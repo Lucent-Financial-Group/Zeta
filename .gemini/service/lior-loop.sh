@@ -2,7 +2,7 @@
 # lior-loop.sh — Antigravity CLI background manager for Lior (Maji hat)
 
 
-export PATH="/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+export PATH="$HOME/.local/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
 
 CONTROL_CLONE="$HOME/.local/share/zeta-lior-control"
 BROADCAST_DIR="$HOME/.local/share/zeta-broadcasts"
