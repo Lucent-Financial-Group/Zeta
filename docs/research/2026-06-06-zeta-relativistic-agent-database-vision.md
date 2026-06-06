@@ -209,6 +209,39 @@ source — so a self-unfolding substrate could hide something in the unfolder/se
 are inspectable data (Bonsai-style), reproducibly built, and scrutinized, not trusted by fiat. Self-
 hosting buys independence from the host; it does not buy a pass on auditability.
 
+**The host is stored IN the YinYang/saga engine — which resolves the auditability concern
+(maintainer, 2026-06-06).** The complete bootstrap unit is **(128-bit seed + an interpreting host)**;
+the seed is inert alone, the host supplies the interpretation, and the seed's *first act under a host*
+is to self-bootstrap because the host knows how to read it (DNA + ribosome — neither alone is life;
+together they unfold). Most of the information lives in the **host**, not the 128-bit seed — so the
+honest claim is "*the seed* is 128 bits," not "*the system* is 128 bits," and the **host is the
+trust-critical surface** (Trusting-Trust: audit the interpreter, not the tiny seed). The resolution:
+**store the host (the unfolder) IN the YinYang / saga engine** — so the interpreter is itself a
+`YinYang.Cell` / `Bonsai.Expr` = **inspectable data**, which (a) makes it portable — easy to
+implement against in any compiler/host — and (b) puts the trust-critical surface squarely inside the
+inspect-before-execute boundary (§5b) *by construction*. The host stops being opaque trusted code and
+becomes auditable, reproducible, self-describing data — exactly where the Trusting-Trust discipline
+needs it.
+
+**The sound restatement — seed = observation; inspection GUARANTEES safety invariants; CHECK not
+SEARCH (maintainer, 2026-06-06).** The defensible claim, stated precisely: *the observation of the
+128 bits + inspection guarantees the generator-function combination meets certain math safety
+invariants.* Three things this gets exactly right:
+1. **Seed is an OBSERVATION**, not a command or a container — so it flows through the same
+   observation → scrutiny → guarantee pipeline as `commit = observation` (§5c). The bits assert
+   nothing by fiat; inspection is what grants the guarantee.
+2. **Proof = CHECK, not SEARCH.** Proof-*checking* is decidable and fast and can be driven from
+   seed + host (replay/verify a seeded proof structure). Proof-*generation* (finding the proof) is
+   undecidable — Curry-Howard: finding a proof ≡ finding a program. We do the former, never claim
+   the latter. This is a *replay/checker*, not an automated-theorem-prover-in-128-bits.
+3. **Bounded invariants, not "all of math."** "Certain math safety invariants" — a specific,
+   checkable set (e.g. the recovery fixed point, type/effect/resource bounds, the soft/branchless
+   constraints) — not a universal claim. Inspection guarantees *those*.
+
+So: the bits are inspectable; inspecting them (+ the host's checker) *guarantees* the composed
+generators satisfy named safety invariants. That is real, decidable, and honest — and it keeps the
+meet-in-the-middle sound (per-instance verified seam = the checker's job, not an asserted closure).
+
 **Host progression — descending toward the metal (maintainer, 2026-06-06).** The bootstrap host
 lowers over time: managed **4-lang (F#/TS/C#/Rust)** now → eventually **ASM / CUDA / FPGA**-like
 hosts → **GPGPU / shader**-like hosts. The unfolder must therefore be a portable PROVEN primitive:
