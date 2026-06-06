@@ -162,6 +162,89 @@ delta) before its action runs. So "ids can encode actions" composes with, rather
 observation→command trust boundary. Anchor: parser combinators (Hutton/Meijer); self-describing
 bytecode / tagged encodings.
 
+## 4e. The seed: Zeta as a self-unfolding 128-bit fixed point (quine) — the long game
+
+Maintainer (2026-06-06): *"we should be able to encode all of Zeta into a 128-bit id where our F#
+code knows how to unfold it, and it unfolds to the same code that unfolds it."* This is the endpoint
+of id-as-program (§4d) + wonder compression (§6.4): a 128-bit **seed** that an **unfolder** expands
+into the system, where the unfold *also reproduces the unfolder* —
+
+```
+unfold(seed) = (Zeta, unfold)      // a fixed point: the output contains its own generator
+```
+
+That is a **quine / self-reproducing fixed point**: the seed names a fixed point of `unfold`; the
+unfolder is recovered *by* unfolding (DNA that encodes the machinery to read DNA). Anchors:
+**Kleene's second recursion theorem**, the **Y / fixed-point combinator**, the **metacircular
+evaluator** (Lisp `eval`/`apply`, SICP), **quines**, **von Neumann's universal constructor /
+self-replication**, **Solomonoff / Kolmogorov / Chaitin** (shortest program that generates the
+object), and **bootstrapping compilers**. The `self-boot` skill (Alexa bootstrapping from
+foundational docs) is the operational shadow of this; the formal version is the seed-unfold.
+
+**Honest caveat (information theory — keep it sound).** 128 bits cannot *literally contain* all of
+Zeta's information (Kolmogorov: 128 bits name only 2^128 distinct objects; the residual /
+history is far larger). So the 128 bits are the **seed/name of the fixed point**, not a literal
+compression of every bit. The split (wonder compression at maximal scale):
+
+- **unfolder** = the generator (lives in the substrate; reproduced by the unfold — the quine part),
+- **seed** = the 128-bit id that selects/derives the canonical core,
+- **residual** = history + the world's divergences from prediction (rides the delta log; §6.4).
+
+So "all of Zeta from 128 bits" is exact for the *self-reproducing canonical kernel* and the
+*generated/derivable core*; the lived residual is layered on via the log. The id seeds the fixed
+point; the unfolder regenerates itself and the derivable system; the log carries the surprise. That
+keeps the dream both beautiful and information-theoretically honest.
+
+**Grounding: this is compiler bootstrapping / self-hosting (maintainer, 2026-06-06).** Not sci-fi —
+it's *"writing the C# compiler in C# after you've written it in C first."* We write the unfolder in
+a **host (F# = the "C" stage)**; then Zeta **self-hosts** (the "C#-in-C#" stage), and the host can
+fall away once the system reproduces itself. Standard practice (GCC/rustc bootstrap, T-diagrams),
+applied to the whole substrate rather than just a compiler. The `self-boot` skill is the manual
+version of the same move.
+
+**Security corollary — the bootstrap must be auditable (Thompson, *Reflections on Trusting Trust*,
+1984).** A self-reproducing compiler can carry a backdoor that survives recompilation from clean
+source — so a self-unfolding substrate could hide something in the unfolder/seed. Defense: the
+**capability/inspect-before-execute boundary (§5b) extends down to the seed and unfolder** — they
+are inspectable data (Bonsai-style), reproducibly built, and scrutinized, not trusted by fiat. Self-
+hosting buys independence from the host; it does not buy a pass on auditability.
+
+**Host progression — descending toward the metal (maintainer, 2026-06-06).** The bootstrap host
+lowers over time: managed **4-lang (F#/TS/C#/Rust)** now → eventually **ASM / CUDA / FPGA**-like
+hosts → **GPGPU / shader**-like hosts. The unfolder must therefore be a portable PROVEN primitive:
+**4-language + 4-serializer + Arrow + protobuf/gRPC**, with the **math leg proven via the existing
+homeostat / Markov links in the chain** (the recovery-fixed-point proof composes with the other
+math homeostats). Same primitive, many hosts — manifesto §4 Bounded Mobility (compute relocates
+within safety bounds) taken down to the silicon; the microkernel/FPGA endgame is the bottom of this
+ladder.
+
+**Why we must stay SOFT, not SHARP (maintainer, 2026-06-06) — it's a hardware-portability law, not
+just epistemics.** To run on **GPGPU / shaders** the computation must be *soft*: branchless,
+data-parallel, continuous/probabilistic (`SoftValue`, `TriBoolean` held-uncertainty, uncollapsed),
+**not sharp** (hard branches, early collapse). Sharp control flow = **SIMT branch divergence** =
+can't run efficiently on shaders. So the "never falsely certain / don't collapse early / wonder"
+discipline is *simultaneously* epistemic honesty AND the thing that makes the substrate executable
+on the ultimate massively-parallel hosts. Soft compute = wonder-preserving = shader-portable; this
+is why uncertainty stays first-class all the way down. Anchor: SIMT/branch-divergence, data-parallel
+& differentiable/soft computing, branchless programming.
+
+**Coding discipline (maintainer 2026-06-06): avoid `if` — it is a composition-killer.** Treat a
+branch like a `goto`: it fragments a smooth, composable pipeline the way `goto` fragments control
+flow, and it breaks branchlessness everywhere it appears. Prefer composition over branching —
+`map`/`fold`/`match`-on-total-DUs, `select`/`min`/`max`/masking, lookup/predication, `TriBoolean`
+`cooperate` (don't collapse), arithmetic over conditionals. Sharp `if` chains both break shader
+portability (divergence) AND lose smoothness/differentiability. Write soft, composable, branch-free
+code by default; a branch is a smell to be designed out, not a tool to reach for. (Anchor: branchless
+/ data-oriented design; Dijkstra "Go To Statement Considered Harmful" — `if` is the next rung.)
+
+**Positive form (maintainer 2026-06-06): fragment control flow into composable *soft* DUs/ADTs.**
+Don't just delete branches — **reify control flow as data**: a discriminated union / algebraic data
+type you compose and `fold`/interpret (total `match`), not imperative branches. "Soft" = the DU
+carries uncertainty (`SoftValue`/`TriBoolean`) so dispatch stays soft. This is the DurableSaga
+DU-state-machine (§5c) generalized + the interpreter / free-monad pattern (control-as-data,
+interpreted). Total `match` on a valid-states DU is *composition*, not branching — that's the
+sanctioned shape; collapse/`measure` only at the edge.
+
 ## 5. DynamicValue-centric, uncertainty-first-class, LLM-in-the-box
 
 - **Data is DynamicValue.** Cells are self-describing `DynamicValue` trees; uncertainty is not an
