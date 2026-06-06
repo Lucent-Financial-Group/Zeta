@@ -39,15 +39,12 @@ not push code changes to these files while that work is in flight; fold into it.
 
 ## Sites found (sweep 2026-06-06)
 
-1. **`src/Core/SpineAsync.fs:33`** — background merge worker is `Task.Run(fun () -> ...)`
-   that blocks on `reader.WaitToReadAsync(...).AsTask().Result` (sync-over-async,
-   line 42). Parks one threadpool thread for the spine's whole lifetime.
-   - Prepared (held, unpushed) patch: rewrite as a `backgroundTask` loop with
-     `let! ready = reader.WaitToReadAsync ct` — genuine async, parks no thread.
-     Verified locally: Core builds 0/0, Spine tests 30/30. Patch text saved at
-     `/tmp/spineasync-async-truthful.patch` (regenerate from this note if lost).
-   - Open design question for the FDB direction: should this worker exist as a
-     separate task at all, or fold into the single run loop?
+1. **`src/Core/SpineAsync.fs:33`** — background merge worker is still a
+   lifetime `Task.Run(Func<Task>(...))`. The sync-over-async blocker
+   (`reader.WaitToReadAsync(...).AsTask().Result`) was removed by PR #6693;
+   the worker now awaits `WaitToReadAsync`. Remaining design question for the
+   FDB direction: should this worker exist as a separate task at all, or fold
+   into `FerryThrottler` / the single run loop once the result arity lands?
 
 2. **`src/Core/Runtime.fs:77`** — `ShardedRuntime.StepAsync` fans shard work out
    via `Array.init shardCount (fun i -> Task.Run(...))` + `Task.WhenAll`.
