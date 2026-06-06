@@ -34,16 +34,6 @@ tempted to ship.
 
 ## P0 — ship-blockers
 
-### gate windows-2025 red — DynamicValue canonical codec StackOverflow on deep nesting
-
-- **Site:** `src/Core/DynamicValue.fs` — encoder `toCanonicalJson` (`let rec`, ~L417; recurses per level in `Array`/`Object` via `List.fold`+`Result.bind`, ~L428/L436) and decoder `readValue`/`readArray`/`readObject` (`let rec … and …`, ~L870–960; recurses per nesting level). The XML codec has the parallel shape. Exercised by `tests/Tests.FSharp/Fuzz.DecodeBoundary.Tests.fs` (depth-2000 JSON+XML deep-nesting Facts + the decode∘encode∘decode property). **Amplifier:** `fromCanonicalJson`'s canonicity check re-encodes the decoded value (`toCanonicalJson decoded = input`), so a deep *decode* also walks the deep *encode* recursion.
-- **Found:** 2026-06-06 by Otto (CI triage; gate went red at `92b04d498`, green at `b40a097a5`).
-- **Severity:** P0 (gate-red — blocks main).
-- **Symptom:** `build-and-test (windows-2025)` ONLY (all 5 other platforms incl. windows-11-arm + both ubuntu + macos pass) crashes the test runner with `Xunit.Sdk.TestPipelineException` / `VSTestTask returned false but did not log an error`. Root cause: the canonical codec recurses per nesting level with no depth guard; deep nesting overflows the tighter windows-x64 threadpool (`Task.Run`, ~1 MB) stack, and a `StackOverflowException` is unhandleable in .NET → it kills the process mid-assembly (598 passed, then FATAL). Deterministic on windows-x64.
-- **Fix LANDED 2026-06-06 (awaiting windows-x64 CI confirm):** added a dedicated `NestingTooDeep` case to `EncodeError` + `DecodeError`, mirrored across all four languages (F#/C#/Rust/TS), and a recursion-depth guard (fixed internal bound `maxNestingDepth = 256`, well above any real value) to the **JSON + XML encode + decode** paths in every language. Past the bound the codec returns `Error NestingTooDeep` as data (Result-over-exception), never overflows. Ilyana (public-api-designer) reviewed + approved the surface (named the case, fixed-internal bound, no reuse). Boundary contract test added (depth 256 → Ok, 257 → `NestingTooDeep`). Validated locally across all 4 langs (F# 95, C# 94, Rust all, TS 170 + full-solution build clean); CI windows-x64 is the final confirmation the SOF is gone. **This entry is deleted once that gate run is green.**
-- **Fast-follow (filed separately):** the CBOR + Arrow codecs and the TS string-returning `canonicalJson`/`canonicalXml` encoders lack an `Error` channel (return `byte[]`/`string`), so guarding them needs a return-type change — deferred (no failing test, separate API decision). Also pending: boundary tests in C#/Rust/TS, Rust `#[non_exhaustive]` on the error enums, and the TS per-codec `DecodeError` fragmentation (Ilyana flags). See the fast-follow workitem.
-- **Who:** Otto (shadow) implemented + Ilyana reviewed. Fast-follow → DynamicValue owner / Kenji.
-
 ### Expert/skill split half-done — onboarding confusion
 
 - **Site:** `.claude/agents/` vs `.claude/skills/` vs `docs/EXPERT-REGISTRY.md`
@@ -203,86 +193,6 @@ tempted to ship.
 - **Fix:** either add a Stable branch in `isEnabled` that
   returns `true` unconditionally, OR delete the Stable
   stage entirely and document graduation-means-deletion.
-
-### IterateToFixedPoint lossy overload
-
-- **Site:** `src/Core/Recursive.fs:247-264`
-- **Found:** round 20 by Viktor
-- **Severity:** P1
-- **Symptom:** the `int`-returning overload can't distinguish
-  "converged on last iteration" from "hit the iteration cap";
-  the `WithConvergence` overload can. Spec says the driver
-  MUST return enough info.
-- **Fix:** delete the lossy overload or document it as
-  "for converged-only callers; use `WithConvergence` if you
-  need cap detection."
-
-### FeedbackOp permits Build with connected=0
-
-- **Site:** `src/Core/Recursive.fs:38-53`
-- **Found:** round 20 by Viktor
-- **Severity:** P1
-- **Symptom:** a `FeedbackOp` that was registered but never
-  `Connect`-ed silently no-ops in `AfterStepAsync`. Spec says
-  wired-exactly-once.
-- **Fix:** `Circuit.Build` asserts every `FeedbackOp` has
-  `connected=1`; throw otherwise.
-
-### CountingBloomFilter hash quality on user types
-
-- **Site:** `src/Core/BloomFilter.fs:125-133`
-- **Found:** round 20 by Kira
-- **Severity:** P1
-- **Symptom:** fallback uses `EqualityComparer<'T>.Default.GetHashCode`
-  (32-bit, poor quality) then re-hashes through XxHash128.
-  Effective hash is the 32-bit input; FPR silently inflates.
-- **Fix:** require user types to implement `IHashable` or pass
-  a `ReadOnlySpan<byte>` serialiser; fall back only with a
-  `TraceWarning`.
-
-### InfoTheoreticSharder Checked.+ mid-loop overflow
-
-- **Site:** `src/Core/NovelMathExt.fs`
-- **Found:** round 20 by Kira
-- **Severity:** P1
-- **Symptom:** `Checked.(+)` inside the argmin loop throws on
-  int64 saturation mid-scan, leaving `shardLoads` in a
-  consistent but half-committed state and the caller with an
-  unrecoverable sharder.
-- **Fix:** clamp at `Int64.MaxValue` rather than throwing;
-  document the saturation as "load cap, not an error".
-
-### Delay overload without initial uses Unchecked.defaultof
-
-- **Site:** `src/Core/Primitive.fs:74-75`
-- **Found:** round 20 by Viktor
-- **Severity:** P1
-- **Symptom:** `Delay` no-initial overload passes
-  `Unchecked.defaultof<'T>`. For reference types that's `null`;
-  spec says "declared initial value on very first tick."
-- **Fix:** remove the no-initial overload, or amend spec to
-  define `Unchecked.defaultof` as the declared default.
-
-### BloomBench 47-bit int64 key generator
-
-- **Site:** `bench/Benchmarks/BloomBench.fs`
-- **Found:** round 20 by Kira
-- **Severity:** P1
-- **Symptom:** `int64 (rng.Next()) <<< 16 ||| int64 (rng.Next())`
-  produces a 47-bit value, not the intended 63-bit. Keys
-  cluster; FPR numbers the bench produces are optimistic.
-- **Fix:** `rng.NextInt64()`.
-
-### FeatureFlags.resetAll not atomic vs concurrent set/isEnabled
-
-- **Site:** `src/Core/FeatureFlags.fs:132-143`
-- **Found:** round 20 by Kira
-- **Severity:** P1 (test-harness only, but docstring promises
-  "clean slate")
-- **Symptom:** `ConcurrentDictionary.Clear()` is not
-  linearizable against concurrent `set` / `isEnabled`; a
-  concurrent `set` during `resetAll` can leave stale entries.
-- **Fix:** `lock overrides` around `Clear`.
 
 ---
 

@@ -93,6 +93,7 @@
     <Compile Include="Fusion.Equation.fs" />
     <Compile Include="Spine.fs" />
     <Compile Include="SpineAsync.fs" />
+    <Compile Include="FerryThrottler.fs" />
     <Compile Include="BalancedSpine.fs" />
     <Compile Include="SpineSelector.fs" />
     <Compile Include="SimdMerge.fs" />
@@ -105,6 +106,14 @@
     <Compile Include="ChaosEnv.fs" />
     <Compile Include="HigherOrder.fs" />
     <Compile Include="DiskSpine.fs" />
+    <Compile Include="DiskSpineAsync.fs" />
+    <Compile Include="FileSync.fs" />
+    <Compile Include="DeltaLog.fs" />
+    <Compile Include="DeltaCodec.fs" />
+    <Compile Include="DiskDeltaLog.fs" />
+    <Compile Include="SnapshotStore.fs" />
+    <Compile Include="RecoverableSpine.fs" />
+    <Compile Include="DurableSaga.fs" />
     <Compile Include="Durability.fs" />
     <Compile Include="Checkpoint.fs" />
     <Compile Include="Consensus.fs" />
