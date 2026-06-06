@@ -278,6 +278,13 @@ tempted to ship.
 
 ## P2 — nice to have
 
+### MerkleTree.LeafDiff is flat O(N), not the branch-pruning walk its docstring claims
+- **Site:** `src/Core/Merkle.fs` (`LeafDiff`, ~L134) — docstring says "O(changed + log N) branch-prunes at every matching internal level"; code is a flat loop over the whole leaf arrays.
+- **Found:** 2026-06-06 by Lior
+- **Symptom:** doc/impl gap — actual cost is O(N) on every diff, not the advertised pruned walk (perf, not correctness).
+- **Fix:** implement the recursive top-down walk on the level digests (prune subtrees where `digestA = digestB`), or correct the docstring to O(N).
+- **Who:** Naledi / Kenji
+
 ### TECH-RADAR row for Bloom sits at Trial without a bench
 
 - **Site:** `docs/TECH-RADAR.md` (Bloom filter row)
