@@ -19,6 +19,11 @@ let private keyEnc (i: int) : DynamicValue = DynamicValue.Int(int64 i)
 let private keyDec (dv: DynamicValue) : int =
     match dv with DynamicValue.Int w -> int w | o -> failwithf "keyDec: %A" o
 
+type private FixedBytesDeltaCodec(bytesPerDelta: int) =
+    interface IDeltaCodec<int> with
+        member _.Encode _ = Array.zeroCreate bytesPerDelta
+        member _.Decode _ = ZSet<int>.Empty
+
 let private withDir name (f: string -> unit) =
     let dir = DeterministicTestPath.nextDir name
     try f dir
@@ -136,6 +141,35 @@ let ``group-commit segment log truncates torn trailing record on recovery`` () =
         dlog.HighWater |> should equal 2L
         dlog.ReplayAsync(0L, ct).AsTask().Result |> Array.map _.Seq |> should equal [| 1L; 2L |]
         FileInfo(segment).Length |> should equal before)
+
+
+[<Fact>]
+let ``group-commit segment log shields admitted append from caller cancellation`` () =
+    withDir "gcdl-cancel-after-admit" (fun dir ->
+        let config = { FerryThrottlerConfig.deterministic with MaxBatchSize = 1 }
+        use log = new GroupCommitDiskDeltaLog<int>(dir, FixedBytesDeltaCodec(4 * 1024 * 1024), config)
+        let dlog = log :> IDeltaLog<int>
+        let first = dlog.AppendAsync(ZSet.ofKeys [ 1 ], empty, ct).AsTask()
+        use cts = new CancellationTokenSource()
+        let second = dlog.AppendAsync(ZSet.ofKeys [ 2 ], empty, cts.Token).AsTask()
+        cts.Cancel()
+        System.Threading.Tasks.Task.WaitAll([| first :> System.Threading.Tasks.Task; second :> System.Threading.Tasks.Task |])
+        first.Result |> should equal 1L
+        second.Result |> should equal 2L
+        dlog.ReplayAsync(0L, ct).AsTask().Result |> Array.map _.Seq |> should equal [| 1L; 2L |])
+
+
+[<Fact>]
+let ``group-commit segment log live replay uses read-only scan during append`` () =
+    withDir "gcdl-live-replay" (fun dir ->
+        use log = new GroupCommitDiskDeltaLog<int>(dir, FixedBytesDeltaCodec(8 * 1024 * 1024))
+        let dlog = log :> IDeltaLog<int>
+        let append = dlog.AppendAsync(ZSet.ofKeys [ 1 ], empty, ct).AsTask()
+        // This must not require a read/write handle; the writer opens with
+        // FileShare.Read while the append is in flight.
+        dlog.ReplayAsync(0L, ct).AsTask().Wait()
+        append.Wait()
+        dlog.ReplayAsync(0L, ct).AsTask().Result |> Array.map _.Seq |> should equal [| 1L |])
 
 
 [<Fact>]

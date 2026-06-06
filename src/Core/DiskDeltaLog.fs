@@ -216,11 +216,12 @@ type GroupCommitDiskDeltaLog<'K when 'K : comparison>
         let deltaBytes = br.ReadBytes deltaLen
         { Seq = seq; Delta = codec.Decode deltaBytes; Captured = captured }
 
-    let recoverEntries () : DeltaLogEntry<'K>[] =
+    let scanEntries (truncateTrailingTornWrite: bool) : DeltaLogEntry<'K>[] =
         if not (File.Exists segmentPath) then
             [||]
         else
-            use fs = new FileStream(segmentPath, FileMode.Open, FileAccess.ReadWrite, FileShare.Read)
+            let access = if truncateTrailingTornWrite then FileAccess.ReadWrite else FileAccess.Read
+            use fs = new FileStream(segmentPath, FileMode.Open, access, FileShare.ReadWrite)
             use br = new BinaryReader(fs)
             let entries = ResizeArray<DeltaLogEntry<'K>>()
             let mutable scanning = true
@@ -229,7 +230,8 @@ type GroupCommitDiskDeltaLog<'K when 'K : comparison>
                 if fs.Length - fs.Position = 0L then
                     scanning <- false
                 elif fs.Length - fs.Position < 8L then
-                    fs.SetLength recordStart
+                    if truncateTrailingTornWrite then
+                        fs.SetLength recordStart
                     scanning <- false
                 else
                     let len = br.ReadInt32()
@@ -237,14 +239,16 @@ type GroupCommitDiskDeltaLog<'K when 'K : comparison>
                     if len < 0 then
                         invalidOp $"GroupCommitDiskDeltaLog: negative record length {len} at byte {recordStart}."
                     elif fs.Length - fs.Position < int64 len then
-                        fs.SetLength recordStart
+                        if truncateTrailingTornWrite then
+                            fs.SetLength recordStart
                         scanning <- false
                     else
                         let payload = br.ReadBytes len
                         let actualCrc = HardwareCrc.Crc32C(ReadOnlySpan payload)
                         if actualCrc <> expectedCrc then
                             if fs.Position = fs.Length then
-                                fs.SetLength recordStart
+                                if truncateTrailingTornWrite then
+                                    fs.SetLength recordStart
                                 scanning <- false
                             else
                                 invalidOp
@@ -254,7 +258,7 @@ type GroupCommitDiskDeltaLog<'K when 'K : comparison>
             entries.ToArray()
 
     let mutable nextSeq =
-        let recovered = recoverEntries ()
+        let recovered = scanEntries true
         if recovered.Length = 0 then 0L else recovered |> Array.maxBy _.Seq |> _.Seq
 
     let appendBoat (boat: ReadOnlyMemory<GroupCommitDeltaAppendRequest>) (ct: CancellationToken) : Task<int64 array> =
@@ -283,13 +287,16 @@ type GroupCommitDiskDeltaLog<'K when 'K : comparison>
 
     interface IDeltaLog<'K> with
         member _.AppendAsync(delta, captured, ct) =
-            let seq = lock gate (fun () -> nextSeq <- nextSeq + 1L; nextSeq)
-            let payload = framePayload seq captured delta
-            let req = { Seq = seq; Record = frameRecord payload }
-            throttler.ProcessAsync(req, ct) |> ValueTask<int64>
+            if ct.IsCancellationRequested then
+                ValueTask<int64>(Task.FromCanceled<int64> ct)
+            else
+                let seq = lock gate (fun () -> nextSeq <- nextSeq + 1L; nextSeq)
+                let payload = framePayload seq captured delta
+                let req = { Seq = seq; Record = frameRecord payload }
+                throttler.ProcessAsync(req, CancellationToken.None) |> ValueTask<int64>
 
         member _.ReplayAsync(fromSeqExclusive, _ct) =
-            recoverEntries ()
+            scanEntries false
             |> Array.filter (fun e -> e.Seq > fromSeqExclusive)
             |> Array.sortBy _.Seq
             |> ValueTask<DeltaLogEntry<'K>[]>
