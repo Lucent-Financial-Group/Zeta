@@ -115,31 +115,29 @@
     };
   };
 
-  # Stable cluster-wide name for the control-plane (`control-plane`),
-  # independent of this node's per-install hostname (node-<6hex>).
+  # Stable name for the control-plane (`control-plane`), independent of
+  # this node's per-install hostname (node-<6hex>).
   #
   # WHY a fixed name: Cilium runs with kubeProxyReplacement (kube-proxy is
-  # disabled above), so every node's Cilium agent must reach the API
-  # server directly at a name that resolves the same way cluster-wide:
-  # `k8sServiceHost: control-plane` (see k8s/bootstrap/cilium-install.yaml).
-  # Workers' k3s-agent serverAddr uses the same name.
+  # disabled above), so the Cilium agent must reach the API server
+  # directly at `k8sServiceHost: control-plane`
+  # (see k8s/bootstrap/cilium-install.yaml). On the control-plane node
+  # itself the API is local, so we map `control-plane` -> 127.0.0.1 in
+  # /etc/hosts. This is all a single-node cluster needs, and is the
+  # endpoint the control-plane's own Cilium agent uses. Deterministic;
+  # no name-resolution protocol required.
   #
-  # Two resolution paths, both pointing each node at the right endpoint:
-  #   - On the control-plane itself: /etc/hosts maps `control-plane` ->
-  #     127.0.0.1 (the API is local; deterministic, avoids resolving its
-  #     own NetBIOS name via broadcast-to-self).
-  #   - On workers: the NetBIOS alias below makes nmbd answer broadcast
-  #     queries for `control-plane`, and nss-wins (common.nix) resolves
-  #     it to this node's LAN IP.
   # mDNS is NOT used — `control-plane.zeta.local` was a dangling name that
   # never resolved (mDNS is single-label `.local`; nothing defined it).
+  #
+  # MULTI-NODE TODO: workers (k3s-agent serverAddr = https://control-plane)
+  # need `control-plane` to resolve to the control-plane's LAN IP. mDNS is
+  # unreliable here and NetBIOS/nss-wins broadcast resolution did not work
+  # in testing (winbindd path). The robust path is to inject a
+  # `control-plane <cp-ip>` /etc/hosts entry on each worker at install
+  # time (zeta-install.sh) once worker provisioning lands. Tracked
+  # separately; single-node bring-up does not depend on it.
   networking.hosts."127.0.0.1" = [ "control-plane" ];
-
-  # nmbd answers broadcast NetBIOS name queries for `control-plane` in
-  # addition to this node's hostname, so workers + Cilium can find the
-  # control-plane by the fixed name. Merges with common.nix's
-  # services.samba.settings.global.
-  services.samba.settings.global."netbios aliases" = "control-plane";
 
   networking.firewall = {
     allowedTCPPorts = [

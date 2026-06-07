@@ -160,15 +160,6 @@
     openFirewall = false;  # we open ONLY 137/138 UDP below; no SMB ports
     smbd.enable = false;   # NO SMB file-sharing daemon
     nmbd.enable = true;    # NetBIOS name daemon ONLY
-    # nss-wins: add `wins` to /etc/nsswitch.conf `hosts:` so glibc
-    # getaddrinfo() (and therefore k3s + Cilium's k8sServiceHost) can
-    # RESOLVE NetBIOS names via broadcast — not just publish them.
-    # Without this, nmbd publishes `<hostname>` on the wire but nothing
-    # on the node can look it up (the prior config was publish-only;
-    # nsswitch had no `wins`). This is what makes `control-plane`
-    # resolve cluster-wide (see k3s-server.nix netbios alias + the
-    # nixos/tests/netbios-control-plane-resolution.nix VM test).
-    nsswins = true;
     settings = {
       global = {
         "workgroup" = "ZETA";

@@ -194,12 +194,12 @@
           k3s-control-plane-cluster-init =
             import ./nixos/tests/k3s-cluster-init.nix { inherit pkgs; };
 
-          # Regression test for control-plane name resolution: a worker VM
-          # resolves the control-plane by the NetBIOS name `control-plane`
-          # (nmbd alias + nss-wins). See
-          # nixos/tests/netbios-control-plane-resolution.nix.
-          netbios-control-plane-resolution =
-            import ./nixos/tests/netbios-control-plane-resolution.nix { inherit pkgs; };
+          # ONLINE end-to-end: boots the control-plane WITH internet, installs
+          # Cilium for real, asserts the node reaches Ready + CoreDNS Running.
+          # REQUIRES internet -> build with `--option sandbox false`.
+          # See nixos/tests/k3s-cluster-online.nix.
+          k3s-cluster-online =
+            import ./nixos/tests/k3s-cluster-online.nix { inherit pkgs; };
         };
 
         devShells.default = pkgs.mkShell {
