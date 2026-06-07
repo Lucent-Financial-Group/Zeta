@@ -115,6 +115,32 @@ not an afterthought — it is the seam through which the dogfooding test is met.
 > exactly the state this criterion retires — the data plane is "done" when these `git` invocations are
 > replaced by data-plane DB commands over the same git backend.
 
+### git-reach as the gap detector (the requirements loop)
+
+> Aaron: *"if you have to use git, you know our database is missing a primitive or composition of
+> primitives for its interface. We can make an MCP and a CLI for it."*
+
+This turns the dogfooding test into a **self-driving requirements loop**: every time Otto (or any
+component) reaches for `git`, that reach *names a missing DB primitive* — or a missing *composition* of
+existing primitives. The git operation is the spec for the gap. So the build proceeds by:
+
+1. Try to do the work through the DB interface.
+2. If you fall back to `git`, log the exact operation — that's a missing primitive/composition.
+3. Add it to the DB interface (a primitive, or a composition of the three nouns' verbs).
+4. The git fallback disappears.
+
+When the punch-list of git-reaches is empty, the interface is complete *by construction*. The interface
+ships on **two surfaces over the same data-plane core**:
+
+- **An MCP** — the agent-facing surface (Otto and other agents call DB tools instead of `Bash git …`).
+- **A CLI** — the human/script-facing surface (the same generic commands for people and automation).
+
+Both are thin frontends over the one data-plane command core (the three nouns + their verbs); they are
+not separate implementations. Concretely, today's git-reaches already enumerate the first primitives the
+interface must cover: commit/append, branch, checkout, log/history, diff, status, fetch/pull, push, and
+the PR/merge control-plane verbs — each is either a noun-verb (`append`/`branch`/`history`) or a
+composition to expose.
+
 ## 3. Cell host substrates — three, each cell distinct
 
 > Aaron: *"support 1 systemd (and other OS service) cells, 2 raw kubernetes operator-pattern cells,
