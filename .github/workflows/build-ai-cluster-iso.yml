@@ -158,6 +158,15 @@ jobs:
         working-directory: full-ai-cluster
         run: nix build .#checks.x86_64-linux.k3s-control-plane-cluster-init -L --print-build-logs
 
+      # Regression test for control-plane name resolution: a worker VM
+      # resolves the control-plane by the NetBIOS name `control-plane`
+      # (nmbd alias + nss-wins). Validates the addressing fix that replaced
+      # the dangling, never-resolvable `control-plane.zeta.local`. Hermetic
+      # (NetBIOS broadcast on the test VLAN; no internet).
+      - name: NixOS test — control-plane resolves via NetBIOS (addressing regression)
+        working-directory: full-ai-cluster
+        run: nix build .#checks.x86_64-linux.netbios-control-plane-resolution -L --print-build-logs
+
       - name: Build installer ISO
         working-directory: full-ai-cluster
         run: nix build .#installer-iso --print-build-logs

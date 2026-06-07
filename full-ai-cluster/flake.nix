@@ -193,6 +193,13 @@
           # comes all the way up (see nixos/tests/k3s-cluster-init.nix).
           k3s-control-plane-cluster-init =
             import ./nixos/tests/k3s-cluster-init.nix { inherit pkgs; };
+
+          # Regression test for control-plane name resolution: a worker VM
+          # resolves the control-plane by the NetBIOS name `control-plane`
+          # (nmbd alias + nss-wins). See
+          # nixos/tests/netbios-control-plane-resolution.nix.
+          netbios-control-plane-resolution =
+            import ./nixos/tests/netbios-control-plane-resolution.nix { inherit pkgs; };
         };
 
         devShells.default = pkgs.mkShell {

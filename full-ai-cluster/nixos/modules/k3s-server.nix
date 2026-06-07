@@ -40,6 +40,13 @@
       "--write-kubeconfig-mode=0640"
       "--write-kubeconfig-group=wheel"
 
+      # Make the API-server cert valid for the stable name `control-plane`.
+      # Cilium (kubeProxyReplacement) and workers connect to
+      # https://control-plane:6443; without this SAN the TLS handshake
+      # would fail cert verification when the endpoint is addressed by
+      # that name. (127.0.0.1 / the node IP are SAN'd by k3s already.)
+      "--tls-san=control-plane"
+
       # CNI takeover by Cilium — disable flannel + kube-proxy + the
       # built-in network-policy controller. Cilium handles all three.
       "--flannel-backend=none"
@@ -107,6 +114,32 @@
       root-application.source = ../../k8s/bootstrap/root-application.yaml;
     };
   };
+
+  # Stable cluster-wide name for the control-plane (`control-plane`),
+  # independent of this node's per-install hostname (node-<6hex>).
+  #
+  # WHY a fixed name: Cilium runs with kubeProxyReplacement (kube-proxy is
+  # disabled above), so every node's Cilium agent must reach the API
+  # server directly at a name that resolves the same way cluster-wide:
+  # `k8sServiceHost: control-plane` (see k8s/bootstrap/cilium-install.yaml).
+  # Workers' k3s-agent serverAddr uses the same name.
+  #
+  # Two resolution paths, both pointing each node at the right endpoint:
+  #   - On the control-plane itself: /etc/hosts maps `control-plane` ->
+  #     127.0.0.1 (the API is local; deterministic, avoids resolving its
+  #     own NetBIOS name via broadcast-to-self).
+  #   - On workers: the NetBIOS alias below makes nmbd answer broadcast
+  #     queries for `control-plane`, and nss-wins (common.nix) resolves
+  #     it to this node's LAN IP.
+  # mDNS is NOT used — `control-plane.zeta.local` was a dangling name that
+  # never resolved (mDNS is single-label `.local`; nothing defined it).
+  networking.hosts."127.0.0.1" = [ "control-plane" ];
+
+  # nmbd answers broadcast NetBIOS name queries for `control-plane` in
+  # addition to this node's hostname, so workers + Cilium can find the
+  # control-plane by the fixed name. Merges with common.nix's
+  # services.samba.settings.global.
+  services.samba.settings.global."netbios aliases" = "control-plane";
 
   networking.firewall = {
     allowedTCPPorts = [
