@@ -45,7 +45,10 @@
 
 { pkgs }:
 
-pkgs.nixosTest {
+# nixpkgs 25.11 removed the top-level `pkgs.nixosTest` alias (throw added
+# 2025-10-27); the entry point is `pkgs.testers.nixosTest` — same
+# { name; nodes; testScript; } signature.
+pkgs.testers.nixosTest {
   name = "k3s-control-plane-cluster-init";
 
   nodes.server = { config, pkgs, lib, ... }: {
