@@ -83,6 +83,38 @@ ZetaId / routing coordinate — a *key*, not a payload shape). If a `Cell` type 
 more than `(identity, Log)`, that's the signal to re-run the noun cut — it's smuggling a fold back in
 as a noun.
 
+## 2a. Definition of DONE for the data plane — the DB layer replaces the git CLI
+
+> Aaron: *"to consider the data plane done, all of our persistence should be able to go through our DB
+> layer that understands filesystem and git but running in git-native mode where it makes efficient use
+> of git history and branches and ZetaIds and such. You should not need to use the git CLI anymore after
+> this — even things like backlog (that are control plane) can still be called by you, Otto the LLM, [via]
+> the generic commands that exist in the data plane for our DB, instead of git."*
+
+This is the **acceptance test**, stated as dogfooding:
+
+1. **All persistence routes through the DB layer** — no component writes to disk or calls `git`
+   directly; everything goes through the data-plane's generic command surface.
+2. **The DB layer understands filesystem AND git**, running in **git-native mode** — it makes
+   *efficient* use of git history (the Log = commits), branches, and **ZetaIds** as first-class
+   addresses. Git is the backend; the DB is the interface.
+3. **The dogfooding criterion (the bright line):** *Otto (the LLM) no longer uses the `git` CLI.*
+   Every persistence action — commit/append, branch, read history, fetch-by-ZetaId, and even
+   **control-plane operations like backlog** — is issued through the data-plane DB's **generic
+   commands**, not `git`. When a full work-cycle (land a change, branch, query history, update backlog)
+   needs no `git`, the data plane is done.
+
+**Implication for the build:** the data plane needs a **generic command surface** (a CLI/API) that
+exposes the three nouns and their verbs over the git-native backend — `persist`/`append` (commit a
+ZSet to a Log), `branch`, `history`/`log` (read the Log), `get`/`resolve` by ZetaId, `fold`/`snapshot`
+(materialize state). Control-plane consumers (backlog, docs, memory) become *callers* of this surface,
+not direct git users. This generic-command surface is a first-class deliverable of "data-plane done,"
+not an afterthought — it is the seam through which the dogfooding test is met.
+
+> Note (current honesty): this very session still uses `git` CLI for all commits/branches/PRs. That is
+> exactly the state this criterion retires — the data plane is "done" when these `git` invocations are
+> replaced by data-plane DB commands over the same git backend.
+
 ## 3. Cell host substrates — three, each cell distinct
 
 > Aaron: *"support 1 systemd (and other OS service) cells, 2 raw kubernetes operator-pattern cells,
@@ -145,10 +177,14 @@ unusually mature data model + persistence. The three biggest gaps to "full singl
    are done; this completes the three-noun proven base. *(The crystallized next slice.)*
 2. **Extract the data-plane package** at the `IDeltaLog`/`ISnapshotStore` seam (the agent-free
    product shape) + its query/write interface surface (`FSharpApi`/`Query`/`Dsl`).
-3. **Durability floor** — ship `fsync`-on-commit (gap #1) so the "reliable" claim is honest.
-4. **Cell contract + one host adapter** — define the `(identity, Log)` cell contract; land ONE host
+3. **Generic command surface + route ALL persistence through it (the definition-of-done, §2a)** —
+   a CLI/API over the three nouns/verbs (`persist`/`append`/`branch`/`history`/`get`-by-ZetaId/`fold`)
+   on the git-native backend; migrate control-plane consumers (backlog, docs, memory) onto it. **Done
+   test: Otto completes a full work-cycle with zero `git` CLI calls.**
+4. **Durability floor** — ship `fsync`-on-commit (gap #1) so the "reliable" claim is honest.
+5. **Cell contract + one host adapter** — define the `(identity, Log)` cell contract; land ONE host
    (systemd is simplest) before k8s-operator / Orleans.
-5. *(later)* multi-key txn/isolation (gap #2), general query/index (gap #3), the geo/governance
+6. *(later)* multi-key txn/isolation (gap #2), general query/index (gap #3), the geo/governance
    pattern libraries (§5), then the agent-over-cells experiments (§4).
 
 ## Anchors
