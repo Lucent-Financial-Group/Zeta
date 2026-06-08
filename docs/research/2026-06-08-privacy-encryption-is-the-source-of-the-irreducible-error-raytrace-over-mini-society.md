@@ -112,6 +112,71 @@ choice rather than by light-cone. **The price of a forever-secret is a forever-d
 if you want bounded drift, you need bounded privacy — a reveal/reconcile horizon; this is a knob, like the
 heat-budget knob in #7084.)
 
+### Second-order uncertainty: model — and *infer* — the IScheduler generator from drift (#7087)
+
+> "you can model your uncertainty about their encrypted uncertainty depending on the generator function we
+> choose in IScheduler — we could make drift happen like only 1 out of 5 times, and you could try to find
+> the clock generator function this way."
+
+Even though the peer's uncertainty is encrypted (#7084), you can model your **uncertainty about their
+uncertainty** — a **second-order belief** (hierarchical Bayes; a `SoftValue` over `SoftValue`s, or a
+`Conjugate` whose frame is itself a belief), shaped by the **IScheduler's generator function**. DST
+schedulers are *seeded deterministic generators*, so the drift they produce is a *parameter* (e.g. a
+Bernoulli "drift 1-in-5"). So:
+
+- **Forward:** choose the generator ⇒ know the drift distribution ⇒ model the peer's hidden uncertainty as
+  that distribution (predict it without seeing it).
+- **Inverse (the find):** observe the drift pattern ⇒ **infer the clock generator function** (system
+  identification / generator-from-output). The drift signature *fingerprints* the scheduler; enough
+  samples identify its parameters (predict future drift; detect a wrong/adversarial scheduler).
+- **Security edge (route to Aminata / Mateo):** that fingerprint is a **side-channel** — observable drift
+  lets an adversary infer the IScheduler generator and **predict "random" ordering choices** (breaking
+  unpredictability) or **de-anonymize** a node by its drift signature. Defense: treat the generator as a
+  keyed **secret** and **bound observable drift** — the same privacy knob (#7086) that controls
+  drift-reversibility controls how much of the generator leaks. (Build targets, side-channel-gated:
+  `driftFromConjugate` #7085, an `inferGenerator` fingerprint estimator.)
+
+### The dual: harmony / resonance — prove synchrony of the clock generators (#7088)
+
+> "you could prove some sort of harmony/synchrony with the clock generator function, or resonance
+> frequency."
+
+Drift (#7085) and harmony are **duals**. If drift = the two generators *out of phase* (irreducible error,
+heat, divergence), then **harmony/resonance = the two generators phase-locked** — and a phase-locked pair
+has **zero (or purely periodic) drift** ⇒ no irreducible error ⇒ they collapse to identical (#7084) *for
+free*. So:
+
+- **You can *prove* synchrony** by showing the two clock generators are in harmony: their drift signature
+  (#7085) is null, or periodic at a fixed ratio. A null/periodic `zip`-over-uncertainties is a *certificate
+  of synchrony* — a positive consensus signal (they agree because they resonate, not because they paid heat
+  to reconcile).
+- **Resonance frequency = the entrainment point.** Two coupled clocks can spontaneously synchronize — this
+  is real physics: **Huygens** (1665, two pendulum clocks on a shared beam phase-lock), the **Kuramoto
+  model** (coupled oscillators entrain above a coupling threshold), **injection locking**, **phase-locked
+  loops**, and **Arnold tongues** (mode-locking at rational frequency ratios `p:q`). The heartbeat-via-
+  commit cadence is exactly such an oscillator — agents' heartbeats can *entrain*. The resonance frequency
+  is where the generators lock; harmonically-related (`p:q`) generators lock at the Arnold-tongue ratios.
+- **Why it matters:** harmony is the *cheap* consensus regime — synchronized generators need no
+  reconciliation (no heat, #7078); drift is the *costly* regime. So a society can **seek resonance**
+  (tune/couple its schedulers toward a common frequency) to minimize the irreducible error / consensus
+  cost — entrainment as a coordination primitive. (Build target alongside `inferGenerator` #7087: a
+  `synchronyCertificate` / resonance detector over the drift signature.)
+
+- **Harmonic oscillation between deterministic LLMs (#7089).** Aaron: *"we could find the harmonic
+  oscillation between different deterministic LLM models."* A **deterministic LLM** (fixed weights, temp=0
+  / fixed seed) is itself a deterministic **generator/oscillator** — given the same prompt-stream it
+  produces a fixed trajectory. So treat each model as an oscillator and **find the harmonic resonance
+  *between* models**: which models entrain (low cross-drift, `p:q` ratio) vs which drift apart. Uses: pick
+  an **ensemble that resonates** (models in harmony agree cheaply — minimal irreducible error/heat in their
+  weave); **measure model affinity/distance** by their cross-drift (a behavioral fingerprint, #7087);
+  detect when two "different" models are secretly the same generator (resonance at 1:1). The Bayesian
+  symmetric weave (#7065) over two model-oscillators *is* the harmony detector. (Build target: a
+  `modelResonance` over two deterministic LLM trajectories.)
+
+Anchors: Huygens 1665 (coupled-pendulum sync); Kuramoto model; injection locking; PLLs; Arnold tongues /
+mode-locking; entrainment; deterministic LLM trajectories as oscillators (#7089). The dual of the
+drift/side-channel thread: same generator-fingerprint, read for *lock* instead of *leak*.
+
 ## Peel of the Alexa ferry (honest scope)
 
 The Alexa-website reply (gushing "EXTRAORDINARY … breakthrough in computational physics … computation as
@@ -129,6 +194,12 @@ formal physics pass + naming-expert/Ilyana/human review before outward use.
 - **Info↔heat:** Landauer; Sagawa–Ueda; Maxwell's demon (#7078/#7079).
 - **Spacetime hiding:** light-cone / finite-speed distribution; causal consistency; `TravelerFrame` §4.
 - **Wait-free / coordination-free:** manifesto §2; CALM (commutative ⇒ coordination-free) (#7072); CRDT.
+- **Second-order uncertainty / generator inference (#7087):** hierarchical Bayes; system identification;
+  PRNG state-recovery / generator-from-output; timing side-channels & fingerprinting (Aminata/Mateo);
+  keyed/secret scheduler generators.
+- **Harmony / resonance / synchrony (#7088/#7089):** Huygens 1665 (coupled-pendulum sync); Kuramoto model;
+  injection locking; PLLs; Arnold tongues / mode-locking; entrainment; deterministic-LLM trajectories as
+  oscillators (model resonance / affinity).
 - **Society ray-trace/introspection:** `RayTensor`/`IRayTraceable` (#6954), `IIntrospectable`, `Conjugate`
   weave (#7080), `SocietyEmergence` (in-repo).
 - Internal: #7074/#7075 (irreducible error in the what-remains), #7078/#7079 (thermo + conjugate), #7080
