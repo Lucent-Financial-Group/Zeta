@@ -47,6 +47,30 @@ So an interface = **a bundle of fold-queries over one stream, joined/zipped, new
 unifies: the noun-class interface (#7051), the table↔stream fold (#7029), the forced-RX observation
 (#7050), and the everything-is-edges graph (#7036 — joins/zips are graph edges between queries).
 
+## Is this a known pattern in category theory? Yes (#7054)
+
+Aaron asked. It's several converging, named results — and his coinage is almost literal:
+
+- **The Banana Split Law** (Fokkinga 1990; Bird & de Moor, *Algebra of Programming* 1997). A **tuple of
+  catamorphisms over one structure = a single catamorphism producing the tuple**:
+  `⦇f⦈ △ ⦇g⦈  =  ⦇ (f ∘ F π₁) △ (g ∘ F π₂) ⦈`. "Banana-split" is the *actual theorem name* — multiple
+  fold-queries over one stream provably collapse to one fold. Aaron's intuition was the literal law.
+- **Arrow fanout `&&&`** (Hughes, *Arrows* 2000) — `(&&&) : a b c → a b c' → a b (c × c')` runs multiple
+  computations on one input and tuples the results. "1 stream → N queries → pair" *is* fanout.
+- **zip = product/tupling; join-by-key = pullback (fiber product).** Relational join is a pullback in
+  **Set/Rel** (the fiber product over the join key); zip is the product. So "join/zip the queries and take
+  the intersection" = forming a **limit** of the diagram of queries; the synthesized object is that limit.
+- **Interfaces are coalgebras** (Rutten; Jacobs, *Introduction to Coalgebra*). An object defined by *what
+  you can observe of it* is a **coalgebra**, and **streams are the canonical final coalgebra**. So
+  "synthesize the interface from stream observations" is the coalgebraic view of objects (observation-
+  defined) — which is exactly the forced-RX nature (#7050): you only observe over streams.
+- **Applicative functors** (McBride & Paterson, *Applicative programming with effects*) — `zip` is the
+  applicative `⊛` combining independent queries.
+
+The cut: **banana-split law** (the folds) + **arrow fanout / product / pullback → a limit** (the join/zip
++ intersection) + **coalgebra** (the interface-as-observations). The pattern is sound and well-trodden;
+Zeta's contribution is running it over the *one DBSP Z-set stream* with `DynamicValue` stored-procs.
+
 ## Honest scope (peel)
 
 #7051 is **built + differential-tested** (`ITableProc`, `nativeProc`, `dynamicProc` via object expression).
@@ -61,6 +85,14 @@ Recorded as the target shape.
 - **Rx join/zip / reactive combinators** — `Rx.fs`, ReactiveX `zip`/`combineLatest`/`join`; Bonsai
   incremental joins.
 - **Catamorphisms ("bananas") / recursion schemes** — Meijer et al. 1991 (each query is a fold).
+- **Banana Split Law** — Fokkinga 1990; Bird & de Moor, *Algebra of Programming* 1997 (tuple-of-folds = one
+  fold; the literal name of Aaron's pattern, #7054).
+- **Arrows / fanout `&&&`** — Hughes 2000 (run many computations on one input, tuple results).
+- **Limits: product (zip) / pullback (join-by-key)** — relational join = pullback in Set/Rel; the synthesized
+  object is the limit of the query diagram.
+- **Coalgebra / final coalgebra** — Rutten; Jacobs, *Introduction to Coalgebra* (interfaces-as-coalgebras;
+  streams are the final coalgebra; observation-defined objects ⇒ the forced-RX view #7050).
+- **Applicative functors** — McBride & Paterson (zip = applicative `⊛`).
 - **Hexagonal ports & adapters** — Cockburn (#7019); native vs interpreted vs synthesized, one interface.
 - Internal: #7049 (native-vs-interpreted differential), #7050 (forced RX / bananas), #7029 (table/stream
   fold), #7036 (everything-is-edges; join/zip = edges), #7019 (pluggable/hexagonal), `StoredProc.fs`.
