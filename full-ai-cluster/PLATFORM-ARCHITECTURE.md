@@ -98,6 +98,7 @@ packaged; we assemble `NixOS + k3s + Longhorn + KubeVirt` declaratively, keeping
 our OS, our k8s, our GitOps.
 
 **Components (all ArgoCD apps, sync-wave after Longhorn):**
+
 - **KubeVirt operator** → installs `virt-controller`, `virt-handler` (DaemonSet),
   `virt-api`. VMs run as `virt-launcher` pods wrapping QEMU.
 - **CDI** (Containerized Data Importer) → imports disk images (qcow2/iso/raw)
@@ -105,6 +106,7 @@ our OS, our k8s, our GitOps.
 
 **NixOS node enablement** (`nixos/modules/kubevirt-node.nix`, imported by hosts
 that run VMs):
+
 - `boot.kernelModules = [ "kvm-intel" /* or kvm-amd */ ]`, ensure `/dev/kvm`.
 - packages: `swtpm` (vTPM), `virtiofsd` (fs passthrough), `qemu` (already present
   on `worker-gpu`).
@@ -208,6 +210,7 @@ The management plane. Mental model maps cleanly:
 ```
 
 **Build vs adopt:**
+
 - **Now (days):** drop in **Headlamp** (CNCF, plugin-extensible) as an ArgoCD app
   → instant top-down visibility into pods/clusters/PVCs/DBs/(VMs once KubeVirt).
   *(Rancher is also NixOS-safe — it's an app, unlike Harvester — but heavier.)*
@@ -279,21 +282,25 @@ tenant owns lives in its namespace(s). We already run all five mechanisms — mo
 platforms don't.
 
 ### 4.3 Storage
+
 Longhorn for all stateful state: game saves, VM disks, DB data, agent memory.
 Single replica on one node (set in the hardening PR); 2–3 as workers join.
 Object storage (MinIO/SeaweedFS) added for backups, images, large blobs.
 
 ### 4.4 Security
+
 Per-tenant: gatekeeper policy, Vault creds, SPIRE workload identity,
 cert-manager TLS. Tenant workloads image-scanned before admission. The portal
 authenticates via OIDC (IdP decision below) → k8s RBAC.
 
 ### 4.5 Observability & billing
+
 Grafana stack already collects metrics/logs/traces → the portal's per-resource
 blades read from it. **OpenCost** (later) turns Prometheus usage into per-tenant
 cost → billing/metering.
 
 ### 4.6 The agent layer (the differentiator)
+
 otto/lior/vera run as systemd units **outside** k8s ("control plane outside the
 control plane"), so they can repair the cluster from outside its failure domain.
 They drive the **same CRs** the portal does: provision, scale, repair, configure,
