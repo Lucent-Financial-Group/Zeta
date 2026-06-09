@@ -52,6 +52,35 @@ tick (uncertain phase), the four-corner feedback reduces that uncertainty toward
 **snaps to a sharp tick at a confidence threshold** (SoftValue.resolve / the SolidGround move applied to
 time). Soft time → measured/fed-back → ground time.
 
+## 5. The IScheduler reuses the chip8 arrow + soft-interrupt-handler trick — in every room, time as a participant
+
+> Aaron (2026-06-09): "our IScheduler can use the same category theory arrow and interrupt handler
+> trick we did with chip8 and apply it to every DST room with common cause correlation via common seed
+> cause." · "and time as a participant."
+
+The **`IScheduler` reuses the chip8 trick** — the **category-theory arrow + soft-interrupt-handler**
+("hook the arrow"; `2026-06-09-ray-trace-observer-integration-plan-hook-the-arrow-and-soft-interrupt-
+handler-...`; `DynamicValueArrow.fs`; `Chip8Observer.fs`) — and **applies it to every DST room**:
+
+- **the arrow** — the scheduler's tick is an **arrow** (Hughes arrow / profunctor; `DynamicValueArrow`):
+  observe → transform → emit, composable; the IScheduler hooks the room's arrow to inject generated
+  (soft) time at each step. Same arrow the chip8 observer hooks.
+- **the soft-interrupt-handler** — the scheduler raises a **soft interrupt** to reflect/observe at a
+  tick (the chip8 soft-interrupt that reflects downward into the controller); in a room this is the
+  feedback point — `tFeedbackIn` fires the soft interrupt, the handler folds the corners, `tFeedbackOut`
+  resumes. Soft (SoftValue) so it's exploratory + reducible.
+- **common-cause correlation via the common seed** — applied across **every** room, the same seeded
+  IScheduler drives all rooms, so their arrows are **correlated by the common cause** (the common seed)
+  — that's what makes cross-room **S=4 staged-coincidence** legitimate (shared seed = common cause; not
+  physical, per the peel). One scheduler, one seed, correlated rooms.
+- **time as a participant** — the IScheduler-arrow isn't ambient: it's the **clock-participant's** move
+  in the room (its `tFeedbackIn`/`tFeedbackOut` seat), per §1–§4 above. The arrow trick is *how* the
+  time-participant acts.
+
+So the chip8 "hook the arrow + soft interrupt" generalizes to the universal room scheduler: **every DST
+room's time is the IScheduler hooking that room's arrow with a soft-interrupt feedback handler,
+correlated across rooms by the common seed, with time itself a soft per-room-owned participant.**
+
 ## Synthesis
 
 The clock-participant is **soft, owned, and self-feeding**:
