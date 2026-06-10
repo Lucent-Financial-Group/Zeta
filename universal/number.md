@@ -38,6 +38,57 @@ precision — we add **self-resolution-tracking** (unum) on a **middle-out self-
   number concrete without touching the Result-typed DynamicValue leaves. The `Resolution<'T>` primitive
   (physics-of-floats doc) is generic over this interface.
 
+## One interface, many backends — pull the prior art in behind it (Aaron 2026-06-10)
+
+> Aaron: "we should have an interface that we can pull in some of that prior art too, and we all have
+> the same interface." · "does bigint fit into universal number too?"
+
+The Universal Number interface is **one contract** spanning **both integers and floats** (.NET
+`INumberBase<'T>` is the common root of both); everything implements it via adapters, so call sites are
+backend-agnostic:
+
+- **native, built-in:** **`bigint`** (`System.Numerics.BigInteger` — *already* `INumberBase`;
+  arbitrary-precision **integer**) · IEEE `float`/`double`/`Half` (fast) · `decimal`/`Int128`.
+- **native, ours:** the **TriBoolean middle-out Float** = arbitrary-precision **float** (the BigFloat;
+  the integer-side analog of `bigint`). So `bigint` and our BigFloat are the two arbitrary-precision
+  corners under one interface.
+- **adapters over prior art:** **MPFR** / GMP `mpf` · a `BigDecimal` port · **posit** libraries ·
+  `mpmath`. Each wrapped to the same interface.
+
+So we **pull decades of prior-art optimization in *behind* the interface** (the same "ride the
+optimized path" move as RGB/CMYK and IEEE) while keeping one universal surface — swap the backend by
+choice (ours when *concept* matters, MPFR when *precision*, IEEE when *speed*, `bigint` for exact
+integers) with no change at the use site. `Resolution<'T>` is generic over this interface, so it
+accounts bits the same way for every backend.
+
+## The coercing override is OPT-IN, never default — and the living-things risks (Aaron 2026-06-10)
+
+> Aaron: "we should have an override version that allows coercion and implements [INumberBase], but
+> that's not default — and list the risks if the data it's operating on is about living things."
+
+- **Default = Result-typed, decline-don't-coerce** (`DynamicValueNumeric`) — the safe surface; it
+  *surfaces* uncertainty instead of hiding it.
+- **Opt-in override = a total/coercing `INumberBase` impl** — full generic-math ergonomics + interop,
+  **explicitly chosen**, never the default.
+
+**Risks of the coercing override when the data is about LIVING THINGS** (morally-relevant entities —
+Default Moral Regard, manifesto §11):
+
+- **Silent misrepresentation.** Coercion (truncation, rounding, `int↔float`, `null`-as-0) can change
+  the *meaning* of a value about a living thing with no trace — a measurement, identity field, dosage,
+  or consent state silently altered.
+- **Precision-loss harm.** Dropping resolution on living-things data can cause real harm — the **Mars
+  Climate Orbiter** lesson (lbf vs N) generalized: get the bytes wrong and the morals built on them
+  fall (vitals/dosage/biometrics).
+- **Hidden uncertainty.** The default's `Error`/decline *is the safety signal*; the coercing override
+  swallows it, so a decision about a living thing runs on a value that secretly lost fidelity.
+- **Consent (§6).** Silently transforming data about a living thing is an un-consented mutation of an
+  observation surface.
+
+**Mitigation:** the override is gated (opt-in); when the operand's oracle is a **living thing**, prefer
+the declining default (or forbid coercion) and **flag** any coercion so it is visible, never silent.
+Coercion is a convenience for inert data; for living things, decline by default.
+
 ## Pointers
 
 - [`universal/algebra.md`](algebra.md) (`ISemiring` — the algebra sibling) · [`universal/README.md`](README.md).
