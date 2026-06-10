@@ -52,6 +52,29 @@ cell uses*:
 - **inject other I/O** — any other interface across the membrane (sensor, another mesh, …) — "unless we
   inject other IO interfaces." The crossing interface is always a choice.
 
+**Each crossing is INDEPENDENTLY injectable — test net and disk in isolation AND together (Aaron
+2026-06-10).** `IEffects` is **not one monolith** — it is a composite of per-subsystem interfaces
+(`INet`/Reticulum, `IDisk`, …), each separately null-or-real. So the test matrix is the product:
+
+| net (Reticulum) | disk | what it tests |
+|---|---|---|
+| null | null | **pure DST** — the Zeta entropy alone (git history), fully sealed |
+| real | null | **net in isolation** — mesh uncertainty only |
+| null | real | **disk in isolation** — storage uncertainty only |
+| real | real | **together** — both crossings live (prod-like) |
+
+Isolating one crossing tells you *which* membrane the uncertainty came through — you can attribute ΔU
+to net vs disk. (FDB does exactly this: per-subsystem fault/latency injection. Mechanism for the
+`mea`/`IEffects` build: a record of independently-swappable interface fields, each `null`|real.)
+
+**These are PARAMETERS OF THE ROOM (Aaron 2026-06-10).** DI here *is* parametrization: supplying the
+room its `IEffects` (`net` null/real, `disk` null/real, …) is **passing it parameters** — the same
+parameter set as seed, duration, required [`hats/`](../../hats/), and the society-model knobs (the
+board-room parametrization). The room is a **function of its parameters**; "inject the effects" =
+"supply the room's I/O parameters." So `sim` never detects its context — the **runner sets the room's
+parameters** (including which crossings are live), and the room runs as the pure function of them. This
+unifies the DI seam with the parametrized board-room test: one parameter set, the crossings among them.
+
 So uncertainty has **two sources**, cleanly separated by the membrane: **intrinsic** (git history /
 reified types — always present inside the cell) and **extrinsic** (what crosses the boundary via
 Reticulum or another injected I/O). This reconciles the earlier correction: `mea` is never
