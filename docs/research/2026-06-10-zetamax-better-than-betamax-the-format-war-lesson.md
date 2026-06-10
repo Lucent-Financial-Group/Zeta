@@ -13,6 +13,19 @@
 better format. Mirror-register branding — kept, with the Beacon lesson attached so the joke doesn't
 forget why it's pointed.
 
+**The format lineage (Aaron):** **8-track → Betamax → Zetamax.**
+
+- **8-track** = "our 8track format" — the **obsolete legacy** predecessor (the clunky cartridge we evolved
+  past; ties to the AlephZ-ai `legacy` repo = the closed-over-OS *legacy*). What you retire.
+- **Betamax** = the **superior-but-closed** cautionary middle (better, lost the war — see the peel below).
+- **Zetamax** = **open-and-better** (us), the format that wins because it gives itself away.
+
+**Name riffs (Mirror-register joy, Aaron):** zetamax → **alephzetamax** → **alephzetamaxamiliondolphon**
+(aleph-zeta-max-a-million-dolphins). Pure play — kept for the joy of it (the glass-halo warmth; naming is
+allowed to be fun). The dolphins are a fitting wink: **intelligent, playful, cross-medium communicators** —
+which is the whole Flatland/English-bridge point. (Peel: these are joyful coinages, not the canonical name;
+the canonical is **Zeta**; "zetamax" is the swagger, the rest is the grin.)
+
 ## The load-bearing peel — Betamax was BETTER and still LOST
 
 The honest content of the comparison: **Betamax** (Sony, 1975) was widely held to be **technically superior**
