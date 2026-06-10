@@ -11,12 +11,14 @@ so an update is a bounded, DST-replayable tick — not an ad-hoc push.
   update flow (e.g. re-flash the USB image, pull new node software). See
   `.claude/skills/home-crypto-mining/blueprint-mynode-nodes.md`.
 
-## Honest scope / security
+## Security by clarity (our own PKI), not obscurity
 
-- **No secrets/keys** in update artifacts (per repo + `inventory/CLAUDE.md`); signing/attestation of updates
-  routes to **Nazar** (security) — SLSA/artifact-attestation, not asserted here.
-- Live update execution (flashing, pushing) is an **ops** action (Dejan / human) — `updates/` holds the
-  process + artifacts; firing it is gated.
+- Update **artifacts, recipes, and config live in the repo, in the open** (clarity = security). Any secret
+  in an update is **sealed by our own keyring/PKI** (the encrypted null) and committed — not hidden.
+- **Signing/attestation** uses **our own PKI** (the persona keyring + cert-manager/Let's Encrypt on the
+  zetacluster; GitHub+FIDO trust root; SLSA over our keys) — we are our own authority, not an external gate.
+- The live **act** (flashing a USB, ArgoCD sync) is a human/automated step, but its **recipe + desired-state
+  are repo** (GitOps; `install.sh`/ArgoCD realize declared state).
 
 ## Pointers
 
