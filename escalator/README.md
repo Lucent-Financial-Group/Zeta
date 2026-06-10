@@ -1,10 +1,17 @@
 # escalator/ — lowering competing proof towers into first operational principles, at root
 
 `escalator/` is **reverse tessellation as a machine** (Aaron 2026-06-10): it **lowers multiple competing
-proof towers down into shared first operational principles.** A root-level folder. Where `ladders/` go up
-and `chutes/` drop down, an **escalator is the *hard* one** — *"ladders are easy, escalators are hard"* —
-because it is **continuous, powered, and carries many towers down at once**, reconciling them onto common
-ground.
+proof towers down into shared first operational principles — and raises them back up.** A root-level folder.
+Where `ladders/` go up and `chutes/` drop down, an **escalator is the *hard* one** — *"ladders are easy,
+escalators are hard"* — because it is **continuous, powered, and carries many towers at once**, reconciling
+them onto common ground.
+
+**BOTH WAYS — not a stairway to heaven (Aaron):** "I don't want a stairway to heaven, I want an escalator
+both ways." A stairway to heaven is **one-way** (only up, only to the top). The escalator runs **both
+directions, continuously**: **down** = lower competing towers → first operational principles (`ground/`);
+**up** = rebuild from first principles → the towers. This is **bootstrap up-and-down** (the 128-bit seed
+regenerates the full state *and* collapses back; Rx bidirectional time) made a machine — always reach the
+ground AND always rebuild from it, no dead-end summit.
 
 ## What it does
 
