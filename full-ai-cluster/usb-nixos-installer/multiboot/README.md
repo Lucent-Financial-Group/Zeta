@@ -39,12 +39,32 @@ gunzip -c /payloads/mynode-model-two.img.gz | sudo dd of=/dev/<node-disk> bs=4M 
 `SHA256SUMS`, verified 2026-06-10. Ties the home-crypto-mining blueprint:
 `.claude/skills/home-crypto-mining/blueprint-mynode-nodes.md` — td5/td6.)
 
+## Combine at BUILD time, not flash time (Aaron 2026-06-10)
+
+The builder combines everything into **one deterministic composite USB *image*** (`zeta-multiboot.img`:
+GRUB + `/boot/iso/*.iso` + `/payloads/*.img.gz`), **SHA-256-locked and qemu-testable** (the
+[`tools/zflash`](../../../tools/zflash) pattern) — and *then* flashing is a dumb, reproducible
+`dd` of that image. Combining is **not** done at flash time.
+
+Why build-time:
+
+- **Reproducible + verifiable** — the composite is a single artifact you can SHA-256-lock and replay
+  (DST); flash-time file-copy is stateful, per-device, and has no artifact to verify.
+- **Testable before hardware** — boot the composite in qemu (zflash harness) before any USB is touched.
+- **Declarative** — contents come entirely from `images.manifest`; changing the stick = re-run the
+  build, not hand-copy files (the Ventoy-style flash-time model we explicitly did NOT pick).
+
+Tradeoff (accepted): to add/change an image you re-build (cheap; manifest-driven), and the composite is
+large (Zeta ISO + MyNode ≈ several GB). Verifiability wins.
+
 ## Build (once `build-multiboot-usb.ts` lands)
 
 1. `nix build .#installer-iso` (the Zeta installer ISO).
-2. `bun build-multiboot-usb.ts --device /dev/<usb>` — fetches + verifies the manifest payloads, lays
-   out the stick, installs GRUB, writes `grub.cfg`.
-3. Boot the target on the stick → GRUB menu → pick Zeta (or another ISO). Flash MyNode from
+2. `bun build-multiboot-usb.ts` — fetches + SHA-256-verifies the manifest payloads and **assembles the
+   composite `zeta-multiboot.img`** (GRUB installed, `grub.cfg` written, ISOs + payloads laid out).
+   Emits the image's SHA-256. (qemu-bootable for test — zflash sibling.)
+3. `dd if=zeta-multiboot.img of=/dev/<usb> bs=4M status=progress conv=fsync` — dumb, reproducible flash.
+4. Boot the target on the stick → GRUB menu → pick Zeta (or another ISO). Flash MyNode from
    `/payloads/` per above.
 
 ## Honest scope / status
