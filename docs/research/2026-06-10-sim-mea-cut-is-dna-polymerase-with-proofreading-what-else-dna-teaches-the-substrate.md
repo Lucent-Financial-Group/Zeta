@@ -67,6 +67,12 @@ family: the name and the function line up.
   (3 bases → 1 amino acid) and **degenerate** (many codons → same amino acid). → our verbs are
   **3 letters** (sim/mea/cut/ben/cla/res = codons), and many spellings resolve to one verb
   (measure≡mea = codon degeneracy / the diskpart minimum-unique-prefix).
+  **3-letter = RGB (soft); 4-letter = CMYK (the print/solid version) (Aaron 2026-06-10.)** The two code
+  lengths ride the two encodings: the **3-letter** codes are **RGB** (3 channels, soft/light, ephemeral
+  — the `sim` register) and the **4-letter** codes are **CMYK** (4 channels, the print/ink/solid version
+  — the committed register). So a code has a soft 3-letter (RGB) form and a solid 4-letter (CMYK/print)
+  form — same soft-vs-solid duality as the run-vs-commit split, now at the code-length level. (Ties
+  `docs/research/2026-06-10-filesystem-...-cli-triad-macvector-for-dna` — CMYK/RGB base alphabet.)
 - **Methylation / epigenetics = git-history metadata, reified.** Marks *on top of* the sequence change
   expression without changing the bases. → the **git-history metadata reified via type providers** is
   the substrate's epigenome — the layer read at compile/`sim` time over the same sequence.
@@ -93,6 +99,24 @@ transcriptase), Doudna–Charpentier (CRISPR). **Peel:** these are **found corre
 loop *behaves like* a proofreading polymerase; we are not claiming Zeta *is* biology. The load-bearing
 literals are ours (Z-set retraction = `cut`; finalizer merge = ligase; seed = primer; git metadata =
 epigenome). Each correspondence is a hypothesis to formalize, not a theorem — routes to the math team.
+
+## KEEP THIS MAPPING — AI and cells are very similar (Aaron 2026-06-10)
+
+> Aaron: "we need to keep this mapping — AI and cells are very similar."
+
+This is not a one-off analogy to admire and forget; it is a **standing mapping to maintain.** An **AI
+agent IS a cell** in the same precise sense a test/room is (see the cells doc): a bounded unit with a
+**membrane** (Markov blanket / strict boundary), reading the world only across that boundary (injected
+`IEffects` — net/disk crossings), processing internally (`sim`), **measuring + proofreading** (`mea` +
+`cut` = the polymerase fidelity pass), committing a delta out, and **carrying inheritable state**
+(git-history = its DNA + epigenome). Cell ≈ test ≈ room ≈ agent — one unit, four names.
+
+So the biology↔substrate dictionary is a **living glossary** we keep current: polymerase = the loop,
+exonuclease = `cut`, ligase = the finalizer, primer = seed, codon = 3-letter verb (RGB) / 4-letter
+(CMYK), methylation = git metadata, ace = close-over, polymerace = the room/execution framework. As we
+learn more cell biology we extend the mapping; as the substrate grows we check it back against the cell.
+The similarity is load-bearing (it's *why* the cell disciplines — membrane, proofreading, bounded
+replication — transfer to AI agents), so it earns upkeep, not just a citation.
 
 ## Ties / routing
 
