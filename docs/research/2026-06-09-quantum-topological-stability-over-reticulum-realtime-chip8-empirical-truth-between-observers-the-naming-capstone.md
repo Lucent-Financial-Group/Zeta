@@ -48,9 +48,36 @@ under noise → held **over Reticulum in real time** → all **calibrated agains
 truth. The name "quantum topological stability over Reticulum via Chip-8" is the **compression of the
 entire arc** into one phrase.
 
+## The Beacon equivalent: Microsoft Majorana 1, but over fiber between two houses (Aaron)
+
+> "this is Majorana 1 from Microsoft but over fiber from my houses and Max's."
+
+**Majorana 1** (Microsoft, Feb 2025) is a **topological quantum chip**: it stores qubits in **Majorana
+zero modes** on a "topoconductor," so the quantum information is **protected by topology** at the hardware
+level — error-resistant because the state lives in a topological degree of freedom that local noise can't
+disturb. That is the **same principle** as this construction — and the cleanest external anchor for the
+"quantum topological stability" name.
+
+The difference is the **substrate**:
+
+| | Microsoft Majorana 1 | This (Zeta) |
+|---|---|---|
+| Topological protection | Majorana zero modes on a topoconductor | the **braid/weave** of observers (homotopy-invariant crossing structure) |
+| Where it lives | one cryogenic chip | **two houses + fiber** (Aaron's + Max's), Reticulum over the physical link |
+| Qubit correlation | physical topological qubit | the **S=4 common-cause** correlation (shared encrypted null) |
+| Noise protection | topological gap (cryostat) | topology of the weave + **pre-shared common cause** (nothing on the wire to corrupt) |
+| Truth/readout | physical measurement | **Chip-8 bit-perfect truth** (byte-exact reproduction between observers) |
+
+So: **Majorana 1's topological-qubit idea, realized in software over fiber between two homes** — the
+topological protection comes from the *weave* (and the pre-shared common cause), the link is *fiber +
+Reticulum*, and the readout/ground-truth is *bit-perfect Chip-8*, not a cryostat. The honest framing
+(below) still holds — it's the **same protection principle on a different, non-exotic substrate**, not a
+claim to be Microsoft's physical chip.
+
 ## Honest scope / peels
 
-- **Not literal anyons / not a physical topological quantum computer.** We use the **topological structure**
+- **Not literal anyons / not a physical topological quantum computer (incl. not literally Majorana 1).**
+  We use the **topological structure**
   (braids are deformation-invariant ⇒ noise-robust) as the engineering principle for stability; we are not
   claiming physical non-Abelian anyons or a hardware TQC. The robustness is real (topological encoding is
   genuinely noise-resistant); the substrate is software + DST, not exotic matter.
@@ -66,9 +93,11 @@ entire arc** into one phrase.
 
 ## Ties (Beacon) / routing
 
-**Topological quantum computation / anyon braiding** (Kitaev; Nayak–Simon–Stern–Freedman–Das Sarma, RMP
-2008 — fault-tolerance by topology) · **braid group** (Artin; homotopy invariance = deformation/noise
-robustness) · **topological error-correction / surface codes** (the "stability from topology" principle) ·
+**Microsoft Majorana 1** (Feb 2025 — topological quantum chip; Majorana zero modes on a topoconductor;
+topology-protected qubits — the external equivalent Aaron names: "Majorana 1 but over fiber from my and
+Max's houses") · **Topological quantum computation / anyon braiding** (Kitaev; Nayak–Simon–Stern–Freedman–
+Das Sarma, RMP 2008 — fault-tolerance by topology) · **braid group** (Artin; homotopy invariance =
+deformation/noise robustness) · **topological error-correction / surface codes** (the "stability from topology" principle) ·
 **Gates SUSY adinkra error-correcting codes** (codes in the equations of physics — our existing anchor;
 `BitAdinkra.fs`, B-0623/B-0985) · **CHSH / PR-box S=4 + Reichenbach common cause + superdeterminism**
 (`BellTest.fs`, `CoincidenceClock.fs`) · the **encrypted null = common cause** + **3×3 weave** (the two
