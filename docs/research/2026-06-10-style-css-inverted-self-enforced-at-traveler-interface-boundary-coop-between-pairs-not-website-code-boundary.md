@@ -51,7 +51,16 @@ Travelers — **human or AI** (Aaron, Otto, Max) — **choose how to view** the 
 traveler's observer frame** (relativity / the traveler-frame-relative meeting protocol; the two-observer
 weave) — there is **no absolute view**; each traveler renders code-temperature/style/CSS in *their* frame
 (their aesthetic lens; the **polarity-lens / LLMController**; the Universal Temperature-Transient + device
-interfaces). **Consent-first (§6):** nobody's view is imposed on another — the view belongs to the viewer;
+interfaces).
+
+**This already exists — simple frame-relative temperature controls (Aaron):** "websites already allow dark
+and light mode, and monitors allow for temperature — both of these are simple frame-relative temperature
+controls." **Dark/light mode** (the website lets each viewer pick light vs dark — a per-viewer style frame)
+and **monitor color-temperature** (night-light / warm-vs-cool white — a per-viewer temperature frame) are
+**existing, shipping instances** of exactly this: the *same content*, rendered in the *viewer's chosen
+frame*, with **no absolute** appearance. Zeta generalizes these simple controls to the full Universal
+Temperature-Transient view (code-temperature/style/CSS), per traveler, frame-relative — not a new idea, the
+*generalization* of one everyone already uses. **Consent-first (§6):** nobody's view is imposed on another — the view belongs to the viewer;
 a *shared* view is negotiated between a **pair** (co-op), frame to frame, not dictated. (This is why it's
 *self*-enforced + *co-op between pairs*: your frame is yours; agreement is a pairwise frame-reconciliation.)
 
