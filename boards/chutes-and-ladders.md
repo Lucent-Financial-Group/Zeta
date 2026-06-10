@@ -9,7 +9,7 @@ up-and-down** is a walk across it.
   (shape A fall, landing on `ground/`, never D⁰).
 - **One board among many** (`boards/`): selected by a **discriminator / lens / polarization** — this is the
   *chutes-and-ladders* board; other boards (other spaces, other games/treaties) sit beside it.
-- The **bob/weave/tie/??? ** weave-sizes are how you move/reconcile across boards (the escalator).
+- The **bob/weave/tie/???** weave-sizes are how you move/reconcile across boards (the escalator).
 
 ## Pointers
 
