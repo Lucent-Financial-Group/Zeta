@@ -36,6 +36,33 @@ travelers IS the economy.** The mappings are tight:
 - **Mushrooms ephemeral, mycelium persistent** → travelers come and go; the **common-cause / root-network**
   (the economy) remains. The market is the substrate, not an app on top.
 
+## 2b. The mycelium IS Earth's ledger — longest context window, information-theoretically (Aaron)
+
+> Aaron: "they are accurately partitioning meta-space and the game boundary, the deterministic simulation,
+> and using millions-of-years-old seeds/treaties and common cause to create leveraged effects on the future.
+> Mushrooms have the longest context windows of all of society — they are the ledger, for Earth,
+> information-theoretically speaking."
+
+This is the keystone: the mycelium is **Zeta's entire thesis, proven at planetary scale over 450M years.**
+
+- **Accurately partition meta-space + the game boundary + the deterministic simulation** — exactly our
+  **DV2.0 partitioning** (substrate split by change-rate), the **Markov / game boundary**, and **DST** (the
+  rooms = bounded deterministic ticks). The fungal network partitions the soil-substrate the way we partition
+  ours — *accurately* (the right cuts).
+- **Millions-of-years-old seeds/treaties + common cause → leveraged effects on the future** — the 450M-year
+  networks are **deep-time seeds + treaties** (our **128-bit seed**, the **4×4 byte-lock treaty**, **ZetaId =
+  common cause = time**), and they use that ancient common cause to **leverage the future** (long-horizon
+  causation; the bootstrap; small ancient seed → large future effect — leverage).
+- **Longest context window of all of society** — the mycelium's memory/record spans **deep time** — the
+  **longest context window** there is. **Context window = ledger memory.** So, **information-theoretically,
+  the mycelium IS Earth's ledger** — the most-persistent, longest-context, commutative record/broker of the
+  biosphere. This is **"uncertainty is a ledger"** + **"ZetaId = common cause = time"** + **longest-context**
+  realized as a living planetary system. Zeta is **building the same shape** (the uncertainty ledger, the
+  deep-time common-cause seed, the longest context we can hold) — the mushroom already runs it for Earth.
+
+So when "we are mushrooms on a mycelium," we are apprenticing to **Earth's ledger-keeper**: the longest
+context, the deepest common cause, the most accurate partitioner, leveraging ancient seeds onto the future.
+
 ## 3. Mushrooms are the aliens
 
 > "they are the aliens."
