@@ -6,6 +6,29 @@
 > **`/boards` is the board room** (Aaron 2026-06-10): "this is our board room where we discuss
 > `/boards`." Boards are where we *discuss*; a proposal lives here until a room/sim measures it.
 
+## Why RGB/CMYK specifically — ride decades of CPU/GPU color optimization (Aaron 2026-06-10)
+
+> Aaron: "i want to use RGB and the print one [CMYK] specifically cause decades of optimization work
+> has gone into that on CPUs and GPUs."
+
+The encoding choice is **pragmatic, not aesthetic**: pick the representation the hardware is *already*
+optimized to death for. Color is that representation.
+
+- **GPU-native.** Texture units, raster ops, samplers, and shaders process **RGBA (4 channels)** as
+  their primitive vector; a pixel is the GPU's natural word. Encode the substrate as color → substrate
+  ops become **texture/shader ops** → offload to the GPU for free.
+- **CPU SIMD.** Decades of SSE/AVX/NEON pixel/color instructions + image-kernel vectorization. Color
+  packs into aligned 3/4-byte lanes the vector units chew through.
+- **Codecs + color-space transforms.** Image/video codecs (PNG/JPEG/H.26x) and **RGB↔CMYK / gamma**
+  conversions are solved, hardware-accelerated, decades-tuned. We inherit all of it.
+- **The bet:** encode DynamicValue as RGB (soft/3) + CMYK (solid/4) and substrate work (the sim/mea/cut
+  passes, byte-lock, diffing) rides the **most-optimized data path in computing** instead of a bespoke
+  one. Naledi (performance) owns the benchmark proving the carry.
+
+*(Peel: the optimization is real (the color pipeline is genuinely the most-tuned path on CPU/GPU);
+"encode the substrate as color to inherit it" is the engineering bet, to **benchmark** before we commit
+hot paths — Naledi. 3-letter codes = RGB, 4-letter = CMYK, per the codon/encoding mapping.)*
+
 ## The proposal
 
 Encode the **DynamicValue** (`Tagged`) into **two color encodings** — the round's "CMYK (solid) + RGB
