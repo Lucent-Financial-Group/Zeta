@@ -23,10 +23,10 @@ only the installer) with a GRUB menu + a declarative payload list.
 
 | name | kind | notes |
 |---|---|---|
-| `zeta-installer` | `grub-iso-local` | built by `nix build .#installer-iso` (no download); GRUB loopback-boots it |
-| `mynode-model-two` | `flash-img` | `mynode_amd64_0-3-34.img.gz` (amd64, v0.3.34); SHA-256-pinned; a **flash payload**, not a boot entry |
+| `zeta-installer` | `grub-iso-local` | built by `nix build .#installer-iso` (no download, always current); GRUB loopback-boots it |
+| `mynode-model-two` | `flash-img-latest` | newest `mynode_amd64_*.img.gz` resolved each build; verified against MyNode's `SHA256SUMS`; a **flash payload**, not a boot entry |
 
-### MyNode Model Two is a flash payload, not a boot entry
+### MyNode Model Two is a flash payload, not a boot entry — and always the LATEST
 
 MyNode ships **raw disk images** (`.img.gz`), not bootable ISOs — even the amd64 build. So Model Two
 rides the USB under `/payloads/` and is **flashed onto the node** (td5 / td6), not GRUB-booted:
@@ -35,9 +35,18 @@ rides the USB under `/payloads/` and is **flashed onto the node** (td5 / td6), n
 gunzip -c /payloads/mynode-model-two.img.gz | sudo dd of=/dev/<node-disk> bs=4M status=progress conv=fsync
 ```
 
-(Pinned image: `mynode_amd64_0-3-34.img.gz`, SHA-256 `03498d02…81dde`, from MyNode's published
-`SHA256SUMS`, verified 2026-06-10. Ties the home-crypto-mining blueprint:
-`.claude/skills/home-crypto-mining/blueprint-mynode-nodes.md` — td5/td6.)
+**Always latest, never hard-coded (Aaron 2026-06-10: "make sure that process pulls the latest mynode
+every time and is not hard coded to one").** The builder resolves the newest `mynode_amd64_*.img.gz`
+from MyNode's published `SHA256SUMS` on every build and verifies the download against that fresh
+checksum — so we track upstream automatically *and* catch transit corruption. (As of 2026-06-10 this
+resolves to `mynode_amd64_0-3-34.img.gz`, SHA-256 `03498d02…81dde` — recorded for reference only; the
+version is **not** pinned in the manifest.)
+
+*Tradeoff (named):* verifying against the freshly-fetched `SHA256SUMS` guards **transit**, not a
+**compromised upstream** (a pinned `flash-img` entry would freeze the version to guard the source).
+For a re-flashable node appliance, latest-always is the right call; flip the entry to pinned
+`flash-img` if source-pinning ever matters more than freshness. Ties the home-crypto-mining blueprint:
+`.claude/skills/home-crypto-mining/blueprint-mynode-nodes.md` — td5/td6.
 
 ## Combine at BUILD time, not flash time (Aaron 2026-06-10)
 
