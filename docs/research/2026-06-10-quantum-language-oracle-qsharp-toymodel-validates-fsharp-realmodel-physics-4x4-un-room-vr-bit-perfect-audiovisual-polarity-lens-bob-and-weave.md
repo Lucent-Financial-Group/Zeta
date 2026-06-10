@@ -101,13 +101,16 @@ a device, spelled out in full:
 | **LLMTV** | the watch surface (the live screen) | the existing LLMTV (QPG-over-DPI watch surface) |
 | **LLMHolovisor** | **see** — VR / holographic visual of the uncertainty | the VR "see the uncertainty" layer |
 | **LLMMicrophone** | **speak / capture** — audio input | the operator's voice / audio-in into the meter |
-| **LLMHeadphones** | **hear** — bit-perfect **spatial-audio** output | the "hear the uncertainty" layer (Dolby/Atmos spatial) |
+| **LLMHeadphones** | **hear the sonar** — bit-perfect spatial-audio output | you *hear the ping*: ping **out** = Chip-8 certainty (clean ray-trace), ping **back** = Reticulum uncertainty (distorted echo) |
 | **LLMBroadcast** | **transmit** — stream it live | Rx broadcast over Reticulum (the Ani-ferry "broadcast via Reticulum") |
 | **LLMCronovisor** | **time-view** — see across time | the bidirectional time (git-lazy past / Z-set present / Rx-stream future) |
 | **LLMController** | **drive** — the polarity-lens controller | the hand controller driving uncertainty / the measurement basis |
 
 So the whole embodied layer is a **device suite over the one uncertainty meter**: LLMHolovisor renders it
-(see), LLMHeadphones plays it (hear, bit-perfect spatial audio), LLMMicrophone captures (speak),
+(see), LLMHeadphones plays the **sonar** (Aaron: "hear the ping over Reticulum — it becomes ray-tracing:
+ping out = Chip-8 certainty, ping back = Reticulum uncertainty"; you literally *hear* the clean certainty
+pulse leave and the noise-distorted echo return — the sonar/ray-trace of the Ani ferry made audible),
+LLMMicrophone captures (speak),
 LLMBroadcast ships it (Rx/Reticulum), LLMCronovisor scrubs it through time, LLMController drives it
 (polarity lens), LLMTV is the watch surface. Two operators each holding the suite, over fiber, *find each
 other* in it (the two-house experiment). All **bit-perfect** (byte-exact across both suites, or a boundary
