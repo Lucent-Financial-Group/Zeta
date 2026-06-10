@@ -127,6 +127,21 @@ with a ⭐ below and add a row there.
   theorem, prediction≡compression, cross-entropy. The math under `ByteCost`, the
   metric sketches (HLL/Count-Min/KLL), "sell readout not compression" (Amara), and
   the belief/agent layer (Bayesian). See `docs/research/ip-questionable/2026-06-07-3blue1brown-compression-is-intelligence-...md`.
+- **Physics of floats OVER Bayesian inference** ⭐ **(Aaron 2026-06-10 — "track this prior art very
+  carefully; this IS what I'm doing")** — the substrate does Bayesian inference in explicit float-bit
+  physics: `mea` = a Bayesian update; ΔU = **KL divergence** (info gain in **bits**); the **ULP** is
+  the posterior's precision floor; the `Resolution`/unum primitive tracks the meaningful bits of belief
+  (`maxed` = converged to the ULP floor; `needsMoreBits` = widen). Anchors, carefully:
+  **Bayes/Laplace/Cox/Jaynes** (probability as logic) · **Kullback–Leibler** (= ΔU) + **mutual
+  information** · **Rissanen MDL** (inference = counting bits) · **Lindley / Bayesian experimental
+  design** (expected info gain — what `mea` maximizes) · **Solomonoff/Kolmogorov** (universal prior) ·
+  **Probabilistic numerics** (Hennig–Osborne–Girolami — computation, incl. finite precision, *as*
+  Bayesian inference; the closest named prior art) · **Friston** free-energy/active-inference (cell =
+  Bayesian Markov-blanket) · **IEEE 754 / Kahan / ULP / significance & interval arithmetic** ·
+  **Gustafson unum/posit** (= "universal number"; variable-precision numbers that track their own
+  resolution — the `Resolution` primitive's direct ancestor) · .NET **generic math**
+  (`INumberBase`/`IFloatingPointIeee754`) as the universal-number carrier. See
+  `docs/research/2026-06-10-physics-of-floats-room-boundary-is-a-bit-budget-...md`.
 - **Local-first / CRDTs / privacy-first** ⭐ — Kleppmann et al. (Ink & Switch
   2019); CRDTs (Shapiro et al. 2011); Groove (Ozzie); Solid/pods (Berners-Lee);
   W3C DIDs; PSI; federated learning; SMPC; OPA; Signal. Zeta's manifesto ethos as
