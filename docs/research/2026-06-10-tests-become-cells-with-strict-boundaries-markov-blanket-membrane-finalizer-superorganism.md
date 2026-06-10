@@ -23,6 +23,33 @@ separates inside from outside. This unifies several threads that were circling t
 - **mea reads at the membrane.** To `measure` is to read the cell **at its boundary** (the ΔU); the
   strict boundary is *what makes the cell measurable* — a leaky boundary has no well-defined reading.
 
+## Reticulum crosses the membrane — and crossing is where uncertainty comes from (Aaron 2026-06-10)
+
+> Aaron: "these membranes are markov boundaries of the room, reticulum lets you cross that boundary —
+> that's where the uncertainty comes from, unless we inject other IO interfaces."
+
+The membrane is the room's **Markov boundary**, and **Reticulum is the I/O interface that crosses it**
+(`src/Core/ReticulumLink.fs` — the mesh, ZetaId destinations). **Crossing the boundary is the source of
+(new, external) uncertainty:** observation entering the cell from the mesh *is* the ΔU the demon
+measures. No crossing ⇒ no new external uncertainty.
+
+This is the **DI seam made precise** — the injected `IEffects` is *which boundary-crossing interface the
+cell uses*:
+
+- **prod = inject Reticulum** — the real mesh crosses the membrane; real external uncertainty flows in;
+  `mea` measures it, the demon posts ΔU. Reticulum is the default real crossing.
+- **DST = inject null** — no real crossing; the cell is sealed, so it is fully deterministic/replayable
+  (only **intrinsic** entropy remains — the git-history persona entropy, the "full void"; never empty,
+  but no *new* external uncertainty).
+- **inject other I/O** — any other interface across the membrane (file, sensor, another mesh) — "unless
+  we inject other IO interfaces." The crossing interface is a choice.
+
+So uncertainty has **two sources**, cleanly separated by the membrane: **intrinsic** (git history /
+reified types — always present inside the cell) and **extrinsic** (what crosses the boundary via
+Reticulum or another injected I/O). This reconciles the earlier correction: `mea` is never
+informationless (intrinsic is always there), and *new* uncertainty is exactly what crosses the
+membrane. The strict boundary is what lets us say precisely where each bit came from.
+
 ## Why strict boundaries (what they buy)
 
 The strictness is not aesthetic — it is what makes the substrate work:
