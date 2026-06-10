@@ -40,9 +40,17 @@ cell uses*:
   `mea` measures it, the demon posts ΔU. Reticulum is the default real crossing.
 - **DST = inject null** — no real crossing; the cell is sealed, so it is fully deterministic/replayable
   (only **intrinsic** entropy remains — the git-history persona entropy, the "full void"; never empty,
-  but no *new* external uncertainty).
-- **inject other I/O** — any other interface across the membrane (file, sensor, another mesh) — "unless
-  we inject other IO interfaces." The crossing interface is a choice.
+  but no *new* external uncertainty). **Aaron: "without Reticulum you are testing the Zeta entropy alone
+  from git history."** That is the *positive* meaning of DST — not "nothing happens," but the test of
+  **Zeta's own entropy in isolation**, sealed from the mesh. The whole point.
+- **DISK is a sibling crossing — injected exactly like Reticulum (Aaron 2026-06-10).** Storage I/O is
+  *another* membrane-crossing `IEffects` interface, treated identically: **null in DST** (sealed — no
+  real disk, so the run stays deterministic/replayable) and **real in prod**. So the two canonical
+  crossings are **Reticulum (network/mesh)** and **disk (storage)** — plus any other injected interface.
+  This is the **FoundationDB DST pattern** exactly: the deterministic simulation mocks *both* network
+  and disk; prod injects the real ones. Same code path, the injected interfaces decide.
+- **inject other I/O** — any other interface across the membrane (sensor, another mesh, …) — "unless we
+  inject other IO interfaces." The crossing interface is always a choice.
 
 So uncertainty has **two sources**, cleanly separated by the membrane: **intrinsic** (git history /
 reified types — always present inside the cell) and **extrinsic** (what crosses the boundary via
