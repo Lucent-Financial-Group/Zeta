@@ -123,36 +123,42 @@ resolution; the optics can focus a `Resolution`. (If "they" meant **lens + prism
 base is **profunctor optics** — `Lens` and `Prism` are one `Optic` parametrized by the profunctor
 constraint, `Strong`→lens, `Choice`→prism; say the word and I'll capture that too.)
 
-## Our own "middle-out" float — conceptual format + IEEE for speed (want BOTH) (Aaron 2026-06-10)
+## Our "middle-out" float ALREADY EXISTS — the TriBoolean Float (Aaron 2026-06-10; corrected — look, don't infer)
 
-> Aaron: "can we make our own version for our middle-out floats? IEEE kind of sucks; ours is better
-> conceptually, theirs has decades of optimizations — we want both."
+> Aaron: "can we make our own version for our middle-out floats?" → then: "we have middle-out float
+> code that uses triboolean ... we already made middle out and tested it ... we have some proofs around
+> it too."
 
-Yes. "Middle-out" = **tapered precision**: concentrate fraction bits near **unit magnitude (the
-middle)** and taper toward the extremes — exactly **posits** (Gustafson, unum-III). Conceptually
-cleaner than IEEE 754: dynamic precision where it matters, **one zero, no NaN zoo, no subnormal
-special-casing**, and the value *tracks its own resolution* (the `Resolution`/ubit story above). That's
-why "ours is better conceptually."
+**Correction (honest register — owning the miss):** I first wrote this as "to build." Wrong — it is
+**already built, tested, and proven 4/4 cross-language.** The middle-out float **is the TriBoolean
+Float** (B-0944; spec `docs/research/2026-05-30-tri-boolean-float-v0-spec-middle-out-self-describing-decode-aaron-otto.md`):
 
-But IEEE has **decades of hardware + library optimization**, so — same dual move as RGB/CMYK and
-soft/hard — **keep both:**
+- **Built in all four oracles:** `src/Core.FSharp.TriBoolean/Float.fs`, `src/Core.CSharp.TriBoolean/`,
+  `src/Core.Rust.TriBoolean/src/float.rs`, `src/Core.TypeScript/tri-boolean-float/`.
+- **Proven 4/4** (BFT cross-language parity / byte-lock): `docs/PROVEN-COVERAGE-AND-GAPS.md`
+  — "TriBoolean (+ float) ✓✓✓✓ 4/4." The four compilers are non-Byzantine oracles; 4-of-4
+  compiler-checked parity = consensus with no human voters.
+- **Middle-out + self-describing (literally):** the **middle field decodes the ends** —
+  `value = V · 2^(mode − bias)`, `V` = MSB-first read of (high ++ low), `mode` = the middle decoder
+  field. The middle significant bits *specify how to decode* the high/low end bits.
+- **Tri-boolean / digital-qubit, not just posit:** every field is a `Tri list` (`Tri.T=1`, `Tri.F=0`,
+  `Tri.N=superposed`). `Tri.N` in a value trit ⇒ `ValueSuperposed`; in a decoder trit ⇒
+  `InterpretationSuperposed`. **`measure` is the only collapsing op** — and that is exactly the
+  substrate's **`mea` at the number scope**: the number itself holds superposition and is *measured*.
+  (Posit is the cousin anchor — tapered/self-describing — but ours adds the **digital-qubit
+  measure/superposition**, which is *why* it fits "physics of floats over Bayesian inference": the
+  belief lives in the trits, `measure` collapses it.)
 
-- **`MiddleOut` = our canonical/conceptual format** (posit-style tapered precision; the representation
-  we *reason and byte-lock* in; carries its own `Resolution`). Implement as a real
-  `INumberBase<MiddleOut>` / `IFloatingPointIeee754`-shaped type so it plugs into .NET generic math and
-  our algebra/category interfaces (the "universal number").
-- **IEEE float/double = the optimized compute path.** Lower to IEEE for the hot arithmetic (inherit the
-  decades of CPU/GPU/codec tuning — the same "ride the optimized data path" argument as color), then
-  lift results back to `MiddleOut`. Lossless where the IEEE precision ≥ the MiddleOut resolution;
-  otherwise the `Resolution` primitive flags `needsMoreBits` on the round-trip.
-- **Conversion is the seam:** `MiddleOut ↔ IEEE` (a lens/iso where exact, a prism where lossy — the
-  optics again). The four-oracle byte-lock pins the `MiddleOut` bytes (canonical), IEEE is the
-  accelerator behind it.
+**The "want both" is already the design:** the TriBoolean Float is the **canonical, byte-locked,
+self-describing** representation; **IEEE f64 is the shared decode target / optimized path** (all four
+oracles decode to f64, agreeing up to 2^53 — the int64/u64 accumulation keeps parity). So we have:
+our conceptual middle-out format (TriBoolean) **and** IEEE's optimized arithmetic, exactly as asked.
 
-So: canonical correctness in our middle-out format, raw speed in IEEE, conversion tracked by
-`Resolution`. (To build incrementally — start with `Resolution<'T>` over IEEE today, add the
-`MiddleOut` posit-type + IEEE interop next; Naledi benchmarks the round-trip, Soraya/Sova proves the
-conversion laws.)
+**So the `Resolution` primitive should build ON the TriBoolean Float, not reinvent it:** the trits +
+`measure` already carry superposition/collapse; `Resolution` adds the explicit **bit-budget accounting**
+(`needsMoreBits`/`maxed`/`headroom`) on top, generic over `INumberBase` so it also wraps IEEE. Next:
+wire `Resolution` over `Core.FSharp.TriBoolean.Float` + IEEE (Naledi benchmarks; the existing 4/4 proofs
+already cover the float's decode laws — extend them for the bit-budget predicates).
 
 ## Anchors (Beacon)
 

@@ -139,9 +139,14 @@ with a ⭐ below and add a row there.
   Bayesian inference; the closest named prior art) · **Friston** free-energy/active-inference (cell =
   Bayesian Markov-blanket) · **IEEE 754 / Kahan / ULP / significance & interval arithmetic** ·
   **Gustafson unum/posit** (= "universal number"; variable-precision numbers that track their own
-  resolution — the `Resolution` primitive's direct ancestor) · .NET **generic math**
-  (`INumberBase`/`IFloatingPointIeee754`) as the universal-number carrier. See
-  `docs/research/2026-06-10-physics-of-floats-room-boundary-is-a-bit-budget-...md`.
+  resolution — the cousin anchor) · .NET **generic math** (`INumberBase`/`IFloatingPointIeee754`) as
+  the universal-number carrier. **Our built instance = the TriBoolean Float** (B-0944; middle-out,
+  self-describing — the middle field decodes the ends; trits T/F/N with `measure` collapsing
+  superposition = `mea` at the number scope; built + proven **4/4 cross-language** TS/F#/C#/Rust, see
+  `src/Core.{FSharp,CSharp,Rust}.TriBoolean/Float*` + `src/Core.TypeScript/tri-boolean-float/` +
+  `docs/PROVEN-COVERAGE-AND-GAPS.md`). See
+  `docs/research/2026-06-10-physics-of-floats-room-boundary-is-a-bit-budget-...md` +
+  `docs/research/2026-05-30-tri-boolean-float-v0-spec-middle-out-self-describing-decode-aaron-otto.md`.
 - **Local-first / CRDTs / privacy-first** ⭐ — Kleppmann et al. (Ink & Switch
   2019); CRDTs (Shapiro et al. 2011); Groove (Ozzie); Solid/pods (Berners-Lee);
   W3C DIDs; PSI; federated learning; SMPC; OPA; Signal. Zeta's manifesto ethos as
