@@ -172,6 +172,22 @@ module ShapeAcceptance =
                 && Braid.isIdentity 2 [ 1; -1 ] // do-undo: the inverse undoes exactly
                 && not (Braid.isIdentity 2 [ 1; 1 ]) // memory at its smallest: sigma^2 != 1
             ok, "sigma != 1; sigma·sigma⁻¹ = 1; sigma² != 1 — the three smallest braid proofs, on the atom"
+        | "shape-triboolean" ->
+            // the resolution law, live: same sampleProgressive as the renderer — partial budget
+            // leaves Unknowns (honesty), full budget leaves ZERO (uncertainty fully reduced).
+            let grid = MediaLines.constIntOr "grid" 8 d
+            let partial = MediaLines.constIntOr "budget-partial" 20 d
+            let full = MediaLines.constIntOr "budget-full" 64 d
+            let curve = [ BoundaryLight.p 1 1; BoundaryLight.p (grid * 2 - 2) (grid * 2 - 2) ]
+            let unknowns budget =
+                BoundaryLight.sampleProgressive BoundaryLight.MiddleOut budget 3.0 0.4 grid grid 2 curve
+                |> Map.toList
+                |> List.filter (fun (_, t) -> t = BoundaryLight.Unknown)
+                |> List.length
+            let atPartial = unknowns partial
+            let atFull = unknowns full
+            (atPartial > 0 && atFull = 0),
+            sprintf "partial budget leaves %d Unknown (must be > 0); full budget leaves %d (must be 0)" atPartial atFull
         | "shape-softvalue" ->
             // the ladder's code laws, run LIVE on PixelLens (the rungs in code):
             // (a) quantize: floor(confidence * levels / 1000) = the declared coarse level;
@@ -194,6 +210,7 @@ module ShapeAcceptance =
             let wb = MediaLines.constIntOr "weight-b" 3 d
             let wc = MediaLines.constIntOr "weight-c" 2 d
             let court = MediaLines.constIntOr "court-cells" 60 d
+            // same call as the renderer: treemap(x=2, y=8, w=court, h=16, horizontal) — drawn = gated
             let tiles = LayoutEngine.treemap 2 8 court 16 true [ "a", wa; "b", wb; "c", wc ]
             let widths = tiles |> List.map (fun r -> r.W)
             let contiguous =
