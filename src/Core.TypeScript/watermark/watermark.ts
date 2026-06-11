@@ -6,20 +6,24 @@
 export type Strategy = "monotonic" | "bounded" | "periodic";
 
 export class Watermark {
-  constructor(
-    public readonly EventTime: number,
-    public readonly Source: number
-  ) {}
+  readonly EventTime: number;
+  readonly Source: number;
+  constructor(eventTime: number, source: number) {
+    this.EventTime = eventTime;
+    this.Source = source;
+  }
 
   static readonly MinValue = new Watermark(-9223372036854775808, 0);
   static readonly MaxValue = new Watermark(9223372036854775807, 0);
 }
 
 export class Timestamped<T> {
-  constructor(
-    public readonly Value: T,
-    public readonly EventTime: number
-  ) {}
+  readonly Value: T;
+  readonly EventTime: number;
+  constructor(value: T, eventTime: number) {
+    this.Value = value;
+    this.EventTime = eventTime;
+  }
 }
 
 export type WatermarkStrategy =
@@ -30,8 +34,11 @@ export type WatermarkStrategy =
 export class WatermarkTracker {
   private _maxSeen = -9223372036854775808;
   private _lastEmitted = -9223372036854775808;
+  readonly strategy: WatermarkStrategy;
 
-  constructor(public readonly strategy: WatermarkStrategy) {}
+  constructor(strategy: WatermarkStrategy) {
+    this.strategy = strategy;
+  }
 
   private candidateFor(observedMax: number): number {
     switch (this.strategy.type) {
