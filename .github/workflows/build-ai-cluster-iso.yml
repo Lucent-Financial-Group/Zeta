@@ -520,7 +520,7 @@ jobs:
   build-aarch64:
     name: build-iso-aarch64 + qemu-boot
     runs-on: ubuntu-24.04-arm
-    timeout-minutes: 90
+    timeout-minutes: 120
     permissions:
       contents: read
     steps:
