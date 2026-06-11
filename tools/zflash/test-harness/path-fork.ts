@@ -20,6 +20,7 @@ import {
   createSpawnSyncQcow2RetentionExecutor,
   planQcow2SnapshotRetention,
   type Qcow2RetentionExecutionFeedback,
+  type Qcow2RetentionExecutionStep,
   type Qcow2RetentionExecutor,
   type Qcow2SnapshotRetentionPlan,
   type QemuCommand,
@@ -321,12 +322,16 @@ export function assertPathForkSerialMarkers(
   };
 }
 
-export type PathForkExecutionStep =
+export type PathForkExecutionStep = Extract<
+  Qcow2RetentionExecutionStep,
   | "bootstrap-create-disk-image"
   | "bootstrap-initial-install-from-iso-with-disk"
   | "bootstrap-create-baseline-snapshot"
-  | `restore-${PathForkId}`
-  | `boot-${PathForkId}`;
+  | "restore-migrate-existing-creds"
+  | "restore-fresh-cluster"
+  | "boot-migrate-existing-creds"
+  | "boot-fresh-cluster"
+>;
 
 export interface PathForkForkExecution {
   readonly forkId: PathForkId;
@@ -454,9 +459,9 @@ export function executePathForkRuntimePlan(
               },
             };
           }
-          execution = executor.runCommandUntilSerialMarkers(step, command, stopCondition);
+          execution = executor.runCommandUntilSerialMarkers(step as Qcow2RetentionExecutionStep, command, stopCondition);
         } else {
-          execution = executor.runCommand(step, command);
+          execution = executor.runCommand(step as Qcow2RetentionExecutionStep, command);
         }
       } catch (error) {
         return {
@@ -508,7 +513,7 @@ export function executePathForkRuntimePlan(
     const restoreStep = `restore-${fork.forkId}` as const;
     let restoreExecution: QemuCommandExecution;
     try {
-      restoreExecution = executor.runCommand(restoreStep, fork.restoreStartingState);
+      restoreExecution = executor.runCommand(restoreStep as Qcow2RetentionExecutionStep, fork.restoreStartingState);
     } catch (error) {
       return {
         error: {
@@ -561,7 +566,7 @@ export function executePathForkRuntimePlan(
           },
         };
       }
-      bootExecution = executor.runCommandUntilSerialMarkers(bootStep, bootCommand, fork.stopCondition);
+      bootExecution = executor.runCommandUntilSerialMarkers(bootStep as Qcow2RetentionExecutionStep, bootCommand, fork.stopCondition);
     } catch (error) {
       return {
         error: {
