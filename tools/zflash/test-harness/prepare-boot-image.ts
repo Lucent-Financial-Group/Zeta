@@ -19,16 +19,21 @@
  */
 
 import { spawnSync } from "node:child_process";
-import { existsSync, mkdtempSync, writeFileSync } from "node:fs";
+import { existsSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import {
+  detectIsohybridEspOffsetBytes,
+  ISOHYBRID_ESP_OFFSET_FALLBACK_BYTES,
+} from "../../../full-ai-cluster/tools/zflash-lib";
 import { runFileBackedZflashCli } from "../../../full-ai-cluster/tools/zflash-file-backed";
 import { buildBlob, composeBundle } from "../../installer/zeta-creds-persist";
 
 export const DEFAULT_QEMU_USB_UUID = "b0891-qemu-test-usb-00000001";
 export const DEFAULT_QEMU_PASSPHRASE = "b0891-qemu-test-passphrase";
-export const DEFAULT_ESP_OFFSET_BYTES = 1_048_576;
+/** @deprecated Prefer auto-detect via {@link resolveEspOffsetBytesForIso}; kept for tests. */
+export const DEFAULT_ESP_OFFSET_BYTES = ISOHYBRID_ESP_OFFSET_FALLBACK_BYTES;
 export const DEFAULT_QEMU_HOSTNAME = "node-qemu-test";
 
 const REPO_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "../../..");
@@ -48,6 +53,12 @@ export interface PrepareBootImageResult {
   readonly outputImagePath: string;
   readonly credentialBlobPath?: string;
   readonly bootImageEnv: "ZFLASH_QEMU_RETENTION_BOOT_IMAGE" | "ZFLASH_QEMU_PATH_FORK_BOOT_IMAGE";
+}
+
+export function resolveEspOffsetBytesForIso(isoPath: string): number {
+  const headSize = Math.max(512, ISOHYBRID_ESP_OFFSET_FALLBACK_BYTES + 512);
+  const isoHead = readFileSync(isoPath).subarray(0, headSize);
+  return detectIsohybridEspOffsetBytes(isoHead);
 }
 
 export function checkZflashToolchain(): string | null {
@@ -96,6 +107,8 @@ export function prepareBootImage(input: PrepareBootImageInput): PrepareBootImage
     return { error: `ssh pubkey not found: ${input.pubkeyPath}` };
   }
 
+  const espOffsetBytes = resolveEspOffsetBytesForIso(absIso);
+
   let credentialBlobPath: string | undefined;
   if (input.withCredentialBlob) {
     const staging = mkdtempSync(join(tmpdir(), "zeta-zflash-cred-blob-"));
@@ -107,7 +120,7 @@ export function prepareBootImage(input: PrepareBootImageInput): PrepareBootImage
     {
       isoPath: absIso,
       outputImagePath: resolve(input.outputImagePath),
-      espOffsetBytes: input.espOffsetBytes,
+      espOffsetBytes,
       pubkeyPath: input.pubkeyPath,
       testMode: input.testMode,
       hostname: input.hostname,
