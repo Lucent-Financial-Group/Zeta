@@ -61,7 +61,7 @@ export class QuantumObservableOracle implements IQuantumObservableOracle {
     return {
       Id: id,
       Operation: operation,
-      ThetaRadians: theta,
+      ...(theta !== undefined ? { ThetaRadians: theta } : {}),
       Probabilities: { Zero: probZero, One: probOne },
     };
   }
@@ -218,9 +218,9 @@ export class QuantumObservableOracle implements IQuantumObservableOracle {
     return {
       Id: id,
       Operation: operation,
-      PhaseRadians: phase,
+      ...(phase !== undefined ? { PhaseRadians: phase } : {}),
       Probabilities: { Zero: probZero, One: probOne },
-      Visibility: operation.endsWith("Open") ? undefined : 1.0,
+      ...(operation.endsWith("Open") ? {} : { Visibility: 1.0 }),
     };
   }
 }
