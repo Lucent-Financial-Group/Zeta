@@ -52,6 +52,14 @@ the only sin, machine-checked); unknown kinds ride through old readers (the futu
 Make a tiny cartridge of your own before touching MIPS — anything: a shape, a beep, a two-frame joke.
 You'll learn the whole substrate by where the lint pushes back.
 
+## 3½. The shape catalog (a cartridge per shape)
+The head-shapes are becoming a catalog — `shape.worldline`, `shape.lightcone`, `shape.fourcorner`,
+`shape.braid`, `shape.spiral`, `shape.seam` — each a registered generator (ZetaId'd, cost-declared)
+that ships as its OWN cartridge. Pick one, open its cartridge, watch it draw itself stroke by stroke
+(the head riding the edge), read the generator that makes it. That's the lesson loop: SEE the shape,
+READ its generator, CHANGE a number, SEE it again. When one clicks for you, you've learned the
+structure it encodes — that's the whole pedagogy in one file.
+
 ## 4. Then build YOUR machine (B-1028 — the staged road)
 The CHIP-9 playbook, which you watched work end-to-end, replayed on YOUR home turf (Hennessy's MIPS):
 1. the teaching-ISA core in F# — exact, pure, stepwise (R/I/J decode first);
