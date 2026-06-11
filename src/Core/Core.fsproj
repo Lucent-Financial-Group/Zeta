@@ -271,6 +271,7 @@
     <Compile Include="GameFingerprint.fs" />
     <Compile Include="FingerprintPrism.fs" />
     <Compile Include="SoftLens.fs" />
+    <Compile Include="WeaveFold.fs" />
     <Compile Include="SoftTie.fs" />
     <Compile Include="LinguisticSeed.fs" />
     <Compile Include="ConformalGA.fs" />
