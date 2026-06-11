@@ -128,6 +128,7 @@ function listBacklogFiles(tierDir: string): readonly string[] {
 
 function checkboxFor(status: string): "[x]" | "[ ]" {
   if (status === "closed") return "[x]";
+  if (status === "done") return "[x]";
   if (status.startsWith("superseded-by-")) return "[x]";
   // open / deferred / decomposed all render as unchecked (still open)
   return "[ ]";
@@ -144,7 +145,7 @@ function generateContent(backlogDir: string): string {
   out.push("");
   out.push("_Each entry below is a link to a per-row file under");
   out.push("`docs/backlog/`. Entries with `- [ ]` are open; `- [x]`");
-  out.push("are closed (status: closed in frontmatter)._");
+  out.push("are closed (status: closed/done in frontmatter)._");
   // No explicit blank line here: the per-tier loop below pushes its
   // own leading "" before each section label, which (after
   // `out.join("\n")`) produces exactly one blank line between the
