@@ -36,5 +36,6 @@ Bayesian, AmplitudeEmu all in-tree).
 - ℂ: the three-oracle Mach-Zehnder (shipped earlier).
 - ℤ: the existing ZSet suite (free).
 - ℝ≥0: discrete sum-product as a WSet circuit vs the analytic Bayesian marginal (the GDL instance) — green.
+
 B-1032 CLOSED. Plus damping (the loopy upgrade, honest limits tested) and SoftPositivity (the probit
 EP twin) landed alongside on the inference port.
