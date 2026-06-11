@@ -18,6 +18,7 @@
  * Exit 0 prints JSON with outputImagePath (+ credentialBlobPath when baked).
  */
 
+import { spawnSync } from "node:child_process";
 import { existsSync, mkdtempSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
@@ -49,6 +50,23 @@ export interface PrepareBootImageResult {
   readonly bootImageEnv: "ZFLASH_QEMU_RETENTION_BOOT_IMAGE" | "ZFLASH_QEMU_PATH_FORK_BOOT_IMAGE";
 }
 
+export function checkZflashToolchain(): string | null {
+  for (const [bin, installHint] of [
+    ["qemu-img", "qemu-utils"],
+    ["mcopy", "mtools"],
+  ] as const) {
+    try {
+      const result = spawnSync(bin, ["--version"], { encoding: "utf8" });
+      if (result.status !== 0) {
+        return `${bin} not usable (exit ${String(result.status)}); install via apt/brew (${installHint})`;
+      }
+    } catch {
+      return `${bin} not found in PATH; install via apt/brew (${installHint})`;
+    }
+  }
+  return null;
+}
+
 export function writeTestCredentialBlob(outputPath: string): void {
   const bundle = composeBundle({
     usbUuid: DEFAULT_QEMU_USB_UUID,
@@ -65,6 +83,11 @@ export function writeTestCredentialBlob(outputPath: string): void {
 }
 
 export function prepareBootImage(input: PrepareBootImageInput): PrepareBootImageResult | { readonly error: string } {
+  const toolchainError = checkZflashToolchain();
+  if (toolchainError !== null) {
+    return { error: toolchainError };
+  }
+
   const absIso = resolve(input.isoPath);
   if (!existsSync(absIso)) {
     return { error: `installer ISO not found: ${absIso}` };

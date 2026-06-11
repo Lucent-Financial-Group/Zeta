@@ -213,13 +213,11 @@ describe("B-0891 test-harness dispatcher", () => {
         readSerialOutput: (path) => {
           if (path.includes("migrate.serial.log")) {
             return [
-              "[iter-5.1]",
               "[B-0891-retention]   found pre-baked zeta-creds.enc on boot USB ESP",
               "[B-0891-retention]   Step 6.95-picker will skip account re-entry",
             ].join("\n");
           }
           return [
-            "[iter-5.1]",
             "[B-0891-retention]   no pre-baked zeta-creds.enc on boot USB ESP; Step 6.95-picker remains normal",
           ].join("\n");
         },

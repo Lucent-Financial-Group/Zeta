@@ -52,6 +52,8 @@ on:
       - 'tools/ci/qemu-boot-test.ts'
       - 'tools/ci/qemu-full-install-test.ts'
       - 'tools/ci/test-iter-54-install-flow.test.ts'
+      - 'tools/zflash/test-harness/**'
+      - 'tools/installer/zeta-creds-restore.ts'
       - '.github/workflows/build-ai-cluster-iso.yml'
   push:
     branches: [main]
@@ -66,6 +68,8 @@ on:
       - 'tools/ci/qemu-boot-test.ts'
       - 'tools/ci/qemu-full-install-test.ts'
       - 'tools/ci/test-iter-54-install-flow.test.ts'
+      - 'tools/zflash/test-harness/**'
+      - 'tools/installer/zeta-creds-restore.ts'
       - '.github/workflows/build-ai-cluster-iso.yml'
   workflow_dispatch:
 
@@ -84,7 +88,7 @@ jobs:
   build:
     name: build-iso
     runs-on: ubuntu-24.04
-    timeout-minutes: 60
+    timeout-minutes: ${{ github.event_name == 'workflow_dispatch' && 240 || 90 }}
     permissions:
       contents: read
       # B-0853.1 cosign keyless OIDC — sigstore/Fulcio CA mints a short-lived
@@ -241,10 +245,11 @@ jobs:
       # of THIS workflow. The TS helper at tools/ci/qemu-boot-test.ts
       # takes the ISO path as a positional CLI arg (no shell expansion
       # of attacker-controllable strings).
-      - name: Install QEMU (apt)
+      - name: Install QEMU + zflash toolchain (apt)
         # qemu-system-x86 for cascade #5 boot smoke-test
         # qemu-utils for qemu-img (cascade #6 Slice 1 virtual hard disk)
-        run: sudo apt-get update -y && sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends qemu-system-x86 qemu-utils
+        # mtools for zflash file-backed ESP writes (B-0891 scenario 1 bake)
+        run: sudo apt-get update -y && sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends qemu-system-x86 qemu-utils mtools
 
       - name: B-0891 scenario 1 — initial format (audit + zflash --test + QEMU boot)
         working-directory: full-ai-cluster
@@ -292,26 +297,66 @@ jobs:
           echo "Serial log out path: $SERIAL_LOG_OUT_PATH"
           bun ../tools/zflash/test-harness/run.ts --scenario boot-cluster-up "$iso_abs"
 
-      - name: B-0891 scenarios 3–4 — retention + path-fork (workflow_dispatch only)
+      - name: B-0891 scenario 3 — reformat with retention (workflow_dispatch only)
         if: github.event_name == 'workflow_dispatch'
         continue-on-error: true
-        timeout-minutes: 180
+        timeout-minutes: 90
         working-directory: full-ai-cluster
         env:
           ZFLASH_QEMU_RETENTION_EXECUTE: "1"
-          ZFLASH_QEMU_PATH_FORK_EXECUTE: "1"
-          ZFLASH_QEMU_PATH_FORK_BOOTSTRAP: "1"
+          ZFLASH_QEMU_RETENTION_RUN_DIR: ${{ github.workspace }}/b0891-retention-run
         run: |
           set -euo pipefail
           mapfile -t iso_candidates < <(find result/iso -maxdepth 1 -type f \( -name 'zeta-installer-*.iso' -o -name 'nixos-minimal-*.iso' \) | sort)
           if [ "${#iso_candidates[@]}" -eq 0 ]; then
-            echo "::error::B-0891 scenarios 3-4: No installer ISO under result/iso/" >&2
+            echo "::error::B-0891 scenario 3: No installer ISO under result/iso/" >&2
             exit 1
           fi
           iso_abs=$(readlink -f "${iso_candidates[0]}")
-          echo "B-0891 retention/path-fork ISO: $iso_abs"
+          echo "B-0891 retention ISO: $iso_abs"
+          echo "Retention run dir: $ZFLASH_QEMU_RETENTION_RUN_DIR"
+          mkdir -p "$ZFLASH_QEMU_RETENTION_RUN_DIR"
           bun ../tools/zflash/test-harness/run.ts --scenario reformat-with-retention "$iso_abs"
+
+      - name: B-0891 scenario 4 — path-fork migrate vs fresh (workflow_dispatch only)
+        if: github.event_name == 'workflow_dispatch'
+        continue-on-error: true
+        timeout-minutes: 90
+        working-directory: full-ai-cluster
+        env:
+          ZFLASH_QEMU_PATH_FORK_EXECUTE: "1"
+          ZFLASH_QEMU_PATH_FORK_BOOTSTRAP: "1"
+          ZFLASH_QEMU_PATH_FORK_RUN_DIR: ${{ github.workspace }}/b0891-path-fork-run
+        run: |
+          set -euo pipefail
+          mapfile -t iso_candidates < <(find result/iso -maxdepth 1 -type f \( -name 'zeta-installer-*.iso' -o -name 'nixos-minimal-*.iso' \) | sort)
+          if [ "${#iso_candidates[@]}" -eq 0 ]; then
+            echo "::error::B-0891 scenario 4: No installer ISO under result/iso/" >&2
+            exit 1
+          fi
+          iso_abs=$(readlink -f "${iso_candidates[0]}")
+          echo "B-0891 path-fork ISO: $iso_abs"
+          echo "Path-fork run dir: $ZFLASH_QEMU_PATH_FORK_RUN_DIR"
+          mkdir -p "$ZFLASH_QEMU_PATH_FORK_RUN_DIR"
           bun ../tools/zflash/test-harness/run.ts --scenario reformat-from-scratch "$iso_abs"
+
+      - name: Upload B-0891 retention serial logs
+        if: always() && github.event_name == 'workflow_dispatch'
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: b0891-retention-serial-logs
+          path: b0891-retention-run/**/*.log
+          if-no-files-found: warn
+          retention-days: 7
+
+      - name: Upload B-0891 path-fork serial logs
+        if: always() && github.event_name == 'workflow_dispatch'
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: b0891-path-fork-serial-logs
+          path: b0891-path-fork-run/**/*.log
+          if-no-files-found: warn
+          retention-days: 7
 
       # Upload serial log as workflow artifact regardless of test outcome
       # so debug post-mortem is always possible. `if: always()` because

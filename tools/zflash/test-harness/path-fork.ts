@@ -17,7 +17,6 @@ import {
   B0891_RETENTION_USB_SERIAL_MARKERS,
 } from "./serial-markers";
 import {
-  INITIAL_INSTALL_SERIAL_MARKERS,
   RETENTION_ABSENT_TERMINAL_MARKERS,
   RETENTION_FAILURE_SERIAL_MARKERS,
   buildQemuSystemBootArgs,
@@ -159,13 +158,11 @@ interface NormalizedPathForkRuntimeInput {
   readonly kvmAvailable: boolean;
 }
 
-function requiredMarkers(forkId: PathForkId): readonly string[] {
-  return [
-    ...INITIAL_INSTALL_SERIAL_MARKERS,
-    ...(forkId === "migrate-existing-creds"
-      ? MIGRATE_EXISTING_CREDS_SERIAL_MARKERS
-      : FRESH_CLUSTER_SERIAL_MARKERS),
-  ];
+/** Fork boots prove the operator path choice only — B-0891 early markers, not a second full install. */
+function forkSuccessMarkers(forkId: PathForkId): readonly string[] {
+  return forkId === "migrate-existing-creds"
+    ? MIGRATE_EXISTING_CREDS_SERIAL_MARKERS
+    : FRESH_CLUSTER_SERIAL_MARKERS;
 }
 
 function forbiddenMarkers(forkId: PathForkId): readonly string[] {
@@ -225,7 +222,7 @@ function missingRequirementsForFork(input: NormalizedPathForkRuntimeInput, forkI
 
 function forkPlan(input: NormalizedPathForkRuntimeInput, fork: PathForkVariant): PathForkRuntimeForkPlan {
   const serialLogPath = serialLogPathForFork(input, fork.forkId);
-  const forkRequiredMarkers = requiredMarkers(fork.forkId);
+  const forkRequiredMarkers = forkSuccessMarkers(fork.forkId);
   const forkForbiddenMarkers = forbiddenMarkers(fork.forkId);
   const qemuBootCommand = bootCommandForFork(input, fork.forkId);
 
