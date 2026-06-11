@@ -22,5 +22,6 @@ SpeedScope/Chrome tracing anywhere). So the lane splits honestly:
 - **Windows (Aaron's session):** full ETW via PerfView — CPU stacks, GC heap, contention — the
   deepest free profiler .NET has. Targets when he sits down: the chip8 step loop, ZSet
   consolidate, the BP message pass (the rooms most worth a flamegraph).
-- Note: a perfview SKILL was not found in THIS repo's .claude/skills at filing time (grep clean)
-  — if it lives in another repo of the fleet, ferry it; else this row seeds one.
+- Aaron remembered right: the skill EXISTS in this repo —
+  `.claude/skills/performance-and-runtime-ops/` (profiling-expert + performance-analysis-expert
+  blueprints carry the PerfView procedure). His Windows session uses it as-is.
