@@ -3,7 +3,80 @@
 // (./golden-vectors.json) that the C#/F#/Rust oracles also verify. All integer arithmetic — no floats,
 // byte-lockable in the safe-integer range (the .NET/Rust oracles use int64).
 
-export type Strategy = "monotonic" | "bounded";
+export type Strategy = "monotonic" | "bounded" | "periodic";
+
+export class Watermark {
+  constructor(
+    public readonly EventTime: number,
+    public readonly Source: number
+  ) {}
+
+  static readonly MinValue = new Watermark(-9223372036854775808, 0);
+  static readonly MaxValue = new Watermark(9223372036854775807, 0);
+}
+
+export class Timestamped<T> {
+  constructor(
+    public readonly Value: T,
+    public readonly EventTime: number
+  ) {}
+}
+
+export type WatermarkStrategy =
+  | { readonly type: "monotonic" }
+  | { readonly type: "bounded"; readonly maxLatenessMs: number }
+  | { readonly type: "periodic"; readonly intervalMs: number; readonly latenessMs: number };
+
+export class WatermarkTracker {
+  private _maxSeen = -9223372036854775808;
+  private _lastEmitted = -9223372036854775808;
+
+  constructor(public readonly strategy: WatermarkStrategy) {}
+
+  private candidateFor(observedMax: number): number {
+    switch (this.strategy.type) {
+      case "monotonic":
+        return observedMax;
+      case "bounded": {
+        const lateness = this.strategy.maxLatenessMs;
+        if (observedMax <= -9223372036854775808 + lateness) {
+          return -9223372036854775808;
+        }
+        return observedMax - lateness;
+      }
+      case "periodic": {
+        const lateness = this.strategy.latenessMs;
+        if (observedMax <= -9223372036854775808 + lateness) {
+          return -9223372036854775808;
+        }
+        return observedMax - lateness;
+      }
+    }
+  }
+
+  /**
+   * Observe a new event timestamp. Returns the new watermark (may be
+   * unchanged from the previous value).
+   */
+  public Observe(eventTime: number): number {
+    if (eventTime > this._maxSeen) {
+      this._maxSeen = eventTime;
+    }
+    const candidate = this.candidateFor(this._maxSeen);
+    if (candidate > this._lastEmitted) {
+      this._lastEmitted = candidate;
+    }
+    return this._lastEmitted;
+  }
+
+  public get Current(): number {
+    return this._lastEmitted;
+  }
+
+  public get MaxObserved(): number {
+    return this._maxSeen;
+  }
+}
 
 /**
  * The WatermarkTracker fold: returns the emitted watermark after each observed event time.
@@ -12,12 +85,19 @@ export type Strategy = "monotonic" | "bounded";
  * never surfaces in outputs.
  */
 export function observe(strategy: Strategy, lateness: number, events: number[]): number[] {
-  let maxSeen = Number.NEGATIVE_INFINITY;
-  let lastEmitted = Number.NEGATIVE_INFINITY;
+  let maxSeen = -9223372036854775808;
+  let lastEmitted = -9223372036854775808;
   const out: number[] = [];
   for (const e of events) {
     if (e > maxSeen) maxSeen = e;
-    const candidate = strategy === "monotonic" ? maxSeen : maxSeen - lateness;
+    let candidate = maxSeen;
+    if (strategy === "bounded" || strategy === "periodic") {
+      if (maxSeen <= -9223372036854775808 + lateness) {
+        candidate = -9223372036854775808;
+      } else {
+        candidate = maxSeen - lateness;
+      }
+    }
     if (candidate > lastEmitted) lastEmitted = candidate;
     out.push(lastEmitted);
   }
@@ -31,11 +111,12 @@ export function isLate(wm: number, eventTime: number): boolean {
 
 /** Combine per-source watermarks downstream: min (can't progress past the slowest input). */
 export function combine(sources: number[]): number {
-  let min = Number.POSITIVE_INFINITY;
+  let min = 9223372036854775807;
   let any = false;
   for (const s of sources) {
     any = true;
     if (s < min) min = s;
   }
-  return any ? min : Number.NEGATIVE_INFINITY;
+  return any ? min : -9223372036854775808;
 }
+
