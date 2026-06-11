@@ -1,59 +1,339 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
-/* eslint-disable sonarjs/cognitive-complexity */
 import { describe, expect, test } from "bun:test";
-// @ts-expect-error: quantum-circuit has no official typings
 import QuantumCircuit from "quantum-circuit";
 import golden from "./qsharp-golden.json";
 
+interface Complex {
+  readonly real: number;
+  readonly imag: number;
+}
+
+type Matrix = Complex[][];
+type CircuitAction = (circuit: QuantumCircuit) => void;
+interface CorrelatorProbabilities {
+  readonly corr: number;
+  readonly pSame: number;
+  readonly pOpposite: number;
+}
+
 const qsharpDumpTolerance = 1e-5;
 const tolerance = 1e-6;
+
+const singleQubitActions = new Map<string, CircuitAction>([
+  [
+    "Zeta.ReferenceOracle.ApplyH",
+    (circuit) => {
+      append(circuit, "h", 0);
+    },
+  ],
+  [
+    "Zeta.ReferenceOracle.ApplyRyPiOver3",
+    (circuit) => {
+      append(circuit, "ry", 0, [Math.PI / 3]);
+    },
+  ],
+  [
+    "Zeta.ReferenceOracle.ApplyRyPiOver2",
+    (circuit) => {
+      append(circuit, "ry", 0, [Math.PI / 2]);
+    },
+  ],
+]);
+
+const machZehnderActions = new Map<string, CircuitAction>([
+  [
+    "Zeta.ReferenceOracle.ApplyMachZehnderOpen",
+    (circuit) => {
+      append(circuit, "h", 0);
+    },
+  ],
+  [
+    "Zeta.ReferenceOracle.ApplyMachZehnderClosedZeroPhase",
+    (circuit) => {
+      append(circuit, "h", 0);
+      append(circuit, "h", 0);
+    },
+  ],
+  [
+    "Zeta.ReferenceOracle.ApplyMachZehnderClosedPiPhase",
+    (circuit) => {
+      append(circuit, "h", 0);
+      append(circuit, "z", 0);
+      append(circuit, "h", 0);
+    },
+  ],
+  [
+    "Zeta.ReferenceOracle.ApplyMachZehnderClosedPiOver3Phase",
+    (circuit) => {
+      applyClosedPhaseMachZehnder(circuit, Math.PI / 3);
+    },
+  ],
+  [
+    "Zeta.ReferenceOracle.ApplyMachZehnderClosedPiOver2Phase",
+    (circuit) => {
+      applyClosedPhaseMachZehnder(circuit, Math.PI / 2);
+    },
+  ],
+  [
+    "Zeta.ReferenceOracle.ApplyMachZehnderClosedTwoPiOver3Phase",
+    (circuit) => {
+      applyClosedPhaseMachZehnder(circuit, (2 * Math.PI) / 3);
+    },
+  ],
+]);
+
+const singleQubitGateActions = new Map<string, CircuitAction>([
+  [
+    "H",
+    (circuit) => {
+      append(circuit, "h", 0);
+    },
+  ],
+  [
+    "Ry(pi/2)",
+    (circuit) => {
+      append(circuit, "ry", 0, [Math.PI / 2]);
+    },
+  ],
+  [
+    "Ry(pi/3)",
+    (circuit) => {
+      append(circuit, "ry", 0, [Math.PI / 3]);
+    },
+  ],
+  [
+    "Rz(pi/3)",
+    (circuit) => {
+      append(circuit, "rz", 0, [Math.PI / 3]);
+    },
+  ],
+  [
+    "S",
+    (circuit) => {
+      append(circuit, "s", 0);
+    },
+  ],
+  [
+    "T",
+    (circuit) => {
+      append(circuit, "t", 0);
+    },
+  ],
+  [
+    "X",
+    (circuit) => {
+      append(circuit, "x", 0);
+    },
+  ],
+  [
+    "Y",
+    (circuit) => {
+      append(circuit, "y", 0);
+    },
+  ],
+  [
+    "Z",
+    (circuit) => {
+      append(circuit, "z", 0);
+    },
+  ],
+]);
+
+const pauliProductActions = new Map<string, CircuitAction>([
+  [
+    "Zeta.ReferenceOracle.ApplyPauliXAfterZ",
+    (circuit) => {
+      applyGates(circuit, "z", "x");
+    },
+  ],
+  [
+    "Zeta.ReferenceOracle.ApplyPauliZAfterX",
+    (circuit) => {
+      applyGates(circuit, "x", "z");
+    },
+  ],
+  [
+    "Zeta.ReferenceOracle.ApplyPauliXAfterY",
+    (circuit) => {
+      applyGates(circuit, "y", "x");
+    },
+  ],
+  [
+    "Zeta.ReferenceOracle.ApplyPauliYAfterX",
+    (circuit) => {
+      applyGates(circuit, "x", "y");
+    },
+  ],
+  [
+    "Zeta.ReferenceOracle.ApplyPauliYAfterZ",
+    (circuit) => {
+      applyGates(circuit, "z", "y");
+    },
+  ],
+  [
+    "Zeta.ReferenceOracle.ApplyPauliZAfterY",
+    (circuit) => {
+      applyGates(circuit, "y", "z");
+    },
+  ],
+]);
 
 function closeTo(actual: number, expected: number, epsilon = tolerance) {
   expect(Math.abs(actual - expected)).toBeLessThanOrEqual(epsilon);
 }
 
-function getAmplitudeProb(amp: any): number {
-  if (!amp) return 0;
-  if (typeof amp === "number") return amp * amp;
-  return amp.re * amp.re + amp.im * amp.im;
+function closeComplexTo(actual: Complex, expected: Complex, epsilon = tolerance) {
+  closeTo(actual.real, expected.real, epsilon);
+  closeTo(actual.imag, expected.imag, epsilon);
 }
 
-function normalizeComplex(val: any): { real: number; imag: number } {
-  if (typeof val === "number") {
-    return { real: val, imag: 0 };
-  } else if (val && typeof val === "object") {
-    if ("re" in val && "im" in val) {
-      return { real: val.re, imag: val.im };
-    }
-    if ("real" in val && "imag" in val) {
-      return { real: val.real, imag: val.imag };
-    }
+function expectDefined<T>(value: T | undefined, label: string): T {
+  expect(value, label).toBeDefined();
+  return value as T;
+}
+
+function append(circuit: QuantumCircuit, gate: string, wire: number | readonly number[], params?: readonly number[]) {
+  if (params === undefined) {
+    circuit.appendGate(gate, wire);
+    return;
   }
-  return { real: 0, imag: 0 };
+
+  circuit.appendGate(gate, wire, { params });
 }
 
-describe("quantum-circuit simulator (second oracle)", () => {
+function applyGates(circuit: QuantumCircuit, first: string, second: string) {
+  append(circuit, first, 0);
+  append(circuit, second, 0);
+}
+
+function applyClosedPhaseMachZehnder(circuit: QuantumCircuit, phase: number) {
+  append(circuit, "h", 0);
+  append(circuit, "rz", 0, [phase]);
+  append(circuit, "h", 0);
+}
+
+function applyKnownOperation(circuit: QuantumCircuit, operation: string, actions: ReadonlyMap<string, CircuitAction>) {
+  const action = expectDefined(actions.get(operation), `Unknown operation: ${operation}`);
+  action(circuit);
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null;
+}
+
+function numberField(record: Record<string, unknown>, field: string): number | undefined {
+  const value = record[field];
+  return typeof value === "number" ? value : undefined;
+}
+
+function normalizeComplex(value: unknown): Complex {
+  if (typeof value === "number") return { real: value, imag: 0 };
+
+  if (isRecord(value)) {
+    const re = numberField(value, "re");
+    const im = numberField(value, "im");
+    if (re !== undefined && im !== undefined) return { real: re, imag: im };
+
+    const real = numberField(value, "real");
+    const imag = numberField(value, "imag");
+    if (real !== undefined && imag !== undefined) return { real, imag };
+  }
+
+  throw new Error(`Unsupported quantum-circuit complex value: ${JSON.stringify(value)}`);
+}
+
+function normalizeMatrix(raw: readonly (readonly unknown[])[]): Matrix {
+  return raw.map((row) => row.map(normalizeComplex));
+}
+
+function matrixRow(matrix: Matrix, row: number): Complex[] {
+  return expectDefined(matrix[row], `missing matrix row ${String(row)}`);
+}
+
+function matrixAt(matrix: Matrix, row: number, col: number): Complex {
+  return expectDefined(matrixRow(matrix, row)[col], `missing matrix cell ${String(row)},${String(col)}`);
+}
+
+function probabilityOne(circuit: QuantumCircuit): number {
+  return expectDefined(circuit.probabilities()[0], "missing |1> probability");
+}
+
+function amplitudeProbability(circuit: QuantumCircuit, basisIndex: number): number {
+  const amplitude = normalizeComplex(
+    expectDefined(circuit.state[basisIndex], `missing basis amplitude ${String(basisIndex)}`),
+  );
+  return amplitude.real * amplitude.real + amplitude.imag * amplitude.imag;
+}
+
+function bellProbabilities(circuit: QuantumCircuit) {
+  const p00 = amplitudeProbability(circuit, 0);
+  const p01 = amplitudeProbability(circuit, 1);
+  const p10 = amplitudeProbability(circuit, 2);
+  const p11 = amplitudeProbability(circuit, 3);
+  return { p00, p01, p10, p11 };
+}
+
+function bellPhiPlusCircuit(a: number, b: number): QuantumCircuit {
+  const circuit = new QuantumCircuit(2);
+  append(circuit, "h", 0);
+  append(circuit, "cx", [0, 1]);
+  append(circuit, "ry", 0, [-a]);
+  append(circuit, "ry", 1, [-b]);
+  circuit.run();
+  return circuit;
+}
+
+function bellSingletCircuit(a: number, b: number): QuantumCircuit {
+  const circuit = new QuantumCircuit(2);
+  append(circuit, "h", 0);
+  append(circuit, "cx", [0, 1]);
+  append(circuit, "x", 1);
+  append(circuit, "z", 1);
+  append(circuit, "ry", 0, [-a]);
+  append(circuit, "ry", 1, [-b]);
+  circuit.run();
+  return circuit;
+}
+
+function phiPlusCorrelator(a: number, b: number): number {
+  const { p00, p01, p10, p11 } = bellProbabilities(bellPhiPlusCircuit(a, b));
+  return p00 + p11 - (p01 + p10);
+}
+
+function singletCorrelatorProbabilities(a: number, b: number): CorrelatorProbabilities {
+  const { p00, p01, p10, p11 } = bellProbabilities(bellSingletCircuit(a, b));
+  const pSame = p00 + p11;
+  const pOpposite = p01 + p10;
+  return { corr: pOpposite - pSame, pSame, pOpposite };
+}
+
+function makeGateCircuit(gateName: string): QuantumCircuit {
+  if (gateName === "BellPhiPlusPrep") {
+    const circuit = new QuantumCircuit(2);
+    append(circuit, "h", 0);
+    append(circuit, "cx", [0, 1]);
+    return circuit;
+  }
+
+  const circuit = new QuantumCircuit(1);
+  applyKnownOperation(circuit, gateName, singleQubitGateActions);
+  return circuit;
+}
+
+function circuitMatrix(circuit: QuantumCircuit): Matrix {
+  return normalizeMatrix(circuit.circuitMatrix());
+}
+
+// The TS simulator is a second implementation over the same observable
+// golden vectors as Q#. It checks measurable probabilities/matrices here;
+// Tsirelson maximality remains a cited/proved theorem, not a sampling claim.
+describe("quantum-circuit simulator (second observable oracle)", () => {
   test("single-qubit measurement observables match textbook probabilities", () => {
     for (const v of golden.vectors.singleQubitMeasurement) {
-      const c = new QuantumCircuit(1);
-      if (v.operation === "Zeta.ReferenceOracle.ApplyH") {
-        c.appendGate("h", 0);
-      } else if (v.operation === "Zeta.ReferenceOracle.ApplyRyPiOver3") {
-        c.appendGate("ry", 0, { params: [Math.PI / 3] });
-      } else if (v.operation === "Zeta.ReferenceOracle.ApplyRyPiOver2") {
-        c.appendGate("ry", 0, { params: [Math.PI / 2] });
-      } else {
-        throw new Error(`Unknown operation: ${v.operation}`);
-      }
-      c.run();
+      const circuit = new QuantumCircuit(1);
+      applyKnownOperation(circuit, v.operation, singleQubitActions);
+      circuit.run();
 
-      const probOne = c.probabilities()[0];
+      const probOne = probabilityOne(circuit);
       const probZero = 1 - probOne;
 
       closeTo(probZero, v.probabilities.Zero, qsharpDumpTolerance);
@@ -61,128 +341,61 @@ describe("quantum-circuit simulator (second oracle)", () => {
     }
   });
 
-  test("Bell/CHSH vector correlators and S parameter", () => {
+  test("Bell/CHSH vector correlators and S parameter match Q# observables", () => {
     const canonical = golden.vectors.bellChsh.canonical;
     const angles = canonical.anglesRadians;
 
-    const computeCorrelator = (a: number, b: number) => {
-      const c = new QuantumCircuit(2);
-      c.appendGate("h", 0);
-      c.appendGate("cx", [0, 1]);
-      c.appendGate("ry", 0, { params: [-a] });
-      c.appendGate("ry", 1, { params: [-b] });
-      c.run();
+    const eAb = phiPlusCorrelator(angles.a, angles.b);
+    const eAbPrime = phiPlusCorrelator(angles.a, angles.bPrime);
+    const eAPrimeB = phiPlusCorrelator(angles.aPrime, angles.b);
+    const eAPrimeBPrime = phiPlusCorrelator(angles.aPrime, angles.bPrime);
+    const s = eAb - eAbPrime + eAPrimeB + eAPrimeBPrime;
 
-      const p00 = getAmplitudeProb(c.state[0]);
-      const p01 = getAmplitudeProb(c.state[1]);
-      const p10 = getAmplitudeProb(c.state[2]);
-      const p11 = getAmplitudeProb(c.state[3]);
-      return p00 + p11 - (p01 + p10);
-    };
-
-    const E_ab = computeCorrelator(angles.a, angles.b);
-    const E_abPrime = computeCorrelator(angles.a, angles.bPrime);
-    const E_aPrimeb = computeCorrelator(angles.aPrime, angles.b);
-    const E_aPrimebPrime = computeCorrelator(angles.aPrime, angles.bPrime);
-
-    const s = E_ab - E_abPrime + E_aPrimeb + E_aPrimebPrime;
-
-    closeTo(E_ab, canonical.correlators["E(a,b)"], qsharpDumpTolerance);
-    closeTo(E_abPrime, canonical.correlators["E(a,bPrime)"], qsharpDumpTolerance);
-    closeTo(E_aPrimeb, canonical.correlators["E(aPrime,b)"], qsharpDumpTolerance);
-    closeTo(E_aPrimebPrime, canonical.correlators["E(aPrime,bPrime)"], qsharpDumpTolerance);
+    closeTo(eAb, canonical.correlators["E(a,b)"], qsharpDumpTolerance);
+    closeTo(eAbPrime, canonical.correlators["E(a,bPrime)"], qsharpDumpTolerance);
+    closeTo(eAPrimeB, canonical.correlators["E(aPrime,b)"], qsharpDumpTolerance);
+    closeTo(eAPrimeBPrime, canonical.correlators["E(aPrime,bPrime)"], qsharpDumpTolerance);
     closeTo(s, canonical.s, qsharpDumpTolerance);
   });
 
-  test("Bell/CHSH singlet corners", () => {
+  test("Bell/CHSH singlet corners match Q# observable treaty", () => {
     const singlet = golden.vectors.bellChsh.singletCorners;
-
-    const runSingletCircuit = (a: number, b: number) => {
-      const c = new QuantumCircuit(2);
-      c.appendGate("h", 0);
-      c.appendGate("cx", [0, 1]);
-      c.appendGate("x", 1);
-      c.appendGate("z", 1);
-      c.appendGate("ry", 0, { params: [-a] });
-      c.appendGate("ry", 1, { params: [-b] });
-      c.run();
-
-      const p00 = getAmplitudeProb(c.state[0]);
-      const p01 = getAmplitudeProb(c.state[1]);
-      const p10 = getAmplitudeProb(c.state[2]);
-      const p11 = getAmplitudeProb(c.state[3]);
-      const corr = p01 + p10 - (p00 + p11);
-      return { corr, pSame: p00 + p11, pOpposite: p01 + p10 };
-    };
-
     let s = 0;
+
     for (const corner of singlet.corners) {
       const angles = corner.anglesRadians;
-      const res = runSingletCircuit(angles.a, angles.b);
-      closeTo(res.corr, corner.correlator, qsharpDumpTolerance);
-      closeTo(res.pSame, corner.sameOutcomeProbability, qsharpDumpTolerance);
-      closeTo(res.pOpposite, corner.oppositeOutcomeProbability, qsharpDumpTolerance);
-      s += corner.coefficient * res.corr;
+      const result = singletCorrelatorProbabilities(angles.a, angles.b);
+
+      closeTo(result.corr, corner.correlator, qsharpDumpTolerance);
+      closeTo(result.pSame, corner.sameOutcomeProbability, qsharpDumpTolerance);
+      closeTo(result.pOpposite, corner.oppositeOutcomeProbability, qsharpDumpTolerance);
+      s += corner.coefficient * result.corr;
     }
+
     closeTo(s, singlet.s, qsharpDumpTolerance);
     closeTo(s, singlet.analytic, qsharpDumpTolerance);
   });
 
-  test("Bell coincidence probability outcomes", () => {
+  test("Bell coincidence probability outcomes match Q# observables", () => {
     for (const v of golden.vectors.bellCoincidence) {
-      const c = new QuantumCircuit(2);
-      c.appendGate("h", 0);
-      c.appendGate("cx", [0, 1]);
-
-      if (v.operation === "Zeta.ReferenceOracle.ApplyBellSingletAnalyzers") {
-        c.appendGate("x", 1);
-        c.appendGate("z", 1);
-      }
-
-      c.appendGate("ry", 0, { params: [-v.anglesRadians.a] });
-      c.appendGate("ry", 1, { params: [-v.anglesRadians.b] });
-      c.run();
-
-      const p00 = getAmplitudeProb(c.state[0]);
-      const p01 = getAmplitudeProb(c.state[1]);
-      const p10 = getAmplitudeProb(c.state[2]);
-      const p11 = getAmplitudeProb(c.state[3]);
-
+      const circuit =
+        v.operation === "Zeta.ReferenceOracle.ApplyBellSingletAnalyzers"
+          ? bellSingletCircuit(v.anglesRadians.a, v.anglesRadians.b)
+          : bellPhiPlusCircuit(v.anglesRadians.a, v.anglesRadians.b);
+      const { p00, p01, p10, p11 } = bellProbabilities(circuit);
       const actualProb = v.event === "sameOutcome" ? p00 + p11 : p01 + p10;
+
       closeTo(actualProb, v.probability, qsharpDumpTolerance);
     }
   });
 
-  test("interference visibility (Mach-Zehnder interferometer)", () => {
+  test("interference visibility matches Q# Mach-Zehnder observables", () => {
     for (const v of golden.vectors.interferenceVisibility) {
-      const c = new QuantumCircuit(1);
-      if (v.operation === "Zeta.ReferenceOracle.ApplyMachZehnderOpen") {
-        c.appendGate("h", 0);
-      } else if (v.operation === "Zeta.ReferenceOracle.ApplyMachZehnderClosedZeroPhase") {
-        c.appendGate("h", 0);
-        c.appendGate("h", 0);
-      } else if (v.operation === "Zeta.ReferenceOracle.ApplyMachZehnderClosedPiPhase") {
-        c.appendGate("h", 0);
-        c.appendGate("z", 0);
-        c.appendGate("h", 0);
-      } else if (v.operation === "Zeta.ReferenceOracle.ApplyMachZehnderClosedPiOver3Phase") {
-        c.appendGate("h", 0);
-        c.appendGate("rz", 0, { params: [Math.PI / 3] });
-        c.appendGate("h", 0);
-      } else if (v.operation === "Zeta.ReferenceOracle.ApplyMachZehnderClosedPiOver2Phase") {
-        c.appendGate("h", 0);
-        c.appendGate("rz", 0, { params: [Math.PI / 2] });
-        c.appendGate("h", 0);
-      } else if (v.operation === "Zeta.ReferenceOracle.ApplyMachZehnderClosedTwoPiOver3Phase") {
-        c.appendGate("h", 0);
-        c.appendGate("rz", 0, { params: [(2 * Math.PI) / 3] });
-        c.appendGate("h", 0);
-      } else {
-        throw new Error(`Unknown operation: ${v.operation}`);
-      }
-      c.run();
+      const circuit = new QuantumCircuit(1);
+      applyKnownOperation(circuit, v.operation, machZehnderActions);
+      circuit.run();
 
-      const probOne = c.probabilities()[0];
+      const probOne = probabilityOne(circuit);
       const probZero = 1 - probOne;
 
       closeTo(probZero, v.probabilities.Zero, qsharpDumpTolerance);
@@ -190,110 +403,44 @@ describe("quantum-circuit simulator (second oracle)", () => {
     }
   });
 
-  test("gate unitary matrices match reference oracle exactly", () => {
+  test("gate unitary simulator sanity checks match Q# reference matrices", () => {
     const unitaries = golden.vectors.gateUnitaries;
 
     for (const [gateName, expectedMatrixRaw] of Object.entries(unitaries)) {
-      const expectedMatrix = expectedMatrixRaw as any[][];
-      let c: QuantumCircuit;
-      if (gateName === "BellPhiPlusPrep") {
-        c = new QuantumCircuit(2);
-        c.appendGate("h", 0);
-        c.appendGate("cx", [0, 1]);
-      } else {
-        c = new QuantumCircuit(1);
-        if (gateName === "H") {
-          c.appendGate("h", 0);
-        } else if (gateName === "Ry(pi/2)") {
-          c.appendGate("ry", 0, { params: [Math.PI / 2] });
-        } else if (gateName === "Ry(pi/3)") {
-          c.appendGate("ry", 0, { params: [Math.PI / 3] });
-        } else if (gateName === "Rz(pi/3)") {
-          c.appendGate("rz", 0, { params: [Math.PI / 3] });
-        } else if (gateName === "S") {
-          c.appendGate("s", 0);
-        } else if (gateName === "T") {
-          c.appendGate("t", 0);
-        } else if (gateName === "X") {
-          c.appendGate("x", 0);
-        } else if (gateName === "Y") {
-          c.appendGate("y", 0);
-        } else if (gateName === "Z") {
-          c.appendGate("z", 0);
-        } else {
-          throw new Error(`Unknown gate unitary key: ${gateName}`);
-        }
-      }
-
-      const actualRawMatrix = c.circuitMatrix();
-      const actualMatrix = actualRawMatrix.map((row: any) => row.map(normalizeComplex));
+      const expectedMatrix = normalizeMatrix(expectedMatrixRaw);
+      const actualMatrix = circuitMatrix(makeGateCircuit(gateName));
 
       expect(actualMatrix.length).toBe(expectedMatrix.length);
-      for (let r = 0; r < expectedMatrix.length; r++) {
-        const expectedRow = expectedMatrix[r]!;
-        const actualRow = actualMatrix[r]!;
-        expect(actualRow.length).toBe(expectedRow.length);
-        for (let col = 0; col < expectedRow.length; col++) {
-          const act = actualRow[col];
-          const exp = expectedRow[col];
-          if (act && exp) {
-            closeTo(act.real, exp.real, qsharpDumpTolerance);
-            closeTo(act.imag, exp.imag, qsharpDumpTolerance);
-          }
+      for (let row = 0; row < expectedMatrix.length; row++) {
+        expect(matrixRow(actualMatrix, row).length).toBe(matrixRow(expectedMatrix, row).length);
+
+        for (let col = 0; col < matrixRow(expectedMatrix, row).length; col++) {
+          closeComplexTo(matrixAt(actualMatrix, row, col), matrixAt(expectedMatrix, row, col), qsharpDumpTolerance);
         }
       }
     }
   });
 
-  test("Q# Pauli products anticommutation relations", () => {
+  test("Pauli product matrices match Q# hardware-side anticommutation signs", () => {
     for (const item of golden.vectors.pauliAnticommutation) {
-      const runCircuit = (opName: string) => {
-        const c = new QuantumCircuit(1);
-        if (opName === "Zeta.ReferenceOracle.ApplyPauliXAfterZ") {
-          c.appendGate("z", 0);
-          c.appendGate("x", 0);
-        } else if (opName === "Zeta.ReferenceOracle.ApplyPauliZAfterX") {
-          c.appendGate("x", 0);
-          c.appendGate("z", 0);
-        } else if (opName === "Zeta.ReferenceOracle.ApplyPauliXAfterY") {
-          c.appendGate("y", 0);
-          c.appendGate("x", 0);
-        } else if (opName === "Zeta.ReferenceOracle.ApplyPauliYAfterX") {
-          c.appendGate("x", 0);
-          c.appendGate("y", 0);
-        } else if (opName === "Zeta.ReferenceOracle.ApplyPauliYAfterZ") {
-          c.appendGate("z", 0);
-          c.appendGate("y", 0);
-        } else if (opName === "Zeta.ReferenceOracle.ApplyPauliZAfterY") {
-          c.appendGate("y", 0);
-          c.appendGate("z", 0);
-        } else {
-          throw new Error(`Unknown Pauli operation: ${opName}`);
-        }
-        return c.circuitMatrix().map((row: any) => row.map(normalizeComplex));
-      };
+      const lhsCircuit = new QuantumCircuit(1);
+      const rhsCircuit = new QuantumCircuit(1);
+      applyKnownOperation(lhsCircuit, item.lhsOperation, pauliProductActions);
+      applyKnownOperation(rhsCircuit, item.rhsOperation, pauliProductActions);
 
-      const lhs = runCircuit(item.lhsOperation);
-      const rhs = runCircuit(item.rhsOperation);
+      const lhs = circuitMatrix(lhsCircuit);
+      const rhs = circuitMatrix(rhsCircuit);
+      const expectedLhs = normalizeMatrix(item.lhsMatrix);
+      const expectedRhs = normalizeMatrix(item.rhsMatrix);
 
-      for (let r = 0; r < lhs.length; r++) {
-        const lhsRow = lhs[r] as any[];
-        const rhsRow = rhs[r] as any[];
-        const expectedLhsRow = item.lhsMatrix[r] as any[];
-        const expectedRhsRow = item.rhsMatrix[r] as any[];
-        for (let col = 0; col < lhsRow.length; col++) {
-          const lVal = lhsRow[col];
-          const rVal = rhsRow[col];
-          const expectedLVal = normalizeComplex(expectedLhsRow[col]);
-          const expectedRVal = normalizeComplex(expectedRhsRow[col]);
+      for (let row = 0; row < lhs.length; row++) {
+        for (let col = 0; col < matrixRow(lhs, row).length; col++) {
+          const lhsValue = matrixAt(lhs, row, col);
+          const rhsValue = matrixAt(rhs, row, col);
 
-          closeTo(lVal.real, expectedLVal.real, qsharpDumpTolerance);
-          closeTo(lVal.imag, expectedLVal.imag, qsharpDumpTolerance);
-          closeTo(rVal.real, expectedRVal.real, qsharpDumpTolerance);
-          closeTo(rVal.imag, expectedRVal.imag, qsharpDumpTolerance);
-
-          closeTo(lVal.real, -rVal.real, qsharpDumpTolerance);
-          closeTo(lVal.imag, -rVal.imag, qsharpDumpTolerance);
+          closeComplexTo(lhsValue, matrixAt(expectedLhs, row, col), qsharpDumpTolerance);
+          closeComplexTo(rhsValue, matrixAt(expectedRhs, row, col), qsharpDumpTolerance);
+          closeComplexTo(lhsValue, { real: -rhsValue.real, imag: -rhsValue.imag }, qsharpDumpTolerance);
         }
       }
     }
