@@ -37,7 +37,7 @@ describe("B-0891 test-harness dispatcher", () => {
     const parsed = JSON.parse(result.stdout);
     expect(parsed.mode).toBe("dry-run");
     expect(parsed.targets[0].id).toBe("reformat-with-retention");
-    expect(parsed.targets[0].plan).toContain("implementation pending");
+    expect(parsed.targets[0].plan).toContain("auto-prepare zflash boot image");
   });
 
   test("runtime attempt for retention emits QEMU plan but fails closed", () => {
@@ -85,7 +85,7 @@ describe("B-0891 test-harness dispatcher", () => {
     expect(parsed.mode).toBe("dry-run");
     expect(parsed.targets[0].id).toBe("reformat-from-scratch");
     expect(parsed.targets[0].plan).toContain("path-fork plan");
-    expect(parsed.targets[0].plan).toContain("identity comparison proof");
+    expect(parsed.targets[0].plan).toContain("auto-prepare zflash boot image");
   });
 
   test("runtime attempt for path-fork emits migrate + fresh plans but fails closed", () => {

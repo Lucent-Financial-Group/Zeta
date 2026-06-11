@@ -13,6 +13,10 @@ import {
   type PathForkVariant,
 } from "./extensions";
 import {
+  B0891_FRESH_USB_SERIAL_MARKER,
+  B0891_RETENTION_USB_SERIAL_MARKERS,
+} from "./serial-markers";
+import {
   INITIAL_INSTALL_SERIAL_MARKERS,
   RETENTION_ABSENT_TERMINAL_MARKERS,
   RETENTION_FAILURE_SERIAL_MARKERS,
@@ -103,14 +107,9 @@ const DEFAULT_MEMORY_MB = 4096;
 const DEFAULT_CPU_COUNT = 2;
 const DEFAULT_SNAPSHOT_NAME = "post-initial-format";
 
-export const MIGRATE_EXISTING_CREDS_SERIAL_MARKERS: readonly string[] = [
-  "[B-0891-retention]   found pre-baked zeta-creds.enc on boot USB ESP",
-  "[B-0891-retention]   Step 6.95-picker will skip account re-entry",
-];
+export const MIGRATE_EXISTING_CREDS_SERIAL_MARKERS = B0891_RETENTION_USB_SERIAL_MARKERS;
 
-export const FRESH_CLUSTER_SERIAL_MARKERS: readonly string[] = [
-  "[B-0891-retention]   no pre-baked zeta-creds.enc on boot USB ESP; Step 6.95-picker remains normal",
-];
+export const FRESH_CLUSTER_SERIAL_MARKERS: readonly string[] = [B0891_FRESH_USB_SERIAL_MARKER];
 
 function nonEmpty(value: string): boolean {
   return value.trim().length > 0;
