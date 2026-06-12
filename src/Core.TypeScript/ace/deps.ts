@@ -285,6 +285,7 @@ export function generateFlux(resolved: ResolvedGraph, namespace: string = "defau
   const manifests: Record<string, any> = {};
 
   for (const chart of resolved.order) {
+    const node = resolved.nodes.get(chart)!;
     const deps = Array.from(resolved.nodes.keys()).filter((n) => {
       // Find what this node directly depends on
       if (node.dependsOn?.includes(n)) return true;
@@ -369,7 +370,6 @@ export function generateArgoCD(resolved: ResolvedGraph, namespace: string = "def
 
   for (const chart of resolved.order) {
     const wave = resolved.waves.get(chart) ?? 0;
-    const node = resolved.nodes.get(chart)!;
 
     const app: any = {
       apiVersion: "argoproj.io/v1alpha1",
