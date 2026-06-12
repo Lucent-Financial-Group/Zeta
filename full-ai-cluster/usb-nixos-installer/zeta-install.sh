@@ -56,6 +56,29 @@ LONGHORN1_TAIL="${LONGHORN1_TAIL:-1G}"
 
 bail() { echo "ERROR: $*" >&2; exit 1; }
 
+# sgdisk size specs (1G, 512M, …) → bytes for pre-wipe capacity checks.
+size_spec_to_bytes() {
+  local spec="$1"
+  local num="${spec%[KkMmGgTt]}"
+  local unit="${spec:${#num}}"
+  [[ "$num" =~ ^[0-9]+$ ]] || bail "invalid LONGHORN1_TAIL size spec: $spec"
+  case "${unit^^}" in
+    K) echo $((num * 1024)) ;;
+    M) echo $((num * 1024 * 1024)) ;;
+    G) echo $((num * 1024 * 1024 * 1024)) ;;
+    T) echo $((num * 1024 * 1024 * 1024 * 1024)) ;;
+    *) bail "invalid LONGHORN1_TAIL unit in spec: $spec (use K/M/G/T suffix)" ;;
+  esac
+}
+
+LONGHORN1_TAIL_BYTES="$(size_spec_to_bytes "$LONGHORN1_TAIL")"
+if (( LONGHORN1_TAIL_BYTES < 1024 * 1024 * 1024 )); then
+  bail "LONGHORN1_TAIL=$LONGHORN1_TAIL too small (need >= 1G for longhorn1 tail)"
+fi
+if (( LONGHORN1_TAIL_BYTES > 1024 * 1024 * 1024 * 1024 )); then
+  bail "LONGHORN1_TAIL=$LONGHORN1_TAIL too large (max 1T tail slice)"
+fi
+
 # /dev/nvme0n1 → /dev/nvme0n1p1; /dev/sda → /dev/sda1.
 # NVMe + mmcblk + loop + md devices use the 'p' partition suffix;
 # SATA/SAS/USB devices don't. The heuristic matches kernel naming.
@@ -80,17 +103,16 @@ disk_class() {
   fi
 }
 
-# Install-time sanity check before sgdisk: ESP 1G + root (>=4G) + longhorn1 tail.
+# Pre-wipe sanity check: ESP 1G + root (>=4G) + configured longhorn1 tail.
 assert_boot_disk_large_enough() {
   local disk="$1"
-  local disk_bytes esp_bytes min_root_bytes min_longhorn_bytes min_total_bytes
+  local disk_bytes esp_bytes min_root_bytes min_total_bytes
   disk_bytes=$(blockdev --getsize64 "$disk")
   esp_bytes=$((1024 * 1024 * 1024))
   min_root_bytes=$((4 * 1024 * 1024 * 1024))
-  min_longhorn_bytes=$((1024 * 1024 * 1024))
-  min_total_bytes=$((esp_bytes + min_root_bytes + min_longhorn_bytes))
+  min_total_bytes=$((esp_bytes + min_root_bytes + LONGHORN1_TAIL_BYTES))
   if (( disk_bytes < min_total_bytes )); then
-    bail "BOOT disk $disk too small for ESP 1G + root + longhorn1 ${LONGHORN1_TAIL} (need >= ~6G, have $(lsblk -d -n -o SIZE "$disk"))"
+    bail "BOOT disk $disk too small for ESP 1G + root + longhorn1 ${LONGHORN1_TAIL} (need >= $(( (min_total_bytes + 1024*1024*1024 - 1) / (1024*1024*1024) ))G, have $(lsblk -d -n -o SIZE "$disk"))"
   fi
 }
 
@@ -179,6 +201,9 @@ else
   [[ "$confirm" == "WIPE" ]] || bail "aborted"
 fi
 
+# Validate BOOT disk fits the layout before any destructive work.
+assert_boot_disk_large_enough "$BOOT_DISK"
+
 # ── Step 3: wipe every disk in scope ──────────────────────────────
 for d in "$BOOT_DISK" "${DATA_DISKS[@]}"; do
   echo "Wiping $d ..."
@@ -189,7 +214,6 @@ done
 # ── Step 4: partition ─────────────────────────────────────────────
 # Install-time only: root fills the BOOT disk (no fixed size cap). sgdisk end
 # code -${LONGHORN1_TAIL} reserves the longhorn1 tail; partition 3 takes it.
-assert_boot_disk_large_enough "$BOOT_DISK"
 echo "Partitioning $BOOT_DISK (ESP 1G + root max + longhorn1 ${LONGHORN1_TAIL} tail) ..."
 sudo sgdisk -n "1:0:+1G"                    -t 1:ef00 -c 1:ESP        "$BOOT_DISK"
 sudo sgdisk -n "2:0:-${LONGHORN1_TAIL}"     -t 2:8300 -c 2:root       "$BOOT_DISK"

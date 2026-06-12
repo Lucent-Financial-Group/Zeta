@@ -99,6 +99,7 @@ const REQUIRED_SENTINELS: readonly SentinelAssertion[] = [
       // ── iter-5.4 sentinels (PR #5364 + #5352 + #5354 substrate) ──
       "Step 6.8: iter-5.4.0 homelab gh-auth + operator pubkey copy", // iter-5.4.0 anchor
       "assert_boot_disk_large_enough", // B-0891 install-time BOOT disk floor check
+      "LONGHORN1_TAIL_BYTES", // parse tail before wipe (Codex review on #7887)
       "2:0:-${LONGHORN1_TAIL}", // root max-fill geometry (no fixed ROOT_SIZE cap)
       "root max", // operator-visible layout: always fill BOOT disk
       "Step 6.9: iter-5.4.1 self-registration commit+push", // iter-5.4.1 self-reg anchor
