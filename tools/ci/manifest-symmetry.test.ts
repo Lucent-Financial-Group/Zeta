@@ -81,6 +81,8 @@ const WINDOWS_EXCEPTIONS: Record<string, string> = {
     "headscale SERVER-side CLI — mesh coordination ops run on Linux/macOS hosts; Windows dev boxes join the mesh as tailscale clients (manifests/windows tailscale line).",
   "r-base":
     "R statistical runtime (charting/grammar-of-graphics lens-finder); covered on Windows by the `r` manifest line (scoop r / winget RProject.R / choco R.Project). apt names the package r-base; brew + scoop name it r.",
+  tailscale: "mesh VPN client; on Windows, Tailscale installs natively via MSI/installer or winget (Tailscale.Tailscale).",
+  "headscale-cli": "control CLI for self-hosted Headscale control server (zetacluster k8s/container side); Windows operators use remote API or the container shell directly.",
 };
 
 test("manifests/windows covers every apt/brew system tool (or an allowlisted exception)", () => {
