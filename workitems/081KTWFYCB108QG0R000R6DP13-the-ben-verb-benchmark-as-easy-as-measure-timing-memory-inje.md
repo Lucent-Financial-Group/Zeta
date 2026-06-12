@@ -1,15 +1,30 @@
 ---
-id: B-1039
-title: The ben verb — benchmark as easy as measure; timing/memory injected interfaces living with rooms/cartridges; GRADE the ComplexityRegistry's predictions
+id: 081KTWFYCB108QG0R000R6DP13
+type: task
+state: in-progress
 priority: P2
-status: in-progress
-tier: verification-substrate
-tags: [benchmark, ben, sim-mea-cut, testloop, complexity, prediction, rooms, chip8, di-verbs, hexagonal]
-created: 2026-06-11
-owner: open (slice 2 of B-1035's framework; pairs with Naledi's bench lane)
+slug: the-ben-verb-benchmark-as-easy-as-measure-timing-memory-inje
+title: "The ben verb — benchmark as easy as measure; timing/memory injected interfaces living with rooms/cartridges; GRADE the ComplexityRegistry's predictions"
+created: 2026-06-11T23:23:00.000Z
+depends_on: []
+composes_with: []
 ---
 
-# B-1039 — ben(chmark) joins the verb set (Aaron 2026-06-11, verbatim spine)
+# The ben verb — benchmark as easy as measure
+
+<!-- Work-item body. ZetaId-keyed (conflict-free, time-sortable). "Backlog" is a
+     STATE = this folder; completion moves the file to workitems/done/YYYY/MM/.
+     Identity is the zetaid prefix — resolve cross-refs by `081KTWFYCB108QG0R000R6DP13-*.md` glob. -->
+
+Migrated from the accidental legacy `B-1039` row so the item lives on the current
+ZetaId workitem surface instead of extending the frozen sequential backlog.
+
+Owner note: open; slice 2 of B-1035's framework; pairs with Naledi's bench lane.
+
+Tags: benchmark, ben, sim-mea-cut, testloop, complexity, prediction, rooms, chip8, di-verbs,
+hexagonal.
+
+## Ben(chmark) joins the verb set
 
 > "We should make ben(chmark) work as easy as measure — it's just injected: the extra interfaces
 > or whatever we need. Timing tests and memory use and stuff that LIVE WITH the room/cartridges.
@@ -46,6 +61,36 @@ Beacon: BenchmarkDotNet; Hoefler & Belli (SC '15, benchmarking rigor); our Compl
 the chip8 emu (exact, no ambient) + ONE dotnet room through a BenchmarkDotNet-backed adapter +
 the n/2n/4n grader over three registry rows.
 
-## Progress (slice 1, 2026-06-11): Ben.fs SHIPS — the exact chip8 tick meter (Steps/MemEntries/DisplayLit/Extra/StackDepth/Faulted, deterministic) + the GRADER (infer doubling-ratio growth class; grade = Confirmed/Tighter/Violated). Two REAL predictions graded CONFIRMED with exact cost proxies (treemap tiles = O(children); IBLT build work = n·k via the table's own count sum); falsifiers prove Violated/Tighter/refusal. Dogfooded through ITestLoop. Remaining: dotnet wall/alloc meters behind the boundary + red light; BenchmarkDotNet senior adapter; the cartridge `ben` line kind + gate refusal.
+## Progress, slice 1, 2026-06-11
+
+Ben.fs SHIPS — the exact chip8 tick meter
+(Steps/MemEntries/DisplayLit/Extra/StackDepth/Faulted, deterministic) + the GRADER
+(infer doubling-ratio growth class; grade = Confirmed/Tighter/Violated). Two REAL predictions
+graded CONFIRMED with exact cost proxies (treemap tiles = O(children); IBLT build work = n·k via
+the table's own count sum); falsifiers prove Violated/Tighter/refusal. Dogfooded through
+ITestLoop. Remaining: dotnet wall/alloc meters behind the boundary + red light; BenchmarkDotNet
+senior adapter; the cartridge `ben` line kind + gate refusal.
 
 ## Progress 2 (2026-06-11): the math team's critique APPLIED — infer rewritten to log₂-log₂ OLS slope + R² ≥ 0.99 + minimum-span (≥8×) + band-gap REFUSAL (n^1.5 returns None — no fabricated bugs) + Loglinear class; Tighter advisory below 32× span; Violated bug-grade criteria documented. Their tautology note on the slice-1 proxies stands: the treemap/IBLT grades validate the GRADER PIPELINE on exact cardinality, not the time column — true time grading needs the alloc/instruction meters. The deterministic APM answer landed: Ben.allocBytes (GC.GetAllocatedBytesForCurrentThread — exact, warmup-gated, replay-equal, tested); wall time stays statistical (BenchmarkDotNet senior lane; EventPipe/dotnet-trace/PerfView = offline lane). Search-by-O landed in ComplexityRegistry (parseO degree+logs; searchTimeAtMost/searchSpaceAtMost; unsearchable() keeps blind spots visible).
+
+## Progress 3 (2026-06-11) — pro(file) joins the verbs; THE VACUUM MODEL
+
+Aaron: "now lets have ben and pro(file) and all in our framework — air tight, vacuum tight, only
+memory and index loaded into memory, in our MUMPS; if cached you get it."
+
+`pro` is the verb set's next member (sim·mea·cut·ben·pro), and the architecture falls out of the
+B-1035 sealed-room clause: **the room stays vacuum-tight; profilers watch THROUGH THE GLASS.**
+EventPipe is out-of-process by design — `dotnet-trace`/`dotnet-counters` attach from OUTSIDE the
+seal without injecting a syscall into the loop, so Reticulum-only IO survives profiling
+(observation without contamination; the red light still names the watcher). INSIDE the vacuum,
+only the deterministic meters run: `chip8Ticks` and `allocBytes` (replay-equal, double-run
+checked). THE MUMPS REGISTER (Aaron's anchor): M's globals ARE the database — memory-resident,
+index + data as one sparse tree, no file door at query time. Our warm-cache-at-startup clause
+(B-1035, Reticulum-only IO) is that discipline by another name — memory + index loaded at room
+boot, then the loop runs sealed; "if cached, you get it." Our Map-keyed frames/ledgers already
+have the globals shape.
+
+Beacon: MUMPS/M (Octo Barnett & Neil Pappalardo, Massachusetts General Hospital, 1966; ANSI
+X11.1-1977) — the memory-mapped hierarchical-global lineage; .NET EventPipe (out-of-process
+tracing, the diagnostics-IPC design) — observation that never enters the observed process's
+code path.
