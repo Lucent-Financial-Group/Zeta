@@ -138,9 +138,8 @@ fi
 kubectl config use-context "kind-${CLUSTER_NAME}"
 kubectl wait --for=condition=Ready nodes --all --timeout=180s
 
-echo "Installing zeta-local-path StorageClass (dev/CI parity) ..."
+echo "Ensuring zeta-local-path StorageClass alias (dev/CI parity) ..."
 kubectl apply -f "${SCRIPT_DIR}/manifests/zeta-local-path.yaml"
-kubectl -n local-path-storage rollout status daemonset/local-path-provisioner --timeout=180s
 
 if ! helm -n argocd status argocd >/dev/null 2>&1; then
   echo "Installing ArgoCD ..."
