@@ -34,6 +34,7 @@
     <Compile Include="GSet.fs" />
     <Compile Include="Bag.fs" />
     <Compile Include="ZSet.fs" />
+    <Compile Include="FusionReconstruction.fs" />
     <Compile Include="WeightedSet.fs" />
     <Compile Include="RayTensor.fs" />
     <Compile Include="ToffoliGate.fs" />
@@ -51,6 +52,7 @@
     <Compile Include="CliVerb.fs" />
     <Compile Include="Optics.fs" />
     <Compile Include="UniversalNumber.fs" />
+    <Compile Include="Resolution.fs" />
     <Compile Include="TravelerFrame.fs" />
     <Compile Include="FrameDelta.fs" />
     <Compile Include="UncertainClock.fs" />
@@ -236,6 +238,7 @@
     <Compile Include="InferenceLadder.fs" />
     <Compile Include="TimeGen.fs" />
     <Compile Include="Braid.fs" />
+    <Compile Include="VisionAttention.fs" />
     <Compile Include="MediaLines.fs" />
     <Compile Include="CartridgeLaw.fs" />
     <Compile Include="CapabilityLedger.fs" />
