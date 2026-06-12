@@ -82,6 +82,20 @@ export interface QuantumObservableDelta {
   readonly row: QuantumObservableRow;
   readonly weight: number;
 }
+
+export interface QuantumObservableBatch {
+  readonly batchId: number;
+  readonly deltas: readonly QuantumObservableDelta[];
+}
+
+export interface QuantumObservableTranscript {
+  readonly schema: string;
+  readonly metadata?: {
+    readonly generatedBy: string;
+    readonly timestamp: string;
+  };
+  readonly batches: readonly QuantumObservableBatch[];
+}
 function compareStrings(a: string, b: string): number {
   if (a < b) return -1;
   if (a > b) return 1;
