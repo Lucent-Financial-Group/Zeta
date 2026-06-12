@@ -54,7 +54,7 @@
   zeta.disko = {
     nvme0 = "/dev/disk/by-id/nvme-REPLACE_ME_BOOT_DISK";
     nvme1 = "/dev/disk/by-id/nvme-REPLACE_ME_LONGHORN_DISK";
-    # rootSize = "256G";  # default; override if needed
+    # longhorn1Tail = "1G";  # default; root max-fills nvme0 between ESP and this tail
   };
   # ─────────────────────────────────────────────────────────────
 

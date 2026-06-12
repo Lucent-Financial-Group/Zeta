@@ -1,24 +1,24 @@
 # full-ai-cluster/nixos/modules/disko-shapes/2nvme.nix
 #
 # Cookie-cutter disko shape: 2 NVMes, equal capacity, K3S + Longhorn
-# node. Works on 1TB / 2TB / 4TB / whatever — only the OS partition
-# is fixed-size; the rest of each disk is claimed via size="100%".
-# That handles the "1TB is never really 1TB" reality.
+# node. Works on 1TB / 2TB / 8TB / whatever — root max-fills nvme0
+# (no fixed OS cap); longhorn1 keeps a fixed tail slice. Matches the
+# USB installer's zeta-install layout (ESP + root max + longhorn tail).
 #
 # Layout:
 #
 #   nvme0n1
 #     p1   1 GiB   FAT32   /boot               EFI
-#     p2   256 GiB ext4    /                   OS + /nix/store + image cache
-#     p3   rest    ext4    /var/lib/longhorn-disk1
+#     p2   max     ext4    /                   OS + /nix/store + image cache
+#     p3   tail    ext4    /var/lib/longhorn-disk1
 #
 #   nvme1n1
 #     p1   rest    ext4    /var/lib/longhorn-disk2
 #
-# Net: ~256 GiB headroom for OS + container cache; everything else
-# is Longhorn capacity. Per-disk failure isolates cleanly (OS
-# survives a Longhorn-disk failure; one Longhorn data path going
-# away triggers cluster-level re-replication from peer nodes).
+# Root grows with disk size; only longhorn1 tail is fixed (default 1G).
+# Per-disk failure isolates cleanly (OS survives a Longhorn-disk
+# failure; one Longhorn data path going away triggers cluster-level
+# re-replication from peer nodes).
 #
 # Per-host override: set `zeta.disko.nvme0` and `zeta.disko.nvme1`
 # to the actual /dev/disk/by-id symlinks for the target's drives.
@@ -57,14 +57,13 @@ in
       example = "/dev/disk/by-id/nvme-WD_BLACK_SN850X_1000GB_25092A800123";
     };
 
-    rootSize = lib.mkOption {
+    longhorn1Tail = lib.mkOption {
       type = lib.types.str;
-      default = "256G";
+      default = "1G";
       description = ''
-        Size of the OS root partition on nvme0. Default 256 GiB,
-        which covers /nix/store accumulation across upgrades + a
-        fat container image cache (CUDA + vLLM + Ollama + the rest
-        of the AI stack adds up fast).
+        Fixed tail slice on nvme0 for longhorn1. Root max-fills the
+        space between the 1 GiB ESP and this tail (same geometry as
+        zeta-install on the USB installer).
       '';
     };
   };
@@ -79,6 +78,7 @@ in
             type = "gpt";
             partitions = {
               ESP = {
+                priority = 1;
                 size = "1G";
                 type = "EF00";   # EFI System Partition
                 content = {
@@ -90,7 +90,10 @@ in
               };
 
               root = {
-                size = cfg.rootSize;
+                priority = 2;
+                start = "0";
+                # sgdisk end code: root fills from after ESP to the longhorn1 tail.
+                end = "-${cfg.longhorn1Tail}";
                 content = {
                   type = "filesystem";
                   format = "ext4";
@@ -100,9 +103,7 @@ in
               };
 
               longhorn1 = {
-                # "100%" = fill the rest of the disk. Handles the
-                # "1TB is never really 1TB" reality — works on 931 GiB,
-                # 1.86 TiB, whatever the actual reported capacity is.
+                # "100%" = remaining tail after root (default 1G; actual bytes follow disk).
                 size = "100%";
                 content = {
                   type = "filesystem";
