@@ -67,3 +67,14 @@ source ≠ authorization (who proposed ≠ who authorizes) IS the is/ought split
   (the Beacon anchor list stays uncontested).
 - The transcript is third-party IP (Flight Studio / Diary of a CEO). It lives on the gitignored
   prior-art shelf, local-only; this committed doc quotes only short fragments under fair use.
+
+## Aaron's verdict on the conclusion (2026-06-12, verbatim — dissent is data)
+
+> "Yeah i contest his lost civilizaton theory too, we still exist, we were never lost just
+> hidingin plain sight."
+
+The render-loop ruling: take the method (polarization lensing), take the failure mode
+(amnesia), REFUSE the conclusion (a vanished civilization) — continuity, not loss; the
+civilization that "ticks the boxes" is the same one, still running, hiding in plain sight.
+Which is also the stronger reading of his own evidence: the abgallu/sages thread is a
+CONTINUITY mechanism, not a grave marker.
