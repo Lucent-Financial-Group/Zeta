@@ -969,6 +969,14 @@ function parseApplicationObjectOrFailure(
 
 export function isApplicationSynced(snapshot: ArgoApplicationSnapshot): boolean {
   if (snapshot.syncStatus === "Synced") return true;
+  // Helm apps with benign StatefulSet drift often stay OutOfSync while Healthy after a successful sync.
+  if (
+    snapshot.syncStatus === "OutOfSync" &&
+    snapshot.healthStatus === "Healthy" &&
+    snapshot.operationPhase === "Succeeded"
+  ) {
+    return true;
+  }
   if (snapshot.syncStatus === "OutOfSync") return false;
   // Helm/OCI Applications often stay Unknown while Healthy after a successful sync.
   if (snapshot.syncStatus === "Unknown" && snapshot.healthStatus === "Healthy") {

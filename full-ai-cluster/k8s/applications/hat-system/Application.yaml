@@ -31,7 +31,7 @@ spec:
       recurse: true
       # Skip the operator's Go source — it's not a manifest. Same for
       # the graph/render helper and the queries docs.
-      exclude: '{operator/**,graph/**,queries/**}'
+      exclude: '{operator/**,graph/**,queries/**,Application.yaml}'
   destination:
     server: https://kubernetes.default.svc
     namespace: hat-system

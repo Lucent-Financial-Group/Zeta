@@ -338,7 +338,7 @@ describe("B-0967 argocd-health-test Application verdicts", () => {
         message: "",
         operationPhase: "Succeeded",
       }),
-    ).toBe(false);
+    ).toBe(true);
   });
 
   test("reports exact missing and unhealthy Applications", () => {
