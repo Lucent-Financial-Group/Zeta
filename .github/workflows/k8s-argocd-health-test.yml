@@ -55,6 +55,11 @@ jobs:
     name: plan + unit tests
     runs-on: ubuntu-24.04
     timeout-minutes: 12
+    env:
+      # k8s lane NEEDS the .mise.full.toml set (k3d/kubectl/helm). Keep it
+      # active for both install and later mise-shim execution.
+      MISE_ENV: full
+      ZETA_HOST_TIER: full
     steps:
       - name: Checkout
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
@@ -62,9 +67,6 @@ jobs:
       - name: Install toolchain via three-way-parity script
         env:
           MISE_GITHUB_TOKEN: ${{ github.token }}
-          # k8s lane NEEDS the .mise.full.toml set (k3d/kubectl/helm) — declare full
-          # explicitly, never rely on runner-size auto-detect (workitem 081KTWQZY7F).
-          ZETA_HOST_TIER: full
         run: ./tools/setup/install.sh
 
       - name: Install bun dependencies
@@ -95,6 +97,11 @@ jobs:
         runner: [ubuntu-24.04, ubuntu-24.04-arm]
     runs-on: ${{ matrix.runner }}
     timeout-minutes: 45
+    env:
+      # k8s lane NEEDS the .mise.full.toml set (k3d/kubectl/helm). Keep it
+      # active for both install and later mise-shim execution.
+      MISE_ENV: full
+      ZETA_HOST_TIER: full
     steps:
       - name: Checkout
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
@@ -102,9 +109,6 @@ jobs:
       - name: Install toolchain via three-way-parity script
         env:
           MISE_GITHUB_TOKEN: ${{ github.token }}
-          # k8s lane NEEDS the .mise.full.toml set (k3d/kubectl/helm) — declare full
-          # explicitly, never rely on runner-size auto-detect (workitem 081KTWQZY7F).
-          ZETA_HOST_TIER: full
         run: ./tools/setup/install.sh
 
       - name: Install bun dependencies
