@@ -119,3 +119,11 @@ mechanically enforced, not conventional: the double-run boundary refuses a smugg
 runs, one seed, two timestamps — falsifier added to TestLoop.Host.fs alongside the entropy
 smuggler). Noninterference (#13) closes flush: the room's only doors stay Reticulum + the injected
 Source; time is an observable THROUGH the glass, never an input inside it.
+
+## Progress 6 (2026-06-11) — pro's attach lane SHIPS (tools/perf/pro.ts)
+
+The glass-side wrapper, ruling-compliant by construction: spawns (or takes --pid) and attaches
+dotnet-trace/EventPipe from OUTSIDE — zero syscalls in the room, red light on, seal intact.
+Smoke-verified live (1.7MB .nettrace off a spawned fsi). Honest caveat in-header: `dotnet test`
+work runs in a child testhost — attach by --pid via `dotnet-trace ps`. Remaining: BenchmarkDotNet
+senior adapter.
