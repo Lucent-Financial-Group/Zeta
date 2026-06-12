@@ -111,7 +111,7 @@ jobs:
           path: |
             ~/.local/share/mise
             ~/.cache/mise
-          key: mise-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml') }}
+          key: mise-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', '.mise.full.toml') }}
 
       - name: Cache elan (Lean 4 toolchain)
         uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
@@ -140,6 +140,11 @@ jobs:
           key: nuget-${{ runner.os }}-${{ hashFiles('Directory.Packages.props') }}
 
       - name: Install toolchain via three-way-parity script (GOVERNANCE Section 24)
+        # slim host declaration: this lane builds+tests only — standard/full-tier manifest
+        # entries (stryker, analyzers, the diagnostics suite) are skipped LOUDLY by
+        # dotnet-tools.sh. Workitem 081KTWQZY7F08QG0R0034KN17T (host tiers x package requires).
+        env:
+          ZETA_HOST_TIER: slim
         run: ./tools/setup/install.sh
 
       - name: Build (0 Warning(s) / 0 Error(s) required)

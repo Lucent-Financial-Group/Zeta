@@ -22,9 +22,10 @@ on:
       - "src/Core.TypeScript/cluster/argocd-health-test.test.ts"
       - "full-ai-cluster/dev-cluster/**"
       - "full-ai-cluster/k8s/applications/**/Application.yaml"
-      - "docs/backlog/P1/B-0967-kubernetes-argocd-kind-k3d-integration-health-tests-separate-from-usb-iso-aaron-2026-05-31.md"
+      - "docs/backlog/P1/081KSXN940008QG0R000SCP2H1-kubernetes-argocd-kind-k3d-integration-health-tests-separate.md"
       - ".github/workflows/k8s-argocd-health-test.yml"
       - ".mise.toml"
+      - ".mise.full.toml"
       - "package.json"
       - "bun.lock"
   push:
@@ -34,9 +35,10 @@ on:
       - "src/Core.TypeScript/cluster/argocd-health-test.test.ts"
       - "full-ai-cluster/dev-cluster/**"
       - "full-ai-cluster/k8s/applications/**/Application.yaml"
-      - "docs/backlog/P1/B-0967-kubernetes-argocd-kind-k3d-integration-health-tests-separate-from-usb-iso-aaron-2026-05-31.md"
+      - "docs/backlog/P1/081KSXN940008QG0R000SCP2H1-kubernetes-argocd-kind-k3d-integration-health-tests-separate.md"
       - ".github/workflows/k8s-argocd-health-test.yml"
       - ".mise.toml"
+      - ".mise.full.toml"
       - "package.json"
       - "bun.lock"
   workflow_dispatch:
@@ -60,6 +62,9 @@ jobs:
       - name: Install toolchain via three-way-parity script
         env:
           MISE_GITHUB_TOKEN: ${{ github.token }}
+          # k8s lane NEEDS the .mise.full.toml set (k3d/kubectl/helm) — declare full
+          # explicitly, never rely on runner-size auto-detect (workitem 081KTWQZY7F).
+          ZETA_HOST_TIER: full
         run: ./tools/setup/install.sh
 
       - name: Install bun dependencies
@@ -97,6 +102,9 @@ jobs:
       - name: Install toolchain via three-way-parity script
         env:
           MISE_GITHUB_TOKEN: ${{ github.token }}
+          # k8s lane NEEDS the .mise.full.toml set (k3d/kubectl/helm) — declare full
+          # explicitly, never rely on runner-size auto-detect (workitem 081KTWQZY7F).
+          ZETA_HOST_TIER: full
         run: ./tools/setup/install.sh
 
       - name: Install bun dependencies

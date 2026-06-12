@@ -28,6 +28,10 @@ fi
 # sharing a name prefix (dotnet-ef vs dotnet-ef-tools) don't collide.
 INSTALLED="$(dotnet tool list -g 2>/dev/null | awk 'NR>2 {print tolower($1)}' || echo '')"
 
+# HOST TIERS — shared helper (workitem 081KTWQZY7F08QG0R0034KN17T).
+# shellcheck source=tools/setup/common/host-tier.sh disable=SC1091
+. "$(cd "$(dirname "$0")" && pwd)/host-tier.sh"
+
 MANIFEST_LINES="$(mktemp)"
 trap 'rm -f "$MANIFEST_LINES"' EXIT
 awk '
@@ -36,8 +40,14 @@ awk '
 ' "$MANIFEST" > "$MANIFEST_LINES"
 
 while IFS= read -r line || [ -n "$line" ]; do
-  # Manifest lines are "<tool> <version>" or just "<tool>".
+  # Manifest lines are "<tool> [<version>] [tier=<t>]".
+  required_tier="$(zeta_tier_of_line "$line")"
+  line="$(zeta_strip_tier "$line")"
   tool="$(echo "$line" | awk '{print $1}')"
+  if ! zeta_tier_allows "$required_tier"; then
+    echo "→ $tool skipped: requires tier=$required_tier, host is $ZETA_HOST_TIER ($ZETA_HOST_TIER_SOURCE)"
+    continue
+  fi
   version="$(echo "$line" | awk '{print $2}')"
   tool_lc="$(echo "$tool" | tr '[:upper:]' '[:lower:]')"
   if echo "$INSTALLED" | grep -Fxq "$tool_lc"; then
