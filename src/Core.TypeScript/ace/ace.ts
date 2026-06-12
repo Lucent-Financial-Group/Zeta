@@ -137,9 +137,9 @@ interface DepsArgs {
   readonly command: "deps";
   readonly sub: "validate" | "resolve";
   readonly graphPath: string;
-  readonly outDir?: string;
+  readonly outDir?: string | undefined;
   readonly outputEngine: "flux" | "argocd" | "both";
-  readonly chartsDir?: string;
+  readonly chartsDir?: string | undefined;
   readonly namespace: string;
 }
 

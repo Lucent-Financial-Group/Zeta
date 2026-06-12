@@ -138,12 +138,16 @@ export function setNestedProperty(obj: any, path: string, value: any): void {
   let current = obj;
   for (let i = 0; i < parts.length - 1; i++) {
     const part = parts[i];
+    if (part === undefined) continue; // split() never yields undefined entries; satisfies the checker honestly
     if (!(part in current)) {
       current[part] = {};
     }
     current = current[part];
   }
-  current[parts[parts.length - 1]] = value;
+  const last = parts[parts.length - 1];
+  if (last !== undefined) {
+    current[last] = value;
+  }
 }
 
 export function resolveGraph(graph: AppDependencyGraphSpec, chartsDir?: string): ResolvedGraph {
@@ -192,7 +196,7 @@ export function resolveGraph(graph: AppDependencyGraphSpec, chartsDir?: string):
               throw new Error(`Validation error: target '${cons.target}' is malformed (must be '<chart>.values.<path>')`);
             }
             const consumer = parts[0];
-            if (!nodes.has(consumer)) {
+            if (consumer === undefined || !nodes.has(consumer)) {
               throw new Error(`Validation error: consumer target '${cons.target}' references unknown chart '${consumer}'`);
             }
             // If consumer uses producer's output, consumer depends on producer
@@ -281,7 +285,6 @@ export function generateFlux(resolved: ResolvedGraph, namespace: string = "defau
   const manifests: Record<string, any> = {};
 
   for (const chart of resolved.order) {
-    const node = resolved.nodes.get(chart)!;
     const deps = Array.from(resolved.nodes.keys()).filter((n) => {
       // Find what this node directly depends on
       if (node.dependsOn?.includes(n)) return true;
