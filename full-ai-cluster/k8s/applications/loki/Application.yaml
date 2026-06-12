@@ -37,8 +37,8 @@ spec:
         write: { replicas: 1 }
         read:  { replicas: 1 }
         backend: { replicas: 1 }
-        chunksCache: { enabled: true, replicas: 1 }
-        resultsCache: { enabled: true, replicas: 1 }
+        chunksCache: { enabled: false }
+        resultsCache: { enabled: false }
   destination:
     server: https://kubernetes.default.svc
     namespace: loki

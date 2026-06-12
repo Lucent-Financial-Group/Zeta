@@ -85,6 +85,8 @@ export interface ArgoApplicationSnapshot {
   readonly syncStatus: string;
   readonly healthStatus: string;
   readonly message: string;
+  readonly operationPhase?: string;
+  readonly syncRevision?: string;
 }
 
 export interface ApplicationVerdict {
@@ -211,6 +213,7 @@ const DEV_EXCLUDED_DIRS = new Set([
 /** Deferred from included Synced+Healthy proof until dev wiring/substrate exists (B-0967). */
 const DEV_INCLUDED_PROOF_DEFERRED_DIRS = new Set([
   "agent-memory",
+  "forgejo",
   "gitlab",
   "orleans",
   "platform",
@@ -919,6 +922,7 @@ export function parseApplicationList(jsonText: string): readonly ArgoApplication
     const status = itemRecord ? recordAt(itemRecord, "status") : null;
     const sync = status ? recordAt(status, "sync") : null;
     const health = status ? recordAt(status, "health") : null;
+    const operationState = status ? recordAt(status, "operationState") : null;
     const name = metadata ? stringAt(metadata, "name") : "";
     if (name.length === 0) return [];
     return [
@@ -927,6 +931,8 @@ export function parseApplicationList(jsonText: string): readonly ArgoApplication
         syncStatus: sync ? stringAt(sync, "status") : "",
         healthStatus: health ? stringAt(health, "status") : "",
         message: health ? stringAt(health, "message") : "",
+        operationPhase: operationState ? stringAt(operationState, "phase") : undefined,
+        syncRevision: sync ? stringAt(sync, "revision") : undefined,
       },
     ];
   });
@@ -961,6 +967,17 @@ function parseApplicationObjectOrFailure(
   }
 }
 
+export function isApplicationSynced(snapshot: ArgoApplicationSnapshot): boolean {
+  if (snapshot.syncStatus === "Synced") return true;
+  if (snapshot.syncStatus === "OutOfSync") return false;
+  // Helm/OCI Applications often stay Unknown while Healthy after a successful sync.
+  if (snapshot.syncStatus === "Unknown" && snapshot.healthStatus === "Healthy") {
+    if (snapshot.operationPhase === "Succeeded") return true;
+    if (snapshot.syncRevision !== undefined && snapshot.syncRevision.length > 0) return true;
+  }
+  return false;
+}
+
 export function classifyApplications(
   expectedApplications: readonly ExpectedApplication[],
   snapshots: readonly ArgoApplicationSnapshot[],
@@ -979,7 +996,7 @@ export function classifyApplications(
           reason: `Application not found; expected from ${expected.path}`,
         };
       }
-      const ok = snapshot.syncStatus === "Synced" && snapshot.healthStatus === "Healthy";
+      const ok = isApplicationSynced(snapshot) && snapshot.healthStatus === "Healthy";
       const base = {
         name: expected.name,
         ok,

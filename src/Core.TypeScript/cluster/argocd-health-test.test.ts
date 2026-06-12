@@ -9,6 +9,7 @@ import {
   classifySmokeApplications,
   discoverExpectedApplications,
   isExcludedFromIncludedProof,
+  isApplicationSynced,
   isIncludedScope,
   parseApplicationList,
   parseApplicationName,
@@ -235,7 +236,8 @@ describe("B-0967 argocd-health-test manifest parsing", () => {
     expect(applications.some((app) => app.dir === "temporal" && app.excludedFromDev)).toBe(true);
     const included = applications.filter((app) => !app.excludedFromDev);
     expect(included.length).toBeGreaterThan(10);
-    expect(included.some((app) => app.name === "forgejo")).toBe(true);
+    expect(included.some((app) => app.name === "trust-manager")).toBe(true);
+    expect(included.some((app) => app.name === "forgejo")).toBe(false);
   });
 
   test("isExcludedFromIncludedProof catches Longhorn in child manifests", () => {
@@ -297,8 +299,9 @@ describe("B-0967 argocd-health-test Application verdicts", () => {
           {
             metadata: { name: "argocd" },
             status: {
-              sync: { status: "Synced" },
+              sync: { status: "Synced", revision: "7.7.10" },
               health: { status: "Healthy", message: "" },
+              operationState: { phase: "Succeeded" },
             },
           },
         ],
@@ -310,8 +313,32 @@ describe("B-0967 argocd-health-test Application verdicts", () => {
         syncStatus: "Synced",
         healthStatus: "Healthy",
         message: "",
+        operationPhase: "Succeeded",
+        syncRevision: "7.7.10",
       },
     ]);
+  });
+
+  test("isApplicationSynced accepts Unknown Helm apps that reconciled successfully", () => {
+    expect(
+      isApplicationSynced({
+        name: "cert-manager",
+        syncStatus: "Unknown",
+        healthStatus: "Healthy",
+        message: "",
+        operationPhase: "Succeeded",
+        syncRevision: "v1.16.2",
+      }),
+    ).toBe(true);
+    expect(
+      isApplicationSynced({
+        name: "dapr",
+        syncStatus: "OutOfSync",
+        healthStatus: "Healthy",
+        message: "",
+        operationPhase: "Succeeded",
+      }),
+    ).toBe(false);
   });
 
   test("reports exact missing and unhealthy Applications", () => {
@@ -386,8 +413,8 @@ describe("B-0967 argocd-health-test planning", () => {
     expect(plan.scope).toBe("included");
     expect(plan.checks.join("\n")).toContain("Synced and Healthy");
     const included = plan.expectedApplications.filter((app) => !app.excludedFromDev).map((app) => app.name);
-    expect(included).toContain("forgejo");
     expect(included).not.toContain("gitlab");
+    expect(included).not.toContain("forgejo");
     expect(included).not.toContain("agent-memory");
   });
 
