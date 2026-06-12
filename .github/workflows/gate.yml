@@ -491,14 +491,15 @@ jobs:
     # §24): yamllint (pipx→uv) + kubeconform (ubi:) pinned in .mise.toml, so dev
     # laptops + CI + devcontainers + install.ps1 all get the same versions.
     name: lint (yaml/k8s)
+    # kubeconform's pin lives in .mise.full.toml — BOTH install and the run steps need the
+    # full-tier env, so it sits at JOB level (the step-level env broke the shim resolve:
+    # "No version is set for shim: kubeconform"). Workitem 081KTWQZY7F.
+    env:
+      ZETA_HOST_TIER: full
+      MISE_ENV: full
     timeout-minutes: 10
     runs-on: ubuntu-24.04
     continue-on-error: true # ADVISORY — remove once clean for a few rounds (then required)
-    env:
-      # kubeconform lives in .mise.full.toml. Keep the full-tier mise env active
-      # for both install and later shim execution, not only the install step.
-      MISE_ENV: full
-      ZETA_HOST_TIER: full
 
     steps:
       - name: Checkout

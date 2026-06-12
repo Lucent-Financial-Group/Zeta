@@ -53,13 +53,13 @@ concurrency:
 jobs:
   dry-run:
     name: plan + unit tests
+    # k8s lane NEEDS .mise.full.toml (k3d/kubectl/helm) at install AND run time — job-level
+    # env, never step-level (the shim resolve needs MISE_ENV=full; workitem 081KTWQZY7F).
+    env:
+      ZETA_HOST_TIER: full
+      MISE_ENV: full
     runs-on: ubuntu-24.04
     timeout-minutes: 12
-    env:
-      # k8s lane NEEDS the .mise.full.toml set (k3d/kubectl/helm). Keep it
-      # active for both install and later mise-shim execution.
-      MISE_ENV: full
-      ZETA_HOST_TIER: full
     steps:
       - name: Checkout
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
@@ -95,13 +95,13 @@ jobs:
       fail-fast: false
       matrix:
         runner: [ubuntu-24.04, ubuntu-24.04-arm]
+    # k8s lane NEEDS .mise.full.toml (k3d/kubectl/helm) at install AND run time — job-level
+    # env, never step-level (the shim resolve needs MISE_ENV=full; workitem 081KTWQZY7F).
+    env:
+      ZETA_HOST_TIER: full
+      MISE_ENV: full
     runs-on: ${{ matrix.runner }}
     timeout-minutes: 45
-    env:
-      # k8s lane NEEDS the .mise.full.toml set (k3d/kubectl/helm). Keep it
-      # active for both install and later mise-shim execution.
-      MISE_ENV: full
-      ZETA_HOST_TIER: full
     steps:
       - name: Checkout
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
