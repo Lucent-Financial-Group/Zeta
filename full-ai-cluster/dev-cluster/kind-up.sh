@@ -138,6 +138,9 @@ fi
 kubectl config use-context "kind-${CLUSTER_NAME}"
 kubectl wait --for=condition=Ready nodes --all --timeout=180s
 
+echo "Installing Gateway API CRDs (cert-manager enableGatewayAPI on kind/k3d) ..."
+kubectl apply --server-side -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.2.0/standard-install.yaml
+
 echo "Ensuring zeta-local-path StorageClass alias (dev/CI parity) ..."
 kubectl apply -f "${SCRIPT_DIR}/manifests/zeta-local-path.yaml"
 

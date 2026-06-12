@@ -48,7 +48,7 @@ spec:
       #                no GPUs on the Mac or on normal CI runners.
       #   gitlab / orleans / temporal / agent-memory / platform - deferred from
       #                included Synced+Healthy proof until dev wiring exists.
-      exclude: '{cilium/**,longhorn/**,ollama/**,vllm/**,deepseek-coder/**,qwen-coder/**,gitlab/**,orleans/**,temporal/**,agent-memory/**,platform/**}'
+      exclude: '{cilium/**,cilium-lb-ipam/**,longhorn/**,ollama/**,vllm/**,deepseek-coder/**,qwen-coder/**,gitlab/**,orleans/**,temporal/**,agent-memory/**,platform/**}'
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd

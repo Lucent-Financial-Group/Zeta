@@ -226,6 +226,7 @@ describe("B-0967 argocd-health-test manifest parsing", () => {
     expect(applications.length).toBeGreaterThan(20);
     expect(applications.some((app) => app.name === "argocd" && !app.excludedFromDev)).toBe(true);
     expect(applications.some((app) => app.dir === "cilium" && app.excludedFromDev)).toBe(true);
+    expect(applications.some((app) => app.dir === "cilium-lb-ipam" && app.excludedFromDev)).toBe(true);
     expect(applications.some((app) => app.dir === "longhorn" && app.excludedFromDev)).toBe(true);
     expect(applications.some((app) => app.dir === "vault" && app.excludedFromDev)).toBe(true);
     expect(applications.some((app) => app.dir === "agent-memory" && app.excludedFromDev)).toBe(true);

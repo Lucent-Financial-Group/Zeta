@@ -198,7 +198,15 @@ const APPLICATION_NAME_PATTERN = /^\s+name:\s*([A-Za-z\d_.-]+)\s*$/;
 const DNS_LABEL_PATTERN = /^[a-z\d]([-a-z\d]*[a-z\d])?$/;
 const SMOKE_MIN_APPLICATIONS = 20;
 
-const DEV_EXCLUDED_DIRS = new Set(["cilium", "longhorn", "ollama", "vllm", "deepseek-coder", "qwen-coder"]);
+const DEV_EXCLUDED_DIRS = new Set([
+  "cilium",
+  "cilium-lb-ipam",
+  "longhorn",
+  "ollama",
+  "vllm",
+  "deepseek-coder",
+  "qwen-coder",
+]);
 
 /** Deferred from included Synced+Healthy proof until dev wiring/substrate exists (B-0967). */
 const DEV_INCLUDED_PROOF_DEFERRED_DIRS = new Set([
