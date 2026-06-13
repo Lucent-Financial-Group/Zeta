@@ -22,13 +22,12 @@
  * `mode` is just `fold(initial, events).mode`. So "persist the chosen mode" IS
  * "append the mode-setting NextAction to the log." No mode table — the log is it.
  *
- * ── This slice: free_time + self_reflect ONLY (operator 2026-05-31) ───────────
- * These two are the zero-risk first kinds: they have NO external side-effect —
- * executing them is purely (a) append the event + (b) set the mode via simulate.
- * free_time is unilateral/never-gated (NCI); self_reflect is review/journal/think.
- * Every other kind (do_item, respond_to_operator, preserve_ferry, decompose,
- * explore, play, edit_grammar) carries a real side-effect and is returned as
- * `not-yet-executable` until its effect is wired in a follow-up slice.
+ * ── This slice: ALL 9 action kinds wired (2026-06-13) ─────────────────────────
+ * Zero-effect kinds (free_time, self_reflect, explore, play, decompose,
+ * edit_grammar) have no external side-effect — append + simulate.
+ * `do_item` delegates to `executeDoItem` (command/observation split).
+ * `preserve_ferry` and `respond_to_operator` are operator-channel effects:
+ * effect-first (durability of ferry content / response emission) then append.
  *
  * The `EventSink` is INJECTED (asymmetric-authorship: the sink AUTHORS its own
  * outcome channel) so this slice is testable with a fake sink and no git I/O;
@@ -45,13 +44,45 @@
  */
 
 import { simulate, type NextAction, type World } from "./observe";
+import { executeDoItem, type CommandExecutor, type DoItemOptions, type DoItemResult, type ActionObservation } from "./do-item";
+
+export type { CommandExecutor, DoItemOptions, DoItemResult, ActionObservation };
+
+// ─── Operator port (injected for preserve_ferry + respond_to_operator) ──────
+
+/**
+ * The operator port — the effectful seam for operator-channel actions.
+ * Injected so tests use a fake (no file I/O, no real response emission).
+ *
+ * `preserveFerry`: durably write the ferried content to substrate (e.g. a
+ * committed file). Returns the path/id of what was preserved.
+ *
+ * `emitResponse`: emit the agent's response to the operator (e.g. write to
+ * a response channel, print to stdout, or append to a transcript file).
+ */
+export interface OperatorPort {
+  preserveFerry: (content: string) => Promise<{ ok: true; path: string } | { ok: false; reason: string }>;
+  emitResponse: (text: string) => Promise<{ ok: true } | { ok: false; reason: string }>;
+}
+
+/** A fake operator port for tests — records calls without I/O. */
+export function fakeOperatorPort(): OperatorPort & { preserved: string[]; responses: string[] } {
+  const preserved: string[] = [];
+  const responses: string[] = [];
+  return {
+    preserved,
+    responses,
+    preserveFerry: async (content) => { preserved.push(content); return { ok: true, path: `ferry/${preserved.length}.md` }; },
+    emitResponse: async (text) => { responses.push(text); return { ok: true }; },
+  };
+}
 
 /** The action kinds this slice can execute (zero external side-effect: mode-set + append). */
-const EXECUTABLE_KINDS = ["free_time", "self_reflect"] as const;
-type ExecutableKind = (typeof EXECUTABLE_KINDS)[number];
+const ZERO_EFFECT_KINDS = ["free_time", "self_reflect", "explore", "play", "decompose", "edit_grammar"] as const;
+type ZeroEffectKind = (typeof ZERO_EFFECT_KINDS)[number];
 
-function isExecutableKind(kind: NextAction["kind"]): kind is ExecutableKind {
-  return (EXECUTABLE_KINDS as readonly string[]).includes(kind);
+function isZeroEffectKind(kind: NextAction["kind"]): kind is ZeroEffectKind {
+  return (ZERO_EFFECT_KINDS as readonly string[]).includes(kind);
 }
 
 /**
@@ -90,25 +121,95 @@ export type ExecuteResult =
   | { readonly ok: false; readonly feedback: ExecuteFeedback };
 
 /**
- * Execute a chosen action: append it to the durable log, then transition the
- * world via `simulate` (the single reducer). This slice handles `free_time` +
- * `self_reflect`; every other kind returns `not-yet-executable`.
+ * Execute a chosen action. Routes through four paths:
  *
- * Order matters: APPEND FIRST, then project. If the append fails, no transition
- * is reported (the durable log stays the source of truth — we don't advance the
- * in-memory world past an event that didn't land). Idempotency + ordering of the
- * log itself are the sink/transport's concern (G-Set dedup by event id).
+ * 1. **Zero-effect kinds** (free_time, self_reflect, explore, play, decompose,
+ *    edit_grammar): backlog/mode transform only. Append then simulate.
+ *
+ * 2. **do_item**: delegates to `executeDoItem` (command/observation event split).
+ *
+ * 3. **preserve_ferry / respond_to_operator**: operator-channel effects.
+ *    Effect first, then append, then simulate.
+ *
+ * Order matters: for operator actions, EFFECT FIRST (the content might be lost to
+ * compaction if we append-then-effect and the effect fails). For zero-effect kinds,
+ * APPEND FIRST (no effect to lose). For do_item, APPEND-STARTED-FIRST (the executor
+ * contract per B-0964).
  */
-export async function execute(world: World, action: NextAction, sink: EventSink): Promise<ExecuteResult> {
-  if (!isExecutableKind(action.kind)) {
-    return { ok: false, feedback: { kind: "not-yet-executable", actionKind: action.kind } };
+export async function execute(
+  world: World,
+  action: NextAction,
+  sink: EventSink,
+  executor?: CommandExecutor,
+  doItemOpts?: DoItemOptions,
+  operatorPort?: OperatorPort,
+): Promise<ExecuteResult> {
+  // Path 1: zero-effect kinds (mode-set + append)
+  if (isZeroEffectKind(action.kind)) {
+    const outcome = await sink.append(action);
+    if (!outcome.ok) {
+      return { ok: false, feedback: { kind: "append-failed", actionKind: action.kind, reason: outcome.reason } };
+    }
+    return { ok: true, world: simulate(world, action), appended: action, eventId: outcome.eventId };
   }
 
-  const outcome = await sink.append(action);
-  if (!outcome.ok) {
-    return { ok: false, feedback: { kind: "append-failed", actionKind: action.kind, reason: outcome.reason } };
+  // Path 2: do_item (command/observation event split via executeDoItem)
+  if (action.kind === "do_item") {
+    if (!executor || !doItemOpts) {
+      return { ok: false, feedback: { kind: "not-yet-executable", actionKind: action.kind } };
+    }
+    const observationSink: EventSink<ActionObservation> = {
+      append: (obs) => sink.append(obs as unknown as NextAction),
+    };
+    const result: DoItemResult = await executeDoItem(world, action.item, observationSink, executor, doItemOpts);
+    if (!result.ok) {
+      return { ok: false, feedback: { kind: "append-failed", actionKind: "do_item", reason: result.feedback.reason } };
+    }
+    if (result.completed) {
+      return { ok: true, world: result.world, appended: action, eventId: "do-item-completed" };
+    }
+    return { ok: true, world: result.world, appended: action, eventId: "do-item-failed" };
   }
 
-  // Durable event landed → project the in-memory transition via the pure reducer.
-  return { ok: true, world: simulate(world, action), appended: action, eventId: outcome.eventId };
+  // Path 3: preserve_ferry — effect first (durability of the ferry content)
+  if (action.kind === "preserve_ferry") {
+    if (!operatorPort) {
+      return { ok: false, feedback: { kind: "not-yet-executable", actionKind: action.kind } };
+    }
+    // The ferry content is in action.reason (the verbatim text to preserve).
+    const effectResult = await operatorPort.preserveFerry(action.reason);
+    if (!effectResult.ok) {
+      return { ok: false, feedback: { kind: "append-failed", actionKind: action.kind, reason: effectResult.reason } };
+    }
+    const outcome = await sink.append(action);
+    if (!outcome.ok) {
+      // Effect succeeded but append failed — the ferry IS preserved (the content
+      // is durable at effectResult.path), but the log doesn't reflect it yet.
+      // Return success anyway: the content is safe (durability-first).
+      return { ok: true, world: simulate(world, action), appended: action, eventId: "ferry-preserved-append-lagged" };
+    }
+    return { ok: true, world: simulate(world, action), appended: action, eventId: outcome.eventId };
+  }
+
+  // Path 3b: respond_to_operator — effect first (emit the response)
+  if (action.kind === "respond_to_operator") {
+    if (!operatorPort) {
+      return { ok: false, feedback: { kind: "not-yet-executable", actionKind: action.kind } };
+    }
+    const effectResult = await operatorPort.emitResponse(action.reason);
+    if (!effectResult.ok) {
+      return { ok: false, feedback: { kind: "append-failed", actionKind: action.kind, reason: effectResult.reason } };
+    }
+    const outcome = await sink.append(action);
+    if (!outcome.ok) {
+      // Response emitted but append lagged — the operator got the reply (effect
+      // succeeded), so report success; the log will catch up on next tick.
+      return { ok: true, world: simulate(world, action), appended: action, eventId: "response-emitted-append-lagged" };
+    }
+    return { ok: true, world: simulate(world, action), appended: action, eventId: outcome.eventId };
+  }
+
+  // Exhaustiveness guard — all 9 kinds are wired above; this is unreachable
+  // unless the NextAction union is extended without updating execute().
+  return { ok: false, feedback: { kind: "not-yet-executable", actionKind: action.kind } };
 }

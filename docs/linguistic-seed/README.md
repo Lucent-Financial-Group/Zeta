@@ -9,6 +9,13 @@ formalisation is follow-up work.
 verification-expert (Soraya) on Lean4 formalisation when it
 fires.
 
+**Vernacular companion:** [`FIVE-YEAR-OLD-WALK.md`](FIVE-YEAR-OLD-WALK.md)
+— the top-down child-register telling of the composable kernel
+(the deliverable ferry 24 named "the natural next build"). This
+README + `terms/*.md` are the bottom-up formal side; the walk is
+the same shapes said in plain words. Vernacular is the strongest
+Beacon form, so the two sides meet in the middle.
+
 ## Why this exists
 
 The linguistic seed is the factory's **most-fundamental
@@ -121,28 +128,44 @@ what the factory currently needs**. Don't pre-populate
 memories / docs cite, backwards-chain to the axioms as
 surface-contact surfaces the gaps.
 
-## Initial term candidates (to land in v1)
+## Landed terms (the DAG is in `prereq-graph.json`)
 
-Zero terms landed yet. First candidates (not prescriptive,
-agent-pick; Aaron + formal-verification-expert nudge):
+**v2 landed (9 terms; two roots; self-describing).** The seed now carries
+the vocabulary to describe its *own* structure (`axiom` + `definition`),
+with no dangling edges.
 
-- **truth** (Tarski's predicate; metalanguage-scoped)
-- **implication** (material conditional; Meredith-derivable)
-- **equality** (structural identity; reflexive /
-  symmetric / transitive)
-- **set** (extensional; Zermelo-Fraenkel-subset-minimal)
-- **function** (set-theoretic: set of ordered pairs with
-  uniqueness)
-- **axiom** (self-referential in the seed itself: a
-  seed-term whose `defined-by: axiomatic`)
-- **definition** (self-referential: a seed-term that
-  makes another term precise)
-- **retraction** (Zeta-adjacent; negative-weight
-  inverse; grounds into signed-integer weights)
+Roots (axiomatic, `dependencies: []`):
 
-Adding a ninth term requires the previous eight to be
-landed first (per backwards-chain discipline — each term
-can only depend on already-landed terms).
+- **truth** (Tarski's predicate; metalanguage-scoped) — `terms/truth.md`
+- **membership** (the primitive `∈` "is one of"; second root) —
+  `terms/membership.md`
+
+Derived:
+
+- **implication** (material conditional; Meredith-derivable) —
+  `terms/implication.md`, deps `[truth]`
+- **equality** (Leibniz indiscernibility; reflexive / symmetric /
+  transitive) — `terms/equality.md`, deps `[implication]`
+- **set** (extensional; Zermelo-Fraenkel) — `terms/set.md`,
+  deps `[equality, implication, membership]`
+- **function** (set-theoretic: single-valued total relation) —
+  `terms/function.md`, deps `[set, equality]`
+- **retraction** (Zeta-adjacent; Z-set negative-weight inverse;
+  the formal twin of the five-year-old walk's "honest take-back") —
+  `terms/retraction.md`, deps `[function]`
+- **axiom** (self-referential: a claim posited true without proof — what a
+  root *is*; Tarski-careful) — `terms/axiom.md`, deps `[truth]`
+- **definition** (self-referential: stipulative, eliminable + non-creative
+  introduction of a term — what every non-root file *is*) —
+  `terms/definition.md`, deps `[equality]`
+
+**Candidates next** (backwards-chained as downstream need surfaces):
+**relation** / **order** / **number** / **proof** / **negation** (as
+Craft / soulfile / prompt-injection-resistance consumers need them).
+
+Per the backwards-chain discipline, each new term may depend only on
+already-landed terms (no dangling references; `prereq-graph.json` enforces
+the constraint).
 
 ## Composition with other substrate
 
@@ -210,16 +233,18 @@ commitment is adopter-pluggable.
 
 ## Follow-up work (tracked via gap #2 closure)
 
-- Land the prereq-graph.json skeleton with empty DAG
-- Land first 3-5 terms (`truth` / `implication` / `equality`
-  / `set` / `function`) as v1
+- [x] Land the `prereq-graph.json` (landed **populated**, not empty — six
+  terms with real edges; one honest dangling primitive recorded)
+- [x] Land first 3-5 terms (`truth` / `implication` / `equality` / `set` /
+  `function`) as v1 — landed, plus `retraction` as the Zeta-adjacent capstone
 - Route formal-verification-expert (Soraya) for Lean4
-  sketch-and-formalise pattern
+  sketch-and-formalise pattern (the term Lean blocks are **draft sketches**,
+  not proven — Soraya's lane to harden)
 - Route applied-mathematics-expert + formal-verification-
   expert for initial term-review cadence
 - Update cross-references from other factory memories
   (soulfile DSL, Craft memory, prompt-injection-bootstrap
-  memory) to point at live seed files once v1 lands
+  memory) to point at live seed files now that v1 has landed
 
 ## Gap #2 closure status
 

@@ -25,6 +25,8 @@
     <Compile Include="Fixpoint.fs" />
     <Compile Include="Orbit.fs" />
     <Compile Include="AdinkraCode.fs" />
+    <Compile Include="E8Lattice.fs" />
+    <Compile Include="Tsirelson.fs" />
     <Compile Include="HexCore.fs" />
     <Compile Include="Semiring.fs" />
     <Compile Include="ProbabilitySemiring.fs" />
@@ -34,6 +36,8 @@
     <Compile Include="GSet.fs" />
     <Compile Include="Bag.fs" />
     <Compile Include="ZSet.fs" />
+    <Compile Include="FusionReconstruction.fs" />
+    <Compile Include="IoBoundary.fs" />
     <Compile Include="WeightedSet.fs" />
     <Compile Include="RayTensor.fs" />
     <Compile Include="ToffoliGate.fs" />
@@ -51,6 +55,7 @@
     <Compile Include="CliVerb.fs" />
     <Compile Include="Optics.fs" />
     <Compile Include="UniversalNumber.fs" />
+    <Compile Include="Resolution.fs" />
     <Compile Include="TravelerFrame.fs" />
     <Compile Include="FrameDelta.fs" />
     <Compile Include="UncertainClock.fs" />
@@ -58,6 +63,7 @@
     <Compile Include="BeliefConvergence.fs" />
     <Compile Include="Evolution.fs" />
     <Compile Include="DynamicValue.fs" />
+    <Compile Include="MarkdownTreaty.fs" />
     <Compile Include="YinYang.fs" />
     <Compile Include="Diplomacy.fs" />
     <Compile Include="DurableDiplomacy.fs" />
@@ -171,6 +177,7 @@
     <Compile Include="Plan.fs" />
     <Compile Include="Incremental.fs" />
     <Compile Include="Dsl.fs" />
+    <Compile Include="Vision.fs" />
     <Compile Include="Query.fs" />
     <Compile Include="Injection.fs" />
     <Compile Include="InjectionExt.fs" />
@@ -235,11 +242,13 @@
     <Compile Include="InferenceLadder.fs" />
     <Compile Include="TimeGen.fs" />
     <Compile Include="Braid.fs" />
+    <Compile Include="VisionAttention.fs" />
     <Compile Include="MediaLines.fs" />
     <Compile Include="CartridgeLaw.fs" />
     <Compile Include="CapabilityLedger.fs" />
     <Compile Include="BoundaryLight.fs" />
     <Compile Include="GeneratorRegistry.fs" />
+    <Compile Include="GeneratorCatalog.fs" />
     <Compile Include="ZetaIdViz.fs" />
     <Compile Include="AnimFlow.fs" />
     <Compile Include="PixelLens.fs" />
@@ -285,6 +294,7 @@
     <Compile Include="SoftLens.fs" />
     <Compile Include="WeaveFold.fs" />
     <Compile Include="AdinkraViz.fs" />
+    <Compile Include="DashedWalk.fs" />
     <Compile Include="LayoutEngine.fs" />
     <Compile Include="ShapeRender.fs" />
     <Compile Include="ShapeAcceptance.fs" />
@@ -332,6 +342,7 @@
     <!-- Language-neutral contract lib (ITensor); WeightedSet implements it -->
     <ProjectReference Include="..\Core.Abstractions\Zeta.Core.Abstractions.csproj" />
     <ProjectReference Include="..\Core.FSharp.ZetaId\Zeta.Core.FSharp.ZetaId.fsproj" />
+    <ProjectReference Include="..\Core.FSharp.Yaml\Zeta.Core.FSharp.Yaml.fsproj" />
   </ItemGroup>
 
   <!-- F# static analyzers. Run via `dotnet msbuild -t:AnalyzeFSharpProject`. -->
