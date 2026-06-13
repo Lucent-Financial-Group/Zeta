@@ -85,6 +85,7 @@ const REQUIRED_FILES: readonly FileAssertion[] = [
   // operator-side flash tool (B-0789 + iter-5.x)
   { path: "src/Core.TypeScript/zflash/cli.ts", minBytes: 1000 },
   { path: "src/Core.TypeScript/zflash/flash-usb.ts", minBytes: 1000 },
+  { path: "src/Core.TypeScript/zflash/flash-usb-windows.ts", minBytes: 1000 },
 ];
 
 // Sentinel-string assertions: catches the case where a file exists but
