@@ -71,7 +71,7 @@ jobs:
         run: bun install --frozen-lockfile
 
       - name: Test zflash library + file-backed invariants
-        run: bun test src/Core.TypeScript/zflash/lib.test.ts src/Core.TypeScript/zflash/file-backed.test.ts src/Core.TypeScript/zflash/file-backed-runtime.test.ts
+        run: bun test src/Core.TypeScript/zflash/lib.test.ts src/Core.TypeScript/zflash/file-backed.test.ts src/Core.TypeScript/zflash/file-backed-runtime.test.ts src/Core.TypeScript/zflash/flash-usb-windows.test.ts
 
       - name: Test zflash QEMU harness invariants
         run: bun test src/Core.TypeScript/zflash/test-harness/
