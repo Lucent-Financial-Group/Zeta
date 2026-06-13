@@ -6,8 +6,8 @@
 // migration. See docs/best-practices/repo-scripting.md.
 //
 // Usage:
-//   bun tools/lint/no-empty-dirs.ts          # check mode
-//   bun tools/lint/no-empty-dirs.ts --list   # list mode
+//   bun src/Core.TypeScript/lint/no-empty-dirs.ts          # check mode
+//   bun src/Core.TypeScript/lint/no-empty-dirs.ts --list   # list mode
 //
 // Exit codes:
 //   0   no flagged empty dirs (or --list mode)
@@ -22,7 +22,7 @@ type ExitCode = 0 | 1 | 2;
 type Mode = "check" | "list";
 
 const SPAWN_MAX_BUFFER = 64 * 1024 * 1024;
-const ALLOWLIST_REL = "tools/lint/no-empty-dirs.allowlist";
+const ALLOWLIST_REL = "src/Core.TypeScript/lint/no-empty-dirs.allowlist";
 const SPACE = 0x20;
 const TAB = 0x09;
 const CR = 0x0d;
