@@ -35,6 +35,17 @@ spec:
   destination:
     server: https://kubernetes.default.svc
     namespace: hat-system
+  ignoreDifferences:
+    # K8s 1.35+ populates status.terminatingReplicas before OpenAPI catches up;
+    # ArgoCD structured merge diff then fails with ComparisonError (B-0967 CI).
+    - group: apps
+      kind: Deployment
+      jqPathExpressions:
+        - .status.terminatingReplicas
+    - group: apps
+      kind: StatefulSet
+      jqPathExpressions:
+        - .status.terminatingReplicas
   syncPolicy:
     automated:
       prune: true
