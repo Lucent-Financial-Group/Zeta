@@ -31,10 +31,7 @@ spec:
       recurse: true
       # Skip the operator's Go source — it's not a manifest. Same for
       # the graph/render helper and the queries docs.
-      # Policies require Gatekeeper ConstraintTemplate CRD registration; on kind/CI
-      # the constraint kinds are applied via a follow-on homelab sync once CTs are
-      # Established. CRDs + seed hats + operator (replicas:0) are enough here.
-      exclude: '{operator/**,graph/**,queries/**,Application.yaml,policies/**}'
+      exclude: '{operator/**,graph/**,queries/**,Application.yaml}'
   destination:
     server: https://kubernetes.default.svc
     namespace: hat-system
