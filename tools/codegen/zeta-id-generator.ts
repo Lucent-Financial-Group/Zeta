@@ -1,5 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
+import { execSync } from 'child_process';
 
 // Define the Field interface representing a bitfield
 interface Field {
@@ -24,7 +25,6 @@ function parseYaml(filePath: string): Field[] {
       continue;
     }
     if (trimmed.startsWith('reserved_bits:')) {
-      inFields = false;
       break;
     }
     if (!inFields) {
@@ -172,6 +172,19 @@ function main() {
   const pyPath = path.join(rootDir, 'src/Core.Python/src/zeta/zeta_id_gen.py');
   fs.writeFileSync(pyPath, generatePython(fields), 'utf-8');
   console.log(`Wrote Python to ${pyPath}`);
+
+  console.log('Running formatters on generated code...');
+  try {
+    execSync(`npx prettier --write "${tsPath}"`);
+    execSync(`go fmt "${goPath}"`);
+    execSync(`cargo fmt --manifest-path "${path.join(rootDir, 'src/Core.Rust.ZetaId/Cargo.toml')}"`);
+    const pyVenvRuff = path.join(rootDir, 'src/Core.Python/.venv/bin/ruff');
+    if (fs.existsSync(pyVenvRuff)) {
+      execSync(`"${pyVenvRuff}" format "${pyPath}"`);
+    }
+  } catch (err) {
+    console.warn('Warning: Layout formatters had issues:', err);
+  }
 
   console.log('Codegen successfully completed across 6 languages.');
 }
