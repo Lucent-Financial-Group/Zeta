@@ -71,8 +71,8 @@ TypeScript/Bun control plane is available.
 ```text
 .gemini/service/install-lior-service.sh
 .gemini/service/lior-loop.sh
-full-ai-cluster/dev-cluster/down.sh
-full-ai-cluster/dev-cluster/up.sh
+full-ai-cluster/dev-cluster/down.ts
+full-ai-cluster/dev-cluster/up.ts
 full-ai-cluster/usb-nixos-installer/zeta-first-boot.sh
 full-ai-cluster/usb-nixos-installer/zeta-install.sh
 tools/kiro/kiro-loop-wrapper.sh

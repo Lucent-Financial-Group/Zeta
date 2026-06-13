@@ -36,11 +36,10 @@ What differs between dev and prod:
   exclude it until a storage overlay exists.
 - **Network MTU** - dev/CI use the runtime default. Prod uses the real
   NIC MTU.
-- **Persistence** - dev/CI data is removed by `./down.sh` or
-  `kind-down.sh`. Prod data survives reboots.
+- **Persistence** - dev/CI data is removed by `bun down.ts` or `bun kind-down.ts`. Prod data survives reboots.
 
 Apps that don't make sense in dev are excluded by the root
-App-of-Apps `exclude:` glob in `up.sh`:
+App-of-Apps `exclude:` glob in `apply-root-app.ts`:
 
 - `longhorn/**` - no second NVMe to back it; local-path-provisioner
   handles PVCs in dev
@@ -65,9 +64,9 @@ bash tools/setup/install.sh
 # k3d, kind, kubectl, and helm.
 
 cd full-ai-cluster/dev-cluster
-./up.sh                       # main branch
-./up.sh feat/my-pr-2026-05-25 # dev-test a PR before merging
-./up.sh --config profiles/ci.k3d-config.yaml --git-ref feat/my-pr-2026-05-25
+bun up.ts                       # main branch
+bun up.ts feat/my-pr-2026-05-25 # dev-test a PR before merging
+bun up.ts --config profiles/ci.k3d-config.yaml --git-ref feat/my-pr-2026-05-25
                               # single-node CI-sized profile
 
 # Watch reconciliation
@@ -86,10 +85,10 @@ open https://localhost:8443
 ## Tear down
 
 ```bash
-./down.sh
-./down.sh --config profiles/ci.k3d-config.yaml
-./kind-down.sh --cluster-name zeta-ci
-ZETA_CONTAINER_RUNTIME=podman ./kind-down.sh --cluster-name zeta-ci-podman
+bun down.ts
+bun down.ts --config profiles/ci.k3d-config.yaml
+bun kind-down.ts --cluster-name zeta-ci
+ZETA_CONTAINER_RUNTIME=podman bun kind-down.ts --cluster-name zeta-ci-podman
 ```
 
 Removes the cluster, any matching registry, and clears the kubectl context.
@@ -100,7 +99,7 @@ Idempotent -- safe to re-run.
 Docker Desktop's multi-cluster support means you can run multiple
 k3d clusters in parallel. Adjust `metadata.name` and the
 `hostPort` for the registry + load-balancer ports in
-`k3d-config.yaml`, then `up.sh` against a copy of the config.
+`k3d-config.yaml`, then `bun up.ts` against a copy of the config.
 Pattern: per-PR dev clusters for parallel dev-testing.
 
 ## Automated health harness
