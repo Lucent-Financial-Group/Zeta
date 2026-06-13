@@ -1,19 +1,19 @@
 # ADR: Cross-Language DI Port & Scoped Lifetime Emulation
 
-*   **Status**: Draft / Proposed
-*   **Date**: 2026-06-13
-*   **Author**: Lior (structural synthesizer)
-*   **Task/Backlog Ref**: Primitive Registry (docs/PRIMITIVE-REGISTRY.md)
+* **Status**: Draft / Proposed
+* **Date**: 2026-06-13
+* **Author**: Lior (structural synthesizer)
+* **Task/Backlog Ref**: Primitive Registry (docs/PRIMITIVE-REGISTRY.md)
 
 ---
 
 ## Context & Problem Statement
 
-To build scale-free, testable, and robust systems across our 6 consensus languages, we must establish a consistent strategy for dependency management and object lifetimes. 
+To build scale-free, testable, and robust systems across our 6 consensus languages, we must establish a consistent strategy for dependency management and object lifetimes.
 
-Rust manages object lifetimes at compile-time using strict lexical lifetimes (e.g., `MyStruct<'a>`). In contrast, our garbage-collected targets (F#, C#, TypeScript, Go, Python) do not have compile-time lifetimes; their memory is managed at runtime by GC sweeps. 
+Rust manages object lifetimes at compile-time using strict lexical lifetimes (e.g., `MyStruct<'a>`). In contrast, our garbage-collected targets (F#, C#, TypeScript, Go, Python) do not have compile-time lifetimes; their memory is managed at runtime by GC sweeps.
 
-To bridge this conceptual gap, we need a unified **Dependency Injection (DI)** model where GC-based languages **emulate Rust's compile-time lexical lifetimes using DI Scoped Lifetimes**. 
+To bridge this conceptual gap, we need a unified **Dependency Injection (DI)** model where GC-based languages **emulate Rust's compile-time lexical lifetimes using DI Scoped Lifetimes**.
 
 ---
 
@@ -38,14 +38,17 @@ We define a 1-to-1 mapping between Rust's compile-time lifetimes and GC-based DI
 ```
 
 #### 1. Rust Target: Pure Structural Dependency Wiring
+
 - Rust does not need a runtime DI container. Instead, we use **Constructor Injection** combined with explicit **Lexical Lifetimes** (`'a`) to guarantee at compile-time that a child dependency never outlives its parent scope.
 - Global singletons are represented using `'static` references or thread-safe once-cell initializers (`lazy_static`, `OnceLock`).
 
 #### 2. F# & C# Target: `Microsoft.Extensions.DependencyInjection`
+
 - We use the standard .NET DI abstractions (`IServiceCollection` and `IServiceProvider`).
 - Scoped lifetimes are managed via `IServiceScope`. Entering a scope (e.g. `using var scope = provider.CreateScope()`) mimics entering a Rust block scope. Exiting the `using` block disposes all resolved scoped services, freeing memory.
 
 #### 3. TypeScript Target: Mapped Scope Containers
+
 - In JS/TS, we implement a lightweight DI registry supporting Singleton, Scoped, and Transient lifetimes.
 - Scopes are managed using explicit context managers:
   ```typescript
@@ -58,6 +61,7 @@ We define a 1-to-1 mapping between Rust's compile-time lifetimes and GC-based DI
   This creates a predictable boundary mimicking Rust’s scope constraints.
 
 #### 4. Python Target: Context-Managed Containers
+
 - In Python, we define a DI container that integrates with python’s context managers (`with` blocks):
   ```python
   with container.scope() as scoped_services:
@@ -66,6 +70,7 @@ We define a 1-to-1 mapping between Rust's compile-time lifetimes and GC-based DI
   ```
 
 #### 5. Go Target: Context-Bounded Lifetimes
+
 - Go manages scope lifetimes by carrying request-scoped or transaction-scoped states inside the standard `context.Context` parameter, combined with factory function injection.
 - When the context is cancelled, cleanup hooks are executed, simulating the cleanup of a Rust scope.
 
@@ -73,9 +78,9 @@ We define a 1-to-1 mapping between Rust's compile-time lifetimes and GC-based DI
 
 ## Consequences
 
-*   **Pros**:
-    *   **Unified Architectural Model**: Developers can reason about lifetimes identically across all 6 targets (e.g. "this database pool has a Singleton lifetime, and this transaction buffer has a Scoped lifetime").
-    *   **Leak Prevention**: Associating resource disposal with DI scope exit ensures all allocated memory is GC-reclaimed, matching Rust's RAII (Resource Acquisition Is Initialization) safety.
-    *   **Test Isolation**: Mocking and overriding dependencies during integration testing is consistent across all targets by replacing DI registrations.
-*   **Cons**:
-    *   **Runtime Overhead in GC Languages**: DI container resolution and scope creation introduce minor runtime allocations in GC languages, whereas Rust's lifetime assertions are 100% free at runtime.
+* **Pros**:
+  * **Unified Architectural Model**: Developers can reason about lifetimes identically across all 6 targets (e.g. "this database pool has a Singleton lifetime, and this transaction buffer has a Scoped lifetime").
+  * **Leak Prevention**: Associating resource disposal with DI scope exit ensures all allocated memory is GC-reclaimed, matching Rust's RAII (Resource Acquisition Is Initialization) safety.
+  * **Test Isolation**: Mocking and overriding dependencies during integration testing is consistent across all targets by replacing DI registrations.
+* **Cons**:
+  * **Runtime Overhead in GC Languages**: DI container resolution and scope creation introduce minor runtime allocations in GC languages, whereas Rust's lifetime assertions are 100% free at runtime.
