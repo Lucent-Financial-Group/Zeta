@@ -5,14 +5,21 @@ namespace Zeta.Core
 /// Aaron 2026-06-12: "that one already has a cart we made we just need the SQL").
 ///
 /// The `GeneratorRegistry` is the STORE (generators-with-seeds, content-addressed). This is the
-/// QUERY side: the registry's `known` entries read as a RELATION — one row per generator, with the
+/// QUERY side: the registry's `known` entries read as a RELATION — one row per generator, the
 /// CATEGORY (the dotted-name prefix: `shape`, `algebra`, `boundary`, `shader`, …) projected out as
 /// a first-class column. The query shape is relational combinators (FROM = `rows`, WHERE = `where`,
 /// SELECT = ordinary projection over the result) rather than a SQL-string parser — a parser is a
 /// large permanent contract surface; combinators are total, minimal, and compose. The DBSP path
 /// (the catalog as a Z-set, a query as an incremental circuit) is the future, not this MVP.
 ///
-/// Culture-invariant by default (B-0969): all string comparison here is `StringComparer.Ordinal` /
+/// Surface scoped to Ilyana's v1 review (public-api-designer, PR #8013): `Row` WRAPS the registry
+/// `Entry` (carries it, never copies its fields — so Entry-growth flows through, no drift); the
+/// exposed members are the minimum that serves the unfold path (`rows`/`where`/`categories`/
+/// `byCategory` + the one earned predicate `inCategory`); projections (zetaIds, name lookup,
+/// other predicates) are left to the consumer's `map`/`where` rather than named — add a member
+/// when a real second consumer asks, not before.
+///
+/// Culture-invariant by default (B-0969): all string comparison is `StringComparer.Ordinal` /
 /// ordinal `IndexOf` — categories must sort and match identically on every machine (the catalog is
 /// shared substrate; a locale-sorted category list would diverge across nodes).
 [<RequireQualifiedAccess>]
@@ -20,13 +27,12 @@ module GeneratorCatalog =
 
     open System
 
-    /// A catalog row: the registry entry with its CATEGORY projected as a column.
-    /// (ZetaId / Name / Version are the Entry; Category is derived from Name.)
+    /// A catalog row: the registry `Entry` (carried, not copied) plus its CATEGORY projected as the
+    /// one genuinely-new column. Read `r.Entry.ZetaId` / `.Name` / `.Version`; `Category` is derived.
+    /// (Wrap-don't-copy per Ilyana P1-1 — if `Entry` grows a column, `Row` inherits it for free.)
     type Row =
-        { ZetaId: string
-          Name: string
-          Category: string
-          Version: int }
+        { Entry: GeneratorRegistry.Entry
+          Category: string }
 
     /// The category of a generator name: the prefix before the first '.', ordinal — or the whole
     /// name if it has no dot (a category-less generator is its own category).
@@ -38,11 +44,7 @@ module GeneratorCatalog =
     /// FROM: the catalog as a relation — every known generator, one row, category projected.
     let rows: Row list =
         GeneratorRegistry.known
-        |> List.map (fun e ->
-            { ZetaId = e.ZetaId
-              Name = e.Name
-              Category = categoryOf e.Name
-              Version = e.Version })
+        |> List.map (fun e -> { Entry = e; Category = categoryOf e.Name })
 
     /// SELECT DISTINCT category — the catalog's categories, ordinal-sorted (stable across machines).
     let categories: string list =
@@ -51,33 +53,15 @@ module GeneratorCatalog =
         |> List.distinct
         |> List.sortWith (fun a b -> String.CompareOrdinal(a, b))
 
-    /// WHERE: filter rows by a predicate (the general query; SELECT is ordinary projection after).
+    /// WHERE: filter rows by a predicate (the general query; SELECT is ordinary projection after,
+    /// e.g. `byCategory "shape" |> List.map (fun r -> r.Entry.ZetaId)` — the unfold path).
     let where (predicate: Row -> bool) : Row list = rows |> List.filter predicate
 
-    // ── Composable predicate builders (the WHERE-clause vocabulary) ──────────────────────────────
-
-    /// rows in a given category (ordinal exact match on the projected category).
+    /// The one earned predicate: rows in a given category (ordinal exact match). Earns a name
+    /// because it is the headline filter AND it encodes the ordinal-match discipline for consumers.
     let inCategory (category: string) (r: Row) : bool =
         String.Equals(r.Category, category, StringComparison.Ordinal)
 
-    /// rows whose name contains a substring (ordinal — case-sensitive, locale-free).
-    let nameContains (sub: string) (r: Row) : bool =
-        r.Name.IndexOf(sub, StringComparison.Ordinal) >= 0
-
-    /// rows at a specific version.
-    let atVersion (version: int) (r: Row) : bool = r.Version = version
-
-    // ── Convenience SELECTs (the common queries, named) ─────────────────────────────────────────
-
-    /// SELECT * WHERE category = … (the headline query: get every generator of a kind).
+    /// SELECT * WHERE category = … (the headline query: every generator of a kind — its ZetaIds
+    /// are then `|> List.map (fun r -> r.Entry.ZetaId)`, the addresses a `gen` line unfolds from).
     let byCategory (category: string) : Row list = where (inCategory category)
-
-    /// The ZetaIds of a category — the addresses you'd hand a MediaLines `gen` line to unfold.
-    let zetaIdsInCategory (category: string) : string list =
-        byCategory category |> List.map (fun r -> r.ZetaId)
-
-    /// SELECT the single row for a name (newest version wins — mirrors GeneratorRegistry.byName).
-    let byName (name: string) : Row option =
-        where (fun r -> String.Equals(r.Name, name, StringComparison.Ordinal))
-        |> List.sortByDescending (fun r -> r.Version)
-        |> List.tryHead

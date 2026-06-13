@@ -1,7 +1,8 @@
 module Zeta.Tests.GeneratorCatalogTests
 
 // SQL over the generator catalog (ferry 37 — "we just need the SQL"): the relational query
-// surface over GeneratorRegistry. Total functions, ordinal comparison, the registry as a relation.
+// surface over GeneratorRegistry, scoped to Ilyana's v1 review (PR #8013). Total functions,
+// ordinal comparison, the registry as a relation, Row WRAPS Entry (no field copy / no drift).
 
 open global.Xunit
 open FsCheck
@@ -16,11 +17,11 @@ let ``categoryOf takes the dotted prefix, ordinal; no-dot names are their own ca
     Assert.Equal("loner", GeneratorCatalog.categoryOf "loner") // no dot → whole name
 
 [<Fact>]
-let ``FROM: every registry entry becomes exactly one row, ZetaId/Version preserved`` () =
+let ``FROM: every registry entry becomes exactly one row, carrying the Entry (not copying it)`` () =
     Assert.Equal(List.length GeneratorRegistry.known, List.length GeneratorCatalog.rows)
     for e in GeneratorRegistry.known do
-        let row = GeneratorCatalog.rows |> List.find (fun r -> r.Name = e.Name && r.Version = e.Version)
-        Assert.Equal(e.ZetaId, row.ZetaId)
+        let row = GeneratorCatalog.rows |> List.find (fun r -> r.Entry.Name = e.Name && r.Entry.Version = e.Version)
+        Assert.Equal(e, row.Entry) // wraps the exact Entry — Entry-growth flows through for free
         Assert.Equal(GeneratorCatalog.categoryOf e.Name, row.Category)
 
 [<Fact>]
@@ -36,22 +37,18 @@ let ``WHERE category = shape returns only shape.* generators, and finds the brai
     let shapes = GeneratorCatalog.byCategory "shape"
     Assert.NotEmpty(shapes)
     Assert.All(shapes, fun r -> Assert.Equal("shape", r.Category))
-    Assert.Contains("shape.braid", shapes |> List.map (fun r -> r.Name))
+    Assert.Contains("shape.braid", shapes |> List.map (fun r -> r.Entry.Name))
 
 [<Fact>]
-let ``the SELECT→unfold path: a category's zetaids match the registry's ids for those names`` () =
-    let ids = GeneratorCatalog.zetaIdsInCategory "shape"
+let ``the SELECT→unfold path: byCategory |> map zetaId matches the registry's ids for those names`` () =
+    // the consumer-composed unfold path (Ilyana cut the named zetaIdsInCategory in favour of map)
     for r in GeneratorCatalog.byCategory "shape" do
-        Assert.Equal(GeneratorRegistry.idOf r.Name r.Version, r.ZetaId)
-        Assert.Contains(r.ZetaId, ids)
+        Assert.Equal(GeneratorRegistry.idOf r.Entry.Name r.Entry.Version, r.Entry.ZetaId)
 
 [<Fact>]
-let ``byName mirrors the registry (newest version) and nameContains is ordinal`` () =
-    match GeneratorCatalog.byName "shape.adinkra", GeneratorRegistry.byName "shape.adinkra" with
-    | Some row, Some entry -> Assert.Equal(entry.ZetaId, row.ZetaId)
-    | _ -> failwith "shape.adinkra must resolve in both"
-    Assert.NotEmpty(GeneratorCatalog.where (GeneratorCatalog.nameContains "braid"))
-    Assert.Empty(GeneratorCatalog.where (GeneratorCatalog.nameContains "BRAID")) // ordinal: case matters
+let ``inCategory is ordinal: case matters`` () =
+    Assert.NotEmpty(GeneratorCatalog.where (GeneratorCatalog.inCategory "shape"))
+    Assert.Empty(GeneratorCatalog.where (GeneratorCatalog.inCategory "SHAPE")) // ordinal — no case fold
 
 [<Property>]
 let ``every row's category is the prefix of its name (the projection is faithful)`` (i: int) =
@@ -59,10 +56,10 @@ let ``every row's category is the prefix of its name (the projection is faithful
     if List.isEmpty rs then true
     else
         let r = rs.[((i % rs.Length) + rs.Length) % rs.Length]
-        r.Name.StartsWith(r.Category, System.StringComparison.Ordinal)
+        r.Entry.Name.StartsWith(r.Category, System.StringComparison.Ordinal)
 
 [<Property>]
-let ``where composes: inCategory ∧ atVersion = the rows that satisfy both`` (v: int) =
+let ``where composes from inCategory + a consumer predicate (the WHERE vocabulary)`` (v: int) =
     let cat = "shape"
-    let both = GeneratorCatalog.where (fun r -> GeneratorCatalog.inCategory cat r && GeneratorCatalog.atVersion v r)
-    both |> List.forall (fun r -> r.Category = cat && r.Version = v)
+    let both = GeneratorCatalog.where (fun r -> GeneratorCatalog.inCategory cat r && r.Entry.Version = v)
+    both |> List.forall (fun r -> r.Category = cat && r.Entry.Version = v)
