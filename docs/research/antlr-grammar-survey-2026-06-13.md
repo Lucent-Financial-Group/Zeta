@@ -182,19 +182,22 @@ Specifically, the compiler enforces a **four-part metadata contract** on every s
 ### 5.1. Content-Addressed ZetaId & Category
 
 To prevent silent layout shifts and enforce static equivalence, each type carries a deterministic `ZetaId` and a `Category` header:
+
 - **Category**: Classifies the structural subsystem (e.g. `category 1` for core AST tokens, `category 3` for metadata, `category 8` for shapes).
-- **ZetaId**: A 128-bit hash (represented as a 32-hex string) computed deterministically from the type's fully qualified name, its category, and its fields schema layout. 
+- **ZetaId**: A 128-bit hash (represented as a 32-hex string) computed deterministically from the type's fully qualified name, its category, and its fields schema layout.
   - Since the ID is content-addressed, any structural change in a type's definition (e.g. adding a field, renaming a case) changes its `ZetaId`. This immediately breaks compiler compatibilities and forces developers to explicitly bump versions and re-ratify downstream treaties, avoiding silent runtime bugs.
 
 ### 5.2. Auto-Generated Mock Generators
 
 Every compiled IR type programmatically exposes a deterministic generator function (e.g. `ZetaAST.sample(seed: Int) -> T` or F#'s `Generator.sample<'T>()`):
+
 - Uses standard PRNG seeds to generate high-fidelity, structurally valid mock instances of the type.
 - Serves as the test harness for property-based testing and cross-language serialization comparisons. If all 6 languages execute the generator with the same seed, they must produce identical canonical outputs (e.g. `canonical-json` byte streams).
 
 ### 5.3. Homoiconic `.lines` Cartridges
 
 For every compiled type, the build tool generates a companion `.lines` cartridge file under `db/shapes/cartridges/` (e.g. `db/shapes/cartridges/zeta-observation.lines`):
+
 - **Metadata Registration**: Formally registers the type’s `ZetaId` and metadata.
 - **Law Definitions**: Defines known-answer algebraic identities and constraints (e.g. `law field-count` or `law byte-budget`).
 - **Treaty Assertions**: Lists the ratification status for all 6 language oracles (TS, F#, C#, Rust, Go, Python). An oracle cannot claim ratification unless it passes the cartridge's local verification check.
@@ -224,5 +227,3 @@ To ensure the generated code is correct and secure, the ZetaParse compiler pipel
 
 - **Opaque Blobs Rejection (BP-09 / Spec 8)**: The code generator lints the generated outputs to verify that all serialized states map to readable, git-diffable ASCII structures. The compiler will reject any attempt to generate binary payloads or base64-encoded strings inside the primary IR type contracts.
 - **Data Vault 2.0 Partitioning (Discipline 5 / Spec 8)**: The schema validator audits code generation to ensure clear separation of change rates: stable keys (hubs) are separated from relationships (links) and rapidly shifting data payloads (satellites) at the type definition layer.
-
-
