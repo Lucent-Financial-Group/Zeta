@@ -1164,7 +1164,7 @@ jobs:
           done
 
       - name: Run Go and Python Lint Script
-        run: bash tools/lint/lint-go-python.sh
+        run: bun src/Core.TypeScript/lint/lint-go-python.ts
 
   cross-verify:
     # Enforce the trust-core cross-language byte-lock + golden-vector oracles + the Ace
