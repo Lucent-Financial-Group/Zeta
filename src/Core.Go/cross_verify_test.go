@@ -8,6 +8,7 @@ import (
 	"testing"
 	"zeta/sha256"
 	"zeta/tri_boolean"
+	"zeta/zeta_id"
 
 	"gopkg.in/yaml.v3"
 )
@@ -229,6 +230,118 @@ func TestCrossVerifyTriBoolean(t *testing.T) {
 			}
 
 			outMap[v.Id] = floatRes
+		}
+	}
+
+	jsonData, err := json.MarshalIndent(outMap, "", "  ")
+	if err != nil {
+		t.Fatalf("failed to marshal JSON: %v", err)
+	}
+
+	jsonStr := string(jsonData) + "\n"
+
+	outputPath := filepath.Join(fixtureDir, "go-output.json")
+	if err := os.WriteFile(outputPath, []byte(jsonStr), 0644); err != nil {
+		t.Fatalf("failed to write go-output.json: %v", err)
+	}
+}
+
+type ZetaIdVector struct {
+	Id            string `yaml:"id"`
+	Version       uint8  `yaml:"version"`
+	Timestamp     uint64 `yaml:"timestamp"`
+	Chromosome    uint8  `yaml:"chromosome"`
+	Category      uint8  `yaml:"category"`
+	Firefly       uint8  `yaml:"firefly"`
+	AuthorityType string `yaml:"authority_type"`
+	AuthorityRaw  *uint8 `yaml:"authority_raw"`
+	Persona       uint8  `yaml:"persona"`
+	MomentumType  string `yaml:"momentum_type"`
+	MomentumRaw   *uint8 `yaml:"momentum_raw"`
+	Location      uint8  `yaml:"location"`
+	ExpectedHex   string `yaml:"expected_hex"`
+}
+
+type ZetaIdYaml struct {
+	Vectors []ZetaIdVector `yaml:"vectors"`
+}
+
+type ZetaIdOutput struct {
+	Hex             string `json:"hex"`
+	RoundtripOk     bool   `json:"roundtripOk"`
+	MatchesExpected bool   `json:"matchesExpected"`
+}
+
+func observationsEqual(a, b zeta_id.ZetaObservation) bool {
+	aAuthVal, _ := zeta_id.AuthorityToByte(a.Authority)
+	bAuthVal, _ := zeta_id.AuthorityToByte(b.Authority)
+	aMomVal, _ := zeta_id.MomentumToByte(a.Momentum)
+	bMomVal, _ := zeta_id.MomentumToByte(b.Momentum)
+	return a.Version == b.Version &&
+		a.Timestamp == b.Timestamp &&
+		a.Chromosome == b.Chromosome &&
+		a.Category == b.Category &&
+		a.Firefly == b.Firefly &&
+		a.Authority.Type == b.Authority.Type &&
+		aAuthVal == bAuthVal &&
+		a.Persona == b.Persona &&
+		a.Momentum.Type == b.Momentum.Type &&
+		aMomVal == bMomVal &&
+		a.Location == b.Location
+}
+
+func TestCrossVerifyZetaId(t *testing.T) {
+	repoRoot := findRepoRoot()
+	fixtureDir := filepath.Join(repoRoot, "tests", "cross-verification", "zeta-id")
+	vectorsPath := filepath.Join(fixtureDir, "vectors.yaml")
+
+	data, err := os.ReadFile(vectorsPath)
+	if err != nil {
+		t.Fatalf("failed to read vectors.yaml: %v", err)
+	}
+
+	var y ZetaIdYaml
+	if err := yaml.Unmarshal(data, &y); err != nil {
+		t.Fatalf("failed to unmarshal vectors.yaml: %v", err)
+	}
+
+	outMap := make(map[string]ZetaIdOutput)
+	for _, v := range y.Vectors {
+		var authRaw uint8
+		if v.AuthorityRaw != nil {
+			authRaw = *v.AuthorityRaw
+		}
+		var momRaw uint8
+		if v.MomentumRaw != nil {
+			momRaw = *v.MomentumRaw
+		}
+
+		obs := zeta_id.ZetaObservation{
+			Version:    v.Version,
+			Timestamp:  v.Timestamp,
+			Chromosome: v.Chromosome,
+			Category:   v.Category,
+			Firefly:    v.Firefly,
+			Authority:  zeta_id.Authority{Type: zeta_id.AuthorityType(v.AuthorityType), Value: authRaw},
+			Persona:    v.Persona,
+			Momentum:   zeta_id.Momentum{Type: zeta_id.MomentumType(v.MomentumType), Value: momRaw},
+			Location:   v.Location,
+		}
+
+		packed, err := zeta_id.Pack(obs, zeta_id.DeterministicEnv{})
+		if err != nil {
+			t.Fatalf("failed to pack observation for %s: %v", v.Id, err)
+		}
+		hexVal := zeta_id.ToHex(packed)
+
+		unpacked := zeta_id.Unpack(packed)
+		roundtripOk := observationsEqual(obs, unpacked)
+		matchesExpected := hexVal == v.ExpectedHex
+
+		outMap[v.Id] = ZetaIdOutput{
+			Hex:             hexVal,
+			RoundtripOk:     roundtripOk,
+			MatchesExpected: matchesExpected,
 		}
 	}
 
