@@ -171,6 +171,10 @@ describe("buildInventoryReport", () => {
         files: ["src/Core.TypeScript/kiro/kiro-loop-wrapper.sh"],
       },
       {
+        category: "lint toolchain wrapper",
+        files: ["tools/lint/lint-go-python.sh"],
+      },
+      {
         category: "nixos installer",
         files: [
           "full-ai-cluster/usb-nixos-installer/zeta-first-boot.sh",
