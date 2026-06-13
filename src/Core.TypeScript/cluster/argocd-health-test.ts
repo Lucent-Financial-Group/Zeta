@@ -217,7 +217,6 @@ const DEV_INCLUDED_PROOF_DEFERRED_DIRS = new Set([
   "gitlab",
   "orleans",
   "platform",
-  "seaweedfs", // A/B blob-store alt; ArgoCD sync stays Unknown on kind CI — minio is the gate
   "temporal",
 ]);
 
@@ -838,7 +837,8 @@ function bootstrapCluster(plan: HarnessPlan, options: CliOptions): Failure | nul
       "env",
       [
         `ZETA_CONTAINER_RUNTIME=${options.runtime}`,
-        "full-ai-cluster/dev-cluster/kind-up.sh",
+        "bun",
+        "src/Core.TypeScript/cluster/dev-cluster/kind-up.ts",
         "--config",
         options.configPath,
         "--cluster-name",
@@ -854,8 +854,8 @@ function bootstrapCluster(plan: HarnessPlan, options: CliOptions): Failure | nul
     return runOrFail("kubectl", ["config", "use-context", `k3d-${plan.clusterName}`], "KubectlFailed", 30);
   }
   return runOrFail(
-    "full-ai-cluster/dev-cluster/up.sh",
-    ["--config", options.configPath, "--git-ref", options.gitRef],
+    "bun",
+    ["src/Core.TypeScript/cluster/dev-cluster/k3d-up.ts", "--config", options.configPath, "--git-ref", options.gitRef],
     "ClusterBootstrapFailed",
     options.timeoutSeconds,
   );
