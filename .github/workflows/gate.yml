@@ -1163,8 +1163,11 @@ jobs:
             sleep "$backoff"
           done
 
-      - name: Run Go and Python Lint Script
-        run: bun src/Core.TypeScript/lint/lint-go-python.ts
+      - name: Run Go Lint Script
+        run: bun src/Core.TypeScript/lint/lint-go.ts
+
+      - name: Run Python Lint Script
+        run: bun src/Core.TypeScript/lint/lint-python.ts
 
   cross-verify:
     # Enforce the trust-core cross-language byte-lock + golden-vector oracles + the Ace
