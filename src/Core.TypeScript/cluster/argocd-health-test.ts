@@ -925,16 +925,17 @@ export function parseApplicationList(jsonText: string): readonly ArgoApplication
     const operationState = status ? recordAt(status, "operationState") : null;
     const name = metadata ? stringAt(metadata, "name") : "";
     if (name.length === 0) return [];
-    return [
-      {
-        name,
-        syncStatus: sync ? stringAt(sync, "status") : "",
-        healthStatus: health ? stringAt(health, "status") : "",
-        message: health ? stringAt(health, "message") : "",
-        operationPhase: operationState ? stringAt(operationState, "phase") : undefined,
-        syncRevision: sync ? stringAt(sync, "revision") : undefined,
-      },
-    ];
+    const operationPhase = operationState ? stringAt(operationState, "phase") : "";
+    const syncRevision = sync ? stringAt(sync, "revision") : "";
+    const snapshot: ArgoApplicationSnapshot = {
+      name,
+      syncStatus: sync ? stringAt(sync, "status") : "",
+      healthStatus: health ? stringAt(health, "status") : "",
+      message: health ? stringAt(health, "message") : "",
+      ...(operationPhase.length > 0 ? { operationPhase } : {}),
+      ...(syncRevision.length > 0 ? { syncRevision } : {}),
+    };
+    return [snapshot];
   });
 }
 
