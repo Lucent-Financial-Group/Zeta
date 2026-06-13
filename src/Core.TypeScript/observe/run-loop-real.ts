@@ -26,6 +26,9 @@ import { loadWorld } from "./load-world";
 import { observe, renderAction } from "./observe";
 import { execute, type OperatorPort } from "./execute";
 import { folderSink } from "./event-sink-folder";
+import { resolveForgeHost } from "../forge-host/registry";
+import { readPRStateAsync } from "./world-infra";
+import "../forge-host/github/index"; // registers the GitHub adapter
 
 interface CliArgs {
   by: string;
@@ -65,8 +68,26 @@ async function main(): Promise<number> {
     repoRoot: args.repoRoot,
   });
 
+  // 1b. Resolve ForgeHost and query PR state (async, host-agnostic)
+  const forgeResult = resolveForgeHost(args.repoRoot);
+  let forgeState: import("./observe").ForgeState | undefined;
+  if (forgeResult.ok) {
+    const prState = await readPRStateAsync(forgeResult.value);
+    forgeState = {
+      openPrCount: prState.open.length,
+      cleanPrCount: prState.clean.length,
+      cleanPrNumbers: prState.clean.map((pr) => pr.number),
+    };
+    console.log(`[forge:${forgeResult.value.forgeName}] ${forgeState.openPrCount} open PRs, ${forgeState.cleanPrCount} clean`);
+  } else {
+    console.log(`[forge] not resolved: ${forgeResult.error.message} (continuing without PR state)`);
+  }
+
+  // Enrich world with forge state
+  const enrichedWorld = forgeState ? { ...world, forgeState } : world;
+
   // 2. Pick the next action (pure oracle)
-  const action = observe(world);
+  const action = observe(enrichedWorld);
 
   console.log(`[observe] ${renderAction(action)}`);
 
@@ -92,7 +113,7 @@ async function main(): Promise<number> {
     },
   };
 
-  const result = await execute(world, action, sink, undefined, undefined, operatorPort);
+  const result = await execute(enrichedWorld, action, sink, undefined, undefined, operatorPort);
 
   if (!result.ok) {
     console.error(
