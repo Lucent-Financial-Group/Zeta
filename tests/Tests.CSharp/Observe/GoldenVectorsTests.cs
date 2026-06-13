@@ -10,7 +10,7 @@ using Zeta.Core.CSharp.Observe;
 // Cross-language-parity = non-Byzantine-BFT (B-0944): the C# observe-algebra
 // (oracle #3) replays the SHARED golden-vector fixture and must produce the SAME
 // states the TS reference (oracle #1) emitted — and that the F# oracle (#2) already
-// reproduced. "The compilers don't lie." Fixture: tools/observe/golden-vectors.json.
+// reproduced. "The compilers don't lie." Fixture: src/Core.TypeScript/observe/golden-vectors.json.
 public sealed class GoldenVectorsTests
 {
     /// Walk up from the test assembly to the repo root (Zeta.sln sentinel) — same
@@ -92,7 +92,7 @@ public sealed class GoldenVectorsTests
 
     private static (World Initial, List<NextAction> Events, World Final, List<World> Replay) Load()
     {
-        var path = Path.Join(RepoRoot(), "tools", "observe", "golden-vectors.json");
+        var path = Path.Join(RepoRoot(), "src", "Core.TypeScript", "observe", "golden-vectors.json");
         using var doc = JsonDocument.Parse(File.ReadAllText(path));
         var root = doc.RootElement;
         var initial = ParseWorld(root.GetProperty("initialWorld"));
