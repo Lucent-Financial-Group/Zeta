@@ -1,4 +1,4 @@
-import { parseYaml } from "../../src/Core.TypeScript/ace/deps";
+import { parseYaml } from "./deps";
 import semver from "semver";
 
 function extractChartSection(yamlText: string, chartName: string): string {
