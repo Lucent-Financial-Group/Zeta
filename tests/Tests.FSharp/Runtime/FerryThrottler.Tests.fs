@@ -406,3 +406,53 @@ let ``contextual throttler threads each item's context to its boat (explicit Arr
         do! throttler.CompleteAsync()
         List.ofSeq seen |> should equal [ struct (1, "ctx-a"); struct (2, "ctx-b") ]
     }
+
+
+[<Fact>]
+let ``contextual throttler captures ambient context AT the enqueue boundary, not at process`` () : Task =
+    // Capture-at-the-boundary (Itron pattern): the ambient is snapshotted on the
+    // enqueuer's flow at EnqueueCapturedAsync time and threaded as data. Mutating
+    // the ambient AFTER enqueue must NOT change what the boat sees — proving the
+    // snapshot happened at the door, not at processing.
+    task {
+        let ambient = AsyncLocal<string>()
+        let seen = ConcurrentQueue<struct (int * string)>()
+        let processBatch (boat: ReadOnlyMemory<struct (int * string)>) (_ct: CancellationToken) : Task =
+            for i in 0 .. boat.Length - 1 do seen.Enqueue(boat.Span.[i])
+            Task.CompletedTask
+        use throttler =
+            new ContextualFerryThrottler<int, string>(
+                FerryThrottlerConfig.deterministic,
+                processBatch,
+                manual = true,
+                capture = (fun () -> ambient.Value))
+        ambient.Value <- "at-enqueue"
+        do! throttler.EnqueueCapturedAsync(1) // snapshots "at-enqueue"
+        ambient.Value <- "changed-after" // mutate the ambient AFTER the door
+        do! throttler.PumpToIdleAsync()
+        do! throttler.CompleteAsync()
+        // The boat sees the enqueue-time snapshot, not the later mutation.
+        List.ofSeq seen |> should equal [ struct (1, "at-enqueue") ]
+    }
+
+
+[<Fact>]
+let ``contextual result throttler threads context and fans aligned results back`` () : Task =
+    // Result arity with explicit context: each item's context rides to the boat,
+    // and the per-item Task<'TResult> still returns the aligned result.
+    task {
+        let processBatch (boat: ReadOnlyMemory<struct (int * string)>) (_ct: CancellationToken) : Task<string array> =
+            task {
+                return
+                    [| for i in 0 .. boat.Length - 1 do
+                           let struct (n, ctx) = boat.Span.[i]
+                           sprintf "%d@%s" n ctx |]
+            }
+        use throttler =
+            new ContextualResultFerryThrottler<int, string, string>(FerryThrottlerConfig.deterministic, processBatch)
+        let t1 = throttler.ProcessAsync(1, "a")
+        let t2 = throttler.ProcessAsync(2, "b")
+        let! results = Task.WhenAll([| t1; t2 |])
+        do! throttler.CompleteAsync()
+        results |> should equal [| "1@a"; "2@b" |]
+    }
