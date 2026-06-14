@@ -116,8 +116,8 @@ Add to `tests/cross-verification/zeta-id/`:
 ## Resolution
 
 The Crockford Base32 canonical string encoding for the 128-bit `ZetaId` has been fully implemented and verified.
+
 1. **Specification**: Documented in [zeta-id-canonical-string-encoding.md](file:///Users/acehack/Documents/src/repos/Zeta/docs/zeta-id-canonical-string-encoding.md).
 2. **Implementation**: Added formatting, parsing, lenient alias mapping, and 128-bit overflow checks in C#, F#, Rust, and TypeScript.
 3. **Consensus**: Updated [compare.ts](file:///Users/acehack/Documents/src/repos/Zeta/tests/cross-verification/zeta-id/compare.ts) to compare both `hex` and `crockford` string outputs across the 5 language implementations, passing with 100% agreement on all 12 test vectors.
 4. **Pull Request**: Submitted Pull Request [PR #8141](https://github.com/Lucent-Financial-Group/Zeta/pull/8141).
-
