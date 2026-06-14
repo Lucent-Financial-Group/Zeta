@@ -15,8 +15,10 @@ namespace Zeta.Tests.CSharp.Algebra;
 /// <c>expectedReplayStates[i]</c> (after op i) AND <c>expectedFinalState</c>. The
 /// fixture embeds the canonical expected states (no per-language output file), so
 /// passing == agreeing with the TS/F#/Rust oracles. Read with
-/// <see cref="StringComparer.Ordinal"/> to match the fixture's stated ordinal/code-point
-/// order (not culture-sensitive <see cref="System.Collections.Generic.Comparer{T}.Default"/>).
+/// <see cref="Collation.UnicodeCodePointComparer"/> (ascending Unicode code-point /
+/// UTF-8 byte order) to match the fixture's stated comparator — NOT
+/// <see cref="StringComparer.Ordinal"/>, which is UTF-16 code-unit order and diverges
+/// from code-point order on astral (non-BMP) keys such as U+2070E (𠜎).
 /// </summary>
 public class GSetCrossVerifyTests
 {
@@ -47,7 +49,7 @@ public class GSetCrossVerifyTests
         var path = Path.Join(root, "src", "Core.TypeScript", "g-set", "golden-vectors.json");
         using var doc = JsonDocument.Parse(File.ReadAllText(path));
         var r = doc.RootElement;
-        var cmp = StringComparer.Ordinal;
+        var cmp = Collation.UnicodeCodePointComparer.Ordinal;
 
         var state = GSet.OfSeq(Strings(r.GetProperty("initialSet")), cmp);
         var ops = r.GetProperty("ops");
@@ -74,7 +76,7 @@ public class GSetCrossVerifyTests
     [Fact]
     public void UnionObeysCrdtLaws()
     {
-        var cmp = StringComparer.Ordinal;
+        var cmp = Collation.UnicodeCodePointComparer.Ordinal;
         static GSet<string> G(StringComparer cmp, params string[] xs) => GSet.OfSeq(xs, cmp);
 
         var a = G(cmp, "a", "c");
@@ -118,7 +120,7 @@ public class GSetCrossVerifyTests
         // G-Set is an additive, commutative + idempotent monoid, so it surfaces the
         // generic-math IAdditiveIdentity + IAdditionOperators (NOT INumber — no inverse /
         // order / product). (+) == Union for same-comparer operands; AdditiveIdentity is empty.
-        var cmp = StringComparer.Ordinal;
+        var cmp = Collation.UnicodeCodePointComparer.Ordinal;
         static GSet<string> G(StringComparer cmp, params string[] xs) => GSet.OfSeq(xs, cmp);
 
         var a = G(cmp, "a", "c");
