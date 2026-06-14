@@ -188,12 +188,13 @@ async function waitForInstallComplete(serialLogPath: string): Promise<InstallRes
           elapsedSeconds: elapsedSec,
         };
       }
+      const resolvedHostname = extractGeneratedHostname(content);
       return {
         exitCode: 0,
         reason: `phase 1 SUCCESS — install complete + ${SELF_REG_CI_MARKER} observed`,
         serialLogTail: content.slice(-1500),
         elapsedSeconds: elapsedSec,
-        hostname: extractGeneratedHostname(content) ?? undefined,
+        ...(resolvedHostname !== null ? { hostname: resolvedHostname } : {}),
       };
     }
 
@@ -253,7 +254,7 @@ async function waitForInstalledLogin(
         reason: `phase 2 SUCCESS — login prompt "${loginNeedle}" observed`,
         serialLogTail: content.slice(-1500),
         elapsedSeconds: elapsedSec,
-        hostname: expectedHostname ?? undefined,
+        ...(expectedHostname !== null ? { hostname: expectedHostname } : {}),
       };
     }
 
