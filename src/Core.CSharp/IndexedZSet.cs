@@ -738,8 +738,13 @@ public sealed class IndexedZSet<TKey, TValue> :
 
     private void RequireSameComparers(IndexedZSet<TKey, TValue> other)
     {
-        if ((!string.Equals(KeyCollationName, other.KeyCollationName, StringComparison.Ordinal) && !_compareK.Equals(other._compareK)) ||
-            (!string.Equals(ValueCollationName, other.ValueCollationName, StringComparison.Ordinal) && !_compareV.Equals(other._compareV)))
+        var sameKeyCollation = !string.Equals(KeyCollationName, "custom", StringComparison.Ordinal) &&
+                               string.Equals(KeyCollationName, other.KeyCollationName, StringComparison.Ordinal);
+        var sameValCollation = !string.Equals(ValueCollationName, "custom", StringComparison.Ordinal) &&
+                               string.Equals(ValueCollationName, other.ValueCollationName, StringComparison.Ordinal);
+
+        if ((!sameKeyCollation && !_compareK.Equals(other._compareK)) ||
+            (!sameValCollation && !_compareV.Equals(other._compareV)))
         {
             throw new ArgumentException(
                 $"IndexedZSet ops require both operands to use the same collation name or equivalent comparers (this key: '{KeyCollationName}', other key: '{other.KeyCollationName}'; this value: '{ValueCollationName}', other value: '{other.ValueCollationName}').",

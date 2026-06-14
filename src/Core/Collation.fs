@@ -9,8 +9,10 @@ open System.Text
 type UnicodeCodePointComparer(ignoreCase: bool) =
     inherit StringComparer()
     
-    static member Ordinal = UnicodeCodePointComparer(false)
-    static member OrdinalIgnoreCase = UnicodeCodePointComparer(true)
+    static let ordinal = UnicodeCodePointComparer(false)
+    static let ordinalIgnoreCase = UnicodeCodePointComparer(true)
+    static member Ordinal = ordinal
+    static member OrdinalIgnoreCase = ordinalIgnoreCase
 
     override this.Compare(x: string, y: string) =
         if obj.ReferenceEquals(x, y) then 0
