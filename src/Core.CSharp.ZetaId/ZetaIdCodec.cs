@@ -252,7 +252,7 @@ public static class ZetaIdCodec
         {
             return string.Equals(Format(Parse(s)), s, System.StringComparison.Ordinal);
         }
-        catch
+        catch (System.ArgumentException)
         {
             return false;
         }
