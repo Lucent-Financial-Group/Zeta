@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import { describe, expect, it } from "bun:test";
 import { validateSelfRegCiCoherent } from "./self-reg-serial.ts";
 import { extractGeneratedHostname } from "./qemu-full-install-test.ts";
@@ -23,5 +25,17 @@ describe("qemu-full-install-test hostname extraction", () => {
 
   it("returns null when marker absent", () => {
     expect(extractGeneratedHostname("zeta-installer login:")).toBeNull();
+  });
+});
+
+describe("qemu-full-install-test B-0835 Bug 1 regression guard", () => {
+  it("is documented in waitForInstalledLogin — control-plane login fails when node hostname expected", () => {
+    // Structural test: the guard string is in the source so refactors don't drop it.
+    const src = readFileSync(
+      resolve(import.meta.dir, "qemu-full-install-test.ts"),
+      "utf8",
+    );
+    expect(src).toContain("B-0835 Bug 1 regression");
+    expect(src).toContain('control-plane login:');
   });
 });

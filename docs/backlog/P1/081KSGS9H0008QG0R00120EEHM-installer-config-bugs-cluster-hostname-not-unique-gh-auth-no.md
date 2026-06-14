@@ -7,7 +7,8 @@ title: installer config-bugs cluster — hostname not unique (shows control-plan
 effort: S
 ask: aaron 2026-05-26
 created: 2026-05-26
-last_updated: 2026-05-26
+last_updated: 2026-06-14
+progress: "Bugs 1–3 substrate fixes landed (#5349 banner, #5354 hostname symlinks, activation-script password #5352 class); scenario 2 CI validates hostname login + iter-5.4.1-ci self-reg dry-run. Bug 4 (live push) still operator-runtime. Row stays open until scenarios 3/4 green + physical sanity-check."
 depends_on:
   - B-0754
 composes_with:

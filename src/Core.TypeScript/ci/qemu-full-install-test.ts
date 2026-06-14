@@ -269,6 +269,21 @@ async function waitForInstalledLogin(
       };
     }
 
+    // B-0835 Bug 1 regression guard — fail fast if flake hostname leaked
+    // through instead of iter-5.2.2 generated node identity.
+    if (
+      expectedHostname &&
+      expectedHostname !== "control-plane" &&
+      content.includes("control-plane login:")
+    ) {
+      return {
+        exitCode: 1,
+        reason: `phase 2 FAILURE — B-0835 Bug 1 regression: saw "control-plane login:" but expected "${expectedHostname}"`,
+        serialLogTail: content.slice(-2000),
+        elapsedSeconds: elapsedSec,
+      };
+    }
+
     if (!loginNeedle) {
       for (const match of content.matchAll(/(?:^|\n)([a-z0-9-]+) login:/gi)) {
         const host = match[1];
