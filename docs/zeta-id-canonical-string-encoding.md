@@ -8,6 +8,7 @@ This format is designed to be filename-safe, sort-preserving, and visually resil
 The canonical string encoding for ZetaId is **Crockford Base32** (with modifications for fixed length and strict validation).
 
 ### Alphabet
+
 The alphabet contains 32 symbols, strictly ordered by ascending ASCII values:
 ```
 0123456789ABCDEFGHJKMNPQRSTVWXYZ
@@ -15,11 +16,14 @@ The alphabet contains 32 symbols, strictly ordered by ascending ASCII values:
 This alphabet excludes the ambiguous characters `I`, `L`, `O`, and `U` to minimize visual confusion.
 
 ### Width
+
 Every packed ZetaId is represented by exactly **26 characters**.
+
 - $26 \times 5 = 130$ bits.
 - The top 2 bits are zero-padded (so the maximum value represented by the first character is `7`).
 
 ### Case Sensitivity & Lenient Aliases
+
 1. **Canonical Form**: Strictly uppercase. Only contains symbols from the canonical alphabet.
 2. **Parsing (Lenient)**:
    - Case-insensitive (lowercase symbols are folded to uppercase).
@@ -31,12 +35,14 @@ Every packed ZetaId is represented by exactly **26 characters**.
 ## 2. Endianness
 
 The string serialization represents the 128-bit integer in **big-endian (network byte order)**.
+
 - The first character (index 0) represents the most-significant bits of the ZetaId.
 - The 26th character (index 25) represents the least-significant 5 bits of the ZetaId.
 
 ## 3. Bit-Numbering
 
 We use the **LSB-0** bit-numbering convention:
+
 - Bit `0` is the least-significant bit of the 128-bit integer.
 - Bit `127` is the most-significant bit.
 
