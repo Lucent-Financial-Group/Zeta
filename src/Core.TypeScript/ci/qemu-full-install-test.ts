@@ -398,4 +398,6 @@ async function main(): Promise<never> {
   reportResult(phase2, serialLogPath);
 }
 
-main();
+if (import.meta.main) {
+  main();
+}
