@@ -54,14 +54,25 @@ deadlock, the human decides.
 
 ## MCP (Cursor)
 
-Project servers live in [`.cursor/mcp.json`](.cursor/mcp.json) (`zeta` stdio +
-`github` via [`src/Core.TypeScript/cursor/github-mcp.ts`](src/Core.TypeScript/cursor/github-mcp.ts)).
+Tracked in this repo:
+
+- [`.cursor/mcp.json`](.cursor/mcp.json) — repo-root workspace (paths relative to clone)
+- [`src/Core.TypeScript/cursor/github-mcp.ts`](src/Core.TypeScript/cursor/github-mcp.ts)
 
 **GitHub auth fix:** disable the marketplace **GitHub** plugin
 (`plugin-github-github`) in Settings → Tools & Integrations → MCP — its OAuth
 path sends malformed `Authorization` headers to `api.githubcopilot.com/mcp/`.
 The project `github` server uses `gh auth token` + the official docker image
 instead. Prereqs: `gh auth login`, Docker running.
+
+## Agent home (Riven)
+
+Per B-0894.3, Riven boots from ~/.zeta/agents/cursor/. That home holds one or more git clones as siblings; Zeta is one of them. Each clone carries its own tracked .cursor/mcp.json. Cursor boots MCP from the repos — no MCP config at the agent-home root.
+
+Layout:
+~/.zeta/agents/cursor/     # agent home
+  Zeta/                    # clone with .cursor/mcp.json
+  <other-repo>/            # more clones
 
 ## Conventions
 
