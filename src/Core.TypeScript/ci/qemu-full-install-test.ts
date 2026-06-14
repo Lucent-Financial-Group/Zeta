@@ -176,12 +176,13 @@ async function waitForInstallComplete(serialLogPath: string): Promise<InstallRes
 
     const content = readSerial(serialLogPath);
     if (content.includes(INSTALL_COMPLETE_MARKER)) {
+      const hostname = extractGeneratedHostname(content);
       return {
         exitCode: 0,
         reason: `phase 1 SUCCESS — "${INSTALL_COMPLETE_MARKER}" observed`,
         serialLogTail: content.slice(-1500),
         elapsedSeconds: elapsedSec,
-        hostname: extractGeneratedHostname(content) ?? undefined,
+        ...(hostname ? { hostname } : {}),
       };
     }
 
@@ -235,13 +236,13 @@ async function waitForInstalledLogin(
     const elapsedSec = Math.floor((Date.now() - start) / 1000);
     const content = readSerial(serialLogPath);
 
-    if (loginNeedle && content.includes(loginNeedle)) {
+    if (expectedHostname && content.includes(`${expectedHostname} login:`)) {
       return {
         exitCode: 0,
-        reason: `phase 2 SUCCESS — login prompt "${loginNeedle}" observed`,
+        reason: `phase 2 SUCCESS — login prompt "${expectedHostname} login:" observed`,
         serialLogTail: content.slice(-1500),
         elapsedSeconds: elapsedSec,
-        hostname: expectedHostname ?? undefined,
+        hostname: expectedHostname,
       };
     }
 
