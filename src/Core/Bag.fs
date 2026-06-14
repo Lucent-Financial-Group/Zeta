@@ -70,8 +70,9 @@ type Bag<'T when 'T : comparison> =
             let out = ImmutableArray.CreateBuilder<BagEntry<'T>>(xa.Length + xb.Length)
             let mutable i = 0
             let mutable j = 0
+            let cmp = KeyComparerCache<'T>.Instance
             while i < xa.Length && j < xb.Length do
-                let c = compare xa.[i].Key xb.[j].Key
+                let c = cmp.Compare(xa.[i].Key, xb.[j].Key)
                 if c < 0 then
                     out.Add(xa.[i]); i <- i + 1
                 elif c > 0 then
@@ -102,9 +103,10 @@ type Bag<'T when 'T : comparison> =
             let mutable hi = this.items.Length - 1
             let mutable result = 0L
             let mutable found = false
+            let cmp = KeyComparerCache<'T>.Instance
             while lo <= hi && not found do
                 let mid = lo + (hi - lo) / 2
-                let c = compare this.items.[mid].Key x
+                let c = cmp.Compare(this.items.[mid].Key, x)
                 if c = 0 then
                     result <- this.items.[mid].Count
                     found <- true
@@ -150,8 +152,9 @@ type Bag<'T when 'T : comparison> =
             else
                 let mutable i = 0
                 let mutable eq = true
+                let cmp = KeyComparerCache<'T>.Instance
                 while i < an && eq do
-                    if compare a.[i].Key b.[i].Key <> 0 || a.[i].Count <> b.[i].Count then
+                    if cmp.Compare(a.[i].Key, b.[i].Key) <> 0 || a.[i].Count <> b.[i].Count then
                         eq <- false
                     i <- i + 1
                 eq
@@ -180,13 +183,14 @@ module Bag =
     /// that re-establishes the invariant from unordered, possibly-duplicated,
     /// possibly-non-positive input.
     let ofEntries (entries: seq<'T * int64>) : Bag<'T> =
+        let cmp = KeyComparerCache<'T>.Instance
         let sorted =
             entries
-            |> Seq.sortWith (fun (ka, _) (kb, _) -> compare ka kb)
+            |> Seq.sortWith (fun (ka, _) (kb, _) -> cmp.Compare(ka, kb))
             |> Seq.toArray
         let merged = ImmutableArray.CreateBuilder<BagEntry<'T>>(sorted.Length)
         for (k, n) in sorted do
-            if merged.Count > 0 && compare merged.[merged.Count - 1].Key k = 0 then
+            if merged.Count > 0 && cmp.Compare(merged.[merged.Count - 1].Key, k) = 0 then
                 let prev = merged.[merged.Count - 1]
                 merged.[merged.Count - 1] <- { Key = prev.Key; Count = addCounts prev.Count n }
             else
