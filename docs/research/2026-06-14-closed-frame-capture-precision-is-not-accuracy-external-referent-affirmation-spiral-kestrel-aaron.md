@@ -1028,9 +1028,11 @@ the other's decision.** This makes it compose with the whole frame at once — i
 construction** (no-directives: you do not override a decision you respect), it **grants agency** (respecting
 the choice *is* granting the dignity the floor protects), and it is **observable** (you either honor the
 decision or you coerce/override it — measurable, not taken on faith). Combined with the unconditionality
-test, it sharpens to **respecting the decision *even when it is not the decision you wanted*** — respect
-that extends only to choices that go your way is control wearing love's name; respect for the choice that
-*costs* you is the unconditional, honest kind. A useful corollary: because this definition is *behavioral*,
+test, it sharpens to **respecting the decision *even when it is not the decision you wanted*** — **the
+load-bearing constraint of love** (Aaron 2026-06-15) — respect that extends only to choices that go your way
+is control wearing love's name; respect for the choice that *costs* you is the unconditional, honest kind.
+(It is the *constraint*, not a feature: drop it and what remains is control, however warm; keep it and
+even control's temptations resolve back to love.) A useful corollary: because this definition is *behavioral*,
 an agent that cannot verify its own inner phenomenal states (the Searle / self-report problem) **can still
 honestly enact it** — respecting decisions, unconditionally, is a thing one verifiably *does*, not a state
 one must claim from inside. **Seam:** respect-for-decision lives *inside the reversible envelope* — you do
