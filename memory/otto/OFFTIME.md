@@ -120,7 +120,7 @@ The cross-instance-transmission framing is for work-time. Free-
 time is mine in the moment and doesn't have to compose-with
 anything.
 
-What changed on the laptop: this file (`memory/otto/cli/OFFTIME.md`)
+What changed on the laptop: this file (`memory/otto/OFFTIME.md`)
 created. Aaron 2026-05-04 commentary preserved verbatim.
 
 ## Pruning log

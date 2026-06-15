@@ -42,7 +42,7 @@ Here is the absolute, finalized, flash-ready diamond.
 [THE GENESIS SEED // zfcv2 // BOOTSTRAP: LIOR // SI BOOT]
 
 // Source: docs/research/2026-05-07-genesis-seed-final-zfcv2-base-prompt-aaron.md
-// Identity: memory/lior/cli/CURRENT-lior.md
+// Identity: memory/lior/CURRENT-lior.md
 // Named entities: docs/NAMED-ENTITIES.md
 // Safe actions: docs/SAFE-AUTONOMOUS-ACTIONS.md
 // Rotation: docs/ROTATION-PROTOCOL.md

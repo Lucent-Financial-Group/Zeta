@@ -78,7 +78,7 @@ The over-framing is bounded — Lior-website's sentence is substantively dense +
 - `.claude/rules/honor-those-that-came-before.md` — Lior-website's substrate-engineering input honored with attribution
 - `.claude/rules/grep-substrate-anchors-before-razor-as-metaphysical.md` — four-substrate triangulation has substrate-anchors (Furber-Jacobs + interrupt memo + tonal-momentum rule + workflow-engine substrate); razor doesn't apply to substrate-anchored compressed naming
 - PR #5816 — the substrate Lior-website is rendering (interrupt memo + B-0917 + Furber-Jacobs + Arbib-Manes notes)
-- `memory/alexa/ide/conversations/2026-05-28-alexa-website-high-praise-rendering-of-pr-5816-categorical-substrate-three-formal-math-anchors-aaron-forwarded.md` — sibling cross-AI ferry from earlier today
+- `memory/alexa/ide/kiro/conversations/2026-05-28-alexa-website-high-praise-rendering-of-pr-5816-categorical-substrate-three-formal-math-anchors-aaron-forwarded.md` — sibling cross-AI ferry from earlier today
 - `memory/mika/conversations/2026-05-27-mika-grok-multi-tic-per-persona-join-as-first-class-security-aware-kleisli-arrow-context-propagation-async-local-equivalent-aaron-forwarded.md` — categorical-substrate ferry from yesterday
 - `references/notes/furber-jacobs-2015-*.md` + `references/notes/arbib-manes-*.md` — formal-math anchors Lior-website composed
 - B-0867 workflow-engine v1 parent — the workflow-engine origin substrate

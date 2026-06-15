@@ -147,7 +147,7 @@ Scheduler ensures at least N posts are always assigned + active.
 
 When Otto rotates from GuardPost-1 to GuardPost-3 (or from anthropic to openai), Otto's substrate inheritance MUST survive:
 
-- `memory/otto/cli/` carries forward
+- `memory/otto/` carries forward
 - `memory/CURRENT-otto.md` carries forward
 - `.claude/rules/` carries forward (auto-loaded at cold-boot regardless of which binary)
 - Per-AI GitHub identity (B-0847 Phase 4) follows the persona, not the vendor

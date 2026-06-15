@@ -76,7 +76,7 @@ interface AuditResult {
 
 const SPAWN_MAX_BUFFER = 64 * 1024 * 1024;
 const ROUND_RE = /^## Round (\d+)/gm;
-const OWNER_RE = /memory\/([a-z0-9_-]+)(?:\/(?:cli|ide))?\/NOTEBOOK\.md/;
+const OWNER_RE = /memory\/([a-z0-9_-]+)\/NOTEBOOK\.md/;
 
 function classifyFailure(
   cmd: string,
@@ -259,28 +259,12 @@ function listPersonas(): readonly PersonaInfo[] {
           continue;
         }
         
-        // 1. Direct notebooks (non-harness)
-        const hasDirectNotebook =
+        const hasNotebook =
           existsSync(join(personaPath, "NOTEBOOK.md")) ||
           existsSync(join(personaPath, "MEMORY.md")) ||
           existsSync(join(personaPath, "PERSONA.md"));
-        if (hasDirectNotebook) {
+        if (hasNotebook) {
           out.push({ name: item.name, path: personaPath });
-        } else {
-          // 2. Surface-nested notebooks (harnesses)
-          const subItems = readdirSync(personaPath, { withFileTypes: true });
-          for (const sub of subItems) {
-            if (sub.isDirectory() && (sub.name === "cli" || sub.name === "ide")) {
-              const surfacePath = join(personaPath, sub.name);
-              const hasSurfaceNotebook =
-                existsSync(join(surfacePath, "NOTEBOOK.md")) ||
-                existsSync(join(surfacePath, "MEMORY.md")) ||
-                existsSync(join(surfacePath, "PERSONA.md"));
-              if (hasSurfaceNotebook) {
-                out.push({ name: item.name, path: surfacePath });
-              }
-            }
-          }
         }
       }
     }

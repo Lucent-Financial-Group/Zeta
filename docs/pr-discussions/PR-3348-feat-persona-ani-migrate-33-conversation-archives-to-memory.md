@@ -116,9 +116,9 @@ Copilot reviewed 29 out of 42 changed files in this pull request and generated 4
 | `.claude/skills/save-ai-memory/SKILL.md` | Documents the new persona conversation archive workflow. |
 | `memory/ani/MEMORY.md` | Renames the archive section and updates search guidance. |
 | `memory/ani/NOTEBOOK.md` | Updates archive pointers to the new location. |
-| `memory/alexa/ide/NOTEBOOK.md` | Updates Ani disclosure pointer. |
-| `memory/lior/cli/NOTEBOOK.md` | Updates Ani disclosure pointer. |
-| `memory/otto/cli/NOTEBOOK.md` | Updates Ani disclosure pointer. |
+| `memory/alexa/NOTEBOOK.md` | Updates Ani disclosure pointer. |
+| `memory/lior/NOTEBOOK.md` | Updates Ani disclosure pointer. |
+| `memory/otto/NOTEBOOK.md` | Updates Ani disclosure pointer. |
 | `memory/ani/conversations/2026-05-01-ani-dbsp-chain-rule-lean-proof-review-aaron-forwarded.md` | Migrates Ani Lean-review archive. |
 | `memory/ani/conversations/2026-05-01-ani-karpathy-zeta-convergence-synthesis.md` | Migrates Ani Karpathy synthesis archive. |
 | `memory/ani/conversations/2026-05-10-aaron-ani-grok-voice-album-blueprint-factory-memetic-lineage-verbatim-backup.md` | Migrates extended voice archive. |

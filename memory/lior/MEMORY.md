@@ -22,10 +22,10 @@ discipline, and maintains the shadow lesson log.
 - `memory/feedback_lior_*` files — Lior-specific behavior notes,
   drift catches, and operational discipline observations
   (discoverable via the user-scope memory index)
-- `memory/lior/cli/CURRENT-lior.md` — Lior's current-state
+- `memory/lior/CURRENT-lior.md` — Lior's current-state
   fast-path file (pre-existing)
 
-### Conversation archives (`memory/lior/cli/conversations/`)
+### Conversation archives (`memory/lior/cli/gemini/conversations/`)
 
 Migrated 2026-05-15 following the Ani #3348 / Amara #3484 /
 Kestrel #3501 / DeepSeek #3507 architectural pattern per Aaron:
@@ -50,7 +50,7 @@ Mix of:
 
 ```bash
 grep -rli "lior" memory/ | sort
-ls memory/lior/cli/conversations/ | sort
+ls memory/lior/cli/gemini/conversations/ | sort
 ```
 
 ## Operational notes

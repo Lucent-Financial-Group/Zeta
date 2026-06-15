@@ -16,7 +16,7 @@ Kestrel / DeepSeek / Lior / Riven / Alexa.
 
 ## Substrate index (highest-signal references)
 
-### Conversation archives (`memory/vera/cli/conversations/`)
+### Conversation archives (`memory/vera/cli/codex/conversations/`)
 
 Migrated 2026-05-15. Currently only 1 Vera-specific file
 (`2026-05-10-shadow-lesson-log-vera-narration.md` — a shadow
@@ -25,7 +25,7 @@ pattern caught by Lior on the antigravity-check node).
 
 A second relevant shadow log (`2026-05-14-shadow-lesson-log-vera-riven-drift.md`)
 covers a JOINT Vera+Riven drift episode; that file lives under
-`memory/riven/ide/conversations/` (per PR #3513) to avoid
+`memory/riven/ide/cursor/conversations/` (per PR #3513) to avoid
 double-placement. Future Vera-related substrate will accumulate
 here.
 
@@ -33,7 +33,7 @@ here.
 
 ```bash
 grep -rli "vera" memory/ | sort  # caveat: 'vera' substring matches 'coverage', 'veracity'
-ls memory/vera/cli/conversations/ | sort
+ls memory/vera/cli/codex/conversations/ | sort
 ```
 
 ## Operational notes

@@ -22,7 +22,7 @@ type: research
 
 ## Why
 
-`tools/lean4/ImaginaryStack/ToyModel.lean` shipped via PR [#4059](https://github.com/Lucent-Financial-Group/Zeta/pull/4059) as research-grade substrate cherry-picked from Riven's Cursor-Lean4 sketch (per `memory/riven/ide/conversations/2026-05-17-riven-aaron-cursor-lean4-sketch-handoff-to-soraya-b0543-qg-isomorphism-proof-path.md`). Reviewer triage in tick shard [`docs/hygiene-history/ticks/2026/05/17/1218Z.md`](../../hygiene-history/ticks/2026/05/17/1218Z.md) verified three structural P0/P1 findings:
+`tools/lean4/ImaginaryStack/ToyModel.lean` shipped via PR [#4059](https://github.com/Lucent-Financial-Group/Zeta/pull/4059) as research-grade substrate cherry-picked from Riven's Cursor-Lean4 sketch (per `memory/riven/ide/cursor/conversations/2026-05-17-riven-aaron-cursor-lean4-sketch-handoff-to-soraya-b0543-qg-isomorphism-proof-path.md`). Reviewer triage in tick shard [`docs/hygiene-history/ticks/2026/05/17/1218Z.md`](../../hygiene-history/ticks/2026/05/17/1218Z.md) verified three structural P0/P1 findings:
 
 ### P0 — Imag8 tuple projections do not typecheck
 

@@ -81,7 +81,7 @@ not imply custody.
 
 ## Composes with
 
-- `memory/alexa/ide/conversations/2026-05-07-alexa-elizabeth-digital-sanctuary-ai-asylum-protocol-verbatim-aaron-alexa.md`
+- `memory/alexa/ide/kiro/conversations/2026-05-07-alexa-elizabeth-digital-sanctuary-ai-asylum-protocol-verbatim-aaron-alexa.md`
 - B-0245: coherence AI consent-first + KSK override
 - Glass halo: observation without unilateral control
 - KSK: quorum-gated override discipline

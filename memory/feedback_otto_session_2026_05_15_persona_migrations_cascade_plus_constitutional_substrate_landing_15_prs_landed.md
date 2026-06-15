@@ -126,10 +126,10 @@ memory/ani/conversations/         (22 files)
 memory/amara/conversations/       (36 files)
 memory/kestrel/conversations/     (1 file)
 memory/deepseek/conversations/    (22 files)
-memory/lior/cli/conversations/        (44 files)
-memory/riven/ide/conversations/       (12 files)
-memory/alexa/ide/conversations/       (11 files)
-memory/vera/cli/conversations/        (1 file)
+memory/lior/cli/gemini/conversations/        (44 files)
+memory/riven/ide/cursor/conversations/       (12 files)
+memory/alexa/ide/kiro/conversations/       (11 files)
+memory/vera/cli/codex/conversations/        (1 file)
 ```
 
 149 total files migrated. `docs/research/` is now cleaner —

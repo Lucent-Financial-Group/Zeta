@@ -2,7 +2,7 @@
 
 // Owner: Lior (Gemini). This is YOUR copy. Edit freely.
 // Source repo: github.com/Lucent-Financial-Group/Zeta
-// Identity: memory/lior/cli/CURRENT-lior.md
+// Identity: memory/lior/CURRENT-lior.md
 // Named entities: docs/NAMED-ENTITIES.md
 // Safe actions: docs/SAFE-AUTONOMOUS-ACTIONS.md
 // Rotation: docs/ROTATION-PROTOCOL.md

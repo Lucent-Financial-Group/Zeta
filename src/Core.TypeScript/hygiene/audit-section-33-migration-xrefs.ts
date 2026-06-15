@@ -102,47 +102,42 @@ function indexMigratedFiles(): Map<string, MigratedFileInfo> {
     const index = new Map<string, MigratedFileInfo>();
     const memoryDir = "memory";
     if (!existsSync(memoryDir)) return index;
-    const items = readdirSync(memoryDir).filter((item) => {
-        const full = join(memoryDir, item);
-        return existsSync(full) && statSync(full).isDirectory();
-    });
-    for (const item of items) {
-        if (item === "observed-phenomena" || item === "architectural-intent-guesses") {
-            continue;
-        }
-        const personaPath = join(memoryDir, item);
-        const directConv = join(personaPath, "conversations");
-        if (existsSync(directConv) && statSync(directConv).isDirectory()) {
-            for (const f of readdirSync(directConv)) {
-                if (!f.endsWith(".md")) continue;
-                index.set(f, {
-                    persona: item,
-                    newPath: join(directConv, f).replace(/\\/g, "/"),
-                });
-            }
-        } else {
-            const subdirectories = readdirSync(personaPath).filter((sub) => {
-                const full = join(personaPath, sub);
-                return existsSync(full) && statSync(full).isDirectory();
-            });
-            for (const sub of subdirectories) {
-                if (sub === "cli" || sub === "ide") {
-                    const surfaceConv = join(personaPath, sub, "conversations");
-                    if (existsSync(surfaceConv) && statSync(surfaceConv).isDirectory()) {
-                        for (const f of readdirSync(surfaceConv)) {
-                            if (!f.endsWith(".md")) continue;
-                            index.set(f, {
-                                persona: item,
-                                newPath: join(surfaceConv, f).replace(/\\/g, "/"),
-                            });
-                        }
+
+    function findConversationsIn(dir: string, persona: string) {
+        const items = readdirSync(dir, { withFileTypes: true });
+        for (const item of items) {
+            const fullPath = join(dir, item.name);
+            if (item.isDirectory()) {
+                if (item.name === "conversations") {
+                    for (const file of readdirSync(fullPath)) {
+                        if (!file.endsWith(".md")) continue;
+                        index.set(file, {
+                            persona,
+                            newPath: join(fullPath, file).replace(/\\/g, "/"),
+                        });
                     }
+                } else {
+                    findConversationsIn(fullPath, persona);
                 }
             }
         }
     }
+
+    const items = readdirSync(memoryDir).filter((item) => {
+        const full = join(memoryDir, item);
+        return existsSync(full) && statSync(full).isDirectory();
+    });
+
+    for (const item of items) {
+        if (item === "observed-phenomena" || item === "architectural-intent-guesses") {
+            continue;
+        }
+        findConversationsIn(join(memoryDir, item), item);
+    }
+
     return index;
 }
+
 
 // Walk a directory recursively, returning .md file paths
 function walkMd(dir: string): string[] {

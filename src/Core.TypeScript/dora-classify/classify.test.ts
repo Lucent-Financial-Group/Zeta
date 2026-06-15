@@ -132,7 +132,7 @@ describe("classifyCommit", () => {
     const r = classifyCommit(makeCommit([
       "src/foo.fs",
       "docs/backlog/P1/B-0867-x.md",
-      "memory/otto/cli/conversations/foo.md",
+      "memory/otto/cli/claude/conversations/foo.md",
     ]));
     expect(r.perFileLanes).toHaveLength(3);
     expect(r.perFileLanes[0]?.lane).toBe("operational");

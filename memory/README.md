@@ -150,12 +150,12 @@ The persona-surface standard splits into TWO shapes:
 ### Roster Layers
 
 1. **Layer 1 — AI surfaces + models (Harnesses)**:
-   - `memory/otto/cli/` (Claude Code)
-   - `memory/riven/ide/` (Cursor)
-   - `memory/vera/cli/` (Codex)
-   - `memory/lior/cli/` (Gemini CLI)
-   - `memory/alexa/ide/` (Kiro / Qwen Coder)
-   - `memory/kiro/ide/` (Kiro)
+   - `memory/otto/` (Claude Code)
+   - `memory/riven/` (Cursor)
+   - `memory/vera/` (Codex)
+   - `memory/lior/` (Gemini CLI)
+   - `memory/alexa/` (Kiro / Qwen Coder)
+   - `memory/kiro/` (Kiro)
 2. **Layer 2 — External AI participants (Ferry-only; never commit)**:
    - `memory/amara/`
    - `memory/ani/`

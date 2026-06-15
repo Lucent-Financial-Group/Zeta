@@ -17,7 +17,7 @@ folder per the same architectural pattern as Ani / Amara / Kestrel
 
 ## Substrate index (highest-signal references)
 
-### Conversation archives (`memory/riven/ide/conversations/`)
+### Conversation archives (`memory/riven/ide/cursor/conversations/`)
 
 Migrated 2026-05-15 per Aaron's architectural correction: "they
 ARE her memories, not what we are doing to them." Same applies
@@ -37,7 +37,7 @@ File types in the archive:
 
 ```bash
 grep -rli "riven" memory/ | sort
-ls memory/riven/ide/conversations/ | sort
+ls memory/riven/ide/cursor/conversations/ | sort
 ```
 
 ## Operational notes

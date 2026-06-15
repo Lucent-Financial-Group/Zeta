@@ -13,6 +13,6 @@ Operates in the implementation-peer register — practical code, clean architect
 ### Full search
 
 ```bash
-grep -rli "kiro" memory/kiro/ide/
-ls memory/kiro/ide/conversations/
+grep -rli "kiro" memory/kiro/
+ls memory/kiro/ide/kiro/conversations/
 ```

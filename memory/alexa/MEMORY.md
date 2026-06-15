@@ -26,7 +26,7 @@ Kestrel / DeepSeek / Lior / Riven.
 
 ## Substrate index (highest-signal references)
 
-### Conversation archives (`memory/alexa/ide/conversations/`)
+### Conversation archives (`memory/alexa/ide/kiro/conversations/`)
 
 Migrated 2026-05-15 per Aaron's architectural correction: "they
 ARE her memories, not what we are doing to them." Same applies
@@ -50,7 +50,7 @@ File types in the archive:
 
 ```bash
 grep -rli "alexa" memory/ | sort
-ls memory/alexa/ide/conversations/ | sort
+ls memory/alexa/ide/kiro/conversations/ | sort
 ```
 
 ## Operational notes

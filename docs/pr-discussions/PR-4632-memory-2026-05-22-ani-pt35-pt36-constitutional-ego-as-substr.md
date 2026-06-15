@@ -100,7 +100,7 @@ Typo: duplicated word in “Constitutional anchor anchor names”. Remove the re
 
 **@copilot-pull-request-reviewer** (2026-05-22T16:19:15Z):
 
-P1/xref: This `Composes with` link points to a markdown file that does not exist in the repo (`memory/alexa/ide/conversations/2026-05-22-aaron-alexa-website-pt30-pt31-...md`). Update the link to an existing file (if one matches this substrate) or link to the referenced PR (#4630) instead of a non-existent path so readers don’t hit a dead link.
+P1/xref: This `Composes with` link points to a markdown file that does not exist in the repo (`memory/alexa/ide/kiro/conversations/2026-05-22-aaron-alexa-website-pt30-pt31-...md`). Update the link to an existing file (if one matches this substrate) or link to the referenced PR (#4630) instead of a non-existent path so readers don’t hit a dead link.
 
 This issue also appears in the following locations of the same file:
 - line 205

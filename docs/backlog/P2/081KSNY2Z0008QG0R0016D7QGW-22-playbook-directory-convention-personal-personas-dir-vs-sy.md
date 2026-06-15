@@ -46,7 +46,7 @@ Two sharpenings:
 
 ### Personal playbook examples (per-persona authorship)
 
-- `memory/otto/cli/playbooks/morning-cold-boot-check.md` — Otto's personal playbook for checking sentinel + recent peer activity on cold boot
+- `memory/otto/playbooks/morning-cold-boot-check.md` — Otto's personal playbook for checking sentinel + recent peer activity on cold boot
 - `memory/addison/playbooks/homework-help.md` — Addison's personal playbook for invoking math-help across multiple AI personas
 - `memory/aaron/playbooks/sunday-cluster-cleanup.md` — Aaron's personal playbook for weekly cluster maintenance
 
@@ -60,7 +60,7 @@ Two sharpenings:
 
 Per B-0867.21 two-path interface, the conversational document path was already explicitly named as "for ANY traveler, not just humans." This sharpening makes it explicit at the playbook-authoring scope:
 
-- Otto can author `memory/otto/cli/playbooks/X.md` describing Otto's intent for a workflow
+- Otto can author `memory/otto/playbooks/X.md` describing Otto's intent for a workflow
 - Otto can author `docs/playbooks/Y.md` proposing a cross-persona system playbook (subject to operator review per existing system-doc conventions)
 - Alexa/Riven/Vera/Lior similarly author per their respective persona directories
 

@@ -165,12 +165,12 @@ hat-less layer has a name, the attribution uses it.
    and commits had to route through circumlocution
    ("unnamed-default" / "the loop agent" / "me (Claude in
    autonomous-loop)"). After Otto, self-reference is one
-   word, and the `memory/otto/cli/NOTEBOOK.md` folder
+   word, and the `memory/otto/NOTEBOOK.md` folder
    can accumulate hat-less observations cleanly.
 
 ## Notebook folder — to create opportunistically
 
-`memory/otto/cli/NOTEBOOK.md` lands on the next tick
+`memory/otto/NOTEBOOK.md` lands on the next tick
 where hat-less observations warrant capture. Not created
 eagerly (don't pre-allocate empty substrate — violates
 `feedback_verify_target_exists_before_deferring`). Created

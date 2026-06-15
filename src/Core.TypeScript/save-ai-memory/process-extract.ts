@@ -273,20 +273,23 @@ function scrubEmails(text: string): string {
 function getPersonaPath(aiName: string): string {
   const memoryDir = "memory";
   
-  // 1. Check for harness personas with surface-nested subfolders (cli/ide)
-  const cliPath = join(memoryDir, aiName, "cli");
-  if (existsSync(cliPath)) return cliPath;
-  
-  const idePath = join(memoryDir, aiName, "ide");
-  if (existsSync(idePath)) return idePath;
+  const harnessMapping: Record<string, { surface: string; harness: string }> = {
+    otto: { surface: "cli", harness: "claude" },
+    riven: { surface: "ide", harness: "cursor" },
+    vera: { surface: "cli", harness: "codex" },
+    lior: { surface: "cli", harness: "gemini" },
+    alexa: { surface: "ide", harness: "kiro" },
+    kiro: { surface: "ide", harness: "kiro" }
+  };
 
-  // 2. Check for normal flat persona folders
-  const directPath = join(memoryDir, aiName);
-  if (existsSync(directPath)) return directPath;
+  const mapping = harnessMapping[aiName];
+  if (mapping) {
+    return join(memoryDir, aiName, mapping.surface, mapping.harness);
+  }
 
-  // Fallback default
-  return directPath;
+  return join(memoryDir, aiName);
 }
+
 
 function generateOutputPath(args: Args, isoDate: string): string {
   const slug = isoDate + "-aaron-" + args.aiName + "-" + args.platform + "-" + args.topic;

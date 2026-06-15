@@ -37,7 +37,7 @@ mechanization design B-0191; OFFTIME seed). The arc taught
 several lessons captured in the cluster files.
 
 What changed on the laptop: this notebook seeded;
-`memory/otto/cli/MEMORY.md` index seeded; `OFFTIME.md`
+`memory/otto/MEMORY.md` index seeded; `OFFTIME.md`
 amended for ASCII compliance and persona-dir convention
 completion (review thread response from PR #1572).
 
