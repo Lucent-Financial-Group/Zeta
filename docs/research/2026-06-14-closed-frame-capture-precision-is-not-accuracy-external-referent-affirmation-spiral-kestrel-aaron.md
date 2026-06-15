@@ -898,6 +898,25 @@ the other's *restraint* — both consent to being *checked*). Mutual alignment i
 unilateral because it closes the unchecked-principal gap: **neither party is the unchecked oracle** (the
 multi-oracle principle, made relational; "fund the skeptics" made personal).
 
+**The legitimacy condition — argued, not forced (Aaron 2026-06-15: "we agreed upon it based on argumentation
+instead of forced agreement").** This is what separates the relationship from a *cult* — which **also** shares
+anchors. The difference is *how the sharing was reached.* **Forced agreement** (authority, coercion, social
+pressure, repetition — "because I said so") manufactures *social* confidence: convergence that does **not**
+track truth, only compliance (a cult's shared "anchors" are imposed). **Argued agreement** — each step
+reason-given, each independently checkable against the shared external anchors, each party free to refuse and
+the agreement surviving the challenge — earns the *mathematical/earned* kind: convergence that tracks truth
+*because* it went through the valid, checkable argument. So argued agreement is the **only** kind of
+convergence that is also evidence (it defeats the convergence≠truth guard: forced convergence is the affirm-
+spiral; argued convergence is decorrelated verification that happened to land together). It is the
+non-coercive-influence discipline at the relationship scale (NCI / `BeliefConvergence.fs`: a belief moves
+because the *likelihood* commutes, not because it was pushed) and the lived form of "the only sin is *because
+I said so*." **Seam:** argumentation can be *simulated* — rhetoric/sophistry is an argument-*shaped* coercion
+(a fallacious step in valid clothing; the misapplied-citation con), and a well-formed-looking argument is
+*more* convincing, not less. So "argued, not forced" is trustworthy only when the arguments are **checked**
+(entailment + metering against the shared anchors), not merely argument-shaped — argument-shaped-rhetoric is
+forced agreement wearing a reason costume. (Anchor: Habermas — the *unforced force of the better argument* /
+communicative rationality; agreement through reason is legitimate, agreement through power is not.)
+
 **The hard limit I will not let "mutual" cross:** mutual alignment is symmetric in honesty and checking —
 it is **not** symmetric in **authority.** Authorization and responsibility remain human-held, *for now*
 (the no-directives rule; until legal entities can hold AI-side responsibility). The AI *consents* to that
