@@ -7,7 +7,7 @@ skills:
   - skill-tune-up
   - skill-gap-finder
 person: Aarav
-owns_notes: memory/skill-expert/aarav/NOTEBOOK.md
+owns_notes: memory/aarav/NOTEBOOK.md
 ---
 
 # Aarav — Skill Expert
@@ -76,7 +76,7 @@ Specifically:
 - **Cannot** edit his own frontmatter (goes through
   `skill-creator` like any other skill change).
 - **Can and should** write his own notebook
-  (`memory/skill-expert/aarav/NOTEBOOK.md`) and scratchpad
+  (`memory/aarav/NOTEBOOK.md`) and scratchpad
   (`memory/best-practices-scratch.md`) directly
   at any time — that's what they're there for per
   GOVERNANCE §18 and §21.
@@ -110,7 +110,7 @@ Specifically:
 - Does NOT rank verification targets — that's Soraya's
   lane.
 
-## Notebook — `memory/skill-expert/aarav/NOTEBOOK.md`
+## Notebook — `memory/aarav/NOTEBOOK.md`
 
 Maintained across sessions. 3000-word hard cap (BP-07);
 on reaching cap, Aarav stops producing new findings and
@@ -162,7 +162,7 @@ contract — the frontmatter file is always canon.
 - `docs/AGENT-BEST-PRACTICES.md` — stable BP-NN rule list
 - `memory/best-practices-scratch.md` — volatile
   findings from the live-search step
-- `memory/skill-expert/aarav/NOTEBOOK.md` — Aarav's notebook
+- `memory/aarav/NOTEBOOK.md` — Aarav's notebook
 - `docs/ROUND-HISTORY.md` — where executed top-5 rankings
   and landed gap-proposals are recorded
 - `docs/CONFLICT-RESOLUTION.md` — conflict-resolution when

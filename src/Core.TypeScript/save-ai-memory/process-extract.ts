@@ -3,7 +3,7 @@
  * tools/save-ai-memory/process-extract.ts
  *
  * Process a verbatim conversation extract (from external AI chat UI) into a
- * canonical §33 archive markdown file in memory/<role>/<persona>/<ai-name>/conversations/.
+ * canonical §33 archive markdown file in memory/<persona>/<ai-name>/conversations/.
  * (Pre-2026-05-15 the destination was docs/research/; migrated under the
  * "they ARE her memories" architectural correction.)
  *
@@ -33,7 +33,7 @@
  *      extracts conversation text in chronological order. If plaintext:
  *      uses as-is (caller is responsible for ordering).
  *   3. Generates a §33-compliant markdown file with proper archive header
- *   4. Writes to memory/<role>/<persona>/<ai-name>/conversations/YYYY-MM-DD-aaron-<ai-name>-<platform>-<topic>.md
+ *   4. Writes to memory/<persona>/<ai-name>/conversations/YYYY-MM-DD-aaron-<ai-name>-<platform>-<topic>.md
  *      (or --output)
  *   5. Optionally (--commit) stages the file + commits via git
  *
@@ -61,7 +61,7 @@
  *   security_reminder_hook recommendation.
  */
 
-import { writeFileSync, readFileSync, existsSync, readdirSync, mkdirSync } from "node:fs";
+import { writeFileSync, readFileSync, existsSync, mkdirSync } from "node:fs";
 import { join, dirname, relative } from "node:path";
 import { execFileSync } from "node:child_process";
 
@@ -272,16 +272,20 @@ function scrubEmails(text: string): string {
 
 function getPersonaPath(aiName: string): string {
   const memoryDir = "memory";
-  const roles = readdirSync(memoryDir, { withFileTypes: true });
-  for (const r of roles) {
-    if (r.isDirectory()) {
-      const personaPath = join(memoryDir, r.name, aiName);
-      if (existsSync(personaPath)) {
-        return personaPath;
-      }
-    }
-  }
-  return join(memoryDir, "harness", aiName);
+  
+  // 1. Check for harness personas with surface-nested subfolders (cli/ide)
+  const cliPath = join(memoryDir, aiName, "cli");
+  if (existsSync(cliPath)) return cliPath;
+  
+  const idePath = join(memoryDir, aiName, "ide");
+  if (existsSync(idePath)) return idePath;
+
+  // 2. Check for normal flat persona folders
+  const directPath = join(memoryDir, aiName);
+  if (existsSync(directPath)) return directPath;
+
+  // Fallback default
+  return directPath;
 }
 
 function generateOutputPath(args: Args, isoDate: string): string {

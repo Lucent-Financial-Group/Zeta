@@ -76,7 +76,7 @@ updates on planner/executor split vs ReAct choices.
 ## 2026-04-19 -- devops-engineer (Dejan) scoped tune-up -- Aarav
 
 **Source:** scoped review of `.claude/agents/devops-engineer.md`,
-`.claude/skills/devops-engineer/SKILL.md`, `memory/devops-engineer/dejan/*`.
+`.claude/skills/devops-engineer/SKILL.md`, `memory/dejan/*`.
 **Findings (with BP-NN citations):**
 
 - **F1 (P2, BP-01).** Agent frontmatter `description` is 595 chars --
@@ -106,7 +106,7 @@ updates on planner/executor split vs ReAct choices.
   signal: "every CI minute earns its slot" is measurable (cost
   estimate per workflow change). "Never compliments a green
   build" is a concrete posture rule. Pass.
-- **F8 (P1, BP-07).** Notebook (`memory/devops-engineer/dejan/NOTEBOOK.md`)
+- **F8 (P1, BP-07).** Notebook (`memory/dejan/NOTEBOOK.md`)
   declares 3000-word cap + ASCII-only + prune every third audit.
   OFFTIME.md declares ASCII-only + prune-to-10-entries at BP-07
   reflection cadence. Both pass.
@@ -164,7 +164,7 @@ updates on planner/executor split vs ReAct choices.
 ## 2026-04-19 -- developer-experience-engineer (Bodhi) scoped tune-up -- Aarav
 
 **Source:** scoped review of `.claude/agents/developer-experience-engineer.md`,
-`.claude/skills/developer-experience-engineer/SKILL.md`, `memory/developer-experience-engineer/bodhi/*`.
+`.claude/skills/developer-experience-engineer/SKILL.md`, `memory/bodhi/*`.
 **Findings (with BP-NN citations):**
 
 - **F1 (P2, BP-01).** Agent `description` ~520 chars, SKILL `description`
@@ -749,7 +749,7 @@ completeness, and can be extended to cover the whole repo.
 - For every ADR under `docs/DECISIONS/`, does it carry a
   reversion-trigger stamp?
 - For every persona under `.claude/agents/`, does their
-  notebook under `memory/<role>/<persona>/<name>/` exist?
+  notebook under `memory/<persona>/<name>/` exist?
 - For every OpenSpec capability under `openspec/specs/`,
   is there a companion formal spec (TLA+ / Lean / Z3)
   where the property class demands one?
@@ -825,7 +825,7 @@ observability substrate, not a mirror of one.
 **Applies to our repo?** Yes -- this ratifies the pattern
 already in use by the Round 37 alignment observability
 substrate (`tools/alignment/out/`), ROUND-HISTORY.md, WINS.md,
-and the per-persona notebooks at `memory/<role>/<persona>/*/NOTEBOOK.md`.
+and the per-persona notebooks at `memory/<persona>/*/NOTEBOOK.md`.
 The maintainer's directive extends the pattern from "how some
 of our observability happens to work" to "the default
 architectural choice for every new observability surface."

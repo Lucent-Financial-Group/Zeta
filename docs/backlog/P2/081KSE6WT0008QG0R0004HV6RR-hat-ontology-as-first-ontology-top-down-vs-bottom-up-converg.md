@@ -16,9 +16,9 @@ composes_with:
 related_substrate:
   - full-ai-cluster/k8s/applications/hat-system/
   - docs/agentic-organization/
-  - memory/external-ai-participant/mika/
-  - memory/human-co-owner/max/
-  - memory/human-co-owner/addison/
+  - memory/mika/
+  - memory/max/
+  - memory/addison/
 tags: [hat-ontology, manager-of-managers, bubble-wrap, offsetting-pairs, red-team, emergence, convergence, knowledge-graph, runbooks, mika-substrate, max-substrate]
 ---
 

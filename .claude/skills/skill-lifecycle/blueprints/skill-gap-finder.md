@@ -113,9 +113,9 @@ For each strong + moderate candidate:
 
 ### Step 5 — hand off
 
-Write the proposals in the scratchpad at `memory/<role>/<persona>/
+Write the proposals in the scratchpad at `memory/<persona>/
 best-practices-scratch.md` (or a new file under
-`memory/<role>/<persona>/` dedicated to skill-gaps) and **do not
+`memory/<persona>/` dedicated to skill-gaps) and **do not
 create the skill yourself**. `skill-creator` is the
 canonical workflow per GOVERNANCE §4 — this skill
 recommends; skill-creator executes.

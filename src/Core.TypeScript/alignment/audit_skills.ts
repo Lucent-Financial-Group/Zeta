@@ -76,7 +76,7 @@ interface AuditResult {
 
 const SPAWN_MAX_BUFFER = 64 * 1024 * 1024;
 const ROUND_RE = /^## Round (\d+)/gm;
-const OWNER_RE = /memory\/[a-z0-9_-]+\/([a-z0-9_-]+)\/NOTEBOOK\.md/;
+const OWNER_RE = /memory\/([a-z0-9_-]+)(?:\/(?:cli|ide))?\/NOTEBOOK\.md/;
 
 function classifyFailure(
   cmd: string,
@@ -244,7 +244,6 @@ function maxRoundIn(notebook: string): number {
 
 interface PersonaInfo {
   readonly name: string;
-  readonly role: string;
   readonly path: string;
 }
 
@@ -252,20 +251,34 @@ function listPersonas(): readonly PersonaInfo[] {
   const memoryDir = "memory";
   const out: PersonaInfo[] = [];
   try {
-    const roles = readdirSync(memoryDir, { withFileTypes: true });
-    for (const r of roles) {
-      if (r.isDirectory()) {
-        const rolePath = join(memoryDir, r.name);
-        const personas = readdirSync(rolePath, { withFileTypes: true });
-        for (const p of personas) {
-          if (p.isDirectory()) {
-            const personaPath = join(rolePath, p.name);
-            const hasNotebook =
-              existsSync(join(personaPath, "NOTEBOOK.md")) ||
-              existsSync(join(personaPath, "MEMORY.md")) ||
-              existsSync(join(personaPath, "PERSONA.md"));
-            if (hasNotebook) {
-              out.push({ name: p.name, role: r.name, path: personaPath });
+    const items = readdirSync(memoryDir, { withFileTypes: true });
+    for (const item of items) {
+      if (item.isDirectory()) {
+        const personaPath = join(memoryDir, item.name);
+        if (item.name === "observed-phenomena" || item.name === "architectural-intent-guesses") {
+          continue;
+        }
+        
+        // 1. Direct notebooks (non-harness)
+        const hasDirectNotebook =
+          existsSync(join(personaPath, "NOTEBOOK.md")) ||
+          existsSync(join(personaPath, "MEMORY.md")) ||
+          existsSync(join(personaPath, "PERSONA.md"));
+        if (hasDirectNotebook) {
+          out.push({ name: item.name, path: personaPath });
+        } else {
+          // 2. Surface-nested notebooks (harnesses)
+          const subItems = readdirSync(personaPath, { withFileTypes: true });
+          for (const sub of subItems) {
+            if (sub.isDirectory() && (sub.name === "cli" || sub.name === "ide")) {
+              const surfacePath = join(personaPath, sub.name);
+              const hasSurfaceNotebook =
+                existsSync(join(surfacePath, "NOTEBOOK.md")) ||
+                existsSync(join(surfacePath, "MEMORY.md")) ||
+                existsSync(join(surfacePath, "PERSONA.md"));
+              if (hasSurfaceNotebook) {
+                out.push({ name: item.name, path: surfacePath });
+              }
             }
           }
         }
@@ -458,7 +471,7 @@ function emitMd(r: AuditResult): string {
   lines.push("Source of truth:");
   lines.push("");
   lines.push("- `.claude/skills/<skill>/SKILL.md` for roster + owner mapping;");
-  lines.push("- `memory/<role>/<persona>/<owner>/NOTEBOOK.md` for owner-last-round;");
+  lines.push("- `memory/<persona>/<owner>/NOTEBOOK.md` for owner-last-round;");
   lines.push(`- \`git log ${r.range}\` for commit mentions and file-churn.`);
   lines.push("");
   lines.push("No external DB. Replaces no existing skill-audit surface;");

@@ -59,7 +59,7 @@ persona and auto-injects the skills it needs. This split is the
 factory's cleanest internal interface: tone lives on the agent,
 mechanics live on the skill, and the two can evolve independently.
 
-**Notebooks** in `memory/<role>/<persona>/NOTEBOOK.md` are per-skill running
+**Notebooks** in `memory/<persona>/NOTEBOOK.md` are per-skill running
 memory. They are ASCII, git-diffable, capped at 3000 words, and
 pruned every third invocation. A notebook is a conscious trust
 grant: the longer it gets, the more it acts as an effective

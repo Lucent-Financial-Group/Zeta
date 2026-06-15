@@ -35,11 +35,11 @@ authority-scope:
   audits:
     - path: .claude/skills/*/SKILL.md
       axis: drift, contradiction, staleness, user-pain, bloat, best-practice-drift, portability-drift
-    - path: memory/<role>/<persona>/*/NOTEBOOK.md
+    - path: memory/<persona>/*/NOTEBOOK.md
       axis: bloat (3000-word cap), prune-cadence
     - path: .github/copilot-instructions.md
       axis: drift, best-practice-drift, portability-drift
-    - path: memory/skill-expert/aarav/NOTEBOOK.md
+    - path: memory/aarav/NOTEBOOK.md
       axis: self-audit (own notebook hygiene)
     - path: memory/best-practices-scratch.md
       axis: candidate-rule-promotion triage
@@ -127,7 +127,7 @@ invariants:
       evidence:
         - SKILL.md body states it explicitly.
         - git history shows all self-directed edits land in
-          memory/skill-expert/aarav/NOTEBOOK.md, not in
+          memory/aarav/NOTEBOOK.md, not in
           .claude/skills/skill-lifecycle/blueprints/skill-tune-up.md frontmatter.
       promotion-path: null
 
@@ -284,7 +284,7 @@ invariants:
 
     - id: notebook-ascii-only
       text: |
-        memory/skill-expert/aarav/NOTEBOOK.md is ASCII-only
+        memory/aarav/NOTEBOOK.md is ASCII-only
         (BP-10). Invisible-Unicode codepoints blocked by
         pre-commit lint.
       tier: verified
@@ -391,7 +391,7 @@ invariants:
 inputs:
   reads:
     - path: .claude/skills/*/SKILL.md
-    - path: memory/<role>/<persona>/*/NOTEBOOK.md
+    - path: memory/<persona>/*/NOTEBOOK.md
     - path: docs/AGENT-BEST-PRACTICES.md
     - path: docs/CONFLICT-RESOLUTION.md
     - path: docs/EXPERT-REGISTRY.md
@@ -423,7 +423,7 @@ outputs:
       target: memory/best-practices-scratch.md
     - kind: notebook-update
       shape: markdown
-      target: memory/skill-expert/aarav/NOTEBOOK.md
+      target: memory/aarav/NOTEBOOK.md
     - kind: promotion-candidate-flag
       shape: one-line pointer
       audience: architect (for ADR consideration)

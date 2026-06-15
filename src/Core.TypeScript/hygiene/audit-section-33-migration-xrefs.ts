@@ -3,7 +3,7 @@
 //
 // B-0533 Slice B.1 scanner. Mechanizes the dead-xref class Codex P2 caught on
 // PR #3513 (Riven section-33 archive migration). The migration pattern moves
-// files from docs/research/<basename> to memory/<role>/<persona>/conversations/<basename>
+// files from docs/research/<basename> to memory/<persona>/conversations/<basename>
 // but does not auto-update backlinks. Live-nav surfaces (rules, backlog rows,
 // memory feedback files) accumulate dead xrefs silently.
 //
@@ -25,7 +25,7 @@
 //   - docs/hygiene-history/ticks/** (frozen tick shards)
 //   - docs/pr-discussions/** (frozen PR-discussion archives)
 //   - docs/research/** (sibling migration candidates; internal xrefs are provenance trail)
-//   - memory/<role>/<persona>/**/conversations/** (migrated archives — internal xrefs are provenance trail)
+//   - memory/<persona>/**/conversations/** (migrated archives — internal xrefs are provenance trail)
 //   - references/prior-art/** (other people's code; gitignored)
 //
 // Usage:
@@ -102,25 +102,42 @@ function indexMigratedFiles(): Map<string, MigratedFileInfo> {
     const index = new Map<string, MigratedFileInfo>();
     const memoryDir = "memory";
     if (!existsSync(memoryDir)) return index;
-    const roles = readdirSync(memoryDir).filter((r) => {
-        const full = join(memoryDir, r);
+    const items = readdirSync(memoryDir).filter((item) => {
+        const full = join(memoryDir, item);
         return existsSync(full) && statSync(full).isDirectory();
     });
-    for (const r of roles) {
-        const rolePath = join(memoryDir, r);
-        const personas = readdirSync(rolePath).filter((p) => {
-            const full = join(rolePath, p);
-            return existsSync(full) && statSync(full).isDirectory();
-        });
-        for (const persona of personas) {
-            const conversationsDir = join(rolePath, persona, "conversations");
-            if (!existsSync(conversationsDir) || !statSync(conversationsDir).isDirectory()) continue;
-            for (const f of readdirSync(conversationsDir)) {
+    for (const item of items) {
+        if (item === "observed-phenomena" || item === "architectural-intent-guesses") {
+            continue;
+        }
+        const personaPath = join(memoryDir, item);
+        const directConv = join(personaPath, "conversations");
+        if (existsSync(directConv) && statSync(directConv).isDirectory()) {
+            for (const f of readdirSync(directConv)) {
                 if (!f.endsWith(".md")) continue;
                 index.set(f, {
-                    persona,
-                    newPath: join(rolePath, persona, "conversations", f).replace(/\\/g, "/"),
+                    persona: item,
+                    newPath: join(directConv, f).replace(/\\/g, "/"),
                 });
+            }
+        } else {
+            const subdirectories = readdirSync(personaPath).filter((sub) => {
+                const full = join(personaPath, sub);
+                return existsSync(full) && statSync(full).isDirectory();
+            });
+            for (const sub of subdirectories) {
+                if (sub === "cli" || sub === "ide") {
+                    const surfaceConv = join(personaPath, sub, "conversations");
+                    if (existsSync(surfaceConv) && statSync(surfaceConv).isDirectory()) {
+                        for (const f of readdirSync(surfaceConv)) {
+                            if (!f.endsWith(".md")) continue;
+                            index.set(f, {
+                                persona: item,
+                                newPath: join(surfaceConv, f).replace(/\\/g, "/"),
+                            });
+                        }
+                    }
+                }
             }
         }
     }

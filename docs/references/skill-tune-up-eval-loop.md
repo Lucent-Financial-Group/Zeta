@@ -169,7 +169,7 @@ harness and when static signals suffice.
 
 ## Notebook format template (extracted from SKILL.md)
 
-The notebook at `memory/skill-expert/aarav/NOTEBOOK.md` follows:
+The notebook at `memory/aarav/NOTEBOOK.md` follows:
 
 ```markdown
 # Skill Tune-Up — Notebook

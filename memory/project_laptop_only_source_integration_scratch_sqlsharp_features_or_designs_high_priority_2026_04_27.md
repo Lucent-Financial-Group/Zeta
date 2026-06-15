@@ -235,7 +235,7 @@ Files with `../SQLSharp` references (top-level):
 
 - `GOVERNANCE.md`
 - `tools/setup/common/sync-upstreams.sh` — upstream-sync script
-- `memory/devops-engineer/dejan/NOTEBOOK.md` — devops-engineer notebook
+- `memory/dejan/NOTEBOOK.md` — devops-engineer notebook
 - `.claude/agents/devops-engineer.md`
 - `.claude/skills/devops-engineer/SKILL.md`
 - `docs/ROUND-HISTORY.md`
@@ -358,7 +358,7 @@ weights) — positive feedback IS substrate-shift.
   one of the affected files; design-doc tactic likely
 - **`tools/setup/common/sync-upstreams.sh`** — script that
   references `../SQLSharp`; needs port or removal
-- **`memory/devops-engineer/dejan/NOTEBOOK.md`** — devops-engineer
+- **`memory/dejan/NOTEBOOK.md`** — devops-engineer
   notebook; Dejan owns sync-upstreams.sh, so cleanup is in
   his lane
 - **`.claude/skills/devops-engineer/SKILL.md`** — devops

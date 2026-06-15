@@ -9,7 +9,7 @@
 //
 // Phase-0 scope (deliberately minimal):
 //   - Scan: docs/**, .claude/skills/**, .claude/agents/**,
-//     memory/<role>/<persona>/**, openspec/**, AGENTS.md, CLAUDE.md,
+//     memory/<persona>/**, openspec/**, AGENTS.md, CLAUDE.md,
 //     GOVERNANCE.md, README.md
 //   - Pattern A: markdown link [text](path) where path resolves.
 //   - Pattern B: backtick file ref `path/to/file.ext` where

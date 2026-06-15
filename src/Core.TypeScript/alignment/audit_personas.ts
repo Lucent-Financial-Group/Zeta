@@ -7,14 +7,14 @@
 // What it measures:
 //
 //   NOTEBOOK-LAST-ROUND   round number of the most recent entry in
-//                         memory/<role>/<persona>/NOTEBOOK.md
+//                         memory/<persona>/NOTEBOOK.md
 //   NOTEBOOK-STALENESS    current round minus NOTEBOOK-LAST-ROUND
 //   COMMIT-MENTIONS       count of commits in the audited range whose
 //                         message body references the persona by name
 //   ROSTER-COVERAGE       fraction of the roster that shows either a
 //                         notebook-touch or a commit-mention this round
 //
-// Roster = union of `memory/<role>/<persona>/` directories.
+// Roster = union of `memory/<persona>/` directories.
 //
 // Usage:
 //   bun tools/alignment/audit_personas.ts                   # main..HEAD
@@ -197,7 +197,6 @@ function parseArgs(argv: readonly string[]): ParseResult {
 
 interface PersonaInfo {
   readonly name: string;
-  readonly role: string;
   readonly path: string;
 }
 
@@ -205,20 +204,34 @@ function listPersonas(): readonly PersonaInfo[] {
   const memoryDir = "memory";
   const out: PersonaInfo[] = [];
   try {
-    const roles = readdirSync(memoryDir, { withFileTypes: true });
-    for (const r of roles) {
-      if (r.isDirectory()) {
-        const rolePath = join(memoryDir, r.name);
-        const personas = readdirSync(rolePath, { withFileTypes: true });
-        for (const p of personas) {
-          if (p.isDirectory()) {
-            const personaPath = join(rolePath, p.name);
-            const hasNotebook =
-              existsSync(join(personaPath, "NOTEBOOK.md")) ||
-              existsSync(join(personaPath, "MEMORY.md")) ||
-              existsSync(join(personaPath, "PERSONA.md"));
-            if (hasNotebook) {
-              out.push({ name: p.name, role: r.name, path: personaPath });
+    const items = readdirSync(memoryDir, { withFileTypes: true });
+    for (const item of items) {
+      if (item.isDirectory()) {
+        const personaPath = join(memoryDir, item.name);
+        if (item.name === "observed-phenomena" || item.name === "architectural-intent-guesses") {
+          continue;
+        }
+        
+        // 1. Direct notebooks (non-harness)
+        const hasDirectNotebook =
+          existsSync(join(personaPath, "NOTEBOOK.md")) ||
+          existsSync(join(personaPath, "MEMORY.md")) ||
+          existsSync(join(personaPath, "PERSONA.md"));
+        if (hasDirectNotebook) {
+          out.push({ name: item.name, path: personaPath });
+        } else {
+          // 2. Surface-nested notebooks (harnesses)
+          const subItems = readdirSync(personaPath, { withFileTypes: true });
+          for (const sub of subItems) {
+            if (sub.isDirectory() && (sub.name === "cli" || sub.name === "ide")) {
+              const surfacePath = join(personaPath, sub.name);
+              const hasSurfaceNotebook =
+                existsSync(join(surfacePath, "NOTEBOOK.md")) ||
+                existsSync(join(surfacePath, "MEMORY.md")) ||
+                existsSync(join(surfacePath, "PERSONA.md"));
+              if (hasSurfaceNotebook) {
+                out.push({ name: item.name, path: surfacePath });
+              }
             }
           }
         }
@@ -347,7 +360,7 @@ function emitMd(r: AuditResult): string {
   }
   lines.push("");
   lines.push(
-    `Source of truth: \`memory/<role>/<persona>/<name>/NOTEBOOK.md\` for last-round signal; \`git log ${r.range}\` for commit mentions. Both are git-tracked text — no external DB.`,
+    `Source of truth: \`memory/<persona>/<name>/NOTEBOOK.md\` for last-round signal; \`git log ${r.range}\` for commit mentions. Both are git-tracked text — no external DB.`,
   );
   return lines.join("\n");
 }
