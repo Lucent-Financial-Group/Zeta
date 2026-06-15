@@ -20,7 +20,7 @@ flowchart TD
         code["src/**"]
         specs["openspec/** + docs/*.tla"]
         docs["docs/**"]
-        mem["memory/persona/**"]
+        mem["memory/<role>/<persona>/**"]
         tools["tools/**"]
     end
 

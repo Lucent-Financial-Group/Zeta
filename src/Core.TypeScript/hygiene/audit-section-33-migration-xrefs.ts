@@ -3,7 +3,7 @@
 //
 // B-0533 Slice B.1 scanner. Mechanizes the dead-xref class Codex P2 caught on
 // PR #3513 (Riven section-33 archive migration). The migration pattern moves
-// files from docs/research/<basename> to memory/persona/<persona>/conversations/<basename>
+// files from docs/research/<basename> to memory/<role>/<persona>/conversations/<basename>
 // but does not auto-update backlinks. Live-nav surfaces (rules, backlog rows,
 // memory feedback files) accumulate dead xrefs silently.
 //
@@ -25,7 +25,7 @@
 //   - docs/hygiene-history/ticks/** (frozen tick shards)
 //   - docs/pr-discussions/** (frozen PR-discussion archives)
 //   - docs/research/** (sibling migration candidates; internal xrefs are provenance trail)
-//   - memory/persona/**/conversations/** (migrated archives — internal xrefs are provenance trail)
+//   - memory/<role>/<persona>/**/conversations/** (migrated archives — internal xrefs are provenance trail)
 //   - references/prior-art/** (other people's code; gitignored)
 //
 // Usage:
@@ -46,7 +46,7 @@
 import { existsSync, readFileSync, readdirSync, statSync, writeFileSync } from "node:fs";
 import { join, relative } from "node:path";
 
-const PERSONA_BASE = "memory/persona";
+
 const LIVE_NAV_SURFACES = [".claude/rules", ".claude/agents", ".claude/commands", ".claude/skills", "memory", "docs/backlog"];
 const ROOT_MD = readdirSync(".").filter(f => f.endsWith(".md"));
 
@@ -93,20 +93,35 @@ function parseArgs(argv: string[]): { kind: "args"; args: Args } | { kind: "erro
     return { kind: "args", args: { report, enforce } };
 }
 
-// Build basename to persona index by walking memory/persona/*/conversations/
-function indexMigratedFiles(base: string): Map<string, string> {
-    const index = new Map<string, string>();
-    if (!existsSync(base)) return index;
-    const personas = readdirSync(base).filter((p) => {
-        const full = join(base, p);
+interface MigratedFileInfo {
+    readonly persona: string;
+    readonly newPath: string;
+}
+
+function indexMigratedFiles(): Map<string, MigratedFileInfo> {
+    const index = new Map<string, MigratedFileInfo>();
+    const memoryDir = "memory";
+    if (!existsSync(memoryDir)) return index;
+    const roles = readdirSync(memoryDir).filter((r) => {
+        const full = join(memoryDir, r);
         return existsSync(full) && statSync(full).isDirectory();
     });
-    for (const persona of personas) {
-        const conversationsDir = join(base, persona, "conversations");
-        if (!existsSync(conversationsDir) || !statSync(conversationsDir).isDirectory()) continue;
-        for (const f of readdirSync(conversationsDir)) {
-            if (!f.endsWith(".md")) continue;
-            index.set(f, persona);
+    for (const r of roles) {
+        const rolePath = join(memoryDir, r);
+        const personas = readdirSync(rolePath).filter((p) => {
+            const full = join(rolePath, p);
+            return existsSync(full) && statSync(full).isDirectory();
+        });
+        for (const persona of personas) {
+            const conversationsDir = join(rolePath, persona, "conversations");
+            if (!existsSync(conversationsDir) || !statSync(conversationsDir).isDirectory()) continue;
+            for (const f of readdirSync(conversationsDir)) {
+                if (!f.endsWith(".md")) continue;
+                index.set(f, {
+                    persona,
+                    newPath: join(rolePath, persona, "conversations", f).replace(/\\/g, "/"),
+                });
+            }
         }
     }
     return index;
@@ -139,10 +154,9 @@ function collectLiveNavFiles(): string[] {
 
     for (const subdir of LIVE_NAV_SURFACES) {
         if (subdir === "memory") {
-            // memory/ — top-level only; explicitly exclude persona/ (migrated archives)
+            // memory/ — top-level only; explicitly exclude all subdirectories (migrated archives)
             if (!existsSync(subdir)) continue;
             for (const entry of readdirSync(subdir)) {
-                if (entry === "persona") continue;
                 const full = join(subdir, entry);
                 let st;
                 try {
@@ -172,7 +186,7 @@ function collectLiveNavFiles(): string[] {
 
 // Find docs/research/<basename> references in a file, where <basename> is
 // a key in the migrated index. Returns lines with their 1-indexed line numbers.
-function findDeadXrefs(filePath: string, migratedIndex: Map<string, string>): DeadXref[] {
+function findDeadXrefs(filePath: string, migratedIndex: Map<string, MigratedFileInfo>): DeadXref[] {
     const content = readFileSync(filePath, "utf8");
     const lines = content.split("\n");
     const found: DeadXref[] = [];
@@ -185,14 +199,14 @@ function findDeadXrefs(filePath: string, migratedIndex: Map<string, string>): De
         let m: RegExpExecArray | null;
         while ((m = pattern.exec(line)) !== null) {
             const basename = m[1]!;
-            const persona = migratedIndex.get(basename);
-            if (persona !== undefined) {
+            const info = migratedIndex.get(basename);
+            if (info !== undefined) {
                 found.push({
                     fromFile: filePath,
                     lineNumber: i + 1,
                     basename,
-                    persona,
-                    newPath: `memory/persona/${persona}/conversations/${basename}`,
+                    persona: info.persona,
+                    newPath: info.newPath,
                     line: line.trim().slice(0, 200),
                 });
             }
@@ -202,7 +216,7 @@ function findDeadXrefs(filePath: string, migratedIndex: Map<string, string>): De
 }
 
 function audit(): AuditResult {
-    const migratedIndex = indexMigratedFiles(PERSONA_BASE);
+    const migratedIndex = indexMigratedFiles();
     const liveNavFiles = collectLiveNavFiles();
     const deadXrefs: DeadXref[] = [];
     for (const f of liveNavFiles) {

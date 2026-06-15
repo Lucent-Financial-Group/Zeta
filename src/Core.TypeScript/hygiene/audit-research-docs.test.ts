@@ -91,7 +91,7 @@ describe("auditResearchDocsInRoots", () => {
       ]);
       expect(result.memoryFiles).toEqual([
         "memory/MEMORY.md",
-        "memory/persona/CURRENT.md",
+        "memory/<role>/<persona>/CURRENT.md",
       ]);
       expect(result.referenced).toEqual([
         "docs/research/absolute.md",
