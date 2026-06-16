@@ -190,8 +190,12 @@ export class PersonaSummoner implements ISummon {
     }
 
     const { harness } = personaConfig;
-    // Replace prompt template
-    const execArgs = harness.args.map(arg => arg.replace("{{PROMPT}}", fullPrompt));
+    // Resolve model: persona preferred → harness default → empty
+    const resolvedModel = personaConfig.preferredModel ?? harness.defaultModel ?? "";
+    // Replace templates in args
+    const execArgs = harness.args.map(arg =>
+      arg.replace("{{PROMPT}}", fullPrompt).replace("{{MODEL}}", resolvedModel)
+    );
 
     // Execute the harness command
     let runResult;
