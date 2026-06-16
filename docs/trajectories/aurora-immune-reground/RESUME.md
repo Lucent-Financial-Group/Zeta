@@ -50,13 +50,13 @@ theorems, not metaphor.
 ## Next concrete steps (in order)
 
 1. **(a) wiring task:** point Aurora's `d_self` predicate at `NonRegisterCollapse` (no new proof).
-3. **(b)/(e) FsCheck cross-checks** (Soraya's BP-16): the Aurora §4.1 retraction sim (e) +
+2. **(b)/(e) FsCheck cross-checks** (Soraya's BP-16): the Aurora §4.1 retraction sim (e) +
    the Z3 honest-count side (b).
-4. **Authors:** (c)/(d)/(g) FsCheck/Z3 smalls.
-5. **Prereq:** confirm Z3 `QF_FD` set support in `src/Core.FSharp.Z3Verify` for (d) (else QF_BV subset).
-6. **Refinements noted in-spec:** (b) honest-supermajority-of-quorum needs D=3f+1 sizing;
+3. **Authors:** (c)/(d)/(g) FsCheck/Z3 smalls.
+4. **Prereq:** confirm Z3 `QF_FD` set support in `src/Core.FSharp.Z3Verify` for (d) (else QF_BV subset).
+5. **Refinements noted in-spec:** (b) honest-supermajority-of-quorum needs D=3f+1 sizing;
    (e) multi-claim substrate + multi-hop kernel reachability is the v3.
-7. **Promotion:** when operators stand on proven legs + Aurora's 5 tests pass → open a §B row
+6. **Promotion:** when operators stand on proven legs + Aurora's 5 tests pass → open a §B row
    *"Aurora immune re-grounded on the proven identity primitive"*; promote one operator at a time (§C).
 
 ## Hygiene flag (separate, not bundled here)
