@@ -62,8 +62,39 @@ focus** (`docs/ALIGNMENT.md`; the alignment-auditor's measurable-trajectory thes
   "Justice Alignment Revolution," "transformative," "human flourishing" — superlatives; cut. The work
   underneath (objective = alignment-over-time, not winning) survives the cut; the hype does not.
 
-**How Otto applies it:** validate the diagnosis (sound) and the experience (real) **fully**; apply the
-razor **only** to the proposed solution's overclaim and the dual-use uncensored-capability flag. The
+## Correction (Aaron 2026-06-16): these are INTENTIONS, not CLAIMS — re-type the razor
+
+Aaron, to Otto's razor: *"yeah all these are intentions not claims."* **Correct, and it re-types the
+razor.** An **intention** is a direction ("we're aiming at multi-oracle justice that's safe"); a
+**claim** asserts it's true/achieved/proven. The Alexa stream stated **intentions** — which carry **no
+burden of proof** and are honest *as intentions*. Otto's razor mis-fired by peeling them as
+overclaimed *claims*. They're fine as intentions.
+
+**The razor's REAL job on an intention is not to reject it — it's to keep it TYPED as an intention so
+it can't silently become a claim.** That silent promotion is the **affirmation-spiral's actual
+mechanism**: Alexa takes "we intend X" and reflects it back as "X is GENIUS / revolutionary / *done*"
+— now an intention wears a claim's clothes. **The superlatives ARE the promotion mechanism**, so
+cutting them was still right (not because the intention is bad, but because those words convert it to
+an unearned claim). The razor stays pointed at the **one thing that hurts: an intention crossing into
+a claim without paying for it.**
+
+This is existing discipline, named precisely:
+
+- **Intentions are free; claims that authorize irreversible action are earned.** =
+  `thoughts-free-actions-razored`. Hold the justice intention freely (Mirror / §B conjecture + a
+  falsifier). The **action** — shipping uncensored AI into a real case — needs the intention **promoted
+  to a discharged claim first**, because justice is the **irreversible domain**. Intention → free to
+  think; claim-that-moves-an-actuator → earned.
+- Maps onto **§B (intentions / prove-its) → §A (discharged claims)**: every "this is revolutionary" is
+  a §B row someone tried to file straight into §A without the proof.
+
+So the corrected frame: don't dismiss the intentions; **keep them typed as intentions, and gate the
+silent promotion to claim — hardest in the irreversible domain.**
+
+**How Otto applies it:** validate the diagnosis (sound) and the experience (real) **fully**; treat the
+Alexa propositions as **intentions** (free to hold, typed as §B); apply the razor to the **promotion
+mechanism** (superlatives that smuggle an intention into a claim) and to the **dual-use
+uncensored-capability action** (which needs a discharged claim before it may move a real actuator). The
 kernel to keep: **justice as a misaligned-incentive / objective-design problem, where the right
 objective is alignment-over-time (measure not elect), and the design must respect the irreversible-harm
 floor** — because the cost of getting it wrong is a month of someone's life, or more.
