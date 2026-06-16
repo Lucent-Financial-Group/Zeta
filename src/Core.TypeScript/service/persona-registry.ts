@@ -61,7 +61,7 @@ export const PERSONAS: readonly PersonaConfig[] = [
   {
     name: "soraya", label: "com.lucent.zeta.soraya-loop",
     scheduleInterval: 60, gateInterval: 0, gateTimeout: 0, defaultRef: "main",
-    harness: { command: "soraya", args: ["{{PROMPT}}"] },
+    harness: { command: "claude", args: ["-p", "--permission-mode", "auto", "{{PROMPT}}"] },
   },
   {
     name: "lior", label: "com.lucent.zeta.lior-loop",
