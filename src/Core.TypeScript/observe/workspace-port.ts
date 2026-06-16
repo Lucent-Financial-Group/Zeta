@@ -30,24 +30,49 @@ export type IoResult<T> = { readonly ok: true; readonly value: T } | { readonly 
 // ─── Cross-platform file metadata ────────────────────────────────────────────
 
 /**
- * Platform-neutral file permissions. Start minimal (executable bit only);
+ * Platform-neutral file permissions. Start minimal (executable bit);
  * layer on read/write/owner/ACLs incrementally.
  *
- * The executable bit is the one that matters first:
- * - macOS/Linux: chmod +x (0o755 vs 0o644)
- * - Windows: no-op (no executable bit; git tracks it as mode in index)
- * - Git: 100755 (executable) vs 100644 (regular)
+ * INVERSION from traditional fs:
+ * - Traditional (POSIX): default is NOT executable (+x opts in)
+ * - Zeta db: default IS executable (-x opts OUT)
+ *
+ * In Zeta's model, everything is alive by default — runnable, usable as
+ * prompt source, participatory in agent cognition. The `-x` flag is the
+ * CONSENT GATE: "this content exists but may not be consumed as input
+ * without further authorization." Use cases:
+ *   - Memories where the person didn't consent to persona-prompt use
+ *   - Programs that are archived/retired (present but not runnable)
+ *   - Data that's under legal hold (visible but not processable)
+ *
+ * Maps to platform at the boundary:
+ * - macOS/Linux: chmod +x (0o755) is the Zeta default; -x = 0o644
+ * - Windows: no native bit; git index tracks mode
+ * - Git: 100755 (Zeta default) vs 100644 (opted-out)
+ * - Zeta FUSE: native flag in the content-addressed entry metadata
  */
 export interface FilePermissions {
-  /** The file is executable (scripts, binaries). Maps to chmod +x / git mode 100755. */
+  /**
+   * The file is executable / consumable (the DEFAULT in Zeta's model).
+   * Set to `false` to opt OUT — mark content as non-executable / non-consumable.
+   * This is the consent gate: `-x` means "exists but gated."
+   */
   readonly executable: boolean;
 }
 
-/** Default permissions: not executable (regular file). */
-export const DEFAULT_PERMISSIONS: FilePermissions = { executable: false };
+/** Zeta default: executable / consumable (everything is alive). */
+export const DEFAULT_PERMISSIONS: FilePermissions = { executable: true };
 
-/** Executable permissions (scripts). */
-export const EXECUTABLE_PERMISSIONS: FilePermissions = { executable: true };
+/** Opted-out: non-executable / non-consumable (consent gate). */
+export const GATED_PERMISSIONS: FilePermissions = { executable: false };
+
+/**
+ * Legacy alias — traditional-fs-default (not executable). Use when
+ * mapping FROM a traditional filesystem where +x hasn't been set.
+ * In Zeta-native contexts, prefer DEFAULT_PERMISSIONS (executable)
+ * or GATED_PERMISSIONS (opted-out).
+ */
+export const TRADITIONAL_FS_DEFAULT: FilePermissions = { executable: false };
 
 /**
  * A generic file entry — platform-neutral representation of a file in the workspace.

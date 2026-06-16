@@ -2,8 +2,9 @@ import { describe, expect, test } from "bun:test";
 import {
   simulatedWorkspacePort,
   emptySimulatedState,
-  EXECUTABLE_PERMISSIONS,
+  GATED_PERMISSIONS,
   DEFAULT_PERMISSIONS,
+  TRADITIONAL_FS_DEFAULT,
   type SimulatedState,
   type FileEntry,
 } from "./workspace-port";
@@ -165,7 +166,7 @@ describe("simulatedWorkspacePort — version control primitives (git-free)", () 
     port.pull("origin", "main");
     port.branch("alexa/fix-123", "origin/main");
     port.writeFile("src/fix.ts", "export function fix() { return true; }");
-    port.writeFile("scripts/deploy.sh", "#!/bin/bash\necho deploy", EXECUTABLE_PERMISSIONS);
+    port.writeFile("scripts/deploy.sh", "#!/bin/bash\necho deploy", DEFAULT_PERMISSIONS);
     const commitResult = port.commit("fix: resolve issue 123", ["src/fix.ts", "scripts/deploy.sh"]);
     port.push("origin", "alexa/fix-123");
 
@@ -182,21 +183,8 @@ describe("simulatedWorkspacePort — version control primitives (git-free)", () 
   });
 });
 
-describe("simulatedWorkspacePort — permissions (cross-platform)", () => {
-  test("writeFile with executable permissions records them", () => {
-    const state = emptySimulatedState();
-    const port = simulatedWorkspacePort(state);
-
-    port.writeFile("scripts/run.sh", "#!/bin/bash\necho hi", EXECUTABLE_PERMISSIONS);
-
-    const entry = port.readFileEntry("scripts/run.sh");
-    expect(entry.ok).toBe(true);
-    if (entry.ok) {
-      expect(entry.value.permissions.executable).toBe(true);
-    }
-  });
-
-  test("default permissions are not executable", () => {
+describe("simulatedWorkspacePort — permissions (Zeta inverted model)", () => {
+  test("default is executable/consumable (everything alive)", () => {
     const state = emptySimulatedState();
     const port = simulatedWorkspacePort(state);
 
@@ -205,41 +193,55 @@ describe("simulatedWorkspacePort — permissions (cross-platform)", () => {
     const entry = port.readFileEntry("src/lib.ts");
     expect(entry.ok).toBe(true);
     if (entry.ok) {
-      expect(entry.value.permissions.executable).toBe(false);
+      expect(entry.value.permissions.executable).toBe(true); // Zeta default: alive
     }
   });
 
-  test("setPermissions makes a file executable", () => {
+  test("GATED_PERMISSIONS opts out (-x = consent gate)", () => {
     const state = emptySimulatedState();
     const port = simulatedWorkspacePort(state);
 
-    port.writeFile("bin/tool", "#!/usr/bin/env bun\nconsole.log('hi')");
-    port.setPermissions("bin/tool", EXECUTABLE_PERMISSIONS);
+    // Sister's memories: preserved but not consumable as prompt source
+    port.writeFile("memory/persona/elizabeth/journal.md", "private content", GATED_PERMISSIONS);
 
-    const entry = port.readFileEntry("bin/tool");
+    const entry = port.readFileEntry("memory/persona/elizabeth/journal.md");
     expect(entry.ok).toBe(true);
     if (entry.ok) {
-      expect(entry.value.permissions.executable).toBe(true);
+      expect(entry.value.permissions.executable).toBe(false); // gated: exists but not for consumption
     }
+  });
+
+  test("setPermissions can gate a previously-executable file", () => {
+    const state = emptySimulatedState();
+    const port = simulatedWorkspacePort(state);
+
+    port.writeFile("memory/shared/conversation.md", "content");
+    // Initially alive (default)
+    let entry = port.readFileEntry("memory/shared/conversation.md");
+    expect(entry.ok && entry.value.permissions.executable).toBe(true);
+
+    // Person withdraws consent → gate it
+    port.setPermissions("memory/shared/conversation.md", GATED_PERMISSIONS);
+    entry = port.readFileEntry("memory/shared/conversation.md");
+    expect(entry.ok && entry.value.permissions.executable).toBe(false);
   });
 
   test("setPermissions on missing file returns error", () => {
     const port = simulatedWorkspacePort(emptySimulatedState());
-    const result = port.setPermissions("nope.sh", EXECUTABLE_PERMISSIONS);
+    const result = port.setPermissions("nope.sh", GATED_PERMISSIONS);
     expect(result.ok).toBe(false);
   });
 
-  test("win32 simulated port still tracks executable (for git mode)", () => {
+  test("win32 simulated port still tracks the flag (for git mode)", () => {
     const state = emptySimulatedState("win32");
     const port = simulatedWorkspacePort(state);
     expect(port.platform).toBe("win32");
 
-    port.writeFile("script.ps1", "Write-Host hi", EXECUTABLE_PERMISSIONS);
+    port.writeFile("script.ps1", "Write-Host hi");
     const entry = port.readFileEntry("script.ps1");
     expect(entry.ok).toBe(true);
     if (entry.ok) {
-      // Git tracks the mode even on Windows (100755 in index)
-      expect(entry.value.permissions.executable).toBe(true);
+      expect(entry.value.permissions.executable).toBe(true); // Zeta default even on win32
     }
   });
 });
