@@ -52,21 +52,42 @@ export const EXECUTABLE_PERMISSIONS: FilePermissions = { executable: true };
 /**
  * A generic file entry — platform-neutral representation of a file in the workspace.
  * Paths use forward slashes universally; platform mapping happens at the port boundary.
+ *
+ * Content can be text (UTF-8) or binary (Uint8Array). The workspace port doesn't
+ * assume a traditional filesystem — the backend could be a real OS fs, git,
+ * a FUSE-mounted Zeta image (single-file, APFS-like history + binary support),
+ * or an embedded store on a micro/unikernel with no OS filesystem at all.
  */
 export interface FileEntry {
   /** Platform-neutral path (forward slashes, relative to workspace root). */
   readonly path: string;
-  /** File content (UTF-8 text; binary files are out of scope for v0). */
-  readonly content: string;
+  /** File content — text (UTF-8 string) or binary (raw bytes). */
+  readonly content: string | Uint8Array;
   /** Cross-platform permissions. */
   readonly permissions: FilePermissions;
+  /** Whether the content is binary (opaque bytes) vs text (UTF-8 diffable). */
+  readonly binary: boolean;
 }
+
+/**
+ * The storage backend kind. The workspace port is agnostic — it works over
+ * whichever backend is wired:
+ *
+ * - "os-fs": traditional OS filesystem (macOS/Linux/Windows)
+ * - "git": git-native content-addressed store (text-oriented, requires git)
+ * - "zeta-fs": Zeta's own FUSE filesystem — APFS-like snapshots + git-like
+ *   history + binary support, operates as a single file (no OS fs required),
+ *   mountable via FUSE when a kernel is available, embeddable when Zeta IS
+ *   the kernel (micro/unikernel). THE ENDGAME BACKEND.
+ * - "simulated": in-memory (DST testing, no I/O)
+ */
+export type StorageBackend = "os-fs" | "git" | "zeta-fs" | "simulated";
 
 /**
  * Which platform we're mapping to. The port uses this to translate
  * generic operations into platform-specific ones.
  */
-export type Platform = "darwin" | "linux" | "win32";
+export type Platform = "darwin" | "linux" | "win32" | "zeta";
 
 /** Detect the current platform. */
 export function currentPlatform(): Platform {
@@ -79,14 +100,23 @@ export interface WorkspacePort {
   /** The platform this port maps to (for permission translation). */
   readonly platform: Platform;
 
-  /** Read a file's content. Returns the text or an error reason. */
+  /** The storage backend (os-fs, git, zeta-fs, simulated). */
+  readonly backend: StorageBackend;
+
+  /** Read a file's text content. Returns the text or an error reason. */
   readFile(path: string): IoResult<string>;
 
-  /** Read a file with its metadata (content + permissions). */
+  /** Read a file as binary (raw bytes). For images, compiled artifacts, etc. */
+  readBinary(path: string): IoResult<Uint8Array>;
+
+  /** Read a file with its full metadata (content + permissions + binary flag). */
   readFileEntry(path: string): IoResult<FileEntry>;
 
-  /** Write content to a file (creates parent dirs). Returns ok or error reason. */
+  /** Write text content to a file (creates parent dirs). Returns ok or error reason. */
   writeFile(path: string, content: string, permissions?: FilePermissions): IoResult<void>;
+
+  /** Write binary content to a file. For compiled artifacts, images, etc. */
+  writeBinary(path: string, content: Uint8Array, permissions?: FilePermissions): IoResult<void>;
 
   /** Set permissions on an existing file (e.g., make executable). */
   setPermissions(path: string, permissions: FilePermissions): IoResult<void>;
@@ -114,6 +144,7 @@ export function realWorkspacePort(repoRoot: string): WorkspacePort {
   const platform = currentPlatform();
   return {
     platform,
+    backend: "os-fs" as StorageBackend,
 
     readFile(path: string): IoResult<string> {
       try {
@@ -123,14 +154,27 @@ export function realWorkspacePort(repoRoot: string): WorkspacePort {
       }
     },
 
+    readBinary(path: string): IoResult<Uint8Array> {
+      try {
+        const buf = readFileSync(join(repoRoot, path));
+        return { ok: true, value: new Uint8Array(buf) };
+      } catch (err) {
+        return { ok: false, reason: `readBinary(${path}): ${(err as Error).message}` };
+      }
+    },
+
     readFileEntry(path: string): IoResult<FileEntry> {
       try {
         const full = join(repoRoot, path);
-        const content = readFileSync(full, "utf-8");
         const stat = statSync(full);
-        // On macOS/Linux, check if owner-execute bit is set (0o100)
         const executable = platform !== "win32" ? (stat.mode & 0o111) !== 0 : false;
-        return { ok: true, value: { path, content, permissions: { executable } } };
+        // Heuristic: try UTF-8 first; if it fails or contains null bytes, treat as binary
+        const raw = readFileSync(full);
+        const hasNull = raw.includes(0);
+        if (hasNull) {
+          return { ok: true, value: { path, content: new Uint8Array(raw), permissions: { executable }, binary: true } };
+        }
+        return { ok: true, value: { path, content: raw.toString("utf-8"), permissions: { executable }, binary: false } };
       } catch (err) {
         return { ok: false, reason: `readFileEntry(${path}): ${(err as Error).message}` };
       }
@@ -148,6 +192,20 @@ export function realWorkspacePort(repoRoot: string): WorkspacePort {
         return { ok: true, value: undefined };
       } catch (err) {
         return { ok: false, reason: `writeFile(${path}): ${(err as Error).message}` };
+      }
+    },
+
+    writeBinary(path: string, content: Uint8Array, permissions?: FilePermissions): IoResult<void> {
+      try {
+        const full = join(repoRoot, path);
+        mkdirSync(dirname(full), { recursive: true });
+        writeFileSync(full, content);
+        if (permissions?.executable && platform !== "win32") {
+          chmodSync(full, 0o755);
+        }
+        return { ok: true, value: undefined };
+      } catch (err) {
+        return { ok: false, reason: `writeBinary(${path}): ${(err as Error).message}` };
       }
     },
 
@@ -237,13 +295,29 @@ export function emptySimulatedState(platform: Platform = "darwin"): SimulatedSta
 export function simulatedWorkspacePort(state: SimulatedState): WorkspacePort {
   return {
     platform: state.platform,
+    backend: "simulated" as StorageBackend,
 
     readFile(path: string): IoResult<string> {
       const entry = state.files.get(path);
       if (entry === undefined) {
         return { ok: false, reason: `readFile(${path}): ENOENT` };
       }
-      return { ok: true, value: entry.content };
+      if (entry.binary) {
+        return { ok: false, reason: `readFile(${path}): file is binary, use readBinary()` };
+      }
+      return { ok: true, value: entry.content as string };
+    },
+
+    readBinary(path: string): IoResult<Uint8Array> {
+      const entry = state.files.get(path);
+      if (entry === undefined) {
+        return { ok: false, reason: `readBinary(${path}): ENOENT` };
+      }
+      if (!entry.binary) {
+        // Text → bytes (encode UTF-8)
+        return { ok: true, value: new TextEncoder().encode(entry.content as string) };
+      }
+      return { ok: true, value: entry.content as Uint8Array };
     },
 
     readFileEntry(path: string): IoResult<FileEntry> {
@@ -259,6 +333,17 @@ export function simulatedWorkspacePort(state: SimulatedState): WorkspacePort {
         path,
         content,
         permissions: permissions ?? DEFAULT_PERMISSIONS,
+        binary: false,
+      });
+      return { ok: true, value: undefined };
+    },
+
+    writeBinary(path: string, content: Uint8Array, permissions?: FilePermissions): IoResult<void> {
+      state.files.set(path, {
+        path,
+        content,
+        permissions: permissions ?? DEFAULT_PERMISSIONS,
+        binary: true,
       });
       return { ok: true, value: undefined };
     },
@@ -268,7 +353,6 @@ export function simulatedWorkspacePort(state: SimulatedState): WorkspacePort {
       if (!entry) {
         return { ok: false, reason: `setPermissions(${path}): ENOENT` };
       }
-      // On win32, executable is a no-op (but we still record it for git mode tracking)
       state.files.set(path, { ...entry, permissions });
       return { ok: true, value: undefined };
     },
