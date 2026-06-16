@@ -86,6 +86,9 @@ export interface WorkspacePort {
   /** Diff between two refs (or working tree vs HEAD). */
   diff(from?: string, to?: string): IoResult<string>;
 
+  /** Find the most recent common ancestor of two branches (LCA in the commit DAG). */
+  mergeBase(branchA: string, branchB: string): IoResult<{ hash: string }>;
+
   // ─── Escape hatches ────────────────────────────────────────────────
 
   /** Raw git command (legacy — use structured ops above when possible). */
@@ -268,6 +271,12 @@ export function realWorkspacePort(repoRoot: string): WorkspacePort {
       const r = spawnSync("git", ["-C", repoRoot, ...args], { encoding: "utf-8", timeout: 30_000 });
       if (r.status !== 0) return { ok: false, reason: `diff: ${(r.stderr ?? "").trim()}` };
       return { ok: true, value: r.stdout ?? "" };
+    },
+
+    mergeBase(branchA: string, branchB: string): IoResult<{ hash: string }> {
+      const r = spawnSync("git", ["-C", repoRoot, "merge-base", branchA, branchB], { encoding: "utf-8", timeout: 10_000 });
+      if (r.status !== 0) return { ok: false, reason: `mergeBase(${branchA}, ${branchB}): ${(r.stderr ?? "").trim()}` };
+      return { ok: true, value: { hash: (r.stdout ?? "").trim() } };
     },
 
     exec(command: string, args: readonly string[]): IoResult<{ stdout: string; exitCode: number }> {
@@ -484,6 +493,13 @@ export function simulatedWorkspacePort(state: SimulatedState): WorkspacePort {
 
     diff(_from?: string, _to?: string): IoResult<string> {
       return { ok: true, value: "" }; // no diff in simulation
+    },
+
+    mergeBase(_branchA: string, _branchB: string): IoResult<{ hash: string }> {
+      // In simulation, all branches share the same linear history
+      // The merge base is the earliest commit
+      const hash = state.commits.length > 0 ? `sim-000001` : "sim-root";
+      return { ok: true, value: { hash } };
     },
   };
 }

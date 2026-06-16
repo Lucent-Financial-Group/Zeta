@@ -193,5 +193,52 @@ for (const factory of factories) {
         expect(r.value.exitCode).toBe(0);
       }
     });
+
+    // ── Multi-home (link) ────────────────────────────────────────────
+
+    test("link creates a second path to the same content", () => {
+      port.writeFile("src/shared/util.ts", "export const shared = true;");
+      const linkResult = port.link("src/shared/util.ts", "packages/app/util.ts");
+      expect(linkResult.ok).toBe(true);
+
+      // Both paths read the same content
+      const original = port.readFile("src/shared/util.ts");
+      const linked = port.readFile("packages/app/util.ts");
+      expect(original.ok).toBe(true);
+      expect(linked.ok).toBe(true);
+      if (original.ok && linked.ok) {
+        expect(linked.value).toBe(original.value);
+      }
+    });
+
+    test("link to missing source returns error or creates dangling link (backend-dependent)", () => {
+      const r = port.link("does/not/exist.ts", "somewhere/else.ts");
+      // Real fs: symlinks can dangle (ok). Simulated: rejects (not ok).
+      // Both are valid — the invariant is "doesn't throw."
+      expect(typeof r.ok).toBe("boolean");
+    });
+
+    // ── History operations ────────────────────────────────────────────
+
+    test("history returns entries after commits", () => {
+      port.writeFile("src/a.ts", "v1");
+      port.stage(["src/a.ts"]);
+      port.commit("first commit");
+      
+      const h = port.history();
+      expect(h.ok).toBe(true);
+      if (h.ok) {
+        expect(h.value.length).toBeGreaterThan(0);
+        expect(h.value[0]!.message).toContain("first commit");
+      }
+    });
+
+    test("mergeBase returns a hash", () => {
+      const r = port.mergeBase("HEAD", "HEAD");
+      expect(r.ok).toBe(true);
+      if (r.ok) {
+        expect(r.value.hash.length).toBeGreaterThan(0);
+      }
+    });
   });
 }
