@@ -22,6 +22,9 @@ named in the file header and in `docs/FROZEN-CORE-AND-CONJECTURE-REGISTER.md` §
 | `lean-toolchain` | Pinned Lean 4 toolchain (`leanprover/lean4:v4.30.0-rc1`) |
 | `Lean4.lean` | Library root — imports every machine-checked module so `lake build` walks them transitively |
 | `Lean4/DbspChainRule.lean` | DBSP chain rule formalization (Budiu et al. arXiv:2203.16684) |
+| `Lean4/DynamicValue.lean` | Defines `DynamicValue` AST matching the canonical F# definition, plus tag injectivity proofs |
+| `Lean4/JsonCodec.lean` | Simplified JSON AST mapping and structural round-trip proofs for JSON representable subset |
+| `Lean4/CborCodec.lean` | Simplified CBOR encoding model and fuel-based round-trip proofs for CBOR representable subset |
 | `ImaginaryStack/ToyModel.lean` | Adinkra-as-generator / bulk-from-boundary toy lemma — machine-checked, sorry-free (2026-06-05) |
 | `ImaginaryStack/ErasureDistance.lean` | Erasure-correction principle (distance ⇒ any `<d` erasures correctable; distance-5 ⇒ any 12-of-16) **+ a concrete Reed–Solomon `[16,12]` code proven distance-5 / corrects-any-4-erasures** — machine-checked, sorry-free (2026-06-05) |
 | `Privacy/IdentityForcesPrivacy.lean` | Privacy-from-identity *necessity* (Leibniz identity-of-indiscernibles: under public convergence, distinction must live in private state) — pure Lean, **axiom-free**, sorry-free (2026-06-05) |
@@ -100,6 +103,26 @@ arXiv:2203.16684 §3.1-3.2:
 abelian groups `G`, `H`, `J` (for general bilinear `⊗` chain rule, not just
 composition). Currently named as future-round target at
 `Lean4/DbspChainRule.lean:593`.
+
+## DynamicValue Serialization Proofs (`Lean4/DynamicValue.lean`, `Lean4/JsonCodec.lean`, `Lean4/CborCodec.lean`)
+
+Formalizes the structural round-trip properties of the canonical `DynamicValue` AST on the representable subset of JSON and CBOR shapes.
+
+### Model Boundaries and Simplifying Assumptions
+
+Per Riven's adversarial review (2026-06-16), these proofs verify the **structural bijections of the nested value-tree abstraction** rather than the full byte-level wire formats defined by RFC 8949 (CBOR) and RFC 8259 (JSON).
+
+Key simplifications include:
+
+1. **Simplified Header Encoding (CBOR)**: Headers are encoded as `[major, arg]` (fixed two-byte header representation in Nat lists) rather than bit-packed variable-length bytes.
+2. **Simplified String Encoding (CBOR)**: Unicode characters map directly to lists of `Nat` code points via `Char.toNat` / `Char.ofNat` instead of proper UTF-8 byte stream compilation.
+3. **Float & Byte Stubs**: Floats are marked as unrepresentable in both JSON and CBOR, with the CBOR encoder/decoder mapping floats to fixed/stubbed representations.
+4. **Key Sorting & Formatting**: Maps are serialized in insertion order. Text-level constraints (whitespace rules, escape sequences, JSON number representations) are not modeled.
+
+### Parity Strategy (The 7 Languages + Lean 4)
+
+- **Production parity**: Parity across the 7 production-grade languages (F#, C#, Rust, TypeScript, Go, Python, and Q#) is maintained and enforced via differential tests executing and validating against the shared golden vectors (e.g., `golden-vectors-cbor.json` / `golden-vectors.json`).
+- **Mathematical soundness**: The Lean 4 formalization ensures the theoretical soundness of the serialization/deserialization bijection on the representable value-trees.
 
 ## Verification registry
 

@@ -1,5 +1,21 @@
 import Lean4.DynamicValue
 
+/-!
+# CBOR Codec Formalization Boundaries
+
+**CRITICAL: THIS IS A SIMPLIFIED MODEL AND NOT AN RFC 8949 COMPLIANT WIRE CODEC.**
+
+Per Riven's adversarial review (2026-06-16):
+1. **Simplified Header Encoding**: Uses `[major, arg]` (fixed two-byte headers mapped to Nat lists) rather than RFC 8949's bit-packed variable-length header format.
+2. **Simplified String Encoding**: Maps characters directly to their `Nat` code points via `Char.toNat` instead of compiling a proper UTF-8 byte stream.
+3. **Float Stubs**: Floats are marked as unrepresentable (`IsRepresentableInCbor .float _ = False`), with the encoder defaulting to `[7, 0]` and decoder blindly emitting `0.0`.
+4. **No Key Sorting**: Map keys are serialized in insertion order rather than RFC 8949 §4.2.1 lexicographical sorted byte order.
+
+This model is intended to prove structural round-trip bijections of the nested value-tree abstraction using a fuel-based recursion model. Cross-language byte parity and RFC compliance for the 7 production engines are verified via differential testing against shared golden vectors, not by this proof.
+-/
+
+
+
 /-- Convert a character to its Nat code point. -/
 def charToNat (c : Char) : Nat :=
   c.toNat

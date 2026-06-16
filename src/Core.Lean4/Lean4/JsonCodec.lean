@@ -1,5 +1,20 @@
 import Lean4.DynamicValue
 
+/-!
+# JSON Codec Formalization Boundaries
+
+**CRITICAL: THIS IS A SIMPLIFIED MODEL AND NOT AN RFC 8259 COMPLIANT PARSER/SERIALIZER.**
+
+Per Riven's adversarial review (2026-06-16):
+1. **Simplified AST and Predicates**: Focuses exclusively on the 6 JSON-representable shapes of `DynamicValue` v1 (floats and bytes are excluded via `IsRepresentableInJson`).
+2. **No Text Serialization**: The proof verifies the bijection between the `DynamicValue` AST and the simplified `Json` AST. It does not handle text-level serialization issues such as whitespace, escape sequences, or string parsing.
+3. **Key Ordering**: Assumes simple insertion-order preservation without addressing duplicate keys or key sorting.
+
+This model is intended to prove structural round-trip bijections of the nested value-tree abstraction. Actual text-level RFC 8259 compliance and cross-language byte parity are verified using differential test suites against golden vectors.
+-/
+
+
+
 /-- Simplified JSON AST covering the 6 locked shapes of DynamicValue v1. -/
 inductive Json where
   | null
