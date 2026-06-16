@@ -89,3 +89,29 @@ generalizes to any schema change.
 - Schema versioning via separate version numbers (the Z-set IS the version — fold gives you the current shape)
 - Breaking backward compatibility during the overlap window
 - Requiring all backends to be deployed simultaneously (each migrates independently)
+
+## Addendum: Reference-Counting Quorum + Adversarial Review (2026-06-16)
+
+### Requirement 7: Reference-counted quorum (provable zero-ref before drop)
+
+**User Story:** As the system architect, I want the overlap window to close ONLY when provably zero consumers reference the old schema fields, so that no read can fail after consolidation.
+
+#### Acceptance Criteria
+
+1. Given every consumer (UI component, backend service, agent, materialized view) declares which schema fields it references, when a schema delta is applied, then the system can enumerate all references to old fields.
+2. Given the ref count for an old field is > 0, when tryConsolidate is called, then it REFUSES (returns the list of remaining references as the reason).
+3. Given the ref count for ALL old fields reaches 0, when tryConsolidate is called, then it succeeds (the overlap window closes).
+4. Given a UI component renders data using field "modified", when that field is retracted but the UI still references it, then the ref count remains > 0 and consolidation is blocked until the UI is updated.
+5. Given the TLA+ spec, when model-checked, then the safety property includes: `canConsolidate iff \A f \in retractedFields: refCount(f) = 0`.
+
+### Requirement 8: Adversarial review of migration proofs (summon-gated)
+
+**User Story:** As a system operator, I want every schema migration proof to be adversarially reviewed by a summoned critic persona before finalization, so that missed references are caught before the overlap window closes.
+
+#### Acceptance Criteria
+
+1. Given a schema delta with ref count = 0, when finalization is requested, then a critic persona is summoned (via ISummon/PersonaSummoner) with the prompt: "find a consumer that still references the old field."
+2. Given the critic finds no remaining reference, when it responds, then finalization proceeds.
+3. Given the critic finds a remaining reference, when it responds, then finalization is BLOCKED and the reference is added to the ref count.
+4. Given the adversarial review uses a local LLM (temperature 0), when it runs, then the review is deterministic and reproducible (DST-compatible).
+5. Given the adversarial review uses a cloud persona (Grok critique role), when it runs, then the review has higher quality but is non-deterministic (logged for audit).
