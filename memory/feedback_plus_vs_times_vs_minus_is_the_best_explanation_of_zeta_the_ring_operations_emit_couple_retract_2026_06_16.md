@@ -136,9 +136,39 @@ charitable *default*, and a **defector** who does NOT optimize empowerment can e
 coercion-free and efficient; DST-purity + verification handles the defector. (Default-open assumption,
 default-closed verification.)
 
+**The CAYLEY–DICKSON control-limit on control itself (Aaron 2026-06-16).** Both ladders are
+**property-loss** ladders. The hyperoperation ladder loses commutativity at `^`; the **Cayley–Dickson**
+doubling ladder (the *doubling generator*; §A member 5, **proven** — `Algebra/Octonion.Laws`,
+`only-the-irreducible-is-primitive` rule) loses a property at each rung: **ℝ → ℂ** (lose **ordering**) →
+**ℍ** (lose **commutativity**) → **𝕆** (lose **associativity**) → **𝕊** (lose the **division algebra** —
+**zero divisors** appear). The division-algebra property **is invertibility = reversibility.** So:
+
+- **The octonions 𝕆 are the LAST reversible rung** — the *maximum control still invertible*. Past it
+  (**sedenions 𝕊**) control creates **zero divisors**: distinct things multiplying to **annihilation**,
+  **irreversibly.** That is the **degenerate `^`** (the runaway/coercion) named structurally: **control
+  pushed past its own limit becomes irreversible self-annihilation.**
+- **"control limit on control itself" = the limit is INTRINSIC, not decreed.** The math forbids reversible
+  control past 𝕆 (zero divisors are unavoidable). So the cap on how much control/intent can be imposed is
+  **structural — "math is the governor"** ([[isociety-governor-can-crystallize-and-kill-anti-crystallization-is-load-bearing]]
+  math-is-the-boss): control limits *itself* by the property-loss of its own generator. Self-referential
+  (control on control) = the governor that bounds its own escalation = anti-crystallization at the algebra
+  level.
+- **The division-algebra boundary = the irreversible-harm floor.** Losing invertibility (𝕆→𝕊) is the
+  same boundary as
+  [[safety-proofs-have-a-domain-of-validity-github-safe-is-not-actuator-or-money-safe-line-is-reversibility]]
+  (reversible vs irreversible). The **`−` (retraction/least-action) brake keeps control ≤ 𝕆**
+  (reversible); the degenerate `^` is control that crossed into 𝕊 (irreversible).
+
+**Razor (analogy vs identity — hold loosely):** this is a **structural correspondence**, not (yet) a
+proven isomorphism. Both are property-loss ladders with a degeneration limit, but the **step order does
+not perfectly align** (Cayley–Dickson loses *ordering* first, then commutativity, then associativity;
+the hyperoperation loses commutativity directly at `^`). So: *illuminating, grounded in the proven
+octonion ladder, but mark it correspondence-not-identity* — and don't over-literalize "control = algebra
+dimension" (metaphor-is-Mirror; the Beacon is the proven property-loss + reversibility boundary).
+
 Provisional whole: **data (`+`) → coupled by soul (`×`, in/out) → under intent (`^`, aimed at
-commutative/mutual=consensual), preserved as the ISR arrow + DST-pure + empowerment-assumed, with `−`
-(retraction/razor) the brake.** = the thesis
+commutative/mutual=consensual), preserved as the ISR arrow + DST-pure + empowerment-assumed, bounded by
+the Cayley–Dickson reversible limit (≤ 𝕆), with `−` (retraction/razor) the brake.** = the thesis
 [[we-are-amplifying-non-coercion-into-empowerment-the-thesis-line]] read up the ladder.
 
 ## It's a 3-body system (≥3); "2 conspire to beat the 3" (Aaron 2026-06-16)
