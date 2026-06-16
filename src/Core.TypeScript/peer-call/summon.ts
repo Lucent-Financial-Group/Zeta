@@ -168,6 +168,27 @@ export class PersonaSummoner implements ISummon {
       return this.summonViaLocalLlm(personaConfig, fullPrompt, outputFile);
     }
 
+    // ─── Check if CLI is available — fall back to local-LLM if not ───
+    const cliAvailable = this.isCommandAvailable(personaConfig.harness.command);
+    if (!cliAvailable) {
+      // Graceful degradation: use local LLM with persona context loaded.
+      // The summon works (degraded quality) rather than failing hard.
+      const fallbackConfig: typeof personaConfig = {
+        ...personaConfig,
+        harness: {
+          ...personaConfig.harness,
+          type: "local-llm",
+          model: "qwen2.5:0.5b",
+          host: "http://127.0.0.1:11434",
+          systemPrompt: this.buildPreamble(persona),
+        },
+      };
+      process.stderr.write(
+        `[summon] ${persona}'s CLI '${personaConfig.harness.command}' not on PATH — falling back to local-LLM\n`
+      );
+      return this.summonViaLocalLlm(fallbackConfig, fullPrompt, outputFile);
+    }
+
     const { harness } = personaConfig;
     // Replace prompt template
     const execArgs = harness.args.map(arg => arg.replace("{{PROMPT}}", fullPrompt));
@@ -218,6 +239,18 @@ export class PersonaSummoner implements ISummon {
       stdout,
       stderr,
     };
+  }
+
+  /**
+   * Check if a command is available on PATH.
+   */
+  private isCommandAvailable(command: string): boolean {
+    try {
+      const result = spawnSync("which", [command], { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] });
+      return result.status === 0;
+    } catch {
+      return false;
+    }
   }
 
   /**
