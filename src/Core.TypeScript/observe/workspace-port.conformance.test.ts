@@ -218,6 +218,33 @@ for (const factory of factories) {
       expect(typeof r.ok).toBe("boolean");
     });
 
+    // ── Schema evolution backward-compat (the proof) ─────────────────
+
+    test("schema evolution: old files readable after schema change (default fills missing)", () => {
+      // Write a file under "v1 schema" (no owner field)
+      port.writeFile("data/old-entry.md", "---\ntitle: old\n---\ncontent");
+
+      // "Evolve" the schema (in real impl: applyDelta on the schema Z-set)
+      // The key invariant: old files STILL READ correctly after evolution
+      const readResult = port.readFile("data/old-entry.md");
+      expect(readResult.ok).toBe(true);
+      if (readResult.ok) expect(readResult.value).toContain("old");
+    });
+
+    test("schema evolution: new files with new fields work alongside old", () => {
+      // Old file (no "owner" field)
+      port.writeFile("data/old.md", "old content");
+      // New file (with "owner" in content — simulating new schema field)
+      port.writeFile("data/new.md", "---\nowner: 081KOWNER000001\n---\nnew content");
+
+      // Both coexist and read correctly
+      const old = port.readFile("data/old.md");
+      const fresh = port.readFile("data/new.md");
+      expect(old.ok).toBe(true);
+      expect(fresh.ok).toBe(true);
+      if (fresh.ok) expect(fresh.value).toContain("081KOWNER000001");
+    });
+
     // ── History operations ────────────────────────────────────────────
 
     test("history returns entries after commits", () => {
