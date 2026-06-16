@@ -103,6 +103,8 @@ export interface WorkspacePort {
   /** The storage backend (os-fs, git, zeta-fs, simulated). */
   readonly backend: StorageBackend;
 
+  // ─── Content operations (backend-agnostic) ─────────────────────────
+
   /** Read a file's text content. Returns the text or an error reason. */
   readFile(path: string): IoResult<string>;
 
@@ -127,7 +129,26 @@ export interface WorkspacePort {
   /** List files in a directory (non-recursive). Returns filenames or error. */
   readDir(path: string): IoResult<readonly string[]>;
 
-  /** Run a git command. Returns stdout or error. */
+  // ─── Version control operations (the 5 primitives git implements) ──
+
+  /** Create or switch to a named branch (pointer to a state). */
+  branch(name: string, from?: string): IoResult<void>;
+
+  /** Current branch name. */
+  currentBranch(): IoResult<string>;
+
+  /** Record the current state as a commit (append delta to the log). */
+  commit(message: string, paths?: readonly string[]): IoResult<{ hash: string }>;
+
+  /** Replicate commits to a remote peer. */
+  push(remote: string, branch: string): IoResult<void>;
+
+  /** Ingest commits from a remote peer. */
+  pull(remote: string, branch: string): IoResult<void>;
+
+  // ─── Escape hatches (legacy / not-yet-abstracted) ──────────────────
+
+  /** Raw git command (legacy escape hatch — use version control ops above when possible). */
   git(args: readonly string[]): IoResult<string>;
 
   /** Run an arbitrary command. Returns stdout + exit code. */
@@ -245,6 +266,45 @@ export function realWorkspacePort(repoRoot: string): WorkspacePort {
         return { ok: false, reason: `git ${args[0]}: ${(result.stderr ?? "").trim() || `exit ${result.status}`}` };
       }
       return { ok: true, value: (result.stdout ?? "").trim() };
+    },
+
+    // ─── Version control (delegates to git today; replaced by zeta-fs later) ──
+
+    branch(name: string, from?: string): IoResult<void> {
+      const args = from ? ["checkout", "-B", name, from] : ["checkout", "-B", name];
+      const result = spawnSync("git", ["-C", repoRoot, ...args], { encoding: "utf-8", timeout: 30_000 });
+      if (result.status !== 0) return { ok: false, reason: `branch(${name}): ${(result.stderr ?? "").trim()}` };
+      return { ok: true, value: undefined };
+    },
+
+    currentBranch(): IoResult<string> {
+      const result = spawnSync("git", ["-C", repoRoot, "rev-parse", "--abbrev-ref", "HEAD"], { encoding: "utf-8", timeout: 10_000 });
+      if (result.status !== 0) return { ok: false, reason: `currentBranch: ${(result.stderr ?? "").trim()}` };
+      return { ok: true, value: (result.stdout ?? "").trim() };
+    },
+
+    commit(message: string, paths?: readonly string[]): IoResult<{ hash: string }> {
+      // Stage specified paths or all
+      const addArgs = paths && paths.length > 0 ? ["add", ...paths] : ["add", "-A"];
+      spawnSync("git", ["-C", repoRoot, ...addArgs], { encoding: "utf-8", timeout: 30_000 });
+      const result = spawnSync("git", ["-C", repoRoot, "commit", "--no-verify", "-m", message], { encoding: "utf-8", timeout: 30_000 });
+      if (result.status !== 0) return { ok: false, reason: `commit: ${(result.stderr ?? "").trim()}` };
+      // Get the hash
+      const hashResult = spawnSync("git", ["-C", repoRoot, "rev-parse", "HEAD"], { encoding: "utf-8", timeout: 10_000 });
+      const hash = (hashResult.stdout ?? "").trim();
+      return { ok: true, value: { hash } };
+    },
+
+    push(remote: string, branch: string): IoResult<void> {
+      const result = spawnSync("git", ["-C", repoRoot, "push", "-u", remote, branch], { encoding: "utf-8", timeout: 60_000 });
+      if (result.status !== 0) return { ok: false, reason: `push(${remote}, ${branch}): ${(result.stderr ?? "").trim()}` };
+      return { ok: true, value: undefined };
+    },
+
+    pull(remote: string, branch: string): IoResult<void> {
+      const result = spawnSync("git", ["-C", repoRoot, "pull", "--rebase", remote, branch], { encoding: "utf-8", timeout: 60_000 });
+      if (result.status !== 0) return { ok: false, reason: `pull(${remote}, ${branch}): ${(result.stderr ?? "").trim()}` };
+      return { ok: true, value: undefined };
     },
 
     exec(command: string, args: readonly string[]): IoResult<{ stdout: string; exitCode: number }> {
@@ -435,6 +495,33 @@ export function simulatedWorkspacePort(state: SimulatedState): WorkspacePort {
         return { ok: true, value: { stdout: "0 fail\n1 pass", exitCode: 0 } };
       }
       return { ok: true, value: { stdout: "simulated", exitCode: 0 } };
+    },
+
+    // ─── Version control primitives (simulated — in-memory log) ──────
+
+    branch(name: string, _from?: string): IoResult<void> {
+      state.branch = name;
+      return { ok: true, value: undefined };
+    },
+
+    currentBranch(): IoResult<string> {
+      return { ok: true, value: state.branch };
+    },
+
+    commit(message: string, _paths?: readonly string[]): IoResult<{ hash: string }> {
+      const hash = `sim-${String(state.commits.length + 1).padStart(6, "0")}`;
+      const changedFiles = [...state.files.keys()].slice(0, 5);
+      state.commits.push({ message, files: changedFiles });
+      return { ok: true, value: { hash } };
+    },
+
+    push(_remote: string, branch: string): IoResult<void> {
+      state.pushed.add(branch);
+      return { ok: true, value: undefined };
+    },
+
+    pull(_remote: string, _branch: string): IoResult<void> {
+      return { ok: true, value: undefined };
     },
   };
 }

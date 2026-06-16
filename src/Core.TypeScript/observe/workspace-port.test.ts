@@ -123,6 +123,65 @@ describe("simulatedWorkspacePort — pre-seeded state", () => {
   });
 });
 
+describe("simulatedWorkspacePort — version control primitives (git-free)", () => {
+  test("branch + currentBranch", () => {
+    const state = emptySimulatedState();
+    const port = simulatedWorkspacePort(state);
+
+    expect(port.currentBranch()).toEqual({ ok: true, value: "main" });
+    port.branch("alexa/feature", "origin/main");
+    expect(port.currentBranch()).toEqual({ ok: true, value: "alexa/feature" });
+  });
+
+  test("commit returns a hash and records the message", () => {
+    const state = emptySimulatedState();
+    const port = simulatedWorkspacePort(state);
+
+    port.writeFile("src/new.ts", "export const x = 1;");
+    const result = port.commit("feat: add new module");
+
+    expect(result.ok).toBe(true);
+    if (result.ok) {
+      expect(result.value.hash).toMatch(/^sim-/);
+    }
+    expect(state.commits.length).toBe(1);
+    expect(state.commits[0]!.message).toBe("feat: add new module");
+  });
+
+  test("push records the branch", () => {
+    const state = emptySimulatedState();
+    const port = simulatedWorkspacePort(state);
+
+    port.branch("alexa/work");
+    port.push("origin", "alexa/work");
+    expect(state.pushed.has("alexa/work")).toBe(true);
+  });
+
+  test("full cycle via version control primitives (no git CLI)", () => {
+    const state = emptySimulatedState();
+    const port = simulatedWorkspacePort(state);
+
+    // The executor's workflow using only the abstracted primitives:
+    port.pull("origin", "main");
+    port.branch("alexa/fix-123", "origin/main");
+    port.writeFile("src/fix.ts", "export function fix() { return true; }");
+    port.writeFile("scripts/deploy.sh", "#!/bin/bash\necho deploy", EXECUTABLE_PERMISSIONS);
+    const commitResult = port.commit("fix: resolve issue 123", ["src/fix.ts", "scripts/deploy.sh"]);
+    port.push("origin", "alexa/fix-123");
+
+    // Verify
+    expect(port.currentBranch()).toEqual({ ok: true, value: "alexa/fix-123" });
+    expect(commitResult.ok).toBe(true);
+    expect(state.pushed.has("alexa/fix-123")).toBe(true);
+    expect(state.commits.length).toBe(1);
+
+    // The executable flag is tracked
+    const entry = port.readFileEntry("scripts/deploy.sh");
+    expect(entry.ok).toBe(true);
+    if (entry.ok) expect(entry.value.permissions.executable).toBe(true);
+  });
+});
+
 describe("simulatedWorkspacePort — permissions (cross-platform)", () => {
   test("writeFile with executable permissions records them", () => {
     const state = emptySimulatedState();
