@@ -3,3 +3,4 @@
 -- `lake build` walks them transitively.
 import Lean4.DbspChainRule
 import Lean4.DynamicValue
+import Lean4.JsonCodec
