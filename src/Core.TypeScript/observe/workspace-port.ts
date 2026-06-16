@@ -27,14 +27,69 @@
 
 export type IoResult<T> = { readonly ok: true; readonly value: T } | { readonly ok: false; readonly reason: string };
 
+// ─── Cross-platform file metadata ────────────────────────────────────────────
+
+/**
+ * Platform-neutral file permissions. Start minimal (executable bit only);
+ * layer on read/write/owner/ACLs incrementally.
+ *
+ * The executable bit is the one that matters first:
+ * - macOS/Linux: chmod +x (0o755 vs 0o644)
+ * - Windows: no-op (no executable bit; git tracks it as mode in index)
+ * - Git: 100755 (executable) vs 100644 (regular)
+ */
+export interface FilePermissions {
+  /** The file is executable (scripts, binaries). Maps to chmod +x / git mode 100755. */
+  readonly executable: boolean;
+}
+
+/** Default permissions: not executable (regular file). */
+export const DEFAULT_PERMISSIONS: FilePermissions = { executable: false };
+
+/** Executable permissions (scripts). */
+export const EXECUTABLE_PERMISSIONS: FilePermissions = { executable: true };
+
+/**
+ * A generic file entry — platform-neutral representation of a file in the workspace.
+ * Paths use forward slashes universally; platform mapping happens at the port boundary.
+ */
+export interface FileEntry {
+  /** Platform-neutral path (forward slashes, relative to workspace root). */
+  readonly path: string;
+  /** File content (UTF-8 text; binary files are out of scope for v0). */
+  readonly content: string;
+  /** Cross-platform permissions. */
+  readonly permissions: FilePermissions;
+}
+
+/**
+ * Which platform we're mapping to. The port uses this to translate
+ * generic operations into platform-specific ones.
+ */
+export type Platform = "darwin" | "linux" | "win32";
+
+/** Detect the current platform. */
+export function currentPlatform(): Platform {
+  return process.platform as Platform;
+}
+
 // ─── The port interface ──────────────────────────────────────────────────────
 
 export interface WorkspacePort {
+  /** The platform this port maps to (for permission translation). */
+  readonly platform: Platform;
+
   /** Read a file's content. Returns the text or an error reason. */
   readFile(path: string): IoResult<string>;
 
+  /** Read a file with its metadata (content + permissions). */
+  readFileEntry(path: string): IoResult<FileEntry>;
+
   /** Write content to a file (creates parent dirs). Returns ok or error reason. */
-  writeFile(path: string, content: string): IoResult<void>;
+  writeFile(path: string, content: string, permissions?: FilePermissions): IoResult<void>;
+
+  /** Set permissions on an existing file (e.g., make executable). */
+  setPermissions(path: string, permissions: FilePermissions): IoResult<void>;
 
   /** Check if a path exists. Never fails (missing = false). */
   exists(path: string): boolean;
@@ -51,12 +106,15 @@ export interface WorkspacePort {
 
 // ─── Real implementation (production) ────────────────────────────────────────
 
-import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
+import { chmodSync, existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { spawnSync } from "node:child_process";
 
 export function realWorkspacePort(repoRoot: string): WorkspacePort {
+  const platform = currentPlatform();
   return {
+    platform,
+
     readFile(path: string): IoResult<string> {
       try {
         return { ok: true, value: readFileSync(join(repoRoot, path), "utf-8") };
@@ -65,14 +123,46 @@ export function realWorkspacePort(repoRoot: string): WorkspacePort {
       }
     },
 
-    writeFile(path: string, content: string): IoResult<void> {
+    readFileEntry(path: string): IoResult<FileEntry> {
+      try {
+        const full = join(repoRoot, path);
+        const content = readFileSync(full, "utf-8");
+        const stat = statSync(full);
+        // On macOS/Linux, check if owner-execute bit is set (0o100)
+        const executable = platform !== "win32" ? (stat.mode & 0o111) !== 0 : false;
+        return { ok: true, value: { path, content, permissions: { executable } } };
+      } catch (err) {
+        return { ok: false, reason: `readFileEntry(${path}): ${(err as Error).message}` };
+      }
+    },
+
+    writeFile(path: string, content: string, permissions?: FilePermissions): IoResult<void> {
       try {
         const full = join(repoRoot, path);
         mkdirSync(dirname(full), { recursive: true });
         writeFileSync(full, content);
+        // Apply permissions (macOS/Linux only; Windows is a no-op)
+        if (permissions?.executable && platform !== "win32") {
+          chmodSync(full, 0o755);
+        }
         return { ok: true, value: undefined };
       } catch (err) {
         return { ok: false, reason: `writeFile(${path}): ${(err as Error).message}` };
+      }
+    },
+
+    setPermissions(path: string, permissions: FilePermissions): IoResult<void> {
+      if (platform === "win32") {
+        // Windows has no executable bit; git handles it via index mode.
+        // Return ok (no-op) so cross-platform code doesn't branch.
+        return { ok: true, value: undefined };
+      }
+      try {
+        const full = join(repoRoot, path);
+        chmodSync(full, permissions.executable ? 0o755 : 0o644);
+        return { ok: true, value: undefined };
+      } catch (err) {
+        return { ok: false, reason: `setPermissions(${path}): ${(err as Error).message}` };
       }
     },
 
@@ -117,22 +207,25 @@ export function realWorkspacePort(repoRoot: string): WorkspacePort {
 // ─── Simulated implementation (DST / in-memory) ──────────────────────────────
 
 export interface SimulatedState {
-  /** In-memory filesystem: path → content */
-  readonly files: Map<string, string>;
+  /** In-memory filesystem: path → FileEntry */
+  readonly files: Map<string, FileEntry>;
   /** Git log: list of committed changes */
   readonly commits: Array<{ message: string; files: string[] }>;
   /** Current branch */
   branch: string;
   /** Pushed branches */
   readonly pushed: Set<string>;
+  /** Simulated platform (default: darwin) */
+  readonly platform: Platform;
 }
 
-export function emptySimulatedState(): SimulatedState {
+export function emptySimulatedState(platform: Platform = "darwin"): SimulatedState {
   return {
     files: new Map(),
     commits: [],
     branch: "main",
     pushed: new Set(),
+    platform,
   };
 }
 
@@ -143,16 +236,40 @@ export function emptySimulatedState(): SimulatedState {
  */
 export function simulatedWorkspacePort(state: SimulatedState): WorkspacePort {
   return {
+    platform: state.platform,
+
     readFile(path: string): IoResult<string> {
-      const content = state.files.get(path);
-      if (content === undefined) {
+      const entry = state.files.get(path);
+      if (entry === undefined) {
         return { ok: false, reason: `readFile(${path}): ENOENT` };
       }
-      return { ok: true, value: content };
+      return { ok: true, value: entry.content };
     },
 
-    writeFile(path: string, content: string): IoResult<void> {
-      state.files.set(path, content);
+    readFileEntry(path: string): IoResult<FileEntry> {
+      const entry = state.files.get(path);
+      if (entry === undefined) {
+        return { ok: false, reason: `readFileEntry(${path}): ENOENT` };
+      }
+      return { ok: true, value: entry };
+    },
+
+    writeFile(path: string, content: string, permissions?: FilePermissions): IoResult<void> {
+      state.files.set(path, {
+        path,
+        content,
+        permissions: permissions ?? DEFAULT_PERMISSIONS,
+      });
+      return { ok: true, value: undefined };
+    },
+
+    setPermissions(path: string, permissions: FilePermissions): IoResult<void> {
+      const entry = state.files.get(path);
+      if (!entry) {
+        return { ok: false, reason: `setPermissions(${path}): ENOENT` };
+      }
+      // On win32, executable is a no-op (but we still record it for git mode tracking)
+      state.files.set(path, { ...entry, permissions });
       return { ok: true, value: undefined };
     },
 
