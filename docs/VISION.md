@@ -2040,7 +2040,6 @@ Six instructions. The universal emulator. Runs on qubits (Q#), runs on bits
 (Chip-8/9), runs on amplitudes (AmplitudeEmu). Same algebra, same operators,
 different substrates. The universal is the substrate; the particular is the filter.
 
-
 ## Information lithography — DST time-crystals deployed by ACE (2026-06-19)
 
 > What they do with physical light through physical glass in physical space,
@@ -2075,6 +2074,7 @@ periodicity). The observe loop IS a time crystal:
 ### The caustic magic window
 
 The computational caustics "magic window" is the purest version of the architecture:
+
 - The glass looks blank to the naked eye (the soft substrate has no visible hard values)
 - Shine light through it → the shadow IS the image (apply a polarity filter → the projection IS the data)
 - The data was always there; the observer's light revealed it
