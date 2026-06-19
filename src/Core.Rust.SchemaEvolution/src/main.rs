@@ -29,6 +29,9 @@ struct Delta {
 #[derive(Debug, Deserialize)]
 #[serde(rename_all = "camelCase")]
 struct ReplayState {
+    // Deserialized to keep the struct faithful to the golden-vector schema;
+    // this oracle asserts on entry_count, not the field list itself.
+    #[allow(dead_code)]
     active_fields: Vec<SchemaField>,
     entry_count: usize,
 }
@@ -45,6 +48,9 @@ struct FinalState {
 struct CommPair {
     delta_a: usize,
     delta_b: usize,
+    // Present in the golden vector; this oracle re-derives commutativity
+    // rather than trusting the recorded flag.
+    #[allow(dead_code)]
     commutes: bool,
 }
 
