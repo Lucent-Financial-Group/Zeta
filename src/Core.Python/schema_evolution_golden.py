@@ -7,12 +7,9 @@ Zero dependencies beyond stdlib (json, sys).
 
 import json
 import sys
-from typing import Any
 
 
-def apply_delta(
-    schema: list[tuple[dict, int]], delta: dict
-) -> list[tuple[dict, int]]:
+def apply_delta(schema: list[tuple[dict, int]], delta: dict) -> list[tuple[dict, int]]:
     """Apply a schema evolution delta. Retract at -1, insert at +1, drop weight=0."""
     # Build name → (field, weight) map
     m: dict[str, tuple[dict, int]] = {}
@@ -51,7 +48,9 @@ def sorted_field_names(schema: list[tuple[dict, int]]) -> list[str]:
 
 def main() -> int:
     if len(sys.argv) < 2:
-        print("Usage: python schema_evolution_golden.py <path-to-json>", file=sys.stderr)
+        print(
+            "Usage: python schema_evolution_golden.py <path-to-json>", file=sys.stderr
+        )
         return 1
 
     with open(sys.argv[1]) as f:

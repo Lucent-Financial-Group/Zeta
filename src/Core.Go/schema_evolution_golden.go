@@ -42,11 +42,11 @@ type CommPair struct {
 }
 
 type GoldenVectors struct {
-	InitialFields       []SchemaField `json:"initialFields"`
-	Deltas              []Delta       `json:"deltas"`
+	InitialFields        []SchemaField `json:"initialFields"`
+	Deltas               []Delta       `json:"deltas"`
 	ExpectedReplayStates []ReplayState `json:"expectedReplayStates"`
-	ExpectedFinalState  FinalState    `json:"expectedFinalState"`
-	CommutativePairs    []CommPair    `json:"commutativePairs"`
+	ExpectedFinalState   FinalState    `json:"expectedFinalState"`
+	CommutativePairs     []CommPair    `json:"commutativePairs"`
 }
 
 func applyDelta(schema []SchemaEntry, delta Delta) []SchemaEntry {
