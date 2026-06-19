@@ -11,15 +11,17 @@ EXTENDS Naturals, FiniteSets, Integers
 CONSTANTS
     Fields,         \* The universe of possible field names
     Consumers,      \* The universe of consumer identities
-    MaxEvolutions   \* Bound for model-checking (finite state space)
+    MaxEvolutions,  \* Bound for model-checking (finite state space)
+    MaxDeliveryDelay \* Bounded delivery: max ticks between event emit and visibility
 
 VARIABLES
     schema,         \* Function: field -> weight (positive = active, 0 = dropped)
     refs,           \* Function: consumer -> set of referenced fields
     overlapOpen,    \* Boolean: is the overlap window currently open?
-    evolved         \* Counter: how many evolutions have been applied
+    evolved,        \* Counter: how many evolutions have been applied
+    pendingMigrations \* Set of consumers that have SENT migration but not yet visible
 
-vars == <<schema, refs, overlapOpen, evolved>>
+vars == <<schema, refs, overlapOpen, evolved, pendingMigrations>>
 
 \* ── Type invariant ──────────────────────────────────────────────────────
 
@@ -36,6 +38,7 @@ Init ==
     /\ refs = [c \in Consumers |-> Fields]  \* All consumers initially reference all fields
     /\ overlapOpen = FALSE
     /\ evolved = 0
+    /\ pendingMigrations = {}
 
 \* ── Helper: reference count for a field ─────────────────────────────────
 
@@ -59,14 +62,26 @@ ApplyDelta(retract, insert) ==
           [] OTHER         -> schema[f]]
     /\ overlapOpen' = (overlapOpen \/ retract /= {})  \* Opens on retract, NEVER closes here
     /\ evolved' = evolved + 1
-    /\ UNCHANGED refs
+    /\ UNCHANGED <<refs, pendingMigrations>>
 
 \* ── Action: Migrate a consumer ──────────────────────────────────────────
-\* A consumer drops references to retracted fields (the migration step).
+\* Phase 1: Consumer SENDS its migration (adds to pending — not yet visible).
+\* Models the real-world CDC delay: event emitted but not yet delivered.
 
-MigrateConsumer(c) ==
+SendMigration(c) ==
     /\ c \in Consumers
-    /\ refs' = [refs EXCEPT ![c] = {f \in refs[c] : schema[f] > 0}]  \* Drop refs to non-active fields
+    /\ c \notin pendingMigrations
+    /\ \E f \in refs[c] : schema[f] <= 0  \* Only migrates if holding retracted refs
+    /\ pendingMigrations' = pendingMigrations \union {c}
+    /\ UNCHANGED <<schema, refs, overlapOpen, evolved>>
+
+\* Phase 2: Migration event DELIVERED (bounded delivery — eventually arrives).
+\* This is when refs actually update. Models CDC delivery latency.
+
+DeliverMigration(c) ==
+    /\ c \in pendingMigrations
+    /\ refs' = [refs EXCEPT ![c] = {f \in refs[c] : schema[f] > 0}]
+    /\ pendingMigrations' = pendingMigrations \ {c}
     /\ UNCHANGED <<schema, overlapOpen, evolved>>
 
 \* ── Action: Consolidate ─────────────────────────────────────────────────
@@ -75,10 +90,11 @@ MigrateConsumer(c) ==
 
 Consolidate ==
     /\ overlapOpen = TRUE
+    /\ pendingMigrations = {}  \* No in-flight migrations (all delivered)
     /\ \A f \in Fields : schema[f] <= 0 => RefCount(f) = 0
     /\ schema' = [f \in Fields |-> IF schema[f] <= 0 THEN 0 ELSE schema[f]]
     /\ overlapOpen' = FALSE
-    /\ UNCHANGED <<refs, evolved>>
+    /\ UNCHANGED <<refs, evolved, pendingMigrations>>
 
 \* ── Next-state relation ─────────────────────────────────────────────────
 
@@ -86,14 +102,20 @@ Next ==
     \/ \E retract, insert \in SUBSET Fields :
         ApplyDelta(retract, insert)
     \/ \E c \in Consumers :
-        MigrateConsumer(c)
+        SendMigration(c)
+    \/ \E c \in Consumers :
+        DeliverMigration(c)
     \/ Consolidate
 
 \* ── Fairness (for liveness) ─────────────────────────────────────────────
 
-\* Consumers must eventually migrate (drop retracted refs), and Consolidate
-\* must eventually fire. This guarantees the overlap window closes.
-Fairness == WF_vars(Consolidate) /\ \A c \in Consumers : WF_vars(MigrateConsumer(c))
+\* Bounded delivery: pending migrations EVENTUALLY deliver (CDC guarantee).
+\* Consumers eventually send migration when holding retracted refs.
+\* Consolidate eventually fires when preconditions met.
+Fairness ==
+    /\ WF_vars(Consolidate)
+    /\ \A c \in Consumers : WF_vars(SendMigration(c))
+    /\ \A c \in Consumers : WF_vars(DeliverMigration(c))
 Spec == Init /\ [][Next]_vars /\ Fairness
 
 \* ── SAFETY: Every referenced field resolves ─────────────────────────────
