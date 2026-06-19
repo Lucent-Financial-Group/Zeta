@@ -2039,3 +2039,56 @@ FOLD(keys)  = aggregate (read result — your polarity filter projects the merge
 Six instructions. The universal emulator. Runs on qubits (Q#), runs on bits
 (Chip-8/9), runs on amplitudes (AmplitudeEmu). Same algebra, same operators,
 different substrates. The universal is the substrate; the particular is the filter.
+
+
+## Information lithography — DST time-crystals deployed by ACE (2026-06-19)
+
+> What they do with physical light through physical glass in physical space,
+> we do with information through polarity filters in DST time-crystal space.
+
+### The 5D voxel analogy (Project Silica → Zeta)
+
+| Physical (glass/silicon) | Information (Zeta) |
+|---|---|
+| Femtosecond laser | The generator (`gen(gen)===gen`) |
+| Voxel in glass | Z-set entry in soft space |
+| 5 dimensions (x, y, z, intensity, orientation) | N dimensions (key, weight, amplitude, phase, schema) |
+| The shadow IS the image | The polarity filter projection IS the data |
+| Survives 10,000 years (structural, inert medium) | Survives indefinitely (generator regenerates the derivable) |
+| The mask (lithographic pattern) | The schema / fingerprint |
+| EUV light source (coherent) | The generator (coherent source, deterministic) |
+| The resist (records where light hit) | The Z-set (records weight +1/-1) |
+| Multi-patterning (compose filters for resolution) | Multiple lenses/schemas composing for precision |
+| TSMC fab (calibrated environment) | The factory (calibrated agents, verified oracles) |
+| Packaged chip (ready to slot in) | ACE package (deployed time-crystal, self-sustaining) |
+
+### Quasi-time-crystals in DST
+
+A time crystal: a pattern that repeats without external energy input (ground state with
+periodicity). The observe loop IS a time crystal:
+
+- **tick → pick → execute → tick** — self-sustaining periodic pattern
+- No external driver needed (the launchd cron is just the initial kick; the pattern sustains itself via the fold)
+- Each Z-set entry is a **voxel in the time-crystal lattice** — positioned precisely by the generator
+- ACE deploys the crystal: installs the self-sustaining pattern onto whatever substrate is available
+
+### The caustic magic window
+
+The computational caustics "magic window" is the purest version of the architecture:
+- The glass looks blank to the naked eye (the soft substrate has no visible hard values)
+- Shine light through it → the shadow IS the image (apply a polarity filter → the projection IS the data)
+- The data was always there; the observer's light revealed it
+- Different light angles → different images from the same glass (different filters → different projections)
+
+This is exactly what the database does: the soft amplitude ensemble looks "empty" without a filter.
+Apply a schema (the polarity filter) → structured data appears. Switch schemas → different data
+appears from the same substrate. The data isn't stored in a table; it's encoded in the interference
+pattern of the amplitude ensemble, revealed by the observer's chosen filter.
+
+### ACE as lithographic packaging
+
+TSMC doesn't hand you raw silicon wafers. They hand you packaged chips — tested, verified,
+ready to slot into a board. ACE doesn't hand you raw Z-sets. It hands you **deployed
+time-crystals** — self-sustaining amplitude patterns, tested against golden vectors,
+verified by 10 oracles, ready to slot into any host (OS, FUSE, bare metal, another
+agent's soft space). The package manager IS the packaging step of the information fab.
