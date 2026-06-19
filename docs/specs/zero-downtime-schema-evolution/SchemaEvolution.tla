@@ -62,12 +62,11 @@ ApplyDelta(retract, insert) ==
     /\ UNCHANGED refs
 
 \* ── Action: Migrate a consumer ──────────────────────────────────────────
-\* A consumer updates its references (stops referencing old fields).
+\* A consumer drops references to retracted fields (the migration step).
 
-MigrateConsumer(c, newRefs) ==
+MigrateConsumer(c) ==
     /\ c \in Consumers
-    /\ newRefs \subseteq {f \in Fields : schema[f] > 0}  \* Can only reference ACTIVE fields
-    /\ refs' = [refs EXCEPT ![c] = newRefs]
+    /\ refs' = [refs EXCEPT ![c] = {f \in refs[c] : schema[f] > 0}]  \* Drop refs to non-active fields
     /\ UNCHANGED <<schema, overlapOpen, evolved>>
 
 \* ── Action: Consolidate ─────────────────────────────────────────────────
@@ -86,13 +85,15 @@ Consolidate ==
 Next ==
     \/ \E retract, insert \in SUBSET Fields :
         ApplyDelta(retract, insert)
-    \/ \E c \in Consumers, newRefs \in SUBSET Fields :
-        MigrateConsumer(c, newRefs)
+    \/ \E c \in Consumers :
+        MigrateConsumer(c)
     \/ Consolidate
 
 \* ── Fairness (for liveness) ─────────────────────────────────────────────
 
-Fairness == WF_vars(Consolidate)
+\* Consumers must eventually migrate (drop retracted refs), and Consolidate
+\* must eventually fire. This guarantees the overlap window closes.
+Fairness == WF_vars(Consolidate) /\ \A c \in Consumers : WF_vars(MigrateConsumer(c))
 Spec == Init /\ [][Next]_vars /\ Fairness
 
 \* ── SAFETY: Every referenced field resolves ─────────────────────────────
