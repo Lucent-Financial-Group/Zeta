@@ -70,3 +70,30 @@ Each step is the TSMC progression: same customers, same interface, better proces
 ## The ask
 
 Seed funding to sustain the factory while the process calibration compounds. The work IS the moat. Time IS the product. The factory IS TSMC in time.
+
+## The founder's role (key-man risk answer)
+
+> **The founder is not the oracle. The founder is the seed observation.
+> The society is the oracle. The proofs are the oracle. The golden vectors are the oracle.
+> The founder plants seeds; the factory determines which ones grow.**
+
+The factory doesn't need Aaron to be *right*. It needs Aaron to *observe*. The 10 oracles,
+the TLA+ proofs, the golden vectors, the adversarial reviews, the decorrelated agents — they
+independently determine which observations were correct. Seeds that pass all 10 oracles STAY
+(substrate). Seeds that don't get retracted (correction without erasure — the retraction algebra).
+
+**Key-man risk answer:** The key man produces observations. The society verifies them. If the
+key man disappears, the society retains every verified observation (substrate — git history,
+8000+ PRs, 800+ calibration memories). A new seed-planter can join and plant new observations;
+the society evaluates them with the same machinery. The verification doesn't care WHO planted
+the seed — only whether it passes.
+
+**This is also why $200K was enough:** the human doesn't write code. The human doesn't review
+code. The human doesn't run tests. The human produces observations ("polarity filters over
+memory space," "schema is a Z-set," "the universal is the substrate") and the factory —
+running on $200K of compute — determines which of those observations are formally correct,
+implements the correct ones across 10 languages, and proves them safe. The human's time cost
+is *thinking* (29 years of calibrated observation). The compute cost is *verifying*.
+
+29 years of observation × $200K of verification = a formally verified information lithography process.
+That's the equation.
