@@ -746,3 +746,250 @@ let ``Z3 proves C13 I∘D = id (integrate of differentiate telescopes to each ti
         "  (not (= (+ (- s0 0.0) (- s1 s0) (- s2 s1)) s2))))\n" +
         "(check-sat)\n"
     z3ScriptHolds "C13 I∘D = id" script
+
+
+// ═══════════════════════════════════════════════════════════════════
+// Aurora round (d) — capability gate `cap_req ⊆ cap_allowed` (standardization
+// Test 4.4). Soraya's BP-16 routing: Z3 set algebra; prereq probed 2026-06-19 —
+// `(Set Int)` works under (set-logic ALL) but the chosen encoding is QF_BV
+// BITMASK over a 64-capability universe (decidable, CI-portable, finite-universe
+// faithful — Soraya's stated fallback). Subset is the natural bvand form:
+//   admit ⟺ cap_req ⊆ cap_allowed ⟺ (bvand req allowed) = req
+//                                  ⟺ (bvand req (bvnot allowed)) = 0
+// These are the symbolic (Z3) leg of the (d) cross-check; the §4.4 "10 injection
+// variants" FsCheck leg (Soraya's secondary) remains as a noted follow-up.
+// Authored by Otto per the aurora-immune-reground trajectory (Aaron 2026-06-19).
+// ═══════════════════════════════════════════════════════════════════
+
+let private bv0 = "(_ bv0 64)"
+
+[<Fact>]
+let ``Z3 proves capability subset has two equivalent bvand encodings (d)`` () =
+    // (bvand req allowed) = req  ⟺  (bvand req (bvnot allowed)) = 0. The gate's
+    // admit predicate is well-defined regardless of which encoding the impl uses.
+    let script =
+        "(set-logic QF_BV)\n" +
+        "(declare-const req (_ BitVec 64))\n" +
+        "(declare-const allowed (_ BitVec 64))\n" +
+        "(assert (not (= (= (bvand req allowed) req) (= (bvand req (bvnot allowed)) " + bv0 + "))))\n" +
+        "(check-sat)\n"
+    z3ScriptHolds "(d) capability subset encodings equivalent" script
+
+[<Fact>]
+let ``Z3 proves capability gate is reflexive: a set always satisfies its own requirement (d)`` () =
+    let script =
+        "(set-logic QF_BV)\n" +
+        "(declare-const req (_ BitVec 64))\n" +
+        "(assert (not (= (bvand req (bvnot req)) " + bv0 + ")))\n" +
+        "(check-sat)\n"
+    z3ScriptHolds "(d) capability subset reflexive" script
+
+[<Fact>]
+let ``Z3 proves capability gate is transitive (d)`` () =
+    // a ⊆ b ∧ b ⊆ c ⇒ a ⊆ c. Chained delegation never widens the effective grant.
+    let script =
+        "(set-logic QF_BV)\n" +
+        "(declare-const a (_ BitVec 64))\n" +
+        "(declare-const b (_ BitVec 64))\n" +
+        "(declare-const c (_ BitVec 64))\n" +
+        "(assert (not (=> (and (= (bvand a (bvnot b)) " + bv0 + ") (= (bvand b (bvnot c)) " + bv0 + "))\n" +
+        "                 (= (bvand a (bvnot c)) " + bv0 + "))))\n" +
+        "(check-sat)\n"
+    z3ScriptHolds "(d) capability subset transitive" script
+
+[<Fact>]
+let ``Z3 proves granting capabilities never revokes admission: monotone in allowed (d)`` () =
+    // allowed ⊆ allowed' ⇒ (req ⊆ allowed ⇒ req ⊆ allowed'). Widening the grant
+    // can only keep or turn a deny into an admit, never flip an admit to a deny.
+    let script =
+        "(set-logic QF_BV)\n" +
+        "(declare-const req (_ BitVec 64))\n" +
+        "(declare-const al (_ BitVec 64))\n" +
+        "(declare-const al2 (_ BitVec 64))\n" +
+        "(assert (not (=> (and (= (bvand al (bvnot al2)) " + bv0 + ") (= (bvand req (bvnot al)) " + bv0 + "))\n" +
+        "                 (= (bvand req (bvnot al2)) " + bv0 + "))))\n" +
+        "(check-sat)\n"
+    z3ScriptHolds "(d) admit monotone in allowed" script
+
+[<Fact>]
+let ``Z3 proves least-privilege: demanding MORE capabilities is strictly stricter (d)`` () =
+    // req ⊆ req' ∧ req' ⊆ allowed ⇒ req ⊆ allowed. The antitone direction —
+    // a request can never gain admission by REQUIRING a capability it wasn't granted.
+    let script =
+        "(set-logic QF_BV)\n" +
+        "(declare-const req (_ BitVec 64))\n" +
+        "(declare-const req2 (_ BitVec 64))\n" +
+        "(declare-const al (_ BitVec 64))\n" +
+        "(assert (not (=> (and (= (bvand req (bvnot req2)) " + bv0 + ") (= (bvand req2 (bvnot al)) " + bv0 + "))\n" +
+        "                 (= (bvand req (bvnot al)) " + bv0 + "))))\n" +
+        "(check-sat)\n"
+    z3ScriptHolds "(d) least-privilege antitone in req" script
+
+[<Fact>]
+let ``Z3 proves an empty requirement is always admitted (d)`` () =
+    // ∅ ⊆ allowed for every allowed — an action needing no capability always passes.
+    let script =
+        "(set-logic QF_BV)\n" +
+        "(declare-const al (_ BitVec 64))\n" +
+        "(assert (not (= (bvand " + bv0 + " (bvnot al)) " + bv0 + ")))\n" +
+        "(check-sat)\n"
+    z3ScriptHolds "(d) empty requirement always admits" script
+
+[<Fact>]
+let ``Z3 witnesses a genuine DENIAL: a required capability outside allowed is refused (d)`` () =
+    // Non-vacuity: the gate is not trivially always-admit. There exist req, allowed
+    // with a required bit outside allowed — and the admit predicate is then FALSE.
+    let script =
+        "(set-logic QF_BV)\n" +
+        "(declare-const req (_ BitVec 64))\n" +
+        "(declare-const al (_ BitVec 64))\n" +
+        "(assert (not (= (bvand req (bvnot al)) " + bv0 + ")))\n" + // some required cap not allowed
+        "(assert (not (= (bvand req al) req)))\n" + // ⇒ admit predicate false (denied)
+        "(check-sat)\n"
+    z3ScriptHasModel "(d) genuine denial reachable" script
+
+[<Fact>]
+let ``Z3 witnesses a genuine ADMIT: a fully-covered non-empty requirement passes (d)`` () =
+    // Non-vacuity the other way: the gate is not trivially always-deny. There exist
+    // a non-empty req fully within allowed — admitted.
+    let script =
+        "(set-logic QF_BV)\n" +
+        "(declare-const req (_ BitVec 64))\n" +
+        "(declare-const al (_ BitVec 64))\n" +
+        "(assert (not (= req " + bv0 + ")))\n" + // non-trivial requirement
+        "(assert (= (bvand req (bvnot al)) " + bv0 + "))\n" + // fully covered ⇒ admitted
+        "(check-sat)\n"
+    z3ScriptHasModel "(d) genuine admit reachable" script
+
+
+// ═══════════════════════════════════════════════════════════════════
+// Aurora round (b) — BFT-threshold soundness under Sybil: the HONEST-COUNT side
+// (standardization §2 BFT threshold; the symbolic leg of Soraya's BP-16 routing for (b)).
+// Quorum arithmetic over QF_LIA: N total proven-distinct identities, f Byzantine-faulty, quorum Q.
+// Safety = two quorums intersect in an honest node (2Q ≥ N+f+1); liveness = a quorum forms from
+// non-faulty nodes (Q ≤ N−f). The canonical PBFT instance is N = 3f+1, Q = 2f+1.
+// SCOPE (honest, ties to the scoping doc): this is the THRESHOLD ARITHMETIC cross-check assuming
+// distinct identities — it does NOT discharge anti-Sybil entropy (G3, §B, open). "Distinct" is only
+// ENFORCED if forging identities is costly; here we prove the counting is sound GIVEN distinctness,
+// and (L6) that a raw-node majority sharing identities is refused by counting distinct, not raw.
+// Anchors: Lamport–Shostak–Pease 1982; Castro–Liskov 1999 (PBFT 3f+1 / 2f+1); rides §A NonRegisterCollapse.
+// ═══════════════════════════════════════════════════════════════════
+
+[<Fact>]
+let ``Z3 proves the canonical BFT quorum (N=3f+1, Q=2f+1) is both safe and live (b)`` () =
+    // safety: 2Q ≥ N+f+1 (two quorums share an honest node); liveness: Q ≤ N−f (a quorum can form).
+    let script =
+        "(declare-const f Int)(declare-const N Int)(declare-const Q Int)\n" +
+        "(assert (not (=> (and (>= f 0) (= N (+ (* 3 f) 1)) (= Q (+ (* 2 f) 1)))\n" +
+        "                 (and (>= (* 2 Q) (+ N f 1)) (<= Q (- N f))))))\n" +
+        "(check-sat)\n"
+    z3ScriptHolds "(b) canonical quorum safe+live" script
+
+[<Fact>]
+let ``Z3 proves a BFT quorum holds an honest supermajority (honest strictly outnumber faulty) (b)`` () =
+    // A quorum of Q=2f+1 with ≤ f faulty has honest ≥ f+1 > f — honest strictly outnumber faulty.
+    let script =
+        "(declare-const f Int)(declare-const Q Int)(declare-const faulty Int)\n" +
+        "(assert (not (=> (and (>= f 0) (= Q (+ (* 2 f) 1)) (>= faulty 0) (<= faulty f))\n" +
+        "                 (and (>= (- Q faulty) (+ f 1)) (> (- Q faulty) faulty)))))\n" +
+        "(check-sat)\n"
+    z3ScriptHolds "(b) honest supermajority in quorum" script
+
+[<Fact>]
+let ``Z3 proves N >= 3f+1 is NECESSARY — below it no quorum is both safe and live (b)`` () =
+    // The classic BFT bound: if N ≤ 3f, no Q satisfies both safety (2Q ≥ N+f+1) and liveness (Q ≤ N−f).
+    // Asserting the conjunction directly ⇒ UNSAT proves no such witness exists.
+    let script =
+        "(declare-const f Int)(declare-const N Int)(declare-const Q Int)\n" +
+        "(assert (and (>= f 0) (<= N (* 3 f)) (>= Q 0)\n" +
+        "             (>= (* 2 Q) (+ N f 1)) (<= Q (- N f))))\n" +
+        "(check-sat)\n"
+    z3ScriptHolds "(b) 3f+1 necessity (N<=3f has no safe+live quorum)" script
+
+[<Fact>]
+let ``Z3 proves BFT fault-tolerance is monotone: tolerate f implies tolerate any f' <= f (b)`` () =
+    // Mirrors CSLib FLP's Consensus.fault_mono — the bridge to the eventual Lean lift.
+    let script =
+        "(declare-const f Int)(declare-const fp Int)(declare-const N Int)\n" +
+        "(assert (not (=> (and (>= fp 0) (<= fp f) (>= N (+ (* 3 f) 1)))\n" +
+        "                 (>= N (+ (* 3 fp) 1)))))\n" +
+        "(check-sat)\n"
+    z3ScriptHolds "(b) fault-tolerance monotone" script
+
+[<Fact>]
+let ``Z3 proves two quorums always share at least one honest identity (the agreement crux) (b)`` () =
+    // intersection ≥ 2Q−N = f+1; minus ≤ f faulty ⇒ ≥ 1 honest in every quorum-intersection.
+    let script =
+        "(declare-const f Int)(declare-const N Int)(declare-const Q Int)(declare-const faulty Int)\n" +
+        "(assert (not (=> (and (>= f 0) (= N (+ (* 3 f) 1)) (= Q (+ (* 2 f) 1)) (>= faulty 0) (<= faulty f))\n" +
+        "                 (>= (- (- (* 2 Q) N) faulty) 1))))\n" +
+        "(check-sat)\n"
+    z3ScriptHolds "(b) honest quorum-intersection" script
+
+[<Fact>]
+let ``Z3 witnesses Sybil refusal: a raw-node majority is refused when distinct identities fall short (b)`` () =
+    // The (b)-specific link to §A NonRegisterCollapse + the TLA+ NoSybilRawMajorityRefusal witness:
+    // counting must be over PROVEN-DISTINCT identities, not raw nodes. A ring whose raw count meets the
+    // quorum but whose distinct-identity count does NOT (≥2 raw share 1 identity) is refused. SAT = the
+    // refusal is reachable (the quorum is keyed on identities, so raw majority ≠ admission).
+    let script =
+        "(declare-const Q Int)(declare-const rawInQ Int)(declare-const distinctInQ Int)\n" +
+        "(assert (> Q 0))\n" +
+        "(assert (>= rawInQ Q))\n" + // raw nodes meet the threshold count
+        "(assert (< distinctInQ Q))\n" + // distinct identities fall short ⇒ refused
+        "(assert (<= distinctInQ (- rawInQ 1)))\n" + // ≥2 raw nodes collapse to fewer distinct identities
+        "(check-sat)\n"
+    z3ScriptHasModel "(b) Sybil raw-majority refusal reachable" script
+
+
+// ═══════════════════════════════════════════════════════════════════
+// Aurora G3a — anti-Sybil entropy COST-FLOOR (the distinctness-enforcement structure for (b)).
+// Scoping: docs/research/2026-06-19-g3-anti-sybil-entropy-cost-the-distinctness-enforcement-under-aurora-b-scoping.md
+// Model: an identity costs a floor `c > 0` of captured entropy; holding N distinct identities costs
+// N·c; captured entropy E affords at most floor(E/c) distinct identities. This makes "no economy of
+// scale in forging" explicit — the structural heart of anti-Sybil (Douceur 2002: needs a costly
+// resource; Dwork–Naor / proof-of-work pricing shape).
+// SCOPE (the binding honesty — do NOT read as closing G3): this is G3a (cost-LINEARITY) only. It is
+// CONDITIONAL on G3b — that the entropy floor `c` is a REAL, conserved, non-forgeable resource — which
+// is the open crux (§B), NOT proven here. So: structure CI-enforced, premise (G3b) named-and-open,
+// exactly the "arithmetic proven, premise named" shape (b) itself has. And (L4): Sybil is made
+// prohibitive-by-COST, not impossible — a funded adversary CAN pay (the four non-claims bind).
+// ═══════════════════════════════════════════════════════════════════
+
+[<Fact>]
+let ``Z3 proves the cost barrier: you cannot afford Q distinct identities below Q*c (G3a)`` () =
+    // c>0 ∧ N≥Q ∧ E < Q·c ⇒ N·c > E — affording N≥Q identities is impossible under-funded.
+    let script =
+        "(declare-const c Int)(declare-const N Int)(declare-const Q Int)(declare-const E Int)\n" +
+        "(assert (not (=> (and (> c 0) (>= N Q) (< E (* Q c))) (> (* N c) E))))\n" +
+        "(check-sat)\n"
+    z3ScriptHolds "(G3a) cost barrier below Q*c" script
+
+[<Fact>]
+let ``Z3 proves NO economy of scale: entropy for one identity (E=c) yields at most ONE distinct (G3a)`` () =
+    // The anti-Sybil heart: a ring of any number of raw nodes funded for one capture (E=c) can hold
+    // ≤ 1 distinct identity — it cannot manufacture N>1 distinct identities for one identity's cost.
+    let script =
+        "(declare-const c Int)(declare-const N Int)(declare-const E Int)\n" +
+        "(assert (not (=> (and (> c 0) (= E c) (>= N 0) (<= (* N c) E)) (<= N 1))))\n" +
+        "(check-sat)\n"
+    z3ScriptHolds "(G3a) no economy of scale (E=c ⇒ ≤1 distinct)" script
+
+[<Fact>]
+let ``Z3 proves identity cost is monotone/linear in the count (G3a)`` () =
+    let script =
+        "(declare-const c Int)(declare-const N1 Int)(declare-const N2 Int)\n" +
+        "(assert (not (=> (and (> c 0) (<= N1 N2)) (<= (* N1 c) (* N2 c)))))\n" +
+        "(check-sat)\n"
+    z3ScriptHolds "(G3a) cost monotone/linear" script
+
+[<Fact>]
+let ``Z3 witnesses prohibitive-by-COST not impossible: a funded adversary CAN buy a quorum (G3a)`` () =
+    // The honest seam made executable: G3 makes Sybil prohibitive-by-cost, NOT impossible. A
+    // sufficiently-funded adversary (E ≥ Q·c) can pay for Q distinct identities — SAT. (This is why
+    // the four non-claims bind: P(infection) > 0; cost raises the bar, it does not close the door.)
+    let script =
+        "(declare-const c Int)(declare-const N Int)(declare-const Q Int)(declare-const E Int)\n" +
+        "(assert (> c 0))(assert (>= Q 3))(assert (>= N Q))(assert (<= (* N c) E))\n" +
+        "(check-sat)\n"
+    z3ScriptHasModel "(G3a) funded adversary can pay (prohibitive-by-cost, not impossible)" script

@@ -1,6 +1,6 @@
 # Trajectory — Aurora Immune System re-grounded on the proven identity primitive
 
-Status: **active — the 2 TLA+ rounds are AUTHORED, TLC-green, and Viktor/Kira RE-CONFIRMED (both PASS); formal round CLOSED. (a) d_self identity-axis wiring DONE + (e) FsCheck cross-check DONE (2026-06-19). Next: (b) Z3 honest-count cross-check (after anti-Sybil §B) + (c)/(d)/(g) FsCheck/Z3 smalls → §A promotion.**
+Status: **READY TO PROMOTE — formal round CLOSED; (a) d_self wiring + ALL FOUR test-obligation cross-checks (c/d/e/g) + (b) TLA+ AND Z3 honest-count legs all done (2026-06-19). The one remaining open premise is anti-Sybil entropy: G3a (cost-floor / no-economy-of-scale) LANDED in Z3; G3b (the floor is real + non-forgeable) is the open crux + a research fork (model + prover choice, surfaced for Soraya/maintainer). NEXT: (i) §B→§A promotion row (drafted, awaits maintainer sign-off — proof-lineage); (ii) G3b model+prover call; (iii) CSLib G1 lane (decided). See scoping docs: aurora-b-…cslib-flp + g3-anti-sybil-entropy-cost.**
 Last refreshed: 2026-06-19
 Parent trajectory: none (sibling of `anti-infection`, but this is *active formal work*, not the defensive posture)
 Grounding:
@@ -60,10 +60,38 @@ theorems, not metaphor.
      `PermanentHarmHorizon.tla`, FsCheck asserts HarmFloor at every reachable state + 3 non-vacuity
      witnesses (accept / irrev-block / horizon-block). `tests/Tests.FSharp/Formal/PermanentHarmHorizonCrossVerify.Tests.fs`
      (4 green). Discharge: scoping doc §8(e).
-   - **(b) TODO:** the Z3 honest-count side (`honest > 2/3` over proven-distinct identities); note the
-     anti-Sybil-entropy §B dependency must sequence first (it's still open).
+   - ✅ **(b) Z3 honest-count leg DONE (2026-06-19):** 6 QF_LIA lemmas — canonical quorum safe+live,
+     honest supermajority, 3f+1 necessity, fault-monotone (mirrors CSLib `Consensus.fault_mono`),
+     honest quorum-intersection, + Sybil raw-majority-refusal witness (counts proven-distinct
+     identities). `tests/Tests.FSharp/Formal/Z3.Laws.Tests.fs` (59 Z3 green). Discharge: §8(b).
+     **Still open:** the TLA+ leg already exists; what remains is **G3 anti-Sybil entropy** (§B) — the
+     threshold arithmetic is sound GIVEN distinctness, not a discharge of the entropy premise.
+     **CSLib FLP-lift routing scoped:** `docs/research/2026-06-19-aurora-b-bft-sybil-lift-onto-cslib-flp-consensus-lean-scoping.md`
+     (G1 crash→Byzantine, G2 identity-keyed quorum, G3 anti-Sybil entropy = the blocker).
+     **G3 scoped (2026-06-19):** `docs/research/2026-06-19-g3-anti-sybil-entropy-cost-the-distinctness-enforcement-under-aurora-b-scoping.md`
+     — splits G3 into G3a (cost-linearity) + G3b (entropy floor real + non-forgeable = open crux).
+     ✅ **G3a LANDED (2026-06-19):** 4 Z3 cost-floor lemmas (cost barrier, **no economy of scale**
+     `E=c⇒≤1 distinct`, monotone, prohibitive-by-cost-not-impossible witness) in `Z3.Laws.Tests.fs`
+     (63 Z3 green) — structure CI-gated, conditional on G3b. **Open = G3b** (model choice + non-forgeability;
+     a research fork — Soraya routing + CSLib Crypto/Lean decision; surface, don't auto-pick).
 3. **Authors:** (c)/(d)/(g) FsCheck/Z3 smalls.
-4. **Prereq:** confirm Z3 `QF_FD` set support in `src/Core.FSharp.Z3Verify` for (d) (else QF_BV subset).
+   - ✅ **(g) DONE (2026-06-19):** Autoimmunity Flood / immune-memory decay (Test 4.5). Under flood
+     (`Danger≈0`) Eq 10 → `n(t+1)=max(0,(1−δ)·n(t)−β·FP)`; FsCheck asserts decay→0, monotone,
+     fp-accelerates, contraction `(1−δ)∈(0,1)`, and archive-immune (§4.5 a+b).
+     `tests/Tests.FSharp/Formal/AutoimmunityDecayCrossVerify.Tests.fs` (6 green). Discharge: §8(g).
+   - ✅ **(d) DONE (2026-06-19):** capability gate `cap_req ⊆ cap_allowed` (Test 4.4) — 8 Z3 lemmas
+     over QF_BV bitmasks (encoding-equivalence, reflexive, transitive, monotone-in-allowed,
+     antitone-in-req/least-privilege, empty-req-admits + 2 non-vacuity witnesses). In
+     `tests/Tests.FSharp/Formal/Z3.Laws.Tests.fs` (53 Z3 tests green). Discharge: §8(d). FsCheck
+     injection-variant leg + Semgrep/CodeQL at call-site = noted follow-up.
+   - ✅ **(c) DONE (2026-06-19):** `CoordRisk` spectral (Test 4.3) — self-contained symmetric Jacobi
+     eigensolver (no dep); Test A fragmentation `λ₂→0` (+ bridge lifts it = `−Δλ₂`), Test B hub
+     `ρ=√(n−1)` surge, eigensolver validated by closed forms (`λ₂(K_n)=n`, `ρ(K_n)=n−1`, `ρ(star)=√(n−1)`),
+     + Fiedler-PSD / connectivity / Perron / hub-monotone properties.
+     `tests/Tests.FSharp/Formal/CoordRiskSpectralCrossVerify.Tests.fs` (10 green). Discharge: §8(c).
+     Threshold calibration + ≤5% false-positive bound = empirical (non-claim #2), still owed.
+4. ✅ **Prereq DONE (2026-06-19):** z3 4.16.0; `(Set Int)` works under `(set-logic ALL)`, but QF_BV
+   bitmask is the chosen encoding (decidable, CI-portable, finite-universe faithful — Soraya's fallback).
 5. **Refinements noted in-spec:** (b) honest-supermajority-of-quorum needs D=3f+1 sizing;
    (e) multi-claim substrate + multi-hop kernel reachability is the v3.
 6. **Liveness path = observe.ts (Aaron 2026-06-16).** Round (e) proves *safety* (over-horizon/

@@ -151,6 +151,96 @@ green).
   leg routes through `observe.ts` (Aaron 2026-06-16), not by bolting `WF` onto the toy. The four
   non-claims travel unchanged.
 
+### (g) Autoimmunity Flood / immune-memory decay — FsCheck cross-check landed (2026-06-19, Otto)
+
+Test 4.5 (§4.5 / Eq 10 / §2.6 archive-active split). Under the flood scenario (valid, safe, highly
+novel inputs → high `d_self`, `Danger ≈ 0`), Eq 10's clonal-expansion term `α·Match·Danger` vanishes
+and the active-detector recurrence reduces to `n(t+1) = max(0, (1−δ)·n(t) − β·FP)` — a contraction.
+Test: `tests/Tests.FSharp/Formal/AutoimmunityDecayCrossVerify.Tests.fs` (6 green: 5 FsCheck properties
++ 1 non-vacuity witness). Asserts:
+
+- **§4.5(a) decay → 0:** active detectors decay below ε over `T(δ)` ticks with no reactivation —
+  immune bloat / autoimmunity is bounded (the worst case, fp = 0 pure-geometric, is the one tested).
+- **monotone + fp-accelerates:** a flood tick never *amplifies* a detector; β·FP only subtracts.
+- **contraction `(1−δ) ∈ (0,1)`** for δ ∈ (0,1) — the QF_LRA fact Soraya routed as the optional Z3
+  cross-check (asserted directly; a one-line Z3 follow-up is available if a redundant tool-leg is wanted).
+- **§4.5(b) archive immune:** the `M^archive` partition has NO decay operator (updated only by explicit
+  policy); any number of ticks leaves the fixture set unchanged, and a canonical fixture persists while
+  the same attack's active weight decays to ~0 ("canonical attack memory ≠ always-hot active detector").
+
+### (d) capability gate `cap_req ⊆ cap_allowed` — Z3 lemmas landed (2026-06-19, Otto)
+
+Test 4.4 (capability-gate intersection). **Prereq resolved (Soraya's filed prereq):** z3 4.16.0;
+`(Set Int)` works under `(set-logic ALL)`, but the chosen encoding is **QF_BV bitmask** over a
+64-capability universe — decidable, CI-portable, finite-universe faithful (Soraya's stated fallback,
+and the better choice than general set theory here). Subset is the natural `bvand` form:
+`admit ⟺ cap_req ⊆ cap_allowed ⟺ (bvand req allowed) = req ⟺ (bvand req (bvnot allowed)) = 0`.
+Lemmas in `tests/Tests.FSharp/Formal/Z3.Laws.Tests.fs` (8: 6 UNSAT proofs + 2 SAT witnesses):
+
+- **encoding equivalence** (the two subset forms agree), **reflexivity**, **transitivity** (chained
+  delegation never widens the grant).
+- **monotone in `allowed`** (granting never revokes admission) + **antitone in `req`** (least
+  privilege — a request can never gain admission by *requiring* a capability it wasn't granted; this
+  is the no-escalation safety direction).
+- **empty requirement always admits.**
+- **non-vacuity (both outcomes reachable):** a genuine **denial** (required cap outside allowed) and
+  a genuine **admit** (non-empty req fully covered) — so the gate is neither always-admit nor always-deny.
+
+Honest scope: this is the **symbolic** (Z3) leg. Soraya's secondary FsCheck leg (§4.4 "10 injection
+variants" at the call-site) + Semgrep/CodeQL at the deployed gate remain a noted follow-up.
+
+### (c) CoordRisk spectral — FsCheck cross-check landed (2026-06-19, Otto) — LAST test-obligation leg
+
+Test 4.3 (Cult-Cartel Topology). Soraya routed this to **FsCheck over networkx-style graphs** (the
+TLA+-hammer guard fired — eigenvalues are not a state-transition system). CoordRisk watches two spectral
+quantities of the gossip graph: the adjacency spectral radius `ρ(A_t)` (hub concentration / Cult) and
+the Laplacian Fiedler value `λ₂(L_t)` (algebraic connectivity / Cartel). Test:
+`tests/Tests.FSharp/Formal/CoordRiskSpectralCrossVerify.Tests.fs` (10 green: 6 closed-form/scenario
+witnesses + 4 FsCheck properties), built on a **self-contained symmetric Jacobi eigensolver** (no
+external linear-algebra dependency — only-the-irreducible-is-primitive: generate the spectrum).
+
+- **Eigensolver validated** by closed forms (these would fail if the solver were wrong): `λ₂(K_n) = n`,
+  `ρ(K_n) = n−1`, `ρ(star) = √(n−1)`.
+- **Test A (Cartel/fragmentation):** two exclusive gossip pockets (disconnected) ⇒ `λ₂ = 0`; one bridge
+  edge lifts `λ₂` off 0 — the detectable `−Δλ₂` CoordRisk fires on. Fiedler's theorem (connected ⟺
+  `λ₂ > 0`) holds across sizes.
+- **Test B (Cult/hub):** a star (hub) `ρ = √(n−1)` surges above a sparse non-hub cycle (`ρ = 2`) and
+  grows monotonically with the hub — the `Δρ` CoordRisk fires on.
+- **Properties:** Fiedler ≥ 0 (Laplacian PSD), Perron–Frobenius `ρ ≤ max-degree`, hub-surge monotone.
+
+Honest scope (falsifier §5/leg-3): this proves the **spectral facts under CoordRisk's terms are
+informative** (fragmentation→λ₂↓, hub→ρ↑). It does NOT calibrate the detection thresholds or the ≤5%
+false-positive-on-natural-evolution bound — that is empirical calibration (non-claim #2), still owed.
+
+**Milestone:** with (c) landed, all FOUR test-obligation cross-checks (c, d, e, g) + the (a) identity
+wiring are done. Only **(b)** remains, parked behind the open anti-Sybil-entropy §B dependency. The §B
+row *"Aurora immune re-grounded on the proven identity primitive"* is now ready to promote toward §A
+(operator-by-operator, §C) — gated on the maintainer's sign-off (proof-lineage change).
+
+### (b) BFT honest-count — Z3 symbolic leg landed (2026-06-19, Otto)
+
+The symbolic (Z3) leg of Soraya's BP-16 routing for (b) — the BFT-threshold *arithmetic* over QF_LIA
+(N total proven-distinct identities, f Byzantine-faulty, quorum Q). 6 lemmas in
+`tests/Tests.FSharp/Formal/Z3.Laws.Tests.fs` (5 UNSAT proofs + 1 SAT witness, 59 Z3 tests green):
+
+- **canonical quorum (N=3f+1, Q=2f+1) is safe ∧ live** (`2Q ≥ N+f+1` ∧ `Q ≤ N−f`); **honest
+  supermajority in any quorum** (honest ≥ f+1 > f); **honest quorum-intersection** (two quorums always
+  share ≥1 honest identity — the agreement crux).
+- **3f+1 is NECESSARY** — `N ≤ 3f` admits no quorum that is both safe and live (the classic BFT bound,
+  proven by UNSAT of the conjunction).
+- **fault-tolerance monotone** (tolerate f ⟹ tolerate any f′≤f) — mirrors CSLib FLP's
+  `Consensus.fault_mono`, the bridge to the eventual Lean lift.
+- **Sybil refusal witness:** a raw-node majority is *refused* when distinct-identity count falls short
+  (≥2 raw share 1 identity) — counting is over **proven-distinct identities** (rides §A
+  `NonRegisterCollapse`), the arithmetic shadow of the TLA+ `NoSybilRawMajorityRefusal`.
+
+**Honest scope (the binding seam):** this proves the threshold counting is sound **GIVEN distinctness**
+— it does **NOT** discharge **G3 anti-Sybil entropy** (§B, open). "Distinct" is only *enforced* if
+forging identities is costly; the full BFT-under-Sybil guarantee still inherits G3. So (b) now has its
+TLA+ leg (reachability, TLC-green) + this Z3 leg (threshold arithmetic), with the entropy premise
+named-and-open (see the CSLib FLP-lift scoping doc §4 G3). Anchors: Lamport–Shostak–Pease 1982;
+Castro–Liskov 1999 (PBFT).
+
 ## Composes with
 
 - `docs/research/aurora-immune-math-standardization-2026-04-26.md` — the math being re-grounded (Amara; Gemini; Otto rigor pass).

@@ -61,11 +61,16 @@ module DarkHallCabinetRuntime =
           Children: Cart.Cart list
           Parent: Chip8Cow.Frame }
 
+    type MetaCartPolicy =
+        { Name: string
+          Policy: MetaCart.SelectionPolicy }
+
     type RunRequest =
         | RunSoftChip8 of seed: uint64 * rom: byte[] * frames: int
         | RunDarkHallCpu of program: byte[] * budget: int
         | RunChip9Cart of cart: Cart.Cart * manifest: Chip9Capabilities.Manifest
         | RunMetaCart of MetaCartLaunch
+        | RunMetaCartWithPolicy of policy: MetaCartPolicy * launch: MetaCartLaunch
 
     type RunResult =
         | SoftChip8Frame of Chip8Cow.Frame
@@ -114,6 +119,7 @@ module DarkHallCabinetRuntime =
         | RunDarkHallCpu _ -> "run-darkhall-cpu"
         | RunChip9Cart _ -> "run-chip9-cart"
         | RunMetaCart _ -> "run-meta-cart"
+        | RunMetaCartWithPolicy _ -> "run-meta-cart-with-policy"
 
     let private isExecutableCore =
         function
@@ -212,6 +218,25 @@ module DarkHallCabinetRuntime =
     let actionAt (cell: int) (readout: ControllerReadout) : CabinetAction option =
         GridBinding.labelAt cell readout.Grid
 
+    /// Sub-readout for the host-assisted meta-cart machine. The Dark Hall
+    /// controller observes the cabinet action; this readout observes the child
+    /// cart selection inside that action before the host boundary executes.
+    let observeMetaCartLaunch (launch: MetaCartLaunch) : MetaCart.SelectionReadout =
+        MetaCart.selectionReadoutWithCapabilities
+            launch.Goal
+            launch.ParentCapabilities
+            launch.Seed
+            launch.Children
+
+    let observeMetaCartLaunchWithPolicy
+        (policyName: string)
+        (policy: MetaCart.SelectionPolicy)
+        (launch: MetaCartLaunch)
+        : MetaCart.SelectionReadout =
+        launch
+        |> observeMetaCartLaunch
+        |> MetaCart.applySelectionPolicy policyName policy
+
     let private findCabinet (room: DarkHall.Room) (cabinetName: string) =
         room.Cabinets |> List.tryFind (fun cabinet -> cabinet.Name = cabinetName)
 
@@ -272,6 +297,24 @@ module DarkHallCabinetRuntime =
             | None -> return machine
         }
 
+    let private executeMetaCartLaunch
+        (source: string)
+        (sink: IHeatSink)
+        (launch: MetaCartLaunch)
+        (readout: MetaCart.SelectionReadout)
+        : Result<RunResult, Feedback> =
+        let host = MetaCart.CapabilityCartHost(launch.Children, launch.ChildCapabilitiesBySha) :> MetaCart.ICartHost
+
+        MetaCart.playChosenFromSelectionReadoutWithCapabilities
+            source
+            sink
+            launch.ParentCapabilities
+            readout
+            host
+            launch.Parent
+        |> Result.map MetaCartResult
+        |> Result.mapError Feedback.MetaCartFeedback
+
     let private executeMachine
         (source: string)
         (sink: IHeatSink)
@@ -299,18 +342,14 @@ module DarkHallCabinetRuntime =
                     |> Result.mapError (fun reason -> Feedback.Chip9Feedback(address, reason))
 
             | DarkHall.MachineCore.MetaCartHost, RunMetaCart launch ->
-                return
-                    MetaCart.playChosenCarriedWithCapabilities
-                        source
-                        sink
-                        launch.Goal
-                        launch.Seed
-                        launch.ParentCapabilities
-                        launch.ChildCapabilitiesBySha
-                        launch.Children
-                        launch.Parent
-                    |> Result.map MetaCartResult
-                    |> Result.mapError Feedback.MetaCartFeedback
+                let readout = observeMetaCartLaunch launch
+
+                return executeMetaCartLaunch source sink launch readout
+
+            | DarkHall.MachineCore.MetaCartHost, RunMetaCartWithPolicy(policy, launch) ->
+                let readout = observeMetaCartLaunchWithPolicy policy.Name policy.Policy launch
+
+                return executeMetaCartLaunch source sink launch readout
 
             | core, _ when not (isExecutableCore core) ->
                 return Error(Feedback.UnsupportedMachine(address, core))

@@ -48,6 +48,108 @@ let ``machine action declares workflow-style DU metadata`` () =
     Assert.Equal(Some(mkAddress "play" "meta-cart-host"), action.Address)
 
 [<Fact>]
+let ``observeMetaCartLaunch exposes the child-cart selection readout`` () =
+    let loopCart = CartFixtures.cart CartFixtures.loop
+    let inputCart = CartFixtures.cart CartFixtures.inputFork
+
+    let launch: Runtime.MetaCartLaunch =
+        { Goal = 10
+          Seed = 1UL
+          ParentCapabilities = Chip9Capabilities.metaHost
+          ChildCapabilitiesBySha =
+            MetaCart.capabilityMap
+                [ loopCart, CartFixtures.loop.Capabilities
+                  inputCart, CartFixtures.inputFork.Capabilities ]
+          Children = [ loopCart; inputCart ]
+          Parent = Chip8Cow.create 1UL }
+
+    let readout = Runtime.observeMetaCartLaunch launch
+
+    Assert.Equal(2, readout.Candidates.Length)
+    Assert.Contains("chip8arcade.choose", System.String.Join(" ", readout.DeterministicRulesApplied))
+
+    match readout.Selected with
+    | Some selected ->
+        Assert.Equal(1, selected.Index)
+        Assert.Equal(MetaCart.slotOfCart inputCart, selected.Slot)
+    | None -> Assert.Fail("expected selected child cart")
+
+[<Fact>]
+let ``observeMetaCartLaunchWithPolicy exposes attention-reordered child selection`` () =
+    let loopCart = CartFixtures.cart CartFixtures.loop
+    let inputCart = CartFixtures.cart CartFixtures.inputFork
+
+    let launch: Runtime.MetaCartLaunch =
+        { Goal = 10
+          Seed = 1UL
+          ParentCapabilities = Chip9Capabilities.metaHost
+          ChildCapabilitiesBySha =
+            MetaCart.capabilityMap
+                [ loopCart, CartFixtures.loop.Capabilities
+                  inputCart, CartFixtures.inputFork.Capabilities ]
+          Children = [ loopCart; inputCart ]
+          Parent = Chip8Cow.create 1UL }
+
+    let readout =
+        Runtime.observeMetaCartLaunchWithPolicy
+            "operator-attention"
+            (MetaCart.attentionSelectionPolicy (fun slot -> if slot.Name = loopCart.Meta.Title then 100.0 else 0.0))
+            launch
+
+    Assert.Equal(2, readout.Candidates.Length)
+    Assert.Contains("selection policy operator-attention", System.String.Join(" ", readout.DeterministicRulesApplied))
+
+    match readout.Selected with
+    | Some selected ->
+        Assert.Equal(0, selected.Index)
+        Assert.Equal(MetaCart.slotOfCart loopCart, selected.Slot)
+    | None -> Assert.Fail("expected attention policy to select the loop cart")
+
+[<Fact>]
+let ``executeCell surfaces policy backpressure heat for attention-selected meta-cart denial`` () =
+    task {
+        let sink = RecordingHeatSink()
+        let cell = requireCell "darkhall.play.meta-cart-host"
+        let chip9Cart = CartFixtures.cart CartFixtures.chip9GreenDot
+        let inputCart = CartFixtures.cart CartFixtures.inputFork
+
+        let launch: Runtime.MetaCartLaunch =
+            { Goal = 10
+              Seed = 1UL
+              ParentCapabilities = Chip9Capabilities.metaHost
+              ChildCapabilitiesBySha =
+                MetaCart.capabilityMap
+                    [ chip9Cart, Chip9Capabilities.chip8Default
+                      inputCart, CartFixtures.inputFork.Capabilities ]
+              Children = [ chip9Cart; inputCart ]
+              Parent = Chip8Cow.create 1UL }
+
+        let policy: Runtime.MetaCartPolicy =
+            { Name = "operator-attention"
+              Policy = MetaCart.attentionSelectionPolicy (fun slot -> if slot.Name = chip9Cart.Meta.Title then 100.0 else 0.0) }
+
+        let! result =
+            Runtime.executeCell
+                "darkhall"
+                (sink :> IHeatSink)
+                Chip9Capabilities.metaHost
+                Arcade.room
+                cell
+                (Runtime.RunMetaCartWithPolicy(policy, launch))
+
+        match result with
+        | Error(Runtime.Feedback.MetaCartFeedback(MetaCart.Feedback.HostDenied(slot, reason))) ->
+            Assert.Equal(MetaCart.slotOfCart chip9Cart, slot)
+            Assert.Contains("chip9.color-planes", reason)
+            Assert.Equal(2, sink.Signatures.Count)
+            Assert.Equal("meta-cart.denied", sink.Signatures.[0].Kind)
+            Assert.Equal("meta-cart.policy-backpressure", sink.Signatures.[1].Kind)
+            Assert.Contains("policy=operator-attention", sink.Signatures.[1].Detail)
+            Assert.Contains(slot.Fingerprint.Sha256, sink.Signatures.[1].Detail)
+        | other -> Assert.Fail(sprintf "expected policy-selected meta-cart denial, got %A" other)
+    }
+
+[<Fact>]
 let ``executeCell runs the selected soft CHIP8 scheduler machine`` () =
     task {
         let sink = RecordingHeatSink()

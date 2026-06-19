@@ -59,6 +59,16 @@ type private DenyingHost(reason: string) =
     interface MetaCart.ICartHost with
         member _.Play request = Error(MetaCart.Feedback.HostDenied(request.Slot, reason))
 
+type private SelectivelyDenyingHost(denied: MetaCart.CartSlot, reason: string, carried: Cart.Cart list) =
+    let local = MetaCart.LocalCartHost carried :> MetaCart.ICartHost
+
+    interface MetaCart.ICartHost with
+        member _.Play request =
+            if request.Slot.Fingerprint.Sha256 = denied.Fingerprint.Sha256 then
+                Error(MetaCart.Feedback.HostDenied(request.Slot, reason))
+            else
+                local.Play request
+
 [<Fact>]
 let ``host denial emits heat without pretending the child ran`` () =
     let slot = MetaCart.slotOfCart child
@@ -104,6 +114,187 @@ let ``chooseSlot reuses arcade reflection and picks the most knowable child`` ()
         Assert.Equal(1.0, c.Reflection.Report.Confidence, 12)
         Assert.Equal((GameFingerprint.fingerprint inputCart.Rom).Sha256, c.Slot.Fingerprint.Sha256)
     | None -> Assert.True(false, "expected a reflected child choice")
+
+[<Fact>]
+let ``selectionReadout exposes reflected candidates and the selected slot before launch`` () =
+    let readout =
+        MetaCart.selectionReadoutWithCapabilities
+            10
+            Chip9Capabilities.metaHost
+            1UL
+            [ loopCart; inputCart ]
+
+    Assert.Equal(10, readout.Goal)
+    Assert.Equal(10, readout.ReflectedGoal)
+    Assert.Equal(2, readout.Candidates.Length)
+    Assert.Contains("choice-cell 0x1FF", System.String.Join(" ", readout.DeterministicRulesApplied))
+
+    match readout.Selected with
+    | Some selected ->
+        let expected = MetaCart.slotOfCart inputCart
+        Assert.Equal(1, selected.Index)
+        Assert.Equal(expected, selected.Slot)
+        Assert.Equal(expected.Fingerprint.Sha256, selected.Slot.Fingerprint.Sha256)
+    | None -> Assert.True(false, "expected a selected child in the readout")
+
+[<Fact>]
+let ``attention policy reorders candidates without crossing the host boundary`` () =
+    let sink = RecordingHeatSink()
+
+    let readout =
+        MetaCart.selectionReadout
+            10
+            1.0
+            (SoftThrottle.tank 5.0 1.0)
+            1UL
+            [ loopCart; inputCart ]
+
+    let attended =
+        readout
+        |> MetaCart.applySelectionPolicy
+            "test-attention"
+            (MetaCart.attentionSelectionPolicy (fun slot -> if slot.Name = loopCart.Meta.Title then 10.0 else 0.0))
+
+    Assert.Contains("selection policy test-attention", System.String.Join(" ", attended.DeterministicRulesApplied))
+
+    match attended.Selected with
+    | Some selected ->
+        Assert.Equal(0, selected.Index)
+        Assert.Equal(MetaCart.slotOfCart loopCart, selected.Slot)
+    | None -> Assert.Fail("expected attention to select an existing child cart")
+
+    match attended.PolicyTrace with
+    | Some trace ->
+        Assert.Equal("test-attention", trace.PolicyName)
+        Assert.True(trace.ChangedSelection)
+        Assert.Equal(Some(MetaCart.slotOfCart inputCart), trace.BaselineSelected |> Option.map (fun choice -> choice.Slot))
+        Assert.Equal(Some(MetaCart.slotOfCart loopCart), trace.PolicySelected |> Option.map (fun choice -> choice.Slot))
+    | None -> Assert.Fail("expected attention policy trace")
+
+    let host = MetaCart.LocalCartHost [ loopCart; inputCart ] :> MetaCart.ICartHost
+
+    match
+        MetaCart.playChosenFromSelectionReadout
+            "parent-cart"
+            (sink :> IHeatSink)
+            attended
+            host
+            (Chip8Cow.create 1UL)
+    with
+    | Ok result ->
+        Assert.Equal(MetaCart.slotOfCart loopCart, result.Play.Slot)
+        Assert.Equal(Some(MetaCart.slotOfCart loopCart), MetaCart.readSlot [ MetaCart.slotOfCart loopCart; MetaCart.slotOfCart inputCart ] result.ParentWithChoice)
+        Assert.Equal(0, sink.Signatures.Count)
+    | Error feedback -> Assert.Fail(sprintf "expected attended child launch, got %A" feedback)
+
+[<Fact>]
+let ``attention-selected denied branch emits policy backpressure heat`` () =
+    let sink = RecordingHeatSink()
+
+    let readout =
+        MetaCart.selectionReadout
+            10
+            1.0
+            (SoftThrottle.tank 5.0 1.0)
+            1UL
+            [ loopCart; inputCart ]
+
+    let attended =
+        readout
+        |> MetaCart.applySelectionPolicy
+            "operator-attention"
+            (MetaCart.attentionSelectionPolicy (fun slot -> if slot.Name = loopCart.Meta.Title then 100.0 else 0.0))
+
+    let denied = MetaCart.slotOfCart loopCart
+    let host = SelectivelyDenyingHost(denied, "attention-target-over-budget", [ loopCart; inputCart ]) :> MetaCart.ICartHost
+
+    match
+        MetaCart.playChosenFromSelectionReadout
+            "parent-cart"
+            (sink :> IHeatSink)
+            attended
+            host
+            (Chip8Cow.create 1UL)
+    with
+    | Error(MetaCart.Feedback.HostDenied(slot, reason)) ->
+        Assert.Equal(denied, slot)
+        Assert.Equal("attention-target-over-budget", reason)
+        Assert.Equal(2, sink.Signatures.Count)
+        Assert.Equal("meta-cart.denied", sink.Signatures.[0].Kind)
+        Assert.Equal("meta-cart.policy-backpressure", sink.Signatures.[1].Kind)
+        Assert.Contains("policy=operator-attention", sink.Signatures.[1].Detail)
+        Assert.Contains((MetaCart.slotOfCart inputCart).Fingerprint.Sha256, sink.Signatures.[1].Detail)
+        Assert.Contains(denied.Fingerprint.Sha256, sink.Signatures.[1].Detail)
+        Assert.Contains("attention-target-over-budget", sink.Signatures.[1].Detail)
+    | other -> Assert.Fail(sprintf "expected policy-selected HostDenied feedback, got %A" other)
+
+[<Fact>]
+let ``selection policy cannot invent a non-candidate slot`` () =
+    let sink = RecordingHeatSink()
+
+    let readout =
+        MetaCart.selectionReadout
+            10
+            1.0
+            (SoftThrottle.tank 5.0 1.0)
+            1UL
+            [ loopCart; inputCart ]
+
+    let fakeSlot = MetaCart.reference "invented-child" (GameFingerprint.fingerprint [| 0x00uy; 0xE0uy |])
+
+    let inventingPolicy (candidateReadout: MetaCart.SelectionReadout) =
+        candidateReadout.Selected
+        |> Option.map (fun selected -> { selected with Slot = fakeSlot })
+
+    let attended = readout |> MetaCart.applySelectionPolicy "inventing" inventingPolicy
+
+    match attended.Selected with
+    | Some selected -> Assert.Fail(sprintf "expected invented policy choice to be rejected, got %A" selected)
+    | None -> ()
+
+    let host = MetaCart.LocalCartHost [ loopCart; inputCart ] :> MetaCart.ICartHost
+
+    match
+        MetaCart.playChosenFromSelectionReadout
+            "parent-cart"
+            (sink :> IHeatSink)
+            attended
+            host
+            (Chip8Cow.create 1UL)
+    with
+    | Error(MetaCart.Feedback.NoSelection source) ->
+        Assert.Equal("parent-cart", source)
+        Assert.Equal(0, sink.Signatures.Count)
+    | other -> Assert.Fail(sprintf "expected cold NoSelection after invented policy choice, got %A" other)
+
+[<Fact>]
+let ``playChosenFromSelectionReadout launches through the injected host boundary`` () =
+    let sink = RecordingHeatSink()
+    let readout =
+        MetaCart.selectionReadout
+            10
+            1.0
+            (SoftThrottle.tank 5.0 1.0)
+            1UL
+            [ loopCart; inputCart ]
+
+    let host = MetaCart.LocalCartHost [ loopCart; inputCart ] :> MetaCart.ICartHost
+
+    match
+        MetaCart.playChosenFromSelectionReadout
+            "parent-cart"
+            (sink :> IHeatSink)
+            readout
+            host
+            (Chip8Cow.create 1UL)
+    with
+    | Ok result ->
+        let expected = MetaCart.slotOfCart inputCart
+        Assert.Equal(expected, result.Choice.Slot)
+        Assert.Equal(expected, result.Play.Slot)
+        Assert.Equal(Some expected, MetaCart.readSlot [ MetaCart.slotOfCart loopCart; expected ] result.ParentWithChoice)
+        Assert.Equal(0, sink.Signatures.Count)
+    | Error feedback -> Assert.True(false, sprintf "expected reflected child launch, got %A" feedback)
 
 [<Fact>]
 let ``playChosenCarried commits the reflected choice into the parent cell and launches the child`` () =
