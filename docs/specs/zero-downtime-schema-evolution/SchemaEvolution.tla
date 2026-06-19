@@ -6,7 +6,7 @@
 \* The key invariant: Consolidate is BLOCKED until refCount = 0
 \* for ALL retracted fields. This guarantees zero-downtime by construction.
 
-EXTENDS Naturals, FiniteSets, Sequences
+EXTENDS Naturals, FiniteSets, Integers
 
 CONSTANTS
     Fields,         \* The universe of possible field names
@@ -24,16 +24,16 @@ vars == <<schema, refs, overlapOpen, evolved>>
 \* ── Type invariant ──────────────────────────────────────────────────────
 
 TypeOK ==
-    /\ schema \in [Fields -> Int]
+    /\ schema \in [Fields -> -2..2]
     /\ refs \in [Consumers -> SUBSET Fields]
     /\ overlapOpen \in BOOLEAN
-    /\ evolved \in Nat
+    /\ evolved \in 0..MaxEvolutions
 
 \* ── Initial state ───────────────────────────────────────────────────────
 
 Init ==
-    /\ schema \in [Fields -> {0, 1}]  \* Each field starts active (1) or absent (0)
-    /\ refs \in [Consumers -> SUBSET Fields]  \* Each consumer declares its refs
+    /\ schema = [f \in Fields |-> 1]  \* All fields start active
+    /\ refs = [c \in Consumers |-> Fields]  \* All consumers initially reference all fields
     /\ overlapOpen = FALSE
     /\ evolved = 0
 
@@ -57,7 +57,7 @@ ApplyDelta(retract, insert) ==
         CASE f \in retract -> schema[f] - 1
           [] f \in insert  -> schema[f] + 1
           [] OTHER         -> schema[f]]
-    /\ overlapOpen' = (retract /= {})
+    /\ overlapOpen' = (overlapOpen \/ retract /= {})  \* Opens on retract, NEVER closes here
     /\ evolved' = evolved + 1
     /\ UNCHANGED refs
 
@@ -66,7 +66,7 @@ ApplyDelta(retract, insert) ==
 
 MigrateConsumer(c, newRefs) ==
     /\ c \in Consumers
-    /\ newRefs \subseteq Fields
+    /\ newRefs \subseteq {f \in Fields : schema[f] > 0}  \* Can only reference ACTIVE fields
     /\ refs' = [refs EXCEPT ![c] = newRefs]
     /\ UNCHANGED <<schema, overlapOpen, evolved>>
 
