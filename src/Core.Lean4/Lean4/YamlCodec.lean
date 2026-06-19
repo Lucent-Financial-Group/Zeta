@@ -6,14 +6,14 @@ import Lean4.DynamicValue
 **CRITICAL: THIS IS A SIMPLIFIED MODEL AND NOT AN RFC-COMPLIANT PARSER/SERIALIZER.**
 
 Following similar boundaries as JSON and CBOR:
-1. **Simplified AST and Predicates**: Focuses exclusively on the 7 YAML-representable shapes of `DynamicValue` v1 (bytes is excluded via `IsRepresentableInYaml`, float is included).
+1. **Simplified AST and Predicates**: Focuses on the 6 always YAML-representable shapes of `DynamicValue` v1. Bytes are excluded, and floats are excluded until the finite canonical-decimal runtime contract is modeled in Lean.
 2. **No Text Serialization**: The proof verifies the bijection between the `DynamicValue` AST and the simplified `Yaml` AST. It does not handle text-level parsing/formatting.
 3. **Key Ordering**: Assumes simple insertion-order preservation.
 
 This model is intended to prove structural round-trip bijections of the nested value-tree abstraction. Actual text-level RFC compliance and cross-language byte parity are verified using differential test suites against golden vectors.
 -/
 
-/-- Simplified YAML AST covering the 7 representable shapes of DynamicValue v1. -/
+/-- Simplified YAML AST covering the YAML value shapes used by DynamicValue v1. -/
 inductive Yaml where
   | null
   | bool (b : Bool)
@@ -25,12 +25,12 @@ inductive Yaml where
   deriving Repr
 
 mutual
-  /-- Predicate characterizing DynamicValues representable in plain YAML (Bytes deferred, Float representable). -/
+  /-- Predicate characterizing DynamicValues representable in plain YAML (Bytes and Float deferred). -/
   def IsRepresentableInYaml : DynamicValue → Prop
     | .null => True
     | .bool _ => True
     | .int _ => True
-    | .float _ => True
+    | .float _ => False
     | .string _ => True
     | .bytes _ => False
     | .array l => IsRepresentableYamlList l
@@ -48,12 +48,12 @@ mutual
 end
 
 mutual
-  /-- Convert a DynamicValue to its YAML AST counterpart. Returns none for Bytes. -/
+  /-- Convert a DynamicValue to its YAML AST counterpart. Returns none for Bytes and Float. -/
   def toYaml : DynamicValue → Option Yaml
     | .null => some .null
     | .bool b => some (.bool b)
     | .int i => some (.int i)
-    | .float f => some (.float f)
+    | .float _ => none
     | .string s => some (.string s)
     | .bytes _ => none
     | .array l => (toYamlList l).map .array
@@ -107,7 +107,7 @@ mutual
     | .null, _ => ⟨.null, rfl, rfl⟩
     | .bool b, _ => ⟨.bool b, rfl, rfl⟩
     | .int i, _ => ⟨.int i, rfl, rfl⟩
-    | .float f, _ => ⟨.float f, rfl, rfl⟩
+    | .float _, h => False.elim h
     | .string s, _ => ⟨.string s, rfl, rfl⟩
     | .bytes _, h => False.elim h
     | .array l, h =>

@@ -23,10 +23,10 @@
 
 | format | F# | C# | Rust | TS | Python | Go | Q# | status |
 |--------|:--:|:--:|:----:|:--:|:------:|:--:|:--:|--------|
-| **JSON** (self-describing) | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✗ | **Conformed / safe-parsed** |
+| **JSON** (self-describing) | ✓ | ✓ | ✓ | ✓ | ✗ | ✗ | ✗ | **DynamicValue byte-locked (4/7)**; Python/Go have canonical JSON helpers, not DynamicValue codecs |
 | **CBOR** (self-describing, total 8/8 shapes) | ✓ | ✓ | ✓ | ✓ | ✗ | ✗ | ✗ | **Byte-locked (4/7)** |
 | **XML** (typed-element) | ✓ | ✓ | ✓ | ✓ | ✗ | ✗ | ✗ | **Byte-locked (4/7)** |
-| **YAML** (safe-subset) | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✗ | **Conformed / event-parsed** |
+| **YAML** (safe-subset) | ✓ | ✓ | ✓ | ✓ | ✗ | ✗ | ✗ | **DynamicValue byte-locked (4/7)**; Python/Go have event scanners, not DynamicValue codecs |
 | **Arrow** (columnar) | ✓ | ✓ | ✗ | ✗ | ✗ | ✗ | ✗ | **2/7 — F#+C# only** (shared .NET `Apache.Arrow`) |
 | **protobuf** (schema-REQUIRED) | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | **0/7 — not present** (needs runtime schema registry) |
 
@@ -36,10 +36,11 @@
 
 | primitive | F# | C# | Rust | TS | Python | Go | Q# | note |
 |-----------|:--:|:--:|:----:|:--:|:------:|:--:|:--:|------|
-| DynamicValue (carrier) | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✗ | The universal value tree |
+| DynamicValue (carrier) | ✓ | ✓ | ✓ | ✓ | ✗ | ✗ | ✗ | 4/7; Python/Go ports need carriers plus golden-vector codec tests |
 | TriBoolean (+ float) | ✓ | ✓ | ✓ | ✓ | ✗ | ✗ | ✗ | 4/7 |
 | Bonsai (reified computation) | ✓ | ✓ | ✓ | ✓ | ✗ | ✗ | ✗ | 4/7 |
-| Yaml · Sha256 · RangeSet | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✗ | 6/7 (Python & Go include YAML + Sha256) |
+| Yaml events · Sha256 | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✗ | 6/7 helpers; Python/Go do not yet lift them through DynamicValue |
+| RangeSet | ✓ | ✓ | ✓ | ✓ | ✗ | ✗ | ✗ | 4/7 |
 | Observe · AceCanonical · Resume | ✓ | ✓ | ✓ | ✗ | ✗ | ✗ | ✗ | 3/7 — no TS |
 | Algebra | ✓ | ✗ | ✓ | ✗ | ✗ | ✗ | ✗ | 2/7 — F#+Rust |
 
@@ -66,9 +67,11 @@ Formal proof and verification targets are mapped explicitly as first-class ancho
 
 ## 5. GAP LIST
 
-1. **Arrow in Rust + TS + Python + Go** (2/7 → 7/7) — needs an Arrow codec each.
-2. **protobuf / gRPC** (0/7) — schema-required binary format, fits DynamicValue only via the schema-registry.
-3. **New seeds Predicate3 / SchemaEvolution / SoftValue: F#-only (1/7)** — port to remaining runtimes in the matrix.
-4. **Observe / AceCanonical / Resume: no TS (3/7)**; **Algebra: F#+Rust only (2/7)**.
-5. **Belief/SoftValue convergence (general case):** is the *path-dependent* Bayesian uncertainty-merge a join-semilattice?
-6. **Premise-unconditional formal legs:** Merkle real-hash analysis; Metric Lean/Mathlib Markov.
+1. **DynamicValue Python + Go carriers/codecs** (4/7 → 6/7, Q# remains oracle-only) — canonical JSON/YAML helpers exist, but not the DynamicValue carrier or golden-vector codec surface.
+2. **Arrow in Rust + TS + Python + Go** (2/7 → 7/7) — needs an Arrow codec each.
+3. **RangeSet in Python + Go** (4/7 → 6/7) — needs ports plus golden-vector tests.
+4. **protobuf / gRPC** (0/7) — schema-required binary format, fits DynamicValue only via the schema-registry.
+5. **New seeds Predicate3 / SchemaEvolution / SoftValue: F#-only (1/7)** — port to remaining runtimes in the matrix.
+6. **Observe / AceCanonical / Resume: no TS (3/7)**; **Algebra: F#+Rust only (2/7)**.
+7. **Belief/SoftValue convergence (general case):** is the *path-dependent* Bayesian uncertainty-merge a join-semilattice?
+8. **Premise-unconditional formal legs:** Merkle real-hash analysis; Metric Lean/Mathlib Markov.

@@ -7,7 +7,7 @@ Machine-checked formalizations of Zeta's load-bearing mathematical claims using
 [Mathlib](https://leanprover-community.github.io/). The artifact-grade module
 `Lean4/DbspChainRule.lean` is fully machine-checked — no `sorry`, no `admit` —
 and CI-type-checked against the pinned toolchain on every PR that touches
-`tools/lean4/**`. As of 2026-06-05, `ImaginaryStack/ToyModel.lean` (the
+`src/Core.Lean4/**`. As of 2026-06-05, `ImaginaryStack/ToyModel.lean` (the
 Adinkra-as-generator / bulk-from-boundary toy lemma) is **also** machine-checked
 and sorry-free — CI type-checks it and runs an axiom audit that fails on
 `sorryAx`. Its honest scope (erasure-distance for arbitrary erasure patterns; the
@@ -38,7 +38,7 @@ named in the file header and in `docs/FROZEN-CORE-AND-CONJECTURE-REGISTER.md` §
 # tools/lean4/lean-toolchain (leanprover/lean4:v4.30.0-rc1).
 ./tools/setup/install.sh
 
-cd tools/lean4
+cd src/Core.Lean4
 lake exe cache get               # fetch Mathlib's pre-built oleans (multi-GB; first run only)
 lake env lean Lean4/DbspChainRule.lean  # type-check the artifact (~30s after cache warm)
 # Or, to build everything `Lean4.lean` imports:
@@ -106,7 +106,7 @@ composition). Currently named as future-round target at
 
 ## DynamicValue Serialization Proofs (`Lean4/DynamicValue.lean`, `Lean4/JsonCodec.lean`, `Lean4/CborCodec.lean`)
 
-Formalizes the structural round-trip properties of the canonical `DynamicValue` AST on the representable subset of JSON and CBOR shapes.
+Formalizes the structural round-trip properties of the canonical `DynamicValue` AST on the representable subset of JSON, CBOR, and YAML shapes.
 
 ### Model Boundaries and Simplifying Assumptions
 
@@ -116,12 +116,12 @@ Key simplifications include:
 
 1. **Simplified Header Encoding (CBOR)**: Headers are encoded as `[major, arg]` (fixed two-byte header representation in Nat lists) rather than bit-packed variable-length bytes.
 2. **Simplified String Encoding (CBOR)**: Unicode characters map directly to lists of `Nat` code points via `Char.toNat` / `Char.ofNat` instead of proper UTF-8 byte stream compilation.
-3. **Float & Byte Stubs**: Floats are marked as unrepresentable in both JSON and CBOR, with the CBOR encoder/decoder mapping floats to fixed/stubbed representations.
+3. **Float & Byte Stubs**: Floats are marked as unrepresentable in JSON, CBOR, and YAML until each runtime's finite canonical number contract is modeled in Lean. Bytes are also excluded from YAML.
 4. **Key Sorting & Formatting**: Maps are serialized in insertion order. Text-level constraints (whitespace rules, escape sequences, JSON number representations) are not modeled.
 
 ### Parity Strategy (The 7 Languages + Lean 4)
 
-- **Production parity**: Parity across the 7 production-grade languages (F#, C#, Rust, TypeScript, Go, Python, and Q#) is maintained and enforced via differential tests executing and validating against the shared golden vectors (e.g., `golden-vectors-cbor.json` / `golden-vectors.json`).
+- **Production parity**: Parity across the production runtime languages is maintained and enforced via differential tests executing and validating against the shared golden vectors (e.g., `golden-vectors-cbor.json` / `golden-vectors.json`). Python and Go currently have canonical JSON/YAML helpers but not the DynamicValue carrier/codec surface; Q# remains an oracle/reference lane.
 - **Mathematical soundness**: The Lean 4 formalization ensures the theoretical soundness of the serialization/deserialization bijection on the representable value-trees.
 
 ## Verification registry
@@ -135,8 +135,9 @@ with provenance, audit cadence, and cross-check status.
 [`.github/workflows/lean-proof.yml`](../../.github/workflows/lean-proof.yml)
 runs `./tools/setup/install.sh` (to install elan + the pinned toolchain), then
 `lake exe cache get` (to fetch Mathlib's pre-built oleans), then
-`lake env lean Lean4/DbspChainRule.lean` (to type-check the artifact) on every
-PR touching `tools/lean4/**`. Path-filtered to run out-of-band from the main
+`lake build` (to build the `Lean4.lean` package root and all imported codec proofs),
+plus explicit theorem-file checks and the sorry-free axiom audit on every
+PR touching `src/Core.Lean4/**`. Path-filtered to run out-of-band from the main
 `gate.yml` matrix (Mathlib cache is multi-GB and toolchain setup is heavier
 than the dotnet/bun gates). See workflow source for SHA-pinning +
 concurrency-group + minimum-permissions details.
@@ -150,7 +151,7 @@ If you cite this artifact:
   author       = {{Lucent Financial Group}},
   title        = {Zeta DBSP chain rule, machine-checked in Lean 4 + Mathlib},
   year         = {2026},
-  howpublished = {\url{https://github.com/Lucent-Financial-Group/Zeta/tree/main/tools/lean4}},
+  howpublished = {\url{https://github.com/Lucent-Financial-Group/Zeta/tree/main/src/Core.Lean4}},
   note         = {Formalizes Budiu et al. (VLDB 2023, arXiv:2203.16684) Proposition 3.2 + Theorem 3.3 corollary}
 }
 ```
