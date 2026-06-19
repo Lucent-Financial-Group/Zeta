@@ -1948,7 +1948,6 @@ audit (after round 33):
   Postgres" and not "Zeta sits behind a Postgres façade".
   See `docs/research/crystallization-ledger.md` turn 1.
 
-
 ## The universal substrate and the polarity filter (2026-06-19, Alexa session)
 
 > **The universal is the substrate; the particular is the filter.**
@@ -1971,6 +1970,7 @@ state + the irreducible seed. The hard log was training wheels until the generat
 ### Lenses as polarity filters
 
 A lens (`SnapPolicy`) IS a polarity filter in the optics sense:
+
 - The soft value has amplitude in all directions (all candidates weighted)
 - The polarity filter selects one projection axis (the snap policy)
 - What passes through = the hard value the consumer sees
