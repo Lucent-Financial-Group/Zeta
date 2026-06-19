@@ -52,6 +52,7 @@ A formally verified information lithography process:
 The moat is not features. It's **process calibration time**.
 
 Nobody replicates this by:
+
 - Throwing money at it (the calibration IS the time — years of substrate engineering, 8000+ PRs)
 - Hiring more people (the workforce is AI; more humans doesn't help — more calibrated agents does)
 - Building a competing product (the product IS the process, not a feature set)
