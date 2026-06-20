@@ -24,6 +24,7 @@ module DarkHallScheduler =
     type ScheduledRoomState =
         { Loop: RoomLoop.LoopState
           CompletedTicks: int
+          CompletedLaps: int
           LastTick: RoomLoop.TickOutcome option
           HeatRowsRev: HeatBoundaryRow list }
 
@@ -72,6 +73,7 @@ module DarkHallScheduler =
     let initial (room: DarkHall.Room) (manifest: Chip9Capabilities.Manifest) : ScheduledRoomState =
         { Loop = RoomLoop.initial room manifest
           CompletedTicks = 0
+          CompletedLaps = 0
           LastTick = None
           HeatRowsRev = [] }
 
@@ -149,8 +151,22 @@ module DarkHallScheduler =
         let tick = state.CompletedTicks + 1
         { Loop = outcome.State
           CompletedTicks = tick
+          CompletedLaps = state.CompletedLaps
           LastTick = Some outcome
           HeatRowsRev = rowOfOutcome tick outcome :: state.HeatRowsRev }
+
+    let private stampCumulativeLaps
+        (startLaps: int)
+        (outcome: SimLoop.Outcome<ScheduledRoomState, string list>)
+        : SimLoop.Outcome<ScheduledRoomState, string list> =
+        let laps =
+            outcome.Laps
+            |> List.mapi (fun i lap ->
+                { lap with State = { lap.State with CompletedLaps = startLaps + i + 1 } })
+
+        let final = { outcome.Final with CompletedLaps = startLaps + List.length outcome.Laps }
+
+        { outcome with Laps = laps; Final = final }
 
     let tick
         (source: string)
@@ -194,10 +210,13 @@ module DarkHallScheduler =
         (cut: string list -> ScheduledRoomState -> bool)
         (start: ScheduledRoomState)
         =
-        let handler = roomTickHandler name matches sourceName sink requestFor choose
-        let measure = renderHeatBoardForState (uint64 seed)
+        task {
+            let handler = roomTickHandler name matches sourceName sink requestFor choose
+            let measure = renderHeatBoardForState (uint64 seed)
 
-        SimLoop.run [ handler ] interruptSource measure cut clock budget ctx seed ticksPerLap start
+            let! outcome = SimLoop.run [ handler ] interruptSource measure cut clock budget ctx seed ticksPerLap start
+            return stampCumulativeLaps start.CompletedLaps outcome
+        }
 
     /// Run a bounded sim -> measure -> cut loop where the measurement is the
     /// host-visible CHIP-9 heat board. This is the Dark Hall room loop shape for
@@ -261,7 +280,7 @@ module DarkHallScheduler =
         sprintf
             "saves/darkhall/%s/lap-%d-tick-%d.heat-board"
             (continuationLoopId loopId)
-            (List.length outcome.Laps)
+            outcome.Final.CompletedLaps
             outcome.Final.CompletedTicks
 
     let private heatBoardStatePointerPrefix (loopId: string) : string =
@@ -274,7 +293,17 @@ module DarkHallScheduler =
         (loopId: string)
         (outcome: SimLoop.Outcome<ScheduledRoomState, string list>)
         : SimLoop.Continuation option =
-        SimLoop.continueAfter (continuationLoopId loopId) (heatBoardStatePointer loopId outcome) outcome
+        match outcome.Stopped with
+        | SimLoop.Stopped.LapBudget
+        | SimLoop.Stopped.TickBudget
+        | SimLoop.Stopped.ClockBudget ->
+            Some
+                { LoopId = continuationLoopId loopId
+                  NextLap = outcome.Final.CompletedLaps
+                  TicksSpent = List.length outcome.Laps
+                  StatePointer = heatBoardStatePointer loopId outcome }
+        | SimLoop.Stopped.CutChoseClose
+        | SimLoop.Stopped.RoomError _ -> None
 
     let encodeHeatBoardContinuation
         (loopId: string)
