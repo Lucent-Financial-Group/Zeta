@@ -23,12 +23,13 @@ in
         url = "https://github.com/jdx/mise/releases/download/v${version}/mise-v${version}-linux-${arch.${system}}.tar.gz";
         hash = sha256.${system};
       };
+      sourceRoot = "mise";
       nativeBuildInputs = [ prev.autoPatchelfHook ];
       dontBuild = true;
       installPhase = ''
         runHook preInstall
         mkdir -p "$out/bin"
-        install -m755 mise/bin/mise "$out/bin/mise"
+        install -m755 bin/mise "$out/bin/mise"
         runHook postInstall
       '';
       meta = (prev.mise.meta or { }) // {
