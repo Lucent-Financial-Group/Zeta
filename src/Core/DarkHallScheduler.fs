@@ -213,9 +213,16 @@ module DarkHallScheduler =
         =
         task {
             let handler = roomTickHandler name matches sourceName sink requestFor choose
-            let measure = renderHeatBoardForState (uint64 seed)
+            let mutable lapBoundary = start.CompletedLaps
+            let mutable cutState = start
+            let measure state =
+                lapBoundary <- lapBoundary + 1
+                cutState <- { state with CompletedLaps = lapBoundary }
+                renderHeatBoardForState (uint64 seed) cutState
 
-            let! outcome = SimLoop.run [ handler ] interruptSource measure cut clock budget ctx seed ticksPerLap start
+            let cutAtLap measured _state = cut measured cutState
+
+            let! outcome = SimLoop.run [ handler ] interruptSource measure cutAtLap clock budget ctx seed ticksPerLap start
             return stampCumulativeLaps start.CompletedLaps outcome
         }
 
