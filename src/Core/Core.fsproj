@@ -26,6 +26,8 @@
     <Compile Include="Viewport.fs" />
     <Compile Include="ForceLayout.fs" />
     <Compile Include="MetaspaceMap.fs" />
+    <Compile Include="GlassHalo.fs" />
+    <Compile Include="DoorGraph.fs" />
     <Compile Include="Fixpoint.fs" />
     <Compile Include="Orbit.fs" />
     <Compile Include="AdinkraCode.fs" />
@@ -192,6 +194,7 @@
     <Compile Include="PredictionScheduler.fs" />
     <Compile Include="Heat.fs" />
     <Compile Include="RoomHorizon.fs" />
+    <Compile Include="RoomAdmission.fs" />
     <Compile Include="Query.fs" />
     <Compile Include="Injection.fs" />
     <Compile Include="InjectionExt.fs" />
@@ -322,6 +325,7 @@
     <Compile Include="WikidataGraph.fs" />
     <Compile Include="GraphSnapshot.fs" />
     <Compile Include="CoEmpowerGraphSvg.fs" />
+    <Compile Include="MetaspaceGraphRender.fs" />
     <Compile Include="MintPanel.fs" />
     <Compile Include="DemoDashboard.fs" />
     <Compile Include="DemoPipeline.fs" />

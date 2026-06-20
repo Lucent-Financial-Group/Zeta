@@ -158,6 +158,7 @@
     <Compile Include="PredictionInference.Tests.fs" />
     <Compile Include="PredictionScheduler.Tests.fs" />
     <Compile Include="RoomHorizon.Tests.fs" />
+    <Compile Include="RoomAdmission.Tests.fs" />
     <Compile Include="RecordedSource.Tests.fs" />
     <Compile Include="SoftIsr.Tests.fs" />
     <Compile Include="SimFramework.Tests.fs" />
@@ -369,6 +370,9 @@
     <Compile Include="Formal/Viewport.Tests.fs" />
     <Compile Include="Formal/ForceLayout.Tests.fs" />
     <Compile Include="Formal/MetaspaceMap.Tests.fs" />
+    <Compile Include="Formal/MetaspaceGraphRender.Tests.fs" />
+    <Compile Include="Formal/GlassHalo.Tests.fs" />
+    <Compile Include="Formal/DoorGraph.Tests.fs" />
     <Compile Include="Formal/LiveLegs.Tests.fs" />
     <Compile Include="Formal/WikidataGraph.Tests.fs" />
     <Compile Include="Formal/GraphSnapshot.Tests.fs" />
