@@ -274,14 +274,15 @@ jobs:
       # waits for `[iter-5.3]` marker in serial log to verify nixos-install
       # + iter-4.2 + iter-5.2 substrate completed.
       #
-      # Hard gate on push-to-main + workflow_dispatch (scenario 1 already
-      # blocking). Scenario 2 promoted from advisory after #8155 pubkey fix
-      # and green build-iso run 27486800503 (2026-06-14).
+      # Hard gate on push-to-main for scenarios 1 + 2. Scenario 2 green on
+      # main after #8478 initrd virtio root fix (run 27602908527: phase-2
+      # reached node-XXXXXX login:).
       #
       # Security: no github.event.* interpolation; ISO path comes from
       # prior workflow step's filesystem find.
       - name: B-0891 scenario 2 — boot + install substrate (B-0831 Slice 1)
         if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+        timeout-minutes: 90
         working-directory: full-ai-cluster
         env:
           SERIAL_LOG_OUT_PATH: ${{ github.workspace }}/qemu-full-install-serial.log

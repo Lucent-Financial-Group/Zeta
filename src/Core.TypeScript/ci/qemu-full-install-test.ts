@@ -21,7 +21,7 @@
  */
 
 import { execFileSync, spawn } from "node:child_process";
-import { appendFileSync, existsSync, mkdtempSync, readFileSync } from "node:fs";
+import { existsSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { serialFirstBootInProgress } from "../zflash/test-harness/serial-markers";
@@ -54,12 +54,21 @@ const CONSOLE_MIRROR_HINT =
   "(see full-ai-cluster/usb-nixos-installer/zeta-first-boot.sh)";
 
 const INSTALL_TIMEOUT_SECONDS = 1800;
-const DISK_BOOT_TIMEOUT_SECONDS = 600;
+const DISK_BOOT_TIMEOUT_SECONDS = 1800;
 const POLL_INTERVAL_MS = 2000;
 const MEMORY_MB = 4096;
 const CPU_COUNT = 2;
 const DISK_SIZE_GB = 20;
 const KVM_PATH = "/dev/kvm";
+
+/** Separator between phase-1 installer serial and phase-2 disk-boot serial in artifacts. */
+export const PHASE2_SERIAL_SEPARATOR =
+  "\n\n=== PHASE 2: boot installed disk (no ISO) ===\n\n";
+
+/** Exported for unit tests. QEMU `-serial file:` truncates on each launch. */
+export function mergeFullInstallSerialLogs(phase1: string, phase2: string): string {
+  return phase1 + PHASE2_SERIAL_SEPARATOR + phase2;
+}
 
 /** Exported for unit tests. */
 export const OVMF_FIRMWARE_CANDIDATES = [
@@ -186,19 +195,38 @@ function buildQemuDiskBootArgs(diskPath: string, serialLogPath: string, tmpDir: 
     throw new Error("OVMF firmware missing; cannot UEFI-boot installed systemd-boot disk");
   }
   const varsPath = prepareWritableOvmfVars(tmpDir, ovmf.varsTemplate);
+  return buildQemuDiskBootArgsPure(diskPath, serialLogPath, ovmf.code, varsPath, kvmEnabled());
+}
+
+/** Exported for unit tests. */
+export function buildQemuDiskBootArgsPure(
+  diskPath: string,
+  serialLogPath: string,
+  ovmfCodePath: string,
+  ovmfVarsPath: string,
+  kvm: boolean,
+): string[] {
+  // Phase 2 only needs a login prompt on serial — no network. A virtio-net
+  // NIC exposes a UEFI "Misc Device" boot entry (Pci 0x3,0x0) that can win
+  // fresh OVMF_VARS boot order and stall after initrd (B-0891 run #27589613408).
   const args: string[] = [
     "-machine", "q35",
     "-m", String(MEMORY_MB),
     "-smp", String(CPU_COUNT),
-    "-drive", `if=pflash,format=raw,unit=0,readonly=on,file=${ovmf.code}`,
-    "-drive", `if=pflash,format=raw,unit=1,file=${varsPath}`,
-    "-drive", `file=${diskPath},if=virtio,format=qcow2`,
+    "-drive", `if=pflash,format=raw,unit=0,readonly=on,file=${ovmfCodePath}`,
+    "-drive", `if=pflash,format=raw,unit=1,file=${ovmfVarsPath}`,
+    "-drive", `file=${diskPath},if=none,format=qcow2,id=installdisk`,
+    "-device", "virtio-blk-pci,drive=installdisk,bootindex=1",
     "-serial", `file:${serialLogPath}`,
     "-display", "none",
-    "-netdev", "user,id=net0",
-    "-device", "virtio-net-pci,netdev=net0",
+    "-vga", "none",
+    "-no-reboot",
   ];
-  appendKvmCpu(args);
+  if (kvm) {
+    args.push("-enable-kvm", "-cpu", "host");
+  } else {
+    args.push("-cpu", "qemu64");
+  }
   return args;
 }
 
@@ -304,15 +332,37 @@ async function waitForInstalledLogin(
   const start = Date.now();
   const deadline = start + DISK_BOOT_TIMEOUT_SECONDS * 1000;
   const loginNeedle = expectedHostname ? `${expectedHostname} login:` : null;
+  const welcomeNeedle = expectedHostname
+    ? `Welcome to ${expectedHostname} (Zeta cluster node)`
+    : null;
+  let lastReportedMinute = -1;
 
   while (Date.now() < deadline) {
     const elapsedSec = Math.floor((Date.now() - start) / 1000);
+    const elapsedMin = Math.floor(elapsedSec / 60);
+    if (elapsedMin > lastReportedMinute) {
+      const target = loginNeedle ?? "installed-system login prompt";
+      console.log(
+        `[qemu-full-install-test] phase 2: ${elapsedMin} min elapsed; waiting for "${target}"`,
+      );
+      lastReportedMinute = elapsedMin;
+    }
     const content = readSerial(serialLogPath);
 
     if (loginNeedle && content.includes(loginNeedle)) {
       return {
         exitCode: 0,
         reason: `phase 2 SUCCESS — login prompt "${loginNeedle}" observed`,
+        serialLogTail: content.slice(-1500),
+        elapsedSeconds: elapsedSec,
+        ...(expectedHostname !== null ? { hostname: expectedHostname } : {}),
+      };
+    }
+
+    if (welcomeNeedle && content.includes(welcomeNeedle) && content.includes("login:")) {
+      return {
+        exitCode: 0,
+        reason: `phase 2 SUCCESS — login banner "${welcomeNeedle}" observed`,
         serialLogTail: content.slice(-1500),
         elapsedSeconds: elapsedSec,
         ...(expectedHostname !== null ? { hostname: expectedHostname } : {}),
@@ -361,7 +411,9 @@ async function waitForInstalledLogin(
   const emptySerialHint =
     content.trim().length === 0
       ? " (serial log empty — installed disk may need UEFI/OVMF boot or console=ttyS0 on the installed node)"
-      : "";
+      : content.includes("EFI stub: Loaded initrd") && !content.includes("login:")
+        ? " (serial stopped after EFI initrd — likely initrd cannot mount virtio root; verify hardware-configuration.nix copy at install + virtio_blk in initrd)"
+        : "";
   return {
     exitCode: 1,
     reason: loginNeedle
@@ -452,38 +504,44 @@ async function main(): Promise<never> {
 
   const tmpDir = mkdtempSync(join(tmpdir(), "zeta-qemu-full-install-test-"));
   const diskPath = join(tmpDir, "install-target.qcow2");
-  const serialLogPath = process.env.SERIAL_LOG_OUT_PATH ?? join(tmpDir, "serial.log");
+  const artifactSerialLogPath = process.env.SERIAL_LOG_OUT_PATH ?? join(tmpDir, "serial.log");
+  const phase1SerialLogPath = join(tmpDir, "phase1-serial.log");
+  const phase2SerialLogPath = join(tmpDir, "phase2-serial.log");
+
+  const writeArtifactSerialLog = (phase1: string, phase2: string): void => {
+    writeFileSync(artifactSerialLogPath, mergeFullInstallSerialLogs(phase1, phase2));
+  };
 
   console.log(`[qemu-full-install-test] ISO: ${isoPath}`);
   console.log(`[qemu-full-install-test] Virtual disk: ${diskPath}`);
-  console.log(`[qemu-full-install-test] Serial log: ${serialLogPath}`);
+  console.log(`[qemu-full-install-test] Serial log artifact: ${artifactSerialLogPath}`);
 
   createVirtualDisk(diskPath);
 
   const phase1 = await runQemuUntil(
-    buildQemuInstallArgs(isoPath, diskPath, serialLogPath),
-    serialLogPath,
-    () => waitForInstallComplete(serialLogPath),
+    buildQemuInstallArgs(isoPath, diskPath, phase1SerialLogPath),
+    phase1SerialLogPath,
+    () => waitForInstallComplete(phase1SerialLogPath),
     "phase 1 (ISO install)",
   );
+  const phase1Serial = readSerial(phase1SerialLogPath);
   if (phase1.exitCode !== 0) {
-    reportResult(phase1, serialLogPath);
+    writeArtifactSerialLog(phase1Serial, "");
+    reportResult(phase1, artifactSerialLogPath);
   }
 
-  const installSerial = readSerial(serialLogPath);
-  const hostname = phase1.hostname ?? extractGeneratedHostname(installSerial);
+  const hostname = phase1.hostname ?? extractGeneratedHostname(phase1Serial);
   console.log(`[qemu-full-install-test] phase 1 done; expected hostname: ${hostname ?? "(infer at login)"}`);
 
-  appendFileSync(serialLogPath, "\n\n=== PHASE 2: boot installed disk (no ISO) ===\n\n");
-
   const phase2 = await runQemuUntil(
-    buildQemuDiskBootArgs(diskPath, serialLogPath, tmpDir),
-    serialLogPath,
-    () => waitForInstalledLogin(serialLogPath, hostname),
+    buildQemuDiskBootArgs(diskPath, phase2SerialLogPath, tmpDir),
+    phase2SerialLogPath,
+    () => waitForInstalledLogin(phase2SerialLogPath, hostname),
     "phase 2 (disk boot)",
   );
 
-  reportResult(phase2, serialLogPath);
+  writeArtifactSerialLog(phase1Serial, readSerial(phase2SerialLogPath));
+  reportResult(phase2, artifactSerialLogPath);
 }
 
 if (import.meta.main) {

@@ -1,9 +1,12 @@
 import { describe, expect, it } from "bun:test";
 import { validateSelfRegCiCoherent } from "./self-reg-serial.ts";
 import {
+  buildQemuDiskBootArgsPure,
   detectUnexpectedControlPlaneLogin,
   extractGeneratedHostname,
+  mergeFullInstallSerialLogs,
   OVMF_FIRMWARE_CANDIDATES,
+  PHASE2_SERIAL_SEPARATOR,
 } from "./qemu-full-install-test.ts";
 
 describe("validateSelfRegCiCoherent", () => {
@@ -36,6 +39,36 @@ describe("qemu-full-install-test OVMF firmware paths", () => {
       code: "/usr/share/OVMF/OVMF_CODE_4M.fd",
       vars: "/usr/share/OVMF/OVMF_VARS_4M.fd",
     });
+  });
+});
+
+describe("qemu-full-install-test phase 2 disk boot QEMU args", () => {
+  it("prefers virtio disk bootindex and omits virtio-net (UEFI PXE boot trap)", () => {
+    const args = buildQemuDiskBootArgsPure(
+      "/tmp/disk.qcow2",
+      "/tmp/serial.log",
+      "/usr/share/OVMF/OVMF_CODE_4M.fd",
+      "/tmp/OVMF_VARS.fd",
+      true,
+    );
+    expect(args.join(" ")).toContain("virtio-blk-pci,drive=installdisk,bootindex=1");
+    expect(args.join(" ")).not.toContain("if=virtio,format=qcow2,bootindex");
+    expect(args.join(" ")).not.toContain("virtio-net");
+    expect(args.join(" ")).not.toContain("netdev");
+    expect(args).toContain("-vga");
+    expect(args).toContain("none");
+  });
+});
+
+describe("qemu-full-install-test serial log artifact merge", () => {
+  it("preserves phase 1 output when phase 2 QEMU truncates its serial file", () => {
+    const merged = mergeFullInstallSerialLogs(
+      "phase1: ZETA CLUSTER NODE INSTALL COMPLETE\n",
+      "phase2: node-abc123 login:",
+    );
+    expect(merged).toContain("ZETA CLUSTER NODE INSTALL COMPLETE");
+    expect(merged).toContain(PHASE2_SERIAL_SEPARATOR.trim());
+    expect(merged).toContain("node-abc123 login:");
   });
 });
 

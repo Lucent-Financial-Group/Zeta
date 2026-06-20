@@ -17,6 +17,12 @@
  * - Same interface, same code path: production and simulation differ only in
  *   which WorkspacePort implementation is injected
  *
+ * This module is the reconciled superset of two lines of work:
+ *   - the DAG / history surface (link, stage, readFileAt, history, blame,
+ *     diff, mergeBase) used by the conformance suite, and
+ *   - the cross-platform metadata surface (FilePermissions, FileEntry,
+ *     StorageBackend, Platform, binary read/write, setPermissions).
+ *
  * Composes with:
  *   - src/Core.TypeScript/observe/kiro-executor.ts (the consumer)
  *   - src/Core.TypeScript/observe/simulate-tick.ts (injects the simulated impl)
@@ -154,15 +160,28 @@ export interface WorkspacePort {
   /** List files in a directory (non-recursive). Returns filenames or error. */
   readDir(path: string): IoResult<readonly string[]>;
 
-  // ─── Version control operations (the 5 primitives git implements) ──
+  // ─── Multi-home / DAG operations ──────────────────────────────────
 
-  /** Create or switch to a named branch (pointer to a state). */
-  branch(name: string, from?: string): IoResult<void>;
+  /**
+   * Link content at an additional path (multi-home).
+   * On os-fs polyfill: creates a symlink from newPath → existingPath.
+   * On zeta-fs-native: adds a DAG edge (content hash gets another parent).
+   * On simulated: both paths map to the same content.
+   */
+  link(existingPath: string, newPath: string): IoResult<void>;
+
+  // ─── Version control (the primitives git implements) ───────────────
 
   /** Current branch name. */
   currentBranch(): IoResult<string>;
 
-  /** Record the current state as a commit (append delta to the log). */
+  /** Create or switch to a named branch. */
+  branch(name: string, from?: string): IoResult<void>;
+
+  /** Stage files for the next commit. */
+  stage(paths: readonly string[]): IoResult<void>;
+
+  /** Record staged changes (or the given paths) as a commit. Returns the commit hash. */
   commit(message: string, paths?: readonly string[]): IoResult<{ hash: string }>;
 
   /** Replicate commits to a remote peer. */
@@ -171,18 +190,52 @@ export interface WorkspacePort {
   /** Ingest commits from a remote peer. */
   pull(remote: string, branch: string): IoResult<void>;
 
-  // ─── Escape hatches (legacy / not-yet-abstracted) ──────────────────
+  // ─── History operations (git log / blame / show) ───────────────────
 
-  /** Raw git command (legacy escape hatch — use version control ops above when possible). */
+  /** Read a file at a specific revision/ref (git show <ref>:<path>). */
+  readFileAt(path: string, ref: string): IoResult<string>;
+
+  /** Get commit history for a path (most recent first). */
+  history(path?: string, maxCount?: number): IoResult<readonly HistoryEntry[]>;
+
+  /** Get line-by-line authorship (git blame). */
+  blame(path: string): IoResult<readonly BlameEntry[]>;
+
+  /** Diff between two refs (or working tree vs HEAD). */
+  diff(from?: string, to?: string): IoResult<string>;
+
+  /** Find the most recent common ancestor of two branches (LCA in the commit DAG). */
+  mergeBase(branchA: string, branchB: string): IoResult<{ hash: string }>;
+
+  // ─── Escape hatches ────────────────────────────────────────────────
+
+  /** Raw git command (legacy — use structured ops above when possible). */
   git(args: readonly string[]): IoResult<string>;
 
   /** Run an arbitrary command. Returns stdout + exit code. */
   exec(command: string, args: readonly string[]): IoResult<{ stdout: string; exitCode: number }>;
 }
 
+/** One entry from commit history. */
+export interface HistoryEntry {
+  readonly hash: string;
+  readonly message: string;
+  readonly author: string;
+  readonly date: string;
+}
+
+/** One line from blame output. */
+export interface BlameEntry {
+  readonly line: number;
+  readonly hash: string;
+  readonly author: string;
+  readonly date: string;
+  readonly content: string;
+}
+
 // ─── Real implementation (production) ────────────────────────────────────────
 
-import { chmodSync, existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
+import { chmodSync, existsSync, mkdirSync, readdirSync, readFileSync, statSync, symlinkSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { spawnSync } from "node:child_process";
 
@@ -214,7 +267,7 @@ export function realWorkspacePort(repoRoot: string): WorkspacePort {
         const full = join(repoRoot, path);
         const stat = statSync(full);
         const executable = platform !== "win32" ? (stat.mode & 0o111) !== 0 : false;
-        // Heuristic: try UTF-8 first; if it fails or contains null bytes, treat as binary
+        // Heuristic: try UTF-8 first; if it contains null bytes, treat as binary
         const raw = readFileSync(full);
         const hasNull = raw.includes(0);
         if (hasNull) {
@@ -231,7 +284,6 @@ export function realWorkspacePort(repoRoot: string): WorkspacePort {
         const full = join(repoRoot, path);
         mkdirSync(dirname(full), { recursive: true });
         writeFileSync(full, content);
-        // Apply permissions (macOS/Linux only; Windows is a no-op)
         if (permissions?.executable && platform !== "win32") {
           chmodSync(full, 0o755);
         }
@@ -293,43 +345,121 @@ export function realWorkspacePort(repoRoot: string): WorkspacePort {
       return { ok: true, value: (result.stdout ?? "").trim() };
     },
 
+    // ─── Multi-home (symlinks on os-fs) ──────────────────────────────
+
+    link(existingPath: string, newPath: string): IoResult<void> {
+      try {
+        const fullNew = join(repoRoot, newPath);
+        mkdirSync(dirname(fullNew), { recursive: true });
+        symlinkSync(join(repoRoot, existingPath), fullNew);
+        return { ok: true, value: undefined };
+      } catch (err) {
+        return { ok: false, reason: `link(${existingPath} → ${newPath}): ${(err as Error).message}` };
+      }
+    },
+
     // ─── Version control (delegates to git today; replaced by zeta-fs later) ──
+
+    currentBranch(): IoResult<string> {
+      const r = spawnSync("git", ["-C", repoRoot, "rev-parse", "--abbrev-ref", "HEAD"], { encoding: "utf-8", timeout: 10_000 });
+      if (r.status !== 0) return { ok: false, reason: `currentBranch: ${(r.stderr ?? "").trim()}` };
+      return { ok: true, value: (r.stdout ?? "").trim() };
+    },
 
     branch(name: string, from?: string): IoResult<void> {
       const args = from ? ["checkout", "-B", name, from] : ["checkout", "-B", name];
-      const result = spawnSync("git", ["-C", repoRoot, ...args], { encoding: "utf-8", timeout: 30_000 });
-      if (result.status !== 0) return { ok: false, reason: `branch(${name}): ${(result.stderr ?? "").trim()}` };
+      const r = spawnSync("git", ["-C", repoRoot, ...args], { encoding: "utf-8", timeout: 30_000 });
+      if (r.status !== 0) return { ok: false, reason: `branch(${name}): ${(r.stderr ?? "").trim()}` };
       return { ok: true, value: undefined };
     },
 
-    currentBranch(): IoResult<string> {
-      const result = spawnSync("git", ["-C", repoRoot, "rev-parse", "--abbrev-ref", "HEAD"], { encoding: "utf-8", timeout: 10_000 });
-      if (result.status !== 0) return { ok: false, reason: `currentBranch: ${(result.stderr ?? "").trim()}` };
-      return { ok: true, value: (result.stdout ?? "").trim() };
+    stage(paths: readonly string[]): IoResult<void> {
+      const r = spawnSync("git", ["-C", repoRoot, "add", ...paths], { encoding: "utf-8", timeout: 30_000 });
+      if (r.status !== 0) return { ok: false, reason: `stage: ${(r.stderr ?? "").trim()}` };
+      return { ok: true, value: undefined };
     },
 
     commit(message: string, paths?: readonly string[]): IoResult<{ hash: string }> {
-      // Stage specified paths or all
-      const addArgs = paths && paths.length > 0 ? ["add", ...paths] : ["add", "-A"];
-      spawnSync("git", ["-C", repoRoot, ...addArgs], { encoding: "utf-8", timeout: 30_000 });
-      const result = spawnSync("git", ["-C", repoRoot, "commit", "--no-verify", "-m", message], { encoding: "utf-8", timeout: 30_000 });
-      if (result.status !== 0) return { ok: false, reason: `commit: ${(result.stderr ?? "").trim()}` };
-      // Get the hash
-      const hashResult = spawnSync("git", ["-C", repoRoot, "rev-parse", "HEAD"], { encoding: "utf-8", timeout: 10_000 });
-      const hash = (hashResult.stdout ?? "").trim();
-      return { ok: true, value: { hash } };
+      // Stage specified paths if provided (otherwise commit what's already staged).
+      if (paths && paths.length > 0) {
+        spawnSync("git", ["-C", repoRoot, "add", ...paths], { encoding: "utf-8", timeout: 30_000 });
+      }
+      const r = spawnSync("git", ["-C", repoRoot, "commit", "--no-verify", "-m", message], { encoding: "utf-8", timeout: 30_000 });
+      if (r.status !== 0) return { ok: false, reason: `commit: ${(r.stderr ?? "").trim()}` };
+      const h = spawnSync("git", ["-C", repoRoot, "rev-parse", "HEAD"], { encoding: "utf-8", timeout: 10_000 });
+      return { ok: true, value: { hash: (h.stdout ?? "").trim() } };
     },
 
     push(remote: string, branch: string): IoResult<void> {
-      const result = spawnSync("git", ["-C", repoRoot, "push", "-u", remote, branch], { encoding: "utf-8", timeout: 60_000 });
-      if (result.status !== 0) return { ok: false, reason: `push(${remote}, ${branch}): ${(result.stderr ?? "").trim()}` };
+      const r = spawnSync("git", ["-C", repoRoot, "push", "-u", remote, branch], { encoding: "utf-8", timeout: 60_000 });
+      if (r.status !== 0) return { ok: false, reason: `push(${remote}, ${branch}): ${(r.stderr ?? "").trim()}` };
       return { ok: true, value: undefined };
     },
 
     pull(remote: string, branch: string): IoResult<void> {
-      const result = spawnSync("git", ["-C", repoRoot, "pull", "--rebase", remote, branch], { encoding: "utf-8", timeout: 60_000 });
-      if (result.status !== 0) return { ok: false, reason: `pull(${remote}, ${branch}): ${(result.stderr ?? "").trim()}` };
+      const r = spawnSync("git", ["-C", repoRoot, "pull", "--rebase", remote, branch], { encoding: "utf-8", timeout: 60_000 });
+      if (r.status !== 0) return { ok: false, reason: `pull(${remote}, ${branch}): ${(r.stderr ?? "").trim()}` };
       return { ok: true, value: undefined };
+    },
+
+    // ─── History operations ──────────────────────────────────────────
+
+    readFileAt(path: string, ref: string): IoResult<string> {
+      const r = spawnSync("git", ["-C", repoRoot, "show", `${ref}:${path}`], { encoding: "utf-8", timeout: 30_000 });
+      if (r.status !== 0) return { ok: false, reason: `readFileAt(${path}@${ref}): ${(r.stderr ?? "").trim()}` };
+      return { ok: true, value: r.stdout ?? "" };
+    },
+
+    history(path?: string, maxCount?: number): IoResult<readonly HistoryEntry[]> {
+      const args = ["log", `--max-count=${maxCount ?? 20}`, "--format=%H|%s|%an|%aI"];
+      if (path) args.push("--", path);
+      const r = spawnSync("git", ["-C", repoRoot, ...args], { encoding: "utf-8", timeout: 30_000 });
+      if (r.status !== 0) return { ok: false, reason: `history: ${(r.stderr ?? "").trim()}` };
+      const entries = (r.stdout ?? "").trim().split("\n").filter(Boolean).map(line => {
+        const [hash = "", message = "", author = "", date = ""] = line.split("|");
+        return { hash, message, author, date };
+      });
+      return { ok: true, value: entries };
+    },
+
+    blame(path: string): IoResult<readonly BlameEntry[]> {
+      const r = spawnSync("git", ["-C", repoRoot, "blame", "--porcelain", path], { encoding: "utf-8", timeout: 30_000 });
+      if (r.status !== 0) return { ok: false, reason: `blame(${path}): ${(r.stderr ?? "").trim()}` };
+      // Simplified porcelain parse — extract hash + author + content per line
+      const lines = (r.stdout ?? "").split("\n");
+      const entries: BlameEntry[] = [];
+      let lineNum = 0;
+      let currentHash = "";
+      let currentAuthor = "";
+      let currentDate = "";
+      for (const line of lines) {
+        if (/^[0-9a-f]{40}/.test(line)) {
+          currentHash = line.slice(0, 40);
+          lineNum++;
+        } else if (line.startsWith("author ")) {
+          currentAuthor = line.slice(7);
+        } else if (line.startsWith("author-time ")) {
+          currentDate = line.slice(12);
+        } else if (line.startsWith("\t")) {
+          entries.push({ line: lineNum, hash: currentHash, author: currentAuthor, date: currentDate, content: line.slice(1) });
+        }
+      }
+      return { ok: true, value: entries };
+    },
+
+    diff(from?: string, to?: string): IoResult<string> {
+      const args = ["diff"];
+      if (from) args.push(from);
+      if (to) args.push(to);
+      const r = spawnSync("git", ["-C", repoRoot, ...args], { encoding: "utf-8", timeout: 30_000 });
+      if (r.status !== 0) return { ok: false, reason: `diff: ${(r.stderr ?? "").trim()}` };
+      return { ok: true, value: r.stdout ?? "" };
+    },
+
+    mergeBase(branchA: string, branchB: string): IoResult<{ hash: string }> {
+      const r = spawnSync("git", ["-C", repoRoot, "merge-base", branchA, branchB], { encoding: "utf-8", timeout: 10_000 });
+      if (r.status !== 0) return { ok: false, reason: `mergeBase(${branchA}, ${branchB}): ${(r.stderr ?? "").trim()}` };
+      return { ok: true, value: { hash: (r.stdout ?? "").trim() } };
     },
 
     exec(command: string, args: readonly string[]): IoResult<{ stdout: string; exitCode: number }> {
@@ -350,7 +480,7 @@ export function realWorkspacePort(repoRoot: string): WorkspacePort {
 // ─── Simulated implementation (DST / in-memory) ──────────────────────────────
 
 export interface SimulatedState {
-  /** In-memory filesystem: path → FileEntry */
+  /** In-memory filesystem: path → FileEntry (content + permissions + binary flag) */
   readonly files: Map<string, FileEntry>;
   /** Git log: list of committed changes */
   readonly commits: Array<{ message: string; files: string[] }>;
@@ -514,23 +644,30 @@ export function simulatedWorkspacePort(state: SimulatedState): WorkspacePort {
       }
     },
 
-    exec(command: string, args: readonly string[]): IoResult<{ stdout: string; exitCode: number }> {
-      // Simulate common commands
-      if (command === "bun" && args[0] === "test") {
-        return { ok: true, value: { stdout: "0 fail\n1 pass", exitCode: 0 } };
+    // ─── Multi-home (in-memory: both paths → same content) ──────────
+
+    link(existingPath: string, newPath: string): IoResult<void> {
+      const entry = state.files.get(existingPath);
+      if (entry === undefined) {
+        return { ok: false, reason: `link(${existingPath} → ${newPath}): source ENOENT` };
       }
-      return { ok: true, value: { stdout: "simulated", exitCode: 0 } };
+      state.files.set(newPath, { ...entry, path: newPath });
+      return { ok: true, value: undefined };
     },
 
     // ─── Version control primitives (simulated — in-memory log) ──────
+
+    currentBranch(): IoResult<string> {
+      return { ok: true, value: state.branch };
+    },
 
     branch(name: string, _from?: string): IoResult<void> {
       state.branch = name;
       return { ok: true, value: undefined };
     },
 
-    currentBranch(): IoResult<string> {
-      return { ok: true, value: state.branch };
+    stage(_paths: readonly string[]): IoResult<void> {
+      return { ok: true, value: undefined };
     },
 
     commit(message: string, _paths?: readonly string[]): IoResult<{ hash: string }> {
@@ -547,6 +684,61 @@ export function simulatedWorkspacePort(state: SimulatedState): WorkspacePort {
 
     pull(_remote: string, _branch: string): IoResult<void> {
       return { ok: true, value: undefined };
+    },
+
+    // ─── History (simulated from in-memory log) ──────────────────────
+
+    readFileAt(path: string, _ref: string): IoResult<string> {
+      // In simulation, all refs see the same content (no real history)
+      const entry = state.files.get(path);
+      if (entry === undefined) return { ok: false, reason: `readFileAt(${path}): ENOENT` };
+      if (entry.binary) return { ok: false, reason: `readFileAt(${path}): file is binary` };
+      return { ok: true, value: entry.content as string };
+    },
+
+    history(_path?: string, maxCount?: number): IoResult<readonly HistoryEntry[]> {
+      const n = maxCount ?? 20;
+      const entries: HistoryEntry[] = state.commits.slice(-n).reverse().map((c, i) => ({
+        hash: `sim-${String(state.commits.length - i).padStart(6, "0")}`,
+        message: c.message,
+        author: "simulated",
+        date: new Date().toISOString(),
+      }));
+      return { ok: true, value: entries };
+    },
+
+    blame(path: string): IoResult<readonly BlameEntry[]> {
+      const entry = state.files.get(path);
+      if (entry === undefined) return { ok: false, reason: `blame(${path}): ENOENT` };
+      if (entry.binary) return { ok: false, reason: `blame(${path}): file is binary` };
+      const lines = (entry.content as string).split("\n");
+      const entries: BlameEntry[] = lines.map((line, i) => ({
+        line: i + 1,
+        hash: "sim-000001",
+        author: "simulated",
+        date: new Date().toISOString(),
+        content: line,
+      }));
+      return { ok: true, value: entries };
+    },
+
+    diff(_from?: string, _to?: string): IoResult<string> {
+      return { ok: true, value: "" }; // no diff in simulation
+    },
+
+    mergeBase(_branchA: string, _branchB: string): IoResult<{ hash: string }> {
+      // In simulation, all branches share the same linear history.
+      // The merge base is the earliest commit.
+      const hash = state.commits.length > 0 ? `sim-000001` : "sim-root";
+      return { ok: true, value: { hash } };
+    },
+
+    exec(command: string, args: readonly string[]): IoResult<{ stdout: string; exitCode: number }> {
+      // Simulate common commands
+      if (command === "bun" && args[0] === "test") {
+        return { ok: true, value: { stdout: "0 fail\n1 pass", exitCode: 0 } };
+      }
+      return { ok: true, value: { stdout: "simulated", exitCode: 0 } };
     },
   };
 }

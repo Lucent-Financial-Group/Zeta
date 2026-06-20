@@ -134,6 +134,8 @@
     <Compile Include="LinguisticSeed.Tests.fs" />
     <Compile Include="Salon.Tests.fs" />
     <Compile Include="Arcade.Tests.fs" />
+    <Compile Include="DarkHallCabinetRuntime.Tests.fs" />
+    <Compile Include="DarkHallRoomLoop.Tests.fs" />
     <Compile Include="BowlingAlley.Tests.fs" />
     <Compile Include="Skadium.Tests.fs" />
     <Compile Include="DevRoom.Tests.fs" />
@@ -212,8 +214,11 @@
     <Compile Include="SpectralPivot.Tests.fs" />
     <Compile Include="OttoAvatar.Tests.fs" />
     <Compile Include="Chip9Treaty.Tests.fs" />
+    <Compile Include="Chip9Capabilities.Tests.fs" />
     <Compile Include="Chip8Quote.Tests.fs" />
+    <Compile Include="CartFixtures.Tests.fs" />
     <Compile Include="Cart.Tests.fs" />
+    <Compile Include="MetaCart.Tests.fs" />
     <Compile Include="Chip8SelfSim.Tests.fs" />
     <Compile Include="SoftChip8Scheduler.Tests.fs" />
     <Compile Include="BitAdinkra.Tests.fs" />
@@ -238,6 +243,7 @@
     <Compile Include="SoftActionController.Tests.fs" />
     <Compile Include="SoftEvolution.Tests.fs" />
     <Compile Include="StateSpace.Tests.fs" />
+    <Compile Include="HierarchicalPlanning.Tests.fs" />
     <Compile Include="StateSpaceGuarded.Tests.fs" />
     <Compile Include="DeltaPattern.Tests.fs" />
     <Compile Include="MemoryLens.Tests.fs" />
@@ -329,6 +335,11 @@
     <Compile Include="Formal/RefuseBindingCrossVerify.Tests.fs" />
     <Compile Include="Formal/BifurcationCrossVerify.Tests.fs" />
     <Compile Include="Formal/NonRegisterCollapseCrossVerify.Tests.fs" />
+    <Compile Include="Formal/PermanentHarmHorizonCrossVerify.Tests.fs" />
+    <Compile Include="Formal/AutoimmunityDecayCrossVerify.Tests.fs" />
+    <Compile Include="Formal/CoordRiskSpectralCrossVerify.Tests.fs" />
+    <Compile Include="Formal/DecorrelationEstimator.Tests.fs" />
+    <Compile Include="Formal/SocietalDora.Tests.fs" />
     <Compile Include="Simulation/CartelToy.Tests.fs" />
 
     <!-- Circuit/ -->

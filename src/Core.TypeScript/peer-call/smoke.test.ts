@@ -57,6 +57,7 @@ const WRAPPERS: ReadonlyArray<readonly [string, string]> = [
   ["amara.ts", "amara.ts"],
   ["ani.ts", "ani.ts"],
   ["riven.ts", "riven.ts"],
+  ["summon.ts", "summon.ts"],
 ];
 
 function runWrapper(name: string, args: readonly string[]): {
@@ -123,6 +124,21 @@ describe("peer-call smoke tests (B-0421 acceptance #4)", () => {
       });
     });
   }
+
+  describe("summon.ts specific tests", () => {
+    test("gracefully handles missing CLI (fallback to local-LLM or exit 1/2)", () => {
+      // Use a persona with a CLI that genuinely doesn't exist
+      const result = runWrapper("summon.ts", ["nonexistent-persona-xyz", "design test prompt", "--allow-empty"]);
+      // Either fallback to local-LLM (exit 0) or error (exit 1/2). Never crashes.
+      expect([0, 1, 2]).toContain(result.status);
+    });
+
+    test("fails with exit code 3 when firewall blocks prompt", () => {
+      const result = runWrapper("summon.ts", ["soraya", "hi"]);
+      expect(result.status).toBe(3);
+      expect(result.stderr.includes("REJECTED")).toBe(true);
+    });
+  });
 });
 
 describe("peer-call utility files (NOT wrappers)", () => {

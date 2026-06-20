@@ -187,6 +187,7 @@
     <Compile Include="RoomHorizon.fs" />
     <Compile Include="Query.fs" />
     <Compile Include="Injection.fs" />
+    <Compile Include="Heat.fs" />
     <Compile Include="InjectionExt.fs" />
     <Compile Include="SpeculativeWatermark.fs" />
     <Compile Include="Sink.fs" />
@@ -237,6 +238,8 @@
     <Compile Include="Chip8Citizen.fs" />
     <Compile Include="Chip8Quote.fs" />
     <Compile Include="Cart.fs" />
+    <Compile Include="Chip9Capabilities.fs" />
+    <Compile Include="CartFixtures.fs" />
     <Compile Include="SwarmBoard.fs" />
     <Compile Include="SwarmBoardAnsi.fs" />
     <Compile Include="ZetaMax.fs" />
@@ -294,6 +297,8 @@
     <Compile Include="Hat.fs" />
     <Compile Include="Persona.fs" />
     <Compile Include="Diversity.fs" />
+    <Compile Include="Decorrelation.fs" />
+    <Compile Include="SocietalDora.fs" />
     <Compile Include="IdentityCapacity.fs" />
     <Compile Include="TrustCalculus.fs" />
     <Compile Include="PrivacyEconomy.fs" />
@@ -325,11 +330,14 @@
     <Compile Include="ConformalGA.fs" />
     <Compile Include="Salon.fs" />
     <Compile Include="GameCatalog.fs" />
+    <Compile Include="MetaCart.fs" />
     <Compile Include="ControlMerge.fs" />
     <Compile Include="PolarityFilter.fs" />
     <Compile Include="ZetaExec.fs" />
     <Compile Include="DarkHall.fs" />
     <Compile Include="Arcade.fs" />
+    <Compile Include="DarkHallCabinetRuntime.fs" />
+    <Compile Include="DarkHallRoomLoop.fs" />
     <Compile Include="ReticulumQuantum.fs" />
     <Compile Include="Skadium.fs" />
     <Compile Include="BowlingAlley.fs" />
