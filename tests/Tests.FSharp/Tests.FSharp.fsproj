@@ -66,6 +66,7 @@
     <Compile Include="Bonsai/IntrCtx.Tests.fs" />
     <Compile Include="Bonsai/BonsaiSoft.Tests.fs" />
     <Compile Include="Bonsai/DurableYinYang.Tests.fs" />
+    <Compile Include="Bonsai.Property.Tests.fs" />
     <Compile Include="Core/Codec.Tests.fs" />
     <Compile Include="RangeSet.Tests.fs" />
     <Compile Include="DynamicValue.Tests.fs" />
@@ -354,6 +355,7 @@
     <Compile Include="Formal/GraphSnapshot.Tests.fs" />
     <Compile Include="Formal/CoEmpowerGraphSvg.Tests.fs" />
     <Compile Include="Formal/MintPanel.Tests.fs" />
+    <Compile Include="Formal/DemoDashboard.Tests.fs" />
     <Compile Include="Simulation/CartelToy.Tests.fs" />
 
     <!-- Circuit/ -->
