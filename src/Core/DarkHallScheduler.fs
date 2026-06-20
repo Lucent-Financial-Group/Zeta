@@ -174,18 +174,18 @@ module DarkHallScheduler =
         |> Seq.toArray
         |> fun chars -> System.String(chars)
 
+    let private continuationLoopId (loopId: string) : string =
+        match pointerSafe loopId with
+        | "" -> "darkhall"
+        | id -> id
+
     /// Deterministic save pointer for the latest heat-board state. The pointer
     /// names the room/lap/tick boundary; the host decides where the actual save
     /// payload is written.
     let heatBoardStatePointer (loopId: string) (outcome: SimLoop.Outcome<ScheduledRoomState, string list>) : string =
-        let safeLoopId =
-            match pointerSafe loopId with
-            | "" -> "darkhall"
-            | id -> id
-
         sprintf
             "saves/darkhall/%s/lap-%d-tick-%d.heat-board"
-            safeLoopId
+            (continuationLoopId loopId)
             (List.length outcome.Laps)
             outcome.Final.CompletedTicks
 
@@ -196,7 +196,7 @@ module DarkHallScheduler =
         (loopId: string)
         (outcome: SimLoop.Outcome<ScheduledRoomState, string list>)
         : SimLoop.Continuation option =
-        SimLoop.continueAfter loopId (heatBoardStatePointer loopId outcome) outcome
+        SimLoop.continueAfter (continuationLoopId loopId) (heatBoardStatePointer loopId outcome) outcome
 
     let encodeHeatBoardContinuation
         (loopId: string)

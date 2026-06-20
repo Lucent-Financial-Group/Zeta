@@ -260,4 +260,18 @@ let ``budget stopped heat board sim loop mints a continuation token`` () =
             let encoded = SimLoop.encodeContinuation token
             Assert.Equal(Some token, SimLoop.parseContinuation encoded)
             Assert.Equal(Some encoded, Scheduler.encodeHeatBoardContinuation "darkhall-heat-board" outcome)
+
+        match Scheduler.continueHeatBoardAfter "" outcome with
+        | None -> Assert.Fail "empty loop ids should normalize into a parseable continuation"
+        | Some token ->
+            Assert.Equal("darkhall", token.LoopId)
+            Assert.Equal("saves/darkhall/darkhall/lap-2-tick-2.heat-board", token.StatePointer)
+            Assert.Equal(Some token, SimLoop.parseContinuation (SimLoop.encodeContinuation token))
+
+        match Scheduler.continueHeatBoardAfter "darkhall:heat/board" outcome with
+        | None -> Assert.Fail "unsafe loop ids should normalize into a parseable continuation"
+        | Some token ->
+            Assert.Equal("darkhall-heat-board", token.LoopId)
+            Assert.Equal("saves/darkhall/darkhall-heat-board/lap-2-tick-2.heat-board", token.StatePointer)
+            Assert.Equal(Some token, SimLoop.parseContinuation (SimLoop.encodeContinuation token))
     }
