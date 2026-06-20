@@ -17,10 +17,10 @@
  *
  * Run:  bun inventory/proofs/phase6-export-roundtrip.ts
  */
-import IE from "../lib/inventory-export.js";
+import IE, { type Column } from "../lib/inventory-export.js";
 
 // CSV column spec (matches the core columns index.html exports).
-const COLUMNS = [
+const COLUMNS: Column[] = [
   { key: "id", header: "id", kind: "int" },
   { key: "name", header: "name", kind: "string" },
   { key: "brand", header: "brand", kind: "string" },
@@ -76,8 +76,6 @@ function main() {
   // ---------- CSV ----------
   const csv = IE.toCSV(SOURCE, COLUMNS);
   show("CSV export (full)", csv.replace(/\r\n/g, "\\r\\n\n")); // make CRLF visible
-  // gate (b): show the raw exported lines for the tricky rows
-  const csvLines = csv.split("\r\n");
   console.log("\n--- gate (b): raw CSV cells for tricky rows (CRLF shown as \\r\\n) ---");
   // a quoted field may contain a newline, so re-derive line spans by re-parsing
   const rawRows = IE.parseCSV(csv); // array-of-arrays of strings (pre-coercion)

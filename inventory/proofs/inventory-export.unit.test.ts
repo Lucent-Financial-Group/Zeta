@@ -13,10 +13,10 @@
  * newlines; the real RFC-4180 parser round-trips them exactly.
  */
 import { describe, test, expect } from "bun:test";
-import IE from "../lib/inventory-export.js";
+import IE, { type Column, type ParseResult } from "../lib/inventory-export.js";
 
 // Column spec mirrors what index.html exports for CSV (core string/typed fields).
-const COLUMNS = [
+const COLUMNS: Column[] = [
   { key: "id", header: "id", kind: "int" },
   { key: "name", header: "name", kind: "string" },
   { key: "qty", header: "qty", kind: "int" },
@@ -24,20 +24,33 @@ const COLUMNS = [
   { key: "is_archived", header: "is_archived", kind: "bool" },
 ];
 
+type Row = { id: number; name: string; qty: number | null; notes: string | null; is_archived: boolean };
+
 // Tricky rows: apostrophe, embedded comma, embedded double-quote, embedded
 // newline, unicode (accent + CJK + emoji), and a null cell.
-const TRICKY = [
+const TRICKY: Row[] = [
   { id: 1, name: "O'Brien's Drill", qty: 3, notes: "left shelf, row 2, bin 7", is_archived: false },
   { id: 2, name: 'Cable, 6" "HD" run', qty: 12, notes: 'note with "quotes" and, commas', is_archived: false },
   { id: 3, name: "Café Ω 设备 🔧", qty: null, notes: "line one\nline two\r\nline three", is_archived: true },
 ];
+const COMMA_ROW = TRICKY[1]!; // the embedded-comma+quote row, used in the broken/fixed pair
+
+// Narrow the parse result (discriminated union) and fail loudly on the wrong arm.
+function okItems(r: ParseResult): Record<string, unknown>[] {
+  if (!r.ok) throw new Error("expected parse OK, got error: " + r.error);
+  return r.items;
+}
+function errOf(r: ParseResult): string {
+  if (r.ok) throw new Error("expected parse FAILURE, got ok");
+  return r.error;
+}
 
 describe("CSV round-trip is value-identical for tricky characters", () => {
   test("apostrophe / comma / quote / newline / unicode / null all survive", () => {
     const csv = IE.toCSV(TRICKY, COLUMNS);
     const parsed = IE.parseCSVToItems(csv, COLUMNS);
     expect(parsed.ok).toBe(true);
-    expect(parsed.items).toEqual(TRICKY);
+    expect(okItems(parsed)).toEqual(TRICKY);
   });
 
   test("apostrophe is NOT mangled (O'Brien stays O'Brien, no leading guard char)", () => {
@@ -55,21 +68,21 @@ describe("CSV round-trip is value-identical for tricky characters", () => {
 });
 
 describe("BROKEN vs FIXED parser (Green != verified)", () => {
-  const naiveParse = (csv: string) =>
+  const naiveParse = (csv: string): string[][] =>
     csv.trimEnd().split("\n").slice(1).map((line) => line.split(","));
 
   test("NAIVE split-parser CORRUPTS the comma/quote row (demonstrates the bug)", () => {
-    const csv = IE.toCSV([TRICKY[1]], COLUMNS); // 'Cable, 6" "HD" run'
+    const csv = IE.toCSV([COMMA_ROW], COLUMNS); // 'Cable, 6" "HD" run'
     const naive = naiveParse(csv);
     // the single data row splits into MORE than 5 cells because of the embedded comma
-    expect(naive[0].length).not.toBe(COLUMNS.length);
+    expect(naive[0]!.length).not.toBe(COLUMNS.length);
   });
 
   test("REAL RFC-4180 parser preserves the SAME row exactly", () => {
-    const csv = IE.toCSV([TRICKY[1]], COLUMNS);
+    const csv = IE.toCSV([COMMA_ROW], COLUMNS);
     const real = IE.parseCSVToItems(csv, COLUMNS);
     expect(real.ok).toBe(true);
-    expect(real.items[0]).toEqual(TRICKY[1]);
+    expect(okItems(real)[0]).toEqual(COMMA_ROW);
   });
 });
 
@@ -78,14 +91,14 @@ describe("CSV staging-check rejects a corrupted import (abort+report)", () => {
     const bad = "id,name,qty,notes\n1,x,1,y\n"; // missing is_archived column
     const r = IE.parseCSVToItems(bad, COLUMNS);
     expect(r.ok).toBe(false);
-    expect(String(r.error)).toContain("header");
+    expect(errOf(r)).toContain("header");
   });
   test("wrong cell count in a row is reported", () => {
     const header = COLUMNS.map((c) => c.header).join(",");
     const bad = header + "\r\n" + "1,only,two\r\n";
     const r = IE.parseCSVToItems(bad, COLUMNS);
     expect(r.ok).toBe(false);
-    expect(String(r.error)).toContain("cells");
+    expect(errOf(r)).toContain("cells");
   });
 });
 
@@ -94,7 +107,7 @@ describe("JSON round-trip is lossless", () => {
     const json = IE.toJSON(TRICKY);
     const r = IE.parseJSON(json);
     expect(r.ok).toBe(true);
-    expect(r.items).toEqual(TRICKY);
+    expect(okItems(r)).toEqual(TRICKY);
   });
 });
 
