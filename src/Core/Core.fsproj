@@ -263,6 +263,7 @@
     <Compile Include="BoundaryLight.fs" />
     <Compile Include="GeneratorRegistry.fs" />
     <Compile Include="GeneratorIrRegistry.fs" />
+    <Compile Include="ZetaIrV1.fs" />
     <Compile Include="GeneratorCatalog.fs" />
     <Compile Include="ZetaIdViz.fs" />
     <Compile Include="AnimFlow.fs" />
@@ -359,6 +360,7 @@
     <Compile Include="Arcade.fs" />
     <Compile Include="DarkHallCabinetRuntime.fs" />
     <Compile Include="DarkHallRoomLoop.fs" />
+    <Compile Include="DarkHallScheduler.fs" />
     <Compile Include="ReticulumQuantum.fs" />
     <Compile Include="Skadium.fs" />
     <Compile Include="BowlingAlley.fs" />

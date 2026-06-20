@@ -26,6 +26,7 @@
     <Compile Include="Algebra/Bag.Tests.fs" />
     <Compile Include="Algebra/ZSet.Tests.fs" />
     <Compile Include="Algebra/FusionReconstruction.Tests.fs" />
+    <Compile Include="Formal/GSetFusionLaws.Tests.fs" />
     <Compile Include="Algebra/IoBoundary.Tests.fs" />
     <Compile Include="Algebra/ZSet.Overflow.Tests.fs" />
     <Compile Include="Algebra/Residuated.Tests.fs" />
@@ -88,6 +89,9 @@
     <Compile Include="Clock.FullVertical.Tests.fs" />
     <Compile Include="Merkle.FullVertical.Tests.fs" />
     <Compile Include="ZSetMerkle.Tests.fs" />
+    <Compile Include="ZSetMerkleProof.CrossVerify.Tests.fs" />
+    <Compile Include="ZetaIrV1.Tests.fs" />
+    <Compile Include="ZetaIrV1Gen.CrossVerify.Tests.fs" />
     <Compile Include="ContentHasher.Tests.fs" />
     <Compile Include="Blake3Hasher.Tests.fs" />
     <Compile Include="ContentHash256.Tests.fs" />
@@ -138,6 +142,7 @@
     <Compile Include="Arcade.Tests.fs" />
     <Compile Include="DarkHallCabinetRuntime.Tests.fs" />
     <Compile Include="DarkHallRoomLoop.Tests.fs" />
+    <Compile Include="DarkHallScheduler.Tests.fs" />
     <Compile Include="BowlingAlley.Tests.fs" />
     <Compile Include="Skadium.Tests.fs" />
     <Compile Include="DevRoom.Tests.fs" />
@@ -324,6 +329,7 @@
     <Compile Include="AdinkraCode.Tests.fs" />
     <Compile Include="Formal/CliffordE8Bridge.Tests.fs" />
     <Compile Include="Formal/CliffordE8Roots.Tests.fs" />
+    <Compile Include="Formal/CliffordStarRing.Laws.Tests.fs" />
     <Compile Include="CayleyDicksonAdinkra.Tests.fs" />
     <Compile Include="Evolution.Tests.fs" />
     <Compile Include="MediatorUnit.Tests.fs" />
@@ -344,7 +350,10 @@
     <Compile Include="Formal/AutoimmunityDecayCrossVerify.Tests.fs" />
     <Compile Include="Formal/CoordRiskSpectralCrossVerify.Tests.fs" />
     <Compile Include="Formal/DecorrelationEstimator.Tests.fs" />
+    <Compile Include="Formal/DecorrelationDpiCrossCheck.Tests.fs" />
     <Compile Include="Formal/SocietalDora.Tests.fs" />
+    <Compile Include="Formal/SocietalDoraCoupledMinimizer.Tests.fs" />
+    <Compile Include="Formal/MoralLensMeasurability.Tests.fs" />
     <Compile Include="Formal/SocietalDoraSvg.Tests.fs" />
     <Compile Include="Formal/AlarmAlgebra.Tests.fs" />
     <Compile Include="Formal/CoEmpowerField.Tests.fs" />
@@ -466,6 +475,8 @@
     <Compile Include="DeltaLogEntryCodec.Tests.fs" />
     <Compile Include="Command.Tests.fs" />
     <Compile Include="Formal/Merkle.Laws.Tests.fs" />
+    <Compile Include="Formal/MerkleInclusion.Laws.Tests.fs" />
+    <Compile Include="Formal/MerkleProofGoldenVectors.Tests.fs" />
     <Compile Include="Formal/Sketch.Laws.Tests.fs" />
     <Compile Include="Formal/Metric.Bounds.Tests.fs" />
     <Compile Include="Formal/Tlc.Runner.Tests.fs" />
