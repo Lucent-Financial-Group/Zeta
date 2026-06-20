@@ -161,8 +161,13 @@
   <!-- Phase 6: printable QR label sheet — rendered ONLY when printing (see @media print). -->
   <div id="label-sheet" class="label-sheet" aria-hidden="true"></div>
 
-  <!-- supabase-js v2. NOTE (Phase 7): pin an exact version + add SRI. -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- supabase-js v2.108.2 — VENDORED same-origin (Phase 7 hardening), byte-identical
+       from npm @supabase/supabase-js@2.108.2/dist/umd/supabase.min.js (the package's
+       declared browser entrypoint, what the old @2 CDN URL resolved to). SRI pins it and
+       the CSP drops cdn.jsdelivr.net entirely. Provenance + sha384 recorded in PROGRESS.md.
+       Updates are now a deliberate manual repo step (owner-accepted trade-off, Q2=A). -->
+  <script src="lib/supabase-js-2.108.2.umd.min.js"
+          integrity="sha384-JWEyvHh+lRf0sN/WWY+QTQwX+CyWqmNg4tkc8GQzAMEtR2wGNrCJlvnu1lHD1kDm"></script>
   <!-- Phase 5: shared custom-field logic (same-origin; CSP script-src 'self').
        ONE SOURCE OF TRUTH with inventory/proofs/custom-fields.unit.test.ts. -->
   <script src="lib/custom-fields.js"></script>
