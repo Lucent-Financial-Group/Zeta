@@ -5,6 +5,7 @@ import {
   humanParticipant,
   observeWithParticipant,
   type HumanNotifier,
+  type Participant,
 } from "./participant";
 import { buildMenu, type World } from "./observe";
 
@@ -80,6 +81,21 @@ describe("Participant — human (async, notification-gated)", () => {
     const result = await p.choose(WORK_WORLD, buildMenu(WORK_WORLD));
     expect(result.index).toBe(0); // oracle fallback
     expect(result.fallback).toBe(true);
+  });
+});
+
+describe("Participant — observeWithParticipant fallback", () => {
+  test("falls back to oracle when choose() throws (degrade-toward-correct)", async () => {
+    const throwing: Participant = {
+      kind: "test-persona",
+      name: "test:throws",
+      choose: async () => {
+        throw new Error("chooser exploded");
+      },
+    };
+    // Must not propagate — should return the oracle pick for WORK_WORLD.
+    const action = await observeWithParticipant(WORK_WORLD, throwing);
+    expect(action.kind).toBe("do_item");
   });
 });
 

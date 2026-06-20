@@ -175,7 +175,15 @@ export function humanParticipant(
  */
 export async function observeWithParticipant(world: World, participant: Participant): Promise<NextAction> {
   const menu = buildMenu(world);
-  const result = await participant.choose(world, menu);
+  let result: ChooseResult;
+  try {
+    result = await participant.choose(world, menu);
+  } catch {
+    // Degrade-toward-correct: a rejected/throwing chooser (human-notifier
+    // rejection, test-persona throw, future I/O failure) must not abort the
+    // observe loop. Fall back to the deterministic oracle pick.
+    return observe(world);
+  }
   if (result.fallback) return observe(world);
   return menu[result.index] ?? observe(world);
 }
