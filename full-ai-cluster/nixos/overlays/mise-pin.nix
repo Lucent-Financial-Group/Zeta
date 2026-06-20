@@ -25,6 +25,7 @@ in
       };
       sourceRoot = "mise";
       nativeBuildInputs = [ prev.autoPatchelfHook ];
+      buildInputs = [ prev.stdenv.cc.cc.lib ];
       dontBuild = true;
       installPhase = ''
         runHook preInstall
