@@ -1,13 +1,12 @@
 import { describe, expect, test } from "bun:test";
 import {
   oracleParticipant,
-  localLlmParticipant,
   testPersonaParticipant,
   humanParticipant,
   observeWithParticipant,
   type HumanNotifier,
 } from "./participant";
-import { buildMenu, observe, type World } from "./observe";
+import { buildMenu, type World } from "./observe";
 
 const WORK_WORLD: World = {
   backlog: [{ id: "081KTEST001", title: "test item", ready: true, ambiguous: false }],

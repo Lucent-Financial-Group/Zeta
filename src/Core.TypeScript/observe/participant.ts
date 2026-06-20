@@ -21,8 +21,8 @@
  *   - docs/research/2026-06-16-universal-participant-abstraction-observe-loop-summon-convergence-alexa.md
  */
 
-import { observe, observeWithLlm, buildMenu, actionLabel, type World, type NextAction } from "./observe";
-import { ollamaBackend, chooseIndex, type ModelBackend } from "../accelerator/local-llm";
+import { observe, buildMenu, actionLabel, type World, type NextAction } from "./observe";
+import { ollamaBackend, chooseIndex } from "../accelerator/local-llm";
 import type { ISummon, SummonResult } from "../peer-call/summon";
 
 // ─── The Participant interface ───────────────────────────────────────────────
@@ -45,7 +45,7 @@ export function oracleParticipant(): Participant {
   return {
     kind: "oracle",
     name: "oracle",
-    choose: async (world) => {
+    choose: async (_world) => {
       // The oracle always picks index 0 (which is observe(world) by construction)
       return { index: 0, raw: "oracle-default", fallback: false };
     },
