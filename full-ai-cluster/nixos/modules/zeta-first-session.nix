@@ -13,6 +13,7 @@
 let
   cfg = config.zeta.firstSession;
   bunShimPath = "${cfg.home}/.local/share/mise/shims/bun";
+  bunNixPath = lib.getExe pkgs.bun;
   scriptPath = "${cfg.repoRoot}/src/Core.TypeScript/observe/first-session-run.ts";
 in
 {
@@ -67,7 +68,14 @@ in
           case "$-" in
             *i*)
               if [ -z "''${ZETA_FIRST_SESSION_RUNNING:-}" ] && [ ! -f "${cfg.markerPath}" ]; then
-                if [ -f "${scriptPath}" ] && [ -x "${bunShimPath}" ]; then
+                _bun=""
+                for _c in "${bunShimPath}" "${cfg.home}/.bun/bin/bun" "${bunNixPath}"; do
+                  if [ -x "$_c" ]; then
+                    _bun="$_c"
+                    break
+                  fi
+                done
+                if [ -f "${scriptPath}" ] && [ -n "$_bun" ]; then
                   export ZETA_FIRST_SESSION_RUNNING=1
                   export ZETA_FIRST_SESSION_MARKER="${cfg.markerPath}"
                   export HOME="${cfg.home}"
@@ -75,10 +83,10 @@ in
                   LLM_FLAG=""
                   ${lib.optionalString cfg.useLlm "LLM_FLAG=\"--llm\""}
                   echo "zeta-first-session: launching post-login credential adventure..."
-                  cd "${cfg.repoRoot}" && "${bunShimPath}" "${scriptPath}" $LLM_FLAG || true
+                  cd "${cfg.repoRoot}" && "$_bun" "${scriptPath}" $LLM_FLAG || true
                   unset ZETA_FIRST_SESSION_RUNNING
                 else
-                  echo "zeta-first-session: script or bun shim missing — skipping (install substrate incomplete?)"
+                  echo "zeta-first-session: script or bun missing — skipping (install substrate incomplete?)"
                 fi
               fi
               ;;
