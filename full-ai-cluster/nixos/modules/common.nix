@@ -315,6 +315,7 @@
     # mise activate sets up shims for all .mise.toml runtimes (bun,
     # node, dotnet, python, java, uv, actionlint, shellcheck, etc.)
     if command -v mise >/dev/null 2>&1; then
+      export MISE_PYTHON_GITHUB_ATTESTATIONS="''${MISE_PYTHON_GITHUB_ATTESTATIONS:-0}"
       _zeta_repo=""
       if [ -f /etc/zeta/.mise.toml ]; then
         _zeta_repo="/etc/zeta"

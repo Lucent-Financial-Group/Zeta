@@ -167,15 +167,20 @@ fi
 # flags. Bumping: pull /repos/jdx/mise/releases/latest, update
 # MISE_VERSION + both MISE_SHA256_* values together — they form a
 # content-pin set.
-# Skipped on NixOS — tarball mise is not FHS-compatible; use system mise.
+# Skipped on real NixOS — tarball mise is not FHS-compatible; use system mise.
+# B-0849 docker harness (/.dockerenv + glibc loader) still uses the tarball.
 if ! command -v mise >/dev/null 2>&1; then
-  if [ "$IS_NIXOS" = 1 ]; then
+  if [ "$IS_NIXOS" = 1 ] && [ ! -f /.dockerenv ]; then
     echo "error: mise not found on PATH on NixOS" >&2
     echo "  declare mise in environment.systemPackages (installer ISO + common.nix)" >&2
     echo "  and ensure /run/current-system/sw/bin is on PATH during target bootstrap" >&2
     exit 1
   fi
-  echo "↓ installing mise from pinned release tarball..."
+  if [ "$IS_NIXOS" = 1 ] && [ -f /.dockerenv ]; then
+    echo "↓ NixOS docker harness: installing mise from pinned tarball (FHS glibc loader)..."
+  else
+    echo "↓ installing mise from pinned release tarball..."
+  fi
   MISE_VERSION="v2026.4.24"
   MISE_SHA256_X64="de2f924940c29b8983035833e2fb3a50092c5794562ca0dcd0cf87b40cae2c58"
   MISE_SHA256_ARM64="cf5f4899c3f1b56239d2eedf173c68c47b7db95400c4fa1b61e943dee4965727"

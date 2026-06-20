@@ -46,9 +46,9 @@ RUN touch /etc/NIXOS
 # its own process; Docker doesn't persist exports across RUN layers;
 # without this ENV, the validation RUNs below would fail because
 # mise/bun aren't on PATH in the fresh layer's shell). install.sh
-# on NixOS uses nix-provided mise (linux.sh); shims land at
-# ~/.local/share/mise/shims/; bun --global lands at ~/.bun/bin/.
-ENV PATH=/root/.bun/bin:/root/.local/share/mise/shims:/nix/var/nix/profiles/default/bin:/root/.local/bin:/usr/local/bin:/usr/bin:/bin
+# installs mise to ~/.local/bin/mise and shims to ~/.local/share/mise/
+# shims/; bun --global lands at ~/.bun/bin/.
+ENV PATH=/root/.bun/bin:/root/.local/share/mise/shims:/root/.local/bin:/nix/var/nix/profiles/default/bin:/usr/local/bin:/usr/bin:/bin
 
 # Install the NixOS userspace commands install.sh invokes plus the runtime
 # libraries expected by the dynamically linked .mise.toml toolchain downloads
@@ -57,7 +57,6 @@ ENV PATH=/root/.bun/bin:/root/.local/share/mise/shims:/nix/var/nix/profiles/defa
 RUN set -eu; \
     nix-env -iA \
     nixpkgs.nix \
-    nixpkgs.mise \
     nixpkgs.bash \
     nixpkgs.coreutils \
     nixpkgs.findutils \
