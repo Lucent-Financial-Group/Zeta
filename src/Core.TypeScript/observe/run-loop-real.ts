@@ -3,9 +3,9 @@
  * src/Core.TypeScript/observe/run-loop-real.ts — the real observe loop, wired end-to-end.
  *
  * Connects the three completed subsystems:
- *   loadWorld()    → real World from backlog + event log + operator channel
- *   observe()     → pure deterministic action pick (the oracle)
- *   execute(sink) → real EventSink (folder-direct-to-main)
+ *   loadWorld()                → real World from backlog + event log + operator channel
+ *   observeWithParticipant()  → configurable chooser (oracle/local-llm/cloud-persona/human)
+ *   execute(sink)             → real EventSink (folder-direct-to-main)
  *
  * This is ONE TICK. The autonomous-loop cron calls this once per tick; the cron
  * cadence is the heartbeat (not an infinite loop inside this script). Exits 0
@@ -14,28 +14,41 @@
  * Usage:
  *   bun src/Core.TypeScript/observe/run-loop-real.ts [--by <agentId>] [--event-dir <path>]
  *   bun src/Core.TypeScript/observe/run-loop-real.ts --dry-run
+ *   bun src/Core.TypeScript/observe/run-loop-real.ts --participant local-llm
+ *   bun src/Core.TypeScript/observe/run-loop-real.ts --participant cloud:amara
  *
  * Flags:
- *   --by <id>         Agent identity (default: "alexa", from ZETA_AGENT_ID env)
- *   --event-dir <p>   Event log folder (default: "docs/observe-events")
- *   --dry-run         Load world + pick action but don't execute (print the pick)
- *   --repo-root <p>   Repo root for backlog reader (default: process.cwd())
+ *   --by <id>             Agent identity (default: "alexa", from ZETA_AGENT_ID env)
+ *   --event-dir <p>       Event log folder (default: "docs/observe-events")
+ *   --dry-run             Load world + pick action but don't execute (print the pick)
+ *   --repo-root <p>       Repo root for backlog reader (default: process.cwd())
+ *   --participant <spec>  Chooser: "oracle" | "local-llm" | "local-llm:<model>" | "cloud:<persona>"
+ *                         (default: ZETA_PARTICIPANT env or "oracle")
  */
 
 import { loadWorld } from "./load-world";
-import { observe, renderAction } from "./observe";
+import { renderAction } from "./observe";
 import { execute, type OperatorPort } from "./execute";
 import { folderSink } from "./event-sink-folder";
 import { resolveForgeHost } from "../forge-host/registry";
 import { readPRStateAsync } from "./world-infra";
 import "../forge-host/github/index"; // registers the GitHub adapter
 import { kiroExecutor, buildDoItemSpec } from "./kiro-executor";
+import {
+  observeWithParticipant,
+  oracleParticipant,
+  localLlmParticipant,
+  cloudPersonaParticipant,
+  type Participant,
+} from "./participant";
+import { PersonaSummoner } from "../peer-call/summon";
 
 interface CliArgs {
   by: string;
   eventDir: string;
   repoRoot: string;
   dryRun: boolean;
+  participant: string; // "oracle" | "local-llm" | "local-llm:<model>" | "cloud:<persona>"
 }
 
 function parseArgs(argv: string[]): CliArgs {
@@ -44,6 +57,7 @@ function parseArgs(argv: string[]): CliArgs {
     eventDir: "docs/observe-events",
     repoRoot: process.cwd(),
     dryRun: false,
+    participant: process.env.ZETA_PARTICIPANT ?? "oracle",
   };
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i];
@@ -55,9 +69,36 @@ function parseArgs(argv: string[]): CliArgs {
       args.repoRoot = argv[++i]!;
     } else if (arg === "--dry-run") {
       args.dryRun = true;
+    } else if (arg === "--participant" && argv[i + 1]) {
+      args.participant = argv[++i]!;
     }
   }
   return args;
+}
+
+/**
+ * Resolve a CLI participant spec string to a concrete Participant.
+ *
+ * Formats:
+ *   "oracle"            → oracleParticipant()
+ *   "local-llm"        → localLlmParticipant() (default model)
+ *   "local-llm:<model>"→ localLlmParticipant({ model })
+ *   "cloud:<persona>"  → cloudPersonaParticipant(PersonaSummoner, persona)
+ */
+function resolveParticipant(spec: string): Participant {
+  if (spec === "oracle") return oracleParticipant();
+  if (spec === "local-llm") return localLlmParticipant();
+  if (spec.startsWith("local-llm:")) {
+    const model = spec.slice("local-llm:".length);
+    return localLlmParticipant({ model });
+  }
+  if (spec.startsWith("cloud:")) {
+    const persona = spec.slice("cloud:".length);
+    return cloudPersonaParticipant(new PersonaSummoner(), persona);
+  }
+  // Unknown spec — warn and degrade to oracle (safe default)
+  console.warn(`[participant] unknown spec "${spec}" — falling back to oracle`);
+  return oracleParticipant();
 }
 
 async function main(): Promise<number> {
@@ -98,8 +139,10 @@ async function main(): Promise<number> {
   // Enrich world with forge state
   const enrichedWorld = forgeState ? { ...world, forgeState } : world;
 
-  // 2. Pick the next action (pure oracle)
-  const action = observe(enrichedWorld);
+  // 2. Pick the next action (via Participant — configurable chooser)
+  const participant = resolveParticipant(args.participant);
+  console.log(`[participant] ${participant.kind}:${participant.name}`);
+  const action = await observeWithParticipant(enrichedWorld, participant);
 
   console.log(`[observe] ${renderAction(action)}`);
 
