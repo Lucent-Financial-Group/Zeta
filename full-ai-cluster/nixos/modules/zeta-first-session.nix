@@ -98,7 +98,7 @@ in
         ConditionPathExists = [
           "/etc/zeta/qemu-first-session-ci"
           "!${cfg.markerPath}"
-          cfg.scriptPath
+          scriptPath
           bunShimPath
         ];
       };
