@@ -9,7 +9,7 @@
     <PackageVersion Include="G-Research.FSharp.Analyzers" Version="0.22.0" />
     <PackageVersion Include="Ionide.Analyzers" Version="0.15.0" />
     <PackageVersion Include="FSharp.Analyzers.Build" Version="0.5.0" />
-    <PackageVersion Include="Meziantou.Analyzer" Version="3.0.103" />
+    <PackageVersion Include="Meziantou.Analyzer" Version="3.0.105" />
     <!-- SonarAnalyzer.CSharp pinned but NOT referenced from
          Directory.Build.props yet — surfaces 15+ real findings
          (S1905 unnecessary casts, S6966 SendAsync, S2699
@@ -51,6 +51,6 @@
     <!-- Microsoft first-party DI: the IServiceCollection seam the mediator registers into.
          Abstractions for the port library; the full container for the proving test. -->
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.9" />
-    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="10.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="10.0.9" />
   </ItemGroup>
 </Project>
