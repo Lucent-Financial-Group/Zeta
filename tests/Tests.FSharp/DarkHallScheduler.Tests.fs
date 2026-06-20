@@ -33,6 +33,11 @@ let private timer =
     | TimerElapsed _ -> true
     | _ -> false
 
+let private budget maxLaps : SimLoop.Budget =
+    { MaxLaps = maxLaps
+      MaxTicks = 64
+      MaxMillis = 1_000L }
+
 [<Fact>]
 let ``heat boundary rows render as a host visible CHIP-9 board`` () =
     let row: Scheduler.HeatBoundaryRow =
@@ -312,3 +317,118 @@ let ``heat board continuation admission refuses malformed and foreign spawn toke
         Assert.Equal(System.Int32.MaxValue, nextLap)
         Assert.Equal(2, ticksPerLap)
     | other -> Assert.Fail(sprintf "expected overflow refusal, got %A" other)
+
+[<Fact>]
+let ``saved heat board state resumes as the next finite sim loop link`` () =
+    task {
+        let store = Scheduler.InMemoryHeatBoardStateStore() :> Scheduler.IHeatBoardStateStore
+        let source absoluteTick =
+            if absoluteTick = 2 || absoluteTick = 3 then
+                [ TimerElapsed absoluteTick ]
+            else
+                []
+
+        let! first =
+            Scheduler.heatBoardSimLoop
+                "darkhall-heat-board"
+                Arcade.room
+                Chip9Capabilities.chip8Default
+                timer
+                "darkhall-simloop"
+                (NullHeatSink() :> IHeatSink)
+                (fun _ -> None)
+                (chooseById "darkhall.edit-grammar")
+                (fun _ -> [ TimerElapsed 17 ])
+                int64
+                (budget 2)
+                (ctx ())
+                42L
+                1
+                (fun _ _ -> true)
+
+        Assert.Equal(SimLoop.Stopped.LapBudget, first.Stopped)
+        Assert.Equal(2, first.Final.CompletedTicks)
+
+        let! pointerResult =
+            Scheduler.saveHeatBoardStateAsync
+                store
+                "darkhall-heat-board"
+                first
+                System.Threading.CancellationToken.None
+
+        let pointer =
+            match pointerResult with
+            | Ok pointer -> pointer
+            | Error feedback ->
+                Assert.Fail(sprintf "expected saved state pointer, got %A" feedback)
+                ""
+
+        let tokenLine =
+            match Scheduler.encodeHeatBoardContinuation "darkhall-heat-board" first with
+            | Some token -> token
+            | None ->
+                Assert.Fail "budget-stopped heat-board run should encode a continuation"
+                ""
+
+        let! resumed =
+            Scheduler.resumeHeatBoardSimLoop
+                "darkhall-heat-board"
+                store
+                "darkhall-heat-board"
+                timer
+                "darkhall-simloop"
+                (NullHeatSink() :> IHeatSink)
+                (fun _ -> None)
+                (chooseById "darkhall.edit-grammar")
+                source
+                int64
+                (budget 2)
+                (ctx ())
+                42L
+                1
+                (fun _ _ -> true)
+                tokenLine
+                System.Threading.CancellationToken.None
+
+        match resumed with
+        | Error feedback -> Assert.Fail(sprintf "expected resumed heat-board link, got %A" feedback)
+        | Ok outcome ->
+            Assert.Equal(SimLoop.Stopped.LapBudget, outcome.Stopped)
+            Assert.Equal(4, outcome.Final.CompletedTicks)
+            Assert.Equal(pointer, Scheduler.heatBoardStatePointer "darkhall-heat-board" first)
+            Assert.Equal(2, outcome.Laps.Length)
+            Assert.Equal<int list>([ 3; 4 ], outcome.Laps |> List.map (fun lap -> lap.State.CompletedTicks))
+    }
+
+[<Fact>]
+let ``resume refuses a valid continuation when the state snapshot is missing`` () =
+    task {
+        let missingPointer = "saves/darkhall/darkhall-heat-board/lap-2-tick-2.heat-board"
+        let tokenLine = sprintf "spawn:darkhall-heat-board:2:2:%s" missingPointer
+        let store = Scheduler.InMemoryHeatBoardStateStore() :> Scheduler.IHeatBoardStateStore
+
+        let! resumed =
+            Scheduler.resumeHeatBoardSimLoop
+                "darkhall-heat-board"
+                store
+                "darkhall-heat-board"
+                timer
+                "darkhall-simloop"
+                (NullHeatSink() :> IHeatSink)
+                (fun _ -> None)
+                (chooseById "darkhall.edit-grammar")
+                (fun _ -> [ TimerElapsed 17 ])
+                int64
+                (budget 1)
+                (ctx ())
+                42L
+                1
+                (fun _ _ -> true)
+                tokenLine
+                System.Threading.CancellationToken.None
+
+        match resumed with
+        | Error(Scheduler.HeatBoardContinuationFeedback.SnapshotMissing pointer) ->
+            Assert.Equal(missingPointer, pointer)
+        | other -> Assert.Fail(sprintf "expected missing snapshot feedback, got %A" other)
+    }
