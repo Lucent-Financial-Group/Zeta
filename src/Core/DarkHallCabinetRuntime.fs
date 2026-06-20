@@ -393,6 +393,7 @@ module DarkHallCabinetRuntime =
                 match rejectedHeatKind with
                 | Some "meta-cart.policy-backpressure" -> Some "meta-cart.policy-backpressure"
                 | Some _ -> None
+                | None when outcome = AttentionOutcome.HeatRejected -> None
                 | None ->
                     if isPolicyBackpressure trace readout.Selected failedSlot then
                         Some "meta-cart.policy-backpressure"
