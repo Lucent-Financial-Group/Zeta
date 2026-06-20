@@ -28,7 +28,7 @@ in
       installPhase = ''
         runHook preInstall
         mkdir -p "$out/bin"
-        install -m755 mise "$out/bin/mise"
+        install -m755 mise/bin/mise "$out/bin/mise"
         runHook postInstall
       '';
       meta = (prev.mise.meta or { }) // {
