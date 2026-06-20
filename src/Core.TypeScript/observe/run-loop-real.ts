@@ -33,7 +33,9 @@ import { folderSink } from "./event-sink-folder";
 import { resolveForgeHost } from "../forge-host/registry";
 import { readPRStateAsync } from "./world-infra";
 import "../forge-host/github/index"; // registers the GitHub adapter
-import { kiroExecutor, buildDoItemSpec } from "./kiro-executor";
+import { portExecuteItem } from "./kiro-executor-v2";
+import { realWorkspacePort, type WorkspacePort } from "./workspace-port";
+import type { DoItemOptions } from "./do-item";
 import {
   observeWithParticipant,
   oracleParticipant,
@@ -151,15 +153,26 @@ async function main(): Promise<number> {
     return 0;
   }
 
-  // 3. Execute the pick (real sink + real executor for do_item)
+  // 3. Execute the pick (real sink + WorkspacePort-based executor for do_item)
   const sink = folderSink({ eventDir: args.eventDir, by: args.by });
 
-  // Wire the real executor for do_item actions
-  const executor = kiroExecutor({ repoRoot: args.repoRoot, agentId: args.by });
+  // Wire the WorkspacePort-based executor (v2: no bash, no raw git).
+  // The executor.run() delegates to portExecuteItem — typed port operations only.
+  const port: WorkspacePort = realWorkspacePort(args.repoRoot);
+  const executor: import("./do-item").CommandExecutor = {
+    tier: "just-bash",
+    run: async (_spec) => {
+      if (action.kind !== "do_item") {
+        return { ok: true, stdout: "no-op (non-do_item)", exitCode: 0 as const };
+      }
+      return portExecuteItem(port, action.item, args.by);
+    },
+  };
 
-  // Build DoItemOptions if the action is do_item
-  const doItemOpts = action.kind === "do_item"
-    ? buildDoItemSpec(action.item, { repoRoot: args.repoRoot, agentId: args.by })
+  // Build DoItemOptions for the port executor path.
+  // The RunSpec.script is a no-op placeholder — execution goes through the port.
+  const doItemOpts: DoItemOptions | undefined = action.kind === "do_item"
+    ? { spec: { script: "# port-executor: no bash", cwd: args.repoRoot }, gated: false }
     : undefined;
 
   // Placeholder OperatorPort — just logs; real implementation writes to transcript
