@@ -29,7 +29,9 @@ which credentials to set up, which to skip, whether to stay local-only.
 | `src/Core.TypeScript/observe/load-node-session.ts` | Probe marker + creds → optional World channel |
 | `observe.ts` + `grammar-16-render.ts` | `nodeSession` channel; slot 4 first-session sub-menu |
 
-Not yet wired: QEMU phase-3 SSH proof.
+| `docs/trajectories/usb-zflash-installer/HAT-ROUTING.md` | Slice 5 hat path → owner sketch |
+
+Not yet wired: QEMU phase-3 SSH executor (markers defined in `serial-markers.ts`).
 
 ## Reused from observe / workflow DUs
 
@@ -59,7 +61,7 @@ Per `docs/BUILD-GATES.md` — local prepush is the gate; peers replay; CI is sig
 2. **Slice 2 (done)** — `firstSessionWithLlm` + closed-loop LLM tests (observe DU reuse)
 3. **Slice 3 (done)** — `zeta-first-session` profile.d on installed NixOS; gh device-flow executor; serial markers
 4. **Slice 4 (done)** — `nodeSession` World channel + grammar-16 slot-4 overlay (NextAction union unchanged)
-5. **Slice 5** — hat-gate: installer hat vs observe hat code owners (CODEOWNERS / hat-system)
+5. **Slice 5 (sketch)** — hat routing doc (`HAT-ROUTING.md`); CODEOWNERS when teams confirmed
 
 ## Hat / code-owner sketch
 
