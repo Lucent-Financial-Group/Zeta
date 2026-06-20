@@ -4,18 +4,21 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <!--
-    BASELINE Content-Security-Policy (Phase 2/3). Locks the network surface:
-      - connect-src pinned to 'self' + this project's Supabase host only
-      - object/base/form-action locked down
-    'unsafe-inline' for script/style is the cost of a SINGLE standalone file.
-    Phase 7 hardening (per PROGRESS.md) moves JS/CSS to external files + adds
-    nonces/SRI and drops 'unsafe-inline'. Do NOT pull that forward here.
+    HARDENED Content-Security-Policy (Phase 7 Part 1). Locks the network surface:
+      - script-src / style-src = 'self' ONLY. 'unsafe-inline' is GONE: all JS lives
+        in same-origin lib/*.js and all CSS in inventory.css (no inline <script>,
+        no <style>, no style="" attrs, no inline event handlers).
+      - cdn.jsdelivr.net REMOVED: supabase-js is vendored same-origin + SRI-pinned.
+      - connect-src pinned to 'self' + this project's Supabase host only.
+      - object/base/form-action locked down.
+    Regression guard: inventory/proofs/phase7-csp-proof.ts fails if 'unsafe-inline',
+    an off-origin script, or any inline JS/CSS is reintroduced.
     Fonts: system-ui only (owner decision 2026-05-31) — NO font CDN added.
   -->
   <meta http-equiv="Content-Security-Policy" content="
     default-src 'self';
-    script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net;
-    style-src 'self' 'unsafe-inline';
+    script-src 'self';
+    style-src 'self';
     connect-src 'self' https://mdtbgreryqddloluhdmm.supabase.co;
     img-src 'self' data:;
     base-uri 'none';
