@@ -150,6 +150,91 @@ let ``executeCell surfaces policy backpressure heat for attention-selected meta-
     }
 
 [<Fact>]
+let ``attention ledger compares denied high-attention future with executed lower-attention future`` () =
+    task {
+        let address = mkAddress "play" "meta-cart-host"
+        let chip9Cart = CartFixtures.cart CartFixtures.chip9GreenDot
+        let inputCart = CartFixtures.cart CartFixtures.inputFork
+
+        let launch: Runtime.MetaCartLaunch =
+            { Goal = 10
+              Seed = 1UL
+              ParentCapabilities = Chip9Capabilities.metaHost
+              ChildCapabilitiesBySha =
+                MetaCart.capabilityMap
+                    [ chip9Cart, Chip9Capabilities.chip8Default
+                      inputCart, CartFixtures.inputFork.Capabilities ]
+              Children = [ chip9Cart; inputCart ]
+              Parent = Chip8Cow.create 1UL }
+
+        let highAttention: Runtime.MetaCartPolicy =
+            { Name = "operator-attention"
+              Policy = MetaCart.attentionSelectionPolicy (fun slot -> if slot.Name = chip9Cart.Meta.Title then 100.0 else 0.0) }
+
+        let highSink = RecordingHeatSink()
+
+        let! deniedReport =
+            Runtime.executeAddressWithAttentionLedger
+                "darkhall"
+                (highSink :> IHeatSink)
+                Chip9Capabilities.metaHost
+                Arcade.room
+                address
+                (Runtime.RunMetaCartWithPolicy(highAttention, launch))
+
+        match deniedReport.Result with
+        | Error(Runtime.Feedback.MetaCartFeedback(MetaCart.Feedback.HostDenied(slot, reason))) ->
+            Assert.Equal(MetaCart.slotOfCart chip9Cart, slot)
+            Assert.Contains("chip9.color-planes", reason)
+        | other -> Assert.Fail(sprintf "expected high-attention denial, got %A" other)
+
+        let deniedRow = Assert.Single(deniedReport.AttentionLedger)
+
+        Assert.Equal("darkhall", deniedRow.Source)
+        Assert.Equal(address, deniedRow.Address)
+        Assert.Equal("operator-attention", deniedRow.PolicyName)
+        Assert.True(deniedRow.ChangedSelection)
+        Assert.Equal<MetaCart.CartSlot option>(Some(MetaCart.slotOfCart inputCart), deniedRow.Baseline)
+        Assert.Equal<MetaCart.CartSlot option>(Some(MetaCart.slotOfCart chip9Cart), deniedRow.Selected)
+        Assert.Equal(Runtime.AttentionOutcome.Denied, deniedRow.Outcome)
+        Assert.Equal<string option>(Some "meta-cart.policy-backpressure", deniedRow.HeatKind)
+        Assert.Contains("chip9.color-planes", deniedRow.Reason)
+
+        let lowerAttention: Runtime.MetaCartPolicy =
+            { Name = "operator-attention"
+              Policy = MetaCart.attentionSelectionPolicy (fun slot -> if slot.Name = inputCart.Meta.Title then 1.0 else 0.0) }
+
+        let lowerSink = RecordingHeatSink()
+
+        let! executedReport =
+            Runtime.executeAddressWithAttentionLedger
+                "darkhall"
+                (lowerSink :> IHeatSink)
+                Chip9Capabilities.metaHost
+                Arcade.room
+                address
+                (Runtime.RunMetaCartWithPolicy(lowerAttention, launch))
+
+        match executedReport.Result with
+        | Ok(Runtime.MetaCartResult result) -> Assert.Equal(MetaCart.slotOfCart inputCart, result.Play.Slot)
+        | other -> Assert.Fail(sprintf "expected lower-attention execution, got %A" other)
+
+        let executedRow = Assert.Single(executedReport.AttentionLedger)
+
+        Assert.False(executedRow.ChangedSelection)
+        Assert.Equal<MetaCart.CartSlot option>(Some(MetaCart.slotOfCart inputCart), executedRow.Baseline)
+        Assert.Equal<MetaCart.CartSlot option>(Some(MetaCart.slotOfCart inputCart), executedRow.Selected)
+        Assert.Equal(Runtime.AttentionOutcome.Executed, executedRow.Outcome)
+        Assert.Equal<string option>(None, executedRow.HeatKind)
+
+        let summary = Runtime.summarizeAttentionLedger [ deniedRow; executedRow ]
+
+        Assert.Equal(1, summary.Denied)
+        Assert.Equal(1, summary.Executed)
+        Assert.Equal(1, summary.Backpressured)
+    }
+
+[<Fact>]
 let ``executeCell runs the selected soft CHIP8 scheduler machine`` () =
     task {
         let sink = RecordingHeatSink()
