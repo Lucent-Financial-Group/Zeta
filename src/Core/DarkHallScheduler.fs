@@ -35,6 +35,7 @@ module DarkHallScheduler =
         | StatePointerMismatch of expectedPrefix: string * actual: string
         | ResumeTickOverflow of nextLap: int * ticksPerLap: int
         | SnapshotLapMismatch of expected: int * actual: int
+        | SnapshotTickMismatch of expected: int * actual: int
         | SnapshotMissing of pointer: string
         | SnapshotStoreRejected of pointer: string * reason: string
 
@@ -444,6 +445,8 @@ module DarkHallScheduler =
                     | Ok start ->
                         if start.CompletedLaps <> admission.Token.NextLap then
                             return Error(HeatBoardContinuationFeedback.SnapshotLapMismatch(admission.Token.NextLap, start.CompletedLaps))
+                        elif start.CompletedTicks <> admission.ResumeBaseTick then
+                            return Error(HeatBoardContinuationFeedback.SnapshotTickMismatch(admission.ResumeBaseTick, start.CompletedTicks))
                         else
                             let resumedSource = resumeHeatBoardSource admission interruptSource
 

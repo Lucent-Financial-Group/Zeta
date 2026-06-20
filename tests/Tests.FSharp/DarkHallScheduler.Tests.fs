@@ -643,6 +643,72 @@ let ``resume refuses a token whose lap does not match the loaded snapshot`` () =
     }
 
 [<Fact>]
+let ``resume refuses a token whose tick boundary does not match the loaded snapshot`` () =
+    task {
+        let store = Scheduler.InMemoryHeatBoardStateStore() :> Scheduler.IHeatBoardStateStore
+
+        let! first =
+            Scheduler.heatBoardSimLoop
+                "darkhall-heat-board"
+                Arcade.room
+                Chip9Capabilities.chip8Default
+                timer
+                "darkhall-simloop"
+                (NullHeatSink() :> IHeatSink)
+                (fun _ -> None)
+                (chooseById "darkhall.edit-grammar")
+                (fun _ -> [ TimerElapsed 17 ])
+                int64
+                (budget 2)
+                (ctx ())
+                42L
+                2
+                (fun _ _ -> true)
+
+        let! pointerResult =
+            Scheduler.saveHeatBoardStateAsync
+                store
+                "darkhall-heat-board"
+                first
+                System.Threading.CancellationToken.None
+
+        let pointer =
+            match pointerResult with
+            | Ok pointer -> pointer
+            | Error feedback ->
+                Assert.Fail(sprintf "expected saved state pointer, got %A" feedback)
+                ""
+
+        let tokenLine = sprintf "spawn:darkhall-heat-board:2:2:%s" pointer
+
+        let! resumed =
+            Scheduler.resumeHeatBoardSimLoop
+                "darkhall-heat-board"
+                store
+                "darkhall-heat-board"
+                timer
+                "darkhall-simloop"
+                (NullHeatSink() :> IHeatSink)
+                (fun _ -> None)
+                (chooseById "darkhall.edit-grammar")
+                (fun _ -> [ TimerElapsed 17 ])
+                int64
+                (budget 1)
+                (ctx ())
+                42L
+                1
+                (fun _ _ -> true)
+                tokenLine
+                System.Threading.CancellationToken.None
+
+        match resumed with
+        | Error(Scheduler.HeatBoardContinuationFeedback.SnapshotTickMismatch(expected, actual)) ->
+            Assert.Equal(2, expected)
+            Assert.Equal(4, actual)
+        | other -> Assert.Fail(sprintf "expected snapshot tick mismatch feedback, got %A" other)
+    }
+
+[<Fact>]
 let ``resume refuses a finite link whose offset would overflow after the first lap`` () =
     task {
         let pointer = "saves/darkhall/darkhall-heat-board/lap-max.heat-board"
