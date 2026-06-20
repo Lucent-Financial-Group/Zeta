@@ -168,16 +168,22 @@ fi
 # MISE_VERSION + both MISE_SHA256_* values together — they form a
 # content-pin set.
 # Skipped on real NixOS — tarball mise is not FHS-compatible; use system mise.
-# B-0849 docker harness (/.dockerenv + glibc loader) still uses the tarball.
+# B-0849 docker harness wires /lib64/ld-linux-*.so.* so tarball mise works there.
+linux_sh_nixos_tarball_mise_allowed() {
+  [ -f /.dockerenv ] \
+    || [ -e /lib64/ld-linux-x86-64.so.2 ] \
+    || [ -e /lib/ld-linux-aarch64.so.1 ]
+}
+
 if ! command -v mise >/dev/null 2>&1; then
-  if [ "$IS_NIXOS" = 1 ] && [ ! -f /.dockerenv ]; then
+  if [ "$IS_NIXOS" = 1 ] && ! linux_sh_nixos_tarball_mise_allowed; then
     echo "error: mise not found on PATH on NixOS" >&2
     echo "  declare mise in environment.systemPackages (installer ISO + common.nix)" >&2
     echo "  and ensure /run/current-system/sw/bin is on PATH during target bootstrap" >&2
     exit 1
   fi
-  if [ "$IS_NIXOS" = 1 ] && [ -f /.dockerenv ]; then
-    echo "↓ NixOS docker harness: installing mise from pinned tarball (FHS glibc loader)..."
+  if [ "$IS_NIXOS" = 1 ]; then
+    echo "↓ NixOS (docker/FHS): installing mise from pinned tarball..."
   else
     echo "↓ installing mise from pinned release tarball..."
   fi
