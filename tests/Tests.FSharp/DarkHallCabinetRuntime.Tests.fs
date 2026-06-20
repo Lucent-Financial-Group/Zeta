@@ -235,6 +235,66 @@ let ``attention ledger compares denied high-attention future with executed lower
     }
 
 [<Fact>]
+let ``attention ledger does not label rejected denial heat as policy backpressure`` () =
+    task {
+        let address = mkAddress "play" "meta-cart-host"
+        let chip9Cart = CartFixtures.cart CartFixtures.chip9GreenDot
+        let inputCart = CartFixtures.cart CartFixtures.inputFork
+
+        let launch: Runtime.MetaCartLaunch =
+            { Goal = 10
+              Seed = 1UL
+              ParentCapabilities = Chip9Capabilities.metaHost
+              ChildCapabilitiesBySha =
+                MetaCart.capabilityMap
+                    [ chip9Cart, Chip9Capabilities.chip8Default
+                      inputCart, CartFixtures.inputFork.Capabilities ]
+              Children = [ chip9Cart; inputCart ]
+              Parent = Chip8Cow.create 1UL }
+
+        let highAttention: Runtime.MetaCartPolicy =
+            { Name = "operator-attention"
+              Policy = MetaCart.attentionSelectionPolicy (fun slot -> if slot.Name = chip9Cart.Meta.Title then 100.0 else 0.0) }
+
+        let sink =
+            BoundedHeatSink(
+                { Capacity = 1
+                  ForgetPolicy = BoundedGSetForgetPolicy.RejectNew }
+            )
+
+        let filler = HeatSignature.ofMass "test" "heat.fill" 1 1.0 "occupy bounded heat sink"
+
+        match (sink :> IHeatSink).Emit filler with
+        | Ok() -> ()
+        | Error feedback -> Assert.Fail(sprintf "expected heat sink prefill, got %A" feedback)
+
+        let! report =
+            Runtime.executeAddressWithAttentionLedger
+                "darkhall"
+                (sink :> IHeatSink)
+                Chip9Capabilities.metaHost
+                Arcade.room
+                address
+                (Runtime.RunMetaCartWithPolicy(highAttention, launch))
+
+        match report.Result with
+        | Error(Runtime.Feedback.MetaCartFeedback(MetaCart.Feedback.HeatRejected(slot, HeatSinkFeedback.Backpressure(heat, _, _)))) ->
+            Assert.Equal(MetaCart.slotOfCart chip9Cart, slot)
+            Assert.Equal("meta-cart.denied", heat.Kind)
+        | other -> Assert.Fail(sprintf "expected rejected denial heat, got %A" other)
+
+        let row = Assert.Single(report.AttentionLedger)
+
+        Assert.Equal(Runtime.AttentionOutcome.HeatRejected, row.Outcome)
+        Assert.Equal<string option>(None, row.HeatKind)
+
+        let summary = Runtime.summarizeAttentionLedger [ row ]
+
+        Assert.Equal(1, summary.HeatRejected)
+        Assert.Equal(0, summary.Backpressured)
+    }
+
+[<Fact>]
 let ``executeCell runs the selected soft CHIP8 scheduler machine`` () =
     task {
         let sink = RecordingHeatSink()

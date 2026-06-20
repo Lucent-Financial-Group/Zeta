@@ -352,15 +352,20 @@ module DarkHallCabinetRuntime =
             sprintf "heat sink backpressure kind=%s capacity=%d count=%d" heat.Kind capacity count
         | HeatSinkFeedback.StorageError error -> boundedGSetErrorReason error
 
+    let private rejectedHeatKind =
+        function
+        | HeatSinkFeedback.Backpressure(heat, _, _) -> Some heat.Kind
+        | HeatSinkFeedback.StorageError _ -> None
+
     let private metaCartFeedbackOutcome =
         function
         | MetaCart.Feedback.NoSelection source ->
-            AttentionOutcome.NoSelection, sprintf "no selection from %s" source, None
+            AttentionOutcome.NoSelection, sprintf "no selection from %s" source, None, None
         | MetaCart.Feedback.MissingCart slot ->
-            AttentionOutcome.Missing, sprintf "missing cart sha256=%s" slot.Fingerprint.Sha256, Some slot
-        | MetaCart.Feedback.HostDenied(slot, reason) -> AttentionOutcome.Denied, reason, Some slot
+            AttentionOutcome.Missing, sprintf "missing cart sha256=%s" slot.Fingerprint.Sha256, Some slot, None
+        | MetaCart.Feedback.HostDenied(slot, reason) -> AttentionOutcome.Denied, reason, Some slot, None
         | MetaCart.Feedback.HeatRejected(slot, feedback) ->
-            AttentionOutcome.HeatRejected, heatSinkFeedbackReason feedback, Some slot
+            AttentionOutcome.HeatRejected, heatSinkFeedbackReason feedback, Some slot, rejectedHeatKind feedback
 
     let private isPolicyBackpressure
         (trace: MetaCart.SelectionPolicyTrace)
@@ -379,16 +384,20 @@ module DarkHallCabinetRuntime =
         : AttentionLedgerRow option =
         readout.PolicyTrace
         |> Option.map (fun trace ->
-            let outcome, reason, failedSlot =
+            let outcome, reason, failedSlot, rejectedHeatKind =
                 match result with
-                | Ok _ -> AttentionOutcome.Executed, "selected cart executed", None
+                | Ok _ -> AttentionOutcome.Executed, "selected cart executed", None, None
                 | Error feedback -> metaCartFeedbackOutcome feedback
 
             let heatKind =
-                if isPolicyBackpressure trace readout.Selected failedSlot then
-                    Some "meta-cart.policy-backpressure"
-                else
-                    None
+                match rejectedHeatKind with
+                | Some "meta-cart.policy-backpressure" -> Some "meta-cart.policy-backpressure"
+                | Some _ -> None
+                | None ->
+                    if isPolicyBackpressure trace readout.Selected failedSlot then
+                        Some "meta-cart.policy-backpressure"
+                    else
+                        None
 
             { Source = source
               Address = address
