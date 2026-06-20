@@ -675,3 +675,37 @@ let ``resume refuses a finite link whose offset would overflow after the first l
             Assert.Equal(1, ticksPerLap)
         | other -> Assert.Fail(sprintf "expected resumed-link overflow feedback, got %A" other)
     }
+
+[<Fact>]
+let ``resume refuses a one-lap link whose completed lap would overflow`` () =
+    task {
+        let pointer = "saves/darkhall/darkhall-heat-board/lap-max.heat-board"
+        let tokenLine = sprintf "spawn:darkhall-heat-board:%d:0:%s" System.Int32.MaxValue pointer
+        let store = Scheduler.InMemoryHeatBoardStateStore() :> Scheduler.IHeatBoardStateStore
+
+        let! resumed =
+            Scheduler.resumeHeatBoardSimLoop
+                "darkhall-heat-board"
+                store
+                "darkhall-heat-board"
+                timer
+                "darkhall-simloop"
+                (NullHeatSink() :> IHeatSink)
+                (fun _ -> None)
+                (chooseById "darkhall.edit-grammar")
+                (fun _ -> [ TimerElapsed 17 ])
+                int64
+                (budget 1)
+                (ctx ())
+                42L
+                1
+                (fun _ _ -> true)
+                tokenLine
+                System.Threading.CancellationToken.None
+
+        match resumed with
+        | Error(Scheduler.HeatBoardContinuationFeedback.ResumeTickOverflow(nextLap, ticksPerLap)) ->
+            Assert.Equal(System.Int32.MaxValue, nextLap)
+            Assert.Equal(1, ticksPerLap)
+        | other -> Assert.Fail(sprintf "expected one-lap completed-lap overflow feedback, got %A" other)
+    }

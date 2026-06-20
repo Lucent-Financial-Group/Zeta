@@ -341,8 +341,12 @@ module DarkHallScheduler =
         let linkLaps = min maxLaps tickBoundedLaps
         let baseTick = int64 nextLap * perLap
         let lastTickInLink = baseTick + linkLaps * perLap - 1L
+        let completedLapBoundary = int64 nextLap + linkLaps
 
-        if lastTickInLink > int64 System.Int32.MaxValue then
+        if
+            lastTickInLink > int64 System.Int32.MaxValue
+            || completedLapBoundary > int64 System.Int32.MaxValue
+        then
             Error(HeatBoardContinuationFeedback.ResumeTickOverflow(nextLap, int perLap))
         else
             Ok(int baseTick)
