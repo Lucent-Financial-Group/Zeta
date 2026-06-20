@@ -34,6 +34,7 @@ module DarkHallScheduler =
         | LoopIdMismatch of expected: string * actual: string
         | StatePointerMismatch of expectedPrefix: string * actual: string
         | ResumeTickOverflow of nextLap: int * ticksPerLap: int
+        | SnapshotLapMismatch of expected: int * actual: int
         | SnapshotMissing of pointer: string
         | SnapshotStoreRejected of pointer: string * reason: string
 
@@ -321,6 +322,24 @@ module DarkHallScheduler =
         else
             Ok(int baseTick)
 
+    let private resumeLinkBaseTick
+        (nextLap: int)
+        (ticksPerLap: int)
+        (budget: SimLoop.Budget)
+        : Result<int, HeatBoardContinuationFeedback> =
+        let perLap = int64 (max 1 ticksPerLap)
+        let maxLaps = int64 (max 1 budget.MaxLaps)
+        let maxTicks = int64 (max 1 budget.MaxTicks)
+        let tickBoundedLaps = (maxTicks + perLap - 1L) / perLap
+        let linkLaps = min maxLaps tickBoundedLaps
+        let baseTick = int64 nextLap * perLap
+        let lastTickInLink = baseTick + linkLaps * perLap - 1L
+
+        if lastTickInLink > int64 System.Int32.MaxValue then
+            Error(HeatBoardContinuationFeedback.ResumeTickOverflow(nextLap, int perLap))
+        else
+            Ok(int baseTick)
+
     /// Admit a heat-board continuation token back through the Dark Hall boundary.
     /// Arbitrary `spawn:*` text is not authority: the token must parse, match the
     /// expected loop id, and point inside the heat-board save namespace before a
@@ -356,7 +375,13 @@ module DarkHallScheduler =
         (admission: HeatBoardContinuationAdmission)
         (source: SoftScheduler.Source)
         : SoftScheduler.Source =
-        fun tick -> source (admission.ResumeBaseTick + tick)
+        fun tick ->
+            let absoluteTick = int64 admission.ResumeBaseTick + int64 tick
+
+            if absoluteTick > int64 System.Int32.MaxValue then
+                []
+            else
+                source (int absoluteTick)
 
     let saveHeatBoardStateAsync
         (store: IHeatBoardStateStore)
@@ -397,29 +422,36 @@ module DarkHallScheduler =
             match admitHeatBoardContinuation loopId ticksPerLap tokenLine with
             | Error feedback -> return Error feedback
             | Ok admission ->
-                let! loaded = store.ReadAsync(admission.StatePointer, ct)
-
-                match loaded with
+                match resumeLinkBaseTick admission.Token.NextLap ticksPerLap budget with
                 | Error feedback -> return Error feedback
-                | Ok start ->
-                    let resumedSource = resumeHeatBoardSource admission interruptSource
+                | Ok baseTick ->
+                    let admission = { admission with ResumeBaseTick = baseTick }
+                    let! loaded = store.ReadAsync(admission.StatePointer, ct)
 
-                    let! outcome =
-                        heatBoardSimLoopFromState
-                            name
-                            matches
-                            sourceName
-                            sink
-                            requestFor
-                            choose
-                            resumedSource
-                            clock
-                            budget
-                            ctx
-                            seed
-                            ticksPerLap
-                            cut
-                            start
+                    match loaded with
+                    | Error feedback -> return Error feedback
+                    | Ok start ->
+                        if start.CompletedLaps <> admission.Token.NextLap then
+                            return Error(HeatBoardContinuationFeedback.SnapshotLapMismatch(admission.Token.NextLap, start.CompletedLaps))
+                        else
+                            let resumedSource = resumeHeatBoardSource admission interruptSource
 
-                    return Ok outcome
+                            let! outcome =
+                                heatBoardSimLoopFromState
+                                    name
+                                    matches
+                                    sourceName
+                                    sink
+                                    requestFor
+                                    choose
+                                    resumedSource
+                                    clock
+                                    budget
+                                    ctx
+                                    seed
+                                    ticksPerLap
+                                    cut
+                                    start
+
+                            return Ok outcome
         }
