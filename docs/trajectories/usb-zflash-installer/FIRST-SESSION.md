@@ -1,6 +1,6 @@
 # First-session vertical — post-login choose-your-own-adventure
 
-Status: slice 3 landed (NixOS profile.d + gh executor + S0 tests)
+Status: slice 4 landed (nodeSession World channel + grammar-16 overlay)
 Owner hat (tentative): **usb-zflash-installer** + **observe** composes
 Last refreshed: 2026-06-20
 
@@ -26,7 +26,10 @@ which credentials to set up, which to skip, whether to stay local-only.
 | `src/Core.TypeScript/observe/first-session-run.test.ts` | S0 demo/dry-run + probe tests |
 | `full-ai-cluster/nixos/modules/zeta-first-session.nix` | profile.d hook on first interactive zeta login |
 
-Not yet wired: `observe` NextAction union merge, QEMU phase-3 SSH proof.
+| `src/Core.TypeScript/observe/load-node-session.ts` | Probe marker + creds → optional World channel |
+| `observe.ts` + `grammar-16-render.ts` | `nodeSession` channel; slot 4 first-session sub-menu |
+
+Not yet wired: QEMU phase-3 SSH proof.
 
 ## Reused from observe / workflow DUs
 
@@ -55,7 +58,7 @@ Per `docs/BUILD-GATES.md` — local prepush is the gate; peers replay; CI is sig
 1. **Slice 1 (done)** — pure first-session state machine + tests
 2. **Slice 2 (done)** — `firstSessionWithLlm` + closed-loop LLM tests (observe DU reuse)
 3. **Slice 3 (done)** — `zeta-first-session` profile.d on installed NixOS; gh device-flow executor; serial markers
-4. **Slice 4** — merge into `observe` World channel (`nodeSession`) + grammar-16 slot map
+4. **Slice 4 (done)** — `nodeSession` World channel + grammar-16 slot-4 overlay (NextAction union unchanged)
 5. **Slice 5** — hat-gate: installer hat vs observe hat code owners (CODEOWNERS / hat-system)
 
 ## Hat / code-owner sketch
