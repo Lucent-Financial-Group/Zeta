@@ -73,9 +73,9 @@ async function executeViaPort(
 ): Promise<RunOutcome> {
   const branch = claimBranchName(item, agentId);
 
-  // 1. Pull latest
-  const pullResult = port.pull("origin", "main");
-  // Pull can fail (no remote, offline) — continue anyway for local work
+  // 1. Pull latest. Pull can fail (no remote, offline) — continue anyway for
+  //    local work; we intentionally do not branch on the result here.
+  void port.pull("origin", "main");
 
   // 2. Create claim branch
   const branchResult = port.branch(branch, "origin/main");
@@ -154,11 +154,16 @@ export function portExecutor(options: PortExecutorOptions): CommandExecutor {
   return {
     tier: "just-bash" as ExecutorTier, // same tier label (compatible with do-item)
 
-    run: async (spec: RunSpec): Promise<RunOutcome> => {
-      // The spec carries the item info in a structured way.
-      // For backward compat, parse item from the script comment if needed.
-      // In the new path, the caller passes the item directly via portExecuteItem.
-      return { ok: true, stdout: "port-executor: use portExecuteItem directly", exitCode: 0 };
+    run: async (_spec: RunSpec): Promise<RunOutcome> => {
+      // The spec carries the item info in a structured way, but the new path
+      // bypasses RunSpec/bash entirely: callers pass the item directly via
+      // portExecuteItem. This RunSpec entry point is a compatibility shim that
+      // directs callers to the typed path; agentId is surfaced in stdout below.
+      return {
+        ok: true,
+        stdout: `port-executor (${agentId}): use portExecuteItem directly`,
+        exitCode: 0,
+      };
     },
   };
 }

@@ -67,8 +67,7 @@ describe("kiro-executor-v2 (WorkspacePort-based, no bash/git)", () => {
   test("handles push failure gracefully (local commit still valid)", async () => {
     const state = emptySimulatedState();
     const port = simulatedWorkspacePort(state);
-    // Override push to fail
-    const originalPush = port.push;
+    // Override push to fail (simulating offline / no remote)
     (port as any).push = () => ({ ok: false, reason: "no remote" });
 
     const result = await portExecuteItem(port, ITEM, "alexa");
