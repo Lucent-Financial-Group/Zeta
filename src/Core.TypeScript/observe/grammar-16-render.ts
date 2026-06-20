@@ -71,7 +71,7 @@ export function renderGrammar16(world: World): readonly RenderedMenuSlot[] {
   );
 
   const overrides: Readonly<Record<number, SlotOverride>> = {
-    [SLOT.ACCEPT]: firstSessionLead
+    [SLOT.ACCEPT]: firstSessionLead && firstSessionMenu
       ? {
           label: firstSessionLabel(firstSessionLead),
           availability: T,

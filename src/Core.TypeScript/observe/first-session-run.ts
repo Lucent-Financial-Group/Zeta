@@ -50,34 +50,40 @@ export interface RunOptions {
 }
 
 export function parseArgs(argv: string[]): RunOptions {
-  const opts: RunOptions = {
-    markerPath: process.env.ZETA_FIRST_SESSION_MARKER ?? DEFAULT_MARKER_PATH,
-    dryRun: false,
-    demo: false,
-    demoScript: [],
-    useLlm: false,
-    home: process.env.HOME ?? "/home/zeta",
-    runner: defaultShellRunner(),
-    backend: ollamaBackend({ timeoutMs: 30_000 }),
-  };
+  let markerPath = process.env.ZETA_FIRST_SESSION_MARKER ?? DEFAULT_MARKER_PATH;
+  let dryRun = false;
+  let demo = false;
+  let demoScript: string[] = [];
+  let useLlm = false;
+  let home = process.env.HOME ?? "/home/zeta";
 
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i];
     if (arg === "--marker-path" && argv[i + 1]) {
-      opts.markerPath = argv[++i]!;
+      markerPath = argv[++i]!;
     } else if (arg === "--dry-run") {
-      opts.dryRun = true;
+      dryRun = true;
     } else if (arg === "--demo") {
-      opts.demo = true;
+      demo = true;
     } else if (arg === "--script" && argv[i + 1]) {
-      opts.demoScript = argv[++i]!.split(",").map((s) => s.trim()).filter(Boolean);
+      demoScript = argv[++i]!.split(",").map((s) => s.trim()).filter(Boolean);
     } else if (arg === "--llm") {
-      opts.useLlm = true;
+      useLlm = true;
     } else if (arg === "--home" && argv[i + 1]) {
-      opts.home = argv[++i]!;
+      home = argv[++i]!;
     }
   }
-  return opts;
+
+  return {
+    markerPath,
+    dryRun,
+    demo,
+    demoScript,
+    useLlm,
+    home,
+    runner: defaultShellRunner(),
+    backend: ollamaBackend({ timeoutMs: 30_000 }),
+  };
 }
 
 export function sessionFromProbe(
@@ -142,9 +148,10 @@ function printMenu(session: NodeSessionState): void {
 async function pickAction(
   session: NodeSessionState,
   opts: RunOptions,
+  demoQueue: string[],
 ): Promise<FirstSessionAction | null> {
   if (opts.demo) {
-    const token = opts.demoScript.shift();
+    const token = demoQueue.shift();
     if (!token) return null;
     return actionFromDemoToken(token, session);
   }
@@ -206,12 +213,13 @@ export async function runFirstSession(opts: RunOptions): Promise<NodeSessionStat
 
   console.log(`${SERIAL_PREFIX} begin`);
   let session = sessionFromProbe(opts.runner, opts.home);
+  const demoQueue = opts.demo ? [...opts.demoScript] : [];
 
   const maxTicks = 24;
   for (let tick = 0; tick < maxTicks; tick++) {
     if (session.complete) break;
 
-    const action = await pickAction(session, opts);
+    const action = await pickAction(session, opts, demoQueue);
     if (!action) break;
 
     console.log(`${SERIAL_PREFIX} choice kind=${action.kind}${"vendor" in action ? ` vendor=${action.vendor}` : ""}`);

@@ -26,8 +26,9 @@ describe("first-session — credential adventure oracle", () => {
       complete: false,
     };
     expect(firstSessionOracle(session).kind).toBe("setup_credential");
-    if (firstSessionOracle(session).kind === "setup_credential") {
-      expect(firstSessionOracle(session).vendor).toBe("claude");
+    const lead = firstSessionOracle(session);
+    if (lead.kind === "setup_credential") {
+      expect(lead.vendor).toBe("claude");
     }
   });
 

@@ -18,8 +18,7 @@ import {
 } from "./first-session-run";
 import { defaultNodeSession } from "./first-session";
 
-function fakeRunner(overrides: Partial<ShellRunner> & { files?: string[] }): ShellRunner {
-  const files = new Set(overrides.files ?? []);
+function fakeRunner(overrides: Partial<ShellRunner>): ShellRunner {
   return {
     run: overrides.run ?? (() => ({ exitCode: 1 })),
     spawnInteractive: overrides.spawnInteractive ?? (() => ({ exitCode: 0 })),

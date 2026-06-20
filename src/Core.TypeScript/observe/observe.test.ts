@@ -135,7 +135,7 @@ describe("observe — first-session channel (slice 4)", () => {
     expect(isFirstSessionPending(world)).toBe(true);
     const a = observe(world);
     expect(a.kind).toBe("explore");
-    expect(a.reason).toContain("first-session");
+    if (a.kind === "explore") expect(a.reason).toContain("first-session");
   });
 
   it("operator still outranks pending nodeSession", () => {

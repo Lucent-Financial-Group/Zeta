@@ -9,7 +9,7 @@ describe("loadNodeSession", () => {
     const dir = mkdtempSync(join(tmpdir(), "zeta-fs-marker-"));
     const marker = join(dir, "complete.marker");
     writeFileSync(marker, "done\n");
-    expect(loadNodeSession({ markerPath: marker, session: undefined })).toBeUndefined();
+    expect(loadNodeSession({ markerPath: marker })).toBeUndefined();
   });
 
   it("returns injected session for tests", () => {
