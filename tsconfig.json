@@ -35,6 +35,8 @@
     "**/bin/**",
     "**/obj/**",
     "**/.lake/**",
+    "db",
+    "db/**",
     "tools/lean4/.lake/**",
     "tools/alloy/**",
     "tools/tla/**",
@@ -43,6 +45,8 @@
     "full-ai-cluster/portal/web",
     "full-ai-cluster/portal/web/**",
     "src/Core.TypeScript/qsharp-oracle/**",
-    "src/Core.TypeScript/cursor/**"
+    "src/Core.TypeScript/cursor/**",
+    "db",
+    "db/**"
   ]
 }
