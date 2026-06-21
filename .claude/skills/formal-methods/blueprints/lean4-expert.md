@@ -202,7 +202,7 @@ but tractable. Open when someone has the time.
   proof
 - `tools/lean4/lakefile.toml` + `lake-manifest.json` +
   `lean-toolchain` — load-bearing project scaffolding
-- `tools/setup/common/elan.sh` — toolchain installer
+- `tools/setup/mechanisms/from-elan.sh` — toolchain installer
 - `memory/tariq/NOTEBOOK.md` — round-by-round sorry-count
   and proof progress
 - `docs/research/mathlib-progress.md` — historical
