@@ -1237,3 +1237,28 @@ export {
   type InitializationError,
   type ValidateInitializationResult,
 } from "./room-initialization.ts";
+export {
+  emitSwap,
+  makeHatSwap,
+  type HatSwapEvent,
+  type HatSwap,
+  type HatSwapBindingRef,
+  type HatSwapPreviousWearer,
+} from "./hat-swap-event.ts";
+export { DEFAULT_HAT_POLICY, type HatPolicy } from "./hat-policy.ts";
+export {
+  cooldownPolicy,
+  maxBindingsPolicy,
+  conflictOfInterestPolicy,
+  quorumPolicy,
+  warmupPolicy,
+  maxNewHatsPolicy,
+  noSupervisorCyclesPolicy,
+  ADMISSION_POLICIES,
+  evaluateAdmission,
+  type AdmissionOp,
+  type AdmissionRequest,
+  type AdmissionDecision,
+  type AdmissionPolicy,
+} from "./hat-admission.ts";
+export { updateHatReputation, recordWearerOn, recordWearerOff } from "./hat-status.ts";

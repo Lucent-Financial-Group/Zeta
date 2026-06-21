@@ -93,6 +93,17 @@ export const ReputationScope = {
 
 export type ReputationScope = (typeof ReputationScope)[keyof typeof ReputationScope];
 
+/**
+ * Hat.status — observed runtime state of a hat (port of the K8s Hat CRD
+ * `status` block, Merge1 §07). Reputation accrues on the hat (and pairings),
+ * never only the agent.
+ */
+export type HatStatus = {
+  reputation: number;
+  currentWearers: readonly string[];
+  lifetimeWearers: number;
+};
+
 export type HatDefinition = {
   id: string;
   name: string;
@@ -126,4 +137,6 @@ export type HatDefinition = {
   riskLevel: RiskLevel;
   requiresTwoPersonApproval: boolean;
   requiresHumanApproval: boolean;
+  /** observed runtime state (K8s Hat CRD `status`, Merge1 §07) */
+  status?: HatStatus;
 };
