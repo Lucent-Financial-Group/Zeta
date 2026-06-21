@@ -93,6 +93,24 @@ export const ReputationScope = {
 
 export type ReputationScope = (typeof ReputationScope)[keyof typeof ReputationScope];
 
+/**
+ * Identity tuple — ported from `src/Core/Maji.fs` `IdentityTuple` (Merge1 §01).
+ * The canonical identity pattern projected from a hat's load-bearing substrate
+ * (`I_t = N(LoadBearing(S_t))`). Preserves projection across room boundaries
+ * (the MessiahFunction lift), so a hat re-seated in a new room keeps its values,
+ * goals, roles, policies, and provenance.
+ */
+export type IdentityTuple = {
+  values: readonly string[];
+  goals: readonly string[];
+  roles: readonly string[];
+  policies: readonly string[];
+  memory: readonly string[];
+  corrections: readonly string[];
+  crossRefs: readonly string[];
+  provenance: readonly string[];
+};
+
 export type HatDefinition = {
   id: string;
   name: string;
@@ -126,4 +144,6 @@ export type HatDefinition = {
   riskLevel: RiskLevel;
   requiresTwoPersonApproval: boolean;
   requiresHumanApproval: boolean;
+  /** Identity tuple ported from Maji (§01); preserved across room boundaries. */
+  identityTuple?: IdentityTuple;
 };

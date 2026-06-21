@@ -95,6 +95,187 @@ export function asZetaIdDecimal(value: string): ZetaIdDecimal {
 }
 
 /**
+ * ZetaId metadata — ported from `src/Core.FSharp.ZetaId/Types.fs` (Merge1 §01).
+ *
+ * The current `ZetaIdDecimal` is a branded index string with no metadata. These
+ * types and the pack/unpack codec carry the full observation metadata
+ * (category, authority, persona, momentum, location) so a ZetaId is
+ * self-describing. Byte values mirror the F#/C# `Category`, `AuthorityValue`,
+ * `Persona`, and `Location` enums for cross-language parity (§10 MP-8). The
+ * codec round-trips: `unpackZetaObservation(packZetaObservation(o)) === o` for
+ * all canonical observations.
+ */
+export type ZetaCategory =
+  | "observation"
+  | "emission"
+  | "workflow"
+  | "heartbeat"
+  | "batch"
+  | "friction_telemetry"
+  | "bus"
+  | "spawn"
+  | "work_item";
+
+export type ZetaAuthority =
+  | "human_verified"
+  | "trusted_agent"
+  | "standard"
+  | "best_effort"
+  | "simulated"
+  | "raw";
+
+export type ZetaPersona = "human_maintainer" | "firefly_coherence";
+
+/** Location hint. Codes mirror the F# 8-bit `Location` enum; unknown → "unknown". */
+export type ZetaLocation =
+  | "unknown"
+  | "east_us_va"
+  | "west_us_or"
+  | "central_us"
+  | "canada_toronto"
+  | "west_europe"
+  | "north_europe"
+  | "southeast_asia_sg"
+  | "northeast_asia_tk"
+  | "australia_syd"
+  | "south_america_sp"
+  | "multi_region";
+
+export type ZetaObservation = {
+  version: 1;
+  /** 48-bit milliseconds since epoch. */
+  timestamp: number;
+  category: ZetaCategory;
+  authority: ZetaAuthority;
+  persona: ZetaPersona;
+  /** 8-bit momentum (0..255). */
+  momentum: number;
+  location: ZetaLocation;
+};
+
+const ZETA_CATEGORY_BYTE: Record<ZetaCategory, number> = {
+  observation: 0,
+  emission: 1,
+  workflow: 2,
+  heartbeat: 3,
+  batch: 4,
+  friction_telemetry: 5,
+  bus: 6,
+  spawn: 7,
+  work_item: 8,
+};
+
+const ZETA_AUTHORITY_BYTE: Record<ZetaAuthority, number> = {
+  human_verified: 31,
+  trusted_agent: 20,
+  standard: 15,
+  best_effort: 8,
+  simulated: 3,
+  raw: 0,
+};
+
+const ZETA_PERSONA_BYTE: Record<ZetaPersona, number> = {
+  human_maintainer: 1,
+  firefly_coherence: 2,
+};
+
+const ZETA_LOCATION_BYTE: Record<ZetaLocation, number> = {
+  unknown: 0,
+  east_us_va: 1,
+  west_us_or: 2,
+  central_us: 3,
+  canada_toronto: 4,
+  west_europe: 5,
+  north_europe: 6,
+  southeast_asia_sg: 7,
+  northeast_asia_tk: 8,
+  australia_syd: 9,
+  south_america_sp: 10,
+  multi_region: 11,
+};
+
+function reverseLookup<T extends string>(table: Record<T, number>, byte: number, fallback: T): T {
+  for (const key of Object.keys(table) as T[]) {
+    if (table[key] === byte) {
+      return key;
+    }
+  }
+  return fallback;
+}
+
+// Field widths and offsets (LSB → MSB), packed into a single bigint.
+const ZETA_VERSION_BITS = 5n;
+const ZETA_TIMESTAMP_BITS = 48n;
+const ZETA_CATEGORY_BITS = 4n;
+const ZETA_AUTHORITY_BITS = 5n;
+const ZETA_PERSONA_BITS = 8n;
+const ZETA_MOMENTUM_BITS = 8n;
+const ZETA_LOCATION_BITS = 8n;
+
+const ZETA_VERSION_OFFSET = 0n;
+const ZETA_TIMESTAMP_OFFSET = ZETA_VERSION_OFFSET + ZETA_VERSION_BITS;
+const ZETA_CATEGORY_OFFSET = ZETA_TIMESTAMP_OFFSET + ZETA_TIMESTAMP_BITS;
+const ZETA_AUTHORITY_OFFSET = ZETA_CATEGORY_OFFSET + ZETA_CATEGORY_BITS;
+const ZETA_PERSONA_OFFSET = ZETA_AUTHORITY_OFFSET + ZETA_AUTHORITY_BITS;
+const ZETA_MOMENTUM_OFFSET = ZETA_PERSONA_OFFSET + ZETA_PERSONA_BITS;
+const ZETA_LOCATION_OFFSET = ZETA_MOMENTUM_OFFSET + ZETA_MOMENTUM_BITS;
+
+const mask = (bits: bigint): bigint => (1n << bits) - 1n;
+
+/** Pack a ZetaObservation into its base-10 ZetaId index string. */
+export function packZetaObservation(obs: ZetaObservation): ZetaIdDecimal {
+  if (obs.timestamp < 0 || obs.timestamp > Number(mask(ZETA_TIMESTAMP_BITS))) {
+    throw new Error(`packZetaObservation: timestamp ${obs.timestamp} exceeds 48 bits`);
+  }
+  if (obs.momentum < 0 || obs.momentum > 0xff) {
+    throw new Error(`packZetaObservation: momentum ${obs.momentum} exceeds 8 bits`);
+  }
+  let packed = 0n;
+  packed |= BigInt(obs.version) << ZETA_VERSION_OFFSET;
+  packed |= BigInt(obs.timestamp) << ZETA_TIMESTAMP_OFFSET;
+  packed |= BigInt(ZETA_CATEGORY_BYTE[obs.category]) << ZETA_CATEGORY_OFFSET;
+  packed |= BigInt(ZETA_AUTHORITY_BYTE[obs.authority]) << ZETA_AUTHORITY_OFFSET;
+  packed |= BigInt(ZETA_PERSONA_BYTE[obs.persona]) << ZETA_PERSONA_OFFSET;
+  packed |= BigInt(obs.momentum) << ZETA_MOMENTUM_OFFSET;
+  packed |= BigInt(ZETA_LOCATION_BYTE[obs.location]) << ZETA_LOCATION_OFFSET;
+  return asZetaIdDecimal(packed.toString(10));
+}
+
+/** Unpack a ZetaId index string back into its observation metadata. */
+export function unpackZetaObservation(id: ZetaIdDecimal): ZetaObservation {
+  const packed = BigInt(id);
+  const category = reverseLookup(
+    ZETA_CATEGORY_BYTE,
+    Number((packed >> ZETA_CATEGORY_OFFSET) & mask(ZETA_CATEGORY_BITS)),
+    "observation",
+  );
+  const authority = reverseLookup(
+    ZETA_AUTHORITY_BYTE,
+    Number((packed >> ZETA_AUTHORITY_OFFSET) & mask(ZETA_AUTHORITY_BITS)),
+    "raw",
+  );
+  const persona = reverseLookup(
+    ZETA_PERSONA_BYTE,
+    Number((packed >> ZETA_PERSONA_OFFSET) & mask(ZETA_PERSONA_BITS)),
+    "firefly_coherence",
+  );
+  const location = reverseLookup(
+    ZETA_LOCATION_BYTE,
+    Number((packed >> ZETA_LOCATION_OFFSET) & mask(ZETA_LOCATION_BITS)),
+    "unknown",
+  );
+  return {
+    version: 1,
+    timestamp: Number((packed >> ZETA_TIMESTAMP_OFFSET) & mask(ZETA_TIMESTAMP_BITS)),
+    category,
+    authority,
+    persona,
+    momentum: Number((packed >> ZETA_MOMENTUM_OFFSET) & mask(ZETA_MOMENTUM_BITS)),
+    location,
+  };
+}
+
+/**
  * The run lifecycle as an explicit DU. Mirrors the V0 spine
  * (signal -> triage -> gate -> assignment -> run -> evidence -> review) so the
  * Organization's deterministic rules apply at every step (operator idea 6).

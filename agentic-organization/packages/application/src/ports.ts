@@ -21,6 +21,8 @@ import type { CommandType } from "../../domain/src/index.ts";
 import type { ContextPackAdvisoryPromotionDecisionWriteInput } from "./context-pack-advisory-promotion-policy.ts";
 import type { ContextPackDocConsultOutcomeStamp } from "./context-pack-doc-consult-ledger.ts";
 
+import type { SimulationEnvironment } from "./simulation-environment.ts";
+
 export type Clock = {
   now: () => string;
 };
@@ -28,6 +30,31 @@ export type Clock = {
 export type IdGenerator = {
   createId: (prefix: string) => string;
 };
+
+/**
+ * Project a {@link Clock} from a {@link SimulationEnvironment} (Merge1 §01).
+ * `Clock` is the narrow read-only-time slice of the full environment.
+ */
+export function clockFromEnv(env: SimulationEnvironment): Clock {
+  return { now: env.now };
+}
+
+/**
+ * Project an {@link IdGenerator} from a {@link SimulationEnvironment} (Merge1
+ * §01). Ids are sequential per prefix (`prefix-001`, `prefix-002`, …) so they
+ * stay deterministic and human-legible under simulation. The environment is the
+ * seam owner; the generator keeps its own per-prefix counters.
+ */
+export function idGeneratorFromEnv(_env: SimulationEnvironment): IdGenerator {
+  const counters = new Map<string, number>();
+  return {
+    createId: (prefix: string) => {
+      const next = (counters.get(prefix) ?? 0) + 1;
+      counters.set(prefix, next);
+      return `${prefix}-${String(next).padStart(3, "0")}`;
+    },
+  };
+}
 
 export type CommandEffects = {
   supervisorSignals: readonly SupervisorSignal[];

@@ -20,6 +20,11 @@
  * see docs/research/2026-06-07-test-seam-deterministic-simulation-of-all-nouns-and-verbs).
  */
 import type { Clock, IdGenerator } from "./ports.ts";
+import { clockFromEnv, idGeneratorFromEnv } from "./ports.ts";
+import type { SimulationEnvironment } from "./simulation-environment.ts";
+import { createVirtualEnvironment } from "./simulation-environment.ts";
+import type { DurabilityMode } from "./durability.ts";
+import type { ZetaAuthority, ZetaCategory, ZetaPersona } from "./observe.ts";
 
 /** Whether a seam binds the real-world adapter or a deterministic double. */
 export type SeamMode = "real" | "mock";
@@ -68,6 +73,12 @@ export type AgentIdentity = {
   agentId: string;
   /** OAuth subject / token id the agent authenticated as. */
   subject: string;
+  /** ZetaId metadata — ported from src/Core.FSharp.ZetaId/Types.fs (Merge1 §01). */
+  zetaId?: {
+    category: ZetaCategory;
+    authority: ZetaAuthority;
+    persona: ZetaPersona;
+  };
 };
 
 /**
@@ -113,6 +124,12 @@ export type Room = {
   roomId: string;
   /** Room-wide default; individual `seams` entries may differ. */
   seamMode: SeamMode;
+  /**
+   * Full simulation environment (Merge1 §01). When present, `clock` and `ids`
+   * are projections of it; the room obtains ALL side effects through `env` so
+   * the whole room replays bit-identically under the same seed (DST, §10 MP-1).
+   */
+  env?: SimulationEnvironment;
   clock: Clock;
   ids: IdGenerator;
   seams: readonly RoomSeamBinding[];
@@ -121,6 +138,8 @@ export type Room = {
   budget: RoomBudget;
   /** The agent this room runs as (absent for pure, identity-less simulation). */
   identity?: AgentIdentity | undefined;
+  /** The persistence promise this room makes (Merge1 §01). */
+  durabilityMode?: DurabilityMode;
   /** Process isolation boundary (bwrap in production). */
   sandbox: SandboxSpec;
   /** OAuth-identity → allowed-tool-grants mediator, invoked via observe.ts. */
@@ -134,6 +153,10 @@ export type CreateDeterministicRoomInput = {
   baseTimeMs?: number;
   /** Ms the clock advances per `now()` call (default 1). */
   stepMs?: number;
+  /** Seed for the room's virtual RNG (default 0). Same seed → same trace (DST). */
+  seed?: bigint | number;
+  /** Persistence promise (default `in_memory_only` for simulation rooms). */
+  durabilityMode?: DurabilityMode;
   budget?: RoomBudget;
   communicationStrategy?: CommunicationStrategy;
   seams?: readonly RoomSeamBinding[];
@@ -163,20 +186,13 @@ export const mockCredentialProxy: CredentialProxyPort = {
  * credential proxy, …) at the same seams.
  */
 export function createDeterministicRoom(input: CreateDeterministicRoomInput): Room {
-  const baseTimeMs = input.baseTimeMs ?? 0;
-  const stepMs = input.stepMs ?? 1;
-  let tick = 0;
-  const counters = new Map<string, number>();
-  const clock: Clock = {
-    now: () => new Date(baseTimeMs + tick++ * stepMs).toISOString(),
-  };
-  const ids: IdGenerator = {
-    createId: (prefix: string) => {
-      const next = (counters.get(prefix) ?? 0) + 1;
-      counters.set(prefix, next);
-      return `${prefix}-${String(next).padStart(3, "0")}`;
-    },
-  };
+  const env = createVirtualEnvironment(
+    BigInt(input.seed ?? 0),
+    input.baseTimeMs ?? 0,
+    input.stepMs ?? 1,
+  );
+  const clock: Clock = clockFromEnv(env);
+  const ids: IdGenerator = idGeneratorFromEnv(env);
   const seams: readonly RoomSeamBinding[] =
     input.seams ?? [
       { seam: "clock", mode: "mock", adapter: "frozen-clock" },
@@ -187,12 +203,14 @@ export function createDeterministicRoom(input: CreateDeterministicRoomInput): Ro
   return {
     roomId: input.roomId,
     seamMode: "mock",
+    env,
     clock,
     ids,
     seams,
     hatIds: input.hatIds,
     communicationStrategy: input.communicationStrategy ?? "english",
     budget: input.budget ?? { maxSteps: 1024 },
+    durabilityMode: input.durabilityMode ?? "in_memory_only",
     identity: input.identity,
     sandbox: input.sandbox ?? { engine: "none", workspaceMount: "/workspace", allowedEgress: [], revokeOnExpiry: true },
     credentialProxy: input.credentialProxy ?? mockCredentialProxy,
