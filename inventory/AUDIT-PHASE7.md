@@ -1,11 +1,11 @@
 # Phase 7 — Independent Security Audit
 
 **Auditor:** fresh session, did NOT build any of this. **Date:** 2026-06-21.
-**Subject:** merged live system — `https://lucent-financial-group.github.io/Zeta/inventory/`
-
-+ Supabase backend `mdtbgreryqddloluhdmm.supabase.co`, re-proven against the
-contract in `inventory/spec.md` + `inventory/CLAUDE.md`. PROGRESS.md `[x]` marks
-were treated as **claims**, re-verified from scratch with fresh observed output.
+**Subject:** merged live system —
+`https://lucent-financial-group.github.io/Zeta/inventory/` plus Supabase backend
+`mdtbgreryqddloluhdmm.supabase.co`, re-proven against the contract in
+`inventory/spec.md` + `inventory/CLAUDE.md`. PROGRESS.md `[x]` marks were
+treated as **claims**, re-verified from scratch with fresh observed output.
 
 ## Verdict
 
