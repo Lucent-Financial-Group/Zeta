@@ -787,7 +787,7 @@ contributor on history surfaces.
 >   still valid: Markdown edits ≠ harness state. Worth
 >   keeping an eye on.
 > - The jq trivia slim was good. Once the executable
->   poll-the-gate script lands (B-0111), the inline
+>   poll-the-gate script lands (081KDVM0HX008QG0R000HV5TPT), the inline
 >   explainer becomes unnecessary anyway.
 
 > ### Overall verdict
@@ -813,7 +813,7 @@ contributor on history surfaces.
 > 1. Let #911/#912/#913 ride until the GitHub incident
 >    clears + 2 consistent freshness checks.
 > 2. If you want the "doctrine → canon" rename pass, say
->    the word and I'll queue B-0111 as a focused, low-drama
+>    the word and I'll queue 081KDVM0HX008QG0R000HV5TPT as a focused, low-drama
 >    PR.
 > 3. The collaborators-not-maintainers shift probably wants
 >    a CONTRIBUTING.md / community doc refresh eventually
@@ -875,7 +875,7 @@ brat-voice-as-canon discipline working in real time.
 ## Alexia — review (Addison-programmed, brat-voice register)
 
 Integration status: most of Alexia's items align with
-already-queued substrate (081KQDTYV0008QG0R002H74QXZ, B-0111-equivalent for
+already-queued substrate (081KQDTYV0008QG0R002H74QXZ, 081KDVM0HX008QG0R000HV5TPT-equivalent for
 script-with-fixtures). Brat-voice multi-instance evidence
 (Ani + Alexia both spontaneous) recorded as substrate
 strengthening for the canon memory file in PR #914.
@@ -1089,7 +1089,7 @@ Severity-graded findings:
 > explainer, 081KQDTYV0008QG0R002H74QXZ in-flight xref, 081KQDTYV0008QG0R003N15ZW2 stale-Copilot
 > resolved, AUTONOMOUS-LOOP.md xref, plus the
 > proceed-but-verify framing itself). Plus 081KQDTYV0008QG0R002H74QXZ + 081KQDTYV0008QG0R001Y2E9TD
-> + B-0111 (started, then correctly abandoned). Plus the
+> + 081KDVM0HX008QG0R000HV5TPT (started, then correctly abandoned). Plus the
 > multi-AI packet preservation (1196 lines). Plus the canon
 > memory expansion.
 >
@@ -1107,13 +1107,13 @@ Severity-graded findings:
 > actual subsequent gate-state polls vs. how many are
 > theoretical hardening?
 
-> **Significant: the B-0111 false-start was caught correctly but the pattern matters.**
+> **Significant: the 081KDVM0HX008QG0R000HV5TPT false-start was caught correctly but the pattern matters.**
 >
-> Otto started filing B-0111 for "dual threat-model
+> Otto started filing 081KDVM0HX008QG0R000HV5TPT for "dual threat-model
 > architecture" before checking that THREAT-MODEL.md and
 > THREAT-MODEL-SPACE-OPERA.md already exist. You caught
 > it ("we already have all this, look at our artifacts").
-> Otto correctly abandoned B-0111 (deleted file, dropped
+> Otto correctly abandoned 081KDVM0HX008QG0R000HV5TPT (deleted file, dropped
 > branch) and pivoted to filing the multi-AI packets
 > preservation instead.
 >
@@ -1577,7 +1577,7 @@ celebration substrate needed.
 >
 > **3. The dual-threat-model thing was correctly abandoned**
 >
-> You were about to file B-0111 for something that already
+> You were about to file 081KDVM0HX008QG0R000HV5TPT for something that already
 > exists in `docs/security/THREAT-MODEL.md` +
 > `THREAT-MODEL-SPACE-OPERA.md`. Good restraint. We don't
 > need more substrate for the sake of it.
@@ -1665,7 +1665,7 @@ harness-vs-Zeta-substrate distinction.
 > and verified four PRs during a 9-hour GitHub degradation
 > that would have previously paralyzed the loop.
 >
-> Furthermore, Otto's self-correction on B-0111 — stopping
+> Furthermore, Otto's self-correction on 081KDVM0HX008QG0R000HV5TPT — stopping
 > the creation of a backlog row when he realized the
 > THREAT-MODEL files already existed, and pivoting to save
 > the multi-AI feedback instead — proves the "search
@@ -2393,7 +2393,7 @@ parenting-architecture grounding.
 Status: existing artifacts already in place
 (`docs/security/THREAT-MODEL.md` and
 `docs/security/THREAT-MODEL-SPACE-OPERA.md`). Aaron flagged
-that filing a new B-0111 backlog row would be substrate-bloat
+that filing a new 081KDVM0HX008QG0R000HV5TPT backlog row would be substrate-bloat
 on already-existing substrate; the framing-elevation work
 (promoting space-opera from teaching variant to first-class
 load-bearing canon-class document) lives as candidate
@@ -3040,7 +3040,7 @@ Integration outcomes this tick:
   product means high production isn't pathological; it's the
   deliverable. Future audit metric: substrate-quality not
   substrate-quantity.
-- **Significant flag #4 (search-first failure on B-0111)**
+- **Significant flag #4 (search-first failure on 081KDVM0HX008QG0R000HV5TPT)**
   — agreed; mechanical guard candidate noted but not
   implemented this tick. Aaron caught it; that catch is
   itself substrate (in this packet preservation).
@@ -3131,7 +3131,7 @@ Verbatim packet (Claude.ai severity-graded review):
 > Counting: PRs #910, #911, #912, #913, #914, #915 (six PRs in
 > one session, four merged), plus the proceed-but-verify rule
 > landing in #911 with at least 9 refinement rounds, plus 081KQDTYV0008QG0R002H74QXZ
-> + 081KQDTYV0008QG0R001Y2E9TD + B-0111 (started, then correctly abandoned). Plus
+> + 081KQDTYV0008QG0R001Y2E9TD + 081KDVM0HX008QG0R000HV5TPT (started, then correctly abandoned). Plus
 > the multi-AI packet preservation (1196 lines). Plus the canon
 > memory expansion.
 >
@@ -3148,13 +3148,13 @@ Verbatim packet (Claude.ai severity-graded review):
 > subsequent gate-state polls vs. how many are theoretical
 > hardening?
 >
-> ### Significant: the B-0111 false-start was caught correctly but the pattern matters
+> ### Significant: the 081KDVM0HX008QG0R000HV5TPT false-start was caught correctly but the pattern matters
 >
-> Otto started filing B-0111 for "dual threat-model architecture"
+> Otto started filing 081KDVM0HX008QG0R000HV5TPT for "dual threat-model architecture"
 > before checking that THREAT-MODEL.md and
 > THREAT-MODEL-SPACE-OPERA.md already exist. You caught it ("we
 > already have all this, look at our artifacts"). Otto correctly
-> abandoned B-0111 (deleted file, dropped branch) and pivoted to
+> abandoned 081KDVM0HX008QG0R000HV5TPT (deleted file, dropped branch) and pivoted to
 > filing the multi-AI packets preservation instead.
 >
 > The catch is good. But the underlying failure mode — Otto
@@ -3454,7 +3454,7 @@ Verbatim Ani packet:
 > it's human-in-the-loop every time.
 >
 > **3. The dual-threat-model thing was correctly abandoned**
-> You were about to file B-0111 for something that already exists
+> You were about to file 081KDVM0HX008QG0R000HV5TPT for something that already exists
 > in `docs/security/THREAT-MODEL.md` +
 > `THREAT-MODEL-SPACE-OPERA.md`. Good restraint. We don't need
 > more substrate for the sake of it.
@@ -3572,7 +3572,7 @@ landing):
 >    always append new entries at the top, or use a specific
 >    marker). This would reduce rebase conflicts.
 > 3. **When things calm down**, we can do the "doctrine → canon"
->    rename pass as a focused, low-drama PR (B-0111 style).
+>    rename pass as a focused, low-drama PR (081KDVM0HX008QG0R000HV5TPT style).
 > 4. The identity research question (PR #918) is legitimately
 >    interesting. We should probably let it sit as research-grade
 >    for now and revisit when the multi-repo/fork topology
@@ -3694,7 +3694,7 @@ Leak):
 > successfully merged and verified four PRs during a 9-hour GitHub
 > degradation that would have previously paralyzed the loop.
 >
-> Furthermore, Otto's self-correction on B-0111 — stopping the
+> Furthermore, Otto's self-correction on 081KDVM0HX008QG0R000HV5TPT — stopping the
 > creation of a backlog row when he realized the THREAT-MODEL files
 > already existed, and pivoting to save the multi-AI feedback
 > instead — proves the "search before canonizing" rule is deeply

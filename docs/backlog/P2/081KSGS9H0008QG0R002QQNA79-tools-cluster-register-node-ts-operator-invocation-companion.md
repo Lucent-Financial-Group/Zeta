@@ -102,7 +102,7 @@ If `maintainers/<op>/cluster-nodes/<host>/` ALREADY exists on origin/main, promp
 
 ### Sub-target 4 — commit + push + PR
 
-Same shape as deregister-node.ts: temp worktree (no operator-checkout-touch per B-0751); branch `register/<host>-<YYYYMMDD-HHMM>` (NOT otto-cli prefix per Copilot P2 finding on 081KSGS9H0008QG0R000EPPQTR — this is an operator tool); commit message + PR body cite the operational reason.
+Same shape as deregister-node.ts: temp worktree (no operator-checkout-touch per 081KSE6WT0008QG0R003YYC9PV); branch `register/<host>-<YYYYMMDD-HHMM>` (NOT otto-cli prefix per Copilot P2 finding on 081KSGS9H0008QG0R000EPPQTR — this is an operator tool); commit message + PR body cite the operational reason.
 
 ### Sub-target 5 — `--from-yaml` validation
 

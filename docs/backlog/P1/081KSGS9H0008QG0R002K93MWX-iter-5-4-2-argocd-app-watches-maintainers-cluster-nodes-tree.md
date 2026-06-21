@@ -151,7 +151,7 @@ This is the empirical proof of the full iter-5.4 arc.
 
 - Multi-maintainer governance (081KSGS9H0008QG0R0027HJZYH sub-target 6; future)
 - Full operator-pattern controller in Go (initial impl is kustomize + simple kubectl-shell loop; Go operator deferred)
-- Cross-cluster federation (B-0741 substrate via re-landed 081KSE6WT0008QG0R002CC6314; separate scope at iter-7)
+- Cross-cluster federation (081KSE6WT0008QG0R002CC6314 substrate via re-landed 081KSE6WT0008QG0R002CC6314; separate scope at iter-7)
 - ArgoCD itself install/config (081KSE6WT0008QG0R002275NDE; assumed already present per cluster bring-up)
 
 ## Substrate-inventory pass

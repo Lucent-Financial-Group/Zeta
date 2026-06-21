@@ -9,7 +9,7 @@ created: 2026-05-29
 last_updated: 2026-05-29
 depends_on:
   - 081KSE6WT0008QG0R003YYC9PV
-  - B-0751
+  - 081KSE6WT0008QG0R003YYC9PV
 composes_with:
   - 081KRFA460008QG0R001KC0VBH
   - 081KRFA460008QG0R00061SXRW
@@ -38,7 +38,7 @@ tags: [agent-autonomy, pr-reviews, thread-resolution, self-correction, worktree-
 ### 3. Isolated Worktree Execution
 
 - `AGENTS.md` and `GOVERNANCE.md` mandate dedicated worktrees for autonomous edits.
-- 081KSE6WT0008QG0R003YYC9PV and B-0751 define worktree isolation and sandbox bypass rules.
+- 081KSE6WT0008QG0R003YYC9PV and 081KSE6WT0008QG0R003YYC9PV define worktree isolation and sandbox bypass rules.
 - This row uses isolated worktrees to perform the resolution edits and local compilation checks.
 
 ## Scope

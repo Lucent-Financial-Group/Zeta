@@ -127,7 +127,7 @@
     },
     {
       "number": 5038,
-      "title": "backlog(B-0760): USB as repair tool for any node — identity preservation + no-disruption-at-3+-nodes invariant",
+      "title": "backlog(081KSE6WT0008QG0R003WG0V6P): USB as repair tool for any node — identity preservation + no-disruption-at-3+-nodes invariant",
       "createdAgo": "6h ago",
       "state": "open"
     },
@@ -145,7 +145,7 @@
     },
     {
       "number": 5032,
-      "title": "backlog(B-0758): USB-persistent OS — unRAID-style zero-internal-disk support",
+      "title": "backlog(081KSE6WT0008QG0R00021PPX1): USB-persistent OS — unRAID-style zero-internal-disk support",
       "createdAgo": "7h ago",
       "state": "open"
     },

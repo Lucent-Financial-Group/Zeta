@@ -223,18 +223,18 @@ Changes:
     install <pkg>`:
     1a. Hat resolution (skill-bound; PAIR primitive)
     1b. Multi-oracle BFT proto-governance (N-of-M consent)
-    1c. Cross-fork ontology negotiation (per B-0741/081KSE6WT0008QG0R000JSJ3SR; per-persona
+    1c. Cross-fork ontology negotiation (per 081KSE6WT0008QG0R002CC6314/081KSE6WT0008QG0R000JSJ3SR; per-persona
         ontology maps)
     1d. Guardian/KSK gate (per canonical Ace project memory; Bond Curve
         pricing; local receipts; high-risk multi-N-of-M)
     1e. ace install proceeds + receipt written
 
-(2) Added B-0741 to the substrate-citation table with explicit
+(2) Added 081KSE6WT0008QG0R002CC6314 to the substrate-citation table with explicit
     "CLOSED prematurely earlier this session" annotation. The close
     was mechanically justified (DIRTY conflict) but the substrate
     is load-bearing for 081KSGS9H0008QG0R001Y9FB62's architectural integration.
 
-(3) New "## Sub-row to re-file" section tracks B-0741 as a known
+(3) New "## Sub-row to re-file" section tracks 081KSE6WT0008QG0R002CC6314 as a known
     dependency for iter-7 implementation; needs cherry-pick re-land
     per pr-triage-tiers Tier 3.
 

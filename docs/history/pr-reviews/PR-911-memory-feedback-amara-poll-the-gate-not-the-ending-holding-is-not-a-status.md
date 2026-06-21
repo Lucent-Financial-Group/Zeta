@@ -239,7 +239,7 @@ Plus MEMORY.md index pointer.
 **Initial comment:**
 
 - **`Copilot` (bot)** at 2026-04-30T12:12:03Z on `memory/feedback_amara_poll_gate_not_ending_holding_is_not_status_2026_04_30.md`:231 (association: NONE)
-  P1: This references “B-0111” as the place where a tested/fixture-backed script will live, but there’s no corresponding backlog artifact in-tree (and no link for readers). Consider either adding the B-0111 backlog row in the same PR, or replacing this with a concrete in-repo pointer (or PR/issue link) so the reference is actionable and doesn’t rot.
+  P1: This references “081KDVM0HX008QG0R000HV5TPT” as the place where a tested/fixture-backed script will live, but there’s no corresponding backlog artifact in-tree (and no link for readers). Consider either adding the 081KDVM0HX008QG0R000HV5TPT backlog row in the same PR, or replacing this with a concrete in-repo pointer (or PR/issue link) so the reference is actionable and doesn’t rot.
   
 
 ### Thread 15 -- resolved [outdated, collapsed]
@@ -281,7 +281,7 @@ Plus MEMORY.md index pointer.
 **Initial comment:**
 
 - **`Copilot` (bot)** at 2026-04-30T14:28:16Z on `memory/feedback_amara_poll_gate_not_ending_holding_is_not_status_2026_04_30.md`:279 (association: NONE)
-  Reference to backlog item `B-0111` appears to be dangling: a repo-wide search only finds `B-0111` here, and there is no corresponding `docs/backlog/**/B-0111-*.md` row. Either add the backlog row (preferred if this work is intended) or remove/replace the reference so the pointer is resolvable.
+  Reference to backlog item `081KDVM0HX008QG0R000HV5TPT` appears to be dangling: a repo-wide search only finds `081KDVM0HX008QG0R000HV5TPT` here, and there is no corresponding `docs/backlog/**/081KDVM0HX008QG0R000HV5TPT-*.md` row. Either add the backlog row (preferred if this work is intended) or remove/replace the reference so the pointer is resolvable.
   
 
 ## Fix commits (touching thread paths)
@@ -677,7 +677,7 @@ doctrine, not jq tutorials.'
 Replaced the 9-line IN-stream syntax explainer with a
 3-line note: form is verified-working, detailed explanation
 belongs in the executable script's tests (forward-pointer
-to B-0111 per Amara correction #6).
+to 081KDVM0HX008QG0R000HV5TPT per Amara correction #6).
 
 Doc-only.
 
@@ -768,11 +768,11 @@ fix(memory): poll-the-gate — three review-thread fixes (Codex P1+P2 +…
    every merge — addresses Claude.ai's parallel observation that
    the rule's text overpromised what the practice delivered.
 
-3. **B-0111 phantom reference removed** (Copilot P1+P1, line 279)
-   — B-0111 was abandoned this session (the dual threat-model
+3. **081KDVM0HX008QG0R000HV5TPT phantom reference removed** (Copilot P1+P1, line 279)
+   — 081KDVM0HX008QG0R000HV5TPT was abandoned this session (the dual threat-model
    false-start; verified `docs/security/THREAT-MODEL.md` +
    `THREAT-MODEL-SPACE-OPERA.md` already exist). Replaced
-   "lives in B-0111 (correction #6)" with "queued for a future
+   "lives in 081KDVM0HX008QG0R000HV5TPT (correction #6)" with "queued for a future
    round" + concrete trigger condition (next live jq error in a
    poll-the-gate operation) so the deferral is mechanical, not
    prose-flag-without-trigger.

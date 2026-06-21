@@ -8,7 +8,7 @@ ask: aaron 2026-05-26
 created: 2026-05-26
 last_updated: 2026-05-26
 depends_on:
-  - B-0754
+  - 081KSGS9H0008QG0R002T3BJ2R
 composes_with:
   - 081KSE6WT0008QG0R003G0Y62D
   - 081KSE6WT0008QG0R0029S1D5Z
@@ -168,7 +168,7 @@ The maintainer's "wait for 4.2" signal is exactly the right shape for this decom
 
 ## Composes with
 
-- **B-0754** — iter-3 zero-typing USB install (iter-4 is the credential-substrate follow-on)
+- **081KSGS9H0008QG0R002T3BJ2R** — iter-3 zero-typing USB install (iter-4 is the credential-substrate follow-on)
 - **081KSE6WT0008QG0R003G0Y62D** — first-time-CLI-user persona (iter-4 v1 is operator-friction-cost; iter-4.2+ closes the zero-typing gap)
 - **081KSE6WT0008QG0R0029S1D5Z** — IP-KVM Comet Pro substrate (iter-4 makes local-console access load-bearing — KVM-via-IP becomes operationally valuable when tty1 has a password to type into)
 - **081KSE6WT0008QG0R002275NDE** — simplest-first plugin sequence (sha512crypt = simplest first; promote to stronger later)

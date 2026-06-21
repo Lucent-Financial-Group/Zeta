@@ -39,7 +39,7 @@ Tick 1802Z scan surfaced 20+ dead xrefs across 8 migrated personas (Amara, DeepS
 
 ## Test plan
 
-- [x] 081KRMEXM0008QG0R000K25MXS ID free (B-0531 in-flight, 081KRMEXM0008QG0R003FZNK3E on main, 081KRMEXM0008QG0R000K25MXS verified free via \`gh pr list\`)
+- [x] 081KRMEXM0008QG0R000K25MXS ID free (081KRMEXM0008QG0R00070X79J in-flight, 081KRMEXM0008QG0R003FZNK3E on main, 081KRMEXM0008QG0R000K25MXS verified free via \`gh pr list\`)
 - [x] Frontmatter parses (composes_with: 081KQ3HBZ0008QG0R001FPVG3Z, 081KRMEXM0008QG0R003FZNK3E; depends_on: [])
 - [ ] CI green (markdownlint, archive-header §33 lint)
 - [ ] Auto-merge arms
@@ -99,7 +99,7 @@ surfaces across 8 migrated personas. Two-slice approach:
 - Slice B: static lint at tools/hygiene/lint-section-33-xrefs.ts +
   wired into gate.yml; composes with 081KRMEXM0008QG0R003FZNK3E mechanization pattern
 
-ID-allocation discipline applied: B-0531 in-flight (PR #3520), 081KRMEXM0008QG0R003FZNK3E
+ID-allocation discipline applied: 081KRMEXM0008QG0R00070X79J in-flight (PR #3520), 081KRMEXM0008QG0R003FZNK3E
 on main (file lint), 081KRMEXM0008QG0R000K25MXS free + verified via gh pr list search.
 
 Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>

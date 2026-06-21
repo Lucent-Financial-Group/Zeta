@@ -20,7 +20,7 @@ Razor-cadence item 5 investigation: user-scope MEMORY.md is 242 lines / 66KB / 2
 
 081KRHWGX0008QG0R0029X10F4 captures two-phase plan: (1) bulk cleanup of over-long entries; (2) mechanize via `tools/hygiene/audit-user-scope-memory-index.ts` (parallel to PR #3202).
 
-(Renumbered from B-0516 → 081KRHWGX0008QG0R0029X10F4 due to multi-Otto ID-collision; substrate-honest disclosure in commit message.)
+(Renumbered from 081KRHWGX0008QG0R001BPYWTT → 081KRHWGX0008QG0R0029X10F4 due to multi-Otto ID-collision; substrate-honest disclosure in commit message.)
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

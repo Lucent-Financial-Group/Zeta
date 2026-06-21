@@ -31,7 +31,7 @@ Single script for any maintainer to get a host-loop running:
 
   bash tools/setup/host-loop-bootstrap.sh --agent-name max-24x7
 
-Creates isolated clone, generates launchd plist, installs service, verifies first heartbeat. Per 081KRQ1AB0008QG0R0014PKF49 + B-0751.
+Creates isolated clone, generates launchd plist, installs service, verifies first heartbeat. Per 081KRQ1AB0008QG0R0014PKF49 + 081KSE6WT0008QG0R003YYC9PV.
 
 ## Outcome
 

@@ -11,8 +11,8 @@ depends_on:
   - 081KRFA460008QG0R0018SN61J
   - 081KSE6WT0008QG0R0016CEE2Z
 composes_with:
-  - B-0747
-  - B-0754
+  - 081KSE6WT0008QG0R003D199HE
+  - 081KSGS9H0008QG0R002T3BJ2R
   - 081KSE6WT0008QG0R0015ZF2G6
   - 081KSE6WT0008QG0R003FG3E8R
   - 081KSE6WT0008QG0R000WVYAJ2
@@ -122,7 +122,7 @@ for cluster composition:
 - One Argo CD `Application` declares which apps the cluster has
 - Each child app declares its substrate dependencies
 - Versioned + reproducible + diff-able + bisect-able
-- Composes with B-0747 git-native per-machine state
+- Composes with 081KSE6WT0008QG0R003D199HE git-native per-machine state
 - Composes with 081KSE6WT0008QG0R0008483B2 digital twin (App-of-Apps = twin config
   source)
 
@@ -190,8 +190,8 @@ opt into higher tiers when their workflow demands.
 | Composition row | How Local Loop composes |
 |---|---|
 | 081KRFA460008QG0R0018SN61J F# fork for AI safety | Local Loop is F#/.NET native; same substrate base |
-| B-0747 git-native per-machine state | App-of-Apps as packages.json IS git-native cluster composition |
-| B-0754 zero-typing first-boot | The installer-substrate is testable via Local Loop too (sim the boot flow) |
+| 081KSE6WT0008QG0R003D199HE git-native per-machine state | App-of-Apps as packages.json IS git-native cluster composition |
+| 081KSGS9H0008QG0R002T3BJ2R zero-typing first-boot | The installer-substrate is testable via Local Loop too (sim the boot flow) |
 | 081KSE6WT0008QG0R0015ZF2G6 open AI-trainable reference | Local Loop scenarios become benchmark scenarios per ARC-AGI parallel |
 | 081KSE6WT0008QG0R003FG3E8R auto-submit-back telemetry | In-the-wild failures reproducible via Local Loop with the failure envelope |
 | 081KSE6WT0008QG0R000WVYAJ2 operator-in-the-negotiation-high-seat | Operators run Local Loop without Zeta-specific tooling; works with vanilla F# stack |
@@ -215,7 +215,7 @@ opt into higher tiers when their workflow demands.
 - Three-tier testing makes 081KSE6WT0008QG0R003G0Y62D first-time-CLI-user persona
   development experience substantively distinct: dev tests
   WITHOUT requiring Docker / K8s install
-- Argo CD App-of-Apps as packages.json operationalizes B-0747
+- Argo CD App-of-Apps as packages.json operationalizes 081KSE6WT0008QG0R003D199HE
   git-native state + 081KSE6WT0008QG0R0008483B2 digital twin in a familiar
   developer mental model
 - Per 081KSE6WT0008QG0R0004ZPPRP Itron-mode: deterministic K8s simulation is a

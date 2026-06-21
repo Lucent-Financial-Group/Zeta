@@ -50,7 +50,7 @@ Per Kestrel Part 4: "PR-now: the four-corner ownership extension to the asymmetr
 - 081KRW63S0008QG0R000QJR08H (schemas-as-rows / participation economy) — pipeline schemas live as rows; Target 5 integration
 - 081KRW63S0008QG0R001SAHYKV (English-as-projection I(D(x))=x) — serialized expression trees ARE the substrate-form
 - 081KS3X9Y0008QG0R00218150M (multi-oracle BFT) — one of the backends in Target 4
-- B-0741 (fork-negotiated ontology) — cross-fork stream-pipeline negotiation
+- 081KSE6WT0008QG0R002CC6314 (fork-negotiated ontology) — cross-fork stream-pipeline negotiation
 - 081KSGS9H0008QG0R000Q18PGQ (cluster-fork-as-trust-boundary) — stream pipelines crossing fork boundaries
 - 081KSKBP80008QG0R000J2YFK2 (Nemerle dotnet support) — sibling toolkit for cases where F# CE hits its limits
 - 081KSKBP80008QG0R0031DTHS9 (asymmetric-authorship cluster) — foundation this builds on

@@ -46,7 +46,7 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated 2 c
 **docs/backlog/P2/081KRYRGG0008QG0R002DGWP94-b0590-slice5-bare-metal-install-automation.md:11**
 * P2: `composes_with` repeats `081KRQ1AB0008QG0R002G93CM7` which is already listed in `depends_on`. `tools/backlog/lint-frontmatter.ts` flags this as a redundant edge; keep the stronger `depends_on` edge and drop the duplicate from `composes_with` (or vice versa if it’s not actually a hard prerequisite).
 ```
-depends_on: [081KRQ1AB0008QG0R002G93CM7, B-0671]
+depends_on: [081KRQ1AB0008QG0R002G93CM7, 081KRYRGG0008QG0R003CF4DH5]
 composes_with: [081KRQ1AB0008QG0R002G93CM7]
 ```
 </details>
@@ -65,4 +65,4 @@ This issue also appears on line 10 of the same file.
 
 **@copilot-pull-request-reviewer** (2026-05-19T16:15:16Z):
 
-P1: `depends_on` references `081KRQ1AB0008QG0R002G93CM7` and `B-0671`, but there are no corresponding backlog row files/IDs in `docs/backlog/**` (and no entries in `docs/BACKLOG.md`). Either add those rows in this PR, or remove/adjust these references so dependencies point only at existing rows.
+P1: `depends_on` references `081KRQ1AB0008QG0R002G93CM7` and `081KRYRGG0008QG0R003CF4DH5`, but there are no corresponding backlog row files/IDs in `docs/backlog/**` (and no entries in `docs/BACKLOG.md`). Either add those rows in this PR, or remove/adjust these references so dependencies point only at existing rows.

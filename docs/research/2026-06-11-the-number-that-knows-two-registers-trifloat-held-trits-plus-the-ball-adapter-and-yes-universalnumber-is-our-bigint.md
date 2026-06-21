@@ -18,7 +18,7 @@ prior-art adapters that double as differential-test oracles. Aaron's instinct = 
    composed of trits where any trit may be HELD (`Tri.N`), and `measure` names WHICH kind of
    unknown you hold: ValueSuperposed (a value trit held) vs InterpretationSuperposed (the decode
    instruction itself held). Not truncation — held structure.
-2. **METRIC unknowns (TO BUILD — the ball adapter, B-1037):** a number carrying its own error
+2. **METRIC unknowns (TO BUILD — the ball adapter, 081KTSZN10008QG0R003PHDV1C):** a number carrying its own error
    BOUND: center ± radius (ball arithmetic — Arb, Johansson 2017; interval arithmetic, Moore
    1966; unums/valids, Gustafson). THE LAW THAT ANSWERS "not just truncated": **a lossy operation
    must WIDEN the radius, never silently round** — exactness is `radius = 0` (our milli-exact
@@ -33,5 +33,5 @@ a BELIEF (soft, Bayesian) — shape-softvalue vs shape-triboolean's edge line sa
 ## Pointers
 
 - UniversalNumber.fs (the port; bigint adapter live) · Core.FSharp.TriBoolean/Float.fs (register 1)
-- B-1037 (the ball adapter) · db/shapes/cartridges/triboolean.lines (the display's third state,
+- 081KTSZN10008QG0R003PHDV1C (the ball adapter) · db/shapes/cartridges/triboolean.lines (the display's third state,
   now drawn — wish-list item 1 landed)

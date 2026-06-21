@@ -174,7 +174,7 @@ Final substrate from Mika transcript lines 4700-4731 (END section completion):
   success = health metric).
 
 Batch-7 grand total: 10 rows from Mika transcript late-section exploration
-(081KRW63S0008QG0R002N6PPVK through 081KRW63S0008QG0R0009MCJ4T, with the B-0656-B-0657 numbers skipped — those
+(081KRW63S0008QG0R002N6PPVK through 081KRW63S0008QG0R0009MCJ4T, with the 081KDWK6FG008QG0R001A8QKV9-081KDWK8A3008QG0R003RZMV8C numbers skipped — those
 covered partially elsewhere).
 
 🤖 Generated with Claude Code

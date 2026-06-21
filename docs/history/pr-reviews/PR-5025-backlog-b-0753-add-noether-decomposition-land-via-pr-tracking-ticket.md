@@ -31,7 +31,7 @@
 
 Adds backlog row **081KSE6WT0008QG0R003BCQEKW** under P3 to track the landing of Lior's Noether decomposition child files (`081KQ0YZ80008QG0R002T6TM7Z.1` through `081KQ0YZ80008QG0R002T6TM7Z.4`) on `main` via PR #4926 (or sibling PR). 
 
-This establishes a substrate-honest, observable path for tracking in-flight remote work following the 081KSE6WT0008QG0R003YYC9PV and B-0751 local main checkout alignment.
+This establishes a substrate-honest, observable path for tracking in-flight remote work following the 081KSE6WT0008QG0R003YYC9PV and 081KSE6WT0008QG0R003YYC9PV local main checkout alignment.
 
 Co-Authored-By: Gemini <noreply@google.com>
 
@@ -79,7 +79,7 @@ backlog(081KSE6WT0008QG0R003BCQEKW): add Noether decomposition land via PR track
 
 Why: To establish a substrate-honest tracking row for landing Lior's Noether
 decomposition child files (081KQ0YZ80008QG0R002T6TM7Z.1 through 081KQ0YZ80008QG0R002T6TM7Z.4) on main via PR #4926,
-following the 081KSE6WT0008QG0R003YYC9PV and B-0751 local main checkout alignment.
+following the 081KSE6WT0008QG0R003YYC9PV and 081KSE6WT0008QG0R003YYC9PV local main checkout alignment.
 
 - Add docs/backlog/P3/081KSE6WT0008QG0R003BCQEKW-noether-decomposition-land-via-pr-2026-05-25.md
 

@@ -130,7 +130,7 @@ Copilot reviewed 6 out of 6 changed files in this pull request and generated 5 c
 
 **@copilot-pull-request-reviewer** (2026-05-26T20:42:34Z):
 
-`B-0751` is referenced in `composes_with`, but there is no backlog row with frontmatter `id: B-0751` in the repo. Either add the missing `B-0751` row or replace this with the correct existing dependency (e.g. `081KSE6WT0008QG0R003YYC9PV`) so cross-references stay resolvable.
+`081KSE6WT0008QG0R003YYC9PV` is referenced in `composes_with`, but there is no backlog row with frontmatter `id: 081KSE6WT0008QG0R003YYC9PV` in the repo. Either add the missing `081KSE6WT0008QG0R003YYC9PV` row or replace this with the correct existing dependency (e.g. `081KSE6WT0008QG0R003YYC9PV`) so cross-references stay resolvable.
 
 ### Thread 2: docs/backlog/P2/081KSGS9H0008QG0R002H0ENQ1-multi-ai-shared-checkout-convention-human-maintainer-surface-plus-always-up-to-date-main-for-society-aaron-2026-05-26.md:29 (resolved)
 
@@ -154,7 +154,7 @@ Same issue as above: `fetch + reset --hard origin/main` is described as "safe" h
 
 **@copilot-pull-request-reviewer** (2026-05-26T20:42:35Z):
 
-`B-0751` is referenced here but there is no backlog row with `id: B-0751` in the repo. Either add that missing row or update this section to point at the correct existing backlog item / rule so readers can follow the dependency chain.
+`081KSE6WT0008QG0R003YYC9PV` is referenced here but there is no backlog row with `id: 081KSE6WT0008QG0R003YYC9PV` in the repo. Either add that missing row or update this section to point at the correct existing backlog item / rule so readers can follow the dependency chain.
 
 ## General comments
 

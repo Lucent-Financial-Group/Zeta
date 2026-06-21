@@ -180,7 +180,7 @@ substrates remained on main:
 1. infra/nixos/hosts/installer/ + .github/workflows/build-installer-iso.yml
    — LEGACY (root flake; simpler; lacks zero-typing install machinery)
 2. full-ai-cluster/usb-nixos-installer/ + build-ai-cluster-iso.yml
-   — CANONICAL (zeta-install.sh + zeta-first-boot.sh + zflash + B-0754
+   — CANONICAL (zeta-install.sh + zeta-first-boot.sh + zflash + 081KSGS9H0008QG0R002T3BJ2R
    iter-3 firmware + 081KSGS9H0008QG0R002T3BJ2R iter-4 SSH-key/hashed-password + 081KSGS9H0008QG0R003V23XNZ
    iter-5 WiFi)
 

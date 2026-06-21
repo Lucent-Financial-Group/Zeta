@@ -31,7 +31,7 @@
 
 - PR #3376 (0710Z shard) MERGED at \`ccff9b0\`
 - PR #3379 picked up 7 unresolved threads — all addressed + resolved (commit \`744ded3\`)
-- **CRITICAL**: substrate-honest correction comment posted to PR #3323 — my prior "081KRMEXM0008QG0R000T0A28T free" advisory was wrong; actual next-free is B-0531
+- **CRITICAL**: substrate-honest correction comment posted to PR #3323 — my prior "081KRMEXM0008QG0R000T0A28T free" advisory was wrong; actual next-free is 081KRMEXM0008QG0R00070X79J
 
 ## Test plan
 
@@ -99,7 +99,7 @@ was wrong (081KRMEXM0008QG0R000T0A28T was taken by PR #3342; my on-disk check ra
 primary worktree on detached HEAD). All 7 resolved via graphql resolveReviewThread.
 
 Substrate-honest correction comment posted to PR #3323 thread at 07:42Z; actual
-next-free B-NNNN is B-0531. The chain-of-evidence preserves the first (wrong)
+next-free B-NNNN is 081KRMEXM0008QG0R00070X79J. The chain-of-evidence preserves the first (wrong)
 advisory + the correction, rather than rewriting history.
 
 Refresh-before-decide failed at ID-allocation scope for the SECOND time in two

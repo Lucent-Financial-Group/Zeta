@@ -37,7 +37,7 @@
 
 - [x] Row file passes `BACKLOG_WRITE_FORCE=1 bun tools/backlog/generate-index.ts` — index entry added
 - [x] All cross-referenced rows + PRs + memory file use valid relative paths
-- [x] 081KRQ1AB0008QG0R000QYJFZE ID confirmed free (B-0552 in flight on PR #3728; on-disk highest at the time of authoring was 081KRQ1AB0008QG0R000SASDNE)
+- [x] 081KRQ1AB0008QG0R000QYJFZE ID confirmed free (081KRQ1AB0008QG0R002SQRJW6 in flight on PR #3728; on-disk highest at the time of authoring was 081KRQ1AB0008QG0R000SASDNE)
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

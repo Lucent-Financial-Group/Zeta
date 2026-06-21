@@ -257,7 +257,7 @@ TS Bun script (per Rule 0) that:
 - Verifies node exists on origin/main before destructive op (exit 2 if
   not found)
 - Creates temp worktree (don't touch operator's primary checkout per
-  Aaron's B-0751 SHARED-VIEW discipline)
+  Aaron's 081KSE6WT0008QG0R003YYC9PV SHARED-VIEW discipline)
 - git rm -r the cluster-nodes/<host>/ subtree
 - Commits + pushes (branch: `otto-cli/deregister-<host>-<YYYYMMDD-HHMM>`)
 - Opens PR by default (safer; ArgoCD won't reconcile half-baked state);
@@ -300,7 +300,7 @@ daemon, grace-period policy, documentation).
 - 081KSGS9H0008QG0R000EPPQTR + 081KSGS9H0008QG0R000JVGZKG IDs next-free per git ls-tree origin/main
 
 Composes with iter-5.4.x arc (081KSGS9H0008QG0R0027HJZYH + 081KSGS9H0008QG0R0037H3W4T + 081KSGS9H0008QG0R002K93MWX), 081KSGS9H0008QG0R00153CQ8B
-zero-dev-machine end-state, B-0751 primary-checkout-is-SHARED-VIEW
+zero-dev-machine end-state, 081KSE6WT0008QG0R003YYC9PV primary-checkout-is-SHARED-VIEW
 discipline (deregister tool uses temp worktree).
 
 Co-Authored-By: Claude <noreply@anthropic.com>

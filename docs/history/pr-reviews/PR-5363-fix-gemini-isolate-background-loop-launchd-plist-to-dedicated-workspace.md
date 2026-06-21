@@ -29,7 +29,7 @@
 
 ## Summary
 
-Migrates Lior's background loop runner launchd daemon from Aaron's contested primary checkout to the isolated clone directory (`/Users/acehack/.local/share/zeta-lior-loop/Zeta`), aligning with Codex and Riven isolated agent loop architecture (B-0751).
+Migrates Lior's background loop runner launchd daemon from Aaron's contested primary checkout to the isolated clone directory (`/Users/acehack/.local/share/zeta-lior-loop/Zeta`), aligning with Codex and Riven isolated agent loop architecture (081KSE6WT0008QG0R003YYC9PV).
 
 ## Changes
 
@@ -91,7 +91,7 @@ skill(gemini): Isolate Lior background loop launchd plist to dedicate…
 Why: To migrate Lior's background loop runner launchd daemon from Aaron's
 contested primary checkout to the isolated clone directory
 (/Users/acehack/.local/share/zeta-lior-loop/Zeta), aligning with Codex and
-Riven isolated agent loop architecture (B-0751).
+Riven isolated agent loop architecture (081KSE6WT0008QG0R003YYC9PV).
 
 - .gemini/launchd/com.zeta.lior-loop.plist — Point ProgramArguments and WorkingDirectory to the isolated clone.
 

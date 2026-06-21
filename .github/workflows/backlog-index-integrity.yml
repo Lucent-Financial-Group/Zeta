@@ -81,6 +81,9 @@ jobs:
       - name: no-new-B-NNNN cutover guard (mint ZetaIds instead)
         run: bun src/Core.TypeScript/backlog/lint-no-new-bnnnn.ts
 
+      - name: no legacy B-NNNN prose refs (alias map is frozen history only)
+        run: bun src/Core.TypeScript/backlog/lint-no-b-refs.ts
+
       - name: verify per-row + index parity
         shell: bash
         run: |

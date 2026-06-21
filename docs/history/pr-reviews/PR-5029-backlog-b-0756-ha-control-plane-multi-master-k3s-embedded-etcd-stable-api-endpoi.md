@@ -29,7 +29,7 @@
 
 ## Summary
 
-Backlog row captured mid-B-0754-v1 session: Aaron asked "if we support mutiple control plane nodes when i have two or more how is etcd involved?".
+Backlog row captured mid-081KSGS9H0008QG0R002T3BJ2R-v1 session: Aaron asked "if we support mutiple control plane nodes when i have two or more how is etcd involved?".
 
 Architecture target: 1/3/5/7 odd-count control-plane HA via k3s embedded etcd raft quorum, with stable API endpoint via DNS round-robin (v1) or kube-vip/keepalived virtual IP (v2). Single-control-plane stays as easy default.
 
@@ -45,7 +45,7 @@ Even-count refusal at config-time (2/4/6 control-planes split-brain on partition
 
 ## Composes with
 
-- B-0754 (zero-typing first-boot — needs 'h' / 'j' keystroke options when HA mode is opted in)
+- 081KSGS9H0008QG0R002T3BJ2R (zero-typing first-boot — needs 'h' / 'j' keystroke options when HA mode is opted in)
 - 081KSE6WT0008QG0R003612WGJ (role taxonomy expansion)
 
 ## Test plan
@@ -126,14 +126,14 @@ backlog(081KSE6WT0008QG0R001NG9JZH): HA control-plane — multi-master k3s embed
 
 …orum + stable API endpoint
 
-Mid-B-0754-v1 conversation: Aaron asked 'if we support mutiple
+Mid-081KSGS9H0008QG0R002T3BJ2R-v1 conversation: Aaron asked 'if we support mutiple
 control plane nodes when i have two or more how is etcd involved?'.
 This row captures the architecture work to enable 1/3/5/7 odd-count
 control-plane HA via k3s embedded etcd raft quorum + stable API
 endpoint via DNS round-robin (v1) or kube-vip/keepalived virtual IP
 (v2). Single-control-plane stays as easy default.
 
-Composes with B-0754 (zero-typing first-boot prompt needs ha-init /
+Composes with 081KSGS9H0008QG0R002T3BJ2R (zero-typing first-boot prompt needs ha-init /
 ha-join options) + 081KSE6WT0008QG0R003612WGJ (role taxonomy expansion).
 
 Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>

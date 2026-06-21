@@ -11,8 +11,8 @@ depends_on:
   - 081KSE6WT0008QG0R001H3DA90
   - 081KSE6WT0008QG0R0018WZ7TH
 composes_with:
-  - B-0741
-  - B-0747
+  - 081KSE6WT0008QG0R002CC6314
+  - 081KSE6WT0008QG0R003D199HE
   - 081KSE6WT0008QG0R000WVYAJ2
   - 081KSE6WT0008QG0R0009YYNP4
   - 081KSE6WT0008QG0R00063R6HB
@@ -80,7 +80,7 @@ standards:
 |---|---|---|
 | **F# namespace** (per 081KSE6WT0008QG0R001H3DA90 + 081KSE6WT0008QG0R0018WZ7TH) | F# `namespace` declaration; per-type registration; per-namespace consensus strictness | Same identifier as K8s + ontology |
 | **Kubernetes namespace** | k8s namespace for resources (Pods, Services, ConfigMaps, etc.) | Same identifier; k8s namespace name = F# namespace name |
-| **Ontology namespace** (per B-0741) | Vocabulary scope for ontology translation | Same identifier; ontology namespace name = F# + K8s namespace name |
+| **Ontology namespace** (per 081KSE6WT0008QG0R002CC6314) | Vocabulary scope for ontology translation | Same identifier; ontology namespace name = F# + K8s namespace name |
 
 Operator passes an experiment-ID header (OTel-style trace ID
 analog) → request routes to the namespace that matches the
@@ -270,9 +270,9 @@ curl https://api.zeta.local/foo \
 ## Composes with
 
 - 081KRFA460008QG0R0018SN61J — F# fork for AI safety (substrate base)
-- B-0741 — ontology negotiation (per-namespace vocabulary
+- 081KSE6WT0008QG0R002CC6314 — ontology negotiation (per-namespace vocabulary
   scope)
-- B-0747 — git-native per-machine state (per-branch namespace
+- 081KSE6WT0008QG0R003D199HE — git-native per-machine state (per-branch namespace
   auto-creation via Argo CD ApplicationSet)
 - 081KSE6WT0008QG0R000WVYAJ2 — operator-in-the-negotiation-high-seat (Cilium /
   Istio / Gateway API all swappable per operator preference)

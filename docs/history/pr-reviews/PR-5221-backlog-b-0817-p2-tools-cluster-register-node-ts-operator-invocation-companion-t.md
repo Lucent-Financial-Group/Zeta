@@ -132,7 +132,7 @@ Two modes:
   pre-composed yaml; tool validates + commits + pushes
 
 Mirrors deregister-node.ts shape:
-- Temp worktree (no operator-checkout-touch per B-0751)
+- Temp worktree (no operator-checkout-touch per 081KSE6WT0008QG0R003YYC9PV)
 - DNS-label hostname validation
 - --reason text in commit + PR
 - Branch prefix 'register/' (NOT 'otto-cli/' per Copilot P2 finding

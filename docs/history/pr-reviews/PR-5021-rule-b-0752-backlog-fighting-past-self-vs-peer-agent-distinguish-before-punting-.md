@@ -29,9 +29,9 @@
 
 Aaron 2026-05-25 Vera-anchor: 'you don't do like vera and just leave it unfixed cause you assume it's someone elses issues'.
 
-Closes today's agent-substrate-discipline cluster (081KSE6WT0008QG0R003YYC9PV + B-0751 + 081KSE6WT0008QG0R000E05579):
+Closes today's agent-substrate-discipline cluster (081KSE6WT0008QG0R003YYC9PV + 081KSE6WT0008QG0R003YYC9PV + 081KSE6WT0008QG0R000E05579):
 - 081KSE6WT0008QG0R003YYC9PV: clean up after yourself
-- B-0751: agents have own clones; cross-agent contention eliminated
+- 081KSE6WT0008QG0R003YYC9PV: agents have own clones; cross-agent contention eliminated
 - 081KSE6WT0008QG0R000E05579 (this): distinguish own vs peer; don't silent-punt
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
@@ -324,12 +324,12 @@ because I silent-punted on my own substrate.
 Today's agent-substrate-discipline cluster (closes the 2026-05-25
 inflection):
 - 081KSE6WT0008QG0R003YYC9PV: clean up after yourself
-- B-0751: agents have own clones; cross-agent contention eliminated at
+- 081KSE6WT0008QG0R003YYC9PV: agents have own clones; cross-agent contention eliminated at
   architecture level
 - 081KSE6WT0008QG0R000E05579 (this): distinguish own vs peer substrate; don't silent-punt;
   fix yours; coordinate on theirs
 
-Composes with 081KSE6WT0008QG0R003YYC9PV (sibling cleanup discipline) + B-0751 (per-clone
+Composes with 081KSE6WT0008QG0R003YYC9PV (sibling cleanup discipline) + 081KSE6WT0008QG0R003YYC9PV (per-clone
 ownership semantics) + claim-acquire (force-remove guard authorization
 model clarified) + peer-call-infrastructure (bus envelope coordination)
 + agent-roster-reference-card (canonical identity prefixes).

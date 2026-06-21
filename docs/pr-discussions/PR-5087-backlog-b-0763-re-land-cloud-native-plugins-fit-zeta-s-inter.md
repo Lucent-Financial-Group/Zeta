@@ -68,7 +68,7 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated 3 c
 
 **@copilot-pull-request-reviewer** (2026-05-26T04:32:29Z):
 
-`depends_on` / `composes_with` references include IDs that don’t appear to exist as backlog rows anywhere under `docs/backlog/**` (e.g., B-0741, B-0744, B-0749, B-0754). This makes the dependency/composition graph non-resolvable and will break any future strict-lint of these fields. Either add the missing row files (with matching `id:`) or update these references to the correct existing backlog IDs.
+`depends_on` / `composes_with` references include IDs that don’t appear to exist as backlog rows anywhere under `docs/backlog/**` (e.g., 081KSE6WT0008QG0R002CC6314, 081KSE6WT0008QG0R000SH6E0R, 081KSE6WT0008QG0R001RG4FXD, 081KSGS9H0008QG0R002T3BJ2R). This makes the dependency/composition graph non-resolvable and will break any future strict-lint of these fields. Either add the missing row files (with matching `id:`) or update these references to the correct existing backlog IDs.
 
 ### Thread 2: docs/backlog/P2/081KSE6WT0008QG0R000WVYAJ2-cloud-native-plugins-fit-zeta-shape-not-vice-versa-negotiation-high-seat-vendor-swap-aaron-2026-05-25.md:62 (resolved)
 
@@ -110,7 +110,7 @@ P1: The acceptance checklist calls out “PROVISIONING.md updated” but there i
 
 **@copilot-pull-request-reviewer** (2026-05-26T04:51:23Z):
 
-P1: The `composes_with` frontmatter list is incomplete relative to the later “## Composes with” section (e.g., B-0741/B-0744/B-0749/B-0754 are listed in the body but not in frontmatter). Please sync these so tooling/graph views based on frontmatter don’t drift from the narrative list.
+P1: The `composes_with` frontmatter list is incomplete relative to the later “## Composes with” section (e.g., 081KSE6WT0008QG0R002CC6314/081KSE6WT0008QG0R000SH6E0R/081KSE6WT0008QG0R001RG4FXD/081KSGS9H0008QG0R002T3BJ2R are listed in the body but not in frontmatter). Please sync these so tooling/graph views based on frontmatter don’t drift from the narrative list.
 
 ### Thread 9: docs/backlog/P2/081KSE6WT0008QG0R000WVYAJ2-cloud-native-plugins-fit-zeta-shape-not-vice-versa-negotiation-high-seat-vendor-swap-aaron-2026-05-25.md:73 (resolved)
 

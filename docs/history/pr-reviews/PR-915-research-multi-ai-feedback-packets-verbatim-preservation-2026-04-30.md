@@ -1165,7 +1165,7 @@ verbatim:
    (affirmation-substrate parenting personal-info still in canon;
    minimal-tick spam needs mechanical fix not discipline reminder),
    two Significant flags (substrate production rate extreme;
-   B-0111 false-start search-first failure), two Smaller flags
+   081KDVM0HX008QG0R000HV5TPT false-start search-first failure), two Smaller flags
    (post-merge verification language overpromises; AceHack three-
    source drift reduced not eliminated). Plus deeper architectural
    critique: "loop has substrate-as-output not substrate-as-

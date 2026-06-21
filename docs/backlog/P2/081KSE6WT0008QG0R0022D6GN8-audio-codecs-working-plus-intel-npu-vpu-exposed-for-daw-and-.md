@@ -8,7 +8,7 @@ ask: aaron 2026-05-25
 created: 2026-05-25
 last_updated: 2026-05-25
 depends_on:
-  - B-0754
+  - 081KSGS9H0008QG0R002T3BJ2R
 composes_with:
   - 081KSE6WT0008QG0R003612WGJ
   - 081KSE6WT0008QG0R003G0Y62D
@@ -25,7 +25,7 @@ Aaron 2026-05-25 mid-iter-3-prep, extending the audio-firmware
 cleanup scope: *"i'd like the sound codecs workikng and npus for
 use like by daw and others."*
 
-B-0754 iter-3 PR (#5057) bundles `hardware.enableRedistributableFirmware = true`
+081KSGS9H0008QG0R002T3BJ2R iter-3 PR (#5057) bundles `hardware.enableRedistributableFirmware = true`
 into the installer ISO, which silences the Intel SoF `ASoC: failed
 to instantiate card -2` boot-time warning by giving the firmware
 probe what it needs. But that's only the FIRMWARE LAYER. To
@@ -126,7 +126,7 @@ hardware is present (lspci detection at install time).
       is also a cluster member)
 - [ ] flake.nix `nixosConfigurations.workstation = mkSystem
       { modules = [ ... ]; };` entry
-- [ ] B-0754 v1 role keystroke prompt extended: add 'k' for
+- [ ] 081KSGS9H0008QG0R002T3BJ2R v1 role keystroke prompt extended: add 'k' for
       workstation (composes with 081KSE6WT0008QG0R003612WGJ role taxonomy
       expansion); other role options unchanged
 - [ ] Existing roles (`control-plane`, `worker-gpu`) get
@@ -206,7 +206,7 @@ sub-rows when those operators show up.
 
 ## Composes with
 
-- B-0754 — installer ISO (the iter-3 firmware fix is the
+- 081KSGS9H0008QG0R002T3BJ2R — installer ISO (the iter-3 firmware fix is the
   prerequisite this row builds on)
 - 081KSE6WT0008QG0R003612WGJ — role taxonomy expansion (workstation role lands here)
 - 081KSE6WT0008QG0R003G0Y62D — first-time-CLI-user persona (DAW operators are a

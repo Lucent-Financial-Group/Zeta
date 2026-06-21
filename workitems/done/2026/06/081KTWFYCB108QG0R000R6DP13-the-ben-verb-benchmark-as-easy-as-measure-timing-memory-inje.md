@@ -17,7 +17,7 @@ composes_with: []
      STATE = this folder; completion moves the file to workitems/done/YYYY/MM/.
      Identity is the zetaid prefix — resolve cross-refs by `081KTWFYCB108QG0R000R6DP13-*.md` glob. -->
 
-Migrated from the accidental legacy `B-1039` row so the item lives on the current
+Migrated from the accidental legacy `081KTSZN10008QG0R001F0B5A6` row so the item lives on the current
 ZetaId workitem surface instead of extending the frozen sequential backlog.
 
 Owner note: open; slice 2 of 081KTSZN10008QG0R002J0GE0Z's framework; pairs with Naledi's bench lane.
@@ -141,5 +141,5 @@ cases AND named errors, the IbltReconcile Partial blade). BenchmarkDotNet 0.15.8
 ONLY (same placement as Infer.NET); its child-process methodology is glass-side by design; the
 in-process Dry adapter is wired but Skip-marked (heavyweight for the suite — manual lane). Live
 proof: the alloc meter drove a discovered iblt-build case across a 16× ladder and Ben.infer named
-Linear. B-1039's named slices are now all landed or consciously closed (wall-in-room cancelled by
+Linear. 081KTSZN10008QG0R001F0B5A6's named slices are now all landed or consciously closed (wall-in-room cancelled by
 the glass-side ruling).

@@ -1,6 +1,6 @@
 ---
 pr_number: 5133
-title: "backlog(081KSE6WT0008QG0R002CC6314): re-land of B-0741 (closed prematurely in stale-PR triage) \u2014 ontology+category negotiation; load-bearing for iter-7 (081KSGS9H0008QG0R001Y9FB62)"
+title: "backlog(081KSE6WT0008QG0R002CC6314): re-land of 081KSE6WT0008QG0R002CC6314 (closed prematurely in stale-PR triage) \u2014 ontology+category negotiation; load-bearing for iter-7 (081KSGS9H0008QG0R001Y9FB62)"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-26T08:40:24Z"
@@ -12,26 +12,26 @@ archived_at: "2026-05-26T12:13:12Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5133: backlog(081KSE6WT0008QG0R002CC6314): re-land of B-0741 (closed prematurely in stale-PR triage) — ontology+category negotiation; load-bearing for iter-7 (081KSGS9H0008QG0R001Y9FB62)
+# PR #5133: backlog(081KSE6WT0008QG0R002CC6314): re-land of 081KSE6WT0008QG0R002CC6314 (closed prematurely in stale-PR triage) — ontology+category negotiation; load-bearing for iter-7 (081KSGS9H0008QG0R001Y9FB62)
 
 ## PR description
 
 ## Summary
 
-Re-land of substrate originally filed as **B-0741** via [PR #5003](https://github.com/Lucent-Financial-Group/Zeta/pull/5003) on 2026-05-25. I closed it earlier in this session's stale-PR triage as Tier 3 (DIRTY-conflict); close-comment named the cherry-pick re-land path explicitly. This PR is that re-land.
+Re-land of substrate originally filed as **081KSE6WT0008QG0R002CC6314** via [PR #5003](https://github.com/Lucent-Financial-Group/Zeta/pull/5003) on 2026-05-25. I closed it earlier in this session's stale-PR triage as Tier 3 (DIRTY-conflict); close-comment named the cherry-pick re-land path explicitly. This PR is that re-land.
 
-Renumbered to **081KSE6WT0008QG0R002CC6314** because B-0741 number remains taken on main (same pattern as #5132 renumbered peer Otto's classifier-bypass rows 081KSGS9H0008QG0R001EKTS5A-0803 → 081KSGS9H0008QG0R001K8P0FJ-0810 today).
+Renumbered to **081KSE6WT0008QG0R002CC6314** because 081KSE6WT0008QG0R002CC6314 number remains taken on main (same pattern as #5132 renumbered peer Otto's classifier-bypass rows 081KSGS9H0008QG0R001EKTS5A-0803 → 081KSGS9H0008QG0R001K8P0FJ-0810 today).
 
 ## Substrate-inventory pass (per `.claude/rules/verify-existing-substrate-before-authoring.md` landed via #5131)
 
-Topic: `B-0741`, ontology negotiation, fork-negotiation, AI-skills+hats federation
+Topic: `081KSE6WT0008QG0R002CC6314`, ontology negotiation, fork-negotiation, AI-skills+hats federation
 Searched surfaces:
 - `docs/agendas/` → ace-package-manager AGENDA includes hats + multi-oracle BFT
 - `docs/trajectories/` → ace-package-manager-skill-crystallization-pipeline
-- `docs/backlog/` → 10+ existing B-0741 cross-references; 081KSE6WT0008QG0R000YYH3DY sibling on hats-as-negotiated-fork-structure
+- `docs/backlog/` → 10+ existing 081KSE6WT0008QG0R002CC6314 cross-references; 081KSE6WT0008QG0R000YYH3DY sibling on hats-as-negotiated-fork-structure
 - `.claude/rules/` → non-coercion-invariant + tonal-momentum compose at related scope
 - `memory/` → ace + agora + agents-skills substrate
-- `docs/research/` → 3 files reference B-0741
+- `docs/research/` → 3 files reference 081KSE6WT0008QG0R002CC6314
 
 Conclusion: substrate is REFERENCED (not just orphan); re-land closes dangling cross-refs.
 
@@ -39,7 +39,7 @@ Authoring action: cherry-pick + renumber + add re-land-context section.
 
 ## Why this matters now
 
-Per the maintainer 2026-05-26 catch on iter-7 (081KSGS9H0008QG0R001Y9FB62): *"i'm assuming you have the hat / fork negoation for ace too"*. Cross-fork ontology negotiation is the third layer of every `ace install <pkg>` action per 081KSGS9H0008QG0R001Y9FB62's architectural integration section. 081KSE6WT0008QG0R002CC6314 (= the original B-0741) substrate is load-bearing for that.
+Per the maintainer 2026-05-26 catch on iter-7 (081KSGS9H0008QG0R001Y9FB62): *"i'm assuming you have the hat / fork negoation for ace too"*. Cross-fork ontology negotiation is the third layer of every `ace install <pkg>` action per 081KSGS9H0008QG0R001Y9FB62's architectural integration section. 081KSE6WT0008QG0R002CC6314 (= the original 081KSE6WT0008QG0R002CC6314) substrate is load-bearing for that.
 
 ## Test plan
 
@@ -56,7 +56,7 @@ Per the maintainer 2026-05-26 catch on iter-7 (081KSGS9H0008QG0R001Y9FB62): *"i'
 
 ## Pull request overview
 
-Re-lands the previously closed B-0741 backlog substrate as a new P2 row (081KSE6WT0008QG0R002CC6314) to restore/resolve existing cross-references and keep the generated backlog index in sync.
+Re-lands the previously closed 081KSE6WT0008QG0R002CC6314 backlog substrate as a new P2 row (081KSE6WT0008QG0R002CC6314) to restore/resolve existing cross-references and keep the generated backlog index in sync.
 
 **Changes:**
 - Added new backlog row file `081KSE6WT0008QG0R002CC6314` (re-land context + original substrate content).

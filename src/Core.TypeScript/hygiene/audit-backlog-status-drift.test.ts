@@ -269,7 +269,7 @@ describe("findDriftCandidates", () => {
     test("does NOT flag rows with empty primary-artifact lists", () => {
         const rows: readonly BacklogRow[] = [
             {
-                id: "B-9999",
+                id: "081KED9T0X008QG0R003SZN0FB",
                 path: "fake",
                 status: "open",
                 primaryArtifacts: [],

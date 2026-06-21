@@ -12,7 +12,7 @@ depends_on:
 composes_with:
   - 081KSGS9H0008QG0R002F04ECB
   - 081KRW63S0008QG0R003TX8MG5
-  - B-0751
+  - 081KSE6WT0008QG0R003YYC9PV
   - 081KSGS9H0008QG0R0027HJZYH
   - 081KSGS9H0008QG0R002K93MWX
   - 081KSGS9H0008QG0R00120EEHM
@@ -80,10 +80,10 @@ Per Aaron's *"i can interactive login like gh if that works"*:
 
 - **081KSGS9H0008QG0R002T0XQ50** (each Zeta AI gets own GitHub identity) — this row IS the first concrete substrate for 081KSGS9H0008QG0R002T0XQ50; node-local Claude IS the first AI that needs the post-cluster identity
 - **081KSGS9H0008QG0R0027HJZYH** (iter-5.4.0 homelab gh-auth-login) — same interactive-login pattern at install time; claude login is the post-install operator-interactive equivalent
-- **B-0795 / 081KSGS9H0008QG0R0037H3W4T / 081KSGS9H0008QG0R002K93MWX** (iter-5.4.1 self-registration) — the PR this agent stewards
+- **081KDWV501008QG0R003PCVDHM / 081KSGS9H0008QG0R0037H3W4T / 081KSGS9H0008QG0R002K93MWX** (iter-5.4.1 self-registration) — the PR this agent stewards
 - **081KSGS9H0008QG0R002F04ECB** (Twilio phone support substrate AI picks up call fixes cluster) — sibling at cluster-AI-support scope; Twilio version is voice-interface, this row is GitHub-PR-interface; same shape
 - **081KRW63S0008QG0R003TX8MG5** (Knights Guild + Constitution-Class) — ratification path for the agent's scope-bounds
-- **B-0751** (per-agent isolated clones) — sibling at clone-scope; node-local Claude needs its own clone per the same architecture
+- **081KSE6WT0008QG0R003YYC9PV** (per-agent isolated clones) — sibling at clone-scope; node-local Claude needs its own clone per the same architecture
 - **081KSGS9H0008QG0R00120EEHM** (iter-5.4 install bug cluster) — Bug 5 (gh in systemPackages) is prerequisite; claude-code addition is the parallel for this row
 - `.claude/rules/persistence-choice-architecture-for-zeta-ais.md` — the node-local Claude is a chosen-persistence AI; the cluster IS its persistence-substrate
 - `.claude/rules/non-coercion-invariant.md` HC-8 — operator authorizes scope; agent operates within authorized bounds; agent withdraws cleanly on operator request

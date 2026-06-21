@@ -10,8 +10,8 @@ last_updated: 2026-05-25
 depends_on:
   - 081KSE6WT0008QG0R00063R6HB
 composes_with:
-  - B-0741
-  - B-0754
+  - 081KSE6WT0008QG0R002CC6314
+  - 081KSGS9H0008QG0R002T3BJ2R
   - 081KSE6WT0008QG0R003G0Y62D
   - 081KSE6WT0008QG0R0015ZF2G6
   - 081KSE6WT0008QG0R003FG3E8R
@@ -85,7 +85,7 @@ playbook converges on.
 |---|---|
 | **Vertical** | AI cluster infrastructure (specifically the AI-cluster substrate where Zeta is pioneer — modern declarative AI clusters with GPU + storage + scheduling + observability + identity + repair-tool semantics) |
 | **Existing control structures** | k8s control plane, GitOps reconciliation (ArgoCD/Flux), CNCF ecosystem (KEDA/DAPR/OPA/Crossplane/etc.), cloud-provider APIs (AWS/GCP/Azure/Cloudflare/etc.), hardware vendor SDKs (NVIDIA/AMD/Intel) |
-| **Control layer Zeta builds** | Operator-facing interfaces + reference architecture + zero-typing install (B-0754) + USB-as-repair-tool (B-0760) + telemetry flywheel (081KSE6WT0008QG0R003FG3E8R) + Zeta-native scheduler (081KSE6WT0008QG0R0016CEE2Z) + binary-compatible Zeta-native k8s impls (081KSE6WT0008QG0R00049EFBD) |
+| **Control layer Zeta builds** | Operator-facing interfaces + reference architecture + zero-typing install (081KSGS9H0008QG0R002T3BJ2R) + USB-as-repair-tool (081KSE6WT0008QG0R003WG0V6P) + telemetry flywheel (081KSE6WT0008QG0R003FG3E8R) + Zeta-native scheduler (081KSE6WT0008QG0R0016CEE2Z) + binary-compatible Zeta-native k8s impls (081KSE6WT0008QG0R00049EFBD) |
 | **Capital flows the control layer gates** | Compute spend (GPU $/hour), storage spend, network egress, model-API calls, identity/auth costs, observability SaaS spend, support contracts, training/inference spot/reserved purchases, multi-region orchestration |
 | **Compound expansions** | Once operator runs Zeta cluster substrate, adjacent product surfaces: managed AI-workload marketplace, optimization advisor (081KSE6WT0008QG0R003FG3E8R telemetry-driven), vendor-cost arbitrage (081KSE6WT0008QG0R000WVYAJ2 swap mechanism), DST replay services, model-locality-aware CDN, compliance/governance automation |
 
@@ -99,7 +99,7 @@ The standard VC meta-playbook converges on EXTRACTION:
 | Lock vendors out | Exclusive marketplace contracts; preferred-vendor positioning | Vendor-swap preserved per 081KSE6WT0008QG0R000WVYAJ2 + binary-compat per 081KSE6WT0008QG0R00049EFBD → every vendor competes |
 | Lock operators in | Switching cost = rewrite-application; data export crippled | Standards-first per 081KSE6WT0008QG0R00063R6HB (uses k8s CRDs + Helm + OCI everyone already speaks); switching cost ≈ 0 |
 | Hoard data asymmetrically | Operator's data becomes vendor's strategic asset | Telemetry is opt-in per 081KSE6WT0008QG0R003FG3E8R; collected data published openly; no asymmetry |
-| Capture upside; socialize downside | Vendor takes growth; operators absorb risk + failure cost | Failure-tolerance built in (B-0760 USB-as-repair-tool); operator carries upside via lower TCO |
+| Capture upside; socialize downside | Vendor takes growth; operators absorb risk + failure cost | Failure-tolerance built in (081KSE6WT0008QG0R003WG0V6P USB-as-repair-tool); operator carries upside via lower TCO |
 | Hide pricing | Quote-based; opaque rate cards; sales-touch required | Cost-comparison surface mandated per 081KSE6WT0008QG0R000WVYAJ2 acceptance |
 | Build moat via lock-in | Switching cost moat | Moat via composition coherence + open reference + telemetry flywheel + AI-trainable substrate |
 
@@ -239,9 +239,9 @@ The composed strategic substrate from this session:
 | Ecosystem leverage | 081KSE6WT0008QG0R0009YYNP4 P2 | CNCF projects as force multipliers behind interfaces |
 | Reference target | 081KSE6WT0008QG0R0015ZF2G6 P2 | Open AI-trainable cluster reference + ARC-AGI benchmark |
 | UX bar | 081KSE6WT0008QG0R003G0Y62D P2 | First-time-CLI-user persona + 3-node prod-ready inflection |
-| Substrate primitive | B-0754 P2 | Zero-typing cluster install (iteration N in progress) |
-| Operational resilience | B-0760 P2 | USB as universal repair tool; zero-disruption at 3+ nodes |
-| Edge-case coverage | B-0758 P3 | unRAID-style USB-persistent-OS / zero-disk |
+| Substrate primitive | 081KSGS9H0008QG0R002T3BJ2R P2 | Zero-typing cluster install (iteration N in progress) |
+| Operational resilience | 081KSE6WT0008QG0R003WG0V6P P2 | USB as universal repair tool; zero-disruption at 3+ nodes |
+| Edge-case coverage | 081KSE6WT0008QG0R00021PPX1 P3 | unRAID-style USB-persistent-OS / zero-disk |
 
 This row is the **load-bearing strategic context** that explains
 WHY the rest of the cluster fits together as one coherent
@@ -252,10 +252,10 @@ substrate-honest execution of a well-tested commercial pattern.
 
 ## Composes with
 
-- B-0741 — ontology negotiation (at standards layer per
+- 081KSE6WT0008QG0R002CC6314 — ontology negotiation (at standards layer per
   ServiceTitan + Itron; substrate-honest because every operator
   using any standard benefits)
-- B-0754 — zero-typing first-boot (the operator-facing control
+- 081KSGS9H0008QG0R002T3BJ2R — zero-typing first-boot (the operator-facing control
   layer entry point)
 - 081KSE6WT0008QG0R003G0Y62D — first-time-CLI-user persona (the adoption bet that
   makes the VC meta-playbook work at scale)

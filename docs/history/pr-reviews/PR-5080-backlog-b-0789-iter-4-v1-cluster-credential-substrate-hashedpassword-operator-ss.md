@@ -51,7 +51,7 @@ Rotate immediately on first tty1 login via `passwd zeta`. Hash format: sha512cry
 
 ## Composes with
 
-- B-0754 (iter-3 zero-typing USB install — iter-4 is the credential-substrate follow-on)
+- 081KSGS9H0008QG0R002T3BJ2R (iter-3 zero-typing USB install — iter-4 is the credential-substrate follow-on)
 - 081KSE6WT0008QG0R003G0Y62D (first-time-CLI-user persona)
 - 081KSE6WT0008QG0R0029S1D5Z (Comet Pro IP-KVM — local-console-with-password becomes load-bearing for the IP-KVM substrate)
 - 081KSE6WT0008QG0R002275NDE / 081KSE6WT0008QG0R000C18G5D (simplest-first discipline)

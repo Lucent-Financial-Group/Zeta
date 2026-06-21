@@ -27,7 +27,7 @@
 
 ## Description
 
-Aaron 2026-05-25 named the positioning today's cluster-install work has been building: a complete, open, modern, cloud-agnostic reference architecture AI systems can train on + benchmark against, like ARC-AGI for cluster infrastructure / DevOps. Composes with B-0754 / 081KSE6WT0008QG0R003612WGJ / 081KSE6WT0008QG0R001NG9JZH / 081KSE6WT0008QG0R000CV98PV / B-0758 / 081KSE6WT0008QG0R003G0Y62D / B-0760.
+Aaron 2026-05-25 named the positioning today's cluster-install work has been building: a complete, open, modern, cloud-agnostic reference architecture AI systems can train on + benchmark against, like ARC-AGI for cluster infrastructure / DevOps. Composes with 081KSGS9H0008QG0R002T3BJ2R / 081KSE6WT0008QG0R003612WGJ / 081KSE6WT0008QG0R001NG9JZH / 081KSE6WT0008QG0R000CV98PV / 081KSE6WT0008QG0R00021PPX1 / 081KSE6WT0008QG0R003G0Y62D / 081KSE6WT0008QG0R003WG0V6P.
 
 ## Outcome
 
@@ -98,7 +98,7 @@ Aaron 2026-05-25 named the positioning today's cluster-install work has been bui
 - **`Copilot` (bot)** at 2026-05-26T00:06:38Z on `docs/backlog/P2/081KSE6WT0008QG0R0015ZF2G6-zeta-cluster-as-open-source-reference-architecture-for-ai-to-train-on-and-compete-on-arc-agi-style-benchmark-aaron-2026-05-25.md`:178 (association: NONE)
 
   <pre>
-  P1: This text treats B-0749 as an existing backlog row, but there is no `id: B-0749` row file in `docs/backlog/**` (and it’s not in `docs/BACKLOG.md`). Either file B-0749 in this PR (or update the reference to the correct existing ID), or reword to avoid implying it already exists.
+  P1: This text treats 081KSE6WT0008QG0R001RG4FXD as an existing backlog row, but there is no `id: 081KSE6WT0008QG0R001RG4FXD` row file in `docs/backlog/**` (and it’s not in `docs/BACKLOG.md`). Either file 081KSE6WT0008QG0R001RG4FXD in this PR (or update the reference to the correct existing ID), or reword to avoid implying it already exists.
 
   </pre>
 
@@ -113,7 +113,7 @@ Aaron 2026-05-25 named the positioning today's cluster-install work has been bui
 - **`Copilot` (bot)** at 2026-05-26T00:06:38Z on `docs/backlog/P2/081KSE6WT0008QG0R0015ZF2G6-zeta-cluster-as-open-source-reference-architecture-for-ai-to-train-on-and-compete-on-arc-agi-style-benchmark-aaron-2026-05-25.md`:58 (association: NONE)
 
   <pre>
-  P1: This references B-0743, but there is no `id: B-0743` backlog row file in the repo (and it’s not present in `docs/BACKLOG.md`). If this is meant to be a dependency/composition point, consider filing B-0743 (or updating to the correct existing ID) so the cross-reference graph stays navigable.
+  P1: This references 081KSE6WT0008QG0R003WW3YJQ, but there is no `id: 081KSE6WT0008QG0R003WW3YJQ` backlog row file in the repo (and it’s not present in `docs/BACKLOG.md`). If this is meant to be a dependency/composition point, consider filing 081KSE6WT0008QG0R003WW3YJQ (or updating to the correct existing ID) so the cross-reference graph stays navigable.
 
   </pre>
 
@@ -145,8 +145,8 @@ benchmark against. ARC-AGI parallel — public benchmark scenarios
 hardware-swap, version-upgrade), open scoring, reproducible test
 environment, public leaderboard, AI systems compete to improve.
 
-Composes with B-0754 / 081KSE6WT0008QG0R003612WGJ / 081KSE6WT0008QG0R001NG9JZH / 081KSE6WT0008QG0R000CV98PV / B-0758 / 081KSE6WT0008QG0R003G0Y62D
-/ B-0760 — the full cluster-install substrate cluster. 081KSE6WT0008QG0R003G0Y62D is
+Composes with 081KSGS9H0008QG0R002T3BJ2R / 081KSE6WT0008QG0R003612WGJ / 081KSE6WT0008QG0R001NG9JZH / 081KSE6WT0008QG0R000CV98PV / 081KSE6WT0008QG0R00021PPX1 / 081KSE6WT0008QG0R003G0Y62D
+/ 081KSE6WT0008QG0R003WG0V6P — the full cluster-install substrate cluster. 081KSE6WT0008QG0R003G0Y62D is
 the human-facing persona half; 081KSE6WT0008QG0R0015ZF2G6 is the AI-facing
 benchmark-substrate half.
 

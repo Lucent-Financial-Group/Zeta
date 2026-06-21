@@ -28,7 +28,7 @@
 ## Description
 
 ## Summary
-- remove the not-yet-main-visible B-0751 row from 081KSE6WT0008QG0R003YYC9PV frontmatter graph links while keeping PR #5019 as prose substrate
+- remove the not-yet-main-visible 081KSE6WT0008QG0R003YYC9PV row from 081KSE6WT0008QG0R003YYC9PV frontmatter graph links while keeping PR #5019 as prose substrate
 - make the current-state worktree hygiene rule use role-reference prose for the empirical quote
 - align the main-branch detector comment with its OK-on-success command output
 

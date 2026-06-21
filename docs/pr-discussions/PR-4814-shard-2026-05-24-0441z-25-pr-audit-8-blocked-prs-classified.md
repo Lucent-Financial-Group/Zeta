@@ -29,7 +29,7 @@ Otto-CLI background-worker tick at 04:41Z. Polled 25 open PRs via `poll-pr-gate-
 | C | 4733, 4737 | `feedback_*.md` missing required `**Why:**`/`**How to apply:**` markers |
 | D | 4768, 4773 | `/Users/acehack` hardcoded in launchd plist + malformed `launchctl bootout` |
 | E | 4780 | Tautological FsCheck residuation property; missing RHS check; non-independent oracle |
-| F | 4769 | B-0700 backlog row added but per-row file missing (broken link) |
+| F | 4769 | 081KRSKQ20008QG0R00367828S backlog row added but per-row file missing (broken link) |
 
 ## Lane disposition
 

@@ -11,9 +11,9 @@ depends_on:
   - 081KSE6WT0008QG0R00049EFBD
 composes_with:
   - 081KRFA460008QG0R0018SN61J
-  - B-0741
-  - B-0747
-  - B-0754
+  - 081KSE6WT0008QG0R002CC6314
+  - 081KSE6WT0008QG0R003D199HE
+  - 081KSGS9H0008QG0R002T3BJ2R
   - 081KSE6WT0008QG0R0015ZF2G6
   - 081KSE6WT0008QG0R003FG3E8R
   - 081KSE6WT0008QG0R000WVYAJ2
@@ -143,7 +143,7 @@ compensate for.
       tolerations, topologySpreadConstraints, priority classes,
       preemption) work identically to kube-scheduler
 - [ ] First AI-aware plugin: GPU topology awareness
-      (lstopo-based; reads hwloc inventory per B-0754 substrate
+      (lstopo-based; reads hwloc inventory per 081KSGS9H0008QG0R002T3BJ2R substrate
       already on installer ISO) — multi-GPU workloads
       co-located on NVLink-connected GPUs
 - [ ] Second AI-aware plugin: model-locality awareness
@@ -203,12 +203,12 @@ profiling demands it.
 ## Composes with
 
 - 081KRFA460008QG0R0018SN61J — F# fork for AI safety (the substrate base)
-- B-0741 — ontology negotiation (scheduler hints carry across
+- 081KSE6WT0008QG0R002CC6314 — ontology negotiation (scheduler hints carry across
   ontologies; e.g., OpenAI's "model_id" vs Anthropic's
   "model_name" both fit the model-locality plugin)
-- B-0747 — git-native per-machine state (scheduler can read
+- 081KSE6WT0008QG0R003D199HE — git-native per-machine state (scheduler can read
   per-machine declared state to inform placement)
-- B-0754 — zero-typing first-boot (the install path includes
+- 081KSGS9H0008QG0R002T3BJ2R — zero-typing first-boot (the install path includes
   zeta-scheduler in the AI-cluster reference once it ships)
 - 081KSE6WT0008QG0R0015ZF2G6 — open reference architecture (scheduler is the first
   ARC-AGI benchmark scenario)

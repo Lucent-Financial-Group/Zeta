@@ -64,7 +64,7 @@ Follow-up: close #5062 with substrate-recoverable cross-link.
 - **`Copilot` (bot)** at 2026-05-26T05:09:48Z on `docs/backlog/P1/081KSE6WT0008QG0R002275NDE-simplest-first-plugin-sequence-wrapping-already-deployed-cluster-substrate-redis-nats-cockroach-temporal-orleans-opa-aaron-2026-05-25.md`:72 (association: NONE)
 
   <pre>
-  `B-0743` is referenced here, but there is no corresponding backlog row in `docs/backlog/**` (and it also does not appear in the generated `docs/BACKLOG.md`). This leaves the row with a broken cross-reference; either update this to the correct existing B-id or land the missing B-0743 row in the backlog so the reference resolves.
+  `081KSE6WT0008QG0R003WW3YJQ` is referenced here, but there is no corresponding backlog row in `docs/backlog/**` (and it also does not appear in the generated `docs/BACKLOG.md`). This leaves the row with a broken cross-reference; either update this to the correct existing B-id or land the missing 081KSE6WT0008QG0R003WW3YJQ row in the backlog so the reference resolves.
 
   </pre>
 
@@ -144,13 +144,13 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 **Message:**
 
 ```
-fix(081KSE6WT0008QG0R002275NDE): B-0743 → 081KSE6WT0008QG0R003WZAQKV — 'I execute, you fingerprint' lives at …
+fix(081KSE6WT0008QG0R002275NDE): 081KSE6WT0008QG0R003WW3YJQ → 081KSE6WT0008QG0R003WZAQKV — 'I execute, you fingerprint' lives at …
 
 …081KSE6WT0008QG0R003WZAQKV
 
 Empirical Copilot finding verified via grep: 'I execute, you fingerprint'
 concept lives in docs/backlog/P2/081KSE6WT0008QG0R003WZAQKV-zflash-touch-id-pam-plus-short-challenge-format-plus-iso-auto-discovery-i-execute-you-fingerprint-aaron-2026-05-25.md
-not B-0743. Likely a typo in original PR #5062.
+not 081KSE6WT0008QG0R003WW3YJQ. Likely a typo in original PR #5062.
 
 Co-Authored-By: Claude <noreply@anthropic.com>
 ```

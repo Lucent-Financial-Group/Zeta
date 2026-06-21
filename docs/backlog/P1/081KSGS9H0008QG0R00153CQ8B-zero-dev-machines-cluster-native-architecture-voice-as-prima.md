@@ -8,7 +8,7 @@ ask: aaron 2026-05-26
 created: 2026-05-26
 last_updated: 2026-05-26
 depends_on:
-  - B-0754
+  - 081KSGS9H0008QG0R002T3BJ2R
   - 081KSE6WT0008QG0R000RH1526
   - 081KSGS9H0008QG0R002T3BJ2R
 composes_with:
@@ -158,7 +158,7 @@ Without 081KSGS9H0008QG0R00153CQ8B named as the end-state target, each of those 
 
 ## Composes with substrate
 
-- **B-0754** — iter-3 USB install (depends_on; foundation)
+- **081KSGS9H0008QG0R002T3BJ2R** — iter-3 USB install (depends_on; foundation)
 - **081KSE6WT0008QG0R000RH1526** — Local Loop tier-3 substrate (cluster IS tier-3; 081KSGS9H0008QG0R00153CQ8B promotes it from "test target" to "primary work surface")
 - **081KSGS9H0008QG0R002T3BJ2R** — iter-4 SSH+password substrate + iter-5 cluster-write-back design (depends_on; foundation for cluster-as-PR-author)
 - **081KSE6WT0008QG0R003G0Y62D** — first-time-CLI-user persona BROADENED to homelab-persona (composes; voice operator = no-CLI operator)

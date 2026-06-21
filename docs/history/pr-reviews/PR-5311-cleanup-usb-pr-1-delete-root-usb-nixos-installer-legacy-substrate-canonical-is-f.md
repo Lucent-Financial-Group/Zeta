@@ -43,9 +43,9 @@ The root-level \`usb-nixos-installer/\` was the first installer substrate in the
 
 The canonical AI-cluster substrate at \`full-ai-cluster/usb-nixos-installer/\` supersedes it. The canonical version has the SAME content PLUS:
 - \`zeta-install.sh\` (zero-typing install helper)
-- \`zeta-first-boot.sh\` (first-boot service substrate per B-0754)
+- \`zeta-first-boot.sh\` (first-boot service substrate per 081KSGS9H0008QG0R002T3BJ2R)
 - \`flake.lock\` (reproducible build pin)
-- 290-line installer configuration.nix with hardware-firmware enable (B-0754 iter-3) + SSH-key + hashed-password substrate (081KSGS9H0008QG0R002T3BJ2R iter-4) + WiFi credential injection (081KSGS9H0008QG0R003V23XNZ iter-5)
+- 290-line installer configuration.nix with hardware-firmware enable (081KSGS9H0008QG0R002T3BJ2R iter-3) + SSH-key + hashed-password substrate (081KSGS9H0008QG0R002T3BJ2R iter-4) + WiFi credential injection (081KSGS9H0008QG0R003V23XNZ iter-5)
 - Larger module ecosystem in \`full-ai-cluster/nixos/modules/\`
 
 ## Why this deletion is safe (substrate-check pre-cleanup audit)

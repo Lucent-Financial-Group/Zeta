@@ -78,7 +78,7 @@ Plus specific cleanup commands (audit / per-worktree clean check / mass-remove s
 - GitHub Action that fires on PR merge
 - Identifies the branch + finds any local worktree pointing to that branch (across all agent machines via shared state mechanism)
 - Triggers cleanup (via bus envelope OR direct webhook) per-machine
-- Composes with 081KSE6WT0008QG0R002YBWBB1 Layer 1 provenance + B-0746 (GitHub PR mechanics lessons)
+- Composes with 081KSE6WT0008QG0R002YBWBB1 Layer 1 provenance + 081KSE6WT0008QG0R0025QPP05 (GitHub PR mechanics lessons)
 - Acceptance: PR merge → corresponding worktrees cleaned automatically within N hours
 
 ### Scope item 4 — Operator-checkout-path protection
@@ -102,7 +102,7 @@ Plus specific cleanup commands (audit / per-worktree clean check / mass-remove s
   pool primitive; PR #5019 per-agent clones supersede the shared-pool
   approach for new architecture work
 - **Operator's own worktree creation** — operator can always create worktrees anywhere; rule applies to agents only
-- **Automated branch deletion** — separate scope; depends on PR-mergedness + downstream dependencies (per B-0741 fork interop)
+- **Automated branch deletion** — separate scope; depends on PR-mergedness + downstream dependencies (per 081KSE6WT0008QG0R002CC6314 fork interop)
 - **Repo-level git config for worktree-pool defaults** — future scope; would require operator-side config buy-in
 
 ## Composes with .claude/rules/
@@ -123,7 +123,7 @@ Plus specific cleanup commands (audit / per-worktree clean check / mass-remove s
   in `composes_with` until its B-row exists on main
 - **081KSE6WT0008QG0R002YBWBB1** (leverage-class safety substrate) — Layer 1 provenance chain captures cleanup events
 - **081KSE6WT0008QG0R003WZAQKV** (zflash empirical anchor) — operator was trying to use zflash when the worktree mess blocked them; concrete pain
-- **B-0746** (GitHub force-push lesson) — related sibling failure mode at GitHub-state scope
+- **081KSE6WT0008QG0R0025QPP05** (GitHub force-push lesson) — related sibling failure mode at GitHub-state scope
 
 ## Empirical anchor — 2026-05-25 session
 

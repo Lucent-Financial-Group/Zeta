@@ -43,7 +43,7 @@ protection are never bypassed; the only sanctioned direct-push surface
 remains the `docs/agent-heartbeats/**` carve-out pending 081KQ3HBZ0008QG0R002ZPXAFQ
 branch-protection prerequisites.
 
-Supersedes the earlier "renumber 081KSNY2Z0008QG0R000ZNRFCE to B-0935" framing — no B-0935 row is
+Supersedes the earlier "renumber 081KSNY2Z0008QG0R000ZNRFCE to 081KSRGFP0008QG0R0029WD04S" framing — no 081KSRGFP0008QG0R0029WD04S row is
 created; the committed content is governed by 081KSRGFP0008QG0R000J9Y634. (081KSNY2Z0008QG0R000ZNRFCE remains the
 unrelated otel-trace-id row.)
 
@@ -145,7 +145,7 @@ Tests / build / linter green.
 - **`Copilot` (bot)** at 2026-05-30T00:11:06Z on `docs/DECISIONS/2026-05-29-monitoring-and-reducing-pr-review-friction.md`:5 (association: NONE)
 
   <pre>
-  The ADR's backlog pointer now targets 081KSRGFP0008QG0R000J9Y634, but 081KSRGFP0008QG0R000J9Y634 is the automated background review thread resolution row, while this PR title/description says the PR review friction monitoring row was renumbered to B-0935. I also found no B-0935 backlog row in docs/BACKLOG.md or docs/backlog/**, so the monitoring ADR is either pointing at the wrong row or the promised renumbered row is missing.
+  The ADR's backlog pointer now targets 081KSRGFP0008QG0R000J9Y634, but 081KSRGFP0008QG0R000J9Y634 is the automated background review thread resolution row, while this PR title/description says the PR review friction monitoring row was renumbered to 081KSRGFP0008QG0R0029WD04S. I also found no 081KSRGFP0008QG0R0029WD04S backlog row in docs/BACKLOG.md or docs/backlog/**, so the monitoring ADR is either pointing at the wrong row or the promised renumbered row is missing.
   </pre>
 
 ## Fix commits (touching thread paths)
@@ -182,15 +182,15 @@ Co-Authored-By: Gemini <noreply@google.com>
 **Message:**
 
 ```
-backlog(hygiene): Renumber backlog ID to B-0935 to resolve duplicates…
+backlog(hygiene): Renumber backlog ID to 081KSRGFP0008QG0R0029WD04S to resolve duplicates…
 
 … collision
 
-Renames the reactive PR friction monitoring backlog row from 081KSNY2Z0008QG0R000ZNRFCE to B-0935 to clear the duplicate-ID collision with the existing P2 OpenTelemetry trace composition row, updates all local references, and regenerates the backlog index.
+Renames the reactive PR friction monitoring backlog row from 081KSNY2Z0008QG0R000ZNRFCE to 081KSRGFP0008QG0R0029WD04S to clear the duplicate-ID collision with the existing P2 OpenTelemetry trace composition row, updates all local references, and regenerates the backlog index.
 
-- Renamed docs/backlog/P1/081KSNY2Z0008QG0R000ZNRFCE-reactive-pr-review-friction-monitoring-agentic-pipeline-aaron-2026-05-29.md -> docs/backlog/P1/B-0935-reactive-pr-review-friction-monitoring-agentic-pipeline-aaron-2026-05-29.md
-- Updated id and sub-row references inside docs/backlog/P1/B-0935-...
-- Updated Backlog reference to B-0935 in docs/DECISIONS/2026-05-29-monitoring-and-reducing-pr-review-friction.md
+- Renamed docs/backlog/P1/081KSNY2Z0008QG0R000ZNRFCE-reactive-pr-review-friction-monitoring-agentic-pipeline-aaron-2026-05-29.md -> docs/backlog/P1/081KSRGFP0008QG0R0029WD04S-reactive-pr-review-friction-monitoring-agentic-pipeline-aaron-2026-05-29.md
+- Updated id and sub-row references inside docs/backlog/P1/081KSRGFP0008QG0R0029WD04S-...
+- Updated Backlog reference to 081KSRGFP0008QG0R0029WD04S in docs/DECISIONS/2026-05-29-monitoring-and-reducing-pr-review-friction.md
 - Regenerated docs/BACKLOG.md using tools/backlog/generate-index.ts
 
 Co-Authored-By: Gemini <noreply@google.com>
@@ -278,9 +278,9 @@ merge(main): resolve friction-report conflict — adopt 081KSRGFP0008QG0R000J9Y6
 …, reframe HFLV to preserve gates
 
 Resolves PR #6059 DIRTY conflict + 5 Copilot review threads:
-- Renumber 081KSNY2Z0008QG0R000ZNRFCE->B-0935 was superseded by main's canonical 081KSRGFP0008QG0R000J9Y634
+- Renumber 081KSNY2Z0008QG0R000ZNRFCE->081KSRGFP0008QG0R0029WD04S was superseded by main's canonical 081KSRGFP0008QG0R000J9Y634
   (PR #6055 renamed the same row to automated-background-review-thread-resolution).
-  Dropped the duplicate B-0935 row; ADR Backlog field -> 081KSRGFP0008QG0R000J9Y634; BACKLOG.md regenerated.
+  Dropped the duplicate 081KSRGFP0008QG0R0029WD04S row; ADR Backlog field -> 081KSRGFP0008QG0R000J9Y634; BACKLOG.md regenerated.
 - HFLV mitigations reframed from gate-BYPASS (auto-resolve/linter-bypass/direct-to-main)
   to gate-PRESERVING mechanical-repair-then-re-verify, aligned with the landed 081KSRGFP0008QG0R000J9Y634
   "Resolute Agent" ADR. Required checks, review, and branch protection are never bypassed;

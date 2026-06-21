@@ -13,7 +13,7 @@ depends_on:
 composes_with:
   - 081KR2E4K0008QG0R001SWEPNV
   - 081KSE6WT0008QG0R000CV98PV
-  - B-0758
+  - 081KSE6WT0008QG0R00021PPX1
   - 081KSE6WT0008QG0R000WVYAJ2
   - 081KSE6WT0008QG0R0009YYNP4
   - 081KSE6WT0008QG0R00063R6HB
@@ -81,7 +81,7 @@ event store.
 - Operator workloads target Karmada CRDs (PropagationPolicy,
   OverridePolicy, ResourceBinding); Karmada handles
   cross-cluster distribution
-- Composes with B-0758 unRAID-style edge clusters (each edge
+- Composes with 081KSE6WT0008QG0R00021PPX1 unRAID-style edge clusters (each edge
   site = one member cluster)
 
 Scale: thousands of nodes across N member clusters; Karmada
@@ -112,7 +112,7 @@ medium; etc.).
 **KubeStellar**:
 
 - Edge-aware federation
-- Composes with B-0758 unRAID-style edge nodes
+- Composes with 081KSE6WT0008QG0R00021PPX1 unRAID-style edge nodes
 - Workload-transport pattern via OCM (Open Cluster Management)
 
 ### Tier 3 (custom / future)
@@ -133,13 +133,13 @@ Document + ship **per-scale-tier recommendation**:
 
 | Cluster scale | Recommended approach | Substrate rows |
 |---|---|---|
-| **1-5 nodes** (lab, home, small business) | Single cluster; k3s embedded etcd OR kine + SQLite | B-0754, 081KSE6WT0008QG0R001NG9JZH |
+| **1-5 nodes** (lab, home, small business) | Single cluster; k3s embedded etcd OR kine + SQLite | 081KSGS9H0008QG0R002T3BJ2R, 081KSE6WT0008QG0R001NG9JZH |
 | **5-50 nodes** (small production, edge site) | Single cluster; k3s + kine + NATS JetStream | 081KSE6WT0008QG0R001AZQA5Z |
 | **50-500 nodes** (medium production) | Single cluster; k3s + kine + CockroachDB | 081KSE6WT0008QG0R001AZQA5Z |
 | **500-5000 nodes** (large production) | NATS super-cluster (federate control plane geographically) OR Karmada multi-cluster | This row Tier 1 |
 | **5000+ nodes** (hyperscale) | Cell-based + Karmada; many smaller clusters + federation | This row Tier 1 + custom |
 | **Multi-region / multi-cloud** | Karmada + per-region clusters; OR NATS super-cluster with leaf-nodes per region | This row Tier 1 |
-| **Edge** (many tiny clusters) | KubeStellar OR Karmada + B-0758 unRAID-style edge nodes | This row Tier 2 + B-0758 |
+| **Edge** (many tiny clusters) | KubeStellar OR Karmada + 081KSE6WT0008QG0R00021PPX1 unRAID-style edge nodes | This row Tier 2 + 081KSE6WT0008QG0R00021PPX1 |
 | **Multi-tenant SaaS** | vCluster on host cluster + tenant-per-vCluster | This row Tier 2 + 081KSE6WT0008QG0R001E1F862 |
 
 ## Acceptance
@@ -157,7 +157,7 @@ Document + ship **per-scale-tier recommendation**:
 - [ ] Per-tier migration paths: operator can migrate UP the
       tier hierarchy as cluster grows (5 → 50 → 500 → ...)
       without manifest changes (per 081KSE6WT0008QG0R000WVYAJ2 vendor-swap pattern)
-- [ ] Zeta-first-boot (B-0754) role keystroke extended for
+- [ ] Zeta-first-boot (081KSGS9H0008QG0R002T3BJ2R) role keystroke extended for
       federation member: 'm' for "member of existing cluster
       via Karmada" (joining a federated cluster instead of
       bootstrapping new)
@@ -181,7 +181,7 @@ Document + ship **per-scale-tier recommendation**:
   cover the HA design space)
 - 081KSE6WT0008QG0R000CV98PV — cluster auto-discovery (multi-cluster discovery
   via mDNS / Reticulum / Karmada)
-- B-0758 — USB-persistent OS unRAID-style (edge nodes
+- 081KSE6WT0008QG0R00021PPX1 — USB-persistent OS unRAID-style (edge nodes
   composing into federation per Tier 2 KubeStellar /
   Karmada)
 - 081KSE6WT0008QG0R000WVYAJ2 — cloud-native plugins fit Zeta interfaces

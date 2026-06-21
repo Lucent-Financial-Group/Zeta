@@ -18,7 +18,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 Aaron 2026-05-25 named the ServiceTitan strategic principle as substrate-engineering policy: every cluster-install substrate decision filters through 'are we inventing or adopting?'. Prefer adopting existing standards (k8s CRDs, OAM Components, Crossplane Compositions, Helm 3 OCI, ArgoCD, Flux, OpenTelemetry, OPA Rego, DAPR Components, NixOS) over inventing parallel substrate. Sharpens (not retracts) 081KSE6WT0008QG0R000WVYAJ2 + 081KSE6WT0008QG0R0009YYNP4. Ontology negotiation at the STANDARDS LAYER (not per-project) is the load-bearing leverage point.
 
-P1 because it's the strategic filter shape every future cluster-install row should pass through. Composes with B-0741 / B-0744 / B-0747 / 081KSE6WT0008QG0R002E6P098 / B-0749 / B-0754 / 081KSE6WT0008QG0R003G0Y62D / 081KSE6WT0008QG0R0015ZF2G6 / 081KSE6WT0008QG0R003FG3E8R / 081KSE6WT0008QG0R000WVYAJ2 / 081KSE6WT0008QG0R0009YYNP4.
+P1 because it's the strategic filter shape every future cluster-install row should pass through. Composes with 081KSE6WT0008QG0R002CC6314 / 081KSE6WT0008QG0R000SH6E0R / 081KSE6WT0008QG0R003D199HE / 081KSE6WT0008QG0R002E6P098 / 081KSE6WT0008QG0R001RG4FXD / 081KSGS9H0008QG0R002T3BJ2R / 081KSE6WT0008QG0R003G0Y62D / 081KSE6WT0008QG0R0015ZF2G6 / 081KSE6WT0008QG0R003FG3E8R / 081KSE6WT0008QG0R000WVYAJ2 / 081KSE6WT0008QG0R0009YYNP4.
 
 ## General comments
 

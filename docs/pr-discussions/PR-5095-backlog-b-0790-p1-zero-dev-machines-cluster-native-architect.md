@@ -52,7 +52,7 @@ End-state-architectural, not single-PR:
 
 ## Composes with
 
-B-0754 / 081KSE6WT0008QG0R003G0Y62D / 081KSE6WT0008QG0R0029S1D5Z / 081KSE6WT0008QG0R002275NDE / 081KSE6WT0008QG0R0004AP0ZA / 081KSE6WT0008QG0R000RH1526 / 081KSE6WT0008QG0R003CMCX84 / 081KSE6WT0008QG0R000FN7TVJ / 081KSE6WT0008QG0R000TMNCVS / 081KSGS9H0008QG0R002T3BJ2R + agent-roster-reference-card + tick-must-never-stop + autonomous-loop-per-tick + human-audit-and-legal-risk-acceptance-pattern + `maintainers/aaron/legal-entities/inventory.md` + `memory/max/PERSONA.md` (per-maintainer-liability sub-section).
+081KSGS9H0008QG0R002T3BJ2R / 081KSE6WT0008QG0R003G0Y62D / 081KSE6WT0008QG0R0029S1D5Z / 081KSE6WT0008QG0R002275NDE / 081KSE6WT0008QG0R0004AP0ZA / 081KSE6WT0008QG0R000RH1526 / 081KSE6WT0008QG0R003CMCX84 / 081KSE6WT0008QG0R000FN7TVJ / 081KSE6WT0008QG0R000TMNCVS / 081KSGS9H0008QG0R002T3BJ2R + agent-roster-reference-card + tick-must-never-stop + autonomous-loop-per-tick + human-audit-and-legal-risk-acceptance-pattern + `maintainers/aaron/legal-entities/inventory.md` + `memory/max/PERSONA.md` (per-maintainer-liability sub-section).
 
 ## Test plan
 

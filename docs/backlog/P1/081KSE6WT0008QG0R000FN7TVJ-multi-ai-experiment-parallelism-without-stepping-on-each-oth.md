@@ -13,7 +13,7 @@ depends_on:
   - 081KSE6WT0008QG0R000R8CPFX
 composes_with:
   - 081KRFA460008QG0R0018SN61J
-  - B-0746
+  - 081KSE6WT0008QG0R0025QPP05
   - 081KSE6WT0008QG0R003FG3E8R
   - 081KSE6WT0008QG0R003WMG4XV
   - 081KSE6WT0008QG0R000RH1526
@@ -50,7 +50,7 @@ The substrate that eliminates the stepping-on-feet:
 | **Per-AI namespace** (081KSE6WT0008QG0R0018WZ7TH mirror tier) | Each AI has personal mirror namespace; no consensus required to experiment | Each AI iterates freely; no peer-AI contention at type-definition layer |
 | **Per-AI experiment-ID routing** (081KSE6WT0008QG0R000R8CPFX) | Each AI's requests route to their own namespace via header | No cross-AI request interference; AI's experiment runs against AI's namespace |
 | **Event-store-native digital twin** (081KSE6WT0008QG0R0008483B2) | Experiments are PROJECTIONS over shared event stream; CQRS read-model fork | No DB-level interference; experiments share underlying events; differ in projection (read model) only |
-| **Per-AI branch + git-native state** (B-0747) | Each AI's work in own git branch; rebase / merge per consensus | Standard git-level isolation; well-trodden pattern |
+| **Per-AI branch + git-native state** (081KSE6WT0008QG0R003D199HE) | Each AI's work in own git branch; rebase / merge per consensus | Standard git-level isolation; well-trodden pattern |
 | **Per-AI claim coordinator** (existing 081KR7JY10008QG0R000R503K2 bus) | Each AI claim-acquires backlog items before working | No double-allocation of substrate work |
 
 The combination = **maximum velocity for multi-AI parallel
@@ -78,7 +78,7 @@ For multi-AI parallel experimentation at scale (N AIs running
 M experiments each = N*M experimental branches), the event-
 store-native projection approach is the only operationally-
 viable substrate. Aaron's existing DBSP + retraction-native
-substrate (per B-0746 + 081KRFA460008QG0R0018SN61J) IS exactly the event-store-
+substrate (per 081KSE6WT0008QG0R0025QPP05 + 081KRFA460008QG0R0018SN61J) IS exactly the event-store-
 native pattern at algebraic scope.
 
 ## Target
@@ -94,7 +94,7 @@ maximum velocity without stepping on each other:
   per 081KSE6WT0008QG0R000R8CPFX
 - Per-experiment read-model projection over shared event
   stream per 081KSE6WT0008QG0R0008483B2 + 081KRFA460008QG0R0018SN61J
-- Own git branch per agent + per experiment per B-0747
+- Own git branch per agent + per experiment per 081KSE6WT0008QG0R003D199HE
 - Own claim-coordinator entries per backlog work per 081KR7JY10008QG0R000R503K2
 
 ### Cross-AI coordination
@@ -178,9 +178,9 @@ experiment scope) actually working at scale.
 - 081KR7JY10008QG0R000R503K2 — existing claim-coordinator bus (cross-AI advisory)
 - 081KRFA460008QG0R0018SN61J — F# fork for AI safety (substrate base; DBSP
   retraction-native algebra IS event-store-native pattern)
-- B-0746 — Mirror/Beacon retraction-native substrate (mirror
+- 081KSE6WT0008QG0R0025QPP05 — Mirror/Beacon retraction-native substrate (mirror
   tier = per-AI freedom; beacon tier = common namespace)
-- B-0747 — git-native per-machine state (per-AI branches)
+- 081KSE6WT0008QG0R003D199HE — git-native per-machine state (per-AI branches)
 - 081KSE6WT0008QG0R003FG3E8R — auto-submit-back telemetry (per-AI experiment
   outcomes contribute to shared substrate evolution)
 - 081KSE6WT0008QG0R003WMG4XV — observable+controllable fabric (per-AI Observables

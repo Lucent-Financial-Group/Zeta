@@ -10,12 +10,12 @@ last_updated: 2026-05-25
 depends_on:
   - 081KSE6WT0008QG0R00063R6HB
 composes_with:
-  - B-0741
-  - B-0744
-  - B-0747
+  - 081KSE6WT0008QG0R002CC6314
+  - 081KSE6WT0008QG0R000SH6E0R
+  - 081KSE6WT0008QG0R003D199HE
   - 081KSE6WT0008QG0R002E6P098
-  - B-0749
-  - B-0754
+  - 081KSE6WT0008QG0R001RG4FXD
+  - 081KSGS9H0008QG0R002T3BJ2R
   - 081KSE6WT0008QG0R0015ZF2G6
   - 081KSE6WT0008QG0R003FG3E8R
   - 081KSE6WT0008QG0R000WVYAJ2
@@ -116,7 +116,7 @@ Itron-co-create**.
 - [ ] Sequencing: Itron-mode engagements require having
       something to bring to the table — must follow meaningful
       Zeta substrate adoption + working reference; not pursued
-      until after B-0754 v1 ships + 3-node reference works
+      until after 081KSGS9H0008QG0R002T3BJ2R v1 ships + 3-node reference works
       + first wave of 081KSE6WT0008QG0R00049EFBD binary-compatible impls land
 - [ ] Documentation: README updates to make the dual-mode
       strategy legible to operators + potential co-creation
@@ -135,7 +135,7 @@ modes of the same standards-layer strategy**:
 - Both share: standards layer is where negotiation high seat
   lives (081KSE6WT0008QG0R000WVYAJ2)
 - Both share: ontology negotiation at standards layer is the
-  load-bearing leverage point (B-0741)
+  load-bearing leverage point (081KSE6WT0008QG0R002CC6314)
 - The choice between them is per-axis, per-positioning, not
   global
 
@@ -165,19 +165,19 @@ rather than just consuming it.
 
 ## Composes with
 
-- B-0741 — ontology negotiation (the substrate that operates at
+- 081KSE6WT0008QG0R002CC6314 — ontology negotiation (the substrate that operates at
   the standards layer per both ServiceTitan + Itron playbooks)
-- B-0744 — FIDO2/WebAuthn (081KSE6WT0008QG0R00063R6HB ServiceTitan example —
+- 081KSE6WT0008QG0R000SH6E0R — FIDO2/WebAuthn (081KSE6WT0008QG0R00063R6HB ServiceTitan example —
   existing standards Zeta plugs into; could become Itron if
   Zeta co-authors next WebAuthn revision)
-- B-0747 — git-native per-machine state (Itron candidate: co-
+- 081KSE6WT0008QG0R003D199HE — git-native per-machine state (Itron candidate: co-
   author with HashiCorp Terraform / Pulumi / Crossplane on
   per-machine state portability standard)
 - 081KSE6WT0008QG0R002E6P098 — kro/Crossplane (Itron candidate: co-author kro's
   successor / Crossplane v3 with project maintainers)
-- B-0749 — KubeVela/OAM (Itron candidate: contribute to OAM v2
+- 081KSE6WT0008QG0R001RG4FXD — KubeVela/OAM (Itron candidate: contribute to OAM v2
   via OAM working group)
-- B-0754 — zero-typing first-boot (Itron candidate later: NixOS
+- 081KSGS9H0008QG0R002T3BJ2R — zero-typing first-boot (Itron candidate later: NixOS
   + community on installer-flow standards once Zeta substrate
   proves itself)
 - 081KSE6WT0008QG0R0015ZF2G6 — open reference architecture (Itron candidate: co-
@@ -207,7 +207,7 @@ rather than just consuming it.
 
 - **Wave 0 (today)**: 081KSE6WT0008QG0R00063R6HB ServiceTitan-mode dominant; this row
   exists as substrate; no active Itron engagements yet
-- **Wave 1 (after first B-0754 hardware-validated reference + 3-node
+- **Wave 1 (after first 081KSGS9H0008QG0R002T3BJ2R hardware-validated reference + 3-node
   cluster + first wave of 081KSE6WT0008QG0R00049EFBD Zeta-native impls)**: Itron-mode
   engagement opportunities begin; identify partners; preliminary
   conversations
@@ -275,11 +275,11 @@ operational experience at both ends of the company-stage
 spectrum, not abstract case-study analysis.
 
 **Recalibration**: Zeta is at garage-equivalent stage today
-(B-0754 iteration-2 in flight on first node). ServiceTitan
+(081KSGS9H0008QG0R002T3BJ2R iteration-2 in flight on first node). ServiceTitan
 started ServiceTitan-mode from garage day-1 and it worked from
 day-1. The playbook applies NOW — not as future aspiration, not
 after Zeta "earns" something abstract. The earning IS the
-substrate-engineering work already happening (B-0754 / 081KSE6WT0008QG0R003G0Y62D /
+substrate-engineering work already happening (081KSGS9H0008QG0R002T3BJ2R / 081KSE6WT0008QG0R003G0Y62D /
 081KSE6WT0008QG0R0015ZF2G6 / 081KSE6WT0008QG0R003FG3E8R / 081KSE6WT0008QG0R000WVYAJ2 / 081KSE6WT0008QG0R0009YYNP4 / 081KSE6WT0008QG0R00063R6HB / 081KSE6WT0008QG0R00049EFBD / 081KSE6WT0008QG0R0016CEE2Z).
 Aaron isn't recalling history; he's executing the same playbook
 he's seen work twice. The "When this row's playbook becomes

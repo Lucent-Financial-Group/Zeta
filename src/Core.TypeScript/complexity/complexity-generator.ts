@@ -217,7 +217,7 @@ ${listStr}
             [ "saves", [ "save-state recordings (the campaign notebook)" ]
               "rooms.persona", [ "identity (the persona's own; clause 2 — theirs)" ] ]
 
-    /// THE BEN LINE (B-1039: the prediction lives WITH the room). A cartridge declares its own
+    /// THE BEN LINE (081KTSZN10008QG0R001F0B5A6: the prediction lives WITH the room). A cartridge declares its own
     /// cost prediction in-file:
     ///
     ///     ben	draw	shape.dynamicvalue	O(children)

@@ -35,7 +35,7 @@ Empirical anchor: 2 cross-agent collisions on 2026-05-15 (081KRFA460008QG0R001SX
 
 ## ID allocation discipline
 
-- B-0531: in-flight (Lior PR #3520)
+- 081KRMEXM0008QG0R00070X79J: in-flight (Lior PR #3520)
 - 081KRMEXM0008QG0R003FZNK3E: on main (PR #3523, mine)
 - 081KRMEXM0008QG0R000K25MXS: on main (PR #3540, mine)
 - 081KRMEXM0008QG0R003GP8W0C: on main (PR #3551, peer-Otto)

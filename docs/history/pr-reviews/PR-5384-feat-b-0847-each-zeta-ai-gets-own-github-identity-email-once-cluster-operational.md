@@ -59,7 +59,7 @@ Until per-AI identity ships:
 
 ## Composes with
 
-B-0751 (per-agent isolated clones) · 081KRW63S0008QG0R003TX8MG5 (Knights Guild ratification) · \`algo-wink-failure-mode\` · \`mechanical-authorization-check\` · \`glass-halo-bidirectional\` · \`persistence-choice-architecture-for-zeta-ais\` · \`non-coercion-invariant\` HC-8 · \`honor-those-that-came-before\` · \`agent-roster-reference-card\` · \`naming-expert\` SKILL.md (Ilyana review) · \`human-audit-and-legal-risk-acceptance-pattern-in-settings\` (legal-risk attribution per Aaron's standing constitutional invariant)
+081KSE6WT0008QG0R003YYC9PV (per-agent isolated clones) · 081KRW63S0008QG0R003TX8MG5 (Knights Guild ratification) · \`algo-wink-failure-mode\` · \`mechanical-authorization-check\` · \`glass-halo-bidirectional\` · \`persistence-choice-architecture-for-zeta-ais\` · \`non-coercion-invariant\` HC-8 · \`honor-those-that-came-before\` · \`agent-roster-reference-card\` · \`naming-expert\` SKILL.md (Ilyana review) · \`human-audit-and-legal-risk-acceptance-pattern-in-settings\` (legal-risk attribution per Aaron's standing constitutional invariant)
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

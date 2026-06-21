@@ -18,7 +18,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 Aaron 2026-05-25 named the cluster-install target persona: first-time command-line users; UX bar 'easier than Proxmox / unRAID for home clusters'; 3-node threshold = production-ready inflection (when 081KSE6WT0008QG0R001NG9JZH HA substrate + 081KSE6WT0008QG0R000CV98PV auto-discovery light up real cluster availability).
 
-This row captures the audit work to apply the persona filter across every operator-facing cluster-install surface. Composes with the full 081KSE6WT0008QG0R003WZAQKV/B-0738/B-0739/B-0743/B-0754/081KSE6WT0008QG0R003612WGJ/081KSE6WT0008QG0R001NG9JZH/081KSE6WT0008QG0R000CV98PV/B-0758 cluster substrate.
+This row captures the audit work to apply the persona filter across every operator-facing cluster-install surface. Composes with the full 081KSE6WT0008QG0R003WZAQKV/081KSE6WT0008QG0R003BG8M6J/081KSE6WT0008QG0R0025170CV/081KSE6WT0008QG0R003WW3YJQ/081KSGS9H0008QG0R002T3BJ2R/081KSE6WT0008QG0R003612WGJ/081KSE6WT0008QG0R001NG9JZH/081KSE6WT0008QG0R000CV98PV/081KSE6WT0008QG0R00021PPX1 cluster substrate.
 
 Also includes competitive framing table (vs Proxmox VE / unRAID / Talos / k3sup) and an empirical persona-bet test via external non-maintainer user.
 

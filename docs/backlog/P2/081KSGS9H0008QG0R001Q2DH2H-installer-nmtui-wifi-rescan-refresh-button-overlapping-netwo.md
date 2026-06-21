@@ -8,7 +8,7 @@ ask: aaron 2026-05-26
 created: 2026-05-26
 last_updated: 2026-05-26
 depends_on:
-  - B-0754
+  - 081KSGS9H0008QG0R002T3BJ2R
 composes_with:
   - 081KSGS9H0008QG0R0011BC7T2
 tags: [installer, first-boot, networkmanager, nmtui, wifi, physical-hardware-support-test, empirical-anchor, operator-ux]
@@ -112,7 +112,7 @@ Approach C acceptance (deferred):
 
 - `full-ai-cluster/usb-nixos-installer/zeta-first-boot.sh` (the
   substrate this row touches)
-- B-0754 (zero-typing first-boot scope; this row extends the
+- 081KSGS9H0008QG0R002T3BJ2R (zero-typing first-boot scope; this row extends the
   zero-typing path to dense-WiFi environments)
 - 081KSGS9H0008QG0R0011BC7T2 (CI cascade #6 full-install + cluster-auto-join — physical
   hardware-support test that surfaced this issue is exactly the

@@ -73,7 +73,7 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated 2 c
 | File | Description |
 | ---- | ----------- |
 | docs/backlog/P2/081KSBMG30008QG0R003B46GWG-soraya-round57-lsm-spine-registry-and-bp16-cross-check-pair-2026-05-24.md | New P2 backlog row describing Spine registry-row capture and BP-16 paired-tool cross-check request. |
-| docs/BACKLOG.md | Backlog index updated to reference 081KSBMG30008QG0R003B46GWG (and also adds a B-0700 entry). |
+| docs/BACKLOG.md | Backlog index updated to reference 081KSBMG30008QG0R003B46GWG (and also adds a 081KRSKQ20008QG0R00367828S entry). |
 
 ## Review threads
 
@@ -81,7 +81,7 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated 2 c
 
 **@copilot-pull-request-reviewer** (2026-05-24T00:17:25Z):
 
-The new BACKLOG entry for B-0700 links to `backlog/P2/B-0700-soraya-continuous-loop-substrate-with-bus-escalation-2026-05-17.md`, but there is no corresponding per-row file under `docs/backlog/` (search for `id: B-0700` returns no matches). This leaves a broken link and will likely fail the backlog index integrity gate; either add the missing row file or remove this line and regenerate `docs/BACKLOG.md` from the row files (`tools/backlog/generate-index.sh`).
+The new BACKLOG entry for 081KRSKQ20008QG0R00367828S links to `backlog/P2/081KRSKQ20008QG0R00367828S-soraya-continuous-loop-substrate-with-bus-escalation-2026-05-17.md`, but there is no corresponding per-row file under `docs/backlog/` (search for `id: 081KRSKQ20008QG0R00367828S` returns no matches). This leaves a broken link and will likely fail the backlog index integrity gate; either add the missing row file or remove this line and regenerate `docs/BACKLOG.md` from the row files (`tools/backlog/generate-index.sh`).
 
 ### Thread 2: docs/backlog/P2/081KSBMG30008QG0R003B46GWG-soraya-round57-lsm-spine-registry-and-bp16-cross-check-pair-2026-05-24.md:51 (resolved)
 

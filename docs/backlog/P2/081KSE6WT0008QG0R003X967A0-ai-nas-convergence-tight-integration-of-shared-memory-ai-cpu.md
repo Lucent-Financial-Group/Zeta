@@ -10,11 +10,11 @@ last_updated: 2026-05-25
 depends_on:
   - 081KSE6WT0008QG0R0004AP0ZA
 composes_with:
-  - B-0754
+  - 081KSGS9H0008QG0R002T3BJ2R
   - 081KSE6WT0008QG0R003612WGJ
-  - B-0758
+  - 081KSE6WT0008QG0R00021PPX1
   - 081KSE6WT0008QG0R003G0Y62D
-  - B-0760
+  - 081KSE6WT0008QG0R003WG0V6P
   - 081KSE6WT0008QG0R000WVYAJ2
   - 081KSE6WT0008QG0R0016CEE2Z
   - 081KSE6WT0008QG0R0022D6GN8
@@ -115,7 +115,7 @@ The pattern: **AI NAS convergence wins for inference-heavy
 workloads** (most home-lab + small-business AI today).
 Training-heavy workloads still benefit from discrete compute
 (eGPU per 081KSE6WT0008QG0R0004AP0ZA OCuLink) + dedicated storage (Longhorn
-replication across mini-PC nodes per B-0754 greedy N-disk).
+replication across mini-PC nodes per 081KSGS9H0008QG0R002T3BJ2R greedy N-disk).
 
 ## Per-AI-NAS-class Zeta substrate composition
 
@@ -123,10 +123,10 @@ replication across mini-PC nodes per B-0754 greedy N-disk).
 
 Composes with:
 
-- B-0754 zero-typing first-boot — greedy N-disk handles 4-8
+- 081KSGS9H0008QG0R002T3BJ2R zero-typing first-boot — greedy N-disk handles 4-8
   NVMe + HDD layouts cleanly; OS on fastest disk (NVMe);
   Longhorn distributes across remaining
-- B-0758 USB-persistent OS — for vendors that ship locked-down
+- 081KSE6WT0008QG0R00021PPX1 USB-persistent OS — for vendors that ship locked-down
   OS (Synology DSM, QNAP QTS), USB-persistent OS bypasses;
   AI NAS hardware becomes Zeta cluster node
 - 081KSE6WT0008QG0R0022D6GN8 audio+NPU+ONNX — shared-memory NPU substrate works
@@ -140,10 +140,10 @@ Composes with:
 
 Composes with:
 
-- B-0758 USB-persistent OS — bypass vendor OS; Zeta substrate
+- 081KSE6WT0008QG0R00021PPX1 USB-persistent OS — bypass vendor OS; Zeta substrate
   takes over hardware; vendor warranty likely voided (operator
   decision)
-- B-0760 USB-as-repair-tool — Zeta substrate is the repair
+- 081KSE6WT0008QG0R003WG0V6P USB-as-repair-tool — Zeta substrate is the repair
   tool; vendor's recovery method preserved as fallback
 - 081KSE6WT0008QG0R000WVYAJ2 vendor-swap — operator can return to vendor OS
   by re-flashing vendor recovery; Zeta substrate stays as
@@ -153,7 +153,7 @@ Composes with:
 
 Composes with:
 
-- B-0754 zero-typing first-boot — these are essentially
+- 081KSGS9H0008QG0R002T3BJ2R zero-typing first-boot — these are essentially
   mini-PCs in NAS chassis; existing substrate works unchanged
 - 081KSE6WT0008QG0R0004AP0ZA hardware sourcing — these straddle mini-PC + NAS
   categories; included in 081KSE6WT0008QG0R0004AP0ZA's curated picks where vendor
@@ -182,7 +182,7 @@ Composes with:
       to handle the AI-NAS NVMe + HDD layout efficiently
       (NVMe for hot tier; HDD for cold tier; Longhorn
       auto-tiers via volume class)
-- [ ] AI-NAS-specific first-boot considerations (per B-0754):
+- [ ] AI-NAS-specific first-boot considerations (per 081KSGS9H0008QG0R002T3BJ2R):
       AI NAS often has more disks than mini-PC; greedy N-disk
       should label disks per role automatically (boot disk =
       fastest NVMe; longhorn-hot = remaining NVMe; longhorn-cold
@@ -199,14 +199,14 @@ Composes with:
 
 Substrate-honest delta:
 
-- **B-0754 zero-typing**: greedy N-disk extends to handle 4-12
+- **081KSGS9H0008QG0R002T3BJ2R zero-typing**: greedy N-disk extends to handle 4-12
   disk layouts (currently tested with 2 NVMe per iter-2/3); per
   AI NAS class, the disk-count + class mix differs
 - **081KSE6WT0008QG0R003612WGJ role taxonomy**: new role `ai-nas` that combines
   worker-storage + worker-gpu (with NPU instead of discrete
   GPU); alternatively, existing `worker-gpu` + `worker-storage`
   roles compose into the AI NAS chassis
-- **B-0758 USB-persistent OS**: more relevant for AI NAS due
+- **081KSE6WT0008QG0R00021PPX1 USB-persistent OS**: more relevant for AI NAS due
   to vendor OS lockdown patterns
 - **081KSE6WT0008QG0R000WVYAJ2 vendor-swap**: AI NAS hardware vendors compete on
   shipping Zeta-friendly defaults; differentiation lever
@@ -245,14 +245,14 @@ substrate-honest competition.
 
 ## Composes with
 
-- B-0754 — zero-typing first-boot (extends to AI NAS disk
+- 081KSGS9H0008QG0R002T3BJ2R — zero-typing first-boot (extends to AI NAS disk
   layouts)
 - 081KSE6WT0008QG0R003612WGJ — role taxonomy expansion (new `ai-nas` role OR
   composition of worker-storage + worker-gpu)
-- B-0758 — USB-persistent OS (bypass vendor-OS lockdown)
+- 081KSE6WT0008QG0R00021PPX1 — USB-persistent OS (bypass vendor-OS lockdown)
 - 081KSE6WT0008QG0R003G0Y62D — first-time-CLI-user persona (AI NAS is one
   hardware class this persona may pick)
-- B-0760 — USB-as-repair-tool (replaceable AI NAS units;
+- 081KSE6WT0008QG0R003WG0V6P — USB-as-repair-tool (replaceable AI NAS units;
   rebuild via USB stays universal)
 - 081KSE6WT0008QG0R000WVYAJ2 — operator-in-the-negotiation-high-seat (per-vendor
   AI NAS support gradient is operator's competitive lever)

@@ -98,7 +98,7 @@ Six consecutive holds without ANY of these firing.
   <pre>
   **&lt;sub&gt;&lt;sub&gt;![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Remove dangling backlog link without a row file**
 
-  `docs/BACKLOG.md` is generated from files under `docs/backlog/P*/B-*.md`, but this new index entry points to `backlog/P2/B-0700-soraya-continuous-loop-substrate-with-bus-escalation-2026-05-17.md`, which is not present in the repo. That creates a broken link in the canonical index and guarantees regeneration/check drift (the entry will disappear the next time the index is rebuilt), so the commit leaves the backlog surface inconsistent.
+  `docs/BACKLOG.md` is generated from files under `docs/backlog/P*/B-*.md`, but this new index entry points to `backlog/P2/081KRSKQ20008QG0R00367828S-soraya-continuous-loop-substrate-with-bus-escalation-2026-05-17.md`, which is not present in the repo. That creates a broken link in the canonical index and guarantees regeneration/check drift (the entry will disappear the next time the index is rebuilt), so the commit leaves the backlog surface inconsistent.
 
   Useful? React with 👍 / 👎.
   </pre>
@@ -114,7 +114,7 @@ Six consecutive holds without ANY of these firing.
 - **`Copilot` (bot)** at 2026-05-24T01:09:21Z on `docs/BACKLOG.md`:667 (association: NONE)
 
   <pre>
-  P0: `docs/BACKLOG.md` now includes a link for **B-0700**, but there is no corresponding per-row file under `docs/backlog/P2/` (and no `id: B-0700` anywhere under `docs/backlog/`). This is a broken link and will diverge from the output of `tools/backlog/generate-index.sh` (likely failing backlog-index-integrity checks). Either add the missing `docs/backlog/P2/B-0700-...md` row file with `id: B-0700`, or remove this entry and regenerate `docs/BACKLOG.md` from the existing row files.
+  P0: `docs/BACKLOG.md` now includes a link for **081KRSKQ20008QG0R00367828S**, but there is no corresponding per-row file under `docs/backlog/P2/` (and no `id: 081KRSKQ20008QG0R00367828S` anywhere under `docs/backlog/`). This is a broken link and will diverge from the output of `tools/backlog/generate-index.sh` (likely failing backlog-index-integrity checks). Either add the missing `docs/backlog/P2/081KRSKQ20008QG0R00367828S-...md` row file with `id: 081KRSKQ20008QG0R00367828S`, or remove this entry and regenerate `docs/BACKLOG.md` from the existing row files.
 
   </pre>
 

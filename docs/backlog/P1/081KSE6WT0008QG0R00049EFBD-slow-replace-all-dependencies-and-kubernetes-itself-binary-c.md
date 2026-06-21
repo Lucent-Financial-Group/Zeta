@@ -11,11 +11,11 @@ depends_on:
   - 081KSE6WT0008QG0R00063R6HB
 composes_with:
   - 081KRFA460008QG0R0018SN61J
-  - B-0741
-  - B-0747
+  - 081KSE6WT0008QG0R002CC6314
+  - 081KSE6WT0008QG0R003D199HE
   - 081KSE6WT0008QG0R002E6P098
-  - B-0749
-  - B-0754
+  - 081KSE6WT0008QG0R001RG4FXD
+  - 081KSGS9H0008QG0R002T3BJ2R
   - 081KSE6WT0008QG0R0015ZF2G6
   - 081KSE6WT0008QG0R003FG3E8R
   - 081KSE6WT0008QG0R000WVYAJ2
@@ -204,16 +204,16 @@ catalog. Every replacement layer = one benchmark scenario.
 
 - 081KRFA460008QG0R0018SN61J — DBpedia + F# fork for AI safety (the F# substrate
   base this row's implementations build on)
-- B-0741 — ontology negotiation (the cross-interface
+- 081KSE6WT0008QG0R002CC6314 — ontology negotiation (the cross-interface
   translation substrate; Zeta-native impls preserve the
   semantic contract per ontology)
-- B-0747 — git-native per-machine state + GitOps reconciliation
+- 081KSE6WT0008QG0R003D199HE — git-native per-machine state + GitOps reconciliation
   (the substrate Zeta-native operators reconcile against)
 - 081KSE6WT0008QG0R002E6P098 — kro/Crossplane/Koreo (the existing CRD-substitution
   substrate Zeta-native operators plug into)
-- B-0749 — KubeVela/OAM (Zeta-native operators can fulfill OAM
+- 081KSE6WT0008QG0R001RG4FXD — KubeVela/OAM (Zeta-native operators can fulfill OAM
   Components without operator-facing changes)
-- B-0754 — zero-typing first-boot (the install path bundles
+- 081KSGS9H0008QG0R002T3BJ2R — zero-typing first-boot (the install path bundles
   the chosen impl per layer; operator can swap at install time
   or runtime)
 - 081KSE6WT0008QG0R0015ZF2G6 — open reference architecture (each replacement layer

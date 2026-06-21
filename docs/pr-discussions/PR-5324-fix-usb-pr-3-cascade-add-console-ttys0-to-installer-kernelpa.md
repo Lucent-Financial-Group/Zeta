@@ -60,7 +60,7 @@ Beneficiaries of serial console output:
 ## Composes with
 
 - PR #5322 (the QEMU boot smoke-test workflow this fixes the cascade for)
-- B-0754 iter-3 firmware substrate (similar UX-cleanliness motivation; surface less mysterious behavior)
+- 081KSGS9H0008QG0R002T3BJ2R iter-3 firmware substrate (similar UX-cleanliness motivation; surface less mysterious behavior)
 - canonical zflash + zeta-install flow (no behavioral change for keyboard-attached path)
 
 ## Reviews

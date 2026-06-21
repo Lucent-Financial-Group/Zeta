@@ -17,7 +17,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 ## PR description
 
 ## Summary
-- remove the not-yet-main-visible B-0751 row from 081KSE6WT0008QG0R003YYC9PV frontmatter graph links while keeping PR #5019 as prose substrate
+- remove the not-yet-main-visible 081KSE6WT0008QG0R003YYC9PV row from 081KSE6WT0008QG0R003YYC9PV frontmatter graph links while keeping PR #5019 as prose substrate
 - make the current-state worktree hygiene rule use role-reference prose for the empirical quote
 - align the main-branch detector comment with its OK-on-success command output
 
@@ -36,7 +36,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 This PR tightens post-merge worktree hygiene documentation by keeping 081KSE6WT0008QG0R003YYC9PV’s graph links limited to main-visible backlog rows while preserving PR #5019 as prose context.
 
 **Changes:**
-- Removes B-0751 from 081KSE6WT0008QG0R003YYC9PV frontmatter `composes_with` while retaining PR #5019 references in prose.
+- Removes 081KSE6WT0008QG0R003YYC9PV from 081KSE6WT0008QG0R003YYC9PV frontmatter `composes_with` while retaining PR #5019 references in prose.
 - Updates the generated backlog index title to match the 081KSE6WT0008QG0R003YYC9PV row title.
 - Aligns the worktree hygiene rule’s detector comments and empirical-anchor prose with current-state role-reference wording.
 
@@ -46,7 +46,7 @@ Copilot reviewed 3 out of 3 changed files in this pull request and generated no 
 
 | File | Description |
 | ---- | ----------- |
-| `docs/backlog/P2/081KSE6WT0008QG0R003YYC9PV-agent-worktree-hygiene-rule-landing-plus-mechanization-target-cleanup-tooling-plus-worktree-pool-primitive-aaron-2026-05-25.md` | Updates 081KSE6WT0008QG0R003YYC9PV graph/prose references around PR #5019 and B-0751 visibility. |
+| `docs/backlog/P2/081KSE6WT0008QG0R003YYC9PV-agent-worktree-hygiene-rule-landing-plus-mechanization-target-cleanup-tooling-plus-worktree-pool-primitive-aaron-2026-05-25.md` | Updates 081KSE6WT0008QG0R003YYC9PV graph/prose references around PR #5019 and 081KSE6WT0008QG0R003YYC9PV visibility. |
 | `docs/BACKLOG.md` | Regenerates the 081KSE6WT0008QG0R003YYC9PV index entry from the updated row title. |
 | `.claude/rules/agent-worktree-hygiene-never-hold-main-never-step-on-operator-cleanup-on-pr-merge.md` | Clarifies expected command output and replaces direct quote with role-reference current-state prose. |
 

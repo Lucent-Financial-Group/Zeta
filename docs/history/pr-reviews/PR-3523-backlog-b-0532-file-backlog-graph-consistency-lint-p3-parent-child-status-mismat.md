@@ -45,7 +45,7 @@ BACKLOG.md regenerated to include the new row.
 ## Test plan
 
 - [x] markdownlint clean on the new row + regenerated BACKLOG.md
-- [x] ID allocation verified against \`origin/main\` (081KRMEXM0008QG0R000X1PPGC was the prior max) + in-flight PR scan (B-0531 taken by [PR #3520](https://github.com/Lucent-Financial-Group/Zeta/pull/3520))
+- [x] ID allocation verified against \`origin/main\` (081KRMEXM0008QG0R000X1PPGC was the prior max) + in-flight PR scan (081KRMEXM0008QG0R00070X79J taken by [PR #3520](https://github.com/Lucent-Financial-Group/Zeta/pull/3520))
 - [x] Frontmatter matches sibling P3 rows' shape
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

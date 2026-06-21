@@ -53,7 +53,7 @@ Mirror of iter-5.4.0 \`gh auth login\`: operator SSHes to node → \`claude logi
 
 ## Composes with
 
-[081KSGS9H0008QG0R002T0XQ50](docs/backlog/P2/081KSGS9H0008QG0R002T0XQ50-each-ai-gets-own-github-identity-with-email-once-cluster-operational-substrate-honest-attribution-end-to-end-closes-enabledby-token-owner-not-actor-algo-wink-aaron-2026-05-26.md) · 081KSGS9H0008QG0R0027HJZYH · B-0795/081KSGS9H0008QG0R0037H3W4T/081KSGS9H0008QG0R002K93MWX · [081KSGS9H0008QG0R002F04ECB](docs/backlog/P2/081KSGS9H0008QG0R002F04ECB-twilio-phone-support-substrate-AI-picks-up-call-fixes-cluster-via-event-store-runbooks-while-talking-sms-parallel-interface-amazon-USB-sales-enabled-by-AI-as-support-layer-aaron-mika-2026-05-26.md) · 081KRW63S0008QG0R003TX8MG5 · B-0751 · 081KSGS9H0008QG0R00120EEHM Bug 5
+[081KSGS9H0008QG0R002T0XQ50](docs/backlog/P2/081KSGS9H0008QG0R002T0XQ50-each-ai-gets-own-github-identity-with-email-once-cluster-operational-substrate-honest-attribution-end-to-end-closes-enabledby-token-owner-not-actor-algo-wink-aaron-2026-05-26.md) · 081KSGS9H0008QG0R0027HJZYH · 081KDWV501008QG0R003PCVDHM/081KSGS9H0008QG0R0037H3W4T/081KSGS9H0008QG0R002K93MWX · [081KSGS9H0008QG0R002F04ECB](docs/backlog/P2/081KSGS9H0008QG0R002F04ECB-twilio-phone-support-substrate-AI-picks-up-call-fixes-cluster-via-event-store-runbooks-while-talking-sms-parallel-interface-amazon-USB-sales-enabled-by-AI-as-support-layer-aaron-mika-2026-05-26.md) · 081KRW63S0008QG0R003TX8MG5 · 081KSE6WT0008QG0R003YYC9PV · 081KSGS9H0008QG0R00120EEHM Bug 5
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

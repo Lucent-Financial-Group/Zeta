@@ -78,10 +78,10 @@ Zeta substrate eliminates:
 |---|---|---|
 | **Cloud-vendor switching** | Rewrite app per cloud SDK | 081KSE6WT0008QG0R000WVYAJ2 vendor-swap behind owned interfaces |
 | **K8s YAML hell** | Hand-edit YAML; typos at runtime; CRD drift | 081KSE6WT0008QG0R001H3DA90 F# type system; compile-time validation |
-| **Helm vs Kustomize vs Argo CD** | Pick one; recommit when wrong | 081KSE6WT0008QG0R00063R6HB ServiceTitan-route + B-0747 GitOps standard |
-| **Per-vendor CRD differences** | Learn N vendor's CRDs | B-0741 ontology negotiation; one mental model |
-| **Cluster install ceremony** | ~8 commands of node-side typing | B-0754 zero-typing first-boot |
-| **Node failure repair** | Debugging + manual recovery | B-0760 USB-as-repair-tool |
+| **Helm vs Kustomize vs Argo CD** | Pick one; recommit when wrong | 081KSE6WT0008QG0R00063R6HB ServiceTitan-route + 081KSE6WT0008QG0R003D199HE GitOps standard |
+| **Per-vendor CRD differences** | Learn N vendor's CRDs | 081KSE6WT0008QG0R002CC6314 ontology negotiation; one mental model |
+| **Cluster install ceremony** | ~8 commands of node-side typing | 081KSGS9H0008QG0R002T3BJ2R zero-typing first-boot |
+| **Node failure repair** | Debugging + manual recovery | 081KSE6WT0008QG0R003WG0V6P USB-as-repair-tool |
 | **Backend choice for state store** | etcd vs Postgres vs CockroachDB vs DynamoDB; rewrite per choice | 081KSE6WT0008QG0R001AZQA5Z kine adapter family |
 | **Scheduling configuration** | Custom plugins, scheduler hints, taints/tolerations | 081KSE6WT0008QG0R0016CEE2Z Zeta-native scheduler + 081KSE6WT0008QG0R003WMG4XV fabric |
 | **Observability stack assembly** | Pick Prometheus + Loki + Tempo + Grafana + glue | Already pre-deployed per existing Zeta cluster |

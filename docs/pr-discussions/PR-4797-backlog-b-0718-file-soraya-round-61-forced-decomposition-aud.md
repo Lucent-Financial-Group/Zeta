@@ -94,7 +94,7 @@ Adds a new P3 backlog row (081KS923C0008QG0R000TE1589) capturing a meta-audit of
 
 **Changes:**
 - Added `docs/backlog/P3/081KS923C0008QG0R000TE1589-...md` with the audit framing, hypotheses, and acceptance criteria.
-- Updated `docs/BACKLOG.md` to include 081KS923C0008QG0R000TE1589 (and also adds an entry for B-0700).
+- Updated `docs/BACKLOG.md` to include 081KS923C0008QG0R000TE1589 (and also adds an entry for 081KRSKQ20008QG0R00367828S).
 
 ### Reviewed changes
 
@@ -103,7 +103,7 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated 3 c
 | File | Description |
 | ---- | ----------- |
 | docs/backlog/P3/081KS923C0008QG0R000TE1589-soraya-four-trigger-framework-cadence-audit-2026-05-23.md | New backlog row documenting the cadence/trigger audit plan and cross-references. |
-| docs/BACKLOG.md | Index update to list 081KS923C0008QG0R000TE1589 (but currently also introduces a broken B-0700 entry). |
+| docs/BACKLOG.md | Index update to list 081KS923C0008QG0R000TE1589 (but currently also introduces a broken 081KRSKQ20008QG0R00367828S entry). |
 
 ### COMMENTED — @AceHack (2026-05-24T02:09:35Z)
 
@@ -117,7 +117,7 @@ _(no body)_
 
 **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Remove dangling backlog link without a row file**
 
-`docs/BACKLOG.md` is generated from files under `docs/backlog/P*/B-*.md`, but this new index entry points to `backlog/P2/B-0700-soraya-continuous-loop-substrate-with-bus-escalation-2026-05-17.md`, which is not present in the repo. That creates a broken link in the canonical index and guarantees regeneration/check drift (the entry will disappear the next time the index is rebuilt), so the commit leaves the backlog surface inconsistent.
+`docs/BACKLOG.md` is generated from files under `docs/backlog/P*/B-*.md`, but this new index entry points to `backlog/P2/081KRSKQ20008QG0R00367828S-soraya-continuous-loop-substrate-with-bus-escalation-2026-05-17.md`, which is not present in the repo. That creates a broken link in the canonical index and guarantees regeneration/check drift (the entry will disappear the next time the index is rebuilt), so the commit leaves the backlog surface inconsistent.
 
 Useful? React with 👍 / 👎.
 
@@ -125,7 +125,7 @@ Useful? React with 👍 / 👎.
 
 **@copilot-pull-request-reviewer** (2026-05-24T01:09:21Z):
 
-P0: `docs/BACKLOG.md` now includes a link for **B-0700**, but there is no corresponding per-row file under `docs/backlog/P2/` (and no `id: B-0700` anywhere under `docs/backlog/`). This is a broken link and will diverge from the output of `tools/backlog/generate-index.sh` (likely failing backlog-index-integrity checks). Either add the missing `docs/backlog/P2/B-0700-...md` row file with `id: B-0700`, or remove this entry and regenerate `docs/BACKLOG.md` from the existing row files.
+P0: `docs/BACKLOG.md` now includes a link for **081KRSKQ20008QG0R00367828S**, but there is no corresponding per-row file under `docs/backlog/P2/` (and no `id: 081KRSKQ20008QG0R00367828S` anywhere under `docs/backlog/`). This is a broken link and will diverge from the output of `tools/backlog/generate-index.sh` (likely failing backlog-index-integrity checks). Either add the missing `docs/backlog/P2/081KRSKQ20008QG0R00367828S-...md` row file with `id: 081KRSKQ20008QG0R00367828S`, or remove this entry and regenerate `docs/BACKLOG.md` from the existing row files.
 
 ### Thread 3: docs/backlog/P3/081KS923C0008QG0R000TE1589-soraya-four-trigger-framework-cadence-audit-2026-05-23.md:43 (resolved)
 
@@ -150,7 +150,7 @@ Verify-before-fix per `.claude/rules/blocked-green-ci-investigate-threads.md`: t
 ## Otto-CLI autonomous-loop steward — 3 of 4 threads resolved
 
 **Resolved no-op**:
-- \`PRRT_kwDOSF9kNM6EWITL\` + \`PRRT_kwDOSF9kNM6EWIbs\` (B-0700 dangling link) — outdated; recurring across multiple PRs; B-0700 row file authoring is separate substrate work
+- \`PRRT_kwDOSF9kNM6EWITL\` + \`PRRT_kwDOSF9kNM6EWIbs\` (081KRSKQ20008QG0R00367828S dangling link) — outdated; recurring across multiple PRs; 081KRSKQ20008QG0R00367828S row file authoring is separate substrate work
 - \`PRRT_kwDOSF9kNM6EWIbv\` (line 43 \`||\` table) — known Copilot FP class per [\`.claude/rules/blocked-green-ci-investigate-threads.md\`](https://github.com/Lucent-Financial-Group/Zeta/blob/main/.claude/rules/blocked-green-ci-investigate-threads.md); direct \`awk\` shows single-pipe row (\`| (d) Fresh spec... | Razor-discipline... |\`) — 5th confirmed FP this session
 
 **Left unresolved for author**: \`PRRT_kwDOSF9kNM6EWIbx\` (line 32) — Copilot is correct that Soraya's NOTEBOOK quote has internal count tension ("current count is 4" but enumerates "rounds 54, 55, 56, 58, 59, 60 = 6 holds"). However, this is a **direct verbatim quote from Soraya's NOTEBOOK** preserved with formatting; per substrate-or-it-didn't-happen + verbatim-preservation discipline Otto-CLI won't silently rewrite Soraya's words. Recommended fix is an author-side clarifying parenthetical (e.g., note the "4" is counting consecutive-holds-at-write-time vs the 6-round enumeration covering subsequent holds), OR Soraya can correct her NOTEBOOK in next round and re-quote.

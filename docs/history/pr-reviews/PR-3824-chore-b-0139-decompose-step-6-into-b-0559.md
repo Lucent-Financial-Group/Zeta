@@ -77,7 +77,7 @@ Automated decomposition of step 6 from blob 081KQGDBJ0008QG0R002S9SWH6.
 - **`Copilot` (bot)** at 2026-05-16T08:16:11Z on `docs/backlog/P1/081KQGDBJ0008QG0R002S9SWH6-pre-substrate-kenji-era-otto-work-inventory-aaron-2026-05-01.md`:11 (association: NONE)
 
   <pre>
-  The `children` field was updated (B-0555, 081KRQ1AB0008QG0R002J484S1 added) but `last_updated` is still `2026-05-14`. Per tools/backlog/README.md, `last_updated` must be bumped on every content edit; please update it to 2026-05-16 to match the decomposition date.
+  The `children` field was updated (081KRQ1AB0008QG0R002GWSJGQ, 081KRQ1AB0008QG0R002J484S1 added) but `last_updated` is still `2026-05-14`. Per tools/backlog/README.md, `last_updated` must be bumped on every content edit; please update it to 2026-05-16 to match the decomposition date.
   </pre>
 
 **Replies:**
@@ -101,7 +101,7 @@ Automated decomposition of step 6 from blob 081KQGDBJ0008QG0R002S9SWH6.
   <pre>
   **&lt;sub&gt;&lt;sub&gt;![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Remove nonexistent child ID from decomposition list**
 
-  The parent row now lists `B-0555` as a child, but there is no backlog file with `id: B-0555` in `docs/backlog/**` (repo-wide search). This introduces a dangling decomposition edge, so consumers of the parent’s `children:` metadata cannot resolve that work item and the decomposition state becomes internally inconsistent (the row appears to have a child that cannot be tracked or completed). Either add the missing `B-0555` row in the same change or drop this ID from `children:`.
+  The parent row now lists `081KRQ1AB0008QG0R002GWSJGQ` as a child, but there is no backlog file with `id: 081KRQ1AB0008QG0R002GWSJGQ` in `docs/backlog/**` (repo-wide search). This introduces a dangling decomposition edge, so consumers of the parent’s `children:` metadata cannot resolve that work item and the decomposition state becomes internally inconsistent (the row appears to have a child that cannot be tracked or completed). Either add the missing `081KRQ1AB0008QG0R002GWSJGQ` row in the same change or drop this ID from `children:`.
 
   Useful? React with 👍 / 👎.
   </pre>
@@ -111,7 +111,7 @@ Automated decomposition of step 6 from blob 081KQGDBJ0008QG0R002S9SWH6.
   - **`AceHack` (human)** at 2026-05-16T10:54:30Z on `docs/backlog/P1/081KQGDBJ0008QG0R002S9SWH6-pre-substrate-kenji-era-otto-work-inventory-aaron-2026-05-01.md`:11 (association: MEMBER)
 
     <pre>
-    Cross-PR decomposition pattern: B-0555 is filed in sibling PR #3772 ("chore(b-0139): decompose step 1 into B-0555"), also in flight. The reference is dangling only at the file-tree time between the two PR landings — once #3772 merges, the parent `children:` resolves. This matches the "stale-but-fresh-looking findings" class in `.claude/rules/blocked-green-ci-investigate-threads.md`. Recommend merging #3772 first to clear the dangling state; no code change here.
+    Cross-PR decomposition pattern: 081KRQ1AB0008QG0R002GWSJGQ is filed in sibling PR #3772 ("chore(b-0139): decompose step 1 into 081KRQ1AB0008QG0R002GWSJGQ"), also in flight. The reference is dangling only at the file-tree time between the two PR landings — once #3772 merges, the parent `children:` resolves. This matches the "stale-but-fresh-looking findings" class in `.claude/rules/blocked-green-ci-investigate-threads.md`. Recommend merging #3772 first to clear the dangling state; no code change here.
     </pre>
 
 ## Fix commits (touching thread paths)

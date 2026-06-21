@@ -27,7 +27,7 @@
 
 ## Description
 
-Backlog row capturing Aaron's ask: 'can we make this auto matic as i add and others create their own clusers so 1, 2, 3, 4, etc... are all setup correctly unattended unless you interrupt?' — each USB self-organizes via mDNS discovery; bootstrap if first, join if Nth. Composes with B-0754 / 081KSE6WT0008QG0R003612WGJ / 081KSE6WT0008QG0R001NG9JZH.
+Backlog row capturing Aaron's ask: 'can we make this auto matic as i add and others create their own clusers so 1, 2, 3, 4, etc... are all setup correctly unattended unless you interrupt?' — each USB self-organizes via mDNS discovery; bootstrap if first, join if Nth. Composes with 081KSGS9H0008QG0R002T3BJ2R / 081KSE6WT0008QG0R003612WGJ / 081KSE6WT0008QG0R001NG9JZH.
 
 ## Outcome
 

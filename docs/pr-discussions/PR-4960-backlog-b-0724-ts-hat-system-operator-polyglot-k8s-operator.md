@@ -31,7 +31,7 @@ Future Rust (kube-rs) + Python (kopf) extensions land via the same pattern.
 - **The pattern** — multiple language operators watching the same CRDs; leader election picks active reconciler
 - **TS operator stack** — Max's preferred choices (kubernetes/client-node, NestJS optional, fastify webhook, nats.js + pino for tick emit)
 - **Learning curve** — captures Aaron's *"max needs to learn the operator pattern... he is backend/frontend over paas"* + *"he will be resistant probably like most devs at first until he internlizes is worth"*. Frames the Go scaffold as a TEACHING TOOL, with a pair-programming pattern + a 7-step suggested PR sequence + resource list (kubernetes.io concepts, kubebuilder book, @kubernetes/client-node README, existing TS-operator references).
-- **Composition with shipped substrate** — PR #4930 Go scaffold (reference/baseline), PR #4958 agentic-organization docs (CLUSTER_NATIVE_HAT_SYSTEM mentions the architecture), 081KSE6WT0008QG0R002RFEC0S (smoke test as polyglot validation gate), B-0723 (multi-kubelet × polyglot for redundancy)
+- **Composition with shipped substrate** — PR #4930 Go scaffold (reference/baseline), PR #4958 agentic-organization docs (CLUSTER_NATIVE_HAT_SYSTEM mentions the architecture), 081KSE6WT0008QG0R002RFEC0S (smoke test as polyglot validation gate), 081KSE6WT0008QG0R002CQS1HR (multi-kubelet × polyglot for redundancy)
 
 ## Test plan
 
@@ -107,7 +107,7 @@ Addressed in 7166bbb50 — dangling refs qualified with 'pending merge' or rewri
 
 **@copilot-pull-request-reviewer** (2026-05-25T17:26:40Z):
 
-This row references `B-0723` as an existing backlog item, but there is no `B-0723` row file under `docs/backlog/` currently. If `B-0723` isn’t filed yet, consider changing the text to avoid implying it exists (or add the missing row in the same PR) so cross-references remain resolvable.
+This row references `081KSE6WT0008QG0R002CQS1HR` as an existing backlog item, but there is no `081KSE6WT0008QG0R002CQS1HR` row file under `docs/backlog/` currently. If `081KSE6WT0008QG0R002CQS1HR` isn’t filed yet, consider changing the text to avoid implying it exists (or add the missing row in the same PR) so cross-references remain resolvable.
 
 **@AceHack** (2026-05-25T17:29:17Z):
 

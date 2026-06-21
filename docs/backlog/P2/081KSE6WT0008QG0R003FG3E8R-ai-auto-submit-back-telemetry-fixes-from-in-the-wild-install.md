@@ -8,15 +8,15 @@ ask: aaron 2026-05-25
 created: 2026-05-25
 last_updated: 2026-05-25
 depends_on:
-  - B-0754
+  - 081KSGS9H0008QG0R002T3BJ2R
   - 081KSE6WT0008QG0R003G0Y62D
 composes_with:
-  - B-0743
+  - 081KSE6WT0008QG0R003WW3YJQ
   - 081KSE6WT0008QG0R003612WGJ
   - 081KSE6WT0008QG0R001NG9JZH
   - 081KSE6WT0008QG0R000CV98PV
-  - B-0758
-  - B-0760
+  - 081KSE6WT0008QG0R00021PPX1
+  - 081KSE6WT0008QG0R003WG0V6P
   - 081KSE6WT0008QG0R0015ZF2G6
 tags: [cluster, telemetry, ai-native, network-effects, adoption, consent, distributed]
 ---
@@ -61,7 +61,7 @@ instance running in the wild:
 4. **Maintainers review** → merge if the fix is correct;
    reject + add to known-failure-modes if not; auto-merge if the
    fix matches an existing pattern (e.g., "another bare command
-   not found → add to systemd PATH" pattern matches B-0754
+   not found → add to systemd PATH" pattern matches 081KSGS9H0008QG0R002T3BJ2R
    iter-2 fix shape exactly)
 5. **Next operator on similar hardware** auto-applies the fix
    via fresh ISO download
@@ -75,7 +75,7 @@ similar hardware pays 0. **Network-effect substrate.**
 
 - [ ] Telemetry consent: opt-in at install-time via a 'press t
       to enable telemetry' keystroke in the role-prompt window
-      (per B-0743 'I execute, you fingerprint' consent pattern);
+      (per 081KSE6WT0008QG0R003WW3YJQ 'I execute, you fingerprint' consent pattern);
       default OFF for privacy-first home labs; documented clearly
 - [ ] Success-telemetry envelope: minimal payload (hardware specs
       from `lshw -short` + `lspci` + `dmidecode -t system`,
@@ -151,21 +151,21 @@ more operators.
 
 ## Composes with
 
-- B-0743 — "I execute, you fingerprint" consent pattern (the
+- 081KSE6WT0008QG0R003WW3YJQ — "I execute, you fingerprint" consent pattern (the
   telemetry opt-in keystroke is at install-time; the operator
   consents per install, not blanket)
-- B-0754 — zero-typing first-boot (the substrate the telemetry
+- 081KSGS9H0008QG0R002T3BJ2R — zero-typing first-boot (the substrate the telemetry
   agent runs inside)
 - 081KSE6WT0008QG0R003612WGJ — role taxonomy (telemetry covers all role variants)
 - 081KSE6WT0008QG0R001NG9JZH — HA control-plane (telemetry covers 1/3/5/7 node
   shapes)
 - 081KSE6WT0008QG0R000CV98PV — cluster auto-discovery (telemetry can capture which
   auto-discovery scenarios fire)
-- B-0758 — USB-persistent OS (telemetry covers diskless +
+- 081KSE6WT0008QG0R00021PPX1 — USB-persistent OS (telemetry covers diskless +
   internal-disk-present + USB-resident-OS shapes)
 - 081KSE6WT0008QG0R003G0Y62D — first-time-CLI-user persona (the adoption-scaling
   payoff lives in this persona's success metric)
-- B-0760 — USB-as-repair-tool (telemetry capture extends to
+- 081KSE6WT0008QG0R003WG0V6P — USB-as-repair-tool (telemetry capture extends to
   rebuild-from-USB flow)
 - 081KSE6WT0008QG0R0015ZF2G6 — ARC-AGI reference architecture (the training data
   source + the benchmark catalog generator)

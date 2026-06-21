@@ -76,7 +76,7 @@ bun src/Core.TypeScript/zflash/cli.ts --agent 2>&1 | tail -100
 - `USB: /dev/disk<N> (...)` (auto-detected; one external USB present)
 - Device details + pre-flash display showing current USB contents
 - `[agent-mode: auto-typing 'yes XXXX']` — the consent-token being auto-typed
-- **Touch ID prompt fires on your Mac** — touch the trackpad (this is the physical-presence gate per B-0743; agent CANNOT bypass it)
+- **Touch ID prompt fires on your Mac** — touch the trackpad (this is the physical-presence gate per 081KSE6WT0008QG0R003WW3YJQ; agent CANNOT bypass it)
 - `Flash complete.`
 - `iter-4.2: injecting ~/.ssh/id_ed25519.pub into /dev/disk<N> ESP...`
 - `iter-4.2: pubkey written; USB ejected. Safe to remove.`

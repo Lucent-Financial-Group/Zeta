@@ -63,7 +63,7 @@ Strong validation of 081KSGS9H0008QG0R0011BC7T2's reframing within minutes of it
 
 - [x] markdownlint clean
 - [x] BACKLOG.md regenerated
-- [x] Composes_with B-0754 + 081KSGS9H0008QG0R0011BC7T2 + 081KSGS9H0008QG0R001Q2DH2H + 081KSGS9H0008QG0R003JNSVR5 + zeta-install.sh + zeta-first-boot.sh
+- [x] Composes_with 081KSGS9H0008QG0R002T3BJ2R + 081KSGS9H0008QG0R0011BC7T2 + 081KSGS9H0008QG0R001Q2DH2H + 081KSGS9H0008QG0R003JNSVR5 + zeta-install.sh + zeta-first-boot.sh
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

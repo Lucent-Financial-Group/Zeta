@@ -92,9 +92,9 @@ Authored via **REST git-data API bypass** — `git push` hung on `git pack-objec
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-24T02:50:03Z on `docs/BACKLOG.md`:667 (association: NONE)
 
   <pre>
-  **&lt;sub&gt;&lt;sub&gt;![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Replace nonexistent B-0700 entry with new 081KSBMG30008QG0R000WJ9FMP row**
+  **&lt;sub&gt;&lt;sub&gt;![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Replace nonexistent 081KRSKQ20008QG0R00367828S entry with new 081KSBMG30008QG0R000WJ9FMP row**
 
-  This index line links to `backlog/P2/B-0700-...`, but there is no matching `docs/backlog/**/B-0700-*.md` row file, while the commit actually adds `docs/backlog/P3/081KSBMG30008QG0R000WJ9FMP-...md`. Since `docs/BACKLOG.md` is declared auto-generated and CI enforces parity via `bun tools/backlog/generate-index.ts --check` in `.github/workflows/backlog-index-integrity.yml`, this creates generated-index drift and leaves the newly added 081KSBMG30008QG0R000WJ9FMP task undiscoverable from the canonical backlog index.
+  This index line links to `backlog/P2/081KRSKQ20008QG0R00367828S-...`, but there is no matching `docs/backlog/**/081KRSKQ20008QG0R00367828S-*.md` row file, while the commit actually adds `docs/backlog/P3/081KSBMG30008QG0R000WJ9FMP-...md`. Since `docs/BACKLOG.md` is declared auto-generated and CI enforces parity via `bun tools/backlog/generate-index.ts --check` in `.github/workflows/backlog-index-integrity.yml`, this creates generated-index drift and leaves the newly added 081KSBMG30008QG0R000WJ9FMP task undiscoverable from the canonical backlog index.
 
   Useful? React with 👍 / 👎.
   </pre>
@@ -110,7 +110,7 @@ Authored via **REST git-data API bypass** — `git push` hung on `git pack-objec
 - **`Copilot` (bot)** at 2026-05-24T02:50:42Z on `docs/BACKLOG.md`:667 (association: NONE)
 
   <pre>
-  `docs/BACKLOG.md` is auto-generated (tools/backlog/README.md) and must match `bun tools/backlog/generate-index.ts --check` in CI. This newly added entry links to `backlog/P2/B-0700-...` which does not exist under `docs/backlog/` in this branch, and the index also does not include the newly added 081KSBMG30008QG0R000WJ9FMP row. Regenerate `docs/BACKLOG.md` from the per-row files and ensure only existing rows are referenced (including adding 081KSBMG30008QG0R000WJ9FMP).
+  `docs/BACKLOG.md` is auto-generated (tools/backlog/README.md) and must match `bun tools/backlog/generate-index.ts --check` in CI. This newly added entry links to `backlog/P2/081KRSKQ20008QG0R00367828S-...` which does not exist under `docs/backlog/` in this branch, and the index also does not include the newly added 081KSBMG30008QG0R000WJ9FMP row. Regenerate `docs/BACKLOG.md` from the per-row files and ensure only existing rows are referenced (including adding 081KSBMG30008QG0R000WJ9FMP).
 
   </pre>
 

@@ -35,7 +35,7 @@ Aaron 2026-05-25, two forwarded research dumps + extension:
 ## Three verbatim research docs preserved
 
 - **`docs/research/2026-05-25-kro-crossplane-koreo-kubevela-carvel-ack-kcc-aso-spectrum-aaron-forwarded.md`** — primary spectrum (low-level → middleware → kro → Crossplane)
-- **`docs/research/2026-05-25-fido2-webauthn-passkeys-oauth-oidc-biometric-bridge-aaron-forwarded.md`** — re-emphasized biometric/OIDC bridge (seeds B-0744)
+- **`docs/research/2026-05-25-fido2-webauthn-passkeys-oauth-oidc-biometric-bridge-aaron-forwarded.md`** — re-emphasized biometric/OIDC bridge (seeds 081KSE6WT0008QG0R000SH6E0R)
 - **`docs/research/2026-05-25-radius-terraform-pulumi-controllers-crossplane-alternatives-aaron-forwarded.md`** — Aaron's extension dump with Crossplane competitors
 
 ## 081KSE6WT0008QG0R002E6P098 row
@@ -53,15 +53,15 @@ Aaron 2026-05-25, two forwarded research dumps + extension:
 
 ## Composes with
 
-- B-0747 (machine substrate scope; sibling at different layer)
+- 081KSE6WT0008QG0R003D199HE (machine substrate scope; sibling at different layer)
 - 081KSE6WT0008QG0R000YYH3DY (reference k8s stack; directly affected by spectrum choices)
-- B-0741 (cross-fork ontology negotiation; uses whatever composition layer)
+- 081KSE6WT0008QG0R002CC6314 (cross-fork ontology negotiation; uses whatever composition layer)
 - 081KSE6WT0008QG0R0006HKTXJ (4-tier cluster topology; cloud tier composes with cloud-provider operators)
-- B-0744 (biometric/OIDC bridge — informed by the FIDO2/WebAuthn research preserved here)
+- 081KSE6WT0008QG0R000SH6E0R (biometric/OIDC bridge — informed by the FIDO2/WebAuthn research preserved here)
 
 ## Aaron's "composes with machine outside k8s and other things gitops like" signal
 
-The spectrum thinking extends BEYOND k8s. B-0749 (queued follow-up) carves the "GitOps-beyond-k8s + spectrum thinking generalization" scope.
+The spectrum thinking extends BEYOND k8s. 081KSE6WT0008QG0R001RG4FXD (queued follow-up) carves the "GitOps-beyond-k8s + spectrum thinking generalization" scope.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

@@ -35,7 +35,7 @@ Same pattern as 081KRMEXM0008QG0R000HHAG77: detect logic in place, wiring is the
 
 ## ID allocation
 
-- B-0531: in-flight (Lior PR #3520)
+- 081KRMEXM0008QG0R00070X79J: in-flight (Lior PR #3520)
 - 081KRMEXM0008QG0R003FZNK3E–081KRMEXM0008QG0R001BH94PS: on main
 - **081KRMEXM0008QG0R0034SS319: free** (verified via gh pr list search)
 
@@ -135,7 +135,7 @@ is the gap. Two-slice plan:
 - Slice B: --enforce-long-entries flag + lint-memory-index-entry-lengths
   gate.yml job (after baseline = 0)
 
-ID allocation: 081KRMEXM0008QG0R0034SS319 verified free (B-0531-081KRMEXM0008QG0R001BH94PS all taken/in-flight).
+ID allocation: 081KRMEXM0008QG0R0034SS319 verified free (081KRMEXM0008QG0R00070X79J-081KRMEXM0008QG0R001BH94PS all taken/in-flight).
 
 Composes with: 081KRMEXM0008QG0R000HHAG77 (sibling cleanup+gate pattern), 081KRMEXM0008QG0R001BH94PS (sibling
 substrate-honest residual capture), CLAUDE.md MEMORY.md convention.

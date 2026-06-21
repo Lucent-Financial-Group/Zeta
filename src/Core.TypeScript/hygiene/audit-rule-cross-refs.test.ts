@@ -60,7 +60,7 @@ describe("refExists", () => {
   });
 
   test("returns false for a non-existent backlog ID", () => {
-    expect(refExists({ fromRule: "test.md", raw: "B-9999", kind: "backlog-id" })).toBe(false);
+    expect(refExists({ fromRule: "test.md", raw: "081KED9T0X008QG0R003SZN0FB", kind: "backlog-id" })).toBe(false);
   });
 
   test("resolves a glob pattern when at least one match exists", () => {

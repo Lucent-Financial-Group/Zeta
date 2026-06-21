@@ -1,6 +1,6 @@
 ---
 pr_number: 5028
-title: "feat(B-0754): zero-typing USB install \u2014 first-boot service + nmtui fallback + role keystroke prompt"
+title: "feat(081KSGS9H0008QG0R002T3BJ2R): zero-typing USB install \u2014 first-boot service + nmtui fallback + role keystroke prompt"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-25T23:23:46Z"
@@ -12,7 +12,7 @@ archived_at: "2026-05-25T23:58:31Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5028: feat(B-0754): zero-typing USB install — first-boot service + nmtui fallback + role keystroke prompt
+# PR #5028: feat(081KSGS9H0008QG0R002T3BJ2R): zero-typing USB install — first-boot service + nmtui fallback + role keystroke prompt
 
 ## PR description
 
@@ -60,7 +60,7 @@ Switch to `Ctrl-Alt-F2` for a normal login shell. The first-boot service runs on
 ## Composes with
 
 - 081KSE6WT0008QG0R003WZAQKV — zflash + Touch ID PAM (the Mac-side one-touch flow this matches on the node side)
-- B-0743 — "I execute, you fingerprint" desktop admin consent pattern (extended here to "I execute, you walk away" for the node-side install)
+- 081KSE6WT0008QG0R003WW3YJQ — "I execute, you fingerprint" desktop admin consent pattern (extended here to "I execute, you walk away" for the node-side install)
 - 081KSE6WT0008QG0R0005XASX2 — destructive-tool authoring contract (preserved: the destructive consent moves to flash time, gated by Touch ID + nonce)
 - 081KSE6WT0008QG0R003612WGJ — role taxonomy expansion (the prompt grows when more host configs land)
 - 081KSE6WT0008QG0R001NG9JZH — HA control-plane + etcd (sibling architecture work)

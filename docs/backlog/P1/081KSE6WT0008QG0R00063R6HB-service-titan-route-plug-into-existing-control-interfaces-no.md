@@ -8,13 +8,13 @@ ask: aaron 2026-05-25
 created: 2026-05-25
 last_updated: 2026-05-25
 depends_on:
-  - B-0741
+  - 081KSE6WT0008QG0R002CC6314
 composes_with:
-  - B-0744
-  - B-0747
+  - 081KSE6WT0008QG0R000SH6E0R
+  - 081KSE6WT0008QG0R003D199HE
   - 081KSE6WT0008QG0R002E6P098
-  - B-0749
-  - B-0754
+  - 081KSE6WT0008QG0R001RG4FXD
+  - 081KSGS9H0008QG0R002T3BJ2R
   - 081KSE6WT0008QG0R003G0Y62D
   - 081KSE6WT0008QG0R0015ZF2G6
   - 081KSE6WT0008QG0R003FG3E8R
@@ -78,11 +78,11 @@ of adoption cost.
 **The new value Zeta adds happens INSIDE these standards**, not
 in parallel to them:
 
-- AI-native cluster install (B-0754) — shipped AS NixOS host
+- AI-native cluster install (081KSGS9H0008QG0R002T3BJ2R) — shipped AS NixOS host
   configs + ArgoCD Application manifests + Helm charts; operators
   consume via their existing GitOps + helm flow; Zeta substrate
   is "the most ergonomic NixOS + ArgoCD + KubeVela composition"
-- USB as repair tool (B-0760) — shipped AS standard kubeadm /
+- USB as repair tool (081KSE6WT0008QG0R003WG0V6P) — shipped AS standard kubeadm /
   k3sup join-flow extensions; operators get the repair semantics
   by adopting Zeta's k8s manifests in their existing cluster
 - ARC-AGI reference architecture (081KSE6WT0008QG0R0015ZF2G6) — published AS a
@@ -101,7 +101,7 @@ in parallel to them:
 
 ## Ontology negotiation at the standards layer (the killer feature)
 
-The B-0741 ontology-negotiation substrate becomes **far more
+The 081KSE6WT0008QG0R002CC6314 ontology-negotiation substrate becomes **far more
 valuable when it operates AT the standards layer** instead of
 per-project or per-cluster:
 
@@ -125,7 +125,7 @@ benefits, not just Zeta-cluster operators.
 - [ ] Document the policy explicitly in `docs/strategic-substrate.md`
       OR in CLAUDE.md+AGENTS.md so every future substrate
       authoring decision is filtered through it
-- [ ] Audit existing cluster-install substrate (B-0754 v1
+- [ ] Audit existing cluster-install substrate (081KSGS9H0008QG0R002T3BJ2R v1
       currently in iteration-2 testing) against this filter:
       what parts INVENT new control interfaces? Which parts plug
       into existing standards? Refactor toward existing standards
@@ -160,7 +160,7 @@ ServiceTitan strategic filter: every cluster-install substrate
 decision should pass through "are we inventing or adopting?"
 and prefer adopting.
 
-The composition with B-0741 (ontology negotiation):
+The composition with 081KSE6WT0008QG0R002CC6314 (ontology negotiation):
 
 - **Without this row**: Zeta builds its own ontology layer +
   asks operators to translate from their vocabulary to Zeta's
@@ -174,19 +174,19 @@ layer is the load-bearing differentiator.
 
 ## Composes with
 
-- B-0741 — ontology+category negotiation (the substrate that
+- 081KSE6WT0008QG0R002CC6314 — ontology+category negotiation (the substrate that
   operates at the standards layer per this row's sharpening)
-- B-0744 — FIDO2/WebAuthn auth bridge (plug into existing
+- 081KSE6WT0008QG0R000SH6E0R — FIDO2/WebAuthn auth bridge (plug into existing
   WebAuthn + OIDC standards rather than invent new auth
   protocols)
-- B-0747 — git-native per-machine state + GitOps reconciliation
+- 081KSE6WT0008QG0R003D199HE — git-native per-machine state + GitOps reconciliation
   (the existing GitOps standard Zeta plugs into via ArgoCD /
   Flux)
 - 081KSE6WT0008QG0R002E6P098 — kro/Crossplane/Koreo/middleware spectrum (the
   existing k8s-CRD-substitution substrate Zeta adopts)
-- B-0749 — KubeVela/OAM Component/Trait (the existing app-model
+- 081KSE6WT0008QG0R001RG4FXD — KubeVela/OAM Component/Trait (the existing app-model
   standard Zeta adopts)
-- B-0754 — zero-typing first-boot (must be auditable against
+- 081KSGS9H0008QG0R002T3BJ2R — zero-typing first-boot (must be auditable against
   this filter)
 - 081KSE6WT0008QG0R003G0Y62D — first-time-CLI-user persona (the persona benefits
   when Zeta plugs into standards they may already know)

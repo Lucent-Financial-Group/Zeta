@@ -60,13 +60,13 @@ Empirical anchor for Path B: this session's successful agent-driven flash via th
 ## Composes with
 
 - 081KSE6WT0008QG0R003WZAQKV — zflash + Touch ID PAM + short challenge (the substrate this enhances)
-- B-0743 — "I execute, you fingerprint" desktop admin consent pattern (the rule this skill instantiates)
+- 081KSE6WT0008QG0R003WW3YJQ — "I execute, you fingerprint" desktop admin consent pattern (the rule this skill instantiates)
 - 081KSE6WT0008QG0R0005XASX2 — destructive-tool authoring contract (the safety floor preserved)
-- B-0738 / B-0739 — Linux + Windows extensions (not in scope here)
+- 081KSE6WT0008QG0R003BG8M6J / 081KSE6WT0008QG0R0025170CV — Linux + Windows extensions (not in scope here)
 
 ## Test plan
 
-- [x] Edits made in isolated worktree (`/private/tmp/zeta-zflash-detail-2026-05-25`) off fresh `origin/main` per B-0751 (agents don't touch the operator's primary checkout)
+- [x] Edits made in isolated worktree (`/private/tmp/zeta-zflash-detail-2026-05-25`) off fresh `origin/main` per 081KSE6WT0008QG0R003YYC9PV (agents don't touch the operator's primary checkout)
 - [x] `bun full-ai-cluster/tools/flash-usb.ts --help` parses (no TS syntax errors)
 - [x] Skill SKILL.md frontmatter valid; shows up in skill router listing
 - [ ] CI green

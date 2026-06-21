@@ -18,7 +18,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## Summary
 
-Backlog row captured mid-B-0754-v1 session: Aaron asked "if we support mutiple control plane nodes when i have two or more how is etcd involved?".
+Backlog row captured mid-081KSGS9H0008QG0R002T3BJ2R-v1 session: Aaron asked "if we support mutiple control plane nodes when i have two or more how is etcd involved?".
 
 Architecture target: 1/3/5/7 odd-count control-plane HA via k3s embedded etcd raft quorum, with stable API endpoint via DNS round-robin (v1) or kube-vip/keepalived virtual IP (v2). Single-control-plane stays as easy default.
 
@@ -34,7 +34,7 @@ Even-count refusal at config-time (2/4/6 control-planes split-brain on partition
 
 ## Composes with
 
-- B-0754 (zero-typing first-boot — needs 'h' / 'j' keystroke options when HA mode is opted in)
+- 081KSGS9H0008QG0R002T3BJ2R (zero-typing first-boot — needs 'h' / 'j' keystroke options when HA mode is opted in)
 - 081KSE6WT0008QG0R003612WGJ (role taxonomy expansion)
 
 ## Test plan
@@ -49,12 +49,12 @@ Even-count refusal at config-time (2/4/6 control-planes split-brain on partition
 
 ## Pull request overview
 
-Adds a single P3 backlog row scoping future HA control-plane work for k3s: odd-count embedded-etcd quorum (1/3/5/7), explicit refusal of even counts, three opt-in modes (`single`/`ha-init`/`ha-join`), and a stable API endpoint via DNS round-robin (v1) or kube-vip/keepalived VIP (v2). The row composes with B-0754 (zero-typing first-boot) and 081KSE6WT0008QG0R003612WGJ (role taxonomy).
+Adds a single P3 backlog row scoping future HA control-plane work for k3s: odd-count embedded-etcd quorum (1/3/5/7), explicit refusal of even counts, three opt-in modes (`single`/`ha-init`/`ha-join`), and a stable API endpoint via DNS round-robin (v1) or kube-vip/keepalived VIP (v2). The row composes with 081KSGS9H0008QG0R002T3BJ2R (zero-typing first-boot) and 081KSE6WT0008QG0R003612WGJ (role taxonomy).
 
 **Changes:**
 - New P3 backlog row `081KSE6WT0008QG0R001NG9JZH` capturing HA control-plane architecture target and acceptance criteria.
 - Documents stable API endpoint options (DNS RR, kube-vip, external LB) and k3s embedded-etcd operational notes (snapshots, join token, removal).
-- Cross-references planned extensions to B-0754's keystroke prompt and a future `zflash --ha-bootstrap-ip` flag.
+- Cross-references planned extensions to 081KSGS9H0008QG0R002T3BJ2R's keystroke prompt and a future `zflash --ha-bootstrap-ip` flag.
 
 ## Review threads
 

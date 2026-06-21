@@ -91,7 +91,7 @@ Per Aaron's 2026-05-23 21:30Z direction: Otto auto-ships Soraya findings immedia
 - **`Copilot` (bot)** at 2026-05-24T00:17:25Z on `docs/BACKLOG.md`:667 (association: NONE)
 
   <pre>
-  The new BACKLOG entry for B-0700 links to `backlog/P2/B-0700-soraya-continuous-loop-substrate-with-bus-escalation-2026-05-17.md`, but there is no corresponding per-row file under `docs/backlog/` (search for `id: B-0700` returns no matches). This leaves a broken link and will likely fail the backlog index integrity gate; either add the missing row file or remove this line and regenerate `docs/BACKLOG.md` from the row files (`tools/backlog/generate-index.sh`).
+  The new BACKLOG entry for 081KRSKQ20008QG0R00367828S links to `backlog/P2/081KRSKQ20008QG0R00367828S-soraya-continuous-loop-substrate-with-bus-escalation-2026-05-17.md`, but there is no corresponding per-row file under `docs/backlog/` (search for `id: 081KRSKQ20008QG0R00367828S` returns no matches). This leaves a broken link and will likely fail the backlog index integrity gate; either add the missing row file or remove this line and regenerate `docs/BACKLOG.md` from the row files (`tools/backlog/generate-index.sh`).
 
   </pre>
 

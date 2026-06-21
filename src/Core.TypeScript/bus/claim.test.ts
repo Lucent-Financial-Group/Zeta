@@ -269,20 +269,20 @@ describe("claim.ts — worktree field (081KRFA460008QG0R001SXP0C2)", () => {
   });
 
   test("acquire surfaces explicit --worktree value in check output", () => {
-    const wt = "/tmp/zeta-test-worktree-B-0601";
-    run("acquire", "--from", "otto", "--item", "B-0601", "--worktree", wt);
+    const wt = "/tmp/zeta-test-worktree-081KDWG1RV008QG0R00180WEJT";
+    run("acquire", "--from", "otto", "--item", "081KDWG1RV008QG0R00180WEJT", "--worktree", wt);
 
-    const r = run("check", "--item", "B-0601");
+    const r = run("check", "--item", "081KDWG1RV008QG0R00180WEJT");
     expect(r.exitCode).toBe(1);
     expect(r.stdout).toContain("claimed by otto");
     expect(r.stdout).toContain(`[worktree: ${wt}]`);
   });
 
   test("check --json includes worktree on the claim record", () => {
-    const wt = "/tmp/zeta-test-worktree-B-0602";
-    run("acquire", "--from", "otto", "--item", "B-0602", "--worktree", wt);
+    const wt = "/tmp/zeta-test-worktree-081KDWG3KE008QG0R003Q76ZM6";
+    run("acquire", "--from", "otto", "--item", "081KDWG3KE008QG0R003Q76ZM6", "--worktree", wt);
 
-    const r = run("check", "--item", "B-0602", "--json");
+    const r = run("check", "--item", "081KDWG3KE008QG0R003Q76ZM6", "--json");
     expect(r.exitCode).toBe(1);
     const out = JSON.parse(r.stdout);
     expect(out.claims).toHaveLength(1);
@@ -293,19 +293,19 @@ describe("claim.ts — worktree field (081KRFA460008QG0R001SXP0C2)", () => {
     const r = run(
       "acquire",
       "--from", "otto-cli",
-      "--item", "B-0603",
+      "--item", "081KDWG5E1008QG0R00343E5J8",
       "--branch", "feat/b0603-test",
-      "--worktree", "/tmp/zeta-test-worktree-B-0603",
+      "--worktree", "/tmp/zeta-test-worktree-081KDWG5E1008QG0R00343E5J8",
     );
     expect(r.exitCode).toBe(0);
     expect(r.stdout).toContain("(feat/b0603-test)");
-    expect(r.stdout).toContain("[worktree: /tmp/zeta-test-worktree-B-0603]");
+    expect(r.stdout).toContain("[worktree: /tmp/zeta-test-worktree-081KDWG5E1008QG0R00343E5J8]");
   });
 
   test("activeClaims returns claim records WITH a worktree field when payload carries one", () => {
     const wt = "/tmp/zeta-test-worktree-shape";
-    run("acquire", "--from", "otto", "--item", "B-0604", "--worktree", wt);
-    const r = run("check", "--item", "B-0604", "--json");
+    run("acquire", "--from", "otto", "--item", "081KDWG78M008QG0R000CCP1CA", "--worktree", wt);
+    const r = run("check", "--item", "081KDWG78M008QG0R000CCP1CA", "--json");
     expect(r.exitCode).toBe(1);
     const out = JSON.parse(r.stdout);
     expect(out.claims[0].worktree).toBe(wt);
@@ -317,7 +317,7 @@ describe("claim.ts — worktree field (081KRFA460008QG0R001SXP0C2)", () => {
     const r1 = run(
       "acquire",
       "--from", "otto-cli",
-      "--item", "B-0605",
+      "--item", "081KDWG937008QG0R003AKCAGC",
       "--worktree", "/tmp/zeta-test-cli-worktree",
     );
     expect(r1.exitCode).toBe(0);
@@ -327,7 +327,7 @@ describe("claim.ts — worktree field (081KRFA460008QG0R001SXP0C2)", () => {
     const r2 = run(
       "acquire",
       "--from", "otto-desktop",
-      "--item", "B-0605",
+      "--item", "081KDWG937008QG0R003AKCAGC",
       "--worktree", "/tmp/zeta-test-desktop-worktree",
     );
     expect(r2.exitCode).toBe(1);
@@ -335,12 +335,12 @@ describe("claim.ts — worktree field (081KRFA460008QG0R001SXP0C2)", () => {
   });
 
   test("same sender re-acquiring from a different worktree is idempotent (existing behavior preserved)", () => {
-    const r1 = run("acquire", "--from", "otto-cli", "--item", "B-0606", "--worktree", "/tmp/A");
+    const r1 = run("acquire", "--from", "otto-cli", "--item", "081KDWGAXT008QG0R0010RKAKR", "--worktree", "/tmp/A");
     expect(r1.exitCode).toBe(0);
     // Same sender + same item from different worktree: still idempotent re-acquire,
     // matching the pre-081KRFA460008QG0R001SXP0C2 same-sender behavior. The check filter is on `from`,
     // not on (from, worktree). Substrate-honest design decision recorded in the row.
-    const r2 = run("acquire", "--from", "otto-cli", "--item", "B-0606", "--worktree", "/tmp/B");
+    const r2 = run("acquire", "--from", "otto-cli", "--item", "081KDWGAXT008QG0R0010RKAKR", "--worktree", "/tmp/B");
     expect(r2.exitCode).toBe(0);
   });
 
@@ -349,7 +349,7 @@ describe("claim.ts — worktree field (081KRFA460008QG0R001SXP0C2)", () => {
   // and would otherwise be recorded as the worktree path. parseArgs now
   // distinguishes bare-flag (boolean true) from explicit string values.
   test("bare --worktree (no value) is rejected with a clear error", () => {
-    const r = run("acquire", "--from", "otto", "--item", "B-0607", "--worktree");
+    const r = run("acquire", "--from", "otto", "--item", "081KDWGCRD008QG0R002NKPC87", "--worktree");
     expect(r.exitCode).toBe(1);
     expect(r.stderr).toContain("--worktree requires a path argument");
   });
@@ -359,7 +359,7 @@ describe("claim.ts — worktree field (081KRFA460008QG0R001SXP0C2)", () => {
   // rejected. The bare-flag check is on the boolean sentinel, not on the
   // string content.
   test("explicit --worktree true (literal string) is accepted as a valid path", () => {
-    const r = run("acquire", "--from", "otto", "--item", "B-0608", "--worktree", "true", "--json");
+    const r = run("acquire", "--from", "otto", "--item", "081KDWGEK0008QG0R0015F7EA7", "--worktree", "true", "--json");
     expect(r.exitCode).toBe(0);
     const out = JSON.parse(r.stdout);
     expect(out.acquired).toBe(true);
@@ -507,14 +507,14 @@ describe("claim.ts — acquire lock cleanup (P1)", () => {
   afterEach(cleanTestDir);
 
   test("no lock files remain in bus dir after acquire", () => {
-    run("acquire", "--from", "otto", "--item", "B-0555");
+    run("acquire", "--from", "otto", "--item", "081KRQ1AB0008QG0R002GWSJGQ");
     const lockFiles = readdirSync(TEST_DIR).filter((f) => f.startsWith("acquire-"));
     expect(lockFiles).toHaveLength(0);
   });
 
   test("no lock files remain after failed acquire", () => {
-    run("acquire", "--from", "vera", "--item", "B-0555");
-    run("acquire", "--from", "otto", "--item", "B-0555"); // blocked
+    run("acquire", "--from", "vera", "--item", "081KRQ1AB0008QG0R002GWSJGQ");
+    run("acquire", "--from", "otto", "--item", "081KRQ1AB0008QG0R002GWSJGQ"); // blocked
     const lockFiles = readdirSync(TEST_DIR).filter((f) => f.startsWith("acquire-"));
     expect(lockFiles).toHaveLength(0);
   });

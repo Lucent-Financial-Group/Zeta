@@ -14,7 +14,7 @@ composes_with:
   - 081KRW63S0008QG0R000QJR08H
   - 081KRW63S0008QG0R001SAHYKV
   - 081KS3X9Y0008QG0R00218150M
-  - B-0741
+  - 081KSE6WT0008QG0R002CC6314
   - 081KSGS9H0008QG0R000Q18PGQ
   - 081KSKBP80008QG0R000J2YFK2
   - 081KSKBP80008QG0R0031DTHS9
@@ -124,7 +124,7 @@ serializable as a typed expression tree. Composes with:
   high-bandwidth substrate-form of the pipeline)
 - 081KSGS9H0008QG0R000Q18PGQ (cluster-fork-as-trust-boundary: serialized pipelines cross fork
   boundaries with their schemas)
-- B-0741 (fork-negotiated ontology: pipeline expression trees carry their
+- 081KSE6WT0008QG0R002CC6314 (fork-negotiated ontology: pipeline expression trees carry their
   type-signatures so cross-fork negotiation can verify shape compatibility)
 - 081KRQ1AB0008QG0R0001J9PFT (operator-substrate-cluster-engine: cluster-side execution of
   serialized expressions)
@@ -166,7 +166,7 @@ from schemas registered as rows (081KRW63S0008QG0R000QJR08H substrate). Composes
 - Pipeline schema lives as a row in the schemas-as-rows substrate
 - Type provider reads the row at compile time
 - Generated types parameterize the CE surface
-- Cross-fork pipeline negotiation uses the same row-schemas (B-0741)
+- Cross-fork pipeline negotiation uses the same row-schemas (081KSE6WT0008QG0R002CC6314)
 
 Substrate-engineering work: build the type provider + the row-schema
 format + the cross-fork negotiation protocol.
@@ -257,7 +257,7 @@ with no runtime state tracking needed.
 | 081KRW63S0008QG0R000QJR08H (schemas-as-rows / participation economy) | Pipeline schemas live as rows; Target 5 integration |
 | 081KRW63S0008QG0R001SAHYKV (English-as-projection I(D(x))=x) | Serialized expression trees ARE the substrate-form; Target 3 composition |
 | 081KS3X9Y0008QG0R00218150M (multi-oracle BFT) | One of the backends in Target 4; consensus-mediated stream substrate |
-| B-0741 (fork-negotiated ontology) | Cross-fork stream-pipeline negotiation per Target 5 |
+| 081KSE6WT0008QG0R002CC6314 (fork-negotiated ontology) | Cross-fork stream-pipeline negotiation per Target 5 |
 | 081KSGS9H0008QG0R000Q18PGQ (cluster-fork-as-trust-boundary) | Stream pipelines crossing fork boundaries; cluster-engine execution |
 | 081KSKBP80008QG0R000J2YFK2 (Nemerle dotnet support) | Sibling language toolkit for cases where F# CE hits its limits (compile-time syntax extension) |
 | 081KSKBP80008QG0R0031DTHS9 (asymmetric-authorship + monad-propagation cluster) | Foundation this row builds on (PR #5579 four-corner ownership extension landed there) |
@@ -283,7 +283,7 @@ Searched surfaces:
 
 - `docs/agendas/`: no specific stream-substrate agenda; agendas exist for adjacent topics (ace-package-manager / ai-autonomy / etc.)
 - `docs/trajectories/`: no specific stream-substrate trajectory
-- `docs/backlog/`: 081KSKBP80008QG0R000N9W9XH (ConvFeedback at conversation scope); 081KRQ1AB0008QG0R0001J9PFT (cluster-engine); 081KRW63S0008QG0R000QJR08H (schemas-as-rows); 081KS3X9Y0008QG0R00218150M (multi-oracle BFT); 081KRW63S0008QG0R001SAHYKV (English-as-projection); B-0741 (fork-negotiation); 081KSGS9H0008QG0R000Q18PGQ (cluster-fork-as-trust-boundary); 081KSKBP80008QG0R000J2YFK2 (Nemerle); 081KSKBP80008QG0R0031DTHS9 (asymmetric-authorship + monad-propagation cluster). NO existing row covers the 4-kind stream taxonomy + F# CE machinery + protocol-typing combination
+- `docs/backlog/`: 081KSKBP80008QG0R000N9W9XH (ConvFeedback at conversation scope); 081KRQ1AB0008QG0R0001J9PFT (cluster-engine); 081KRW63S0008QG0R000QJR08H (schemas-as-rows); 081KS3X9Y0008QG0R00218150M (multi-oracle BFT); 081KRW63S0008QG0R001SAHYKV (English-as-projection); 081KSE6WT0008QG0R002CC6314 (fork-negotiation); 081KSGS9H0008QG0R000Q18PGQ (cluster-fork-as-trust-boundary); 081KSKBP80008QG0R000J2YFK2 (Nemerle); 081KSKBP80008QG0R0031DTHS9 (asymmetric-authorship + monad-propagation cluster). NO existing row covers the 4-kind stream taxonomy + F# CE machinery + protocol-typing combination
 - `.claude/rules/`: asymmetric-authorship-and-protocol-types-via-monad-propagation rule (target of PR #5579); no specific stream-kind taxonomy rule
 - `memory/`: extensive operator substrate on the conversation cascade (24 PRs today); Kestrel persona substrate at `memory/kestrel/conversations/2026-05-27-...`
 - `docs/research/`: cross-AI conversation substrate from today's cascade (Amara + Prism + Kestrel ferries)

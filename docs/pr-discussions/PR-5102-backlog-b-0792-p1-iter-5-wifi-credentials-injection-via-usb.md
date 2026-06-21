@@ -39,7 +39,7 @@ Aaron's PC1 booted iter-4.2-flashed USB; installed; rebooted; came up on console
 ## Composes with
 
 - 081KSGS9H0008QG0R002T3BJ2R (iter-4 SSH+password substrate; depends_on; iter-5 extends ESP-injection pattern)
-- B-0754 / 081KSE6WT0008QG0R003G0Y62D / 081KSE6WT0008QG0R0029S1D5Z / 081KSE6WT0008QG0R0004AP0ZA / 081KSGS9H0008QG0R00153CQ8B
+- 081KSGS9H0008QG0R002T3BJ2R / 081KSE6WT0008QG0R003G0Y62D / 081KSE6WT0008QG0R0029S1D5Z / 081KSE6WT0008QG0R0004AP0ZA / 081KSGS9H0008QG0R00153CQ8B
 - \`.claude/rules/human-audit-and-legal-risk-acceptance-pattern-in-settings.md\` (potential \`_wifi_credentials_acceptance\` block if cluster goes beyond personal homelab)
 
 ## Security framing

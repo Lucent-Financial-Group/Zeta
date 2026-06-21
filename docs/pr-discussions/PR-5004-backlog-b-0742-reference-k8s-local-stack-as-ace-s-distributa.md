@@ -18,11 +18,11 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## Summary
 
-Aaron 2026-05-25, continuing the ACE+fork-negotiation arc after B-0741:
+Aaron 2026-05-25, continuing the ACE+fork-negotiation arc after 081KSE6WT0008QG0R002CC6314:
 
 > *"hats become our negoated fork structure on top of a referece k8s local stack in zeta so anyone can use the reference stack and negoate back hats and new cluster primitives / charts ontology negoation, ace can distribute the reference stack itself as PoC that it has reliable AI control over all the package managers deterministicly and declarative / desired state way for easy git ops ai native human native understanding."*
 
-**Operational anchor for B-0741.** B-0741 = WHAT the primitive is; 081KSE6WT0008QG0R000YYH3DY = HOW it's empirically demonstrated via reference-cluster-as-Ace-package.
+**Operational anchor for 081KSE6WT0008QG0R002CC6314.** 081KSE6WT0008QG0R002CC6314 = WHAT the primitive is; 081KSE6WT0008QG0R000YYH3DY = HOW it's empirically demonstrated via reference-cluster-as-Ace-package.
 
 ## Three substantive claims
 
@@ -42,7 +42,7 @@ Inventory of already-landed PR substrate:
 
 ### 2. Hats become the negotiated fork structure ON TOP of reference
 
-Forks declare delta via hat-ontology; cross-fork negotiation maps capabilities (B-0741 surface 2). Worked example: LFG-cluster `trading-bot-driver` hat + Healthcare-Zeta-fork `hipaa-data-handler` hat negotiate; overlap is `audit-*` capabilities; disjoints stay per-fork; signed mapping is recorded.
+Forks declare delta via hat-ontology; cross-fork negotiation maps capabilities (081KSE6WT0008QG0R002CC6314 surface 2). Worked example: LFG-cluster `trading-bot-driver` hat + Healthcare-Zeta-fork `hipaa-data-handler` hat negotiate; overlap is `audit-*` capabilities; disjoints stay per-fork; signed mapping is recorded.
 
 ### 3. Ace distributes the reference stack as PoC of reliable AI control over all PMs
 
@@ -64,7 +64,7 @@ Single `ace install zeta/reference-cluster@v1` dispatches across **Nix flakes + 
 
 ## Composes with
 
-- **B-0741** (abstract primitive this row anchors)
+- **081KSE6WT0008QG0R002CC6314** (abstract primitive this row anchors)
 - 081KSE6WT0008QG0R0004HV6RR (hat ontology)
 - 081KQZVQW0008QG0R000ZHEN62 + 081KR2E4K0008QG0R0033WVCXE + 081KR2E4K0008QG0R002YE3MMD (Ace PM CLI lineage; scope item 3 extends 081KR2E4K0008QG0R002YE3MMD to whole-cluster packages)
 - 081KSE6WT0008QG0R0006HKTXJ (4-tier federation) + 081KSE6WT0008QG0R003C9KGQE (Reticulum)

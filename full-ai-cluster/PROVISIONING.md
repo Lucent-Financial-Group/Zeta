@@ -51,7 +51,7 @@ Commit + push to main so the install reads from a real ref.
 ## Step 4: boot the box on the USB
 
 UEFI boot order → USB first. The first-boot service auto-launches
-on tty1 (per B-0754 zero-typing scope):
+on tty1 (per 081KSGS9H0008QG0R002T3BJ2R zero-typing scope):
 
 1. **10-sec role prompt**: press `c` for control-plane (default
    on timeout), `w` for worker-gpu

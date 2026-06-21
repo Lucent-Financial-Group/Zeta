@@ -39,7 +39,7 @@ Captures the substrate-honest residual after this session's 4-batch Otto-279 per
 
 ## ID allocation
 
-- B-0531: in-flight (Lior PR #3520)
+- 081KRMEXM0008QG0R00070X79J: in-flight (Lior PR #3520)
 - 081KRMEXM0008QG0R003FZNK3E, 081KRMEXM0008QG0R000K25MXS, 081KRMEXM0008QG0R003GP8W0C, 081KRMEXM0008QG0R000HHAG77: on main
 - 081KRMEXM0008QG0R001BH94PS: free (verified)
 

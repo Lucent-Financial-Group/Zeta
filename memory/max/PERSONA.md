@@ -54,7 +54,7 @@ Aaron 2026-05-25 added Max's primary near-term workstream: **own the tier-2 Dock
 |---|---|---|
 | 1 — pure-code (no Docker, no K8s) | Aaron + Otto | F# Local Loop tests |
 | **2 — Docker-observable (Docker Desktop + native multi-node kind)** | **Max** | This workstream |
-| 3 — full CI in real cluster | Aaron + Otto + the iter-3 NixOS cluster | Already shipping per B-0754 |
+| 3 — full CI in real cluster | Aaron + Otto + the iter-3 NixOS cluster | Already shipping per 081KSGS9H0008QG0R002T3BJ2R |
 
 Max's contract: **touch the Docker Desktop GUI only where the API/CLI demonstrably can't do it.** Everything else (clusters, app deploys, port-forwards, kubectl, helm, argo, observability stacks) gets scripted or skill-encoded. If Max finds himself clicking a button twice, that's a signal to encode the next click as a skill or script.
 

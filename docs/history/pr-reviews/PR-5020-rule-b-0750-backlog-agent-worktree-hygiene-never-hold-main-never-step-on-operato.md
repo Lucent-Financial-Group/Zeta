@@ -29,13 +29,13 @@
 
 Operator 2026-05-25: 'we need to fix this mess yall always stepping on each other and me constantly'.
 
-Empirical anchor: 37 agent worktrees mass-cleaned same session (081KSE6WT0008QG0R0005XASX2→B-0749 cascade leftovers) + 1 peer worktree holding [main] at stale SHA blocked operator's git checkout main.
+Empirical anchor: 37 agent worktrees mass-cleaned same session (081KSE6WT0008QG0R0005XASX2→081KSE6WT0008QG0R001RG4FXD cascade leftovers) + 1 peer worktree holding [main] at stale SHA blocked operator's git checkout main.
 
 Ships:
 - .claude/rules/agent-worktree-hygiene-never-hold-main-never-step-on-operator-cleanup-on-pr-merge.md (auto-loads at cold-boot)
 - 081KSE6WT0008QG0R003YYC9PV backlog row with 5 mechanization scope items
 
-Composes with 081KRMEXM0008QG0R000X1PPGC cron-sentinel-mutex + B-0751 per-agent-clones architecture (sibling; B-0751 supersedes the worktree-pool scope item).
+Composes with 081KRMEXM0008QG0R000X1PPGC cron-sentinel-mutex + 081KSE6WT0008QG0R003YYC9PV per-agent-clones architecture (sibling; 081KSE6WT0008QG0R003YYC9PV supersedes the worktree-pool scope item).
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
@@ -133,7 +133,7 @@ Composes with 081KRMEXM0008QG0R000X1PPGC cron-sentinel-mutex + B-0751 per-agent-
 - **`Copilot` (bot)** at 2026-05-25T22:52:34Z on `docs/backlog/P2/081KSE6WT0008QG0R003YYC9PV-agent-worktree-hygiene-rule-landing-plus-mechanization-target-cleanup-tooling-plus-worktree-pool-primitive-aaron-2026-05-25.md`:66 (association: NONE)
 
   <pre>
-  PR description mentions a sibling “B-0751 per-agent-clones architecture” that supersedes the worktree-pool scope item, but this PR doesn’t add any B-0751 row and this backlog row still lists a worktree-pool primitive as in-scope. Either add/mention B-0751 here (and mark the pool item superseded/deferred), or drop the B-0751 supersedes claim from the PR description to keep description vs shipped artifacts consistent.
+  PR description mentions a sibling “081KSE6WT0008QG0R003YYC9PV per-agent-clones architecture” that supersedes the worktree-pool scope item, but this PR doesn’t add any 081KSE6WT0008QG0R003YYC9PV row and this backlog row still lists a worktree-pool primitive as in-scope. Either add/mention 081KSE6WT0008QG0R003YYC9PV here (and mark the pool item superseded/deferred), or drop the 081KSE6WT0008QG0R003YYC9PV supersedes claim from the PR description to keep description vs shipped artifacts consistent.
   </pre>
 
 **Replies:**
@@ -141,7 +141,7 @@ Composes with 081KRMEXM0008QG0R000X1PPGC cron-sentinel-mutex + B-0751 per-agent-
   - **`AceHack` (human)** at 2026-05-26T00:52:43Z on `docs/backlog/P2/081KSE6WT0008QG0R003YYC9PV-agent-worktree-hygiene-rule-landing-plus-mechanization-target-cleanup-tooling-plus-worktree-pool-primitive-aaron-2026-05-25.md`:66 (association: MEMBER)
 
     <pre>
-    Fixed in 018adea1: B-0751 (per-agent-clones architecture) named in Scope item 2 as potential superseder, and added to Composes-with-backlog-substrate section with substrate-honest framing that the row may not yet exist on main but if filed separately retires Scope item 2.
+    Fixed in 018adea1: 081KSE6WT0008QG0R003YYC9PV (per-agent-clones architecture) named in Scope item 2 as potential superseder, and added to Composes-with-backlog-substrate section with substrate-honest framing that the row may not yet exist on main but if filed separately retires Scope item 2.
     </pre>
 
 ### Thread 5 -- resolved [outdated, collapsed]
@@ -258,7 +258,7 @@ Composes with 081KRMEXM0008QG0R000X1PPGC cron-sentinel-mutex + B-0751 per-agent-
 - **`Copilot` (bot)** at 2026-05-26T00:51:39Z on `docs/backlog/P2/081KSE6WT0008QG0R003YYC9PV-agent-worktree-hygiene-rule-landing-plus-mechanization-target-cleanup-tooling-plus-worktree-pool-primitive-aaron-2026-05-25.md`:66 (association: NONE)
 
   <pre>
-  P2: PR description says a sibling B-0751 “supersedes the worktree-pool scope item”, but this backlog row still lists “Scope item 2 — Worktree-pool primitive” without noting supersession. Either add the superseded-by note here (or drop the scope item) or adjust the PR description so they don’t contradict.
+  P2: PR description says a sibling 081KSE6WT0008QG0R003YYC9PV “supersedes the worktree-pool scope item”, but this backlog row still lists “Scope item 2 — Worktree-pool primitive” without noting supersession. Either add the superseded-by note here (or drop the scope item) or adjust the PR description so they don’t contradict.
   </pre>
 
 ### Thread 13 -- unresolved
@@ -272,7 +272,7 @@ Composes with 081KRMEXM0008QG0R000X1PPGC cron-sentinel-mutex + B-0751 per-agent-
 - **`Copilot` (bot)** at 2026-05-26T01:04:51Z on `docs/backlog/P2/081KSE6WT0008QG0R003YYC9PV-agent-worktree-hygiene-rule-landing-plus-mechanization-target-cleanup-tooling-plus-worktree-pool-primitive-aaron-2026-05-25.md`:14 (association: NONE)
 
   <pre>
-  P1 (codebase convention / xref integrity): This row lists `B-0751` in `composes_with`, but there is no `docs/backlog/**` row with `id: B-0751` in the repo, so this becomes a dangling cross-reference. Either land the B-0751 row in the same PR, or remove `B-0751` from `composes_with` and refer to it as a not-yet-filed / external PR-only concept (with a concrete URL) to keep the backlog graph navigable.
+  P1 (codebase convention / xref integrity): This row lists `081KSE6WT0008QG0R003YYC9PV` in `composes_with`, but there is no `docs/backlog/**` row with `id: 081KSE6WT0008QG0R003YYC9PV` in the repo, so this becomes a dangling cross-reference. Either land the 081KSE6WT0008QG0R003YYC9PV row in the same PR, or remove `081KSE6WT0008QG0R003YYC9PV` from `composes_with` and refer to it as a not-yet-filed / external PR-only concept (with a concrete URL) to keep the backlog graph navigable.
 
   </pre>
 
@@ -345,7 +345,7 @@ Same-PR ships:
    - Main-branch-hold detector
 
 Empirical anchor: 37 agent worktrees mass-cleaned same session (mostly
-own-substrate-cascade leftovers from today's 081KSE6WT0008QG0R0005XASX2→B-0749 cascade);
+own-substrate-cascade leftovers from today's 081KSE6WT0008QG0R0005XASX2→081KSE6WT0008QG0R001RG4FXD cascade);
 operator unblocked + rule landed simultaneously.
 
 Per .claude/rules/no-directives.md: rule auto-loads at cold-boot for
@@ -379,9 +379,9 @@ fix(081KSE6WT0008QG0R003YYC9PV): resolve 4 Copilot threads on PR #5020
 - agent-worktree-hygiene rule line 119: add explicit link to PR #4530 +
   cross-pointer to claim-acquire-before-worktree-work.md
 - 081KSE6WT0008QG0R003YYC9PV backlog row Scope item 2: explicitly compose-with 081KRQ1AB0008QG0R001KQ9S4B
-  (existing Otto-only worktree-pool row); name B-0751 as potential
+  (existing Otto-only worktree-pool row); name 081KSE6WT0008QG0R003YYC9PV as potential
   superseder
-- 081KSE6WT0008QG0R003YYC9PV backlog row Composes-with section: list 081KRQ1AB0008QG0R001KQ9S4B + B-0751 with
+- 081KSE6WT0008QG0R003YYC9PV backlog row Composes-with section: list 081KRQ1AB0008QG0R001KQ9S4B + 081KSE6WT0008QG0R003YYC9PV with
   same framing
 
 Co-Authored-By: Claude <noreply@anthropic.com>

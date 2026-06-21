@@ -20,7 +20,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 Adds backlog row **081KSE6WT0008QG0R003BCQEKW** under P3 to track the landing of Lior's Noether decomposition child files (`081KQ0YZ80008QG0R002T6TM7Z.1` through `081KQ0YZ80008QG0R002T6TM7Z.4`) on `main` via PR #4926 (or sibling PR). 
 
-This establishes a substrate-honest, observable path for tracking in-flight remote work following the 081KSE6WT0008QG0R003YYC9PV and B-0751 local main checkout alignment.
+This establishes a substrate-honest, observable path for tracking in-flight remote work following the 081KSE6WT0008QG0R003YYC9PV and 081KSE6WT0008QG0R003YYC9PV local main checkout alignment.
 
 Co-Authored-By: Gemini <noreply@google.com>
 

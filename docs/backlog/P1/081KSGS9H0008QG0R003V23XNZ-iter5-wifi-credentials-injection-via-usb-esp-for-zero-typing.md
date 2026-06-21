@@ -10,7 +10,7 @@ last_updated: 2026-05-26
 depends_on:
   - 081KSGS9H0008QG0R002T3BJ2R
 composes_with:
-  - B-0754
+  - 081KSGS9H0008QG0R002T3BJ2R
   - 081KSE6WT0008QG0R003G0Y62D
   - 081KSE6WT0008QG0R0029S1D5Z
   - 081KSE6WT0008QG0R0004AP0ZA
@@ -146,7 +146,7 @@ This sub-target is downstream of cluster-orchestration-substrate selection (081K
 ## Composes with substrate
 
 - **081KSGS9H0008QG0R002T3BJ2R** (iter-4 SSH+password substrate; depends_on; iter-5 extends the ESP-injection pattern this row builds on)
-- **B-0754** (iter-3 USB install; depends_on through 081KSGS9H0008QG0R002T3BJ2R)
+- **081KSGS9H0008QG0R002T3BJ2R** (iter-3 USB install; depends_on through 081KSGS9H0008QG0R002T3BJ2R)
 - **081KSE6WT0008QG0R003G0Y62D** (first-time-CLI-user persona broadened to homelab; this row is load-bearing for homelab specifically)
 - **081KSE6WT0008QG0R0029S1D5Z** (Comet Pro IP-KVM; composes; remote-first install still needs network reachability after install)
 - **081KSE6WT0008QG0R0004AP0ZA** (commodity hardware reference; wifi-only mini-PCs are common in the curated list)

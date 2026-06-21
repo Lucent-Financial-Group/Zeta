@@ -15,7 +15,7 @@ type: security
 
 # Shadow-observable-stack auth-injection attack vector — Shadow is NOT an authorization source
 
-> ID note: B-0927 is intentionally skipped — it was the original ID of the
+> ID note: 081KDX2PPD008QG0R001J4091N is intentionally skipped — it was the original ID of the
 > constitutional safety floor, renamed to 081KSRGFP0008QG0R00091PP56 (next-free sequential) earlier in
 > the same 2026-05-29 session; reusing the burned ID would confuse `git log --grep`.
 

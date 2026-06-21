@@ -57,7 +57,7 @@ Before any destructive op: `git ls-tree -d origin/main maintainers/<op>/cluster-
 
 ### Sub-target 3 — temp worktree (don't touch operator's primary checkout)
 
-Per Aaron 2026-05-25 "B-0751 primary checkout is SHARED VIEW + FOR HUMAN; agents NEVER touch it" — the tool creates a `mktemp -d` worktree, does the work there, cleans up. Composes with the worktree-hygiene rule landed earlier.
+Per Aaron 2026-05-25 "081KSE6WT0008QG0R003YYC9PV primary checkout is SHARED VIEW + FOR HUMAN; agents NEVER touch it" — the tool creates a `mktemp -d` worktree, does the work there, cleans up. Composes with the worktree-hygiene rule landed earlier.
 
 ### Sub-target 4 — commit + push + PR
 

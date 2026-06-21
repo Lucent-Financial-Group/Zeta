@@ -54,7 +54,7 @@ Adds docs/DECISIONS/2026-05-29-automated-background-review-thread-resolution.md 
 - **`Copilot` (bot)** at 2026-05-29T22:44:02Z on `docs/backlog/P1/081KSNY2Z0008QG0R003R0Z7D2-automated-background-review-thread-resolution-agentic-pipeline-aaron-2026-05-29.md`:2 (association: NONE)
 
   <pre>
-  081KSNY2Z0008QG0R003R0Z7D2 is already in use by an existing P1 row, `docs/backlog/P1/081KSNY2Z0008QG0R003R0Z7D2-reproducibility-as-causal-attribution-substrate-...-aaron-2026-05-28.md` (frontmatter `id: 081KSNY2Z0008QG0R003R0Z7D2`). Per the backlog convention, `id` values must be factory-wide unique (`B-NNNN`). This new file introduces a duplicate ID that will collide with the existing row (and shows up in the BACKLOG.md diff as the prior 081KSNY2Z0008QG0R003R0Z7D2 being silently replaced). Pick the next free ID (e.g. B-0935) and rename the file accordingly.
+  081KSNY2Z0008QG0R003R0Z7D2 is already in use by an existing P1 row, `docs/backlog/P1/081KSNY2Z0008QG0R003R0Z7D2-reproducibility-as-causal-attribution-substrate-...-aaron-2026-05-28.md` (frontmatter `id: 081KSNY2Z0008QG0R003R0Z7D2`). Per the backlog convention, `id` values must be factory-wide unique (`B-NNNN`). This new file introduces a duplicate ID that will collide with the existing row (and shows up in the BACKLOG.md diff as the prior 081KSNY2Z0008QG0R003R0Z7D2 being silently replaced). Pick the next free ID (e.g. 081KSRGFP0008QG0R0029WD04S) and rename the file accordingly.
   </pre>
 
 **Replies:**

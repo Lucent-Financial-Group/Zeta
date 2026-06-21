@@ -128,7 +128,7 @@ The maintainer's 2026-05-26 follow-ups in this conversation:
 | **[081KRFA460008QG0R001H98EXJ](../P1/081KRFA460008QG0R001H98EXJ-three-repo-split-stage1-create-forge-ace-with-scaffolding-aaron-2026-05-13.md)** | Repo-split scaffolding for Ace |
 | **[081KSE6WT0008QG0R000YYH3DY](../P2/081KSE6WT0008QG0R000YYH3DY-reference-k8s-local-stack-as-aces-distributable-poc-hats-as-negotiated-fork-structure-on-top-deterministic-declarative-gitops-ai-native-human-native-aaron-2026-05-25.md)** | K8s-local-stack as Ace's distributable POC; hats as negotiated fork structure on top of deterministic-declarative-gitops |
 | **[081KSE6WT0008QG0R000JSJ3SR](../P1/081KSE6WT0008QG0R000JSJ3SR-industry-sharp-categories-plus-per-persona-ontology-maps-plus-ace-package-manager-negotiation-aaron-2026-05-25.md)** | Ace package-manager negotiation + per-persona ontology maps |
-| **B-0741** (CLOSED 2026-05-26 prematurely during this session's stale-triage — see "## Sub-row to re-file" below) | "ontology+category negotiation as cross-cluster + cross-fork AI-skills+hats federation point — Ace becomes git-native AI-native fork-negotiation primitive for ANY AI-native project supporting forking + skills" |
+| **081KSE6WT0008QG0R002CC6314** (CLOSED 2026-05-26 prematurely during this session's stale-triage — see "## Sub-row to re-file" below) | "ontology+category negotiation as cross-cluster + cross-fork AI-skills+hats federation point — Ace becomes git-native AI-native fork-negotiation primitive for ANY AI-native project supporting forking + skills" |
 | **[Package format spec v2](../../research/2026-05-22-ace-package-format-spec-v2-substrate-engineering-pipeline-extension.md)** | DeepSeek 2026-05-22 substrate-engineering pipeline extension (substrate-generation → sieve → cartographer → deliberate-writing-pass → houses) |
 | **Research substrate** | [`docs/research/2026-05-08-ace-dlc-package-format-spec.md`](../../research/2026-05-08-ace-dlc-package-format-spec.md), [`docs/research/2026-05-07-ace-itron-patent-provenance-hole-puncher-bft-ten-year-plan-verbatim-aaron-claudeai.md`](../../research/2026-05-07-ace-itron-patent-provenance-hole-puncher-bft-ten-year-plan-verbatim-aaron-claudeai.md), [`docs/research/2026-05-02-aaron-ace-identity-dissolution-for-transfer-wwjd-rejection-arc-children-religious-freedom-first-class.md`](../../research/2026-05-02-aaron-ace-identity-dissolution-for-transfer-wwjd-rejection-arc-children-religious-freedom-first-class.md) |
 
@@ -139,7 +139,7 @@ The maintainer's 2026-05-26 follow-ups in this conversation:
 - Ace agenda already specifies: *"Hats = controls + self-bindings over time crystals (PAIR is load-bearing primitive)"* + *"proto-governance via skill-bound hats with multi-oracle BFT (authority + bindings tied to skills)"*
 - [081KSE6WT0008QG0R000YYH3DY](../P2/081KSE6WT0008QG0R000YYH3DY-reference-k8s-local-stack-as-aces-distributable-poc-hats-as-negotiated-fork-structure-on-top-deterministic-declarative-gitops-ai-native-human-native-aaron-2026-05-25.md): hats as negotiated fork structure on top of deterministic-declarative-gitops
 - [081KSE6WT0008QG0R000JSJ3SR](../P1/081KSE6WT0008QG0R000JSJ3SR-industry-sharp-categories-plus-per-persona-ontology-maps-plus-ace-package-manager-negotiation-aaron-2026-05-25.md): Ace package-manager negotiation + per-persona ontology maps
-- **B-0741** (CLOSED prematurely earlier this session — `backlog(B-0741): ontology+category negotiation as cross-cluster + cross-fork AI-skills+hats federation point — Ace becomes git-native AI-native fork-negotiation primitive for ANY AI-native project supporting forking + skills`). Closed via PR #5003 close-comment as part of the stale-PR triage; the close was justified mechanically (DIRTY conflict) but the substrate is genuinely load-bearing for this row — should be cherry-picked + re-landed (see "## Sub-row to re-file" below)
+- **081KSE6WT0008QG0R002CC6314** (CLOSED prematurely earlier this session — `backlog(081KSE6WT0008QG0R002CC6314): ontology+category negotiation as cross-cluster + cross-fork AI-skills+hats federation point — Ace becomes git-native AI-native fork-negotiation primitive for ANY AI-native project supporting forking + skills`). Closed via PR #5003 close-comment as part of the stale-PR triage; the close was justified mechanically (DIRTY conflict) but the substrate is genuinely load-bearing for this row — should be cherry-picked + re-landed (see "## Sub-row to re-file" below)
 
 ### Architectural integration of hats + fork-negotiation
 
@@ -155,7 +155,7 @@ git (single source of truth) — per fork; each fork has its own git
 │       (skill-bound hats per Ace agenda; PAIR primitive; controls + self-bindings)
 │   1b. Multi-oracle BFT proto-governance: does the hat have N-of-M consent
 │       from the cluster's oracles for this specific action class?
-│   1c. (Cross-fork operations) Ontology negotiation per B-0741/081KSE6WT0008QG0R000JSJ3SR:
+│   1c. (Cross-fork operations) Ontology negotiation per 081KSE6WT0008QG0R002CC6314/081KSE6WT0008QG0R000JSJ3SR:
 │       does the source fork's ontology map to the target fork's ontology
 │       at the action's category? (per-persona ontology maps mediate)
 │   1d. Guardian/KSK gate (per canonical Ace project memory):
@@ -173,11 +173,11 @@ git (single source of truth) — per fork; each fork has its own git
 │   crossplane/         → Crossplane invokes ace-deployed providers
 ```
 
-This means the iter-7 implementation arc has **substantially more substrate to compose with than my initial draft**: B-0741 (re-land needed) + 081KSE6WT0008QG0R000YYH3DY + 081KSE6WT0008QG0R000JSJ3SR + the Guardian/KSK substrate from the canonical Ace project memory + the multi-oracle BFT pattern from the agenda. Sub-targets 1–5 each must respect the hat-authority + BFT-proto-governance + (where applicable) ontology-negotiation flow; they're not "thin platform playbooks delegating to `ace install`" but rather "playbooks that invoke `ace install` knowing each invocation goes through the full Ace authority flow."
+This means the iter-7 implementation arc has **substantially more substrate to compose with than my initial draft**: 081KSE6WT0008QG0R002CC6314 (re-land needed) + 081KSE6WT0008QG0R000YYH3DY + 081KSE6WT0008QG0R000JSJ3SR + the Guardian/KSK substrate from the canonical Ace project memory + the multi-oracle BFT pattern from the agenda. Sub-targets 1–5 each must respect the hat-authority + BFT-proto-governance + (where applicable) ontology-negotiation flow; they're not "thin platform playbooks delegating to `ace install`" but rather "playbooks that invoke `ace install` knowing each invocation goes through the full Ace authority flow."
 
 ## Sub-row to re-file
 
-[B-0741](https://github.com/Lucent-Financial-Group/Zeta/pull/5003) (close-comment via PR #5003 stale-triage earlier this session) — the substrate is load-bearing for 081KSGS9H0008QG0R001Y9FB62's architectural integration above and needs re-landing via cherry-pick (per [`pr-triage-tiers.md`](../../.claude/rules/pr-triage-tiers.md) Tier 3). Sibling B-NNNN row should re-file with whatever ID-renumbering is needed. The close-comment named this as the substrate-honest re-land path; this row tracks it as a known dependency for iter-7 implementation.
+[081KSE6WT0008QG0R002CC6314](https://github.com/Lucent-Financial-Group/Zeta/pull/5003) (close-comment via PR #5003 stale-triage earlier this session) — the substrate is load-bearing for 081KSGS9H0008QG0R001Y9FB62's architectural integration above and needs re-landing via cherry-pick (per [`pr-triage-tiers.md`](../../.claude/rules/pr-triage-tiers.md) Tier 3). Sibling B-NNNN row should re-file with whatever ID-renumbering is needed. The close-comment named this as the substrate-honest re-land path; this row tracks it as a known dependency for iter-7 implementation.
 
 ### Correct layering (architecture-shape revision)
 

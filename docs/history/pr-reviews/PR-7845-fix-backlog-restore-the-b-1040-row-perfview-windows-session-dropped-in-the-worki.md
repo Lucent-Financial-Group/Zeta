@@ -27,7 +27,7 @@
 
 ## Description
 
-The #7837 merge resolution took main's BACKLOG.md side; main had moved B-1036..39 to workitems/ but 081KTSZN10008QG0R002NMN8P7 has no workitem — its P3 file landed index-dark. One row restored under P3.
+The #7837 merge resolution took main's BACKLOG.md side; main had moved 081KTSZN10008QG0R002R3RENG..39 to workitems/ but 081KTSZN10008QG0R002NMN8P7 has no workitem — its P3 file landed index-dark. One row restored under P3.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

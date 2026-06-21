@@ -55,7 +55,7 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated 1 c
 
 **@copilot-pull-request-reviewer** (2026-05-26T05:01:35Z):
 
-`depends_on` references `B-0754`, but there is no corresponding backlog row file with `id: B-0754` under `docs/backlog/**` (and `docs/BACKLOG.md` has no B-0754 entry). This breaks backlog dependency/xref integrity; either add the missing `B-0754` row file (preferred) or change this dependency to an existing row ID / remove it until the row exists.
+`depends_on` references `081KSGS9H0008QG0R002T3BJ2R`, but there is no corresponding backlog row file with `id: 081KSGS9H0008QG0R002T3BJ2R` under `docs/backlog/**` (and `docs/BACKLOG.md` has no 081KSGS9H0008QG0R002T3BJ2R entry). This breaks backlog dependency/xref integrity; either add the missing `081KSGS9H0008QG0R002T3BJ2R` row file (preferred) or change this dependency to an existing row ID / remove it until the row exists.
 
 ## General comments
 

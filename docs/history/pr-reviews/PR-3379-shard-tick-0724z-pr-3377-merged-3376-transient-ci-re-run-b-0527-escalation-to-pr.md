@@ -247,7 +247,7 @@ fix(shard): address 7 Codex P2 + Copilot review threads on 0724Z shard
   to next tick was a real diagnostic gap (substrate-honest acknowledgment)
 - "081KRMEXM0008QG0R000T0A28T free" claim WAS WRONG — 081KRMEXM0008QG0R000T0A28T was already taken by PR #3342 on origin/main
   at the time my comment was posted. Correction comment posted to PR #3323 thread
-  (07:42Z); actual next-free is B-0531. Composes with refresh-before-decide at
+  (07:42Z); actual next-free is 081KRMEXM0008QG0R00070X79J. Composes with refresh-before-decide at
   ID-allocation scope.
 - Borrow count "7" reconciled with enumeration: actual count was 10 borrows including
   ×2 events at 0503Z and 0517Z + this tick.

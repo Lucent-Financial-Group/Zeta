@@ -175,7 +175,7 @@ Composes_with cross-refs:
 - 081KSGS9H0008QG0R000EPPQTR (deregister sibling)
 - 081KSGS9H0008QG0R003A37Z65 (architectural principle: maximize ArgoCD + minimize NixOS-
   native lock-in)
-- B-0754 (zero-typing first-boot scope; substrate exercised in Slice 1)
+- 081KSGS9H0008QG0R002T3BJ2R (zero-typing first-boot scope; substrate exercised in Slice 1)
 - 081KSGS9H0008QG0R00033DT02 (isoName nixpkgs 25.11 regression; orthogonal)
 - flash-cluster-iso SKILL.md (operator-side 0-human-typing analog of
   this CI-side cascade)

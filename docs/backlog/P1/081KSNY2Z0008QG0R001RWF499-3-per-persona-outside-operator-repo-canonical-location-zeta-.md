@@ -9,7 +9,7 @@ depends_on:
   - 081KSNY2Z0008QG0R0032E7PCY
 composes_with:
   - 081KSE6WT0008QG0R003YYC9PV
-  - B-0751
+  - 081KSE6WT0008QG0R003YYC9PV
   - 081KRMEXM0008QG0R000X1PPGC
 tags:
   - hygiene
@@ -92,7 +92,7 @@ This PR (the one filing 081KSNY2Z0008QG0R001RWF499) delivers criteria 1 + 2 + 3.
 
 - **081KSNY2Z0008QG0R0032E7PCY** — parent row; this row refines the location-default
 - **081KSE6WT0008QG0R003YYC9PV** — agent worktree cleanup; cleanup commands need to scan `~/.zeta/agents/<persona>/` surface
-- **B-0751** — per-agent isolated clones; 081KSNY2Z0008QG0R001RWF499 is the worktree-level realization of the per-agent-isolation pattern at clone-level
+- **081KSE6WT0008QG0R003YYC9PV** — per-agent isolated clones; 081KSNY2Z0008QG0R001RWF499 is the worktree-level realization of the per-agent-isolation pattern at clone-level
 - **081KRMEXM0008QG0R000X1PPGC** — cron-sentinel mutex; multi-agent contention solved by per-persona base directories
 - **081KSNY2Z0008QG0R0032E7PCY.1** (filed later) — bus envelope migration to `~/.zeta/bus/`; same namespace
 - **`.claude/rules/agent-worktree-hygiene-never-hold-main-never-step-on-operator-cleanup-on-pr-merge.md`** — rule being edited

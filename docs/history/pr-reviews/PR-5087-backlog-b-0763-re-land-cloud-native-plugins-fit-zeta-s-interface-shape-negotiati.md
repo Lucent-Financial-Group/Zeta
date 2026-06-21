@@ -65,7 +65,7 @@ Follow-up: close #5049 with substrate-recoverable cross-link.
 - **`Copilot` (bot)** at 2026-05-26T04:32:29Z on `docs/backlog/P2/081KSE6WT0008QG0R000WVYAJ2-cloud-native-plugins-fit-zeta-shape-not-vice-versa-negotiation-high-seat-vendor-swap-aaron-2026-05-25.md`:16 (association: NONE)
 
   <pre>
-  `depends_on` / `composes_with` references include IDs that don’t appear to exist as backlog rows anywhere under `docs/backlog/**` (e.g., B-0741, B-0744, B-0749, B-0754). This makes the dependency/composition graph non-resolvable and will break any future strict-lint of these fields. Either add the missing row files (with matching `id:`) or update these references to the correct existing backlog IDs.
+  `depends_on` / `composes_with` references include IDs that don’t appear to exist as backlog rows anywhere under `docs/backlog/**` (e.g., 081KSE6WT0008QG0R002CC6314, 081KSE6WT0008QG0R000SH6E0R, 081KSE6WT0008QG0R001RG4FXD, 081KSGS9H0008QG0R002T3BJ2R). This makes the dependency/composition graph non-resolvable and will break any future strict-lint of these fields. Either add the missing row files (with matching `id:`) or update these references to the correct existing backlog IDs.
 
   </pre>
 
@@ -170,7 +170,7 @@ Follow-up: close #5049 with substrate-recoverable cross-link.
 - **`Copilot` (bot)** at 2026-05-26T04:51:23Z on `docs/backlog/P2/081KSE6WT0008QG0R000WVYAJ2-cloud-native-plugins-fit-zeta-shape-not-vice-versa-negotiation-high-seat-vendor-swap-aaron-2026-05-25.md`:13 (association: NONE)
 
   <pre>
-  P1: The `composes_with` frontmatter list is incomplete relative to the later “## Composes with” section (e.g., B-0741/B-0744/B-0749/B-0754 are listed in the body but not in frontmatter). Please sync these so tooling/graph views based on frontmatter don’t drift from the narrative list.
+  P1: The `composes_with` frontmatter list is incomplete relative to the later “## Composes with” section (e.g., 081KSE6WT0008QG0R002CC6314/081KSE6WT0008QG0R000SH6E0R/081KSE6WT0008QG0R001RG4FXD/081KSGS9H0008QG0R002T3BJ2R are listed in the body but not in frontmatter). Please sync these so tooling/graph views based on frontmatter don’t drift from the narrative list.
 
   </pre>
 
@@ -267,8 +267,8 @@ fix(081KSE6WT0008QG0R000WVYAJ2): address 4 empirical Copilot findings — dead d
 
 …le paths
 
-- Remove B-0741/B-0744/B-0749/B-0754 references (no row files exist on disk)
-- Drop empty depends_on (B-0741 was the only dep, now removed)
+- Remove 081KSE6WT0008QG0R002CC6314/081KSE6WT0008QG0R000SH6E0R/081KSE6WT0008QG0R001RG4FXD/081KSGS9H0008QG0R002T3BJ2R references (no row files exist on disk)
+- Drop empty depends_on (081KSE6WT0008QG0R002CC6314 was the only dep, now removed)
 - docs/cloud-plugin-authoring.md → docs/PLUGIN-AUTHOR.md (existing canonical authoring doc)
 - PROVISIONING.md → full-ai-cluster/PROVISIONING.md (explicit path)
 - README → full-ai-cluster/README.md (explicit; paired with PROVISIONING context)
@@ -322,7 +322,7 @@ fix(081KSE6WT0008QG0R000WVYAJ2): resolve 5 Copilot review threads — namespace 
 
 … + frontmatter sync + product-name spelling
 
-- Frontmatter composes_with: add B-0741, B-0744, B-0749, B-0754 (synced with body)
+- Frontmatter composes_with: add 081KSE6WT0008QG0R002CC6314, 081KSE6WT0008QG0R000SH6E0R, 081KSE6WT0008QG0R001RG4FXD, 081KSGS9H0008QG0R002T3BJ2R (synced with body)
 - Clarify interfaces live in Zeta.<Primitive> namespaces (matching table); Zeta.Cloud.Plugins.<vendor> is for adapter implementations
 - Table: 'CosmosDB' → 'Cosmos DB' (Azure product name)
 - last_updated bump to today

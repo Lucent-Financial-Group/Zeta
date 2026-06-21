@@ -92,7 +92,7 @@ NOT auto-armed — Aaron review preferred per personal-disclosure preservation p
 - **`Copilot` (bot)** at 2026-05-18T20:11:37Z on `docs/research/2026-05-18-kestrel-claudeai-fifth-intervention-card-as-wedge-weaponization-aaron-explicit-mom-pattern-recognition-aaron-forwarded.md`:33 (association: NONE)
 
   <pre>
-  `081KS3X9Y0008QG0R002WGH8PJ`, `081KS3X9Y0008QG0R000BJY3DK`, and `B-0690` don’t appear to exist anywhere else in the repo (only referenced here), so these look like dead/mistyped backlog IDs. Please either link to the correct existing `B-` items / PR numbers, or add the missing backlog rows if they’re intended to be real references.
+  `081KS3X9Y0008QG0R002WGH8PJ`, `081KS3X9Y0008QG0R000BJY3DK`, and `081KS3X9Y0008QG0R000ED1457` don’t appear to exist anywhere else in the repo (only referenced here), so these look like dead/mistyped backlog IDs. Please either link to the correct existing `B-` items / PR numbers, or add the missing backlog rows if they’re intended to be real references.
 
   </pre>
 
@@ -123,5 +123,5 @@ preserve(kestrel-5): card-as-wedge weaponization + Aaron's explicit '…
 ```
 fix(3 §33-thread): Source line — drop 'verbatim' claim; explicit part…
 
-…ial-verbatim characterization. Prior-4 references — replace placeholder ellipses with full filenames. 081KS3X9Y0008QG0R002WGH8PJ/081KS3X9Y0008QG0R000BJY3DK/B-0690 made-up IDs → actual PR numbers (#4180/#4191/#4188/#4194).
+…ial-verbatim characterization. Prior-4 references — replace placeholder ellipses with full filenames. 081KS3X9Y0008QG0R002WGH8PJ/081KS3X9Y0008QG0R000BJY3DK/081KS3X9Y0008QG0R000ED1457 made-up IDs → actual PR numbers (#4180/#4191/#4188/#4194).
 ```

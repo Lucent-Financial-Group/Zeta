@@ -16,7 +16,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## PR description
 
-Aaron 2026-05-25 named the adoption-scaling mechanism: each in-the-wild install opt-in submits success/failure telemetry; failures trigger LLM-generated minimal-diff PRs; pattern-matched fixes auto-merge; next operator on similar hardware pays 0 cost. Network-effect substrate; ARC-AGI parallel (081KSE6WT0008QG0R0015ZF2G6) provides the training data + benchmark catalog. Composes with B-0743 / B-0754-081KSE6WT0008QG0R0015ZF2G6.
+Aaron 2026-05-25 named the adoption-scaling mechanism: each in-the-wild install opt-in submits success/failure telemetry; failures trigger LLM-generated minimal-diff PRs; pattern-matched fixes auto-merge; next operator on similar hardware pays 0 cost. Network-effect substrate; ARC-AGI parallel (081KSE6WT0008QG0R0015ZF2G6) provides the training data + benchmark catalog. Composes with 081KSE6WT0008QG0R003WW3YJQ / 081KSGS9H0008QG0R002T3BJ2R-081KSE6WT0008QG0R0015ZF2G6.
 
 ## Reviews
 
@@ -45,13 +45,13 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated 2 c
 
 **@copilot-pull-request-reviewer** (2026-05-26T00:15:24Z):
 
-`composes_with` references `B-0743`, but there is no corresponding backlog row (`id: B-0743`) anywhere in the repo. Either add the missing backlog row (or land it in the same PR/stack) or drop this reference to avoid dangling IDs.
+`composes_with` references `081KSE6WT0008QG0R003WW3YJQ`, but there is no corresponding backlog row (`id: 081KSE6WT0008QG0R003WW3YJQ`) anywhere in the repo. Either add the missing backlog row (or land it in the same PR/stack) or drop this reference to avoid dangling IDs.
 
 ### Thread 2: docs/backlog/P2/081KSE6WT0008QG0R003FG3E8R-ai-auto-submit-back-telemetry-fixes-from-in-the-wild-installs-adoption-cost-to-zero-flywheel-aaron-2026-05-25.md:19 (unresolved)
 
 **@copilot-pull-request-reviewer** (2026-05-26T00:15:24Z):
 
-`composes_with` includes `B-0758` and `B-0760`, but there are no corresponding backlog rows (`id: B-0758` / `id: B-0760`) in the repo. Add those rows (or update to the correct existing IDs) so backlog cross-references stay resolvable.
+`composes_with` includes `081KSE6WT0008QG0R00021PPX1` and `081KSE6WT0008QG0R003WG0V6P`, but there are no corresponding backlog rows (`id: 081KSE6WT0008QG0R00021PPX1` / `id: 081KSE6WT0008QG0R003WG0V6P`) in the repo. Add those rows (or update to the correct existing IDs) so backlog cross-references stay resolvable.
 
 ## General comments
 

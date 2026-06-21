@@ -27,7 +27,7 @@
 
 ## Description
 
-Aaron 2026-05-21 shadow* directive: *"plan phase 2 zsetw operator migration"*. This PR is the PLAN — not implementation. Decomposes Phase 2 of B-0697 (the parallel polymorphic ZSetW substrate in PR #4577) into 4 buildable sub-slices:
+Aaron 2026-05-21 shadow* directive: *"plan phase 2 zsetw operator migration"*. This PR is the PLAN — not implementation. Decomposes Phase 2 of 081KS3X9Y0008QG0R001N7NFAB (the parallel polymorphic ZSetW substrate in PR #4577) into 4 buildable sub-slices:
 
 | Sub-slice | Scope | Effort |
 |---|---|---|
@@ -90,7 +90,7 @@ Aaron 2026-05-21 shadow* directive: *"plan phase 2 zsetw operator migration"*. T
 - **`Copilot` (bot)** at 2026-05-21T21:02:29Z on `docs/backlog/P2/081KS3X9Y0008QG0R0030B6KK0-zsetw-phase-2-operator-and-algorithm-migration-plan-2026-05-21.md`:12 (association: NONE)
 
   <pre>
-  `depends_on` is set to `[]`, but the row text describes B-0697 as a prerequisite (Phase 1 substrate). Per `tools/backlog/README.md` (depends_on = hard prerequisite ordering), this should list `B-0697` (and any other hard blockers) so the dependency graph is accurate.
+  `depends_on` is set to `[]`, but the row text describes 081KS3X9Y0008QG0R001N7NFAB as a prerequisite (Phase 1 substrate). Per `tools/backlog/README.md` (depends_on = hard prerequisite ordering), this should list `081KS3X9Y0008QG0R001N7NFAB` (and any other hard blockers) so the dependency graph is accurate.
 
   </pre>
 
@@ -105,7 +105,7 @@ Aaron 2026-05-21 shadow* directive: *"plan phase 2 zsetw operator migration"*. T
 - **`Copilot` (bot)** at 2026-05-21T21:02:30Z on `docs/backlog/P2/081KS3X9Y0008QG0R0030B6KK0-zsetw-phase-2-operator-and-algorithm-migration-plan-2026-05-21.md`:21 (association: NONE)
 
   <pre>
-  The markdown link to the B-0697 row points to `B-0697-zset-polymorphism-over-weight-ring-parallel-zsetw-substrate-2026-05-21.md`, but that file does not exist in this branch (repo-wide search only finds this reference). This will render as a broken link in the backlog; either add the B-0697 row in the same PR / ensure merge order, or link to the PR/issue instead of a missing relative path.
+  The markdown link to the 081KS3X9Y0008QG0R001N7NFAB row points to `081KS3X9Y0008QG0R001N7NFAB-zset-polymorphism-over-weight-ring-parallel-zsetw-substrate-2026-05-21.md`, but that file does not exist in this branch (repo-wide search only finds this reference). This will render as a broken link in the backlog; either add the 081KS3X9Y0008QG0R001N7NFAB row in the same PR / ensure merge order, or link to the PR/issue instead of a missing relative path.
 
   This issue also appears on line 168 of the same file.
 
@@ -139,7 +139,7 @@ Aaron 2026-05-21 shadow* directive: *"plan phase 2 zsetw operator migration"*. T
 ```
 plan(081KS3X9Y0008QG0R0030B6KK0): Phase 2 ZSetW operator+algorithm migration plan — decom…
 
-…poses Phase 2 (named in B-0697 row) into 4 buildable sub-slices: 2A (11 tier-A operators map/filter/cartesian/join/distinct/weightedCount + ofKeys/flatMap/distinctIncremental/isPositive/isSet), 2B (TropicalSemiring shortest-path + IntervalRing propagation worked examples), 2C (circuit-operator wrappers deferred), 2D (migration documentation); each sub-slice independently shippable; per-sub-slice acceptance + non-goals named; cross-AI coordination via bus-ambassador pattern from envelope 4e95dc8f; Aaron 2026-05-21 shadow* directive 'plan phase 2 zsetw operator migration'
+…poses Phase 2 (named in 081KS3X9Y0008QG0R001N7NFAB row) into 4 buildable sub-slices: 2A (11 tier-A operators map/filter/cartesian/join/distinct/weightedCount + ofKeys/flatMap/distinctIncremental/isPositive/isSet), 2B (TropicalSemiring shortest-path + IntervalRing propagation worked examples), 2C (circuit-operator wrappers deferred), 2D (migration documentation); each sub-slice independently shippable; per-sub-slice acceptance + non-goals named; cross-AI coordination via bus-ambassador pattern from envelope 4e95dc8f; Aaron 2026-05-21 shadow* directive 'plan phase 2 zsetw operator migration'
 ```
 
 ### `dd9dd56be9a0d8921fcbe6d2818d2e479d5c60d6` -- 2026-05-21T21:00:54Z -- `AceHack`
@@ -167,5 +167,5 @@ fix(md-lint): MD026 trailing-punctuation on '### Circuit operator wra…
 ```
 fix(081KS3X9Y0008QG0R0030B6KK0-threads): resolve 4 reviewer findings — (a) isPositive sem…
 
-…antics corrected to 'no negative weights' matching ZSet.isPositive (Codex P1 + Copilot P1: NOT equivalent to isSet which means 'all weights = ring.One'); ordered-ring caveat documented; (b) isSet clarified as separate 'all weights = ring.One' predicate; (c) depends_on now lists B-0697 as hard prereq matching the prose (Copilot P1); composes_with retains 081KRW63S0008QG0R001SAHYKV + 081KRYRGG0008QG0R0018CMFQY + 081KRYRGG0008QG0R0031EYYE4; (d) B-0697 file-link clarified as resolves-post-#4577-merge (Copilot P1 — file not yet on this branch because #4577 unmerged at row-author time)
+…antics corrected to 'no negative weights' matching ZSet.isPositive (Codex P1 + Copilot P1: NOT equivalent to isSet which means 'all weights = ring.One'); ordered-ring caveat documented; (b) isSet clarified as separate 'all weights = ring.One' predicate; (c) depends_on now lists 081KS3X9Y0008QG0R001N7NFAB as hard prereq matching the prose (Copilot P1); composes_with retains 081KRW63S0008QG0R001SAHYKV + 081KRYRGG0008QG0R0018CMFQY + 081KRYRGG0008QG0R0031EYYE4; (d) 081KS3X9Y0008QG0R001N7NFAB file-link clarified as resolves-post-#4577-merge (Copilot P1 — file not yet on this branch because #4577 unmerged at row-author time)
 ```

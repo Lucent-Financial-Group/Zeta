@@ -138,7 +138,7 @@ Phased acceptance (each slice ships independently):
 - 081KSGS9H0008QG0R000EPPQTR (tools/cluster-deregister-node.ts sibling)
 - 081KSGS9H0008QG0R003A37Z65 (architectural principle: maximize ArgoCD scope + minimize
   NixOS-native lock-in)
-- B-0754 (zero-typing first-boot auto-install scope; the substrate
+- 081KSGS9H0008QG0R002T3BJ2R (zero-typing first-boot auto-install scope; the substrate
   exercised in CI cascade #6 phase 1)
 - 081KSGS9H0008QG0R00033DT02 (isoName mkForce nixpkgs 25.11 regression; orthogonal but
   composes at ISO-naming scope)

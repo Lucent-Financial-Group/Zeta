@@ -85,7 +85,7 @@ Same dogfooding pattern as PR #5696 (which used persistent-location to land pers
 
 - **081KSNY2Z0008QG0R0032E7PCY** (parent, PR #5696, merged `d3962a9ef`) — reboot-survival fix; this PR refines location
 - **081KSE6WT0008QG0R003YYC9PV** — cleanup discipline; cleanup commands updated to scan new surface
-- **B-0751** — per-agent isolated clones (per-persona dirs are worktree-level analog)
+- **081KSE6WT0008QG0R003YYC9PV** — per-agent isolated clones (per-persona dirs are worktree-level analog)
 - **081KRMEXM0008QG0R000X1PPGC** — multi-agent contention; per-persona base dirs reduce contention surface
 - **081KSNY2Z0008QG0R0032E7PCY.1** (filed later) — bus envelope migration to `~/.zeta/bus/`; same namespace
 - **`tick-must-never-stop.md`** — sentinel session-exit non-persistence is sibling at harness-level; this PR is filesystem-level. SessionStart hook + first-action discipline produces auto-arming sentinel at session-open (empirically validated this session per operator observation)

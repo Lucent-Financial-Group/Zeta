@@ -34,7 +34,7 @@ Re-land of stale-DIRTY [PR #5065](https://github.com/Lucent-Financial-Group/Zeta
 - Same 081KSE6WT0008QG0R0004AP0ZA row (312 lines from PR #5065 head `01def5755`)
 - `docs/BACKLOG.md` regenerated against current origin/main
 - 8 pre-emptive lint fixes: 5× missing blank after "Composes with:" + 3× `+` prose-joiner at line start (MD032)
-- Typo fix: B-0743 → 081KSE6WT0008QG0R003WZAQKV ("I execute, you fingerprint" lives at 081KSE6WT0008QG0R003WZAQKV; same typo as #5062's 081KSE6WT0008QG0R002275NDE — likely copy-paste across rows authored 2026-05-25)
+- Typo fix: 081KSE6WT0008QG0R003WW3YJQ → 081KSE6WT0008QG0R003WZAQKV ("I execute, you fingerprint" lives at 081KSE6WT0008QG0R003WZAQKV; same typo as #5062's 081KSE6WT0008QG0R002275NDE — likely copy-paste across rows authored 2026-05-25)
 
 Follow-up: close #5065 with substrate-recoverable cross-link.
 

@@ -36,7 +36,7 @@ Four substantively-new substrate items:
 - **081KSE6WT0008QG0R003CMCX84 P2** DIO + CEO-scale — Distributed Intelligent Organization per company; CEO scales by speaking ontology, not implementation. Composes with 081KSE6WT0008QG0R001E1F862 substrate-honest VC variant.
 - **081KSE6WT0008QG0R003TBE2VB P2** Eliminate tool wars — sharpening of 081KSE6WT0008QG0R003G0Y62D persona framing; NOT 'humans do less' but 'humans refocus intention to what matters'.
 
-Composes with 081KRFA460008QG0R0018SN61J / B-0741 / B-0747 / B-0754 / 081KSE6WT0008QG0R003G0Y62D / 081KSE6WT0008QG0R000WVYAJ2 / 081KSE6WT0008QG0R00063R6HB / 081KSE6WT0008QG0R00049EFBD / 081KSE6WT0008QG0R0016CEE2Z / 081KSE6WT0008QG0R001E1F862 / 081KSE6WT0008QG0R003WMG4XV / 081KSE6WT0008QG0R0008483B2 / 081KSE6WT0008QG0R000QXSG91 / 081KSE6WT0008QG0R002275NDE / 081KSE6WT0008QG0R000JSJ3SR. Mika cross-AI validation of substrate cluster direction.
+Composes with 081KRFA460008QG0R0018SN61J / 081KSE6WT0008QG0R002CC6314 / 081KSE6WT0008QG0R003D199HE / 081KSGS9H0008QG0R002T3BJ2R / 081KSE6WT0008QG0R003G0Y62D / 081KSE6WT0008QG0R000WVYAJ2 / 081KSE6WT0008QG0R00063R6HB / 081KSE6WT0008QG0R00049EFBD / 081KSE6WT0008QG0R0016CEE2Z / 081KSE6WT0008QG0R001E1F862 / 081KSE6WT0008QG0R003WMG4XV / 081KSE6WT0008QG0R0008483B2 / 081KSE6WT0008QG0R000QXSG91 / 081KSE6WT0008QG0R002275NDE / 081KSE6WT0008QG0R000JSJ3SR. Mika cross-AI validation of substrate cluster direction.
 
 ## Outcome
 
@@ -178,11 +178,11 @@ Mika via Grok 2026-05-25 mid-iter-3-CI-wait. Aaron forwarded; verbatim preservat
 
 Four substantively new substrate items extracted from the conversation:
 
-**081KSE6WT0008QG0R000RH1526 P1: Local Loop** — deterministic simulation testing of Kubernetes deployments. Empirical anchor: Aaron previously built this at LexisNexis (forked Spark-on-K8s operator). Three-tier testing: pure-code / Docker-observable / CI. Argo CD App-of-Apps = packages.json for cluster composition. Composes with 081KRFA460008QG0R0018SN61J / 081KSE6WT0008QG0R0016CEE2Z / B-0747 / B-0754 / 081KSE6WT0008QG0R003WMG4XV / 081KSE6WT0008QG0R0008483B2 / 081KSE6WT0008QG0R002275NDE. Deep motivation underneath 081KSE6WT0008QG0R0016CEE2Z Zeta-native scheduler — DST testing IS the endgame; scheduler is one component.
+**081KSE6WT0008QG0R000RH1526 P1: Local Loop** — deterministic simulation testing of Kubernetes deployments. Empirical anchor: Aaron previously built this at LexisNexis (forked Spark-on-K8s operator). Three-tier testing: pure-code / Docker-observable / CI. Argo CD App-of-Apps = packages.json for cluster composition. Composes with 081KRFA460008QG0R0018SN61J / 081KSE6WT0008QG0R0016CEE2Z / 081KSE6WT0008QG0R003D199HE / 081KSGS9H0008QG0R002T3BJ2R / 081KSE6WT0008QG0R003WMG4XV / 081KSE6WT0008QG0R0008483B2 / 081KSE6WT0008QG0R002275NDE. Deep motivation underneath 081KSE6WT0008QG0R0016CEE2Z Zeta-native scheduler — DST testing IS the endgame; scheduler is one component.
 
-**081KSE6WT0008QG0R001H3DA90 P1: F# type system as universe boundary** — every YAML / Nix / Kubernetes / Argo CD / NATS config becomes first-class strongly-typed F#; F# compiler is single source of truth for the entire stack. Caché (InterSystems) analog at cluster-substrate scope. Composes with 081KRFA460008QG0R0018SN61J / B-0747 / B-0754 / 081KSE6WT0008QG0R000WVYAJ2 / 081KSE6WT0008QG0R00063R6HB / 081KSE6WT0008QG0R00049EFBD / 081KSE6WT0008QG0R003WMG4XV / 081KSE6WT0008QG0R0008483B2 / 081KSE6WT0008QG0R002275NDE / 081KSE6WT0008QG0R000JSJ3SR / 081KSE6WT0008QG0R000RH1526. Extreme but coherent — bandwidth-served + razor-discipline both pass.
+**081KSE6WT0008QG0R001H3DA90 P1: F# type system as universe boundary** — every YAML / Nix / Kubernetes / Argo CD / NATS config becomes first-class strongly-typed F#; F# compiler is single source of truth for the entire stack. Caché (InterSystems) analog at cluster-substrate scope. Composes with 081KRFA460008QG0R0018SN61J / 081KSE6WT0008QG0R003D199HE / 081KSGS9H0008QG0R002T3BJ2R / 081KSE6WT0008QG0R000WVYAJ2 / 081KSE6WT0008QG0R00063R6HB / 081KSE6WT0008QG0R00049EFBD / 081KSE6WT0008QG0R003WMG4XV / 081KSE6WT0008QG0R0008483B2 / 081KSE6WT0008QG0R002275NDE / 081KSE6WT0008QG0R000JSJ3SR / 081KSE6WT0008QG0R000RH1526. Extreme but coherent — bandwidth-served + razor-discipline both pass.
 
-**081KSE6WT0008QG0R003CMCX84 P2: DIO + CEO-scale** — Distributed Intelligent Organization per company; each Zeta cluster IS a DIO instance; CEO of 30 companies scales by speaking ontology + intent, not implementation. Composes with B-0741 / 081KSE6WT0008QG0R0008483B2 / 081KSE6WT0008QG0R000JSJ3SR / 081KRFA460008QG0R0018SN61J / 081KSE6WT0008QG0R001E1F862 (substrate-honest VC meta-playbook) / 081KSE6WT0008QG0R000QXSG91 / 081KSE6WT0008QG0R000RH1526 / 081KSE6WT0008QG0R001H3DA90 / 081KSE6WT0008QG0R003TBE2VB.
+**081KSE6WT0008QG0R003CMCX84 P2: DIO + CEO-scale** — Distributed Intelligent Organization per company; each Zeta cluster IS a DIO instance; CEO of 30 companies scales by speaking ontology + intent, not implementation. Composes with 081KSE6WT0008QG0R002CC6314 / 081KSE6WT0008QG0R0008483B2 / 081KSE6WT0008QG0R000JSJ3SR / 081KRFA460008QG0R0018SN61J / 081KSE6WT0008QG0R001E1F862 (substrate-honest VC meta-playbook) / 081KSE6WT0008QG0R000QXSG91 / 081KSE6WT0008QG0R000RH1526 / 081KSE6WT0008QG0R001H3DA90 / 081KSE6WT0008QG0R003TBE2VB.
 
 **081KSE6WT0008QG0R003TBE2VB P2: Eliminate tool wars** — sharpening of 081KSE6WT0008QG0R003G0Y62D first-time-CLI-user persona framing. NOT 'humans do less' but 'humans refocus intention to what really matters'. Pro-intent-for-everyone (humans AND AI agents). Operator keeps agency + value; substrate handles plumbing. Composes with 081KSE6WT0008QG0R003G0Y62D / 081KSE6WT0008QG0R003FG3E8R / 081KSE6WT0008QG0R000WVYAJ2 / 081KSE6WT0008QG0R00063R6HB / 081KSE6WT0008QG0R001E1F862 / 081KSE6WT0008QG0R003WMG4XV / 081KSE6WT0008QG0R0008483B2 / 081KSE6WT0008QG0R002275NDE / 081KSE6WT0008QG0R000RH1526 / 081KSE6WT0008QG0R001H3DA90 / 081KSE6WT0008QG0R003CMCX84.
 
@@ -217,7 +217,7 @@ mirror = free; common namespaces = strict consensus); type system
 becomes consensus mechanism + governance layer. Maps to existing
 Mirror/Beacon substrate (Mirror = personal namespace; Beacon =
 common namespaces). Composes with 081KSE6WT0008QG0R001H3DA90 (extends to distributed
-scope); B-0741 (ontology); B-0746 (Mirror/Beacon); 081KSE6WT0008QG0R0008483B2 (twin);
+scope); 081KSE6WT0008QG0R002CC6314 (ontology); 081KSE6WT0008QG0R0025QPP05 (Mirror/Beacon); 081KSE6WT0008QG0R0008483B2 (twin);
 081KSE6WT0008QG0R003CMCX84 (DIO + CEO-scale).
 
 081KSE6WT0008QG0R000R8CPFX P1: Unified namespace across F# / Kubernetes / Ontology +
@@ -230,7 +230,7 @@ mesh (eBPF; no sidecars; pairs natively with Cilium-as-CNI per
 081KSE6WT0008QG0R00049EFBD wave 3) is primary; Argo Rollouts drives the routing
 config; per 081KSE6WT0008QG0R00063R6HB ServiceTitan-route everything plugs into
 existing standards. Composes with 081KSE6WT0008QG0R001H3DA90 / 081KSE6WT0008QG0R0018WZ7TH + every layer
-above (B-0741 / B-0747 / 081KSE6WT0008QG0R000WVYAJ2 / 081KSE6WT0008QG0R0009YYNP4 / 081KSE6WT0008QG0R00063R6HB / 081KSE6WT0008QG0R00049EFBD /
+above (081KSE6WT0008QG0R002CC6314 / 081KSE6WT0008QG0R003D199HE / 081KSE6WT0008QG0R000WVYAJ2 / 081KSE6WT0008QG0R0009YYNP4 / 081KSE6WT0008QG0R00063R6HB / 081KSE6WT0008QG0R00049EFBD /
 081KSE6WT0008QG0R0016CEE2Z / 081KSE6WT0008QG0R003WMG4XV / 081KSE6WT0008QG0R0008483B2 / 081KSE6WT0008QG0R003CMCX84 / 081KSE6WT0008QG0R003TBE2VB).
 
 Mika cross-AI validation: substrate cluster filed earlier this
@@ -306,13 +306,13 @@ use case.
 
 Per-AI isolation at every layer: type-definition (081KSE6WT0008QG0R0018WZ7TH) +
 request-routing (081KSE6WT0008QG0R000R8CPFX) + event-store (081KSE6WT0008QG0R0008483B2 projections; not
-separate DBs) + git-state (B-0747) + backlog-claim (081KR7JY10008QG0R000R503K2).
+separate DBs) + git-state (081KSE6WT0008QG0R003D199HE) + backlog-claim (081KR7JY10008QG0R000R503K2).
 
 Event-store-native projections matter specifically: storage cost
 approximately constant (one event log + N projections vs N data
 copies); cross-experiment comparison via projection-join; time
 travel per experiment via event replay. Per Aaron's existing
-DBSP + retraction-native substrate (B-0746 / 081KRFA460008QG0R0018SN61J).
+DBSP + retraction-native substrate (081KSE6WT0008QG0R0025QPP05 / 081KRFA460008QG0R0018SN61J).
 
 'Will be required soon when we grow' = P1 operational signal. As
 Zeta AI agent count grows (Otto multi-surface + Alexa + Riven +
@@ -320,7 +320,7 @@ Vera + Lior + Mika + external participants), stepping-on-each-
 other failure modes become operationally blocking. Pre-emptive
 substrate landing IS substrate-honest.
 
-Composes with 081KR7JY10008QG0R000R503K2 / 081KRFA460008QG0R0018SN61J / B-0746 / B-0747 / 081KSE6WT0008QG0R003FG3E8R / 081KSE6WT0008QG0R003WMG4XV
+Composes with 081KR7JY10008QG0R000R503K2 / 081KRFA460008QG0R0018SN61J / 081KSE6WT0008QG0R0025QPP05 / 081KSE6WT0008QG0R003D199HE / 081KSE6WT0008QG0R003FG3E8R / 081KSE6WT0008QG0R003WMG4XV
 / 081KSE6WT0008QG0R0008483B2 / 081KSE6WT0008QG0R000RH1526 / 081KSE6WT0008QG0R001H3DA90 / 081KSE6WT0008QG0R003CMCX84 / 081KSE6WT0008QG0R0018WZ7TH / 081KSE6WT0008QG0R000R8CPFX / 081KSE6WT0008QG0R000C18G5D /
 081KRW63S0008QG0R003TX8MG5.
 

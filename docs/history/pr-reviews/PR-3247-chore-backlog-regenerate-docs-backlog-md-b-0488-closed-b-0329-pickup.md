@@ -161,7 +161,7 @@ Verifies clean:
 - No other refs to the renamed file (grep confirmed)
 
 The next available ID before this renumber was 081KRHWGX0008QG0R003N033PD (highest on-disk
-081KRHWGX0008QG0R001HMWM1W; no in-flight PRs claim 0520-0522). B-0516 is missing (was
+081KRHWGX0008QG0R001HMWM1W; no in-flight PRs claim 0520-0522). 081KRHWGX0008QG0R001BPYWTT is missing (was
 renumbered earlier per tick-history archaeology).
 
 Co-Authored-By: Claude <noreply@anthropic.com>

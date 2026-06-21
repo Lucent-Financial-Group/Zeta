@@ -9,7 +9,7 @@ ask: aaron 2026-05-21 ("we can start to loose up and have hourly gates or someth
 created: 2026-05-21
 last_updated: 2026-05-21
 depends_on: []
-composes_with: [B-0691, 081KQ3HBZ0008QG0R002ZPXAFQ]  # B-0691 row pending merge via PR #4562; implementation already shipped via PR #4565
+composes_with: [081KS3X9Y0008QG0R001MD26NZ, 081KQ3HBZ0008QG0R002ZPXAFQ]  # 081KS3X9Y0008QG0R001MD26NZ row pending merge via PR #4562; implementation already shipped via PR #4565
 tags: [ci-cadence, branch-model, fast-branch, life-branch, hourly-batched-gates, promotion-path, soraya-promotion-gate, cost-reduction]
 type: operational
 ---
@@ -55,7 +55,7 @@ Classic Linus `dev/main` pattern adapted to Zeta:
 - Full gates: lint + build + all static analysis + all tests + Codex+Copilot review threads (per PR)
 - TreatWarningsAsErrors strict
 - Signed commits (gated on 081KQ3HBZ0008QG0R002ZPXAFQ + Bouncy Castle foundation per Otto-346)
-- Soraya-promotion-gate: formal-verification clean state required before fast→life promotion (per Soraya loop B-0691)
+- Soraya-promotion-gate: formal-verification clean state required before fast→life promotion (per Soraya loop 081KS3X9Y0008QG0R001MD26NZ)
 - Reverter-quality preserved (atomic squash commits)
 
 ### Promotion path
@@ -84,7 +84,7 @@ Classic Linus `dev/main` pattern adapted to Zeta:
 
 ### Phase 3 — Soraya-promotion-gate
 
-- Soraya loop (B-0691; PR #4565) publishes `formal-verification-result` bus envelopes
+- Soraya loop (081KS3X9Y0008QG0R001MD26NZ; PR #4565) publishes `formal-verification-result` bus envelopes
 - Promotion PR creation script (Phase 2) reads recent envelopes
 - If any spec is in `fail` state since last promotion, block promotion until resolved
 - Soraya gets veto authority over `fast` → `life` promotion when formal-verification is unhealthy
@@ -165,7 +165,7 @@ So the answer is **per-pattern, not universal**. Fast/life experiment should tes
 ## Composes with substrate
 
 - 081KQ3HBZ0008QG0R002ZPXAFQ (heartbeat-file integrity threat-model + direct-to-main attack surface — fast/life model SOLVES part of the direct-to-main problem by keeping `life` strict + allowing `fast` for low-stakes substrate)
-- B-0691 (Soraya loop — provides the verification-result envelopes that gate promotion)
+- 081KS3X9Y0008QG0R001MD26NZ (Soraya loop — provides the verification-result envelopes that gate promotion)
 - 081KRW63S0008QG0R002KC5DSR / 081KRW63S0008QG0R002ZRNDJ8 / 081KRW63S0008QG0R002YAA09X / 081KRW63S0008QG0R001SAHYKV (Agora V6 substrate — operational primitives preserved across both branches)
 - `.claude/rules/refresh-world-model-poll-pr-gate.md` — gh CLI patterns this PR's promotion script would use
 - `.claude/rules/blocked-green-ci-investigate-threads.md` — promotion-PR thread triage discipline
@@ -183,6 +183,6 @@ Aaron 2026-05-21 substrate-engineering framing: explicit priorities (no warnings
 Companion rows from today's cascade:
 
 - 081KS3X9Y0008QG0R001D454ZK + 081KS3X9Y0008QG0R003Y2X2T0 + 081KS3X9Y0008QG0R000J4SFTS (Otto-VSCode PRs 6-8 architectural substrate)
-- B-0691 (Soraya loop — provides the promotion-gate verification envelopes)
+- 081KS3X9Y0008QG0R001MD26NZ (Soraya loop — provides the promotion-gate verification envelopes)
 - 081KS3X9Y0008QG0R000BJY3DK (Otto-VSCode third surface — provides the fast/life cadence-distribution surface)
-- B-0690 (v1→v2 ZetaId migration coordination — bound by life-branch promotion discipline)
+- 081KS3X9Y0008QG0R000ED1457 (v1→v2 ZetaId migration coordination — bound by life-branch promotion discipline)

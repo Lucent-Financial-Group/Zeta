@@ -260,7 +260,7 @@ If a trajectory conflicts on the same shared path across N=3 consecutive batch c
 ```yaml
 topic: batch-merge-conflict-required-manual
 trajectories: ["trajectory/0a", "trajectory/0b"]
-conflicting_paths: ["docs/backlog/P1/B-1234-foo.md"]
+conflicting_paths: ["docs/backlog/P1/081KDXM8TP008QG0R003679HZ7-foo.md"]
 batches_attempted: 3
 window: 2026-05-28T14:00Z..2026-05-28T15:00Z
 suggested_resolution: "operator review; either pick one trajectory's change or refactor the trajectories to write to different paths"

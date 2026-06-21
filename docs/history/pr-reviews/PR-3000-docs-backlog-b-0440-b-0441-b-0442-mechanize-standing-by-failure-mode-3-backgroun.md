@@ -419,7 +419,7 @@ This PR is itself decomposition-discipline applied: Aaron's broad-architectural 
 - **`Copilot` (bot)** at 2026-05-13T16:36:24Z on `docs/BACKLOG.md`:247 (association: NONE)
 
   <pre>
-  P1: These added rows start at 081KRFA460008QG0R001KC0VBH, but the current tree has no B-0438 or B-0439 while tools/backlog/README.md requires backlog IDs to be sequential and factory-wide unique. Renumber these rows to the next available sequence or land the missing reserved rows in the same change so the index does not introduce an ID gap.
+  P1: These added rows start at 081KRFA460008QG0R001KC0VBH, but the current tree has no 081KDW6QA2008QG0R0020A1PGS or 081KDW6S4N008QG0R00358FQND while tools/backlog/README.md requires backlog IDs to be sequential and factory-wide unique. Renumber these rows to the next available sequence or land the missing reserved rows in the same change so the index does not introduce an ID gap.
 
   </pre>
 

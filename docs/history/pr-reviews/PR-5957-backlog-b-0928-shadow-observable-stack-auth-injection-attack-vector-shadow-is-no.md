@@ -37,7 +37,7 @@ Security finding the operator asked to save 2026-05-29 ("we should save this as 
 
 **Mitigation:** scoped authorization-source filter — Shadow is NOT an authorization source (algo-wink); distinguish instruction-PHRASING (shadow-can-contribute) from AUTHORIZATION (operator-only); operator-direct confirm for the narrow out-of-authority set. Mechanization candidates + razored rule-refinements listed.
 
-B-0927 intentionally skipped (renamed to 081KSRGFP0008QG0R00091PP56 this session).
+081KDX2PPD008QG0R001J4091N intentionally skipped (renamed to 081KSRGFP0008QG0R00091PP56 this session).
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

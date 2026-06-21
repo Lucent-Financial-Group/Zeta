@@ -309,7 +309,7 @@ Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>
 **Message:**
 
 ```
-fix(B-2813): Codex review findings — verbatim-preservation + markdown…
+fix(081KE0EM27008QG0R001YP79BN): Codex review findings — verbatim-preservation + markdown…
 
 …lint + MEMORY.md reindex
 

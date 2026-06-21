@@ -8,11 +8,11 @@ ask: aaron 2026-05-25
 created: 2026-05-25
 last_updated: 2026-05-26
 composes_with:
-  - B-0741
-  - B-0744
+  - 081KSE6WT0008QG0R002CC6314
+  - 081KSE6WT0008QG0R000SH6E0R
   - 081KSE6WT0008QG0R002E6P098
-  - B-0749
-  - B-0754
+  - 081KSE6WT0008QG0R001RG4FXD
+  - 081KSGS9H0008QG0R002T3BJ2R
   - 081KSE6WT0008QG0R003G0Y62D
   - 081KSE6WT0008QG0R0015ZF2G6
   - 081KSE6WT0008QG0R003FG3E8R
@@ -64,7 +64,7 @@ Operator swaps plugin → vendor changes; operator's code doesn't.
 | `Zeta.Storage.Vector` | Pinecone / Weaviate / Qdrant / Milvus / pgvector / OpenSearch-kNN |
 | `Zeta.Compute.Function` | AWS Lambda / GCP Cloud Functions / Cloudflare Workers / Knative / K8s Jobs |
 | `Zeta.Compute.GPU` | AWS EC2-GPU / GCP A100 / Lambda Labs / RunPod / local NVIDIA / local AMD ROCm |
-| `Zeta.Identity.Auth` | Auth0 / Okta / Cognito / Firebase Auth / Keycloak / OIDC / WebAuthn (B-0744) |
+| `Zeta.Identity.Auth` | Auth0 / Okta / Cognito / Firebase Auth / Keycloak / OIDC / WebAuthn (081KSE6WT0008QG0R000SH6E0R) |
 | `Zeta.Messaging.Queue` | SQS / Pub/Sub / Service Bus / NATS / Kafka / RabbitMQ |
 | `Zeta.Network.LoadBalancer` | ALB / GCP LB / Azure FrontDoor / nginx / Traefik / kube-vip |
 | `Zeta.Observability.Metrics` | CloudWatch / GCP Monitoring / Datadog / Prometheus / Grafana Cloud |
@@ -172,15 +172,15 @@ Composes naturally with the two flywheels already filed:
 
 ## Composes with
 
-- B-0741 — ontology+category negotiation (this row IS that
+- 081KSE6WT0008QG0R002CC6314 — ontology+category negotiation (this row IS that
   pattern applied at the cloud-vendor layer)
-- B-0744 — FIDO2/WebAuthn/Passkeys/OIDC bridge (the
+- 081KSE6WT0008QG0R000SH6E0R — FIDO2/WebAuthn/Passkeys/OIDC bridge (the
   `Zeta.Identity.Auth` interface composes with this)
 - 081KSE6WT0008QG0R002E6P098 — kro/Crossplane/middleware spectrum (the runtime
   substrate for declaring plugin choices via k8s CRDs)
-- B-0749 — KubeVela/OAM Component/Trait model (the vocabulary
+- 081KSE6WT0008QG0R001RG4FXD — KubeVela/OAM Component/Trait model (the vocabulary
   for declaring interface implementations + composing them)
-- B-0754 — zero-typing cluster install (the operator-facing
+- 081KSGS9H0008QG0R002T3BJ2R — zero-typing cluster install (the operator-facing
   install path needs interface plugins to be discoverable at
   install time)
 - 081KSE6WT0008QG0R003G0Y62D — first-time-CLI-user persona (the swap-vendors
@@ -246,4 +246,4 @@ cluster product."
 Aaron 2026-05-25, mid-iteration-2 wait, naming the negotiation-
 high-seat positioning that owning interfaces (vs implementing
 vendors' interfaces) delivers. Composes naturally with today's
-already-filed substrate cluster (B-0741 through 081KSE6WT0008QG0R003FG3E8R).
+already-filed substrate cluster (081KSE6WT0008QG0R002CC6314 through 081KSE6WT0008QG0R003FG3E8R).

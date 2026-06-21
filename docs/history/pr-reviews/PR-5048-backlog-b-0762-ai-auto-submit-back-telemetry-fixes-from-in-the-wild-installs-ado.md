@@ -27,7 +27,7 @@
 
 ## Description
 
-Aaron 2026-05-25 named the adoption-scaling mechanism: each in-the-wild install opt-in submits success/failure telemetry; failures trigger LLM-generated minimal-diff PRs; pattern-matched fixes auto-merge; next operator on similar hardware pays 0 cost. Network-effect substrate; ARC-AGI parallel (081KSE6WT0008QG0R0015ZF2G6) provides the training data + benchmark catalog. Composes with B-0743 / B-0754-081KSE6WT0008QG0R0015ZF2G6.
+Aaron 2026-05-25 named the adoption-scaling mechanism: each in-the-wild install opt-in submits success/failure telemetry; failures trigger LLM-generated minimal-diff PRs; pattern-matched fixes auto-merge; next operator on similar hardware pays 0 cost. Network-effect substrate; ARC-AGI parallel (081KSE6WT0008QG0R0015ZF2G6) provides the training data + benchmark catalog. Composes with 081KSE6WT0008QG0R003WW3YJQ / 081KSGS9H0008QG0R002T3BJ2R-081KSE6WT0008QG0R0015ZF2G6.
 
 ## Outcome
 

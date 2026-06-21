@@ -27,7 +27,7 @@ Documented in shards:
 - `1856Z.md` — multi-Otto branch-state untangle procedure documented
 - `1905Z.md` — parallel-Otto carried over `081KRHWGX0008QG0R0018VR3SK` file
 - `1908Z.md` — `git checkout -f origin/main` workaround
-- `1927Z.md` — B-0516 → 081KRHWGX0008QG0R0029X10F4 renumber due to parallel-Otto ID collision
+- `1927Z.md` — 081KRHWGX0008QG0R001BPYWTT → 081KRHWGX0008QG0R0029X10F4 renumber due to parallel-Otto ID collision
 
 ## RCA hypotheses
 

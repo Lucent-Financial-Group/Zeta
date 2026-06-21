@@ -12,7 +12,7 @@ composes_with:
   - 081KSKBP80008QG0R0039RW25E
   - 081KRW63S0008QG0R001SAHYKV
   - 081KS3X9Y0008QG0R00218150M
-  - B-0741
+  - 081KSE6WT0008QG0R002CC6314
 related_personas:
   - kestrel (2026-05-27 multi-AI conversation end)
   - operator

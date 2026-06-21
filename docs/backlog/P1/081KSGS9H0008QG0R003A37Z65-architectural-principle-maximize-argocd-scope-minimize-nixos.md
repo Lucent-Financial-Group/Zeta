@@ -123,7 +123,7 @@ Ace is the entry point per the 081KSGS9H0008QG0R001Y9FB62 architecture; ArgoCD i
 Per [`.claude/rules/verify-existing-substrate-before-authoring.md`](../../../.claude/rules/verify-existing-substrate-before-authoring.md):
 
 - `grep -rlF "ArgoCD"` → existing references across iter-5.4.x + iter-6.x rows (consumes ArgoCD); no existing principle row
-- `grep -rlF "portability"` + `grep -rlF "cross-cluster"` → 081KSE6WT0008QG0R002CC6314 + B-0741 substrate at fork-federation scope; this row's scope is the host-distribution scope (different)
+- `grep -rlF "portability"` + `grep -rlF "cross-cluster"` → 081KSE6WT0008QG0R002CC6314 + 081KSE6WT0008QG0R002CC6314 substrate at fork-federation scope; this row's scope is the host-distribution scope (different)
 - ID 081KSGS9H0008QG0R003A37Z65 next-free per `git ls-tree origin/main` (highest = 081KSGS9H0008QG0R000EPPQTR just merged via #5216)
 
 ## Origin

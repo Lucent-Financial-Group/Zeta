@@ -9,12 +9,12 @@ created: 2026-05-25
 last_updated: 2026-05-25
 depends_on: []
 composes_with:
-  - B-0743
-  - B-0754
+  - 081KSE6WT0008QG0R003WW3YJQ
+  - 081KSGS9H0008QG0R002T3BJ2R
   - 081KSE6WT0008QG0R003612WGJ
-  - B-0758
+  - 081KSE6WT0008QG0R00021PPX1
   - 081KSE6WT0008QG0R003G0Y62D
-  - B-0760
+  - 081KSE6WT0008QG0R003WG0V6P
   - 081KSE6WT0008QG0R0015ZF2G6
   - 081KSE6WT0008QG0R000WVYAJ2
   - 081KSE6WT0008QG0R001E1F862
@@ -70,7 +70,7 @@ The five principles Aaron's been applying:
 | **Mini-PC base** (cluster node) | Beelink SER8 / SER9, Minisforum AI370 / UM790 XTX, ASUS NUC 14 Pro AI, GMKtec K8/K9, Aoostar GEM12 | AMD Ryzen AI / Intel Meteor Lake / Lunar Lake / Arrow Lake; NPU + iGPU + CPU shared memory; 32-96GB RAM; 1-2 NVMe slots; USB4 / OCuLink port for eGPU | $400-800 |
 | **AI CPU (shared-memory NPU+iGPU+CPU)** | Intel Core Ultra (Meteor Lake / Lunar Lake / Arrow Lake); AMD Ryzen AI 300 series | Unified memory means inference doesn't pay PCIe copy cost; NPU handles small models; iGPU for medium; CPU fallback; all share RAM | (built into mini-PC) |
 | **OCuLink eGPU** (optional per-node) | One-Netbook OCuLink dock; Aoostar Atom Man G7 Ti dock; GPD G1 dock; ADT-Link UT3G; standalone OCuLink-PCIe x4 adapter + GPU + PSU | OCuLink = standardized PCIe-over-cable; mini-PC gets full-size GPU without PCIe slot; eGPU is hot-swappable + replaceable + reusable across mini-PC swaps | $150-300 (dock) + $300-2000 (GPU) |
-| **NVMe storage** (per node, 1-2) | Crucial P3 Plus 1TB / 2TB; Samsung 990 EVO; WD SN770; Sabrent Rocket 4 | Cheap NVMe is now $40-80/TB; 2 NVMe per node = greedy disko shape works (per B-0754 v1); Longhorn replication handles failure | $40-150 per disk |
+| **NVMe storage** (per node, 1-2) | Crucial P3 Plus 1TB / 2TB; Samsung 990 EVO; WD SN770; Sabrent Rocket 4 | Cheap NVMe is now $40-80/TB; 2 NVMe per node = greedy disko shape works (per 081KSGS9H0008QG0R002T3BJ2R v1); Longhorn replication handles failure | $40-150 per disk |
 | **IP-KVM** (per node, optional but recommended) | GL.iNet Comet Pro (per 081KSE6WT0008QG0R0029S1D5Z); BliKVM v3 / v4 mini; PiKVM v3; JetKVM; NanoKVM; Tinypilot Voyager 2 | HDMI capture + USB HID + virtual mass-storage + ATX power; complete remote BIOS-to-cluster-member per 081KSE6WT0008QG0R0029S1D5Z | $50-200 |
 | **Remote finger** (ATX power servo) | Comet Pro finger accessory; BliKVM ATX adapter; or DIY servo + ESP32 | Press power button remotely without splicing into motherboard ATX header | $20-60 |
 | **Network** | Cheap 2.5GbE or 10GbE switch (TP-Link TL-SG108-M2; Mikrotik CRS305; Zyxel XGS1010); CAT 6A cables; or WiFi 6/6E if no ethernet | 2.5GbE adequate for home lab; 10GbE if running storage-heavy workloads; PoE optional if powering Comet Pro from switch | $80-300 (switch) + $20 (cables) |
@@ -118,13 +118,13 @@ ONNX runtime + per-vendor execution providers).
 
 Composes with:
 
-- B-0754 zero-typing first-boot — greedy N-disk handles
+- 081KSGS9H0008QG0R002T3BJ2R zero-typing first-boot — greedy N-disk handles
   mini-PC's typical 1-2 NVMe layouts cleanly
-- B-0758 unRAID-style USB-persistent OS — for mini-PCs with
+- 081KSE6WT0008QG0R00021PPX1 unRAID-style USB-persistent OS — for mini-PCs with
   only 1 NVMe + operator wanting OS isolation from data
 - 081KSE6WT0008QG0R003G0Y62D first-time-CLI-user persona — mini-PCs are what
   this persona buys; not enterprise hardware
-- B-0760 USB-as-repair-tool — replaceable mini-PCs means
+- 081KSE6WT0008QG0R003WG0V6P USB-as-repair-tool — replaceable mini-PCs means
   "node failed → buy new $400 mini-PC → plug USB → walk
   away → cluster rejoins"
 
@@ -157,7 +157,7 @@ Composes with:
 Composes with:
 
 - 081KSE6WT0008QG0R0029S1D5Z (already filed) — Comet Pro substrate covers this
-- B-0760 USB-as-repair-tool — KVM enables remote repair
+- 081KSE6WT0008QG0R003WG0V6P USB-as-repair-tool — KVM enables remote repair
   without physical access
 - 081KSE6WT0008QG0R003WZAQKV "I execute, you fingerprint" — KVM physical-presence
   consent floor is the once-per-node plug-in event
@@ -196,7 +196,7 @@ Composes with:
         50-nodes-capable)
       - 3-node HA + GPU expansion (1-3 eGPUs)
       - Edge deployment (1 mini-PC per site; many sites;
-        per B-0758 + 081KSE6WT0008QG0R000QXSG91 KubeStellar)
+        per 081KSE6WT0008QG0R00021PPX1 + 081KSE6WT0008QG0R000QXSG91 KubeStellar)
 - [ ] AI-trainable hardware substrate: per-BOM cost +
       capability data published per 081KSE6WT0008QG0R0015ZF2G6 reference; AI
       systems can recommend hardware configs based on operator
@@ -238,19 +238,19 @@ catalog updates; future operators inherit current-state BOM.
 
 ## Composes with
 
-- B-0743 — "I execute, you fingerprint" (Touch ID on Mac for
+- 081KSE6WT0008QG0R003WW3YJQ — "I execute, you fingerprint" (Touch ID on Mac for
   flashing; physical-presence consent floor across cluster
   hardware + accessories)
-- B-0754 — zero-typing first-boot (designed for commodity
+- 081KSGS9H0008QG0R002T3BJ2R — zero-typing first-boot (designed for commodity
   hardware; greedy N-disk handles mini-PC layouts)
 - 081KSE6WT0008QG0R003612WGJ — role taxonomy (worker-gpu role for eGPU-equipped
   mini-PCs; control-plane role for non-GPU)
-- B-0758 — unRAID-style USB-persistent OS (extends to
+- 081KSE6WT0008QG0R00021PPX1 — unRAID-style USB-persistent OS (extends to
   single-NVMe mini-PCs + zero-internal-disk edge deployments)
 - 081KSE6WT0008QG0R003G0Y62D — first-time-CLI-user persona (this row is the
   HARDWARE accessibility companion to 081KSE6WT0008QG0R003G0Y62D's SOFTWARE
   accessibility persona work)
-- B-0760 — USB-as-repair-tool (commodity hardware =
+- 081KSE6WT0008QG0R003WG0V6P — USB-as-repair-tool (commodity hardware =
   replaceable = repair-by-swap)
 - 081KSE6WT0008QG0R0015ZF2G6 — open AI-trainable reference architecture (the BOM
   IS part of the reference; AI systems train on hardware-cost
@@ -280,7 +280,7 @@ catalog updates; future operators inherit current-state BOM.
   when Zeta adoption justifies engagement (081KSE6WT0008QG0R0004ZPPRP Itron-mode)
 - Cluster-in-a-box appliance products (pre-configured Zeta
   cluster shipping as turnkey hardware) — separate scope;
-  defer until B-0754 substrate proven on multiple
+  defer until 081KSGS9H0008QG0R002T3BJ2R substrate proven on multiple
   hardware-vendor combinations
 - Server-class hardware support (Dell PowerEdge, HPE ProLiant,
   Supermicro) — works fine via existing substrate; this row's

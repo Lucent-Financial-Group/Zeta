@@ -8,12 +8,12 @@ ask: aaron-mika-grok 2026-05-25
 created: 2026-05-25
 last_updated: 2026-05-25
 depends_on:
-  - B-0741
+  - 081KSE6WT0008QG0R002CC6314
   - 081KSE6WT0008QG0R0008483B2
   - 081KSE6WT0008QG0R000JSJ3SR
 composes_with:
   - 081KRFA460008QG0R0018SN61J
-  - B-0754
+  - 081KSGS9H0008QG0R002T3BJ2R
   - 081KSE6WT0008QG0R003G0Y62D
   - 081KSE6WT0008QG0R0015ZF2G6
   - 081KSE6WT0008QG0R003FG3E8R
@@ -71,14 +71,14 @@ shared distributed-intelligence database substrate.
 
 A DIO is a company / organization / business unit that:
 
-- Runs on Zeta cluster substrate (per B-0754 + 081KSE6WT0008QG0R0015ZF2G6 + 081KSE6WT0008QG0R0008483B2
+- Runs on Zeta cluster substrate (per 081KSGS9H0008QG0R002T3BJ2R + 081KSE6WT0008QG0R0015ZF2G6 + 081KSE6WT0008QG0R0008483B2
   digital twin)
 - Composes the full strategic substrate cluster (per
   081KSE6WT0008QG0R000WVYAJ2 / 081KSE6WT0008QG0R00063R6HB / 081KSE6WT0008QG0R00049EFBD / 081KSE6WT0008QG0R003WMG4XV / 081KSE6WT0008QG0R0008483B2 / 081KSE6WT0008QG0R002275NDE / 081KSE6WT0008QG0R000JSJ3SR)
 - Operates AI agents + human contributors interchangeably (per
   081KSE6WT0008QG0R003G0Y62D persona spans human-driven + AI-driven workflows)
 - Uses the shared Zeta ontology + standardized interfaces (per
-  B-0741 + 081KSE6WT0008QG0R000JSJ3SR)
+  081KSE6WT0008QG0R002CC6314 + 081KSE6WT0008QG0R000JSJ3SR)
 - Is independently intelligent: thinks, remembers (per 081KSE6WT0008QG0R0008483B2
   digital twin), acts (per 081KSE6WT0008QG0R003WMG4XV fabric), all standardized on
   the same vocabulary the CEO operates against
@@ -179,7 +179,7 @@ graph across DIOs (per per-DIO twin + cross-DIO federation per
 - [ ] AI-vs-human staffing per DIO: same touch points;
       operator (CEO) doesn't need to know which DIOs are
       AI-run vs human-run for cross-DIO operations
-- [ ] Substrate-honest accountability per DIO (per B-0743
+- [ ] Substrate-honest accountability per DIO (per 081KSE6WT0008QG0R003WW3YJQ
       named-human-attachment scaling): per-DIO operator
       accepts per-DIO legal/operational risk; CEO is shared
       contributor not single-point-of-accountability
@@ -207,9 +207,9 @@ graph across DIOs (per per-DIO twin + cross-DIO federation per
 ## Composes with
 
 - 081KRFA460008QG0R0018SN61J F# fork (the substrate language for typed ontology)
-- B-0741 ontology+category negotiation (Ace bridges per-DIO
+- 081KSE6WT0008QG0R002CC6314 ontology+category negotiation (Ace bridges per-DIO
   vocabulary variations)
-- B-0754 zero-typing first-boot (per-DIO bootstrap pattern)
+- 081KSGS9H0008QG0R002T3BJ2R zero-typing first-boot (per-DIO bootstrap pattern)
 - 081KSE6WT0008QG0R003G0Y62D first-time-CLI-user persona (operator persona spans
   human-driven + AI-driven DIOs)
 - 081KSE6WT0008QG0R0015ZF2G6 open AI-trainable reference architecture (multi-DIO
@@ -255,7 +255,7 @@ graph across DIOs (per per-DIO twin + cross-DIO federation per
 Aaron-Mika-Grok 2026-05-25 mid-iter-3-CI-wait. Aaron named
 the CEO-of-30-companies scale + DIO substrate as the ultimate
 operator-scale framing. Each Zeta cluster IS a DIO; CEO scales
-by speaking ontology + intent (per B-0741 + 081KSE6WT0008QG0R000JSJ3SR + 081KSE6WT0008QG0R001H3DA90);
+by speaking ontology + intent (per 081KSE6WT0008QG0R002CC6314 + 081KSE6WT0008QG0R000JSJ3SR + 081KSE6WT0008QG0R001H3DA90);
 substrate handles everything below ontology layer.
 
 Verbatim preservation at

@@ -34,7 +34,7 @@
 - [PR #3523](https://github.com/Lucent-Financial-Group/Zeta/pull/3523) opened — 081KRMEXM0008QG0R003FZNK3E (backlog-graph consistency lint, P3); auto-merge armed.
 - Cron sentinel \`1011e43d\` confirmed live.
 
-ID allocation discipline applied: verified 081KRMEXM0008QG0R003FZNK3E free against \`origin/main\` (081KRMEXM0008QG0R000X1PPGC max) + in-flight PR scan (B-0531 taken by peer Lior [PR #3520](https://github.com/Lucent-Financial-Group/Zeta/pull/3520)).
+ID allocation discipline applied: verified 081KRMEXM0008QG0R003FZNK3E free against \`origin/main\` (081KRMEXM0008QG0R000X1PPGC max) + in-flight PR scan (081KRMEXM0008QG0R00070X79J taken by peer Lior [PR #3520](https://github.com/Lucent-Financial-Group/Zeta/pull/3520)).
 
 This branch is the post-recovery commit of the 1643Z shard. The first push attempt (\`shard/tick-1643z-otto-cli-2026-05-15\`) included an unintended deletion of \`.claude/rules/codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md\` (peer Otto's freshly-landed [PR #3522](https://github.com/Lucent-Financial-Group/Zeta/pull/3522) at commit \`3f0ef90\`); reset + restored the canary file from \`origin/main\` + re-pushed under this clean branch name. The bad branch was abandoned (no PR opened against it).
 
@@ -116,7 +116,7 @@ shard(tick): 1643Z — PR #3518 + #3519 merged; 081KRMEXM0008QG0R003FZNK3E filed
 - Sentinel 1011e43d live.
 
 ID allocation discipline applied: verified 081KRMEXM0008QG0R003FZNK3E free against
-origin/main (081KRMEXM0008QG0R000X1PPGC max) + in-flight PR scan (B-0531 taken by
+origin/main (081KRMEXM0008QG0R000X1PPGC max) + in-flight PR scan (081KRMEXM0008QG0R00070X79J taken by
 peer Lior PR #3520).
 
 Co-Authored-By: Claude <noreply@anthropic.com>

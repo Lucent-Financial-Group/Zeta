@@ -61,7 +61,7 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated 3 c
 
 **@copilot-pull-request-reviewer** (2026-05-26T05:09:48Z):
 
-`B-0743` is referenced here, but there is no corresponding backlog row in `docs/backlog/**` (and it also does not appear in the generated `docs/BACKLOG.md`). This leaves the row with a broken cross-reference; either update this to the correct existing B-id or land the missing B-0743 row in the backlog so the reference resolves.
+`081KSE6WT0008QG0R003WW3YJQ` is referenced here, but there is no corresponding backlog row in `docs/backlog/**` (and it also does not appear in the generated `docs/BACKLOG.md`). This leaves the row with a broken cross-reference; either update this to the correct existing B-id or land the missing 081KSE6WT0008QG0R003WW3YJQ row in the backlog so the reference resolves.
 
 ### Thread 2: docs/backlog/P1/081KSE6WT0008QG0R002275NDE-simplest-first-plugin-sequence-wrapping-already-deployed-cluster-substrate-redis-nats-cockroach-temporal-orleans-opa-aaron-2026-05-25.md:113 (unresolved)
 

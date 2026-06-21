@@ -8,13 +8,13 @@ ask: aaron 2026-05-25
 created: 2026-05-25
 last_updated: 2026-05-25
 depends_on:
-  - B-0741
+  - 081KSE6WT0008QG0R002CC6314
   - 081KSE6WT0008QG0R000WVYAJ2
 composes_with:
-  - B-0747
+  - 081KSE6WT0008QG0R003D199HE
   - 081KSE6WT0008QG0R002E6P098
-  - B-0749
-  - B-0754
+  - 081KSE6WT0008QG0R001RG4FXD
+  - 081KSGS9H0008QG0R002T3BJ2R
   - 081KSE6WT0008QG0R003G0Y62D
   - 081KSE6WT0008QG0R0015ZF2G6
   - 081KSE6WT0008QG0R003FG3E8R
@@ -39,11 +39,11 @@ benefit from but vendor lock-in models have not yet exploited:
 | **KEDA** | CNCF Graduated | Event-driven autoscaling (queue depth, metrics, schedules → pod count) |
 | **DAPR** | CNCF Incubating | Distributed-app building blocks (state, pub/sub, service-invoke, bindings, secrets, actors) as sidecars + SDK |
 | **OPA** | CNCF Graduated | Policy-as-code via Rego (admission control, authz, config validation) |
-| **OAM** + **KubeVela** | CNCF Sandbox | Application-model / Component-Trait separation (already filed at B-0749) |
+| **OAM** + **KubeVela** | CNCF Sandbox | Application-model / Component-Trait separation (already filed at 081KSE6WT0008QG0R001RG4FXD) |
 | **Crossplane** | CNCF Incubating | Cloud-resource provisioning via k8s CRDs (already filed at 081KSE6WT0008QG0R002E6P098) |
 | **kro** | CNCF Sandbox | ResourceGraphDefinition + CEL composition (already filed at 081KSE6WT0008QG0R002E6P098) |
 | **Cilium** | CNCF Graduated | eBPF networking + service mesh + observability |
-| **ArgoCD / Flux** | CNCF Graduated | GitOps reconciliation (already in Zeta substrate per B-0747) |
+| **ArgoCD / Flux** | CNCF Graduated | GitOps reconciliation (already in Zeta substrate per 081KSE6WT0008QG0R003D199HE) |
 | **Longhorn** | CNCF Incubating | Replicated block storage (Zeta default per current substrate) |
 | **Rook + Ceph** | CNCF Graduated | Storage orchestrator + distributed object store (Zeta future) |
 | **Knative** | CNCF Incubating | Serverless on k8s |
@@ -57,9 +57,9 @@ seat property from 081KSE6WT0008QG0R000WVYAJ2.
 Combined with:
 
 - **Ace** (Aaron's existing package-manager substrate — old-school
-  PM-of-PMs, per 081KQZVQW0008QG0R000ZHEN62 / 081KR2E4K0008QG0R0033WVCXE / 081KR2E4K0008QG0R002YE3MMD lineage + B-0741 +
+  PM-of-PMs, per 081KQZVQW0008QG0R000ZHEN62 / 081KR2E4K0008QG0R0033WVCXE / 081KR2E4K0008QG0R002YE3MMD lineage + 081KSE6WT0008QG0R002CC6314 +
   related Ace work)
-- **Ontology negotiation** (B-0741): cross-cluster, cross-fork,
+- **Ontology negotiation** (081KSE6WT0008QG0R002CC6314): cross-cluster, cross-fork,
   cross-vendor namespace bridging
 
 ...the CNCF ecosystem becomes a **force multiplier** for Zeta
@@ -101,7 +101,7 @@ Zeta interface (per 081KSE6WT0008QG0R000WVYAJ2 contract), so operators get:
       Rego is overkill)
 - [ ] **OAM + KubeVela** plugin behind `Zeta.Application.Model`
       interface (Component + Trait → KubeVela Application CRD);
-      composes with B-0749
+      composes with 081KSE6WT0008QG0R001RG4FXD
 - [ ] **Cilium** plugin behind `Zeta.Network.Mesh` interface
 - [ ] **Knative** plugin behind `Zeta.Compute.Function`
       interface (composes with 081KSE6WT0008QG0R000WVYAJ2 cloud-Function adapters
@@ -151,7 +151,7 @@ stable contract.
 Per Aaron's "package management of managers" framing:
 
 - **Ace as PM-of-PMs**: the Ace package manager (per Aaron's
-  existing 081KQZVQW0008QG0R000ZHEN62 / 081KR2E4K0008QG0R0033WVCXE / 081KR2E4K0008QG0R002YE3MMD / B-0741 substrate) is
+  existing 081KQZVQW0008QG0R000ZHEN62 / 081KR2E4K0008QG0R0033WVCXE / 081KR2E4K0008QG0R002YE3MMD / 081KSE6WT0008QG0R002CC6314 substrate) is
   designed to compose other package managers — npm, pip, gem,
   cargo, helm, krew, etc. → Ace.
 - **Ontology negotiation**: cross-vocabulary translation
@@ -166,15 +166,15 @@ Per Aaron's "package management of managers" framing:
 
 ## Composes with
 
-- B-0741 — ontology+category negotiation (the cross-vocabulary
+- 081KSE6WT0008QG0R002CC6314 — ontology+category negotiation (the cross-vocabulary
   bridge layer)
-- B-0747 — git-native per-machine state + GitOps reconciliation
+- 081KSE6WT0008QG0R003D199HE — git-native per-machine state + GitOps reconciliation
   (the substrate the CNCF plugins reconcile against)
 - 081KSE6WT0008QG0R002E6P098 — kro/Crossplane/Koreo/middleware spectrum (the runtime
   for declaring plugin choices via k8s CRDs)
-- B-0749 — KubeVela/OAM Component/Trait (already filed; this row
+- 081KSE6WT0008QG0R001RG4FXD — KubeVela/OAM Component/Trait (already filed; this row
   references + composes)
-- B-0754 — zero-typing first-boot (the install path needs CNCF
+- 081KSGS9H0008QG0R002T3BJ2R — zero-typing first-boot (the install path needs CNCF
   plugins discoverable at install time)
 - 081KSE6WT0008QG0R003G0Y62D — first-time-CLI-user persona (CNCF plugin docs need
   persona-aligned plain language; many CNCF docs are
@@ -225,7 +225,7 @@ substrate.
 ## Strategic context
 
 This row + 081KSE6WT0008QG0R000WVYAJ2 (cloud-native plugins) + 081KSE6WT0008QG0R0015ZF2G6 (open reference
-architecture) + 081KSE6WT0008QG0R003FG3E8R (telemetry flywheel) + B-0741 (ontology
+architecture) + 081KSE6WT0008QG0R003FG3E8R (telemetry flywheel) + 081KSE6WT0008QG0R002CC6314 (ontology
 negotiation) compose into Zeta's full strategic substrate:
 
 - **Own interfaces** (081KSE6WT0008QG0R000WVYAJ2) → negotiation high seat
@@ -234,7 +234,7 @@ negotiation) compose into Zeta's full strategic substrate:
 - **Open reference** (081KSE6WT0008QG0R0015ZF2G6) → AI-trainable + competitively
   benchmarked
 - **Telemetry flywheel** (081KSE6WT0008QG0R003FG3E8R) → adoption-cost-to-zero
-- **Ontology negotiation** (B-0741) → cross-vocabulary bridge
+- **Ontology negotiation** (081KSE6WT0008QG0R002CC6314) → cross-vocabulary bridge
 
 The competitive moat = the COMBINATION. Any one of these is
 mimicable; the full stack composed coherently is not.

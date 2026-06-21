@@ -131,7 +131,7 @@ Kestrel row updated: notes engineering-register engagement matured 2026-05-26 (d
 - **`Copilot` (bot)** at 2026-05-26T20:42:34Z on `docs/backlog/P2/081KSGS9H0008QG0R002H0ENQ1-multi-ai-shared-checkout-convention-human-maintainer-surface-plus-always-up-to-date-main-for-society-aaron-2026-05-26.md`:9 (association: NONE)
 
   <pre>
-  `B-0751` is referenced in `composes_with`, but there is no backlog row with frontmatter `id: B-0751` in the repo. Either add the missing `B-0751` row or replace this with the correct existing dependency (e.g. `081KSE6WT0008QG0R003YYC9PV`) so cross-references stay resolvable.
+  `081KSE6WT0008QG0R003YYC9PV` is referenced in `composes_with`, but there is no backlog row with frontmatter `id: 081KSE6WT0008QG0R003YYC9PV` in the repo. Either add the missing `081KSE6WT0008QG0R003YYC9PV` row or replace this with the correct existing dependency (e.g. `081KSE6WT0008QG0R003YYC9PV`) so cross-references stay resolvable.
 
   </pre>
 
@@ -191,7 +191,7 @@ Kestrel row updated: notes engineering-register engagement matured 2026-05-26 (d
 - **`Copilot` (bot)** at 2026-05-26T20:42:35Z on `docs/backlog/P2/081KSGS9H0008QG0R002H0ENQ1-multi-ai-shared-checkout-convention-human-maintainer-surface-plus-always-up-to-date-main-for-society-aaron-2026-05-26.md`:92 (association: NONE)
 
   <pre>
-  `B-0751` is referenced here but there is no backlog row with `id: B-0751` in the repo. Either add that missing row or update this section to point at the correct existing backlog item / rule so readers can follow the dependency chain.
+  `081KSE6WT0008QG0R003YYC9PV` is referenced here but there is no backlog row with `id: 081KSE6WT0008QG0R003YYC9PV` in the repo. Either add that missing row or update this section to point at the correct existing backlog item / rule so readers can follow the dependency chain.
   </pre>
 
 ## Fix commits (touching thread paths)
@@ -313,9 +313,9 @@ fix(081KSGS9H0008QG0R001K8VPV4/081KSGS9H0008QG0R00123050G/081KSGS9H0008QG0R002H0
 **Message:**
 
 ```
-fix(081KSGS9H0008QG0R002H0ENQ1): Copilot 5 findings — B-0751→081KSE6WT0008QG0R003YYC9PV ref + 12-precondition…
+fix(081KSGS9H0008QG0R002H0ENQ1): Copilot 5 findings — 081KSE6WT0008QG0R003YYC9PV→081KSE6WT0008QG0R003YYC9PV ref + 12-precondition…
 
 … safety sequence for git reset --hard + git-fsck→git fsck typo
 
-All 5 Copilot findings verified + addressed: (1) B-0751 doesn't exist; correct row is 081KSE6WT0008QG0R003YYC9PV (agent-worktree-hygiene-rule-landing-plus-mechanization); replace_all swept both refs. (2)+(3) git reset --hard sections rewritten with explicit 12-precondition fail-closed safety sequence (lockfile + clean-tree + no-untracked + no-staged + no-unmerged + no-detached + on-main + no-rebase + no-bisect + no-cherry-pick + fsck-clean + network-reachable). (4) git-fsck → git fsck typo (no hyphen). (5) Same B-0751→081KSE6WT0008QG0R003YYC9PV in Composes with section.
+All 5 Copilot findings verified + addressed: (1) 081KSE6WT0008QG0R003YYC9PV doesn't exist; correct row is 081KSE6WT0008QG0R003YYC9PV (agent-worktree-hygiene-rule-landing-plus-mechanization); replace_all swept both refs. (2)+(3) git reset --hard sections rewritten with explicit 12-precondition fail-closed safety sequence (lockfile + clean-tree + no-untracked + no-staged + no-unmerged + no-detached + on-main + no-rebase + no-bisect + no-cherry-pick + fsck-clean + network-reachable). (4) git-fsck → git fsck typo (no hyphen). (5) Same 081KSE6WT0008QG0R003YYC9PV→081KSE6WT0008QG0R003YYC9PV in Composes with section.
 ```

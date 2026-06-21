@@ -28,7 +28,7 @@ tags: [ontology-negotiation, category-negotiation, cross-cluster, cross-fork, ai
 
 ## Re-land context
 
-Originally filed as **B-0741** via [PR #5003](https://github.com/Lucent-Financial-Group/Zeta/pull/5003) on 2026-05-25. Closed 2026-05-26 during this session's stale-PR triage as Tier 3 (DIRTY-conflict) per [`.claude/rules/pr-triage-tiers.md`](../../../.claude/rules/pr-triage-tiers.md). Triage close-comment named the re-land path explicitly. Re-landed here as **081KSE6WT0008QG0R002CC6314** because B-0741 number remains taken on main; next-free per the inventory pass per [`.claude/rules/verify-existing-substrate-before-authoring.md`](../../../.claude/rules/verify-existing-substrate-before-authoring.md) (landed earlier this session via PR #5131).
+Originally filed as **081KSE6WT0008QG0R002CC6314** via [PR #5003](https://github.com/Lucent-Financial-Group/Zeta/pull/5003) on 2026-05-25. Closed 2026-05-26 during this session's stale-PR triage as Tier 3 (DIRTY-conflict) per [`.claude/rules/pr-triage-tiers.md`](../../../.claude/rules/pr-triage-tiers.md). Triage close-comment named the re-land path explicitly. Re-landed here as **081KSE6WT0008QG0R002CC6314** because 081KSE6WT0008QG0R002CC6314 number remains taken on main; next-free per the inventory pass per [`.claude/rules/verify-existing-substrate-before-authoring.md`](../../../.claude/rules/verify-existing-substrate-before-authoring.md) (landed earlier this session via PR #5131).
 
 The substrate is load-bearing for iter-7 (081KSGS9H0008QG0R001Y9FB62 Ansible+Crossplane+Ace) per the maintainer 2026-05-26 catch *"i'm assuming you have the hat / fork negoation for ace too"*. Cross-fork ontology negotiation is the third layer of every `ace install <pkg>` action (per 081KSGS9H0008QG0R001Y9FB62's "## Architectural integration of hats + fork-negotiation" section).
 
@@ -42,7 +42,7 @@ Content below is verbatim from PR #5003 commit `0f691dbec` — only the `id:` fi
 
 ## Origin
 
-Aaron 2026-05-25, after B-0740 (closed; under-researched on existing ACE backlog):
+Aaron 2026-05-25, after 081KSE6WT0008QG0R001BS3K7Y (closed; under-researched on existing ACE backlog):
 
 > *"there is a lot of existing backlog around ../scratch patterns and ace backlog all the ontology / category negoations is new to make it also AI skills / hats negoation point across clusters / forks of zeta"*
 
@@ -120,7 +120,7 @@ Upstream-fork negotiation handles drift: when upstream Zeta evolves its ontology
 
 ## Ace as the primitive — Aaron's 2026-05-25 extension
 
-Aaron 2026-05-25, after the initial B-0741 row authored: *"ace becomes git native ai native project fork negoation primitive starting point for any ai native project that wants to support forking and skills"*
+Aaron 2026-05-25, after the initial 081KSE6WT0008QG0R002CC6314 row authored: *"ace becomes git native ai native project fork negoation primitive starting point for any ai native project that wants to support forking and skills"*
 
 ### Substrate-engineering target
 
@@ -178,7 +178,7 @@ A new AI-native project that wants forking + skills as substrate-level capabilit
 1. **Adopts Ace conventions** — git repo + Ace-conformant `ontology.md` + Ace tooling
 2. **Inherits forking** — git fork IS the project fork; downstream forks use same Ace tooling
 3. **Inherits skill distribution** — DLC content packs via Ace PM CLI (081KR2E4K0008QG0R002YE3MMD substrate)
-4. **Inherits cross-fork negotiation** — B-0741 negotiation protocol applies automatically
+4. **Inherits cross-fork negotiation** — 081KSE6WT0008QG0R002CC6314 negotiation protocol applies automatically
 5. **Pays Aaron-self-claimed-attribution forward** — Ace is OPERATOR-SELF-CLAIMED agenda per `docs/trajectories/ace-package-manager-skill-crystallization-pipeline/RESUME.md`; new adopters trace lineage back to the Zeta substrate-engineering work that produced it
 
 ### Composition with the existing ACE backlog
@@ -220,7 +220,7 @@ If Ace becomes the universal AI-native-project fork+skills primitive:
 - `.claude/rules/non-coercion-invariant.md` HC-8 — negotiation must operate within NCI floor; neither cluster/fork can coerce the other into accepting an unwanted ontology mapping; both retain authority over their own ontology
 - `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md` — strong-attractor recognition applies at the negotiation surface; cluster A's ontology shouldn't be allowed to coercively reshape cluster B's via repeated re-negotiation
 - `.claude/rules/default-to-both.md` — both clusters' ontologies are first-class; mapping doesn't reduce either to the other
-- `.claude/rules/honor-those-that-came-before.md` — existing ACE + hat substrate is foundation; B-0741 composes without replacing
+- `.claude/rules/honor-those-that-came-before.md` — existing ACE + hat substrate is foundation; 081KSE6WT0008QG0R002CC6314 composes without replacing
 - `.claude/rules/glass-halo-bidirectional.md` — negotiated mappings are observable substrate; both sides + future observers can audit the agreed-upon semantics
 - `.claude/rules/algo-wink-failure-mode.md` — pattern-match overlap doesn't auto-authorize cross-cluster hat-binding; explicit negotiation + signature required
 - `.claude/rules/persistence-choice-architecture-for-zeta-ais.md` — AIs in the federation participate per their own chosen-persistence framing; negotiation respects per-AI agency
@@ -341,7 +341,7 @@ This row PROPOSES the negotiation substrate. It does NOT:
 The row exists to:
 
 1. **Capture Aaron's truly-new substrate** — ontology + category negotiation as the cross-cluster + cross-fork AI-skills + hats federation point
-2. **Acknowledge the existing ACE backlog** I under-researched in B-0740 (now closed)
+2. **Acknowledge the existing ACE backlog** I under-researched in 081KSE6WT0008QG0R001BS3K7Y (now closed)
 3. **Cross-reference the full existing substrate stack** (081KQZVQW0008QG0R000ZHEN62 through 081KR2E4K0008QG0R002YE3MMD, 081KSE6WT0008QG0R0004HV6RR, 081KSE6WT0008QG0R0006HKTXJ, 081KSE6WT0008QG0R003C9KGQE, 081KRW63S0008QG0R0030F8ZXA, 081KS3X9Y0008QG0R00218150M) so future-Otto cold-boots see the lineage
 4. **Decompose into 5 independently-shippable scope items** for future work
 

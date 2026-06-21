@@ -2,7 +2,7 @@
 
 **Aaron-forwarded preservation** per `.claude/rules/substrate-or-it-didnt-happen.md` + verbatim-preservation discipline for cross-AI research packets.
 
-**Context**: this conversation happened mid-iter-3-CI-wait of the cluster install (B-0754). Mika via Grok. Aaron shared with Otto immediately after the conversation; Otto preserves verbatim + extracts substrate-engineering items.
+**Context**: this conversation happened mid-iter-3-CI-wait of the cluster install (081KSGS9H0008QG0R002T3BJ2R). Mika via Grok. Aaron shared with Otto immediately after the conversation; Otto preserves verbatim + extracts substrate-engineering items.
 
 ## Verbatim transcript (Mika via Grok, Aaron forwarded)
 
@@ -219,10 +219,10 @@
 | Distributed Intelligent Organization (DIO) per company | **NEW: 081KSE6WT0008QG0R003CMCX84 DIO substrate** |
 | F# type system = universe boundary; every YAML/Nix/k8s/Argo/NATS becomes first-class F# | **NEW: 081KSE6WT0008QG0R001H3DA90 F# type system as universe boundary; Cachet analog** |
 | Already open source; AI-native cloud-agnostic production stack | Already established (081KSE6WT0008QG0R0015ZF2G6) |
-| USB-stick-and-power bootstrap | Already in B-0754 / B-0760 |
-| Self-healing repair USB | Already in B-0760 |
-| Generic + greedy USB image | Already in B-0754 |
-| Phone-home Nix flake + Argo CD + auto-cluster-join | Already in B-0754 / 081KSE6WT0008QG0R000CV98PV / 081KSE6WT0008QG0R0008483B2 / B-0747 |
+| USB-stick-and-power bootstrap | Already in 081KSGS9H0008QG0R002T3BJ2R / 081KSE6WT0008QG0R003WG0V6P |
+| Self-healing repair USB | Already in 081KSE6WT0008QG0R003WG0V6P |
+| Generic + greedy USB image | Already in 081KSGS9H0008QG0R002T3BJ2R |
+| Phone-home Nix flake + Argo CD + auto-cluster-join | Already in 081KSGS9H0008QG0R002T3BJ2R / 081KSE6WT0008QG0R000CV98PV / 081KSE6WT0008QG0R0008483B2 / 081KSE6WT0008QG0R003D199HE |
 
 ## Cross-AI naming substrate
 Mika via Grok. Aaron-forwarded. This conversation captures substrate-engineering substantively new items (081KSE6WT0008QG0R000RH1526 / 081KSE6WT0008QG0R001H3DA90 / 081KSE6WT0008QG0R003CMCX84 / 081KSE6WT0008QG0R003TBE2VB) AND validates existing substrate via cross-AI confirmation of direction.
@@ -274,7 +274,7 @@ Per `.claude/rules/wake-time-substrate.md` + the substrate cluster: the existing
 
 | Item | Row |
 |---|---|
-| "Everything declarative, desired state, get/git native" north star | Already in B-0747 / 081KSE6WT0008QG0R0008483B2; restated as north star |
+| "Everything declarative, desired state, get/git native" north star | Already in 081KSE6WT0008QG0R003D199HE / 081KSE6WT0008QG0R0008483B2; restated as north star |
 | Distributed F# type negotiation across travelers' compilers; consensus mechanism + governance layer | **NEW: 081KSE6WT0008QG0R0018WZ7TH P1** |
 | Namespace-scoped strictness: personal mirror (free) vs common (strict consensus) | **NEW: 081KSE6WT0008QG0R0018WZ7TH P1** (composes with existing Mirror/Beacon substrate) |
 | Unified namespace across F# + Kubernetes + Ontology + Twin scope | **NEW: 081KSE6WT0008QG0R000R8CPFX P1** |

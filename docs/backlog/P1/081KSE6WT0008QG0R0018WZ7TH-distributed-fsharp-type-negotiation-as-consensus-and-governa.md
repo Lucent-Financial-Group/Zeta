@@ -8,12 +8,12 @@ ask: aaron-mika-grok 2026-05-25
 created: 2026-05-25
 last_updated: 2026-05-25
 depends_on:
-  - B-0741
+  - 081KSE6WT0008QG0R002CC6314
   - 081KSE6WT0008QG0R001H3DA90
 composes_with:
   - 081KRFA460008QG0R0018SN61J
-  - B-0746
-  - B-0747
+  - 081KSE6WT0008QG0R0025QPP05
+  - 081KSE6WT0008QG0R003D199HE
   - 081KSE6WT0008QG0R00063R6HB
   - 081KSE6WT0008QG0R003WMG4XV
   - 081KSE6WT0008QG0R0008483B2
@@ -80,7 +80,7 @@ definition against:
 ## Composition with Mirror / Beacon substrate
 
 Per existing Zeta substrate (Mirror = ephemeral free-play; Beacon
-= durable + stable + publicly-shared per B-0746 retraction-
+= durable + stable + publicly-shared per 081KSE6WT0008QG0R0025QPP05 retraction-
 native algebra), the namespace tiers map naturally:
 
 | Existing Zeta tier | This row's namespace |
@@ -248,12 +248,12 @@ fit; Argo is the closer fit because of existing deployment).
 ## Composes with
 
 - 081KRFA460008QG0R0018SN61J — F# fork for AI safety (substrate base)
-- B-0741 — ontology negotiation (Ace bridges per-namespace
+- 081KSE6WT0008QG0R002CC6314 — ontology negotiation (Ace bridges per-namespace
   ontology + this row's per-namespace type consensus
   compose)
-- B-0746 — Mirror/Beacon retraction-native algebra (existing
+- 081KSE6WT0008QG0R0025QPP05 — Mirror/Beacon retraction-native algebra (existing
   substrate tier; namespaces map to tiers)
-- B-0747 — git-native per-machine state (per-namespace type
+- 081KSE6WT0008QG0R003D199HE — git-native per-machine state (per-namespace type
   registry is git-committed)
 - 081KSE6WT0008QG0R00063R6HB — ServiceTitan route (Argo Rollouts existing-
   standard for canary; Cilium service mesh existing-standard

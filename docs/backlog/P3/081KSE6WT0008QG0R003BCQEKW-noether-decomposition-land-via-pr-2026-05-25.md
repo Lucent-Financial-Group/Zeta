@@ -17,7 +17,7 @@ composes_with:
 
 ## Origin
 
-Aaron Stainback / Lior 2026-05-25 BFT loop alignment session. Following the 081KSE6WT0008QG0R003YYC9PV (worktree hygiene) and B-0751 (per-agent isolated clones) architectures, the divergent Noether decomposition commits on local `main` were safely reset. This ticket files the substrate-honest follow-up to track landing the Noether decomposition children (`081KQ0YZ80008QG0R002T6TM7Z.1` through `081KQ0YZ80008QG0R002T6TM7Z.4`) on `main` via PR #4926 or a sibling PR.
+Aaron Stainback / Lior 2026-05-25 BFT loop alignment session. Following the 081KSE6WT0008QG0R003YYC9PV (worktree hygiene) and 081KSE6WT0008QG0R003YYC9PV (per-agent isolated clones) architectures, the divergent Noether decomposition commits on local `main` were safely reset. This ticket files the substrate-honest follow-up to track landing the Noether decomposition children (`081KQ0YZ80008QG0R002T6TM7Z.1` through `081KQ0YZ80008QG0R002T6TM7Z.4`) on `main` via PR #4926 or a sibling PR.
 
 ## Finding
 

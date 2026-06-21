@@ -616,7 +616,7 @@ check for architecturally-distinct framing.
 
 Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>
 
-* fix(B-2813): Codex review findings — verbatim-preservation + markdownlint + MEMORY.md reindex
+* fix(081KE0EM27008QG0R001YP79BN): Codex review findings — verbatim-preservation + markdownlint + MEMORY.md reindex
 
 Three review-thread fixes on PR #2813:
 
@@ -1763,7 +1763,7 @@ check for architecturally-distinct framing.
 
 Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>
 
-* fix(B-2813): Codex review findings — verbatim-preservation + markdownlint + MEMORY.md reindex
+* fix(081KE0EM27008QG0R001YP79BN): Codex review findings — verbatim-preservation + markdownlint + MEMORY.md reindex
 
 Three review-thread fixes on PR #2813:
 
@@ -2066,7 +2066,7 @@ Reindexes MEMORY.md for paired-edit check.
 
 Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>
 
-* fix(B-2816): Codex review findings — Why/How-to-apply markers + reference fixes + typo
+* fix(081KE0ESJ0008QG0R002VCENMT): Codex review findings — Why/How-to-apply markers + reference fixes + typo
 
 Three Codex review-thread fixes on PR #2816:
 

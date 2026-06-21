@@ -10,8 +10,8 @@ last_updated: 2026-05-25
 depends_on:
   - 081KRFA460008QG0R0018SN61J
 composes_with:
-  - B-0747
-  - B-0754
+  - 081KSE6WT0008QG0R003D199HE
+  - 081KSGS9H0008QG0R002T3BJ2R
   - 081KSE6WT0008QG0R000WVYAJ2
   - 081KSE6WT0008QG0R00063R6HB
   - 081KSE6WT0008QG0R00049EFBD
@@ -128,10 +128,10 @@ Per-row composition:
 - **081KRFA460008QG0R0018SN61J F# fork for AI safety** — this row extends F# fork
   scope from "Python ML ecosystem replacement" to "entire
   cluster-substrate ecosystem boundary"
-- **B-0747 git-native per-machine state** — the F# code IS the
+- **081KSE6WT0008QG0R003D199HE git-native per-machine state** — the F# code IS the
   per-machine state; commits to git represent state transitions
   in the type system
-- **B-0754 zero-typing first-boot** — installer config + first-
+- **081KSGS9H0008QG0R002T3BJ2R zero-typing first-boot** — installer config + first-
   boot script + zeta-install.sh all become F# (emit bash /
   nix / yaml as compiler output)
 - **081KSE6WT0008QG0R000WVYAJ2 vendor-swap interfaces** — each interface IS an F#

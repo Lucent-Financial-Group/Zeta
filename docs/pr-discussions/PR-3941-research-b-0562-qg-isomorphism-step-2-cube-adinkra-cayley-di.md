@@ -31,7 +31,7 @@ Step 1 (081KRMEXM0008QG0R003YWZC21, shipped via #3614) formalized `Zeta_{RA} = (
 
 ## ID-allocation note (081KRMEXM0008QG0R000ARAR7P → 081KRQ1AB0008QG0R001F7DE2D renumber)
 
-Originally allocated as **081KRMEXM0008QG0R000ARAR7P**. Collided with [#3619](https://github.com/Lucent-Financial-Group/Zeta/pull/3619)'s renumber-sweep that re-took 081KRMEXM0008QG0R000ARAR7P for Riven's cursor-terminal loop work. Renumbered to **081KRQ1AB0008QG0R001F7DE2D** — the next free above all merged-on-main (highest 081KRQ1AB0008QG0R0001J9PFT) plus in-flight [#3878](https://github.com/Lucent-Financial-Group/Zeta/pull/3878)'s B-0561 allocation. Discipline per `.claude/rules/otto-channels-reference-card.md`'s multi-Otto ID-allocation section.
+Originally allocated as **081KRMEXM0008QG0R000ARAR7P**. Collided with [#3619](https://github.com/Lucent-Financial-Group/Zeta/pull/3619)'s renumber-sweep that re-took 081KRMEXM0008QG0R000ARAR7P for Riven's cursor-terminal loop work. Renumbered to **081KRQ1AB0008QG0R001F7DE2D** — the next free above all merged-on-main (highest 081KRQ1AB0008QG0R0001J9PFT) plus in-flight [#3878](https://github.com/Lucent-Financial-Group/Zeta/pull/3878)'s 081KRQ1AB0008QG0R000VBS5D7 allocation. Discipline per `.claude/rules/otto-channels-reference-card.md`'s multi-Otto ID-allocation section.
 
 ## Crash-recovery context
 

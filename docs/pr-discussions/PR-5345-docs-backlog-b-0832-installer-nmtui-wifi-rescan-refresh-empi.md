@@ -44,7 +44,7 @@ This row IS what 081KSGS9H0008QG0R0011BC7T2 predicted: physical hardware-support
 
 - [x] markdownlint clean
 - [x] BACKLOG.md regenerated
-- [x] Composes_with B-0754 (zero-typing first-boot scope) + 081KSGS9H0008QG0R0011BC7T2 (CI cascade #6 + physical-as-hardware-support-test substrate)
+- [x] Composes_with 081KSGS9H0008QG0R002T3BJ2R (zero-typing first-boot scope) + 081KSGS9H0008QG0R0011BC7T2 (CI cascade #6 + physical-as-hardware-support-test substrate)
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

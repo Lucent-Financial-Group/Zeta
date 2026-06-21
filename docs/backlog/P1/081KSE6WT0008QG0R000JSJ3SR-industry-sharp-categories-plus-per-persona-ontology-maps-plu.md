@@ -103,12 +103,12 @@ the cross-vocabulary translation when needed.
 
 ## Ace package manager as ontology negotiator
 
-Per 081KQZVQW0008QG0R000ZHEN62 / 081KR2E4K0008QG0R0033WVCXE / 081KR2E4K0008QG0R002YE3MMD (existing Ace substrate) + B-0741
+Per 081KQZVQW0008QG0R000ZHEN62 / 081KR2E4K0008QG0R0033WVCXE / 081KR2E4K0008QG0R002YE3MMD (existing Ace substrate) + 081KSE6WT0008QG0R002CC6314
 (ontology negotiation):
 
 **Ace is the package-manager-of-managers**. It composes other
 package managers (npm / pip / cargo / helm / krew / nix / etc.)
-into a single substrate. Per B-0741 ontology negotiation: Ace
+into a single substrate. Per 081KSE6WT0008QG0R002CC6314 ontology negotiation: Ace
 also bridges cross-vocabulary translation between ecosystems.
 
 For Zeta plugin substrate: Ace becomes the ONTOLOGY NEGOTIATOR
@@ -197,7 +197,7 @@ recognize what they're adopting.
   negotiation extension builds on)
 - 081KRFA460008QG0R0018SN61J — F# fork for AI safety (the substrate base; plugin
   interfaces are F# native)
-- B-0741 — ontology+category negotiation (the substrate this
+- 081KSE6WT0008QG0R002CC6314 — ontology+category negotiation (the substrate this
   row operationalizes per-plugin)
 - 081KSE6WT0008QG0R003G0Y62D — first-time-CLI-user persona (one of many personas
   this row's multi-map approach supports)
@@ -252,5 +252,5 @@ discussions); multiple per-persona ontology maps supported with
 Ace package manager as the cross-vocabulary negotiator.
 
 This row + the first plugin shipment IS the substrate kickoff
-for Ace operating at ontology-negotiation scope per B-0741 +
+for Ace operating at ontology-negotiation scope per 081KSE6WT0008QG0R002CC6314 +
 existing Ace substrate.

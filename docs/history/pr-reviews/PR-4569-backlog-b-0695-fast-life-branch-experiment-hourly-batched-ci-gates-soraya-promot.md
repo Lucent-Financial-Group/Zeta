@@ -55,7 +55,7 @@ Real win is cost-during-cascade-bursts, not absolute. The PR-latency tradeoff (f
 
 ## Composes with
 
-- B-0691 (Soraya loop — provides verification-result envelopes for promotion-gate)
+- 081KS3X9Y0008QG0R001MD26NZ (Soraya loop — provides verification-result envelopes for promotion-gate)
 - 081KQ3HBZ0008QG0R002ZPXAFQ (heartbeat-file integrity threat-model — direct-to-main attack surface; fast/life partial solution)
 - 081KRW63S0008QG0R002KC5DSR / 081KRW63S0008QG0R002ZRNDJ8 / 081KRW63S0008QG0R002YAA09X / 081KRW63S0008QG0R001SAHYKV (Agora V6)
 - `.claude/rules/lfg-acehack-topology.md` (branch-protection discipline)
@@ -153,7 +153,7 @@ Real win is cost-during-cascade-bursts, not absolute. The PR-latency tradeoff (f
 - **`Copilot` (bot)** at 2026-05-21T18:38:29Z on `docs/backlog/P2/081KS3X9Y0008QG0R002EEH26Z-fast-life-branch-experiment-hourly-batched-gates-cost-reduction-2026-05-21.md`:12 (association: NONE)
 
   <pre>
-  `composes_with` includes `B-0691`, but there is currently no backlog row file for `B-0691` in `docs/backlog/**`. Either add/land the `B-0691` row in the same PR, or annotate/link to where it lives (e.g., PR/issue) so readers can resolve the dependency.
+  `composes_with` includes `081KS3X9Y0008QG0R001MD26NZ`, but there is currently no backlog row file for `081KS3X9Y0008QG0R001MD26NZ` in `docs/backlog/**`. Either add/land the `081KS3X9Y0008QG0R001MD26NZ` row in the same PR, or annotate/link to where it lives (e.g., PR/issue) so readers can resolve the dependency.
 
   </pre>
 
@@ -244,7 +244,7 @@ fix(reviewer-threads): align title + BACKLOG.md summary with correcte…
 ```
 fix(reviewer-threads-2): resolve 3 new Copilot findings on 081KS3X9Y0008QG0R002EEH26Z — (…
 
-…a) replace dead .claude/skills/skill-reviewer/SKILL.md link with substrate-honest 'to be authored' note; (b) annotate B-0691 composes_with with pending-PR-#4562 reference (impl already shipped via #4565; row file lands when #4562 merges); (c) rewrite Substrate-honest framing paragraph that still contained contradictory ~70% claim + self-correction (replaced with pointer to corrected-math section for the burst-dependent numbers)
+…a) replace dead .claude/skills/skill-reviewer/SKILL.md link with substrate-honest 'to be authored' note; (b) annotate 081KS3X9Y0008QG0R001MD26NZ composes_with with pending-PR-#4562 reference (impl already shipped via #4565; row file lands when #4562 merges); (c) rewrite Substrate-honest framing paragraph that still contained contradictory ~70% claim + self-correction (replaced with pointer to corrected-math section for the burst-dependent numbers)
 ```
 
 ### `365de53b659142294274bc8b18ed838853bce43d` -- 2026-05-21T18:41:59Z -- `AceHack`

@@ -11,8 +11,8 @@ depends_on:
   - 081KSE6WT0008QG0R001NG9JZH
 composes_with:
   - 081KRFA460008QG0R0018SN61J
-  - B-0747
-  - B-0754
+  - 081KSE6WT0008QG0R003D199HE
+  - 081KSGS9H0008QG0R002T3BJ2R
   - 081KSE6WT0008QG0R000WVYAJ2
   - 081KSE6WT0008QG0R00063R6HB
   - 081KSE6WT0008QG0R00049EFBD
@@ -106,7 +106,7 @@ control-plane backing store. Operators choose backend per:
         (with CockroachDB sub-config)
       - `modules/control-plane-backing-store/nats.nix`
         (JetStream)
-- [ ] Zeta-first-boot role keystroke prompt (B-0754) extended
+- [ ] Zeta-first-boot role keystroke prompt (081KSGS9H0008QG0R002T3BJ2R) extended
       to include backing-store choice for control-plane role:
       'a' SQLite (lab), 's' Dqlite (small HA), 'p' Postgres,
       'n' NATS JetStream, 'e' embedded etcd (default for
@@ -127,9 +127,9 @@ control-plane backing store. Operators choose backend per:
 
 - 081KRFA460008QG0R0018SN61J — F# fork for AI safety (the substrate base for
   future Zeta-native DBSP backing store)
-- B-0747 — git-native per-machine state (each backend choice
+- 081KSE6WT0008QG0R003D199HE — git-native per-machine state (each backend choice
   is per-machine config; declarative + GitOps-reconciled)
-- B-0754 — zero-typing first-boot (backing-store choice
+- 081KSGS9H0008QG0R002T3BJ2R — zero-typing first-boot (backing-store choice
   added to keystroke prompt for control-plane role)
 - 081KSE6WT0008QG0R001NG9JZH — HA control-plane (this row sharpens — etcd-less
   options are alternative HA paths, not parallel scope)

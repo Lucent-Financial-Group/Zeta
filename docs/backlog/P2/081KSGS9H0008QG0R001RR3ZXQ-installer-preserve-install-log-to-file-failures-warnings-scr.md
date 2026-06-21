@@ -8,7 +8,7 @@ ask: aaron 2026-05-26
 created: 2026-05-26
 last_updated: 2026-05-26
 depends_on:
-  - B-0754
+  - 081KSGS9H0008QG0R002T3BJ2R
 composes_with:
   - 081KSGS9H0008QG0R0011BC7T2
   - 081KSGS9H0008QG0R001Q2DH2H
@@ -111,7 +111,7 @@ if Approach A misses anything.
   this row modifies)
 - `full-ai-cluster/usb-nixos-installer/zeta-first-boot.sh` (wrapper
   that calls zeta-install; could set `LOG_FILE` env var)
-- B-0754 (zero-typing first-boot scope; this row extends with
+- 081KSGS9H0008QG0R002T3BJ2R (zero-typing first-boot scope; this row extends with
   preserved-log substrate)
 - 081KSGS9H0008QG0R0011BC7T2 (CI cascade #6 phase 1 captures full serial console; this row
   is the OPERATOR-SIDE analog — log preserved on disk so operator can

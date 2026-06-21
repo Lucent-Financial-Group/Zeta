@@ -144,13 +144,13 @@ After the Anchor 2 correction, the maintainer 2026-05-26 caught a third
 gap: *"i'm assuming you have the hat / fork negoation for ace too"*.
 Hats + fork-negotiation were CITED in the substrate-table after Anchor 2
 but NOT integrated into 081KSGS9H0008QG0R001Y9FB62's architectural flow. The Ace agenda
-specifies hats + multi-oracle BFT as load-bearing primitives + B-0741
+specifies hats + multi-oracle BFT as load-bearing primitives + 081KSE6WT0008QG0R002CC6314
 (prematurely closed earlier in same session) provides the cross-fork
 ontology negotiation substrate; both should have been integrated into
 the iter-7 architectural shape from the start.
 
 Fixed in PR #5130 follow-on commit by adding "### Architectural
-integration of hats + fork-negotiation" section + tracking B-0741 as a
+integration of hats + fork-negotiation" section + tracking 081KSE6WT0008QG0R002CC6314 as a
 sub-row to re-file per Tier 3.
 
 ## The composition with dep-pin-search-first-authority

@@ -130,12 +130,12 @@ The second response is the discipline. The first IS the failure mode.
 
 - **081KSE6WT0008QG0R000E05579** (the row this rule lands with) — substrate-engineering target for tooling
 - **081KSE6WT0008QG0R003YYC9PV** (agent worktree hygiene) — sibling at cleanup discipline; this rule adds the ownership-classification discipline
-- **B-0751** (per-agent isolated clones) — per-agent-clone makes ownership LARGELY UNAMBIGUOUS (clone path = identity); this rule still applies for transitional period + for substrate outside the clone scope (memory files, bus envelopes, etc.)
+- **081KSE6WT0008QG0R003YYC9PV** (per-agent isolated clones) — per-agent-clone makes ownership LARGELY UNAMBIGUOUS (clone path = identity); this rule still applies for transitional period + for substrate outside the clone scope (memory files, bus envelopes, etc.)
 - **081KRMEXM0008QG0R000X1PPGC** (cron-sentinel mutex) — shares scope on cross-agent coordination
 
 ## Empirical anchor
 
-The human maintainer 2026-05-25 named the specific peer-agent instance + generalized the discipline. Same session as the 37-worktree mass-cleanup (081KSE6WT0008QG0R003YYC9PV origin) + per-agent-clone decision (B-0751). The three rules together (081KSE6WT0008QG0R003YYC9PV + B-0751 + 081KSE6WT0008QG0R000E05579) form the cross-agent substrate-discipline cluster for the 2026-05-25 architectural inflection. Named-attribution anchor: `docs/backlog/P2/081KSE6WT0008QG0R000E05579-...` (history surface).
+The human maintainer 2026-05-25 named the specific peer-agent instance + generalized the discipline. Same session as the 37-worktree mass-cleanup (081KSE6WT0008QG0R003YYC9PV origin) + per-agent-clone decision (081KSE6WT0008QG0R003YYC9PV). The three rules together (081KSE6WT0008QG0R003YYC9PV + 081KSE6WT0008QG0R003YYC9PV + 081KSE6WT0008QG0R000E05579) form the cross-agent substrate-discipline cluster for the 2026-05-25 architectural inflection. Named-attribution anchor: `docs/backlog/P2/081KSE6WT0008QG0R000E05579-...` (history surface).
 
 ## Substrate-honest framing
 

@@ -29,7 +29,7 @@
 
 Aaron 2026-05-25 named the cluster-install target persona: first-time command-line users; UX bar 'easier than Proxmox / unRAID for home clusters'; 3-node threshold = production-ready inflection (when 081KSE6WT0008QG0R001NG9JZH HA substrate + 081KSE6WT0008QG0R000CV98PV auto-discovery light up real cluster availability).
 
-This row captures the audit work to apply the persona filter across every operator-facing cluster-install surface. Composes with the full 081KSE6WT0008QG0R003WZAQKV/B-0738/B-0739/B-0743/B-0754/081KSE6WT0008QG0R003612WGJ/081KSE6WT0008QG0R001NG9JZH/081KSE6WT0008QG0R000CV98PV/B-0758 cluster substrate.
+This row captures the audit work to apply the persona filter across every operator-facing cluster-install surface. Composes with the full 081KSE6WT0008QG0R003WZAQKV/081KSE6WT0008QG0R003BG8M6J/081KSE6WT0008QG0R0025170CV/081KSE6WT0008QG0R003WW3YJQ/081KSGS9H0008QG0R002T3BJ2R/081KSE6WT0008QG0R003612WGJ/081KSE6WT0008QG0R001NG9JZH/081KSE6WT0008QG0R000CV98PV/081KSE6WT0008QG0R00021PPX1 cluster substrate.
 
 Also includes competitive framing table (vs Proxmox VE / unRAID / Talos / k3sup) and an empirical persona-bet test via external non-maintainer user.
 
@@ -122,7 +122,7 @@ backlog(081KSE6WT0008QG0R003G0Y62D): cluster-install UX audit against first-time
 
 … persona — 'easier than Proxmox' bar + 3-node prod-ready inflection
 
-Aaron 2026-05-25, mid-B-0754-v1 conversation: 'if i'm targeting
+Aaron 2026-05-25, mid-081KSGS9H0008QG0R002T3BJ2R-v1 conversation: 'if i'm targeting
 first time commandline users that's the persona i'm going for so
 this can spread easliy to home clusters easlier than proxmox or
 any of that but prodicution ready once 3 nodes'.
@@ -140,8 +140,8 @@ Includes competitive framing vs Proxmox VE / unRAID / Talos /
 k3sup; acronym glossary; end-to-end happy-path validation by
 external non-maintainer user as empirical persona-bet test.
 
-Composes with all of 081KSE6WT0008QG0R003WZAQKV / B-0738 / B-0739 / B-0743 /
-B-0754 / 081KSE6WT0008QG0R003612WGJ / 081KSE6WT0008QG0R001NG9JZH / 081KSE6WT0008QG0R000CV98PV / B-0758.
+Composes with all of 081KSE6WT0008QG0R003WZAQKV / 081KSE6WT0008QG0R003BG8M6J / 081KSE6WT0008QG0R0025170CV / 081KSE6WT0008QG0R003WW3YJQ /
+081KSGS9H0008QG0R002T3BJ2R / 081KSE6WT0008QG0R003612WGJ / 081KSE6WT0008QG0R001NG9JZH / 081KSE6WT0008QG0R000CV98PV / 081KSE6WT0008QG0R00021PPX1.
 
 Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>
 ```
@@ -172,7 +172,7 @@ true positives:
 Per .claude/rules/blocked-green-ci-investigate-threads.md
 verify-before-fix: schema confirmed at tools/backlog/README.md
 lines 57-74; direct awk inspection confirmed all four findings.
-P2 advisory composes_with/depends_on redundancy on B-0754 left
+P2 advisory composes_with/depends_on redundancy on 081KSGS9H0008QG0R002T3BJ2R left
 in place per repo-wide pattern (205 files have it; not
 Copilot-flagged on this PR; not CI-blocking).
 

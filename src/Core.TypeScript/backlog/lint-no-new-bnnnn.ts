@@ -11,7 +11,7 @@
 // creating more — we said stop a long time ago"): the 2026-06-11 rename sweep (#7840-#7843 + the
 // workitems migration) drove the B-named file set to ZERO, and the original toll-booth design had
 // demonstrably failed — the "rare, deliberate" bump procedure was used ROUTINELY (five consecutive
-// "grandfather B-10XX" commits; B-1036..081KTSZN10008QG0R002NMN8P7 minted after the stop was called). So the check is
+// "grandfather B-10XX" commits; 081KTSZN10008QG0R002R3RENG..081KTSZN10008QG0R002NMN8P7 minted after the stop was called). So the check is
 // now a wall: ANY file named `B-<digits>*` under docs/backlog/ or workitems/ FAILS, regardless of
 // frontmatter — post-sweep, a B-named file is by definition new. There is no bump procedure.
 // frozen-bnnnn-ids.json stays as the historical record of the closed series (and so legacy `id:`

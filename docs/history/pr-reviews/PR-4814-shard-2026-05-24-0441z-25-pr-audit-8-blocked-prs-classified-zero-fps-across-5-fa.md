@@ -40,7 +40,7 @@ Otto-CLI background-worker tick at 04:41Z. Polled 25 open PRs via `poll-pr-gate-
 | C | 4733, 4737 | `feedback_*.md` missing required `**Why:**`/`**How to apply:**` markers |
 | D | 4768, 4773 | `/Users/acehack` hardcoded in launchd plist + malformed `launchctl bootout` |
 | E | 4780 | Tautological FsCheck residuation property; missing RHS check; non-independent oracle |
-| F | 4769 | B-0700 backlog row added but per-row file missing (broken link) |
+| F | 4769 | 081KRSKQ20008QG0R00367828S backlog row added but per-row file missing (broken link) |
 
 ## Lane disposition
 
@@ -259,7 +259,7 @@ All 38+ unresolved threads classified as substantive findings, zero FPs:
 - Class C (missing schema markers, 2 PRs): feedback files missing Why:/How to apply:
 - Class D (hardcoded paths, 2 PRs): /Users/acehack baked into launchd plist
 - Class E (test correctness P0/P1, 1 PR): tautological FsCheck on residuation
-- Class F (broken backlog link, 1 PR): B-0700 row added but per-row file missing
+- Class F (broken backlog link, 1 PR): 081KRSKQ20008QG0R00367828S row added but per-row file missing
 
 All 25 PRs are lior/* or alexa/* lane branches. Per claim-acquire-before-
 worktree-work.md lane discipline + the task brief's "check out branch" directive,

@@ -27,9 +27,9 @@
 
 ## Description
 
-Aaron 2026-05-25 named the CNCF-ecosystem-as-force-multipliers pattern: adopt KEDA + DAPR + OPA + OAM/KubeVela + Crossplane + kro + Cilium + Knative + OpenTelemetry + Rook/Ceph as plugins behind Zeta interfaces. Composed via Ace (PM-of-PMs) + ontology negotiation (B-0741). Zeta owns the stable operator contract; CNCF projects ship the substrate underneath; operator gets ecosystem momentum + maintenance distribution for free.
+Aaron 2026-05-25 named the CNCF-ecosystem-as-force-multipliers pattern: adopt KEDA + DAPR + OPA + OAM/KubeVela + Crossplane + kro + Cilium + Knative + OpenTelemetry + Rook/Ceph as plugins behind Zeta interfaces. Composed via Ace (PM-of-PMs) + ontology negotiation (081KSE6WT0008QG0R002CC6314). Zeta owns the stable operator contract; CNCF projects ship the substrate underneath; operator gets ecosystem momentum + maintenance distribution for free.
 
-Disambiguates OPA (Open Policy Agent / Rego) vs OAM (Open Application Model). Composes with B-0741 / B-0747 / 081KSE6WT0008QG0R002E6P098 / B-0749 / 081KSE6WT0008QG0R0015ZF2G6 / 081KSE6WT0008QG0R003FG3E8R / 081KSE6WT0008QG0R000WVYAJ2.
+Disambiguates OPA (Open Policy Agent / Rego) vs OAM (Open Application Model). Composes with 081KSE6WT0008QG0R002CC6314 / 081KSE6WT0008QG0R003D199HE / 081KSE6WT0008QG0R002E6P098 / 081KSE6WT0008QG0R001RG4FXD / 081KSE6WT0008QG0R0015ZF2G6 / 081KSE6WT0008QG0R003FG3E8R / 081KSE6WT0008QG0R000WVYAJ2.
 
 ## Outcome
 

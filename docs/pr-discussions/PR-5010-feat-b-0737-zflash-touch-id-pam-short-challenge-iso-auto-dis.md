@@ -49,9 +49,9 @@ Agent-driven mode: **1 fingerprint, no keystrokes** (agent types nonce; Touch ID
 ## Composes with
 
 - 081KSE6WT0008QG0R0005XASX2 (destructive-tool authoring contract)
-- B-0743 (desktop admin consent pattern — this PR's substrate IS the empirical anchor)
+- 081KSE6WT0008QG0R003WW3YJQ (desktop admin consent pattern — this PR's substrate IS the empirical anchor)
 - 081KSE6WT0008QG0R002YBWBB1 (leverage-class safety substrate — Layer 1 provenance)
-- B-0738 / B-0739 (Linux + Windows variant scope)
+- 081KSE6WT0008QG0R003BG8M6J / 081KSE6WT0008QG0R0025170CV (Linux + Windows variant scope)
 - 081KSE6WT0008QG0R000YYH3DY (reference k8s stack — zflash is part of bring-up)
 
 ## Test plan

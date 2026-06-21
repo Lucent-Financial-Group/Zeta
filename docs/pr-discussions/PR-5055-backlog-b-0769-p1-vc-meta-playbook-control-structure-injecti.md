@@ -22,7 +22,7 @@ Substrate-honest variant: same control-structure position; opposite value-flow d
 
 Financial-engineering layer: adjusted EBITDA shaped per investor profile (seed/A → growth equity → pre-IPO → PE → strategic → public markets); substrate-honest variant = TRUE adjustments + single GAAP→non-GAAP bridge + auditor-survivable. ServiceTitan empirical anchor.
 
-Composes with B-0741 / B-0754 / 081KSE6WT0008QG0R003G0Y62D / 081KSE6WT0008QG0R0015ZF2G6-081KSE6WT0008QG0R0004ZPPRP + 5 ethical-floor rules.
+Composes with 081KSE6WT0008QG0R002CC6314 / 081KSGS9H0008QG0R002T3BJ2R / 081KSE6WT0008QG0R003G0Y62D / 081KSE6WT0008QG0R0015ZF2G6-081KSE6WT0008QG0R0004ZPPRP + 5 ethical-floor rules.
 
 ## General comments
 
