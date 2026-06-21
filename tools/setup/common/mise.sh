@@ -21,19 +21,9 @@ if [ ! -f "$REPO_ROOT/.mise.toml" ]; then
   exit 1
 fi
 
-# Trust before any config read. MISE_TRUSTED_CONFIG_PATHS is an early-init setting
-# (must be env/global — not .mise.toml). install.ps1 Windows parity: dev install
-# entry defaults full tier unless operator or CI declared otherwise.
-if [ -z "${ZETA_HOST_TIER:-}" ] && [ "${GITHUB_ACTIONS:-}" != "true" ]; then
-  export ZETA_HOST_TIER=full
-fi
-case ":${MISE_TRUSTED_CONFIG_PATHS:-}:" in
-  *:"$REPO_ROOT":*) ;;
-  *) export MISE_TRUSTED_CONFIG_PATHS="${MISE_TRUSTED_CONFIG_PATHS:+$MISE_TRUSTED_CONFIG_PATHS:}$REPO_ROOT" ;;
-esac
-
-# `mise trust --all --yes` is required before `install` on interactive TTYs.
-# CI has no TTY so `--all` alone looked green while VMs still prompted (2026-06-20).
+# Trust before any config read. MISE_TRUSTED_CONFIG_PATHS is exported by install.sh
+# (parent shell) so post-mise steps (python-tools, agent-clis) inherit it — exports
+# in this child script alone do not propagate upward or sideways.
 if ! (cd "$REPO_ROOT" && mise trust --all --yes); then
   echo "error: mise trust --all --yes failed for $REPO_ROOT" >&2
   exit 1
