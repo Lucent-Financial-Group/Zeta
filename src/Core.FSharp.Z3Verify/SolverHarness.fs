@@ -285,7 +285,7 @@ module SolverHarness =
             match which "eprover" with
             | None -> false
             | Some _ ->
-                match runEProver "fof(smoke, conjecture, (X = X))." with
+                match runEProver "fof(smoke, conjecture, (![X]: X = X))." with
                 | Unsat -> true
                 | _ -> false
 

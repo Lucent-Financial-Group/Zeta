@@ -42,13 +42,15 @@ verify_sha256 () {
   fi
 }
 
+EPROVER_SMOKE_QUERY='fof(smoke, conjecture, (![X]: X = X)).'
+
 fol_smoke_ok () {
   local name="$1"
   local bin="$2"
   [ -x "$bin" ] || return 1
   case "$name" in
     eprover)
-      printf '%s\n' 'fof(smoke, conjecture, (X = X)).' \
+      printf '%s\n' "$EPROVER_SMOKE_QUERY" \
         | "$bin" --auto --tstp-format >/dev/null 2>&1
       ;;
     *)
