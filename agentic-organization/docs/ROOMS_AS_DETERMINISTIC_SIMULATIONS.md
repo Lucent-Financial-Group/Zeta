@@ -66,7 +66,7 @@ inline so each claim stands on a named anchor.
 
 ## 2. The action plane: an action is a deterministic simulation
 
-Today the action plane runs through `tools/observe/observe.ts`: a `NextAction` 
+Today the action plane runs through `tools/observe/observe.ts`: a `NextAction`
 discriminated union plus a **pure** `simulate(world, action) → world` and a
 `runLoop` that proves the loop replays (same world + same chooser ⇒ same trace).
 The refactor this doc anchors:
@@ -134,7 +134,7 @@ room itself as a context the observe pipeline can read).
 ## 4. RMO plans rooms for *tasks* (not meetings)
 
 RMO (Resource Management Office) already computes hat **supply** from the
-prioritized workload: `computeRequiredHatSupply(workload) → Map<hatId, count>` 
+prioritized workload: `computeRequiredHatSupply(workload) → Map<hatId, count>`
 (`rmo.ts`). The extension:
 
 > **RMO determines, per task, how many rooms and how many hats per room.**
@@ -225,7 +225,7 @@ seams that are the same real/mock flip as everything else.
   (`CLUSTER_EXECUTION_AND_MEMORY_SUBSTRATE.md`) made a first-class room property
   — defence-in-depth *inside* the k3s/Cilium/SPIRE/OPA stack, not a replacement.
   The `subprocess` engine already in code (`apps/workers/.../subprocess-sandbox.ts`:
-  stripped env, isolated cwd, SIGKILL-on-timeout) is the weaker engine; `bwrap` 
+  stripped env, isolated cwd, SIGKILL-on-timeout) is the weaker engine; `bwrap`
   is the production one; `none` is for pure simulation.
 - **Credential proxy.** The agent authenticates with **its own OAuth identity**
   (the SPIRE/JWT hat token: agent id, hat-assignment id, **allowed-MCP-tools**,
@@ -233,7 +233,7 @@ seams that are the same real/mock flip as everything else.
   Authorization). It holds **no raw secrets**. To use a tool it goes through
   `observe.ts`, which **invokes the credential proxy**: the proxy validates the
   active hat assignment + scope (org/project/team/work-item) and returns only the
-  tool grants that identity is allowed (`CLUSTER_EXECUTION_AND_MEMORY_SUBSTRATE.md` 
+  tool grants that identity is allowed (`CLUSTER_EXECUTION_AND_MEMORY_SUBSTRATE.md`
   §Credential Proxy).
 
 How `observe.ts` mediates — the agent never names a tool or holds a key:
@@ -259,7 +259,7 @@ dark slot with a reason, not a runtime error.
 
 `room.ts` lands the seam shapes: `AgentIdentity` (agentId + OAuth subject),
 `SandboxSpec` (`engine: "bwrap" | "subprocess" | "none"`, workspace mount,
-egress allowlist, `revokeOnExpiry`), `ToolGrant`, and `CredentialProxyPort` 
+egress allowlist, `revokeOnExpiry`), `ToolGrant`, and `CredentialProxyPort`
 (`grantsFor(identity, hatIds) → ToolGrant[]`). `mockCredentialProxy` grants one
 scoped tool per seated hat, deterministically, so the **whole authorization path
 replays under DST** — a deterministic room binds the mock sandbox + mock proxy;
@@ -273,7 +273,7 @@ sandbox, its proxy. Same room, two lenses.
 ## 9. Build status
 
 - `packages/application/src/room.ts` — `Room` interface + `createDeterministicRoom`,
-  plus the `AgentIdentity` / `SandboxSpec` / `CredentialProxyPort` / `ToolGrant` 
+  plus the `AgentIdentity` / `SandboxSpec` / `CredentialProxyPort` / `ToolGrant`
   seams and `mockCredentialProxy` (this slice).
 - `packages/application/src/rmo.ts` — `planTaskRooms` per-task room planner (this slice).
 - `packages/application/test/room-planning-rmo.test.ts` — DST + packing + sandbox/credential-proxy tests.
