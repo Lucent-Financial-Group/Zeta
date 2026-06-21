@@ -22,6 +22,8 @@
     <Compile Include="PolicyKind.fs" />
     <Compile Include="RetryPolicy.fs" />
     <Compile Include="CayleyDickson.fs" />
+    <Compile Include="AlgebraInterfaces.fs" />
+    <Compile Include="SpecializationCache.fs" />
     <Compile Include="Cl3.fs" />
     <Compile Include="Viewport.fs" />
     <Compile Include="ForceLayout.fs" />
@@ -142,10 +144,10 @@
     <Compile Include="Advanced.fs" />
     <Compile Include="Fusion.fs" />
     <Compile Include="Fusion.Equation.fs" />
-    <Compile Include="Spine.fs" />
-    <Compile Include="SpineAsync.fs" />
     <Compile Include="DeterministicSyncContext.fs" />
     <Compile Include="FerryThrottler.fs" />
+    <Compile Include="Spine.fs" />
+    <Compile Include="SpineAsync.fs" />
     <Compile Include="BalancedSpine.fs" />
     <Compile Include="SpineSelector.fs" />
     <Compile Include="SimdMerge.fs" />
@@ -274,6 +276,9 @@
     <Compile Include="ZetaIrV2.fs" />
     <Compile Include="ZetaIrV3.fs" />
     <Compile Include="ZetaIrV4.fs" />
+    <Compile Include="SymbolicAlgebra.fs" />
+    <Compile Include="ZetaIrNormalizer.fs" />
+    <Compile Include="ZetaIrCanonicalizer.fs" />
     <Compile Include="GeneratorCatalog.fs" />
     <Compile Include="ZetaIdViz.fs" />
     <Compile Include="AnimFlow.fs" />

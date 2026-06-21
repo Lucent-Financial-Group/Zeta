@@ -1,6 +1,5 @@
 ---
-id: B-0095
-zetaid: 081KQB8J40008QG0R0005ZEYNN
+id: 081KQB8J40008QG0R0005ZEYNN
 priority: P2
 status: open
 title: Escrow — define rules + resolve naming collision with software-vendoring sense + migrate other deferred research from backlog/research/
@@ -18,11 +17,11 @@ tags: [aaron-2026-04-29, escrow, naming-collision, factory-hygiene, deferred-res
 type: friction-reducer
 ---
 
-# B-0095 — Escrow rules + naming-collision resolution + deferred-research migration
+# 081KQB8J40008QG0R0005ZEYNN — Escrow rules + naming-collision resolution + deferred-research migration
 
 ## Source
 
-Aaron 2026-04-29 input after the B-0094 escrow PR landed:
+Aaron 2026-04-29 input after the 081KQB8J40008QG0R000X0QSAK escrow PR landed:
 
 > *"backlog add other stuff we need from backlog research to
 > escrow, we also needs rules for what goes in here, shit
@@ -36,7 +35,7 @@ Three distinct sub-asks wrapped in one input.
 
 ## Why P2
 
-The escrow primitive landed in B-0094 / PR #714 (research-deferred
+The escrow primitive landed in 081KQB8J40008QG0R000X0QSAK / PR #714 (research-deferred
 thesis preservation). It will be reused. Without (a) clear rules
 for entry, (b) naming-collision resolution, and (c) population
 from existing deferred research, the primitive risks becoming
@@ -47,7 +46,7 @@ the directory.
 
 The word "escrow" is overloaded between two distinct senses:
 
-1. **Research-grade preservation escrow** (the B-0094 sense
+1. **Research-grade preservation escrow** (the 081KQB8J40008QG0R000X0QSAK sense
    landing today). Bounded preservation of a not-yet-ready
    thesis until it earns operational landing through a
    defined gate.
@@ -69,13 +68,13 @@ Options:
   escrowed/` but add a top-level rule that this directory is
   for research-grade preservation, distinct from the software-
   engineering-vendoring sense. The vendoring-adjacent surface
-  in this repo is `references/upstreams/` (read-only clones
+  in this repo is `references/prior-art/` (read-only clones
   from sibling repos per the operational rule in
   `docs/AGENT-BEST-PRACTICES.md` "Operational standing rules"
   section); GOVERNANCE.md §23 separately governs upstream
   open-source contributions via sibling `../` clones, which
   is a related-but-distinct workflow (sibling clones live at
-  `../`, not under `references/upstreams/`).
+  `../`, not under `references/prior-art/`).
 - **Option C: Name both senses explicitly** in a glossary
   entry — research-escrow vs vendor-escrow vs dependency-
   escrow — and let the directory name stay if the glossary
@@ -88,7 +87,7 @@ need to acknowledge the overload.
 
 ## Sub-ask 2: Define rules for what goes in escrow
 
-The B-0094 row defined escrow shape for the specific Aurora
+The 081KQB8J40008QG0R000X0QSAK row defined escrow shape for the specific Aurora
 flywheel thesis. The general rule is implicit. Make it
 explicit.
 
@@ -122,7 +121,7 @@ Candidate rules (to be ratified through ADR or skill-creator):
    extend; surfaced escrow demands one of four decisions
    (extend / run prototype / revise / retire).
 
-These rules already live implicitly in B-0094's body. Promote
+These rules already live implicitly in 081KQB8J40008QG0R000X0QSAK's body. Promote
 to a `docs/research/escrowed/README.md` (or equivalent contract
 doc) as a real rule-set future agents can cite.
 
@@ -134,15 +133,15 @@ escrow shape.
 
 Audit candidates (NOT yet exhaustive — survey work pending):
 
-- `docs/backlog/P2/B-0089-veridicality-rainbow-table-canonicalization-research-and-graduation-aaron-ani-amara-2026-04-28.md`
+- `docs/backlog/P2/081KQ8P5D0008QG0R003F6FNVF-veridicality-rainbow-table-canonicalization-research-and-graduation-aaron-ani-amara-2026-04-28.md`
   — graduation roadmap with a falsifier gate. Possibly
   escrow-eligible if its work is "not ready yet."
-- `docs/backlog/P2/B-0090-cadenced-lost-substrate-recovery-audit-aaron-2026-04-28.md`
+- `docs/backlog/P2/081KQ8P5D0008QG0R0002TN22C-cadenced-lost-substrate-recovery-audit-aaron-2026-04-28.md`
   — operational rather than research; probably stays in
   backlog/.
 - `docs/research/aurora-immune-governance-bridge-minimal-2026-04-28.md`
   — already landed as active research; NOT escrow-eligible
-  (it's the prototype gate for B-0094).
+  (it's the prototype gate for 081KQB8J40008QG0R000X0QSAK).
 - Various Amara ferry-pending-absorb rows (if any are still
   open with un-absorbed research that has a clear gate).
 
@@ -173,8 +172,8 @@ input was one wrapper.
 
 ## Composes with
 
-- **B-0094** — the worked example escrow. Schema this row
-  formalizes is what B-0094 implicitly defined.
+- **081KQB8J40008QG0R000X0QSAK** — the worked example escrow. Schema this row
+  formalizes is what 081KQB8J40008QG0R000X0QSAK implicitly defined.
 - **PR #714** — the in-flight PR landing the file at
   `docs/research/escrowed/aurora-autonomous-flywheel-thesis-2026-04-28.md`
   (path becomes canonical when PR #714 merges).
@@ -185,14 +184,14 @@ input was one wrapper.
 - **GOVERNANCE.md §23** — upstream OSS contributions via
   sibling `../` clones; relevant context for sub-ask 1's
   vocabulary disambiguation but NOT the authority for
-  `references/upstreams/` being a vendoring home (the
+  `references/prior-art/` being a vendoring home (the
   operational rule for that surface lives in
   `docs/AGENT-BEST-PRACTICES.md` "Operational standing
   rules" section).
 
 ## What this row does NOT authorize
 
-- Does NOT authorize moving the existing B-0094 escrow file
+- Does NOT authorize moving the existing 081KQB8J40008QG0R000X0QSAK escrow file
   before sub-ask 1 (naming-collision) is resolved. Until then,
   the file stays at `docs/research/escrowed/aurora-autonomous-
   flywheel-thesis-2026-04-28.md` per the in-flight PR #714.
@@ -200,7 +199,7 @@ input was one wrapper.
   before sub-ask 2 (rules) lands. Without rules, migrations
   are arbitrary.
 - Does NOT authorize creating new escrow content beyond the
-  in-flight B-0094 work.
+  in-flight 081KQB8J40008QG0R000X0QSAK work.
 
 ## Pickup for future Otto
 
@@ -218,11 +217,11 @@ Each step is bounded; do not stack.
 
 ## Re-decomposition (2026-05-11, Riven one-bounded-step)
 
-B-0095 was too broad (3 sub-asks + open-ended migration audit). Re-decomposed into 3 smallest dependency-ordered atomic children:
+081KQB8J40008QG0R0005ZEYNN was too broad (3 sub-asks + open-ended migration audit). Re-decomposed into 3 smallest dependency-ordered atomic children:
 
-- **B-0095.1** (XS): naming collision resolution (naming-expert + decision + apply)
-- **B-0095.2** (XS): ruleset formalization (README.md via skill-creator/ADR)
-- **B-0095.3** (S): audit + per-item migration (depends on .1+.2)
+- **081KRA5AR0008QG0R001K6M8HA** (XS): naming collision resolution (naming-expert + decision + apply)
+- **081KRA5AR0008QG0R00206D5SY** (XS): ruleset formalization (README.md via skill-creator/ADR)
+- **081KRA5AR0008QG0R00267TPQX** (S): audit + per-item migration (depends on .1+.2)
 
 This follows "always re-decompose — assume mistakes" and "if too broad, decompose before implementation". Children carry parent/depends_on links. Original row kept for provenance; status remains open until children close.
 

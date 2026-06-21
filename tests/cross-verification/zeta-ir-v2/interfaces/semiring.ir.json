@@ -1,0 +1,68 @@
+{
+  "schema": "zeta-ir-v2-interface",
+  "name": "ISemiring",
+  "typeParams": [{ "name": "TWeight", "variance": "invariant" }],
+  "doc": "Semiring (ring) interface for first-class uncertainty in DBSP weights.",
+  "members": [
+    { "name": "Zero", "kind": "property", "type": "TWeight", "doc": "Additive identity." },
+    { "name": "One", "kind": "property", "type": "TWeight", "doc": "Multiplicative identity." },
+    { "name": "Add", "kind": "method", "params": [{"name": "a", "type": "TWeight"}, {"name": "b", "type": "TWeight"}], "returns": "TWeight", "doc": "Additive combination (⊕)." },
+    { "name": "Mul", "kind": "method", "params": [{"name": "a", "type": "TWeight"}, {"name": "b", "type": "TWeight"}], "returns": "TWeight", "doc": "Multiplicative product (⊗)." },
+    { "name": "Negate", "kind": "method", "params": [{"name": "a", "type": "TWeight"}], "returns": "TWeight", "doc": "Additive inverse." }
+  ],
+  "laws": [
+    {
+      "id": "add-assoc",
+      "schema": "associative",
+      "op": "Add",
+      "status": "proven",
+      "proof": "src/Core.TypeScript/algebra/interfaces.test.ts:add-is-associative",
+      "doc": "Add(Add(a,b),c) = Add(a,Add(b,c))"
+    },
+    {
+      "id": "add-comm",
+      "schema": "commutative",
+      "op": "Add",
+      "status": "proven",
+      "proof": "src/Core.TypeScript/algebra/interfaces.test.ts:add-is-commutative",
+      "doc": "Add(a,b) = Add(b,a)"
+    },
+    {
+      "id": "add-identity",
+      "schema": "identity",
+      "op": "Add",
+      "element": "Zero",
+      "status": "proven",
+      "proof": "src/Core.TypeScript/algebra/interfaces.test.ts:zero-is-additive-identity",
+      "doc": "Add(a, Zero) = a"
+    },
+    {
+      "id": "add-inverse",
+      "schema": "inverse",
+      "op": "Add",
+      "inverse": "Negate",
+      "identity": "Zero",
+      "status": "proven",
+      "proof": "src/Core.TypeScript/algebra/interfaces.test.ts:negate-is-additive-inverse",
+      "doc": "Add(a, Negate(a)) = Zero"
+    },
+    {
+      "id": "mul-identity",
+      "schema": "identity",
+      "op": "Mul",
+      "element": "One",
+      "status": "proven",
+      "proof": "src/Core.TypeScript/algebra/interfaces.test.ts:one-is-multiplicative-identity",
+      "doc": "Mul(a, One) = a = Mul(One, a)"
+    },
+    {
+      "id": "mul-distributes-add",
+      "schema": "distributive",
+      "mul": "Mul",
+      "add": "Add",
+      "status": "proven",
+      "proof": "src/Core.TypeScript/algebra/interfaces.test.ts:mul-distributes-over-add",
+      "doc": "Mul(a, Add(b,c)) = Add(Mul(a,b), Mul(a,c))"
+    }
+  ]
+}

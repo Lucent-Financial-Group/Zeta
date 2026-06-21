@@ -1,12 +1,11 @@
 ---
-id: B-0956
-zetaid: 081KSXN940008QG0R002FWR9B2
+id: 081KSXN940008QG0R002FWR9B2
 title: Migrate work-items to ZetaId WorkItem keys (conflict-free, no cross-agent ID consensus) — type ∈ {task, bug}; backlog is a STATE, not a type
 status: open
 priority: P1
 created: 2026-05-31
 attribution: aaron-otto-2026-05-31
-last_updated: 2026-05-31
+last_updated: 2026-06-21
 decomposition: umbrella
 depends_on:
   - 081KSXN940008QG0R00171YAZW
@@ -31,19 +30,25 @@ tags:
   - umbrella
 ---
 
-# B-0956 — Work-items → ZetaId WorkItem keys (conflict-free, no consensus)
+# 081KSXN940008QG0R002FWR9B2 — Work-items → ZetaId WorkItem keys (conflict-free, no consensus)
+
+> **Progress 2026-06-21 (#8948 merged):** the **backlog shard** slice is complete —
+> all `docs/backlog/*` rows use zetaid-only `id:` frontmatter; repo-wide prose refs
+> migrated; `lint-no-b-refs` + `lint-no-new-bnnnn` gate the surface; migration scripts
+> retired; ~1,251 frozen aliases in `b-to-zetaid-map.json`. **This umbrella stays open**
+> for the work-item **event G-Set**, lifecycle state machine, and DORA Bag-folds (below).
 
 > **Product-team design review (2026-06-06):** the design memo this umbrella asks for is
 > [`docs/research/2026-06-06-product-team-review-b0956-backlog-to-zetaid-workitem-migration-pm2-ilyana-rodney-otto.md`](../../research/2026-06-06-product-team-review-b0956-backlog-to-zetaid-workitem-migration-pm2-ilyana-rodney-otto.md).
 > Unanimous: **incremental alias-and-keep, NOT big-bang**; first slice = mint tool + frontmatter-lint +
-> ref-integrity-lint (zero row changes). Blocker found: **B-0682 (ZetaId string encoding) must lock first**
+> ref-integrity-lint (zero row changes). Blocker found: **081KS3X9Y0008QG0R000W00V73 (ZetaId string encoding) must lock first**
 > (promote P2→P1) — must be **filename-safe AND sort-preserving** (time high-bits → lexicographic sort =
 > chronological). **Filename shape DECIDED (Aaron 2026-06-06, the 500-agent collision test): option A —
 > `workitems/<zetaid>-<description>.md`** (ZetaId PREFIX = conflict-free + time-sortable key; description
 > suffix = human-readable). A slug-only filename would collide across concurrent agents (slug = a hidden
-> consensus point); the ZetaId prefix makes files disjoint (the B-0954 G-Set property) and chronologically
+> consensus point); the ZetaId prefix makes files disjoint (the 081KSXN940008QG0R00171YAZW G-Set property) and chronologically
 > sortable. Lookups/cross-refs key on the ZetaId-prefix glob (`<zetaid>-*.md`), so reword is safe. Root
-> cause of the chronic `backlog-index-integrity` red also found there (B-1016 has no frontmatter; B-0366.2
+> cause of the chronic `backlog-index-integrity` red also found there (081KT7YW00008QG0R002T1XNWT has no frontmatter; 081KR50HA0008QG0R0002PGV1N
 > id mismatch).
 
 ## Problem (the does-not-scale pain, operator-named 2026-05-31)
@@ -55,10 +60,10 @@ Allocating a sequential **`B-NNNN`** id requires **cross-agent consensus**: chec
 highest id on `origin/main` **and** scan in-flight PRs for the next free number, and hope
 no peer grabs it first (the
 [`otto-channels-reference-card.md`](../../../.claude/rules/otto-channels-reference-card.md)
-ID-allocation discipline + the empirical B-0449/B-0450 collision). With N concurrent agents
+ID-allocation discipline + the empirical 081KRFA460008QG0R002DG8KPZ/081KRFA460008QG0R001QFS6EV collision). With N concurrent agents
 this is a coordination bottleneck + collision source — it **does not scale**.
 
-**Empirical anchor (this session):** filing B-0955 required exactly that dance. That's the
+**Empirical anchor (this session):** filing 081KSXN940008QG0R002KEJ7C2 required exactly that dance. That's the
 cost this row removes.
 
 ## Prior art — an incrementing ID is a hidden consensus (operator 2026-05-31)
@@ -96,7 +101,7 @@ A **work-item** has:
 
 ## Where work-items sit in the G-Set / Bag / Z-set / DORA ladder
 
-Same substrate as the bus (B-0954) + the git-native LGTM observability (event-sourced-obs
+Same substrate as the bus (081KSXN940008QG0R00171YAZW) + the git-native LGTM observability (event-sourced-obs
 ADR addendum, #6289). The four rungs map cleanly:
 
 | Layer | What | Algebra |
@@ -122,11 +127,11 @@ one git-native ZetaId-keyed event substrate** — G-Set base, Z-set/Bag views.
 
 - `Category.WorkItem = 8` — reserved ZetaId category (comment: *"tasks + bugs; B-xxxxx →
   ZetaId migration"*). Design intent in the type; no row owned the migration until this one.
-- **B-0954** (agent-bus, landed #6283) — the proven git-native ZetaId G-Set the work-item
+- **081KSXN940008QG0R00171YAZW** (agent-bus, landed #6283) — the proven git-native ZetaId G-Set the work-item
   event store mirrors (disjoint files, no-PR, conflict-free, cross-machine).
-- **B-0867** (workflow-engine v1) — work-items are its lifecycle objects (the state machine).
-- **B-0773** (git-native event store) + **B-0890.1** (folders-on-main, no-PR) — substrate + transport.
-- **B-0061** (monolith→per-row backlog migration) — backlog-representation-migration precedent.
+- **081KSKBP80008QG0R000B3Y19A** (workflow-engine v1) — work-items are its lifecycle objects (the state machine).
+- **081KSE6WT0008QG0R0008483B2** (git-native event store) + **081KSNY2Z0008QG0R000E5KTPX** (folders-on-main, no-PR) — substrate + transport.
+- **081KQ8P5D0008QG0R001BH93SA** (monolith→per-row backlog migration) — backlog-representation-migration precedent.
 - **#6289** (event-sourced-observability ADR + git-native LGTM addendum) — the Bag/DORA layer.
 
 ## Design questions (umbrella sub-targets)
@@ -135,23 +140,24 @@ one git-native ZetaId-keyed event substrate** — G-Set base, Z-set/Bag views.
    **slug + title** alongside (ZetaId not memorable). Filename shape TBD
    (`workitems/<zetaid>.md` + slug index? `<slug>.<zetaid-short>.md`?).
 2. **type / state as first-class fields** — `type: task|bug`, `state: backlog|in-progress|
-   done|closed`; the lifecycle is the B-0867 state machine; "backlog" = a `state` value.
+   done|closed`; the lifecycle is the 081KSKBP80008QG0R000B3Y19A state machine; "backlog" = a `state` value.
 3. **Cross-references.** `depends_on`/`composes_with` move from `B-NNNN` to ZetaId or stable slug.
 4. **Backward-compat.** ~950 existing `B-NNNN` rows: **alias-and-keep** (new items ZetaId-keyed,
    legacy keep `B-NNNN` as their stable slug) — low-risk, incremental, not big-bang.
 5. **Index + views.** `BACKLOG.md` (and a per-state view, since backlog is just `state=open`)
    regenerate from the new shape.
 6. **Consensus-free mint.** `bun tools/backlog/new-workitem.ts` mints a `Category.WorkItem`
-   ZetaId **locally** — no `origin/main` check, no PR scan. (Node-safe per B-0955 / ADR v6.)
+   ZetaId **locally** — no `origin/main` check, no PR scan. (Node-safe per 081KSXN940008QG0R002KEJ7C2 / ADR v6.)
 
 ## Acceptance
 
+- [x] Existing `B-NNNN` backlog rows migrated to zetaid keys (#8948; frozen alias map for history).
 - [ ] New work-items get a `Category.WorkItem` ZetaId minted **locally, no consensus**.
 - [ ] `type ∈ {task, bug}` and `state ∈ {backlog, in-progress, done, closed, …}` are
       first-class; **"backlog" is a state value**, derivable as a Z-set view.
 - [ ] Disjoint-id files never collide across concurrent agents (G-Set property).
 - [ ] Metrics/DORA are Bag-folds over the work-item event G-Set (no separate store; reuses #6289).
-- [ ] Existing `B-NNNN` rows keep working (alias-and-keep) — no lost rows.
+- [x] Cross-references in backlog shard use zetaids (#8948).
 - [ ] The `otto-channels` ID-allocation consensus discipline is retired for work-items.
 
 ## Substrate-honest framing
@@ -159,16 +165,16 @@ one git-native ZetaId-keyed event substrate** — G-Set base, Z-set/Bag views.
 **Umbrella** — file the design memo (schema + type/state fields + readability + backward-
 compat) first; route the schema through the product-team agreement before any bulk
 migration. Low-risk path: **new items ZetaId-keyed now (consensus-free), legacy B-NNNN
-aliased**. Mirrors the agent-bus (B-0954); the lifecycle is the workflow engine (B-0867);
+aliased**. Mirrors the agent-bus (081KSXN940008QG0R00171YAZW); the lifecycle is the workflow engine (081KSKBP80008QG0R000B3Y19A);
 metrics ride the git-native LGTM (#6289).
 
 ## Composes with
 
-- B-0954 (agent-bus) — the proven git-native ZetaId G-Set the work-item store mirrors
-- B-0867 (workflow engine) — the state machine work-items live in (state = lifecycle)
-- B-0773 (git-native event store) + B-0890.1 (folders-on-main, no-PR) — substrate + transport
+- 081KSXN940008QG0R00171YAZW (agent-bus) — the proven git-native ZetaId G-Set the work-item store mirrors
+- 081KSKBP80008QG0R000B3Y19A (workflow engine) — the state machine work-items live in (state = lifecycle)
+- 081KSE6WT0008QG0R0008483B2 (git-native event store) + 081KSNY2Z0008QG0R000E5KTPX (folders-on-main, no-PR) — substrate + transport
 - #6289 (event-sourced-observability + git-native LGTM) — DORA/metrics as Bag-folds
-- B-0061 (monolith→per-row migration) — backlog-representation precedent
-- B-0955 (Bun→Node migration) — the mint tool is Node-safe per the same ADR v6
+- 081KQ8P5D0008QG0R001BH93SA (monolith→per-row migration) — backlog-representation precedent
+- 081KSXN940008QG0R002KEJ7C2 (Bun→Node migration) — the mint tool is Node-safe per the same ADR v6
 - `Category.WorkItem = 8` (`src/Core.TypeScript/zeta-id/types.ts`) — the reserved slot
 - `.claude/rules/otto-channels-reference-card.md` — the ID-allocation consensus this removes

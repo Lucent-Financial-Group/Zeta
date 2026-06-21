@@ -10,21 +10,15 @@
 #   4. mise (runtime manager)
 #   5. common/mise.sh     — installs dotnet/python/java/bun/uv
 #                           per .mise.toml
-#   6. common/python-tools.sh — uv-managed Python CLI tools
-#                              (ruff, etc.) from manifests/uv-tools
-#   7. common/quantum.sh  — optional Q# reference-oracle deps from
-#                           manifests/quantum (opt-in)
-#   8. common/elan.sh     — Lean toolchain (no mise plugin yet)
-#   9. common/dotnet-tools.sh — dotnet global tools (semgrep,
-#                              stryker, etc.) from manifests/dotnet-tools
-#  10. common/verifiers.sh    — TLA+ + Alloy jars from manifests/verifiers
-#  10b. common/tlaps.sh       — TLAPS (tlapm) opam source-build, gated on
-#                              ZETA_INSTALL_FULL (heavy OCaml build)
-#  11. common/agent-clis.sh   — agent/peer CLIs (bun-global) from manifests/agent-clis
-#  12. common/one-liner-tools.sh — non-package-manager CLIs (download-then-exec installers)
-#                                  from manifests/one-liner-tools
-#  13. common/local-llm.sh   — local-LLM core primitive (ollama via brew above + pinned
-#                              tiny model from manifests/local-llm)
+#   6. mechanisms/from-uv-tool.sh — uv-managed Python CLI tools
+#   7. mechanisms/from-uv-venv.sh — optional project .venv deps (opt-in)
+#   8. mechanisms/from-elan.sh     — Lean toolchain
+#   9. mechanisms/from-dotnet-global.sh — dotnet global tools
+#  10. mechanisms/from-url.sh   — HTTPS assets → repo paths
+#  10b. mechanisms/from-opam-git.sh — opam git source-build (ZETA_INSTALL_FULL)
+#  11. mechanisms/from-bun-global.sh — bun-global CLIs
+#  12. mechanisms/from-installer.sh — vendor install scripts
+#  13. mechanisms/from-ollama.sh   — local-LLM primitive
 #  14. common/shellenv.sh    — managed PATH file
 #  15. common/profile-edit.sh — append the managed-PATH source line to the shell profile
 
@@ -56,7 +50,7 @@ echo "✓ Xcode CLT at $(xcode-select -p 2>/dev/null || echo 'pending user confi
 # ── 2. Homebrew ─────────────────────────────────────────────────────
 if ! command -v brew >/dev/null 2>&1; then
   echo "↓ installing Homebrew..."
-  # Download to temp file then exec — the B-0063 structural fix.
+  # Download to temp file then exec — the 081KQ8P5D0008QG0R001DMK8JD structural fix.
   # Homebrew does not publish a SHA256 for install.sh (the script
   # tracks HEAD of github.com/Homebrew/install with no tagged
   # releases). Trust anchor: HTTPS + GitHub + the Homebrew project.
@@ -123,11 +117,71 @@ if [ -f "$BREW_MANIFEST" ]; then
 fi
 echo "✓ brew packages up to date"
 
+# ── 3b. Brew CASKS (from manifests/brew-cask) ───────────────────────
+# Casks are a separate brew namespace (`--cask` / `brew list --cask`), so they get
+# their own declarative manifest + loop (mirrors the formula loop above, tier-aware).
+CASK_MANIFEST="$SETUP_DIR/manifests/brew-cask"
+if [ -f "$CASK_MANIFEST" ]; then
+  CASKS="$(awk '
+    { sub(/#.*$/, ""); gsub(/^[[:space:]]+|[[:space:]]+$/, "") }
+    NF > 0 { print }
+  ' "$CASK_MANIFEST")"
+  if [ -n "$CASKS" ]; then
+    echo "↓ installing brew casks from $(basename "$CASK_MANIFEST")..."
+    printf '%s\n' "$CASKS" | while IFS= read -r cask_line; do
+      required_tier="$(zeta_tier_of_line "$cask_line")"
+      stripped="$(zeta_strip_tier "$cask_line")"
+      cask="$(printf '%s' "$stripped" | awk '{print $1}')"
+      [ -z "$cask" ] && continue
+      # Optional `tap=<owner/tap>` token — a custom tap (e.g. cvc5/cvc5) is tapped + trusted
+      # before install. Generalizes the former cvc5 one-off into the manifest framework.
+      tap="$(printf '%s' "$stripped" | awk '{for(i=2;i<=NF;i++){if($i ~ /^tap=/){sub(/^tap=/,"",$i); print $i}}}')"
+      if ! zeta_tier_allows "$required_tier"; then
+        echo "→ $cask skipped: requires tier=$required_tier, host is $ZETA_HOST_TIER ($ZETA_HOST_TIER_SOURCE)"
+        continue
+      fi
+      if [ -n "$tap" ]; then
+        brew tap "$tap" >/dev/null 2>&1 || true
+        brew trust "$tap" >/dev/null 2>&1 || true
+      fi
+      if brew list --cask "$cask" >/dev/null 2>&1; then
+        brew upgrade --cask "$cask" >/dev/null 2>&1 || true
+      else
+        brew install --cask "$cask"
+      fi
+    done
+  fi
+fi
+echo "✓ brew casks up to date"
+
 # ── 4. mise ─────────────────────────────────────────────────────────
+# Keep in sync with .mise.toml min_version and tools/setup/linux.sh MISE_PIN_VERSION.
+MISE_PIN_VERSION="2026.6.11"
+
+installed_mise_version=""
+if command -v mise >/dev/null 2>&1; then
+  installed_mise_version="$(mise --version 2>/dev/null | awk '{print $1}')"
+fi
+
 if ! command -v mise >/dev/null 2>&1; then
   echo "↓ installing mise via Homebrew..."
   brew install mise
 fi
+
+installed_mise_version="$(mise --version 2>/dev/null | awk '{print $1}')"
+if [ "$installed_mise_version" != "$MISE_PIN_VERSION" ]; then
+  echo "↓ upgrading mise ${installed_mise_version:-unknown} → ${MISE_PIN_VERSION} via Homebrew..."
+  brew update
+  brew upgrade mise || brew install mise
+  installed_mise_version="$(mise --version 2>/dev/null | awk '{print $1}')"
+  if [ "$installed_mise_version" != "$MISE_PIN_VERSION" ]; then
+    echo "error: mise is ${installed_mise_version}, but .mise.toml requires ${MISE_PIN_VERSION}" >&2
+    echo "  run: brew update && brew upgrade mise" >&2
+    exit 1
+  fi
+fi
+mkdir -p "${MISE_DATA_DIR:-$HOME/.local/share/mise}"
+touch "${MISE_DATA_DIR:-$HOME/.local/share/mise}/.disable-self-update"
 echo "✓ mise: $(mise --version)"
 
 # ── 5-12. Common steps ──────────────────────────────────────────────
@@ -153,37 +207,22 @@ for shim_dir in \
   fi
 done
 
-"$SETUP_DIR/common/python-tools.sh"
-"$SETUP_DIR/common/quantum.sh"
+"$SETUP_DIR/mechanisms/from-uv-tool.sh"
+"$SETUP_DIR/mechanisms/from-uv-venv.sh"
 
 # Make ~/.dotnet/tools available for the remainder of this install.sh
-# process so dotnet-tools.sh can install globals (semgrep / stryker)
-# into $HOME/.dotnet/tools and find them on PATH in the same run.
+# process so from-dotnet-global can install globals into $HOME/.dotnet/tools
+# and find them on PATH in the same run.
 export PATH="$HOME/.dotnet/tools:$PATH"
 
-"$SETUP_DIR/common/elan.sh"
-"$SETUP_DIR/common/dotnet-tools.sh"
-"$SETUP_DIR/common/dotnet-workloads.sh"
-"$SETUP_DIR/common/verifiers.sh"
-# TLAPS (tlapm, TLA+ proof manager) — opam source-build (no arm64 upstream
-# binary; Aaron path-A). Heavy OCaml build → gated behind ZETA_INSTALL_FULL
-# so minimal/CI/devcontainer installs stay fast. opam + z3 come from
-# manifests/brew above. Best-effort: warns + continues (never bricks install).
-if [ "${ZETA_INSTALL_FULL:-0}" = "1" ]; then
-  "$SETUP_DIR/common/tlaps.sh" || echo "⚠ tlaps.sh failed — see output above; continuing"
-else
-  echo "✓ skipping TLAPS opam source-build (set ZETA_INSTALL_FULL=1 to build tlapm)"
-fi
-# Agent + peer-AI CLIs (claude/codex/gemini) bun-global from manifests/agent-clis.
-# Best-effort: warns + continues on failure (auth/login is the operator's; never bricks install).
-"$SETUP_DIR/common/agent-clis.sh"
-# Expose repo package bins (ace, zeta-shadow) on PATH via `bun link`. Best-effort.
-"$SETUP_DIR/common/repo-bins.sh"
-# Non-package-manager CLIs (grok/cursor-agent/kiro/hermes/forge) via their own one-line
-# installers from manifests/one-liner-tools. Detect-first + best-effort (never bricks install).
-"$SETUP_DIR/common/one-liner-tools.sh"
-# Local-LLM core primitive — macOS gets the ollama binary via manifests/brew
-# (above); this pulls the pinned tiny model (manifests/local-llm). Graceful.
-"$SETUP_DIR/common/local-llm.sh"
+"$SETUP_DIR/mechanisms/from-elan.sh"
+"$SETUP_DIR/mechanisms/from-dotnet-global.sh"
+"$SETUP_DIR/mechanisms/from-dotnet-workload.sh"
+"$SETUP_DIR/mechanisms/from-url.sh"
+"$SETUP_DIR/mechanisms/from-opam-git.sh" || echo "⚠ from-opam-git failed — see output above; continuing"
+"$SETUP_DIR/mechanisms/from-bun-global.sh"
+"$SETUP_DIR/mechanisms/from-bun-link.sh"
+"$SETUP_DIR/mechanisms/from-installer.sh"
+"$SETUP_DIR/mechanisms/from-ollama.sh"
 "$SETUP_DIR/common/shellenv.sh"
 "$SETUP_DIR/common/profile-edit.sh"

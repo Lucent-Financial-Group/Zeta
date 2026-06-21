@@ -34,21 +34,35 @@ HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO="$(cd "$HERE/../../.." && pwd)"
 
 mode="${1:-}"; name="${2:-}"; shift 2 2>/dev/null || true
-public_only=""; vault_path=""; out_dir=""; gh_secret=""; gh_repo="Lucent-Financial-Group/Zeta"
+public_only=""; vault_path=""; out_dir=""; gh_secret=""; gh_repo="Lucent-Financial-Group/Zeta"; dry_run=""
 while [ $# -gt 0 ]; do case "$1" in
   --public-only) public_only="--public-only";;
   --vault) vault_path="${2:?}"; shift;;
   --gh-secret) gh_secret="${2:?}"; shift;;
   --gh-repo) gh_repo="${2:?}"; shift;;
   --out) out_dir="${2:?}"; shift;;
+  --publish) echo "note: --publish moved to the biometric-gated publish.ts; ignoring here" >&2 ;;
+  --dry-run) dry_run="--dry-run";;
   *) echo "unknown arg: $1" >&2; exit 2;;
 esac; shift; done
 
 [ -n "$mode" ] && [ -n "$name" ] || { sed -n '2,30p' "$0"; exit 2; }
-case "$mode" in generate|import|rotate) ;; *) echo "mode must be generate|import|rotate" >&2; exit 2;; esac
+case "$mode" in generate|import|rotate|onboard) ;; *) echo "mode must be generate|import|rotate|onboard" >&2; exit 2;; esac
 
 command -v bun >/dev/null || { echo "bun required (closed over in install.sh)"; exit 1; }
 [ -d "$HERE/node_modules" ] || (cd "$HERE" && bun install >/dev/null)
+
+if [ "$mode" = "onboard" ]; then
+  # Reuse-only orchestrator: chains status -> user-keyring(instruction) -> machine-key ->
+  # publish(biometric-gated, via publish.ts) -> trust-resolve. It NEVER runs seed-gen (a
+  # missing user keyring prints the keyring.sh generate|rotate instruction); the GitHub
+  # publish always goes THROUGH publish.ts's biometric gate (no --publish toggle, no bypass).
+  extra_args=()
+  [ -n "$dry_run" ] && extra_args+=("--dry-run")
+  [ -n "$out_dir" ] && extra_args+=("--repo-root" "$out_dir")
+  bun "$HERE/onboard-cli.ts" --user "$name" "${extra_args[@]}"
+  exit 0
+fi
 
 umask 077
 tmp="$(mktemp -t zeta-keyring.XXXXXX.json)"

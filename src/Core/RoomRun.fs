@@ -33,15 +33,35 @@ module RoomRun =
           Frames: int
           Start: Chip8Cow.Frame }
 
+    type HorizonDrivePlan<'K, 'S when 'K : comparison> =
+        { SourceName: string
+          Horizon: BoundedGSet<'K>
+          Tank: SoftThrottle.Tank
+          Candidates: RoomHorizon.Candidate<'K, 'S> list }
+
     type UnifiedHeatRun<'K when 'K : comparison> =
         { Room: Scheduler.BoundaryScheduledRoomState<'K>
           SoftFrame: Chip8Cow.Frame
-          BoundaryHeatRows: Scheduler.HeatBoundaryRow list }
+          BoundaryHeatRows: Scheduler.HeatBoundaryRow list
+          HeatTranscript: Scheduler.HeatTranscriptSummary }
+
+    type UnifiedHorizonRun<'K, 'S when 'K : comparison> =
+        { Room: Scheduler.BoundaryScheduledRoomState<'K>
+          SoftFrame: Chip8Cow.Frame
+          HorizonReport: RoomHorizon.Report<'K, 'S>
+          HeatRows: Scheduler.HeatBoundaryRow list
+          HeatTranscript: Scheduler.HeatTranscriptSummary }
 
     [<RequireQualifiedAccess>]
     type UnifiedHeatFeedback<'K when 'K : comparison> =
         | SchedulerFeedback of InterruptFeedback
         | SoftDriveFeedback of room: Scheduler.BoundaryScheduledRoomState<'K> * feedback: HeatSinkFeedback
+
+    [<RequireQualifiedAccess>]
+    type UnifiedHorizonFeedback<'K, 'S when 'K : comparison> =
+        | BaseRunFeedback of UnifiedHeatFeedback<'K>
+        | HorizonFeedback of run: UnifiedHeatRun<'K> * feedback: RoomHorizon.Feedback
+        | HorizonHeatFeedback of run: UnifiedHorizonRun<'K, 'S> * feedback: RoomHorizon.Feedback
 
     /// Run one boundary-aware scheduler tick and then one soft-drive window
     /// through the same heat sink. If the soft lookahead cannot export heat,
@@ -87,11 +107,55 @@ module RoomRun =
                         softPlan.Start
                 with
                 | Ok frame ->
+                    let rows = Scheduler.boundaryHeatRows room
+
                     return
                         Ok
                             { Room = room
                               SoftFrame = frame
-                              BoundaryHeatRows = Scheduler.boundaryHeatRows room }
+                              BoundaryHeatRows = rows
+                              HeatTranscript = Scheduler.summarizeHeatRows rows }
 
                 | Error feedback -> return Error(UnifiedHeatFeedback.SoftDriveFeedback(room, feedback))
+        }
+
+    /// Run the room tick, the soft CHIP-8 lookahead, and a finite prediction
+    /// horizon through one injected heat boundary. The horizon row is appended
+    /// after the runtime rows so hosts can render the complete finite-room
+    /// pressure transcript on the Dark Hall heat board.
+    let boundaryTickThenSoftDriveThenHorizon
+        (sink: IHeatSink)
+        (boundaryPlan: BoundaryTickPlan<'K>)
+        (softPlan: SoftDrivePlan)
+        (horizonPlan: HorizonDrivePlan<'K, 'S>)
+        (state: Scheduler.BoundaryScheduledRoomState<'K>)
+        : Task<Result<UnifiedHorizonRun<'K, 'S>, UnifiedHorizonFeedback<'K, 'S>>> =
+        task {
+            let! baseRun = boundaryTickThenSoftDrive sink boundaryPlan softPlan state
+
+            match baseRun with
+            | Error feedback -> return Error(UnifiedHorizonFeedback.BaseRunFeedback feedback)
+            | Ok run ->
+                match RoomHorizon.update horizonPlan.Horizon horizonPlan.Tank horizonPlan.Candidates with
+                | Error feedback -> return Error(UnifiedHorizonFeedback.HorizonFeedback(run, feedback))
+                | Ok report ->
+                    let horizonRow =
+                        Scheduler.heatRowOfHorizonReport
+                            run.Room.CompletedTicks
+                            run.Room.Loop.Room.Name
+                            horizonPlan.SourceName
+                            report
+
+                    let rows = run.BoundaryHeatRows @ [ horizonRow ]
+
+                    let horizonRun =
+                        { Room = run.Room
+                          SoftFrame = run.SoftFrame
+                          HorizonReport = report
+                          HeatRows = rows
+                          HeatTranscript = Scheduler.summarizeHeatRows rows }
+
+                    match RoomHorizon.emitHeat sink horizonPlan.SourceName report with
+                    | Ok() -> return Ok horizonRun
+                    | Error feedback -> return Error(UnifiedHorizonFeedback.HorizonHeatFeedback(horizonRun, feedback))
         }

@@ -5,7 +5,7 @@
 // flash-usb with the `--short` challenge format, and lets sudo's PAM
 // stack (Touch ID, after `zflash-setup` ran) gate the dd.
 //
-// iter-4.2 extension (B-0789): after the dd succeeds, zflash also
+// iter-4.2 extension (081KSGS9H0008QG0R002T3BJ2R): after the dd succeeds, zflash also
 // mounts the freshly-flashed USB's FAT ESP partition + writes the
 // operator's SSH pubkey to it as `/zeta-authorized-keys.pub` so
 // `zeta-install.sh` on the booted installer can pick it up + inject
@@ -61,7 +61,7 @@
 //   finger on the actual trackpad.
 
 import { execFileSync, spawn } from "node:child_process";
-import { existsSync, mkdtempSync, readdirSync, readFileSync, rmSync, statSync } from "node:fs";
+import { existsSync, mkdtempSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs";
 import { homedir, platform, tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -75,6 +75,13 @@ import {
   parseUuidFromDiskutilInfo,
   resolveZetaTestInfraPubkeyFromZflashModule,
 } from "./lib.ts";
+import {
+  deviceKeyPath,
+  userKeyringPublicPath,
+  realEffects as realMachineEffects,
+} from "../../../tools/setup/persona-keys/machine.ts";
+import { realEffects as realTrustEffects } from "../../../tools/setup/persona-keys/github-trust.ts";
+import { onboard, formatOnboard } from "../../../tools/setup/persona-keys/onboard.ts";
 
 const ISO_GLOB_PREFIX = "zeta-installer-";
 const DEFAULT_SSH_KEY = join(homedir(), ".ssh", "id_ed25519.pub");
@@ -116,7 +123,7 @@ function autoDiscoverIso(): string {
   return chosen;
 }
 
-// ── iter-4.3 freshness checks (B-0789 follow-on) ──────────────────
+// ── iter-4.3 freshness checks (081KSGS9H0008QG0R002T3BJ2R follow-on) ──────────────────
 //
 // Two gaps surfaced by the 2026-05-26 empirical iter-4.2 test run:
 //
@@ -456,7 +463,7 @@ function findFlashUsbPath(): string {
   return sibling;
 }
 
-// ── iter-4.2 helpers (B-0789) ──────────────────────────────────────
+// ── iter-4.2 helpers (081KSGS9H0008QG0R002T3BJ2R) ──────────────────────────────────────
 
 interface ExternalDiskBrief {
   device: string; // e.g., /dev/disk6
@@ -486,7 +493,7 @@ function findFatPartition(device: string): string | null {
   // NixOS isohybrid + dd produces the MBR form on macOS. Be lenient —
   // accept any FAT/EFI-shaped string OR any of the MBR FAT/ESP type
   // codes. Returns the partition device path (e.g., /dev/disk6s2) or
-  // null. iter-4.4 fix-forward (B-0789): added 0xEF MBR matching after
+  // null. iter-4.4 fix-forward (081KSGS9H0008QG0R002T3BJ2R): added 0xEF MBR matching after
   // 2026-05-26 empirical test surfaced the bug.
   try {
     const out = execFileSync("diskutil", ["list", device], { encoding: "utf8" });
@@ -690,9 +697,9 @@ function writeCredBlobToEsp(mountPoint: string, espPart: string, credBake: CredB
   try {
     execFileSync("sudo", ["chmod", "600", target], { stdio: "ignore" });
   } catch {
-    process.stdout.write(`B-0852: chmod 600 not honored for ${target}; continuing because some FAT mounts ignore POSIX modes\n`);
+    process.stdout.write(`081KSKBP80008QG0R003AX2A69: chmod 600 not honored for ${target}; continuing because some FAT mounts ignore POSIX modes\n`);
   }
-  process.stdout.write(`B-0852: wrote encrypted credential blob to ${target} (USB UUID ${usbUuid})\n`);
+  process.stdout.write(`081KSKBP80008QG0R003AX2A69: wrote encrypted credential blob to ${target} (USB UUID ${usbUuid})\n`);
 }
 
 function resolveTestInfraPubkeyPath(): string {
@@ -730,7 +737,7 @@ async function injectPubkeyToUsb(
     process.stdout.write(`iter-5.2: ALSO injecting hostname '${hostOverride}' into ESP ...\n`);
   }
   if (credBake.bakeCredArgs.length > 0) {
-    process.stdout.write(`B-0852: ALSO baking ${credBake.bakeCredArgs.length} credential blob entr${credBake.bakeCredArgs.length === 1 ? "y" : "ies"} into ESP ...\n`);
+    process.stdout.write(`081KSKBP80008QG0R003AX2A69: ALSO baking ${credBake.bakeCredArgs.length} credential blob entr${credBake.bakeCredArgs.length === 1 ? "y" : "ies"} into ESP ...\n`);
   }
 
   // Brief settle so macOS re-reads partition table after dd
@@ -795,7 +802,7 @@ async function injectPubkeyToUsb(
   }
   process.stdout.write(`iter-4.2: wrote pubkey to ${target}\n`);
 
-  // iter-5.2 (B-0792): if --host was passed, write zeta-hostname.txt
+  // iter-5.2 (081KSGS9H0008QG0R003V23XNZ): if --host was passed, write zeta-hostname.txt
   // to ESP in the same mount session (covered by the same sudo
   // timestamp window; no additional Touch ID). zeta-install.sh reads
   // this file at install time + writes to /etc/zeta/cluster-node-id;
@@ -835,7 +842,7 @@ async function injectPubkeyToUsb(
       writeCredBlobToEsp(mountPoint, espPart, credBake);
     } catch (e) {
       unmountEsp(espPart, mountResult);
-      bail(3, `B-0852 zeta-creds inject failed: ${e instanceof Error ? e.message : String(e)}`);
+      bail(3, `081KSKBP80008QG0R003AX2A69 zeta-creds inject failed: ${e instanceof Error ? e.message : String(e)}`);
     }
   }
 
@@ -938,7 +945,7 @@ async function main() {
       if (!next || next.startsWith("-")) {
         bail(2, "--host requires a name argument (e.g., --host pikachu)");
       }
-      // iter-5.2 (B-0792): hostname per RFC1123 — alphanumeric + hyphens,
+      // iter-5.2 (081KSGS9H0008QG0R003V23XNZ): hostname per RFC1123 — alphanumeric + hyphens,
       // no leading/trailing hyphen, 1-63 chars. Reject empty + invalid
       // shapes BEFORE writing to USB so cluster-side substrate doesn't
       // have to handle garbage. Aaron 2026-05-26 architectural framing:
@@ -1050,7 +1057,7 @@ async function main() {
         "                            role-stack — e.g., --host pikachu installs as pikachu\n" +
         "                            regardless of flake role config. Default: flake config name\n" +
         "                            (control-plane for the zero-typing single-node path)\n" +
-        "  --agent                   (B-0844) agent-driven mode — spawn flash-usb with piped stdin\n" +
+        "  --agent                   (081KSGS9H0008QG0R001EZKNCB) agent-driven mode — spawn flash-usb with piped stdin\n" +
         "                            so the agent auto-types the 'yes <nonce>' challenge by reading\n" +
         "                            the nonce from stdout. Touch ID PAM gate STILL fires on the\n" +
         "                            operator's Mac (cannot be agent-bypassed). Use when running\n" +
@@ -1059,7 +1066,7 @@ async function main() {
         "  --test                    QEMU/CI-only: inject zeta-test-infra.pub alongside the operator\n" +
         "                            pubkey into /zeta-authorized-keys.pub. Production USB/ISO builds\n" +
         "                            must omit this flag so prod never trusts the ephemeral test key.\n" +
-        "  --bake-cred <id=value>    B-0852 write encrypted /zeta-creds.enc to USB ESP\n" +
+        "  --bake-cred <id=value>    081KSKBP80008QG0R003AX2A69 write encrypted /zeta-creds.enc to USB ESP\n" +
         "                            after flashing; repeatable. Values use the existing\n" +
         "                            zeta-creds-persist credential handlers.\n" +
         "  --bake-passphrase-file <path>\n" +
@@ -1104,18 +1111,94 @@ async function main() {
   const flashUsb = findFlashUsbPath();
 
   // Pre-flight: determine if iter-4.2 inject will run + which key
-  const pubkeyPath = sshKeyOverride ?? DEFAULT_SSH_KEY;
+  let pubkeyPath = sshKeyOverride ?? DEFAULT_SSH_KEY;
   let willInject = !noInject;
-  if (willInject && !existsSync(pubkeyPath)) {
-    process.stderr.write(
-      `\nzflash: iter-4.2 inject skipped — pubkey not found at ${pubkeyPath}\n` +
-        `  (proceeding with flash; cluster node will need manual operator-ssh-keys.nix\n` +
-        `   edit + nixos-rebuild on first login per iter-4 v1 fallback)\n\n`,
-    );
-    willInject = false;
+  let tempPubkeyPath: string | null = null;
+
+  if (willInject) {
+    if (sshKeyOverride) {
+      if (!existsSync(pubkeyPath)) {
+        process.stderr.write(
+          `\nzflash: iter-4.2 inject skipped — pubkey not found at ${pubkeyPath}\n` +
+            `  (proceeding with flash; cluster node will need manual operator-ssh-keys.nix\n` +
+            `   edit + nixos-rebuild on first login per iter-4 v1 fallback)\n\n`,
+        );
+        willInject = false;
+      }
+    } else {
+      // Resolve user persona using git config or USER env
+      let user = "";
+      try {
+        const gitUser = execFileSync("git", ["config", "user.name"], { encoding: "utf8" }).trim();
+        if (gitUser) {
+          user = gitUser.toLowerCase().replace(/[^a-z0-9._-]+/g, "-");
+        }
+      } catch { /* ignore */ }
+      if (!user) {
+        user = process.env.USER || "zeta";
+      }
+
+      const repoRoot = findRepoRoot() || ".";
+      const home = homedir();
+      
+      const userKeyringPublic = userKeyringPublicPath(repoRoot, user);
+      const localMachineKey = deviceKeyPath(home);
+
+      const userKeyringExists = existsSync(userKeyringPublic);
+      const machineKeyExists = existsSync(localMachineKey);
+
+      if (!userKeyringExists || !machineKeyExists) {
+        process.stdout.write(`\nzflash: detected missing user keyring or machine key for user '${user}'.\n`);
+        process.stdout.write(`Starting inline onboarding flow (reuse-only orchestrator)...\n\n`);
+        try {
+          // Delegate to the reuse-only orchestrator: it ensures THIS host's PURE machine key
+          // (registered at the user-independent machines/<host>.pub) and PRINTS the keyring.sh
+          // instruction if the user keyring is missing (it does NOT run seed-gen — seed custody
+          // is the operator's). PURE-KEY MODEL: there is NO GitHub publish — a machine key is
+          // not a user's GitHub auth key. No secret/seed handling lives here.
+          const res = await onboard(
+            {
+              machine: realMachineEffects(),
+              trust: realTrustEffects(),
+            },
+            { user, repoRoot, home },
+          );
+          process.stdout.write(formatOnboard(res) + "\n\n");
+        } catch (err: unknown) {
+          bail(1, `Onboarding failed: ${err instanceof Error ? err.message : String(err)}`);
+        }
+      }
+
+      // Generate the union of the machine's public key and the user's PUBLISHED public key.
+      // We read ONLY public trust roots — the machine pubkey file and the operator's
+      // maintainers/<user>/ssh-pubkeys.txt (the public trust registry) — never a private
+      // keyring JSON (the orchestrator no longer materializes secrets locally).
+      const machinePubPath = deviceKeyPath(home) + ".pub";
+      const userSshPubPath = join(repoRoot, "maintainers", user, "ssh-pubkeys.txt");
+
+      let combinedContent = "";
+      if (existsSync(machinePubPath)) {
+        combinedContent += readFileSync(machinePubPath, "utf8").trim() + "\n";
+      }
+      if (existsSync(userSshPubPath)) {
+        const userPub = readFileSync(userSshPubPath, "utf8").trim();
+        if (userPub) combinedContent += userPub + "\n";
+      }
+
+      if (combinedContent.trim()) {
+        tempPubkeyPath = join(tmpdir(), `zeta-combined-${user}.pub`);
+        writeFileSync(tempPubkeyPath, combinedContent, { mode: 0o644 });
+        pubkeyPath = tempPubkeyPath;
+      } else {
+        process.stderr.write(
+          `\nzflash: iter-4.2 inject skipped — failed to construct combined pubkey\n\n`
+        );
+        willInject = false;
+      }
+    }
   }
 
-  // iter-5.2.2 (B-0792) — REVERTS iter-5.2.1 flash-time auto-generation:
+  // iter-5.2.2 (081KSGS9H0008QG0R003V23XNZ) — REVERTS iter-5.2.1 flash-time auto-generation:
   //
   // The maintainer 2026-05-26 surfaced the design flaw with flash-time
   // auto-generation: *"wait zflash has a hard coded name? i was
@@ -1155,7 +1238,7 @@ async function main() {
   // sudo Touch ID PAM prompt, dd progress). We are a thin invocation
   // wrapper.
   //
-  // Agent mode (--agent flag, B-0844): switch from execFileSync({stdio:
+  // Agent mode (--agent flag, 081KSGS9H0008QG0R001EZKNCB): switch from execFileSync({stdio:
   // "inherit"}) to spawn({stdio: ["pipe", "pipe", "inherit"]}) — stdin
   // is piped so we can auto-type the challenge response; stdout is
   // piped so we can SCAN for the "yes <nonce>" challenge line then
@@ -1234,7 +1317,15 @@ async function main() {
   }
 
   if (willInject) {
-    await injectPubkeyToUsb(pubkeyPath, hostOverride, credBake, testMode);
+    try {
+      await injectPubkeyToUsb(pubkeyPath, hostOverride, credBake, testMode);
+    } finally {
+      if (tempPubkeyPath && existsSync(tempPubkeyPath)) {
+        try {
+          rmSync(tempPubkeyPath, { force: true });
+        } catch { /* ignore */ }
+      }
+    }
   } else {
     process.stdout.write("\n(iter-4.2 inject skipped per --no-inject or missing pubkey)\n");
     if (hostOverride !== null) {

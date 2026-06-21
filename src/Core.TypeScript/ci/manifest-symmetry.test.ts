@@ -64,7 +64,7 @@ const WINDOWS_EXCEPTIONS: Record<string, string> = {
   "qemu-utils": "covered on Windows by the qemu manifest line; apt splits qemu-img utilities from qemu-system-*",
   mtools:
     "file-backed zflash ESP-image writer for Unix/NixOS QEMU proof; no scoop/winget/choco package source is declared yet, so Windows keeps QEMU-only coverage until a Windows package source is selected",
-  // Rootless-podman helpers (added to apt with podman; B-0964 §2). Linux-only: on
+  // Rootless-podman helpers (added to apt with podman; 081KT07NV0008QG0R001CBQ2X2 §2). Linux-only: on
   // Windows podman runs its Linux VM via WSL2, which provides user-namespace mapping,
   // networking, and overlay storage inside the VM — these host packages have no
   // Windows-native equivalent (the WSL2 distro carries them).
@@ -73,6 +73,8 @@ const WINDOWS_EXCEPTIONS: Record<string, string> = {
   "fuse-overlayfs": "Linux rootless overlay storage driver; Windows podman uses WSL2's VM storage",
   opam: "OCaml package manager; only needed on Unix to build tlapm from source. Windows tlapm installs via prebuilt MSI/zip.",
   z3: "SMT solver; on Windows, Z3 is either scoop-installed or used via JS z3-solver npm package.",
+  cvc5: "SMT solver; on Windows, cvc5 is either scoop-installed or downloaded directly.",
+  eprover: "first-order ATP; on Windows, E prover is typically run in WSL or downloaded directly.",
   "headscale-cli":
     "headscale SERVER-side CLI — mesh coordination ops run on Linux/macOS hosts; Windows dev boxes join the mesh as tailscale clients (manifests/windows tailscale line).",
   "r-base":
@@ -111,11 +113,11 @@ test("mise tool matcher treats names and versions as literals", () => {
   expect('helm = "4x2x0"').not.toMatch(pattern);
 });
 
-test("Windows agent CLI install consumes the shared agent-clis manifest", () => {
+test("Windows agent CLI install consumes the shared from-bun-global manifest", () => {
   const installPs1 = readFileSync(join(setupDir, "install.ps1"), "utf8");
-  const agentCliManifest = readFileSync(join(setupDir, "manifests", "agent-clis"), "utf8");
+  const agentCliManifest = readFileSync(join(setupDir, "manifests", "from-bun-global"), "utf8");
 
-  expect(installPs1).toContain("manifests\\agent-clis");
+  expect(installPs1).toContain("manifests\\from-bun-global");
   expect(agentCliManifest).toContain("@anthropic-ai/claude-code");
   expect(agentCliManifest).toContain("@openai/codex");
   expect(agentCliManifest).toContain("bin=claude");
@@ -129,7 +131,7 @@ test("Windows agent CLI install consumes the shared agent-clis manifest", () => 
 
 test("Codex CLI setup migrates the deprecated service_tier default value", () => {
   const installPs1 = readFileSync(join(setupDir, "install.ps1"), "utf8");
-  const agentClisSh = readFileSync(join(setupDir, "common", "agent-clis.sh"), "utf8");
+  const agentClisSh = readFileSync(join(setupDir, "mechanisms", "from-bun-global.sh"), "utf8");
 
   for (const installer of [installPs1, agentClisSh]) {
     expect(installer).toContain("service_tier");
@@ -141,21 +143,21 @@ test("Codex CLI setup migrates the deprecated service_tier default value", () =>
   expect(agentClisSh).toContain("repair_codex_service_tier_config");
 });
 
-test("NixOS install shield validates agent-clis manifest, not one hardcoded CLI", () => {
+test("NixOS install shield validates from-bun-global manifest, not one hardcoded CLI", () => {
   const dockerfile = readFileSync(
     join(repoRoot, "src", "Core.TypeScript", "ci", "dockerfiles", "nixos-install-sh-test", "Dockerfile"),
     "utf8",
   );
 
-  expect(dockerfile).toContain("tools/setup/manifests/agent-clis");
+  expect(dockerfile).toContain("tools/setup/manifests/from-bun-global");
   expect(dockerfile).toContain("bin=*)");
   expect(dockerfile).not.toContain("bun install --global @anthropic-ai/claude-code");
   expect(dockerfile).not.toContain("bun install --global @openai/codex");
   expect(dockerfile).not.toContain("bun install --global @google/gemini-cli");
 });
 
-test("local-llm install defaults to skip outside interactive/full install contexts", () => {
-  const localLlm = readFileSync(join(setupDir, "common", "local-llm.sh"), "utf8");
+test("from-ollama install defaults to skip outside interactive/full install contexts", () => {
+  const localLlm = readFileSync(join(setupDir, "mechanisms", "from-ollama.sh"), "utf8");
   const ubuntuDockerfile = readFileSync(
     join(repoRoot, "src", "Core.TypeScript", "ci", "dockerfiles", "ubuntu-install-sh-test", "Dockerfile"),
     "utf8",
@@ -192,8 +194,8 @@ test("NixOS and USB installer surfaces delegate agent/runtime drift to install g
   // comes from the same install.sh manifest graph as dev machines and CI.
   expect(commonNix).toContain("mise");
   expect(commonNix).toContain("mtools");
-  expect(commonNix).toContain("tools/setup/manifests/agent-clis");
-  expect(aiAgentNix).toContain("tools/setup/manifests/agent-clis");
+  expect(commonNix).toContain("tools/setup/manifests/from-bun-global");
+  expect(aiAgentNix).toContain("tools/setup/manifests/from-bun-global");
 
   // The live USB bakes zeta-install declaratively, then the target bootstrap enters the
   // canonical install graph with the live-ISO guard explicitly overridden for the target.
@@ -205,11 +207,11 @@ test("NixOS and USB installer surfaces delegate agent/runtime drift to install g
   expect(usbInstallerFlake).toContain("mtools");
   expect(zetaInstall).toContain("ZETA_INSTALL_NIXOS_MODE=installed");
   expect(zetaInstall).toContain("ZETA_INSTALL_FULL=1");
-  expect(zetaInstall).toContain("tools/setup/manifests/agent-clis");
-  expect(zetaInstall).toContain("tools/setup/manifests/one-liner-tools");
+  expect(zetaInstall).toContain("tools/setup/manifests/from-bun-global");
+  expect(zetaInstall).toContain("tools/setup/manifests/from-installer");
 
   // No NixOS module should name individual bun-global agent packages; package selection lives
-  // in tools/setup/manifests/agent-clis.
+  // in tools/setup/manifests/from-bun-global.
   for (const nixText of [commonNix, aiAgentNix]) {
     expect(nixText).not.toContain("@anthropic-ai/claude-code");
     expect(nixText).not.toContain("@openai/codex");

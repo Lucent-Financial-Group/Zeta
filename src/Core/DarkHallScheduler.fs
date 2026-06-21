@@ -1,5 +1,7 @@
 namespace Zeta.Core
 
+open System.Collections.Generic
+
 /// Scheduler-facing boundary for Dark Hall rooms.
 ///
 /// `DarkHallRoomLoop` owns observe -> choose -> execute -> append. This module
@@ -15,6 +17,14 @@ module DarkHallScheduler =
     type HeatBoundaryRow =
         { Tick: int
           RoomName: string
+          HeatRejected: int
+          Backpressured: int
+          StorageErrors: int
+          HeatKinds: string list
+          Reasons: string list }
+
+    type HeatTranscriptSummary =
+        { Rows: int
           HeatRejected: int
           Backpressured: int
           StorageErrors: int
@@ -117,6 +127,29 @@ module DarkHallScheduler =
     let boundaryBackpressured (state: BoundaryScheduledRoomState<'K>) : bool =
         state.HeatRowsRev |> List.exists (fun row -> row.Backpressured > 0)
 
+    let private distinctOrdinal (values: string list) : string list =
+        let seen = HashSet<string>(System.StringComparer.Ordinal)
+
+        values
+        |> List.filter (fun value -> seen.Add value)
+
+    let summarizeHeatRows (rows: HeatBoundaryRow list) : HeatTranscriptSummary =
+        { Rows = rows.Length
+          HeatRejected = rows |> List.sumBy _.HeatRejected
+          Backpressured = rows |> List.sumBy _.Backpressured
+          StorageErrors = rows |> List.sumBy _.StorageErrors
+          HeatKinds = rows |> List.collect _.HeatKinds |> distinctOrdinal
+          Reasons = rows |> List.collect _.Reasons }
+
+    let heatTranscript (state: ScheduledRoomState) : HeatTranscriptSummary =
+        state |> heatRows |> summarizeHeatRows
+
+    let boundaryHeatTranscript (state: BoundaryScheduledRoomState<'K>) : HeatTranscriptSummary =
+        state |> boundaryHeatRows |> summarizeHeatRows
+
+    let transcriptHasHeat (summary: HeatTranscriptSummary) : bool =
+        summary.HeatRejected > 0 || summary.Backpressured > 0 || summary.StorageErrors > 0
+
     let private setColor (x: int) (y: int) (mask: byte) (frame: Chip8Cow.Frame) : Chip8Cow.Frame =
         let idx = y * Chip8.DisplayW + x
         let display =
@@ -168,6 +201,41 @@ module DarkHallScheduler =
 
     let renderHeatBoardForState (seed: uint64) (state: ScheduledRoomState) : string list =
         state |> heatRows |> renderHeatBoard seed
+
+    let private heatReadoutOfSignatures (signatures: HeatSignature list) : RoomLoop.HeatReadout =
+        { HeatRejected = signatures.Length
+          Backpressured =
+            signatures
+            |> List.filter (fun signature ->
+                signature.Kind.Contains("backpressure", System.StringComparison.Ordinal)
+                || signature.Kind.Contains("denied", System.StringComparison.Ordinal))
+            |> List.length
+          StorageErrors = 0
+          HeatKinds = signatures |> List.map _.Kind
+          Reasons = signatures |> List.map _.Detail }
+
+    /// Project a finite prediction horizon into the same host-visible heat row
+    /// used by Dark Hall/CHIP room execution. The horizon is not a runtime:
+    /// attention may order futures, but this row only reports materialized
+    /// forgetting and paid finite-view backpressure.
+    let heatRowOfHorizonReport
+        (tick: int)
+        (roomName: string)
+        (source: string)
+        (report: RoomHorizon.Report<'K, 'S>)
+        : HeatBoundaryRow =
+        let heat =
+            report
+            |> RoomHorizon.heatSignatures source
+            |> heatReadoutOfSignatures
+
+        { Tick = tick
+          RoomName = roomName
+          HeatRejected = heat.HeatRejected
+          Backpressured = heat.Backpressured
+          StorageErrors = heat.StorageErrors
+          HeatKinds = heat.HeatKinds
+          Reasons = heat.Reasons }
 
     let private rowOfOutcome (tick: int) (outcome: RoomLoop.TickOutcome) : HeatBoundaryRow =
         { Tick = tick
