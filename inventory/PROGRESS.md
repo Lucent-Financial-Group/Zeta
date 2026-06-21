@@ -206,6 +206,7 @@ Stop the phase. Diagnose + fix + re-verify, or escalate. Never mark passed to ad
 ## Residual risk register (verify at Auditor pass / tune post-launch)
 
 **PHASE 7 PART 1 STATUS (2026-06-20, branch claude/phase-7-part-1-hardening-bj76d5) — read before the items below:**
+
 - **CSP 'unsafe-inline' — RESOLVED.** Inline JS -> `lib/inventory-app.js`; inline CSS -> `inventory.css`;
   the 9 `style=""` attrs -> utility classes. CSP is now `script-src 'self'; style-src 'self';` (no
   'unsafe-inline', no 'unsafe-eval', cdn.jsdelivr.net dropped). Guarded by `proofs/phase7-csp-proof.ts`
@@ -234,7 +235,6 @@ Stop the phase. Diagnose + fix + re-verify, or escalate. Never mark passed to ad
 - **PROOF-RESIDUE CLEANUP — SQL PROVIDED, owner runs it.** `sql/phase7-proof-residue-cleanup.sql`
   (guarded, single-transaction) removes items 216/225/226/227/228 + their change_log + inactive
   p5_mpyh93ei_/p5_mpyhaucf_ defs. OWNER runs in the SQL editor (EXPORT first).
-
 
 auth email deliverability · login rate-limiting · deep a11y · timezone display · CSV encoding edges ·
 password reset · browser compatibility · region latency · large-scale performance · live multi-user sync ·
@@ -1054,6 +1054,7 @@ Environment note: CronList/CronCreate (autonomous-loop hook) and a browser (Play
 unavailable here — flagged to owner; the live in-browser CSP-no-violations check is the Part-2 Auditor's.
 
 WHAT SHIPPED (8 commits on claude/phase-7-part-1-hardening-bj76d5):
+
 1. `inventory.css` — extracted from the inline `<style>`; 9 `style=""` attrs -> utility classes.
 2. `lib/inventory-app.js` — extracted ~1100-line inline `<script>` (node --check OK; logic unchanged).
 3. `lib/supabase-js-2.108.2.umd.min.js` — VENDORED byte-identical (204211 bytes) + SRI; CDN tag removed.
@@ -1064,6 +1065,7 @@ WHAT SHIPPED (8 commits on claude/phase-7-part-1-hardening-bj76d5):
 7. `sql/phase7-proof-residue-cleanup.sql` (owner-run) + `proofs/phase7-credential-burn-verify.ts` (post-rotation).
 
 VERIFIED (commands + observed output):
+
 - `bun inventory/proofs/phase7-csp-proof.ts` on the real index.html => 15/15 PASS, exit 0.
 - KEY TEST FAILS ON BROKEN CODE (CLAUDE.md): copy with 'unsafe-inline'+cdn reintroduced => 3 FAIL, exit 1;
   copy with inline `<script>`+style attr added => FAIL; tampered vendored supabase file => SRI-mismatch FAIL.
@@ -1076,11 +1078,13 @@ VERIFIED (commands + observed output):
 - semgrep `.semgrep.yml --error` on every changed/added file incl. both workflows => 0 findings.
 
 CHECKS I DID NOT SELF-CERTIFY (Part-2 Auditor / owner, per CLAUDE.md):
+
 - Live, in-browser confirmation of NO CSP console violations on the deployed Pages site (no browser here).
 - The unauthenticated external anon-read checks on the live site (owner/auditor-run by design).
 - Deploy-propagation (Pages CDN caching) and the deferred Phase-3/5/6 live re-verifies.
 
 OWNER ACTIONS OUTSTANDING before the Auditor can pass Phase 7:
+
 - Rotate/delete editor@gmail.com + viewer@gmail.com + the admin password/secret; then run
   `BURN_EMAIL=... BURN_PASSWORD='<old pw>' bun inventory/proofs/phase7-credential-burn-verify.ts`
   for each (or send me the rotated-dead passwords and I'll run it without echoing them).
