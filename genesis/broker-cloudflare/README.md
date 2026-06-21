@@ -28,7 +28,9 @@ browser.
 ## Setup (≈5 minutes)
 
 ### 1. Register a GitHub OAuth App
+
 GitHub → **Settings → Developer settings → OAuth Apps → New OAuth App**.
+
 - **Homepage URL:** your Genesis site, e.g. `https://your-username.github.io/Zeta/genesis/`
 - **Authorization callback URL:** *leave a placeholder for now*; you'll set it to
   `https://genesis-auth.<your-subdomain>.workers.dev/auth/github/callback` after step 3.
@@ -36,6 +38,7 @@ GitHub → **Settings → Developer settings → OAuth Apps → New OAuth App**.
 Copy the **Client ID** and generate a **Client secret**.
 
 ### 2. Install Wrangler & clone this folder
+
 ```bash
 npm install -g wrangler   # or: npm i -D wrangler
 cd genesis/broker-cloudflare
@@ -44,10 +47,12 @@ wrangler login
 ```
 
 ### 3. Edit `wrangler.toml`
+
 Set `ALLOWED_FRONTEND_ORIGINS` to your Pages **origin** (e.g.
 `https://your-username.github.io`). Leave `SELF_BASE_URL` as a placeholder for now.
 
 ### 4. Set secrets (encrypted; never in source)
+
 ```bash
 wrangler secret put GITHUB_CLIENT_ID
 wrangler secret put GITHUB_CLIENT_SECRET
@@ -58,12 +63,14 @@ wrangler secret put JWT_SECRET          # 32+ random bytes; e.g. `openssl rand -
 ```
 
 ### 5. Deploy
+
 ```bash
 wrangler deploy
 ```
 Wrangler prints your Worker URL, e.g. `https://genesis-auth.<sub>.workers.dev`.
 
 ### 6. Close the loop
+
 - Put that URL in `wrangler.toml` → `SELF_BASE_URL`, then `wrangler deploy` again
   (so `redirect_uri` matches exactly).
 - In your **GitHub OAuth App**, set the **Authorization callback URL** to
@@ -74,12 +81,14 @@ Wrangler prints your Worker URL, e.g. `https://genesis-auth.<sub>.workers.dev`.
 Done. The "Sign in with GitHub" button now works, hosted on **your** free Worker.
 
 ## Verify
+
 ```bash
 curl https://genesis-auth.<sub>.workers.dev/healthz
 # {"status":"ok","providers":["github"]}
 ```
 
 ## Security notes
+
 - **Secrets** live only as Wrangler-encrypted secrets, never in `wrangler.toml`
   or git. `.dev.vars` (local only) is git-ignored.
 - **CSRF:** the `state` value is stored in a first-party `HttpOnly; Secure;
