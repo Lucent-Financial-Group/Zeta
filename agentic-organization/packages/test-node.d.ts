@@ -52,6 +52,9 @@ declare module "node:child_process" {
 declare module "node:fs" {
   export function mkdtempSync(prefix: string): string;
   export function rmSync(path: string, options: { recursive: boolean; force: boolean }): void;
+  export function mkdirSync(path: string, options: { recursive: boolean }): void;
+  export function readFileSync(path: string, encoding: "utf-8" | "utf8"): string;
+  export function writeFileSync(path: string, data: string, options?: { flag: "wx" }): void;
 }
 
 declare module "node:os" {
