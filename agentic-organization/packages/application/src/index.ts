@@ -1237,3 +1237,51 @@ export {
   type InitializationError,
   type ValidateInitializationResult,
 } from "./room-initialization.ts";
+// ── Merge1 §03 — Agent-Loop State Machine ─────────────────────────────────────
+export {
+  transition,
+  cycleClose,
+  postResultTransition,
+  type AgentPersona,
+  type AgentContext,
+  type Lane,
+  type DoraMetrics,
+  type TrajectoryPhase,
+  type WorkCandidate,
+  type StatusSnapshot,
+  type WorkResult,
+  type NamedDependencyInput,
+  type AgentState,
+  type MenuOption,
+} from "./agent-state-machine.ts";
+export { generateMenuOptions } from "./menu-generator.ts";
+export {
+  agentStateDigest,
+  createAgentStateRecord,
+  firstBrokenLink,
+  dominantChain,
+  type AgentStateRecord,
+  type AgentStateRecordCause,
+  type AgentStateRecordMenuInput,
+  type NewAgentStateRecord,
+} from "./agent-state-store.ts";
+export {
+  initialPrivateRegister,
+  applyPrivateRegisterEvent,
+  foldPrivateRegister,
+  privateRegisterDigest,
+  publicProjection,
+  createNonCollapseWitness,
+  nonCollapseHolds,
+  type RelationConsent,
+  type PrivateRegister,
+  type PrivateRegisterEvent,
+  type PrivateRegisterRecord,
+  type PublicRelationPosture,
+  type PrivateRegisterNonCollapseWitness,
+} from "./private-register.ts";
+export {
+  decideFreeTimeTransition,
+  type FreeTimeTransitionSchedulerInput,
+  type FreeTimeTransitionDecision,
+} from "./free-time-scheduler.ts";
