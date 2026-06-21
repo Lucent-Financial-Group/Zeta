@@ -1,12 +1,19 @@
 module ZetaIrV4.Tests
 
+open System
 open Xunit
 open Zeta.Core
 open System.IO
 open System.Text.Json
 
+let private repoRoot () =
+    let mutable dir = DirectoryInfo(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location))
+    while not (isNull dir) && not (File.Exists(Path.Join(dir.FullName, "Zeta.sln"))) do
+        dir <- dir.Parent
+    if isNull dir then failwith "Could not locate repo root (Zeta.sln)." else dir.FullName
+
 let goldenPath () =
-    Path.Combine(__SOURCE_DIRECTORY__, "..", "cross-verification", "_golden", "zeta-ir-v4.golden.json")
+    Path.Join(repoRoot (), "tests", "cross-verification", "_golden", "zeta-ir-v4.golden.json")
 
 // ── the firewall: v1, v2, and v3 reject v4 (and vice versa) ───────────────────────────
 
