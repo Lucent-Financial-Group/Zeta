@@ -65,7 +65,7 @@ export function createChaosEnvironment(
       if (!has("clock_skew")) {
         return new Date(base).toISOString();
       }
-      const skew = (draw() % (clockSkewMs * 2n + 1n)) - clockSkewMs;
+      const d = draw(); const absDraw = d < 0n ? -d : d; const skew = (absDraw % (clockSkewMs * 2n + 1n)) - clockSkewMs;
       // Rare time reversal — simulate NTP corrections moving the clock back.
       if (has("time_reversal") && (draw() & 0x3fn) === 0n) {
         const back = skew < 0n ? skew : -skew;
