@@ -31,6 +31,7 @@ interface LawSchema {
   element?: string;
   inverse?: string;
   identity?: string;
+  over?: string;
   status: "open" | "proven" | "conjectured";
   proof?: string;
   guard?: string; // optional predicate (for tower-level laws)
@@ -86,7 +87,11 @@ ${tests}
 }
 
 function generateInputBindings(law: LawSchema): string {
-  const inputs = requiredInputs(law);
+  // Declare ONLY the inputs the generated body actually references — `requiredInputs`
+  // is per-schema and can over-declare for a specific law, which emits unused-var
+  // (TS6133/6199) lint errors in the generated file. Filter against the body.
+  const body = generateTestBody(law);
+  const inputs = requiredInputs(law).filter((v) => new RegExp(`\\b${v}\\b`).test(body));
   if (inputs.length === 0) {
     return "      // No random inputs required for this schema.";
   }

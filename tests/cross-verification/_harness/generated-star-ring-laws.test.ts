@@ -12,7 +12,7 @@ describe("IStarRing — algebraic law property tests (generated)", () => {
   test("conj-involutive: Conj(Conj(a)) = a", () => {
     // PROVEN: src/Core.TypeScript/algebra/star-ring.test.ts:conj-involution
     for (let i = 0; i < N; i++) {
-      const a = gen(), b = gen(), c = gen();
+      const a = gen();
       expect(eq(r.conj(r.conj(a)), a)).toBe(true);
     }
   });
@@ -20,7 +20,6 @@ describe("IStarRing — algebraic law property tests (generated)", () => {
   test("conj-one: Conj(One) = One", () => {
     // PROVEN: src/Core.TypeScript/algebra/star-ring.test.ts:conj-one
     for (let i = 0; i < N; i++) {
-      const a = gen(), b = gen(), c = gen();
       expect(eq(r.conj(r.one), r.one)).toBe(true);
     }
   });
@@ -28,7 +27,7 @@ describe("IStarRing — algebraic law property tests (generated)", () => {
   test("conj-add-homomorphism: Conj(Add(a,b)) = Add(Conj(a), Conj(b))", () => {
     // PROVEN: src/Core.TypeScript/algebra/star-ring.test.ts:conj-add-hom
     for (let i = 0; i < N; i++) {
-      const a = gen(), b = gen(), c = gen();
+      const a = gen(), b = gen();
       expect(eq(r.conj(r.add(a, b)), r.add(r.conj(a), r.conj(b)))).toBe(true);
     }
   });
@@ -36,7 +35,7 @@ describe("IStarRing — algebraic law property tests (generated)", () => {
   test("conj-mul-antihomomorphism: Conj(Mul(a,b)) = Mul(Conj(b), Conj(a)) [reverses order]", () => {
     // PROVEN: src/Core.TypeScript/algebra/star-ring.test.ts:conj-mul-antihom
     for (let i = 0; i < N; i++) {
-      const a = gen(), b = gen(), c = gen();
+      const a = gen(), b = gen();
       expect(eq(r.conj(r.mul(a, b)), r.mul(r.conj(b), r.conj(a)))).toBe(true);
     }
   });
@@ -45,7 +44,7 @@ describe("IStarRing — algebraic law property tests (generated)", () => {
     // PROVEN: src/Core.TypeScript/algebra/star-ring.test.ts:complex-mul-commutative
     // GUARDED: only holds when level <= complex
     for (let i = 0; i < N; i++) {
-      const a = gen(), b = gen(), c = gen();
+      const a = gen(), b = gen();
       expect(eq(r.mul(a, b), r.mul(b, a))).toBe(true);
     }
   });
@@ -62,7 +61,6 @@ describe("IStarRing — algebraic law property tests (generated)", () => {
   test("norm-multiplicative: |Mul(a,b)|² = |a|²·|b|² — holds for all Cayley-Dickson levels (composition algebra)", () => {
     // PROVEN: src/Core.TypeScript/algebra/star-ring.test.ts:norm-multiplicative
     for (let i = 0; i < N; i++) {
-      const a = gen(), b = gen(), c = gen();
       // |f(a)*f(b)| approx= |f(a*b)| (norm-multiplicativity)
       // Skipped for scalar gen — needs vector/complex input
     }
