@@ -25,7 +25,8 @@ fi
 resolve_dest () {
   local dest="$1"
   case "$dest" in
-    "~/"*) printf '%s\n' "${dest/#\~/$HOME}" ;;
+    ~/*)
+      printf '%s\n' "${dest/#\~/$HOME}" ;;
     /*)    printf '%s\n' "$dest" ;;
     *)     printf '%s\n' "$REPO_ROOT/$dest" ;;
   esac
