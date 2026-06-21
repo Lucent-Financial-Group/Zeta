@@ -40,10 +40,9 @@ module SolverHarness =
         if String.IsNullOrEmpty(mode) then "live"
         else mode.ToLowerInvariant()
 
-    let private isGitHubLinuxArm64 () =
+    let private isGitHubLinux () =
         String.Equals(Environment.GetEnvironmentVariable("CI"), "true", StringComparison.OrdinalIgnoreCase)
         && RuntimeInformation.IsOSPlatform(OSPlatform.Linux)
-        && RuntimeInformation.OSArchitecture = Architecture.Arm64
 
     let private sha256 (input: string) =
         use hasher = SHA256.Create()
@@ -240,9 +239,9 @@ module SolverHarness =
         let solverName = "eprover"
         let mode = getSolverMode()
 
-        // GitHub's Linux ARM64 E prover package currently false-negatives the
+        // GitHub's Linux E prover package currently false-negatives the
         // small FOL equality proofs; replay keeps the oracle strict there.
-        if mode = "replay" || (mode = "live" && isGitHubLinuxArm64()) then
+        if mode = "replay" || (mode = "live" && isGitHubLinux()) then
             match tryGetReplayedVerdict solverName query with
             | Some v -> v
             | None when mode = "replay" ->
