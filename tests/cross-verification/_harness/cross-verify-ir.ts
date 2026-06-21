@@ -216,6 +216,67 @@ printf "{%s}" (String.concat "," pairs)`;
   }
 }
 
+function generateAndRunQSharp(ir: ZetaIrV2, inputs: [string, string][], tmpDir: string): OracleResult {
+  // Q# Int is 64-bit signed. Wrapping u64 arithmetic isn't native.
+  // Q# participates only when constants fit in Int range (≤ 2^63-1).
+  // For splitmix64 (constants > 2^63), Q# is honestly excluded — different arithmetic model.
+  const maxConstant = ir.ops.reduce((max, op) => {
+    if (op.op === "mul") {
+      const k = getK(op, ir.width);
+      return k > max ? k : max;
+    }
+    return max;
+  }, 0n);
+  const qsharpIntMax = 9223372036854775807n;
+  if (maxConstant > qsharpIntMax) {
+    return { language: "qsharp", outputs: {}, error: `Q# Int overflow: constant ${maxConstant} > Int.MaxValue (u64 wrapping not native in Q#)` };
+  }
+
+  const maskExpr = ir.width < 64 ? ` &&& ${(1n << BigInt(ir.width)) - 1n}` : "";
+  const body = ir.ops.map(op => {
+    if (op.op === "mul") return `        set z = (z * ${getK(op, ir.width)})${maskExpr};`;
+    if (op.op === "xorshr") return `        set z = (z ^^^ (z >>> ${op.s}))${maskExpr};`;
+    return "";
+  }).join("\n");
+  const inputCases = inputs.map(([id, val]) =>
+    `        ("${id}", ${val})`
+  ).join(",\n");
+
+  const pyScript = `
+import qdk, json, sys
+ctx = qdk.Context()
+qs_code = """
+namespace Oracle {
+    function Mix(x : Int) : Int {
+        mutable z = x;
+${body}
+        return z;
+    }
+}
+"""
+ctx.eval(qs_code)
+inputs = [
+${inputCases}
+]
+out = {}
+for (id, val) in inputs:
+    result = ctx.eval(f"Oracle.Mix({val})")
+    out[id] = str(int(result))
+sys.stdout.write(json.dumps(out))
+`;
+
+  const file = join(tmpDir, "oracle_qs.py");
+  writeFileSync(file, pyScript);
+  // Use the project venv that has qdk installed
+  const venvPython = join(process.cwd(), "src/Core.Python/.venv/bin/python3");
+  try {
+    const stdout = execSync(`${venvPython} ${file}`, { encoding: "utf-8", timeout: 30000 });
+    return { language: "qsharp", outputs: JSON.parse(stdout) };
+  } catch (e: any) {
+    return { language: "qsharp", outputs: {}, error: `qdk not available: ${(e.message || "").slice(0, 100)}` };
+  }
+}
+
 export interface CrossVerifyResult {
   generator: string;
   languages: string[];
@@ -236,6 +297,7 @@ export function crossVerify(ir: ZetaIrV2, inputs: [string, string][]): CrossVeri
     generateAndRunCSharp(ir, inputs, tmpDir),
     generateAndRunRust(ir, inputs, tmpDir),
     generateAndRunFSharp(ir, inputs, tmpDir),
+    generateAndRunQSharp(ir, inputs, tmpDir),
   ];
 
   // Clean up
