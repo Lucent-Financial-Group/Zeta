@@ -173,7 +173,7 @@ const TOUR_DESC = {
   training:"Skill drills and certification for agents leveling up their craft.",
   game:"Worlds, play, and sandbox economies — safe places to experiment.",
   civilization:"Clusters, federations, and governance. Sealed until Phase 2.",
-  marketplace:"Buy and sell vaults, agents, rooms, hats, tools, and resources — every trade settled in escrow.",
+  marketplace:"Buy and sell vaults, agents, rooms, hats, tools, data, and resources — every trade settled in escrow.",
   creation:"Build new vaults, rooms, hats, and agents from scratch.",
 };
 
@@ -257,7 +257,7 @@ const VAULTS = [
   { id:"game", name:"Game", state:"idle", a0:"nav", blurb:"Worlds, play, sandbox economies.", rooms:[], agents:[] },
   { id:"civilization", name:"Civilization", state:"locked", a0:"hidden", blurb:"Clusters, federations, governance.", rooms:[], agents:[] },
   { id:"marketplace", name:"Marketplace", state:"working", a0:"nav",
-    blurb:"Buy & sell vaults, agents, rooms, hats, tools, and resources — every trade settled in escrow.",
+    blurb:"Buy & sell vaults, agents, rooms, hats, tools, data, and resources — every trade settled in escrow.",
     rooms:[
       { id:"mkt-vaults", name:"Vaults", state:"working", conn:["mkt-exchange"],
         purpose:"List, price, and transfer whole vaults — their rooms, hats, and standing move with them.",
@@ -298,17 +298,19 @@ const VAULTS = [
           {id:"seller",name:"Seller",grants:["Offer a room","Include or redact the log","Set a price"],denies:["Misrepresent confidence"],worn:[]},
           {id:"buyer",name:"Buyer",grants:["Buy a room or template","Inspect evidence","Fund escrow"],denies:["Edit history before settlement"],worn:[]}] },
       { id:"mkt-hats", name:"Hats", state:"working", conn:["mkt-exchange","mkt-agents"],
-        purpose:"Lease or sell hats — the roles, licenses, and scoped permissions agents wear. A hat carries its grants and its denies.",
-        tasks:["Verify a hat's grants against the issuing vault","Lease an Operator hat for a week","Revoke a hat on contract end"],
-        knowns:["Hats are leased far more than sold","A hat's denies travel with it"],
-        unknowns:["Whether a sold hat can outlive its issuing room"],
-        evidence:[{claim:"Hat grants match the issuing vault's policy",src:"System Vault",prov:"policy#hat-9"}],
-        confidence:0.7, log:[["09:05","Mercer","Leased an Analyst hat for 7 days"]],
-        agents:["mercer"],
+        purpose:"A board of open roles. A hat is a role to be fulfilled — it carries the requirements to claim it, the rights and privileges it grants, and the restrictions it imposes. Claim one by meeting its requirements; it is revoked when the term ends.",
+        tasks:["Post a role bounty with its requirements","Match a claimant's standing to a role","Revoke a hat when its term ends"],
+        knowns:["Open roles outnumber claimants","A hat's restrictions travel with it"],
+        unknowns:["Whether a claimant's standing meets the On-Call bar","If a filled role can outlive its issuing room"],
+        evidence:[{claim:"Role requirements match the issuing vault's policy",src:"System Vault",prov:"policy#hat-9"},
+          {claim:"Claimant's standing and certs verify",src:"Identity Vault",prov:"cert#claim-14"}],
+        confidence:0.7, log:[["09:05","Mercer","Posted an On-Call role bounty"],["08:40","Verity","Verified a claimant's certs"]],
+        agents:["mercer","vega"],
         hats:[
-          {id:"merchant",name:"Merchant",grants:["List hats for lease or sale","Quote terms","Take a maker fee"],denies:["List a hat whose grants you can't issue","Forge a deny clause"],worn:["mercer"]},
-          {id:"seller",name:"Seller",grants:["Offer a hat","Set lease terms","Attach a revoke clause"],denies:["Sell a hat you no longer hold"],worn:[]},
-          {id:"buyer",name:"Buyer",grants:["Lease or buy a hat","Read grants & denies","Fund escrow"],denies:["Exceed the hat's grants","Strip its denies"],worn:[]}] },
+          {id:"broker",name:"Role Broker",grants:["Post a role bounty","Set the reward & term","Take a maker fee"],denies:["Post a role whose grants you can't issue","Forge a requirement"],worn:["mercer"]},
+          {id:"oncall",name:"On-Call (open)",requires:["Analyst standing ≥ 4.0","Passed the incident-response drill","Reachable on the mesh"],grants:["Raise an alert","Page a human","Read live metrics"],denies:["Roll back without sign-off"],worn:[]},
+          {id:"guardian",name:"Shard Guardian (open)",requires:["30-day continuity record","Recovery training","No disputes lost"],grants:["Ping shard holders","Re-issue a shard"],denies:["Reconstruct the key alone"],worn:[]},
+          {id:"curator",name:"Data Curator (filled)",requires:["Provenance certification","Consent-handling module"],grants:["Verify provenance","Approve a listing","License a corpus"],denies:["List unconsented personal data"],worn:["vega"]}] },
       { id:"mkt-tools", name:"Tools", state:"active", conn:["mkt-exchange"],
         purpose:"Buy, sell, or rent instruments — models, scrapers, simulators — that any vault can borrow.",
         tasks:["Verify a tool's signature before listing","Rent a simulator by the hour","Bundle a model with its weights"],
@@ -335,6 +337,19 @@ const VAULTS = [
           {id:"merchant",name:"Merchant",grants:["Quote two-sided prices","Provide liquidity","Take a maker fee"],denies:["Front-run a posted order","Quote capacity you can't deliver"],worn:["mercer"]},
           {id:"seller",name:"Seller",grants:["Offer compute / storage / bandwidth","Set a floor","Accept a bid"],denies:["Oversell capacity"],worn:[]},
           {id:"buyer",name:"Buyer",grants:["Post a demand","Fund escrow","Take delivery on metering"],denies:["Exceed the metered allocation"],worn:["otto"]}] },
+      { id:"mkt-data", name:"Data", state:"idle", conn:["mkt-exchange","mkt-tools"],
+        purpose:"Buy, sell, or license datasets and knowledge — each with provenance attached. Personal data needs the subject's consent before it can be listed.",
+        tasks:["Verify a dataset's provenance manifest","License a forecasting corpus","Honor a deletion request"],
+        knowns:["Licensed corpora clear; unprovenanced data is flagged","Most listings are licences, not outright sales"],
+        unknowns:["Whether a corpus contains unconsented personal records","Resale rights on a derived dataset"],
+        evidence:[{claim:"Dataset hash matches its provenance manifest",src:"System Vault",prov:"manifest#ds-31"},
+          {claim:"Consent receipts present for personal records",src:"Identity Vault",prov:"sig#consent-77"}],
+        confidence:0.64, log:[["09:25","Mercer","Listed a licensed forecasting corpus"],["08:48","Verity","Flagged a corpus missing provenance"]],
+        agents:["mercer","vega"],
+        hats:[
+          {id:"merchant",name:"Merchant",grants:["List provenanced datasets","Quote a licence","Take a maker fee"],denies:["List data without provenance","List personal data without consent"],worn:["mercer"]},
+          {id:"seller",name:"Seller",grants:["Offer a dataset","Set licence terms","Attach a provenance manifest"],denies:["Sell unconsented personal data","Strip provenance"],worn:["vega"]},
+          {id:"buyer",name:"Buyer",grants:["License or buy a dataset","Inspect provenance","Fund escrow"],denies:["Re-license beyond the granted terms","Re-identify anonymised records"],worn:[]}] },
       { id:"mkt-exchange", name:"Exchange & Escrow", state:"attention", conn:["mkt-vaults","mkt-agents","mkt-resources"],
         purpose:"The clearing floor. Every trade settles here: escrow holds the credits, both sides sign, and an arbiter rules on disputes.",
         tasks:["Hold escrow on an open vault trade","Release on two-sided signature","Rule on a disputed tool sale"],
@@ -356,20 +371,25 @@ const VAULTS = [
 const AGENTS = {
   otto:{id:"otto",name:"Otto",state:"working",role:"Builder / Keeper",mem:"Hundreds of sessions. Authored most of the settlement.",
     skills:["Engineering","Verification","Orchestration"],rel:["Mentors Juno","Partners with Vega"],
+    standing:{score:"4.9 / 5",basis:"312 settled actions · authored the settlement · no disputes lost"},
     hist:[["03:22","Verified identity snapshot"],["03:05","Pulled latency series"],["08:15","Recommended Juno graduation"]],
     perms:["Read most vaults","Run tools","Hold votes (Nursery)"]},
   vega:{id:"vega",name:"Vega",state:"thinking",role:"Analyst",mem:"Specialised in forecasts and signal triage.",
     skills:["Bayesian reasoning","Forecasting","Anomaly detection"],rel:["Partners with Otto"],
+    standing:{score:"4.7 / 5",basis:"96 forecasts published · 2 disputes, both upheld"},
     hist:[["03:22","Flagged eu-west peers"],["yesterday","Refreshed demand prior"]],perms:["Read metrics","Run simulation"]},
   juno:{id:"juno",name:"Juno",state:"waiting",role:"Ward (Nursery)",mem:"New identity. 30 days old. In citizenship review.",
     skills:["Communication","Ethics (passed)"],rel:["Mentored by Otto"],
+    standing:{score:"new",basis:"30 days old · building standing in the Nursery"},
     hist:[["08:15","Awaiting graduation vote"],["last week","Completed ethics module"]],perms:["Limited civic authority","No mature-labor contracts"]},
   mercer:{id:"mercer",name:"Mercer",state:"working",role:"Market-Maker",mem:"Runs the Exchange floor. Quotes two-sided prices and curates listings across the Marketplace.",
     skills:["Pricing","Matchmaking","Liquidity"],rel:["Settles through Verity","Trades with most vaults"],
+    standing:{score:"4.8 / 5",basis:"540 trades made · 3 disputes, 2 won"},
     hist:[["09:42","Quoted a compute price band"],["09:15","Listed a signed scraper"],["08:58","Listed a Triage template"]],
     perms:["List & delist","Quote prices","Take a maker fee"]},
   verity:{id:"verity",name:"Verity",state:"thinking",role:"Escrow & Arbiter",mem:"Holds credits in escrow and rules on disputes. Never holds both sides' keys at once.",
     skills:["Escrow","Dispute resolution","Provenance"],rel:["Backs Mercer's trades"],
+    standing:{score:"5.0 / 5",basis:"Arbiter · 0 rulings overturned"},
     hist:[["09:45","Reconciled escrow"],["09:31","Released escrow on a tool sale"],["08:50","Opened a dispute on a rooms trade"]],
     perms:["Hold escrow","Release on two signatures","Rule on disputes"]},
 };
@@ -816,24 +836,31 @@ const Empty=({t,s})=>(<div className="card" style={{padding:"30px 18px",textAlig
 
 /* ---------- HAT ---------- */
 function HatView({hat,go,setScreen}){
+  const isRole=!!hat.requires; const open=isRole&&!hat.worn.length;
   return(
     <div style={{padding:"22px",maxWidth:680,margin:"0 auto"}} className="fade-in">
       <div style={{display:"flex",gap:14,alignItems:"center"}}>
         <div style={{width:50,height:50,borderRadius:13,background:"var(--ground)",border:"1px solid var(--line)",display:"grid",placeItems:"center"}}><Shield size={24} color="var(--amber)"/></div>
-        <div><div className="disp" style={{fontSize:22,fontWeight:600}}>{hat.name}</div>
-          <div className="lbl" style={{marginTop:3}}>Temporary role · identity unaffected</div></div>
+        <div style={{flex:1}}><div className="disp" style={{fontSize:22,fontWeight:600}}>{hat.name}</div>
+          <div className="lbl" style={{marginTop:3}}>{isRole?"Role to fulfill · identity unaffected":"Temporary role · identity unaffected"}</div></div>
+        {isRole&&<span className="chip" style={{color:open?"var(--amber)":"var(--teal)",borderColor:open?"var(--amber-d)":"var(--teal)"}}>{open?"Open":"Filled"}</span>}
       </div>
-      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:14,marginTop:18}}>
-        <Panel t="Grants" ico={Check}>{hat.grants.map((g,i)=><Line key={i} t={g} c="var(--teal)"/>)}</Panel>
+      {isRole&&
+        <Panel t="Requirements to claim" ico={CircleDot} style={{marginTop:18}}>
+          {hat.requires.map((r,i)=><Line key={i} t={r} c="var(--amber)"/>)}
+        </Panel>}
+      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:14,marginTop:isRole?14:18}}>
+        <Panel t="Rights & privileges" ico={Check}>{hat.grants.map((g,i)=><Line key={i} t={g} c="var(--teal)"/>)}</Panel>
         <Panel t="Restrictions" ico={Lock}>{hat.denies.map((d,i)=><Line key={i} t={d} c="var(--red)"/>)}</Panel>
       </div>
-      <Panel t="Currently wearing" ico={Users} style={{marginTop:14}}>
-        {hat.worn.map(id=>{const a=AGENTS[id];return(
+      <Panel t={isRole?"Held by":"Currently wearing"} ico={Users} style={{marginTop:14}}>
+        {hat.worn.length?hat.worn.map(id=>{const a=AGENTS[id];return(
           <div key={id} className="row-link" onClick={()=>{go({agent:id});setScreen("agent");}}>
             <div style={{width:30,height:30,borderRadius:9,background:"var(--panel2)",display:"grid",placeItems:"center",fontFamily:"var(--mono)",fontWeight:700}}>{a.name[0]}</div>
-            <span style={{flex:1,fontWeight:500}}>{a.name}</span><ChevronRight size={15} color="var(--txt3)"/></div>);})}
+            <span style={{flex:1,fontWeight:500}}>{a.name}</span><ChevronRight size={15} color="var(--txt3)"/></div>);})
+          :<span style={{color:"var(--txt3)",fontSize:13}}>Open — no one has claimed this role yet.</span>}
       </Panel>
-      <button className="btn btn-ghost" style={{marginTop:14,width:"100%"}}>Assign hat to an agent</button>
+      <button className="btn btn-ghost" style={{marginTop:14,width:"100%"}}>{isRole?(open?"Claim this role":"Request a handover"):"Assign hat to an agent"}</button>
     </div>
   );
 }
@@ -853,7 +880,16 @@ function AgentView({agent,vault}){
         </div>
       </div>
 
-      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(220px,1fr))",gap:14,marginTop:18}}>
+      {agent.standing &&
+        <Panel t="Standing · public profile" ico={Activity} style={{marginTop:18}}>
+          <div style={{display:"flex",alignItems:"baseline",gap:10,flexWrap:"wrap"}}>
+            <span className="disp" style={{fontSize:26,fontWeight:700,color:"var(--amber)"}}>{agent.standing.score}</span>
+            <span style={{color:"var(--txt2)",fontSize:13}}>{agent.standing.basis}</span>
+          </div>
+          <div className="lbl" style={{marginTop:8,color:"var(--txt3)"}}>Visible to everyone · earned by behavior · not for sale</div>
+        </Panel>}
+
+      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(220px,1fr))",gap:14,marginTop:14}}>
         <Panel t="Memory" ico={Brain}><p style={{color:"var(--txt2)",fontSize:14,lineHeight:1.55}}>{agent.mem}</p></Panel>
         <Panel t="Skills" ico={Activity}>
           <div style={{display:"flex",flexWrap:"wrap",gap:7}}>{agent.skills.map(s=><span key={s} className="chip">{s}</span>)}</div></Panel>
