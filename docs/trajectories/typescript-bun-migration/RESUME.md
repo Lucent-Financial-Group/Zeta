@@ -80,11 +80,11 @@ tools/setup/doctor.sh
 tools/setup/linux.sh
 tools/setup/macos.sh
 tools/setup/common/curl-fetch.sh
-tools/setup/common/dotnet-tools.sh
-tools/setup/common/elan.sh
+tools/setup/mechanisms/from-dotnet-global.sh
+tools/setup/mechanisms/from-elan.sh
 tools/setup/common/mise.sh
 tools/setup/common/profile-edit.sh
-tools/setup/common/python-tools.sh
+tools/setup/mechanisms/from-uv-tool.sh
 tools/setup/common/shellenv.sh
 tools/setup/common/sync-prior-art.sh
 tools/setup/common/verifiers.sh

@@ -3,6 +3,7 @@ id: B-0951
 zetaid: 081KLL7PPSUMF84HN7WN96ZEQ1P77U
 priority: P3
 status: open
+unblocked: 2026-06-21
 title: Ace setup-manifest realizers — defer Bun/Ace realizer swap until non-mechanism install scripts are consolidated and CI is clean (Aaron 2026-06-21)
 effort: L
 ask: Aaron 2026-06-21
@@ -32,11 +33,9 @@ The Ace declarative desired-state trajectory (B-0854, B-0288) stays **backlogged
 Do **not** pursue Bun/Ace realizer swaps or Ace package pointer expansion for setup
 manifests until:
 
-1. **B-0950** lands — every non-mechanism `tools/setup/common/*.sh` realizer is folded
-   into the mechanism-by-source pattern (`tools/setup/mechanisms/*` + manifests), same
-   shape as #8907 (`from-url`, `from-deb`, `from-shim`, `from-installer`).
-2. **CI is clean** on steward-mechanical work — flake fixes, inventory drift, install
-   shields. Owner-domain reds (formal solvers, codegen oracles) stay with their domains.
+1. **B-0950** landed (#8920) — non-mechanism `common/*.sh` realizers folded into
+   `tools/setup/mechanisms/*` + manifests; Ace mechanism pointers cover the full graph.
+2. **CI is clean** on steward-mechanical work — gate green on mechanism consolidation merge.
 
 ## What was explored and parked
 
