@@ -4,7 +4,7 @@
 #
 # Order matters:
 #   1. apt packages from manifests/apt (build-essential, curl, etc.)
-#   1b. mechanisms/from-deb.sh + from-shim.sh — platform fallbacks after apt
+#   1b. mechanisms/from-deb.sh + from-shim.sh + from-autotools-tarball.sh — platform fallbacks after apt
 #   2. mise (via official installer; no apt package yet)
 #   3. common/mise.sh     — installs dotnet/python/java/bun/uv
 #                           per .mise.toml
@@ -99,15 +99,6 @@ elif [ -f "$APT_MANIFEST" ]; then
             ;;
         esac
       done
-      # eprover absent from jammy apt; mechanisms/from-deb.sh installs Noble pool .deb.
-      case " $PKGS " in
-        *" eprover "*)
-          echo "↻ apt: eprover deferred on Ubuntu 22.04 jammy (mechanisms/from-deb.sh)"
-          PKGS="${PKGS// eprover / }"
-          PKGS="${PKGS//eprover /}"
-          PKGS="${PKGS// eprover/}"
-          ;;
-      esac
     fi
   fi
   if [ -n "$PKGS" ]; then
@@ -158,10 +149,11 @@ elif [ -f "$APT_MANIFEST" ]; then
 fi
 echo "✓ apt packages up to date"
 
-# Jammy mechanism fallbacks (from-deb, from-shim) after apt; Noble uses apt directly.
+# Jammy mechanism fallbacks (from-deb, from-shim, from-autotools-tarball) after apt.
 if [ "$IS_NIXOS" != 1 ]; then
   "$SETUP_DIR/mechanisms/from-deb.sh"
   "$SETUP_DIR/mechanisms/from-shim.sh"
+  "$SETUP_DIR/mechanisms/from-autotools-tarball.sh"
 fi
 
 # ── 2. mise ─────────────────────────────────────────────────────────

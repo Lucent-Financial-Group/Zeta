@@ -40,6 +40,14 @@ export function buildSetupMechanismPointers(): ReadonlyArray<PackageManagerPoint
       manifest: "tools/setup/manifests/from-shim",
       defaultUpdate: "when-drift-bump-pin",
     }),
+    pointerFromMechanismManifest({
+      mechanism: "from-autotools-tarball",
+      text: readManifest("from-autotools-tarball"),
+      purpose: "Pinned upstream autotools tarball → configure/make install (Linux formal solvers)",
+      realizer: "tools/setup/mechanisms/from-autotools-tarball.sh",
+      manifest: "tools/setup/manifests/from-autotools-tarball",
+      defaultUpdate: "pinned-url",
+    }),
     pointerFromSetupManifest({
       text: readManifest("from-uv-tool"),
       ecosystem: "uv-tool",

@@ -34,7 +34,10 @@ describe("setup mechanism pointers (Ace time-crystal deps)", () => {
     expect(pointers.every((p) => p.realizer.startsWith("tools/setup/mechanisms/"))).toBe(true);
     for (const p of pointers) {
       expect(p.schema).toBe("zeta.ace.package-manager-pointers.v1");
-      if (p.manifest === "tools/setup/manifests/from-dotnet-workload") {
+      if (
+        p.manifest === "tools/setup/manifests/from-dotnet-workload"
+        || p.manifest === "tools/setup/manifests/from-deb"
+      ) {
         expect(p.dependencies.length).toBe(0);
       } else {
         expect(p.dependencies.length).toBeGreaterThan(0);
