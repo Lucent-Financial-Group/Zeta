@@ -88,7 +88,6 @@ sys.stdout.write(json.dumps(out))`;
 }
 
 function generateAndRunGo(ir: ZetaIrV2, inputs: [string, string][], tmpDir: string): OracleResult {
-  const mask = ir.width >= 64 ? "" : `\tz = z & ${(1n << BigInt(ir.width)) - 1n}`;
   const body = ir.ops.map(op => {
     if (op.op === "mul") {
       const line = `\tz = z * ${getK(op, ir.width)}`;
@@ -130,11 +129,6 @@ ${inputLines}
 // ─── The Oracle: compare all languages ──────────────────────────────────
 
 function generateAndRunCSharp(ir: ZetaIrV2, inputs: [string, string][], tmpDir: string): OracleResult {
-  const body = ir.ops.map(op => {
-    if (op.op === "mul") return `        z = unchecked(z * ${getK(op, ir.width)}UL);`;
-    if (op.op === "xorshr") return `        z = z ^ (z >> ${op.s});`;
-    return "";
-  }).join("\n");
   const maskLine = ir.width < 64 ? `        z = z & ${(1n << BigInt(ir.width)) - 1n}UL;\n` : "";
   const bodyWithMask = ir.ops.map(op => {
     if (op.op === "mul") return `        z = unchecked(z * ${getK(op, ir.width)}UL);\n${maskLine}`.trimEnd();
