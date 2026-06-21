@@ -1237,3 +1237,29 @@ export {
   type InitializationError,
   type ValidateInitializationResult,
 } from "./room-initialization.ts";
+export {
+  CATALOGUE,
+  createMockFormalVerification,
+  type FormalVerificationPort,
+  type TlaVerificationResult,
+  type AlloyVerificationResult,
+  type ToolchainStatus,
+} from "./formal-verification-port.ts";
+export {
+  finiteSocietyClosureCertificate,
+  validateFiniteSocietyClosureCertificate,
+  type DirectedEdge,
+  type FiniteSocietyClosureStep,
+  type FiniteSocietyClosureCertificate,
+  type FiniteSocietyClosureValidation,
+} from "./society-closure-certificate.ts";
+export {
+  evaluateSoakGate,
+  DEFAULT_MIN_TICKS,
+  DEFAULT_MIN_SOAK_MS,
+  DEFAULT_REQUIRED_SPECS,
+  DEFAULT_SOAK_GATE_CRITERIA,
+  type SoakGateCriteria,
+  type SoakGateInput,
+  type SoakGateResult,
+} from "./review-gate-soak.ts";
