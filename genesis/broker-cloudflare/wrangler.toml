@@ -19,9 +19,13 @@ compatibility_date = "2025-01-01"
 # put that here and redeploy so redirect_uri matches.
 SELF_BASE_URL = "https://genesis-auth.example.workers.dev"
 
-# Comma-separated allowlist of frontend origins the broker may redirect back to.
-# e.g. your GitHub Pages origin. EXACT origin match (scheme://host[:port]).
-ALLOWED_FRONTEND_ORIGINS = "https://your-username.github.io"
+# Comma-separated allowlist of post-login redirect targets. Each entry may be:
+#   - a full URL incl. path (TIGHTEST — recommended): only that exact origin+path
+#     may receive the identity token, e.g.
+#     https://your-username.github.io/Zeta/genesis/
+#   - an origin only (looser): any path on that origin is allowed.
+# Query strings and fragments are always stripped before redirecting.
+ALLOWED_FRONTEND_ORIGINS = "https://your-username.github.io/Zeta/genesis/"
 
 # Optional tuning:
 JWT_ISSUER = "genesis-auth"

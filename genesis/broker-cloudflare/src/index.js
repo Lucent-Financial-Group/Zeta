@@ -117,12 +117,21 @@ async function handleCallback(provider, request, url, env) {
   const p = providerConfig(provider, env);
   if (!p) return json({ error: `unknown provider '${provider}'` }, 404);
 
+  // Always clear the state cookies on ANY callback outcome (no replay window).
+  const clearHeaders = () => {
+    const h = new Headers({ "content-type": "application/json" });
+    h.append("Set-Cookie", `gx_state_${provider}=; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=0`);
+    h.append("Set-Cookie", `gx_redir_${provider}=; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=0`);
+    return h;
+  };
+  const fail = (obj, status) => new Response(JSON.stringify(obj), { status, headers: clearHeaders() });
+
   const error = url.searchParams.get("error");
-  if (error) return json({ error: `provider returned: ${error}` }, 400);
+  if (error) return fail({ error: `provider returned: ${error}` }, 400);
 
   const code = url.searchParams.get("code");
   const state = url.searchParams.get("state");
-  if (!code || !state) return json({ error: "missing code/state" }, 400);
+  if (!code || !state) return fail({ error: "missing code/state" }, 400);
 
   const cookies = parseCookies(request.headers.get("Cookie") || "");
   const expectedState = cookies[`gx_state_${provider}`];
@@ -131,10 +140,11 @@ async function handleCallback(provider, request, url, env) {
 
   // CSRF: state from the provider must match our first-party cookie (constant-time).
   if (!expectedState || !timingSafeEqual(expectedState, state)) {
-    return json({ error: "invalid state" }, 400);
+    return fail({ error: "invalid state" }, 400);
   }
-  if (!finalRedirect || !resolveRedirect(finalRedirect, allowedOrigins(env))) {
-    return json({ error: "invalid redirect" }, 400);
+  const safeRedirect = finalRedirect ? resolveRedirect(finalRedirect, allowedOrigins(env)) : null;
+  if (!safeRedirect) {
+    return fail({ error: "invalid redirect" }, 400);
   }
 
   const selfBase = requireVar(env, "SELF_BASE_URL").replace(/\/+$/, "");
@@ -151,16 +161,16 @@ async function handleCallback(provider, request, url, env) {
       redirect_uri: `${selfBase}/auth/${encodeURIComponent(provider)}/callback`,
     }),
   });
-  if (!tokenResp.ok) return json({ error: "token exchange failed" }, 400);
+  if (!tokenResp.ok) return fail({ error: "token exchange failed" }, 400);
   const tokenBody = await tokenResp.json().catch(() => null);
   const accessToken = tokenBody && tokenBody.access_token;
-  if (!accessToken) return json({ error: "no access_token in response" }, 400);
+  if (!accessToken) return fail({ error: "no access_token in response" }, 400);
 
   // Fetch the user's PUBLIC identity. (The access token is used here and then discarded.)
   const userResp = await fetch(p.userInfoUrl, {
     headers: { Authorization: `Bearer ${accessToken}`, Accept: "application/json", "User-Agent": "genesis-broker/1.0" },
   });
-  if (!userResp.ok) return json({ error: "userinfo failed" }, 400);
+  if (!userResp.ok) return fail({ error: "userinfo failed" }, 400);
   const user = await userResp.json().catch(() => ({}));
 
   const id = user.id != null ? String(user.id) : "";
@@ -183,9 +193,9 @@ async function handleCallback(provider, request, url, env) {
   };
   const jwt = await mintHs256(claims, env.JWT_SECRET);
 
-  // Clear the state cookies and hand the JWT back via the URL fragment.
-  const sep = finalRedirect.includes("#") ? "&" : "#";
-  const headers = new Headers({ Location: `${finalRedirect}${sep}token=${encodeURIComponent(jwt)}` });
+  // Hand the JWT back via the URL fragment (state cookies cleared below).
+  const sep = safeRedirect.includes("#") ? "&" : "#";
+  const headers = new Headers({ Location: `${safeRedirect}${sep}token=${encodeURIComponent(jwt)}` });
   headers.append("Set-Cookie", `gx_state_${provider}=; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=0`);
   headers.append("Set-Cookie", `gx_redir_${provider}=; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=0`);
   return new Response(null, { status: 302, headers });
@@ -248,18 +258,51 @@ function optVar(env, key, fallback) {
   return v && String(v).length ? String(v) : fallback;
 }
 
-/** Allow only a requested redirect whose ORIGIN exactly matches the allowlist. */
+/**
+ * Validate a post-login redirect and return a SANITIZED URL (origin + path only;
+ * attacker-controlled query/fragment are dropped — we append our own #token).
+ * Allowlist entries may be an exact ORIGIN (any path on it allowed) OR a full
+ * URL including a path (then origin+path must match EXACTLY — tightest; use this).
+ */
 function resolveRedirect(requested, allowed) {
-  if (!requested || !requested.trim()) return allowed.length ? allowed[0] : null;
+  if (!requested || !requested.trim()) {
+    return allowed.length ? sanitizeAllowEntry(allowed[0]) : null;
+  }
   let uri;
   try {
     uri = new URL(requested);
   } catch {
     return null;
   }
-  const origin = `${uri.protocol}//${uri.host}`;
-  const ok = allowed.some((a) => a.replace(/\/+$/, "").toLowerCase() === origin.toLowerCase());
-  return ok ? requested : null;
+  if (uri.protocol !== "https:" && uri.protocol !== "http:") return null;
+  const origin = `${uri.protocol}//${uri.host}`.toLowerCase();
+  const reqPath = uri.pathname || "/"; // no query, no fragment, no userinfo
+  for (const entry of allowed) {
+    let a;
+    try {
+      a = new URL(entry);
+    } catch {
+      continue;
+    }
+    if (`${a.protocol}//${a.host}`.toLowerCase() !== origin) continue;
+    if (a.pathname && a.pathname !== "/") {
+      // Entry has a path => require exact origin+path match.
+      if (a.pathname.replace(/\/+$/, "") === reqPath.replace(/\/+$/, "")) return `${origin}${reqPath}`;
+      continue;
+    }
+    // Entry is origin-only => allow any path on that origin (less strict).
+    return `${origin}${reqPath}`;
+  }
+  return null;
+}
+
+function sanitizeAllowEntry(entry) {
+  try {
+    const a = new URL(entry);
+    return `${a.protocol}//${a.host}`.toLowerCase() + (a.pathname || "/");
+  } catch {
+    return null;
+  }
 }
 
 function appendQuery(urlStr, params) {
@@ -336,6 +379,13 @@ async function mintHs256(claims, secret) {
 async function verifyHs256(token, secret) {
   const parts = token.split(".");
   if (parts.length !== 3) return null;
+  let header;
+  try {
+    header = JSON.parse(b64urlDecodeToString(parts[0]));
+  } catch {
+    return null;
+  }
+  if (!header || header.alg !== "HS256") return null; // pin alg; reject none/RS256/etc
   const expected = await hmacSignB64url(`${parts[0]}.${parts[1]}`, secret);
   if (!timingSafeEqual(expected, parts[2])) return null;
   let claims;

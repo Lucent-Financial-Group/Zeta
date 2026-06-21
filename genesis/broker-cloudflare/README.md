@@ -48,8 +48,11 @@ wrangler login
 
 ### 3. Edit `wrangler.toml`
 
-Set `ALLOWED_FRONTEND_ORIGINS` to your Pages **origin** (e.g.
-`https://your-username.github.io`). Leave `SELF_BASE_URL` as a placeholder for now.
+Set `ALLOWED_FRONTEND_ORIGINS` to your Pages URL. **Recommended (tightest):**
+use the full URL incl. path, e.g. `https://your-username.github.io/Zeta/genesis/`
+— then only that exact origin+path can receive the identity token. (An origin-only
+entry also works but allows any path on that origin.) Leave `SELF_BASE_URL` as a
+placeholder for now.
 
 ### 4. Set secrets (encrypted; never in source)
 
@@ -93,8 +96,14 @@ curl https://genesis-auth.<sub>.workers.dev/healthz
   or git. `.dev.vars` (local only) is git-ignored.
 - **CSRF:** the `state` value is stored in a first-party `HttpOnly; Secure;
   SameSite=Lax` cookie on the Worker's own host and compared in constant time.
-- **Open-redirect / code-leak:** the post-login `redirect` is validated by
-  **exact origin** against `ALLOWED_FRONTEND_ORIGINS`; anything else is rejected.
+- **Open-redirect / code-leak:** the post-login `redirect` is validated against
+  `ALLOWED_FRONTEND_ORIGINS`, **sanitized to origin+path** (attacker-controlled
+  query/fragment are dropped), and — when an allowlist entry includes a path —
+  required to match that **exact origin+path**. Anything else is rejected.
+- **No replay window:** the `state` cookies are cleared on **every** callback
+  outcome (success or failure), not just success.
+- **JWT alg pinned:** the identity-JWT verifier requires `alg: "HS256"` and
+  rejects any other algorithm (no `none`/alg-confusion surface).
 - **No token in the browser:** the provider access token is used to read public
   identity and then discarded; only a short-lived signed identity JWT is returned.
 - Errors return generic messages; tokens/secrets are never logged or echoed.
