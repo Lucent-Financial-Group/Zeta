@@ -45,6 +45,17 @@
     "laws": 2,
     "extends": []
   },
+  "IPort": {
+    "typeParams": [
+      "invariant:T"
+    ],
+    "members": [
+      "method:Read",
+      "method:Write"
+    ],
+    "laws": 3,
+    "extends": []
+  },
   "ISemiring": {
     "typeParams": [
       "invariant:TWeight"
