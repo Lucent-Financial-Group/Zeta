@@ -26,12 +26,14 @@ Providers: `github`, `gitlab` (gitlab.com or self-managed via `GitLab:BaseUrl`).
 
 **GitHub** — Settings → Developer settings → *OAuth Apps* → New OAuth App
 (https://github.com/settings/developers). For an org app use the org's settings.
+
 - Homepage URL: `https://lucent-financial-group.github.io/Zeta/genesis/`
 - **Authorization callback URL:** `https://YOUR-BACKEND/auth/github/callback`
 - Copy the **Client ID** and generate a **Client secret**.
 
 **GitLab** — User Settings → *Applications* (https://gitlab.com/-/profile/applications),
 or a Group/Instance application.
+
 - **Redirect URI:** `https://YOUR-BACKEND/auth/gitlab/callback`
 - Scopes: **`read_user`** only. Confidential: **Yes** (we use the secret).
 - Copy the **Application ID** (client id) and **Secret**.
