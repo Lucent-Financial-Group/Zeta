@@ -128,6 +128,8 @@ if ! command -v mise >/dev/null 2>&1; then
   echo "↓ installing mise via Homebrew..."
   brew install mise
 fi
+mkdir -p "${MISE_DATA_DIR:-$HOME/.local/share/mise}"
+touch "${MISE_DATA_DIR:-$HOME/.local/share/mise}/.disable-self-update"
 echo "✓ mise: $(mise --version)"
 
 # ── 5-12. Common steps ──────────────────────────────────────────────
