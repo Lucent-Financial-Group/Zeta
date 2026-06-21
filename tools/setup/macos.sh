@@ -135,8 +135,12 @@ fi
 if ! command -v mise >/dev/null 2>&1; then
   echo "↓ installing mise via Homebrew..."
   brew install mise
-elif [ "$installed_mise_version" != "$MISE_PIN_VERSION" ]; then
+fi
+
+installed_mise_version="$(mise --version 2>/dev/null | awk '{print $1}')"
+if [ "$installed_mise_version" != "$MISE_PIN_VERSION" ]; then
   echo "↓ upgrading mise ${installed_mise_version:-unknown} → ${MISE_PIN_VERSION} via Homebrew..."
+  brew update
   brew upgrade mise || brew install mise
   installed_mise_version="$(mise --version 2>/dev/null | awk '{print $1}')"
   if [ "$installed_mise_version" != "$MISE_PIN_VERSION" ]; then
