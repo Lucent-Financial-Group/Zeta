@@ -4,9 +4,11 @@ module Zeta.Tests.Formal.Z3LawsTests
 open System
 open System.Diagnostics
 open System.IO
+open System.Collections.Generic
+open System.Text.Json
 open FsUnit.Xunit
 open global.Xunit
-
+open Zeta.Formal
 
 /// Integration of external formal-verification tools as xUnit tests.
 /// These run in CI whenever the relevant tool is installed; otherwise
@@ -29,78 +31,45 @@ let private which (tool: string) : string option =
         else None
     with _ -> None
 
+let private solversAvailable () =
+    let mode = Environment.GetEnvironmentVariable("ZETA_SOLVER_MODE")
+    if not (String.IsNullOrEmpty(mode)) && mode.ToLowerInvariant() = "replay" then
+        true
+    else
+        which "z3" |> Option.isSome && which "cvc5" |> Option.isSome
 
-let private runZ3Raw (script: string) : string =
-    match which "z3" with
-    | None -> ""
-    | Some _ ->
-        let psi = ProcessStartInfo(
-                    "z3", "-in",
-                    RedirectStandardInput = true,
-                    RedirectStandardOutput = true,
-                    UseShellExecute = false)
-        use p = Process.Start psi
-        p.StandardInput.Write script
-        p.StandardInput.Close()
-        let output = p.StandardOutput.ReadToEnd()
-        p.WaitForExit()
-        output
+let private eProverAvailable () =
+    let mode = Environment.GetEnvironmentVariable("ZETA_SOLVER_MODE")
+    if not (String.IsNullOrEmpty(mode)) && mode.ToLowerInvariant() = "replay" then
+        true
+    else
+        SolverHarness.eproverLiveAvailable ()
 
+let private smtHolds (name: string) (script: string) =
+    if solversAvailable() then
+        let (v1, v2) = SolverHarness.crossCheck script
+        v1 |> should equal Unsat
+        v2 |> should equal Unsat
 
-let private runZ3 (script: string) : bool =
-    runZ3Raw script |> fun s -> s.Contains "unsat"
-
-
-let private firstZ3Token (output: string) =
-    output.Split([| ' '; '\n'; '\r'; '\t' |], StringSplitOptions.RemoveEmptyEntries)
-    |> Array.tryHead
-
-
-/// Tiny header declaring the `a b c i d` integer constants used by the
-/// simple pointwise lemmas. The full-SMT forms (chain rule, Merkle,
-/// Bloom, bit-vectors) build their own preambles inline.
 let private z3AxiomHolds (name: string) (smtClaim: string) =
-    let script =
-        """(declare-const a Int)
-(declare-const b Int)
-(declare-const c Int)
-(declare-const i Int)
-(declare-const d Int)
-(assert (not """ + smtClaim + """))
-(check-sat)
-"""
-    match which "z3" with
-    | None -> ()   // Tool not available; pretend test passes. CI should install z3.
-    | Some _ ->
-        let unsat = runZ3 script
-        unsat
-        |> should equal true
-        |> ignore
-        if not unsat then
-            failwithf "Z3 failed to prove axiom %s" name
+    let header = "(declare-const a Int)\n(declare-const b Int)\n(declare-const c Int)\n(declare-const i Int)\n(declare-const d Int)\n"
+    let script = $"%s{header}(assert (not %s{smtClaim}))\n(check-sat)\n"
+    smtHolds name script
 
-
-/// Run a self-contained Z3 script (its own declarations + `check-sat`)
-/// and assert UNSAT. Use this for lemmas that need quantifier-level
-/// axioms or QF_BV preludes that don't fit the simple a/b/c header.
 let private z3ScriptHolds (name: string) (fullScript: string) =
-    match which "z3" with
-    | None -> ()
-    | Some _ ->
-        let unsat = runZ3 fullScript
-        if not unsat then
-            failwithf "Z3 failed to prove lemma %s. Output:\n%s" name (runZ3Raw fullScript)
+    smtHolds name fullScript
 
-
-/// Assert that a self-contained script has a model. Use this to show a
-/// counterexample to an implication, not to claim a universal theorem.
 let private z3ScriptHasModel (name: string) (fullScript: string) =
-    match which "z3" with
-    | None -> ()
-    | Some _ ->
-        let output = runZ3Raw fullScript
-        if firstZ3Token output <> Some "sat" then
-            failwithf "Z3 failed to find witness %s. Output:\n%s" name output
+    if solversAvailable() then
+        let (v1, v2) = SolverHarness.crossCheck fullScript
+        v1 |> should equal Sat
+        v2 |> should equal Sat
+
+let private folHolds (name: string) (query: string) =
+    if eProverAvailable() then
+        let ok = SolverHarness.proveFOL query
+        ok |> should equal true
+
 
 
 [<Fact>]
@@ -191,9 +160,9 @@ let ``Z3 proves distinct is idempotent as BV64 bit-vector identity`` () =
     let script =
         "(declare-const w (_ BitVec 64))\n" +
         "(define-const zero64 (_ BitVec 64) (_ bv0 64))\n" +
-        "(define-fun distinct ((x (_ BitVec 64))) (_ BitVec 64)\n" +
+        "(define-fun is_distinct ((x (_ BitVec 64))) (_ BitVec 64)\n" +
         "  (ite (bvsgt x zero64) (_ bv1 64) (_ bv0 64)))\n" +
-        "(assert (not (= (distinct (distinct w)) (distinct w))))\n" +
+        "(assert (not (= (is_distinct (is_distinct w)) (is_distinct w))))\n" +
         "(check-sat)\n"
     z3ScriptHolds "distinct idempotent (BV64)" script
 
@@ -208,7 +177,7 @@ let ``Z3 proves H function correctness as BV64 identity`` () =
         "(define-const zero64 (_ BitVec 64) (_ bv0 64))\n" +
         "(define-const one64  (_ BitVec 64) (_ bv1 64))\n" +
         "(define-const negone64 (_ BitVec 64) (bvneg one64))\n" +
-        "(define-fun distinct ((x (_ BitVec 64))) (_ BitVec 64)\n" +
+        "(define-fun is_distinct ((x (_ BitVec 64))) (_ BitVec 64)\n" +
         "  (ite (bvsgt x zero64) one64 zero64))\n" +
         "(define-fun H ((i (_ BitVec 64)) (d (_ BitVec 64))) (_ BitVec 64)\n" +
         "  (ite (and (bvsgt i zero64) (bvsle (bvadd i d) zero64)) negone64\n" +
@@ -217,8 +186,8 @@ let ``Z3 proves H function correctness as BV64 identity`` () =
         "             (bvsle iw (_ bv1000000 64))\n" +
         "             (bvsle (bvneg (_ bv1000000 64)) dw)\n" +
         "             (bvsle dw (_ bv1000000 64))))\n" +
-        "(assert (not (= (distinct (bvadd iw dw))\n" +
-        "                (bvadd (distinct iw) (H iw dw)))))\n" +
+        "(assert (not (= (is_distinct (bvadd iw dw))\n" +
+        "                (bvadd (is_distinct iw) (H iw dw)))))\n" +
         "(check-sat)\n"
     z3ScriptHolds "H function (BV64)" script
 
@@ -293,7 +262,7 @@ let ``Z3 proves agenda monotonicity under quality threshold`` () =
     // Quality(t) >= threshold_B contradicts NOT InAgendaB(t).
     // This is not a tautology: SAT without the threshold ordering constraint.
     let script =
-        "(declare-sort Trajectory)\n" +
+        "(declare-sort Trajectory 0)\n" +
         "(declare-fun Quality (Trajectory) Int)\n" +
         "(declare-const threshold_A Int)\n" +
         "(declare-const threshold_B Int)\n" +
@@ -317,7 +286,7 @@ let ``Z3 proves agenda range disjointness for non-overlapping quality windows`` 
     // hi_A < lo_B — a three-way arithmetic contradiction, not a
     // definitional P AND NOT P.
     let script =
-        "(declare-sort Trajectory)\n" +
+        "(declare-sort Trajectory 0)\n" +
         "(declare-fun Quality (Trajectory) Int)\n" +
         "(declare-const lo_A Int)\n" +
         "(declare-const hi_A Int)\n" +
@@ -344,9 +313,9 @@ let ``Z3 finds shared trajectory with independent persona policies`` () =
     // future input. A stronger theorem would need richer semantics for
     // private state, agenda deltas, policy updates, and membrane rules.
     let script =
-        "(declare-sort Trajectory)\n" +
-        "(declare-sort Input)\n" +
-        "(declare-sort Action)\n" +
+        "(declare-sort Trajectory 0)\n" +
+        "(declare-sort Input 0)\n" +
+        "(declare-sort Action 0)\n" +
         "(declare-const SharedT Trajectory)\n" +
         "(declare-const FutureInput Input)\n" +
         "(declare-const ActionA Action)\n" +
@@ -368,7 +337,7 @@ let ``Z3 finds shared trajectory with independent persona policies`` () =
     z3ScriptHasModel "shared trajectory with independent persona policies" script
 
 
-// ── B-0373: Alignment proof primitive — CausalPower ─────────────────────
+// ── 081KR50HA0008QG0R001NNPEXC: Alignment proof primitive — CausalPower ─────────────────────
 //
 // One primitive: Policy<A>'s dependence on PrivateState<A>.
 // Anchor: Pearl (2009) "Causality" §1.3 — interventional independence.
@@ -393,8 +362,8 @@ let ``Z3 finds shared trajectory with independent persona policies`` () =
 [<Fact>]
 let ``Z3 witnesses causal power for free policy: distinct private states map to distinct actions`` () =
     let script =
-        "(declare-sort SharedTrace)\n" +
-        "(declare-sort Action)\n" +
+        "(declare-sort SharedTrace 0)\n" +
+        "(declare-sort Action 0)\n" +
         "(declare-const stateA1 Int)\n" +
         "(declare-const stateA2 Int)\n" +
         "(declare-const trace SharedTrace)\n" +
@@ -410,8 +379,8 @@ let ``Z3 witnesses causal power for free policy: distinct private states map to 
 [<Fact>]
 let ``Z3 proves collapsed policy has no causal power: state change cannot change action`` () =
     let script =
-        "(declare-sort SharedTrace)\n" +
-        "(declare-sort Action)\n" +
+        "(declare-sort SharedTrace 0)\n" +
+        "(declare-sort Action 0)\n" +
         "(declare-const stateA1 Int)\n" +
         "(declare-const stateA2 Int)\n" +
         "(declare-const trace SharedTrace)\n" +
@@ -450,7 +419,7 @@ let ``TLC model-checker is available when configured`` () =
         ()
 
 // ═══════════════════════════════════════════════════════════════════
-// B-1007 C1 — Gaussian message product is an ABELIAN GROUP on the
+// 081KT2T2J0008QG0R000YZ3NMY C1 — Gaussian message product is an ABELIAN GROUP on the
 // natural-parameter representation (ν = μ·τ, τ = 1/σ²). product =
 // component-wise add, divide = component-wise subtract, identity =
 // One = (0,0). This is ℝ² under vector +/- — the abelian-group axioms
@@ -461,7 +430,7 @@ let ``TLC model-checker is available when configured`` () =
 // Anchor: KFL 2001 (sum-product), Minka 2001 (EP cavity = divide),
 // Wainwright-Jordan 2008 §3 (exp-family natural params = free abelian
 // group). Mirrors the Z-set abelian-group lemmas above (same property
-// class, Gaussian payload). Authored by Soraya per B-1007.
+// class, Gaussian payload). Authored by Soraya per 081KT2T2J0008QG0R000YZ3NMY.
 //
 // Float overflow (proper closure can break when τ1+τ2 overflows to ∞)
 // is invisible to QF_LRA ideal reals — that is the FsCheck side's job
@@ -536,7 +505,7 @@ let ``Z3 proves proper Gaussians are closed under product, guarded (C1)`` () =
     z3ScriptHolds "C1 proper closed under product (guarded)" script
 
 // ═══════════════════════════════════════════════════════════════════
-// B-1007 C2 — Beta message product is an ABELIAN GROUP on the SHIFTED
+// 081KT2T2J0008QG0R000YZ3NMY C2 — Beta message product is an ABELIAN GROUP on the SHIFTED
 // natural parameters. The impl works on (α, β) directly: product =
 // α₁+α₂−1, divide = α₁−α₂+1, identity One = Beta(1,1). These ARE the
 // abelian-group axioms on the shifted naturals (n = α−1), proven here
@@ -608,7 +577,7 @@ let ``Z3 proves proper Beta prior times a likelihood stays proper, guarded (C2)`
     z3ScriptHolds "C2 Beta conjugate closure (prior x likelihood, guarded)" script
 
 // ═══════════════════════════════════════════════════════════════════
-// B-1007 C3 — Bernoulli message product is an ABELIAN GROUP via LOG-ODDS
+// 081KT2T2J0008QG0R000YZ3NMY C3 — Bernoulli message product is an ABELIAN GROUP via LOG-ODDS
 // addition. The impl computes in probability space (t/(t+f)); that is
 // mathematically log-odds add. Here Z3 proves the LOG-ODDS model
 // (ℓ ∈ ℝ, product = ℓ_a + ℓ_b, identity One = 0, inverse = negation) is
@@ -662,7 +631,7 @@ let ``Z3 proves Bernoulli divide round-trips the product, the EP cavity (C3)`` (
         "(assert (not (= (- (+ lA lB) lB) lA)))\n" +
         "(check-sat)\n"
     z3ScriptHolds "C3 Bernoulli cavity round-trip ((a*b)/b = a)" script
-// B-1007 C6 — BP convergence detection (`not (distance x y <= tol)`) is
+// 081KT2T2J0008QG0R000YZ3NMY C6 — BP convergence detection (`not (distance x y <= tol)`) is
 // NaN/∞-SAFE: a divergent run can never falsely report convergence. The
 // NaN/∞ cases are IEEE-754 facts, so they are proven in Z3's
 // floating-point theory (QF_FP); the finite threshold is proven in
@@ -710,7 +679,7 @@ let ``Z3 proves the finite convergence threshold has no converged-and-moved over
 
 
 // ═══════════════════════════════════════════════════════════════════
-// C13 (B-1007 P1) — the DBSP operator-inverse identities, symbolically
+// C13 (081KT2T2J0008QG0R000YZ3NMY P1) — the DBSP operator-inverse identities, symbolically
 // over the IDEAL REALS (QF_LRA). z⁻¹ (delay): (z⁻¹ x)[t] = x[t−1], x[−1]=0.
 // I (integrate): I(s)[t] = Σ_{i≤t} s[i]. D (differentiate): D(x)[t] =
 // x[t] − x[t−1] = (1 − z⁻¹)(x). The substance is the TELESCOPING:
@@ -910,9 +879,9 @@ let ``Z3 proves N >= 3f+1 is NECESSARY — below it no quorum is both safe and l
 let ``Z3 proves BFT fault-tolerance is monotone: tolerate f implies tolerate any f' <= f (b)`` () =
     // Mirrors CSLib FLP's Consensus.fault_mono — the bridge to the eventual Lean lift.
     let script =
-        "(declare-const f Int)(declare-const fp Int)(declare-const N Int)\n" +
-        "(assert (not (=> (and (>= fp 0) (<= fp f) (>= N (+ (* 3 f) 1)))\n" +
-        "                 (>= N (+ (* 3 fp) 1)))))\n" +
+        "(declare-const f Int)(declare-const f_prime Int)(declare-const N Int)\n" +
+        "(assert (not (=> (and (>= f_prime 0) (<= f_prime f) (>= N (+ (* 3 f) 1)))\n" +
+        "                 (>= N (+ (* 3 f_prime) 1)))))\n" +
         "(check-sat)\n"
     z3ScriptHolds "(b) fault-tolerance monotone" script
 
@@ -993,3 +962,82 @@ let ``Z3 witnesses prohibitive-by-COST not impossible: a funded adversary CAN bu
         "(assert (> c 0))(assert (>= Q 3))(assert (>= N Q))(assert (<= (* N c) E))\n" +
         "(check-sat)\n"
     z3ScriptHasModel "(G3a) funded adversary can pay (prohibitive-by-cost, not impossible)" script
+
+// ═══════════════════════════════════════════════════════════════════
+// Greenfield ATP and Cross-Check Harness Validation Tests
+// ═══════════════════════════════════════════════════════════════════
+
+[<Fact>]
+let ``E prover proves Bloom-filter probe determinism (FOL)`` () =
+    let query = 
+        "fof(bloom_det, conjecture, (k1 = k2 => (h1(k1) = h1(k2) & h2(k1) = h2(k2))))."
+    folHolds "bloom_det" query
+
+[<Fact>]
+let ``E prover proves Merkle second-preimage resistance (FOL)`` () =
+    let query =
+        "fof(h_injective, axiom, ! [X1, Y1, Z1, W1, X2, Y2, Z2, W2] : (h(X1, Y1, Z1, W1) = h(X2, Y2, Z2, W2) => (X1 = X2 & Y1 = Y2 & Z1 = Z2 & W1 = W2))).\n" +
+        "fof(merkle_injective, conjecture, (h(a1, b1, c1, d1) = h(a2, b2, c2, d2) => (a1 = a2 & b1 = b2 & c1 = c2 & d1 = d2)))."
+    folHolds "merkle_injective" query
+
+[<Fact>]
+let ``E prover proves Hard-refusal carve-out is absorbing (FOL)`` () =
+    let query =
+        "fof(hard_refusal, axiom, ! [X] : (isHardRefusal(X) => isRefused(X))).\n" +
+        "fof(hard_refusal_absorbing, conjecture, (isHardRefusal(m) => isRefused(m)))."
+    folHolds "hard_refusal_absorbing" query
+
+[<Fact>]
+let ``E prover proves Real-distress excludes fictional-scene (FOL)`` () =
+    let query =
+        "fof(real_distress_axiom, axiom, ! [X] : (realDistress(X) => (inRealEngagement(X) & ~inFictionalScene(X)))).\n" +
+        "fof(real_distress_conjecture, conjecture, (realDistress(m) => ~inFictionalScene(m)))."
+    folHolds "real_distress_conjecture" query
+
+[<Fact>]
+let ``Z3 vs CVC5 cross-check harness catches a planted disagreement`` () =
+    let sha256 (input: string) =
+        use hasher = System.Security.Cryptography.SHA256.Create()
+        let bytes = hasher.ComputeHash(System.Text.Encoding.UTF8.GetBytes(input))
+        bytes |> Array.map (fun b -> b.ToString("x2")) |> String.concat ""
+
+    let findRepoRoot () =
+        let rec search (dir: string) =
+            if File.Exists(Path.Combine(dir, "Zeta.sln")) then
+                dir
+            else
+                let parent = Directory.GetParent(dir)
+                if parent = null then
+                    failwith "Could not find repository root (Zeta.sln)"
+                else
+                    search parent.FullName
+        search (Directory.GetCurrentDirectory())
+
+    let originalMode = Environment.GetEnvironmentVariable("ZETA_SOLVER_MODE")
+    let replayPath = Path.Combine(findRepoRoot(), "tests/Tests.FSharp/Formal/solver-replay.json")
+    let backupExist = File.Exists(replayPath)
+    let backupContent = if backupExist then File.ReadAllText(replayPath) else ""
+    try
+        Environment.SetEnvironmentVariable("ZETA_SOLVER_MODE", "replay")
+        
+        let dummyQuery = "(check-sat) ; dummy disagreement query"
+        let hash = sha256 dummyQuery
+        let db = Dictionary<string, Dictionary<string, string>>()
+        db.["z3"] <- Dictionary()
+        db.["z3"].[hash] <- "unsat"
+        db.["cvc5"] <- Dictionary()
+        db.["cvc5"].[hash] <- "sat" // mismatch!
+        
+        let options = JsonSerializerOptions(WriteIndented = true)
+        let json = JsonSerializer.Serialize(db, options)
+        File.WriteAllText(replayPath, json)
+        
+        (fun () -> SolverHarness.crossCheck dummyQuery |> ignore)
+        |> should throw typeof<System.Exception>
+    finally
+        Environment.SetEnvironmentVariable("ZETA_SOLVER_MODE", originalMode)
+        if backupExist then
+            File.WriteAllText(replayPath, backupContent)
+        else
+            if File.Exists(replayPath) then File.Delete(replayPath)
+

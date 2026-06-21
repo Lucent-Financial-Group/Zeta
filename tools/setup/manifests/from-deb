@@ -1,0 +1,4 @@
+# Mechanism: from-deb — install .deb from URL when= host matches.
+# Format: <binary-name>  <deb-url>  [deps=pkg1,pkg2]  [when=ubuntu-22.04,amd64]
+#
+# (empty — eprover moved to from-autotools-tarball; Noble/Jammy .deb 3.0.03 aborts in CI.)

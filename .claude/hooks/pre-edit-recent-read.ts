@@ -14,7 +14,7 @@
 // never hard-errors.
 //
 // Wired via .claude/settings.json PreToolUse matcher:"Edit".
-// Per B-0033.2 (atomic child of B-0033).
+// Per 081KR50HA0008QG0R0005ABWPH (atomic child of 081KQ3HBZ0008QG0R0008RYCSX).
 
 import { readHookInput, deny, allow, sessionReadLogPath, OTTO343_READLOG_TAG } from "./harness.ts";
 import { readFileSync } from "node:fs";

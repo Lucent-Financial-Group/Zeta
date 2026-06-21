@@ -10,7 +10,7 @@
 //
 // Wired via .claude/settings.json PostToolUse matcher:"Read".
 // Sibling to .claude/hooks/pre-edit-recent-read.ts.
-// Per B-0033.2 (PR #2395+).
+// Per 081KR50HA0008QG0R0005ABWPH (PR #2395+).
 
 import { readHookInput, sessionReadLogPath } from "./harness.ts";
 import { readFileSync, writeFileSync } from "node:fs";

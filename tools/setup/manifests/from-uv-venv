@@ -1,0 +1,28 @@
+# Mechanism: from-uv-venv — PyPI libraries into repo .venv via uv pip install.
+# Realizer: tools/setup/mechanisms/from-uv-venv.sh
+#
+# Importable libraries (not uv tool CLIs). Opt in: ZETA_INSTALL_QUANTUM=1 or ZETA_INSTALL_FULL=1.
+#
+# Format per line (the installer consumes the first field as the pip spec):
+#   <pip-package-id>[==X.Y.Z]   [role=<toy-validator|oracle>]  [lang=<q#|qiskit|cirq|...>]
+# Pins verified 2026-06-10 against Microsoft Learn QDK setup guidance and PyPI:
+# qdk 1.29.1, qsharp 1.29.1, azure-quantum 3.10.0.
+#
+# Q# — reference oracle for H/Ry measurement stats, gate-set observables,
+# Bell/CHSH, and interference visibility. qdk[azure] owns the supported
+# Microsoft QDK Python entrypoint; qsharp is pinned directly so %%qsharp /
+# import qsharp parity stays explicit; azure-quantum is pinned to close the
+# optional-cloud-backend transitive edge.
+qdk[azure]==1.29.1     role=reference-oracle lang=q#
+qsharp==1.29.1         role=reference-oracle lang=q#
+azure-quantum==3.10.0  role=reference-oracle lang=q#
+quantum-circuit==0.9.247 role=second-oracle lang=typescript ecosystem=npm
+#
+# The rest of the quantum-language oracle remains intentionally deferred until
+# the Q# reference vectors exist; uncomment with verified pins when those cells
+# become active.
+# qiskit==<pin>         role=oracle          lang=qiskit       # IBM
+# cirq==<pin>           role=oracle          lang=cirq         # Google
+# pennylane==<pin>      role=oracle          lang=pennylane    # Xanadu
+#
+# See docs/research/2026-06-10-vera-brief-qsharp-reference-oracle-for-the-finite-resolution-qubits-framework.md.

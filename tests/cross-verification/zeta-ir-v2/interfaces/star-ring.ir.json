@@ -1,0 +1,79 @@
+{
+  "schema": "zeta-ir-v2-interface",
+  "name": "IStarRing",
+  "typeParams": [{ "name": "TWeight", "variance": "invariant" }],
+  "extends": ["ISemiring"],
+  "doc": "A *-ring: ISemiring + Conj involution. The unified floor for Cayley-Dickson hypercomplex towers.",
+  "members": [
+    { "name": "Zero", "kind": "property", "type": "TWeight", "doc": "Additive identity." },
+    { "name": "One", "kind": "property", "type": "TWeight", "doc": "Multiplicative identity." },
+    { "name": "Add", "kind": "method", "params": [{"name": "a", "type": "TWeight"}, {"name": "b", "type": "TWeight"}], "returns": "TWeight", "doc": "Additive combination (⊕)." },
+    { "name": "Mul", "kind": "method", "params": [{"name": "a", "type": "TWeight"}, {"name": "b", "type": "TWeight"}], "returns": "TWeight", "doc": "Multiplicative product (⊗). Loses commutativity above ℂ, associativity above ℍ." },
+    { "name": "Negate", "kind": "method", "params": [{"name": "a", "type": "TWeight"}], "returns": "TWeight", "doc": "Additive inverse." },
+    { "name": "Conj", "kind": "method", "params": [{"name": "a", "type": "TWeight"}], "returns": "TWeight", "doc": "Involution (conjugation): identity on ℝ, complex conjugate on ℂ, recursive beyond." }
+  ],
+  "laws": [
+    {
+      "id": "conj-involutive",
+      "schema": "involutive",
+      "op": "Conj",
+      "status": "proven",
+      "proof": "src/Core.TypeScript/algebra/star-ring.test.ts:conj-involution",
+      "doc": "Conj(Conj(a)) = a"
+    },
+    {
+      "id": "conj-one",
+      "schema": "fixpoint",
+      "op": "Conj",
+      "element": "One",
+      "status": "proven",
+      "proof": "src/Core.TypeScript/algebra/star-ring.test.ts:conj-one",
+      "doc": "Conj(One) = One"
+    },
+    {
+      "id": "conj-add-homomorphism",
+      "schema": "homomorphism",
+      "op": "Conj",
+      "over": "Add",
+      "status": "proven",
+      "proof": "src/Core.TypeScript/algebra/star-ring.test.ts:conj-add-hom",
+      "doc": "Conj(Add(a,b)) = Add(Conj(a), Conj(b))"
+    },
+    {
+      "id": "conj-mul-antihomomorphism",
+      "schema": "antihomomorphism",
+      "op": "Conj",
+      "over": "Mul",
+      "status": "proven",
+      "proof": "src/Core.TypeScript/algebra/star-ring.test.ts:conj-mul-antihom",
+      "doc": "Conj(Mul(a,b)) = Mul(Conj(b), Conj(a)) [reverses order]"
+    },
+    {
+      "id": "mul-commutative",
+      "schema": "commutative",
+      "op": "Mul",
+      "guard": "level <= complex",
+      "status": "proven",
+      "proof": "src/Core.TypeScript/algebra/star-ring.test.ts:complex-mul-commutative",
+      "doc": "Mul(a,b) = Mul(b,a) — holds for ℝ and ℂ, fails at ℍ"
+    },
+    {
+      "id": "mul-associative",
+      "schema": "associative",
+      "op": "Mul",
+      "guard": "level <= quaternion",
+      "status": "proven",
+      "proof": "src/Core.TypeScript/algebra/star-ring.test.ts:quaternion-mul-associative",
+      "doc": "Mul(Mul(a,b),c) = Mul(a,Mul(b,c)) — holds for ℝ, ℂ, ℍ; fails at 𝕆"
+    },
+    {
+      "id": "norm-multiplicative",
+      "schema": "multiplicative",
+      "op": "Norm",
+      "over": "Mul",
+      "status": "proven",
+      "proof": "src/Core.TypeScript/algebra/star-ring.test.ts:norm-multiplicative",
+      "doc": "|Mul(a,b)|² = |a|²·|b|² — holds for all Cayley-Dickson levels (composition algebra)"
+    }
+  ]
+}

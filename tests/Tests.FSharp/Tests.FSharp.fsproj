@@ -95,6 +95,8 @@
     <Compile Include="ZetaIrV3.Tests.fs" />
     <Compile Include="ZetaIrV4.Tests.fs" />
     <Compile Include="ZetaIrMinimalSet.Tests.fs" />
+    <Compile Include="ZetaIrNormalizer.Tests.fs" />
+    <Compile Include="ZetaIrCanonicalizer.Tests.fs" />
     <Compile Include="ZetaIrV1Gen.CrossVerify.Tests.fs" />
     <Compile Include="ContentHasher.Tests.fs" />
     <Compile Include="Blake3Hasher.Tests.fs" />
@@ -482,6 +484,7 @@
     <Compile Include="Plugin/Capabilities.Tests.fs" />
 
     <!-- Formal/ -->
+    <Compile Include="../../src/Core.FSharp.Z3Verify/SolverHarness.fs" />
     <Compile Include="Formal/Z3.Laws.Tests.fs" />
     <Compile Include="Formal/ByteCost.Laws.Tests.fs" />
     <Compile Include="Formal/Jaccard.Laws.Tests.fs" />

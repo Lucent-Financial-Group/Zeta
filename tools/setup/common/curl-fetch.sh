@@ -4,15 +4,16 @@
 # fetching URLs during install.
 #
 # One helper:
-#   - curl_fetch        — file-output downloads. `--retry 5`
-#                         + `--retry-all-errors` (safe because
-#                         curl restarts the file from scratch
-#                         on retry).
+#   - curl_fetch        — file-output downloads. retry defaults:
+#                         12 retries, 10-second delay, 300-second cap
+#                         + `--retry-all-errors` + a multi-minute
+#                         retry window (safe because curl restarts
+#                         the file from scratch on retry).
 #
 # All upstream-installer call sites (Homebrew, mise, elan)
 # now use the download-to-temp + verify + exec pattern via
 # curl_fetch. The former curl_fetch_stream function (streamed
-# pipe-to-shell, no retries) was removed by B-0063 — no call
+# pipe-to-shell, no retries) was removed by 081KQ8P5D0008QG0R001DMK8JD — no call
 # sites remain.
 #
 # WHY
@@ -27,13 +28,13 @@
 #
 # This file centralises the retry policy so every call site
 # uses the same flags. Previously the policy was inlined in
-# `tools/setup/common/verifiers.sh` and missing entirely from
+# `tools/setup/mechanisms/from-url.sh` and missing entirely from
 # `linux.sh` (mise install), `macos.sh` (Homebrew install),
 # and `elan.sh` (Lean toolchain install). Follow-up framing:
 # *"sounds like a common helper would help too rather than
 # copy/paste."*
 #
-# DOWNLOAD-TO-TEMP PATTERN (B-0063)
+# DOWNLOAD-TO-TEMP PATTERN (081KQ8P5D0008QG0R001DMK8JD)
 # ==================================
 # All upstream-installer call sites now download to a temp
 # file via curl_fetch (with full retries), verify content
@@ -62,12 +63,17 @@
 #
 # RETRY POLICY (rationale)
 # ========================
-#   --retry 5            — up to 5 retries (6 total attempts
-#                          including the initial try, per
-#                          curl(1)). Empirically covers the
-#                          upstream 5xx blips this install
-#                          path has hit.
-#   --retry-delay 2      — 2-second base delay between retries.
+#   --retry N            — default 12 retries (13 total attempts
+#                          including the initial try, per curl(1)).
+#                          The old 5-retry/2-second envelope
+#                          exhausted in ~12s during a GitHub
+#                          release 500 burst on 2026-06-21.
+#   --retry-delay N      — default 10 seconds between retries, long
+#                          enough to ride through short CDN/release
+#                          edge outages without rerunning CI.
+#   --retry-max-time N   — default 300 seconds, an upper bound so
+#                          a truly down upstream still fails instead
+#                          of hanging a job indefinitely.
 #   --retry-all-errors   — (file-output only) retry on ALL
 #                          transient errors including HTTP
 #                          5xx without `Retry-After`. Curl's
@@ -83,7 +89,7 @@
 # COMMAND-SUBSTITUTION + SET-E (historical note)
 # ===============================================
 # All installer call sites now use download-to-temp + exec
-# (B-0063), which sidesteps the command-substitution + set -e
+# (081KQ8P5D0008QG0R001DMK8JD), which sidesteps the command-substitution + set -e
 # interaction entirely. curl_fetch writes to a file; failure
 # is caught by curl's non-zero exit + set -euo pipefail; the
 # size check ([ -s "$TMP" ]) catches the edge case of an
@@ -131,7 +137,14 @@ _curl_fetch_supports_retry_all_errors() {
 # keeps the connect/DNS/408/429/5xx-with-Retry-After retry behaviour
 # that bare --retry already provides.
 curl_fetch() {
-  local -a retry_args=(--retry 5 --retry-delay 2)
+  local retry_count="${ZETA_CURL_RETRY_COUNT:-12}"
+  local retry_delay_seconds="${ZETA_CURL_RETRY_DELAY_SECONDS:-10}"
+  local retry_max_time_seconds="${ZETA_CURL_RETRY_MAX_TIME_SECONDS:-300}"
+  local -a retry_args=(
+    --retry "$retry_count"
+    --retry-delay "$retry_delay_seconds"
+    --retry-max-time "$retry_max_time_seconds"
+  )
   if _curl_fetch_supports_retry_all_errors; then
     retry_args+=(--retry-all-errors)
   fi

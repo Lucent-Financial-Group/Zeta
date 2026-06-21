@@ -11,11 +11,15 @@
 #
 # Lean stays outside mise until a mise plugin exists (candidate
 # OSS contribution target per GOVERNANCE.md §23) — installed via
-# `tools/setup/common/elan.sh`.
+# `tools/setup/mechanisms/from-elan.sh`.
 #
 # Consumed by `tools/setup/common/mise.sh` which runs
 # `mise install` from this directory. See
 # `docs/research/build-machine-setup.md` for the full rationale.
+#
+# Keep in sync with tools/setup/linux.sh MISE_VERSION and
+# full-ai-cluster/nixos/overlays/mise-pin.nix (three-way parity).
+min_version = "2026.6.11"
 
 [tools]
 # .NET 10 SDK (latest). Kept in sync with `global.json` — Zeta's
@@ -62,6 +66,14 @@ actionlint = "1.7.12"
 # slim + ubuntu-24.04-arm runners don't ship shellcheck pre-
 # installed, so declarative pin here ensures dev/CI parity.
 shellcheck = "0.11.0"
+# 1Password CLI (`op`) — cross-OS secret/cert access for the private-key-custody lane
+# (Aaron 2026-06-21: "1password-cli ... we need to support on all operating systems ...
+# just the cli not the whole app ... make sure all our oses have it"). Via mise (the
+# cross-platform path — NOT per-OS brew/apt/scoop) so mac+linux+windows get the SAME
+# pinned `op` in one line. Scoped service accounts + `op` give least-privilege agent
+# secret retrieval; the desktop app (mac cask) is deliberately NOT a dep (CLI suffices).
+# Pin per dep-pin-search-first (mise ls-remote 2026-06-21): 1password-cli 2.34.1.
+"1password-cli" = "2.34.1"
 # Cluster integration + GitOps tooling (k3d/kind/kubectl/helm/kubeconform) moved to
 # .mise.full.toml (host-tier split, workitem 081KTWQZY7F08QG0R0034KN17T): full-tier hosts
 # (dev laptops, cluster nodes, CI k8s lanes) still converge on the one pinned tool graph
@@ -113,6 +125,10 @@ node = "24"
 "pipx:mypy" = "2.1.0"
 
 [settings]
+# Explicit: use astral-sh/python-build-standalone precompiled binaries (fast
+# install on dev laptops + CI). Compile-from-source is opt-in via
+# `python.compile = true` when a platform build is required.
+python.compile = false
 # `python-build-standalone` (upstream for mise's python plugin)
 # gates downloads on GitHub artifact attestations. On CI the
 # unauthenticated GitHub API rate-limits the shared runner IP;

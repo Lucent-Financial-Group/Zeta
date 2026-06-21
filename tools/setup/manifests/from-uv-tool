@@ -1,0 +1,13 @@
+# Mechanism: from-uv-tool — Python CLI tools via uv tool install.
+# Realizer: tools/setup/mechanisms/from-uv-tool.sh
+# non-empty line; optional `==X.Y.Z` version qualifier per line.
+#
+# Zeta scope (today): ruff for Python linting of any Python helper
+# scripts that land under `tools/`. Semgrep is NOT here — Semgrep is
+# a dotnet-install-managed dep (see `common/dotnet-tools.sh`) that
+# happens to be written in Python, not a uv-installed tool.
+#
+# Single flat manifest today; `@include` hierarchy (@min in @all)
+# is a BACKLOG P1 item.
+
+ruff

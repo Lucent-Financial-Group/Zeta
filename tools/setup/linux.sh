@@ -4,24 +4,21 @@
 #
 # Order matters:
 #   1. apt packages from manifests/apt (build-essential, curl, etc.)
+#   1b. mechanisms/from-deb.sh + from-shim.sh + from-autotools-tarball.sh — platform fallbacks after apt
 #   2. mise (via official installer; no apt package yet)
 #   3. common/mise.sh     — installs dotnet/python/java/bun/uv
 #                           per .mise.toml
-#   4. common/python-tools.sh — uv-managed Python CLI tools
-#                              (ruff, etc.) from manifests/uv-tools
-#   5. common/quantum.sh  — optional Q# reference-oracle deps from
-#                           manifests/quantum (opt-in)
-#   6. common/elan.sh     — Lean toolchain
-#   7. common/dotnet-tools.sh — dotnet global tools from
-#                              manifests/dotnet-tools
-#   8. common/verifiers.sh    — TLA+ + Alloy jars from manifests/verifiers
-#   8b. common/tlaps.sh       — TLAPS (tlapm) opam source-build, gated on
-#                              ZETA_INSTALL_FULL (heavy OCaml build)
-#   9. common/agent-clis.sh   — agent/peer CLIs (bun-global) from manifests/agent-clis
-#  10. common/one-liner-tools.sh — non-package-manager CLIs (download-then-exec installers)
-#                                  from manifests/one-liner-tools
-#  11. common/local-llm.sh   — local-LLM core primitive (ollama + pinned tiny model) from
-#                              manifests/local-llm
+#   4. mechanisms/from-uv-tool.sh — uv tool install (manifests/from-uv-tool)
+#   5. mechanisms/from-uv-venv.sh — project .venv pip deps (manifests/from-uv-venv; opt-in)
+#   6. mechanisms/from-elan.sh     — Lean toolchain manager
+#   7. mechanisms/from-dotnet-global.sh — dotnet global tools
+#   8. mechanisms/from-dotnet-workload.sh — dotnet workloads
+#   9. mechanisms/from-url.sh   — HTTPS assets → repo paths
+#  10. mechanisms/from-opam-git.sh — opam git source-build (ZETA_INSTALL_FULL)
+#  11. mechanisms/from-bun-global.sh — bun-global CLIs
+#  12. mechanisms/from-bun-link.sh — repo package bins on PATH
+#  13. mechanisms/from-installer.sh — vendor install scripts
+#  14. mechanisms/from-ollama.sh — local-LLM primitive
 #  12. common/shellenv.sh    — managed PATH file
 #  13. common/profile-edit.sh — append the managed-PATH source line to the shell profile
 #
@@ -43,7 +40,7 @@ SETUP_DIR="$REPO_ROOT/tools/setup"
 source "$SETUP_DIR/common/curl-fetch.sh"
 
 # ── Detect NixOS — skip apt step entirely, use systemPackages instead ──
-# iter-5.5.0 (B-0848 Phase 2, operator 2026-05-27 ALIGNMENT catch):
+# iter-5.5.0 (081KSGS9H0008QG0R001JNKBFD Phase 2, operator 2026-05-27 ALIGNMENT catch):
 # NixOS provides system packages declaratively via common.nix
 # environment.systemPackages, NOT apt. The same install.sh entry-point
 # can still bootstrap a NixOS cluster node by skipping the apt step and
@@ -92,7 +89,7 @@ elif [ -f "$APT_MANIFEST" ]; then
     # shellcheck disable=SC1091
     . /etc/os-release
     if [ "${ID:-}" = "ubuntu" ] && [ "${VERSION_ID:-}" = "22.04" ]; then
-      for _pair in libicu74:libicu70 libssl3t64:libssl3; do
+      for _pair in libicu74:libicu70 libssl3t64:libssl3 cvc5:cvc4; do
         _noble="${_pair%%:*}"
         _jammy="${_pair#*:}"
         case " $PKGS " in
@@ -152,6 +149,13 @@ elif [ -f "$APT_MANIFEST" ]; then
 fi
 echo "✓ apt packages up to date"
 
+# Jammy mechanism fallbacks (from-deb, from-shim, from-autotools-tarball) after apt.
+if [ "$IS_NIXOS" != 1 ]; then
+  "$SETUP_DIR/mechanisms/from-deb.sh"
+  "$SETUP_DIR/mechanisms/from-shim.sh"
+  "$SETUP_DIR/mechanisms/from-autotools-tarball.sh"
+fi
+
 # ── 2. mise ─────────────────────────────────────────────────────────
 # NixOS: use declarative system mise (common.nix / installer ISO). Upstream
 # release tarballs are glibc-linked and fail with "cannot execute: required
@@ -186,29 +190,38 @@ fi
 # MISE_VERSION + both MISE_SHA256_* values together — they form a
 # content-pin set.
 # Skipped on real NixOS — tarball mise is not FHS-compatible; use system mise.
-# B-0849 docker harness wires /lib64/ld-linux-*.so.* so tarball mise works there.
+# 081KSKBP80008QG0R000E3RKPK docker harness wires /lib64/ld-linux-*.so.* so tarball mise works there.
 linux_sh_nixos_tarball_mise_allowed() {
   [ -f /.dockerenv ] \
     || [ -e /lib64/ld-linux-x86-64.so.2 ] \
     || [ -e /lib/ld-linux-aarch64.so.1 ]
 }
 
-if ! command -v mise >/dev/null 2>&1; then
+MISE_PIN_VERSION="2026.6.11"
+MISE_VERSION="v${MISE_PIN_VERSION}"
+MISE_SHA256_X64="89c88e407c6e3a19f5f86af2cbbf88c6ef6147d55a7098c84da12b36f44f1ff3"
+MISE_SHA256_ARM64="0318f90fccf8bad6547ad6b2191764233309ceb3b6cece94c48454f385f091f5"
+MISE_SHA256_ARMV7="f9ea7f661e24371769899d85130ddf3978d32c966daf2f25bbbc3be5a7b531e6"
+
+installed_mise_version=""
+if command -v mise >/dev/null 2>&1; then
+  installed_mise_version="$(mise --version 2>/dev/null | awk '{print $1}')"
+fi
+
+if [ "$installed_mise_version" != "$MISE_PIN_VERSION" ]; then
   if [ "$IS_NIXOS" = 1 ] && ! linux_sh_nixos_tarball_mise_allowed; then
     echo "error: mise not found on PATH on NixOS" >&2
     echo "  declare mise in environment.systemPackages (installer ISO + common.nix)" >&2
     echo "  and ensure /run/current-system/sw/bin is on PATH during target bootstrap" >&2
     exit 1
   fi
-  if [ "$IS_NIXOS" = 1 ]; then
+  if [ -n "$installed_mise_version" ]; then
+    echo "↓ upgrading mise ${installed_mise_version} → ${MISE_PIN_VERSION} (pinned release tarball)..."
+  elif [ "$IS_NIXOS" = 1 ]; then
     echo "↓ NixOS (docker/FHS): installing mise from pinned tarball..."
   else
     echo "↓ installing mise from pinned release tarball..."
   fi
-  MISE_VERSION="v2026.4.24"
-  MISE_SHA256_X64="de2f924940c29b8983035833e2fb3a50092c5794562ca0dcd0cf87b40cae2c58"
-  MISE_SHA256_ARM64="cf5f4899c3f1b56239d2eedf173c68c47b7db95400c4fa1b61e943dee4965727"
-  MISE_SHA256_ARMV7="2e122fd8bec64f86449872c633e47023b56416f887e4646307ad176baae3bfa9"
   # The previous `curl mise.run | sh` shape supported armv7 implicitly
   # (the installer auto-detects). Preserve that here — no Zeta CI leg
   # uses armv7 today, but dev laptops on a Raspberry Pi 4 in 32-bit
@@ -242,13 +255,12 @@ if ! command -v mise >/dev/null 2>&1; then
   mkdir -p "${HOME}/.local/bin"
   mv "${MISE_TMP}/mise/bin/mise" "${HOME}/.local/bin/mise"
   # Tmp dir cleanup happens via the EXIT trap above.
-  # Pinned tarball: bump via install.sh / flake overlay, not mise self-update.
-  mkdir -p "${MISE_DATA_DIR:-$HOME/.local/share/mise}"
-  touch "${MISE_DATA_DIR:-$HOME/.local/share/mise}/.disable-self-update"
-  # The installer puts mise at $HOME/.local/bin/mise; ensure we can
-  # invoke it for the remainder of this script run.
   export PATH="${HOME}/.local/bin:${PATH}"
 fi
+# Pinned tarball installs above; pre-existing mise on PATH is kept as-is.
+# Always mark self-update disabled — Zeta bumps mise via linux.sh / flake / brew.
+mkdir -p "${MISE_DATA_DIR:-$HOME/.local/share/mise}"
+touch "${MISE_DATA_DIR:-$HOME/.local/share/mise}/.disable-self-update"
 echo "✓ mise: $(mise --version)"
 
 # ── 3-10. Common steps ──────────────────────────────────────────────
@@ -274,37 +286,22 @@ for shim_dir in \
   fi
 done
 
-"$SETUP_DIR/common/python-tools.sh"
-"$SETUP_DIR/common/quantum.sh"
+"$SETUP_DIR/mechanisms/from-uv-tool.sh"
+"$SETUP_DIR/mechanisms/from-uv-venv.sh"
 
 # Make ~/.dotnet/tools available for the remainder of this install.sh
-# process so dotnet-tools.sh can install globals (semgrep / stryker)
-# into $HOME/.dotnet/tools and find them on PATH in the same run.
+# process so from-dotnet-global can install globals into $HOME/.dotnet/tools
+# and find them on PATH in the same run.
 export PATH="$HOME/.dotnet/tools:$PATH"
 
-"$SETUP_DIR/common/elan.sh"
-"$SETUP_DIR/common/dotnet-tools.sh"
-"$SETUP_DIR/common/dotnet-workloads.sh"
-"$SETUP_DIR/common/verifiers.sh"
-# TLAPS (tlapm, TLA+ proof manager) — opam source-build (no arm64 upstream
-# binary; Aaron path-A). Heavy OCaml build → gated behind ZETA_INSTALL_FULL
-# so minimal/CI/devcontainer installs stay fast. opam + z3 come from
-# manifests/apt above. Best-effort: warns + continues (never bricks install).
-if [ "${ZETA_INSTALL_FULL:-0}" = "1" ]; then
-  "$SETUP_DIR/common/tlaps.sh" || echo "⚠ tlaps.sh failed — see output above; continuing"
-else
-  echo "✓ skipping TLAPS opam source-build (set ZETA_INSTALL_FULL=1 to build tlapm)"
-fi
-# Agent + peer-AI CLIs (claude/codex/gemini) bun-global from manifests/agent-clis.
-# Best-effort: warns + continues on failure (auth/login is the operator's; never bricks install).
-"$SETUP_DIR/common/agent-clis.sh"
-# Expose repo package bins (ace, zeta-shadow) on PATH via `bun link`. Best-effort.
-"$SETUP_DIR/common/repo-bins.sh"
-# Non-package-manager CLIs (grok/cursor-agent/kiro/hermes/forge) via their own one-line
-# installers from manifests/one-liner-tools. Detect-first + best-effort (never bricks install).
-"$SETUP_DIR/common/one-liner-tools.sh"
-# Local-LLM core primitive — installs pinned ollama binary + pulls the pinned
-# tiny model (manifests/local-llm). Graceful: warns + continues on failure.
-"$SETUP_DIR/common/local-llm.sh"
+"$SETUP_DIR/mechanisms/from-elan.sh"
+"$SETUP_DIR/mechanisms/from-dotnet-global.sh"
+"$SETUP_DIR/mechanisms/from-dotnet-workload.sh"
+"$SETUP_DIR/mechanisms/from-url.sh"
+"$SETUP_DIR/mechanisms/from-opam-git.sh" || echo "⚠ from-opam-git failed — see output above; continuing"
+"$SETUP_DIR/mechanisms/from-bun-global.sh"
+"$SETUP_DIR/mechanisms/from-bun-link.sh"
+"$SETUP_DIR/mechanisms/from-installer.sh"
+"$SETUP_DIR/mechanisms/from-ollama.sh"
 "$SETUP_DIR/common/shellenv.sh"
 "$SETUP_DIR/common/profile-edit.sh"
