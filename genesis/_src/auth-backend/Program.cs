@@ -2,7 +2,6 @@ using System.Globalization;
 using System.Net.Http.Headers;
 using System.Security.Cryptography;
 using System.Text;
-using System.Text.Json;
 using System.Text.Json.Nodes;
 
 // ---------------------------------------------------------------------------
@@ -76,8 +75,6 @@ var providers = new Dictionary<string, ProviderConfig>(StringComparer.Ordinal)
         Scope: "read_user"),
 };
 
-var jsonOpts = new JsonSerializerOptions(JsonSerializerDefaults.Web);
-
 app.MapGet("/healthz", () => Results.Ok(new { status = "ok", providers = providers.Keys }));
 
 // Step 1+2: kick off the OAuth dance.
@@ -148,7 +145,7 @@ app.MapGet("/auth/{provider}/callback", async (
     http.DefaultRequestHeaders.UserAgent.ParseAdd("genesis-auth/1.0");
 
     // Exchange the authorization code for an access token (server-to-server).
-    var tokenReq = new HttpRequestMessage(HttpMethod.Post, p.TokenUrl)
+    using var tokenReq = new HttpRequestMessage(HttpMethod.Post, p.TokenUrl)
     {
         Content = new FormUrlEncodedContent(new Dictionary<string, string>
         {
@@ -171,7 +168,7 @@ app.MapGet("/auth/{provider}/callback", async (
         return Results.BadRequest(new { error = "no access_token in response", detail = tokenBody });
 
     // Fetch the user's public identity.
-    var userReq = new HttpRequestMessage(HttpMethod.Get, p.UserInfoUrl);
+    using var userReq = new HttpRequestMessage(HttpMethod.Get, p.UserInfoUrl);
     userReq.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
     userReq.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
@@ -240,10 +237,9 @@ static string? ResolveRedirect(string? requested, string[] allowedOrigins)
     if (!Uri.TryCreate(requested, UriKind.Absolute, out var uri))
         return null;
     var origin = $"{uri.Scheme}://{uri.Authority}";
-    foreach (var allowed in allowedOrigins)
-        if (string.Equals(allowed.TrimEnd('/'), origin, StringComparison.OrdinalIgnoreCase))
-            return requested;
-    return null;
+    return allowedOrigins.Any(a => string.Equals(a.TrimEnd('/'), origin, StringComparison.OrdinalIgnoreCase))
+        ? requested
+        : null;
 }
 
 static string QueryHelpersAppend(string url, Dictionary<string, string> q)
