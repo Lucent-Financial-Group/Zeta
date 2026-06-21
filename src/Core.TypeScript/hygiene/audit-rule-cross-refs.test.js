@@ -18,7 +18,7 @@ describe("pullRefs", () => {
         expect(refs).toHaveLength(1);
         expect(refs[0].raw).toBe("tools/peer-call/claude.ts");
     });
-    test("pulls B-NNNN backlog ID references", () => {
+    test("pulls zetaid backlog ID references", () => {
         const content = "Composes with 081KQR4HQ0008QG0R001GAD29A and 081KRHWGX0008QG0R002DPG02X.";
         const refs = pullRefs(content, "test.md");
         expect(refs).toHaveLength(2);

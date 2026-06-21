@@ -12,7 +12,7 @@ New rounds are appended at the top.
 Newest first. Anchor links work in markdown renderers that
 slugify `## Round N — <title>` to `#round-n-<title-slug>`.
 
-- [Round 46 — Helm dependency-graph and variable-passing subcommand (081KSGS9H0008QG0R00367G209)](#round-46--helm-dependency-graph-and-variable-passing-subcommand-b-0821)
+- [Round 46 — Helm dependency-graph and variable-passing subcommand (081KSGS9H0008QG0R00367G209)](#round-46--helm-dependency-graph-and-variable-passing-subcommand-081ksgs9h0008qg0r00367g209)
 - [Round 45 — QG isomorphism proof strategy foundation + Universal Infinite Poker Game cosmology formalization](#round-45--qg-isomorphism-proof-strategy-foundation--universal-infinite-poker-game-cosmology-formalization)
 - [Round 44 — in-flight](#round-44--in-flight)
 - [Round 43 — invariant-substrates program + empirical BP-03 harness evidence + agent-cadence telemetry](#round-43--invariant-substrates-program--empirical-bp-03-harness-evidence--agent-cadence-telemetry)

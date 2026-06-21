@@ -18,7 +18,7 @@
  */
 
 import { readdirSync, readFileSync, writeFileSync, statSync } from "node:fs";
-import { basename, join, relative } from "node:path";
+import { basename, join } from "node:path";
 import { spawnSync } from "node:child_process";
 import { legacyZetaIdFromBId, parentBId, timestampForLegacyBId } from "./legacy-b-id-zetaid";
 

@@ -10,7 +10,7 @@
 //
 //   - Scan all `.claude/rules/*.md` files
 //   - Pull backtick'd path references (`<path>.md`, `<path>.ts`, etc.)
-//   - Pull backlog ID references (B-NNNN)
+//   - Pull backlog ID references (zetaid / 081K…)
 //   - Test existence via direct path + glob + per-row backlog file lookup
 //   - Report stale-pointer CANDIDATES (failed existence)
 //
@@ -94,10 +94,10 @@ function pullRefs(content: string, ruleFile: string): Ref[] {
     refs.push({ fromRule: ruleFile, raw, kind: "path" });
   }
 
-  // Backlog ID references (B-NNNN)
-  const idPattern = /\bB-([0-9]{4})\b/g;
+  // Backlog ID references (canonical zetaid form)
+  const idPattern = /\b(081K[0-9A-Z]{22})\b/g;
   while ((m = idPattern.exec(content)) !== null) {
-    refs.push({ fromRule: ruleFile, raw: `B-${m[1]!}`, kind: "backlog-id" });
+    refs.push({ fromRule: ruleFile, raw: m[1]!, kind: "backlog-id" });
   }
 
   // Dedup
@@ -287,9 +287,14 @@ function refExists(ref: Ref): boolean {
           const path = join(dir, f);
           try {
             const content = readFileSync(path, "utf8");
-            const idMatch = content.match(/^id:\s*(B-\d{4})\b/m);
-            if (idMatch && idMatch[1]) {
+            const idMatch = content.match(/^id:\s*(081K[0-9A-Z]{22})\b/m);
+            if (idMatch?.[1]) {
               cachedBacklogIds.add(idMatch[1]);
+              continue;
+            }
+            const stemMatch = f.match(/^(081K[0-9A-Z]{22})/);
+            if (stemMatch?.[1]) {
+              cachedBacklogIds.add(stemMatch[1]);
             }
           } catch {
             // ignore read errors

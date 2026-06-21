@@ -86,5 +86,22 @@
     "extends": [
       "ISemiring"
     ]
+  },
+  "IZSetIsa": {
+    "typeParams": [
+      "invariant:TState",
+      "invariant:TEvent",
+      "invariant:TWeight"
+    ],
+    "members": [
+      "method:Emit",
+      "method:Retract",
+      "method:Branch",
+      "method:Join",
+      "method:Merge",
+      "method:Fold"
+    ],
+    "laws": 2,
+    "extends": []
   }
 }
