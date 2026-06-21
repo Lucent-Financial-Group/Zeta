@@ -267,7 +267,7 @@ Repair-CodexConfigServiceTier
 # 5b. Expose the repo's package bins (ace, zeta-shadow) on PATH via `bun link` (the package.json
 # `bin` map declares them). Best-effort + GRACEFUL (Invoke-ToolSoft): a failure WARNS and
 # continues -- convenience commands, not hard deps; never brick install. Parity with
-# common/repo-bins.sh on Unix.
+# mechanisms/from-bun-link.sh on Unix.
 Push-Location $RepoRoot
 try {
   $rbCode = Invoke-ToolSoft { mise exec -- bun link }

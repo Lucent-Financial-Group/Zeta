@@ -36,7 +36,7 @@ tools/lean4/
     └── packages/mathlib    # ~6.8 GB of .olean files; never commit
 ```
 
-Installed via `tools/setup/common/elan.sh`. `lake build`
+Installed via `tools/setup/mechanisms/from-elan.sh` (`manifests/from-elan`). `lake build`
 is CI gate Phase 2 (daily cadence per `docs/research/ci-
 gate-inventory.md`).
 
