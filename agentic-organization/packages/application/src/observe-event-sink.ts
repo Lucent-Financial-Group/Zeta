@@ -132,6 +132,12 @@ function writeEventFile(
   envelope: EventEnvelope,
   eventDir: string,
 ): { ok: true; path: string; created: boolean } | { ok: false; reason: string } {
+  // The id becomes a path segment. Sanitize HERE — right before `join` — so the
+  // value reaching the filesystem is provably a bare 32-hex name with no path
+  // separators / traversal / reserved chars (closes the path-injection flow).
+  if (!isCanonicalEventId(envelope.id)) {
+    return { ok: false, reason: `non-canonical event id (expected 32 lowercase hex): '${envelope.id}'` };
+  }
   const path = join(eventDir, `${envelope.id}.json`);
   const serialized = `${JSON.stringify(envelope, null, 2)}\n`;
   try {

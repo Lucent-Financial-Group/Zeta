@@ -1,5 +1,5 @@
 import { deepEqual, equal, ok } from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { mkdtempSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { test } from "node:test";
@@ -379,7 +379,9 @@ test("mintObserveEventIdHex produces canonical 32-hex ids", () => {
 });
 
 function mkTempDir(): string {
-  return join(tmpdir(), `observe-sink-${mintObserveEventIdHex()}`);
+  // mkdtempSync atomically creates a unique, securely-permissioned dir — the
+  // safe-temp pattern (no predictable name / TOCTOU window).
+  return mkdtempSync(join(tmpdir(), "observe-sink-"));
 }
 
 // ─── runLoop + chooseNextAction: the closed loop degrades to the oracle ────────
