@@ -67,6 +67,11 @@ SETUP_DIR="$REPO_ROOT/tools/setup"
 if [ -z "${ZETA_HOST_TIER:-}" ] && [ "${GITHUB_ACTIONS:-}" != "true" ]; then
   export ZETA_HOST_TIER=full
 fi
+# Dev laptops: auto-wire shellenv into rc files (profile-edit.sh). CI stays off
+# so runner images are not mutated; opt out locally with ZETA_AUTO_EDIT_PROFILES=0.
+if [ -z "${ZETA_AUTO_EDIT_PROFILES:-}" ] && [ "${GITHUB_ACTIONS:-}" != "true" ]; then
+  export ZETA_AUTO_EDIT_PROFILES=1
+fi
 case ":${MISE_TRUSTED_CONFIG_PATHS:-}:" in
   *:"$REPO_ROOT":*) ;;
   *) export MISE_TRUSTED_CONFIG_PATHS="${MISE_TRUSTED_CONFIG_PATHS:+$MISE_TRUSTED_CONFIG_PATHS:}$REPO_ROOT" ;;

@@ -1,25 +1,22 @@
 #!/usr/bin/env bash
 #
-# tools/setup/common/profile-edit.sh — opt-in auto-edit of shell
-# rc files to source the managed `$HOME/.config/zeta/shellenv.sh`.
+# tools/setup/common/profile-edit.sh — auto-edit shell rc files to source
+# the managed `$HOME/.config/zeta/shellenv.sh`.
 #
-# Default off. Enable with `ZETA_AUTO_EDIT_PROFILES=1` before
-# running install.sh — the rc-file edit is user-visible and
-# should be consent-gated. See GOVERNANCE.md §24 (three-way
-# parity applies here too: dev laptop / CI runner / devcontainer
-# need this the same way).
+# Default ON for dev laptops (install.sh sets ZETA_AUTO_EDIT_PROFILES=1
+# when unset and not CI). Opt out with ZETA_AUTO_EDIT_PROFILES=0.
+# See GOVERNANCE.md §24 (three-way parity: dev laptop / CI / devcontainer).
 #
 # Targets (whichever exist on the machine):
+#   ~/.zprofile      (zsh login shells; macOS Terminal/iTerm login path)
 #   ~/.zshrc         (zsh interactive; macOS default)
 #   ~/.bashrc        (bash interactive; Linux default)
 #   ~/.bash_profile  (bash login; macOS)
 #   ~/.profile       (POSIX fallback; SSH non-interactive)
 #
-# Idempotent. The fenced-marker block is detected on re-run; if
-# the block is already present, the script skips (no duplicate
-# appends). If the block's content has drifted (Zeta regenerated
-# shellenv.sh with a different path, etc.), the script replaces
-# the block in place.
+# Idempotent. The fenced-marker block is detected on re-run; if the block
+# is already present, the script refreshes it in place. Legacy unmarked
+# source lines (pre-marker installs) are left alone — no duplicate append.
 
 set -euo pipefail
 
@@ -31,15 +28,12 @@ MARKER_END='# ---- /zeta shellenv ----'
 SOURCE_LINE='[ -f "$HOME/.config/zeta/shellenv.sh" ] && . "$HOME/.config/zeta/shellenv.sh"'
 
 # ── gate ────────────────────────────────────────────────────────────
-# Default is OFF. User must opt in. This matches Aaron's round-34
-# preference: auto-edit by flag, never by default, never silent.
 if [ "${ZETA_AUTO_EDIT_PROFILES:-0}" != "1" ]; then
   cat <<'EOF'
 ✓ profile-edit: skipped (ZETA_AUTO_EDIT_PROFILES != 1)
 
-  To auto-wire the managed shellenv into your ~/.zshrc /
-  ~/.bashrc / ~/.bash_profile / ~/.profile (whichever exist),
-  re-run with:
+  Dev laptops default to auto-edit. To wire shellenv into rc files, either
+  re-run install.sh (default on non-CI) or set explicitly:
 
       ZETA_AUTO_EDIT_PROFILES=1 tools/setup/install.sh
 
@@ -72,6 +66,8 @@ ensure_block_in_file () {
     ' "$target" > "$tmp"
     mv "$tmp" "$target"
     echo "✓ $target: zeta block refreshed"
+  elif grep -Fq "$SOURCE_LINE" "$target"; then
+    echo "✓ $target: legacy shellenv source present (unmarked); skipping duplicate"
   else
     # Block absent — append.
     {
@@ -82,8 +78,8 @@ ensure_block_in_file () {
 }
 
 # ── apply ──────────────────────────────────────────────────────────
-echo "↓ ZETA_AUTO_EDIT_PROFILES=1 — editing shell rc files..."
-for rc in "$HOME/.zshrc" "$HOME/.bashrc" "$HOME/.bash_profile" "$HOME/.profile"; do
+echo "↓ profile-edit — wiring managed shellenv into shell rc files..."
+for rc in "$HOME/.zprofile" "$HOME/.zshrc" "$HOME/.bashrc" "$HOME/.bash_profile" "$HOME/.profile"; do
   ensure_block_in_file "$rc"
 done
 echo "✓ profile-edit: done. New shells will source the Zeta toolchain."
