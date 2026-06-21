@@ -1,0 +1,29 @@
+# Cloudflare Worker config for the Project Genesis OAuth identity broker.
+#
+# Secrets are NOT stored here. Set them with:
+#   wrangler secret put GITHUB_CLIENT_ID
+#   wrangler secret put GITHUB_CLIENT_SECRET
+#   wrangler secret put JWT_SECRET            # 32+ random bytes, base64/hex
+#   wrangler secret put GITLAB_CLIENT_ID      # optional
+#   wrangler secret put GITLAB_CLIENT_SECRET  # optional
+#
+# The two non-secret vars below MUST be edited before first deploy.
+
+name = "genesis-auth"
+main = "src/index.js"
+compatibility_date = "2025-01-01"
+
+[vars]
+# This Worker's own public URL (no trailing slash). After your first deploy,
+# Wrangler prints it as https://genesis-auth.<your-subdomain>.workers.dev —
+# put that here and redeploy so redirect_uri matches.
+SELF_BASE_URL = "https://genesis-auth.example.workers.dev"
+
+# Comma-separated allowlist of frontend origins the broker may redirect back to.
+# e.g. your GitHub Pages origin. EXACT origin match (scheme://host[:port]).
+ALLOWED_FRONTEND_ORIGINS = "https://your-username.github.io"
+
+# Optional tuning:
+JWT_ISSUER = "genesis-auth"
+JWT_TTL_MINUTES = "30"
+# GITLAB_BASE_URL = "https://gitlab.com"   # only for self-managed GitLab
