@@ -42,7 +42,7 @@ are closed (status: closed/done in frontmatter)._
 
 ## P1 — within 2-3 rounds
 
-- [ ] **[B-0950](backlog/P1/081KDU93J0OAZMF14J8R4K66ZR06XL-non-mechanism-setup-realizers-consolidate-to-mechanism-by-source-before-ace.md)** Non-mechanism setup realizers — consolidate quantum/elan/python-tools/dotnet-tools/agent-clis/local-llm/tlaps into mechanism-by-source before Ace migration (Aaron 2026-06-21)
+- [x] **[B-0950](backlog/P1/081KDU93J0OAZMF14J8R4K66ZR06XL-non-mechanism-setup-realizers-consolidate-to-mechanism-by-source-before-ace.md)** Non-mechanism setup realizers — consolidate quantum/elan/python-tools/dotnet-tools/agent-clis/local-llm/tlaps into mechanism-by-source before Ace migration (Aaron 2026-06-21)
 - [x] **[B-0058.3](backlog/P1/081KDVGZGE008QG0R001Z656SG-3-candidate-failure-honesty-log.md)** Candidate-failure honesty log
 - [ ] **[B-0003](backlog/P1/081KQ0YZ80008QG0R001QJJTVF-alignment-md-rewrite.md)** ALIGNMENT.md rewrite — incorporate Otto-281..287 + bidirectional alignment + factory-as-superfluid + Noether direction; spread via rigor not manipulation (matrix-pill not poison-pill)
 - [x] **[B-0006](backlog/P1/081KQ0YZ80008QG0R001V0XCYZ-memory-md-compression-pass-prune-distill-entries-to-one-line.md)** MEMORY.md compression pass — distill entries to true one-liners; bring file under ~200-line cap
