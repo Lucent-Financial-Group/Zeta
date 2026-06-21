@@ -6,8 +6,8 @@ sources: chatgpt/external-research (per Aaron's forwarding)
 discipline: research substrate; preserves verbatim per substrate-or-it-didnt-happen
 substrate_landings:
   - B-0747 (the row this research informs at machine-substrate GitOps scope)
-  - B-0748 (kro + Crossplane + middleware spectrum evaluation — the row this research seeds)
-  - B-0742 (reference k8s stack — affected by spectrum choice)
+  - 081KSE6WT0008QG0R002E6P098 (kro + Crossplane + middleware spectrum evaluation — the row this research seeds)
+  - 081KSE6WT0008QG0R000YYH3DY (reference k8s stack — affected by spectrum choice)
 tags: [kro, crossplane, koreo, kubevela, carvel, ack, kcc, aso, gitops-spectrum, k8s-control-plane, declarative-operators, function-kro]
 ---
 
@@ -126,21 +126,21 @@ Aaron 2026-05-25 framing immediately following the paste: *"kro yes and we need 
 
 | Spectrum tool | How it composes with Zeta substrate |
 |---|---|
-| **kro** | Strong candidate for B-0742 reference stack composition layer. Aaron's endorsement ("kro yes") signals adoption direction. RGD + CEL pattern feels native to the declarative-everything posture. Composes with B-0731 hat-ontology (RGDs could declare hat-bindings as part of cluster resource graphs). |
+| **kro** | Strong candidate for 081KSE6WT0008QG0R000YYH3DY reference stack composition layer. Aaron's endorsement ("kro yes") signals adoption direction. RGD + CEL pattern feels native to the declarative-everything posture. Composes with 081KSE6WT0008QG0R0004HV6RR hat-ontology (RGDs could declare hat-bindings as part of cluster resource graphs). |
 | **Crossplane** | Heavy-weight; existing investment in Vault + SPIRE + cert-manager + ESO substrate (per Addison's STARTING-POINT bootstrap order) may not need Crossplane's universal-control-plane scope. Substrate-honest: evaluate per use case. |
 | **Koreo** | Middle-tier orchestrator; could be useful if cross-provider (AWS+GCP+Azure) cluster composition becomes load-bearing for federated forks (per B-0741). Today's single-cluster scope doesn't need it; future federation might. |
 | **KubeVela** | CUE-based; CUE is a substrate Aaron has noted before (per memory). KubeVela could sit between ArgoCD apps + the underlying k8s resources to provide higher-level app modeling. Evaluate. |
 | **Carvel (kbld + ytt)** | Template-free YAML injection. Could compose with B-0747 reconciler logic at the "render the desired-state files" step. Substrate-honest evaluation needed. |
-| **ACK / KCC / ASO** | Cloud-provider operators; useful when Zeta cluster needs to provision cloud resources (per B-0727 4-tier topology — cloud/hub tier composes with these). Today's bare-metal-first focus deprioritizes; production cloud tier composes. |
+| **ACK / KCC / ASO** | Cloud-provider operators; useful when Zeta cluster needs to provision cloud resources (per 081KSE6WT0008QG0R0006HKTXJ 4-tier topology — cloud/hub tier composes with these). Today's bare-metal-first focus deprioritizes; production cloud tier composes. |
 | **function-kro** | kro inside Crossplane; if we adopt Crossplane AND kro both, function-kro is the canonical integration path. |
 
 ### What this research enables
 
-The research informs B-0748 (kro + Crossplane + middleware spectrum evaluation — the umbrella for evaluating spectrum adoption for Zeta reference stack + downstream forks). The research is also reusable: any fork (per B-0741) evaluating its own composition layer adoption gets the spectrum analysis for free.
+The research informs 081KSE6WT0008QG0R002E6P098 (kro + Crossplane + middleware spectrum evaluation — the umbrella for evaluating spectrum adoption for Zeta reference stack + downstream forks). The research is also reusable: any fork (per B-0741) evaluating its own composition layer adoption gets the spectrum analysis for free.
 
 ### What this research does NOT decide
 
-This research is descriptive (spectrum exists; tools have these properties). It does NOT decide for Zeta which tools to adopt. That's B-0748's design pass. Substrate-honest expectation: the design pass weighs against Zeta's existing investments (Vault + SPIRE + cert-manager + ESO + ArgoCD), the upcoming B-0747 machine-state-reconciler scope, the cross-fork interop story per B-0741, and operator (Aaron + Max + Addison) preferences.
+This research is descriptive (spectrum exists; tools have these properties). It does NOT decide for Zeta which tools to adopt. That's 081KSE6WT0008QG0R002E6P098's design pass. Substrate-honest expectation: the design pass weighs against Zeta's existing investments (Vault + SPIRE + cert-manager + ESO + ArgoCD), the upcoming B-0747 machine-state-reconciler scope, the cross-fork interop story per B-0741, and operator (Aaron + Max + Addison) preferences.
 
 ### Aaron's "composes with machine outside k8s and other things gitops like" framing
 

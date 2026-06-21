@@ -46,7 +46,7 @@ Each legacy row is one markdown file with YAML frontmatter:
 
 ```markdown
 ---
-id: B-0042
+id: 081KQ3HBZ0008QG0R002GDRFS5
 priority: P2
 status: open
 title: Server Meshing and SpacetimeDB deep research
@@ -58,8 +58,8 @@ last_updated: 2026-04-24
 depends_on: []
 decomposition: blob
 composes_with:
-  - B-0031
-  - B-0038
+  - 081KQ3HBZ0008QG0R003B2NAA2
+  - 081KQ3HBZ0008QG0R0006NJP4K
 tags: [game-industry, sharding, multi-node]
 ---
 

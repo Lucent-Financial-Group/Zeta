@@ -46,15 +46,15 @@ Maji Anti-Entropy Sweep: Peeling off slice 5 (category classifier) from the mass
 ### Thread 1 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6DOEpG`
-- **Path**: `docs/backlog/P2/B-0678-b0620-slice-5-category-classifier.md`
+- **Path**: `docs/backlog/P2/081KRYRGG0008QG0R001DDV68E-b0620-slice-5-category-classifier.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-19T16:24:22Z on `docs/backlog/P2/B-0678-b0620-slice-5-category-classifier.md`:14 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-19T16:24:22Z on `docs/backlog/P2/081KRYRGG0008QG0R001DDV68E-b0620-slice-5-category-classifier.md`:14 (association: NONE)
 
   <pre>
-  The frontmatter is missing two required fields per `tools/backlog/README.md`: `title` (required string) and `last_updated` (required YYYY-MM-DD). Other recent rows under `docs/backlog/P2/` (e.g. `B-0672-b0590-slice5-bare-metal-install-automation.md`, `B-0610-amazon-orders-extract-v3-design-pass-2026-05-16.md`) include both. Please add them.
+  The frontmatter is missing two required fields per `tools/backlog/README.md`: `title` (required string) and `last_updated` (required YYYY-MM-DD). Other recent rows under `docs/backlog/P2/` (e.g. `081KRYRGG0008QG0R002DGWP94-b0590-slice5-bare-metal-install-automation.md`, `081KRQ1AB0008QG0R002TZ063S-amazon-orders-extract-v3-design-pass-2026-05-16.md`) include both. Please add them.
   </pre>
 
 ### Thread 2 -- resolved [outdated, collapsed]
@@ -68,7 +68,7 @@ Maji Anti-Entropy Sweep: Peeling off slice 5 (category classifier) from the mass
 - **`Copilot` (bot)** at 2026-05-19T16:24:22Z on `docs/backlog/P2/B-0620-slice-5-category-classifier.md`:2 (association: NONE)
 
   <pre>
-  Filename does not match the frontmatter `id`. The id is `B-0620.5` but the file is named `B-0620-slice-5-category-classifier.md`. Per `tools/backlog/README.md` and consistent with all other dotted-id rows in `docs/backlog/P2/` (e.g. `B-0004.1-substrate-inventory-scanner-ts.md`, `B-0026.1-…`, `B-0610` siblings), this should be `B-0620.5-category-classifier.md` so the filename prefix matches the id. As-is, the file will collide visually/sort-wise with the parent `B-0620` row when it lands.
+  Filename does not match the frontmatter `id`. The id is `B-0620.5` but the file is named `B-0620-slice-5-category-classifier.md`. Per `tools/backlog/README.md` and consistent with all other dotted-id rows in `docs/backlog/P2/` (e.g. `081KR50HA0008QG0R000YTJE8Q-substrate-inventory-scanner-ts.md`, `081KR50HA0008QG0R000C6N7CJ-…`, `081KRQ1AB0008QG0R002TZ063S` siblings), this should be `B-0620.5-category-classifier.md` so the filename prefix matches the id. As-is, the file will collide visually/sort-wise with the parent `B-0620` row when it lands.
   </pre>
 
 ## Fix commits (touching thread paths)
@@ -89,12 +89,12 @@ feat(B-0620.5): decompose slice 5 from blob PR 4023
 
 **Touched files (intersect with thread paths):**
 
-- `docs/backlog/P2/B-0678-b0620-slice-5-category-classifier.md`
+- `docs/backlog/P2/081KRYRGG0008QG0R001DDV68E-b0620-slice-5-category-classifier.md`
 
 **Message:**
 
 ```
-fix(B-0678): normalize slice 5 backlog row
+fix(081KRYRGG0008QG0R001DDV68E): normalize slice 5 backlog row
 
 Rebase the B-0620 slice 5 category-classifier row onto current main, assign a numeric backlog id, add required frontmatter, repair the landed slice dependency, and regenerate docs/BACKLOG.md.
 

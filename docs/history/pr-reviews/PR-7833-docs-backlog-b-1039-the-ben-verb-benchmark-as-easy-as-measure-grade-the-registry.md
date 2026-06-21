@@ -27,7 +27,7 @@
 
 ## Description
 
-ben joins sim·mea·cut as a DI-injected verb on the B-1035 boundary: rooms inherit timing/memory metering (red-lit — being timed is being observed; ambient only at the rim). The jewel: ComplexityRegistry rows are PREDICTIONS — ben runs n/2n/4n and grades them (VIOLATED = a priced bug). chip8 = the exact case (ticks, no wall clock); BenchmarkDotNet = the dotnet senior adapter. Docs only.
+ben joins sim·mea·cut as a DI-injected verb on the 081KTSZN10008QG0R002J0GE0Z boundary: rooms inherit timing/memory metering (red-lit — being timed is being observed; ambient only at the rim). The jewel: ComplexityRegistry rows are PREDICTIONS — ben runs n/2n/4n and grades them (VIOLATED = a priced bug). chip8 = the exact case (ticks, no wall clock); BenchmarkDotNet = the dotnet senior adapter. Docs only.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

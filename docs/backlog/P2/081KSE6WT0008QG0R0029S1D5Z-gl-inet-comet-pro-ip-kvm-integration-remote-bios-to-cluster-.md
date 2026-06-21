@@ -1,6 +1,5 @@
 ---
-id: B-0770
-zetaid: 081KSE6WT0008QG0R0029S1D5Z
+id: 081KSE6WT0008QG0R0029S1D5Z
 priority: P2
 status: open
 title: GL.iNet Comet Pro IP-KVM integration — remote BIOS-to-cluster-member; zero-physical-access cluster bring-up + repair
@@ -38,7 +37,7 @@ IP-KVM attached. The Comet Pro provides everything needed for
 | USB mass-storage emulation | Agent PRESENTS the Zeta installer ISO as a virtual USB drive — no physical USB stick required on PC 2 |
 | ATX power control (with optional cable) | Agent POWERS the box on/off + reboots remotely |
 | Wake-on-LAN | Power-on without ATX cable if motherboard supports WOL |
-| Web UI + API | Standards-layer interface (per B-0765 ServiceTitan route) — REST + WebRTC for stream + HID |
+| Web UI + API | Standards-layer interface (per 081KSE6WT0008QG0R00063R6HB ServiceTitan route) — REST + WebRTC for stream + HID |
 | BliKVM-derived firmware | Open-source-friendly; hackable; community substrate |
 | Local network or Tailscale / Headscale (per Zeta substrate) | Operator's network OR Zeta's existing zero-trust mesh; no exposed public ports needed |
 
@@ -72,7 +71,7 @@ Zeta substrate that wraps Comet Pro into a coherent
 
 - **Comet Pro inventory**: per-cluster registry of which nodes
   have a Comet Pro attached + each Comet Pro's network address
-  (mDNS-discovered per B-0757, OR static config)
+  (mDNS-discovered per 081KSE6WT0008QG0R000CV98PV, OR static config)
 - **Agent-facing API wrapper**: TypeScript wrapper around
   Comet Pro's REST + WebRTC (`tools/kvm/comet-pro.ts`) that
   exposes the operations Zeta needs:
@@ -137,7 +136,7 @@ Zeta substrate that wraps Comet Pro into a coherent
       zero-physical-access pattern; per-vendor BIOS
       navigation notes
 
-## ServiceTitan-route composition (B-0765)
+## ServiceTitan-route composition (081KSE6WT0008QG0R00063R6HB)
 
 Comet Pro is **the existing IP-KVM standards interface** Zeta
 plugs into — exactly per the ServiceTitan-route principle. The
@@ -145,13 +144,13 @@ substrate Zeta adds:
 
 - AI-driven BIOS navigation (vision + per-vendor handlers)
 - Integration with Zeta's cluster substrate (identity-aware
-  repair per B-0760; auto-discovery per B-0757)
+  repair per B-0760; auto-discovery per 081KSE6WT0008QG0R000CV98PV)
 - Multi-node orchestration patterns
 
 Alternative IP-KVM devices fit the same Zeta wrapper if their
 API surface matches (BliKVM, PiKVM, NanoKVM, Tinypilot,
 JetKVM). Aaron picked Comet Pro; the wrapper is shaped per
-B-0763 so alternative IP-KVM vendors plug in behind the same
+081KSE6WT0008QG0R000WVYAJ2 so alternative IP-KVM vendors plug in behind the same
 operator-facing interface.
 
 ## Why this is load-bearing for the cluster substrate
@@ -160,9 +159,9 @@ operator-facing interface.
 |---|---|
 | Operator must physically attend each node for first install + every BIOS-level change | Zero-physical-access for everything except the initial 5-min plug-in of Comet Pro itself |
 | Repair-tool semantics (B-0760) require physical access to plug in USB | Repair fully remote via virtual-USB mount |
-| 3-node HA promise (B-0756) requires Aaron to drive 3 hours to remote site if all 3 fail | Aaron can repair from anywhere with network access |
-| Reference architecture (B-0761) limited to "buyers who have physical access to all nodes" | Reference architecture works for distributed / colo / edge deployments where physical access is expensive |
-| ARC-AGI benchmark scenarios (B-0761) limited to scenarios humans can stage | Benchmark scenarios can include "5-node cluster gets rebuilt remotely from cold-iron after 3 simultaneous node failures" |
+| 3-node HA promise (081KSE6WT0008QG0R001NG9JZH) requires Aaron to drive 3 hours to remote site if all 3 fail | Aaron can repair from anywhere with network access |
+| Reference architecture (081KSE6WT0008QG0R0015ZF2G6) limited to "buyers who have physical access to all nodes" | Reference architecture works for distributed / colo / edge deployments where physical access is expensive |
+| ARC-AGI benchmark scenarios (081KSE6WT0008QG0R0015ZF2G6) limited to scenarios humans can stage | Benchmark scenarios can include "5-node cluster gets rebuilt remotely from cold-iron after 3 simultaneous node failures" |
 
 The Comet Pro substrate extends Zeta's reach from
 "home-lab where Aaron walks to each node" to "distributed
@@ -180,21 +179,21 @@ deployment surface.
 - B-0754 — zero-typing first-boot runs unchanged inside the
   virtual-USB-mounted ISO; the Comet Pro is just a different
   delivery mechanism for the same ISO
-- B-0757 — cluster auto-discovery via mDNS extends to Comet
+- 081KSE6WT0008QG0R000CV98PV — cluster auto-discovery via mDNS extends to Comet
   Pros (discoverable as cluster-node-adjacent KVM devices)
-- B-0759 — first-time-CLI-user persona broadens: includes
+- 081KSE6WT0008QG0R003G0Y62D — first-time-CLI-user persona broadens: includes
   operators who manage colo / edge / remote deployments
 - B-0760 — USB-as-repair-tool fully composed with remote
   delivery via Comet Pro
-- B-0761 — open reference architecture grows: distributed-
+- 081KSE6WT0008QG0R0015ZF2G6 — open reference architecture grows: distributed-
   remote-access cluster bring-up becomes a documented
   reference scenario
-- B-0762 — auto-submit-back telemetry includes Comet Pro
+- 081KSE6WT0008QG0R003FG3E8R — auto-submit-back telemetry includes Comet Pro
   driver compatibility + BIOS vendor handler accuracy
-- B-0763 — IP-KVM device alternatives (BliKVM, PiKVM, JetKVM,
+- 081KSE6WT0008QG0R000WVYAJ2 — IP-KVM device alternatives (BliKVM, PiKVM, JetKVM,
   NanoKVM, Tinypilot) plug in via the same Comet Pro wrapper
   shape per the negotiation-high-seat principle
-- B-0764 — composes with KubeVirt / Crucial Cluster API for
+- 081KSE6WT0008QG0R0009YYNP4 — composes with KubeVirt / Crucial Cluster API for
   bare-metal provisioning workflows that other operators
   already use
 
@@ -205,7 +204,7 @@ deployment surface.
 | Motherboard | TBD (Aaron to confirm) | BIOS vendor + BIOS-entry-key + UEFI secure boot policy |
 | BIOS / UEFI | TBD | AMI / Phoenix / Insyde / Award |
 | NVMe / SATA / HDD layout | TBD | per B-0754 greedy N-disk + B-0758 USB-persistent-OS triage |
-| GPU | TBD | per B-0755 worker-gpu role |
+| GPU | TBD | per 081KSE6WT0008QG0R003612WGJ worker-gpu role |
 | ATX power header pin layout | TBD | for Comet Pro power-control cable |
 
 Once Aaron confirms PC 2 hardware, this section gets concrete.
@@ -223,7 +222,7 @@ adapt at runtime.
   reachability by default; agent reach via operator's network
   OR Zeta's mesh substrate (Tailscale / Headscale / Reticulum)
 - Audit trail: every agent-driven Comet Pro operation logged +
-  telemetry-eligible per B-0762 opt-in
+  telemetry-eligible per 081KSE6WT0008QG0R003FG3E8R opt-in
 - Physical-presence consent: Comet Pro plug-in IS the physical-
   presence consent event per B-0743; subsequent agent ops
   operate under that consent until operator revokes (e.g.,
@@ -233,7 +232,7 @@ adapt at runtime.
 
 - Replacing Comet Pro firmware with Zeta-native BliKVM fork —
   separate row if ever; today's scope is integrate-as-standard
-  per B-0765
+  per 081KSE6WT0008QG0R00063R6HB
 - Power-distribution unit (PDU) integration for remote power
   cycling — Comet Pro ATX cable covers single-node; rack-PDU
   is separate scope
@@ -252,9 +251,9 @@ adapt at runtime.
 Aaron 2026-05-25 mid-iter-2-test prep: PC 2 is being added
 with GL.iNet Comet Pro for remote BIOS-to-cluster-member setup.
 The Comet Pro substrate composes with the cluster-install
-cluster (B-0754 / B-0760 / B-0757) and extends Zeta's
+cluster (B-0754 / B-0760 / 081KSE6WT0008QG0R000CV98PV) and extends Zeta's
 deployment reach from physical-access-required to fully
-remote. ServiceTitan-route composition (B-0765) preserved:
+remote. ServiceTitan-route composition (081KSE6WT0008QG0R00063R6HB) preserved:
 Comet Pro is the existing standards-layer interface; Zeta
 plugs in with AI-driven BIOS navigation + cluster-substrate
 integration.

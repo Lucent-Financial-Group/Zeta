@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 // backfill-legacy-zetaids.ts — one-shot: add a `zetaid:` field to every grandfathered B-NNNN row
-// (B-0956 cutover, Aaron 2026-06-06). The B-NNNN stays the human alias / filename / id; the ZetaId makes
+// (081KSXN940008QG0R002FWR9B2 cutover, Aaron 2026-06-06). The B-NNNN stays the human alias / filename / id; the ZetaId makes
 // every work-item uniformly 128-bit-addressable (for the git-native G-Set / bus substrate) WITHOUT a
 // filename rewrite.
 //
@@ -37,7 +37,7 @@ function mix64(x: bigint): bigint {
 
 /** Deterministic 64-bit randomness, stable per B-NNNN. Position-DEPENDENT FNV-1a fold
  *  (each char advances the state through the multiply) so anagram / equal-digit-sum ids —
- *  e.g. B-0308 vs B-0281 — do not collide the way a commutative additive hash would. */
+ *  e.g. 081KR2E4K0008QG0R002S3FDXN vs 081KR2E4K0008QG0R002FSPPQR — do not collide the way a commutative additive hash would. */
 function detRand(s: string): bigint {
   let z = 0xcbf29ce484222325n; // FNV-1a offset basis
   for (let i = 0; i < s.length; i++) {

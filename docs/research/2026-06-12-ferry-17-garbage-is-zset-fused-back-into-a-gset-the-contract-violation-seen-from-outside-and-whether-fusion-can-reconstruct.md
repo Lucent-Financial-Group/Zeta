@@ -182,7 +182,7 @@ interfaces; the transfer to replicated-data contracts is ours and is marked as s
   membrane processable)
 - `src/Core/ZSet.fs` `consolidate*` (the fusion act, in-tree) · `db/shapes/cartridges/gc.lines`
   (the GC cartridge) · B-1036 rung 5 (history epochs / git gc — this ferry is its theory) ·
-  B-0969 (GCounter; the ordinal-parity lesson lives next door)
+  081KT07NV0008QG0R001YDB73K (GCounter; the ordinal-parity lesson lives next door)
 - Anchors: Shapiro–Preguiça–Baquero–Zawirski 2011 (CRDTs; the 2P-set) · Bieniusa et al. 2012
   (the tombstone problem; optimized OR-sets) · Baquero et al. (causal stability — the GC
   horizon) · Meyer 1988 (open-closed) · Landauer 1961 (erasure pays) · LSM compaction /

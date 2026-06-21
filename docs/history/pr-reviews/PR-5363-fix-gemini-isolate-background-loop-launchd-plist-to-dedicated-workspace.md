@@ -107,7 +107,7 @@ Co-Authored-By: Gemini <noreply@google.com>
 **Message:**
 
 ```
-fix(B-0823 lior-loop plist): add maintainer-only header per sibling-p…
+fix(081KSGS9H0008QG0R003SWZF9J lior-loop plist): add maintainer-only header per sibling-p…
 
 …list convention
 
@@ -126,5 +126,5 @@ and try to `launchctl load` it unchanged.
 No behavioral change — comment-only edit.
 
 Landed via REST git-data API per .claude/rules/blocked-green-ci-investigate-threads.md
-B-0615 push-hang workaround (single-file change; no worktree contention).
+081KRW63S0008QG0R000EAZ9K2 push-hang workaround (single-file change; no worktree contention).
 ```

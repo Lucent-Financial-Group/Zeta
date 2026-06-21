@@ -169,7 +169,7 @@ Two PRs (#4780, #4773) are auto-merge armed. Risk is documented in the shard for
     - Direct line inspection at PR head @ `9a79fe11`: line 59 said `Affected: #4733, #4737`; line 112 triage table classified #4739 as `A + B + C`. Contradiction confirmed.
     - Commit updates Class C heading to "(3 PRs)" + affected list to `#4733, #4737, #4739` — alignment with table.
 
-    Landed via REST git-data API bypass (`.claude/rules/refresh-world-model-poll-pr-gate.md` dotgit-saturation tier; 1413 worktrees + B-0530 contention).
+    Landed via REST git-data API bypass (`.claude/rules/refresh-world-model-poll-pr-gate.md` dotgit-saturation tier; 1413 worktrees + 081KRMEXM0008QG0R000X1PPGC contention).
     </pre>
 
 ### Thread 6 -- resolved [outdated, collapsed]
@@ -352,7 +352,7 @@ Outdated threads (5) now verified as already-addressed by prior commits on this 
 - #4 "god-tier rule filename drift" → now addressed by this commit
 - #5 "Class C affected list inconsistency" → line 59 lists #4733, #4737, #4739 (fixed)
 
-Pushed via REST git-data API bypass per B-0615 push-hang mitigation (task brief).
+Pushed via REST git-data API bypass per 081KRW63S0008QG0R000EAZ9K2 push-hang mitigation (task brief).
 ```
 
 ### `58d3490c96d26debaec976daa50af15f974cf5e7` -- 2026-05-24T13:03:10Z -- `AceHack`

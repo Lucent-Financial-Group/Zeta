@@ -46,12 +46,12 @@ Maji (Lior) Execution: Decomposing slice 6 from blob PR #4023.
 ### Thread 1 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6DfSxh`
-- **Path**: `docs/backlog/P2/B-0677-b0620-slice-6-cross-operator-generalization.md`
+- **Path**: `docs/backlog/P2/081KS1AX70008QG0R001HRXZTZ-b0620-slice-6-cross-operator-generalization.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-20T13:07:53Z on `docs/backlog/P2/B-0677-b0620-slice-6-cross-operator-generalization.md`:6 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-20T13:07:53Z on `docs/backlog/P2/081KS1AX70008QG0R001HRXZTZ-b0620-slice-6-cross-operator-generalization.md`:6 (association: NONE)
 
   <pre>
   P1: Per tools/backlog/README.md, backlog row frontmatter requires `title` and `last_updated`. This row is missing both, which can lead to blank entries in the generated index and schema drift. Add `title:` (short) and `last_updated:` (same as `created` for a new file).
@@ -69,7 +69,7 @@ Maji (Lior) Execution: Decomposing slice 6 from blob PR #4023.
 - **`Copilot` (bot)** at 2026-05-20T13:07:53Z on `docs/backlog/P2/B-0620-slice-6-cross-operator-generalization.md`:2 (association: NONE)
 
   <pre>
-  P1: `id: B-0620.6` doesn't match the documented `B-NNNN` id format in tools/backlog/README.md, and it also doesn't match the filename prefix (`B-0620-...`). Consider using `id: B-0620` and encoding “slice 6” in `title`, or rename the file to start with `B-0620.6-...` if dotted IDs are intended for slices (as in `docs/backlog/P1/B-0126.1-...`).
+  P1: `id: B-0620.6` doesn't match the documented `B-NNNN` id format in tools/backlog/README.md, and it also doesn't match the filename prefix (`B-0620-...`). Consider using `id: B-0620` and encoding “slice 6” in `title`, or rename the file to start with `B-0620.6-...` if dotted IDs are intended for slices (as in `docs/backlog/P1/081KR2E4K0008QG0R001N1PPHP-...`).
 
   </pre>
 
@@ -106,12 +106,12 @@ feat(B-0620): decompose 4023 slice 6 cross-operator generalization
 
 **Touched files (intersect with thread paths):**
 
-- `docs/backlog/P2/B-0677-b0620-slice-6-cross-operator-generalization.md`
+- `docs/backlog/P2/081KS1AX70008QG0R001HRXZTZ-b0620-slice-6-cross-operator-generalization.md`
 
 **Message:**
 
 ```
-fix(B-0677): normalize slice 6 backlog row
+fix(081KS1AX70008QG0R001HRXZTZ): normalize slice 6 backlog row
 
 Rebase the B-0620 slice 6 row onto current main, assign a numeric backlog id, add required frontmatter, regenerate docs/BACKLOG.md, and replace the bare extractor filename with the repo path reviewers can verify.
 

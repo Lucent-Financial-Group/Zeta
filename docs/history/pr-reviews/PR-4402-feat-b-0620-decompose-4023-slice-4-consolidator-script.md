@@ -105,7 +105,7 @@ Maji (Lior) Execution: Decomposing slice 4 from blob PR #4023.
 - **`Copilot` (bot)** at 2026-05-20T13:04:45Z on `docs/backlog/P2/B-0620-slice-4-consolidator-script.md`:2 (association: NONE)
 
   <pre>
-  The row id uses a dotted slice form (`B-0620.4`), but the filename is `B-0620-slice-4-...` (no `.4`). Other sliced rows in `docs/backlog/**` include the dotted suffix in the filename (e.g., `B-0126.1-...`). Consider renaming the file so the filename and `id` stay aligned for searchability and cross-referencing.
+  The row id uses a dotted slice form (`B-0620.4`), but the filename is `B-0620-slice-4-...` (no `.4`). Other sliced rows in `docs/backlog/**` include the dotted suffix in the filename (e.g., `081KR2E4K0008QG0R001N1PPHP-...`). Consider renaming the file so the filename and `id` stay aligned for searchability and cross-referencing.
 
   </pre>
 
@@ -175,15 +175,15 @@ Maji (Lior) Execution: Decomposing slice 4 from blob PR #4023.
 ### Thread 9 -- resolved [outdated, collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6DfnG5`
-- **Path**: `docs/backlog/P2/B-0676-b0620-slice-4-consolidator-script.md`
+- **Path**: `docs/backlog/P2/081KS1AX70008QG0R001Y9EN85-b0620-slice-4-consolidator-script.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-20T13:23:44Z on `docs/backlog/P2/B-0676-b0620-slice-4-consolidator-script.md`:5 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-20T13:23:44Z on `docs/backlog/P2/081KS1AX70008QG0R001Y9EN85-b0620-slice-4-consolidator-script.md`:5 (association: NONE)
 
   <pre>
-  The per-row `title` is used verbatim in the generated docs/BACKLOG.md index, which already prefixes each entry with the row ID. Including `B-0676 -` in the `title` makes the index entry redundant; consider changing the title to omit the row ID (e.g., start with `B-0620 slice 4…` or just the descriptive text) and regenerate docs/BACKLOG.md.
+  The per-row `title` is used verbatim in the generated docs/BACKLOG.md index, which already prefixes each entry with the row ID. Including `081KS1AX70008QG0R001Y9EN85 -` in the `title` makes the index entry redundant; consider changing the title to omit the row ID (e.g., start with `B-0620 slice 4…` or just the descriptive text) and regenerate docs/BACKLOG.md.
 
   </pre>
 
@@ -198,19 +198,19 @@ Maji (Lior) Execution: Decomposing slice 4 from blob PR #4023.
 - **`Copilot` (bot)** at 2026-05-20T13:23:45Z on `docs/BACKLOG.md`:288 (association: NONE)
 
   <pre>
-  This index entry currently repeats the row ID in the title text (`B-0676 - …`) even though the index already shows `**[B-0676]**`. If you drop the `B-0676 -` prefix from the row file’s frontmatter `title` and regenerate the index, this line will become cleaner and consistent with the surrounding entries.
+  This index entry currently repeats the row ID in the title text (`081KS1AX70008QG0R001Y9EN85 - …`) even though the index already shows `**[081KS1AX70008QG0R001Y9EN85]**`. If you drop the `081KS1AX70008QG0R001Y9EN85 -` prefix from the row file’s frontmatter `title` and regenerate the index, this line will become cleaner and consistent with the surrounding entries.
 
   </pre>
 
 ### Thread 11 -- resolved [outdated, collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6DfvqV`
-- **Path**: `docs/backlog/P2/B-0676-b0620-slice-4-consolidator-script.md`
+- **Path**: `docs/backlog/P2/081KS1AX70008QG0R001Y9EN85-b0620-slice-4-consolidator-script.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-20T13:30:28Z on `docs/backlog/P2/B-0676-b0620-slice-4-consolidator-script.md`:29 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-20T13:30:28Z on `docs/backlog/P2/081KS1AX70008QG0R001Y9EN85-b0620-slice-4-consolidator-script.md`:29 (association: NONE)
 
   <pre>
   Spelling/clarity: “hardware-filter substrate” reads like an incomplete modifier. Consider changing to “hardware-filtered substrate” (or a clearer noun phrase like “hardware inventory substrate”) so the acceptance criterion is unambiguous.
@@ -269,14 +269,14 @@ Co-Authored-By: Codex <noreply@openai.com>
 **Touched files (intersect with thread paths):**
 
 - `docs/BACKLOG.md`
-- `docs/backlog/P2/B-0676-b0620-slice-4-consolidator-script.md`
+- `docs/backlog/P2/081KS1AX70008QG0R001Y9EN85-b0620-slice-4-consolidator-script.md`
 
 **Message:**
 
 ```
 fix(pr4402): use numeric backlog id
 
-Convert the B-0620 slice 4 child row to B-0676 so autonomous pickup can pass the id and slug through claim-worktree-bootstrap without hitting the dotted-id rejection.
+Convert the B-0620 slice 4 child row to 081KS1AX70008QG0R001Y9EN85 so autonomous pickup can pass the id and slug through claim-worktree-bootstrap without hitting the dotted-id rejection.
 
 Co-Authored-By: Codex <noreply@openai.com>
 ```
@@ -285,14 +285,14 @@ Co-Authored-By: Codex <noreply@openai.com>
 
 **Touched files (intersect with thread paths):**
 
-- `docs/backlog/P2/B-0676-b0620-slice-4-consolidator-script.md`
+- `docs/backlog/P2/081KS1AX70008QG0R001Y9EN85-b0620-slice-4-consolidator-script.md`
 
 **Message:**
 
 ```
 fix(pr4402): clarify planned inventory entrypoint
 
-State explicitly that the B-0676 slice creates tools/inventory/ if needed and that tools/inventory/consolidate.ts is the planned entrypoint, so the backlog row no longer points at a currently missing directory without context.
+State explicitly that the 081KS1AX70008QG0R001Y9EN85 slice creates tools/inventory/ if needed and that tools/inventory/consolidate.ts is the planned entrypoint, so the backlog row no longer points at a currently missing directory without context.
 
 Co-Authored-By: Codex <noreply@openai.com>
 ```
@@ -302,14 +302,14 @@ Co-Authored-By: Codex <noreply@openai.com>
 **Touched files (intersect with thread paths):**
 
 - `docs/BACKLOG.md`
-- `docs/backlog/P2/B-0676-b0620-slice-4-consolidator-script.md`
+- `docs/backlog/P2/081KS1AX70008QG0R001Y9EN85-b0620-slice-4-consolidator-script.md`
 
 **Message:**
 
 ```
 fix(pr4402): avoid duplicate backlog id in title
 
-Remove the redundant B-0676 prefix from the row title and regenerate docs/BACKLOG.md so the generated index does not repeat the id.
+Remove the redundant 081KS1AX70008QG0R001Y9EN85 prefix from the row title and regenerate docs/BACKLOG.md so the generated index does not repeat the id.
 
 Co-Authored-By: Codex <noreply@openai.com>
 ```
@@ -318,14 +318,14 @@ Co-Authored-By: Codex <noreply@openai.com>
 
 **Touched files (intersect with thread paths):**
 
-- `docs/backlog/P2/B-0676-b0620-slice-4-consolidator-script.md`
+- `docs/backlog/P2/081KS1AX70008QG0R001Y9EN85-b0620-slice-4-consolidator-script.md`
 
 **Message:**
 
 ```
 fix(pr4402): clarify hardware inventory wording
 
-Replace the ambiguous hardware-filter substrate phrase with hardware inventory substrate in the B-0676 acceptance criteria.
+Replace the ambiguous hardware-filter substrate phrase with hardware inventory substrate in the 081KS1AX70008QG0R001Y9EN85 acceptance criteria.
 
 Co-Authored-By: Codex <noreply@openai.com>
 ```

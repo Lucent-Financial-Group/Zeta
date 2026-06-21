@@ -1,6 +1,5 @@
 ---
-id: B-0950
-zetaid: 081KDU93J0OAZMF14J8R4K66ZR06XL
+id: 081KDU93J0OAZMF14J8R4K66ZR06XL
 priority: P1
 status: done
 title: Non-mechanism setup realizers — consolidate quantum/elan/python-tools/dotnet-tools/agent-clis/local-llm/tlaps into mechanism-by-source before Ace migration (Aaron 2026-06-21)
@@ -23,7 +22,7 @@ type: chore
 owner: Dejan
 ---
 
-# B-0950 — Non-mechanism setup realizers → mechanism-by-source
+# 081KDU93J0OAZMF14J8R4K66ZR06XL — Non-mechanism setup realizers → mechanism-by-source
 
 ## Operator framing (Aaron 2026-06-21)
 
@@ -35,7 +34,7 @@ uniform realizer**, **`_when.sh` = platform filter**, **`ace-mechanism-pointers.
 dep graph**. Several install steps still use one-off `tools/setup/common/*.sh` scripts that duplicate
 the same parse-manifest → invoke-package-manager logic with different ecosystems.
 
-This row consolidates them **before** any Ace Bun-realizer work (B-0951 / B-0854).
+This row consolidates them **before** any Ace Bun-realizer work (081KSXN940008QG0R000R76H45 / 081KSKBP80008QG0R002VRN56K).
 
 ## Already mechanism-based (do not re-litigate)
 
@@ -96,11 +95,11 @@ After each step: update `linux.sh`/`macos.sh` dispatch, extend `ace-mechanism-po
    attributable to the migration.
 4. `bun src/Core.TypeScript/hygiene/check-bash-retirement-inventory.ts --enforce` green with updated
    allowlist.
-5. B-0951 unblocked (Ace realizer work can resume on uniform mechanism graph).
+5. 081KSXN940008QG0R000R76H45 unblocked (Ace realizer work can resume on uniform mechanism graph).
 
 ## Steward vs owner-domain CI residuals (do not conflate)
 
-These are **not** B-0950 acceptance criteria — track on owner lanes:
+These are **not** 081KDU93J0OAZMF14J8R4K66ZR06XL acceptance criteria — track on owner lanes:
 
 | Check | Owner | Status |
 |---|---|---|

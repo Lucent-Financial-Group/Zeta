@@ -1,6 +1,5 @@
 ---
-id: B-0755
-zetaid: 081KSE6WT0008QG0R003612WGJ
+id: 081KSE6WT0008QG0R003612WGJ
 priority: P2
 status: open
 title: Cluster role taxonomy expansion — control-plane-gpu, worker-cpu, worker-storage, all-in-one fused host configs
@@ -67,7 +66,7 @@ Host configs for:
 
 - B-0754 — zero-typing USB install (the keystroke-prompt
   surface that needs to grow when new roles land)
-- B-0737 — zflash + Touch ID PAM
+- 081KSE6WT0008QG0R003WZAQKV — zflash + Touch ID PAM
 - `full-ai-cluster/nixos/modules/` — the module library this
   row's host configs compose from
 

@@ -1,6 +1,5 @@
 ---
-id: B-0756
-zetaid: 081KSE6WT0008QG0R001NG9JZH
+id: 081KSE6WT0008QG0R001NG9JZH
 title: HA control-plane — multi-master k3s embedded etcd quorum + stable API endpoint (DNS round-robin or kube-vip virtual IP)
 status: open
 priority: P3
@@ -99,7 +98,7 @@ existing DNS infra), kube-vip v2 if needed.
 
 - B-0754 — zero-typing USB install (the keystroke prompt this
   extends; ha-init and ha-join modes)
-- B-0755 — role taxonomy expansion (HA control-plane is
+- 081KSE6WT0008QG0R003612WGJ — role taxonomy expansion (HA control-plane is
   another role variant)
 - `modules/k3s-server.nix` — primary module surface
 - `modules/k3s-agent.nix` — agents need to know the stable API

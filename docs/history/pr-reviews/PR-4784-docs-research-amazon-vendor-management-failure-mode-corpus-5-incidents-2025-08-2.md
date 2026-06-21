@@ -90,12 +90,12 @@ Renamed from \`amazon-support-routing-without-resolution-empirical-anchor-7-tran
 ### Thread 1 -- resolved [outdated, collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6EVw8L`
-- **Path**: `docs/backlog/P2/B-0713-soraya-round50-imaginary-stack-toy-model-registry-gap-lean-2026-05-23.md`
+- **Path**: `docs/backlog/P2/081KS923C0008QG0R002RH3EH8-soraya-round50-imaginary-stack-toy-model-registry-gap-lean-2026-05-23.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-23T22:51:52Z on `docs/backlog/P2/B-0713-soraya-round50-imaginary-stack-toy-model-registry-gap-lean-2026-05-23.md`:4 (association: NONE)
+- **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-23T22:51:52Z on `docs/backlog/P2/081KS923C0008QG0R002RH3EH8-soraya-round50-imaginary-stack-toy-model-registry-gap-lean-2026-05-23.md`:4 (association: NONE)
 
   <pre>
   **&lt;sub&gt;&lt;sub&gt;![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Preserve open backlog item instead of deleting its row**
@@ -237,9 +237,9 @@ Renamed from \`amazon-support-routing-without-resolution-empirical-anchor-7-tran
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-23T23:06:38Z on `docs/BACKLOG.md`:680 (association: NONE)
 
   <pre>
-  **&lt;sub&gt;&lt;sub&gt;![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Keep B-0713 tracked until its registry work lands**
+  **&lt;sub&gt;&lt;sub&gt;![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Keep 081KS923C0008QG0R002RH3EH8 tracked until its registry work lands**
 
-  This change removes the `B-0713` index row from `docs/BACKLOG.md` and deletes `docs/backlog/P2/B-0713-soraya-round50-imaginary-stack-toy-model-registry-gap-lean-2026-05-23.md`, but the deleted row is still `status: open` and the acceptance criteria it tracks (registering `ImaginaryStack/ToyModel` in `docs/research/verification-registry.md` and cross-linking `tools/lean4/README.md`) are not implemented in this commit. Deleting an unresolved row makes that known verification-drift task invisible to backlog tooling and future rounds, increasing the chance the gap is silently dropped instead of being closed/superseded with traceability.
+  This change removes the `081KS923C0008QG0R002RH3EH8` index row from `docs/BACKLOG.md` and deletes `docs/backlog/P2/081KS923C0008QG0R002RH3EH8-soraya-round50-imaginary-stack-toy-model-registry-gap-lean-2026-05-23.md`, but the deleted row is still `status: open` and the acceptance criteria it tracks (registering `ImaginaryStack/ToyModel` in `docs/research/verification-registry.md` and cross-linking `tools/lean4/README.md`) are not implemented in this commit. Deleting an unresolved row makes that known verification-drift task invisible to backlog tooling and future rounds, increasing the chance the gap is silently dropped instead of being closed/superseded with traceability.
 
   Useful? React with 👍 / 👎.
   </pre>
@@ -320,11 +320,11 @@ Renamed from \`amazon-support-routing-without-resolution-empirical-anchor-7-tran
 ```
 docs(research): Amazon vendor-management failure-mode corpus (rebased…
 
-… onto current main with B-0713 + B-0714)
+… onto current main with 081KS923C0008QG0R002RH3EH8 + 081KS923C0008QG0R000ECG5EC)
 
-Rebases PR #4784 onto current main (which now has B-0713 + B-0714 from
+Rebases PR #4784 onto current main (which now has 081KS923C0008QG0R002RH3EH8 + 081KS923C0008QG0R000ECG5EC from
 sibling Soraya rounds 50+51). Previous branch base predated those
-merges, causing a phantom-deletion conflict on B-0713.
+merges, causing a phantom-deletion conflict on 081KS923C0008QG0R002RH3EH8.
 
 Tree = current main + only the new comprehensive corpus file
 (2026-05-23-amazon-vendor-management-failure-mode-corpus-multi-incident-
@@ -416,7 +416,7 @@ fix(research): address Copilot+Codex review findings on Amazon corpus
 Verified via direct file inspection: body enumerates Incident 1, 2, 3, 4
 (plus 4b sub-section); Contact 1, 2, 3 in Incident 1 only.
 
-Pushed via REST git-data API bypass per B-0615 push-hang mitigation
+Pushed via REST git-data API bypass per 081KRW63S0008QG0R000EAZ9K2 push-hang mitigation
 (PR #4145 worked example).
 
 Co-Authored-By: Claude <noreply@anthropic.com>

@@ -1,6 +1,6 @@
 ---
 pr_number: 4797
-title: "backlog(B-0718): file Soraya round-61 forced-decomposition \u2014 audit four-trigger routing-tick framework"
+title: "backlog(081KS923C0008QG0R000TE1589): file Soraya round-61 forced-decomposition \u2014 audit four-trigger routing-tick framework"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-24T01:06:35Z"
@@ -12,7 +12,7 @@ archived_at: "2026-05-24T14:25:16Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #4797: backlog(B-0718): file Soraya round-61 forced-decomposition — audit four-trigger routing-tick framework
+# PR #4797: backlog(081KS923C0008QG0R000TE1589): file Soraya round-61 forced-decomposition — audit four-trigger routing-tick framework
 
 ## PR description
 
@@ -27,7 +27,7 @@ This is the auditor's own routing-loop recognizing it was hitting the **standing
 Soraya's current four re-engagement triggers (named round 54, carried through rounds 55-60):
 
 - (a) PR merge on filed Soraya rows (KNOWN_ANCHORS additions)
-- (b) Peer execution-side PR merge (e.g., PR #4780 B-0711)
+- (b) Peer execution-side PR merge (e.g., PR #4780 081KS923C0008QG0R0005VM4FB)
 - (c) New BUGS.md entry naming formal tool
 - (d) Fresh spec on main without anchor citation
 
@@ -90,11 +90,11 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 
 ## Pull request overview
 
-Adds a new P3 backlog row (B-0718) capturing a meta-audit of Soraya’s “four-trigger routing-tick” framework after repeated hold cycles, and updates the generated backlog index to include the new row.
+Adds a new P3 backlog row (081KS923C0008QG0R000TE1589) capturing a meta-audit of Soraya’s “four-trigger routing-tick” framework after repeated hold cycles, and updates the generated backlog index to include the new row.
 
 **Changes:**
-- Added `docs/backlog/P3/B-0718-...md` with the audit framing, hypotheses, and acceptance criteria.
-- Updated `docs/BACKLOG.md` to include B-0718 (and also adds an entry for B-0700).
+- Added `docs/backlog/P3/081KS923C0008QG0R000TE1589-...md` with the audit framing, hypotheses, and acceptance criteria.
+- Updated `docs/BACKLOG.md` to include 081KS923C0008QG0R000TE1589 (and also adds an entry for B-0700).
 
 ### Reviewed changes
 
@@ -102,8 +102,8 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated 3 c
 
 | File | Description |
 | ---- | ----------- |
-| docs/backlog/P3/B-0718-soraya-four-trigger-framework-cadence-audit-2026-05-23.md | New backlog row documenting the cadence/trigger audit plan and cross-references. |
-| docs/BACKLOG.md | Index update to list B-0718 (but currently also introduces a broken B-0700 entry). |
+| docs/backlog/P3/081KS923C0008QG0R000TE1589-soraya-four-trigger-framework-cadence-audit-2026-05-23.md | New backlog row documenting the cadence/trigger audit plan and cross-references. |
+| docs/BACKLOG.md | Index update to list 081KS923C0008QG0R000TE1589 (but currently also introduces a broken B-0700 entry). |
 
 ### COMMENTED — @AceHack (2026-05-24T02:09:35Z)
 
@@ -127,13 +127,13 @@ Useful? React with 👍 / 👎.
 
 P0: `docs/BACKLOG.md` now includes a link for **B-0700**, but there is no corresponding per-row file under `docs/backlog/P2/` (and no `id: B-0700` anywhere under `docs/backlog/`). This is a broken link and will diverge from the output of `tools/backlog/generate-index.sh` (likely failing backlog-index-integrity checks). Either add the missing `docs/backlog/P2/B-0700-...md` row file with `id: B-0700`, or remove this entry and regenerate `docs/BACKLOG.md` from the existing row files.
 
-### Thread 3: docs/backlog/P3/B-0718-soraya-four-trigger-framework-cadence-audit-2026-05-23.md:43 (resolved)
+### Thread 3: docs/backlog/P3/081KS923C0008QG0R000TE1589-soraya-four-trigger-framework-cadence-audit-2026-05-23.md:43 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-24T01:09:22Z):
 
 P2: The markdown table under “The four triggers under audit” is written with leading `||` on each row, which renders an extra empty first column (and may not match the table style used elsewhere). Use the standard `| ... | ... |` syntax so the table is 2 columns as intended.
 
-### Thread 4: docs/backlog/P3/B-0718-soraya-four-trigger-framework-cadence-audit-2026-05-23.md:32 (resolved)
+### Thread 4: docs/backlog/P3/081KS923C0008QG0R000TE1589-soraya-four-trigger-framework-cadence-audit-2026-05-23.md:32 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-24T01:09:22Z):
 

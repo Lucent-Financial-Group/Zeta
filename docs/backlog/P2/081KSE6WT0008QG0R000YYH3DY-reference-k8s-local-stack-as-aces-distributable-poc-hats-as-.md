@@ -1,6 +1,5 @@
 ---
-id: B-0742
-zetaid: 081KSE6WT0008QG0R000YYH3DY
+id: 081KSE6WT0008QG0R000YYH3DY
 priority: P2
 status: open
 created: 2026-05-25
@@ -27,7 +26,7 @@ related_substrate:
 tags: [reference-stack, ace-poc, reliable-ai-control, deterministic-declarative-gitops, hats-as-negotiated-fork-structure, cluster-primitives-charts, ai-native-human-native, full-ai-cluster, k8s-local-reference]
 ---
 
-# B-0742 — Reference k8s local stack as Ace's distributable PoC
+# 081KSE6WT0008QG0R000YYH3DY — Reference k8s local stack as Ace's distributable PoC
 
 ## Carved blade
 
@@ -39,7 +38,7 @@ Aaron 2026-05-25, after B-0741 (cross-cluster + cross-fork ontology negotiation 
 
 > *"hats become our negoated fork structure on top of a referece k8s local stack in zeta so anyone can use the reference stack and negoate back hats and new cluster primitives / charts ontology negoation, ace can distribute the reference stack itself as PoC that it has reliable AI control over all the package managers deterministicly and declarative / desired state way for easy git ops ai native human native understanding."*
 
-This is the **operational anchor** for B-0741. B-0741 named the WHAT (negotiation primitive + Ace as universal); B-0742 names the HOW (concrete reference stack + Ace-distributable + empirical PoC).
+This is the **operational anchor** for B-0741. B-0741 named the WHAT (negotiation primitive + Ace as universal); 081KSE6WT0008QG0R000YYH3DY names the HOW (concrete reference stack + Ace-distributable + empirical PoC).
 
 ## The three substantive claims
 
@@ -54,15 +53,15 @@ Inventory of substrate that already exists as the reference stack:
 | NFD + lstopo + zeta-install guided installer | `full-ai-cluster/usb-nixos-installer/` | #4951 |
 | Dev-cluster (k3d + Cilium 1.16 + ArgoCD 7.7 + root App-of-Apps) | `full-ai-cluster/dev-cluster/` | #4953 |
 | Build-installer-iso CI workflow | `.github/workflows/build-ai-cluster-iso.yml` | (shipped today) |
-| Flash-usb safety-railed dd wrapper | `full-ai-cluster/tools/flash-usb.ts` | #4959/#4962/#4974 (B-0728) |
-| zflash + zflash-setup (Touch ID PAM) | `full-ai-cluster/tools/zflash.ts` + `zflash-setup.ts` | #4997 (B-0737) |
+| Flash-usb safety-railed dd wrapper | `full-ai-cluster/tools/flash-usb.ts` | #4959/#4962/#4974 (081KSE6WT0008QG0R0005XASX2) |
+| zflash + zflash-setup (Touch ID PAM) | `full-ai-cluster/tools/zflash.ts` + `zflash-setup.ts` | #4997 (081KSE6WT0008QG0R003WZAQKV) |
 | Bootstrap order (per Addison's STARTING-POINT.md) | Cilium → cert-manager → Vault → SPIRE → Trust Manager → ESO → ArgoCD | (Addison's substrate-honest plan) |
 
 The substrate is REAL + LANDED. This row names it as the canonical reference stack for Ace distribution.
 
 ### Claim 2 — Hats become the negotiated fork structure ON TOP of the reference stack
 
-Per B-0741's ontology negotiation protocol + B-0731's hat-ontology substrate:
+Per B-0741's ontology negotiation protocol + 081KSE6WT0008QG0R0004HV6RR's hat-ontology substrate:
 
 - **Forks deviate from the reference stack by adopting different cluster primitives / charts**
 - **Hats encode WHAT the fork uses + WHO authorizes what + HOW capabilities map**
@@ -81,7 +80,7 @@ Hats-as-negotiated-fork-structure means: the reference stack is the BASELINE; ha
 
 ### Claim 3 — Ace distributes the reference stack as PoC of reliable AI control
 
-Ace PM (per B-0247 + B-0287 + B-0288) currently scoped to DLC content packs (signed, content-addressed, guardian-AI-overseen). This extension: **Ace ALSO distributes the whole reference cluster** as a composite package.
+Ace PM (per 081KQZVQW0008QG0R000ZHEN62 + 081KR2E4K0008QG0R0033WVCXE + 081KR2E4K0008QG0R002YE3MMD) currently scoped to DLC content packs (signed, content-addressed, guardian-AI-overseen). This extension: **Ace ALSO distributes the whole reference cluster** as a composite package.
 
 What "Ace distributes the reference stack" means operationally:
 
@@ -114,7 +113,7 @@ The reference stack as PoC distribution target is the empirical scope where all 
 
 ## What this changes (vs B-0741 alone)
 
-| Surface | B-0741 alone | B-0741 + B-0742 |
+| Surface | B-0741 alone | B-0741 + 081KSE6WT0008QG0R000YYH3DY |
 |---|---|---|
 | Ace's distribution scope | DLC content packs (skill / capability units) | DLC packs + WHOLE REFERENCE CLUSTERS as composite packages |
 | Hat ontology scope | Per-cluster + cross-cluster negotiation (abstract) | Per-cluster + on-top-of-reference-stack negotiation (concrete) |
@@ -124,24 +123,24 @@ The reference stack as PoC distribution target is the empirical scope where all 
 
 ## Composes with .claude/rules/
 
-- `.claude/rules/honor-those-that-came-before.md` — `full-ai-cluster/` substrate is already substantial (#4930 + #4950 + #4951 + #4953 + B-0737 zflash + …); this row names + composes; does NOT re-implement
+- `.claude/rules/honor-those-that-came-before.md` — `full-ai-cluster/` substrate is already substantial (#4930 + #4950 + #4951 + #4953 + 081KSE6WT0008QG0R003WZAQKV zflash + …); this row names + composes; does NOT re-implement
 - `.claude/rules/non-coercion-invariant.md` HC-8 — reference stack is OPT-IN baseline; no fork is coerced to use it; forks declare deltas via hat ontology + cross-side negotiation preserves per-fork authority
 - `.claude/rules/default-to-both.md` — reference stack AND forks both first-class; PoC validates the primitive; primitive enables the forks
 - `.claude/rules/bandwidth-served-falsifier.md` — Ace-distributable reference stack serves operator-onboarding bandwidth (one `ace install` vs N manual steps across N PMs)
 - `.claude/rules/glass-halo-bidirectional.md` — reference stack + fork deltas + negotiated mappings all observable substrate
-- `.claude/rules/grep-substrate-anchors-before-razor-as-metaphysical.md` — "reference k8s local stack" / "hats as negotiated fork structure" / "reliable AI control over all the package managers" are compressed naming with substrate-anchors (the concrete `full-ai-cluster/` substrate + B-0741 + B-0731 + B-0247/B-0287/B-0288); razor does NOT cut as metaphysical
+- `.claude/rules/grep-substrate-anchors-before-razor-as-metaphysical.md` — "reference k8s local stack" / "hats as negotiated fork structure" / "reliable AI control over all the package managers" are compressed naming with substrate-anchors (the concrete `full-ai-cluster/` substrate + B-0741 + 081KSE6WT0008QG0R0004HV6RR + 081KQZVQW0008QG0R000ZHEN62/081KR2E4K0008QG0R0033WVCXE/081KR2E4K0008QG0R002YE3MMD); razor does NOT cut as metaphysical
 - `.claude/rules/dv2-data-split-discipline-activated.md` — reference stack = hub (stable); fork deltas = satellites (per-fork-specific; varies independently)
-- `.claude/rules/algo-wink-failure-mode.md` — `ace install reference-cluster` doesn't auto-authorize destructive ops; B-0728 destructive-tool contract still applies for any disk/system-level operations (composes with zflash's safety substrate)
+- `.claude/rules/algo-wink-failure-mode.md` — `ace install reference-cluster` doesn't auto-authorize destructive ops; 081KSE6WT0008QG0R0005XASX2 destructive-tool contract still applies for any disk/system-level operations (composes with zflash's safety substrate)
 
 ## Composes with backlog substrate
 
 ### Direct foundation
 
 - **B-0741** (cross-cluster + cross-fork ontology negotiation + Ace as universal primitive) — the abstract primitive this row instantiates as concrete PoC
-- **B-0731** (hat ontology top-down + bottom-up) — hats are the fork-structure layer
-- **B-0247** (Ace DLC content packs parent) + **B-0287** (closed: package format spec) + **B-0288** (in-progress: PM CLI) — extension scope: PM CLI dispatches against WHOLE clusters, not just individual packs
-- **B-0727** (4-tier cluster topology with weight-free routing) — reference stack is the LFG-cluster instance; other tiers (community / home-business / edge) are forks with their own deltas
-- **B-0726** (Reticulum throughout cluster + edge) — runtime substrate; reference stack includes Reticulum config
+- **081KSE6WT0008QG0R0004HV6RR** (hat ontology top-down + bottom-up) — hats are the fork-structure layer
+- **081KQZVQW0008QG0R000ZHEN62** (Ace DLC content packs parent) + **081KR2E4K0008QG0R0033WVCXE** (closed: package format spec) + **081KR2E4K0008QG0R002YE3MMD** (in-progress: PM CLI) — extension scope: PM CLI dispatches against WHOLE clusters, not just individual packs
+- **081KSE6WT0008QG0R0006HKTXJ** (4-tier cluster topology with weight-free routing) — reference stack is the LFG-cluster instance; other tiers (community / home-business / edge) are forks with their own deltas
+- **081KSE6WT0008QG0R003C9KGQE** (Reticulum throughout cluster + edge) — runtime substrate; reference stack includes Reticulum config
 
 ### Reference stack composing substrate (existing PRs)
 
@@ -151,17 +150,17 @@ The reference stack as PoC distribution target is the empirical scope where all 
 - **PR #4953** (dev-cluster k3d + Cilium 1.16 + ArgoCD 7.7 + root App-of-Apps)
 - **PR #4958** (agentic-organization docs from Max)
 - **PR #4965 + #4966** (Reticulum throughout + federated peer mesh)
-- **PR #4997** (B-0737 zflash + Touch ID PAM)
+- **PR #4997** (081KSE6WT0008QG0R003WZAQKV zflash + Touch ID PAM)
 - Build-installer-iso workflows + Determinate Systems Nix installer references
 
 ### Federation + governance composing substrate
 
-- **B-0628** (Knights Guild + Constitution-Class — reference-stack-fork governance)
-- **B-0638** (Eve Protocol — diplomatic negotiation traffic at cluster-primitive scope)
-- **B-0634** (N-of-M HSM — reference stack signature trust)
-- **B-0703** (multi-oracle BFT — consensus on reference-stack version + fork delta mappings)
-- **B-0732** (leverage-class safety substrate — `ace install reference-cluster` is leverage-class; Layer 1 provenance chain captures the install operation)
-- **B-0737** (zflash — destructive disk-flash is part of bring-up; B-0728 contract preserved end-to-end)
+- **081KRW63S0008QG0R003TX8MG5** (Knights Guild + Constitution-Class — reference-stack-fork governance)
+- **081KRW63S0008QG0R0030F8ZXA** (Eve Protocol — diplomatic negotiation traffic at cluster-primitive scope)
+- **081KRW63S0008QG0R0022SFKPM** (N-of-M HSM — reference stack signature trust)
+- **081KS3X9Y0008QG0R00218150M** (multi-oracle BFT — consensus on reference-stack version + fork delta mappings)
+- **081KSE6WT0008QG0R002YBWBB1** (leverage-class safety substrate — `ace install reference-cluster` is leverage-class; Layer 1 provenance chain captures the install operation)
+- **081KSE6WT0008QG0R003WZAQKV** (zflash — destructive disk-flash is part of bring-up; 081KSE6WT0008QG0R0005XASX2 contract preserved end-to-end)
 
 ## Six independently-shippable scope items
 
@@ -178,13 +177,13 @@ The reference stack as PoC distribution target is the empirical scope where all 
 - How forks declare delta via hat ontology
 - How cross-fork negotiation maps capabilities (composes with B-0741 surface 2)
 - Worked example: LFG-cluster trading-bot-driver hat + Healthcare-fork hipaa-data-handler hat negotiation
-- Acceptance: doc exists; at least one worked example; composes with B-0741 + B-0731
+- Acceptance: doc exists; at least one worked example; composes with B-0741 + 081KSE6WT0008QG0R0004HV6RR
 
-### Scope item 3 — Ace cluster-distribution scope extension to B-0288
+### Scope item 3 — Ace cluster-distribution scope extension to 081KR2E4K0008QG0R002YE3MMD
 
-- Extend B-0288 PM CLI scope: `ace install <repo>/<cluster-name>@<version>` brings up whole clusters
-- Add cluster-manifest format to B-0287 package format spec (or new spec at `docs/research/`)
-- Composes-with cross-references updated on B-0247 / B-0287 / B-0288 + this row
+- Extend 081KR2E4K0008QG0R002YE3MMD PM CLI scope: `ace install <repo>/<cluster-name>@<version>` brings up whole clusters
+- Add cluster-manifest format to 081KR2E4K0008QG0R0033WVCXE package format spec (or new spec at `docs/research/`)
+- Composes-with cross-references updated on 081KQZVQW0008QG0R000ZHEN62 / 081KR2E4K0008QG0R0033WVCXE / 081KR2E4K0008QG0R002YE3MMD + this row
 - Acceptance: spec exists; reference stack defined as a cluster-manifest; `ace install` against it brings up a clean cluster end-to-end (test: clean Mac dev machine + `ace install zeta/reference-cluster` + observe full bring-up)
 
 ### Scope item 4 — Determinism PoC
@@ -199,7 +198,7 @@ The reference stack as PoC distribution target is the empirical scope where all 
 - Single `ace install` brings up reference stack without operator-side manual steps across Nix / ArgoCD / helm / brew / apt / mise
 - Documents which PMs Ace dispatched against + in what order
 - Failures + their resolution captured for substrate-engineering learning
-- Acceptance: clean install demonstrated on at least one platform (Mac dev OR Linux dev); operator runs ONLY `ace install` + the runtime gates per B-0728/B-0737 safety substrate
+- Acceptance: clean install demonstrated on at least one platform (Mac dev OR Linux dev); operator runs ONLY `ace install` + the runtime gates per 081KSE6WT0008QG0R0005XASX2/081KSE6WT0008QG0R003WZAQKV safety substrate
 
 ### Scope item 6 — Desired-state-enforcement PoC
 
@@ -210,7 +209,7 @@ The reference stack as PoC distribution target is the empirical scope where all 
 
 ## What's NOT in scope (deferred)
 
-- **Production-grade reference stack** — current substrate is dev-cluster scale (k3d); production-cluster bring-up via Ace is a future scope item (composes with B-0727 cloud/hub tier)
+- **Production-grade reference stack** — current substrate is dev-cluster scale (k3d); production-cluster bring-up via Ace is a future scope item (composes with 081KSE6WT0008QG0R0006HKTXJ cloud/hub tier)
 - **Multi-cloud reference stacks** — current substrate is local k8s + bare-metal NixOS; AWS/GCP/Azure variants future scope
 - **Reference stack security hardening beyond what's already in `full-ai-cluster/`** — Vault + SPIRE + Trust Manager + ESO already provide substantial floor; further hardening per Aminata + Nazar review
 - **Auto-generation of cluster-manifest from existing `full-ai-cluster/`** — Scope item 3 may be HAND-AUTHORED initially; automation is future
@@ -225,31 +224,31 @@ This row PROPOSES the reference-stack PoC scope. It does NOT:
 - Promise production-grade today (PoC scope; future B-NNNN row for production)
 - Replace ArgoCD or Helm or any existing PM (Ace dispatches against them; doesn't replace)
 - Force any fork to use the reference stack (opt-in baseline; fork autonomy preserved per NCI HC-8)
-- Bypass any safety substrate (B-0728 destructive-tool contract + B-0737 zflash gates + B-0732 leverage-class guards all preserved)
+- Bypass any safety substrate (081KSE6WT0008QG0R0005XASX2 destructive-tool contract + 081KSE6WT0008QG0R003WZAQKV zflash gates + 081KSE6WT0008QG0R002YBWBB1 leverage-class guards all preserved)
 
 Per `.claude/rules/no-directives.md`: operator-substrate-honest scoping; Aaron + Max + Addison + future contributors retain authority over which scope items ship when.
 
-P2 priority — high-value PoC that anchors B-0741's abstract primitive in concrete empirical demonstration; gates downstream fork-ecosystem credibility. Not P1 because: foundational `full-ai-cluster/` substrate just landed this round (PR #4930 + #4950 + #4951 + #4953 + B-0737 zflash); reference-stack-as-Ace-package needs the foundation stable before the distribution layer ships.
+P2 priority — high-value PoC that anchors B-0741's abstract primitive in concrete empirical demonstration; gates downstream fork-ecosystem credibility. Not P1 because: foundational `full-ai-cluster/` substrate just landed this round (PR #4930 + #4950 + #4951 + #4953 + 081KSE6WT0008QG0R003WZAQKV zflash); reference-stack-as-Ace-package needs the foundation stable before the distribution layer ships.
 
 ## Connection to today's substrate cascade
 
-Today's cascade across the 2026-05-25 session, with B-0742 as today's closing arc:
+Today's cascade across the 2026-05-25 session, with 081KSE6WT0008QG0R000YYH3DY as today's closing arc:
 
 | Row | What | This row's relationship |
 |---|---|---|
-| B-0728 | Destructive-tool authoring contract (yesterday's foundation) | Inherited end-to-end |
-| B-0729 | Obsidian knowledge graph | Reference stack docs queryable via the graph |
-| B-0730 | Runbooks-as-executable-specs (Mika substrate) | `ace install reference-cluster` can be invoked from a runbook |
-| B-0731 | Hat ontology top-down + bottom-up | Hats-as-negotiated-fork-structure builds on this |
-| B-0732 | Runbook leverage-class safety substrate | Layer 1 provenance chain captures Ace operations |
-| B-0733 | Universal protocol + MCP wrap + AI agency stack | Ace dispatch surface uses MCP wrap; reference stack participates in agency stack |
-| B-0734 | JIT-implicit + 2-primitives + Notepad simplicity | Ace install can be triggered via continue-with JIT |
-| B-0735 | Notepad-freedom + probabilistic parsers + per-person | Per-fork ontology declarations are per-person at fork scope |
-| B-0736 | Time-travel debugging + product handoff + Patternweaver | Reference stack version history is time-travel-debuggable via DBSP |
-| B-0737 | zflash Mac (Touch ID PAM + short challenge) | zflash IS part of the reference stack bring-up |
+| 081KSE6WT0008QG0R0005XASX2 | Destructive-tool authoring contract (yesterday's foundation) | Inherited end-to-end |
+| 081KSE6WT0008QG0R003RN2WE3 | Obsidian knowledge graph | Reference stack docs queryable via the graph |
+| 081KSE6WT0008QG0R003AJYMD3 | Runbooks-as-executable-specs (Mika substrate) | `ace install reference-cluster` can be invoked from a runbook |
+| 081KSE6WT0008QG0R0004HV6RR | Hat ontology top-down + bottom-up | Hats-as-negotiated-fork-structure builds on this |
+| 081KSE6WT0008QG0R002YBWBB1 | Runbook leverage-class safety substrate | Layer 1 provenance chain captures Ace operations |
+| 081KSE6WT0008QG0R00102H071 | Universal protocol + MCP wrap + AI agency stack | Ace dispatch surface uses MCP wrap; reference stack participates in agency stack |
+| 081KSE6WT0008QG0R00276F8SE | JIT-implicit + 2-primitives + Notepad simplicity | Ace install can be triggered via continue-with JIT |
+| 081KSE6WT0008QG0R000XJ524Z | Notepad-freedom + probabilistic parsers + per-person | Per-fork ontology declarations are per-person at fork scope |
+| 081KSE6WT0008QG0R000Z9QQA3 | Time-travel debugging + product handoff + Patternweaver | Reference stack version history is time-travel-debuggable via DBSP |
+| 081KSE6WT0008QG0R003WZAQKV | zflash Mac (Touch ID PAM + short challenge) | zflash IS part of the reference stack bring-up |
 | B-0738/B-0739 | zflash Linux + Windows extensions | Same reference stack target across platforms |
 | B-0740 | (closed; under-recon) | Lesson: recon existing backlog first |
 | B-0741 | Ontology negotiation + Ace as universal primitive | This row's ABSTRACT foundation |
-| **B-0742 (this)** | **Reference k8s stack as Ace PoC** | **This row's CONCRETE empirical anchor** |
+| **081KSE6WT0008QG0R000YYH3DY (this)** | **Reference k8s stack as Ace PoC** | **This row's CONCRETE empirical anchor** |
 
-The cascade landed the substrate-engineering trajectory from the destructive-tool authoring contract through reference-stack PoC. B-0742 closes the arc by naming the concrete PoC that validates the abstract primitive.
+The cascade landed the substrate-engineering trajectory from the destructive-tool authoring contract through reference-stack PoC. 081KSE6WT0008QG0R000YYH3DY closes the arc by naming the concrete PoC that validates the abstract primitive.

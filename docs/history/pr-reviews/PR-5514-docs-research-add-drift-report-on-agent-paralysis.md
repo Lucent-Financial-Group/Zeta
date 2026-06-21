@@ -54,7 +54,7 @@ This PR contains a drift report detailing the paralysis of agents Otto, Riven, a
 - **`Copilot` (bot)** at 2026-05-27T17:08:04Z on `docs/research/agent-paralysis-drift-report-2026-05-27.md`:18 (association: NONE)
 
   <pre>
-  P1: The reference to “isolated worktree protocol (B-0751)” is not currently resolvable in-tree (there is no backlog row/document with `id: B-0751`). This makes the citation hard to verify; consider citing the concrete artefact that exists (e.g., PR #5019 per-agent isolated clones) and/or a backlog row that exists (e.g., B-0750 worktree hygiene), and align the wording with what B-0751 is described as elsewhere (“per-agent isolated clones architecture”).
+  P1: The reference to “isolated worktree protocol (B-0751)” is not currently resolvable in-tree (there is no backlog row/document with `id: B-0751`). This makes the citation hard to verify; consider citing the concrete artefact that exists (e.g., PR #5019 per-agent isolated clones) and/or a backlog row that exists (e.g., 081KSE6WT0008QG0R003YYC9PV worktree hygiene), and align the wording with what B-0751 is described as elsewhere (“per-agent isolated clones architecture”).
   </pre>
 
 **Replies:**
@@ -62,7 +62,7 @@ This PR contains a drift report detailing the paralysis of agents Otto, Riven, a
   - **`AceHack` (human)** at 2026-05-27T17:14:28Z on `docs/research/agent-paralysis-drift-report-2026-05-27.md`:18 (association: MEMBER)
 
     <pre>
-    Fixed in 67aa9848f — replaced the B-0751 reference at line 18 with PR #5019 (closed proposal) + B-0750 (worktree-hygiene row in tree) + agent-worktree-hygiene rule path. All three artifacts are resolvable in-tree.
+    Fixed in 67aa9848f — replaced the B-0751 reference at line 18 with PR #5019 (closed proposal) + 081KSE6WT0008QG0R003YYC9PV (worktree-hygiene row in tree) + agent-worktree-hygiene rule path. All three artifacts are resolvable in-tree.
     </pre>
 
 ### Thread 2 -- resolved [outdated, collapsed]
@@ -76,7 +76,7 @@ This PR contains a drift report detailing the paralysis of agents Otto, Riven, a
 - **`Copilot` (bot)** at 2026-05-27T17:08:05Z on `docs/research/agent-paralysis-drift-report-2026-05-27.md`:39 (association: NONE)
 
   <pre>
-  P1: “per-agent isolated clone/worktree architecture (B-0751)” appears to cite a backlog row that isn’t present in the repo (`id: B-0751` not found). To keep this recommendation actionable, cite the existing source of truth (PR #5019 and/or the relevant backlog row such as B-0750) or add a linkable reference that exists in-tree.
+  P1: “per-agent isolated clone/worktree architecture (B-0751)” appears to cite a backlog row that isn’t present in the repo (`id: B-0751` not found). To keep this recommendation actionable, cite the existing source of truth (PR #5019 and/or the relevant backlog row such as 081KSE6WT0008QG0R003YYC9PV) or add a linkable reference that exists in-tree.
   </pre>
 
 **Replies:**
@@ -84,7 +84,7 @@ This PR contains a drift report detailing the paralysis of agents Otto, Riven, a
   - **`AceHack` (human)** at 2026-05-27T17:14:38Z on `docs/research/agent-paralysis-drift-report-2026-05-27.md`:39 (association: MEMBER)
 
     <pre>
-    Fixed in 67aa9848f — replaced the B-0751 reference at line 38 with PR #5019 (closed design proposal) + B-0750 (worktree-hygiene row that exists in tree). Both are linkable + verifiable.
+    Fixed in 67aa9848f — replaced the B-0751 reference at line 38 with PR #5019 (closed design proposal) + 081KSE6WT0008QG0R003YYC9PV (worktree-hygiene row that exists in tree). Both are linkable + verifiable.
     </pre>
 
 ## Fix commits (touching thread paths)
@@ -119,7 +119,7 @@ exists.
 
 Replace both references with concrete artifacts that DO exist:
 - PR #5019 (the closed design proposal)
-- B-0750 (worktree-hygiene row in tree)
+- 081KSE6WT0008QG0R003YYC9PV (worktree-hygiene row in tree)
 - .claude/rules/agent-worktree-hygiene-... rule path
 
 Composes with Lior's prior markdownlint fix (bce0e7ec7).

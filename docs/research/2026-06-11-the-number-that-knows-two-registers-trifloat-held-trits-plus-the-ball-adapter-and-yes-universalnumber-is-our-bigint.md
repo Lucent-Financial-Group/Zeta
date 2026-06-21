@@ -14,7 +14,7 @@ prior-art adapters that double as differential-test oracles. Aaron's instinct = 
 
 ## "Knows what it doesn't know" — TWO registers, one existing, one to build
 
-1. **STRUCTURAL unknowns (EXISTS, four-oracle ratified — B-0944):** `TriBoolean.Float` — a float
+1. **STRUCTURAL unknowns (EXISTS, four-oracle ratified — 081KSV2WD0008QG0R00051XS0N):** `TriBoolean.Float` — a float
    composed of trits where any trit may be HELD (`Tri.N`), and `measure` names WHICH kind of
    unknown you hold: ValueSuperposed (a value trit held) vs InterpretationSuperposed (the decode
    instruction itself held). Not truncation — held structure.

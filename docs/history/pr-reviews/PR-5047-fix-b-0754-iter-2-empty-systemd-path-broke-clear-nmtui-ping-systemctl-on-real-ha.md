@@ -67,9 +67,9 @@ Even if the systemd Environment is overridden by some future change, these two f
 
 ## Composes with
 
-- B-0759 first-time-CLI-user persona — drop-to-shell with recovery hints worked exactly as designed; the persona-aligned error path was substrate-honest
+- 081KSE6WT0008QG0R003G0Y62D first-time-CLI-user persona — drop-to-shell with recovery hints worked exactly as designed; the persona-aligned error path was substrate-honest
 - B-0760 USB-as-repair-tool — same systemd-PATH discipline applies to every command the repair flow will invoke
-- B-0761 reference architecture — this is iteration N of N for the AI-native cluster-bootstrap reference; bandwidth payoff across every future install
+- 081KSE6WT0008QG0R0015ZF2G6 reference architecture — this is iteration N of N for the AI-native cluster-bootstrap reference; bandwidth payoff across every future install
 
 ## Test plan
 
@@ -140,7 +140,7 @@ Two-layer fix (defense in depth):
 
 2. **Script-level absolute paths + ANSI escape** (zeta-first-boot.sh): replace 'clear || true' with 'printf \033c || true' (no external command); change 'nmtui' invocation to '/run/current-system/sw/bin/nmtui'. Belt-and-suspenders: even if the systemd Environment is overridden by some future change, these two failure modes stay fixed.
 
-Composes with B-0759 first-time-CLI-user persona (substrate-honest error path proved the discipline — drop-to-shell with recovery hints worked exactly as designed); B-0760 USB-as-repair-tool (the same systemd-PATH discipline applies to every command the repair flow will invoke); B-0761 reference architecture (this is iteration N of N for the AI-native cluster-bootstrap reference, payoff is bandwidth-engineered across every future install).
+Composes with 081KSE6WT0008QG0R003G0Y62D first-time-CLI-user persona (substrate-honest error path proved the discipline — drop-to-shell with recovery hints worked exactly as designed); B-0760 USB-as-repair-tool (the same systemd-PATH discipline applies to every command the repair flow will invoke); 081KSE6WT0008QG0R0015ZF2G6 reference architecture (this is iteration N of N for the AI-native cluster-bootstrap reference, payoff is bandwidth-engineered across every future install).
 
 Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>
 ```

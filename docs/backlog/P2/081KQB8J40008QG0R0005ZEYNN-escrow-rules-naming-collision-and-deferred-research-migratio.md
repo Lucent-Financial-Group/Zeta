@@ -1,6 +1,5 @@
 ---
-id: B-0095
-zetaid: 081KQB8J40008QG0R0005ZEYNN
+id: 081KQB8J40008QG0R0005ZEYNN
 priority: P2
 status: open
 title: Escrow — define rules + resolve naming collision with software-vendoring sense + migrate other deferred research from backlog/research/
@@ -18,7 +17,7 @@ tags: [aaron-2026-04-29, escrow, naming-collision, factory-hygiene, deferred-res
 type: friction-reducer
 ---
 
-# B-0095 — Escrow rules + naming-collision resolution + deferred-research migration
+# 081KQB8J40008QG0R0005ZEYNN — Escrow rules + naming-collision resolution + deferred-research migration
 
 ## Source
 
@@ -134,10 +133,10 @@ escrow shape.
 
 Audit candidates (NOT yet exhaustive — survey work pending):
 
-- `docs/backlog/P2/B-0089-veridicality-rainbow-table-canonicalization-research-and-graduation-aaron-ani-amara-2026-04-28.md`
+- `docs/backlog/P2/081KQ8P5D0008QG0R003F6FNVF-veridicality-rainbow-table-canonicalization-research-and-graduation-aaron-ani-amara-2026-04-28.md`
   — graduation roadmap with a falsifier gate. Possibly
   escrow-eligible if its work is "not ready yet."
-- `docs/backlog/P2/B-0090-cadenced-lost-substrate-recovery-audit-aaron-2026-04-28.md`
+- `docs/backlog/P2/081KQ8P5D0008QG0R0002TN22C-cadenced-lost-substrate-recovery-audit-aaron-2026-04-28.md`
   — operational rather than research; probably stays in
   backlog/.
 - `docs/research/aurora-immune-governance-bridge-minimal-2026-04-28.md`
@@ -218,11 +217,11 @@ Each step is bounded; do not stack.
 
 ## Re-decomposition (2026-05-11, Riven one-bounded-step)
 
-B-0095 was too broad (3 sub-asks + open-ended migration audit). Re-decomposed into 3 smallest dependency-ordered atomic children:
+081KQB8J40008QG0R0005ZEYNN was too broad (3 sub-asks + open-ended migration audit). Re-decomposed into 3 smallest dependency-ordered atomic children:
 
-- **B-0095.1** (XS): naming collision resolution (naming-expert + decision + apply)
-- **B-0095.2** (XS): ruleset formalization (README.md via skill-creator/ADR)
-- **B-0095.3** (S): audit + per-item migration (depends on .1+.2)
+- **081KRA5AR0008QG0R001K6M8HA** (XS): naming collision resolution (naming-expert + decision + apply)
+- **081KRA5AR0008QG0R00206D5SY** (XS): ruleset formalization (README.md via skill-creator/ADR)
+- **081KRA5AR0008QG0R00267TPQX** (S): audit + per-item migration (depends on .1+.2)
 
 This follows "always re-decompose — assume mistakes" and "if too broad, decompose before implementation". Children carry parent/depends_on links. Original row kept for provenance; status remains open until children close.
 

@@ -1,6 +1,5 @@
 ---
-id: B-0676
-zetaid: 081KS1AX70008QG0R001Y9EN85
+id: 081KS1AX70008QG0R001Y9EN85
 status: open
 priority: P2
 title: B-0620 slice 4 consolidator script
@@ -9,7 +8,7 @@ last_updated: 2026-05-20
 type: feature
 ---
 
-# B-0676: B-0620 slice 4 consolidator script
+# 081KS1AX70008QG0R001Y9EN85: B-0620 slice 4 consolidator script
 
 ## Scope
 

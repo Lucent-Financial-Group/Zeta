@@ -77,7 +77,7 @@ Aaron 2026-05-21 framing: "math is hard." Formal-verification work (TLA+ / Lean 
 ## Composes with substrate
 
 - B-0691 (the row this PR implements; filed via PR #4562)
-- B-0400 (bus protocol — claim coordinator substrate this PR extends with formal-verification-result topic)
+- 081KR7JY10008QG0R000R503K2 (bus protocol — claim coordinator substrate this PR extends with formal-verification-result topic)
 - `.claude/agents/formal-verification-expert.md` (Soraya persona contract)
 - `memory/persona/soraya/` (NOTEBOOK + MEMORY + JOURNAL + OFFTIME)
 - `docs/research/verification-registry.md` (job registry the loop reads from)

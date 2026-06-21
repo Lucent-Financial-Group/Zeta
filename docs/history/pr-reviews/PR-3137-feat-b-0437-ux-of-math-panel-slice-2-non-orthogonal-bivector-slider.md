@@ -50,7 +50,7 @@ This makes the *wedge product's independence requirement* immediately tangible v
 dotnet build -c Release → Build succeeded. 0 Warning(s) 0 Error(s)
 ```
 
-## Acceptance criteria (B-0437)
+## Acceptance criteria (081KRFA460008QG0R001JTAPZW)
 
 - [x] Panel renders without errors in `demo/index.html`
 - [x] Displays at least one worked example of a bivector fingerprint

@@ -1,6 +1,5 @@
 ---
-id: B-0678
-zetaid: 081KRYRGG0008QG0R001DDV68E
+id: 081KRYRGG0008QG0R001DDV68E
 status: open
 priority: P2
 title: B-0620 slice 5 category classifier
@@ -14,7 +13,7 @@ depends_on:
   - 081KS1AX70008QG0R001Y9EN85 # B-0620 slice 4 consolidator script
 ---
 
-# B-0678: B-0620 slice 5 category classifier
+# 081KRYRGG0008QG0R001DDV68E: B-0620 slice 5 category classifier
 
 ## Context
 
@@ -34,5 +33,5 @@ using the same financial substrate category split as the consolidator row.
 ## Acceptance
 
 - [ ] Classifier module implemented with mapping logic based on product keywords and categories.
-- [ ] Integrates with the consolidator script (`B-0676`).
+- [ ] Integrates with the consolidator script (`081KS1AX70008QG0R001Y9EN85`).
 - [ ] Committable hardware inventory substrate output correctly categorizes products.

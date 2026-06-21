@@ -56,7 +56,7 @@ dotnet build -c Release → Build succeeded. 0 Warning(s). 0 Error(s).
 
 (Pure HTML/JS addition; no .NET source changes.)
 
-## Acceptance criteria (B-0437 slice-1)
+## Acceptance criteria (081KRFA460008QG0R001JTAPZW slice-1)
 
 - [x] Panel renders without errors in `demo/index.html`
 - [x] Displays at least one worked example of a bivector fingerprint (HC-1 canvas)
@@ -204,7 +204,7 @@ Slice-1 delivers:
 
 Build gate: dotnet build -c Release → 0 warnings, 0 errors (pure HTML/JS).
 
-Closes slice-1 of B-0437. Slice-2 (B-0438) will wire live alignment-audit
+Closes slice-1 of 081KRFA460008QG0R001JTAPZW. Slice-2 (B-0438) will wire live alignment-audit
 data and introduce non-orthogonal witness signals.
 
 operative-authorization: aaron 2026-05-13: "Cooling period: TBD. The memory file IS the durable record"

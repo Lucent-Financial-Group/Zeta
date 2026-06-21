@@ -130,7 +130,7 @@ Frontmatter is missing required `title` and `last_updated` fields (and `last_upd
 
 **@copilot-pull-request-reviewer** (2026-05-20T13:04:45Z):
 
-The row id uses a dotted slice form (`B-0620.4`), but the filename is `B-0620-slice-4-...` (no `.4`). Other sliced rows in `docs/backlog/**` include the dotted suffix in the filename (e.g., `B-0126.1-...`). Consider renaming the file so the filename and `id` stay aligned for searchability and cross-referencing.
+The row id uses a dotted slice form (`B-0620.4`), but the filename is `B-0620-slice-4-...` (no `.4`). Other sliced rows in `docs/backlog/**` include the dotted suffix in the filename (e.g., `081KR2E4K0008QG0R001N1PPHP-...`). Consider renaming the file so the filename and `id` stay aligned for searchability and cross-referencing.
 
 ### Thread 5: docs/backlog/P2/B-0620-slice-4-consolidator-script.md:19 (resolved)
 
@@ -160,19 +160,19 @@ Useful? React with 👍 / 👎.
 
 The scope references `tools/inventory/consolidate.ts`, but there is currently no `tools/inventory/` directory in the repo. To avoid a stale/incorrect pointer, either adjust this to the intended existing location for inventory tooling (or add a brief note that the path will be created as part of this slice, plus the exact planned path).
 
-### Thread 9: docs/backlog/P2/B-0676-b0620-slice-4-consolidator-script.md:5 (resolved)
+### Thread 9: docs/backlog/P2/081KS1AX70008QG0R001Y9EN85-b0620-slice-4-consolidator-script.md:5 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-20T13:23:44Z):
 
-The per-row `title` is used verbatim in the generated docs/BACKLOG.md index, which already prefixes each entry with the row ID. Including `B-0676 -` in the `title` makes the index entry redundant; consider changing the title to omit the row ID (e.g., start with `B-0620 slice 4…` or just the descriptive text) and regenerate docs/BACKLOG.md.
+The per-row `title` is used verbatim in the generated docs/BACKLOG.md index, which already prefixes each entry with the row ID. Including `081KS1AX70008QG0R001Y9EN85 -` in the `title` makes the index entry redundant; consider changing the title to omit the row ID (e.g., start with `B-0620 slice 4…` or just the descriptive text) and regenerate docs/BACKLOG.md.
 
 ### Thread 10: docs/BACKLOG.md:288 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-20T13:23:45Z):
 
-This index entry currently repeats the row ID in the title text (`B-0676 - …`) even though the index already shows `**[B-0676]**`. If you drop the `B-0676 -` prefix from the row file’s frontmatter `title` and regenerate the index, this line will become cleaner and consistent with the surrounding entries.
+This index entry currently repeats the row ID in the title text (`081KS1AX70008QG0R001Y9EN85 - …`) even though the index already shows `**[081KS1AX70008QG0R001Y9EN85]**`. If you drop the `081KS1AX70008QG0R001Y9EN85 -` prefix from the row file’s frontmatter `title` and regenerate the index, this line will become cleaner and consistent with the surrounding entries.
 
-### Thread 11: docs/backlog/P2/B-0676-b0620-slice-4-consolidator-script.md:29 (resolved)
+### Thread 11: docs/backlog/P2/081KS1AX70008QG0R001Y9EN85-b0620-slice-4-consolidator-script.md:29 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-20T13:30:28Z):
 

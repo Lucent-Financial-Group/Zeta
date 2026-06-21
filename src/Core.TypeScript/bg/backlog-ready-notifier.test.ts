@@ -113,20 +113,20 @@ describe("backlog-ready-notifier slice 2", () => {
   describe("parseRow", () => {
     test("extracts id + priority + status + depends_on from frontmatter", () => {
       const content = `---
-id: B-0440
+id: 081KRFA460008QG0R001KC0VBH
 priority: P1
 status: open
 title: "Test row"
-depends_on: [B-0400, B-0402]
+depends_on: [081KR7JY10008QG0R000R503K2, 081KR7JY10008QG0R0008NGW95]
 ---
 
 body content`;
-      const row = parseRow(content, "B-0440-test.md");
+      const row = parseRow(content, "081KRFA460008QG0R001KC0VBH-test.md");
       expect(row).not.toBeNull();
-      expect(row?.id).toBe("B-0440");
+      expect(row?.id).toBe("081KRFA460008QG0R001KC0VBH");
       expect(row?.priority).toBe("P1");
       expect(row?.status).toBe("open");
-      expect(row?.dependsOn).toEqual(["B-0400", "B-0402"]);
+      expect(row?.dependsOn).toEqual(["081KR7JY10008QG0R000R503K2", "081KR7JY10008QG0R0008NGW95"]);
     });
 
     test("handles empty depends_on array", () => {
@@ -165,7 +165,7 @@ depends_on:
     });
 
     test("strips YAML inline comments from block-style depends_on", () => {
-      // Real-world example from B-0422: `- B-0395  # operational-resonance-...`
+      // Real-world example from 081KRCQQF0008QG0R0008VT354: `- 081KR50HA0008QG0R0019KYAAS  # operational-resonance-...`
       // was previously parsed as the full string (including the comment),
       // producing a false-positive dangling-dep warning.
       const content = `---
@@ -173,12 +173,12 @@ id: B-9011
 priority: P1
 status: open
 depends_on:
-  - B-0395  # operational-resonance-conversation-interface (Clifford engine)
+  - 081KR50HA0008QG0R0019KYAAS  # operational-resonance-conversation-interface (Clifford engine)
   - B-9001
   - B-9002 # short trailing note
 ---`;
       const row = parseRow(content, "B-9011.md");
-      expect(row?.dependsOn).toEqual(["B-0395", "B-9001", "B-9002"]);
+      expect(row?.dependsOn).toEqual(["081KR50HA0008QG0R0019KYAAS", "B-9001", "B-9002"]);
     });
 
     test("strips YAML inline comments from inline-array depends_on", () => {
@@ -186,15 +186,15 @@ depends_on:
 id: B-9012
 priority: P1
 status: open
-depends_on: [B-0440, B-0441 # ready-to-grind notifier, B-0442]
+depends_on: [081KRFA460008QG0R001KC0VBH, 081KRFA460008QG0R00229616S # ready-to-grind notifier, 081KRFA460008QG0R00061SXRW]
 ---`;
       const row = parseRow(content, "B-9012.md");
       // Note: a `#` in an inline-array element terminates the list visually
       // but YAML doesn't treat `]` as commentable so this is best-effort.
       // The first two entries are clean; the third gets absorbed by the
       // comment which the parser strips. Verify the clean entries survive.
-      expect(row?.dependsOn).toContain("B-0440");
-      expect(row?.dependsOn).toContain("B-0441");
+      expect(row?.dependsOn).toContain("081KRFA460008QG0R001KC0VBH");
+      expect(row?.dependsOn).toContain("081KRFA460008QG0R00229616S");
     });
 
     test("returns null when frontmatter missing", () => {

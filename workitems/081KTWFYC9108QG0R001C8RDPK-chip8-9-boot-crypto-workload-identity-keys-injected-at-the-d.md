@@ -39,7 +39,7 @@ The design observation (to be red-teamed before any code):
    cannot produce valid signatures (honest by construction, like the flat inference engine).
 3. **Workload identity = the room's, not the machine's:** SPIFFE/SVID is the prior art — identity
    issued to the WORKLOAD at startup by the host (zflash maintainer-key chain + the warm-cache
-   startup from B-1035 is exactly the issuance moment), scoped to the room's lifetime (the
+   startup from 081KTSZN10008QG0R002J0GE0Z is exactly the issuance moment), scoped to the room's lifetime (the
    5-minute bound rotates credentials for free).
 4. **Reticulum already speaks identity natively** (cryptographic identities are built into RNS) —
    the bus IS the auth surface; a crossing is signed at the membrane, metered and lit. Boot

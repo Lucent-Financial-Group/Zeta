@@ -29,7 +29,7 @@
 
 ## Summary
 
-This PR hardens the Lior (Gemini) background loop runner prompt configuration to strictly enforce detached worktree safety (B-0750) and per-agent isolated clone architecture (B-0751).
+This PR hardens the Lior (Gemini) background loop runner prompt configuration to strictly enforce detached worktree safety (081KSE6WT0008QG0R003YYC9PV) and per-agent isolated clone architecture (B-0751).
 
 ## Changes
 

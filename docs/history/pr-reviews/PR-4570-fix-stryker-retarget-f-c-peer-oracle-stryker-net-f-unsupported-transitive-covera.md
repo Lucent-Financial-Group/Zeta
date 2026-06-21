@@ -63,8 +63,8 @@ The Stryker gap is specifically mutation-testing-quality. F# coverage via other 
 
 - #4563 (checkBilinear)
 - #4567 (unclear; need to check)
-- #4568 (B-0692/B-0693/B-0694 rows)
-- #4569 (B-0695 fast/life branch)
+- #4568 (081KS3X9Y0008QG0R001D454ZK/081KS3X9Y0008QG0R003Y2X2T0/081KS3X9Y0008QG0R000J4SFTS rows)
+- #4569 (081KS3X9Y0008QG0R002EEH26Z fast/life branch)
 
 All BLOCKED on the pre-existing F# Stryker bug per Otto-VSCode's diagnosis.
 

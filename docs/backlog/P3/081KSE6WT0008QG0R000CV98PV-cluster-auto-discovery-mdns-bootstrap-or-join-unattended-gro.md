@@ -1,6 +1,5 @@
 ---
-id: B-0757
-zetaid: 081KSE6WT0008QG0R000CV98PV
+id: 081KSE6WT0008QG0R000CV98PV
 title: Cluster auto-discovery — mDNS bootstrap-or-join so 1st/2nd/3rd/Nth USB self-organizes into a growing cluster unattended
 status: open
 priority: P3
@@ -56,8 +55,8 @@ self-organizes into the right role:
       - `lsblk -d -o NAME,TRAN | grep nvme | wc -l` → disk count
       - role priority: control-plane (if 1st) > worker-gpu (if nvidia)
         > worker-storage (if 4+ disks) > worker-cpu (else)
-- [ ] Operator-interrupt keystroke prompt extended (per B-0755 +
-      B-0756 role expansions): override auto-pick with any role
+- [ ] Operator-interrupt keystroke prompt extended (per 081KSE6WT0008QG0R003612WGJ +
+      081KSE6WT0008QG0R001NG9JZH role expansions): override auto-pick with any role
 - [ ] Token distribution security: for home-lab v1, ship token
       via mDNS TXT (acceptable since the cluster network is trusted);
       for prod v2, use SOPS/age preshared at flash time
@@ -73,9 +72,9 @@ self-organizes into the right role:
 
 - B-0754 — zero-typing first-boot (this row extends the first-boot
   flow with discovery)
-- B-0755 — role taxonomy expansion (the roles discovery can pick
+- 081KSE6WT0008QG0R003612WGJ — role taxonomy expansion (the roles discovery can pick
   among)
-- B-0756 — HA control-plane (the join-as-HA-control-plane option
+- 081KSE6WT0008QG0R001NG9JZH — HA control-plane (the join-as-HA-control-plane option
   needs the multi-master substrate)
 - `avahi` NixOS module — mDNS publish/discover infrastructure
 
@@ -97,5 +96,5 @@ self-organizes into the right role:
 
 ## Origin
 
-Aaron 2026-05-25, immediately after the B-0756 HA-control-plane
+Aaron 2026-05-25, immediately after the 081KSE6WT0008QG0R001NG9JZH HA-control-plane
 file, surveying the unattended-growth UX.

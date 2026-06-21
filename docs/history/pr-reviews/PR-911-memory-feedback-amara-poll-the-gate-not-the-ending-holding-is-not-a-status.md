@@ -203,7 +203,7 @@ Plus MEMORY.md index pointer.
 **Initial comment:**
 
 - **`Copilot` (bot)** at 2026-04-30T11:32:28Z on `memory/feedback_amara_poll_gate_not_ending_holding_is_not_status_2026_04_30.md`:84 (association: NONE)
-  `B-0109` is referenced here as an existing allowlist rule, but there doesn’t appear to be any `B-0109` backlog row/doc in the repo (no matches in `docs/` or `docs/backlog/`). This reads like a dangling cross-reference; either link to the actual canonical backlog/doc location (if it exists under a different ID/path) or remove/rename the `B-0109` reference so future readers can resolve it.
+  `081KQDTYV0008QG0R002H74QXZ` is referenced here as an existing allowlist rule, but there doesn’t appear to be any `081KQDTYV0008QG0R002H74QXZ` backlog row/doc in the repo (no matches in `docs/` or `docs/backlog/`). This reads like a dangling cross-reference; either link to the actual canonical backlog/doc location (if it exists under a different ID/path) or remove/rename the `081KQDTYV0008QG0R002H74QXZ` reference so future readers can resolve it.
   
 
 ### Thread 12 -- resolved [collapsed]
@@ -215,7 +215,7 @@ Plus MEMORY.md index pointer.
 **Initial comment:**
 
 - **`Copilot` (bot)** at 2026-04-30T11:32:28Z on `memory/persona/amara/conversations/2026-04-30-amara-poll-gate-not-ending-holding-is-not-status.md`:250 (association: NONE)
-  This references `B-0108` as an existing backlog row, but `B-0108` doesn’t appear anywhere else in the repo (no matches in `docs/BACKLOG.md` or `docs/backlog/**`). If this is meant to be a durable pointer, consider linking to the actual backlog artifact (or correcting the ID) so the reference is resolvable later.
+  This references `081KQDTYV0008QG0R003N15ZW2` as an existing backlog row, but `081KQDTYV0008QG0R003N15ZW2` doesn’t appear anywhere else in the repo (no matches in `docs/BACKLOG.md` or `docs/backlog/**`). If this is meant to be a durable pointer, consider linking to the actual backlog artifact (or correcting the ID) so the reference is resolvable later.
   
 
 ### Thread 13 -- resolved [outdated, collapsed]
@@ -227,7 +227,7 @@ Plus MEMORY.md index pointer.
 **Initial comment:**
 
 - **`Copilot` (bot)** at 2026-04-30T12:12:03Z on `memory/feedback_amara_poll_gate_not_ending_holding_is_not_status_2026_04_30.md`:86 (association: NONE)
-  P1: Broken cross-reference: this text points at `docs/backlog/P0/B-0109-dependency-status-tracking-surface-2026-04-30.md`, but that file doesn’t exist in the repo. Either add the backlog artifact in this PR, or replace the path with a durable reference that exists now (e.g., a PR link) and only add the file link once it lands.
+  P1: Broken cross-reference: this text points at `docs/backlog/P0/081KQDTYV0008QG0R002H74QXZ-dependency-status-tracking-surface-2026-04-30.md`, but that file doesn’t exist in the repo. Either add the backlog artifact in this PR, or replace the path with a durable reference that exists now (e.g., a PR link) and only add the file link once it lands.
   
 
 ### Thread 14 -- resolved [outdated, collapsed]
@@ -327,7 +327,7 @@ Verbatim Amara catch preserved at
 memory/persona/amara/conversations/2026-04-30-amara-poll-gate-not-ending-holding-is-not-status.md
 per Otto-363 channel-verbatim-preservation.
 
-B-0108 (immune system upgrades) remains research-absorb backlog
+081KQDTYV0008QG0R003N15ZW2 (immune system upgrades) remains research-absorb backlog
 only — not analyzed during active lanes.
 
 Files:
@@ -549,7 +549,7 @@ Three-condition re-arm rule:
 Without the consistency-across-checks rule, the conservative
 disable becomes a coin-flip on re-arm. Composes with the
 auto-merge pre-flight discipline already in this rule and
-with B-0109 (dependency-status surface) which the relevant-
+with 081KQDTYV0008QG0R002H74QXZ (dependency-status surface) which the relevant-
 component allowlist will live in.
 
 Doc-only.
@@ -612,7 +612,7 @@ Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
 **Message:**
 
 ```
-memory(poll-the-gate): in-flight B-0109 xref note + jq IN-stream synt…
+memory(poll-the-gate): in-flight 081KQDTYV0008QG0R002H74QXZ xref note + jq IN-stream synt…
 
 …ax explainer (Copilot P1 round)
 
@@ -633,18 +633,18 @@ real readability concern.
    explicit form (index(.) != null) for readers who prefer
    it.
 
-2. Copilot flagged the B-0109 xref as broken since B-0109
-   doesn't exist in the repo. Real concern: B-0109 is on
+2. Copilot flagged the 081KQDTYV0008QG0R002H74QXZ xref as broken since 081KQDTYV0008QG0R002H74QXZ
+   doesn't exist in the repo. Real concern: 081KQDTYV0008QG0R002H74QXZ is on
    PR #912's branch, not yet on main. Same pattern as the
    earlier '(landing in PR #911 alongside this row)' note
    on #912 — added the inline 'landing in PR #912 alongside
    this rule' note here so the cross-reference is clearly
    in-flight rather than dangling.
 
-3. Copilot flagged B-0108 in the research doc as broken,
-   but B-0108 IS on main (merged via PR #910 at 11:11:40Z,
+3. Copilot flagged 081KQDTYV0008QG0R003N15ZW2 in the research doc as broken,
+   but 081KQDTYV0008QG0R003N15ZW2 IS on main (merged via PR #910 at 11:11:40Z,
    commit 6f0392d). Verified at 11:34Z: file exists at
-   docs/backlog/P2/B-0108-immune-system-upgrades-research-absorb-2026-04-30.md
+   docs/backlog/P2/081KQDTYV0008QG0R003N15ZW2-immune-system-upgrades-research-absorb-2026-04-30.md
    (5525 bytes). Copilot's repo index is stale (~22 min
    behind main); resolving thread without code change.
 
@@ -652,8 +652,8 @@ Doc-only.
 
 Closes review threads:
 - PRRT_kwDOSF9kNM5-t_03 (Copilot P1: jq IN-stream — actually works; explainer added)
-- PRRT_kwDOSF9kNM5-t_1y (Copilot P1: B-0109 xref — added in-flight note)
-- PRRT_kwDOSF9kNM5-t_2M (Copilot P1: B-0108 ref — already on main, stale Copilot index)
+- PRRT_kwDOSF9kNM5-t_1y (Copilot P1: 081KQDTYV0008QG0R002H74QXZ xref — added in-flight note)
+- PRRT_kwDOSF9kNM5-t_2M (Copilot P1: 081KQDTYV0008QG0R003N15ZW2 ref — already on main, stale Copilot index)
 
 Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
 ```

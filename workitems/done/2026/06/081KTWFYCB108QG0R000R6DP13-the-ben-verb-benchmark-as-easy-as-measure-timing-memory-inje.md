@@ -20,7 +20,7 @@ composes_with: []
 Migrated from the accidental legacy `B-1039` row so the item lives on the current
 ZetaId workitem surface instead of extending the frozen sequential backlog.
 
-Owner note: open; slice 2 of B-1035's framework; pairs with Naledi's bench lane.
+Owner note: open; slice 2 of 081KTSZN10008QG0R002J0GE0Z's framework; pairs with Naledi's bench lane.
 
 Tags: benchmark, ben, sim-mea-cut, testloop, complexity, prediction, rooms, chip8, di-verbs,
 hexagonal.
@@ -34,8 +34,8 @@ hexagonal.
 
 ## The shape (the quartet, applied)
 
-1. **`ben` is a VERB beside `sim·mea·cut`** — same static-DI wiring (B-1028 style): a room/test
-   that wants metering declares the interface; the FRAMEWORK injects the meter (B-1035's
+1. **`ben` is a VERB beside `sim·mea·cut`** — same static-DI wiring (081KTSZN10008QG0R001BCCTXT style): a room/test
+   that wants metering declares the interface; the FRAMEWORK injects the meter (081KTSZN10008QG0R002J0GE0Z's
    before/after boundary already owns the rim — ben extends it with timing + allocation capture).
    Rooms inherit; nobody hand-rolls a stopwatch.
 2. **Ambient honesty:** wall-time and GC counters are ambient entropy — they live ONLY at the
@@ -80,14 +80,14 @@ Aaron: "now lets have ben and pro(file) and all in our framework — air tight, 
 memory and index loaded into memory, in our MUMPS; if cached you get it."
 
 `pro` is the verb set's next member (sim·mea·cut·ben·pro), and the architecture falls out of the
-B-1035 sealed-room clause: **the room stays vacuum-tight; profilers watch THROUGH THE GLASS.**
+081KTSZN10008QG0R002J0GE0Z sealed-room clause: **the room stays vacuum-tight; profilers watch THROUGH THE GLASS.**
 EventPipe is out-of-process by design — `dotnet-trace`/`dotnet-counters` attach from OUTSIDE the
 seal without injecting a syscall into the loop, so Reticulum-only IO survives profiling
 (observation without contamination; the red light still names the watcher). INSIDE the vacuum,
 only the deterministic meters run: `chip8Ticks` and `allocBytes` (replay-equal, double-run
 checked). THE MUMPS REGISTER (Aaron's anchor): M's globals ARE the database — memory-resident,
 index + data as one sparse tree, no file door at query time. Our warm-cache-at-startup clause
-(B-1035, Reticulum-only IO) is that discipline by another name — memory + index loaded at room
+(081KTSZN10008QG0R002J0GE0Z, Reticulum-only IO) is that discipline by another name — memory + index loaded at room
 boot, then the loop runs sealed; "if cached, you get it." Our Map-keyed frames/ledgers already
 have the globals shape.
 

@@ -1,6 +1,5 @@
 ---
-id: B-0096
-zetaid: 081KQB8J40008QG0R000A61G4T
+id: 081KQB8J40008QG0R000A61G4T
 priority: P3
 status: open
 title: Forbidden Pattern Quarantine / Antigen Library — escrow-eligible candidate (Amara via Aaron 2026-04-29)
@@ -18,7 +17,7 @@ tags: [aaron-2026-04-29, amara-2026-04-29, escrow-eligible, antigen-library, for
 type: friction-reducer
 ---
 
-# B-0096 — Forbidden Pattern Quarantine / Antigen Library — escrow-eligible candidate
+# 081KQB8J40008QG0R000A61G4T — Forbidden Pattern Quarantine / Antigen Library — escrow-eligible candidate
 
 ## Source
 
@@ -45,7 +44,7 @@ The proposal has three distinct-but-related concepts:
 ## Why P3 + open (not yet escrowed)
 
 Per the absorb-without-integrating discipline + the just-landed
-escrow primitive (B-0094, B-0095): substantial conceptual
+escrow primitive (B-0094, 081KQB8J40008QG0R0005ZEYNN): substantial conceptual
 proposals from a single forwarding event should NOT be
 integrated as live substrate, AND should NOT be promoted
 directly to a research/escrowed/ file mid-flight. The bounded
@@ -199,7 +198,7 @@ file, the work shape is:
 
 - **B-0094** — escrow primitive; this row eventually graduates
   to a sibling escrow file under that primitive's pattern.
-- **B-0095** — escrow rules + naming-collision; sub-ask 3
+- **081KQB8J40008QG0R0005ZEYNN** — escrow rules + naming-collision; sub-ask 3
   (migrate other deferred research) covers exactly this kind
   of substrate.
 - **PR #707** — minimal Aurora bridge; the new antigen classes

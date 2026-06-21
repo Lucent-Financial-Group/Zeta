@@ -16,6 +16,7 @@
  * Usage:
  *   bun src/Core.TypeScript/backlog/migrate-b-ids-to-zetaid.ts --dry-run   # show what would change
  *   bun src/Core.TypeScript/backlog/migrate-b-ids-to-zetaid.ts             # apply changes
+ *   bun src/Core.TypeScript/backlog/migrate-b-ids-to-zetaid.ts --backlog-only  # docs/backlog + BACKLOG.md only
  */
 
 import { readdirSync, readFileSync, writeFileSync, statSync } from "node:fs";
@@ -24,10 +25,29 @@ import { join, relative } from "node:path";
 const REPO_ROOT = process.cwd();
 const DRY_RUN = process.argv.includes("--dry-run");
 const VERBOSE = process.argv.includes("--verbose");
+const BACKLOG_ONLY = process.argv.includes("--backlog-only");
+const SKIP_FILES = new Set([
+  "b-to-zetaid-map.json",
+  "migrate-b-ids-to-zetaid.ts",
+  "migrate-b-ids-to-zetaid.js",
+  "autonomous-pickup.test.ts",
+]);
 
-// Step 1: Build the mapping
+// Step 1: Build the B-xxxx → ZetaId mapping (canonical JSON first, then frontmatter)
 function buildMapping(): Map<string, string> {
   const map = new Map<string, string>();
+  const conflicts: string[] = [];
+
+  const mapPath = join(REPO_ROOT, "src", "Core.TypeScript", "backlog", "b-to-zetaid-map.json");
+  try {
+    const raw = JSON.parse(readFileSync(mapPath, "utf-8")) as Record<string, string>;
+    for (const [bId, zetaId] of Object.entries(raw)) {
+      map.set(bId, zetaId);
+    }
+  } catch {
+    // fall through to frontmatter-only build
+  }
+
   const tiers = ["P0", "P1", "P2", "P3"];
   for (const tier of tiers) {
     const dir = join(REPO_ROOT, "docs", "backlog", tier);
@@ -42,13 +62,32 @@ function buildMapping(): Map<string, string> {
       const content = readFileSync(join(dir, f), "utf-8");
       const idMatch = content.match(/^id:\s*(.+)$/m);
       const zetaMatch = content.match(/^zetaid:\s*(.+)$/m);
-      if (idMatch && zetaMatch) {
-        const bId = idMatch[1]!.trim();
-        const zetaId = zetaMatch[1]!.trim();
-        map.set(bId, zetaId);
+      if (!idMatch || !zetaMatch) continue;
+      const bId = idMatch[1]!.trim();
+      const zetaId = zetaMatch[1]!.trim();
+      if (!/^B-\d/.test(bId)) continue;
+      const stem = f.replace(/\.md$/, "");
+      const dashIdx = stem.indexOf("-");
+      const filePrefix = dashIdx === -1 ? stem : stem.slice(0, dashIdx);
+      if (filePrefix !== zetaId) {
+        conflicts.push(`${bId} in ${tier}/${f}: zetaid ${zetaId} ≠ filename prefix ${filePrefix}`);
+        continue;
       }
+      const existing = map.get(bId);
+      if (existing && existing !== zetaId) {
+        conflicts.push(`${bId}: canonical map has ${existing}, row ${tier}/${f} claims ${zetaId}`);
+        continue;
+      }
+      map.set(bId, zetaId);
     }
   }
+
+  if (conflicts.length > 0) {
+    console.warn(`Mapping conflicts (${conflicts.length} skipped — fix id/zetaid drift):`);
+    for (const c of conflicts.slice(0, 20)) console.warn(`  ${c}`);
+    if (conflicts.length > 20) console.warn(`  … and ${conflicts.length - 20} more`);
+  }
+
   return map;
 }
 
@@ -148,13 +187,19 @@ console.log(`Built mapping: ${map.size} B-xxxx → ZetaId pairs`);
 
 const extensions = new Set([".md", ".ts", ".json", ".yaml", ".yml", ".jsonc"]);
 const skip = new Set(["node_modules", ".git", "bun.lock"]);
-const files = findFiles(REPO_ROOT, extensions, skip);
-console.log(`Found ${files.length} files to scan`);
+let files = findFiles(REPO_ROOT, extensions, skip);
+if (BACKLOG_ONLY) {
+  files = files.filter((f) => f.includes("docs/backlog/") || f.endsWith("docs/BACKLOG.md"));
+  console.log(`Backlog-only mode: ${files.length} files`);
+} else {
+  console.log(`Found ${files.length} files to scan`);
+}
 
 let changedFiles = 0;
 let totalReplacements = 0;
 
 for (const file of files) {
+  if (SKIP_FILES.has(file.split("/").pop() ?? "")) continue;
   const original = readFileSync(file, "utf-8");
   let modified = replaceReferences(original, map);
 

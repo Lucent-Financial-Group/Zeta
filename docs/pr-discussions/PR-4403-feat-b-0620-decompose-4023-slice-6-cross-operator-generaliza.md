@@ -31,7 +31,7 @@ Adds a new per-row backlog item for B-0620 slice 6 (“cross-operator generaliza
 
 ## Review threads
 
-### Thread 1: docs/backlog/P2/B-0677-b0620-slice-6-cross-operator-generalization.md:6 (resolved)
+### Thread 1: docs/backlog/P2/081KS1AX70008QG0R001HRXZTZ-b0620-slice-6-cross-operator-generalization.md:6 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-20T13:07:53Z):
 
@@ -41,7 +41,7 @@ P1: Per tools/backlog/README.md, backlog row frontmatter requires `title` and `l
 
 **@copilot-pull-request-reviewer** (2026-05-20T13:07:53Z):
 
-P1: `id: B-0620.6` doesn't match the documented `B-NNNN` id format in tools/backlog/README.md, and it also doesn't match the filename prefix (`B-0620-...`). Consider using `id: B-0620` and encoding “slice 6” in `title`, or rename the file to start with `B-0620.6-...` if dotted IDs are intended for slices (as in `docs/backlog/P1/B-0126.1-...`).
+P1: `id: B-0620.6` doesn't match the documented `B-NNNN` id format in tools/backlog/README.md, and it also doesn't match the filename prefix (`B-0620-...`). Consider using `id: B-0620` and encoding “slice 6” in `title`, or rename the file to start with `B-0620.6-...` if dotted IDs are intended for slices (as in `docs/backlog/P1/081KR2E4K0008QG0R001N1PPHP-...`).
 
 ### Thread 3: docs/backlog/P2/B-0620-slice-6-cross-operator-generalization.md:17 (resolved)
 

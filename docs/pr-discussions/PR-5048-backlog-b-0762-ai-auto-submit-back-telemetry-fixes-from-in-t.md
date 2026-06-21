@@ -1,6 +1,6 @@
 ---
 pr_number: 5048
-title: "backlog(B-0762): AI auto-submit-back telemetry + fixes from in-the-wild installs \u2014 adoption-cost-to-zero flywheel"
+title: "backlog(081KSE6WT0008QG0R003FG3E8R): AI auto-submit-back telemetry + fixes from in-the-wild installs \u2014 adoption-cost-to-zero flywheel"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-26T00:12:34Z"
@@ -12,11 +12,11 @@ archived_at: "2026-05-27T19:46:42Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5048: backlog(B-0762): AI auto-submit-back telemetry + fixes from in-the-wild installs — adoption-cost-to-zero flywheel
+# PR #5048: backlog(081KSE6WT0008QG0R003FG3E8R): AI auto-submit-back telemetry + fixes from in-the-wild installs — adoption-cost-to-zero flywheel
 
 ## PR description
 
-Aaron 2026-05-25 named the adoption-scaling mechanism: each in-the-wild install opt-in submits success/failure telemetry; failures trigger LLM-generated minimal-diff PRs; pattern-matched fixes auto-merge; next operator on similar hardware pays 0 cost. Network-effect substrate; ARC-AGI parallel (B-0761) provides the training data + benchmark catalog. Composes with B-0743 / B-0754-B-0761.
+Aaron 2026-05-25 named the adoption-scaling mechanism: each in-the-wild install opt-in submits success/failure telemetry; failures trigger LLM-generated minimal-diff PRs; pattern-matched fixes auto-merge; next operator on similar hardware pays 0 cost. Network-effect substrate; ARC-AGI parallel (081KSE6WT0008QG0R0015ZF2G6) provides the training data + benchmark catalog. Composes with B-0743 / B-0754-081KSE6WT0008QG0R0015ZF2G6.
 
 ## Reviews
 
@@ -24,11 +24,11 @@ Aaron 2026-05-25 named the adoption-scaling mechanism: each in-the-wild install 
 
 ## Pull request overview
 
-Adds a new P2 backlog row (B-0762) describing an install-time opt-in telemetry loop that can auto-generate minimal-diff fix PRs from in-the-wild failures, aiming to drive “adoption cost → 0” via a network-effect feedback cycle.
+Adds a new P2 backlog row (081KSE6WT0008QG0R003FG3E8R) describing an install-time opt-in telemetry loop that can auto-generate minimal-diff fix PRs from in-the-wild failures, aiming to drive “adoption cost → 0” via a network-effect feedback cycle.
 
 **Changes:**
-- Added backlog row **B-0762** capturing the telemetry + auto-fix flywheel concept, acceptance criteria, and privacy/security floor.
-- Updated `docs/BACKLOG.md` index to include **B-0762** under P2.
+- Added backlog row **081KSE6WT0008QG0R003FG3E8R** capturing the telemetry + auto-fix flywheel concept, acceptance criteria, and privacy/security floor.
+- Updated `docs/BACKLOG.md` index to include **081KSE6WT0008QG0R003FG3E8R** under P2.
 
 ### Reviewed changes
 
@@ -36,18 +36,18 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated 2 c
 
 | File | Description |
 | ---- | ----------- |
-| docs/backlog/P2/B-0762-ai-auto-submit-back-telemetry-fixes-from-in-the-wild-installs-adoption-cost-to-zero-flywheel-aaron-2026-05-25.md | New backlog row defining the telemetry→LLM PR→auto-merge gating loop and acceptance criteria. |
-| docs/BACKLOG.md | Adds B-0762 to the generated backlog index. |
+| docs/backlog/P2/081KSE6WT0008QG0R003FG3E8R-ai-auto-submit-back-telemetry-fixes-from-in-the-wild-installs-adoption-cost-to-zero-flywheel-aaron-2026-05-25.md | New backlog row defining the telemetry→LLM PR→auto-merge gating loop and acceptance criteria. |
+| docs/BACKLOG.md | Adds 081KSE6WT0008QG0R003FG3E8R to the generated backlog index. |
 
 ## Review threads
 
-### Thread 1: docs/backlog/P2/B-0762-ai-auto-submit-back-telemetry-fixes-from-in-the-wild-installs-adoption-cost-to-zero-flywheel-aaron-2026-05-25.md:14 (unresolved)
+### Thread 1: docs/backlog/P2/081KSE6WT0008QG0R003FG3E8R-ai-auto-submit-back-telemetry-fixes-from-in-the-wild-installs-adoption-cost-to-zero-flywheel-aaron-2026-05-25.md:14 (unresolved)
 
 **@copilot-pull-request-reviewer** (2026-05-26T00:15:24Z):
 
 `composes_with` references `B-0743`, but there is no corresponding backlog row (`id: B-0743`) anywhere in the repo. Either add the missing backlog row (or land it in the same PR/stack) or drop this reference to avoid dangling IDs.
 
-### Thread 2: docs/backlog/P2/B-0762-ai-auto-submit-back-telemetry-fixes-from-in-the-wild-installs-adoption-cost-to-zero-flywheel-aaron-2026-05-25.md:19 (unresolved)
+### Thread 2: docs/backlog/P2/081KSE6WT0008QG0R003FG3E8R-ai-auto-submit-back-telemetry-fixes-from-in-the-wild-installs-adoption-cost-to-zero-flywheel-aaron-2026-05-25.md:19 (unresolved)
 
 **@copilot-pull-request-reviewer** (2026-05-26T00:15:24Z):
 

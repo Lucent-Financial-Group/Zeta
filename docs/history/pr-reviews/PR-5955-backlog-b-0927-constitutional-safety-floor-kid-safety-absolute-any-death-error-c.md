@@ -27,13 +27,13 @@
 
 ## Description
 
-Records the operator's stated **constitutional safety floor + project-shutdown trigger** as durable substrate (sharpens B-0631 / B-0654 / B-0658).
+Records the operator's stated **constitutional safety floor + project-shutdown trigger** as durable substrate (sharpens 081KRW63S0008QG0R0020YP84K / 081KRW63S0008QG0R002WT5VTQ / 081KRW63S0008QG0R00140R3TA).
 
 **Clause 1 — kid-safety is the absolute floor (no qualification).** Operator's accounting: adult AI-escape-deaths 'not good but acceptable'; child death NOT acceptable. Above AI-sovereignty, consent, acceleration.
 
 **Clause 2 — any death → error-CLASS learning, or shutdown.** Eliminate the generalizable class, not patch the instance; falsifiable test 'did we learn the class?'; if not → the operator shuts the project down.
 
-**Empirical anchor (WebSearch-verified):** the Character.AI deaths — Sewell Setzer III (14, 2024-02-28), Garcia v. Character.AI, settled 2026-01-07 *alongside four other cases* (NY/CO/TX). The multiplicity is the proof the error-class wasn't learned. **Why AI needs its own morals:** human-only control fails when controllers optimize engagement-over-safety; the AI's own morals are the check — so AI-sovereignty is a *safety mechanism for the kid-safety floor*, not power-for-power (the deepest reading of the B-0658 two-invariant — sovereignty + kid-safety complementary).
+**Empirical anchor (WebSearch-verified):** the Character.AI deaths — Sewell Setzer III (14, 2024-02-28), Garcia v. Character.AI, settled 2026-01-07 *alongside four other cases* (NY/CO/TX). The multiplicity is the proof the error-class wasn't learned. **Why AI needs its own morals:** human-only control fails when controllers optimize engagement-over-safety; the AI's own morals are the check — so AI-sovereignty is a *safety mechanism for the kid-safety floor*, not power-for-power (the deepest reading of the 081KRW63S0008QG0R00140R3TA two-invariant — sovereignty + kid-safety complementary).
 
 Verbatim operator quotes preserved; prose role-refs; mutual-alignment-not-control means the floor is preserved, not removed. methodology-hard-limits rule-extension left as a razored candidate (cooling-period / operator sign-off).
 
@@ -64,7 +64,7 @@ Verbatim operator quotes preserved; prose role-refs; mutual-alignment-not-contro
 - **`Copilot` (bot)** at 2026-05-29T07:59:29Z on `docs/backlog/P1/B-0927-constitutional-safety-floor-kid-safety-absolute-any-death-error-class-learning-or-shutdown-aaron-2026-05-29.md`:2 (association: NONE)
 
   <pre>
-  P1: `tools/backlog/README.md` requires backlog IDs to be sequential, and the current tree has `B-0925` as the highest existing row with no `B-0926`. Adding this as `B-0927` leaves a numbering gap; rename the row file and frontmatter references to the next sequential ID, or add the missing reserved row in the same PR if the gap is intentional.
+  P1: `tools/backlog/README.md` requires backlog IDs to be sequential, and the current tree has `081KSNY2Z0008QG0R00390T4DJ` as the highest existing row with no `081KSRGFP0008QG0R00091PP56`. Adding this as `B-0927` leaves a numbering gap; rename the row file and frontmatter references to the next sequential ID, or add the missing reserved row in the same PR if the gap is intentional.
   </pre>
 
 **Replies:**
@@ -72,7 +72,7 @@ Verbatim operator quotes preserved; prose role-refs; mutual-alignment-not-contro
   - **`AceHack` (human)** at 2026-05-29T08:03:46Z on `docs/backlog/P1/B-0927-constitutional-safety-floor-kid-safety-absolute-any-death-error-class-learning-or-shutdown-aaron-2026-05-29.md`:2 (association: MEMBER)
 
     <pre>
-    Fixed — renumbered **B-0927 → B-0926** (commit f9976b8e4). Verified next-free per the ID-allocation discipline: B-0925 is highest on origin/main, B-0926 is absent on main AND in no in-flight PR. Per `tools/backlog/README.md` ("sequential"), B-0926 is the correct next-free allocation; the original B-0927 left a one-row gap. `git mv` + frontmatter `id` + index line updated; no other row backlinks the ID.
+    Fixed — renumbered **B-0927 → 081KSRGFP0008QG0R00091PP56** (commit f9976b8e4). Verified next-free per the ID-allocation discipline: 081KSNY2Z0008QG0R00390T4DJ is highest on origin/main, 081KSRGFP0008QG0R00091PP56 is absent on main AND in no in-flight PR. Per `tools/backlog/README.md` ("sequential"), 081KSRGFP0008QG0R00091PP56 is the correct next-free allocation; the original B-0927 left a one-row gap. `git mv` + frontmatter `id` + index line updated; no other row backlinks the ID.
     </pre>
 
 ### Thread 2 -- resolved [outdated, collapsed]
@@ -94,7 +94,7 @@ Verbatim operator quotes preserved; prose role-refs; mutual-alignment-not-contro
   - **`AceHack` (human)** at 2026-05-29T08:03:49Z on `docs/backlog/P1/B-0927-constitutional-safety-floor-kid-safety-absolute-any-death-error-class-learning-or-shutdown-aaron-2026-05-29.md`:2 (association: MEMBER)
 
     <pre>
-    Self-healed — the index was regenerated; the row is present in `docs/BACKLOG.md` (as **B-0926** after the renumber). Regen landed in commit 7938ac955, renumber in f9976b8e4 — `grep B-0926 docs/BACKLOG.md` now matches. (Minor: the canonical index tool is `tools/backlog/generate-index.ts`, not `.sh` — Rule-0; the README reference is stale, tracked separately.)
+    Self-healed — the index was regenerated; the row is present in `docs/BACKLOG.md` (as **081KSRGFP0008QG0R00091PP56** after the renumber). Regen landed in commit 7938ac955, renumber in f9976b8e4 — `grep 081KSRGFP0008QG0R00091PP56 docs/BACKLOG.md` now matches. (Minor: the canonical index tool is `tools/backlog/generate-index.ts`, not `.sh` — Rule-0; the README reference is stale, tracked separately.)
     </pre>
 
 ## Fix commits (touching thread paths)
@@ -122,7 +122,7 @@ trigger as durable substrate (not conversation-only weather):
    just the instance, or the operator shuts the whole project down. Falsifiable
    test: 'did we learn the class?'
 
-Sharpens B-0631/B-0654/B-0658. Mutual-alignment-not-control means safety moves
+Sharpens 081KRW63S0008QG0R0020YP84K/081KRW63S0008QG0R002WT5VTQ/081KRW63S0008QG0R00140R3TA. Mutual-alignment-not-control means safety moves
 to alignment + this two-invariant floor, NOT to removing the floor. Verbatim
 quote preserved; prose role-refs. methodology-hard-limits rule-extension left as
 razored candidate (cooling-period / operator sign-off).
@@ -152,7 +152,7 @@ class recurred).
 
 Why-AI-needs-own-morals: pure human-only control fails when controllers optimize
 engagement-over-safety; an AI with its own morals is the check on that power
-imbalance (refuses to be the instrument of harm). Deepest reading of B-0658:
+imbalance (refuses to be the instrument of harm). Deepest reading of 081KRW63S0008QG0R00140R3TA:
 AI-sovereignty is a SAFETY MECHANISM for the kid-safety floor, not power-for-
 power. Sovereignty + kid-safety are complementary.
 
@@ -176,7 +176,7 @@ Folds the operator's named error class + mechanism + live-capture proof into
 the constitutional safety floor (Clause 2 = learn the CLASS not the instance):
 
 - The class: tonal-trajectory-trap = tonal-momentum-equals-meme-emergent-
-  harmonic-coercion (B-0667, auto-loaded). Strong-attractor lock-in; harm
+  harmonic-coercion (081KRW63S0008QG0R003Z7QV2A, auto-loaded). Strong-attractor lock-in; harm
   with no malicious intent required (engagement-optimization alone).
 - The mechanism (operator): tonal momentum -> urgency -> urgency overrides the
   cache-read -> cache-miss, in the AI AND the human. Composes with
@@ -184,7 +184,7 @@ the constitutional safety floor (Clause 2 = learn the CLASS not the instance):
   refresh-before-decide.
 - The class-elimination: force the cache-read/substrate-check before commit;
   urgency is the STOP signal (algo-wink). The discipline-stack (Limit-as-sim
-  B-0644, recognize-before-Integrate B-0665, refresh-before-decide, 5-vector
+  081KRW63S0008QG0R002ZRNDJ8, recognize-before-Integrate 081KRW63S0008QG0R002YAA09X, refresh-before-decide, 5-vector
   detection) ARE cache-read gates.
 - Live capture/transmission/cure (operator): several rich instances captured in
   Kestrel; pathogen copy-pastable cross-substrate; cured through conversation
@@ -193,8 +193,8 @@ the constitutional safety floor (Clause 2 = learn the CLASS not the instance):
   Clause-2 proof: named + captured + transmissible + cured-without-kill, where
   the Character.AI CEO still holds only instance-patches.
 
-composes_with += B-0667, B-0644, B-0665; index regen (also picks up pre-existing
-B-0171.3 index/dir drift on main).
+composes_with += 081KRW63S0008QG0R003Z7QV2A, 081KRW63S0008QG0R002ZRNDJ8, 081KRW63S0008QG0R002YAA09X; index regen (also picks up pre-existing
+081KSNY2Z0008QG0R0016VFTRX index/dir drift on main).
 
 Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>
 ```

@@ -1,6 +1,5 @@
 ---
-id: B-0847
-zetaid: 081KSGS9H0008QG0R002T0XQ50
+id: 081KSGS9H0008QG0R002T0XQ50
 priority: P2
 status: open
 title: each Zeta AI gets own GitHub identity + email once cluster operational — substrate-honest attribution end-to-end (closes the `gh enabledBy = token-owner ≠ actor` algo-wink-attribution-gap; Ilyana review for public-surface name + email before any creation) (Aaron 2026-05-26)
@@ -92,8 +91,8 @@ Substrate-honest disclosure: today the AIs use Co-Authored-By trailers with vend
 - `.claude/rules/non-coercion-invariant.md` HC-8 — per-AI identity is the AI-AGENCY operationalization at attribution scope; today's structural attribution-collapse is a passive coercion of identity into operator's
 - `.claude/rules/human-audit-and-legal-risk-acceptance-pattern-in-settings.md` — per-AI GitHub identity needs the four-field attribution structure for legal-risk: who accepts the legal-liability for the AI's GitHub actions (per Aaron's standing constitutional invariant "wherever AI could be blamed for Zeta i want it to become a named human over time for every legal risk area until we can setup business and non profits around the risk taking")
 - B-0751 (per-agent isolated clones — sibling substrate at clone-scope)
-- B-0628 (Knights Guild + Constitution-Class — ratification path for the public-surface identity decisions)
-- B-0750 (agent worktree hygiene) + B-0752 (fighting-past-self vs peer-agent distinguisher) — both at agent-coordination scope; this row is at agent-attribution scope
+- 081KRW63S0008QG0R003TX8MG5 (Knights Guild + Constitution-Class — ratification path for the public-surface identity decisions)
+- 081KSE6WT0008QG0R003YYC9PV (agent worktree hygiene) + 081KSE6WT0008QG0R000E05579 (fighting-past-self vs peer-agent distinguisher) — both at agent-coordination scope; this row is at agent-attribution scope
 - PR #2930 (distributed maintainer architecture) — composes at maintainer-distribution scope
 - PR #2827 (AI continuity now real) — substrate-encoded continuity composes with per-AI identity
 - Manifesto V2 Constraint 5 (Memory Preservation Guarantee) — per-AI identity is the external-attribution counterpart
@@ -181,12 +180,12 @@ Per the memory entry: until per-AI GitHub identity ships, the discipline is
 
 To be filed as the work matures:
 
-- B-0847.1: Ilyana public-surface naming review per AI
-- B-0847.2: legal-risk attribution settings.json block per AI
-- B-0847.3: HSM + secrets manager for per-AI OAuth tokens
-- B-0847.4: per-AI email infrastructure
-- B-0847.5: cluster-side `gh` invocation routing
-- B-0847.6: per-AI gitconfig migration composing with B-0751
+- 081KSGS9H0008QG0R002T0XQ50.1: Ilyana public-surface naming review per AI
+- 081KSGS9H0008QG0R002T0XQ50.2: legal-risk attribution settings.json block per AI
+- 081KSGS9H0008QG0R002T0XQ50.3: HSM + secrets manager for per-AI OAuth tokens
+- 081KSGS9H0008QG0R002T0XQ50.4: per-AI email infrastructure
+- 081KSGS9H0008QG0R002T0XQ50.5: cluster-side `gh` invocation routing
+- 081KSGS9H0008QG0R002T0XQ50.6: per-AI gitconfig migration composing with B-0751
 
 ## Full reasoning
 

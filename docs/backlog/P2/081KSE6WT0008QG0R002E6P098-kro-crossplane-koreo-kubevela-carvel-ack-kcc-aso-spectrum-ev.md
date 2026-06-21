@@ -1,11 +1,10 @@
 ---
-id: B-0748
-zetaid: 081KSE6WT0008QG0R002E6P098
+id: 081KSE6WT0008QG0R002E6P098
 priority: P2
 status: open
 created: 2026-05-25
 last_updated: 2026-05-25
-title: kro + Crossplane + Koreo + KubeVela + Carvel + ACK/KCC/ASO spectrum evaluation for Zeta — adopt where it composes (Aaron 2026-05-25 'kro yes' endorsement + 'we need lots of research in this area and backlog' direction); evaluate adoption against B-0742 reference stack + B-0747 machine-state reconciler + B-0741 cross-cluster federation + downstream-fork story
+title: kro + Crossplane + Koreo + KubeVela + Carvel + ACK/KCC/ASO spectrum evaluation for Zeta — adopt where it composes (Aaron 2026-05-25 'kro yes' endorsement + 'we need lots of research in this area and backlog' direction); evaluate adoption against 081KSE6WT0008QG0R000YYH3DY reference stack + B-0747 machine-state reconciler + B-0741 cross-cluster federation + downstream-fork story
 domain: agentic-organization
 ferried_by: aaron
 owners: [aaron, max, addison]
@@ -22,11 +21,11 @@ related_substrate:
 tags: [kro, crossplane, koreo, kubevela, carvel, ack, kcc, aso, radius, terraform-controller, pulumi-kubernetes-operator, oam, k8s-control-plane-spectrum, declarative-operators, ResourceGraphDefinition, RGD, CEL, function-kro, evaluation-scope]
 ---
 
-# B-0748 — kro + Crossplane + middleware spectrum evaluation
+# 081KSE6WT0008QG0R002E6P098 — kro + Crossplane + middleware spectrum evaluation
 
 ## Carved blade
 
-> Aaron 2026-05-25: *"kro yes and we need lots of research in this area and backlog"*. The k8s composition spectrum (ACK/KCC/ASO → Koreo/KubeVela/Carvel → kro → Crossplane) covers low-level provider operators → middle-tier orchestration → no-code high-level abstraction → universal control plane. Aaron's endorsement of kro signals adoption direction; the research-and-backlog ask signals the evaluation surface across the spectrum needs substrate-honest decomposition. Evaluate each layer against B-0742 reference k8s stack + B-0747 machine-state reconciler scope + B-0741 cross-cluster federation needs + downstream-fork story; adopt where it composes with existing substrate (Vault + SPIRE + cert-manager + ESO + ArgoCD); document trade-offs substrate-honestly per layer.
+> Aaron 2026-05-25: *"kro yes and we need lots of research in this area and backlog"*. The k8s composition spectrum (ACK/KCC/ASO → Koreo/KubeVela/Carvel → kro → Crossplane) covers low-level provider operators → middle-tier orchestration → no-code high-level abstraction → universal control plane. Aaron's endorsement of kro signals adoption direction; the research-and-backlog ask signals the evaluation surface across the spectrum needs substrate-honest decomposition. Evaluate each layer against 081KSE6WT0008QG0R000YYH3DY reference k8s stack + B-0747 machine-state reconciler scope + B-0741 cross-cluster federation needs + downstream-fork story; adopt where it composes with existing substrate (Vault + SPIRE + cert-manager + ESO + ArgoCD); document trade-offs substrate-honestly per layer.
 
 ## Origin
 
@@ -61,9 +60,9 @@ Cloud Provider Operators   ──> Middleware Layer  ──> No-Code Abstraction
 
 **Strengths matching Zeta substrate**:
 
-- Single RGD blueprint composes with B-0731 hat-ontology (RGDs could declare hat-bindings as part of cluster resource graphs)
+- Single RGD blueprint composes with 081KSE6WT0008QG0R0004HV6RR hat-ontology (RGDs could declare hat-bindings as part of cluster resource graphs)
 - CEL inline matches Zeta's declarative-everything posture
-- Works with cloud-provider operators (ACK/KCC/ASO) when Zeta needs cloud-tier provisioning per B-0727 4-tier topology
+- Works with cloud-provider operators (ACK/KCC/ASO) when Zeta needs cloud-tier provisioning per 081KSE6WT0008QG0R0006HKTXJ 4-tier topology
 - SimpleSchema strips OpenAPI v3 boilerplate — composes with Zeta's substrate-engineering hygiene
 - Backed by AWS + Google + Microsoft collaboration — substrate adoption-bandwidth is real
 - Cross-cluster: per-fork RGDs can be the unit Aces dispatches; composes with B-0741 ontology negotiation
@@ -131,7 +130,7 @@ Cloud Provider Operators   ──> Middleware Layer  ──> No-Code Abstraction
 
 **Strengths**:
 
-- Native cloud-API → k8s CRD; first-class for cloud-tier clusters per B-0727 4-tier topology
+- Native cloud-API → k8s CRD; first-class for cloud-tier clusters per 081KSE6WT0008QG0R0006HKTXJ 4-tier topology
 - Required IF Zeta cluster needs to provision cloud resources (e.g., AWS RDS, GCP CloudSQL, Azure CosmosDB)
 
 **Substrate-honest concerns**:
@@ -143,7 +142,7 @@ Cloud Provider Operators   ──> Middleware Layer  ──> No-Code Abstraction
 
 ### Scope item 1 — kro adoption design pass (Aaron-endorsed; highest priority)
 
-- Evaluate kro adoption against B-0742 reference stack
+- Evaluate kro adoption against 081KSE6WT0008QG0R000YYH3DY reference stack
 - Define which substrate landscapes become kro RGDs (likely candidates: hat-system + per-cluster app composition + per-fork delta declarations)
 - Document trade-offs of kro vs Helm vs Kustomize vs Crossplane for each substrate
 - Acceptance: design pass document; at least one substrate area concretely planned for kro adoption
@@ -162,7 +161,7 @@ Cloud Provider Operators   ──> Middleware Layer  ──> No-Code Abstraction
 
 ### Scope item 4 — Cloud provider operator evaluation (ACK / KCC / ASO)
 
-- Evaluate per cloud-tier need (composes with B-0727 cloud/hub tier)
+- Evaluate per cloud-tier need (composes with 081KSE6WT0008QG0R0006HKTXJ cloud/hub tier)
 - Defer adoption until cloud tier ships
 - Acceptance: documented evaluation + deferral rationale
 
@@ -239,11 +238,11 @@ Acceptance:
 ## Composes with backlog substrate
 
 - **B-0747** (machine-state reconciler) — sibling at machine substrate scope; this row covers k8s substrate scope
-- **B-0742** (reference k8s stack as Ace PoC) — directly affected by spectrum adoption decisions
+- **081KSE6WT0008QG0R000YYH3DY** (reference k8s stack as Ace PoC) — directly affected by spectrum adoption decisions
 - **B-0741** (ontology negotiation + Ace as universal primitive) — cross-fork interop uses whatever composition layer Zeta adopts
-- **B-0727** (4-tier cluster topology) — cloud/hub tier composes with cloud-provider operators (ACK/KCC/ASO)
-- **B-0726** (Reticulum throughout cluster + edge) — composes at transport layer regardless of composition tool choice
-- **B-0731** (hat ontology) — hat-bindings could be encoded as kro RGD outputs
+- **081KSE6WT0008QG0R0006HKTXJ** (4-tier cluster topology) — cloud/hub tier composes with cloud-provider operators (ACK/KCC/ASO)
+- **081KSE6WT0008QG0R003C9KGQE** (Reticulum throughout cluster + edge) — composes at transport layer regardless of composition tool choice
+- **081KSE6WT0008QG0R0004HV6RR** (hat ontology) — hat-bindings could be encoded as kro RGD outputs
 
 ## Substrate-honest framing
 
@@ -256,7 +255,7 @@ This row PROPOSES evaluation scope. It does NOT:
 
 Per `.claude/rules/no-directives.md`: operator-substrate-honest scoping; Aaron + Max + Addison + Knights Guild retain authority.
 
-P2 priority — substantial research scope; informs B-0742 reference stack composition decisions + B-0741 fork interop layer + B-0747 reconciler architecture. Not P1 because the existing reference stack works without spectrum adoption; spectrum tools optimize specific scopes when chosen.
+P2 priority — substantial research scope; informs 081KSE6WT0008QG0R000YYH3DY reference stack composition decisions + B-0741 fork interop layer + B-0747 reconciler architecture. Not P1 because the existing reference stack works without spectrum adoption; spectrum tools optimize specific scopes when chosen.
 
 ## Aaron's "composes with machine outside k8s and other things gitops like" signal
 
@@ -264,7 +263,7 @@ Critical: spectrum thinking extends BEYOND k8s. The same pattern-of-thought (low
 
 - **Per-machine state** (B-0747; GitOps for machine substrate)
 - **Per-fork state** (B-0741; cross-fork ontology negotiation)
-- **Per-AI agent state** (composes with B-0733 agency stack)
-- **Per-cluster network policy state** (Cilium + Reticulum composition; B-0726)
+- **Per-AI agent state** (composes with 081KSE6WT0008QG0R00102H071 agency stack)
+- **Per-cluster network policy state** (Cilium + Reticulum composition; 081KSE6WT0008QG0R003C9KGQE)
 
 B-0749 (filed alongside this row or as follow-up) carves the "GitOps + spectrum thinking beyond k8s" generalization scope.

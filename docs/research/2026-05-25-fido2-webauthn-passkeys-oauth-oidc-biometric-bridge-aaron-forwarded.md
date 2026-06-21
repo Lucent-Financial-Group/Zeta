@@ -60,7 +60,7 @@ Aaron 2026-05-25 first surfaced this in response to my B-0743 desktop admin cons
 
 | Standard | Role in Zeta substrate-engineering |
 |---|---|
-| **WebAuthn** (W3C+FIDO) | Client-side API at the operator's desktop; translates B-0737/B-0743 Touch ID into signed assertion |
+| **WebAuthn** (W3C+FIDO) | Client-side API at the operator's desktop; translates 081KSE6WT0008QG0R003WZAQKV/B-0743 Touch ID into signed assertion |
 | **FIDO2 / Passkeys** (FIDO Alliance) | Hardware-bound credential format; composes with macOS Secure Enclave + Windows TPM + Linux TitanM/fprintd |
 | **OAuth 2.0** (IETF) | Token-based authorization; bearer tokens for downstream service calls |
 | **OIDC** (OpenID Foundation) | Identity layer on OAuth 2.0; carries WHO across services; the load-bearing bridge protocol |
@@ -83,9 +83,9 @@ Aaron's framing 2026-05-25: *"we should save that new clean who composition you 
 ### What this research informs
 
 - **B-0744** — the cross-cutting auth bridge row; this research is the seed
-- **B-0743 + B-0737** — desktop biometric pattern; this research grounds it in industry standards
+- **B-0743 + 081KSE6WT0008QG0R003WZAQKV** — desktop biometric pattern; this research grounds it in industry standards
 - **B-0741** — cross-cluster federation; OIDC federation IS the trust substrate (multiple OIDC issuers can federate)
-- **B-0742** — reference stack; will host an OIDC issuer (probably Vault's per substrate honesty)
+- **081KSE6WT0008QG0R000YYH3DY** — reference stack; will host an OIDC issuer (probably Vault's per substrate honesty)
 - **B-0747** — machine-state declared-state CAN include OIDC issuer config
 
 ### What this research does NOT decide

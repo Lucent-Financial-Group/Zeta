@@ -1,6 +1,5 @@
 ---
-id: B-0761
-zetaid: 081KSE6WT0008QG0R0015ZF2G6
+id: 081KSE6WT0008QG0R0015ZF2G6
 priority: P2
 status: open
 title: Zeta cluster as open-source reference architecture for AI to train on and compete on — ARC-AGI-style benchmark substrate
@@ -31,7 +30,7 @@ competition."*
 The Zeta cluster substrate (NixOS declarative + k3s + Longhorn /
 future Ceph/Rook + zero-typing USB install + 3-node HA quorum +
 mDNS auto-discovery + GitOps + AI-cluster modules) is being built
-as a usable home-cluster product (per B-0759 first-time-CLI-user
+as a usable home-cluster product (per 081KSE6WT0008QG0R003G0Y62D first-time-CLI-user
 persona). But it ALSO incidentally defines something rarer in the
 AI/cluster space:
 
@@ -134,13 +133,13 @@ shape at the infrastructure / cluster / DevOps domain:
 ## Composes with
 
 - B-0754 — zero-typing USB install (the substrate's UX delivery)
-- B-0755 — role taxonomy expansion (the reference architecture
+- 081KSE6WT0008QG0R003612WGJ — role taxonomy expansion (the reference architecture
   needs full role coverage)
-- B-0756 — HA control-plane (production-ready inflection)
-- B-0757 — cluster auto-discovery (the seamless growth path)
+- 081KSE6WT0008QG0R001NG9JZH — HA control-plane (production-ready inflection)
+- 081KSE6WT0008QG0R000CV98PV — cluster auto-discovery (the seamless growth path)
 - B-0758 — USB-persistent OS (the unRAID-style competitive
   framing for storage-heavy reference deployments)
-- B-0759 — first-time-CLI-user UX audit (the human-facing
+- 081KSE6WT0008QG0R003G0Y62D — first-time-CLI-user UX audit (the human-facing
   half; this row is the AI-facing half)
 - B-0760 — USB as repair tool (the no-disruption-at-3+-nodes
   invariant the benchmark would test)
@@ -176,7 +175,7 @@ which improves the substrate for everyone.
 
 - Multi-cloud-portability tooling (Terraform / Crossplane /
   KubeVela bridges) — separate scope; covered by existing
-  B-0748 / B-0749 work
+  081KSE6WT0008QG0R002E6P098 / B-0749 work
 - AI-vs-AI competition tooling (judge framework, transcript
   diffing, automated scoring) — separate scope; out of this
   row's v1

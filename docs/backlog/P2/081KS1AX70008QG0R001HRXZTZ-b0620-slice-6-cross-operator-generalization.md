@@ -1,6 +1,5 @@
 ---
-id: B-0677
-zetaid: 081KS1AX70008QG0R001HRXZTZ
+id: 081KS1AX70008QG0R001HRXZTZ
 status: open
 priority: P2
 title: B-0620 slice 6 cross-operator generalization
@@ -9,7 +8,7 @@ last_updated: 2026-05-20
 type: feature
 ---
 
-# B-0677: B-0620 slice 6 cross-operator generalization
+# 081KS1AX70008QG0R001HRXZTZ: B-0620 slice 6 cross-operator generalization
 
 ## Scope
 

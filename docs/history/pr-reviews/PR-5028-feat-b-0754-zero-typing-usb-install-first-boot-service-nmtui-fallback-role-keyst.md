@@ -62,7 +62,7 @@ If anything fails: drop to interactive shell (no `exit 1`); the existing manual 
 | `usb-nixos-installer/zeta-install.sh` | `ZETA_AUTO_CONFIRM=WIPE` env-var bypass for typed confirmation |
 | `usb-nixos-installer/nixos/installer/configuration.nix` | systemd unit + `/etc/zeta-firstboot.conf` + `/etc/zeta-firstboot-enabled` + disable getty@tty1 |
 | `PROVISIONING.md` | Updates Step 4 + Step 5 to reflect zero-typing default |
-| `docs/backlog/P2/B-0755-cluster-role-taxonomy-expansion-...md` | Follow-up backlog row for role taxonomy expansion (control-plane-gpu, worker-cpu, worker-storage, all-in-one) |
+| `docs/backlog/P2/081KSE6WT0008QG0R003612WGJ-cluster-role-taxonomy-expansion-...md` | Follow-up backlog row for role taxonomy expansion (control-plane-gpu, worker-cpu, worker-storage, all-in-one) |
 
 ### Override path (recovery / non-standard shapes)
 
@@ -70,11 +70,11 @@ Switch to `Ctrl-Alt-F2` for a normal login shell. The first-boot service runs on
 
 ## Composes with
 
-- B-0737 — zflash + Touch ID PAM (the Mac-side one-touch flow this matches on the node side)
+- 081KSE6WT0008QG0R003WZAQKV — zflash + Touch ID PAM (the Mac-side one-touch flow this matches on the node side)
 - B-0743 — "I execute, you fingerprint" desktop admin consent pattern (extended here to "I execute, you walk away" for the node-side install)
-- B-0728 — destructive-tool authoring contract (preserved: the destructive consent moves to flash time, gated by Touch ID + nonce)
-- B-0755 — role taxonomy expansion (the prompt grows when more host configs land)
-- B-0756 — HA control-plane + etcd (sibling architecture work)
+- 081KSE6WT0008QG0R0005XASX2 — destructive-tool authoring contract (preserved: the destructive consent moves to flash time, gated by Touch ID + nonce)
+- 081KSE6WT0008QG0R003612WGJ — role taxonomy expansion (the prompt grows when more host configs land)
+- 081KSE6WT0008QG0R001NG9JZH — HA control-plane + etcd (sibling architecture work)
 
 ## Test plan
 
@@ -157,12 +157,12 @@ Switch to `Ctrl-Alt-F2` for a normal login shell. The first-boot service runs on
 ### Thread 5 -- resolved [outdated, collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6EpFWK`
-- **Path**: `docs/backlog/P2/B-0755-cluster-role-taxonomy-expansion-control-plane-gpu-worker-cpu-worker-storage-all-in-one-aaron-2026-05-25.md`
+- **Path**: `docs/backlog/P2/081KSE6WT0008QG0R003612WGJ-cluster-role-taxonomy-expansion-control-plane-gpu-worker-cpu-worker-storage-all-in-one-aaron-2026-05-25.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-25T23:26:55Z on `docs/backlog/P2/B-0755-cluster-role-taxonomy-expansion-control-plane-gpu-worker-cpu-worker-storage-all-in-one-aaron-2026-05-25.md`:11 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-25T23:26:55Z on `docs/backlog/P2/081KSE6WT0008QG0R003612WGJ-cluster-role-taxonomy-expansion-control-plane-gpu-worker-cpu-worker-storage-all-in-one-aaron-2026-05-25.md`:11 (association: NONE)
 
   <pre>
   P1: Backlog per-row schema requires `last_updated` and uses `effort` (not `size`) plus `tags` (not `labels`) per `tools/backlog/README.md` frontmatter table. This new row is missing `last_updated` and uses non-schema fields, which risks drift vs the documented backlog format.
@@ -246,12 +246,12 @@ Switch to `Ctrl-Alt-F2` for a normal login shell. The first-boot service runs on
 ### Thread 11 -- resolved [outdated, collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6EpI_v`
-- **Path**: `docs/backlog/P2/B-0755-cluster-role-taxonomy-expansion-control-plane-gpu-worker-cpu-worker-storage-all-in-one-aaron-2026-05-25.md`
+- **Path**: `docs/backlog/P2/081KSE6WT0008QG0R003612WGJ-cluster-role-taxonomy-expansion-control-plane-gpu-worker-cpu-worker-storage-all-in-one-aaron-2026-05-25.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-25T23:35:34Z on `docs/backlog/P2/B-0755-cluster-role-taxonomy-expansion-control-plane-gpu-worker-cpu-worker-storage-all-in-one-aaron-2026-05-25.md`:11 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-25T23:35:34Z on `docs/backlog/P2/081KSE6WT0008QG0R003612WGJ-cluster-role-taxonomy-expansion-control-plane-gpu-worker-cpu-worker-storage-all-in-one-aaron-2026-05-25.md`:11 (association: NONE)
 
   <pre>
   P1: This new backlog row frontmatter doesn’t match the documented schema in tools/backlog/README.md (e.g., missing required `last_updated`, and uses `size`/`labels` instead of the documented `effort`/`tags`). Please align the frontmatter with the current schema so tooling and conventions stay consistent.
@@ -264,7 +264,7 @@ Switch to `Ctrl-Alt-F2` for a normal login shell. The first-boot service runs on
 
 **Touched files (intersect with thread paths):**
 
-- `docs/backlog/P2/B-0755-cluster-role-taxonomy-expansion-control-plane-gpu-worker-cpu-worker-storage-all-in-one-aaron-2026-05-25.md`
+- `docs/backlog/P2/081KSE6WT0008QG0R003612WGJ-cluster-role-taxonomy-expansion-control-plane-gpu-worker-cpu-worker-storage-all-in-one-aaron-2026-05-25.md`
 - `full-ai-cluster/PROVISIONING.md`
 - `full-ai-cluster/usb-nixos-installer/nixos/installer/configuration.nix`
 - `full-ai-cluster/usb-nixos-installer/zeta-first-boot.sh`
@@ -311,7 +311,7 @@ acceptance criteria from B-0754:
 4. **PROVISIONING.md** — updates Step 4 + Step 5 to reflect
    the zero-typing default; manual flow preserved as override
 
-Also files **B-0755** (role taxonomy expansion —
+Also files **081KSE6WT0008QG0R003612WGJ** (role taxonomy expansion —
 control-plane-gpu, worker-cpu, worker-storage, all-in-one
 fused host configs) which the role prompt will grow to
 support once the new host configs land.
@@ -324,10 +324,10 @@ Operator's verbatim asks during the session that produced this:
   internet on eth and if not there then ask for wifi setup automatically
   if not just one one for wifi one line for setup if possible"
 
-Composes with B-0737 (zflash + Touch ID), B-0743 ("I execute,
+Composes with 081KSE6WT0008QG0R003WZAQKV (zflash + Touch ID), B-0743 ("I execute,
 you fingerprint" pattern — extended here to "I execute, you
-walk away" for the node side), B-0728 (destructive-tool
-authoring contract), B-0755 (role taxonomy).
+walk away" for the node side), 081KSE6WT0008QG0R0005XASX2 (destructive-tool
+authoring contract), 081KSE6WT0008QG0R003612WGJ (role taxonomy).
 
 Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>
 ```
@@ -375,7 +375,7 @@ Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>
 
 **Touched files (intersect with thread paths):**
 
-- `docs/backlog/P2/B-0755-cluster-role-taxonomy-expansion-control-plane-gpu-worker-cpu-worker-storage-all-in-one-aaron-2026-05-25.md`
+- `docs/backlog/P2/081KSE6WT0008QG0R003612WGJ-cluster-role-taxonomy-expansion-control-plane-gpu-worker-cpu-worker-storage-all-in-one-aaron-2026-05-25.md`
 - `full-ai-cluster/usb-nixos-installer/nixos/installer/configuration.nix`
 - `full-ai-cluster/usb-nixos-installer/zeta-first-boot.sh`
 
@@ -392,7 +392,7 @@ P0 (consent framing): comment block on the env-var trio falsely implied destruct
 
 P1 (stale 2-NVMe doc): configuration.nix comment on zeta-install (line 180) + in-ISO /etc/zeta-install.md MANUAL OVERRIDE section both said '2-NVMe' even though greedy N-disk shipped on the same PR. Both updated to 'greedy N-disk (any combo of NVMe/SSD/HDD)'.
 
-P1 (frontmatter schema): B-0755 row used size/labels/authors instead of effort/tags/ask per tools/backlog/README.md schema; missing required last_updated. Fixed.
+P1 (frontmatter schema): 081KSE6WT0008QG0R003612WGJ row used size/labels/authors instead of effort/tags/ask per tools/backlog/README.md schema; missing required last_updated. Fixed.
 
 Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>
 ```

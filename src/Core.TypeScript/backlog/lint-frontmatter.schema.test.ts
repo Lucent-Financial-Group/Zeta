@@ -23,10 +23,10 @@ function fixture(rows: { dir: string; name: string; content: string }[]): string
   return base;
 }
 
-const GOOD = `---\nid: B-0001\npriority: P1\nstatus: open\ntitle: A good row\n---\n# B-0001\n`;
+const GOOD = `---\nid: 081KPYCJH0008QG0R003MDS51N\npriority: P1\nstatus: open\ntitle: A good row\n---\n# 081KPYCJH0008QG0R003MDS51N\n`;
 
 test("schema-only PASSES on a well-formed row (exit 0)", () => {
-  const base = fixture([{ dir: "P1", name: "B-0001-good.md", content: GOOD }]);
+  const base = fixture([{ dir: "P1", name: "081KPYCJH0008QG0R003MDS51N-good.md", content: GOOD }]);
   const r = runSchemaOnly(base);
   rmSync(base, { recursive: true, force: true });
   expect(r.status).toBe(0);
