@@ -20,6 +20,7 @@
  * see docs/research/2026-06-07-test-seam-deterministic-simulation-of-all-nouns-and-verbs).
  */
 import type { Clock, IdGenerator } from "./ports.ts";
+import type { TransportPort } from "./bus-transport.ts";
 
 /** Whether a seam binds the real-world adapter or a deterministic double. */
 export type SeamMode = "real" | "mock";
@@ -125,6 +126,12 @@ export type Room = {
   sandbox: SandboxSpec;
   /** OAuth-identity → allowed-tool-grants mediator, invoked via observe.ts. */
   credentialProxy: CredentialProxyPort;
+  /**
+   * The room's message transport (Merge1 §04). When present, cross-room
+   * messages route through it; the `transport` seam binding names the adapter
+   * (mock-bus | ephemeral-bus | nats). Absent for pure, transport-less rooms.
+   */
+  transport?: TransportPort | undefined;
 };
 
 export type CreateDeterministicRoomInput = {

@@ -13,6 +13,14 @@ declare module "node:crypto" {
   };
 
   export function createHash(algorithm: "sha1" | "sha256"): Hash;
+
+  export type Hmac = {
+    update(data: string | Uint8Array): Hmac;
+    digest(encoding: "hex"): string;
+  };
+
+  export function createHmac(algorithm: "sha256", key: string | Uint8Array): Hmac;
+  export function timingSafeEqual(a: Uint8Array, b: Uint8Array): boolean;
 }
 
 declare module "node:test" {
@@ -52,6 +60,10 @@ declare module "node:child_process" {
 declare module "node:fs" {
   export function mkdtempSync(prefix: string): string;
   export function rmSync(path: string, options: { recursive: boolean; force: boolean }): void;
+  export function mkdirSync(path: string, options: { recursive: boolean }): void;
+  export function readdirSync(path: string): string[];
+  export function readFileSync(path: string, encoding: "utf-8" | "utf8"): string;
+  export function writeFileSync(path: string, data: string, options?: { flag: "wx" }): void;
 }
 
 declare module "node:os" {
@@ -123,6 +135,7 @@ declare module "node:path" {
   export const sep: string;
   export function join(...paths: string[]): string;
   export function relative(from: string, to: string): string;
+  export function resolve(...paths: string[]): string;
 }
 
 declare module "node:url" {
