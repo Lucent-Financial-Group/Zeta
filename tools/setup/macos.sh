@@ -117,14 +117,42 @@ if [ -f "$BREW_MANIFEST" ]; then
 fi
 echo "✓ brew packages up to date"
 
-# Tap, trust, and install the official cvc5 cask (custom tap for macOS)
-if ! command -v cvc5 >/dev/null 2>&1; then
-  echo "↓ tapping and installing cvc5..."
-  brew tap cvc5/cvc5
-  brew trust cvc5/cvc5 || true
-  brew install --cask cvc5
+# ── 3b. Brew CASKS (from manifests/brew-cask) ───────────────────────
+# Casks are a separate brew namespace (`--cask` / `brew list --cask`), so they get
+# their own declarative manifest + loop (mirrors the formula loop above, tier-aware).
+CASK_MANIFEST="$SETUP_DIR/manifests/brew-cask"
+if [ -f "$CASK_MANIFEST" ]; then
+  CASKS="$(awk '
+    { sub(/#.*$/, ""); gsub(/^[[:space:]]+|[[:space:]]+$/, "") }
+    NF > 0 { print }
+  ' "$CASK_MANIFEST")"
+  if [ -n "$CASKS" ]; then
+    echo "↓ installing brew casks from $(basename "$CASK_MANIFEST")..."
+    printf '%s\n' "$CASKS" | while IFS= read -r cask_line; do
+      required_tier="$(zeta_tier_of_line "$cask_line")"
+      stripped="$(zeta_strip_tier "$cask_line")"
+      cask="$(printf '%s' "$stripped" | awk '{print $1}')"
+      [ -z "$cask" ] && continue
+      # Optional `tap=<owner/tap>` token — a custom tap (e.g. cvc5/cvc5) is tapped + trusted
+      # before install. Generalizes the former cvc5 one-off into the manifest framework.
+      tap="$(printf '%s' "$stripped" | awk '{for(i=2;i<=NF;i++){if($i ~ /^tap=/){sub(/^tap=/,"",$i); print $i}}}')"
+      if ! zeta_tier_allows "$required_tier"; then
+        echo "→ $cask skipped: requires tier=$required_tier, host is $ZETA_HOST_TIER ($ZETA_HOST_TIER_SOURCE)"
+        continue
+      fi
+      if [ -n "$tap" ]; then
+        brew tap "$tap" >/dev/null 2>&1 || true
+        brew trust "$tap" >/dev/null 2>&1 || true
+      fi
+      if brew list --cask "$cask" >/dev/null 2>&1; then
+        brew upgrade --cask "$cask" >/dev/null 2>&1 || true
+      else
+        brew install --cask "$cask"
+      fi
+    done
+  fi
 fi
-echo "✓ cvc5 installed"
+echo "✓ brew casks up to date"
 
 # ── 4. mise ─────────────────────────────────────────────────────────
 # Keep in sync with .mise.toml min_version and tools/setup/linux.sh MISE_PIN_VERSION.
