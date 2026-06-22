@@ -1,11 +1,52 @@
 # Trajectory - Cluster Encryption / Credential Substrate
 
 Status: active — first surfaced 2026-05-29 from substrate inventory (was tracked only as scattered backlog rows; never had a trajectory surface, which is why it was easy to lose at cold-boot)
-Last refreshed: 2026-05-29
+Last refreshed: 2026-06-21
 Type: workstream (current-focus) — a trajectory the operator is *actively powering*. Many trajectories can be tracked; only a few are workstreams at once (finite-focus / WIP-bounded — a workstream is a trajectory under sustained thrust, and thrust budget is finite, so most trajectories coast). ("Trajectory" is the genus; "workstream" is the species: a trajectory under sustained thrust toward a deliverable, vs. emergent-posture trajectories like `anti-infection`, which self-describes as "not a workstream with a cadence." See [`factory-trajectory-surface`](../factory-trajectory-surface/RESUME.md) for the genus/species taxonomy.) One of the operator's three current cluster workstreams (encryption / usb-zflash / ts-workflow-engine).
 Eventual encoding (design-stage — the human maintainer 2026-05-23 genetic-ID substrate + Clifford/HKT): this trajectory's state is trackable as a 128-bit genetic-ID seed (discrete, reversible via parser-combinator ↔ generator-function) → Clifford-space path (continuous, eventual). Mirrors the three-lane I8-lattice / I9-manifold split.
 Current blocker: none operationally; the live design tension is interactive-login-vs-baked-in-keys-vs-CI-test (081KSGS9H0008QG0R003JNSVR5)
-Next concrete action: confirm 081KSKBP80008QG0R003AX2A69 auth-method-picker + encrypted-blob impl status against the on-disk installer; resolve the 081KSGS9H0008QG0R003JNSVR5 tension (how CI tests a full install without shipping credentials)
+Next concrete action: round-trip harness in flight (otto/onboarding-roundtrip-harness — sandboxed new-fork setup→teardown→re-setup ×N, surfaces the rotate-command gap). Then smart cascading teardown (cascade-with-warnings; extra-care warn on memories/hardware-state/unrecoverable-encrypted; OWNER-consent-gated memory delete; user-sovereign encryption can't be force-reset; each user = own git repo — see `docs/research/2026-06-21-smart-cascading-teardown-user-sovereign-deletion-…`). All 3 vaults now Active+Standby (rotation-ready: Lucent/Personal/CA, 2 service accounts each in Keychain). CA-recovery hardware (FIDO/HSM/N-of-M) = post-investor next layer. Live wipe + clean re-onboard once the harness is tight. Teardown primitive shipped (#9000).
+
+## 2026-06-21 — Identity+Crypto onboarding consolidated; one-fingerprint vision
+
+**Where we are (shipped this session):** CA + machine key + user key + N+M-correct device cert,
+all registered. `op` (1Password CLI) cross-OS via mise. `secret-clip.sh` generic clipboard/
+masked/dialog → OS-keystore primitive. Two scoped 1Password vaults (Lucent agent-readable +
+Personal/User human-only), tokens in Keychain (lucent default, aaron opt-in). CA private + Aaron's
+SSH/GPG backed up to 1Password. Decisions: **hexagonal ports** (SecretStore/KeyCustody/
+CertAuthority/Consent → DB-as-first-class-PKI endgame), **event-sourced authorization** (grant/
+revoke = Z-set deltas), **identity+crypto synthesis** (one seed → SSH/PGP/Nostr/ETH/Solana via
+`derive.ts`). Blueprints: op-token provisioning, onboarding-prereqs (GitHub required + 1Password
+strongly-encouraged).
+
+**The vision (Aaron 2026-06-21) — ONE fingerprint, killer web3/crypto-investor UX:**
+
+- **One touch** sets up a new fork/user/cluster/machine: agent+blueprint+TS scripts GENERATE the
+  seed phrase(s) during onboarding, **save them into 1Password** (User vault, human-viewable),
+  derive the FULL keychain (identity + crypto wallets), custody per class vault, auto-configure
+  GitHub + 1Password. Security is first-class *because it's easy*.
+- **1-of-2 seeds + seed rotation:** redundant seeds (lose one → recover from the other) AND seeds
+  themselves are **rotatable** if leaked/lost — rotation applies at the seed layer, not just keys.
+- **Dual rotation from the start** (overlap-window dual-key, the 2026-06-15 decision) on every key.
+- **Teardown/unregister primitive:** delete everything (CA, machine, cert, keyring) + unregister
+  from main — a CORE PRIMITIVE (TS now; all langs via gen/ eventually). Needed to prove clean
+  re-onboarding. **BUILT** (PR open, Otto verify-gate): two halves behind injected effects
+  (noninterference §13) — (1) LOCAL WIPE of `~/.config/zeta/{ca,machine,keyring,keyset}`
+  (shred-then-unlink, biometric-gated fail-closed); (2) REPO UNREGISTER staging `git rm` of
+  `maintainers/<ca>/ssh-ca.pub` + `machines/<host>.pub` + `machines/<host>-cert.pub` for a PR
+  (never pushes, respects shared-checkout-is-view-only). `--dry-run` is DEFAULT-safe (reports
+  the plan, touches nothing, never prompts); `--confirm` + ONE biometric does the real wipe;
+  idempotent re-run = "already clean"; optional `--note-1password` PRINTS (never deletes) the
+  backup items. Files: `tools/setup/persona-keys/teardown{.ts,-cli.ts,.test.ts}`.
+- **Then back out 1Password:** run the same flow WITHOUT 1Password, see which steps go manual vs
+  stay automatic — the **hexagonal ports** make the secret/key/CA backends swap with no call-site
+  change. *"The interfaces are the valuable thing"* (Aaron, repeated) — the ports ARE the value.
+- Seed custody stays the human's: agent generates → hands to the human's 1Password → forgets;
+  agent never retains the master or a wallet seed.
+
+Design synthesis: `docs/research/2026-06-21-zeta-identity-crypto-substrate-one-seed-hd-keychain-…`.
+Build: workitem 081KVNXBR4S08QG0R0015DHBBN. Vault sep: 081KVNTNTDQ0. Decisions: hexagonal +
+event-sourced (2026-06-21), dual-key rotation (2026-06-15).
 
 ## Why This Exists
 
