@@ -228,6 +228,12 @@ let ``heat boundary signals classify scheduler rows without caller string parsin
 
 [<Fact>]
 let ``heat signature classifier is the shared pressure and forgetting rule`` () =
+    let nullKind: string = null
+
+    Assert.False(HeatSignature.isBackpressureKind nullKind)
+    Assert.False(HeatSignature.isDeniedKind nullKind)
+    Assert.False(HeatSignature.isPressureKind nullKind)
+    Assert.False(HeatSignature.isForgettingKind nullKind)
     Assert.True(HeatSignature.isBackpressureKind "room-admission.backpressure")
     Assert.False(HeatSignature.isBackpressureKind "room-boundary.door-denied")
     Assert.True(HeatSignature.isDeniedKind "room-boundary.door-denied")
@@ -250,6 +256,12 @@ let ``heat signature classifier is the shared pressure and forgetting rule`` () 
     Assert.Equal(
         Scheduler.HeatBoundarySignal.Forgotten,
         Scheduler.heatBoundarySignalOfKind "soft-emu.prune"
+    )
+
+    Assert.True(
+        match Scheduler.heatBoundarySignalOfKind nullKind with
+        | Scheduler.HeatBoundarySignal.Other value -> isNull value
+        | _ -> false
     )
 
 [<Fact>]

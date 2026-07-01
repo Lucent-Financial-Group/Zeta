@@ -21,7 +21,7 @@ type HeatSignature =
 module HeatSignature =
 
     let private kindContains (needle: string) (kind: string) : bool =
-        kind.Contains(needle, StringComparison.Ordinal)
+        not (String.IsNullOrEmpty kind) && kind.Contains(needle, StringComparison.Ordinal)
 
     let isBackpressureKind (kind: string) : bool =
         kindContains "backpressure" kind
