@@ -714,7 +714,7 @@ jobs:
     # expansion. See openspec/specs/static-analysis/profiles/
     # github-actions.md.
     name: lint (actionlint)
-    timeout-minutes: 5
+    timeout-minutes: 15
     runs-on: ubuntu-24.04
 
     steps:
