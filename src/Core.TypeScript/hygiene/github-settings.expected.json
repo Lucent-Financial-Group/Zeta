@@ -214,7 +214,7 @@
       "state": "active"
     },
     {
-      "name": "legacy-backlog-freeze",
+      "name": "backlog-index-integrity",
       "path": ".github/workflows/backlog-index-integrity.yml",
       "state": "active"
     },

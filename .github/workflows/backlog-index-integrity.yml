@@ -1,4 +1,4 @@
-name: legacy-backlog-freeze
+name: backlog-index-integrity
 
 # Transition guard for the frozen legacy backlog substrate. Current work-items
 # are ZetaId files under `workitems/`; this workflow only prevents accidental
