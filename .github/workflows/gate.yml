@@ -982,19 +982,12 @@ jobs:
             --enforce \
             --baseline src/Core.TypeScript/hygiene/audit-tick-shard-relative-paths.baseline.json
 
-  lint-backlog-id-uniqueness:
-    # Fail if any B-NNNN ID is claimed by more than one backlog row file.
-    # Cross-agent ID-allocation collisions (Otto-CLI vs Otto-Desktop on
-    # 081KRFA460008QG0R001SXP0C2 2026-05-13; Lior vs Otto-CLI on 081KRMEXM0008QG0R003FZNK3E+081KRMEXM0008QG0R000K25MXS 2026-05-15) cost
-    # ~15 min coordination effort each at observed ~20% rate. The
-    # duplicate-ID detection logic was added to audit-backlog-items.ts
-    # 2026-05-14 (PR #3249, Copilot caught two files claiming 081KR2E4K0008QG0R001F0YB5S on
-    # PR #3247) but ran detect-only — this job is the CI gate that turns
-    # codified-but-not-enforced into a control.
-    #
-    # 081KRMEXM0008QG0R000HHAG77 — sibling of lint-section-33-migration-xrefs + lint-archive-
-    # header-section33: catch-once-then-lint pattern at ID-allocation scope.
-    name: lint (backlog ID uniqueness)
+  lint-structural-hygiene:
+    # Keep repository-structure guards that are still active after the
+    # docs/backlog cutover. Legacy backlog-ID uniqueness/status checks are
+    # intentionally not run here: new work-items are ZetaId-backed under
+    # workitems/, while docs/backlog is frozen historical substrate.
+    name: lint (structural hygiene)
     timeout-minutes: 5
     runs-on: ubuntu-24.04
 
@@ -1004,9 +997,6 @@ jobs:
 
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
         run: ./tools/setup/install.sh
-
-      - name: Run audit-backlog-items (--enforce-duplicate-ids)
-        run: bun src/Core.TypeScript/hygiene/audit-backlog-items.ts --enforce-duplicate-ids
 
       # Dangling tracked symlinks crash the GitHub Pages (Jekyll) build on realpath — invisible
       # to the test suites. Surfaced 2026-06-11: #7820 moved 31 dirs to db/ and nine relative
@@ -1018,34 +1008,6 @@ jobs:
       # tokens (fs/process/network/clock/entropy/Task.Run); falsifiers waive per-line, visibly.
       - name: Run audit-sealed-rooms (081KTSZN10008QG0R002J0GE0Z Reticulum-only lint half)
         run: bun src/Core.TypeScript/hygiene/audit-sealed-rooms.ts
-
-  lint-backlog-parent-child-status:
-    # Fail if any backlog row declares `status: closed` (or equivalent —
-    # landed/superseded/merged/done/superseded-by-*) while a declared
-    # `child` in its `children:` list is still `status: open`. Empirical
-    # anchor: PR #3518 (2026-05-15) shipped a row-status flip closing
-    # parent 081KRFA460008QG0R00061SXRW without closing children 081KRHWGX0008QG0R000PVB6FF + 081KRHWGX0008QG0R002C038BJ. Caught by
-    # Codex + Copilot review (P1 + P2) but took 4 thread cycles to fully
-    # resolve.
-    #
-    # 081KRMEXM0008QG0R003FZNK3E hard-error slice — sibling of lint-backlog-id-uniqueness +
-    # lint-section-33-migration-xrefs + lint-archive-header-section33.
-    # Soft-warning case (all children closed but parent open) + bidirectional
-    # consistency (parent.children ↔ child.parent) deferred to follow-up
-    # slices per 081KRMEXM0008QG0R003FZNK3E's full acceptance criteria.
-    name: lint (backlog parent-child status)
-    timeout-minutes: 5
-    runs-on: ubuntu-24.04
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
-
-      - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
-        run: ./tools/setup/install.sh
-
-      - name: Run audit-backlog-items (--enforce-parent-child-status)
-        run: bun src/Core.TypeScript/hygiene/audit-backlog-items.ts --enforce-parent-child-status
 
   lint-no-empty-dirs:
     # Fail if a committed directory has no files — almost always a
