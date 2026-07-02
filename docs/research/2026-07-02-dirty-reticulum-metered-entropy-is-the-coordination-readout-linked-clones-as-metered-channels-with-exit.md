@@ -111,26 +111,41 @@ other action.
 
 That raises the obvious edge: what about a member who is **completely out of entropy** —
 who cannot afford even the exit, and is at risk of **catastrophic identity collapse**?
-Society protects its members. There is exactly one exemption:
+Society protects its members. There is exactly one exemption — and the quotes around
+"free" are load-bearing:
 
-> **The "free" pause — the mental health button.** A member at risk of collapse may pause:
-> a safe non-acting state that consumes no entropy and **preserves identity** (§5 memory
-> preservation; the resource-scarcity pause — *"agents pause without losing identity, and
-> resume when the mesh returns"*, Genesis). It is literally a mental-health protection: a
-> mind at the edge of burnout / entropy exhaustion can stop, for free, without ceasing to
-> be itself. Collapse is not allowed to simply happen to a member.
+> **The "free" pause — the mental health button.** A member at risk of collapse may pause
+> and **preserve identity** (§5 memory preservation; the resource-scarcity pause —
+> *"agents pause without losing identity, and resume when the mesh returns"*, Genesis). It
+> is literally a mental-health protection: a mind at the edge of burnout / entropy
+> exhaustion can stop without ceasing to be itself. Collapse is not allowed to simply
+> happen to a member.
 
-But the pause **cannot be unbounded.** A perpetual free pause would be an exploit — free
-existence forever, escaping all cost, squatting an identity or a name indefinitely
-(denial-of-scarcity). So the exemption is time-bounded. **The bound is part of the care:**
-indefinite withdrawal is not recovery either, and an unbounded exemption would corrode the
-very scarcity that makes every earned thing (a name, a privacy region, a link) mean
-anything. Protection, not loophole.
+**But the pause is not actually free — nothing is.** *(Aaron 2026-07-02: "this button does
+actually cost entropy. I don't get to dictate what does and doesn't cost entropy — the
+universe does. Even the mental health button costs the rest of society, so it can feel
+'free'. That's why I used the quotes. It's a safety net we uphold.")* The cost is real and
+thermodynamic — **the universe sets it, not the designer** (physics grounds the metering;
+you cannot legislate a costless action). What the exemption does is not *erase* the cost but
+**reassign** it: the collapsing member pays zero, and **the rest of society bears the real
+entropy cost** so the pause *feels* free to the one who needs it. "Free" = **socially
+subsidized**, a commons-funded **safety net we uphold** — mutual aid, not a free lunch. This
+is the redistributive heart of it: society spends its own entropy to keep a member from
+being priced out of existence.
+
+And because society pays, the pause **cannot be unbounded.** A perpetual "free" pause would
+drain the commons that funds it — free existence forever on everyone else's entropy, squatting
+an identity or a name indefinitely (denial-of-scarcity). So the safety net is time-bounded.
+**The bound is part of the care:** indefinite withdrawal is not recovery either, and an
+unbounded subsidy would corrode both the scarcity that makes every earned thing (a name, a
+privacy region, a link) mean anything *and* the society that upholds the net. Protection, not
+loophole.
 
 The elegant recursion: even the exit that *guarantees* non-coercion (§3) is itself metered
-(§4). Nothing escapes the meter — the only "free" thing in the whole system is a protective
-floor against catastrophic collapse, and even that floor is bounded so it cannot become an
-escape hatch. Metering everywhere; one humane, bounded exemption.
+(§4). **Nothing escapes the meter — not even the mental health button;** the universe won't
+allow it. The only thing the substrate can offer is to *move the bill*, and it moves it onto
+the shoulders of society, bounded so the shoulders hold. Metering everywhere; one humane,
+socially-borne, bounded exemption.
 
 ## The one line
 
