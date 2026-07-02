@@ -1,5 +1,5 @@
 import { describe, expect, it } from "bun:test";
-import { decodeReplayArtifact } from "./llmtv-replay";
+import { decodeReplayArtifact, foldReplayArtifact } from "./llmtv-replay";
 import { createLlmtvLiveReplayBridge } from "./llmtv-live-replay-bridge";
 import { createLlmtvLiveReadout, type LlmtvLiveReadoutIo } from "./llmtv-live-readout";
 import type { DiscoveryTransport } from "./discovery-beacon";
@@ -88,6 +88,23 @@ function throwingIo(message: string): LlmtvLiveReadoutIo {
   };
 }
 
+function failOnceIo(message: string): { readonly io: LlmtvLiveReadoutIo; readonly writes: Map<string, string> } {
+  const writes = new Map<string, string>();
+  let failed = false;
+  return {
+    writes,
+    io: {
+      writeText: (path, text) => {
+        if (!failed) {
+          failed = true;
+          throw new Error(message);
+        }
+        writes.set(path, text);
+      },
+    },
+  };
+}
+
 function mind(label: string): () => SourceMind {
   return () => ({
     role: "prediction",
@@ -96,7 +113,7 @@ function mind(label: string): () => SourceMind {
   });
 }
 
-function config(name: string): LlmtvNodeConfig {
+function config(name: string, publishEveryMs = 1_000): LlmtvNodeConfig {
   return {
     self: { persona: name, surface: "llmtv", instance: "0", node: "test" },
     zid: `zid-${name}`,
@@ -105,7 +122,7 @@ function config(name: string): LlmtvNodeConfig {
     mind: mind(name),
     ttlMs: 10_000,
     helloEveryMs: 1_000,
-    publishEveryMs: 1_000,
+    publishEveryMs,
   };
 }
 
@@ -145,6 +162,35 @@ describe("LLMTV live readout cadence", () => {
     });
   });
 
+  it("keeps quiet dwellers visible across partial readout ticks until expiry", () => {
+    const mesh = createFakeMesh();
+    const scheduler = mesh.scheduler();
+    const alexaPort = mesh.attach("alexa");
+    const sorayaPort = mesh.attach("soraya");
+    const alexa = createLlmtvLiveReplayBridge(config("alexa"), alexaPort, alexaPort, scheduler);
+    const soraya = createLlmtvLiveReplayBridge(config("soraya", 3_000), sorayaPort, sorayaPort, scheduler);
+    const { io, writes } = memoryIo();
+    const readout = createLlmtvLiveReadout(alexa, scheduler, io, {
+      seed: "S4",
+      readoutEveryMs: 1_000,
+      replayPath: "/tmp/live.replay.json",
+      htmlPath: "/tmp/live.html",
+      expireTtlMs: 10_000,
+    });
+
+    alexa.node.start();
+    soraya.node.start();
+    readout.start();
+    mesh.advance(1_000);
+    mesh.advance(1_000);
+
+    const replay = decodeReplayArtifact(writes.get("/tmp/live.replay.json")!);
+    expect(replay).not.toBeNull();
+    expect(foldReplayArtifact(replay!).transcript.dwellers.map((dweller) => dweller.name)).toEqual(["alexa", "soraya"]);
+    expect(writes.get("/tmp/live.html")).toContain('data-dweller="soraya"');
+    expect(readout.lastSummary()).toMatchObject({ dwellers: 2 });
+  });
+
   it("skips empty ticks by default so the last rendered page is not erased", () => {
     const mesh = createFakeMesh();
     const scheduler = mesh.scheduler();
@@ -180,5 +226,30 @@ describe("LLMTV live readout cadence", () => {
     const result = readout.flushNow();
 
     expect(result).toEqual({ ok: false, reason: "write-failed", error: "disk full" });
+  });
+
+  it("keeps captured frames queued until a failed write can be retried", () => {
+    const mesh = createFakeMesh();
+    const scheduler = mesh.scheduler();
+    const alexaPort = mesh.attach("alexa");
+    const bridge = createLlmtvLiveReplayBridge(config("alexa"), alexaPort, alexaPort, scheduler);
+    const { io, writes } = failOnceIo("disk full");
+    const readout = createLlmtvLiveReadout(bridge, scheduler, io, {
+      seed: "S4",
+      readoutEveryMs: 1_000,
+      replayPath: "/tmp/live.replay.json",
+      htmlPath: "/tmp/live.html",
+    });
+
+    bridge.node.start();
+    const failed = readout.flushNow();
+    const queuedAfterFailure = bridge.recorder.frames().length;
+    const retried = readout.flushNow();
+
+    expect(failed).toEqual({ ok: false, reason: "write-failed", error: "disk full" });
+    expect(queuedAfterFailure).toBeGreaterThan(0);
+    expect(retried.ok).toBe(true);
+    expect(bridge.recorder.frames()).toEqual([]);
+    expect(writes.get("/tmp/live.html")).toContain('data-dweller="alexa"');
   });
 });
