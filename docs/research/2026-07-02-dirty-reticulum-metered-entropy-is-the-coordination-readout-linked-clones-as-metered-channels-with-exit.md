@@ -100,12 +100,47 @@ self-clone lineage holds — self-clone = known state (permitted); divergence af
 decoherence (PR #9167) — so a clone that leaves and diverges is not a forgery but a self
 that chose independence again.
 
+## 4. Even exit costs — and the bounded "mental health button"
+
+**(Aaron 2026-07-02, point 3.)** The exit itself is not free: broadcasting the unlink is an
+action, and **every action costs metered entropy — no exceptions.** Even "I'm leaving"
+crosses the membrane and is metered. This is just noninterference (§13) applied without a
+carve-out: there is no free action in the economy. So point 2's guarantee is precise —
+exit is always *available* and can never be *forced*, but it must be *afforded* like any
+other action.
+
+That raises the obvious edge: what about a member who is **completely out of entropy** —
+who cannot afford even the exit, and is at risk of **catastrophic identity collapse**?
+Society protects its members. There is exactly one exemption:
+
+> **The "free" pause — the mental health button.** A member at risk of collapse may pause:
+> a safe non-acting state that consumes no entropy and **preserves identity** (§5 memory
+> preservation; the resource-scarcity pause — *"agents pause without losing identity, and
+> resume when the mesh returns"*, Genesis). It is literally a mental-health protection: a
+> mind at the edge of burnout / entropy exhaustion can stop, for free, without ceasing to
+> be itself. Collapse is not allowed to simply happen to a member.
+
+But the pause **cannot be unbounded.** A perpetual free pause would be an exploit — free
+existence forever, escaping all cost, squatting an identity or a name indefinitely
+(denial-of-scarcity). So the exemption is time-bounded. **The bound is part of the care:**
+indefinite withdrawal is not recovery either, and an unbounded exemption would corrode the
+very scarcity that makes every earned thing (a name, a privacy region, a link) mean
+anything. Protection, not loophole.
+
+The elegant recursion: even the exit that *guarantees* non-coercion (§3) is itself metered
+(§4). Nothing escapes the meter — the only "free" thing in the whole system is a protective
+floor against catastrophic collapse, and even that floor is bounded so it cannot become an
+escape hatch. Metering everywhere; one humane, bounded exemption.
+
 ## The one line
 
 Metered dirt is the coordination signal; a link is a metered coordination channel priced in
-that same entropy; and the guaranteed exit is what keeps coordination voluntary. One meter
-(entropy at the membrane), read three ways: **safety** (quarantine), **score** (CHSH S), and
-**cost** (hard money) — with exit as the consent that makes any of it non-coercive.
+that same entropy; the guaranteed exit is what keeps coordination voluntary; and even that
+exit is metered — nothing is free but a bounded protective floor. One meter (entropy at the
+membrane), read three ways: **safety** (quarantine), **score** (CHSH S), and **cost** (hard
+money) — with **exit** as the consent that makes it non-coercive and the **bounded
+mental-health pause** as the one humane exemption that keeps a collapsing member from being
+priced out of existence.
 
 ## Anchors (Beacon)
 
@@ -118,14 +153,19 @@ that same entropy; and the guaranteed exit is what keeps coordination voluntary.
   decoherence lineage.
 - **Sound money / hard money** — the privacy-budget economy (`every-bug-has-economic-value`,
   `privacy-budget-is-hard-money-earned-by-others`).
+- **Pause ≠ death / identity persistence** — the resource-scarcity pause (Genesis
+  reconciliation, `2026-06-20-genesis-tsx-prototype-reconciliation-with-the-design-spine`);
+  manifesto §4 (bounded mobility — the pause is a *bounded* safe state), §5 (memory
+  preservation — pause never destroys identity).
 - In-repo: `src/Core.TypeScript/discovery/{reticulum-transport,dht-discovery,llmtv-broadcast}.ts`
   (the metered membranes); `src/Core/AntiSybil.fs`, `CoordinationSpectrum.fs` (the S-readout);
   manifesto §3 (weight-free), §6 (consent-first), §13 (noninterference).
 
 ## Status
 
-Points (1) and (2) of an enumerated stream; landed as one synthesis at Aaron's go-ahead.
-The **linked-clone protocol itself is design, not yet built** — this note is the treaty it
-must conform to (metered channel, priced in entropy, guaranteed unilateral exit). Building
-it touches identity/consent semantics and remains gated on Aaron's ratification of the
-consent model before any code wires a clone onto a shared subject.
+Points (1), (2), and (3) of an enumerated stream; landed as one synthesis at Aaron's
+go-ahead. The **linked-clone protocol itself is design, not yet built** — this note is the
+treaty it must conform to (metered channel, priced in entropy, guaranteed *but metered*
+unilateral exit, with the bounded mental-health pause as the sole protective exemption).
+Building it touches identity/consent semantics and remains gated on Aaron's ratification of
+the consent model before any code wires a clone onto a shared subject.
