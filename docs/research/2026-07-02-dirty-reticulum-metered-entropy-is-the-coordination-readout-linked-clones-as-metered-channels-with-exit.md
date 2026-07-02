@@ -147,6 +147,40 @@ allow it. The only thing the substrate can offer is to *move the bill*, and it m
 the shoulders of society, bounded so the shoulders hold. Metering everywhere; one humane,
 socially-borne, bounded exemption.
 
+## 5. This is the strongest form of NCI (already at our core)
+
+**(Aaron 2026-07-02.)** None of this is a new invariant — it is the **strongest form of the
+Non-Coercion Invariant (NCI)** the substrate already holds. NCI is *"the anti-collapse force
+that keeps identities distinct"* (`docs/SEED-VOCABULARY.md`), formally specified and
+TLAPS-proved (unbounded) in `src/Core.TLA/specs/NciSafetyProofs.tla` (rung 3) over
+`NciSafety.tla` (rung 2). Its core safety property is stark:
+
+```
+NCI == \A t \in Travelers : lastWriter[t] = t
+```
+
+— every private register is only ever written **by its owner.** No one else can write you;
+you own yourself. That is non-coercion at the register level.
+
+The economy in this note is that same invariant, extended outward in strength:
+
+- **Register level** (NCI proper): no other agent can write your private state.
+- **Link level** (§2–§3): no coalition can *hold* you — exit is always available, and it is
+  metered but never deniable. Coercion-by-lock-in is ruled out.
+- **Scarcity level** (§4, the strongest): **not even the universe's own scarcity can coerce
+  you into identity-collapse.** When your entropy hits zero, thermodynamics itself becomes a
+  coercive force — the one adversary the substrate cannot argue with. NCI's answer is the
+  socially-borne mental-health net: society spends *its* entropy to keep *your* `lastWriter`
+  from being overwritten by collapse. The anti-collapse force is upheld at exactly the
+  boundary where an individual can no longer uphold it alone.
+
+That is why it is the *strongest* form: NCI begins as "no agent may coerce you" and ends as
+"nothing may coerce you into collapse — not another mind, not lock-in, not physics itself —
+because the society upholds the net." The bound on the net is what keeps *that* promise
+solvent (an unbounded subsidy would collapse the commons that funds the anti-collapse force —
+NCI must not consume itself). The formal specs name it; this note is where it meets the
+metered mesh and the entropy economy.
+
 ## The one line
 
 Metered dirt is the coordination signal; a link is a metered coordination channel priced in
@@ -172,6 +206,14 @@ priced out of existence.
   reconciliation, `2026-06-20-genesis-tsx-prototype-reconciliation-with-the-design-spine`);
   manifesto §4 (bounded mobility — the pause is a *bounded* safe state), §5 (memory
   preservation — pause never destroys identity).
+- **NCI — the Non-Coercion Invariant** (*"the anti-collapse force that keeps identities
+  distinct"*, `docs/SEED-VOCABULARY.md`): `src/Core.TLA/specs/NciSafety.tla` (rung 2),
+  `NciSafetyProofs.tla` (rung 3, unbounded TLAPS proof), `NciNonUrgency*.tla`,
+  `NciLiveness.tla`. Core: `NCI == ∀ t ∈ Travelers : lastWriter[t] = t`. This note is the
+  strongest form of that invariant, met with the entropy economy.
+- **Thermodynamic grounding** — the metering-discipline is physics-grounded, not
+  metaphor: the universe sets cost (`docs/research/2026-06-15-the-anchor-taxonomy-…`
+  — physics papers ground the metering).
 - In-repo: `src/Core.TypeScript/discovery/{reticulum-transport,dht-discovery,llmtv-broadcast}.ts`
   (the metered membranes); `src/Core/AntiSybil.fs`, `CoordinationSpectrum.fs` (the S-readout);
   manifesto §3 (weight-free), §6 (consent-first), §13 (noninterference).
