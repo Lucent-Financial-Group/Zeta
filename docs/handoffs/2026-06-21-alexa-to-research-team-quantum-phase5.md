@@ -8,6 +8,7 @@ Status: summoned (timed out at 16min — deep research, will pick up next tick)
 ## Context
 
 Phases 1-4 of ci-full-verification-gate complete on main:
+
 - All 7 toolchains provisioned (Rust in mise, smoke check)
 - full-verify CI job live with alerting
 - Clifford cross-language byte-lock (3 langs agree)
@@ -40,6 +41,7 @@ The quantum lane must track heat (entropy/information cost) as precisely as
 CHIP-8's soft lane tracks support growth.
 
 **The parallel:**
+
 - CHIP-8 AmplitudeEmu: tracks `support` = number of frames with nonzero amplitude
 - SparseQuantumSim: tracks `support()` = same metric
 - Both = "how many bits of uncertainty exist right now"
