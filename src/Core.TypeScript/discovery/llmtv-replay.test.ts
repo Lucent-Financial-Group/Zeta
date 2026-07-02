@@ -69,13 +69,14 @@ describe("LLMTV replay source -- pure fold from wire frames to transcript", () =
       [
         { receivedAtMs: 1000, wire: "not json" },
         { receivedAtMs: 1001, wire: JSON.stringify({ schema: "wrong", msg: { t: "frame" } }) },
-        replayFrame(publishFrame(alexa, 1, 1, alexaMind), 1002),
+        { receivedAtMs: 1002, wire: JSON.stringify({ schema: "zeta.llmtv.broadcast.v1", msg: { t: "frame" } }) },
+        replayFrame(publishFrame(alexa, 1, 1, alexaMind), 1003),
       ],
       "S4",
       { generatedBy: "test-replay" },
     );
 
-    expect(result.stats).toEqual({ accepted: 1, rejected: 2, expired: 0 });
+    expect(result.stats).toEqual({ accepted: 1, rejected: 3, expired: 0 });
     expect(result.transcript.generatedBy).toBe("test-replay");
     expect(result.transcript.dwellers).toHaveLength(1);
   });
