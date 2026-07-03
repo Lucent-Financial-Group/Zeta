@@ -1171,8 +1171,8 @@ let ``SM-Z3-3: flat message (tau=0) cannot make a proper marginal improper (safe
 
 [<Fact>]
 let ``SM-Z3-4: mutual empowerment — equality-factor mean is strictly between the two priors`` () =
-    // ∀ μ₁ < μ₂, τ > 0. μ₁ < (τμ₁+τμ₂)/(2τ) < μ₂
-    // midpoint = (μ₁+μ₂)/2; negate: midpoint ≤ μ₁ OR midpoint ≥ μ₂ → unsat
+    // ∀ μ₁ < μ₂, τ > 0. (μ₁+μ₂)/2 is strictly between μ₁ and μ₂.
+    // QF_LRA (no division): (μ₁+μ₂)/2 ≤ μ₁ ⟺ μ₂ ≤ μ₁; (μ₁+μ₂)/2 ≥ μ₂ ⟺ μ₁ ≥ μ₂.
     let script =
         "(set-logic QF_LRA)\n" +
         "(declare-const mu1 Real)\n" +
@@ -1181,8 +1181,8 @@ let ``SM-Z3-4: mutual empowerment — equality-factor mean is strictly between t
         "(assert (> tau 0.0))\n" +
         "(assert (< mu1 mu2))\n" +
         "(assert (or\n" +
-        "  (<= (/ (+ (* tau mu1) (* tau mu2)) (* 2.0 tau)) mu1)\n" +
-        "  (>= (/ (+ (* tau mu1) (* tau mu2)) (* 2.0 tau)) mu2)))\n" +
+        "  (<= (+ mu1 mu2) (* 2.0 mu1))\n" +
+        "  (>= (+ mu1 mu2) (* 2.0 mu2))))\n" +
         "(check-sat)\n"
     z3ScriptHolds "SM-Z3-4 mutual empowerment: equality-factor mean strictly between priors" script
 
@@ -1269,7 +1269,7 @@ let ``SM-Z3-B2: collapsed agent (infinite precision) erases other agent's causal
     // Concrete: with τ_A > 0, the marginal is NEVER exactly μ_B (A still has some power).
     // But as τ_B/τ_A → ∞, A's influence → 0. This is the collapse hazard SM-2 prevents.
     let script =
-        "(set-logic QF_LRA)\n" +
+        "(set-logic QF_NRA)\n" +
         "(declare-const mu_A Real)\n" +
         "(declare-const mu_B Real)\n" +
         "(declare-const tau_A Real)\n" +
@@ -1277,9 +1277,8 @@ let ``SM-Z3-B2: collapsed agent (infinite precision) erases other agent's causal
         "(assert (> tau_A 0.0))\n" +
         "(assert (> tau_B 0.0))\n" +
         "(assert (not (= mu_A mu_B)))\n" +
-        // The marginal mean is strictly between mu_A and mu_B (not equal to either)
-        // when both precisions are positive. Negate: marginal = mu_B → tau_A = 0 → contradiction.
-        "(assert (= (/ (+ (* tau_A mu_A) (* tau_B mu_B)) (+ tau_A tau_B)) mu_B))\n" +
+        // Cross-multiply: (τ_A·μ_A + τ_B·μ_B)/(τ_A+τ_B) = μ_B ⟺ τ_A·(μ_A−μ_B) = 0.
+        "(assert (= (+ (* tau_A mu_A) (* tau_B mu_B)) (* mu_B (+ tau_A tau_B))))\n" +
         "(check-sat)\n"
     // This should be SAT (it IS possible for the marginal to equal mu_B — when tau_A = 0,
     // but we asserted tau_A > 0, so it should be UNSAT). Let's verify:
