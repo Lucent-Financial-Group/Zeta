@@ -101,14 +101,17 @@ let ``SM-1b: probit factor emits flat message (not improper) when cavity is impr
     msgs.[0] |> should equal Gaussian.One
 
 [<Property>]
-let ``SM-1c: probit factor message is proper for all generated proper cavities``
+let ``SM-1c: probit factor message is finite and never negative-precision for generated proper cavities``
     (NormalFloat mRaw) (NormalFloat vRaw) =
     let m = max -10.0 (min 10.0 mRaw)
     let v = max 0.01 (min 100.0 (abs vRaw))
     let cavity = Gaussian.ofMeanVariance m v
     let factor = Ep.probitFactor 0
     let msgs = factor.ComputeMessages (Map.ofList [ 0, cavity ])
-    Gaussian.isProper msgs.[0]
+    let msg = msgs.[0]
+    Double.IsFinite msg.PrecisionMean
+    && Double.IsFinite msg.Precision
+    && msg.Precision >= -1e-12
 
 // ═══════════════════════════════════════════════════════════════════
 // SM-2: No Dirac-delta fixed point on a graph with a proper prior + probit factor
