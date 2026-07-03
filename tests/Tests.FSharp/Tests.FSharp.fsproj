@@ -102,6 +102,8 @@
     <Compile Include="IsaSpec.Tests.fs" />
     <Compile Include="Netlist.Tests.fs" />
     <Compile Include="Sequential.Tests.fs" />
+    <Compile Include="Cpu.Tests.fs" />
+    <Compile Include="CpuSynth.Tests.fs" />
     <Compile Include="Sppf.Tests.fs" />
     <Compile Include="PcfgEm.Tests.fs" />
     <Compile Include="GrammarLadder.Tests.fs" />
@@ -458,6 +460,7 @@
     <Compile Include="Operators/ResidualMax.Tests.fs" />
     <Compile Include="Operators/Differentiate.Tests.fs" />
     <Compile Include="Operators/OperatorAlgebra.Tests.fs" />
+    <Compile Include="Operators/BeliefStream.Tests.fs" />
     <Compile Include="Operators/RecursiveCounting.MultiSeed.Tests.fs" />
     <Compile Include="Operators/RecursiveSemiNaive.Boundary.Tests.fs" />
     <Compile Include="Operators/CrmScenarios.Tests.fs" />

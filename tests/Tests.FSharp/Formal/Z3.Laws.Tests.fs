@@ -1073,16 +1073,19 @@ let ``Z3 proves THE CHSH LOCAL-HIDDEN-VARIABLE BOUND: for deterministic ±1 outc
 // the intermediate (v/(1+v))·λ(z+λ) never amplifies the v² term
 // beyond v itself — keeping v̂ finite even when v = 1e308.
 //
-// Z3 proves this over the IDEAL REALS (QF_LRA). Division is NOT in QF_LRA — use
-// equivalent linear forms: v/(1+v) < 1 ⟺ v < 1+v; the factored identity
-// v·(1 − v/(1+v)) = v/(1+v) ⟺ v·(1+v) − v² = v (multiply through by 1+v > 0).
+// Z3/CVC5 prove this over the IDEAL REALS. Quotient bounds are encoded
+// without variable-denominator division so linear-logic solvers cannot
+// report a diagnostic and then also print a bogus `sat`.
+//   ∀ v > 0. v / (1 + v) < 1   (trivially: v < 1 + v ⟺ 0 < 1)
+// The FsCheck twin (Ep.Tests.fs: "no v-squared overflow" Fact) exercises
+// the actual floating-point implementation at v = 1e308.
 //
 // Anchor: Ep.fs line 89: `let vHat = v * (1.0 - (v / (1.0 + v)) * lambda * (z + lambda))`
 // ═══════════════════════════════════════════════════════════════════
 
 [<Fact>]
 let ``Z3 proves v/(1+v) < 1 for all v > 0 (C9: no v² overflow in vHat)`` () =
-    // QF_LRA (no division): v/(1+v) < 1 ⟺ v < 1+v for v > 0. Negate: v >= 1+v → unsat.
+    // Since 1+v is positive, negate v/(1+v) < 1 as v >= 1+v -> unsat.
     let script =
         "(set-logic QF_LRA)\n" +
         "(declare-const v Real)\n" +
@@ -1093,7 +1096,7 @@ let ``Z3 proves v/(1+v) < 1 for all v > 0 (C9: no v² overflow in vHat)`` () =
 
 [<Fact>]
 let ``Z3 proves v/(1+v) > 0 for all v > 0 (C9: vHat factor is non-trivial)`` () =
-    // QF_LRA: v > 0 implies v/(1+v) > 0. Negate: v > 0 ∧ v ≤ 0 → unsat.
+    // Since 1+v is positive, v/(1+v) <= 0 iff v <= 0 -> unsat under v > 0.
     let script =
         "(set-logic QF_LRA)\n" +
         "(declare-const v Real)\n" +
@@ -1104,12 +1107,15 @@ let ``Z3 proves v/(1+v) > 0 for all v > 0 (C9: vHat factor is non-trivial)`` () 
 
 [<Fact>]
 let ``Z3 proves v*(1 - v/(1+v)) = v/(1+v) for all v > 0 (C9: factored form algebraically correct)`` () =
-    // Nonlinear (v² term): QF_NRA. Equivalent form v·(1+v) − v² = v (multiply by 1+v > 0).
+    // Confirms the factored v·(1 − r) = r identity for r = v/(1+v)
+    // without using a variable-denominator division term in the SMT query.
     let script =
         "(set-logic QF_NRA)\n" +
         "(declare-const v Real)\n" +
+        "(declare-const r Real)\n" +
         "(assert (> v 0.0))\n" +
-        "(assert (not (= (- (* v (+ 1.0 v)) (* v v)) v)))\n" +
+        "(assert (= (* r (+ 1.0 v)) v))\n" +
+        "(assert (not (= (* v (- 1.0 r)) r)))\n" +
         "(check-sat)\n"
     z3ScriptHolds "C9 v*(1 - v/(1+v)) = v/(1+v) algebraic identity" script
 
@@ -1171,14 +1177,12 @@ let ``SM-Z3-3: flat message (tau=0) cannot make a proper marginal improper (safe
 
 [<Fact>]
 let ``SM-Z3-4: mutual empowerment — equality-factor mean is strictly between the two priors`` () =
-    // ∀ μ₁ < μ₂, τ > 0. (μ₁+μ₂)/2 is strictly between μ₁ and μ₂.
-    // QF_LRA (no division): (μ₁+μ₂)/2 ≤ μ₁ ⟺ μ₂ ≤ μ₁; (μ₁+μ₂)/2 ≥ μ₂ ⟺ μ₁ ≥ μ₂.
+    // ∀ μ₁ < μ₂, τ > 0. μ₁ < (τμ₁+τμ₂)/(2τ) < μ₂.
+    // midpoint = (μ₁+μ₂)/2; negate: midpoint ≤ μ₁ OR midpoint ≥ μ₂ → unsat
     let script =
         "(set-logic QF_LRA)\n" +
         "(declare-const mu1 Real)\n" +
         "(declare-const mu2 Real)\n" +
-        "(declare-const tau Real)\n" +
-        "(assert (> tau 0.0))\n" +
         "(assert (< mu1 mu2))\n" +
         "(assert (or\n" +
         "  (<= (+ mu1 mu2) (* 2.0 mu1))\n" +
@@ -1277,11 +1281,13 @@ let ``SM-Z3-B2: collapsed agent (infinite precision) erases other agent's causal
         "(assert (> tau_A 0.0))\n" +
         "(assert (> tau_B 0.0))\n" +
         "(assert (not (= mu_A mu_B)))\n" +
-        // Cross-multiply: (τ_A·μ_A + τ_B·μ_B)/(τ_A+τ_B) = μ_B ⟺ τ_A·(μ_A−μ_B) = 0.
+        // The marginal mean is strictly between mu_A and mu_B (not equal to either)
+        // when both precisions are positive. Multiply by the positive denominator
+        // instead of writing a division term; the product is nonlinear, so QF_NRA is honest here.
         "(assert (= (+ (* tau_A mu_A) (* tau_B mu_B)) (* mu_B (+ tau_A tau_B))))\n" +
         "(check-sat)\n"
-    // This should be SAT (it IS possible for the marginal to equal mu_B — when tau_A = 0,
-    // but we asserted tau_A > 0, so it should be UNSAT). Let's verify:
+    // The equality would require tau_A*(mu_A-mu_B)=0; tau_A > 0 and mu_A != mu_B
+    // make that impossible.
     z3ScriptHolds "SM-Z3-B2 collapsed agent erases other's causal power: marginal ≠ mu_B when tau_A > 0 and mu_A ≠ mu_B" script
 
 [<Fact>]

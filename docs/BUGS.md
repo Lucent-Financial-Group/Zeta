@@ -107,6 +107,17 @@ can no longer pass with Go silent.
 
 ### Discovery-beacon wire is unsigned — spoof / poison / forged-evict (bus, shadow*)
 
+**STATUS (2026-07-03, Otto): membrane SHIPPED + ADOPTED at the live node.** `beacon-auth.ts`
+(`signMessage`/`observeSigned`) is the authenticity membrane; `llmtv-node.ts` now runs it via a
+`BeaconConfig` windowed migration (`off`/`dual`/`required`) — outbound hello/probeMatch signed,
+inbound verified, `dual` accepts signed + legacy-unsigned (signals on legacy), `required` is
+signed-only + fail-closed. Signer is opaque (`BeaconSigner`, no raw key material — biometric/HSM-
+ready) per Ilyana's public-API review; illegal states unrepresentable (discriminated union). 20
+discovery tests incl. spoof/poison/forged-evict/tamper/untrusted-in-dual refusals + the 5 migration
+proofs. REMAINING (smaller, tracked): (a) the `maintainers/<name>/` keyring → `BeaconTrust` loader
+(impure I/O slice); (b) the operational `dual`→`required` cutover on the real mesh; (c) a captured
+envelope is replayable within TTL (freshness not yet signed — needs per-peer seq state).
+
 - **Site:** `src/Core.TypeScript/discovery/discovery-beacon.ts:99-124` (`observe`) — `hello`/`probeMatch` upsert an attacker-supplied `{ep, zid, routes}` into every listener's PeerTable with NO authenticity check; `bye` (l.110-114) deletes a peer by `endpointKey(msg.ep)` with zero auth (one forged `bye` evicts any node from every table).
 - **Found:** 2026-07-03 by Otto (bus-doc anti-entropy sweep), Aaron steer ("ais should just do similar/same" as the human auth)
 - **Severity:** P1
@@ -290,6 +301,15 @@ can no longer pass with Go silent.
 ---
 
 ## P2 — nice to have
+
+### Z3LawsTests cross-check flakes when CVC5 fails to run (build-and-test intermittent)
+
+- **Site:** `Zeta.Tests.Formal.Z3LawsTests` (the Z3/CVC5 cross-check; BP-16 triage rule)
+- **Found:** 2026-07-03 by Otto (CI sweep — observed on #9311's build-and-test, PASSED on #9312's run same day)
+- **Severity:** P2
+- **Symptom:** several Z3LawsTests fail with `System.Exception: Solver disagreement: Z3 returned Sat, CVC5 returned SolverError "Exit code 1, Stderr: "` — an EMPTY stderr + exit 1 means CVC5 crashed / was unavailable in the runner, i.e. the solver did not run, NOT a genuine logical disagreement. Intermittent (same suite passed hours later), so it non-deterministically reddens `build-and-test` on ubuntu + macos. Not tied to any source change (surfaced on a TS-only PR).
+- **Fix:** distinguish "solver unavailable / crashed" (empty stderr, exit≠0) from "solver returned a contradicting verdict" in the cross-check harness — the former should retry-or-skip-with-a-warning (env flake), only the latter is a real disagreement to fail on. Pin/verify the CVC5 binary in the runner. Keep BP-16's fail-on-true-disagreement semantics.
+- **Who:** Soraya (formal-verification routing) → cross-check triage owner
 
 ### Round-3 filed (Kira r3 + test-gap audit, 2026-06-13) — deferred with reasons
 
