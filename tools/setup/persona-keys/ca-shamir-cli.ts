@@ -7,8 +7,7 @@
 //   bun ca-shamir-cli.ts combine --ca aaron --threshold 2 --confirm        # reconstruct from shares in default dir
 //   bun ca-shamir-cli.ts combine --ca aaron --threshold 2 --shares 1,3 --confirm
 import { homedir } from "node:os";
-import { dirname, resolve as resolvePath } from "node:path";
-import { fileURLToPath } from "node:url";
+import { resolve as resolvePath } from "node:path";
 import { realBiometric, sessionBiometric } from "./biometric.ts";
 import {
   combineSharesToCa,
@@ -26,7 +25,6 @@ const opt = (n: string): string | undefined => {
   return i >= 0 ? args[i + 1] : undefined;
 };
 
-const here = dirname(fileURLToPath(import.meta.url));
 const home = opt("--home") ?? homedir();
 const confirm = flag("--confirm");
 const dryRun = !confirm;

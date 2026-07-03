@@ -43,7 +43,7 @@ function makeSandbox(): { home: string; repoRoot: string; cleanup: () => void } 
   };
 }
 
-function custodyFx(root: string): CaShamirCustodyEffects {
+function custodyFx(): CaShamirCustodyEffects {
   return {
     exists: (p) => existsSync(p),
     readBytes: (p) => new Uint8Array(readFileSync(p)),
@@ -78,7 +78,7 @@ test("split dry-run: would-split, no share files, no biometric", async () => {
   try {
     await genRealCa(sb.home, sb.repoRoot);
     const prompts: string[] = [];
-    const fx = custodyFx(sb.home);
+    const fx = custodyFx();
     const sharesDir = caShamirSharesDir(sb.home, CA);
     const res = await splitCaToShares(fx, {
       ca: CA,
@@ -102,7 +102,7 @@ test("split confirm: writes n share files; k subset reconstructs original privat
     const caPriv = caPrivateKeyPath(sb.home);
     const original = readFileSync(caPriv);
     const prompts: string[] = [];
-    const fx = custodyFx(sb.home);
+    const fx = custodyFx();
 
     const split = await splitCaToShares(fx, {
       ca: CA,
@@ -145,7 +145,7 @@ test("split fail-closed: declined biometric writes nothing", async () => {
   const sb = makeSandbox();
   try {
     await genRealCa(sb.home, sb.repoRoot);
-    const fx = custodyFx(sb.home);
+    const fx = custodyFx();
     const res = await splitCaToShares(fx, {
       ca: CA,
       home: sb.home,
@@ -164,7 +164,7 @@ test("combine insufficient shares: fail without writing output key", async () =>
   const sb = makeSandbox();
   try {
     await genRealCa(sb.home, sb.repoRoot);
-    const fx = custodyFx(sb.home);
+    const fx = custodyFx();
     await splitCaToShares(fx, {
       ca: CA,
       home: sb.home,
@@ -193,7 +193,7 @@ test("formatters and decodeShareFile never emit private key marker", async () =>
   const sb = makeSandbox();
   try {
     await genRealCa(sb.home, sb.repoRoot);
-    const fx = custodyFx(sb.home);
+    const fx = custodyFx();
     const split = await splitCaToShares(fx, {
       ca: CA,
       home: sb.home,
