@@ -1073,7 +1073,7 @@ let ``Z3 proves THE CHSH LOCAL-HIDDEN-VARIABLE BOUND: for deterministic ±1 outc
 // the intermediate (v/(1+v))·λ(z+λ) never amplifies the v² term
 // beyond v itself — keeping v̂ finite even when v = 1e308.
 //
-// Z3 proves this over the IDEAL REALS (QF_LRA):
+// Z3/CVC5 prove this over the IDEAL REALS (QF_NRA):
 //   ∀ v > 0. v / (1 + v) < 1   (trivially: v < 1 + v ⟺ 0 < 1)
 // The FsCheck twin (Ep.Tests.fs: "no v-squared overflow" Fact) exercises
 // the actual floating-point implementation at v = 1e308.
@@ -1083,9 +1083,10 @@ let ``Z3 proves THE CHSH LOCAL-HIDDEN-VARIABLE BOUND: for deterministic ±1 outc
 
 [<Fact>]
 let ``Z3 proves v/(1+v) < 1 for all v > 0 (C9: no v² overflow in vHat)`` () =
-    // QF_LRA: negate the claim v/(1+v) < 1, i.e. assert v/(1+v) >= 1 → unsat
+    // QF_NRA: variable-denominator division is nonlinear, so this must not be encoded as QF_LRA.
+    // Negate the claim v/(1+v) < 1, i.e. assert v/(1+v) >= 1 -> unsat.
     let script =
-        "(set-logic QF_LRA)\n" +
+        "(set-logic QF_NRA)\n" +
         "(declare-const v Real)\n" +
         "(assert (> v 0.0))\n" +
         "(assert (>= (/ v (+ 1.0 v)) 1.0))\n" +
@@ -1095,7 +1096,7 @@ let ``Z3 proves v/(1+v) < 1 for all v > 0 (C9: no v² overflow in vHat)`` () =
 [<Fact>]
 let ``Z3 proves v/(1+v) > 0 for all v > 0 (C9: vHat factor is non-trivial)`` () =
     let script =
-        "(set-logic QF_LRA)\n" +
+        "(set-logic QF_NRA)\n" +
         "(declare-const v Real)\n" +
         "(assert (> v 0.0))\n" +
         "(assert (<= (/ v (+ 1.0 v)) 0.0))\n" +
@@ -1106,7 +1107,7 @@ let ``Z3 proves v/(1+v) > 0 for all v > 0 (C9: vHat factor is non-trivial)`` () 
 let ``Z3 proves v*(1 - v/(1+v)) = v/(1+v) for all v > 0 (C9: factored form algebraically correct)`` () =
     // Confirms the factored v·(1 − v/(1+v)) = v/(1+v) identity that avoids the v² intermediate.
     let script =
-        "(set-logic QF_LRA)\n" +
+        "(set-logic QF_NRA)\n" +
         "(declare-const v Real)\n" +
         "(assert (> v 0.0))\n" +
         "(assert (not (= (* v (- 1.0 (/ v (+ 1.0 v)))) (/ v (+ 1.0 v)))))\n" +
