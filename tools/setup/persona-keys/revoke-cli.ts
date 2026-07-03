@@ -5,7 +5,7 @@
 //   bun revoke-cli.ts --ca aaron --host mymac                    # dry-run (default)
 //   bun revoke-cli.ts --ca aaron --host mymac --confirm          # real revoke (one fingerprint)
 //   bun revoke-cli.ts --ca aaron --cert path/to/cert.pub --confirm
-import { hostname as osHostname, homedir } from "node:os";
+import { hostname as osHostname } from "node:os";
 import { dirname, resolve as resolvePath } from "node:path";
 import { fileURLToPath } from "node:url";
 import { realBiometric, sessionBiometric } from "./biometric.ts";

@@ -3,7 +3,7 @@ import { existsSync, mkdtempSync, mkdirSync, rmSync, writeFileSync } from "node:
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { caPublicKeyPath } from "./ca.ts";
-import type { BiometricAuth, BiometricResult } from "./biometric.ts";
+import type { BiometricAuth } from "./biometric.ts";
 import { machineCertPath } from "./teardown.ts";
 import { krlPath, krlRelPath, revokeCert, type RevokeEffects } from "./revoke.ts";
 
