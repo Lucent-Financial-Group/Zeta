@@ -66,7 +66,9 @@ open Zeta.Bayesian
 // cavity is improper (τ ≤ 0), the factor emits Gaussian.One (the flat
 // message) — it contributes no information but also does not corrupt
 // the marginal. When the cavity is proper, the projected message is
-// also proper (the probit observation adds precision, never removes it).
+// also proper (the probit observation adds precision, never removes it), OR
+// flat (Gaussian.One) when the projection equals the cavity — never a
+// negative-precision EP cavity bomb.
 //
 // This is the per-step invariant that makes runToFixpoint safe: no
 // single pass can turn a proper marginal into an improper one, because
@@ -101,14 +103,16 @@ let ``SM-1b: probit factor emits flat message (not improper) when cavity is impr
     msgs.[0] |> should equal Gaussian.One
 
 [<Property>]
-let ``SM-1c: probit factor message is proper for all generated proper cavities``
+let ``SM-1c: probit factor message is proper or flat for all generated proper cavities``
     (NormalFloat mRaw) (NormalFloat vRaw) =
     let m = max -10.0 (min 10.0 mRaw)
     let v = max 0.01 (min 100.0 (abs vRaw))
     let cavity = Gaussian.ofMeanVariance m v
     let factor = Ep.probitFactor 0
     let msgs = factor.ComputeMessages (Map.ofList [ 0, cavity ])
-    Gaussian.isProper msgs.[0]
+    let msg = msgs.[0]
+    // Proper (adds information) or flat (identity — τ=0) — never τ < 0.
+    (Gaussian.isProper msg || msg = Gaussian.One) && msg.Precision >= 0.0
 
 // ═══════════════════════════════════════════════════════════════════
 // SM-2: No Dirac-delta fixed point on a graph with a proper prior + probit factor
