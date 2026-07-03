@@ -1,5 +1,5 @@
 import { test, expect } from "bun:test";
-import { mintWorkItem, publishCreatedEvent, slugify, type WorkItemEnv } from "./new-workitem";
+import { mintWorkItem, publishCreatedEvent, slugify, workItemEventsRoot, type WorkItemEnv } from "./new-workitem";
 import { parse, isCanonical, ZETAID_BASE32_LEN } from "../zeta-id/encoding";
 import { DEFAULT_ENV } from "../zeta-id/zeta-id";
 import { mkdtempSync, readFileSync, rmSync } from "node:fs";
@@ -81,18 +81,36 @@ test("slugify is filename-safe, lowercase, hyphenated, bounded", () => {
 });
 
 test("publishCreatedEvent writes a WorkItemCreated G-Set file", () => {
-  const eventsRoot = mkdtempSync(join(tmpdir(), "wi-events-"));
+  const workItemsDir = mkdtempSync(join(tmpdir(), "wi-smoke-"));
+  const eventsRoot = workItemEventsRoot(workItemsDir);
   try {
     const env: WorkItemEnv = detEnv();
     const spec = { title: "Event slice", type: "task" as const };
     const minted = mintWorkItem(spec, env);
     const result = publishCreatedEvent(minted, spec, env, "test-agent", eventsRoot);
     expect(result.kind).toBe("created");
+    expect(result.path.startsWith(eventsRoot)).toBe(true);
     const body = JSON.parse(readFileSync(result.path, "utf-8"));
     expect(body.kind).toBe("created");
     expect(body.by).toBe("test-agent");
     expect(body.payload.workItemId).toBe(minted.zetaid);
     expect(body.payload.type).toBe("task");
+  } finally {
+    rmSync(workItemsDir, { recursive: true, force: true });
+  }
+});
+
+test("publishCreatedEvent is deterministic given the same WorkItemEnv", () => {
+  const eventsRoot = mkdtempSync(join(tmpdir(), "wi-events-"));
+  try {
+    const env: WorkItemEnv = detEnv();
+    const spec = { title: "Replay", type: "task" as const };
+    const minted = mintWorkItem(spec, env);
+    const a = publishCreatedEvent(minted, spec, env, "test-agent", eventsRoot);
+    const b = publishCreatedEvent(minted, spec, env, "test-agent", eventsRoot);
+    expect(a.path).toBe(b.path);
+    expect(a.kind).toBe("created");
+    expect(b.kind).toBe("exists-identical");
   } finally {
     rmSync(eventsRoot, { recursive: true, force: true });
   }

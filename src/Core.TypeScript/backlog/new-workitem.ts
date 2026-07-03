@@ -33,7 +33,7 @@ import { join } from "node:path";
 import { pack, DEFAULT_ENV } from "../zeta-id/zeta-id";
 import { format } from "../zeta-id/encoding";
 import { Category, Chromosome, Firefly, type ZetaObservation } from "../zeta-id/types";
-import { makeCreatedEvent } from "../work-items/types";
+import { makeCreatedEvent, mintWorkItemEventIdHex } from "../work-items/types";
 import { writeEvent, type WriteResult } from "../work-items/publish";
 
 export type WorkItemType = "task" | "bug";
@@ -146,6 +146,11 @@ composes_with: ${yamlList(spec.composesWith ?? [])}
   return { zetaid, filename, slug, content };
 }
 
+/** Event G-Set root co-located with the work-item markdown tree. */
+export function workItemEventsRoot(workItemsDir: string): string {
+  return join(workItemsDir, "events");
+}
+
 /** Append a WorkItemCreated fact to the event G-Set (081KSXN940008QG0R002FWR9B2). */
 export function publishCreatedEvent(
   minted: MintedWorkItem,
@@ -166,6 +171,7 @@ export function publishCreatedEvent(
     },
     by,
     atMs,
+    (ms) => mintWorkItemEventIdHex(env, ms),
   );
   return writeEvent(event, eventsRoot);
 }
@@ -245,7 +251,7 @@ function main(argv: readonly string[]): number {
   }
   writeFileSync(path, minted.content, "utf8");
   const actor = process.env.ZETA_WORKITEM_ACTOR ?? "otto-cli";
-  const eventResult = publishCreatedEvent(minted, spec, SYSTEM_ENV, actor);
+  const eventResult = publishCreatedEvent(minted, spec, SYSTEM_ENV, actor, workItemEventsRoot(dir));
   if (eventResult.kind === "collision") {
     process.stderr.write(`new-workitem: event collision at ${eventResult.path}\n`);
     return 1;
