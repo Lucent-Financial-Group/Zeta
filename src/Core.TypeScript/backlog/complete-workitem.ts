@@ -129,6 +129,7 @@ function resolvePath(arg: string, dir: string): string | null {
 function main(argv: readonly string[]): number {
   const args = argv.filter((a) => !a.startsWith("--"));
   const flags = new Set(argv.filter((a) => a.startsWith("--")));
+  const push = flags.has("--push");
   const dirIdx = argv.indexOf("--dir");
   const dir = dirIdx >= 0 ? argv[dirIdx + 1]! : "workitems";
   const target = args[0];
@@ -169,7 +170,15 @@ function main(argv: readonly string[]): number {
 
   const actor = process.env.ZETA_WORKITEM_ACTOR ?? "otto-cli";
   const eventsRoot = workItemEventsRoot(workItemsDir);
-  const stateResult = publishStateChangedEvent(done.zetaid, done.fromState, "done", SYSTEM_ENV, actor, eventsRoot);
+  const stateResult = publishStateChangedEvent(
+    done.zetaid,
+    done.fromState,
+    "done",
+    SYSTEM_ENV,
+    actor,
+    eventsRoot,
+    push,
+  );
   if (stateResult.kind === "collision") {
     process.stderr.write(`complete-workitem: event collision at ${stateResult.path}\n`);
     return 1;

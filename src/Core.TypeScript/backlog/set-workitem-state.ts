@@ -58,6 +58,7 @@ function zetaidFromPath(path: string): string {
 function main(argv: readonly string[]): number {
   const args = argv.filter((a) => !a.startsWith("--"));
   const flags = new Set(argv.filter((a) => a.startsWith("--")));
+  const push = flags.has("--push");
   const dirIdx = argv.indexOf("--dir");
   const dir = dirIdx >= 0 ? argv[dirIdx + 1]! : "workitems";
   const toIdx = argv.indexOf("--to");
@@ -103,7 +104,7 @@ function main(argv: readonly string[]): number {
       return 0;
     }
     writeFileSync(fromPath, newContent, "utf8");
-    const result = publishClosedEvent(zetaid, SYSTEM_ENV, actor, eventsRoot, reason);
+    const result = publishClosedEvent(zetaid, SYSTEM_ENV, actor, eventsRoot, reason, push);
     if (result.kind === "collision") {
       process.stderr.write(`set-workitem-state: event collision at ${result.path}\n`);
       return 1;
@@ -132,7 +133,7 @@ function main(argv: readonly string[]): number {
     return 0;
   }
   writeFileSync(fromPath, newContent, "utf8");
-  const result = publishStateChangedEvent(zetaid, fromState, to, SYSTEM_ENV, actor, eventsRoot);
+  const result = publishStateChangedEvent(zetaid, fromState, to, SYSTEM_ENV, actor, eventsRoot, push);
   if (result.kind === "collision") {
     process.stderr.write(`set-workitem-state: event collision at ${result.path}\n`);
     return 1;

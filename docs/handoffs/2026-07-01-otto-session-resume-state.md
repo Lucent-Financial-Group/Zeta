@@ -15,9 +15,9 @@ Main at save: post **#9212** + **#9214** merge.
   - `complete-workitem` emits `state-changed → done`
   - `set-workitem-state` for backlog ↔ in-progress and `--close`
   - `open-backlog.ts` folds events → open Z-set view
+  - `--push` on lifecycle CLIs → direct-to-main event publish (agent-bus pattern)
 
 ## Next resume targets
 
-- **081KSXN slice 2c** — git direct-to-main publish (agent-bus pattern)
 - **081KSXN** — DORA Bag-folds
 - **081KVP2M1…** — lifecycle triad (KRL revocation)
