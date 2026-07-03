@@ -115,11 +115,13 @@ subset with ≥3 alternatives too).
 **The honest framing (Otto, 2026-07-03):** Zeta trades Arrow’s impossibility for the
 opinion-pooling tradeoff space, and picks the log-linear pool — a real, defensible choice with
 named costs, not a dissolution of impossibility. The costs are:
+
 1. Marginalization doesn’t commute with pooling (non-load-bearing for the architecture).
 2. Lying within the NCI boundary is possible but self-punishing (Condorcet competence).
 3. The log-linear pool requires proper Gaussians (§A #12, Soft-Mode Stability, guarantees this).
 
 **Why this is already built (not new scaffolding):**
+
 - `AttentionRouter.fs` (KL × alignment × Condorcet bonus) = the routing-weights line of the table.
 - `DelayDecorrelation.fs` = consensus propagates at Reticulum delay.
 - NCI boundary (AR-6, AR-8) = the de Finetti conditional-independence condition.
