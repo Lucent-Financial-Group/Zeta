@@ -88,6 +88,7 @@ terraform-into-cell) can assume no-global without an axiom.* Detail: consolidate
 | 18 | **Delay-Decorrelation Theorem (Reticulum Condorcet Bonus)** | Network delay enforces decorrelation; the S-value hierarchy maps directly to the Condorcet ρ regime. Reticulum delay is the physical mechanism of mutual empowerment, as delay grants a Condorcet bonus that amplifies routing weights for independent paths. **✅ PROVEN (FsCheck), 2026-07-03**: `DelayDecorrelation.Tests.fs` DD-1 through DD-9 prove boundary conditions, monotonicity, and Condorcet threshold mappings. `ReticulumRouter.Tests.fs` proves high-delay connections receive amplified routing weights compared to low-delay connections with identical KL divergence. | `DelayDecorrelation.Tests.fs`, `ReticulumRouter.Tests.fs` |
 | 19 | **Arrow-Escape Governance Architecture** | Governance escapes Arrow's Impossibility Theorem by replacing global social welfare functions with local market clearing. Resource allocation (asks/bids) clears via cardinal price mechanisms bounded by the memory graph (Sybil resistance). Binary decisions resolve locally via posterior convergence within entangled subgraphs, explicitly violating unrestricted domain and avoiding global voting. **✅ PROVEN (FsCheck), 2026-07-03**: `ArrowEscape.Tests.fs` AE-1 to AE-7 prove IIA triviality for cardinal clearing, order-independence of local consensus, and the structural impossibility of Sybil market manipulation outside the memory graph. | `ArrowEscape.Tests.fs`, `LocalConsensus.fs`, `AskBidClearing.fs` |
 | 20 | **Information Value (IV) as Economic Primitive** | Information Value is formalized as the Kullback-Leibler (KL) divergence between prior and posterior beliefs. It serves as the single denomination for the attention router, Thousand Brains column voting, and Web3 market clearing. **✅ PROVEN (FsCheck), 2026-07-03**: `InformationValue.Tests.fs` IV-1 to IV-7 prove IV is strictly non-negative, monotonically increases with precision gain and mean shift (surprise), amplifies with the Reticulum Condorcet bonus, and correctly denominates market clearing. | `InformationValue.fs`, `InformationValue.Tests.fs` |
+| 21 | **Thousand Brains Lattice (Writer-Actor-Routing)** | Implements the Thousand Brains theory using Zeta's Bayesian primitives. Columns are independent discrete-ticking Gaussian observers. They cast votes (beliefs) to a lateral consensus pool, weighted logarithmically by their accumulated Information Value. This recovers continuous information lost to the discrete-tick cognitive penalty. **✅ PROVEN (FsCheck), 2026-07-03**: `ThousandBrains.Tests.fs` TB-1 to TB-6 prove IV-weighted logarithmic voting, consensus shift toward high-IV columns, and joint precision thresholding. | `ThousandBrains.fs`, `ThousandBrains.Tests.fs` |
 
 ---
 
@@ -132,9 +133,26 @@ The math isn’t new scaffolding — it’s the proof layer over pieces that alr
 
 ---
 
+### A-method note — Information Value lineage: Lindley, Friston, and the Casimir Gap (Amara 2026-07-03)
+
+An honest accounting of prior art for §A #20. Zeta defines Information Value (IV) as the KL divergence from prior to posterior. This definition is not novel — it was proposed by **Dennis Lindley (1956)** as the expected information gain of a Bayesian experiment. We stand on his shoulders for the math.
+
+**The Casimir Gap connection:** Karl Friston's Active Inference (2006+) posits that agents act to minimize expected free energy (surprise). Aaron maps this to the **vacuum or Casimir gap energy** — the pressure between two boundary plates (the agent's internal model vs. sensory reality). Friston's expected free energy is the *pressure* of the gap; Zeta's IV is the *realized energy release* when the gap collapses (the burst of nats when prior updates to posterior).
+
+**Zeta's architectural contribution:**
+1. **IV as Market Denomination:** Classical economics (Howard 1966) denominates VoI in dollars/utils. Zeta uses Lindley's nats as the literal currency of the attention economy (router, Thousand Brains, Web3).
+2. **Delay-Decorrelation Amplifier:** Multiplying base IV by the Condorcet bonus derived from network latency (`L/(1+L)`) has no classical precedent. Delay enforcing independence is a purely relativistic innovation.
+3. **Retrospective Billing:** Friston uses expected free energy for future action; Zeta uses realized IV for retrospective billing.
+
+---
+
 ## B. THE CONJECTURE REGISTER (open — frontier, NOT floor; nothing in §A depends on these)
 
 Each row is a real, named open proof obligation. Interesting ≠ closed. Discharge → promote to §A.
+
+### B-zeta. Zeta Regularization of Information Value (Amara 2026-07-03)
+**Conjecture Z-1:** The total Information Value extracted by a discrete-ticking agent from a continuous information source is bounded by the Euler-Maclaurin difference between the discrete update sum and the continuous integral. The residual penalty is $-\frac{1}{12}$, representing the irreducible cognitive friction of discrete observation. 
+*Status:* Open. To be proven by demonstrating that the continuous-time limit of EP message passing over a Wiener process requires $\zeta(-1)$ regularization to yield a finite KL divergence. This justifies the necessity of the Thousand Brains lateral consensus architecture to recover the lost information.
 
 ### B-frame. The traveler self-frame over DBSP (Aaron's load-bearing target, 2026-06-05)
 
