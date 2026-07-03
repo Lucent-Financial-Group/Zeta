@@ -26,7 +26,7 @@
   <div style="display:flex;align-items:center;gap:8px;padding:9px 18px;border-bottom:1px solid #26304A;background:#0E1320;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.06em">
     <a href="Settlement.dc.html" style="color:#94A0BC;text-decoration:none">Settlement</a>
     <span style="color:#5E6B8A">›</span>
-    <span onClick="{{ goVault }}" style="color:{{ vaultCrumbColor }};cursor:pointer">Observatory</span>
+    <span onClick="{{ goVault() }}" style="color:{{ vaultCrumbColor }};cursor:pointer">Observatory</span>
     <sc-if value="{{ showRoom }}" hint-placeholder-val="{{ false }}"><span style="color:#5E6B8A">›</span><span style="color:#E8B566">{{ roomName }}</span></sc-if>
     <sc-if value="{{ showAgent }}" hint-placeholder-val="{{ false }}"><span style="color:#5E6B8A">›</span><span style="color:#E8B566">{{ agentName }}</span></sc-if>
   </div>
@@ -48,14 +48,14 @@
     <sc-if value="{{ showVault }}" hint-placeholder-val="{{ true }}">
       <div style="display:flex;gap:22px;border-bottom:1px solid #26304A;margin-top:20px">
         <sc-for list="{{ tabs }}" as="tb" hint-placeholder-count="4">
-          <div onClick="{{ tb.pick }}" style="font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;padding:8px 2px;cursor:pointer;color:{{ tb.color }};border-bottom:2px solid {{ tb.line }}">{{ tb.label }}</div>
+          <div onClick="{{ tb.pick() }}" style="font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;padding:8px 2px;cursor:pointer;color:{{ tb.color }};border-bottom:2px solid {{ tb.line }}">{{ tb.label }}</div>
         </sc-for>
       </div>
 
       <sc-if value="{{ tabRooms }}" hint-placeholder-val="{{ true }}">
         <div style="margin-top:18px;display:grid;gap:9px">
           <sc-for list="{{ rooms }}" as="r" hint-placeholder-count="2">
-            <div onClick="{{ r.open }}" style="display:flex;align-items:center;gap:12px;padding:13px 14px;border-radius:11px;cursor:pointer;background:#141A28;border:1px solid #26304A" style-hover="background:#1B2334;border-color:#323E5C">
+            <div onClick="{{ r.open() }}" style="display:flex;align-items:center;gap:12px;padding:13px 14px;border-radius:11px;cursor:pointer;background:#141A28;border:1px solid #26304A" style-hover="background:#1B2334;border-color:#323E5C">
               <span style="width:9px;height:9px;border-radius:50%;background:{{ r.color }};box-shadow:0 0 7px {{ r.color }};flex-shrink:0"></span>
               <div style="flex:1"><div style="font-weight:600;font-size:14px">{{ r.name }}</div><div style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#5E6B8A;margin-top:2px">{{ r.meta }}</div></div>
               <span style="font-family:'Space Mono',monospace;font-size:11px;color:#94A0BC">{{ r.conf }}</span>
@@ -80,7 +80,7 @@
       <sc-if value="{{ tabAgents }}" hint-placeholder-val="{{ false }}">
         <div style="margin-top:18px;display:grid;gap:9px">
           <sc-for list="{{ agents }}" as="ag" hint-placeholder-count="2">
-            <div onClick="{{ ag.open }}" style="display:flex;align-items:center;gap:12px;padding:13px 14px;border-radius:11px;cursor:pointer;background:#141A28;border:1px solid #26304A" style-hover="background:#1B2334;border-color:#323E5C">
+            <div onClick="{{ ag.open() }}" style="display:flex;align-items:center;gap:12px;padding:13px 14px;border-radius:11px;cursor:pointer;background:#141A28;border:1px solid #26304A" style-hover="background:#1B2334;border-color:#323E5C">
               <span style="width:9px;height:9px;border-radius:50%;background:{{ ag.color }};box-shadow:0 0 7px {{ ag.color }};flex-shrink:0"></span>
               <div style="flex:1"><div style="font-weight:600;font-size:14px">{{ ag.name }}</div><div style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#5E6B8A;margin-top:2px">{{ ag.role }}</div></div>
               <span style="color:#5E6B8A">›</span>

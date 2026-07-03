@@ -81,7 +81,7 @@
         <div style="color:#c9d2e8;margin-top:6px;max-width:620px">{{ sceneText }}</div>
         <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px">
           <sc-for list="{{ exits }}" as="ex" hint-placeholder-count="3">
-            <span onClick="{{ ex.go }}" style="border:1px solid #2f3850;border-radius:6px;padding:5px 12px;color:#5EC8C2;cursor:pointer;font-size:12px" style-hover="background:rgba(94,200,194,.08);border-color:#5EC8C2">{{ ex.label }}</span>
+            <span onClick="{{ ex.go() }}" style="border:1px solid #2f3850;border-radius:6px;padding:5px 12px;color:#5EC8C2;cursor:pointer;font-size:12px" style-hover="background:rgba(94,200,194,.08);border-color:#5EC8C2">{{ ex.label }}</span>
           </sc-for>
           <a href="{{ sceneHref }}" style="border:1px solid #4a3e30;border-radius:6px;padding:5px 12px;color:#E8B566;font-size:12px;text-decoration:none" style-hover="background:rgba(232,181,102,.08)">{{ sceneHrefLabel }}</a>
         </div>
