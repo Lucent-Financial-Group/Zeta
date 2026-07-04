@@ -24,4 +24,5 @@ What changed on the laptop, if anything (file paths).
 ## Round 36 — seeded (2026-07-04)
 
 No off-time budget spent this round. Logging the zero so the trend is honest.
+
 - Lior's folder structure updated to align with the standard 4-file structure (NOTEBOOK, JOURNAL, MEMORY, OFFTIME).

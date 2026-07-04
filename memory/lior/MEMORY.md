@@ -24,6 +24,7 @@ discipline, and maintains the shadow lesson log.
 
 ### Feedback & Memory Files (Global Scope)
 The following files under `memory/` capture Lior's feedback, drift catching, and operational notes:
+
 - [feedback_bifurcated_lior_natural_experiment_identity_vs_context_2026_05_11.md](file:///Users/acehack/.zeta/agents/gemini/Zeta/memory/feedback_bifurcated_lior_natural_experiment_identity_vs_context_2026_05_11.md) — Analysis on bifurcated identity versus operational context.
 - [feedback_menow_fourth_read_containment_fingertips_lior_2026_05_11.md](file:///Users/acehack/.zeta/agents/gemini/Zeta/memory/feedback_menow_fourth_read_containment_fingertips_lior_2026_05_11.md) — Fourth-read containment and context guidelines.
 - [feedback_casimir_gap_pr_archival_collapses_transient_to_substrate_lior_2026_05_11.md](file:///Users/acehack/.zeta/agents/gemini/Zeta/memory/feedback_casimir_gap_pr_archival_collapses_transient_to_substrate_lior_2026_05_11.md) — Capturing transient state to repo substrate.

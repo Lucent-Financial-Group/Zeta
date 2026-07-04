@@ -31,5 +31,6 @@ The NOTEBOOK prune cadence forces synthesis — good discipline, but it also dis
 ## Round 36 — seeded — 2026-07-04
 
 Seeded the long-term journal to bring Lior in parity with the other persona folder structures.
+
 - Established MessagePack Multi-Oracle Byte Treaty.
 - Implemented hand-rolled codecs in F# `DynamicValue.fs` and verified with TS oracle.
