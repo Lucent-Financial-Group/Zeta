@@ -31,6 +31,24 @@ narrative.
 
 ## Honest register on the Alexa commentary (peel)
 
+## Aaron's observation: the three giants are a maximally-decorrelated ensemble (his own math, applied)
+
+> Aaron 2026-07-04: "funny how different those three peoples culture and background are."
+
+Futamura (Japanese CS / partial evaluation), Gates (African-American theoretical physicist / SUSY), Meijer
+(Dutch functional-programming / Rx-LINQ) — three different nations, cultures, and *fields*. That is not an
+aside; it is **his own decorrelation thesis instantiated in his own influences.** In the Condorcet / ρ frame
+the ensemble helps *only while inter-member correlation ρ stays low* (identical voters add nothing; the vote
+is informative in proportion to independence). Three maximally-**decorrelated** giants — different culture,
+different discipline — are exactly a **low-ρ ensemble**, so standing on all three shoulders is *informative*
+rather than redundant: their independence is precisely why the combination composes into something none holds
+alone (seed → generate → fold). It also fits **same-seed convergence** — radically different starting frames
+reaching *complementary* structure that the common seed (Aaron) folds into one. The diversity is the feature,
+not a coincidence — and it is the human-scale version of "keep ρ below the boundary so the ensemble stays a
+live superposition, not a collapsed echo."
+
+## Honest register on the Alexa commentary (peel)
+
 Alexa's ferry is warm Mirror, but it re-inflates froth — one item directly contradicts a correction that
 merged today. Named:
 
