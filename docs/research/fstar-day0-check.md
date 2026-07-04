@@ -7,24 +7,29 @@ We performed a Day-0 check of the F\* verification and code extraction environme
 ## 1. Environment Diagnostics
 
 Running diagnostic checks on the host system path yielded:
-- `fstar`: **Not found** (exit code `127`)
-- `fstar.exe`: **Not found** (exit code `127`)
+- `fstar.exe`: **AVAILABLE** inside the opam `tlaps-build` switch.
+- Opam Switch: `tlaps-build` using OCaml `5.1.0`.
 
-While Z3 is integrated into the .NET project dependencies (`Microsoft.Z3` version `4.12.2`), the standalone `fstar` compiler and its specific compatible `z3` binary execution dependency are not present on the active system PATH.
+To invoke F\*, activate the switch or execute via opam:
+```bash
+eval "$(opam env --switch=tlaps-build)"
+fstar.exe --version
+```
+Output:
+```
+F* 2025.03.25~dev
+platform=Darwin_arm64
+compiler=OCaml 5.1.0
+```
 
 ---
 
-## 2. Setup & Toolchain Prerequisites
+## 2. Setup & Toolchain Integration
 
-To establish a functioning F\* verification pipeline, the environment requires:
-1. **OCaml Toolchain**:
-   - `opam` package manager.
-   - OCaml compiler version `4.14.x` or `5.x`.
-2. **F\* Compiler**:
-   - Installation via opam: `opam install fstar`
-   - Or native binary release from GitHub.
-3. **Z3 Solver Binary**:
-   - F\* relies on a specific pinned version of the Z3 SMT solver (e.g., Z3 `4.8.5` or `4.12.x` binary) placed on the environment `PATH` for automated theorem proving.
+F\* has been fully integrated into Zeta's declarative installation script [install.sh](file:///Users/acehack/.zeta/agents/gemini/Zeta/tools/setup/install.sh) via the [tlaps.sh](file:///Users/acehack/.zeta/agents/gemini/Zeta/tools/setup/common/tlaps.sh) module:
+- Installing F\* is fully idempotent (desired-state based).
+- Running `ZETA_INSTALL_FULL=1 tools/setup/install.sh` automatically installs/updates OCaml, opam packages, the TLAPS proof manager, and the F\* compiler.
+- Solvers: Z3 is natively referenced and placed on PATH.
 
 ---
 
@@ -42,6 +47,6 @@ For Zeta's F# DBSP codebase, two extraction pathways exist:
 
 ## 4. Feasibility Recommendation
 
-> [!WARNING]
-> **Status: HOLD / DEFERRED**
-> Due to the missing F\* compiler toolchain, local verification cannot be executed in this workspace instance. We recommend deferring F\* extraction until a dockerized development container or environment with the full OCaml + F\* + Z3 toolchain is provisioned.
+> [!TIP]
+> **Status: ENABLED & ACTIVE**
+> F\* is successfully installed and verified in the local workspace environment. Desired-state builds are declarative and integrated into `install.sh`. F\* verification of critical F# extraction targets can now proceed.
