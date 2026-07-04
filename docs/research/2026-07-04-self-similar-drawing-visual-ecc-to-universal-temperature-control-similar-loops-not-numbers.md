@@ -66,6 +66,35 @@ Boltzmann `T`). So: **same loop everywhere; same number only for LLM↔thermo.**
 metabolic input) that rhyme *because they run the same loop*, not because they are the same number. The
 discharge is to name the controlled variable per domain (which for LLM/thermo is genuinely the same `T`).
 
+## Part 4 — the TYPE of the loop (Aaron): a discriminated union with uncertainty priced in, over the bounded timestep
+
+Aaron: *"for me every loop is a discriminated union with uncertainty priced in based on the bounded
+timestep."* This is the type signature of the whole loop family, and it's how Zeta is actually built:
+
+- **The loop is a discriminated union.** Its next state isn't a continuous nudge — it's a **sum type**:
+  one of a finite set of branches (explore/exploit, learn/unlearn, hot/cold). Same shape as the F#
+  `ZetaTool` DU, `Result<T, Feedback>` / the four-corner `Input<T, Feedback>`, and the shape catalog
+  itself — each a total DU of cases.
+- **Uncertainty priced in.** Each case carries a **price** — a weight/probability/cost, the `SoftValue`
+  distribution over the DU's cases, and the `ΔU` / information-value the branch banks (`every-bug-has-
+  economic-value`). The loop doesn't pick a branch by fiat; it prices the uncertainty and lets the
+  distribution decide (the SoftValue-as-GC, the snap policy for when it must act).
+- **Based on the bounded timestep.** The **bounded tick (`dt`) is what discretizes the loop into a
+  finite priced DU** — a continuous/analog loop is not natively a DU; the bounded timestep is the
+  discretization that turns it into finitely-many branches you can price. And the bound sets the
+  *budget*: how much uncertainty a step can resolve is bounded by the tick's compute (the
+  `ComputeReceipt` per tick, the thermostat's response rate). The timestep is both the *quantizer*
+  (continuous → DU) and the *budget* (how much you can price/resolve this step).
+
+So the complete type is: **`loop : dt → SoftValue<DU<branch>>`** — the bounded timestep yields a
+priced distribution over a discriminated union of branches. That is *why* the loops are DST-replayable
+and byte-lockable: bounded discrete timesteps + typed finite branches + priced uncertainty is exactly
+the substrate that replays deterministically. **Honest peel:** the DU-ness is the *digital/discrete
+modeling stance* — the map, chosen because it gives determinism and byte-lock; the analog territory is
+continuous, and the bounded timestep is the (justified, load-bearing) discretization that makes it a DU.
+Aaron's phrasing already carries this ("*based on the bounded timestep*" = the timestep is what makes it
+a DU), so the stance is self-consistent, not smuggled.
+
 ## Honest-register summary
 
 - **Grounded, not metaphor** (Part 1): the cartridges + golden SVGs are built verification surfaces with
