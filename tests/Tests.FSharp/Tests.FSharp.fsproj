@@ -86,6 +86,7 @@
     <Compile Include="DynamicValue.CborGoldenVectors.Tests.fs" />
     <Compile Include="DynamicValue.MsgpackGoldenVectors.Tests.fs" />
     <Compile Include="MessagePackSerializer.Tests.fs" />
+    <Compile Include="ZetaSqlBuilder.Tests.fs" />
     <Compile Include="DynamicValue.CborDecode.Tests.fs" />
     <Compile Include="DynamicValue.JsonDecode.Tests.fs" />
     <Compile Include="DynamicValue.Canonical.Tests.fs" />
