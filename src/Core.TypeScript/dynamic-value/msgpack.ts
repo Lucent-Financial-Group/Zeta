@@ -33,12 +33,6 @@ function f64Bits(v: number): bigint {
   return dv.getBigUint64(0, false);
 }
 
-function f64FromBitsHex(hex: string): number {
-  const dv = new DataView(new ArrayBuffer(8));
-  dv.setBigUint64(0, BigInt("0x" + hex), false);
-  return dv.getFloat64(0, false);
-}
-
 export function f64ToBitsHex(v: number): string {
   return f64Bits(v).toString(16).padStart(16, "0");
 }
@@ -55,7 +49,7 @@ function fromHex(hex: string): Uint8Array {
 function toHex(bytes: Uint8Array): string {
   let out = "";
   for (let i = 0; i < bytes.length; i++) {
-    out += bytes[i].toString(16).padStart(2, "0");
+    out += bytes[i]!.toString(16).padStart(2, "0");
   }
   return out;
 }
@@ -125,7 +119,7 @@ function encodeStr(out: number[], s: string): void {
     out.push(0xdb);
     pushBE(out, BigInt(len), 4);
   }
-  for (let i = 0; i < len; i++) out.push(bytes[i]);
+  for (let i = 0; i < len; i++) out.push(bytes[i]!);
 }
 
 function encodeBytes(out: number[], hex: string): void {
@@ -140,7 +134,7 @@ function encodeBytes(out: number[], hex: string): void {
     out.push(0xc6);
     pushBE(out, BigInt(len), 4);
   }
-  for (let i = 0; i < len; i++) out.push(bytes[i]);
+  for (let i = 0; i < len; i++) out.push(bytes[i]!);
 }
 
 function encodeArray(out: number[], arr: Tagged[]): void {
@@ -223,7 +217,7 @@ export function fromCanonicalMsgpack(input: Uint8Array | number[]): DecodeResult
     if (pos + n > bytes.length) fail("UnexpectedEnd");
     let v = 0n;
     for (let i = 0; i < n; i++) {
-      v = (v << 8n) | BigInt(bytes[pos + i]);
+      v = (v << 8n) | BigInt(bytes[pos + i]!);
     }
     pos += n;
     return v;
@@ -232,6 +226,7 @@ export function fromCanonicalMsgpack(input: Uint8Array | number[]): DecodeResult
   function readValue(): Tagged {
     if (pos >= bytes.length) fail("UnexpectedEnd");
     const initial = bytes[pos++];
+    if (initial === undefined) fail("UnexpectedEnd");
 
     // positive fixint: 0x00 - 0x7f
     if (initial <= 0x7f) {

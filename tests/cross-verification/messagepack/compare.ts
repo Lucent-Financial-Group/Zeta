@@ -38,7 +38,8 @@ for (const [name, impl] of impls) {
   console.log(`  ${name}: ${impl ? `${Object.keys(impl).length} results` : "MISSING"}`);
 }
 
-if (!impls[0][1]) {
+const tsImpl = impls[0];
+if (!tsImpl || !tsImpl[1]) {
   console.error("ts-output.json MISSING — the TS reference oracle is required");
   process.exit(1);
 }

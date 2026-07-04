@@ -7,6 +7,7 @@ We performed a Day-0 check of the F\* verification and code extraction environme
 ## 1. Environment Diagnostics
 
 Running diagnostic checks on the host system path yielded:
+
 - `fstar.exe`: **AVAILABLE** inside the opam `tlaps-build` switch.
 - Opam Switch: `tlaps-build` using OCaml `5.1.0`.
 
@@ -27,6 +28,7 @@ compiler=OCaml 5.1.0
 ## 2. Setup & Toolchain Integration
 
 F\* has been fully integrated into Zeta's declarative installation script [install.sh](file:///Users/acehack/.zeta/agents/gemini/Zeta/tools/setup/install.sh) via the [tlaps.sh](file:///Users/acehack/.zeta/agents/gemini/Zeta/tools/setup/common/tlaps.sh) module:
+
 - Installing F\* is fully idempotent (desired-state based).
 - Running `ZETA_INSTALL_FULL=1 tools/setup/install.sh` automatically installs/updates OCaml, opam packages, the TLAPS proof manager, and the F\* compiler.
 - Solvers: Z3 is natively referenced and placed on PATH.
@@ -38,10 +40,10 @@ F\* has been fully integrated into Zeta's declarative installation script [insta
 F\* formally verifies monadic, stateful, and concurrent code, and natively supports extraction to **OCaml**, **F#** (experimental/legacy), and **Kremlin/C** (for low-level system code).
 
 For Zeta's F# DBSP codebase, two extraction pathways exist:
+
 - **ML-Dialect Translation**:
-  Extracting to OCaml, then utilizing a transpiler or manual type-mapping to F# (due to the shared ML lineage). F# can compile most pure OCaml structures natively.
+
 - **Direct F# Target**:
-  Maintaining custom F\* code wrappers that compile cleanly as F# files by defining F# equivalents of the F\* standard library primitives.
 
 ---
 

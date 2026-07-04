@@ -47,10 +47,11 @@ A witness block $W$ contains a cryptographic digest and sequence markers:
 $$W = \langle \text{Magic}, \text{SeqNo}, \text{Digest}, \text{MetaCount}, \text{Offsets}, \dots \rangle$$
 
 Where:
+
 - $\text{Magic}$ is a 32-bit sentinel (`0x57444331` for "WDC1").
 - $\text{SeqNo}$ is a monotonically increasing 64-bit transaction sequence number.
 - $\text{Digest}$ is a SHA-256 hash of the full transaction delta payload:
-  
+
   $$\text{Digest} = H(\text{DeltaPayload})$$
 
 - $\text{Offsets}$ contains the target logical address offsets for the page flush.
@@ -62,15 +63,18 @@ Where:
 We prove WDC correct relative to **Buffered Durable Linearizability (BDL)** (Izraelevitz et al., DISC 2016). BDL generalizes classical linearizability to systems that buffer persistent writes and can crash.
 
 Let $H$ be an execution history. A history contains invoke and response events for transactions. Under a crash-recovery model:
+
 - A crash event $\mathcal{C}$ occurs, splitting history $H$ into $H_{\text{pre-crash}}$ and $H_{\text{post-recovery}}$.
 - The system recovers to a consistent state $S_{\text{rec}}$.
 
 Under BDL, there exists a subsequence of completed transactions in $H_{\text{pre-crash}}$ that are *durable* (persisted) and forms a valid linearizable history matching $S_{\text{rec}}$. Any transaction that returned *after* the witness write is guaranteed to be in this subsequence.
 
 ### Theorem (Witness-Durable Consistency)
+
 *If a transaction $T_i$ completes its witness write $W_i$ and returns `Ok` to the client, then under any crash event $\mathcal{C}$ occurring after the return of $T_i$, $T_i$ is present in the recovered state $S_{\text{rec}}$.*
 
-#### Proof Sketch:
+#### Proof Sketch
+
 1. Since the witness write $W_i$ is written via AWUPF, it is durably written to NAND.
 2. In the event of a crash before the asynchronous page flush of $T_i$'s delta, the recovery manager reads the witness logs.
 3. The recovery manager detects $W_i$, matches it with the sequence number, and requests the transaction payload from the recovery cohort or re-executes the deterministic generator.
@@ -85,10 +89,11 @@ Upon system reboot after a crash event $\mathcal{C}$:
 1. **Scan Witness Log**: Scan the physical witness slots sequentially.
 2. **Filter Active Witnesses**: Identify the witness blocks with valid $\text{Magic}$ and valid checksums where $\text{SeqNo} > \text{LastFlushedSeqNo}$.
 3. **Reconstruction**:
-   - For each active witness $W$:
+
      - Reconstruct the transaction delta payload.
      - Verify the payload integrity: $H(\text{DeltaPayload}) == W.\text{Digest}$.
      - If verified, apply the delta to the cold store.
+
 4. **Checkpoint**: Update $\text{LastFlushedSeqNo}$ and clear the witness log slots.
 
 ---
@@ -101,7 +106,7 @@ Below is the TLA+ state-machine model representing the WDC state transition, buf
 --------------------------- MODULE WdcProtocol ---------------------------
 EXTENDS Naturals, Sequences
 
-VARIABLES 
+VARIABLES
     state,          \* Server state: "Active", "Crashed"
     witness_log,    \* Set of witness blocks written to NVMe
     cold_store,     \* Committed and flushed page data
@@ -157,7 +162,7 @@ Recover ==
 \* Invariant: Witness-Durable Linearizability holds
 BDL_Invariant ==
     \forall w \in witness_log :
-        (state = "Active" /\ w.seq < next_seq) => 
+        (state = "Active" /\ w.seq < next_seq) =>
             (\E tx \in SeqToSet(cold_store) : tx = w.digest) \/ (\E tx \in buffer_pool : tx.seq = w.seq)
 
 =============================================================================

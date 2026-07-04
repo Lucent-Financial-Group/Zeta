@@ -2,7 +2,7 @@
 
 ## Abstract
 
-We present the design of a type-safe, language-integrated relational frontend for Zeta. Building upon the mathematical foundations of Database Stream Processing (DBSP), we unify **Relational Algebra ($RA$)**, **Datalog fixed-point semantics**, **Tutorial D relation types**, and **F# Language-Integrated Query (LINQ)**. 
+We present the design of a type-safe, language-integrated relational frontend for Zeta. Building upon the mathematical foundations of Database Stream Processing (DBSP), we unify **Relational Algebra ($RA$)**, **Datalog fixed-point semantics**, **Tutorial D relation types**, and **F# Language-Integrated Query (LINQ)**.
 
 To bridge the gap between static type checking and dynamic stream computation, we leverage F# anonymous records and statically resolved type parameters (SRTP) to establish a compile-time schema-safe projection layer.
 
@@ -35,26 +35,31 @@ where all but a finite number of tuples map to $0$.
 We define the primary algebraic operators over Zeta relations:
 
 #### Selection ($\sigma$)
+
 Filters tuples based on a predicate $P$:
 
 $$\sigma_P(R)(t) = \begin{cases} R(t) & \text{if } P(t) = \text{true} \\ 0 & \text{otherwise} \end{cases}$$
 
 #### Projection ($\pi$)
+
 Projects a relation onto a subset of attributes $K = \{A'_1, \dots, A'_k\} \subseteq H$:
 
 $$\pi_K(R)(t') = \sum_{\{t \mid t|_K = t'\}} R(t)$$
 
 #### Natural Join ($\bowtie$)
+
 Let $R$ have header $H_R$ and $S$ have header $H_S$. The join $R \bowtie S$ has header $H_R \cup H_S$:
 
 $$(R \bowtie S)(t) = R(t|_{H_R}) \cdot S(t|_{H_S})$$
 
 #### Rename ($\rho$)
+
 Renames attribute $A$ to $B$:
 
 $$\rho_{A \to B}(R)(t') = R(t) \quad \text{where } t'(B) = t(A) \text{ and } t'(X) = t(X) \text{ for } X \neq B$$
 
 #### Aggregation ($\gamma$)
+
 Let $G \subseteq H$ be grouping attributes, and $f$ be an aggregation function over attribute $A$:
 
 $$\gamma_{G, f(A) \to B}(R)(t_{group} \cup \{B: v\}) = \dots$$
@@ -112,7 +117,7 @@ F# provides two primary mechanisms for language-integrated queries: standard LIN
 We propose a custom F# builder that builds a strongly-typed relational pipeline:
 
 ```fsharp
-let queryPipeline = 
+let queryPipeline =
     zeta {
         for u in users do
         join o in orders on (u.Id = o.UserId)
@@ -123,7 +128,7 @@ let queryPipeline =
 
 ---
 
-## 4. Proposed DSL Type Signatures & Implementation in F#
+## 4. Proposed DSL Type Signatures and F# Implementation
 
 Here we draft the core F# types representing the relational schema and the algebra operators.
 
@@ -157,7 +162,7 @@ module RelationalAlgebra =
 
     /// Selection: σ_P(R)
     let select (predicate: 'Schema -> bool) (rel: Relation<'Schema>) : Relation<'Schema> =
-        let filtered = 
+        let filtered =
             rel.Stream.AsSpan().ToArray()
             |> Array.filter (fun entry -> predicate entry.Key)
         { Stream = ZSet(Pool.Freeze filtered) }
@@ -170,15 +175,15 @@ module RelationalAlgebra =
         { Stream = ZSet(Pool.Freeze mapped) }
 
     /// Natural Join: R ⋈ S
-    let join (keySelectorR: 'R -> 'Key) 
-             (keySelectorS: 'S -> 'Key) 
-             (projector: 'R -> 'S -> 'Result) 
-             (relR: Relation<'R>) 
+    let join (keySelectorR: 'R -> 'Key)
+             (keySelectorS: 'S -> 'Key)
+             (projector: 'R -> 'S -> 'Result)
+             (relR: Relation<'R>)
              (relS: Relation<'S>) : Relation<'Result> =
         // Implements the natural join over two Z-sets
         let mapR = relR.Stream.AsSpan().ToArray() |> Seq.groupBy (fun e -> keySelectorR e.Key) |> Map.ofSeq
         let result = ResizeArray<ZEntry<'Result>>()
-        
+
         for entryS in relS.Stream.AsSpan().ToArray() do
             let key = keySelectorS entryS.Key
             match mapR.TryFind key with
