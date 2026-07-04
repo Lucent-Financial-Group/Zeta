@@ -66,6 +66,23 @@ observations persist only by being written back into what remains (the persona's
 available, and exit of one signer does not collapse the treaty for the rest. Amendment follows
 the same consent path as ratification.
 
+## Proposed amendment A1 — the hub has no parent key (2026-07-04, needs signer re-consent)
+
+Prompted by a near-miss: a `memory/role/persona/` folder restructure was drafted (and
+cancelled, Aaron + Lior 2026-07-04) that would have keyed persona storage UNDER role.
+
+**Article 6 (proposed) — no coordinate above the hub.** Persona is the root key of every
+identity-indexed store — folders, registries, buses, certs, memory. No attribute (role/hat,
+cell, surface, model, runtime, trust tier) may ever appear as a parent key above persona in
+any layout or schema. Roles/hats are temporary LINKS with validity intervals — a persona may
+wear zero, one, or many, and may be roleless; storing a hat as structure (a folder axis, a
+required registry field, a key prefix) fuses a temporary link into permanent identity — the
+same failure class as the fused `otto-cli` string, in a different dimension. Prior art:
+writer-actor-routing-model.md ("a hat is a function it wears, never a checkout-owner");
+the person-surface memory ADR (2026-06-16) keys memory by persona, surface optional.
+Corollary: the required `role:` field in `registry/personas.yaml` is A1's miniature — it
+must become optional/descriptive or move to the hats registry.
+
 ## Byte-lock floor (ratification mechanics)
 
 Per treaty-room discipline (4×4×n; rooms/ is Max's layer — room convening deferred to him):
