@@ -189,7 +189,7 @@ module RelationalAlgebra =
             match mapR.TryFind key with
             | Some entriesR ->
                 for entryR in entriesR do
-                    let weight = entryR.Weight * entryS.Weight
+                    let weight = Checked.( * ) entryR.Weight entryS.Weight
                     let resVal = projector entryR.Key entryS.Key
                     result.Add(ZEntry(resVal, weight))
             | None -> ()

@@ -14,7 +14,7 @@ type ZetaQueryBuilder() =
         for entryT in r.Stream do
             let relU = f entryT.Key
             for entryU in relU.Stream do
-                let weight = entryT.Weight * entryU.Weight
+                let weight = Checked.( * ) entryT.Weight entryU.Weight
                 result.Add(ZEntry(entryU.Key, weight))
         { Stream = ZSet(Pool.Freeze (result.ToArray())) }
 
@@ -53,7 +53,7 @@ type ZetaQueryBuilder() =
             match mapR.TryFind key with
             | Some entriesR ->
                 for entryR in entriesR do
-                    let weight = entryR.Weight * entryS.Weight
+                    let weight = Checked.( * ) entryR.Weight entryS.Weight
                     let resVal = projector entryR.Key entryS.Key
                     result.Add(ZEntry(resVal, weight))
             | None -> ()
