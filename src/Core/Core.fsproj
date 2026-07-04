@@ -444,6 +444,7 @@
     <PackageReference Include="System.Reactive" />
     <PackageReference Include="System.Numerics.Tensors" />
     <PackageReference Include="FsPickler" />
+    <PackageReference Include="MessagePack" />
     <PackageReference Include="Apache.Arrow" />
   </ItemGroup>
 
