@@ -37,10 +37,11 @@ jobs:
       - name: Extract producing agent from branch name
         id: producer
         env:
-          HEAD_REF: ${{ github.head_ref }}
+          # actionlint: github.head_ref is attacker-controlled on PRs — pass
+          # through env, never inline into the script.
+          BRANCH: ${{ github.head_ref }}
         run: |
           # Branch format: flush/heartbeat-<agent>-<timestamp>
-          BRANCH="$HEAD_REF"
           # Extract agent name between "heartbeat-" and the next "-" or timestamp
           AGENT=$(echo "$BRANCH" | sed -n 's|flush/heartbeat-\([a-z]*\)-.*|\1|p')
           if [ -z "$AGENT" ]; then

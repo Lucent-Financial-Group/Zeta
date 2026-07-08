@@ -1,11 +1,14 @@
 import { describe, expect, it } from "bun:test";
+import { DEFAULT_QEMU_WIFI_PASSWORD } from "../zflash/test-harness/prepare-boot-image";
 import { validateSelfRegCiCoherent } from "./self-reg-serial.ts";
 import {
+  assertGeneratedNodeHostnameContract,
+  assertWifiEspPhase1Contract,
   buildQemuDiskBootArgsPure,
+  buildQemuInstallArgsPure,
   detectInstalledLoginPrompt,
   detectPhase2Success,
   detectUnexpectedControlPlaneLogin,
-  assertGeneratedNodeHostnameContract,
   extractGeneratedHostname,
   mergeFullInstallSerialLogs,
   NODE_HEX_HOSTNAME_RE,
@@ -59,6 +62,41 @@ describe("qemu-full-install-test phase 2 disk boot QEMU args", () => {
     expect(args.join(" ")).not.toContain("netdev");
     expect(args).toContain("-vga");
     expect(args).toContain("none");
+  });
+});
+describe("qemu-full-install-test phase 1 boot media QEMU args", () => {
+  it("uses cdrom for ISO install", () => {
+    const args = buildQemuInstallArgsPure({ kind: "iso", path: "/tmp/installer.iso" }, "/tmp/disk.qcow2", "/tmp/serial.log", !0);
+    expect(args.join(" ")).toContain("-cdrom /tmp/installer.iso");
+    expect(args.join(" ")).toContain("virtio-net");
+    expect(args.join(" ")).not.toContain("usb-storage");
+  });
+  it("uses usb-storage for zflash wifi ESP image", () => {
+    const args = buildQemuInstallArgsPure({ kind: "usb-image", path: "/tmp/zflash-wifi.img" }, "/tmp/disk.qcow2", "/tmp/serial.log", !1);
+    expect(args.join(" ")).toContain("usb-storage,bus=xhci.0,drive=zflashboot,bootindex=1");
+    expect(args.join(" ")).toContain("file=/tmp/zflash-wifi.img,if=none,format=raw,readonly=on,id=zflashboot");
+    expect(args.join(" ")).not.toContain("-cdrom");
+  });
+});
+describe("qemu-full-install-test wifi ESP phase-1 contract", () => {
+  it("accepts found + wrote + association-deferred markers", () => {
+    const serial = [
+      "[iter-5-wifi] found zeta-wifi-credentials.json on boot USB ESP",
+      "[iter-5-wifi] wrote NetworkManager profile to installed system (zeta-esp-homelab.nmconnection)",
+      "[iter-5-wifi] association deferred (physical-gated; no radio claim)",
+      "ZETA CLUSTER NODE INSTALL COMPLETE"
+    ].join(`
+`);
+    expect(assertWifiEspPhase1Contract(serial).ok).toBe(!0);
+  });
+  it("fails when wifi markers missing and never echoes the QEMU test PSK", () => {
+    const result = assertWifiEspPhase1Contract(`ZETA CLUSTER NODE INSTALL COMPLETE
+`);
+    expect(result.ok).toBe(!1);
+    if (!result.ok) {
+      expect(result.reason).toContain("wifi ESP install markers missing");
+      expect(result.reason).not.toContain(DEFAULT_QEMU_WIFI_PASSWORD);
+    }
   });
 });
 describe("qemu-full-install-test serial log artifact merge", () => {
@@ -119,10 +157,12 @@ describe("qemu-full-install-test phase 3 first-session markers", () => {
     expect(detectPhase2Success(serial, "node-abc123", !1).ok).toBe(!0);
     expect(detectPhase2Success(serial, "node-abc123", !0).ok).toBe(!1);
   });
-  it("detectPhase2Success passes when login and first-session markers present", () => {
+  it("detectPhase2Success passes when login and mock identity-auth markers present", () => {
     const serial = [
       "zeta-first-session: begin",
       "zeta-first-session: choice kind=setup_credential vendor=gh",
+      "zeta-first-session: identity-auth-mock-begin",
+      "zeta-first-session: identity-auth-mock-ok",
       "zeta-first-session: choice kind=use_local_llm_only",
       "zeta-first-session: complete canSelfRegister=true",
       "node-abc123 login:"
@@ -131,6 +171,17 @@ describe("qemu-full-install-test phase 3 first-session markers", () => {
     expect(result.ok).toBe(!0);
     if (result.ok)
       expect(result.reason).toContain("first-session markers");
+  });
+  it("detectPhase2Success rejects dry-run-only first-session when phase3 required", () => {
+    const serial = [
+      "zeta-first-session: begin",
+      "zeta-first-session: choice kind=setup_credential vendor=gh",
+      "zeta-first-session: choice kind=use_local_llm_only",
+      "zeta-first-session: complete canSelfRegister=true",
+      "node-abc123 login:"
+    ].join(`
+`);
+    expect(detectPhase2Success(serial, "node-abc123", !0).ok).toBe(!1);
   });
   it("detectInstalledLoginPrompt finds generated hostname login line", () => {
     const result = detectInstalledLoginPrompt(`boot
