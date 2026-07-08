@@ -40,7 +40,7 @@ public class ZSetWRingGenerator : IIncrementalGenerator
     private static string GenerateRingWrapper(string ringType, string weightType, bool isRing)
     {
         var shortName = ringType.Split('.').Last();
-        
+
         var methods = $@"        public static ZSetW<K, {weightType}> Singleton<K>(K key, {weightType} weight) where K : System.IComparable<K>
         {{
             return ZSetWModule.SingletonBy<{ringType}, {weightType}, K>(default({ringType}), key, weight);
