@@ -36,9 +36,11 @@ jobs:
 
       - name: Extract producing agent from branch name
         id: producer
+        env:
+          HEAD_REF: ${{ github.head_ref }}
         run: |
           # Branch format: flush/heartbeat-<agent>-<timestamp>
-          BRANCH="${{ github.head_ref }}"
+          BRANCH="$HEAD_REF"
           # Extract agent name between "heartbeat-" and the next "-" or timestamp
           AGENT=$(echo "$BRANCH" | sed -n 's|flush/heartbeat-\([a-z]*\)-.*|\1|p')
           if [ -z "$AGENT" ]; then
