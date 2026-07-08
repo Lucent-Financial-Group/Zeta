@@ -122,28 +122,49 @@ describe("LLMTV room replay adapter", () => {
     expect(folded.transcript.dwellers).toHaveLength(1);
   });
 
-  it("defaults multi-snapshot receipt times to end at the expiry clock", () => {
-    const artifact = roomTranscriptsToReplayArtifact(
+  it("defaults multi-snapshot receipt times by source sequence under expiry", () => {
+    const newRoom = transcript(2, [deniedHeat, forgottenHeat]);
+    const oldRoom = transcript(1, [deniedHeat]);
+    const newestFirst = roomTranscriptsToReplayArtifact(
       [
         {
-          transcript: transcript(2, [deniedHeat, forgottenHeat]),
+          transcript: newRoom,
           sourceZid: "room:darkhall",
           seq: 2,
         },
         {
-          transcript: transcript(1, [deniedHeat]),
+          transcript: oldRoom,
           sourceZid: "room:darkhall",
           seq: 1,
         },
       ],
-      { expire: { nowMs: 1000, ttlMs: 100 } },
+      { expire: { nowMs: 1000, ttlMs: 0 } },
+    );
+    const oldestFirst = roomTranscriptsToReplayArtifact(
+      [
+        {
+          transcript: oldRoom,
+          sourceZid: "room:darkhall",
+          seq: 1,
+        },
+        {
+          transcript: newRoom,
+          sourceZid: "room:darkhall",
+          seq: 2,
+        },
+      ],
+      { expire: { nowMs: 1000, ttlMs: 0 } },
     );
 
-    const folded = foldReplayArtifact(artifact);
+    const foldedNewestFirst = foldReplayArtifact(newestFirst);
+    const foldedOldestFirst = foldReplayArtifact(oldestFirst);
 
-    expect(artifact.frames.map((frame) => frame.receivedAtMs)).toEqual([999, 1000]);
-    expect(folded.stats).toEqual({ accepted: 2, rejected: 0, expired: 0 });
-    expect(folded.transcript.dwellers).toHaveLength(1);
+    expect(newestFirst.frames.map((frame) => frame.receivedAtMs)).toEqual([1000, 999]);
+    expect(oldestFirst.frames.map((frame) => frame.receivedAtMs)).toEqual([999, 1000]);
+    expect(foldedNewestFirst.stats).toEqual({ accepted: 2, rejected: 0, expired: 0 });
+    expect(foldedOldestFirst.stats).toEqual({ accepted: 2, rejected: 0, expired: 0 });
+    expect(foldedNewestFirst.transcript.dwellers[0]?.frame).toBe(2);
+    expect(foldedOldestFirst.transcript.dwellers[0]?.frame).toBe(2);
   });
 
   it("lets repeated room snapshots converge by the replay fold's LWW sequence rule", () => {

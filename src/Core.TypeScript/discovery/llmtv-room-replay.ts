@@ -105,14 +105,33 @@ export function roomTranscriptToBroadcastMessage(
   return publishFrame(sourceForTranscript(transcript, options), seq, frameNo, sourceMindFromDweller(dweller));
 }
 
+function defaultReceivedAtMs(
+  transcript: RoomRunTranscript,
+  message: BroadcastMessage,
+  options: Pick<RoomTranscriptReplayOptions, "expire">,
+): number {
+  const fallbackFrameTime = message.t === "frame" ? message.frameNo : transcript.ticks.length;
+  return finiteWhole(options.expire?.nowMs, fallbackFrameTime);
+}
+
+function messageFrameNo(message: BroadcastMessage): number {
+  return message.t === "frame" ? message.frameNo : 0;
+}
+
+function replayFrameFromMessage(
+  transcript: RoomRunTranscript,
+  message: BroadcastMessage,
+  options: Pick<RoomTranscriptReplayOptions, "expire" | "from" | "receivedAtMs">,
+): ReplayWireFrame {
+  return replayFrame(message, finiteWhole(options.receivedAtMs, defaultReceivedAtMs(transcript, message, options)), options.from);
+}
+
 export function roomTranscriptToReplayFrame(
   transcript: RoomRunTranscript,
   options: RoomTranscriptReplayOptions = {},
 ): ReplayWireFrame {
   const message = roomTranscriptToBroadcastMessage(transcript, options);
-  const fallbackFrameTime = message.t === "frame" ? message.frameNo : transcript.ticks.length;
-  const fallbackReceivedAtMs = finiteWhole(options.expire?.nowMs, fallbackFrameTime);
-  return replayFrame(message, finiteWhole(options.receivedAtMs, fallbackReceivedAtMs), options.from);
+  return replayFrameFromMessage(transcript, message, options);
 }
 
 export function roomTranscriptToReplayArtifact(
@@ -134,15 +153,45 @@ export function roomTranscriptsToReplayArtifact(
   options: RoomTranscriptsReplayOptions = {},
 ): ReplayArtifact {
   const step = finiteWhole(options.receivedAtStepMs, 1);
-  const lastDefaultReceivedAtMs = finiteWhole(options.expire?.nowMs, 0);
-  const defaultStartReceivedAtMs = Math.max(0, lastDefaultReceivedAtMs - Math.max(0, entries.length - 1) * step);
-  const start = finiteWhole(options.startReceivedAtMs, defaultStartReceivedAtMs);
-  const frames = entries.map((entry, index) => {
+  const prepared = entries.map((entry, index) => {
     const { transcript, ...entryOptions } = entry;
-    return roomTranscriptToReplayFrame(transcript, {
-      ...entryOptions,
-      receivedAtMs: entryOptions.receivedAtMs ?? start + index * step,
-    });
+    return { entryOptions, index, message: roomTranscriptToBroadcastMessage(transcript, entryOptions), transcript };
+  });
+  const fallbackReceivedAtMs = new Map<number, number>();
+
+  if (options.expire !== undefined && options.startReceivedAtMs === undefined) {
+    const now = finiteWhole(options.expire.nowMs, 0);
+    const bySource = new Map<string, typeof prepared>();
+    for (const item of prepared) {
+      const bucket = bySource.get(item.message.source.zid);
+      if (bucket === undefined) {
+        bySource.set(item.message.source.zid, [item]);
+      } else {
+        bucket.push(item);
+      }
+    }
+
+    for (const bucket of bySource.values()) {
+      const implicit = bucket
+        .filter((item) => item.entryOptions.receivedAtMs === undefined)
+        .sort(
+          (left, right) =>
+            left.message.seq - right.message.seq || messageFrameNo(left.message) - messageFrameNo(right.message) || left.index - right.index,
+        );
+      const start = Math.max(0, now - Math.max(0, implicit.length - 1) * step);
+      implicit.forEach((item, rank) => fallbackReceivedAtMs.set(item.index, start + rank * step));
+    }
+  } else {
+    const lastDefaultReceivedAtMs = finiteWhole(options.expire?.nowMs, 0);
+    const defaultStartReceivedAtMs = Math.max(0, lastDefaultReceivedAtMs - Math.max(0, entries.length - 1) * step);
+    const start = finiteWhole(options.startReceivedAtMs, defaultStartReceivedAtMs);
+    prepared.forEach((item) => fallbackReceivedAtMs.set(item.index, start + item.index * step));
+  }
+
+  const frames = prepared.map(({ entryOptions, index, message, transcript }) => {
+    const receivedAtMs = entryOptions.receivedAtMs ?? fallbackReceivedAtMs.get(index);
+    const frameOptions = receivedAtMs === undefined ? entryOptions : { ...entryOptions, receivedAtMs };
+    return replayFrameFromMessage(transcript, message, frameOptions);
   });
   const first = entries[0];
   const base = {
