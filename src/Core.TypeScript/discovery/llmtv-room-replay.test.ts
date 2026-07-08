@@ -108,6 +108,44 @@ describe("LLMTV room replay adapter", () => {
     expect(html).not.toContain("<script");
   });
 
+  it("uses the injected expiry clock as the default snapshot receipt time", () => {
+    const artifact = roomTranscriptToReplayArtifact(transcript(1, [deniedHeat]), {
+      sourceZid: "room:darkhall",
+      seq: 1,
+      expire: { nowMs: 1000, ttlMs: 100 },
+    });
+
+    const folded = foldReplayArtifact(artifact);
+
+    expect(artifact.frames[0]?.receivedAtMs).toBe(1000);
+    expect(folded.stats).toEqual({ accepted: 1, rejected: 0, expired: 0 });
+    expect(folded.transcript.dwellers).toHaveLength(1);
+  });
+
+  it("defaults multi-snapshot receipt times to end at the expiry clock", () => {
+    const artifact = roomTranscriptsToReplayArtifact(
+      [
+        {
+          transcript: transcript(2, [deniedHeat, forgottenHeat]),
+          sourceZid: "room:darkhall",
+          seq: 2,
+        },
+        {
+          transcript: transcript(1, [deniedHeat]),
+          sourceZid: "room:darkhall",
+          seq: 1,
+        },
+      ],
+      { expire: { nowMs: 1000, ttlMs: 100 } },
+    );
+
+    const folded = foldReplayArtifact(artifact);
+
+    expect(artifact.frames.map((frame) => frame.receivedAtMs)).toEqual([999, 1000]);
+    expect(folded.stats).toEqual({ accepted: 2, rejected: 0, expired: 0 });
+    expect(folded.transcript.dwellers).toHaveLength(1);
+  });
+
   it("lets repeated room snapshots converge by the replay fold's LWW sequence rule", () => {
     const oldRoom = transcript(1, [deniedHeat]);
     const newRoom = transcript(2, [deniedHeat, forgottenHeat]);

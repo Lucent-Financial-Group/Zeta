@@ -110,7 +110,8 @@ export function roomTranscriptToReplayFrame(
   options: RoomTranscriptReplayOptions = {},
 ): ReplayWireFrame {
   const message = roomTranscriptToBroadcastMessage(transcript, options);
-  const fallbackReceivedAtMs = message.t === "frame" ? message.frameNo : transcript.ticks.length;
+  const fallbackFrameTime = message.t === "frame" ? message.frameNo : transcript.ticks.length;
+  const fallbackReceivedAtMs = finiteWhole(options.expire?.nowMs, fallbackFrameTime);
   return replayFrame(message, finiteWhole(options.receivedAtMs, fallbackReceivedAtMs), options.from);
 }
 
@@ -132,8 +133,10 @@ export function roomTranscriptsToReplayArtifact(
   entries: readonly RoomTranscriptReplayEntry[],
   options: RoomTranscriptsReplayOptions = {},
 ): ReplayArtifact {
-  const start = finiteWhole(options.startReceivedAtMs, 0);
   const step = finiteWhole(options.receivedAtStepMs, 1);
+  const lastDefaultReceivedAtMs = finiteWhole(options.expire?.nowMs, 0);
+  const defaultStartReceivedAtMs = Math.max(0, lastDefaultReceivedAtMs - Math.max(0, entries.length - 1) * step);
+  const start = finiteWhole(options.startReceivedAtMs, defaultStartReceivedAtMs);
   const frames = entries.map((entry, index) => {
     const { transcript, ...entryOptions } = entry;
     return roomTranscriptToReplayFrame(transcript, {
