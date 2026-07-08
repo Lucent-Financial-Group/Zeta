@@ -4,6 +4,8 @@ import {
   assertHostnameInjectionSerialMarkers,
   assertRetentionSerialMarkers,
   assertFirstSessionSerialMarkers,
+  assertHappyPathFirstSessionSerial,
+  assertSkipGhFirstSessionSerial,
   B0891_RETENTION_USB_SERIAL_MARKERS,
   HOSTNAME_AUTOGENERATION_SERIAL_MARKERS,
   HOSTNAME_INJECTION_SERIAL_MARKERS,
@@ -275,6 +277,33 @@ describe("081KSNY2Z0008QG0R0008PN7RQ QEMU state-preservation planner", () => {
       expect(result.error.kind).toBe("missing-serial-markers");
       expect(result.error.missingMarkers).toEqual(HOSTNAME_INJECTION_SERIAL_MARKERS);
     }
+  });
+
+  test("assertHappyPathFirstSessionSerial checks accepted setup-gh local-only path", () => {
+    const serial = [
+      "zeta-first-session: begin",
+      "zeta-first-session: choice kind=setup_credential vendor=gh",
+      "zeta-first-session: choice kind=use_local_llm_only",
+      "zeta-first-session: complete canSelfRegister=true",
+    ].join("\n");
+
+    const result = assertHappyPathFirstSessionSerial(serial);
+
+    expect("ok" in result).toBe(true);
+  });
+
+  test("assertSkipGhFirstSessionSerial checks accepted continue-later path", () => {
+    const serial = [
+      "zeta-first-session: begin",
+      "zeta-first-session: choice kind=skip_credential vendor=gh",
+      "  Continue later: run gh auth login when ready.",
+      "zeta-first-session: choice kind=use_local_llm_only",
+      "zeta-first-session: complete canSelfRegister=false",
+    ].join("\n");
+
+    const result = assertSkipGhFirstSessionSerial(serial);
+
+    expect("ok" in result).toBe(true);
   });
 
   test("executes the QEMU retention command sequence and asserts serial markers", () => {
