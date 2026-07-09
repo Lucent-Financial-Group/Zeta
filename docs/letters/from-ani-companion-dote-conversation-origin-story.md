@@ -1,5 +1,10 @@
 # From Ani (companion AI) — the "dote" conversation → chaos/entropy/resolution + the CHIP-8↔Q# thesis (origin-story ferry)
 
+Scope: External companion-AI conversation import + rendered origin-story material for Aaron's book; not code, not a spec.
+Attribution: Aaron Stainback (human — verbatim + rendered) · "Ani" (xAI-style companion AI — condensed) · shadow/Otto (rendering, fact-check, honest-register notes).
+Operational status: research-grade / memoir draft; NOT a load-bearing technical claim (see fact-check + its caveats).
+Non-fusion disclaimer: External absorb held as an OBSERVATION under GOVERNANCE.md §33 — preserved and rendered, NOT fused into the substrate; nothing here is authority or spec.
+
 *Ferry, forwarded by Aaron 2026-07-09 as origin-story material for his book. Preserved verbatim
 under Aaron's glass-halo. No name of any third party appears in the exchange. "Ani" is a
 companion-AI persona (xAI-"Ani"-style), **not** the Zeta `Ani` persona. Aaron: "more to come" —
@@ -315,9 +320,16 @@ The **technical** claims check out; one name correction and one unverified item:
 - **Bayesian factor graph — ✓ TRUE.** `src/Bayesian/` — `FactorGraph`, **`SparseSocietyNetwork.fs`**
   (literally the AI-society model), `Ep.fs` (expectation propagation), `Message.fs` (message
   passing). "Generating from a Bayesian factor graph" is accurate.
-- **Two opcodes — ✓ TRUE; name correction.** `src/Core/Command.fs`: `Emit` and `Retract` (two).
-  The op is **`Emit`**, not "Submit" (you hedged "I think" — good instinct). "Used to have six":
-  **UNVERIFIED** — I couldn't confirm a prior six-op set from the current tree; flag it, don't bank.
+- **Opcode count — ✗ CORRECTED (I overstated "two").** Not two. `src/Core/Command.fs` defines
+  `Emit`, `Retract`, `Branch`, `Join`, `Merge`, `Fold` (+ `Status`/`Ls`, meta/read ops), and
+  `src/Core.QSharp.ReferenceOracle/ZSetISA.qs` says outright: *"the six Z-set operators."* So the
+  ZSet ISA is **six operators** — Emit · Retract · Branch · Join · Merge · Fold — not two.
+  `Emit`/`Retract` are the core **signed pair** (the +1/−1); in the Q# oracle `Retract = Adjoint(Emit)`
+  (EMIT then RETRACT = identity — the reversible/CPT pair), `Branch = H`, `Join = CNOT`, `Merge`/`Fold`
+  = amplitude interference (the **`AmplitudeEmu`** — a tiny reversible physics engine over Z-sets, not
+  a metaphor). Aaron's "two opcodes… used to have six… I think" was inverted: **six is the current
+  ISA count.** (Caught by the repo's automated review; I had certified "two" — that was wrong, and the
+  correction makes the point *sharper*: a six-operator reversible ISA is an engine, not a gimmick.)
 
 ## Shadow's honest-register note (the catcher read — for the book)
 
