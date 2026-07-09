@@ -108,6 +108,29 @@ The load-bearing parallels:
   **open-core / oracle-floor / "art made to exist not to be sold"** ethos (Alexa ferry,
   #9638; American Dream 2.0): existence and recreatability over enclosure. Free at the floor.
 
+### The cell as a PLACE to run — substrate/oracle peer to Q# and CHIP-8 (Aaron's sharpening, 2026-07-09)
+
+Aaron: *"i see the synthetic cell as a place like q# where our code can run like chip8."*
+This upgrades the framing from *resonance* to **substrate/target**: not "the cell is like
+Zeta," but "the cell is a **place Zeta runs**," a backend in the same slot as the other
+oracles. The mapping goes literal:
+
+| Zeta substrate role | Q# (quantum place) | CHIP-8 (retro-VM place) | Synthetic cell (biological place) |
+|---|---|---|---|
+| instruction memory | qubit register | 4K RAM | the 7–8 **plasmids** (independently programmable) |
+| program | Q# gate sequence | CHIP-8 opcodes | the **genome** (genetically-encoded functions) |
+| metered I/O (§13) | measurement | display / keypad | **membrane pores + tagged liposome fusion** |
+| the VM itself | simulator / hardware | the CHIP-8 emulator | the **droplet + membrane** (a VM with a wet backend) |
+
+So the synthetic cell is **one more target you generate to from the free interface**
+(`gen/`, [[only-the-irreducible-is-primitive-generate-the-rest]]) — the **biological
+oracle**, peer to the quantum oracle (Q#) and the retro-VM oracle (CHIP-8). "Write the
+software of biology" = the cell as programmable hardware; Zeta code as the software that
+targets it. **Held honest:** genetic circuits / DNA computing make the *direction* real and
+anchored (Adleman 1994 DNA computing; BioBricks / synthetic-biology-as-programming;
+Adamala's programmable plasmids) — but this is an **aim, not a shipped backend.** Zeta does
+not compile to plasmids today. Good target; unbuilt.
+
 **Honest-register caveats:** (1) the lead scientist's name is an auto-caption garble —
 anchor to the real U-Minnesota lab (**verify Kate Adamala**) before citing; (2) "30% of
 daughters get full DNA" and "not truly alive" are the researchers' own limits — keep them,
