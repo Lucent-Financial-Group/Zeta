@@ -17,10 +17,15 @@
 //   bun src/Core.TypeScript/model-backend/github-login-cli.ts token
 //       Prints the stored access token (for scripts / curl -H).
 //   bun src/Core.TypeScript/model-backend/github-login-cli.ts askpass <prompt>
-//       GIT_ASKPASS mode: answers "Username" prompts with x-access-token and
-//       anything else with the stored token. Wire it with:
-//         GIT_ASKPASS="bun .../github-login-cli.ts askpass" git push …
-//       (git invokes $GIT_ASKPASS twice, passing the prompt as argv)
+//       Explicit GIT_ASKPASS mode (answers Username prompts with
+//       x-access-token, anything else with the stored token).
+//
+//   GIT_ASKPASS wiring (reviewer catch, #9615 P1): git does NOT run the
+//   value through a shell — it execs the program directly with the prompt
+//   as the sole argument (gitcredentials(7)). So point GIT_ASKPASS at THIS
+//   script (the shebang execs bun) and main() recognizes a bare
+//   credential-prompt argv as an implicit askpass call:
+//     GIT_ASKPASS=src/Core.TypeScript/model-backend/github-login-cli.ts git push …
 //
 // Exit codes: 0 ok · 1 flow/storage failure · 2 usage error.
 
@@ -48,6 +53,14 @@ export function askpassAnswer(prompt: string, accessToken: string): string {
   return /username/i.test(prompt) ? "x-access-token" : accessToken;
 }
 
+/// Does this argv look like git's direct GIT_ASKPASS exec (one credential
+/// prompt, no subcommand)? git passes exactly one argument — the prompt.
+export function looksLikeAskpassExec(argv: readonly string[]): boolean {
+  if (argv.length === 0) return false;
+  const joined = argv.join(" ");
+  return /\b(username|password)\b/i.test(joined) && !["login", "token", "askpass"].includes(argv[0] ?? "");
+}
+
 export type CliIo = {
   readonly out: (line: string) => void;
   readonly err: (line: string) => void;
@@ -56,17 +69,26 @@ export type CliIo = {
 /// `login` — run the device flow to completion against injected deps. The one
 /// human step (approve the code) is surfaced through `out`.
 export async function runLogin(store: TokenStore, io: CliIo, deps?: Partial<LoginDeps>): Promise<number> {
-  const outcome = await deviceLogin(githubDeviceProvider, {
-    transport: deps?.transport ?? fetchTransport(),
-    store,
-    onCode: (uri, code) => {
-      io.out(`Open ${uri} and enter code: ${code}`);
-      io.out("Waiting for approval…");
-    },
-    sleep: deps?.sleep ?? ((ms) => new Promise((r) => setTimeout(r, ms))),
-    now: deps?.now ?? (() => new Date().toISOString()),
-    ...(deps?.maxPolls !== undefined ? { maxPolls: deps.maxPolls } : {}),
-  });
+  let outcome;
+  try {
+    outcome = await deviceLogin(githubDeviceProvider, {
+      transport: deps?.transport ?? fetchTransport(),
+      store,
+      onCode: (uri, code) => {
+        io.out(`Open ${uri} and enter code: ${code}`);
+        io.out("Waiting for approval…");
+      },
+      sleep: deps?.sleep ?? ((ms) => new Promise((r) => setTimeout(r, ms))),
+      now: deps?.now ?? (() => new Date().toISOString()),
+      ...(deps?.maxPolls !== undefined ? { maxPolls: deps.maxPolls } : {}),
+    });
+  } catch (e) {
+    // storage/transport rejection (read-only ~/.config, full disk, …) becomes
+    // the same clean verdict as a flow failure — never an unhandled rejection
+    // (reviewer catch, #9615 P2).
+    io.err(`github login failed: ${e instanceof Error ? e.message : String(e)}`);
+    return 1;
+  }
   if (!outcome.ok) {
     io.err(`github login failed: ${outcome.error}`);
     return 1;
@@ -87,6 +109,10 @@ export async function runFromStore(mode: "token" | "askpass", prompt: string, st
 }
 
 export async function main(argv: readonly string[], store: TokenStore, io: CliIo): Promise<number> {
+  // git's direct GIT_ASKPASS exec: argv is just the prompt (no subcommand).
+  if (looksLikeAskpassExec(argv)) {
+    return runFromStore("askpass", argv.join(" "), store, io);
+  }
   const [cmd = "", ...rest] = argv;
   switch (cmd) {
     case "login":
@@ -108,5 +134,10 @@ if (invokedDirectly) {
   mkdirSync(dir, { recursive: true, mode: 0o700 });
   const store = fileTokenStore(dir, nodeStoreFs());
   const io: CliIo = { out: (l) => console.log(l), err: (l) => console.error(l) };
-  main(process.argv.slice(2), store, io).then((code) => process.exit(code));
+  main(process.argv.slice(2), store, io)
+    .then((code) => process.exit(code))
+    .catch((e: unknown) => {
+      console.error(`github-login-cli failed: ${e instanceof Error ? e.message : String(e)}`);
+      process.exit(1);
+    });
 }

@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import type { HttpTransport } from "./backend.ts";
 import { memoryTokenStore } from "./token-store.ts";
-import { askpassAnswer, main, runLogin, type CliIo } from "./github-login-cli.ts";
+import { askpassAnswer, looksLikeAskpassExec, main, runLogin, type CliIo } from "./github-login-cli.ts";
 
 // The first consumer of the GitHub AuthProvider — fake transport + memory
 // store, no network, no fs, no git. Proofs:
@@ -60,6 +60,41 @@ describe("login", () => {
     expect(out.some((l) => l.includes("AAAA-1111"))).toBe(true);
     const stored = await store.load("github");
     expect(stored?.tokens.accessToken).toBe("gho_T");
+  });
+});
+
+describe("GIT_ASKPASS direct exec (git passes only the prompt)", () => {
+  test("bare credential-prompt argv routes to askpass; subcommands do not", () => {
+    expect(looksLikeAskpassExec(["Username for 'https://github.com': "])).toBe(true);
+    expect(looksLikeAskpassExec(["Password for 'https://x-access-token@github.com': "])).toBe(true);
+    expect(looksLikeAskpassExec(["login"])).toBe(false);
+    expect(looksLikeAskpassExec([])).toBe(false);
+  });
+
+  test("main answers a bare Username prompt without a subcommand", async () => {
+    const store = memoryTokenStore();
+    await store.save({ provider: "github", tokens: { accessToken: "gho_T", refreshToken: "" }, lastRefresh: "t" });
+    const { io, out } = collectIo();
+    expect(await main(["Username for 'https://github.com': "], store, io)).toBe(0);
+    expect(out).toEqual(["x-access-token"]);
+  });
+});
+
+describe("storage failure becomes a clean verdict (no unhandled rejection)", () => {
+  test("store.save rejection -> exit 1 with the failure message", async () => {
+    const failingStore = {
+      load: () => Promise.resolve(null),
+      save: () => Promise.reject(new Error("EROFS: read-only file system")),
+    };
+    const { io, err } = collectIo();
+    const code = await runLogin(failingStore, io, {
+      transport: sequencedTransport(),
+      sleep: () => Promise.resolve(),
+      now: () => "t",
+      maxPolls: 5,
+    });
+    expect(code).toBe(1);
+    expect(err[0]).toContain("EROFS");
   });
 });
 
