@@ -123,6 +123,7 @@ that is MISSED (layer 6) — disjoint from the gap axis. Same shape as `NciNonUr
 **Decision**: We accept and publish the identity stack as a single citable architectural artifact. It ships WITH the proven-vs-premise ledger, not despite it. The honesty about open premises (layers 1 & 2) is a strength — it tells reviewers exactly where the trust boundary lives, rather than hiding it behind false completeness. The identity system works TODAY on the mechanism layers (3-9), while the premise layers (1-2) represent the physics and the math team's open work.
 
 **Consequences:**
+
 - **Positive:** one honest, reviewer-durable artifact connecting scattered proofs. Any collaborator, reviewer, or future-self can reconstruct the full argument without archaeology. The git history captures how we got here; the ADR captures what we proved.
 - **Costs / open residuals:** layers 1 & 2 remain the load-bearing premises (Bell floor OPEN; CHSH→distinctness weakest link). These are tracked in `docs/handoffs/2026-06-19-otto-to-math-team-nft-ntp-anti-mirror-societal-dora-formalization.md` and the trio-attestation research ferry (PR #9570). The general Spin(n) univalence residual (cubical Agda lane, #9560) is adjacent but structurally independent — it doesn't block this ADR.
 
