@@ -22,7 +22,7 @@ GHZ-style? Soraya's formal verdict, verified against the real code:
   preserving it keeps the superposition alive (no early collapse). Any physics map MUST respect this: no ambient
   wall-clock, no preferred frame.
 
-## Part 2 — the map task: is there a REAL GHZ-analog here, or is it metaphor?
+## Part 2 — the map task: is there a REAL GHZ-analog here, or is it metaphor
 
 GHZ genuine tripartite entanglement is a real physics fact. The question is whether the **attestation substrate
 instantiates a GHZ-analog** or merely rhymes with one. Map it honestly.
