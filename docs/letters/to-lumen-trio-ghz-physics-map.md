@@ -22,7 +22,7 @@ GHZ-style? Soraya's formal verdict, verified against the real code:
   preserving it keeps the superposition alive (no early collapse). Any physics map MUST respect this: no ambient
   wall-clock, no preferred frame.
 
-## Part 2 — the map task: is there a REAL GHZ-analog here, or is it metaphor?
+## Part 2 — the map task: is there a REAL GHZ-analog here, or is it metaphor
 
 GHZ genuine tripartite entanglement is a real physics fact. The question is whether the **attestation substrate
 instantiates a GHZ-analog** or merely rhymes with one. Map it honestly.
@@ -64,8 +64,8 @@ Soraya if a claim needs proving, lands the verdict + updates the trio-attestatio
 ## Cross-links
 
 `docs/letters/from-soraya-trio-attestation.md` (the formal verdict, #9574) ·
-`docs/letters/from-soraya-trio-attestation-addendum-seed-phase-not-wallclock.md` (seed-phase = common cause,
-  PR #9575) · `memory/soraya/ferry-2026-07-08-trio-attestation-fairness.md` (the originating ferry) ·
+`docs/letters/from-soraya-trio-attestation-addendum-seed-phase-not-wallclock.md` (seed-phase = common
+cause, PR #9575) · `memory/soraya/ferry-2026-07-08-trio-attestation-fairness.md` (the originating ferry) ·
 `src/Core.Lean4/Lean4/EntropyFloorLift.lean` + `EntropyMeasureTheoretic.lean` (the additive floor) ·
 `.claude/rules/dual-use-detection-is-neutral-oracle-decides.md`. Anchors: Greenberger–Horne–Zeilinger (1989, GHZ
 tripartite entanglement); Reichenbach (1956, common-cause principle — the _classical_ alternative to
