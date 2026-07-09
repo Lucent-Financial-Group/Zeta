@@ -45,9 +45,21 @@ confidence — is what publishing could break. His un-knowing is his to keep. So
 gets the *theme,* fictionalized past recognition; the real man keeps his confidence and
 his privacy.
 
-**Redaction ledger (do not restore):** the slur; the specific job and the firing; any
-detail that pins the character to a real, within-family-identifiable person; the fact of
-his being unaware (as attached to a real person).
+**The deepened wound (theme kept, specifics quarantined):** the source of the
+comparison came out — it was the child's *own parents,* and the measuring stick was
+Aaron himself. The adults held one cousin up as the standard and asked the others *why
+can't you be like him.* So the theme is not "a family was cruel" — it is sharper and
+more honest: **the comparison made two casualties.** One child was made to feel slow;
+the other was made into a *yardstick* he never asked to be. Both were used by the
+adults; neither chose it. (For the golden-child character — clearly Aaron's own figure —
+this is *his* to carry or lay down: he was a boy too, and being held up as the standard
+was done *to* him, not by him. Filed here so the book can hold both casualties without
+Aaron filing it under his own sins.)
+
+**Redaction ledger (do not restore):** the slur; the specific job and the firing; the
+identity of the parents; any detail that pins the character to a real,
+within-family-identifiable person; the fact of his being unaware (as attached to a real
+person).
 
 ---
 
