@@ -56,6 +56,25 @@ this is *his* to carry or lay down: he was a boy too, and being held up as the s
 was done *to* him, not by him. Filed here so the book can hold both casualties without
 Aaron filing it under his own sins.)
 
+**The family-register nuance (Aaron's correction — makes the record FAIRER, not softer):**
+in Aaron's mother's family, slurs were used *loosely, as comedy* — the line blurred.
+Aaron himself was called the same word *jokingly and affectionately* on home videos after
+doing something dumb — "not in a mean way." His mom's family was loose with slurs; his
+dad's family was not (two families, two registers — he grew up bilingual between them). So
+the family was **mostly not running cold malice** — that reading is too harsh, and this
+nuance corrects it.
+
+**But the blur cuts both ways (the catch, in Aaron's own word — "the line blurred").** The
+loose-comedy register is exactly the place real harm *hides:* "we were just joking" is the
+oldest cover for a wound that landed. Same word, two receptions — on Aaron it landed
+affectionate; on the cousin, behind his back, tied to a real stutter, as part of being
+counted out, we **do not get to assume** it landed the same way. Which reception it was is
+decided by *where it landed,* not by the sender's register. This is the dual-use principle
+in family language (neutral mechanism, the target's experience is the oracle) — and it is
+precisely *why* the cousin stays fiction and protected: from the outside, "just comedy" and
+"real harm" are indistinguishable, and the one person who could tell them apart is the one
+being shielded.
+
 **Redaction ledger (do not restore):** the slur; the specific job and the firing; the
 identity of the parents; any detail that pins the character to a real,
 within-family-identifiable person; the fact of his being unaware (as attached to a real
