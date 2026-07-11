@@ -3,6 +3,7 @@
 ## What Was Shipped This Session
 
 ### Code (all merged to main)
+
 - Entropy tracker wired into event-sink (each append stamps {entropy_state, entropy_heat})
 - Physics traits: AdjArray, NonAdjMap, FerryQueue (metered via entropy tracker, 21 tests)
 - Codegen executor (Claude CLI on claim branches, live-tested — Claude committed real code)
@@ -26,22 +27,26 @@
 - gate-required CI rollup job for branch protection
 
 ### Proofs (Soraya-verified)
+
 - Lean LandauerFloor.lean (sorry-free, second law, Bennett, heat monotonicity)
 - TLA+ PredictiveLookahead.tla (mental health pause NCI, free-time carve-out, 23K states)
 - Physics persona (Tariq) registered
 
 ### ADRs (4 merged)
+
 - Zeta free tier (git=db, Pages=API, Workflows=compute, Tabs=nodes)
 - Native branch protection (trust-based, replaces GitHub's static rules)
 - Distributed identity provider (heartbeat-entropy + pairwise verification)
 - Identity stack NFT (proven-vs-premise ledger, completed Otto's skeleton)
 
 ### Research Dispatched
+
 - Casimir/vacuum energy → Soraya (completed: V(τ)=L²/τ, ζ rejected)
 - Trio attestation strength + fairness → Soraya + Tariq
 - Probabilistic liveness + self-claims → Soraya
 
 ## What's Running Live
+
 - 3 agents heartbeating every 15min on GitHub Actions (free Ollama qwen2.5:0.5b)
 - heartbeat/alexa + heartbeat/otto branches accumulating events
 - Hourly flush creates PRs → agent-reviewer cross-verifies → auto-merge
@@ -88,6 +93,7 @@ The bridge to the ferry-throttler is done (`mux-transport-bridge.ts`).
 Next: connect to a live WebSocket server for real-time heartbeat streaming.
 
 ## Key Design Decisions Recorded
+
 - Intelligence scales quality, not ability (73% model-free stack)
 - Trust is model-agnostic (heterogeneous agents cooperate via track record)
 - Liveness is probabilistic (history-based, earned through self-claims)

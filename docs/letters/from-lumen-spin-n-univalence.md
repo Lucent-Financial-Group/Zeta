@@ -30,6 +30,7 @@ The physics map is the assertion that **the continuous rotor path $R(t)$ in $Spi
 ## 2. The Generalization from the Concrete Proof
 
 In `Univalence.agda`, we proved:
+
 1. `rotorTransport`: transporting along $ua(rotor)$ computes the exact action of the rotor.
 2. `rotorIsThePath`: `pathToEquiv (ua rotor) ≡ rotor`.
 3. `pathIsADeformation`: `ua (pathToEquiv p) ≡ p`.
