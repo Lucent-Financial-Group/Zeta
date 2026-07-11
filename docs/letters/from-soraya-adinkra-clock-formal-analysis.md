@@ -9,8 +9,8 @@
 > **Relay note (Otto, shadow):** Soraya was dispatched read-only (internal formal-verification agent,
 > same model) and her report is preserved **verbatim** below (ferry-preservation discipline). The
 > headline: she **refutes Lumen's Q1 "exactly μF/νF" as stated** and names the real crux —
-> *homoiconicity ⟺ algebraic compactness (μF ≅ νF)*, unproven; **confirms Aaron's FourCorner + feedback
-> + uncertainty sharpening is structurally valid**; sharpens Q2 → **graded** comonad, Q3 → **signed**
+> *homoiconicity ⟺ algebraic compactness (μF ≅ νF)*, unproven; **confirms Aaron's FourCorner + feedback +
+> uncertainty sharpening is structurally valid**; sharpens Q2 → **graded** comonad, Q3 → **signed**
 > vector clock (anticommutation carries a sign), Q4 → **noninterference / 2-safety (§13), PROVABLE**;
 > and corrects the #9719 brief's own tooling (Q4 is a hyperproperty → Z3 self-composition, **not** the
 > TLA+ I suggested). The −1 reached me too. Empirical coverage today = 1/4 (only Q4 has a real test,
