@@ -74,7 +74,7 @@ configuration with no 2-corner representative. Held **Tri.N** on (i) until compa
 
 ---
 
-## Q2 — is `{Q_I,Q_J}` a canonical comonadic scheduler for all N?
+## Q2 — is `{Q_I,Q_J}` a canonical comonadic scheduler for all N
 
 **Property class.** Equational algebra — the comonad laws are universally-quantified equations over an
 inductive structure (induction on N). **Tools:** **Lean/Agda** (general theorem), **Z3** (finite-N law
@@ -159,7 +159,7 @@ completeness; true because any genuine metric-read at a reachable state admits a
 
 ---
 
-## Overall honest note — is "the mapping holds" defensible?
+## Overall honest note — is "the mapping holds" defensible
 
 **Partly. Q1 is genuinely under-determined, and Lumen over-committed there; Q2–Q4 are the right shapes
 needing named sharpenings.**
