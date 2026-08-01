@@ -120,7 +120,6 @@ const AGENT_NAMES: Record<string, string> = { alexa: "Alexa", otto: "Otto", sora
 
 const THIRTY_MIN_MS = 30 * 60 * 1000;
 const TWO_HOURS_MS = 2 * 60 * 60 * 1000;
-const EIGHT_HOURS_MS = 8 * 60 * 60 * 1000;
 const ONE_DAY_MS = 24 * 60 * 60 * 1000;
 const SEVEN_DAYS_MS = 7 * ONE_DAY_MS;
 const TWO_DAYS_MS = 2 * ONE_DAY_MS;
@@ -290,7 +289,7 @@ function computeStatus(frameAgeMs: number, events: readonly ObserveEvent[], nowM
 
 function computeReputation(
   agent: string,
-  allEvents: readonly ObserveEvent[],
+  _allEvents: readonly ObserveEvent[],
   nowMs: number,
   eventsByAgent: Map<string, ObserveEvent[]>,
 ): { value: number; epsilon: number; silent: boolean; history: number[] } {
@@ -376,9 +375,9 @@ function buildObservatoryVault(
     confidence,
     rooms: [
       buildRoom("signal-triage", events, agentLatest, hatAssignments, reputations, nowMs,
-        (e) => true, "cadence measurement"),
+        () => true, "cadence measurement"),
       buildRoom("demand-forecast", events, agentLatest, hatAssignments, reputations, nowMs,
-        (e) => true, "reliability forecasting"),
+        () => true, "reliability forecasting"),
     ],
   };
 }
@@ -494,7 +493,7 @@ function buildRoom(
   reputations: Map<string, { value: number; epsilon: number; silent: boolean; history: number[] }>,
   nowMs: number,
   eventFilter: (e: ObserveEvent) => boolean,
-  domain: string,
+  _domain: string,
   driftLedger?: DriftLedger | null,
 ): RoomSnapshot {
   const roomEvents = events.filter(eventFilter);
