@@ -51,6 +51,7 @@ A TypeScript adapter reads the live heartbeat event log and tick-history, then p
 **Data flow:** Heartbeat events (G-set) → tick-metrics-writer → vault-state-bridge (pure projection) → `data/vault-state.json` → Settlement page (same-origin fetch, React render).
 
 **Key decisions:**
+
 1. One JSON file carries the entire projection (matches tick-history.json / drift-mtth.json pattern)
 2. Deterministic adapter — identical inputs produce byte-identical output
 3. No new CI workflow — runs as a step in the existing heartbeat job
