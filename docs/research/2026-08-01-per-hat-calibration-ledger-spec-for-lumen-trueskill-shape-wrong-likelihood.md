@@ -104,6 +104,7 @@ a factor graph over Gaussians with expectation propagation, implemented in **Inf
 which is the lineage `MinimalBnn.fs` / `FactorGraph.fs` already claim.
 
 **KEEP the shape:**
+
 - Bayesian, factor-graph, EP message passing — machinery largely present
 - **explicit σ, not a point estimate.** An agent with 3 settled predictions must not rank like one
   with 300. *"We don't know yet"* is structurally different from *"we know they're average."*
