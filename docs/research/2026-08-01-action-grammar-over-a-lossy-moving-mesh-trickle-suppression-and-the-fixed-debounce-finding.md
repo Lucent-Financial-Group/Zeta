@@ -240,15 +240,58 @@ The opposite drift matters too: as L **grows**, a window shorter than the true r
 suppressing genuine self-emission, and ρ climbs back toward 1 — correlation-to-one returns without
 any signal that it has.
 
-**Confidence: moderate.** The fixed-parameter reading is from the config surface; the full call path
-has not been traced, and there may be an adaptive layer above it. **This is a finding to verify, not
-a confirmed defect.** The check is cheap: does any caller recompute `MinDelay` from a measured
-round-trip, or is it set once at construction?
+### 4.1 CONFIRMED (verified 2026-08-01) — and it is sharper than stated above
 
-If confirmed, the shape of the fix is standard and already in the anchor set: track the round-trip
-the way RPL tracks ETX — measured continuously per-link — and derive the window from the current
-estimate rather than a constant. The bat does this natively; its window is its own physiology
-tracking the returning echo, not a constant chosen in advance.
+The check named here — *does any caller recompute `MinDelay` from a measurement?* — was run. Results:
+
+1. **`MinDelay` is never recomputed anywhere.** A repo-wide search for `MinDelay` /
+   `dlaOracleConfigs` / `minDelayForRho` outside `DebouncedOracle.fs` itself returns **nothing** —
+   no caller, no test, no adaptive layer. It is a constant chosen at construction.
+2. **There is no behavioural test of the discrimination claim.** The only test file referencing
+   `DebouncedOracle` is `tests/Tests.FSharp/DeterminismLint.Tests.fs`, and its reference is an
+   *allowlist row* permitting the live-mode `DateTime.UtcNow` edge. It asserts nothing about accept
+   / suppress behaviour.
+
+**And the mechanism is measuring a different quantity than the docstring claims.** The accept test is:
+
+```fsharp
+let elapsed = now - lastAccepted
+if elapsed >= config.MinDelay then  ... accept ...  // else suppress
+```
+
+`elapsed` is the **inter-arrival time since the last accepted reading**. The docstring's L is the
+**round-trip time to the object**. These are not the same quantity, and nothing in the code relates
+them. So:
+
+- Two genuine readings from *different* nearby sources, arriving close together, are suppressed as
+  "self-emission" — they never were.
+- A true self-echo arriving *after* a slow emission cadence is accepted as genuine.
+
+What the code implements is a **rate limiter**. What the docstring claims is **self/other
+discrimination via physical round-trip**. The rate limiter is a reasonable component; it is not that
+claim.
+
+> **This makes ρ = 1/(1+L) unfalsifiable as currently wired.** L is a configured constant, so ρ is
+> arithmetic on a number chosen in advance, not a measurement of anything. "We achieve ρ = 0.5"
+> restates the config. That is the same shape as the six §A discharges demoted on 2026-08-01 — a
+> quantity asserted rather than measured — and it is why this belongs in the register's §B, not in
+> anything that reads as established.
+
+**Precedent in this exact file.** `DeterminismLint.Tests.fs:48` records that `DebouncedOracle`'s DST
+branch *"read ambient `UtcNow` despite the docstring"* and was fixed on 2026-07-31. That is the same
+defect class — code not doing what its own documentation says — found in the same file a day earlier.
+Two instances is a pattern worth naming: this file's docstrings have been running ahead of its code.
+
+### 4.2 Shape of the fix (not a proposal — the standard answer)
+
+Track the round-trip the way RPL tracks **ETX**: measured continuously per-link, with the window
+derived from the current estimate rather than a constant. A bat does this natively — its window is
+physiology tracking the returning echo, not a number chosen in advance.
+
+Minimum honest interim step, if the adaptive version is not built now: **narrow the docstring to what
+the code does** (inter-arrival rate control), and stop describing it as self/other discrimination or
+as a measurement of ρ. A component that rate-limits is useful and should be kept; the claim attached
+to it is what fails.
 
 ---
 
