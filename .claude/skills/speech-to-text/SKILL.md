@@ -1,6 +1,6 @@
 ---
 name: speech-to-text
-description: Transcribe audio or video to text locally and free — ferrying talks, podcasts, meetings, voice notes. Picks the right open ASR model for the content and reports what it could not hear.
+description: Transcribe audio or video to text locally and free — talks, podcasts, meetings, voice notes. Picks the open ASR model by content type.
 ---
 
 # speech-to-text
@@ -113,6 +113,13 @@ model, which pages, transcript vs slides) so nobody mistakes a paraphrase for a 
   IAsyncEnumerable<ReadOnlyMemory<byte>> -> IAsyncEnumerable<SpeechRecognitionResult>` is
   a Kleisli arrow, so recognizer and `IAudioConverter` compose by plain function
   composition. It is **one-directional** — no back-channel, so nothing can interrupt
-  mid-stream. The duplex half is `src/Core/DebouncedOracle.fs` (echolocation: emit a
-  pulse, listen for the return, enforce `L > 0`) plus the four-corner closure in
-  `src/Core/ReceiptScheduler.fs`.
+  mid-stream, which is why barge-in is the hard part.
+- **The duplex half is already built here**, and ASR is simply not wired into it yet:
+  `src/Core.TypeScript/model-backend/four-corner.ts` (the shape — chat-completions is the
+  projection where both feedback sinks are no-ops), `duplex-transport.ts`
+  (`fourCornerOverDuplex`), and `multiplexed-duplex-transport.ts` (N channels over one
+  socket, ZetaId-keyed, per-channel interrupt). Wiring speech in means giving the
+  recognizer a `feedback-in` corner (VAD: "the user started talking" → interrupt the
+  running generation) and a `feedback-out` corner (backpressure when the model outruns
+  TTS). `src/Core/DebouncedOracle.fs` is the echolocation debounce with enforced `L > 0`
+  — the guard that stops a loud speaker from blocking a quiet one.
