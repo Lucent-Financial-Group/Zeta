@@ -52,6 +52,7 @@ A TypeScript adapter reads the live heartbeat event log and tick-history, then p
 **Data flow:** Heartbeat events (G-set) → tick-metrics-writer → vault-state-bridge (pure projection) → `data/vault-state.json` → Settlement page (same-origin fetch, React render).
 
 **Key decisions:**
+
 1. Two files: roster (hub, rarely changes) + state (satellite, every tick) — page draws dwellers even when state fetch fails
 2. Deterministic adapter — identical inputs produce byte-identical output
 3. No new CI workflow — runs as a step in the existing heartbeat job
