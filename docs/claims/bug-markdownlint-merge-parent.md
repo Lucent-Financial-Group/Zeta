@@ -4,8 +4,8 @@
 - **Harness:** codex
 - **Claimed at:** 2026-08-01T19:19:27Z
 - **ETA:** 2026-08-01T21:00:00Z
-- **Scope:** Ensure the PR markdownlint job fetches the synthetic merge commit's first parent.
-- **Durable target:** .github/workflows/gate.yml
+- **Scope:** Ensure the PR markdownlint job fetches its merge parent and repair the inherited markdown drift it exposed.
+- **Durable target:** .github/workflows/gate.yml; docs/PRIOR-ART-LIST.md
 - **Platform mirror:** none
 
 ## Notes
