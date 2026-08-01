@@ -133,33 +133,50 @@ jobs:
         env:
           AGENT: ${{ matrix.agent }}
         run: |
-          # Find the last two heartbeat events to compute the gap
-          EVENTS=$(ls -t docs/observe-events/*.json 2>/dev/null | head -2)
-          if [ "$(echo "$EVENTS" | wc -l)" -lt 2 ]; then
-            echo "[cadence] Not enough events to measure gap yet"
-            exit 0
-          fi
-          LATEST=$(echo "$EVENTS" | head -1)
-          PREVIOUS=$(echo "$EVENTS" | tail -1)
-          # Extract timestamps
-          T1=$(python3 -c "import json; print(json.load(open('$LATEST'))['at'])" 2>/dev/null || echo "")
-          T0=$(python3 -c "import json; print(json.load(open('$PREVIOUS'))['at'])" 2>/dev/null || echo "")
-          if [ -z "$T1" ] || [ -z "$T0" ]; then
-            echo "[cadence] Could not parse timestamps"
-            exit 0
-          fi
-          # Compute gap in seconds
-          GAP=$(python3 -c "
+          # WHY THIS IS ALL IN PYTHON AND FILTERED BY AGENT.
+          #
+          # Three agents tick together, so "the last two events" GLOBALLY are two different
+          # agents inside the SAME tick. Measuring that gap reports the spacing between peers,
+          # not the cadence: on real data it read 29s / "3004% of target" while the society was
+          # actually running at 14% of target. A measurement that confidently reports the
+          # opposite of the truth is worse than none — it manufactures false confidence.
+          # Consecutive events FOR ONE AGENT are consecutive TICKS. That is the cadence.
+          #
+          # Python, not shell: `ls -t` trips SC2012 (actionlint escalates it to a gate failure —
+          # it turned main red in #9898), and `find -printf` is GNU-only so it would work on the
+          # runner while being unverifiable on a Mac — the same environment-mismatch trap that
+          # made #9890 ship broken. Reading the JSON directly avoids both and is testable
+          # anywhere. Event files are ZetaId-named and ZetaIds are time-ordered, so name order
+          # is chronological — verified against all 947 committed events, not assumed.
+          #
+          # Output goes to STDOUT, never captured into a variable: #9898 assigned the result to
+          # $GAP and never referenced it, so the measurement AND its ::warning:: were computed
+          # correctly and discarded. An annotation only becomes an annotation on the step's
+          # stdout. The measurement added to catch silent degradation was itself silent.
+          python3 -c "
+          import json, glob, os, sys
+          agent = os.environ.get('AGENT', '')
+          rows = []
+          for f in sorted(glob.glob('docs/observe-events/*.json')):
+              try:
+                  d = json.load(open(f))
+              except Exception:
+                  continue
+              if d.get('by') == agent and d.get('at'):
+                  rows.append(d['at'])
+          if len(rows) < 2:
+              print(f'[cadence] {agent}: fewer than 2 events — cannot measure yet')
+              sys.exit(0)
           from datetime import datetime
-          t1 = datetime.fromisoformat('$T1'.replace('Z','+00:00'))
-          t0 = datetime.fromisoformat('$T0'.replace('Z','+00:00'))
+          t1 = datetime.fromisoformat(rows[-1].replace('Z', '+00:00'))
+          t0 = datetime.fromisoformat(rows[-2].replace('Z', '+00:00'))
           gap = (t1 - t0).total_seconds()
-          declared = 900  # 15 min
+          declared = 900
           ratio = declared / gap if gap > 0 else 0
-          print(f'gap={int(gap)}s ({int(gap/60)}min) declared=900s ratio={ratio:.1%}')
-          if gap > 1800:  # more than 2x declared
-            print(f'::warning::[cadence] {int(gap/60)}min gap exceeds 2x declared (30min). Running at {ratio:.0%} of target.')
-          " 2>/dev/null || echo "[cadence] measurement failed (non-fatal)")
+          print(f'[cadence] {agent}: gap={int(gap)}s ({gap/60:.1f}min) declared=900s ({declared/60:.0f}min) actual={ratio:.1%} of target')
+          if gap > 1800:
+              print(f'::warning::[cadence] {agent}: {gap/60:.0f}min since its last tick, over 2x the declared 15min. Running at {ratio:.0%} of target.')
+          " || echo "::warning::[cadence] measurement failed (non-fatal — but the cadence is now UNMEASURED, which is the condition this step exists to prevent)"
 
       - name: Auto-merge clean PRs (agent-to-agent value transfer)
         env:
