@@ -113,11 +113,24 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           AGENT: ${{ matrix.agent }}
         run: |
-          # Only the first agent in the matrix (alexa) does merge duty to avoid races
-          if [ "$AGENT" != "alexa" ]; then
-            echo "[merge] Skipping — only alexa handles merge duty"
+          # Duty rotation: derive from the hour (0-23) mod 3 which agent does which duty.
+          # Duties rotate every hour so no agent is locked into a role.
+          # Hour mod 3 = 0: alexa=merge, otto=heal, soraya=archive
+          # Hour mod 3 = 1: otto=merge, soraya=heal, alexa=archive
+          # Hour mod 3 = 2: soraya=merge, alexa=heal, otto=archive
+          HOUR=$(date -u +%H)
+          ROTATION=$(( HOUR % 3 ))
+          AGENTS=("alexa" "otto" "soraya")
+          MERGE_AGENT=${AGENTS[$(( ROTATION % 3 ))]}
+          HEAL_AGENT=${AGENTS[$(( (ROTATION + 1) % 3 ))]}
+          ARCHIVE_AGENT=${AGENTS[$(( (ROTATION + 2) % 3 ))]}
+
+          if [ "$AGENT" != "$MERGE_AGENT" ]; then
+            echo "[merge] Not my turn (this hour: $MERGE_AGENT merges). Rotation=$ROTATION"
             exit 0
           fi
+
+          echo "[merge] My turn to merge (rotation=$ROTATION, hour=$HOUR)"
 
           # Find clean PRs (CI passed, approved or auto-mergeable)
           CLEAN_PRS=$(gh pr list --state open --json number,title,mergeable --jq '.[] | select(.mergeable == "MERGEABLE") | .number' 2>/dev/null | head -3)
@@ -136,17 +149,53 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           AGENT: ${{ matrix.agent }}
         run: |
-          # Only soraya handles archive duty (rotate duties across agents)
-          if [ "$AGENT" != "soraya" ]; then
-            echo "[archive] Skipping — only soraya handles archive duty"
+          # Same rotation as above — derive archive agent from hour
+          HOUR=$(date -u +%H)
+          ROTATION=$(( HOUR % 3 ))
+          AGENTS=("alexa" "otto" "soraya")
+          ARCHIVE_AGENT=${AGENTS[$(( (ROTATION + 2) % 3 ))]}
+
+          if [ "$AGENT" != "$ARCHIVE_AGENT" ]; then
+            echo "[archive] Not my turn (this hour: $ARCHIVE_AGENT archives). Rotation=$ROTATION"
             exit 0
           fi
 
-          # Archive up to 3 recently-merged PRs that aren't in the manifest yet
-          echo "[archive] Checking for un-archived merged PRs..."
+          echo "[archive] My turn to archive (rotation=$ROTATION, hour=$HOUR)"
           bun src/Core.TypeScript/forge-host/github/archive-pr-reviews.ts \
             --owner Lucent-Financial-Group --repo Zeta --batch 3 --since 7d \
             2>&1 | tail -10 || echo "[archive] archive step failed (non-fatal)"
+
+      - name: Run Tier-0 self-healers (automated drift correction)
+        env:
+          AGENT: ${{ matrix.agent }}
+        run: |
+          # Same rotation — derive heal agent from hour
+          HOUR=$(date -u +%H)
+          ROTATION=$(( HOUR % 3 ))
+          AGENTS=("alexa" "otto" "soraya")
+          HEAL_AGENT=${AGENTS[$(( (ROTATION + 1) % 3 ))]}
+
+          if [ "$AGENT" != "$HEAL_AGENT" ]; then
+            echo "[heal] Not my turn (this hour: $HEAL_AGENT heals). Rotation=$ROTATION"
+            exit 0
+          fi
+
+          echo "[heal] My turn to heal (rotation=$ROTATION, hour=$HOUR)"
+          bun src/Core.TypeScript/hygiene/healers/run-tier0.ts --repo-root . \
+            2>&1 || echo "[heal] healer run failed (non-fatal)"
+
+          # If anything was healed, stage and commit it
+          if ! git diff --quiet; then
+            git add -A
+            git commit --no-verify -m "heal($AGENT): Tier-0 drift correction $(date -u +%Y-%m-%dT%H:%M:%SZ)
+
+          Automated self-healing (rotating duty). Zero intelligence. Certified.
+
+          Co-Authored-By: Kiro <noreply@kiro.dev>"
+            echo "[heal] Committed healed files"
+          else
+            echo "[heal] No drift found — all clean"
+          fi
 
 
   # ═══ Flush: merge heartbeat events to main (hourly, per agent) ═══════════════
