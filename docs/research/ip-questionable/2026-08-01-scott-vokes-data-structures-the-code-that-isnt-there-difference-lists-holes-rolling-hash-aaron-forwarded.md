@@ -154,16 +154,12 @@ the "detection is not a verdict" failure in a different register.
    where nothing should have been. `DecodeResult`'s `ok: false` branch has no `value` field — the
    component isn't there — which is why it cannot express the lie.
 
-**Structural, load-bearing but not literal:**
-
-4. *"Implementation details bubble up to the surface"* is the same claim as Iris's render
+4. **Structural, load-bearing but not literal.** *"Implementation details bubble up to the surface"* is the same claim as Iris's render
    discipline from the other end: the adapter's choice of representation **is** the page's
    vocabulary, whether or not anyone intended it. `git` vs `hg` is the large version of
    `color`-in-the-JSON.
 
-**Explicitly not claimed:**
-
-5. That difference lists are implementable as-is outside a unifying substrate. They need logic
+5. **Explicitly not claimed:** that difference lists are implementable as-is outside a unifying substrate. They need logic
    variables — Prolog, miniKanren, or an explicit mutable-once cell. In F#/TS the honest encoding
    is a write-once ref or a promise, and Vokes says as much ("a bit closer to futures/promises").
    Borrowing the *shape* is legitimate; claiming we get unification for free is not.
