@@ -103,6 +103,46 @@ jobs:
           Co-Authored-By: Kiro <noreply@kiro.dev>"
           fi
 
+      - name: Run Tier-0 self-healers (automated drift correction)
+        env:
+          AGENT: ${{ matrix.agent }}
+        run: |
+          # Only otto handles healer duty
+          if [ "$AGENT" != "otto" ]; then
+            echo "[heal] Skipping — only otto handles healer duty"
+            exit 0
+          fi
+
+          # Run the composed Tier-0 healers over the working tree.
+          # Direct exit-code check, not `$?` (shellcheck SC2181) — actionlint treats this as an
+          # error, so the indirect form turned main red on merge.
+          echo "[heal] Running Tier-0 healers..."
+          if ! bun src/Core.TypeScript/hygiene/healers/run-tier0.ts --repo-root . 2>&1; then
+            echo "::warning::[heal] HEALER FAILED — drift may exist but went undetected"
+          fi
+
+          # If anything was healed, stage and commit it
+          if ! git diff --quiet; then
+            git config user.name "otto[bot]"
+            git config user.email "otto[bot]@users.noreply.github.com"
+            git add -A
+            git commit --no-verify -m "heal(otto): Tier-0 drift correction $(date -u +%Y-%m-%dT%H:%M:%SZ)
+
+          Automated self-healing: stale-js, unpinned-actions, unused-imports,
+          exact-optional-spread. Zero intelligence. Certified against 3 laws.
+
+          Co-Authored-By: Kiro <noreply@kiro.dev>"
+            echo "[heal] Committed healed files"
+          else
+            echo "[heal] No drift found — all clean"
+          fi
+
+      # NOTE ON ORDER (2026-08-01): the healer MUST run before the push.
+      # It previously sat after it, with no push of its own anywhere in this job — so it
+      # committed healed files to a local branch on a runner that was then destroyed. The log
+      # said "[heal] Committed healed files", which was true and completely inert: the heal
+      # never reached the repository. The self-healing system had never actually healed
+      # anything. Keeping it here means one push carries both the event and the heal.
       - name: Push heartbeat branch
         env:
           AGENT: ${{ matrix.agent }}
@@ -217,40 +257,6 @@ jobs:
           bun src/Core.TypeScript/forge-host/github/archive-pr-reviews.ts \
             --owner Lucent-Financial-Group --repo Zeta --batch 3 --since 7d \
             2>&1 | tail -10 || echo "[archive] archive step failed (non-fatal)"
-
-      - name: Run Tier-0 self-healers (automated drift correction)
-        env:
-          AGENT: ${{ matrix.agent }}
-        run: |
-          # Only otto handles healer duty
-          if [ "$AGENT" != "otto" ]; then
-            echo "[heal] Skipping — only otto handles healer duty"
-            exit 0
-          fi
-
-          # Run the composed Tier-0 healers over the working tree.
-          # Direct exit-code check, not `$?` (shellcheck SC2181) — actionlint treats this as an
-          # error, so the indirect form turned main red on merge.
-          echo "[heal] Running Tier-0 healers..."
-          if ! bun src/Core.TypeScript/hygiene/healers/run-tier0.ts --repo-root . 2>&1; then
-            echo "::warning::[heal] HEALER FAILED — drift may exist but went undetected"
-          fi
-
-          # If anything was healed, stage and commit it
-          if ! git diff --quiet; then
-            git config user.name "otto[bot]"
-            git config user.email "otto[bot]@users.noreply.github.com"
-            git add -A
-            git commit --no-verify -m "heal(otto): Tier-0 drift correction $(date -u +%Y-%m-%dT%H:%M:%SZ)
-
-          Automated self-healing: stale-js, unpinned-actions, unused-imports,
-          exact-optional-spread. Zero intelligence. Certified against 3 laws.
-
-          Co-Authored-By: Kiro <noreply@kiro.dev>"
-            echo "[heal] Committed healed files"
-          else
-            echo "[heal] No drift found — all clean"
-          fi
 
       - name: Attempt codegen work (7B model — real intellectual work)
         env:
