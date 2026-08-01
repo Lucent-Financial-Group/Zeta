@@ -106,7 +106,28 @@ jobs:
       - name: Push heartbeat branch
         env:
           AGENT: ${{ matrix.agent }}
-        run: git push origin "heartbeat/$AGENT"
+        # --force-with-lease is REQUIRED here, and it is safe. Why both halves matter:
+        #
+        # REQUIRED: the branch is reset from main each tick (#9895) and the flush SQUASHES onto
+        # main. A squash creates a NEW commit, so the branch's previous tip is never an ancestor
+        # of the new main:
+        #     tick 1:  branch = main@A + event1        -> push fast-forwards, fine
+        #     flush:   squash event1 onto main         -> main@B, which does NOT contain A+event1
+        #     tick 2:  checkout -B from B, + event2    -> remote is still A+event1, NOT an ancestor
+        #                                              -> plain push REJECTED (non-fast-forward)
+        # So an unforced push works exactly once after each flush and fails every tick after.
+        # Verified against the live repo: the pre-flush tip 80cf58075 is not an ancestor of main.
+        #
+        # SAFE: the heartbeat branch is scratch space, not a record. The flush has already landed
+        # its content on main before the next reset, so nothing unique lives here to lose.
+        # --force-with-lease (not --force) still refuses if someone else moved the ref underneath
+        # us — it declines a surprise, it just does not require ancestry.
+        #
+        # CONFIG NOTE: this is why `heartbeat/*` must NOT carry a `non_fast_forward` ruleset.
+        # Ruleset 16934633 ("Heartbeat Branch Protection") targets `refs/heads/agent-heartbeats`,
+        # which matches nothing — the real branches are `heartbeat/<agent>`. Retargeting it must
+        # keep `deletion` only; adding non_fast_forward would deadlock this step permanently.
+        run: git push --force-with-lease origin "heartbeat/$AGENT"
 
       - name: Measure cadence (declared vs actual — detect silent degradation)
         env:
