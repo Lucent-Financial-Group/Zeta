@@ -249,11 +249,11 @@ export function buildVaultState(input: BridgeInput): VaultState {
 
   // Build vault snapshots
   const vaults: VaultSnapshot[] = [
-    buildObservatoryVault(events, eventsByAgent, agentLatest, hatAssignments, reputations, nowMs),
-    buildToolsVault(events, eventsByAgent, agentLatest, driftLedger, hatAssignments, reputations, nowMs),
-    buildSystemVault(events, eventsByAgent, agentLatest, hatAssignments, reputations, nowMs),
-    buildTrainingVault(events, eventsByAgent, agentLatest, codegenHatAgent, reputations, nowMs),
-    buildEconomyVault(events, eventsByAgent, agentLatest, reputations, nowMs),
+    buildObservatoryVault(events, agentLatest, hatAssignments, reputations, nowMs),
+    buildToolsVault(events, agentLatest, driftLedger, hatAssignments, reputations, nowMs),
+    buildSystemVault(events, agentLatest, hatAssignments, reputations, nowMs),
+    buildTrainingVault(events, agentLatest, codegenHatAgent, reputations, nowMs),
+    buildEconomyVault(events, agentLatest, reputations, nowMs),
   ];
 
   return {
@@ -359,7 +359,6 @@ function computeReputation(
 
 function buildObservatoryVault(
   events: readonly ObserveEvent[],
-  eventsByAgent: Map<string, ObserveEvent[]>,
   agentLatest: Map<string, ObserveEvent>,
   hatAssignments: Map<string, string>,
   reputations: Map<string, { value: number; epsilon: number; silent: boolean; history: number[] }>,
@@ -386,7 +385,6 @@ function buildObservatoryVault(
 
 function buildToolsVault(
   events: readonly ObserveEvent[],
-  eventsByAgent: Map<string, ObserveEvent[]>,
   agentLatest: Map<string, ObserveEvent>,
   driftLedger: DriftLedger | null,
   hatAssignments: Map<string, string>,
@@ -417,7 +415,6 @@ function buildToolsVault(
 
 function buildSystemVault(
   events: readonly ObserveEvent[],
-  eventsByAgent: Map<string, ObserveEvent[]>,
   agentLatest: Map<string, ObserveEvent>,
   hatAssignments: Map<string, string>,
   reputations: Map<string, { value: number; epsilon: number; silent: boolean; history: number[] }>,
@@ -444,7 +441,6 @@ function buildSystemVault(
 
 function buildTrainingVault(
   events: readonly ObserveEvent[],
-  eventsByAgent: Map<string, ObserveEvent[]>,
   agentLatest: Map<string, ObserveEvent>,
   codegenAgent: string,
   reputations: Map<string, { value: number; epsilon: number; silent: boolean; history: number[] }>,
@@ -471,7 +467,6 @@ function buildTrainingVault(
 
 function buildEconomyVault(
   events: readonly ObserveEvent[],
-  eventsByAgent: Map<string, ObserveEvent[]>,
   agentLatest: Map<string, ObserveEvent>,
   reputations: Map<string, { value: number; epsilon: number; silent: boolean; history: number[] }>,
   nowMs: number,
