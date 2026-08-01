@@ -190,10 +190,11 @@ jobs:
             exit 0
           fi
 
-          # Run the composed Tier-0 healers over the working tree
+          # Run the composed Tier-0 healers over the working tree.
+          # Direct exit-code check, not `$?` (shellcheck SC2181) — actionlint treats this as an
+          # error, so the indirect form turned main red on merge.
           echo "[heal] Running Tier-0 healers..."
-          bun src/Core.TypeScript/hygiene/healers/run-tier0.ts --repo-root . 2>&1
-          if [ $? -ne 0 ]; then
+          if ! bun src/Core.TypeScript/hygiene/healers/run-tier0.ts --repo-root . 2>&1; then
             echo "::warning::[heal] HEALER FAILED — drift may exist but went undetected"
           fi
 
