@@ -470,12 +470,35 @@ function buildEconomyVault(
   reputations: Map<string, { value: number; epsilon: number; silent: boolean; history: number[] }>,
   nowMs: number,
 ): VaultSnapshot {
-  // Economy vault is always "live" if we have any events (reputation is always computable)
+  // Status derives from EVIDENCE RECENCY, like every other scope.
+  //
+  // This previously read `events.length > 0 ? "live" : "cold"` with a hardcoded confidence of
+  // {0.8, 0.1}, on the reasoning that "reputation is always computable". That conflates the
+  // computation being available with the society being active: a seven-hour-old event still made
+  // reputation computable, and the vault duly reported "live" over a settlement that had done
+  // nothing since morning. Found by Iris reviewing the emitted JSON, 2026-08-01.
+  //
+  // A renderer can cap this (a child never raises its parent), but the FILE has to be honest on
+  // its own — monitor.html, a CLI, or any other consumer reads it directly and inherits whatever
+  // it claims.
   const hatAssignments = new Map<string, string>();
+  const freshestMs = events.reduce(
+    (newest, e) => Math.max(newest, new Date(e.at).getTime()),
+    Number.NEGATIVE_INFINITY,
+  );
+  const evidenceAgeMs = events.length === 0 ? Number.POSITIVE_INFINITY : nowMs - freshestMs;
+  const status = computeStatus(evidenceAgeMs, events, nowMs);
+  // Confidence tracks the evidence too: wide band when the newest evidence is old, because a
+  // narrow band is a claim of precision we did not earn.
+  const confidence = status === "live"
+    ? { value: 0.8, epsilon: 0.1 }
+    : status === "stale"
+      ? { value: 0.5, epsilon: 0.3 }
+      : { value: 0.2, epsilon: 0.5 };
   return {
     id: "economy",
-    status: events.length > 0 ? "live" : "cold",
-    confidence: { value: 0.8, epsilon: 0.1 },
+    status,
+    confidence,
     rooms: [
       buildRoom("reputation-engine", events, agentLatest, hatAssignments, reputations, nowMs,
         (_e) => true, "reputation computation"),

@@ -361,3 +361,56 @@ describe("reputation weights recent activity above old activity", () => {
     expect(dwellerReputation(state, "otto")?.value ?? 0).toBeGreaterThanOrEqual(0.1);
   });
 });
+
+/**
+ * PER-VAULT STATUS — the gap Iris found that these tests missed.
+ *
+ * The suite above pins page-level status thoroughly and never checked a single vault. Iris
+ * caught it reviewing the emitted JSON: buildEconomyVault returns
+ *   status: events.length > 0 ? "live" : "cold"
+ * with no recency test at all, plus a hardcoded confidence of {0.8, 0.1} unconditioned on any
+ * evidence. So a vault reads "live" off a seven-hour-old event, and asserts 80% confidence in
+ * a reading it did not measure.
+ *
+ * The page can cap this (a child's status never raises its parent), but the FILE still says
+ * something false, and every other consumer inherits it — monitor.html, a future CLI, anything
+ * reading the JSON directly. Honesty has to hold in the artifact, not only in one renderer.
+ *
+ * This is a straight miss on my part: I tested the property at the scope I happened to think of.
+ */
+describe("per-vault status obeys the same honesty rule as the page", () => {
+  test("no vault reads live off stale evidence", () => {
+    const sevenHoursAgo = NOW - 7 * HOUR;
+    const state = buildVaultState(
+      input({
+        tickHistory: historyAged(5 * MIN),
+        events: [
+          event("otto", "commit", sevenHoursAgo),
+          event("alexa", "commit", sevenHoursAgo),
+          event("soraya", "commit", sevenHoursAgo),
+        ],
+      }),
+    );
+    const vaults = (state as unknown as { vaults: { id: string; status: string }[] }).vaults;
+    const wronglyLive = vaults.filter((v) => v.status === "live").map((v) => v.id);
+    expect(wronglyLive).toEqual([]);
+  });
+
+  test("no vault asserts confidence it did not measure", () => {
+    // A hardcoded {0.8, 0.1} is a claim of 80% certainty with a narrow band, emitted whether or
+    // not anything was observed. With no recent evidence the honest output is a low value with
+    // a wide band, exactly as the contract's confidence table specifies.
+    const state = buildVaultState(
+      input({
+        tickHistory: historyAged(5 * MIN),
+        events: [event("otto", "commit", NOW - 7 * HOUR)],
+      }),
+    );
+    const vaults = (state as unknown as { vaults: { id: string; confidence: { value: number; epsilon: number } }[] }).vaults;
+    for (const vault of vaults) {
+      if (vault.confidence.value >= 0.8) {
+        expect(Math.abs(vault.confidence.epsilon)).toBeGreaterThan(0.1);
+      }
+    }
+  });
+});
