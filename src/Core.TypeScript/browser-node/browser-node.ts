@@ -168,16 +168,21 @@ function uniqueSorted<T extends string>(values: readonly T[]): readonly T[] {
   return [...new Set(values)].sort(compareOrdinal);
 }
 
+function sequenceOrder(sequence: number): number {
+  return Number.isSafeInteger(sequence) && sequence >= 0 ? sequence : -1;
+}
+
 function foldTabs(events: readonly BrowserTabPresence[]): readonly BrowserTabPresence[] {
   const latest = new Map<string, BrowserTabPresence>();
 
   for (const event of events) {
     const current = latest.get(event.tabId);
+    const eventSequence = sequenceOrder(event.sequence);
+    const currentSequence = current === undefined ? -1 : sequenceOrder(current.sequence);
     if (
       current === undefined ||
-      event.sequence > current.sequence ||
-      (event.sequence === current.sequence &&
-        TAB_STATE_SAFETY_ORDER[event.state] > TAB_STATE_SAFETY_ORDER[current.state])
+      eventSequence > currentSequence ||
+      (eventSequence === currentSequence && TAB_STATE_SAFETY_ORDER[event.state] > TAB_STATE_SAFETY_ORDER[current.state])
     ) {
       latest.set(event.tabId, event);
     }
@@ -191,11 +196,12 @@ function foldRequests(events: readonly BrowserPortRequest[]): readonly BrowserPo
 
   for (const event of events) {
     const current = latest.get(event.port);
+    const eventSequence = sequenceOrder(event.sequence);
+    const currentSequence = current === undefined ? -1 : sequenceOrder(current.sequence);
     if (
       current === undefined ||
-      event.sequence > current.sequence ||
-      (event.sequence === current.sequence &&
-        CONSENT_SAFETY_ORDER[event.consent] > CONSENT_SAFETY_ORDER[current.consent])
+      eventSequence > currentSequence ||
+      (eventSequence === currentSequence && CONSENT_SAFETY_ORDER[event.consent] > CONSENT_SAFETY_ORDER[current.consent])
     ) {
       latest.set(event.port, event);
     }

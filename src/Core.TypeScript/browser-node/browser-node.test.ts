@@ -70,7 +70,7 @@ describe("browser node capability and liveness planner", () => {
     const events = [
       { tabId: "tab-b", sequence: 2, state: "dark" as const },
       { tabId: "tab-a", sequence: 1, state: "foreground" as const },
-      { tabId: "tab-b", sequence: 1, state: "foreground" as const },
+      { tabId: "tab-b", sequence: 2, state: "foreground" as const },
     ];
     const forward = planBrowserNode(snapshot({ capabilities: ["css", "javascript"], tabs: events }));
     const reverse = planBrowserNode(snapshot({ capabilities: ["css", "javascript"], tabs: [...events].reverse() }));
@@ -201,6 +201,34 @@ describe("browser node capability and liveness planner", () => {
       ["device-hardware", "denied"],
     ]);
     expect(readout.feedback.map((feedback) => feedback.code)).toEqual(["consent-required", "consent-denied"]);
+  });
+
+  test("resolves equal-sequence consent conflicts toward the restrictive state", () => {
+    const requests = [
+      { port: "ai-inference" as const, sequence: 4, consent: "granted" as const },
+      { port: "ai-inference" as const, sequence: 4, consent: "denied" as const },
+    ];
+    const bindings = [
+      {
+        port: "ai-inference" as const,
+        adapterId: "local-wasm-model-plugin",
+        requiredCapabilities: ["javascript", "webassembly"] as const,
+        reliability: "best-effort" as const,
+      },
+    ];
+    const forward = planBrowserNode(
+      snapshot({ capabilities: ["css", "javascript", "webassembly"], bindings, requests }),
+    );
+    const reverse = planBrowserNode(
+      snapshot({
+        capabilities: ["css", "javascript", "webassembly"],
+        bindings,
+        requests: [...requests].reverse(),
+      }),
+    );
+
+    expect(forward).toEqual(reverse);
+    expect(forward.ports).toMatchObject([{ port: "ai-inference", state: "denied" }]);
   });
 
   test("activates Reticulum and AI only through declared plugin bindings", () => {
