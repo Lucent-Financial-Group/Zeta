@@ -226,6 +226,203 @@ declaration is the whole point. If the form ever renders more confidently than t
 beneath it, it has become the thing it was built to prevent — which is the identical bar the
 vault surface is held to.
 
+## 5b. The mechanical form — data structures with holes built in
+
+Aaron, 2026-08-01, forwarding two talks: *"it's about data structures with holes built in …
+data structures that leave room to fill in later."*
+
+The template is not only an epistemic move. **It is a data structure with a buffer**, and the
+buffer has been formalised, implemented, and complexity-analysed for thirty years. That matters
+because it turns §5's operational rules from advice into something with a known cost model —
+and because one of the mechanisms is the *exact* failure mode of §2, mechanised.
+
+### The hole: a Bε-tree / hitchhiker buffer
+
+A **Bε-tree** (Brodal & Fagerberg; Arge's buffer trees before them; Tokutek's *fractal tree*
+commercially; Greenberg's **hitchhiker tree** as the path-copying functional variant already
+anchored in `docs/PRIOR-ART-LIST.md`) is a B+ tree where **every index node carries a small
+buffer**. A write lands in the nearest buffer and stops. When a buffer fills, it **flushes**
+one level down, recursively, and only reaches the leaf — real, committed structure — when it
+has nowhere left to go.
+
+The correspondence is exact, not decorative:
+
+| hitchhiker tree | template |
+|---|---|
+| a buffer on every index node | a slot at every level of abstraction, not just the top |
+| a write lands in the buffer and stops | proposing a shape costs one touch, not a full commitment |
+| buffers flush **recursively** when full | instantiating one template can cascade into others |
+| the leaf is where it becomes real structure | the expert's ruling is where it becomes an earned class |
+| flush control is the *caller's* choice | when to force a ruling is a scheduling decision, not the structure's |
+
+And the amortisation carries the same meaning in both: a B+ tree pays the full root-to-leaf
+path cost on **every** insert; the buffered tree pays it **once per flush**, amortised across
+everything the buffer accumulated. Greenberg's own table — 21 IOs for a B+ tree, 12 for a
+fractal, **5** for a hitchhiker over the same seven inserts. The template amortises the cost of
+*expertise* the same way: you do not need the specialist present at proposal time, you
+accumulate proposals in the buffer and the specialist flushes them in one pass.
+
+### The load-bearing detail: a read MUST project its pending operations
+
+This is the part worth carving. In a buffered tree, **you cannot read a leaf directly.** The
+committed structure at the leaf is *stale by construction* — the truth is the leaf **plus**
+every pending operation buffered along the path from the root. Read the leaf alone and you get
+an answer that is well-formed, plausible, and **wrong**.
+
+That is precisely §2's slot→assumed-present drift, in silicon. "Beta(1,1) today" read like
+shipped behaviour because the reader took the committed structure and did not project the
+unflushed buffer sitting above it. The tree does not merely illustrate the failure — it
+**names the fix**: the read path is *required* to walk the buffers and apply what is pending.
+
+> **Carve:** reading a structure that has holes means reading the holes too. A summary that
+> reports only what is committed, without the pending slots above it, is not a shortcut — it is
+> a wrong answer with good formatting.
+
+Greenberg's talk carries the sharper corollary: the naive projection **breaks scans**. Project
+every pending operation into every leaf and you get nonsense ordering. The correct
+implementation projects *only the operations whose key range lands in that leaf*. Applied here:
+an unfilled template must be surfaced to the readers **it actually bears on**, and to no one
+else. Broadcasting every open slot to every reader is as useless as hiding them.
+
+### The other half: retroactivity — filling a hole left in the past
+
+Demaine, Iacono & Langerman, ***Retroactive Data Structures*** (SODA 2004; TALG 2007) — a
+**new lineage for this repo**, not previously in `PRIOR-ART-LIST.md`.
+
+A *persistent* structure lets you branch at a past point and replay forward — correct, and
+O(elapsed). A **retroactive** structure lets you **insert or delete an operation in the past
+and have the present update without replaying**. Two strengths: *partially* retroactive (change
+the past, query only the present) and *fully* retroactive (change the past, query any past
+time), the latter being materially harder.
+
+That is what discharging a template does. A slot is filled — an expert rules "wrong shelf,
+use coverage-at-τ" — and everything downstream that was written against the open slot must now
+reflect it. The persistent answer is *re-derive everything since*. The retroactive answer is
+*apply the ruling at its point in the timeline and let the present move*. The second is what
+a factory running at thousands of pushes a day actually needs.
+
+Two constraints Demaine's work forces, and both bind here:
+
+- **The consistency problem.** You cannot retroactively delete an enqueue without also
+  deleting a dequeue — the history must stay well-formed. Filling a template retroactively has
+  the same obligation: every downstream claim that leaned on the open slot must be reconciled,
+  not silently orphaned. This is the same discipline as Z-set retraction: the correction is an
+  event, and it must balance.
+- **There is no general transformation.** Demaine proves you cannot mechanically make an
+  arbitrary structure fully retroactive at acceptable cost. Some structures admit it cheaply;
+  others do not. Honest reading: **some templates cannot be discharged retroactively at all**
+  and require replay. Knowing which is which, per domain, is exactly the domain-indexed
+  shelf of §3 — and it is why the answer is *per property class*, never universal.
+
+### Metaphor discipline
+
+Naming the line, per the standing guard against over-weighting a metaphor as a design surface
+(the DNA/ACTG correction, 2026-06-11):
+
+- **Mechanism, not metaphor:** the buffered-tree cost model, path copying, flush control, and
+  the project-pending-operations read path. These are implementable and already anchored;
+  the hitchhiker tree is named in `PRIOR-ART-LIST.md` as the IO-optimised sorted immutable
+  index for the COW store. If `zetadb` wants an index with holes built in, this is not an
+  analogy — it is the data structure.
+- **Structural analogy, load-bearing but not literal:** buffer ↔ slot, flush ↔ ruling,
+  projection ↔ labelling at point of use. Strong enough to carry the carve above, and it
+  earns its place by predicting a failure we had already hit independently.
+- **Not claimed:** that the epistemic move inherits the complexity bounds. `O(log_B n)` says
+  nothing about how long an expert takes to rule. Borrowing the *shape* is legitimate;
+  borrowing the *asymptotics* would be exactly the metering-test failure — physics-as-metaphor,
+  with a Big-O hat on.
+
+## 5c. The through-line — a thing that carries its own decoder
+
+Aaron, 2026-08-01, on the homoiconicity talk: *"oh wow this really connects to our adinkra stuff
+and our minimal reflection."*
+
+It does, and the connection is tighter than analogy. Four things surfaced in a single day, and
+they are one shape:
+
+| | the thing | what it carries about itself |
+|---|---|---|
+| §5a-b | a **template / buffer** | its own *shape* — the slot says what would fill it |
+| Aaron's objection to the impossibility | the **TriBoolean Float** | its own *bounds* — "the middle field decodes the ends" |
+| this section | a **homoiconic representation** | its own *interpretation* — code and data are one form |
+| already carved (2026-07-04) | an **adinkra** | its own *error correction* — the diagram IS the doubly-even self-dual code |
+
+Each is a thing that carries its own decoder. That is what makes the set worth naming rather
+than four coincidences.
+
+### The anchor, which the repo did not have
+
+**Homoiconicity is currently unanchored here** — one incidental mention in
+`PRIOR-ART-LIST.md:81` and nothing else. The lineage, which is better than the folklore:
+
+- **Mooers & Deutsch, TRAC (1965)** — the coinage. TRAC's property: *the procedures it
+  evaluates and the text of those procedures are the same bytes, inside the program and out.*
+  **One** representation — no source → AST → bytecode ladder at all.
+- **Warren S. McCulloch** suggested the word (footnote in that paper). The same McCulloch of
+  McCulloch–Pitts neurons — already adjacent to this repo's lineage.
+- **Charles Sanders Peirce**, via McCulloch — *semiotics*: the sign, the idea it raises, the
+  object it refers to. Homoiconicity is the degenerate case where sign and object coincide.
+- **Mooers & Deutsch would not grant Lisp the property**, because some Lisp primitives were
+  machine language and so broke the single-representation claim. By the original definition
+  **almost nothing qualifies** — which is precisely why "minimal" is the operative word in
+  minimal reflection.
+- Sierra's working criterion, which is the usable one: **literal data structures + a reader for
+  them + the whole language expressible in them.** JSON has the first two and fails the third —
+  hence CloudFormation, a real language wearing a data structure badly.
+
+### The sharpening: minimal reflection = how many links must share a shape
+
+The best line in the talk is a crowd-sourced one: *"in the chain of representations between
+human desire and machine effect, there is one link where both parties have the same shape."*
+
+That reframes the whole question usefully. **Every** system has a chain of representations —
+intent, source, AST, bytecode, electrons. The question was never "is the whole chain one
+form" (TRAC's answer, and nearly nothing satisfies it). The question is **how many links must
+coincide, and which ones.**
+
+- TRAC: **all** links. Maximal, and almost unachievable.
+- Lisp: **one** link — s-expressions — and that one link is enough for macros.
+- **Adinkra: one link, chosen so that it is simultaneously the diagram, the algebra, and the
+  error-correcting code.** That is what "minimal reflection surface" means, stated in the
+  homoiconicity vocabulary: not *less* reflection, but the **fewest coinciding links that still
+  close the loop** — where closing the loop is `gen(gen) == gen`, and the loop closing is what
+  makes it self-correcting rather than merely self-describing.
+
+That distinction is load-bearing and worth keeping: **self-describing** is carrying your own
+decoder. **Self-correcting** is carrying enough of your own decoder that drift is detectable
+and repairable from the carried part alone. The adinkra is the second; a comment is the first.
+
+### Why this bears on the templates
+
+Sierra's critique of embedded DSLs transfers directly, and it is the same shape as
+`interfaces-free-classes-earned-under-rules`:
+
+> A macro gives you **one shot**. You cannot build further abstractions on it without writing
+> another macro. Plain data structures let you use the entire language to produce or consume
+> them.
+
+A macro is a **committed class** — it fixes the expansion, and everything downstream is limited
+to what that expansion admits. Plain data is a **free interface** — anything can generate it,
+anything can read it, and new layers compose without permission from the original author.
+
+Applied to §5: **a template should be data, not a macro.** A slot stated as inert structure can
+be filled by any expert, read by any consumer, and instantiated more than once for different
+shelves. A slot encoded as machinery — a helper that "handles" the open question — fixes the
+answer's shape before the specialist arrives, which is the whole failure the routing discipline
+exists to prevent.
+
+### Metaphor discipline, again
+
+- **Mechanism:** homoiconicity is a checkable property of a language (Sierra's three criteria),
+  and `gen(gen) == gen` is a checkable property of a generator. Both are testable.
+- **Structural, load-bearing:** "carries its own decoder" as the common shape across template /
+  self-describing number / homoiconic form / adinkra. It earns its place by having made a
+  prediction — Aaron's objection to the impossibility result was *exactly* this move applied to
+  a scalar, reached independently.
+- **Not claimed:** that Peirce's semiotics gives us anything operational, or that being
+  homoiconic makes a representation correct. TRAC was homoiconic and is dead. The property buys
+  **one** thing: the tools that read the form are the tools that write it.
+
 ## 6. What this does not claim
 
 - Not that Lumen's Beta framing is right; that is Soraya's ruling, and "wrong instrument" is a
