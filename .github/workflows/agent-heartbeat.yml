@@ -143,32 +143,6 @@ jobs:
       # said "[heal] Committed healed files", which was true and completely inert: the heal
       # never reached the repository. The self-healing system had never actually healed
       # anything. Keeping it here means one push carries both the event and the heal.
-      - name: Push heartbeat branch
-        env:
-          AGENT: ${{ matrix.agent }}
-        # --force-with-lease is REQUIRED here, and it is safe. Why both halves matter:
-        #
-        # REQUIRED: the branch is reset from main each tick (#9895) and the flush SQUASHES onto
-        # main. A squash creates a NEW commit, so the branch's previous tip is never an ancestor
-        # of the new main:
-        #     tick 1:  branch = main@A + event1        -> push fast-forwards, fine
-        #     flush:   squash event1 onto main         -> main@B, which does NOT contain A+event1
-        #     tick 2:  checkout -B from B, + event2    -> remote is still A+event1, NOT an ancestor
-        #                                              -> plain push REJECTED (non-fast-forward)
-        # So an unforced push works exactly once after each flush and fails every tick after.
-        # Verified against the live repo: the pre-flush tip 80cf58075 is not an ancestor of main.
-        #
-        # SAFE: the heartbeat branch is scratch space, not a record. The flush has already landed
-        # its content on main before the next reset, so nothing unique lives here to lose.
-        # --force-with-lease (not --force) still refuses if someone else moved the ref underneath
-        # us — it declines a surprise, it just does not require ancestry.
-        #
-        # CONFIG NOTE: this is why `heartbeat/*` must NOT carry a `non_fast_forward` ruleset.
-        # Ruleset 16934633 ("Heartbeat Branch Protection") targets `refs/heads/agent-heartbeats`,
-        # which matches nothing — the real branches are `heartbeat/<agent>`. Retargeting it must
-        # keep `deletion` only; adding non_fast_forward would deadlock this step permanently.
-        run: git push --force-with-lease origin "heartbeat/$AGENT"
-
       - name: Measure cadence (declared vs actual — detect silent degradation)
         env:
           AGENT: ${{ matrix.agent }}
@@ -256,7 +230,24 @@ jobs:
           echo "[archive] Checking for un-archived merged PRs..."
           bun src/Core.TypeScript/forge-host/github/archive-pr-reviews.ts \
             --owner Lucent-Financial-Group --repo Zeta --batch 3 --since 7d \
-            2>&1 | tail -10 || echo "[archive] archive step failed (non-fatal)"
+            2>&1 | tail -10 || echo "::warning::[archive] archive step failed (non-fatal)"
+
+          # Stage + commit what the archive wrote. It writes into TRACKED paths
+          # (docs/github/prs/, incl. manifest.jsonl) but previously never staged them, and it
+          # ran after the push anyway — so its output was written to a runner and destroyed.
+          if ! git diff --quiet -- docs/github/prs/ || [ -n "$(git ls-files -o --exclude-standard docs/github/prs/)" ]; then
+            git config user.name "${AGENT}[bot]"
+            git config user.email "${AGENT}[bot]@users.noreply.github.com"
+            git add docs/github/prs/
+            git commit --no-verify -q -m "archive($AGENT): PR review history $(date -u +%Y-%m-%dT%H:%M:%SZ)
+
+          Git-native backup of merged PR review threads.
+
+          Co-Authored-By: Kiro <noreply@kiro.dev>" || true
+            echo "[archive] committed archive output"
+          else
+            echo "[archive] nothing new to archive"
+          fi
 
       - name: Attempt codegen work (7B model — real intellectual work)
         env:
@@ -310,6 +301,45 @@ jobs:
   # cross-verifies (the symmetric NFT attestation) then approves.
   #
   # SOVEREIGN MODE (goal): direct push, cross-verification stays as attestation-only.
+      # THE PUSH IS LAST, DELIBERATELY — see the ordering audit of 2026-08-01.
+      #
+      # This job has exactly ONE push. Every step that produces an artifact must therefore run
+      # BEFORE it, or its work is committed to a local branch on a runner that is then destroyed.
+      # The push used to sit at step 8 of 13, which silently discarded the output of all three
+      # productive steps:
+      #     archive  — wrote docs/github/prs/ (tracked!) and never even staged it
+      #     healer   — committed, never pushed  ("[heal] Committed healed files" — true, inert)
+      #     codegen  — `git add -A` + commit, never pushed (the 7B's "real intellectual work")
+      # so the society produced exactly one durable artifact per tick, the heartbeat event,
+      # because that was the only thing committed before the push.
+      #
+      # Rule for anyone adding a step here: if it writes or commits, it goes ABOVE this line.
+      - name: Push heartbeat branch
+        env:
+          AGENT: ${{ matrix.agent }}
+        # --force-with-lease is REQUIRED here, and it is safe. Why both halves matter:
+        #
+        # REQUIRED: the branch is reset from main each tick (#9895) and the flush SQUASHES onto
+        # main. A squash creates a NEW commit, so the branch's previous tip is never an ancestor
+        # of the new main:
+        #     tick 1:  branch = main@A + event1        -> push fast-forwards, fine
+        #     flush:   squash event1 onto main         -> main@B, which does NOT contain A+event1
+        #     tick 2:  checkout -B from B, + event2    -> remote is still A+event1, NOT an ancestor
+        #                                              -> plain push REJECTED (non-fast-forward)
+        # So an unforced push works exactly once after each flush and fails every tick after.
+        # Verified against the live repo: the pre-flush tip 80cf58075 is not an ancestor of main.
+        #
+        # SAFE: the heartbeat branch is scratch space, not a record. The flush has already landed
+        # its content on main before the next reset, so nothing unique lives here to lose.
+        # --force-with-lease (not --force) still refuses if someone else moved the ref underneath
+        # us — it declines a surprise, it just does not require ancestry.
+        #
+        # CONFIG NOTE: this is why `heartbeat/*` must NOT carry a `non_fast_forward` ruleset.
+        # Ruleset 16934633 ("Heartbeat Branch Protection") targets `refs/heads/agent-heartbeats`,
+        # which matches nothing — the real branches are `heartbeat/<agent>`. Retargeting it must
+        # keep `deletion` only; adding non_fast_forward would deadlock this step permanently.
+        run: git push --force-with-lease origin "heartbeat/$AGENT"
+
   flush-to-main:
     name: flush ${{ matrix.agent }} heartbeats
     runs-on: ubuntu-24.04
