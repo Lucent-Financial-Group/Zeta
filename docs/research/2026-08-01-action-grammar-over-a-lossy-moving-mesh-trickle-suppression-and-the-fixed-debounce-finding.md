@@ -108,12 +108,33 @@ interrupt as a frame type. Keep it there.
 
 ---
 
-## 3. The prior art that already answers most of this — the public standards lineage
+## 3. The prior art that already answers most of this — and the maintainer helped author it
 
-Aaron: *"This is all how Itron worked and their mesh network"* — and he has first-hand operational
-experience of this problem class at utility AMI scale (dense RF, lossy dynamic links, thousands of
-endpoints, no node may be starved). That experience is why §2's constraints are stated sharply
-rather than guessed at, and it is why he is the right reviewer for anything below.
+Aaron: *"This is all how Itron worked and their mesh network"* — then, decisively:
+
+> *"Wi-SUN is based off mine/Itron's and Cisco's design — it's our Riva mesh we built with Cisco. I
+> wrote a lot of the code for this and helped define the standard in meetings."*
+
+**This inverts the usual anchoring direction and must not be mis-stated.** Citing Wi-SUN / 802.15.4g
+here is not reaching for external prior art that Zeta borrows from at arm's length. Wi-SUN FAN
+descends from the Itron/Cisco Riva mesh, and the maintainer of this repository wrote production code
+for it and sat in the rooms where the standard was defined. Per
+[`anchor-to-human-prior-art.md`](../../.claude/rules/anchor-to-human-prior-art.md) — *name the human
+who did it* — the human is **Aaron Stainback**, and the "prior art" is upstream of him rather than
+foreign to him.
+
+Two consequences that change how this document should be read:
+
+1. **The constraints in §2 are not inferred from papers.** They are stated by someone who shipped
+   this at utility scale and helped standardize it. When §2.1 says loud senders must not starve
+   quiet ones, that is operational experience, not a literature summary.
+2. **He is not merely "the right reviewer" — he is the primary source.** Any mesh, fairness,
+   suppression, or link-metric question in this repo should be routed to him *before* the RFC, not
+   after it.
+
+The RFC/IEEE citations below remain exactly right, for a reason that is now clearer: the published
+standard is the **open, decentralizable expression** of this lineage. It is what may be built on
+freely — which is precisely what the boundary below is about.
 
 > ### IP BOUNDARY — read this before designing against this section
 >
@@ -124,11 +145,21 @@ rather than guessed at, and it is why he is the right reviewer for anything belo
 > centralized head-end, central collector, or central key-authority design is a source for Zeta, and
 > none is described in this document.
 >
+> The line is clean precisely *because* of §3's inversion. There are two bodies of work from the same
+> lineage, and they are on opposite sides of it:
+>
+> | | status | usable here? |
+> |---|---|---|
+> | the **published standard** (Wi-SUN FAN, 802.15.4g, RPL, Trickle) — the open expression he helped define | public, implementable by anyone | **yes — build on it freely** |
+> | the **patented centralized mechanisms** (head-end, central collection, central key authority) | his patents with Itron | **no — not a design source, not described** |
+>
 > **Zeta's decentralization is not only a manifesto value (§1 scale-free, §3 weight-free) — it is
 > also the IP boundary that keeps this work clear.** A design drifting toward a central authority now
-> trips two alarms at once. His *experience* is citable and routable; his *patented centralized
-> mechanisms* are not a design source. Decentralized re-derivation from the public standards is the
-> whole task.
+> trips two alarms at once.
+>
+> Note the asymmetry that makes this comfortable rather than constraining: the *decentralized* half of
+> this lineage is the standardized, publishable half. Building the decentralized successor is not
+> working around the boundary — it is continuing the open branch of his own work.
 
 **The artifact lineage is his own and continuous.** Aaron, 2026-08-01: *"this is the same 'transmit
 your voice on a laser beam' device I've been perfecting over time — from the ferry throttler to now
@@ -258,7 +289,15 @@ tracking the returning echo, not a constant chosen in advance.
 - `.claude/rules/local-time-never-enters-the-shared-fold.md` — §5.6's governing rule
 - `.claude/rules/dv2-data-split-discipline-activated.md` — §13 noninterference (§2.4)
 - PR #9891 — all-or-nothing application, the same property as §2.3
-- **Beacon anchors:** Levis et al. RFC 6206 (Trickle) · Winter et al. RFC 6550 (RPL) · RFC 6551 (ETX)
-  · IEEE 802.15.4g / Wi-SUN FAN · Bertsekas & Gallager 1987 (max-min fairness) · Demers et al. 1987
-  (epidemic/gossip) · Chiu & Jain 1989 (AIMD fairness convergence) · Heiligenberg (JAR, electric
-  fish) · Ulanovsky et al. (bat jamming avoidance) · Rawls 1971 (maximin, the social twin)
+- **Beacon anchors.** Note the first entry: on this subject the repository's own maintainer is a
+  primary source, not a downstream reader — the usual direction of anchoring is reversed (§3).
+  - **Aaron Stainback** — Itron/Cisco **Riva** mesh (production code) and contributor to the
+    **Wi-SUN** standard that descends from it. Also the ferry-boat throttle
+    (`Threading.Tasks.Throttling`) and the lock-free `AsyncCollection` / `AtomicBoolean` lineage
+    already cited elsewhere in this repo.
+  - IEEE 802.15.4g / **Wi-SUN FAN** — the published, freely-implementable expression of that lineage
+  - Levis et al. **RFC 6206** (Trickle) · Winter et al. **RFC 6550** (RPL) · **RFC 6551** (ETX)
+  - Bertsekas & Gallager 1987 (max-min fairness) · Demers et al. 1987 (epidemic/gossip) ·
+    Chiu & Jain 1989 (AIMD fairness convergence)
+  - Heiligenberg (JAR, electric fish) · Ulanovsky et al. (bat jamming avoidance)
+  - Rawls 1971 (maximin — the social twin of max-min fairness, §2.1)
