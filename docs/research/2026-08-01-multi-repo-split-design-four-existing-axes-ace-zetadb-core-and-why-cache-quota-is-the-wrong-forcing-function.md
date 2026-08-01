@@ -106,6 +106,40 @@ GitHub Pages site: coined internal shorthand carried outward with its caveat dro
 2026-07-04 and 2026-07-16. One repo, so a boundary would not have stopped that specific instance —
 but it demonstrates the failure mode is real, routine, and slow to notice.
 
+#### The algebra underneath it — Z-set vs G-set (Aaron, 2026-08-01)
+
+> "It's like the G-set / Z-set split. Mirror is easy Z-set; Beacon is harder to change, it's becoming
+> G-set over time."
+
+This is the sharper statement of the same thing, and it explains *why* the containment cost differs
+rather than merely asserting that it does:
+
+| register | algebra | retraction |
+|---|---|---|
+| **Mirror** | **Z-set** — signed, `+1` / `−1` | free. A wrong coinage is simply retracted; that is what the register is for |
+| **Beacon** | **G-set** — grow-only | **no retraction operator.** Once published, cited, or copied, it is in the set |
+
+So the crossing is not just expensive — **it is a change of algebra.** Content moves from a structure
+that *has* an inverse to one that does not. That is the real reason the boundary must be strong: you
+cannot undo on the far side, so the decision has to be made on the near side.
+
+And the "over time" is load-bearing. Beacon is not born grow-only — **it hardens**. A claim published
+this morning can still be corrected; one cited for a year effectively cannot, because retraction no
+longer reaches everyone who copied it. **Retraction cost rises monotonically with time since
+publication**, which means the window for cheap correction closes silently and without warning.
+
+The Tsirelson case is exactly this trajectory: born 2026-07-04 *with* an honest caveat (still
+Z-set — retractable), caveat dropped 2026-07-16, then published to a public site. Correcting it was
+still possible, but it had already become a public correction rather than an edit.
+
+> **Design consequence: the repo boundary IS the Z-set → G-set transition point.** A branch merge
+> performs that transition invisibly and in bulk; a cross-repo copy makes it a deliberate, reviewable
+> act. The boundary should sit exactly where the algebra changes.
+
+(The repo already reasons this way elsewhere — the heartbeat flush documents its payload as
+"append-only ZetaId event files (G-Set, conflict-free)", and Z-set retraction is the core correction
+primitive. This is that same distinction applied to *registers* rather than to data.)
+
 **Consequence for the design:** Mirror/Beacon is the one axis that earns the split **independent of
 any CI quota** (§0). Where §0 argues the cache ceiling should not drive topology, this axis needs no
 such justification — containment is the reason, and it would hold if the quota were infinite.
