@@ -137,6 +137,95 @@ knocked down, not to be instantiated).
 
 ---
 
+## 5a. The flagship domain: hypothesis-in-BUSINESS-template-form
+
+Aaron, 2026-08-01: *"this is getting close to hypothesis-in-business-template-form — this is
+the financial form I'm going for, for regular people to express what makes them pay attention
+to making money."*
+
+This is the instantiation the pattern was reaching for, and it inverts who the template serves.
+Everywhere above, the template is written **by** someone with a mapping **for** a specialist to
+rule on. Here it is written **by a non-expert** so that a specialist — or their own later self —
+can engage with it. Same structure, opposite direction, and the harder problem.
+
+### What it has to capture, and why "pays attention" is the right seed
+
+Most people already hold financial hypotheses. They are simply held in a form nobody can argue
+with: *"solar seems like it's going somewhere"*, *"everyone I know switched to that app"*,
+*"my landlord keeps raising rent."* Each is a **real observation with genuine signal**, and each
+is unarguable as stated — not because the person is unsophisticated, but because the form
+strips out everything that would make it checkable.
+
+Aaron's framing puts the seed in the right place: **what made you pay attention.** That is the
+honest starting point, it is the part the person genuinely owns, and it is usually the part an
+expert never hears. The template's job is to carry that noticing forward without laundering it
+into false confidence — and equally, without discarding it because it arrived in vernacular.
+
+### The shape (a slot list, not advice)
+
+The financial-domain shelf, in the same sense §3 uses "shelf". This is a form for *stating* a
+hypothesis, not a recommendation about what to hold:
+
+| slot | why it is in the template |
+|---|---|
+| **what I noticed** | the raw observation, in the person's own words, undiluted |
+| **why I think it generalises** | separates *n=1 in my life* from *a real trend* — the single most common failure |
+| **what would have to be true** | the load-bearing assumptions, made enumerable |
+| **how I could be wrong** | pre-mortem; the slot most people skip and the one an expert reads first |
+| **what would change my mind, by when** | resolution criteria + a horizon — this is what makes it *scoreable* rather than a vibe |
+| **what it would cost me to be wrong** | the difference between a hypothesis and a bet |
+| **how confident, honestly** | a number, with the admission that the number is soft |
+
+The last three are what convert an opinion into something that can be **wrong in public and
+still leave the person's standing intact.** That is the same property `toy`, `sorry`, and the
+signed-epsilon work protect elsewhere: uncertainty is *rendered*, never hidden, and being wrong
+in a declared way is not a loss of face.
+
+### Why this is not a recommendation engine, and must not become one
+
+Two constraints, both structural rather than editorial:
+
+1. **The template never fills its own slots.** It elicits and organises; it does not answer.
+   The moment it proposes what to hold, it stops being a form for the person's reasoning and
+   becomes an oracle wearing a form's clothes — and it acquires an incentive to be believed.
+   Multi-Oracle (§11) applies literally here: the mechanism reports the shape, the person's own
+   oracle decides.
+2. **Legibility flows to whoever the person chooses.** A completed template is exactly the
+   artifact that makes someone legible to an advisor, a lender, or a platform. That makes it
+   sensitive by construction, and it lands squarely under consent-first and
+   privacy-budget-is-hard-money: no collection without a stated benefit and an opt-in, and
+   frost over the personal parts is earned and inviolable.
+
+### Anchors
+
+- **Tetlock, *Superforecasting* / the Good Judgment Project (2005-2015)** — the direct anchor,
+  and the strongest evidence the approach works for non-experts. Ordinary volunteers given a
+  disciplined template — explicit probability, fixed horizon, unambiguous resolution criteria,
+  tracked and scored over time — systematically outperformed credentialed analysts. The finding
+  that matters here: **the template, not the credential, did the work.**
+- **Brier (1950)** — proper scoring rules. What makes a forecast honest is that overclaiming
+  is *penalised*; this is why the confidence slot must be a number and must be tracked.
+- **Klein, the pre-mortem (2007)** — "assume it failed; explain why." The mechanism behind the
+  "how I could be wrong" slot, and empirically better at surfacing risk than asking for risks
+  directly.
+- **Kahneman & Tversky — inside vs outside view; base-rate neglect.** "Why I think it
+  generalises" exists specifically to force the outside view, which is precisely what the
+  vernacular form omits.
+- **Buffett's circle of competence** — the honest declaration of where one's noticing is worth
+  something. A domain-indexed template *is* a circle of competence made explicit.
+- **Ostrom, *Governing the Commons* (1990)** — already a Zeta anchor; relevant here because
+  ordinary participants reliably produce good governance when given the right *form*, not more
+  expertise. Same claim as Tetlock's, from a different field.
+
+### The failure mode to watch
+
+Identical to §2, with higher stakes: **slot→assumed-present drift.** A filled-in template reads
+authoritative — it has numbers, structure, and a confidence figure. Someone will cite it as
+analysis. It is not analysis; it is a *stated hypothesis with its uncertainty declared*, and the
+declaration is the whole point. If the form ever renders more confidently than the evidence
+beneath it, it has become the thing it was built to prevent — which is the identical bar the
+vault surface is held to.
+
 ## 6. What this does not claim
 
 - Not that Lumen's Beta framing is right; that is Soraya's ruling, and "wrong instrument" is a
