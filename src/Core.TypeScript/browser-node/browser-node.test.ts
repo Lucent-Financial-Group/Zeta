@@ -171,6 +171,38 @@ describe("browser node capability and liveness planner", () => {
     });
   });
 
+  test("prefers a durable adapter before deterministic identifier tie-breakers", () => {
+    const readout = planBrowserNode(
+      snapshot({
+        capabilities: ["css", "javascript", "fetch"],
+        bindings: [
+          {
+            port: "git-native-read",
+            adapterId: "a-best-effort",
+            requiredCapabilities: ["javascript", "fetch"],
+            reliability: "best-effort",
+          },
+          {
+            port: "git-native-read",
+            adapterId: "z-durable",
+            requiredCapabilities: ["javascript", "fetch"],
+            reliability: "durable",
+          },
+        ],
+        requests: [{ port: "git-native-read", sequence: 1, consent: "not-required" }],
+      }),
+    );
+
+    expect(readout.ports).toMatchObject([
+      {
+        port: "git-native-read",
+        state: "active",
+        adapterId: "z-durable",
+        reliability: "durable",
+      },
+    ]);
+  });
+
   test("never activates background or hardware adapters without consent", () => {
     const readout = planBrowserNode(
       snapshot({

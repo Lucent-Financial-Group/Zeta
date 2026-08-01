@@ -127,6 +127,11 @@ export interface BrowserNodeReadout {
   readonly feedback: readonly BrowserNodeFeedback[];
 }
 
+const RELIABILITY_PRIORITY: Readonly<Record<BrowserAdapterReliability, number>> = {
+  durable: 0,
+  "best-effort": 1,
+};
+
 const TIER_CAPABILITY: Readonly<Record<BrowserExecutionTier, BrowserNodeCapability>> = {
   "static-css": "css",
   javascript: "javascript",
@@ -326,6 +331,10 @@ function bestBinding(
       const missingCompare = left.missing.length - right.missing.length;
       if (missingCompare !== 0) return missingCompare;
 
+      const reliabilityCompare =
+        RELIABILITY_PRIORITY[left.binding.reliability] - RELIABILITY_PRIORITY[right.binding.reliability];
+      if (reliabilityCompare !== 0) return reliabilityCompare;
+
       const adapterCompare = compareOrdinal(left.binding.adapterId, right.binding.adapterId);
       if (adapterCompare !== 0) return adapterCompare;
 
@@ -333,9 +342,7 @@ function bestBinding(
         JSON.stringify(uniqueSorted(left.binding.requiredCapabilities)),
         JSON.stringify(uniqueSorted(right.binding.requiredCapabilities)),
       );
-      if (requirementCompare !== 0) return requirementCompare;
-
-      return compareOrdinal(left.binding.reliability, right.binding.reliability);
+      return requirementCompare;
     });
 
   const candidate = candidates[0];
