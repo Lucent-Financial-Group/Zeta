@@ -78,6 +78,43 @@ released in lockstep, which is a monorepo with extra steps and worse tooling.
 **Litmus for any proposed cut:** *can these two repos release independently?* If a change to A
 always requires a same-day change to B, they are one repo wearing two names.
 
+### 2.1 CONTAINMENT COST — a second axis that can override change rate (resolved 2026-08-01)
+
+Change rate is the right **default** discipline, and it is not the only one. Aaron, resolving the
+Mirror/Beacon open question:
+
+> "I think Mirror/Beacon is much safer as a repo split, the way we use Mirror shorthand all the time."
+
+That is correct, and it identifies a partition axis DV2.0 alone does not supply:
+
+> **Boundary strength should match the COST OF ACCIDENTAL CROSSING, not only the change rate.**
+
+The mechanism is about *attention*, not intent:
+
+- **A branch merge is routine and low-attention.** It happens dozens of times a day and nobody reads
+  every line. The leak path is not carelessness — it is a normal merge doing exactly what merges do.
+- **A cross-repo copy is deliberate.** Someone must consciously move the thing, which is precisely
+  the moment the Mirror→Beacon compression is supposed to happen.
+
+Mirror register is coined shorthand used constantly (substrate, tick, glass halo, ferry). Beacon
+register is outward-facing and must stand on anchored first principles. So the crossing is **cheap
+to do accidentally and expensive to undo** — once an unanchored coinage is published under a Beacon
+surface, retracting it is a public correction.
+
+**This is not hypothetical.** On 2026-08-01 a fabricated "Tsirelson" constant reached a **public**
+GitHub Pages site: coined internal shorthand carried outward with its caveat dropped between
+2026-07-04 and 2026-07-16. One repo, so a boundary would not have stopped that specific instance —
+but it demonstrates the failure mode is real, routine, and slow to notice.
+
+**Consequence for the design:** Mirror/Beacon is the one axis that earns the split **independent of
+any CI quota** (§0). Where §0 argues the cache ceiling should not drive topology, this axis needs no
+such justification — containment is the reason, and it would hold if the quota were infinite.
+
+Applying the litmus from §2 honestly: Mirror and Beacon repos might *not* release independently, and
+by change rate alone they could be branches. **Containment overrides that here.** When the two
+disciplines disagree, name which one is deciding and why — this document decides for containment on
+this axis, and for change rate on every other.
+
 ---
 
 ## 3. `ace` and `zetadb` as the shared core
@@ -159,9 +196,8 @@ real forker.
    says persona = "what remains", actor = "what acts" — the repo should follow the persona.
 2. **Where does `references/prior-art/` live?** Gigabytes, gitignored, explicit-target search only.
    It is neither hub nor product.
-3. **Does the Mirror/Beacon axis cross-cut the others**, or is it a *branch* discipline within each
-   repo? Axis 3 says repos; DV2.0 change-rate analysis suggests it might be branches. **These
-   disagree and it should be resolved before cutting.**
+3. ~~**Does the Mirror/Beacon axis cross-cut the others**, or is it a *branch* discipline?~~
+   **RESOLVED 2026-08-01 — repo split. See §2.1.**
 4. **Honor-system license framing** (axis 2) — unresolved there, still unresolved here.
 5. **Does `ace` bootstrap itself?** If installing `ace` requires `ace`, name the escape hatch.
 
