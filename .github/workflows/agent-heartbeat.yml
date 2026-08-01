@@ -349,24 +349,55 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
+          # SQUASH, NOT MERGE — main forbids merge commits.
+          #
+          # `main` carries ruleset "Branch Safety" (id 16189060, ACTIVE) targeting ~DEFAULT_BRANCH
+          # with `required_linear_history`. A `--no-ff` merge commit is rejected outright:
+          #     ! [remote rejected] HEAD -> main (push declined due to repository rule violations)
+          #
+          # #9890 shipped the merge form and would have failed on its very first run. It passed
+          # review because it was verified in a scratch repo that HAD NO RULESETS — an environment
+          # that differed from production in the one way that decided the outcome. Recording that
+          # here so the next person tests the rule, not just the logic.
+          #
+          # NOTE: classic branch protection is EMPTY on this repo (required_status_checks: false,
+          # required_pull_request_reviews: false, restrictions: false). Rulesets are a SEPARATE
+          # mechanism and do not appear in that API. Check both:
+          #     gh api repos/<owner>/<repo>/rules/branches/main
+          #
+          # Squashing loses nothing here: the payload is append-only ZetaId event files (G-Set),
+          # so the per-tick commit boundaries carry no information the events themselves do not.
+          # One linear commit per flush satisfies the rule and reads better in `git log`.
           PUSHED=0
           for attempt in 1 2 3 4 5; do
             git fetch origin main --quiet
             git checkout -B "flush-work-$AGENT" origin/main --quiet
-            git merge "origin/heartbeat/$AGENT" --no-ff -m "flush(heartbeat): $AGENT events to main
-
-          Periodic flush of $AHEAD heartbeat events from heartbeat/$AGENT.
-          Sovereign path: append-only ZetaId event files (G-Set, conflict-free).
-
-          Co-Authored-By: Kiro <noreply@kiro.dev>" || {
-              echo "[flush] MERGE CONFLICT for $AGENT — surfacing instead of force-resolving."
+            git merge --squash "origin/heartbeat/$AGENT" >/dev/null 2>&1 || {
+              echo "[flush] CONFLICT for $AGENT — surfacing instead of force-resolving."
               echo "[flush] Append-only ZetaId events should never conflict; a conflict here means"
               echo "[flush] something is writing outside the G-Set discipline and wants a human."
               exit 1
             }
 
+            # Idempotency (#6): if these events are already on main the squash stages nothing,
+            # and re-flushing must be a no-op rather than an empty-commit or an error.
+            STAGED=$(git diff --cached --name-only | wc -l | tr -d ' ')
+            if [ "$STAGED" = "0" ]; then
+              echo "[flush] $AGENT: already on main — nothing to land (no-op)"
+              PUSHED=1
+              break
+            fi
+
+            git commit -q -m "flush(heartbeat): $AGENT events to main ($STAGED files)
+
+          Squashed flush of $AHEAD heartbeat commits from heartbeat/$AGENT.
+          Append-only ZetaId event files (G-Set, conflict-free) — squashed because main
+          requires linear history; the commit boundaries carry no information the events do not.
+
+          Co-Authored-By: Kiro <noreply@kiro.dev>"
+
             if git push origin HEAD:main; then
-              echo "[flush] $AGENT: $AHEAD events landed on main (attempt $attempt)"
+              echo "[flush] $AGENT: $STAGED event files landed on main (attempt $attempt)"
               PUSHED=1
               break
             fi
