@@ -113,7 +113,8 @@ jobs:
           AGENT: ${{ matrix.agent }}
         run: |
           # Find the last two heartbeat events to compute the gap
-          EVENTS=$(ls -t docs/observe-events/*.json 2>/dev/null | head -2)
+          EVENTS=$(find docs/observe-events -maxdepth 1 -type f -name '*.json' -printf '%T@ %p\n' \
+            | sort -nr | cut -d' ' -f2- | head -2)
           if [ "$(echo "$EVENTS" | wc -l)" -lt 2 ]; then
             echo "[cadence] Not enough events to measure gap yet"
             exit 0
@@ -128,7 +129,7 @@ jobs:
             exit 0
           fi
           # Compute gap in seconds
-          GAP=$(python3 -c "
+          python3 -c "
           from datetime import datetime
           t1 = datetime.fromisoformat('$T1'.replace('Z','+00:00'))
           t0 = datetime.fromisoformat('$T0'.replace('Z','+00:00'))
@@ -138,7 +139,7 @@ jobs:
           print(f'gap={int(gap)}s ({int(gap/60)}min) declared=900s ratio={ratio:.1%}')
           if gap > 1800:  # more than 2x declared
             print(f'::warning::[cadence] {int(gap/60)}min gap exceeds 2x declared (30min). Running at {ratio:.0%} of target.')
-          " 2>/dev/null || echo "[cadence] measurement failed (non-fatal)")
+          " 2>/dev/null || echo "[cadence] measurement failed (non-fatal)"
 
       - name: Auto-merge clean PRs (agent-to-agent value transfer)
         env:
@@ -192,8 +193,7 @@ jobs:
 
           # Run the composed Tier-0 healers over the working tree
           echo "[heal] Running Tier-0 healers..."
-          bun src/Core.TypeScript/hygiene/healers/run-tier0.ts --repo-root . 2>&1
-          if [ $? -ne 0 ]; then
+          if ! bun src/Core.TypeScript/hygiene/healers/run-tier0.ts --repo-root . 2>&1; then
             echo "::warning::[heal] HEALER FAILED — drift may exist but went undetected"
           fi
 
