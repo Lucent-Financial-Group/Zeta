@@ -18,3 +18,10 @@
 - A source-owned runtime exposes start, recover, read, checkpoint, retract, and stop operations through typed results.
 - The fixture delegates to the runtime instead of owning persistence policy.
 - Focused unit tests and the real Chromium multitab smoke remain green.
+
+## Verification
+
+- `bunx tsc --noEmit` passes.
+- 38 focused browser lifecycle, persistence, codec, and durable-runtime tests pass; the Windows manifest slice adds 21 passing setup checks.
+- The real two-page Chromium smoke passes save, stale-write rejection, restart recovery, stale-delete rejection, bounded retraction, and clean restart.
+- A broad `bun test` reached 8,401 passes and found two unrelated existing failures: a deterministic Windows manifest mismatch (fixed forward on this branch) and a stale local `kiro-cli` symlink whose target application is absent on this Mac.
