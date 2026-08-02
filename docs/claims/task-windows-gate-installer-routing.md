@@ -16,4 +16,5 @@
 ## Exit
 
 - The workflow selects `install.sh` only on Unix and `install.ps1 -SkipLoopRegister` only on Windows.
-- Source-owned tests and actionlint enforce the split, and a post-merge main matrix reaches the direct Bun guard on both Windows architectures.
+- Source-owned tests and actionlint enforce the split.
+- Dispatched branch run `30762290568` proved Windows 2025 completed the native installer, resolved Bun in the next workflow step, and passed build plus tests. Windows ARM64 also reached the native installer; it then reported separate unavailable native dependencies (Java 26 metadata, 1Password CLI artifact, and Semgrep's OpenSSL build), replacing the prior false-positive shell no-op with an actionable architecture result.
