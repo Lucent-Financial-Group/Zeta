@@ -10,7 +10,6 @@
 
 **Verbatim, lightly segmented by sentence boundaries. Not corrected — ASR errors are left in place so a reader can judge them.**
 
-
 ---
 
 **[0:00:00]** This presentation was recorded at StrangeLoop 2012 in St.
