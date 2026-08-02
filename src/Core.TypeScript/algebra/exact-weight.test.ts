@@ -20,7 +20,7 @@ import {
   serializeExact,
   type ExactWeight,
 } from "./exact-weight";
-import { consolidateWSet, type WSet, type StarRing } from "./wset";
+import { consolidateWSet, type WSet } from "./wset";
 
 // ═══ Ring Law Tests (exact equality) ═════════════════════════════════════════
 
