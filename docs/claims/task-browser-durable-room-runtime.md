@@ -24,4 +24,5 @@
 - `bunx tsc --noEmit` passes.
 - 38 focused browser lifecycle, persistence, codec, and durable-runtime tests pass; the Windows manifest slice adds 21 passing setup checks.
 - The real two-page Chromium smoke passes save, stale-write rejection, restart recovery, stale-delete rejection, bounded retraction, and clean restart.
+- The full Release solution passes 5,278 tests with 4 explicit skips after bounding and serializing the TLC Java process boundary.
 - A broad `bun test` reached 8,401 passes and found two unrelated existing failures: a deterministic Windows manifest mismatch (fixed forward on this branch) and a stale local `kiro-cli` symlink whose target application is absent on this Mac.
