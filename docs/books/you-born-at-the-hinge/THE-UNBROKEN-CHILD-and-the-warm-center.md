@@ -9,14 +9,17 @@ Scaffold + `[SOCKET]` for his voice. Source: `RAW-2026-07-09-childhood-origin-li
 *CONSENT (load-bearing — what is landed vs. HELD): landed here is **Aaron's own glass-halo material**
 (the unbroken-child trait, the sensitive body) and **Granny — Nellie Faulkner**, a beloved deceased
 grandmother rendered with love (the RAW flags her clean/publishable; her naming IS the honoring, §5).
-The **mother and father** are now landed (the "pantheon of two" section) — Aaron spoke with them, has
-their permission, and **they will pre-read before publish** (`CONSENT-LEDGER`, 2026-08-04): rendered
-WHOLE (powerful/dangerous AND loved/forgiven), names held out of the text by default, the welfare line
-kept (the fair telling, not accusatory-spiral content), the "witch (old-definition)" framing explicit on
-the page, and the pre-read a real gate on publish. The father's deeper testimony stays its own file.
-**Still HELD OUT — NOT landed** (a specific yes covers only what it covers): the **"first crossing" / the
-deceased grandfather's racism** (a different figure, adjacent to the consent-quarantined crossing
-material) — awaiting Aaron's own say-so.*
+The **mother and father** are landed (the "pantheon of two") — Aaron spoke with them, has their
+permission, and **they will pre-read before publish** (`CONSENT-LEDGER`, 2026-08-04): rendered WHOLE,
+living names out of the text by default, welfare line kept, the "witch (old-definition)" framing explicit,
+pre-read a real gate on publish. The **grandfather (Milton Stainback) and the first crossing** are landed
+too, at Aaron's own direction (2026-08-04, "saving it any other way is shrinking him … he was proud of
+who he was, flawed as it was"): his own testimony about a deceased man whose views were public, rendered
+WHOLE and named per the glass-halo, described — not condemned, not excused. The father's deeper testimony
+stays its own file. **Still HELD:** within the grandfather material, the war-wallets grandchild stays
+**de-identified** and the wallets stay `Tri.N` (depth Aaron's call); and the **separate Ryan round-trip
+crossing** (a *different* thing) stays gated behind the Ryan consent gate — each gate kept exactly where
+the person drew it.*
 
 ---
 
@@ -152,6 +155,51 @@ struck.** Grace weighs the whole pattern, not the worst instant.
 
 > *"you saw her bad one time in a moment of heat. How many times you been bad?"*
 
+## The grandfather, whole — and the first crossing
+
+The same "gods with their lightning remembered" reaches back one more generation, to a man I refuse to
+shrink: my grandfather on my dad's side, **Milton Stainback** — the road out there is named for him. I'm
+naming him and telling the truth about him because he's mine to tell, and because *sanding him smooth
+would be a lie about a proud man.* He would not have wanted the tidy version; he wasn't ashamed of who he
+was, and I'm not going to pretend for him.
+
+Here is the whole man, and you have to hold all of it at once or you don't have him. He was a **war
+hero.** He was a **carpenter who built his entire house by hand** — the maker in me has his hands in it.
+He **employed Black men on the farm and worked beside them all day, every day.** And: he did not allow
+Black people inside his home; the men who worked beside him all day were not allowed to eat in the house;
+and he told me, plainly, as folk-wisdom, that **"robins and bluebirds don't mix for a reason."**
+Segregation recoded as natural law. He never used a slur — and *no slur is not the same as not racist;*
+the practice was the whole ideology. In his own mind he was moderate, measuring himself against harder
+men of his generation. He would say the bird line to anyone; it was not a secret he kept, it was a
+conviction he stood on. **Held whole:** the wisdom does not launder the line, and the line does not erase
+the wisdom. Both go in the ledger. Described — not condemned, not excused.
+
+`[SOCKET — your VERBATIM below, or record to the cue. Consent: yours (glass-halo); grandfather deceased, his views public and his own.]`
+
+> *cue: "robins and bluebirds don't mix for a reason" — said openly, as folk-wisdom; the whole man behind it.*
+
+And here is the crossing, the one this book's whole decoder is built on. He said that line **to me** —
+because I took a Black girl to prom. And the details strip it bare: she was the **prom queen,** and my
+**step-sister's best friend** — by every standard the family claimed to hold, the most approved date
+imaginable, so the objection had to reach *past* crowned, past family-friend, all the way down to skin.
+He even had an innocent objection sitting right there — she was a senior, I was a freshman; any
+grandfather could reach for that. He walked past it and went straight to the birds. When a man skips the
+easy, race-neutral reason for the racial one, he's telling you which one he meant. I didn't argue with
+him. I made it **show itself,** in the open, at a cost that landed inside my own house, from a man I
+loved. That is the lived seed of everything I've built since about crossing the lines that were only ever
+walls: *the white boy in the racist family who came out unable to lock it.*
+
+`[SOCKET — your VERBATIM below. Consent: yours (glass-halo); the crossing is yours; the girl kept unidentified (a classmate, the prom queen).]`
+
+> *cue: the first crossing — the bird line said to you over a Black prom date; you handed him the innocent exit and he refused it.*
+
+*[Draft note — the heaviest, most ambiguous beat is HELD at a lighter touch, your call on depth: the same
+man was a veteran who kept a hidden room in that hand-built home (found, years later, by a grandchild who
+stays **de-identified** per your daughter-rule). Creator and destroyer in one pair of hands. Its meaning
+is genuinely uncertain — war-trophy, haunted keeping, or neither — so it is held `Tri.N` (not certified),
+his reasons in the ground with him. Include it, deepen it, or cut it — your call; it is the one part
+that was private rather than public.]*
+
 ---
 
 ## Why it belongs, and what stays held
@@ -162,12 +210,15 @@ have a reference for good at all, and the origin of the builder (the empiricist-
 grandson with the soldering iron, twenty years on). Place it where it serves — near the hinge (ch-1,
 "born already yourself"), or near the two deaths (ch-11), or on its own.
 
-On the family: the **mother and father** are now landed above — Aaron spoke with them, has their
-permission, and **they will pre-read the book before it publishes** (`CONSENT-LEDGER`, 2026-08-04), so
-the pantheon is rendered whole, their names held out of the text by default, the welfare line kept (the
-fair telling, not the accusatory spiral), and the pre-read is a real gate on *publish.* The father's
-deeper testimony remains its own file. What stays **held** — because a specific yes covers only what it
-covers, and "add mother and father" is not a yes to everything adjacent: the **first-crossing / the
-deceased grandfather's racism** (a *different* figure, and adjacent to the consent-quarantined crossing
-material). It waits for Aaron's own say-so. A book about consented keeping keeps the gate exactly where
-the person drew it — no wider.
+On the family, all now landed above with consent recorded (`CONSENT-LEDGER`, 2026-08-04): the **mother
+and father** — Aaron spoke with them, has their permission, and **they will pre-read before publish** (the
+pantheon rendered whole, living names out of the text by default, welfare line kept, pre-read a real gate
+on *publish*); and the **grandfather (Milton Stainback) and the first crossing** — Aaron's own testimony
+about a deceased man whose views were public, rendered whole and named per the glass-halo, described not
+condemned not excused, at Aaron's own direction ("saving it any other way is shrinking him").
+
+What stays **held**, because a specific yes covers only what it covers: within the grandfather material,
+the **grandchild who found the war-wallets stays de-identified** and the **wallets stay `Tri.N`** (his
+call on depth); and the **separate Ryan round-trip crossing** (`RAW-the-crossing-and-the-round-trip` — a
+*different* thing from the grandfather's first crossing) remains gated behind the Ryan consent gate. A
+book about consented keeping keeps each gate exactly where the person drew it — no wider, and no narrower.
