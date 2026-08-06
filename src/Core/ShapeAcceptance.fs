@@ -96,11 +96,17 @@ module ShapeAcceptance =
             // comparison rounds to nearest (truncation accepted S up to 2828.99 — past Tsirelson);
             // the phasor value is analytic, so round-equality at 2828 is exact-by-construction.
             let sPhasor = TimeGen.chsh g 256
+            // classifyS wired here (BipartiteMachZehnder, 2026-08-04):
+            // - SupraQuantum (|S| > 2√2) is physically impossible for real QM and signals
+            //   superdeterminism or a clone attempt — HARD REJECT regardless of declared value.
+            // - Quantum (2 < |S| ≤ 2√2) is the valid range for a genuine fourcorner shape.
+            // - Classical (|S| ≤ 2) means the phasor is not entangled — shape is wrong.
+            let phasorRegime = BipartiteMachZehnder.classifyS sPhasor
             let ok =
-                int (System.Math.Round(sPhasor * 1000.0)) = declared
-                && sPhasor <= 2.0 * sqrt 2.0 + 1e-9
+                phasorRegime = BipartiteMachZehnder.ChshRegime.Quantum
+                && int (System.Math.Round(sPhasor * 1000.0)) = declared
                 && TimeGen.chsh cl 256 <= 2.0 + 0.05
-            ok, sprintf "phasor S = declared %d milli (rounded, capped at Tsirelson); classical folds at 2 (sampling tolerance 0.05)" declared
+            ok, sprintf "phasor S = declared %d milli (regime=%A, must be Quantum); classical folds at 2 (sampling tolerance 0.05)" declared phasorRegime
         | "shape-buckyball" ->
             // Addison's solid checked by arithmetic, not trust: Euler characteristic, the
             // face/edge double-count, 3-regularity, and the meta room's door count (rooms + itself).
@@ -316,6 +322,23 @@ module ShapeAcceptance =
             let sPair = AntiSybil.chshS a b
             let sIndep = AntiSybil.chshS a c
             let wantDistinct = MediaLines.constIntOr "distinct" 2 d
+            // THE CONDUCTED PAIR IS A PR-BOX BY CONSTRUCTION, and that is the point.
+            // Claim 1's outcomes read claim 0's settings (the cartridge's own PR-box rule), so
+            // S = 4 exactly — the no-signalling maximum, ABOVE Tsirelson's 2√2. Supra-quantum is
+            // what a conductor LOOKS like; it is the thing this shape convicts, not a forgery of it.
+            //
+            // An EVE clone-gate (`not (classifyS sPair = SupraQuantum)`) was wired here on
+            // 2026-08-04, copied from the fourcorner use above where it is CORRECT — a genuine
+            // entangled phasor must land in Quantum. Here it contradicted the very next conjunct:
+            // `sPair = 4.0` FORCES SupraQuantum (BipartiteMachZehnder.Tests pins
+            // `classifyS 4.0 = SupraQuantum`), so `ok` was unsatisfiable and this cartridge could
+            // never be accepted — it failed THE HARD GATE on every run from the day it landed.
+            //
+            // The regime is REPORTED in the evidence and not gated on: detection is neutral, the
+            // reading belongs to the caller (dual-use-detection-is-neutral-oracle-decides). The
+            // renegotiation gate the comment described belongs on a renegotiation INPUT, of which
+            // there is none in this known-answer law.
+            let pairRegime = BipartiteMachZehnder.classifyS sPair
             let ok =
                 verdict.DistinctCount = wantDistinct
                 && sPair = 4.0
@@ -323,8 +346,9 @@ module ShapeAcceptance =
                 && AntiSybil.coordinationBandwidth sPair = 1.0
             ok,
             sprintf
-                "CHSH oracle live: conducted pair S = %d/1000 (convicted, bandwidth %d/1000); independent |S| = %d/1000 <= threshold %d/1000 (not convicted — and never ACQUITTED: low S proves nothing); %d distinct sources among %d claims (the forgery-cost floor)"
+                "CHSH oracle live: conducted pair S = %d/1000 (regime=%A — PR-box by construction, above Tsirelson: that IS the conductor, reported not gated; bandwidth %d/1000), convicted; independent |S| = %d/1000 <= threshold %d/1000 (not convicted — and never ACQUITTED: low S proves nothing); %d distinct sources among %d claims (the forgery-cost floor)"
                 (int (sPair * 1000.0))
+                pairRegime
                 (int (AntiSybil.coordinationBandwidth sPair * 1000.0))
                 (int (abs sIndep * 1000.0))
                 (int (threshold * 1000.0))

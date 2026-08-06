@@ -1,52 +1,52 @@
 {
   "schema": "zeta.vault-state.v1",
-  "status": "stale",
-  "reason": "latest frame 92min ago",
-  "generated_at_ms": 1785630344517,
-  "tick_frame_t": "2026-08-01T22:53:50.323Z",
-  "total_events_read": 949,
+  "status": "live",
+  "reason": "latest frame within 30min",
+  "generated_at_ms": 1785997063670,
+  "tick_frame_t": "2026-08-06T06:14:50.396Z",
+  "total_events_read": 951,
   "vaults": [
     {
       "id": "observatory",
-      "status": "stale",
+      "status": "live",
       "confidence": {
-        "value": 0.5,
-        "epsilon": 0.25
+        "value": 0.7124999999999999,
+        "epsilon": 0.1
       },
       "rooms": [
         {
           "id": "signal-triage",
           "confidence": {
-            "value": 0.5,
-            "epsilon": 0.29198805555555557
+            "value": 0.73,
+            "epsilon": 0.1
           },
           "activity_log": [
             {
-              "at": "2026-08-01T15:13:48.817Z",
+              "at": "2026-08-06T06:17:42.877Z",
+              "agent": "otto",
+              "kind": "edit_grammar",
+              "summary": "edit_grammar: propose extending the action grammar"
+            },
+            {
+              "at": "2026-08-06T03:27:39.333Z",
               "agent": "soraya",
               "kind": "edit_grammar",
               "summary": "edit_grammar: propose extending the action grammar"
             },
             {
-              "at": "2026-08-01T15:13:18.863Z",
-              "agent": "otto",
-              "kind": "edit_grammar",
-              "summary": "edit_grammar: propose extending the action grammar"
-            },
-            {
-              "at": "2026-08-01T15:13:16.261Z",
+              "at": "2026-08-06T03:26:56.374Z",
               "agent": "alexa",
               "kind": "edit_grammar",
               "summary": "edit_grammar: propose extending the action grammar"
             },
             {
-              "at": "2026-08-01T14:59:30.227Z",
+              "at": "2026-08-06T03:26:48.788Z",
               "agent": "otto",
               "kind": "edit_grammar",
               "summary": "edit_grammar: propose extending the action grammar"
             },
             {
-              "at": "2026-08-01T14:58:42.052Z",
+              "at": "2026-08-01T15:13:48.817Z",
               "agent": "soraya",
               "kind": "edit_grammar",
               "summary": "edit_grammar: propose extending the action grammar"
@@ -57,36 +57,36 @@
         {
           "id": "demand-forecast",
           "confidence": {
-            "value": 0.5,
-            "epsilon": 0.29198805555555557
+            "value": 0.73,
+            "epsilon": 0.1
           },
           "activity_log": [
             {
-              "at": "2026-08-01T15:13:48.817Z",
+              "at": "2026-08-06T06:17:42.877Z",
+              "agent": "otto",
+              "kind": "edit_grammar",
+              "summary": "edit_grammar: propose extending the action grammar"
+            },
+            {
+              "at": "2026-08-06T03:27:39.333Z",
               "agent": "soraya",
               "kind": "edit_grammar",
               "summary": "edit_grammar: propose extending the action grammar"
             },
             {
-              "at": "2026-08-01T15:13:18.863Z",
-              "agent": "otto",
-              "kind": "edit_grammar",
-              "summary": "edit_grammar: propose extending the action grammar"
-            },
-            {
-              "at": "2026-08-01T15:13:16.261Z",
+              "at": "2026-08-06T03:26:56.374Z",
               "agent": "alexa",
               "kind": "edit_grammar",
               "summary": "edit_grammar: propose extending the action grammar"
             },
             {
-              "at": "2026-08-01T14:59:30.227Z",
+              "at": "2026-08-06T03:26:48.788Z",
               "agent": "otto",
               "kind": "edit_grammar",
               "summary": "edit_grammar: propose extending the action grammar"
             },
             {
-              "at": "2026-08-01T14:58:42.052Z",
+              "at": "2026-08-01T15:13:48.817Z",
               "agent": "soraya",
               "kind": "edit_grammar",
               "summary": "edit_grammar: propose extending the action grammar"
@@ -123,25 +123,25 @@
           "dwellers": [
             {
               "agent_id": "otto",
-              "last_seen": "2026-08-01T15:13:18.863Z",
+              "last_seen": "2026-08-06T06:17:42.877Z",
               "hat_id": "healer",
               "last_action": {
                 "kind": "edit_grammar",
-                "at": "2026-08-01T15:13:18.863Z"
+                "at": "2026-08-06T06:17:42.877Z"
               },
               "reputation": {
-                "value": 0.11666666666666665,
-                "epsilon": -0.1091089451179962,
+                "value": 0.1,
+                "epsilon": -0.17407765595569785,
                 "silent": false
               },
               "reputation_history": [
-                0.15625,
-                0.11458333333333333,
-                0.125,
-                0.13541666666666666,
                 0.125,
                 0.125,
-                0.09375
+                0.07291666666666667,
+                0,
+                0,
+                0,
+                0.020833333333333332
               ]
             }
           ]
@@ -160,9 +160,15 @@
           "id": "merge-floor",
           "confidence": {
             "value": 0.5,
-            "epsilon": 0.2920784888888889
+            "epsilon": 0.22846471111111114
           },
           "activity_log": [
+            {
+              "at": "2026-08-06T03:26:56.374Z",
+              "agent": "alexa",
+              "kind": "edit_grammar",
+              "summary": "edit_grammar: propose extending the action grammar"
+            },
             {
               "at": "2026-08-01T15:13:16.261Z",
               "agent": "alexa",
@@ -186,36 +192,30 @@
               "agent": "alexa",
               "kind": "edit_grammar",
               "summary": "edit_grammar: propose extending the action grammar"
-            },
-            {
-              "at": "2026-08-01T11:07:45.905Z",
-              "agent": "alexa",
-              "kind": "edit_grammar",
-              "summary": "edit_grammar: propose extending the action grammar"
             }
           ],
           "dwellers": [
             {
               "agent_id": "alexa",
-              "last_seen": "2026-08-01T15:13:16.261Z",
+              "last_seen": "2026-08-06T03:26:56.374Z",
               "hat_id": "merge",
               "last_action": {
                 "kind": "edit_grammar",
-                "at": "2026-08-01T15:13:16.261Z"
+                "at": "2026-08-06T03:26:56.374Z"
               },
               "reputation": {
-                "value": 0.12708333333333333,
-                "epsilon": -0.10721125348377948,
+                "value": 0.1,
+                "epsilon": -0.17407765595569785,
                 "silent": false
               },
               "reputation_history": [
-                0.15625,
-                0.11458333333333333,
                 0.125,
                 0.13541666666666666,
-                0.125,
-                0.125,
-                0.125
+                0.07291666666666667,
+                0,
+                0,
+                0,
+                0.010416666666666666
               ]
             }
           ]
@@ -224,9 +224,15 @@
           "id": "archive-stacks",
           "confidence": {
             "value": 0.5,
-            "epsilon": 0.29198805555555557
+            "epsilon": 0.22834538055555556
           },
           "activity_log": [
+            {
+              "at": "2026-08-06T03:27:39.333Z",
+              "agent": "soraya",
+              "kind": "edit_grammar",
+              "summary": "edit_grammar: propose extending the action grammar"
+            },
             {
               "at": "2026-08-01T15:13:48.817Z",
               "agent": "soraya",
@@ -250,36 +256,30 @@
               "agent": "soraya",
               "kind": "edit_grammar",
               "summary": "edit_grammar: propose extending the action grammar"
-            },
-            {
-              "at": "2026-08-01T11:07:49.171Z",
-              "agent": "soraya",
-              "kind": "edit_grammar",
-              "summary": "edit_grammar: propose extending the action grammar"
             }
           ],
           "dwellers": [
             {
               "agent_id": "soraya",
-              "last_seen": "2026-08-01T15:13:48.817Z",
+              "last_seen": "2026-08-06T03:27:39.333Z",
               "hat_id": "archive",
               "last_action": {
                 "kind": "edit_grammar",
-                "at": "2026-08-01T15:13:48.817Z"
+                "at": "2026-08-06T03:27:39.333Z"
               },
               "reputation": {
-                "value": 0.11597222222222221,
-                "epsilon": -0.10976425998969035,
+                "value": 0.1,
+                "epsilon": -0.17677669529663687,
                 "silent": false
               },
               "reputation_history": [
-                0.15625,
-                0.11458333333333333,
-                0.11458333333333333,
-                0.13541666666666666,
                 0.125,
                 0.125,
-                0.09375
+                0.07291666666666667,
+                0,
+                0,
+                0,
+                0.010416666666666666
               ]
             }
           ]
@@ -304,25 +304,25 @@
           "dwellers": [
             {
               "agent_id": "alexa",
-              "last_seen": "2026-08-01T15:13:16.261Z",
+              "last_seen": "2026-08-06T03:26:56.374Z",
               "hat_id": "codegen",
               "last_action": {
                 "kind": "edit_grammar",
-                "at": "2026-08-01T15:13:16.261Z"
+                "at": "2026-08-06T03:26:56.374Z"
               },
               "reputation": {
-                "value": 0.12708333333333333,
-                "epsilon": -0.10721125348377948,
+                "value": 0.1,
+                "epsilon": -0.17407765595569785,
                 "silent": false
               },
               "reputation_history": [
-                0.15625,
-                0.11458333333333333,
                 0.125,
                 0.13541666666666666,
-                0.125,
-                0.125,
-                0.125
+                0.07291666666666667,
+                0,
+                0,
+                0,
+                0.010416666666666666
               ]
             }
           ]
@@ -331,45 +331,45 @@
     },
     {
       "id": "economy",
-      "status": "cold",
+      "status": "live",
       "confidence": {
-        "value": 0.2,
-        "epsilon": 0.5
+        "value": 0.8,
+        "epsilon": 0.1
       },
       "rooms": [
         {
           "id": "reputation-engine",
           "confidence": {
-            "value": 0.5,
-            "epsilon": 0.29198805555555557
+            "value": 0.73,
+            "epsilon": 0.1
           },
           "activity_log": [
             {
-              "at": "2026-08-01T15:13:48.817Z",
+              "at": "2026-08-06T06:17:42.877Z",
+              "agent": "otto",
+              "kind": "edit_grammar",
+              "summary": "edit_grammar: propose extending the action grammar"
+            },
+            {
+              "at": "2026-08-06T03:27:39.333Z",
               "agent": "soraya",
               "kind": "edit_grammar",
               "summary": "edit_grammar: propose extending the action grammar"
             },
             {
-              "at": "2026-08-01T15:13:18.863Z",
-              "agent": "otto",
-              "kind": "edit_grammar",
-              "summary": "edit_grammar: propose extending the action grammar"
-            },
-            {
-              "at": "2026-08-01T15:13:16.261Z",
+              "at": "2026-08-06T03:26:56.374Z",
               "agent": "alexa",
               "kind": "edit_grammar",
               "summary": "edit_grammar: propose extending the action grammar"
             },
             {
-              "at": "2026-08-01T14:59:30.227Z",
+              "at": "2026-08-06T03:26:48.788Z",
               "agent": "otto",
               "kind": "edit_grammar",
               "summary": "edit_grammar: propose extending the action grammar"
             },
             {
-              "at": "2026-08-01T14:58:42.052Z",
+              "at": "2026-08-01T15:13:48.817Z",
               "agent": "soraya",
               "kind": "edit_grammar",
               "summary": "edit_grammar: propose extending the action grammar"
