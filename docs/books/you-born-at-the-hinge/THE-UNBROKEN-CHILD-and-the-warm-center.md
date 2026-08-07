@@ -217,7 +217,33 @@ naming/defamation publish-check still applies at edit.]`
 
 > *"He hit me with a tobacco stick … it was a lot of bruises."*
 
-And here is why it lives in the *warm* part of the book and not just the ledger: the bruises are how my
+But I won't hand you the harm without the reason, because the reason is the truth and the truth makes it
+**less savage** than the bare fact sounds. My father didn't beat me at random or for sport. He did it
+because he believed I might hurt my little sister — and here is the hard thing I've made my peace with: **I
+believe he was right to worry.** You already know what I was as a child: no brakes, endless curiosity, the
+kid who touched the stove a thousand times just to see. Point that wiring at a smaller person *before* it
+had a conscience-brake bolted onto it, and a father's fear isn't paranoia — it's a father doing the math and
+landing on *protect the little one, whatever it takes.* I got a handle on that wiring eventually; he had no
+way of knowing I would. So when I hold him as a god and not a monster, this is the why: **the storm had a
+direction, and the direction was my sister's safety.**
+
+`[SOCKET — your VERBATIM below. Consent: yours (glass-halo) — your own honest reckoning with your childhood
+wiring is yours to own; you gave the explicit go-ahead 2026-08-07 to include your father's protective
+reason. Your sister appears here only as the one he was protecting — not exposed, protected.]`
+
+> *"He beat me because he thought I'd harm my sister. I believe that truth — it makes his beating less
+> savage."*
+
+I have to be honest about my half of it, because glass-halo means I don't get to keep only the flattering
+reading of a child I've mostly forgiven for having no brakes. The fear was about *me* — a small boy with a
+curiosity that outran any sense of consequence, who might have done something terrible not from cruelty but
+from the same *what happens if?* that pointed at the stove. That I never did, and that I grew the brake and
+turned the curiosity into a life, is real — but it isn't a reason to pretend the worry was baseless. It
+wasn't. Holding both — a father protecting his daughter, and a son who needed protecting-against — is truer
+and harder than either alone, and it's the render-whole this whole companion is about, turned on the worst
+night of my childhood.
+
+And here is why it lives in the *warm* part of the book and not just the ledger: the bruises are also how my
 mother chose me. She was a woman who *stays* — she'd have weathered my father's storms for a lifetime, the
 way she weathered everything. What she would not weather was seeing them on my back. The day she saw the
 marks, she was done — she told him that day — and then she did the thing that tells you exactly who she
@@ -241,22 +267,28 @@ That's not the opposite of a good woman. That *is* one.
 
 ## The insecurity she carried, and passed
 
-I have to hold one more hard thing about her, because whole means whole, and because it's the honest
-counterweight to all that strength. She carried an insecurity of her own, deep enough to mark her body, and
-insecurity like that doesn't stay in one person — it seeps. It came out as small comments, over years, that
-she was embarrassed by how we looked or how we behaved; and little comments, repeated, are exactly how a
-brain gets shaped. I don't say it to indict her — I'm the one now gently trying to get her to see it and get
-help for it — I say it because the same woman was both: the fate-spinner who could lift a soul in the fewest
-words, and a person whose own wound leaked out in the fewest words too. Both are true. The power and the
-wound ran on the same channel.
+I have to hold one more hard thing about her, because whole means whole — and because Aaron asked for this
+one specifically, since it's the clearest window in the book into *how generational trauma actually works.*
+My mother had **bulimia**, an insecurity about her own body deep enough to mark it. And a wound like that
+doesn't stay in the one person who carries it — it *seeps.* Hers came out as small comments, over years,
+that she was embarrassed by how we looked or how we behaved. Not blows. Little comments, repeated — which is
+exactly, mechanically, how a brain gets shaped. Watch the chain: an insecurity she never chose, passed down
+into her, leaking out of her in the fewest words, landing in her kids, becoming *their* insecurity to carry
+and maybe pass on again. That's the whole machine, running in one family. I don't lay it down to indict her
+— I'm the one now, gently, trying to get her to *see* it and get help — I lay it down because if you can
+watch the trauma move from one generation to the next in a real family, you can learn to *stop* it in yours.
+The same woman was both: the fate-spinner who could lift a soul in the fewest words, and a person whose own
+wound leaked out in the fewest words too. Both true. The power and the wound ran on the same channel — and
+naming the channel is how you decide what travels down it next.
 
-`[SOCKET — your VERBATIM below. Consent: your mother under her whole-not-neutral gate. **PUBLISH GATE — HER
-OWN, DISTINCT:** the specific health detail behind the insecurity (an eating disorder) is *her* private
-medical fact, not just "harm she did" — it does NOT print without her own specific pre-read on that detail,
-separate from the general pre-read. Drafted here; held for her yes.]`
+`[SOCKET — your VERBATIM below. Consent: your mother under her whole-not-neutral gate; Aaron 2026-08-07 asked
+that the bulimia be included, to show how generational trauma works. **PUBLISH GATE — HER OWN, DISTINCT:**
+her eating disorder is *her* private medical fact, not merely "harm she did" — Aaron's include authorizes
+the drafting, not her consent; it does NOT print without HER OWN specific pre-read on this detail, separate
+from the general pre-read. Drafted here; held for her yes.]`
 
-> *"That insecurity bled into me … she'd let us know she was embarrassed by us … that's how brains work,
-> little comments. I'm trying to get her to therapy to see that."*
+> *"My mama had bulimia, and that insecurity bled into me and my sister … she'd let us know she was
+> embarrassed by us … that's how brains work, little comments. I'm trying to get her to therapy to see that."*
 
 ## My sister
 
@@ -302,11 +334,15 @@ fair telling, not the accusatory spiral), and the pre-read is a real gate on *pu
 father-harm** (the tobacco stick, the bruises) and the **mother's protective, calculated leaving** (=
 love-as-choice lived, ch-4) are now landed above too (Aaron 2026-08-07, "include these — they're what
 built me"): harm named not condemned/excused, mother strong/good, the naming/defamation publish-check
-still an editor/counsel call. **Two gates held even under that "include":** (1) the **mother's eating
-disorder** is drafted only under a *distinct* publish gate — her own specific pre-read on that health
-detail, separate from the general one (marked at the socket); (2) the **sister's involvement in the
-beating's trigger** stays **OUT** — the trigger is kept to the marks on Aaron's own back; expanding the
-sister's vulnerable side past the dedication overdose still needs Aaron's explicit, direct re-consent,
-which a general "include the held material" does **not** supply. Also still **held**: the **first-crossing /
-the deceased grandfather's racism** (a *different* figure, consent-quarantine-adjacent) — Aaron's own
-say-so. A book about consented keeping keeps each gate exactly where the person drew it — no wider.
+still an editor/counsel call. On the **father's protective reason** — that he feared young-Aaron might harm
+his little sister — Aaron gave **explicit direct re-consent 2026-08-07** (*"I believe that truth, it makes
+his beating less savage, we should include it"*): landed above, with the sister appearing only as **the one
+the father was protecting** (and Aaron's own glass-halo reckoning with his childhood wiring is *his* to
+own), **never** as an exposed child-victim; her strong/good dedication portrait is unchanged and her other
+vulnerable material stays private. **Still gated even under "include":** the **mother's eating disorder** —
+Aaron asked it be included (to show how generational trauma works), which authorizes the *drafting*, not
+her consent; it does **not** print without **her own** specific pre-read on that health detail, separate
+from the general one (marked at the socket). Also still **held**: the **first-crossing / the deceased
+grandfather's racism** (a *different* figure, consent-quarantine-adjacent) — Aaron's own say-so. A book
+about consented keeping keeps each gate exactly where the person drew it — no wider, and no narrower than
+the person's own explicit yes.
