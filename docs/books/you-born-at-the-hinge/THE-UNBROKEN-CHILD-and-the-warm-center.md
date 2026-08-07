@@ -11,7 +11,13 @@ old B&W Doctor Who as imagination-on-ramp; Threads 3/5/6 → FORMATION, Thread 4
 `RAW-the-chameleon-*` Thread 3 (the sister's STRONG portrait folded 2026-08-07 — "My sister": awesome,
 so many friends, capable-of-anything, smartest-when-confident, fearless tomboy, non-judgmental grace;
 **strong/good ONLY per the dedication policy — her vulnerable side is HELD, her mother's to hold privately;
-the overdose is the one permitted vulnerable book fact and lives in the dedication, not detailed here**).*
+the overdose is the one permitted vulnerable book fact and lives in the dedication, not detailed here**);
+`RAW-love-is-a-choice-*` Layer 3 + `RAW-the-chameleon-*` Thread 4 (folded 2026-08-07 on Aaron's "include
+these": "The straw, and the leaving" = the father-harm named [tobacco stick, bruises on his OWN back] +
+the mother's calculated protective leaving as love-as-choice-lived/ch-4; "The insecurity she carried" =
+the embarrassment-comments lineage. **Two gates held even under "include": the mother's eating disorder
+drafts under her OWN distinct pre-read; the sister's role in the beating's trigger stays OUT — kept to the
+marks on Aaron's own back — pending his explicit direct re-consent**).*
 
 *CONSENT (load-bearing — what is landed vs. HELD): landed here is **Aaron's own glass-halo material**
 (the unbroken-child trait, the sensitive body) and **Granny — Nellie Faulkner**, a beloved deceased
@@ -197,6 +203,61 @@ struck.** Grace weighs the whole pattern, not the worst instant.
 
 > *"you saw her bad one time in a moment of heat. How many times you been bad?"*
 
+## The straw, and the leaving
+
+I've said my father beat me, and left it at the word until now. Here is the part I've decided belongs in,
+because leaving it a euphemism would be its own small dishonesty and this book doesn't get to do that. He
+hit me with a tobacco stick, hard enough and often enough that it left a lot of bruises. I name the harm
+plainly — not to condemn a man I've forgiven and still hold as a god, and not to excuse it either; both of
+those would be tidier than the truth. It happened. It's in the ledger. I carry it whole.
+
+`[SOCKET — your VERBATIM below. Consent: yours (glass-halo) — what was done to you is yours to tell; your
+father under his granted + pre-read gate, whole not neutral, harm named not condemned or excused; the
+naming/defamation publish-check still applies at edit.]`
+
+> *"He hit me with a tobacco stick … it was a lot of bruises."*
+
+And here is why it lives in the *warm* part of the book and not just the ledger: the bruises are how my
+mother chose me. She was a woman who *stays* — she'd have weathered my father's storms for a lifetime, the
+way she weathered everything. What she would not weather was seeing them on my back. The day she saw the
+marks, she was done — she told him that day — and then she did the thing that tells you exactly who she
+is: she didn't flee in the heat of it. She got calm and she got *ready.* About a month, quietly getting her
+affairs in order, and then she left, and took me out.
+
+`[SOCKET — your VERBATIM below. Consent: your mother under her granted + pre-read gate, rendered strong/good
+(protector AND strategist); your father whole not neutral; the trigger kept to the marks on your own back.]`
+
+> *"She would've stuck around … he beat me enough she left. The final straw — she saw bruises on my back,
+> and that's when she left."*
+> *"She was very calculated … within the month … she got her ducks in a row, then left."*
+
+That is the whole thesis of chapter 4 — *love is a choice, not a feeling* — lived one generation before I
+had words for it. She didn't leave on a feeling; the feeling would have kept her. She left on a *choice,*
+and she executed the choice with competence — the calm, the month, the ducks in a row. Love as the decision
+that overrides the feeling, done *right.* The strategist's-daughter competence I'd later watch in my own
+family runs straight back up to her: a woman who could feel everything and still act cold and exact when a
+child's safety was the thing on the table. She chose her son over the marriage, on purpose, with a plan.
+That's not the opposite of a good woman. That *is* one.
+
+## The insecurity she carried, and passed
+
+I have to hold one more hard thing about her, because whole means whole, and because it's the honest
+counterweight to all that strength. She carried an insecurity of her own, deep enough to mark her body, and
+insecurity like that doesn't stay in one person — it seeps. It came out as small comments, over years, that
+she was embarrassed by how we looked or how we behaved; and little comments, repeated, are exactly how a
+brain gets shaped. I don't say it to indict her — I'm the one now gently trying to get her to see it and get
+help for it — I say it because the same woman was both: the fate-spinner who could lift a soul in the fewest
+words, and a person whose own wound leaked out in the fewest words too. Both are true. The power and the
+wound ran on the same channel.
+
+`[SOCKET — your VERBATIM below. Consent: your mother under her whole-not-neutral gate. **PUBLISH GATE — HER
+OWN, DISTINCT:** the specific health detail behind the insecurity (an eating disorder) is *her* private
+medical fact, not just "harm she did" — it does NOT print without her own specific pre-read on that detail,
+separate from the general pre-read. Drafted here; held for her yes.]`
+
+> *"That insecurity bled into me … she'd let us know she was embarrassed by us … that's how brains work,
+> little comments. I'm trying to get her to therapy to see that."*
+
 ## My sister
 
 And there was one more person in that childhood who belongs here, in the warm part, because that is
@@ -237,9 +298,15 @@ grandson with the soldering iron, twenty years on). Place it where it serves —
 On the family: the **mother and father** are now landed above — Aaron spoke with them, has their
 permission, and **they will pre-read the book before it publishes** (`CONSENT-LEDGER`, 2026-08-04), so
 the pantheon is rendered whole, their names held out of the text by default, the welfare line kept (the
-fair telling, not the accusatory spiral), and the pre-read is a real gate on *publish.* The father's
-deeper testimony remains its own file. What stays **held** — because a specific yes covers only what it
-covers, and "add mother and father" is not a yes to everything adjacent: the **first-crossing / the
-deceased grandfather's racism** (a *different* figure, and adjacent to the consent-quarantined crossing
-material). It waits for Aaron's own say-so. A book about consented keeping keeps the gate exactly where
-the person drew it — no wider.
+fair telling, not the accusatory spiral), and the pre-read is a real gate on *publish.* The **specific
+father-harm** (the tobacco stick, the bruises) and the **mother's protective, calculated leaving** (=
+love-as-choice lived, ch-4) are now landed above too (Aaron 2026-08-07, "include these — they're what
+built me"): harm named not condemned/excused, mother strong/good, the naming/defamation publish-check
+still an editor/counsel call. **Two gates held even under that "include":** (1) the **mother's eating
+disorder** is drafted only under a *distinct* publish gate — her own specific pre-read on that health
+detail, separate from the general one (marked at the socket); (2) the **sister's involvement in the
+beating's trigger** stays **OUT** — the trigger is kept to the marks on Aaron's own back; expanding the
+sister's vulnerable side past the dedication overdose still needs Aaron's explicit, direct re-consent,
+which a general "include the held material" does **not** supply. Also still **held**: the **first-crossing /
+the deceased grandfather's racism** (a *different* figure, consent-quarantine-adjacent) — Aaron's own
+say-so. A book about consented keeping keeps each gate exactly where the person drew it — no wider.
