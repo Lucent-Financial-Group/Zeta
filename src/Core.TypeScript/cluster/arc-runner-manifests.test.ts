@@ -28,6 +28,7 @@ const APPS = join(REPO_ROOT, "full-ai-cluster", "k8s", "applications");
 const CONTROLLER = join(APPS, "arc-controller", "Application.yaml");
 const RUNNER_SET = join(APPS, "arc-runner-set", "Application.yaml");
 const MODEL_PVC = join(APPS, "arc-runner-set", "model-cache-pvc.yaml");
+const HEALTH_WORKFLOW = join(REPO_ROOT, ".github", "workflows", "k8s-argocd-health-test.yml");
 
 function load(path: string): Record<string, unknown> {
   return parse(readFileSync(path, "utf8")) as Record<string, unknown>;
@@ -64,6 +65,25 @@ describe("both ARC manifests exist and parse", () => {
       expect(doc.apiVersion).toBe("argoproj.io/v1alpha1");
       expect((doc.metadata as { namespace: string }).namespace).toBe("argocd");
     }
+  });
+});
+
+describe("included-cluster ARC failure diagnostics", () => {
+  test("retain pod state plus current and previous controller logs", () => {
+    const workflow = load(HEALTH_WORKFLOW);
+    const jobs = workflow.jobs as Record<
+      string,
+      { steps?: { name?: string; run?: string }[] }
+    >;
+    const diagnostics = jobs["live-kind-included"]?.steps?.find(
+      (step) => step.name === "Print cluster diagnostics",
+    );
+    const run = diagnostics?.run ?? "";
+    const controllerSelector = "app.kubernetes.io/name=gha-rs-controller";
+
+    expect(run).toContain(`describe pods -l ${controllerSelector}`);
+    expect(run).toContain(`logs -l ${controllerSelector}`);
+    expect(run).toContain("--previous=true");
   });
 });
 
