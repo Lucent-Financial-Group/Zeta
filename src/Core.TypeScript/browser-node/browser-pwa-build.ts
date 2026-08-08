@@ -46,8 +46,13 @@ async function bundle(entrypoint: string, outDir: string, naming: string): Promi
 /** Emit the self-contained worker and importable Dark Hall PWA runtime. */
 export async function buildBrowserPwaAssets(options: BrowserPwaBuildOptions): Promise<BrowserPwaBuildResult> {
   if (options.outDir.length === 0) return { ok: false, error: "out-dir must be a non-empty path" };
-  const outDir = resolve(options.outDir);
-  mkdirSync(outDir, { recursive: true });
+  let outDir: string;
+  try {
+    outDir = resolve(options.outDir);
+    mkdirSync(outDir, { recursive: true });
+  } catch (error) {
+    return { ok: false, error: message(error) };
+  }
 
   const worker = await bundle(join(import.meta.dir, "browser-service-worker-entry.ts"), outDir, "sw.js");
   if (!worker.ok) return worker;

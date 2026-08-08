@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, test } from "bun:test";
-import { existsSync, mkdtempSync, readFileSync, rmSync } from "node:fs";
+import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { buildBrowserPwaAssets } from "./browser-pwa-build";
@@ -38,5 +38,17 @@ describe("browser PWA production build", () => {
       ok: false,
       error: "out-dir must be a non-empty path",
     });
+  });
+
+  test("returns a typed refusal when the output path cannot be created", async () => {
+    const root = mkdtempSync(join(tmpdir(), "zeta-browser-pwa-refusal-"));
+    roots.push(root);
+    const filePath = join(root, "not-a-directory");
+    writeFileSync(filePath, "occupied", "utf8");
+
+    const result = await buildBrowserPwaAssets({ outDir: filePath });
+
+    expect(result.ok).toBe(false);
+    if (!result.ok) expect(result.error.length).toBeGreaterThan(0);
   });
 });
