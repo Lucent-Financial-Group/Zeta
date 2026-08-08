@@ -49,6 +49,11 @@ function source(doc: Record<string, unknown>): Record<string, unknown> {
   return (doc.spec as { source?: Record<string, unknown> }).source ?? {};
 }
 
+function syncOptions(doc: Record<string, unknown>): string[] {
+  const spec = doc.spec as { syncPolicy?: { syncOptions?: unknown[] } };
+  return (spec.syncPolicy?.syncOptions ?? []).map(String);
+}
+
 describe("both ARC manifests exist and parse", () => {
   test("the files the root App-of-Apps will pick up are present", () => {
     // The root includes '{*/Application.yaml,Application.yaml}'. A supporting manifest that
@@ -149,6 +154,15 @@ describe("chart versions are pinned", () => {
         "ghcr.io/actions/actions-runner-controller-charts",
       );
     }
+  });
+});
+
+describe("controller CRDs use server-side apply", () => {
+  test("large schemas never enter the last-applied annotation", () => {
+    const options = syncOptions(load(CONTROLLER));
+
+    expect(options).toContain("CreateNamespace=true");
+    expect(options).toContain("ServerSideApply=true");
   });
 });
 
