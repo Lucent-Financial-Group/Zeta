@@ -45,7 +45,7 @@ import {
   type Participant,
 } from "./participant";
 import { PersonaSummoner } from "../peer-call/summon";
-import { createPhaseClock, stampPhase, type PhaseClock } from "./phase-clock";
+import { createPhaseClock, stampPhase, resumePhaseFromEvents, type PhaseClock } from "./phase-clock";
 
 interface CliArgs {
   by: string;
@@ -176,7 +176,34 @@ async function main(): Promise<number> {
 
   // The phase clock: time as a 4th traveler. Created BEFORE the sink so append IS tick.
   // Each agent carries its own phase clock — no wall-clock needed for multi-planet.
-  const phaseClock: PhaseClock = createPhaseClock();
+  // PERSISTENCE: resume from the highest phase this agent has ever produced.
+  // Missed ticks between sessions are erasures — the ECC (Reed-Solomon) covers the gap.
+  // You don't need every intermediate tick, just the latest anchor to continue.
+  const resumePoint = (() => {
+    try {
+      const { readdirSync, readFileSync } = require("node:fs") as typeof import("node:fs");
+      const { join } = require("node:path") as typeof import("node:path");
+      const files = readdirSync(args.eventDir).filter((f: string) => f.endsWith(".json")).sort();
+      // Read the last ~20 events (most recent) to find our highest phase
+      const recent = files.slice(-20);
+      let maxPhase = -1;
+      let maxSeed = 4; // COMMON_SEED
+      for (const f of recent) {
+        try {
+          const raw = JSON.parse(readFileSync(join(args.eventDir, f), "utf-8"));
+          if (raw.by === args.by && raw.phase?.phase > maxPhase) {
+            maxPhase = raw.phase.phase;
+            maxSeed = raw.phase.derived;
+          }
+        } catch { /* skip malformed */ }
+      }
+      return maxPhase >= 0 ? { phase: maxPhase, seed: maxSeed } : undefined;
+    } catch { return undefined; }
+  })();
+  const phaseClock: PhaseClock = createPhaseClock(undefined, resumePoint);
+  if (resumePoint) {
+    console.log(`[phase] resumed from phase ${resumePoint.phase} (seed: ${resumePoint.seed})`);
+  }
 
   const sink = folderSink({ eventDir: args.eventDir, by: args.by, phaseClock, ...(localCommit ? { commit: localCommit } : {}) });
 
