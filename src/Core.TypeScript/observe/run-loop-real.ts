@@ -45,7 +45,7 @@ import {
   type Participant,
 } from "./participant";
 import { PersonaSummoner } from "../peer-call/summon";
-import { createPhaseClock, stampPhase, resumePhaseFromEvents, type PhaseClock } from "./phase-clock";
+import { createPhaseClock, stampPhase, type PhaseClock } from "./phase-clock";
 
 interface CliArgs {
   by: string;
