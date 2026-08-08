@@ -205,6 +205,31 @@ async function main(): Promise<number> {
     console.log(`[phase] resumed from phase ${resumePoint.phase} (seed: ${resumePoint.seed})`);
   }
 
+  // MULTI-PLANET CONVERGENCE: observe peer phases to jump to the causal frontier.
+  // If peers are ahead of us, one observe() call catches us up — no replay needed.
+  // This is the HLC merge: max(ours, theirs) + 1 on next tick.
+  (() => {
+    try {
+      const { readdirSync, readFileSync } = require("node:fs") as typeof import("node:fs");
+      const { join } = require("node:path") as typeof import("node:path");
+      const files = readdirSync(args.eventDir).filter((f: string) => f.endsWith(".json")).sort();
+      const recent = files.slice(-50); // scan more events for peer phases
+      let peerMaxPhase = -1;
+      for (const f of recent) {
+        try {
+          const raw = JSON.parse(readFileSync(join(args.eventDir, f), "utf-8"));
+          if (raw.by !== args.by && raw.phase?.phase > peerMaxPhase) {
+            peerMaxPhase = raw.phase.phase;
+          }
+        } catch { /* skip */ }
+      }
+      if (peerMaxPhase > phaseClock.state.phase) {
+        phaseClock.observe(peerMaxPhase);
+        console.log(`[phase] observed peer at phase ${peerMaxPhase} → advanced to ${phaseClock.state.phase}`);
+      }
+    } catch { /* no events to observe — fine */ }
+  })();
+
   const sink = folderSink({ eventDir: args.eventDir, by: args.by, phaseClock, ...(localCommit ? { commit: localCommit } : {}) });
 
   // Wire the executor for do_item: codegen (Claude CLI) or port (claim-only).
