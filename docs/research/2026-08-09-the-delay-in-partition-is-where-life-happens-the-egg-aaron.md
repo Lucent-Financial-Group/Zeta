@@ -286,6 +286,36 @@ what we share is the iterative round structure and the chosen selection pressure
 where stability means surviving partition without coordination.* Not a random walk — a search
 steered toward configurations the structure says should hold together alone.
 
+### Random mutation is the fallback, with a stated switch condition
+
+> Aaron: *"random mutations are for when we are out of ideas."*
+
+That places it exactly, and it makes the algorithm two-operator rather than one:
+
+| operator | when | cost | a losing variant |
+|---|---|---|---|
+| **Directed** (default) | you have a hypothesis about where the island is | few samples | **informative** — it lost for reasons you can read |
+| **Random** (fallback) | you have a residue and **no hypothesis about it** | many samples | uninformative — "worse", and nothing more |
+
+Random variation is not the engine and it is not shameful; it is the **operator of last
+resort**, and its sample-inefficiency is precisely why it goes last rather than first.
+
+The switch condition is **mechanical, not a mood** — and the registry already computes it:
+
+> Switch to random variation when `DoesNotReduce` carries **no proposed structure**. A residue
+> with a hypothesis is directed work. A residue with none is unmapped space, and unmapped
+> space is the only place random variation earns its cost.
+
+This is how superheavy synthesis actually proceeds, which is the reason the physics anchor
+keeps paying: you aim at predicted magic numbers while the shell model has predictions, and
+when the predictions run out you fire beams and see what sticks. Both operators, in that
+order, for that reason.
+
+It also names a failure mode in each direction. Reaching for random variation while a
+hypothesis remains untried is **wasting the cheap operator** — most of a GA's classical cost
+is exactly this. Staying directed after the hypotheses are exhausted is **searching a map
+that has run out**, and it feels productive right up until nothing new reduces.
+
 ## What this predicts / what to do with it
 
 1. **The missing R8/R9 clause should be written as a stated bound, not a mechanism** — and
