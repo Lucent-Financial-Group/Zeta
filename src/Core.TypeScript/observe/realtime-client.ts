@@ -145,7 +145,7 @@ export function createRealtimeClient(opts: RealtimeClientOptions): RealtimeClien
         connected = false;
       }
       // Fail all pending pushes
-      for (const [id, p] of pending) {
+      for (const [, p] of pending) {
         clearTimeout(p.timer);
         p.resolve({ ok: false, reason: "client closed" });
       }
