@@ -2,6 +2,7 @@ import { describe, expect, it } from "bun:test";
 import { DEFAULT_QEMU_WIFI_PASSWORD } from "../zflash/test-harness/prepare-boot-image";
 import { validateSelfRegCiCoherent } from "./self-reg-serial.ts";
 import {
+  assertFirstBootProvisioningContract,
   assertGeneratedNodeHostnameContract,
   assertWifiEspPhase1Contract,
   buildQemuDiskBootArgsPure,
@@ -261,5 +262,39 @@ describe("qemu-full-install-test phase 3 first-session markers", () => {
     const result = detectInstalledLoginPrompt("boot\nzeta-a1b2c3 login:", "zeta-a1b2c3");
     expect(result.ok).toBe(true);
     if (result.ok) expect(result.hostname).toBe("zeta-a1b2c3");
+  });
+});
+
+// ── 081KZETP6AT: first-boot provisioning contract ─────────────────────────────
+describe("assertFirstBootProvisioningContract (081KZETP6AT)", () => {
+  it("passes when install.sh never emitted a final failure", () => {
+    const serial = "[iter-5.5.0] ── DONE — first login will have: install.sh-managed runtimes";
+    expect(assertFirstBootProvisioningContract(serial).ok).toBe(true);
+  });
+
+  it("passes when a transient failure was RECOVERED by the retry (retry must stay green)", () => {
+    // Attempt 1 failed, attempt 2 succeeded -> no final-failure marker. This is
+    // exactly the transient case the backoff exists to absorb; it must not fail.
+    const serial = [
+      "[iter-5.5.0]   install.sh attempt 1/3 FAILED rc=1 — retrying in 12s (081KZETP6AT transient-blip backoff)",
+      "[iter-5.5.0]   install.sh succeeded on attempt 2/3 (081KZETP6AT transient-blip recovered by retry)",
+    ].join("\n");
+    expect(assertFirstBootProvisioningContract(serial).ok).toBe(true);
+  });
+
+  it("FAILS when install.sh exhausted every retry (the false green this closes)", () => {
+    // Verbatim shape from run 31323533516, where scenario 2 reported PASS while
+    // the toolchain install had failed all three attempts.
+    const serial = [
+      "[iter-5.5.0]   install.sh attempt 1/3 FAILED rc=1 — retrying in 12s",
+      "[iter-5.5.0]   install.sh attempt 2/3 FAILED rc=1 — retrying in 24s",
+      "[iter-5.5.0]   WARN: install.sh FAILED rc=1 after 3 attempts — runtimes/agent CLIs may be partial",
+    ].join("\n");
+    const result = assertFirstBootProvisioningContract(serial);
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.reason).toContain("PARTIALLY");
+      expect(result.reason).toContain("nix-ld");
+    }
   });
 });

@@ -14,6 +14,11 @@
   imports = [
     ./injected-hostname.nix
     ./login-banner.nix
+    # 081KZETP6AT: FHS loader (nix-ld) for foreign dynamically-linked ELFs — mise's
+    # prebuilt toolchains and the vendor agent CLIs. Needed on INSTALLED nodes too,
+    # not only on the ISO: the lazy first-login `mise install` recovery in this file
+    # fails identically post-reboot without a loader.
+    ./foreign-binaries.nix
     # Longhorn node prerequisites (open-iscsi + nfs). Without these every
     # `longhorn` PVC stays Pending and the whole stateful layer is dead.
     # Imported here so control-plane AND workers get them uniformly.
