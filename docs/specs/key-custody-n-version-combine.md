@@ -129,7 +129,7 @@ not implementation defects**, and fixing them is worth more than either derivati
 - **AC3 and AC4 remain unimplemented by anyone.** No one should read either derivation as
   covering custody transfer.
 
-## 7. Was the double derivation worth it?
+## 7. Was the double derivation worth it
 
 Yes, and the reason is specific: **the four gaps in B and the vacuity of AC3 were invisible
 from inside B.** B's 21 tests pass. Its header claims full coverage. Nothing internal to it
