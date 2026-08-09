@@ -160,6 +160,59 @@ principal's own component advances autonomously**.
 The N-version protocol found the ambiguity. It took the maintainer to notice that the
 resolution I chose was the capturing one.
 
+## Divergence under partition IS speciation — and it is the evolutionary algorithm
+
+> Aaron: *"we diverge under partition and that is speciation."* / *"this is our evolutionary
+> algo we have."*
+
+This closes the thread, and it is a mechanism rather than an analogy.
+
+**Allopatric speciation** (Mayr, 1942): a population separated by a barrier accumulates
+variation independently; on *secondary contact* the lineages either reintegrate — still one
+species — or they do not, and the speciation is complete. Map it directly:
+
+| biology | substrate |
+|---|---|
+| geographic barrier | network partition |
+| isolation interval | the delay where life happens |
+| independent variation | each locality advancing its own phase component |
+| secondary contact | reunion / merge |
+| reintegration vs. speciation | the fold converges, or the lineages are now distinct |
+
+**Partition is the variation operator. Reunion is selection.** That is a complete
+evolutionary algorithm, and we get it from the network topology rather than bolting it on.
+
+Three things fall out that were previously separate claims:
+
+1. **Freezing is extinction, not stasis.** A frozen node generates no variation, so it
+   contributes nothing to the search — which is the deeper reason the previous section's
+   correction matters. Capture and evolutionary death are the same event here.
+2. **The N-version result is this algorithm run once, by hand.** Two derivations isolated on
+   purpose, allowed to diverge, then merged — and the value came from the divergence, exactly
+   as the combine concluded. We were already running the algorithm without naming it.
+3. **The "staleness bound" is the migration interval**, and it has real prior art.
+
+### The bound has a name and a literature
+
+In an **island-model / coarse-grained parallel GA** (Cohoon et al. 1987; Whitley, Rana &
+Heckendorn on island models), subpopulations evolve in isolation with periodic **migration**,
+and the migration rate/interval is *the* tuning parameter:
+
+- **Migration too frequent** → premature convergence. The islands homogenise before they have
+  explored anything; you have one population wearing several names. (This is the same failure
+  as correlated derivations, and as colonies that do not genuinely diverge.)
+- **Migration too rare** → compute spent on lineages that were never going to contribute.
+
+So the missing R8/R9 clause is not an unprecedented values call after all — it is a
+**migration interval**, a parameter with decades of study on exactly this tradeoff. That is a
+better framing than the dial I first proposed, because it comes with a literature instead of
+an intuition.
+
+*(Honest limit: the island-model analogy governs the exploration/exploitation tradeoff. It
+does not by itself say anything about the SAFETY side — how much stale authority a long
+isolation permits. R8's capture concern is a separate axis, and the bound has to satisfy
+both. Naming the EA parameter does not retire the values question, it isolates it.)*
+
 ## What this predicts / what to do with it
 
 1. **The missing R8/R9 clause should be written as a stated bound, not a mechanism** — and
