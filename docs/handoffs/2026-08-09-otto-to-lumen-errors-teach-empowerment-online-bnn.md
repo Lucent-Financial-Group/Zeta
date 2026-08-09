@@ -360,6 +360,45 @@ harder research problem. Do not conflate them into one "signature detector" — 
 judging what is separable **in principle** versus what merely looks separable, ask
 Aaron: he has hands-on experience with the hardest version in two unrelated domains.
 
+### The operating point is NEAR-ZERO FALSE POSITIVES — because the output is an accusation
+
+> Aaron: *"exactly — at Itron they used it to **detect crimes** too, so false positives
+> needed to be near 0."*
+
+This is the most important constraint in this section and the easiest to lose while
+optimising a detector. At Itron the same disaggregation signal that finds a legitimate
+high-draw appliance also finds **energy theft** — so a false positive is not a metric
+regression, it is **an innocent person accused of a crime**. The operating point is
+deliberately lopsided: **high precision, low recall — prefer missing real offenders to
+accusing innocent ones.**
+
+Zeta inherits this exactly, because Sybil detection has the same shape: a false
+positive is **an honest agent accused of being a forger**. Three consequences, two of
+them already carved:
+
+1. **Report the fact, never the verdict.**
+   [`dual-use-detection-is-neutral-oracle-decides`](../../.claude/rules/dual-use-detection-is-neutral-oracle-decides.md)
+   already requires this — `SameSourceAsKnown` is the neutral fact; **REUNION** (an
+   honest identity reconnected to its returning self) and **SYBIL** (a forger minting
+   names) are *caller policy*. Aaron's crime-detection experience is the strongest
+   argument for that rule anywhere in the repo: at Itron the identical signature meant
+   "theft" or "new hot tub" depending on context the detector does not have. A detector
+   that hardcoded the accusation would have been wrong **at the cost of a prosecution**.
+2. **Tune to precision, and state which way you erred.** The false-positive rate is a
+   first-class acceptance number, not a footnote, and the threshold is justified by the
+   *cost of being wrong* — never by F1, which averages away exactly the asymmetry that
+   matters here.
+3. **A false positive IS bystander harm.** It falls under the externality bound Aaron
+   settled today: a wrongly-accused agent is a **non-consenting third party** pushed
+   below its floor by an interaction it never opted into. So anti-Sybil detection is not
+   merely adjacent to the empowerment work — it is **governed by it**, and Soraya's
+   externality proof obligation should treat detector output as one of the ways a
+   bystander's `trustBound` gets pushed down.
+
+Practically: build the identification half first (the cheap win), but **ship it
+reporting facts with calibrated confidence, never verdicts** — and make its
+false-positive rate the acceptance criterion rather than its hit rate.
+
 ---
 
 ## 7. NOT Lumen's — route to Soraya (formal verification) / math team
