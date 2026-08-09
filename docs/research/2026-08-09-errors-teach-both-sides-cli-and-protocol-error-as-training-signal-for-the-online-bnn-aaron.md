@@ -111,6 +111,100 @@ inference are the same message pass"), then:
   (`TravelerRankLedger` / the calibration ledger). **Do not let an unmetered error
   channel become an unaccounted training channel.**
 
+## The thermodynamic half — why a rich error is *cheaper*, not merely nicer
+
+Aaron, same session:
+
+> *"We have a concept of heat from erasure and also missed communications that lead
+> to errors, because that's when you hit the edges — it helps us with our reversible
+> computing heat budgeting and entropy budgeting too."*
+>
+> *"We also have a four-corner feedback system for continual learning with pseudo-
+> retrocausality by emitting a −1 in Z-sets … that updates the generator function."*
+>
+> *"We preserve uncertainty, and each traveler/agent decides who it trusts based on
+> past performance."*
+
+This answers the metering-unit question left open below, and upgrades the argument
+from *ergonomics* to *physics*.
+
+### Errors are where you hit the edge of the reversible envelope
+
+A missed or rejected message forces the receiver into one of two moves:
+
+- **Discard and redo.** The failed attempt's state is erased, and erasure has a hard
+  floor — **Landauer (1961)**: ≥ `kT ln 2` per bit (≈ 2.8 × 10⁻²¹ J at 300 K). That
+  floor is already modelled in-repo: `src/Core/ComputeReceipt.fs` carries `DeltaJ`
+  (cost), `DeltaU` (net useful work — *"negative = heat"*) and `LandauerRatio`
+  (efficiency against the theoretical minimum).
+- **Retract and re-emit.** Emit a **−1** for the superseded belief. `+w` and `−w`
+  annihilate in `consolidate`, but — per the honesty note already carved into
+  `src/Core/WSet.fs` — *the past record is immutable; only its reading is corrected.*
+  **Nothing is erased**, so no Landauer floor is paid for the correction itself.
+
+So Aaron's two ideas are one idea:
+
+> **A teaching error buys a retraction; a bare error buys an erasure.**
+
+A bare `exit 2` gives the receiver nothing to retract *with*: it cannot identify
+which belief was wrong, so it discards the whole attempt and redoes it. A teaching
+error names the dimension, so the receiver emits one targeted `−1` and carries the
+rest of its state forward. Same correction — one erased bit instead of thousands.
+That is why "errors are costly" is literal rather than rhetorical: the cost has a
+unit, and the unit is **heat**.
+
+This is the bit-level discipline of
+`docs/research/2026-05-09-zset-reversible-computing-landauer-bridge-math-writeup.md`
+and `src/Core/ToffoliGate.fs` (*"no bit erasure: the retained wires carry the inverse
+function"*), meeting the network.
+
+### The loop: four corners → −1 → the generator
+
+`src/Core/FourCorner.fs` is the bidirectional-feedback object this rides on — a 2×2
+of (data × feedback) × (in × out), i.e. `N S E W = {1, i, −1, −i} = C₄`, with
+`TInFeedback` **co-owned** (*"each is backpressure from the other's perspective —
+frame-relative, no absolute backpressure"*). Both transports here are instances:
+turn-based CLI is the degenerate case where corners alternate; multiplexed
+bidirectional is the general case where all four are live at once.
+
+```
+teaching error → −1 retraction (no erasure) → generator update → future emissions
+                                                                 corrected at the source
+```
+
+The last arrow is the one easy to miss: the retraction **updates the generator
+function**, not merely the current answer. Because the generator IS the
+error-correcting code
+([`only-the-irreducible-is-primitive-generate-the-rest`](../../.claude/rules/only-the-irreducible-is-primitive-generate-the-rest.md)),
+correcting it repairs every future emission at the root instead of patching outputs
+one at a time. And because the specializer's own rules are `DynamicValue`
+(`MixIr` / mix-as-data), the generator is a **value** — which is precisely what makes
+it addressable by a Z-set delta. Mix-as-data is the enabling condition for
+generator-level learning, not a separate curiosity.
+
+"Pseudo-retrocausality" is the honest name, and `WSet.fs` already carries the caveat:
+nothing is sent backwards. Later feedback updates the *interpretation*; the stored
+history is re-run through it; the superseded emission is retracted. The past record
+is immutable — only its reading, and therefore the downstream conclusion, is
+corrected.
+
+### Uncertainty is preserved, and trust is local
+
+Two constraints on how an error may update a receiver:
+
+- **Preserve uncertainty.** An error updates a posterior; it must not collapse one.
+  `TravelerRankLedger` keeps `(μ, σ²)` and reports `trustBand = Φ(μ/√(σ²+β²))` — a
+  distribution, not a point estimate. A failure that drove a peer to certainty would
+  destroy exactly the information the next update needs.
+- **Trust is decided by each traveler from past performance**, with no central
+  authority (Multi-Oracle, §11). A fresh identity starts at the honest prior `0.5`,
+  never a pessimistic `0.0`.
+
+Together these settle the adversarial-teaching worry raised below: error-derived
+updates are **trust-weighted per receiver**, so a peer that teaches badly or
+maliciously moves your posterior less, and its own `trustBand` degrades on the
+evidence. The defence is endogenous — no separate anti-abuse mechanism required.
+
 ## Open questions (genuinely open — not settled here)
 
 1. **Schema.** One canonical machine-readable error envelope across every CLI and
@@ -120,12 +214,17 @@ inference are the same message pass"), then:
    symmetric protocol means both ends update. If an error teaches the receiver that
    the sender is wrong, does the *sender* also learn from the fact that it emitted
    one? That is a feedback loop with a stability question attached.
-3. **Metering units.** If an error is a metered influence crossing, what is the unit —
-   bits of ΔU, an entropy budget draw, or a calibration-ledger event?
-4. **Adversarial teaching.** An error that is maximally informative to an honest peer
-   is also maximally informative to an attacker probing the interface. Where does
-   teaching stop? (Note this is the dual-use pattern again — the mechanism is
-   neutral, the oracle decides.)
+3. ~~**Metering units.**~~ **ANSWERED above (Aaron, same session): the unit is HEAT.**
+   `ComputeReceipt` already carries `DeltaJ` / `DeltaU` / `LandauerRatio` against the
+   `kT ln 2` floor. What remains open is narrower: what exchange rate converts an
+   avoided retry into avoided joules, so the budget is enforceable rather than
+   merely observable?
+4. **Adversarial teaching.** Largely settled by trust-weighting (above): a bad teacher
+   moves your posterior less and loses `trustBand` on the evidence. What stays open is
+   the *outbound* direction — an error maximally informative to an honest peer is also
+   maximally informative to an attacker probing the interface, and the sender cannot
+   condition on trust it has not yet earned about a stranger. Where does teaching stop
+   for an unknown peer? (Dual-use again: the mechanism is neutral, the oracle decides.)
 
 ## Anchors (Beacon)
 
@@ -139,6 +238,10 @@ inference are the same message pass"), then:
   side (`src/Bayesian/Ep.fs`, `MinimalBnn`).
 - **Goguen & Meseguer (1982), noninterference** — why the error channel must be
   declared and metered rather than ambient.
+- **Landauer (1961)**, *Irreversibility and heat generation in the computing process*
+  — the `kT ln 2` floor that makes "errors are costly" a physical claim.
+- **Bennett (1973)**, *Logical reversibility of computation* — why retraction rather
+  than erasure is the cheap correction; the Toffoli/Z-set bridge already in-repo.
 
 ## Pointers
 
