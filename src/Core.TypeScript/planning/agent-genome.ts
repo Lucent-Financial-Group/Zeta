@@ -180,18 +180,19 @@ export function crossover(
   crossoverPoint: number
 ): AgentGenome {
   const cp = Math.max(0, Math.min(6, Math.round(crossoverPoint)));
-  const channels = [
-    parent1.rgb.r, parent1.rgb.g, parent1.rgb.b,
-    parent1.cmyk.c, parent1.cmyk.m, parent1.cmyk.y, parent1.cmyk.k,
-  ];
-  const channels2 = [
-    parent2.rgb.r, parent2.rgb.g, parent2.rgb.b,
-    parent2.cmyk.c, parent2.cmyk.m, parent2.cmyk.y, parent2.cmyk.k,
-  ];
-  const child = channels.map((v, i) => i < cp ? v : channels2[i]);
+  const choose = (index: number, left: number, right: number): number => index < cp ? left : right;
   return {
-    rgb: { r: child[0], g: child[1], b: child[2] },
-    cmyk: { c: child[3], m: child[4], y: child[5], k: child[6] },
+    rgb: {
+      r: choose(0, parent1.rgb.r, parent2.rgb.r),
+      g: choose(1, parent1.rgb.g, parent2.rgb.g),
+      b: choose(2, parent1.rgb.b, parent2.rgb.b),
+    },
+    cmyk: {
+      c: choose(3, parent1.cmyk.c, parent2.cmyk.c),
+      m: choose(4, parent1.cmyk.m, parent2.cmyk.m),
+      y: choose(5, parent1.cmyk.y, parent2.cmyk.y),
+      k: choose(6, parent1.cmyk.k, parent2.cmyk.k),
+    },
     generation: Math.max(parent1.generation, parent2.generation) + 1,
     parentIds: [parent1Id, parent2Id],
   };
