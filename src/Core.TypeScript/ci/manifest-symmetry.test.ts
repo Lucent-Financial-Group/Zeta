@@ -146,8 +146,15 @@ test("Windows agent CLI install consumes the shared from-bun-global manifest", (
   expect(installPs1).not.toContain("@google/gemini-cli");
 });
 
-test("Unix and Windows setup realize the frozen root devDependency graph", () => {
-  const miseSetup = readFileSync(join(setupDir, "common", "mise.sh"), "utf8");
+test("ACE Unix and Windows setup realize the root devDependency graph", () => {
+  const setupRealizers = readFileSync(
+    join(repoRoot, "src", "Core.TypeScript", "ace", "setup-realizers", "index.ts"),
+    "utf8",
+  );
+  const bunWorkspaceRealizer = readFileSync(
+    join(repoRoot, "src", "Core.TypeScript", "ace", "setup-realizers", "from-bun-workspace.ts"),
+    "utf8",
+  );
   const installPs1 = readFileSync(join(setupDir, "install.ps1"), "utf8");
   const packageJson = JSON.parse(readFileSync(join(repoRoot, "package.json"), "utf8")) as {
     readonly dependencies?: Readonly<Record<string, string>>;
@@ -156,7 +163,8 @@ test("Unix and Windows setup realize the frozen root devDependency graph", () =>
   const bunLock = readFileSync(join(repoRoot, "bun.lock"), "utf8");
   const playwrightVersion = packageJson.devDependencies?.playwright;
 
-  expect(miseSetup).toContain("mise exec -- bun install --frozen-lockfile");
+  expect(setupRealizers).toContain('"from-bun-workspace"');
+  expect(bunWorkspaceRealizer).toContain('["bun", "install"]');
   expect(installPs1).toContain("mise exec -- bun install --frozen-lockfile");
   expect(playwrightVersion).toBeDefined();
   expect(packageJson.dependencies?.playwright).toBeUndefined();

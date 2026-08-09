@@ -170,18 +170,6 @@ done
 # Print the resolved versions so the log is useful on a first run.
 (cd "$REPO_ROOT" && mise current)
 
-# Realize the repository's pinned JavaScript/TypeScript dependency graph before
-# any source-owned Bun setup realizer runs. This keeps local install.sh results
-# identical to CI and prevents missing devDependencies from masquerading as
-# TypeScript source errors.
-if [ ! -f "$REPO_ROOT/package.json" ] || [ ! -f "$REPO_ROOT/bun.lock" ]; then
-  echo "error: package.json and bun.lock are required for the root Bun install" >&2
-  exit 1
-fi
-echo "downloading pinned root JavaScript/TypeScript dependencies..."
-(cd "$REPO_ROOT" && mise exec -- bun install --frozen-lockfile)
-echo "ok root JavaScript/TypeScript dependencies installed"
-
 ensure_rust_components() {
   if ! command -v rustc >/dev/null 2>&1 || ! command -v cargo >/dev/null 2>&1; then
     return 0
