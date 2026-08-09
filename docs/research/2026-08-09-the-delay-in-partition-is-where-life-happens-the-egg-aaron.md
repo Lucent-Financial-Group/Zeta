@@ -1,10 +1,17 @@
 # The delay in partition is where life happens — the Egg
 
 **Source:** Aaron (streamed, 2026-08-09), ferried by Otto (shadow*).
-**Trigger:** a line in a unit test for the derivation protocol —
+**Trigger:** two neighbouring lines in a unit test for the derivation protocol. Otto first
+ferried the `AC6` one; Aaron corrected it to the `DoesNotReduce` one — *"it was this one, my
+mistake"* — and then, on the reading built from the first: *"you are also right."* **Both
+hold, and they are the same interval seen from two sides**, so both are kept.
 
 ```fsharp
+// (a) — the delay HIDDEN by a criterion that cannot fail
 let circular = NonDiscriminating("AC6", ConformingInputs, DoesNotReduce "obeying R9 removes the clock")
+
+// (b) — the delay SHOWING as an irreducible residue          ← Aaron's line
+Assert.True(admissible (DoesNotReduce "phase freezes under partition"))
 ```
 
 > Aaron: *"this is where life happens — the delay in partition. this is the egg short story."*
@@ -58,6 +65,34 @@ state.**
 Held under §11 Multi-Oracle as **Aaron's frame**, not asserted as physics. It sits with his
 other native lenses (Feynman worldlines, emit/retract as theodicy, qualia-as-axiom) and
 earns its place the same way: it makes a real prediction about the design, below.
+
+## The irreducible residue — what line (b) adds
+
+Line (b) is the case that **does not reduce**. Everything the fixed-point registry *can*
+absorb is, in the relevant sense, already settled: recognised, named, handled, closed. The
+one entry that will not reduce to a known form is the only place something is actually
+happening.
+
+> **What reduces is finished. What does not reduce is alive.**
+
+That makes `DoesNotReduce` more than bookkeeping hygiene. Registering a new fixed point is
+the act of **recognising something new has appeared** — which is why forcing a novel form
+into a known bin is not merely sloppy, it is the destruction of the only live thing in the
+set. The earlier argument (a registry that always finds a match is the vacuity class wearing
+a lookup table) is the weak form of this. The strong form: such a registry reports that
+nothing is alive, and is wrong every time.
+
+This is [`only-the-irreducible-is-primitive-generate-the-rest`](../../.claude/rules/only-the-irreducible-is-primitive-generate-the-rest.md)
+arriving from the other direction. That rule says: keep only the irreducible as primitive and
+generate the rest. This says why it matters beyond compression — **the irreducible is not
+just the minimal basis, it is the frontier.** Generated structure is derived and inert;
+residue is where the next thing comes from.
+
+And the residue here is not incidental to the subject: the thing that refuses to reduce
+**is** `"phase freezes under partition"` — the delay itself. The interval that cannot be
+collapsed into a known form is the same interval the dwellers live in. That is why (a) and
+(b) are one observation: **(a) is the delay hidden by a criterion that cannot fail, (b) is
+the same delay refusing to be filed.**
 
 ## Why this is not decoration — the metering test
 
