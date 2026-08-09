@@ -215,9 +215,9 @@ both. Naming the EA parameter does not retire the values question, it isolates i
 
 ## Islands of STABILITY — the synthesis that closes the honest limit
 
-**Human anchor: James, Aaron's colleague at Itron** — the islands-of-stability framing is his
-contribution, and it resolves the gap the previous section left open.
-*(First name only, as Aaron gave it; say the word for full attribution or none.)*
+**Human anchor: James Whitfield, Aaron's colleague at Itron** — the islands-of-stability
+framing is his contribution, and it resolves the gap the previous section left open. He also
+supplies the organisational instance, below: he **ran his human teams this way**.
 
 I recorded a limit: the island-model GA framing governs exploration/exploitation but says
 nothing about **stale authority**, R8's separate axis. The nuclear reading closes it, because
@@ -315,6 +315,56 @@ It also names a failure mode in each direction. Reaching for random variation wh
 hypothesis remains untried is **wasting the cheap operator** — most of a GA's classical cost
 is exactly this. Staying directed after the hypotheses are exhausted is **searching a map
 that has run out**, and it feels productive right up until nothing new reduces.
+
+## The migration operator was a person — James Whitfield's teams
+
+> Aaron: *"James Whitfield ran his human teams like this, and I was the particle he let
+> communicate with all."*
+
+This is the island model implemented on humans, decades before we wrote it down, and the
+detail that matters is the **one particle**.
+
+In an island-model search the migration rate is the whole parameter (§ above). Whitfield's
+teams were the islands — isolated so they would genuinely diverge — and Aaron was the
+**migration operator**: the single carrier permitted to cross between them. Not an accident
+of seniority; it is the minimum nonzero migration rate, and it is *directed*:
+
+- **Open communication between teams → premature convergence.** Everyone converges on the
+  first plausible approach; you are paying for N teams and getting one, wearing N names. This
+  is the correlated-derivations failure at organisational scale.
+- **Zero communication → no cross-pollination.** Each island re-derives what its neighbour
+  already has, and good variants never spread.
+- **One carrier → a tunable, low, *selective* rate.** The carrier cannot transmit everything,
+  so bandwidth scarcity **forces selection at the migration step** — they must choose which
+  variant is worth moving. That is strictly more than a standard island GA does, where
+  migrants are picked at random or by local fitness.
+
+It also explains something about Aaron's own practice rather than just Whitfield's design:
+**he was trained as a migration operator.** Carrying a signature-detection technique from
+16 kHz electricity metering to audio track separation to Shazam-style identification is the
+same move — selecting the transferable variant and moving it across an isolation boundary. The
+skill this document keeps relying on is the one that role builds.
+
+### The honest tension — a single carrier is a hub
+
+A designated migration particle is a **central coordinator for variation.** Whoever is the
+particle holds enormous and largely invisible influence over which variants spread and which
+die on their island. In Whitfield's org that was a person Aaron trusted, and the arrangement
+was legible to everyone in it.
+
+In the substrate it cannot be a designated node, and the reason is this document's own
+argument: we just established that freezing under partition is unacceptable **because it
+reveals a hidden central coordinator**. A single migration channel is that same hub, moved
+from the liveness axis to the variation axis — if the carrier is down, partitioned, or
+captured, no variant crosses and every island silently stops evolving.
+
+**The structural version of the same rate:** migration by rate-limited pairwise gossip on
+reunion rather than through a designated carrier. Random contact at a bounded rate gives the
+same low migration the design depends on, with no node whose absence stops the algorithm and
+no node whose preferences steer it. What is lost is Whitfield's *selective* migration — gossip
+carries whatever the pair has, not what a judgement says is most transferable — and that loss
+is real. Recovering the selectivity without recreating the hub is an open problem worth
+naming rather than papering over.
 
 ## What this predicts / what to do with it
 
