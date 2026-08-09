@@ -76,9 +76,9 @@ export function createRealtimeClient(opts: RealtimeClientOptions): RealtimeClien
           p.resolve({ ok: true, eventId: msg.receipt.eventId });
         }
       } else if (msg.error) {
-        // Server error response — resolve any pending push with failure
-        // (can't easily match to a specific push, so log it)
-        console.warn(`[realtime-client] server error: ${msg.error}`);
+        // Server error response — sanitize before logging (CodeQL: no log injection)
+        const safeError = String(msg.error).slice(0, 200).replace(/[\n\r]/g, " ");
+        console.warn("[realtime-client] server error:", safeError);
       }
     } catch { /* malformed message — ignore */ }
   }
