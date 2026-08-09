@@ -107,6 +107,43 @@ module DerivationProtocol =
             | _ -> false)
         |> List.map (fun c -> c.Requirement, c.Declared)
 
+    // ────────────────────────────── Reducing to a known fixed point ──────────────────────────────
+
+    /// The input set a predicate was checked for discrimination over. "Satisfiable by a literal" and
+    /// "no conforming implementation can fail it" are the same defect over different sets, which is
+    /// why this is a parameter rather than two cases.
+    type InputSet =
+        /// Nothing can make the predicate differ — a literal, a constant, a non-optional field.
+        | AllInputs
+        /// It could differ in principle, but obeying the spec removes the discriminating input. The
+        /// text is fine; the logic is circular.
+        | ConformingInputs
+
+    /// Where a reduction's category came from. **Pigeonhole by the subject's own self-claim, never by
+    /// the observer's inference** — the observer's job is to check whether the self-claim was
+    /// delivered, not to choose the bin. Assumption-based classification skips the declaration and
+    /// corrupts both steps.
+    type ReductionKey =
+        /// The criterion (or its author) states its own form. The only admissible key.
+        | SelfClaimed of form: string
+        /// An observer guessed the form. Recorded so the guess is visible, never acted on.
+        | Inferred of by: string
+
+    /// The result of reducing against the fixed-point registry. `DoesNotReduce` is a first-class
+    /// outcome, not a fallthrough: a registry that always finds a match is the vacuity class wearing
+    /// a lookup table.
+    type Reduction =
+        | ReducesTo of known: string * key: ReductionKey
+        /// Genuinely new. Register it rather than forcing a fit — forcing one destroys the finding.
+        | DoesNotReduce of proposed: string
+
+    /// Only a self-claimed reduction may be acted on. This makes the pigeonhole rule mechanical.
+    let admissible (r: Reduction) : bool =
+        match r with
+        | ReducesTo(_, SelfClaimed _) -> true
+        | ReducesTo(_, Inferred _) -> false
+        | DoesNotReduce _ -> true
+
     // ────────────────────────────── What a divergence means ──────────────────────────────
 
     /// Why two derivations of one spec came out different. The default reading is that the SPEC is at
@@ -116,11 +153,8 @@ module DerivationProtocol =
         | SpecAmbiguity of requirement: string * readings: string list
         /// The spec states no requirement at all for something it names.
         | NoNormativeText of requirement: string
-        /// A criterion satisfiable by a literal — nothing can fail it.
-        | VacuousCriterion of criterion: string * why: string
-        /// A criterion that no conforming implementation can fail, because obeying the spec removes
-        /// the condition it tests. Distinct from vacuous: the text is fine, the logic is circular.
-        | UnfalsifiableCriterion of criterion: string * why: string
+        /// A criterion that **fails to discriminate** over `over`. One case rather than three.
+        | NonDiscriminating of criterion: string * over: InputSet * reduction: Reduction
         /// Two requirements that cannot both hold in some reachable state.
         | RequirementsInTension of a: string * b: string * state: string
         /// The host repo's convention was never given to the implementer, who therefore could not

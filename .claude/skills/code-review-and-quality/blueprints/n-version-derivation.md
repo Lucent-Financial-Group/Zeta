@@ -45,11 +45,19 @@ leaked before you congratulate the spec.
    it can fail. Every acceptance criterion must name the function
    whose output demonstrates it *and two inputs that make that output
    differ.*
-3. **Unfalsifiable criteria.** Distinct from vacuous: the text is
-   fine, the logic is circular — obeying the spec removes the
-   condition the criterion tests. (Worked case: "two principals with
-   skewed clocks agree" is unfalsifiable once the spec forbids
-   clocks.)
+3. **Failure to discriminate.** Vacuous and unfalsifiable are ONE
+   defect over different input sets: nothing can make the predicate
+   differ (`AllInputs`), or obeying the spec removes the
+   discriminating input (`ConformingInputs`). Worked case: "two
+   principals with skewed clocks agree" cannot be failed once the
+   spec forbids clocks.
+
+   Reduce each one against the **fixed-point registry** rather than
+   re-deriving it — and **pigeonhole by the subject's own self-claim,
+   never by your inference.** The observer checks whether a
+   self-claim was delivered; it does not choose the bin.
+   `DoesNotReduce` is a first-class outcome: **a registry that always
+   finds a match is the vacuity class wearing a lookup table.**
 
 ## Sequence
 

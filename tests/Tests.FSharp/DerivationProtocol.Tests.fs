@@ -63,7 +63,11 @@ let ``unearnedClaims names exactly the requirements claimed but not paid for`` (
 let ``every divergence is a spec defect unless it is an argued implementation defect`` () =
     Assert.True(isSpecDefect (SpecAmbiguity("R9", [ "observed causal frame"; "opaque scalar" ])))
     Assert.True(isSpecDefect (NoNormativeText "R9"))
-    Assert.True(isSpecDefect (UnfalsifiableCriterion("AC6", "obeying R9 removes the clock to skew")))
+    Assert.True(
+        isSpecDefect (
+            NonDiscriminating("AC6", ConformingInputs, ReducesTo("self-negating universal", SelfClaimed "no clock to skew"))
+        )
+    )
     Assert.True(isSpecDefect (RequirementsInTension("R8", "R9", "partition: phase freezes, grant never expires")))
     Assert.True(isSpecDefect (ConventionUnstated "Result-over-exception"))
 
@@ -126,3 +130,27 @@ let ``an unknown license blocks a whitebox derivation — unknown is not permiss
     // Good intentions do not substitute for an established license.
     Assert.False(whiteboxPermitted unknown)
     Assert.True(whiteboxPermitted { unknown with License = Some "Apache-2.0" })
+
+// ───────────────── reduction is by SELF-CLAIM, never by inference ─────────────────
+
+[<Fact>]
+let ``a reduction the observer inferred is not admissible — only a self-claim is`` () =
+    // The guard on the pigeonhole: the observer checks whether a self-claim was delivered, it does
+    // not choose the bin. Today's C1 is the live case — my review inferred A's R6 was implemented;
+    // A's own self-claim said partial, and the self-claim was the accurate one.
+    Assert.False(admissible (ReducesTo("self-negating universal", Inferred "looked similar to me")))
+    Assert.True(admissible (ReducesTo("self-negating universal", SelfClaimed "preaches no preachers")))
+
+[<Fact>]
+let ``does-not-reduce is a first-class outcome, not a fallthrough`` () =
+    // A registry that always finds a match is the vacuity class wearing a lookup table.
+    Assert.True(admissible (DoesNotReduce "phase freezes under partition"))
+
+[<Fact>]
+let ``the two discrimination failures differ only by input set`` () =
+    // Vacuous and unfalsifiable were three cases; they are one case and a parameter.
+    let vacuous = NonDiscriminating("AC3", AllInputs, DoesNotReduce "literal-typed field")
+    let circular = NonDiscriminating("AC6", ConformingInputs, DoesNotReduce "obeying R9 removes the clock")
+    Assert.True(isSpecDefect vacuous)
+    Assert.True(isSpecDefect circular)
+    Assert.NotEqual<Divergence>(vacuous, circular)
