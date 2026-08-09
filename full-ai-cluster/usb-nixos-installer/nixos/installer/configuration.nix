@@ -14,7 +14,7 @@
     # live ISO is where zeta-install.sh Step 6.95a runs `tools/setup/install.sh`,
     # and mise's prebuilt toolchains (bun/node/python/rust/java/dotnet) cannot
     # execve without an interpreter — the deterministic first-boot failure.
-    ../../../nixos/modules/foreign-binaries.nix
+    ../modules/foreign-binaries.nix
   ];
 
   networking.hostName = "zeta-installer";

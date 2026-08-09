@@ -199,6 +199,7 @@ linux_sh_fhs_loader_present() {
 # Is a DECLARATIVE (system/nix-profile) mise present? On NixOS this is the
 # canonical one — pinned + autoPatchelf'd via overlays/mise-pin.nix.
 linux_sh_nixos_system_mise_present() {
+  local _sys_mise_dir
   for _sys_mise_dir in \
       /run/current-system/sw/bin \
       "${HOME}/.nix-profile/bin" \
@@ -214,9 +215,16 @@ linux_sh_nixos_system_mise_present() {
 #  - real NixOS with a declarative mise: NO, even now that nix-ld provides a
 #    loader. The system mise is canonical; a tarball copy would shadow it.
 #  - real NixOS without a declarative mise: only if a loader exists at all.
+# Order matters: the declarative-mise check comes FIRST so the stated policy
+# ("system mise is canonical, never shadow it") actually holds everywhere,
+# including a NixOS container that ships one. Checking /.dockerenv first would
+# hand such a container the tarball and contradict the comment above (Kira, PR
+# #10196 review). The docker harness is unaffected either way — it ships no
+# system mise, and in BuildKit RUN steps /.dockerenv does not even exist, so it
+# qualifies via the loader arm it wires itself.
 linux_sh_nixos_tarball_mise_allowed() {
-  [ -f /.dockerenv ] && return 0
   linux_sh_nixos_system_mise_present && return 1
+  [ -f /.dockerenv ] && return 0
   linux_sh_fhs_loader_present
 }
 
@@ -335,7 +343,15 @@ echo "✓ mise: $(mise --version)"
 # The condition is deterministic, so detect it up front and say what to do.
 # Guarded on IS_NIXOS, so dev laptops / CI runners / devcontainers (no /etc/NIXOS)
 # are provably unaffected; the docker harness wires a loader, so it passes too.
-if [ "$IS_NIXOS" = 1 ] && ! linux_sh_fhs_loader_present && [ -z "${NIX_LD:-}" ]; then
+# NOTE: test the LOADER FILE nix-ld points at, never merely `[ -n "$NIX_LD" ]`.
+# NIX_LD is an environment.variables export; the /lib64 stub is created by a
+# DIFFERENT mechanism (nix-ld's systemd-tmpfiles rule). They are not the same
+# fact, and NIX_LD is inherited by every subshell, `sudo -E`, container and
+# chroot — so a leaked var with no stub present would silently disarm exactly
+# the check this block exists to perform (Kira, PR #10196 review).
+if [ "$IS_NIXOS" = 1 ] \
+  && ! linux_sh_fhs_loader_present \
+  && [ ! -e "${NIX_LD:-/nonexistent}" ]; then
   echo "error: NixOS without an FHS loader — mise's prebuilt toolchains cannot exec." >&2
   echo "  every dynamically-linked tool (bun/node/python/rust/java/dotnet) will fail" >&2
   echo "  with 'cannot execute: required file not found' (missing ELF interpreter)." >&2

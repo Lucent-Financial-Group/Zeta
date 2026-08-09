@@ -158,7 +158,17 @@ export function wifiEspPhase1Enabled(): boolean {
   return process.env.QEMU_WIFI_ESP_PHASE1 === "1";
 }
 
-/** Serial marker zeta-install.sh emits when install.sh exhausted every retry. */
+/**
+ * Serial markers zeta-install.sh emits around the first-boot install.sh step.
+ *
+ * These are LITERALS DUPLICATED from `zeta-install.sh` (the START echo and the
+ * post-retry WARN). Nothing in the type system ties them to their producer, so
+ * `qemu-full-install-test.test.ts` asserts that zeta-install.sh actually contains
+ * both — otherwise rewording the shell echo would silently turn the contract
+ * below into a test that can never fail, which is precisely the defect class this
+ * contract exists to close (Kira, PR #10196 review).
+ */
+export const INSTALL_SH_START_MARKER = "running tools/setup/install.sh";
 export const INSTALL_SH_FINAL_FAILURE_MARKER = "WARN: install.sh FAILED rc=";
 
 /**
@@ -177,6 +187,21 @@ export const INSTALL_SH_FINAL_FAILURE_MARKER = "WARN: install.sh FAILED rc=";
 export function assertFirstBootProvisioningContract(phase1Serial: string): {
   readonly ok: true;
 } | { readonly ok: false; readonly reason: string } {
+  // Require POSITIVE evidence, do not merely look for a failure string. An
+  // assertion that only convicts and never acquits passes green on a truncated
+  // serial, a VM that died before Step 6.95a, or an install.sh that was never
+  // invoked at all — the same "absence of bad news = good news" hole this
+  // contract was added to close (Kira, PR #10196 review).
+  if (!phase1Serial.includes(INSTALL_SH_START_MARKER)) {
+    return {
+      ok: false,
+      reason:
+        `first-boot never reached the install.sh step (start marker "${INSTALL_SH_START_MARKER}" ` +
+        "absent from the phase-1 serial). Either the serial was truncated, the VM died before " +
+        "Step 6.95a, or the runtime-bootstrap block was skipped — all of which previously passed " +
+        "green because the contract only looked for a failure string.",
+    };
+  }
   if (!phase1Serial.includes(INSTALL_SH_FINAL_FAILURE_MARKER)) return { ok: true };
   return {
     ok: false,
