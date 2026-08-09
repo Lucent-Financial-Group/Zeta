@@ -219,7 +219,69 @@ Also: `bun test` green over a fallback that no test exercises proves nothing (se
 
 ---
 
-## 7. Pointers
+## 7. NOT Lumen's — route to Soraya (formal verification) / math team
+
+Several open items are **proof obligations or values-math**, not implementation.
+Lumen should *not* absorb these; they need a second, independent check. Flagged per
+BP-16 (a claim asserted by one tool is not verified).
+
+### For Soraya (formal-verification routing)
+
+1. **`empowermentBound` gaming-resistance — prove, don't assume.**
+   The design doc claims calibration may already police over-declaration: a peer that
+   declares capabilities it lacks fails to deliver, degrading `trustBound`, which is a
+   *constraint* in the empowerment objective. That is a plausible mutual-policing
+   argument and it is **unproven**. If it holds it removes the need for a separate
+   anti-gaming mechanism; if it fails, the bound is exploitable by declaration alone.
+   Property to check: *no declaration strategy raises a peer's admissible
+   `jointOptionGain` without a matching delivery record.*
+2. **The linear-blend degeneracy** (`w(μ+k₁σ) + (1−w)(μ−k₂σ) = μ + k′σ`) is stated
+   algebraically in the design doc. Cheap to lock as a machine-checked lemma so a
+   future implementer cannot re-introduce a scalar blend and believe it is the third
+   bound.
+3. **`min` vs `sum` vs Nash for `jointOptionGain`.** The claim is that `min` is
+   maximin and therefore protects the worse-off party while `sum` permits sacrificing
+   one party for aggregate gain. That is a checkable property of the aggregator, not
+   an opinion — worth stating formally before it becomes a values argument.
+4. **TRL-31 / TRL-32 whitewash-unprofitability.** Currently *verified by tests over
+   the tested cases*, not a closed-form result — the Max-facing doc was corrected to
+   say exactly that. A second independent check would let us call it **proven**. This
+   is the cleanest BP-16 candidate on the board.
+
+### For the math team / mathematical-physics
+
+1. **The `hl-conformal-map` regularisation question is math, not just a code fix.**
+   §1a is written as an implementation item, but the underlying question is
+   mathematical: `hlAmplitudeIntegral` treats non-finite entries as *the singularity
+   regularisation*. Is excluding those points the correct regularisation of the
+   Joukowski map's derivative singularity — and what is the actual effect on `A_n`
+   (and hence `D`) of including them with `|dw/dz|² = 1`? Lumen can fix the code; the
+   **validity of the regularisation** should be checked by someone who is not the
+   author. It sits directly under the Z-2 falsifier.
+2. **Landauer exchange rate** (open question in the errors ferry). Unit is settled
+   (heat); what remains is the conversion from *avoided retries* to *avoided joules*
+   so the entropy budget is enforceable rather than merely observable. That is a
+   physics/accounting derivation, not a coding task.
+3. **"Does the sender learn too?"** If an error teaches the receiver *and* the sender
+   updates from having emitted one, that is a symmetric feedback loop with an
+   unexamined **stability** question (does it converge, oscillate, or run away?).
+   Dynamical-systems shaped; wants an actual analysis, not an assertion.
+4. **D_f at finite N.** `box-counting-conformance.test.ts` proves the two independent
+   estimators agree to 1e-10 once (grid, scales) match, and that the 1.30↔1.41 gap is
+   dominated by grid size rather than the fit window. What it does **not** answer:
+   what the correct finite-N scaling is, and how it should approach the asymptotic
+   ≈1.71 (Halsey). Lumen's convergence chart is the empirical half; the analytic half
+   is unclaimed.
+
+**Suggested routing:** the four **Soraya** items above → Soraya (she already owns the
+CHSH/Z3 lemma work and the BP-16 cross-check rule); TRL-31/32 is the cleanest BP-16
+candidate on the board. The four **math-team** items → math team, with the
+`hl-conformal-map` regularisation FIRST — it is the only one that can silently move
+an already-published number.
+
+---
+
+## 8. Pointers
 
 - Ferries: the three `2026-08-09-*` docs listed in §0.
 - Workitems: `081KZKYDJ9Q` (empowermentBound — open, yours),
