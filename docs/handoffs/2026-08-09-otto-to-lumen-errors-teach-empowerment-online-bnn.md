@@ -223,6 +223,122 @@ Also: `bun test` green over a fallback that no test exercises proves nothing (se
 
 ---
 
+## 6b. ANSWERED — what free LLMs actually consume: the 4×4 (16) action grammar
+
+Aaron, 2026-08-09, answering the "what do free LLMs consume?" question routed to you:
+
+> *"We already have the start of our own harness, and tool-calling our own CLIs a bit —
+> it might be toy-like. We also have a universal 4×4 (16) square grammar and controller
+> interface that we run in a loop for a choose-your-own-adventure-like interface, so
+> even non-intelligent and very low-intelligence models can make progress."*
+
+**This already exists in-tree; do not design a new interface.**
+
+- `src/Core/ActionGrammar.fs` — *"the universal action algebra/grammar of the 4×4
+  controller"*. The **16-key hex keypad is a 4×4 grid** = the finite action alphabet.
+  Held-key sets form a **Boolean lattice** (the powerset of 16): `bottom` ⊥, `top` ⊤,
+  `join`, `meet`, `complement`, `leq`. So actions are not a flat enum — they *compose*
+  algebraically.
+- `src/Core/SoftController.fs` — `inputSuperposition` returns `(bool[] * float) list`:
+  a **weighted distribution over actions**, each branch explored in its own timeslice.
+- `src/Core.TypeScript/model-backend/` — `zeta-agent-loop.ts`, `tool-calls.ts`,
+  `zeta-store.ts`: the harness + tool-calling Aaron describes as "toy-like".
+
+### The connection worth building on
+
+**A BNN's natural output IS the controller's natural input.** The BNN produces a
+posterior over actions; `inputSuperposition` is already `(action, weight) list`. There
+is no impedance mismatch to engineer — the shapes already match. The source even
+anticipates it: `SoftController` carries *"Collapse to the best branch (Aaron
+2026-06-08): if we're running Bayesian you can learn what…"*.
+
+So the pipeline is: **BNN posterior over the 16 → weighted branches → collapse →
+learn the branch.** That is the R4 loop, concretely, with both ends already written.
+
+### Why 16 is the point (not an arbitrary size)
+
+A finite 16-symbol alphabet means **capability is not a precondition for participation**.
+A model that cannot write code can still pick 1 of 16 and make progress — the
+choose-your-own-adventure framing. That matters for a society of *free* models: the
+floor for joining is "can select from a small set", not "can generate a correct
+program". It also composes with the errors thread — a wrong action returns a teaching
+error over a **finite** action space, which is the easiest possible learning signal
+(the corrective distinction is always one of 16, never open-ended).
+
+### How it generalises: signature loading, not a bigger alphabet (Aaron, correcting Otto)
+
+My first draft of this section carried the caveat *"'universal' is concrete for CHIP-8;
+generalising is an open claim."* **That understated the design, and Aaron corrected it:**
+
+> *"We are designing an **Xbox-like interface** in mind to make it universal. The square
+> lets you navigate search space in a predictable fashion by **loading different
+> external signatures of the search space you are in**. We've generalized it in our
+> zeta scheduler for .NET too, and our ferry throttler that can predict itself."*
+>
+> *"We just have not pulled it all together."*
+
+The universality mechanism is **not** an alphabet large enough to cover everything —
+it is a **fixed controller shape with swappable semantics**, exactly like a game
+controller. Same 16 positions; the *signature* of the search space you are currently in
+determines what they mean. An Xbox controller is universal across games not because 16
+buttons encode every possible action, but because every game **loads its own mapping**
+onto an invariant shape.
+
+That is a much stronger claim than "it works for CHIP-8", and it is the right one to
+build to: **the alphabet is invariant, the signature is loaded per search space.**
+
+**Already generalised beyond CHIP-8 (verified in-tree):**
+
+- `src/Core/FerryThrottler.fs` — the DoP-knobbed channel ferry ("that can predict
+  itself"), plus `SoftThrottle.fs` / `FeedbackThrottle.fs` and the TS
+  `src/Core.TypeScript/ferry-throttler/`.
+- `src/Core/PredictionScheduler.fs` — *"scheduler adapter for the source-owned
+  prediction kernel"*; alongside `SoftScheduler`, `CellScheduler`,
+  `VirtualTimeScheduler`, `DarkHallScheduler`, `SoftChip8Scheduler`.
+
+**The honest gap is INTEGRATION, not design** (Aaron: *"we just have not pulled it all
+together"*). The controller grammar, the superposition input, the throttler, the
+schedulers and the `model-backend` harness all exist and were each built to the same
+shape — they are not yet one loop. So the R4 work is **assembly**, not invention: that
+is a materially easier and better-specified job than the one my earlier caveat implied,
+and it is worth saying so plainly rather than leaving a false "open research question"
+in front of it.
+
+Do keep the source's own scope note where it applies literally (`ActionGrammar.fs`:
+*"'universal' is concrete for CHIP-8 — all CHIP-8 controls live in these 16"*) — that
+sentence is true about the CHIP-8 *mapping*, not about the controller abstraction.
+
+### The signature detector already exists — and it has a strong human anchor
+
+> Aaron: *"our signature detector has many names in the soft regime, like soft values
+> over dynamic values — I think it's called rainbow spectrum or something; we have a
+> few different signature algorithms. **I used to work at Itron and built
+> disaggregation over electric signal at 16 kHz.**"*
+
+Verified in-tree — do not build a new one:
+
+- `src/Core/CoordinationSpectrum.fs` — *"the S-spectrum as a **soft-rainbow
+  fingerprint**"*. The CHSH probe battery is a **prism**: one source wearing many faces
+  disperses into a characteristic pairwise-S spectrum, recognisable across attempts
+  even under fresh names.
+- `src/Core/Optics.fs` — `FingerprintPrism.Rainbow`.
+
+**The anchor to cite (Beacon):** the existing citation is Pappu 2002, *Physical One-Way
+Functions* (PUFs — identity read from laser speckle). The **missing sibling anchor is
+NILM** — non-intrusive load monitoring, recovering which appliances run from one
+aggregate electrical signal by their signatures (**G. W. Hart, Proc. IEEE 80(12),
+1992**). Aaron built this at Itron at **16 kHz**, i.e. high-rate transient/harmonic
+signatures, well past the ~1 Hz most NILM literature assumes.
+
+That is first-hand production expertise, so **ask him rather than deriving from first
+principles.** And the NILM framing carries transferable structure worth mining for the
+signature-loading design: signatures are **additive** in the aggregate (superposition
+of loads), detection is **inference under overlap**, and the hard cases are
+*simultaneous* and *near-identical* loads — which is exactly the problem of
+distinguishing agents/sources sharing one channel.
+
+---
+
 ## 7. NOT Lumen's — route to Soraya (formal verification) / math team
 
 Several open items are **proof obligations or values-math**, not implementation.
