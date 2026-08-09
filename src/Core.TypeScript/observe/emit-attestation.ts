@@ -19,7 +19,7 @@
 
 import { readdirSync, readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { join } from "node:path";
-import { buildAttestation, type AttestationEvent } from "./attestation-event";
+import { buildAttestation } from "./attestation-event";
 
 interface CliArgs {
   attestor: string;
