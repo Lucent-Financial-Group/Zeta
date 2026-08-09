@@ -112,6 +112,54 @@ number.** It is a values choice wearing an engineering costume: how much diverge
 is worth how much stale authority. That is why it was hard to state, and why two honest
 implementers both walked around it.
 
+## CORRECTION (Aaron, same session) — freezing is not a setting, it is capture
+
+The dial above is wrong at one end, and the reason matters more than the error.
+
+> Aaron: *"we never want to freeze under partition — that is hidden extraction from the
+> central coordinator."*
+
+I wrote `bound → 0` as a legitimate pole of a values trade-off ("maximum agreement, no
+separate lives"). It is not a pole. **A node whose phase freezes when partitioned has
+revealed that it was depending on a coordinator all along** — the freeze is the proof of the
+dependency, and the dependency is the extraction. Nothing was decentralised; the coordination
+was merely invisible while the network happened to be up.
+
+This is [`manifesto`](../governance/MANIFESTO.md) §1 (no central point of coordination) and
+§2 (progress without blocking on another part's permission) failing together, and it is
+**hidden**, which is what makes it worse than an obvious hub: partition is the only condition
+under which the dependency becomes observable.
+
+It also sharpens the Egg reading rather than contradicting it. **A frozen node is not living
+in the delay — it is captured in it.** Living in the interval requires continuing to advance
+locally while unreconciled. Freezing is the absence of a dweller, not a quiet one.
+
+### What this makes the missing clause
+
+Not a staleness bound. The clause must **mandate local advancement**:
+
+> **A principal's own phase component MUST advance without observing anyone.** Expiry is
+> evaluated against a coordinate the principal can advance alone, so grants expire under
+> partition *on schedule*; agreement is on the **causal order**, reconciled on reunion, never
+> on a shared counter.
+
+That is Lamport (1978) semantics and it dissolves the R8/R9 tension rather than trading it
+off: your own component is monotone and autonomous (**R8 holds under partition — the grant
+expires**), and the partial order over merged components is what two principals agree about
+(**R9 holds — no wall-clock, no coordinator**). `TravelerFrame` already observes per-actor;
+what the spec must require is that a principal **observes its own line**, autonomously.
+
+### Consequence for amendment A1 (already merged)
+
+A1 says phase MUST be *derived from an observed causal frame*. Read strictly — phase advances
+only by observing others — **A1 mandates the freeze, and therefore mandates the hidden
+coordinator.** It is not merely incomplete (as §C2 of the combine recorded); it is wrong in
+that reading and must be amended again: derived from an observed causal frame **in which the
+principal's own component advances autonomously**.
+
+The N-version protocol found the ambiguity. It took the maintainer to notice that the
+resolution I chose was the capturing one.
+
 ## What this predicts / what to do with it
 
 1. **The missing R8/R9 clause should be written as a stated bound, not a mechanism** — and
