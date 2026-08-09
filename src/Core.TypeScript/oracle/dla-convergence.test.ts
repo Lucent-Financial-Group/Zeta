@@ -121,11 +121,10 @@ function boxCountDf(cluster: Uint8Array, grid: number): number {
   const meanX = logInvEps.reduce((a, b) => a + b) / n;
   const meanY = logN.reduce((a, b) => a + b) / n;
   let num = 0, den = 0;
-  for (const [index, x] of logInvEps.entries()) {
-    const y = logN[index];
-    if (y === undefined) continue;
-    num += (x - meanX) * (y - meanY);
-    den += (x - meanX) ** 2;
+  for (let i = 0; i < n; i++) {
+    // i < n = logN.length, so index is always in range; ?? 0 satisfies noUncheckedIndexedAccess
+    num += ((logInvEps[i] ?? 0) - meanX) * ((logN[i] ?? 0) - meanY);
+    den += ((logInvEps[i] ?? 0) - meanX) ** 2;
   }
   return den > 0 ? num / den : 0;
 }
