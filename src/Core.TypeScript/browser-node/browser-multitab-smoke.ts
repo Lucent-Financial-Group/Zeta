@@ -249,7 +249,8 @@ async function waitForReady(page: Page): Promise<void> {
 async function installServiceWorker(page: Page, url: string): Promise<true> {
   await page.goto(url);
   await page.waitForFunction(
-    "() => globalThis.__zetaServiceWorkerInstall?.state === 'ready' || globalThis.__zetaServiceWorkerInstall?.state === 'failed'",
+    `() => globalThis.__zetaServiceWorkerInstall?.state === "failed" ||
+      (globalThis.__zetaServiceWorkerInstall?.state === "ready" && Boolean(navigator.serviceWorker.controller))`,
     undefined,
     { timeout: timeoutMs },
   );
