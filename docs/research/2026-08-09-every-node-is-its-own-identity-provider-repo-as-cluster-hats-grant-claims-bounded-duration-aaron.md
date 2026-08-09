@@ -171,11 +171,54 @@ key classes with distinct scopes, transfer as an explicit two-sided operation, R
 forcing case) and **rejects the hub**: transfer is a retraction/emission pair on the key
 event stream, verifiable by both parties without a broker in the middle.
 
-**Open question this raises:** who witnesses a transfer? Itron has the ISM as the witness.
-Decentralized, the honest candidates are (a) both parties' signatures on the same event,
-(b) the cluster's BFT layer (`SybilBftProtocol`), or (c) social attestation like the
-privacy budget. This is unresolved and should not be guessed — it decides whether a
-one-sided "transfer" is possible, which is the whole security question.
+### ANSWERED — the witness stakes privacy budget
+
+> Aaron: *"privacy budget risk sounds like a good starting point. It's like **gambling but
+> on stuff that matters** — only **you** can decide to risk your privacy budget, **never
+> coerced**."*
+
+Itron's witness is the ISM, a hub. Decentralized, the witness is whoever **stakes privacy
+budget** on the attestation being true. A false attestation costs the witness budget that
+took *social effort by others* to earn and that cannot be re-granted except by others
+attesting again.
+
+**Why this is the right shape and not just a fine:**
+
+- **It cannot be paid from a treasury.** Privacy budget is credited only by others
+  attesting you added value to them — it is not purchasable, so a wealthy attacker cannot
+  simply fund false witnesses. The cost is *reputational and socially conferred*, which is
+  the one currency a Sybil cannot mint.
+- **Witnessing is voluntary, so transfers cannot be forced through.** If nobody will stake
+  on your transfer, it does not get witnessed. That is an anti-fraud property falling out
+  of the mechanism rather than bolted on — and it directly answers the security question,
+  because a **one-sided transfer is impossible without someone willing to risk something
+  they cannot buy.**
+- **Skin in the game, in the strict sense.** The witness's downside is real and personal,
+  which is what distinguishes attestation from signature-as-formality.
+
+**The tension worth naming, and its resolution.** The carved rule
+[`privacy-budget-is-hard-money-earned-by-others`](../../.claude/rules/privacy-budget-is-hard-money-earned-by-others.md)
+says the budget *"can be earned … but it **cannot be taken away**."* Staking-and-losing
+looks like it violates that. It does not, once three things are distinguished:
+
+| Operation | Who initiates | Permitted? |
+|---|---|---|
+| **Spend** (frost a region) | the owner | yes — already carved |
+| **Stake** (risk it on an attestation) | **the owner** | **yes — this proposal** |
+| **Confiscate** (take it) | anyone else | **never** |
+
+Hard money forbids only the third. *"Only you can decide to risk your privacy budget,
+never coerced"* is precisely the clause that keeps the hard-money property intact: no one
+can take it **from** you; you may spend or wager it **yourself**. Worth adding to the rule
+explicitly, because a future reader could otherwise read "cannot be taken away" as
+forbidding stakes.
+
+**Still open (smaller):** what is the payout side? A wager with only a downside is a
+tax on honesty and nobody rational witnesses. Candidates: the witness earns budget when
+the attestation is later confirmed (symmetric wager), or witnessing is compensated by the
+transferring parties, or witnessing itself is value-added-to-others and therefore
+*already* budget-earning under the existing rule — which would be the most elegant, since
+it needs no new mechanism at all.
 
 ## Three-key rotation — and why the RIGHT reason matters
 
