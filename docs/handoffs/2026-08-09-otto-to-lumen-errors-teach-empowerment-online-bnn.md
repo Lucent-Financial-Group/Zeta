@@ -337,6 +337,29 @@ of loads), detection is **inference under overlap**, and the hard cases are
 *simultaneous* and *near-identical* loads — which is exactly the problem of
 distinguishing agents/sources sharing one channel.
 
+**Four domains, and they split into TWO halves — this distinction matters.** Aaron also
+engineers live sound for local bands and splits a single track into multitrack stems
+(*"very similar techniques"*), and names **MusicBrainz Picard** and **Shazam** as *"very
+similar signature math"*. He is right in both cases, but they are not the same job:
+
+| Half | Question | Anchors | Zeta use |
+|---|---|---|---|
+| **Separation** | *"which sources compose this mixture?"* | NILM (Hart 1992); ICA (Comon 1994; Bell & Sejnowski 1995); NMF spectrogram factorisation (Lee & Seung 1999; Smaragdis) | pull apart agents sharing one channel |
+| **Fingerprint identification** | *"which known thing is this, from a partial/noisy observation?"* | Shazam (Wang 2003 — constellation of spectrogram peaks + combinatorial hashing, robust under noise); Chromaprint/AcoustID behind Picard | recognise a **repeat source under a fresh name** |
+
+`CoordinationSpectrum` needs **both**, and its own docstring says so: the prism
+disperses a mixture (separation), producing *"a fingerprint … a repeat source is known
+by its refraction **even under fresh names**"* (identification). The Sybil case is
+precisely the hard cell of both halves at once — simultaneous near-identical loads,
+doubled instruments with the same timbre, **one source wearing many faces**.
+
+Practical consequence: the identification half has a strong, cheap, battle-tested
+design (Shazam-style: hash robust local features, match against a store, tolerate
+noise and partial observation) and is likely the faster win. The separation half is the
+harder research problem. Do not conflate them into one "signature detector" — and when
+judging what is separable **in principle** versus what merely looks separable, ask
+Aaron: he has hands-on experience with the hardest version in two unrelated domains.
+
 ---
 
 ## 7. NOT Lumen's — route to Soraya (formal verification) / math team
