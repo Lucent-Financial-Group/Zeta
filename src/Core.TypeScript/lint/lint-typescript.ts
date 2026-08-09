@@ -8,6 +8,7 @@
 //   bun src/Core.TypeScript/lint/lint-typescript.ts
 
 import { spawnSync } from "node:child_process";
+import { existsSync, readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -23,6 +24,17 @@ interface Step {
 const STEPS: readonly Step[] = [
   { label: "TypeScript type check: tsc", cmd: ["bun", "x", "tsc", "--noEmit", "-p", "tsconfig.json"] },
 ];
+
+interface PackageManifest {
+  readonly devDependencies?: Readonly<Record<string, string>>;
+}
+
+export function findMissingRootDevDependencies(repoRoot: string): readonly string[] {
+  const packageJson = JSON.parse(readFileSync(resolve(repoRoot, "package.json"), "utf8")) as PackageManifest;
+  return Object.keys(packageJson.devDependencies ?? {})
+    .filter((name) => !existsSync(resolve(repoRoot, "node_modules", name, "package.json")))
+    .sort();
+}
 
 function run(step: Step): boolean {
   console.log(`=== ${step.label} ===`);
@@ -55,6 +67,19 @@ function run(step: Step): boolean {
 }
 
 function main(): number {
+  let missing: readonly string[];
+  try {
+    missing = findMissingRootDevDependencies(REPO_ROOT);
+  } catch (error) {
+    console.error(`x Cannot inspect root devDependencies: ${error instanceof Error ? error.message : String(error)}`);
+    return 1;
+  }
+  if (missing.length > 0) {
+    console.error(`x Root devDependencies are not installed: ${missing.join(", ")}`);
+    console.error("  Run: bun install --frozen-lockfile");
+    return 1;
+  }
+
   for (const step of STEPS) {
     if (!run(step)) return 1;
   }
@@ -62,4 +87,4 @@ function main(): number {
   return 0;
 }
 
-process.exit(main());
+if (import.meta.main) process.exit(main());
