@@ -134,6 +134,103 @@ constraints that already exist and should drive it:
   or mint a new one? §5 Memory Preservation says an identity transition must never silently
   destroy memory, which argues for *same identity, new key, both recorded*.
 
+## Anchor: Aaron built key-transfer-between-owners at Itron (concept, not code)
+
+> Aaron 2026-08-09: *"I built the KeyUtilities for **RMA and key transfer between
+> owners**."* (`Itron.Security.KeyUtilities`, alongside `ISM`.)
+
+**Cleanroom boundary, stated up front.** This is Aaron's own work but his former
+employer's IP, and the repo already carries the discipline for exactly this situation
+(`memory/feedback_metering_protocols_…_cleanroom_itron_concept_not_code`): the *domain
+expertise* is first-hand and usable, the *implementation* is not. What follows is the
+concept inventory — read from operation names and domain types only — and Zeta gets a
+clean-room re-derivation, never transcribed code.
+
+**The concepts that transfer (and that our design is currently missing):**
+
+| Itron concept | What it establishes | Zeta consequence |
+|---|---|---|
+| `IUtility` / `UtilityModel` as a first-class domain type | **the OWNER is a modelled entity**, not an implicit ambient context | ownership must be a type in the key model, not a field on a key |
+| `ExportApplicationKey` / `ExportMeterKeys` / `ExportCertBundle` | **key CLASSES transfer at different scopes** — application-wide, per-device, and cert-bundle | one rotation/transfer verb is not enough; scope is part of the operation |
+| `ImportISMKeys` (paired export→import) | **transfer is an explicit two-sided operation**, not a mutation of an owner field | matches `+1`/`−1` on the key event stream rather than an in-place edit |
+| **RMA as the trigger** | a device physically changing hands is the *canonical* forcing case | the hardest case is not rotation-in-place, it is **custody change with history intact** |
+
+**The RMA case is the sharpest thing here, and it is one our design had not considered.**
+A returned meter physically moves to a different owner while remaining the same device.
+That is precisely §5 Memory Preservation applied to hardware: the identity transition must
+not silently destroy what the device knows. Zeta's equivalent — an agent or node changing
+custody (the spawner→self-owning graduation from the capacity work, or a node moving
+between clusters when a repo forks) — has the same shape and currently has no operation
+for it.
+
+**The inversion that must be preserved.** Itron's model is export/import **through a
+central security manager (ISM)**. That is the centralized shape, and the existing memory
+is explicit that *"the patents are CENTRALIZED, Zeta is decentralized — never propose
+centralized Itron-shaped designs."* So Zeta takes the concept vocabulary (owner as a type,
+key classes with distinct scopes, transfer as an explicit two-sided operation, RMA as the
+forcing case) and **rejects the hub**: transfer is a retraction/emission pair on the key
+event stream, verifiable by both parties without a broker in the middle.
+
+**Open question this raises:** who witnesses a transfer? Itron has the ISM as the witness.
+Decentralized, the honest candidates are (a) both parties' signatures on the same event,
+(b) the cluster's BFT layer (`SybilBftProtocol`), or (c) social attestation like the
+privacy budget. This is unresolved and should not be guessed — it decides whether a
+one-sided "transfer" is possible, which is the whole security question.
+
+## Three-key rotation — and why the RIGHT reason matters
+
+Aaron floated a 3-key rotation scheme rather than 2-key. **The conclusion is likely right;
+one of the offered rationales is not, and the difference is worth writing down because it
+changes what we can defend.**
+
+### The rationale to discard
+
+> *"that will make us at least 20% different … and we are also decentralized, that makes
+> us different, it's not a copy."*
+
+**There is no percentage threshold that makes a derivative work non-infringing** — "20%
+different" is a persistent myth, not a doctrine. Worse, reasoning *"how do we make this
+different enough"* **implies deriving from the original**, which is precisely what
+cleanroom exists to prevent. A defense built on *how much we changed it* has already
+conceded the starting point.
+
+**What actually protects this work is what we already have:** Aaron's seven years of
+first-hand domain expertise, specs he paid for and implemented by hand, and public
+standards. That is *independent derivation from legitimately-held knowledge* — a
+categorically stronger position than a similarity argument, and exactly what the existing
+`cleanroom / concept-not-code` rule already prescribes. **Design from requirements; never
+from the original's shape minus a percentage.**
+
+### The rationale that holds — 3 keys because we are decentralized
+
+Under a central authority, rotation can be a **coordinated cutover**: the hub knows the
+switchover instant, so `current + next` suffices. Itron could use a 2-key shape *because*
+the ISM was that hub.
+
+With no hub, propagation is not instantaneous, and that forces the third slot:
+
+| Slot | Why it must exist without a hub |
+|---|---|
+| **previous** | a peer that has not yet learned of the rotation still presents/verifies the old key — without this slot, rotation partitions the cluster |
+| **current** | what we sign with now |
+| **next** | pre-staged and published *before* use, so the cutover needs no synchronizing message |
+
+The property this buys is the same one required of binding expiry earlier in this
+document: **it must take effect with no coordination**, and must be safe under partition.
+A 2-key scheme in a decentralized system has a window where two honest peers cannot verify
+each other and neither is wrong — which is a liveness failure caused purely by the absence
+of a hub.
+
+So the defensible statement is: **we need three keys because we have no central authority
+to synchronize a cutover** — not because three differs from two. That framing is both
+true and stronger, and it generalizes: the same argument predicts we will need overlap
+windows anywhere a central coordinator would otherwise have sequenced a transition.
+
+**Still open:** how long is `previous` honored? Too short re-creates the partition window;
+too long extends the period a compromised old key is accepted. That bound is a real
+security/liveness trade and should be decided deliberately, ideally expressed in agreed
+phase rather than wall-clock (same reason as expiry).
+
 ## Why dogfood this before hardware (Aaron's instinct is right)
 
 PKI mistakes are the expensive kind: they are discovered late, they invalidate enrolled
