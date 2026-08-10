@@ -366,6 +366,46 @@ carries whatever the pair has, not what a judgement says is most transferable �
 is real. Recovering the selectivity without recreating the hub is an open problem worth
 naming rather than papering over.
 
+### The hub was patented — and Itron owns it
+
+> Aaron: *"yep, I wrote the patent on myself."* / *"peer-to-peer is the decentralized
+> upgrade."*
+
+**US20180109563A1 → granted US10834144B2, "Hub and Agent Communication Through a Firewall"**
+— inventors Aaron Stainback and Christopher Higgins, **assignee Itron Inc**, priority
+2016-10-13, granted 2020-11-10, live to 2038.
+
+So the migration-operator-as-hub is not a metaphor this document reached for. Aaron played the
+role at Whitfield's org and then **formalised it as a claimed mechanism**, and the title says
+*hub*. The tension recorded above — that a designated carrier is a central coordinator — is a
+granted patent with his name on it.
+
+The mechanism: an on-premises agent **dials outbound** to a cloud hub over WSS/443, so no
+inbound port opens and no firewall rule changes; the hub then sends **command names and
+parameters**, and *only pre-configured commands exist at the agent* — the hub cannot transmit
+a new one.
+
+**What survives decentralisation.** The security core is not the hub. Outbound-initiated
+contact works peer-to-peer unchanged. And the closed command set — **the far side may name a
+command, never define one** — is a least-privilege property that matters *more* peer-to-peer
+than hub-and-spoke, because a gossip peer deserves exactly as little trust as a hub does.
+Compromising your counterparty must not buy arbitrary execution on you.
+
+**What does not.** The hub as sole mediator: the single-migration-particle shape, which fails
+exactly when the carrier is partitioned or captured.
+
+**The licensing fact, which is not philosophical.** Itron is the assignee. **Inventorship
+conveys no license, and coworker sign-off is not assignee authority.** Citing the patent is
+free — it is a published public document — but practicing its claims is not ours to choose.
+So the decentralised design is not merely the manifesto-preferred one; it is the clean path,
+and a genuinely peer-to-peer architecture with no mediating node does not read on a hub claim.
+*(Not legal advice; claim construction is for counsel.)*
+
+That closes the loop this section opened. The open problem was recovering **selective**
+migration without recreating the hub. The patent shows the hub version is real, works, and is
+owned — so the P2P upgrade is the only direction available, and the selectivity has to be
+recovered structurally rather than by appointing a particle.
+
 ## What this predicts / what to do with it
 
 1. **The missing R8/R9 clause should be written as a stated bound, not a mechanism** — and
