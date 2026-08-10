@@ -580,7 +580,16 @@ arriving at the physical layer, and it is the strongest available argument that 
 pedantic.
 
 **Jurisdictional plurality is a trust property — and the KSK has it concretely.** Max is
-**CEO of Lucent Financial Group** and a **Russian-American dual citizen**. *(Recorded with
+**CEO of Lucent Financial Group**, Aaron is **CTO**, and Max is a **Russian-American dual
+citizen**.
+
+*(That officer structure also sharpens something load-bearing throughout this thread:
+**authorization has a scope, and the scope is the company.** Aaron as CTO holds real corporate
+authority over `Lucent-Financial-Group/Zeta` and `lucent-ksk` — which is why "commit it" is a
+decision he can actually make, not merely a preference. It is equally why the **Itron** patent
+boundary stands unmoved: that authority does not reach another company's assignee rights, and
+no amount of seniority at LFG licenses US10834144B2. Same person, two very different
+authorization surfaces, and conflating them is exactly the escalation this thread is about.)* *(Recorded with
 consent: Otto initially withheld this as third-party personal data — "glass halo" asserted by
 one person is not another's consent — and Aaron confirmed he had spoken with Max directly and
 that Max is fine with it being known. Attributed here as Aaron-relayed consent, and kept
