@@ -90,6 +90,32 @@ does not remove concentration. What it buys is that the concentration is *re-for
 the guard is to keep re-emergence cheap (low barrier to a new node accruing degree), never to
 pretend the hub is not there.
 
+### The mitigation is §11 — a hub IS an oracle
+
+Aaron 2026-08-09: *"hubs ≈ oracles, and we have multi-oracle for this reason."*
+
+A hub and an oracle are the same structure seen through different needs: **a concentration of
+deference.** An oracle is what you defer to for a *judgement*; a hub is what you defer to for
+*reach*. The targeted-attack fragility above assumes **one dominant hub per function** — and
+that assumption is exactly what the **Multi-Oracle Principle (§11)** forbids.
+
+So §11 was never only about morality. Read generally — *no single mandatory locus of
+deference* — it is the anti-fragility property for topology too, stated at the values layer
+before we needed it at the routing layer. *(That generalisation is Aaron's, made explicit here;
+the manifesto text states §11 in moral terms.)*
+
+**And it makes §11 measurable.** It stops being a principle you assert and becomes a
+distribution you can check:
+
+> For every function, the deference distribution must have **more than one** independently
+> accrued peak. If deference for any function collapses onto a single node, that is a §11
+> violation **visible in the graph** — no interpretation required.
+
+The design consequence is k-redundant deference: consult or route through **≥ k independently
+accrued hubs**, never simply the top one. Note this also costs something real — plural
+deference is slower and sometimes contradictory, and the contradiction is the point: an oracle
+you cannot cross-check is one you are captured by.
+
 ## Standing guard
 
 Before any "the nodes just call home" / "one broker in front of the fleet" design: this rule
