@@ -28,6 +28,26 @@ The hub as **sole mediator** of all traffic. That is the single-migration-partic
 works, it is legible, and it fails when the carrier is partitioned or captured — the same
 hidden-coordinator failure as freezing under partition, moved to the variation axis.
 
+## Why it is a different game, not a different setting
+
+Aaron 2026-08-09: *"their patent is for central, Zeta is for decentralized — it's a whole
+different game."* The sharper form of that, and the one to reason from:
+
+**The hub exists to solve an asymmetry Zeta does not have.** The patent's problem is *how does
+a vendor's cloud service reach into a customer's firewalled premises* — two parties in
+structurally unequal positions: one owns the boundary, the other needs through it, and neither
+can be the other. The hub is the vendor's side of that boundary, and it is the right answer
+**to that problem**.
+
+Zeta has no vendor and no customer premises. Peers are symmetric; nobody owns the boundary the
+others must cross. **The problem the hub solves does not occur in our topology** — so the
+mechanism is not something we would adopt even if it were free of charge and free of claims.
+This is not "we picked the decentralized option instead"; it is a different problem with a
+different shape.
+
+That is also why the licensing question, while real, is the *second* reason and not the first.
+The first reason is that a hub would be **wrong here on the merits**.
+
 ## Standing guard
 
 Before any "the nodes just call home" / "one broker in front of the fleet" design: this rule
