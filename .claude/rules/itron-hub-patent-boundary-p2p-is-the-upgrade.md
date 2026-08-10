@@ -24,9 +24,11 @@ The patent's security core is **not** the hub, and it survives decentralization 
 
 ## What is not portable
 
-The hub as **sole mediator** of all traffic. That is the single-migration-particle shape: it
-works, it is legible, and it fails when the carrier is partitioned or captured — the same
-hidden-coordinator failure as freezing under partition, moved to the variation axis.
+The hub as **sole mediator** of all traffic — specifically an **appointed** one. That is the
+single-migration-particle shape: it works, it is legible, and it fails when the carrier is
+partitioned or captured — the same hidden-coordinator failure as freezing under partition,
+moved to the variation axis. Note what is *not* excluded: **emergent** hubs are fine and
+expected (see below). The defect is appointment, not degree.
 
 ## Why it is a different game, not a different setting
 
@@ -47,6 +49,46 @@ different shape.
 
 That is also why the licensing question, while real, is the *second* reason and not the first.
 The first reason is that a hub would be **wrong here on the merits**.
+
+## Emergent hubs are the scale-free alternative — hubs are fine, *appointment* is not
+
+Aaron 2026-08-09: *"emergent hubs is the scale-free actor alternative — Kevin Bacon."*
+
+This resolves the open problem the migration thread left: recover **selective** migration
+without recreating the hub. The answer is that §1 never forbade hubs. It forbids a central
+point of **control**, and an emergent hub is high *connectivity* with no *authority*.
+
+**Scale-free networks** (Barabási–Albert 1999): preferential attachment produces a power-law
+degree distribution in which hubs appear **without anyone appointing them**. Kevin Bacon is
+the folk example — and the honest detail is that he is *not* the most connected actor (Steiger
+and others outrank him); he is famous because of the game, which is itself the lesson: **the
+named hub and the actual hub are different nodes.** Appointment tracks fame; emergence tracks
+use.
+
+The distinction that matters operationally:
+
+| | designated hub | emergent hub |
+|---|---|---|
+| how it got there | appointed | accumulated use |
+| selectivity | the appointee's judgement | earned — peers repeatedly found its transfers worth taking |
+| capture | appoint the wrong node, own the network | must actually be useful, repeatedly, to acquire degree |
+| removal | **the algorithm halts** — there is no successor | connectivity degrades and **re-emerges elsewhere** |
+
+That last row is the whole difference. A designated carrier partitioned or captured stops
+every island evolving. An emergent hub removed is re-elected by usage, because the property
+that made it a hub is a *behaviour peers can perform*, not a *title someone holds*.
+
+**And this is the naming eigenvector again.** Degree accrues from peers who themselves have
+degree; it is socially conferred and cannot be self-minted — the same construction as the
+privacy budget and the remembrance graph. Selective migration is recovered exactly there:
+selectivity is not delegated to a particle, it *precipitates* out of many peers independently
+choosing what was worth carrying.
+
+**Honest limit.** Scale-free topologies are robust to random failure and **fragile to targeted
+attack on hubs** (Albert, Jeong & Barabási 2000). Emergence removes the appointment risk; it
+does not remove concentration. What it buys is that the concentration is *re-formable* — so
+the guard is to keep re-emergence cheap (low barrier to a new node accruing degree), never to
+pretend the hub is not there.
 
 ## Standing guard
 
