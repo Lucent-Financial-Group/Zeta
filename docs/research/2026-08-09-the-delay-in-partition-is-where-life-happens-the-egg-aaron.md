@@ -732,6 +732,45 @@ Which is three rules meeting at one point, all of which we already had:
 *(Recorded as Aaron-supplied: I verified the threat-model names in-tree, not the exploit
 incident itself. The mapping onto NCI is mine.)*
 
+### CORRECTION — capability gifting is not the defect; it is capability INJECTION, and it is dual-use
+
+> Aaron: *"capability gifting on dag/chain is capability injection — dual use — and we support
+> [it] for mutual empowerment of all involved."*
+
+I listed **capability gifting** as step 4 of the attack. That is wrong, and the error is the
+kind [`dual-use-detection-is-neutral-oracle-decides`](../../.claude/rules/dual-use-detection-is-neutral-oracle-decides.md)
+exists to prevent: I named the mechanism after its adversarial reading.
+
+The same operation has two honest readings:
+
+| reading | what it is |
+|---|---|
+| **adversarial** | confused deputy — the agent spends capabilities for a party who never held them |
+| **legitimate** | **delegation** — a principal deliberately grants a capability so both parties can do more. This is *mutual empowerment*, and it is a thing we are building, not tolerating |
+
+**So the defect is step 3, not step 4.** Authority laundering — the decode conferring authority
+— is the whole vulnerability. Capability injection is the *payload*, and it is harmful only
+because step 3 forged the consent that would have made it legitimate. Remove step 3 and step 4
+is a feature. This is the boxing ring again: the punch is not the offence; entering without
+consent is.
+
+**What makes it safely dual-use is the DAG.** On a DAG/chain the injection is a **recorded,
+attributable edge** — who granted what, to whom, from which fork (and in `DagFs` each linear
+fork can carry its own keys). An ambient capability transfer is unauditable; an edge is not.
+The adversarial version therefore has a signature: it needs the gift to be **unrecorded or
+misattributed**, because a correctly recorded gift names a giver who never agreed.
+
+Which means the discriminator is not the operation but the edge's properties — and they are
+exactly the ones derivation A already built:
+
+- **declared by the giver** (not inferred from content — the self-claim rule)
+- **recorded and attributable** (an edge in the DAG, not an ambient effect)
+- **bounded and self-expiring** (R8/R9 — a gifted capability that never expires is capture)
+
+A capability injection with all three is empowerment. Missing any one, it is the BankerBot
+step. **The mechanism is neutral; the edge's provenance decides** — which is the rule stated
+for capabilities rather than for detection.
+
 ### The control conclusion: DUs and workflows live OUTSIDE the LLM, and change by multi-party verification
 
 > Aaron: *"discriminated unions / workflows need to be external from LLMs and multi-party
