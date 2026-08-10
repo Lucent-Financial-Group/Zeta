@@ -189,6 +189,14 @@ async function waitForControllerInput(page: Page, source: "keyboard" | "pointer"
   );
 }
 
+async function readControllerInput(page: Page, pageName: string): Promise<DarkHallBrowserControllerInputReadout> {
+  return page.evaluate((name) => {
+    const started = (globalThis as unknown as BrowserPwaPageGlobal).__zetaDarkHallPage;
+    if (started?.ok !== true) throw new Error(`${name} did not expose its active runtime.`);
+    return started.value.read().input;
+  }, pageName);
+}
+
 async function waitForRowCommand(
   page: Page,
   kind: "emit" | "retract",
@@ -485,11 +493,11 @@ export async function runBrowserPwaSmoke(): Promise<BrowserPwaSmokeResult> {
     stage = "route pointer and keyboard controller input";
     await pageB.click('[data-action-id="darkhall.database.inspect"]');
     await waitForControllerInput(pageB, "pointer", 6);
+    const pointerInput = await readControllerInput(pageB, "page B");
     await pageA.keyboard.press("KeyC");
     await waitForControllerInput(pageA, "keyboard", 12);
+    const keyboardInput = await readControllerInput(pageA, "page A");
     const [beforeA, beforeB] = await Promise.all([observe(pageA, "page A"), observe(pageB, "page B")]);
-    const pointerInput = beforeB.input;
-    const keyboardInput = beforeA.input;
 
     stage = "edit, emit, select, retract, and re-emit database row";
     await pageB.fill("[data-row-command-key]", "game/score");
