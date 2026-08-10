@@ -1,6 +1,18 @@
 namespace Zeta.Core
 
-/// **Threshold signature verification — derivation A of an N-version clean-room build.**
+/// **k-of-n MULTI-signature verification.**
+///
+/// `B1` — this module was called "threshold signature verification" and that name was **wrong**.
+/// "Threshold signature" is the term of art for the Desmedt–Frankel / Shamir construction: an
+/// *aggregated single signature* verified against *one group key*. What this does — count distinct
+/// signers, de-duplicate submissions, report unknown ones — is only meaningful for **k-of-n
+/// multi-signature**, where each party signs separately.
+///
+/// The N=3 run caught it: all three derivations built multi-signature because the requirements
+/// forced it, so the spec was internally coherent and externally misnamed. **A cryptographer
+/// reading only the old title would have built the wrong primitive.**
+///
+/// Synthesised from derivation A, with amendments B1–B9 from the combine applied.
 ///
 /// Answers one question: *from the perspective of ONE verifying party, did at least `Threshold`
 /// distinct signers on THAT party's roster produce a cryptographically valid signature over this
@@ -26,7 +38,7 @@ namespace Zeta.Core
 /// Note this module verifies a **multi-signature over a shared roster** (n independent signatures,
 /// k required), *not* a single aggregated threshold signature; that distinction is deliberate — see
 /// the derivation report.
-module ThresholdSignatureVerification =
+module MultiSignatureVerification =
 
     open System
     open System.Security.Cryptography

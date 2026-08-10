@@ -1,4 +1,4 @@
-module Zeta.Tests.ThresholdSignatureVerificationTests
+module Zeta.Tests.MultiSignatureVerificationTests
 
 // Derivation A of the N-version clean-room build of
 // `docs/specs/threshold-signature-verification-cleanroom-spec.md`.
@@ -11,7 +11,7 @@ module Zeta.Tests.ThresholdSignatureVerificationTests
 open System
 open global.Xunit
 open Zeta.Core
-open Zeta.Core.ThresholdSignatureVerification
+open Zeta.Core.MultiSignatureVerification
 
 // -------------------------------------------------------------------------------------------------
 // Fixtures — golden vectors, hex-in-text (no binary in the proof lineage).
