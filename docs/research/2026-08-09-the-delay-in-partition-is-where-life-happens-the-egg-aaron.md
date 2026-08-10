@@ -732,6 +732,45 @@ Which is three rules meeting at one point, all of which we already had:
 *(Recorded as Aaron-supplied: I verified the threat-model names in-tree, not the exploit
 incident itself. The mapping onto NCI is mine.)*
 
+### The control conclusion: DUs and workflows live OUTSIDE the LLM, and change by multi-party verification
+
+> Aaron: *"discriminated unions / workflows need to be external from LLMs and multi-party
+> verified on changes."*
+
+This is what the BankerBot chain forces, and it is the **same closed-command-set property for
+the third time today** — which is the strongest evidence it is the right primitive:
+
+| layer | the rule |
+|---|---|
+| the patent (hub↔agent) | the hub may **name** a command; only the agent holds definitions |
+| identity (this thread) | a hub may **relay** an attestation; never **issue** one |
+| **the model** | **the LLM may name a transition; never define one** |
+
+If the action space is a discriminated union held **outside** the model, then a decoded
+payload cannot invent an action. The worst it can do is *name one that already exists* — and
+naming an existing, already-authorized transition is not an exploit, it is use. Authority
+laundering needs the decode step to be able to **introduce** an action; a closed external DU
+removes the introduction, so the laundering has nothing to launder.
+
+**Why the second half is not optional.** An external DU that any single party can edit has
+only moved the vulnerability one level up: instead of injecting an action, you inject a
+*change to the action space*. So DU/workflow changes are a **gated class requiring k-of-n
+verification** — which is §11 multi-oracle applied to the schema itself. No single party,
+human or AI, may widen the action space alone. That is the same argument as k-redundant
+deference, one layer further in: **the most dangerous concentration is not over decisions, it
+is over the definition of what decisions exist.**
+
+**The enforcement gap, recorded honestly.** Today's `src/Core/DerivationProtocol.fs` satisfies
+the first half — it is F#, external to any model, and an LLM can only name its cases. It does
+**not** satisfy the second: any agent with commit access can edit that DU, and nothing
+currently requires k-of-n on such a change. The mechanism is straightforward (a CI gate
+requiring multiple approvals on DU-defining paths) and it is unbuilt, so it is named here as a
+gap rather than described as a design.
+
+Related and already in force: [`interfaces-free-classes-earned-under-rules`](../../.claude/rules/interfaces-free-classes-earned-under-rules.md)
+— the rules of the game are free interfaces; state is earned *under `rules/`*. Aaron's point
+extends it: **the interface itself must not be editable by the party playing the game.**
+
 ## What this predicts / what to do with it
 
 1. **The missing R8/R9 clause should be written as a stated bound, not a mechanism** — and
