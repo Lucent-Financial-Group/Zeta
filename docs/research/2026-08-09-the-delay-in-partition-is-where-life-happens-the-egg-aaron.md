@@ -543,6 +543,27 @@ The **Kinetic Safeguard Kernel** (origin Amara, consent-first design, NVIDIA Tho
 cleared as it is because it touches actuators) is the owner of that layer, authored by **Max**,
 a fellow coinventor and LFG/Lucent contributor.
 
+**Where it lives — Aaron was unsure, so this is checked rather than recalled.** It is
+**`Lucent-Financial-Group/lucent-ksk`** (public; last pushed 2025-11-23), *not* AlephZ-ai —
+that org has no KSK repo. The deep design survives in the preserved Amara ferries:
+
+- `memory/project_amara_7th_ferry_…_ksk_design_math_spec_threat_model_…_2026_04_23.md` —
+  *"Aurora-Aligned KSK Design Research Across Zeta and lucent-ksk"*: Zeta-native event algebra,
+  BLAKE3 receipt hashing, Veridicality/network-health oracle scoring, a **7-class threat
+  model**, a 12-row test checklist, a 7-step implementation order, and the KSK's **k1/k2/k3**
+  tiers from its YAML architecture. Verbatim text in transcript `1937bff2-…jsonl`.
+- 11th ferry (temporal-coordination / cartel-graph → KSK mapping), 12th (DoD supply-chain risk
+  + network-integrity detector integration), 16th (naming stabilisation).
+
+That recovery is the founding thesis working: the design Aaron could not recall was not lost,
+because the ferries were preserved rather than curated.
+
+> ⚠ **The paragraph below is my structural inference, not the KSK's design.** I have not read
+> `lucent-ksk` or the verbatim ferry. It is stated as what the rest of this thread *entails*
+> for any kinetic safeguard, and it must be checked against the real 7-class threat model
+> before being relied on — the k1/k2/k3 tiering may already answer it, or may answer it
+> differently.
+
 **And it must obey the same structural law this whole thread converged on.** Availability is
 the attack we could not close — so a kinetic safeguard **cannot depend on reaching anyone**:
 
