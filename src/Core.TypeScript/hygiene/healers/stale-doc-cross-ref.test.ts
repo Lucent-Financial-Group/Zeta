@@ -163,7 +163,6 @@ describe("staleDocCrossRefHealer", () => {
 
   test("closure: healing does not create new findings", () => {
     const healed = staleDocCrossRefHealer.heal(brokenLinkTree);
-    const beforeFindings = staleDocCrossRefDetector.detect(brokenLinkTree);
     const afterFindings = staleDocCrossRefDetector.detect(healed);
     // After healing, no findings should remain (or at minimum, no NEW ones)
     expect(afterFindings.length).toBeLessThanOrEqual(0);
