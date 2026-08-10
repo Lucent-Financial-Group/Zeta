@@ -579,15 +579,23 @@ than the fallback.** This is the freeze correction and the expiry-needs-no-messa
 arriving at the physical layer, and it is the strongest available argument that those were not
 pedantic.
 
-*(Deliberately not recorded here: Aaron also gave a personal detail about Max's citizenship.
-It is omitted because third-party personal data — particularly on a clearance-adjacent,
-actuator-touching project — is Max's to publish, not Aaron's to publish on his behalf, and
-"glass halo" asserted by someone else is not that person's consent. The **principle** Aaron
-may have been pointing at is recordable and worth recording: **jurisdictional plurality is a
-trust property.** A decentralised system whose contributors and nodes sit under several legal
-regimes cannot be compelled wholesale by any one of them — §11 multi-oracle applied to
-jurisdictions. Export-control status is the countervailing constraint on kinetic tech, and is
-a legal question for counsel, not a design one.)*
+**Jurisdictional plurality is a trust property — and the KSK has it concretely.** Max is
+**CEO of Lucent Financial Group** and a **Russian-American dual citizen**. *(Recorded with
+consent: Otto initially withheld this as third-party personal data — "glass halo" asserted by
+one person is not another's consent — and Aaron confirmed he had spoken with Max directly and
+that Max is fine with it being known. Attributed here as Aaron-relayed consent, and kept
+because it is load-bearing rather than biographical.)*
+
+Why it is load-bearing: a decentralised trust system whose principals sit under **several
+legal regimes cannot be compelled wholesale by any one of them.** That is §11 multi-oracle
+applied to jurisdictions — the same anti-monopoly-of-deference argument as emergent hubs,
+one layer out. A single-jurisdiction system has a legal hub whether or not it has a
+topological one, and a court order is a capture that no amount of cryptography answers.
+
+The countervailing constraint is real and points the other way: **export control on
+actuator-touching technology** is a live legal question for a kinetic safeguard with a
+dual-national principal, and it is counsel's to answer, not a design decision. Both facts
+belong on the record; neither settles the other.
 
 ## What this predicts / what to do with it
 
