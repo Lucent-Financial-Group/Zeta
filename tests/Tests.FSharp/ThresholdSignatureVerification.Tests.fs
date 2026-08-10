@@ -451,3 +451,30 @@ let ``R5: a signature valid for one scope does not verify for another`` () =
           Submissions = [ submit alice ecdsaId aliceSig ] }
     Assert.False (ok (verify registry p samePayloadOtherScope 0L)).Authorized
     Assert.True (ok (verify registry p (request [ submit alice ecdsaId aliceSig ]) 0L)).Authorized
+
+// -------------------------------------------------------------------------------------------------
+// B7 — the port is pure and total: a fault is a RETURNED VALUE, never an exception
+// -------------------------------------------------------------------------------------------------
+
+[<Fact>]
+let ``B7: malformed key material returns a fault rather than throwing`` () =
+    // The discriminator that matters: garbage key material must come back as `Error`, not as an
+    // exception escaping the adapter. `verify` does not wrap adapters in try/with — catching would
+    // turn an adapter bug into a silent per-submission denial — so this property has to hold in the
+    // adapter itself.
+    let garbage = Array.create 8 0xFFuy
+    let r = Schemes.ecdsaP256Sha256.Verify(garbage, [| 1uy |], [| 2uy |])
+    match r with
+    | Error _ -> ()
+    | Ok v -> failwithf "expected a returned fault for malformed key material, got Ok %b" v
+
+[<Fact>]
+let ``B7: a well-formed but wrong signature is Ok false, not a fault`` () =
+    // The other side of the same contract: "could not interpret the input" and "interpreted it and
+    // it did not verify" are different answers, and conflating them would let a forgery read as a
+    // malformed input (or the reverse) in the verdict.
+    let wrong = Array.zeroCreate 64
+    match Schemes.ecdsaP256Sha256.Verify(aliceSpki, signingBytes Scope Payload, wrong) with
+    | Ok false -> ()
+    | Ok true -> failwith "an all-zero signature must not verify"
+    | Error f -> failwithf "a well-formed wrong signature must be Ok false, not %A" f

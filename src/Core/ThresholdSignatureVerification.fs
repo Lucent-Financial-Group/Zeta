@@ -76,6 +76,21 @@ module ThresholdSignatureVerification =
     /// **The port (R6).** A signature scheme is an interface, never a hard-coded choice: a
     /// post-quantum migration must be expressible by supplying a different implementation, with no
     /// change at any call site. Implementations MUST be stateless and deterministic.
+    /// `B7` — **the port's contract, and R9's purity guarantee extends THROUGH it, not up to it.**
+    ///
+    /// All three N=3 derivations independently declared R9 (`verify` is a pure function) `partial`,
+    /// and one named the reason: the original port permitted an adapter that read a clock or did
+    /// I/O, so R9 was **unachievable through a conforming implementation** — a hole in the port's
+    /// design rather than in anyone's tests. An implementation of this interface therefore MUST be:
+    ///
+    /// * **pure** — no clock, no I/O, no global mutable state, no randomness. The same
+    ///   `(publicKey, message, signature)` yields the same answer on every machine, forever.
+    /// * **total** — it MUST NOT throw. A fault is a *returned value* (`Error SchemeFault`), never
+    ///   an exception.
+    ///
+    /// `verify` deliberately does **not** wrap adapters in `try/with`. Catching here would turn an
+    /// adapter bug into a silent per-submission denial — a verifier that quietly stops authorizing
+    /// while every test still passes. A throwing adapter is a defect that must surface loudly.
     type ISignatureScheme =
         /// The tag this implementation answers to. Two implementations in one registry must not
         /// share an `Id`.
