@@ -406,6 +406,55 @@ migration without recreating the hub. The patent shows the hub version is real, 
 owned — so the P2P upgrade is the only direction available, and the selectivity has to be
 recovered structurally rather than by appointing a particle.
 
+## Where the whole thread lands: a distributed identity and permission provider
+
+> Aaron: *"this is our distributed identity and permission provider for distributed trust —
+> defeats this."*
+
+The day started with the ask: *each node must be its own identity provider, with an
+RBAC-shaped policy module — users, claims, hats that grant claims, and bindings of bounded
+duration.* It ends here, and the pieces assembled themselves out of separate threads:
+
+| piece | where it came from | what it does |
+|---|---|---|
+| **per-principal issuance** | R11 — every principal issues and verifies | no single issuer exists to attack |
+| **bounded, self-expiring grants** | R8 + R9, and derivation A's `PhaseWindow` | authority decays without anyone sending a message |
+| **local phase advancement** | the freeze correction | grants expire *on schedule* under partition |
+| **per-principal trust** | §11 Multi-Oracle | each node decides whom it trusts; no mandatory root |
+| **emergent hubs** | scale-free / preferential attachment | reach, earned by use, with no appointment |
+| **k-redundant deference** | §11 made measurable | no function's deference collapses to one node |
+
+### Why it defeats the targeted-hub attack
+
+The fragility result says: take out the highest-degree node and connectivity collapses. In a
+**centralised identity provider** that is fatal, because the highest-degree node *is* the
+issuer — compromise it and you can mint any credential for anyone.
+
+Here the highest-degree node is a **relay, not an issuer**, and the distinction is the whole
+defence. It is the patent's closed-command-set property generalised: *the far side may **name**
+a command, never **define** one* becomes ***a hub may relay an attestation, never issue one.***
+
+So compromising the biggest hub buys an adversary observation and delay. It does **not** buy:
+
+- **forgery** — issuance is per-principal; the hub holds no signing authority for anyone else
+- **escalation** — a hat's claims are bound to its grant window; a relay cannot widen them
+- **persistence** — grants expire against locally-advancing phase, so a captured hub cannot
+  hold authority open by simply refusing to deliver a revocation. **There is nothing to
+  withhold**: expiry needs no message (R8), which is precisely why R8 mattered.
+
+That last one is the sharpest, and it is why the freeze correction was load-bearing rather
+than pedantic. A design where phase freezes under partition would let a captured hub **extend
+every grant in the system indefinitely just by partitioning its victims** — silence would
+become permission. Local advancement makes silence expire instead.
+
+### The honest remainder
+
+Availability is still attackable: kill enough hubs and messages stop flowing, which stops
+*reunion* and therefore stops the evolutionary algorithm's selection step. Nodes keep
+operating correctly and their grants keep expiring correctly — **safety holds, liveness
+degrades.** That is the right trade to have made, and it is a trade, not a proof of
+invulnerability.
+
 ## What this predicts / what to do with it
 
 1. **The missing R8/R9 clause should be written as a stated bound, not a mechanism** — and
