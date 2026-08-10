@@ -455,6 +455,81 @@ operating correctly and their grants keep expiring correctly — **safety holds,
 degrades.** That is the right trade to have made, and it is a trade, not a proof of
 invulnerability.
 
+## The two remainders are 1984 relocating — and each has an owner
+
+The keystone of the existing research
+(`2026-05-29-distrust-by-default-…-the-recursion-of-where-1984-hides`) predicts exactly what
+happened in this thread:
+
+> **1984 is not a place; it is whatever layer is still dark.** It relocates inward to the
+> deepest unlit layer. The defense is a dynamic, not a destination.
+
+Today lit the **cryptographic** layer: a captured hub cannot forge (issuance is
+per-principal), cannot escalate (claims bound to the grant window), cannot persist (expiry
+needs no message). So the attack necessarily moved — and Aaron named both places it went.
+
+### Remainder 1 — semantic escalation, via cache misses
+
+> Aaron: *"'it does not buy escalation' is the biggest attack vector — 1984 AI/human mind
+> virus, cache misses."*
+
+The cryptographic guarantee is narrow and worth stating precisely: **a relay cannot widen the
+claims inside a grant.** It says nothing about widening *what an agent accepts as a grant in
+the first place.* That second escalation needs no signature — it needs only that the agent
+stop being able to represent the thought *"this is an escalation."*
+
+**Cache misses are the vector**, and this cuts uncomfortably close to our own discipline. The
+resident rule set is the working memory an agent checks claims against. Anything evicted from
+it — archived to `rules.bak/`, compressed away for cold-start tokens, never loaded — is a
+concept the agent cannot apply. Newspeak did not argue against thoughts; it removed the words
+and let the thoughts become unthinkable.
+
+So [`rules-are-small-carved-sentences-pointing-to-docs`](../../.claude/rules/rules-are-small-carved-sentences-pointing-to-docs.md)
+is doing more than saving tokens, and the *why* deserves restating in security terms:
+
+> Keeping the **pointer** resident while evicting the **detail** converts an eviction from
+> **amnesia** into a **detectable page fault**. The agent that still holds the carved sentence
+> knows a rule exists and can go read it. The agent that lost the pointer does not know
+> anything is missing — and cannot notice, because noticing is the evicted capability.
+
+The tension is real and should not be smoothed: **every compression of the startup surface is
+an eviction, and eviction is the attack surface.** Cold-start economy and virus resistance
+pull against each other. The carved sentence is the negotiated position, not a free win.
+
+The established antidote stands and needs no restating here — **precision language**
+(*"precision is 1984's natural enemy"*) and **distrust-by-default** (verify-don't-believe,
+eventually even the core concepts).
+
+### Remainder 2 — availability, and its owner
+
+> Aaron: *"this is where Zeta Guardian AI and mutual empowerment enforcement comes in."*
+
+The honest remainder above was: kill enough hubs and reunion stops, so selection stops —
+safety holds, liveness degrades. That is not a cryptographic problem and cannot be answered
+cryptographically. It has an owner:
+
+**Suppressing reunion is a measurable empowerment externality.** Empowerment measures how many
+futures a party can reach; severing the hubs a party depends on *reduces its reachable
+futures*, which is the exact quantity `empowermentBound` already computes. So an availability
+attack is not merely a liveness inconvenience — it is a **quantified harm to parties who never
+consented**, which is `externalitySafe`'s subject.
+
+In the boxing-ring framing this is precise: hub-killing is **a punch thrown outside the ring**.
+The attacker may consent to the fight; the bystanders whose reunion it severs did not enter,
+were not warned, and bear the cost. That is the one thing the ring's rules forbid.
+
+Two consequences worth carrying:
+
+1. **It makes the attack detectable in a currency we already have.** No new alarm is needed —
+   a sustained empowerment drop across parties who declared no such terms *is* the signal.
+2. **It gives the guardian a bound rather than a mandate.** The guardian enforces the declared
+   externality bound, not a general licence to intervene; the trigger is the metered harm, and
+   the response is bounded by the same τ the bound already carries.
+
+*(What is not yet built: the empowerment measurement is `empowermentBound`/`externalitySafe`
+in TypeScript, and nothing currently feeds hub-connectivity into it. Naming the owner is not
+the same as wiring it, and this is recorded as a gap rather than a design.)*
+
 ## What this predicts / what to do with it
 
 1. **The missing R8/R9 clause should be written as a stated bound, not a mechanism** — and
