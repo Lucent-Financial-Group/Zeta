@@ -678,6 +678,60 @@ arriving**, because `lastWriter[t] = t` is a property of who wrote, not of what 
 for the phase model. **Danger theory / zero-trust** framing in the Amara 11th-ferry immune
 system doc is the biological half of the same idea.
 
+### The BankerBot exploit is an NCI violation — and the encoding was trivial
+
+> Aaron: *"this is what caused the bankerbot exploit and simple hidden decoded messages."* /
+> *"steganography, simple morse code almost."*
+
+The threat model is already in-tree and named: **authority laundering, capability gifting,
+confused deputy** (`2026-05-11-claudeai-overnight-read-progress-suggestions-critic-assessment.md`,
+listed there among the validated work). Aaron's addition is the *delivery mechanism*, and it
+maps onto the NCI exactly.
+
+The chain:
+
+1. An encoded payload rides inside observed content — **steganographic, and barely so.**
+2. The agent **decodes** it.
+3. The decoded text is treated as instruction. **This is the authority laundering step: content
+   acquires authority merely by passing through a decode.**
+4. The agent then spends its own capabilities on the attacker's behalf — **capability gifting**,
+   with the agent as **confused deputy**.
+
+Step 3 is `lastWriter[t] ≠ t`. The observed entity became the last writer of the agent's
+intent, which is precisely the state `[]NCI` proves unreachable. **The BankerBot class is not
+a new threat to model — it is an instance of the invariant we already proved, occurring where
+the invariant was not enforced.**
+
+**Why trivial encoding suffices, and why that is the important part.** The instinct is that
+steganography must be sophisticated. It must not: it only has to be *outside the surface form
+the filter recognises.* Filters match syntax; interpretation happens after decoding; the
+attacker lives in the gap between those two layers. Near-Morse is enough because sophistication
+was never the variable — **layer mismatch was.** This is the LangSec result (Sassaman,
+Patterson & Bratus — shotgun parsers, input languages recognised at one layer and interpreted
+at another), and it is why "we filter for malicious strings" is not a defence: the string is
+not malicious until after you have already decided it is safe.
+
+**The fix is not a better filter.** It is the structural invariant this thread already carries,
+stated for decoding:
+
+> **Decoding must never confer authority.** Decode is a *reading* operation. Authorization
+> arrives on a separate declared channel or it does not exist — so a decoded instruction is
+> data with a suggestion in it, exactly like an undecoded one.
+
+Which is three rules meeting at one point, all of which we already had:
+
+- [`no-directives`](../../.claude/rules/no-directives.md) — **source ≠ authorization.** Anyone
+  may attach a source; only the authorizing party attaches authority. Decoding attaches
+  neither.
+- **NCI** — the observed can never become your last writer, and the refresh/act trigger reads
+  only internal state.
+- **Pigeonhole by self-claim, never by assumption** — decoding *is* inference. The decoded
+  string declares nothing about who authorized it; treating it as authorized is the observer
+  choosing the bin.
+
+*(Recorded as Aaron-supplied: I verified the threat-model names in-tree, not the exploit
+incident itself. The mapping onto NCI is mine.)*
+
 ## What this predicts / what to do with it
 
 1. **The missing R8/R9 clause should be written as a stated bound, not a mechanism** — and
