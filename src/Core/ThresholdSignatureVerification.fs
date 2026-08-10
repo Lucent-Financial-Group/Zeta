@@ -152,9 +152,20 @@ module ThresholdSignatureVerification =
     type SchemeStatus =
         /// Accepted at every epoch.
         | Current
-        /// Accepted only while `epoch <= LastAcceptedEpoch`. The bound lives **in the data**; nothing
+        /// `B9` — **HALF-OPEN**: accepted while `epoch < FirstRejectedEpoch`, matching `PhaseWindow`
+        /// in `KeyCustody`. Inclusive vs half-open diverges at exactly one epoch, silently, mid-cutover,
+        /// and no implementation's own tests can catch the difference — so the spec pins it and the
+        /// field is named for the first REJECTED epoch rather than the last accepted one, which makes
+        /// the boundary unambiguous at the call site.
+        ///
+        /// `B3` — the window is **ADVISORY, not enforcing**. Nothing in the signed material commits to
+        /// a time, so this bounds what THIS verifier chooses to accept; it cannot bind a signer and it
+        /// does not prevent a retired-scheme signature from existing. The epoch is supplied by the
+        /// verifier and never read from the request — taking it from the request would be a downgrade
+        /// attack, since the adversary would choose the value that admits their own signature.
+        /// The bound lives **in the data**; nothing
         /// about the window is implied by code or by a clock.
-        | Retiring of lastAcceptedEpoch: int64
+        | Retiring of firstRejectedEpoch: int64
 
     /// One row of a verifier's accepted-algorithm set.
     type SchemePolicy =
@@ -208,7 +219,7 @@ module ThresholdSignatureVerification =
         /// The submitter named a scheme this verifier does not accept at all.
         | SchemeNotAccepted of scheme: SchemeId
         /// **R7** — the scheme is accepted but retiring, and the supplied epoch is past its window.
-        | RetiringSchemeExpired of scheme: SchemeId * lastAcceptedEpoch: int64
+        | RetiringSchemeExpired of scheme: SchemeId * firstRejectedEpoch: int64
         /// The signer is rostered but holds no key for the scheme they signed under.
         | NoKeyForScheme of scheme: SchemeId
         /// **R5** — the bytes are well-formed and did not verify against the rostered key.
@@ -308,7 +319,8 @@ module ThresholdSignatureVerification =
         | Some keys ->
             match Map.tryFind sub.Scheme statusOf with
             | None -> Rejected(SchemeNotAccepted sub.Scheme)
-            | Some(Retiring last) when epoch > last -> Rejected(RetiringSchemeExpired(sub.Scheme, last))
+            | Some(Retiring firstRejected) when epoch >= firstRejected ->
+                Rejected(RetiringSchemeExpired(sub.Scheme, firstRejected))
             | Some _ ->
                 match keys |> List.tryFind (fun k -> k.Scheme = sub.Scheme) with
                 | None -> Rejected(NoKeyForScheme sub.Scheme)

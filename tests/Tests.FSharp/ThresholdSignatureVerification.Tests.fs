@@ -234,8 +234,9 @@ let ``AC5 R6: the same scope, payload, signers and threshold verify under two sc
 // Acceptance 6 / R7 — migration overlap window, boundary checked on both sides
 // -------------------------------------------------------------------------------------------------
 
-/// A verifier mid-migration: the platform scheme is current, the toy double is retiring and accepted
-/// through epoch 100 inclusive. The bound lives in the data (`Retiring 100L`), not in code.
+/// A verifier mid-migration: the platform scheme is current, the toy double is retiring with epoch
+/// 100 as the FIRST REJECTED epoch — the window is half-open `[.., 100)` per amendment `B9`, matching
+/// `PhaseWindow` in `KeyCustody`. The bound lives in the data (`Retiring 100L`), not in code.
 let private migrating =
     let aliceToy = toyKey "alice"
     let p =
@@ -254,14 +255,17 @@ let ``AC6 R7: a retiring-scheme signature counts inside the stated window and no
 
     let at (e: int64) = ok (verify registry p retiringReq e)
 
-    // Both sides of the boundary, and the boundary itself (inclusive by this derivation's choice).
+    // Both sides of the boundary AND the boundary itself. `B9` pins it half-open, so 99 is the last
+    // accepted epoch and 100 is the first rejected one. This is the single epoch at which the two
+    // readings diverge — the divergence no derivation's own tests could have caught, because each was
+    // self-consistent with whichever side it had chosen.
     Assert.True (at 0L).Authorized
     Assert.True (at 99L).Authorized
-    Assert.True (at 100L).Authorized
+    Assert.False (at 100L).Authorized
     Assert.False (at 101L).Authorized
     Assert.Equal<(SignerId * RejectReason list) list>(
         [ alice, [ RetiringSchemeExpired(toyId, 100L) ] ],
-        (at 101L).Rejections
+        (at 100L).Rejections
     )
 
 [<Fact>]
