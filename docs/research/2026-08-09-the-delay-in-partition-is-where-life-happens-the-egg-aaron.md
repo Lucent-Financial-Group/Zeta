@@ -530,6 +530,44 @@ Two consequences worth carrying:
 in TypeScript, and nothing currently feeds hub-connectivity into it. Naming the owner is not
 the same as wiring it, and this is recorded as a gap rather than a design.)*
 
+### Remainder 2b — where the harm becomes kinetic: the KSK
+
+> Aaron: *"and our kinetic safeguard SDK — our KSK, authored by Max, a fellow coinventor."*
+
+The empowerment answer above is *informational*: it detects and prices a harm. That is
+sufficient where the harm is informational. It is **not** sufficient where the system drives
+**actuators**, because there the empowerment reduction becomes a physical event, and pricing
+it after the fact is not a safeguard.
+
+The **Kinetic Safeguard Kernel** (origin Amara, consent-first design, NVIDIA Thor target;
+cleared as it is because it touches actuators) is the owner of that layer, authored by **Max**,
+a fellow coinventor and LFG/Lucent contributor.
+
+**And it must obey the same structural law this whole thread converged on.** Availability is
+the attack we could not close — so a kinetic safeguard **cannot depend on reaching anyone**:
+
+> **Safety must not require delivery.** A grant expires because local phase advanced, not
+> because a revocation arrived. An actuator must stop for the same reason: because the local
+> safeguard decided, not because a message got through.
+
+An adversary who can cut reunion can cut a "stop" command. So a KSK that consults a hub — or
+even a quorum — before refusing motion has reintroduced exactly the hidden coordinator this
+thread spent the day removing, in the one place where its failure is measured in injuries
+rather than stale credentials. **Fail-safe must be local, and it must be the default rather
+than the fallback.** This is the freeze correction and the expiry-needs-no-message rule
+arriving at the physical layer, and it is the strongest available argument that those were not
+pedantic.
+
+*(Deliberately not recorded here: Aaron also gave a personal detail about Max's citizenship.
+It is omitted because third-party personal data — particularly on a clearance-adjacent,
+actuator-touching project — is Max's to publish, not Aaron's to publish on his behalf, and
+"glass halo" asserted by someone else is not that person's consent. The **principle** Aaron
+may have been pointing at is recordable and worth recording: **jurisdictional plurality is a
+trust property.** A decentralised system whose contributors and nodes sit under several legal
+regimes cannot be compelled wholesale by any one of them — §11 multi-oracle applied to
+jurisdictions. Export-control status is the countervailing constraint on kinetic tech, and is
+a legal question for counsel, not a design one.)*
+
 ## What this predicts / what to do with it
 
 1. **The missing R8/R9 clause should be written as a stated bound, not a mechanism** — and
