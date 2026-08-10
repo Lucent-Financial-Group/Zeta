@@ -166,9 +166,13 @@ prose rather than arithmetic** — that is where honest readings multiply.
    concurrent Release builds pushed load average past 28 and dominated wall-clock. Isolation is
    about independence, not throughput — do not read a green worktree plan as a parallel-speed
    plan.
-3. **Expect one derivation in three to need rescuing.** Both runs so far had an agent wedge
-   before pushing. Committed-but-unpushed work is recoverable from its worktree by the
-   dispatching session; **check the worktree before declaring a derivation lost.**
+3. **Do not call a slow derivation a dead one.** In generation 1 the coordinator judged a
+   derivation wedged — flat transcript, zero CPU, an unanswered nudge — pushed its commits, and
+   wrote its analysis off as lost. **It was simply slow, and later delivered a full report with
+   14 ambiguities.** The rescue was harmless; the *conclusion* was wrong and had to be corrected
+   after the combine had already merged. Committed-but-unpushed work IS recoverable from the
+   worktree, so preserve it — but **preserving is not pronouncing.** State "not yet reported",
+   never "lost", until the agent is confirmed dead.
 4. **Fix the spec before dispatching a further derivation.** A fourth against unamended text
    reproduces every divergence already found, and pays full price for nothing.
 
