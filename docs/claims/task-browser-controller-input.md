@@ -19,4 +19,3 @@
 - Editable fields and unrelated browser shortcuts are not intercepted.
 - Concurrent gestures receive bounded typed backpressure, and stop removes every installed listener.
 - Focused unit tests and the real Chromium PWA smoke remain green.
-
