@@ -207,6 +207,12 @@ module ThresholdSignatureVerification =
         | ThresholdBelowOne of threshold: int
         /// `Threshold > |roster|`: unsatisfiable no matter who signs.
         | ThresholdExceedsRosterSize of threshold: int * rosterSize: int
+        /// `B8` — the threshold exceeds the number of signers who could ever contribute. A rostered
+        /// signer holding no key under any ACCEPTED scheme can never produce a countable signature,
+        /// so a policy may pass every other check and still be unable to authorize. Rejecting only
+        /// `threshold > rosterSize` misses this: the roster is large enough and the eligible subset
+        /// is not.
+        | ThresholdExceedsEligibleSigners of threshold: int * eligible: int
         /// No signer is rostered, so nothing can ever count.
         | EmptyRoster
         /// No scheme is accepted, so no signature can ever be checked.
@@ -310,7 +316,18 @@ module ThresholdSignatureVerification =
             elif rosterSize = 0 then Error EmptyRoster
             elif policy.Threshold < 1 then Error(ThresholdBelowOne policy.Threshold)
             elif policy.Threshold > rosterSize then Error(ThresholdExceedsRosterSize(policy.Threshold, rosterSize))
-            else Ok()
+            else
+                // `B8` — a config that can NEVER authorize is an error, not a silent permanent denial.
+                // Eligibility is per-signer: at least one key under a scheme this verifier accepts.
+                let accepted = policy.AcceptedSchemes |> List.map (fun p -> p.Scheme) |> Set.ofList
+                let eligible =
+                    policy.Roster
+                    |> Map.filter (fun _ keys -> keys |> List.exists (fun k -> Set.contains k.Scheme accepted))
+                    |> Map.count
+                if policy.Threshold > eligible then
+                    Error(ThresholdExceedsEligibleSigners(policy.Threshold, eligible))
+                else
+                    Ok()
 
     // ---------------------------------------------------------------------------------------------
     // Verification (R5, R9)

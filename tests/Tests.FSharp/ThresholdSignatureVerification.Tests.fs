@@ -478,3 +478,19 @@ let ``B7: a well-formed but wrong signature is Ok false, not a fault`` () =
     | Ok false -> ()
     | Ok true -> failwith "an all-zero signature must not verify"
     | Error f -> failwithf "a well-formed wrong signature must be Ok false, not %A" f
+
+[<Fact>]
+let ``B8: a roster large enough but not ELIGIBLE enough is a configuration error`` () =
+    // The gap B8 closes. Roster size 2 and threshold 2, so `ThresholdExceedsRosterSize` does not
+    // fire — but bob holds no key under any accepted scheme, so only alice can ever contribute and
+    // the policy can never authorize. Before B8 this returned a permanent, silent denial.
+    let p =
+        policy
+            [ alice, [ ecdsaKey aliceSpki ]; bob, [ toyKey "bob" ] ]
+            2
+            ecdsaOnly
+
+    Assert.Equal(Error(ThresholdExceedsEligibleSigners(2, 1)), verify registry p aliceAndBob 0L)
+
+    // The discriminator: with threshold 1 the identical roster is a legitimate configuration.
+    Assert.True (ok (verify registry { p with Threshold = 1 } aliceAndBob 0L)).Authorized
