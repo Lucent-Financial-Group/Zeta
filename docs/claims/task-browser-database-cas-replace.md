@@ -6,7 +6,7 @@
 - **ETA:** 2026-08-11T02:00:00Z
 - **Scope:** Restore the TypeScript gate, add versioned browser database row selection, implement explicit compare-and-swap replacement through owned controller ports, and exercise the ZetaDB primary storage path.
 - **Durable target:** `src/Core.TypeScript/darkhall-ui/`, `src/Core.TypeScript/browser-node/`, focused tests, and this claim.
-- **Platform mirror:** Pending pull request.
+- **Platform mirror:** [PR #10295](https://github.com/Lucent-Financial-Group/Zeta/pull/10295).
 
 ## Boundaries
 
