@@ -103,6 +103,9 @@ export interface BrowserDatabaseIntentOutboxPort {
     sequence: number,
     tick: ZetaDbTickReadout,
   ): Promise<BrowserDatabaseIntentResult<BrowserDatabaseIntentReadout>>;
+  acknowledgeArchive(
+    receipt: BrowserDatabaseExecutionReceipt,
+  ): Promise<BrowserDatabaseIntentResult<BrowserDatabaseIntentReadout>>;
   refuse(
     databaseNodeId: string,
     intentId: string,
@@ -739,6 +742,22 @@ function receiptMatchesTick(receipt: BrowserDatabaseExecutionReceipt, tickValue:
   );
 }
 
+function sameExecutionReceipt(left: BrowserDatabaseExecutionReceipt, right: BrowserDatabaseExecutionReceipt): boolean {
+  return (
+    left.schema === right.schema &&
+    left.databaseNodeId === right.databaseNodeId &&
+    left.intentId === right.intentId &&
+    left.sequence === right.sequence &&
+    left.status === right.status &&
+    left.executorId === right.executorId &&
+    left.executorKind === right.executorKind &&
+    left.revision === right.revision &&
+    left.accepted === right.accepted &&
+    left.duplicates === right.duplicates &&
+    left.deltaCount === right.deltaCount
+  );
+}
+
 export function decideBrowserDatabaseIntentSettlement(
   existingValue: unknown,
   databaseNodeId: unknown,
@@ -800,6 +819,28 @@ export function decideBrowserDatabaseIntentSettlement(
     );
   }
   return succeeded({ ledger, value: receipt.value });
+}
+
+export function decideBrowserDatabaseReceiptArchiveAcknowledgement(
+  existingValue: unknown,
+  receiptValue: unknown,
+): BrowserDatabaseIntentResult<BrowserDatabaseIntentLedger> {
+  const receipt = validateBrowserDatabaseExecutionReceipt(receiptValue);
+  if (!receipt.ok) return receipt;
+  const existing = currentLedger(existingValue, receipt.value.databaseNodeId);
+  if (!existing.ok) return existing;
+  const retained = existing.value.receipts.find((candidate) => candidate.intentId === receipt.value.intentId);
+  if (retained === undefined) return succeeded(existing.value);
+  if (!sameExecutionReceipt(retained, receipt.value)) {
+    return browserDatabaseIntentFailed(
+      "intent-conflict",
+      `Archive acknowledgement for ${receipt.value.intentId} does not match its retained execution receipt.`,
+    );
+  }
+  return succeeded({
+    ...existing.value,
+    receipts: existing.value.receipts.filter((candidate) => candidate.intentId !== receipt.value.intentId),
+  });
 }
 
 export function decideBrowserDatabaseIntentRefusal(
@@ -886,6 +927,14 @@ export function createInMemoryBrowserDatabaseIntentOutbox(
       if (!decision.ok) return Promise.resolve(decision);
       store(decision.value.ledger);
       return Promise.resolve(readout(decision.value.ledger));
+    },
+    acknowledgeArchive: (receipt) => {
+      const ledger = readLedger(receipt.databaseNodeId);
+      if (!ledger.ok) return Promise.resolve(ledger);
+      const decision = decideBrowserDatabaseReceiptArchiveAcknowledgement(ledger.value, receipt);
+      if (!decision.ok) return Promise.resolve(decision);
+      store(decision.value);
+      return Promise.resolve(readout(decision.value));
     },
     refuse: (databaseNodeId, intentId, sequence, refusal) => {
       const ledger = readLedger(databaseNodeId);
