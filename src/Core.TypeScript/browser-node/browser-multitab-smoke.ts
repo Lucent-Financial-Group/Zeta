@@ -168,6 +168,16 @@ function errorDetail(error: unknown): string {
   return error instanceof Error ? error.message : String(error);
 }
 
+function parseJsonRecord(payload: string | undefined): Readonly<Record<string, unknown>> | null {
+  if (payload === undefined) return null;
+  try {
+    const parsed: unknown = JSON.parse(payload) as unknown;
+    return parsed !== null && typeof parsed === "object" && !Array.isArray(parsed) ? parsed : null;
+  } catch {
+    return null;
+  }
+}
+
 async function buildFixture(): Promise<
   { readonly ok: true; readonly pageSource: string; readonly workerSource: string } | BrowserMultitabSmokeFailure
 > {
@@ -445,7 +455,7 @@ async function runIntentRecoveryProof(
           ?.getAttribute("data-database-outbox-recovery"),
       };
     });
-    throw new Error(`${errorDetail(error)}; survivor=${JSON.stringify(diagnostic)}`);
+    throw new Error(`${errorDetail(error)}; survivor=${JSON.stringify(diagnostic)}`, { cause: error });
   }
   const recoverySnapshot = await survivor.evaluate(async () => {
     const root = globalThis as unknown as BrowserSmokeGlobal;
@@ -669,20 +679,14 @@ function validateIntentRecovery(transcript: BrowserMultitabSmokeTranscript, fail
     failures.push("the surviving page did not release the locally archived execution receipt");
   }
   const archiveRow = transcript.intentRecovery.archive.rows.find((row) => row.rowKey === "execution-receipt/0");
-  let archivedReceipt: Readonly<Record<string, unknown>> | null = null;
-  try {
-    const parsed = archiveRow === undefined ? null : JSON.parse(archiveRow.payload);
-    archivedReceipt = parsed !== null && typeof parsed === "object" && !Array.isArray(parsed) ? parsed : null;
-  } catch {
-    archivedReceipt = null;
-  }
+  const archivedReceipt = parseJsonRecord(archiveRow?.payload);
   if (
     transcript.intentRecovery.archive.nodeId !== "intent-recovery:database:receipts" ||
     transcript.intentRecovery.archive.revision !== 1 ||
     archiveRow?.weight !== 1 ||
     archivedReceipt?.databaseNodeId !== "intent-recovery:database" ||
-    archivedReceipt?.intentId !== "intent-recovery/score" ||
-    archivedReceipt?.revision !== 1
+    archivedReceipt.intentId !== "intent-recovery/score" ||
+    archivedReceipt.revision !== 1
   ) {
     failures.push("the surviving page did not retain the exact execution receipt in its archive node");
   }

@@ -14,7 +14,6 @@ import type {
   BrowserDatabaseIntentRecord,
 } from "./browser-database-intent-outbox";
 import type {
-  BrowserDatabaseReceiptArchiveAcknowledgement,
   BrowserDatabaseReceiptArchiveFeedback,
   BrowserDatabaseReceiptArchivePort,
 } from "./browser-database-receipt-archive";
@@ -108,6 +107,10 @@ function failed(
 
 function isIdentifier(value: unknown): value is string {
   return typeof value === "string" && value.length > 0 && value.length <= 1024;
+}
+
+function isRecord(value: unknown): value is Readonly<Record<string, unknown>> {
+  return value !== null && typeof value === "object" && !Array.isArray(value);
 }
 
 function isRevision(value: unknown): value is number {
@@ -288,11 +291,9 @@ function publishExecutionReceipt(
   }
 }
 
-function acknowledgementMatchesReceipt(
-  acknowledgement: BrowserDatabaseReceiptArchiveAcknowledgement,
-  receipt: BrowserDatabaseExecutionReceipt,
-): boolean {
+function acknowledgementMatchesReceipt(acknowledgement: unknown, receipt: BrowserDatabaseExecutionReceipt): boolean {
   return (
+    isRecord(acknowledgement) &&
     acknowledgement.schema === "zeta.browser-database-receipt-archive-ack.v1" &&
     isIdentifier(acknowledgement.archiveNodeId) &&
     acknowledgement.databaseNodeId === receipt.databaseNodeId &&

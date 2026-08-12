@@ -113,8 +113,9 @@ function archiveAcknowledgement(
   const rowKey = archiveRowKey(receipt.sequence);
   const payload = JSON.stringify(receipt);
   const exactRow = tick.rows.find((row) => row.rowKey === rowKey && row.payload === payload && row.weight === 1);
+  const untrustedTick = tick as unknown as Readonly<Record<string, unknown>>;
   if (
-    tick.schema !== "zeta.db.tick.v1" ||
+    untrustedTick.schema !== "zeta.db.tick.v1" ||
     tick.nodeId !== options.archiveNodeId ||
     tick.executorId !== options.executorId ||
     tick.executorKind !== "browser-tab" ||
