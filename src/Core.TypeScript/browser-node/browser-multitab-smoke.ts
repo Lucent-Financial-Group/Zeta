@@ -172,7 +172,9 @@ function parseJsonRecord(payload: string | undefined): Readonly<Record<string, u
   if (payload === undefined) return null;
   try {
     const parsed: unknown = JSON.parse(payload) as unknown;
-    return parsed !== null && typeof parsed === "object" && !Array.isArray(parsed) ? parsed : null;
+    return parsed !== null && typeof parsed === "object" && !Array.isArray(parsed)
+      ? (parsed as Readonly<Record<string, unknown>>)
+      : null;
   } catch {
     return null;
   }
