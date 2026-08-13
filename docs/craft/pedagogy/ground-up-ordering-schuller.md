@@ -319,6 +319,99 @@ answer, twice, to two problems that look unrelated. In-tree the primitive alread
 (`src/Core.CSharp/ZSetMerkle.cs`, `src/Core.Abstractions/IContentHasher.cs`, the content-addressed
 store); what does not exist is the concept graph to run it over.
 
+## The delivery plan: blocks, auto-resolution, and grades as currency
+
+> **Aaron, 2026-08-13:** *"the plan is to turn it into visual carts and games and let pople put the
+> peices together like legos and building blocks with microsoft graphedit like auto resoltuion of
+> graphs to connect unconnectable pieces with the right middle peices, they will learn visually and
+> also we can have quzes and tests, all this can help you earn privacy budget for good grades,
+> gameify it."*
+
+Three separable claims. The middle one has real prior art and is the technically deepest; the third
+answers the attestation gap recorded above, but only partly, and the residue matters.
+
+### Intelligent Connect is the right algorithm, and it already exists
+
+Microsoft's **GraphEdit** is the DirectShow filter-graph editor, and the behaviour Aaron is pointing
+at is its **Intelligent Connect** (Microsoft, DirectShow, ~1996): when you drag one filter's output
+pin to another's input pin and the media types do not match, it *searches the registered filter set
+for intermediate filters that make the connection type-check*, and inserts them. You express intent
+— *connect these two* — and the system supplies the missing middle.
+
+Mapped onto the dependency DAG this is exact: **given where the learner is (node A) and where the
+work requires them to be (node C), if A does not reach C directly, search the graph for the
+intermediate concepts B₁…Bₙ that complete the chain.** That is path-finding over the same edges
+already drawn above.
+
+**It also upgrades the traversal from reactive to planned.** The lazy descent described earlier is
+*reactive*: you descend when you hit a wall. Intelligent Connect is *planned*: compute the whole
+missing chain up front and hand it over as a route. Same graph, same lazy principle — you still only
+materialise what the connection needs — but the learner sees the path instead of discovering it one
+wall at a time.
+
+And it is the same shape as **type-directed program synthesis / proof search**: finding a composite
+`A → C` by composing available morphisms is exactly what a proof assistant's `apply`-search does.
+Pins and media types are objects and morphisms; Intelligent Connect is composition search in the
+dependency category. The repo already has the arrow/composition vocabulary this would be built in.
+
+### Grades close the attestation gap — but they are a currency, and currencies get attacked
+
+The Merkle section above concluded that content-addressing gives **invalidation** but not
+**attestation**: you cannot recompute whether a person holds a node. Quizzes and tests *are* the
+missing attestation — a score is a real, checkable artifact, and it is the standard answer.
+
+But it stops being a testing question the moment Aaron connects it to **privacy budget**, because
+[privacy budget is hard money](../../../.claude/rules/privacy-budget-is-hard-money-earned-by-others.md):
+irreversible, non-confiscatable, spent on permanent frost. **A gameable quiz that mints hard money
+mints it from nothing** — that is an inflation attack on the currency, and unlike an ordinary
+Goodhart problem it cannot be corrected afterwards, because the rule forbids confiscation.
+
+**And there is a direct conflict with the rule as written**, which should be stated rather than
+finessed. The rule says budget is credited **only** by *others in society attesting you added value
+to them*, never self-minted. A machine-graded quiz is not another dweller attesting anything. It
+attests **competence**, not **contribution** — and the rule is specifically about contribution.
+
+### The resolution the rest of this document already supplies
+
+Recall the forced-set test: **a node is forced iff the human is the last line of correction for it.**
+
+Then learning a *forced* node is not merely competence. It means **you became a corrector where
+society had none** — you reduced the collective risk of an uncaught error, for everyone, in an area
+where no model could check. That is *value added to others* in the rule's own sense, and it is
+socially conferred rather than self-asserted, because **the forced set is computed from the
+correction topology, not chosen by the learner.**
+
+So the honest form of Aaron's proposal:
+
+- **A grade on a FORCED node mints privacy budget.** You closed a real gap in the correction graph.
+- **A grade on a non-forced node does not.** Models could already check that area; you added no
+  correction capacity, however much you learned. Credit it as standing, competence, or a score —
+  just not as hard money.
+
+This keeps the social-conferral property exactly intact, and it kills the obvious grind: you cannot
+farm easy nodes for currency, because the forced set is a live function of what else can check you,
+and it shrinks precisely as models get better at an area.
+
+### Residual attack, named and not solved
+
+Grinding is closed; **gaming the instrument is not.** A quiz on a forced node is still a quiz, and if
+the score buys hard money it becomes a target. The truer form of the mechanism would credit
+**demonstrated correction** — you actually caught something a model got wrong — rather than a test
+score, because that is the thing the rule is really about and it cannot be studied for. It is also
+much harder to build, and rarer to trigger.
+
+Recorded as an open design question, not a solved one. Anyone building the quiz layer should assume
+the score will be optimised against, and should be able to say what happens to the currency when it
+is.
+
+### Anchors
+
+DirectShow / GraphEdit Intelligent Connect (Microsoft, ~1996) — the auto-resolution prior art.
+Goodhart (1975) / Campbell (1979) — a measure that becomes a target ceases to be a good measure.
+Papert, *Mindstorms* (1980) — constructionism; the Lego framing is his lineage, and it is worth the
+citation because the claim *"people learn by assembling pieces"* is exactly the thing that needs an
+anchor rather than an assertion.
+
 ## Conceptual rigor precedes symbolic rigor
 
 > "rigor in mathematics is of course extremely important. But for me the best rigor is the conceptual
