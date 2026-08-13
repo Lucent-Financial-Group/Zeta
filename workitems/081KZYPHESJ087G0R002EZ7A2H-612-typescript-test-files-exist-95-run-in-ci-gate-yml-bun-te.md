@@ -78,3 +78,42 @@ already a proven pattern here.
 Fixing this requires editing `.github/workflows/gate.yml`, and PRs touching `.github/workflows/**` do not
 get the `gate` check scheduled and are unmergeable through the normal path. The measurement + the
 allow-list checker can land as ordinary code first; the workflow edit is a separate, gated step.
+
+## MEASURED — both obstacles above are resolved, favourably (2026-08-13, same day)
+
+The work-item named two unknowns as reasons this is "probably not a simple add-a-glob." Both were then
+measured on `origin/main`:
+
+```
+bun test src/Core.TypeScript/
+  7339 pass
+  0 fail
+  17205670 expect() calls
+  Ran 7339 tests across 568 files. [210.39s]
+```
+
+- **Runtime: 210 s.** The `lint (TS)` cap is `timeout-minutes: 12` (720 s). The full suite fits with
+  ~3.4× headroom.
+- **Pass rate: 100%.** Zero failures. The fear that long-unrun tests had rotted red is **wrong** —
+  nothing has to be quarantined, and enabling them cannot turn the gate red on unrelated PRs.
+
+**So the staged-adoption caution in this item was over-cautious and should not be used to defer the
+fix.** The change really is close to "add the glob," and the two obstacles that justified staging do
+not exist. Correcting this in place rather than leaving a work-item that argues for slowness on
+grounds since disproved.
+
+Note what this also means: **568 test files and 7,339 assertions have been passing invisibly.** The
+suite is healthy; it is simply not connected to anything. That is a better problem than a rotten
+suite, and a worse one than it looks — every one of those 7,339 assertions is currently decorative.
+
+Two caveats that survive the measurement, both honest:
+
+- The run was on macOS (this operator's machine); CI is `ubuntu-24.04`. Runtime and pass rate should be
+  confirmed on the CI runner before the cap is trusted. Some tests spawn `kind`/ArgoCD scaffolding
+  (`cluster/dev-cluster/use-cases.test.ts`) whose behaviour differs there.
+- 568 files ran, against 612 counted under `src/` + `tests/`. The difference is `tests/` (not under
+  `src/Core.TypeScript/`), so that tree still needs its own measurement.
+
+**The allow-list-with-reason instrument is still the right shape** — not because tests need quarantine
+today, but because it is what keeps a *future* directory from silently falling outside the glob, which
+is the actual recurring defect.
