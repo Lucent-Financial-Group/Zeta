@@ -366,6 +366,82 @@ be *what you owe when you insist on a single answer*.
 model's confident answer on a question no one else has checked. It should go to an independent model
 before it is treated as anything but a conjecture.
 
+## The tangle: coordination slows, collapses, and cannot self-rescue (Aaron, 2026-08-13)
+
+> *"coordination slows things down like gravity does and it can bottom out into a singularity like our
+> clifford homoclinical tangles — it's just i model black holes in a soft chaotic regime and have good
+> piloting to avoid getting stuck, we have some proof that sometimes an outside observer is needed to
+> get the cartographer unstuck or something like that"*
+
+**The proof exists and is verbatim in shipped source** — `src/Bayesian/FigureEightEnsemble.fs:22-27`:
+
+> *"**The groupthink spiral IS the homoclinic tangle:** In the 3-body problem, the homoclinic tangle
+> is the mechanism by which a near-stable trajectory escapes the fixed point. In the figure-8
+> ensemble, the closed mutual-update loop is the information-theoretic homoclinic tangle: the beliefs
+> spiral toward consensus (the fixed point) and then… stay there (collapse) rather than escaping.
+> **The demon cannot resist the tangle from inside the loop — it needs an external observer (the 4th
+> body / the referee).**"*
+
+The module's own setup makes the collapse measurable: each cell's posterior is the next cell's prior,
+so after enough rounds every cell has processed the same information in the same order, and
+**`rhoProxy → 1` — full correlation, the groupthink spiral.** That number is the singularity Aaron is
+pointing at: not a metaphor for one, a scalar that goes to its limit.
+
+### This gives the gravity conjecture two legs it did not have
+
+The previous section withdrew "coordination is gravity" for lack of a metering test, keeping only
+"coordination ↔ dark." Two of the missing legs just arrived, and one of them is **measurable today**:
+
+- **Slowdown ↔ gravitational time dilation.** A clock deep in a potential well runs slow relative to a
+  distant one. A node deep in coordination advances its *logical* clock slowly relative to a
+  coordination-free node — it spends wall-clock waiting rather than ticking. This is not a shape-match:
+  it is **ticks-per-wall-second as a function of coordination load**, and we already record tick
+  history. Plot one against the other and the analogy either produces a curve or it does not.
+- **Collapse ↔ singularity.** `rhoProxy → 1` is a genuine limit of a genuine quantity: all beliefs
+  identical, mutual information exhausted, no diversity left to compute with. And the escape condition
+  is the sharp part — *the demon cannot resist the tangle from inside the loop.*
+
+**And the honest disanalogy, which is the interesting one.** In general relativity the horizon is
+one-way: nothing escapes, and no external rescue is possible. Here the collapse **is** reversible, but
+only from outside — an external observer restores what the loop destroyed. So this substrate is not a
+black hole; it is a system with **a collapse basin and a rescue channel that must be exogenous.** That
+difference is worth more than the resemblance, because it is what makes the piloting Aaron mentions
+possible at all.
+
+### The convergence: this is the correction-topology test, derived from dynamics
+
+The forced-set work in `docs/craft/pedagogy/` arrived at a test from *epistemics*: **a node is forced
+iff the human is the last line of correction** — no other model reachable, or none competent to
+disagree. `FigureEightEnsemble` arrives at the same statement from *dynamics*: **a closed mutual-update
+loop converges to a fixed point it cannot detect or escape from inside; escape requires the 4th body.**
+
+**These are the same theorem with two derivations.** One says you cannot *check* yourself; the other
+says you cannot *escape* yourself. Both conclude that correction is necessarily exogenous.
+
+That reframes something from earlier today. When a second model was dispatched specifically to refute
+the Mars/Earth claim and did, that was not merely a useful review — it was **the 4th body**. A single
+model reasoning in a self-consistent loop converges to its own fixed point and, by this result, cannot
+see it from inside. The independent check is not diligence; it is the only mechanism that works.
+
+It also explains why the **referee principle** exists as an engineering practice
+(`docs/backlog/P1/081KT2T2J0008QG0R0026XCGQM`): *"each strand of the 4×4 is checked not just for
+self-consistency but against outside implementations — Bouncy Castle, Boost, NIST KATs, Noble,
+language stdlibs… our interface is ours, but the behavior is refereed."* Self-consistency is exactly
+what a tangle has in abundance. Refereeing against outside implementations is the 4th body, applied to
+code rather than to belief.
+
+### What to build, cheapest first
+
+1. **The dilation plot** — ticks-per-wall-second against coordination load, from existing tick history.
+   This is the first quantitative test the gravity conjecture has been offered, and it is nearly free.
+2. **A `rhoProxy` alarm** — the collapse is already computed; surfacing it as a live signal turns
+   "watch out for groupthink" into a metered threshold with a defined intervention (bring in a
+   referee).
+3. **Name the piloting.** Aaron says he has *"good piloting to avoid getting stuck."* If that piloting
+   is a procedure rather than an instinct, it is the most valuable undocumented thing in this section —
+   a control law for staying out of the collapse basin, which is exactly what a `rhoProxy` alarm would
+   need in order to act rather than merely warn.
+
 ## Status
 
 | Leg | Verdict |
