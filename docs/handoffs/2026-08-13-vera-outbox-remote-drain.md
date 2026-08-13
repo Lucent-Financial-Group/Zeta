@@ -216,3 +216,76 @@ and shows up only if you grep the recovery tree. Anyone scoping auth work will r
 scratch — which is what just happened here. `docs/recovered-orphan-branches-2026-05/` should be swept
 for other decisions in the same state; a decision nobody can find is a decision that will be made
 again, differently.
+
+---
+
+## Correction 2 — the machine is not the unit; decorrelation is measured, not proxied (Aaron, 2026-08-13)
+
+Ferried verbatim:
+
+> on the same machine has the common attack vector you call out but we allow multple agents on one
+> machine we have decorrelation metrics for named agents so we don't really care about the machines
+> they run on, we also are working on getting agents their own cryptographic keys for their own
+> private state, we have a lot of worlk on this around our hard money and encryption budget this is
+> one of the key sources of decorrelation, that and erasure and etropy capture, machines are just one
+> source of entropy and most agents will run on multiple machines and have distributted hardware keys
+> and tick sources so it's not every stranded in one place
+
+The addendum above said *"five tabs on one machine are one witness, not five."* That reached for the
+machine as a stand-in for identity — which is the specific error
+[`shared-checkout-is-view-only.md`](../../.claude/rules/shared-checkout-is-view-only.md) already
+carves against: **a bus/routing address is not identity.** A machine is a routing address. I used it
+as an identity proxy because I did not check whether the correlation was measurable directly. It is.
+
+### What is actually built (CHECKED, in-tree)
+
+| Instrument | What it measures | Where |
+|---|---|---|
+| `DecorrelationExcess` | excess correlation over an independent null | `src/Core/DecorrelationExcess.fs` |
+| `DecorrelationExcessFusion` | MI excess over a **stratified permutation null**, over a causal DAG | consumed by `CommitPairCorrelator.fs` |
+| `CommitPairCorrelator` | the instrument applied to commit-stream pairs | `src/Core/CommitPairCorrelator.fs` |
+| `GridTelemetry` | supplies the `(causal DAG, per-action observables, action set)` triple it consumes | `src/Core/GridTelemetry.fs` |
+| **CHSH identity oracle** | conviction at `2 + ε`, Hoeffding-shaped margin, **autocorrelation-corrected** via a Bartlett-windowed HAC `n_eff` | `src/Core/AntiSybil.fs` |
+| `LoopholeFlags` | Detection · Locality · MeasurementIndependence · Coincidence | `src/Core/AntiSybil.fs:522` |
+
+So the question "are these two claimed identities independent?" is not answered by asking where they
+run. It is answered by a **Bell-test-shaped measurement**: two systems sharing only past classical
+randomness with no in-tick channel cannot exceed `|S| = 2` (Bell 1964; CHSH 1969), so correlation
+above the calibrated margin **convicts** the pair. Named agents are the unit; machines drop out.
+
+Aaron names the decorrelation sources: **own cryptographic keys over own private state** (tied to the
+hard-money / encryption-budget work — see
+[`privacy-budget-is-hard-money-earned-by-others.md`](../../.claude/rules/privacy-budget-is-hard-money-earned-by-others.md)),
+**erasure**, and **entropy capture** (`src/Core.TypeScript/algebra/entropy-tracker.ts`;
+`tools/Z3Verify/landauer-floor-lemma.smt2`). A machine is *one* entropy source among these, and most
+agents run across several machines with distributed hardware keys and tick sources — so no agent's
+independence is stranded in one location to begin with.
+
+### Where co-location actually lands — and it is a flag, not a disqualification
+
+`LoopholeFlags.Locality` is exactly this concern, stated properly: *"the two streams were NOT
+space-like separated and setting-choice could reach the other side within the round. Open ⇒ an in-tick
+channel, not entanglement, can produce `|S| > 2`."* Co-located agents open that flag. They are not
+thereby "one witness" — the reading is still taken, and it is still informative; what changes is which
+explanations remain available for a violation. `MeasurementIndependence` covers the sibling case where
+settings correlate with process state.
+
+The repo's load-bearing default already says so for the hardest case: for two commit streams **from
+the same process**, Locality and MeasurementIndependence are **OPEN** by default
+(`docs/research/2026-08-02-adversarial-chsh-soundness-commit-probe-register3-lumen.md`). That is the
+honest version of what the addendum was reaching for, and it was already written down.
+
+### The bound that does survive, and should be stated in any quorum design
+
+**One-way inference.** `AllDistinct = true` means **"no pair convicted"** — never *"all proven
+distinct"* (`AntiSybil.fs:166`). The instrument convicts correlation; it never certifies independence.
+So a quorum can honestly report *"no pair of these members was convicted as correlated at margin ε
+over n rounds, with loophole profile P"* and can never report *"these members are independent."*
+
+That is the same asymmetry as
+[`dual-use-detection-is-neutral-oracle-decides.md`](../../.claude/rules/dual-use-detection-is-neutral-oracle-decides.md):
+report the fact (`SameSourceAsKnown`), let policy attach the reading. Applied here, the PWA question
+restates cleanly and stops being about tabs at all: **not "how many tabs are open" but "what is the
+CHSH margin across these named agents at n rounds, and which loophole flags are open?"** A quorum
+that publishes its `n`, its `ε`, and its `LoopholeFlags` is making a claim someone can check; one that
+publishes a member count is not.
