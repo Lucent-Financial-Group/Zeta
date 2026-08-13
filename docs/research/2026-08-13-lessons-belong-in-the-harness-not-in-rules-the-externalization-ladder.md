@@ -192,3 +192,72 @@ have exactly that failure mode**, and it should be designed for rather than disc
    readiness number for the whole direction.
 5. Enumerate the substrate that depends on git's **merge semantics** rather than git-as-a-store. That
    set is what "we won't even need git" has to empty.
+
+---
+
+## Addendum 2 — a bare scalar is where distinctions go to die (Aaron, 2026-08-13)
+
+On the finding that no threshold can distinguish 5% corruption from 5% congestion when the estimator
+does not carry the distinction:
+
+> good call out we need to carry both and also be on the lookout for hidden assumption like this, this
+> alwasy falls out when going from decide to code
+
+The observation about **decide → code** is the general one, and it has a specific mechanical cause worth
+naming, because naming it makes the assumption findable *before* the transition rather than during it.
+
+### The pattern
+
+Two of today's most expensive findings are the same defect wearing different clothes:
+
+| finding | the type | what the type cannot carry |
+|---|---|---|
+| The orbital `1.2` survived months of review | `float` | **why this value** — derivation, measurement, or guess |
+| AIMD backs off on corruption it cannot relieve | `lossRate : float` | **what kind of loss** — congestion vs corruption vs reorder |
+
+In both cases a **scalar return type** silently discarded a distinction that the caller then could not
+recover, and in both cases the loss was invisible until someone tried to *act* on the value. That is
+exactly Aaron's "falls out when going from decide to code": the deciding stage still holds the
+distinction in the author's head; the coding stage picks a type; and if the type is a bare scalar, the
+distinction is destroyed at that instant and nothing downstream can restore it.
+
+**A bare scalar is where distinctions go to die.** It is the type-level equivalent of averaging — it
+produces a number that is *usable* and therefore *used*, while the thing that made it meaningful has
+been thrown away.
+
+### Both fixes are the same rung-1 move
+
+- `Bound` carrying `Derivation | Measurement | Assumption(reason)` — dispatched, and the only rung-1
+  candidate previously identified.
+- `LossSignal` carrying `Congestion of rate | Corruption of rate | Reorder of rate | Unknown of rate` —
+  the same shape, and it is *precisely* what "separate the signals" means once written as a type. The
+  measured cost of not having it: **7.1× throughput at 2% corruption, 90× at 10%**
+  (`081KZYQ8KNB087G0R000G8QPRE`).
+
+Neither is a new mechanism. Both are the same recognition — **the distinction belongs in the type, not
+in the reader's memory** — which is the ladder's rung 1 stated for data rather than for operations.
+
+### The findable version, so this is a check and not a vibe
+
+**PROPOSED heuristic, stated so it can be applied mechanically at the decide→code boundary:**
+
+> When a decision produces a scalar, ask what the *deciding* discussion distinguished that the scalar
+> does not. If the answer is non-empty, the scalar is lossy and the distinction will have to be
+> reconstructed by inference downstream — which is where it will be reconstructed *wrongly*.
+
+Both of today's cases pass this test loudly and in hindsight. The orbital discussion distinguished
+"proved" from "assumed" and shipped a `float`. The transport discussion distinguished "the link is
+congested" from "the link is noisy" and shipped a `float`. In each case a reviewer *did* hold the
+distinction — it simply had nowhere to live.
+
+Whether this can be promoted above rung 4 is genuinely open. A lint for "public function returns a bare
+`float`" would fire constantly and get disabled — the failure mode already recorded for
+`no-agent-gate-bypass`'s first draft. So this may be an irreducibly *judgement* rule, correctly on rung
+4 — which would make it one of the few. **Worth trying to find the checkable version before accepting
+that**, and the most promising angle is narrower: scalars that cross a **decision boundary** (feed a
+threshold comparison, a bound, or a control action) rather than all scalars everywhere.
+
+### Open (added)
+
+6. Find the checkable form of the scalar-loses-the-distinction heuristic, or establish that it is
+   irreducibly rung 4. Narrowing to *scalars that feed a control decision* is the first thing to try.
