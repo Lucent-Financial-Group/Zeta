@@ -272,6 +272,100 @@ per the file's own coverage note. Since the claim is exactly *"non-monotone ⟺ 
 it is mechanically checkable — a lint that flags any port whose CALM classification disagrees with its
 control-qubit use would turn the theorem into a build-time guard rather than a comment.
 
+## The CALM limit as the light meter — and the gravity conjecture (Aaron, 2026-08-13)
+
+> *"so CALM says it can't avoid coordination where this CALM limit (i'm making up this term) is how
+> you measure the light, more coordination less light more gravity i think"*
+
+Two claims of very different strength, and separating them is the whole value.
+
+### The measure: solid, and already half-implemented
+
+The light/dark axis has wanted a dimensionless number since it was first recorded. **CALM supplies
+one, and it is not a metaphor**: *the fraction of a computation that cannot be made monotone.*
+
+- **Monotone ⇒ coordination-free** (CALM theorem). No round trip, no control qubit, dispatch without
+  observing — which is exactly the lightlike condition already recorded: statically addressable,
+  sparse, embarrassingly parallel.
+- **Non-monotone ⇒ coordination is unavoidable.** Not slow, not awkward — *provably* required. That is
+  the dark condition with a theorem behind it rather than an intuition.
+
+So **"CALM limit" is a good coinage and it names something real.** It is also nearly measurable
+today: `QuantumTransactionPorts.qs` already classifies ports by whether a control qubit is *used*, and
+its own coverage note says CALM classification is checked by *"signature audit/lint."* A meter that
+reports *what fraction of the ports in a subsystem require a used control* would be the light meter,
+built from a check that already exists.
+
+That is the version worth building, and it stands on its own regardless of the next part.
+
+### Aaron withdrew the gravity half himself, unprompted
+
+> **Aaron, minutes later:** *"or at least more coordination more dark area — not sure if it's same as
+> gravity."*
+
+Worth recording as *conduct*, not just as content. The retreat was made by the person who proposed the
+claim, before anyone challenged it, and it lands exactly on the boundary the analysis below draws
+independently: **coordination ↔ dark is the claim; gravity is the maybe.** He kept the part with a
+theorem under it and held the part without one at arm's length.
+
+That is the standard this document has been trying to hold all day, applied by the author to his own
+idea in real time — and it is the difference between a generator and a claim. The section below is
+retained in full because the reasoning is still worth having, but note that its conclusion was reached
+from both directions.
+
+### The gravity identification: the metering test has not been run
+
+*"more coordination, less light, more gravity."* This is the part that needs the discipline that
+killed the Mars/Earth claim earlier in this same document, so it gets it.
+
+**What supports it:** coordination and gravity are both **one-signed** — coordination is never a
+benefit, gravity is never repulsive — and both are **universal**: everything non-monotone pays, and
+everything with energy gravitates. Both are also **aggregative**: gravity pulls matter together,
+coordination pulls parties to one logical place.
+
+**What is missing, and it is most of physics:** gravity is not merely "an attractive universal cost."
+It couples specifically to energy–momentum, it is described by curvature of a metric, it produces an
+inverse-square weak field, and it satisfies an equivalence principle. **None of those has been shown
+for coordination**, and until at least one is, "coordination is gravity" is a shape-match, not a
+measurement. The metering test asks whether the physics does work beyond vocabulary; here it has not
+been asked to yet.
+
+### The defensible version, which is stronger than the identification
+
+There *is* a real parallel, and it is one level up — at the **derivation shape** rather than at the
+quantity:
+
+- **Schuller:** demand *predictivity* of the matter field equations (a well-posed Cauchy problem), and
+  the causal structure — and then gravitational dynamics — **falls out**. Gravity is the price of
+  wanting a well-defined evolution.
+- **CALM:** demand a *consistent shared conclusion* for a non-monotone query, and coordination **falls
+  out**. Coordination is the price of wanting a well-defined answer.
+
+In both, the thing that looks like a substance is actually **the cost of a demand for well-posedness**,
+derived rather than postulated. That is a genuine structural rhyme, it is stated at the right level of
+abstraction to survive scrutiny, and it does not require coordination to be gravity — only for both to
+be *what you owe when you insist on a single answer*.
+
+### Falsifiers, so this can be settled rather than believed
+
+1. **For the meter:** exhibit a computation that is monotone yet provably requires coordination, or
+   non-monotone yet provably coordination-free. Either kills the CALM limit as a light measure. (CALM
+   is a theorem, so this should fail — which is what makes the meter trustworthy.)
+2. **For the gravity claim:** exhibit *any one* of — a coordination analogue of the equivalence
+   principle (cost independent of what is being coordinated), a metric whose curvature reproduces
+   coordination cost, or an inverse-square falloff in some natural distance. One success promotes this
+   from rhyme to structure; continued absence should demote it to a labelled analogy, as happened to
+   the Mars/Earth section above.
+3. **Cheapest first step, and it is nearly free:** build the meter. Run the CALM classification over a
+   few subsystems and see whether the resulting light/dark fractions match where we already *say* the
+   dark regions are (consensus paths, the fold, commit). If the numbers land where intuition says
+   they should, the measure is real. If they do not, the intuition needs revising — and that is a
+   finding either way.
+
+**Routing note:** this is exactly the class of claim the correction-topology test warns about — one
+model's confident answer on a question no one else has checked. It should go to an independent model
+before it is treated as anything but a conjecture.
+
 ## Status
 
 | Leg | Verdict |
