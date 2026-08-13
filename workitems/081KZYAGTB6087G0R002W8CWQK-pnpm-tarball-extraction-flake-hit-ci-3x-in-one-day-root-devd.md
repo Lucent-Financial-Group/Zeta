@@ -68,3 +68,38 @@ So exactly **one consumer** needs it, and **fifteen** pay for it.
 The failures are unrelated to the GH013 ruleset regression that is also currently reddening
 `drift-sweep` and friends (that one is `Required status check "gate (required)" is expected`).
 Two distinct problems on the same workflows — worth keeping separate when triaging.
+
+
+## Split framing (Aaron, 2026-08-13) — better than "move it to the Pages path"
+
+> *"can we can split this out to different workflows and have one use the result of the
+> other if needed or different routes, we can also do different repos if needed, whatever
+> is best — we are working on splitting out to multi repo over time, this is going to be a
+> long migration."*
+
+**The split is already latent in the structure, and the flake is the seam showing.**
+`demo/identity-dla-site` is not a directory with an odd dependency — it is a **separate
+project**: its own `pnpm-lock.yaml`, its own `packageManager: pnpm@10.4.1`, distinct from
+the root's `bun@1.3.13`. Two projects currently share one root install, and that sharing is
+exactly what makes fifteen workflows pay for one consumer's toolchain.
+
+Three routes, in increasing order of how much migration they represent:
+
+1. **Separate workflow, same repo.** A `pages-site` workflow that installs pnpm itself,
+   path-filtered to `demo/identity-dla-site/**`. The other 14 workflows stop fetching the
+   tarball. Cheapest, reversible, and available today.
+2. **Job-to-job artifact handoff** — the *"one uses the result of the other"* shape. Build
+   the site in one job, upload the artifact, let deploy consume it. Worth it when the build
+   is expensive; **here it is cheap**, so this mostly buys isolation rather than time and
+   adds an artifact hop without removing the coupling. Probably skip.
+3. **Separate repo.** `identity-dla-site` arguably already *is* one — own lockfile, own
+   package manager, own toolchain. A clean early candidate for the multi-repo migration
+   precisely *because* it is small and its seam is already visible as a CI flake.
+
+**Recommendation: (1) now, (3) when the migration reaches it.**
+
+**And there is a DV2.0 argument for (3) independent of the flake.** The site changes at a
+different rate than the core, has different dependencies, and different reviewers — that is
+a change-rate boundary, which is this repo's own stated criterion for where a split belongs
+(`.claude/rules/dv2-data-split-discipline-activated.md` §5). The flake is not the reason to
+split; it is the symptom that reveals a boundary that was already there.
