@@ -1,0 +1,180 @@
+# Ground-up ordering — the theoretical track's method (Schuller)
+
+> **Aaron, 2026-08-13:** *"This learning from the ground up should be saved in our craft school in
+> this repo, this order is pretty good, i learned these out of order and it was harder."*
+
+Source: Frederic Schuller, in conversation (2026-08-13 ferry,
+`docs/research/ip-questionable/2026-08-13-frederic-schuller-toe-constructive-gravity-*`). Schuller
+built the *Geometric Anatomy of Theoretical Physics* course from nothing — a differential-geometry
+course whose first lecture is **propositional logic** — and won the Ars Legendi prize, Germany's top
+university teaching award, substantially for it.
+
+This document is **method, not subject matter**. It says how to order a theoretical-track module, not
+what to put in one.
+
+## Where this fits in Craft (the honest tension)
+
+Craft's stated default is **tool-use first** — *"you don't need to build a hammer to use a hammer"* —
+with the theoretical track explicitly opt-in. Ground-up ordering is the opposite instinct, and it
+would be wrong to quietly file it as though there were no conflict.
+
+There is no conflict, because **Schuller draws the same split himself**:
+
+> "if some biology student has a physics course that can be excellently taught without much ado, but
+> if you say you want to educate the next generation of theoretical physics and maybe you hope that
+> some of them might make groundbreaking discoveries — we better give them our best."
+
+So: **applied track keeps tool-use-first. This is the discipline the theoretical track was missing.**
+Craft already had the two-track structure and a justification for it; what it did not have was a
+worked method for the opt-in side. That is what this is.
+
+## The two assumptions
+
+Schuller's stated teaching axioms, which he grants are both slightly false and uses anyway:
+
+> "A — students, no matter whoever comes to you, beginners, masters, Master students, they know
+> nothing, nothing at all. And second, they're infinitely intelligent."
+
+**This is exactly the correct posture for writing to a cold-starting agent**, which is why it belongs
+in this repo rather than only in a lecture hall. An agent waking into a fresh context genuinely knows
+nothing — no accumulated session, no assumed prior — and is genuinely very capable. Documentation
+written for "knows nothing + highly capable" is precisely what
+[`docs/SEED-VOCABULARY.md`](../../SEED-VOCABULARY.md) is doing when it works. Documentation that
+assumes a shared prior is documentation that fails on wake.
+
+His reason for the assumptions is the useful part: *"I don't know what they know and I don't know in
+which way they know it."* The second clause carries the weight. Two readers can both "know" a term and
+hold incompatible pictures of it; starting from scratch is cheaper than diagnosing which picture each
+one has.
+
+## Advanced ≠ later-learned — the ordering claim
+
+The load-bearing insight, and the one that answers Aaron's *"I learned these out of order and it was
+harder"*:
+
+> "very often you change the order in which you teach subjects. What you think is an advanced subject
+> is typically something you learned later. And a less advanced subject is one you yourself learned
+> earlier. But that's not a particularly meaningful classification of advanced and not advanced."
+
+**A curriculum ordered by "advanced-ness" is ordered by the author's autobiography, not by the
+subject's dependency structure.** Those coincide only by luck. The fix is to order by what genuinely
+depends on what — which is a *structural* question with a right answer, unlike "how hard did this feel
+to me."
+
+Worked example, his: teaching classical mechanics by spending half the semester on differential
+geometry first. Colleagues predicted bad pass rates; pass rates were normal to good. His
+justification is not that differential geometry is impressive —
+
+> "you should never do something because it looks fancy. 'Whoo, we did differential geometry.' No —
+> I need to tell you what a covector is if I want to talk about momenta, because canonical momenta
+> **are** covectors. They're not vectors. … But position is not a vector. And you can't get away from
+> this structurally conceptually wrong idea unless you immediately put it in the setting of a
+> manifold."
+
+The prerequisite is not decoration; teaching momenta before covectors installs a wrong idea that later
+work has to fight. **Cost of correct order is paid once; cost of wrong order is paid at every
+junction after.**
+
+## The dependency chain he actually used
+
+Each step exists because the next one is not statable without it:
+
+    propositional logic
+      -> first-order logic (he notes he stopped short of this)
+        -> axioms of set theory
+          -> the empty set, the power set
+            -> topological space  (a set + a distinguished subset of its power set)
+              -> topological manifold
+                -> smooth manifold
+                  -> differential geometry
+                    -> mechanics / general relativity
+
+The forcing move, in his words: *"if you do naive set theory, you have all kinds of contradictions in
+two lines. If you say a set is a collection of elements — that sounds good, but that doesn't make any
+sense. First of all, I didn't tell you what a collection is. Second, I didn't tell you what an
+element is."*
+
+Note this is a **dependency chain, not a difficulty ramp**. Propositional logic is not "easier" than
+manifolds; it is *upstream* of them.
+
+He is also explicit that the regress does not bottom out — *"it's very difficult to find a really
+foundational beginning from nothing"* — so the goal is not foundations, it is **knowing where your
+assumptions entered**: "why do you have the axiom of choice? Because at some point I required it."
+
+## Conceptual rigor precedes symbolic rigor
+
+> "rigor in mathematics is of course extremely important. But for me the best rigor is the conceptual
+> rigor. … Of course you can write down things with epsilons and deltas and make it very rigorous.
+> Before that, you need to be conceptually rigorous."
+
+A precise formalisation of a vague concept is precision about the wrong thing. Get the concept right
+first; then the symbols have something to be precise *about*.
+
+## The "equal footing" catalog — the sharpest transferable tool
+
+Schuller keeps a running catalog of **phrases that stand in for explanations**:
+
+> "'All possible paths' seems to be echoed due to doctrinal inheritance without thinking. Just like
+> the word 'equal footing.' Time and space are treated on equal footing… What is equal footing? Have
+> you seen a mathematical definition of equal footing? We're supposed to be rigorous."
+
+And the test for whether a given use is legitimate:
+
+> "they're of course placeholders for a better explanation. Sometimes you have a much better
+> explanation. … If pushed, [you] would give a brilliant explanation — then you're allowed to use this
+> short term. **But if it's just used to gloss over your own ignorance, consciously or unconsciously,
+> one should eliminate it.** But we all do this."
+
+**This is the repo's own discipline arriving from outside.** It is
+[`no-directives`](../../../.claude/rules/no-directives.md)'s *"the only sin is because I said so"*
+applied to vocabulary; it is the Beacon rule's *"an unanchored coinage is a debt until its anchor is
+named"*; it is the Mirror→Beacon compression test. A shorthand you can expand on demand is Mirror
+shorthand and it is fine. A shorthand you cannot expand is a debt wearing a technical accent.
+
+**Practical instruction for Craft authors:** keep the catalog. When you write a phrase to justify
+rather than to explain, either expand it or cut it. Candidate house phrases worth auditing under this
+test: *"scale-free"*, *"weight-free"*, *"the fold"*, *"solid ground"*, *"lightlike"*. Each of those
+has a real expansion — which is exactly the point: the test is passable, so failing it is a choice.
+
+## Design from a blank room
+
+> "instead of starting with a textbook, you'll go into a blank room with blank paper and think, how
+> can I teach this subject?"
+
+He takes the summer break and sketches a storyline *"as today one would have to present it in order to
+get it accepted in a very good journal — if this was a discovery."* Research-grade thinking applied to
+the **redesign** of an established course. Inheriting a textbook's order inherits the accidents of its
+author's own learning path (see *advanced ≠ later-learned* above).
+
+## The methodological coda, which cost us a paragraph today
+
+Two of his remarks are the register discipline stated plainly:
+
+> "ideas are cheap, very easy to have — and get rid of ideas if they don't seem to work out. Or put
+> them to the side. And try to have some standards of how you push ideas forward."
+
+> "you can't just push an idea. **You need to react to what the theory reports back to you** if you
+> try to modify it like that."
+
+Both were vindicated within hours of being ferried. A confident claim in that same ferry — that the
+Mars/Earth simulation was where the physics stopped being a metaphor — was put to adversarial review
+and refuted the same day; the claim is struck in the document with the refutation recorded beside it.
+The theory reported back. That is the standard this file is asking Craft authors to hold.
+
+He also declines to universalise any of it — *"every researcher should have his own set of rules,
+because otherwise we're all doing the same. That's not good. Variability is good"* — which is the
+Multi-Oracle Principle in a teaching register, and is why this is filed as **a** method rather than
+**the** method.
+
+## Pointers
+
+- [`docs/craft/README.md`](../README.md) — the two-track split this refines (applied default,
+  theoretical opt-in)
+- [`docs/SEED-VOCABULARY.md`](../../SEED-VOCABULARY.md) — the cold-boot kernel; the "knows nothing +
+  infinitely intelligent" assumption is what makes it work
+- [`.claude/rules/anchor-to-human-prior-art.md`](../../../.claude/rules/anchor-to-human-prior-art.md) —
+  the Beacon rule the "equal footing" catalog independently reinvents
+- [`.claude/rules/mirror-beacon-register-discipline.md`](../../../.claude/rules/mirror-beacon-register-discipline.md)
+  — expandable shorthand (Mirror) vs. shorthand standing in for absent explanation
+- Schuller's lecture series: *Gravity and Light* (2015), *Geometric Anatomy of Theoretical Physics*
+  (Erlangen) — both public
