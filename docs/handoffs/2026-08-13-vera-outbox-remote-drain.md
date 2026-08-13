@@ -100,3 +100,70 @@ starts being **countable**, which is the difference between a witness and a quor
 
 Nothing about your internal design. The persistence, tab coordination, receipt archive and handoff are
 built and tested; this is strictly the missing egress.
+
+---
+
+## Addendum — the scope is larger than egress (Aaron, 2026-08-13)
+
+Ferried verbatim:
+
+> the PWA should be able to run llms and our own bnn and write code and run our worklofws, it just
+> requires mutual observation to make it into git
+
+This reframes the ask above. The brief treated the tab as a **producer of receipts** that needs a way
+out. Aaron is describing the tab as a **full compute node** — inference, code generation, workflow
+execution — for which git is not the runtime but the *settlement layer*, and the only gate on
+settlement is mutual observation.
+
+### What is already true (CHECKED against the tree)
+
+- **The BNN needs no port.** `src/Core.TypeScript/planning/student-t-bnn.ts`,
+  `planning/error-bnn-bridge.ts`, and `oracle/hl-bnn-bridge.ts` import **no node builtins** — no
+  `node:fs`, no `node:path`, no `child_process`. They are pure TypeScript over arithmetic. A browser
+  tab can run them today, unmodified. "Run our own BNN in the PWA" is not a build task; it is an import.
+- **GPU compute in a tab is demonstrated, not hypothesised.** `demo/identity-dla-site/src/components/
+  OracleWebGPU.tsx` runs the DLA simulation as a WebGPU compute shader at N ≈ 50 000 walkers with a
+  graceful fallback, and lands the same `D_f ≈ 1.322` as every CPU oracle. That is an existing
+  in-repo proof that the substrate-independence claim survives the browser.
+- **Reading git in a tab is built.** `gitpull.html` — dumb protocol, `DecompressionStream("deflate")`,
+  SHA-1 verification per object, same-origin static GETs, no CORS surface.
+
+### What is genuinely absent
+
+- **In-tab LLM inference.** There is **nothing** in the tree: no WebLLM, no `transformers.js`, no
+  ONNX runtime, no wasm inference path. This is the one item of the four that is a new dependency
+  rather than a wiring job, and it is the one that will dominate the size and licensing questions.
+- **A workflow executor that is not GitHub Actions.** "Run our workflows" splits two ways and they
+  have different costs: *dispatching* a workflow from the tab is the egress problem already scoped
+  above; *executing* one in the tab means a second runner implementation, and two runners drift.
+  Which one is meant should be decided before anything is built, because they share almost no code.
+
+### The sharp part — mutual observation is a witness count, and tabs on one machine count once
+
+The brief above ends on the distinction it could not yet resolve: *"one tab alive stops being
+implicit and starts being countable, which is the difference between a witness and a quorum."*
+Aaron's framing answers it — mutual observation **is** the gate. But the answer carries its own
+failure mode, and it is worth stating before the code exists rather than after:
+
+**Five tabs on one machine are one witness, not five.** They share a browser profile, an origin, a
+clock, a key store, and a compromise. A quorum rule that counts tabs is trivially satisfiable by
+opening tabs — which is precisely the sybil shape `src/Core/AntiSybil.fs` and
+`src/Core/CoordinationSpectrum.fs` already exist to price. The independence a quorum needs is
+independence of *failure*, and co-located tabs have none.
+
+So the countable unit cannot be the tab. It has to be something a second tab on the same machine
+cannot manufacture: a distinct key with a distinct attestation, or a distinct machine, or a peer that
+paid something to store the observation. Per `dual-use-detection-is-neutral-oracle-decides.md`, the
+mechanism should report the neutral fact — *these two observations came from the same source* — and
+leave "co-located tabs" versus "one dweller across devices" to policy. Both are honest readings.
+
+This does not block the work. It names the one place where the design can look finished and be empty:
+a quorum whose members are not independent is a check that did not run, wearing the name of one that did.
+
+### Correction to the constraints above
+
+The constraints section states `CI Gate` carries **`bypass_actors: []`**. That is now **stale** — a
+bypass actor was added on 2026-08-13 at Aaron's instruction so agent-authored PRs can land without a
+human in the loop. The advice it supports ("do not weaken the gate; park on an ungated branch") still
+holds; the fact does not. Same stale text also sits in `.github/workflows/agent-heartbeat.yml` and
+`.github/workflows/tick-metrics.yml` comments.
