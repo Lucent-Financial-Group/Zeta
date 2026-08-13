@@ -130,3 +130,114 @@ the one thing that only makes sense above it.
 - `docs/research/2026-08-13-soraya-light-time-asymmetry-envelope-routing-and-proof.md` (#10418) — where 253.60 ms comes from
 - [`local-time-never-enters-the-shared-fold.md`](../../.claude/rules/local-time-never-enters-the-shared-fold.md) — the rule carved before this code, for this check
 - Work-items `081KZYK0Q8Z087G0R0010Z2Z2Q`, `081KZYNGQ29087G0R000F5N6H6`
+
+---
+
+## Part 3 — cancellation is the instrument, not the vulnerability (Aaron, 2026-08-13)
+
+On the counter raised above — that a quorum whose members can annihilate each other is one an
+adversary can neutralise with an opposite phase:
+
+> i think this is the honest measurment instrument, we can try to design quaroms that don't do this but
+> we should be able to mesure it when they don't, bft means no one is trusted really this is why you
+> need some sort of hard money it many bft protocol, ours can be privacy budget eventually or something
+> like that or some other bft that can tla check, we want it to be as resistant as bitcon or more when
+> it has that many geo distributed nodes independtly run
+
+This inverts the framing above, correctly. I presented destructive interference as a **failure mode**.
+It is a **reading**. A quorum that sums to zero is telling you something true — its members were
+opposite-phase — and the alternative (a Bayesian fold, where evidence can only ever add) is not safer,
+it is merely *unable to notice*. Bug **B3** is precisely that blindness: six correlated agents on one
+data stream report `precision = 66.0` on a wrong mean, because addition has no way to express
+disagreement.
+
+So the design goal is not "build quorums that cannot cancel." It is **"build quorums that do not
+cancel, and instrument them so cancellation is visible when it happens."** That is the same shape as
+[`dual-use-detection-is-neutral-oracle-decides.md`](../../.claude/rules/dual-use-detection-is-neutral-oracle-decides.md):
+report the neutral fact — *destructive interference occurred at magnitude X* — and let policy attach
+the reading (honest disagreement? adversarial phase injection? a miscalibrated agent?). Suppressing the
+mechanism would discard the measurement along with the attack surface.
+
+### The tension that has to be resolved before privacy budget can be BFT collateral
+
+Aaron's reason for hard money is exact: **BFT assumes no one is trusted**, so the protocol cannot rest
+on identity or good faith — it needs something costly. Most BFT-with-stake designs get that from
+**slashing**: misbehaviour is provable, and provable misbehaviour destroys stake.
+
+But this repo's privacy budget is defined the other way. From
+[`privacy-budget-is-hard-money-earned-by-others.md`](../../.claude/rules/privacy-budget-is-hard-money-earned-by-others.md):
+
+> it **cannot be taken away** … no confiscation, no inflation-away, banked irreversibly. Earned frost is
+> memory that cannot be destroyed (§5 Memory Preservation) — the substrate must never revoke it, not for
+> convenience, not for an audit, not by a majority vote.
+
+**A non-confiscatable stake cannot be slashed, and a stake that cannot be slashed cannot deter.** It can
+only *gate entry* — it makes identities expensive to acquire, which prices Sybils, but it imposes no
+marginal cost on an identity that already exists and then defects. So privacy-budget-as-collateral is
+**proof-of-entry-cost**, not proof-of-stake, and any BFT security argument built on it must not quietly
+assume slashing semantics.
+
+**CHECKED**: both commitments are on file and they are in direct tension. Three honest resolutions, and
+someone must pick:
+
+1. **Carve a narrow exception** — confiscation permitted *only* on cryptographically provable Byzantine
+   behaviour (equivocation, conflicting signatures at one height), never on judgement. This is the
+   smallest exception, and it is still an exception to a rule that says "not by a majority vote."
+2. **Do not rest security on slashing.** Use budget purely as an entry cost and get Byzantine deterrence
+   from elsewhere (bonded side-collateral that *is* slashable, leaving earned frost untouched).
+3. **Separate the two currencies.** Earned privacy budget stays inviolable; a distinct, slashable bond
+   is what a validator posts. The naming eigenvector confers the first; the second is ordinary capital.
+
+(3) looks cleanest and preserves both rules intact, but that is an opinion — the point of writing it
+down is that the choice is *load-bearing* and currently unmade.
+
+### The Bitcoin comparison, stated honestly
+
+> we want it to be as resistant as bitcon or more when it has that many geo distributed nodes
+> independtly run
+
+Worth separating two properties that the phrasing merges, because they come from different places:
+
+| property | Bitcoin gets it from | node count's role |
+|---|---|---|
+| **Safety** (no conflicting history) | **hashpower cost** — rewriting history costs energy | ~none |
+| **Censorship-resistance / liveness** | **many independent geo-distributed nodes + miners** | this is exactly it |
+
+Bitcoin runs on the order of 10⁴ reachable nodes, but its *security budget* is mining expenditure, not
+node population. So "as resistant as Bitcoin at that many nodes" buys the second row directly and the
+first row not at all. If our safety is to be comparable, it has to come from a comparable *cost*, and
+naming which cost is the open question this section exists to force.
+
+Also worth stating: proof-of-stake-shaped systems have failure modes proof-of-work does not —
+nothing-at-stake, long-range attacks, weak subjectivity (a new node cannot determine the canonical
+chain from genesis alone). A reputation/social-conferral currency like privacy budget inherits a
+*further* one: reputation is attackable by patient infiltration, and it is not permissionless in the way
+Bitcoin is. None of these are disqualifying; all of them need to be in the threat model before the
+comparison is claimed rather than after.
+
+### TLA+ is the right tool here — and the contrast is instructive
+
+Aaron: *"some other bft that can tla check."* Yes, and note the routing contrast with the same week's
+orbital work. TLA+ was **rejected categorically** for the light-time envelope because it has no reals:
+TLC would have model-checked a discretisation and gone green on a statement about the discretisation.
+
+BFT consensus is the opposite case — a **discrete state machine** over finite processes, messages and
+rounds, with safety (agreement, validity) and liveness (termination under partial synchrony) as
+temporal properties. That is TLA+'s home ground, with a deep lineage: Lamport's own consensus work,
+and the Tendermint and Ethereum-consensus TLA+ specs as modern worked examples.
+
+Same routing discipline, opposite answer — which is the discipline working, not an inconsistency.
+
+**Anchors** (CITED FROM STANDING KNOWLEDGE, not page-checked): Pease, Shostak & Lamport 1980;
+Lamport, Shostak & Pease 1982 (Byzantine Generals); Dwork, Lynch & Stockmeyer 1988 (partial synchrony);
+Castro & Liskov 1999 (PBFT); Nakamoto 2008; Buterin & Griffith 2017 (Casper FFG, the slashing-conditions
+formulation); Douceur 2002 (Sybil).
+
+### Open
+
+1. **Pick a resolution to the slashing tension** (1, 2, or 3 above). Everything else is downstream.
+2. Specify the quorum in TLA+ with an explicit adversary, and check whether phase-cancellation is
+   reachable under the Byzantine model — that turns the "priced before authority" requirement into a
+   model-checked property rather than a promise.
+3. Define the cancellation **measurement**: magnitude, and the neutral fact it reports, so the
+   instrument exists whether or not any quorum ever uses amplitudes.
