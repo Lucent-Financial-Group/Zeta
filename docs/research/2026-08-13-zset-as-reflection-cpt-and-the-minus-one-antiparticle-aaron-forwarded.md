@@ -104,6 +104,12 @@ So the reflection is a property of **completed** histories, and naming that cond
 the claim usable: *a history is closed exactly when its Z-set folds to zero.* That is checkable, and
 it gives "t₀ = t_∞" a truth condition instead of a vibe.
 
+> **CONFIRMED — Aaron, 2026-08-13:** *"closed vs open agree."* The open/closed distinction is the
+> operative one, and it is worth noting what it buys beyond precision: **"is this history closed?" is
+> now a question the substrate can answer about itself** — fold the Z-set, check for zero. An open
+> history is one still carrying unanswered emissions, which is a meaningful and computable thing to
+> know about a run, an agent, or a conversation.
+
 ## Companion result — the symmetry group, the tick, and the hierarchy pun (Lumen, 2026-08-13)
 
 Three related claims were routed for independent review the same day, with Aaron's explicit
@@ -181,6 +187,90 @@ generator, not as a claim.
 **The mechanism is real and stands without the borrowed name.** Recommendation: call it the
 **capture/permanence problem**. The physics term buys nothing and costs a physicist's misreading, and
 manifesto §3 (weight-free) already names it correctly.
+
+> **ACCEPTED — Aaron, 2026-08-13:** *"i like capture permanace problem that's very accurate to how i
+> think of it."* So **capture/permanence problem** is the term. Not a euphemism for the physics one —
+> a more accurate name for a different thing, and the accuracy is the point: the failure quantity is
+> *how long authority persists*, not *how many orders of magnitude separate two scales*.
+
+## Reversible computing and CALM — the connection is real, already built, and is a TENSION not an identity
+
+> **Aaron, 2026-08-13:** *"i connect this directly to reversable computing and the like CALM i think,
+> these have a lot of connections in my mind"*
+
+**The instinct is right and the work is already done** — on 2026-07-02, at a level of precision that
+inverts the naive version of the connection. The load-bearing statement is in
+`src/Core.QSharp.ReferenceOracle/QuantumTransactionPorts.qs:18`:
+
+> *"`Adj` is the RETRACT axis (emit/retract, DBSP +1/−1); `Ctl` is the COORDINATION axis.
+> **Orthogonal.**"*
+
+Two taxes, two axes, and **Q#'s own functors are the axes**:
+
+| Axis | Q# functor | What it costs | The law |
+|---|---|---|---|
+| **Reversibility** | `Adj` | energy — `kT·ln2` per erased bit | Landauer 1961 |
+| **Coordination** | `Ctl` | a round trip | CALM (Hellerstein; Ameloot–Neven–Van den Bussche 2013) |
+
+### The trap, already named in the file
+
+The natural guess is that *reversible* and *coordination-free* are the same virtue. They are not, and
+the file says so explicitly (`:16-17`):
+
+> *"no inverse ⇒ CANNOT be a unitary `Adj` op. So **"monotone-safe = is Adj" inverts the truth**: the
+> most CALM-safe thing there is (an idempotent merge) is exactly what fails the Adj test."*
+
+That is the whole result in one sentence. **Idempotence — `x ∨ x = x`, the most coordination-free
+property available — is precisely non-invertibility.** You cannot undo a join. So the operation that
+best satisfies CALM is the operation that most thoroughly fails reversibility.
+
+And symmetrically: a **Z-set retraction is invertible** (`+w` / `−w` — the `Adj` axis, the antiparticle
+of Leg 1) but **non-monotone**, so CALM says it *cannot* avoid coordination. The file makes the
+coordination physical (`:11-13`):
+
+> *"MONOTONE (CALM-safe) ⟺ expressible with NO USED control qubit → fire unconditionally.
+> NON-MONOTONE (needs coordination) ⟺ requires a USED control qubit → **the control qubit IS the
+> coordination the CALM theorem says non-monotone programs cannot avoid.**"*
+
+So the theorem's prediction is made structural rather than remembered: you can *see* the coordination
+in the signature. And classification is **on use, not on declared capability** — a port may declare
+`Adj + Ctl` for composability while using no control, and it is the non-use that makes it CALM-safe.
+
+### Where the two axes meet: measurement pays both
+
+`Lean4/LandauerFloor.lean` supplies the third leg:
+
+> *"The Landauer bound (1961): erasing one bit irreversibly costs at least kT·ln2 … In our framework
+> this IS the cost contract for **non-`Adj` operations** (measurements, commits, ferry-batch flush) —
+> the entropy tracker's `measure(bitsErased)` transfers bits from Ledger A (state/uncertainty) to
+> Ledger B (heat/environment), and the heat is MONOTONE (second law)."*
+
+And the Q# file records the **idempotence impedance mismatch** honestly (`:20-24`): unitaries are never
+idempotent except involutions, so the ports model commutativity and associativity (confluence,
+provable at the unitary level) but **not** idempotence — which *"re-enters ONLY through
+measurement/normalization, a non-unitary, sim-only step."* With the discipline attached: *"Do not
+'prove idempotence' at the unitary level — that would be Statement-class verification drift."*
+
+Put together, the picture closes:
+
+- **Everything reversible is free** — no erasure, no Landauer cost. That is why retraction rather than
+  delete is not merely a memory-preservation policy (§5) but a *thermodynamic* choice.
+- **Everything monotone is coordination-free** — no control qubit, no round trip.
+- **Idempotence buys coordination-freeness at the price of invertibility**, and it enters only at
+  measurement.
+- **Measurement/commit is the one operation that pays both taxes**: non-unitary, so Landauer charges
+  it; and the place normalization happens, so it is where the CALM-safe idempotence lives.
+
+That is the connection Aaron is reaching for, and it is stronger than the intuition because it is a
+**trade-off with named coin on each side** rather than a family resemblance. It also explains, without
+any new argument, why this substrate keeps history and adds inverses: the append-and-cancel discipline
+is the only way to stay on the cheap side of *both* laws for as long as possible, deferring the
+measurement that charges you.
+
+**Open, and cheap:** the `Adj`/`Ctl` classification is currently checked by *"signature audit/lint"*
+per the file's own coverage note. Since the claim is exactly *"non-monotone ⟺ uses a control qubit"*,
+it is mechanically checkable — a lint that flags any port whose CALM classification disagrees with its
+control-qubit use would turn the theorem into a build-time guard rather than a comment.
 
 ## Status
 
