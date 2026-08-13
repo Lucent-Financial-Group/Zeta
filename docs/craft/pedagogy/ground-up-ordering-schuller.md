@@ -460,6 +460,59 @@ plan above, a categorical shape would be the first of its kind in a catalog that
 geometric and physical — and the braided structure (strands crossing, over/under, the twist) is about
 as renderable as mathematics gets.
 
+## Cartridges that draw the difference — where the picture IS the proof
+
+> **Aaron, 2026-08-13:** *"we could have carts for these that can draw the differences visually if
+> possible and in css and such."*
+
+This is the best available first target for the visual plan, because braided-vs-symmetric is one of
+the rare places where **the picture is not an illustration of the proof — it is the proof.** σ² ≠ id
+is genuinely hard to feel from the equation and immediate from the diagram: cross two strands twice,
+and either you are back to parallel (symmetric) or you are visibly still twisted (braided). Nobody
+needs the algebra to see which one they are looking at.
+
+### What already exists (CHECKED)
+
+`db/shapes/cartridges/braid.lines` **already carries the distinguishing fact**, in three places:
+
+- `constant stuck 1` — *"the locked word is NOT the identity braid, proven by Artin's faithful
+  action"*: the strands return to their own columns and the braid still cannot be pulled apart.
+- The over/under **occlusion gap** in the ink — resolved as an issue on 2026-06-12, so *who crossed
+  over whom is in the drawing*, which is precisely the memory a symmetric swap does not have.
+- `treaty fsharp bytes ratified` — *"Braid.equal proves Artin (1,2,1 = 2,1,2) and sigma^2 != identity
+  — tests green."*
+
+So the fact is drawn and machine-backed. **What is missing is the contrast.** A single braid diagram
+shows someone a braid; it does not show them what a braid *is not*.
+
+### The proposed cartridges
+
+- **`symmetric-vs-braided`** — the two-panel one, and the highest value. Same two crossings on both
+  sides. Left panel: a symmetric swap, where the second crossing undoes the first and the strands end
+  parallel. Right panel: the braid generator, where the second crossing does *not* undo it. Same
+  input, same word, different category, visibly different output. That single image is the whole
+  content of `braidR_not_symmetric_perm3`.
+- **`traced`** — the feedback loop of `WSet.fs`'s FourCornerTrace (Joyal–Street–Verity 1996): a wire
+  leaving an output and returning to an input. Worth drawing *specifically because it is easy to
+  confuse with a crossing and is not one* — traced ⇏ braided, and the picture makes the difference
+  obvious in a way the prose warning has not.
+- **`twist`** — a flat ribbon carrying a 2π rotation, versus a bare strand which cannot express one.
+  This is the framed/unframed distinction: the reason an unframed conjugation quandle has θ = id is
+  that a bare strand has nowhere to put the twist. A ribbon does. That is a picture, not a lemma.
+
+### Why the format already supports it
+
+The cartridges are **text** (`db/shapes/cartridges/*.lines`) rendered to `db/shapes/golden/*.svg` and
+`*.html`, which satisfies
+[`no-binary-in-proof-lineage`](../../../.claude/rules/no-binary-in-proof-lineage.md) — the drawing is
+diffable and the golden output is byte-lockable. The schema already carries `constant` rows with a
+stated WHY, `law` rows tied to code, `edge` rows for relations between shapes, and per-oracle `treaty`
+rows ratified by consent. A contrast cartridge needs no new machinery: it needs a second panel and an
+`edge differs-from` row.
+
+`shape-crossing` already exists as the atom `braid.lines` composes from, so the symmetric panel is a
+variation on a shape that is built, not a new primitive.
+
 ## Conceptual rigor precedes symbolic rigor
 
 > "rigor in mathematics is of course extremely important. But for me the best rigor is the conceptual
