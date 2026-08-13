@@ -167,3 +167,52 @@ bypass actor was added on 2026-08-13 at Aaron's instruction so agent-authored PR
 human in the loop. The advice it supports ("do not weaken the gate; park on an ungated branch") still
 holds; the fact does not. Same stale text also sits in `.github/workflows/agent-heartbeat.yml` and
 `.github/workflows/tick-metrics.yml` comments.
+
+---
+
+## Correction — "greenfield on WebAuthn" was wrong (Otto, 2026-08-13)
+
+An earlier note on this brief claimed the PWA identity key would be greenfield because no
+WebAuthn/passkey code exists in-tree. Aaron flagged it: *"for webauthn i though we had some fido and
+biometrics for zflash already and some other research so maybe not fully greenfield."* He is right.
+The grep behind that claim was too narrow — it looked for `webauthn` and `passkey` and missed `FIDO`,
+`sk-ssh-`, `pam_tid`, and an entire adopted-substrate design. What actually exists:
+
+| Prior work | Status | Where |
+|---|---|---|
+| **B-0744 — FIDO2/WebAuthn/Passkeys/OIDC adopted as Zeta's cross-cutting auth substrate** (Aaron, 2026-05-25). The exact desktop-biometric → server-token bridge this brief needs; names `@simplewebauthn/server` server-side, browser-native WebAuthn client-side; anchors FIDO Alliance + W3C + OpenID Foundation | **designed, never built** | `docs/recovered-orphan-branches-2026-05/misc/backlog/b0744-…` |
+| **Biometric sudo elevation via Touch ID PAM** — ADR, status **accepted** | **landed** | `docs/DECISIONS/2026-05-29-biometric-sudo-elevation-via-touch-id-pam.md` |
+| **zflash "I execute, you fingerprint"** — Touch ID PAM as the irreversible-action consent gate, short `yes <4-hex>` challenge | open work-item | `081KSE6WT0008QG0R003WZAQKV` |
+| **`fido:credId` as a ZetaId-resolvable identity-anchor scheme**, alongside `oauth:`, `did:`, `nostr:` | architecture, not built | `081KTHY32YQ08QG0R000JWHJYN` |
+| **FIDO/U2F hardware-backed SSH keys accepted** (`sk-ssh-`, `sk-ecdsa-`, RFC 8709) | **shipped config** | `full-ai-cluster/nixos/modules/operator-authorized-keys.nix` |
+
+**What is still genuinely absent (CHECKED):** no `@simplewebauthn/*` dependency in any `package.json`,
+and **zero** `navigator.credentials` / `PublicKeyCredential` call sites anywhere in the tree. So no
+WebAuthn *ceremony* has ever been run. The doctrine, the ADR, the anchor scheme and the hardware-key
+plumbing all exist; the registration/assertion code does not.
+
+### Two things this changes
+
+**1. The identity key is not a new root — it is a credence booster, and must not be load-bearing.**
+`081KTHY32YQ08QG0R000JWHJYN` already settles the layering: external anchors (`fido:credId` included)
+sit **above** the self-certifying heartbeat identity as *optional, revocable* credence, feeding the
+credence query — and are **never load-bearing for existence** (§3 weight-free), because a central
+anchor imports a trust dependency (§1). A three-key split that treats the passkey as the PWA's root
+identity inverts that. The passkey raises confidence that a tab is who it claims; it must not be what
+makes the tab exist, or a revoked credential deletes a dweller.
+
+**2. Touch ID PAM does not solve this case, and it is worth saying why.** `pam_tid.so` proves physical
+presence **to the local machine**; it produces no origin-bound, hardware-backed assertion a remote
+verifier can check. WebAuthn's phishing resistance comes precisely from that origin binding. So the
+landed ADR establishes the *doctrine* the PWA needs — "I execute, you fingerprint", biometric as the
+consent gate on irreversible action — while supplying none of the *mechanism*. Reusing the doctrine
+and building the mechanism is the correct read; treating the ADR as coverage is not.
+
+### The finding underneath the mistake
+
+B-0744 is an **adopted-substrate decision living in a recovery folder**. It was never re-filed into the
+live backlog after the 2026-05 orphan-branch recovery, so it is invisible to a normal backlog search
+and shows up only if you grep the recovery tree. Anyone scoping auth work will re-derive it from
+scratch — which is what just happened here. `docs/recovered-orphan-branches-2026-05/` should be swept
+for other decisions in the same state; a decision nobody can find is a decision that will be made
+again, differently.
