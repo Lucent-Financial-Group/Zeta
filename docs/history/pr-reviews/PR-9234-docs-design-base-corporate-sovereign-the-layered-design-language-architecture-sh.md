@@ -30,6 +30,7 @@
 Aaron 2026-07-02: *"we need two distinct design languages on top of the base — corporate = fallout-shelter, sovereign = liminal."* Formalizes Iris's "two surfaces of one building" into a named, layered token architecture.
 
 ## The architecture
+
 - **BASE** — the shared spine every surface inherits (state-color DU + `(value,ε)` bars + frost + type). Meaning, never chrome.
 - **CORPORATE** — the fallout-shelter language: administering the society as a going concern (settlement / dora / vault — Addison's Genesis ops).
 - **SOVEREIGN** — the liminal language: a mind governing *itself* (hall / llmtv — neon-liminal, homoiconic). Renamed from "arcade" — the arcade is the aesthetic, **sovereignty is the meaning** (`ai-sovereignty-path`).
@@ -37,6 +38,7 @@ Aaron 2026-07-02: *"we need two distinct design languages on top of the base —
 A surface = **BASE + exactly one of {Corporate, Sovereign}** — picked by what it's *for*; never mix the two chromes, never a third; the switch is one `[data-language]` attribute (the case IS the attribute).
 
 ## Landed
+
 - `docs/design/design-language-base-corporate-sovereign.md` — the canonical spec: per-language tokens (grounded in Iris's shipped tokens), the pick-your-language rule, the CSS-custom-property cascade shape, and why two-on-one-base.
 - `.claude/agents/user-experience-engineer.md` — Iris (design-language owner) updated to the `BASE → {Corporate, Sovereign}` naming.
 

@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - Add `rotate-cluster.ts` / `rotate-cluster-cli.ts` — one command spanning cluster CA + machine ports (the deferred gap on 081KVP2M1).
 - Preserve peer CAs in `TrustedUserCAKeys` across CA overlap (`parseTrustSetPeers` + `renderTrustSet` multi-self). Fixes silent peer-drop in bare `rotate --ports ca-key`.
 - Sandbox tests + harness gap-closed assertion.
 
 ## Test plan
+
 - [x] `bun test rotate-cluster.test.ts`
 - [x] `bun test rotate.test.ts` (CA-KEY ∅-blast-radius)
 - [x] `bun src/Core.TypeScript/lint/lint-typescript.ts`

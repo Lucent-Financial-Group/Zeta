@@ -30,9 +30,11 @@
 You chose *make SchedulerZeta load-bearing*: the running scheduler should consult its recurrence prediction to skip re-simulating a config it can prove is on a known orbit. That's exactly `runToHorizon`.
 
 ## src/Core/SchedulerZeta.fs
+
 `runToHorizon key step start horizon` returns the state after `horizon` ticks, but **fast-forwards through detected recurrence**: record the trajectory only until it enters a cycle (transient t, period p), then compute the state at tick `horizon` by index arithmetic `states[t + (horizon - t) mod p]` - not `horizon` invocations of `step`. Work is O(reachable), independent of horizon size.
 
 ## Tests (5/5, +2)
+
 - **runToHorizon == naive step^n for every horizon** (the correctness guarantee);
 - **LOAD-BEARING**: fast-forwards the REAL CHIP-8 config through **1,000,000,000 frames** in bounded work (O(reachable ~ 5)) - naive would be 4e9 Chip8.step calls; the test runs in ~78ms. The scheduler skips re-simulating a config it has proven periodic.
 

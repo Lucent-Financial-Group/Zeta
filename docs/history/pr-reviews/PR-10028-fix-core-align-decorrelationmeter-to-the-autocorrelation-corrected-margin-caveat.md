@@ -30,11 +30,13 @@
 Aligns the `DecorrelationMeter` (the earlier scope-limited CHSH instrument) with the `chshSybilCalibrated` default switch (#10027): `classifyPair` / `fuse` now bound at `2 + AntiSybil.chshMarginAutocorr` (the pairs own HAC effective-sample margin) instead of the i.i.d. `chshMargin`.
 
 ## Effect
+
 An autocorrelated / periodic probe stream no longer under-states the fluctuation, so it needs more rounds to convict `AboveClassicalBound` — the correct, more-conservative behavior. Resolves the modules own SOUNDNESS-block autocorrelation caveat (updated in place).
 
 Same subset logic as the anti-sybil switch: `margin_corrected ≥ margin_iid` ⇒ can only **remove** false `AboveClassicalBound` verdicts, never add. The streams are already in hand at both call sites (no signature change). The i.i.d. `chshMargin` stays exported for callers who explicitly want it.
 
 ## Tests
+
 8 DecorrelationMeter tests green with **no fixture changes** — the s4 fixtures autocorrelation is mild enough that `|S|=4` still clears the corrected bound at n=100; the tiny-n non-conviction and identical-pair (S=2) tests hold a fortiori. Core 0-warning.
 
 This was the flagged one-line follow-up from #10027 — the last i.i.d.-`chshMargin` conviction site is now aligned.

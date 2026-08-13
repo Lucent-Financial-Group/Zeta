@@ -28,10 +28,12 @@
 ## Description
 
 ## Summary
+
 - Mint workitem 081KX1KWD7N for smart cascading teardown (slice 1 planner + consent gates).
 - Implementation follows in a sibling PR from the cascade builder.
 
 ## Test plan
+
 - [x] Workitem mint event present
 - [ ] Implementation PR lands cascade-teardown.ts + tests
 

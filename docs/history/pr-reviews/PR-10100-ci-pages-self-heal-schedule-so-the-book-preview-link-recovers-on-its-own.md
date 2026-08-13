@@ -30,10 +30,12 @@
 Durable fix for the recurring book-link 404s (Aaron-authorized the Pages fix).
 
 ## Root cause (fully diagnosed)
+
 1. Pages was `build_type: legacy` (branch-builder from repo root — no `/preview/`), clobbering the Actions artifact on every commit. **Flipped to `build_type: workflow`** via API → legacy builder disabled.
 2. That exposed a second issue: heartbeat/metrics/drift commits are pushed by the Actions `GITHUB_TOKEN`, which by GitHub's anti-recursion rule **do not trigger `pages-deploy.yml`**. So under workflow mode those pushes still disturb the deployment and 404 `/preview/`, with nothing re-running to restore it.
 
 ## Fix
+
 Add a `*/15` **schedule** trigger. Schedule events aren't subject to the token anti-recursion, so `pages-deploy` re-runs on its own and re-publishes the current `main` artifact (including the `/preview/` book subtree). Combined with `build_type: workflow`, the book link **self-heals within ~15 min** of any disturbance — no manual redeploy, no babysitting.
 
 Public-repo Actions minutes are free (legitimate open-source use), so the schedule cost is a non-issue.

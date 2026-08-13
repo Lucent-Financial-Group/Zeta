@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - Add `MinimalBnn.fs`: single Gaussian cell, conjugate updates, cumulative IV via `InformationValue.compute`.
 - CI metric: after N informative observations, cumulative IV > 0 and posterior precision rises.
 - Honest doc scope: not a transformer / not backprop weights. Moves 081KWQS2PN to done.
 
 ## Test plan
+
 - [x] `dotnet test tests/Bayesian.Tests/Bayesian.Tests.fsproj -c Release --filter FullyQualifiedName~MinimalBnn` (3 passed)
 
 Made with [Cursor](https://cursor.com)

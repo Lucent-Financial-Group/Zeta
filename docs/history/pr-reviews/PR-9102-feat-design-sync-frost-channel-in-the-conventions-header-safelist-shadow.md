@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - Teaches the claude.ai/design agent the frost channel: blur density = privacy-budget spend (GlassHalo/RoomBoundary semantics — clear default, frosting earned), never decoration. Safelist ships `backdrop-blur-*`/`blur-*` so the vocabulary exists in the compiled CSS (validated: 34 occurrences in `_ds_bundle.css`, README carries the section).
 - Re-synced: 10/10 components verified-by-upload (unchanged), styling + README uploaded, `_ds_sync.json` re-anchored last.
 

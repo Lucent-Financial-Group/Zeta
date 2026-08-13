@@ -30,12 +30,14 @@
 Aaron: *"lets make it live."* The two halves of the bus meet: a node announces itself (discovery beacon), discovers peers, publishes its LLMTV frames to whoever it found, and folds everyone else's into a **live society grid** — physically, over a real socket.
 
 ## What landed
+
 - **`llmtv-node.ts`** — the runner, **pure over injected ports** (transport + scheduler). The same node logic runs deterministically under a fake in-memory bus *and* physically over UDP with zero code change. Entropy crosses only through the injected ports (noninterference §13); publish/hello cadences are single dial-able timers (the DoP=1 cooperative-loop form of `async-all-the-way`). Scale-free: 1 node and N on one path.
 - **`udp-transport.ts`** — the thin **impure edge**: one `udp4` multicast socket implementing both `DiscoveryTransport` + `BroadcastTransport` (send = broadcast/publish; every packet reaches both `onMessage`/`onFrame`; the guarded decoders keep only their own schema). UDP multicast is the *first* transport; Reticulum plugs into the same port next.
 - **`llmtv-node.test.ts`** — fake-bus convergence (DST §7): two nodes discover + exchange frames and both grids converge; **frost never crosses**; going-dark retires a source; three nodes all see each other. 4 tests, no real socket needed.
 - **`llmtv-node.demo.ts`** — runnable: three nodes on one multicast group, live grid re-rendered to HTML as frames arrive.
 
 ## Verified live
+
 Ran three nodes on a real UDP multicast group. The console showed alexa's grid populate **empty → [soraya] → [otto, soraya]** off real packets; the rendered HTML had **0 script tags**, both other dwellers, and — critically — the **frost membrane held over the socket**: frosted content (`PRIVATE`) never left the source, only veil labels crossed.
 
 ```
@@ -48,6 +50,7 @@ Ran three nodes on a real UDP multicast group. The console showed alexa's grid p
 ```
 
 ## Checks
+
 - 49 tests pass (discovery + darkhall); TS lint clean; markdownlint clean.
 - The demo writes only to the path you give (default `/tmp`) — nothing committed by running it.
 

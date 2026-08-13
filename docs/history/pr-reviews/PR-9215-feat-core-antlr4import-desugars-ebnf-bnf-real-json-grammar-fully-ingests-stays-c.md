@@ -39,12 +39,15 @@ x?    → H : ε | x
 Helper names deterministic (`rule_gN`, not GetHashCode — byte-lock/DST). Actions `{…}` / predicates / wildcards still skipped + logged (pure-grammar-first). Total on hostile input.
 
 ## Milestone
+
 A **real JSON grammar** (grammars-v4 shape, EBNF-heavy) now **fully ingests end-to-end and stays `isClosed`** — the roadmap's "full-ingest JSON.g4" step.
 
 ## Proofs (7/7)
+
 EBNF grammar ingests with helpers emitted (not skipped); **closure preserved** (the strongest desugar-correctness signal — a dangling helper ⇒ not closed); actions skipped while EBNF is not; grammar rides the codec stack + round-trips the IR; deterministic; total on hostile input (unclosed groups, stray operators, 500 open parens); the JSON milestone.
 
 ## Next (resume)
+
 The **LR/GLR backend** (grammar → executable parser); then point the ingester at **YAML/KDL `.g4`** to retire the lenient-YAML and KDL findings.
 
 Anchors: ZetaParse (Amara); Knuth (LR), Tomita (GLR); antlr/grammars-v4 (MIT/BSD).

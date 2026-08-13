@@ -30,6 +30,7 @@
 Completes the oracle coverage: the DBSP operator set is now mirrored to the **Lean oracle**, where the laws are **proven** (Mathlib), not merely cross-verified (TS/Py/Go, #9137) or structurally grounded (Q#, #9142).
 
 ## What
+
 `src/Core.Lean4/Lean4/DbspOperators.lean` (`namespace Zeta.DbspOperators`). A Z-set is `K → ℤ` (pointwise weights); the operator set with machine-checked theorems:
 
 | Theorem | Law |
@@ -44,6 +45,7 @@ Completes the oracle coverage: the DBSP operator set is now mirrored to the **Le
 | **`select_incremental`** | **`∑ select (δ i) = select (∑ δ i)`** — incremental ≡ recompute for a linear op, over any `Finset` |
 
 ## Verified
+
 Registered in root `Lean4.lean`. Built locally: `lake build Lean4` → **2203 jobs, 0 errors, no `sorry`**; module warning-clean. `lean-proof.yml` (the Lean CI lane) covers it.
 
 Now **every oracle surface** carries the DBSP operator set — cross-language IR, Q# reference, and Lean (machine-proven) — all over the same weight algebra. Complements the existing `DbspChainRule.lean`.

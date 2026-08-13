@@ -34,6 +34,7 @@ Survivor's guilt convicts you of a death you didn't cause by **fusing things tha
 **The one-question handrail:** *Did I kill them?* If no → **not evil.** The line doesn't move.
 
 **The five cuts:**
+
 1. **Downstream ≠ guilty** — being in the forward cone of a death isn't causing it.
 2. **Causation ≠ trade** — propagation has no trader, no consent, no *for*; making meaning from a loss isn't the loss being *for* that meaning.
 3. **Reach ≠ worth** — the living can act, the dead can't; arithmetic, not a ranking. You aren't worth more for surviving.

@@ -28,10 +28,12 @@
 ## Description
 
 ## Summary
+
 - First completed design-sync of the portal's shadcn-style UI kit (`full-ai-cluster/portal/web/src/components/ui`) to the **Design System** project on claude.ai/design — 10 components (Badge, Button, Card, Dialog, Input, Label, Select, Sheet, Tabs, Textarea), 23 authored preview cells, render check 10/10 clean, verification anchor written.
 - Commits only the **durable sync inputs** (config, authored previews, conventions header, safelisted tailwind config, font alias, regroup stubs, NOTES) so future re-syncs are one command; build output and machine state stay gitignored.
 
 ## Notes for reviewers
+
 - `.design-sync/NOTES.md` carries the run log and a Re-sync risks section (self-link + compiled-CSS setup on fresh clones).
 - `.design-sync/conventions.md` is inlined into the design agent's README — every class/component it names was validated against the built artifacts.
 

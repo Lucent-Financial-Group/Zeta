@@ -30,6 +30,7 @@
 Aaron: package the book for a proofreader (Mandarin link + iPhone e-reader), and *"download whatever tools we need and link them in our declarative installers for all our OS shields."*
 
 ## What's here (the safe, durable foundation)
+
 - **pandoc in the declarative installers** — `tools/setup/manifests/{brew,apt}` (all OS shields; single-source-of-truth).
 - **`tools/book-build/build-book.sh`** — assembles the shareable draft and builds an **EPUB** (iPhone Books / any e-reader) via pandoc. **Consent scope is baked in and load-bearing:**
   - ✅ default: `OUTLINE.md` + `ch-NN-*.md`
@@ -42,6 +43,7 @@ Aaron: package the book for a proofreader (Mandarin link + iPhone e-reader), and
 English EPUB verified locally (valid 76KB EPUB, chapters + outline).
 
 ## Held for your go (not done autonomously — outward-facing + others' material)
+
 - **Mandarin translation + the external link** you'd send your friend: the companions carry Addison's / your parents' material (their pre-read gates), and a full memoir machine-translation should have your eyes on it before it goes out (meaning-drift). Say the word on scope (chapters-only vs +companions) and I'll produce it.
 - **Heads-up:** the chapters are still `[SOCKET]` scaffolds — a proofread now reviews structure, not your final voice.
 

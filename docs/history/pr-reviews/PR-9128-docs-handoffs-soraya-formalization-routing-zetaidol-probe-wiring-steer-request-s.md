@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - **Otto→Soraya:** routes the four property batches from tonight (CPT composite law, CHSH-Sybil soundness bound, geo mixture law/estimator as the small F\* candidate, identity histories as TLA+-shaped behaviors with the liveness gap named). Advisory priority 2>4>1>3.
 - **Otto→Aaron:** five steer questions for wiring the CHSH oracle into the ZetaIdol audition — probe timing, pairwise consent, conviction consequences (collapse vs mark-and-honor), probe economics, and the un-seeded-entropy prerequisite. Consent-shaping; no code until steered.
 

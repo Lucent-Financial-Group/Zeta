@@ -32,13 +32,16 @@ The **first real consumer** of the cell scheduler (`081KTG5S0M9`) — a DBSP inc
 Makes the design note's thesis concrete — *"messages are Z-set deltas; a cell's inbox is a ZSetW"* — connecting the scheduler back to the base atom (`ZSet`).
 
 ## What
+
 - `DbspOp = Filter | Rekey | Relay | Integrate` (`RequireQualifiedAccess` so the cases don't collide with the circuit operator types in `Operators.fs`).
 - A cell holds its operator, downstream targets, and integrated output (`Acc` = DBSP `I`). The `step` is pure: apply operator to the incoming delta → integrate → emit the output delta downstream. That purity is exactly the noninterference the scheduler's DoP-invariance depends on.
 
 ## The law it demonstrates end-to-end
+
 Streaming a sequence of input deltas (insertions **and** a retraction) through the cell graph yields the same integrated sink state as a **batch recompute** — DBSP's *incremental ≡ recompute*, now **across the scheduler** — and it's **DoP-invariant**.
 
 ## Tests (4, green)
+
 - incremental ≡ recompute (`filter-even → ×10 → sink`);
 - **retraction cancels at every stage** (key 2 and its image 20 vanish through the graph);
 - `run(1) == run(4)` on the DBSP workload;
@@ -47,6 +50,7 @@ Streaming a sequence of input deltas (insertions **and** a retraction) through t
 Full suite **3848 green**, 0 warnings.
 
 ## Why it matters
+
 Per the review-debt ledger (§6a), this is the **anchor consumer**: it gives the deferred perf pass an actual load to measure instead of a guessed hot path, and it ungates the oracle/Roslyn mirror follow-ups.
 
 Anchor: Budiu et al. *DBSP* (VLDB 2023) — linear operators commute with the delta.

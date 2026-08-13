@@ -28,14 +28,17 @@
 ## Description
 
 ## Summary
+
 - Add install-graph-ordered `--pre-mise` and `--post-mise` flags to `setup-realize.ts` (plus `--all` in canonical order, not alphabetical).
 - Replace 14 individual `realize_mechanism` calls in `linux.sh` / `macos.sh` with two batch calls: `--pre-mise` (Linux, post-apt) and `--post-mise` (after mise + PATH shims + dotnet tools PATH).
 - Preserve shell `.sh` fallback via `realize_mechanisms_shell_fallback`; `from-opam-git` remains best-effort.
 
 ## Context
+
 Final step of **081KLL7…** — all 14 Bun realizers landed in #9188; this completes the install-script cutover.
 
 ## Test plan
+
 - [x] `mise exec -- bun test src/Core.TypeScript/ace/setup-realize.test.ts src/Core.TypeScript/ace/setup-realizers.test.ts`
 - [x] `mise exec -- bun src/Core.TypeScript/lint/lint-typescript.ts`
 - [ ] CI gate green (docker install-sh tests exercise full path)

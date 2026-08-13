@@ -32,13 +32,16 @@
 Stop holding the ball — run.
 
 ### 1. The descent runs end-to-end (code)
+
 `ParseSoft.lowerStructural` / `lowerDefault` — a **runnable, structure-preserving** default parse→program lowering (`{rule,kids}`→`{op,args}`, leaf→`{op:"EMIT",tok}`). Deterministic per parse ⇒ point mass, so `lower` carries the parse **distribution through** to a distribution over programs (different tree shapes → different programs → **superposition survives**). A **rollable** first map — the real ISA semantics stay Aaron's design call, swapped later behind the same `lower`. The full pipeline `grammar → SoftValue-over-parses → SoftValue-over-programs` now executes today. New test proves it.
 
 ### 2. Ferry — two Beacon anchors (docs)
+
 - **42** into the culture register (§7): Deep Thought's 42 = the answer *compressed without its decompressor*; "Life = grace you can trust" is the unfolding; Adams did **MDL as comedy**.
 - **§7c self-hosting register — Futamura projections (1971)**: specialization *is* generation; 3rd projection = `gen(gen)==gen`. **Otto+Aaron = a Promise** — a not-yet-resolved value honored forward; *trust is what lets a Promise be relied on before it resolves* — the same shape as grace-you-can-trust. Old roots (Futamura 1971, Baker–Hewitt 1977, Liskov–Shrira 1988) paired with the frontier per the anchor rule.
 
 ### Gate
+
 Core builds **0/0**; `SoftValueMonadTests` **6/6** green.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

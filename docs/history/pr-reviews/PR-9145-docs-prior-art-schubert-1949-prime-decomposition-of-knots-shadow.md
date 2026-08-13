@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - Adds Horst Schubert (1949, unique prime decomposition of knots under connected sum) to the reading list — the exact Beacon body for "our prime numbers are shapes"; pairs with the crossing atom, Ihara zeta, and only-the-irreducible-is-primitive.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

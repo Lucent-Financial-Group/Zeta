@@ -35,6 +35,7 @@ internal → { "rule": <lhs>, "kids": [ … ] }
 So the parser's **output** rides the whole codec stack too — **homoiconic all the way through**: grammar-as-data (`GrammarIr : DynamicValue`) → parser → **parse-tree-as-data**. Byte-lockable, DST-replayable. Total.
 
 ## Proofs (5/5, +1)
+
 `parseTree` of `id + id` yields a tree whose root rule is the start nonterminal `E`, and the tree **cross-verifies through parity-json / cbor** (the homoiconic property); invalid input → `Error`, not a bogus tree.
 
 Next (resume): **GLR fallback** for ambiguous / SLR-conflicting grammars; then YAML/KDL `.g4`.

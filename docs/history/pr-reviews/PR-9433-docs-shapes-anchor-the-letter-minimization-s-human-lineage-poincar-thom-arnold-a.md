@@ -37,6 +37,7 @@ Aaron 2026-07-04 *"lets do it"* (the last standing bank). The shape catalog anch
 - **Arnold** — the **ADE** classification of simple singularities (`A_n, D_n, E_6,7,8`): *the* canonical letter-minimization in math; its **E₈ is the same E₈** as the AdinkraCode/Clifford/E8 privacy stack.
 
 ## Honest note (Beacon)
+
 The method + letter-minimization have deep prior art (Poincaré→Thom→Arnold-ADE); the catalog stands in that lineage, not from nowhere. But the **exact A–F contents are Zeta's own selection** (algebraic fixed-point classes, not Thom's germs or Arnold's normal forms); the parallels (7≈7, A/D/E overlap) are **suggestive rhymes to check**, not proven isomorphisms; the shared **E₈ is the one real identity**. The novel layer is the **security-key/DU-loop/rollable reading**, not the letter-minimization — that move is Arnold's.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

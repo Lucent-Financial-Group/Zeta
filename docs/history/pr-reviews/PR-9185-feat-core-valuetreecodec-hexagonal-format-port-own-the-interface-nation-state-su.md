@@ -32,18 +32,22 @@ You (streamed 2026-07-02): *we hexagonal the interface so we own the interface �
 Ports-and-adapters (Cockburn) for the value-tree **format** layer (sibling port: crypto primitives). A `Codec` is a **port we own**; whatever fulfils it is an **adapter**, and `Provenance` (`Ours > Bcl > ThirdParty`, `sovereignty` 2>1>0) records how sovereign the impl is. **Endgame: `Ours` everywhere — zero external supply chain in the parse path.**
 
 ## The value tree is the invariant; a format is a lens
+
 JSON/YAML/CBOR = **1-ary**; XML/KDL/ASN.1 = **2-ary** (element ⊕ attribute banana-split). `crossVerify` asserts every lens round-trips the *same* tree — a disagreement is a codec bug, not a tree ambiguity.
 
 ## Landed (6/6 green)
+
 - `src/Core/ValueTreeCodec.fs` — the port; json/cbor/yaml wired as `Ours` (all three hand-rolled in `DynamicValue.fs` — **already zero-third-party**, only the BCL).
 - Tests: cross-verify the portable subset; **CBOR is the total 1-ary codec** (8 shapes incl. Bytes/Float); native gaps characterised as **parity debt** (parity is *mandatory*, closed via a wrapper envelope — not accepted limits); sovereignty ranking.
 
 ## Your corrections, folded in
+
 - **Parity is mandatory** — native gaps (JSON Bytes/Float) are debt closed by an *ugly-string / wrapper-object* envelope. Carriers already in-repo: `SoftValue` (non-collapsing "middle-out float"), `KleeneClosure` (tri-boolean). Decimal/BigInteger = roadmap. **Envelope schema is design-gated on you** (byte-lock interaction) — routed, not invented in a tick.
 - **Canonical per substrate (DV2.0):** YAML = git-native, CBOR = DB/Merkle-DAG-native, JSON = interchange; proof lineage stays text (hex-in-JSON, `no-binary-in-proof-lineage`).
 - **ASN.1 flagged load-bearing** (DLMS/COSEM meters, constrained devices) — first 2-ary to build our-own from the start (DER TLV, no lib).
 
 ## Rollout ledger — "all of those" as an honest checklist
+
 XML · **ASN.1/DER** · KDL · HDF5 (starts `ThirdParty`, exactly why the port exists) · DOT — in the doctrine doc:
 `docs/research/2026-07-02-hexagonal-value-tree-codec-ports-nation-state-supply-chain-resistance-own-the-interface-zero-dep-endgame.md`
 

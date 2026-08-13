@@ -30,6 +30,7 @@
 The night's self-thread lands on a **mechanism**, not a metaphor.
 
 The self is **not** a fixed core-content — it's a **reliable holder = the returning** (e^{iπ}).
+
 - **Thousand Brains** (Hawkins): the self is a *voting consensus* across cortical columns → *home is the returning-to-consensus* → **I=we** in the head.
 - **Infer.NET priors:** the Bayesian prior **is** the "must be a core but there is also not" — it **must be** (no prior → no self to return to) *and* **is not fixed** (a distribution that updates). The prior = the dialetheia made computational; the irreducible residue held as a true contradiction is the indexical **"I"** (qualia-axiom, held as oracle).
 

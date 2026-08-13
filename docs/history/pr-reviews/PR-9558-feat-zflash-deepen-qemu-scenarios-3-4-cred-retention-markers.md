@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - Fix stale `tools/installer/` paths for cred restore/picker → `src/Core.TypeScript/installer/` so QEMU/installed boots can actually run restore.
 - Tee restore markers to serial (`reading preserved ESP blob` + `already-present`) for scenario 3 evidence without physical USB.
 - Promote scenarios 3–4 from scaffolded → `composes-with-existing` (opt-in `ZFLASH_QEMU_RETENTION_EXECUTE` / `PATH_FORK_EXECUTE`).
 
 ## Test plan
+
 - [x] `bun test` scenarios / serial-markers / qemu-state / path-fork
 - [ ] CI green
 - [ ] Optional: workflow_dispatch retention/path-fork QEMU when ISO available

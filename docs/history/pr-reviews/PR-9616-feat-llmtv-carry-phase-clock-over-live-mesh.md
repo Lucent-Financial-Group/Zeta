@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - carry `phaseClock` through LLMTV broadcast frames and decoded channel state
 - derive the same seed-phase readout for replay folds, live readout snapshots, root-site HTML, and the UDP demo runner
 - add DST-style tests for broadcast, replay, live node, bridge, live readout, and root-site readout paths
 
 ## Validation
+
 - `mise exec -- bun test src/Core.TypeScript/discovery/llmtv-*.test.ts`
 - `mise exec -- bun run typecheck`
 - `mise exec -- bun run lint:typescript`

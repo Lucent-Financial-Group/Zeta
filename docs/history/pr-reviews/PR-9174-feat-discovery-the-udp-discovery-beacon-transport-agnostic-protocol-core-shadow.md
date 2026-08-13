@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - First slice of the bus's zero-config bootstrap: `discovery-beacon.ts`, the **pure, transport-agnostic** WS-Discovery-lineage protocol (Hello/Bye/Probe/ProbeMatch), guarded text decode (no binary in proof lineage; foreign input → null), peer-table state machine, TTL expiry, scope matching, and the injected `DiscoveryTransport` port (the core never imports a socket — noninterference §13). Pure + DST-replayable (`nowMs` injected). **9/9 bun tests green.**
 - Designed for Aaron's growth vision: UDP multicast is the *first* transport; the same core serves Reticulum announce and DHT ("always discoverable in broadcast range anywhere" = run all transports, fold all inbound through one `observe`). README maps the path. Anchors: WS-Discovery/WCF (maintainer), Reticulum, Kademlia.
 

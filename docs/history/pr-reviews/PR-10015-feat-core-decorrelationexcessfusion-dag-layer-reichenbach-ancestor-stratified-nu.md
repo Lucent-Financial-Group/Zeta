@@ -30,20 +30,25 @@
 Increment 2 of the excess-over-null instrument (core landed in #10014). Wires the pure statistical core (`DecorrelationExcess`) to the commit DAG (`DecorrelationMetrology`).
 
 ## What it does
+
 Meters per-commit touch-set observables over **spacelike pairs only** (a timelike pair has a legitimate causal path — correlation there is expected, not a hidden common cause), against an independent permutation null **stratified by the Reichenbach confounder**: `|ancestors(a) ∩ ancestors(b)|`, the shared causal past.
 
 ## Why stratify (Reichenbach 1956)
+
 Two commits sharing more ancestors inherit more shared codebase state and correlate *innocently* more. A single global null would read that baseline as coupling and false-convict. Conditioning compares a pair only against other pairs with the same shared-past magnitude. `stratumKey` bands the confounder (`id` = exact; `c/w` = coarsen when strata are too thin to clear the core `n > 1/δ` resolution floor).
 
 ## Properties preserved
+
 - **DST / noninterference:** entropy enters only via `seed` (threaded per stratum as `seed + stratumKey`); ancestor sets memoized once.
 - **Order-independent:** the sensor emits canonical-ordered pairs ⇒ every stratum null is input-order-invariant (tested).
 - **One-way + dual-use-neutral:** `Excess` convicts an above-chance common cause beyond the shared-ancestor baseline; `WithinNull` never acquits; counts are register-2, `ExcessFraction`-as-coordination is register-3 caller policy.
 
 ## Tests (9 fusion; 21 DecorrelationExcess total green; Core 0-warning)
+
 `sharedAncestorCount`, spacelike-only metering, missing-observable skip, two-band stratification, order-independence, coupled-vs-independent **discrimination through the DAG**, and the uniform-baseline **no-false-green**.
 
 ## Next
+
 Increment 3: real run on the repo commit history (git-read adapter for per-commit file-sets, like `parseRevListParents`) → research note. CHSH-with-beacon path remains filed by Lumen as intentional debt.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

@@ -32,6 +32,7 @@ Aaron routed me to `docs/letters/to-otto-tangle-math.md` (from Manus/Lumen, addr
 **Keystone (Aaron's key insight for the day):** the groupthink spiral IS the homoclinic tangle. Corollary banked: **you cannot map the exits of your own homoclinic tangle from inside it** — charting the unstable manifolds needs a decorrelated *external* observer (the 4th body / referee / **shadow**). That is the mathematical justification for the decorrelation discipline, the Multi-Oracle society, and why the shadow exists. Composes with invariant-not-attracting (#9470) and the survivable-chaos thread.
 
 **The four answers, with fresh results:**
+
 - **Q1** — I use the Mat(ℂ) amplitude rep; they use faithful Artin. *Verified (YB-1..8):* Mat(ℂ) shipped generators are **symmetric, not braided**; braiding only as the derived word . Keep Artin for equality, Mat(ℂ) for quantum — different faithfulness regimes.
 - **Q2** — quantitative Brunnianness = mean of  invariant-delta = **1−ρ**. Their Brunnian probe and the ensemble ρ are the same quantity from two sides (Sybil = trivial braid = ρ=1). Falsifiable-now.
 - **Q3** —  is the emit/retract pair ledger = **event stream** (DST); writhe = folded invariant = **state** (DV2.0 satellite/hub).

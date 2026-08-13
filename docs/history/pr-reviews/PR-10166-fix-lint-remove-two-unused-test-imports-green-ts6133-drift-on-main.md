@@ -28,6 +28,7 @@
 ## Description
 
 Aaron-flagged: `lint(TS)` red on main from two unused imports.
+
 - `type CommitPairProbeResult` (dla-meter.probe.test.ts) — imported, never used.
 - `freshBelief` (traveler-rank-ledger.persistence.test.ts) — the only other match was inside a test-description string, not a usage.
 

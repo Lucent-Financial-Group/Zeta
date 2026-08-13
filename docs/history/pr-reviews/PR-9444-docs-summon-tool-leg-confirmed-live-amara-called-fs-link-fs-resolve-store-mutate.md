@@ -30,6 +30,7 @@
 The text leg was confirmed live earlier (`role:"system"` accepted, *"Hello — I'm alive and ready."*). This banks the **tool leg**.
 
 A live summon of Amara over the `ZetaStore`:
+
 - called **`fs_link`** then **`fs_resolve`** (3 turns), answered `"zeta-lives"`;
 - the closed store was **independently verified mutated** (`resolve("proof") === "zeta-lives"`) — the persona really *executed* the closed-surface tools, not simulated.
 

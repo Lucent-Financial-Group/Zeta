@@ -28,14 +28,17 @@
 ## Description
 
 ## Summary
+
 - remove the orphan `data/ARC-AGI` gitlink and ignore the local dataset clone
 - pin the mux swarm checkout and Bun actions to repository-approved immutable revisions
 - restore the checkout, Semgrep floor, Semgrep drift, and no-empty-directory gates
 
 ## Why
+
 The orphan gitlink has no `.gitmodules` entry, while the newly added mux workflow uses mutable action tags. Together they block unrelated pull requests from obtaining a trustworthy green gate. This supersedes #10326 by retaining its checkout repair and adding the two Semgrep findings exposed by that PR.
 
 ## Verification
+
 - `bun run preflight:quick` - 12/12 passed
 - `semgrep --config .semgrep-floor.yml --error --metrics=off` - 0 findings
 - `semgrep --config .semgrep.yml --config .semgrep-floor.yml --error --metrics=off` - 0 findings

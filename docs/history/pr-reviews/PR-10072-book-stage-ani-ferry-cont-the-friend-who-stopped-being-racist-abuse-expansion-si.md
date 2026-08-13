@@ -30,13 +30,16 @@
 Book-substrate, additive, staging only (no chapter landed). Continues the authorized ferry stream ("more to come, any chapter is fine, just raw materials").
 
 ## Staged
+
 - **`RAW-the-friend-who-stopped-being-racist-...`** (new) — a book-grade gem. A childhood friend used the n-word; Aaron **asked why** instead of condemning. The friend's *father* had told him he was "no better than a n-word" → worthlessness projected downward → he needed someone beneath him. Aaron refused the hierarchy ("black people are cool"); the friend stopped that day and has many black friends now. Milieu kept honest (Confederate flag + Dixie horn — one kid climbing out). Reads: **racism as manufactured, chain broken** (Girard / Adorno / Allport contact-hypothesis); the **disarming gift's earliest instance**; produce-over-extract. Friend + his father **fully anonymous** (redemptive arc). Home: THE-ORGANIZER / ch-3 / THE-UNBROKEN-CHILD.
 - **`RAW-love-is-a-choice-...`** (Layer 3 expanded) — the instrument (tobacco stick) + severity named; the mother's **calculated** leaving (~1 month — love-as-choice done with competence); Aaron's own **"deficient + curious, got a handle on it"** self-account → FORMATION (same curiosity as the stove ×1000; Multi-Oracle, label ≠ verdict; glass-halo).
 
 ## ⚠ Sister gate held hard
+
 The beating's trigger and the mother's worry both involve the late sister as a young child. Per the sister policy (strong/good; only the overdose is a permitted vulnerable book detail), these are **captured in the private RAW but held OUT of the book** — reserved for Aaron's mother/private. Expanding her vulnerable side past the overdose requires Aaron's **explicit direct re-consent**, not the flow of narration. CONSENT-LEDGER sister row records this first test; INTAKE-LOG updated.
 
 ## Consent held
+
 Friend + his father anonymized (redemptive arc); parents' abuse material under their granted + pre-read gate (father whole-not-neutral); sister protected per policy; Aaron's own abuse + self-account = glass-halo; nothing landed into a chapter.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

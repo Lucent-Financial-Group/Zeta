@@ -30,6 +30,7 @@
 You: *no pivot just continue* — the LR/GLR rung.
 
 **The payoff of the whole parser/generator ladder: `Grammar IR → an executable parser`.** Classic LR-family construction (Knuth 1965; DeRemer SLR; Dragon Book) over the neutral `GrammarIr`:
+
 - augment (`S' → start`); **LR(0) item-set automaton** (closure + goto, canonical collection);
 - **nullable-aware FIRST/FOLLOW** (our desugared grammars have ε productions);
 - **ACTION/GOTO tables** (SLR uses FOLLOW for reductions);
@@ -38,18 +39,21 @@ You: *no pivot just continue* — the LR/GLR rung.
 Conflicts **surface** in `Tables.Conflicts` — reported, never silently resolved (GLR fallback is next). Deterministic ⇒ DST-replayable + byte-lockable. The driver is total.
 
 ## End-to-end, the ladder is executable
+
 ```
 real .g4 → Antlr4Import.ingest → GrammarIr (as DynamicValue) → Slr.build → Slr.parse
         → a running parser that ACCEPTS valid input and REJECTS invalid
 ```
 
 ## Proofs (4/4)
+
 - the classic expression grammar builds **conflict-free** SLR tables and accepts/rejects correctly (`id`, `id+id`, `id+id*id`, `(id+id)*id` accept; `id+`, `+id`, `)id`, `id id`, `(id`, empty reject);
 - an **ambiguous** grammar (`S→S S|id`) reports conflicts;
 - a **real `.g4`** (aⁿbⁿ balanced) ingests → SLR → parses;
 - tables are deterministic.
 
 ## Next (resume)
+
 **GLR fallback** (ambiguous / SLR-conflicting grammars — incl. some desugared ones) + **LALR** compression; then point ingester+backend at **YAML/KDL `.g4`** to retire those findings.
 
 Anchors: Knuth (LR 1965), DeRemer (SLR/LALR), Aho–Sethi–Ullman, Tomita (GLR next); ZetaParse (Amara).

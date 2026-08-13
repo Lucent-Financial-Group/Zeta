@@ -30,6 +30,7 @@
 Recovery for the red **surfaced (not caused)** by #9778. Both reds are pre-existing — my code builds clean (0/0) and trips no semgrep rule.
 
 **This PR fixes:** the two `file-read-without-size-cap` findings —
+
 - `CelegansController.fs`: real `FileInfo.Length` cap (64 MiB) before the CSV read (sanctioned pattern) + justified inline `// nosemgrep`.
 - `.semgrep.yml`: exclude `**/*.Tests.fs` (test fixtures aren't the untrusted-file attack surface).
 

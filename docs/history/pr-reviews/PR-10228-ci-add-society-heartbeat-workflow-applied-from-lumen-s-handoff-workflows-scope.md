@@ -32,6 +32,7 @@ Applies Lumen's `society-heartbeat.yml` from `docs/handoffs/add-society-heartbea
 **Lumen couldn't push it** — the GitHub App token lacks `workflows` scope (a GitHub security boundary that stops automated tools from creating workflow files without explicit human authorization). My push from Aaron's clone **does** carry that scope, so this didn't need to wait.
 
 ## Reviewed before applying, not pasted blind
+
 - **Runner script exists** (`src/Core.TypeScript/planning/society-evolution-runner.ts`) and so does `docs/observe-events/` — the workflow won't no-op or fail on a missing path.
 - **Actions are SHA-pinned** (checkout, setup-bun) — matches repo supply-chain discipline.
 - **Concurrency group with `cancel-in-progress: false`** — each generation is a durable fact, correctly never cancelled.
@@ -40,6 +41,7 @@ Applies Lumen's `society-heartbeat.yml` from `docs/handoffs/add-society-heartbea
 - YAML lint + **actionlint clean**.
 
 ## One thing recorded rather than silently accepted
+
 This is a **second instance of the cross-substrate fold race** (`081KZM0FTJM`). The commit step is a read-modify-write (`pull --rebase` → `push`) whose only guard is an **Actions-scoped** concurrency group — it cannot see a launchd cell or browser cell doing the same thing. Same class as the zetadb fold. Noted on that workitem rather than blocking this, since the pattern is already live in the repo.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

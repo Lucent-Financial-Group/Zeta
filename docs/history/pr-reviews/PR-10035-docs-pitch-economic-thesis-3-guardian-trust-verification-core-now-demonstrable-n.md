@@ -30,9 +30,11 @@
 Taking the economic thesis. §3 already argues the right thing — the guardians value is the **strength of enforcement**, never a policy label ("a policy-promise guardian is weak and forkable"), and it **must** be the most formally-verified component. When the thesis was written, that enforcement mechanism was **register-3 (the bet)**. This session built a concrete, runnable, four-reviewer-verified piece of it — so it moves toward **register-2**.
 
 ## The added §3 proof-point (honestly register-labeled, per the docs own discipline)
+
 The **mutual non-coordination verifier**: both the AI *and* the data owner run the **same deterministic instrument on the same open causal record**; a hidden coordination channel leaves a **fingerprint neither can hide or fake** — enforcement by *math both parties re-run*, not a label either asserts. Shipped: the decorrelation instrument (excess-over-null + Reichenbach + autocorrelation-corrected, formally-verified margin), a **runnable demonstration** (clears honest operators ≈ the 5% false-alarm budget, flags a hidden lockstep channel by a wide margin), and a **telemetry adapter** (declared causal provenance, never wall-clock). Verified through **four independent reviewers** (Z3, math-physics, a zero-empathy critic, property tests).
 
 ## Honest bound kept explicit (no inflation)
+
 **Register-2 for the trust-*verification* primitive only** — it runs, its tested, a skeptic can re-run it. The **full guardian** (hardware attestation, confidential compute, real EMS integration) stays **register-3**. But the question an investor actually asks — *"real enforcement mechanism or policy promise?"* — now has a **demonstrable answer for its core**, not a roadmap.
 
 Also fixed the stale pointer (old scope-limited `DecorrelationMeter.fs` → the mature instrument + null family + Caveat-A margin + `GridTelemetry` + the runnable demo + the diligence explainer + capstone).

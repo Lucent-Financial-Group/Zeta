@@ -30,17 +30,20 @@
 **Aaron 2026-07-02:** "how do we make this general and intrinsic hardware?" — the two-column ferry (#9274) named the hardware column as `mix` with a **netlist** residual target. This opens it.
 
 ### `Netlist` — computation as gates
+
 - A combinational netlist IR — gates `{g:and|or|xor|not, out, in}` and circuits `{inputs, outputs, gates}` — all `DynamicValue`, so a circuit is byte-locked, DST-replayable, and **generated-not-sourced** (supply-chain closure down to the gates).
 - `eval` — combinational evaluator (gates in topological order).
 - `adder n` — an n-bit **ripple-carry adder** (half-adder bit 0, full adders threading the carry); drops the final carry ⇒ computes `(a+b) mod 2^n`, exactly the ISA's byte wrap.
 
 ### Proven — 4 new tests, Core **0/0**
+
 - **Gate basics** — and/or/xor/not truth tables.
 - **Adder = addition (EXHAUSTIVE)** — the 8-bit gate adder equals `(a+b) mod 256` for **all 65 536 byte pairs**. The circuit *is* the arithmetic.
 - **Netlist is byte-lockable data** — a circuit rides the codec stack (json‖ + cbor cross-verify).
 - **Bridge to the ISA** — the adder computes exactly what `Isa.ADD` does (byte wrap), so ISA arithmetic lowers to gates: the first thread from **Column A (code)** to **Column B (circuit)**.
 
 ### Two-column table
+
 Column A (general `mix` over any ISA-as-data) complete; **Column B rung 1 (the combinational core) landed**. Full ISA→circuit synthesis (sequencing, registers as flip-flops) is the next rung.
 
 Anchors: Shannon (1937, boolean algebra = circuits); ripple-carry full-adder; Lava/Chisel.

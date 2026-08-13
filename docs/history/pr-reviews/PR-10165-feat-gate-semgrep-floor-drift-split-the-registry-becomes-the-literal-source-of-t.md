@@ -30,6 +30,7 @@
 Executes **Vera's ratification note** (drift-and-heal ADR, Accepted 2026-08-08): the blocking `lint (semgrep)` job scanned all 17 rules while the floor registry named only two — the registry wasn't the source of truth it claims to be.
 
 **The split (no duplication):**
+
 - `.semgrep-floor.yml` (new) — the two `workflow-supply-chain` rules, byte-identical bodies, moved not copied. The blocking gate job scans ONLY this file — which also delivers the ADR's promised *seconds-fast floor check*. Header states: adding a rule here = adding to the floor = treaty-amendment consent path.
 - `.semgrep.yml` — keeps the 15 non-floor rules.
 - `lint (semgrep drift)` (new job, NOT in the gate roll-up) — runs both configs; findings are drift: red X = signal, measured by the ledger, never a lock on unrelated lanes.

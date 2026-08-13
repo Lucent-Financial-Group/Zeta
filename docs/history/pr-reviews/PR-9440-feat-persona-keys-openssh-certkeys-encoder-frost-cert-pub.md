@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 Closes **081KWPHRNE** — live OpenSSH path for threshold CAs:
 
 - **`openssh-cert.ts`** — PROTOCOL.certkeys encoder (signable prefix, finalize, pubkey lines, `+52w` validity)
@@ -38,6 +39,7 @@ Closes **081KWPHRNE** — live OpenSSH path for threshold CAs:
 Still monorepo tools-over-trunks. Remaining: **081KWPHRNFW** (DKG/ROAST/HSM).
 
 ## Test plan
+
 - [x] `bun test openssh-cert.test.ts frost-ca-custody.test.ts`
 - [ ] CI green
 

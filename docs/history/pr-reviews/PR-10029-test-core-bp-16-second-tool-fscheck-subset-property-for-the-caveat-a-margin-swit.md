@@ -30,6 +30,7 @@
 Completes the BP-16 cross-check for the P0 default switch (#10027). Soraya machine-verified obligations (a)/(b)/(c) with **Z3** on the pointwise formulas; the cross-check rule wants a **second independent tool** for a P0 security change (the switch shipped on a 40-batch fixed-seed loop — below that bar). This is the second tool: **FsCheck** generative properties over real `ChshRound` streams, reaching the executable paths Z3 cant (union-find closure, the `infinity` guard, the HAC bandwidth, the `RhoMax` clamp).
 
 ## Five properties (100 generated cases each; green)
+
 - **(a)** `effectiveSampleSize ≤ n`, equality iff `ρ₁ ≤ 0`.
 - **(a)** `effectiveSampleSizeHAC ≤ n` for any stream + bandwidth.
 - **(b)** `chshMarginAutocorr ≥ chshMargin` for every pair + δ — the load-bearing fact behind (c).

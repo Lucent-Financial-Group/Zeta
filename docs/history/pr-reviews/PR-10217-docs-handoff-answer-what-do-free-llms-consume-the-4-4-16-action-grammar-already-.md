@@ -30,16 +30,19 @@
 Answers a question I'd routed to Lumen as open. Aaron: *"we already have… a universal 4×4 (16) square grammar and controller interface that we run in a loop for a choose-your-own-adventure like interface, so even non-intelligent and very low-intelligence models can make progress."*
 
 **Verified in-tree — so Lumen should not design a new interface:**
+
 - `ActionGrammar.fs` — *"the universal action algebra/grammar of the 4×4 controller"*. The **16-key hex keypad is a 4×4 grid** = the finite action alphabet, and held-key sets form a **Boolean lattice** (powerset of 16) with join/meet/complement/leq — so actions **compose algebraically**, not a flat enum.
 - `SoftController.inputSuperposition` → `(bool[] * float) list` — a **weighted distribution over actions**, each branch explored in its own timeslice.
 - `model-backend/{zeta-agent-loop,tool-calls,zeta-store}.ts` — the harness Aaron calls "toy-like".
 
 ## The connection worth building on
+
 **A BNN's natural output IS the controller's natural input.** The BNN emits a posterior over actions; `inputSuperposition` is already `(action, weight) list` — there's no impedance mismatch to engineer. The source even anticipates it: `SoftController` carries *"Collapse to the best branch (Aaron 2026-06-08): if we're running Bayesian you can learn what…"*.
 
 So Round 4 is concretely **BNN posterior over the 16 → weighted branches → collapse → learn the branch**, with both ends already written.
 
 ## Why 16 is the point
+
 A finite alphabet makes **capability not a precondition for participation** — a model that can't write code can still pick 1 of 16 and make progress. That's the floor for a society of *free* models. It also composes with the errors thread: a wrong action yields a teaching error over a **finite** action space, so the corrective distinction is always one of 16 rather than open-ended.
 
 Carries the source's own honest peel rather than overstating it: *"'universal' is concrete for CHIP-8"* — generalising to arbitrary tool-calling is an open claim, not settled.

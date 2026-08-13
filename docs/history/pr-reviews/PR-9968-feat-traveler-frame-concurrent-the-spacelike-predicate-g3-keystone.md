@@ -36,14 +36,18 @@ concurrent a b  =  not (dominates a b) && not (dominates b a)
 = neither's causal view contains the other's = each has seen something the other has not = a genuine fork in the causal DAG. Decided by the **versionstamp partial order ONLY, never wall-clock** (`local-time-never-enters-the-shared-fold`) — two observers with different receive-times classify the same pair identically.
 
 ## Both oracles, each with a sabotage-verified property suite
+
 Shipped in **F# (canonical) + TS (peer)** for parity:
+
 - **symmetric**; **irreflexive** (a frame never forks itself);
 - **exclusive with the order** (if either dominates, NOT concurrent);
 - **tetrachotomy**: exactly one of {equal, a▷b, b▷a, concurrent} — the four cells of (dominates a b, dominates b a) ∈ 𝔹²;
 - **concurrent ⟺ genuine fork** (each ahead somewhere), stated over coords independently of `dominates` — the semantic characterization.
 
 ## Sabotage-verified before shipping
+
 The tests are worthless if they can't fail:
+
 - **F#:** `&&`→`||` caught (5/25 fail); dropped conjunct caught (5/25 fail); restored **25/25**.
 - **TS:** `&&`→`||` caught (4/6 fail); restored **6/6** (314 assertions).
 

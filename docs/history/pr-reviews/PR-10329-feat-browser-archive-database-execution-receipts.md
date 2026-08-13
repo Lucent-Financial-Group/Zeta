@@ -28,15 +28,18 @@
 ## Description
 
 ## Summary
+
 - archive settled browser database execution receipts into a separate finite ZetaDB node
 - release local no-forget outbox capacity only after an exact persistence acknowledgement
 - recover interrupted archive acknowledgements without reexecuting application mutations
 - wire the native browser page and Chromium multi-tab proof to verify the persisted receipt row
 
 ## Why
+
 The durable local receipt ledger prevented information loss but permanently consumed finite capacity. This adds a bounded archive boundary: an archive at capacity returns typed backpressure, while successful or duplicate exact persistence permits deterministic local release.
 
 ## Verification
+
 - `bun run preflight` - 14/14 passed before final main rebase
 - `bun run preflight:quick` - 12/12 passed after final main rebase and again in pre-push
 - focused browser tests - 52 passed, 0 failed

@@ -39,6 +39,7 @@ Plus a **recursion-depth ceiling (512)** — a hostile deeply-nested stream is r
 `decode` is now **total** — every input yields a `Result`, never an exception.
 
 ## Proofs (7/7)
+
 - **13 crafted hostile streams** (length overflow, indefinite length, truncation, oversized INTEGER, wrong NULL/BOOL length, unsupported tag, trailing bytes, malformed object entry) — each returns `Error`, and the test **fails on any escaped exception**;
 - **600-deep** nesting refused at the ceiling (no stack overflow); **100-deep** still round-trips.
 

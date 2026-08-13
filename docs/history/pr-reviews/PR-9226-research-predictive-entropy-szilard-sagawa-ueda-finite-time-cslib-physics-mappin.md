@@ -31,6 +31,7 @@ Two Phase-5 research notes (formal-verification-expert role, invoked by Otto). B
 `docs/research/2026-07-02-observe-without-commit-the-thermodynamic-architecture.md` and the two-ledger note.
 
 ## 1. Predictive entropy — the full "Provable Advantage" derivation
+
 `docs/research/2026-07-02-predictive-entropy-szilard-sagawa-ueda-finite-time-offline-scheduling-advantage.md`
 
 - **Szilard 1929** — bit = `kT ln2` of work, so soft-lane bits are thermodynamic fuel (a charged capacitor, not scratchpad).
@@ -40,6 +41,7 @@ Two Phase-5 research notes (formal-verification-expert role, invoked by Otto). B
 - **Routed:** Z3 floor-lemma (P1: F1-F4) + TLA+ lookahead invariant (P2). Honesty guard: policy-shape claim, not a joules claim on current silicon.
 
 ## 2. CSLib -> physics mapping
+
 `docs/research/2026-07-02-cslib-data-structures-thermodynamic-mapping-adj-vs-nonadj-soft-hard-lane.md`
 
 - Correction to one-role-per-structure: cost is **per-operation on three axes** (Adj/retract, Ctl/coordination, support/Ledger A).

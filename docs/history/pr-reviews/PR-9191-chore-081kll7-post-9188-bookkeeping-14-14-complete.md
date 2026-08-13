@@ -28,10 +28,12 @@
 ## Description
 
 ## Summary
+
 - Update **081KLL7…** backlog row: slice 4 (#9188) landed, **14/14** Bun realizer coverage.
 - Refresh resume doc; next step is `ace-realize --all` cutover.
 
 ## Test plan
+
 - [ ] CI gate green
 
 

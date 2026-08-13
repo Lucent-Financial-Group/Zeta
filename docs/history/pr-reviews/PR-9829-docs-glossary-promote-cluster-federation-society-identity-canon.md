@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - Promote Iris/Addison Genesis Concepts cluster vs federation vocabulary into operational glossary (SEED carved kernel + GLOSSARY §Society identity)
 - Cross-link USB-IDENTITY-THREAT-MODEL companions and UI canon to the glossary
 - Update USB trajectory RESUME + threat-model next slices
 
 ## Test plan
+
 - [x] Docs-only change
 - [ ] markdownlint / CI path gate green
 

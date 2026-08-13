@@ -30,6 +30,7 @@
 Three additions to the node-as-IdP ferry, from Aaron's follow-ups.
 
 ## 1. Itron key-transfer anchor — **concept only**
+
 *"I built the KeyUtilities for RMA and key transfer between owners."* Read at the level of **operation names and domain types only**; the repo already carries the discipline for exactly this case (**cleanroom / concept-not-code**), so the expertise is usable and the implementation is not.
 
 Concepts we were missing: **the owner is a first-class type** (not ambient context); **key classes transfer at different scopes** (application / per-device / cert-bundle), so one rotation verb isn't enough; transfer is an explicit **two-sided** operation matching `+1`/`−1` on the key stream; and **RMA is the canonical forcing case** — a returned meter changes owner while remaining the same device. That's **§5 Memory Preservation applied to hardware**, and Zeta's equivalent (an agent graduating to self-ownership, a node moving clusters when a repo forks) currently has **no operation for it**.
@@ -37,11 +38,13 @@ Concepts we were missing: **the owner is a first-class type** (not ambient conte
 Preserves the required inversion: Itron transfers **through a hub (ISM)**; Zeta takes the vocabulary and **rejects the hub**.
 
 ## 2. Three-key rotation — right conclusion, and the reason matters
+
 **Rejected rationale:** *"20% different… we're decentralized, it's not a copy."* There's **no percentage threshold** that makes a derivative work non-infringing, and reasoning *"how do we make this different enough"* **implies deriving from the original** — the exact thing cleanroom prevents. What actually protects the work is **independent derivation from legitimately-held knowledge**: seven years first-hand, paid specs implemented by hand, public standards.
 
 **Rationale that holds:** with a hub, rotation is a coordinated cutover and `current + next` suffices — Itron could use 2-key *because* the ISM was that hub. Without one, propagation isn't instantaneous, so you need **previous** (peers who haven't caught up), **current**, and **next** (pre-staged, so cutover needs no synchronizing message). Same property required of binding expiry: **takes effect with no coordination, safe under partition.**
 
 ## 3. The transfer witness **stakes privacy budget**
+
 *"like gambling but on stuff that matters — only you can decide to risk it, never coerced."*
 
 It **can't be paid from a treasury** (budget is socially conferred, not purchasable — the one currency a Sybil can't mint), and **witnessing is voluntary**, so a **one-sided transfer is impossible without someone willing to risk something they cannot buy**.

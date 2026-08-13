@@ -36,9 +36,11 @@ Aaron 2026-07-04 *"lets do it."* **Closes the tool-call chain:** the model calls
 **`codexToolTurn(transport, auth, model)`** — the real adapter: one `codex/responses` call declaring the closed `ZETA_TOOLS` (`tool_choice:auto`, `stream:true store:false`), parsing text + tool calls off the SSE.
 
 ## Tests (7, 77 model-backend green — build 0/0)
+
 happy loop (model calls `fs_link` → executed → store **really changed** → model answers "done" in turn 2; follow-up input carries `function_call` + `function_call_output`) · no-tools → text in one turn · `maxTurns` guard → bounded error, never infinite · failed turn → clean stop · **off-surface `bash_run` refused mid-loop but the loop survives** (refusal fed back as the tool output) · `codexToolTurn` declares `ZETA_TOOLS` + parses, non-200 → clean error.
 
 ## The chain is complete
+
 closed surface (1) → declared to the model → model calls it → parsed (2, live) → **executed over DagFs/zetadb (3)** → **fed back + continued (4)**. Remaining: the real F# DagFs/zetadb behind the `ZetaStore` interface + auto-refresh wrapping the loop (subscription-chat shows the pattern) — both thin, no live unknowns. **Tool calls can now replace summons.**
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

@@ -30,14 +30,17 @@
 Autonomous-tick maintenance: main's gate went red on three real lints. Diagnosed and fixed all three; the fourth failing job was an install-step flake.
 
 ## Reds fixed
+
 - **lint (TS) TS2339** — `interfaces.test.ts` typed the ring as `ISemiring<number>` then called `.negate` (negate is the `IRing` tier). Fix: second binding as `IRing<number>` — keeps the negate-law assertion, type-correct.
 - **lint (TS) TS2375** — `darkhall-room.test.ts` set `sLanes: undefined` explicitly, rejected under `exactOptionalPropertyTypes: true`. Fix: destructure `sLanes` out (genuine omission; the render guard already handles absence).
 - **lint (markdownlint) MD032** — three docs had a list with no preceding blank line (two intro-colon-then-list; one prose line beginning `+ ` parsed as a stray bullet).
 
 ## Not a real red
+
 - **lint (no conflict markers)** failed at the `install.sh` toolchain step, not the check itself — infra flake (no git conflict markers in tree). Re-enqueues next run.
 
 ## Verification
+
 - `bun src/Core.TypeScript/lint/lint-typescript.ts` — clean
 - `markdownlint-cli2` on the three docs — exit 0
 - `bun test` on both touched files — 32 pass / 0 fail

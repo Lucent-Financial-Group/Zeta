@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - Add `ca-shamir-custody.ts` + `ca-shamir-cli.ts` to split/combine the local CA private key into k-of-n Shamir shares (cold-backup / disaster recovery).
 - Wire `--shamir <k-of-n>` into `ca-cli.ts` (post-generation) and `rotate-cli.ts` (post CA-key rotate), reusing one biometric session per run.
 - Sandbox tests + harness gap-closed assertion; closes the deferred custody slice on work item 081KVP3GYW1.
 
 ## Test plan
+
 - [x] `bun test ca-shamir-custody.test.ts shamir.test.ts`
 - [x] `bun test onboarding-roundtrip.test.ts -t SHAMIR`
 - [ ] CI green on PR

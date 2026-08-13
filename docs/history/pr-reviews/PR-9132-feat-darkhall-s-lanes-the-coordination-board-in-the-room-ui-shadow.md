@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - Schema-additive `sLanes` on the room transcript (integer milli S per identity pair) rendered as a coordination board: verdict as `data-verdict` (CSS dispatches the color), bandwidth estimator f̂ = (|S|−2)/2 as a custom-property lane fill, one-way inference stated in API + aria ("open" never acquits).
 - 10/10 bun tests including schema-additivity (no lanes → no board) and the estimator ladder. Pairs with `AntiSybil.chshS` (#9117) and `shape-sybil-verdict` (#9119).
 

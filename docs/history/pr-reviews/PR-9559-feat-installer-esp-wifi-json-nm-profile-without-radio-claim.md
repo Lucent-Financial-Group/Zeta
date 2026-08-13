@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - Add `wifi-esp-to-nm` helper that turns ESP `{ssid,password}` JSON into a NetworkManager `.nmconnection`.
 - Install Step 6.6 writes the profile to `/mnt/etc/NetworkManager/system-connections/` and emits `association deferred (physical-gated; no radio claim)`.
 - Serial/audit markers cover the software path; real WiFi association stays metal-gated.
 
 ## Test plan
+
 - [x] `bun test` wifi-esp-to-nm + serial-markers
 - [x] CLI smoke compose
 - [ ] CI green

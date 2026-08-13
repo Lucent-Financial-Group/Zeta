@@ -30,16 +30,19 @@
 **Aaron 2026-07-03:** "next please continue building column b" + "what's next?" — the sequential-logic fork, taken (the architectural call is rollable).
 
 The combinational netlist computes outputs *once*; real hardware and any looping program need **state across clock cycles**. `Sequential.fs` is the minimal honest model:
+
 - A **`SeqCircuit`** (`DynamicValue`) = a combinational **core** + a **feedback map** (`outWire → stateWire`) + **initial state**. The feedback wires *are* the flip-flops.
 - **`run seqc external cycles`** clocks it: each cycle, evaluate the core on (external ∪ state), then latch the feedback outputs into the state wires.
 - **`counter n`** (`next = state + 1`) and **`accumulator n`** (`next = state + x`) demonstrate the primitive.
 
 ### Proven — 3 new tests, Core **0/0**
+
 - **Counter** — state = `k mod 256` after k clocks (evolves by +1/cycle; wraps correctly at 256/257/300).
 - **Accumulator** — state = `(k*x) mod 256` after k clocks with fixed external `x`.
 - **Byte-lockable** — a sequential circuit rides the codec stack.
 
 ### Why it matters
+
 This is the primitive that lets **control flow / full (non-straight-line) programs** synthesize: a CPU *is* this state machine stepping an instruction ROM (PC + decode + register file as clocked state).
 
 **Column B:** gates → adder → straight-line synthesis → ALU → **sequential state**. Next rung (on this primitive): the full stateful CPU — PC + instruction ROM + decode, so `SE`/`JP` synthesize.

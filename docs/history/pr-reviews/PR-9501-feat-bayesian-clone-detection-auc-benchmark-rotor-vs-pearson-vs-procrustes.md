@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - Adds `CloneDetectionBenchmark` (`src/Bayesian/CloneDetectionBenchmark.fs`) with synthetic clone/independent belief-stream pairs, noise sweep, and three scorers: Clifford rotor, Pearson, affine Procrustes residual.
 - CI tests lock rotor AUC ≥ Pearson at every noise level (081KWQS0NGS closed).
 - Mints backlog work item 081KWQS2PN for minimal BNN (not implemented here).
 
 ## Test plan
+
 - [x] `dotnet test tests/Bayesian.Tests/Bayesian.Tests.fsproj -c Release --filter FullyQualifiedName~CloneDetectionBenchmark`
 - [ ] CI green on merge
 

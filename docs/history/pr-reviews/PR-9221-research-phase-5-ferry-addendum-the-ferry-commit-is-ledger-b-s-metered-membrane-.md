@@ -32,6 +32,7 @@ Addendum to the Phase 5 quantum-formal-routing note (PR #9208, merged). Otto inv
 **Core insight lands:** it gives §13's injected metered door an address — the ferry commit seam; the DoP/batch knob = the discharge-rate knob.
 
 **Three metering-test corrections** (each changes what the ledger records, so each is load-bearing):
+
 1. **Landauer does not amortize** — additive in bits erased (`B·kT·ln2` whether batched or singleton). Batching amortizes the fixed per-commit *overhead* (fsync/syscall/framing/RTT), which sits ~1e9–1e11× above the floor (Bérut et al. 2012). Keep Ledger B batch-size-invariant; `C_overhead` is a distinct edge-only column, not the Landauer lineage. Folding batch size into the floor = Definition-class drift.
 2. **Batch size is a QUANTITY; TDP is a RATE** — `discharge_rate = (bits/batch ÷ flush_interval)·kT·ln2` (what the config sets); TDP = downstream absorb-rate ceiling; backpressure = the governor. "batch size = TDP" is a Mars-Climate-class UoM error.
 3. **The ferry is the MEMBRANE** (§13 metered door), not the sink — the downstream environment absorbs. Naming the ferry "the sink" blurs the door/environment distinction noninterference relies on.

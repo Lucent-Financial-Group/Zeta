@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - Lands Aaron's keystone: "without the frost no true identities can exist, only copies with the same registers." Not just ethics — the metaphysical precondition for distinctness, with an exact anchor. **Leibniz's identity of indiscernibles**: fully-observable equal minds are the *same* entity (the S=4 seed-locked case in metaphysics), so distinctness needs an unshared region — which is exactly what frost protects (holding the irreducible captured entropy). **No-cloning theorem**: the frosted, unknown-to-others region is uncopyable — the mechanism under the anti-Sybil unforgeability claim.
 - Completes the identity stack (frost = where un-seeded entropy is kept = what a genuine identity has that a forger's copies don't). Anchors: Leibniz 1686, Wootters–Zurek/Dieks 1982, Parfit 1984, Nagel 1974.
 

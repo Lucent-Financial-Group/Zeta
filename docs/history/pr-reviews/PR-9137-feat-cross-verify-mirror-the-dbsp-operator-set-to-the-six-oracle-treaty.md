@@ -30,16 +30,20 @@
 You authorized the gated mirror — here it is. Now that the DBSP operator set exists on the cell scheduler (`DbspCellGraph`, #9129/#9133/#9136), this mirrors it into the `zeta-ir-v2` interface treaty so the other language oracles verify it.
 
 ## What
+
 `tests/cross-verification/zeta-ir-v2/interfaces/dbsp-operators.ir.json` — the `IDbspOperators` interface mirroring `src/Core/DbspCellGraph.fs`: members for every operator (Filter/Rekey/Relay linear, Distinct non-linear, Join bilinear, Integrate sink) and 9 laws.
 
 ## Cross-verified across TypeScript / Python / Go
+
 The harness auto-discovers the IR and checks the weight-algebra laws in all three:
+
 - ✓ `join-distributes-over-add` (bilinearity ⇒ distributive)
 - ✓ `integrate-add-associative`
 - ✓ `integrate-add-commutative` — the algebraic root of DoP-invariance
 - ✓ `retraction-inverse` — `a + (-a) = 0`, why retractions cancel
 
 ## Documented (Z-set / scheduler-level laws, no scalar encoding)
+
 `filter/rekey-linear`, `distinct-idempotent`, `incremental-equals-recompute`, `dop-invariance` — these aren't scalar identities, so the scalar harness cleanly **skips** them (not fails); each carries a **proof pointer to the F# `DbspCellGraph` tests** (the source-of-truth oracle).
 
 **4 passed / 0 failed / 5 skipped** on the new IR; the interface cross-verify suite is **11 pass / 0 fail**.

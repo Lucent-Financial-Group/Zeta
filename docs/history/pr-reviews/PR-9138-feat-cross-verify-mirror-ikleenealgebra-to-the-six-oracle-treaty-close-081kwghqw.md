@@ -30,12 +30,15 @@
 The pattern's proven (#9137), so — as you asked — this mirrors **`IKleeneAlgebra`** into the `zeta-ir-v2` treaty and closes the gated workitem **`081KWGHQW5`**.
 
 ## What
+
 `tests/cross-verification/zeta-ir-v2/interfaces/kleene-algebra.ir.json` — the `IKleeneAlgebra` interface (`ISemiring` Zero/One/Add/Mul + `Star`) mirrored from `src/Core.Abstractions/IKleeneAlgebra.cs` and its F# instances (`NovelMath.TropicalSemiring`, `KleeneClosure.BooleanKleene`).
 
 ## Cross-verified across TS / Python / Go
+
 - ✓ `add-assoc`, `add-comm`, `add-identity`, `mul-identity`, `mul-distributes-add` — the generic semiring axioms (hold in the native arithmetic model).
 
 ## Documented (with F# proof pointers) — the honest part
+
 - ○ **`add-idempotent`** — `a⊕a=a`. Correctly **NOT** scalar-encoded: it fails over native `+` (holds only in idempotent carriers — boolean ∨, tropical min), so the scalar harness skips it. This is the distinguishing Kleene axiom; proven in F# on the concrete instances.
 - ○ `star-left/right-unfold`, `matrix-star-is-closure` — star has no finite scalar encoding, and the closure law is matrix-level; proof pointers to the F# `BooleanKleene`/`KleeneClosure` tests (reachability = BFS oracle).
 

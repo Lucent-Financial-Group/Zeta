@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - Add `state-changed` / `closed` event publishers (`work-items/lifecycle.ts`) and event makers in `types.ts`
 - Wire `complete-workitem.ts` to emit `state-changed → done` (honors `--dir` for done path + events root)
 - Add `set-workitem-state.ts` for backlog ↔ in-progress transitions and `--close`
@@ -35,6 +36,7 @@
 - Refresh Otto session resume doc
 
 ## Test plan
+
 - [x] `bun test src/Core.TypeScript/work-items/ src/Core.TypeScript/backlog/new-workitem.test.ts src/Core.TypeScript/backlog/complete-workitem.test.ts` (24/24)
 - [ ] CI gate green
 - [ ] Smoke: mint → set in-progress → complete → `open-backlog.ts` shows item removed

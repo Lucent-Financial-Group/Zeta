@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - Preserves Soraya's routing verdict verbatim (shadow ferry): Lean+Stryker for CPT, Z3+statistics-gate for CHSH-Sybil (Lean deferred), Z3 for geo with **F\* declined**, **TLA+ accepted** for deterministic-forger liveness only. Priority modified 2>4>3>1. Her chief finding (finite-sample threshold unsoundness) was acted on same-day in #9134.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

@@ -30,6 +30,7 @@
 Both greenlit by Aaron ("1 yes sounds great, 2 we can always rename to be more accurate and we are greenfield").
 
 **1. The bus meter** (`bus-meter.ts` + living-node wiring): nodes probe the wire (probe/ack echoing `sentAt` — local clock only, the NTP trick), fold the **minimum** observed crossing (conservative: evidence must survive the wire's fastest), and judge the regime against the decision deadline τ (default: the node's own publish cadence):
+
 - `in-cone` — a crossing can beat τ: super-quantum readouts are **fakeable** (Toner–Bacon: 1 bit)
 - `out-of-cone` — no crossing beats τ: **S > 2√2 is hard evidence** of one-process-two-faces
 - `unmeasured` — never upgrades to evidence

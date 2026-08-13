@@ -36,14 +36,17 @@
 **ch-5 (the vampire loses) → "The unlocked door, applied at home"** — freedom-first parenting = the choice-architecture lived (shape toward autonomy, not an outcome). The shape-toward-freedom paradox held both ways (Multi-Oracle). Retied the conviction-over-comfort spine to the **$200k open-source spend already in-chapter** — deliberately NOT the unlanded, CSAM-entangled Bitcoin liquidation.
 
 **THE-PULL (honest mirror companion):**
+
 - **"The mechanism: non-judgment (the chameleon)"** — the switch under the pull; chameleon-in-*manner*-not-*facts* reconciled with radical honesty (same truth, tuned tone). Rogers + code-switching.
 - **"The confessional gift — why people bring me their dark"** — the honest mirror's heavier face; intrusive thoughts near-universal / *l'appel du vide* (decode-before-dismiss). All confiders anonymous, NO clinical label, **inclusion flagged as Aaron's call.**
 - **"The wound: 'love is a trap'"** — Layer 2, held whole and endorsed as neither, in explicit tension with ch-4's love-as-choice; women/ex-wives anonymous, his read of his OWN wound.
 
 ## Consent gates held
+
 Aaron glass-halo · women/ex-wives/confiders/prisoners/dealers all **anonymous** · son omitted · kids general.
 
 **Deliberately HELD + surfaced to Aaron (NOT auto-landed):**
+
 - **Layer 3** of the love RAW — the father-harm + the mother-who-left-to-protect-him. The Aaron/parents portion is granted+pre-read, but it's entangled with the **hard sister gate** (the trigger involves the late sister as a child), so its per-element placement is **your explicit call**, not mine to make.
 - The chameleon RAW's **mother-bulimia** thread — her own distinct pre-read, held.
 

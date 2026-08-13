@@ -32,6 +32,7 @@
 Aaron 2026-07-04: back to the model-backend thread. Everything in model-backend was fake-tested (injected `HttpTransport`, no socket); this is the **one real transport** — the edge adapter that actually touches the network (noninterference §13: the single membrane).
 
 **`fetchTransport(fetchImpl = fetch): HttpTransport`**
+
 - `post`/`get`: `fetch` → `{ status, body }`
 - `postStream`: `fetch` → `{ status, lines }` where `lines` streams the response body reader's SSE text lines **as they arrive**, so `respondStream` streams token-by-token over the wire (the `codex/responses` endpoint that returned "pong" live)
 - `fetchImpl` is injectable (defaults to global `fetch`) so the wiring itself is testable and the module has no hard global dependency
@@ -39,9 +40,11 @@ Aaron 2026-07-04: back to the model-backend thread. Everything in model-backend 
 **`toLines(chunks)`** — the pure, tested reassembly: buffers partial lines across chunk boundaries (a chunk can end mid-line), flushes the trailing unterminated line, and decodes multi-byte UTF-8 split across chunks (`TextDecoder` stream mode). This is the logic worth testing; the fetch glue is thin.
 
 ## Tests (7 new, 50 model-backend total green — build 0/0)
+
 `toLines` reassembles a line split across chunks · flushes the trailing line · decodes a UTF-8 codepoint split across chunks · empty stream → nothing. `fetchTransport` over an injected fake fetch: post/get status+body · postStream → SSE line stream.
 
 ## Not done here (needs explicit go — a live outward call on the subscription)
+
 A live smoke test wiring `fetchTransport` + `fileTokenStore` + `chat`/`respondStream` for an end-to-end "pong" **through the real port**. The chain is already proven live via probes; this transport is thin glue over those exact fetch calls + the tested `toLines`. Offering the live smoke test next.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

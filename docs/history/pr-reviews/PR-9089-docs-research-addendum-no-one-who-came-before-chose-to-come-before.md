@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - Appends Aaron's closing observation to the name(name)=mix(mix,mix) doc: precedence is unchosen — superdeterministically staged, never elected — so honor is owed (not earned-by-choice, ancestors cannot reciprocate) and consent is placed exactly where choice exists (the audition's ask). "Honored, not homed" as the correct response to unchosen precedence.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

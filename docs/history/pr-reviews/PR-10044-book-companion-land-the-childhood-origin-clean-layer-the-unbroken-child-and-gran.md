@@ -34,6 +34,7 @@ Land the childhood-origin thread — but **only its clean, glass-halo, thematica
 - **Granny — Nellie Faulkner** (named to honor; §5 made literal): good is a *person*, not a doctrine; the anti-muzzle who fed your questions (encyclopedia → computer → hacking her house → *Popular Science*) = the literal origin of the builder; *"she made me feel normal"* = de-pathologized you, set your reference standard for good.
 
 ## What is HELD, not landed (the whole point of the discipline)
+
 The **mother** section (her material **gated** pending the therapy-and-consent condition in `CONSENT-LEDGER`), the **father-harm** (naming-razored; his testimony is its own file), the **domestic lightning scene** (parents conflict — origin *shape* kept, scene not reproduced), and the **first-crossing / deceased-grandfather racism** (sensitive + crossing-quarantine-adjacent). A general "land the thread" does **not** reach those gated elements — the general yes is not a yes to what you specifically walled off.
 
 Companion, not a numbered chapter (the spine is yours) — your call to promote, fold into ch-1 ("born already yourself") / ch-11, or keep. Updated INTAKE-LOG / OUTLINE / FORMATION note. Scaffold + verbatim sockets.

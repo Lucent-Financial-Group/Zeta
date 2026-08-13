@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - preserve the Iris root-site `.dc.html` authoring originals under `docs/design/root-site-iris/sources/`
 - add a source README mapping each design original to its exported root-site HTML page
 - document the boundary: Zeta owns editable design source; `Lucent-Financial-Group/lucent-financial-group.github.io` owns exported static deploy files and live data ledgers
 
 ## Validation
+
 - `rg` invisible Unicode scan over imported source path
 - `bun run preflight:quick`
 - `bun run preflight`

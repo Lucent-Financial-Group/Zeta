@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - Assert file-backed zflash plans include `/zeta-hostname.txt` and `/zeta-creds.enc` when hostname + credential blob are set.
 - Add pure QEMU serial-marker helpers and fixture tests for explicit ESP hostname injection plus on-node hostname autogeneration.
 - Document that WiFi radio association remains physical-gated while a future ESP WiFi blob can reuse this pattern.
 
 ## Test plan
+
 - `MISE_TRUSTED_CONFIG_PATHS=/Users/acehack/.zeta/agents/cursor-usb-esp-hostname-creds-asserts/.mise.toml mise x bun@1.3.13 -- bun test src/Core.TypeScript/zflash/lib.test.ts src/Core.TypeScript/zflash/test-harness/qemu-state.test.ts src/Core.TypeScript/zflash/test-harness/serial-markers.test.ts`
 - `MISE_TRUSTED_CONFIG_PATHS=/Users/acehack/.zeta/agents/cursor-usb-esp-hostname-creds-asserts/.mise.toml mise x bun@1.3.13 -- bun run typecheck`
 - `MISE_TRUSTED_CONFIG_PATHS=/Users/acehack/.zeta/agents/cursor-usb-esp-hostname-creds-asserts/.mise.toml mise x bun@1.3.13 -- bunx markdownlint-cli2 docs/trajectories/usb-zflash-installer/RESUME.md`

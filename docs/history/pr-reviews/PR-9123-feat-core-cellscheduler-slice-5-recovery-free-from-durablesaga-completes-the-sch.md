@@ -30,6 +30,7 @@
 Slice 5 — the **final slice** of the cell scheduler (`081KTG5S0M9`).
 
 ## What
+
 Recovery is **free from `DurableSaga`** (design note §4): a cell is `DurableSaga.start log (sagaStep stepFn) initial` over any `IDeltaLog<'Msg>`. Every processed message is appended + folded into state; a crash discards only the in-memory saga, and `DurableSaga.ResumeAsync` replays the log in seq order to rebuild the **identical** state. No new persistence code.
 
 - **`sagaStep`** adapts a cell `stepFn` to a `DurableSaga` signed reducer tracking the cell's *state only* (emission/routing is the scheduler's concern, replayed deterministically — not durable cell state). **Append-only v1**: a step is information-gaining, not group-invertible, so no per-cell retraction compensation (matches the `DurableYinYang` doctrine).
@@ -37,11 +38,13 @@ Recovery is **free from `DurableSaga`** (design note §4): a cell is `DurableSag
 Whole-society recovery = per-cell saga recovery **+** deterministic message replay (slices 1–3): seed + message-log reproduces the whole society (DST at fleet scale).
 
 ## Tests (3 new, 22 total)
+
 - restart-from-log rebuilds identical state;
 - resume-then-continue advances correctly;
 - independent cells recover independently.
 
 ## 🎉 This completes the cell scheduler
+
 All five slices landed: #9118 (DoP=1 multiplexer) · #9120 (DoP=N + `run(1)==run(N)`) · #9121 (fairness/parking) · #9122 (soft cells) · this (recovery). A generic DoP=1→DoP=N deterministic multiplexer, structural fairness, soft cells that snap only at the edge, free recovery. **22 tests**, build 0 warnings.
 
 Anchors: event sourcing / log replay (Fowler); `DurableSaga` over `GitDeltaLog`.

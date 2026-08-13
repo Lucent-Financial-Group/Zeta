@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - carry lastFrameAgeMs from the LLMTV root-site status sidecar into the Hall status card summary
 - render freshness as a zero-JS data attribute, visible metric, and CLI status token
 - harden the static Pages export test so freshness and phase-clock facts survive replay -> status -> Hall HTML
 
 ## Validation
+
 - mise exec -- bun test src/Core.TypeScript/discovery/llmtv-hall-status-card.test.ts src/Core.TypeScript/discovery/llmtv-pages-static-export.test.ts
 - bun run preflight:quick
 - git diff --check

@@ -30,16 +30,19 @@
 **Aaron 2026-07-02:** "yes next please" — completing the parametricity `IsaSpec` started: `evalSpec` was already ISA-parametric; now **`mix` is too**.
 
 ### What this adds
+
 `IsaSpec.specialize` generalizes `Isa.specialize` (which hard-coded CHIP-8's opcodes) to specialize the **effects** generically — so partial evaluation (dynarec) works for **any** ISA given only its spec + a load-immediate builder (`reg → value → instruction`; CHIP-8's is `Isa.set`).
 
 Straight-line, single-`setreg`-effect fragment: a fully-static value **folds** into `known`; a dynamic one is residualized as-is with its static register reads **materialized** first, and its written register goes dynamic. Control flow / multi-effect ops are rejected (honest scope, same as `Isa.specialize`). The generic residual is correct but not peephole-optimal (materialize-then-emit vs fold-to-immediate) — the **S-m-n law holds regardless**, which is what the tests check.
 
 ### Proven — 3 new tests, **6/6** IsaSpec, **45/45** across the stack, Core **0/0**
+
 - **Spec-driven mix S-m-n law** (ISA-parametric): `evalSpec spec (residual) dyn ⊕ known = evalSpec spec p (static ∪ dyn)` over straight-line CHIP-8 cases (fold / ADD-immediate / materialize).
 - **ISA-parametric**: `mix` specializes a program in the **extended (SUB) ISA** correctly — an opcode added purely as data, with **no specializer change**.
 - Rejects control flow.
 
 ### Where this sits
+
 Column A is now **fully ISA-parametric**: one `eval` + one `mix` over any instruction set as data. This is the generalized dynarec (`mix(cpu-interp, ROM) = compiled game`) for 6502/68000-as-specs, and the residual is byte-locked `DynamicValue` ready for either target (code today; netlist = Column B).
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

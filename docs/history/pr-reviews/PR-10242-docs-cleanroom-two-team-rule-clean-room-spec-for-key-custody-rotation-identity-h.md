@@ -30,6 +30,7 @@
 Aaron: *"route the work after the cleanroom spec to a different named background agent to comply with the whiteroom laws."* Correct — and it applies to **me specifically**: I opened the prior-art tree, so I'm the contaminated side and am **barred from implementing this**.
 
 ## 1. New rule — because it governs **agent routing**, not etiquette
+
 `.claude/rules/cleanroom-two-team-separation.md`: whoever **looked** writes only a functional specification and may not build from it; a **different named agent that has never seen the original** implements from the spec alone.
 
 The protection is **independent derivation**, and one agent doing both halves destroys it *by definition*, however careful that agent is. Since agents are dispatched programmatically here, **the wall is the routing decision**.
@@ -37,9 +38,11 @@ The protection is **independent derivation**, and one agent doing both halves de
 Records the corollary that's tempting and wrong: **"make it N% different" is not a defense** — no percentage threshold exists, and the reasoning presupposes deriving from the original, conceding exactly what the wall protects.
 
 ## 2. New spec — `docs/specs/key-custody-and-rotation-cleanroom-spec.md`
+
 12 requirements + 6 acceptance criteria, each stated as *what the system must do* and justified from **Zeta's own constraints** (§1, §3, §5, §11, partition tolerance) — never from another system's structure. **Verified for expression leakage: zero occurrences of any prior-art name.** The header tells the implementer it is the clean side and must not seek the original.
 
 ## 3. Homoiconicity at the identity level
+
 *"yes exactly, homoiconicity at the identity level for most organizing words."* This turns the fork observation from coincidence into design law — one representation serves cluster, node, device, agent, custody, key domain, so an operation on one **is** the operation on all.
 
 Consistent because Zeta already has homoiconicity at the **data** level (`DynamicValue`) and the **compiler** level (mix-as-data — a residual is a value, which is what lets a GC collect it and a Z-set delta address it). What it buys: any invariant proved of `fork` holds at every magnification, so we don't design three things that later disagree.

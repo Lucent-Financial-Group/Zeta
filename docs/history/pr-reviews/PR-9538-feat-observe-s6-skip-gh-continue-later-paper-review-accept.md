@@ -28,12 +28,14 @@
 ## Description
 
 ## Summary
+
 - Paper/mock review accepted (GitHub → local → done).
 - Skip GitHub now tells how to continue later (local console or SSH) + post-choice tip.
 - Longer-term goal noted: desktop app UI over NixOS, then microkernel — not an S6 exit criterion.
 - Physical boot still human-gated / not ready.
 
 ## Test plan
+
 - [x] `bun test src/Core.TypeScript/observe/first-session`
 - [x] `bun run typecheck`
 

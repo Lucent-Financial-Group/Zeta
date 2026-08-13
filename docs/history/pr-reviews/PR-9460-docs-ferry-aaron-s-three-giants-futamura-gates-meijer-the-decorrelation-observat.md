@@ -30,6 +30,7 @@
 Aaron named his foundational tripod — **Futamura, Gates, Meijer** — and observed *"funny how different those three peoples culture and background are."* Both banked.
 
 **The tripod (Beacon, all already in PRIOR-ART-LIST, tied to their pillars):**
+
 - **Futamura** — partial evaluation / Futamura projections → **self-hosting / generation** (Isa/Cogen).
 - **Gates** — adinkras + doubly-even self-dual ECC → **the seed / error-correcting code** ([8,4]).
 - **Meijer** — recursion schemes (cata/**ana**/hylo), Rx, Applied Duality (μF⇄νF) → **the fold + the duality** (`DynamicValueFold.ana`; μF="what remains" ⇄ νF="what acts" *is* Aaron's frame).

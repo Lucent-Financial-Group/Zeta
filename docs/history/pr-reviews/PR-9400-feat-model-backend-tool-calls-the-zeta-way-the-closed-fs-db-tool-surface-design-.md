@@ -32,6 +32,7 @@
 Aaron 2026-07-04: *"tool calls next … but the zeta way — our tools are ONLY our file system and database, not random bash/CLI; it's zetadb/gitv2/dagfs that results in code loaded via type providers and Roslyn generators; our db IS our IR IS our events IS our tables — recursive as fuck all the way down."* He asked *"is this that easy?"* — the honest answer: the **vendor protocol is** (parse `function_call`, feed results back), but it assumes an **open** tool surface and is the wrong thing to ship. This does it the Zeta way.
 
 ## The design (`docs/research/2026-07-04-tool-calls-the-zeta-way-…`) — three moves
+
 1. **The tool surface is CLOSED**: fs (`DagFs`: resolve/link/editLocal/editEverywhere/unlink) + db (`zetadb`: append/query, Z-set fold, retraction first-class). **No bash.** The surface *is* the sandbox (object-capability).
 2. **A tool call is an EVENT appended to zetadb — which IS the IR.** So a call is an IR node; views re-fold incrementally; a wrong call is **retracted (−1)**, not patched (same Z-set algebra as the Maji/four-corner ferry).
 3. **The event reifies to CODE** via F# type providers / C# Roslyn generators, on demand (weak refs). The generators are themselves folds over the log: **`gen(gen)==gen`**. Recursive all the way down.
@@ -39,9 +40,11 @@ Aaron 2026-07-04: *"tool calls next … but the zeta way — our tools are ONLY 
 **Replaces summons:** a persona/compiler summon becomes one kind of fs+db tool-call event reified on demand (workflow-DU summon backlog `081KSXN940008QG0R002B89QZ1` is the bridge). Anchors: Kay/Smalltalk + ObjC Distributed Objects + Hewitt + Erlang; DBSP/Z-sets; Merkle/git; F# type providers + Roslyn `IIncrementalGenerator`; ocap (Miller).
 
 ## Slice 1 (built — no live unknown): `zeta-tools.ts`
+
 `ZETA_TOOLS` = exactly the DagFs + zetadb ops as `codex/responses` `tools` declarations; `domainOf` (`fs.*`/`db.*`); `isClosedSurface` (the invariant, asserted before declaring tools to any model). **5 tests** (55 model-backend green, build 0/0): surface is closed; IS exactly the fs+db vocabulary; no shell/exec/http/eval tool; a smuggled `bash.run` fails the invariant; every decl well-formed.
 
 ## Honest boundary
+
 **Slice 2** (parse `function_call` from the `codex/responses` SSE stream) needs a **live probe** of the tool-call event shape — the same "docs were wrong on several shapes" risk the text-delta path hit. Request-side `tools` (slice 1) is the stable part, safe now. Slices 2 (parse, gated), 3 (fs+db execution binding), 4 (summon→tool-call bridge) follow.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

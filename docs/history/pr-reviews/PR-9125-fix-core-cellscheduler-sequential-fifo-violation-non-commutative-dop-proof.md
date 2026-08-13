@@ -30,15 +30,19 @@
 A **P0 correctness fix** caught by adversarial review of the just-completed cell scheduler (distributed-seed verify pattern).
 
 ## The bug
+
 The sequential `step` re-ready logic round-tripped a cell's *next* inbox message through `deliver` (which appends to the **tail**), rotating the cell's own queue head→tail. A cell holding `[m1;m2;m3]` processed `m1, m3, m2` — **not FIFO**, despite the type's documented `head = next to process (FIFO)` contract.
 
 Every existing test used **commutative** int accumulation, so nothing caught it — and it made the sequential runner (the claimed deterministic reference) disagree with the ferry runner on any non-commutative cell.
 
 ## The fix
+
 Re-ready a cell by appending its id to `Ready` **only** — never disturb the inbox. Guarded against double-add when a self-send already re-readied it.
 
 ## The test gap (same review, Q4)
+
 The 12-cell ring proved *reassembly determinism* but not the real invariant — commutative workloads satisfy DoP-invariance trivially even if ordering were broken. Added **3 non-commutative tests** with order-sensitive list state:
+
 - sequential runner preserves a cell's own FIFO order (`[1;2;3] → [3;2;1]`; the pre-fix bug gave `[2;3;1]`);
 - **DoP-invariance on a non-commutative `src→sink` stream at DoP 1/4/16** — the real proof;
 - sequential and ferry runners agree on a non-commutative multi-message cell.
@@ -46,6 +50,7 @@ The 12-cell ring proved *reassembly determinism* but not the real invariant — 
 **25 tests** total (was 22), build 0 warnings.
 
 ## Follow-up (not this PR)
+
 Remaining review findings — O(n²) list-based queues at the stated thousands-of-cells scale, dead `Ready` bookkeeping in the ferry path, and drop/error metering (§13) — will land as a focused perf + observability PR.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

@@ -30,6 +30,7 @@
 Mirrors the DBSP operator set into the source-owned **Q# reference oracle**, following `AlgebraInterfaces.qs`'s convention (Q# has no interfaces — a matching function signature IS the instance; verified by a source-text structural oracle, no QDK in CI).
 
 ## What
+
 `src/Core.QSharp.ReferenceOracle/DbspOperators.qs` (`namespace Zeta.Dbsp`) — every operator at the **weight level** over `Int`, **grounded in the algebra tier** (`Zeta.Algebra`). The DBSP operators aren't new algebra; they ride the semiring/ring the oracle already defines:
 
 | Operator | Grounding |
@@ -42,6 +43,7 @@ Mirrors the DBSP operator set into the source-owned **Q# reference oracle**, fol
 | `DbspDistinctCross` | boundary crossing `+1/-1/0` (non-linear `H`) |
 
 ## Verification
+
 `dbsp-operators.test.ts` — a source-text structural oracle (same discipline as `zset-isa.test.ts`): asserts the full operator surface is declared **and** that each operator's weight action is grounded in the correct `Zeta.Algebra` function. Wired into `gate.yml`'s Q# reference-oracle step.
 
 Local: **19 pass / 0 fail** on the exact CI Q# command; **cross-verify-all 31/31**; gate.yml valid YAML. (Ran the byte-lock oracle before pushing — the lesson from #9141.)

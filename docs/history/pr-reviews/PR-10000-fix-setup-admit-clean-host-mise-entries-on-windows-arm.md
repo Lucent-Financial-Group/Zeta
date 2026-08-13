@@ -28,14 +28,17 @@
 ## Description
 
 ## Summary
+
 - treat `mise ls --current` requested versions as the configured graph on clean hosts
 - stop filtering fresh entries by mise's pre-install `active: false` state
 - lock the Windows ARM smoke contract against reintroducing that predicate
 
 ## Failure evidence
+
 Main run 30766988056 reached the new Windows ARM filter, emitted the three intended exclusions, then rejected `actionlint` because a clean mise data directory marks configured-but-uninstalled tools inactive.
 
 ## Verification
+
 - reproduced the clean-host inventory with an empty `MISE_DATA_DIR`
 - executed the extracted PowerShell filter against that inventory: 20 supported tools retained
 - `mise exec -- bun test src/Core.TypeScript/ci/windows-install-ps1-smoke.test.ts` (12 passed)

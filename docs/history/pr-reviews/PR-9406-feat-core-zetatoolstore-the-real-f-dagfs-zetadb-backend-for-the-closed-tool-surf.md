@@ -32,6 +32,7 @@
 Aaron 2026-07-04: *"wire the real F# DagFs/zetadb backend next."* The **F# oracle** of the TS `zeta-store.ts` — binds the closed tool vocabulary to the **actual `DagFs.Tree` + `ZSet`**, same semantics on the real substrate.
 
 **`ZetaToolStore.fs` (src/Core):**
+
 - **`ZetaTool` DU** — the closed surface as a **total type** (`only-the-irreducible-is-primitive`): `FsResolve`/`FsLink`/`FsEditLocal`/`FsEditEverywhere`/`FsUnlink`/`DbAppend`/`DbQuery`. No bash — the type *is* the sandbox.
 - **`Store = { Fs: DagFs.Tree<string>; Log: ZSet<string> }`** — fs is the content-addressed DagFs tree (MerkleHash over UTF-8); db is an append-only **Z-set** event log.
 - **`execute`**: records the call as a `tool_call` event **first** (the call *is* an IR node — db is the IR), then applies. fs → `DagFs.link`/`editLocal`/`editEverywhere`/`unlink`/`resolve`; db → `ZSet.add`.
@@ -39,9 +40,11 @@ Aaron 2026-07-04: *"wire the real F# DagFs/zetadb backend next."* The **F# oracl
 - **`parse`** enforces the closed surface (mirrors TS `domainOf`/`isClosedSurface`): off-surface → refused; `fs_`/`db_` but unknown op → unknown-tool error.
 
 ## Tests — 7 F# (ZTS-1..7) pass; Core builds **0 warnings / 0 errors** under `TreatWarningsAsErrors`
+
 fs link→resolve · missing → None · editLocal COW vs editEverywhere shared-follow · unlink · db_append→query log + retract removes from fold · the call recorded as a `tool_call` IR node · `parse` refuses `bash_run` + `fs_teleport` (unknown) + missing arg.
 
 ## Notes
+
 - **Reconciliation item:** `DagFs.editEverywhere` is a **no-op on an absent path**; the TS in-memory store links-if-absent. F# DagFs is the source of truth — the TS store should be reconciled (or the divergence documented). Both tests only exercise the present-path case, which agrees.
 - **Thin follow-on:** bridge the harness (`runToolLoop`) to this F# backend (HTTP/IPC or an F# harness) so the loop drives the **real** store, not just the in-memory twin.
 

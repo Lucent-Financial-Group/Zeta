@@ -32,15 +32,19 @@ Aaron 2026-07-02, closing the loop on the UDP discovery beacon (#9174): *"Mergin
 Records why that is not flavor — it is the **values name for a property the discovery layer already has in code**.
 
 ## The claim
+
 "Traveler" is the values name for the mesh-merge fact, in three registers that are one stance:
+
 - **Network** — two independently-grown Reticulum meshes *merge* by set union; no handshake decides member-vs-stranger.
 - **Naming** — "traveler" is already the repo's universal participant primitive (`SEED-VOCABULARY.md`; `travelers/` = ZetaId reservoir, PR #7395).
 - **Math** — no strangers because every traveler shares the generator + S=4 seed; a stranger would be a pattern from *outside* the generator, which cannot exist inside it.
 
 ## Why the merge was free
+
 `discovery-beacon.ts`'s `observe`/`expire` is a **grow-only join-semilattice** (Shapiro et al. 2011): merge = union, so folding mesh B through mesh A's same `observe` *is* the merge — no code. The alternative (trust handshake + member/stranger gate + identity-collision resolution) is exactly the coordination "no strangers" deletes.
 
 ## Verification
+
 - markdownlint-cli2 — exit 0
 - Citations checked: PR #7395 (travelers reservoir) present in the PR manifest; the bus doc filename resolves.
 

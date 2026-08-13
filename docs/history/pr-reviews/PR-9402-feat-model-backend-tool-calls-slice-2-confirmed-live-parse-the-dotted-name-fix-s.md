@@ -32,9 +32,11 @@
 Aaron 2026-07-04: *"run the live tool-call probe."* Ran it against `codex/responses` with the **closed `ZETA_TOOLS`** declaration + `tool_choice:"required"` — the model correctly called **`fs_resolve {path:"README.md"}`**. **The closed fs+db surface works live.** The probe surfaced two real findings, both fixed here.
 
 ### Finding 1 — a real bug in slice 1: no dots in tool names
+
 The Responses API validates names against `^[a-zA-Z0-9_-]+$` (a dotted name 400s `tools[0].name does not match pattern`). Renamed `fs.resolve`→`fs_resolve`, `db.append`→`db_append`, etc.; `domainOf` + `isClosedSurface` now key on the `fs_`/`db_` prefix; added a test that every name matches the API pattern. **The closure invariant is unchanged** (a smuggled `bash_run` still fails).
 
 ### Finding 2 — the confirmed tool-call event shape (captured live)
+
 ```
 response.output_item.added   item:{type:"function_call", name, call_id, arguments:""}   ← name+call_id early
 response.function_call_arguments.delta {delta, item_id} ×N                              ← args stream in
@@ -44,9 +46,11 @@ response.output_item.done    item:{type:"function_call", name, call_id, argument
 `output_item.done` is the clean single-event parse. **`tool-calls.ts` (slice 2):** `parseToolCallLine` → `ToolCall {name, callId, arguments}`; `toolCallsFromSse` → every completed call; `functionCallOutput(callId, output)` → the `function_call_output` to feed the result back (the result, the Zeta way, is the DagFs content / zetadb view / new event id).
 
 ## Tests (7 new, 62 model-backend green — build 0/0) — use the VERBATIM captured events
+
 parse the real `fs_resolve` call · non-function/in-progress/text/`[DONE]` → null · malformed/empty args → `{}` never throws · `toolCallsFromSse` extracts the call · `functionCallOutput` references `call_id` + stringifies.
 
 ## Next
+
 Slice 3 (bind each `ToolCall` to its DagFs/zetadb op — a call is an `append`; result is `resolve`/view; retraction on a bad call) + wiring tool calls into `respondStream`/`chat` as a loop.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

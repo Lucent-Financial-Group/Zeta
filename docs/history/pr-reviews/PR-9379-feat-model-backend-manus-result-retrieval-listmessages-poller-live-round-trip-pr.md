@@ -43,9 +43,11 @@ completion = a status_update with agent_status "stopped"; answer = latest assist
 Added: `HttpTransport.get` (the port now does GET + POST — both fakes updated); `listMessages` + `latestAssistantContent` + `isComplete`. Noninterference §13 preserved — network only through the injected transport; the key is read from the Keychain at the edge, never in the module.
 
 ## Tests — 16 model-backend green (build 0/0)
+
 `listMessages` request shape (GET + `task_id` + `x-manus-api-key`) · parses the **live-captured** shape → `latestAssistantContent`="pong", `isComplete`=true on 'stopped' · running-not-done → false/null · non-200 + missing-messages → clean errors. **Verified live** against the real task: `complete=true, answer="pong"`.
 
 ## Status
+
 The full chain works end to end, both directions: **Keychain key → fetch → task.create → agent runs → listMessages → "pong".** Next: a poll **loop** (inject sleep) + the **first real Lumen summon** (`force_skills: mathematics-and-physics`). (The live smoke-test/probe scripts are local scratch, not committed — they make paid calls; say if you want them in the repo.)
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

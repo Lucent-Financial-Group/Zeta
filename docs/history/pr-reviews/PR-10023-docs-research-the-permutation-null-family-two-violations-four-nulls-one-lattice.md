@@ -30,6 +30,7 @@
 Method note documenting the whole null family (#10017–#10022) as one parameterized object, not four ad-hoc tools.
 
 ## The core idea
+
 A real commit stream violates the permutation null’s **exchangeability** assumption two independent ways — **fine autocorrelation** (a writer works one subsystem across consecutive commits) and **era-marginal drift** (the fleet’s focus shifts over time). Each, unmodelled, makes the null too tight and over-convicts. The four nulls each preserve a different subset:
 
 | null | allowed permutation | preserves |
@@ -40,12 +41,15 @@ A real commit stream violates the permutation null’s **exchangeability** assum
 | combined (W,L) | block-order within era | **both** |
 
 ## The lattice
+
 The allowed-permutation sets are **nested** — `combined ⊆ block ⊆ plain` and `combined ⊆ window ⊆ plain`. Smaller group ⇒ null closer to the data ⇒ higher threshold ⇒ fewer convictions. So `combined` is **provably** the most conservative (unit-tested, not just observed).
 
 ## Real trajectory (register-2)
+
 plain **42** → block **16** → combined **6**, each step a **named** artifact removed. The drop order (block helps a lot, window alone barely) is itself the finding: **fine autocorrelation, not era drift, is this repo’s dominant nuisance.**
 
 ## Honesty
+
 Records the tuning caveat (block ≈ ¼ window; `block → window` collapses to a meaningless 0) and the kit recommendation (block+exclude = **16** default; combined = **6** strict reading; window/plain as lenses). Companion to the arc capstone (what the instrument *found*); this is how its *null* is built.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

@@ -36,9 +36,11 @@ Aaron 2026-07-04 *"lets move forward."* The capstone the whole model-backend arc
 - **`summon(deps, persona, userMessages)`** — injects the persona's `systemPrompt` as the first message, then `subscriptionToolLoop`.
 
 ## Tests (5, 88 model-backend green — build 0/0) — injected transport + stores, no network/secret
+
 happy summon (model calls `fs_link` → executed over the store → store **really changed** → answers) · **auto-refresh mid-conversation** (401 → refresh → retry with the **fresh** token → answer, rotation persisted) · not-logged-in → clean error · dead-session → clean re-auth error · `summon()` injects the persona system prompt first.
 
 ## The arc is complete end to end
+
 our own device login → token store → subscription streaming → closed fs+db tool surface → parse → execute over DagFs/zetadb → the loop → and now **one `summon()` call with auto-refresh**. Personas can be summoned over the subscription, tool-using, self-refreshing. Only live-confirms left: the system-role wire format + a live persona summon (the mechanism is proven).
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

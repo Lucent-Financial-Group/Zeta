@@ -30,18 +30,22 @@
 The named-and-deferred next rung of the homoclinic thread, built: connect **`Braid.fs` (topology)** to the entropy scale **`Orbit.fs` (dynamics)** speaks in.
 
 ## The bridge
+
 A 2-D system whose periodic orbits braid carries a braid β ∈ Bₙ. Nielsen–Thurston classifies β as periodic / reducible / **pseudo-Anosov** with a **dilatation** λ > 1, and (Boyland; Fathi–Shub) any surface homeomorphism carrying those orbits has **topological entropy h ≥ log λ**. The braid forces an entropy floor.
 
 ## How (reuses `Braid.act`, no new matrix code)
+
 For a pA braid the dilatation is the exponential growth rate of curve length under iteration, and `Braid.act` already applies the Artin automorphism φ of Fₙ. Iterate φ on the generators, measure reduced word-length growth (`|φ^k(x)| ~ λ^k`), average the asymptotic per-step log-ratio → `log λ`.
 
 ## Validated — exact where it should be
+
 - **σ₁σ₂⁻¹** (canonical pA on 3 strands): `growthRate` **0.9625**, `dilatation` **2.6181** — that *is* `log((3+√5)/2)` and `(3+√5)/2` to four digits. The raw Artin growth **nails** the dilatation on the canonical case.
 - single crossing (reducible): ~0.015 (~0, the polynomial residual). empty: exactly 0.
 - **Artin-equal** words `[1;2;1]` and `[2;1;2]` force **identical** entropy → it's a braid invariant.
 - `BraidTests` **21/21**, Core builds **0/0**.
 
 ## Honest scope
+
 `growthRate` is the RAW Artin growth — exact for pA with an efficient (train-track) representative, an estimate (upper-leaning) in general; the exact dilatation needs Bestvina–Handel train tracks (**deferred**). This is the **braid→entropy half**; extracting the braid *from* a dynamical orbit set (the `Orbit`/forger-map side, so `h ≥ log λ` becomes a statement about a specific dynamics) is the other, still-**deferred** half.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

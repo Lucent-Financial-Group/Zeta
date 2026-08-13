@@ -30,6 +30,7 @@
 Taking the guardian thread: make the grid-trust claim **demonstrable, not just described**, and bring the Max explainer (#10012) up to date with the decorrelation arc that has since shipped.
 
 ## The demonstration (runnable, CI-maintained)
+
 `GridTrustDemo.Tests.fs` — two operators (A = human-side, B = AI-side) act *concurrently* each tick on a shared grid; the grid state merges both actions before the next tick (a **fork-merge ladder**), so the only pairs the shipped instrument meters are the same-tick, genuinely-concurrent `(a_i, b_i)` actions (40 of them). Run the **shipped** `DecorrelationExcessFusion` on two worlds:
 
 | World | Verdict |
@@ -40,7 +41,9 @@ Taking the guardian thread: make the grid-trust claim **demonstrable, not just d
 **2 vs 21** — a wide, legible margin from the same deterministic code both sides re-run on the same open causal record. The claim is now runnable, not prose. Honest details in the doc: the independent world flags at ~2 (it spends its error budget and no more, doesnt fake certainty); and an earlier version of the demo *correctly failed to separate* when the "channel" was too diffuse (a shared feature at equal marginal rates is indistinguishable from independence — the instrument only fires on coupling *beyond* chance).
 
 ## Explainer refresh
+
 The two biggest honest limits in the first draft are now **closed**:
+
 1. The **passive pre-shared-trigger detector** (was `[in-progress]`) is built + shipped + twice-adversarially-reviewed → **`[proven-in-part]`**.
 2. The **autocorrelation hole** in the finite-sample margin (was `[in-progress]`) is Caveat-A-fixed, Z3 + property verified, default switched → **`[proven-fixed]`**.
 

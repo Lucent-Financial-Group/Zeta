@@ -47,6 +47,7 @@ Diplomacy's safety property (shape public) is the exact thing transport must hid
 **2. The layering.** Default to transport (private); diplomacy is an earned upgrade between trusted pairs. Upgrade handshake **rides inside the transport envelope**, never announced in transit; trust comes from **remembered relationship** (key derived from shared memory, not negotiated in-band); one-way ratchet toward privacy.
 
 **3. The open tension.** Public trust ledger (glass-halo / anti-sybil) vs unobservable-on-wire upgrade.
+
 - *Partial fix:* wire-opaque + ledger-transparent are two orders, not one — no conflict for a network eavesdropper.
 - *Unresolved residual:* a public trust ledger **is a social graph**; the edge itself endangers a whistleblower in a hostile fork, independent of message content.
 - *Candidate (not adopted):* edges public by default, frostable by earned budget. Open points needing an owner are listed in the doc.

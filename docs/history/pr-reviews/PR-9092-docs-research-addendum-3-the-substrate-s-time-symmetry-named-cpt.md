@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - Ferries Aaron's identification: the time-symmetric substrate is CPT symmetry, with concrete Zeta realizations per factor (T = tick reversal / DST replay; C = Z-set weight negation, retraction as Feynman–Stückelberg antiparticle of insertion; P = braid-crossing mirror / layout reflection).
 - Includes a signable, property-testable conjecture: the CPT composite is a law-preserving involution — `fold(CPT(t)) = CPT(fold(t))` — where each factor alone may fail (that failure IS the arrow) but the composite must not.
 

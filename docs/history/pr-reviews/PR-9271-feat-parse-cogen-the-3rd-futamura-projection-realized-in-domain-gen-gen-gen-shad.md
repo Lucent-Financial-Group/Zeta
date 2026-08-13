@@ -30,6 +30,7 @@
 **Aaron 2026-07-02:** "Futamura i want to get to next level." — closes the ladder.
 
 ### `compile = mix ∘ read`
+
 - `read` (MetaGrammar) turns grammar-**notation text** into a `Grammar` — its input language is defined by the homoiconic meta-grammar kernel;
 - `mix` = `Slr.build` — our domain-specific specializer;
 - the residual is serialized to byte-locked IR.
@@ -37,6 +38,7 @@
 So `Cogen.compile : notation text → serialized specialized parser`, in one arrow.
 
 ### The cogen fixpoint (the lvl-3 content, machine-checked)
+
 ```
 compile (emit kernel)  =  toDynamicValue (build kernel)
 regenerateMetaParser () = directMetaParser ()      -- exact DynamicValue equality
@@ -44,12 +46,15 @@ regenerateMetaParser () = directMetaParser ()      -- exact DynamicValue equalit
 The compiler, fed the definition of **its own input language** (the kernel's notation), **reproduces itself** — the self-application that characterises cogen. And the regenerated parser works: it parses grammar-notation, including the kernel's own defining text (full circle, tested).
 
 ### Honest scope (Beacon, not hype)
+
 Our `mix` is a **domain-specific** specializer (LR parsing), not a general partial evaluator — so this is the 3rd projection realized **in-domain**. The self-application and its fixpoint are real and proven; a *fully general* cogen would need a general `mix`, which we don't claim.
 
 ### Tests — 3 new, **31/31** parser/grammar/cogen suite, Core **0/0**
+
 compile-is-general (target language `b a*` parses via `parseFromIr`) · **cogen fixpoint** (exact `DynamicValue` equality) · self-application closure (regenerated meta-parser parses the kernel's own text + any other grammar's notation).
 
 ### Futamura ladder — complete in-domain
+
 - lvl 1 (table-gen = specialization) ✓
 - lvl 2 (residual-IR, #9266) ✓
 - lvl 3 seed (homoiconic kernel, #9269) ✓

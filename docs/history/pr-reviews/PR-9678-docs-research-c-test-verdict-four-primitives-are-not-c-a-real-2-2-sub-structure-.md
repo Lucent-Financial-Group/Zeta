@@ -30,6 +30,7 @@
 Ran the test from workitem `081KX6...` (Aaron: *"start the C₄ test"*). **Verdict (first-pass razor): NOT C₄.**
 
 Using Amara's keeper — *meno = survive-erosion (world), mnao = survive-erosion (mind), noeo = world-enters (IN), lampo = shines-out (OUT)*:
+
 - **noeo ↔ lampo** = a clean conjugate ± axis (in/out). ✓
 - **meno ↔ mnao** = **NOT** opposites — the *same* `*men-` generator at two **scopes** (being/cognition, shared PIE root); a self-similar lift, not a negation. ✗
 

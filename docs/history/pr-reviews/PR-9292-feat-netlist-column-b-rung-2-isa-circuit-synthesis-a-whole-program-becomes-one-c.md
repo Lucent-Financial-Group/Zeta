@@ -30,7 +30,9 @@
 **Aaron 2026-07-03:** "next please continue building column b." The headline rung — the residual-target knob fully turned: **program → gates.**
 
 ### `Netlist.synthesize`
+
 Threads a **symbolic register file** (16 registers × 8 wires) through a straight-line program, instantiating a sub-circuit per instruction:
+
 - `SET` → constant wires (derived from an input: `const0 = v0_0 XOR v0_0 = 0`, no special inputs needed)
 - `ADD`/`ADDR` → an 8-bit adder instance
 - `MOV` → a rewire
@@ -38,11 +40,13 @@ Threads a **symbolic register file** (16 registers × 8 wires) through a straigh
 The result is **one combinational circuit** from the 16 initial register values (inputs) to the 16 final ones (outputs) — the same computation `Isa.eval` does, as gates. Plus `regInputs`/`regOutputs` to drive it from / read it back to a register map. Straight-line only; control flow needs sequential logic (next rung).
 
 ### Proven — 3 new tests, **7/7** Netlist, Core **0/0**
+
 - **Synthesis = interpreter** — the synthesized circuit matches `Isa.eval` on **every register** across 5 programs (pass-through, byte wrap, MOV-from-input, chained arithmetic).
 - **One byte-lockable circuit** — rides the codec stack (json‖ + cbor).
 - **Rejects control flow** (needs sequential logic).
 
 ### Where this sits
+
 This **is** the mix→netlist bridge: a Column-A residual (straight-line) lowers to a Column-B circuit. Column A complete; Column B rung 1 (gates) + rung 2 (program→circuit) landed. Next: sequential logic (registers as flip-flops) for control flow / full programs.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

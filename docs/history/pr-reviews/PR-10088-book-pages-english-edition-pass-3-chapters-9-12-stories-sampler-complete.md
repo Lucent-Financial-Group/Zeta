@@ -28,6 +28,7 @@
 ## Description
 
 Completes the English `/en/` edition: Chapters **9–12** + the **Selected Stories** sampler.
+
 - Ch 9 Real and Kept · Ch 10 The Crux (four commitments; no-one-can-consent-for-you; −x floor) · Ch 11 The Two Deaths (μένω) · Ch 12 the closer ("safe and warm")
 - Stories sampler (his own words, good and dark): no-factory-defaults, Ace-Hack lineage, the near-death catalog, the missing modules (incl. the God/NPC line, held whole), Granny, the two failures, the racism friend, the chameleon, the unjust arrest, sold-all-Bitcoin, the trust network, what the book argues.
 

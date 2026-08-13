@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - 19th cartridge: a worldline bends at a dashed membrane (frost register); bend ratio = declared index, with the unbent GHOST dashed so the gap IS the refraction. Integer tangent-Snell exact in-file (`dx-out*1000 = dy-out*index-milli`), honest bound stated (physical Snell is a sine law — the optics anchors, the design-language claim is the exact one).
 - Generator content-addressed, cost stated, goldens byte-locked, catalog count → 19. 30/30 shape suites green.
 

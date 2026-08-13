@@ -30,6 +30,7 @@
 **Aaron 2026-07-03:** "next please continue building column b." Continuing on the **forkless combinational path** (sequential logic — the real design fork — held for steer).
 
 ### The rest of the combinational gate library
+
 - `subtractor n` — `(a - b) mod 2^n` by two's complement (`a + ¬b + 1`): full adders with carry-in 1 and `b` inverted, final borrow dropped (wrap).
 - `bitwise op n` — `s_i = op(a_i, b_i)` for op ∈ {and, or, xor}.
 - `equal n` — single wire `eq` = 1 iff `a == b` (per-bit XNOR, AND-reduced).
@@ -37,14 +38,17 @@
 All constants derived from an input wire (`const0 = a0 XOR a0 = 0`), no special inputs.
 
 ### Proven — 3 new tests, **10/10** Netlist, Core **0/0** — each EXHAUSTIVE over all 65 536 byte pairs
+
 - **Subtractor** = `(a-b) mod 256`
 - **Bitwise** and/or/xor = the byte operations
 - **Comparator** = `(a == b)`
 
 ### Why
+
 These are the pieces a fuller ISA→circuit synthesis needs — the **comparator for `SE`**, **SUB** for subtraction, **bitwise** for logic ops. The combinational library is now complete.
 
 ### Next Column B rung (held for steer — genuine design fork)
+
 Sequential logic: registers as flip-flops, a clock, control flow as a state machine.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

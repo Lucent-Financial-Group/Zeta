@@ -30,6 +30,7 @@
 Closes the **P3** from the missing-citations audit (#9771).
 
 Two Lumen docs were renamed `-amara.md` → `-lumen.md`; five pointer cross-refs in three sibling docs still pointed at the dead `-amara.md` names. Repointed:
+
 - `discrete-ticks-amara.md` → `discrete-ticks-lumen.md` (×2)
 - `casimir-gap-amara.md` → `casimir-gap-lumen.md` (×2, incl. a line-wrapped ref)
 

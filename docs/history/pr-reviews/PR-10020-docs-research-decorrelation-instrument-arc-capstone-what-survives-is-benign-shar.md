@@ -30,15 +30,19 @@
 Consolidates the six-layer decorrelation arc (#10014–#10019) into one capstone, and reports the honest bottom line after eyeballing the strongest survivor (band-100).
 
 ## The arc (each layer names its own limit, answered by the next)
+
 sensor → CHSH (scope-limited) → excess-over-null/Jaccard → MI (finer) → block null (exchangeability) → disjoint-pair exclusion (well-posed population).
 
 ## The trajectory (register-2)
+
 Spurious convictions fell **monotonically — never by moving a threshold**: plain MI **42** → block L=4/16/64 → **12** → + exclude causally-disjoint → **11**/159. Striking fact: band-0 was **336,291 of 460,849** metered pairs (73%) — most "concurrent" pairs are cross-branch and causally disjoint.
 
 ## What survives (register-2 → register-3, LABELED)
+
 Survivors are dominated by **shared-infrastructure buses** (`docs/github` PR-tracking, `docs/claims`, `workitems/done`). **band-100** eyeballed directly: 589 commits, one dev era, MI driven by `tools/setup` doctrine + `docs/claims` releases + a FROZEN-CORE fix — **benign era-clustered fleet activity, not covert coordination.** No smoking gun; every survivor is a `SameSharedChannel` fact with "benign" supplied by the oracle, not the number.
 
 ## Value
+
 Turns the grid-trust explainer (#10012) honest `[in-progress]` limit into `[proven-in-part]`: a passive shared common cause is now detectable on real data, with an exchangeability-honest null and a well-posed population — the case CHSH structurally couldn’t see.
 
 Supersedes the *framing* of the 2026-08-03 first-run doc (its Jaccard finding stands). Honest non-claims (coarse observable, single window, `WithinNull` never acquits) and the open frontier (file-level observable, within-era null, Soraya’s CHSH Caveat-A) recorded in the doc.

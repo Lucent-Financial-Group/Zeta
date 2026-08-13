@@ -30,10 +30,12 @@
 You: *no pivot just continue* — the GLR rung. SLR discards conflicts (one action per state); **GLR keeps them and forks the parse**, so ambiguous and SLR-conflicting grammars still parse.
 
 ## First GLR slice
+
 - **`buildGlr`** — same LR(0) automaton + FIRST/FOLLOW (extracted `buildAutomaton`, shared with SLR), but the ACTION table keeps the **full action list** per `(state, terminal)` — conflicts retained.
 - **`glrParse`** — BFS over `(stack, input-position)` configurations, forking on every applicable action; accepts if **any** path reaches Accept. Visited-set bounds cycles; step budget backstops. Total. (Naive GLR — GSS sharing + a real parse *forest* are the next refinements; this returns accept/reject.)
 
 ## Proofs (7/7, +2)
+
 - the ambiguous **`E → E + E | id`**: SLR `build` **reports conflicts** (can't handle it), while **GLR** accepts `id`, `id+id`, `id+id+id` and rejects `id+`, `+id`, `id id`, empty;
 - GLR **agrees with SLR** on the unambiguous expression grammar;
 - the SLR refactor (shared `buildAutomaton`) leaves the SLR/parseTree tests green.

@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - detect Windows ARM64 in the native bootstrap
 - derive the active mise tool graph and requested versions from `.mise.toml`
 - omit only Java 26, Semgrep, and 1Password CLI where upstream Windows ARM64 artifacts are unavailable
@@ -35,9 +36,11 @@
 - lock the narrow exception set with a Bun smoke test
 
 ## Why
+
 The Windows ARM build lane installed Node successfully but `mise install` aborted on three optional tools: Java 26 has no mise metadata for this platform, Semgrep falls back to a native cryptography build without OpenSSL, and the selected 1Password ARM64 archive returns 404. Aborting there prevented the supported .NET/Bun/Node/Python toolchain from reaching build and tests.
 
 ## Verification
+
 - `mise exec -- bun test src/Core.TypeScript/ci/windows-install-ps1-smoke.test.ts` (12 passed)
 - PowerShell parser accepted `tools/setup/install.ps1`
 - extracted `Get-MiseConfiguredToolSpecs` retained 20 real configured tools and excluded exactly the observed three

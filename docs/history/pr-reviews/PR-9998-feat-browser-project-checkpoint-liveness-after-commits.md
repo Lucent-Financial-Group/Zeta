@@ -28,15 +28,18 @@
 ## Description
 
 ## Summary
+
 - make browser checkpoint state an explicit coordinator and lifecycle projection operation
 - refresh the live Dark Hall readout after successful durable save and retraction
 - expose checkpoint state as CSS-addressable HTML data and visible readout text
 - preserve committed storage state while returning typed feedback if rendering or projection fails
 
 ## Boundary
+
 This updates the local tab projection only after the injected checkpoint adapter reports success. It does not broadcast an unversioned storage claim to peers; IndexedDB remains the authority for cross-tab durability.
 
 ## Verification
+
 - `mise exec -- bun test src/Core.TypeScript/browser-node src/Core.TypeScript/darkhall-ui` (104 passed)
 - `mise exec -- bunx tsc --noEmit`
 - `mise exec -- bun run preflight:quick` (12/12 passed)

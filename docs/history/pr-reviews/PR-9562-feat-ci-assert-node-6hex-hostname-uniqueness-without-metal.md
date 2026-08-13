@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - Add `assertGeneratedNodeHostnameContract` — phase-1 `node-<6hex>` must match phase-2 login; `control-plane login:` after generation is Bug 1 regression.
 - Refresh usb-zflash RESUME: next action is minimize-metal QEMU/CI deepen; physical boot only for residual hardware.
 - Note IdP + ZetaDB/DagFs as eventual `gh`/git replacement.
 
 ## Test plan
+
 - [x] `bun test` qemu-full-install-test
 - [x] markdownlint on RESUME + backlog row
 - [ ] CI green

@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - Land pure TS multiboot planner under `src/Core.TypeScript/installer/multiboot/`: parse `images.manifest`, plan `/boot/iso/` vs `/payloads/` layout, resolve `flash-img-latest` from SHA256SUMS, fill GRUB kernel/initrd placeholders.
 - CLI: `bun …/build-multiboot-usb.ts --plan` (hermetic JSON). Fetch/assemble `zeta-multiboot.img` deferred (large artifacts).
 - Identity namespace enforced in planner (threat model): Zeta under `/boot/`, MyNode flash under `/payloads/` only.
 
 ## Test plan
+
 - [x] `bun test src/Core.TypeScript/installer/multiboot/multiboot.test.ts`
 - [x] `--plan` against repo `images.manifest`
 - [x] `tsc --noEmit`

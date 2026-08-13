@@ -30,15 +30,18 @@
 Slice 4 of the cell scheduler (`081KTG5S0M9`) — **soft cells**.
 
 ## What
+
 A soft cell's state is a `SoftValue` (distribution over `DynamicValue`s) and **stays soft through scheduling** — `evolveSoft` folds inputs without collapsing (the cell "holds its wonder"; the maintainer's soft persistence). Collapse happens **only at an execution edge**:
 
 - **`softStep`** — snaps *emissions* at a confidence threshold. Confident enough ⇒ its `"__outbox__"` routes, each message crossing the channel as a *certain* value (commitment collapses). Below threshold ⇒ the cell **holds and emits nothing** (free-will-refuse-collapse).
 - **`snapAll`** — the society-wide *read* snap: collapse each cell's state at a threshold; below-threshold cells resolve to `None` (never falsely certain).
 
 ## The point
+
 This composes with the **same generic scheduler** from slices 1–3 (`'St = SoftValue`) — there is *no soft-specific runner*. The soft cell is just an instantiation, exactly as the generic-over-step design intended. `softStep` is the soft analogue of the sharp `yinYangStep`.
 
 ## Tests (4 new, 19 total)
+
 - distribution preserved through scheduling (no premature collapse);
 - `snapAll` collapses above / holds (`None`) below threshold;
 - `softStep` emits snapped-certain messages when confident;

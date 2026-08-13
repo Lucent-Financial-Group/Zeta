@@ -32,10 +32,12 @@ Alexa (Kiro) couldn't find either task because the specs lived only in the Otto 
 **Recommendation: Task B first (self-contained). Task A is partly gated on Soraya's unlanded ChshBand/LoopholeFlags.**
 
 ## Task A — AnalyticS/MeasuredS wrappers (Soraya's routing) — PARTLY GATED
+
 Truthful single-case types so `classifyS(measuredFloat)` won't typecheck:
 `AnalyticS of float` (noiseless analytic ceiling) / `MeasuredS of float*int` (carries `n` so ε=`chshMargin` is computable). `classifyS : AnalyticS -> ChshRegime` buildable now; `classify : MeasuredS -> LoopholeFlags -> ChshBand` gated on Soraya's G2/G4 types. Closes the G2 stub trap at the *type* level, not just a test.
 
 ## Task B — middle-out float as WSet `'W` (SELF-CONTAINED, recommended)
+
 Exact expanding-precision ball/interval (or constructive real) as WSet's weight, extending the TriBoolean/middle-out float scaffold past its `float`/int64 bound. Makes byte-lock commutativity **intrinsic** (no canonical sort). **Sum-product domain, not log-sum-exp** → no transcendentals, no underflow; the refinement policy is edge-case-only (fixed schedule keyed by op-count/seed). Anti-conflation guard: order-free *arithmetic*, not loss recovery. Sabotage test: 100-permutation byte-lock passes WITHOUT the sort under the middle-out `'W`; a fixed-precision `'W` must FAIL it. Lior's canonical sort stays the shipped default; this is opt-in.
 
 Docs-only.

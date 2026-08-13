@@ -45,6 +45,7 @@ These reified tables are **weak-reference-shaped data** — because the mix's ru
 2. `defaultEvalDef` is **byte-lockable** (collectible) data
 
 ## Progression
+
 **slice 1** = parameters as data + `gen(gen)==gen`; **slice 2** = algorithm as data, one object all ISAs; **slice 3** = abstract-eval as data, only the universal driver native.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

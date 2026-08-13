@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - Remove `QEMU_SELF_REGISTER_ALLOW_MISSING` and `ZETA_FIRST_SESSION_ALLOW_DRY_RUN_AUTH` — phase-3 is mock-auth (or skip) + post-boot self-register only; rebuild ISO.
 - Add `docs/security/USB-IDENTITY-THREAT-MODEL.md`: identity subjects, key-binding matrix (USB UUID flaw → iSerial/TPM), `gh` foothold vs Zeta IdP, multiboot/MyNode surface.
 - Link from core `THREAT-MODEL.md` + USB trajectory RESUME.
 
 ## Test plan
+
 - [x] bun test qemu-first-session-phase3 + qemu-full-install-test
 - [x] rg confirms escapes gone from TS/JS
 - [ ] CI build-iso scenario 2 on rebuilt ISO

@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - Pushes the hall forward: `hall/gallery/` mounts the whole homoiconic catalog — all 23 SVG goldens (copied from `db/shapes/golden/`), captioned from the cartridges' own first lines and labeled with each shape's ZetaId (drawn=gated, extended to the gallery). Braided/identity family featured first, rest alphabetical. Card added to the hall landing; QPG throughout. **Zero edits to demo/genesis/inventory.**
 - Goldens stay source-of-truth (byte-locked); this is a regenerable copy into the site, never hand-drawn.
 

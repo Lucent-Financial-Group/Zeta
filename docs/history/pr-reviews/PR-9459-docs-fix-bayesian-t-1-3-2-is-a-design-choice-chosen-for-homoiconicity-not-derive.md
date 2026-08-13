@@ -30,6 +30,7 @@
 Aaron: *"Soraya's leg — derive it or name it a design choice for me; if it can't be derived it was chosen to be more homoiconic."* The honest attempt.
 
 **Derivation attempt:** given the map `ρ = S/12` (pin `ρ*=1/3 ↔ S=4`, assume linear), `ρ_T = 2√2/12 = 1/(3√2)` is **forced**. But the two premises are **choices, not theorems**:
+
 - **(P1)** identifying the Condorcet groupthink boundary `ρ*=1/3` with the CHSH algebraic max `S=4` — natural (both = "maximally correlated") but not forced; they live on different axes.
 - **(P2)** linearity of `ρ` in `S` — no first-principles reason a pairwise correlation is linear in the 4-correlator CHSH sum.
 
@@ -38,6 +39,7 @@ So **`ρ_T = 1/(3√2)` is NOT derivable from first principles.**
 **Conclusion (Aaron's hypothesis confirmed): it's a design choice, chosen for homoiconicity.** The linear origin-fixing map is the *unique* map making the three-regime CHSH diagram and the three-regime ρ diagram the **same diagram** (same ordering, ratios, boundaries under one scale factor `1/12`). Homoiconicity = representation has the same structure as the represented; a non-linear map would distort the ratios and break shape-identity. Among shape-preserving maps, the origin-fixing linear one is **minimal** (Rodney's razor, "exactly the bits needed").
 
 **Corrections (register on self):**
+
 - The earlier "two contradictory encodings 0.236 vs 0.414" flag is **withdrawn** — they're *different quantities*: `0.236 = ρ_T` (linear ρ↔S identification); `0.414 = √2−1 = (S−2)/2` at S=2√2 is `BusRegime`'s coordination-bandwidth / AntiSybil ceiling (direct CHSH, no ρ*=1/3 map).
 - `YinYangEnsemble.tsirelsonThreshold` said *"Derived from the Bell inequality triangle"* — corrected to **name it a design choice** (the homoiconic linear identification). Comment-only F# change.
 

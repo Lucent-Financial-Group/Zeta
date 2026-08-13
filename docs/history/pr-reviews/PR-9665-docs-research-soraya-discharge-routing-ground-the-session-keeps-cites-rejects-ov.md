@@ -32,6 +32,7 @@ Grounds the session per Aaron's "ground all this in a few Soraya sessions and ma
 **Cleanly rejected:** the M-theory/membrane chain (asserted-not-derived; "machine-checkable like Condorcet" = borrowed-credibility category error; fails the physics-as-metering test).
 
 **Overclaims caught (the honest win):**
+
 - Condorcet **not** machine-proven — `FROZEN-…-REGISTER.md` row 15 overclaims; Lean `Tendsto` is the open target.
 - distinctness ⇒ error-independence is a **conflation** (S=4 shared-seed correlated error) → formalize or retract.
 - **G3b** (anti-Sybil entropy floor non-forgeability) refuted in toy model = the open crux.

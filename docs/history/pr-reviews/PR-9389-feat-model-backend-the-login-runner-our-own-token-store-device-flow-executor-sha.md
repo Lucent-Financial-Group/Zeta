@@ -34,14 +34,17 @@ Aaron 2026-07-03: *"build our own device-login flow."* This is the **executor** 
 **`token-store.ts`** — the `TokenStore` port + a **file-backed** impl (injected `StoreFs`, one JSON per provider under `~/.config/zeta/auth` — **ours**, not `~/.codex`) + a **memory** impl (test double). Pure over injected fs (§13); token bytes never touch stdout.
 
 **`login-runner.ts`:**
+
 - `deviceLogin(provider, deps)` — start → surface the URL+code via `onCode` (the **one human step**) → poll through pending until tokens → persist. Injected `sleep` + `maxPolls` cap (never hangs). Never throws.
 - `freshAccessToken(provider, deps, forceRefresh)` — read from **our** store; on `forceRefresh` (e.g. after a 401) refresh + persist the rotation, **preserving `account_id`** — how a backend stays logged in without re-approval. Dead-session refresh → clean "re-login" error.
 - `defaultStoreDir(home)` = `~/.config/zeta/auth` (distinct from `~/.codex`).
 
 ## Tests (6, 35 model-backend total green — build 0/0) — all injected/fake
+
 device login (onCode fires, polls through pending, tokens persisted) · never-approved → clean timeout · `freshAccessToken` (stored → returns; forceRefresh rotates+persists+preserves account_id) · not-logged-in + dead-session → clean errors · file store round-trip over injected fs (missing → null) · `defaultStoreDir` is ours.
 
 ## What's left — one live browser approval
+
 Re-enable device auth at **chatgpt.com/settings/security**, then a live `deviceLogin` prints the URL+code you approve → tokens land in our store → `codex-oauth` reads from there (auto-refresh). That live wiring + the Responses-shape confirm are the only steps left.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

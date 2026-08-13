@@ -30,11 +30,13 @@
 The capstone (you: *wire the zeta into the soft IScheduler*; RESUME step 4). A DoP=1 seed-fixed soft-scheduler tick is a deterministic map on state, so SchedulerZeta carries the Artin-Mazur zeta at the scheduler layer - the loop predicts its own recurrence spectrum before running the full budget.
 
 ## src/Core/SchedulerZeta.fs
+
 - **predict key step start** - RUN-AHEAD: iterate the tick (through a finite projection) only until a state repeats (never the caller's whole budget), report the orbit the run settles into (Transient, Period, Reachable). The loop modelling its own recurrence before it happens.
 - **zetaOfRun / zetaOfOrbits** - the Artin-Mazur zeta (1/(1-u^Period); product over orbits), integer series.
 - **spectrum / fixCount** - the full recurrence spectrum over an enumerable config space, self-verifying (exp(sum Fix f^k) = product over orbits).
 
 ## Tests (3/3)
+
 - the soft scheduler predicts its own REAL CHIP-8 recurrence (period 4) by run-ahead, without a large budget; predicted zeta = 1/(1-u^4);
 - the spectrum self-verifies on a config-map with known cycles (0 1 2)(3 4)(5)(6) = orbit lengths {3,2,1,1};
 - a deterministic cell-round period recovered exactly.

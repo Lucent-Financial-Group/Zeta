@@ -28,12 +28,14 @@
 ## Description
 
 ## Summary
+
 - Add `QEMU_WIFI_ESP_PHASE1=1` to `qemu-full-install-test`: bake file-backed zflash USB with `zeta-wifi-credentials.json`, boot via usb-storage, assert ESP→NM serial markers (`found` / `wrote` / `association deferred`).
 - Extend `prepareBootImage` with optional wifi credentials; add `assertWifiEspInstallSerial` with secret redaction.
 - Wire `workflow_dispatch`-only CI step + artifact upload on `build-ai-cluster-iso.yml` (not a push hard-gate).
 - Progress note on wifi backlog + USB trajectory RESUME.
 
 ## Test plan
+
 - [x] `bun test` on qemu-full-install / serial-markers / prepare-boot-image
 - [x] `tsc --noEmit`
 - [ ] Optional: `workflow_dispatch` `build-ai-cluster-iso` to exercise live ISO path

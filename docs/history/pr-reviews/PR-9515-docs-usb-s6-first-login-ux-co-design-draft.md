@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - Expand S6 placeholder into a co-design draft (menu labels, gh-default path, tone, LLM vs numbered menu).
 - Align `first-session` / `first-session-run` user-visible strings with the draft.
 - Mint workitem 081KX1MG6PK; physical boot + paper review remain exit criteria (not claimed done).
 
 ## Test plan
+
 - [x] `bun test src/Core.TypeScript/observe/first-session` (54 passed)
 - [ ] Operator paper/mock review (human)
 - [ ] Physical boot on one cluster node (human)

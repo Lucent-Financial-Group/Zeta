@@ -30,14 +30,18 @@
 Two gaps closed so the algebra-tower drift-check covers the full **semiring→ring→kleene** tower **and runs on every PR**.
 
 ## 1. Complete the tower (kleene was missing)
+
 The `codegen-law-drift` check covered semiring/ring/star-ring but not kleene. Adds:
+
 - **`src/Core.TypeScript/algebra/kleene.ts`** — a TS Kleene oracle instance: tropical `(min,+)`. Crucially its `add` is **idempotent** (`min(a,a)=a`), so `add-idempotent` genuinely holds — unlike the `numberSemiring` used for the ring tier, where it would fail.
 - `IKleeneAlgebra` registered in `codegen-law-drift.test.ts` + the checked-in `generated-kleene-laws.test.ts`. Generated laws pass against the tropical instance (semiring axioms + `add-idempotent`; star/closure laws render as documented comments — no scalar encoding).
 
 ## 2. Wire the drift-check into CI (it was local-only)
+
 Adds a step to `gate.yml`'s cross-verify job running the drift-check + all four generated law-property files (semiring, ring, star-ring, kleene). **Pure bun/arithmetic** — no go/python spawns, so the cross-language law cross-verify stays a separate lane (no new toolchain dependency in this job).
 
 ## Verified
+
 - `26 tests / 0 fail` on the exact CI command locally;
 - `gate.yml` valid YAML.
 

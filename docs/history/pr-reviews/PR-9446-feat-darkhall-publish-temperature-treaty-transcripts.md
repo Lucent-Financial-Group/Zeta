@@ -28,12 +28,14 @@
 ## Description
 
 ## Summary
+
 - add a `temperatureTreaty` envelope to Dark Hall room transcripts so LLMTV and no-script UI consumers can read heat, temperature, black-body, Q#, and F# treaty metadata as one lane
 - derive the F# transcript bundle through the Core temperature reference-oracle port, preserving reference feedback as data instead of exceptions
 - teach the TypeScript Dark Hall renderer to consume treaty-bearing F# JSON directly or synthesize the same bundle from older temperature/black-body readouts
 - fix latest-main markdownlint drift in the soft-imaginary research note
 
 ## Validation
+
 - dotnet test tests/Tests.FSharp/Tests.FSharp.fsproj -c Release --filter FullyQualifiedName~DarkHallRoomTranscript
 - bun test src/Core.TypeScript/darkhall-ui/darkhall-room.test.ts
 - bun run preflight:quick

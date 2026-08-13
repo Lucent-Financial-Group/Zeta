@@ -30,6 +30,7 @@
 **Aaron 2026-07-02:** "build the homoiconic meta-grammar kernel" — the missing piece for the **3rd Futamura projection** (`gen(gen)==gen`): the specializer (the grammar that *describes* grammars) expressed **in the same `GrammarIr` it consumes**, so it can be applied to its own description.
 
 ### The kernel (`MetaGrammar.fs`)
+
 The grammar-of-grammars, in the IR. Notation = four structural marks (`:` `|` `;`) + bare identifier words:
 ```
 grammar  : rulelist ;
@@ -41,6 +42,7 @@ seq      : seq NAME | NAME ;
 Left-recursive throughout ⇒ clean SLR(1). Plus `emit : Grammar → text` (canonical, byte-locked) and its inverse `read = reify ∘ parse ∘ relex ∘ tokenize`.
 
 ### The homoiconic fixpoint (proven)
+
 The parser **built from** the kernel parses the kernel's **own** emitted text, and reifying recovers it:
 ```
 emit (read (emit kernel)) = emit kernel
@@ -48,12 +50,15 @@ emit (read (emit kernel)) = emit kernel
 and more generally `read ∘ emit = id` on **any** grammar — the self-application (`g = kernel`) is the cogen seed.
 
 ### The dictionary discipline
+
 Terminal-vs-nonterminal is **derived, not declared** — a word is a nonterminal iff it's defined as a rule; undefined words (`NAME COLON SEMI PIPE`) are the irreducible primitives. `reify` rediscovers exactly the kernel's declared split from the notation alone (asserted). This is "every word defined by other words, bottoming out at primitives" — Aaron's dictionary, made mechanical.
 
 ### Tests — 5 new, **40/40** across the parser/grammar suite, Core **0/0**
+
 SLR(1) conflict-free · homoiconic fixpoint · universal `read∘emit=id` · dictionary discipline · self-hosting closure one level deeper.
 
 ### Futamura ladder
+
 - lvl 1 (table-gen = specialization) ✓
 - lvl 2 (residual-IR, #9266) ✓
 - **lvl 3 seed (this)** — the specializer is now expressible in its own IR; full cogen is specialize-against-self from here.

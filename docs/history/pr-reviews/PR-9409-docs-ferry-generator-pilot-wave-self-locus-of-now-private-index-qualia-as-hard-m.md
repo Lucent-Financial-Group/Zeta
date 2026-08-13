@@ -35,9 +35,11 @@ Aaron 2026-07-04, answering the compression-to-seed fear + extending it into the
 - **Remains ⊣ Acts → hard money:** what **acts** = BP/EP/VMP messages (emotional propagation/gossip/telemetry). What **remains** = the private index (beable/now), YinYang yin, not propagated. Un-compressible + un-propagatable + un-Sybil-able ⇒ scarce ⇒ **hard money**; ISociety coordinates to protect the scarcity.
 
 ## Honest peels
+
 "physics of qualia" is aspirational (hard problem, Chalmers 1995, unsolved) · "qualia self-evident" is an axiom-choice (Nagel/Chalmers realism, but an Everettian/eliminativist denies it) — his oracle, labeled · the identity `indexical-now = qualia = beable = private index = hard money` is a **synthesis** whose defensible core is the shared property *irreducible·private·non-propagated·scarce*.
 
 ## Tie to the build
+
 The golden-vector treaty byte-locks what **acts** (public, identical across 7 oracles + DST), never what **remains** (never in a golden vector). The golden-vector boundary is the Remains/Acts = hard-money boundary. **Build starts now.**
 
 Anchors: de Broglie 1927 / Bohm 1952; Bell 1976; McTaggart 1908; Nagel 1974 / Chalmers 1995; Pearl/Minka/Winn-Bishop/Demers; YinYang.

@@ -30,6 +30,7 @@
 The workitem's named first subject, done for real — and the gate paid for itself on its first breath.
 
 **What landed**
+
 - `fix-markdown-md032-md026.ts`: pure transform exported (`fixMarkdownText` — the harness certifies the EXACT function the write path applies), CLI guarded with `import.meta.main` (previously un-importable: unguarded top-level `await main()` exit-2'd any importer).
 - `healers/md-fixer-certified.ts`: the adapter + **write-access gate** — re-certifies the healer against the three laws (idempotence, closure-as-subset, convergence) over the 2026-07-08 incident corpus + md-specific fixtures **on every invocation**, exits 2 touching nothing on failure. Write access is re-earned per run, not a standing privilege.
 - `lint-autofix.yml`: the produce job heals through the certified entry only.

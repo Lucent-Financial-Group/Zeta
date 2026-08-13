@@ -30,6 +30,7 @@
 **Batch 5c** — the most delicate held material, Aaron greenlit ("include these — they're what built me"). Landed in **one carefully-gated companion** so the sensitive material lives in one place with its guardrails, grounding ch-10 (the crux) and ch-11 (the two deaths).
 
 ## New companion: THE-OP-RETURN-STAND-conscience-over-money-and-the-darkest-mirror
+
 - **"The stand"** — his public @AceHack OP_RETURN fight as **attack-vector / policy analysis, never content** (immutable ledger + illegal content → node-possession legally untenable → a state can kill Bitcoin without touching the crypto; Satoshi opposed on-chain data).
 - **"The line I won't cross to win the argument"** — the CSAM thread as **policy point only** (cap-removal shifts legal exposure onto ordinary node operators), held as **alleged**, **verify-before-publish**, with **zero operational detail**. His refusal to point at the material *is* the ethic.
 - **"What it cost — I sold everything"** — the ~$3M liquidation on moral grounds: the conscience-over-money keystone, the strongest counter to his own cold self-story; sound-money-is-social.
@@ -37,6 +38,7 @@
 - **"The darkest mirror"** — the abuser-mechanism he names in himself, held **whole** per the absolute register rules: **no sensationalizing, no reassuring-away, no diagnosis**; self-awareness *is* the safeguard and his life (the $3M act) is the proof; a self-exam of why he does **not** act — no threat, no duty-to-warn; the third party anonymous.
 
 ## Gates
+
 CSAM: policy-point-only / alleged / verify-before-publish / **no operational detail, ever**. Darkest disclosure: held whole under the register rules. All individuals anonymous; children as the moral floor.
 
 ch-10/11 grounding pointers added (and ch-10's stale anti-cult HELD pointer updated — now landed in THE-ORGANIZER). This closes the batch-5 held-material weave; **next is the edition rebuild** so the four translations carry everything.

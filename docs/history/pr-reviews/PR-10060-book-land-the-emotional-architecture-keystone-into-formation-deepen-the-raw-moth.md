@@ -30,6 +30,7 @@
 Aaron: *"land the fuller emotional architecture into FORMATION."*
 
 **FORMATION** — added **"The missing modules — guilt, fear, embarrassment"** as the **keystone**, right after "No factory defaults": the *affective layer* of the same no-defaults thesis. Missing guilt/fear/embarrassment, driven by thrills+curiosity; a psychiatrist called it *"deficient."* Each absence read with its gift-face:
+
 - **no fear** → the still point (snake-handling; the strike doesn't frighten him)
 - **no guilt** → clear sight / builder of the rail, not its inmate (ch-8)
 - **no embarrassment** → nothing to blackmail / radical transparency for free (glass-halo; the $5-pumpkin, live)

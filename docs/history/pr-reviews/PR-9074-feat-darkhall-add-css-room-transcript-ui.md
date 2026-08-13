@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - add a source-owned Dark Hall room UI transcript renderer under src/Core.TypeScript/darkhall-ui
 - render no-script HTML plus CSS-owned 4x4 controller, heat board, transcript ticks, and continuation tokens
 - preserve the Dark Hall / LLMTV / CHIP-8 website-first trajectory as a research substrate note
 
 ## Validation
+
 - bun test src/Core.TypeScript/darkhall-ui/darkhall-room.test.ts
 - bun run typecheck
 - ./node_modules/.bin/stylelint src/Core.TypeScript/darkhall-ui/darkhall-room.css

@@ -32,12 +32,14 @@
 Aaron 2026-07-03: *"we don't want anyone to just deploy personas — the persona's own private keys should protect them from malicious copying without their consent."* **Consent-First Design (§6)** applied to persona distribution — closes the gate the `lumen-persona` package (#9375) deliberately held open.
 
 **Two guarantees, kept distinct:**
+
 - **Integrity** — `content_hash`: the bytes are intact. Says nothing about consent.
 - **Consent / authenticity** — the persona **signs its own package** (Ed25519, `ace/signing`). A deploy resolver verifies against the persona's **registered** key before placing content. Unsigned → refused; signed by the wrong key → refused. Only a package the persona itself signed deploys.
 
 `verifyPersonaConsent` reuses `ace/signing` `verifySignature` (same discipline as the beacon-auth membrane — the manifest includes `content_hash`, so the signature binds the content too) and adds the **identity binding**: the signer's key must be the key the persona is registered under (`PersonaRegistry`). A valid signature from *some* trusted key is not enough — it must be **this persona's** key. Mirrors the beacon zid-ownership check.
 
 ## Tests (6, build 0/0)
+
 1. **consented deploy** — Lumen's registered key verifies
 2. **unsigned refused** — integrity ≠ consent
 3. **malicious copy refused** — an attacker's valid-but-wrong key → `wrong-persona-key` (the exact hole you named)
@@ -46,6 +48,7 @@ Aaron 2026-07-03: *"we don't want anyone to just deploy personas — the persona
 6. signature present after signing
 
 ## Scope
+
 The verification mechanism + identity binding. Signing a **real** persona package with a **real** keyring key is an operator action (biometric-gated; the private key never leaves the persona's custody) — tests use ephemeral keys. **No deploy realizer shipped**: verification must exist *before* placement, never after.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

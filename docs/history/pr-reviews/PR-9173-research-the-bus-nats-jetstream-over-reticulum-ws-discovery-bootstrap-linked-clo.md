@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - Specifies Aaron's coordination bus in three anchored layers: **WS-Discovery** UDP discovery (his maintainer anchor — presented on it in the WCF/SOAP days; ad-hoc=no-registry / managed=optional-proxy) → **Reticulum** transport (no broker, the mesh IS the broker) → **NATS/JetStream** semantics (a durable stream IS the DBSP Z-set event store with DST replay, distributed; broadcast first-class).
 - Load-bearing synthesis: **the bus is the linked-clone channel** (PR #9167), proven from the inside when two Otto consoles ran and neither knew the other was running. What a clone publishes to a subject is its shared one-identity region; off-bus is its private divergence — frost at the process level, Leibniz per-region, hive-mind by consent.
 

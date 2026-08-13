@@ -34,6 +34,7 @@ Workitem `081KZ9XH11908QG0R001RMFX7M` (P1) — **assigned to Lior**, composes wi
 **Goal:** extend the F# EP engine with moment-matching projections + exp-family conjugate updates over the DBSP semiring. EP is a new *factor type* (cavity→tilt→project→divide), not a new engine — driven by `FactorGraph.runToFixpoint`; `Message` already gives the group structure.
 
 **The split (the load-bearing correction):** the original brief put two properties on one falsifier line; they test different algorithms:
+
 - **A. Sum-product exactness on TREE graphs** → the EP / exact-BP correctness oracle (on a tree with conjugate factors EP = exact BP).
 - **B. ELBO monotonicity** → the **VMP path ONLY**. EP has **no** ELBO-monotonicity / convergence guarantee (Minka 2001); monotone ELBO is VMP's (Winn & Bishop 2005). Asserting it on EP passes for the wrong reason or fails spuriously.
 - **EP's own oracle:** moment-match accuracy vs numerical quadrature at the fixed point (the pattern `Ep.fs` already uses for the probit site) — not ELBO.

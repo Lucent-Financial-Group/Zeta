@@ -30,21 +30,26 @@
 **Aaron 2026-07-02:** "what's next?" → the pivot rung named in the two-column ferry (#9274): a **universal** interpreter both columns share, so one `mix` specializes *it* — Futamura generally, not per-grammar.
 
 ### `Isa.eval` — universal interpreter, programs-as-data
+
 Minimal CHIP-8-shaped register machine over `DynamicValue`: 16 byte registers `V0..VF` (mod 256), pc, step budget. Opcodes `SET`[6xkk] `ADD`[7xkk] `MOV`[8xy0] `ADDR`[8xy4] `SE`[3xkk] `JP`[1nnn] `HALT`. Instructions **are** `DynamicValue.Object`s — homoiconic, so `mix` reads/emits them as data.
 
 ### `Isa.specialize` — the first *general* `mix`
+
 Online partial evaluation (BTA integrated) over the straight-line fragment (`SET/ADD/MOV/ADDR/HALT`): static ops **fold** to constants; dynamic ops **residualize**; `ADDR Vx Vy` with static `Vy` becomes the immediate `ADD`; a static reg going dynamic is **materialized** first. Control flow (`SE/JP`) is a residual boundary — rejected (honest scope; a later rung generalizes it).
 
 ### The correctness law (Kleene S-m-n / Futamura mix — machine-checked)
+
 ```
 eval (residual) dynamic  ⊕  known  =  eval p (static ∪ dynamic)
 ```
 Verified across fold / ADD-immediate / materialize cases. This is `mix` over a **universal** interpreter — the generalization past the domain-specific `Slr.build`.
 
 ### Why CHIP-8-shaped
+
 The ISA is the **pivot that also opens the hardware column**: same interpreter, residual target = netlist ⇒ a circuit.
 
 ### Tests — 4 new, **23/23** across ISA + Futamura ladder, Core **0/0**
+
 eval runs control flow · mix-correctness law (3 cases) · specialization reduces the residual · fragment boundary (control flow rejected).
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

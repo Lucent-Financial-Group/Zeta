@@ -30,23 +30,28 @@
 The honest register-3 probe CHSH could not be — and both oracles converged on it independently.
 
 ## Why this, why now
+
 - **Soraya** (scope review) and **Lumen** (adversarial review, `docs/research/2026-08-02-adversarial-chsh-soundness-commit-probe-register3-lumen.md`, Attempt 3 + verdict) both ruled that forcing a ±1 CHSH observable onto commit *metadata* is numerology (measurement-independence and no-signaling fail by construction), and that the honest instrument **available now — no protocol change, no randomness beacon** — is **excess correlation over an independent null**.
 - It catches a **passive shared common cause**, which CHSH structurally cannot (a shared seed sits *under* the Bell bound). This is what turns the grid-trust explainer (#10012) honest `[in-progress]` limit into a real instrument.
 
 ## This increment: the pure statistical core (Lumen pieces 1–4)
+
 - `jaccard` — v1 touch-set overlap statistic (swappable for `Decorrelation.mutualInformation`, the CMI reconnection).
 - `permutationNull` — seeded splitmix64 Fisher–Yates shuffle breaks the real A↔B pairing; pools the statistic over `k` permutations (Fisher 1935 / Pitman 1937). **Entropy enters ONLY via `seed`** ⇒ DST-replayable, golden-lockable.
 - `nullThreshold` / `quantile` — the `(1−δ)` empirical threshold.
 - `classifyPair` — **one-way** verdict: `ExcessCorrelation` convicts an above-chance common cause; `WithinNull` **never acquits** (per `AntiSybil` "low |S| never acquits").
 
 ## Honest properties (in docstring + tests)
+
 - **Resolution floor:** need `n > 1/δ` pairs to convict; below that the null saturates to `WithinNull` — soundness-biased, **never a false green** (the safe direction).
 - **Reichenbach confounder** (condition on shared-ancestor overlap) deferred to the next DAG-wiring increment; flagged, not hidden.
 
 ## Tests / build
+
 12 tests green (jaccard, deterministic + genuine-permutation shuffle, pooled null, quantile, one-way conviction, and the end-to-end soundness pair: coupled convicts, independent does not). Core builds 0-warning.
 
 ## Next increments
+
 Wire to `DecorrelationMetrology.spacelikeCommitPairs` + ancestor-stratified null (fusion layer) → real run on repo history → research note. CHSH-with-beacon path filed by Lumen as intentional debt.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

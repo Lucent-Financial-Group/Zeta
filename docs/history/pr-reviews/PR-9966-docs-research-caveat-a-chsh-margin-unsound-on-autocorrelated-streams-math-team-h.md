@@ -30,17 +30,21 @@
 Routing Soraya's **caveat (a)** to the math team (she named Hiroshi as likely owner). Caveat (b) — BusRegime RTT/2 for asymmetric planetary orbits — is routed separately to Lumen (Aaron handling).
 
 ## The problem
+
 `AntiSybil.chshMargin` (`:201`) = √(32·ln(1/δ)/n) assumes **per-round-independent λ**. Real commit streams **autocorrelate** → effective `n_eff < n` → the margin is **optimistic** → over-convicts (false leak/sybil) and sets the G2 band boundaries too tight. The conviction (unsound) direction.
 
 ## Scope split (Soraya's)
+
 - **Concentration-bound correctness = Soraya** (Z3/FsCheck monotonicity: n_eff ≤ n; margin_corrected ≥ margin_iid).
 - **Choice of mixing model + estimator = math team** (this handoff). A prover can't fix a modeling assumption.
 
 ## Candidate fixes to evaluate
+
 1. Effective-sample `n_eff = n·(1−ρ₁)/(1+ρ₁)`, ρ₁ = lag-1 autocorr of the outcome-product series (Newey–West 1987; Kontorovich–Ramanan 2008).
 2. Stationarity precondition — non-stationary window downgrades to non-convicting (like `BusRegime.Unmeasured`).
 
 ## Math team owns
+
 Which dependence model (measured on real origin/main history), which autocorr/long-run-variance estimator, which stationarity test, and the corrected margin formula → handed back to Soraya for the correctness lemmas.
 
 **P1 prerequisite on G3** (monitor must not ship on the bare i.i.d. margin); not a blocker on G2/G4. Docs-only.

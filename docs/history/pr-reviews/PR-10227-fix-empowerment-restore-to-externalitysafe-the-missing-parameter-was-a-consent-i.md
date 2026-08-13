@@ -30,6 +30,7 @@
 Soraya's **P0 #1**. The shipped predicate **dropped the `τ` parameter** the design specifies and hardcoded `τ = 0` — which reads a bystander's **silence as consent** to the maximum harm the predicate can permit.
 
 ## What that produced (all reproduced here)
+
 | | Input | Old result |
 |---|---|---|
 | **L4** | bystander at floor `0.8`, harm `−0.7` | **true** — reported safe while pushed far below their own floor |
@@ -37,19 +38,23 @@ Soraya's **P0 #1**. The shipped predicate **dropped the `τ` parameter** the des
 | **L2** | any `delta ≥ 0` | vacuously **true** — and EB-8 asserts exactly that branch, so **the test cannot fail** |
 
 ## The fix, per the boxing-ring table
+
 - **Bystander (no declared `τ`)** → **any** harm fails. They're the audience, not in the ring.
 - **Entered the ring (declared `τ`)** → harm down to their declared `τ` is permitted.
 
 The default is the party's **own pre-interaction floor** rather than a magic constant, so the predicate reduces to `harm >= 0` and *"no harm to a bystander"* is true **by construction**. A permissive `τ` must be passed explicitly — it can never be inferred.
 
 ## Two other review findings, addressed in place
+
 - **`Math.min(0, delta)` kept**, with the missing justification written down: a claimed *benefit* to a non-consenting party is an unverified assertion about someone not at the table, so letting `+0.3` offset `−0.3` would let the pair **self-certify a compensation the bystander never agreed to**.
 - **The `floor + delta` expression is now labelled a proxy**, naming both defects honestly: the real property needs `posterior_after(third, interaction)`, which **does not exist**, and the addition mixes a *calibration-score* bound with a *reach* quantity (the lbf-vs-N shape). Tolerated only because the alternative is no bystander check at all — and marked so nobody mistakes it for the real operator (the `D_f 1.322` lesson).
 
 ## The tests are real this time — I checked
+
 **All 10 pre-existing tests still passed after a material semantic change**, which is itself the evidence they were self-certifying. So I verified the 6 new ones aren't: restoring the old `τ ?? 0` makes **4 of 6 fail**, and the fix makes them pass again.
 
 ## Deliberately NOT in this PR
+
 - **The cross-aggregator comparison** (a `sum` interaction outranking a harmless `min` one) — left for Lumen, deeper in their design. Aaron's framing reclassifies it as **a punch thrown outside the ring**: an *entry-control* failure, so the fix isn't rescaling — a sacrificing interaction must not be **selectable at all** against parties who haven't entered.
 - **A capacity predicate** — no wallet exists in-tree, so one would silently pass everyone.
 

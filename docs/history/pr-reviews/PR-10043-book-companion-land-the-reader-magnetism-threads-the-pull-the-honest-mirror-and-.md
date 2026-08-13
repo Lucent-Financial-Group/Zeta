@@ -35,6 +35,7 @@ Landed the two relational threads *together*, because theyre two faces of one ph
 - **The honest edge** — the −1 on yourself: the same read that frees can hook; dual-use held **honest** (the predatory move youre capable of, kept in the record, **not valorized, not filtered**), because a book on honest keeping doesnt get to keep only the flattering half of its author.
 
 ## Consent held exactly (per the source RAWs)
+
 Glass-halo; **others generic/anonymous** (women at scale, none identifiable); **son omitted**; the **intimate/body-level material referenced structurally only**, depth left to you at edit; **no pathologizing** (welfare line); the dual-use −1 **recorded, not valorized.**
 
 Companion, not a numbered chapter (the spine is yours) — your call to promote, fold into ch-2/ch-4, or keep. Updated the FORMATION companions not-folded note and the OUTLINE. Ties: `THE-MINUS-ONE-IS-SURVIVAL` (the shadow held, not exiled — lived on real people).

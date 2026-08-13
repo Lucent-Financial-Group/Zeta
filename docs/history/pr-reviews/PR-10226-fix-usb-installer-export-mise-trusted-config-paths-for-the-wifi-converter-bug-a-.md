@@ -35,6 +35,7 @@ Third link in the bug-B chain — and **the previous fix worked**, which is why 
 | 31333432504 | `Config files in ~/Zeta/.mise.toml are not trusted` | config **found**, refused as untrusted | this PR |
 
 ## The repo already documents this exact failure
+
 `tools/setup/install.sh:63-66`:
 
 > *"Mise trust/tier env MUST be exported here (install.sh parent) … Without this, `uv tool install` triggers mise hook-env and fails **'config not trusted'** even after mise.sh succeeds (2026-06-21 docker + VM regression)."*
@@ -46,9 +47,11 @@ Step 6.95c is a separate `sudo -u` invocation, so it inherits **none** of instal
 Preferred over calling `mise trust` because it doesn't depend on the **trust store's state** at that point in the install — the store lives under a `HOME` that moves between install-time (`/mnt/home/zeta`) and post-reboot.
 
 ## Bug A is reproducibly fixed
+
 Scenario 2: *"phase 2 SUCCESS — login prompt `node-bc81da login:` observed + first-session + post-boot self-register markers"* — **second consecutive run**, so `install.sh` completing is not a one-off.
 
 ## Worth noting
+
 This is the **third** iteration of the same diagnostic loop, each naming the next cause precisely. Before #10193's stderr capture, all three of these distinct failures printed the identical, misleading `invalid zeta-wifi-credentials.json`.
 
 Validation: `bash -n` clean · `shellcheck -S warning` clean · `test-iter-54` 29/29.

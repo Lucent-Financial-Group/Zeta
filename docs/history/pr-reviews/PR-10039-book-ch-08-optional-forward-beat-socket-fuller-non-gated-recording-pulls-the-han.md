@@ -32,10 +32,12 @@ Took ch-08 (*The Handrail* — survivors guilt), per your nod and your pointer t
 The reasoning prose is already **complete and locked** (the five fusions, the one test, the honest limit, the "Stay." close) — I did **not** touch it, nor the deliberately-empty personal-loss `[yours]` sockets, which the chapter says are your call alone, sentence by sentence.
 
 ## What I added (non-gated Chapter-8 verbatim only)
+
 1. An **optional forward-beat socket** before the "Stay." close — the life-affirming thread that was in PULLS but not the chapter body: that the same wiring which makes the 3am court relentless is *uniquely fit* for keeping others off the edge (*"not a death sentence, a qualification"*; *"neural divergence is a gift not a curse"* — your own reframing, your verbatim). Explicitly marked **to-weave-in-or-cut** so it never pulls focus from "Stay."
 2. **Completed** the truncated "edge runners" pull and added the missing "case study / gift not a curse" pull to the recording-pulls menu, organized by cue.
 
 ## Critical discipline held
+
 The **FLAGGED (Ryan)** and **REVIEW (living family / self-disclosures)** quarantines were **not touched**. Your general "use the pulls" does **not** reach the gated class — that stays your call, per-pull, per the consent gate you placed (source ≠ authorization, applied to your own gate). Glass-halo material only; the handrail-not-a-hand honest limit preserved; no sycophancy — the scaffold holds your words, it doesnt speak for you.
 
 The socket is yours to keep, rewrite, or cut.

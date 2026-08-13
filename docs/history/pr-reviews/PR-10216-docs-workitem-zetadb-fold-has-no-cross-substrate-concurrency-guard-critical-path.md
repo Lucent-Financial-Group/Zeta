@@ -30,6 +30,7 @@
 Files a finding surfaced while ferrying the zetadb thread. Workitem only; no code changed.
 
 ## The gap
+
 The zetadb node's **only** guard against concurrent folds is a GitHub-Actions `concurrency:` group. That lock **cannot see** a launchd cell, a k8s pod, a browser tab, or a PWA — all declared tick-source substrates. And the commit path is a read-modify-write with no compare-and-set:
 
 ```
@@ -40,14 +41,17 @@ git add … && commit && push
 So two cells on different substrates can fold the same journal and race to commit `checkpoint.json`.
 
 ## Why it's critical path, not backlog
+
 Aaron's stated target: *"dogfood on the github free workflow runners **and also on our local hardware at the same time**… tick sources from anywhere, even open browser tabs and PWA."*
 
 **The goal itself is the condition that defeats the existing guard.** Everything downstream in the zetadb-as-compiler thread (fold → reify → types) sits on a checkpoint two cells can currently corrupt.
 
 ## The fix is explicitly NOT a distributed lock
+
 That would be a central point of coordination (**§1 scale-free** violation) and wouldn't survive a browser tab going offline. The disciplines already prescribe **convergence** instead — #6 idempotency, commutativity, and content-addressing, which *plausibly* supplies idempotence by construction (`ContentStore`/`DagFs` already work that way). **Plausibly is not proven.**
 
 ## Acceptance
+
 - Formal property (→ **Soraya**): *N cells folding the same journal from any substrate produce one checkpoint effect, independent of order or overlap.*
 - A test that **actually runs two concurrent folds** against one journal and asserts a single converged checkpoint — not a mock. The GH concurrency group may stay as a cheap optimisation, but must stop being what correctness depends on.
 - Analytic half (→ **math team**): is the journal fold a commutative monoid, and does content-addressing give idempotence by construction?

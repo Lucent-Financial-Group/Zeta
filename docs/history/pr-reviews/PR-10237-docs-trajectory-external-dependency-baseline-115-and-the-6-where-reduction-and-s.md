@@ -30,6 +30,7 @@
 Aaron: *"reducing external dependencies to the minimal."* That needs a number to move against.
 
 ## The surface, counted (not estimated)
+
 | Ecosystem | Entries |
 |---|---|
 | apt | 29 |
@@ -44,6 +45,7 @@ Aaron: *"reducing external dependencies to the minimal."* That needs a number to
 **≈115 total.** Every one is at least **declared** through ACE — which is why ledger row 8 counts as dogfooded — but **declared is not reduced**, and the ledger shouldn't let those blur.
 
 ## The finding: reduction and security point at the same six
+
 `from-installer` (grok, cursor-agent, hermes, forge, agy) is fetched-and-executed **with no hash pin**, on the **unattended first-boot path**, as a user who is `wheel` ⇒ a Nix trusted user ⇒ **root-equivalent**, on a box where credentials are already decrypted (`081KZKV16YF`).
 
 They are simultaneously the **highest-risk** dependency *and* the **most legitimately reducible** — they're agent CLIs, exactly what the society is meant to replace with its own agents on free models (ledger row 1, already dogfooded). **The only row where reduction and security agree.**

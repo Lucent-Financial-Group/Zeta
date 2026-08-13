@@ -30,21 +30,25 @@
 Lands Soraya's two Z3 lemma files and **corrects an outward-facing claim they refute**.
 
 ## The claim was false, not merely under-verified
+
 `docs/ZETA-CORE-TECHNOLOGY-FOR-MAX.md` said: *"a Sybil attacker who creates a fresh identity after every miss cannot accumulate more trust than an honest agent with the same miss rate."*
 
 I had already softened this once (*"checked by tests, not closed-form"*) — but the **claim itself is false**, not just under-evidenced. Softening a false statement is not the same as correcting it.
 
 ## Machine-checked (5/5 goals; I re-ran them locally: `unsat/sat/unsat/sat/unsat`)
+
 - **W1** — whitewash is strictly profitable **exactly when `μ < 0`**, and `σ²` does not appear: **accumulated evidence is irrelevant** to whether discarding an identity pays.
 - **W3 — the true theorem:** `μ` strictly increases on a hit, strictly decreases on a miss, fresh has `μ = 0` ⇒ **no whitewash strategy reaches `trustBand > ½` without recorded hits.** *Whitewash buys amnesty up to the prior, never advantage above it.*
 - **W5** — TRL-31/32's assertion (`discardedTB < freshTB`) is **logically equivalent to "whitewash gain > 0"**. The tests assert the profitability of whitewash under a name that denies it.
 
 ## The sharpest part
+
 **Friedman & Resnick (2001), *The Social Cost of Cheap Pseudonyms*** is an **impossibility result** — free pseudonyms + not distrusting newcomers ⇒ profitable whitewashing — and it was **already cited in our own file** (`calibration-ledger.ts:46`).
 
 **We cited the impossibility result and then asserted its negation.** That's the *cited*-vs-**checked** anchor failure our own anchor-taxonomy research doc warns about, occurring in this repo.
 
 ## The correction
+
 States it as what it actually is: **a deliberate values choice.** Zeta picks `trustBand(fresh) = 0.5` over a pessimistic `0.0` because default moral regard (§11) outranks whitewash-hardening — which **prices in** whitewashing for sub-prior performers rather than eliminating it. Plus the two honest consequences Soraya measured over 1.5M ADF updates: break-even at **~50% hit rate** (not an adversarial corner), and accumulated reputation gives **little compounding protection**.
 
 The false claim also contradicted **FROZEN-CORE**, which correctly says whitewashing resets to 0.5 *"which is better than the discarded identity"* — two in-repo docs stating opposite things, with the false one outward-facing.

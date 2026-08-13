@@ -32,6 +32,7 @@ The enforcement half of the drift build-out. The ledger (#9863) measures and the
 **`registry/drift-slo.yaml`** — declarative tick-indexed budgets (default `max_open_age_ticks: 6` ≈ 24h at the 4h cadence; per-rule overrides). Sibling of `uncompensatable-floor.yaml`; raising a budget weakens a promise — registry-change discipline applies.
 
 **`drift-ledger.ts`** — pure SLO core + CLI:
+
 - `sloBreaches`: breach = oldest open age **strictly over** budget (age == budget is at the boundary, not past it)
 - `reconcileFiled` / `newlyBreaching`: **one filing per breach episode** via `docs/drift-events/slo-filed.json` — a still-open rule is never re-filed (§12 idempotency); a fully-healed rule clears, so a later re-breach files a fresh workitem instead of being deduped forever
 - `slo` command mints the P1 **in-process** through `new-workitem.ts`'s own `mintWorkItem` + `publishCreatedEvent` (ZetaId-keyed, event-log fact included; actor `drift-sweep` — no persona names on the workitems surface)

@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - **2a:** the CHSH LHV bound proved by z3+cvc5 (cross-checked, replay-cached for CI) — the inequality behind the conviction semantics, now a signed lemma in `Z3.Laws.Tests`.
 - **2b:** `chshMargin` ε(n,δ) = √(32·ln(1/δ)/n) with the derivation and scope in the docstring, and `chshSybilCalibrated` convicting at 2+ε — closing the BUGS.md P1 (entry deleted per convention). The statistics gate runs 100 seeded λ-mixing instances: all under the margin, 25–75 above bare 2.0 (the finding quantified). The exact previously-false-convicted instance now acquits; conducted pairs still convict.
 - 19/19 suite green; Z3 lemma green in record and replay modes; Lean/Hoeffding stays deferred per routing.

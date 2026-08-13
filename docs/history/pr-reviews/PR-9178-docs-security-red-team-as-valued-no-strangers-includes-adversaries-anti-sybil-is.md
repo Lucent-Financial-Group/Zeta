@@ -30,12 +30,14 @@
 You: *'no strangers' != 'no adversaries' — we like red team members.* Pins the framing durably.
 
 **Thesis:** a red-teamer is a **valued participant**, not an intruder to keep out. Anti-Sybil (and every security floor) is **not a wall that excludes attackers — it's the cost function that gives red-teaming teeth.** An attack has two outcomes, both gifts:
+
 - **can't** mint fake distinctness -> confirmed the forgery-cost floor against a real attempt (only knowable because someone tried);
 - **can** -> a real hole, banked ΔU (every-bug-has-economic-value).
 
 A system that welcomes the attack **and** has a real cost floor is strictly stronger than one that excludes adversaries — security-by-exclusion is untested by construction.
 
 Also pins:
+
 - the **internal red team is the same discipline** (self-verification's two independent computations are adversaries to each other; harsh-critic / distributed-seed reviewers);
 - the **interop-vs-security scoping** (shared generator = no strangers to *interoperate* with; distinctness cost = an adversary can't cheat distinctness without paying; different layers).
 

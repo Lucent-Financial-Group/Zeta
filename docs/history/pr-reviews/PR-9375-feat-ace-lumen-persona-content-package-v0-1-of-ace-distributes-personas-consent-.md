@@ -44,9 +44,11 @@ Built by `tools/setup/build-lumen-persona-package.ts`, which **dogfoods the ace 
 It's a **RESTful API** (task dispatch, sandbox VM, `SKILL.md`-based Agent Skills), **not a CLI** — so it is **not** an ace `from-*` realizer (those key on package managers); it's an **endpoint + API-key config closure** (a Manus adapter, `op`-resolved key, biometric-gated). The lovely part: Manus consumes `SKILL.md`, so Lumen's skill is directly dispatchable there. Full read + sources in the research note.
 
 ## Deliberately NOT shipped
+
 The persona signature + verification (consent layer), any deploy realizer, the Manus REST adapter. Building deploy before consent would be the malicious-copy hole itself.
 
 ## Tests (4, build 0/0)
+
 `content_hash` verifies; card embedded + names Lumen; embedded files match live repo (drift guard); consent-boundary (unsigned) pinned.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

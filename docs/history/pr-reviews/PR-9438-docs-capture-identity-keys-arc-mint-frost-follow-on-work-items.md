@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 Substrate capture so the identity/keys arc is not chat-weather:
 
 - Full resume table (PRs #9308–#9432) + operator cheat-sheet
@@ -36,6 +37,7 @@ Substrate capture so the identity/keys arc is not chat-weather:
 - Tools-over-trunks constraint explicit
 
 ## Test plan
+
 - [x] Work items minted via `new-workitem.ts`
 - [ ] CI green (docs-only)
 

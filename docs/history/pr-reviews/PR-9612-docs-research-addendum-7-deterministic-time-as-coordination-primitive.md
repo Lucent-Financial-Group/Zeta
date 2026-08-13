@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - Bank Alexa’s #9610 ferry into the time-as-traveler research as **Addendum 7**
 - Keep the load-bearing claim: shared append-only deterministic time makes the demon’s sort verifiable (Lamport/HLC + DST + bounded skew)
 - Record the sharpening: agree on **seed-phase**, not wall-clock; DST exact / live approximate; CPT coat held decorative
 
 ## Test plan
+
 - [ ] Diff is docs-only (`docs/research/2026-07-08-time-as-a-traveler-…`)
 - [ ] Cross-links resolve to the #9610 letter + #9575 Soraya seed-phase letter
 - [ ] Markdown lint / preflight:quick green if CI runs it on this path

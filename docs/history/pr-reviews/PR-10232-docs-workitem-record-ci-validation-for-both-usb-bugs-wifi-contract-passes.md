@@ -30,9 +30,11 @@
 Records the validation evidence on both USB workitems so they don't sit stale at "pending validation" now that the runs are in.
 
 ## Bug A (`081KZETP6AT`) — validated across **three consecutive** runs
+
 Scenario 2 reports `phase 2 SUCCESS`, and that **is** the proof `install.sh` completed — the provisioning contract (#10196) fails the scenario whenever install.sh exhausts its retries. Fix chain: `nix-ld` (#10196) + `node.compile = false` (#10212).
 
 ## Bug B (`081KZHJPJCF`) — the wifi contract **PASSES**
+
 Verified at the **marker level**, not just the step conclusion:
 ```
 [iter-5-wifi] found zeta-wifi-credentials.json on boot USB ESP
@@ -41,6 +43,7 @@ Verified at the **marker level**, not just the step conclusion:
 ```
 
 ## The six-cause chain, recorded in order
+
 1. ESP unmounted before the iter-5 probes (#10184)
 2. `ZETA_HOME` unbound in the newly-reachable branch (#10185)
 3. NM write attempted before repo/mise existed → step 6.95c (#10186)

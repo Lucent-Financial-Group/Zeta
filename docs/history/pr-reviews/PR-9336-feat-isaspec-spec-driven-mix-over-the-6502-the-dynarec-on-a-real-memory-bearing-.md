@@ -53,6 +53,7 @@ Proven across dynamic cell values — the memory-aware mix is correct.
 2. **specialization reduces** — an all-static program folds to an **empty** residual (all work done at mix time)
 
 ## The ladder now
+
 1st projection → 2nd → general `mix` → Column B (gates → CPU → synthesizable CPU) → the target knob (Code|Circuit) → ISA-as-data + memory + the 6502 → **the mix folding a real ISA's memory (this)**. The dynarec is no longer toy-only.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

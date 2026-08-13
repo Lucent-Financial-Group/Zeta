@@ -32,9 +32,11 @@ You (2026-07-02): *ASN.1 is very important in like ANSI standards DLMS COSEM sta
 **Opens the 2-ary column** on the ValueTreeCodec port (#9185 / #9187). ASN.1 DER (X.690) is a tag-length-value grammar, so we own it with **no external library** — `Provenance = Ours` immediately, not adapter-then-own. The **tag** is the 2-ary *second channel* (type/attribute) beside the value — the analogue of XML element ⊕ attribute.
 
 ## Native DER mapping (X.690 §8)
+
 Null→NULL · Bool→BOOLEAN (true=0xFF) · Int→INTEGER (minimal two's-complement) · String→UTF8String · Bytes→OCTET STRING · Array→SEQUENCE · Object→`[0]`-constructed SEQUENCE OF {key,value} (order-preserving). **Float** = ASN.1 REAL, deliberately this codec's **parity debt**, closed the uniform way by `parity` — so we skip the fiddly REAL binary encoding. 7/8 native; `parity asn1` total.
 
 ## Proofs (5/5)
+
 - native round-trip incl. edge cases — minimal/negative INTEGER (0/-1/127/128/-128/Int64.Min/Max), empty collections, a 200-byte string exercising **long-form length**;
 - **2-ary column joins the agreement** — `crossVerify [parity json; cbor; parity yaml; parity asn1]` empty on the full eight-shape tree;
 - Float native `Error` (parity debt), closed by `parity`;
@@ -42,6 +44,7 @@ Null→NULL · Bool→BOOLEAN (true=0xFF) · Int→INTEGER (minimal two's-comple
 - **DER byte-lock** as text hex (`no-binary-in-proof-lineage`): NULL=`0500`, BOOL true=`0101ff`, INTEGER 0=`020100` / -1=`0201ff` / 127=`02017f` / 128=`02020080` / -128=`020180`, OCTET STRING "ABC"=`0403414243`.
 
 ## Doc
+
 2-ary column opened (ASN.1 row ✅ `Ours`); §8 records **ZetaId as the universal pointer** on envelope graph edges — points inside *and* outside the superdeterministic Markov boundary.
 
 Next: `cloudevents`/`debezium` envelope categories + frontmatter ⇄ value-tree; then KDL.

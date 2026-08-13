@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - First additive slice of the GitHub Pages ⊕ design-language ⊕ dark-hall mash: a self-contained neon-liminal `hall/index.html` fusing the three chrome palettes into one token block, inlining three real shape goldens as QPG hero art, and linking `demo/`/`genesis/`/`inventory/` as-is. **Zero edits to any existing page** (git status shows only `hall/`).
 - Verified the live site is committed static HTML (the Astro workflow is an unconfigured stub) so "without destroying" is grounded. Plan doc maps the next additive slices and flags the one blocker: **Addison's fallout-shelter vault reference tsx are not in this repo — need their location** to port that section.
 

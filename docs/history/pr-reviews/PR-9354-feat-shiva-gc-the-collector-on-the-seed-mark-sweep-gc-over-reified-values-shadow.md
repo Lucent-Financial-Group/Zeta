@@ -47,6 +47,7 @@ Heap = `{ id, value, refs:[id] }` objects (all `DynamicValue`, byte-lockable). `
 6. the heap is **byte-lockable**
 
 ## Honest scope
+
 Mark-sweep over an explicit content-addressed heap; ids stand for content hashes. Weak-reference/ephemeron integration + incremental/generational collection are the follow-ons.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

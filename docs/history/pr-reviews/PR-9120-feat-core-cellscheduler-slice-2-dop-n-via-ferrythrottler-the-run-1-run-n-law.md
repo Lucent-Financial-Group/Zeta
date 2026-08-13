@@ -30,14 +30,17 @@
 Slice 2 of the cell scheduler (`081KTG5S0M9`) — **DoP=N and the scale-free proof**.
 
 ## What
+
 `runFerryToQuiescence config stepFn maxRounds s0` runs the cell society through a `FerryThrottler` at `config.MaxDegreeOfParallelism` ferries.
 
 **Round-based:** each round steps every currently-ready cell once (on its head message), fanning the pure `stepFn` computations through the ferry at the chosen DoP, then **reassembling results in deterministic cell-id (Ordinal) order *before* any state merge**.
 
 ## The law
+
 `run(DoP=1) == run(DoP=N)` holds **by construction** — concurrency lives only in the pure step's *execution*; the *ordering* that state depends on is restored deterministically. The knob changes throughput, never the answer (scale-free §1). Noninterference (§13) is what makes the ferry safe: `stepFn` reads only `(own state, one message)` → `(new state, emitted)`, so two cells on two ferries can't observe each other mid-step.
 
 ## Tests (3 new, 11 total on the module)
+
 - **`run(1) == run(4) == run(16)`** DoP-invariance on a 12-cell ring workload — the scale-free proof.
 - Ferry round-runner **agrees with slice-1's sequential runner** on a commutative workload (`a=6, b=12`).
 - Runaway cycle hits the **named `Error` backstop** (not a silent cap).

@@ -32,6 +32,7 @@
 **Verdict:** the −1/12 / Casimir / ζ / Bernoulli cluster is exemplary — fully anchored + self-aware register addenda. One real gap: the **BAMS→E8** doc.
 
 **Fix** (house-style: Lumen's prose untouched, added register addendum):
+
 - **P0** — "E8 is the proven-optimal 8D sphere packing" is a named *theorem* with no citation → **Viazovska (2017)**, Annals of Math 185(3) 991–1015, arXiv:1603.04246.
 - **P1** — mapping asserted as *identity* with no register label → marked **validity-level math-shape correspondence** (register C, per flag #9769); CONJECTURE that the belief-space optimum is literally E8.
 - **P2** — Viazovska + Condorcet (1785) added to `PRIOR-ART-LIST`.

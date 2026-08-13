@@ -30,21 +30,25 @@
 Otto invoked the **formal-verification-expert role (Soraya)** on Alexa's Phase 5 handoff (`docs/handoffs/2026-06-21-alexa-to-research-team-quantum-phase5.md`). Design note + Q# signature skeletons for the three items.
 
 ## What lands
+
 - `docs/research/2026-07-02-quantum-phase5-two-ledgers-calm-is-ctl-not-adj-landauer-as-cost-contract.md` — routing verdicts, tool-assignment table, four answered questions.
 - `src/Core.QSharp.ReferenceOracle/QuantumPersistentLog.qs` — signature skeleton (item 1).
 - `src/Core.QSharp.ReferenceOracle/QuantumTransactionPorts.qs` — signature skeleton (item 2).
 
 ## Two load-bearing corrections to the handoff (agents-not-bots)
+
 1. **Transaction Ports** — CALM-monotone maps to the **`Ctl` axis, not `Adj`**. Idempotent lattice joins (`a∨a=a`) are non-injective ⇒ no inverse ⇒ **cannot be unitary `Adj` ops**, so "monotone-safe = is Adj" inverts the truth. Correct: monotone ⟺ *no used control qubit* (coordination-free, CALM theorem); non-monotone ⟺ *used control qubit* = the coordination. Idempotence impedance mismatch named (ports model confluence at the unitary level; idempotence is sim-only via measurement).
 2. **Maxwell's Demon** — the demon needs **two ledgers**. State-entropy (support: branch +1, measure −k) + environment heat (Landauer: 0 for `Adj`/Bennett, +k for erase). `net = ΔS_state + ΔS_env`, conserved: **= 0 iff `is Adj`, ≥ 0 for measure**. "measure = −1 bit" was only Ledger A; the erased bits are *paid into heat* — that is the demon.
 
 ## The four questions, answered with routing
+
 - **Landauer as cost contract** — yes; same `witness/contract` shape as the shipped `cost-counter.ts`, flipped to a lower bound (`heat ≥ kT ln2 × bits`); bookkeep in **bits** (byte-lockable), joules only at the edge.
 - **Counting vs von Neumann** — Shannon-of-Born now (pure state → von Neumann of the whole state ≡ 0); reduced-density von Neumann deferred to the decoherence/clone-divergence lane (tracked, not built).
 - **Tropical composition** — entropy is tropical-graded: additive accumulation = `⊗(=+)`, min-heat = `⊕(=min)`, reversible op = 0 = multiplicative identity.
 - **Extend sim or injected effect** — **injected effect** (§13 noninterference; the `createCountedRing` decorator), not sim mutation.
 
 ## Discipline
+
 - **BP-16** honored on both P0-adjacent claims (confluence Q#+Z3; net-entropy FsCheck+TLA+); **anti-TLA+-hammer** checked (TLA+ only for the two genuine temporal-safety invariants).
 - `.qs` files are standalone reference oracle (no project; **not in the `dotnet` build gate** — same pattern as `ZSetISA.qs`).
 - Lean deferred on all three per the handoff. Substrate figures verified by reading (verify-before-record).

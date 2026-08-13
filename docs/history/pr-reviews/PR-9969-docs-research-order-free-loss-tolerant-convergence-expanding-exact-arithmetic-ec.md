@@ -30,15 +30,19 @@
 Aaron's architecture goal: **nothing needs canonical order**; partial-order-dependent things use ECC-over-time to recover missed packets (UDP/analog/audio). Two facets of one property, both opt-in/cost-gated.
 
 ## Facet A → Lior/Alexa — expanding-exact arithmetic (a *build*, not a swap)
+
 Both candidates rejected as-is (verified in code): **AmplitudeEmu** is fixed-float + ensemble-shaped (inherits IEEE-754 non-associativity); **TriBoolean/middle-out float** decodes to `float` and is int64-bounded. The build: a genuinely-expanding arbitrary-precision-with-uncertainty rep (constructive reals / ball arithmetic), in the **sum-product domain not log-sum-exp** — eliminates the transcendentals *and* underflow at once. Lior's canonical sort stays the shipped default.
 
 ## Facet B → Lumen — ECC-over-the-channel
+
 Adinkra inner + interleaving + rateless outer. Catch 1: block-correction ≠ packet-recovery without erasure-decoding + interleaving. Catch 2: [8,4] is fixed-rate; variable loss wants rateless (LT/Raptor).
 
 ## Unification + third drift axis
+
 Erasure/fountain codes are inherently order-independent → one layer gives **both** loss-tolerance and order-freedom. This is the *channel* drift axis, alongside space (byte-lock) and time (DST) — the existing `only-the-irreducible-is-primitive` rule applied to the wire.
 
 ## Existing artifacts (verified, all honest/labeled) + THE ANTI-CONFLATION GUARD
+
 ErasureDistance.lean (RS [16,12], Singleton-optimal 4/16), ToyModel.lean (labeled toy), AdinkraCode.fs ([8,4], t=1), BusDelaySim/the-egg (decorrelation). **Guard:** "receive one, recompute the rest, miss ∞" (Cayley–Dickson doubling + mod-2) is **generative recomputation, not ECC** — the tower unfolds deterministically from a seed, ~zero independent entropy, unbounded only because nothing independent is lost (same superdeterminism artifact as CHSH S=4). Three things never to multiply: generative-recompute / redundancy-recovery / genuine-ECC-erasure. Only the last is error-correction; only its Singleton bound is real. The overclaim is **not in current code** (likely a pre-correction `sorry`-in-type revision).
 
 Docs-only.

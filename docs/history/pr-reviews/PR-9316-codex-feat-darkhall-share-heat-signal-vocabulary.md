@@ -28,16 +28,19 @@
 ## Description
 
 Why:
+
 - Heat now crosses host IO, Dark Hall scheduler rows, room transcripts, TS UI, and the Q# oracle.
 - The scheduler had the typed signal vocabulary locally, while host heat signatures still required downstream string parsing.
 
 What:
+
 - Added a shared HeatSignal DU and classifier/token helpers in Heat.fs.
 - Kept DarkHallScheduler.HeatBoundarySignal as a compatibility alias over the shared vocabulary.
 - Routed scheduler row classification through HeatSignal.ofCounts.
 - Added tests proving host HeatSignature tokenization and scheduler/transcript signal compatibility.
 
 Proof:
+
 - dotnet test tests/Tests.FSharp/Tests.FSharp.fsproj -c Release --filter "FullyQualifiedName~DarkHallSchedulerTests|FullyQualifiedName~DarkHallRoomTranscriptTests|FullyQualifiedName~RoomRunTests"
 - dotnet format --verify-no-changes --include src/Core/Heat.fs src/Core/DarkHallScheduler.fs tests/Tests.FSharp/DarkHallScheduler.Tests.fs
 - dotnet build -c Release

@@ -32,9 +32,11 @@ You (streamed 2026-07-02): *We must have parity even if we have to use ugly stri
 Closes the **parity debt** the codec port surfaced in #9185. JSON/YAML are native only on Null/Bool/Int/String/Array/Object; `ValueTreeEnvelope.encode` wraps every non-native shape (Float, Bytes; next Decimal/SoftValue/Kleene) in a **version + category-tagged wrapper** under a single reserved key (`$zeta`). So `ValueTreeCodec.parity json` / `parity yaml` are now **total** — the full eight-shape tree round-trips faithfully.
 
 ## Landable *because* rollable (your unblock)
+
 The envelope schema is **not an irreversible decision**: version + category tags reuse `SchemaEvolution` (081KSRGFP0008QG0R001Y6RTY9). A reader that knows `{1..N}` serves any wire `≤ N`; a newer version / unknown category is a **clean `Error`, never silent corruption** → a v2 writer rolls out while v1 readers keep serving. Collision-safe: a source object using `$zeta` is escaped (category `map`).
 
 ## Proofs (5/5)
+
 1. full eight-shape round-trip = identity;
 2. **parity closed** — `crossVerify [parity json; cbor; parity yaml]` empty on the *full* tree;
 3. collision object round-trips;
@@ -42,6 +44,7 @@ The envelope schema is **not an irreversible decision**: version + category tags
 5. **0-downtime parser replacement** — new reader reads old bytes (backward), old reader reads new bytes without crash/corruption (forward, envelope = unknown-metadata passthrough) — the format-level analogue of a schema migration.
 
 ## Doctrine doc extended
+
 - §5 parity **closed**; §7 **every serialization decision is 0-downtime-rollable** (fold parser-roll proofs into the schema-evolution suite);
 - §8 the envelope **generalises to event envelopes** — CloudEvents (CNCF) / Debezium (CDC, `op` ≈ Z-set ±1) — the **frontmatter** metadata⊕payload shape, one dependency-graph discipline (deps / frontmatter / event-causation; ace package manager).
 

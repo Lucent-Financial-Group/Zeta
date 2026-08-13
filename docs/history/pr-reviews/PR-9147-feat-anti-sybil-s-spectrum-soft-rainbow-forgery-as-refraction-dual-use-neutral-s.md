@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - `CoordinationSpectrum`: the CHSH probe battery as a prism — a claimed-identity set disperses into its symmetrized sorted pairwise-|S| spectrum (permutation-invariant; the test caught `chshS`'s argument asymmetry and drove the fix), and a soft `FingerprintPrism.Rainbow` recognizes a repeat source by its dispersion under fresh names. Anchor: Pappu 2002 (the original PUF was identity-by-refraction).
 - **Dual-use named in the interface:** `recognize` returns the neutral `SameSourceAsKnown` — reunion vs sybil is the caller's oracle. New rule `dual-use-detection-is-neutral-oracle-decides.md`; both readings tested from one match. 5/5 green.
 

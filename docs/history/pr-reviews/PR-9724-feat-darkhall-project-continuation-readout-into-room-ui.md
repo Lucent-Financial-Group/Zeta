@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - add the F# `continuationReadout` field to the TypeScript Dark Hall room transcript contract
 - render resume status, loop id, stop reason, next lap, and resume base tick as no-script room UI data
 - expose continuation state to LLMTV as a normal prediction lane
@@ -35,6 +36,7 @@
 - rewrap the latest-main Soraya relay note so CI markdownlint does not parse a blockquoted `+` continuation as a list
 
 ## Verification
+
 - `mise exec -- bun test src/Core.TypeScript/darkhall-ui/darkhall-room.test.ts`
 - `mise exec -- bun test src/Core.TypeScript/installer/multiboot/multiboot.test.ts`
 - `mise exec -- bunx tsc --noEmit`

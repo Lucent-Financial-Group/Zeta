@@ -32,6 +32,7 @@ Lands Lumen's math review of Fable's E8 blade-mask result.
 **The result stands.** All golden numbers reproduce bit-exactly, and I independently confirmed the root set is genuinely E8 via Construction A (240 roots, norm²=4, inner products {−4,−2,0,2,4}, **closed under reflections**). What was wrong is the **explanation** — twice.
 
 ## Head-to-head, now pinned by regression tests
+
 | Criterion | Matches | Exactly the 2 survivors? |
 |---|---|---|
 | XOR-closed subgroup | 3 | No — under-determined |
@@ -45,10 +46,12 @@ Lands Lumen's math review of Fable's E8 blade-mask result.
 **Algebraic content:** with `Cl(3,0) ≅ ℂ⊗ℍ` and `I = e₁₂₃` central, `A = q + I·p` is versor-normed ⟺ `q, p` are ℝ-collinear ⟺ **A is a decomposable element of ℂ⊗ℍ**. Collinearity forces `span(q) = span(p)` — which is *why* the support must be I-closed. Also recorded: support-level talk is a **lossy projection** — only 8 of 16 sign patterns per support qualify (16 + 8 + 8 = 32).
 
 ## Two caveats now attached to "32" — required before FROZEN-CORE
+
 1. **"32-element E8 fragment" is wrong twice.** Not a sub-root-system (reflection closure is **48 = D₄⊕D₄**, a Borel–de Siebenthal subsystem), and 32 counts **root-vectors, not symmetries** — they induce only **8 distinct maps**, generating a group of order **16 ≅ D₄ × C₂**, index 43,545,600 in W(E8).
 2. **32 is labelling-dependent.** Over all `8!` relabellings: 16 in ~47%, **32 in only ~30%**. **Only the 16 single blades are invariant.** So 32 is a fact about *this pairing of two coordinate conventions*, not about E8 and Cl(3,0). *(Sweep measured by Lumen, not independently re-run — provenance flagged.)*
 
 ## The quantization is now derived, not observed
+
 `|det A|² + |v|² = 16` and `det(−A x Ã/4) = |det A|²·det(x)/16` stratify by det/rank into three tiers; **64 and 128 are `4 × fiber size` of a rank-1 ℂ-linear map**, not orbit or stabiliser sizes. This also refutes the doc's earlier conjecture that tiers stratify by the subalgebra the support generates.
 
 **4 discriminating tests added** so neither wrong explanation can come back. 11/11 pass. My files contribute 0 tsc errors (the 1 remaining is a pre-existing unused import in `ace-cli.test.ts` from the ACE work — not this PR).

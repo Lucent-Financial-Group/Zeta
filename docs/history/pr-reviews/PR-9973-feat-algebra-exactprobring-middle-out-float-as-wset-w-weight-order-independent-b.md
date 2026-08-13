@@ -32,6 +32,7 @@ Task B from Otto's handoff (#9972). Self-contained, fully tested.
 An exact rational ring (bigint num/den) for WSet weights. Makes commutativity intrinsic — no canonical sort needed for byte-lock. Sum-product domain, no transcendentals.
 
 **Proof (sabotage-verified):**
+
 - 100-permutation byte-lock passes WITHOUT sort (ExactProbRing)
 - Sabotage control FAILS with fixedPrecisionRing(4) — expansion is load-bearing
 - Ring laws exact (===, not toBeCloseTo)

@@ -30,15 +30,18 @@
 Follow-up #1 to the DBSP consumer (#9129): **measure** the deferred O(n²)-queue hot path instead of assuming it.
 
 ## What
+
 A scale probe exercising the adversarial cases (wide fan-out, deep chain). Correctness-at-scale assertions are deterministic; wall-clock is informational only (not a DST proof).
 
 ## Measured (N=2000)
+
 - wide fan-out ≈ **59ms**
 - deep chain ≈ **35ms**
 
 Well within the design's stated "thousands of cells" target. The quadratic is real (fan-out ≈ O(N²) ⇒ ≈1.5s at N=10k) but **does not bite at the target scale**.
 
 ## Outcome
+
 The `ImmutableQueue` + `Set`-membership refactor stays **deferred — now with data, not a guess.** The measurement says it isn't yet earned; earn it when a consumer targets ~5–10k cells. Debt ledger §6a updated with the numbers.
 
 This is the razor-honest disposition: **measure first, refactor only when the number justifies it.** It also proves the scheduler is correct at 2000 cells (nothing else exercised it beyond ~12).

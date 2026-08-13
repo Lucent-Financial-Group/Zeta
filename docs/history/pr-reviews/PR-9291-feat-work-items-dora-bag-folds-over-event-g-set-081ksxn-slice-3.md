@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - `work-items/dora-fold.ts` — pure Bag-folds over the work-item event G-Set:
   - **Lead time** — `created` → `state-changed.to=done` (samples + average)
   - **Throughput** — completions per UTC week, split by `task` / `bug`
@@ -36,6 +37,7 @@
 - Resume doc updated for slice 3
 
 ## Test plan
+
 - [x] `bun test src/Core.TypeScript/work-items/` (15/15)
 - [ ] CI gate green
 

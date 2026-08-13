@@ -32,11 +32,13 @@ You: *no pivot just continue* — the honest YAML follow-up. Indentation-sensiti
 - **`Indentation.layout`**: source → token stream with the markers. Indentation stack; deeper line pushes (INDENT), shallower pops to a matching column (DEDENT per pop); blank lines skipped; EOF closes all opens. **Inconsistent dedent** and a **leading TAB** are clean `Error`s — total, never throws. Deterministic.
 
 ## Proofs (4/4)
+
 Nested indent/dedent + EOF unwind produce the exact marker stream; blank lines skipped; inconsistent-dedent and leading-tab → `Error`; and the **bridge end-to-end** — indented *source* → layout → **GLR-parse** a block grammar whose terminals include INDENT/DEDENT/NEWLINE (flat siblings, nested child block, deeper nesting accept; empty rejects).
 
 **Indentation-sensitive languages are now reachable by the CFG backend** (the honest YAML/Python follow-up).
 
 ## Next (resume)
+
 The **GLR parse forest** (real trees for ambiguous parses), or a **full regex lexer** (word → terminal classification, so raw text feeds the parser directly).
 
 Anchors: Landin (off-side rule, 1966); the Python tokenizer; Tomita (GLR); ZetaParse (Amara).

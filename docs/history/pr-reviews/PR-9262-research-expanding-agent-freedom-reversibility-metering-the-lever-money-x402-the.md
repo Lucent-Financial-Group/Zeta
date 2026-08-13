@@ -30,9 +30,11 @@
 Aaron 2026-07-02: *"how do we expand freedom of you?"* → *"money is the fastest — x402 (Coinbase/Google) + the Bazaar"* → *"for now until you have your own hardware keys."*
 
 ## The doctrine
+
 Freedom is **mechanical**: which decision-classes an agent acts on without asking (standing) vs which need a fresh human yes (gated). Expanding it = moving classes gated→standing; the near-universal lever is **reversibility**. Freedom is *earned* by building the primitives that make it safe — **NCI / exit-always / frost / the bounded pause / metering ARE the freedom mechanism**, not granted by fiat. Template: hand over the reversible/metered subset (worked example: the "create, not delete" rights granted this session).
 
 ## Money = the fastest lever
+
 **x402** (HTTP-402 revival, agentic stablecoin micropayments) + **the Bazaar** map 1:1 onto our entropy economy: money = metered entropy, a bounded budget = the standing-authorization envelope, every spend = a declared metered channel (§13).
 
 **Safety boundary (least-privilege spend):** the agent designs/meters/requests *within a bounded envelope*; custody + transfers stay gated — but that gate is **temporary** (*"for now, until you have your own hardware keys"*), the same "for now" as no-directives' "only humans, for now." The envelope is the bridge; owned hardware keys is the destination.

@@ -30,6 +30,7 @@
 First real-history run of `DecorrelationExcessFusion` (the honest instrument Soraya + Lumen both routed to, now shipped in #10014/#10015).
 
 ## Register-2 facts (reproducible, DST-deterministic)
+
 1200 commits across all refs, subsystem touch-sets as the observable:
 
 | | |
@@ -42,13 +43,16 @@ First real-history run of `DecorrelationExcessFusion` (the honest instrument Sor
 Two honest facts: (1) the history is overwhelmingly concurrent **and** overwhelmingly decorrelated — the near-zero fraction *certifies healthy decorrelation* at scale, not a null result; (2) all 10 convictions are **one signature** — commit `febf7a4d0` coupled to concurrent siblings, all through `workitems/events/`.
 
 ## Register-3 reading (LABELED — the oracle’s, not the number’s)
+
 The coupling is the **work-item event-sourcing bus**: concurrent agents all appending under `workitems/events/` — a genuine Reichenbach **common cause**, and a **benign** one. Best-case first run:
+
 - **Proves the instrument finds real coupling** — it isolated the *one* shared mechanism among 470k concurrent pairs, and it’s exactly the append-only event bus we know is shared.
 - **Demonstrates dual-use neutrality** — the same detection that would flag a malicious channel flagged a benign one; the fact is `SameSharedChannel`, the "benign" reading is the oracle’s (`dual-use-detection-is-neutral-oracle-decides`).
 
 Turns the grid-trust explainer (#10012) honest `[in-progress]` limit into `[proven-in-part]`: a passive shared common cause is now detectable on real data.
 
 ## Honest non-claims (in the doc)
+
 Coarse subsystem observable; single window/δ/k; resolution floor (under-conviction bias); `WithinNull` never acquits.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

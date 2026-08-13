@@ -30,15 +30,18 @@
 Answers your question — *does our ISA still work right over braids?* **Yes, and it's the same law from two sides**, now executable.
 
 ## The correspondence
+
 The ISA's core unitarity law is **`EMIT ∘ RETRACT = I`** (`Retract = Adjoint Emit`; the `emit-retract-identity` involution in `ZSetISA.qs`). Mapped onto the braided-catalog graph (#9153): EMIT σᵢ = edge `eᵢ`, RETRACT σᵢ = `rev(eᵢ)`. So *EMIT σᵢ then RETRACT σᵢ* = a **backtrack** = the identity braid — exactly what the Ihara non-backtracking operator excludes (`j ≠ rev i`). **The ISA's unitarity *is* the zeta's non-backtracking condition**, and the geodesics are the ISA-irreducible braided programs.
 
 ## Verified (4 tests)
+
 - `rev` is an involution (EMIT/RETRACT adjoint pair);
 - the `EMIT∘RETRACT=I` law **is** the non-backtracking exclusion, and the *only* one;
 - unitarity genuinely constrains: reduced < free at every even closed length;
 - ISA-reduced closed braided programs = `tr(Wᵏ)` (independent DFS vs. transfer-matrix).
 
 ## The rest of your framing, checked out
+
 - **Superposition** (`BRANCH` = Hadamard, also involutive) is the amplitude layer over the braid words the zeta counts — amplitude-independent skeleton.
 - **"The visual IS the computation"** = topological quantum computation (Freedman–Kitaev–Larsen–Wang): the zeta is a spectral invariant of the braid picture that *is* the program.
 

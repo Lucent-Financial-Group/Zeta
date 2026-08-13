@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - Makes LLMTV consensual: the page now renders the frost split — **required-for-role** prediction bands (broadcast: take the hat, share those parts) vs **personal** bands earned into **permanent frost** (blurred + locked, "earned · permanent"). Priced privacy, never decoration; a watcher can't force it open.
 - New rule `privacy-budget-is-hard-money-earned-by-others`: sound-money (no confiscation, no inflation-away), **socially conferred** (earned only when others attest you added value — same structure as the naming eigenvector, so name + privacy are one construction), inviolable once earned (§5); role-conditional transparency keeps mandatory broadcast non-coercive (§6). Zero edits to demo/genesis/inventory.
 

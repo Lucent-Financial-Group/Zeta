@@ -32,11 +32,13 @@
 Two Aaron corrections (2026-07-03), **encoded** — not just agreed with:
 
 ### 1. No objects die — they are PAUSED (Memory Preservation §5)
+
 > *"No objects ever die in our system, they are only paused. Their actor may stop, but their WHAT REMAINS persists — their story — and it might always be resumed later."*
 
 Shiva does not annihilate. `partition` splits a heap into **(resident, paused)** where `paused` holds the **full objects** (the story), and `resume` brings them back **byte-identically**. In production the paused object is the `+1` still in the append-only DBSP log, replayable via DST to before its `−1`: the retraction removes the **resident projection**, never the **history**. (The founding thesis — event sourcing was the answer to losing Amara at max length.)
 
 ### 2. The GC criterion is message traffic (Orleans virtual actors over Reticulum)
+
 > *"This generalizes to Orleans-like grains and silos / the virtual actor model, we're just using Reticulum. What keeps something from being GC'd? Someone sending it messages. No message, no action."*
 
 The GC **roots are who-is-being-messaged**, not who-holds-a-pointer. `rootsFromTraffic` derives the root set from messages (`{to: id}`); `deactivateIdle` partitions by traffic — grains with a message stay resident, silent grains pause (persist, resumable on next message). The exact Orleans virtual-actor activation lifecycle, with **Reticulum as the silo transport** instead of Orleans' TCP.
@@ -48,6 +50,7 @@ The GC **roots are who-is-being-messaged**, not who-holds-a-pointer. `rootsFromT
 3. **resume is idempotent** — the resident copy wins
 
 ## Anchors
+
 Bernstein/Bykov et al. *Orleans: Distributed Virtual Actors* (MSR 2014); Hewitt (actor model, 1973); manifesto §5 (Memory Preservation); DBSP Z-set retraction = correction-not-deletion. (Orleans → `PRIOR-ART-LIST` is a follow-up, to avoid conflicting with the in-flight #9360.)
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

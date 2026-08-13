@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - Replace full `markdownlint-cli2 --fix` in mechanical lint auto-heal with the repo's **safe** MD032/MD026 fixer only.
 - Full `--fix` was racing agent PRs and mangling line-leading `#4 (item ref)` into ATX headings (MD018) and math/star prose like `ρ* and` (MD037).
 - Gate still enforces the full rule set on check; auto-heal no longer applies unsafe fixes.
@@ -35,9 +36,11 @@
 - Clear the current main MD009 trailing-space red in `FROZEN-CORE`.
 
 ## Why (reliability class)
+
 Outside-world / agent-ops — **not** a DST violation. Concurrent main landings + unsafe auto-heal + interactive git editors are harness/CI reliability, not simulation nondeterminism.
 
 ## Test plan
+
 - [x] `mise exec -- markdownlint-cli2 "**/*.md"`
 - [ ] CI green
 - [ ] Confirm auto-heal commit message becomes `MD032/MD026 safe fixer` on next md-touching PR

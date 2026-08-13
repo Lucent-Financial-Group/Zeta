@@ -59,6 +59,7 @@ With rung 1's **exhaustive** `adder`/`equal` proofs, the whole processor is gate
 Programs ≤ 256 instructions (8-bit PC).
 
 ## Column B, complete
+
 gates/adder (1) → program→circuit synthesis (2) → ALU (SUB/bitwise/compare) → clocked state (3) → clocked CPU (4) → **fully-synthesizable CPU (5)**. The residual-target knob is fully turned to silicon.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

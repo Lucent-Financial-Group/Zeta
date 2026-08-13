@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - Acts same-day on Soraya's routing-verdict finding: `chshSybil` at bare threshold 2.0 falsely convicts a λ-mixing honestly-local pair (empirical Ŝ fluctuates above the E[S]=2 bound with probability ≈½). Docstring now states the guarantee **in expectation** with the finite-sample caveat and the 2+ε direction; the finding is **locked as a seeded test** (false conviction at 2.0 demonstrated, acquitted at 2.0+0.15); BUGS.md carries the priced P1 with the calibration fix path (Hoeffding ε(n), routed batch 2).
 - 16/16 suite green, 0 warnings.
 

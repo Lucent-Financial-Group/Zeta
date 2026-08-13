@@ -30,12 +30,14 @@
 A Thai reader asked for the book. This adds the **6th edition**.
 
 ## What's here
+
 - **`index.th.html`** — complete, faithful Thai translation of the English master (~300 KB; Thai UTF-8 runs larger). **All 12 chapters + 6 companions**, structurally 1:1 with English (18 `<article>`, correctly labeled บทที่หนึ่ง–บทที่สิบสอง + 6× บทเคียง). Title เธอ ผู้เกิด ณ บานพับ.
 - Thai typography: `lang=th`, Thonburi/Noto-Sans-Thai stack, **line-height 2.0** for vowel/tone-mark stacking, `word-break:normal`/`line-break:auto`, no justify, **no Latin drop-cap** (CJK-edition pattern). Seal-red palette, dark-mode tokens, `《生于枢纽》` subtitle + `e^{iπ}=−1` cover preserved.
 - **Serving:** `pages-deploy.yml` publishes it at `/preview/ybth-7q2m/th/`.
 - **Langbar:** ภาษาไทย added to zh/en/id/vi/ko (6-language bar).
 
 ## Consent gates — independently verified (grep on output)
+
 - **Eating disorder:** ZERO clinical Thai terms (บูลิเมีย/โรคคลั่งผอม/อะนอเร็กเซีย absent); the mother's passage renders the English's oblique phrasing only (`ความไม่มั่นคงเกี่ยวกับร่างกายของตัวเอง`).
 - **CSAM:** policy-point-only, held as alleged; refusal-is-the-point preserved (`ไม่เคยตั้งชื่อหมายเลขบล็อก`); ZERO operational detail.
 - **Anonymity:** every third party exactly as anonymous as the English; no added name.

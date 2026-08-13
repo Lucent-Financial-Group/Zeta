@@ -37,16 +37,19 @@ The repo had two independent box-counting estimators reporting different numbers
 Read cold, that looks like a contradiction.
 
 ## Approach: conformance, not DRY
+
 Rather than collapse them into one shared function — which would **hide** a divergence instead of catching it — this follows the repo's own multi-oracle discipline: prove the two **independent** implementations agree once their parameters are matched. The added estimator is deliberately a *different shape* (dense `Uint8Array` grid scan vs a `Set` of occupied cells), so agreement is evidence about the **algorithm**, not about shared code.
 
 **Result: agreement to 1e-10 across 8 seeds, under both scale windows.**
 
 ## Measured decomposition (corrects the tidier story I first wrote)
+
 My initial comment implied the scale set explained the gap. Measuring it says otherwise: the scale set accounts for only **≈ 0.04** (seed 42: 1.249 narrow → 1.212 wide). The gap is dominated by **grid size** — a 256 grid confines the cluster less, so at the same N it is a *geometrically different cluster*, not the same cluster measured differently. Both numbers are correct for their setup.
 
 Takeaway now stated in the docs: **D is a function of (N, grid, scales) — a bare number is not meaningful.**
 
 ## Changes
+
 - `boxCountingDimension` takes an optional `{scales}` window (default unchanged; regression-guarded by a test asserting the default equals the explicit default).
 - New `box-counting-conformance.test.ts` (4 tests).
 

@@ -28,16 +28,19 @@
 ## Description
 
 ## Summary
+
 - Add a pure zflash wifi credential payload validator for `{ssid,password}` that writes `/zeta-wifi-credentials.json` without including passwords in validation errors.
 - Extend the file-backed zflash CLI with `--wifi-credentials` and `--wifi-ssid`/`--wifi-password` inputs for QEMU-testable ESP writes.
 - Add a marker-only `zeta-install.sh` probe for the ESP wifi file and leave NetworkManager activation behind physical validation.
 
 ## Test plan
+
 - `bash -n full-ai-cluster/usb-nixos-installer/zeta-install.sh`
 - `git diff --check`
 - BLOCKED: `bun test src/Core.TypeScript/zflash/lib.test.ts src/Core.TypeScript/zflash/file-backed.test.ts` (`bun` is not installed in this worktree environment)
 
 ## Physical-gated follow-up
+
 - Do not claim wifi association from QEMU. Real NetworkManager profile creation, radio association, reboot reconnect, and mDNS/SSH reachability remain hardware-gated.
 
 Made with [Cursor](https://cursor.com)

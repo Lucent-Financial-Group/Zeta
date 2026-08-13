@@ -28,14 +28,17 @@
 ## Description
 
 ## Summary
+
 - disable mise exec auto-install after the explicit Windows ARM supported graph is provisioned
 - keep later Bun bootstrap commands from retrying unsupported Java, Semgrep, and 1Password tools
 - assert the control is applied after explicit install and before the first Bun exec
 
 ## Failure evidence
+
 Main run 30767910405 proved the clean-host graph filter retained and installed supported tools. The later agent-CLI step then ran `mise exec -- bun ...`, whose default `exec_auto_install=true` expanded back to the full config and retried the three excluded ARM tools.
 
 ## Verification
+
 - `MISE_EXEC_AUTO_INSTALL=false mise settings get exec_auto_install` returned `false`
 - PowerShell parser accepted `tools/setup/install.ps1`
 - `mise exec -- bun test src/Core.TypeScript/ci/windows-install-ps1-smoke.test.ts` (12 passed)

@@ -30,6 +30,7 @@
 Diagnostic instrumentation for the intermittent x86_64 first-boot `install.sh` rc=1 (`081KZETP6AT08QG0R003MG1VYN`). The last capture had **no `mise ERROR`**, so the cause isn't necessarily mise and can sit above `tail`'s window.
 
 Two additive changes (no success-path behavior change):
+
 1. `MISE_VERBOSE=1` on the `install.sh` invocation — full explanation if it *is* mise-side.
 2. `tee` the FULL output to `~/.zeta/install-sh-firstboot.log`; on failure, grep the actual error lines to the console (which reaches the CI serial log) — captures the rc=1 cause regardless of source (mise/bun/nix/script) or position.
 

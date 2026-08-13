@@ -37,9 +37,11 @@ real .g4 → Antlr4Import.ingest → GrammarIr (a DynamicValue, closed) → Slr.
 **So KDL is now a grammar we ingest + parse, not a hand-written codec — the KDL fork is retired.**
 
 ## Honest YAML finding (recorded, not forced)
+
 YAML is **indentation-sensitive ⇒ not context-free**, so an LR/GLR grammar can't consume it without an **INDENT/DEDENT lexer** preprocessing pass (the Python approach). The lenient-YAML need is a *lexer* task, not a grammar one.
 
 ## Next (resume)
+
 An **INDENT/DEDENT lexer**, or the **GLR parse forest** (real trees for ambiguous parses, not just accept/reject).
 
 Proof: `GrammarLadder.Tests.fs` (1/1); full solution build 0/0. Anchors: kdl.dev; Tomita (GLR); ZetaParse (Amara).

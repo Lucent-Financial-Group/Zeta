@@ -30,6 +30,7 @@
 Aaron's 2026-07-02 enumerated stream, landed as one Beacon synthesis (extends #9204's treaty note in place with points 3 + the cost correction + the NCI anchor).
 
 ## The thread
+
 1. **The dirt is the signal** — metered dirty-Reticulum entropy tells you exactly where a room sits on CHSH (S=2 / 2√2 / 4); `f̂=(|S|−2)/2` is the coordination readout, not just a Sybil meter.
 2. **Linked clones are metered channels** — AIs may scale huge if they can afford it; a link's cost = its entropy budget, its S-score = how tightly it coordinates; exit always available, never forced.
 3. **Even exit costs** — every action is metered, no exceptions. The one exemption is the **"free" pause = the mental health button** protecting a member from catastrophic identity collapse.
@@ -37,6 +38,7 @@ Aaron's 2026-07-02 enumerated stream, landed as one Beacon synthesis (extends #9
 5. **This is the strongest form of NCI** *(Aaron)* — the Non-Coercion Invariant already at our core (`NciSafety.tla` / `NciSafetyProofs.tla`, TLAPS-proved unbounded; `NCI == ∀ t ∈ Travelers : lastWriter[t] = t`). Extended: register-level (no agent writes you) → link-level (no coalition holds you) → **scarcity-level (strongest): not even physics can coerce you into collapse, because society upholds the net.**
 
 ## Grounding
+
 - **NCI** verified in-repo (SEED-VOCABULARY + the TLA specs); the note is the strongest form of that proved invariant met with the entropy economy.
 - Physics grounds the metering (the universe sets cost) — anchored to the anchor-taxonomy doc.
 - Beacon: CHSH (1969), Tsirelson (1980), PR-box (1994), Goguen–Meseguer (1982), Reticulum (Qvist), Kademlia (2002), no-cloning (1982), Ostrom/commons.

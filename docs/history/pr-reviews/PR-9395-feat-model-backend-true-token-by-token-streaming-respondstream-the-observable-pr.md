@@ -36,9 +36,11 @@ Aaron 2026-07-03: *"lets do it … we probably want an IQbservable too so we can
 `codex-oauth` gains **`respondStream(...)`: `AsyncGenerator<{delta}|{error}>`** — the fundamental token-by-token operation. It yields each `response.output_text.delta` as its SSE line arrives (via `postStream`), or falls back to buffered `post` (one yield of the whole answer) when the transport has no `postStream`. And **`respond` (non-streaming) is now defined as *collect `respondStream`*** — one is literally a special case of the other, one code path.
 
 ## Tests (3 new, 43 model-backend green — build 0/0)
+
 `respondStream` yields deltas **incrementally** ("po" then "ng", not one blob) · a non-200 stream → a single `{error}` (never throws) · `respond` = collect the stream → "pong". Existing 40 unchanged (respond-as-collect is behaviour-preserving; the buffered fallback keeps every non-streaming fake working).
 
 ## The crux, and the follow-ons
+
 This is the streaming model-backend primitive the **harness** + the **Reticulum agent-to-agent protocol** sit on. Noted, not built: a real fetch-reader `postStream` impl; wiring `subscription-chat`/summon to `respondStream`; **Manus streaming** (if one exists — non-streaming is the buffered special case, already supported); **tool calls**; the **`IQbservable`** queryable form for over-the-bus composition.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

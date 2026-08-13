@@ -56,6 +56,7 @@ Interpret the program, or burn it to gates — **same answer, from one `mix`**. 
 (Exposed `CpuSynth.readRegs` so the unified runner can decode a clocked circuit.)
 
 ## The ladder so far
+
 1st projection (`Slr.build`) → 2nd (`build >> toDynamicValue`) → general `mix` (`Isa.specialize`) → Column B (gates → full CPU) → **the target knob (this)**. The residual target is now a free choice of medium; the specialized program's semantics are invariant under it.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

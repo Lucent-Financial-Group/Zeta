@@ -30,10 +30,13 @@
 **Aaron 2026-07-02:** "how is our futamara projection lvl 3?" — answered by advancing the ladder to the honest next rung.
 
 ### Where we were
+
 `Slr.build : Grammar → Tables` is already the **1st projection**: LR table-gen is partial evaluation of the LR interpreter w.r.t. the grammar, so `Tables` is a parser **specialized to one grammar** (the residual).
 
 ### What this adds (the 2nd projection)
+
 Because our residual is **data**, not compiled code, serializing it makes the specialized parser a first-class, shippable object:
+
 - `Slr.toDynamicValue : Tables → DynamicValue` — the residual parser as **canonical, byte-locked IR** (maps → key-sorted arrays; symbol shape `{k;n}` shared with `GrammarIr`). Rides the codec stack (json‖ + cbor cross-verify), DST-replayable, version/rollable.
 - `Slr.ofDynamicValue` — the inverse (deserialize → runnable tables).
 - `Slr.parseFromIr : DynamicValue → tokens → Result` — run the specialized parser **straight from IR**.
@@ -41,11 +44,13 @@ Because our residual is **data**, not compiled code, serializing it makes the sp
 So `build g |> Result.map toDynamicValue` **is** the 2nd projection (grammar → a standalone specialized-parser program); `parseFromIr` executes it.
 
 ### Tests (11/11 SlrTests, Core 0/0)
+
 - **Faithful round-trip**: Action/Goto/Start/Conflicts identical after serialize→deserialize; `parseFromIr ≡ accepts` on 6 strings (incl. rejects).
 - **Deterministic serialization**: same grammar → identical IR (byte-lock/DST).
 - The residual IR cross-verifies clean through `json‖ + cbor`.
 
 ### Lvl 3 (not this slice)
+
 Cogen / `gen(gen)==gen` still needs the specializer expressed **in the grammar IR** — the homoiconic meta-grammar ("english as its own grammar"). This rung is what makes that reachable.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

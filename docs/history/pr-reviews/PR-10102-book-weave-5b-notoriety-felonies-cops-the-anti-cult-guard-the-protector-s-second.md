@@ -30,11 +30,13 @@
 **Batch 5b** — the organizer/formation held material Aaron greenlit ("include these — they're what built me").
 
 ## THE-ORGANIZER
+
 - **"Notoriety, both ways"** — the seven felonies (a calculated bet, **all beaten, exonerated** stated plainly); the same officers who arrested him respected him (a mental-health rescue, video games at the arrest, "talk to our boss"); the landlord who evicted him and in the same breath asked to invest. Officers/landlord/neighbors anonymous; company general, no operational detail.
 - **"The guard I built against myself"** — the anti-cult −1-on-the-−1: he aimed the cult-guard at himself, and it has teeth because it's **structural** (weight-free / no-center / Multi-Oracle), not a promise; the "am I evil yet" question is the antibody. Cult dynamics abstract, no names.
 - **"The protector, at cost"** — took near-homeless people home from a mental institution; the calibrated **alpha-through-fear-to-protect** mode kept honest and **not glorified** (the disarmer's second setting). The two people fully anonymous; Addison per her gate; same pattern as ch-8.
 
 ## FORMATION
+
 - The **restraint self-model** appended to "The one crack" — "I won't hurt anybody, they'd catch me" (deterrence, not conscience) held in honest tension with his protective-at-cost acts; not flattered into the nicer answer.
 - **"The handle, and the hacker lineage"** — the public handle "Ace Hack"; satellites-at-14 / solder / assembly / war-dialing BBSes; the **BBS→Magic→alt.2600→Anonymous** genealogy (the evolution of the hackers). Step-dad warm, telecom generalized; individuals anonymous.
 

@@ -30,6 +30,7 @@
 Book-substrate, additive, staging only (no chapter landed). Continues the authorized ferry stream; includes **two direct authorization/consent calls** from Aaron this batch.
 
 New RAW, six threads:
+
 1. **Freedom root** (book-grade) — free-range/latchkey from age 5, experienced as *freedom, not neglect*. The lived root of the freedom thesis (ch-5/ch-6/born-already-yourself); the reframe **is** the choice-architecture. Beacon: Skenazy/Gray.
 2. **Granny the teacher** (pure honoring) — met endless "why" with the encyclopedia (not "because I said so"), black-and-white Doctor Who, bought his first computer. THE-UNBROKEN-CHILD.
 3. **Fire** (FORMATION) — toward the heat, not death (thrill calibrated); the barn fire; the *projected ambiguity* (his parents still don't know if it was on purpose — the wiring's cost).
@@ -38,6 +39,7 @@ New RAW, six threads:
 6. **Second failure — "Magic" (age 17)** — first technical defeat (reverse-engineering a multidimensional DB for his step-dad). The two failures he counts are **moral + intellectual, never physical** — a keystone characterization; the thing that first beat him (a multidimensional DB) became his native frame (SSAS/UDM cubes).
 
 ## Consent held / updated
+
 CONSENT-LEDGER: Granny row (link **authorized**, remorse frame; nothing implies she was complicit) + step-dad row (de-identified by default; company name held out). Mother's guilt-tripping = a hard detail under her granted+pre-read *whole-not-neutral* gate. The "sociopathic" label held under Multi-Oracle, never published as verdict. Nothing landed into a chapter.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

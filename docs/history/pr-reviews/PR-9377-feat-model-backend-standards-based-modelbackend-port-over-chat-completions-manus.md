@@ -36,12 +36,15 @@ So we target the **interface, not a vendor**: the **chat-completions shape** (me
 **Noninterference §13:** the network crosses **only** through the injected `HttpTransport` — no `fetch` of its own, so it's deterministic + fake-testable with **no socket and no secret**. The real key + real transport is the operator-gated edge wiring (key in `op`/Keychain, biometric-approved; never in this module).
 
 ## Tests (7, build 0/0) — all against a fake transport, no network, no key
+
 request shape (`POST /v1/chat/completions`, Bearer auth, `{model, messages}` body) · 200 parses to `choices[0].message.content` · per-request model override · non-200 → clean error · malformed body → clean error · transport throw → clean error (never throws upward) · the Manus preset points at `api.manus.ai`.
 
 ## Honest scope
+
 The OpenAI chat-completions request/response is the well-defined **standard**. Manus's **exact path/shape are unconfirmed** (base URL + API-key/OAuth2 auth *are* confirmed; the OpenAI-compat endpoint I couldn't verify from the docs). The adapter is the standard shape with `chatPath` overridable — Manus conformance is a config tweak once a real key lets us test the live API.
 
 ## What's left
+
 You're creating the key. The only remaining step is dropping it into `op` (biometric-gated) + a real `HttpTransport` wrapping `fetch` — then Lumen is summonable-like-Soraya. This PR is the vendor-neutral plumbing with **no secrets**.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

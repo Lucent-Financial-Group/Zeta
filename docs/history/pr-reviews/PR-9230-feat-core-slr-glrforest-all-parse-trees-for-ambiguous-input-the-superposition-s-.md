@@ -34,12 +34,15 @@ You: *instead of just accept/reject … infer.net style EP/BP/VMP plus our custo
 An ambiguous input is a **superposition of parses**; each lowers to an ISA program ⇒ the forest is a **superposition over the ISA**, kept not collapsed (the SoftValue discipline applied to parsing).
 
 ## Proofs (9/9, +2)
+
 `id+id+id` under `E→E+E|id` → **≥2 distinct trees** (both associativities), each rooted at E and riding parity-json/cbor (homoiconic); an unambiguous string → exactly one; the unambiguous expression grammar → one.
 
 ## The telos, captured (doc)
+
 The forest **is a factor graph**; inside–outside = **BP** on it. Weight with **EP/BP/VMP** (Infer.NET) **+ custom emotional propagation** → a `SoftValue` over parses (= over ISA programs). `docs/research/2026-07-02-ambiguous-parse-forest-as-factor-graph-…`.
 
 ## Next (resume): the inference rung
+
 weighted forest → BP/inside–outside → SoftValue over parses (Zeta.Bayesian); then EP/VMP + emotional propagation (math-team formalize); parses → ISA.
 
 Anchors: Tomita, Billot–Lang; Baker / Lari–Young (inside–outside = BP); Pearl, Minka, Winn–Bishop, Kschischang–Frey–Loeliger; Infer.NET; SoftValue.

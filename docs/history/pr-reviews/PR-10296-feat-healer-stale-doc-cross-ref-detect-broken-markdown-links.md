@@ -32,6 +32,7 @@
 Tier-0 healer that detects broken relative-path cross-references in markdown files.
 
 **What it does:**
+
 - Scans `[text](relative/path)` links in `.md` files
 - Checks whether the target exists in the file tree
 - Annotates broken links: `text <- Blast radius bound correctly triggers (1176 stale refs accumulated in

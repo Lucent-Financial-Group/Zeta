@@ -30,15 +30,19 @@
 Slice 3 of the cell scheduler (`081KTG5S0M9`) — **fairness + parking**, with the razor applied.
 
 ## The finding
+
 Fairness is **structural, not a knob**: the round-based runner steps every ready cell exactly once per round (perfect round-robin), and the sequential runner re-enqueues at the ready-queue **tail** — same round-robin. No cell can starve another. Parking is **free**: an idle cell is absent from the ready set, costing nothing until a message wakes it.
 
 ## What ships
+
 - `activeCells` (ready set) + `parkedCells` (idle set) observability — a clean partition of the cell set (the idle-counter externalised into the inbox structure).
 
 ## What's deliberately *omitted* (scope honesty §6)
+
 The **BEAM reduction-budget**. Its job is to stop one cell monopolising a ferry when a single *step* does unbounded work — but each step here is bounded to exactly one message, so a budget knob would be **unearned weight** (only-the-irreducible-is-primitive; interfaces-free-classes-earned). It becomes earned only if a future step variant folds many messages per turn. Named, not silently dropped.
 
 ## Tests (4 new, 15 total)
+
 - **starvation-freedom**: a 100-message flooder doesn't stall a 1-message peer (cold runs by turn 1).
 - **structural round-robin**: peers interleave `a,b,a,b,a,b`, not `a,a,a,b,b,b`.
 - **parking partition**: active ⊎ parked = all cells, no overlap.

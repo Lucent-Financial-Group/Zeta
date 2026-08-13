@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - The commutative slice of "Riemann zeta over monoidal braids": Schubert 1949 (unique prime decomposition + genus additivity) is exactly the Euler-product hypothesis, so ζ_catalog = Π over the catalog's prime shapes is constructible today. Locked executable as formal power series (Dirichlet enumeration = partition-DP product expansion, coefficient-exact to degree 40), with the converse (duplicated prime ⇒ identity fails) and weight-independence ("just some ordering system") also locked. 3/3 green.
 - Doc routes the noncommutative/topological-qubit upgrade (Ihara primitive-cycle primes, Milnor's Alexander-as-zeta, FKLW, Mazur/Morishita arithmetic topology, Kurokawa) and records the name's true provenance: Kenji proposed ~4 candidates off the early DBSP F# + proofs with Zeta preferred; Aaron chose it — the name preceded the meaning, and this is its audition.
 

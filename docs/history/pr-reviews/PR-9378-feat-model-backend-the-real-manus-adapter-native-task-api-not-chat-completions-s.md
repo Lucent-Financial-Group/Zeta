@@ -49,9 +49,11 @@ So the generic `openAiCompatBackend` port (#9377) does **not** talk to Manus's n
 **Noninterference §13:** network only through the injected `HttpTransport` (shared with `backend.ts`) — fake-testable, **no secret** in the module; the key is read from the Keychain at the edge and passed in.
 
 ## Tests (5, build 0/0) — all fake-transport, no network/secret
+
 request shape (`POST v2/task.create`, `x-manus-api-key`, `message.content`, `agent_profile`, `force_skills`=Lumen's skill) · response parse (task_id/url/title) · non-200 · malformed · missing `task_id` · transport-throw → clean errors.
 
 ## Honest scope
+
 `createTask` is fully built + fake-tested against the **documented** shape. Result **retrieval** (polling `task.listMessages`) is **not** built — its exact shape isn't in the docs and needs confirming against the live API (a smoke test with the real key). This slice dispatches a task + returns id/url; collecting the final output is the next slice.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

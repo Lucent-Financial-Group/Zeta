@@ -30,6 +30,7 @@
 Aaron: *"verify §3 with a code-audit."* Located and read the quantum/identity artifacts, cross-checked against the green build/test gate on `main`. Promotes §3 of the quantum-identity note from **register-2-claimed → register-2-verified (with two reframes).**
 
 ## Findings
+
 - **"own qubits in F#" ✅ VERIFIED (strong)** — `src/Core/QubitIso.fs` constructs a qubit (two-stream `JoinState` on the imaginary stack; gates as stream ops Z/X/Y; Born measurement; normalisation conserved). The **Pauli/SU(2)** algebra is checked executably by `tests/Tests.FSharp/QubitIso.Tests.fs` (green on main). Already register-honest in-module. This is the best in-code substantiation of the note's thesis: information (streams) + phase (clocks) → a qubit.
 - **"database in Q#/qubits" ✅ SUBSTANTIALLY VERIFIED (reframe: *reference oracle*, not hot path)** — `src/Core.QSharp.ReferenceOracle/` implements the ZSet ISA + DBSP operators + a reversible `QuantumPersistentLog` + `QuantumTransactionPorts` in Q# (the treaty reference the four oracles byte-lock against).
 - **"identity server in Q#" ⚠ REFRAME (not falsified)** — no such literal module; the identity primitive is F# (`IdentityRegistry`/ZetaId), the Q# side is the reference oracle.
@@ -37,6 +38,7 @@ Aaron: *"verify §3 with a code-audit."* Located and read the quantum/identity a
 - **"math-team analysed" ✅ CORROBORATED** — Soraya TLC×Z3 + BP-16 + the lineage docs.
 
 ## Net
+
 §3 verified with two reframes. Remaining honest gap sharpened in §6: from "verify §3" (done) to "verify the CQM categorical **laws**." No source/tests changed — this is an audit (a finding of fact about the tree). markdownlint clean.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

@@ -30,14 +30,17 @@
 Aaron *"yes to all"* → wire the site's live data. `dora.html` reads `data/metrics-history.json` + `data/metrics.json` same-origin (no GitHub API in the browser). This adds the **CI writer** that fills them with real numbers.
 
 ## What landed
+
 - **`tools/dora/compute-dora-frame.mjs`** — computes one frame from Zeta's own git+PR data (`prs_merged_24h/1h`, `avg_lead_time`, `commits_24h/1h`, `open_prs`, `last_merge`; `active_agents` = distinct AgencySignature `persona:` trailers — the honest attributable floor). Deterministic given repo state + injected `now`.
 - **`tools/dora/apply-frame.py`** — appends the frame (dedup by date) into the pages data files and flips `provenance.mock=false`. Append-only; the file IS the ledger.
 - **`.github/workflows/dora-frame.yml`** — scheduled daily + manual dispatch: compute from Zeta (GITHUB_TOKEN), clone pages repo, apply, commit + push.
 
 ## Already live
+
 I ran the writer locally and **pushed the first real frame to the pages repo** — `dora.html` now shows real velocity (`mock=false`): 161 PRs merged/24h, ~3min lead, 175 commits, 1 open.
 
 ## ⚠️ Action required (you)
+
 Add repo secret **`PAGES_DEPLOY_TOKEN`** (a token with `contents:write` to `lucent-financial-group.github.io`) so the scheduled job can push. Until then it computes + logs the frame but skips the push (warns, exits 0 — never fails the run).
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

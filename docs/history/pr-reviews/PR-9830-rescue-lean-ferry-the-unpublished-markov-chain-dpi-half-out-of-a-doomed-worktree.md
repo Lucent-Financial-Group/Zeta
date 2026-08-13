@@ -30,6 +30,7 @@
 Rescues 6-week-old unpublished Lean work from an at-risk worktree (`otto/lean-data-processing-inequality`, 2026-06-21) before disk reclamation. **COMPLEMENT, not supersede** — verified declaration-by-declaration, zero name overlap: main had the analytic lever (`relEntropy_nonneg`/`gibbs_le`) with no model; the worktree had the constructive Markov-chain model with no lever. Nothing from main dropped.
 
 **Three findings the brief did not anticipate:**
+
 1. **Neither file ever contained a `sorry`** — the "1 sorry" each (mine, from grepping) was the prose string `no `sorry`` in a header comment. My error, corrected.
 2. **The worktree header was materially FALSE**: under a *"WHAT IS PROVEN (no sorry)"* banner it claimed a `dataProcessing` theorem ("I(X;Z) ≤ I(X;Y)") that **did not exist anywhere in the file**. That's a *worse* failure mode than a `sorry` — an absent theorem emits no warning, no `sorryAx`, and passes every axiom audit silently. Recorded as an explicit honesty note.
 3. **The rescued proof did not build** — genuine 6-week Mathlib drift (`Finset.mul_sum` no longer fires on `a * (S / c)`). Fixed termwise, deliberately *without* widening the tower's import surface.

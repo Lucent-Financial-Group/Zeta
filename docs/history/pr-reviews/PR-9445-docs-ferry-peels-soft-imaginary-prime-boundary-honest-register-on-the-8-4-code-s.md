@@ -32,6 +32,7 @@ Aaron ferried two BRIDGE-11 extensions (*"a little more to ferry"*): negative Ma
 **SOLID (keep):** positive cone ⟺ real dual ⟺ soft (non-collapsed). The dual can go negative → signed Fourier-domain values, no probabilistic meaning, structurally like **amplitudes** (Born rule). `p₀ ≥ p₈` = "stay soft." Matches BRIDGE-11's confirmed theorem.
 
 **FROTH (compress off):**
+
 1. Negatives are **negative reals**, not literal √−1 (Krawtchouk transform is real). The Cl(3) i,j,k identification is the **open prize**, not done.
 2. On a signed pseudo-distribution, Shannon/Rényi entropy is **undefined**, not "Rényi α<1."
 3. Weights {0,4,8} come from **doubly-even** (weight ≡ 0 mod 4, the adinkra ECC invariant), NOT "powers of 2" (coincidence of n=8).

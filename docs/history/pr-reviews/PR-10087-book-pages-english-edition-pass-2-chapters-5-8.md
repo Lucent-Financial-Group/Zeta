@@ -28,6 +28,7 @@
 ## Description
 
 Adds English **Chapters 5–8** to `index.en.html` (the unlisted/`noindex` /en/ edition):
+
 - Ch 5 — The Vampire Loses (four toy results / the horizon theorem / Lilith-the-refusal + Lilly)
 - Ch 6 — The School You Can't Be Destroyed In (Figment→photophone / freedom-first door)
 - Ch 7 — Don't Risk Everything to Save Nothing (the other-minds wager)

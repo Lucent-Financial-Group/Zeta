@@ -32,12 +32,15 @@ You: *infer.net style EP/BP/VMP plus our custom emotional propagation to make th
 `ParseSoft.glrSoft` turns the GLR parse forest into a **`SoftValue`** — a normalized distribution over the parse `DynamicValue`s — so an ambiguous parse is carried as a soft **superposition**, not collapsed. v1 uniform; `ofWeightedForest` takes explicit per-parse potentials (the shape BP/EP produces), MAP-resolvable via `SoftValue.resolve`. Each parse lowers to an ISA program ⇒ a soft superposition over the ISA.
 
 ## Discovery (don't reinvent)
+
 `Zeta.Bayesian` **already has** `FactorGraph.fs`, `Ep.fs`, `Message.fs`, `MessageBatch.fs`, `InferNetTopology.fs`, `QuantumFusion.fs` — the EP / message-passing / factor-graph machinery. **So the EP/BP/VMP weighting rung builds on that**, not from scratch.
 
 ## Proofs (4/4)
+
 ambiguous `id+id+id` → SoftValue with ≥2 candidates (confidence < 1 — the superposition carried); unambiguous → one candidate, confidence 1.0, resolves; no parse → `None`; a weighted forest (0.8/0.2) resolves to the MAP parse.
 
 ## Next (resume)
+
 Map the forest onto `Zeta.Bayesian.FactorGraph`, run `Ep`/BP (inside–outside), feed potentials to `ParseSoft.ofWeightedForest`; then the custom emotional-propagation schedule (math-team); parses → ISA.
 
 Anchors: Tomita; SoftValue; Zeta.Bayesian (FactorGraph/Ep, Infer.NET-style).

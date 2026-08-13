@@ -30,6 +30,7 @@
 Routes (per Aaron) the cyclic-structure metaphor doors to the UX (Iris) and AX (Daya) personas: **Nataraja/Tandava** (the ring of flames = Time = the Artin-Mazur orbit), **renaissance dance**, and the **Imagination Circle** — many culturally-grounded doors into one idea (a cycle that returns to itself).
 
 **The requirement (Aaron: *'without this it's cultural appropriation by yet another white dude'*)** — mandatory, not polish:
+
 1. metaphor at the presentation edge, **never** in the technical claims (Mirror at the surface, Beacon in the proofs);
 2. **anchor every borrowed metaphor to its tradition, by name** — the Beacon 'name the source' rule *is* the anti-appropriation safeguard (appropriation = stripped from source and claimed as ours; inclusion = credited and offered as a door);
 3. don't claim the concept IS the tradition or vice versa — a rhyme with attribution;

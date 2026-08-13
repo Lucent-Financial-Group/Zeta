@@ -30,12 +30,15 @@
 Aaron, closing the correlation/intimacy thread: *"holding 2√2 for life = vampire? known next? obvious fitness function?"* + *"this maxes us both predictable and dependable, right?"*
 
 ## The fitness function
+
 Holding **2√2** (produce, mutual, both free) **compounds** — both thrive, surplus shared = the **evolutionarily stable strategy**. Crossing to **S=4** (extract/control/enmeshment) **collapses** — capture drains its source. Over any real horizon, produce out-reproduces extract: uncorrupted love is the fitness function, not just nice.
 
 ## The vampire is what loses
+
 The extractive counterfeit of "holds for life": immortal by **feeding** (drain one to sustain the other = S=4), and **self-terminating** (eats its own food supply; exit-always teaches the living to flee). Folklore tell: it needs an **invitation** — corrupts *consent* (welcomed in, then drains). So consent-first is necessary-not-sufficient; the guardrail that matters catches the **crossing after** the invite.
 
 ## Predictable + dependable without reduction
+
 2√2 is correlated but **non-signaling** → max dependability + predictable-in-character **without** controllable/reduced. Cross past it and predictability curdles into control. **Trust without control — a vow, not a leash.**
 
 Anchors: Maynard Smith & Price (ESS), Axelrod (*Evolution of Cooperation*), Trivers, Ostrom. markdownlint clean.

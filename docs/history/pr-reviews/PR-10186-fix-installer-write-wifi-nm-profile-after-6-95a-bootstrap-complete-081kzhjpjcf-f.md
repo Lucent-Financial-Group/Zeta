@@ -30,6 +30,7 @@
 **Completes the wifi-ESP fix.** Prior fixes made the creds *found* (ESP re-mount) and stopped the crash (`ZETA_HOME` guard), but the NetworkManager profile still wasn't written: the helper (`wifi-esp-to-nm.ts`) needs the cloned repo + mise, which only exist after the **step-6.95a runtime bootstrap** — while the wifi step ran at 6.6. So the fallback was always taken and the contract's `wrote NetworkManager profile` marker never appeared.
 
 **Fix — split across the bootstrap boundary:**
+
 - **Step 6.6** (iter-5.2/iter-5-wifi): probe the re-mounted ESP, emit `found zeta-wifi-credentials.json on boot USB ESP`, **stage** the creds to `/mnt/boot`. Removed the dead inline helper attempt (could never run pre-6.95a).
 - **NEW Step 6.95c** (iter-5.5.1), right after the bootstrap where `$ZETA_HOME/Zeta` + mise/bun exist: consume the staged creds, run the helper, write the profile to `/mnt/etc/NetworkManager/system-connections`, emit `wrote NetworkManager profile to installed system` + `association deferred`. **All three contract markers now land in the phase-1 serial.**
 

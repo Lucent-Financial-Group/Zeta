@@ -28,12 +28,14 @@
 ## Description
 
 ## Summary
+
 - Add `continuationReadout` to the Dark Hall room transcript contract.
 - Add `ofHeatBoardOutcome` so budget-stopped heat-board sim loops expose their resume token, state pointer, stop reason, and admitted resume base tick.
 - Populate the last transcript tick with the encoded continuation token when a link is resumable.
 - Fix markdownlint spacing in the latest Adinkra letter from main.
 
 ## Verification
+
 - `dotnet test tests/Tests.FSharp/Tests.FSharp.fsproj -c Release --filter "FullyQualifiedName~DarkHallRoomTranscriptTests"`
 - `dotnet build -c Release`
 - `dotnet test Zeta.sln -c Release --no-build`

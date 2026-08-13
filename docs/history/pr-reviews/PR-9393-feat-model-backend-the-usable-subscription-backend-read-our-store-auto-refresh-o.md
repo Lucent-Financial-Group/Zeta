@@ -36,6 +36,7 @@ Aaron 2026-07-03: *"eventually this is how you'll all talk to each other over Re
 This is the per-agent **"speak to a model"** primitive the Reticulum agent-to-agent layer sits on: messages-in → answer-out, one provider today (OpenAI subscription), many later.
 
 ## Tests (5 new, 40 model-backend total green — build 0/0), injected fake transport + store
+
 happy path (stored token → SSE → answer, used the stored bearer) · **auto-refresh** (401 → refresh → persist rotation → retry → answer, used the **fresh** token) · not-logged-in → clean error · dead-session (401 then refresh fails) → clean "re-auth failed (run deviceLogin)" · non-401 surfaced as-is (no retry).
 
 *(Rebased onto #9392 — the confirmed-live streaming `codex-oauth` — since the branch was first cut from a stale main.)*

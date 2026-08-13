@@ -50,6 +50,7 @@ Closes the **adoption half** of BUGS.md P1 #9304. The signing membrane shipped i
 5 new migration proofs: `required↔required` discovery · required-**rejects**-unsigned (the flag-day breakage the window avoids) · dual-accepts-**both** · dual-**rejects**-untrusted (no silent downgrade) · fail-closed. Plus full regression — the `off` default preserves old behavior exactly.
 
 ## Remaining (tracked in BUGS.md)
+
 (a) `maintainers/<name>/` keyring → `BeaconTrust` loader (impure I/O slice); (b) the operational `dual`→`required` cutover on the real mesh; (c) TTL-window replay freshness (needs per-peer seq state).
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

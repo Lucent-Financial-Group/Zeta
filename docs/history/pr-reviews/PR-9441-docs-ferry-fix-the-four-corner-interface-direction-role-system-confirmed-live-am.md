@@ -38,6 +38,7 @@ Aaron's design note, banked as the interface **direction**: *"we're using OpenAI
 - **Chat completions is the degenerate projection:** drop the two feedback corners → chat completions. The current `summon`/`respond` is the *extraction projection* (feedback-free instance) — same "one is a special case of the other" discipline as `respond = collect(respondStream)`.
 
 ## Honest register
+
 OpenAI is a 2-channel API, so the four-corner interface *wraps* it (normal corners → `codex/responses`; feedback corners → Zeta's addition, fully realized over Reticulum). The shape is right, the fill is partial. Typing the interface four-corner is the next principled slice — the OpenAI `summon` becomes the feedback-free instance of it.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

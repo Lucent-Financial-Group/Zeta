@@ -32,16 +32,21 @@ You (2026-07-02): *compile to/from our IR and most other ANTLR grammars … smal
 Two pieces on rung 3 (builds on GrammarIr #9205):
 
 ## `Antlr4Import` — ingest `.g4` into the Grammar IR
+
 Don't *run* ANTLR — ingest it (per ZetaParse). Reads the **compatible (BNF) subset**; EBNF operators / `{…}` actions / predicates are **skipped and logged** (`Ingest.Skipped`, no silent truncation). **Deterministic** — synthesised literal-terminal names are hex of UTF-8 bytes, *not* `GetHashCode` (string hashes are per-process randomised → would break DST + byte-lock). **Total** on hostile input.
+
 - **Open fork for you:** how the neutral IR represents **EBNF** (carry it vs. desugar to BNF) — currently deferred by log-skipping.
 
 ## `GrammarIr.isClosed` — the dictionary closure
+
 *"every word defined by other words"*: every symbol referenced in a production (start included) must be defined within the grammar. Empty `undefinedSymbols` ⇒ the grammar is **closed / self-contained** — the first **machine-checkable step** toward the math team's provably-homoiconic meta-grammar.
 
 ## Proofs (9/9)
+
 BNF `.g4` ingests to expected terminals/productions/start; the EBNF rule is skipped **and** logged (surfaced, not leaked); ingested grammar rides the codec stack + round-trips the IR; ingest is deterministic and total on hostile input; the expr grammar is closed and a dangling reference is caught.
 
 ## Vision captured
+
 `docs/research/2026-07-02-homoiconic-meta-grammar-…`: homoiconic (IR *is* DynamicValue), dictionary-closure (`isClosed`), proof obligations routed to **Soraya / Core.Lean4 math team** (homoiconicity fixed point, closure+totality, self-hosting / Futamura `gen(gen)==gen`).
 
 Anchors: ZetaParse (Amara), antlr/grammars-v4 (MIT/BSD); McCarthy (homoiconicity), Kleene, Futamura, Tarski; ZetaId.

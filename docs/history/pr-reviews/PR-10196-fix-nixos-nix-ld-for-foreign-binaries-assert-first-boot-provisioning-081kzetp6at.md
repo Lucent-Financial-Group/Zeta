@@ -30,19 +30,23 @@
 Implements Dejan's recommendation for bug A, plus the acceptance assertion whose absence let it hide for weeks. **Aaron approved the direction** ("notice failure fast + auto-heal built in").
 
 ## Root cause (captured; all 3 retries identical ⇒ deterministic)
+
 NixOS provides no `/lib64/ld-linux-x86-64.so.2`, so mise's **prebuilt** toolchains cannot `execve`. The split is **by linkage, not luck**: every dynamically-linked tool failed (bun/node/python/rust/java/dotnet) while every statically-linked one succeeded (go/zig/uv/shellcheck/k3d/kubectl/helm). The repo already ran `autoPatchelfHook` on the mise **binary** (`overlays/mise-pin.nix`) — nothing patched what mise **fetches**.
 
 ## 1. `nixos/modules/foreign-binaries.nix` (new)
+
 `programs.nix-ld` + library set. Imported by **both** trees (they share no base): the installer ISO config (where Step 6.95a runs) **and** `nixos/modules/common.nix` (installed nodes — the lazy first-login `mise install` recovery fails identically post-reboot without it).
 
 Chose nix-ld over nix-native toolchains so `.mise.toml` stays the **single version source** across all four consumers (GOVERNANCE §24). Measured, not hypothetical: nixpkgs already carries `bun-1.3.3` vs `.mise.toml`'s `1.3.14`, and byte-lock needs the fleet running CI's bytes.
 
 ## 2. `tools/setup/linux.sh` — Dejan's Risk 1 (the dangerous part)
+
 Enabling nix-ld **creates the loader stub**, which under the old *single* predicate would have flipped `tarball_mise_allowed` to TRUE on real NixOS for the first time — silently re-enabling a deliberately-fatal path and shadowing the pinned system mise with a `~/.local/bin` tarball copy.
 
 Split **capability** ("is there a loader") from **policy** ("should we use the tarball"): docker harness → yes; real NixOS with a declarative mise → **no, even with a loader**. Version mismatch now gets its own honest error (bump the nix pin, don't sidestep it). Plus a **fail-fast preflight**: a loader-less NixOS fails in ~1s with a fix hint instead of downloading ~2 GB three times to reach a doomed step. Guarded on `IS_NIXOS`, so laptops / CI runners / devcontainers are provably unaffected.
 
 ## 3. `qemu-full-install-test.ts` — the assertion (grace in the artifact, strict in the test)
+
 **Evidence this closes a real false green:** on run 31323533516, **scenario 2 reported PASS while `install.sh` had failed all three attempts.** A fully-provisioned node and a node with *no toolchain at all* both reported "passed" — which is exactly why a deterministic failure read as "a rare transient blip."
 
 - Matches only the **final, post-retry** marker → a retry-recovered transient stays green (auto-heal keeps working).
@@ -50,9 +54,11 @@ Split **capability** ("is there a loader") from **policy** ("should we use the t
 - `build-iso` is **not** in the required gate floor, so this is loud **without wedging merges**.
 
 ## Validation
+
 `bash -n` + `shellcheck -S warning` clean on both scripts · qemu harness **24/24** (3 new: clean / retry-recovered / exhausted) · contract behavior verified directly.
 
 ## Not auto-merging
+
 Per Dejan's writeup: requesting **Kira** on the predicate split (Risk 1) and **Mateo** on the `nix-ld.libraries` set as a supply-chain surface before this lands. Real proof is a `build-ai-cluster-iso` dispatch + Aaron's hardware.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

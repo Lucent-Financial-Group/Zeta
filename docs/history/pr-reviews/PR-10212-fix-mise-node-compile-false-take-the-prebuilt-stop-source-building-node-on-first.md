@@ -28,6 +28,7 @@
 ## Description
 
 ## First: nix-ld **worked**
+
 Validation run 31329548492 (isolated ref) confirms the #10196 fix. Comparing the *same* captured diag block:
 
 | | Before | After |
@@ -41,9 +42,11 @@ The missing-ELF-interpreter problem is resolved.
 **The assertion also did its job.** Scenario 2 now fails loudly with the first-boot-provisioning message where the identical situation previously reported **PASS** — the false green is closed. Without it we'd have "fixed" bug A on a bad signal.
 
 ## The remaining blocker is narrower, and not a linker issue
+
 mise fetched the node **source** tarball (`node-v24.19.0.tar.gz`, not `-linux-x64.tar.xz`) and ran `./configure`, which needs `python` on `PATH` in the build subshell. It isn't there during first-boot provisioning → `exec: python: not found` → exit 127 → `install.sh` rc=1 on all three attempts.
 
 ## Fix
+
 `node.compile = false` in `.mise.toml` `[settings]`, mirroring the **existing `python.compile = false`** directly above it — same discipline, same rationale, reviewed precedent.
 
 **Why prebuilt is clearly right here:** node was the *only* tool that chose source. Every other tool in that same run took a prebuilt and succeeded — which is the evidence that the platform executes prebuilts fine now that nix-ld provides the loader. This also removes a multi-minute source build from every cluster-node bringup.
@@ -51,6 +54,7 @@ mise fetched the node **source** tarball (`node-v24.19.0.tar.gz`, not `-linux-x6
 **Declarative, not an env var** in the installer, so it applies to all three GOVERNANCE §24 consumers rather than only first boot.
 
 ## Validation
+
 Verified with the real mise binary — `mise settings` reports `node.compile  false  ~/.local/share/zeta-otto/.mise.toml`, alongside the existing `python.compile`. `manifest-symmetry` 11/11.
 
 Also seen and deliberately **not** chased (non-fatal): `error: $HOME differs from euid-obtained home directory: you may be using sudo` — rustup's warning about the `sudo -u "#$ZETA_UID" HOME=…` invocation shape. Rust installed anyway; noise, not a blocker. Noted on the workitem for separate tidying.

@@ -74,6 +74,7 @@ _Sourced from [Microsoft.NET.Test.Sdk's releases](https://github.com/microsoft/v
 ## 18.8.1
 
 ## What's Changed
+
 * Fix protocol negotiation timeout when STJ reflection is disabled (18.8.1) by @​nohwnd in https://github.com/microsoft/vstest/pull/16281
 
 
@@ -82,6 +83,7 @@ _Sourced from [Microsoft.NET.Test.Sdk's releases](https://github.com/microsoft/v
 ## 18.8.0
 
 ## What's Changed
+
 * Migrate from Newtonsoft.Json to System.Text.Json / Jsonite (merge to main) by @​nohwnd in https://github.com/microsoft/vstest/pull/15687
    - For more detail refer to https://devblogs.microsoft.com/dotnet/vs-test-is-removing-its-newtonsoft-json-dependency/
 * Create source-only filter package by @​Youssef1313 in https://github.com/microsoft/vstest/pull/15638
@@ -135,6 +137,7 @@ Dependabot will resolve any conflicts with this PR as long as you don't alter it
 <br />
 
 You can trigger Dependabot actions by commenting on this PR:
+
 - `@dependabot rebase` will rebase this PR
 - `@dependabot recreate` will recreate this PR, overwriting any edits that have been made to it
 - `@dependabot show <dependency name> ignore conditions` will show all of the ignore conditions of the specified dependency

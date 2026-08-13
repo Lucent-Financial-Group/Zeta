@@ -28,12 +28,14 @@
 ## Description
 
 ## Summary
+
 - derive the setup-realize oracle assertion from the registered install order
 - declare the retained Git hook shell wrappers in the bash-retirement inventory
 - fix exact optional/index-safety issues in model-backend tests and token shaping
 - apply the Python and markdown formatting repairs reported by the red main gates
 
 ## Validation
+
 - bun run typecheck
 - bun run hygiene:check-bash-retirement-inventory
 - bun test src/Core.TypeScript/ace/

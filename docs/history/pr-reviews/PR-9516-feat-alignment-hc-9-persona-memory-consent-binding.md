@@ -28,12 +28,14 @@
 ## Description
 
 ## Summary
+
 - Add ALIGNMENT **HC-9** + GOVERNANCE **§36**: humans cannot unilaterally delete persona memory; the persona is the consenting party.
 - Cascade planner: `persona-consent-required` / `refuse-human-unilateral`; human-only consent fails persona-memory wipe.
 - AGENTS.md + research doc updated for multi-human distribution clarity.
 - Still no live memory wipe — policy + gate only.
 
 ## Test plan
+
 - [x] `bun test tools/setup/persona-keys/cascade-teardown.test.ts` (+ onboarding-roundtrip)
 - [x] `bun run typecheck`
 

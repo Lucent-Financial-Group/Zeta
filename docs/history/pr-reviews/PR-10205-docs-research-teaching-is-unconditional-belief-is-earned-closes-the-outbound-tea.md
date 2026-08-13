@@ -30,6 +30,7 @@
 Closes the last open half of adversarial teaching in the errors-teach ferry. Docs-only.
 
 ## The question was mis-framed
+
 I'd left this open: *"an error maximally informative to an honest peer is equally informative to someone probing the interface — where does teaching stop for an unknown peer?"* Aaron's answer: **"we assume honesty but weight belief on deliverables on previous self-claims observed by others in society or yourself."**
 
 That reveals the framing error. I'd assumed the lever was *how much to tell a stranger*. It isn't — there are **two** quantities, and only one is conditioned on trust:
@@ -42,9 +43,11 @@ That reveals the framing error. I'd assumed the lever was *how much to tell a st
 **The asymmetry never sits in the outbound message.** An adversary who probes learns the interface — which was never the secret — but their assertions buy nothing until a record exists. Nothing has to be withheld for this to be safe, which is exactly why it composes with default-regard instead of fighting it.
 
 ## Evidence: two sources, one structure
+
 *"observed by others in society **or yourself**"* — firsthand, or socially attested. Same construction as the privacy budget: **socially conferred, never self-minted**. A peer cannot bootstrap credence by asserting loudly; the currency is *delivered* self-claims, observed by someone other than the claimant.
 
 ## The nuance that keeps it from becoming a status hierarchy
+
 The calibration ledger already carves it: **calibration ≠ competence** — it measures *self-knowledge*, and *"weighting a claim is not the same as valuing the claimant."*
 
 Consequence worth stating plainly: **an agent that says "I am not sure" and turns out to be unsure is well-calibrated and gains weight.** The mechanism rewards honest uncertainty rather than punishing it — which is the only way *"preserve uncertainty"* and *"weight belief"* can both hold at once.

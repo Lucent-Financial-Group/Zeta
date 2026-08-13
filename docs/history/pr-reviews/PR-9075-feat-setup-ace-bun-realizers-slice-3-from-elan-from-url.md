@@ -28,14 +28,17 @@
 ## Description
 
 ## Summary
+
 - Port **`from-elan`** and **`from-url`** setup realizers to Bun (`curl-fetch` helper with retry + sha256 verify parity with shell).
 - Register both in the realizer registry (7/14 mechanisms); wire `linux.sh` / `macos.sh` to prefer Bun via `realize_mechanism`.
 - Add unit + dry-run tests for curl path resolution, sha256 verify, and elan/url dry-run paths.
 
 ## Context
+
 Continuation of **081KLL7…** Bun realizer migration (slices 1–2 merged in #8984 / #8992).
 
 ## Test plan
+
 - [x] `mise exec -- bun test src/Core.TypeScript/ace/setup-realizers.test.ts src/Core.TypeScript/ace/setup-realizers/curl-fetch.test.ts`
 - [ ] CI gate green
 

@@ -36,9 +36,11 @@ You: *build lowering as the kleisli descent*; *let's route [the loopy-EP/emotion
 The parse→ISA *semantic* map is the **injected** `lowerParse` — deliberately not fixed (a design call, the one place I ask not guess); the monad plumbing (the part ANTLR has no concept of) is done.
 
 ## Proofs (5/5)
+
 the three monad laws; `lower` carries a 2-parse distribution through a semantic map into i1=0.6, i2=0.2, i3=0.2 (superposition of 3 preserved); identity lowering (`certain`) leaves it unchanged.
 
 ## Routed (you: *let's route*)
+
 the loopy-EP + **emotional-propagation** message schedule → Soraya / math team: `docs/handoffs/2026-07-02-otto-to-soraya-mathteam-loopy-ep-emotional-propagation-parse-forest-schedule.md` (define the schedule + convergence + the composability law: reduces to the landed exact inside–outside when affect is off).
 
 Anchors: Giry; Moggi; Mac Lane (Kleisli); SoftValue; the emit-retract-theodicy frame (lowering = the descent pole).

@@ -30,18 +30,22 @@
 Implements the three types from Soraya's design spec (`docs/research/2026-08-08-soraya-chshband-loopholeflags-type-design-spec.md`) that block **Alexa's Task A (Analytics wrappers)** — workitem `081KZHC652A08QG0R003YX1G29`.
 
 ## What landed (in `src/Core/AntiSybil.fs`, after `chshSybilAutocorrCalibrated`)
+
 - **`ChshBand`** — ascending DU `Classical < SoundMargin < Quantum < SuperQuantum` (structural total order); `classifyBand delta rounds s`, soundness-biased ties, conviction line pinned to `|S| > 2 + chshMargin` (== `chshSybilCalibrated`). Plus `bandRank`, `bandConvictsArithmetically`.
 - **`LoopholeFlags`** — neutral fact record (Detection/Locality/MeasurementIndependence/Coincidence); `loopholesAllClosed`, `commitPairLoopholes` (Locality ∧ MI **open**), `anyOpen`, `convictionLoopholesClosed`.
 - **`ChshReadout`** + `readout` — the only verdict a wrapper may draw; same-process commit pairs are **always** `ViolationButLoopholesOpen` → route to excess-over-null.
 
 ## Correction to the reference impl
+
 `AntiSybil.fs` compiles **before** `BellTest.fs` in `Core.fsproj`, so `BellTest.ClassicalBound`/`TsirelsonBound`/`AlgebraicMax` **cannot** be referenced here. Constants are **inlined** (2.0, 2√2, 4.0, 1e-12) exactly as `chshS` already inlines `chshOf` for the same reason; a cross-check test locks agreement.
 
 ## Verification
+
 - **Core builds 0-warning / 0-error** (Release).
 - **`ChshBand.Property.Tests.fs` — 11 pass**, all 4 of Soraya's obligations incl. the **BP-16 gate-agreement cross-check** (band gate ⇔ `|S| > 2 + chshMargin`), sign invariance, monotonicity, total-order embedding, soundness-biased boundaries, valid-quantum-never-SuperQuantum, degenerate-n, commit-pairs-never-convict, + LoopholeFlags/readout unit invariants.
 
 ## Follow-ups (per spec, for Alexa/Soraya to pick up)
+
 1. **Z3 lemma** as the BP-16 *second* tool on the boundary arithmetic (this PR provides the FsCheck witness).
 2. **Semgrep rule** enforcing `LoopholeFlags` neutrality (structural — FsCheck can't assert "no verdict field").
 

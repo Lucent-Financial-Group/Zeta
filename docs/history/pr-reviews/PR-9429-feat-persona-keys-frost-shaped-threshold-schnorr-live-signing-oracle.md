@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 FROST slice 1 for **081KVP3GYW1**, forced into the monorepo tools trunk (`tools/setup/persona-keys/`) beside `shamir.ts` / `ca-shamir-custody.ts` — not a sidecar service.
 
 - **`frost.ts`** — dealer keygen (Shamir over curve order L), commit → partial → combine protocol; standard Ed25519 verify
@@ -36,9 +37,11 @@ FROST slice 1 for **081KVP3GYW1**, forced into the monorepo tools trunk (`tools/
 - Shamir remains **cold backup**; frost is the **live signing** path per agent-native-key-custody design
 
 ## Not in this slice
+
 RFC 9591 DKG, ROAST, HSM-sealed shares, wiring into `ca.ts` `ssh-keygen -s` (slice 2).
 
 ## Test plan
+
 - [x] `bun test frost.test.ts`
 - [x] CLI keygen | sign → `verified: true`
 - [ ] CI green

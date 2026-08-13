@@ -30,6 +30,7 @@
 Aaron: *"do we have more UI to work on?"* — the documented next slice (`the-nested-surfaces` build order) was the **LLMTV society grid**, and `hall/tv/` was still hand-authored HTML while `hall/room/` is real generator output. This closes both: a `darkhall-tv.ts` generator emits `hall/tv/` from a typed transcript, so the TV surface is now the **homoiconic twin of the room**.
 
 ## What landed
+
 - **`darkhall-tv.ts`** — types + pure render functions + inline CSS + document. DU cases become **data-attributes** (`MindTemp` → `data-temp`; required/personal band → `data-kind`; frost → `data-frost`), the same discipline as the room's `data-verdict`. The case *is* the attribute.
 - **Integer-milli soft predictions** — `(value, ε)` travels as integer milli in [0,1000]; no floats in the transcript bytes (the DST byte-lock discipline shared with `SLane.sMilli`).
 - **Scale-free society grid** — `dwellers.map(renderDweller)`; one dweller and N run the same path (§1). The grid *is* the map.
@@ -38,6 +39,7 @@ Aaron: *"do we have more UI to work on?"* — the documented next slice (`the-ne
 - Visual preserved: CSS ported verbatim except temp selectors moved to `[data-temp=...]` so the DU drives the color.
 
 ## Additive & verified
+
 - `hall/{index,gallery,room,vault}` untouched.
 - **24 darkhall tests pass** (14 new); TS lint clean; markdownlint clean.
 - Emitted page: **0 script tags**, 3 dwellers, 2 frost regions.

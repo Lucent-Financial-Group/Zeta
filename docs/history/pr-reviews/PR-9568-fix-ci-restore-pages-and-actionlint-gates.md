@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - remove literal Liquid raw/endraw syntax from the archived PR #8178 review text so GitHub Pages/Jekyll no longer parses it as an unclosed raw block
 - brace the heartbeat workflow AGENT variable before the literal [bot] suffix so actionlint/ShellCheck accepts the expansion
 - pass agent-reviewer github.head_ref through an environment variable before shell use, satisfying actionlint's script-injection guard
@@ -36,6 +37,7 @@
 - fix Markdown spacing that latest main brought into the merged PR branch
 
 ## Verification
+
 - rg -n "\{%|%\}|\{\{" docs/history/pr-reviews/PR-8178-fix-pages-escape-function-term-set-braces.md || true
 - mise exec -- npx --yes markdownlint-cli2 docs/history/pr-reviews/PR-8178-fix-pages-escape-function-term-set-braces.md
 - mise exec -- npx --yes markdownlint-cli2 docs/letters/to-lumen-close-the-hadamard-lemma.md

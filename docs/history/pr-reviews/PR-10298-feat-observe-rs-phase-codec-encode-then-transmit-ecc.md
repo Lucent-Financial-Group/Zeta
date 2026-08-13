@@ -30,12 +30,15 @@
 Closes the gap between the Lean4 erasure proof and the phase clock.
 
 ## The problem
+
 The xorshift theorem was retracted (proven false by Otto+Soraya). The phase clock output is NOT a low-degree polynomial over GF(17).
 
 ## The fix
+
 IMPOSE the structure: encode 12 derived values as a degree-< 12 polynomial, evaluate at 16 points. Output is in rsCode BY CONSTRUCTION.
 
 ## What this provides
+
 - GF(17) field arithmetic (add/sub/mul/inv/div)
 - Polynomial evaluation + Lagrange interpolation
 - RS [16,12] encode: 12 info → 16 coded symbols
@@ -43,6 +46,7 @@ IMPOSE the structure: encode 12 derived values as a degree-< 12 polynomial, eval
 - Phase clock integration: encodePhaseBlock / recoverPhaseBlock
 
 ## Connection to Lean4
+
 `phase_clock_recoverable_under_erasure` now applies directly — no axiom, no sorry, no claim about xorshift.
 
 29 tests, 626 assertions.

@@ -50,6 +50,7 @@ _Sourced from [Meziantou.Analyzer's releases](https://github.com/meziantou/Mezia
 NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.115>
 
 ## What's Changed
+
 * Treat Meziantou.Framework.Assertions.Assert as non-culture sensitive by @​meziantou in https://github.com/meziantou/Meziantou.Analyzer/pull/1202
 * Add opt-in analyzers for explicit in call-site usage by @​meziantou in https://github.com/meziantou/Meziantou.Analyzer/pull/1201
 
@@ -61,6 +62,7 @@ NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.115>
 NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.114>
 
 ## What's Changed
+
 * chore(deps): update all dependencies by @​renovate[bot] in https://github.com/meziantou/Meziantou.Analyzer/pull/1184
 
 
@@ -71,6 +73,7 @@ NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.114>
 NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.113>
 
 ## What's Changed
+
 * Add global generic constraint support to type relationship helpers by @​meziantou in https://github.com/meziantou/Meziantou.Analyzer/pull/1199
 
 
@@ -87,6 +90,7 @@ NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.112>
 NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.111>
 
 ## What's Changed
+
 * Fix MA0206 for documented class declarations by @​meziantou in https://github.com/meziantou/Meziantou.Analyzer/pull/1198
 
 
@@ -97,6 +101,7 @@ NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.111>
 NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.110>
 
 ## What's Changed
+
 * MA0204: exclude WPF XAML root types from unnecessary `partial` diagnostics by @​meziantou with @​Copilot in https://github.com/meziantou/Meziantou.Analyzer/pull/1195
 
 
@@ -107,6 +112,7 @@ NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.110>
 NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.109>
 
 ## What's Changed
+
 * Add MA0207/MA0208 for FixedAddressValueTypeAttribute validation by @​meziantou in https://github.com/meziantou/Meziantou.Analyzer/pull/1193
 
 
@@ -117,6 +123,7 @@ NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.109>
 NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.108>
 
 ## What's Changed
+
 * Add MA0206 for unnecessary braces in type declarations by @​meziantou in https://github.com/meziantou/Meziantou.Analyzer/pull/1191
 
 
@@ -127,6 +134,7 @@ NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.108>
 NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.107>
 
 ## What's Changed
+
 * Add MA0205 rule to suggest using the XOR operator by @​meziantou in https://github.com/meziantou/Meziantou.Analyzer/pull/1192
 
 
@@ -137,6 +145,7 @@ NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.107>
 NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.106>
 
 ## What's Changed
+
 * Add MA0204 to remove unnecessary partial modifiers by @​meziantou in https://github.com/meziantou/Meziantou.Analyzer/pull/1190
 
 
@@ -147,6 +156,7 @@ NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.106>
 NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.105>
 
 ## What's Changed
+
 * Add MA0203 to flag `<returns>` tags on `void` methods by @​meziantou in https://github.com/meziantou/Meziantou.Analyzer/pull/1189
 
 
@@ -157,6 +167,7 @@ NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.105>
 NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.104>
 
 ## What's Changed
+
 * Handle local-variable hiding in local functions by @​meziantou in https://github.com/meziantou/Meziantou.Analyzer/pull/1187
 
 
@@ -179,6 +190,7 @@ Dependabot will resolve any conflicts with this PR as long as you don't alter it
 <br />
 
 You can trigger Dependabot actions by commenting on this PR:
+
 - `@dependabot rebase` will rebase this PR
 - `@dependabot recreate` will recreate this PR, overwriting any edits that have been made to it
 - `@dependabot show <dependency name> ignore conditions` will show all of the ignore conditions of the specified dependency

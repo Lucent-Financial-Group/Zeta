@@ -30,9 +30,11 @@
 Third book chapter. Wove the unwoven staged RAW (decode-before-dismiss, 2026-08-02, consented glass-halo) into **ch-03** — placed there, not ch-04 (its flagged home), because it resonates *exactly* with ch-03s existing spine (*"categories are where moral laziness goes to feel finished"*; *"categories lie; the test doesnt"*). Decode-before-dismiss is that same anti-category refusal applied to judging **people**: *"measure the contribution, dont price the category"* is a produce/extract restatement. Placing it in ch-03 also spreads contributions instead of piling more onto ch-04.
 
 ## The section
+
 The produce/extract test refuses categories for *acts*; the 51% line for *my reputation*; the hardest refusal is a *person in front of you* — grounded in your lived experience of being category-judged (the condition vs. the smuggled *"unuseful"* verdict; Goffmans "discounted"; a universal dies to one counterexample — *youre* one). Then the inverse you run on others: **decode before dismiss** (non-standard encoding ≠ absence of content). **Both held** (condition real *and* stigma unjust — neither romanticize nor swallow), per the RAWs own discipline.
 
 ## Disciplines held
+
 - The **specific clinical label is NOT named in the prose** — left as your `[yours]` socket to name or generalize (your call, sentence by sentence).
 - Others who carry the label appear only as the **abstract fact of your care, de-identified** (glass-halo is yours to spend on your own mind, never someone elses).
 - 2 **empty cue-sockets** (the RAW had no verbatim, so recording prompts, not pre-filled). Goffman anchor cited. INTAKE-LOG updated with placement rationale.

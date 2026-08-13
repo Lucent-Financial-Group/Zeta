@@ -30,6 +30,7 @@
 Book-substrate, additive, staging only (no chapter landed). Aaron: "more to come, any chapter is fine, this is just some raw materials." Continues the authorized ferry stream ("use the materials for book, dignified for all parties").
 
 ## Staged
+
 - **`RAW-the-prison-calm-and-the-protector.md`** (appended):
   - The **bravery reframe** — *"I wasn't afraid; bravery is doing it when you're afraid."* The anti-valorization capstone in Aaron's own words; the "NOT valorized" read now points to it.
   - The **"deficient" chorus** (psychiatrists + mama + kids + ex-wives) — held under Multi-Oracle (label ≠ verdict); the thrill-is-the-engine line.
@@ -40,6 +41,7 @@ Book-substrate, additive, staging only (no chapter landed). Aaron: "more to come
   3. **GATED childhood detail** — his mother left his father over the abuse (bruises on his back = her final straw); her leaving = love-as-choice *lived*. Aaron's abuse = glass-halo; **both parents GRANTED + pre-read** (mother strong/protector; father whole-not-neutral, harm named not condemned/excused; naming/defamation = publish-time check).
 
 ## Consent held
+
 All non-consented third parties anonymized; no clinical labels as verdicts; the father-harm rides the parents' existing granted + pre-read gate; nothing landed into a chapter (Aaron places).
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

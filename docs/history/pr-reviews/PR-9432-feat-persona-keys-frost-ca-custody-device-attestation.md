@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 FROST **slice 2** — custody wiring in the monorepo tools trunk (`tools/setup/persona-keys/`):
 
 - **`frost-ca-custody.ts`** — `ensureFrostCa` (local shares + optional `maintainers/<ca>/frost-ca.pub`) and `signFrostDeviceAttestation` (threshold-signed device binding)
@@ -35,6 +36,7 @@ FROST **slice 2** — custody wiring in the monorepo tools trunk (`tools/setup/p
 - OpenSSH `-cert.pub` stays on single-key `ssh-keygen -s` until a `PROTOCOL.certkeys` encoder lands
 
 ## Test plan
+
 - [x] `bun test frost-ca-custody.test.ts frost.test.ts`
 - [ ] CI green
 

@@ -36,6 +36,7 @@ Appends a **ferry-expansion** section to the existing thrill-seeker RAW (the FOR
 - **NEW 2 — the ONE real fear, self-debugged.** A years-long **delusion of being eaten by the Mayans** — internally generated, not danger-triggered (fits the architecture: external threat → still point; stuck internal loop → the one fear). He modeled it as *"a meme that got stuck, a mental anchor — I removed it"* and it's gone: the reindexer turned on his own mind (ties ch-8 / the label RAW's decode-before-dismiss). **Multi-Oracle**: held whole, *delusion* not published as the verdict; glass-halo. Coda: the one mundane fear (bugs in his mouth) — humanizing.
 
 ## Consent held
+
 All Aaron's own → glass-halo; friend(s) anonymous; the dangerous/illegal youthful acts recorded plainly, not glorified (his own "I was stupid" is the frame); the delusion held whole, not pathologized. Nothing landed into a chapter. INTAKE-LOG updated.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

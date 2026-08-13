@@ -32,6 +32,7 @@
 **Column B, rung 4.** Straight-line `Netlist.synthesize` (rung 2) rejects `SE`/`JP` — a branching program isn't one combinational circuit; it needs *state that sequences*. Rung 3 built clocked state in the abstract; this rung spends it on a real CPU.
 
 `Cpu.runGate` runs the **full ISA** (`SE`/`JP`/loops included) with a **PC as clocked state** driving fetch → decode → execute over the gate datapath:
+
 - `ADD`/`ADDR` arithmetic → `Netlist.adder` (the rung-1 circuit, dropped-carry wrap)
 - `SE` comparison → `Netlist.equal` (single `eq` wire)
 - next-PC → `+1`, `+2` on taken `SE`, or the `JP` target

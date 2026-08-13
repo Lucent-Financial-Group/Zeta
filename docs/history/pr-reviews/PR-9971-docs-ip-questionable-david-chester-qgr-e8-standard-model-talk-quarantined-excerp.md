@@ -32,11 +32,13 @@ Aaron asked to save this to `ip-questionable`. It's a **David Chester (Quantum G
 Saved per the ip-questionable policy: excerpt+reference, provenance-not-authorship, DMCA-deletable, analysis never depends on the verbatim.
 
 ## The honest split (Otto's read, up front in the doc)
+
 - **Chester is the most honest of the E8-physics crowd** — he explicitly critiques Lisi's 2007 flaws (no chiral fermions, no 3-gen explanation, cites `spin(15,1)` not in E8, super-connection without a super-algebra), uses real recent math (**Wilson–Dray–Manogue** E8 construction), and flags his own "tricks"/"conjectures."
 - **Rigorous anchors to mine** (no TOE claim needed): E8 group/algebra/root-system, **Freudenthal–Tits magic square**, octonion↔E8↔Clifford, flipped su5 (Barr 1982), MacDowell–Mansouri gravity.
 - **Unproven / leave it:** SM+gravity from a single 248; 3 generations from the 128 spinner; extra time dimensions; the "assume a scalar vev" gravity trick; and the QGR "unify spirit and matter" + $1/month donation framing (the fundraising-mysticism metering flag).
 
 ## The Zeta-lane guard
+
 Zeta **already uses this exact E8 math** (`AdinkraCode`, `E8Lattice`, `CliffordE8Roots`, `ErasureDistance`) and stays Beacon-honest **precisely because it uses E8 as an ECC / generator for the *computational* substrate — never as a fundamental-physics / Standard-Model / gravity claim.** Same E8 math; honest use (checked, byte-locked, coding) vs trap use (unproven particle-physics TOE). Safe anchors kept: adinkra = ECC/generator, **Hawkins Thousand Brains** = the intelligence model, category/type theory = design language.
 
 Docs-only, quarantine folder.

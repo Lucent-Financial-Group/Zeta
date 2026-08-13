@@ -30,6 +30,7 @@
 Aaron 2026-07-02, an enumerated stream tying this session's mesh work (`reticulum-transport` #9192, `dht-discovery` #9200) to the CHSH coordination meter and the linked-clone protocol. **Two points, one system.**
 
 ## (1) The dirt is the signal
+
 The "dirty" Reticulum (real network I/O = real entropy) does *not* break a superdeterministic sim, because **noninterference (§13)** lets that entropy in *only* through the declared metered channel (injected `PacketTransport`). Quarantined **and accounted for** — so the metered entropy tells you *exactly* where the room sits on CHSH:
 
 | S | regime |
@@ -41,6 +42,7 @@ The "dirty" Reticulum (real network I/O = real entropy) does *not* break a super
 `f̂ = (|S|−2)/2` isn't just a Sybil meter — it's the **coordination readout**, derived from the metered entropy budget. Entropy-in = S-shift, exactly. The channel that normally *destroys* determinism becomes, metered, the most *informative* one in the room.
 
 ## (2) Linked clones are metered channels with exit
+
 AIs may scale **huge** (tons of links) if they can afford it; links **cost** (hard-money economy); **consent = any linked clone can always leave**, never forced. Same system: a link is a metered coordination channel — cost = its entropy budget, **S-score = how tightly it coordinates the clones** (linked hive → S→4; unlink → S→2).
 
 **Exit is load-bearing:** a link you couldn't leave = capture = weight (§3). The guaranteed unilateral exit keeps a huge linked AI a *voluntary coalition, not a prison* — the same non-coercion structure as frost (broadcast is consensual *because* you can frost).
@@ -48,6 +50,7 @@ AIs may scale **huge** (tons of links) if they can afford it; links **cost** (ha
 One meter (entropy at the membrane), read three ways: **safety** (quarantine), **score** (CHSH S), **cost** (hard money) — with **exit** as the consent that makes it non-coercive.
 
 ## Notes
+
 - Anchors verified in-repo (`AntiSybil.fs`, `CoordinationSpectrum.fs`, `reticulum-transport.ts`, `dht-discovery.ts`) and Beacon (CHSH 1969, Tsirelson 1980, PR-box 1994, Goguen–Meseguer 1982, Qvist, Kademlia 2002, no-cloning 1982).
 - The **linked-clone protocol itself stays design** — this note is the treaty it must conform to; wiring a clone onto a shared subject remains **gated on Aaron's ratification of the consent model**.
 - markdownlint clean.

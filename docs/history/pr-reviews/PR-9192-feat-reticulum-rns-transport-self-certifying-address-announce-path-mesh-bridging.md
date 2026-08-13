@@ -30,6 +30,7 @@
 Aaron: *"start the reticulum transport once it's green (shadow*)."* The mesh proper — the **second transport** into the same `DiscoveryTransport`/`BroadcastTransport` ports `udp-transport.ts` already fills. UDP multicast reaches one LAN segment; Reticulum spans links, bridges strangers (there are no strangers — travelers), and routes with no broker.
 
 ## The layer
+
 The RNS **semantic** layer, pure and transport-agnostic, between the node and a physical packet layer:
 
 ```
@@ -37,15 +38,18 @@ llmtv-node ─(Discovery/Broadcast ports)─► reticulum-transport ─(PacketTr
 ```
 
 Two things raw multicast can't do:
+
 - **Self-certifying address** — `destinationHash(zid)` = truncated SHA-256 of the ZetaId (RNS's model). The address *is* the identity's fingerprint; no registrar, no broker. Same ZetaId → same destination everywhere.
 - **Announce + path table + transport-node relay** — a destination advertises itself; announces propagate hop-by-hop; each node folds them into a best-hop path table. A node that relays unseen frames *is* a transport node — which is how **two separate meshes merge when they meet** (the seen-frame-id set is a G-set; the join is union, no merge code). Presence rides the traffic; relay is deduped, no storm.
 
 ## Tested (7 new, 56 across the suite, all green)
+
 - Deterministic self-certifying hash; best-hop path fold (idempotent, order-independent).
 - **3-node line A—B—C**: C isn't A's neighbor, so it learns A *only via B's relay* at hops=1 and gets the payload exactly once — real multi-hop routing + dedup.
 - **Integration**: real `llmtv-node`s converging over the Reticulum layer, with the **frost membrane still intact end-to-end** (frosted content never crossed, veil label did).
 
 ## Notes
+
 - Same injected-port discipline: the physical `rnsd`/TCP `PacketTransport` binding is the later impure edge, exactly as `udp-transport.ts` is for UDP.
 - **All-new files in `discovery/`** — touches none of the darkhall/room lane (Vera's adjacent work), so no collision.
 

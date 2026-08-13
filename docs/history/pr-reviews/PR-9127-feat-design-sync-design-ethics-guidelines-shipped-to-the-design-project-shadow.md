@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - Ships the four design-agent laws as `guidelines/` in the claude.ai/design project (skins never remap meaning; frost = priced privacy; QPG over DPI; honest bounds), re-synced with 10/10 components verified-by-upload and the anchor written last.
 - Applies the new validator's prescribed `cardMode: column` remedy for four `[GRID_OVERFLOW]` warns via targeted rebuild.
 

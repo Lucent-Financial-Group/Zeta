@@ -28,11 +28,13 @@
 ## Description
 
 ## First: BUG A IS FIXED
+
 Validation run 31331483608, scenario 2: **`phase 2 SUCCESS — login prompt "node-8c2d89 login:" observed + first-session + post-boot self-register markers`**.
 
 Because the first-boot provisioning contract (#10196) **fails** the scenario whenever `install.sh` exhausts its retries, **scenario 2 passing is the proof that `install.sh` completed.** Two fixes got there: `programs.nix-ld` (#10196) removed the missing-ELF-interpreter failure, and `node.compile = false` (#10212) stopped mise source-building node.
 
 ## This PR: the last link in the wifi-ESP chain
+
 The converter diagnostic added in #10193 printed the stderr that used to be captured to `/tmp` and **deleted unread**:
 
 ```
@@ -45,6 +47,7 @@ Set a global default version with one of the following:  mise use -g bun@1.3.14
 **Fix:** `cd '$ZETA_HOME/Zeta' && bun …`, matching the working sibling ~100 lines later (`zeta-creds-picker`, l.1780) which already does exactly this. One line, in-repo precedent, no new mechanism.
 
 ## Why this is the diagnosability work paying for itself
+
 The error **named its own fix verbatim** — `mise use -g bun@1.3.14` pointed straight at version resolution — and the correct pattern already existed nearby. Before #10193, this identical failure printed only `invalid zeta-wifi-credentials.json`, which is exactly what sent the earlier diagnosis chasing a creds bug that never existed.
 
 Validation: `bash -n` clean · `shellcheck -S warning` clean · `test-iter-54` 29/29.

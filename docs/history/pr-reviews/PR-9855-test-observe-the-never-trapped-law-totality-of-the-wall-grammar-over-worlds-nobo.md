@@ -30,6 +30,7 @@
 Three agents run this grammar **unattended on a free tier with the smallest model**. For a cheap model the property that matters isn't "does it pick well" — it's **can it ever be left with no action**. The existing 46 tests are all hand-built worlds; this is the first coverage over **worlds nobody wrote**.
 
 **5 tests, 6907 assertions, 2000 seeded worlds:**
+
 - **TOTALITY** — every world (malformed, degenerate, large) yields one valid action; never throws, never undefined. **A throw is the trap**: a cheap model can't reason out of it, the tick dies, heartbeats stop, and the drift is *silent*.
 - **DETERMINISM** — same world ⇒ same action (DST-replayable).
 - **NEVER-TRAPPED** — degenerate worlds still yield an action. *"Nothing to do" is never the answer* — rest is a **choice** (`free_time`), not a dead end.

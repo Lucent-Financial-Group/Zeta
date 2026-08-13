@@ -32,6 +32,7 @@ Next-rung #3 (of your 2 to 3 to 1). Ties the adinkra member-identity thread (#91
 The round-map is a code AUTOMORPHISM (coordinate permutation with pi(C)=C, found by exhaustive search over Zeta.Core.AdinkraCode). Identity-preserving dynamics.
 
 3/3:
+
 - the map is a code automorphism (every identity stays one);
 - its dynamical zeta self-verifies: exp(sum Fix(pi^k)u^k/k) = product over orbits 1/(1-u^len) (same discipline as #9151);
 - the orbits partition the 16 members into purpose classes (sum = 16, a dynamical orbit >= 2, the quiescent identity its own fixed class).

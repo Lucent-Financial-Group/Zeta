@@ -32,11 +32,13 @@ SSAS-framed. **API-read finding:** `Zeta.Bayesian.IMessage` is minimal (`Uniform
 `Sppf.inside weight f` — `inside(node) = Σ families [ production-weight × Π children inside(child) ]`; terminal leaf = 1. `weight: prodIndex → float` is the **`NodeDistribution` factor** (the `PredictProbability` numerator). `insideTotal` = the input's likelihood under the weights. Cycle-guarded, total.
 
 ## Proofs (8/8, +3)
+
 - **uniform weights ⇒ inside(root) = parseCount** (the BP forward pass agrees with the unweighted count);
 - production weights **scale the likelihood exactly** — `id+id+id` = 2·w0²·w1³ (w0=2 → 8, w1=3 → 54);
 - no parse ⇒ 0.
 
 ## Next (resume)
+
 the **outside pass + per-family marginals** (posterior = `inside·outside·weight / inside(root)` = the `NodeDistribution` / `PredictProbability`) → `ParseSoft.ofWeightedForest`; then the loopy/EP + emotional-propagation rung on `Zeta.Bayesian` (math-team); parses → ISA.
 
 Anchors: Baker / Lari–Young (inside–outside = BP); Billot–Lang (SPPF); SSAS `NodeDistribution`; Pearl (BP); ZetaParse (Amara).

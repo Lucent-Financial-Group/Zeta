@@ -30,9 +30,11 @@
 The routed **noncommutative upgrade** of #9146's commutative slice, per your "push forward safely with any math" go.
 
 ## The step
+
 #9146 landed the Euler product over knots-under-connected-sum — **commutative** factorization (Schubert). This lands the **Ihara zeta of a graph**, whose primes are **primitive closed geodesics**, which compose **noncommutatively** (path concatenation). That's the genuine noncommutative step named in #9146's upgrade path.
 
 ## Safety net = self-verification
+
 You said a wrong construction just rotates out — so I made *wrongness visible*: the zeta is computed **two completely independent ways** and required to agree.
 
 - **Geodesic side:** `N_k = tr(W^k)` (W = non-backtracking Hashimoto edge operator); `ζ = exp(Σ N_k u^k/k)` via the log-derivative recurrence `m·c_m = Σ N_k c_{m−k}` (exact division asserted — a wrong `W` is caught immediately).
@@ -41,6 +43,7 @@ You said a wrong construction just rotates out — so I made *wrongness visible*
 **They agree coefficient-by-coefficient to degree 24** — the noncommutative Euler-product↔determinant identity (Ihara 1966 / Bass 1992), the analog of #9146's `Dirichlet = Euler`.
 
 ## Checks
+
 - Over **K₄** (Terras's textbook example), exact `int64`.
 - Hand-checkable geodesic counts: `N₁=N₂=0`, `N₃=24` (4 triangles × 3 starts × 2 directions) ⇒ `ζ = 1 + 8u³ + …`.
 - **Converse locked:** dropping the non-backtracking guard gives `N₂>0` and breaks the Bass identity at `u²` — the identity is exactly as strong as the non-backtracking restriction.

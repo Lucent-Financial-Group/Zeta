@@ -30,18 +30,23 @@
 The shipped default anti-sybil oracle now convicts at `2 + chshMarginAutocorr` (the pairs own HAC effective-sample margin) instead of the i.i.d. `2 + chshMargin`. **Closes the Caveat-A over-conviction bug in the default path** — real streams autocorrelate, so the i.i.d. margin was too tight and falsely collapsed honest-but-bursty identities into one source.
 
 ## Authorization + verify-before-trust gate
+
 Authorized by Aaron 2026-08-04 ("switch the default, ship it") **after** the gate cleared:
+
 - **Soraya VERIFIED** (a) `n_eff ≤ n`, (b) `margin_corrected ≥ margin_iid` (Z3), and (c) the conviction set is a strict **subset** of the i.i.d. oracles (my 40-batch machine-check).
 - Because the corrected margin is never smaller, the switch **can only remove false collapses, never add a conviction** — provably safe.
 - Her two model-scope holes (lag-2, stationarity gate) were already fixed in #10026 (HAC estimator + multi-block gate).
 
 ## Scope
+
 The **margin swap only** (parameter-free, fully proven). The stationarity gate stays in the opt-in `chshSybilAutocorrCalibrated` (needs a tol choice). `chshMargin` (i.i.d.) unchanged and still exported (algebraic bound + caveat pointer). No external callers to repoint. `DecorrelationMeter` still uses the i.i.d. `chshMargin` deliberately — separate, scope-limited instrument, a distinct decision.
 
 ## Framing (Soraya)
+
 "Provably **more conservative than i.i.d.**", NOT "fully sound" — dependence beyond the HAC bandwidth can still evade.
 
 ## Tests
+
 30 AntiSybil + 67 Sybil/DecorrelationMeter green (strong S=4 convictions still convict — low-autocorrelation pairs get corrected ≈ i.i.d.). Core 0-warning.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

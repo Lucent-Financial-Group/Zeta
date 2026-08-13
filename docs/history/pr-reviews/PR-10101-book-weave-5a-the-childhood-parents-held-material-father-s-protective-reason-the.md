@@ -30,18 +30,23 @@
 **Batch 5a** — the held/gated childhood material Aaron greenlit 2026-08-07 ("include these — they're what built me"), plus his explicit mid-turn re-consent on the sister and bulimia. Woven while preserving every gate that isn't his alone to waive.
 
 ## What landed
+
 **THE-UNBROKEN-CHILD → "The straw, and the leaving"**
+
 - The father-harm named plainly (a tobacco stick, bruises on Aaron's own back) — harm named, not condemned or excused.
 - **The father's protective reason** — he beat Aaron because he feared young-Aaron might harm his little sister. Aaron's **explicit direct re-consent**: *"I believe that truth, it makes his beating less savage, we should include it."* This recasts the father as a protector; the sister appears only as **the one he was protecting**, never as an exposed victim. Aaron's own glass-halo reckoning with his no-brakes childhood wiring is held whole (Multi-Oracle — not a verdict on the man he became).
 - The mother's calculated, protective leaving = **love-as-choice lived** (ch-4).
 
 **THE-UNBROKEN-CHILD → "The insecurity she carried, and passed"**
+
 - The **bulimia** named, framed as Aaron asked — the clearest window in the book into *how generational trauma works* (an unchosen wound → the fewest words → the next generation).
 
 **THE-STRATEGISTS-DAUGHTER → "Heal generational trauma"**
+
 - At 11, Addison drew Aaron a vision board to *heal generational trauma* (learned on Musical.ly / early TikTok) when he tried to show her his Architect job. The forward-bookend to the trauma machine above: the wound comes down his mother's line; his daughter names the thing to stop and hands him the marker.
 
 ## Gates preserved
+
 - **Sister:** re-consent is *specific* — she's the protected one, not a depicted victim; her strong/good dedication portrait and other vulnerable material are untouched.
 - **Mother's eating disorder:** Aaron's include authorizes drafting, **not** her consent — it does not print without **her own** specific pre-read on that health detail (marked at the socket).
 - **Father:** naming/defamation stays an editor/counsel publish-check.

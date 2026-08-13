@@ -28,10 +28,12 @@
 ## Description
 
 ## Summary
+
 - Update **081KLL7…** backlog row: slice 3 (#9075) landed, **7/14** Bun realizer coverage, slice 4 next.
 - Refresh Otto session resume doc for 2026-07-02 handoff.
 
 ## Test plan
+
 - [ ] CI gate green (backlog-index / lint-no-b-refs)
 
 

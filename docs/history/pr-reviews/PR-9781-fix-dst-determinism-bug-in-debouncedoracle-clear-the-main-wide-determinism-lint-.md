@@ -40,6 +40,7 @@ The determinism lint (`no ambient entropy in src/Core outside justified edges`) 
 ## The other 9 (justified edges, allowlisted with WHYs)
 
 Each verified before allowlisting — none feed the ρ/Condorcet math, none run on the DST/seed path:
+
 - **DebouncedOracle.fs (1)** — the live-mode debounce door.
 - **OracleTransport.fs (7)** — reading-timestamp metadata + live Git/WebSocket/Reticulum **emit-latency instrumentation** (observability, live-emit path).
 - **MoneyVelocityOracle.fs (1)** — reading-timestamp display field (ρ/bonus/velocity come from UTXO age + M2).

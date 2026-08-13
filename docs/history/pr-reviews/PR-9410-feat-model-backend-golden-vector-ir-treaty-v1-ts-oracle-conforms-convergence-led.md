@@ -34,6 +34,7 @@ Aaron 2026-07-04 *"start the golden-vector build."* The treaty: every oracle (TS
 **`zeta-store-golden-vectors.json`** — v1 locks the hash-**independent** fs semantics that already agree: link→resolve roundtrip, multi-parent dedup, `editEverywhere` shared-follow, `editLocal` COW, `unlink`. Text-only (no binary in the proof lineage). Addresses **not** locked yet — see `_convergence`.
 
 ## Starting the build did its job — it surfaced the disagreements the treaty must drive to zero
+
 1. **content-hash function** — TS blake3 (`ace` `contentHash`) vs F# XxHash128 (`MerkleHash`): addresses diverge → pick **one canonical hash** (the first treaty **signature** — your call).
 2. **tool_call event encoding** — TS object vs F# string → canonicalize.
 3. **`editEverywhere` on an absent path** — TS links-if-absent vs F# no-op (DagFs = source of truth) → reconcile TS.

@@ -32,6 +32,7 @@ One of the two CHSH-types verification follow-ups from Soraya's spec: the **stru
 Generic-mode `pattern-regex` (rule 18) over `src/Core/AntiSybil.fs`, fires on a verdict-noun boolean record field. Does **not** collide with the legitimate `SybilVerdict` DU (type name, not an `IsSybil: bool` field).
 
 **Validated locally** (semgrep 1.161.0):
+
 - Parses ✔
 - **0 findings** on the real `AntiSybil.fs` — no false-positive ✔
 - **1 finding** on a planted `IsForgery: bool` — fires correctly ✔

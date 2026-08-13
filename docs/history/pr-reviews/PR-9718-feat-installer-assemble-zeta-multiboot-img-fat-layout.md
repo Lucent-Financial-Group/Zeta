@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - Land `--assemble` for the multiboot planner: resolve SHA256SUMS latest pins, fetch+verify URL payloads, write `/boot/` + `/payloads/` onto a qemu-img/mtools FAT composite (`zeta-multiboot.img`)
 - Hermetic unit tests + optional mtools smoke (tiny real image); `--dry-run` / `--require-local` for air-gapped CI
 - Honest scope: GRUB EFI/BIOS embed (`grub-install`) is the next slice — layout is mdir/qemu-img inspectable today
 
 ## Test plan
+
 - [x] `bun test src/Core.TypeScript/installer/multiboot/multiboot.test.ts` (13 pass)
 - [x] `--assemble --require-local --dry-run` with fixture ISO/payload prints step plan
 - [ ] CI lint/path gate green

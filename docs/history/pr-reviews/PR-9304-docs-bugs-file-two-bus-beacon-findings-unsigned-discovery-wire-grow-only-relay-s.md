@@ -32,16 +32,20 @@
 Anti-entropy sweep of the NATS/JetStream-over-Reticulum bus research doc surfaced **two shipped-code defects** in `src/Core.TypeScript/discovery/`, now filed to `docs/BUGS.md` P1 (findings only — no code changed).
 
 ### 1. Discovery-beacon wire is unsigned — spoof / poison / forged-evict
+
 - `discovery-beacon.ts:99-124` (`observe`) folds attacker-supplied `{ep, zid, routes}` into every listener's PeerTable with **no authenticity check**; `bye` deletes a peer by key with **zero auth** (one forged `bye` evicts any node from every table).
 - **Fix REUSES the human auth already built** (per Aaron's steer "ais should just do similar/same"): personas share the `tools/setup/persona-keys/` keyring; bind `zid` to the persona pubkey, sign with `ace/signing.ts` (Ed25519 over canonical JSON), verify before upsert/delete, `bye` self-signed. Rotation = the existing dual-key overlap ADR (2026-06-15). **Not a new auth scheme.**
 
 ### 2. Reticulum relay `seenFids` is a grow-only set — memory-exhaustion DoS
+
 - `reticulum-transport.ts:158` — relay dedup set never evicts while siblings have `gc`/`expire`; unbounded memory / OOM, trivially floodable.
 
 ## Not filed here
+
 The third bus observation — **JetStream-over-Reticulum durability is unproven** — is a not-yet-built design crux, not a shipped-code bug, so it's held for a research/backlog note rather than BUGS.md.
 
 ## Who
+
 Kenji (Architect) owns the fixing work; Nadia (agent-layer) advisory on #1.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

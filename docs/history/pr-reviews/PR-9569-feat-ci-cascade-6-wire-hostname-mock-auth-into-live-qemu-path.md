@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - Wire `assertGeneratedNodeHostnameContract` into live `qemu-full-install-test` after phase 2 when install generated `node-<6hex>`.
 - Phase-3 first-session gate now requires mock identity-auth markers (or explicit skip); dry-run-only happy path no longer counts unless `ZETA_FIRST_SESSION_ALLOW_DRY_RUN_AUTH=1`.
 - Document the deepen on cascade #6 backlog row.
 
 ## Test plan
+
 - [x] `tsc --noEmit`
 - [x] `bun test` qemu-first-session-phase3 + qemu-full-install-test
 - [ ] CI green (build-iso QEMU path with `QEMU_FIRST_SESSION_PHASE3=1`)

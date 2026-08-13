@@ -28,10 +28,12 @@
 ## Description
 
 ## Summary
+
 - Mark **081KLL7…** backlog row **done** (closed by #9203) and refresh Otto resume doc
 - Fix stale references to deleted `tools/setup/mechanisms/*.sh` in CI cache keys, workflow path filters, manifests, and docs
 
 ## Test plan
+
 - [ ] Gate green (docs + workflow path changes only)
 - [ ] `lint (no conflict markers)` / `lint (markdownlint)` pass
 

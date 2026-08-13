@@ -30,9 +30,11 @@
 The block null tightened autocorrelation-driven over-conviction (42→12 as L grew), but `band-0` kept convicting. The reason is principled, not a tuning miss: pairs with **zero shared ancestors** have **no common cause to condition on** (Reichenbach conditioning is undefined there), and `generation` is not a shared temporal axis across disjoint histories, so their block null is meaningless. Band-0 is not a homogeneous confounder stratum — it is a bag of everything causally disconnected, which should not be metered as one common-cause test.
 
 ## Fix
+
 `minSharedAncestors` floor on `fuseMIBlock` — meter only pairs whose **raw** shared-ancestor count ≥ the floor (pass `1` to drop the disjoint pairs; the principled default). The floor is on the raw count, **not** the banded `stratumKey` (with `c/2` banding, banded-key-0 would wrongly also hold count-1 pairs).
 
 ## Real-history effect (1200 commits)
+
 Band-0 was **336,291 of 460,849** metered pairs (**73%**) — most "concurrent" pairs in an all-refs window are cross-branch and causally disjoint. Excluding them removes exactly band-0’s one (huge) false conviction; the causally-related strata still respond to the block null:
 
 | block L | incl band-0 | excl band-0 |
@@ -45,6 +47,7 @@ Band-0 was **336,291 of 460,849** metered pairs (**73%**) — most "concurrent" 
 **Combined (block L=64 + exclude disjoint): 11/159 strata convict** — down from the plain `fuseMI`’s 42/160, and every survivor is now a causally-related within-history stratum worth actually investigating, not an artifact.
 
 ## Tests (16 fusion green; Core 0-warning)
+
 +1: `minSharedAncestors=1` drops the zero-shared-ancestor cross-history pairs (two-disjoint-roots DAG).
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

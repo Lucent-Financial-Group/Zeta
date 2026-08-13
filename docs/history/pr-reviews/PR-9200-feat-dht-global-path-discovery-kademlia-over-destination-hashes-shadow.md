@@ -30,14 +30,17 @@
 Aaron asked *"what's next?"* — the layer above announce: **global reachability**. Announce (`reticulum-transport`) gives *local* presence; this DHT lets a node **find** a destination beyond direct announce range by walking the network toward it. The *"always discoverable if it's in broadcast range anywhere, even over the global internet"* layer.
 
 ## Kademlia on the self-certifying destination hash
+
 - **XOR distance metric** over the destination hashes (node id = `destinationHash(zid)`).
 - **k-bucket routing table**: bucket = leading-zero-bits of the XOR distance (shared prefix length), each capped at k with MRU refresh + oldest-eviction (Kademlia's long-lived-node preference). Idempotent fold; never inserts self.
 - **Iterative lookup**: query the α closest un-queried nodes for ones closer still, fold, repeat until a round surfaces nothing closer (converged). Returns the k closest reachable to the target.
 
 ## Pure + DST-replayable
+
 The lookup's `query(node, target)` is **injected and synchronous** for the algorithm, so convergence is tested deterministically over a fake global graph; the real async transport (findNode → foundNodes round trip) wraps it at the edge (noninterference §13). Node ids are the deterministic hashes — Kademlia's random ids become byte-locked here.
 
 ## Tested (12 new, 79 across the suite, all green)
+
 - XOR metric; `bucketIndex` leading-zero-bits; k-bucket insert / MRU-refresh / oldest-eviction; closest-N.
 - **The heart** — a lookup that reaches a target it did *not* directly know, by hopping **S→A→T** (multi-hop convergence).
 - Exact-target in a connected graph; no-regress on a sparse ring.

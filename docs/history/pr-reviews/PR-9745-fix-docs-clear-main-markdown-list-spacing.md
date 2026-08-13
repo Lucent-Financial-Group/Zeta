@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - add the MD032-required blank line before a list in the 60k crypto-scam RAW note
 - add the MD032-required blockquote blank line before a list in the autobiography RAW note
 - fixes the current main markdownlint red from run 29167735328
 
 ## Validation
+
 - mise exec -- markdownlint-cli2 "**/*.md"
 - bun run preflight:quick
 - git diff --check

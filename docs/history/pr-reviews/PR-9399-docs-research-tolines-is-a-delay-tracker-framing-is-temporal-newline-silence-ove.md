@@ -36,14 +36,17 @@ Aaron's aside on watching the **live smoke test** stream token-by-token through 
 Preserved + anchored. `toLines` splits on `"\n"` (a byte delimiter), but over a real-time / analog / mesh channel the real frame boundary is a **pause** — `delay > threshold ⇒ new line`. `toLines` and a delay-threshold framer are the **same operator with a different boundary detector** (byte-delimiter vs temporal-gap); generalize to a pluggable `frameBy(detector)`.
 
 ## Threads it ties
+
 - **Streaming** — `respondStream` token boundaries *are* temporal (the smoke test's 39 ms gap between "Three" and ".").
 - **Heat / backpressure** — growing inter-chunk Δt = congestion, a free sensor feeding autonegotiated backoff; framing and flow-control read the *same* signal.
 - **Reticulum / UDP / analog mesh** — no reliable delimiter → **silence IS the delimiter.**
 
 ## Beacon anchors (temporal framing is established)
+
 **Modbus RTU inter-frame silence `t3.5`** (frames delimited by ≥3.5 char-times idle, not a byte; Modicon 1979) — Aaron's aside exactly · UART idle-line detection · **Nagle's algorithm** (RFC 896, 1984) the dual knob · SSE keep-alive heartbeats use time to hold framing across silence.
 
 ## Also records
+
 The `frameBy(detector)` generalization as a note for the network-protocol thread (**not built**): one `toLines`-shaped operator, two detectors, byte-framed HTTP/SSE and temporal-framed mesh share one code path; the temporal Δt doubles as the heat input.
 
 **Live smoke test that prompted this:** `chat()` → "pong" (auto-refresh exercised live), `respondStream` streaming through the real committed port — full stack live.

@@ -30,6 +30,7 @@
 First finding of a proactive soundness audit for the **Caveat-A bug class**: a probabilistic guarantee resting on an independence assumption the construction may not actually deliver.
 
 ## The finding
+
 `CountMin.fs` claimed a "**provable** error bound `ε=e/w` with probability `1-δ=1-e^-d`." But that Cormode–Muthukrishnan bound is a theorem **only under a 2-universal (pairwise-independent) hash family** per row (for `ε=e/w`) **and independent rows** (for the `δ=e^-d` amplification). This implementation derives every row from **one XxHash3 base hash + SplitMix-mixed per-row seeds** — the docstring already hedged "independent-**looking**", which is the tell.
 
 - **Heuristically sound** on non-adversarial data (strong avalanche ⇒ near-uniform collisions).
@@ -37,9 +38,11 @@ First finding of a proactive soundness audit for the **Caveat-A bug class**: a p
 - **Not adversary-safe** — an attacker who knows the public, unkeyed `seed` can craft inputs that collide across all `d` rows, defeating the `δ` amplification and forcing arbitrary overestimates.
 
 ## Calibrated to actual usage
+
 No current caller is adversarial (frequency telemetry; callers are `NovelMathExt` / `SplitMix64`), so this is a **stated assumption, not a live vulnerability**. The severity of the adversarial caveat is conditional; the "not provable" caveat is fully load-bearing.
 
 ## The fix (Beacon-honesty only — no code behavior change)
+
 The type docstring + `forEpsDelta` now state the guarantee is conditional/heuristic, name the **provable path** (Carter–Wegman multiply-shift 2-universal family), and the **adversarial mitigation** (key the hash with a secret seed). Same discipline as the `AntiSybil.chshMargin` i.i.d. caveat.
 
 Anchors: Cormode–Muthukrishnan 2005; Carter–Wegman 1979; Dietzfelbinger multiply-shift.

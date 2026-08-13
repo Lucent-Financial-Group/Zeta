@@ -30,6 +30,7 @@
 Completes the end-to-end ECC integration.
 
 The RS phase accumulator now runs on every heartbeat tick:
+
 - Persists partial buffer between ticks via `.rs-buffer-{agent}.json`
 - Every 12th tick emits a recoverable RS [16,12] codeword
 - Logs emission for observability

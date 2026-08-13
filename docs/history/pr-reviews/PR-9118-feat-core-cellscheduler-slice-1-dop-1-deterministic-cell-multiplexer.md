@@ -30,6 +30,7 @@
 Slice 1 of the cell scheduler (`081KTG5S0M9`) — the **DoP=1 deterministic multiplexer**.
 
 ## What
+
 Thousands of cells step on one cooperative loop, deterministic FIFO order, communicating **only** through inboxes (the declared channel — noninterference §13). No wall-clock, no randomness, no shared mutable state ⇒ same `(cells, messages)` replays identically (DST; the FoundationDB run-loop at the cell layer).
 
 - **Generic over the cell step** (`'St -> 'Msg -> 'St * (CellId*'Msg) list`) — the multiplexer is honestly separable from the cell's work.
@@ -37,9 +38,11 @@ Thousands of cells step on one cooperative loop, deterministic FIFO order, commu
 - **Non-termination is a NAMED backstop** (`Error`), never a silent cap.
 
 ## Why this shape
+
 Slice 2 feeds this exact ready-queue to a `FerryThrottler` for DoP=N and proves `run(1) == run(N)` (the scale-free law). Slice 1 is the deterministic core that invariant must match. Composition, not a fourth scheduler — per the [design note](docs/research/2026-07-02-cell-scheduler-cells-on-the-deterministic-soft-loop-dop1-to-dopn.md) (slice 1 now marked LANDED).
 
 ## Tests (8, green)
+
 sum-to-quiescence · inter-cell routing · **DoP=1 determinism (byte-identical replay)** · parking (idle cells cost nothing, untouched) · unknown-target drop · runaway backstop fires · `routeOutbox` extract/strip + non-object passthrough.
 
 Build 0 warnings.

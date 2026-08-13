@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - `--grub-efi <BOOTX64.EFI>` embeds `/EFI/BOOT/BOOTX64.EFI` + removable-media `/EFI/BOOT/grub.cfg` into the FAT composite
 - `planQemuUeFiBootArgs` for OVMF UEFI boot argv; mtools smoke asserts EFI layout
 - No GRUB binary vendored (nix/`grub-mkimage`); stub proves layout only
 
 ## Test plan
+
 - [x] `bun test src/Core.TypeScript/installer/multiboot/multiboot.test.ts` (15 pass)
 - [x] `--assemble --grub-efi … --dry-run` shows EFI mcopy steps
 - [ ] CI path/lint green

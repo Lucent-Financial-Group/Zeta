@@ -28,12 +28,14 @@
 ## Description
 
 ## Summary
+
 - `frost-dkg.ts`: in-process n-party distributed keygen (Feldman VSS); no trusted dealer holds the group scalar after ceremony.
 - `frost-share-adapter.ts`: software-file adapter + honest HSM stub (throws until platform bindings land).
 - `ca-cli frost-ca --dkg` wires dealerless keygen into frost CA custody (081KWPHRNFW slice 1).
 - ROAST + real HSM seals remain backlog on the same work item.
 
 ## Test plan
+
 - [x] `bun test tools/setup/persona-keys/frost-dkg.test.ts`
 - [x] `bun test tools/setup/persona-keys/frost-share-adapter.test.ts`
 - [x] `bun test tools/setup/persona-keys/frost-ca-custody.test.ts`

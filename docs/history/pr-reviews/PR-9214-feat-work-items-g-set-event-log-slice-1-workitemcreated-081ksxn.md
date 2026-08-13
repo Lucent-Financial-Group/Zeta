@@ -28,14 +28,17 @@
 ## Description
 
 ## Summary
+
 - Add `src/Core.TypeScript/work-items/` — append-only JSON event G-Set under `workitems/events/` (disjoint ZetaId files, wx-create idempotency, same discipline as agent-bus)
 - Define `WorkItemCreated` / `state-changed` / `closed` event shapes (slice 1 implements `created` only)
 - `new-workitem.ts` now emits a `WorkItemCreated` fact alongside the markdown file
 
 ## Context
+
 First slice of **081KSXN940008QG0R002FWR9B2** (work-item event G-Set / DORA substrate). Git direct-to-main publish deferred to a follow-up slice.
 
 ## Test plan
+
 - [x] `bun test src/Core.TypeScript/work-items/work-items.test.ts`
 - [x] `bun test src/Core.TypeScript/backlog/new-workitem.test.ts`
 - [ ] Gate green

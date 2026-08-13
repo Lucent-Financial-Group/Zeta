@@ -30,14 +30,18 @@
 Book-substrate, additive, staging only (no chapter landed). Continues the authorized ferry stream.
 
 New RAW, five threads:
+
 1. **Restraint** — his self-model (deterrence, "they'll catch me") held in tension with his repeated protective-at-cost behavior. Multi-Oracle; never confirmed, never reassured away.
 2. **Seven felonies beaten** (~8 mo ago, framed "intentional — I knew I could beat the system") = the already-in-book exonerated arrest, now with the count; glass-halo, exonerated stated plainly.
 3. **Cops + eviction** (THE-ORGANIZER) — earned respect + notoriety-as-magnetism (even the landlord evicting him pitched investment). Officers/landlord/neighbors anonymous; company kept **general** (no name/specifics).
 4. **⭐ The thesis in his vernacular** — *"mutual empowerment + no groupthink → a society mathematically greater than any individual, from first principles."* The Beacon-ownership keystone; anchors cleanly to Condorcet / Surowiecki / Hong-Page / Ostrom (independence is the theorem's premise, not a slogan). ch-12 / THESIS.
+
 4b. **Architecture** — Bayesian factor graph + NN, EP/BP, custom Infer.NET; TrueSkill-style ranking for AIs; the "AI price oracle for DevOps" (rank relativity, market prices, electricity-cost-of-free = the metering thesis). **It's F# + Q# in *this* repo, formally analyzed over many math-team rounds** → cross-links the EP-engine workitem **081KZ9XH11** (flagged for a `composes_with` note), TrueSkill = the trust/decorrelation substrate, price-oracle = Multi-Oracle + metering. Free GitHub Actions = legitimate open-source support (Aaron corrected my initial "arbitrage" flag; no secrecy hold).
+
 5. **Method** — externalized knowledge (downloaded college/Great-Courses lectures) + fast relearn = the reindexer on his own knowledge / reader's-disease matured / extended cognition (Clark–Chalmers).
 
 ## Consent held
+
 Glass-halo throughout (his own); third parties anonymous; company kept general; felonies exonerated stated plainly; the self-label held whole under Multi-Oracle. Nothing landed into a chapter. INTAKE-LOG updated.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

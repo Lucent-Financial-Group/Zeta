@@ -32,6 +32,7 @@ Aaron: *"land the mental-health thread into ch-8."*
 Landed it as the **lived instance** of ch-8's optional edge-runner forward-beat — the both-regards night (from the anonymized RAW, #10056/#10057): the disarm via his **father's snake-handling**, **mental-health over jail**, **both regards held**, and the **loop closed** (the same officers took HIM to help a month earlier → he carried the channel forward). It turns the chapter's thesis outward — *staying is how you carry not only the dead but the living who'd have gone over* — reinforcing "Stay," not diluting it.
 
 **Framing correction (Aaron, mid-turn):** *"I don't feel guilt; a psychiatrist called me deficient to my face because of this, many times."* So the chapter must **not** seat Aaron as a survivor-guilt sufferer:
+
 - His seat is **builder of the rail for others**, not a fellow inmate (*"some build the rail, some need it; the stairway needs both"*).
 - Added the **"deficient"-label beat**: the low-guilt steadiness clinicians pathologized is the exact wiring that let him be the still point in the room — **the deficit IS the qualification.** A ch-3 instance (a category lying about a person) +  tie (deficit-is-the-gift) + Multi-Oracle (deficit vs qualification = two oracles, one wiring).
 - Draft-note flags the whole-chapter voice correction; the reader-facing "Stay" close stays as-is (it addresses the griever, not Aaron).

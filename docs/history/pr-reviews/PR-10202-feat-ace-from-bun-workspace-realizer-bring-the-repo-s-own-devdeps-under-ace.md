@@ -30,11 +30,13 @@
 Dogfoods ACE as the package manager of package managers, per Aaron: *"the ace package manager is our goal too for all this dependency management so we dog food our own package manager of package managers."*
 
 ## The gap
+
 ACE managed **19 dependency classes** but not the most obvious one: **the repo's own `package.json` devDependencies**. `install.sh` never ran a root `bun install`, so a fully-provisioned machine had every mise toolchain, every global CLI, every dotnet/uv/opam tool — and **no `node_modules`**. CI's `lint (TS)` job installed them itself as a separate step, so CI and a dev laptop silently disagreed.
 
 The cost was **misdiagnosis, not inconvenience**: local `tsc` reported `TS2307: Cannot find module` for devDeps while CI was green on the same commit, and **two independent reviewers concluded "lint is red on main"** from that phantom. A phantom error looks exactly like a finding (`081KZKWB1FZ`).
 
 ## Why an ACE class, not a shell line
+
 A dependency class belongs in the package manager of package managers, not bolted onto a bootstrap script. Same shape as the other 19: declared mechanism, idempotent apply, honest skip.
 
 - **`from-bun-workspace.ts`** — `bun install` at repo root. Idempotent by construction (upsert against the lockfile). Skips honestly when `package.json` is absent or `bun` isn't yet on PATH.
@@ -43,6 +45,7 @@ A dependency class belongs in the package manager of package managers, not bolte
 - Added to `BEST_EFFORT_REALIZER_IDS` and to the ACE mechanism-pointer registry (+ regenerated the drift-checked `ace-mechanism-pointers.json`).
 
 ## Validation
+
 - **End-to-end:** deleted `node_modules` entirely → ran the realizer → **325 packages restored**, local lint back to **0 errors, matching CI**.
 - ACE suite **470/470** (registry pinning tests updated for the intentional 16→17 addition).
 - The single failure in `src/Core.TypeScript/ci/` (windows↔apt/brew manifest parity) is **pre-existing on clean main** — verified by stashing.

@@ -30,9 +30,11 @@
 Took a book chapter. ch-04 (*The Correlation of Souls*) had the abstract argument (the 2√2 ceiling, health-as-mobility, intimacy-as-equality) but no **lived root** — no answer to *"where did this way of seeing come from."* The reindexer RAW (2026-08-02, flagged *"the lived root of the whole thesis — Home: ch-04"*) is exactly that.
 
 ## What I did
+
 Wove it in as a new section, **"The math was lived first,"** in the books established method — the shadow builds the prose scaffold + register discipline; your **verbatim** goes in 3 `[SOCKET]` blocks for you to rewrite in your own voice. It grounds the chapters whole thesis in your lived origin: rebuilding an inner world after a fracture by indexing on **relational structure** (function words / connective tissue = where meaning lives), not the scattered content — *"the math of the self, one domain over, is the self."* Plus the qualia half: non-biased elicitation → **correlations that hold across many**, the literal root of "the correlation of souls." Structurally it makes the teardown land harder — the building is human because it was *built* from a person coming back.
 
 ## Disciplines held
+
 - Mentor **de-identified** per `CONSENT-LEDGER` (no name, no employer).
 - The heavy personal line is **your verbatim in a socket**, framed as *survival made general, not spectacle*.
 - **Honest limit attached** (not a clinical claim, not a substitute for care; a method is not a hand — reach for people), mirroring the handrail chapter.

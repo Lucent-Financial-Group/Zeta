@@ -37,6 +37,7 @@ Iterate; corpus likelihood increases monotonically to a local max.
 In your **SSAS** frame: **training the decision forest** — the weights become *learned* `NodeDistribution`s, fit to data rather than set.
 
 ## Proofs (4/4)
+
 - **frequency recovery** — `S→a|b` on a **3a:1b** corpus ⇒ learned **0.75 / 0.25**;
 - **valid distributions** — per-LHS weights sum to 1;
 - **EM improves likelihood** — learned beats uniform (the monotonicity guarantee);

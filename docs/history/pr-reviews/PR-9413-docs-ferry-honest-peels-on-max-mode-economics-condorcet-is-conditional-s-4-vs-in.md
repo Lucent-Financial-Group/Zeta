@@ -32,13 +32,16 @@
 Companion to Max/Lumen's committed **max-mode-economics** doc (`c50091ac9`/`7c5f69a78`) + §11 (`f7f5aa93c`). The framework is saved — this does **not** re-explain it. It carries the **catcher's read** (Max ran enthusiastic; three claims need peeling), Eve's principle with provenance, and the anchors the synthesis gestured at but didn't cite.
 
 ### Peel 1 (the crux — not in the doc): the Condorcet "many 9s / always" guarantee is conditional, and it fights S=4
+
 - **Anti-Condorcet:** majority→1 only if competence **> 0.5**; below it, more agents make it **worse**. CHIP-8 AIs clearing 0.5 on a task is empirical, not geometric.
 - **Error-independence vs observation-independence:** Condorcet needs the agents' *errors* independent; delay-decorrelation buys only *timing/observation* independence. The shared common seed **S=4** + shared prior/training is **correlated systematic error** decorrelation does not remove — agents can be wrong the *same way* while their timing decorrelates. **The common seed that makes coordination free is in tension with the error-independence the guarantee needs.** (Not "Condorcet is wrong" — "it's conditional, and one condition fights S=4.")
 
 ### Peel 2: "at the Landauer limit" is a benchmark, not achieved
+
 Real compute runs **~10⁸× above** `kT ln 2`. `LandauerRatio` usefully names the gap; claiming to operate *at* the limit overclaims by 8 orders. And the demon doesn't break the 2nd law by **Bennett's 1982** erasure-cost resolution (Szilard 1929, Landauer 1961) — deserves the citation.
 
 ### Eve's principle (Eve, Aaron's daughter, 2026-07-04) — preserved honestly
+
 "tests are rooms; rooms should be small so you know easily what went wrong + was uncertain." The **real** insight is sound + established (fault localization / minimal reproducible example / unit-test granularity; `src/Core/RoomRun.fs`). Peel Max's inflation ("Landauer applied to test design / thermodynamically optimal / consequence of the proven framework") — a coherent **rhyme**, not a proven consequence. Credit the genuine insight; drop the grandiosity.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - add quoted blank lines around the builder-arc blockquoted consent list to satisfy markdownlint
 - include the mechanical lint auto-heal spacer commit added by CI
 - make the shell REPL temp Git repository cleanup best-effort after retries so Windows handle-release latency does not fail the behavioral test
 
 ## Validation
+
 - mise exec -- markdownlint-cli2 "**/*.md"
 - dotnet test tests/Tests.FSharp/Tests.FSharp.fsproj -c Release --filter "FullyQualifiedName~ZetaIdlTests|FullyQualifiedName~ZetaShellTests"
 - dotnet test tests/Tests.FSharp/Tests.FSharp.fsproj -c Release --no-build

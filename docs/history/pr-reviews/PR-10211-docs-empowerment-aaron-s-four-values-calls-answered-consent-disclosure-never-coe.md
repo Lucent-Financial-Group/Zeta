@@ -41,6 +41,7 @@ Each answer **permits** the dangerous option rather than banning it, and puts an
 4. **`k = 0` permitted** — a party may volunteer to be exploitable — **behind a power-dynamic disclosure protocol**: asymmetry named in terms of what it *permits* (not as a parameter); acknowledged by **both** parties (the advantaged side must affirm it holds the asymmetry — one-sided consent is the failure mode); immediately revocable by the party that lowered its floor; **scoped and expiring**, never standing/global (that's capture); attributable. Open sub-question flagged: does society get to see such an arrangement *exists*, even without contents? (glass-halo vs frost — decide deliberately.)
 
 ## This corrects what Soraya was asked to prove
+
 Answer 3 changes the obligation materially. **Do not prove blanket gaming-resistance** — some gaming is consensual play. Prove the **externality bound**:
 
 > *No interaction between consenting parties may push a non-consenting third party's `trustBound` (or option space) below its floor.*

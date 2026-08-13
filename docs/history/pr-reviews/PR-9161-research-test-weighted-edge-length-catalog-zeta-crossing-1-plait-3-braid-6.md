@@ -30,6 +30,7 @@
 Next-rung #2 (of your 2 to 3 to 1). #9153 gave the Ihara zeta over the catalog's 3 generators as parallel edges, all length 1; this adds #9146's cartridge weights as edge LENGTHS (crossing=1, plait-move=3, braid=6), so a geodesic's length is the SUM of its generators' weights - unifying #9146's commutative weights with #9153's noncommutative geodesics.
 
 Self-verified two genuinely different ways to degree 24:
+
 - weighted-edge determinant (6x6, entry u^length)
 - subdivided-graph Ihara (each length-L generator to L unit edges; standard 20-edge trace side)
 

@@ -30,6 +30,7 @@
 Design ferry + workitem `081KZKYDJ9Q` for Aaron's ask: *"we need one based on mutual empowerment that mixes the two — mutual empowerment and multi-oracle, so each member can decide which oracles it trusts or start its own."* **Not implemented.**
 
 ## First: why the obvious implementation is wrong
+
 Recorded before anyone writes it. A linear blend of the two shipped bounds is **vacuous**:
 
 ```
@@ -39,20 +40,25 @@ w·(μ + k₁σ) + (1−w)·(μ − k₂σ)  =  μ + k′σ
 It collapses to another **single-agent** bound with a different `k` — no second party, no new information. It's `exploreBound` turned down. **The mix must be structural, and must range over both agents.**
 
 ## Proposed shape
+
 - **`trustBound` becomes the floor — for *both* parties.** Non-coercion falls straight out: I cannot buy my upside with your downside.
 - **`exploreBound` becomes the reach**, maximized over the **joint** option space.
 - Indexed by an **oracle set the member chooses** — §11 Multi-Oracle applied to a *metric* rather than a verdict. No ambient global scorer: that would be both a mandatory morality (§11) and an unmetered influence channel (§13).
 
 ## The anchor is real, not metaphor
+
 Empowerment = **channel capacity from an agent's actions to its own future observations** (Klyubin/Polani/Nehaniv 2005). And **Salge & Polani 2017, *Empowerment as Replacement for the Three Laws of Robotics*** already proposes maximizing *the other's* empowerment as an alignment objective — non-coercive **by construction**, because it expands what the other *can* do without steering what they *will* do. That's this project's choice architecture, expressed as a number.
 
 ## Hard constraint named before implementation
+
 **Empowerment must be computed from DECLARED capability, never inferred by observing a peer's private state.** Otherwise it is surveillance and collides with §6 consent-first and the inviolability of earned frost. Declaring more buys more precise empowerment — which must stay an *incentive* to disclose and never become a *requirement*.
 
 ## Placement
+
 Kept **separate** from `calibration-ledger.ts`: calibration scores a **claimant's self-knowledge**; empowerment scores an **interaction between two peers**. Collapsing them turns a calibration score into a social ranking — the exact failure the existing docstring guards against (*"weighting a claim is not the same as valuing the claimant"*).
 
 ## Four open questions, left explicitly unresolved (values calls, not implementation details)
+
 1. `jointOptionGain` aggregation: **min** (maximin — protects the worse-off party, matches the floor discipline) vs sum (permits sacrificing one party for aggregate gain) vs Nash product. `min` looks right; it's your call.
 2. A cheap, honest proxy for channel capacity (exact computation is intractable).
 3. Gaming via over-declaration — calibration may already police it (undelivered declarations degrade `trustBound`, which is a *constraint* here), but that should be proven, not assumed.

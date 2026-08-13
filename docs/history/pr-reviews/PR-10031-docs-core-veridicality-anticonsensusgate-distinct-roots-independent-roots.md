@@ -30,16 +30,20 @@
 Soundness-audit finding **#2** (Caveat-A class: independence *asserted*, not *verified*) — and higher-stakes than #1 (CountMin, #10030) because this is a **trust-upgrade gate**.
 
 ## The finding
+
 `antiConsensusGate` counts distinct `RootAuthority` **label strings** (`≥ 2`) and calls that "independent roots." But distinct labels are not proof of independent sources:
+
 1. **`RootAuthority` is self-asserted metadata** — a Sybil defeats the gate by presenting **one** real source under **two** labels. That is the *exact* pseudo-consensus the gates own docstring says it rejects ("50 claims tracing to a single upstream source").
 2. Two genuinely-distinct roots can still be **correlated** (shared upstream), which a label count cannot see.
 
 So independence is **asserted** (via label-distinctness), not verified. `validateProvenance` does not close it — confirmed format/signature-only. The gate *names* the sybil problem but doesnt *use* the anti-sybil machinery that now exists.
 
 ## The fix (Beacon-honesty, no behavior change)
+
 Documents that the gate is a **one-way first filter**: failing (`< 2` labels) convicts single-source pseudo-consensus; **passing does NOT certify independence.** Points to `AntiSybil.chshSybilCalibrated` as the real same-source test to compose upstream when the trust upgrade is adversarial. Deeper fix (wire the anti-sybil check in) is a flagged follow-up needing a `RootAuthority`→identity-stream mapping.
 
 ## Audit status
+
 Same discipline as CountMin (#10030) and the `chshMargin` caveat. Also checked `SignalQuality` this round — **clean** (its composite is a weighted mean, consciously *not* a product, so no independence assumption; honest negative, no finding).
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

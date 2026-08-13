@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - Rewrite `USB-IDENTITY-THREAT-MODEL.md` around society geometry: traveler → cluster → federation → ISociety/CTM (self-similar), citing Iris Genesis Concepts (Addison) and IdP ADR.
 - Clusters = relationships (never enforceable); federations = contracts (always with exits). Each scale (and sophisticated travelers) can carry its own threat model.
 - Installer today is cluster-shaped with GitHub-PR as fake federation — named explicitly so we do not over-claim enforceability.
 
 ## Test plan
+
 - [x] markdownlint on touched docs
 - [ ] Optional: glossary promotion of cluster/federation from Iris (follow-up)
 

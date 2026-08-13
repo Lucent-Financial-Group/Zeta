@@ -30,9 +30,11 @@
 Move-forward #2 (of the two you asked for; #1 = Artin–Mazur scheduler zeta, #9151). #9148 proved the Ihara identity on a textbook graph (K₄); this lands it on the **braided catalog itself**.
 
 ## The graph *is* the generators
+
 The catalog's three generators — **crossing, plait-move, braid** (#9146's cartridge family) — are the **three parallel edges** of a 2-vertex multigraph. Its non-backtracking geodesics are exactly the **braided words** in the three generators. The generators *are* the edges.
 
 ## Self-verified three ways (to degree 24)
+
 - geodesic side `ζ = exp(Σ tr(Wᵏ)uᵏ/k)`
 - Bass side `ζ⁻¹ = (1−u²)^{|E|−|V|} det(I−Au+Qu²)` (2×2)
 - closed form `ζ = 1/((1−u²)²(1−4u²))`

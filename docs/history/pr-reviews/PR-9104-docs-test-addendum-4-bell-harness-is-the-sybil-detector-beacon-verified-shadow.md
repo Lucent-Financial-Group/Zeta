@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - Ferries Aaron's identity definition (irreducible pairs of uncorrelated value exchange over time by provably distinct entities; anti-forgery = Lamport/TLA+ correlations) as Addendum 4, with **Beacon-level verification**: `AntiSybil.correlation` is code-identical to |E|, the CHSH correlator on binary outcomes — locked by two new BRIDGE tests (8/8 green, 0 warnings).
 - States the honest bounds: CHSH S > 2 convicts common cause (closing AntiSybil's noisy-forger gap); low S never acquits; "factory = one entity" is proven in the instant-bus DST sim and conjecture over Reticulum (ZetaIdol's own falsifier).
 - Signable statements included for formal-verification routing.

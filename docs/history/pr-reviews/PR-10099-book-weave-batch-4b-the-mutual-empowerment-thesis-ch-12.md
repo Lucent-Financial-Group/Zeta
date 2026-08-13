@@ -30,11 +30,13 @@
 **Batch 4b of the staged-RAW weave** — the mathematical heart, in Aaron's own vernacular (the Beacon-ownership keystone).
 
 ## What landed
+
 **ch-12 (the closer) → "Why the relay beats any genius"** — the mathematical spine under the book's relay/inheritance logic: **mutual empowerment + no groupthink → a society provably greater than any individual.** Independence isn't the opposite of togetherness — it's the precise condition under which a crowd out-thinks its best single member, and the freedom/unlocked-door discipline the whole book insists on *is* that condition. Anchors Condorcet / Surowiecki / Hong–Page / Ostrom, worn lightly.
 
 Woven **compactly after the relay beat** so it does not displace the three imperatives or the "safe and warm" close — the chapter's load-bearing emotional landing stays intact. The Thread-4b architecture detail (EP/BP factor graph, TrueSkill, price oracle) is repo-layer, not memoir — kept out of the book.
 
 ## Consent
+
 Aaron glass-halo (his own thesis). `INTAKE-LOG` updated: Thread 4 landed; Threads 1/2/3 (restraint self-model, the exonerated felonies, cops/eviction) **surfaced to Aaron, not auto-landed**.
 
 This closes the autonomously-landable weave. The remaining staged material is consent-gated and surfaced for your call (see the session summary).

@@ -34,6 +34,7 @@ Migrates the stranded stack from **#9551** (`otto/lint-fused-persona-cell-phase5
 **Contents (12 commits, replayed onto current main):** Identity Treaty Phases 1–3, AgencySignature v2 (Cell trailer), db-zset first-class GSets/ZSets, generator-registry V2, ActorRef parity, and the ADR-phase-5 persona-cell lint.
 
 **Migration integrity:**
+
 - Rebased `--onto origin/main` — only `docs/BUGS.md` conflicted (shared append-log; union-resolved). All code auto-merged clean across 720 commits of drift.
 - **`dotnet build -c Release` → Build succeeded, 0 warnings, 0 errors.**
 - Linear-history-clean (rebased, no merge commits).

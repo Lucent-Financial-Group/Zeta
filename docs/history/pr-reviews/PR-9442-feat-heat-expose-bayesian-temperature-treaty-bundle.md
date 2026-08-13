@@ -28,12 +28,14 @@
 ## Description
 
 ## Summary
+
 - add a source-owned temperature reference-oracle port and treaty bundle in Core so Q# stays a plugin/reference over the runtime-owned heat lane
 - expose Bayesian beliefs as the same heat/temperature/black-body treaty bundle used by room transcripts and Q# vectors
 - pin the Bayesian bundle against the committed Q# heat-signals treaty and reject schema drift as typed feedback
 - fix latest-main quick-preflight drift: trim MD012 double blanks and narrow the persona-key optional validity flag before spreading it
 
 ## Validation
+
 - dotnet test tests/Bayesian.Tests/Bayesian.Tests.fsproj -c Release --filter FullyQualifiedName~BayesianTemperatureTests
 - dotnet test tests/Tests.FSharp/Tests.FSharp.fsproj -c Release --filter FullyQualifiedName~QSharpOracle
 - bun test src/Core.QSharp.ReferenceOracle/heat-signals.test.ts

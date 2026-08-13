@@ -30,7 +30,9 @@
 Two honest-register cleanups from the bug-A/bug-B validation run.
 
 ## 1. The mislabel that cost a diagnosis cycle
+
 `[iter-5-wifi] invalid zeta-wifi-credentials.json` was printed for **two very different causes**:
+
 1. **the runtime is missing** — first-boot `install.sh` didn't complete, so there's no `bun` to run `wifi-esp-to-nm.ts` with (the creds file may be perfectly fine); vs
 2. **the creds JSON really is malformed**.
 
@@ -39,9 +41,11 @@ On validation run 31323533516 it was case (1) — bug A (`081KZETP6AT`, determin
 **Fix:** probe for `bun` and emit a distinct marker (`converter unavailable (bun/runtime missing — install.sh incomplete)`), and **print the converter's stderr** — which was being captured to `/tmp/zeta-esp-wifi.err` and then **deleted unread**.
 
 ## 2. Correcting my own premature claim
+
 The `081KZHJPJCF` workitem said *"COMPLETE FIX LANDED — pending validation."* Validation has now run, and while the read-side fix **does** work (both `found` markers land), the contract still fails **downstream of bug A**. That workitem is now marked **blocked on 081KZETP6AT**, not independently completable — leaving an optimistic claim standing against contrary evidence is the thing worth fixing.
 
 ## Validation
+
 `bash -n` clean · `shellcheck -S warning` clean · **300/300 tests pass** (test-iter-54 sentinels preserved + full installer suite).
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

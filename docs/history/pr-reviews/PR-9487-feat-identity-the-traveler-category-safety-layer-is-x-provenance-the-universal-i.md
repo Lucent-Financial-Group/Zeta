@@ -30,6 +30,7 @@
 Aaron: *"design the persona-frame identity-provenance layer"* — refined live across six messages into the self-declared **traveler category** (genus: self-propagating pattern — human/AI/whale/cat/DNA/cell/mushroom, open), which is at once the **interface selector** ("this is how you interface into them"), the **root of the trust graph** (is-X truthful before any claim is auditable), and the **consent handle**.
 
 **`identity-provenance.ts` (6/6 tests, lint clean):**
+
 - `TravelerCategory` = a self-declared registry **number** (wire + generic English-free BNNs read the number; English is a satellite label). Open — new travelers are new numbers, no type change.
 - **The impersonation floor, structural:** `Synthetic` is self-declared/free (AI discloses as AI); attested categories have **one door** (`attestedTraveler`, verifier-gated with a credential this codebase cannot mint) — so an AI freely IS itself but **structurally cannot BE** a specific person/whale/cell it is not. Unregistered ⇒ attested (fail-safe). Tested: AI can't self-declare human; mismatched subject/category/policy refused.
 - **Persona-frame wiring:** a served persona's traveler = `selfDeclaredTraveler(Synthetic, channelId, name, model)`, the opening handshake frame; the handshake + human `AttestationVerifier` fill are the named next slice.

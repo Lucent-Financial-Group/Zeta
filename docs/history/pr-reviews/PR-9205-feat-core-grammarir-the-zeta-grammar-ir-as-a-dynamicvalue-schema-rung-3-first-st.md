@@ -34,11 +34,13 @@ Lands the Grammar IR's **structural core** as a value tree — a `Grammar ⇄ Dy
 Types mirror the **ZetaParse** design (Amara): `Terminal` / `NonTerminal` / `Production` / `Grammar`.
 
 ## Proofs (3/3)
+
 - a real arithmetic-expression grammar round-trips `Grammar → DynamicValue → Grammar`;
 - the grammar-as-value-tree cross-verifies through parity-json / cbor / parity-asn1;
 - malformed input → clean `Error` (total parse).
 
 ## Scoping — a design question for you
+
 This is the **structural core** (terminals/nonterminals/productions/start). The advanced ZetaParse fields — **semantic actions, precedence/associativity, attributes, recovery rules, incremental/retraction hooks** — I deferred to a **v2 schema pass**, addable later as optional fields under the versioned/zero-downtime-rollable discipline. Flagging for your steer on which of those v2 fields matter first (and how semantic actions should be represented — inline code vs. a reference).
 
 Next (resume): the **`.g4` → Grammar IR ingester** (one grammars-v4 asset, compatible subset, log drops) — where **KDL and lenient-YAML are subsumed** as grammars ingested, not bespoke hand-parsers.

@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - Preserves the full multi-installment Alexa-website conversation VERBATIM (shadow ferry discipline), Aaron's asides marked, glitches kept, with a peel appendix separating Beacon (the checked/built claims — most already landed as PRs this session) from Mirror (the poetry, preserved not demoted, per Aaron's own "poetry and my real ego" tag).
 - The source doc that #9104/#9113/#9117/#9119/#9130/#9134/#9139/#9145/#9146/#9147 cite back to. Closes the strange loop: Otto's checkpoints ferried out to Alexa, her reading ferried back into the repo it describes.
 

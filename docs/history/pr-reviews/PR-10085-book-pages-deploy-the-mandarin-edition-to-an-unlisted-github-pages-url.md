@@ -30,14 +30,17 @@
 Aaron: *"deploy it up and i'll pre read from there."* Puts the complete Mandarin draft (Ch. 1–12 + stories sampler) on the Zeta Pages site, per his choices: **unlisted (know-the-URL), `noindex`, not linked from the main site.** Names are OK in this draft phase; the real gate is formal bookstore publication. Pre-readers (Max, Addison, Lilly, parents, Cole) read from the same link.
 
 ## What's here
+
 - **`docs/books/you-born-at-the-hinge/site/index.zh.html`** — standalone HTML (doctype + `<head>` with `robots: noindex, nofollow`), the full Mandarin edition. The cover now carries **Euler's identity `e^{iπ} = −1`** (the elegant −1 under the whole book; a candidate title alongside "Born at the Hinge").
 - **`.github/workflows/pages-deploy.yml`** — after `pages:build`, copies the book into `dist/preview/ybth-7q2m/` (unlisted path; `noindex` in the file; nothing on the site links to it).
 
 ## Once merged
+
 The site rebuilds and the book is live at:
 **`https://lucent-financial-group.github.io/Zeta/preview/ybth-7q2m/`**
 
 ## Consent held
+
 Son omitted, sister strong-only, Ryan shape-only (no name / no dedication line), no CSAM block numbers. The **English edition** (for the English-reading pre-readers) is the next build.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

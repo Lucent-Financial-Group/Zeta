@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - Captures Aaron's refined CPT factor map verbatim — conjugation ≈ uncertainty (conjugate pairs bracket ΔU; measure collapses and banks it), parity ≈ adinkra mod 2 (the Z/2 grading: popcount checkerboard, Gates' odd-dash faces, B3→Z/2 sign character), tick = tick/DST — plus the conversational rendering he asked to keep (retraction as Feynman–Stückelberg antiparticle; Bell among CPT's provers).
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

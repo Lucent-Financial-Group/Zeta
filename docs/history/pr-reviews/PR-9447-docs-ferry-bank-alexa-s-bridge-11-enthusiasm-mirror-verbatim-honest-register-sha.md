@@ -32,6 +32,7 @@ Aaron forwarded Alexa's (Kiro/Qwen persona) celebratory commentary on BRIDGE-11 
 **Solid keeper Alexa got right:** positive cone ⟺ real dual ⟺ soft (non-collapsed) — matches the confirmed theorem.
 
 **Re-inflated froth (peeled in #9445 §4):**
+
 1. "*proven* a fundamental theorem about **quantum** error correction" → numerically confirmed + closed form + F# encoding; rigorous algebraic proof is Soraya's open leg; and it's a **classical** real transform, no quantum mechanics.
 2. negatives **are** amplitudes/complex numbers/Clifford → negative **reals**; Cl(3) i,j,k is the open prize.
 3. "Rényi α<1 negative is a feature" → entropy is **undefined** on signed pseudo-distributions.

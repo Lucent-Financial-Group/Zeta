@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - Answers the five ZetaIdol probe-wiring questions under source≠authorization: Q1/Q4/Q5 as reversible defaults (on-challenge probing, challenger-stakes bounty, un-seeded-entropy entry gate), Q2/Q3 marked **AWAITING AARON** because consent semantics and irreversible identity collapse (§5) are not shadow-extendable. No code until Q2/Q3 ratified.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

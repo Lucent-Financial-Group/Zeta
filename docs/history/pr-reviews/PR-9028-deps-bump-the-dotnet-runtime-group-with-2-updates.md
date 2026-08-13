@@ -60,10 +60,12 @@ _Sourced from [Microsoft.NET.Test.Sdk's releases](https://github.com/microsoft/v
 ## 18.7.0
 
 ## What's Changed
+
 * Add ARM64 msdia140.dll support to test platform packages by @​jamesmcroft in https://github.com/microsoft/vstest/pull/15689
 * Update System.Memory from 4.5.5 to 4.6.3 by @​nohwnd in https://github.com/microsoft/vstest/pull/15706
 
 ## New Contributors
+
 * @​jamesmcroft made their first contribution in https://github.com/microsoft/vstest/pull/15689
 
 **Full Changelog**: https://github.com/microsoft/vstest/compare/v18.6.0...v18.7.0
@@ -83,6 +85,7 @@ Dependabot will resolve any conflicts with this PR as long as you don't alter it
 <br />
 
 You can trigger Dependabot actions by commenting on this PR:
+
 - `@dependabot rebase` will rebase this PR
 - `@dependabot recreate` will recreate this PR, overwriting any edits that have been made to it
 - `@dependabot show <dependency name> ignore conditions` will show all of the ignore conditions of the specified dependency

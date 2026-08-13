@@ -40,7 +40,7 @@ system-wide   kern.maxfiles        65536   ← the actual ceiling that was hit
 
 **Raising `ulimit -n` does nothing for this failure.** Three worktrees each running `dotnet build -c Release` with their own MSBuild node sets exhausted the system-wide table.
 
-## Memory tradeoff, or DoS protection?
+## Memory tradeoff, or DoS protection
 
 Mostly the second. **The limit is a ceiling, not a reservation** — the kernel preallocates nothing when you raise it, and memory is consumed per *open* descriptor (a few hundred bytes of kernel struct), so cost tracks actual usage. **Raising it 10x costs nothing until 10x the descriptors are actually open.**
 
@@ -51,6 +51,7 @@ The low default exists so one runaway process can't drain a system-wide table an
 Raising system limits needs root and changes machine-wide settings, so this only **warns with the exact commands**. A human applies them.
 
 The remedies are platform-correct rather than generic:
+
 - **macOS** persists via a `/Library/LaunchDaemons` plist — **launchd owns this; `/etc/sysctl.conf` is not reliable for `maxfiles`**
 - **Linux** sets `fs.file-max`, per-user `nofile`, **and** `DefaultLimitNOFILE` under systemd — because **systemd services don't read `limits.conf`**, a common way this fix looks applied and isn't
 

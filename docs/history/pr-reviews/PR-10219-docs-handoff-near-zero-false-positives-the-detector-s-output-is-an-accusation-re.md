@@ -38,6 +38,7 @@ This is the most important constraint in the signature section and the easiest t
 Zeta inherits this exactly: a false-positive Sybil detection is **an honest agent accused of being a forger**.
 
 ### Three consequences — two already carved
+
 1. **Report the fact, never the verdict.** `dual-use-detection-is-neutral-oracle-decides` already requires it (`SameSourceAsKnown` is the neutral fact; REUNION vs SYBIL is caller policy). Aaron's crime-detection experience is the strongest argument for that rule anywhere in the repo: the identical signature meant *"theft"* or *"new hot tub"* depending on context the detector doesn't have — a detector that hardcoded the accusation would have been wrong **at the cost of a prosecution**.
 2. **Tune to precision, and state which way you erred.** The false-positive rate is a first-class acceptance number justified by the *cost of being wrong* — never F1, which averages away exactly the asymmetry that matters.
 3. **A false positive IS bystander harm.** It falls under the externality bound settled today: a wrongly-accused agent is a **non-consenting third party** pushed below its floor by an interaction it never opted into. So anti-Sybil detection is **governed by** the empowerment work, not merely adjacent — and Soraya's externality proof obligation should treat detector output as one of the ways a bystander's `trustBound` gets pushed down.
@@ -45,6 +46,7 @@ Zeta inherits this exactly: a false-positive Sybil detection is **an honest agen
 **Practically:** build the identification half first (the cheap win), but ship it **reporting facts with calibrated confidence, never verdicts**, and make its false-positive rate the acceptance criterion rather than its hit rate.
 
 ## Also recovered: separation vs identification
+
 The four signature domains split into two different jobs — separation (NILM/ICA/NMF: *which sources compose this mixture?*) vs fingerprint identification (Shazam/Chromaprint: *which known thing is this, from a noisy partial observation?*). `CoordinationSpectrum` needs both, and its docstring already says so.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

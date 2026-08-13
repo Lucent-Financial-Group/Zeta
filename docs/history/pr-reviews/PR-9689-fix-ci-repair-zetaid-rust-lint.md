@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - Split ZetaId Rust cross-verification expected-value accounting into independent hex and Crockford counters.
 - Keep parse-reject vectors as successful rejected-input cases instead of treating the invalid input string as expected formatter output.
 - Fix one markdownlint blank-line regression in the latest intake log.
 
 ## Verification
+
 - `cargo fmt --manifest-path src/Core.Rust.ZetaId/Cargo.toml --check`
 - `cargo test --manifest-path src/Core.Rust.ZetaId/Cargo.toml`
 - `cargo clippy --manifest-path src/Core.Rust.ZetaId/Cargo.toml --all-targets -- -D warnings`

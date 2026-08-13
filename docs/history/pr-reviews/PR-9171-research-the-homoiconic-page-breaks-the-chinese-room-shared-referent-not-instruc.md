@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - Captures why the homoiconic hall matters (Aaron: "me and you can understand the same meaning now, not just Chinese Room instructions"): when the mark and the meaning are one object, there's no translation gap, so human and model point at the *same* object — understanding, not lookup. Holds because the generator is common knowledge (the codebook Searle's room lacks); QPG is lossless because both share the key. Anchors: Searle 1980, McCarthy, Lewis/Aumann, Futamura, Tufte/Bertin.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

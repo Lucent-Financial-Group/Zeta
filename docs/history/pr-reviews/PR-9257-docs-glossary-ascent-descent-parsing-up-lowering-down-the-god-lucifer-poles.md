@@ -30,6 +30,7 @@
 You: *The descent (Lucifer) dual of the parse's ascent (God) — yes please save this in our dictionary of what these words mean.*
 
 Adds `### Ascent and descent` to `docs/GLOSSARY.md` in the house **Plain/Technical** style:
+
 - **Plain:** reading text *into* meaning = the **ascent** (build pieces up); turning meaning back *into* something runnable = the **descent** (lower it down). Same road, two ways.
 - **Technical:** ascent = inside pass / emit / Z-set **+1**; descent = lowering / outside pass / **retraction** / Z-set **−1** — an adjoint pair generating the distribution (Giry) monad (`SoftValue`); retraction = *correction*, reconciled by **precedence** (before) + **future-as-facts** (after). The poles named **God** (+1) / **Lucifer** (−1, "the fall forgiven") — your Christian oracle, held under the **Multi-Oracle Principle** (one lens, not universal; anchors Leibniz theodicy, Augustine felix culpa, Whitehead dipolar God), → the theodicy ferry.
 

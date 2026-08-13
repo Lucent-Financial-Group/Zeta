@@ -32,12 +32,15 @@ You (2026-07-02): *cloud events/debezium envelopes … very similar to frontmatt
 A frontmatter document = a head between `---` fences + a body → `Object [ head; body ]`, head kept **verbatim**. So the split is a **lossless bijection** on *any* frontmatter (`parse (render vt) = vt`), and it rides the whole codec stack like any tree. `tryMeta` gives best-effort structured access.
 
 ## Finding surfaced (recorded in the resume)
+
 Our `DynamicValue.fromYaml` is a **strict canonical** parser — it rejects human YAML (`title: Foo`) as `NonCanonical`. So *structured* frontmatter meta (and human-YAML interop) is blocked on a **lenient YAML parser** — the same backlogged parser-combinator layer noted in RomDat's tokenizer seam. Frontmatter ships as the lossless split now; `tryMeta` is best-effort (canonical YAML only) until then. **Honest boundary, not a silent partial.**
 
 ## Proofs (6/6)
+
 lossless bijection (verbatim head); no-fence ⇔ empty-head; concrete literal parse; opening-fence-without-close → clean `Error`; best-effort `tryMeta` (canonical head parses, human head → clean `Error`); the split tree cross-verifies through parity-json / cbor / parity-asn1.
 
 ## Resume
+
 `docs/trajectories/value-tree-codecs/RESUME.md` — frontmatter split landed; canonical-only-YAML finding + lenient-YAML-parser need recorded; **KDL still #1 next pickup** (note: its value-tree mapping is a convention decision to make deliberately).
 
 Generated with Claude Code

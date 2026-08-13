@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - Ports Addison Cooper's shelter-cutaway vault (from the preserved `.tsx.txt` reference) into the Dark Hall as a static additive page: cog door, elevator shaft with lifting car, stacked floors of rooms, status lights, bobbing dwellers, her amber/teal palette. Credited to Addison with a link to the origin; the `.tsx.txt` stays the untouched source (Memory Preservation — this is a rendition, not a rebuild).
 - One card added to the hall landing. `prefers-reduced-motion` collapses animation. **Zero edits to demo/genesis/inventory** — only `hall/` touched.
 

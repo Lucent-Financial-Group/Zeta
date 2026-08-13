@@ -30,6 +30,7 @@
 Book-substrate, additive, staging only (no chapter landed). Aaron: "you can put anything in the book, same story to everyone" — full glass-halo on his own material; third-party gates persist (not his to waive). He confirmed holding his sister's vulnerable parts private.
 
 New RAW, six threads:
+
 1. **Chameleon / non-judgment = the disarming gift's mechanism** ("prisoners told me their crimes because I'm non-judgmental … like snake handling … mama calls it being a chameleon"). Reconciles chameleon-with-honesty: he blends in *manner*, tells the *same facts* to everyone. Beacon: Rogers' unconditional positive regard; code-switching.
 2. **Protector, again** — took two homeless people home from the mental institution (met the woman he lives with there), helped both get jobs; one turned almost-violent → took him to get help. The ⚠ "alpha through fear to protect her" nuance (protective intimidation, calibrated, honest-not-glorified). Addison helped. Woman + man fully anonymous (their mental-health context is theirs). Likely connects the mental-health-over-jail RAW.
 3. **Sister — the strong portrait** (awesome, so many friends, could do anything, smartest-when-confident, fearless tomboy, the same non-judgmental grace) is usable; the vulnerable parts (drug-selling, confidence wound, pretty-pressure) are **held private per policy — Aaron confirmed "hold those private, that's good."**

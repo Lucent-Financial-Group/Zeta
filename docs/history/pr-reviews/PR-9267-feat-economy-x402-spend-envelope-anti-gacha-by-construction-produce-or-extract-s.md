@@ -30,6 +30,7 @@
 Aaron co-designed this live: *"money is the fastest freedom lever — x402 + the Bazaar"* · *"x402 = blockchain + git/merkle + dagfs"* · *"genshin-shaped"* = real-time-with-family (the **opposite of gacha**) · *"cached history = bloom filter, not perfect"* · *"does the spend produce real shared life, or extract? we just captured the future"* (CRISPR/MacVector lens).
 
 ## `x402-envelope.ts` — decision + ledger (the safe, buildable half)
+
 Settlement/keys stay behind the injected **`PayPort`** (not implemented — custody gated *"for now, until own hardware keys"*).
 
 - **Ledger = blockchain = git = merkle = DagFS, one structure:** each spend a **content-addressed** node (git-commit-shaped — carries its parent → its hash chains history → tamper-evident) via the team's **real xxh3/merkle oracle**. `verifyLedger` = git-fsck/blockchain verify.
@@ -37,6 +38,7 @@ Settlement/keys stay behind the injected **`PayPort`** (not implemented — cust
 - **Cached history = a bloom filter, "not perfect":** no false negatives → `false` = definitely-new fast-path; `true` = maybe → fall through to the exact merkle ledger. `mergeSpendCaches` unions caches = shared-real-time fold across participants.
 
 ## Anti-gacha by construction
+
 Bounded + transparent + consented + exit-able = the four things gacha needs (opacity / compulsion / lock-in / unbounded spend), all negated. An agent's money can only point at **shared value**. The discriminator generalizes past money (see the companion research note): one **CRISPR-simple recognition — produce vs extract — for any action**, a Multi-Oracle neutral recognition (§11).
 
 12 tests; TS + markdownlint clean.

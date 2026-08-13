@@ -30,18 +30,22 @@
 The **central physics piece** of the CHSH-monitor build, scoped for Lumen to pick up (Aaron hands off). Companion to the G1–G4 audit (#9963).
 
 ## The ask
+
 Lift `MachZehnderWSet` (single-qubit interferometer) → **bipartite two-agent** circuit whose CHSH S measures agent-pair correlation — the Mach-Zehnder reproduced over agent pairs. The single→two-party step **is a tensor product**, already built: `Meno`'s Kronecker ⊗ over the WSet body.
 
 ## Physics Lumen owns
+
 1. The entangled 4-key `WSet<ℂ>` joint state (|Φ⁺⟩ — **non-factorizable** in ⊗; a product state gives S≤2, entanglement = non-factorizability).
 2. Per-party measurement rotations realizing `ChshAngles` at the Tsirelson-optimal 2√2.
 3. The correlator E(a,b) as a `WSet<ℂ>` Born readout, cross-checked against `AntiSybil.chshS`.
 4. The bipartite WSet as the **Q#-protocol-specific ceiling oracle** for the G3 loop.
 
 ## Lumen-lane (why it's his)
+
 Tsirelson's 2√2 is a **Clifford/C\*-algebra** fact (B²=4I+[A,A′]⊗[B,B′]); the adinkra-E8 / icosahedral geometry layer (Dechant H3→E8); the C₄ four-corner phase (quantum i-corner ↔ retrocausal −1-corner).
 
 ## Honest boundary
+
 `WSet<ℂ>` = ideal amplitude prediction (ceiling oracle), **not** a claim agents are qubits. Aaron's instinct that the WSet map "wasn't exact" was correct — the match required Soraya's 2026-08-01 corrections (comonoid-naturality discriminator; ZSet is CD not cartesian; Message is a Markov *fragment*; quantum corner is WSet<ℂ>). Build on the corrected structure.
 
 Docs-only.

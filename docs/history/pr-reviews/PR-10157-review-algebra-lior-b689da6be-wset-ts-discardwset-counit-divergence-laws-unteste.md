@@ -30,6 +30,7 @@
 Aaron-requested review of Lior's shipped algebra feature (`b689da6be`: BooleanRing + copy/discard comonoid morphisms on the WSet TS port). Reviewed by Otto + independently verified by Lumen (mathematical-physics-expert). Files the finding as workitem `081KZHEYCKH08QG0R001PYEMME`.
 
 **Correct-as-written (verified ✔):**
+
 - `BooleanRing` — lawful commutative idempotent semiring; correctly omits `negate`.
 - `copyWSet` (Δ) — preserves weight `w` at `[k,k]` (NOT `w⊗w`), the correct diagonal comonoid; faithful to F# `WSet.copy`.
 

@@ -28,10 +28,12 @@
 ## Description
 
 ## Summary
+
 - Follow-up to #9553: widen mock serial `string[]` so `tsc --noEmit` accepts user-code/uri/ok pushes.
 - Heal pre-existing MD032 blanks-around-lists on identity/branch-protection ADRs (+ Soraya letter) that blocked gate markdownlint.
 
 ## Test plan
+
 - [x] `tsc --noEmit` clean for identity-auth-provider
 - [x] `bun test` identity-auth-provider + first-session-run
 - [x] markdownlint-cli2 on the three healed docs

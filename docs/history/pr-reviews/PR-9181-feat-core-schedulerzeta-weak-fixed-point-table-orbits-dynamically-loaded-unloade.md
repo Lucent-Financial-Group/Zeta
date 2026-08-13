@@ -32,10 +32,12 @@ You: *our weak reference tables so the fixed points can be dynamically loaded an
 The fixed points of a run (the states ON its orbit — the recurrence the zeta identifies) are **derived**: recomputable via the O(reachable) run-ahead. So they never need pinning — hold them **weakly**, let the GC (Shiva) reclaim them, regenerate on next access. cogen-as-memory-management, the `SpecializationCache` philosophy applied to the scheduler's recurrence.
 
 ## src/Core/SchedulerZeta.fs
+
 - `orbitStates` — the recurrent set (fixed points), transient excluded;
 - `FixedPointCache(key, step, start)` — a `WeakReference<'S[]>` table: `Orbit()` loads from the weak cache or regenerates if the GC unloaded it; `Unload()` is the explicit Shiva sweep; Hits/Misses. Regeneration is **lossless** (derived).
 
 ## Tests (7/7, +2)
+
 - load → cache-hit (same instance) → **Unload (Shiva)** → reload regenerates the *same* fixed points exactly;
 - `orbitStates` returns only the recurrent set (transient excluded).
 

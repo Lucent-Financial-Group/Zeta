@@ -28,16 +28,19 @@
 ## Description
 
 ## Summary
+
 - Update `081KLL7…` backlog row: slices 1–2 merged (#8984, #8992), 5/14 realizers, slice 3 next.
 - Add `docs/handoffs/2026-07-01-otto-session-resume-state.md`; supersede 2026-06-21 resume pointer.
 - Unblock `lint-no-b-refs` for backlog-index workflow: quarantine archival surfaces (recovered orphans, `docs/history/`, `memory/`, `.claude/rules.bak/`) and migrate eight live-doc B-NNNN stragglers.
 
 ## Git archaeology (documented in new handoff)
+
 - `chore/post-8948` tip `6371d0b00` never merged directly; equivalent landed via #8985.
 - No unmerged slice-3 realizer work on deleted branches.
 - Dangling `eb0028148` hygiene commit superseded by main.
 
 ## Test plan
+
 - [x] `bun src/Core.TypeScript/backlog/lint-no-b-refs.ts`
 - [x] `bun src/Core.TypeScript/backlog/generate-index.ts --check`
 - [ ] backlog-index-integrity workflow green on PR

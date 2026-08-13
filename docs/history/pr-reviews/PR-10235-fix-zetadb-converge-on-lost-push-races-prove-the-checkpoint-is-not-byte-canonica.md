@@ -30,16 +30,19 @@
 Starting the fold race (`081KZM0FTJM`). The investigation **corrected my own filing twice** and surfaced a deeper cause.
 
 ## What I had wrong — the system was healthier than I filed
+
 - **Idempotency is already tested** (*"idempotent no-op on replay"*). My filing said content-addressing *"plausibly"* gives it and *"plausibly is not proven"* — it was proven.
 - **The workflow already had the right convergence shape**: after `git pull --rebase` it **re-derives** the checkpoint rather than replaying a stale precomputed diff.
 - **`society-heartbeat` is not a second instance** — it appends **uniquely-named** files, which is a G-set append and conflict-free under rebase.
 
 ## What was genuinely broken — now fixed
+
 A lost push race **failed the run instead of re-converging**. `git push` is a compare-and-swap; the loser was rejected and `set -e` killed the job. Fine while Actions was the only writer (its concurrency group serialised us with *ourselves*) — **not** fine for runners + local hardware + browser cells at once.
 
 Added a bounded retry around `rebase → re-fold → amend → push`, so each attempt re-derives from whatever `main` now holds. **Convergence, not a lock** — a distributed lock would be central coordination (§1) and wouldn't survive a browser tab going offline.
 
 ## New finding, proven by test: the checkpoint is NOT byte-canonical
+
 ```
 SEMANTIC entries equal (sorted): true
 SEMANTIC rows equal (sorted):    true
@@ -51,6 +54,7 @@ Folding `{a,b}` vs `{b,a}` gives **identical semantic state but different bytes*
 Invisible with one writer. With concurrent substrates, **two nodes in the same state emit different checkpoint files** — git sees a real diff, last-writer-wins clobbers, and content-addressing can't dedup them. **The retry converges the race; it cannot fix a representation that isn't a pure function of the delta set.**
 
 ## What I deliberately did NOT do
+
 The canonical-ordering fix changes the **on-disk checkpoint representation** and may interact with existing checkpoints and byte-lock vectors — that's the zetadb owner's call, not a drive-by. Landed instead: one test asserting the semantic convergence that **does** hold, and one **pinning** the byte-divergence so the gap stays visible and its fix is detectable — explicitly not asserting the divergence is correct.
 
 Validation: zetadb suite **15/15** · actionlint + yaml-lint clean · verified the `[ ] && echo` in the retry is errexit-safe **empirically** rather than assuming.

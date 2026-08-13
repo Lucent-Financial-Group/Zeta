@@ -38,11 +38,13 @@ We have wired F\* compiler installation declaratively and idempotently into `ins
 ### Declarative Dependency Graph Integration
 
 #### [MODIFY] [tlaps.sh](file:///Users/acehack/.zeta/agents/gemini/Zeta/tools/setup/common/tlaps.sh)
+
 - Added desired-state based, idempotent `fstar` compiler installation.
 - Utilizes the `tlaps-build` opam switch using OCaml `5.1.0`.
 - Supports verification checks detecting both the generic `fstar` and the native dune/opam build executable `fstar.exe` (solving toolchain resolution differences on Unix/macOS).
 
 #### [MODIFY] [fstar-day0-check.md](file:///Users/acehack/.zeta/agents/gemini/Zeta/docs/research/fstar-day0-check.md)
+
 - Updated diagnostics report to confirm the F\* compiler is **AVAILABLE** inside the opam switch environment.
 - Outlined invocation paths (`opam exec --switch=tlaps-build -- fstar.exe`) and toolchain verification details.
 
@@ -51,6 +53,7 @@ We have wired F\* compiler installation declaratively and idempotently into `ins
 ## 2. Verification Results
 
 ### Declarative Installation Run
+
 Executed `tools/setup/common/tlaps.sh` sequentially to assert idempotency and correct resolution:
 ```
 ✓ tlapm already installed: 1eabe97
@@ -63,6 +66,7 @@ Executed `tools/setup/common/tlaps.sh` sequentially to assert idempotency and co
 Completes cleanly and rapidly when the desired state is already satisfied.
 
 ### Full .NET Test Suite
+
 ```bash
 dotnet test
 ```

@@ -28,12 +28,14 @@
 ## Description
 
 ## Summary
+
 - retire the obsolete live backlog ID uniqueness and parent-child status jobs from `gate.yml`
 - keep active structural hygiene checks under a neutral `lint (structural hygiene)` job
 - relabel the legacy backlog workflow as a frozen-substrate guard, not current work-item identity
 - fix quick-preflight drift from latest main: Agora markdownlint and two aspirational workitem paths parsed as dangling references
 
 ## Validation
+
 - `actionlint -color -ignore 'unknown permission scope "administration"' .github/workflows/gate.yml .github/workflows/backlog-index-integrity.yml`\n- `npx --yes markdownlint-cli2 docs/BUILD-GATES.md`\n- `bun src/Core.TypeScript/hygiene/audit-dangling-symlinks.ts && bun src/Core.TypeScript/hygiene/audit-sealed-rooms.ts`\n- `bun src/Core.TypeScript/hygiene/audit-backlog-items.ts --enforce-duplicate-ids` (reports 0 rows / 0 duplicate groups; proof this is obsolete gate noise, not current ZetaId collision)\n- `bun run preflight:quick`\n
 
 ## Outcome

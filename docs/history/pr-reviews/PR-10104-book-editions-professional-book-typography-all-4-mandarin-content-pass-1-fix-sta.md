@@ -30,15 +30,18 @@
 Reader-driven (Aaron relayed the Vietnamese reader: *"doesn't look as professional as other books"* — a typography/layout issue).
 
 ## Typography — read like a printed book, not a web article (all four editions)
+
 - **First-line paragraph indents with no inter-paragraph gap** — the single biggest "this is a book" signal. Latin (en/id/vi) indent 1.35em; Chinese indents 2em (the 段首缩进 two-character convention). First paragraphs after headings/rules/quotes stay flush.
 - **Justified text** — Latin gets auto-hyphenation; CJK justifies naturally. Orphans/widows control.
 - **A real drop cap** on each chapter's opening paragraph (Latin); the Chinese edition keeps its seal-red first-character accent (drop caps aren't a CJK convention).
 
 ## Mandarin content pass 1
+
 Wove the new chapter beats into the 中文 edition (essence, matching the edition's condensed register — full-length passes to follow per Aaron's "make them longer with full info"):
 ch-3 the friend who changed · ch-4 love-is-a-choice · ch-5 freedom-first parenting · ch-12 the mutual-empowerment thesis.
 
 ## Fixed stale banners
+
 en/id/vi draft notes said "currently Chapters 1–4" though the editions are complete → now "the complete book, Chapters 1–12, plus selected stories."
 
 Next passes: expand the editions to full-length content (not condensed), and carry the companions, per Aaron.

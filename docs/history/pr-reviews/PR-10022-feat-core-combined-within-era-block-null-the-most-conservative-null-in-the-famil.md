@@ -30,6 +30,7 @@
 Composes the two nulls: `windowBlockShuffle` windows by era (windows IN PLACE) **and** block-shuffles WITHIN each era (blocks intact, order permuted within). Its permutation group is a **subset of both** siblings, so its threshold is provably `≥` both — the most conservative null in the family. `blockSize=1` recovers the window null; `windowSize≥n` recovers the block null. Adds `permutationNullMIWindowBlock` + `fuseMIWindowBlock`.
 
 ## Real-data payoff (1200 commits, exclude disjoint, δ=0.05, k=200)
+
 | null | survivors |
 |---|---|
 | window-only W=128 | 42 |
@@ -41,9 +42,11 @@ The combined null cuts survivors to **6** — the strata whose coupling survives
 **Honest tuning caveat:** when `blockSize` approaches `windowSize` (W=128 L=64) the null barely shuffles ⇒ collapses to **0** (over-conservative, meaningless). The sensible regime is block ≈ ¼ window.
 
 ## Closes the null-refinement thread
+
 plain **42** → block **16** → combined **6** — every step a real nuisance removed, never a threshold moved. The block+exclude config (16) stays the practical default; the combined null (6) is the strict reading.
 
 ## Tests (60 DecorrelationExcess+Metrology green; Core 0-warning)
+
 +6: `windowBlockShuffle` window/block recovery + membership+contiguity + determinism; `permutationNullMIWindowBlock` **dominates-both** proof; `fuseMIWindowBlock` structure-match + no-false-green.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

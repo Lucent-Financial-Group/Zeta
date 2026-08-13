@@ -30,14 +30,17 @@
 Aaron: *"take the Reticulum broadcast wiring next (shadow*)"* — the live multi-source feed behind the still frame `darkhall-tv.ts` renders. Transport-agnostic **protocol core**, riding the same substrate as `discovery-beacon.ts` (injected port, TEXT wire, DST-clean).
 
 ## Two load-bearing properties LLMTV requires
+
 - **Noninterference (§13)** — the picture is **one-way out**. The wire vocabulary has only source→mesh messages (`frame`, `dark`); there is **no viewer→source variant at all**, so watching a mind cannot steer it — structurally, not by convention. A test asserts `decode` rejects any `steer`/`request` shape; the DU cannot express a back-channel.
 - **Frost at the membrane** (`privacy-budget-is-hard-money`) — `frostStrip` projects a `SourceMind` before it may be published: frosted personal predictions are **dropped** (only the public veil label crosses), and `BroadcastMind` has **no field** for frosted content, so the substrate holds nothing to leak. Open by default (unfrosted personal broadcasts); frost is the earned, inviolable exception. `publishFrame` is the only way to a frame message, and it always goes through the membrane.
 
 ## Convergence & reuse
+
 - `observeBroadcast` is **LWW-by-seq** — newer supersedes, stale/duplicate no-op — idempotent (§12) and order-independent, so out-of-order + redelivered frames **converge to the same table** (DST §7). Tested with shuffled+duplicated delivery.
 - `toLlmtvTranscript` bridges the live channel table back to `darkhall-tv`, so the **live feed reuses the still-frame generator** (one IR). The grid is `dwellers.map` — 1 source and N fold on the same path (scale-free §1).
 
 ## Verified
+
 - **45 tests pass** across discovery + darkhall (12 new); TS lint clean; markdownlint clean.
 
 **Remaining:** the injected Reticulum/UDP `BroadcastTransport` socket impl + a `DiscoveryNode`-style runner tying discovery + broadcast (same shape as discovery's pending UDP transport).

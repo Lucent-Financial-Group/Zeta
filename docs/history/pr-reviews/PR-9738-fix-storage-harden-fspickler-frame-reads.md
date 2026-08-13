@@ -32,6 +32,7 @@ Fix the Windows main-gate FsPickler round-trip failure by writing the length pre
 The failing post-merge main job was `build-and-test (windows-2025)` on commit `fa10fd7e`; the actual failure was `Zeta.Tests.Storage.FsPicklerSerializerTests.larger DU-keyed Z-set round-trips with all weights preserved`, throwing `ArgumentOutOfRangeException` in `Serializer.fs:180`.
 
 Validation:
+
 - dotnet test tests/Tests.FSharp/Tests.FSharp.fsproj -c Release --filter "FullyQualifiedName~FsPicklerSerializerTests"
 - dotnet test tests/Tests.FSharp/Tests.FSharp.fsproj -c Release --no-build
 - bun run preflight:quick

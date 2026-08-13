@@ -30,11 +30,13 @@
 Closes the **diagnosability half** of `081KZKWB1FZ`. (The ACE `from-bun-workspace` realizer, #10202, closed the provisioning half.)
 
 ## The problem
+
 `tsc` cannot distinguish **"this module is not declared"** (a real error) from **"this module is declared but was never installed here"** (an unprovisioned checkout) — both surface as `TS2307`, and the second reads *exactly* like a finding.
 
 That is how a phantom `Cannot find module 'playwright'` convinced **two independent reviewers** that lint was red on `main` while CI was green on the same commit — and led to a non-bug being routed to an owner who had nothing to fix.
 
 ## The guard
+
 Reclassifies **only** declared-but-not-installed modules, and says so unmissably:
 
 ```
@@ -54,10 +56,12 @@ Reclassifies **only** declared-but-not-installed modules, and says so unmissably
 **A TS2307 for a module genuinely absent from `package.json` stays a real error.** The guard must never be able to hide one — and the load-bearing unit test is exactly that negative case.
 
 ## Changes
+
 - `packageBaseName` + `missingInstalledDeps` exported as pure functions, **9 unit tests**: scoped packages, subpath imports (`@scope/pkg/sub` → `@scope/pkg`), relative/absolute specifiers ignored, dedup/sort, and the undeclared-module case that must survive.
 - Entry point now guarded by `import.meta.main` — without it, importing the module for tests ran the whole type check and `process.exit`-ed out of the test runner.
 
 ## Validation
+
 End-to-end by **recreating the original scenario**: removed `node_modules/playwright`, ran the linter, got the explicit unprovisioned-environment report instead of a bare TS2307. CLI still exits 0 on a healthy tree.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

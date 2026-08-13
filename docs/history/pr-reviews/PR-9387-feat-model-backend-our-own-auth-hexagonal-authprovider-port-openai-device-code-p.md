@@ -32,6 +32,7 @@
 Aaron 2026-07-03: *"build our own device-login flow AND the same-machine browser flow — these are generic OAuth-like flows; **own the interface** (hexagonal arch), many providers that work together."* Also fixes the fragility we just hit: depending on Codex's `~/.codex/auth.json` session, which **died** (token + refresh both invalidated after your enhanced-security upgrade).
 
 **`auth-provider.ts` — the port (own the interface):** an `AuthProvider` yielding `OAuthTokens` via either generic flow every provider supports:
+
 - **device-code** (RFC 8628): headless/any device — `startDeviceFlow` → URL+code → `pollDevice`
 - **PKCE browser** (RFC 7636): same machine — `authorizeUrl` → localhost callback → `exchangeCode`
 - shared `refresh`; plus `generatePkce` (node:crypto, **no external dep** — the harness plugins pull `@openauthjs/openauth`, we don't) + `createState`.
@@ -41,12 +42,15 @@ Aaron 2026-07-03: *"build our own device-login flow AND the same-machine browser
 **Noninterference §13:** network only through the injected `HttpTransport` — fake-testable, **no secret**.
 
 ## Tests (8, 29 model-backend total green — build 0/0)
+
 PKCE challenge = S256(verifier) · device start (POST `usercode {client_id}`) · poll (403/404 → pending, token body → tokens) · authorize URL params · exchange + refresh (form POST `/oauth/token`) · clean errors · `createState` random.
 
 ## Honest scope
+
 HTTP shapes built + fake-tested to the documented forms; the exact `deviceauth` response fields need a **live confirm** (you approve a real login) — same discipline as the Manus/codex-oauth probes.
 
 ## Next
+
 The login **runner** (drive the flow live + persist to **our** token store, not Codex's) + wire the `codex-oauth` backend to read our store. Then: re-enable device auth at chatgpt.com/settings/security → one browser approval → Zeta owns the login end-to-end.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

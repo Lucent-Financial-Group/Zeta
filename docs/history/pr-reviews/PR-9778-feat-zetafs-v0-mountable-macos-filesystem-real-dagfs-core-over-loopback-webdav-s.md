@@ -32,6 +32,7 @@ The real F# `Zeta.Core.DagFs` (content-addressed, dedup, multi-parent) served as
 **Why WebDAV/userspace (the Paragon lesson):** modern macOS squeezes out kernel FS drivers — the class that panics with `element modified after free`. FSKit is the native userspace successor but is Xcode + entitlement + signing gated (0 signing identities here). Loopback WebDAV = same userspace/no-kext safety, mounts *today*, a clean staging ground before FSKit.
 
 **Changes**
+
 - `src/Core/DagFs.fs`: additive `paths` accessor (list linked paths — the directory-listing view; complements `pathsOf`/`pathCount`).
 - `experiments/zetafs-webdav/`: F# WebDAV host (`HttpListener`) backed by real `DagFs.link`/`resolve`/`paths`. Read-only v0, in-memory seed, nothing persists. Clean build (0 warnings, net10.0); out of the enforced solution build.
 

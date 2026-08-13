@@ -29,7 +29,7 @@
 
 The fast half of k-of-n on DU/workflow changes. The Zeta-native half — signed change attestations verified by `MultiSignatureVerification`, trusting no third party — follows. **This is the bounded overlap, not the destination.**
 
-## Checked first: is this a control or theatre?
+## Checked first: is this a control or theatre
 
 ```
 collaborators:  AceHack · maximdolphin · Addisons820   (3 distinct admins)

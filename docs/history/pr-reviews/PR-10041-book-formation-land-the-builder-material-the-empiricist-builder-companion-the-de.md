@@ -30,6 +30,7 @@
 Put the builder/origin material where it should land. The honest problem: the books 12-chapter spine is thematic-philosophical, the builder material is formation-biography, and it maps 1:1 to no chapter — and I wont unilaterally add a numbered chapter to your spine. So it lands as a **companion** (the book already uses these: FOOTSTONE / IDENTITY-AS-HELD-SPECTRUM / ON-METHOD), gathering the scattered builder RAWs into one coherent origin arc, cross-referenced to the chapters it grounds. **Your call whether to promote it to a chapter.**
 
 ## The arc — unified under one frame: the deficit *is* the gift
+
 - **"No factory defaults → built my own OS"** — cost: write every module by hand; gift: can read + override every one. Same coin.
 - **The empiricist stove, mapped 1000×** — measure the thing yourself until the map is exact (the empiricist, present before language).
 - **Thrill-seeker: lethal in a child → engine in the man** — "you dont remove the engine, you aim it."
@@ -37,6 +38,7 @@ Put the builder/origin material where it should land. The honest problem: the bo
 - **Feynman-imagination → Susskind-depth** — imagination-then-rigor, the register discipline lived early.
 
 ## Disciplines held
+
 - Glass-halo (your own material); **son omitted entirely** (standing minor rule); **Chris King named** for the readers-disease coinage (consent granted earlier this session, positive-credit scope).
 - The near-death catalog is recorded **plainly, not glorified** (survivorship bias / "the graveyard" named; the "really stupid" framing is yours) and **not disowned** (root of the gift) — the both-held register.
 - Scaffold + verbatim sockets; anchors cited (Einstein, Zuckerman/Farley, Feynman, Susskind). INTAKE-LOG + OUTLINE updated.

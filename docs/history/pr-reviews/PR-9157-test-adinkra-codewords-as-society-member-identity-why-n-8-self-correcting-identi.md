@@ -30,9 +30,11 @@
 Push-forward on the adinkra thread (you: *"push forward on the adinkra stuff, it's very valid, time will be the ultimate judge"*).
 
 ## Honest note
+
 The doubly-even self-dual code is **already** a full module — `Zeta.Core.AdinkraCode` (`[8,4,4]` extended Hamming, 14 tests). I initially overwrote its test file by mistake, **caught it** (git showed it Modified, not new) and **restored the original**. This PR adds a *complementary* file building **on** the existing module, not duplicating it.
 
 ## What's new (what the existing tests don't cover + your framing needs)
+
 - **WHY N=8** — the minimal doubly-even self-dual length: exhaustive search finds *none* at N=2/4/6, one at N=8 (Gleason/Mallows–Sloane: ). The E8/Clifford floor the adinkra→Clifford→E8 ladder stands on.
 - **Member identity self-corrects** — a purpose-codeword corrupted in any 1 bit decodes back to itself (nearest-codeword; min distance 4). Identity as an ECC (Gates).
 - **Distinct purpose = distinct identity** — the 14 weight-4 codewords are ≥ distance 4 apart (purposes don't collide).

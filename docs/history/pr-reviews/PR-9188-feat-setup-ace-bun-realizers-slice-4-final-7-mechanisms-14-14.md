@@ -28,14 +28,17 @@
 ## Description
 
 ## Summary
+
 - Port the remaining **7** setup mechanism realizers to Bun: `from-deb`, `from-shim`, `from-autotools-tarball`, `from-uv-venv`, `from-opam-git`, `from-installer`, `from-ollama`.
 - Add shared `when.ts` for `when=` host filtering (mirrors `_when.sh`).
 - Register all **14/14** mechanisms; `linux.sh` / `macos.sh` now route every mechanism via `realize_mechanism` (shell `.sh` remains fallback when Bun realizer unavailable).
 
 ## Context
+
 Completes **081KLL7…** Bun realizer migration started in slices 1–3 (#8984, #8992, #9075).
 
 ## Test plan
+
 - [x] `mise exec -- bun test src/Core.TypeScript/ace/setup-realizers*.ts`
 - [x] `mise exec -- bun src/Core.TypeScript/lint/lint-typescript.ts`
 - [ ] CI gate green

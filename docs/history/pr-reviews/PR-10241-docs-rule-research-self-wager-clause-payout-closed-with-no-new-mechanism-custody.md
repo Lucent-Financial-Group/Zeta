@@ -30,6 +30,7 @@
 Three of Aaron's confirmations, landed — one touches a **carved rule**, so it's deliberately minimal.
 
 ## 1. The rule now says it explicitly
+
 *"It can't be **taken** away but it can be **self-wagered** away in a gamble."*
 
 "Cannot be taken away" is about **who initiates**, not whether the balance can fall:
@@ -43,14 +44,17 @@ Three of Aaron's confirmations, landed — one touches a **carved rule**, so it'
 The property that matters is that **no other party can reach your balance** — not that the balance is frozen. An owner who may spend but not stake has *less* agency over their own money, not more protection. **Guard added:** a stake must never be *required* to hold a role or participate, or it's coercion wearing a wager's clothes.
 
 ## 2. The payout side closes with **no new mechanism**
+
 *"yes it is value add."* A wager with only a downside would be a tax on honesty and nobody rational would witness. But **truthful witnessing is value added to others** — already the sole way budget is credited. So the gamble is **symmetric by construction**.
 
 The elegance is the argument: **nothing was invented.** Both sides were already in the rule; only spend/stake/confiscate had to be made explicit. A scheme needing a new currency, escrow, or arbiter would have been worse *even if it worked*.
 
 ## 3. Custody change = a **DagFs fork** — this closes the RMA gap
+
 *"in our DagFS each linear fork can have its own keys."*
 
 `editLocal` is already a copy-on-write fork over a content-addressed multi-parent tree, so three properties come **free**:
+
 - **§5 Memory Preservation is automatic** — a fork *shares ancestry* rather than copying or destroying it, so the pre-transfer history is a **common ancestor**. The device genuinely remains the same device.
 - **The old owner keeps their branch** — transfer stops being a destructive hand-off, which is what an RMA actually needs and what a naive owner-field mutation destroys.
 - **Keys are per-branch**, so no key spans two custodies — the isolation is **structural**, not protocol-enforced.

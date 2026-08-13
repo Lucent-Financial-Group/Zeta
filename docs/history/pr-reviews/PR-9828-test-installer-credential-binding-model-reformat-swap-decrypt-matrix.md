@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - Add `credential-binding-model.ts` with injectable factors (`usbUuid`, `usbISerial`, `uefiKeyfile`, `tpmSeal`) and a declarative reformat/swap expectation matrix aligned with USB-IDENTITY-THREAT-MODEL §4
 - Crypto proof: 24 factor×scenario tests assert GCM decrypt matches the matrix (usbUuid shipped flaw documented; iSerial/uefi/tpm research paths)
 - Generalize `zeta-creds-crypto` via `deriveKeyFromBindingMaterial` — shipped `usbUuid` behavior unchanged
 
 ## Test plan
+
 - [x] `bun test src/Core.TypeScript/installer/credential-binding-model.test.ts` (34 pass)
 - [x] `bun test src/Core.TypeScript/installer/zeta-creds-crypto.test.ts` (19 pass — unchanged semantics)
 - [ ] CI lint/path gate green

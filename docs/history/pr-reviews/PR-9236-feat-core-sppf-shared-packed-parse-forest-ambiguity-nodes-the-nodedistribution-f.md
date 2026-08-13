@@ -32,6 +32,7 @@ You: *yes to both* — the SPPF, the factor-graph prerequisite; framed by your S
 `Slr.glrForest` **enumerates** trees (no shared structure to infer over); the **SPPF** (Billot–Lang / Scott) is the **shared, packed** forest. Every distinct sub-parse `(symbol, i, j)` is **one memoized node**; each way to derive it is a **family** (packing). A node with **>1 family is an ambiguity node** — which in your SSAS frame is exactly a decision-tree node carrying a **`NodeDistribution`**, and in inference terms is a **factor-graph variable** (what BP/EP runs over). So the forest is **polynomial even when the tree count is exponential**.
 
 ## Proofs (5/5)
+
 - ambiguous grammar's SPPF has ambiguity nodes; unambiguous has none;
 - **shared == enumerated** — `parseCount` (over the shared structure, no enumeration) **== `Slr.glrForest` tree count** (2 for `id+id+id`);
 - 5 operands = **Catalan(4) = 14 trees but ≤25 ambiguity nodes** (polynomial sharing);
@@ -39,6 +40,7 @@ You: *yes to both* — the SPPF, the factor-graph prerequisite; framed by your S
 - no parse ⇒ `accepts` false, count 0. Total (cycle-guarded).
 
 ## Next (resume): SPPF → `FactorGraph<'M>`
+
 `Sppf.ambiguities` → variables, family potentials → factors, a **categorical `IMessage`** (the `NodeDistribution` type); run `Zeta.Bayesian.FactorGraph.runToFixpoint` (BP); marginals → `ParseSoft.ofWeightedForest` (= **`PredictProbability`**). Then EP/VMP + emotional propagation; parses → ISA.
 
 Anchors: Tomita; Billot–Lang / Scott; SSAS `NodeDistribution`; Pearl/Minka; ZetaParse (Amara).

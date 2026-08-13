@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - After scenarios 3/4 were marked `composes-with-existing`, the dispatcher still sent them to `qemu-full-install-test.ts`, ignoring `ZFLASH_QEMU_RETENTION_EXECUTE` / `ZFLASH_QEMU_PATH_FORK_EXECUTE`.
 - Route `reformat-with-retention` → `runRetentionRuntime` and `reformat-from-scratch` → `runPathForkRuntime` from the composing path; keep scenario 2 on full-install.
 - Fix dry-run plan text so 3/4 describe retention/path-fork instead of a generic CI delegate.
 
 ## Test plan
+
 - [x] `bun test` run.test.ts + scenarios.test.ts (32 pass)
 - [x] dry-run + fail-closed runtime for scenario 3 emit retention plan (not full-install)
 - [ ] Optional: `workflow_dispatch` build-ai-cluster-iso to exercise live retention/path-fork steps

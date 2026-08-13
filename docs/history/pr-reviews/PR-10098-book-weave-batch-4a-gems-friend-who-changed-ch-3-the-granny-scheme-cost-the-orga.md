@@ -32,6 +32,7 @@
 > The consent-heavy remainder of batch 4 (the CSAM policy point, the OP_RETURN/Bitcoin cluster, the darkest self-disclosure, the anti-cult guard, the felony count, the hacker lineage) is being **surfaced to Aaron, not auto-landed**, per its explicit *verify-before-publish* / *Aaron's-call-only* flags. See the closing note.
 
 ## What landed
+
 **ch-3 → "Decode before dismiss, the earliest time it worked"** — the friend who said the n-word; Aaron asked *why*, hit the inherited worthlessness under it (a father who'd called his own son worthless), and the friend changed for good. The exact decode-before-dismiss + produce-over-extract home (change a person > win an argument). Friend + father FULLY anonymous (redemptive arc); Confederate-flag milieu as honest color, not endorsement.
 
 **THE-ORGANIZER → "The one it cost — my grandmother"** — the youth scheme ran through Granny's workplace; embarrassing *her* is the one moral failure he counts. Remorse frame that honors her; scheme mechanics stay **scale+omission**; nothing implies she knew or was complicit.
@@ -39,6 +40,7 @@
 **THE-UNBROKEN-CHILD → "My sister"** — the dedicatee's **strong** portrait (capable-of-anything, smartest-when-confident, fearless tomboy, non-judgmental grace; he saw her brilliance where others saw only her looks). **Strong/good ONLY** per the dedication policy — her vulnerable side stays private (her mother's to hold); the overdose is left to the dedication, not detailed here.
 
 ## Consent gates held
+
 Aaron glass-halo · friend/father/officers/co-participants anonymous · **sister strong-only, vulnerable HELD** · Granny link authorized + remorse frame + scale+omission · son omitted.
 
 `INTAKE-LOG` updated (friend-racist, farm-childhood all threads, chameleon Thread 3 now landed).

@@ -30,14 +30,17 @@
 Book-substrate + one authorized workitem cleanup. Additive, staging only (no chapter landed).
 
 ## Book RAW (new)
+
 **Cluster 1 — "Ace Hack" hacker origin** (glass-halo; the root of the security-engineering career): the public handle; satellites at 14; solder + assembly; hack tools from Radio Shack parts; phone + credit-card networks; war-dialing BBSes before the term; the library-internet before the internet; the lineage **IRC "Magic" → alt.2600 → Anonymous** (adjacent, friends IRL). Honest-not-glorified (juvenile, decades old). Step-dad **de-identified** (Raleigh-fiber / long-distance = identifying → generalized by default); individuals anonymous; the "Magic" name-collision with the MDDB flagged, not asserted.
 
 **Cluster 2 — the Bitcoin OP_RETURN stand** (Aaron's **public, book-authorized** writing): his X article (Sep 4 2025, @AceHack) + GitHub posts to Bitcoin Core opposing v30's OP_RETURN cap removal — immutable ledger + illegal content (CSAM) → node possession legally untenable → a way to kill Bitcoin without touching its crypto (state-attack vector; Interpol / RWTH-Aachen / Guardian). Handled as **attack-vector analysis, never content**. Deeply on-theme: the **dark mirror of the book's memory/consent/right-to-be-forgotten core** (ch-10/11); sound money; decentralization-is-the-point; **conscience over his own 15 BTC** (a data point against the "restraint = deterrence" self-model); the centaur ("written by AI influenced by my moral stance"); and **Satoshi himself opposed on-chain data** (Beacon, short quote). Linked, not wholesale-pasted.
 
 ## Workitem cleanup (per standing authorization)
+
 `workitems/081KZ9XH11` (F# EP engine, Lior): added a **Design-context** section recording that this engine is the core of Aaron's **live** system (F# + Q#, math-team-analyzed), with **TrueSkill-for-AIs** as the primary consumer and the anti-Sybil/decorrelation substrate (081KZ7H82J) composing — with a pointer to the vernacular-architecture RAW. Gives Lior the "why this matters / who consumes it" context.
 
 ## Consent
+
 Glass-halo throughout; hacking honest-not-glorified; step-dad de-identified; individuals anonymous; Bitcoin material is Aaron's public, authorized writing; CSAM handled analytically. Nothing landed into a chapter. INTAKE-LOG updated.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

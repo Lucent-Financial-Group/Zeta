@@ -28,18 +28,21 @@
 ## Description
 
 ## Summary
+
 - **081KVP3GYWS0:** Defines org-CA vs user-CA conflict-resolution in `trust-graph.ts` — self-root authoritative for **identity**, org-root for **authorization** (SDSI/SPKI); tests demonstrate non-confluence without the rule and confluence with it; KRL transitive closure hook
 - **081KVP3GYW1:** Adds GF(257) Shamir k-of-n `shamirSplit` / `shamirCombine` reference oracle with property tests
 - **Alloy:** `src/Core.Alloy/specs/TrustGraph.als` structural non-confluence / scoped-confluence checks
 - Onboarding round-trip harness gap-closed assertions; both work items marked closed
 
 ## Test plan
+
 - [x] `bun test tools/setup/persona-keys/trust-graph.test.ts`
 - [x] `bun test tools/setup/persona-keys/shamir.test.ts`
 - [x] `bun test tools/setup/persona-keys/onboarding-roundtrip.test.ts -t "GAP CLOSED"`
 - [x] `bun src/Core.TypeScript/lint/lint-typescript.ts`
 
 ## Deferred
+
 - Wire Shamir into CA custody/rotate path
 - Z3/FsCheck formal cross-check (BP-16 leg)
 - Unified cluster-trust-root rotate

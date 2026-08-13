@@ -30,9 +30,11 @@
 Ferries Aaron's zetadb thread, plus the **verified** dogfooding audit he asked for. Docs-only; all 15 cited paths checked to exist; markdownlint clean.
 
 ## The claim
+
 > *"zetadb is really close to our own compiler of compilers, with the Futamura stuff bolted onto our generate+join reconstruction and Shiva teardown — so our database shows up as **types in the compiler**, available to the BNN and other free LLMs in our society, through our harness."* + *"we can have cells anywhere."*
 
 ## The three components are already in-tree (each confirmed during the Max-doc correction pass)
+
 - **Futamura, in-domain** — `Cogen.fs` is the **3rd projection**, self-application fixpoint proven to exact `DynamicValue` equality; `MixCogen.fs` carries 2nd+3rd as reified config. *The Max doc had these listed as future work; they're shipped.*
 - **generate+join reconstruction** — the generator IS the ECC.
 - **Shiva teardown** — mark-sweep over a content-addressed `DynamicValue` heap; collect **is** the Z-set `−1` retraction.
@@ -40,6 +42,7 @@ Ferries Aaron's zetadb thread, plus the **verified** dogfooding audit he asked f
 **The load-bearing enabler is mix-as-data:** because the specializer's own rules are `DynamicValue`, a residual is a *value* — which is what lets a GC collect it, a Z-set delta address it, and a compiler stage emit it. Every arrow depends on that one property.
 
 ## The new arrow — and what's honestly missing
+
 ```
 journal →[fold]→ checkpoint →[reify]→ TYPES → BNN + free LLMs (via harness)
 ```
@@ -48,9 +51,11 @@ journal →[fold]→ checkpoint →[reify]→ TYPES → BNN + free LLMs (via har
 Why *types* rather than an API: a type is what a compiler can **specialize against**, so Futamura's 1st projection turns "a query against this database" into a **residual program with the data baked in** — which is the compiler-of-compilers claim. For an online BNN it pays twice: a wrong query becomes a **type error** instead of a bad runtime answer, and a type error is a **teaching error** (cheapest ΔU transfer, correctable by retraction rather than erasure).
 
 ## Cells anywhere
+
 The zetadb node **is** a cell (cron `13,43`, folds journal, commits checkpoint) and nothing about it is Actions-specific — merging this into the four-tick-source topology, with idempotency / commutativity / no-local-time carried over unchanged.
 
 ## Verified dogfooding audit
+
 ACE-realizers, zetadb, zetafs (`DagFs`), free-model agents (`[alexa, otto, soraya]` on Ollama) and the harness are **all running**, with evidence cited per row. **The one real gap: ACE-as-meta-package-manager** (`AceCanonical` only).
 
 Also records a method error worth keeping: "zetafs" was first audited as **absent** — that was a **name mismatch** (it's `DagFs`), and a false negative from searching one spelling is the same class of error as a false positive from a grep hit.

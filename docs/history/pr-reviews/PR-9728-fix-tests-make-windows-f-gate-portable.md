@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - make Zeta IDL F# code generation use deterministic LF line endings across platforms
 - dispose the shell REPL LibGit2 repository before temp-directory cleanup and retry Windows directory deletion
 - remove an obsolete debug write to /tmp from the shell test
 
 ## Validation
+
 - dotnet test tests/Tests.FSharp/Tests.FSharp.fsproj -c Release --filter "FullyQualifiedName~ZetaIdlTests|FullyQualifiedName~ZetaShellTests"
 - dotnet test tests/Tests.FSharp/Tests.FSharp.fsproj -c Release --no-build
 - bun run preflight:quick

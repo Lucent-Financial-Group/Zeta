@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - The toy model Aaron asked for, no Reticulum needed: conducted-vs-local CHSH rounds under a light-in-fiber latency floor + seeded jitter (DST). **Exact law: S = 2 + 2·f\*** (delivered fraction at the minus-term corner), estimator f̂ = (S−2)/2, radius of the conductor d\* = τ·200 km/ms. Earth at the 5-min tick is engineering-limited; Mars is physics-limited — the light cone evicts the conductor, drawing identity boundaries per Addendum 4's uncorrelated-exchange definition.
 - Research note includes the five-year-old f11-vs-f\* explanation (recorded at Aaron's ask — the scorekeeper's minus corner is a convention; the first run whispered to the wrong corner and scored S=0) and the F\* proof-language observation.
 - **Verification note (honest):** the pre-fix suite executed locally (6F/1P — that's how the sign convention was caught); post-fix local runs were blocked by fleet-shared vstest contention. Build clean, 0 warnings; this PR's CI run is the verifier and auto-merge waits on it.

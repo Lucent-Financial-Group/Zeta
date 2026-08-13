@@ -45,6 +45,7 @@ The catch is the mutator running mid-trace: a **black→white** write can lose t
 Pause-not-death preserved: **white = paused**, not destroyed.
 
 ## The Shiva GC tier set is now complete
+
 strong mark-sweep (#9354) · weak ephemeron (#9356) · virtual-actor/traffic-lived + residency-transparent delivery (#9361/#9362) · generational (#9364) · **incremental/concurrent (this)** — all over one byte-locked reified-value heap, all pause-not-death.
 
 Anchors: Dijkstra/Lamport/Martin/Scholten/Steffens *On-the-Fly Garbage Collection* (CACM 1978) — already on `PRIOR-ART-LIST`.

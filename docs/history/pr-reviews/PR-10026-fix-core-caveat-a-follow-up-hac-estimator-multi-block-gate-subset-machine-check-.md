@@ -30,15 +30,19 @@
 Sorayas adversarial review of the Caveat-A margin (#10025) **verified all three monotonicity obligations** but found **two model-scope holes** (both MEDIUM). Both fixed here — theyre the math-teams per the handoff split. Her switch verdict was SWITCH-AFTER-FORMAL-PROOF; this supplies the proofs executable half.
 
 ## (3b) Lag-1-only was insufficient → HAC estimator
+
 AR(1) assumes `ρ_k = ρ₁^k`, but Sorayas interleave witness (`ρ₁=0.12`, `ρ₂=0.39` — 25× the AR(1) prediction) defeated it: `n_eff` barely shrank, still over-convicting the honest-bursty pair Caveat-A protects. **Fix:** `effectiveSampleSizeHAC` — a Bartlett-windowed Newey–West long-run variance over lags `1..L` (`L=⌊n^(1/3)⌋`): `n_eff = n / (1 + 2·Σ(1−k/(L+1))·ρ_k⁺)`. Clamped `ρ_k⁺≥0` + Bartlett weights keep `factor ≥ 1` ⇒ **`n_eff ≤ n` still holds**, so Sorayas (a)/(b)/(c) proofs (which need only that) survive the generalisation. AR(1) `effectiveSampleSize` kept as the documented special case.
 
 ## (3c) Stationarity gate was defeatable → multi-block
+
 Two-halves check passes `[+1×10,−1×10,+1×10,−1×10]` (both half-means 0) though its a step function. **Fix:** `isApproxStationaryMultiBlock` — B blocks, requires both block-**mean** and block-**variance** spread `≤ tol`. The oracle now gates on it (4 blocks).
 
 ## Machine-check of obligation (c)
+
 A 40-batch seed loop asserts the autocorr oracles conviction set is a **subset** of the i.i.d. oracles (`DistinctCount_autocorr ≥ iid`) — the executable half of Sorayas proof, gating the eventual default switch.
 
 ## Tests (30 AntiSybil green; Core 0-warning)
+
 +4: `lagKAutocorr` lag-2 signal, HAC-catches-lag2, multi-block defeat-witness, subset-over-40-batches. Margin test updated — alternating is now correctly **strictly larger** (the old lag-1-only "equals" assertion was the bug). Shipped `chshMargin`/`chshSybilCalibrated` still unchanged (switch pending).
 
 Anchors: Newey–West 1987; Bartlett 1946; Kontorovich–Ramanan 2008; Hoeffding 1963.

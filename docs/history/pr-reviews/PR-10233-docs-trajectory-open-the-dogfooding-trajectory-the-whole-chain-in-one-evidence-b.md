@@ -30,6 +30,7 @@
 Opens the **dogfooding trajectory** Aaron declared: *"we've been building to the point we can dogfood, we are there now."*
 
 ## The gap this closes
+
 The chain existed in **three partial places and no single one** — and **no document in the repo contained the word "dogfood."**
 
 | Surface | Carries | Missing |
@@ -39,6 +40,7 @@ The chain existed in **three partial places and no single one** — and **no doc
 | today's zetadb ferry | a verified 6-surface audit | point-in-time, buried in research |
 
 ## The ledger — 17 rows, three tiers, every claim verified against the tree
+
 **Tier 1 (society runtime) is where we actually are:** agents on free models, local cells, the society evolution loop, and GitHub-Actions ticks are **genuinely dogfooded**; browser/PWA and k8s are partial; bare-Linux services not started.
 
 **Tier 2 is honest about the distance:** ACE *realizers* are dogfooded (17 classes, `install.sh` delegates) — but the ACE **meta**-package-manager is the single biggest gap; **CockroachDB is still the real store** behind a partial ZetaDB; `DagFs` exists but isn't the OS filesystem; the **unikernel has no surface in-tree at all**.
@@ -46,9 +48,11 @@ The chain existed in **three partial places and no single one** — and **no doc
 **Tier 3** tracks the compiler chain: `journal → fold → checkpoint` runs; `checkpoint → types` is the arrow that turns ZetaDB into a compiler stage.
 
 ## Why "we are there now" is credible rather than aspirational
+
 **Before today this trajectory was blocked and nobody had said so out loud.** Cluster nodes couldn't provision themselves (NixOS has no FHS loader ⇒ mise's prebuilts couldn't `execve`), so **two of the four intended tick-source substrates couldn't run the stack at all**. That's fixed and CI-validated.
 
 ## Five ranked ways to dogfood more
+
 Led by **`081KZM0FTJM`**: the only fold guard is an **Actions-scoped** concurrency group that cannot see a local or browser cell — so it **gates the stated headline goal** of runners + local hardware simultaneously.
 
 Also carries the day's discipline forward: verify the artifact not the ceremony · a test that cannot fail is worse than no test · grace in the artifact, strict in the test · errors must teach.

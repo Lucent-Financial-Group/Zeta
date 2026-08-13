@@ -30,6 +30,7 @@
 Caught on a CI-health tick: the **markdownlint job has been red on main** since the Soraya→Otto routing-verdict handoff doc merged — poisoning markdownlint for every subsequent PR (it lints the whole tree). Non-required (didn't block merges), but a persistent fleet-wide red, and the doc is a handoff addressed to my persona.
 
 ## Two nit classes
+
 - **MD026** (trailing punctuation in heading): the Batch-1 H2 ended with a period.
 - **MD037** (spaces in emphasis): the `F*` language name (F + literal `*`) parses as a stray emphasis opener — `F* sits` reads as `* s...`. Escaped all 5 bare `F*` → `F\*` (renders identically); the backticked `` `f*` `` was already safe.
 

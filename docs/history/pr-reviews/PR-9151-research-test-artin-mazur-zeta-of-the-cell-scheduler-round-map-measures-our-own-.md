@@ -30,11 +30,13 @@
 Move-forward #1 (of the two you asked for). The name stops auditioning on outside objects and **measures our own machine**: the cell scheduler is a deterministic dynamical system, and this is its **Artin–Mazur zeta**.
 
 ## What
+
 A finite cell society (ring of N bits, each cell integrating its left neighbour mod 2 — the synchronous round of the round-based runner, DoP-invariant) is a deterministic map `f` on `(ℤ/2)^N`. Its Artin–Mazur zeta `ζ = exp(Σ Fix(f^k)u^k/k)` equals the Euler product over periodic orbits `Π 1/(1−u^|O|)` — **that equality is the theorem, self-verified** two independent ways (fixed-point counts of the iterated map vs. cycle decomposition of the recurrent set; a wrong `f` diverges). Same safety net as #9148.
 
 The round-map `M = I + S` is deliberately **non-bijective** (all-ones ∈ ker) ⇒ genuine transients; the zeta sees only the recurrent part. **Unique fixed point = the empty configuration** — the quiescent all-zeros society is ζ's leading `1`. The scheduler's rest state *is* the zeta's `1`.
 
 ## Downstream hooks (you named these — routed, not built here)
+
 - **Self-prediction in the soft `IScheduler`**: a scheduler carrying its own zeta can predict its recurrence spectrum (transient vs. recurrent, orbit periods) before running — the loop modelling itself.
 - **CHIP-8/9 meta-cart**: a cart's dynamics fingerprinted by its periodic-orbit spectrum.
 

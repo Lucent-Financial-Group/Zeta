@@ -30,7 +30,9 @@
 Aaron *"compose the pieces into one living node — and assume S=2 is your enemy but friend."* The culmination: one node composing this session's pure protocols over **one injected transport** — discovery-beacon (peers) + llmtv-broadcast (mind → society grid) + linked-clone (opt a region onto a shared subject; exit always) + x402-envelope (spend within a bounded merkle-verified budget). DHT slots in behind the same transport. All pure over injected ports.
 
 ## The S=2 principle, built in
+
 S=2 (CHSH classical/local) is the **independent ground state**:
+
 - **Enemy** — a living node exists to coordinate *above* it (link/broadcast/spend together → S→4), where shared value is produced.
 - **Friend** — it's the **exit floor**: every link drops back to S=2, always (unlink never deniable), and that guaranteed fall-back is what makes every ascent *voluntary*, not capture.
 

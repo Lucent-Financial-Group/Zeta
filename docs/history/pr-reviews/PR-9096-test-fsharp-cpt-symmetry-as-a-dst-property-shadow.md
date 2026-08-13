@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - Makes the Addendum 3/3.1 conjecture machine-checked: `fold(CPT t) = CPT(fold t)` with Aaron's dictionary (conjugation ≈ uncertainty → Z-set weight negation; parity ≈ adinkra mod 2 → Gates dash parity / braid sign register; tick = tick/DST → transcript reversal).
 - 9 tests across three planes: Z-plane composite + annihilation (matter meets antimatter) + T-alone-holds (the abelian substrate records no arrow); braid lone-factor failure witnesses (T alone and P alone fail — the composite law already lives in Braid.Tests and is cited, not duplicated); mod-2 register CPT-protected; adinkra global sign conjugation preserves the Gates condition across random gauge orbits.
 - `dotnet build` 0 warnings; 9/9 pass in 167ms.

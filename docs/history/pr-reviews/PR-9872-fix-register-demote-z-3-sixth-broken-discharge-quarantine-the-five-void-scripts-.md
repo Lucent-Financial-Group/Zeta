@@ -30,21 +30,27 @@
 Soraya's cleanup sweep. **She corrects my framing on two counts — both corrections are better than what I had.**
 
 ## Z-3 verified broken on six counts
+
 Beyond the tautology I found: **no Loewner equation is integrated at all** (the header claims it "runs the Loewner equation"; there's no ODE solver in the file), and the **row contradicts its own code** — it lists κ ∈ {2.67, 4.0, 5.7, 8.0} while `KAPPA_PRESETS` is {2.0, 2.67, 5.7, 6.0}; two of four don't exist. `error < 1e-10` merely measures `exp`/`log` round-trip precision. Demoted, prior text retained NOT IN FORCE.
 
 ## Provenance — my framing was backwards
+
 The constant did **not** originate as a rendering parameter. It was born **2026-07-04** in `YinYangEnsemble.fs` as ρ_T = ρ\*/√2 via a *declared* map — **with an honest caveat** (*"A DESIGN CHOICE, not a first-principles derivation"*). 2026-07-16: adopted as DLA sticking probability, **caveat dropped**. 2026-07-31: read as physics. **The name travelled and the caveat did not** — a better diagnosis, and a more useful lesson than "fabrication".
 
 ## My convicting argument was also weak
+
 I argued "the real crossing is ρ\* = √2−1". Soraya: the repo *already adjudicated* that 0.2357 and 0.414 are **different quantities**, not a contradiction. The argument that actually convicts: **Tsirelson's bound is S ≤ 2√2 on the CHSH correlator — there is no Tsirelson bound on a correlation *coefficient* at all.** Both numbers are images of 2√2 under freely chosen maps.
 
 ## A real defect, not just naming
+
 `MoneyVelocityOracle.fs` **contradicted itself**: `tsirelsonAgeDays` claims the Classical boundary at 1184 days (ρ=0.2357) while `moneyRegime` *in the same file* puts it at √2−1 ≈ 517 days — **2.3× off**. Its `regimeTable` also *asserted* `SoundMoney` instead of calling `moneyRegime` — the same could-not-fail pattern. Now computed.
 
 ## False-green CI found and killed
+
 `bun test src/Core.TypeScript/verify/` reported **13 pass** — and `test:typescript` is a bare `bun test`. Anyone running the suite saw 13 green tests reading as discharged conjectures. All nine files → `docs/research/void-discharges-2026-08-01/` with `.void` suffixes + an 82-line README. **Verified: 0 tests found there now.** Moved not deleted, so register citations still resolve.
 
 ## §A #1–#28: CLEAN ✅
+
 Explicitly verified — zero hits for the constant, any certificate, any z-script, or any of Z-2…Z-7 across the whole §A span. **The frozen core was never contaminated.**
 
 Gates: tsc ✓ · discharge-consistency ✓ (0 rows) · dotnet build Core/Bayesian/Bayesian.Tests **0 warn / 0 err**. 🤖 Generated with [Claude Code](https://claude.com/claude-code)

@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 Closes the deferred BP-16 leg on **081KVP3GYW1**:
 
 - **`src/Core/Shamir.fs`** — F# peer of `tools/setup/persona-keys/shamir.ts` (GF(257), matching LCG)
@@ -36,6 +37,7 @@ Closes the deferred BP-16 leg on **081KVP3GYW1**:
 - **Golden seed** — `shamir-golden-vectors.json` locked by TS + replayed by F#
 
 ## Test plan
+
 - [x] `bun test shamir.test.ts shamir-golden.test.ts`
 - [x] `dotnet test --filter FullyQualifiedName~ShamirCrossVerify` (8 passed)
 - [ ] CI green

@@ -30,12 +30,15 @@
 Your live extension (stacks on the weak table #9181): *soft GC via fingerprinting — things get GC'd whose fingerprints are not strongly currently selected; in soft mode loading a game is like having Shiva reload/calculate from zetaid the expected orbits of the games being played.*
 
 ## SoftFixedPointTable<'F,'S,'K>
+
 Each game is registered by its **fingerprint** (`'F` = its data signature / ZetaId) with its dynamics; its expected orbit (fixed points) is derived and held **weakly**. `Select(weights, threshold)` is the soft-GC pass — `weights` = the current soft-selection distribution over game fingerprints (prediction mode): **unload** every game below threshold (Shiva sweeps the unattended) and **load / regenerate-from-fingerprint** every strongly-selected one. Soft, not binary — the prediction distribution is the reclaim pressure. **Loading a game IS Shiva recomputing its orbits from its ZetaId.**
 
 ## Reuse the signature DBs — don't reinvent (your point)
+
 ROM identity is a hard distributed problem humans already solved: **TOSEC, GoodTools, MAME DATs** curate the CRC32/MD5/SHA1 signatures + catalog metadata. `'F` is generic so a TOSEC hash / `ContentHash256` / any curated signature is the fingerprint (anchor-to-human-prior-art). Routed next: read + understand those catalogs' metadata.
 
 ## Tests (8/8, +1)
+
 Two games keyed by TOSEC-style data-signature fingerprints; soft-selecting A over B loads A / soft-GCs B; attention swap sweeps A and reloads B from its fingerprint; re-selecting A regenerates its orbit exactly (lossless).
 
 Anchors: TOSEC / GoodTools / MAME; anchor-to-human-prior-art; WeakReference/SpecializationCache; Artin-Mazur 1965.

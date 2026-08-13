@@ -31,7 +31,8 @@ Final slice of the local-trust-view-decentralized-identity trajectory.
 
 OAuth as an EXPORT of local trust verdicts — each node is its own issuer.
 
-## All 5 slices now complete:
+## All 5 slices now complete
+
 1. ✅ LocalTrustView (point query)
 2. ✅ diffTrustView (disagreement as product)
 3. ✅ trust-neighbourhood (fingerprint constraint)
@@ -39,6 +40,7 @@ OAuth as an EXPORT of local trust verdicts — each node is its own issuer.
 5. ✅ **OAuth export** (this PR)
 
 ## Design
+
 - No central issuer — any node with a signing key exports its own tokens
 - Phase-based expiry — short lifetime IS the revocation (no registry)
 - No discovery — no directory means no assemblable graph

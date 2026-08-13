@@ -30,11 +30,13 @@
 Fold in the rest of the builder facets. On reading *all* the RAWs Id cross-referenced, only **one** is a genuine builder facet — the radioshack→crypto arc. The rest turned out to be distinct threads.
 
 ## Folded: "The loop — from breaking a system to building one"
+
 The dual-use capstone: **RadioShack** → soldered a wildcard to break satellite access-control cards (a crime, his shadow, crowd-common, solo, statute-passed) → met the **H-card designer** at **Itron** → built the national smart-meter crypto stack *together.* Poacher-turned-gamekeeper made literal; the capacity is neutral, only the aim moved across thirty years (ties to ch-3s produce/extract dual-use and the anti-forgery credibility it earns).
 
 **Consent held exactly** per the RAWs load-bearing frame: Aarons arc **full** (his hack is his to tell); the colleague **un-named** (role only); **Itron** named (institution); **crypto internals out** (live critical-infra security, no methods); the satellite hack held honest, **not valorized**, no methods; national scale = deployment fact (Itrons business), not personal puff. Two verbatim sockets.
 
 ## The honest scope correction (the real content of "fold in the rest")
+
 The other RAWs Id labeled "builder facets" in the first draft **are not** — on reading, theyre distinct threads with their own homes, and forcing them into the builder companion would miscategorize them. Named explicitly as **not-folded**: the reader/reading-people (relational, dual-use dating), magnetism/basement/"total regard, bounded scope" (personal/isolation thread, intimate consent-material), wild-youth/organizer, and the deep childhood-origin (lineage/family/body). The **photophone** is already in ch-6 (not duplicated).
 
 That correction *is* the companions own discipline — "measure it, dont price the category" — applied to its own scope.

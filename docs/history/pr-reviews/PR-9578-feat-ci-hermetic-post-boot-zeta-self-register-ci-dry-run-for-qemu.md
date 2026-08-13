@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - Add `ZETA_SELF_REGISTER_MODE=ci-dry-run` to `zeta-self-register.sh` (compose preview + `zeta-self-register:*` markers; no gh/git push).
 - Wire `zeta-self-register-ci.service` when `/etc/zeta/qemu-self-register-ci` exists; WIPE installs write that marker next to first-session CI.
 - Phase-3 `qemu-full-install-test` requires post-boot self-register markers alongside mock identity-auth (`QEMU_SELF_REGISTER_ALLOW_MISSING=1` escape for older ISOs).
 
 ## Test plan
+
 - [x] Unit tests: self-reg-serial, qemu-first-session-phase3, qemu-full-install-test
 - [x] Local smoke: `ZETA_SELF_REGISTER_MODE=ci-dry-run` script emits markers
 - [x] `tsc --noEmit`

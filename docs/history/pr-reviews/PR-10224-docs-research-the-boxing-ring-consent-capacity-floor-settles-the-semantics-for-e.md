@@ -32,6 +32,7 @@ Ferries the values architecture behind the harm question, and it **settles the `
 > *"Imagine I'm trying to **not impose values but let them arise naturally**. The harm floor is **no harm to children** — they can't consent to harm until they are an adult. If you consent to harm, you could consent to a space where **harm outweighs non-harm** — but the rules should be **clear** and the danger **warned**. Like a **boxing ring**."*
 
 ## Why "no imposed values" and "a hard floor" aren't a contradiction
+
 This looks like one, and isn't. A system that lets values arise naturally must still guarantee **the integrity of the mechanism by which they arise** — and that mechanism is consent. So the one thing it cannot leave to emergence is *whether consent is real*: a "consent" obtainable from a party that cannot give it isn't weaker consent, it's **the absence of the mechanism wearing its name**.
 
 > **The minimum a consent-based substrate must impose is the integrity of consent itself.** That is not a value among values — it's what makes value-emergence possible.
@@ -39,6 +40,7 @@ This looks like one, and isn't. A system that lets values arise naturally must s
 The floor is deliberately thin: it protects the **capacity to choose**, never the content of the choice.
 
 ## The τ semantics this settles
+
 | Party | Floor | Why |
 |---|---|---|
 | **Cannot consent** | **No harm — absolute, not a parameter** | Not overridable by any `τ`, by the party, or by anyone claiming to act for them |
@@ -48,9 +50,11 @@ The floor is deliberately thin: it protects the **capacity to choose**, never th
 Implementation: restore `τ` with the **bystander default**; add a **capacity predicate no `τ` can override**; make `sum` reachable only via the recorded opt-in **plus a warning phrased as what can happen to you** (same mechanism as the `k = 0` disclosure protocol).
 
 ## It reclassifies Soraya's cross-aggregator finding
+
 A `sum` interaction outranking a harmless `min` one *purely because `sum` yields a bigger number* is **a punch thrown outside the ring** — an **entry-control failure, not a scoring bug**. The fix isn't rescaling the comparison; a sacrificing interaction must not be **selectable at all** against parties who haven't entered.
 
 ## Left genuinely open
+
 **Who decides capacity for an agent, and how is it attested?** Too permissive ("any agent can consent") makes the floor decorative — an attacker spawns consenting victims. Too restrictive rebuilds incumbency and contradicts *"capability is not a precondition for participation."* Possibly socially attested like the privacy budget — but that's a hypothesis, not a decision, and I haven't guessed at it.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

@@ -30,6 +30,7 @@
 Ferries the identity/PKI direction, led by a **verified inventory** — Aaron said there's a lot of prior work, and there is.
 
 ## What already exists (do NOT rebuild)
+
 - **`Hat.fs`** already has **action restrictions** *and* **control of other hats** — most of "hats grant claims and restrictions."
 - **`IdentityCapacity.fs`** makes identity **entropy-bounded** (*bits of uncertainty = available identities*), explicitly **not** a flags-enum on hats.
 - **`PrivacyPreservingIdentity.fs`** is the adinkra/E8/Cl(3,0) layer — the "math proofs" half.
@@ -38,12 +39,14 @@ Ferries the identity/PKI direction, led by a **verified inventory** — Aaron sa
 - Plus `ssh-ca.nix` (a real CA anchor) and `SybilBftProtocol.fs`.
 
 ## The four gaps — each verified absent, not assumed
+
 1. **No bounded duration anywhere.** No expiry/TTL/lease in `Hat`, `Policy` or `KeyStore`. **The most load-bearing gap**, because a grant that cannot expire *is* accumulating authority (§3 weight-free).
 2. **No key rotation** in any identity/key module.
 3. **No identity-*provider* surface** — every OAuth/OIDC thing in-tree is **client** code. We consume identity; we never issue it.
 4. **No repo → cluster binding.**
 
 ## Proposed shape
+
 **Cluster id from the repo's root-commit** — survives renames and mirrors, and a **fork genuinely becomes a different cluster** the moment it diverges, with no registry or naming authority. *The hard part, flagged:* repo affiliation is a **claim of membership, not authorization** — anyone can clone. Joining must be `(repo affiliation) ∧ (a key the cluster accepts)`, or every forker is a member.
 
 **Node-as-IdP** takes IdentityServer4 as an **interop outline only**; internal trust stays the existing anti-Sybil machinery — so we don't accidentally rebuild a **centralized CA inside a decentralized system** (the exact trap in Aaron's Itron note: those patents are centralized).
@@ -51,6 +54,7 @@ Ferries the identity/PKI direction, led by a **verified inventory** — Aaron sa
 **Bindings:** bounded duration is the **default, not an option**; expiry must take effect with **no coordination** (lease-shaped beats revocation-list-shaped, and survives partition); expiry evaluated against **agreed phase, never wall clock**, or two nodes disagree about who holds a hat; revocation is a **`−1` retraction**, never a delete.
 
 ## Why dogfood-first is right
+
 PKI mistakes are discovered late, invalidate enrolled devices, and on hardware a bad rotation can **lock you out of a node you have to physically walk to**. Every substrate in the dogfooding ledger can exercise enrolment, issuance, expiry and rotation at zero physical cost with a full replay log — if a rotation strands a browser cell, you close the tab. The doc gives the concrete test loop.
 
 All cited paths verified; markdownlint clean.

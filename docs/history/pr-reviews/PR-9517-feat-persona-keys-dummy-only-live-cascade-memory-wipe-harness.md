@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - Live wipe testing uses an **empty `dummy-*` persona** only — never a real persona (Aaron 2026-07-08).
 - Harness refuses: non-`dummy-*` ids, repo `memory/` roots, non-empty dirs, human-only consent (HC-9).
 - Sandbox create → dry-run → wipe path covered in CI.
 
 ## Test plan
+
 - [x] `bun test tools/setup/persona-keys/cascade-dummy-persona-wipe.test.ts`
 - [x] onboarding-roundtrip gap-closed assertion
 - [x] `bun run typecheck`

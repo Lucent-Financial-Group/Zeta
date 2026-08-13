@@ -28,15 +28,18 @@
 ## Description
 
 ## Summary
+
 - **Delete** all 14 `tools/setup/mechanisms/from-*.sh` scripts + `_when.sh` (Bun realizers are authoritative).
 - **Install scripts:** `linux.sh` runs `ace-realize --all` after mise (pre-mise realizers moved post-mise); NixOS keeps `--post-mise` only. `macos.sh` runs `--all`. Shell fallback removed — bun required.
 - **Ace pointers:** `ace-mechanism-pointers.json` + `setup-mechanism-pointers.ts` now reference `src/Core.TypeScript/ace/setup-realizers/*.ts`.
 - **Bash retirement:** allowlist shrinks by 15; adds `smoke-7-toolchains.sh` (landed on main without allowlist entry).
 
 ## Context
+
 Final hygiene step for **081KLL7…** after #9195 cutover.
 
 ## Test plan
+
 - [x] `bun test src/Core.TypeScript/ace/setup-mechanism-pointers.test.ts`
 - [x] `bun src/Core.TypeScript/hygiene/check-bash-retirement-inventory.ts --enforce`
 - [ ] CI gate green (docker install-sh tests)

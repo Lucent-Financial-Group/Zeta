@@ -30,11 +30,13 @@
 **Self-caught regression.** The DBSP + IKleeneAlgebra oracle mirrors (#9137/#9138) added new interface IRs but didn't update the `zeta-ir-v2` interface oracle's frozen allowlist, so `cross-verify-all.ts` (the byte-lock step of gate.yml's cross-verify job) failed with "unexpected interface" — `cross-verify-all: 30/31`. It slipped through because that job is **non-required** (doesn't block auto-merge) and I'd only run the interface *law* test, not the byte-lock oracle. Caught it on the next tick's CI health check.
 
 ## Fixes
+
 - **Register `IDbspOperators`, `IKleeneAlgebra`, `IRing`** in `expectedNames` (IRing was a pre-existing miss from whoever added `ring.ir.json`; registering is how a new frozen interface is admitted).
 - **Transitive `IStarRing extends ISemiring` check.** It was direct-only, but the `081KWG9JQ9H` split rebased `IStarRing` onto `IRing` (`extends: ["IRing"]`, and `IRing extends ["ISemiring"]`). Made the check walk the extends chain so the legitimate `IStarRing→IRing→ISemiring` hierarchy passes.
 - Regenerated the committed `ts-output.json` snapshot (now 11 interfaces).
 
 ## Result
+
 Interface oracle **0 mismatches**; **cross-verify-all 31/31**; interface law + codegen-drift suites **16 pass / 0 fail**. The byte-lock oracle is green again.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

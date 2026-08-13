@@ -32,6 +32,7 @@ You: *pin it down in code, tie it to AntiSybil.fs*. The scoped, bankable claim -
 Pins the Leibniz reading onto `Zeta.Core.AntiSybil` (which already collapses indiscernible streams into shared sources, reporting DistinctCount = the forgery-cost floor), checked against KNOWN source counts (self-verification: the oracle recovers the number of independent private seeds the streams were built from).
 
 4/4:
+
 - **identity of indiscernibles**: 4 observably-identical agents = 1 identity;
 - **CPT invariance** (your point): an inverted replay (Z-set -1 = charge-conjugated + time-reversed, a positron from t0=t-infinity, the fold's fixpoint) is the SAME source - `correlation` folds anti-correlation onto 1, so you can't forge a Sybil by running your own history backwards. Identity = its own CPT-conjugate. Ties the CPT composite law (fold(map neg (reverse t)) = neg(fold t)) to Sybil resistance;
 - **distinctness requires independent private entropy**: k independent seeds = k distinct identities (recovers k=5);

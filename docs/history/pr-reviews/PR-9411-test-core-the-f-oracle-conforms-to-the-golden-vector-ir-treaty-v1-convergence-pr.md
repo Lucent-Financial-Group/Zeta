@@ -34,6 +34,7 @@ Aaron 2026-07-04 *"the IR is the solution, make all 7 langs agree."* The F# repl
 `ZetaToolStore.Golden.Tests.fs`: `repoRoot()` → read the JSON → for each vector, replay ops then check probes against a fresh F# `Store` (`parse` enforces the closed surface; `execute` over real DagFs). **ZTS-GOLDEN passes**: link→resolve, multi-parent dedup, editEverywhere shared-follow, editLocal COW, unlink — all agree with the TS oracle. **8 F# ZetaToolStore tests green; build 0 warnings / 0 errors** under `TreatWarningsAsErrors`.
 
 ## Still the work list (the `_convergence` ledger)
+
 v1 is hash-independent so both oracles agree despite the open divergences: **canonical hash** (the first treaty *signature* — your call), event encoding, editEverywhere-on-absent, db event type. Resolving each lets the vectors grow to lock addresses + the db log + the absent-path case, and admits the other 5 oracles.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

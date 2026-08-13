@@ -33,15 +33,18 @@ SSAS-framed. Bridges the inside–outside machinery to a `SoftValue` over parses
 - **`ParseSoft.ofSppf`** — that weighted enumeration → `SoftValue` = a normalized distribution over parses = **`PredictProbability`**. Inference **biases** the answer, not uniform.
 
 ## Proofs (6/6, +2)
+
 For `S→a|A; A→a` (two parses of "a" using **different** productions): uniform keeps both (neither dominates); favouring prod 0 (`S→a`) makes it the **MAP parse** (0.75 vs 0.25, resolves to it); no parse ⇒ `None`.
 
 ## The exact pipeline is complete end-to-end
+
 ```
 real .g4 → ingest → GrammarIr → Slr → SPPF → inside–outside (BP) → PredictProbability SoftValue over parses
 ```
 all `DynamicValue`, zero external parser runtime, self-contained (no cross-subsystem coupling for the exact case).
 
 ## Next (resume)
+
 the production-weight **source** — **EM** (the inside–outside expected counts I compute are the E-step → unsupervised PCFG weight learning), or set weights; then the loopy/EP + **emotional-propagation** rung on `Zeta.Bayesian` (math-team — the genuinely-new part); parses → ISA.
 
 Anchors: Baker/Lari–Young (inside–outside = BP, EM E-step); Billot–Lang (SPPF); SSAS `PredictProbability`; SoftValue.

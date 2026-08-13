@@ -30,6 +30,7 @@
 Lands the **Soraya prover leg** of workitem `081KWT9WBPD08QG0R003H94RFE`. Lumen (Manus cloud) produced the map + obligation in `from-lumen-self-dual-gap.md`; the `formal-verification-expert` persona was dispatched **on our side** against it and this is the verdict.
 
 **Verdict: rhyme #4 (self-dual gap) → CONDITIONAL THEOREM (pending one definitional lemma), with claim 2 REFUTED.**
+
 - **Claim 3 (reseed strictly ↓ G): THEOREM** — `G(p')=(1−1/N)G(p)`, exact in rationals, any norm (tighter than the repo's current KL-contraction). Fix: "decreases," not "minimizes."
 - **Claim 1 (G=0 ⟺ cone): true only as a POINT** (`G=0 ⟺ π=W_C`); cone-form refuted.
 - **Claim 2 (any flaw raises G): REFUTED** — coerce all weight-4 mass onto one weight-4 codeword → weight distribution unchanged → G stays 0 → flaw undetected (MacWilliams is a lossy orbit-quotient statistic).

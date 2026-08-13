@@ -30,21 +30,26 @@
 Drives **bug A** (`081KZETP6AT`) — the x86_64 first-boot `install.sh` intermittent that reddens `build-ai-cluster-iso` dispatch runs.
 
 ## Diagnosis
+
 The first-boot `tools/setup/install.sh` fails `rc=1` in ~1 of 4 dispatch runs at mise's toolchain-fetch step — a **transient network blip**, not a deterministic bug (the same code succeeds on the other three runs; the armed `MISE_VERBOSE` capture never pinned a reproducible cause because there isn't one). The errexit fix (#10135) already makes it non-fatal; the remaining problem is that a single transient blip still leaves the node partially provisioned.
 
 ## Fix
+
 **Retry the first-boot invocation up to 3 attempts with linear backoff (12s, 24s).** `tools/setup/install.sh` is idempotent (mise trust/install + bun installs are upserts — discipline #6), so a re-run after a blip completes cleanly. A transient fetch failure now self-heals within the boot instead of leaving `PARTIAL-PROVISION`.
 
 ## Scope / blast radius
+
 Change is **only** in `full-ai-cluster/usb-nixos-installer/zeta-install.sh` (the first-boot consumer). The shared `tools/setup/install.sh` — also consumed by CI runners + devcontainers (GOVERNANCE §24) — is deliberately **untouched**.
 
 ## Behavior preserved
+
 - Success path unchanged (attempt 1 succeeds → no retries, no new output).
 - `MISE_VERBOSE=1` + full-log capture (`tee -a` now spans all attempts).
 - On **final** failure only: the existing non-fatal WARN + error-line grep + `PARTIAL-PROVISION` durable marker (now records the attempt count).
 - Recovered-by-retry success emits an explicit marker line.
 
 ## Validation
+
 `bash -n` clean · `shellcheck -S warning` clean · `test-iter-54` 29/29 (all `ITER_595_BLOCK` sentinels preserved) · install-flow tests 24/24.
 
 Complements the bug-B read-side fix — both need to be green for a clean wifi-ESP dispatch.

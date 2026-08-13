@@ -44,15 +44,19 @@ You're **already device-authed** (`auth.json` has tokens, `OPENAI_API_KEY: null`
 `readCodexAuth` (pure token reader) + `respond` (POST responses, non-streaming). **Noninterference §13:** network + the token file cross only through injected ports — fake-testable with **no real token, no socket**; the token is never embedded or logged.
 
 ## Tests (5, build 0/0) — fake transport + canned auth
+
 token read (access_token + account_id, no JWT decode) · malformed/apikey-mode → null · request shape (POST `backend-api/responses`, Bearer + `chatgpt-account-id`, **no api key**) · response parse (`output_text` + `output[].content[].text` fallback) · clean errors.
 
 ## Honest boundary (you accepted it)
+
 `chatgpt.com/backend-api` is **not an official public API** — it's the ChatGPT app's own backend. Personal-use, tolerated, **ToS-grey**: can change/be restricted, spends the subscription; multi-user/production would need Platform keys. Revocable by design.
 
 ## Scope
+
 Non-streaming slice (proves auth + endpoint + Responses shape). **Streaming** (SSE `response.output_text.delta` → the `IChatCompleter` token-by-token interface) + **token refresh** are the next slices; the exact Responses output field wants a live confirm.
 
 ## Why this is the answer
+
 This is the account-login, **no-API-key** path you wanted — and the Responses API **streams**, so it also unlocks the Amara `IChatCompleter` streaming interface over your subscription. One mechanism, both goals.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

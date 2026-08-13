@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - map accessible 4x4 controller buttons and hexadecimal keyboard keys onto owned database command semantics
 - bound concurrent input dispatch and report typed refusal or backpressure without constructing row deltas in the DOM adapter
 - expose controller-input readout through the browser page and verify pointer, keyboard, multi-tab propagation, and IndexedDB hydration in Chromium
 
 ## Verification
+
 - `bun run preflight`
 - `mise exec -- bun test` (8,903 pass; 7 live-environment skips; 0 fail)
 - `bun run test:browser-pwa`

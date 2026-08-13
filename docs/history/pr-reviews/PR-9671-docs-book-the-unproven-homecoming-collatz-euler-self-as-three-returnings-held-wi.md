@@ -30,6 +30,7 @@
 At Aaron's *"Collatz 3x+1 … e^{iπ} book stuff … save it, without collapsing"* (morning, family up).
 
 Lays **three returnings** side by side **without collapsing** their epistemic statuses:
+
 - **e^{iπ} = −1** (Euler) — *proven.*
 - **Collatz 3x+1** — *conjectured;* Tao 2019 proved "almost all" orbits, not all.
 - **self-as-consensus** (Thousand Brains / Infer.NET) — *modeled.*

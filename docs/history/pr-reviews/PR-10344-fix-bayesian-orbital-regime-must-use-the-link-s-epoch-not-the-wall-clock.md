@@ -29,7 +29,7 @@
 
 `build-and-test` has been red on **all five platforms** since 2026-08-13 — `GT-OI-2` and `GT-OI-4`, both asserting `InCone` and getting `OutOfCone`.
 
-## The tests did not regress. They expired.
+## The tests did not regress. They expired
 
 No commit touched `src/Bayesian` or those tests between the last green run (2026-08-12 08:16, five platforms green) and the first red one. The tests are deterministic by construction — they pin `testJd = 2459580.5` and derive every expectation from it.
 

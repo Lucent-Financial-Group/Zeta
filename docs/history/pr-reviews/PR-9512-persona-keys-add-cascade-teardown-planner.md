@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - Add a pure smart cascade teardown planner with blast-radius summary, dependent classification, and dry-run formatting.
 - Add consent gating that requires explicit extra-care acknowledgments and refuses cross-user memory/encrypted-vault teardown.
 - Wire `teardown-cli.ts --cascade` to print a public-inventory cascade plan without changing default teardown safety.
 
 ## Test plan
+
 - `~/.local/share/mise/shims/bun test tools/setup/persona-keys/cascade-teardown.test.ts`
 - `~/.local/share/mise/shims/bun test tools/setup/persona-keys/onboarding-roundtrip.test.ts`
 - `~/.local/share/mise/shims/bun run typecheck`

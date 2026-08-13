@@ -32,6 +32,7 @@
 Aaron 2026-07-03, two connected observations — one **encoded**, both **ferried + anchored**:
 
 ### 1. Messaging is the only verb → the runtime distributes for free
+
 > *"The message passing works to make the entire runtime distributed — like Objective-C to the max, and other message-oriented languages."*
 
 If the only way to touch a grain is to **send it a message**, then *where* it is and *whether it's resident* is invisible to the sender. `ShivaGc.deliver`:
@@ -45,14 +46,17 @@ If the only way to touch a grain is to **send it a message**, then *where* it is
 The sender can't tell the cases apart — **that obliviousness IS the distribution transparency.** The exact hook Smalltalk exposes as `doesNotUnderstand:`, Objective-C as `forwardInvocation:`/`NSProxy` (and shipped as **Distributed Objects**), Erlang as location-transparent `!`.
 
 ### 2. Reify on demand, let go weakly → the world need not fit in memory
+
 > *"In F# this is made real with reified type providers, and in C# with generators, and our weak references so the entire world does not have to be reified into compiler memory at once."*
 
 F# type providers = the virtual-actor pattern **at compile time** (materialize the branch you touch, not the whole space); the weak-value `Ephemeron` table is the bound. **Reify-on-demand + let-go-weakly = a finite resident window over an unbounded world.** Ferried with the read.
 
 ## Tests (1 new, 10 ShivaGc total green — build 0/0)
+
 `deliver` is residency-transparent — resumes a paused grain, no-ops a resident one, leaves an unknown grain to routing.
 
 ## Prior art anchored
+
 `PRIOR-ART-LIST` new section (includes the **Orleans** anchor deferred from #9361): Bernstein/Bykov *Orleans* (2014), Hewitt (actors), Kay/Smalltalk, Cox/Objective-C + Distributed Objects, Armstrong/Erlang, Syme (F# type providers) + Roslyn generators.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

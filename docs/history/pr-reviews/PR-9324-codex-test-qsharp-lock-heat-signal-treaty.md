@@ -28,16 +28,19 @@
 ## Description
 
 Why:
+
 - Heat is now shared across host IO and room transcripts, and Q# already mirrors heat as pure oracle labels.
 - The missing latch was a committed treaty vector proving the Q# integer alphabet and F# `HeatSignal` tokens stay aligned.
 
 What:
+
 - Added `heat-signals-treaty.json` with token/code vectors and classification examples.
 - Extended the Q# heat source test to pin `HeatSignal*()` return codes to the treaty.
 - Extended F# QSharp oracle tests to prove `HeatSignal` tokens and kind classification match the same treaty.
 - Documented the treaty file in the Q# reference oracle README.
 
 Proof:
+
 - bun test src/Core.QSharp.ReferenceOracle/heat-signals.test.ts
 - bunx eslint src/Core.QSharp.ReferenceOracle/heat-signals.test.ts
 - bunx prettier --check src/Core.QSharp.ReferenceOracle/heat-signals.test.ts src/Core.QSharp.ReferenceOracle/heat-signals-treaty.json src/Core.QSharp.ReferenceOracle/README.md
@@ -47,6 +50,7 @@ Proof:
 - bun src/Core.TypeScript/hygiene/audit-agencysignature-main-tip.ts --commit HEAD
 
 Local note:
+
 - `bun run lint:typescript` and repo-wide `bun run format:check` are broad repo-audit shapes in this checkout and fail on pre-existing files outside this slice; scoped ESLint/Prettier on touched files are green.
 
 ## Outcome

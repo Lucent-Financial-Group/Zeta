@@ -30,7 +30,9 @@
 Fixes **Sorayas Caveat-(a)** (routed via the 2026-08-02 math-team handoff): `AntiSybil.chshMargin` is a Hoeffding bound assuming per-round-independent λ, but real commit/message streams autocorrelate (author bursts, topic runs) ⇒ effective sample size `n_eff < n` ⇒ the true margin is larger ⇒ the shipped margin is **optimistic and over-convicts** (falsely collapses honest-but-autocorrelated identities into one source).
 
 ## Model chosen (the math-team decision the handoff assigns — Sorayas candidate #1)
+
 The **AR(1) effective-sample correction**, soundness-biased:
+
 - `lag1Autocorr` — ρ₁ of the round-ordered ±1 outcome-product series.
 - `effectiveSampleSize n ρ₁ = n·(1−ρ₁⁺)/(1+ρ₁⁺)`, `ρ₁⁺ = clamp ρ₁ to [0, 0.999]`. **`n_eff ≤ n` always, equality iff `ρ₁ ≤ 0`.** Negative autocorrelation gets no optimistic bonus.
 - `chshMarginAutocorr` — substitutes `n_eff` for `n`; equals `chshMargin` on i.i.d., strictly larger on positively-autocorrelated products.
@@ -38,9 +40,11 @@ The **AR(1) effective-sample correction**, soundness-biased:
 - `chshSybilAutocorrCalibrated` — the sound oracle (`2 + marginAutocorr` + stationarity downgrade). **Strictly more conservative** than `chshSybilCalibrated` — can only drop FALSE collapses, never add.
 
 ## Scope split respected
+
 This is the **model + estimator** (math-team). Concentration **correctness** (the monotonicity obligations) is **Sorayas** to prove formally (Z3/FsCheck) — routing to her now. The shipped `chshMargin` / `chshSybilCalibrated` are **unchanged** (opt-in sound path + a caveat pointer in the docstring); switching the default is gated on Sorayas formal sign-off (security verify-before-trust).
 
 ## Tests (28 AntiSybil green; Core 0-warning)
+
 6 property tests: `lag1Autocorr` signs, `effectiveSampleSize` monotonicity + clamp, `chshMarginAutocorr` ≥ iid always / strictly-larger-on-autocorr / equals-on-alternating, stationarity gate, oracle subset-conservatism.
 
 Does **not** touch the algebraic bounds (2, 2√2, 4) — only the finite-sample margin around them. Anchors: Hoeffding 1963; Newey–West 1987; Kontorovich–Ramanan 2008; Pironio et al. 2010.

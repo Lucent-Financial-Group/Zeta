@@ -30,6 +30,7 @@
 Adds `windowShuffle` / `permutationNullMIWindow` / `fuseMIWindow` — the **complement** of the block null. `blockShuffle` keeps blocks intact and permutes their ORDER (preserves fine autocorrelation); `windowShuffle` keeps era-windows **in place** and permutes their CONTENTS (preserves era-level marginal structure). Generation-ordered so windows are eras. The unit test proves the intent: coupling that is **only** era-marginal (constant within an era, differing across) is convicted by the plain null but correctly **refused** by the within-era null.
 
 ## Honest real-data finding (1200 commits; both exclude disjoint; δ=0.05, k=200)
+
 The within-era null convicts **more**, not fewer, than the block null:
 
 | null | ExcessStrata |
@@ -42,6 +43,7 @@ Because shuffling *within* an era destroys the fine lag-1 autocorrelation the bl
 **The real conclusion:** the genuinely conservative instrument is their **combination** — window by era **and** block-shuffle *within* each era — preserving both. That is the clear next step. This PR ships the within-era null (correct + tested); its real-data role is a lens, not the default. *Pragmatic-then-review: ship the correct mechanism, label the finding.*
 
 ## Tests (54 DecorrelationExcess+Metrology green; Core 0-warning)
+
 +7: `windowShuffle` identity/plain-recovery/membership/permutation/determinism; `permutationNullMIWindow` era-marginal refusal; `fuseMIWindow` structure-match + no-false-green.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

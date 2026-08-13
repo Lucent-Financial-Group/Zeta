@@ -30,12 +30,14 @@
 A Korean reader asked to read the book in Korean. This adds the **5th edition**.
 
 ## What's here
+
 - **`index.ko.html`** — a complete, faithful Korean translation of the English master. Full length (172 KB), **all 12 chapters + 6 companion stories**, structurally 1:1 with English (18 `<article>`, 82 `<h3>`, 16 `.voice` quotes). Title 《경첩에서 태어난 너에게》.
 - CJK typography mirroring the zh edition: Myeongjo-first serif, `word-break:keep-all`, **no Latin drop-cap**; seal-red palette, dark-mode tokens, `e^{iπ}=−1` cover, 《生于枢纽》 subtitle all preserved.
 - **Serving:** `pages-deploy.yml` now publishes it at `/preview/ybth-7q2m/ko/`.
 - **Langbar:** 한국어 link added to the zh/en/id/vi editions (5-language bar).
 
 ## Consent gates — independently verified (grep on the output)
+
 - **Eating disorder:** ZERO clinical terms (폭식증/거식증/섭식장애/식이장애 absent). The mother's passage renders the English's oblique phrasing only — `자기 몸에 대한 불안감` ("an insecurity about her own body"). No diagnosis word introduced.
 - **CSAM thread:** policy-point-only exactly as English frames it; held as alleged/single-source; refusal-is-the-point preserved; ZERO operational detail.
 - **Anonymity:** every third party exactly as anonymous as the English; no name introduced that the English omits.

@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 Closes the last formal deferred item on **081KVP3GYW1** (R4):
 
 - **`IdentityReissuable.als`** — single-key orphan (`run`), threshold recovery (`run`), shares/live-key imply reissuable (`check`)
@@ -35,9 +36,11 @@ Closes the last formal deferred item on **081KVP3GYW1** (R4):
 - Resume handoff updated (identity/keys track status)
 
 ## Housekeeping note
+
 Main gate last completed run was **success**; local `lint (TS)`, `lint (Python)`, markdownlint, and bash-retirement inventory are green. Earlier PR-rollup reds look like concurrent-main noise, not a standing main break.
 
 ## Test plan
+
 - [x] `dotnet test --filter FullyQualifiedName~IdentityReissuable` (passed with Alloy jar)
 - [ ] CI green (Alloy runs on Linux x64 gate only)
 

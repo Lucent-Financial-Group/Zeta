@@ -30,6 +30,7 @@
 Soraya delivered the design for the two types Alexa's Task A (Analytics wrappers) is blocked on. This preserves her spec verbatim and links it from the routing workitem `081KZHC652A08QG0R003YX1G29`.
 
 **Design (summary):**
+
 - `ChshBand` — ascending DU `Classical < SoundMargin < Quantum < SuperQuantum`; `classifyBand delta rounds s`, soundness-biased ties, conviction line pinned to `chshSybilCalibrated` (`2 + chshMargin d n`).
 - `LoopholeFlags` — neutral fact record (Detection/Locality/MeasurementIndependence/Coincidence); `commitPairLoopholes` leaves Locality ∧ MI **open**, making "quantum band over commits ⇒ shared source" unsound by construction.
 - `ChshReadout` — the only verdict a wrapper may draw; for same-process commit pairs always `ViolationButLoopholesOpen` → route to excess-over-null (`DecorrelationExcess.fs`).

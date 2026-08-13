@@ -32,6 +32,7 @@
 Follow-up to #9413. Aaron 2026-07-04: *"the network delay is what makes it honest over reticulum — i can't fake it."* Folds the **resolution** into the Condorcet peel so the doc carries both halves (peel + resolution), stronger than either alone.
 
 The Reticulum delay is **physical** (the finite bus speed / propagation limit) → a **proof-of-distance**: you can't counterfeit being a decorrelated node without faking distance, which physics forbids. **Delay is hard money for independence** (and literally the anti-Sybil guarantee). It resolves the two axes unevenly:
+
 - **Un-fakeable independence (adversarial): fully resolved** — physics can't be spoofed.
 - **Statistical error-independence (shared S=4): partly** — delay decorrelates the **input-driven** error (nodes observe different reality-slices), **not** the **prior-driven** error (same weights from S=4 → wrong the same way on the shared-model component).
 

@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - Checkpoint before an Alexa-website ferry batch: shipped work, open threads in priority order, standing disciplines. Memory carries the derivation chain; this doc makes the session resumable by any agent.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - Lands Aaron's 2026-07-02 observation chain as citable substrate: shapes earn names by being remembered by named ancestors, making naming a self-application fixed point — the same construction as Futamura III (`co = mix(mix,mix)`) and `gen(gen)==gen`. One construction at three layers (structure, computation, society); no central authority at any layer.
 - Carries convergence grounds (Kleene for the mix tower, Perron–Frobenius for the remembrance eigenvector = PageRank's construction), the in-repo evidence (adinkra ↔ braid proof-bearing cartridge edges, ZetaIdol identity ladder), and full Beacon anchors.
 - The point, per Aaron: **honor those who came before** — remembering an ancestor is the act that constitutes the namespace.

@@ -30,12 +30,15 @@
 **Aaron 2026-07-02:** "what's next sonic mario" — Sonic = Genesis 68000, Mario = NES 6502: real console ISAs. The honest path to them is **not** more hand-written interpreters but the **ISA-as-description**, so a new CPU is a spec, not code.
 
 ### `IsaSpec` — the instruction set as data
+
 An `IsaSpec` is a `DynamicValue` mapping each op-name to a list of **effects** built from a fixed irreducible primitive set (read/write register, read operand field, add, sub, set-pc, skip-if-equal, halt). `evalSpec` interprets **any** ISA given its spec. Adding an instruction — or a whole CPU — is writing a spec value; the interpreter is never touched (`only-the-irreducible-is-primitive`).
 
 ### The emulator connection you named
+
 A fast emulator's **dynamic recompilation (dynarec) IS Futamura's 1st projection** — `mix(cpu-interpreter, ROM) = compiled game`. Making the CPU a spec is what lets one `mix` specialize **any** ISA against **any** ROM. CHIP-8 today; the same shape scales to the **6502 (Mario)** and **68000 (Sonic)** as specs. TOSEC/MAME are the ROM/metadata substrate.
 
 ### Proven — 3 new tests, **7/7** with `Isa`, Core **0/0**
+
 - **Differential equivalence** — `evalSpec chip8 p = Isa.eval p` on every program (control flow, folding, byte wrap); the hand-written interpreter is the oracle.
 - **ISA is byte-lockable data** — the spec rides the codec stack (json‖ + cbor cross-verify).
 - **Extension as data** — a new opcode `SUB` added purely as a spec value runs under `evalSpec`, while `Isa.eval` and the SUB-less spec reject it.

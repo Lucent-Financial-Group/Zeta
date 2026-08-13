@@ -32,20 +32,24 @@
 **It works, live, end-to-end.** You logged in via **our** device flow (Codex-independent) and a real call returned **"pong"** — token-by-token over your ChatGPT subscription, **no API key**. The live run corrected several shapes the docs got wrong; this PR locks in reality.
 
 ### `openai-auth.ts` — device flow (confirmed live)
+
 - endpoints are under **`/api/accounts`** (a bare `/deviceauth` 405'd an HTML page)
 - `pollDevice` on a 200 gets `{ status:"success", authorization_code, code_verifier }` (server-generated PKCE) — it now **exchanges** that code for tokens
 - `account_id` comes from the **id_token JWT** claim `https://api.openai.com/auth`
 - verification URL = `auth.openai.com/codex/device`
 
 ### `codex-oauth.ts` — subscription responses (confirmed live)
+
 - endpoint is **`/backend-api/codex/responses`** (not `/responses` — 404s)
 - model **`gpt-5.5`** (gpt-5.2/codex/etc. rejected for a ChatGPT account); headers **`originator: codex_cli_rs`** + **`OpenAI-Beta: responses=experimental`** gate the models; body requires **`stream:true` AND `store:false`**
 - the endpoint is **streaming-only (SSE)** — exactly the token-by-token `IChatCompleter` path you wanted. `assembleSse` concatenates `response.output_text.delta` events. (True `AsyncIterable` streaming is the next slice — needs a streaming transport method; this buffers + parses, which works.)
 
 ## Tests (35 model-backend green, build 0/0)
+
 device poll→exchange (sequenced fake) · startDeviceFlow under `/api/accounts` · `codex/responses` request shape (originator/beta headers, stream:true store:false, gpt-5.5) · SSE delta assembly → "pong" · clean errors. Token stored in **our** `~/.config/zeta/auth/openai.json`.
 
 ## The full live chain, proven
+
 our device login → tokens in our store → subscription → `codex/responses` (streaming) → **"pong"**. No API key, account login, token-by-token.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

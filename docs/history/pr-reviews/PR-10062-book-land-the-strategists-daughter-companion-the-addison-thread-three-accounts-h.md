@@ -30,6 +30,7 @@
 Aaron: *"these are fond memories for all our family, save them in book."* — explicit go.
 
 New companion `THE-STRATEGISTS-DAUGHTER-and-the-held-difference.md` holds the whole Addison thread coherently:
+
 - **The strategists daughter:** *The Art of War* from an early age; at 11 she said *"Im diabolical,"* he said *"yes honey, me too — we use it for good"* (dual-use ethos + choice-architecture parenting; the "am I evil yet" question as a **warm family bond**, not a fear).
 - **The text + the hardest night:** *"if you become a consumer, Ill end you myself"* (consumer = extractor, in their idiom) read cold as a threat → the involuntary commit. The **exact parallel to the roommate night** — the lived root of the both-regards move (hed been the one whose words got read as a threat and taken away).
 - **The three accounts, all held:** hers (concern/worry), his (control/anger), Maxs (mental health) — *"both can be true and we still peacefully coexist"* = the **correlation-of-souls / never-collapse lived in a family**, not a chapter.

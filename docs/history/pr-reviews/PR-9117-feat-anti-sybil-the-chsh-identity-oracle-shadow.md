@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - Converts Addendum 4 into a working instrument: `chshS` (pairwise CHSH from randomized-settings probe streams), `chshSybil` (union-find over |S| > 2 convictions — one-way inference stated: convicts sameness, never acquits), `coordinationBandwidth` (f̂ = (|S|−2)/2, the geo model's estimator as API).
 - 7 new tests, 15/15 suite green, 0 warnings: completeness (S=4 conviction), soundness (independent seeds), the LHV edge exactly at S=2, the mixture tier S=2+2f\* with estimator round-trip, 3-claim union-find, bandwidth ladder, and a drift lock pinning the inlined formula to `BellTest.chshOf`.
 

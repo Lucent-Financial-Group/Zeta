@@ -30,15 +30,19 @@
 Re-authors the live intent of the now-closed **#9833** against current `main` (that PR was superseded — main migrated the installer `.js`→`.ts` and restructured `gate.yml`).
 
 ## The gap
+
 `build-and-test` (the required floor) runs `dotnet test` but **not** `bun test`. So the **271-test** TypeScript installer suite was running **nowhere** in CI:
+
 - `credential-binding-model`, `wifi-esp-to-nm`, `zeta-creds-*` (crypto/envelope/manifest/persist-restore/picker), `zeta-hardware-detect`, `key-refusal-falsifier`, …
 
 These are the **USB/zflash first-install + self-heal provisioning** tests (`docs/trajectories/usb-zflash-installer/`). A regression in them is a regression in getting a node onto metal.
 
 ## The approach
+
 Per the **2026-08-01 "THE FLIP"** architecture (`gate-required` note), blocking-floor additions are a treaty-amendment consent path — so this is a **separate, targeted, path-filtered workflow** (same pattern as `k8s-argocd-health-test.yml` / `keyring-dst1000.yml`), **not** an entry in `gate-required needs:`. It runs on every PR/push touching `installer/**` and gives its own red X; it does not block unrelated lanes.
 
 ## Verification
+
 - `bun test src/Core.TypeScript/installer/` → **271 pass, 0 fail** (11 files) locally.
 - `actionlint` clean; YAML valid.
 

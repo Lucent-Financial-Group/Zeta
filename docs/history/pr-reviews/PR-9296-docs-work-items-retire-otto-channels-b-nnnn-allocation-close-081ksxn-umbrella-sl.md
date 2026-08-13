@@ -28,12 +28,14 @@
 ## Description
 
 ## Summary
+
 - Add `.claude/rules/workitems-mint-with-zetaid.md` — agents mint via `new-workitem.ts`, not B-NNNN scan
 - `AGENTS.md` + `backlog/README.md` — same discipline for all harnesses
 - Close umbrella row `081KSXN940008QG0R002FWR9B2` — all acceptance criteria met (#9214–#9291)
 - Regenerate `docs/BACKLOG.md`
 
 ## Test plan
+
 - [x] `markdownlint` on changed docs
 - [x] `bun src/Core.TypeScript/backlog/generate-index.ts --check`
 - [ ] CI gate green

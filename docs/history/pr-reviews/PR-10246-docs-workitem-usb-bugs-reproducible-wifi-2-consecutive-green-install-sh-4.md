@@ -40,6 +40,7 @@ success  wifi ESP acceptance            <- 2nd consecutive
 **Bug A** has now reported `phase 2 SUCCESS` on **four consecutive** dispatch runs. Each is independent evidence that `install.sh` completed, because the provisioning contract (#10196) *fails* the scenario whenever install.sh exhausts its retries.
 
 ## CI side is done for both
+
 **Neither is moved to `done`** — each still requires one clean boot on Aaron's hardware, and closing on CI alone would be exactly the false-confidence pattern this session spent the day removing.
 
 Recorded as **one** update with the complete two-run picture rather than churning the workitems after each run.

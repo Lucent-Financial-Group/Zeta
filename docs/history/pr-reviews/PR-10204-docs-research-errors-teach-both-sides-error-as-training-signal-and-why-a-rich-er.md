@@ -30,12 +30,15 @@
 Ferries Aaron's streamed design direction (four messages, one session). Docs-only; every cited in-repo path verified; markdownlint clean.
 
 ## The extension that matters
+
 "Errors should teach" started as a CLI vibe (shipped in #10203). Aaron extended it to **every CLI and transport protocol**, coupled to the **online-learning BNN** Lumen is building. The key move: **the "user" who learns from an error need not be human.** Once the receiver is an online-learning agent, an error stops being a status report and becomes a **training example** — a labeled negative with the direction of the correction attached. That makes error design information-theoretic, not cosmetic.
 
 **The information content of an error is the distinction the receiver could not draw for itself** — not a restatement of what it already observed. Worked example: `tsc` cannot separate "not declared" from "declared but not installed"; that missing bit fooled two reviewers into thinking CI was red when it was green.
 
 ## The thermodynamic half (why this is physics, not ergonomics)
+
 An error forces the receiver to either:
+
 - **discard and redo** → erasure → the hard **Landauer** `kT ln 2` floor (already modelled in `ComputeReceipt.fs` as `DeltaJ` / `DeltaU` / `LandauerRatio`), or
 - **retract and re-emit** → a **−1** → `+w`/`−w` annihilate in `consolidate`, but per the honesty note already carved in `WSet.fs` the past record is immutable and only its *reading* is corrected. **Nothing is erased**, so no Landauer floor is paid for the correction.
 
@@ -44,6 +47,7 @@ An error forces the receiver to either:
 A bare `exit 2` leaves the receiver nothing to retract *with*, so it discards the whole attempt. A teaching error names the dimension, so one targeted `−1` suffices — same correction, one erased bit instead of thousands. "Errors are costly" is literal: the unit is **heat**.
 
 ## The loop
+
 ```
 teaching error → −1 retraction (no erasure) → generator update → future emissions
                                                                  corrected at the source
@@ -51,6 +55,7 @@ teaching error → −1 retraction (no erasure) → generator update → future 
 The easy-to-miss arrow: the retraction updates the **generator function**, and since *the generator IS the ECC*, that repairs future emissions at the root rather than patching outputs one at a time. **Mix-as-data is the enabling condition** — the generator is a `DynamicValue`, which is what makes it addressable by a Z-set delta at all.
 
 ## Two open questions closed, honestly
+
 - **Metering units → answered: heat.** What remains open is narrower: the exchange rate from avoided retries to avoided joules, so the budget is *enforceable* rather than merely observable.
 - **Adversarial teaching → settled inbound** by trust-weighting (a bad teacher moves your posterior less and loses `trustBand` on the evidence — endogenous defence, no separate anti-abuse mechanism). **Still open outbound:** a sender cannot condition on trust it hasn't yet earned about a stranger.
 

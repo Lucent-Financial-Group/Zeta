@@ -30,6 +30,7 @@
 Aaron's greenlight + coinage (ferried verbatim): *"it's like going to the salon and the telemetry is gossip about all the other participants of the mesh… regular telemetry otel kind of stuff but also gossip about kept/unkept self claims."* The joke is the literal anchor — Demers et al. 1987 named gossip protocols after rumor spreading.
 
 **`GossipTelemetry.fs`** — one salon, two payloads:
+
 - **Crossings** (OTel half): third-party link RTTs — closes `ReticulumBusMeter`'s documented epistemic limit.
 - **KeptClaims** (Zeta half): +x/−x self-declarations as neutral facts — who said what, contradictions kept, verdicts oracle-side (§11).
 

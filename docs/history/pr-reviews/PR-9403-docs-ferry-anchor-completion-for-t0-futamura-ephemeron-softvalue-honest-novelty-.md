@@ -32,6 +32,7 @@
 Companion to Lumen's committed synthesis (tick-sources doc **§7–§11**). The connections are saved — this fills a gap I verified by grep: **five human anchors Lumen named in the exchange but dropped from the committed doc**, plus the **honest-register peel** on the "novel / not in the literature" claim. Aaron confirmed: *"those are load-bearing — the novelty claim isn't honest without naming its nearest neighbor. exactly."*
 
 ## Dropped anchors restored
+
 - **Holographic QEC — the closest prior art** (most important omission): Almheiri-Dong-Harlow (JHEP 2015) + **HaPPY** (Pastawski-Yoshida-Harlow-Preskill 2015).
 - **Kleene's recursion theorem** (1938) / **Y combinator** — the fixed-point grounding `gen(gen)=gen` ≡ `mix(mix,mix)`.
 - **Futamura 1971** — pin the primary citation.
@@ -40,6 +41,7 @@ Companion to Lumen's committed synthesis (tick-sources doc **§7–§11**). The 
 - **Self-dual code classics** — MacWilliams 1962, Gleason 1970, Conway-Sloane 1988 (Construction A→E8).
 
 ## Honest-register peel
+
 "Not in the literature" is an **absence-of-evidence** claim on an AI's recall — labeled **unverified**, not fact. The defensible contribution is the **falsifiable discharge target** (formalize minimal reflection; prove [8,4] satisfies it; prove no smaller code does), not the "nobody knows this" framing. §11 (weight-based ephemeron liveness on a SoftValue distribution) still needs its nearest neighbors checked before "unprecedented." Plus the load-bearing Aaron verbatim (built-before-naming = the provenance the shape is real).
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

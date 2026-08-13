@@ -28,12 +28,14 @@
 ## Description
 
 ## Summary
+
 - Adds a fixed-point temperature readout treaty for heat, uncertainty, and pressure across F#, TypeScript, Q#, and the Bayesian plugin.
 - Records attention as ordering pressure without letting it raise thermal cost.
 - Adds Bayesian Gaussian uncertainty projection tests and Dark Hall/Q# treaty checks.
 - Fixes current-main C# style gate drift in the distributed cron abstraction files.
 
 ## Validation
+
 - bun test src/Core.TypeScript/darkhall-ui/darkhall-room.test.ts src/Core.QSharp.ReferenceOracle/heat-signals.test.ts
 - dotnet test tests/Bayesian.Tests/Bayesian.Tests.fsproj -c Release --filter FullyQualifiedName~BayesianTemperatureTests
 - dotnet test tests/Tests.FSharp/Tests.FSharp.fsproj -c Release --filter FullyQualifiedName~QSharpOracleTests|FullyQualifiedName~DarkHallRoomTranscriptTests

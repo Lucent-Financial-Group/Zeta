@@ -34,15 +34,18 @@ Aaron 2026-07-04: *"build slice 3 — the DagFs/zetadb execution binding."* Bind
 **`ZetaStore` — the closed capability surface, executable:** fs = DagFs (content-addressed tree: `resolve`/`link`/`editLocal`/`editEverywhere`/`unlink`) + db = zetadb (append-only **Z-set** log: `append`/`query`/`retract`). `inMemoryZetaStore` is the DST-friendly default + test double; a real DagFs/zetadb backend is the same interface, different substrate. Reuses `ace/store.ts` `contentHash`.
 
 **`executeToolCall(store, call)`:**
+
 - **dispatches by domain** (fs/db); an off-surface name (not `fs_*`/`db_*`) is **refused, not run** — the closure holds at the door *and* at dispatch (a smuggled `bash_run` never reaches the store).
 - **the call IS an IR node**: every executed call is appended as a `tool_call` event first, so the store's history contains what shaped it (replayable, retractable).
 - **a wrong call is retracted, not patched**: db events carry Z-set weights; `retract` appends −1; the `log` view folds to net-present events. `editLocal` is a COW fork; `editEverywhere` follows every path sharing the node.
 - **never throws** — bad args → clean error; `toFunctionCallOutput` wraps result/error into the `function_call_output` fed back.
 
 ## Tests (8, 70 model-backend green — build 0/0)
+
 fs link→resolve round-trip · missing path → null · editLocal COW vs editEverywhere shared-follow · unlink · db_append→id, query log/count fold, retract removes from fold · the call recorded as a `tool_call` IR node · off-surface `bash_run` refused (nothing recorded) · bad args → clean error · feed-back wrapping.
 
 ## The chain is complete end to end
+
 closed surface (1) → declared to the model → model calls it → parsed to `ToolCall` (2, live-confirmed) → **executed over DagFs/zetadb (3)** → `function_call_output` fed back. **Slice 4** (wire into `respondStream`/`chat` as an execute-and-continue loop; the real F# DagFs/zetadb backend behind the same `ZetaStore`) is next.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

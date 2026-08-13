@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - Grounds Addison's cloning economics (`project-genesis-foundation §15`) in the no-cloning theorem *exactly*: it forbids copying an **unknown** state, so **you can self-clone** (you hold your own description — permitted), **others can't clone you** (your frost is unknown to them — forbidden by the theorem, so consent IS the physics), and **self-clones diverge** (distinct hidden state = decoherence into distinct identities, Leibniz). Maps her Independent Clone (free divergence → new identity) and Linked Clone/Hive (deliberate partial-indiscernibility on a shared region).
 - Anchors: Wootters–Zurek/Dieks 1982, Zurek decoherence, Leibniz 1686, Everett 1957, Parfit 1984.
 

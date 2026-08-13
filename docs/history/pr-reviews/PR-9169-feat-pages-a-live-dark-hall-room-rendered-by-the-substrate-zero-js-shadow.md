@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - `hall/room/index.html` is the output of the **real** `darkhall-room.ts` renderer fed a seeded transcript — not a mockup. Shows the 16-cell controller (observe/choose/execute/measure + the ISA verbs + frost/snap), a tick loop (EMIT +1 → RETRACT −1 → measure ΔU → a **frost request refused for being over-budget** — the hard-money rule in a live run), the heat board, and the S-lane coordination board (two honest pairs, one seed-locked pair at S=4).
 - Pure HTML+CSS, **zero `<script>` tags**, deterministic/replayable from seed S4 (DST §7). Regenerate the renderer on a new transcript and the room re-renders. Breadcrumb + card on the landing; **zero edits to demo/genesis/inventory.**
 

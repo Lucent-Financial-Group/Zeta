@@ -32,9 +32,11 @@ Same demonstrable-core treatment as the companion §3 (#10035), applied to the *
 The moats claimed content is **verification precision** (cross-language byte-lock + formal methods). This session shipped a concrete, recent, load-bearing instance of exactly that — so it belongs in the **Thesis** receipts, not the Conjecture.
 
 ## New receipt (matching the terse, defensible-under-diligence format)
+
 The **mutual-verification instrument (the guardian trust core)** — both parties re-run the *same deterministic instrument* on a shared open causal record; a covert channel leaves a fingerprint neither can hide. **Conviction-margin monotonicity Z3-proven**; whole-oracle subset property **FsCheck-tested**; **adversarially verified through four independent reviewers**; a **runnable demonstration** (on *modeled* telemetry) + a **real-data adapter**.
 
 ## Honest bound kept in-line (no inflation)
+
 **Register-2 for the verification *primitive* only**; the full guardian (hardware attestation, real EMS integration) stays **Conjecture**; the demo is on **modeled** telemetry. Cross-links the diligence-reader explainer.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

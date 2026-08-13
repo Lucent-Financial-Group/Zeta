@@ -28,12 +28,14 @@
 ## Description
 
 ## Summary
+
 - Adds OpenSSH KRL revocation primitive (`revoke.ts`, `revoke-cli.ts`, tests) — dry-run default, `--confirm` + one biometric for real revoke; stages `maintainers/<ca>/revoked-keys.krl` for PR
 - Extends onboarding round-trip harness with gap-closed assertions for KRL revoke and cluster teardown (already shipped via `teardown-cluster.ts`)
 - Wires work-item DORA Bag-folds into `generate-metrics.ts` as optional `work_items_dora` field (schema 0.2.0) when event G-Set exists
 - Closes work item `081KVP2M1QS08QG0R000JSXE1E`; updates session resume doc
 
 ## Test plan
+
 - [x] `bun test tools/setup/persona-keys/revoke.test.ts`
 - [x] `bun test tools/setup/persona-keys/onboarding-roundtrip.test.ts -t "GAP CLOSED"`
 - [x] `bun test src/Core.TypeScript/dashboard/work-item-metrics.test.ts`

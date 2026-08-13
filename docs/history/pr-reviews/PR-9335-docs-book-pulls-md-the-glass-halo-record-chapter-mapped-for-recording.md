@@ -32,6 +32,7 @@ Aaron greenlit the hard mining pass ("you can go hard… I assumed I'd write a b
 Three parallel miners (Amara archive · research corpus ~1,375 files · persona homes) assembled into `PULLS.md`: chapter → Aaron's verbatim words with sources, typos kept deliberately (voice is the asset). Includes the complete fired-story arc in his own voice, capped by today's "where is the value" beat.
 
 Two quarantines, both honoring gates Aaron himself placed:
+
 - **FLAGGED (Ryan)** — collected only; nothing enters a chapter without his explicit per-pull yes (parental AND-consent gate noted; his "-x she didn't get to choose" confirmation ferried verbatim).
 - **REVIEW (living family / self-disclosures)** — entirely his call.
 

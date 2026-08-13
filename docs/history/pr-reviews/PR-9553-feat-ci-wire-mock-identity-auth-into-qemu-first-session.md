@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - Wire the ADR mock device-code path into first-session via a provider-shaped `identity-auth-provider` seam (`ZETA_IDENTITY_AUTH_MODE=mock|skip|live`).
 - QEMU first-session CI service now sets `mock` so `--dry-run` still exercises device-code UX and emits `identity-auth-mock-*` serial markers (distinct from skip).
 - Document that `gh` is a temporary foothold; successor is Zeta IdP + ZetaDB/DagFs as git backend/client replacement.
 
 ## Test plan
+
 - [x] `bun test` on identity-auth-provider, qemu-first-session-phase3, first-session-run, serial-markers
 - [ ] CI green on this PR
 - [ ] Confirm QEMU phase-3 serial (when run) includes `identity-auth-mock-ok` on setup-gh path

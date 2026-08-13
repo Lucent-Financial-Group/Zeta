@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 Closes **081KWN0JKJV** (all three options) and the prevention half of **081KWMY831H**:
 
 1. **Option 1 (cleanup)** — tracked `scripts/hooks/commit-msg` strips the known Manus epilogue and refuses residual signatures on the subject.
@@ -37,6 +38,7 @@ Closes **081KWN0JKJV** (all three options) and the prevention half of **081KWMY8
 CI backstop: `lint-no-manus-commit-leak.ts` on structural hygiene scans PR commit subjects vs base.
 
 ## Test plan
+
 - [x] Hook strips glued wrapper subject (`feat: hello`)
 - [x] Hook allows documenting `__manus_ec` in the body
 - [x] `bun test sanitize-manus-commit-msg.test.ts`

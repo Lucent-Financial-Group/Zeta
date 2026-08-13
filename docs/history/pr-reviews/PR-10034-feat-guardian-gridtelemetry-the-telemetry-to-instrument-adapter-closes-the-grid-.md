@@ -30,15 +30,19 @@
 The last `[want]` in the grid-trust explainer: the mapping from a grids telemetry to the decorrelation instruments inputs. `GridTelemetry` is that adapter — and its real content is making the **honest requirement explicit**, which is why it was `[want]`, not free.
 
 ## Schema + adapter
+
 Each grid action carries `(ActionId, Basis, Touched)`. `toDag` / `toObservables` / `actionIds` turn a `GridAction list` into the `(causal DAG, per-action observables, action set)` `DecorrelationExcessFusion` consumes.
 
 ## The load-bearing requirement (the real deliverable)
+
 `Basis` **MUST be declared logical causality** — what each action was *based on*, the sequence-of-events / event provenance an EMS emits — **NEVER a wall-clock timestamp.** Local time cant define the shared causal order without making honest nodes fold different evidence and diverge (`local-time-never-enters-the-shared-fold`, §13). A grid that emits only timestamps **cannot be metered soundly**, and `causalCoverage` says so out loud (a no-provenance stream scores `0.0`). `wellFormed` rejects duplicate/empty `ActionId`s (which would silently drop actions).
 
 ## Scope
+
 The adapter is `[proven]` (pure, total, tested, feeds the shipped instrument). The remaining `[want]` is narrow and per-vendor: binding a *specific* EMS wire format (DNP3 / IEC 61850 SOE / ICCP) to this schema — a deserialization detail, not a soundness question.
 
 ## Tests (8; Core 0-warning)
+
 Adapter extraction; `causalCoverage` (1.0 / 0.0 / nan); `wellFormed` (dup + empty rejected); and **end-to-end** — the grid-trust demo expressed as `GridAction` **telemetry**, run *through* the adapter into the instrument, still clears independent operators and flags a hidden lockstep channel. Explainer limit #3 moved `[want]` → `[proven-in-part]`.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

@@ -76,6 +76,7 @@ This release fixes 3 high severity and 9 moderate severity security vulnerabilit
 ## 3.1.6
 
 ## What's Changed
+
 * Add several known unsafe 'gadgets' to the disallow list by @​AArnott in https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2270
 
 
@@ -84,6 +85,7 @@ This release fixes 3 high severity and 9 moderate severity security vulnerabilit
 ## 3.1.5
 
 ## What's Changed
+
 * Remove unneeded GetTypeInfo() calls by @​Bykiev in https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2206
 * Use 'Write' instead of 'WriteInt32' for union type keys by @​VictorNicollet in https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2212
 * Fix various disposable issues by @​Bykiev in https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2224
@@ -94,6 +96,7 @@ This release fixes 3 high severity and 9 moderate severity security vulnerabilit
 * Revert DateTimeOffset encoding change by @​AArnott in https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2262
 
 ## New Contributors
+
 * @​Bykiev made their first contribution in https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2206
 * @​VictorNicollet made their first contribution in https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2212
 * @​T0PP1ng made their first contribution in https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2225
@@ -104,12 +107,14 @@ This release fixes 3 high severity and 9 moderate severity security vulnerabilit
 ## 3.1.4
 
 ## What's Changed
+
 * Fix SkipClrVisibilityChecks to notice private fields in base classes by @​AArnott in https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2153
 * Promote analyzers to AnalyzerReleases.Shipped.md by @​hanachiru in https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2169
 * Add memory size check to `GetMemoryCheckResult` by @​AArnott in https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2172
 * AccessModifier was added to generated code. by @​Nirklav in https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2185
 
 ## New Contributors
+
 * @​hanachiru made their first contribution in https://github.com/MessagePack-CSharp/MessagePack-CSharp/pull/2169
 
 **Full Changelog**: https://github.com/MessagePack-CSharp/MessagePack-CSharp/compare/v3.1.3...v3.1.4
@@ -131,6 +136,7 @@ Dependabot will resolve any conflicts with this PR as long as you don't alter it
 <br />
 
 You can trigger Dependabot actions by commenting on this PR:
+
 - `@dependabot rebase` will rebase this PR
 - `@dependabot recreate` will recreate this PR, overwriting any edits that have been made to it
 - `@dependabot show <dependency name> ignore conditions` will show all of the ignore conditions of the specified dependency
@@ -139,6 +145,7 @@ You can trigger Dependabot actions by commenting on this PR:
 - `@dependabot ignore <dependency name>` will close this group update PR and stop Dependabot creating any more for the specific dependency (unless you unignore this specific dependency or upgrade to it yourself)
 - `@dependabot unignore <dependency name>` will remove all of the ignore conditions of the specified dependency
 - `@dependabot unignore <dependency name> <ignore condition>` will remove the ignore condition of the specified dependency and ignore conditions
+
 You can disable automated security fix PRs for this repo from the [Security Alerts page](https://github.com/Lucent-Financial-Group/Zeta/network/alerts).
 
 </details>

@@ -28,12 +28,14 @@
 ## Description
 
 ## Summary
+
 - Record Aaron 2026-07-08 S6 decisions in the co-design draft + RESUME.
 - After GitHub: **local is default**; Claude/Codex/Gemini appear only after **Show optional cloud helpers**.
 - Plain-language copy; gh framed as first target (not forever).
 - Physical boot / paper review still human-gated.
 
 ## Test plan
+
 - [x] `bun test src/Core.TypeScript/observe/first-session` (+ grammar/observe related)
 - [x] `bun run typecheck`
 

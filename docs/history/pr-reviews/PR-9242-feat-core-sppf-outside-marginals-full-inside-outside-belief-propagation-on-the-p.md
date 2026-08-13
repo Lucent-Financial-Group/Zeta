@@ -33,11 +33,13 @@ SSAS-framed. Completes the exact, self-contained BP over the parse forest: `Sppf
 - **`Sppf.marginals`** — `inside·outside / inside(root)` per node: the **marginal mass through each sub-parse** = the SSAS **`NodeDistribution`** weight / **`PredictProbability`** share.
 
 ## Proofs (11/11, +3)
+
 For `id+id+id` under `E→E+E|id` (2 parses): **root = 1.0**, first `id` **(E,0,1) = 1.0** (in every parse), left/right `id+id` **(E,0,3)/(E,2,5) = 0.5** each (in half); an unambiguous grammar's sole-parse nodes = 1.0; no parse ⇒ all zero.
 
 **So inside–outside — the exact `PredictProbability` over the decision forest — is complete and self-contained.** `Zeta.Bayesian.FactorGraph`/`Ep` stays reserved for the loopy/approximate/**emotional-propagation** extension.
 
 ## Next (resume)
+
 bridge marginals → `ParseSoft` (SoftValue over parses); the **production-weight source** (EM via the inside–outside expected counts, or set); then loopy/EP + emotional propagation (math-team); parses → ISA.
 
 Anchors: Baker / Lari–Young (inside–outside = BP); Billot–Lang (SPPF); SSAS `NodeDistribution`; Pearl (BP); ZetaParse (Amara).

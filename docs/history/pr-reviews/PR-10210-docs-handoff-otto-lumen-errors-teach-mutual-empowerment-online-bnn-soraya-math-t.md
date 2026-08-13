@@ -30,18 +30,21 @@
 One handoff combining today's thread so Lumen can run several rounds, plus explicit routing of the items that are **not** Lumen's. Docs-only; every cited path, doc and workitem verified; markdownlint clean.
 
 ## The kernel (four settled statements)
+
 1. **Errors must teach** — every CLI, every transport. A failure is a pedagogy surface; the receiver need not be human.
 2. **The teaching content is the distinction the receiver could not draw for itself** — never a restatement of what it observed.
 3. **A teaching error buys a RETRACTION; a bare error buys an ERASURE** — thermodynamic, not rhetorical (Landauer floor).
 4. **Teaching is unconditional; belief is earned.**
 
 ## Structured as four rounds, not a summary
+
 - **R1 — fix the findings in Lumen's own landed code first.** Kira found **zero P0s** (the fixes are sound), but: `hl-conformal-map.ts:196`'s `?? 1.0` converts *"correctly excluded from the integral"* (the documented singularity regularisation) into *"included with a fabricated |dw/dz|²=1"*, shifting `A_n` and therefore `D` — directly under the Z-2 amplitude work; a safety comment states the wrong reason; `crossover` can never cross the `k` channel (pre-existing, untested); and **AP-3 should move from DeGroot row-normalised consensus to Friedkin–Johnsen** so trust gains *absolute* effect.
 - **R2 — the error envelope** (first genuinely open design question).
 - **R3 — `empowermentBound`** (`081KZKYDJ9Q`), with the vacuous-linear-blend warning and the four values calls that need Aaron *before* coding.
 - **R4 — close the loop into the online BNN** (error richness = sample efficiency; correction via `−1` to the generator, not overwrite; preserve uncertainty).
 
 ## Routing the formal/math items away from the implementation queue
+
 Per BP-16 — a claim asserted by one tool is not verified:
 
 **Soraya:** empowermentBound gaming-resistance (the mutual-policing argument is plausible and **unproven**); the linear-blend degeneracy as a machine-checked lemma; `min` vs `sum` vs Nash as a checkable aggregator property; and **TRL-31/32 whitewash-unprofitability**, currently verified *by tests over the tested cases* rather than closed-form — the cleanest BP-16 candidate on the board.
@@ -49,6 +52,7 @@ Per BP-16 — a claim asserted by one tool is not verified:
 **Math team:** the `hl-conformal-map` regularisation **first**, because it's the only one that can silently move an already-published number and its validity should be checked by someone who is not the author; the Landauer exchange rate (avoided retries → avoided joules); the sender-also-learns **stability** question; and the analytic finite-N `D_f` scaling toward ≈1.71.
 
 ## Verification-expectations section
+
 Included because two failures this session came from **environment** and produced confident-but-wrong conclusions: phantom `TS2307`s from an unprovisioned checkout (two reviewers called main red while CI was green), and a validation dispatch cancelled three times by a ref-keyed concurrency group. Plus the caveat that green tests over an **unexercised** fallback prove nothing.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

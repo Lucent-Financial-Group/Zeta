@@ -30,6 +30,7 @@
 Accuracy pass on `docs/ZETA-CORE-TECHNOLOGY-FOR-MAX.md` (+ one companion research doc), consolidating **Soraya's formal-verification review** and a **general-purpose code-accuracy review**. Every fact re-verified against source before editing.
 
 ## Hard errors (Max would catch on grep)
+
 - **Layer count** "seven"/"ten" → **eleven**, consistently.
 - **Layer 9 Z-set merge**: removed the flat-false *"idempotent"* claim. Rewritten as an **abelian group** (commutative, associative, invertible, **not** idempotent — idempotent+invertible forces the trivial group). Added the delivery consequences (out-of-order = commutativity; duplicates = idempotency keys / discipline #6; missed deltas = event-replay + content-addressed snapshots + ECC) and pointed at the idempotent CRDT/G-set join for grow-only state. This also answers Aaron's standing question in-doc.
 - **Layer 2** `classifyS` → **`classifyAnalyticS`** (real name); scoped the clone-gate to the fourcorner shape path and noted the anti-sybil path *reports* the regime (dual-use-neutral), does not gate.
@@ -37,6 +38,7 @@ Accuracy pass on `docs/ZETA-CORE-TECHNOLOGY-FOR-MAX.md` (+ one companion researc
 - **Layer 11 ACE** marked **design-stage / backlog** (only `AceCanonical` exists).
 
 ## Over/under-statement fixes
+
 - "proven" → "conformance-checked"; Layer 3 "provably" → verified-by-TRL-31/32-tests (BP-16 caveat).
 - **Layer 6 Futamura 2nd/3rd were *under*-stated** — `Cogen.fs` (3rd, machine-checked fixpoint) + `MixCogen.fs` realize them **in-domain**; only a fully-general `mix` is future work.
 - Layer 7 `gen(gen)==gen` "guarantee" → **design invariant** (conditional on a deterministic generator); same softening in the unified-BNN companion doc.

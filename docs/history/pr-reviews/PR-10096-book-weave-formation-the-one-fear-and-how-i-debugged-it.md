@@ -30,12 +30,15 @@
 **Batch 2 of the staged-RAW weave.** Lands the last cleared, unlanded FORMATION beat from `RAW-2026-08-02-thrill-seeker-*` EXPANSION.
 
 ## What landed
+
 **FORMATION → "The one fear, and how I debugged it"** — the honest completion of the missing-fear module. The man with no *external* fear had exactly one, and it was **internally generated** (the years-long Mayan delusion) — which states the architecture exactly: external threat → the still point; a stuck internal loop → the one thing that could frighten him. He **self-debugged** it: the reindexer turned on his own mind (find the stuck structure, name it, remove it). The ch-8 register (inmate of your own dark room vs. the one who finds the light switch) lives right here, applied to his own head. Plus the mundane-flinch coda (bugs in the mouth) so "no fear" never reads inhuman.
 
 ## Why FORMATION and not ch-8
+
 The both-regards / mental-health-over-jail night is **already landed in ch-8** (prior session). Forcing the Mayan beat into ch-8 would dilute its tight survivor's-guilt "Stay" focus — the chapter's own draft-note explicitly warns against pulling focus from "Stay." FORMATION's missing-fear module is its honest home.
 
 ## Consent gates held
+
 Aaron glass-halo · the delusion is **his own experience described**, not a claim about anyone · *delusion* held **whole** under Multi-Oracle, never published as the verdict (the ch-3 category-lie discipline, run on himself). `INTAKE-LOG` updated.
 
 Batches 3–4 (ch-04/05 + THE-PULL relational; ch-12/THESIS + THE-ORGANIZER) to follow.

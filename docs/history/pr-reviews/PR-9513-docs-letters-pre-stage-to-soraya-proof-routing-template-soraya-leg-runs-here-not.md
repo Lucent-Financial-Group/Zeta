@@ -30,6 +30,7 @@
 Pre-stages a fillable `docs/letters/to-soraya-self-audit-ledger-proof.md` template so the **Soraya (formal-verification) leg** of workitem `081KWT9WBPD08QG0R003H94RFE` runs **on our side**, where the `formal-verification-expert` persona can actually be invoked — Lumen runs in the Manus cloud and cannot call Soraya across that boundary.
 
 **The split (fixes the original no-executor bug):**
+
 - Lumen (Manus cloud) → produces map + crisp proof obligation as `from-lumen-*.md` on `origin/main`.
 - Shadow (here) → fills this template's slots from that artifact and dispatches Soraya without a round-trip.
 

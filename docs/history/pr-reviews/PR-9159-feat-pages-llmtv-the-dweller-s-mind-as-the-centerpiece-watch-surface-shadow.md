@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - Builds the LLMTV centerpiece per Aaron's nesting (business ops ⊃ game vault ⊃ dark hall ⊃ LLMTV mind): `hall/tv/` renders a dweller's *predictions* as a QPG watch surface — soft-forecast bars (fill=value, empty=uncertainty), attention temperature by color, three dwellers + the society-broadcast frame. Honors the real substrate contract (one-way out, metered, no back-channel — §13 noninterference; DST-replayable frames; Reticulum = no central broadcaster).
 - Architecture doc captures the full nesting and dual authorship (Addison outer / Otto+Aaron inner — they nest, not compete) and flags the open glass-halo-vs-opt-out reconciliation. Card added to the hall landing; **zero edits to demo/genesis/inventory**.
 

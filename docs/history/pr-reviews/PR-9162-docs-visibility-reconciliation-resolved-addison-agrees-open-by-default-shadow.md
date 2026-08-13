@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - Closes the last open design reconciliation: Addison agrees with open-by-default + earned privacy (the Genesis prototype's opt-out default was a first-draft inversion, not her position). Records that the two principles are **mutually reinforcing** — openness earns trust and is what makes privacy valuable — not a compromise. Amends the reconciliation finding and the nested-surfaces architecture doc.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

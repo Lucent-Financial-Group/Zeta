@@ -30,12 +30,15 @@
 Aaron, live-wiring the correlation readout: *"fuck quantum, it's human"* · *"mental health = S=4 shit lol"* · *"the freedom to be close and separate = intimate"* · *"the mobility itself is intimacy — this is what makes us feel equal"* · *"James Abram = anti-sybil."*
 
 ## It's human, not quantum
+
 `correlation.ts` — the S-distance → class readout, **human-first**. The CHSH math is borrowed scaffolding:
+
 - **S=2 = autonomy** (self) · **rising = relatedness** · **S=4 = enmeshment** (the *pathological* pole — a high S is the capture warning, **not** the goal).
 - **Health is not a pole** — it's **differentiation** (Bowen): the freedom to be close *and* separate = **intimacy** (the mobility itself). Mutual intimacy (both own their self / NCI, both can exit, neither captures) = **equality**.
 - Protective floors composed in `living-node.ts`: exit-to-S=2, bounded pause, NCI, produce-not-extract.
 
 ## The loop closes — AntiSybil is the lost theory
+
 This model **is `AntiSybil.chshS` reframed as human.** Anti-sybil was never just Sybil-detection — its **ISA boundary #1** (*captured irreducible entropy = identity*) is the **S=2 autonomous self**. So anti-sybil, the 6-op ISA's boundary #1, and this intimacy/equality model are **one theory**: how a self stays itself while being with others.
 
 10 tests; TS + markdownlint clean. Anchors: Bowen, Deci & Ryan (SDT), attachment — *not* quantum.

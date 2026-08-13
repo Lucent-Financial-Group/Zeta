@@ -30,11 +30,13 @@
 The code (`YinYangEnsemble.fs:159-173`) mandates *"keep the caveat attached wherever this number goes"* and names where it leaked. Soraya's 2026-08-01 audit patched FACTORY-RESUME, FROZEN-CORE (Z-3/Z-5 demotions), the void-discharges quarantine, and the drunk-session letter — but **three research docs still carried ρ_T = 1/(3√2) bare as 'the Tsirelson threshold'**, presenting a design-choice number as a physical bound. Aaron flagged the feeling ("Tsirelson on rhoCount feels wrong") and was reading one of these.
 
 ## Patched
+
 - `the-egg-bus-delay-and-distributed-consciousness.md` — the site Aaron read.
 - `rhocount-rhoproxy-independence.md`.
 - `2026-07-16-austrian-economics-money-velocity-and-the-rho-formula.md` — **worst offender**: listed ρ* = 1/(3√2) under *"Quantum mechanics (Tsirelson)"* as QM-derived. Corrected to *"Condorcet ensemble regime (NOT quantum mechanics)"* + caveat.
 
 ## The caveat (matching the code)
+
 `1/(3√2)` is **not** the Tsirelson bound (that is `S ≤ 2√2` on the CHSH correlator). It is the image of `S = 2√2` under the *freely-chosen* linear map `ρ = S/12` (`ρ* = 1/3 ↔ S = 4`) — homoiconic, not derived. The genuine phase boundary underneath is **ρ* = 1/3** (proven Condorcet collapse limit); **ρ_T = ρ*/√2** is a chosen √2 safety-margin before it.
 
 Docs-only; no thesis rewritten — caveat added additively.

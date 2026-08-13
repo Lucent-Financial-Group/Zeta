@@ -30,9 +30,11 @@
 Follow-up #3 to the DBSP consumer (#9129): add a **non-linear** operator, `DbspOp.Distinct` (the DBSP `H` — incremental set-semantics distinct via `ZSet.distinctIncremental`).
 
 ## Why it's the meatier proof
+
 Unlike the linear `Filter`/`Rekey`/`Relay`, `Distinct` is **stateful**: the cell holds its integrated *input* (`InInt`), emits only boundary-crossing (0↔positive) deltas, and advances `InInt += delta`. It's still a pure function of `(cell, delta)`, so the scheduler's noninterference / DoP-invariance guarantees carry over unchanged — now with a cell that **carries state through the ferry path**.
 
 ## Tests (2 new, 6 on the module)
+
 - **incremental distinct == batch distinct** of the integrated input, with a retraction crossing a key's count back to 0 (key 2 vanishes);
 - distinct inside a `relay → distinct → sink` graph is **DoP-invariant** (`run(1)==run(4)`) and equals `distinct(total)`.
 

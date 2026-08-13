@@ -32,15 +32,18 @@ You (2026-07-02): *we want cloud events/debezium envelopes too … one graph, ma
 The other face of the envelope shape: the parity wrapper (#9187) closes non-native scalars; this is the **metadata-head ⊕ payload** frame that frontmatter and the standard event envelopes share. An event is just a value tree with a standard header, so it **rides the whole codec stack** (json/cbor/yaml/asn1 + parity) for free — no new codec, a shape on the port.
 
 ## Landed
+
 - **CloudEvents (CNCF 1.0):** `cloudEvent` constructor + `validateCloudEvent` (required attrs present + String-typed; unknown-attr passthrough).
 - **Debezium** (before/after/op/source) with the distinctive Zeta bridge — **a CDC `op` is a Z-set weight**: create/read assert the after-row (+1), delete retracts the before-row (−1), update is retract-then-assert (−1 then +1, the *correction*, not a duplicate). `debeziumToZSet` folds an envelope straight into DBSP Z-set deltas.
 
 The metadata head is a **graph**: source/subject/causation are **ZetaId** references (doctrine §8 — the universal pointer, inside + outside the superdeterministic Markov boundary).
 
 ## Proofs (6/6)
+
 CloudEvents build + validate (accept well-formed, reject + name a missing required attr); Debezium op→Z-set weights incl. update nets −1 before / +1 after; unknown/missing op → clean `Error`; a CloudEvent **and** a Debezium tree cross-verify identically through parity-json / cbor / parity-asn1.
 
 ## Both slices tracked
+
 Event envelopes landed here; **KDL** (the delayed half) is the next pickup, recorded in the new crash-safe resume `docs/trajectories/value-tree-codecs/RESUME.md` (the whole codec line: #9184/#9185/#9187/#9189/#9193 + this).
 
 Anchors: CloudEvents (CNCF 1.0); Debezium (CDC); Z-set/DBSP (Budiu et al.).

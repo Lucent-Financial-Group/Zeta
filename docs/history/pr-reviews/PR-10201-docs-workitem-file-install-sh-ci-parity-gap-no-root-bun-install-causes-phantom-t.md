@@ -30,16 +30,19 @@
 Found while re-running `install.sh` locally to verify its idempotency (**it passed** — exit 0 on an already-provisioned machine, 4 agent cells re-provisioned cleanly). Workitem only; no code changed.
 
 ## The gap (verified)
+
 `install.sh` **never runs a root `bun install`** — no non-`--global` `bun install` anywhere under `tools/setup/`. So devDependencies stay uninstalled. CI's `lint (TS)` job installs them **itself**, as a separate step.
 
 A dev who runs `install.sh` therefore gets phantom `TS2307: Cannot find module` errors for every devDependency — errors that **do not exist in CI** — while `install.sh` reports success.
 
 ## Why it's worth a row: it corrupts review conclusions
+
 Today, **two independent reviewers (Otto and Kira) both concluded "lint (TS) is red on main"** from a phantom `Cannot find module 'playwright'`, while CI on the same commit was **green**. `playwright` is correctly declared in `devDependencies` *and* present in `bun.lock` — it was simply never installed locally. A single `bun install` took local errors to **0, exactly matching CI**. I additionally mis-routed the non-bug to the browser-node owner, who had nothing to fix.
 
 The cost isn't inconvenience — it's **misdiagnosis**, the expensive kind, because a phantom error looks exactly like a finding.
 
 ## Not fixing unilaterally
+
 `install.sh` is consumed three ways (dev laptops, CI runners, devcontainers) per **GOVERNANCE §24**, and `--frozen-lockfile` would turn a stale lockfile into a hard install failure for *every* consumer. That's the install-script owner's call.
 
 **Recommended minimum:** a lint preflight that fails with "run `bun install` first" instead of emitting TS2307s that masquerade as type errors.

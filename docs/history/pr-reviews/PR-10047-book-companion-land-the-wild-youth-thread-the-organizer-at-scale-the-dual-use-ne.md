@@ -36,6 +36,7 @@ The last un-landed thread. New companion **THE-ORGANIZER-AT-SCALE**, unified und
 - **The studied one** — dozens mapped you with personality tests *before the internet* (the reverse-humbling; the seeker who was the specimen).
 
 ## Consent held exactly
+
 Your own memoir; **no schools/cities/names/methods**; victims abstract; legal status as you state (expunged/reduced/no-convictions); mother consented (name out); not fused into the substrate (§33). Ties: dual-use = ch-3 + the builder loop; self-incrimination = `THE-MINUS-ONE` (the shadow held, not exiled). INTAKE-LOG / OUTLINE / FORMATION-note updated.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

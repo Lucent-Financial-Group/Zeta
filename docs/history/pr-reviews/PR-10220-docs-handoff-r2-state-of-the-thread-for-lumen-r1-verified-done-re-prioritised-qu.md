@@ -30,7 +30,9 @@
 Aaron asked for a writeup with all the new data. Written as a **fresh Round-2 doc** rather than more addenda, so Lumen reads current state instead of a doc layered with corrections. The R1 handoff stays valid for the *reasoning*.
 
 ## Round 1 is DONE — verified in-tree, not taken on trust
+
 All four items fixed, and **the reasoning survived, not just the code**:
+
 - `hl-conformal-map` `?? 1.0` → length assertion, with the comment preserving *why*: *"do NOT `?? 1.0` here (that would silently include a fabricated |dw/dz|² = 1 in the amplitude integral)."*
 - `agent-genome` comment → now the correct same-length argument.
 - `crossover` k-channel → `Math.min(7,…)` with `i < cp`, so `cp = 7` genuinely means "all from parent1". The previously-unreachable case is reachable.
@@ -39,6 +41,7 @@ All four items fixed, and **the reasoning survived, not just the code**:
 Plus `empowerment-bound.ts` + `externalitySafe()` (10/10). **Nothing in R1 needs redoing.**
 
 ## Now ANSWERED — stop treating as open
+
 - **The four values calls** → *consent + disclosure, never coercion, never accident*.
 - **"What do free LLMs consume?"** → the 4×4 (16) `ActionGrammar` already exists, and **the BNN's natural output IS the controller's natural input** (`inputSuperposition` is already `(action, weight) list`).
 - **Universality = signature loading**, not a bigger alphabet — my earlier caveat was wrong. **The gap is integration, not design.**
@@ -46,6 +49,7 @@ Plus `empowerment-bound.ts` + `externalitySafe()` (10/10). **Nothing in R1 needs
 - **⚠ Near-zero false positives governs the whole detector.** A false positive is *an accusation*; FP rate is the acceptance criterion, **not F1**.
 
 ## Newly OPEN
+
 - **`externalitySafe()` spec/impl gap** — prose says *"below its floor"*, code compares against **0**, so a bystander at `0.8` hit by `−0.7` returns **safe**. Routed to Soraya; **hold until she reports** (values-adjacent, not a pure bug).
 - **zetadb cross-substrate concurrent-fold race** (`081KZM0FTJM`) — **critical path**: Aaron's dogfooding target (runners *and* local hardware simultaneously) is precisely the condition that defeats the Actions-scoped concurrency guard.
 

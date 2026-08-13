@@ -34,6 +34,7 @@ A Russian reader asked for the book. This adds the **7th edition**.
 - **Serving:** `/preview/ybth-7q2m/ru/`. **Langbar:** Русский added to all 6 other editions (7-language bar).
 
 **Consent gates — independently verified (grep on output):**
+
 - Eating disorder: ZERO clinical terms; the mother's passage renders the oblique English only (`неуверенность относительно собственного тела`).
 - CSAM: policy-point-only, alleged; refusal preserved (`ни разу не называл номер блока`); zero operational detail.
 - Anonymity: every third party exactly as anonymous as the English; no added name.

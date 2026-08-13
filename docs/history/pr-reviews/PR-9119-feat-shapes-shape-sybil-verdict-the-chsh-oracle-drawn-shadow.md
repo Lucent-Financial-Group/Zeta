@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - The 18th cartridge: the CHSH identity oracle (PR #9117) rendered in the braid family's vocabulary — a convicted pair plaits into one braid (over/under register = who conducted whom), the unconvicted claim descends straight. **Drawn = gated**: strokes derive from the same `chshSybil` verdict the acceptance gate runs live (conducted S=4 convicted; independent |S|=0.039 not convicted — one-way-inference stated as an in-file law).
 - Generator content-addressed via the registry's own `idOf` (`shape.sybil-verdict@1`), cost stated in ComplexityRegistry, goldens byte-locked, catalog count → 18. 69/69 green across the four affected suites, 0 warnings.
 

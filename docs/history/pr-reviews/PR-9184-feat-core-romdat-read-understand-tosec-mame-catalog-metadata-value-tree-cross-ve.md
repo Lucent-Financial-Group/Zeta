@@ -30,10 +30,12 @@
 You: *read and understand the TOSEC/MAME catalog metadata.* Parses the **Logiqx-format DAT** (TOSEC / GoodTools / No-Intro / MAME) into curated game identities so a ROM we `GameFingerprint`-hash resolves to its catalog entry. Build ON their signatures; don't reinvent.
 
 ## Two cross-verifications (4/4)
+
 - **our identity IS their identity** — `GameFingerprint.crc32Hex` of a ROM equals the `crc` a DAT records for it, so a fingerprinted ROM resolves to the catalog entry;
 - **the value tree is NOT XML-specific** — `toDynamicValue` round-trips *identically* through JSON, CBOR, and YAML. XML is one lens; the value tree is the invariant.
 
 ## Substrate framing (yours)
+
 XML is a **2-ary** value-tree composition (element tree ⊕ attribute tree, the banana-split); JSON/YAML/CBOR are **1-ary** trees; all fold into DynamicValue → Z-sets / schema-evolution / SoftValue.
 
 **Tokenizer seam:** the `System.Xml.Linq` read is a *pragmatic placeholder* for the routed parser-combinator/generator layer (FParsec / GLR·LR* / ANTLR-shaped, backlogged) — load-bearing is the value-tree output, not the tokenizer.

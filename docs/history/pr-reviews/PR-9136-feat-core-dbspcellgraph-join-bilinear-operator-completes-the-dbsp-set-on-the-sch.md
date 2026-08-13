@@ -30,9 +30,11 @@
 The **bilinear Join** — the last major DBSP operator — on the cell scheduler. Completes the operator set: **linear → non-linear → bilinear**, all proven incremental ≡ recompute across the scheduler.
 
 ## What
+
 A join has *two* inputs, so this introduces a **ported message type**: `Msg = { Port: Mono|Left|Right; Delta }`, and `Down` edges tag which port they feed. The incremental form joins each side's delta against the **other side's current integral** (`IntA`/`IntB`), so `I(out) = I(a) ⋈ I(b)` exactly — and it's **order- and DoP-invariant** (each side's delta commutes with the other's arrival).
 
 ## The operator set now spans every DBSP tier
+
 | Tier | Ops |
 |------|-----|
 | Linear | `Filter`, `Rekey`, `Relay` |
@@ -41,9 +43,11 @@ A join has *two* inputs, so this introduces a **ported message type**: `Msg = { 
 | Sink | `Integrate` |
 
 ## Breaking (greenfield)
+
 The message type is now ported (was a bare `ZSet` delta) and `Down` edges carry a port; all existing consumers/tests updated. `mono`/`left`/`right` constructors provided.
 
 ## Tests (9, was 6)
+
 - the 6 prior (linear + distinct) ported to the new message type;
 - **join incremental ≡ recompute** (`I(a)⋈I(b)`, only matched keys);
 - join **order- and DoP-invariant** through a two-relay graph;

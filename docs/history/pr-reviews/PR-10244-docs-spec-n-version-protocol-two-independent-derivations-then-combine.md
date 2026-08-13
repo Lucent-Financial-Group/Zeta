@@ -32,6 +32,7 @@ Aaron: *"do double work and combine the best of both."*
 Adds the protocol to the spec — and **inverts the coordination instruction** in the handoff, because the obvious reading would destroy the value.
 
 ## The rule that makes it worth doing
+
 Each implementer works from **this spec only** and **must not read another implementer's branch, diff, or notes** before finishing. **Two implementations that saw each other are not two derivations** — they're one derivation and a review, and they inherit each other's blind spots.
 
 | Phase | Sees |
@@ -41,9 +42,11 @@ Each implementer works from **this spec only** and **must not read another imple
 | Combine | **both**, plus the spec |
 
 ## The inversion worth flagging
+
 The handoff now says explicitly: **do NOT split the work to avoid overlap — overlap is the point.** Without that, a careful agent would naturally divide the slices and quietly turn an N-version experiment into *one implementation in two parts*.
 
 ## Why the double cost is justified here
+
 - **It's a spec test, not just a code test.** Where A and B diverge, **the spec was ambiguous** — divergence is the *output*, and it localises requirements no single implementation can reveal.
 - **It strengthens the clean-room position** — two independent derivations from a requirements document is precisely the evidence that the result came from requirements and nothing else.
 - **Blind spots are unlikely to coincide** — this catches the failure a single careful implementer *cannot* catch by being more careful.

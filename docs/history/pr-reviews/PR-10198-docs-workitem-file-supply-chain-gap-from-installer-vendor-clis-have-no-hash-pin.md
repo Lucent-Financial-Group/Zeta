@@ -30,15 +30,19 @@
 Files the supply-chain finding Mateo surfaced while reviewing the nix-ld PR (#10196), so it doesn't stay buried in an agent transcript. **Workitem only — no code changed.**
 
 ## The gap (verified)
+
 `curl-fetch.ts:40` **exports `verifySha256File`**; `from-installer.ts` **never calls it** (0 references). The only trust anchor is `url.startsWith("https://")` (`from-installer.ts:70`). Five vendor installers (grok, cursor-agent, hermes, forge, agy) are fetched-then-exec'd with no hash pin.
 
 ## Why it's worth a row
+
 Chain of privilege, all verified in-repo: `ZETA_INSTALL_FULL=1` un-gates that manifest on the **unattended first-boot** path → installers run as `zeta` → `zeta ∈ wheel` and `nix.settings.trusted-users = [ root @wheel ]`, and **a Nix trusted user is root-equivalent** → and `zeta-creds-restore` has already decrypted gh/claude/gemini/codex credentials into that home by then.
 
 ## Pre-existing — not caused by nix-ld
+
 Before #10196 those prebuilt dynamically-linked binaries **could not execve** on installed nodes. That was an **accidental** control (it was the bug being fixed), never a designed mitigation. #10196 moves the fleet from "accidentally inert" to "working as designed" — and the designed state is the one needing this pin. Route the concern to the design, not the loader.
 
 ## The fix is already written, just unwired
+
 `SUPPLY-CHAIN-SAFE-PATTERNS.md` already prescribes SHA-256 pinning; `verifySha256File` is implemented; `MISE_SHA256_*` in `linux.sh` is the content-pin pattern to copy. Also notes that this ingress class is **absent** from that doc's ingress table.
 
 Sibling findings recorded on the row: no systemd sandboxing on the `zeta-ai-agent` units, the `AT_SECURE` watch item + its detector, attestations-off, and `@wheel` in trusted-users.

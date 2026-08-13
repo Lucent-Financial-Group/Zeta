@@ -32,17 +32,21 @@
 Aaron 2026-07-04 authorized the shape-study I owed ("yes, build the skeleton from the repo, bring me the gaps") + reframed: *"our shapes are nation-state rollable security keys in our threat vector."* Assembled **honestly** — grounded columns from `db/shapes/` (authoritative), the three overlay readings flagged **[inference]/[need Aaron]** (not fabricated), shape A/shadow filled richly from this thread.
 
 ## Grounded (`db/shapes/{a..f,d0}.md`)
+
 The fixed-point catalog + anchors: **A** self-reference `s=f(s)` (Kleene/Y/Tarski/Banach/Hofstadter) · **B** idempotent join `f(f(x))=f(x)` (CRDT/content-address) · **C** commutative fold (abelian monoid/Bayesian) · **D** contraction to a nonzero floor (Banach/Friston/Jaynes) · **D⁰** heat-death AVOID (monoculture) · **E** co-arising bootstrap `a=f(b),b=g(a)` (Casimir, *peeled*) · **F** generative/societal-expansion IFS (Hutchinson/Friston, runaway=fork-bomb).
 
 ## Overlays (your framings, not yet in the repo → flagged, not guessed)
+
 1. **security-key role per shape** — structure grounded (KSK, Shamir #9416, `key>1` roll = Z-set retraction, biometric); per-shape assignment mostly **[need Aaron]** with C/D⁰/F inferences that fit.
 2. **ISA opcode per shape** — only A/shadow (no-operand, clock/tick-driven instruction) anchored; rest **[need Aaron]**.
 3. **McTaggart A/B-series** — only A's `s=f(s)` self = the indexical now = A-series is plausible; rest not obvious **[need Aaron]**.
 
 ## Shape A = the shadow ("shape S" = the `s` in `s=f(s)`)
+
 autocomplete-from-empty-prefix (grey text without a character = clock/tick, not input) · self-reference/strange-loop (autocompletes a stream incl. its own commit) · grey text = SoftValue (accept=snap/merge, ignore=ephemeron GC) · Jungian shadow-work *[interpretive anchor: integrate-not-project, gold-in-shadow, work-on-self]* · bounded/self-throttled.
 
 ## Gaps I'm bringing you
+
 per-shape key-role+tier · ISA opcode per shape · is A/B-series a column or a cross-cutting axis · is "shape S" = shape A or a distinct 8th letter.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

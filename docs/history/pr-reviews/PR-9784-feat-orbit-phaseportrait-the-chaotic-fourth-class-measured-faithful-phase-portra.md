@@ -30,11 +30,13 @@
 Sketch of the two next steps flagged when the forgery-spirals turned out **dynamical** (homoclinic-tangle family), not topological. `Orbit.fs` classified `Fixed / Crystal / Quasiperiodic` — ordered orbits up to the **edge of chaos** — and its own docstring admitted it makes "no Lyapunov/chaos claim." This adds the class past the edge, and a way to *see* it.
 
 ## Orbit.fs
+
 - **`Chaotic of float`** — the fourth `Kind`: λ > 0, sensitive dependence, positive-topological-entropy regime past `Quasiperiodic`. `classify` (period-only) would mislabel a chaotic aperiodic orbit `Quasiperiodic`; this names it.
 - **`largestLyapunov`** — Benettin (1980) nearby-orbit divergence: short windows, re-seed the perturbation each window, average the log-stretch. Needs only `dist`+`step`+`nudge` (no tangent-space structure) → honestly an **estimate**, documented as such.
 - **`classifyDynamics`** — measure λ first: `> lyapTol ⇒ Chaotic λ`, else fall through to the period classify.
 
 ## PhasePortrait.fs (new)
+
 Faithful ASCII rasterization of the **actual** iterated map (Poincaré's method — he *discovered* the homoclinic tangle by drawing manifolds). Faithful by construction: plots the real map, never a curve stylized to please the eye — a *verification* visual, not a game one.
 
 **Rendered off the real maps** (this is the eye verifying the dynamics):
@@ -60,9 +62,11 @@ plane rotation orbit                 (Ordered; λ ≈ 0)
 ```
 
 ## Verified
+
 - `OrbitTests` **12/12** — logistic r=4 → λ measured **0.693 = ln 2**, classified `Chaotic`; plane rotation → λ≈0, stays ordered; portraits render to spec. Core builds **0/0**.
 
 ## Named, deferred (honest scope)
+
 - The **Thurston braid-entropy bridge** (braid of the periodic orbits = topological-entropy invariant) connecting this to `Braid.fs`.
 - Whether a **specific** forger map has a genuine homoclinic tangle (transverse manifold intersection) is a further measurement.
 
