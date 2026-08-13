@@ -257,6 +257,14 @@ requires.
 `081KZYK0Q8Z087G0R0010Z2Z2Q` quotes **22,297x** and calls it a strengthening. On
 a 2-hour grid I get **535x**. All three are the same artifact.
 
+> Precision note on my own figure, since this section is about imprecise ones:
+> my `535x` and the divergence table below are computed against the **one-way**
+> form of the shipped expression. `deltaMaxMs` actually uses `rttS = 2R/c`, so
+> the shipped code's own factor is about **half** each number quoted here. The
+> conclusion is unaffected - halving an unbounded quantity leaves it unbounded -
+> but the ratio should be stated with its convention, which is the whole point
+> of this subsection.
+
 The shipped budget is proportional to the projection of Mars's velocity, which
 passes through **zero** while the true asymmetry does not. So the ratio
 **diverges**. Bisecting onto the zero crossing (CHECKED):

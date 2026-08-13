@@ -101,7 +101,10 @@ The shipped budget is proportional to a projection that passes through **zero**
 while the true asymmetry does not, so the under-budget ratio **diverges**.
 Bisecting onto the crossing reaches 1.1e11x before double precision floors out.
 `54x` (D2), `22,297x` (the proposal) and `535x` (this round, 2-hour grid) are the
-same singularity sampled at three grid resolutions. The correct statement is
+same singularity sampled at three grid resolutions. (My `535x` and the `1.1e11x`
+are computed against the **one-way** form; `deltaMaxMs` uses `rttS = 2R/c`, so its
+own factor is about half each. Unaffected - half of unbounded is unbounded - but
+stated with its convention, which is the point.) The correct statement is
 **unbounded**; quoting a multiple makes an unbounded failure look bounded, and
 makes `54 -> 22,297` read as a strengthened finding when it is a finer grid.
 
