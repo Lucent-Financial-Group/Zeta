@@ -1,50 +1,48 @@
 import { describe, expect, test } from "bun:test";
-import { createGatedReviewPullRequest, type HandoffFetch } from "./proposal-gated-commit-runner";
+import { createGatedReviewPullRequest, type HandoffExec } from "./proposal-gated-commit-runner";
 
 describe("proposal gated-commit runner handoff", () => {
-  test("PGCR-1: branch-to-PR handoff sends the bounded branch and never a repository credential in its body", async () => {
-    let captured: RequestInit | undefined;
-    const fakeFetch: HandoffFetch = async (_input, init) => {
-      captured = init;
-      return new Response(null, { status: 201 });
+  test("PGCR-1: branch-to-PR handoff uses argument-safe GitHub CLI inputs and keeps the credential out of proposal arguments", () => {
+    let captured: { readonly command: string; readonly args: readonly string[]; readonly options: Parameters<HandoffExec>[2] } | undefined;
+    const fakeExec: HandoffExec = (command, args, options) => {
+      captured = { command, args, options };
     };
-    await createGatedReviewPullRequest({
+    createGatedReviewPullRequest({
       token: "pr-only-secret",
       repository: "Lucent-Financial-Group/Zeta",
       branch: "proposal/example",
       proposalId: "example",
       issueNumber: 42,
-    }, fakeFetch);
-    expect(captured?.method).toBe("POST");
-    expect(String(captured?.body)).toContain('"head":"proposal/example"');
-    expect(String(captured?.body)).not.toContain("pr-only-secret");
-    expect(new Headers(captured?.headers).get("authorization")).toBe("Bearer pr-only-secret");
+    }, fakeExec);
+    expect(captured?.command).toBe("gh");
+    expect(captured?.args).toContain("proposal/example");
+    expect(captured?.args.join(" ")).not.toContain("pr-only-secret");
+    expect(captured?.options.env.GH_TOKEN).toBe("pr-only-secret");
   });
 
-  test("PGCR-2 FAULT INJECTION: empty PR token yields a credential teaching error before a network request", async () => {
+  test("PGCR-2 FAULT INJECTION: empty PR token yields a credential teaching error before a GitHub CLI invocation", () => {
     let called = false;
-    const fakeFetch: HandoffFetch = async () => {
+    const fakeExec: HandoffExec = () => {
       called = true;
-      return new Response(null, { status: 201 });
     };
-    await expect(createGatedReviewPullRequest({
+    expect(() => createGatedReviewPullRequest({
       token: "",
       repository: "Lucent-Financial-Group/Zeta",
       branch: "proposal/example",
       proposalId: "example",
       issueNumber: 42,
-    }, fakeFetch)).rejects.toThrow("Pull requests: write");
+    }, fakeExec)).toThrow("Pull requests: write");
     expect(called).toBeFalse();
   });
 
-  test("PGCR-3 FAULT INJECTION: GitHub refusal returns a repairable permission teaching error", async () => {
-    const denied: HandoffFetch = async () => new Response(null, { status: 403 });
-    await expect(createGatedReviewPullRequest({
+  test("PGCR-3 FAULT INJECTION: GitHub CLI refusal returns a repairable permission teaching error", () => {
+    const denied: HandoffExec = () => { throw new Error("403"); };
+    expect(() => createGatedReviewPullRequest({
       token: "pr-only-secret",
       repository: "Lucent-Financial-Group/Zeta",
       branch: "proposal/example",
       proposalId: "example",
       issueNumber: 42,
-    }, denied)).rejects.toThrow("Pull requests: write");
+    }, denied)).toThrow("Pull requests: write");
   });
 });

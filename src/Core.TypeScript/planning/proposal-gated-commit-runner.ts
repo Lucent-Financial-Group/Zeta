@@ -1,5 +1,5 @@
 import { execFileSync } from "node:child_process";
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import {
   loadProposalAuthorRegistry,
@@ -11,31 +11,32 @@ type GitHubIssueEvent = {
   readonly issue?: { readonly number?: unknown; readonly body?: unknown; readonly html_url?: unknown };
 };
 
-export type HandoffFetch = (input: string, init: RequestInit) => Promise<Response>;
+export type HandoffExec = (command: string, args: readonly string[], options: { readonly env: NodeJS.ProcessEnv; readonly stdio: "pipe" }) => void;
 
-export async function createGatedReviewPullRequest(input: {
+export function createGatedReviewPullRequest(input: {
   readonly token: string;
   readonly repository: string;
   readonly branch: string;
   readonly proposalId: string;
   readonly issueNumber: number;
-}, fetcher: HandoffFetch = fetch): Promise<void> {
+}, execute: HandoffExec = (command, args, options) => {
+  execFileSync(command, [...args], options);
+}): void {
   if (input.token.length === 0) throw new Error("teaching error: a separate pull-request-scoped credential is required to request an independently gated review; generator: configure ZETA_PR_ARCHIVE_TOKEN with Pull requests: write");
-  const response = await fetcher(`https://api.github.com/repos/${input.repository}/pulls`, {
-    method: "POST",
-    headers: {
-      Accept: "application/vnd.github+json",
-      Authorization: `Bearer ${input.token}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      title: `proposal: ${input.proposalId}`,
-      head: input.branch,
-      base: "main",
-      body: `Passkey-signed proposal from issue #${input.issueNumber}. The branch was created by the bounded verifier; required gates must pass before any merge.`,
-    }),
-  });
-  if (!response.ok) throw new Error(`teaching error: GitHub refused the review PR handoff (HTTP ${response.status}); generator: verify the separate token has Pull requests: write and retry the unchanged branch`);
+  // `execFileSync` receives individual, non-shell arguments. The token is scoped to
+  // the child environment rather than serialised from the issue body into a URL.
+  try {
+    execute("gh", [
+      "pr", "create",
+      "--repo", input.repository,
+      "--base", "main",
+      "--head", input.branch,
+      "--title", `proposal: ${input.proposalId}`,
+      "--body", `Passkey-signed proposal from issue #${input.issueNumber}. The branch was created by the bounded verifier; required gates must pass before any merge.`,
+    ], { env: { ...process.env, GH_TOKEN: input.token }, stdio: "pipe" });
+  } catch {
+    throw new Error("teaching error: GitHub refused the review PR handoff; generator: verify the separate token has Pull requests: write and retry the unchanged branch");
+  }
 }
 
 function git(args: readonly string[]): string {
@@ -119,17 +120,22 @@ async function applyPlan(): Promise<void> {
   git(["apply", "--whitespace=error", patchPath]);
   const receipt = receiptPath(preliminary.proposal.proposalId);
   const receiptAbsolutePath = resolve(repoRoot, receipt);
-  if (existsSync(receiptAbsolutePath)) throw new Error("teaching error: proposal receipt path already exists; generator: create a fresh proposal envelope");
   mkdirSync(dirname(receiptAbsolutePath), { recursive: true });
-  writeFileSync(receiptAbsolutePath, `${JSON.stringify({
-    schema: "zeta.proposal-receipt.v1",
-    proposalId: preliminary.proposal.proposalId,
-    issue: event.url,
-    baseSha: preliminary.proposal.baseSha,
-    changeDigest: preliminary.proposal.changeDigest,
-    credentialId: preliminary.proposal.authorCredentialId,
-    receivedAt: new Date().toISOString(),
-  }, null, 2)}\n`, "utf8");
+  try {
+    // O_EXCL (`wx`) makes receipt creation the replay race barrier. A preceding
+    // existence check would allow concurrent Actions to both pass the check.
+    writeFileSync(receiptAbsolutePath, `${JSON.stringify({
+      schema: "zeta.proposal-receipt.v1",
+      proposalId: preliminary.proposal.proposalId,
+      issue: event.url,
+      baseSha: preliminary.proposal.baseSha,
+      changeDigest: preliminary.proposal.changeDigest,
+      credentialId: preliminary.proposal.authorCredentialId,
+      receivedAt: new Date().toISOString(),
+    }, null, 2)}\n`, { encoding: "utf8", flag: "wx" });
+  } catch {
+    throw new Error("teaching error: proposal receipt path already exists; generator: create a fresh proposal envelope");
+  }
   git(["add", "--", "."]);
   git(["commit", "-m", preliminary.commitMessage]);
   git(["push", "origin", `HEAD:refs/heads/${preliminary.branch}`]);
