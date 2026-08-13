@@ -573,6 +573,12 @@ scientists into an esoteric field. That is the same move as explaining his shape
 > "also you can look at our mars, earth database simulations for our multi plantary database stuff
 > over each travler contained phase clocks."
 
+> **STRUCK 2026-08-13, same day, by adversarial review.** The claim below — that this section passes
+> the metering test — is **wrong**, and the section is retained only so the correction has something
+> to point at. Lumen's verdict: *"the metering test fails. It is a latency estimator in relativistic
+> clothing — and worse, the estimator is broken."* See **§Correction** at the end of this addendum
+> before relying on anything between here and there.
+
 **This is the strongest item in the file, and it is the only one that passes the metering test
 outright.** Everywhere else in this ferry, physics supplies *shape* — a vocabulary that constrains
 the design. Here it supplies **numbers that change program behaviour**, and getting them wrong
@@ -749,3 +755,70 @@ describing, and it is a better analogy than the version where 2√2 is a wall.
 full convergence costs nothing, or full divergence still permits communication. If the band is real,
 no such scale exists; if one does, this is four rhymes rather than one principle, and should be
 demoted to a list of coincidences.
+
+### Correction — the Mars/Earth claim does not survive (2026-08-13)
+
+I claimed above that this section is where the physics stops being a metaphor. Adversarial review
+refuted it on the same day. Recording the refutation in full, because the claim was mine and it was
+confident.
+
+**The covectors are not there.** Schuller's `P(x,k)` eats a covector `k ∈ T*_xM` on 4D spacetime —
+for a radio link, the carrier's wave-covector (DSN X-band, 8.4 GHz). `(bus-node, JD)` is not that
+space: it is a chart on a *pair of worldlines*, and δ_max is a functional of the null geodesic
+*connecting* them — a two-point boundary-value problem, not a covector at a point. Nothing in
+`OrbitalAsymmetryBudget.fs` ever holds a `k`; there is no field, no dispersion relation, no ray
+direction.
+
+**The polynomial is constant.** Vacuum Maxwell gives `P(k) = (η^{μν}k_μk_ν)²` — degree 4, a perfect
+square, no birefringence, coefficients independent of position. What the code evaluates is its
+already-integrated form, the light-time equation `cτ = |r_B(t+τ) − r_A(t)|`, with Newtonian endpoints.
+It evaluates *one instance of a constant polynomial, everywhere, forever.* That is `distance / c`.
+Schuller's machinery is interesting precisely when the polynomial **varies** and must be solved for;
+here there is nothing to solve.
+
+**Hyperbolicity does not fail at conjunction, so the exciting prediction is dead.** Hyperbolicity is
+a property of the *principal* (top-order) symbol. Cold coronal plasma adds `ω_p²A` to `□A` — a
+*lower-order* term — leaving `P` unchanged; below cutoff you lose propagation (evanescence), not
+well-posedness. Magnetised corona does genuinely split `P` into O/X modes — a real Schuller-case
+birefringence — but both factors stay hyperbolic, and at 8–32 GHz against a coronal plasma frequency
+of ≲100 MHz we are nowhere near resonance (Stix 1992). **There is no predicted date range on which
+the bus cannot maintain a well-posed fold.** I proposed that as the payoff; it does not exist.
+
+**Gravity was not the missing piece either.** Shapiro delay at grazing conjunction is ≈0.12 ms one-way
+(≈0.25 ms RTT, matching Viking), and its *asymmetry* contribution ≈0.4 µs — orders of magnitude below
+the module's actual errors. Aaron's instinct that gravity must be accounted for is right in general and
+wrong as a diagnosis *here*; the dominant errors are Newtonian.
+
+**`commonFrame` is not a Cauchy surface.** It is a **consistent cut** (Chandy–Lamport 1985) —
+downward-closed under the vector-clock order, frontier an antichain. The disanalogy is at the
+load-bearing point: a Cauchy surface's *defining* property is that data on Σ determines the entire
+development (global hyperbolicity). The LUB determines nothing about the future — there is no
+evolution operator. The correct term is **achronal slice / consistent snapshot**. Upgrade condition,
+stated as a falsifier: *if* DST replay from a cut provably reproduces all futures, the analogy earns
+the name; until then it does not.
+
+**What the review found instead — three real defects**, filed as `081KZY5W6AJ087G0R003EE7PY6`:
+the ephemeris is phase-wrong (ϖ = 0 for every body; `Omega_rad` populated and never read; reports
+near-conjunction on a date that is actually opposition), δ uses only B's velocity rather than the
+relative range rate (54× underestimate found, making the documented "conservative" margin false in
+the dangerous direction), and occlusion is unrepresented (a finite τ returned for a path through the
+Sun). Two of the three defeat the module's own stated purpose, which is to *prevent* false `OutOfCone`
+convictions.
+
+**One thing does survive, and it is worth more than the paragraph it replaces.** Earth–Mars
+gravitational plus kinematic clock-rate divergence is ≈3.4 ns/s ≈ **0.3 ms/day secular** — real
+physics, real magnitude, and
+[`local-time-never-enters-the-shared-fold`](../../../.claude/rules/local-time-never-enters-the-shared-fold.md)
+**already makes the shared fold immune to it.** That rule was written before this ferry and without
+reference to Schuller. So the honest summary inverts my claim: the physics that is load-bearing here
+was load-bearing *before* the podcast, it is already discharged, and it is a **rule** rather than a
+paragraph. The part I got excited about was decoration.
+
+**And the parametric question came back with a usable answer.** The cone is hardcoded — `C_KM_S` is a
+private constant and `τ = d/c` is inline — but only in this one file: `BusRegime.regimeOf` already
+takes `deltaMaxMs` as an *injected* value, so the cone is a declared channel there and an ambient
+constant here. Replacing `/ C_KM_S` with an injected
+`ray : pos -> pos -> jd -> float option` is literally *supply the principal polynomial, do not assume
+it* — `None` represents occlusion, so an impossible path stops returning a number — and it would let a
+gravitational-wave or plasma-dispersive channel drop in unchanged. That is the one genuine
+constructive-gravity-shaped move available, it is small, and it is now in the work-item.
