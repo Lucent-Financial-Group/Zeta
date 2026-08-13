@@ -1288,9 +1288,12 @@
     //
     // Same-origin only, which is the secure default. If the design-tool preview posts from
     // another origin and stops working, add that exact origin here — do not remove the check.
-    const DC_ALLOWED_ORIGINS = new Set([window.location.origin]);
     window.addEventListener("message", (e) => {
-      if (!DC_ALLOWED_ORIGINS.has(e.origin)) return;
+      // Direct comparison, not a Set lookup: CodeQL's js/missing-origin-check recognises an
+      // equality test against a constant and does NOT recognise `set.has(e.origin)`. The Set
+      // form was functionally identical and still flagged, so this is written the way the
+      // analyser can see — a guard the tooling cannot verify is worth less than one it can.
+      if (e.origin !== window.location.origin) return;
       const type = e.data && e.data.type;
       if (type === "__dc_theme") {
         const t = e.data.theme;
