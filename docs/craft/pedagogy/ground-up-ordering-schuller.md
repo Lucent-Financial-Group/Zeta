@@ -79,15 +79,17 @@ junction after.**
 
 Each step exists because the next one is not statable without it:
 
-    propositional logic
-      -> first-order logic (he notes he stopped short of this)
-        -> axioms of set theory
-          -> the empty set, the power set
-            -> topological space  (a set + a distinguished subset of its power set)
-              -> topological manifold
-                -> smooth manifold
-                  -> differential geometry
-                    -> mechanics / general relativity
+```text
+propositional logic
+  -> first-order logic (he notes he stopped short of this)
+    -> axioms of set theory
+      -> the empty set, the power set
+        -> topological space  (a set + a distinguished subset of its power set)
+          -> topological manifold
+            -> smooth manifold
+              -> differential geometry
+                -> mechanics / general relativity
+```
 
 The forcing move, in his words: *"if you do naive set theory, you have all kinds of contradictions in
 two lines. If you say a set is a collection of elements — that sounds good, but that doesn't make any
@@ -100,6 +102,95 @@ manifolds; it is *upstream* of them.
 He is also explicit that the regress does not bottom out — *"it's very difficult to find a really
 foundational beginning from nothing"* — so the goal is not foundations, it is **knowing where your
 assumptions entered**: "why do you have the axiom of choice? Because at some point I required it."
+
+## The graph itself
+
+The chain above is a **directed dependency graph**, and it is worth holding as a graph rather than as
+a list, because the two traversal orders below disagree about everything except this shape.
+
+```mermaid
+graph BT
+  PL["propositional logic"] --> FOL["first-order logic"]
+  FOL --> ZF["axioms of set theory"]
+  ZF --> ES["empty set · power set"]
+  ES --> TS["topological space<br/>(set + distinguished subset of its power set)"]
+  TS --> TM["topological manifold"]
+  TM --> SM["smooth manifold"]
+  SM --> DG["differential geometry"]
+  DG --> COV["covectors · cotangent space"]
+  COV --> MECH["Lagrangian / Hamiltonian mechanics<br/>(canonical momenta ARE covectors)"]
+  DG --> GR["general relativity"]
+  MECH --> GR
+```
+
+Edges are *"not statable without"*, not *"harder than"*. Propositional logic is not easier than a
+manifold; it is **upstream** of it. That distinction is the whole content of the section above.
+
+## Zeta's traversal is the dual: enter anywhere, descend on demand
+
+> **Aaron, 2026-08-13:** *"his graph is from the ground up we should save that graph somewhere, zeta
+> is jump in anywhere and learn from current level downwards and the AI should force learning for
+> humans to maintain certain areas that need the understanding, his graph is like from first
+> principles up."*
+
+**Same graph, opposite traversal.** Schuller's is *eager and bottom-up*: compute the whole closure
+before you start, then walk it in dependency order, so nothing is ever used before it is defined. That
+is possible because a lecture course knows its destination in advance — the curriculum is a **static**
+plan.
+
+Zeta's is *demand-driven and top-down*: enter at whatever node the work actually put you at, and
+descend an edge only when something you hit is not statable without it. The classic evaluation-strategy
+names are exact here — **eager** vs **call-by-need**.
+
+|   | Schuller (course) | Zeta (working) |
+|---|---|---|
+| Entry | the unique root | wherever the work landed you |
+| Direction | upward, along dependency edges | **downward**, against them |
+| Trigger | the syllabus | hitting something not statable without it |
+| Knows destination? | yes, in advance | no — it depends where you are |
+| Closure computed | fully, ahead of time | lazily, and usually never fully |
+
+**And this is the `app`-free boundary again**, in the shape it keeps taking in this project. Schuller's
+order is statically resolvable — the entire descent is computable before execution begins. Zeta's next
+node depends on *where you actually are*, which is a runtime value. Eager-bottom-up sits in the
+`app`-free fragment; jump-in-anywhere requires `app`. Both are legitimate; they have different costs,
+and the cost of the lazy one is the next section.
+
+## Where lazy descent is FORBIDDEN — the forced set
+
+Demand-driven learning has a failure mode that eager learning does not: **you can defer forever.** A
+node never demanded is never learned, and understanding you never needed is indistinguishable from
+understanding you have lost — right up until the moment you need it to check something.
+
+So the model needs one addition, which is Aaron's third clause: *"the AI should force learning for
+humans to maintain certain areas that need the understanding."* There is a set of nodes where lazy is
+not allowed and the descent must be **eager anyway**, because human oversight depends on it. If a
+human's only access to a load-bearing claim is "the AI said so", the review is ceremonial — and
+[`no-directives`](../../../.claude/rules/no-directives.md) names *because I said so* as the one sin.
+An AI that lets human understanding silently lapse in a load-bearing area has manufactured that sin on
+the human's behalf.
+
+**The obvious objection, stated before someone else states it:** an AI deciding what humans must learn
+is paternalism, and paternalism is a worse failure than ignorance. The guard is structural, and this
+repo already has it —
+[`privacy-budget-is-hard-money`](../../../.claude/rules/privacy-budget-is-hard-money-earned-by-others.md)
+splits mind-parts into **required-for-role** and **personal**: hold a hat and you broadcast what the
+hat needs; everything else is inviolable. Apply the identical split here:
+
+- **The requirement attaches to the HAT, never to the person.** A role declares the nodes whose
+  understanding it requires. Want the role → maintain those. Decline → the role is simply not held,
+  at no cost to standing.
+- **The AI declares and refuses to paper over; it does not compel.** It may say *this claim rests on
+  something you have not descended to, so I will not let the review record as informed.* It may not
+  say *you must learn this.* Declaring a gap is honest reporting; compelling a person is not the
+  AI's to do.
+- **Role-conditional makes it non-coercive**, exactly as role-conditional transparency makes mandatory
+  broadcast non-coercive. This is the same mechanism, applied to knowledge rather than to visibility.
+
+**Open, and genuinely unsettled:** which nodes are in the forced set? *"Everything load-bearing"* is
+not an answer, it is a restatement. A usable answer needs a test — plausibly *"could a wrong result
+here pass review undetected by a reader who has not descended below this node?"* — and that test needs
+trying against real cases before it is trusted. Filed as open rather than decided.
 
 ## Conceptual rigor precedes symbolic rigor
 
