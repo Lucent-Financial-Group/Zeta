@@ -112,6 +112,21 @@ jobs:
         working-directory: src/Core.Lean4
         run: lake exe cache get
 
+      - name: Set up bun (for the orphan guard)
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6
+        with:
+          bun-version: latest
+
+      - name: Guard — no Lean module may escape the build silently
+        working-directory: .
+        # Runs BEFORE the build so a failure names the cause rather than showing a
+        # green build over unchecked proofs. Three times a .lean file has sat outside
+        # `lake build` because nothing imported it, and each time the escaped file was
+        # broken (ImaginaryStack 2026-08-10: compile error + a `sorry` on a false
+        # theorem; MenoBraidedRMatrix and GenSelfApplication 2026-08-13). Deliberate
+        # exclusions stay legal — they go in src/Core.Lean4/ORPHANS.json with a reason.
+        run: bun src/Core.TypeScript/hygiene/lean-orphan-modules.ts
+
       - name: Build Lean package root
         # Lean4.lean imports the machine-checked codec modules
         # (DynamicValue, JsonCodec, CborCodec, YamlCodec) and the
