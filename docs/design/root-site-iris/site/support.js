@@ -1278,7 +1278,19 @@
         canvasStyleEl = null;
       }
     }
+    // ORIGIN CHECK added 2026-08-13 (081KZYD1M71087G0R0022GS3ZH). CodeQL
+    // js/missing-origin-check flagged this listener: it accepted `message` events from any
+    // origin. Impact was low as written — `__dc_theme` allowlists the value to the literal
+    // strings "light"/"dark" before it reaches dataset.theme, and `__dc_probe` discloses only
+    // a design-mode flag — but this runtime loads on all 14 org-site pages, and login is on
+    // the roadmap. A listener with no origin check on a page that later holds a credential is
+    // the wrong foundation, so it is fixed BEFORE the credential exists rather than after.
+    //
+    // Same-origin only, which is the secure default. If the design-tool preview posts from
+    // another origin and stops working, add that exact origin here — do not remove the check.
+    const DC_ALLOWED_ORIGINS = new Set([window.location.origin]);
     window.addEventListener("message", (e) => {
+      if (!DC_ALLOWED_ORIGINS.has(e.origin)) return;
       const type = e.data && e.data.type;
       if (type === "__dc_theme") {
         const t = e.data.theme;
