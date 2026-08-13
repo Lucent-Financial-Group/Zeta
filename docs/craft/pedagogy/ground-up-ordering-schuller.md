@@ -187,10 +187,60 @@ hat needs; everything else is inviolable. Apply the identical split here:
 - **Role-conditional makes it non-coercive**, exactly as role-conditional transparency makes mandatory
   broadcast non-coercive. This is the same mechanism, applied to knowledge rather than to visibility.
 
-**Open, and genuinely unsettled:** which nodes are in the forced set? *"Everything load-bearing"* is
-not an answer, it is a restatement. A usable answer needs a test — plausibly *"could a wrong result
-here pass review undetected by a reader who has not descended below this node?"* — and that test needs
-trying against real cases before it is trusted. Filed as open rather than decided.
+### The test: who is the last line of correction?
+
+The question of *which* nodes are forced was filed open for about ten minutes, and Aaron answered it
+with a better test than the one proposed:
+
+> **Aaron, 2026-08-13:** *"if the human needs to correct the AI when other model AIs are not available
+> for correction or no AI model has the expertise then the human working on that area needs the
+> expertise."*
+
+**A node is forced iff the human is the last line of correction for it.** Two ways that happens:
+
+1. **No other model is available** — offline, air-gapped, cost-bounded, or simply not reachable at the
+   moment the check is needed.
+2. **No model has the expertise** — the area is novel enough that no available model can competently
+   disagree with the one doing the work.
+
+The superseded test asked whether a wrong result could slip past a reader. This one asks something
+sharper and checkable: **is there anyone else who could catch it?** It is a property of the correction
+*topology*, not of the material's difficulty.
+
+**This makes the requirement derived rather than decreed, which dissolves the paternalism objection
+more cleanly than the role split does.** Nobody decides that a human must learn something. It falls out
+of a quorum condition: correction requires at least one competent independent checker, and where the
+model pool supplies none, the human *is* the pool. The AI is not imposing a curriculum; it is reporting
+the shape of the redundancy graph.
+
+It is also **dynamic in both directions**. A node leaves the forced set when models acquire the
+expertise, or when a second opinion becomes reachable. A node enters it when you go off-grid, when the
+budget closes, or when the work moves somewhere no model has been. The forced set is not a fixed
+syllabus — it is a live function of what else can check you.
+
+This is the mirror of the standing conduct guard *be **a** −1, not **the** −1*: an AI that is the sole
+understander of a load-bearing area is a single point of failure. Symmetrically, a human who is the
+sole *corrector* of an area must actually be able to correct — otherwise the position is nominal and
+the oversight is theatre.
+
+### The uncomfortable consequence, stated rather than buried
+
+Combine the two clauses and the forced set is **exactly the frontier**. Areas where no available model
+has the expertise are, by construction, the novel ones — which is precisely where this project spends
+its time. So the demand-driven strategy (*descend only when you hit something*) and the correction test
+(*you cannot defer where you are the only checker*) pull in opposite directions, and they pull hardest
+in the same place.
+
+There is no clever resolution. **Frontier work carries a learning tax, and the tax is heaviest where
+the work is most novel.** What the model can honestly do is make the bill visible — say *this claim
+sits in an area where I am the only one who has looked, so my being wrong here would not be caught* —
+rather than let a confident tone stand in for a second opinion that does not exist.
+
+Worked instance from the day this was written: a confident claim about the Mars/Earth simulation was
+caught only because a *second* model was dispatched specifically to refute it, and it did. Had that
+model been unavailable, the claim would have shipped, and the only remaining corrector would have been
+the human — on material where the relevant expertise is Kepler mechanics and hyperbolicity. That is the
+forced set, demonstrated rather than theorised.
 
 ## Conceptual rigor precedes symbolic rigor
 
