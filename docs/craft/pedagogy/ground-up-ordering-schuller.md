@@ -412,6 +412,54 @@ Papert, *Mindstorms* (1980) — constructionism; the Lego framing is his lineage
 citation because the claim *"people learn by assembling pieces"* is exactly the thing that needs an
 anchor rather than an assertion.
 
+## Who this is for, and why the forced set is the product
+
+> **Aaron, 2026-08-13:** *"A lot of vibe coders want to know what i know over time, they don't want to
+> fully rely on the AI, so i think craft school will be very popular."*
+
+Worth recording because it identifies the audience precisely, and because **the thing that audience
+wants is the forced set** — they just do not have a name for it.
+
+The vibe coder's felt problem is exactly the failure mode described above: they have deferred every
+node, the deferral worked, and they can sense that it leaves them somewhere bad. What they are
+reaching for is not "learn to code properly" and not "learn everything the model knows" — both are
+unbounded, and the second is not even coherent. It is: *which parts must I actually hold, so that I
+am not a rubber stamp on work I cannot check?*
+
+That is the forced-set question, and this document already has an answer to it that is better than
+what the market currently offers:
+
+- **The unbounded answer** — *learn it all, AI is making you lazy* — is the common advice and it is
+  useless, because it is infinite and it is not prioritised.
+- **The forced-set answer is bounded and computed**: learn the nodes where you are the last line of
+  correction. Not the ones that feel advanced, not the ones a curriculum author learned early — the
+  ones where *no other model is reachable or competent*, so a wrong result would not be caught by
+  anyone but you.
+
+That reframes the pitch honestly. It is not *you should understand your code*, which is moralising
+and which everyone already nods along to and ignores. It is: **most of what the AI does for you, you
+genuinely do not need to hold — another model can check it. Here is the specific, smaller set where
+that is false, and it is computed from the correction topology rather than from anyone's opinion.**
+And it *shrinks* as models improve, which is a promise the moralising version cannot make.
+
+Two things follow for what gets built:
+
+- **The forced-set calculation is the product, not the curriculum.** The lessons are the delivery
+  vehicle. Anyone can write lessons; the differentiator is telling someone *which* lessons are
+  load-bearing for them specifically, and being able to show the derivation.
+- **It should be honest about shrinking.** A node leaving the forced set because a model got good at
+  that area is a *success*, and the tool should say so rather than protecting its own syllabus. A
+  course that never tells you that you can stop is selling something else.
+
+### Related gap: the category has no shape
+
+Aaron, same session: *"do we have a shape of the category anywhere?"* — **No.** `db/shapes/cartridges/`
+carries 19 cartridges including `braid`, `crossing`, and `plait-move`, but those render the *object's*
+diagrams. There is no `meno.lines` and no cartridge for the category itself. Given the visual/blocks
+plan above, a categorical shape would be the first of its kind in a catalog that is currently all
+geometric and physical — and the braided structure (strands crossing, over/under, the twist) is about
+as renderable as mathematics gets.
+
 ## Conceptual rigor precedes symbolic rigor
 
 > "rigor in mathematics is of course extremely important. But for me the best rigor is the conceptual
