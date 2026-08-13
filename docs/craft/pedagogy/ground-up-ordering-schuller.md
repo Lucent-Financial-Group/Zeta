@@ -242,6 +242,83 @@ model been unavailable, the claim would have shipped, and the only remaining cor
 the human — on material where the relevant expertise is Kepler mechanics and hyperbolicity. That is the
 forced set, demonstrated rather than theorised.
 
+## Is this a Merkle DAG? Nearly — and "bidirectional" is the right word
+
+> **Aaron, 2026-08-13:** *"is this similar to merkel DAG, is this kind of a bidirectional merkle?"*
+
+Yes, and more exactly than a first pass suggests. The obvious objection — *"a Merkle node's hash is
+just a fold of its children, but a concept carries its own irreducible content"* — is **wrong about
+Merkle**. A Merkle node hashes its own payload *together with* its children:
+
+```text
+hash(n) = H( payload(n) ‖ hash(c₁) ‖ … ‖ hash(cₖ) )
+```
+
+Which is exactly a concept: *its own definitional content, plus the closure of everything it is not
+statable without.* "Smooth manifold" has irreducible content of its own AND is determined in part by
+what a topological manifold is. The structural match is real.
+
+**Change propagation matches too, and this is the load-bearing part.** Alter a leaf and every ancestor
+hash changes. Alter what you mean by "set" and everything above it is invalidated — not wrong
+necessarily, but *no longer known to be right*. That is the same operation.
+
+### Why "bidirectional" is precisely correct
+
+A Merkle DAG under lazy resolution already runs in both directions at once, and **git and IPFS both
+work exactly this way**:
+
+- **Resolution descends.** You hold a root hash and fetch children *on demand* — partial clone,
+  shallow fetch, IPFS block resolution. You never materialise the whole closure.
+- **Verification ascends.** A proof composes from the leaf upward; validity at the root depends on
+  every child hash beneath it.
+
+Map that onto the curriculum and it is the same two directions:
+
+- **Demand descends** — enter where the work put you, resolve a prerequisite only when you hit
+  something not statable without it (§ *Zeta's traversal is the dual*).
+- **Validity ascends** — a claim at your entry node is only as sound as the subtree beneath it.
+
+So Zeta's traversal is not an *alternative* to Schuller's; it is **lazy resolution over the same
+DAG Schuller resolves eagerly.** He materialises the full closure ahead of time because a course knows
+its destination. Working code does not, so it resolves by need. Same graph, same edges, different
+fetch strategy — and the strategy names already exist (eager vs call-by-need, full clone vs partial).
+
+### What this buys: the forced set gets a mechanism instead of a policy
+
+Content-address the concept graph and **invalidation becomes computable**. Change a foundation, and
+every dependent node's hash changes — which mechanically marks every understanding built on it as
+**stale**. That converts *"which areas must a human maintain"* from a standing policy question into a
+live query: *what has changed underneath what this person last descended to?*
+
+Combined with the correction-topology test above, the forced set becomes:
+
+```text
+forced(node) = human_is_last_corrector(node) AND stale_since_last_descent(node)
+```
+
+Both conjuncts are computable in principle. Neither is a judgement call.
+
+### The honest limit
+
+**You can content-address the graph. You cannot hash understanding.** A Merkle DAG verifies by
+*recomputation* — that is the whole trick, and it has no analogue here: there is no canonical
+serialisation of "what a manifold means", and no way to recompute whether a person actually holds a
+node. So the mechanism gives you **invalidation** (what went stale, computably) but not
+**attestation** (who genuinely knows it). Claiming otherwise would be building a compliance theatre —
+a green checkmark asserting knowledge nobody verified, which is this week's recurring defect class
+wearing a cryptographic costume.
+
+### And it closes a loop from the same day
+
+Content-addressing already appeared this morning as *the principled answer to dynamic memory
+allocation*: when the address moves under you, stop addressing by location and address by content
+(the Merkle fixpoint locator, versus a pointer chain that breaks whenever the allocator moves things).
+The identical move works here — when the learner's *position* in the graph moves, you cannot index
+understanding by "where they are in the syllabus", so you index it by **what it depends on**. Same
+answer, twice, to two problems that look unrelated. In-tree the primitive already exists
+(`src/Core.CSharp/ZSetMerkle.cs`, `src/Core.Abstractions/IContentHasher.cs`, the content-addressed
+store); what does not exist is the concept graph to run it over.
+
 ## Conceptual rigor precedes symbolic rigor
 
 > "rigor in mathematics is of course extremely important. But for me the best rigor is the conceptual
