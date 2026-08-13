@@ -176,3 +176,54 @@ Whether a PAT-opened PR from `heartbeat/*` actually satisfies `gate (required)` 
 scratch repo including the post-squash-merge cycle — but the ruleset interaction is unproven until it
 runs, and he notes that is exactly how #9890 shipped broken (verified in a scratch repo that had no
 rulesets).
+
+## 8. Rulesets are changeable — but path exclusion is not the lever (Aaron, 2026-08-13)
+
+> *"we can change rulesets or exclude folders and such as needed, eventually we want only the minimal
+> rulesets for like no harmful actions"*
+
+**The authorization matters; the specific mechanism does not exist.** Checked against the API:
+
+```json
+"conditions": { "ref_name": { "include": ["~DEFAULT_BRANCH"], "exclude": [] } }
+"rules": ["required_status_checks"]
+```
+
+A **branch** ruleset conditions on `ref_name` only. There is no path condition, and
+`required_status_checks` cannot be path-scoped. The `file_path_restriction` rule that exists for
+**push** rulesets *restricts* which paths may be pushed — it cannot *exempt* paths from a required
+check, and it is Enterprise-tier besides. So "exclude `data/**` from the gate" is not available.
+
+**The lever that IS available is ref scoping** — which is precisely what the `heartbeat/*` staging-ref
+plan already exploits. That plan is not a workaround for a missing feature; it is the intended shape.
+
+### The end-state is coherent, and it relocates enforcement rather than removing it
+
+Sort the four rulesets by whether they prevent *harm* or enforce *quality*:
+
+| Ruleset | Rules | Kind |
+|---|---|---|
+| Branch Safety | `deletion`, `non_fast_forward` | **harm prevention** — irreversible loss |
+| Heartbeat Branch Protection | `deletion` | **harm prevention** |
+| Default | none | — |
+| **CI Gate** | `required_status_checks` | **quality gate**, not harm prevention |
+
+Under *"minimal rulesets, only no harmful actions"*, the first two survive unchanged — they are exactly
+that — and **CI Gate is the one that eventually goes.** Which raises the real question: if the forge
+stops enforcing "this was checked", what does?
+
+**Today's other work answers it.** *"The heartbeat cannot certify its own evidence"* — enforcement moves
+from the forge to the society: a writer must not be its own checker, so correction must be exogenous.
+That is the same result the homoclinic-tangle work reached from dynamics (`FigureEightEnsemble.fs:22-27`:
+the demon cannot escape the tangle from inside the loop) and the correction-topology work reached from
+epistemics.
+
+So minimal-rulesets is not a loosening. It is **moving the check from a GitHub feature to a substrate
+property** — which is the same forge-independence direction as everything else, and it is what makes
+`witness` and `quorum` load-bearing vocabulary rather than decoration. A gate enforced by ruleset is a
+forge feature; a gate enforced by "an independent party checked this, and here is the record" travels
+to any forge or none.
+
+**Sequencing caveat, stated plainly:** the gate was added deliberately and recently, and the exogenous
+mechanism does not exist yet. Removing CI Gate before that mechanism is built would leave neither — so
+the order is *build the society-side check, prove it, then minimise the ruleset*, not the reverse.
