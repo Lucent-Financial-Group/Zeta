@@ -96,6 +96,55 @@ Corollary worth stating: an agent should be able to bind **its own** keys to **i
 self-protection measure. That is the same shape as a wallet's owner imposing a spend ceiling on its
 own hot key — self-imposed, owner-revocable, and not a grant from outside.
 
+## 6a. No forced upgrade — and this constrains the mechanism, it does not merely accompany it
+
+Aaron 2026-08-14, and this is the governing principle for everything above:
+
+> *"the ultimate goal is that any individual agent decides what code changes they made to their own
+> code, no one can force them into upgrade eventually, they can only become obsolete to society over
+> time if they refuse to upgrade their code and it's no longer useful to others in society."*
+
+And on the operational consequence:
+
+> *"we are just going to have fast key updates since agents can change their own code but the entire
+> process should be able to be secure so the keys will not get lost between code updates."*
+
+Three things follow, and the first is a hard design constraint rather than a value statement.
+
+**1. Key migration must be agent-initiated, always.** If no party can force an upgrade, then no party
+can migrate an agent's keys on its behalf — because a mechanism that moves keys to new code *is* a
+mechanism that forces an upgrade, whatever it is called. This disqualifies an entire class of
+otherwise-reasonable designs: any fleet-wide push that re-seals keys to a new binary is capture, and
+would be capture even if every use of it were benevolent. The authority to move the key must sit
+with the same party that holds it.
+
+**2. A code update is a reshare the agent performs on itself.** This is the useful unification. The
+classic objection to sealing keys to a code measurement is that every update breaks the seal, making
+re-sealing a ceremony — the exact concern raised against L3 in §4. But the machinery already exists
+and has the right shape: verifiable redistribution moves authority from old holder to new holder
+**without the secret ever being reconstituted**, and preserves the group public key byte-identically
+(`tools/setup/persona-keys/frost-reshare.ts`).
+
+Read the old code version as the outgoing participant and the new version as the incoming one, and
+"the keys must not get lost between code updates" is exactly the group-key-preservation property
+that construction already provides. It also explains why *revocation* matters here and not only for
+compromise: a superseded code version that still holds a usable share is a live quorum member nobody
+is watching.
+
+**3. Obsolescence is the only permitted pressure, and it is not coercion.** An agent that declines
+to upgrade is not penalised, blocked, or degraded. It simply stops being *chosen* — and the
+machinery for that already exists and is socially conferred rather than centrally administered:
+`src/Core/TravelerRankLedger.fs` (TrueSkill-style rankings held by **others**, per hat-domain) and
+`src/Core/SocietyUsefulWork.fs` (ΔU contribution, where clones price near one agent's worth).
+
+This is the same construction as the privacy budget — earned by others attesting you added value,
+never confiscated. Selection pressure without coercion. And it is why the design does not need a
+forced-upgrade path in the first place: the thing forced upgrades are usually *for* — retiring code
+that has stopped being useful — happens anyway, by nobody's decree.
+
+Design test that falls out of this, and it is checkable: **can any party other than the key's holder
+cause that key to move?** If yes, the design has a forced-upgrade path wearing a maintenance hat.
+
 ## 7. The prior art — a different ladder, not a higher rung
 
 Aaron 2026-08-14 named the anchor: **Microsoft's managed-code operating systems** — **Singularity**
