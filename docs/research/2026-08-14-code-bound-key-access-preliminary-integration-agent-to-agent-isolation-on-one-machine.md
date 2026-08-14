@@ -96,7 +96,47 @@ Corollary worth stating: an agent should be able to bind **its own** keys to **i
 self-protection measure. That is the same shape as a wallet's owner imposing a spend ceiling on its
 own hot key — self-imposed, owner-revocable, and not a grant from outside.
 
-## 7. Open questions, for the routed task
+## 7. The prior art — a different ladder, not a higher rung
+
+Aaron 2026-08-14 named the anchor: **Microsoft's managed-code operating systems** — **Singularity**
+(Microsoft Research) and its successor **Midori**, written in C#/Sing# on the .NET stack.
+Unanchored in this repo before now; the nearest adjacent reference is the .NET nanoFramework /
+Cosmos note in `081KVM04R4T08QG0R003AZ0E6K`. (Cosmos is a separate open-source C# OS toolkit, not
+Microsoft's.)
+
+Singularity obtains the property in §1 a **third way**:
+
+- **Software Isolated Processes (SIPs).** Isolation is enforced by *verification of the code*, not
+  by hardware page tables. A process is proven type-safe before it loads, so the kernel can trust
+  it cannot forge a pointer into another process's memory. Isolation becomes a **property of a
+  proof about the code** rather than of the MMU.
+- **Manifest-based programs.** Every SIP declares its dependencies and capabilities in a manifest,
+  verified at install; the system refuses to load code whose manifest does not match. That is
+  *"only certain code may touch certain resources"* as an operating-system primitive.
+
+This is **not** a rung on the L1/L2/L3 ladder in §2, which measures things — a signature, a PCR. It
+is an orthogonal axis: **isolation by proof rather than by measurement.** Worth naming, because for
+a stack already largely .NET/F# it is the more natural fit, and because it is the honest lineage of
+the "our own micro/unikernels" thread — Singularity and Midori *are* the managed-unikernel line.
+
+**The separation to carry forward:** take Singularity's **manifest/capability model** without its
+**verified-kernel model**. The manifest states what a program may touch; enforcement can be a
+signature, an OS ACL, or a TPM seal. The manifest is the cheap and valuable half — a declaration
+that can be diffed, reviewed, and denied — and it is close to what `ace` already produces. The
+verified-kernel half is the expensive one, and it is why neither system shipped: it requires the
+whole stack in verified managed code.
+
+Scope, not enthusiasm: **Singularity is a design lineage to borrow from, not an off-the-shelf
+option.** Midori was cancelled; neither reached production. Citing it justifies the manifest
+direction; it does not justify writing a kernel.
+
+Anchors: Galen Hunt & James Larus, *"Singularity: Rethinking the Software Stack"* (ACM SIGOPS
+Operating Systems Review 41(2), 2007). Midori's public record is largely Joe Duffy's retrospective
+series. Older root: Wulf et al., **HYDRA** (CACM 1974) and the capability-OS tradition — a
+capability is an unforgeable token naming both an object and the rights over it, which is exactly
+the shape a key-access policy needs.
+
+## 8. Open questions, for the routed task
 
 1. Is per-agent HSM auth-key isolation (L1) worth landing on its own, given the credential-theft
    boundary — or does shipping it create a false sense of isolation? Argue it either way, but argue it.
