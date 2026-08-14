@@ -505,10 +505,16 @@ running and every test still passes.
 - `src/Core.TLA/specs/WagerSolvency.tla` plus 5 configs — floor, socialised loss, solvency
 - `tests/Tests.FSharp/Formal/Tlc.Runner.Tests.fs` — three default-config tests added
 
-**Verification status of the F# change:** the .NET SDK does not resolve in this worktree (mise
-config untrusted; sdk-not-found despite 10.0.301 being installed), so `dotnet build` could
-**not** be run locally. The three added tests are literal copies of the existing `assertSpecValid`
-pattern, but that is an argument, not a build. **The gate is the verification.**
+**Verification status of the F# change — UPDATED 2026-08-13, second pass.** The first pass could
+not build locally and said so. Root cause found on the follow-up, and it is worth naming because
+the next agent will hit it: `global.json` pins `10.0.302` with `rollForward: latestPatch`, the
+machine had `10.0.301`, and `latestPatch` cannot roll **backward** — so the pin was unsatisfiable
+and `dotnet` reported `sdk-not-found` while printing a list that appeared to contain a usable
+SDK. `mise trust` on this worktree exposed the 10.0.302 toolchain and resolved it.
+
+**Now verified locally, under the exact invocation CI uses:** `dotnet build -c Release` —
+**0 warnings, 0 errors**; `dotnet test --filter TlcRunnerTests` — **36 passed, 0 failed**
+(3m 31s), covering all three specs added here alongside the 30-odd pre-existing ones.
 
 ---
 
@@ -535,3 +541,53 @@ pattern, but that is an argument, not a build. **The gate is the verification.**
 - `docs/research/2026-08-10-synchrony-non-transfer-audit-bftconsensus-checks-a-counting-tautology.md` — the audit whose falsifiability discipline this work follows
 - `.claude/rules/privacy-budget-is-hard-money-earned-by-others.md` — spend/stake/confiscate
 - `.claude/rules/dual-use-detection-is-neutral-oracle-decides.md` — why section 4b is a statement rather than a fix
+
+---
+
+## 14. Postscript — CI run on #10452 went red, and the cause was mine
+
+`TLC validates QuorumPhaseCancellation` failed in `build-and-test (ubuntu-24.04)` with
+**exit 11, `Error: Deadlock reached.`** Recorded here rather than quietly fixed, because the
+diagnosis is a clean instance of a failure class this document is otherwise about.
+
+**It was not a violated property, and it was not the missing-config gap.** TLC resolved the
+correct default `QuorumPhaseCancellation.cfg` and explored exactly the state space recorded in
+section 4a — 48 distinct states, depth 5. Every property verdict was unchanged.
+
+**The cause was a harness mismatch in my own measurement.** The runs recorded in this document
+were driven by a script passing `-deadlock`, which *disables* TLC deadlock checking.
+`Tlc.Runner.Tests.fs` passes no such flag. `QuorumPhaseCancellation` is a **one-shot** model:
+every member contributes once, there is no round structure and nothing to do afterwards, so once
+`given = Members` no action is enabled and TLC correctly calls the terminal state a deadlock.
+That terminal state *is* the model — a quorum that has finished contributing.
+
+The two sibling specs added in the same round do not hit this because each carries an explicit
+stutter disjunct in `Next`. Both were re-run under the exact CI invocation to confirm:
+`QuorumCollateral` green at 49,674 distinct states, `WagerSolvency` green at 324 — identical to
+the numbers in sections 3 and 5.
+
+**Fix:** `CHECK_DEADLOCK FALSE` declared in the four phase configs, with the reasoning written
+into each. Deliberately *not* fixed by adding a stutter step to `Next`: a stutter self-loop makes
+the terminal state unreachable-as-terminal and would silence any future genuine deadlock in that
+module without a word. The declaration says out loud which terminal state is intended. Same
+choice `SpineAsyncProtocol.cfg`, `ChaosEnvDeterminism.cfg` and `SpineMergeInvariants.cfg` already
+make in this directory.
+
+**The caveat that cuts the other way, and it is against my own specs:** because
+`QuorumCollateral` and `WagerSolvency` *do* stutter, their deadlock check is **vacuous**. Neither
+makes a deadlock-freedom claim and neither should be read as making one. That is the same
+"green for the boring reason" hazard section 3d exists to guard against, and it applies here.
+
+**What this says about the work-item.** `081KZYRDMZW087G0R0012K4QA0` was filed noting that 12 of
+15 configs never execute. This incident sharpens it: the flags a spec is *measured* under and the
+flags CI *checks* it under were silently different, so a hand-run green and a gated green were
+not the same result. The work-item fix should therefore pin the invocation, not just add
+`-config` — otherwise the next mismatch is a different flag. Raised from P2.
+
+**Correction to two numbers in section 4b and 4a.** State counts for runs that HALT ON VIOLATION
+depend on worker count and exploration order; the earlier figures came from a 4-worker run and
+the CI-equivalent single-worker run halts at 100 and 42 distinct states respectively. **The
+verdicts are identical and are what the section claims** — `NoFullCancellation` VIOLATED under
+`QuorumPhaseUnnormalised`, `CancellationImpliesByzantineContributor` VIOLATED under
+`QuorumPhaseHonestSplit`. Exhaustive runs (`0 states left on queue`) are worker-independent and
+those figures stand unchanged: 48, 162, 49,674, 324.

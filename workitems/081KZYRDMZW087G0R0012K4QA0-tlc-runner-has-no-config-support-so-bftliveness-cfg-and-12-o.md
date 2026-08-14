@@ -2,7 +2,7 @@
 id: 081KZYRDMZW087G0R0012K4QA0
 type: bug
 state: backlog
-priority: P2
+priority: P1
 slug: tlc-runner-has-no-config-support-so-bftliveness-cfg-and-12-o
 title: "TLC runner has no -config support, so BftLiveness.cfg and 12 other configs are ungated"
 created: 2026-08-13T23:48:19.580Z
@@ -58,3 +58,35 @@ depend on, and the liveness runs are minutes-long, so the CI-time budget needs i
 reasonable de-duplication, but the entire TLA+ gate then rests on one leg of the matrix. If that
 leg is dropped or renamed, every TLC check silently stops and every test still passes. Worth a
 guard that asserts the TLC leg actually ran at least once per CI run.
+
+## Sharpened 2026-08-13 by CI run on #10452 — raise from P2
+
+The first spec this round that CI actually checked went **red**, and not for a reason either the
+author or the reviewer predicted. `TLC validates QuorumPhaseCancellation` failed with exit 11,
+`Error: Deadlock reached.`
+
+The cause was **not** the missing `-config` (TLC resolved the right default cfg and explored the
+right 48-state space). It was that the runs recorded in the companion research doc were driven by
+a script passing `-deadlock` — which **disables** deadlock checking — while
+`Tlc.Runner.Tests.fs` passes no such flag.
+
+**So the flags a spec is MEASURED under and the flags CI CHECKS it under were silently
+different.** A hand-run green and a gated green were not the same result, and nothing anywhere
+said so.
+
+That widens this work-item. Adding `-config` support is necessary and not sufficient: the next
+mismatch will be a different flag (`-workers` already changes reported state counts for runs that
+halt on violation; `-depth`, `-simulate` and `-coverage` would all do worse). **The fix should
+pin the whole invocation**, so that the command recorded next to a result is the command CI runs.
+
+Suggested shape:
+
+1. A single source of truth for the TLC invocation — one function that builds the argument list,
+   used by both the F# runner and any hand-run script. If a spec needs `-deadlock`, that belongs
+   in its `.cfg` as `CHECK_DEADLOCK FALSE`, not in whoever happened to type the command.
+2. `-config` support plus `assertSpecValidWithConfig` / `assertSpecViolates`, as originally filed.
+3. For any result quoted in a doc, record the exact invocation alongside it.
+
+Immediate mitigation already landed on #10452: `CHECK_DEADLOCK FALSE` declared in the four
+`QuorumPhase*` configs with the reasoning written in, so the intent is in the artefact rather
+than in a shell history.
