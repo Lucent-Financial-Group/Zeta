@@ -61,6 +61,30 @@ bun tools/setup/persona-keys/frost-hardware-probe.ts
 # new: "Device present: NO", "Honourable tiers: (none)"
 ```
 
+## Second bug, found on the follow-up pass: the roster could collapse to 1-of-N silently
+
+With a YubiKey pack inbound, the question became "what does N tokens actually buy". The answer is
+distribution — one compromised token yields one share — and the code could not deliver it.
+
+- `const slotId = opts.slotId ?? 0` binds every share to slot 0 by default.
+- `C_GetSlotList` is **declared in the FFI symbol table and never called**; there is no slot
+  enumeration anywhere, so nothing discovers which token is where.
+- Worse, and the actual defect: `FrostSealedShareFileV2` recorded **no token identity at all**, and
+  `keyLabel` defaults to the same `zeta-frost-wrap` on every token. An operator provisioning the same
+  wrapping key onto each token — the obvious move: one PIN, plus a spare if one is lost — gets a
+  roster where **any one token opens every share**, with nothing in the artifact, the types, or the
+  logs to distinguish it from a real threshold. Cryptography cannot catch this: the second token
+  genuinely can decrypt.
+
+Fixed by recording `sealedByToken` (label#serial from `C_GetTokenInfo`) and refusing a mismatched
+token on load. It is bound into the AAD *and* the in-plaintext bind string, so stripping or editing
+it fails the binding check even on the non-AEAD PKCS#11 tier. Optional and omitted-when-absent, so
+pre-existing artifacts reconstruct byte-identical AAD and still load. 12 new tests, 7/7 mutants dead.
+
+Slot ids are module-assigned and change with replug order, so they are **not** identities — the
+binding is to label+serial and is re-read on every call rather than cached, or a swapped token would
+inherit the previous one's identity.
+
 ## Follow-ups NOT done here
 
 - A Secure Enclave seal tier (`kSecAttrTokenIDSecureEnclave`, P-256, no AES key-wrap of the shape

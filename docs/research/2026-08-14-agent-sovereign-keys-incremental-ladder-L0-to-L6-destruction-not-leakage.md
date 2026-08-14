@@ -160,7 +160,26 @@ real, honest guarantee — you never need the whole tower to get value.
   inside the boundary; no method returns a share scalar). Its only implementation is software and
   declares `exposureBoundary: "signer-function"`, which narrows the exposure window and is **not** the
   invariant. The `usesWithoutExtract: true` branch of the type has no inhabitant anywhere in the repo.
+- **Hardware inbound 2026-08-14 — read this before it arrives (Nazar).** Aaron has ordered a
+  **YubiKey pack** and a **YubiHSM**. Neither is a rung upgrade, and the arrival must not be read as
+  one: the PKCS#11 finding above is structural, so a YubiHSM 2 lands at **L1 with better hardware**,
+  not L2. Plugging it in changes nothing about invariant 2.
+  **Where the value actually is: the pack, not the HSM.** One YubiHSM holding one key is one point of
+  compromise. *N* YubiKeys each sealing a **distinct** share is a genuine threshold — take one token
+  and you get one share, which is below threshold and worth nothing. That defence comes from the
+  **count**, not the tier, and it is the one real security gain available from this purchase.
+  **It is not automatic.** It holds only if share *i* is openable by token *i* **and by no other
+  token**, and the way it fails is silent: provision the same wrapping key onto every token — the
+  obvious move, since it means one PIN and a spare if one is lost — and any single token opens every
+  share, a roster that has collapsed to 1-of-N with nothing to show it. Cryptography alone cannot
+  catch that, because the second token genuinely *can* decrypt. So the artifact now records **which
+  token sealed each share** (`sealedByToken`, bound into the AAD *and* the in-plaintext bind string,
+  so it cannot be stripped) and a different token is **refused on load**. Exercise it the day the
+  tokens land: `ZETA_FROST_HARDWARE_LANE=pkcs11-multi ZETA_FROST_PKCS11_SLOTS=0,1,2`.
+  **Slot ids are not identities** — they are module-assigned and change with replug order, which is
+  why the binding is to the token's label+serial and is re-read on every call rather than cached.
 - **Cost:** ~$650/YubiHSM 2 × M guards, plus mini-PCs. A 5-guard roster is low-thousands of dollars.
+  Priced honestly: that spend buys **at-rest sealing and roster diversity**, not a rung.
 
 ### L3 — Attestation-gated invocation + confidential-compute combine (closes the RAM gap)
 
