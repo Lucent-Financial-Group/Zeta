@@ -12,6 +12,8 @@
 // SECURITY: shares are ALL required to be protected at rest; ANY k shares reconstruct the secret.
 // Never log share bytes. This module is pure math — no filesystem/network doors.
 
+import { randomBytes as nodeRandomBytes } from "node:crypto";
+
 /** Prime field for byte-wise Shamir (257 is prime; bytes map to 0..255). */
 export const SHAMIR_PRIME = 257;
 
@@ -25,7 +27,7 @@ export interface ShamirShare {
 export interface ShamirSplitOptions {
   readonly threshold: number;
   readonly shares: number;
-  /** Optional deterministic RNG for tests — default `Math.random`. */
+  /** Optional deterministic RNG for DST/tests. Default is the OS CSPRNG, never `Math.random`. */
   readonly random?: () => number;
 }
 
@@ -78,7 +80,31 @@ function lagrangeAtZero(points: Array<{ x: number; y: number }>): number {
   return secret;
 }
 
-function randCoeff(random: () => number): number {
+/**
+ * Uniform coefficient in GF(257).
+ *
+ * P0 FIX 2026-08-14, same class as the FROST one: the default source was Math.random,
+ * a non-cryptographic PRNG whose state is recoverable from its own output. Shamir
+ * coefficients are the ONLY thing hiding the secret from a below-threshold set of
+ * shares, so a predictable coefficient collapses the threshold. The injected door is
+ * unchanged for DST; only the default moved.
+ *
+ * Rejection sampling, not modulo: 257 does not divide 2^16, so `x % 257` would bias
+ * the low residues.
+ */
+function randCoeffCrypto(): number {
+  // 257 * 255 = 65535, so the values 0..65534 map onto GF(257) exactly 255 times each.
+  // Reject the single leftover value (65535) rather than take it and bias residue 0.
+  const LIMIT = SHAMIR_PRIME * 255;
+  for (;;) {
+    const b = nodeRandomBytes(2);
+    const v = (b[0]! << 8) | b[1]!;
+    if (v < LIMIT) return v % SHAMIR_PRIME;
+  }
+}
+
+function randCoeff(random: (() => number) | undefined): number {
+  if (random === undefined) return randCoeffCrypto();
   return Math.floor(random() * SHAMIR_PRIME);
 }
 
@@ -87,7 +113,7 @@ export function shamirSplit(secret: Uint8Array, opts: ShamirSplitOptions): Shami
   const k = opts.threshold;
   const n = opts.shares;
   if (k < 1 || n < k) throw new Error("shamir: require 1 ≤ k ≤ n");
-  const random = opts.random ?? Math.random;
+  const random = opts.random;
   const shareYs: number[][] = Array.from({ length: n }, () => []);
 
   for (let b = 0; b < secret.length; b++) {
