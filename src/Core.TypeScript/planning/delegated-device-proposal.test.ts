@@ -274,11 +274,10 @@ describe("delegated browser device proposals", () => {
       ...value.submission.proposal,
       patchDigest: createHash("sha256").update(protectedPatch.trim()).digest("hex"),
     };
-    const signature = sign(
-      "sha256",
-      Buffer.from(canonicalDeviceProposalIntent(proposal), "utf8"),
-      { key: value.devicePrivateKey, dsaEncoding: "ieee-p1363" },
-    );
+    const signature = sign("sha256", Buffer.from(canonicalDeviceProposalIntent(proposal), "utf8"), {
+      key: value.devicePrivateKey,
+      dsaEncoding: "ieee-p1363",
+    });
     const result = verifyDelegatedDeviceProposal({
       submission: {
         ...value.submission,
