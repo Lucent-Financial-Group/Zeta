@@ -20,6 +20,16 @@ type Frame = {
 
 const LABEL_RE = /^([A-Za-z%][A-Za-z0-9]*)(?:\(([^)]*)\))?(?:\s|;|$)/;
 
+function group(m: RegExpExecArray, i: number, ctx: string): string {
+  const v = m[i];
+  if (v === undefined) throw new Error(`${ctx}: missing capture ${String(i)}`);
+  return v;
+}
+
+function chAt(s: string, i: number): string | undefined {
+  return s[i];
+}
+
 export function parseRoutines(source: string): Map<string, Routine> {
   const routines = new Map<string, Routine>();
   let current: Routine | null = null;
@@ -29,7 +39,7 @@ export function parseRoutines(source: string): Map<string, Routine> {
     if (!/^\s/.test(raw) && LABEL_RE.test(line)) {
       const m = LABEL_RE.exec(line);
       if (m === null) continue;
-      const name = m[1].toUpperCase();
+      const name = group(m, 1, "label").toUpperCase();
       const params = (m[2] ?? "")
         .split(",")
         .map((p) => p.trim())
@@ -48,10 +58,11 @@ function stripComment(line: string): string {
   let out = "";
   let inStr = false;
   for (let i = 0; i < line.length; i++) {
-    const ch = line[i];
+    const ch = chAt(line, i);
+    if (ch === undefined) break;
     if (ch === '"') {
       out += ch;
-      if (inStr && line[i + 1] === '"') {
+      if (inStr && chAt(line, i + 1) === '"') {
         out += '"';
         i++;
         continue;
@@ -90,7 +101,9 @@ export class MumpsRuntime {
     if (routine === undefined) throw new Error(`MUMPS routine missing: ${name}`);
     const frame: Frame = { locals: new Map(), parent };
     for (let i = 0; i < routine.params.length; i++) {
-      frame.locals.set(routine.params[i], args[i] ?? "");
+      const pname = routine.params[i];
+      if (pname === undefined) continue;
+      frame.locals.set(pname, args[i] ?? "");
     }
     return this.execBody(routine.body, frame);
   }
@@ -131,11 +144,11 @@ export class MumpsRuntime {
     if (cmd === "FOR") {
       const m = /^([A-Za-z%][A-Za-z0-9]*)=([^:]+):([^:]+):(\S+)\s+(.+)$/.exec(rest);
       if (m === null) throw new Error(`unsupported FOR: ${rest}`);
-      const iter = m[1].toUpperCase();
-      const start = toInt(evalExpr(m[2], frame, this));
-      const step = toInt(evalExpr(m[3], frame, this));
-      const end = toInt(evalExpr(m[4], frame, this));
-      const body = m[5];
+      const iter = group(m, 1, "FOR").toUpperCase();
+      const start = toInt(evalExpr(group(m, 2, "FOR"), frame, this));
+      const step = toInt(evalExpr(group(m, 3, "FOR"), frame, this));
+      const end = toInt(evalExpr(group(m, 4, "FOR"), frame, this));
+      const body = group(m, 5, "FOR");
       if (step === 0n) throw new Error("FOR step is 0");
       for (
         let i = start;
@@ -189,10 +202,11 @@ function splitTop(input: string, sep: string): string[] {
   let depth = 0;
   let inStr = false;
   for (let i = 0; i < input.length; i++) {
-    const ch = input[i];
+    const ch = chAt(input, i);
+    if (ch === undefined) break;
     if (ch === '"') {
       buf += ch;
-      if (inStr && input[i + 1] === '"') {
+      if (inStr && chAt(input, i + 1) === '"') {
         buf += '"';
         i++;
         continue;
@@ -226,7 +240,8 @@ function tokenize(src: string): Tok[] {
   let i = 0;
   const s = src.trim();
   while (i < s.length) {
-    const ch = s[i];
+    const ch = chAt(s, i);
+    if (ch === undefined) break;
     if (/\s/.test(ch)) {
       i++;
       continue;
@@ -235,49 +250,51 @@ function tokenize(src: string): Tok[] {
       let v = "";
       i++;
       while (i < s.length) {
-        if (s[i] === '"' && s[i + 1] === '"') {
+        const cur = chAt(s, i);
+        const nxt = chAt(s, i + 1);
+        if (cur === '"' && nxt === '"') {
           v += '"';
           i += 2;
           continue;
         }
-        if (s[i] === '"') {
+        if (cur === '"') {
           i++;
           break;
         }
-        v += s[i];
+        v += cur ?? "";
         i++;
       }
       tokens.push({ t: "str", v });
       continue;
     }
-    if (ch === "$" && s[i + 1] === "$") {
+    if (ch === "$" && chAt(s, i + 1) === "$") {
       i += 2;
       const m = /^[A-Za-z%][A-Za-z0-9]*/.exec(s.slice(i));
       if (m === null) throw new Error(`bad $$ at ${s.slice(i)}`);
-      tokens.push({ t: "ext", v: m[0].toUpperCase() });
-      i += m[0].length;
+      tokens.push({ t: "ext", v: group(m, 0, "$$").toUpperCase() });
+      i += group(m, 0, "$$").length;
       continue;
     }
     if (ch === "$") {
       i++;
       const m = /^[A-Za-z%][A-Za-z0-9]*/.exec(s.slice(i));
       if (m === null) throw new Error(`bad $func at ${s.slice(i)}`);
-      tokens.push({ t: "fn", v: m[0].toUpperCase() });
-      i += m[0].length;
+      tokens.push({ t: "fn", v: group(m, 0, "$fn").toUpperCase() });
+      i += group(m, 0, "$fn").length;
       continue;
     }
     if (/[A-Za-z%]/.test(ch)) {
       const m = /^[A-Za-z%][A-Za-z0-9]*/.exec(s.slice(i));
       if (m === null) throw new Error(`bad ident at ${s.slice(i)}`);
-      tokens.push({ t: "id", v: m[0].toUpperCase() });
-      i += m[0].length;
+      tokens.push({ t: "id", v: group(m, 0, "id").toUpperCase() });
+      i += group(m, 0, "id").length;
       continue;
     }
     if (/\d/.test(ch)) {
       const m = /^\d+/.exec(s.slice(i));
       if (m === null) throw new Error(`bad number at ${s.slice(i)}`);
-      tokens.push({ t: "num", v: m[0] });
-      i += m[0].length;
+      tokens.push({ t: "num", v: group(m, 0, "num") });
+      i += group(m, 0, "num").length;
       continue;
     }
     if ("+-*/\\#_()<>:,".includes(ch)) {

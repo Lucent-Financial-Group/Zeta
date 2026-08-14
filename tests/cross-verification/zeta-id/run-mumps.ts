@@ -201,13 +201,13 @@ function main(): number {
       mismatches.push(`missing from committed: ${key}`);
       continue;
     }
-    const aHex = typeof a === "string" ? a : a.hex;
-    const bHex = typeof b === "string" ? b : b.hex;
-    const aCrock = typeof a === "string" ? undefined : a.crockford;
-    const bCrock = typeof b === "string" ? undefined : b.crockford;
-    if (aHex !== bHex) mismatches.push(`${key} hex live=${aHex} committed=${bHex}`);
-    if (aCrock !== bCrock) {
-      mismatches.push(`${key} crockford live=${aCrock} committed=${bCrock}`);
+    if (a === undefined) {
+      mismatches.push(`missing live: ${key}`);
+      continue;
+    }
+    if (a.hex !== b.hex) mismatches.push(`${key} hex live=${a.hex} committed=${b.hex}`);
+    if (a.crockford !== b.crockford) {
+      mismatches.push(`${key} crockford live=${a.crockford} committed=${b.crockford}`);
     }
   }
   for (const key of committedKeys) {
