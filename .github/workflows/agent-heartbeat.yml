@@ -541,50 +541,57 @@ jobs:
           # lost is the git-canonical mirror this repo keeps precisely because the host copy is
           # not durable. This net is what should have drained that hole and never ran.
           #
-          # --limit 25 is a real bound, and it DRAINS rather than spinning: the tool skips
-          # PRs that already have a shard and takes the OLDEST 25 of what is left. Oldest-first
+          # --limit 3 is a real bound, and it DRAINS rather than spinning: the tool skips
+          # PRs that already have a shard and takes the OLDEST 3 of what is left. Oldest-first
           # is deliberate — newest-first with a small cap re-picks the same head every tick and
           # starves the tail (the unbounded-queue starvation bug fixed elsewhere in this file).
           # The backlog drains monotonically; once drained the tool prints "nothing to
           # backfill" and exits 0.
           #
-          # WHY 25 AND NOT 3 — measured 2026-08-14, not estimated (081M00GCA8P087G0R000M00W9S).
-          # Per-invocation cost splits into a FIXED part and a MARGINAL part:
+          # WHY 3 AND NOT 25 — blast radius, not arithmetic (Aaron 2026-08-14).
+          #
+          # The measurement genuinely favours a larger bound. Per-invocation cost splits into a
+          # FIXED part and a MARGINAL part:
           #   fixed:    `gh pr list --state merged --limit 3000` = 30 GraphQL points, ~10s.
           #   marginal: 3 GraphQL points + ~2 REST requests + ~4.4s per PR archived.
           #             (Measured, not derived from the node-count formula, which predicts
           #             ~150 points/PR for the reviewThreads query and is wrong here — GitHub
           #             charged 1 point for each of the three calls.)
-          # So at --limit 3 the step spent 39 GraphQL points to archive 3 PRs: 77% of the
-          # budget went on the listing and 23% on the work. At --limit 25 it spends 105 points
-          # for 25 PRs — 71% useful — and ~2 minutes of wall clock, which fits this cron with
-          # wide margin.
+          # So at --limit 3 this step spends 39 GraphQL points to archive 3 PRs: 77% of the
+          # budget goes on the listing and 23% on the work. At 25 it would be 71% useful and
+          # take the drain from ~9 days to ~27 hours. On cost alone, 25 wins.
           #
-          # Budget headroom, against the 5,000/hour GraphQL and 5,000/hour REST ceilings that
-          # are SHARED with the rest of the fleet (observed fleet draw ~600 GraphQL/hour):
-          # scheduled ticks land ~every 30 minutes in practice, not the */15 the cron asks for,
-          # so 2 ticks/hour => 210 GraphQL points/hour (4.2% of ceiling) and ~100 REST/hour.
-          # At --limit 3 it was 78 points/hour to move 6 PRs.
+          # It is 3 anyway, and the reason is the track record of THIS step specifically:
           #
-          # The OTHER ceiling this has to respect is `timeout-minutes: 10` on this job, which is
-          # the one that would hurt: blowing it kills the whole tick, not just archive duty.
-          # Measured on the three most recent soraya ticks: 136s / 293s / 188s of a 600s budget.
-          # This step ran 18s at --limit 3, so --limit 25 adds ~102s => ~395s worst-observed,
-          # leaving ~34% headroom. That headroom is why the bound is 25 and not 50 (~230s added,
-          # ~523s worst case, which is too close to the wall to be worth 13 hours of drain time).
+          #   Archive bodies under docs/history/pr-reviews/ ever added by a heartbeat commit: 0.
+          #   Checked over 500 commits touching that directory — every one came from
+          #   pr-archive-on-merge.yml or a bulk backfill PR. This lane has never once worked.
           #
-          # Effect on the drain: the ~1,345 unarchived merged PRs go from ~9 days at 6 PRs/hour
-          # to ~27 hours at 50 PRs/hour. Deliberately NOT larger: a one-shot drain of all 1,345
-          # would cost ~4,035 GraphQL points and ~100 minutes, which is affordable in isolation
-          # but leaves the fleet no headroom for an hour and a half, and it would land ~2,690
-          # files in one commit. Bounded, resumable ticks are worth more than one heroic run —
-          # a tick that dies mid-sweep costs at most 25 PRs of rework, and the next tick
-          # re-selects exactly what is still missing because the selector reads the shard store
-          # rather than any run state.
+          # And on 2026-08-14 four defects were found in this one step, in sequence, each
+          # masking the next: `--batch 3` was not an accepted flag (exit 1 on arg parsing);
+          # `| tail -10` swallowed that exit code so the `::warning::` fallback was unreachable;
+          # `--since 7d` compared timestamps LEXICOGRAPHICALLY (`"2026-…" >= "7d"` is false) so
+          # it matched nothing even had the flag parsed; and the commit staged the shard index
+          # while never staging the archive BODY the shard points at.
           #
-          # No `--since`: the backlog reaches back to 2026-07-01, so any recent-window filter
-          # would put the oldest and most at-risk PRs permanently out of reach. The listing is
-          # already bounded by MERGED_LIST_LIMIT inside the tool, and `--limit` bounds the work.
+          # That last one is why the bound is the safety knob rather than a throughput dial. It
+          # is SELF-SEALING: `selectBatch` skips any PR that already has a shard, so a shard
+          # written without its body is never re-selected and never repaired. A bulk drain under
+          # that defect would have converted ~1,345 PRs missing from the mirror into ~1,345
+          # permanent dangling pointers.
+          #
+          # Four defects in one step in one day makes a fifth likely enough that cheap discovery
+          # beats fast completion. At 3, an undiscovered defect costs 3 PRs and shows up in the
+          # first flush. At 25 it costs 25. The drain is not urgent — these PRs have been out of
+          # the mirror for six weeks, GitHub still holds the threads, and 9 days versus 27 hours
+          # buys nothing against that risk.
+          #
+          # RAISE IT once this lane has produced a few clean ticks — at which point it will have
+          # a track record for the first time, and the measurement above is already done.
+          #
+          # The OTHER ceiling this must respect is `timeout-minutes: 10` on this job: blowing it
+          # kills the whole tick, not just archive duty. Measured on the three most recent soraya
+          # ticks: 136s / 293s / 188s of a 600s budget, with this step at 18s under --limit 3.
           #
           # NO PIPE on the command itself — the output is captured, then printed separately —
           # because piping is what hid the failure for months. The exit code is checked
@@ -594,7 +601,7 @@ jobs:
           echo "[archive] Checking for un-archived merged PRs..."
           set +e
           ARCHIVE_OUT=$(bun src/Core.TypeScript/forge-host/github/archive-pr-reviews.ts \
-            --owner Lucent-Financial-Group --repo Zeta --all-merged --limit 25 2>&1)
+            --owner Lucent-Financial-Group --repo Zeta --all-merged --limit 3 2>&1)
           ARCHIVE_RC=$?
           printf '%s\n' "$ARCHIVE_OUT" | tail -20
           if [ "$ARCHIVE_RC" -ne 0 ]; then
