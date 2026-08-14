@@ -63,10 +63,10 @@ right fabric for [081KR50HA0008QG0R003T5MZAC](../backlog/P1/081KRA5AR0008QG0R002
 
 ### Recommended BOM (~11 boards, ~$1,050; scale ULX3S 85F up to reach the few-thousand budget)
 
-> **⚠ PRICES BELOW ARE STALE — reverified 2026-08-14 on Crowd Supply:** ULX3S **12F is now $155**
-> (was ~$99) and **85F is now $275** (was ~$155). Both **in stock**, $8 US shipping. The 45F
-> variant is **not** currently listed on Crowd Supply. Recompute before ordering — the "~$1,038"
-> total no longer holds; the same 11 boards are now roughly **$1,700**.
+> **⚠ PRICES BELOW ARE STALE — reverified 2026-08-14 on Crowd Supply:** ULX3S **12F is now \$155**
+> (was ~\$99) and **85F is now \$275** (was ~\$155). Both **in stock**, \$8 US shipping. The 45F
+> variant is **not** currently listed on Crowd Supply. Recompute before ordering — the "~\$1,038"
+> total no longer holds; the same 11 boards are now roughly **\$1,700**.
 
 | Board | FPGA | ~LUTs | Open toolchain | Why | ~Unit | Qty | Subtotal |
 |---|---|---|---|---|---|---|---|
@@ -108,6 +108,7 @@ and the only documented PR target); the 85Fs are what the **payload** needs once
 UP5K is the known-good control.
 
 **What each buys, plainly:**
+
 - **i9/45F** → the *only* device where zero-downtime PR is documented well enough to attempt.
 - **85F** → logic capacity for reversible-gate networks; **no PR advantage** (undocumented frames).
 - **UP5K** → the most trusted open flow, as a control that the toolchain itself is not the bug;
