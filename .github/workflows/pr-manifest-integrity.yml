@@ -39,6 +39,11 @@ on:
   pull_request:
     paths:
       - "src/Core.TypeScript/forge-host/github/**"
+      # The telemetry-flush module is in scope because the derived index staleness bound
+      # DEPENDS on it: agent-heartbeat.yml soraya archive duty is the serialised writer that
+      # repairs the index, and it only lands through this flush. It had no CI test path
+      # either -- which is how a contract regression there stayed invisible.
+      - "src/Core.TypeScript/agent-heartbeats/**"
       - ".github/workflows/pr-manifest-integrity.yml"
   workflow_dispatch:
 
@@ -72,11 +77,14 @@ jobs:
         with:
           bun-version: latest
 
-      - name: Unit tests for the archival + shard tooling
-        # 109 tests across 9 files, about 6 seconds. Before this workflow, zero of them ran in
-        # CI: gate.yml enumerates its bun test targets explicitly and forge-host was never one.
+      - name: Unit tests for the archival, shard and telemetry-flush tooling
+        # About 140 tests across 11 files, roughly 6 seconds. Before this workflow, ZERO of
+        # them ran in CI: gate.yml enumerates its bun test targets explicitly and neither
+        # directory was ever one of them.
         # No bun install step: these tests import node builtins and repo-local modules only.
-        run: bun test src/Core.TypeScript/forge-host/github/
+        run: |
+          bun test src/Core.TypeScript/forge-host/github/
+          bun test src/Core.TypeScript/agent-heartbeats/
 
       - name: Shard store integrity + derived index drift
         env:
