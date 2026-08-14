@@ -55,7 +55,20 @@ function bytesToBase64url(bytes: ArrayBuffer | Uint8Array): string {
   return btoa(binary).replaceAll("+", "-").replaceAll("/", "_").replaceAll("=", "");
 }
 
-function base64urlToBytes(value: string): Uint8Array {
+// The three helpers below deliberately carry NO return-type annotation, and the omission is
+// load-bearing rather than laziness. `Uint8Array` became generic in TypeScript 5.7, and the two
+// toolchains that check this file disagree about how the annotation must be spelled:
+//
+//   root, TS 6.0.3        bare `Uint8Array` widens to `Uint8Array<ArrayBufferLike>`, which is
+//                         NOT assignable to the `BufferSource` that WebAuthn's challenge/id
+//                         fields require -> TS2322
+//   site, TS 5.6.3        `Uint8Array<ArrayBuffer>` is not generic yet -> TS2315
+//
+// No written annotation satisfies both, so #10501 could only trade one error for the other.
+// Inference satisfies both at once: `new Uint8Array(new ArrayBuffer(n))` infers the precise
+// `Uint8Array<ArrayBuffer>` under 6.0.3 and plain `Uint8Array` under 5.6.3, from one spelling.
+// Do not "helpfully" re-add these annotations. See workitem 081KZZ0K0XM087G0R003RNC0C7.
+function base64urlToBytes(value: string) {
   const padded = value.replaceAll("-", "+").replaceAll("_", "/") + "=".repeat((4 - (value.length % 4)) % 4);
   const binary = atob(padded);
   const output = new Uint8Array(new ArrayBuffer(binary.length));
@@ -63,7 +76,7 @@ function base64urlToBytes(value: string): Uint8Array {
   return output;
 }
 
-function randomBytes(length: number): Uint8Array {
+function randomBytes(length: number) {
   const output = new Uint8Array(new ArrayBuffer(length));
   crypto.getRandomValues(output);
   return output;
@@ -103,7 +116,7 @@ export function canonicalProposalIntent(intent: ProposalIntent): string {
   );
 }
 
-export async function sha256Bytes(value: string): Promise<Uint8Array> {
+export async function sha256Bytes(value: string) {
   const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(value));
   return new Uint8Array(digest);
 }

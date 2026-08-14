@@ -27,6 +27,28 @@ the configuration skew it is.
 | TypeScript | `6.0.3` (root `package.json`) | `5.6.3` (subpackage `devDependencies`) |
 | `tsconfig` `target` | set | **absent** (so `tsc` defaults to ES5) |
 
+## The skew is not merely "lagging" — for a while it was UNSATISFIABLE
+
+The sharpest form of this, found while clearing lint on the same file: the two toolchains had
+**contradictory** requirements on one annotation, so no written spelling satisfied both.
+
+| toolchain | `Uint8Array` | `Uint8Array<ArrayBuffer>` |
+|---|---|---|
+| root, TS 6.0.3 | widens to `Uint8Array<ArrayBufferLike>`, **not** assignable to `BufferSource` → **TS2322** | fine |
+| site, TS 5.6.3 | fine | not generic until 5.7 → **TS2315** |
+
+So #10501 did not have a "correct" annotation available to it: fixing `Deploy to GitHub Pages`
+(TS2315, subpackage) necessarily introduced 4× TS2322 in `lint (TS)` (root). Main was green on
+Pages and red on lint for the same file, at the same commit, for exactly this reason — and that
+looked like two unrelated problems.
+
+**Resolved in source by removing the annotations** and letting inference do the work:
+`new Uint8Array(new ArrayBuffer(n))` infers the precise `Uint8Array<ArrayBuffer>` under 6.0.3 and
+plain `Uint8Array` under 5.6.3 — one spelling, both toolchains clean. That unblocks CI but does
+**not** close this item: it is a workaround that happens to exist here, not a general one. The
+next cross-version type disagreement may have no such escape hatch, which is the actual argument
+for aligning.
+
 ## Two CHECKED instances, both from the same skew
 
 1. **`Uint8Array<ArrayBuffer>` — broke `Deploy to GitHub Pages` on main (#10488 → fixed in #10501).**
