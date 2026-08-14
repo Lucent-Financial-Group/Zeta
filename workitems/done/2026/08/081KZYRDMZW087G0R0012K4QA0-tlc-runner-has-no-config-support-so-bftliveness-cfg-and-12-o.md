@@ -1,11 +1,12 @@
 ---
 id: 081KZYRDMZW087G0R0012K4QA0
 type: bug
-state: backlog
+state: done
 priority: P1
 slug: tlc-runner-has-no-config-support-so-bftliveness-cfg-and-12-o
 title: "TLC runner has no -config support, so BftLiveness.cfg and 12 other configs are ungated"
 created: 2026-08-13T23:48:19.580Z
+completed: 2026-08-14T11:04:58.387Z
 depends_on: []
 composes_with: []
 ---
