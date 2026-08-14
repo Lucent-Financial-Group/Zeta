@@ -76,7 +76,8 @@ describe("deriveAttestationId", () => {
     expect(obs.version).toBe(IdVersion.V1);
     expect(obs.category).toBe(Category.WorkItem);
     // Timestamp is DERIVED from the subject's window end, not a mint clock.
-    expect(obs.timestamp).toBe(Date.parse(WINDOW));
+    // `timestamp` is the branded `Milliseconds`, so unwrap before comparing to a number.
+    expect(Number(obs.timestamp)).toBe(Date.parse(WINDOW));
   });
 
   test("the legacy mint decoded to a nonsense id — the condition this fix removes", () => {
