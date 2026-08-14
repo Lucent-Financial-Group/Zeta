@@ -18,7 +18,7 @@ export function createGatedReviewPullRequest(input: {
   readonly repository: string;
   readonly branch: string;
   readonly proposalId: string;
-  readonly issueNumber: number;
+  readonly issueNumber?: number;
 }, execute: HandoffExec = (command, args, options) => {
   execFileSync(command, [...args], options);
 }): void {
@@ -26,13 +26,16 @@ export function createGatedReviewPullRequest(input: {
   // `execFileSync` receives individual, non-shell arguments. The token is scoped to
   // the child environment rather than serialised from the issue body into a URL.
   try {
+    const source = input.issueNumber === undefined
+      ? "a protected-main agent workflow"
+      : `issue #${input.issueNumber}`;
     execute("gh", [
       "pr", "create",
       "--repo", input.repository,
       "--base", "main",
       "--head", input.branch,
       "--title", `proposal: ${input.proposalId}`,
-      "--body", `Passkey-signed proposal from issue #${input.issueNumber}. The branch was created by the bounded verifier; required gates must pass before any merge.`,
+      "--body", `Proposal from ${source}. The branch was created by the bounded verifier; required gates must pass before any merge.`,
     ], { env: { ...process.env, GH_TOKEN: input.token }, stdio: "pipe" });
   } catch {
     throw new Error("teaching error: GitHub refused the review PR handoff; generator: verify the separate token has Pull requests: write and retry the unchanged branch");

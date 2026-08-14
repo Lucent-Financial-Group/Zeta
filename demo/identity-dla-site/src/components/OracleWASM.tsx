@@ -19,17 +19,44 @@
  */
 import { useState, useEffect, useRef, useCallback } from "react";
 
-const ASC_WASM_URL = "/manus-storage/dla_8f1a3cba.wasm";
-const GO_WASM_URL = "/manus-storage/dla_c8f08839.wasm";
-const GO_WASM_EXEC_URL = "/manus-storage/wasm_exec_74c7a3cf.js";
-const WAT_WASM_URL = "/manus-storage/dla_5abba441.wasm";
-const ZIG_WASM_URL = "/manus-storage/dla-zig_5c192117.wasm";
-const EMCC_WASM_URL = "/manus-storage/dla-emcc_00e4c9ed.wasm";
-const LLVM_WASM_URL = "/manus-storage/dla-llvm-opt_2bd67f12.wasm";
-const RUST_WASM_URL = "/manus-storage/dla-rust-opt_48fa29f0.wasm";
+const WASM_BASE_URL = `${import.meta.env.BASE_URL}wasm/`;
+const ASC_WASM_URL = `${WASM_BASE_URL}asc.wasm`;
+const GO_WASM_URL = `${WASM_BASE_URL}go.wasm`;
+const GO_WASM_EXEC_URL = `${WASM_BASE_URL}wasm_exec.js`;
+const WAT_WASM_URL = `${WASM_BASE_URL}wat.wasm`;
+const ZIG_WASM_URL = `${WASM_BASE_URL}zig.wasm`;
+const EMCC_WASM_URL = `${WASM_BASE_URL}emcc.wasm`;
+const LLVM_WASM_URL = `${WASM_BASE_URL}llvm.wasm`;
+const RUST_WASM_URL = `${WASM_BASE_URL}rust.wasm`;
 
 const W = 100, H = 100;
 const N_WALKERS = 800;
+
+function hasWasmMagic(bytes: ArrayBuffer): boolean {
+  const header = new Uint8Array(bytes, 0, Math.min(bytes.byteLength, 4));
+  return header.length === 4 && header[0] === 0x00 && header[1] === 0x61 && header[2] === 0x73 && header[3] === 0x6d;
+}
+
+async function fetchWasm(url: string): Promise<ArrayBuffer> {
+  const response = await fetch(url);
+  if (!response.ok) throw new Error(`WASM asset fetch failed (${response.status}) for ${url}`);
+  const bytes = await response.arrayBuffer();
+  if (!hasWasmMagic(bytes)) throw new Error(`WASM asset contract failed for ${url}: expected 00 61 73 6d, received a non-WASM response`);
+  return bytes;
+}
+
+function canonicalTrajectoryCells(readEntry: (index: number) => number, count: number): Uint8Array {
+  const cells = new Uint8Array(W * H);
+  cells[Math.floor(H / 2) * W + Math.floor(W / 2)] = 1;
+  for (let index = 0; index < count; index++) {
+    const packed = readEntry(index) >>> 0;
+    if (packed === 0xffffffff) continue;
+    const x = (packed >>> 16) & 0xffff;
+    const y = packed & 0xffff;
+    if (x < 128 && y < 128) cells[Math.floor(y * H / 128) * W + Math.floor(x * W / 128)] = 1;
+  }
+  return cells;
+}
 
 // ── Compute D_f from cluster size using JS Math.log (host-side) ──────────────
 function computeDf(clusterSize: number): number {
@@ -55,12 +82,12 @@ interface CompilerResult {
 }
 
 const COMPILERS: Pick<CompilerResult, "name" | "lang" | "color" | "binarySize" | "binarySizeBytes">[] = [
-  { name: "WAT", lang: "WebAssembly Text Format (bare metal)", color: "#f59e0b", binarySize: "697 B", binarySizeBytes: 697 },
+  { name: "WAT", lang: "WebAssembly Text Format (bare metal)", color: "#f59e0b", binarySize: "1.0 KB", binarySizeBytes: 1018 },
   { name: "Zig", lang: "wasm32-freestanding (no runtime)", color: "#f97316", binarySize: "951 B", binarySizeBytes: 951 },
   { name: "C", lang: "Emscripten (clang → WASM, standalone)", color: "#a78bfa", binarySize: "1.1 KB", binarySizeBytes: 1166 },
   { name: "LLVM", lang: "C → LLVM IR → llc-18 -march=wasm32 → wasm-ld-18", color: "#e879f9", binarySize: "1.4 KB", binarySizeBytes: 1389 },
   { name: "Rust", lang: "cargo build --target wasm32-unknown-unknown + wasm-opt", color: "#fb923c", binarySize: "7.4 KB", binarySizeBytes: 7428 },
-  { name: "ASC", lang: "AssemblyScript (TypeScript → WASM)", color: "#2dd4bf", binarySize: "~6 KB", binarySizeBytes: 6144 },
+  { name: "ASC", lang: "AssemblyScript (TypeScript → WASM)", color: "#2dd4bf", binarySize: "5.0 KB", binarySizeBytes: 5106 },
   { name: "Go", lang: "GOOS=js GOARCH=wasm (full runtime)", color: "#60a5fa", binarySize: "~1.5 MB", binarySizeBytes: 1572864 },
 ];
 
@@ -87,23 +114,20 @@ export default function OracleWASM({ seed, onResult }: OracleWASMProps) {
     updateResult(0, { status: "loading" });
     const t0 = performance.now();
     try {
-      const resp = await fetch(WAT_WASM_URL);
-      const buf = await resp.arrayBuffer();
-      const { instance } = await WebAssembly.instantiate(buf, {});
+      const buf = await fetchWasm(WAT_WASM_URL);
+      const { instance } = await WebAssembly.instantiate(buf, { math: { cos_f32: Math.cos, sin_f32: Math.sin } });
       const exp = instance.exports as {
         init: (seed: number) => void;
-        step: (n: number) => number;
+        run: () => void;
         get_cluster_size: () => number;
-        get_cell: (x: number, y: number) => number;
-        get_df: () => number;
+        get_trajectory_entry: (index: number) => number;
       };
       updateResult(0, { status: "running" });
       exp.init(s);
-      exp.step(N_WALKERS);
+      exp.run();
       const clusterSize = exp.get_cluster_size();
       const df = computeDf(clusterSize);
-      const cells = new Uint8Array(W * H);
-      for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) cells[y * W + x] = exp.get_cell(x, y);
+      const cells = canonicalTrajectoryCells(exp.get_trajectory_entry, N_WALKERS);
       updateResult(0, { df, clusterSize, elapsed: (performance.now() - t0) / 1000, status: "done", cells });
       return df;
     } catch (e) {
@@ -117,8 +141,7 @@ export default function OracleWASM({ seed, onResult }: OracleWASMProps) {
     updateResult(1, { status: "loading" });
     const t0 = performance.now();
     try {
-      const resp = await fetch(ZIG_WASM_URL);
-      const buf = await resp.arrayBuffer();
+      const buf = await fetchWasm(ZIG_WASM_URL);
       const { instance } = await WebAssembly.instantiate(buf, {});
       const exp = instance.exports as {
         init: (seed: number) => void;
@@ -147,8 +170,7 @@ export default function OracleWASM({ seed, onResult }: OracleWASMProps) {
     updateResult(2, { status: "loading" });
     const t0 = performance.now();
     try {
-      const resp = await fetch(EMCC_WASM_URL);
-      const buf = await resp.arrayBuffer();
+      const buf = await fetchWasm(EMCC_WASM_URL);
       const { instance } = await WebAssembly.instantiate(buf, {
         wasi_snapshot_preview1: {
           proc_exit: () => {},
@@ -185,8 +207,7 @@ export default function OracleWASM({ seed, onResult }: OracleWASMProps) {
     updateResult(3, { status: "loading" });
     const t0 = performance.now();
     try {
-      const resp = await fetch(LLVM_WASM_URL);
-      const buf = await resp.arrayBuffer();
+      const buf = await fetchWasm(LLVM_WASM_URL);
       const { instance } = await WebAssembly.instantiate(buf, {});
       const exp = instance.exports as {
         init_dla: (seed: number) => void;
@@ -217,8 +238,7 @@ export default function OracleWASM({ seed, onResult }: OracleWASMProps) {
     updateResult(4, { status: "loading" });
     const t0 = performance.now();
     try {
-      const resp = await fetch(RUST_WASM_URL);
-      const buf = await resp.arrayBuffer();
+      const buf = await fetchWasm(RUST_WASM_URL);
       const { instance } = await WebAssembly.instantiate(buf, {});
       const exp = instance.exports as {
         init: (seed: number) => void;
@@ -247,23 +267,23 @@ export default function OracleWASM({ seed, onResult }: OracleWASMProps) {
     updateResult(5, { status: "loading" });
     const t0 = performance.now();
     try {
-      const resp = await fetch(ASC_WASM_URL);
-      const buf = await resp.arrayBuffer();
-      const { instance } = await WebAssembly.instantiate(buf, { env: { abort: () => {} } });
+      const buf = await fetchWasm(ASC_WASM_URL);
+      const { instance } = await WebAssembly.instantiate(buf, {
+        env: { abort: () => {} },
+        "dla-canonical": { cos_f32: Math.cos, sin_f32: Math.sin },
+      });
       const exp = instance.exports as {
         init: (seed: number) => void;
-        step: (n: number) => number;
-        get_cluster_size: () => number;
-        get_cell: (x: number, y: number) => number;
-        get_df: () => number;
+        run: () => void;
+        getClusterSize: () => number;
+        getTrajectoryEntry: (index: number) => number;
       };
       updateResult(5, { status: "running" });
       exp.init(s);
-      exp.step(N_WALKERS);
-      const clusterSize = exp.get_cluster_size();
+      exp.run();
+      const clusterSize = exp.getClusterSize();
       const df = computeDf(clusterSize);
-      const cells = new Uint8Array(W * H);
-      for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) cells[y * W + x] = exp.get_cell(x, y);
+      const cells = canonicalTrajectoryCells(exp.getTrajectoryEntry, N_WALKERS);
       updateResult(5, { df, clusterSize, elapsed: (performance.now() - t0) / 1000, status: "done", cells });
       return df;
     } catch (e) {
@@ -287,25 +307,23 @@ export default function OracleWASM({ seed, onResult }: OracleWASMProps) {
       });
       const GoClass = (window as unknown as { Go: new () => { run: (i: WebAssembly.Instance) => Promise<void>; importObject: WebAssembly.Imports } }).Go;
       const go = new GoClass();
-      const resp = await fetch(GO_WASM_URL);
-      const buf = await resp.arrayBuffer();
+      const buf = await fetchWasm(GO_WASM_URL);
       const { instance } = await WebAssembly.instantiate(buf, go.importObject);
       updateResult(6, { status: "running" });
-      go.run(instance);
+      void go.run(instance);
       await new Promise<void>((resolve) => {
         const check = () => {
-          if ((window as unknown as Record<string, unknown>).goWasmDLA) resolve();
+          if ((window as unknown as Record<string, unknown>).dla_init) resolve();
           else setTimeout(check, 50);
         };
         check();
       });
-      const api = (window as unknown as { goWasmDLA: { init: (s: number) => void; run: (n: number) => void; getDf: () => number; getClusterSize: () => number; getCell: (x: number, y: number) => number } }).goWasmDLA;
-      api.init(s);
-      api.run(N_WALKERS);
-      const clusterSize = api.getClusterSize();
+      const api = window as unknown as { dla_init: (s: number) => void; dla_step: (n: number) => number; dla_get_cell: (x: number, y: number) => number };
+      api.dla_init(s);
+      const clusterSize = api.dla_step(N_WALKERS);
       const df = computeDf(clusterSize);
       const cells = new Uint8Array(W * H);
-      for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) cells[y * W + x] = api.getCell(x, y);
+      for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) cells[y * W + x] = api.dla_get_cell(x, y);
       updateResult(6, { df, clusterSize, elapsed: (performance.now() - t0) / 1000, status: "done", cells });
       return df;
     } catch (e) {

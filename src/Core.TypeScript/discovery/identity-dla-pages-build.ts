@@ -15,6 +15,7 @@
  */
 import { cpSync, existsSync, mkdirSync, readFileSync, rmSync } from "node:fs";
 import { join } from "node:path";
+import { IDENTITY_DLA_PAGES_WASM_ASSETS } from "./identity-dla-pages-wasm-assets";
 
 const repoRoot = process.cwd();
 const siteRoot = join(repoRoot, "demo", "identity-dla-site");
@@ -25,6 +26,12 @@ function run(command: string, args: readonly string[], cwd: string): void {
   const result = Bun.spawnSync([command, ...args], { cwd, stdout: "inherit", stderr: "inherit" });
   if (result.exitCode !== 0)
     throw new Error(`teaching error: ${command} ${args.join(" ")} failed with exit ${String(result.exitCode)}`);
+}
+
+function runWithEnvironment(command: string, args: readonly string[], cwd: string, environment: Record<string, string>): void {
+  const result = Bun.spawnSync([command, ...args], { cwd, env: { ...process.env, ...environment }, stdout: "inherit", stderr: "inherit" });
+  if (result.exitCode !== 0)
+    throw new Error(`teaching error: ${command} ${args.join(" ")} failed with exit ${String(result.exitCode)}; generator: enter the declared Nix development shell or use the pinned Pages workflow toolchain`);
 }
 
 /**
@@ -75,6 +82,25 @@ function pnpm(...args: readonly string[]): void {
 }
 
 console.log(`[pages] identity-dla-site: using pnpm@${pnpmVersion} (declared by the site manifest)`);
+const wasmOutput = join(siteRoot, "public", "wasm");
+rmSync(wasmOutput, { recursive: true, force: true });
+mkdirSync(wasmOutput, { recursive: true });
+for (const asset of IDENTITY_DLA_PAGES_WASM_ASSETS) {
+  const source = join(repoRoot, asset.source);
+  if (!existsSync(source)) throw new Error(`teaching error: declared Pages WebAssembly source is missing at ${source}`);
+  cpSync(source, join(wasmOutput, asset.output));
+}
+// Go is declared in flake.nix and installed explicitly by pages-deploy.yml.
+// Building here prevents a Pages release from serving a stale host-storage URL.
+runWithEnvironment("go", ["build", "-o", join(wasmOutput, "go.wasm"), "./src/wasm-dla/go"], repoRoot, {
+  GOOS: "js",
+  GOARCH: "wasm",
+  GO111MODULE: "off",
+});
+const goRoot = new TextDecoder().decode(Bun.spawnSync(["go", "env", "GOROOT"], { cwd: repoRoot }).stdout).trim();
+const goRuntime = join(goRoot, "lib", "wasm", "wasm_exec.js");
+if (!existsSync(goRuntime)) throw new Error(`teaching error: declared Go runtime support file is missing at ${goRuntime}`);
+cpSync(goRuntime, join(wasmOutput, "wasm_exec.js"));
 pnpm("install", "--frozen-lockfile");
 pnpm("check");
 pnpm("exec", "vite", "build", "--config", "vite.config.pages.ts");

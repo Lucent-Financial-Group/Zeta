@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   createProposalIntent,
   downloadJson,
@@ -34,6 +34,10 @@ export default function PasskeyProposalPanel() {
   const [credentialId, setCredentialId] = useState(() => localStorage.getItem(CREDENTIAL_STORAGE_KEY) ?? "");
   const [enrollment, setEnrollment] = useState<PasskeyEnrollment | null>(null);
   const [issueUrl, setIssueUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (expanded && !isCommitSha(baseSha)) void loadBaseSha();
+  }, [expanded]);
 
   const loadBaseSha = async () => {
     setState("loading-base");
@@ -91,31 +95,34 @@ export default function PasskeyProposalPanel() {
     <div style={{ margin: "0.6rem 0", padding: "0.55rem 0.7rem", background: "rgba(59,130,246,0.06)", border: "1px solid rgba(59,130,246,0.28)", borderRadius: 5, fontFamily: "monospace" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "0.5rem" }}>
         <div>
-          <div style={{ color: "#93c5fd", fontSize: "0.63rem", fontWeight: 700 }}>Passkey proposal → gated commit</div>
-          <div style={{ color: "#64748b", fontSize: "0.47rem", marginTop: "0.08rem" }}>Passkey identifies the proposer; a GitHub Action verifies and executes only a branch proposal.</div>
+          <div style={{ color: "#93c5fd", fontSize: "0.63rem", fontWeight: 700 }}>Agent proposals: automatic · human proposals: passkey-gated</div>
+          <div style={{ color: "#64748b", fontSize: "0.47rem", marginTop: "0.08rem" }}>Agents run through GitHub Actions automatically. This panel is only for the one-time human approval boundary.</div>
         </div>
         <button
           onClick={() => setExpanded(value => !value)}
           style={{ background: "rgba(37,99,235,0.14)", border: "1px solid #1d4ed8", borderRadius: 3, color: "#bfdbfe", fontSize: "0.5rem", cursor: "pointer", padding: "0.12rem 0.35rem" }}
-        >{expanded ? "▲ hide" : "▼ propose"}</button>
+        >{expanded ? "▲ hide human controls" : "▼ human proposal (advanced)"}</button>
       </div>
       {expanded && (
         <div style={{ marginTop: "0.45rem", fontSize: "0.53rem", color: "#cbd5e1", lineHeight: 1.5 }}>
+          <div style={{ padding: "0.3rem 0.4rem", background: "rgba(16,185,129,0.06)", borderLeft: "2px solid #10b981", marginBottom: "0.35rem", color: "#a7f3d0" }}>
+            <strong>For agents: no passkey click is needed.</strong> A trusted workflow already running from protected <code>main</code> can submit a bounded unified patch automatically. It can create a review branch only; required checks remain the merge authority.
+          </div>
           <div style={{ padding: "0.3rem 0.4rem", background: "rgba(15,23,42,0.72)", borderLeft: "2px solid #3b82f6", marginBottom: "0.35rem", color: "#94a3b8" }}>
-            This PWA does <strong style={{ color: "#e2e8f0" }}>not</strong> log you into GitHub or hold a shared GitHub key. It asks the operating system or security key for a user-verified passkey assertion. GitHub&apos;s own issue form authenticates the submitter; the later Action owns the bounded branch write.
+            <strong style={{ color: "#e2e8f0" }}>For a human, enrollment is one time only.</strong> Your device passkey identifies the proposer but has no repository write authority. GitHub&apos;s own issue form authenticates submission; the later Action owns the bounded branch write.
           </div>
           <div style={{ display: "flex", gap: "0.3rem", flexWrap: "wrap", marginBottom: "0.35rem" }}>
-            <button onClick={loadBaseSha} disabled={state === "loading-base"} style={{ background: "rgba(59,130,246,0.12)", border: "1px solid #2563eb", borderRadius: 3, color: "#bfdbfe", fontSize: "0.5rem", cursor: "pointer", padding: "0.12rem 0.35rem" }}>{state === "loading-base" ? "loading main…" : "1. bind main SHA"}</button>
-            <button onClick={enroll} disabled={state === "enrolling"} style={{ background: "rgba(139,92,246,0.12)", border: "1px solid #7c3aed", borderRadius: 3, color: "#ddd6fe", fontSize: "0.5rem", cursor: "pointer", padding: "0.12rem 0.35rem" }}>{state === "enrolling" ? "passkey prompt…" : "2. enroll passkey"}</button>
-            {enrollment && <button onClick={() => downloadJson("zeta-proposal-author.json", enrollment)} style={{ background: "rgba(16,185,129,0.12)", border: "1px solid #047857", borderRadius: 3, color: "#a7f3d0", fontSize: "0.5rem", cursor: "pointer", padding: "0.12rem 0.35rem" }}>download enrollment</button>}
+            <button onClick={loadBaseSha} disabled={state === "loading-base"} style={{ background: "rgba(59,130,246,0.12)", border: "1px solid #2563eb", borderRadius: 3, color: "#bfdbfe", fontSize: "0.5rem", cursor: "pointer", padding: "0.12rem 0.35rem" }}>{state === "loading-base" ? "binding protected main…" : "refresh bound main"}</button>
+            <button onClick={enroll} disabled={state === "enrolling" || credentialId.length > 0} style={{ background: "rgba(139,92,246,0.12)", border: "1px solid #7c3aed", borderRadius: 3, color: credentialId.length > 0 ? "#64748b" : "#ddd6fe", fontSize: "0.5rem", cursor: credentialId.length > 0 ? "not-allowed" : "pointer", padding: "0.12rem 0.35rem" }}>{state === "enrolling" ? "device passkey prompt…" : credentialId.length > 0 ? "device passkey ready" : "first time: enroll device passkey"}</button>
+            {enrollment && <button onClick={() => downloadJson("zeta-proposal-author.json", enrollment)} style={{ background: "rgba(16,185,129,0.12)", border: "1px solid #047857", borderRadius: 3, color: "#a7f3d0", fontSize: "0.5rem", cursor: "pointer", padding: "0.12rem 0.35rem" }}>export public enrollment for review</button>}
           </div>
-          <label style={{ display: "block", color: "#64748b", marginBottom: "0.1rem" }}>Base SHA — immutable revision the proposal was reviewed against</label>
+          <label style={{ display: "block", color: "#64748b", marginBottom: "0.1rem" }}>Bound main SHA — loaded automatically; refresh only after editing a proposal</label>
           <input value={baseSha} onChange={event => setBaseSha(event.target.value.trim())} placeholder="Use ‘bind main SHA’" spellCheck={false} style={{ display: "block", width: "100%", boxSizing: "border-box", background: "#0f172a", border: `1px solid ${baseSha.length === 0 || isCommitSha(baseSha) ? "#334155" : "#ef4444"}`, color: "#cbd5e1", borderRadius: 3, padding: "0.25rem 0.35rem", fontSize: "0.5rem", fontFamily: "monospace" }} />
-          <label style={{ display: "block", color: "#64748b", margin: "0.35rem 0 0.1rem" }}>Requested change — exact unified Git patch, included in the signed SHA-256 payload</label>
+          <label style={{ display: "block", color: "#64748b", margin: "0.35rem 0 0.1rem" }}>Human-requested change — exact unified Git patch, included in the signed SHA-256 payload</label>
           <textarea value={payload} onChange={event => setPayload(event.target.value)} placeholder={'diff --git a/docs/example.md b/docs/example.md\n--- a/docs/example.md\n+++ b/docs/example.md\n@@ -1 +1 @@\n-old\n+new'} rows={6} style={{ display: "block", resize: "vertical", width: "100%", boxSizing: "border-box", background: "#0f172a", border: "1px solid #334155", color: "#cbd5e1", borderRadius: 3, padding: "0.3rem 0.35rem", fontSize: "0.52rem", fontFamily: "monospace", lineHeight: 1.45 }} />
           <div style={{ marginTop: "0.32rem", display: "flex", gap: "0.3rem", alignItems: "center", flexWrap: "wrap" }}>
-            <button onClick={createSignedProposal} disabled={!canSign || state === "signing"} style={{ background: canSign ? "rgba(16,185,129,0.15)" : "rgba(71,85,105,0.16)", border: `1px solid ${canSign ? "#059669" : "#475569"}`, borderRadius: 3, color: canSign ? "#a7f3d0" : "#64748b", fontSize: "0.5rem", cursor: canSign ? "pointer" : "not-allowed", padding: "0.14rem 0.4rem" }}>{state === "signing" ? "passkey prompt…" : "3. sign proposal"}</button>
-            {issueUrl && <a href={issueUrl} target="_blank" rel="noreferrer" style={{ color: "#bfdbfe", border: "1px solid #1d4ed8", background: "rgba(37,99,235,0.12)", borderRadius: 3, padding: "0.14rem 0.4rem", textDecoration: "none", fontSize: "0.5rem" }}>4. submit on GitHub ↗</a>}
+            <button onClick={createSignedProposal} disabled={!canSign || state === "signing"} style={{ background: canSign ? "rgba(16,185,129,0.15)" : "rgba(71,85,105,0.16)", border: `1px solid ${canSign ? "#059669" : "#475569"}`, borderRadius: 3, color: canSign ? "#a7f3d0" : "#64748b", fontSize: "0.5rem", cursor: canSign ? "pointer" : "not-allowed", padding: "0.14rem 0.4rem" }}>{state === "signing" ? "device passkey prompt…" : "sign this human proposal"}</button>
+            {issueUrl && <a href={issueUrl} target="_blank" rel="noreferrer" style={{ color: "#bfdbfe", border: "1px solid #1d4ed8", background: "rgba(37,99,235,0.12)", borderRadius: 3, padding: "0.14rem 0.4rem", textDecoration: "none", fontSize: "0.5rem" }}>open GitHub issue ↗</a>}
           </div>
           <div style={{ color: statusColor, fontSize: "0.48rem", marginTop: "0.32rem" }}>{message}</div>
           <div style={{ color: "#475569", fontSize: "0.44rem", marginTop: "0.25rem" }}>Verifier rejection is expected for an unenrolled passkey, expired envelope, replayed nonce, mismatched repository/ref, changed payload, or origin/RP-ID mismatch. Each rejection returns a correction path rather than silently accepting or discarding evidence.</div>
