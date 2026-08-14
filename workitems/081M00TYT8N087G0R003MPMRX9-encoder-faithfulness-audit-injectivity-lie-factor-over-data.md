@@ -90,6 +90,26 @@ Demonstrated in both directions against real code, **mutant not planted — it a
 4. Relocate `SocietalDoraSvg`'s clamp into a refined type (`UnitInterval` / the existing `Bound` DU) so
    the renderer is branch-free and out-of-range fails loudly upstream.
 
+## Why this audit is the *second route*, not just a metric
+
+Applying the repo's own homoiconicity falsifier
+(`081KX93R6EF08QG0R0020AQQWZ:105` — *"a genuine discriminator must compute … by independent routes"*;
+*"the coincidence was built in, not derived"*) to the rendering surfaces:
+
+- **The golden lock is agreement by construction.** `tests/Tests.FSharp/ShapeAcceptance.Tests.fs:59`
+  compares the committed golden against `ShapeRender.toSvg d` — the generator's own output — and
+  `src/Core.FSharp.Cli/Program.fs:16` confirms goldens are *"regenerated, never edited"*. It proves
+  **determinism** and establishes nothing about faithfulness.
+- **The geometry gate IS an independent route and it has fired.** `src/Core/ShapeAcceptance.fs:41-478`
+  checks mathematical known-answer laws, fail-closed at `:479`; `:48-50` records that bounds joined the
+  spiral law *"after Aaron's eye caught the 1100 escape."*
+- **The gap:** nothing reads the rendered SVG and asks what data it depicts. The stroke list is the last
+  common representation; *strokes → SVG bytes* is checked only by construction.
+
+**Tufte's lie factor measures the effect in the graphic against the effect in the data, computed
+separately from the artifact.** That is the missing second route — which is why this audit is a
+discharge condition for the faithfulness claim, not a nicety.
+
 ## Not in scope
 
 Channel ranking against Cleveland–McGill, and adoption of grammar-of-graphics vocabulary

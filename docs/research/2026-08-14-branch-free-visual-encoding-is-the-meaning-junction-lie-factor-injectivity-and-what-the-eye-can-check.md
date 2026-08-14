@@ -348,6 +348,111 @@ and on a correct encoder over its declared domain. It is not the twelfth structu
    the branch-free stance with 27 years of prior art; adopting the vocabulary is cheaper than
    re-deriving it.
 
+## 11. Addendum — applying the repo's own homoiconicity falsifier to the gallery
+
+Aaron pointed at an existing falsifier rather than letting this be re-derived. From
+`workitems/081KX93R6EF08QG0R0020AQQWZ-math-team-route-formalize-the-adinkra-clock-fork-homoiconic.md:105`:
+
+> **"A genuine discriminator must compute the clock and the structure by *independent* routes and check
+> whether they *must* agree, rather than counting the same event twice."**
+
+— and the failure mode it names: **"The coincidence was built in, not derived."** Generalized: for any
+claim that *code and data are the same thing*, compute both views by independent routes and check whether
+agreement is **forced**. If agreement is true by construction, the claim is **a definition wearing a
+finding's clothes**.
+
+`hall/gallery/index.html:7,42` carries the strongest such claim on any visual surface here — the shape
+catalog as *"a program that is its own picture"*, *"generated from a text cartridge, byte-locked"*.
+Applied by **looking at how the goldens are produced**, not by reasoning about it:
+
+### Finding 1 — the golden lock is agreement by construction
+
+`tests/Tests.FSharp/ShapeAcceptance.Tests.fs:55-60`:
+
+```fsharp
+let golden ext = File.ReadAllText(Path.Combine(repoRoot (), "db", "shapes", "golden", s + "." + ext))
+Assert.Equal<string>(golden "svg", ShapeRender.toSvg d)
+```
+
+The golden is compared against **the generator's own output**, and `src/Core.FSharp.Cli/Program.fs:16`
+confirms the production route: *"SVG/HTML are regenerated, never edited (sync by golden lock)."* The
+golden **is** the recorded output of the function it is checked against.
+
+**Verdict: this proves determinism — real, useful, and a genuine `no-binary-in-proof-lineage` win — and
+it establishes nothing whatever about homoiconicity.** The coincidence was built in.
+
+### Finding 2 — but the independent route already exists, and it has actually fired
+
+`src/Core/ShapeAcceptance.fs` is the discriminator, and it predates the work-item that names the
+discipline. Amara's carved sentence in its header (2026-06-12) *is* the falsifier:
+
+> *"no shape is accepted because it looks good — it is accepted because its generated geometry satisfies
+> its known-answer checks … A shape with no known-answer law CANNOT pass geometry — looks are not a law."*
+
+The gate does not compare bytes. It computes a **mathematical known-answer law** and checks the geometry
+against it — 20 shapes carry laws (`ShapeAcceptance.fs:41-478`): the braid word's permutation must be the
+identity and must equal its Artin twin, the worldline must stay inside the lightcone, the fourcorner must
+reach exactly its declared Tsirelson width. **The default at `:479` is fail-closed** — *"no known-answer
+law for this shape — geometry cannot be accepted on looks"* — which is the exact opposite of the vacuity
+class.
+
+**And it has failed in practice**, which is the only evidence that matters. `ShapeAcceptance.fs:48-50`:
+
+> *"bounds joined the law after Aaron's eye caught the 1100 escape — growth alone was never the whole
+> claim; 'visibly logarithmic ON THE COURT' is."*
+
+A check that was strengthened because it missed a real defect a human eye caught is a falsifier with a
+service record. This is also a second data point for §7: the eye caught what the law did not.
+
+### Finding 3 — the gap, and it is exactly where the lie factor belongs
+
+**Nothing anywhere reads the rendered SVG and asks what data it depicts.**
+
+- For 16 of the 20 laws the gate **recomputes** the geometry (e.g. `BoundaryLight.rotorCurve`, invoked
+  identically at `ShapeAcceptance.fs:45` and `ShapeRender.fs:80`) and never reads what was drawn. The
+  *predicate* is independent; the *computation* is shared.
+- For 4 laws it reads `ShapeRender.strokesOf` — the drawn strokes, the closest thing to a return route
+  (`:141, :208, :355, :443`). To the repo's credit, `:442` flags the caveat itself: *"drawn = gated by
+  the SAME computation (ShapeRender.sybilProbesOf, one source)."*
+- The stroke list is the **last common representation**. The projection *strokes → SVG path bytes* is
+  checked **only** by the golden lock — i.e. only by construction.
+
+**So the claim is half-discharged.** The *program* half has a real, fired falsifier. The *picture* half —
+that the rendered marks depict the data — has only a byte-lock.
+
+**And this closes the loop on §5.** A branch-free encoding "unable to lie" is the same claim shape and
+subject to the same falsifier: if the only evidence a rendering is faithful is that the rendering function
+produced it, that is agreement by construction. **Tufte's lie factor is precisely the independent route** —
+it measures the effect *in the graphic* against the effect *in the data*, computed separately, from the
+artifact rather than from the generator. So the lie factor is not merely a useful metric here:
+
+> **It is the second route that makes the faithfulness claim falsifiable at all.**
+
+That upgrades §5 from an assertion to a claim with a discharge condition, and it names what §8's audit is
+actually for.
+
+### Finding 4 — a correction that contradicts the suggestion I was given
+
+I was told the gallery might be the *weaker* instance and `clis/README.md:90-107` (F# ≅ CLI ≅ filesystem)
+the stronger, on the grounds that those three are implemented by genuinely independent systems. **Checked,
+and I disagree**, with a reason:
+
+`clis/README.md` has **no computed agreement at all** — no test, no gate, nothing executed (`rg` over
+`tests/` finds no falsifier for it). The claim is a **structural resemblance asserted in prose**: the F#
+pipe `|>`, the shell pipe `|`, and the MerkleDAG walk are *"the same act over the same representation."*
+Independence of the *systems* is necessary but **not sufficient** — the falsifier requires an executed
+computation whose agreement **could have come out otherwise**. Prose about three independent systems
+supplies independence without a measurement.
+
+So by the falsifier's own standard: **the gallery is the stronger instance**, because it has a
+discriminator that has actually fired; `clis/README.md` has independence without a computation and is
+**undischarged, not merely partially discharged**. Neither is established. The gallery's shortfall is a
+*missing second route for the picture half*; `clis/README`'s is a *missing route entirely*.
+
+**Follow-on, not filed here** (a separate surface from this doc's encoder work): give the `clis/README`
+claim a falsifier or downgrade its register — a test walking the same path through the F# API, the CLI,
+and the filesystem, checking the three results are forced to agree, would settle it and would be cheap.
+
 ---
 
 *Explicit unindexed rationale: this doc is a same-day ferry + analysis; the memory-substrate index entry
