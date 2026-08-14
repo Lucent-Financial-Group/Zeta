@@ -193,6 +193,19 @@ type HeatSignal =
 [<RequireQualifiedAccess>]
 module HeatSignal =
 
+    /// **The single pressure classifier.** `isBackpressureKind` / `isDeniedKind` are the raw
+    /// substring probes and are consumed HERE and nowhere else: this ordered chain is the one
+    /// place in the substrate that turns a kind string into a signal, and `isPressure` reads
+    /// pressure off the resulting signal. Anything that needs "is this kind pressure?" must ask
+    /// `isPressureKind` below, which is *derived* from this chain rather than recomputed beside
+    /// it (081M010W1BP087G0R002M2BNVW: two independent classifiers of one bit disagreed on kinds
+    /// carrying both a forgetting and a pressure token, and the composition law
+    /// — deferral composes, destruction does not — is decided on exactly that bit).
+    ///
+    /// The chain is ORDERED, so a kind carrying two vocabulary tokens is resolved by position,
+    /// not by meaning. That is a real ambiguity and it is closed OUTSIDE this function:
+    /// `lint-heat-kind-classifier-agreement.ts` refuses any emitted kind literal that carries
+    /// both a forgetting token and a pressure token, so the ambiguous class stays empty.
     let ofKind (kind: string) : HeatSignal =
         match HeatSignature.classifyKind kind with
         | HeatSignature.KindClass.Backpressure -> HeatSignal.Backpressure
@@ -225,6 +238,11 @@ module HeatSignal =
         | HeatSignal.Expired
         | HeatSignal.Stale
         | HeatSignal.Other _ -> false
+
+    /// Is this kind string a pressure (deferral) kind? **Derived from `ofKind`, never recomputed.**
+    /// Replaces `HeatSignature.isPressureKind`, which decided the same bit by an independent
+    /// substring disjunction and therefore could — and on dual-token kinds did — disagree.
+    let isPressureKind (kind: string) : bool = kind |> ofKind |> isPressure
 
     let ofSignature (signature: HeatSignature) : HeatSignal =
         ofKind signature.Kind

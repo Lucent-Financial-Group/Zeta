@@ -278,13 +278,74 @@ let ``heat boundary signals classify scheduler rows without caller string parsin
         Scheduler.heatTranscriptSignalTokens [ forgotten; noForgetBackpressure; denied; countOnly; invalid; expired; stale ]
     )
 
+/// Every heat `Kind` literal that can reach a classifier, enumerated from the repo
+/// (081M010W1BP087G0R002M2BNVW). `wset.*` kinds are composed as
+/// `"wset." + WSetFunction + ".forgotten"`, so the erasing `WSetFunction` names are expanded.
+/// The lint `lint-heat-kind-classifier-agreement.ts` re-derives this list mechanically; this
+/// copy exists so the F# semantics below are pinned in the same build that emits the kinds.
+let private liveHeatKinds =
+    [ "bounded.storage-error"
+      "darkhall.backpressure"
+      "darkhall.heat"
+      "darkhall.machine.denied"
+      "darkhall.storage-error"
+      "forgotten"
+      "backpressure"
+      "invalid"
+      "future.unknown-signal"
+      "llmtv.replay.expired"
+      "llmtv.replay.invalid"
+      "llmtv.replay.stale"
+      "llmtv.replay.ttl"
+      "meta-cart.denied"
+      "meta-cart.missing"
+      "meta-cart.policy-backpressure"
+      "prediction.complexity-bound.backpressure"
+      "room-admission.backpressure"
+      "room-admission.forgotten"
+      "room-boundary.door-denied"
+      "room-boundary.privacy-backpressure"
+      "room-horizon.backpressure"
+      "room-horizon.forgotten"
+      "soft-emu.prune"
+      "wset.consolidate.forgotten"
+      "wset.discard.forgotten"
+      "wset.bornProb.forgotten"
+      "wset.plus.forgotten"
+      "wset.tensor.forgotten" ]
+
+/// **The regression the deletion of `HeatSignature.isPressureKind` rests on.**
+///
+/// That function decided pressure by an independent substring disjunction
+/// (`isBackpressureKind || isDeniedKind`); `HeatSignal.ofKind` decides it by an ordered chain
+/// that tests forgetting FIRST. The two disagree exactly on kinds carrying both a forgetting
+/// and a pressure token — and this test is what establishes that **no such kind is emitted**,
+/// which is why collapsing onto the single classifier changed no behaviour.
+///
+/// It is NOT vacuous: it recomputes the deleted disjunction locally and compares. Introduce a
+/// dual-token kind into `liveHeatKinds`, or reorder the `ofKind` chain, and it fails.
+[<Fact>]
+let ``the deleted substring disjunction and the single classifier agree on every emitted kind`` () =
+    Assert.True(liveHeatKinds.Length >= 25, "scan floor: the enumerated kind corpus shrank — re-derive it")
+
+    for kind in liveHeatKinds do
+        // the deleted `HeatSignature.isPressureKind`, recomputed here and nowhere in src/
+        let deletedDisjunction = HeatSignature.isBackpressureKind kind || HeatSignature.isDeniedKind kind
+
+        Assert.Equal(deletedDisjunction, HeatSignal.isPressureKind kind)
+
+    // and the disagreement is real, not hypothetical — these are refused by the lint, never emitted
+    for ambiguous in [ "soft-emu.prune-backpressure"; "cache.forget-denied"; "bounded-forget-rejected" ] do
+        Assert.True(HeatSignature.isBackpressureKind ambiguous || HeatSignature.isDeniedKind ambiguous)
+        Assert.False(HeatSignal.isPressureKind ambiguous)
+
 [<Fact>]
 let ``heat signature classifier is the shared pressure and forgetting rule`` () =
     let nullKind: string = null
 
     Assert.False(HeatSignature.isBackpressureKind nullKind)
     Assert.False(HeatSignature.isDeniedKind nullKind)
-    Assert.False(HeatSignature.isPressureKind nullKind)
+    Assert.False(HeatSignal.isPressureKind nullKind)
     Assert.False(HeatSignature.isForgettingKind nullKind)
     Assert.False(HeatSignature.isInvalidKind nullKind)
     Assert.False(HeatSignature.isExpiredKind nullKind)
@@ -294,15 +355,15 @@ let ``heat signature classifier is the shared pressure and forgetting rule`` () 
     Assert.False(HeatSignature.isBackpressureKind "room-boundary.door-denied")
     Assert.True(HeatSignature.isDeniedKind "room-boundary.door-denied")
     Assert.True(HeatSignature.isDeniedKind "llmtv.replay.rejected")
-    Assert.True(HeatSignature.isPressureKind "room-boundary.door-denied")
-    Assert.True(HeatSignature.isPressureKind "meta-cart.policy-backpressure")
+    Assert.True(HeatSignal.isPressureKind "room-boundary.door-denied")
+    Assert.True(HeatSignal.isPressureKind "meta-cart.policy-backpressure")
     Assert.True(HeatSignature.isForgettingKind "room-horizon.forgotten")
     Assert.True(HeatSignature.isForgettingKind "soft-emu.prune")
     Assert.True(HeatSignature.isStorageErrorKind "bounded.storage-error")
     Assert.True(HeatSignature.isInvalidKind "llmtv.replay.invalid")
     Assert.True(HeatSignature.isExpiredKind "llmtv.replay.expired")
     Assert.True(HeatSignature.isStaleKind "llmtv.replay.stale")
-    Assert.False(HeatSignature.isPressureKind "soft-emu.prune")
+    Assert.False(HeatSignal.isPressureKind "soft-emu.prune")
 
     Assert.Equal(HeatSignal.Backpressure, HeatSignal.ofKind "meta-cart.policy-backpressure")
     Assert.Equal(HeatSignal.Denied, HeatSignal.ofKind "room-boundary.door-denied")

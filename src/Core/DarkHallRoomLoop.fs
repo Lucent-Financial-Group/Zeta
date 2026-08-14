@@ -162,7 +162,7 @@ module DarkHallRoomLoop =
             HeatRejected = signatures.Length
             Backpressured =
                 signatures
-                |> List.filter (fun signature -> HeatSignature.isPressureKind signature.Kind)
+                |> List.filter (fun signature -> HeatSignal.isPressureKind signature.Kind)
                 |> List.length
             HeatKinds = heatKinds
             Reasons = reasons }

@@ -243,7 +243,7 @@ module DarkHallScheduler =
         { HeatRejected = signatures.Length
           Backpressured =
             signatures
-            |> List.filter (fun signature -> HeatSignature.isPressureKind signature.Kind)
+            |> List.filter (fun signature -> HeatSignal.isPressureKind signature.Kind)
             |> List.length
           StorageErrors = 0
           HeatKinds = signatures |> List.map _.Kind
@@ -288,7 +288,7 @@ module DarkHallScheduler =
 
                   HeatSignature.ofMass source kind units (float units) detail)
 
-          if row.Backpressured > 0 && not (row.HeatKinds |> List.exists HeatSignature.isPressureKind) then
+          if row.Backpressured > 0 && not (row.HeatKinds |> List.exists HeatSignal.isPressureKind) then
               HeatSignature.ofMass
                   source
                   "darkhall.backpressure"
