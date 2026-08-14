@@ -235,10 +235,24 @@ export function flush(opts: FlushOptions): number {
     );
     return 3;
   }
-  process.stdout.write(
-    `[flush] ${opts.lane}: PR #${result.ok.number} ${result.ok.reused ? "re-used" : "opened"} ` +
-      `(${result.ok.url}); squash auto-merge armed\n`,
-  );
+  // Do not assert "armed" when it may not be — see openMergePR's note. Arming is a convenience
+  // over work already durably done (branch pushed, PR open); its failure must not fail the flush,
+  // but it must not be silent either, or telemetry accumulates in a PR nobody is watching.
+  if (result.ok.armed) {
+    process.stdout.write(
+      `[flush] ${opts.lane}: PR #${result.ok.number} ${result.ok.reused ? "re-used" : "opened"} ` +
+        `(${result.ok.url}); squash auto-merge armed\n`,
+    );
+  } else {
+    process.stdout.write(
+      `[flush] ${opts.lane}: PR #${result.ok.number} ${result.ok.reused ? "re-used" : "opened"} ` +
+        `(${result.ok.url}); auto-merge NOT armed — telemetry is parked and safe, PR needs a manual squash merge\n`,
+    );
+    process.stdout.write(
+      `::warning::flush ${opts.lane}: PR #${result.ok.number} open and NOT auto-merging. ` +
+        `Reason: ${result.ok.armError ?? "unknown"}\n`,
+    );
+  }
   return 0;
 }
 

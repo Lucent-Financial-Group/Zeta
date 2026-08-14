@@ -124,6 +124,23 @@ export function findExistingPR(repo: string, head: string, base: string): { read
   }
 }
 
+/**
+ * The arm-auto-merge OUTCOME decision, extracted as a pure function so it can be tested.
+ *
+ * `openMergePR` calls `gh` at module scope and is therefore not unit-testable without process
+ * mocking; this is the part that actually encodes the contract, so it is the part that gets pinned.
+ *
+ * The contract: **a failed arm is still a success.** By the time arming runs, the branch is pushed
+ * and the PR exists — the work is durably done. Reporting failure here discards that.
+ */
+export function armOutcome(
+  arm: { readonly status: number; readonly stdout: string; readonly stderr: string },
+  pr: { readonly number: number; readonly url: string; readonly reused: boolean },
+): { readonly number: number; readonly url: string; readonly reused: boolean; readonly armed: boolean; readonly armError?: string } {
+  if (arm.status === 0) return { ...pr, armed: true };
+  return { ...pr, armed: false, armError: (arm.stderr || arm.stdout).trim() };
+}
+
 /** Open PR from head → base + arm auto-merge with squash. Returns PR URL + number. */
 export function openMergePR(
   repo: string,
@@ -131,7 +148,7 @@ export function openMergePR(
   base: string,
   title: string,
   body: string,
-): { readonly ok: { readonly number: number; readonly url: string; readonly reused: boolean } } | { readonly error: string; readonly code: 3 } {
+): { readonly ok: { readonly number: number; readonly url: string; readonly reused: boolean; readonly armed: boolean; readonly armError?: string } } | { readonly error: string; readonly code: 3 } {
   // Idempotency: re-use existing open PR if one is already open head→base
   const existing = findExistingPR(repo, head, base);
   if ("error" in existing) {
@@ -160,13 +177,26 @@ export function openMergePR(
       return { error: `PR-create response parse failed: ${err instanceof Error ? err.message : String(err)}`, code: 3 };
     }
   }
-  // Arm auto-merge with squash via gh CLI (GraphQL under the hood).
-  // Safe to re-arm on already-armed PRs (idempotent).
+  // Arm auto-merge with squash via gh CLI.
+  //
+  // NOT FATAL, and that is the point (2026-08-13). Arming is a CONVENIENCE layered on top of
+  // work that has already succeeded: by the time we get here the branch is pushed and the PR
+  // exists, so the telemetry is durably parked. Returning an error here discarded a successful
+  // flush and turned both heartbeat workflows red on EVERY run for hours while the data kept
+  // landing correctly — a failing exit code on successful work, which is the wrong contract and
+  // the reason nobody noticed the flush was fine.
+  //
+  // Three independent reasons this call is the one to make optional:
+  //   1. The scoped telemetry PAT cannot perform it —
+  //      `Resource not accessible by personal access token (enablePullRequestAutoMerge)`.
+  //   2. `enablePullRequestAutoMerge` is a GraphQL-ONLY mutation with no REST endpoint, and
+  //      GraphQL is the budget that actually rate-limits this fleet (measured 2026-08-13:
+  //      graphql 1147/5000 vs core 33/5000). It cannot be made cheap, only skipped.
+  //   3. It is not load-bearing — see above.
+  //
+  // Safe to re-arm on an already-armed PR (idempotent), so retrying costs only budget.
   const armResult = gh(["pr", "merge", String(prNumber), "--auto", "--squash", "--repo", repo]);
-  if (armResult.status !== 0) {
-    return { error: `arm auto-merge failed (PR #${prNumber}${reused ? " reused" : " opened"}): ${armResult.stderr || armResult.stdout}`, code: 3 };
-  }
-  return { ok: { number: prNumber, url: prUrl, reused } };
+  return { ok: armOutcome(armResult, { number: prNumber, url: prUrl, reused }) };
 }
 
 async function main(): Promise<number> {
@@ -203,7 +233,16 @@ async function main(): Promise<number> {
     console.error(`merge-heartbeats-to-main: ${result.error}`);
     return result.code;
   }
-  console.log(`${result.ok.reused ? "re-used" : "opened"}: PR #${result.ok.number} (${result.ok.url}); auto-merge re-armed (squash)`);
+  // Never claim "armed" unconditionally — a message that asserts more than happened is the same
+  // defect one level up. When arming failed, say so as a GitHub Actions ::warning:: so the run is
+  // green (the merge DID land on the heartbeat branch) while the waiting PR stays visible. A green
+  // tick that silently queues work forever is the failure this repo keeps finding.
+  if (result.ok.armed) {
+    console.log(`${result.ok.reused ? "re-used" : "opened"}: PR #${result.ok.number} (${result.ok.url}); auto-merge re-armed (squash)`);
+  } else {
+    console.log(`${result.ok.reused ? "re-used" : "opened"}: PR #${result.ok.number} (${result.ok.url}); auto-merge NOT armed`);
+    console.log(`::warning::PR #${result.ok.number} is open and NOT auto-merging — it needs a manual squash merge. Reason: ${result.ok.armError ?? "unknown"}`);
+  }
   return 0;
 }
 
