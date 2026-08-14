@@ -5,7 +5,7 @@ export const ZETA_PAGES_ORIGIN = "https://lucent-financial-group.github.io";
 export const ZETA_PAGES_RP_ID = "lucent-financial-group.github.io";
 export const ZETA_PROPOSAL_MAX_LIFETIME_MS = 5 * 60_000;
 
-export type ProposalIntent = {
+export interface ProposalIntent {
   schema: typeof ZETA_PROPOSAL_SCHEMA;
   proposalId: string;
   repository: typeof ZETA_REPOSITORY;
@@ -17,34 +17,42 @@ export type ProposalIntent = {
   changeDigest: string;
   authorCredentialId: string;
   authorRegistrySequence: number;
-};
+}
 
-export type SerializedWebAuthnAssertion = {
+export interface SerializedWebAuthnAssertion {
   credentialId: string;
   authenticatorData: string;
   clientDataJSON: string;
   signature: string;
   userHandle?: string;
-};
+}
 
 export type SignedProposal = ProposalIntent & {
   assertion: SerializedWebAuthnAssertion;
 };
 
-export type PasskeyEnrollment = {
+export interface PasskeyEnrollment {
   schema: "zeta.proposal-author.v1";
   repository: typeof ZETA_REPOSITORY;
   credentialId: string;
   clientDataJSON: string;
   attestationObject: string;
   createdAt: string;
-};
+}
 
 function bytesToBase64url(bytes: ArrayBuffer | Uint8Array): string {
   const view = bytes instanceof Uint8Array ? bytes : new Uint8Array(bytes);
-  let binary = "";
-  for (let index = 0; index < view.length; index++) binary += String.fromCharCode(view[index] ?? 0);
-  return btoa(binary).replaceAll("+", "-").replaceAll("/", "_").replace(/=+$/, "");
+  // `Array.from` rather than `for...of`: this tsconfig sets no `target`, so iterating a
+  // Uint8Array directly is a TS2802 error under the site's own toolchain. Same idiom as
+  // `sha256Hex` below.
+  const binary = Array.from(view, (byte) => String.fromCharCode(byte)).join("");
+  // Padding is stripped with `replaceAll("=", "")` rather than `.replace(/=+$/, "")`.
+  // The regex form is genuinely super-linear (a run of "=" that never reaches end-of-input
+  // backtracks quadratically), and while base64 output bounds that run at 2 so it is not
+  // reachable here, the linear form removes the construct instead of arguing about it.
+  // Equivalent by RFC 4648 §4: "=" occurs in base64 output only as trailing padding, never
+  // interior — so removing every "=" and removing the trailing run are the same string.
+  return btoa(binary).replaceAll("+", "-").replaceAll("/", "_").replaceAll("=", "");
 }
 
 function base64urlToBytes(value: string): Uint8Array {
@@ -65,6 +73,17 @@ export function isCommitSha(value: string): boolean {
   return /^[0-9a-f]{40}$/i.test(value);
 }
 
+/**
+ * Ordinal (UTF-16 code-unit) key ordering. This is the canonical collation the signed challenge
+ * is computed over and is byte-locked against the Node verifier, so it must stay ordinal and must
+ * never become locale-aware — `<`/`>` on strings compare code units, `localeCompare` would not.
+ */
+function compareKeysOrdinal(left: string, right: string): number {
+  if (left < right) return -1;
+  if (left > right) return 1;
+  return 0;
+}
+
 export function canonicalProposalIntent(intent: ProposalIntent): string {
   const fields: Record<string, unknown> = {
     schema: intent.schema,
@@ -80,7 +99,7 @@ export function canonicalProposalIntent(intent: ProposalIntent): string {
     authorRegistrySequence: intent.authorRegistrySequence,
   };
   return JSON.stringify(
-    Object.fromEntries(Object.entries(fields).sort(([left], [right]) => (left < right ? -1 : left > right ? 1 : 0))),
+    Object.fromEntries(Object.entries(fields).sort(([left], [right]) => compareKeysOrdinal(left, right))),
   );
 }
 
@@ -127,8 +146,27 @@ export async function createProposalIntent(input: {
   };
 }
 
+/**
+ * WebAuthn feature detection that stays honest to BOTH the type-checker and the runtime.
+ *
+ * `lib.dom.d.ts` declares `PublicKeyCredential` as a non-optional global
+ * (`declare var PublicKeyCredential: { ... }`), so TypeScript proves `window.PublicKeyCredential`
+ * can never be falsy and reports a plain truthiness guard as an unnecessary condition. That proof
+ * is about the ambient DOM *declarations*, not about any real browser: the lib describes a fully
+ * modern DOM, and a browser without WebAuthn simply has no such property, so the access yields
+ * `undefined`. The guard therefore does real work at runtime — verified: `tsc` emits the branch
+ * verbatim (no type-directed dead-code elimination) and esbuild's minifier preserves it.
+ *
+ * `typeof` is opaque to that narrowing, so the check is now visible as live to the type-checker
+ * too. This matters on a security-adjacent path: a guard the linter calls unnecessary is a guard
+ * the next refactor deletes.
+ */
+function browserSupportsWebAuthn(): boolean {
+  return typeof window.PublicKeyCredential === "function";
+}
+
 export async function enrollProposalPasskey(): Promise<PasskeyEnrollment> {
-  if (!window.PublicKeyCredential)
+  if (!browserSupportsWebAuthn())
     throw new Error("This browser does not support passkeys. Use a current browser with WebAuthn enabled.");
   if (window.location.origin !== ZETA_PAGES_ORIGIN)
     throw new Error(
