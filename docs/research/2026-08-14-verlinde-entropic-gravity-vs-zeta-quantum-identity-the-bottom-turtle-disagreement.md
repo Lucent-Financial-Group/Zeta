@@ -333,10 +333,27 @@ That last row is not a small difference and it is in our favour: a Merkle link i
 you can *verify was not cut*. `src/Core/TravelerFrame.fs` holds the traveler frame;
 `src/Core.CSharp.Merkle` the hash-linked structure; the Z-set fold is the causal accumulation.
 
-**`memraid` — UNANCHORED.** Zero hits repo-wide (case-insensitive). Either a new coinage from this
-conversation or spelled differently on disk. Flagged rather than guessed at; per
-`anchor-to-human-prior-art` an unanchored coinage is a debt until its anchor is named. **Aaron:
-what is memraid — RAID over memory (striping/parity across travelers), or something else?**
+**`memraid` was a mis-hearing of `mermaid` — resolved by Aaron, same session.** I flagged it as an
+unanchored coinage and asked instead of guessing; the answer is that it is **Mermaid**, the diagram
+DSL, and the prior agreement was that *a Mermaid graph is a **bidirectional Merkle DAG***.
+
+That is a better anchor than the debt I raised, and it is load-bearing rather than cosmetic:
+
+- A Mermaid diagram is **text that denotes a DAG** — so it is diffable, mergeable, and content-
+  addressable, which is the whole `no-binary-in-the-proof-lineage` discipline applied to *pictures*.
+  A rendered PNG of the same graph is opaque; the Mermaid source is not.
+- **Bidirectional** is the operative word. A Merkle DAG is one-way by construction: a child cannot
+  name its parent without breaking the hash. A *drawn* graph carries both directions, because the
+  edge is written down rather than derived. So Mermaid is where we get to **say** the back-edge that
+  the hash structure cannot hold — which is exactly the `four-corner feedback ⇒ pseudo-retrocausality`
+  move of §8c, in the documentation layer instead of the execution layer.
+- **Craft school** (`docs/craft/`, `docs/craft/pedagogy/`) is the worked instance: the pedagogy is
+  itself a DAG of dependencies drawn forward for a learner and traversed backward by a teacher.
+
+Against Verlinde: his entanglement gives connectivity with **no preferred direction** and no way to
+read the link off the state. A Merkle DAG gives direction and verifiability but only forward. Mermaid
+is the layer where the reverse edge is *stated*. Three different answers to "why does the left side
+know it is connected to the right," and we hold all three at once.
 
 ### 8c. Four-corner feedback ⇒ pseudo-retrocausality ⇒ CPT emulation ⇒ Landauer
 
