@@ -135,3 +135,87 @@ locking — all **existing technology, cited from standing knowledge and not pag
 `tools/Z3Verify/landauer-floor-lemma.smt2`, `src/Core.Lean4/Lean4/LandauerFloor.lean`,
 `src/Core.TypeScript/algebra/entropy-tracker.ts`, `081KTHY32YQ08QG0R000JWHJYN` (external anchors as
 revocable credence, never load-bearing).
+
+---
+
+## Correction — erasure *at* the Landauer limit makes the energy itself the receipt (Aaron, 2026-08-13)
+
+> it will be thermodynamicall erased at the lauder limit
+
+I under-read the original claim, and the section above is **partially wrong** as written. It says
+"Landauer is the right *conceptual* anchor and the wrong *security* argument." That holds for a
+conventional key wipe, where the dissipation is incidental. It does **not** hold for the design Aaron is
+describing, where erasure happens *at* the limit — because then the **energy is the evidence**.
+
+### Why "at the limit" is the operative phrase, and it is not about efficiency
+
+Landauer 1961 gives a **lower bound**: erasing one bit dissipates at least `kT ln 2` (≈2.8 × 10⁻²¹ J at
+300 K). Ordinary CMOS dissipates on the order of 10⁴–10⁶ `kT` per operation, so in normal hardware the
+Landauer term is buried many orders of magnitude below the incidental heat and carries no information.
+
+**Designing to operate near the limit makes the erasure energy the dominant, measurable term.** That is
+the engineering point, and it has nothing to do with power saving: it makes the thermodynamic receipt
+*legible*. In hardware that already dissipates a million `kT` per op, "I erased 256 bits" is
+unfalsifiable by measurement. Near the limit it is not.
+
+### What this buys, stated in the one-way form this repo uses everywhere
+
+The inference is **necessary, not sufficient**, and that is still valuable — it is the same shape as the
+CHSH oracle and every other instrument here:
+
+- **No erasure without the energy.** You cannot erase `N` bits while dissipating less than `N · kT ln 2`.
+- **Energy without erasure is possible.** Heat can be dissipated for other reasons, so the measurement
+  cannot *confirm* an erasure.
+
+Therefore: **metered dissipation below `N · kT ln 2` falsifies an erasure claim.** It convicts, never
+acquits — exactly the direction `AntiSybil`'s oracle runs, and the correct direction for an adversarial
+claim. An attacker who wants to claim erasure while retaining the key must actually pay the energy, and
+physics does the enforcing rather than a vendor's signature.
+
+That is a materially different guarantee from attested deletion. Attestation says *a device asserts it
+deleted the key*, and chains to a vendor trust root (§1 dependency, as recorded above). A thermodynamic
+receipt is **not an assertion by anyone** — it is a physical quantity. Where both are available they are
+independent evidence with independent failure modes, which is the strongest form: the vendor could lie
+and the physics could not, and a discrepancy between them is itself a detection.
+
+### Where it sits in the guarantee table
+
+The table above put attested erasure at "one-way by device physics." That was imprecise. Refined:
+
+| act | irreversibility | enforced by | forgeable by |
+|---|---|---|---|
+| `frost` | one-way by rule | the substrate | a substrate bug |
+| attested deletion | one-way by device | vendor attestation chain | a compromised trust root |
+| **erasure at the Landauer limit** | **one-way by thermodynamics** | **physics** | **nobody — but only falsifiable, not confirmable** |
+
+### The honest engineering limits, and they are severe
+
+None of these are objections to the direction; they are what has to be true for it to work.
+
+- **The energies are minuscule.** 256 bits × `kT ln 2` ≈ 7 × 10⁻¹⁹ J. Measuring that directly against
+  thermal noise is extraordinarily hard. The practical construction likely needs erasure of many bits, a
+  calorimetric approach, or an amplification scheme — and **the measurement, not the erasure, is the hard
+  part**. This should be scoped before anything is designed around it.
+- **Approaching the bound requires slow, quasi-static erasure.** The Landauer minimum is attained in the
+  adiabatic limit; fast erasure costs strictly more. So there is a real time-versus-energy tradeoff, and
+  a "fast secure erase" cannot be at the limit by construction.
+- **This is near the frontier of experimental physics, not off-the-shelf engineering.** Bérut et al.
+  (Nature, 2012) experimentally verified the Landauer bound for a single bit in a colloidal-particle
+  system; that is the state of the art being invoked, and it is a laboratory result rather than a
+  component one can order. Adiabatic/reversible-computing logic (Bennett 1982's lineage) is the design
+  family, and it has never been commercially mainstream.
+
+**PROPOSED, and the strongest reason to write it down now:** the *design* implication is clear and cheap
+even before any of the physics is achievable — if erasure is ever to carry a thermodynamic receipt, the
+erasure path must be **metered from the start** and the energy accounted to the ledger. Retrofitting a
+measurement to an unmetered path is not possible. `entropy-tracker.ts` already exists for this, which
+means the cheap half can be built long before the expensive half is buildable.
+
+### Anchors (added)
+
+**Bérut, Arakelyan, Petrosyan, Ciliberto, Dillenschneider & Lutz, *Experimental verification of
+Landauer's principle linking information and thermodynamics* (Nature 483, 2012)** — the experimental
+confirmation this rests on. Bennett 1982 for logical reversibility and the adiabatic-computing lineage.
+Koomey et al. on the practical distance between real hardware and the bound. **All cited from standing
+knowledge, not page-checked** — Bérut et al. is the one to verify first, since the feasibility argument
+leans on it.
