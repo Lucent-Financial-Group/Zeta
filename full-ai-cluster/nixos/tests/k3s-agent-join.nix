@@ -64,10 +64,27 @@ pkgs.testers.nixosTest {
       virtualisation.diskSize = 6144; # MB
     };
 
-    agent = { config, pkgs, lib, ... }: {
+    agent = { config, pkgs, lib, nodes, ... }: {
       # The REAL worker module — which also pulls in k3s-join-observer.nix
       # and enables it, exactly as a shipped worker does.
       imports = [ ../modules/k3s-agent.nix ];
+
+      # `k3s-agent.nix` points at https://control-plane:6443 and
+      # `k3s-server.nix` SANs the API certificate for exactly that name. On
+      # hardware the mapping comes from an installer-injected /etc/hosts entry
+      # (still open — see the MULTI-NODE note in k3s-server.nix); here it is
+      # supplied EXPLICITLY rather than pretended solved.
+      #
+      # It must be declarative: on NixOS /etc/hosts is a symlink into the
+      # read-only store, so appending to it at runtime does not work. Taking
+      # the address from `nodes.server` rather than hardcoding 192.168.1.x
+      # also keeps the test correct if the driver ever renumbers the vlan.
+      #
+      # The TLS verification this enables is real: remove `--tls-san=control-plane`
+      # from k3s-server.nix and the join fails on certificate verification.
+      networking.hosts = {
+        "${nodes.server.networking.primaryIPAddress}" = [ "control-plane" ];
+      };
 
       # The agent cannot start before the server's token exists, and the
       # token only exists after the server has come up. So hold k3s back and
@@ -85,7 +102,9 @@ pkgs.testers.nixosTest {
       # than as an opaque driver timeout.
       zeta.k3sJoinObserver.timeoutSec = 240;
 
-      virtualisation.memorySize = 2048; # MB
+      # Same headroom as the server: the agent runs containerd + kubelet, and
+      # an OOM here would look like a join failure.
+      virtualisation.memorySize = 2560; # MB
       virtualisation.cores = 2;
       virtualisation.diskSize = 6144; # MB
     };
@@ -116,17 +135,11 @@ pkgs.testers.nixosTest {
     )
 
     # ── Name resolution the shipped agent config depends on ─────────────
-    # k3s-agent.nix points at https://control-plane:6443, and k3s-server.nix
-    # SANs the API certificate for exactly that name. On hardware the
-    # mapping comes from an installer-injected /etc/hosts entry (still open,
-    # see the MULTI-NODE note in k3s-server.nix); here it is supplied
-    # explicitly rather than pretended solved. The TLS verification that
-    # follows is real: drop the --tls-san and this line stops being enough.
-    server_ip = server.succeed(
-        "ip -4 -o addr show scope global | awk '{print $4}' | cut -d/ -f1 | head -n1"
-    ).strip()
-    assert server_ip, "server has no global IPv4 address"
-    agent.succeed(f"echo '{server_ip} control-plane' >> /etc/hosts")
+    # Supplied DECLARATIVELY on the agent node (networking.hosts, from
+    # nodes.server.networking.primaryIPAddress) — /etc/hosts on NixOS is a
+    # symlink into the read-only store, so a runtime append does not work.
+    # Assert it resolved before relying on it, so a name-resolution failure
+    # reads as a name-resolution failure and not as a mysterious join timeout.
     agent.succeed("getent hosts control-plane")
 
     # ── The join hand-off: k3s's own token, nothing invented ────────────
