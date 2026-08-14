@@ -49,7 +49,7 @@ rendering of it.
 | Brief said | Actual, checked 2026-08-14 |
 |---|---|
 | YubiHSM 2 carries **FIPS 140-2 Level 3** | The **YubiHSM 2 FIPS** SKU is **FIPS 140-3 Overall Level 3**, CMVP cert **#5302**, valid **2026-06-03**. Newer standard. **And the non-FIPS `YubiHSM 2` ($650) has no validation at all** — the inventory's "3× YubiHSM 2" buys the unvalidated SKU. |
-| PR #10685 "just landed" | **Still OPEN** as of 2026-08-14 (`mergedAt: null`), created 2026-08-14T18:53Z. This doc builds on it as an in-flight sibling, not as merged doctrine. |
+| PR #10685 "just landed" | **It landed mid-survey.** Open at first check (`mergedAt: null`), **merged 2026-08-14T19:27:16Z** — recorded rather than silently corrected, because a check that was honest went stale inside an hour, which is the same liveness lesson this doc is about. It **is** merged doctrine now, and §1 extends it. |
 | SoloKeys "had business trouble, may have stalled" | **Shop is live and every SKU is in stock** ($34–$50). But the *hardware* repo `solokeys/solo2-hw` last pushed **2022-04-18**, is **incomplete by its own README**, and is **not openly licensed**. The company is fine; the *open-hardware* claim is what is stalled. |
 | Nitrokey 3 firmware open, hardware unclear | **Nitrokey 3 hardware is the most completely published of the MCU keys**: KiCad schematic **+ `.kicad_pcb` layout + production gerbers**, **CERN-OHL-S-2.0**, pushed **2026-04-24**. More open than Solo 2's. |
 | TKey is "the only candidate with no proprietary link anywhere" | **Too strong.** Design, toolchain and firmware are open end-to-end — *verified*. But the **iCE40 UP5K die is proprietary Lattice silicon** and the **CH552 USB MCU is a proprietary WCH part** (its firmware is open, in-repo, built with SDCC). No retail device escapes proprietary *dies*. The correct claim is **"no proprietary tooling and no proprietary design"**, which is still unique in this field. |
@@ -380,7 +380,7 @@ agent may execute setup (seed/CA/key generation), the human approves each sensit
 ## Pointers
 
 - `docs/inventory/hardware-to-buy.md` — Tier 2 (TKey) and §1 (research FPGA) updated by this survey.
-- PR #10685 (**open** at time of writing) — vendor-root naming; §1 here extends it with *the vendor can be us*.
+- PR #10685 (**merged 2026-08-14T19:27Z**, mid-survey) — vendor-root naming; §1 here extends it with *the vendor can be us*.
 - `docs/research/2026-05-28-kestrel-7th-ferry-…-fpga-landauer-limit-reversible-computing-…md` — Aaron's own Turns 18/20/22.
 - `docs/backlog/P1/081KR50HA0008QG0R0028HNZH0-3-fpga-vhdl-toffoli-synthesis-design.md` — the reversible/irreversible differential.
 - `src/Core.TypeScript/algebra/key-erasure-meter.ts` — the erasure side of the same physics.
