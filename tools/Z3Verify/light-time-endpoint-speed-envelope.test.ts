@@ -35,12 +35,48 @@
 import { expect, test } from "bun:test";
 import { existsSync } from "node:fs";
 import { join } from "node:path";
-import { mutate, readLemma, structureOf, z3Available, z3Verdicts, SOLVER_TEST_TIMEOUT_MS } from "./smt2-solvers.ts";
+import {
+  mutate,
+  readLemma,
+  structureOf,
+  z3Available,
+  z3Verdicts,
+  solverFloorMet,
+  solverFloorRow,
+  installedVersion,
+  SOLVER_TEST_TIMEOUT_MS,
+} from "./smt2-solvers.ts";
 
 const FILE = "light-time-endpoint-speed-envelope.smt2";
 
 // L0a L0b | L1 L2 L3 L4 | M1 M2 | S1 (sharpness) | R1 R2 (hypothesis necessity)
 const EXPECTED = ["unsat", "unsat", "unsat", "unsat", "unsat", "unsat", "unsat", "unsat", "sat", "sat", "sat"] as const;
+
+/**
+ * Can THIS host's z3 decide this file at all?
+ *
+ * z3 4.8.12 -- what Ubuntu 24.04's apt gives the CI runner -- reaches six of the eleven
+ * blocks and then returns `timeout`, even at -T:300. Measured in `podman run ubuntu:24.04`
+ * against the CI pair exactly, and confirmed on the runner in gate run 31763383985.
+ *
+ * The solver legs SKIP rather than assert the reachable prefix, and the reason is the whole
+ * point of this work-item: every block the old z3 reaches is `unsat`, and every block it
+ * misses is a `sat` witness. Asserting the prefix would be asserting all-unsat -- the exact
+ * defect just removed from this lane, reintroduced as a "partial" gate that cannot fail.
+ *
+ * Declared in registry/smt2-solver-floor.json with the measurement; toolchain fix is
+ * work-item 081KZZ27KJ8087G0R0038ZGBAT.
+ */
+const z3CanDecide = z3Available && solverFloorMet(FILE, "z3");
+
+function skipNote(leg: string): void {
+  const row = solverFloorRow(FILE, "z3");
+  console.warn(
+    `  [skip] ${leg}: z3 ${installedVersion("z3")} is below the declared floor ` +
+      `${row?.minimumVersion} for ${FILE} — see registry/smt2-solver-floor.json, ` +
+      `work-item ${row?.workitem}. NOTHING was checked by this leg.`,
+  );
+}
 
 test("the lemma file is structurally intact (push/pop balanced, every block checked)", () => {
   const s = structureOf(readLemma(FILE));
@@ -51,8 +87,8 @@ test("the lemma file is structurally intact (push/pop balanced, every block chec
 test(
   "z3 produces the expected verdict sequence",
   () => {
-    if (!z3Available) {
-      console.warn("  [skip] z3 not on PATH — solver leg not run");
+    if (!z3CanDecide) {
+      skipNote("verdict sequence");
       return;
     }
     expect(z3Verdicts(readLemma(FILE))).toEqual([...EXPECTED]);
@@ -73,8 +109,8 @@ test("the Lean cross-check the header names is present (BP-16 second tool)", () 
 test(
   "NON-VACUITY: the envelope is SHARP and its hypotheses are load-bearing",
   () => {
-    if (!z3Available) {
-      console.warn("  [skip] z3 not on PATH — non-vacuity leg not run");
+    if (!z3CanDecide) {
+      skipNote("non-vacuity");
       return;
     }
     const seq = z3Verdicts(readLemma(FILE));
@@ -88,8 +124,8 @@ test(
 test(
   "FALSIFIER: restoring R2's ablated hypothesis turns this runner red",
   () => {
-    if (!z3Available) {
-      console.warn("  [skip] z3 not on PATH — falsifier leg not run");
+    if (!z3CanDecide) {
+      skipNote("falsifier");
       return;
     }
     // R2 exists to show that a declared speed bound must hold across the whole light-time
@@ -110,8 +146,8 @@ test(
 test(
   "FALSIFIER: tightening the envelope past sharpness turns M1 sat",
   () => {
-    if (!z3Available) {
-      console.warn("  [skip] z3 not on PATH — falsifier leg not run");
+    if (!z3CanDecide) {
+      skipNote("falsifier");
       return;
     }
     // S1 proves the envelope is ATTAINED, so any strictly tighter bound must be refutable.

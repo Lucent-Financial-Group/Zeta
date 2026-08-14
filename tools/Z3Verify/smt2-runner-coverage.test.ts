@@ -31,9 +31,19 @@ import { join } from "node:path";
 
 const DIR = import.meta.dir;
 const ALLOWLIST = join(DIR, "..", "..", "registry", "unexecuted-smt2-lemmas.json");
+const SOLVER_FLOOR = join(DIR, "..", "..", "registry", "smt2-solver-floor.json");
 
 interface AllowRow {
   readonly path: string;
+  readonly reason: string;
+}
+
+interface FloorRow {
+  readonly lemma: string;
+  readonly solver: string;
+  readonly minimumVersion: string;
+  readonly measuredBadVersion: string;
+  readonly workitem: string;
   readonly reason: string;
 }
 
@@ -42,6 +52,7 @@ const lemmas = readdirSync(DIR)
   .sort();
 
 const allowed: readonly AllowRow[] = JSON.parse(readFileSync(ALLOWLIST, "utf8"));
+const floors: readonly FloorRow[] = JSON.parse(readFileSync(SOLVER_FLOOR, "utf8"));
 
 test("there are lemma files to cover (the check itself is not vacuous)", () => {
   // A coverage check over an empty set passes trivially. Guard it.
@@ -52,6 +63,21 @@ test("every allow-list entry names a real file and carries a non-empty reason", 
   for (const row of allowed) {
     expect(existsSync(join(DIR, "..", "..", row.path))).toBe(true);
     expect(row.reason.trim().length).toBeGreaterThan(0);
+  }
+});
+
+test("every solver-floor entry names a real file, a work-item, and a MEASURED reason", () => {
+  // A solver floor makes a runner leg skip on an under-capable host. That is a hole in the
+  // shield, so it pays the same toll as an allow-list entry: a real target, a non-empty
+  // reason, a work-item to close it, and both version numbers — the one that works and the
+  // one that was measured NOT to. A floor with a vague reason is a skip nobody can audit.
+  for (const row of floors) {
+    expect(existsSync(join(DIR, "..", "..", row.lemma))).toBe(true);
+    expect(["z3", "cvc5"]).toContain(row.solver);
+    expect(row.minimumVersion).toMatch(/^\d+\.\d+\.\d+$/);
+    expect(row.measuredBadVersion).toMatch(/^\d+\.\d+\.\d+$/);
+    expect(row.workitem.trim().length).toBeGreaterThan(0);
+    expect(row.reason).toContain("MEASURED");
   }
 });
 

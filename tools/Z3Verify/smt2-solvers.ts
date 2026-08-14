@@ -61,17 +61,77 @@ const PROCESS_TIMEOUT_MS = 25_000;
  */
 export const SOLVER_TEST_TIMEOUT_MS = 60_000;
 
-function probeBinary(bin: string): boolean {
+function probeVersion(bin: string): string | null {
   // eslint-disable-next-line sonarjs/no-os-command-from-path -- fixed literal, no user input
   const probe = spawnSync(bin, ["--version"], { encoding: "utf8", timeout: PROCESS_TIMEOUT_MS });
-  return probe.status === 0;
+  if (probe.status !== 0) return null;
+  // `Z3 version 4.16.0 - 64 bit` / `This is cvc5 version 1.3.4 [git ...]`
+  return /(\d+)\.(\d+)\.(\d+)/.exec(probe.stdout ?? "")?.[0] ?? null;
 }
 
+const z3Version = probeVersion("z3");
+const cvc5Version = probeVersion("cvc5");
+
 /** z3 on PATH? Probed once per process, same shape as gen-smt2-from-ir.test.ts. */
-export const z3Available: boolean = probeBinary("z3");
+export const z3Available: boolean = z3Version !== null;
 
 /** cvc5 on PATH? */
-export const cvc5Available: boolean = probeBinary("cvc5");
+export const cvc5Available: boolean = cvc5Version !== null;
+
+interface SolverFloorRow {
+  readonly lemma: string;
+  readonly solver: string;
+  readonly minimumVersion: string;
+  readonly measuredBadVersion: string;
+  readonly workitem: string;
+  readonly reason: string;
+}
+
+const SOLVER_FLOORS: readonly SolverFloorRow[] = JSON.parse(
+  readFileSync(join(import.meta.dir, "..", "..", "registry", "smt2-solver-floor.json"), "utf8"),
+);
+
+const versionKey = (v: string): number => {
+  const [a = 0, b = 0, c = 0] = v.split(".").map(Number);
+  return a * 1_000_000 + b * 1_000 + c;
+};
+
+/**
+ * Does this host's `solver` meet the declared floor for `lemmaFile`?
+ *
+ * WHY A FLOOR EXISTS AT ALL. Two committed certificates do not discharge under the solvers
+ * Ubuntu 24.04's apt supplies to the CI runner (z3 4.8.12, cvc5 1.1.2) and discharge in well
+ * under a second under a workstation's (z3 4.16.0, cvc5 1.3.4). Measured in
+ * `podman run ubuntu:24.04` against the CI pair exactly, and confirmed on the runner itself —
+ * see registry/smt2-solver-floor.json for the per-file numbers and work-item
+ * 081KZZ27KJ8087G0R0038ZGBAT for the toolchain fix.
+ *
+ * WHY THE AFFECTED LEGS SKIP RATHER THAN ASSERT A PREFIX. For `light-time`, every block the
+ * old z3 reaches is `unsat` and every block it misses is a `sat` witness. Gating the
+ * reachable prefix would therefore reproduce the exact all-unsat defect this whole lane was
+ * just fixed to remove — a green that cannot fail. A declared skip is honest about covering
+ * nothing; a prefix assertion would claim coverage it does not have.
+ *
+ * The skip is DECLARED, in a registry, with a measured reason and a work-item — never
+ * silent, and never a bare version check invented at the call site.
+ */
+export function solverFloorMet(lemmaFile: string, solver: "z3" | "cvc5"): boolean {
+  const row = SOLVER_FLOORS.find((r) => r.lemma === `tools/Z3Verify/${lemmaFile}` && r.solver === solver);
+  if (row === undefined) return true; // no floor declared for this pair
+  const installed = solver === "z3" ? z3Version : cvc5Version;
+  if (installed === null) return false;
+  return versionKey(installed) >= versionKey(row.minimumVersion);
+}
+
+/** The declared-floor row for a (lemma, solver) pair, for a runner's skip message. */
+export function solverFloorRow(lemmaFile: string, solver: "z3" | "cvc5"): SolverFloorRow | undefined {
+  return SOLVER_FLOORS.find((r) => r.lemma === `tools/Z3Verify/${lemmaFile}` && r.solver === solver);
+}
+
+/** The installed version string, for logging. */
+export function installedVersion(solver: "z3" | "cvc5"): string {
+  return (solver === "z3" ? z3Version : cvc5Version) ?? "absent";
+}
 
 function verdictsOf(cmd: string, args: readonly string[], input: string): Verdict[] {
   const r = spawnSync(cmd, [...args], {
