@@ -28,10 +28,16 @@ carried in the record, never by the id-as-clock:
 
 - [ ] Route the remaining sort sites in §4c through the named comparators, so the declaration is a
       symbol rather than a comment.
-- [ ] Fix `inventory/new-item.ts`: it packs a ms timestamp into a `packGeneric` payload at an offset
-      that does NOT line up with the observation Timestamp field, so its ids read as the year 9200
-      and sort after every observation id. Either move `InventoryAsset` under category < 9 so the
-      documented time-sortability is true, or drop the claim.
+- [x] ~~Fix `inventory/new-item.ts`'s offset.~~ **RETRACTED 2026-08-14** — I called this a defect and
+      it is not one. Re-derived from the code: the ms round-trips exactly, lands at id bits [82,123)
+      above the constant Category field, and `ls inventory/items/` genuinely is chronological within
+      the category. The year-9200 figure was a **misread** (decoding a Generic id against the
+      Observation layout), not a miswrite. Pinned by three tests in `sort-key.test.ts` so nobody
+      "fixes" a correct offset later. **No change to the mint.**
+- [ ] `new-item.ts` calls `packGeneric`, which does **not** bound the payload (verified: it accepts a
+      125-bit payload). `Date.now()` crossing 2^41 on **2039-09-07T15:47:35.552Z** silently truncates
+      and produces an id byte-identical to a zero-ms one. Additive range check; changes no id
+      mintable before 2039. Separate PR — deliberately not folded into the guard.
 - [ ] Name the MINTED vs DERIVED split per category in `registry/categories.yaml` (§6a): a derived
       category takes its identity bits from the subject, never from an ambient clock or CSPRNG.
       `pr-manifest-shards.ts` and `tick-shards.ts` are the two worked examples already in tree.

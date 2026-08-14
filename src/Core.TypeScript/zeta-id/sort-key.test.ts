@@ -93,9 +93,11 @@ test("timeSortKey REFUSES a content-address id", () => {
   expect(() => timeSortKey(ca)).toThrow(ZetaIdSortError);
 });
 
-test("timeSortKey REFUSES a generic/inventory id (the defect that exists TODAY)", () => {
+test("timeSortKey REFUSES a generic/inventory id (the mis-READ that is possible TODAY)", () => {
   // The exact shape inventory/new-item.ts mints: ms in the top 41 bits of a
-  // 119-bit generic payload. Read as an observation timestamp this is the year 9200.
+  // 119-bit generic payload. Read against the OBSERVATION layout it is the year
+  // 9200 — which is a misread of a correct id, not a bad mint (see the sibling
+  // test below, which proves the mint round-trips and is chronological).
   const payload = (BigInt(1_755_000_000_000) << 78n) | 0x1234n;
   const item = packGeneric(1, Category.InventoryAsset, payload);
   const naive = extractField(item, BIT_MASKS.timestamp.offset, BIT_MASKS.timestamp.width);
@@ -112,6 +114,54 @@ test("the live inventory ids are exactly this case", () => {
     expect(categoryOf(id)).toBe(Category.InventoryAsset);
     expect(() => timeSortKey(id)).toThrow(ZetaIdSortError);
   }
+});
+
+/** Invert `packGeneric`: recover the 119-bit payload from a generic-layout id. */
+const payloadOf = (id: ZetaId): bigint =>
+  ((id as bigint) & ((1n << 65n) - 1n)) | ((((id as bigint) >> 69n) & ((1n << 54n) - 1n)) << 65n);
+
+test("inventory/new-item.ts's mint is CORRECT — the ms round-trips exactly", () => {
+  // The retraction, pinned. `timeSortKey` refusing these ids must NOT be read as
+  // "the mint is broken": the ms is written losslessly and read back losslessly on
+  // the Generic layout's own terms. If someone later "fixes" the mint offset, this
+  // test fails and tells them the offset was never the problem.
+  const ms = 1_783_030_317_370n;
+  const id = packGeneric(1, Category.InventoryAsset, (ms << 78n) | 0xdeadbeefn);
+  expect(payloadOf(id) >> 78n).toBe(ms);
+  // and it sits ABOVE the constant Category field, at id bits [82,123)
+  expect(extractField(id, 82n, 41n)).toBe(ms);
+});
+
+test("inventory ids ARE chronological within their own category (the documented claim)", () => {
+  const base = 1_783_030_317_370n;
+  const batch = [7n, 2n, 9n, 4n].map((k) => ({
+    k,
+    id: packGeneric(1, Category.InventoryAsset, ((base + k) << 78n) | 0xabcn),
+  }));
+  const lexical = [...batch].sort((a, b) => (format(a.id) < format(b.id) ? -1 : 1)).map((x) => x.k);
+  expect(lexical).toEqual([2n, 4n, 7n, 9n]); // === true ms order
+});
+
+test("the two live inventory ids decode to real, ordered timestamps", () => {
+  const [a, b] = ["0EFJ9RW179ZFT9WBMXZZNYM92A", "0EFJ9RW1DD28A33YN3F9NCAP9E"].map(parse);
+  const msA = payloadOf(a!) >> 78n;
+  const msB = payloadOf(b!) >> 78n;
+  expect(msA).toBe(1_783_030_317_370n); // 2026-07-02T22:11:57.370Z
+  expect(msB).toBe(1_783_030_317_419n); // 2026-07-02T22:11:57.419Z
+  expect(msA < msB).toBe(true); // and that matches their lexical order
+});
+
+test("packGeneric does NOT bound the payload — the 2039-09-07 truncation is real", () => {
+  // Latent, thirteen years out, and deliberately NOT fixed in this PR: new-item.ts
+  // calls packGeneric directly, which masks instead of validating, so `Date.now()`
+  // crossing 2^41 silently drops the top ms bit and collides with a zero-ms id.
+  const CLIFF = 1n << 41n; // 2039-09-07T15:47:35.552Z
+  expect(new Date(Number(CLIFF)).toISOString()).toBe("2039-09-07T15:47:35.552Z");
+  expect(packGeneric(1, Category.InventoryAsset, CLIFF << 78n)).toBe(
+    packGeneric(1, Category.InventoryAsset, 0n),
+  );
+  // The unbounded-payload root cause, stated as a test rather than as prose.
+  expect(() => packGeneric(1, Category.InventoryAsset, 1n << 125n)).not.toThrow();
 });
 
 test("timeSortKey ACCEPTS an observation id and returns its ms", () => {

@@ -16,6 +16,16 @@
 //     out of bits [75,123) as ms epoch 228_227_880_623_423 — the year 9200. They
 //     sort after every observation id ever minted, and nothing says so.
 //
+//     TO BE PRECISE ABOUT WHERE THE FAULT IS NOT: that mint is CORRECT, and an
+//     earlier draft of this header implying otherwise was wrong. Its ms lands at
+//     id bits [82,123), above the constant Category field, so `ls inventory/items/`
+//     genuinely IS chronological within the category — verified by round-trip, and
+//     the two live ids decode on their own layout's terms to 2026-07-02T22:11:57.370Z
+//     and .419Z, in lexical order. The year-9200 figure is what you get by decoding
+//     a Generic id against the OBSERVATION layout: a misread, not a miswrite. What
+//     this module removes is the SILENCE around cross-layout comparison, not any
+//     mistake made at a mint site.
+//
 // So "sortable" is not a property of a ZetaId. It is a property of a (layout,
 // field) pair. A site that sorts by the WHOLE id while MEANING "by time" has an
 // unstated assumption, and an unstated assumption fails silently — in plausible

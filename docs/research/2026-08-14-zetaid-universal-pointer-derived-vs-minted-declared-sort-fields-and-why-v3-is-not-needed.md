@@ -93,27 +93,74 @@ identity bits come from, not a new envelope.**
 So the honest restatement of the PR #10682 finding is: *a ZetaId minted from an ambient clock and
 ambient entropy cannot be an idempotency key.* One minted from declared inputs can, and two already are.
 
-## 3. CHECKED: a live mixed-layout defect, today, with no v3 in sight
+## 3. CHECKED: two layouts are already silently incomparable — and the mint is NOT the bug
+
+> **CORRECTION, 2026-08-14, after this section was first written and pushed.** An earlier draft
+> called this "a live mixed-layout **defect**" and told `inventory/new-item.ts` to change. **That was
+> wrong, and it is retracted here rather than quietly edited away.** Re-derived from the code (§3a):
+> `new-item.ts` writes exactly where it intends, and its documented property is **true**. The
+> measured numbers in the earlier draft were correct; the **attribution** was not.
 
 `inventory/new-item.ts` mints `Category.InventoryAsset` (10) through `packGeneric`, packing a ms
-timestamp into the top 41 bits of the 119-bit payload. Because `packGeneric` maps payload bit 78 to
-id bit 82 (not 75), the ms value lands **shifted 7 bits left** relative to where the observation
-layout's Timestamp sits.
+timestamp into the top 41 bits of the 119-bit payload. `packGeneric` maps payload bits 65–118 to id
+bits 69–122, so the ms lands at **id bits 82–122** — 7 bits above where the observation layout's
+Timestamp sits.
 
-Measured against the live tree — the two ids in `inventory/items/`, read as observation timestamps:
+### 3a. CHECKED: the mint is internally consistent; `ls inventory/items/` really is chronological
+
+Verified by round-tripping the actual `packGeneric` call rather than reasoning about it:
+
+- `payload >> 78` recovers the input ms **exactly** — the write is not lossy.
+- The ms occupies id bits **[82,123)**. Everything above it (Version, 123–127) is constant across the
+  category, and Category itself (bits 65–68) sits **below** it — so within `Category.InventoryAsset`
+  the highest-varying bits *are* the ms.
+- Whole-id lexical filename order over a synthetic batch reproduced true ms order exactly.
+- The two live ids decode, **on their own layout's terms**, to real timestamps 49 ms apart:
 
 ```
-0EFJ9RW179ZFT9WBMXZZNYM92A  →  bits[75,123) = 228_227_880_623_423 ms  ≈ year 9200
-0EFJ9RW1DD28A33YN3F9NCAP9E  →  bits[75,123) = 228_227_880_629_666 ms  ≈ year 9200
+0EFJ9RW179ZFT9WBMXZZNYM92A  →  ms = 1_783_030_317_370  →  2026-07-02T22:11:57.370Z
+0EFJ9RW1DD28A33YN3F9NCAP9E  →  ms = 1_783_030_317_419  →  2026-07-02T22:11:57.419Z
 ```
 
-An inventory id therefore sorts **after every observation id that will ever be minted** (until ms
-exceeds 2^41, i.e. year 71,671). Two layouts, one version, silently incomparable. Nothing in the repo
-says so. This is the failure mode a v3 was feared to introduce, already present.
+and their lexical order matches their ms order. **The comment at the mint site — *"time-sortable
+filenames, same property as workitems/"* — is TRUE.** No offset change is warranted there.
 
-It has not bitten because inventory ids live in their own directory and
-`generate-items-json.ts` sorts them for **deterministic output bytes**, not for time. Which is the
+### 3b. What is actually true: cross-layout comparison is meaningless, and undocumented
+
+The year-9200 reading in the earlier draft came from decoding an InventoryAsset id **against the
+Observation layout's Timestamp field**, which the Generic layout does not have:
+
+```
+0EFJ9RW179ZFT9WBMXZZNYM92A  →  bits[75,123) read as a Timestamp = 228_227_880_623_423 ms  ≈ year 9200
+                            →  which is just (ms × 128) + low payload bits
+```
+
+So the number was a **misread, not a miswrite**. The consequence is still real and worth stating: an
+inventory id sorts **after every observation id that will ever be minted**, because bits [75,123) of
+one hold a clock and of the other hold a payload. That is not a bug in either mint — it is the
+**designed consequence** of two layouts sharing an envelope with Category *below* the divergent
+region. Comparing across them is a category error the type system does not prevent.
+
+**The finding is the silence, not the shift.** Nothing in the repo said so. That is exactly what
+`layoutClassOf` / `timeSortKey` (§5) now name, and refusing category ≥ 9 is the complete remedy for
+the comparison side.
+
+It has also never bitten, because inventory ids live in their own directory and
+`generate-items-json.ts` sorts them for **deterministic output bytes**, not for time — which is the
 whole insight of §4.
+
+### 3c. The one real latent defect, which is NOT the one first reported
+
+`new-item.ts` calls **`packGeneric` directly**, and `packGeneric` does **not validate payload width**
+— verified: it accepted a 125-bit payload without complaint. Only `packPayload` enforces the 119-bit
+cap. `packGeneric` masks `highPart` to 54 bits, so the ms field has room for exactly **41 bits**:
+
+- `Date.now()` crosses 2^41 at **2039-09-07T15:47:35.552Z**.
+- At that instant the top ms bit is **silently masked off**. Verified: `ms = 2^41` produces the
+  **byte-identical id** to `ms = 0` — a wrap into 1970, and a genuine collision with any zero-ms id.
+
+Thirteen years out, so it gates no mint happening now, and a guard is purely **additive**: rejecting
+`ms >= 2^41` cannot change any id mintable before 2039. Tracked separately rather than folded in here.
 
 ## 4. The measurement: Aaron's 80/20, and the right denominator
 
@@ -147,7 +194,7 @@ the task brief's "every id is v1/v2" is not what the tree holds.) Category distr
 | `backlog/new-workitem.ts` | **yes** (explicitly: *"`ls workitems/` sorted == chronological creation order, for free"*) |
 | `backlog/auto-vivify.ts` | yes (same workitem convention) |
 | `backlog/legacy-b-id-zetaid.ts` | yes — but **derived**: timestamp from the row's `created`, randomness from a hash of the B-id |
-| `inventory/new-item.ts` | intended yes, **actually no** (§3) |
+| `inventory/new-item.ts` | **yes, within its own category** — verified in §3a (an earlier draft said "actually no"; that was my misread) |
 | `work-items/types.ts` (event ids) | tiebreak only; fold orders by `at` |
 | `agent-bus/types.ts` | tiebreak only; cursor is `<ISO timestamp>\|<id>` |
 | `agent-heartbeats/write-heartbeat.ts` | no |
@@ -307,9 +354,12 @@ on something Category already does would leave nothing to spend it on when the l
    two parties deriving the same object **must** get the same id, so ambient entropy is a bug, not a
    feature. The test is not "does it have a timestamp"; it is **"if two parties construct this
    independently, must they agree?"** If yes → DERIVED, and it needs no clock and no randomness.
-3. **Fix `inventory/new-item.ts`** — either move InventoryAsset to the observation layout (categories
-   < 9) so its documented time-sortability is true, or drop the timestamp claim from its comment. It
-   currently promises a property it does not have (§3).
+3. **Leave `inventory/new-item.ts`'s offsets alone.** ~~Move InventoryAsset to the observation
+   layout, or drop the timestamp claim from its comment.~~ **Retracted (§3a):** the mint writes where
+   it intends and its documented time-sortability is true within its own category. What it is missing
+   is a *bound check* — it calls `packGeneric`, which does not validate payload width, so `Date.now()`
+   crossing 2^41 on **2039-09-07** silently truncates and collides (§3c). That guard is additive and
+   changes no id mintable before 2039; it is deliberately **not** in this PR.
 4. **Route the sort sites through §5's declared keys** — work-item
    `081M00TDNYA087G0R003AGFC7J`. Low urgency by §4c, and it is worth doing anyway because the
    declaration documents the 80% that currently sort by time without saying so.
@@ -410,5 +460,5 @@ the *only* places the chronological claim is made, and none of them is code — 
 - Layout: `src/Core.FSharp.ZetaId/BitLayout.fs`, `src/Core.TypeScript/zeta-id/zeta-id.gen.ts`
 - The two derived-mint worked examples: `src/Core.TypeScript/forge-host/github/pr-manifest-shards.ts`,
   `src/Core.TypeScript/observe/tick-shards.ts`
-- The live mixed-layout defect: `src/Core.TypeScript/inventory/new-item.ts`
+- The cross-layout comparison case (mint is correct; §3a/§3b): `src/Core.TypeScript/inventory/new-item.ts`
 - Follow-up: `workitems/081M00TDNYA087G0R003AGFC7J-*.md`
