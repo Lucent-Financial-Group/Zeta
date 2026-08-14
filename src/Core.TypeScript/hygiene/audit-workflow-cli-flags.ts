@@ -109,12 +109,23 @@ export function hasClosedFlagSet(source: string): boolean {
  *
  * Shell line-continuations are joined first, because the real-world defect
  * spanned three lines with trailing backslashes.
+ *
+ * Returns the full `args` token list as well as the `flags` subset. `args` is what
+ * lets a caller replay a workflow's argv against the real parser (see
+ * `archive-pr-reviews.test.ts`) instead of re-deriving it with a parallel regex —
+ * one extractor, exercised by both the lint and the test.
+ *
+ * DELIBERATELY TEXT-ONLY, NO YAML PARSER. `pr-manifest-integrity.yml` runs the
+ * forge-host tests with no `bun install` ("these tests import node builtins and
+ * repo-local modules only"), and the repo is heading for zero external
+ * dependencies. An earlier revision of the archive test imported `yaml` and broke
+ * that job; nothing here may reach outside node builtins.
  */
 export function extractInvocations(
   workflowBody: string,
-): Array<{ tool: string; flags: string[] }> {
+): Array<{ tool: string; flags: string[]; args: string[] }> {
   const joined = workflowBody.replace(/\\\r?\n\s*/g, " ");
-  const out: Array<{ tool: string; flags: string[] }> = [];
+  const out: Array<{ tool: string; flags: string[]; args: string[] }> = [];
   const re = /\bbun\s+(?:run\s+)?(src\/[A-Za-z0-9_\-/.]+\.ts)([^\n]*)/g;
   let m: RegExpExecArray | null;
   while ((m = re.exec(joined)) !== null) {
@@ -123,19 +134,26 @@ export function extractInvocations(
     if (tool === undefined) continue;
     // Stop the argument list at a shell operator — everything after `|`, `||`,
     // `&&`, `;`, `>` belongs to another command, not to this invocation.
-    const argsPart = tail.split(/\s(?:\|\||\||&&|;|>|2>&1)\s/)[0] ?? "";
-    const flags: string[] = [];
-    for (const tok of argsPart.split(/\s+/)) {
-      if (!tok.startsWith("--")) continue;
-      if (tok === "--") continue;
-      // Skip anything shell/GHA-interpolated; we cannot know its literal value.
+    // `2>&1` must match WITHOUT a required trailing space: a real invocation ends
+    // `... --limit 3 2>&1)` inside a command substitution, and a whitespace-anchored
+    // split would leave `2>&1)` sitting in the argument list.
+    const argsPart = tail.split(/\s*(?:2>&1|\|\||\||&&|;|>)/)[0] ?? "";
+    const args: string[] = [];
+    for (const tok of argsPart.trim().split(/\s+/)) {
+      if (tok.length === 0) continue;
+      // Skip anything shell/GHA-interpolated; its literal value is unknowable here.
       if (tok.includes("$") || tok.includes("{{")) continue;
+      args.push(tok);
+    }
+    const flags: string[] = [];
+    for (const tok of args) {
+      if (!tok.startsWith("--") || tok === "--") continue;
       const flag = tok.split("=")[0];
       if (flag !== undefined && /^--[A-Za-z0-9][A-Za-z0-9-]*$/.test(flag)) {
         flags.push(flag);
       }
     }
-    out.push({ tool, flags });
+    out.push({ tool, flags, args });
   }
   return out;
 }

@@ -12,44 +12,64 @@ import { describe, expect, test } from "bun:test";
 import { spawnSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { parse as parseYaml } from "yaml";
 
+import { extractInvocations } from "../../hygiene/audit-workflow-cli-flags.ts";
 import { normalizeSince, selectBatch } from "./archive-pr-reviews.ts";
 
 const REPO_ROOT = join(import.meta.dir, "..", "..", "..", "..");
 const TOOL = "src/Core.TypeScript/forge-host/github/archive-pr-reviews.ts";
 const WORKFLOW = join(REPO_ROOT, ".github", "workflows", "agent-heartbeat.yml");
 
-/** Pull the literal argv this workflow hands to the archive tool. */
-function workflowArgvForTool(runBlock: string): string[] {
-  const joined = runBlock.replace(/\\\r?\n\s*/g, " ");
-  const m = new RegExp(`bun\\s+${TOOL.replace(/[.*+?^${}()|[\\]\\\\]/g, "\\\\$&")}([^\\n]*)`).exec(
-    joined,
-  );
-  if (m === null) return [];
-  // Cut at the first redirect/operator. `2>&1` must be matched WITHOUT requiring a
-  // trailing space: the real invocation ends `... --limit 3 2>&1)` inside a command
-  // substitution, and a whitespace-anchored split leaves `2>&1)` in the argv.
-  const args = (m[1] ?? "").split(/\s*(?:2>&1|\|\||\||&&|;|>)/)[0] ?? "";
-  return args
-    .trim()
-    .split(/\s+/)
-    .filter((t) => t.length > 0 && !t.includes("$") && !t.includes("{{"));
-}
+// NODE BUILTINS + REPO-LOCAL MODULES ONLY — no `yaml`, no external package.
+// `pr-manifest-integrity.yml` runs this directory with NO `bun install` by design,
+// and an earlier revision of this file imported `yaml` to parse the workflow, which
+// turned that job red. The step's `run:` block is located by text instead. The
+// argv is extracted by the SAME `extractInvocations` the lint uses, so the test
+// exercises the real code path rather than a parallel regex that could drift.
 
+/**
+ * Slice the archive step's `run:` block out of the workflow by text.
+ *
+ * A YAML parser would be tidier; it is not available in the job that runs this file.
+ * The step boundary is unambiguous anyway: steps are a `- name:` list at a fixed
+ * indent, so the block runs from this step's `- name:` to the next one.
+ */
 function archiveStepRunBlock(): string {
-  const doc = parseYaml(readFileSync(WORKFLOW, "utf8")) as {
-    jobs: Record<string, { steps?: Array<{ name?: string; run?: string }> }>;
-  };
-  for (const job of Object.values(doc.jobs)) {
-    for (const step of job.steps ?? []) {
-      if (step.name?.includes("Archive PR review history") === true) return step.run ?? "";
+  const lines = readFileSync(WORKFLOW, "utf8").split("\n");
+  const start = lines.findIndex((l) => /^\s*- name: Archive PR review history/.test(l));
+  if (start === -1) throw new Error("archive step not found in agent-heartbeat.yml");
+  const indent = (lines[start] ?? "").indexOf("- name:");
+  let end = lines.length;
+  for (let i = start + 1; i < lines.length; i += 1) {
+    const line = lines[i] ?? "";
+    if (line.trimEnd().length > 0 && line.indexOf("- name:") === indent) {
+      end = i;
+      break;
     }
   }
-  throw new Error("archive step not found in agent-heartbeat.yml");
+  return lines.slice(start, end).join("\n");
+}
+
+/** The literal argv this workflow hands to the archive tool. */
+function workflowArgvForTool(runBlock: string): string[] {
+  const found = extractInvocations(runBlock).find((i) => i.tool === TOOL);
+  return found?.args ?? [];
 }
 
 describe("heartbeat archive step is not vacuous", () => {
+  test("the text-based step extraction is bounded and found the right step", () => {
+    // Guards the extractor itself. Without a YAML parser the step boundary is found by
+    // text, so this pins that it captured exactly ONE step: if the terminator regex ever
+    // stops matching, the block would swallow the rest of the file and the assertions
+    // below would start passing on other steps' content — vacuity by over-capture.
+    const block = archiveStepRunBlock();
+    expect(block).toContain("Archive PR review history");
+    expect(block.match(/^\s*- name:/gm)?.length).toBe(1);
+    expect(block).toContain("archive-pr-reviews.ts");
+    // Bounded: the next step in the file must NOT be inside the block.
+    expect(block).not.toContain("Attempt codegen work");
+  });
+
   test("every flag the workflow passes is accepted by the REAL parser", () => {
     const argv = workflowArgvForTool(archiveStepRunBlock());
     expect(argv.length).toBeGreaterThan(0);
