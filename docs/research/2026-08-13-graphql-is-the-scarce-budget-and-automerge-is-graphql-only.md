@@ -202,3 +202,78 @@ meant to retire.
    that argument.
 7. Instrument the **secondary** limits (content-creation) since they cannot be polled — the only signal
    is a 403 with a `Retry-After`, so the flush paths should log and back off on it rather than failing.
+
+---
+
+## Correction to the correction — self-hosted *substrate* is not self-hosted *runners* (Aaron, 2026-08-13)
+
+> our own hardware help casue we will be using self hosted git and or our own zetadb/fs and wont need
+> github at all github will just be a mirror
+
+**My correction above was too narrow and is itself corrected here.** It said "own hardware does NOT help
+API rate limits at all," and that is true of exactly one reading — **self-hosted runners** — which I
+silently substituted for what Aaron meant.
+
+| what is self-hosted | API effect |
+|---|---|
+| **runners** (compute for GitHub Actions) | **none** — the runner calls the same API with the same tokens under the same limits. My original point, and it stands *for this case*. |
+| **git / zetadb / the substrate itself** | **removes the calls entirely** — there is no API to call, because GitHub is no longer the coordination point. |
+
+So hardware and "stop calling the API" are not alternatives. **Hardware is the enabler of it.** I framed
+them as competing remedies when one is the mechanism for the other, and that framing would have argued
+against the very thing that fixes the problem.
+
+### Why "GitHub will just be a mirror" is the precise part
+
+A mirror is a **push**: one direction, low frequency, no state polling, no PR objects, no merge arming.
+Pushing refs is close to free in API terms.
+
+Every expensive operation catalogued in this document — creating a PR, polling its state, reading its
+checks, arming its merge — exists because GitHub is being used as the **coordination point**, not because
+it is being used as a **store**. Which yields the general statement:
+
+> **API cost is proportional to how much *coordination* runs through GitHub, not how much *data* is
+> stored there.** A mirror stores everything and coordinates nothing, so it costs almost nothing.
+
+That is why the mirror endpoint is not a compromise. It keeps the property GitHub is genuinely good at
+(durable, public, widely-reachable storage) and drops the one that is metered (being the arbiter).
+
+### This is the third appearance of one move today
+
+The same shape has now shown up at three levels in a single session, which is some evidence it is a real
+principle rather than three coincidences:
+
+1. **PR-archive manifest** — stopped using git's *textual merge* as the concurrency primitive (one shared
+   file) and switched to identity-keyed shards. The pairwise-conflict class **disappeared** rather than
+   being managed.
+2. **The evidence fold** (#10474) — stopped asking the fold to detect its own redundancy and moved
+   provenance to the message. The correction became expressible instead of impossible.
+3. **This** — stop using GitHub's *coordination* primitives and keep it as a store. The rate limit stops
+   being a budget to manage.
+
+In each case the fix was **not** to optimise the expensive operation but to **stop needing it**, and in
+each case what remained was the cheap half that was doing the real work all along. Compare the
+rung-1 lesson from `BoundJustification` (#10461): *ask which operation the defect required, and remove
+it; do not add a field beside it.* Same instruction, applied to infrastructure.
+
+### The honest costs, because self-hosting is not free — only differently costed
+
+- **Availability, backup, and auth become ours.** GitHub was providing those, and the bill arrives as
+  operational work rather than as a rate limit. That is a *better* bill for this project, since it is
+  under our control and does not throttle, but it is not zero.
+- **The mirror still needs a pusher**, and if we continue to want GitHub-hosted CI, those workflows still
+  consume the API on GitHub's side. **You escape the API to the degree you stop needing GitHub's
+  *decisions*, and keep paying to the degree you still want its *services*.** Deciding which services we
+  keep is a real scoping question and is not answered here.
+- **Reachability is a service too.** "Public and widely-reachable" is why the mirror exists at all;
+  self-hosting the substrate does not replace that, which is exactly why it stays a mirror rather than
+  being dropped.
+
+### Open (revised)
+
+6. ~~Confirm the per-repo `GITHUB_TOKEN` figure before using it to justify a repo split~~ — still worth
+   confirming, but **de-prioritised**: if coordination moves off GitHub, the workflow-side budget stops
+   being the binding constraint and the split should be justified on its own merits (blast radius,
+   change-rate partitioning per DV2.0) rather than on rate limits.
+8. **Scope which GitHub services survive the mirror transition** — CI? releases? issues? Each retained
+   service keeps its API cost, and the answer determines how much of this document remains relevant.
