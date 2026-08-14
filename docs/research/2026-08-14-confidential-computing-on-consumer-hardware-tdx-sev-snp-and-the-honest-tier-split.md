@@ -61,7 +61,17 @@ do not overclaim it.**
 | tier | isolation | independence claim |
 |---|---|---|
 | **Consumer swarm** (mini PC + eGPU) | software and convention only | agents on one box are **not guaranteed independent** |
-| **Server swarm** (EPYC / Xeon) | SEV-SNP / TDX, hardware-enforced | independence is **attestable** |
+| **Server swarm** (EPYC / Xeon) | SEV-SNP / TDX, hardware-enforced | independence is **attestable — to a silicon-vendor root** (AMD ASK/ARK for SEV-SNP; Intel's provisioning root for TDX) |
+
+**The vendor root is the ceiling on the second row, and it should be stated wherever that row is
+cited.** "Attestable" here means *a relying party can verify a report that chains to AMD's or
+Intel's self-signed key* — so the independence claim is exactly as strong as trust in that vendor,
+and two SEV-SNP nodes are **one root wearing two boxes**. The mitigation is not a stronger claim but
+a **diverse** one: an AMD root and an Intel root are genuinely different roots, which is why a
+mixed-vendor server fleet buys something a single-vendor fleet does not. (Note the distinction that
+matters for air-gapped operation: AMD's KDS, Intel's PCS and NVIDIA's NRAS are *distribution and
+verification services*, which are avoidable — offline verification works. The **root** is not
+avoidable.)
 
 The split is legible to a technical investor precisely *because* it declines to claim the stronger
 property on the cheaper hardware. A fleet claiming hardware isolation on consumer laptop silicon
