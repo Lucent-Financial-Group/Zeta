@@ -42,8 +42,12 @@ async function stage(): Promise<void> {
   const repoRoot = git(["rev-parse", "--show-toplevel"]);
   const proposalId = environment("ZETA_AGENT_PROPOSAL_ID");
   const payload = patchFromBase64(environment("ZETA_AGENT_PATCH_B64"));
+  const declaredBaseSha = environment("ZETA_AGENT_BASE_SHA").toLowerCase();
   const repository = process.env.GITHUB_REPOSITORY ?? "Lucent-Financial-Group/Zeta";
   const currentMainSha = git(["rev-parse", "origin/main"]);
+  if (!/^[0-9a-f]{40}$/u.test(declaredBaseSha) || declaredBaseSha !== currentMainSha.toLowerCase()) {
+    throw new Error("teaching error: protected main advanced after the Pages proposal was bound; generator: refresh the authority binding and queue a fresh local patch");
+  }
   const workflowRef = `${repository}/.github/workflows/agent-proposal-gated-commit.yml@refs/heads/main`;
   const plan = planAgentProposal({
     intent: {
@@ -51,7 +55,7 @@ async function stage(): Promise<void> {
       proposalId,
       repository: "Lucent-Financial-Group/Zeta",
       baseRef: "main",
-      baseSha: currentMainSha,
+      baseSha: declaredBaseSha,
       workflowRef,
       patchDigest: createHash("sha256").update(payload.trim()).digest("hex"),
     },
@@ -76,7 +80,7 @@ async function stage(): Promise<void> {
     writeFileSync(receipt, `${JSON.stringify({
       schema: "zeta.agent-proposal-receipt.v1",
       proposalId,
-      baseSha: currentMainSha,
+      baseSha: declaredBaseSha,
       patchDigest: createHash("sha256").update(payload.trim()).digest("hex"),
       workflowRef,
       stagedAt: new Date().toISOString(),
