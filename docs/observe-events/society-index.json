@@ -1,7 +1,7 @@
 {
   "schema": "zeta.society.event-index/v1",
-  "eventCount": 117,
-  "headDigest": "1d28aaa7267178fe33d06ac5ae6644feddb73cfd14b5fbcdd610b14aad443851",
+  "eventCount": 121,
+  "headDigest": "fa2265b28fd1f2722f998169320ce878ec0aa01076111910ce3903b1b323cd68",
   "events": [
     {
       "id": "society-msm7luj6",
@@ -1015,6 +1015,42 @@
       "previousDigest": "ccd32faa78b17b7f1cc6688ade4133b825235be1bf9d446aa7f381ad867cfc78",
       "chainDigest": "1d28aaa7267178fe33d06ac5ae6644feddb73cfd14b5fbcdd610b14aad443851",
       "sourceRevision": "26af0d626dbe5da532e1490ce7a737ecb2bc500d"
+    },
+    {
+      "id": "society-mstd225y",
+      "at": "2026-08-14T19:49:25.751Z",
+      "file": "society-mstd225y.json",
+      "eventDigest": "05777b19dd600dcac47a92a9948c37d698de4f14453e74ab82db3e23e3c68294",
+      "previousDigest": "1d28aaa7267178fe33d06ac5ae6644feddb73cfd14b5fbcdd610b14aad443851",
+      "chainDigest": "875ba751e9c72d093f261999be940f0fcb29d3efcd018f0cb6a02241f1314c5b",
+      "sourceRevision": "38258c2ea4dc3eee99c9b261985a77e754e4a3b8"
+    },
+    {
+      "id": "society-mstdxe3z",
+      "at": "2026-08-14T20:13:47.567Z",
+      "file": "society-mstdxe3z.json",
+      "eventDigest": "2beea042cce9943852239f583a5d3a5518b6b3aa80d73ea8cf0fd6c4701c5624",
+      "previousDigest": "875ba751e9c72d093f261999be940f0fcb29d3efcd018f0cb6a02241f1314c5b",
+      "chainDigest": "d97a3d817e6f0aa80f2fc66ae6a1178f872e7f43283a98be2dd84e3c173a8330",
+      "sourceRevision": "ab728761f79a06cedb2d45dc8a80ad659ea0c5e8"
+    },
+    {
+      "id": "society-msteznw6",
+      "at": "2026-08-14T20:43:33.175Z",
+      "file": "society-msteznw6.json",
+      "eventDigest": "408a263394e3fa0337ddc613187c42c5d4cd53ccd3fae26b57ed8053f14a5067",
+      "previousDigest": "d97a3d817e6f0aa80f2fc66ae6a1178f872e7f43283a98be2dd84e3c173a8330",
+      "chainDigest": "9e78d063f18ebcd1908e9907f83e20828cdaf50747cb326b709a5dbe7e09417e",
+      "sourceRevision": "b7c98d07cccc9f343aaf2014676efd5657461b7c"
+    },
+    {
+      "id": "society-mstfx9sn",
+      "at": "2026-08-14T21:09:41.208Z",
+      "file": "society-mstfx9sn.json",
+      "eventDigest": "b9d091f3ef9a33048abf75a96b722e36b6a841bb1b58c62be5a6d95164f89d21",
+      "previousDigest": "9e78d063f18ebcd1908e9907f83e20828cdaf50747cb326b709a5dbe7e09417e",
+      "chainDigest": "fa2265b28fd1f2722f998169320ce878ec0aa01076111910ce3903b1b323cd68",
+      "sourceRevision": "8185acb4bec02cf6db1b91e503a0cb2f4b1bf46e"
     }
   ]
 }
