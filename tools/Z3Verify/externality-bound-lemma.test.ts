@@ -35,6 +35,7 @@ import {
   structureOf,
   z3Available,
   z3Verdicts,
+  SOLVER_TEST_TIMEOUT_MS,
 } from "./smt2-solvers.ts";
 
 const FILE = "externality-bound-lemma.smt2";
@@ -47,59 +48,75 @@ test("the lemma file is structurally intact (push/pop balanced, every block chec
   expect(s.checks).toBe(EXPECTED.length);
 });
 
-test("z3 and cvc5 independently produce the expected verdict sequence (BP-16)", () => {
-  if (!z3Available && !cvc5Available) {
-    console.warn("  [skip] z3 and cvc5 not on PATH — solver legs not run");
-    return;
-  }
-  const text = readLemma(FILE);
-  if (z3Available) expect(z3Verdicts(text)).toEqual([...EXPECTED]);
-  if (cvc5Available) expect(cvc5Verdicts(text)).toEqual([...EXPECTED]);
-});
+test(
+  "z3 and cvc5 independently produce the expected verdict sequence (BP-16)",
+  () => {
+    if (!z3Available && !cvc5Available) {
+      console.warn("  [skip] z3 and cvc5 not on PATH — solver legs not run");
+      return;
+    }
+    const text = readLemma(FILE);
+    if (z3Available) expect(z3Verdicts(text)).toEqual([...EXPECTED]);
+    if (cvc5Available) expect(cvc5Verdicts(text)).toEqual([...EXPECTED]);
+  },
+  SOLVER_TEST_TIMEOUT_MS,
+);
 
-test("NON-VACUITY: the degeneracy witnesses L3 and L4 are sat", () => {
-  if (!z3Available) {
-    console.warn("  [skip] z3 not on PATH — non-vacuity leg not run");
-    return;
-  }
-  const seq = z3Verdicts(readLemma(FILE));
-  // The sequence is not all-unsat by construction: L3 and L4 are the two findings this file
-  // exists to record. A file that went all-unsat here would have LOST its content, and that
-  // is the failure this assertion catches.
-  expect(seq[2]).toBe("sat");
-  expect(seq[3]).toBe("sat");
-  expect(seq.filter((v) => v === "sat")).toHaveLength(2);
-});
+test(
+  "NON-VACUITY: the degeneracy witnesses L3 and L4 are sat",
+  () => {
+    if (!z3Available) {
+      console.warn("  [skip] z3 not on PATH — non-vacuity leg not run");
+      return;
+    }
+    const seq = z3Verdicts(readLemma(FILE));
+    // The sequence is not all-unsat by construction: L3 and L4 are the two findings this file
+    // exists to record. A file that went all-unsat here would have LOST its content, and that
+    // is the failure this assertion catches.
+    expect(seq[2]).toBe("sat");
+    expect(seq[3]).toBe("sat");
+    expect(seq.filter((v) => v === "sat")).toHaveLength(2);
+  },
+  SOLVER_TEST_TIMEOUT_MS,
+);
 
-test("FALSIFIER: repairing the degeneracy L4 exhibits turns this runner red", () => {
-  if (!z3Available) {
-    console.warn("  [skip] z3 not on PATH — falsifier leg not run");
-    return;
-  }
-  // Swap the shipped predicate (a) for reading (c) at tau = floor — the reading that would
-  // NOT call a 0.7-below-floor outcome safe. L4's witness vanishes and it flips to unsat.
-  // Two things this proves: the runner asserts a SEQUENCE and not a uniform verdict, and
-  // L4 genuinely depends on which predicate is encoded.
-  const repaired = mutate(
-    readLemma(FILE),
-    "(assert (safeA floor delta))                       ; shipped predicate says SAFE",
-    "(assert (>= (+ floor (negpart delta)) floor))      ; MUTANT: reading (b)/(c) at tau=floor",
-  );
-  const seq = z3Verdicts(repaired);
-  expect(seq[3]).toBe("unsat");
-  expect(seq).not.toEqual([...EXPECTED]);
-});
+test(
+  "FALSIFIER: repairing the degeneracy L4 exhibits turns this runner red",
+  () => {
+    if (!z3Available) {
+      console.warn("  [skip] z3 not on PATH — falsifier leg not run");
+      return;
+    }
+    // Swap the shipped predicate (a) for reading (c) at tau = floor — the reading that would
+    // NOT call a 0.7-below-floor outcome safe. L4's witness vanishes and it flips to unsat.
+    // Two things this proves: the runner asserts a SEQUENCE and not a uniform verdict, and
+    // L4 genuinely depends on which predicate is encoded.
+    const repaired = mutate(
+      readLemma(FILE),
+      "(assert (safeA floor delta))                       ; shipped predicate says SAFE",
+      "(assert (>= (+ floor (negpart delta)) floor))      ; MUTANT: reading (b)/(c) at tau=floor",
+    );
+    const seq = z3Verdicts(repaired);
+    expect(seq[3]).toBe("unsat");
+    expect(seq).not.toEqual([...EXPECTED]);
+  },
+  SOLVER_TEST_TIMEOUT_MS,
+);
 
-test("FALSIFIER: breaking harm-antitonicity turns L6 sat", () => {
-  if (!z3Available) {
-    console.warn("  [skip] z3 not on PATH — falsifier leg not run");
-    return;
-  }
-  // L6 is the ONE good property reading (a) has, and the header asks that any replacement
-  // keep it. Reverse the ordering hypothesis and L6 must report a counterexample —
-  // otherwise it would be an assertion that could not fail.
-  const broken = mutate(readLemma(FILE), "(assert (<= d1 d2))", "(assert (>= d1 d2))");
-  const seq = z3Verdicts(broken);
-  expect(seq[5]).toBe("sat");
-  expect(seq).not.toEqual([...EXPECTED]);
-});
+test(
+  "FALSIFIER: breaking harm-antitonicity turns L6 sat",
+  () => {
+    if (!z3Available) {
+      console.warn("  [skip] z3 not on PATH — falsifier leg not run");
+      return;
+    }
+    // L6 is the ONE good property reading (a) has, and the header asks that any replacement
+    // keep it. Reverse the ordering hypothesis and L6 must report a counterexample —
+    // otherwise it would be an assertion that could not fail.
+    const broken = mutate(readLemma(FILE), "(assert (<= d1 d2))", "(assert (>= d1 d2))");
+    const seq = z3Verdicts(broken);
+    expect(seq[5]).toBe("sat");
+    expect(seq).not.toEqual([...EXPECTED]);
+  },
+  SOLVER_TEST_TIMEOUT_MS,
+);

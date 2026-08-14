@@ -43,6 +43,7 @@ import {
   structureOf,
   z3Available,
   z3Verdicts,
+  SOLVER_TEST_TIMEOUT_MS,
 } from "./smt2-solvers.ts";
 
 const FILE = "whitewash-economics-lemma.smt2";
@@ -55,59 +56,75 @@ test("the lemma file is structurally intact (push/pop balanced, every block chec
   expect(s.checks).toBe(EXPECTED.length);
 });
 
-test("z3 and cvc5 independently produce the expected verdict sequence (BP-16)", () => {
-  if (!z3Available && !cvc5Available) {
-    console.warn("  [skip] z3 and cvc5 not on PATH — solver legs not run");
-    return;
-  }
-  const text = readLemma(FILE);
-  if (z3Available) expect(z3Verdicts(text)).toEqual([...EXPECTED]);
-  if (cvc5Available) expect(cvc5Verdicts(text)).toEqual([...EXPECTED]);
-});
+test(
+  "z3 and cvc5 independently produce the expected verdict sequence (BP-16)",
+  () => {
+    if (!z3Available && !cvc5Available) {
+      console.warn("  [skip] z3 and cvc5 not on PATH — solver legs not run");
+      return;
+    }
+    const text = readLemma(FILE);
+    if (z3Available) expect(z3Verdicts(text)).toEqual([...EXPECTED]);
+    if (cvc5Available) expect(cvc5Verdicts(text)).toEqual([...EXPECTED]);
+  },
+  SOLVER_TEST_TIMEOUT_MS,
+);
 
-test("NON-VACUITY: the refutation witnesses W2 and W4 are sat", () => {
-  if (!z3Available) {
-    console.warn("  [skip] z3 not on PATH — non-vacuity leg not run");
-    return;
-  }
-  const seq = z3Verdicts(readLemma(FILE));
-  expect(seq[1]).toBe("sat"); // a profitable whitewash exists
-  expect(seq[3]).toBe("sat"); // deterrent anti-correlated with need
-  expect(seq.filter((v) => v === "sat")).toHaveLength(2);
-});
+test(
+  "NON-VACUITY: the refutation witnesses W2 and W4 are sat",
+  () => {
+    if (!z3Available) {
+      console.warn("  [skip] z3 not on PATH — non-vacuity leg not run");
+      return;
+    }
+    const seq = z3Verdicts(readLemma(FILE));
+    expect(seq[1]).toBe("sat"); // a profitable whitewash exists
+    expect(seq[3]).toBe("sat"); // deterrent anti-correlated with need
+    expect(seq.filter((v) => v === "sat")).toHaveLength(2);
+  },
+  SOLVER_TEST_TIMEOUT_MS,
+);
 
-test("FALSIFIER: ablating `v > 0` turns W3 sat", () => {
-  if (!z3Available) {
-    console.warn("  [skip] z3 not on PATH — falsifier leg not run");
-    return;
-  }
-  // W3 — "a hit strictly raises mu, a miss strictly lowers it" — rests on the Mills ratio
-  // v = phi(t)/Phi(t) being strictly positive. Drop it and v = 0 leaves mu unmoved on a hit,
-  // so the sign claim fails and W3 must report the counterexample.
-  const ablated = mutate(
-    readLemma(FILE),
-    "(assert (> v 0.0))                                  ; v(t) = phi(t)/Phi(t) > 0",
-    "; MUTANT: `v > 0` ablated",
-  );
-  const seq = z3Verdicts(ablated);
-  expect(seq[2]).toBe("sat");
-  expect(seq).not.toEqual([...EXPECTED]);
-});
+test(
+  "FALSIFIER: ablating `v > 0` turns W3 sat",
+  () => {
+    if (!z3Available) {
+      console.warn("  [skip] z3 not on PATH — falsifier leg not run");
+      return;
+    }
+    // W3 — "a hit strictly raises mu, a miss strictly lowers it" — rests on the Mills ratio
+    // v = phi(t)/Phi(t) being strictly positive. Drop it and v = 0 leaves mu unmoved on a hit,
+    // so the sign claim fails and W3 must report the counterexample.
+    const ablated = mutate(
+      readLemma(FILE),
+      "(assert (> v 0.0))                                  ; v(t) = phi(t)/Phi(t) > 0",
+      "; MUTANT: `v > 0` ablated",
+    );
+    const seq = z3Verdicts(ablated);
+    expect(seq[2]).toBe("sat");
+    expect(seq).not.toEqual([...EXPECTED]);
+  },
+  SOLVER_TEST_TIMEOUT_MS,
+);
 
-test("FALSIFIER: dropping strict monotonicity of Phi turns W1 sat", () => {
-  if (!z3Available) {
-    console.warn("  [skip] z3 not on PATH — falsifier leg not run");
-    return;
-  }
-  // W1 is the file's theorem, and it rests entirely on Phi being strictly monotone —
-  // the abstraction that lets the result hold for the exact normal CDF and every monotone
-  // approximation of it. Ablate that axiom and W1 must produce a counterexample.
-  const ablated = mutate(
-    readLemma(FILE),
-    "(push)\n(assert PhiMonotone)\n(declare-const mu Real) (declare-const s2 Real) (declare-const d Real)",
-    "(push)\n(declare-const mu Real) (declare-const s2 Real) (declare-const d Real)",
-  );
-  const seq = z3Verdicts(ablated);
-  expect(seq[0]).toBe("sat");
-  expect(seq).not.toEqual([...EXPECTED]);
-});
+test(
+  "FALSIFIER: dropping strict monotonicity of Phi turns W1 sat",
+  () => {
+    if (!z3Available) {
+      console.warn("  [skip] z3 not on PATH — falsifier leg not run");
+      return;
+    }
+    // W1 is the file's theorem, and it rests entirely on Phi being strictly monotone —
+    // the abstraction that lets the result hold for the exact normal CDF and every monotone
+    // approximation of it. Ablate that axiom and W1 must produce a counterexample.
+    const ablated = mutate(
+      readLemma(FILE),
+      "(push)\n(assert PhiMonotone)\n(declare-const mu Real) (declare-const s2 Real) (declare-const d Real)",
+      "(push)\n(declare-const mu Real) (declare-const s2 Real) (declare-const d Real)",
+    );
+    const seq = z3Verdicts(ablated);
+    expect(seq[0]).toBe("sat");
+    expect(seq).not.toEqual([...EXPECTED]);
+  },
+  SOLVER_TEST_TIMEOUT_MS,
+);

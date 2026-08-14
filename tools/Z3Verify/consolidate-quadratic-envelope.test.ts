@@ -30,6 +30,7 @@ import {
   structureOf,
   z3Available,
   z3Verdicts,
+  SOLVER_TEST_TIMEOUT_MS,
 } from "./smt2-solvers.ts";
 
 const FILE = "consolidate-quadratic-envelope.smt2";
@@ -43,57 +44,73 @@ test("the lemma file is structurally intact (push/pop balanced, every block chec
   expect(s.checks).toBe(EXPECTED.length);
 });
 
-test("z3 and cvc5 independently produce the expected verdict sequence (BP-16)", () => {
-  if (!z3Available && !cvc5Available) {
-    console.warn("  [skip] z3 and cvc5 not on PATH — solver legs not run");
-    return;
-  }
-  const text = readLemma(FILE);
-  if (z3Available) expect(z3Verdicts(text)).toEqual([...EXPECTED]);
-  if (cvc5Available) expect(cvc5Verdicts(text)).toEqual([...EXPECTED]);
-});
+test(
+  "z3 and cvc5 independently produce the expected verdict sequence (BP-16)",
+  () => {
+    if (!z3Available && !cvc5Available) {
+      console.warn("  [skip] z3 and cvc5 not on PATH — solver legs not run");
+      return;
+    }
+    const text = readLemma(FILE);
+    if (z3Available) expect(z3Verdicts(text)).toEqual([...EXPECTED]);
+    if (cvc5Available) expect(cvc5Verdicts(text)).toEqual([...EXPECTED]);
+  },
+  SOLVER_TEST_TIMEOUT_MS,
+);
 
-test("NON-VACUITY: the encoding can return sat, so E1's unsat is about the claim", () => {
-  if (!z3Available) {
-    console.warn("  [skip] z3 not on PATH — non-vacuity leg not run");
-    return;
-  }
-  const seq = z3Verdicts(readLemma(FILE));
-  expect(seq[1]).toBe("sat");
-  expect(seq[0]).toBe("unsat");
-});
+test(
+  "NON-VACUITY: the encoding can return sat, so E1's unsat is about the claim",
+  () => {
+    if (!z3Available) {
+      console.warn("  [skip] z3 not on PATH — non-vacuity leg not run");
+      return;
+    }
+    const seq = z3Verdicts(readLemma(FILE));
+    expect(seq[1]).toBe("sat");
+    expect(seq[0]).toBe("unsat");
+  },
+  SOLVER_TEST_TIMEOUT_MS,
+);
 
-test("FALSIFIER: a FALSE bound in the theorem block turns this runner red", () => {
-  if (!z3Available) {
-    console.warn("  [skip] z3 not on PATH — falsifier leg not run");
-    return;
-  }
-  // Replace the true bound n(n-1) ≤ 2n² with the false n(n-1) ≤ n. E1 must flip to sat —
-  // proving the block tests the claim rather than merely printing unsat.
-  const wrong = mutate(
-    readLemma(FILE),
-    "(assert (>= n 0))\n(assert (> (* n (- n 1)) (* 2 (* n n))))",
-    "(assert (>= n 0))\n(assert (> (* n (- n 1)) n))",
-  );
-  const seq = z3Verdicts(wrong);
-  expect(seq[0]).toBe("sat");
-  expect(seq).not.toEqual([...EXPECTED]);
-});
+test(
+  "FALSIFIER: a FALSE bound in the theorem block turns this runner red",
+  () => {
+    if (!z3Available) {
+      console.warn("  [skip] z3 not on PATH — falsifier leg not run");
+      return;
+    }
+    // Replace the true bound n(n-1) ≤ 2n² with the false n(n-1) ≤ n. E1 must flip to sat —
+    // proving the block tests the claim rather than merely printing unsat.
+    const wrong = mutate(
+      readLemma(FILE),
+      "(assert (>= n 0))\n(assert (> (* n (- n 1)) (* 2 (* n n))))",
+      "(assert (>= n 0))\n(assert (> (* n (- n 1)) n))",
+    );
+    const seq = z3Verdicts(wrong);
+    expect(seq[0]).toBe("sat");
+    expect(seq).not.toEqual([...EXPECTED]);
+  },
+  SOLVER_TEST_TIMEOUT_MS,
+);
 
-test("FALSIFIER: weakening the probe back to a true bound turns this runner red", () => {
-  if (!z3Available) {
-    console.warn("  [skip] z3 not on PATH — falsifier leg not run");
-    return;
-  }
-  // Make V1's tighter bound true again (back to the E1 constant). The probe stops being a
-  // probe, the sequence goes all-unsat, and the runner must reject it — which is precisely
-  // the state every pre-existing runner in this repo was permanently in.
-  const weakened = mutate(
-    readLemma(FILE),
-    "(assert (> (* 2 (* n (- n 1))) (* n n)))",
-    "(assert (> (* n (- n 1)) (* 2 (* n n))))",
-  );
-  const seq = z3Verdicts(weakened);
-  expect(seq).toEqual(["unsat", "unsat", "unsat"]);
-  expect(seq).not.toEqual([...EXPECTED]);
-});
+test(
+  "FALSIFIER: weakening the probe back to a true bound turns this runner red",
+  () => {
+    if (!z3Available) {
+      console.warn("  [skip] z3 not on PATH — falsifier leg not run");
+      return;
+    }
+    // Make V1's tighter bound true again (back to the E1 constant). The probe stops being a
+    // probe, the sequence goes all-unsat, and the runner must reject it — which is precisely
+    // the state every pre-existing runner in this repo was permanently in.
+    const weakened = mutate(
+      readLemma(FILE),
+      "(assert (> (* 2 (* n (- n 1))) (* n n)))",
+      "(assert (> (* n (- n 1)) (* 2 (* n n))))",
+    );
+    const seq = z3Verdicts(weakened);
+    expect(seq).toEqual(["unsat", "unsat", "unsat"]);
+    expect(seq).not.toEqual([...EXPECTED]);
+  },
+  SOLVER_TEST_TIMEOUT_MS,
+);

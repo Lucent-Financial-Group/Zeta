@@ -18,11 +18,28 @@
 // This module carries only the mechanism. Each lemma's expected sequence, its probe,
 // and its falsifier live in that lemma's own `*.test.ts` next to it.
 //
-// SOLVER TIMEOUTS. Every query carries an explicit solver-side limit and a process-side
-// limit, both below bun's 20s per-test cap (bunfig.toml). A solver that grinds must
-// report `unknown`/`timeout` — which fails the sequence assertion loudly — rather than
-// hanging the CI job. cvc5 genuinely does grind on one file here (see
-// `light-time-endpoint-speed-envelope.test.ts`); that is recorded, not hidden.
+// SOLVER TIMEOUTS — and a MEASURED correction. Every query carries an explicit solver-side
+// limit and a process-side limit, and every solver-touching test declares its own bun
+// timeout via SOLVER_TEST_TIMEOUT_MS below.
+//
+// The first version of this file assumed bun's per-test cap was the 20s written in
+// bunfig.toml's `[test] timeout`, and set a 10s solver limit under it. Wrong on both counts,
+// and CI said so: five tests failed at EXACTLY 5007ms in PR run 31762860737, which is bun
+// 1.3.14's 5s default — the bunfig key is not being honoured. A solver limit ABOVE the test
+// cap is the worst of both worlds: the test dies before the solver can answer, so the
+// failure reports as a timeout and tells you nothing about the proof.
+//
+// So the ordering is now explicit and stated in one place:
+//     solver limit (20s)  <  process limit (25s)  <  bun test timeout (60s)
+// A solver that grinds hits ITS limit first and returns `unknown`/`timeout`, which fails the
+// sequence assertion loudly and legibly. The test harness is never the thing that gives up.
+//
+// The CI runner's solvers are OLDER than a dev workstation's — z3 4.8.12 and cvc5 1.1.2 from
+// the noble apt manifest, against 4.16.0 / 1.3.4 here — so "fast locally" is not evidence
+// about CI, and the budget is sized for the slower pair.
+//
+// cvc5 genuinely does grind on one file here (see `light-time-endpoint-speed-envelope.test.ts`,
+// which runs z3 only for that reason); that is recorded, not hidden.
 
 import { spawnSync } from "node:child_process";
 import { readFileSync } from "node:fs";
@@ -31,8 +48,18 @@ import { join } from "node:path";
 /** A single `(check-sat)` outcome, as the solver prints it. */
 export type Verdict = "sat" | "unsat" | "unknown";
 
-const SOLVER_SECONDS = 10;
-const PROCESS_TIMEOUT_MS = 15_000;
+const SOLVER_SECONDS = 20;
+const PROCESS_TIMEOUT_MS = 25_000;
+
+/**
+ * The bun timeout every solver-touching test must declare as its third `test()` argument.
+ *
+ * Passed explicitly rather than left to bunfig.toml, because bunfig's `[test] timeout` is
+ * NOT applied by bun 1.3.14 — measured, twice, on this workstation and on the CI runner.
+ * A per-test argument is honoured; a config key that is silently ignored is a budget you
+ * only think you have.
+ */
+export const SOLVER_TEST_TIMEOUT_MS = 60_000;
 
 function probeBinary(bin: string): boolean {
   // eslint-disable-next-line sonarjs/no-os-command-from-path -- fixed literal, no user input

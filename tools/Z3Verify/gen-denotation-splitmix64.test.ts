@@ -29,6 +29,7 @@ import {
   structureOf,
   z3Available,
   z3Verdicts,
+  SOLVER_TEST_TIMEOUT_MS,
 } from "./smt2-solvers.ts";
 
 const FILE = "gen-denotation-splitmix64.smt2";
@@ -51,42 +52,54 @@ test("the whole-script status annotation is absent (it contradicts a mixed seque
   expect(readLemma(FILE)).not.toMatch(/^\(set-info\s+:status/m);
 });
 
-test("z3 and cvc5 independently produce the expected verdict sequence (BP-16)", () => {
-  if (!z3Available && !cvc5Available) {
-    console.warn("  [skip] z3 and cvc5 not on PATH — solver legs not run");
-    return;
-  }
-  const text = readLemma(FILE);
-  if (z3Available) expect(z3Verdicts(text)).toEqual([...EXPECTED]);
-  if (cvc5Available) expect(cvc5Verdicts(text)).toEqual([...EXPECTED]);
-});
+test(
+  "z3 and cvc5 independently produce the expected verdict sequence (BP-16)",
+  () => {
+    if (!z3Available && !cvc5Available) {
+      console.warn("  [skip] z3 and cvc5 not on PATH — solver legs not run");
+      return;
+    }
+    const text = readLemma(FILE);
+    if (z3Available) expect(z3Verdicts(text)).toEqual([...EXPECTED]);
+    if (cvc5Available) expect(cvc5Verdicts(text)).toEqual([...EXPECTED]);
+  },
+  SOLVER_TEST_TIMEOUT_MS,
+);
 
-test("NON-VACUITY: both denotation theorems discriminate (VP1, VP2 are sat)", () => {
-  if (!z3Available) {
-    console.warn("  [skip] z3 not on PATH — non-vacuity leg not run");
-    return;
-  }
-  const seq = z3Verdicts(readLemma(FILE));
-  expect(seq[6]).toBe("sat"); // corrupted splitmix64 multiplier IS caught
-  expect(seq[7]).toBe("sat"); // corrupted fmix32 shift width IS caught
-});
+test(
+  "NON-VACUITY: both denotation theorems discriminate (VP1, VP2 are sat)",
+  () => {
+    if (!z3Available) {
+      console.warn("  [skip] z3 not on PATH — non-vacuity leg not run");
+      return;
+    }
+    const seq = z3Verdicts(readLemma(FILE));
+    expect(seq[6]).toBe("sat"); // corrupted splitmix64 multiplier IS caught
+    expect(seq[7]).toBe("sat"); // corrupted fmix32 shift width IS caught
+  },
+  SOLVER_TEST_TIMEOUT_MS,
+);
 
-test("FALSIFIER: un-corrupting VP1 turns this runner red", () => {
-  if (!z3Available) {
-    console.warn("  [skip] z3 not on PATH — falsifier leg not run");
-    return;
-  }
-  // Restore the correct multiplier in the mutant. VP1 becomes THEOREM 1 again — a tautology
-  // of the proof — and flips to unsat, taking the sequence to all-unsat.
-  const undone = mutate(
-    readLemma(FILE),
-    "(define-fun K0_MUT () (_ BitVec 64) #x9e3779b97f4a7c14)",
-    "(define-fun K0_MUT () (_ BitVec 64) #x9e3779b97f4a7c15)",
-  );
-  const seq = z3Verdicts(undone);
-  expect(seq[6]).toBe("unsat");
-  expect(seq).not.toEqual([...EXPECTED]);
-});
+test(
+  "FALSIFIER: un-corrupting VP1 turns this runner red",
+  () => {
+    if (!z3Available) {
+      console.warn("  [skip] z3 not on PATH — falsifier leg not run");
+      return;
+    }
+    // Restore the correct multiplier in the mutant. VP1 becomes THEOREM 1 again — a tautology
+    // of the proof — and flips to unsat, taking the sequence to all-unsat.
+    const undone = mutate(
+      readLemma(FILE),
+      "(define-fun K0_MUT () (_ BitVec 64) #x9e3779b97f4a7c14)",
+      "(define-fun K0_MUT () (_ BitVec 64) #x9e3779b97f4a7c15)",
+    );
+    const seq = z3Verdicts(undone);
+    expect(seq[6]).toBe("unsat");
+    expect(seq).not.toEqual([...EXPECTED]);
+  },
+  SOLVER_TEST_TIMEOUT_MS,
+);
 
 // A SECOND falsifier — mutating a real constant so the THEOREM blocks themselves flip —
 // was written, RUN, and then removed on cost, which is worth recording rather than

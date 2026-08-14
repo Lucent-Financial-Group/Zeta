@@ -35,7 +35,7 @@
 import { expect, test } from "bun:test";
 import { existsSync } from "node:fs";
 import { join } from "node:path";
-import { mutate, readLemma, structureOf, z3Available, z3Verdicts } from "./smt2-solvers.ts";
+import { mutate, readLemma, structureOf, z3Available, z3Verdicts, SOLVER_TEST_TIMEOUT_MS } from "./smt2-solvers.ts";
 
 const FILE = "light-time-endpoint-speed-envelope.smt2";
 
@@ -48,13 +48,17 @@ test("the lemma file is structurally intact (push/pop balanced, every block chec
   expect(s.checks).toBe(EXPECTED.length);
 });
 
-test("z3 produces the expected verdict sequence", () => {
-  if (!z3Available) {
-    console.warn("  [skip] z3 not on PATH — solver leg not run");
-    return;
-  }
-  expect(z3Verdicts(readLemma(FILE))).toEqual([...EXPECTED]);
-});
+test(
+  "z3 produces the expected verdict sequence",
+  () => {
+    if (!z3Available) {
+      console.warn("  [skip] z3 not on PATH — solver leg not run");
+      return;
+    }
+    expect(z3Verdicts(readLemma(FILE))).toEqual([...EXPECTED]);
+  },
+  SOLVER_TEST_TIMEOUT_MS,
+);
 
 test("the Lean cross-check the header names is present (BP-16 second tool)", () => {
   // The .smt2 header states its own soundness caveat: z3's nlsat emits no independently
@@ -66,51 +70,63 @@ test("the Lean cross-check the header names is present (BP-16 second tool)", () 
   expect(readLemma(FILE)).toContain("LightTimeAsymmetry.lean");
 });
 
-test("NON-VACUITY: the envelope is SHARP and its hypotheses are load-bearing", () => {
-  if (!z3Available) {
-    console.warn("  [skip] z3 not on PATH — non-vacuity leg not run");
-    return;
-  }
-  const seq = z3Verdicts(readLemma(FILE));
-  expect(seq[8]).toBe("sat"); // S1 — equality is attained, so the bound has zero slack
-  expect(seq[9]).toBe("sat"); // R1 — Cauchy-Schwarz |u.v| <= ||v|| is load-bearing
-  expect(seq[10]).toBe("sat"); // R2 — V must bound the speed over the WHOLE light-time interval
-});
+test(
+  "NON-VACUITY: the envelope is SHARP and its hypotheses are load-bearing",
+  () => {
+    if (!z3Available) {
+      console.warn("  [skip] z3 not on PATH — non-vacuity leg not run");
+      return;
+    }
+    const seq = z3Verdicts(readLemma(FILE));
+    expect(seq[8]).toBe("sat"); // S1 — equality is attained, so the bound has zero slack
+    expect(seq[9]).toBe("sat"); // R1 — Cauchy-Schwarz |u.v| <= ||v|| is load-bearing
+    expect(seq[10]).toBe("sat"); // R2 — V must bound the speed over the WHOLE light-time interval
+  },
+  SOLVER_TEST_TIMEOUT_MS,
+);
 
-test("FALSIFIER: restoring R2's ablated hypothesis turns this runner red", () => {
-  if (!z3Available) {
-    console.warn("  [skip] z3 not on PATH — falsifier leg not run");
-    return;
-  }
-  // R2 exists to show that a declared speed bound must hold across the whole light-time
-  // interval, not merely at the transmit epoch. Put `wB <= VB` back and R2 becomes M1 — a
-  // tautology of the proof — and flips to unsat.
-  const planted = mutate(
-    readLemma(FILE),
-    "(assert (> wB VB)) (assert (< wB c))       ; <-- VB no longer bounds wB",
-    "(assert (<= wB VB)) (assert (< wB c))",
-  );
-  const seq = z3Verdicts(planted);
-  expect(seq[10]).toBe("unsat");
-  expect(seq).not.toEqual([...EXPECTED]);
-});
+test(
+  "FALSIFIER: restoring R2's ablated hypothesis turns this runner red",
+  () => {
+    if (!z3Available) {
+      console.warn("  [skip] z3 not on PATH — falsifier leg not run");
+      return;
+    }
+    // R2 exists to show that a declared speed bound must hold across the whole light-time
+    // interval, not merely at the transmit epoch. Put `wB <= VB` back and R2 becomes M1 — a
+    // tautology of the proof — and flips to unsat.
+    const planted = mutate(
+      readLemma(FILE),
+      "(assert (> wB VB)) (assert (< wB c))       ; <-- VB no longer bounds wB",
+      "(assert (<= wB VB)) (assert (< wB c))",
+    );
+    const seq = z3Verdicts(planted);
+    expect(seq[10]).toBe("unsat");
+    expect(seq).not.toEqual([...EXPECTED]);
+  },
+  SOLVER_TEST_TIMEOUT_MS,
+);
 
-test("FALSIFIER: tightening the envelope past sharpness turns M1 sat", () => {
-  if (!z3Available) {
-    console.warn("  [skip] z3 not on PATH — falsifier leg not run");
-    return;
-  }
-  // S1 proves the envelope is ATTAINED, so any strictly tighter bound must be refutable.
-  // Halve the right-hand side of M1 and z3 must produce the counterexample — which is what
-  // makes the S1/M1 pair a real sharpness result rather than two independent assertions.
-  // This is also the direct check on the claim #10418 rests on: no multiplicative margin
-  // above 1 is justified by this model.
-  const tightened = mutate(
-    readLemma(FILE),
-    "(assert (not (<= (* (- tAB tBA) (- c VB) (+ c VA)) (* R (+ VA VB)))))\n(check-sat)   ; expect unsat\n(pop 1)",
-    "(assert (not (<= (* (- tAB tBA) (- c VB) (+ c VA)) (* 0.5 (* R (+ VA VB))))))\n(check-sat)   ; MUTANT: bound halved\n(pop 1)",
-  );
-  const seq = z3Verdicts(tightened);
-  expect(seq[6]).toBe("sat");
-  expect(seq).not.toEqual([...EXPECTED]);
-});
+test(
+  "FALSIFIER: tightening the envelope past sharpness turns M1 sat",
+  () => {
+    if (!z3Available) {
+      console.warn("  [skip] z3 not on PATH — falsifier leg not run");
+      return;
+    }
+    // S1 proves the envelope is ATTAINED, so any strictly tighter bound must be refutable.
+    // Halve the right-hand side of M1 and z3 must produce the counterexample — which is what
+    // makes the S1/M1 pair a real sharpness result rather than two independent assertions.
+    // This is also the direct check on the claim #10418 rests on: no multiplicative margin
+    // above 1 is justified by this model.
+    const tightened = mutate(
+      readLemma(FILE),
+      "(assert (not (<= (* (- tAB tBA) (- c VB) (+ c VA)) (* R (+ VA VB)))))\n(check-sat)   ; expect unsat\n(pop 1)",
+      "(assert (not (<= (* (- tAB tBA) (- c VB) (+ c VA)) (* 0.5 (* R (+ VA VB))))))\n(check-sat)   ; MUTANT: bound halved\n(pop 1)",
+    );
+    const seq = z3Verdicts(tightened);
+    expect(seq[6]).toBe("sat");
+    expect(seq).not.toEqual([...EXPECTED]);
+  },
+  SOLVER_TEST_TIMEOUT_MS,
+);
