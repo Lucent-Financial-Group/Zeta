@@ -8,8 +8,10 @@ import {
 } from "./proposal-envelope";
 import {
   planGatedCommit,
+  planOperatorGatedCommit,
   PROPOSAL_ISSUE_MARKER,
   type ProposalCarrier,
+  type OperatorProposalCarrier,
 } from "./proposal-gated-commit";
 import type { ProposalAuthorRegistry } from "./proposal-verifier";
 
@@ -58,6 +60,21 @@ function issueBody(carrier: ProposalCarrier): string {
   return `${PROPOSAL_ISSUE_MARKER}\n\n## Requested change\n\n${carrier.payload}\n## Signed proposal envelope\n\n\`\`\`json\n${JSON.stringify(carrier.proposal)}\n\`\`\`\n`;
 }
 
+function operatorCarrier(payload = PATCH): OperatorProposalCarrier {
+  return {
+    schema: "zeta.operator-proposal.v1",
+    proposalId: "e2f3f222-85cd-4d7d-a4b0-0d28d39c3001",
+    repository: "Lucent-Financial-Group/Zeta",
+    baseRef: "main",
+    baseSha: BASE_SHA,
+    createdAt: NOW.toISOString(),
+    expiresAt: new Date(NOW.getTime() + 60_000).toISOString(),
+    changeDigest: createHash("sha256").update(payload.trim()).digest("hex"),
+    authorCredentialId: CREDENTIAL_ID,
+    payload,
+  };
+}
+
 describe("passkey proposal gated-commit planner", () => {
   test("PGC-1: valid signed unified patch produces a non-main branch plan", () => {
     const { carrier, registry } = fixture();
@@ -87,5 +104,22 @@ describe("passkey proposal gated-commit planner", () => {
     const { carrier, registry } = fixture();
     const result = planGatedCommit({ issueBody: issueBody(carrier), currentMainSha: "c".repeat(40), registry, now: NOW });
     expect(result).toMatchObject({ ok: false, code: "stale-base", retraction: { weight: -1 }, generator: "bindCurrentMainAndSign" });
+  });
+
+  test("PGC-5: a server-authorized Pages carrier takes the same non-main review-branch path", () => {
+    const result = planOperatorGatedCommit({ carrier: operatorCarrier(), currentMainSha: BASE_SHA, now: NOW });
+    expect(result).toMatchObject({ ok: true, branch: "proposal/e2f3f222-85cd-4d7d-a4b0-0d28d39c3001" });
+  });
+
+  test("PGC-6 FAULT INJECTION: altering a Pages operator patch after its digest is bound is rejected", () => {
+    const carrier = { ...operatorCarrier(), payload: `${PATCH}\n# altered` };
+    const result = planOperatorGatedCommit({ carrier, currentMainSha: BASE_SHA, now: NOW });
+    expect(result).toMatchObject({ ok: false, code: "carrier", retraction: { weight: -1 }, generator: "queueBoundedProposal" });
+  });
+
+  test("PGC-7 FAULT INJECTION: a Pages operator cannot use automatic delivery to edit workflow authority", () => {
+    const payload = PATCH.replaceAll("docs/research/example.md", ".github/workflows/gate.yml");
+    const result = planOperatorGatedCommit({ carrier: operatorCarrier(payload), currentMainSha: BASE_SHA, now: NOW });
+    expect(result).toMatchObject({ ok: false, code: "patch", retraction: { weight: -1 }, generator: "maintainer-reviewed-pr" });
   });
 });

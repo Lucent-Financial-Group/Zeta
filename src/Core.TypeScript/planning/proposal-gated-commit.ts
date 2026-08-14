@@ -19,11 +19,31 @@ export interface ProposalCarrier {
   readonly proposal: SignedProposal;
 }
 
+export interface OperatorProposalCarrier {
+  readonly schema: "zeta.operator-proposal.v1";
+  readonly proposalId: string;
+  readonly repository: "Lucent-Financial-Group/Zeta";
+  readonly baseRef: "main";
+  readonly baseSha: string;
+  readonly createdAt: string;
+  readonly expiresAt: string;
+  readonly changeDigest: string;
+  readonly authorCredentialId: string;
+  readonly payload: string;
+}
+
+export interface ProposalReference {
+  readonly proposalId: string;
+  readonly baseSha: string;
+  readonly changeDigest: string;
+  readonly authorCredentialId: string;
+}
+
 export interface GatedCommitPlan {
   readonly ok: true;
   readonly branch: string;
   readonly commitMessage: string;
-  readonly proposal: SignedProposal;
+  readonly proposal: ProposalReference;
   readonly payload: string;
 }
 
@@ -120,6 +140,56 @@ export function planGatedCommit(input: {
     commitMessage: `proposal: ${verification.proposal.proposalId}\n\npasskey-credential: ${verification.author.credentialId}\nchange-digest: ${verification.proposal.changeDigest}`,
     proposal: verification.proposal,
     payload: carrier.payload,
+  };
+}
+
+function digest(payload: string): string {
+  const hasher = new Bun.CryptoHasher("sha256");
+  hasher.update(payload);
+  return hasher.digest("hex");
+}
+
+/** The server-bound Pages operator has already checked the passkey capability.
+ * The Action still independently validates repository, immutable base, digest,
+ * patch paths, and expiration before writing a review branch. */
+export function planOperatorGatedCommit(input: {
+  readonly carrier: OperatorProposalCarrier;
+  readonly currentMainSha: string;
+  readonly now?: Date;
+}): GatedCommitPlanningResult {
+  const carrier = input.carrier;
+  if (carrier.schema !== "zeta.operator-proposal.v1" || carrier.repository !== "Lucent-Financial-Group/Zeta" || carrier.baseRef !== "main") {
+    return reject("carrier", "teaching error: automatic proposal carrier is not bound to Zeta main; generator: queue a fresh proposal from the authorized Pages device", "operator-carrier-boundary", "queueBoundedProposal");
+  }
+  if (!/^[0-9a-f-]{36}$/iu.test(carrier.proposalId) || !/^[0-9a-f]{40}$/iu.test(carrier.baseSha) || carrier.authorCredentialId.length === 0) {
+    return reject("carrier", "teaching error: automatic proposal carrier lacks an immutable base, UUID, or authorized device identity; generator: refresh the local proposal intent", "operator-carrier-shape", "createProposalIntent");
+  }
+  const now = input.now ?? new Date();
+  const expiresAt = Date.parse(carrier.expiresAt);
+  if (!Number.isFinite(expiresAt) || expiresAt <= now.getTime()) {
+    return reject("stale-base", "teaching error: automatic proposal capability expired before staging; generator: authorize the Pages device and queue a fresh proposal", "operator-capability-expired", "authorizeOperatorDevice");
+  }
+  const payload = carrier.payload.trim();
+  if (digest(payload) !== carrier.changeDigest) {
+    return reject("carrier", "teaching error: automatic proposal payload does not match its SHA-256 digest; generator: regenerate the local patch before queuing", "operator-payload-digest", "queueBoundedProposal");
+  }
+  if (carrier.baseSha.toLowerCase() !== input.currentMainSha.toLowerCase()) {
+    return reject("stale-base", "teaching error: protected main advanced after automatic proposal binding; generator: refresh main and queue a fresh proposal", "operator-stale-base", "bindCurrentMainAndQueue");
+  }
+  const paths = patchPaths(payload);
+  if (isGatedCommitRejection(paths)) return paths;
+  const proposal: ProposalReference = {
+    proposalId: carrier.proposalId,
+    baseSha: carrier.baseSha.toLowerCase(),
+    changeDigest: carrier.changeDigest,
+    authorCredentialId: carrier.authorCredentialId,
+  };
+  return {
+    ok: true,
+    branch: `proposal/${proposal.proposalId}`,
+    commitMessage: `proposal: ${proposal.proposalId}\n\noperator-device: ${proposal.authorCredentialId}\nchange-digest: ${proposal.changeDigest}`,
+    proposal,
+    payload,
   };
 }
 

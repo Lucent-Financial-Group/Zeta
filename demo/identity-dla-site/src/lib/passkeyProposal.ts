@@ -3,6 +3,7 @@ export const ZETA_REPOSITORY = "Lucent-Financial-Group/Zeta";
 export const ZETA_PROPOSAL_MARKER = "<!-- zeta-proposal-v1 -->";
 export const ZETA_PAGES_ORIGIN = "https://lucent-financial-group.github.io";
 export const ZETA_PAGES_RP_ID = "lucent-financial-group.github.io";
+export const ZETA_OPERATOR_HARNESS_ORIGIN = "https://idspace-dla-6faa9bmi.manus.space";
 
 export type ProposalIntent = {
   schema: typeof ZETA_PROPOSAL_SCHEMA;
@@ -25,9 +26,7 @@ export type SerializedWebAuthnAssertion = {
   userHandle?: string;
 };
 
-export type SignedProposal = ProposalIntent & {
-  assertion: SerializedWebAuthnAssertion;
-};
+export type SignedProposal = ProposalIntent & { assertion: SerializedWebAuthnAssertion };
 
 export type PasskeyEnrollment = {
   schema: "zeta.proposal-author.v1";
@@ -47,14 +46,19 @@ function bytesToBase64url(bytes: ArrayBuffer | Uint8Array): string {
 
 function base64urlToBytes(value: string): Uint8Array {
   const padded = value.replaceAll("-", "+").replaceAll("_", "/") + "=".repeat((4 - value.length % 4) % 4);
-  const binary = atob(padded);
-  return Uint8Array.from(binary, char => char.charCodeAt(0));
+  return Uint8Array.from(atob(padded), char => char.charCodeAt(0));
 }
 
 function randomBytes(length: number): Uint8Array {
   const output = new Uint8Array(length);
   crypto.getRandomValues(output);
   return output;
+}
+
+async function jsonResponse<T>(response: Response): Promise<T> {
+  const body = await response.json() as T & { teachingError?: unknown };
+  if (!response.ok) throw new Error(typeof body.teachingError === "string" ? body.teachingError : `Operator service rejected the request (HTTP ${response.status}).`);
+  return body;
 }
 
 export function isCommitSha(value: string): boolean {
@@ -114,66 +118,90 @@ export async function createProposalIntent(input: {
 
 export async function enrollProposalPasskey(): Promise<PasskeyEnrollment> {
   if (!window.PublicKeyCredential) throw new Error("This browser does not support passkeys. Use a current browser with WebAuthn enabled.");
-  if (window.location.origin !== ZETA_PAGES_ORIGIN) throw new Error("Passkey enrollment is bound to the published GitHub Pages origin. Open the primary GitHub Pages site before enrolling so this credential is not stranded on a preview hostname.");
+  if (window.location.origin !== ZETA_PAGES_ORIGIN) throw new Error("Passkey enrollment is bound to the published GitHub Pages origin.");
   const credential = await navigator.credentials.create({
     publicKey: {
       challenge: randomBytes(32),
       rp: { name: "Zeta proposal signer", id: ZETA_PAGES_RP_ID },
-      user: {
-        id: randomBytes(32),
-        name: "zeta-proposal-signer",
-        displayName: "Zeta proposal signer",
-      },
-      pubKeyCredParams: [
-        { type: "public-key", alg: -7 },
-        { type: "public-key", alg: -8 },
-      ],
-      authenticatorSelection: {
-        residentKey: "preferred",
-        userVerification: "required",
-      },
+      user: { id: randomBytes(32), name: "zeta-proposal-signer", displayName: "Zeta proposal signer" },
+      pubKeyCredParams: [{ type: "public-key", alg: -7 }, { type: "public-key", alg: -8 }],
+      authenticatorSelection: { residentKey: "preferred", userVerification: "required" },
       attestation: "none",
       timeout: 60_000,
     },
   });
-  if (!(credential instanceof PublicKeyCredential)) throw new Error("No passkey was created. Confirm the browser prompt to enroll.");
-  const response = credential.response;
-  if (!(response instanceof AuthenticatorAttestationResponse)) throw new Error("The browser did not return an attestation response.");
+  if (!(credential instanceof PublicKeyCredential) || !(credential.response instanceof AuthenticatorAttestationResponse)) throw new Error("No passkey enrollment response was returned. Confirm the browser prompt.");
   return {
     schema: "zeta.proposal-author.v1",
     repository: ZETA_REPOSITORY,
     credentialId: bytesToBase64url(credential.rawId),
-    clientDataJSON: bytesToBase64url(response.clientDataJSON),
-    attestationObject: bytesToBase64url(response.attestationObject),
+    clientDataJSON: bytesToBase64url(credential.response.clientDataJSON),
+    attestationObject: bytesToBase64url(credential.response.attestationObject),
     createdAt: new Date().toISOString(),
   };
 }
 
 export async function signProposal(intent: ProposalIntent): Promise<SignedProposal> {
-  if (window.location.origin !== ZETA_PAGES_ORIGIN) throw new Error("Passkey signing is bound to the published GitHub Pages origin. Open the primary GitHub Pages site before signing.");
-  const challenge = await sha256Bytes(canonicalProposalIntent(intent));
+  if (window.location.origin !== ZETA_PAGES_ORIGIN) throw new Error("Passkey signing is bound to the published GitHub Pages origin.");
   const credential = await navigator.credentials.get({
     publicKey: {
-      challenge,
+      challenge: await sha256Bytes(canonicalProposalIntent(intent)),
       allowCredentials: [{ type: "public-key", id: base64urlToBytes(intent.authorCredentialId) }],
       userVerification: "required",
       timeout: 60_000,
     },
   });
-  if (!(credential instanceof PublicKeyCredential)) throw new Error("No passkey assertion was returned. Confirm the browser prompt to sign.");
-  const response = credential.response;
-  if (!(response instanceof AuthenticatorAssertionResponse)) throw new Error("The browser did not return a passkey assertion.");
-  const userHandle = response.userHandle ? bytesToBase64url(response.userHandle) : undefined;
+  if (!(credential instanceof PublicKeyCredential) || !(credential.response instanceof AuthenticatorAssertionResponse)) throw new Error("No passkey assertion was returned. Confirm the browser prompt.");
+  const userHandle = credential.response.userHandle ? bytesToBase64url(credential.response.userHandle) : undefined;
   return {
     ...intent,
     assertion: {
       credentialId: bytesToBase64url(credential.rawId),
-      authenticatorData: bytesToBase64url(response.authenticatorData),
-      clientDataJSON: bytesToBase64url(response.clientDataJSON),
-      signature: bytesToBase64url(response.signature),
+      authenticatorData: bytesToBase64url(credential.response.authenticatorData),
+      clientDataJSON: bytesToBase64url(credential.response.clientDataJSON),
+      signature: bytesToBase64url(credential.response.signature),
       ...(userHandle ? { userHandle } : {}),
     },
   };
+}
+
+export async function authorizeOperatorDevice(credentialId: string): Promise<{ capability: string; credentialId: string; expiresAt: string }> {
+  if (window.location.origin !== ZETA_PAGES_ORIGIN) throw new Error("Device authorization is bound to the published GitHub Pages origin.");
+  const challenge = await jsonResponse<{ ok: true; challenge: string; challengeToken: string }>(
+    await fetch(`${ZETA_OPERATOR_HARNESS_ORIGIN}/api/github-app/operator/challenge`, { headers: { Accept: "application/json" } }),
+  );
+  const credential = await navigator.credentials.get({
+    publicKey: {
+      challenge: base64urlToBytes(challenge.challenge),
+      allowCredentials: [{ type: "public-key", id: base64urlToBytes(credentialId) }],
+      userVerification: "required",
+      timeout: 60_000,
+    },
+  });
+  if (!(credential instanceof PublicKeyCredential) || !(credential.response instanceof AuthenticatorAssertionResponse)) throw new Error("No device authorization assertion was returned. Confirm the passkey prompt.");
+  const assertion = {
+    credentialId: bytesToBase64url(credential.rawId),
+    authenticatorData: bytesToBase64url(credential.response.authenticatorData),
+    clientDataJSON: bytesToBase64url(credential.response.clientDataJSON),
+    signature: bytesToBase64url(credential.response.signature),
+  };
+  return jsonResponse<{ ok: true; capability: string; credentialId: string; expiresAt: string }>(
+    await fetch(`${ZETA_OPERATOR_HARNESS_ORIGIN}/api/github-app/operator/session`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ challengeToken: challenge.challengeToken, assertion }),
+    }),
+  );
+}
+
+export async function submitAutomaticProposal(input: { capability: string; proposalId: string; baseSha: string; payload: string }): Promise<{ proposalId: string; message: string }> {
+  return jsonResponse<{ ok: true; proposalId: string; message: string }>(
+    await fetch(`${ZETA_OPERATOR_HARNESS_ORIGIN}/api/github-app/operator/proposals`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${input.capability}` },
+      body: JSON.stringify({ proposalId: input.proposalId, baseSha: input.baseSha, payload: input.payload }),
+    }),
+  );
 }
 
 export function proposalIssueBody(payload: string, proposal: SignedProposal): string {

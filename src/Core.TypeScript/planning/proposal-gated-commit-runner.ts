@@ -4,12 +4,18 @@ import { dirname, resolve } from "node:path";
 import {
   loadProposalAuthorRegistry,
   planGatedCommit,
+  planOperatorGatedCommit,
   type GatedCommitRejection,
+  type OperatorProposalCarrier,
 } from "./proposal-gated-commit";
 
 type GitHubIssueEvent = {
   readonly issue?: { readonly number?: unknown; readonly body?: unknown; readonly html_url?: unknown };
 };
+
+type LegacyIssueSource = { readonly kind: "issue"; readonly body: string; readonly number: number; readonly url: string };
+type OperatorSource = { readonly kind: "operator"; readonly carrier: OperatorProposalCarrier; readonly url: string };
+type ProposalSource = LegacyIssueSource | OperatorSource;
 
 export type HandoffExec = (command: string, args: readonly string[], options: { readonly env: NodeJS.ProcessEnv; readonly stdio: "pipe" }) => void;
 
@@ -23,12 +29,8 @@ export function createGatedReviewPullRequest(input: {
   execFileSync(command, [...args], options);
 }): void {
   if (input.token.length === 0) throw new Error("teaching error: a separate pull-request-scoped credential is required to request an independently gated review; generator: configure ZETA_PR_ARCHIVE_TOKEN with Pull requests: write");
-  // `execFileSync` receives individual, non-shell arguments. The token is scoped to
-  // the child environment rather than serialised from the issue body into a URL.
   try {
-    const source = input.issueNumber === undefined
-      ? "a protected-main agent workflow"
-      : `issue #${input.issueNumber}`;
+    const source = input.issueNumber === undefined ? "an authorized GitHub Pages device" : `issue #${input.issueNumber}`;
     execute("gh", [
       "pr", "create",
       "--repo", input.repository,
@@ -58,7 +60,7 @@ function publishTeachingError(error: GatedCommitRejection): never {
   throw new Error(message);
 }
 
-function readIssueEvent(): { readonly body: string; readonly number: number; readonly url: string } {
+function readIssueSource(): LegacyIssueSource {
   const eventPath = process.env.GITHUB_EVENT_PATH;
   if (!eventPath) throw new Error("teaching error: GITHUB_EVENT_PATH is required; generator: invoke from the issue proposal workflow");
   const event = JSON.parse(readFileSync(eventPath, "utf8")) as GitHubIssueEvent;
@@ -66,9 +68,23 @@ function readIssueEvent(): { readonly body: string; readonly number: number; rea
   const number = event.issue?.number;
   const url = event.issue?.html_url;
   if (typeof body !== "string" || typeof number !== "number" || typeof url !== "string") {
-    throw new Error("teaching error: workflow event is not a GitHub issue with a proposal body; generator: open a proposal issue with the PWA carrier");
+    throw new Error("teaching error: workflow event is not a GitHub issue with a proposal body; generator: open a legacy proposal issue or use the authorized Pages operator path");
   }
-  return { body, number, url };
+  return { kind: "issue", body, number, url };
+}
+
+function readProposalSource(): ProposalSource {
+  const encoded = process.env.ZETA_OPERATOR_PROPOSAL_B64;
+  if (!encoded) return readIssueSource();
+  try {
+    return {
+      kind: "operator",
+      carrier: JSON.parse(Buffer.from(encoded, "base64url").toString("utf8")) as OperatorProposalCarrier,
+      url: "https://lucent-financial-group.github.io/Zeta/demo/identity-dla-site/#operator-proposal",
+    };
+  } catch {
+    throw new Error("teaching error: automatic proposal carrier is not base64url JSON; generator: queue a fresh bounded proposal from the authorized Pages device");
+  }
 }
 
 function branchExists(branch: string): boolean {
@@ -85,9 +101,8 @@ function receiptPath(proposalId: string): string {
 }
 
 function proposalIdWasConsumed(proposalId: string): boolean {
-  const path = receiptPath(proposalId);
   try {
-    git(["cat-file", "-e", `origin/main:${path}`]);
+    git(["cat-file", "-e", `origin/main:${receiptPath(proposalId)}`]);
     return true;
   } catch {
     return false;
@@ -95,16 +110,13 @@ function proposalIdWasConsumed(proposalId: string): boolean {
 }
 
 async function applyPlan(): Promise<void> {
-  const event = readIssueEvent();
+  const source = readProposalSource();
   const repoRoot = git(["rev-parse", "--show-toplevel"]);
   const registry = loadProposalAuthorRegistry(resolve(repoRoot, "docs/security/proposal-author-registry.json"));
   const currentMainSha = git(["rev-parse", "origin/main"]);
-  const preliminary = planGatedCommit({
-    issueBody: event.body,
-    currentMainSha,
-    registry,
-    now: new Date(),
-  });
+  const preliminary = source.kind === "operator"
+    ? planOperatorGatedCommit({ carrier: source.carrier, currentMainSha, now: new Date() })
+    : planGatedCommit({ issueBody: source.body, currentMainSha, registry, now: new Date() });
   if (!preliminary.ok) publishTeachingError(preliminary);
   if (proposalIdWasConsumed(preliminary.proposal.proposalId) || branchExists(preliminary.branch)) {
     publishTeachingError({
@@ -125,12 +137,10 @@ async function applyPlan(): Promise<void> {
   const receiptAbsolutePath = resolve(repoRoot, receipt);
   mkdirSync(dirname(receiptAbsolutePath), { recursive: true });
   try {
-    // O_EXCL (`wx`) makes receipt creation the replay race barrier. A preceding
-    // existence check would allow concurrent Actions to both pass the check.
     writeFileSync(receiptAbsolutePath, `${JSON.stringify({
       schema: "zeta.proposal-receipt.v1",
       proposalId: preliminary.proposal.proposalId,
-      issue: event.url,
+      issue: source.url,
       baseSha: preliminary.proposal.baseSha,
       changeDigest: preliminary.proposal.changeDigest,
       credentialId: preliminary.proposal.authorCredentialId,
@@ -148,14 +158,14 @@ async function applyPlan(): Promise<void> {
       repository: process.env.GITHUB_REPOSITORY ?? "Lucent-Financial-Group/Zeta",
       branch: preliminary.branch,
       proposalId: preliminary.proposal.proposalId,
-      issueNumber: event.number,
+      ...(source.kind === "issue" ? { issueNumber: source.number } : {}),
     });
   } catch (error) {
     git(["push", "origin", "--delete", preliminary.branch]);
     throw error;
   }
   writeOutput("branch", preliminary.branch);
-  writeOutput("issue_number", String(event.number));
+  if (source.kind === "issue") writeOutput("issue_number", String(source.number));
   writeOutput("proposal_id", preliminary.proposal.proposalId);
 }
 
