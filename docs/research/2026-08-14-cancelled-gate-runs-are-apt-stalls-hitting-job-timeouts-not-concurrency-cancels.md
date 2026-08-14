@@ -4,6 +4,13 @@
 fix + bounded recovery in the same PR. Awaiting maintainer sign-off per round-29 discipline.
 **Work-item:** `081M0104E7Y087G0R002X9A6NB`
 
+> **Sibling, independent:** workflow runs also stall in `action_required`, which produces the
+> same observable (a check that never ran, presented as one that did) via a completely
+> different mechanism — the heartbeat push credential. Diagnosis:
+> `docs/research/2026-08-14-action-required-holds-are-a-push-credential-identity-problem-not-the-cancellation-root-cause.md`
+> (`081M010H4KE087G0R00092AYZS`). The merge queue has TWO independent silent-stall mechanisms;
+> this document covers one of them.
+
 ## The brief's hypothesis, and why it was wrong
 
 The task named a leading hypothesis: a `concurrency:` group too coarse, with
