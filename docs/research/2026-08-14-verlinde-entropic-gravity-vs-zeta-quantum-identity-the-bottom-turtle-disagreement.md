@@ -297,6 +297,101 @@ two bottoms are genuinely rivals, it is there, and it is already written.
 
 ---
 
+## 8. Aaron's corrections — OUR mechanism, stated (2026-08-14, second pass)
+
+Recorded as given, then anchored. Where a term has no in-repo hit I say so rather than invent one.
+
+### 8a. Factor graphs: approximation tooling, and the live thread is that they speak English
+
+Aaron accepts the register-label: *"yes this is tooling for approximation, we could always try to
+get into the physics — but these factor graphs can also speak English, soon, we are in the middle
+of that."* So the EP/factor-graph leg is **not** claimed as physics; it is the approximation
+machinery, and its active direction is **natural language over a factor graph**. In-repo thread:
+`docs/research/2026-07-31-the-cognitive-architecture-spine-wierzbicka-friston-fritz.md` (factor
+graphs + Wierzbicka NSM primes + Friston). Verlinde's *"count how much you don't know"* is a
+marginal; the Zeta bet is that those marginals are **sayable**.
+
+### 8b. OUR mechanism: entangled memories between travelers make the causality chains
+
+Verlinde's mechanism: entanglement is why the left side of the room knows it is connected to the
+right; cut it and you break entanglement proportional to the area.
+
+**Aaron's statement of ours:** *"our mechanism is basically **entangled memories between
+travelers** is what creates our **causality chains** in our Z-sets, Merkle DAGs, memraid
+bidirectional DAGs."*
+
+The parallel is exact in form and different in substrate:
+
+| | Verlinde | Zeta |
+|---|---|---|
+| what is entangled | qubits / subsystems | **memories held by travelers** |
+| what the entanglement produces | **spatial** connectivity — the room does not fall apart | **causal** connectivity — the chain does not fall apart |
+| the carrier | a state on a Hilbert space | **Z-sets + Merkle DAGs** (content-addressed, hash-linked) |
+| cutting it | breaks entanglement ∝ area | breaks the hash chain — and the break is **detectable**, which his is not |
+
+That last row is not a small difference and it is in our favour: a Merkle link is an entanglement
+you can *verify was not cut*. `src/Core/TravelerFrame.fs` holds the traveler frame;
+`src/Core.CSharp.Merkle` the hash-linked structure; the Z-set fold is the causal accumulation.
+
+**`memraid` — UNANCHORED.** Zero hits repo-wide (case-insensitive). Either a new coinage from this
+conversation or spelled differently on disk. Flagged rather than guessed at; per
+`anchor-to-human-prior-art` an unanchored coinage is a debt until its anchor is named. **Aaron:
+what is memraid — RAID over memory (striping/parity across travelers), or something else?**
+
+### 8c. Four-corner feedback ⇒ pseudo-retrocausality ⇒ CPT emulation ⇒ Landauer
+
+Aaron: *"we have the **4 corner feedback** which gives **pseudo retrocausality** so we can
+**emulate CPT symmetry** — these are similar to **antiparticles in code**, emulated; also good
+for **reversibility**, and **Landauer limit tracking**."*
+
+CHECKED, all pre-existing:
+
+- `src/Core.Rust.FourCorner/src/lib.rs` — four-corner is real and shipped, in Rust.
+- `docs/research/2026-08-13-zset-as-reflection-cpt-and-the-minus-one-antiparticle-aaron-forwarded.md`
+  — **yesterday**: Z-set as reflection, CPT, and the −1 antiparticle. This is the exact claim.
+- `docs/research/2026-06-08-time-as-DST-generator-traveler-symmetry-forces-the-complex-laplace-demon-cpt.md`
+  — traveler symmetry forcing CPT.
+- `docs/research/2026-06-10-feynman-is-the-root-anchor-…-feynman-diagrams-of-distributed-systems.md`
+  — retraction = antiparticle, already Aaron's frame.
+- `docs/research/2026-05-28-kestrel-7th-ferry-…-fpga-landauer-limit-reversible-computing-…md`
+  — Landauer + reversible computing on FPGA.
+
+**The chain is coherent:** a Z-set retraction (−1) is the antiparticle; running the fold backward
+is CP; the four-corner feedback supplies the "future as facts" leg that makes the reversal
+*pseudo*-retrocausal rather than actually acausal; and if the computation is reversible then
+**Landauer** is the meter — `kT ln 2` per erased bit, and only *erasure* costs.
+
+### 8d. The sting: today's `verifyLandauer` vacuity was in the load-bearing place
+
+The four vacuities found on 2026-08-14 included **`verifyLandauer` reducing to `x >= x`**.
+
+Read against 8c that is not a peripheral bug. **Landauer tracking is the METER for the entire
+reversibility/CPT-emulation claim.** It is the one number that would tell you whether "we emulate
+antiparticles and run reversibly" is physics or decoration — exactly the metering test of
+`anchor-to-human-prior-art` (physics papers ground the metering discipline). A tautological
+Landauer check means the reversibility claim has been **unmetered this whole time**: asserted,
+never falsifiable.
+
+That is the honest register: the *architecture* in 8c is real and shipped; the *physical claim*
+riding on it had no working meter until today, and re-earning it is now a named piece of work.
+
+### 8e. Wolfram — a self-claimed root anchor
+
+Aaron: *"i've studied Wolfram a lot and he and I think the most alike about this."*
+
+Recorded as a **self-claim** (`pigeonhole by self-claim, never by assumption` — the subject
+supplies the category). It belongs beside Feynman, Meijer, SSAS/decision-forests, and the
+theological frame as a named native lens. In-repo already:
+`docs/research/2026-05-09-class4-empirical-analysis-shadow-taxonomy-wolfram.md`,
+`docs/research/2026-05-07-shadow-irreducibility-operational-guardrail-codex.md`, and backlog
+`081KR50HA0008QG0R001VHE0FQ` (class-4 / Wolfram shadow taxonomy).
+
+This makes §7e's conclusion an *agreement* rather than a correction imposed from outside:
+**computational irreducibility, not Kolmogorov incompressibility**, is the right frame for "the
+universe is its own best computer" — and it is the frame Aaron already works in.
+
+---
+
 ## 6. Open leads (unclaimed, for whoever picks this up)
 
 1. **Modular flow as the source of agreed phase** (§2). Currently `observeAll` takes phase as given.
