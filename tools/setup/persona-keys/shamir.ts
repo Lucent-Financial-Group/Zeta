@@ -89,17 +89,37 @@ function lagrangeAtZero(points: Array<{ x: number; y: number }>): number {
  * shares, so a predictable coefficient collapses the threshold. The injected door is
  * unchanged for DST; only the default moved.
  *
- * Rejection sampling, not modulo: 257 does not divide 2^16, so `x % 257` would bias
- * the low residues.
+ * Debiased by MULTIPLY-SHIFT (Lemire 2019, "Fast Random Integer Generation in an
+ * Interval", ACM TOMACS 29(1)) rather than by modulo. 257 does not divide 2^16, so a
+ * bare `x % 257` would over-represent the low residues.
+ *
+ * Why not the modulo-with-rejection form this replaced: it was CORRECT, and CodeQL
+ * flagged it anyway ("Using modulo on a cryptographically secure random number
+ * produces biased results") because the rule cannot see a rejection bound sitting
+ * above the `%`. The rule is RIGHT in general — an unguarded `v % 257` really is
+ * biased, 255 against 256 — so dismissing it in a crypto file would have recorded that
+ * this rule is waveable here, in the one file where it will eventually fire on a real
+ * defect. Lemire needs no modulo on the random word at all, so the alert goes quiet
+ * because the flagged pattern is genuinely gone, not because it was silenced. It is
+ * also the faster construction: a 32-bit multiply and a shift, against a division.
+ *
+ * Same statistical outcome, verified exhaustively over all 2^16 draws: each of the 257
+ * residues occurs exactly 255 times, and exactly ONE draw is rejected — identical to
+ * the construction it replaces.
  */
 function randCoeffCrypto(): number {
-  // 257 * 255 = 65535, so the values 0..65534 map onto GF(257) exactly 255 times each.
-  // Reject the single leftover value (65535) rather than take it and bias residue 0.
-  const LIMIT = SHAMIR_PRIME * 255;
+  // Reject only when the low 16 bits fall below t = (2^16 - 257) mod 257 = 1 — i.e. when
+  // they are exactly zero. Derived from constants and written as a literal so that no `%`
+  // ever touches the random word: 65536 - 257 = 65279 = 257*254 + 1.
+  const REJECT_BELOW = 1;
   for (;;) {
     const b = nodeRandomBytes(2);
-    const v = (b[0]! << 8) | b[1]!;
-    if (v < LIMIT) return v % SHAMIR_PRIME;
+    const x = (b[0]! << 8) | b[1]!;
+    // 65535 * 257 = 16_842_495 — inside 32 bits, and far inside 2^53, so the product is
+    // exact in a JS number with no BigInt and no precision loss.
+    const m = x * SHAMIR_PRIME;
+    if ((m & 0xffff) < REJECT_BELOW) continue;
+    return m >>> 16;
   }
 }
 
