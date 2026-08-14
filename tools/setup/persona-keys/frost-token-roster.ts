@@ -426,7 +426,14 @@ export function verifyRosterAgainstArtifacts(
   observed: readonly ObservedSealBinding[],
 ): readonly RosterFinding[] {
   const findings: RosterFinding[] = [];
-  const key = (x: number, device: string): string => `${x} ${device}`;
+  // NUL separator, written as the ESCAPE and never as a raw 0x00 byte. NUL is the right
+  // separator because it cannot occur in a token identity, so ("1", "a#b") and ("1#a",
+  // "b") cannot collide. But a RAW NUL makes this file read as binary to grep/rg, which
+  // scan the whole file -- git only sniffs the first 8KB, so git still rendered it as
+  // text and review saw nothing wrong. An audit of this file then silently matches
+  // nothing instead of searching it: a check that did not run, looking like one that
+  // passed. The escape has the identical runtime value and keeps the file greppable.
+  const key = (x: number, device: string): string => `${x}\u0000${device}`;
 
   const observedKeys = new Set<string>();
   for (const o of observed) {
