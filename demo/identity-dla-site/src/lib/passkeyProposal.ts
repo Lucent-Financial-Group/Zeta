@@ -47,7 +47,7 @@ function bytesToBase64url(bytes: ArrayBuffer | Uint8Array): string {
   return btoa(binary).replaceAll("+", "-").replaceAll("/", "_").replace(/=+$/, "");
 }
 
-function base64urlToBytes(value: string): Uint8Array<ArrayBuffer> {
+function base64urlToBytes(value: string): Uint8Array {
   const padded = value.replaceAll("-", "+").replaceAll("_", "/") + "=".repeat((4 - (value.length % 4)) % 4);
   const binary = atob(padded);
   const output = new Uint8Array(new ArrayBuffer(binary.length));
@@ -55,9 +55,15 @@ function base64urlToBytes(value: string): Uint8Array<ArrayBuffer> {
   return output;
 }
 
-function randomBytes(length: number): Uint8Array<ArrayBuffer> {
+function randomBytes(length: number): Uint8Array {
   const output = new Uint8Array(new ArrayBuffer(length));
   crypto.getRandomValues(output);
+  return output;
+}
+
+function ownedArrayBuffer(bytes: Uint8Array): ArrayBuffer {
+  const output = new ArrayBuffer(bytes.byteLength);
+  new Uint8Array(output).set(bytes);
   return output;
 }
 
@@ -84,7 +90,7 @@ export function canonicalProposalIntent(intent: ProposalIntent): string {
   );
 }
 
-export async function sha256Bytes(value: string): Promise<Uint8Array<ArrayBuffer>> {
+export async function sha256Bytes(value: string): Promise<Uint8Array> {
   const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(value));
   return new Uint8Array(digest);
 }
@@ -136,10 +142,10 @@ export async function enrollProposalPasskey(): Promise<PasskeyEnrollment> {
     );
   const credential = await navigator.credentials.create({
     publicKey: {
-      challenge: randomBytes(32),
+      challenge: ownedArrayBuffer(randomBytes(32)),
       rp: { name: "Zeta proposal signer", id: ZETA_PAGES_RP_ID },
       user: {
-        id: randomBytes(32),
+        id: ownedArrayBuffer(randomBytes(32)),
         name: "zeta-proposal-signer",
         displayName: "Zeta proposal signer",
       },
@@ -178,8 +184,10 @@ export async function signProposal(intent: ProposalIntent): Promise<SignedPropos
   const challenge = await sha256Bytes(canonicalProposalIntent(intent));
   const credential = await navigator.credentials.get({
     publicKey: {
-      challenge,
-      allowCredentials: [{ type: "public-key", id: base64urlToBytes(intent.authorCredentialId) }],
+      challenge: ownedArrayBuffer(challenge),
+      allowCredentials: [
+        { type: "public-key", id: ownedArrayBuffer(base64urlToBytes(intent.authorCredentialId)) },
+      ],
       userVerification: "required",
       timeout: 60_000,
     },
