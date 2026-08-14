@@ -112,3 +112,93 @@ today; the expensive path is being taken out of habit and because the gate on `m
 - `.github/workflows/society-heartbeat.yml`, `.github/workflows/agent-heartbeat.yml`
 - `docs/design/2026-08-13-agent-verified-merge-replacing-prs.md` — the move off PRs, now with a
   rate-limit argument attached
+
+---
+
+## Addendum — REST is limited too, and the two proposed remedies fix *different* limits (Aaron, 2026-08-13)
+
+> so the rest have a limit too? hmm i thought rest were free, this is another reason we need to start
+> splitting out repos and get our own hardware working so we get past all these rate limits, we need to
+> try to design around any rate limits
+
+**Yes — REST is limited.** 5000 requests/hour for an authenticated PAT. It *looks* free here only because
+we are using 33 of it. The framing "GraphQL is expensive, REST is free" from the body above is
+**misleading and is corrected here**: REST is *separately budgeted and currently idle*, which is not the
+same as free.
+
+And there is not one limit or two. The full picture, measured:
+
+```
+core (REST)        :   33 / 5000     per hour
+graphql            : 1147 / 5000     per hour, points not requests
+search             :    0 / 30       ← per MINUTE
+code_search        :    0 / 10       ← per minute
+dependency_snapshots:   0 / 100
+code_scanning_autofix: 0 / 10
+audit_log          :    0 / 1750
+```
+
+**`search` at 30/min and `code_search` at 10/min are far tighter than either headline budget**, and are
+the ones an agent doing repo-wide discovery would hit first. They do not appear in the "5000/hour" mental
+model at all.
+
+There is also a class that **does not appear in `rate_limit` output**: GitHub's **secondary** rate limits
+— roughly 80 content-creating requests per minute and 500 per hour, plus concurrent-request caps. Those
+govern creating PRs, comments, and commits, which is exactly what heavy automation does. **The limit most
+likely to bite this fleet is one you cannot query.**
+
+### The two remedies fix different things, and one of them does not help at all
+
+This is the part worth getting right before anything is bought or built.
+
+**Splitting repos — helps the Actions budget, does NOT help the PAT budget.**
+
+- A user PAT's 5000/hr is **per account**, shared across every repository it touches. Splitting the repo
+  changes nothing for it.
+- `GITHUB_TOKEN` inside Actions is **1000/hr per repository**. So *N* repos get *N* × 1000/hr of workflow
+  API budget. **That is a real multiplier, and it is the actual rate-limit argument for splitting.**
+- So the win is real but specific: it multiplies the *workflow-side* budget, not the *agent-side* one.
+
+**Own hardware — does NOT help API rate limits at all.**
+
+- Self-hosted runners remove the Actions **minutes** quota and the runner **concurrency** cap. Those are
+  real constraints and worth removing.
+- But a self-hosted runner calls the **same GitHub API with the same tokens** under the **same limits**.
+  Compute location has no bearing on API budget.
+- **PROPOSED correction, stated plainly because acting on the wrong model is expensive:** if the goal is
+  rate-limit relief, hardware buys compute, not API. Expecting API headroom from owning machines would be
+  a real misallocation.
+
+### What actually escapes an API rate limit
+
+Only one thing: **not calling the API.**
+
+Which is the direction already named — zetadb over git, and eventually not needing git. Every mechanism
+that moves state out of GitHub-as-substrate removes its API calls permanently rather than budgeting them:
+
+- push to an **ungated branch** instead of opening a PR — no PR object, no state polls, no arming
+- read state from the **local clone** (`git log`, `git ls-tree`) instead of the API — free, unlimited,
+  and usually what we actually wanted
+- **derive** rather than query (the `build-graph.ts` pattern) — computed from files already on disk
+
+The general design rule this suggests, and it is stronger than "prefer REST": **treat every API call as a
+consumable, and prefer any local computation that answers the same question.** Most of what the tick loop
+polls is already present in the local clone or in a file; the API was habit.
+
+### The honest limit on this whole line
+
+**Some things genuinely require the API** — merging, creating a PR, reading another party's state. Those
+cannot be designed away while GitHub is the coordination point, only reduced. So the ordering is: stop
+calling it where a local answer exists, split the workflow budget by splitting repos, and treat the
+remaining calls as the real cost of using GitHub as the substrate — which is the cost the move off it is
+meant to retire.
+
+### Open
+
+5. Audit which tick-loop questions have a **local** answer (`git`/filesystem) and stop asking GitHub
+   those. This is larger than the REST/GraphQL swap and probably removes more calls.
+6. Confirm the `GITHUB_TOKEN` per-repo figure against current GitHub documentation before using it to
+   justify a repo split — it is cited from standing knowledge here and is the load-bearing number for
+   that argument.
+7. Instrument the **secondary** limits (content-creation) since they cannot be polled — the only signal
+   is a 403 with a `Retry-After`, so the flush paths should log and back off on it rather than failing.
