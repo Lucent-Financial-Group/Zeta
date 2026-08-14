@@ -50,7 +50,7 @@ describe("assertNoSkipCi", () => {
 // only pass via the explicit MACHINE-LANE-EXEMPT roster entry (#10573). Signing
 // them makes them CORRECT instead of exempt, shrinking the exemption surface.
 describe("AgencySignature on telemetry flushes", () => {
-  test.each(LANES)("%s: the block carries every required key", (lane) => {
+  test.each([...LANES])("%s: the block carries every required key", (lane) => {
     const block = agencySignatureBlock(lane);
     for (const key of REQUIRED_KEYS) {
       expect(block).toContain(`${key}:`);
@@ -58,7 +58,7 @@ describe("AgencySignature on telemetry flushes", () => {
     expect(block).toContain("Co-authored-by:");
   });
 
-  test.each(LANES)("%s: the lane is named in the Agent field", (lane: string) => {
+  test.each([...LANES])("%s: the lane is named in the Agent field", (lane: string) => {
     expect(agencySignatureBlock(lane)).toContain(`Agent: ${lane}-flush-workflow`);
   });
 
@@ -76,7 +76,7 @@ describe("AgencySignature on telemetry flushes", () => {
     expect(agencySignatureBlock("society")).not.toContain("\n\n");
   });
 
-  test.each(LANES)(
+  test.each([...LANES])(
     "%s: git itself parses every required key out of the flush message",
     (lane) => {
       // Not "the string contains the keys" — the PARSER is the witness. A block
