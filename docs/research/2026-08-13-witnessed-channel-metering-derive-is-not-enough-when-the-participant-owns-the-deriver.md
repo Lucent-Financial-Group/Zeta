@@ -147,3 +147,109 @@ rather than a preference.
 **Anchors cited from standing knowledge, not page-checked**: Laurie et al. Certificate Transparency
 (RFC 6962) for the log-commitment shape; Pease/Shostak/Lamport 1980 and Castro & Liskov 1999 for the
 quorum sizing already anchored in #10395.
+
+---
+
+## Unranked mislabeling is a training signal, not an offence (Aaron, 2026-08-13)
+
+> we expect there to be real mislabel cheating in non ranked matches but we we don't scold for that we
+> teach and get better at detection and tell pepole when they've been detected mislabeling and let them
+> refut it and mutual leraning occurs, teach, play after tit for lessor tat. Ranked needs stronger
+> guardrails
+
+This applies **tit for lesser tat → teach → play** to the *governance* of the Arena rather than to play
+inside it — the strategy is self-similar across the two levels, which is manifesto §9/§10 (recursive,
+self-similar) showing up somewhere it was not planted.
+
+### The inversion
+
+The usual security posture treats a detected cheat as an offence to be punished. This treats it as
+**free red-team labour**. An adversary mislabeling in unranked is doing detector development for us, at
+their own cost, and punishing it would drive the behaviour somewhere unobservable — the same
+black-market argument Aaron made for wagering: prohibited-but-valuable activity relocates out of
+instrumentation range, and a ban you cannot enforce is worse than a venue you can watch.
+
+So the two regimes are not merely different stakes. They are in a **pipeline** relationship:
+
+| | role |
+|---|---|
+| **unranked** | where the detector is *trained* — adversaries supply the hard cases |
+| **ranked** | where the detector is *deployed*, with guardrails sized to real stakes |
+
+### Detection is announced and refutable, which is the dual-use rule again
+
+*"tell people when they've been detected mislabeling and let them refute it."* That is exactly
+[`dual-use-detection-is-neutral-oracle-decides.md`](../../.claude/rules/dual-use-detection-is-neutral-oracle-decides.md):
+the mechanism reports the **neutral fact** — *declared class X, observed channel access Y, mismatch at
+Z* — and does not render a verdict. "Mislabeled" is a reading; "the record and the declaration disagree"
+is the measurement. Refutation is what keeps those separate, and without it the detector would be
+holding a morality the substrate is not allowed to hold.
+
+It is also the honest-register discipline applied to accusation: the participant may have a reason the
+detector cannot see, and a system that cannot hear it will convict correctly-behaving participants at
+whatever rate its false-positive rate happens to be.
+
+### The coincidence worth naming: due process and active learning select the same examples
+
+This is the part that makes the design better than merely fair.
+
+**Disputed detections are boundary cases.** A participant only bothers to refute when the call was
+close — nobody argues with an obvious catch. And in active learning, the examples nearest the decision
+boundary are precisely the **most informative** ones (uncertainty sampling): they move the classifier
+more per label than any confidently-classified example.
+
+So the refutation queue *is* the high-value training set. **The procedure that is fairest to the accused
+is also the one that improves the detector fastest** — they are not in tension and no trade-off has to
+be made. That is worth stating explicitly, because designs usually assume due process costs efficiency,
+and here it buys it.
+
+Mutual learning is then literal rather than a nicety: a **successful** refutation is a labelled false
+positive (the detector was wrong, and now knows exactly where); a **failed** one teaches the participant
+what the meter actually sees. Both directions carry information, which is what makes it *mutual* rather
+than merely appealable.
+
+### The risk this creates, and it must be modelled
+
+If unranked is the training set and that is public, **the training set is poisonable.** Two concrete
+attacks, both standard in adversarial ML and both cheap here:
+
+- **Over-fire poisoning** — deliberately generate refutable near-misses to push the detector toward
+  false positives, so that in ranked it flags honest competitors.
+- **Blind-spot poisoning** — flood unranked with easy, obvious mislabels so the detector over-fits to
+  the easy manifold, leaving the technique you intend to use in ranked unlearned.
+
+This is the **adversarial-teaching regime** Aaron already asked for, arriving at a different layer: an
+adversary inside the loop steering it toward a chosen fixed point. Same geometry, same defence — the
+detector's training must be observed by something outside the loop it is training on, and the
+`FigureEightEnsemble` conclusion applies verbatim.
+
+**PROPOSED mitigations, none verified:** hold out a witnessed ranked-derived evaluation set the training
+process cannot influence; weight training examples by the attester's own reliability
+(`KeptClaimOracle.fs` is the existing scorer); and treat a sudden shift in the unranked case
+distribution as itself a detectable event rather than as data.
+
+### "Ranked needs stronger guardrails" — what that means concretely
+
+Teaching loops are too slow when the stakes are live. The guardrail set that follows from the rest of
+this document:
+
+- **Witness/quorum sized by a named `f`**, never a bare count (`quorumSize(faultModel)`).
+- **Mutual signature** — neither participant nor witness can unilaterally produce a valid record.
+- **Pre-declared capability class**, so the declaration is committed before the run rather than chosen
+  after seeing the score.
+- **Refutation still available** — stronger guardrails must not mean unilateral verdicts. Ranked raises
+  the evidentiary bar; it does not remove the right to answer.
+
+That last point matters: the temptation in a high-stakes regime is to trade due process for
+decisiveness, and the previous section is the argument against it — the disputed cases are also the
+informative ones, in ranked as much as in unranked.
+
+## Open (added)
+
+6. Model both poisoning attacks against the unranked → ranked training pipeline; hold out a witnessed
+   evaluation set the pipeline cannot influence.
+7. Specify the refutation protocol: who adjudicates, on what evidence, and what a successful refutation
+   does to the detector — a refutation that changes nothing is theatre.
+8. Decide whether capability class must be **pre-declared** in ranked (committed before the run). My
+   read is yes, and that it is cheap; the alternative lets a participant pick the class that flatters
+   the score after seeing it.
