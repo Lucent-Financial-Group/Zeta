@@ -219,3 +219,47 @@ confirmation this rests on. Bennett 1982 for logical reversibility and the adiab
 Koomey et al. on the practical distance between real hardware and the bound. **All cited from standing
 knowledge, not page-checked** — Bérut et al. is the one to verify first, since the feasibility argument
 leans on it.
+
+---
+
+## Resolution — a family of mechanisms, and the frozen claim must accept any of them (Aaron, 2026-08-13)
+
+> fair enough there are many ways to acheive this, lauder being the physics one
+
+That settles it, and the settlement is better than either of the previous two passes: **irreversibility
+is a family, and Landauer is the physics member of it.** There is no winner to pick, and the useful
+output was the taxonomy rather than the argument.
+
+| mechanism | irreversible because | enforced by | buildable today |
+|---|---|---|---|
+| `frost` (spend budget) | the rule forbids reversal | substrate | **yes** |
+| key wipe + non-extractability | memory overwritten, never exported | device + vendor attestation | **yes** |
+| OTP / eFuse burn | the device is physically damaged | device physics | **yes** |
+| erasure at the Landauer limit | thermodynamics charges for it | physics, unforgeable | frontier |
+
+### The design consequence, which is the actionable part
+
+**The frozen claim must be evidence-type-polymorphic — not tied to one mechanism.** Otherwise the
+achievable versions cannot ship until the hardest one exists, which would be exactly backwards: the
+eFuse path is orderable hardware today, and the Landauer path is a laboratory result.
+
+`081KZ...` — the layering is already settled for this class by
+`081KTHY32YQ08QG0R000JWHJYN`: external anchors are **optional, revocable credence boosters** feeding a
+credence query, never load-bearing for existence. Frozen-ness should be exactly that shape:
+
+```
+frozen-observed(no write in N)          ← always available, weakest, no trust root
+  + frozen-attested(deletion cert)      ← vendor trust root
+  + frozen-fused(OTP state)             ← device physics
+  + frozen-metered(dissipation ≥ bound) ← physics, falsification-only
+```
+
+Each is an independent booster with its own failure mode, and **a disagreement between any two is itself
+a detection** — a device attesting deletion while the meter shows insufficient dissipation is a finding,
+not a tie to be broken. That is the same multi-oracle discipline used everywhere else here, and it is why
+collecting several weak independent signals beats waiting for one strong one.
+
+**So the sequencing is: ship the polymorphic claim now with the observational and attested members, and
+add the physics member if and when it becomes achievable — without redesign.** The one thing that must be
+done early regardless, from the previous section, is metering the erasure path, because a measurement
+cannot be retrofitted to an unmetered channel.
