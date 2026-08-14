@@ -1,4 +1,6 @@
-import { createHash, generateKeyPairSync, sign } from "node:crypto";
+import { createHash, createPublicKey, generateKeyPairSync, sign } from "node:crypto";
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import { describe, expect, test } from "bun:test";
 import { encode } from "cborg";
 import {
@@ -151,5 +153,15 @@ describe("passkey proposal verifier", () => {
     ]));
     const jwk = publicKeyJwkFromEnrollment({ credentialId: toBase64url(credentialId), attestationObject: toBase64url(Buffer.from(attestation)) });
     expect(jwk).toEqual({ kty: "EC", crv: "P-256", x: toBase64url(x), y: toBase64url(y), ext: true });
+  });
+
+  test("PPV-10: the committed proposal-author registry contains a usable public passkey bound only to GitHub Pages", () => {
+    const registryPath = resolve(import.meta.dir, "../../../docs/security/proposal-author-registry.json");
+    const registry = JSON.parse(readFileSync(registryPath, "utf8")) as ProposalAuthorRegistry;
+    const author = registry.authors.find(candidate => candidate.credentialId === "Ca3BF1v-RDBKvvtBxx70z4Kv5JB5gn_7_kwfbifBK8YYnsDA");
+    expect(author).toBeDefined();
+    expect(author?.origin).toBe(ORIGIN);
+    expect(author?.rpId).toBe(RP_ID);
+    expect(createPublicKey({ key: author!.publicKeyJwk, format: "jwk" }).asymmetricKeyType).toBe("ec");
   });
 });
