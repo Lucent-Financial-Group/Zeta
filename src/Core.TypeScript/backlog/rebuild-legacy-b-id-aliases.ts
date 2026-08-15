@@ -231,7 +231,7 @@ console.log(`Alias map: ${Object.keys(sorted).length} entries (${remaining.size}
 
 let changed = 0;
 /**
- * Rewrite walk — scoped to the SAME trees `lint-no-b-refs.ts` polices.
+ * Rewrite walk — scoped to the SAME trees `lint-b-refs-resolve.ts` polices.
  *
  * Previously this skipped only `node_modules`/`.git`, so the remedy the linter
  * advertises was strictly wider than the linter itself: it rewrote the recovered

@@ -1,0 +1,371 @@
+# The legacy-ref ban was vacuous — check resolution instead; and placement for two parked rows
+
+**Shadow, 2026-08-15.** Two pieces of work, the first unblocking the second: replace the
+`B-NNNN` mention-ban with a resolution check, then find homes for the two rows that had been
+parked for retirement.
+
+***
+
+## Part 1 — a gate that forbade its own subject
+
+### The defect
+
+`lint-no-b-refs.ts` failed if any hyphenated legacy id appeared on an authored surface. An
+agent that needed to discuss a legacy row therefore wrote it **hyphenless** — `B0747` — and
+justified the workaround by arguing that exempting one reference "would make the lint
+unfalsifiable."
+
+The instinct was right and pointed the wrong way. The lint was **already** unfalsifiable, and
+for a stronger reason than an exemption would have caused:
+
+> The ban forbids *writing* a legacy ref, so a **stale** legacy ref can never exist in tree,
+> so the lint can never detect one. It achieves compliance by eliminating its own subject.
+
+A check that has removed everything it could fail on is green for the same reason an unplugged
+smoke detector is quiet. This repo has hit the class repeatedly in the last week — a `grep -q`
+satisfied by a SIGSEGV; `markdownlint-cli2` exiting 0 having linted zero files; a property-test
+generator fixed at arity 2 passing a decoder that rejected every non-2-ary call (#10828). This
+is the same shape at the policy layer: **the scope was narrowed to nothing by making the
+subject illegal.**
+
+Aaron 2026-08-15: *"if the gate is too restrictive I'd rather change it and do better drift
+checks."*
+
+### The replacement
+
+`src/Core.TypeScript/backlog/lint-b-refs-resolve.ts` permits the reference and checks that it
+**resolves**. Two rungs, in order:
+
+| rung | meaning | example |
+|---|---|---|
+| `live` | the alias maps carry the id, and the ZetaId they name has a row file under `docs/backlog/P0..P3`, `workitems`, or `workitems/done` | `B-0732` → `081KSE6WT0008QG0R002YBWBB1` |
+| `archive` | no live row, but the id names a surviving artifact under `docs/recovered-orphan-branches-2026-05` | `B-0747` |
+| — | neither ⇒ **FAIL**, naming the file, the ref, and the mapped ZetaId if one exists | |
+
+This is strictly stronger than the ban. It catches a fabricated id, a typo'd id, and a real id
+whose target was deleted out from under the reference — **none of which the ban could see** —
+while letting lineage prose name the thing it is discussing.
+
+**Alias-map presence is deliberately not sufficient.** `b-to-zetaid-map.json` was rebuilt by
+mining git history for `B-NNNN` tokens, so it carries ids in the B-2xxx / B-8xxx / B-9xxx bands
+that were never rows at all. Requiring the target to exist **on disk** is what makes this a
+drift check rather than a second spelling of the map. Measured on the tree that introduced it:
+of 1251 mapped ids, **1160 resolve `live`, 14 resolve `archive`, 77 resolve to nothing.** A
+predicate that separates 1174 from 77 is discriminating; a predicate that could only ever
+return "absent" was not.
+
+### It is falsifiable, proven by mutation
+
+Raw exit codes, no pipes (a pipeline's status is the last command's, and PIPESTATUS is empty in
+this zsh):
+
+```text
+# plant a dangling ref in a real authored file
+$ printf 'mutation probe: cites <a fabricated B-4xxx id>\n' > docs/research/2026-08-15-shadow-mutation-probe.md
+$ bun src/Core.TypeScript/backlog/lint-b-refs-resolve.ts > out 2> err ; echo "EXIT=$?"
+EXIT=1
+  docs/research/2026-08-15-shadow-mutation-probe.md: <id> — DANGLING —
+    no alias-map entry and no archive artifact; this id names nothing
+
+# remove it
+$ rm docs/research/2026-08-15-shadow-mutation-probe.md
+$ bun src/Core.TypeScript/backlog/lint-b-refs-resolve.ts > out 2> err ; echo "EXIT=$?"
+EXIT=0
+ok: 1 legacy B-NNNN reference(s) on authored surfaces, all resolving
+```
+
+A second mutation, for the guard described below — inserting `superseded_by: B-0732` into the
+frontmatter of the live row `081KSE6WT0008QG0R002YBWBB1-...md`:
+
+```text
+EXIT=1
+  docs/backlog/P1/081KSE6WT0008QG0R002YBWBB1-....md: B-0732 — KEY POSITION —
+    a closed-series id in row frontmatter is minting with it, not referencing it
+```
+
+Note that this second mutant's ref **resolves**. It fails anyway, which is the point: the key
+guard is independent of resolution.
+
+`src/Core.TypeScript/backlog/lint-b-refs-resolve.test.ts` (27 tests, all green) pins four
+things, and the gate is worthless if any stops holding: it fires on a ref pointing at nothing;
+it **passes** a ref pointing at something real (without this, the change bought nothing);
+alias-map presence is not resolution; and the minting guards still hold. The scope/boundary
+tests from the predecessor are carried over unchanged — narrowing a lint's scan is the other
+easy route to unfalsifiability, and widening a skip prefix over a live authored surface must
+still go red.
+
+### This does not re-open `B-NNNN` minting
+
+That ambiguity is the one thing that would make this a bad trade, so it is closed twice:
+
+- **`lint-no-new-bnnnn.ts` is untouched.** Any file named `B-<digits>*` under `docs/backlog/`
+  or `workitems/` still fails outright. A test in the new harness *executes that tool* against
+  a planted B-named row file and asserts exit 1, so the claim is checked here rather than
+  assumed. (The planted filename carries a B-13xx id; it is spelled out in the test source and
+  deliberately not here — see the accepted cost below, which this paragraph tripped over on the
+  first draft.)
+- **A legacy id in a work-item row's frontmatter fails.** Naming `B-0747` in prose is lineage;
+  putting one in `id:` / `depends_on:` / `superseded_by:` is using the closed series as a live
+  key. The gate loosens **references**, never **keys**. The distinction is stated in
+  `.claude/rules/workitems-mint-with-zetaid.md`, which otherwise stands as written.
+
+### The B-0732 trap, handled
+
+`B-0732` and `B-0733` read like orphaned legacy numbers and are in fact **live ZetaId rows on
+main** — `081KSE6WT0008QG0R002YBWBB1` and `081KSE6WT0008QG0R00102H071`. An agent nearly minted
+duplicates of them. The resolver's first rung is exactly this migrated case, and both ids are
+pinned by name in the test fixture so a regression reports as a regression rather than as a
+near-duplicate months later.
+
+### Accepted cost, stated out loud
+
+A document about dangling references cannot quote one — writing the literal id would plant a
+second dangling reference, which is the thing being guarded. This is not the prose-bending the
+gate was built to end: the earlier `B0747` bend suppressed a ref that **points at a real
+file**, whereas the probe id points at nothing, so nothing is lost by describing it. The gate
+suppresses only the naming of things that do not exist.
+
+The legitimate need for a literal dangling id — a falsifiability fixture — is served by the
+`ALLOWED_FILES` exemption, which covers the tool and test files and nothing else. No inline
+escape hatch was added. An escape hatch on day one is how a gate rots, and if this bites in
+practice the bite is the evidence that would justify one.
+
+It bit immediately, and the record is worth keeping: the first draft of this document quoted
+the test fixture's B-named filename in the paragraph above, and the gate failed the document
+with `DANGLING — no alias-map entry and no archive artifact; this id names nothing`. The check
+caught its own author on its own commit, which is the only kind of evidence that a gate is not
+decorative.
+
+### Files
+
+- `src/Core.TypeScript/backlog/b-ref-resolve.ts` — the resolver (index + ladder), new
+- `src/Core.TypeScript/backlog/lint-b-refs-resolve.ts` — the gate, replaces `lint-no-b-refs.ts`
+- `src/Core.TypeScript/backlog/lint-b-refs-resolve.test.ts` — the harness, replaces `lint-no-b-refs.test.ts`
+- `src/Core.TypeScript/backlog/b-ref-scope.ts` — scope module; docstring now records the
+  asymmetry that the recovered-branch archive is exempt from being *policed* while still
+  counting as a *resolution target*
+- `.github/workflows/backlog-index-integrity.yml` — both steps retargeted
+- `.claude/rules/workitems-mint-with-zetaid.md` · `src/Core.TypeScript/backlog/README.md` —
+  the reference/key line
+- `workitems/081M010NSB8087G0R002PJVJG7-*` — dated update: the bulk remedy is no longer the
+  advertised first move; its runtime defect is unchanged and the item stays open
+
+### The anchors behind the framing — checked, with two corrections
+
+Aaron's framing for why a gate should permit motion and repair rather than forbid motion:
+*"we don't slow down, we repair before destruction happens… both sides agree destruction ends
+both sides, so let's not do that, infinite game rules."* Both anchors were verified before
+being repeated.
+
+**Project Orion (Dyson & Taylor, 1958) — verified, with a correction that strengthens the
+framing.** Ted Taylor led the nuclear-pulse-propulsion work at General Atomic; Freeman Dyson
+took a sabbatical from Princeton for the 1958–59 academic year to work on it. Detonations aft
+of the vehicle drive a plasma against a pusher plate. **Correction to my brief's wording:** the
+mechanism is not "the plate is repaired between detonations." An unprotected steel plate ablates
+less than 1 mm per pulse; **sprayed with an oil it need not ablate at all**, and the oil is
+redistributed through a hole in the plate *between* pulses. So the maintenance is **prophylactic
+resurfacing applied before the next detonation**, not repair of damage after it — which is
+closer to Aaron's actual words ("repair *before* destruction happens") than my paraphrase was.
+The further gloss "repair capacity sized to damage rate rather than damage avoided" is a fair
+reading of the per-pulse sizing logic, but it is a framing of the mechanism, not a phrase from
+the 1958 work; keep it labelled as such.
+
+**Carse, *Finite and Infinite Games* (Free Press, 1986) — verified as stated, with the
+extension flagged.** The opening line is *"A finite game is played for the purpose of winning,
+an infinite game for the purpose of continuing the play."* The brief's summary is exact.
+**Correction:** the extension — *"so no move that ends play is available to either side"* — is
+not Carse. Carse's infinite player *declines* to end play; a rule that the ending move is
+**unavailable to both sides by mutual agreement** is a strategic-stability argument
+(Schelling's mutual-deterrence reasoning), not a claim from the 1986 text. Both halves are
+usable; they are different citations and should not be merged into one.
+
+Applied here: the ban was the finite move — it ended the play by making the subject illegal.
+The resolution check keeps play going and repairs continuously, which is the Orion posture
+rather than the brakes.
+
+***
+
+## Part 2 — placement for the two parked rows
+
+*"Instead of retire we should try to find placement in the current codebase."* — Aaron,
+2026-08-15.
+
+Both recommendations are **toy** under `toy-is-free-metered-must-be-earned`: a placement is a
+claim about where code should go, and its falsifier is whether a first slice actually lands
+there without needing a home of its own. Nothing below is implemented.
+
+### B-0516 — Gates physical-ECC for memory compression
+
+**Verdict: this already landed, under a different name, and in a better form. Do not mint a
+row.** That is a good result, not a failure.
+
+The row (P3, 2026-05-14, XL, archived at
+`docs/recovered-orphan-branches-2026-05/misc/chore/b-0516-.../B-0516-gates-ecc-physical-compression-research-direction-2026-05-14.md`)
+proposed three paths. All three have homes, and two are built:
+
+**Path 1, adinkra ↔ substrate correspondence — landed and proven.**
+
+- `src/Core/AdinkraCode.fs` — the concrete Adinkra generator: the [8,4] extended Hamming code,
+  proven exhaustively over all 16 codewords to be doubly-even, linear, minimum distance 4.
+- `src/Core/BitAdinkra.fs` — that code layered over the 1-bit identity stream.
+- `src/Core/BinaryCode.fs` · `src/Core/CliffordE8BladeMask.fs` · `src/Core/CliffordE8Bridge.fs`
+  · `src/Core.Lean4/Lean4/CayleyDicksonDoublyEven.lean` ·
+  `src/Core.TypeScript/research/adinkra-ecc/adinkra-ecc-prototype.ts`.
+- Register: `docs/FROZEN-CORE-AND-CONJECTURE-REGISTER.md` §B "Adinkra-as-generator
+  reconstruction" (DISCHARGED 2026-06-05, Lean, sorry-free, axiom-audited) and §A #27
+  "PrivacyPreservingIdentity (Adinkra ↔ E8)".
+- The rule that states the unification: `.claude/rules/only-the-irreducible-is-primitive-generate-the-rest.md`
+  — *the generator **is** the ECC; regenerating from the irreducible **is** the correction.*
+  That sentence is B-0516's thesis, promoted to an always-loaded rule.
+
+**Path 2, compression against structural redundancy — landed as a design, one live row from
+code.**
+
+- `docs/research/2026-06-07-compression-as-self-bootstrapping-compiler-over-generators-dst-regeneration-the-substrate-shannon-lacks-aaron.md`
+  §5 — the dual **materialized ⊕ generative** content node, both arms addressed by the same
+  `ContentHash256`; decompression = run the generator under DST and verify the hash.
+- Live successor row: `workitems/081KTH5N5ZJ08QG0R002JDT704-generative-content-node-compile-to-generator-compressor-dual.md`
+  (P2, backlog, composes with `081KTGTJC1Q08QG0R002VCB55A`).
+
+**Path 3, ECC-aware memory format — landed as research.**
+
+- `docs/research/2026-06-15-ecc-bayesian-memory-growth-universalnumber-precision-times-adinkra-ecc-over-its-growth-data.md`
+  — the ECC run over `src/Core/UniversalNumber.fs`'s precision-growth data.
+
+**What did not land, and should not.** B-0516's headline claim was compression *"bound by
+physics, exceeding classical info-theoretic limits"* because *"you know how the universe will
+reconstruct the data."* Gates' result is that certain **supersymmetric equations** carry
+doubly-even self-dual codes. It does not supply a decoder for arbitrary stored bytes, and no
+step in the row bridges that gap. The landed version replaced "physics reconstructs the rest"
+with "**our generator** reconstructs the rest under DST, verified by content hash" — the same
+shape with a falsifier attached, and that substitution is why it could be built at all.
+
+Under `toy-is-free-metered-must-be-earned` the physics-bound clause stays **toy** and must not
+be cited as a result. (A sibling agent's recovered-branch census reached the same conclusion
+independently; recording the agreement, not inheriting it.)
+
+**Cost to land: near zero, because the landing is done.** The residue is a short lineage
+paragraph on `081KTH5N5ZJ08QG0R002JDT704` recording the Gates-ECC origin and the peel above.
+Explicitly do **not** mint a new row for B-0516 — a fresh row would re-open a claim the tree
+has already answered in a stricter form.
+
+### B-0034 — cross-translation antifragile scripture projection-preservation
+
+**Verdict: homeless as a row, but the method landed and the domain has an adjacent home. Worth
+placing, in two pieces, and the second piece is the one that earns its keep.**
+
+The row (P3, 2026-04-26, archived at
+`docs/recovered-orphan-branches-2026-05/misc/backlog/B-0034-.../B-0034-cross-translation-antifragile-scripture-projection-preservation.md`)
+records Aaron catching an unnamed translation in a citation: *"which translation? … There is so
+much bias in each translation, even the originals we have access to, would be great to take an
+antifragile view across all versions and see what remains."* Its formal core is
+`invariant = ⋂ᵢ Tᵢ(verse)` — what survives every biased projection is load-bearing.
+
+**Placement 1 — the domain home: `src/Core.TypeScript/resonance/` and the etymology track.**
+
+B-0034's ZetaId (`081KQ3HBZ0008QG0R000JEJEN5`) shares a mint batch with three tracks that are
+still live rows on main:
+
+| live row | catalog schema |
+|---|---|
+| `docs/backlog/P2/081KQ3HBZ0008QG0R003GTG5P2-etymology-epistemology-research-track.md` | `src/Core.TypeScript/resonance/etymology-catalog-schema.ts` |
+| `docs/backlog/P3/081KQ3HBZ0008QG0R0034DHWTQ-mythology-research-track.md` | `src/Core.TypeScript/resonance/mythology-catalog-schema.ts` |
+| `docs/backlog/P3/081KQ3HBZ0008QG0R000K3NSX8-occult-western-esoteric-research-track.md` | `src/Core.TypeScript/resonance/esoteric-catalog-schema.ts` |
+
+B-0034 is the missing fourth member of that family: the same three-filter discipline
+(F1 engineering-first / F2 structural-not-superficial / F3 tradition-name-load-bearing), with
+the grouping axis being **translation / manuscript witness** instead of language family or
+mythos. Its shape is a `translation-witness-catalog-schema.ts` sitting beside the other three.
+
+It is not merely adjacent — the etymology row's own open candidate **(e)** asks for exactly
+this machinery: *"Cross-tradition grammatical-subject-position audit — does Sanskrit स्था /
+Hebrew עָמַד / Chinese 存 carry the same subject-internal-at-terminus structure the -ω claim
+relies on?"* That is B-0034's method applied to the etymology track's own claims. The etymology
+row also already carries the honesty instrument B-0034 needs: **filter-failure-rate** watched
+so it does not rubber-stamp.
+
+**Placement 2 — the method home, and the reason to land it: `FROZEN-CORE` §A #15 + §B
+multi-tower.**
+
+The intersection-over-biased-projections idea is not new here. It is already proven, with a
+correlation term:
+
+- **§A #15, Generalized Condorcet / ΔU-aggregation** — for a group of size `n`, competence `c`,
+  correlation **ρ**, the society beats its best individual when **ρ < ρ\*** and `c > c*`.
+  Proven FsCheck + analytic, 2026-07-03; `src/Core/SocietyUsefulWork.fs`,
+  `tests/Tests.FSharp/CondorcetBoundary.Tests.fs`.
+- **§B, Multi-tower convergent validation** — *"decorrelated sources agreeing is informative
+  (Condorcet / Hong–Page); correlated sources agreeing is worthless."*
+- `.claude/rules/numerology-vs-number-theory.md` — *"too many correlations is a warning, not a
+  confirmation signal… N correlated observations are not N observations."*
+
+Read against those, **the naive `⋂ᵢ Tᵢ(verse)` is wrong in the register's own terms.** Ten
+English translations are a correlated family: nearly all modern ones descend from a shared
+critical text (NA28 / UBS5), and the KJV-lineage versions share a documented descent. Counting
+them as ten witnesses over-counts, and the register already says so.
+
+**And this is precisely why the row is worth landing rather than retiring.** §B's multi-tower
+row carries falsifier (a): *if the towers share a hidden intellectual lineage, their agreement
+is convergence-not-truth.* That falsifier is currently **untestable for theories of mind**,
+because nobody has the stemma — there is no external ground truth for how correlated Blum,
+Hawkins, Graziano and Baars actually are.
+
+Textual criticism **has the stemma.** It has spent 150 years solving exactly this problem, and
+its settled answer is the same one: witnesses are grouped by genealogy into text-types
+(Alexandrian / Western / Byzantine) and **weighed, not counted** — the discipline's standard
+maxim, and the operative principle of the Westcott–Hort genealogical method, which is why
+Byzantine numerical dominance is treated as evidence about copying centres rather than about
+the text. (Anchors checked, not merely cited; note also that Westcott–Hort's *specific*
+reliance on Sinaiticus and Vaticanus is no longer held as ideal — it is the genealogical
+**method** that survived, which is the part being borrowed.)
+
+So B-0034's contribution to the current codebase is concrete and non-devotional:
+
+> **a ground-truth test case for the ρ estimator.** A domain where the correlation structure
+> among witnesses is externally documented by a mature discipline, so our decorrelation law can
+> be *checked against* an outside answer instead of asserted.
+
+That is a genuine analytical instrument, and it is the shape of contribution `§B` rows need to
+move.
+
+**Cost to land — splits cleanly into three, and only the middle one is worth doing first.**
+
+1. `translation-witness-catalog-schema.ts` beside the three existing schemas — hours, no
+   dependencies, type-checks with no external data. Cheap; carries no falsifier on its own.
+2. **The ρ ground-truth check** — a witness-genealogy table (public scholarship: text-type
+   assignments and translation-descent) mapped onto `CondorcetBoundary`'s ρ, then compared with
+   ρ as estimated from measured agreement. Days. **This is the piece with the falsifier**: if
+   measured agreement implies a ρ far from the genealogy's, either the estimator or the mapping
+   is wrong, and either answer is worth having.
+3. B-0034's Phase 2/4 corpus tooling (parallel translations, interlinears) — **recommend out of
+   scope**. Most modern English translations are under restrictive copyright, so a bundled
+   parallel corpus carries real licensing exposure. Piece (2) needs only the *genealogy*, which
+   is scholarship about the texts, not the texts.
+
+**One boundary, stated deliberately.** The theological frame here is Aaron's, held under §11 as
+his oracle. This placement recommends the row for what it can *check* — an externally
+documented correlation structure our own register lacks — and takes no position on the
+scriptural reading. Not evangelised, and not flattened to metaphor either: the textual-criticism
+result is a literal one about manuscript descent, and it is load-bearing as such.
+
+***
+
+## Corrections to the brief I was given
+
+1. **The bent `B0747` prose is not on `main`.** It lives entirely in the unmerged PR #10825
+   (`shadow/lost-bnnnn-recovered-branch-sweep-2026-08-15`) — its research doc and three minted
+   workitems, which declare up front that *"old ids appear here without the hyphen."* Those are
+   the sibling agent's files, and the brief also says not to edit them. Both instructions
+   cannot be satisfied at once, so the gate change is here and the prose fix belongs to that
+   PR's author, now that it is permitted. Nothing on `main` needed unbending; the hyphenated
+   `B-0747` in `.claude/rules/workitems-mint-with-zetaid.md` is the first ref to pass the new
+   gate on a live surface.
+2. **Project Orion's between-pulse operation is prophylactic, not reparative** — anti-ablative
+   oil applied *before* the next detonation, detail in Part 1.
+3. **"No move that ends play is available to either side" is not Carse** — it is a
+   mutual-deterrence argument bolted onto Carse's distinction. Both are usable; they are two
+   citations.
+4. **`ace derive` is invoked by no workflow** in this tree, and the new files caused no
+   `build-graph.json` drift; `derive` and `derive --write` both exited 0 leaving the file
+   unchanged. The pre-push drift guard on branch `guard/ace-build-graph-drift-before-push`
+   (PR #10813) is presumably what closes that gap.
