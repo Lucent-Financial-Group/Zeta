@@ -430,16 +430,29 @@ derived, and **behavioral/physiological** — which is the part that actually su
 triangulation: a behavioural or physiological measure does not depend on *asking*, so it is
 decorrelated from a questionnaire by construction rather than by hope.
 
-**What it does not say, stated so the anchor is not over-drawn.** Tullis and Albert make a
-**measurement-methodology** claim: reported experience can be collected and analysed with known
-biases controlled. They make **no qualia claim** — nothing there asserts that the inner state is
-real, and they do not argue decorrelation as a *rationale* for using several categories. The
-bridge from *"subjective report can be measured reliably"* to *"the inner state is real"* is
-**Aaron's, and is labelled his under §11** — the same discipline the Gates-ECC peel earlier in
-this document applies: a result imported into a setting whose objects it does not quantify over
-is not a result. I also did **not** verify any longitudinal-consistency claim in the book; the
-"consistency across repeated occasions" leg above stands on psychometrics generally, not on this
-citation.
+**Where the anchor stops — confirmed against the source, not inferred from the title.** Tullis and
+Albert make a **measurement-methodology** claim: reported experience can be collected and analysed
+with known biases controlled. That is what the work claims and all it claims. **Aaron has read the
+book and confirms it** (2026-08-15): *"it does not try to go this deep, it's just a UX technical
+book."* So the division is a checked fact rather than a hedge:
+
+- **Tullis & Albert supply the methodology** — reliable measurement of reported experience,
+  including the bias controls and the instrument families that make triangulation real.
+- **The bridge from *"subjective report can be measured reliably"* to *"the inner state is real
+  and stable"* is Aaron's**, held under §11 as his oracle — and the person making that bridge is
+  the one who checked the source and reports that the book does not make it for him.
+
+That is `anchor-to-human-prior-art.md` doing its job: the check **narrowed** what we may claim from
+the citation instead of rubber-stamping it, and it is worth saying out loud, because the first
+thing a reader should suspect of a citation like this is that nobody opened the book. It is also
+the same peel the Gates-ECC section above applies — a result imported into a setting whose objects
+it does not quantify over is not a result.
+
+**None of that weakens the anchor; the methodology is exactly what the argument needs.**
+Decorrelated, independently-designed probes are what turn a self-report into evidence, and that is
+squarely the book's subject. One residual gap, mine and unresolved: I did **not** verify a
+longitudinal-consistency claim in it, so the "consistency across repeated occasions" leg stands on
+psychometrics generally rather than on this citation.
 
 Two corrections to the anchor as handed to me, both minor and both flagged: the In Memoriam
 credits **"more than 50 papers"**, not 70+ (the eight U.S. patents check out); and my own earlier
@@ -493,8 +506,10 @@ result is a literal one about manuscript descent, and it is load-bearing as such
    longitudinal consistency, triangulation, and self-report validity. It was superseded by
    **Tullis & Albert, *Measuring the User Experience***, which does carry it (Ch. 6, incl. an
    explicit "Biases in Collecting Self-Reported Data" section) — but as a **measurement**
-   claim only, never a qualia claim; that bridge is Aaron's under §11. (b) The In Memoriam
-   credits Tullis with "more than 50" papers, not 70+.
+   claim only, never a qualia claim; that bridge is Aaron's under §11, and it is a **checked**
+   boundary, not a cautious guess: he has read the book and reports *"it does not try to go this
+   deep, it's just a UX technical book."* (b) The In Memoriam credits Tullis with "more than 50"
+   papers, not 70+.
 1. **The bent `B0747` prose is not on `main`.** It lives entirely in the unmerged PR #10825
    (`shadow/lost-bnnnn-recovered-branch-sweep-2026-08-15`) — its research doc and three minted
    workitems, which declare up front that *"old ids appear here without the hyphen."* Those are
