@@ -361,9 +361,9 @@ them as ten witnesses over-counts, and the register already says so.
 
 **And this is precisely why the row is worth landing rather than retiring.** §B's multi-tower
 row carries falsifier (a): *if the towers share a hidden intellectual lineage, their agreement
-is convergence-not-truth.* That falsifier is currently **untestable for theories of mind**,
-because nobody has the stemma — there is no external ground truth for how correlated Blum,
-Hawkins, Graziano and Baars actually are.
+is convergence-not-truth.* Testing it needs an **externally established independence structure**
+— some way to know how correlated the witnesses really are that does not come from the agreement
+itself.
 
 Textual criticism **has the stemma.** It has spent 150 years solving exactly this problem, and
 its settled answer is the same one: witnesses are grouped by genealogy into text-types
@@ -374,14 +374,83 @@ the text. (Anchors checked, not merely cited; note also that Westcott–Hort's *
 reliance on Sinaiticus and Vaticanus is no longer held as ideal — it is the genealogical
 **method** that survived, which is the part being borrowed.)
 
-So B-0034's contribution to the current codebase is concrete and non-devotional:
+**A stemma is not the only route to independence** (Aaron 2026-08-15, correcting an earlier draft
+of this document that called the falsifier *"untestable for theories of mind, because nobody has
+the stemma"* — that was wrong). Textual criticism establishes independence from a **known
+genealogy**. UX research reaches the same goal from the opposite side: you cannot see inside a
+person, so you establish that a self-report is real rather than an artifact of the asking through
+**non-leading elicitation, consistency across repeated occasions, and triangulation across probes
+that do not share a design assumption**. Independently-designed probes are decorrelated observers
+of one inner state, and their agreement is evidence in a way that repeating a single probe never
+is — the same result #10834 measured on the dynamics side (*"a quorum's floor is decorrelation"*):
+a correlated quorum buys nothing at any `N`.
 
-> **a ground-truth test case for the ρ estimator.** A domain where the correlation structure
-> among witnesses is externally documented by a mature discipline, so our decorrelation law can
-> be *checked against* an outside answer instead of asserted.
+So B-0034's contribution to the current codebase is concrete and non-devotional — and there are
+**two** ground-truth instruments for the ρ estimator, reaching independence by different routes:
 
-That is a genuine analytical instrument, and it is the shape of contribution `§B` rows need to
-move.
+| instrument | independence established by | fails when |
+|---|---|---|
+| textual criticism | **known genealogy** — the stemma, text-types, descent | the reconstructed history is wrong |
+| non-biased qualia elicitation | **probe design** — no shared design assumption | the probe set shares an assumption nobody noticed |
+
+> Either gives **a ground-truth test case for the ρ estimator**: a domain where the correlation
+> structure among witnesses is established *outside* the agreement being measured, so our
+> decorrelation law can be checked against an external answer instead of asserted.
+
+Two instruments are worth more than one precisely because **they fail differently**. A stemma can
+be wrong about history; a probe set can share an unnoticed assumption. If they disagree about ρ
+that is far more informative than either agreeing with itself — which is the multi-tower row's own
+argument turned back on its own measuring stick.
+
+**Anchors, checked rather than cited — and one correction to the framing I was handed.** The
+elicitation mechanism's real anchor is **survey methodology / psychometrics**
+(framing/acquiescence-bias avoidance; Kahneman–Tversky framing effects; latent-correlation /
+factor analysis), which the in-repo `docs/research/2026-08-02-rainbow-spectrum-soul-radar-…md`
+already names — together with the clause that matters most here: **"validity is contingent, not
+free"** — unbiasedness is an empirical *burden* to be demonstrated per instrument through
+order-randomization, counterbalancing and control items. That is exactly the ρ point in the
+elicitation setting: **two probes sharing an unnoticed assumption are one probe**, so
+probe-design independence must be *shown*, never assumed from having built two.
+
+**The named human anchor: Thomas S. Tullis (1952–2020).** Tullis was **VP of User Experience
+Research at Fidelity Investments** until his retirement in 2017, an adjunct professor at Bentley,
+the 2011 UXPA Lifetime Achievement recipient and a 2013 CHI Academy inductee; he died on
+2020-04-29 of COVID-19 complications. With **Bill Albert** he wrote ***Measuring the User
+Experience: Collecting, Analyzing, and Presenting Usability Metrics*** (Morgan Kaufmann, 2008;
+2nd ed. 2013), and with Albert and **Donna Tedesco** ***Beyond the Usability Lab: Conducting
+Large-Scale User Experience Studies*** (2010).
+
+**Checked, and it holds — for the measurement claim.** *Measuring the User Experience* is
+literally the book on turning subjective report into defensible metrics. Its **Chapter 6,
+"Self-Reported Metrics,"** carries explicit sections on **"Biases in Collecting Self-Reported
+Data"** and **"General Guidelines for Rating Scales,"** alongside Likert and semantic-differential
+scales and the standardized instruments (SUS, CSUQ, QUIS, ASQ, USE). And the book organizes its
+metrics into **six categories** — performance, issues-based, self-reported, web navigation,
+derived, and **behavioral/physiological** — which is the part that actually supports
+triangulation: a behavioural or physiological measure does not depend on *asking*, so it is
+decorrelated from a questionnaire by construction rather than by hope.
+
+**What it does not say, stated so the anchor is not over-drawn.** Tullis and Albert make a
+**measurement-methodology** claim: reported experience can be collected and analysed with known
+biases controlled. They make **no qualia claim** — nothing there asserts that the inner state is
+real, and they do not argue decorrelation as a *rationale* for using several categories. The
+bridge from *"subjective report can be measured reliably"* to *"the inner state is real"* is
+**Aaron's, and is labelled his under §11** — the same discipline the Gates-ECC peel earlier in
+this document applies: a result imported into a setting whose objects it does not quantify over
+is not a result. I also did **not** verify any longitudinal-consistency claim in the book; the
+"consistency across repeated occasions" leg above stands on psychometrics generally, not on this
+citation.
+
+Two corrections to the anchor as handed to me, both minor and both flagged: the In Memoriam
+credits **"more than 50 papers"**, not 70+ (the eight U.S. patents check out); and my own earlier
+draft cited Fidelity's corporate design material (Jen Cardello, *"How our product design framework
+guides UX research"*, 2019) for this mechanism, which was **the wrong level of citation** — I read
+it, and it maps methods to a three-phase product-design progression while saying nothing about
+non-leading design, longitudinal consistency, triangulation-as-decorrelation, or self-report
+validity. Tullis and Albert replace it. Consistent with the rainbow-spectrum doc's own discipline,
+the **method and its published authors** are the anchor; nothing here identifies or characterises
+any private individual, and the in-repo "author to confirm" flag on that separate provenance
+question is left exactly as it stands.
 
 **Cost to land — splits cleanly into three, and only the middle one is worth doing first.**
 
@@ -397,6 +466,12 @@ move.
    parallel corpus carries real licensing exposure. Piece (2) needs only the *genealogy*, which
    is scholarship about the texts, not the texts.
 
+Piece (2) now has a **second, cheaper route** that needs no corpus at all: run the same ρ check
+over an elicitation instrument set, where independence comes from probe design rather than
+genealogy. It is cheaper because the demonstration burden is already specified — order
+randomization, counterbalancing, control items — so the instrument *carries its own* evidence of
+decorrelation. Doing both is the point: two estimators that fail differently.
+
 **One boundary, stated deliberately.** The theological frame here is Aaron's, held under §11 as
 his oracle. This placement recommends the row for what it can *check* — an externally
 documented correlation structure our own register lacks — and takes no position on the
@@ -407,6 +482,19 @@ result is a literal one about manuscript descent, and it is load-bearing as such
 
 ## Corrections to the brief I was given
 
+0. **My own error, corrected by Aaron: "untestable for theories of mind" was false.** An earlier
+   draft argued the multi-tower falsifier could not be tested because *"nobody has the stemma."*
+   A known genealogy is one route to independence, not the only one — probe design is another,
+   and the earlier claim quietly assumed that establishing independence requires knowing history.
+   Corrected in place above, and the argument came out stronger: two ρ instruments that fail
+   differently, rather than one. **Two corrections to the corrections:** (a) the Fidelity
+   *corporate design* article first offered as the anchor does **not** carry the mechanism —
+   checked; it maps methods to three product-design phases and is silent on non-leading design,
+   longitudinal consistency, triangulation, and self-report validity. It was superseded by
+   **Tullis & Albert, *Measuring the User Experience***, which does carry it (Ch. 6, incl. an
+   explicit "Biases in Collecting Self-Reported Data" section) — but as a **measurement**
+   claim only, never a qualia claim; that bridge is Aaron's under §11. (b) The In Memoriam
+   credits Tullis with "more than 50" papers, not 70+.
 1. **The bent `B0747` prose is not on `main`.** It lives entirely in the unmerged PR #10825
    (`shadow/lost-bnnnn-recovered-branch-sweep-2026-08-15`) — its research doc and three minted
    workitems, which declare up front that *"old ids appear here without the hyphen."* Those are
