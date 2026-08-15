@@ -10,7 +10,7 @@ import { describe, test, expect } from "bun:test";
 import { crossVerify, ORACLE_LANES } from "./cross-verify-ir";
 import { readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
-import { execSync } from "node:child_process";
+import { execFileSync } from "node:child_process";
 
 const goldenFile = JSON.parse(readFileSync(
   join(import.meta.dir, "../zeta-ir-v1/zeta-ir-v1.golden.json"), "utf-8"
@@ -30,7 +30,7 @@ const INPUTS: [string, string][] = [
 ];
 
 function isAvailable(cmd: string): boolean {
-  try { execSync(`which ${cmd}`, { stdio: "pipe" }); return true; } catch { return false; }
+  try { execFileSync("which", [cmd], { stdio: "pipe" }); return true; } catch { return false; }
 }
 
 const VENV_PYTHON = join(process.cwd(), "src/Core.Python/.venv/bin/python3");
@@ -73,7 +73,11 @@ describe("cross-verify-ir — 7-language byte-lock oracle (CI-enforced)", () => 
     expect(existsSync(VENV_PYTHON), `${VENV_PYTHON} must exist — ${VENV_HINT}`).toBe(true);
     let qdkErr = "";
     const hasQdk = (() => {
-      try { execSync(`${VENV_PYTHON} -c "import qdk"`, { stdio: "pipe" }); return true; }
+      // execFileSync, not execSync: VENV_PYTHON is an absolute path built from
+      // process.cwd(), so string-interpolating it into a shell command line makes
+      // the checkout path part of the command (CodeQL js/shell-command-injection-
+      // from-environment). Passing argv directly spawns no shell at all.
+      try { execFileSync(VENV_PYTHON, ["-c", "import qdk"], { stdio: "pipe" }); return true; }
       catch (e: any) { qdkErr = (e?.message ?? "").slice(0, 200); return false; }
     })();
     expect(hasQdk, `qdk must be importable from the venv — ${VENV_HINT}. ${qdkErr}`).toBe(true);
