@@ -75,11 +75,19 @@ export async function loadSocietyBnn(eventDir: string): Promise<LoadedSocietyBnn
   }
   const { bnn } = deserializeBnn(persisted);
   const transport = bnn.states.get("transport");
-  const previousTransport =
-    transport !== undefined && transport.obsCount > 0
-      ? { mu: transport.posterior.mu, sigma: Math.sqrt(transport.posterior.sigma2) }
-      : undefined;
-  return { bnn, previousTransport, loaded: true };
+  // Omit the key when transport has no observations. Under
+  // exactOptionalPropertyTypes, `previousTransport?: T` is "absent or T",
+  // never "present as undefined". Absence is the persistence meaning:
+  // nothing to take a derivative against. An explicit undefined would be
+  // a different shape and would not survive a JSON tick boundary anyway.
+  if (transport !== undefined && transport.obsCount > 0) {
+    return {
+      bnn,
+      previousTransport: { mu: transport.posterior.mu, sigma: Math.sqrt(transport.posterior.sigma2) },
+      loaded: true,
+    };
+  }
+  return { bnn, loaded: true };
 }
 
 /**

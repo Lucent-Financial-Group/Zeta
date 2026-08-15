@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { mkdtempSync, readFileSync, rmSync } from "node:fs";
+import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { loadBnnState } from "../bayesian/bnn-persistence";
@@ -37,7 +37,7 @@ describe("society BNN survives the tick boundary (081M005CGB7)", () => {
     try {
       const loaded = await loadSocietyBnn(dir);
       expect(loaded.loaded).toBe(false);
-      expect(loaded.previousTransport).toBeUndefined();
+      expect("previousTransport" in loaded).toBe(false);
       expect(evidenceBackedPriorHints(loaded.bnn, "society-runner")).toEqual([]);
       expect(await saveSocietyBnn(loaded.bnn, dir)).toBe(false);
       expect(await loadBnnState(societyBnnPath(dir))).toBeNull();
@@ -105,7 +105,7 @@ describe("society BNN survives the tick boundary (081M005CGB7)", () => {
       absorbGeneration(first.bnn, gen(0.8), "society-tick-1", EMITTED_AT);
       await saveSocietyBnn(first.bnn, dir);
       const second = await loadSocietyBnn(dir);
-      expect(second.previousTransport).toBeUndefined();
+      expect("previousTransport" in second).toBe(false);
       expect(transportHeatReadout(second.bnn, second.previousTransport).trend).toBe("indeterminate");
       expect(transportHeatReadout(second.bnn, second.previousTransport).evidence).toBe("prior");
     } finally {
