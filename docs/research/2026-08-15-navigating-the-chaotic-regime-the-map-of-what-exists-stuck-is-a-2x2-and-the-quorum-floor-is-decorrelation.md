@@ -166,6 +166,47 @@ more useful than calling them one mechanism.
 a fixed point), not a Lyapunov **exponent** (chaos). It was offered as part of this cluster; it belongs
 to a different subject that shares a surname.
 
+### 4a. Escape is not locally free — the cost side, and what the model can and cannot say
+
+Everything above meters escape from the escapee's side only. Aaron 2026-08-15: *"this escape from
+entanglement can be disruptive to you and those around you, but ultimately on average for the better."*
+The structural argument (the coordinator's, and stated as an argument rather than a measurement) is that
+the disruption is not incidental: **you cannot decorrelate unilaterally** — if a node's trajectory is
+entangled with others', then decorrelating *is* perturbing the joint system, the same act seen from
+outside. So the design question is checkable and the tooling currently fails it: **does the escape path
+meter its effect on the correlated set, or only on the escapee?** Every mechanism in §4 — quorum probes,
+`steerOut`, the absent dilation policy — treats escape as locally free, and none of them carries a
+second observable.
+
+**Ran the falsifier, and it splits the claim in two.** The §4 harness could not test this — its probes
+are independent trajectories, so there is no joint system to perturb. So: a 6-node ring of the same
+r=4.02 saddle under diffusive coupling `c` (a coupled map lattice, Kaneko 1984), one node kicked, and
+**the other five nodes' dwell times measured** against an unkicked baseline (4 000 trials = 20 000
+neighbour samples; an escaped node stops updating and contributes its last in-range value).
+
+| coupling `c` | neighbours whose dwell changed | mean change | significance |
+|---|---|---|---|
+| 0.00 (negative control) | **0.0 %** | **exactly 0** | — |
+| 0.05 | 63.4 % | +1.17 (SE 8.73) | 0.13 σ |
+| 0.20 | 64.8 % | +8.88 (SE 8.06) | 1.10 σ |
+
+- **The mechanism claim survives.** Roughly two in three neighbours have their dwell changed by a
+  perturbation applied to someone else, and at zero coupling *exactly none* do — so the harness is not
+  manufacturing the effect. Escape is not locally free.
+- **The "on average" claim is exactly where this model has no power, and that is the honest finding.**
+  The mean neighbour effect is within ~1 σ of zero at both couplings and the **median is exactly 0**,
+  while the per-instance spread is enormous (sd ≈ 1 200 against a 2 000-step budget). So the disruption
+  is large *per instance* and unmeasurable *on average* — the model neither confirms nor refutes the
+  "for the better" half, and anyone reading a mean here would be reading noise. The qualifier was doing
+  real work: it is an expectation claim, and its variance dominates it.
+
+Register: **metered on one model** (coupled logistic lattice). Run in a seeded scratch harness and
+**not a shipped test**, unlike the §4 tables — the parameters above are the whole specification, so it
+reproduces from this paragraph, but nothing in CI will notice if it stops being true. Encoding it as a
+test is available and not done here. The honest consequence for the tooling stands
+regardless of the valence question: a mechanism that reports only the escapee's improvement is
+reporting a best case, and the second observable is cheap.
+
 ## 5. CHIP-8 time dilation: the mechanism and its safety proof exist; the policy does not
 
 Aaron: *"in CHIP-8 we have time dilation where if it detects periodic or quasi time-crystal it gets
