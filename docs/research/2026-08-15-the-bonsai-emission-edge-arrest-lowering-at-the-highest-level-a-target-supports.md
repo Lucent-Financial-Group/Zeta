@@ -252,15 +252,94 @@ That is Aaron's layer split arriving on its own — **`Resume` is a specializati
 side-effecting, CPU-shaped) and is right for that layer. The defect is that **the spec never said so**,
 so nothing stops a reader taking `Resume`'s semantics as the meaning of the format.
 
-**What follows, under Aaron's rule:** the _spec_ reading of `Cond` is `BonsaiSoft`'s — predication, both
-arms total, result a pure function of the predicate, data-parallel and composable (`where` in array
-languages, predication on SIMT hardware). The short-circuiting reading belongs to specialization.
+### Aaron's ruling: label, do not choose
 
-**Not decided here.** Choosing which semantics the format means changes what the format _is_, which is a
-gated call and not the shadow's to make. The observation is attached; the authorization is not.
-Recommended shape if it is taken up: state the predication semantics in the format's contract, mark
-`Resume`'s short-circuit as a **declared specialization** rather than an alternative reading, and add a
-cross-evaluator test on this exact expression — which currently nothing has.
+> **Aaron, 2026-08-15:** _"yes we just need to make sure everything is labeled honestly and able to be
+> reasoned about in the domain in which it is active. Choose the right specialization for the job and
+> make sure you don't use one assuming it's the other. In worst case we would need two specs."_
+
+**A correction to my own framing, flagged.** I wrote above that "the _spec_ reading of `Cond` is
+`BonsaiSoft`'s" and that short-circuit "belongs to specialization." **Withdrawn.** That was still
+picking a winner, dressed as a layering argument. Both readings are legitimate and each is correct in
+its own domain — short-circuit is not a lesser form of predication, it is the _required_ form where an
+arm holds a side-effecting activity that must not run. There is no demotion to perform.
+
+**So the defect is not disagreement — it is indistinguishability.** `Cond` is **one name for two
+functions**, and nothing prevented a program authored under one from reaching the other. That is a known
+failure class in this repo, not a novel one:
+
+- `.claude/rules/dual-use-detection-is-neutral-oracle-decides.md`, the functional half — _"recognising
+  sameness is not assigning identity — they are two different functions."_ Written after a distinctness
+  **detector** was nearly repurposed as an identity **provider**. Same shape: two functions, one name,
+  silent conflation, corrupted downstream state.
+- **#10831** — "time-crystal" carrying four referents across five files: the vocabulary-level version.
+
+### What was built, and the bar it had to clear
+
+The bar was behavioural, not documentary: _can a program authored under one discipline be silently
+evaluated under the other?_ Before: **yes**. Now, through the checked path: **it refuses, by name.**
+
+`tests/cross-verification/_harness/bonsai-discipline.ts` does four things:
+
+1. **Names the two disciplines** — `predicated` / `short-circuit` — with what each means.
+2. **Registers each evaluator with the discipline it actually has** — and the registration is
+   **verified by executing a discriminating probe**, never trusted. This is the load-bearing part: a
+   label nothing checks is a comment.
+3. **Decides statically whether a program's meaning depends on the discipline.** Most do not, and a
+   guard that fires on those is noise — noise is how a guard gets switched off.
+4. **Refuses the handoff** when a discipline-**sensitive** program authored under one discipline is
+   aimed at an evaluator with the other.
+
+**The labels are metered, not asserted.** `bonsai-discipline-probe.ts` runs `Cond(true, 1, Param "nope")`
+through all three evaluators — TypeScript in-process, the two F# ones through the real built
+`Zeta.Core.dll` via `dotnet fsi`, not a transcription — and fails if any registration disagrees with
+observed behaviour. Executed, exit 0:
+
+```text
+BonsaiSoft.evalSoft    error BonsaiSoft: unbound param 'nope'   demonstrates predicated     registered predicated     OK
+Resume.run             value 1                                  demonstrates short-circuit  registered short-circuit  OK
+resume.ts start        value 1                                  demonstrates short-circuit  registered short-circuit  OK
+
+discipline-sensitive: true ($.else free-param-in-arm)
+REFUSED: DISCIPLINE SUBSTITUTION: … authored under `short-circuit` … aimed at `BonsaiSoft.evalSoft` … which is `predicated` …
+same program → resume.ts start: ok=true (disciplines match)
+a closed/total Cond → predicated evaluator: ok=true (program is not discipline-sensitive)
+```
+
+**Sensitivity is decided by the two causes that were _observed_ to differ**, not by speculation: a
+`Call` in an arm (the untaken activity never runs under short-circuit; `BonsaiSoft` reaches it and
+declines it) and a **free** param in an arm (the executed case). Conservative — it may over-report a
+free param that is always bound in practice, and it does not under-report on those two. **Named gaps:**
+an ill-typed `Binary` in an arm and arithmetic overflow are both real causes it cannot see, so
+`sensitive: false` means _"not sensitive for the two causes checked."_
+
+**Mutation-proved** (raw exit codes; `probe` = the cross-language script):
+
+| mutation | unit | probe | named by |
+| --- | --- | --- | --- |
+| baseline | **0** | **0** | — |
+| D1 guard never refuses | **1** | **1** | `a short-circuit-authored, discipline-sensitive program was ACCEPTED by the predicated evaluator` |
+| D2 free-param blinded in the sensitivity analysis | **1** | **1** | the refusal rows plus `a free param in an arm is a cause` |
+| D3 the registration lies (`BonsaiSoft` relabelled short-circuit) | **1** | **1** | `REGISTERED short-circuit but DEMONSTRATES predicated — the registration … must be corrected, not the evaluator` |
+| restored | **0** | **0** | — |
+
+D3 is the one that matters most: it proves the table cannot quietly go stale, because execution refutes
+it.
+
+### What this deliberately does not do
+
+- **It does not move the wire format.** The program↔discipline pairing is a **sidecar**; `serialize`
+  produces byte-identical bytes with or without it, asserted in the tests. Carrying the discipline _in_
+  the bytes may well be the cleaner end state — it is a property of the program, not of a target, so
+  #10827's carved test does not exclude it — but **that is a format change, and a format change is
+  gated.** Written up, not landed. This is the "two specs" outcome Aaron sanctioned as
+  worst-case-acceptable, and it is available if the sidecar proves too weak.
+- **It does not intercept a direct call.** Nothing stops calling `BonsaiSoft.evalSoft` on a
+  short-circuit program without going through `checkHandoff`. This guards the checked path and makes
+  the unchecked one **nameable**; it is not a sandbox, and calling it one would be the vacuity class.
+- **It does not touch the evaluators.** Making them agree would silently pick a reading — ruled out
+  explicitly. `BonsaiSoft.fs`, `Resume.fs`, and `resume.ts` are read-only here; a sibling agent holds
+  that seam.
 
 ***
 
@@ -368,10 +447,10 @@ The edge exists; the ladder does not. In dependency order:
 3. **A Q# emitter, or a written refusal.** `TARGET_FLOOR` proves the design tolerates an empty
    descriptor. It does not produce Q#. Either the Q# lane gets an assembly program or the reason it
    cannot is written down.
-4. **A decision on `Cond`'s arm-evaluation semantics, and a cross-evaluator test.** The divergence
-   above is observed and unowned: nothing in the repo forces `BonsaiSoft` and `Resume` to agree or to
-   declare that they deliberately do not. This is the largest single item on this list and it is a
-   gated call — the shadow attaches the observation, not the resolution.
+4. **The discipline guard on the UNCHECKED path.** `checkHandoff` guards call sites that use it;
+   nothing stops a direct `BonsaiSoft.evalSoft` call on a short-circuit program. Closing that needs
+   either the discipline in the bytes (a gated format change) or a lint that finds direct evaluator
+   call sites — neither landed here.
 5. **A parallel-shape check with teeth.** `assertParallelShaped` is a name-set membership test. It
    cannot tell that a _newly added_ `fn` is parallel; someone must decide and add the name. The honest
    upgrade is a property the checker can verify (associativity of a fold's combine, under a
