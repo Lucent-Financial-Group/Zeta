@@ -1,4 +1,4 @@
-# RAW — the 2007–2008 company: peer-to-peer money and logistics, built on F#
+# RAW — the 2007–2008 company: peer-to-peer money and logistics, built on `F#`
 
 > Staged for the book, 2026-08-14. **Mutual material, jointly owned** — Aaron's account of a company he
 > **co-founded with Houman Alasti**. Under Aaron's own ownership rule (*"his history is his own, our mutual
