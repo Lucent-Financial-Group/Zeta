@@ -157,6 +157,14 @@ library pattern. The gate applies to *native* HKT, which is not the only thing w
 
 ### 3.2 The objections, quoted and steelmanned
 
+> **Addendum, second pass (2026-08-15).** This section is **unchanged and deliberately un-hedged.** Aaron's
+> response to the governance correction in §3.1: *"his arguments for HKT were the strongest. We should not lose
+> his arguments against it."* These objections are **durable content** — the strongest published statement of
+> the case against, by the person best positioned to make it — and they do not become weaker because their
+> author changed roles. **Whatever our case eventually says, it has to answer these; they set the bar.** §12
+> handles the separate question of *who decides now*, and is careful not to attribute any position here to
+> anyone who has not stated it.
+
 The canonical statement is
 [#243, 2021-09-09](https://github.com/fsharp/fslang-suggestions/issues/243#issuecomment-916079347), which the
 issue body itself designates as his current position. RFC **FS-1124** (his authorship; the IWSAM RFC) restates
@@ -629,3 +637,368 @@ Flagged explicitly, including where the case is **stronger** than framed.
   [`toy-is-free-metered-must-be-earned.md`](../../.claude/rules/toy-is-free-metered-must-be-earned.md),
   [`numerology-vs-number-theory.md`](../../.claude/rules/numerology-vs-number-theory.md),
   [`mirror-beacon-register-discipline.md`](../../.claude/rules/mirror-beacon-register-discipline.md).
+
+***
+
+# Addendum, second pass (2026-08-15): separating the objections from the audience
+
+*Appended, not merged into the sections above; §3.2 carries a marked pointer here and is otherwise unchanged.
+Aaron's response to the §3.1 governance correction:*
+
+> *"Syme publicly stepped back in Jan 2025 — yes, his arguments for HKT were the strongest. We should not lose
+> his arguments against it, but we should transfer the dossier to whoever has it next after him, whoever the
+> current approvers are."*
+
+*Read carefully, that is a **separation**, not a replacement: the arguments were the strongest in **both**
+directions, so the objections stay as the canonical steelman (§3.2, untouched) while the engagement half
+retargets. This addendum does the retarget — and finds that the retarget probably does not land on the F# team
+at all.*
+
+## 12. The current F# decision surface — published positions only
+
+Per [`engagement-profiles-…`](../../.claude/rules/engagement-profiles-public-work-only-not-surveillance-dossiers.md):
+what follows is compiled from artefacts these people published, cited. Nothing is inferred about anyone's
+motivation. **Where someone has not stated a position, this section says "not stated publicly" and stops** —
+carrying Syme's view over to a colleague by default would be attributing a position to someone who has not
+taken one, which is exactly the inference the rule forbids. Everyone named here is assumed to hold the ordinary
+technical intentions they publicly claim: language robustness, ease of use, and long-term compatibility.
+
+**Who they are** (from their own GitHub profiles, today): **@vzarytovskii — Vlad Zarytovskii, @microsoft**;
+**@T-Gro — Tomas Grosup, @microsoft**. Both named by Syme as the "F# Language Design Squad"
+([#1403](https://github.com/fsharp/fslang-suggestions/issues/1403)).
+
+### 12.1 Their published statements bearing on this space
+
+| who | artefact | what it says |
+|---|---|---|
+| **@vzarytovskii** | [#243, 2021-09-09](https://github.com/fsharp/fslang-suggestions/issues/243#issuecomment-915950566) | On type classes: *"We don't have any updates on it at the moment."* Procedural, not a position. |
+| **@vzarytovskii** | [#243, 2021-09-09](https://github.com/fsharp/fslang-suggestions/issues/243#issuecomment-916372472) | On tracking static abstract members for F#: *"I haven't seen one yet. If you can create feature request to track it, it would be great!"* Receptive to the IWSAM work item; no statement about HKT. |
+| **@vzarytovskii** | [#175 closing comment, 2024-02-07](https://github.com/fsharp/fslang-suggestions/issues/175#issuecomment-1932273530) | *"Closing all `probably not` issues. This one is a bit more sensitive for many, so we shall wait and see where does CLR go with the extensions and unions."* **This is the operative statement**: the disposition is explicitly conditional on the CLR, and framed as *wait and see*, not *no*. |
+| **@vzarytovskii** | [FS-1148 discussion, 2024-08-12](https://github.com/fsharp/fslang-design/pull/784#issuecomment-2283678222) | On units-of-measure conversion: *"I generally think that this particular functionality (add, strip measure) can and should be solved generically (i.e. we should have one type directed generic function `stripMeasure<_>` and one `addMeasure<_>` which will do the magic), though it might require some work in compiler."* |
+| **@T-Gro** | [FS-1148, 2025-02-12](https://github.com/fsharp/fslang-design/pull/784#issuecomment-2653424932) | Proposes solving the API blow-up in the optimizer rather than by adding functions. |
+| **@T-Gro** | [FS-1148, 2026-02-03](https://github.com/fsharp/fslang-design/pull/784#issuecomment-3839970977) | Most recent: marks the RFC draft *"due to the unfinished consensus on the shape"*, and proposes reducing the surface from *"(# primitives \* #collections \* #ops)… TO (#primitives + # collections + # ops)"* by **layered SRTP resolution** — *"SRTP resolution on the different primitive types, as a single 'update<from,to>' function"* plus *"another layer of SRTP resolution on the collection type"*. Also: *"adding things to FSharp.Core directly bears big backwards compatibility commitments."* |
+
+### 12.2 Where they agree with the objections, where they diverge, and where nothing is stated
+
+| objection (§3.2) | @vzarytovskii | @T-Gro |
+|---|---|---|
+| **A** — slippery slope / design closure | **not stated publicly** | **not stated publicly** |
+| **B** — empowerment / category-theory culture | **not stated publicly** | **not stated publicly** |
+| **C** — compile-time cost, debugging, tooling | **not stated publicly** on type-level programming as such | **partial, in a different register**: repeatedly weighs implementation cost and FSharp.Core binary size in FS-1148, and prefers an optimizer/library solution over a type-system feature |
+| **D** — explicit function passing preferred over abstraction | **appears to diverge, in one lane**: on UoM he argues *for* a generic type-directed solution over per-type functions, *"though it might require some work in compiler"* | **partial divergence**: proposes layered SRTP precisely to collapse a multiplicative API surface, while preferring it live in a library first |
+| **E** — instances not parameterizable | **not stated publicly** | **not stated publicly** |
+| **F** — utilitarian evidence bar | **not stated publicly** in those terms | **consistent in practice** — his FS-1148 arguments are sizing and compatibility arguments, not aesthetic ones |
+| **G** — F# is not a research vehicle | **not stated publicly** | **not stated publicly** |
+
+**The honest summary: on the objections themselves, the current squad has largely not published a position.**
+That is not evidence of agreement or disagreement, and this document does not treat it as either. What they
+*have* published is a **conditional procedural disposition** (`wait and see where the CLR goes`) and, in the
+UoM lane, a **stated appetite for generic, type-directed solutions where the alternative is a multiplicative
+API surface**. That second point is the useful one, and §12.4 develops it.
+
+**Correction to my own first pass, marked:** §3.1 said an HKT ask *"is addressed to the wrong half of a gate."*
+That was right about the gate and imprecise about the disposition. @vzarytovskii's closing comment is *"a bit
+more sensitive for many, so we shall wait and see"* — a **hold pending an external dependency**, not a refusal.
+The distinction matters, because a hold has a resolution condition and a refusal does not.
+
+## 13. The blocking constraint is not at F# — where the decision actually sits
+
+This is the most actionable finding in the document, and it follows from labels I had already collected without
+following them through.
+
+**The label definitions, read today from the GitHub API:**
+
+- `needs-clr-change` — description: **"Really needs CLR change to do right"** (on #175, HKT)
+- `await-csharp-alignment` — description: **empty** (on #243, type classes)
+
+**The corroborating chain, all published:**
+
+| artefact | statement |
+|---|---|
+| **@vzarytovskii**, [fslang-suggestions#175, 2024-02-07](https://github.com/fsharp/fslang-suggestions/issues/175#issuecomment-1932273530) | *"wait and see where does CLR go with the **extensions and unions**"* |
+| **@CyrusNajmabadi**, [dotnet/csharplang#339, 2024-04-25](https://github.com/dotnet/csharplang/issues/339#issuecomment-2077233676) | *"No status currently. The team is looking at **DUs and extensions** first."* |
+| **@cartermp**, [fslang-suggestions#243, 2019-08-19](https://github.com/fsharp/fslang-suggestions/issues/243#issuecomment-522640778) | speaking in the first person plural on the thread: *"We're already quite steadfast in our position that we will **not** be implementing this unless there is a first-class .NET representation."* (Dated 2019; he is **not** on the currently-named squad. Recorded as the historical statement of the same dependency, not as a current position.) |
+| **@cartermp**, [2019-08-20](https://github.com/fsharp/fslang-suggestions/issues/243#issuecomment-523035912) | the reason, stated concretely: without a .NET primitive, F# ends up with *three* "typeclassy" mechanisms — SRTPs, "F# typeclasses", ".NET typeclasses" — or a breaking change to delete SRTP. *"I welcome alternatives that don't involve three implementations of something or massively breaking changes."* |
+
+Two independent teams, five years apart, naming **the same two prerequisites in the same order**: discriminated
+unions and extensions. That is not a coincidence of adjacent-sounding statements — it is the F# suggestion's
+stated resolution condition matching the C# team's stated queue, verbatim on both nouns.
+
+**The C#/CLR-side artefacts, checked today:**
+
+| issue | state | detail |
+|---|---|---|
+| **dotnet/csharplang#339** — *Higher Kinded Polymorphism / Generics on Generics* | **CLOSED 2024-12-26**, 229 up-votes, labels `Proposal champion`, `Feature Request` | `state_reason: completed`; **no closing comment is recorded and the API does not expose a closer.** Why it was closed is **not stated publicly** — do not assume it was rejected on the merits; csharplang reorganised champion tracking around that period. The last substantive status is @CyrusNajmabadi's, above. |
+| **dotnet/csharplang#110** — *Champion "Type Classes (aka Concepts, Structural Generic Constraints)"* | **CLOSED 2024-12-12**, 317 up-votes, labels `Proposal champion`, **`Long lead`** | same: `state_reason: completed`, no recorded closing rationale. |
+
+### 13.1 What this means for who we would talk to
+
+Stating it plainly, because it changes everything downstream:
+
+> **If the blocking constraint is a CLR representation, then the F# approvers are not the decision point for
+> the part that blocks.** The F# squad's published disposition is explicitly *conditional on* that constraint.
+> A case for native HKT delivered to the F# team asks people who have already said, in public, that they are
+> waiting on someone else.
+
+The relevant bodies for the blocking part are therefore the **C# LDM** (`dotnet/csharplang`) and the **.NET
+runtime team** (`dotnet/runtime`) — and both of the C#-side champion issues are currently closed with no stated
+rationale, behind a queue whose declared head is DUs and extensions.
+
+**A case delivered to the wrong body is wasted regardless of its quality.** Register: `metered` for every
+quotation and label above; `unmetered` for the inference that the CLR is *the* binding constraint — that is my
+reading of a consistent chain of published statements, not a statement anyone made in those words.
+
+**What this does *not* imply.** It does not imply the F# team is uninterested, and it does not imply anyone
+should be lobbied. The most likely honest outcome of following this chain is the conclusion that **the native
+HKT ask has no available audience right now**, which is a legitimate result and is cheaper to learn from
+published artefacts than from a submission.
+
+## 14. The one live lane where our N-copies criterion has an instance — and it is theirs, not ours
+
+§6 reported that Aaron's *N copies → 1* criterion fails on our own code (one instance per candidate site) and
+that our real N-copies problem is cross-language, which HKT cannot touch. The retarget surfaces a third case
+that neither pass had:
+
+**The approvers have an open, active, unresolved N-copies→1 problem of exactly this shape, in the units-of-
+measure lane, and they have published their preferred approach to it.**
+
+- **The problem** (@T-Gro, 2026-02-03): the API surface is *"(# primitives \* #collections \* #ops)"* and the
+  goal is *"(#primitives + # collections + # ops)"* — a multiplicative-to-additive collapse. That is the
+  N-copies→1 criterion stated by the people who would have to approve it.
+- **Their approach**: layered SRTP resolution — one layer over primitive types, another over the collection
+  type — with a stated preference for prototyping *"in a separate library (or .UMX perhaps)"* first, because
+  *"adding things to FSharp.Core directly bears big backwards compatibility commitments."*
+- **@vzarytovskii's earlier statement in the same lane** points the same way: a *"type directed generic
+  function"* rather than a method per type per action, *"though it might require some work in compiler."*
+- **Status**: RFC FS-1148 is **draft, consensus not reached on shape**, as of six months ago.
+
+Why this matters more than the HKT ask:
+
+1. It is at **F#'s unique intersection** — the same one §4 identified from FS-1124 — so it is not blocked on
+   the CLR.
+2. The problem is **already acknowledged by the approvers**, so nothing has to be argued into existence.
+3. It is a lane where a **library prototype is the explicitly preferred next step**, and a library prototype is
+   something we can build without anyone's permission.
+4. It gives Aaron's *N copies → 1* criterion a **real instance with real numbers**, which §6 could not supply
+   from our own codebase.
+
+Register: `metered` for the quotations and the RFC's draft status; `unmetered` for the claim that we could
+usefully contribute there — nobody has scoped it, and FS-1148's open questions are about collection remapping
+and FSharp.Core size, not about anything we have measured.
+
+## 15. Hazard: a live defect in the mechanism we are relying on
+
+`dotnet/fsharp#19184` — **"IWSAM can result in a runtime verification exception"**, open, filed 2025-12-31.
+The reproduction is four lines: code that compiles (with the FS3535 warning) throws
+`System.Security.VerificationException` at runtime, because the interface type itself was passed as the type
+argument and the static abstract member *"does not have a most specific implementation."*
+
+This matters to us specifically: PR #10817's headline positive was that **IWSAM carries the §4a algebra ladder
+natively, statically resolved, exit 0**. That result stands as measured — but the mechanism has an open
+soundness-adjacent defect, and our probe would not have hit it (we never pass the interface as the type
+argument). Recorded as a standing guard on that lane, not as a retraction. `metered` (the issue and its
+repro); **inherited** — I did not reproduce it.
+
+Note the irony worth stating rather than hiding: FS-1124's Drawbacks section predicted trouble of this general
+kind, and this is an instance of the author's own warning about the feature he shipped.
+
+## 16. What needs no permission at all
+
+Restated here because §3.1 buried it in a paragraph and it materially changes the urgency of everything above.
+
+> **The `.fsi`-sealed single-`App` brand needs no language change, no CLR change, no C# alignment, and no
+> approver.** It is a library pattern. PR #10817 measured it: the forgery attack **fails to compile**
+> (`FS0887`, attack build exit 1) from a separate consumer assembly, while legitimate cross-assembly use
+> compiles with 0 warnings and runs. It costs **one** earned class total.
+
+So the decision tree is simpler than the framing suggested:
+
+| if the need is… | the path is… | gated by… |
+|---|---|---|
+| **real and near-term** | the `.fsi`-sealed brand, today | **nobody** |
+| **native HKT in F#** | the CLR/C# chain in §13 | a queue whose declared head is DUs + extensions |
+| **types as externalized values** | §7 path (b) | **nobody** — and it is the direction Syme publicly recommends |
+
+Two of the three rows are ungated. The gated row is the one the original brief was built around.
+
+And per §6, the honest position stands unchanged: **we do not currently have the need.** Every candidate site
+has one instance; the brand encoding would abstract over a singleton and forfeit `ZSet.map`'s
+`inline`/`InlineIfLambda` for it. The trigger condition in PR #10817 §5 remains the right deliverable.
+
+## 17. Second-pass claims ledger
+
+| Claim | Register | Evidence |
+|---|---|---|
+| `needs-clr-change` label description is *"Really needs CLR change to do right"*; `await-csharp-alignment` has no description | `metered` | GitHub labels API, today |
+| @vzarytovskii and @T-Gro are Vlad Zarytovskii and Tomas Grosup, both at Microsoft | `metered` | their own GitHub profiles |
+| The current squad has **not published** a position on objections A, B, E, G | `metered` (as an absence found by search) | searches over `org:fsharp` and `dotnet/fsharp` for each handle; absence of a statement is reported as absence, never as agreement |
+| @vzarytovskii's #175 disposition is a conditional hold (*"wait and see"*), not a refusal | `metered` | the closing comment, verbatim |
+| @vzarytovskii favours a generic type-directed UoM solution over per-type functions | `metered` | FS-1148, 2024-08-12 |
+| @T-Gro proposes layered SRTP to collapse a multiplicative API surface to an additive one; RFC is draft pending consensus | `metered` | FS-1148, 2025-02-12 and 2026-02-03 |
+| The F# suggestion's resolution condition and the C# team's queue name the same two prerequisites (DUs, extensions) | `metered` | #175 closing comment; csharplang#339 comment 2024-04-25 |
+| csharplang#339 CLOSED 2024-12-26, #110 CLOSED 2024-12-12, both `state_reason: completed`, **no rationale recorded** | `metered` | GitHub API; the *reason* is **not stated publicly** and is not guessed here |
+| The CLR is the binding constraint for native HKT | `unmetered` | my reading of a consistent published chain; nobody stated it in those words |
+| `dotnet/fsharp#19184` — IWSAM can throw `VerificationException` at runtime | `metered`, **inherited** | the issue and its four-line repro; not reproduced by me |
+| We could usefully contribute to the FS-1148 lane | `unmetered` | unscoped |
+| The `.fsi`-sealed brand path is ungated | `metered` | PR #10817's cross-assembly measurement; no language/CLR change involved by construction |
+
+## 18. Second-pass anchors (checked)
+
+- **@vzarytovskii (Vlad Zarytovskii)** — [fslang-suggestions#175 closing comment](https://github.com/fsharp/fslang-suggestions/issues/175#issuecomment-1932273530); [#243 ×2](https://github.com/fsharp/fslang-suggestions/issues/243#issuecomment-915950566); [FS-1148 discussion](https://github.com/fsharp/fslang-design/pull/784#issuecomment-2283678222). Checked verbatim at each link.
+- **@T-Gro (Tomas Grosup)** — [FS-1148 discussion, 2025-02-04 through 2026-02-03](https://github.com/fsharp/fslang-design/pull/784#issuecomment-3839970977). Checked verbatim.
+- **@CyrusNajmabadi** — [dotnet/csharplang#339, 2024-04-25](https://github.com/dotnet/csharplang/issues/339#issuecomment-2077233676). Checked verbatim.
+- **@cartermp (Phillip Carter)** — [fslang-suggestions#243, 2019-08-19 and 2019-08-20](https://github.com/fsharp/fslang-suggestions/issues/243#issuecomment-522640778). Checked verbatim; dated 2019 and explicitly **not** carried forward as a current position.
+- **dotnet/csharplang#339**, **#110** — states, labels, dates and `state_reason` read from the GitHub API today; closing rationale **absent**, and recorded as absent.
+- **dotnet/fsharp#19184** — title, date and repro read today.
+- **fsharp/fslang-design PR #784 (RFC FS-1148)** — status read today: open, marked draft by @T-Gro 2026-02-03.
+
+***
+
+# Addendum, third pass (2026-08-15): criterion 3 re-measured, on the axis Aaron actually meant
+
+*Appended. §6 and §6.1 are left as written; the correction to them is stated here and marked.*
+
+## 19. What criterion 3 actually asks
+
+Aaron's correction:
+
+> *"for this one when i say multiple copies i don't mean per language. i mean when you have to write
+> specialized versions — like for java numbers instead of dotnet numbers. this is not an exact match, but HKT
+> lets you write one generic version where it would have taken multiple specialized versions before."*
+
+**Correction to §6.1, marked.** §6.1 answered criterion 3 with the cross-language ZSet count (F# 602, C# 566,
+Rust 469, Q# 318, Go 93). That count is a **real finding and it stands** — but it is **not evidence about
+criterion 3**, and presenting it as the answer missed the ask. It is a separate problem: cross-language
+duplication, whose remedy is **generation** (`gen/`,
+[`only-the-irreducible-is-primitive-generate-the-rest.md`](../../.claude/rules/only-the-irreducible-is-primitive-generate-the-rest.md)),
+not type theory. Reclassified accordingly.
+
+The right question is **intra-language**: *where do we write N near-identical implementations that differ only
+in the type being abstracted over, such that a higher-kinded abstraction collapses them to one?* The canonical
+shape is the pre-generic-math world — `sumInts` / `sumLongs` / `sumDoubles` written separately — whose .NET
+answer was `INumber<T>`.
+
+I measured four axes. **They disagree with each other, and the disagreement is the result.**
+
+### 19.1 Numeric axis — N was never N, because the type is already a value
+
+`src/Core/DynamicValueNumeric.fs` (155 lines) is where numeric specialization would live. It does **not**
+contain `addInt` / `addFloat` / `addDecimal`. It contains **one** `add`, which dispatches inside itself over a
+closed union:
+
+```fsharp
+let add (a: DynamicValue) (b: DynamicValue) : Result<DynamicValue, NumericError> =
+    match a, b with
+    | DynamicValue.Null, x | x, DynamicValue.Null -> Ok x            // 0 identity
+    | DynamicValue.Int x,   DynamicValue.Int y   -> ... Checked.(+) x y
+    | DynamicValue.Float x, DynamicValue.Float y -> Ok(DynamicValue.Float(x + y))
+    | DynamicValue.Int x,   DynamicValue.Float y -> ... // widen
+    | DynamicValue.Float x, DynamicValue.Int y   -> ...
+    | _ -> Error(TypeMismatch("add", shapeName a, shapeName b))
+```
+
+Same for `mul`, `negate`, `subtract`, `sum`. **Count: one implementation per operation, not one per numeric
+type.**
+
+This is the most strategically interesting measurement in the document, because of *how* the collapse was
+achieved:
+
+> **We already solved criterion 3 on the numeric axis — by making the numeric type a `DynamicValue` case, i.e.
+> by making the type a value. Not by abstracting over type constructors.**
+
+That is §7 path (b), already shipped, in the exact place where the HKT argument predicted we would need path
+(a). Register: `metered`.
+
+Honest counter-note in the same file: there **is** a 2× duplication — the `Sat` submodule re-implements
+`add`/`mul`/`negate`/`sum` with saturating/poisoning semantics. But that duplication is along the **semantics**
+axis (total vs saturating), which is a strategy parameter at kind `*`; HKT does not address it either. N=2, and
+the collapsing mechanism would be an ordinary passed function — Syme's Objection D, correct again.
+
+### 19.2 Units-of-measure axis — the count is 2, and I am reporting it as 2
+
+This is the axis the second pass flagged as *"exactly criterion 3, live and in our own domain."* Measured, it
+is not — in **our** code.
+
+| measurement | value |
+|---|---|
+| F# files using `[<Measure>]` | **5** (`Units.fs`, `Window.fs`, `EventLog.fs`, `ZetaId/Types.fs`, `InformationValue.fs`) |
+| `[<Measure>]` declarations | **9**, all in `src/Core/Units.fs` (182 lines, 12 functions) |
+| `LanguagePrimitives.*WithMeasure` call sites | **11**, across **3** files |
+| **distinct primitive constructors used** | **2** — `Int64WithMeasure` (7) and `FloatWithMeasure` (4) |
+| `System.Numerics.I*` generic-math constraints in our F# | **0** — every hit is a doc comment naming the C# twin, never a constraint |
+
+So a generic `addMeasure<_>` / `stripMeasure<_>` would collapse **2** constructor variants, over 11 call sites,
+in 3 files. **That is N = 2. It is not a criterion-3 instance in our code, and I am saying so** — the same
+answer §6 gave for one-instance-per-site, and it is worth the same.
+
+**What this does and does not retract.** The FS-1124 finding in §4 stands exactly as written: .NET generic math
+genuinely does not propagate units, the team genuinely chose to suppress `System.Numerics.I*` on unitized
+types, and FS-1148 exists because the surface *in FSharp.Core* is multiplicative (@T-Gro: *"(# primitives \*
+#collections \* #ops)"*). **The gap is real in the ecosystem; our exposure to it is 11 call sites.** Those are
+different claims and the second pass ran them together. Marked as a correction to §14's framing: the FS-1148
+lane remains the best *engagement* opportunity, but it is **not** our criterion-3 evidence.
+
+### 19.3 Codec axis — N = 15, the largest genuine count, and HKT does not collapse it
+
+**15 modules in `src/Core` each hand-write their own `toDynamicValue` / `ofDynamicValue`**: `RomDat`, `Slr`,
+`ZAtom`, `DeltaCodec`, `ZetaIrV1`–`V4`, `GraphSnapshot`, `YinYang`, `CostarZSet`, `Sppf`, `Conjugate`,
+`GrammarIr`. That is a real N, and it is the shape criterion 3 describes.
+
+**But it is not an HKT instance, for two independent reasons, and both matter:**
+
+1. **The abstraction is at kind `*`, not `* -> *`.** Abstracting `'T -> DynamicValue` over `'T` is a **type
+   class / IWSAM / SRTP** problem. It is objection-adjacent machinery, not higher-kinded polymorphism. Citing
+   it for HKT would be the kind-error the whole document is trying to avoid.
+2. **The copies differ *structurally*, not by a type parameter.** Checked two of them side by side —
+   `Conjugate.toDynamicValue` emits `["a"; "b"]` from two frames; `ZetaIrV1.toDynamicValue` emits
+   `["schema"; "generator"; "version"; "width"; "ops"]`. Collapsing these needs **datatype-generic
+   programming** — generic over the *shape* of the type — which is strictly stronger than HKT and is what a
+   source generator or type provider does. Which is, again, §7 path (b) and the mechanism Syme publicly
+   recommends.
+
+Register: `metered` for the count of 15 and for the structural difference; `unmetered` for the claim that a
+generator would collapse them — nobody has scoped it.
+
+### 19.4 Container axis — duplication is absent, not N-fold
+
+Carried forward from PR #10817 and unchanged: **only `ZSet` has `map`/`filter`/`flatMap`**; `GSet`, `Bag` and
+`IndexedZSet` have none. On the axis where HKT would most naturally apply, there is **nothing to collapse** —
+the duplication is absent rather than N-fold. `metered`.
+
+### 19.5 The four axes, side by side
+
+| axis | N | would HKT collapse it? | what actually would |
+|---|---|---|---|
+| **numeric** (`DynamicValueNumeric`) | **1** — already collapsed | no need | **already done: the type is a value** (path b) |
+| **units of measure** | **2** constructors, 11 call sites | partially, at kind `*` | a generic `addMeasure<_>` — the FS-1148 lane, and our exposure is tiny |
+| **codecs** (`toDynamicValue`) | **15** | **no** — kind `*`, and copies differ structurally | **datatype-generic codegen** (path b) |
+| **containers** (`map`/`traverse`) | **1** | would, if N ≥ 2 | nothing to do; the trigger in #10817 §5 |
+| *(cross-language ZSet — reclassified, not criterion 3)* | 5 | no | generation (`gen/`) |
+
+**The verdict on criterion 3, stated plainly:** it fails on every intra-F# axis I can measure, and it fails
+four different ways — already collapsed (numeric), too small to matter (UoM), real but needing a *stronger*
+mechanism than HKT (codecs), and absent (containers).
+
+**And three of the four point at the same alternative.** The numeric axis shows the collapse *already achieved*
+by making the type a value; the codec axis shows the largest remaining N needing shape-generic **generation**;
+the cross-language count needs generation too. That is a convergence toward §7 **path (b)** arrived at by
+measurement rather than by preference — and it was not the answer I expected when I started measuring.
+
+Stated as its own claim so it can be argued with: **on the evidence available in this repository, the mechanism
+that would collapse the most duplication is not higher-kinded polymorphism but shape-generic code generation
+over values.** `unmetered` — it is a reading of four measurements, not a measurement.
+
+## 20. Third-pass claims ledger
+
+| Claim | Register | Evidence |
+|---|---|---|
+| `DynamicValueNumeric` has one `add`/`mul`/`negate`/`sum`, dispatching over a closed DU, not one per numeric type | `metered` | `src/Core/DynamicValueNumeric.fs:46-97` |
+| The `Sat` submodule is a 2× duplication along the *semantics* axis, not the type axis | `metered` | same file, `module Sat` |
+| 5 F# files use `[<Measure>]`; 9 declarations, all in `Units.fs`; 11 `*WithMeasure` call sites in 3 files; **2** distinct constructors | `metered` | `rg` counts, today |
+| Zero `System.Numerics.I*` generic-math **constraints** in our F# (all hits are doc comments) | `metered` | `rg` over `-g'*.fs' src/` |
+| 15 `src/Core` modules hand-write `toDynamicValue`/`ofDynamicValue` | `metered` | `rg -l` count |
+| Those 15 differ **structurally**, not by a type parameter | `metered` | `Conjugate.fs:94` vs `ZetaIrV1.fs:77` read side by side |
+| Collapsing the 15 needs datatype-generic programming, which is stronger than HKT | `metered` (structural) | the two bodies emit different field sets |
+| Criterion 3 fails on all four intra-F# axes | `metered` | the table in §19.5 |
+| Shape-generic codegen over values would collapse more duplication than HKT | `unmetered` | a reading of four measurements |
+| The cross-language ZSet count is **not** criterion-3 evidence | `metered` (reclassification) | Aaron's stated definition of the criterion |
