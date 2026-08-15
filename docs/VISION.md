@@ -888,6 +888,29 @@ stable; at an epoch it chooses, per reference, whether to advance.
 **Register: DESIGNED.** The store ships; the epoch layer over it does not. PR #10819 works out the
 correspondence (git's object/ref split lifted to types). Nothing implements it.
 
+### Nobody picked a duration
+
+An epoch is a **decision point, not a length**, and that is not only an epoch property — it holds one layer
+down, and there it is checkable. `src/Core/AdinkraClock.fs` runs its worldline tick against an *injected*
+`VirtualTimeScheduler`, and `isMetricFree` compares the causal trace produced at two different tick
+durations (1 and 7). The traces are identical: the **frame sequence** is invariant under rescaling the
+**duration between frames**. Aaron's vernacular for it is exact — *the same animation at 24 fps or 60 fps*.
+
+**Register: SHIPPED, and this narrow property is `metered`** — which does not disturb the section
+preamble, since what has a falsifier here is one technical property, not the *direction*. The check carries
+a working negative control (`stepMetricDependent`, a step that reads the clock, returns `false`), so it is
+a test that can fail rather than an assertion that cannot. What it establishes is worth stating at exactly
+its width: **no duration is chosen anywhere in the causal structure; the ordering is topological, and any
+clock over it is injected rather than intrinsic.**
+
+**What is NOT claimed here, and the condition that would license it.** This says nothing about the tick
+being *derived* from the supersymmetry algebra. `AdinkraClock.fs` runs at **N=1**, where the
+anticommutator's entire non-trivial content (`{Q_I, Q_J}` for `I ≠ J`) is empty — `C(1,2) = 0` such pairs —
+and its scheduler advance is a hand-written branch rather than a derived quantity; the file's own
+self-review records the resulting verdict as tautological. **The derivation claim requires an N ≥ 2
+implementation, and is not made.** That is a named, checkable gate rather than a gap for the next reader to
+rediscover. Derivation, the forced numbers, and the refutations: PR **#10831**.
+
 ### The compiler ladder — Bonsai first, and the rungs are not one maturity
 
 Aaron: *"the goal is to emit IL or even machine code or assembly directly … we start as interpreted but
