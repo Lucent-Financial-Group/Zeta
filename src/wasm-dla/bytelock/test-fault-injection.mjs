@@ -263,11 +263,20 @@ console.log("\nPhase 6: malformed artefact (ar archive planted where a .wasm is 
 {
   const wasmPath = join(__dir, "dla-canonical-zig.wasm");
   const backupPath = join(__dir, "dla-canonical-zig.wasm.bak");
-  if (!existsSync(wasmPath)) {
-    fail("malformed artefact", `${wasmPath} is absent — cannot run this negative control`);
-    failures++;
-  } else {
+  // Attempt the copy rather than existsSync-then-copy: the check/use pair is a
+  // TOCTOU gap (CodeQL js/file-system-race, high) because the file can change
+  // between the two calls. Letting copyFileSync be the check closes the gap —
+  // there is only one filesystem operation — and an absent file lands in the
+  // same failure branch with the same message it had before.
+  let copied = false;
+  try {
     copyFileSync(wasmPath, backupPath);
+    copied = true;
+  } catch (e) {
+    fail("malformed artefact", `${wasmPath} is absent or unreadable — cannot run this negative control: ${e.message}`);
+    failures++;
+  }
+  if (copied) {
     try {
       // Direction 1: plant an `ar` archive — the exact bytes that were on main.
       writeFileSync(wasmPath, Buffer.from("!<arch>\n", "ascii"));
