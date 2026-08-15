@@ -100,14 +100,25 @@ The full mechanical filter is in §7; here is what it found, with what CI does t
 | `vocab/MASTER-INDEX.md`, `vocab/words/INDEX.md` | `vocab-hygiene.yml:31,33` |
 | `memory/MEMORY.md` | `memory-index-drift.yml:74` — `reindex-memory-md.ts --check` |
 | backlog index | `backlog-index-integrity.yml:111` — `generate-index.ts --check` |
-| `tests/cross-verification/zeta-id/mumps-output.json` | `gate.yml:1558-1560` — `bun run-mumps.ts` |
-| `bun.lock` | `gate.yml:1510` and 8 other workflows — `bun install --frozen-lockfile` |
-| generated law-property tests | `gate.yml:1568-1571` — `codegen-law-drift.test.ts` |
+| `tests/cross-verification/zeta-id/mumps-output.json` | `gate.yml:1558` step *Execute MUMPS zeta-id packer* — `bun run-mumps.ts` |
+| `bun.lock` | `gate.yml:1539` and 8 other workflows — `bun install --frozen-lockfile` |
+| generated law-property tests | `gate.yml:1587` — `codegen-law-drift.test.ts` |
 | `dla-canonical-go.wasm` | `bytelock.yml` — `node build-substrates.mjs --only=Go` |
+| `src/Core.TypeScript/ace/build-graph.json` | `gate.yml:1542` — `bun test src/Core.TypeScript/ace/` → the DRIFT GATE in `build-graph.test.ts:392` |
 
 Verified locally, not inferred: `Reify.ts --check`, `GramsView.ts --check`, `MasterIndex.ts
 --check` and `generate-index.ts --check` all exit 0 on `origin/main` @ `e4481f19a`; `bun install
 --frozen-lockfile` succeeds.
+
+> **This class caught *this* change, which is the best evidence available that it works.** The
+> first CI run on this branch went red in `cross-verify`, at the ace suite, before ever reaching
+> the step §6 adds. Cause: `build-graph.json` carries a derived `count: 286` of the files under
+> `tests/cross-verification/`, and the two files §6 adds make it 288. Confirmed as *mine* rather
+> than pre-existing by running the same suite against a pristine `origin/main` checkout — 556
+> pass, 0 fail — and against this branch — 2 fail, both the drift gate. `bun … build-graph.ts
+> derive --write` produced a one-line diff and the suite returned to 556/0. A generator that
+> re-derives and byte-compares noticed a two-file change in a directory nobody was thinking
+> about. That is precisely what the eight artifacts in §5 had nothing of.
 
 > **Side observation, measured and not acted on.** `reindex-memory-md.ts --check` exits **2** on
 > `origin/main` @ `e4481f19a` — "Entries: 1629. Index STALE." The workflow treats that as a
@@ -118,17 +129,18 @@ Verified locally, not inferred: `Reify.ts --check`, `GramsView.ts --check`, `Mas
 ### 3b. CROSS-CHECKED — not regenerated, but ≥2 independent producers must agree
 
 **The ZetaId lane.** `compare.ts` pins all seven committed oracle outputs to `vectors.yaml`
-(`gate.yml:1553` → `cross-verify-all.ts` → `compare.ts`, blocking job). Of the seven oracles,
+(`gate.yml:1553`, step *Cross-language byte-lock + golden-vector oracles* → `cross-verify-all.ts`
+→ `compare.ts`; the `cross-verify` job is in the blocking floor). Of the seven oracles,
 **five are independently re-executed in CI**:
 
 | oracle | re-executed by |
 | --- | --- |
-| TypeScript | bare `bun test` (`gate.yml:1684`) |
+| TypeScript | bare `bun test` (`gate.yml:1700`) |
 | F# · C# | `dotnet test Zeta.sln -c Release` (`gate.yml:436`) on **five** OS legs |
-| Python | `uv run … pytest src/Core.Python/tests` (`gate.yml:1734`) — `test_cross_verify_zeta_id` |
+| Python | `uv run … pytest src/Core.Python/tests` (`gate.yml:1750`) — `test_cross_verify_zeta_id` |
 | MUMPS | `bun run-mumps.ts` (`gate.yml:1558`) |
-| **Go** | **nowhere** — `gate.yml:1747` runs `go test ./algebra/`; `src/Core.Go/cross_verify_test.go` is `package main` at the module root and is not in that path |
-| **Rust** | **nowhere** — `gate.yml:1744` runs `cargo test --manifest-path src/Core.Rust.Observe/Cargo.toml`, one of **36** `Core.Rust.*` crates |
+| **Go** | **nowhere** — `gate.yml:1763` runs `go test ./algebra/`; `src/Core.Go/cross_verify_test.go` is `package main` at the module root and is not in that path |
+| **Rust** | **nowhere** — `gate.yml:1760` runs `cargo test --manifest-path src/Core.Rust.Observe/Cargo.toml`, one of **36** `Core.Rust.*` crates |
 
 `cross-verify-all.ts` says so in its own header, which is the honest place for it to be said:
 
@@ -314,7 +326,7 @@ One new check, wired into a **blocking** job, with a falsifier.
 `tests/cross-verification/zeta-id/gen-layout-drift.ts` compares the offset/width constants
 declared by all six generated lanes against `docs/zeta-id-v1-layout.yaml`, and
 `gate.yml` runs it in `cross-verify` — the job `compare.ts` and `run-mumps.ts` already live in,
-which is in the blocking floor. `test (TS suite)` was the wrong home: `gate.yml:1612` says it
+which is in the blocking floor. `test (TS suite)` was the wrong home: `gate.yml:1628` says it
 "RUNS, DOES NOT BLOCK", deliberately.
 
 **Constants, not a byte diff of the regenerated file.** Regenerating in CI would need prettier,

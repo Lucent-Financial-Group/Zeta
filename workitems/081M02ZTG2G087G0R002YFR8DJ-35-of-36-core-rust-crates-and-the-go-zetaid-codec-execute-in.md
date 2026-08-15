@@ -21,8 +21,8 @@ composes_with: []
 `.github/workflows/gate.yml` runs exactly two non-.NET, non-TS test invocations:
 
 ```yaml
-- run: cargo test --manifest-path src/Core.Rust.Observe/Cargo.toml   # gate.yml:1744
-- run: go test ./algebra/                                            # gate.yml:1747
+- run: cargo test --manifest-path src/Core.Rust.Observe/Cargo.toml   # gate.yml:1760
+- run: go test ./algebra/                                            # gate.yml:1763
 ```
 
 `git ls-tree -r origin/main --name-only | grep -c 'Core.Rust.*/Cargo.toml'` returns **36**.
