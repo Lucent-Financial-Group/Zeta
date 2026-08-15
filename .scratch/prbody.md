@@ -62,6 +62,65 @@ Reported, not edited: the IR op-set lane, the build-graph drift guard, the untra
 
 **Auto-merge deliberately not armed.**
 
+
+***
+
+# Second pass — retargeting the engagement half (additive, section 3.2 untouched)
+
+Aaron: *"his arguments for HKT were the strongest. We should not lose his arguments against it, but we should transfer the dossier to whoever has it next after him."* Read carefully that is a **separation**, not a replacement. Section 3.2 is **unchanged and deliberately un-hedged** — the objections are durable content and set the bar regardless of who decides. Section 12 onward does the retarget.
+
+## The current approvers' published positions (section 12)
+
+@vzarytovskii (Vlad Zarytovskii) and @T-Gro (Tomas Grosup), both at Microsoft, named by Syme as the squad. Compiled from what they published, cited, with **"not stated publicly"** where nothing exists — carrying Syme's view over to a colleague by default would attribute a position to someone who has not taken one.
+
+**On objections A, B, E and G: neither has published a position.** Reported as absence, never as agreement. What they *have* published:
+
+- **@vzarytovskii**, closing #175: *"we shall wait and see where does CLR go with the extensions and unions."* **Correction to my own first pass:** I called this "the wrong half of a gate". It is more precisely a **conditional hold**, not a refusal — and a hold has a resolution condition.
+- **@vzarytovskii**, FS-1148: units-of-measure *"can and should be solved generically… one type directed generic function… though it might require some work in compiler."* That **diverges** from Objection D in one lane.
+- **@T-Gro**, FS-1148 (2026-02-03, most recent): reduce the surface from *"(# primitives \* #collections \* #ops)"* to *"(#primitives + # collections + # ops)"* via layered SRTP; RFC marked draft, *"unfinished consensus on the shape"*.
+
+## The most actionable finding: the decision is not at F# (section 13)
+
+Label descriptions read from the API: `needs-clr-change` = **"Really needs CLR change to do right"**. And two teams, five years apart, name the **same two prerequisites in the same order**:
+
+- @vzarytovskii (2024): *"where does CLR go with the **extensions and unions**"*
+- @CyrusNajmabadi, csharplang#339 (2024): *"The team is looking at **DUs and extensions** first."*
+- @cartermp (2019, first-person plural, **not** on the current squad): *"we will **not** be implementing this unless there is a first-class .NET representation"* — because otherwise F# gets three typeclassy mechanisms or a breaking change.
+
+**csharplang#339 (HKT) CLOSED 2024-12-26; #110 (Type Classes) CLOSED 2024-12-12** — both `state_reason: completed`, **no rationale recorded, closer not exposed**. Why is **not stated publicly** and is not guessed.
+
+> If the blocking constraint is a CLR representation, the F# approvers are not the decision point for the part that blocks. A case for native HKT delivered to them asks people who have publicly said they are waiting on someone else.
+
+The likeliest honest outcome of following this chain is that **the native HKT ask has no available audience right now** — a legitimate result, and cheaper to learn from published artefacts than from a submission.
+
+## Also new
+
+- **Section 15 hazard:** `dotnet/fsharp#19184`, open — **IWSAM can throw `System.Security.VerificationException` at runtime**. Four-line repro. #10817's IWSAM result stands as measured, but the mechanism has an open defect. Inherited, not reproduced by me.
+- **Section 16:** two of three paths are **ungated** — the `.fsi`-sealed brand and types-as-values need no approver. The gated one is what the original brief was built around.
+
+***
+
+# Third pass — criterion 3 re-measured on the axis Aaron meant
+
+Aaron: *"i don't mean per language. i mean when you have to write specialized versions — like for java numbers instead of dotnet numbers."*
+
+**Correction to section 6.1, marked:** the cross-language ZSet count stands as a finding but is **not criterion-3 evidence**; reclassified as a separate problem whose remedy is generation. The right question is intra-F#. I measured four axes. **They disagree, and the disagreement is the result.**
+
+| axis | N | would HKT collapse it? |
+|---|---|---|
+| **numeric** (`DynamicValueNumeric`) | **1 — already collapsed** | no need |
+| **units of measure** | **2** constructors, 11 call sites, 3 files | partially, at kind `*` |
+| **codecs** (`toDynamicValue`) | **15** | **no** |
+| **containers** (`map`) | **1** | nothing to collapse |
+
+- **Numeric:** there is no `addInt`/`addFloat`/`addDecimal`. There is **one** `add` dispatching over a closed DU. **We already solved criterion 3 here — by making the numeric type a value, not by abstracting over type constructors.** That is path (b), already shipped, exactly where the HKT argument predicted we would need path (a).
+- **UoM:** measured, not asserted — **the count is 2** (`Int64WithMeasure` ×7, `FloatWithMeasure` ×4), and **zero** `System.Numerics.I*` constraints in our F#. So the second pass's "exactly criterion 3 in our own domain" was **too strong**, and I am marking it: the FS-1124/FS-1148 gap is real *in the ecosystem*; our exposure is 11 call sites. Still the best engagement lane; **not** our criterion-3 evidence.
+- **Codecs:** the largest real N at **15** — but the abstraction is kind `*` (a type class, not HKT), **and** the copies differ *structurally* (`Conjugate` emits `["a";"b"]`; `ZetaIrV1` emits `["schema";"generator";"version";"width";"ops"]`). Collapsing them needs **datatype-generic programming**, which is stronger than HKT.
+- **Containers:** duplication **absent** — only `ZSet` has `map`/`filter`/`flatMap`.
+
+**Criterion 3 fails on every intra-F# axis, four different ways.** And three of the four converge on the same alternative: **the mechanism that would collapse the most duplication here is shape-generic code generation over values, not higher-kinded polymorphism.** That was not the answer I expected when I started measuring, and it is stated as `unmetered` so it can be argued with.
+
+
 Agency-Signature-Version: 1
 Agent: shadow
 Agent-Runtime: Claude Code

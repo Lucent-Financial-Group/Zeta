@@ -21,6 +21,42 @@ Every claim carries a register (`toy` / `unmetered` / `metered`) per
 
 ***
 
+# THE STANDING FRAME — read this first (Aaron, 2026-08-15)
+
+*This block is the load-bearing part of the document for any agent picking this work up later. It is a
+**standing decision** that shapes months of work across many wakes. It is recorded here, verbatim and
+attributed, because a sibling agent (PR #10821) found the same day that an insight living in exactly one
+transcript and zero of 1082 memory files had degraded to a wrong recollection within two days. Do not
+reconstruct this frame from scratch; inherit it.*
+
+> **Aaron, 2026-08-15:** *"yes keep up with all of this, i expect this to be a multi month effort for us to
+> design and build hkt on top of geometry/topology intuition and for it to be useful to the point that
+> clr/c#/f# will allow **without a fork** and take back as a contribution. this is not a fast process. and yes
+> we can research any potential reviewers for their public views and teams public views and responsibilities.
+> and as always, we assume every person and team are doing best effort and has 0 nefarious internal state for
+> these projects. we are not trying to detect deception or anything of that nature, just align with public
+> stated held positions of the ecosystem we are trying to contribute to."*
+
+**Four standing commitments follow from that, and they govern everything below.**
+
+1. **Multi-month program, not a submission.** *"this is not a fast process."* Therefore **"the case is not
+   ready" is the correct status of stage 1, not a failure.** The honest verdicts throughout this document are
+   the *input* to a program, and §23 turns them into stages with entry criteria.
+2. **No fork. Upstream contribution is the goal.** *"to the point that clr/c#/f# will allow **without a fork**
+   and take back as a contribution."* This **resolves** the two-paths question §7 deliberately left unranked —
+   and it resolves it as a **sequence**, not a choice. The earlier F#-fork framing in the repo's memory
+   (2026-05-13) is **superseded** by this.
+3. **Reviewer and team research is authorized, and the useful half is responsibilities** — who owns which
+   decision. §22 is that map, built entirely from published process documents.
+4. **Good faith is binding, for every person and every team.** *"we assume every person and team are doing best
+   effort and has 0 nefarious internal state… we are not trying to detect deception or anything of that
+   nature, just align with public stated held positions."* Operationally: no motive attribution, no reading
+   between the lines, no modelling of internal disagreement between teams, and **"not stated publicly"**
+   wherever a position does not exist. **We are aligning with an ecosystem's stated positions, not overcoming
+   anyone.**
+
+***
+
 ## 0. The five findings, up front
 
 1. **The case is not ready on the code-reuse axis, and the reason is our own design choice.** The repo is
@@ -1002,3 +1038,168 @@ over values.** `unmetered` — it is a reading of four measurements, not a measu
 | Criterion 3 fails on all four intra-F# axes | `metered` | the table in §19.5 |
 | Shape-generic codegen over values would collapse more duplication than HKT | `unmetered` | a reading of four measurements |
 | The cross-language ZSet count is **not** criterion-3 evidence | `metered` (reclassification) | Aaron's stated definition of the criterion |
+
+***
+
+# Addendum, fourth pass (2026-08-15): the program — responsibilities, stages, entry criteria
+
+*Appended. Earlier sections are unchanged; corrections to their framing are marked here.*
+
+## 21. What the standing frame changes about this document
+
+The frame at the top converts this from an assessment into **stage 1 of a program**. Three specific
+re-readings follow, and each is a correction to how an earlier section framed itself:
+
+| earlier framing | corrected under the standing frame |
+|---|---|
+| §6.2 *"the honest recommendation is that the case is not ready to be put to anyone"* | **Still true, and now correctly placed.** It is the finding that closes stage 1, not a verdict on the effort. |
+| §7 *"No recommendation is made between them"* (paths a and b) | **Resolved by Aaron, as a sequence.** No fork; upstream contribution is the goal; the ungated work happens first. §24. |
+| The repo's 2026-05-13 memory: *"when we fork f# compiler for ai safety to add real hkt over clifford"* | **Superseded.** *"without a fork and take back as a contribution."* Any future agent reading that memory file should read this frame alongside it. |
+
+## 22. The responsibilities map — who owns which decision
+
+Aaron authorized research into *"teams public views **and responsibilities**"*. The responsibilities half is
+answerable **entirely from published process documents**, with no inference about any person. Everyone named
+is assumed to be acting in good faith on the responsibilities they publicly hold.
+
+### 22.1 F# — `fsharp/fslang-suggestions`, published process
+
+From the repo's own `README.md`, read today:
+
+> *"The decisions about moving things to 'approved in principle' (and thus RFC stage) are up to the F# Language
+> Design squad. These are currently: Don Syme, Vlad Zarytovskii, Tomas Grosup… Where necessary Don Syme will
+> act as final decision maker. This squad is just people who have the right to label issues - putting that
+> aside everyone should please consider themselves equal contributors."*
+
+| stage | who owns it | artefact |
+|---|---|---|
+| suggestion → **approved-in-principle** | the squad (label rights) | `fslang-suggestions` |
+| approved-in-principle → **RFC** | anyone may draft; squad approves | `fsharp/fslang-design` |
+| RFC → **implementation** | anyone may implement | `dotnet/fsharp` |
+| **final decision, where necessary** | Don Syme | — |
+
+**And the README publishes the approval criteria.** This is the single most useful artefact for planning a
+multi-month program, because it is the actual rubric — fifteen named factors:
+
+> *estimated utility · estimated cost of implementing · completeness of proposed design (is this an "idea" or a
+> concrete suggestion) · availability of alternatives · education/learning paths and simplicity · whether this
+> gives multiple ways to achieve the same thing · votes · design coherence · "less is more" design
+> considerations · likelihood of breaking change · strategic importance · usefulness (or otherwise) for interop
+> with .NET and other languages · risk of churn w.r.t. bugs · cost of churn w.r.t. education materials ·
+> **whether someone is willing to step up to the plate to write an RFC, implement the change and own it long
+> term***
+
+Note the last one: **long-term ownership is an explicit criterion**, and it is the one a multi-month effort is
+uniquely well placed to satisfy.
+
+**And the published path in:**
+
+> *"Probably the best thing you can do to get a feature promoted is to draft an RFC on it, even if it has not
+> yet been marked 'approved'. A prototype implementation of high quality, with tests, can also help convince."*
+
+**And the published constraint on re-opening.** The README distinguishes four categories, of which category 3
+is *"things we thought about doing and left open the future possibility of doing them"*, and states:
+*"In general things in categories 1 and 2 won't be reconsidered unless there is a really very strong case, e.g.
+because of a change in circumstance."* #175's *"wait and see where does CLR go"* places it in **category 3**,
+which is the favourable one — it is open-future, not declined. `metered`.
+
+### 22.2 C# — `dotnet/csharplang`, published process
+
+From that repo's `README.md`, read today:
+
+> *"C# is designed by the C# Language Design Team (LDT) in close coordination with the Roslyn project, which
+> implements the language."* … *"For new feature proposals… please raise them for discussion, and **only**
+> submit a proposal as an issue or pull request **if invited to do so by a member of the Language Design Team**
+> (a 'champion')."*
+
+| stage | who owns it |
+|---|---|
+| **Discussion** | open to anyone (`csharplang` Discussions) |
+| **Champion** | a member of the LDM must adopt it — *"only submit a proposal… if invited"* |
+| **Design decision** | the Language Design Meeting |
+| **Implementation** | Roslyn; prototypes go in a Roslyn fork, with a published quality bar |
+
+The README also publishes milestones that carry decision status: `Working Set`, `Backlog`, **`Any Time`** (*"open to community implementation"*), and **`Likely Never`** (*"the LDM has rejected from the language"*).
+
+**Practical consequence for us:** the C#-side entry point is a **Discussion**, not a proposal — a proposal
+without a champion is explicitly out of process. `metered`.
+
+### 22.3 The map, assembled
+
+| decision | owner | our finding |
+|---|---|---|
+| Native HKT **in F#** | F# squad → approved-in-principle | #175 **closed**, `probably not` + **`needs-clr-change`**, disposition *"wait and see"* (category 3) |
+| Type classes / implicits **in F#** | F# squad | #243 **open**, `await-csharp-alignment` |
+| HKT **in C#** | C# LDM, via a champion | csharplang#339 **closed** 2024-12-26, **rationale not stated publicly** |
+| Type classes **in C#** | C# LDM, via a champion | csharplang#110 **closed** 2024-12-12, label `Long lead`, **rationale not stated publicly** |
+| A **CLR representation** | .NET runtime team (`dotnet/runtime`) | no artefact located in this pass — **not researched**, and named as a gap rather than guessed |
+| **UoM conversion ergonomics** | F# squad, **live** | FS-1148 **draft**, consensus pending, library-first preferred |
+| The **`.fsi`-sealed brand** | **nobody** | a library pattern; measured working in PR #10817 |
+
+**Honest gap, named rather than filled:** I did not research the `dotnet/runtime` side. If the CLR is the
+binding constraint (§13, `unmetered`), that team's published area-ownership and any existing runtime-side
+issue are the missing piece of this map, and finding them is a concrete next task.
+
+## 23. The staged program, with entry criteria
+
+Stages, not a schedule. Each has an **entry criterion that is a measurement**, so promotion is earned rather
+than declared — the same discipline as
+[`toy-is-free-metered-must-be-earned.md`](../../.claude/rules/toy-is-free-metered-must-be-earned.md).
+
+| stage | work | entry criterion to leave it | gated by |
+|---|---|---|---|
+| **1 — measure our own ground** *(complete; this document)* | audit the brief; measure the residue, the axes, the objections, the process | **done**: criterion 3 fails on four axes; one genuine HKT need (profunctor lift); the frame recorded | nobody |
+| **2 — build the interim capability** | the `.fsi`-sealed single-`App` brand, one earned class, `prj` returning `Result`, `InternalsVisibleTo` guard | a **second instance** appears at any candidate site (#10817 §5 trigger): a second braided monoidal category, a real `Prism`, or `map` on a second Z-set family member | **nobody** |
+| **3 — meter the AI-safety claim** | the F# analogue of arXiv:2504.09246 — generate F# with and without structurally-constrained types, count defects surviving the compiler | a **number**, in either direction | nobody |
+| **4 — build the geometric/topological case** | make the geometry claim (§5) falsifiable; connect it to stage 3's measurement | the claim moves from `toy` to `metered`, or is **abandoned** | nobody |
+| **5 — earn standing in the ecosystem** | contribute where the F# team has an open, acknowledged problem — FS-1148 is the live one, library-first as they prefer | a contribution **landed**, or a well-received prototype | F# squad review |
+| **6 — the ask, in whatever form the evidence supports** | RFC draft (F#'s published path) and/or a `csharplang` **Discussion** (C#'s published path) | stages 3–5 produced evidence meeting the published rubric in §22.1 | F# squad / C# LDM champion / CLR |
+
+**Stages 1–4 are entirely ungated.** Only 5 and 6 involve anyone outside this repo, and stage 6 is the only one
+that touches the CLR/C# chain. That ordering is what makes a multi-month effort tractable: **the long pole is
+evidence, not permission.**
+
+**Stage 2's honest status:** the trigger has **not** fired. Building the brand today would abstract over a
+singleton and forfeit `ZSet.map`'s `inline`/`InlineIfLambda` for nothing (§6, PR #10817 §3.2). The capability is
+**available on demand**, not scheduled.
+
+**The one thing to guard against across all six:** §19.5 measured that the mechanism collapsing the most
+duplication in this repo is **shape-generic code generation over values, not HKT**. If stages 3 and 4 keep
+returning that answer, the honest outcome of this program may be **that we do not need the feature we set out
+to contribute** — and the frame's own standard (*align with stated positions; do not overcome anyone*) means
+that outcome gets reported, not buried.
+
+## 24. Where path (b) sits, now that the goal is stated
+
+§7 laid out path (a) *push HKT into F#* and path (b) *make types values in our own layer* without ranking them.
+Aaron's frame ranks the **goal**; it does not delete path (b). Being precise about which, because the
+distinction is load-bearing:
+
+- **Path (b) is not a substitute for the contribution goal.** Aaron stated the goal explicitly: build it *"to
+  the point that clr/c#/f# will allow without a fork and take back as a contribution."* Presenting types-as-
+  values as "the answer instead" would be substituting my measurement for his stated objective.
+- **Path (b) is very likely the right architecture for us regardless**, and this is measured, not preferred:
+  §19.1 found we **already** collapsed numeric specialization by making the type a value, and §19.3 found the
+  largest remaining N (15 hand-written codecs) needs shape-generic generation, not HKT.
+- **It is also what Syme publicly recommends** for industrial type-level programming — type providers, source
+  generators, analyzers ([#243, 2021-09-14](https://github.com/fsharp/fslang-suggestions/issues/243#issuecomment-919427910)).
+  That makes it the *least* contentious thing we could build.
+- **So the three relations are all live, and only evidence decides between them:** path (b) may be (i) the
+  right architecture **and** orthogonal to the contribution; (ii) the thing that **removes the need** for the
+  contribution entirely; or (iii) the substrate that **produces the evidence** the contribution requires — a
+  working shape-generic layer is itself an argument about what the type system should carry. Stages 3–4 are
+  what distinguish these. `unmetered`: all three remain open today.
+
+## 25. Fourth-pass claims ledger
+
+| Claim | Register | Evidence |
+|---|---|---|
+| The F# squad is Syme, Zarytovskii, Grosup; Syme is final decision maker | `metered` | `fslang-suggestions/README.md`, read today |
+| The F# approval rubric is 15 published factors, incl. long-term ownership | `metered` | same README |
+| The published path in is "draft an RFC even if not approved; a high-quality prototype with tests can help convince" | `metered` | same README |
+| #175 sits in README category 3 (open future possibility), the favourable one | `metered` | README's four categories + the *"wait and see"* closing comment |
+| C# requires an LDM champion; unchampioned proposals are out of process; entry point is a Discussion | `metered` | `csharplang/README.md`, read today |
+| `dotnet/runtime` ownership for a CLR representation | **not researched** | named as a gap, not guessed |
+| Stages 1–4 are ungated | `metered` (structural) | none of them requires an external decision |
+| The stage-2 trigger has not fired | `metered` | PR #10817 §5, one instance per site |
+| Path (b) may remove the need for the contribution | `unmetered` | one of three open relations; stages 3–4 decide |
