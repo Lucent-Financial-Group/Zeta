@@ -1203,3 +1203,130 @@ distinction is load-bearing:
 | Stages 1–4 are ungated | `metered` (structural) | none of them requires an external decision |
 | The stage-2 trigger has not fired | `metered` | PR #10817 §5, one instance per site |
 | Path (b) may remove the need for the contribution | `unmetered` | one of three open relations; stages 3–4 decide |
+
+***
+
+# Addendum, fifth pass (2026-08-15): §24 resolved — path (b) is the architecture, and the HKT question is separate and additive
+
+*Appended. §24 stated three open relations between path (b) and the contribution goal and left them open.
+**Aaron closed the question the same day.** Recorded here with date and attribution rather than edited into
+§24, so the reviewed text stays as reviewed — the same durability discipline as the standing frame.*
+
+## 26. The resolution
+
+> **Aaron, 2026-08-15:** *"yes this is our relative, no-central-processor zetadb/fs too — they are all one, and
+> when combined with DynamicValue it's also code that can be interpreted and compiled and specialized at
+> runtime, with JIT-like behavior."*
+
+**§24's three relations collapse to one:**
+
+> **Path (b) is not an alternative to contributing HKT. It is the architecture, already chosen.** Memories,
+> types, files and code are **one content-addressed object store** — relative, with no central processor, with
+> per-agent stores and epoch/ref coordination — and `DynamicValue` is what makes those objects *executable*.
+
+So the correct statement of the relation is **separate and additive**: the system does not need HKT in order to
+function, and the HKT question is a question about **F# the language**, asked on evidence.
+
+### 26.1 Why this is a *stronger* position for the contribution case, not a weaker one
+
+This is the part worth stating plainly, because the instinct runs the other way — losing an appeal to need
+feels like losing an argument. It is the opposite:
+
+- **We are not asking for HKT because our system needs it to function.** We are asking whether F# should have
+  it, on evidence. That is precisely the register §22.1's published rubric rewards (*estimated utility*,
+  *availability of alternatives*, *design coherence*) and precisely the register Syme's published standard
+  demands — *"I generally prefer arguments in utilitarian terms (bug reduction, safety under refactoring…)"*
+  ([#243, 2016-11-15](https://github.com/fsharp/fslang-suggestions/issues/243#issuecomment-260630066)).
+- **An appeal to need would have been the weaker argument anyway**, and Syme's Objection D anticipates it
+  exactly: if you *need* the abstraction to make your system work, the answer is usually that a passed function
+  would have done. A proposal from a system that demonstrably does *not* need it cannot be answered that way.
+- **It also removes the awkwardness §2.2 flagged** — the old brief's "3,000+ PRs proving the encoding works"
+  argued from our own dependency. We have no dependency to argue from. Good.
+
+### 26.2 It re-frames §19, which needs no new measurement
+
+The coordinator's read is correct and I am adopting it: §19.1 found that numeric specialization is collapsed by
+**one `add` dispatching over a closed `DynamicValue` union**, not by `addInt`/`addFloat`/`addDecimal`. I
+recorded that as *"we already solved criterion 3 on the numeric axis"*, which framed it as a **substitute for a
+missing feature**.
+
+**Correction, marked:** it is not a workaround for absent HKT. **It is the architecture doing what it is
+designed to do** — the type is a value because everything in this system is a value in one content-addressed
+store. The measurement is unchanged; only its meaning changes, and it changes in the direction that makes the
+contribution case cleaner. Same for §19.3's 15 hand-written codecs: those are the *unfinished* part of the same
+architecture (shape-generic generation over values), not evidence of an HKT-shaped hole.
+
+### 26.3 The ALC wall is not a problem we have to solve
+
+PR #10819 established that Orleans virtualizes **objects**, objects are **GC-granular**, and CLR **types are
+not** — the smallest collectable unit is an `AssemblyLoadContext`. §7 recorded that as a *cost* borne by path
+(a) and *avoided* by path (b).
+
+Under the resolution, the sharper statement is available:
+
+> **If the objects are `DynamicValue`s rather than CLR types, the ALC constraint does not apply at all.**
+> Everything is GC-granular again. That is exactly why `ShivaGc` works on `DynamicValue` and could not work on
+> `Type`. **The wall is not an obstacle the design must overcome; it is a layer the design does not enter.**
+
+Checked in source, not inferred: `src/Core/ShivaGc.fs` collects a content-addressed heap of `DynamicValue`
+objects `{ id, value, refs }` with machine-checked live-survive, cycle-safety, idempotence and determinism, and
+its own header states the reason — *"you cannot GC baked code, but you can GC values."* `metered`.
+
+## 27. What is shipped vs what is intended — the capability claim, metered
+
+*"Code that can be interpreted and compiled and specialized at runtime, with JIT-like behavior"* is a real
+capability claim with four distinct verbs. They have different registers and must not travel as one word.
+
+| verb | shipped? | evidence |
+|---|---|---|
+| **one content-addressed store over files** | **yes** | `src/Core/ZetaFs.fs` (387 lines) — Patricia trie over a `ContentStore` with `MerkleHash`, generic in the value type. `src/Core/DagFs.fs` (112 lines) — multi-parent content-addressed tree; identical content under N paths is **one** stored node; COW with `editLocal` / `editEverywhere`. `metered`. |
+| **interpreted** | **yes, and reified** | `src/Core/MixIr.fs:184` — **`defaultEvalDef : DynamicValue`**: the evaluator's rules *are* a `DynamicValue`. `src/Core/IsaSpec.fs` asserts the reified path equals the native one — *"Faithful: `tryStaticReified defaultEvalDef … = tryStatic …`"* and *"`specializeFullyReified defaultMixDef defaultEvalDef … = specializeMem …` (proven differentially)"*. `metered`, **inherited** — I read the assertions, I did not run them. |
+| **specialized at runtime** | **yes, as partial evaluation + weak-ref regeneration** | `src/Core/SpecializationCache.fs` (59 lines), read today: `specializer: unit -> ('TInput -> 'TOutput)` is held **strongly** as a constructor field; the specialized function is held in a **`WeakReference`**; on collection it regenerates; **errors are never cached**. This is PR #10815's finding confirmed at source: **generator strong, product weak — compression, not creation.** `metered`. |
+| **compiled** | **only in the partial-evaluation sense** | There is **no runtime code generation**: PR #10819 measured zero `Reflection.Emit` / `AssemblyBuilder` / `ILGenerator` anywhere under `src/`. "Compiled" is true in the **Futamura** sense — specializing an interpreter with respect to a program is compilation — and **false** in the emit-IL sense. `metered` on the absence (inherited from #10819); the word itself is the hazard. |
+
+**So the honest form of the claim:** *one content-addressed store whose objects are `DynamicValue`, an
+interpreter whose rules are themselves `DynamicValue`, and Futamura-style specialization cached behind a weak
+reference.* **"JIT-like" is an analogy to the caching-and-specialization behaviour, not a claim that we emit
+machine code or IL.** Register on the analogy: `toy`. Register on each shipped mechanism: as tabled above.
+
+The bound is the one #10815 already named and it transfers unchanged: regeneration **trades a large resident
+product for a small resident generator**, so the win is real exactly when `|generator| << |product|`. It does
+not make memory free.
+
+## 28. The epoch hazard transfers, and its scope is now larger
+
+[`local-time-never-enters-the-shared-fold.md`](../../.claude/rules/local-time-never-enters-the-shared-fold.md)
+applies to this store, and the resolution **widens** its scope: if memories, types, files and code are one
+object store with epoch/ref coordination, then **an epoch must be a logical clock for all four**, not just for
+types.
+
+The shape to avoid is already in the tree and was flagged by PR #10819. Confirmed at source today,
+`src/Core.TypeScript/ace/deps.ts`:
+
+```ts
+export function getResolvedVersion(node: DependencyNode, asOf?: Date): string { ... const refDate = asOf || new Date(); ... }
+export function getMigrationPhase(node: DependencyNode, asOf?: Date): string { ... const refDate = asOf || new Date(); ... }
+```
+
+Three call sites default to an **ambient `new Date()`**. This is **correct where it is** — deployment
+scheduling is a local action, and the function is properly parameterised with an injectable `asOf`. It is
+recorded, again, because it is exactly the wrong shape to generalise into epochs: an epoch derived from
+wall-clock makes two agents' stores fold different evidence sets and diverge. `metered` (the source);
+**unchanged, not a defect** in its current use.
+
+## 29. Fifth-pass claims ledger
+
+| Claim | Register | Evidence |
+|---|---|---|
+| Path (b) is the chosen architecture; the HKT question is separate and additive | `metered` as a **stated decision** (Aaron 2026-08-15), not as a measurement | the quotation in §26 |
+| §19.1's numeric collapse is the architecture working, not a workaround for missing HKT | `metered` (reframing of an unchanged measurement) | `DynamicValueNumeric.fs` + the resolution |
+| The ALC constraint does not apply when the objects are `DynamicValue` | `metered` (structural) | `ShivaGc.fs` collects `DynamicValue` heaps; #10819's ALC finding, inherited |
+| `ZetaFs` / `DagFs` are content-addressed stores over `ContentStore` + `MerkleHash` | `metered` | `ZetaFs.fs:195-210`, `DagFs.fs:1-18`, read today |
+| `MixIr.defaultEvalDef` is a `DynamicValue` — the eval rules are data | `metered` | `src/Core/MixIr.fs:184` |
+| The reified interpreter/specializer equals the native one | `metered`, **inherited** | `IsaSpec.fs:467,709,800` assertions; not executed by me |
+| `SpecializationCache` holds the generator strongly and the product weakly; never caches errors | `metered` | `src/Core/SpecializationCache.fs`, read line by line today |
+| **No runtime code generation exists** — "compiled" holds only in the Futamura sense | `metered`, **inherited** | PR #10819's zero-hit search for `Reflection.Emit` / `ILGenerator` |
+| "JIT-like behavior" as a claim about emitting code | **`toy`** | an analogy to caching + specialization; nothing emits IL |
+| Regeneration is compression, not creation (`\|generator\| << \|product\|`) | `metered` | PR #10815, confirmed at source here |
+| `ace/deps.ts` defaults to ambient `new Date()` at three sites | `metered` | source, today; correct in place, wrong shape to generalise |
+| Not asking from need is a stronger position under the published rubric | `unmetered` | a reading of §22.1's criteria and Syme's stated standard |

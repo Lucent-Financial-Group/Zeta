@@ -41,8 +41,28 @@ rather than in a conversation. `wake-time-substrate`.
   declarations) in the research doc below. Stages 1–4 are ungated; only 5–6 involve anyone outside this repo.
 - The interim capability that needs **no approver** is the `.fsi`-sealed single-`App` brand (measured in
   PR #10817). Its trigger has **not** fired — do not build it until a candidate site reaches two instances.
-- Never present "types as values" (`ShivaGc` / `DynamicValue`) as a *substitute* for the contribution goal.
-  It may be the right architecture, may remove the need, or may produce the evidence — all three are open.
+- **Types-as-values is the ARCHITECTURE; the HKT question is separate and additive.** Aaron 2026-08-15 resolved
+  this (it was recorded as three open relations earlier the same day — that version is **superseded**):
+  *"yes this is our relative, no-central-processor zetadb/fs too — they are all one, and when combined with
+  DynamicValue it's also code that can be interpreted and compiled and specialized at runtime, with JIT-like
+  behavior."* Memories, types, files and code are **one content-addressed object store**; `DynamicValue` makes
+  those objects executable.
+- **We do not need HKT for the system to function — and that is a STRONGER contribution position.** The ask
+  becomes "should F# have this, on evidence", which is the register the published rubric rewards, and it
+  cannot be answered with "a passed function would have done" (Syme's Objection D). **Never argue from need;
+  we have no dependency to argue from.**
+- **The `AssemblyLoadContext` wall (PR #10819) is not a problem to solve.** If the objects are `DynamicValue`s
+  rather than CLR types, everything is GC-granular again and the design never enters that layer. That is why
+  `ShivaGc` works on `DynamicValue` and could not work on `Type`.
+- **Keep the capability claim honest.** Shipped: content-addressed stores (`ZetaFs`, `DagFs`), an interpreter
+  whose rules are data (`MixIr.defaultEvalDef : DynamicValue`), Futamura specialization behind a weak reference
+  (`SpecializationCache` — generator strong, product weak, errors never cached = **compression, not creation**,
+  PR #10815). **Not** shipped: runtime code generation — zero `Reflection.Emit`/`ILGenerator` in the repo. So
+  "compiled" holds in the **Futamura** sense only, and **"JIT-like" is an analogy (`toy`)**, never a claim that
+  we emit IL.
+- **The epoch hazard now covers all four object kinds** (memory, type, file, code), not just types: an epoch
+  must be a **logical** clock. `ace/deps.ts`'s `asOf || new Date()` is the shape to avoid —
+  `.claude/rules/local-time-never-enters-the-shared-fold.md`.
 
 ## Pointers
 
