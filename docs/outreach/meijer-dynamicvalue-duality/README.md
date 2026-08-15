@@ -76,8 +76,22 @@ the composite could genuinely fail on any constructor. That is precisely the one
 A further register note on the μF/νF framing we have used loosely: **both `Expr` and
 `DynamicValue` are least fixed points (μ).** They are finite, strict, inductive trees; there is
 no laziness and no infinite unfolding anywhere in the shipped code. Calling the behaviour half
-νF is a conceptual gesture at your duality, not a claim licensed by our types. If a genuine ν
-appears here it will be at the streaming/observation layer, not in these two trees.
+νF is a conceptual gesture at your duality, not a claim licensed by our types — our domains are
+finite, and we take yours to be the infinite ones. The forward direction, stated as a trajectory
+rather than a result (Aaron Stainback): a ν is reached by a **generator**, not by a larger
+inductive type — an anamorphism with no terminating condition, codata rather than a bigger tree —
+so growing `Expr` never approaches it. Our nearest live instance is **Cayley–Dickson doubling**
+(ℝ → ℂ → ℍ → 𝕆 → 𝕊 → …), already load-bearing here as the "imaginary stack"
+(`src/Core/CayleyDickson.fs`): the lift `IStarRing<'A> → IStarRing<Doubled<'A>>` has no
+terminating condition and unfolds without a fixed point. Two bounds on that, both of which we
+would rather state than have you supply. Every *rung* one can actually materialize is still
+finite — the coinductive object is the unfold, not any level. And the well-behaved prefix has a
+hard cliff: the doubling degrades lawfully (ℂ loses order, ℍ commutativity, 𝕆 associativity, 𝕊
+alternativity and with it division), and by **Hurwitz's theorem (1898)** the normed division
+algebras over ℝ are exactly ℝ, ℂ, ℍ, 𝕆 — dimensions 1, 2, 4, 8, a complete list. So the
+generator is genuinely infinite while its useful part stops at 8, which is where our own
+octonion/E8 work already sits. That ladder and that bound are recorded in
+`docs/FROZEN-CORE-AND-CONJECTURE-REGISTER.md`, not invented for this page.
 
 ## What `Dv.kt` is
 
