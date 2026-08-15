@@ -1,7 +1,7 @@
 {
   "schema": "zeta.society.event-index/v1",
-  "eventCount": 151,
-  "headDigest": "6476f06819cbd57ece164ccf0cc784d05cd481d69fca3afa8afc6840c2ba0405",
+  "eventCount": 152,
+  "headDigest": "189391ba4a16096a514bbad8f38450f4d89fa8600989d935da4e55371081d3dc",
   "events": [
     {
       "id": "society-msm7luj6",
@@ -1321,6 +1321,15 @@
       "previousDigest": "2a9e1b04aca4fe05076c781c09fd6739525161b3b4c03231c5de0fb75612027f",
       "chainDigest": "6476f06819cbd57ece164ccf0cc784d05cd481d69fca3afa8afc6840c2ba0405",
       "sourceRevision": "9d657ab0de5484fdc98a61f7a3ba89d147007c67"
+    },
+    {
+      "id": "society-msuefbcy",
+      "at": "2026-08-15T13:15:29.987Z",
+      "file": "society-msuefbcy.json",
+      "eventDigest": "ac3e7ff13a9998d253fd313e6e39851e2041828768ad492102296e6140d368ba",
+      "previousDigest": "6476f06819cbd57ece164ccf0cc784d05cd481d69fca3afa8afc6840c2ba0405",
+      "chainDigest": "189391ba4a16096a514bbad8f38450f4d89fa8600989d935da4e55371081d3dc",
+      "sourceRevision": "ca4b971bddd2b54c8c2c25bfc981a286ba7e5b3f"
     }
   ]
 }
