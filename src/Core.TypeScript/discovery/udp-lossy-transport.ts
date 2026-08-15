@@ -1584,9 +1584,15 @@ export class LossyUdpChannel {
     // total — a Bun heap that expanded for transient garbage keeps ~100 MB of high-water mark
     // whatever the receiver does, so the total flatters the fix. Over the second half of the run:
     // 119,848,960 bytes before, 901,120 after. Linear versus flat, which is the whole claim.
-    // `blockSeq` is `readUInt32BE` of an unauthenticated packet and is a SEPARATE field from `seq`,
-    // so a peer holds `seq` monotone — provoking no NACK at all — while spending 4.29e9 distinct
-    // keys. Reproduce with `udp-lossy-transport.retention-measure.ts`.
+    // HOW A PEER OPENS THOSE BLOCKS, restated 2026-08-15 because the address changed under it: the
+    // old sentence here was that `blockSeq` is a SEPARATE unauthenticated field, so a peer holds
+    // `seq` monotone — provoking no NACK at all — while spending 4.29e9 keys. Since
+    // 081KZZZH24H087G0R002TXQA15 the address is DERIVED from `seq`, so that particular move is
+    // gone: consecutive `seq` completes blocks. The defect this eviction guards is NOT gone, and it
+    // is not primarily an attack anyway — it is unrecoverable blocks on a lossy link. A peer that
+    // wants them deliberately strides `seq` by BLOCK_TOTAL, which still opens 2^29 keys but now
+    // leaves a gap per packet and therefore shows up on the NACK/desync path. Reproduce with
+    // `udp-lossy-transport.retention-measure.ts` (ULT-33 is the unit-scale falsifier).
     //
     // The bound is RECV_BLOCK_WINDOW blocks — the SAME constant `MAX_NACK_GAP` is derived from,
     // not a fresh number. That is the point of the shared constant: the receiver's memory is one

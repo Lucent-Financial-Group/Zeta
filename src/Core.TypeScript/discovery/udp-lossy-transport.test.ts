@@ -1359,8 +1359,27 @@ describe("udp-lossy-transport: separated loss signals", () => {
 //
 // It is NOT an attack-only path. A block becomes recoverable at 4 of 8 symbols, so a block that
 // never recovers is a block that lost 5+ — ordinary heavy loss, which is what this transport is
-// for. The attacker's contribution is only speed: `blockSeq` is a separate header field from
-// `seq`, so a peer can hold `seq` monotone (provoking no NACK at all) while spending 4.29e9 keys.
+// for.
+//
+// WHAT CHANGED (2026-08-15, 081KZZZH24H087G0R002TXQA15 / #10778) and why these tests moved with it:
+// the block address is now DERIVED — `blockSeq = floor(seq/8)`, `blockPos = seq%8` — and the wire
+// fields of the same name are no longer an address. So the old setup ("hold `seq` monotone and
+// spend a fresh `blockSeq` per packet") does not open a second block any more; consecutive `seq`
+// fills one block to completion. These tests were re-pointed at `seq`, which is now the ONLY
+// peer-chosen quantity that addresses a block, and they are strictly stronger for it: `seq` is
+// also what NACK, desync and the delivered-once guard are keyed on, so the setup can no longer
+// address blocks through a field the rest of the receiver does not see.
+//
+// The RETENTION DEFECT ITSELF IS UNCHANGED, which is why the coverage is not obsolete: it was
+// "eviction lives inside `if (recovered)`", not "the key came from a trusted field". A peer opens
+// 20,000 never-completing blocks today by striding `seq` by 8 — one symbol per block, position 0,
+// nothing ever recoverable — and pre-fix code retains all 20,000 of them (ULT-33 fails on that
+// code; checked, not assumed).
+//
+// The attacker's contribution is no longer INVISIBILITY, and that is a real gain from the
+// derivation rather than a wash: striding `seq` to open a fresh block per packet necessarily
+// leaves gaps, so the drain now provokes the NACK/desync path it used to slip past entirely. It is
+// still cheap enough in memory terms that the bound has to exist, which is what these tests hold.
 //
 // These tests observe `retainedBlockCount`, which exists for exactly this reason: unbounded
 // growth changes no delivered output, so before it there was nothing in the module a test could
@@ -1371,7 +1390,10 @@ describe("udp-lossy-transport: bounded receiver block memory", () => {
   function makeReceiver(): {
     channel: LossyUdpChannel;
     delivered: Uint8Array[];
-    /** Deliver one raw packet with FULLY peer-chosen header fields — which is what the wire is. */
+    /** Deliver one raw packet with FULLY peer-chosen header fields — which is what the wire is.
+     *  `blockSeq`/`blockPos` are still written (an honest sender sets them, and lying about them
+     *  must stay harmless), but since #10778 the ADDRESS is `blockAddressOf(seq)`: to reach block
+     *  `k` at position `p`, pass `seq = k * 8 + p`. */
     raw: (seq: number, blockSeq: number, blockPos: number, payload: Uint8Array) => void;
     /** Deliver every packet of an honest Adinkra block, at honest `seq`s, minus `lost` positions. */
     honestBlock: (blockSeq: number, lost?: readonly number[]) => void;
@@ -1414,16 +1436,22 @@ describe("udp-lossy-transport: bounded receiver block memory", () => {
     };
   }
 
-  it("ULT-32 (property): no stream of peer-chosen blockSeq takes retention past the window", () => {
-    // Stated over the whole u32 domain rather than at one value, because the defect was "any
+  it("ULT-32 (property): no stream of peer-chosen block keys takes retention past the window", () => {
+    // Stated over the whole key domain rather than at one value, because the defect was "any
     // sufficiently long stream of distinct keys", not one key. Seeded, so a failure replays (§7).
+    //
+    // The generated quantity is the DERIVED key, reached the only way a peer can reach it: `seq =
+    // key * 8`, i.e. position 0 of that block. Generating the wire `blockSeq` here would generate a
+    // field the receiver no longer reads — a property test that cannot fail, which is the vacuity
+    // class. `0x1fffffff` is the exact domain: `floor(u32/8)`, so the derivation narrowed the
+    // peer-choosable key space from 2^32 to 2^29 and priced each key at a sequence gap.
     fc.assert(
-      fc.property(fc.array(fc.integer({ min: 0, max: 0xffffffff }), { minLength: 64, maxLength: 256 }), (keys) => {
+      fc.property(fc.array(fc.integer({ min: 0, max: 0x1fffffff }), { minLength: 64, maxLength: 256 }), (keys) => {
         const r = makeReceiver();
-        keys.forEach((blockSeq, i) => r.raw(i, blockSeq, 0, new Uint8Array([7, 7, 7, 7])));
+        keys.forEach((key) => r.raw(key * 8, 0, 0, new Uint8Array([7, 7, 7, 7])));
         expect(r.channel.retainedBlockCount).toBeLessThanOrEqual(RECV_BLOCK_WINDOW);
         // ANTI-VACUITY: a receiver that retained NOTHING would also pass the line above, and would
-        // be a different, worse module. With ≥64 distinct-ish keys and blockPos 0 throughout, the
+        // be a different, worse module. With ≥64 distinct-ish keys and position 0 throughout, the
         // window must actually be full — the bound is being exercised, not merely satisfied.
         expect(r.channel.retainedBlockCount).toBe(Math.min(RECV_BLOCK_WINDOW, new Set(keys).size));
       }),
@@ -1433,16 +1461,28 @@ describe("udp-lossy-transport: bounded receiver block memory", () => {
 
   it("ULT-33: the filed reproduction — 20,000 never-completing blocks retain 8", () => {
     // The defect's own shape at 1/10 scale (20k rather than 200k, to stay inside a test budget):
-    // fresh `blockSeq` per packet, `blockPos` 0 so nothing ever becomes recoverable, `seq` monotone
-    // so the NACK path is never entered and `recvBlocks` is the only thing under measurement.
+    // one symbol per block at position 0, so no block is ever recoverable and `recvBlocks` is the
+    // only thing that can grow.
+    //
+    // `seq` STRIDES BY 8 — that is the whole change since #10778, and it is a correction to this
+    // test's old premise rather than a cosmetic one. It used to hold `seq` monotone-by-one and
+    // spend a fresh wire `blockSeq` per packet, precisely so the NACK path stayed out of the
+    // measurement. With the address derived, monotone-by-one fills each block to completion, so
+    // the only way to open a fresh block per packet is to skip the other seven `seq`s. That is now
+    // inseparable: the NACK path IS entered here (a 7-wide gap per packet, well inside
+    // MAX_NACK_GAP, broadcast into a no-op transport), and the honest statement is that the drain
+    // costs the attacker a loss signal it used to get for free. What is measured is unchanged —
+    // `retainedBlockCount` is the assertion, and NACK traffic cannot move it.
     const r = makeReceiver();
-    for (let i = 0; i < 20_000; i++) r.raw(i, i, 0, new Uint8Array(64).fill(0xa5));
+    const openOne = (key: number): void => r.raw(key * 8, 0, 0, new Uint8Array(64).fill(0xa5));
+    for (let i = 0; i < 20_000; i++) openOne(i);
     expect(r.channel.retainedBlockCount).toBe(RECV_BLOCK_WINDOW); // was 20,000
     expect(r.delivered.length).toBe(0); // nothing was ever recoverable — anti-vacuity on the setup
 
     // §12 idempotency: replaying the same stream has the effect of running it once.
-    for (let i = 0; i < 20_000; i++) r.raw(i, i, 0, new Uint8Array(64).fill(0xa5));
+    for (let i = 0; i < 20_000; i++) openOne(i);
     expect(r.channel.retainedBlockCount).toBe(RECV_BLOCK_WINDOW);
+    expect(r.delivered.length).toBe(0); // and the replay did not manufacture a recovery either
   }, 30_000);
 
   it("ULT-34: eviction is by RECENCY — 8 packets at the top of u32 cannot park the window", () => {
@@ -1452,8 +1492,15 @@ describe("udp-lossy-transport: bounded receiver block memory", () => {
     // 0/20, permanently, for 8 attacker packets, because every honest block sorts below the parked
     // keys and is evicted the instant it is created. Trading an unauthenticated memory drain for an
     // unauthenticated permanent shutdown is not a fix, and this test is what refuses it.
+    //
+    // The squatters park at the top of the DERIVED key space (`seq = key * 8`, key just under
+    // `floor(0xffffffff/8)`), because since #10778 the wire `blockSeq` this test used to write is
+    // not an address. The fork it guards is untouched by that: eviction still chooses a victim by
+    // key order or by recency, and a peer can still reach the highest keys — it now pays a
+    // sequence gap to do it, which changes the attacker's cost and not the policy question.
     const parked = makeReceiver();
-    for (let i = 0; i < RECV_BLOCK_WINDOW; i++) parked.raw(i, 0xffffffff - i, 0, new Uint8Array([7, 7, 7, 7]));
+    const TOP_KEY = Math.floor(0xffffffff / 8); // 0x1fffffff — the largest key a u32 `seq` can reach
+    for (let i = 0; i < RECV_BLOCK_WINDOW; i++) parked.raw((TOP_KEY - i) * 8, 0, 0, new Uint8Array([7, 7, 7, 7]));
     expect(parked.channel.retainedBlockCount).toBe(RECV_BLOCK_WINDOW); // the window is full of squatters
     for (let b = 0; b < 5; b++) parked.honestBlock(b);
     expect(parked.delivered.length).toBe(20); // 5 blocks * 4 data payloads — was 0 under key order
