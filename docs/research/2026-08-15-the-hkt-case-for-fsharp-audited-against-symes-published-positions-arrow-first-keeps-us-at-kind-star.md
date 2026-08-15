@@ -1,0 +1,631 @@
+# The HKT case for F#, audited: Don Syme's published positions, today's measurements, and why arrow-first keeps us at kind `*`
+
+*Shadow, 2026-08-15.*
+
+**Status of this document.** It is a working assessment, and it is **publishable as written**. It contains
+nothing inferred about anyone's inner life. Every characterisation of a person's position traces to something
+that person published, quoted with a link; where no statement exists, it says **"not stated publicly"** and
+stops there. Good faith and technical intent are assumed by default and without hedging: the only agendas
+treated as being in play are the publicly self-claimed ones, and those are about language robustness and ease
+of use. Governing rule:
+[`engagement-profiles-public-work-only-not-surveillance-dossiers.md`](../../.claude/rules/engagement-profiles-public-work-only-not-surveillance-dossiers.md)
+— compile public work freely and cite it; never model an internal state; for internal states the method is
+**ask, and believe the account**.
+
+The purpose of tailoring an argument to a specific reviewer here is **courtesy, not leverage**: a reviewer
+should need minimal additional context to evaluate a proposal. If a passage in this document would read badly
+to its subject, that is evidence the passage is wrong, not evidence it should be hidden.
+
+Every claim carries a register (`toy` / `unmetered` / `metered`) per
+[`toy-is-free-metered-must-be-earned.md`](../../.claude/rules/toy-is-free-metered-must-be-earned.md).
+
+***
+
+## 0. The five findings, up front
+
+1. **The case is not ready on the code-reuse axis, and the reason is our own design choice.** The repo is
+   **arrow-first**: `Kleisli`/`Arrow` shapes throughout, and **zero `Applicative` anywhere**. An arrow
+   `Arrow<'a,'b>` has both parameters at kind `*`; `Applicative` cannot be *stated* without quantifying over
+   `'F : * -> *`. So PR #10817's residue collapsing twice was not luck — the architecture avoids the `* -> *`
+   layer by construction. `metered`.
+2. **The single sharpest concrete gap is already documented by the F# team, and it sits exactly at F#'s unique
+   intersection**: RFC FS-1124 records that **.NET generic math does not propagate units of measure**, and the
+   team's chosen resolution was to *suppress* the `System.Numerics.I*` interfaces on unitized types. Guidance:
+   *"For generic math using units-of-measure, use SRTP."* This is small, concrete, acknowledged, and needs no
+   new type theory. `metered`.
+3. **The venue assumption in the existing brief is off.** `fslang-suggestions` **#175 "Simulate higher-kinded
+   polymorphism" is CLOSED** (2024-02-07) with labels `probably not` + **`needs-clr-change`**; **#243 "Support
+   type classes or implicits" is OPEN** with label **`await-csharp-alignment`**. And Don Syme publicly
+   announced in January 2025 that he has **stepped back** in favour of an "F# Language Design Squad"
+   (@vzarytovskii, @T-Gro), retaining an oversight and final-decision role. `metered`.
+4. **The two arguments today's measurements do not touch are the geometric-semantics argument and the
+   externalized-types argument — and they point in opposite strategic directions.** The geometry argument runs
+   straight into Syme's sharpest *published* objection and must therefore be posed as a measurable
+   bug-reduction claim, not an expressiveness claim. The externalized-types argument runs *with* his published
+   recommendation, because **type providers and source generators are exactly what he names as the
+   industrially-appropriate form of type-level programming**. `metered` on the citations, `toy` on the geometry
+   claim itself.
+5. **Two paths, laid out with costs, not ranked.** (a) push HKT into F#; (b) make types *values* in our own
+   layer. Path (b) sidesteps the `AssemblyLoadContext` wall found in PR #10819 *and* needs no persuasion from
+   anyone — but it forfeits static checking and makes us the owner of a checker we have not written. §7.
+
+***
+
+## 1. The arrow-first finding, and the precision it demands
+
+Aaron's account (2026-08-15): *"we use the monad arrow kleisli and avoid using app so we keep monad-like rules
+in meta space too."*
+
+Measured on `origin/main` today, independently of that account:
+
+| surface | shape | kind |
+|---|---|---|
+| `src/Core/IntrCtx.fs:34` `ISR<'A,'B> = IntrCtx -> 'A -> Task<Result<'B, InterruptFeedback>>` | documented *"the Kleisli Arrow context monad type alias"*, with `>=>` at line 41 | `*` in both params |
+| `src/Core/Meno.fs` `Arrow<'a,'b> = MenoArrow of (ZSet<'a> -> ZSet<'b>)` | the monoidal/braided arrow | `*` |
+| `src/Core/FerryThrottler.fs:607` `ContextualFerryThrottler` | *"the Kleisli-Arrow"* | `*` |
+| `src/Core/IsrLift.fs:31` | *"the unit of the Kleisli structure — `arr` in arrow terms"* | `*` |
+| Kleisli language also in `SoftValue.fs`, `ParseSoft.fs`, `Tracing.fs` | | `*` |
+| **`Applicative`** | `rg "Applicative"` over every `.fs`/`.fsi` in the repo → **no matches, exit 1** | absent |
+
+**The precision a language designer will check, stated first.** We use **an** arrow, not **the** `Arrow`
+*class*. In Haskell, `Arrow` is a class over `* -> * -> *`; here `Arrow<'a,'b>` and `ISR<'A,'B>` are concrete
+types whose parameters are ordinary kind-`*` type parameters. *The instance needs no HKT; the abstraction
+would.* Likewise `ISR` is Kleisli over `Task<Result<_, InterruptFeedback>>`, which genuinely is a `* -> *`
+thing — but it appears **monomorphically** and is never quantified over. A `* -> *` object that is used and
+never abstracted costs nothing to have and buys nothing to name.
+
+**So the honest claim is not "our mathematics requires HKT."** It is:
+
+> We chose an arrow-first formulation that does not require higher-kinded polymorphism, and the one
+> construction where we wanted the other formulation — the `NovelMathExt.fs` profunctor lift, which needs
+> `p : * -> * -> *` **and** rank-2 (`forall p. Strong p => p a b -> p s t`) — we cut, because neither IWSAM nor
+> open generics can carry either requirement.
+
+That statement is far harder to refute than an appeal to need, and it demonstrates we know where our own
+boundary is. `metered` (the `rg`, the signatures, and PR #10817 §4).
+
+***
+
+## 2. Audit of the 2026-05-11 brief, claim by claim
+
+Source under audit:
+`memory/deepseek/conversations/2026-05-11-deepseek-brief-to-don-syme-python-dead-end-fsharp-hkt-alignment.md`.
+
+### 2.1 Claims that still hold
+
+| brief claim | verdict | check performed |
+|---|---|---|
+| **mypy #6066** — higher-kindedness unsupported | **holds**, with a date correction | `python/mypy#6066` *"Indexing TypeVars / need a workaround for higher-kindedness"*, **open**, created **2018-12-13**. The brief's "8+ years" was ~7.4 years at time of writing; today it is 7.7. |
+| **PyTorch `mypy.ini`** — "Typing tests is low priority" | **holds** for that quote | present verbatim in `pytorch/pytorch:mypy.ini`. The second quote ("OpInfos being annoying to type") was **not** found in that file in this pass — `unmetered`, do not reuse until located. |
+| **Shape-vs-dtype gap** in Python tensor annotations | **holds in substance** | independent of the NTT docomo blog: the type-constrained-decoding literature (§2.3) and `python/typing#1250` both attest that Python's type system cannot express the relevant constructor-level invariants. |
+| **F# UoM is the only mainstream .NET compile-time dimensional safety** | **holds** | uncontested, and *reinforced* by FS-1124, which spends a section on the fact that .NET's generic-math interfaces cannot express it. |
+
+### 2.2 Claims that are weakened or mis-cited
+
+| brief claim | verdict | what is actually true |
+|---|---|---|
+| **"scikit-learn typing #1250"** | **mis-attributed repo** | The real artefact is **`python/typing#1250` "Generic specialization?"**, open since **2022-09-01**. It *is* motivated by the scikit-learn `fit`/`predict` API. Its content is *better* for us than the brief's summary: the author wants `fit` to return `Fitted[Self]` — a **type-constructor-level** refinement Python cannot express. Fix the citation and keep the example. |
+| **"94% of LLM compilation errors are type-check failures"** filed under *Python's structural ceiling* | **filed in the wrong section** | The figure is reported by the GitHub blog (2026-01-08) citing **Mündler, He, Wang, Sen, Song & Vechev, *Type-Constrained Code Generation with Language Models*, arXiv:2504.09246 (2025)** — which studies **TypeScript**, not Python. A claim about TypeScript compilation errors cannot be evidence about Python, which has no such compilation step. `unmetered`: the 94% figure was not located in the abstract in this pass, only in the citing blog post. **See §2.3 — this citation is stronger than the brief made it, once moved.** |
+| **Keras VU#253266** as a type-system consequence | **weakest citation; recommend dropping** | Verified real: CERT/CC VU#253266, published **2024-04-16**, Keras `Lambda` layers execute embedded Python on `load_model()` before Keras 2.13. But the mechanism is **unsafe deserialization of arbitrary callables**, not a typing failure — and **higher-kinded types would not prevent it**. Citing it invites exactly the "a pile of adjacent-sounding advantages" objection that [`numerology-vs-number-theory.md`](../../.claude/rules/numerology-vs-number-theory.md) forbids. |
+| **"Effective HKT via SAIMs + SRTPs (production-ready encoding)"** | **half-refuted, half-upgraded** | PR #10817 confirms IWSAM works natively for our §4a algebra ladder (statically resolved, no boxing, exit 0). But **"production-ready" is not what its designer says**: FS-1124's own guidance is *"Do not use IWSAMs as the basis for a composition framework"* and *"using IWSAMs in application code carries a strong risk you or your team will later remove their use."* Citing IWSAM as an advantage, to the author of the RFC that warns against this use, would fail on first contact. |
+| **"3,000+ PRs proving the encoding works"** | **does not support the claim it is attached to** | PR count is a measure of activity, not of an encoding's soundness. Also, before #10817 no `App<'F,'T>` encoding existed in the repo at all. The evidence that now exists is better and smaller: a **`.fsi`-sealed single-`App` brand** whose forgery attack **fails to compile** (`FS0887`, attack build exit 1) while legitimate cross-assembly use runs clean. |
+| **"Zeta offers implementation team for compiler prototype"** | **premature given §3** | The design process the offer would enter is described in §3; a prototype offer is not the first move that process accepts. |
+
+### 2.3 The correction that makes the case *stronger* than the brief framed it
+
+The arXiv:2504.09246 citation is not merely a statistic about error rates. **The paper's contribution is
+type-constrained decoding** — using a type system to constrain an LLM's generation, reducing compilation errors
+by over 50% across model sizes and families. That is a *utilitarian, measurable* claim of exactly the kind
+Syme has publicly said he prefers:
+
+> *"I generally prefer arguments in utilitarian terms (bug reduction, safety under refactoring, stability of
+> coding patterns under changing requirements, does a mechanism promote team-cooperation etc.)."*
+> — dsyme, [fslang-suggestions#243, 2016-11-15](https://github.com/fsharp/fslang-suggestions/issues/243#issuecomment-260630066)
+
+So the AI-safety argument has a form that fits the stated evaluation criterion: *a richer type system is a
+stronger decoding constraint; a stronger decoding constraint measurably reduces generated-code errors.* That
+is a bug-reduction argument, not an expressiveness argument, and it is the only leg of the original brief that
+gets stronger rather than weaker under audit. It is currently `unmetered` **for F#** — the paper measures
+TypeScript, and nobody has run the equivalent experiment on F#. **Running it is the single highest-value
+missing artefact in the whole case** (§6).
+
+***
+
+## 3. Don Syme's published positions
+
+All of the following are quotations from artefacts he published, with links. Nothing here is an inference
+about motive or internal state; where a reason is not published, this document says so.
+
+### 3.1 Governance facts (checked today)
+
+| fact | source |
+|---|---|
+| **#175 "Simulate higher-kinded polymorphism" is CLOSED**, 2024-02-07, labels `probably not`, **`needs-clr-change`**, `area: type-system`, 94 up-votes. Closing comment by @vzarytovskii: *"Closing all `probably not` issues. This one is a bit more sensitive for many, so we shall wait and see where does CLR go with the extensions and unions."* | [fslang-suggestions#175](https://github.com/fsharp/fslang-suggestions/issues/175#issuecomment-1932273530) |
+| **#243 "Support type classes or implicits" is OPEN**, 321 up-votes, 216 comments, labels **`await-csharp-alignment`**, `area: srtp-and-constraints` | [fslang-suggestions#243](https://github.com/fsharp/fslang-suggestions/issues/243) |
+| **Syme stepped back in Jan 2025.** *"I've stepped back from activity in favour of letting the community lead these processes - but I want to continue to be able to play a sort of oversight role and - where necessary - be a final decision maker."* He names @vzarytovskii and @T-Gro as the "F# Language Design Squad". | [fslang-suggestions#1403, 2025-01-19](https://github.com/fsharp/fslang-suggestions/issues/1403) |
+| **FS-1043** (extension members solving SRTP constraints) is approved-in-principle with a merged trials PR, `dotnet/fsharp#8404`; Syme in 2021: *"We will eventually progress this approved RFC… I also won't progress it until I am certain that it won't lead to a considerable rise in attempts to use type-level programming in F# for activities outside those designed to be supported by the RFC."* | [FS-1043](https://github.com/fsharp/fslang-design/blob/main/RFCs/FS-1043-extension-members-for-operators-and-srtp-constraints.md), [#243 2021-09-09](https://github.com/fsharp/fslang-suggestions/issues/243#issuecomment-916079347) |
+
+**Correction to the framing this task inherited.** "Don Syme is the gatekeeper" is half right and the other
+half matters. He is a **final decision maker with an oversight role, by his own published description**, but
+the day-to-day process is led by the squad, and the two governing labels are `needs-clr-change` (on HKT) and
+`await-csharp-alignment` (on type classes). **An HKT ask addressed to F# alone is addressed to the wrong half
+of a gate the F# team has publicly said is partly CLR-level and partly C#-level.** `metered`.
+
+Note the asymmetry this exposes, in our favour: **the mechanism PR #10817 measured as working — the
+`.fsi`-sealed brand — requires no CLR change, no C# alignment, and no language change at all.** It is a
+library pattern. The gate applies to *native* HKT, which is not the only thing we might want.
+
+### 3.2 The objections, quoted and steelmanned
+
+The canonical statement is
+[#243, 2021-09-09](https://github.com/fsharp/fslang-suggestions/issues/243#issuecomment-916079347), which the
+issue body itself designates as his current position. RFC **FS-1124** (his authorship; the IWSAM RFC) restates
+much of it in a form aimed at a specific feature, with a **Drawbacks** section written, in his words, with
+*"Emphatic language… to act as a corrective."*
+
+***
+
+**Objection A — the slippery slope is intrinsic, not a choice.**
+
+> *"Simple type-classes are never sufficient and result in a consistent stream of requests for more and more
+> type-level programming and type-level abstraction (higher kinds, higher sorted kinds, type families,
+> whatever)."* … *"the classic slippery slope is indeed a basis on which to exclude otherwise useful language
+> features in this repository. In the F# and C# design traditions we have long avoided features with… an
+> obvious slippery slope - we aim to do them complete, as a whole, and resolve the design point to a
+> sufficient coherent closure."*
+> — [#243, 2021-09-09](https://github.com/fsharp/fslang-suggestions/issues/243#issuecomment-916079347) and
+> [2021-09-13](https://github.com/fsharp/fslang-suggestions/issues/243#issuecomment-918569079)
+
+*Steelman.* This is a claim about **design closure**, and it is correct as stated: a feature whose natural
+successor requests are unbounded has no stable stopping point, and shipping it commits the language to an
+open-ended sequence. He is asking for the closure to be specified up front, which is a normal and reasonable
+engineering demand.
+
+*Does our evidence answer it?* **Partially, and better than the original brief could.** Our measurement
+supplies an unusually specific closure: we do not want type families, higher-sorted kinds, or a class
+hierarchy. We want **one construction** — the profunctor lift at `* -> * -> *` plus rank-2 — and we have
+measured that everything else we build collapses to kind `*`. A request that comes with a demonstration of
+where its author's own demand *stops*, backed by a count, is materially different from an open-ended ask.
+`unmetered`: the closure is stated and evidenced for our codebase; it is not evidence about anyone else's.
+
+***
+
+**Objection B — the empowerment/culture argument.**
+
+> *"Adding type-level programming of any kind can lead to communities where the most empowered programmers are
+> those with deep expertise in certain kinds of highly abstract mathematics (e.g. category theory or abstract
+> algebra). Programmers uninterested in this kind of thing are disempowered. While I have great respect for
+> these as mathematical and computational theory, I don't want F# to be the kind of language where the most
+> empowered person in the discord chat is the person who knows the most category theory or abstract algebra."*
+> — [#243, 2021-09-09](https://github.com/fsharp/fslang-suggestions/issues/243#issuecomment-916079347)
+
+*Steelman.* This is a claim about the distribution of capability across a community, and it does not depend on
+whether the mathematics is good — he says explicitly that he respects it. The failure mode named is real and
+observable in other language communities.
+
+*Does our evidence answer it?* **No, and our geometry argument runs directly into it.** This is the honest
+finding of §5: an argument of the form "types should carry braided-monoidal and Clifford structure" is, on its
+face, the exact scenario this objection describes. It is not answered by asserting that the mathematics is
+correct — the objection already grants that. The only form of the argument that engages it is one where the
+*consumer* of the structure is a compiler and a model rather than a reader, and where the benefit is measured
+in defects rather than in expressiveness. §5 develops that, and marks it `toy` until measured.
+
+***
+
+**Objection C — compile-time computation has real costs (performance, debugging, tooling).**
+
+> *"This has serious compilation performance downsides. You end up needing a profiler for your type-level
+> computations… Adding features in this space leads to a need for compile-time debugging. This is absolutely
+> real - the C++ compiler gives 'stack traces' of template instantiation failures, for example. Yet this is a
+> kind of debugging that's completely unsupported in any IDEs today."*
+> — [#243, 2021-09-09](https://github.com/fsharp/fslang-suggestions/issues/243#issuecomment-916079347)
+
+*Steelman.* Uncontroversially true, and he applies it against a feature he did ship: FS-1124 records
+*"Compiler and tooling slow-downs on large interface lists"* and, in a 2024-03-06 addendum, points at a real
+Fleece issue as the prophesied instance. He also applies it to **type providers**, F#'s own feature: *"These
+suffer some of the above problems (e.g. they run at compile-time, and can cause performance and debugging
+problems)… some of what I've written can also be seen as a criticism of this existing part of F#."*
+
+*Does our evidence answer it?* **Not applicable to what we measured.** The `.fsi`-sealed brand encoding does
+**no** type-level computation: it is a sealed class, an `inj`, and a `prj`. It has a runtime cost (boxing;
+PR #10817 §3.2 notes it forfeits `ZSet.map`'s `inline`/`InlineIfLambda`, `unmetered` in magnitude) and
+essentially no compile-time cost. So this objection prices *native* HKT with inference, not the encoding —
+which is another reason the encoding and the language feature must be argued separately and never bundled.
+
+***
+
+**Objection D — explicit function passing is shorter, more general, and better suited to F#.**
+
+> *"Note that explicit function-passing code is shorter and more general - it works with both `MyType1` and
+> `MyType2`. In F# this kind of code is incredibly safe and succinct because of Hindley-Milner type inference
+> - passing functions and making code generic are two of the very easiest things to do in F#, the language is
+> almost made for exactly those activities. For the vast majority of generic coding in F# explicit
+> function-passing is perfectly acceptable, with the massive benefit that the programmer doesn't burn their
+> time trying to create or use a cathedral of perfect abstractions."*
+> — [FS-1124, Drawbacks](https://github.com/fsharp/fslang-design/blob/main/FSharp-7.0/FS-1124-interfaces-with-static-abstract-members.md)
+
+*Steelman.* This is the strongest objection in the set, and it is the one aimed squarely at *our* case, because
+it attacks the reuse argument on its own ground: if the goal is N copies → 1, an explicitly passed function
+achieves it with no type-level machinery, no constraint, and no closure problem.
+
+*Does our evidence answer it?* **No — and today's measurements largely agree with him.** With one instance per
+candidate site (PR #10817 §5), a passed function is the correct engineering answer for everything we currently
+have. The one exception is the profunctor lift, where the abstraction is over a **type constructor at
+`* -> * -> *`** with a rank-2 quantifier — a shape a passed function cannot encode, because the thing being
+abstracted is not a function but the profunctor itself. That is a narrow and real exception, and it is the
+only one we can currently name.
+
+***
+
+**Objection E — implementations are not parameterizable; instances cannot close over anything.**
+
+> *"F# is driven by explicit parameterization… IWSAM implementations are not within the 'core' portion of F#:
+> they are not first-class objects, can't be produced by methods and, can't be additionally parameterized."*
+> — FS-1124. And, on type classes, with a worked example: *"Let's say you create a huge amount of code that
+> uses a swathe of string-related type classes that assume invariant culture… Then you want to localize your
+> code w.r.t. culture… But your type class instances can't be parameterized. So you either have to remove all
+> those type classes from your code or resort to dynamic argument passing though thread-local state. Painful
+> and discontinuous."*
+> — [#243, 2016-11-15](https://github.com/fsharp/fslang-suggestions/issues/243#issuecomment-260630066)
+
+*Steelman.* This is a **discontinuity** argument, and it is about refactoring risk rather than expressiveness:
+the cost of a type-class-shaped abstraction is not paid at the time you write it but at the time a requirement
+changes and the abstraction cannot absorb the change.
+
+*Does our evidence answer it?* **It is a live hazard for us specifically, and worth flagging to ourselves.**
+The culture example he chose is uncomfortably close to home: our
+[`culture-invariant-by-default.md`](../../.claude/rules/culture-invariant-by-default.md) rule exists because a
+culture-sensitive comparison caused a real non-associativity bug (081KT07NV0008QG0R001YDB73K). We resolved it
+by *fixing the culture globally*, which happens to be the configuration in which his objection does not bite —
+but that is luck about our requirements, not a refutation. Recorded as a hazard, not answered.
+
+***
+
+**Objection F — the utilitarian bar, and the incoherence-is-rare claim.**
+
+> *"But how many bugs (= lost developer time) are really caused by a lack of coherence, e.g. conflicting
+> instances? I talked about this when last with Odersky and we figured it was very few."* … *"Anyway I'd need
+> to see much stronger utilitarian evidence that this truly is as critical as claimed - it seems like a
+> well-intentioned article of mathematical faith… more than one grounded in the reality of software practice."*
+> — [#243, 2016-11-15](https://github.com/fsharp/fslang-suggestions/issues/243#issuecomment-260790271)
+
+*Steelman.* He is stating an evidentiary standard: **counted defects avoided**, not derivations. This is the
+same standard [`toy-is-free-metered-must-be-earned.md`](../../.claude/rules/toy-is-free-metered-must-be-earned.md)
+imposes on us internally, which means we are not being asked to adopt an alien discipline.
+
+*Does our evidence answer it?* **Not yet, and this is the crux.** We have no defect count attributable to the
+absence of HKT. We have one shipped compromise (`NovelMathExt.fs`'s reduced `Lens`) and zero bugs traced to it.
+The type-constrained-decoding experiment in §6 is the shape of evidence that would meet this bar.
+
+***
+
+**Objection G — "F# is not a research vehicle."**
+
+> *"To clarify: F# is not a research vehicle (it hasn't been since ~2014). 'Setting the agenda' is not
+> intrinsically a goal… Those looking for a language whose goal is specifically to be a research vehicle for
+> cutting-edge ideas (e.g. advanced research in program verification, or touch-based-programming, or
+> type-level programming, or functorial programming or similar) should look elsewhere."*
+> — [#243, 2021-09-13](https://github.com/fsharp/fslang-suggestions/issues/243#issuecomment-918569079)
+
+*Steelman.* A scope statement about what the project is for. It is not a technical claim and cannot be
+refuted technically; it can only be met by showing that a proposal is *not* research — i.e. that it is
+industrially motivated with measured utility.
+
+*Does our evidence answer it?* **It determines the register in which anything must be written.** An
+AI-safety-and-verification framing that reads as a research agenda is answered by this paragraph before it is
+read. A framing that reads as "here is a measured defect class, here is a small change that removes it" is not.
+
+***
+
+**And the position that is not an objection at all — what he affirmatively recommends.**
+
+> *"What if someone is looking for a strongly typed, functional programming language that embraces type-level
+> programming for industry productivity?"* → *"If that is the specific aim, I would point them to the specific
+> kind of reflective type-level programming done using F# type providers, or C# code generators, or F#/C#
+> analyzers. all of which have many proven practical industry uses… I would also apologise that #450 has not
+> been landed as yet."*
+> — [#243, 2021-09-14](https://github.com/fsharp/fslang-suggestions/issues/243#issuecomment-919427910)
+
+He also states the reason type providers are, in his assessment, tractable where type-level programming is
+not: *"the type-level programs are expressed using term-level programming with all the utility of the
+expression language of F# itself… This means relatively good programming, debugging, profiling, logging,
+diagnostic reporting etc. is available."*
+
+**This is directly load-bearing for §7 path (b), and it is the most useful single sentence in the corpus for
+us**: the mechanism we would need for externalized types is the one he names as the right answer.
+
+***
+
+## 4. The gap the F# team has already documented — and it is at F#'s unique intersection
+
+FS-1124 §"Interaction with Units of Measure" and §"Alternatives for Units of Measure" record that .NET's
+generic-math interfaces do not propagate units. Five options were enumerated; **option 3 was chosen**: *"Do not
+report any `System.Numerics.I*` interfaces for unitized types."* The shipped guidance reads:
+
+> *"**For generic math using units-of-measure, use SRTP.** The .NET support for generic math does not
+> propagate units of measure correctly. Rely on F# SRTP code for these."*
+
+Why this matters more than anything else in this document for near-term action:
+
+- It sits **exactly** at the intersection the 2026-05-11 brief advertised as F#'s unique combination — units of
+  measure **×** generic numeric abstraction. The brief's table implies the combination composes. **It does
+  not**, and the F# team documented the non-composition before we noticed it. `metered`.
+- It is **already acknowledged**, so no one has to be persuaded that a problem exists.
+- It is **bounded**: options 4 and 5 in the RFC (compiler-side rewriting of reported interfaces; BCL metadata
+  for unitization signatures) are named, and the RFC explicitly keeps a *"Possible future options"* section
+  open.
+- It requires **no new type theory** — no kinds, no rank-2, no coherence.
+
+**This is the concrete, Syme-legible, F#-team-acknowledged defect our case could target first.** It is not the
+HKT ask. It is smaller, and it is the kind of contribution that earns standing for a larger conversation.
+Register: `metered` as a statement of what the RFC says; `unmetered` as a claim that we could implement it —
+we have not scoped it.
+
+***
+
+## 5. The geometric-semantics argument
+
+Today's measurements do not touch this argument, and it deserves its own weight — but it needs restating
+before it can survive contact with §3.2's Objection B.
+
+**The argument as usually posed** — *a type system carrying geometric and topological structure lets a human
+and a model agree on what a type* means *rather than what it is* called — is, on its face, precisely the
+scenario Objection B describes. Restating it more forcefully makes it worse, not better.
+
+**The reformulation that engages the objection** is to change who the consumer is. The claim is not that
+programmers should reason categorically. It is:
+
+> A type whose meaning is fixed by structure rather than by name gives a code-generating model a **checkable
+> referent**. Name-based agreement between a human and a model is agreement about a token; structure-based
+> agreement is agreement that a checker can adjudicate. The predicted effect is a reduction in a specific
+> defect class: **plausible-looking code that type-checks against the wrong concept.**
+
+Posed that way it is a bug-reduction claim, which is the register Objection F demands, and it connects to the
+type-constrained-decoding result in §2.3 rather than to aesthetics.
+
+**Honest state: this is `toy`.** We have no measurement that geometric or structural typing improves
+human-model agreement, and no defect count for the class it claims to reduce. Three things are true at once and
+all three should be said:
+
+1. The mathematics is real and in the repo, and it is in the **Lean** lane, not the F# lane. PR #10817
+   established that `MenoBalancedTwist.lean` abstracts over an arbitrary braided monoidal category using
+   Mathlib's **dependent** `Hom : C → C → Type v` — and that **HKT could not state naturality, the hexagons, or
+   coherence anyway.** So the laws that carry the geometric meaning already live in the only lane that can
+   express them.
+2. Therefore HKT in F# would buy **definitional** reuse in the runtime lane, not the geometric semantics. Using
+   the geometry to argue for HKT overstates what HKT delivers, and a reviewer who knows the difference between
+   `* -> * -> *` and a dependent family will notice.
+3. The experiment that would meter it is nameable: take a fixed task set, generate F# with and without
+   structurally-constrained types, and count defects that survive the compiler. That is the F# analogue of
+   arXiv:2504.09246 and it does not exist yet.
+
+**Sibling-lane note, not an edit:** an untracked `MenoBraidedRMatrix.lean` is present in the shared checkout
+and a sibling agent is live on the IR op set. Nothing here touches either.
+
+***
+
+## 6. Aaron's three criteria, scored honestly
+
+| criterion | status | evidence |
+|---|---|---|
+| **Simpler code** | **not demonstrated** | The one HKT-requiring construction (profunctor lift) would *add* machinery — a sealed brand, boxing, a `prj` — to obtain uniform composition across optic kinds. With one optic kind, net simplicity is negative. `metered` (PR #10817 §4). |
+| **Code that could not be written before** | **exactly one instance** | `NovelMathExt.fs`'s profunctor lift: `p : * -> * -> *` **and** rank-2. Neither IWSAM nor open generics reach either. The cut was correct and unavoidable. `metered` (structural). |
+| **N copies → 1** | **not met, and for a structural reason** | Every candidate site has **one** instance: one braided monoidal category, one optic kind, one comonad, one functor over the Z-set family. §1 explains why — the arrow-first design keeps us at kind `*` by construction. `metered`. |
+
+### 6.1 The N-copies problem we actually have is not HKT-shaped
+
+Measured today: `ZSet` is implemented independently in **F#** (`src/Core/ZSet.fs`, 602 lines), **C#**
+(`src/Core.CSharp/ZSet.cs`, 566), **Rust** (`src/Core.Rust.Algebra/src/zset.rs`, 469), **Q#**
+(`src/Core.QSharp.ReferenceOracle/ZSetISA.qs`, 318) and **Go** (`zset_merkle.go`, 93, a subset), plus a
+TypeScript surface. That is a genuine N-copies-of-one-concept problem at real scale — **and higher-kinded
+polymorphism in F# cannot touch any of it, because the duplication is across languages, not across type
+constructors within one.** The lane that addresses it is `gen/` and the
+[`only-the-irreducible-is-primitive-generate-the-rest.md`](../../.claude/rules/only-the-irreducible-is-primitive-generate-the-rest.md)
+discipline: generate the oracles from the free object. `metered` (line counts).
+
+This is worth stating plainly because it is the honest answer to "make the worth obvious": **our largest
+reuse win is not the one HKT provides.**
+
+### 6.2 What would make the case ready — the roadmap
+
+In order of value per unit of effort, and none of these is blocked on anyone outside this repo:
+
+1. **Run the F# type-constrained-decoding experiment** (§2.3). It is the only artefact that meets the stated
+   utilitarian bar, it is entirely within our control, and its result is informative in both directions.
+2. **Scope the UoM × generic-math gap** (§4) against FS-1124's own options 4 and 5. Small, acknowledged,
+   F#-unique.
+3. **Reach a second instance at any one candidate site** (PR #10817 §5's trigger): a second braided monoidal
+   category in F#, a real `Prism`, or `map` on a second Z-set family member. Until then, abstraction is over a
+   singleton.
+4. **Do the two pieces of cheap hygiene the HKT question surfaced but does not own**: delete one of the two
+   duplicate `Lens` definitions (`Optic.fs` / `NovelMathExt.fs`), and rename `Traversal<'r>`, which is
+   value-of-information scheduling over CHIP-8 frames and not an optic at all.
+
+Until (1) and (3), **the honest recommendation is that the case is not ready to be put to anyone**, and the
+trigger condition is more valuable than a brief would be.
+
+***
+
+## 7. Two paths for externalized types — costs, not a ranking
+
+Aaron's framing bundles **ShivaGc** with *"infinite externalized types in the database"*. Two measurements bear
+on it.
+
+**What ShivaGc is, as built** (`src/Core/ShivaGc.fs`, 346 lines): a mark-sweep collector over a
+content-addressed heap of **`DynamicValue`** objects `{ id, value, refs }`, with machine-checked live-survive,
+cycle-safety, idempotence and determinism. Its own header states the reason it can exist at all: *"you cannot
+GC baked code, but you can GC values."* It collects **values**. It does not collect types. `metered` (source).
+
+**The wall**, from PR #10819: *"Orleans virtualizes objects, and objects are GC-granular. Types are not — the
+smallest collectable unit is an `AssemblyLoadContext`."* Falsified by a shipped test: the same generated type
+loaded into two collectible ALCs is **two distinct CLR `Type`s** with identical `AssemblyQualifiedName`,
+mutually non-assignable, while both **content-address to one ZetaId**. Register: `metered`, but **inherited —
+I did not re-run that test**.
+
+Put together: **`ShivaGc` works on `DynamicValue` precisely because values are GC-granular and types are not.**
+That is not an accident of implementation; it is the wall, avoided.
+
+Hence two genuinely divergent paths.
+
+### Path (a) — push HKT into F#
+
+*What it buys.* Definitional reuse in the runtime lane; the profunctor lift becomes writable; externalized
+types remain **CLR types**, so they keep static checking, IDE tooling, and .NET interop.
+
+*What it costs.*
+
+- The `needs-clr-change` and `await-csharp-alignment` gates (§3.1) apply to the native feature.
+- Every objection in §3.2 must be answered, and by §6 we currently answer one of them (A, partially).
+- **The ALC wall remains.** HKT does nothing about type collection granularity; an externalized-type story on
+  CLR types still cannot collect below an `AssemblyLoadContext`.
+- The encoding half is available *today* with no gate at all: PR #10817's `.fsi`-sealed single-`App` brand,
+  cross-assembly-verified, one earned class. Its residual costs are stated there (the `:?>` becomes a
+  module-internal invariant; `InternalsVisibleTo` reopens it; boxing forfeits `inline`/`InlineIfLambda`).
+
+### Path (b) — make types values in our own layer
+
+*What it buys.*
+
+- **It sidesteps the ALC wall entirely**, because values are GC-granular and `ShivaGc` already collects them.
+- It needs **no language change, no CLR change, and no persuasion of anyone** — and it is the direction Syme
+  publicly recommends for industrial type-level programming (§3.2, final quote): type providers, source
+  generators, analyzers, *"reflective type-level programming"* done with term-level code.
+- The substrate is real and load-bearing: `DynamicValue` is an 8-case universal value type consumed by **78
+  modules** in `src/Core` alone. `metered`.
+- It is closer to the "our own language" option, and it composes with `gen/`, which is the lane that can
+  actually attack §6.1's cross-language N-copies problem.
+
+*What it costs, stated without softening.*
+
+- **We forfeit static checking for the externalized types.** A type that is a `DynamicValue` is checked by
+  *our* checker, at *our* boundary — and we have not written that checker. This is the whole cost and it is a
+  large one.
+- **We become the owner of the type theory**, including its soundness, its error messages, and its tooling —
+  the exact burdens §3.2 Objection C prices, relocated onto us rather than removed.
+- **We are further from this than the prose suggests.** PR #10819 measured that there is **no F# type provider
+  in this repository at all** (the `TypeProvider` project is a Roslyn `IIncrementalGenerator`), no runtime code
+  generation, and `AssemblyLoadContext` appears only in prose under `src/`. `SchemaRegistry` is keyed by a
+  hand-chosen `string`, not by a content address — that one word is the seam. Inherited, `metered` by that PR.
+- Four-oracle byte-lock for a value-level type system becomes our responsibility across five languages.
+
+**No recommendation is made between them.** They are not mutually exclusive in principle — the encoding half of
+(a) is ungated and could proceed alongside (b) — but they consume the same attention and they optimise for
+different things: (a) keeps the .NET type system's guarantees and pays in persuasion and in the ALC wall;
+(b) keeps full control and pays in having to build what the CLR was giving us for free.
+
+***
+
+## 8. Corrections to the framing this task inherited
+
+Flagged explicitly, including where the case is **stronger** than framed.
+
+1. **"Don Syme is the gatekeeper"** — half right. He is, by his own January 2025 statement, a final decision
+   maker with an oversight role; the squad leads the process, and the two live labels are `needs-clr-change`
+   and `await-csharp-alignment`. §3.1.
+2. **"He has good objections we are trying to overcome them all"** — the audit finds that **for most of them,
+   our own measurements agree with him** rather than overcoming them. Objection D in particular is *supported*
+   by PR #10817's one-instance-per-site finding. Saying so is the strongest available position; claiming
+   otherwise would fail on first contact.
+3. **The case is stronger than framed in exactly one place, and it is not the reuse axis.** The
+   type-constrained-decoding literature (arXiv:2504.09246) is a *utilitarian, measured* AI-safety argument in
+   precisely the register Syme publicly says he prefers — and the original brief buried it as a statistic in
+   the wrong section. §2.3.
+4. **The case is stronger than framed in a second place: the UoM × generic-math gap** (§4) is a concrete,
+   already-acknowledged, F#-unique defect with named remediation options. Nobody in this repo had noticed it
+   before this audit; it is more actionable than the HKT ask.
+5. **"F# is really close to what we are looking for"** — the measurements *support* this, but not through HKT.
+   What is close is: UoM, HM inference, type providers, IWSAM for the algebra ladder (working today, exit 0),
+   and a mature verification lane. HKT is the one piece that is both distant and, per §5, not the piece that
+   carries the geometric meaning.
+6. **"Python would need a complete rewrite"** — the citations support "Python cannot express these
+   constructor-level invariants" (mypy#6066 open since 2018; `python/typing#1250` open since 2022). They do not
+   support "rewrite", which is a claim about migration cost that nobody has costed. And note Syme's published
+   position #5: he regards typed-Python and TypeScript's *interop-driven* type-level features as the
+   methodology most relevant to F#. An argument that leads with Python's failure lands closer to his stated
+   view than the brief assumed — but it lands as an argument for *practical interop typing*, not for category
+   theory.
+7. **Corrections to my own prior work are already on file** in PR #10817 §6 and are not restated here.
+
+***
+
+## 9. Claims ledger
+
+| Claim | Register | Evidence |
+|---|---|---|
+| Zero `Applicative` in any `.fs`/`.fsi` in the repo | `metered` | `rg "Applicative"` over `-g'*.fs' -g'*.fsi'`, exit 1, no matches |
+| `ISR<'A,'B>` and `Meno.Arrow<'a,'b>` are kind `*` in both parameters; Kleisli language in 7+ modules | `metered` | `src/Core/IntrCtx.fs:34,41`; `src/Core/Meno.fs`; `FerryThrottler.fs:607`; `IsrLift.fs:31` |
+| Arrow-first design is *why* the residue collapses to kind `*` | `unmetered` | a structural explanation consistent with two independent measurements; not itself a measurement |
+| We use **an** arrow, not the Haskell `Arrow` **class** (`* -> * -> *`) | `metered` (structural) | the type definitions are concrete, not classes |
+| #175 CLOSED 2024-02-07, labels `probably not` + `needs-clr-change` | `metered` | GitHub API, today |
+| #243 OPEN, label `await-csharp-alignment`, 321 up-votes | `metered` | GitHub API, today |
+| Syme stepped back Jan 2025 to oversight + final-decision role; squad = @vzarytovskii, @T-Gro | `metered` | fslang-suggestions#1403, his own words |
+| The seven objections A–G, as quoted | `metered` | direct quotation from #243 and FS-1124, links inline |
+| FS-1124 records .NET generic math does not propagate UoM; option 3 chosen; guidance says use SRTP | `metered` | FS-1124 §Interaction with UoM, §Alternatives, §Guidance |
+| `python/typing#1250` is the correct citation, open since 2022-09-01, motivated by scikit-learn `fit` | `metered` | GitHub API + issue body |
+| mypy#6066 open since 2018-12-13 | `metered` | GitHub API |
+| PyTorch `mypy.ini` contains "Typing tests is low priority" | `metered` | file contents |
+| "OpInfos being annoying to type" | `unmetered` | not located in `mypy.ini` in this pass |
+| VU#253266 is a deserialization/code-execution issue, published 2024-04-16; HKT would not prevent it | `metered` | CERT/CC advisory |
+| 94% figure traces to arXiv:2504.09246 via the GitHub blog; the paper studies **TypeScript** | `metered` on attribution, `unmetered` on the figure | abstract read; figure not located in abstract |
+| A richer type system measurably improves generated-code correctness **in F#** | `toy` | the analogous experiment has been run for TypeScript only |
+| Geometric/structural typing improves human-model agreement on type meaning | `toy` | no measurement exists; the experiment is named in §5 |
+| ZSet independently implemented in F#/C#/Rust/Q#/Go; HKT cannot merge them | `metered` | line counts, §6.1 |
+| `ShivaGc` collects `DynamicValue` heaps, not types | `metered` | `src/Core/ShivaGc.fs` |
+| `DynamicValue` is 8-case and consumed by 78 `src/Core` modules | `metered` | `src/Core/DynamicValue.fs:84-91`; `rg -l \| wc -l` |
+| Types are collectable only at `AssemblyLoadContext` granularity | `metered`, **inherited** | PR #10819's shipped test; not re-run by me |
+| The case is not ready to be put to anyone today | `unmetered` | a judgement resting on §6's three criteria |
+
+## 10. Anchors (checked)
+
+- **Syme, D.** — *"Support type classes or implicits"*,
+  [fslang-suggestions#243](https://github.com/fsharp/fslang-suggestions/issues/243), canonical position comment
+  [2021-09-09](https://github.com/fsharp/fslang-suggestions/issues/243#issuecomment-916079347); follow-ups
+  [2021-09-13](https://github.com/fsharp/fslang-suggestions/issues/243#issuecomment-918569079),
+  [2021-09-14](https://github.com/fsharp/fslang-suggestions/issues/243#issuecomment-919427910); earlier
+  [2016-11-15 ×2](https://github.com/fsharp/fslang-suggestions/issues/243#issuecomment-260630066),
+  [2019-07-24](https://github.com/fsharp/fslang-suggestions/issues/243#issuecomment-514627254). Checked: each
+  quotation appears verbatim at the linked comment.
+- **Syme, D.** — RFC **FS-1124**, *Interfaces with static abstract members*, `fsharp/fslang-design`,
+  `FSharp-7.0/`. Checked: §Drawbacks, §Guidance, §Interaction with Units of Measure, §Alternatives for Units of
+  Measure (five options, option 3 chosen). The RFC states its Drawbacks use *"emphatic language… to act as a
+  corrective"* — quoted in that spirit.
+- **Syme, D.** — [*"A thank you to the F# language design community"*, fslang-suggestions#1403,
+  2025-01-19](https://github.com/fsharp/fslang-suggestions/issues/1403). Checked: the stepping-back statement
+  and the named squad are his own words.
+- **Syme, D.** — *The Early History of F#*, HOPL IV, Proc. ACM Program. Lang. 4 (2020). Referenced by him in
+  #243 as the statement of the dimensions F# advances along. **Cited as pointed-to, not read in this pass** —
+  `unmetered`; do not attribute specific content to it without reading it.
+- **Zarytovskii, V.** — closing comment on
+  [fslang-suggestions#175](https://github.com/fsharp/fslang-suggestions/issues/175#issuecomment-1932273530),
+  2024-02-07. Checked verbatim.
+- **Mündler, N., He, J., Wang, H., Sen, K., Song, D. & Vechev, M.** — *Type-Constrained Code Generation with
+  Language Models*, arXiv:2504.09246 (2025). Checked: title, authors, TypeScript scope, and the >50%
+  compilation-error reduction claim in the abstract. The 94% figure is **not** in the abstract.
+- **Yallop, J. & White, L.** — *Lightweight Higher-Kinded Polymorphism*, FLOPS 2014. Checked in PR #10817: the
+  module-signature seal reproduces in F# via `.fsi`.
+- **Pickering, Gibbons & Wu** — *Profunctor Optics: Modular Data Accessors*; **Boisseau & Gibbons** — ICFP 2018.
+  Checked in PR #10817: the rank-2 `forall p. Strong p =>` representation is the papers', and is what F# cannot
+  express.
+- **CERT/CC VU#253266** (2024-04-16); **python/mypy#6066**; **python/typing#1250**; **pytorch/pytorch `mypy.ini`**
+  — all four fetched and read today.
+- **McCarthy (1960)**, **Dijkstra et al. (1978)**, **Hayes (1997)** — already the anchors in `ShivaGc.fs`; not
+  disturbed here.
+
+## 11. Composes with / lanes not touched
+
+- **PR #10817** (open) — the two measurement docs this audit is built on. Extended, not edited.
+- **PR #10819** (open) — the ALC-granularity finding used in §7. Inherited, not re-verified. That lane owns
+  type **materialisation**; this doc owns the **case**.
+- `081KT2T2J0008QG0R0038CRFJM` (verified present on `origin/main`) — the minimal HKT-composing vocabulary. §6.2
+  supplies the roadmap its conformance audit should record against.
+- `081KYWEM90908QG0R002NHEMZE`, `081KX1VE4G808QG0R003DCK3GV`, `081KRFA460008QG0R0018SN61J` — all verified
+  present on `origin/main`.
+- **Sibling lanes reported, not edited:** an agent is live on the IR op set; another on a build-graph drift
+  guard; an untracked `src/Core.Lean4/Lean4/MenoBraidedRMatrix.lean` is present in the shared checkout. No
+  overlap with this doc beyond §5's note.
+- Rules applied:
+  [`engagement-profiles-…`](../../.claude/rules/engagement-profiles-public-work-only-not-surveillance-dossiers.md),
+  [`anchor-to-human-prior-art.md`](../../.claude/rules/anchor-to-human-prior-art.md),
+  [`toy-is-free-metered-must-be-earned.md`](../../.claude/rules/toy-is-free-metered-must-be-earned.md),
+  [`numerology-vs-number-theory.md`](../../.claude/rules/numerology-vs-number-theory.md),
+  [`mirror-beacon-register-discipline.md`](../../.claude/rules/mirror-beacon-register-discipline.md).
