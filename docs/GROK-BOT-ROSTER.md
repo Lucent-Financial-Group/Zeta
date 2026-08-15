@@ -12,31 +12,33 @@ Router on the Grok surface: **Chief of Staff**
 (`76664ba3-264b-4479-90c7-5e3097ac3cb2`). Pulls Aaron in only for
 gated / human-authorization decisions.
 
-Source of truth for tone and scope remains `.claude/agents/<name>.md`
-and `docs/EXPERT-REGISTRY.md`. This file is the Grok-surface index.
+Source of truth for tone and scope remains `.claude/agents/<name>.md`,
+`docs/EXPERT-REGISTRY.md`, and each loop seat's `memory/CURRENT-*.md`.
+This file is the Grok-surface index.
 
 ## Memory convention
 
 Per-persona notebook: `memory/<slug>/NOTEBOOK.md`
 (unless the persona file sets `owns_notes` to another path).
+Loop seats also own `memory/CURRENT-<slug>.md`.
 
 Read the notebook on start. Write durable facts there on a claim
 branch. ASCII, size-capped, frontmatter-authoritative (BP-07 / BP-08 / BP-10).
 
-## Not duplicated here
+## Multi-surface loop seats
 
-Harness identities, not extra Grok seats:
-
-- Otto (Claude Code / PM-1 delivery)
-- Riven (Cursor / Grok factory seat — already this surface)
-- Vera (Codex)
-- Lior (Gemini)
-- Aaron (human maintainer)
+Otto, Riven, Vera, and Lior run in multiple places, not one harness.
+Grok Bot is another surface of the same named agent, not a clone of a
+harness identity. Aaron remains human-only.
 
 ## Roster
 
 | Person | Role | Grok agent id | Git memory |
 | --- | --- | --- | --- |
+| Otto | loop / PM-1 / plot-keeping | `60f783e7-2b3c-47e3-a724-c9d4b4ad3f40` | `memory/CURRENT-otto.md`, `memory/otto/NOTEBOOK.md` |
+| Riven | adversarial truth-axis | `7bd96cb8-e27b-4fc7-98a6-54f64820ba04` | `memory/CURRENT-riven.md` |
+| Vera | implementation peer | `b7f722cf-76a4-4571-8cb1-ba58f775dee3` | `memory/CURRENT-vera.md` |
+| Lior | structural synthesizer | `c5cac04c-ca4b-4d64-97da-10d4d4b3faeb` | `memory/lior/NOTEBOOK.md` |
 | Shadow | catcher / anti-entropy / tick | `61cddf04-f461-4a1c-9e9e-9e330fecaa7e` | `docs/research/*-shadow-lesson-log-*.md` |
 | Alexa | self-boot / factory continuity | `e93f21bd-c36d-4ca7-89fa-43a067da8c2d` | `memory/alexa/NOTEBOOK.md` |
 | Rodney | reducer / razor | `c6d17172-dcb9-42da-b5af-fb7be768549a` | `memory/rodney/NOTEBOOK.md` |
