@@ -30,7 +30,7 @@
  * Exit: 0 = every ref resolves and none sits in a key position · 1 = otherwise.
  */
 
-import { readFileSync, readdirSync, statSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { spawnSync } from "node:child_process";
 import { SKIP_DIR_NAMES, SCAN_EXTENSIONS, shouldSkipDir } from "./b-ref-scope";
@@ -95,27 +95,43 @@ function main(argv: readonly string[]): number {
   const violations: Violation[] = [];
   const resolved: { file: string; ref: string; where: string }[] = [];
 
+  /**
+   * Entry kind comes from the directory read (`withFileTypes`), so there is no
+   * per-entry `statSync` to race against, and the file read is itself the check
+   * (`js/file-system-race` — a stat-then-read guard proves nothing, because the
+   * file can vanish in between). Symlinks are skipped: `universal/*.md` points
+   * into `db/shapes/`, which the walk already visits directly, and
+   * `tests/…/link_to_parent → ..` is a cycle a symlink-following walk recursed
+   * into until PATH_MAX stopped it.
+   */
   function walk(dir: string) {
     const rel = dir.slice(root.length + 1);
     if (shouldSkipDir(rel)) return;
 
-    for (const entry of readdirSync(dir)) {
+    let entries: readonly import("node:fs").Dirent[];
+    try {
+      entries = readdirSync(dir, { withFileTypes: true });
+    } catch {
+      return;
+    }
+    for (const dirent of entries) {
+      const entry = dirent.name;
       if (SKIP_DIR_NAMES.has(entry)) continue;
       const full = join(dir, entry);
-      let st;
-      try {
-        st = statSync(full);
-      } catch {
-        continue;
-      }
-      if (st.isDirectory()) {
+      if (dirent.isDirectory()) {
         walk(full);
         continue;
       }
+      if (!dirent.isFile()) continue;
       if (!SCAN_EXTENSIONS.has(entry.slice(entry.lastIndexOf(".")))) continue;
       if (ALLOWED_FILES.has(entry)) continue;
 
-      const text = readFileSync(full, "utf8");
+      let text: string;
+      try {
+        text = readFileSync(full, "utf8");
+      } catch {
+        continue;
+      }
       const refs = [...new Set(text.match(B_ID_RE) ?? [])];
       if (refs.length === 0) continue;
 

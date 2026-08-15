@@ -49,7 +49,7 @@
  * named as a reference). See `.claude/rules/workitems-mint-with-zetaid.md`.
  */
 
-import { readFileSync, readdirSync, statSync, existsSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 
 /** The legacy id shape, including dotted sub-items (`B-0090.12`). */
@@ -88,29 +88,48 @@ export interface BRefIndex {
   readonly archived: ReadonlyMap<string, string>;
 }
 
+/**
+ * Read an alias map, treating an absent file as an empty map.
+ *
+ * The read IS the existence check. `existsSync` followed by `readFileSync` is
+ * check-then-act on the filesystem (`js/file-system-race`): the file can vanish
+ * between the two calls, so the guard proves nothing and the read throws anyway.
+ * Catching ENOENT from the read is both correct and one syscall cheaper.
+ */
 function readJsonMap(path: string): Record<string, string> {
-  if (!existsSync(path)) return {};
-  return JSON.parse(readFileSync(path, "utf8")) as Record<string, string>;
+  let text: string;
+  try {
+    text = readFileSync(path, "utf8");
+  } catch {
+    return {};
+  }
+  return JSON.parse(text) as Record<string, string>;
 }
 
+/**
+ * Recursive file walk.
+ *
+ * Entry kind comes from `readdirSync(..., { withFileTypes: true })` — the
+ * directory read itself reports it, so there is no per-entry `statSync` to race
+ * against and no second syscall per entry. Symlinks are neither `isDirectory()`
+ * nor `isFile()` and are therefore skipped, which is what we want here: this
+ * repo carries `universal/*.md → db/shapes/*.md` (a second view of a file the
+ * walk already visits directly) and `tests/…/link_to_parent → ..` (a cycle that
+ * a symlink-following `statSync` walk recursed into until PATH_MAX stopped it).
+ */
 function walkFiles(dir: string, out: string[], root: string): void {
-  let entries: string[];
+  let entries: readonly import("node:fs").Dirent[];
   try {
-    entries = readdirSync(dir);
+    entries = readdirSync(dir, { withFileTypes: true });
   } catch {
     return;
   }
-  for (const entry of entries) {
+  for (const dirent of entries) {
+    const entry = dirent.name;
     if (entry === ".git" || entry === "node_modules") continue;
     const full = join(dir, entry);
-    let st;
-    try {
-      st = statSync(full);
-    } catch {
-      continue;
-    }
-    if (st.isDirectory()) walkFiles(full, out, root);
-    else out.push(full.slice(root.length + 1));
+    if (dirent.isDirectory()) walkFiles(full, out, root);
+    else if (dirent.isFile()) out.push(full.slice(root.length + 1));
   }
 }
 

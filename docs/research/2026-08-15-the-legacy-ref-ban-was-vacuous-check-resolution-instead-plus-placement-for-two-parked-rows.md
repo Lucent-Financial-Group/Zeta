@@ -150,6 +150,61 @@ decorative.
 - `workitems/081M010NSB8087G0R002PJVJG7-*` — dated update: the bulk remedy is no longer the
   advertised first move; its runtime defect is unchanged and the item stays open
 
+### The TOCTOU class CodeQL caught, and the second bug underneath it
+
+CodeQL flagged three `js/file-system-race` alerts in `rebuild-legacy-b-id-aliases.ts` — the
+file this change touches. All three are the same shape: `statSync(p)` to decide the entry kind,
+then `readFileSync(p)` / `writeFileSync(p)` outside any `try`. The check proves nothing, because
+the file can vanish or change between the two calls; and for a *rewriting* tool, acting on a
+stale check is the worse half.
+
+**They are genuine, and my own two new files carried the same shape** — CodeQL's diff scope had
+simply not reached them yet. Fixed at all sites the same way, which is the shape that satisfied
+the scanner earlier today in #10757: **let the syscall be the check.** `existsSync` before a
+read is always a race; `readFileSync` inside a `try` is not.
+
+The stronger half of the fix is `readdirSync(dir, { withFileTypes: true })`. Entry kind then
+comes from the **directory read itself**, so there is no per-entry `stat` to race against at
+all — one fewer syscall per entry, across roughly 30k entries.
+
+**That change also surfaced a real latent bug, and it is the reason to prefer this fix over
+wrapping the `stat` in a `try`.** `statSync` follows symlinks; `Dirent` does not. This repo
+carries tracked symlinks:
+
+| link | target | consequence of following it |
+|---|---|---|
+| `universal/*.md` | `db/shapes/*.md` | the same file read twice — and, for the rewriting remedy, the substitution applied **twice** |
+| `db/hy` | `../hygiene` | a whole subtree walked twice |
+| `db/products/glomotion.md` | `../../universal/gamepad.md` | duplicate visit |
+| `tests/cross-verification/experience/fixtures/tree1/subdir1/link_to_parent` | `..` | **a cycle** — measured: the old walk recursed **64 levels deep to a 793-character path** before PATH_MAX stopped it |
+
+Every one of those targets is inside the tree and visited directly by the walk, so **skipping
+symlinks loses no coverage** — verified, not assumed. What it removes is duplicate work and one
+double-application hazard in a tool that writes.
+
+Two tests pin the decision, and both were checked against a mutant that restores the `statSync`
+walk: `a symlink to a file is NOT walked; the real file still is`, and `a symlinked DIRECTORY is
+not descended into`. Under the mutant both go red.
+
+**An owned error, in the harness for this very PR.** The first draft of the second test asserted
+*"a symlink cycle does not hang the walk"* with a wall-clock bound. That check **could not
+fail**: a cycle under the old walk terminates at PATH_MAX in milliseconds, so the bound held
+before and after the fix. I wrote the defect this PR is about into the PR's own harness. It was
+replaced with the out-of-tree-target test, which discriminates.
+
+**A second owned error, and a near-miss.** While checking the remedy's flag handling I ran
+`rebuild-legacy-b-id-aliases.ts --help`. That script has no `--help`; anything that is not
+`--dry-run` is a **write** run, so it began a full rewrite. I killed it before any file was
+modified (`git status` confirms only the four intended files changed), but the correct move was
+to read the argv parsing — `--dry-run` on line 29 — rather than probe a rewriting tool with an
+unrecognised flag. The absence of a `--help` guard on a tool that rewrites ~1,700 files by
+default is worth a row of its own; it is noted here rather than fixed in this PR.
+
+**Runtime:** the syscall reduction is a strict improvement but **not** a fix for
+`081M010NSB8087G0R002PJVJG7`. That item attributes the >10-minute cost to git-history mining,
+not to the walk, and nothing here touches the mining. Unmeasured on that tool, and the item
+stays open.
+
 ### The anchors behind the framing — checked, with two corrections
 
 Aaron's framing for why a gate should permit motion and repair rather than forbid motion:

@@ -1,5 +1,5 @@
 import { test, expect } from "bun:test";
-import { mkdtempSync, mkdirSync, writeFileSync, rmSync, readFileSync } from "node:fs";
+import { mkdtempSync, mkdirSync, writeFileSync, rmSync, readFileSync, symlinkSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { tmpdir } from "node:os";
 import { spawnSync } from "node:child_process";
@@ -184,6 +184,56 @@ test("lint-no-new-bnnnn STILL rejects a B-named file — this change licenses no
   const r = runIn(base, NO_NEW_TOOL);
   expect(r.status).toBe(1);
   expect(r.stderr).toContain("B-1300");
+});
+
+// ── 3b. Walk shape: symlinks are skipped, deliberately ─────────────────────
+// The walk takes entry kind from `readdirSync(withFileTypes)` rather than a
+// per-entry `statSync`, which removes the check-then-act race (js/file-system-race)
+// AND stops following symlinks. That second effect is a behaviour decision, so it
+// is pinned here rather than left to be rediscovered.
+//
+// It loses no coverage in this repo: every tracked symlink target
+// (`universal/*.md → db/shapes/`, `db/hy → ../hygiene`,
+// `db/products/glomotion.md → ../../universal/gamepad.md`) is inside the tree and
+// visited directly. What it removes is a duplicate visit — and, for the rewriting
+// remedy that shares this scope, a double-application through the link.
+
+test("a symlink to a file is NOT walked; the real file still is", () => {
+  const base = fixture({ "docs/research/real-note.md": `cites ${FABRICATED_B}\n` });
+  symlinkSync(join(base, "docs/research/real-note.md"), join(base, "docs/research/link.md"));
+  const r = runIn(base);
+  expect(r.status).toBe(1);
+  // Reported once, from the real path — not twice, and not via the link.
+  expect(r.stderr).toContain("docs/research/real-note.md");
+  expect(r.stderr).not.toContain("docs/research/link.md");
+});
+
+/**
+ * A symlinked DIRECTORY is not descended into either — asserted by pointing one
+ * at a tree the walk cannot otherwise reach, so the assertion discriminates.
+ *
+ * A first draft of this test asserted "a symlink cycle does not hang the walk"
+ * with a wall-clock bound. That check could not fail: a cycle under the old
+ * `statSync` walk terminates at PATH_MAX in milliseconds, so the bound held both
+ * before and after the fix. It was the exact defect this PR is about, written
+ * into the PR's own harness, and it was replaced rather than kept.
+ *
+ * The no-cycle property is a consequence of this test, not a separate one: a
+ * walk that never descends through a link cannot enter a loop made of links.
+ */
+test("a symlinked DIRECTORY is not descended into", () => {
+  const outside = mkdtempSync(join(tmpdir(), "lint-b-refs-outside-"));
+  mkdirSync(join(outside, "hidden"), { recursive: true });
+  writeFileSync(join(outside, "hidden", "planted.md"), `cites ${FABRICATED_B}\n`, "utf8");
+
+  const base = fixture({ "docs/research/a-note.md": `lineage: ${MIGRATED_B}\n` });
+  symlinkSync(join(outside, "hidden"), join(base, "docs/elsewhere"));
+
+  const r = runIn(base);
+  rmSync(outside, { recursive: true, force: true });
+  // A symlink-following walk would reach planted.md and go red on a ref that is
+  // not in the scanned tree at all.
+  expect(r.status).toBe(0);
 });
 
 // ── 4. Scope: the surfaces the gate must still police ──────────────────────
