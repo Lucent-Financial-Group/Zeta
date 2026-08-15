@@ -420,7 +420,26 @@ result is a literal one about manuscript descent, and it is load-bearing as such
 3. **"No move that ends play is available to either side" is not Carse** — it is a
    mutual-deterrence argument bolted onto Carse's distinction. Both are usable; they are two
    citations.
-4. **`ace derive` is invoked by no workflow** in this tree, and the new files caused no
-   `build-graph.json` drift; `derive` and `derive --write` both exited 0 leaving the file
-   unchanged. The pre-push drift guard on branch `guard/ace-build-graph-drift-before-push`
-   (PR #10813) is presumably what closes that gap.
+4. **My first `build-graph` check was blind, and so was the entry point I used.** Two separate
+   errors, both mine, both caught. (a) `deriveGraph` reads **`git ls-files`** — the *tracked*
+   set — so running it before `git add` truthfully reports "in sync" about a file set that
+   excludes the new files. That is a real check answering a question about the wrong input, and
+   it turned PR #10829 red today after both that agent and a reviewer read clean. (b) I invoked
+   it as `ace-cli.ts derive`, which produced **no output and exit 0** — the subcommand lives on
+   `src/Core.TypeScript/ace/build-graph.ts`, and a silent exit-0 from the wrong entry point
+   reads exactly like a pass. Re-run correctly with everything committed:
+   `build-graph.ts derive` reports *in sync*, `derive --write` reports *already current*, and
+   the target count is **106 before and after** — so these files match no evidence glob and
+   there is genuinely no drift. That conclusion is only now supported.
+5. **The prescribed `prettier --write` on `build-graph.json` is wrong for this repo.** The
+   checked-in file is **not** prettier-formatted on `origin/main` and is **not** in
+   `.prettierignore` — `prettier --check` fails on main's own copy, verified against
+   `git show origin/main:…`. Running the step produces a **1273-line diff (310 insertions, 963
+   deletions)** of pure reformatting, unrelated to any PR. The array-per-line shape is what the
+   generator emits, so formatter and generator would be in a standing fight. Left untouched
+   here; the mismatch is a pre-existing repo-wide inconsistency worth its own row, not a step
+   to run inside an unrelated PR.
+6. **`ace derive` is invoked by no workflow** in this tree — confirmed by searching `.github/`
+   for `build-graph`, which matches only a prose line in `copilot-instructions.md`. The pre-push
+   drift guard on branch `guard/ace-build-graph-drift-before-push` (PR #10813) is presumably
+   what closes that gap.
