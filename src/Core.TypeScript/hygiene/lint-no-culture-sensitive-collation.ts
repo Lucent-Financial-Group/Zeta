@@ -187,6 +187,16 @@ export const ALLOWLIST: readonly { readonly file: string; readonly reason: strin
     file: "src/Core.TypeScript/git/tracked-files.test.ts",
     reason: "pins that tracked-file order is ordinal by exhibiting the locale order it must not be",
   },
+  {
+    file: "src/Core.TypeScript/hygiene/treaty-rule-alternatives.ts",
+    reason:
+      "treaty falsifier — evaluates ICU collation as the deliberately wrong alternative that golden vectors must exclude",
+  },
+  {
+    file: "src/Core.TypeScript/hygiene/lint-treaty-rule-discrimination.test.ts",
+    reason:
+      "treaty falsifier tests — compare canonical byte order with real ICU orders to prove the vectors discriminate",
+  },
 
   // ── THE PERMITTED DISPLAY EDGE ──────────────────────────────────────────────
   // Each verified by reading its call sites: `toLocale*` only, rendering a number
@@ -217,7 +227,8 @@ export const ALLOWLIST: readonly { readonly file: string; readonly reason: strin
   },
   {
     file: "demo/identity-dla-site/src/components/ui/calendar.tsx",
-    reason: "display edge — a calendar widget MUST render month and weekday names in the viewer's locale; that is the feature",
+    reason:
+      "display edge — a calendar widget MUST render month and weekday names in the viewer's locale; that is the feature",
   },
   {
     file: "demo/identity-dla-site/src/components/ui/chart.tsx",
@@ -225,7 +236,8 @@ export const ALLOWLIST: readonly { readonly file: string; readonly reason: strin
   },
   {
     file: "src/Renderers/website/client/src/components/ui/calendar.tsx",
-    reason: "display edge — a calendar widget MUST render month and weekday names in the viewer's locale; that is the feature",
+    reason:
+      "display edge — a calendar widget MUST render month and weekday names in the viewer's locale; that is the feature",
   },
   {
     file: "src/Renderers/website/client/src/components/ui/chart.tsx",
@@ -233,11 +245,13 @@ export const ALLOWLIST: readonly { readonly file: string; readonly reason: strin
   },
   {
     file: "src/Core.TypeScript/ops/model-rating-report.ts",
-    reason: "display edge — thousands separators in a console-only cost table; verified to write no file, so no committed diff can churn",
+    reason:
+      "display edge — thousands separators in a console-only cost table; verified to write no file, so no committed diff can churn",
   },
   {
     file: "src/Core.TypeScript/discovery/udp-lossy-transport.retention-measure.ts",
-    reason: "display edge — toLocaleString with the locale pinned explicitly to en-US, formatting console output of a measurement run",
+    reason:
+      "display edge — toLocaleString with the locale pinned explicitly to en-US, formatting console output of a measurement run",
   },
 ];
 
