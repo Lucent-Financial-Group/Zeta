@@ -19,7 +19,7 @@
  *   The sticking threshold is visually legible: watch the boundary form at ρ = 0.2357 (a simulation parameter, not a physics bound).
  */
 import { useState, useEffect, useRef, useCallback } from "react";
-import { useDLA, STICKING_THRESHOLD, ORACLE_PRIME_OFFSETS, runDLA, DLAGrid } from "@/hooks/useDLA";
+import { useDLA, STICKING_THRESHOLD, ORACLE_PRIME_OFFSETS } from "@/hooks/useDLA";
 import { useQuantumWalk } from "@/hooks/useQuantumWalk";
 import OracleCanvas from "@/components/OracleCanvas";
 import OracleCSS from "@/components/OracleCSS";
@@ -43,8 +43,6 @@ import { LiveOracleFeed } from "@/components/LiveOracleFeed";
 const FIXED_SEED = 42;
 const W = 100, H = 100, N = 1200;
 const QW = 80, QH = 80, QSTEPS = 120;
-
-const CHSH_INV_2SQRT2 = 1 / (2 * Math.sqrt(2));
 
 // ── Animated growth hook ─────────────────────────────────────────────────────
 // Runs DLA step-by-step, emitting partial grids so the canvas can show growth.
@@ -492,9 +490,6 @@ export default function Home() {
   const animFrame2 = useAnimatedDLA(typeof seed === 'number' ? seed + 2 : seed, W, H, N, animMode);
   const animFrame3 = useAnimatedDLA(typeof seed === 'number' ? seed + 3 : seed, W, H, N, animMode);
   const animFrame4 = useAnimatedDLA(typeof seed === 'number' ? seed + 4 : seed, W, H, N, animMode);
-  // Keep animFrame as alias for Oracle 1 for backward compat
-  const animFrame = animFrame1;
-
   const allReady = ready && qready && wormResult !== null && inferResult !== null && sleResult !== null;
   const dfs = allReady && main && chip8 && qgrid && wormResult && inferResult && sleResult
     ? [main.df, main.df, chip8.df, main.df, qgrid.df, wormResult.df, inferResult.df, sleResult.df]
