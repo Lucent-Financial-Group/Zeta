@@ -1,0 +1,105 @@
+# Prove the pinned Ollama install actually works — on a real runner, before it reaches the
+# heartbeat lane.
+#
+# WHY THIS LANE EXISTS. agent-heartbeat.yml is the society's liveness path; a broken install
+# step there degrades every tick until someone notices. A pin is also the kind of change that
+# LOOKS right in review and can only be falsified by running it. So the pin is not merged on
+# the strength of a plausible-looking diff: it is merged on the strength of this run.
+#
+# It runs automatically on any PR that touches the pin or the installer, and on demand:
+#     gh workflow run verify-ollama-pin.yml --ref <branch>
+#
+# It exercises BOTH directions, deliberately:
+#   1. the happy path  — install, serve, pull, list  (what the heartbeat does)
+#   2. the refusal     — a deliberately wrong digest MUST be rejected
+# Without (2) this workflow could not tell a working check from an absent one, which is the
+# defect class the pin was written to remove. Do not delete step 2 to save a minute.
+name: verify-ollama-pin
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - .github/ollama-pin.json
+      - .github/scripts/install-ollama.sh
+      - .github/scripts/refresh-ollama-pin.sh
+      - .github/workflows/verify-ollama-pin.yml
+
+permissions:
+  contents: read
+
+concurrency:
+  group: verify-ollama-pin-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: pinned install works end-to-end
+    # SAME image as agent-heartbeat.yml. Verifying on a different runner than the one that
+    # will run it is how #9890 shipped broken — a scratch environment that differed from
+    # production in exactly the way that decided the outcome.
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Show the pin under test
+        run: |
+          python3 -c "
+          import json
+          p = json.load(open('.github/ollama-pin.json'))
+          print('version        ', p['entry']['version'])
+          print('contentAddress ', p['entry']['contentAddress'])
+          print('url            ', p['artifact']['url'])
+          print('sizeBytes      ', p['artifact']['sizeBytes'])
+          "
+
+      - name: REFUSAL PATH — a wrong digest must be rejected
+        run: |
+          # Point the installer at a small file (the release's own sha256sum.txt) while leaving
+          # the tarball's digest in place. The download succeeds; the comparison must not.
+          # Cheap on purpose: it proves the comparison is live without a second 1.4GB fetch.
+          python3 -c "
+          import json
+          p = json.load(open('.github/ollama-pin.json'))
+          tag = p['artifact']['tag']
+          p['artifact']['url'] = f'https://github.com/ollama/ollama/releases/download/{tag}/sha256sum.txt'
+          json.dump(p, open('/tmp/tampered-pin.json', 'w'))
+          "
+          set +e
+          OLLAMA_PIN_FILE=/tmp/tampered-pin.json bash .github/scripts/install-ollama.sh
+          RC=$?
+          set -e
+          if [ "$RC" -eq 0 ]; then
+            echo "::error title=ollama pin::The installer ACCEPTED a payload whose SHA-256 does not match the pin. The digest check is not doing anything."
+            exit 1
+          fi
+          echo "[verify] refusal path OK (rc=$RC) — the digest check can fail"
+
+      - name: HAPPY PATH — install the pinned build
+        run: bash .github/scripts/install-ollama.sh
+
+      - name: Serve and pull the heartbeat model
+        run: |
+          # Exactly what agent-heartbeat.yml does after the install, so this lane fails for the
+          # same reasons that one would. Only the 0.5b model is pulled: the 7b comes from the
+          # same registry over the same client, so pulling 5GB here would re-test the same path
+          # at 12x the cost. That is a stated limit of this verification, not an oversight.
+          ollama serve &
+          for _ in $(seq 1 30); do
+            if ollama list >/dev/null 2>&1; then break; fi
+            sleep 1
+          done
+          ollama --version
+          ollama pull qwen2.5:0.5b
+          ollama list
+
+      - name: Smoke — the model actually answers
+        run: |
+          # `ollama list` proves a download landed, not that inference works. The heartbeat's
+          # observe loop needs a completion, so ask for one.
+          OUT=$(ollama run qwen2.5:0.5b "Reply with the single word: alive" 2>&1)
+          echo "$OUT"
+          [ -n "$OUT" ] || { echo "::error::empty completion from qwen2.5:0.5b"; exit 1; }
