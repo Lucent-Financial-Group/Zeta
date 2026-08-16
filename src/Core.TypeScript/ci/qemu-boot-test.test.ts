@@ -201,6 +201,69 @@ describe("classifyBoot — TIMEOUT and BOOT-FAILED are distinguishable", () => {
   });
 });
 
+describe("STALLED — the hang the budget raise could not fix", () => {
+  // The 4200s budget was raised on the theory that CI was slow. The
+  // instrumented run (job 95208551157) refuted it: CI reached firmware
+  // at t=1s, bootloader at t=16s, efi-stub at t=17s -- IDENTICAL to the
+  // local ladder -- and then emitted nothing for 4184 more seconds. The
+  // same image goes efi-stub -> login in ~35s locally. That is a hang.
+  const stalled = (serial: string, silentFor: number) =>
+    classifyBoot({
+      serial,
+      qemuExited: false,
+      qemuExitCode: null,
+      deadlineReached: false,
+      timeoutSeconds: 4200,
+      secondsSinceSerialGrowth: silentFor,
+    });
+
+  it("calls the real CI signature STALLED, not TIMEOUT", () => {
+    const c = stalled(CI_TIMEOUT, 4184);
+    expect(c.outcome).toBe("STALLED");
+    expect(c.stage).toBe("efi-stub");
+    expect(outcomeExitCode(c.outcome)).toBe(4);
+  });
+
+  it("does not fire before the silence threshold", () => {
+    expect(stalled(CI_TIMEOUT, 599).outcome).not.toBe("STALLED");
+  });
+
+  it("fires at the threshold", () => {
+    expect(stalled(CI_TIMEOUT, 600).outcome).toBe("STALLED");
+  });
+
+  it("does NOT fire below the kernel handoff — that is BOOT-FAILED territory", () => {
+    // Silence in the firmware is a different fact and must not be
+    // relabelled a kernel hang.
+    const c = stalled("UEFI firmware (version ...)\n", 4184);
+    expect(c.outcome).not.toBe("STALLED");
+  });
+
+  it("never fires on a booted guest, however long it has been quiet", () => {
+    expect(stalled(HEALTHY_BOOT, 99999).outcome).toBe("BOOTED");
+  });
+
+  it("is disabled when growth is not tracked (undefined)", () => {
+    const c = classifyBoot({
+      serial: CI_TIMEOUT,
+      qemuExited: false,
+      qemuExitCode: null,
+      deadlineReached: true,
+      timeoutSeconds: 4200,
+    });
+    expect(c.outcome).toBe("TIMEOUT");
+  });
+
+  it("STALLED, TIMEOUT and BOOT-FAILED are three distinct exit codes", () => {
+    const codes = new Set([
+      outcomeExitCode("BOOT-FAILED"),
+      outcomeExitCode("TIMEOUT"),
+      outcomeExitCode("STALLED"),
+    ]);
+    expect(codes.size).toBe(3);
+  });
+});
+
 describe("detectFailureMarker", () => {
   it("names the UEFI Shell fallthrough", () => {
     expect(detectFailureMarker(NO_BOOT_MEDIA)).toContain("UEFI Shell");
@@ -218,6 +281,7 @@ describe("outcomeExitCode — the contract the workflow branches on", () => {
     expect(outcomeExitCode("BOOTED")).toBe(0);
     expect(outcomeExitCode("BOOT-FAILED")).toBe(1);
     expect(outcomeExitCode("TIMEOUT")).toBe(3);
+    expect(outcomeExitCode("STALLED")).toBe(4);
   });
 });
 

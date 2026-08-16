@@ -677,6 +677,28 @@ jobs:
                 echo "(exit 1) for that, and that DOES fail the job."
               } >> "$GITHUB_STEP_SUMMARY"
               ;;
+            4)
+              # STALLED. Measured on job 95208551157: the guest reaches the
+              # EFI stub at t=17s -- the same timing as a local host -- and
+              # then emits nothing for another 4184s. It is a hang, not a
+              # slow runner, so waiting out the 70-minute budget bought
+              # nothing and cost 70 minutes of arm-runner time.
+              #
+              # Deliberately still ADVISORY, and this is the open question:
+              # on the evidence so far this is a REAL and reproducible
+              # aarch64 boot break, which argues for blocking. It is left
+              # non-blocking pending a second observation and a human call,
+              # because flipping it red on one data point would red the ISO
+              # lane on an inference rather than a confirmed rate.
+              echo "::warning::aarch64 QEMU boot: STALLED at the kernel handoff -- serial went silent past the EFI stub. This is a HANG, not a slow runner; raising the budget does not fix it."
+              {
+                echo "aarch64 QEMU boot: **STALLED (advisory)** -- silent past the EFI stub."
+                echo ""
+                echo "The guest reaches the kernel handoff at the same speed as a local host and"
+                echo "then stops. Raising the time budget does not help; this needs a real fix."
+                echo "See the stage ladder in the step log."
+              } >> "$GITHUB_STEP_SUMMARY"
+              ;;
             *)
               echo "::error::aarch64 QEMU boot: BOOT-FAILED (harness exit $rc) -- positive evidence the ISO did not boot, not a slow runner."
               echo "aarch64 QEMU boot: **BOOT-FAILED** (harness exit $rc)" >> "$GITHUB_STEP_SUMMARY"

@@ -27,6 +27,8 @@
  *   3 — TIMEOUT     (budget exhausted while the guest was demonstrably
  *                    still progressing through the boot; NOT evidence of
  *                    a broken image)
+ *   4 — STALLED     (the guest reached the kernel handoff and then went
+ *                    SILENT for STALL_SECONDS -- a hang, not a slow boot)
  *
  * ── WHY 1 AND 3 ARE DIFFERENT EXIT CODES (2026-08-16) ───────────────
  * They used to be the same code with only a free-text `reason` to tell
@@ -73,15 +75,22 @@ const TIMEOUT_SECONDS = 300; // 5 min — generous; typical x86_64 KVM boot is 6
 //   TCG -cpu neoverse-n1 ..... 63s
 //   TCG -cpu max,pauth-impdef  62s   (no win — hypothesis tested, refuted)
 // So the CPU MODEL is not the lever; host speed and QEMU version are.
-// CI runs QEMU 8.2.2 on a 4-vCPU Ampere runner and blew past 1800s with
-// the serial parked at `EFI stub: Exiting boot services` — i.e. still
-// inside the kernel handoff. The implied slowdown vs this measurement is
-// >31x, which is larger than a CPU-model tweak can close, so the budget
-// is raised and INSTRUMENTED (stage ladder with elapsed seconds) instead
-// of guessed at. The job's own `timeout-minutes: 120` bounds the blast
-// radius; ~6 min of that is checkout/nix/apt/build.
+// CI runs QEMU 8.2.2 on a 4-vCPU Ampere runner.
+//
+// CORRECTION (job 95208551157, the first run with the ladder): raising
+// this budget to 4200 did NOT help and the reasoning behind it was wrong.
+// The CI ladder came back
+//     t=1s firmware | t=16s bootloader | t=17s efi-stub | then silence
+// which is the SAME timing as the local measurements above through the
+// EFI stub. The runner is not slow; it stops. So the budget is no longer
+// the lever either, and the value below is kept only as an outer bound —
+// STALL_SECONDS is what actually ends these runs now.
 const AARCH64_TCG_TIMEOUT_SECONDS = 4200; // 70 min
 const POLL_INTERVAL_MS = 1000;
+// Silence past the kernel handoff that we treat as a hang. Locally the
+// efi-stub -> login segment takes ~35s, so 600s is ~17x headroom and is
+// still 7x cheaper than sitting out the 4200s budget.
+const DEFAULT_STALL_SECONDS = 600;
 const MEMORY_MB = 2048; // installer needs >= 1GB; 2GB gives headroom for nix
 const KVM_PATH = "/dev/kvm";
 
@@ -145,7 +154,7 @@ export function detectFailureMarker(serial: string): string | null {
   return null;
 }
 
-export type BootOutcome = "BOOTED" | "BOOT-FAILED" | "TIMEOUT";
+export type BootOutcome = "BOOTED" | "BOOT-FAILED" | "STALLED" | "TIMEOUT";
 
 export interface BootClassification {
   readonly outcome: BootOutcome;
@@ -161,6 +170,13 @@ export interface ClassifyInput {
   /** The time budget has been exhausted. */
   readonly deadlineReached: boolean;
   readonly timeoutSeconds: number;
+  /**
+   * Seconds since the serial log last GREW. Undefined means "not
+   * tracked" and disables stall detection.
+   */
+  readonly secondsSinceSerialGrowth?: number;
+  /** Silence threshold; defaults to DEFAULT_STALL_SECONDS. */
+  readonly stallSeconds?: number;
 }
 
 /**
@@ -189,6 +205,37 @@ export function classifyBoot(input: ClassifyInput): BootClassification {
       outcome: "BOOT-FAILED",
       stage,
       reason: `Boot failed — ${failure} (furthest stage: ${stage})`,
+    };
+  }
+
+  // STALL: the guest handed off to the kernel and then went silent.
+  //
+  // This exists because raising the budget 1800 -> 4200 was WRONG and the
+  // instrumentation I added proved it wrong on the first real run
+  // (job 95208551157). The CI stage ladder was:
+  //     t=1s firmware, t=16s bootloader, t=17s efi-stub, then NOTHING
+  //     for 4184 more seconds.
+  // The identical ladder measured locally is t=1s / t=16s / t=17s and
+  // then login at t=52s. So the runner is the SAME SPEED as a local M2
+  // Ultra all the way to the EFI stub and then stops. A slow machine
+  // does not run the first three stages at 1.0x and the fourth at
+  // <0.01x — this is a HANG at kernel entry, not a budget shortfall.
+  //
+  // Waiting longer therefore buys nothing and costs 70 minutes of
+  // arm-runner time per run. Detect the silence instead and say so.
+  if (
+    input.secondsSinceSerialGrowth !== undefined &&
+    input.secondsSinceSerialGrowth >= (input.stallSeconds ?? DEFAULT_STALL_SECONDS) &&
+    stageAtLeast(stage, "efi-stub")
+  ) {
+    return {
+      outcome: "STALLED",
+      stage,
+      reason:
+        `Stalled at stage ${stage} — the serial console produced nothing for ` +
+        `${input.secondsSinceSerialGrowth}s. The guest reached the kernel handoff and went ` +
+        `silent, which is a HANG, not a slow boot (for reference the same image takes ~35s ` +
+        `from this stage to the login prompt on a local TCG host).`,
     };
   }
 
@@ -228,9 +275,10 @@ export function classifyBoot(input: ClassifyInput): BootClassification {
   return { outcome: "TIMEOUT", stage, reason: "still running" };
 }
 
-export function outcomeExitCode(outcome: BootOutcome): 0 | 1 | 3 {
+export function outcomeExitCode(outcome: BootOutcome): 0 | 1 | 3 | 4 {
   if (outcome === "BOOTED") return 0;
   if (outcome === "BOOT-FAILED") return 1;
+  if (outcome === "STALLED") return 4;
   return 3;
 }
 
@@ -389,6 +437,7 @@ interface WatchResult extends BootClassification {
 async function watchBoot(
   serialLogPath: string,
   timeoutSeconds: number,
+  stallSeconds: number,
   qemuState: () => { exited: boolean; exitCode: number | null },
 ): Promise<WatchResult> {
   const started = Date.now();
@@ -409,10 +458,20 @@ async function watchBoot(
     }
   };
 
+  // Serial-growth tracking, for stall detection.
+  let lastSerialLength = -1;
+  let lastGrowthAt = started;
+
   for (;;) {
     const serial = read();
     const q = qemuState();
     const deadlineReached = Date.now() >= deadline;
+
+    if (serial.length !== lastSerialLength) {
+      lastSerialLength = serial.length;
+      lastGrowthAt = Date.now();
+    }
+    const secondsSinceSerialGrowth = Math.round((Date.now() - lastGrowthAt) / 1000);
 
     const stage = furthestBootStage(serial);
     if (stage !== announced) {
@@ -426,11 +485,14 @@ async function watchBoot(
       qemuExitCode: q.exitCode,
       deadlineReached,
       timeoutSeconds,
+      secondsSinceSerialGrowth,
+      stallSeconds,
     });
 
     const settled =
       classification.outcome === "BOOTED" ||
       classification.outcome === "BOOT-FAILED" ||
+      classification.outcome === "STALLED" ||
       deadlineReached;
 
     if (settled) {
@@ -480,6 +542,15 @@ async function main(): Promise<never> {
     argv.splice(tmoFlag, 2);
   }
 
+  const stallFlag = argv.indexOf("--stall-seconds");
+  let stallSeconds = DEFAULT_STALL_SECONDS;
+  if (stallFlag >= 0) {
+    const v = Number(argv[stallFlag + 1]);
+    if (!Number.isFinite(v) || v <= 0) usage();
+    stallSeconds = v;
+    argv.splice(stallFlag, 2);
+  }
+
   const bootMedia = parseBootMedia(argv);
   if (!bootMedia) usage();
 
@@ -508,7 +579,7 @@ async function main(): Promise<never> {
 
   console.log(`[qemu-boot-test] Boot media: ${bootMedia.kind} ${bootMedia.path}`);
   console.log(`[qemu-boot-test] Serial log: ${serialLogPath}`);
-  console.log(`[qemu-boot-test] Memory: ${MEMORY_MB}MB; timeout: ${timeoutSeconds}s`);
+  console.log(`[qemu-boot-test] Memory: ${MEMORY_MB}MB; timeout: ${timeoutSeconds}s; stall-after: ${stallSeconds}s`);
   console.log(`[qemu-boot-test] Expecting login prompt: "${EXPECTED_LOGIN_PROMPT}"`);
   console.log(`[qemu-boot-test] Arch: ${arch}`);
 
@@ -533,7 +604,7 @@ async function main(): Promise<never> {
     console.log(`[qemu-boot-test] QEMU exited with code ${code}`);
   });
 
-  const result = await watchBoot(serialLogPath, timeoutSeconds, () => ({
+  const result = await watchBoot(serialLogPath, timeoutSeconds, stallSeconds, () => ({
     exited: qemuExited,
     exitCode: qemuExitCode,
   }));
