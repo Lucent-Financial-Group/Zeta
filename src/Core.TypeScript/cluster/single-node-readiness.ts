@@ -48,7 +48,13 @@
 import { readFileSync, readdirSync, existsSync, statSync } from "node:fs";
 import { join, relative, resolve } from "node:path";
 import { parseAllDocuments } from "yaml";
-import { stringCompare } from "../collation/collation";
+// Ordinal (code-point) ordering, per .claude/rules/culture-invariant-by-default.md.
+// NOT localeCompare: it is culture-SENSITIVE, so the same keys sort differently
+// per machine locale. That matters here because these orderings are not display —
+// they feed a fingerprint (see buildFingerprint below) and the audit's stable
+// output. `stringCompare` also walks code points rather than UTF-16 code units,
+// so astral characters order the same way the other oracles order them.
+import { stringCompare } from "../collation/collation.ts";
 
 const REPO_ROOT = resolve(import.meta.dir, "../../..");
 
@@ -364,7 +370,7 @@ export function findRootAppCollisions(
   for (const [key, bucket] of [...byIdentity.entries()].sort((a, b) => stringCompare(a[0], b[0]))) {
     const distinctSources = new Set(bucket.map((identity) => identity.sourcePath));
     if (distinctSources.size < 2) continue;
-    const fingerprint = `${key}=${[...distinctSources].sort(stringCompare).join("|")}`;
+    const fingerprint = `${key}=${[...distinctSources].sort((a, b) => stringCompare(a, b)).join("|")}`;
     if (acknowledged.includes(fingerprint)) continue;
     findings.push({
       check: "root-app-collision",
@@ -374,7 +380,9 @@ export function findRootAppCollisions(
         `Application/${key} but point at ${distinctSources.size} different source paths. ` +
         `Only one can exist in a cluster; with prune+selfHeal the last apply deletes the other tree's children.`,
       detail: [
-        ...bucket.map((identity) => `${identity.path} -> spec.source.path: ${identity.sourcePath}`).sort(stringCompare),
+        ...bucket
+          .map((identity) => `${identity.path} -> spec.source.path: ${identity.sourcePath}`)
+          .sort((a, b) => stringCompare(a, b)),
         `acknowledge with: ${fingerprint}`,
       ],
     });
@@ -389,7 +397,7 @@ export function findRootAppCollisions(
 export function findStorageBudgetOverruns(claims: readonly StorageClaim[], ledger: Ledger): readonly Finding[] {
   const budget = ledger.nodeDiskGib * ledger.nodeCount;
   const findings: Finding[] = [];
-  for (const storageClass of [...ledger.budgetedStorageClasses].sort(stringCompare)) {
+  for (const storageClass of [...ledger.budgetedStorageClasses].sort((a, b) => stringCompare(a, b))) {
     const matching = claims.filter((claim) => claim.storageClass === storageClass);
     if (matching.length === 0) continue;
     const total = matching.reduce((sum, claim) => sum + claim.gibibytes * claim.replicas, 0);
@@ -408,7 +416,7 @@ export function findStorageBudgetOverruns(claims: readonly StorageClaim[], ledge
             `${(claim.gibibytes * claim.replicas).toFixed(0).padStart(5)} GiB  ` +
             `${claim.gibibytes.toFixed(0)}Gi x ${claim.replicas}  ${claim.path}  (${claim.field})`,
         )
-        .sort(stringCompare),
+        .sort((a, b) => stringCompare(a, b)),
     });
   }
   return findings;
@@ -434,7 +442,9 @@ export function findFalseRedundancy(claims: readonly ReplicaClaim[], ledger: Led
         `On ${ledger.nodeCount} node(s) every replica co-schedules: the redundancy is nominal, the failure ` +
         `domain is one node. Either drop to ${ledger.nodeCount}, set hard anti-affinity so the shortfall is ` +
         `visible as Pending pods, or record it in acknowledgedFalseRedundancy with the reason.`,
-      detail: bucket.map((claim) => `${claim.path}: ${claim.field} = ${claim.replicas}`).sort(stringCompare),
+      detail: bucket
+        .map((claim) => `${claim.path}: ${claim.field} = ${claim.replicas}`)
+        .sort((a, b) => stringCompare(a, b)),
     }));
 }
 
