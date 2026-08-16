@@ -60,6 +60,9 @@
     "                               no quorum to lose - but no redundancy either.",
     "  full-ai-cluster/platform     examples/gmod-server.yaml replicas=2. A sample",
     "                               workload, not part of the PoC critical path.",
+    "  full-ai-cluster/kubevirt     Upstream virt-operator manifest replicas=2 with",
+    "                               preferred (soft) pod anti-affinity. Both operators",
+    "                               may run on the PoC node, but provide no node-level HA.",
     "",
     "Removing an entry from this list is the fix, and the fix is one of: drop to",
     "nodeCount replicas (honest single node), set hard anti-affinity (the shortfall",
@@ -70,7 +73,8 @@
     "full-ai-cluster/vault",
     "full-ai-cluster/nats",
     "full-ai-cluster/redis",
-    "full-ai-cluster/platform"
+    "full-ai-cluster/platform",
+    "full-ai-cluster/kubevirt"
   ],
 
   "$comment_acknowledgedRootAppDuplicates": [

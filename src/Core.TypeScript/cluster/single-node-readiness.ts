@@ -48,6 +48,7 @@
 import { readFileSync, readdirSync, existsSync, statSync } from "node:fs";
 import { join, relative, resolve } from "node:path";
 import { parseAllDocuments } from "yaml";
+import { stringCompare } from "../collation/collation";
 
 const REPO_ROOT = resolve(import.meta.dir, "../../..");
 
@@ -360,10 +361,10 @@ export function findRootAppCollisions(
     else bucket.push(identity);
   }
   const findings: Finding[] = [];
-  for (const [key, bucket] of [...byIdentity.entries()].sort((a, b) => a[0].localeCompare(b[0]))) {
+  for (const [key, bucket] of [...byIdentity.entries()].sort((a, b) => stringCompare(a[0], b[0]))) {
     const distinctSources = new Set(bucket.map((identity) => identity.sourcePath));
     if (distinctSources.size < 2) continue;
-    const fingerprint = `${key}=${[...distinctSources].sort((a, b) => a.localeCompare(b)).join("|")}`;
+    const fingerprint = `${key}=${[...distinctSources].sort(stringCompare).join("|")}`;
     if (acknowledged.includes(fingerprint)) continue;
     findings.push({
       check: "root-app-collision",
@@ -373,9 +374,7 @@ export function findRootAppCollisions(
         `Application/${key} but point at ${distinctSources.size} different source paths. ` +
         `Only one can exist in a cluster; with prune+selfHeal the last apply deletes the other tree's children.`,
       detail: [
-        ...bucket
-          .map((identity) => `${identity.path} -> spec.source.path: ${identity.sourcePath}`)
-          .sort((a, b) => a.localeCompare(b)),
+        ...bucket.map((identity) => `${identity.path} -> spec.source.path: ${identity.sourcePath}`).sort(stringCompare),
         `acknowledge with: ${fingerprint}`,
       ],
     });
@@ -387,13 +386,10 @@ export function findRootAppCollisions(
 // Budget + redundancy findings
 // ---------------------------------------------------------------------------
 
-export function findStorageBudgetOverruns(
-  claims: readonly StorageClaim[],
-  ledger: Ledger,
-): readonly Finding[] {
+export function findStorageBudgetOverruns(claims: readonly StorageClaim[], ledger: Ledger): readonly Finding[] {
   const budget = ledger.nodeDiskGib * ledger.nodeCount;
   const findings: Finding[] = [];
-  for (const storageClass of [...ledger.budgetedStorageClasses].sort((a, b) => a.localeCompare(b))) {
+  for (const storageClass of [...ledger.budgetedStorageClasses].sort(stringCompare)) {
     const matching = claims.filter((claim) => claim.storageClass === storageClass);
     if (matching.length === 0) continue;
     const total = matching.reduce((sum, claim) => sum + claim.gibibytes * claim.replicas, 0);
@@ -412,16 +408,13 @@ export function findStorageBudgetOverruns(
             `${(claim.gibibytes * claim.replicas).toFixed(0).padStart(5)} GiB  ` +
             `${claim.gibibytes.toFixed(0)}Gi x ${claim.replicas}  ${claim.path}  (${claim.field})`,
         )
-        .sort((a, b) => a.localeCompare(b)),
+        .sort(stringCompare),
     });
   }
   return findings;
 }
 
-export function findFalseRedundancy(
-  claims: readonly ReplicaClaim[],
-  ledger: Ledger,
-): readonly Finding[] {
+export function findFalseRedundancy(claims: readonly ReplicaClaim[], ledger: Ledger): readonly Finding[] {
   const offenders = claims.filter(
     (claim) => claim.verdict === "false-redundancy" && !ledger.acknowledgedFalseRedundancy.includes(claim.app),
   );
@@ -432,7 +425,7 @@ export function findFalseRedundancy(
     else bucket.push(claim);
   }
   return [...byApp.entries()]
-    .sort((a, b) => a[0].localeCompare(b[0]))
+    .sort((a, b) => stringCompare(a[0], b[0]))
     .map(([app, bucket]) => ({
       check: "false-redundancy" as const,
       severity: "blocker" as const,
@@ -441,7 +434,7 @@ export function findFalseRedundancy(
         `On ${ledger.nodeCount} node(s) every replica co-schedules: the redundancy is nominal, the failure ` +
         `domain is one node. Either drop to ${ledger.nodeCount}, set hard anti-affinity so the shortfall is ` +
         `visible as Pending pods, or record it in acknowledgedFalseRedundancy with the reason.`,
-      detail: bucket.map((claim) => `${claim.path}: ${claim.field} = ${claim.replicas}`).sort((a, b) => a.localeCompare(b)),
+      detail: bucket.map((claim) => `${claim.path}: ${claim.field} = ${claim.replicas}`).sort(stringCompare),
     }));
 }
 
@@ -460,7 +453,7 @@ export function loadManifests(roots: readonly string[], repoRoot = REPO_ROOT): r
       out.push({ app: appNameFor(rel), path: rel, docs: parseYamlDocuments(text, rel) });
     }
   }
-  return out.sort((a, b) => a.path.localeCompare(b.path));
+  return out.sort((a, b) => stringCompare(a.path, b.path));
 }
 
 /**
@@ -484,7 +477,7 @@ export function appNameFor(relPath: string): string {
 
 function listYaml(dir: string, depth = 0): readonly string[] {
   if (depth > 4) return [];
-  const entries = readdirSync(dir, { withFileTypes: true }).sort((a, b) => a.name.localeCompare(b.name));
+  const entries = readdirSync(dir, { withFileTypes: true }).sort((a, b) => stringCompare(a.name, b.name));
   return entries.flatMap((entry) => {
     const path = join(dir, entry.name);
     if (entry.isDirectory()) return listYaml(path, depth + 1);
@@ -520,7 +513,7 @@ export function storageTotals(claims: readonly StorageClaim[]): readonly (readon
   for (const claim of claims) {
     totals.set(claim.storageClass, (totals.get(claim.storageClass) ?? 0) + claim.gibibytes * claim.replicas);
   }
-  return [...totals.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
+  return [...totals.entries()].sort((a, b) => b[1] - a[1] || stringCompare(a[0], b[0]));
 }
 
 export function readLedger(path: string, repoRoot = REPO_ROOT): Ledger {
