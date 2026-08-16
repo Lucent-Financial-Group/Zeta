@@ -147,6 +147,15 @@ describe("heartbeat workflow credential split", () => {
     const probeCalls = preflight.match(/\$\(probe\)/g) ?? [];
     expect(probeCalls.length).toBeGreaterThanOrEqual(2);
 
+    // ORDERING, not just presence -- this assertion is Otto's, from the competing
+    // #11023, and it is strictly stronger than my count above: two probes prove
+    // nothing if both run BEFORE the credential is swapped. The re-probe only
+    // means anything if it tests the credential that replaced the denied one.
+    const swapIndex = preflight.indexOf("git config --local --replace-all");
+    const reprobeIndex = preflight.indexOf("if OUT2=$(probe); then");
+    expect(swapIndex).toBeGreaterThan(-1);
+    expect(reprobeIndex).toBeGreaterThan(swapIndex);
+
     // The swap must be reachable ONLY on a credential answer. Swapping on ANY
     // failure would hide a network or ruleset error behind a credential story.
     expect(preflight).toContain("denied to|Authentication failed|Invalid username or token|error: 403");
