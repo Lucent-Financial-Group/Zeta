@@ -95,10 +95,19 @@ function main(): number {
   const excludeFallback = process.argv.includes("--exclude-fallback");
   const B = Number(argValue("--boot", "2000"));
 
+  // `--models a,b` restricts the panel. Used to produce the PRIMARY estimate over the families that
+  // actually emit a judgment, after the raw-index guard below identifies the ones that do not. A
+  // constant responder's rho is a fact about position bias, and averaging it into W or X reports
+  // that artefact as if it were a property of personas or of weights.
+  const modelFilter = argValue("--models", "");
+  const keep = modelFilter.length > 0 ? new Set(modelFilter.split(",")) : null;
+
   const responses: Response[] = readFileSync(join(root, respPath), "utf8")
-    .split("\n").filter((l) => l.trim()).map((l) => JSON.parse(l) as Response);
+    .split("\n").filter((l) => l.trim()).map((l) => JSON.parse(l) as Response)
+    .filter((r) => keep === null || keep.has(r.model));
   const items: Item[] = readFileSync(join(root, itemsPath), "utf8")
     .split("\n").filter((l) => l.trim()).map((l) => JSON.parse(l) as Item);
+  if (keep !== null) console.log(`\n[filter] restricted to models: ${[...keep].join(", ")}`);
 
   const agents = [...new Set(responses.map((r) => r.agent))].sort();
   const familyOf = new Map(agents.map((a) => [a, a.split("|")[0]!]));
