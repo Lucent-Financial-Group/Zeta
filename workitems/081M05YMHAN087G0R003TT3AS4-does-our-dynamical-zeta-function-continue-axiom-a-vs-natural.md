@@ -54,13 +54,39 @@ explicitly rather than by default.
 
 ## Definition of done
 
-1. State whether the system is (or is not) in a class where Ruelle's theorem applies — **with the
-   hypothesis checked, not cited.** "Axiom A" asserted without verifying uniform hyperbolicity is
-   the unchecked-anchor failure.
-2. If it does not apply, say so and stop. A negative answer closes this item successfully and
-   promotes cartography from default to justified.
-3. Only if it applies: compare a resonance-derived decay rate against `largestLyapunov` on the same
-   system, and state the disagreement honestly rather than tuning to match.
+**Sharpened 2026-08-16 (Aaron).** The first draft said "state whether Ruelle's theorem applies,"
+which invites the exact error it was meant to prevent: attempting continuation, failing, and
+reporting the failure as a result. **A failed attempt is an ignorance claim wearing a result's
+clothes.** Telling *genuinely nothing there* from *I cannot get there from here* needs a **local
+invariant test**, and both relevant fields have one:
+
+- **General relativity** — the Kretschmann scalar is *finite* at an event horizon (obstruction is
+  your coordinates) and *divergent* at r=0 (obstruction is real). Coordinate-independence is the
+  whole point. The real case is **inextendibility** / geodesic incompleteness — the exact analogue
+  of a natural boundary.
+- **Complex analysis** — a natural boundary is established by showing singularities are **dense**
+  on the boundary (Ostrowski–Hadamard gap theorem gives families where they are). Not "we could not
+  continue," but "the obstructions accumulate everywhere along it."
+
+So:
+
+1. A **negative** answer must be the **density result** — singularities accumulating on the
+   abscissa of convergence — or an explicit statement that density could not be established and the
+   question stays open. **"I attempted continuation and it did not work" is NOT a negative answer.**
+2. A **positive** answer requires the Axiom A hypothesis **checked** — uniform hyperbolicity on a
+   compact invariant set, conditions stated and tested against what our code computes — never
+   cited.
+3. **"The question is malformed for what we compute" is a fully valid outcome**, and may be the
+   true one: the figure-eight choreography is a *stable* solution, not an obviously hyperbolic set.
+4. Only if it applies: compare a resonance-derived decay rate against `largestLyapunov` on the same
+   system, stating disagreement honestly rather than tuning until they match.
+
+**Hold this throughout:** the abscissa of convergence is set by topological entropy (orbit growth
+rate) and is a *convergence* boundary. Whether it is also a *natural* boundary is a separate
+question that only the density test answers.
+
+A clean negative closes this item **successfully** — it promotes cartography from unexamined
+default to justified choice.
 
 **Register discipline:** this is a `toy`/open question, not a plan. Nothing in `src/` should be
 changed on the strength of the analogy alone — the continuation question gates everything
