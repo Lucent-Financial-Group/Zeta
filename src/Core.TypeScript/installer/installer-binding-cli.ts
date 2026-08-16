@@ -12,12 +12,16 @@ export type CliBindingSelection = {
   readonly material: string;
 };
 
+function isExactNonEmpty(value: string | null): value is string {
+  return value !== null && value.length > 0 && value === value.trim();
+}
+
 export function selectCliBindingMaterial(input: {
   readonly usbUuid: string | null;
   readonly usbISerial: string | null;
   readonly uefiKeyfileBytes: Uint8Array | null;
 }): CliBindingSelection | { readonly error: string } {
-  const hasIserial = input.usbISerial !== null && input.usbISerial.trim().length > 0;
+  const hasIserial = isExactNonEmpty(input.usbISerial);
   const hasKeyfile = input.uefiKeyfileBytes !== null;
   if (hasIserial && hasKeyfile) {
     return { error: "--usb-iserial and --uefi-keyfile are mutually exclusive" };
@@ -28,10 +32,10 @@ export function selectCliBindingMaterial(input: {
     return { factor: "uefiKeyfile", material };
   }
   if (hasIserial) {
-    return { factor: "usbISerial", material: input.usbISerial!.trim() };
+    return { factor: "usbISerial", material: input.usbISerial };
   }
-  if (input.usbUuid !== null && input.usbUuid.trim().length > 0) {
-    return { factor: "usbUuid", material: input.usbUuid.trim() };
+  if (isExactNonEmpty(input.usbUuid)) {
+    return { factor: "usbUuid", material: input.usbUuid };
   }
   return { error: "binding factor required: --usb-uuid, --usb-iserial, or --uefi-keyfile" };
 }
