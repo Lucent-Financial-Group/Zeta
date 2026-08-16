@@ -103,7 +103,18 @@ describe("armingEnabled", () => {
 });
 
 describe("heartbeat workflow credential split", () => {
-  it("keeps branch writes on the proven workflow credential", () => {
+  // RE-AIMED 2026-08-16. This test used to pin `tickCheckout` as having NO explicit
+  // `token:`, i.e. branch writes ride the default workflow credential. That design was
+  // deliberately reversed: a `pull_request` run whose triggering actor is
+  // `github-actions[bot]` is created and then parked (`completed`/`action_required`), so
+  // `gate (required)` never ran on any heartbeat flush PR. Measured, same head sha —
+  // pull_request/bot => action_required, workflow_dispatch/AceHack => success.
+  //
+  // So the old assertion was a stale pin: correct about what the workflow did, wrong
+  // about what it should do. Deleting it outright would have been worse than leaving it
+  // — the credential split is what cost the fleet ~16.75h in #10850 — so it is re-aimed
+  // at the properties that are load-bearing NOW, each with a mutant that reddens it.
+  it("carries the flush PAT with a verified fallback, not a bare credential swap", () => {
     const tickCheckout = HEARTBEAT_WORKFLOW.slice(
       HEARTBEAT_WORKFLOW.indexOf("- name: Checkout"),
       HEARTBEAT_WORKFLOW.indexOf("- name: Setup bun"),
@@ -113,7 +124,27 @@ describe("heartbeat workflow credential split", () => {
       HEARTBEAT_WORKFLOW.indexOf("flush-to-main:"),
     );
 
-    expect(tickCheckout).not.toContain("\n          token:");
+    // The `||` ladder covers ABSENCE: an unset secret degrades to GITHUB_TOKEN rather
+    // than resolving to an empty credential.
+    expect(tickCheckout).toContain(
+      "token: ${{ secrets.ZETA_TELEMETRY_FLUSH_TOKEN || secrets.GITHUB_TOKEN }}",
+    );
+
+    // The ladder CANNOT cover UNAUTHORIZED — a present-but-powerless token is exactly
+    // what #10850 shipped — so the preflight must be a real push against the real
+    // remote, not a stub. #10913 verified a credential fix against a stubbed git and
+    // failed on the first real tick.
+    expect(tickCheckout).toContain("git push --dry-run origin");
+
+    // THE ANTI-VACUITY PROPERTY: the fallback must be RE-PROBED after the swap. A repair
+    // that is applied and never re-checked looks identical to one that worked — #10913's
+    // fallback ran, logged that it ran, and was denied under the same identity.
+    const swapIndex = tickCheckout.indexOf("--replace-all");
+    const reprobeIndex = tickCheckout.indexOf("OUT2=$(probe)");
+    expect(swapIndex).toBeGreaterThan(-1);
+    expect(reprobeIndex).toBeGreaterThan(swapIndex);
+
+    // The push itself stays lease-guarded and does not carry the fallback token.
     expect(pushStep).toContain('run: git push --force-with-lease origin "heartbeat/$AGENT"');
     expect(pushStep).not.toContain("FALLBACK_TOKEN");
   });
