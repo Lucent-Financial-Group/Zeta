@@ -106,13 +106,23 @@ jobs:
       # `ollama pull` used to kill the whole job, because the pulls sat under `set -e` in the
       # same step as the install. They no longer do.
       #
+      # TYPESCRIPT, NOT A SHELL SCRIPT, and that is not a style preference. A SHA-256 pin
+      # reaches naturally for shell (curl + sha256sum + compare + branch) at exactly the moment
+      # this repo is retiring bash — registering new shell in the retained-shell allowlist would
+      # have been the locally-easy, strategically-wrong move. The allowlist exists for scripts
+      # that run BEFORE bun is available; this one does not (bun install runs above). And a
+      # shell one-liner in a workflow cannot be unit-tested, while the verifier can be and is:
+      # src/Core.TypeScript/ace/pinned-artifact.test.ts drives it through injected effects and
+      # proves the REFUSAL, which is the only half that matters. Neutering the digest comparison
+      # turns 5 of those tests red — checked, not assumed.
+      #
       # Refresh path, failure modes, and why the pin is written in ace's PackageEntry shape:
       # see the `_doc` block in .github/ollama-pin.json. A pin bump is proved on a real runner
-      # by verify-ollama-pin.yml BEFORE it merges — that workflow also runs automatically on
-      # any PR touching the pin.
+      # by verify-ollama-pin.yml BEFORE it merges — that workflow runs automatically on any PR
+      # touching the pin.
       - name: Install Ollama (pinned, checksum-verified)
         continue-on-error: true
-        run: bash .github/scripts/install-ollama.sh
+        run: bun src/Core.TypeScript/ace/install-pinned-artifact.ts --pin .github/ollama-pin.json
 
       - name: Start Ollama + pull models
         continue-on-error: true
@@ -127,8 +137,8 @@ jobs:
               echo "The pinned Ollama install failed; see the install step above."
               echo "Ticking continues without inference."
               echo ""
-              echo "Refresh:  bash .github/scripts/refresh-ollama-pin.sh"
-              echo "Prove it: gh workflow run verify-ollama-pin.yml --ref BRANCH"
+              echo "Refresh:  bun src/Core.TypeScript/ace/refresh-ollama-pin.ts"
+              echo "Prove it: open a PR — verify-ollama-pin.yml runs on it"
             } >> "$GITHUB_STEP_SUMMARY"
             exit 1
           fi
