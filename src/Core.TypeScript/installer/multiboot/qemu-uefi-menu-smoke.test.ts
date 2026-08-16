@@ -37,6 +37,20 @@ describe("qemu-uefi-menu-smoke planning", () => {
     });
   });
 
+  it("prefers a matched 4M CODE/VARS pair over mixed sizes", () => {
+    const present = new Set([
+      "/usr/share/OVMF/OVMF_CODE_4M.fd",
+      "/usr/share/OVMF/OVMF_VARS_4M.fd",
+      "/usr/share/OVMF/OVMF_CODE.fd",
+      "/usr/share/OVMF/OVMF_VARS.fd",
+    ]);
+    const resolved = resolveOvmfPaths((p) => present.has(p));
+    expect(resolved).toEqual({
+      codePath: "/usr/share/OVMF/OVMF_CODE_4M.fd",
+      varsPath: "/usr/share/OVMF/OVMF_VARS_4M.fd",
+    });
+  });
+
   it("lists every missing tool", () => {
     const missing = missingSmokeTools({
       qemu: false,
@@ -66,11 +80,17 @@ describe("qemu-uefi-menu-smoke planning", () => {
       ovmfCodePath: "/usr/share/OVMF/OVMF_CODE.fd",
       ovmfVarsPath: "/tmp/OVMF_VARS.fd",
       serialLogPath: "/tmp/serial.log",
+      media: "usb",
     });
     expect(planned.ok).toBe(true);
     if (!planned.ok) return;
-    expect(planned.args.join(" ")).toContain("OVMF_CODE.fd");
-    expect(planned.args.join(" ")).toContain("zeta-multiboot.img");
-    expect(planned.args.join(" ")).toContain("serial.log");
+    const joined = planned.args.join(" ");
+    expect(joined).toContain("OVMF_CODE.fd");
+    expect(joined).toContain("zeta-multiboot.img");
+    expect(joined).toContain("serial.log");
+    expect(joined).toContain("qemu-xhci");
+    expect(joined).toContain("usb-storage");
+    expect(joined).toContain("-display none");
+    expect(joined).not.toContain("-nographic");
   });
 });
