@@ -48,7 +48,7 @@
     # (RTX 50-series) has no proprietary kernel module at all — on such a node
     # `false` is the broken setting, not the cautious one.
     #
-    # Per-host, after running ./tools/nvidia-open-preflight.sh ON that node:
+    # Per-host, after running bun tools/nvidia-open-preflight.ts ON that node:
     #   zeta.gpu.openModulePreflight.passed   = true;
     #   zeta.gpu.openModulePreflight.evidence = "2026-.., <host>: <cards/cc>";
     #   hardware.nvidia.open = lib.mkForce true;

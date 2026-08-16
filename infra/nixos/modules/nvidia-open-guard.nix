@@ -23,8 +23,8 @@
 # built to surface, but a failed unit means "the driver did not bind", which
 # has other causes too. Read it as a symptom, not a diagnosis.
 #
-# The preflight itself is ./../../../tools/nvidia-open-preflight.sh — run on
-# the candidate node, while the closed module is still loaded.
+# The preflight itself is ../../../tools/nvidia-open-preflight.ts (`bun` it) — run
+# it on the candidate node, while the closed module is still loaded.
 
 { config, lib, pkgs, ... }:
 
@@ -38,7 +38,7 @@ in
       type = lib.types.bool;
       default = false;
       description = ''
-        Set true ONLY after tools/nvidia-open-preflight.sh has exited 0 on this
+        Set true ONLY after tools/nvidia-open-preflight.ts has exited 0 on this
         physical node. Required before `hardware.nvidia.open = true` will build.
       '';
     };
@@ -67,7 +67,7 @@ in
           is in this node — the hardware-configuration.nix files are placeholders —
           so the generation has to be established on the machine:
 
-              ./tools/nvidia-open-preflight.sh
+              bun tools/nvidia-open-preflight.ts
 
           On exit 0, set both `zeta.gpu.openModulePreflight.passed = true` and
           `.evidence`. Do not set them from a datasheet, a purchase order, or the
@@ -149,7 +149,7 @@ in
           echo "The open kernel modules cannot bind pre-Turing GPUs (Maxwell, Pascal,"
           echo "Volta) — if this node was flipped to open without a preflight, that is"
           echo "the first thing to check:"
-          echo "    ./tools/nvidia-open-preflight.sh"
+          echo "    bun tools/nvidia-open-preflight.ts"
           echo "Set hardware.nvidia.open = false and rebuild to restore the closed"
           echo "module, UNLESS these are Blackwell or newer cards, which have no"
           echo "proprietary kernel module at all."

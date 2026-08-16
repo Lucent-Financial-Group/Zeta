@@ -125,7 +125,7 @@ wrong in both directions depending on hardware nobody has recorded, which is the
 
 ### What shipped instead of the flip
 
-1. `tools/nvidia-open-preflight.sh` — run on a candidate node while the **closed** module is still
+1. `tools/nvidia-open-preflight.ts` — run on a candidate node while the **closed** module is still
    loaded; gates on driver-reported CUDA compute capability **>= 7.5**. Capability rather than a
    PCI-ID table because NVIDIA device IDs are not ordered by architecture, so any local table rots
    silently; 7.5 rather than 7 because **Volta is 7.0/7.2 and has no GSP** — the one case a
@@ -138,6 +138,16 @@ wrong in both directions depending on hardware nobody has recorded, which is the
    even if the attestation was wrong or a card was swapped later.
 3. Both `gpu.nix` files keep `open = lib.mkDefault false`, with the stale comment
    ("works on RTX 20-series and newer", silent on Blackwell) replaced by the measured position.
+
+The preflight was first written as `tools/nvidia-open-preflight.sh` and the bash-retirement
+inventory guard rejected it. It was **rewritten in TypeScript rather than allowlisted**, because
+the allowlist's stated bar is "runs before Bun is available", and that is factually not this
+script's situation: `full-ai-cluster/usb-nixos-installer/zeta-install.sh` Step 6.95a runs
+`tools/setup/install.sh` on the pre-cloned repo, which routes NixOS to mise and provisions the
+`.mise.toml`-pinned bun for the `zeta` user. The preflight is an operator diagnostic run long after
+that, so bun is present and no allowlist entry would have been truthful. The one thing here that
+genuinely must run bun-free — the boot-time driver-bound check — is inline systemd shell inside
+`nvidia-open-guard.nix` depending on nothing but coreutils, which is the right side of that line.
 
 ### Still unexercised — do not read this item as verified
 
