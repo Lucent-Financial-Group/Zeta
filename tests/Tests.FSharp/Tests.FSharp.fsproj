@@ -382,6 +382,8 @@
     <Compile Include="CyclotomicAmplitude.Tests.fs" />
     <Compile Include="ReticulumQuantum.Tests.fs" />
     <Compile Include="PolarityFilter.Tests.fs" />
+    <Compile Include="PolarityFilterResolution.Tests.fs" />
+    <Compile Include="PolarityFilterSmoothness.Tests.fs" />
     <Compile Include="DarkHall.Tests.fs" />
     <Compile Include="ITensor.Tests.fs" />
     <Compile Include="SagaSnapshot.Tests.fs" />
@@ -631,6 +633,7 @@
     <Compile Include="Formal/ToffoliGate.Laws.Tests.fs" />
     <Compile Include="Formal/AmplitudeEmuSignalling.Tests.fs" />
     <Compile Include="Formal/MenoBraidedBasisBijection.Tests.fs" />
+    <Compile Include="Formal/LatticeVoaGradedDimensions.Tests.fs" />
 
     <!-- Properties/ last (they cross modules by design). -->
     <Compile Include="Properties/Math.Invariants.Tests.fs" />
@@ -662,6 +665,7 @@
     <Compile Include="ZetaToolStore.Tests.fs" />
     <Compile Include="ZetaToolStore.Golden.Tests.fs" />
     <Compile Include="AdinkraClock.Tests.fs" />
+    <Compile Include="AppFreeFragment.Tests.fs" />
   </ItemGroup>
 
   <ItemGroup>
