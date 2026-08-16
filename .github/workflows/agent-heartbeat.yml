@@ -43,11 +43,9 @@ jobs:
         with:
           fetch-depth: 0
           ref: main
-          # 081M010H4KE: GITHUB_TOKEN makes github-actions[bot] the push actor,
-          # so pull_request runs on heartbeat/* land in action_required and
-          # `gate (required)` never starts. The archive/society flush already
-          # uses this PAT. Recursion is safe: this workflow is schedule +
-          # workflow_dispatch only — a PAT push does not re-fire it.
+          # Try the human-actor PAT first so a future contents:write grant can
+          # produce synchronize events directly. The push step has the narrow
+          # credential-denial fallback to GITHUB_TOKEN shipped in #10913.
           persist-credentials: true
           token: ${{ secrets.ZETA_TELEMETRY_FLUSH_TOKEN || secrets.ZETA_PR_ARCHIVE_TOKEN || secrets.GITHUB_TOKEN }}
 
@@ -875,10 +873,10 @@ jobs:
         # branch, the flush PR's gate does not start) for a DEAD one (nothing lands at all).
         # So: attempt the PAT push first — when the token is granted `contents: write` this is
         # byte-identical to #10850's intent — and on a credential denial ONLY, fall back to
-        # GITHUB_TOKEN so the lane keeps recording. This is grace in the artifact; the strictness
-        # lives in the test, unchanged: `required-check-started.ts` in the flush job still fails
-        # the workflow while `gate (required)` never starts. Nothing here can make a broken
-        # credential look green.
+        # GITHUB_TOKEN so the lane keeps recording. The flush job then closes and reopens the
+        # reused PR under the pull-request-scoped PAT, producing the subscribed `reopened`
+        # event for the fallback-authored head. `required-check-started.ts` remains strict if
+        # that event path fails; the credential fallback alone cannot make the lane look green.
         run: |
           set -euo pipefail
           if git push --force-with-lease origin "heartbeat/$AGENT" 2>/tmp/heartbeat-push.err; then
@@ -894,13 +892,13 @@ jobs:
             exit 1
           fi
 
-          echo "::warning::[heartbeat] ZETA_TELEMETRY_FLUSH_TOKEN cannot push to this repo (403). FIX: grant that fine-grained PAT \`contents: write\` on Lucent-Financial-Group/Zeta. Falling back to GITHUB_TOKEN so heartbeat/$AGENT keeps recording; \`gate (required)\` will NOT start on the flush PR until the PAT is fixed."
+          echo "::warning::[heartbeat] ZETA_TELEMETRY_FLUSH_TOKEN cannot push to this repo (403). Falling back to GITHUB_TOKEN so heartbeat/$AGENT keeps recording; the flush job will reopen its PR under the scoped PAT so gate (required) can start without broadening that credential."
           {
             echo "### heartbeat/$AGENT pushed on the FALLBACK credential"
             echo ""
             echo "\`ZETA_TELEMETRY_FLUSH_TOKEN\` was denied (403) and \`GITHUB_TOKEN\` was used instead."
-            echo "The lane is alive but degraded: \`gate (required)\` will not start on the flush PR."
-            echo "Fix: grant the PAT \`contents: write\` on this repository."
+            echo "The branch write used GITHUB_TOKEN; the flush job must reopen the PR under the scoped PAT."
+            echo "This keeps branch-write and pull-request authority separate."
           } >> "$GITHUB_STEP_SUMMARY"
 
           # actions/checkout persists its token as an http.extraheader, which takes precedence
@@ -940,6 +938,8 @@ jobs:
         with:
           ref: main
           fetch-depth: 0
+          # This job owns PR lifecycle calls under the scoped PAT. It does not
+          # push refs; the workflow token is supplied only to the arm step.
           persist-credentials: true
           token: ${{ secrets.ZETA_TELEMETRY_FLUSH_TOKEN || secrets.ZETA_PR_ARCHIVE_TOKEN || secrets.GITHUB_TOKEN }}
 
@@ -1134,6 +1134,29 @@ jobs:
             exit 1
           fi
 
+      - name: Arm heartbeat PR auto-merge
+        if: steps.check.outputs.skip != 'true'
+        env:
+          AGENT: ${{ matrix.agent }}
+          # The workflow token has contents:write and is already proven by the
+          # earlier merge-duty step to arm automation-only PRs. The scoped PAT
+          # intentionally cannot perform enablePullRequestAutoMerge.
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          PR=$(gh pr list \
+            --repo "$GITHUB_REPOSITORY" \
+            --state open \
+            --head "heartbeat/$AGENT" \
+            --base main \
+            --json number \
+            --jq '.[0].number // empty')
+          if [ -z "$PR" ]; then
+            echo "::error title=Heartbeat flush PR missing::$AGENT has events to flush but no open PR"
+            exit 1
+          fi
+          gh pr merge "$PR" --repo "$GITHUB_REPOSITORY" --squash --auto --delete-branch
+          echo "[flush] $AGENT: armed auto-merge on PR #$PR"
+
       - name: Fail if a heartbeat PR is old and gate never started
         if: always() && matrix.agent == 'alexa'
         env:
@@ -1143,4 +1166,12 @@ jobs:
           # lie: gate never started. This exits 1 when a heartbeat/* PR older
           # than one tick has no `gate (required)` in its rollup. Young PRs
           # are ignored — the check may not have been scheduled yet.
+          set +e
           bun src/Core.TypeScript/forge-host/github/required-check-started.ts --min-age-min 20
+          RC=$?
+          set -e
+          if [ "$RC" -eq 2 ]; then
+            echo "::warning title=Heartbeat gate state unavailable::GitHub did not answer after bounded retries; gate absence is unmeasured, not disproven"
+            exit 0
+          fi
+          exit "$RC"

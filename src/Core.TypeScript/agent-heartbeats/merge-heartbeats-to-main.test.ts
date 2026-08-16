@@ -1,10 +1,23 @@
 // tools/agent-heartbeats/merge-heartbeats-to-main.test.ts — 081KSKBP80008QG0R001KK9WV6.4 merge-tool tests.
 
 import { describe, expect, it } from "bun:test";
-import { armOutcome, armingEnabled, heartbeatMergePrBody, parseArgs } from "./merge-heartbeats-to-main";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
+import {
+  armOutcome,
+  armingEnabled,
+  heartbeatMergePrBody,
+  parseArgs,
+  refreshExistingPR,
+  type GhCommandResult,
+} from "./merge-heartbeats-to-main";
 import { main as validateAgencySignature } from "../hygiene/validate-agencysignature-pr-body";
 
 const TEST_ENV = {} as NodeJS.ProcessEnv;
+const HEARTBEAT_WORKFLOW = readFileSync(
+  join(import.meta.dir, "..", "..", "..", ".github", "workflows", "agent-heartbeat.yml"),
+  "utf8",
+);
 
 describe("parseArgs", () => {
   it("zero args returns built-in defaults", () => {
@@ -56,7 +69,11 @@ describe("armOutcome", () => {
   });
 
   it("arming failed -> STILL a success shape, carrying the PR and the reason", () => {
-    const r = armOutcome(pr, 1, "  GraphQL: Resource not accessible by personal access token (enablePullRequestAutoMerge)\n");
+    const r = armOutcome(
+      pr,
+      1,
+      "  GraphQL: Resource not accessible by personal access token (enablePullRequestAutoMerge)\n",
+    );
     // The load-bearing assertion: the PR survives an arming failure.
     expect(r.number).toBe(10397);
     expect(r.url).toBe(pr.url);
@@ -92,6 +109,67 @@ describe("armingEnabled", () => {
   });
 });
 
+describe("refreshExistingPR", () => {
+  it("closes with the current transcript and reopens to emit the subscribed event", () => {
+    const calls: { readonly args: string[]; readonly input: string | undefined }[] = [];
+    const runGh = (args: string[], input?: string): GhCommandResult => {
+      calls.push({ args, input });
+      return { status: 0, stdout: "{}", stderr: "" };
+    };
+
+    expect(refreshExistingPR("o/r", 42, "fresh title", "fresh body", runGh)).toEqual({ ok: true });
+    expect(calls).toHaveLength(2);
+    expect(calls[0]?.args).toEqual(["api", "-X", "PATCH", "repos/o/r/pulls/42", "--input", "-"]);
+    expect(JSON.parse(calls[0]?.input ?? "null")).toEqual({
+      title: "fresh title",
+      body: "fresh body",
+      state: "closed",
+    });
+    expect(JSON.parse(calls[1]?.input ?? "null")).toEqual({ state: "open" });
+  });
+
+  it("stops if close fails instead of claiming that the gate was retriggered", () => {
+    let calls = 0;
+    const result = refreshExistingPR("o/r", 7, "t", "b", () => {
+      calls += 1;
+      return { status: 1, stdout: "", stderr: "denied" };
+    });
+    expect(result).toEqual({ error: "PR refresh close failed: denied" });
+    expect(calls).toBe(1);
+  });
+
+  it("reports a failed reopen so a closed PR is never described as refreshed", () => {
+    let calls = 0;
+    const result = refreshExistingPR("o/r", 8, "t", "b", () => {
+      calls += 1;
+      return calls === 1
+        ? { status: 0, stdout: "{}", stderr: "" }
+        : { status: 1, stdout: "", stderr: "host unavailable" };
+    });
+    expect(result).toEqual({ error: "PR refresh reopen failed: host unavailable" });
+    expect(calls).toBe(2);
+  });
+});
+
+describe("heartbeat workflow credential split", () => {
+  it("never relies on the pull-request-only PAT as the sole branch writer", () => {
+    expect(HEARTBEAT_WORKFLOW).toContain("FALLBACK_TOKEN: ${{ secrets.GITHUB_TOKEN }}");
+    expect(HEARTBEAT_WORKFLOW).toContain(
+      'git remote set-url origin "https://x-access-token:${FALLBACK_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"',
+    );
+    expect(HEARTBEAT_WORKFLOW).toContain('git push --force-with-lease origin "heartbeat/$AGENT"');
+  });
+
+  it("re-arms the refreshed PR with the write-capable workflow token", () => {
+    const armStep = HEARTBEAT_WORKFLOW.slice(
+      HEARTBEAT_WORKFLOW.indexOf("- name: Arm heartbeat PR auto-merge"),
+      HEARTBEAT_WORKFLOW.indexOf("- name: Fail if a heartbeat PR is old"),
+    );
+    expect(armStep).toContain("GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}");
+    expect(armStep).toContain("gh pr merge");
+  });
+});
+
 // ---------------------------------------------------------------------------
 // The lane signs its own PRs (2026-08-15).
 //
@@ -105,12 +183,7 @@ describe("armingEnabled", () => {
 // wrong before -- the body always LOOKED fine to a human reader.
 // ---------------------------------------------------------------------------
 describe("heartbeatMergePrBody", () => {
-  const AFTER_CUTOVER = [
-    "--pr-created-at",
-    "2026-08-16T00:00:00Z",
-    "--grandfather-cutover",
-    "2026-08-15T00:00:00Z",
-  ];
+  const AFTER_CUTOVER = ["--pr-created-at", "2026-08-16T00:00:00Z", "--grandfather-cutover", "2026-08-15T00:00:00Z"];
 
   // The real validator's real `main()`, over the real generated string.
   function validate(body: string): { readonly status: number; readonly out: string } {
@@ -132,9 +205,7 @@ describe("heartbeatMergePrBody", () => {
   }
 
   it("passes the real pre-merge validator", () => {
-    const { status, out } = validate(
-      heartbeatMergePrBody("main", "2026-08-15T00:00:00.000Z", "AceHack"),
-    );
+    const { status, out } = validate(heartbeatMergePrBody("main", "2026-08-15T00:00:00.000Z", "AceHack"));
     expect(out).toContain("PASS: AgencySignature v1");
     expect(status).toBe(0);
   });
@@ -151,15 +222,9 @@ describe("heartbeatMergePrBody", () => {
     // The workflow's token is `ZETA_TELEMETRY_FLUSH_TOKEN || ZETA_PR_ARCHIVE_TOKEN
     // || GITHUB_TOKEN`, so the identity is a runtime fact. Hardcoding one would
     // have been a false claim in two of the three cases.
-    expect(heartbeatMergePrBody("main", "t", "AceHack")).toContain(
-      "Credential-Mode: shared",
-    );
-    expect(heartbeatMergePrBody("main", "t", "github-actions[bot]")).toContain(
-      "Credential-Mode: dedicated-agent",
-    );
-    expect(heartbeatMergePrBody("main", "t", "unknown")).toContain(
-      "Credential-Mode: unknown",
-    );
+    expect(heartbeatMergePrBody("main", "t", "AceHack")).toContain("Credential-Mode: shared");
+    expect(heartbeatMergePrBody("main", "t", "github-actions[bot]")).toContain("Credential-Mode: dedicated-agent");
+    expect(heartbeatMergePrBody("main", "t", "unknown")).toContain("Credential-Mode: unknown");
   });
 
   it("uses `***` for the rule, never `---`", () => {
