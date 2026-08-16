@@ -143,7 +143,7 @@
  * (EP/ADF); Forsgren, Humble & Kim 2018 (*Accelerate* — DORA).
  */
 
-import { appendFileSync, existsSync, mkdirSync, readFileSync, readdirSync } from "node:fs";
+import { appendFileSync, mkdirSync, readFileSync, readdirSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { join } from "node:path";
 
@@ -542,9 +542,32 @@ function recorderPath(root: string, subdir: string, recorder: string): string {
   return join(root, COMPETENCE_DIR, subdir, `${recorder}.jsonl`);
 }
 
+/**
+ * Read a file that may not exist yet, without a check-then-use race.
+ *
+ * `existsSync` followed by `readFileSync` is a TOCTOU pattern (CodeQL `js/file-system-race`,
+ * caught on PR #10976): the file can appear or vanish between the two calls. Attempting the
+ * read and handling `ENOENT` is one syscall and has no window.
+ */
+function readIfPresent(path: string): string {
+  try {
+    return readFileSync(path, "utf8");
+  } catch (err) {
+    if ((err as NodeJS.ErrnoException).code === "ENOENT") return "";
+    throw err;
+  }
+}
+
+/**
+ * Append one JSONL line unless its content address is already recorded.
+ *
+ * The pre-read is a courtesy, not the guarantee: files are per-recorder (single writer), and
+ * the real idempotency guard is `dedupeByAddress` on read, so a duplicate that slipped through
+ * a concurrent append still folds exactly once.
+ */
 function appendJsonl(path: string, line: string, address: string): boolean {
   mkdirSync(join(path, ".."), { recursive: true });
-  if (existsSync(path) && readFileSync(path, "utf8").includes(address)) return false;
+  if (readIfPresent(path).includes(address)) return false;
   appendFileSync(path, `${line}\n`, "utf8");
   return true;
 }
@@ -561,18 +584,33 @@ export function appendOutcome(root: string, recorder: string, record: OutcomeRec
 
 function readJsonlDir<T>(root: string, subdir: string, isValid: (v: unknown) => v is T): readonly T[] {
   const dir = join(root, COMPETENCE_DIR, subdir);
-  if (!existsSync(dir)) return [];
+  // Attempt-and-handle rather than check-then-use: an absent directory is an empty ledger,
+  // and testing for it first would be the same TOCTOU shape as the append path.
+  let names: readonly string[];
+  try {
+    names = readdirSync(dir).sort(stringCompare);
+  } catch (err) {
+    if ((err as NodeJS.ErrnoException).code === "ENOENT") return [];
+    throw err;
+  }
   const out: T[] = [];
-  for (const name of readdirSync(dir).sort(stringCompare)) {
+  for (const name of names) {
     if (!name.endsWith(".jsonl")) continue;
-    for (const line of readFileSync(join(dir, name), "utf8").split("\n")) {
-      if (line.length === 0) continue;
-      try {
-        const parsed: unknown = JSON.parse(line);
-        if (isValid(parsed)) out.push(parsed);
-      } catch {
-        // schema-on-read: skip malformed lines rather than failing the whole fold
-      }
+    out.push(...parseJsonlLines(readIfPresent(join(dir, name)), isValid));
+  }
+  return out;
+}
+
+/** Schema-on-read: a malformed line is skipped, never allowed to fail the whole fold. */
+function parseJsonlLines<T>(text: string, isValid: (v: unknown) => v is T): T[] {
+  const out: T[] = [];
+  for (const line of text.split("\n")) {
+    if (line.length === 0) continue;
+    try {
+      const parsed: unknown = JSON.parse(line);
+      if (isValid(parsed)) out.push(parsed);
+    } catch {
+      // malformed line — skip
     }
   }
   return out;
