@@ -195,10 +195,63 @@ boundary.
   trace-based-replay literature **do not connect on this point in any source read**, and per BSalC
   §4.1.2 and Acar 2002 the connecting proposition **may be false as stated**.
 
-**Both searchers flagged that they share weights with the author** (ρ̂ ≈ 0.651 across personas vs
-0.096 across weights), so their *agreement* is weak evidence. But the refutation does not rest on
-agreement — it rests on **checkable citations**, which is the part correlation cannot fake. A third
-axis (reactive/FRP) was still running when this was written.
+**All three searchers flagged that they share weights with the author** (ρ̂ ≈ 0.651 across personas
+vs 0.096 across weights), so their *agreement* is weak evidence. But the refutation does not rest on
+agreement — it rests on **checkable citations**, which is the part correlation cannot fake.
+
+### Third axis (reactive/FRP) — the predicted result landed
+
+The hunt was: *Arrowized FRP demonstrably avoids `ArrowApply`; what reasons does it publish?*
+
+**Winograd-Cort & Hudak, ICFP 2014** — an entire paper about removing `switch` — states the claim's
+first half almost verbatim: *"An arrow's structure must be defined statically… therefore, regardless
+of what data the signals contain, the arrow's overall behavior is fixed."* And its stated reasons
+for rejecting `switch`/`app` are **compile-time optimisation, static guarantees, embedded resource
+constraints, and space/time leaks**. The agent grepped the full text for
+`replay|re-execut|speculat|rollback|backtrack|determinis|checkpoint|time travel` — **zero hits in a
+rationale role.**
+
+**Hughes (AFP 2004)** is blunter: *"arrows that support `app` are of relatively little interest!"* —
+with the original motivation being Swierstra & Duponcheel's 1996 parsers, i.e. **static analysis**.
+**Lindley–Wadler–Yallop** give the cleanest formal version: *"static arrow computations are
+**oblivious to their inputs**."*
+
+**So the practice is thirty years old and the justification given has never been replay.** That
+makes Aaron's independent arrival at it *more* interesting rather than less — the practice is
+published under other reasons, and **the reason he gives is the part not found anywhere.**
+
+### The better claim — what the evidence actually supports
+
+**CIEL** (Murray et al., NSDI 2011) is a direct counterexample to the strong form: a *dynamic* task
+graph with arbitrary data-dependent control flow that still gets lineage replay and recursive
+re-execution, requiring only that tasks be **deterministic functions of their dependencies**. Its
+most instructive detail: using UUIDs *"complicated fault tolerance… because the master had to record
+the generated UUIDs to support deterministic task replay"* — fixed by **content-addressing** task
+names. Dynamic structure did not forfeit replay; it made the *structure itself* something that must
+be recorded or content-addressed.
+
+> **The honest form, which all three axes support:** static structure makes replay **free**, because
+> there is no graph to record. Dynamic structure makes replay **conditional** — on recording or
+> content-addressing the structure. `>>=` does not destroy replayability; it puts a **price** on it.
+
+That is weaker than what this doc originally claimed and stronger than nothing, and it is the
+version to carry forward.
+
+### The failure locus is consistent across all three axes
+
+Every axis failed at the *same* boundary, and said so independently: **the static-structure
+literature and the replay literature do not cite each other on this point.** Legs 1–2 live in
+FRP / synchronous languages / SDF / polyhedral / arrows; leg 3 lives in systems — lineage, replay,
+rollback, netcode. No source read crosses.
+
+Under the density criterion that motivated `supportsAbsence`, a **common failure locus across
+methods** is the signature of intrinsic-class rather than artifact-class. Held with the correlation
+caveat: three shared-weight probes are not three independent ones.
+
+**One named gap, not closed:** Perez & Nilsson, *Testing and Debugging Functional Reactive
+Programming* (ICFP 2017) — record-and-replay **in Yampa** — could not be retrieved (ACM DL and both
+repository mirrors failed). That is the single most likely place for leg 3 to already exist, and it
+should be closed before anyone treats this `NotFound` as settled.
 
 So: **plausibly novel as a synthesis, unverified, and the instrument that produced it is the wrong
 one to settle it.** Recorded as an open question, not a claim.
