@@ -14,9 +14,9 @@
 // this file is only the real doors — network, filesystem, process.
 
 import { spawnSync } from "node:child_process";
-import { accessSync, constants, mkdtempSync, writeFileSync } from "node:fs";
+import { accessSync, constants, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { dirname, join } from "node:path";
 import { installPinnedArtifact, type InstallEffects } from "./pinned-artifact.ts";
 
 interface Args {
@@ -87,6 +87,20 @@ function realEffects(): InstallEffects {
         ? ["tar", "--zstd", "-xf", archivePath, "-C", destDir]
         : ["--zstd", "-xf", archivePath, "-C", destDir];
       const r = spawnSync(cmd, args, { encoding: "utf8" });
+
+      // DROP THE ARCHIVE IMMEDIATELY, on both paths. `curl | zstd -d | tar -x` never stored
+      // the 1.4GB asset; verifying a digest requires having the whole thing, so this now costs
+      // 1.4GB of peak disk the old pipeline did not. The heartbeat also pulls ~5.5GB of models
+      // onto the same runner, and the verification lane only pulls the 400MB one — so that
+      // headroom was NOT exercised by the check that proved this works. Freeing it here means
+      // the difference never has to be argued about.
+      try {
+        rmSync(dirname(archivePath), { recursive: true, force: true });
+      } catch {
+        // Best-effort: a runner is ephemeral, and failing to tidy is not a reason to fail an
+        // install that otherwise succeeded.
+      }
+
       if (r.status === 0) return { ok: true, message: "" };
       return {
         ok: false,
