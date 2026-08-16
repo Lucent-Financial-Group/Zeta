@@ -5,6 +5,7 @@ import {
   detectSmokeTooling,
   firstExistingPath,
   grubMkimageArgs,
+  kvmIsUsable,
   missingSmokeTools,
   resolveOvmfPaths,
   smokeGrubCfg,
@@ -68,6 +69,15 @@ describe("qemu-uefi-menu-smoke planning", () => {
       () => false,
     );
     expect(missingSmokeTools(tools).length).toBe(5);
+  });
+
+  it("kvmIsUsable is false when the probe cannot open the device", () => {
+    expect(
+      kvmIsUsable(() => {
+        throw new Error("EACCES");
+      }),
+    ).toBe(false);
+    expect(kvmIsUsable(() => undefined)).toBe(true);
   });
 
   it("firstExistingPath returns null when none exist", () => {

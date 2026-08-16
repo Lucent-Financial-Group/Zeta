@@ -13,10 +13,12 @@
 
 import { spawn, spawnSync } from "node:child_process";
 import {
+  closeSync,
   copyFileSync,
   existsSync,
   mkdirSync,
   mkdtempSync,
+  openSync,
   readFileSync,
   writeFileSync,
 } from "node:fs";
@@ -126,6 +128,21 @@ export function missingSmokeTools(tools: SmokeTooling): readonly string[] {
   if (!tools.mformat) missing.push("mformat");
   if (!tools.ovmf) missing.push("OVMF firmware");
   return missing;
+}
+
+/** GitHub-hosted runners often expose `/dev/kvm` without grant. QEMU then exits 1. */
+export function kvmIsUsable(
+  probe: () => void = () => {
+    const fd = openSync("/dev/kvm", "r+");
+    closeSync(fd);
+  },
+): boolean {
+  try {
+    probe();
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 function commandOnPath(bin: string): boolean {
@@ -260,9 +277,9 @@ export async function runUefiMenuSmoke(): Promise<{
 
   writeFileSync(serialLogPath, "");
   const qemuArgs = [...qemuPlan.args.slice(1)];
-  if (existsSync("/dev/kvm")) {
-    qemuArgs.push("-enable-kvm");
-  }
+  // Always pin accel. QEMU prefers KVM when `/dev/kvm` exists even without
+  // `-enable-kvm`; runners often deny that node (Permission denied → exit 1).
+  qemuArgs.push("-accel", kvmIsUsable() ? "kvm" : "tcg");
   const qemu = spawn("qemu-system-x86_64", qemuArgs, {
     stdio: ["ignore", "pipe", "pipe"],
   });
