@@ -103,12 +103,19 @@ describe("armingEnabled", () => {
 });
 
 describe("heartbeat workflow credential split", () => {
-  it("never relies on the pull-request-only PAT as the sole branch writer", () => {
-    expect(HEARTBEAT_WORKFLOW).toContain("FALLBACK_TOKEN: ${{ secrets.GITHUB_TOKEN }}");
-    expect(HEARTBEAT_WORKFLOW).toContain(
-      'git remote set-url origin "https://x-access-token:${FALLBACK_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"',
+  it("keeps branch writes on the proven workflow credential", () => {
+    const tickCheckout = HEARTBEAT_WORKFLOW.slice(
+      HEARTBEAT_WORKFLOW.indexOf("- name: Checkout"),
+      HEARTBEAT_WORKFLOW.indexOf("- name: Setup bun"),
     );
-    expect(HEARTBEAT_WORKFLOW).toContain('git push --force-with-lease origin "heartbeat/$AGENT"');
+    const pushStep = HEARTBEAT_WORKFLOW.slice(
+      HEARTBEAT_WORKFLOW.indexOf("- name: Push heartbeat branch"),
+      HEARTBEAT_WORKFLOW.indexOf("flush-to-main:"),
+    );
+
+    expect(tickCheckout).not.toContain("\n          token:");
+    expect(pushStep).toContain('run: git push --force-with-lease origin "heartbeat/$AGENT"');
+    expect(pushStep).not.toContain("FALLBACK_TOKEN");
   });
 
   it("dispatches the required gate before arming auto-merge", () => {
