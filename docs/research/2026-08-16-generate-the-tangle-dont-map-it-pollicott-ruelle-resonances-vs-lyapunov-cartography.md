@@ -82,6 +82,40 @@ So the honest form is a question with a known answer-shape:
 **This is what makes the idea falsifiable rather than evocative**, and it is the check to run
 before any of §2–§4 is acted on.
 
+## 5b. Escape velocity and the horizon — Aaron's follow-up, half exactly right
+
+> *"could this be related to escape velocity from a tangle and like some non reversible horizon?"*
+
+**The escape half is not metaphor — it is the mechanism.** The Euler product over periodic orbits
+converges only for **Re(s) > h_top**, because the number of periodic orbits of period *n* grows
+like e^(n·h_top). The boundary of the convergent region is therefore *set by the orbit growth
+rate*. And for **open** systems (dynamics with a hole), the leading Pollicott–Ruelle resonance
+**is** the *escape rate* — a standard technical term in this exact literature. The intuition
+landed on the correct word.
+
+**The horizon half inverts, and the inversion is the useful part.** A black-hole horizon is a
+*coordinate* singularity: the manifold continues straight through it, and the operation that
+carries you across is **analytic continuation itself** — Kruskal–Szekeres maximal extension. So a
+horizon is precisely where continuation *works*. A **natural boundary** is the opposite: not a
+limit on one observer's access, but genuine non-existence beyond. There is nothing on the far side
+to reach. Worth stating plainly, because the two feel alike and behave oppositely.
+
+**The irreversibility instinct lands correctly, one step over.** Pollicott–Ruelle resonances form
+a discrete spectrum only once a direction of time is chosen (anisotropic Banach spaces), and they
+describe *decay* of correlations. The underlying dynamics is Hamiltonian and time-symmetric; the
+resonance spectrum is not. **The continuation is where the arrow of time enters a reversible
+system** — Ruelle's rigorous version of what Prigogine was reaching for. Choosing which half-plane
+to continue into *is* choosing a direction of time.
+
+That last point is not decoration here. §3 contrasts an erasing measurement against a reversible
+derivation. If the derivation's own spectrum is what carries the irreversibility, then the arrow of
+time has moved from the *measuring apparatus* into the *generating function* — a substantive claim
+about where the entropy lives, and one this repo is unusually well positioned to test given
+`LandauerFloor.lean`. Registered as **open**, not asserted.
+
+Anchors: Ruelle 1976 · Pollicott 1985 · Baladi (anisotropic Banach spaces) · Kruskal 1960 /
+Szekeres 1960 (maximal extension) · Prigogine (the program Ruelle made rigorous).
+
 ## 6. What would settle it
 
 `src/Bayesian/FigureEightEnsemble.fs` and `src/Core/BraidEntropy.fs` are the concrete systems we
