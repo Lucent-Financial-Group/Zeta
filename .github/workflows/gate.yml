@@ -833,6 +833,29 @@ jobs:
         # are CI-safe. This is what would have caught #8216's stale snapshot.
         run: bun test src/Core.TypeScript/hygiene/
 
+      - name: Hardware-inventory cross-surface reconciliation (drift)
+        # 081M00R59KS087G0R001W3837V. Hardware inventory lives on several surfaces
+        # with different provenance (a ZetaId register, a human audit snapshot, an
+        # operator declaration, machine self-registrations, SSH host keys) and
+        # nothing reconciled them. This does NOT merge them — it checks the
+        # invariants that hold ACROSS them (dangling machine references, one NIC
+        # counted as two nodes, a surface that never says what it is, a snapshot
+        # edited without moving its own counts, a declaration gone stale against
+        # the probe surface) and reports the register-coverage gap.
+        #
+        # Drift, not a gate, by design: this job is not in the gate-required
+        # roll-up, so a red here is signal, not a block (drift-and-heal ADR).
+        # Divergences we deliberately hold open are ledgered in
+        # inventory/reconciliation-open.json, and a ledger entry that no longer
+        # reproduces fails too — a suppression cannot outlive its cause.
+        run: bun run inventory:reconcile
+
+      - name: Inventory unit tests
+        # These existed (generate-items-json.test.ts) and NO workflow ran them —
+        # found while wiring the reconciliation check. Same shape as the #8216 gap
+        # the hygiene step above closes, one directory over.
+        run: bun test src/Core.TypeScript/inventory/
+
   lint-workflows:
     # actionlint catches .github/workflows/*.yml bugs: unknown
     # context refs, invalid runner labels, shellcheck-style warnings
@@ -1137,6 +1160,15 @@ jobs:
       - name: Run audit-dangling-symlinks (Pages/Jekyll guard)
         run: bun src/Core.TypeScript/hygiene/audit-dangling-symlinks.ts
 
+      # docs/observe-events/ holds three filename schemes; only one of them (32-hex ZetaId)
+      # carries no prefix, so a name that is hex-but-not-an-id is indistinguishable from an
+      # id by shape. Three such names arrived 2026-08-09 from an id "mint" that did no
+      # hashing, passed every `/^[0-9a-f]{32}$/` check in the repo, and produced a false
+      # positive in a ZetaId audit (#10690). This decodes the version field instead of
+      # trusting the regex, and carries a scan floor so it cannot pass by inspecting nothing.
+      - name: Run audit-observe-event-filenames (ZetaId-vs-hex ambiguity guard)
+        run: bun src/Core.TypeScript/hygiene/audit-observe-event-filenames.ts
+
       # 081KTSZN10008QG0R002J0GE0Z Reticulum-only clause: files marked SEALED-ROOM carry zero ambient-channel
       # tokens (fs/process/network/clock/entropy/Task.Run); falsifiers waive per-line, visibly.
       - name: Run audit-sealed-rooms (081KTSZN10008QG0R002J0GE0Z Reticulum-only lint half)
@@ -1193,6 +1225,16 @@ jobs:
         # class MECHANICALLY — no judgement about whether a discharge is *good*, only a
         # refusal of rows that contradict (or are missing) their cited evidence.
         run: bun src/Core.TypeScript/hygiene/lint-discharge-certificate-consistency.ts
+
+      - name: Guard — a golden-vector treaty may not claim a rule its vectors do not pin
+        # PR #10759 was filed on the premise "the tie-break behaviour is byte-locked into
+        # the four-oracle treaty." Measured, that premise was false: first-occurrence and
+        # ordinal-minimum each changed 0 of 7 pinned vectors, because six of the seven had
+        # no tie reaching quorum at all. "The treaty pinned a POINT; the prose claimed a
+        # RULE." This is spec-side mutation testing — mutate the RULE, count the vectors
+        # that change, and refuse a declared exclusion that changes zero. Cross-oracle byte
+        # agreement (the treaty's other, real job) is deliberately NOT audited here.
+        run: bun src/Core.TypeScript/hygiene/lint-treaty-rule-discrimination.ts
 
   lint-markdown:
     # markdownlint-cli2 on every .md file outside the ignore list in

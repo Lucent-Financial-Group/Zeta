@@ -187,6 +187,16 @@ export const ALLOWLIST: readonly { readonly file: string; readonly reason: strin
     file: "src/Core.TypeScript/git/tracked-files.test.ts",
     reason: "pins that tracked-file order is ordinal by exhibiting the locale order it must not be",
   },
+  {
+    file: "src/Core.TypeScript/hygiene/treaty-rule-alternatives.ts",
+    reason:
+      "the treaty-rule register — locale collation IS the alternative under evaluation. All three uses sit inside `evaluate:` callbacks that measure how many pinned vectors change if an implementer had chosen Intl.Collator instead of ordinal; the file exists to prove the vectors discriminate the two. Same shape as collation.test.ts above.",
+  },
+  {
+    file: "src/Core.TypeScript/hygiene/lint-treaty-rule-discrimination.test.ts",
+    reason:
+      "that register's falsifier — asserts Intl.Collator('en') orders 'Z' before 'a' while byte order does not, so the discriminating vectors are proven non-vacuous. The divergence is the assertion, as in society.test.ts above.",
+  },
 
   // ── THE PERMITTED DISPLAY EDGE ──────────────────────────────────────────────
   // Each verified by reading its call sites: `toLocale*` only, rendering a number
@@ -217,7 +227,8 @@ export const ALLOWLIST: readonly { readonly file: string; readonly reason: strin
   },
   {
     file: "demo/identity-dla-site/src/components/ui/calendar.tsx",
-    reason: "display edge — a calendar widget MUST render month and weekday names in the viewer's locale; that is the feature",
+    reason:
+      "display edge — a calendar widget MUST render month and weekday names in the viewer's locale; that is the feature",
   },
   {
     file: "demo/identity-dla-site/src/components/ui/chart.tsx",
@@ -225,7 +236,8 @@ export const ALLOWLIST: readonly { readonly file: string; readonly reason: strin
   },
   {
     file: "src/Renderers/website/client/src/components/ui/calendar.tsx",
-    reason: "display edge — a calendar widget MUST render month and weekday names in the viewer's locale; that is the feature",
+    reason:
+      "display edge — a calendar widget MUST render month and weekday names in the viewer's locale; that is the feature",
   },
   {
     file: "src/Renderers/website/client/src/components/ui/chart.tsx",
@@ -233,11 +245,13 @@ export const ALLOWLIST: readonly { readonly file: string; readonly reason: strin
   },
   {
     file: "src/Core.TypeScript/ops/model-rating-report.ts",
-    reason: "display edge — thousands separators in a console-only cost table; verified to write no file, so no committed diff can churn",
+    reason:
+      "display edge — thousands separators in a console-only cost table; verified to write no file, so no committed diff can churn",
   },
   {
     file: "src/Core.TypeScript/discovery/udp-lossy-transport.retention-measure.ts",
-    reason: "display edge — toLocaleString with the locale pinned explicitly to en-US, formatting console output of a measurement run",
+    reason:
+      "display edge — toLocaleString with the locale pinned explicitly to en-US, formatting console output of a measurement run",
   },
 ];
 

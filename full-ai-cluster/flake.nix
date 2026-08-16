@@ -85,8 +85,12 @@
     {
       # NixOS configurations: installer image + per-host targets.
       nixosConfigurations = {
-        # USB installer ISO — identical to the standalone
-        # usb-nixos-installer/ flake at the parent level.
+        # USB installer ISO — THE only definition. 081KZKS9A6B08QG0R0008EG72M
+        # retired the standalone usb-nixos-installer/flake.nix, which built
+        # this same configuration.nix but applied no overlays, so it shipped
+        # nixpkgs' mise (2025.11.7 at the locked rev) instead of the pinned
+        # 2026.6.12 — below .mise.toml's min_version, fatal at first boot.
+        # Enforced by src/Core.TypeScript/hygiene/mise-pin-parity.test.ts.
         installer = mkSystem {
           modules = [
             ./usb-nixos-installer/nixos/installer/configuration.nix
@@ -239,6 +243,17 @@
           # See nixos/tests/k3s-cluster-online.nix.
           k3s-cluster-online =
             import ./nixos/tests/k3s-cluster-online.nix { inherit pkgs; };
+
+          # THE CLOSEST THING TO PROD without touching prod: installs the REAL
+          # Longhorn chart at the REAL version with the REAL prod values, then
+          # proves a `longhorn` PVC BINDS and a pod writes through the mount.
+          # The platform-fixes check proves iscsiadm resolves; this one proves
+          # the rest of the chain that was dead for 62 days on node-5b2dfa
+          # (manager Ready -> Node CR -> StorageClass -> PVC Bound -> data).
+          # REQUIRES internet -> build with `--option sandbox false`.
+          # See nixos/tests/longhorn-volume-binds.nix.
+          longhorn-volume-binds =
+            import ./nixos/tests/longhorn-volume-binds.nix { inherit pkgs; };
         };
 
         devShells.default = pkgs.mkShell {

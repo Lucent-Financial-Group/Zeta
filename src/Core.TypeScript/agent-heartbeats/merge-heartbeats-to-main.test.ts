@@ -3,7 +3,15 @@
 import { describe, expect, it } from "bun:test";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { armOutcome, armingEnabled, heartbeatMergePrBody, parseArgs } from "./merge-heartbeats-to-main";
+import {
+  armOutcome,
+  armingEnabled,
+  heartbeatMergePrBody,
+  heartbeatMergePrTitle,
+  heartbeatSnapshot,
+  heartbeatSnapshotOutput,
+  parseArgs,
+} from "./merge-heartbeats-to-main";
 import { main as validateAgencySignature } from "../hygiene/validate-agencysignature-pr-body";
 
 const TEST_ENV = {} as NodeJS.ProcessEnv;
@@ -17,8 +25,9 @@ describe("parseArgs", () => {
     const r = parseArgs([], TEST_ENV);
     if ("error" in r) throw new Error(r.error);
     expect(r.repo).toBe("Lucent-Financial-Group/Zeta");
-    expect(r.head).toBe("agent-heartbeats");
+    expect(r.head).toBe("heartbeat/alexa");
     expect(r.base).toBe("main");
+    expect(r.sourceSha).toBeUndefined();
     expect(r.dryRun).toBe(false);
   });
 
@@ -30,11 +39,16 @@ describe("parseArgs", () => {
   });
 
   it("CLI flags override env + defaults", () => {
-    const r = parseArgs(["--repo", "x/y", "--head", "h", "--base", "b", "--dry-run"], TEST_ENV);
+    const sha = "a".repeat(40);
+    const r = parseArgs(
+      ["--repo", "x/y", "--head", "heartbeat/h", "--base", "b", "--source-sha", sha, "--dry-run"],
+      TEST_ENV,
+    );
     if ("error" in r) throw new Error(r.error);
     expect(r.repo).toBe("x/y");
-    expect(r.head).toBe("h");
+    expect(r.head).toBe("heartbeat/h");
     expect(r.base).toBe("b");
+    expect(r.sourceSha).toBe(sha);
     expect(r.dryRun).toBe(true);
   });
 
@@ -44,6 +58,10 @@ describe("parseArgs", () => {
 
   it("rejects unknown flag", () => {
     expect("error" in parseArgs(["--bogus"], TEST_ENV)).toBe(true);
+  });
+
+  it("rejects a non-canonical source SHA", () => {
+    expect("error" in parseArgs(["--source-sha", "ABC123"], TEST_ENV)).toBe(true);
   });
 });
 
@@ -99,6 +117,46 @@ describe("armingEnabled", () => {
     for (const v of ["true", "yes", "0", "", "on"]) {
       expect(armingEnabled({ ZETA_FLUSH_ARM_AUTOMERGE: v } as NodeJS.ProcessEnv)).toBe(false);
     }
+  });
+});
+
+describe("immutable heartbeat snapshots", () => {
+  const SHA_A = "a".repeat(40);
+  const SHA_B = "b".repeat(40);
+
+  it("maps one mutable head SHA to one deterministic heartbeat ref", () => {
+    const first = heartbeatSnapshot("heartbeat/alexa", SHA_A);
+    const replay = heartbeatSnapshot("heartbeat/alexa", SHA_A);
+    if ("error" in first || "error" in replay) throw new Error("valid snapshot rejected");
+    expect(first.ok).toEqual(replay.ok);
+    expect(first.ok.snapshotRef).toBe(`heartbeat/alexa-flush-${SHA_A}`);
+    expect(first.ok.snapshotRef).not.toBe(first.ok.sourceHead);
+  });
+
+  it("a later mutable tip cannot move or reuse the older checked ref", () => {
+    const first = heartbeatSnapshot("heartbeat/alexa", SHA_A);
+    const later = heartbeatSnapshot("heartbeat/alexa", SHA_B);
+    if ("error" in first || "error" in later) throw new Error("valid snapshot rejected");
+    expect(first.ok.snapshotRef).not.toBe(later.ok.snapshotRef);
+    expect(first.ok.sourceSha).toBe(SHA_A);
+    expect(later.ok.sourceSha).toBe(SHA_B);
+  });
+
+  it("rejects unsafe lane names and non-canonical SHAs as values", () => {
+    expect("error" in heartbeatSnapshot("alexa", SHA_A)).toBe(true);
+    expect("error" in heartbeatSnapshot("heartbeat/alexa/../../main", SHA_A)).toBe(true);
+    expect("error" in heartbeatSnapshot("heartbeat/alexa..next", SHA_A)).toBe(true);
+    expect("error" in heartbeatSnapshot("heartbeat/alexa.lock", SHA_A)).toBe(true);
+    expect("error" in heartbeatSnapshot("heartbeat/alexa", "ABC123")).toBe(true);
+  });
+
+  it("emits the exact ref and PR number consumed by the workflow", () => {
+    const snapshot = heartbeatSnapshot("heartbeat/vera", SHA_A);
+    if ("error" in snapshot) throw new Error(snapshot.error);
+    expect(heartbeatSnapshotOutput(snapshot.ok, 11096)).toBe(
+      `skip=false\nsource_head=heartbeat/vera\nsource_sha=${SHA_A}\n` +
+        `snapshot_ref=heartbeat/vera-flush-${SHA_A}\npr_number=11096\n`,
+    );
   });
 });
 
@@ -186,24 +244,73 @@ describe("heartbeat workflow credential split", () => {
     expect(pushStep).not.toContain("FALLBACK_TOKEN");
 
     // #10850's SECOND, latent break: it put the PAT on the flush checkout too.
-    // That credential pushes nothing -- every git call in the flush job is
-    // read-only -- so it gets no push rights. This half of the original pin is
-    // still exactly right and is kept.
+    // The checkout's workflow token now creates only the immutable snapshot ref;
+    // the PAT remains scoped to the PR operation and is not persisted into git.
     expect(flushCheckout).not.toContain("\n          token:");
   });
 
-  it("dispatches the required gate before arming auto-merge", () => {
+  it("prepares each tick by carrying the previous unflushed tree over current main", () => {
+    const prepareStep = HEARTBEAT_WORKFLOW.slice(
+      HEARTBEAT_WORKFLOW.indexOf("- name: Accumulate unflushed heartbeat state"),
+      HEARTBEAT_WORKFLOW.indexOf("- name: Run observe tick"),
+    );
+    expect(prepareStep).toContain("prepare-heartbeat-branch.ts");
+    expect(prepareStep).toContain('--agent "$AGENT"');
+    expect(prepareStep).not.toContain('git checkout -B "heartbeat/$AGENT" origin/main');
+  });
+
+  // RE-AIMED 2026-08-16 (second time today). The predecessor test here pinned the
+  // PRESENCE of `gh workflow run gate.yml` in the flush closure. That belt existed
+  // because a `pull_request` gate run used to park in `action_required`; #10986
+  // removed that cause, and measurement then showed the belt was not merely
+  // redundant but INERT — a `workflow_dispatch` gate run's checks never enter the
+  // flush PR's statusCheckRollup, so they cannot satisfy `gate (required)`.
+  // Observed on one commit: dispatch suite 86701078150 held
+  // `gate (required) completed/success` on PR #11165's head while #11165's rollup
+  // held nine contexts and no gate at all.
+  //
+  // So the assertion is INVERTED rather than deleted. A pin that says "the belt is
+  // here" would now defend a step that costs 3 full-matrix runs per 15-minute tick
+  // and feeds nothing; a pin that says "the belt is gone" defends the removal
+  // against a well-meaning re-add, which is the actual regression risk.
+  it("starts the required gate exactly once, through the PR event and nothing else", () => {
+    // Repo-wide, not closure-scoped: a re-add anywhere in this workflow revives the
+    // duplicate. There is exactly one gate-starting mechanism and it is the
+    // `pull_request` event on the flush PR, which is the only one the merge reads.
+    expect(HEARTBEAT_WORKFLOW).not.toContain("gh workflow run gate.yml");
+    expect(HEARTBEAT_WORKFLOW).not.toContain("secrets.ZETA_SOCIETY_DISPATCH_TOKEN");
+
+    // The removal is only safe because production keeps a falsifier for it. If the
+    // PR event stops starting gate, this step fails the tick instead of letting a
+    // lane merge unchecked — so its loss would silently restore the exact defect
+    // (#10986 / 081M010H4KE) the deleted belt was originally covering for.
+    expect(HEARTBEAT_WORKFLOW).toContain("- name: Fail if a heartbeat PR is old and gate never started");
+    expect(HEARTBEAT_WORKFLOW).toContain("required-check-started.ts --min-age-min 20");
+  });
+
+  it("arms auto-merge on the immutable outputs, never the mutable heartbeat head", () => {
     const flushClosure = HEARTBEAT_WORKFLOW.slice(
-      HEARTBEAT_WORKFLOW.indexOf("- name: Dispatch gate for heartbeat head"),
+      HEARTBEAT_WORKFLOW.indexOf("- name: Flush to main"),
       HEARTBEAT_WORKFLOW.indexOf("- name: Fail if a heartbeat PR is old"),
     );
-    const dispatchIndex = flushClosure.indexOf("gh workflow run gate.yml");
-    const mergeIndex = flushClosure.indexOf("gh pr merge");
-
-    expect(flushClosure).toContain("GH_TOKEN: ${{ secrets.ZETA_SOCIETY_DISPATCH_TOKEN }}");
-    expect(flushClosure).toContain("GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}");
-    expect(dispatchIndex).toBeGreaterThan(-1);
-    expect(mergeIndex).toBeGreaterThan(dispatchIndex);
+    // Re-anchored from the deleted dispatch step to the arming step — same
+    // property (the checked closure consumes the frozen snapshot outputs, never
+    // the mutable lane head that a later tick can advance under it).
+    const checkedClosure = flushClosure.slice(flushClosure.indexOf("- name: Arm heartbeat PR auto-merge"));
+    expect(flushClosure).toContain("id: flush");
+    expect(flushClosure).toContain('git push origin "$SOURCE_SHA:refs/heads/$SNAPSHOT_REF"');
+    expect(flushClosure).toContain('--source-sha "$SOURCE_SHA"');
+    // The freeze must still be VERIFIED after it is written -- the snapshot is what
+    // stops a later tick advancing the lane under an already-checked PR head. The
+    // deleted dispatch step was the last workflow-side reader of the `snapshot_ref`
+    // step OUTPUT, so this pins the property at the place that still enforces it
+    // rather than at a consumer that no longer exists.
+    expect(flushClosure).toContain("Heartbeat snapshot verification failed");
+    expect(checkedClosure).toContain("steps.flush.outputs.pr_number");
+    expect(checkedClosure).toContain("GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}");
+    expect(checkedClosure).toContain("gh pr merge");
+    expect(checkedClosure).not.toContain('--ref "heartbeat/$AGENT"');
+    expect(checkedClosure).not.toContain("gh pr list");
   });
 });
 
@@ -245,6 +352,15 @@ describe("heartbeatMergePrBody", () => {
     const { status, out } = validate(heartbeatMergePrBody("main", "2026-08-15T00:00:00.000Z", "AceHack"));
     expect(out).toContain("PASS: AgencySignature v1");
     expect(status).toBe(0);
+  });
+
+  it("does not claim the mixed tick branch is telemetry-only or skip normal review", () => {
+    const title = heartbeatMergePrTitle("main", "t");
+    const body = heartbeatMergePrBody("main", "t", "AceHack");
+    expect(title).toContain("[heartbeat-batch-merge]");
+    expect(title).not.toContain("[skip-review]");
+    expect(body).toContain("Apply normal review policy");
+    expect(body).not.toContain("ONLY touches");
   });
 
   it("MUTATION: the same body WITHOUT its block is rejected", () => {

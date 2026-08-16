@@ -235,14 +235,14 @@ jobs:
           ollama pull qwen2.5:7b
           ollama list
 
-      - name: Reset heartbeat branch from main (staleness impossible by construction)
+      - name: Accumulate unflushed heartbeat state over current main
         env:
           AGENT: ${{ matrix.agent }}
-        run: |
-          # ALWAYS start from current main. The flush (#9890) pushes events
-          # directly to main now, so no events are stranded on the branch.
-          # This makes staleness IMPOSSIBLE — the agent always runs the latest code.
-          git checkout -B "heartbeat/$AGENT" origin/main
+        # The lane ticks every 15 minutes but flushes about hourly. Rebuilding it directly from
+        # main discarded the intervening ticks. The source-owned preparer starts from current main
+        # and squash-carries the previous lane's final tree delta. Already-flushed state is empty;
+        # unflushed state is staged; a content conflict stops before the remote ref can be moved.
+        run: bun src/Core.TypeScript/agent-heartbeats/prepare-heartbeat-branch.ts --agent "$AGENT"
 
       - name: Run observe tick (local-llm, heartbeat mode)
         env:
@@ -257,7 +257,7 @@ jobs:
             --event-dir docs/observe-events \
             --participant local-llm || echo "[heartbeat] tick failed (non-fatal)"
 
-      - name: Commit heartbeat event
+      - name: Commit accumulated heartbeat tick
         env:
           AGENT: ${{ matrix.agent }}
         run: |
@@ -267,10 +267,10 @@ jobs:
           if git diff --cached --quiet; then
             echo "[heartbeat] no new events to commit"
           else
-            git commit --no-verify -m "heartbeat($AGENT): tick $(date -u +%Y-%m-%dT%H:%M:%SZ)
+            git commit --no-verify -m "heartbeat($AGENT): accumulated tick $(date -u +%Y-%m-%dT%H:%M:%SZ)
 
-          Autonomous observe loop heartbeat. Free-tier Ollama (qwen2.5:0.5b).
-          Agent: $AGENT. Symmetric pair (cross-verified by peer).
+          Carries any prior unflushed lane delta over current main, then adds this tick.
+          Free-tier Ollama (qwen2.5:0.5b). Agent: $AGENT.
 
           Co-Authored-By: Kiro <noreply@kiro.dev>"
           fi
@@ -1003,20 +1003,14 @@ jobs:
           AGENT: ${{ matrix.agent }}
         # --force-with-lease is REQUIRED here, and it is safe. Why both halves matter:
         #
-        # REQUIRED: the branch is reset from main each tick (#9895) and the flush SQUASHES onto
-        # main. A squash creates a NEW commit, so the branch's previous tip is never an ancestor
-        # of the new main:
-        #     tick 1:  branch = main@A + event1        -> push fast-forwards, fine
-        #     flush:   squash event1 onto main         -> main@B, which does NOT contain A+event1
-        #     tick 2:  checkout -B from B, + event2    -> remote is still A+event1, NOT an ancestor
-        #                                              -> plain push REJECTED (non-fast-forward)
-        # So an unforced push works exactly once after each flush and fails every tick after.
-        # Verified against the live repo: the pre-flush tip 80cf58075 is not an ancestor of main.
+        # REQUIRED: the branch is rebuilt over current main each tick, with its previous final
+        # tree delta squash-carried by prepare-heartbeat-branch.ts. Both that rebuild and the
+        # flush's squash create new commit identities, so the new lane tip is not generally a
+        # descendant of its remote predecessor even when every file is preserved.
         #
-        # SAFE: the heartbeat branch is scratch space, not a record. The flush has already landed
-        # its content on main before the next reset, so nothing unique lives here to lose.
-        # --force-with-lease (not --force) still refuses if someone else moved the ref underneath
-        # us — it declines a surprise, it just does not require ancestry.
+        # SAFE: before the rebuild, the preparer three-way merges the remote lane over current main
+        # and stages every unflushed change. A conflict stops the tick without pushing. The lease
+        # then refuses if another writer moved the remote ref after that observation.
         #
         # CONFIG NOTE: this is why `heartbeat/*` must NOT carry a `non_fast_forward` ruleset.
         # Ruleset 16934633 ("Heartbeat Branch Protection") now targets `refs/heads/heartbeat/*`
@@ -1076,9 +1070,9 @@ jobs:
           #
           # The tick checkout got the PAT back (081M05G8D36087G0R0034D3QPA) because its
           # credential performs the `heartbeat/$AGENT` push whose ACTOR decides whether gate
-          # runs. This one does not push anything. Checked, not assumed: the only `git push`
-          # in this workflow is the tick job's; every git call in this job is read-only
-          # (`fetch`, `rev-list`, `log`, `config`), which the default GITHUB_TOKEN does fine.
+          # runs. This one creates one immutable snapshot ref before the PR-only identity takes
+          # over. That push uses the workflow's `contents: write` GITHUB_TOKEN; it cannot update
+          # main, and it never moves an existing snapshot. All later git calls are read-only.
           #
           # #10850 put the PAT here too, and that was its second, latent break. Correcting the
           # record while I am here: #10926 justified reverting it by saying this credential
@@ -1089,8 +1083,8 @@ jobs:
           # forward next time.
           #
           # The PR-creation identity does NOT come from here — it comes from `GH_TOKEN` on the
-          # Flush step below, which `gh` reads. Least privilege: a credential that pushes
-          # nothing gets no push rights.
+          # Flush step below, which `gh` reads. Least privilege: the checkout may create only
+          # the immutable input ref; the PR identity does not gain repository-write authority.
           persist-credentials: true
 
       # WITHOUT THIS THE WHOLE FLUSH JOB IS DEAD. The Flush step below shells out to
@@ -1197,6 +1191,7 @@ jobs:
       # lands after main moved with BOTH agents' events preserved (union); re-flushing
       # already-landed events is a no-op; and a rejected push replays and lands on attempt 2.
       - name: Flush to main (staging branch + checked squash-merge PR)
+        id: flush
         if: steps.check.outputs.skip != 'true'
         env:
           AGENT: ${{ matrix.agent }}
@@ -1208,6 +1203,26 @@ jobs:
         run: |
           AHEAD=$(git rev-list --count "origin/main..origin/heartbeat/$AGENT")
           echo "[flush] $AGENT: $AHEAD heartbeat commits to flush"
+
+          # Freeze the exact checked input before the mutable lane can advance on its next tick.
+          # Snapshot creation belongs to this checkout's contents-write credential. The tool below
+          # deliberately has only PR + metadata authority and verifies this ref without moving it.
+          SOURCE_SHA=$(git rev-parse "origin/heartbeat/$AGENT")
+          SNAPSHOT_REF="heartbeat/$AGENT-flush-$SOURCE_SHA"
+          EXISTING_SHA=$(git ls-remote --heads origin "refs/heads/$SNAPSHOT_REF" | awk '{print $1}')
+          if [ -z "$EXISTING_SHA" ]; then
+            git push origin "$SOURCE_SHA:refs/heads/$SNAPSHOT_REF"
+          elif [ "$EXISTING_SHA" != "$SOURCE_SHA" ]; then
+            echo "::error title=Heartbeat snapshot collision::$SNAPSHOT_REF points to $EXISTING_SHA, expected $SOURCE_SHA"
+            exit 1
+          else
+            echo "[flush] $AGENT: reusing immutable $SNAPSHOT_REF"
+          fi
+          CONFIRMED_SHA=$(git ls-remote --heads origin "refs/heads/$SNAPSHOT_REF" | awk '{print $1}')
+          if [ "$CONFIRMED_SHA" != "$SOURCE_SHA" ]; then
+            echo "::error title=Heartbeat snapshot verification failed::$SNAPSHOT_REF resolved to $CONFIRMED_SHA, expected $SOURCE_SHA"
+            exit 1
+          fi
 
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -1251,15 +1266,15 @@ jobs:
           # so the call is authenticated with a fine-grained PAT instead — the restriction is on
           # the identity, not the operation. Same ladder pr-archive-on-merge.yml already uses.
           #
-          # What the sovereign-mode note got RIGHT is unchanged and still respected: there is
-          # nothing for a human to review in 300 machine-written event files. The PR is not a
-          # review gate here, it is the only available transport for a checked merge — it carries
-          # [skip-review] markers and auto-merges itself the moment `gate` is green.
+          # The PR is the transport for a checked merge. The tick can now carry generated events,
+          # archives, repairs, and source changes, so it keeps the batch marker but does not claim
+          # a telemetry-only review exemption. Auto-merge remains gated by the required checks.
           #
-          # The events are never at risk: they are already on origin/heartbeat/$AGENT (that push
-          # succeeded above). If the PR is slow, or the PAT is absent, they simply wait there and
-          # the next tick carries them plus any new ones. Re-flushing an already-landed event set
-          # is a no-op (G-Set union, discipline #6).
+          # The events are never at risk: this workflow snapshots the exact mutable branch SHA
+          # onto an immutable `heartbeat/<agent>-flush-<sha>` ref, and the PR tool verifies that
+          # ref before opening the PR. A later tick may reset and advance `heartbeat/$AGENT`, but
+          # it cannot move the checked PR head. A rerun at the same SHA reuses the same snapshot;
+          # a new SHA gets a new snapshot. Re-flushing an already-landed event set is a no-op.
           # `set +e` around the call is load-bearing: the default step shell is
           # `bash -eo pipefail`, so without it a non-zero exit aborts the step before $?
           # can be read — and rc=4 ("already on main") would be reported as a failure.
@@ -1267,6 +1282,7 @@ jobs:
           bun src/Core.TypeScript/agent-heartbeats/merge-heartbeats-to-main.ts \
             --repo "$GITHUB_REPOSITORY" \
             --head "heartbeat/$AGENT" \
+            --source-sha "$SOURCE_SHA" \
             --base main
           RC=$?
           set -e
@@ -1278,48 +1294,74 @@ jobs:
           fi
           if [ "$RC" -ne 0 ]; then
             echo "[flush] $AGENT: could not open/arm the flush PR (rc=$RC)."
-            echo "[flush] NO EVENTS LOST — they remain on origin/heartbeat/$AGENT, and the next"
-            echo "[flush] tick carries them plus any new ones. The flush is idempotent: re-merging"
-            echo "[flush] an already-landed event set is a no-op (G-Set union)."
+            echo "[flush] NO EVENTS LOST — the workflow parks the exact source SHA on an"
+            echo "[flush] immutable heartbeat snapshot before opening its PR. The flush is idempotent:"
+            echo "[flush] re-merging an already-landed event set is a no-op (G-Set union)."
             exit 1
           fi
 
-      - name: Dispatch gate for heartbeat head
-        if: steps.check.outputs.skip != 'true'
-        env:
-          AGENT: ${{ matrix.agent }}
-          # This fine-grained credential owns Actions dispatch only. It does not
-          # need repository contents write, and the browser/device relay remains
-          # unable to merge or push main directly.
-          GH_TOKEN: ${{ secrets.ZETA_SOCIETY_DISPATCH_TOKEN }}
-        run: |
-          if [ -z "$GH_TOKEN" ]; then
-            echo "::error title=Heartbeat gate dispatch unavailable::ZETA_SOCIETY_DISPATCH_TOKEN is not configured"
-            exit 1
-          fi
-          gh workflow run gate.yml \
-            --repo "$GITHUB_REPOSITORY" \
-            --ref "heartbeat/$AGENT"
-          echo "[flush] $AGENT: dispatched gate.yml for heartbeat/$AGENT"
-
+      # THE GATE DISPATCH BELT THAT USED TO SIT HERE WAS REMOVED 2026-08-16, AND THE
+      # REASON IS NOT "IT IS REDUNDANT". IT WAS INERT. Measured, not inferred.
+      #
+      # (The literal invocation is spelled out nowhere in this file on purpose: the
+      # unit test pins its ABSENCE by string search, so writing it even inside a
+      # comment would defeat the pin.)
+      #
+      # The dispatch belt was added when a `pull_request` gate run on a heartbeat
+      # lane was created and immediately parked (`completed`/`action_required`)
+      # because the pushing actor was `github-actions[bot]`. #10986 fixed that at
+      # the root by putting a PAT on the checkout whose credential performs the
+      # push, and the `pull_request` run has executed normally since the 17:49Z
+      # cutover — zero `action_required` on alexa/otto/soraya after 18:00Z, all
+      # runs triggered by the PAT actor.
+      #
+      # What the measurement then showed is stronger than redundancy. A
+      # `workflow_dispatch` gate run's checks DO NOT ENTER THE FLUSH PR'S
+      # statusCheckRollup, so they can never satisfy the `gate (required)`
+      # required status check. Both halves observed on the same commit:
+      #   PR #11165, head 3da9b0f3 — dispatch check-suite 86701078150 carried
+      #     `gate (required) completed/success`, and the PR's rollup carried nine
+      #     contexts, none of them gate. `required-check-started.ts` agreed:
+      #     "gate (required) never started on heartbeat PR(s): #11165 ...".
+      #   PR #11166 / #11167 — merged, and the `gate (required)` in the rollup
+      #     came from the `pull_request` run, never from the dispatch run beside it.
+      # So the dispatch was paying for a full matrix that no merge could ever read.
+      #
+      # It was also the MORE expensive of the two: `matrix-setup` gives
+      # `workflow_dispatch` the full OS set (5 build legs, Windows + macOS) and
+      # gives `pull_request` the pre-merge set (3 legs). Cadence measured over 13
+      # consecutive cycles: exactly 3 dispatch gate runs every 15 minutes, without
+      # exception — 288/day of full-matrix work with no consumer.
+      #
+      # AND THE FALSIFIER IS ALREADY IN PRODUCTION, one step below: "Fail if a
+      # heartbeat PR is old and gate never started" exits 1 when a heartbeat PR
+      # older than one tick has no `gate (required)` in its rollup. If removing
+      # this belt is wrong, that step says so on the next tick rather than a lane
+      # merging unchecked. That is why the belt could be removed rather than
+      # merely suspected.
+      #
+      # Reasoning inherited from #10986, which declined to ADD this belt to the
+      # lanes it treated: two independent gate-starting mechanisms make the result
+      # unattributable. That argument applies here in reverse — one mechanism, and
+      # it is the one whose checks the merge actually reads.
+      #
+      # DO NOT re-add a dispatch here to "make sure gate runs". If a flush PR has
+      # no gate run, the cause is upstream of this step: every flush PR observed
+      # without a `pull_request` gate run was `mergeStateStatus: DIRTY` (a
+      # conflicting PR has no computable merge ref), and a dispatch does not fix a
+      # conflict — it only hides the conflict behind a green check nobody reads.
       - name: Arm heartbeat PR auto-merge
-        if: steps.check.outputs.skip != 'true'
+        if: steps.check.outputs.skip != 'true' && steps.flush.outputs.skip != 'true'
         env:
           AGENT: ${{ matrix.agent }}
+          PR: ${{ steps.flush.outputs.pr_number }}
           # The workflow token has contents:write and is already proven by the
           # earlier merge-duty step to arm automation-only PRs. The scoped PAT
           # intentionally cannot perform enablePullRequestAutoMerge.
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          PR=$(gh pr list \
-            --repo "$GITHUB_REPOSITORY" \
-            --state open \
-            --head "heartbeat/$AGENT" \
-            --base main \
-            --json number \
-            --jq '.[0].number // empty')
           if [ -z "$PR" ]; then
-            echo "::error title=Heartbeat flush PR missing::$AGENT has events to flush but no open PR"
+            echo "::error title=Heartbeat flush PR missing::$AGENT snapshot produced no PR number"
             exit 1
           fi
           gh pr merge "$PR" --repo "$GITHUB_REPOSITORY" --squash --auto --delete-branch
