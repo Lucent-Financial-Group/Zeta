@@ -27,8 +27,10 @@
  *   3 — TIMEOUT     (budget exhausted while the guest was demonstrably
  *                    still progressing through the boot; NOT evidence of
  *                    a broken image)
- *   4 — STALLED     (the guest reached the kernel handoff and then went
- *                    SILENT for STALL_SECONDS -- a hang, not a slow boot)
+ *   4 — STALLED     (the guest reached the kernel handoff and then emitted
+ *                    NOTHING for STALL_SECONDS. This reports the FACT --
+ *                    prolonged silence -- and deliberately does not claim
+ *                    whether the guest is hung or starved of CPU.)
  *
  * ── WHY 1 AND 3 ARE DIFFERENT EXIT CODES (2026-08-16) ───────────────
  * They used to be the same code with only a free-text `reason` to tell
@@ -77,20 +79,37 @@ const TIMEOUT_SECONDS = 300; // 5 min — generous; typical x86_64 KVM boot is 6
 // So the CPU MODEL is not the lever; host speed and QEMU version are.
 // CI runs QEMU 8.2.2 on a 4-vCPU Ampere runner.
 //
-// CORRECTION (job 95208551157, the first run with the ladder): raising
-// this budget to 4200 did NOT help and the reasoning behind it was wrong.
-// The CI ladder came back
-//     t=1s firmware | t=16s bootloader | t=17s efi-stub | then silence
-// which is the SAME timing as the local measurements above through the
-// EFI stub. The runner is not slow; it stops. So the budget is no longer
-// the lever either, and the value below is kept only as an outer bound —
-// STALL_SECONDS is what actually ends these runs now.
+// TWO instrumented CI runs, and they DISAGREE — which is the finding:
+//   job 95208551157: t=1s firmware | t=16s bootloader | t=17s efi-stub
+//                    | then NOTHING for 4184s. Never booted.
+//   job 95218377728: t=1s firmware | t=16s bootloader | t=17s efi-stub
+//                    | login t=192s. BOOTED.
+// Same image, same workflow, same runner type. Identical to the EFI stub
+// (and identical to the local host); then the SAME segment takes 175s on
+// one run and >4184s on the other — a >24x swing.
+//
+// So the aarch64 TCG lane is INTERMITTENT, not uniformly slow and not
+// deterministically broken. That vindicates the original 2026-06-12 note
+// this file already carried (two 900s timeouts parked in the EFI stub,
+// then the identical commit passed on rerun once the runner pool freed).
+// I briefly concluded "deterministic hang" from the single bad run; the
+// good run refutes that, and one observation was never enough to support
+// it.
+//
+// The budget stays generous because a good run finishes in ~192s and a
+// contended one may legitimately need far more.
 const AARCH64_TCG_TIMEOUT_SECONDS = 4200; // 70 min
 const POLL_INTERVAL_MS = 1000;
-// Silence past the kernel handoff that we treat as a hang. Locally the
-// efi-stub -> login segment takes ~35s, so 600s is ~17x headroom and is
-// still 7x cheaper than sitting out the 4200s budget.
-const DEFAULT_STALL_SECONDS = 600;
+// How long the serial may stay COMPLETELY SILENT past the kernel handoff
+// before we stop waiting. This is a cost bound, NOT a diagnosis: it ends
+// a futile 70-minute burn early, and it deliberately does not claim to
+// know whether the guest is hung or merely starved.
+//
+// Sizing it honestly against both runs: a healthy CI boot is ~192s END TO
+// END, and the bad run emitted nothing for 4184s. 1200s is >6x a whole
+// healthy boot, which leaves real room for a contended-but-progressing
+// run, while still cutting the wasted budget from 70min to ~20min.
+const DEFAULT_STALL_SECONDS = 1200;
 const MEMORY_MB = 2048; // installer needs >= 1GB; 2GB gives headroom for nix
 const KVM_PATH = "/dev/kvm";
 
@@ -208,21 +227,19 @@ export function classifyBoot(input: ClassifyInput): BootClassification {
     };
   }
 
-  // STALL: the guest handed off to the kernel and then went silent.
+  // STALL: the guest handed off to the kernel and then emitted nothing
+  // for a long time.
   //
-  // This exists because raising the budget 1800 -> 4200 was WRONG and the
-  // instrumentation I added proved it wrong on the first real run
-  // (job 95208551157). The CI stage ladder was:
-  //     t=1s firmware, t=16s bootloader, t=17s efi-stub, then NOTHING
-  //     for 4184 more seconds.
-  // The identical ladder measured locally is t=1s / t=16s / t=17s and
-  // then login at t=52s. So the runner is the SAME SPEED as a local M2
-  // Ultra all the way to the EFI stub and then stops. A slow machine
-  // does not run the first three stages at 1.0x and the fourth at
-  // <0.01x — this is a HANG at kernel entry, not a budget shortfall.
+  // This is a COST BOUND on a lane measured to be intermittent (see the
+  // two disagreeing runs noted at DEFAULT_STALL_SECONDS): one run sat
+  // silent for 4184s and never booted, another booted in 192s. Sitting
+  // out the full 4200s budget on the bad runs costs 70 minutes of
+  // arm-runner time and produces no more information than stopping
+  // earlier does.
   //
-  // Waiting longer therefore buys nothing and costs 70 minutes of
-  // arm-runner time per run. Detect the silence instead and say so.
+  // It reports the FACT (silence of N seconds at stage X) and leaves the
+  // reading — hung vs starved — to whoever looks. Detection is not a
+  // verdict.
   if (
     input.secondsSinceSerialGrowth !== undefined &&
     input.secondsSinceSerialGrowth >= (input.stallSeconds ?? DEFAULT_STALL_SECONDS) &&
@@ -233,9 +250,10 @@ export function classifyBoot(input: ClassifyInput): BootClassification {
       stage,
       reason:
         `Stalled at stage ${stage} — the serial console produced nothing for ` +
-        `${input.secondsSinceSerialGrowth}s. The guest reached the kernel handoff and went ` +
-        `silent, which is a HANG, not a slow boot (for reference the same image takes ~35s ` +
-        `from this stage to the login prompt on a local TCG host).`,
+        `${input.secondsSinceSerialGrowth}s after the kernel handoff. Reference points: the ` +
+        `same image boots end-to-end in ~192s on a good CI run and ~52s on a local TCG host. ` +
+        `This reports the SILENCE, not a diagnosis — the guest may be hung or merely starved ` +
+        `of CPU on a contended runner, and this harness cannot tell those apart.`,
     };
   }
 

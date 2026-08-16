@@ -201,12 +201,14 @@ describe("classifyBoot — TIMEOUT and BOOT-FAILED are distinguishable", () => {
   });
 });
 
-describe("STALLED — the hang the budget raise could not fix", () => {
-  // The 4200s budget was raised on the theory that CI was slow. The
-  // instrumented run (job 95208551157) refuted it: CI reached firmware
-  // at t=1s, bootloader at t=16s, efi-stub at t=17s -- IDENTICAL to the
-  // local ladder -- and then emitted nothing for 4184 more seconds. The
-  // same image goes efi-stub -> login in ~35s locally. That is a hang.
+describe("STALLED — a cost bound on an intermittent lane, not a diagnosis", () => {
+  // TWO instrumented CI runs disagree, and that disagreement IS the
+  // finding:
+  //   job 95208551157 — efi-stub at t=17s, then nothing for 4184s, never booted
+  //   job 95218377728 — efi-stub at t=17s, login at t=192s, booted
+  // Same image, same runner type, >24x swing in the same segment. So the
+  // lane is intermittent. STALLED bounds the wasted time on the bad runs;
+  // it does NOT claim to know whether the guest hung or was starved.
   const stalled = (serial: string, silentFor: number) =>
     classifyBoot({
       serial,
@@ -225,11 +227,26 @@ describe("STALLED — the hang the budget raise could not fix", () => {
   });
 
   it("does not fire before the silence threshold", () => {
-    expect(stalled(CI_TIMEOUT, 599).outcome).not.toBe("STALLED");
+    expect(stalled(CI_TIMEOUT, 1199).outcome).not.toBe("STALLED");
   });
 
   it("fires at the threshold", () => {
-    expect(stalled(CI_TIMEOUT, 600).outcome).toBe("STALLED");
+    expect(stalled(CI_TIMEOUT, 1200).outcome).toBe("STALLED");
+  });
+
+  // The measured good run booted end-to-end in 192s. The threshold must
+  // sit far enough above a whole healthy boot that a contended-but-
+  // progressing run is not cut off and mislabelled.
+  it("leaves >6x headroom over a whole healthy CI boot (192s)", () => {
+    expect(stalled(CI_TIMEOUT, 192).outcome).not.toBe("STALLED");
+    expect(stalled(CI_TIMEOUT, 1000).outcome).not.toBe("STALLED");
+  });
+
+  // Detection is dual-use: report the fact, do not attach the verdict.
+  it("states the silence as a FACT and does not assert 'hang'", () => {
+    const c = stalled(CI_TIMEOUT, 4184);
+    expect(c.reason).toContain("produced nothing for 4184s");
+    expect(c.reason).toContain("cannot tell those apart");
   });
 
   it("does NOT fire below the kernel handoff — that is BOOT-FAILED territory", () => {

@@ -678,25 +678,24 @@ jobs:
               } >> "$GITHUB_STEP_SUMMARY"
               ;;
             4)
-              # STALLED. Measured on job 95208551157: the guest reaches the
-              # EFI stub at t=17s -- the same timing as a local host -- and
-              # then emits nothing for another 4184s. It is a hang, not a
-              # slow runner, so waiting out the 70-minute budget bought
-              # nothing and cost 70 minutes of arm-runner time.
+              # STALLED -- serial silent past the kernel handoff for the
+              # stall window. This lane is measured INTERMITTENT: job
+              # 95208551157 sat silent 4184s and never booted, job
+              # 95218377728 booted in 192s, same image and runner type.
               #
-              # Deliberately still ADVISORY, and this is the open question:
-              # on the evidence so far this is a REAL and reproducible
-              # aarch64 boot break, which argues for blocking. It is left
-              # non-blocking pending a second observation and a human call,
-              # because flipping it red on one data point would red the ISO
-              # lane on an inference rather than a confirmed rate.
-              echo "::warning::aarch64 QEMU boot: STALLED at the kernel handoff -- serial went silent past the EFI stub. This is a HANG, not a slow runner; raising the budget does not fix it."
+              # ADVISORY, and it should stay advisory: on this evidence a
+              # stall is at least as likely to be a starved runner as a
+              # broken image, and blocking on it would red the ISO lane for
+              # runner contention. The harness reports the silence as a
+              # fact and does not diagnose it; BOOT-FAILED (exit 1) is the
+              # bucket that carries positive evidence and that one blocks.
+              echo "::warning::aarch64 QEMU boot: STALLED -- serial produced nothing for the stall window after the kernel handoff. This lane is intermittent (192s on a good run); the harness does not claim whether the guest hung or was starved."
               {
                 echo "aarch64 QEMU boot: **STALLED (advisory)** -- silent past the EFI stub."
                 echo ""
-                echo "The guest reaches the kernel handoff at the same speed as a local host and"
-                echo "then stops. Raising the time budget does not help; this needs a real fix."
-                echo "See the stage ladder in the step log."
+                echo "This lane is measured intermittent: 192s end-to-end on a good run, and one"
+                echo "run silent for 4184s. Stopping early bounds the wasted runner time; it is"
+                echo "not a diagnosis. See the stage ladder in the step log."
               } >> "$GITHUB_STEP_SUMMARY"
               ;;
             *)
