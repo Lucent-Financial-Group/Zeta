@@ -31,6 +31,21 @@ So a single constant, **B₂ = 1/6**, generates both π²/6 and −1/12; the fun
 ties the two formulas together. (Anchors: Euler, *Institutiones calculi differentialis*, 1755;
 Riemann 1859 for the continuation and functional equation.)
 
+**A near-miss worth keeping, because it is not a slip.** Aaron, recalling the handle: *"i kept
+wanting to say euler's numbers but i knew that was not right — i think it was Bernoulli numbers."*
+It was. But **Euler numbers E_n are a real and closely related object**, not a confusion:
+
+| | generating function | attached L-function |
+|---|---|---|
+| **Bernoulli** B_n | x/(eˣ − 1) | **ζ(s)** — the Riemann zeta function |
+| **Euler** E_n | sech(x) = 2/(eˣ + e⁻ˣ) | **β(s)** — the Dirichlet beta function |
+
+Euler numbers stand to the Dirichlet beta function exactly as Bernoulli numbers stand to ζ —
+β(−n) is given by Euler numbers, and β(2) is Catalan's constant (whose irrationality, like ζ(3)'s
+before Apéry, is the hard open question). So the reach for "Euler numbers" landed on the right
+*family*, one L-function over. Recorded because a near-miss that identifies a genuine sibling is
+evidence the structure is held correctly, not evidence of fuzziness.
+
 One object — ζ, **the finitizer**: it assigns a divergent sum a finite value — surfacing across
 analysis, number theory, and physics over roughly 250 years.
 
