@@ -1,16 +1,9 @@
-// tools/agent-heartbeats/merge-heartbeats-to-main.test.ts — 081KSKBP80008QG0R001KK9WV6.4 merge-tool tests.
+// src/Core.TypeScript/agent-heartbeats/merge-heartbeats-to-main.test.ts — heartbeat merge-tool tests.
 
 import { describe, expect, it } from "bun:test";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import {
-  armOutcome,
-  armingEnabled,
-  heartbeatMergePrBody,
-  parseArgs,
-  refreshExistingPR,
-  type GhCommandResult,
-} from "./merge-heartbeats-to-main";
+import { armOutcome, armingEnabled, heartbeatMergePrBody, parseArgs } from "./merge-heartbeats-to-main";
 import { main as validateAgencySignature } from "../hygiene/validate-agencysignature-pr-body";
 
 const TEST_ENV = {} as NodeJS.ProcessEnv;
@@ -109,48 +102,6 @@ describe("armingEnabled", () => {
   });
 });
 
-describe("refreshExistingPR", () => {
-  it("closes with the current transcript and reopens to emit the subscribed event", () => {
-    const calls: { readonly args: string[]; readonly input: string | undefined }[] = [];
-    const runGh = (args: string[], input?: string): GhCommandResult => {
-      calls.push({ args, input });
-      return { status: 0, stdout: "{}", stderr: "" };
-    };
-
-    expect(refreshExistingPR("o/r", 42, "fresh title", "fresh body", runGh)).toEqual({ ok: true });
-    expect(calls).toHaveLength(2);
-    expect(calls[0]?.args).toEqual(["api", "-X", "PATCH", "repos/o/r/pulls/42", "--input", "-"]);
-    expect(JSON.parse(calls[0]?.input ?? "null")).toEqual({
-      title: "fresh title",
-      body: "fresh body",
-      state: "closed",
-    });
-    expect(JSON.parse(calls[1]?.input ?? "null")).toEqual({ state: "open" });
-  });
-
-  it("stops if close fails instead of claiming that the gate was retriggered", () => {
-    let calls = 0;
-    const result = refreshExistingPR("o/r", 7, "t", "b", () => {
-      calls += 1;
-      return { status: 1, stdout: "", stderr: "denied" };
-    });
-    expect(result).toEqual({ error: "PR refresh close failed: denied" });
-    expect(calls).toBe(1);
-  });
-
-  it("reports a failed reopen so a closed PR is never described as refreshed", () => {
-    let calls = 0;
-    const result = refreshExistingPR("o/r", 8, "t", "b", () => {
-      calls += 1;
-      return calls === 1
-        ? { status: 0, stdout: "{}", stderr: "" }
-        : { status: 1, stdout: "", stderr: "host unavailable" };
-    });
-    expect(result).toEqual({ error: "PR refresh reopen failed: host unavailable" });
-    expect(calls).toBe(2);
-  });
-});
-
 describe("heartbeat workflow credential split", () => {
   it("never relies on the pull-request-only PAT as the sole branch writer", () => {
     expect(HEARTBEAT_WORKFLOW).toContain("FALLBACK_TOKEN: ${{ secrets.GITHUB_TOKEN }}");
@@ -160,13 +111,18 @@ describe("heartbeat workflow credential split", () => {
     expect(HEARTBEAT_WORKFLOW).toContain('git push --force-with-lease origin "heartbeat/$AGENT"');
   });
 
-  it("re-arms the refreshed PR with the write-capable workflow token", () => {
-    const armStep = HEARTBEAT_WORKFLOW.slice(
-      HEARTBEAT_WORKFLOW.indexOf("- name: Arm heartbeat PR auto-merge"),
+  it("dispatches the required gate before arming auto-merge", () => {
+    const flushClosure = HEARTBEAT_WORKFLOW.slice(
+      HEARTBEAT_WORKFLOW.indexOf("- name: Dispatch gate for heartbeat head"),
       HEARTBEAT_WORKFLOW.indexOf("- name: Fail if a heartbeat PR is old"),
     );
-    expect(armStep).toContain("GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}");
-    expect(armStep).toContain("gh pr merge");
+    const dispatchIndex = flushClosure.indexOf("gh workflow run gate.yml");
+    const mergeIndex = flushClosure.indexOf("gh pr merge");
+
+    expect(flushClosure).toContain("GH_TOKEN: ${{ secrets.ZETA_SOCIETY_DISPATCH_TOKEN }}");
+    expect(flushClosure).toContain("GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}");
+    expect(dispatchIndex).toBeGreaterThan(-1);
+    expect(mergeIndex).toBeGreaterThan(dispatchIndex);
   });
 });
 

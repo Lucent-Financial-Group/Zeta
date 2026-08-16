@@ -16,8 +16,8 @@ name: agent-heartbeat
 
 on:
   schedule:
-    - cron: '*/15 * * * *'  # every 15 minutes
-  workflow_dispatch:         # manual trigger for testing
+    - cron: "*/15 * * * *" # every 15 minutes
+  workflow_dispatch: # manual trigger for testing
 
 permissions:
   contents: write
@@ -33,7 +33,7 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     strategy:
-      fail-fast: false  # both agents tick independently
+      fail-fast: false # both agents tick independently
       matrix:
         agent: [alexa, otto, soraya]
 
@@ -723,13 +723,12 @@ jobs:
             echo "[work] No new work produced this tick"
           fi
 
-
-  # ═══ Flush: merge heartbeat events to main (hourly, per agent) ═══════════════
-  #
-  # CORPORATE MODE: creates a PR per agent. The agent-reviewer workflow
-  # cross-verifies (the symmetric NFT attestation) then approves.
-  #
-  # SOVEREIGN MODE (goal): direct push, cross-verification stays as attestation-only.
+      # ═══ Flush: merge heartbeat events to main (hourly, per agent) ═══════════════
+      #
+      # CORPORATE MODE: creates a PR per agent. The agent-reviewer workflow
+      # cross-verifies (the symmetric NFT attestation) then approves.
+      #
+      # SOVEREIGN MODE (goal): direct push, cross-verification stays as attestation-only.
       # THE PUSH IS LAST, DELIBERATELY — see the ordering audit of 2026-08-01.
       #
       # This job has exactly ONE push. Every step that produces an artifact must therefore run
@@ -873,10 +872,11 @@ jobs:
         # branch, the flush PR's gate does not start) for a DEAD one (nothing lands at all).
         # So: attempt the PAT push first — when the token is granted `contents: write` this is
         # byte-identical to #10850's intent — and on a credential denial ONLY, fall back to
-        # GITHUB_TOKEN so the lane keeps recording. The flush job then closes and reopens the
-        # reused PR under the pull-request-scoped PAT, producing the subscribed `reopened`
-        # event for the fallback-authored head. `required-check-started.ts` remains strict if
-        # that event path fails; the credential fallback alone cannot make the lane look green.
+        # GITHUB_TOKEN so the lane keeps recording. The flush job then dispatches gate.yml at
+        # the exact heartbeat head with the existing Actions-scoped credential. That is an
+        # explicit check request, independent of which credential authored the branch push.
+        # `required-check-started.ts` remains strict if dispatch fails; the credential fallback
+        # alone cannot make the lane look green.
         run: |
           set -euo pipefail
           if git push --force-with-lease origin "heartbeat/$AGENT" 2>/tmp/heartbeat-push.err; then
@@ -892,13 +892,13 @@ jobs:
             exit 1
           fi
 
-          echo "::warning::[heartbeat] ZETA_TELEMETRY_FLUSH_TOKEN cannot push to this repo (403). Falling back to GITHUB_TOKEN so heartbeat/$AGENT keeps recording; the flush job will reopen its PR under the scoped PAT so gate (required) can start without broadening that credential."
+          echo "::warning::[heartbeat] ZETA_TELEMETRY_FLUSH_TOKEN cannot push to this repo (403). Falling back to GITHUB_TOKEN so heartbeat/$AGENT keeps recording; the flush job will explicitly dispatch gate.yml with the Actions-scoped token."
           {
             echo "### heartbeat/$AGENT pushed on the FALLBACK credential"
             echo ""
             echo "\`ZETA_TELEMETRY_FLUSH_TOKEN\` was denied (403) and \`GITHUB_TOKEN\` was used instead."
-            echo "The branch write used GITHUB_TOKEN; the flush job must reopen the PR under the scoped PAT."
-            echo "This keeps branch-write and pull-request authority separate."
+            echo "The branch write used GITHUB_TOKEN; the flush job dispatches gate.yml separately."
+            echo "This keeps branch-write and Actions-dispatch authority separate."
           } >> "$GITHUB_STEP_SUMMARY"
 
           # actions/checkout persists its token as an http.extraheader, which takes precedence
@@ -1133,6 +1133,24 @@ jobs:
             echo "[flush] an already-landed event set is a no-op (G-Set union)."
             exit 1
           fi
+
+      - name: Dispatch gate for heartbeat head
+        if: steps.check.outputs.skip != 'true'
+        env:
+          AGENT: ${{ matrix.agent }}
+          # This fine-grained credential owns Actions dispatch only. It does not
+          # need repository contents write, and the browser/device relay remains
+          # unable to merge or push main directly.
+          GH_TOKEN: ${{ secrets.ZETA_SOCIETY_DISPATCH_TOKEN }}
+        run: |
+          if [ -z "$GH_TOKEN" ]; then
+            echo "::error title=Heartbeat gate dispatch unavailable::ZETA_SOCIETY_DISPATCH_TOKEN is not configured"
+            exit 1
+          fi
+          gh workflow run gate.yml \
+            --repo "$GITHUB_REPOSITORY" \
+            --ref "heartbeat/$AGENT"
+          echo "[flush] $AGENT: dispatched gate.yml for heartbeat/$AGENT"
 
       - name: Arm heartbeat PR auto-merge
         if: steps.check.outputs.skip != 'true'

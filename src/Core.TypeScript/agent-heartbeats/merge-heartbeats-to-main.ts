@@ -90,47 +90,6 @@ function gh(args: string[], input?: string): { status: number; stdout: string; s
   return { status: result.status ?? -1, stdout: result.stdout, stderr: result.stderr };
 }
 
-export interface GhCommandResult {
-  readonly status: number;
-  readonly stdout: string;
-  readonly stderr: string;
-}
-
-export type GhCommand = (args: string[], input?: string) => GhCommandResult;
-
-/**
- * Refresh an existing heartbeat PR under the pull-request-scoped credential.
- *
- * The scratch branch may be pushed by the GITHUB_TOKEN fallback, and GitHub
- * deliberately does not recursively emit workflow events for that push. Closing
- * then reopening the existing PR creates a `pull_request: reopened` event under
- * the scoped PAT, so `gate (required)` evaluates the branch's current head. The
- * close and reopen are both explicit: an update-only PATCH emits `edited`, which
- * gate.yml does not subscribe to.
- */
-export function refreshExistingPR(
-  repo: string,
-  prNumber: number,
-  title: string,
-  body: string,
-  runGh: GhCommand = gh,
-): { readonly ok: true } | { readonly error: string } {
-  const endpoint = `repos/${repo}/pulls/${String(prNumber)}`;
-  const closed = runGh(
-    ["api", "-X", "PATCH", endpoint, "--input", "-"],
-    JSON.stringify({ title, body, state: "closed" }),
-  );
-  if (closed.status !== 0) {
-    return { error: `PR refresh close failed: ${closed.stderr || closed.stdout}` };
-  }
-
-  const reopened = runGh(["api", "-X", "PATCH", endpoint, "--input", "-"], JSON.stringify({ state: "open" }));
-  if (reopened.status !== 0) {
-    return { error: `PR refresh reopen failed: ${reopened.stderr || reopened.stdout}` };
-  }
-  return { ok: true };
-}
-
 // ---------------------------------------------------------------------------
 // This lane SIGNS ITS OWN PRs. (2026-08-15)
 // ---------------------------------------------------------------------------
@@ -344,10 +303,6 @@ export function openMergePR(
     prNumber = existing.found.number;
     prUrl = existing.found.url;
     reused = true;
-    const refreshed = refreshExistingPR(repo, prNumber, title, body);
-    if ("error" in refreshed) {
-      return { error: refreshed.error, code: 3 };
-    }
   } else {
     const createResult = gh(
       ["api", "-X", "POST", `repos/${repo}/pulls`, "--input", "-"],
