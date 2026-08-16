@@ -110,8 +110,8 @@ export function planQemuUeFiBootArgs(input: {
   readonly ovmfCodePath: string;
   readonly ovmfVarsPath: string;
   readonly serialLogPath?: string;
-  /** virtio whole-disk (default) or USB removable (firmware BOOTX64.EFI search). */
-  readonly media?: "virtio" | "usb";
+  /** virtio whole-disk, USB mass-storage, or QEMU vvfat directory (OVMF BOOTX64 search). */
+  readonly media?: "virtio" | "usb" | "vfat-dir";
 }): { readonly ok: true; readonly args: readonly string[] } | { readonly ok: false; readonly error: string } {
   if (input.outputImagePath.trim().length === 0) {
     return { ok: false, error: "outputImagePath is required" };
@@ -120,6 +120,9 @@ export function planQemuUeFiBootArgs(input: {
     return { ok: false, error: "ovmfCodePath and ovmfVarsPath are required" };
   }
   const media = input.media ?? "virtio";
+  if (media === "vfat-dir" && input.outputImagePath.includes(",")) {
+    return { ok: false, error: "vfat-dir path must not contain a comma (QEMU fat: parser)" };
+  }
   const disk =
     media === "usb"
       ? ([
@@ -130,10 +133,17 @@ export function planQemuUeFiBootArgs(input: {
           "-drive",
           `if=none,id=stick,file=${input.outputImagePath},format=raw`,
         ] as const)
-      : ([
-          "-drive",
-          `file=${input.outputImagePath},format=raw,if=virtio`,
-        ] as const);
+      : media === "vfat-dir"
+        ? ([
+            "-drive",
+            `if=none,id=esp,file=fat:rw:${input.outputImagePath},format=raw`,
+            "-device",
+            "virtio-blk-pci,drive=esp,bootindex=1",
+          ] as const)
+        : ([
+            "-drive",
+            `file=${input.outputImagePath},format=raw,if=virtio`,
+          ] as const);
   // `-nographic` already attaches UART0 to stdio. Adding `-serial file:`
   // creates UART1; GRUB `serial --unit=0` then never hits the log.
   // File capture uses `-display none -serial file:` instead.

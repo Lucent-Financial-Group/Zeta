@@ -2,10 +2,11 @@
 /**
  * Optional QEMU UEFI menu-boot smoke (USB-IDENTITY-THREAT-MODEL §8.2).
  *
- * Assembles a tiny FAT multiboot image with a real `grub-mkimage` EFI,
- * boots it under OVMF, and waits for the serial menu marker.
- * Local: skip (exit 0) when qemu/ovmf/grub-mkimage/mtools are missing.
- * CI: set MULTIBOOT_UEFI_SMOKE_REQUIRED=1 so a skip is a failure.
+ * Assembles a tiny FAT multiboot image with a real `grub-mkimage` EFI
+ * (mdir-checked), then boots the same EFI/BOOT files under OVMF via QEMU
+ * vvfat. Superfloppy-on-usb-storage is BLK0-only on this OVMF; vvfat is
+ * the firmware-visible removable volume. Skip locally when tooling is
+ * absent. CI: set MULTIBOOT_UEFI_SMOKE_REQUIRED=1 so a skip is a failure.
  *
  * Usage:
  *   bun src/Core.TypeScript/installer/multiboot/qemu-uefi-menu-smoke.ts
@@ -26,6 +27,7 @@ import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import {
   executeAssembleFatImage,
+  mdirListingHasGrubEfiEmbed,
   planAssembleFatImage,
   planQemuUeFiBootArgs,
 } from "./assemble.ts";
@@ -264,12 +266,28 @@ export async function runUefiMenuSmoke(): Promise<{
     return { exitCode: 1, reason: executed.error };
   }
 
+  const listing = spawnSync("mdir", ["-/", "-i", outImg], { encoding: "utf8" });
+  const listingText = `${listing.stdout ?? ""}\n${listing.stderr ?? ""}`;
+  if (listing.status !== 0 || !mdirListingHasGrubEfiEmbed(listingText)) {
+    return {
+      exitCode: 1,
+      reason: `assembled image missing EFI/BOOT embed (mdir status ${String(listing.status)}):\n${listingText.slice(-1500)}`,
+    };
+  }
+
+  // Superfloppy FAT on QEMU usb-storage shows up as a USB HARDDRIVE (BLK0, no
+  // FS0) — OVMF never finds BOOTX64.EFI. Boot the same EFI files via vvfat.
+  const espDir = join(tmpRoot, "esp");
+  mkdirSync(join(espDir, "EFI", "BOOT"), { recursive: true });
+  copyFileSync(efiPath, join(espDir, "EFI", "BOOT", "BOOTX64.EFI"));
+  writeFileSync(join(espDir, "EFI", "BOOT", "grub.cfg"), smokeGrubCfg());
+
   const qemuPlan = planQemuUeFiBootArgs({
-    outputImagePath: outImg,
+    outputImagePath: espDir,
     ovmfCodePath: ovmf.codePath,
     ovmfVarsPath: ovmfVarsCopy,
     serialLogPath,
-    media: "usb",
+    media: "vfat-dir",
   });
   if (!qemuPlan.ok) {
     return { exitCode: 1, reason: qemuPlan.error };

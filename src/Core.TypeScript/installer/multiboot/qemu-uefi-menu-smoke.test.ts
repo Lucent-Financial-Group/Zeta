@@ -86,21 +86,30 @@ describe("qemu-uefi-menu-smoke planning", () => {
 
   it("reuses planQemuUeFiBootArgs for the smoke image", () => {
     const planned = planQemuUeFiBootArgs({
-      outputImagePath: "/tmp/zeta-multiboot.img",
+      outputImagePath: "/tmp/zeta-esp",
       ovmfCodePath: "/usr/share/OVMF/OVMF_CODE.fd",
       ovmfVarsPath: "/tmp/OVMF_VARS.fd",
       serialLogPath: "/tmp/serial.log",
-      media: "usb",
+      media: "vfat-dir",
     });
     expect(planned.ok).toBe(true);
     if (!planned.ok) return;
     const joined = planned.args.join(" ");
     expect(joined).toContain("OVMF_CODE.fd");
-    expect(joined).toContain("zeta-multiboot.img");
+    expect(joined).toContain("fat:rw:/tmp/zeta-esp");
     expect(joined).toContain("serial.log");
-    expect(joined).toContain("qemu-xhci");
-    expect(joined).toContain("usb-storage");
+    expect(joined).toContain("virtio-blk-pci");
     expect(joined).toContain("-display none");
     expect(joined).not.toContain("-nographic");
+  });
+
+  it("rejects a vfat-dir path that would break the QEMU fat: parser", () => {
+    const planned = planQemuUeFiBootArgs({
+      outputImagePath: "/tmp/esp,dir",
+      ovmfCodePath: "/usr/share/OVMF/OVMF_CODE.fd",
+      ovmfVarsPath: "/tmp/OVMF_VARS.fd",
+      media: "vfat-dir",
+    });
+    expect(planned.ok).toBe(false);
   });
 });
