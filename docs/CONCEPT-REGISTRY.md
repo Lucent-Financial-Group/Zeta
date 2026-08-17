@@ -332,6 +332,41 @@ their owners.
    and will read every revision as drift. That detector would be exactly the pigeonholing
    weapon Aaron avoids. Routed to the implementing agent as a requirement.
 
+   **The sharpest form, and it names pigeonholing as an economic act (Aaron, same
+   session):**
+
+   > "pigeonhole extracts possible futures and destroys them for maximum gain today"
+
+   Every term in that sentence is already load-bearing here, which is why it lands:
+
+   - **"Extracts"** is the word from the four-corner monad itself — *"results without
+     feedback is extraction"*. Pigeonholing is that operation applied to a person: take the
+     result, return no feedback, leave them no way to answer.
+   - **"Possible futures"** is the **Z-set**: *"reversible live state — the future stays
+     flexible."* Pigeonholing forces a Z-set into a G-set prematurely — it makes the
+     revisable irreversible, which is precisely what **Soft network** forbids:
+     *"uncertainty is held open, never prematurely collapsed."*
+   - **"For maximum gain today"** prices it. The option value destroyed is real and
+     uncounted; the gain is immediate and visible. That asymmetry is what makes extraction
+     locally rational and globally destructive.
+
+   **And it is finite-game play, by Aaron's own definition of useful.** He defines *useful*
+   as **continuing the infinite game rather than ending it** (Carse 1986; register row
+   **R-1**). A finite player plays to win and therefore **to end**. Pigeonholing wins the
+   argument by ending it — it converts a continuing game into a settled one, which is the
+   finite move exactly. *"It makes most arguments boring"* is the tell: a game that can no
+   longer develop is over, whoever won.
+
+   So his declining it is not restraint applied against his interest — it is **consistency
+   with the criterion he already stated**. Under "useful = the game continues," a move that
+   forecloses someone's future is not a victory, it is a loss counted in the wrong column.
+
+   **The design consequence, which is the reason this belongs in a concept registry rather
+   than a notebook:** any mechanism here that collapses a subject's possible futures for a
+   present readout is doing the extractive thing, whatever it is called. Drift detection is
+   the immediate instance — but the shape generalises to classification, ranking,
+   reputation, and any verdict that is easier to assign than to revise.
+
    **What is BUILT, and it is narrower than the principle** — verified in-tree:
    `src/Core.TypeScript/observe/self-claims.ts` implements a `SelfClaim` interface and a
    `ClaimsLedger` (`recordClaim`), bridged at `planning/calibration-bridge.ts`. But its
