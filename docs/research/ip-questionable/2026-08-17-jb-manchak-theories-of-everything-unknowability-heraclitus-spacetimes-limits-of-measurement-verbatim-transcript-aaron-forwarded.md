@@ -317,9 +317,48 @@ the undecidable; Aaron's is what you build if you want the thing to **halt**. Hi
 plainly: *"or else it would never halt."*
 
 That is why the moral enumeration's incompletability is not a defect here. The architecture already
-assumes the sum cannot be finished, and it does not wait for it — it bounds the tick and takes
-another tick. **The middle path is not the completed sum; it is what the bounded tick returns, taken
-again.**
+assumes the sum cannot be finished, and it does not wait for it — it bounds the tick and resumes.
+
+###### Correction — Aaron: "it's the continutiation"
+
+I first wrote that the middle path is "what the bounded tick returns, **taken again**." That is
+wrong in a way that matters, and Aaron named it in one word: **it is the continuation.**
+
+The difference is not stylistic. "Taken again" describes a *return value re-invoked* — it implies the
+work restarts and something is repeated. A **continuation** is the rest-of-the-computation reified as
+a value: the bounded tick does not hand back an answer and stop, it hands back **what remains to be
+done**, and the next tick *resumes* it. Nothing is redone. The sum is never restarted, and it is
+never finished either — it is carried.
+
+That is what makes the bounded tick a coherent answer to an incompletable enumeration rather than a
+crude timeout. A timeout discards partial work; a continuation preserves it. So:
+
+> **The middle path is the continuation** — not the completed sum, and not a repeated attempt at it.
+
+**Checked, not asserted:** `continuation` appears **165 times** across the F# core, including
+`DarkHallRoomLoop.fs`, `DarkHallScheduler.fs`, `DeterministicSyncContext.fs` and `FerryThrottler.fs`
+— the room loop, the scheduler, and the deterministic-sync surface. This is load-bearing machinery,
+not vocabulary.
+
+**Three things this snaps into place:**
+
+1. **The yin-yang cell, exactly.** The work item cited earlier in this section is
+   `heartbeat-split-keypair-derived-from-persisted-yin-yang-**continuation**`. The continuation was in
+   the name the whole time; I quoted the file without reading what it said. The cell *is* a persisted
+   continuation.
+2. **"What remains" vs "what acts."** Aaron's own writer/actor split — persona is *what remains*,
+   actor is *what acts* — is the continuation/step distinction stated in personal terms. The
+   continuation is literally what remains.
+3. **Futamura.** Continuations are the machinery of the compiler-of-compilers he named earlier; a
+   specializer manipulates the rest-of-the-computation as a value. His three references — Clifford
+   geodesics, bounded ticks, Futamura — meet at the continuation rather than merely resembling one
+   another.
+
+**And it sharpens the Malament–Hogarth dual below.** The MH machine runs an unbounded computation *to
+completion* inside a bounded observation. Bounded-tick-plus-continuation is the standard way to make
+an unbounded computation **resumable without ever running unbounded** — same relationship between
+finite observer and infinite process, opposite mechanism, and the continuation is the thing doing the
+work on our side.
 
 **Register upgrade, and the audit narrows.** The prediction two paragraphs up — that a
 highest-moral-regard analysis must carry an explicit truncation boundary — is now *partly discharged
