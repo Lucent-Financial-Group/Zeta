@@ -467,6 +467,49 @@ their owners.
    which is the actual test. **Nothing here measures where that turn happens** — Aaron
    locates it from experience, not from data, and no in-tree instrument detects it.
 
+   **The elicitation protocol itself (Aaron, same session) — and it is a real instrument,
+   not a manner of asking:**
+
+   > "for the group claim i show people my bank account basically by spending obsene amounts
+   > of money on them and then ask you can have anything you want, what do you want, then
+   > they overload and have a crisis of meaning until they start ordering their choices and
+   > what they want to acheive and change in the world if they had the admin controls. I
+   > make them belive the admin controls exist then their imigination slows them down to
+   > decide what to do with them."
+
+   **Four stages, and the third is the point:**
+
+   1. **Establish a credible unlimited resource** — by actual spending, so the premise is
+      not hypothetical-sounding.
+   2. **Open-ended ask** — *"you can have anything you want."*
+   3. **Overload, and a crisis of meaning** — the paralysis is **induced deliberately**,
+      not waited for.
+   4. **Ordering emerges** — the subject begins ranking, and reaches for what they would
+      *achieve or change in the world* given admin controls.
+
+   **This is a better instrument than a survey, and specifically for the finding above.** A
+   preference survey captures stage 2 only, where everyone says *more*. This protocol runs
+   the subject **through** the transition and observes the **recovery** — which is exactly
+   where the quantity→quality turn shows up. It produces the three-row table above rather
+   than assuming it. That is why the "at least they think so" hedge is in the finding: he
+   has seen both sides of the same subject.
+
+   **A methodological caution, offered as one — not a moral objection.** *"I make them
+   believe the admin controls exist."* If the subject understands this as a thought
+   experiment, it is the standard counterfactual prompt and nothing is wrong. If they do
+   not, then **the belief is interviewer-introduced**, and an induced belief is a bias in
+   precisely the dimension the protocol is trying to protect — Aaron's own stated aim is
+   *"non biased over time."* The stage-1 spending is what makes the premise credible, which
+   is the same thing that makes this question live rather than pedantic. **Flagged for its
+   author; not resolved here, and not a claim that anything improper occurred.**
+
+   **Privacy constraint on this entry, applied not merely noted.** The subjects are private
+   individuals, and
+   `engagement-profiles-public-work-only-not-surveillance-dossiers.md` permits compiling
+   *chosen-public* work while forbidding the non-public sphere. So this records **the
+   method and the aggregate shape only** — no subject, no response, no identifying detail —
+   and nothing here should ever be extended into per-person notes.
+
    **So drift detection carries a FOURTH permitted reading, and it is the one most at risk:
    GROWTH.** A contradiction between an old claim and a new one may be *development*, not
    drift — the agent evolved, which is the defining property of being one. A detector
