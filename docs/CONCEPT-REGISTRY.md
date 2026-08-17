@@ -904,6 +904,37 @@ their owners.
    anchor from a citation and worth marking as such — he is reporting what the system does
    in production, not what its paper says.
 
+   **The bet underneath all of it (Aaron, same thread):**
+
+   > "zeta is a bet on crdt and riak like systems being the 80% use case in the future"
+
+   **Read carelessly this contradicts the paragraph above**, where CRDTs are named as the
+   *opposite* commitment — they converge by construction, resolving conflict rather than
+   retaining it. Both are true, and the distinction is the whole position:
+
+   > **The bet is on the WORLD that CRDTs are built for, not on their answer to it.**
+
+   If multi-master, eventually-consistent, no-single-authority topology becomes the 80% case
+   rather than the exception, then *"what do you do with genuine disagreement?"* stops being
+   an edge case and becomes the central question. CRDT convergence is one answer, and it
+   answers by **discarding the disagreement** — deterministically, safely, irreversibly.
+   Zeta bets that world arrives and gives the other answer: **keep it.**
+
+   **Which is why both live in the tree at once, and that is not inconsistency.**
+   `src/Core/Crdt.fs` (266 lines), `src/Core/DeltaCrdt.fs`, and G-counter / OR-set / LWW
+   machinery in `DynamicValueAlgebra.fs` are all present and used. CRDTs are right where
+   convergence genuinely is what you want — a replicated counter has no interesting
+   disagreement to preserve. The claim is narrower and sharper: **convergence must be a
+   choice made per-value, not a property imposed by the substrate**, because a substrate
+   that converges everything cannot represent the cases where the disagreement *is* the
+   information.
+
+   **Register: this is a BET, stated as one by its author, falsifiable in the ordinary
+   way** — the topology either becomes dominant or it does not. No evidence is offered here
+   and none is implied. Recording it matters because it is the **load-bearing assumption
+   under a large number of design choices**, and an unnamed assumption is the kind that
+   never gets re-examined when the world declines to cooperate.
+
    **So drift detection carries a FOURTH permitted reading, and it is the one most at risk:
    GROWTH.** A contradiction between an old claim and a new one may be *development*, not
    drift — the agent evolved, which is the defining property of being one. A detector
