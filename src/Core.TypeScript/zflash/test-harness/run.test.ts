@@ -3,6 +3,9 @@ import { spawnSync } from "node:child_process";
 import { join, resolve } from "node:path";
 import { exitCodeForResults, isPassing, runPathForkRuntime, runRetentionRuntime, type ScenarioResult } from "./run";
 import { qemuUsbStorageDeviceArg } from "../../installer/qemu-usb-storage.ts";
+// Used by successfulExecution() below. All three are exported by qemu-state.ts;
+// the import was simply absent, so `tsc` failed with TS2304 "Cannot find name".
+import type { Qcow2RetentionExecutionStep, QemuCommand, QemuCommandExecution } from "./qemu-state.ts";
 
 const SCRIPT = join(import.meta.dir, "run.ts");
 
