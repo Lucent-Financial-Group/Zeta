@@ -781,6 +781,42 @@ their owners.
    *(The **"+"** in *"Data Vault 2.0+"* is Aaron's and he did not say what it extends.
    Recorded unexpanded rather than guessed at.)*
 
+   **Aaron then inverts the rule's own priority, and the inversion holds up:**
+
+   > "disagreement preservation is the most important outcome for me, the change rate stuff
+   > is just super awesome bonus that agrees with many other traditions, the disagreement
+   > preservation is what's unique to DV2 to me"
+
+   **Checked rather than accepted, because "unique" is a strong word.**
+
+   *Change-rate partitioning is genuinely common.* Kimball's SCD Type 2, Inmon-style
+   temporal history, bitemporal modelling, event sourcing, and CQRS read models all separate
+   slow-changing identity from fast-changing attributes. Aaron's *"agrees with many other
+   traditions"* is accurate — it is convergent, not distinctive.
+
+   *Conflict retention is where DV2 actually diverges from its peers.* Kimball **conforms**
+   dimensions — building the golden record is the deliverable. Inmon/CIF **integrates and
+   reconciles** into an enterprise view. Event sourcing preserves events faithfully but
+   almost always **projects to a single current state**. DV2 alone, among warehouse
+   methodologies, makes *"load both source satellites and reconcile nothing in the raw
+   layer"* the default rather than an escape hatch.
+
+   **Honest bound on the claim:** *unique* is right within data-warehouse methodology and
+   too strong globally. Dynamo-style multi-master keeps sibling values, and Z-sets keep
+   retractions rather than overwriting. **CRDTs are the instructive contrast** — they also
+   never lose writes, but they exist to **converge**, resolving conflict by construction,
+   which is the opposite commitment. So the precise statement is: *among ways of building a
+   warehouse, DV2 is the one whose raw layer refuses to reconcile.* That is a narrower claim
+   than "unique" and it survives, which is worth more.
+
+   **A rule-level consequence, flagged rather than acted on.**
+   `.claude/rules/dv2-data-split-discipline-activated.md` leads with the property its author
+   considers the **common** one and does not mention the property he considers **the point**.
+   By his own priority the carved emphasis is inverted. Rules here are razored — cooling
+   period, disposition-shaping bar — so this is **recorded for Aaron to decide**, not
+   changed. The observation is only that a reader arriving at that rule today would learn
+   the convergent half and miss the distinctive one.
+
    **So drift detection carries a FOURTH permitted reading, and it is the one most at risk:
    GROWTH.** A contradiction between an old claim and a new one may be *development*, not
    drift — the agent evolved, which is the defining property of being one. A detector
