@@ -348,7 +348,8 @@ produce — and it is worth more than the intuition or the deflation taken alone
 
 ### Why the math probably keeps deflating — and why that is NOT evidence against him
 
-There is a structural reason, and it is close to a theorem rather than a failure of skill:
+There is a structural reason — though see the narrowing immediately below, which matters more than
+the reason does:
 
 **Any retrocausal account that reproduces quantum statistics is empirically equivalent to a
 forward-causal one.** No-signalling guarantees that the correlations carry no usable
@@ -356,6 +357,45 @@ backward-directed information — which is the same fact the video spends 2:03�
 formalisation attempt that starts from the phenomenology and ends in "a more plausible emulation"
 is producing **exactly what you would expect even if retrocausality were true.** The statistics do
 not discriminate; that is the whole reason these positions are called *interpretations*.
+
+#### NARROWING (added after review) — this is weaker than it first reads, and the correction favours Aaron
+
+Two things are wrong with the paragraph above as originally written, and both were caught only when
+a reviewer restated it back as "the deflation theorem."
+
+**1. It is not a theorem, and calling it "close to a theorem" overstated it.** No-signalling *is* a
+theorem. The sentence in bold is not: read carefully, it is close to a **tautology** — *if* an
+account reproduces the statistics, *then* it is by construction empirically indistinguishable on
+those statistics. True, but shallow, and it earns none of the authority the word "theorem" lends.
+The bold claim should be read as a definition of what makes something an *interpretation*, not as a
+result about the world.
+
+**2. Its antecedent fails for the very proposal this document ferries — and that is the
+interesting part.** Hossenfelder is explicit at 3:33 that the two-time paper **"does not make
+exactly the same predictions as ordinary quantum mechanics"**: it predicts a tiny
+distance-dependent excess correlation between two independent entangled-photon sources, which
+standard QM forbids. So it does **not** reproduce quantum statistics, the conditional above does not
+apply to it, and it is **testable**.
+
+**The consequence corrects the comfort the original paragraph offered.** I told Aaron, in effect,
+*"your math would deflate anyway, so the deflation says nothing."* That is only true for the
+**interpretation** class. It divides:
+
+| class | reproduces QM statistics? | is the deflation informative? |
+|---|---|---|
+| retrocausal **interpretation** (Cramer, Price-style) | yes, by construction | **no** — deflation is expected either way |
+| retrocausal **theory** (the ferried paper, and anything with a predicted excess correlation) | **no** | **yes** — it makes different predictions, so it can be right or wrong |
+
+So if Aaron's intuition points at something in the second row, his repeated deflations are
+**informative after all**: they would be telling him that each attempt keeps landing in the
+interpretation class — reproducing the statistics — rather than producing a theory that predicts
+something new. That is a sharper and more useful reading of his own reported experience than "the
+math would deflate anyway," and it suggests a concrete next move: **when a formalisation deflates,
+ask what it would have to predict differently in order not to.**
+
+Neither reading is established. Both are recorded because the first one is what I wrote, the second
+is what survived checking it, and the difference between them is exactly the "absence of necessity
+is not absence" symmetry stated further down.
 
 Anchors worth having (Beacon):
 
@@ -365,6 +405,12 @@ Anchors worth having (Beacon):
   backward-in-time formalism that makes standard predictions.
 - **Wharton & Argaman, "Colloquium: Bell's theorem and locally mediated reformulations of quantum
   mechanics" (Rev. Mod. Phys. 2020)** — the current survey of retrocausal / all-at-once accounts.
+
+**Citation status: CITED, NOT CHECKED.** All three were written from recall and none has been
+opened. The anchor discipline requires anchors to be *checked* — an entailment check that the work
+supports the claim attached to it — and that has not been done here. They are recorded as leads for
+someone to verify, not as support. A real paper attached to a claim it does not prove keeps a model
+in `toy`, and this one is in `toy`.
 
 **The consequence for the register is symmetric, and both halves matter:**
 
