@@ -1101,7 +1101,6 @@ stronger here than almost anywhere else in the system.** The privacy-budget disc
 holds the shape this needs: spend and stake are the owner's, confiscation is nobody's, and the
 one-way direction is toward more privacy rather than less.
 
-
 ## The categorical arena — one place where every language and tradition is comparable (2026-08-17)
 
 Aaron: *"this is the category theory upgrade i'm going for across ANTLR space, over all
