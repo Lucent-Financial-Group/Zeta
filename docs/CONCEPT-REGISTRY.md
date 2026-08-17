@@ -1034,6 +1034,45 @@ their owners.
    existing analogue and the natural model. Not routed — the pre-registration design is the
    hard part, and it is a decision rather than an implementation detail.
 
+   **Aaron corrects the null, and the correction is structural (same session):**
+
+   > "for Zeta we are trying to map all coincidence space so it WILL connect, but it should
+   > not deeply — just in certain specialisations. Most will not be general connections. This
+   > is hub and agent, my Itron patent, and also Kevin Bacon six degrees, scale free —
+   > everyone connects, but only a few do with deep connections, most are shallow"
+
+   **I chose the wrong null and this fixes it.** I wrote that *most draws should fail to
+   connect*, and that universal connection would mean vacuity. In a **scale-free** network
+   that is false: near-universal connectivity is the *small-world property*, not a defect.
+   Everything connects. The signal was never the binary.
+
+   **The informative measure is the DEPTH DISTRIBUTION.** Barabási–Albert preferential
+   attachment yields a **power law** — most nodes shallow, a few hubs deep:
+
+   | observation | reading |
+   |---|---|
+   | near-universal connection, **power-law depth** | expected — the network is scale-free |
+   | connection depth **uniform**, everything equally deep | **vacuity** — the framework does not discriminate |
+   | everything shallow, nothing deep | no real structure to find |
+
+   That is a **distribution test rather than a threshold test**, and it is strictly better
+   than what I proposed: it cannot be satisfied by a pattern-matcher producing connections,
+   because producing connections is what the *expected* case already looks like.
+   Pre-registration survives but changes shape — pre-register **what counts as deep versus
+   shallow**, not what counts as a connection.
+
+   **And his own carved material supplies the warning this instrument most needs.**
+   `.claude/rules/itron-hub-patent-boundary-p2p-is-the-upgrade.md` records that **Kevin Bacon
+   is not the most connected actor** — Steiger and others outrank him; he is famous because
+   of the game. *"The named hub and the actual hub are different nodes. Appointment tracks
+   fame; emergence tracks use."*
+
+   Applied here: **the traditions that FEEL deeply connected are not reliably those with high
+   actual degree.** A self-reported *"this resonates deeply"* is the fame metric. The
+   instrument needs a measure of **coupling** that survives being wrong about which
+   connection matters, or it will rediscover the famous hubs and miss the real ones — the
+   coincidence-index failure mode again, at network scale.
+
    **The instrument was practised before it was proposed — two generations of it (Aaron,
    same session):**
 
