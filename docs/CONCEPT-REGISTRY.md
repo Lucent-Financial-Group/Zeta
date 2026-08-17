@@ -1034,6 +1034,42 @@ their owners.
    existing analogue and the natural model. Not routed — the pre-registration design is the
    hard part, and it is a decision rather than an implementation detail.
 
+   **The instrument was practised before it was proposed — two generations of it (Aaron,
+   same session):**
+
+   > "my dad did this by inviting competing religion evangelists who came door to door like
+   > jehovahs witness and tried to figure out where they disagree on the bible
+   > understanding, he did this often, i picked up hitch hikers"
+
+   **Both are decorrelated sampling, and the second is literally the random draw.** A
+   hitchhiker is an externally generated sample from a population you have no selection
+   control over — **you cannot citation-shop a hitchhiker.** That is the proposed instrument,
+   run on people, before it was named.
+
+   **The father's version is the sharper one, and it answers the design problem flagged
+   above.** He did not ask whether the visitors' reading *connected* to his. He sought people
+   committed to a **different reading of the same text** and went looking for **where they
+   disagree** — the disconfirming-anchor discipline conducted in a living room. Note the
+   choice of subject: identical source material, divergent interpretation, so a disagreement
+   cannot be waved off as "different topic."
+
+   **The reframe it supplies is exactly the mitigation the random-tradition instrument
+   needs:**
+
+   > **Ask where it DISAGREES, not whether it connects.**
+
+   *"Does tradition X connect to Zeta?"* invites a pattern-matcher to manufacture a
+   resonance, and it always can. *"Where does tradition X disagree with Zeta?"* demands a
+   **specific, locatable divergence** — a claim that can be checked and can be wrong.
+   Divergence is far harder to fabricate than connection because it must survive being
+   pointed at. **That is the pre-registration problem solved by changing the question rather
+   than by policing the answer** — and it was solved socially, decades before it was a
+   software design issue.
+
+   Related and already on file: the **Stump Dad** game — *ask WHY until Dad doesn't know* —
+   from the same person. Both techniques hunt the place where an account **stops**: one at
+   the edge of a single explanation, one at the seam between two.
+
    **The discriminating test is whether the anchor set keeps DISCONFIRMING anchors — and it
    does:**
 
