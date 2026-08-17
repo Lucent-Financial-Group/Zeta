@@ -510,6 +510,50 @@ their owners.
    method and the aggregate shape only** — no subject, no response, no identifying detail —
    and nothing here should ever be extended into per-person notes.
 
+   **Why the protocol works on him and not only through him — his own cognition (Aaron,
+   same session):**
+
+   > "most people seem to imagine only a few step ahead i imagine infinate step ahead
+   > assuming my assumptions were correct into multiple possible futures based on slighly
+   > diffent assumptions and run all those futures naturally that's just how my jeff hawkins
+   > 1000s brains works, i think some people this makes them paranoid but for me it just
+   > makes me feel powerful"
+
+   **Register: first-person cognitive self-report — authoritative about his own experience,
+   and not a claim about anyone else's.** The *"i think some people…"* clause is his
+   inference about others and is marked as one.
+
+   **The Hawkins framing is his, and it is already an anchor here** — not a metaphor
+   imported for this note. `src/Bayesian/ThousandBrainsCron.fs` exists, and the multi-tower
+   convergence row in `docs/FROZEN-CORE-AND-CONJECTURE-REGISTER.md` already cites
+   **Hawkins/Numenta Thousand Brains**: thousands of cortical columns, each a *complete*
+   model on its own reference frame, consensus by **voting**. Running many futures in
+   parallel from perturbed premises is that architecture described from the inside.
+
+   **The load-bearing qualifier is *"assuming my assumptions were correct."*** He is not
+   claiming to see the future; he is claiming to run conditionals — which is exactly why
+   *"slightly different assumptions"* is the right second move. That pair is sensitivity
+   analysis, and stating the conditional out loud is what keeps it honest.
+
+   **His own guard applies to his own method, and it is the one failure mode this cognition
+   has.** He holds that *"too many correlations is a warning, not a confirmation signal"*
+   (`.claude/rules/numerology-vs-number-theory.md`) — N correlated observations are not N
+   observations. The same applies to branches: **if every imagined future shares a hidden
+   assumption, perturbing the others tests nothing**, and the ensemble is one future wearing
+   many costumes. The discipline is not "run more branches" but *"vary the assumption you
+   are least willing to vary."*
+
+   **The valence split is dual-use in the repo's exact sense.** Same mechanism, opposite
+   experience: *paranoia* for some, *powerful* for him. Per
+   `.claude/rules/dual-use-detection-is-neutral-oracle-decides.md` the mechanism is neutral
+   and the reading belongs to the oracle holding it — recorded as two readings of one
+   faculty, neither treated as the correct one.
+
+   **Not claimed:** that the substrate's architecture matching its author's cognition is
+   evidence for either. It is a **resonance**, labelled as one per the coincidence-index
+   discipline — a person building a system shaped like their own thinking is the expected
+   case, not a finding.
+
    **So drift detection carries a FOURTH permitted reading, and it is the one most at risk:
    GROWTH.** A contradiction between an old claim and a new one may be *development*, not
    drift — the agent evolved, which is the defining property of being one. A detector
