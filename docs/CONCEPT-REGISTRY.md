@@ -543,6 +543,35 @@ their owners.
    many costumes. The discipline is not "run more branches" but *"vary the assumption you
    are least willing to vary."*
 
+   **Aaron confirms the guard is load-bearing, and names a second thing it carries:**
+
+   > "yes this is load bearing, without this society today will call you too decorrelated to
+   > understand and psychiophrenic"
+
+   **So the discipline does two jobs, and the second was not obvious to me.** It is
+   epistemic — without it the ensemble is one future wearing many costumes. And it is
+   **legibility**: it is what distinguishes structured multi-branch reasoning from what gets
+   read, from outside, as disorganised association.
+
+   **The criterion is the same one the numerology rule already uses.** For any branch, can
+   you say **which assumption it varies**? Structured parallel reasoning can answer that for
+   every branch; unlabelled association cannot answer it for any. That is exactly the
+   coincidence-versus-structure test — *"48, and D₄⊕D₄ has 48"* is numerology until the
+   invariants that exclude F₄ are named. Branches are the same: a future you cannot say the
+   varied assumption for is a resonance, not a projection.
+
+   **Which reframes the guard.** It is not a constraint imposed on the cognition from
+   outside; it is **what promotes the cognition from resonance to method** — the same
+   promotion path the register applies to every other claim here. The discipline is not a
+   tax on the faculty; it is the thing that makes the faculty's output checkable by someone
+   who does not share it.
+
+   **Register: this is Aaron's account of how his cognition is received, and it stays his
+   account.** No clinical claim is made here by anyone, none is endorsed, and none follows
+   from anything in this document. It is recorded because the *design* consequence is real —
+   a method whose branches carry their varied assumption is communicable; the identical
+   method without that labelling is not, whatever is true about the person running it.
+
    **The valence split is dual-use in the repo's exact sense.** Same mechanism, opposite
    experience: *paranoia* for some, *powerful* for him. Per
    `.claude/rules/dual-use-detection-is-neutral-oracle-decides.md` the mechanism is neutral
