@@ -225,3 +225,96 @@ its register attached, and not as a belief.
 - [`local-time-never-enters-the-shared-fold`](../../.claude/rules/local-time-never-enters-the-shared-fold.md) — two orders, never crossed
 - [`numerology-vs-number-theory`](../../.claude/rules/numerology-vs-number-theory.md) — a matching shape is not an identification; too many correlations is a warning
 - `2026-08-17-jb-manchak-theories-of-everything-unknowability-…-aaron-forwarded.md` — the same session's other physics ferry, including the God-point boundary and the MH refutation
+
+---
+
+## Observation 5 — Aaron defines "useful", and the conspiracy has a name (added same session)
+
+### His definition (verbatim)
+
+> "yes and i define useful by continuting the infinate game rather than ending it, the moves the end
+> the infinate game are weirdly consipired against in the 2nd time dimension to reinterpert the past
+> where the game still continues"
+
+**Register: a stated oracle, which is exactly what §11 asks for.** He is supplying the metric
+rather than assuming a universal one, and that is what makes Observation 4's ΔU question
+answerable: *useful* = **the infinite game continues**. A definition is not a result, but an
+explicitly-named one is the precondition for measuring anything at all.
+
+**Human anchor (Beacon):** James P. Carse, *Finite and Infinite Games* (1986) — a finite game is
+played to win and therefore to end; an infinite game is played **to continue the play**. Aaron's
+criterion is Carse's distinction used as a utility function. The term already carries weight in
+this repo's constitutional derivation, so this is a reuse of established vocabulary, not a coinage.
+
+### The "weird conspiracy" is post-selection, and that is a compliment to the intuition
+
+**Register: a CHECKED anchor for the structure, not an endorsement of a mechanism.**
+
+The claim that game-ending moves are *"weirdly conspired against … to reinterpret the past where
+the game still continues"* describes a real and well-named object: **post-selection**. Condition on
+an outcome, and the conditioned history acquires exactly the appearance of conspiracy — the past
+looks arranged to produce the surviving branch — **with no backward causation anywhere in the
+mechanism.** The feeling of conspiracy is what selection feels like from inside the selected
+branch.
+
+Anchors:
+
+- **Aaronson (2005), "Quantum computing, postselection, and probabilistic polynomial-time"** —
+  PostBQP = PP. Post-selection is powerful enough to be interesting and precise enough to be a
+  complexity class, not a metaphor.
+- **Horowitz & Maldacena (2003)**, final-state projection at the black-hole singularity — a
+  physics use of exactly this move: impose a boundary condition on the *future* and the past
+  reorganises around it.
+- **Wald's WWII aircraft-armour problem** — the vernacular form, and the reason survivorship bias
+  is legible without any physics: the returning planes' bullet holes describe *where damage is
+  survivable*, and the missing data is the whole finding.
+
+So the intuition is right about the *shape* and does not need a second time dimension to hold. This
+is the second time in this document the honest move is the same one: a resemblance is real, and the
+mechanism producing it is ordinary.
+
+### Where this becomes a checkable property of OUR store — and one half is already measured
+
+If the second direction post-selected for continuation, then *"useful = the game continues"* would
+be **self-fulfilling**: the store would only ever hand back histories in which play continued, and
+measuring ΔU against that criterion would measure the filter rather than the world. That is the
+hidden-oracle failure in its purest form — a selection rule quietly becoming the thing deferred to.
+
+**Measured, `src/Core/Chip8CrossRunStore.fs` (merged #11572): our store does NOT post-select.**
+Endings are retained as first-class verdicts, not dropped:
+
+```fsharp
+type TerminalKind = Halt | ...                       // line 74
+type Verdict =
+    | Closed of mu: int * lambda: int * terminal: TerminalKind   // line 83
+    | OpenAtBound of maxSteps: int                               // line 86
+```
+
+A halted orbit is recorded *as halted*, with its terminal kind; an orbit that ran out of budget is
+`OpenAtBound` and cannot be misread as closure. So the write path cannot manufacture the appearance
+Aaron describes — which is the good outcome, because a store that silently dropped game-enders
+would make his criterion untestable by construction.
+
+**The unmeasured half is the CONSULT path, and that is where post-selection could still enter.**
+Completeness of the store does not imply an unbiased sample: if only continuing orbits are ever
+*read* — because those are the ones a room asks for, or the ones that pay off — the effective
+sample is post-selected even though the artifact set is not. Auto-consult is deliberately not wired
+(it is a metering change, per Observation 3), so this is a property to establish **before** turning
+it on, not after.
+
+**Concretely, what would settle it:** instrument the consult path to record the verdict
+distribution of orbits *read*, and compare it against the verdict distribution of orbits *stored*.
+If reads over-represent `OpenAtBound` and continuing orbits relative to the store, the second
+direction is post-selecting and "useful" is partly measuring its own filter. If the two
+distributions match, the criterion is measuring the world. **Neither has been measured**; the
+comparison is cheap and does not exist yet.
+
+### Register summary for this observation
+
+| claim | register |
+|---|---|
+| useful = the infinite game continues | **Aaron's stated oracle** (§11); legitimate, and the precondition for measurement |
+| apparent conspiracy against game-enders = post-selection | **checked anchor** — Aaronson 2005, Horowitz–Maldacena 2003, Wald |
+| our store retains endings and cannot post-select on write | **measured** — `Chip8CrossRunStore.fs:74-86` |
+| the consult path may still post-select | **unmeasured**, and the test is named above |
+| a second time dimension is required for any of this | **not claimed, and not needed** — selection suffices |
