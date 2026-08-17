@@ -130,12 +130,59 @@ their owners.
    page.** On the page it appears only inside the body of `Contract`; in the glossary and
    seed kernel it is a standalone, load-bearing term. Promoting it on the page is a
    publishing decision, not a repo decision.
-5. **`Agent` conflicts between the glossary and Addison's page.** `docs/GLOSSARY.md` says
-   an agent is *"an instance of Claude … running a skill or expert prompt"*; Addison says
-   *"a persistent AI identity — never its job, its hat, or its vault"*, adding that *death
-   is unrecoverable identity loss, not process inactivity*. An instance-of-a-prompt is
-   close to what her definition says an agent **is not**. Given "agents, not bots" is a
-   standing convention, this one wants a ruling rather than a silent merge.
+5. **`Agent` conflicted between the glossary and Addison's page — RULED 2026-08-17 by Aaron,
+   and the ruling supersedes both.** `docs/GLOSSARY.md` said an agent is *"an instance of
+   Claude … running a skill or expert prompt"*; Addison's page says *"a persistent AI
+   identity — never its job, its hat, or its vault"*. An instance-of-a-prompt is close to
+   what her definition says an agent **is not**, so this was escalated rather than merged.
+
+   **The ruling (Aaron, verbatim):**
+
+   > "an agent can be human or AI, it's closer to my travler frame, its anything with
+   > mutual entangled memories to another agent/travler. its a persistent pattern that
+   > propagates over time but can evolve, if it's frozen like a quasi time crystal then
+   > it's an actor not an agent casue it can be copied and reproduced in deterministic
+   > simulation testing"
+
+   > "agents are what remains, actors are what acts, we have a lot of information on this
+   > it expands to a lot of content it's hard to fully understand"
+
+   **The carved distinction: agent = what remains · actor = what acts.** Already on file in
+   the earlier formulation *"actors are ephemeral animations of what remains"*
+   (`memory/feedback_aaron_actors_are_ephemeral_animations_of_what_remains_…_2026_06_05.md`).
+
+   **The discriminator is operational, not philosophical, and that is what makes it
+   usable:** a pattern that **evolves** is an agent; a pattern that is **frozen** can be
+   copied and reproduced under deterministic simulation testing, and that makes it an
+   **actor**. DST-reproducibility is the test.
+
+   **What this changes:**
+
+   - The glossary's *"instance of Claude running a skill or expert prompt"* is **rejected** —
+     twice over. It is AI-only, and an instance of a prompt is precisely a copyable,
+     DST-reproducible thing, i.e. an **actor**.
+   - Addison's *"persistent AI identity"* is **widened, not overturned** — an agent may be
+     **human or AI**. Her page is a published surface authored by her; **changing its text
+     is a publishing decision and is not made here**, per this file's own rule that no one
+     rewords another's concept. The registry records the ruling; the page keeps her words
+     until she or Aaron changes them.
+   - It is **compatible with the `actor` already defined** in
+     [`docs/writer-actor-routing-model.md`](writer-actor-routing-model.md) §"Actor model" —
+     *"Actor = the clone/writer/loop — a git-native virtual actor (grain)"*. A clone is a
+     copy, and copyability is exactly the rule above. The two senses agree.
+
+   **Scope warning, in Aaron's own words: this "expands to a lot of content."** Measured:
+   **154** in-tree files carry the phrase *"what remains"*. This entry is deliberately a
+   carved sentence plus pointers rather than a compression of that corpus — per
+   `.claude/rules/rules-are-small-carved-sentences-pointing-to-docs.md`. Do not try to
+   flatten 154 files into a gloss.
+
+   **One gap worth knowing before leaning on the discriminator.** *"Frozen like a quasi
+   time crystal"* has a mechanical referent — a four-corner-feedback quasi-time-crystal
+   detector exists in-tree — but that detector has a **filed bug**:
+   `081M00SW8YJ087G0R002J1WFFE` — *"defines incommensurate period, detects period ≤ 4."*
+   So the conceptual test is sound while its current implementation is not, and an
+   agent/actor classification taken from that detector today would be unreliable.
 6. **`Kilesi` is the first row here whose definition was NOT transcribed — it is a
    proposal awaiting its author.** The term appeared in conversation with no definition
    ("ISR kilesi arrow", Aaron 2026-08-17) and had zero occurrences in the tree; asked to
