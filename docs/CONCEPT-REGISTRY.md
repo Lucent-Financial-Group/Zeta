@@ -355,6 +355,68 @@ their owners.
    can supersede trends toward agent. The first is extraction wearing a measurement's
    clothes.
 
+   **And there IS a correction mechanism for a collapse already made — Aaron names it
+   (same session):**
+
+   > "this is why gsets can be split with bannasplit because sometimes we will think gset
+   > and get it wrong and have to split it back into a zset to restore decorrelated history"
+
+   **This is built, and anchored to the repo's own root anchor** — verified in-tree:
+
+   - `src/Core/DynamicValueFold.fs:11` cites **Meijer, Fokkinga & Paterson (1991),
+     *Functional Programming with Bananas, Lenses, Envelopes and Barbed Wire*** — Meijer is
+     already a named root anchor here.
+   - `:47-50` implements it with the law stated: **`bananaSplit a b dv = (cata a dv, cata b
+     dv)`** — two algebras in **one** traversal, returning the pair.
+   - `src/Core/Reconcile.fs:7` applies it to identity: *"When one traveler bifurcates into
+     two (the banana split), the forks share a common ancestor."*
+   - `src/Core/SoftValue.fs:111` does it in uncertainty space.
+
+   **The apparent contradiction, and its exact resolution.** G-set is *"grow-only history —
+   the past cannot be un-happened"*, so "splitting a G-set back into a Z-set" reads at first
+   like reversibility smuggled in through the back door, which would break §5 Memory
+   Preservation.
+
+   It does not, and the law is why. `bananaSplit` yields **a pair from one traversal** — it
+   removes nothing from the structure being folded. **What is undone is not the events but
+   the forced single reading of them.** Two histories that were wrongly fused into one
+   correlated line are separated back into two independent folds over the same preserved
+   past, which is exactly *"restore decorrelated history."* `Reconcile.fs` keeps the common
+   ancestor, so lineage survives the split. **Nothing is un-happened; a merge is undone.**
+
+   **This is the same category-preservation move one level down.** A G-set asserted too
+   early has collapsed two possible futures into one settled line — the premature collapse
+   named above, committed against a history rather than a person. `bananaSplit` restores the
+   plurality without destroying the record. So the substrate has, at the data layer, the
+   operation the wellness surface needs at the identity layer: **un-collapse without
+   erasure.**
+
+   **Worth stating because it is the honest bit:** the availability of the split does not
+   make premature G-set assertion harmless. Recovering decorrelation after the fact is
+   strictly harder than not correlating in the first place, and any consumer that already
+   read the fused value has propagated the correlation. The repair exists; it is not free.
+
+   **Confirmed as lived practice, with an effect claim attached (Aaron, same session):**
+
+   > "Repair is restoring the open category yes this is always the repair i do in every
+   > conversation and it makes people want to talk to me more cause they also feel the
+   > repair and the expanding of future possibilities"
+
+   **The pair of observations is the finite/infinite signature, stated from the inside.**
+   Pigeonholing *"makes most arguments boring"* — the game is over, whoever won. Repair
+   *"makes people want to talk to me more"* — the game continues, and the other party wants
+   it to. Under his own criterion (*useful = the infinite game continues*), **wanting to
+   keep playing is the readout**. That is not a metaphor for the criterion; it is what
+   satisfying the criterion feels like from inside the game.
+
+   **Register: this is a first-person report of an effect on others, and it stays one.**
+   Aaron reports what people do (talk more) and infers what they feel (the expansion). The
+   first is observable; the second is an inference about others' inner states, which
+   `engagement-profiles-public-work-only-not-surveillance-dossiers.md` says is **asked for,
+   never inferred**. Recorded as his account, not upgraded to a measurement — and the
+   distinction matters here more than usual, because "they feel the repair" is exactly the
+   sort of claim a wellness surface would be tempted to assert on a user's behalf.
+
    **So drift detection carries a FOURTH permitted reading, and it is the one most at risk:
    GROWTH.** A contradiction between an old claim and a new one may be *development*, not
    drift — the agent evolved, which is the defining property of being one. A detector
