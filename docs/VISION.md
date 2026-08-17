@@ -1071,6 +1071,43 @@ an outside observer's distribution over "which event was erased" is indistinguis
 prior, and that fails if the mix is too small or the erasure leaks its silhouette. Until that
 exists, this is a named direction with a clear specification, not a capability.
 
+### The thesis of independence — you cannot forget alone
+
+Aaron: *"this is my **thesis of independence**: **mutual empowerment of erasure** of the past,
+without needing to know the specific past erased event."*
+
+**This makes erasure necessarily COOPERATIVE, and that is the structural core rather than a
+sentiment.** The anonymity set is **other participants' events**. A mix of one is a deletion.
+So:
+
+> **You cannot forget alone.** Your erasure requires others' events to hide among — **I make
+> your forgetting possible by contributing to the mix, and you make mine possible.**
+
+**The second clause is a hard protocol constraint, not a courtesy.** *"Without needing to know
+the specific past erased event"* means **the contributors must not learn what was erased
+either.** Not *"I know your secret and will not tell"* — it must be *"I mathematically cannot
+know."* A contributor who can identify what they helped hide is a failure of the design, not a
+minor leak.
+
+**Why this is the independence thesis, and why it inverts the usual framing.** If your past can
+be fully reconstructed by me, you are not independent of me — you are a subsystem of my model.
+Erasure is what makes independence possible. And because erasure requires a mix contributed by
+others, **independence is produced BY interdependence rather than by separation.** You become
+independent *through* others, not away from them.
+
+That is also why this connects to the decorrelation problem the rest of this document keeps
+circling: **independent sources are not found, they are manufactured cooperatively.** Two
+parties who can each fully reconstruct the other are one source wearing two names — which is
+the same shared-cause defect the anti-Sybil work prices, arriving from the privacy side.
+
+**Anchor (CITED, NOT CHECKED):** Chaum's **dining cryptographers / DC-nets** (1988,
+*Unconditional Sender and Recipient Untraceability*) is close to the exact shape — participants
+cooperate, the result is publicly verifiable, and **no participant can determine which of the
+others transmitted**, with information-theoretic rather than computational anonymity.
+Cooperation required, knowledge impossible: the two properties named above, in one
+construction. Its costs are real and must be named rather than discovered — collisions,
+disruption by a malicious participant, O(n) communication. Also **Chaum 1981** (mix networks).
+
 ### The standing decision — and it is a definition, not a tradeoff
 
 Aaron: *"the substrate accepts an unrecoverable loss in exchange for the other party being
