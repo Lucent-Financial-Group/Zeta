@@ -153,20 +153,28 @@ The single chain: **identity proof → quantum gate → calibration → causalit
 
 ## The Infrastructure Stack
 
-The cluster runs on NixOS (declarative, desired-state configuration) with NixFlakes for packages. K3s Kubernetes is deployed via a NixFlake. ArgoCD manages all application deployments. The current deployed applications are:
+The cluster runs on NixOS (declarative, desired-state configuration) with NixFlakes for packages. K3s Kubernetes is deployed via a NixFlake. ArgoCD manages all application deployments.
 
-| Application                         | Status         | Manifest                                         |
-| ----------------------------------- | -------------- | ------------------------------------------------ |
-| Cilium (CNI + Hubble)               | Deployed       | `infra/k8s/applications/cilium/`                 |
-| ArgoCD                              | Deployed       | `infra/k8s/applications/argocd/`                 |
-| Orleans / Temporal TS / Dapr Actors | Deployed       | `infra/k8s/applications/`                        |
-| Longhorn (distributed storage)      | Manifest ready | `infra/k8s/applications/longhorn/`               |
-| Local-path-provisioner              | Manifest ready | `infra/k8s/applications/local-path-provisioner/` |
-| CockroachDB                         | Manifest ready | `infra/k8s/applications/cockroachdb/`            |
+The declaration lives under `full-ai-cluster/`. That is the tree the USB installer actually installs — `full-ai-cluster/usb-nixos-installer/zeta-install.sh` ends in `nixos-install --flake /mnt/etc/zeta/full-ai-cluster#<host>` — and the only flake CI evaluates. It declares **46** ArgoCD `Application` manifests under `full-ai-cluster/k8s/applications/`, plus the app-of-apps root at `full-ai-cluster/k8s/bootstrap/root-application.yaml` (measured 2026-08-17). The older tree declares 7.
 
-All manifests are validated by `infra/k8s/tests/validate-applications.ts` (TypeScript, bun-runnable, 7 test groups, 37/37 pass offline). The CI workflow `helm-validate.yml` runs this on every PR touching `infra/k8s/applications/`.
+| Application                    | Manifest                                                                                                                                    |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| Cilium (CNI + Hubble)          | `full-ai-cluster/k8s/applications/cilium/`                                                                                                  |
+| ArgoCD                         | `full-ai-cluster/k8s/applications/argocd/`                                                                                                  |
+| Orleans                        | `full-ai-cluster/k8s/applications/orleans/`                                                                                                 |
+| Temporal                       | `full-ai-cluster/k8s/applications/temporal/`                                                                                                |
+| Dapr                           | `full-ai-cluster/k8s/applications/dapr/`                                                                                                    |
+| Longhorn (distributed storage) | `full-ai-cluster/k8s/applications/longhorn/`                                                                                                |
+| CockroachDB                    | `full-ai-cluster/k8s/applications/cockroachdb/`                                                                                             |
+| Local-path storage             | _not_ an Application — the `zeta-local-path` StorageClass is declared by the NixOS module `full-ai-cluster/nixos/modules/local-storage.nix` |
 
-NixOS prerequisites for Longhorn (`open-iscsi`, `nfs-common`) are declared in `infra/nixos/modules/common.nix`. All toolchains (Zig, Rust, AssemblyScript, Go, Lua, LLVM, Emscripten, bun, dotnet) are declared in `infra/nixos/modules/common.nix`, `flake.nix`, and `tools/setup/linux.sh`.
+**Status register, stated honestly.** The column this table used to carry said "Deployed" for the first three rows. That is a claim about a running cluster, and nothing in this repository can check it — what is in the repo is a _declaration_, not an observation. Every row above is therefore "declared in the manifest tree the installer installs". Whether a given workload is currently up on the PoC box is an operator observation, not a repo fact.
+
+**Correction, 2026-08-17.** The previous version of this table cited `infra/k8s/applications/cilium/` and `infra/k8s/applications/argocd/` as deployed. Neither directory exists: `infra/k8s/applications/` contains argorollouts, argoworkflows, cockroachdb, gitlab, local-path-provisioner, longhorn, orleans — no cilium, no argocd. `infra/k8s/` + `infra/nixos/` are an **older, second declaration of the same cluster** which collides with `full-ai-cluster/` on the single Kubernetes identity `Application/argocd/zeta-root`; consolidating the two is tracked as work-item `081M00QCHWA087G0R000GKKRXD` and is not yet done.
+
+Validation, measured 2026-08-17: `validate-applications.ts` (real YAML parser, exact chart-version resolution, `helm template` + `kubeconform` under `--render`) is run by the `helm-validate.yml` workflow, and it is still pointed at the **older** tree — 37 checks, all passing. Pointed at `full-ai-cluster/k8s/applications` it reports 224 passed / 14 failed, so the live tree is not yet covered by that lane. Both trees _are_ covered by `gate.yml`'s `lint (yaml/k8s)` job (yamllint + kubeconform over every manifest).
+
+NixOS prerequisites for Longhorn (`services.openiscsi`, `pkgs.nfs-utils`, and the `/usr/local/bin` symlinks Longhorn's binaries expect) are declared in `full-ai-cluster/nixos/modules/longhorn-prereqs.nix`. The byte-lock toolchains (Zig, Rust, AssemblyScript, Go, Lua, LLVM, Emscripten) are declared in the root `flake.nix` devShell and in `infra/nixos/modules/common.nix`; `full-ai-cluster/nixos/modules/common.nix` does not carry them, which is one of the open items in the consolidation above. `bun` and `dotnet` come from `mise` reading the repo's `.mise.toml` on every host, per `tools/setup/linux.sh`.
 
 ---
 
