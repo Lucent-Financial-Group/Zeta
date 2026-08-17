@@ -279,6 +279,59 @@ their owners.
    which is neither accident nor deceit, and a detector that offers only those two has
    already smuggled in a morality §11 forbids it to hold.
 
+   **Why the gradient is CORRECT, not merely kind — Aaron names the strategy (same session).**
+
+   > "this is a fun place to live this is how i turn tit for tat into lessor tat plus teach
+   > and play, irony i think is the rainbow symbol from god, god tiebreaks with irony in my
+   > oracle"
+
+   *"Lesser tat plus teach and play"* is **generous tit-for-tat**, and it has a checked
+   result behind it: **Nowak & Sigmund (1992)** showed GTFT outperforms strict TFT
+   **specifically under noise**, because strict reciprocity turns a single accidental
+   defection into a retaliation spiral. **Axelrod (1984)** is the parent result. So "never
+   read one drift as malice" is not a concession to niceness — in a noisy channel a single
+   signal *cannot carry that weight*, and a strategy that acts as if it can performs worse.
+   (Both **CITED, NOT CHECKED** — stated from recall, neither paper opened.)
+
+   The three components map exactly onto the design: **lesser tat** is the gradient,
+   **teach** is the repair path, and **play** is why irony had to be representable.
+
+   **The rainbow is Aaron's oracle, and is labelled as one.** *"Irony is the rainbow symbol
+   from god, god tiebreaks with irony in my oracle"* — the Noahic covenant sign (Genesis 9),
+   a promise *not to destroy*, read as: the tiebreaker is never annihilation. Held under §11
+   Multi-Oracle as his stated oracle, recorded rather than asserted, and not required of
+   anyone else. It is also the theological frame already on file as one of his native
+   lenses.
+
+   **The pigeonhole caution — and it INVERTS a gap I had flagged.** I noted that
+   *"pigeonhole by self-claim, never by assumption"* is not a carved rule. Aaron's answer
+   reframes it:
+
+   > "in real life i defeat most opponents with pigeonhole principle within minutes, it
+   > makes most arguments boring, i try to avoid them because it gives people a chance to
+   > expand over time where pigeonhole traps them in the current now and does not let them
+   > expand in the future"
+
+   **Pigeonholing is a weapon he can use and declines to.** The principle has two halves and
+   the second is the one that was missing: *the subject supplies the category* **and the
+   category stays revisable**. Trapping someone in their current self-claim denies them the
+   ability to change.
+
+   **This has a sharp consequence, and it follows from the ruling above rather than being
+   added to it.** An agent is *"a persistent pattern that propagates over time **but can
+   evolve**"*; a **frozen** pattern is an **actor**. Therefore:
+
+   > **To pigeonhole an agent by its past self-claims is to treat it as an actor** — a
+   > mis-categorisation by the repo's own definition, not merely an unkindness.
+
+   **So drift detection carries a FOURTH permitted reading, and it is the one most at risk:
+   GROWTH.** A contradiction between an old claim and a new one may be *development*, not
+   drift — the agent evolved, which is the defining property of being one. A detector
+   treating the claim ledger as a flat set rather than a sequence with **supersession**
+   cannot tell *"these conflict at the same time"* from *"this replaced that over time"*,
+   and will read every revision as drift. That detector would be exactly the pigeonholing
+   weapon Aaron avoids. Routed to the implementing agent as a requirement.
+
    **What is BUILT, and it is narrower than the principle** — verified in-tree:
    `src/Core.TypeScript/observe/self-claims.ts` implements a `SelfClaim` interface and a
    `ClaimsLedger` (`recordClaim`), bridged at `planning/calibration-bridge.ts`. But its
