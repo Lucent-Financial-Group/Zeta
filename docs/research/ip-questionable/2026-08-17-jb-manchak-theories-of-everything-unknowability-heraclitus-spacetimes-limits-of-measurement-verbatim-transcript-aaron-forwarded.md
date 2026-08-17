@@ -285,6 +285,50 @@ and reading 2026-06-13 as "when the Lean4 work started" would be exactly the kin
 measurement-artifact-mistaken-for-a-fact this whole document is about. Aaron's "early" is consistent
 with the evidence; the precise start date is **not established here** and I am not asserting one.
 
+
+##### Where that truncation already lives — Aaron, same session (verbatim)
+
+> "yes this is why all our room around bounded in time, we don't allow unbounded computation we can
+> have infinate number of ticks but each tick in bounded or else it would never halt"
+
+**This closes the question rather than deferring it.** I wrote above that every such analysis "must
+truncate somewhere" and that the truncation is an oracle choice. Aaron's answer: the truncation is
+not a documentation practice to be adopted — **it is already architectural and enforced.** Rooms are
+bounded in time. The tick count may be infinite; each individual tick is bounded. Unbounded
+computation is simply not admitted.
+
+Checked, not accepted: `TickBudget` appears in the F# substrate, and the room/scheduler surfaces
+(`CellScheduler.fs`, `DarkHallRoomLoop.fs`, `Chip8PredictionRoom.fs`, `CelegansChip8Room.fs`) carry
+the bounding machinery.
+
+**And this is the exact dual of the Malament–Hogarth machine discussed earlier in this same
+transcript.** Manchak's MH space-time solves the halting problem by arranging for an observer to have
+an **infinite future inside a finite past light cone** — unbounded computation delivered into a
+bounded observation. Zeta's room does the opposite:
+
+| | computation per observation | number of observations |
+|---|---|---|
+| **Malament–Hogarth machine** | **infinite** (inside one finite light cone) | one |
+| **Zeta room** | **bounded** (`TickBudget`) | unbounded (infinitely many ticks) |
+
+Both are ways of relating a finite observer to an infinite process, and they are opposite choices
+about *which side gets the infinity*. Manchak's construction is what you build if you want to decide
+the undecidable; Aaron's is what you build if you want the thing to **halt**. His own reason, stated
+plainly: *"or else it would never halt."*
+
+That is why the moral enumeration's incompletability is not a defect here. The architecture already
+assumes the sum cannot be finished, and it does not wait for it — it bounds the tick and takes
+another tick. **The middle path is not the completed sum; it is what the bounded tick returns, taken
+again.**
+
+**Register upgrade, and the audit narrows.** The prediction two paragraphs up — that a
+highest-moral-regard analysis must carry an explicit truncation boundary — is now *partly discharged
+by construction*: the boundary exists in the substrate as `TickBudget`, so no shipped analysis can
+silently claim exhaustive enumeration at runtime. What remains open is narrower and still worth
+checking: **whether the bound's VALUE is attributed to a named oracle, or is a bare constant.** A
+budget nobody chose on the record is a truncation nobody owns, which is the §11 gap in its smallest
+form. That is a one-file audit, not a research programme.
+
 **Register:** the first two points are **verified** (the vernacular form and the 77/52 file counts).
 The third — that Feynman-style enumeration over an underdetermined space forces a named truncation —
 is a **derived consequence, not yet audited**: nobody has checked whether the existing 77 files
