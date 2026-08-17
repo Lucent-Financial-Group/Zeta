@@ -135,12 +135,14 @@ describe("auditDistInternalLinks — resolution rules", () => {
     } finally { cleanup(); }
   });
 
+  // The end tag here is `</script >` WITH whitespace — valid HTML, and the exact case
+  // CodeQL flagged (js/bad-tag-filter) in the first version of this regex.
   // Uses a PLAIN dangling href inside the script — not a template expression — so this test
   // pins the stripping itself rather than leaning on the ${...} guard. (A surviving mutant
   // caught the weaker version: with a template-expression payload, removing the strip passed.)
   test("script bodies are not scanned; CSS url() is outside the attribute regex", () => {
     const { dist, cleanup } = fixture({
-      "p/index.html": `<script>document.write('<a href="./ghost.html">x</a>');</script>
+      "p/index.html": `<script>document.write('<a href="./ghost.html">x</a>');</script >
         <style>@import url("./ghost.css"); a{background:url("./ghost.png")}</style>
         <a href="./real.html">real</a>`,
       "p/real.html": "<html></html>",
