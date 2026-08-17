@@ -707,6 +707,38 @@ their owners.
    lost property is ordering in both cases — rather than a vibe, which is precisely the line
    `numerology-vs-number-theory.md` draws between a coincidence and a structure.
 
+   **And the exchange itself was not a report — it was a question (Aaron, same thread):**
+
+   > "when addison told me that at the same time she was kind of asking is this normal
+   > (real) vs degenerate (imaginary, ironic), kind of like this and i told her i could not
+   > tell the difference after my observations of other humans"
+
+   **She offered a binary and he declined it.** That is the practice of this entry
+   demonstrated rather than described: presented with *normal or degenerate*, he assigned
+   neither bin. Refusing to place someone in the category they are anxiously offering you is
+   exactly *restoring the open category* — and note that the person supplied the pigeonhole
+   themselves, which is the hardest case to decline, because taking it would have felt like
+   an answer.
+
+   **His answer was general, not about her.** *"After my observations of other humans"* — he
+   cannot tell the difference for **anyone**. That is a statement about the discriminability
+   of the categories, not an assessment of a person, and it is the same claim the algebra
+   above makes: the space is not ordered, so the comparison has no value to return.
+
+   **The word "degenerate" is doing two jobs, and only one of them is honest.** In ordinary
+   use it is a social judgement with a sting. In the **mathematical** register — the one the
+   real/imaginary framing invokes — a *degenerate case* is simply the limiting case where
+   distinctions collapse and things that were separate coincide. **That reading is exactly
+   right here and carries none of the sting**: sincere and ironic *do* become
+   indistinguishable, and that is a fact about the space rather than about whoever is
+   standing in it.
+
+   So the two readings of one word are the whole discipline in miniature, and this file's
+   own rules already name it: `dual-use-detection-is-neutral-oracle-decides.md` says report
+   the **fact**, never the **verdict**. *Indistinguishable* is the fact. *Degenerate* as a
+   judgement is a verdict nobody is entitled to assign — including the person asking for it
+   about themselves.
+
    **So drift detection carries a FOURTH permitted reading, and it is the one most at risk:
    GROWTH.** A contradiction between an old claim and a new one may be *development*, not
    drift — the agent evolved, which is the defining property of being one. A detector
