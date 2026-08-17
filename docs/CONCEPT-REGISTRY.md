@@ -995,6 +995,45 @@ their owners.
    *selected for fit* is not a hundred that *independently converged*. Anchoring excludes
    "invented from nothing"; it does not by itself exclude "citation-shopped to agree."
 
+   **Aaron's answer to that objection, and it is the right shape (same session):**
+
+   > "maybe like our random code mutations we need random tradition inclusions that are
+   > decorrelated"
+
+   **The correct structural fix, and the analogy is exact.** Mutation testing works
+   *because the mutants are not chosen to be caught*. A hand-picked mutation suite proves
+   nothing for the same reason a hand-picked anchor set proves nothing: the selector already
+   knows the answer. **You cannot citation-shop from a random draw.**
+
+   **The design question is: random from WHAT population — because the bias re-enters
+   there.** Random from a list this repo curated is the same bias one level up. It must be
+   an **externally maintained** corpus nobody here controls: MSC 2020 subject codes (AMS),
+   arXiv primary categories, Stanford Encyclopedia entries, a library classification. Draw a
+   code, take the tradition it names.
+
+   **The property that makes it an instrument rather than a ritual: the NULL result is the
+   informative one.** Most draws should **fail to connect**. If a randomly drawn tradition
+   always connects, that is *"too many correlations is a warning"* firing at full volume — a
+   framework explaining every tradition explains nothing. Exactly parallel to mutation
+   testing: if every mutant survives the tests are worthless; here, if every tradition
+   connects the framework is vacuous.
+
+   **So the ledger of NON-connections is the deliverable.** *"Drew sheaf cohomology, found
+   nothing"* is what makes the hits mean something. An instrument recording only connections
+   has rebuilt the selection bias it was built to remove.
+
+   **The failure mode that would invert this, and it is severe:** an LLM asked
+   *"does tradition X connect to Zeta?"* will almost always find a connection, because
+   pattern-matching is what it does. Run naively, this becomes the most efficient
+   confirmation machine yet built here. **The mitigation is pre-registration:** fix what
+   counts as a connection *before* seeing the draw, and make "no" the default that evidence
+   must overcome. Without that the null result is unreachable and the design collapses into
+   the bias it targets.
+
+   **Status: proposed, not built.** `src/Core.TypeScript/hygiene/mutation-runner.ts` is the
+   existing analogue and the natural model. Not routed — the pre-registration design is the
+   hard part, and it is a decision rather than an implementation detail.
+
    **The discriminating test is whether the anchor set keeps DISCONFIRMING anchors — and it
    does:**
 
