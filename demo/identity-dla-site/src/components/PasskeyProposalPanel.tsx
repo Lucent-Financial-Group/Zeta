@@ -10,7 +10,11 @@ import {
   type DeviceCapability,
   type PasskeyEnrollment,
 } from "../lib/passkeyProposal";
-import { createAutomaticVerificationPatch } from "../lib/verificationPatch";
+import {
+  canQueueGeneratedVerification,
+  canQueueSuppliedProposal,
+  queueHarmlessVerification,
+} from "../lib/verificationPatch";
 
 const CREDENTIAL_STORAGE_KEY = "zeta-proposal-passkey-credential-id";
 type PanelState = "idle" | "binding" | "enrolling" | "authorizing" | "ready" | "submitting" | "submitted" | "error";
@@ -125,15 +129,20 @@ export default function PasskeyProposalPanel() {
   };
   const queueVerification = async () => {
     try {
-      const generated = createAutomaticVerificationPatch(baseSha);
-      setPayload(generated);
-      await queue(generated);
+      await queueHarmlessVerification({
+        baseSha,
+        submit: async (generated) => {
+          setPayload(generated);
+          await queue(generated);
+        },
+      });
     } catch (error) {
       setState("error");
       setMessage(error instanceof Error ? error.message : "The local verification agent could not generate a bounded patch.");
     }
   };
-  const enabled = Boolean(capability) && registrySequence !== null && isCommitSha(baseSha) && payload.trim().length > 0;
+  const canGenerate = canQueueGeneratedVerification({ capability, registrySequence, baseSha });
+  const canSupply = canQueueSuppliedProposal({ capability, registrySequence, baseSha, payload });
   const buttonStyle = (active: boolean): CSSProperties => ({
     background: active ? "rgba(16,185,129,0.12)" : "rgba(71,85,105,0.16)",
     border: `1px solid ${active ? "#059669" : "#475569"}`,
@@ -266,8 +275,8 @@ export default function PasskeyProposalPanel() {
           </label>
           <button
             onClick={queueVerification}
-            disabled={!enabled || state === "submitting"}
-            style={{ ...buttonStyle(enabled), marginBottom: "0.35rem" }}
+            disabled={!canGenerate || state === "submitting"}
+            style={{ ...buttonStyle(canGenerate), marginBottom: "0.35rem" }}
           >
             {state === "submitting" ? "queueing automatic proposal…" : "queue harmless verification"}
           </button>
@@ -297,7 +306,7 @@ export default function PasskeyProposalPanel() {
           />
           </details>
           <div style={{ marginTop: "0.32rem" }}>
-            <button onClick={() => void queue()} disabled={!enabled || state === "submitting"} style={buttonStyle(enabled)}>
+            <button onClick={() => void queue()} disabled={!canSupply || state === "submitting"} style={buttonStyle(canSupply)}>
               {state === "submitting" ? "queueing automatic proposal…" : "queue supplied proposal"}
             </button>
           </div>
