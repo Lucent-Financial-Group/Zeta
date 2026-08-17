@@ -935,6 +935,48 @@ their owners.
    under a large number of design choices**, and an unnamed assumption is the kind that
    never gets re-examined when the world declines to cooperate.
 
+   **And the mechanism that makes convergence a per-value choice (Aaron, same thread):**
+
+   > "we impose this per discriminated union — each of our DUs can have shared state that
+   > are CAS by multiple actors as our first stage past CRDTs, no consensus"
+
+   **Built, with his own attribution in the header.** `src/Core/CasStore.fs`: *"Per-row
+   compare-and-swap over the content-addressed store — the lock-free runtime coordination
+   primitive (Aaron 2026-06-07; 'maybe we don't need Orleans')."*
+
+   **Why CAS is genuinely "past CRDTs" for this purpose — and it is the disagreement
+   property again.** From that file's own description: `trySwap` commits **iff** the row's
+   current address still equals the caller's `expected`, *"otherwise it **fails without
+   committing** and returns the **actual** current address so the caller can re-read and
+   retry."*
+
+   > **The loser learns that it lost, and learns what it lost to.** A CRDT merge gives you
+   > neither — it absorbs the conflict into a result and no participant is told a
+   > disagreement occurred.
+
+   So CAS **surfaces** the disagreement where CRDT merge **dissolves** it. That is the same
+   line this whole thread keeps arriving at, now at the concurrency-primitive layer — a
+   fifth route, and the second one already shipped.
+
+   **"No consensus" is precise, not loose, and there is a theorem behind it.**
+   **Herlihy (1991), *Wait-Free Synchronization*** established the consensus hierarchy:
+   compare-and-swap has **consensus number ∞** — it can implement wait-free consensus for
+   any number of processes. So *"no consensus"* does not mean consensus is avoided; it means
+   **no consensus PROTOCOL is run**, because the primitive is already universal. That is why
+   Orleans-style single-activation becomes unnecessary rather than merely unfashionable, and
+   it is what licenses the file's *"no single-activation, no lock — manifesto §2
+   lock/wait-free."* **CITED, NOT CHECKED.**
+
+   **The per-DU part is the point Aaron is making, and it answers the paragraph above
+   directly:** convergence is chosen **at the type**, DU by DU, rather than imposed by the
+   substrate. A DU whose shared state is CAS'd keeps its conflicts legible; one built on a
+   CRDT converges them away; both are available, and the choice is local and explicit.
+
+   **Honest bound, stated by the file itself:** CAS is **single-row**. The header says the
+   *"multi-row-atomic case escalates to the serialized bus / saga."* So *"no consensus"*
+   holds for single-location updates and not universally — the moment you need two rows to
+   move together, coordination reappears under a different name.
+
    **So drift detection carries a FOURTH permitted reading, and it is the one most at risk:
    GROWTH.** A contradiction between an old claim and a new one may be *development*, not
    drift — the agent evolved, which is the defining property of being one. A detector
