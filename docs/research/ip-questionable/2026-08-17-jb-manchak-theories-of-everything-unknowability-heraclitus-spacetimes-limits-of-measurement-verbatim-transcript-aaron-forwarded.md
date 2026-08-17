@@ -265,7 +265,6 @@ mechanically checkable prediction:
 > possibility space silently — the vacuity class, again — or is asserting the global knowledge
 > Manchak proves unavailable.
 
-
 ##### Provenance of that formal work — Aaron, same session (verbatim)
 
 > "we did a lot of formal anaysis on this with this repo was first opened up, in lean4 and other we
@@ -284,7 +283,6 @@ Zeta — an F# implementation of DBSP for .NET 10"), and there are **46** commit
 and reading 2026-06-13 as "when the Lean4 work started" would be exactly the kind of
 measurement-artifact-mistaken-for-a-fact this whole document is about. Aaron's "early" is consistent
 with the evidence; the precise start date is **not established here** and I am not asserting one.
-
 
 ##### Where that truncation already lives — Aaron, same session (verbatim)
 
