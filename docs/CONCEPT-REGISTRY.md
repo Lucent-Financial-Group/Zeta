@@ -554,6 +554,50 @@ their owners.
    discipline — a person building a system shaped like their own thinking is the expected
    case, not a finding.
 
+   **Living ironically, and why irony had to be a READING rather than a detection (Aaron,
+   same session):**
+
+   > "yes i've known a few people who live ironically and to others they can't tell, to me
+   > this is another version of CPT symmetry, equal and opposite qualia experiences that
+   > can't tell the difference from the inside, although i think the ironic ones have the
+   > advantage to tell the difference"
+
+   **The structural claim is sound, and the last clause is the interesting part — because it
+   breaks the symmetry it just invoked.** If sincere-living and ironic-living produce
+   identical observable behaviour, no outside party can distinguish them. But the ironic one
+   **holds both readings at once**: they know the sincere reading *and* know they are doing
+   the other thing. That is not a symmetry, it is an **inclusion** — the ironic position
+   contains the sincere one plus the knowledge of which position it occupies.
+
+   So *"the ironic ones have the advantage"* is not a value judgement about irony; it is a
+   statement about **information**, and it is correct on its own terms. One position has
+   strictly more of it.
+
+   **Register: the CPT framing is his analogy and is labelled one** — CPT is a theorem about
+   field theory and entails nothing about qualia. What transfers is the *shape*
+   (indistinguishability of an equal-and-opposite pair), not a derivation. Note also that
+   the physics itself already carries an asymmetry inside the symmetry — **T alone is
+   violated while CPT holds** — so "apparent symmetry with a real asymmetry inside it" is
+   the accurate version of the analogy rather than a weakening of it. The behavioural
+   indistinguishability point has its own philosophical lineage (inverted qualia; Nagel;
+   Chalmers) — **CITED, NOT CHECKED**.
+
+   **THE DESIGN CONSEQUENCE, and it retroactively explains a choice already made in code.**
+   If irony is behaviourally indistinguishable from sincerity, then **no detector can ever
+   detect it** — the information is only available from inside. Therefore:
+
+   > **Irony is declarable, never detectable.**
+
+   `src/Core.TypeScript/identity-claims.ts` (PR #11663) already gets this right, and this is
+   *why*: `ironic` appears as a permitted **reading** offered under `recurring-drift`, never
+   as a category the system concludes. A detector that claimed to *identify* irony would be
+   asserting access to an inside it does not have — the same overreach as inferring an inner
+   state instead of asking for it. The subject can declare it; the mechanism cannot find it.
+
+   **The repair consequence follows:** a subject in drift should be able to *say* "this was
+   ironic" and have that resolve the tension, because that declaration is the only evidence
+   there is. That is self-claim sovereignty applied to the reading as well as to the claim.
+
    **So drift detection carries a FOURTH permitted reading, and it is the one most at risk:
    GROWTH.** A contradiction between an old claim and a new one may be *development*, not
    drift — the agent evolved, which is the defining property of being one. A detector
