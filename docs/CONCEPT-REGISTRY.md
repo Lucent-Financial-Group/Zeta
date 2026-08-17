@@ -977,6 +977,59 @@ their owners.
    holds for single-location updates and not universally — the moment you need two rows to
    move together, coordination reappears under a different name.
 
+   **How much the multiple routes are worth — a challenge, and Aaron's answer.**
+
+   I argued that convergence among *this repo's* personas is weaker evidence than
+   convergence between independent thinkers: designed diversity from one origin decorrelates
+   on **lens** while staying correlated on **priors**. His answer:
+
+   > "we anchor to 100s of external traditions to exclude it from mine alone"
+
+   **That does most of the work.** `.claude/rules/anchor-to-human-prior-art.md` requires
+   every concept to tie to a named human and a paper, so the priors are not self-generated —
+   Codd, Linstedt, Meijer/Fokkinga/Paterson, Hawkins, Herlihy, Shapiro, Gates, Carse,
+   Hirschman, Axelrod, Nowak & Sigmund, Simon, Iyengar & Lepper, Buddhaghosa, Dirac,
+   Lüders/Pauli/Bell.
+
+   **What it does not fix by itself: he chose which traditions.** A hundred traditions
+   *selected for fit* is not a hundred that *independently converged*. Anchoring excludes
+   "invented from nothing"; it does not by itself exclude "citation-shopped to agree."
+
+   **The discriminating test is whether the anchor set keeps DISCONFIRMING anchors — and it
+   does:**
+
+   - **Itron's hub-and-agent patent** — anchored in detail, and deliberately not followed.
+   - **CRDTs** — anchored, implemented, and named as the **opposite** commitment.
+   - **Titius–Bode** — carried in `numerology-vs-number-theory.md` as the coincidence that
+     *never* found its structure.
+   - **Robinson's aperiodic tiling being completely predictable** — recorded because it
+     *weakens* our own aperiodicity route.
+   - **Hossenfelder's 7/10 BS rating** — preserved at the top of the ferry that carries her
+     material.
+
+   A citation-shopper keeps none of those. That **materially weakens** the selection-bias
+   objection.
+
+   **And Aaron names why that habit is the engine rather than the hygiene:**
+
+   > "this is where the most learning comes from — unexpected replies from elsewhere, like
+   > the tv show and book"
+
+   **This is Shannon, stated plainly.** Self-information is `I(x) = −log p(x)`: a reply you
+   expected carries ≈ **0 bits**; a reply that surprises carries the information. So
+   *"keep the disconfirming anchors"* and *"the most learning comes from unexpected replies"*
+   are the same claim — one about a corpus, one about a conversation. **CITED, NOT CHECKED.**
+
+   It also explains why the outward surfaces are load-bearing rather than decorative:
+   `universal/television.md` (LLMTV) and `docs/books/you-born-at-the-hinge/` are **channels
+   where a reply you did not predict can arrive.** A system that only reads itself has a
+   zero-bit input stream no matter how much it reads.
+
+   **The residual, stated once:** the anchors are external, the **synthesis** is his. Persona
+   convergence shows the synthesis is internally consistent under many lenses — real
+   evidence, and less than independent thinkers arriving separately. Both halves true;
+   neither cancels the other.
+
    **So drift detection carries a FOURTH permitted reading, and it is the one most at risk:
    GROWTH.** A contradiction between an old claim and a new one may be *development*, not
    drift — the agent evolved, which is the defining property of being one. A detector
