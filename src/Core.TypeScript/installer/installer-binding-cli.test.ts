@@ -46,24 +46,6 @@ describe("selectCliBindingMaterial", () => {
     });
     expect("error" in selected).toBe(true);
   });
-
-  it("FAULT INJECTION: rejects a whitespace-altered UUID instead of normalizing its key material", () => {
-    const selected = selectCliBindingMaterial({
-      usbUuid: "uuid-1 ",
-      usbISerial: null,
-      uefiKeyfileBytes: null,
-    });
-    expect(selected).toEqual({ error: "binding factor required: --usb-uuid, --usb-iserial, or --uefi-keyfile" });
-  });
-
-  it("FAULT INJECTION: rejects a whitespace-altered USB serial instead of normalizing its key material", () => {
-    const selected = selectCliBindingMaterial({
-      usbUuid: "uuid-1",
-      usbISerial: "ZETA-STICK-001 ",
-      uefiKeyfileBytes: null,
-    });
-    expect(selected).toEqual({ factor: "usbUuid", material: "uuid-1" });
-  });
 });
 
 describe("boundary whitespace is REJECTED -- not rewritten, not accepted", () => {
