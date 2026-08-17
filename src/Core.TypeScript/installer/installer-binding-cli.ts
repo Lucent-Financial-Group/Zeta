@@ -73,7 +73,7 @@ export function selectCliBindingMaterial(input: {
   readonly usbISerial: string | null;
   readonly uefiKeyfileBytes: Uint8Array | null;
 }): CliBindingSelection | { readonly error: string } {
-  const hasIserial = isExactNonEmpty(input.usbISerial);
+  const hasIserial = input.usbISerial !== null && input.usbISerial.trim().length > 0;
   const hasKeyfile = input.uefiKeyfileBytes !== null;
   if (hasIserial && hasKeyfile) {
     return { error: "--usb-iserial and --uefi-keyfile are mutually exclusive" };
@@ -84,11 +84,6 @@ export function selectCliBindingMaterial(input: {
     return { factor: "uefiKeyfile", material };
   }
   if (hasIserial) {
-<<<<<<< feat/pages-auto-verification
-    return { factor: "usbISerial", material: input.usbISerial };
-  }
-  if (isExactNonEmpty(input.usbUuid)) {
-=======
     if (hasBoundaryWhitespace(input.usbISerial!)) {
       return {
         error:
@@ -106,7 +101,6 @@ export function selectCliBindingMaterial(input: {
           "reports it (refusing rather than trimming, because this value is key material)",
       };
     }
->>>>>>> main
     return { factor: "usbUuid", material: input.usbUuid };
   }
   return { error: "binding factor required: --usb-uuid, --usb-iserial, or --uefi-keyfile" };
