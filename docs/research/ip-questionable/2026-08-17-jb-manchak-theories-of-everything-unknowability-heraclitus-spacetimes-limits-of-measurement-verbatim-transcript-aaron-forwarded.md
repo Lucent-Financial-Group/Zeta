@@ -122,9 +122,53 @@ having to relitigate whether it was ever checked.
 
 **The falsifier that would promote it:** a stated metric on agent-pair memory under which the middle
 path is a geodesic, or decorrelation is a frame transformation, such that a prediction *differs* from
-the plain ρ-weighted aggregation already in `SocietyUsefulWork.fs`. Until then the honest register
-is: a mapping Aaron reached independently, with real substrate under the `decorrelated` half and
-none yet under the `relativity` half.
+the plain ρ-weighted aggregation already in `SocietyUsefulWork.fs`.
+
+#### Aaron's answer to that falsifier, same session (verbatim)
+
+> "we have this in clifford space this is where our geometric indution comes from, i'm now sure we
+> have funnly conneted everything but our hearbeat braids are the start of this, and connects into
+> brainded monoiadal category theory for the category theoritic general version of our clifford
+> geodesiciscs and generalization of it kind of. we keep connecting these closer and closer and also
+> to the futamara becasue these is the basisi of our comipler of compilers it's our compiler
+> 'physics' of computer sicence"
+
+This **materially answers** the paragraph above, and the correction is recorded rather than the
+original left standing: I wrote "none yet under the `relativity` half." That was wrong about *where
+the structure lives*. Aaron names it:
+
+- **Clifford space is the metric.** The geodesic notion the falsifier asked for is not missing — it
+  is where the repo's *geometric induction* already comes from.
+- **Heartbeat braids are the entry point** — the concrete, already-running instance.
+- **Braided monoidal category theory is the general form** — the category-theoretic version of the
+  Clifford geodesics, which is the direction `only-the-irreducible-is-primitive-generate-the-rest`
+  already points (free monoidal category / operad at the top, Clifford as an earned quotient).
+- **Futamura is the same object seen from computing** — the compiler-of-compilers, which Aaron calls
+  "our compiler *physics* of computer science."
+
+**Anchors checked to exist before recording (not asserted):**
+
+- `src/Core.Lean4/Lean4/MenoBraidedRMatrix.lean`, `MenoMonoidalHexagons.lean`, `MenoBalancedTwist.lean`
+  — braided monoidal structure with machine-checked proofs, not prose.
+- `db/shapes/cartridges/braid.lines`, `db/shapes/cartridges/pending/symmetric-vs-braided.lines`,
+  `db/shapes/golden/braid.{html,svg}` — the braid cartridge and its goldens.
+- `docs/research/2026-06-14-…-self-hosting-futamura.md` — the compiler-of-compilers line, incl. §5
+  `gen(gen) == gen`.
+- Clifford/Cayley–Dickson and adinkra→Clifford→E8 lineage per
+  `only-the-irreducible-is-primitive-generate-the-rest.md`.
+
+**Register, held honestly.** This upgrades the claim from *"no located structure"* to **"located
+conjecture with real machine-checked substrate at each named site"** — which is a genuine upgrade and
+is why the correction is worth making. It does **not** discharge the falsifier: none of the four
+sites yet states a metric on **agent-pair memory** under which the middle path is a geodesic and a
+prediction *differs* from ρ-weighted aggregation. Aaron's own phrasing is convergence, not proof —
+*"we keep connecting these closer and closer."*
+
+So the entry stays `unmetered` under `toy-is-free-metered-must-be-earned`, with the promotion path now
+**specific instead of open**: the shortest route is to state the agent-pair memory metric in the
+Clifford setting and check whether its geodesic disagrees with `SocietyUsefulWork.fs` anywhere. A
+disagreement is the falsifier; agreement everywhere would make the relativistic framing decorative,
+which is equally worth knowing. Naming which of those two it is, is the work.
 
 ---
 
