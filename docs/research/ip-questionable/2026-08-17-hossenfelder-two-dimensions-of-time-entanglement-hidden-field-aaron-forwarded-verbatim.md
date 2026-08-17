@@ -436,3 +436,77 @@ Kept as a coincidence-index entry with its register attached, per
 [`numerology-vs-number-theory`](../../.claude/rules/numerology-vs-number-theory.md): an unlabelled
 coincidence in long-term memory is a belief you never decided to hold. This one is labelled, and it
 is a belief Aaron *did* decide to hold, which is a different and legitimate thing.
+
+---
+
+## Observation 7 — CPT, the middle ground, and "one or the other or both"
+
+### Verbatim
+
+> "so for me this is closely related to CPT symmetry and holding both truths open to create the
+> middle ground since either pole is indistingusible from there just being a single monopople it
+> could be 'one or the other or both' that is what quantium means to me in folk langugae."
+
+### What is solid here, and it is more than a metaphor
+
+**The monopole half is a real physical fact, and it is stronger than the analogy needs.** You
+cannot isolate a single magnetic pole. Cut a magnet and you get two magnets, never one pole; no
+magnetic monopole has ever been observed despite dedicated searches. So "either pole is
+indistinguishable from there just being a single monopole" points at something true and sharp:
+**the middle ground is not a choice, it is forced** — nature does not supply the isolated pole to
+collapse to. (Dirac 1931 showed a monopole *would* explain charge quantisation, which is why people
+keep looking; they have not found one.)
+
+**The CPT half is a genuine theorem** — Lüders, Pauli, and Bell (c. 1954–55): CPT is an exact
+symmetry of any local, Lorentz-invariant quantum field theory. And the detail that matters for
+Aaron's use is that **T alone is not a symmetry** — direct T-violation was measured (BaBar, 2012),
+and CP violation is long established. So the *combined* operation is the invariant while the
+individual reversals are not. That is a real instance of the shape he is describing: the pair is
+lawful where neither member is.
+
+**Register: the CPT connection is an ANALOGY and is labelled one.** CPT states that a specific
+threefold operation leaves the physics invariant. It does not state "hold both truths open," and no
+step of the theorem entails an epistemic policy. What transfers is the *shape* — invariance living
+in the pair rather than in either member — not a derivation. Per the standing discipline: a
+matching shape is not an identification.
+
+### The folk definition is unusually good, and has one place it misleads
+
+*"One or the other or both"* is closer to superposition than most folk renderings, and it is
+precisely right about the thing that actually fails: **exclusive disjunction**. Classically A xor B
+is exhaustive and you may assume the unmeasured value was already one of them; quantum mechanically
+you may not, and that assumption's failure — **counterfactual definiteness** — is exactly what Bell
+tests rule out. So the folk phrasing lands on the correct casualty.
+
+**Where it can mislead, stated because the distinction is the one Bell tests measure:** a
+superposition is **not** a classical "both are true." It is not a mixture. `|A⟩ + |B⟩` and a
+50/50 statistical mixture of A and B are *different states with different measurable consequences*,
+and telling them apart is the whole content of an interference experiment. "Or both" read as *both
+obtain* is the mixture; superposition is a third thing that "or both" in English has no word for.
+
+That is not a correction to the intuition so much as a boundary on it — and it is worth having
+because the ferried paper's proposed test (Observation 1) is exactly a correlation measurement,
+i.e. the kind of experiment whose entire job is distinguishing these two cases.
+
+### Where this already exists in the tree — measured, and it landed today
+
+The "hold both open rather than collapse" principle stopped being only a stance today. **PR #11579
+introduced `Epistemic` in `src/Core/SimVerb.fs` — the first five-way known/unknown/assumed/disputed/
+decided type in the repository.** Before it, `Disputed` had **zero** occurrences in any `.fs` or
+`.ts`; `Assumed` had two, both unrelated (Assumed Density Filtering in `TravelerRankLedger.fs`).
+
+That is the middle ground as a **type**: a claim can be *disputed* without being forced to true or
+false, and *assumed* without being promoted to known. A room that collapsed every claim to a binary
+at tick boundaries would be doing precisely what Aaron says the physics forbids — and it would also
+not be a Room in Addison Cooper's sense, which defines one as an uncertainty engine holding exactly
+those five states.
+
+So the honest summary is: **the physics analogy is unproven and the engineering instantiation is
+real.** The five-way type is not evidence for the CPT reading; it is an independent commitment to
+the same discipline, and it is the half we can actually check.
+
+### Pointers added
+
+- `src/Core/SimVerb.fs` — `Epistemic`, the five-way state (PR #11579, 2026-08-17)
+- Addison Cooper, *Genesis Concepts* — Room as "uncertainty engine", the source of the five states
+- `docs/CONCEPT-REGISTRY.md` — the registry those definitions now live in (PR #11566)
