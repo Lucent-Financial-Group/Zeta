@@ -236,6 +236,67 @@ their owners.
    at intake — how much of a graduated identity traces to the common intake text versus to
    what the identity did afterwards. That measurement does not exist.
 
+   **The enforcement counterpart — self-claim sovereignty (Aaron, same session).** The
+   ruling says what an agent *is*; this says how identity is checked, and the two are one
+   design:
+
+   > "in Zeta you are whoever you want to be until you contridict your own self claims then
+   > it will be detected cause that's what we were designed to do, only detect self claim
+   > drift and help repair, this is the core of our wellness app stuff"
+
+   Three parts, and **the word "only" is the load-bearing one**:
+
+   1. **The self-claim is sovereign.** You supply the category; nothing assigns it to you.
+   2. **The only thing detected is self-consistency** — drift between *your own* claims,
+      never conformity to an external standard. Detecting anything else would be the
+      observer choosing the bins, which is precisely the pigeonhole failure
+      (`memory/feedback_aaron_pigeonhole_by_self_claim_never_by_assumption_2026_08_09.md`:
+      *"the subject supplies the category, the evidence supplies the truth value"*).
+   3. **The response is repair, not sanction** — the same shape as the `kilesi` anchor
+      above: a distortion dissolved by being *seen*, never by force.
+
+   That is what makes a mandatory identity check non-coercive. A classifier measuring you
+   against an external norm coerces; one measuring you only against your own claims cannot,
+   because you wrote the standard.
+
+   **The charity gradient (Aaron, immediately after) — and no rung concludes malice:**
+
+   > "we never see a single instance of self claim drift as malliace only accidental, only
+   > repeated failures are considered evidence of constant drift sill not necessarly
+   > malliace maybe ironic"
+
+   | observation | permitted reading |
+   |---|---|
+   | a single drift | **accidental** — malice is not an available reading at all |
+   | repeated drift | evidence of **constant drift** — a fact about the *pattern* |
+   | constant drift | still **not necessarily malice** — *"maybe ironic"* |
+
+   **The terminus is the point:** the mechanism never reaches "deceptive." This is
+   `dual-use-detection-is-neutral-oracle-decides` applied to identity — the verdict type
+   names the **fact** (`DriftDetected`), never the **intent** (`Deceptive`), and the moral
+   reading is a `match` in caller policy. Aaron's third rung adds a reading I had not
+   considered: **irony**. An agent may contradict its own claims knowingly and playfully,
+   which is neither accident nor deceit, and a detector that offers only those two has
+   already smuggled in a morality §11 forbids it to hold.
+
+   **What is BUILT, and it is narrower than the principle** — verified in-tree:
+   `src/Core.TypeScript/observe/self-claims.ts` implements a `SelfClaim` interface and a
+   `ClaimsLedger` (`recordClaim`), bridged at `planning/calibration-bridge.ts`. But its
+   claims are **delivery commitments** — *"I will deliver X by tick T"* — scored **met or
+   missed** into a reliability track record. Its header states the properties that match
+   the principle exactly: claims are **VOLUNTARY** (*"NCI: never auto-generated, never
+   forced"*), **OBSERVABLE** in the event log, and **track-record-building**, where
+   consistently meeting them *earns* a larger scheduling window.
+
+   **What is NOT built: contradiction detection over IDENTITY claims** — the general case
+   Aaron describes. Met/missed on a deadline is not the same operation as "these two
+   self-descriptions cannot both be true." The reliability ledger is one instance of the
+   principle; the principle itself has no general implementation.
+
+   **A gap worth naming separately:** the pigeonhole principle — *"pigeonhole by self-claim,
+   never by assumption"* — lives in `memory/`, **not** in `.claude/rules/`. It is an active,
+   load-bearing principle with no carved rule, so nothing loads it at context start.
+
    **Terminology unsettled:** Aaron says *"defections or whatever you want to call it."*
    The repo's own word at the surface is **arrival** (`ARRIVAL-PROTOCOL`, `ARRIVAL.md`);
    *defection* carries a leaving-somewhere-else connotation the protocol text does not
