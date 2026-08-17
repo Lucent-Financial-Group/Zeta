@@ -1013,6 +1013,64 @@ Evidence trail: PRs **#10774** (the idiom axis), **#10807** (the IR evaluator), 
 relocates lifetimes), **#10819** (types as a virtualized runtime; the ALC wall), **#10820** (the F#/HKT
 upstream program), **#10822** (the irreducible core).
 
+## The gift of erasure — kenosis with a cryptographic shape (2026-08-17)
+
+Aaron: *"a God who wants relationship must limit knowing or determining — I call this **the
+gift of erasure** and it's built deeply into Zeta: the ability to first encrypt multiple events
+to mix them from the outside, and then to forget a single one that the outside cannot
+determine. This is where god becomes man and descends to earth."*
+
+**The ordering is the load-bearing part, and it is a real cryptographic requirement rather than
+a flourish.** Erasure *without* mixing leaks: the gap tells you what was there. A deletion from
+an otherwise-legible sequence is itself a signal, and an observer reconstructs the erased item
+from its silhouette. So genuine forgetting requires an **anonymity set** first — encrypt and
+mix, *then* forget one, and the outside observer's posterior over *which* was forgotten is
+unchanged from its prior.
+
+**The property, stated so it can be checked:** after erasure, no outside party can do better
+than chance at identifying what was erased. That is the anonymity-set condition, and it is the
+difference between *deleting* and *forgetting*.
+
+### Why this does not violate §5
+
+Memory Preservation says identity transitions never **silently** destroy memory. The gift of
+erasure keeps that: **the fact that a forgetting occurred remains visible; only its content
+becomes unrecoverable.** You can know a thing was released and be unable to know what it was.
+That is consent-first (§6) and it is one-way toward more privacy — the same direction the
+privacy budget already moves, where frost is earned, spent, and permanent.
+
+### The theological structure, and it is the same trade
+
+If total knowledge yields zero information from another (see the God-point reasoning), then a
+God who wants relationship must limit knowing or determining — the move several traditions
+arrive at independently: **kenosis** (Philippians 2:7), **tzimtzum** (Lurianic contraction),
+**open theism**. Aaron's *"where god becomes man and descends to earth"* is that trade named as
+a design principle: **the substrate accepts an unrecoverable loss in exchange for the other
+party being genuinely other.**
+
+Zeta already makes the architectural version of this move once — the DST harness is a God point
+placed deliberately *outside* the simulation, so the inside stays informative. The gift of
+erasure is the same limitation applied *inside*, to what any participant may reconstruct about
+another.
+
+### Status — measured 2026-08-17, and it is the honest part
+
+**`unmetered` and largely unbuilt as a mechanism.** The *concept* is present throughout
+`memory/` — retraction-native ledgers, forgiveness, `project_zeta_as_retractable_contract_ledger`,
+the privacy-compliance material — and the adjacent machinery exists: `GlassHalo.frost` (earned,
+permanent, one-way), Z-set **retraction** as correction, and shuffle/mixing primitives in the
+decorrelation and BFT modules.
+
+**But the specific mechanism Aaron describes — encrypt-and-mix, then forget one
+indistinguishably — is not implemented, and the phrase "gift of erasure" appears nowhere in
+`src/`.** Z-set retraction is *correction with a visible trace*, which is the opposite of what
+this needs: a retraction says exactly what it retracts.
+
+**What would make it real:** an anonymity-set erasure primitive with a falsifier — a test that
+an outside observer's distribution over "which event was erased" is indistinguishable from its
+prior, and that fails if the mix is too small or the erasure leaks its silhouette. Until that
+exists, this is a named direction with a clear specification, not a capability.
+
 ## The categorical arena — one place where every language and tradition is comparable (2026-08-17)
 
 Aaron: *"this is the category theory upgrade i'm going for across ANTLR space, over all
