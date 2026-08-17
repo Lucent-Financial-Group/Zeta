@@ -627,6 +627,48 @@ their owners.
    ironic" and have that resolve the tension, because that declaration is the only evidence
    there is. That is self-claim sovereignty applied to the reading as well as to the claim.
 
+   **And then Aaron withdraws half of his own asymmetry claim, which is the sharpest turn in
+   the thread:**
+
+   > "the closest i ever got to detecting this is my daughter telling me she was living
+   > ironically and doing social experiments, and i was like kind of me too, cause it's even
+   > hard to tell from the inside if that's just sincere too"
+
+   *(Recorded as structure only. A family member's disclosure about her own inner life is
+   hers, and `engagement-profiles-public-work-only-not-surveillance-dossiers.md` forbids
+   compiling the non-public sphere — the insight below does not need, and does not carry,
+   whose disclosure it was.)*
+
+   **Two things collapse here, and both matter.**
+
+   **First, the only "detection" that ever occurred was a DECLARATION.** Not a detector
+   firing — someone saying so. That is direct evidence for *"irony is declarable, never
+   detectable"*: the strongest case available is not an inference, it is a report.
+
+   **Second, and this retracts the inclusion I described above:** I argued the ironic
+   position strictly contains the sincere one, since the ironic party knows which position
+   they occupy. Aaron's *"it's even hard to tell from the inside if that's just sincere
+   too"* says **the inner access is not reliable either**. Living ironically may itself be
+   sincere, and the declarer cannot settle it. So the asymmetry is smaller than I claimed —
+   the ironic party has *a declaration*, not *the answer*.
+
+   **This is already carved discipline, met from the inside.** The engagement rule says
+   believe someone as **authority over their own account**, not as **an infallible
+   instrument on their own causes** — introspective access is genuinely limited (**Nisbett &
+   Wilson 1977**, people confabulate reasons), which is why *"I don't know"* is often the
+   most honest answer. Aaron has just supplied a lived instance of exactly that, about
+   himself.
+
+   **The design consequence is precise, and it is a distinction the detector must hold:**
+
+   > A declaration of irony **resolves** the tension. It does not **verify** it.
+
+   Resolution is sovereignty — the subject said it, so the system's business is finished.
+   Verification would require access nobody has, including the declarer. So a drift
+   mechanism may record *"the subject declared this ironic"* and must **never** record
+   *"this was ironic"*. The first is a fact about a speech act; the second is a claim about
+   an inner state that even its owner cannot check.
+
    **So drift detection carries a FOURTH permitted reading, and it is the one most at risk:
    GROWTH.** A contradiction between an old claim and a new one may be *development*, not
    drift — the agent evolved, which is the defining property of being one. A detector
