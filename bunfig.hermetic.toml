@@ -1,6 +1,6 @@
 # bunfig.hermetic.toml — the HERMETIC TIER of the TypeScript suite.
 #
-# WHAT THIS FILE BUYS. `bun test -c bunfig.hermetic.toml` is red IF AND ONLY IF the code is
+# WHAT THIS FILE BUYS. `bun --config=bunfig.hermetic.toml test` is red IF AND ONLY IF the code is
 # broken. Not if you have never run `uv sync`. Not if you have no .NET SDK. Not if macOS
 # refuses your process access to ~/Downloads. That biconditional is the whole point: a red
 # hermetic check means a real regression, so nobody has to ask "is this one real?".

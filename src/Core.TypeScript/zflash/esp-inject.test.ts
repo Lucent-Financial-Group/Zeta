@@ -4,7 +4,7 @@
 // in the test title — see findInstallerIso below.
 //
 // ENVIRONMENT-DEPENDENT TIER. Its verdict depends on the host having a physical
-// installer ISO, so it is excluded from `bun test -c bunfig.hermetic.toml` and
+// installer ISO, so it is excluded from `bun --config=bunfig.hermetic.toml test` and
 // declared in registry/environment-dependent-test-files.json. It still runs on
 // every PR, in `test (TS environment-dependent)`.
 import { describe, expect, test } from "bun:test";

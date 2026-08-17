@@ -25,7 +25,7 @@
  * which a real regression came to look exactly like ambient noise — not CI noise, a
  * local/CI divergence in what red means.
  *
- * THE REMEDY, AS A PROPERTY. After the split, `bun test -c bunfig.hermetic.toml` is red if
+ * THE REMEDY, AS A PROPERTY. After the split, `bun --config=bunfig.hermetic.toml test` is red if
  * and only if the code is broken — on a runner, and on a laptop that has never run
  * `uv sync`, has no .NET SDK, and has nothing plugged into it. A red hermetic check means a
  * real regression, so no reviewer has to ask "is this one real?".
