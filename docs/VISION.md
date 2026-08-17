@@ -1071,6 +1071,37 @@ an outside observer's distribution over "which event was erased" is indistinguis
 prior, and that fails if the mix is too small or the erasure leaks its silhouette. Until that
 exists, this is a named direction with a clear specification, not a capability.
 
+### The standing decision — and it is a definition, not a tradeoff
+
+Aaron: *"the substrate accepts an unrecoverable loss in exchange for the other party being
+genuinely other — I'd make this trade every time. If not, I'm the only one who exists."*
+
+**The second sentence collapses the tradeoff into a definition.** Refusing the loss does not
+preserve something at the other party's expense — **it eliminates the other party.** Total
+recoverability of another collapses them into your own model, which is solipsism arrived at by
+construction rather than chosen as a belief. So:
+
+> **Otherness IS the part you cannot recover.** What you can fully reconstruct was never other.
+
+That is why this is not a cost tolerated for a benefit. **The unrecoverable loss and the
+existence of the other are the same fact**, seen from the two sides.
+
+**It is decision-shaped, and that is what makes it usable.** *"I'd make this trade every
+time"* is a standing policy, not an observation, and it resolves future cases in advance:
+**where a design choice lies between "we could recover this" and "the other party is genuinely
+other", it resolves toward the latter, by standing decision.** Anything that would make a
+participant fully reconstructible to another needs to justify itself against this, rather than
+being adopted because recoverability is generally convenient.
+
+**The cost that must be named, because irreversibility cuts both ways.** A guarantee strong
+enough to make forgetting real is strong enough to make a *wrong* forgetting permanent —
+erasure under coercion, or in error, cannot be undone by anyone, including the substrate. That
+is not an argument against the trade; it is the reason **consent around erasure has to be
+stronger here than almost anywhere else in the system.** The privacy-budget discipline already
+holds the shape this needs: spend and stake are the owner's, confiscation is nobody's, and the
+one-way direction is toward more privacy rather than less.
+
+
 ## The categorical arena — one place where every language and tradition is comparable (2026-08-17)
 
 Aaron: *"this is the category theory upgrade i'm going for across ANTLR space, over all
