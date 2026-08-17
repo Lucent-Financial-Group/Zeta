@@ -318,3 +318,75 @@ comparison is cheap and does not exist yet.
 | our store retains endings and cannot post-select on write | **measured** — `Chip8CrossRunStore.fs:74-86` |
 | the consult path may still post-select | **unmeasured**, and the test is named above |
 | a second time dimension is required for any of this | **not claimed, and not needed** — selection suffices |
+
+---
+
+## Observation 6 — Aaron believes the backward causation is real, and reports that his own math keeps deflating it
+
+### Verbatim
+
+> "yes i think there is actual backward causition becase of my qualia experience but everytime i try
+> to write it in math i come up with a more plausable explination or emulation of the effect without
+> needing the actual time travel."
+
+**Two claims, and they must not be merged.** Observation 5 said post-selection produces the
+*appearance* of conspiracy with no backward causation *in that mechanism*. Aaron is not disputing
+that. He is making a separate, stronger claim — that backward causation is **actually present** —
+and grounding it in first-person experience rather than in the formalism.
+
+### The register, stated plainly
+
+**This is his axiom, held under §11, and it is labelled as such.** Qualia-as-self-evident is a
+stated oracle of his, not a physics result, and it is not treated here as one. Recording it as a
+belief he holds is correct; recording it as a finding would be the failure.
+
+**What is remarkable is the second half, and it is evidence he generated against his own
+position.** He is reporting a repeated, self-run experiment: every attempt to formalise the
+intuition lands on an emulation that does not need time travel. Reporting that honestly, when it
+cuts against the belief, is the behaviour the whole derivation-protocol discipline exists to
+produce — and it is worth more than the intuition or the deflation taken alone.
+
+### Why the math probably keeps deflating — and why that is NOT evidence against him
+
+There is a structural reason, and it is close to a theorem rather than a failure of skill:
+
+**Any retrocausal account that reproduces quantum statistics is empirically equivalent to a
+forward-causal one.** No-signalling guarantees that the correlations carry no usable
+backward-directed information — which is the same fact the video spends 2:03–2:20 on. So a
+formalisation attempt that starts from the phenomenology and ends in "a more plausible emulation"
+is producing **exactly what you would expect even if retrocausality were true.** The statistics do
+not discriminate; that is the whole reason these positions are called *interpretations*.
+
+Anchors worth having (Beacon):
+
+- **Huw Price, *Time's Arrow and Archimedes' Point* (1996)** — retrocausality argued seriously, and
+  argued from time-symmetry rather than from mysticism.
+- **John Cramer, transactional interpretation (1986)** — advanced + retarded waves; an explicitly
+  backward-in-time formalism that makes standard predictions.
+- **Wharton & Argaman, "Colloquium: Bell's theorem and locally mediated reformulations of quantum
+  mechanics" (Rev. Mod. Phys. 2020)** — the current survey of retrocausal / all-at-once accounts.
+
+**The consequence for the register is symmetric, and both halves matter:**
+
+- His formalisations deflating is **not** evidence that backward causation is absent. *Absence of
+  necessity is not absence.* A model that does not require X is not a model that excludes X.
+- Equally, the intuition's persistence is **not** evidence it is present. A conviction that survives
+  many deflations is still a conviction.
+
+So the honest position is **underdetermination**, and underdetermination is precisely where an
+oracle legitimately sits (§11). Aaron is not making an error by holding the belief while his math
+says otherwise; he is occupying the gap the physics leaves open, and he is being explicit that it is
+a gap.
+
+### What this changes for Zeta — nothing, and that is the point
+
+Our second direction remains a file read (Observation 2), the store remains non-post-selecting on
+write (Observation 5), and the consult-path measurement remains the one thing we can actually
+settle. **No design decision here should turn on which way the metaphysics goes**, and if one ever
+did, that would itself be the finding — a substrate whose correctness depends on an
+unresolvable interpretive question would be built wrong.
+
+Kept as a coincidence-index entry with its register attached, per
+[`numerology-vs-number-theory`](../../.claude/rules/numerology-vs-number-theory.md): an unlabelled
+coincidence in long-term memory is a belief you never decided to hold. This one is labelled, and it
+is a belief Aaron *did* decide to hold, which is a different and legitimate thing.
