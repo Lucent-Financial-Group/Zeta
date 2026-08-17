@@ -368,6 +368,58 @@ checking: **whether the bound's VALUE is attributed to a named oracle, or is a b
 budget nobody chose on the record is a truncation nobody owns, which is the §11 gap in its smallest
 form. That is a one-file audit, not a research programme.
 
+###### Aaron generalises it: the HIDDEN ORACLE (verbatim)
+
+> "this is a good audit, a hidden oracle, we should always be on the lookout where the measurement or
+> the limit/budget becomes the oracle silently, we don't want to do this by accident, this is
+> accidental hierarchy or control"
+
+**This is bigger than the `TickBudget` audit that prompted it, and it is the sharpest thing in this
+document.** Named as a defect class:
+
+> A **hidden oracle** is a measurement, limit, threshold, or budget that has silently become the
+> thing deferred to. Nobody granted it authority; it acquired authority because a number had to be
+> chosen and the chosen number now decides outcomes. That is **accidental hierarchy** — control
+> acquired without anyone conferring it.
+
+It is the sibling of rules already on file, and it closes a gap between them:
+
+- `dual-use-detection-is-neutral-oracle-decides` says the mechanism reports the fact and the caller's
+  oracle attaches the meaning. **A hidden oracle is a mechanism that quietly attached the meaning
+  itself.**
+- The Itron rule's **exit test** distinguishes chosen deference (oracle) from enforced deference
+  (hub). **A hidden oracle fails the exit test without anyone noticing, because nobody knew a choice
+  existed.** That is worse than a hub: a hub is at least visible.
+- §11 forbids a single mandatory locus of deference. A bare constant is one, in miniature.
+
+**It is well-evidenced by this very session, which is why it is not speculation.** Today alone:
+
+| constant | what it silently decided | disposition |
+|---|---|---|
+| `--min-age-min 20` | "stalled" vs "merely queued" — while real gate latency was ~28 min, so the *number*, not the evidence, made the call | fixed in #11445 by replacing the number with a **fact** (does a run exist) |
+| `MIN_REGISTRY_ROWS = 1` | whether an empty guard reads as vacuous | live |
+| `TickBudget` | where an incompletable moral enumeration truncates | live, architectural |
+| collation/retirement **baselines** | fine as a debt ceiling that may only fall; becomes an oracle the moment *raising it* is how a failure is resolved | live, ratcheted |
+| `MAX_GRANT_SPAN_PHASES = 65536` | grant span ceiling | **positive control** — labelled a "combine adoption and a maintainer-retunable dial," i.e. its provenance is on the record |
+
+That last row matters most: it shows **the discriminator is ATTRIBUTION, not existence.** A budget is
+not a defect. A budget nobody chose *on the record* is.
+
+**The #11445 fix is the general cure in miniature, and worth stating as such:** the repair was not to
+tune the threshold but to **replace the number with a fact**. Where a fact is available, a constant
+deciding the same question is a hidden oracle by construction.
+
+**Routed rather than only recorded.** "Always be on the lookout" is precisely what humans and agents
+forget, so this was dispatched as a **mechanical detector** — flag gating constants that carry no
+attribution, pass ones that do — with the self-referential guard stated up front: *the detector's own
+thresholds must be attributed, or it is the vacuity class one level up.*
+
+**Deliberately NOT done:** no `.claude/rules/` entry was added. That is a context-startup surface
+under the cooling-period razor and the disposition-shaping bar, and adding one on the strength of a
+same-session insight is exactly what that razor exists to prevent. The principle is recorded here and
+made mechanical in code; promoting it to a resident rule is Aaron's call, later, with the detector's
+findings as evidence.
+
 **Register:** the first two points are **verified** (the vernacular form and the 77/52 file counts).
 The third — that Feynman-style enumeration over an underdetermined space forces a named truncation —
 is a **derived consequence, not yet audited**: nobody has checked whether the existing 77 files
