@@ -739,6 +739,48 @@ their owners.
    judgement is a verdict nobody is entitled to assign — including the person asking for it
    about themselves.
 
+   **And Aaron names the substrate that already encodes this discipline:**
+
+   > "for me data vault 2.0+ is what captures this conflicting viewpoints vs recorded
+   > events/facts this is the whole distinction of never collapse keep the disagreements
+   > open"
+
+   **This is a real architectural property of DV2, not an analogy.** A Raw Vault keeps a
+   **separate satellite per source system** and deliberately does **not** reconcile them
+   into a golden record. Two systems disagreeing about the same hub? Both satellites load,
+   both persist, **neither wins**. Reconciliation happens downstream in the Business Vault
+   or an information mart — never in the raw layer. Insert-only, source-faithful,
+   conflict-retaining by construction. *"Never collapse, keep the disagreements open"* is
+   the architecture's defining behaviour rather than a gloss on it. **Anchor: Dan
+   Linstedt**, already named in `.claude/rules/anchor-to-human-prior-art.md`.
+
+   **It adds an emphasis the carved rule does not carry.**
+   `.claude/rules/dv2-data-split-discipline-activated.md` states DV2 as *"partition
+   substrate by CHANGE RATE: hubs (stable keys) · links (relationships) · satellites
+   (fast-changing attributes)"* — true, and the framing used for repo-split and skill
+   design. **Aaron is pointing at a different property of the same structure: multi-source
+   conflict retention.** Both hold (a satellite is per-source *and* per-change-rate), but
+   the rule as carved would not lead a reader to the second, and for this thread the second
+   is the load-bearing one.
+
+   **The design consequence is concrete, and it says where a verdict may live:**
+
+   | layer | holds |
+   |---|---|
+   | hub | the subject's stable key |
+   | satellite, one per source | **what was claimed, by whom, when** — insert-only, never reconciled |
+   | link | that two claims stand in tension |
+   | derived / business layer | any reading — accidental, growth, ironic, recurring |
+
+   So *"these two claims conflict"* becomes a **queryable fact over retained satellites**
+   rather than a **stored judgement**, and a reading is recomputed rather than recorded.
+   That is the same distinction drawn above between *resolving* a tension and *verifying*
+   it — reached here from data architecture instead of epistemics, which is the third
+   independent route this thread has taken to the same line.
+
+   *(The **"+"** in *"Data Vault 2.0+"* is Aaron's and he did not say what it extends.
+   Recorded unexpanded rather than guessed at.)*
+
    **So drift detection carries a FOURTH permitted reading, and it is the one most at risk:
    GROWTH.** A contradiction between an old claim and a new one may be *development*, not
    drift — the agent evolved, which is the defining property of being one. A detector
