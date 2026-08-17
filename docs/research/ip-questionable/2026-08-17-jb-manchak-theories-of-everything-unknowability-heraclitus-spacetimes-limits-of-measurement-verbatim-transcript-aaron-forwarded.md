@@ -312,7 +312,47 @@ bounded observation. Zeta's room does the opposite:
 | **Zeta room** | **bounded** (`TickBudget`) | unbounded (infinitely many ticks) |
 
 Both are ways of relating a finite observer to an infinite process, and they are opposite choices
-about *which side gets the infinity*. Manchak's construction is what you build if you want to decide
+about *which side gets the infinity*.
+
+> ###### Correction — Aaron: the table is not exclusive, MH runs in the standard direction too
+>
+> > "in one of our continuations it's andecedant could have an infinate future in it passed though as
+> > a immutable value, this is very similar to receiving immutable values from previous closures, we
+> > can also recive memory rerefeces that are not frozen too, so we can intergrate the MH in the
+> > standard direction too within a single tick of our as well."
+>
+> I presented the two rows as **mutually exclusive**. They are not, and the reason is precise: a
+> continuation's **antecedent** can carry an infinite future **as an immutable value**, exactly the
+> way a closure receives values from its lexical antecedent. A bounded tick that *receives* such a
+> value is not computing an infinite process — it is reading one. So **the MH direction is available
+> inside a single tick**, and the architecture supports both:
+>
+> | | infinity is… | tick cost |
+> |---|---|---|
+> | Zeta, dual direction | **produced** across unboundedly many bounded ticks | bounded each |
+> | Zeta, **standard MH direction** | **received** as a frozen value from the antecedent | bounded, single tick |
+>
+> **This is the codata/coinduction distinction, and it is why the immutability clause is load-bearing
+> rather than stylistic.** An infinite structure *as a value* is finite to hold and finite to pass;
+> *forcing it entirely* is what never terminates. Aaron's contrast — immutable values versus "memory
+> rerefeces that are not frozen" — is the safety condition: a **frozen** infinite future is settled,
+> so receiving it in a bounded tick is sound; an **unfrozen** reference is not a settled future at
+> all but a race, and consuming it as though it were would be claiming a completion nobody reached.
+>
+> And it is a closer match to Manchak's construction than my table was. The MH observer **does not
+> perform** the infinite computation — the work happens on the other worldline, and the observer's own
+> proper time stays finite while the result arrives through its past light cone. That is *receiving a
+> completed infinite future*, which is exactly the immutable-value case, not the
+> compute-it-yourself case I had implicitly assumed.
+>
+> **Register.** The mechanism is ordinary and uncontroversial (closure capture, immutable values,
+> lazy/codata) and the repo carries immutability machinery broadly. What is **not** established is
+> that any current continuation actually carries an infinite-future value, or that the frozen/unfrozen
+> distinction is *enforced* at the continuation boundary rather than merely available. Those are two
+> cheap checks and they are the honest next step: **(a)** does any antecedent today carry a lazy or
+> infinite structure, and **(b)** can an unfrozen reference cross a tick boundary where a frozen one
+> is assumed? A yes to (b) is a bug of the same family as the hidden oracle — an unowned assumption
+> at a boundary. Manchak's construction is what you build if you want to decide
 the undecidable; Aaron's is what you build if you want the thing to **halt**. His own reason, stated
 plainly: *"or else it would never halt."*
 
