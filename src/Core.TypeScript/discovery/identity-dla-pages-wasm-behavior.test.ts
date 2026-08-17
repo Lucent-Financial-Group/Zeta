@@ -37,6 +37,10 @@ const bytelockDir = join(repoRoot, "src", "wasm-dla", "bytelock");
 /** Byte-lock seeds with a committed golden vector. Kept small: the Zig substrate runs ~3s/seed. */
 const SEEDS = [1, 42] as const;
 
+// Measured max: 6.747s in the PR #11550 Ubuntu full-suite run and 3.169s locally.
+// This is a test-runner watchdog, not an algorithm budget.
+const CANONICAL_WASM_TEST_TIMEOUT_MS = 20_000;
+
 /** The canonical spec's host trig, f32-rounded — identical to `run-wasm.mjs`'s harness. */
 const trig = {
   cos_f32: (x: number): number => Math.fround(Math.cos(x)),
@@ -71,6 +75,18 @@ function runCanonical(source: string, seed: number): number {
   return Number(clusterSize());
 }
 
+const canonicalMeasurements = new Map<string, number>();
+
+function runCanonicalOnce(source: string, seed: number): number {
+  const key = `${source}\0${seed}`;
+  const existing = canonicalMeasurements.get(key);
+  if (existing !== undefined) return existing;
+
+  const measured = runCanonical(source, seed);
+  canonicalMeasurements.set(key, measured);
+  return measured;
+}
+
 const canonicalAssets = PAGES_WASM_ASSETS.filter((asset) => asset.canonicalAbi);
 
 describe("staged Pages WASM modules reproduce the byte-locked trajectory", () => {
@@ -82,9 +98,13 @@ describe("staged Pages WASM modules reproduce the byte-locked trajectory", () =>
 
   for (const asset of canonicalAssets) {
     for (const seed of SEEDS) {
-      test(`${asset.name} at seed ${seed} matches the committed golden cluster size`, () => {
-        expect(runCanonical(asset.source, seed)).toBe(goldenClusterSize(seed));
-      });
+      test(
+        `${asset.name} at seed ${seed} matches the committed golden cluster size`,
+        () => {
+          expect(runCanonicalOnce(asset.source, seed)).toBe(goldenClusterSize(seed));
+        },
+        CANONICAL_WASM_TEST_TIMEOUT_MS,
+      );
     }
   }
 
@@ -92,8 +112,12 @@ describe("staged Pages WASM modules reproduce the byte-locked trajectory", () =>
   // everything it promises, and never diffuses. Stated separately from the equality above so
   // the failure message says WHICH thing broke.
   for (const asset of canonicalAssets) {
-    test(`${asset.name} diffuses — cluster size is not the degenerate seed cell alone`, () => {
-      expect(runCanonical(asset.source, SEEDS[0])).toBeGreaterThan(1);
-    });
+    test(
+      `${asset.name} diffuses — cluster size is not the degenerate seed cell alone`,
+      () => {
+        expect(runCanonicalOnce(asset.source, SEEDS[0])).toBeGreaterThan(1);
+      },
+      CANONICAL_WASM_TEST_TIMEOUT_MS,
+    );
   }
 });
