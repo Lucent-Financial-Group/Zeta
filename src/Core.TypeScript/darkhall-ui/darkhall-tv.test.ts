@@ -359,6 +359,35 @@ describe("temperature lane — a dead sensor must not render as a calm room", ()
     expect(healthy).toContain("black-body · warm");
   });
 
+  // `fidelity` is OPTIONAL on the value, so "never classified" is a THIRD state
+  // beside faithful and faulty. Rendering it with the empty `exact` suffix would
+  // reproduce this file's own bug one level up — a readout claiming a
+  // cleanliness nobody ever checked. Unreported and clean are different claims.
+  it("does not paint a never-classified channel as a verified-clean one", () => {
+    const { fidelity: _dropped, ...unclassified } = temperatureReadout({
+      source: "llmtv/alexa",
+      heatPpm: 123_000,
+      uncertaintyPpm: 0,
+      pressurePpm: 0,
+      attentionPpm: 0,
+    });
+
+    const unreported = renderDweller(
+      {
+        ...alexa,
+        temperatureTreaty: temperatureTreatyBundle({ temperature: unclassified }),
+      },
+      "S4",
+    );
+
+    expect(unreported).toContain("fidelity not reported");
+    // Not smeared into the fault vocabulary either — we do not know it is broken.
+    expect(unreported).not.toContain("SENSOR FAULT");
+    expect(unreported).not.toContain("PINNED");
+    // The whole point: it must not be byte-identical to the verified-clean lane.
+    expect(unreported).not.toBe(laneFor(123_000));
+  });
+
   it("carries a CSS rule that repaints an out-of-domain lane", () => {
     const doc = renderLlmtvDocument(societyFrame);
     expect(doc).toContain('.temp-lane[data-temperature-fidelity="out-of-domain"]');

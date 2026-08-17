@@ -183,7 +183,7 @@ function renderFrost(frost: FrostRegion): string {
  *
  * `exact` adds nothing, so a healthy lane is unchanged.
  */
-function fidelitySuffix(fidelity: ChannelFidelity): string {
+function fidelitySuffix(fidelity: ChannelFidelity | undefined): string {
   switch (fidelity) {
     case "out-of-domain":
       return " · SENSOR FAULT · no reading";
@@ -191,8 +191,17 @@ function fidelitySuffix(fidelity: ChannelFidelity): string {
       return " · PINNED · at or above ceiling";
     case "below-resolution":
       return " · below resolution";
-    default:
+    case "exact":
       return "";
+    // `fidelity` is OPTIONAL on the value (`heat.ts` — `readonly fidelity?:`),
+    // so `undefined` reaches here whenever a producer never classified the
+    // channel. It must not share the `exact` branch: an empty suffix is the
+    // readout for a channel we checked and found faithful, and reusing it for
+    // one we never checked is this file's own defect — the encoder saying
+    // "exact" about a sensor whose state it does not know. Unreported and
+    // clean are different claims, so they get different readouts.
+    default:
+      return " · fidelity not reported";
   }
 }
 
