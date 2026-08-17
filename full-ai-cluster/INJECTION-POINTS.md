@@ -24,6 +24,61 @@ discipline (e.g., long random tokens, multi-secret bundles) goes via
 post-install secrets management (out of scope for this catalog;
 candidates: SOPS, age, sealed-secrets, External Secrets Operator).
 
+### The rail is now machine-checked (081KTWFYC9108QG0R001C8RDPK)
+
+Until 2026-08-17 the rail above existed **only as this prose**. `FileBackedEspWrite`
+in `src/Core.TypeScript/zflash/lib.ts` carried a closed union of six ESP
+destinations and no notion of what class any of them held, so nothing in the
+build could tell `/zeta-hostname.txt` from `/zeta-join-token`.
+
+`src/Core.TypeScript/zflash/injection-rail.ts` makes the class a type,
+**exhaustive over that same union** (`satisfies Record<EspDestination, …>`), in
+the shape #11485 set for `VendorTrustRoot`: a seventh ESP destination added
+without a declared content class is a TypeScript error, not a review miss.
+`runFileBackedZflash` calls `railFindingsForEspWrites` and discloses every
+secret-class write to the operator at flash time.
+
+Three classes, not two — the table above cannot express why `/zeta-creds.enc`
+is permitted while being called secret material. It is permitted because it is
+an **encrypted envelope** whose key is not on the medium, so that is its own
+class. **The class is DECLARED, never measured:** the rail does not open the
+file to confirm it is an AES-256-GCM envelope.
+
+| ESP destination | Content class | ESP verdict |
+|---|---|---|
+| `/zeta-authorized-keys.pub` | public identifier | permitted by class |
+| `/zeta-hostname.txt` | public identifier | permitted by class |
+| `/zeta-firstboot.conf` | public identifier | permitted by class |
+| `/zeta-creds.enc` | encrypted envelope | permitted by class (declared, not measured) |
+| `/zeta-join-token` | **secret material** | **refused by class; ships under the §6 recorded exception** |
+| `/zeta-wifi-credentials.json` | **secret material** | **REFUSED — no exception on file; see §4a** |
+
+**What is NOT claimed.** This module performs no cryptography and no key
+material passes through it. Nothing here is sealed, bound, attested, or
+verified. It classifies destinations and returns verdicts.
+
+### 4a. WiFi credentials on the ESP — a divergence, not an exception
+
+Found 2026-08-17 while making the rail machine-checkable, and recorded rather
+than quietly fixed (the #11477 standard).
+
+§4 below classifies WiFi credentials as **"Secret material (NEVER on USB ESP)"**
+and says they are typed at the console into `nmtui`. **The shipping code does
+otherwise.** `planFileBackedZflashImage` writes `/zeta-wifi-credentials.json` —
+the SSID and the PSK as plain JSON — onto the ESP whenever `--wifi-ssid` /
+`--wifi-password` / `--wifi-credentials` is passed;
+`composeWifiCredentialsFileContent` validates and serialises, and performs no
+encryption. Three existing tests in `file-backed.test.ts` assert that plaintext
+write as expected behaviour, so the path is live, not vestigial.
+
+This is a **divergence**, categorically different from §6's exception: §6 was
+decided and written down; this was not noticed. It is left UNRESOLVED here on
+purpose — removing a shipped operator flag is a maintainer call, and the
+correct destination (the §7 encrypted blob, or console-only per §4) is the same
+open question §6 already carries. Recorded in code as
+`RAIL_DIVERGENCES` in `injection-rail.ts`, and disclosed at every flash that
+carries it.
+
 ## Supported injection points (live catalog)
 
 Each injection point has: stage (when injected) + content class +
@@ -132,6 +187,59 @@ is recorded as a gap rather than argued away:
 - The correct long-term home is the existing encrypted blob path
   (081KSKBP80008QG0R003AX2A69), which already has the passphrase + UUID binding
   this needs. Folding the join token into that blob is the follow-up.
+
+### 9. Workload identity (SPIFFE) at the door — NOT SHIPPED; derivation + policy only
+
+081KTWFYC9108QG0R001C8RDPK. What exists today is **pure derivation and policy**
+in `src/Core.TypeScript/zflash/injection-rail.ts`. **No workload identity is
+issued, sealed, bound, attested, or injected by anything in this repo.** No
+node has been flashed or booted against any of it.
+
+A SPIFFE workload identity is three artifacts, and only the third is what people
+mean by "the key":
+
+| Artifact | Content class | ESP verdict |
+|---|---|---|
+| SPIFFE ID (the URI) | public identifier | permitted |
+| trust bundle (trust-domain CA **public** keys) | public identifier | permitted |
+| SVID **private key** | secret material | **refused** |
+
+The refusal has two independent reasons, either sufficient: the rail (secret
+material, unencrypted medium), and SPIFFE's own design — the workload generates
+its own private key and only a CSR leaves it. So the honest reading of "keys
+injected at the door" is that **the key is not injected**; what can travel with
+the medium is the public half and the node coordinate.
+
+**The composition that already exists:** the hostname zflash writes to
+`/zeta-hostname.txt` is exactly the `@<node>` coordinate of the identity-treaty
+form (`docs/research/2026-07-03-persona-cell-identity-treaty-*` Article 3,
+`spiffe://zeta/persona/<persona>/cell/<surface>[/<instance>][@<node>]`).
+`deriveNodeWorkloadSpiffeId` derives it and validates by round-tripping through
+`parseSpiffe` — necessary, because `VALID_HOSTNAME_REGEX` accepts uppercase and
+the actor-ref segment charset does not, so `--host Node-A` flashes cleanly and
+yields a SPIFFE ID this repo's own parser rejects.
+
+**Missing injection point (candidate, not filed as a change):** the **trust
+bundle** has no ESP destination. It is a public identifier, so the rail permits
+it, and without a trust anchor on the medium a booting node has nothing to
+verify an issuer against — first contact is TOFU. Adding an ESP destination is
+key handling and therefore behind this work-item's review gate (Nazar + Mateo),
+so it is named here rather than shipped.
+
+**Custody decisions this deliberately does NOT make** (`WORKLOAD_IDENTITY_CUSTODY_DECISIONS`,
+each `decided: false`, asserted by test):
+
+1. Where an SVID private key is **sealed at rest** — TPM 2.0, Secure Enclave,
+   software keystore, or nothing. (The 2026-08-14 hardware probe found no TPM
+   and no usable seal tier on the Mac Studio; the x86 nodes are unprobed.)
+2. Whether the node identity is **TPM-bound** — sealing and binding are separate
+   choices and either can be made without the other.
+3. **Who authorizes issuance** at first boot. SPIRE node attestation answers
+   "which node is this" from a vendor-rooted claim; nothing here answers "and
+   may it have an identity in this trust domain".
+4. Which **governance class** a node workload key takes (self-sovereign /
+   shared-capability / delegated-operational — taxonomy fixed by the 2026-08-14
+   L0→L6 ladder, per-key assignment explicitly left to ratification).
 
 ## Operator-driven `zflash` flag inventory (current)
 
