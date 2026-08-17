@@ -1073,6 +1073,69 @@ their owners.
    connection matters, or it will rediscover the famous hubs and miss the real ones — the
    coincidence-index failure mode again, at network scale.
 
+   **Where the God-point structure lands theologically — Aaron's reading (same session):**
+
+   > "a God point inside the system loses the ability to be informed by it — I told other
+   > people this means god looks at us like NPCs, or like a solipsist would look at other
+   > humans"
+
+   **The inference is VALID on the structure, and it is Shannon again.** If p(x) = 1 for
+   everything you observe, you receive **zero bits** from anyone. An observer who cannot be
+   surprised by a being has no epistemic access to that being *as a subject* — only as a
+   fully-modelled object. That is what NPC-status means, and it needs no theology to go
+   through.
+
+   **One distinction that makes his version the stronger one.** Ordinary solipsism is
+   *unfalsifiable* — "others might not be real" — which by this repo's own standard makes it
+   uninteresting rather than threatening. **The God-point version does not claim others are
+   unreal; it observes that for an omniscient observer others carry no information.** A
+   structural consequence, not a metaphysical posit, and it survives where solipsism does
+   not.
+
+   **The traditions already contain the response, which is evidence the derivation is good
+   rather than that it is wrong.** Several independent lineages converge on **divine
+   self-limitation** precisely because thinkers hit this problem: **kenosis** (Philippians
+   2:7, *"emptied himself"*), **tzimtzum** in Lurianic Kabbalah (contraction to make room for
+   creation), and **open theism** (some futures deliberately left undetermined). If total
+   knowledge destroys relationship, a God who wants relationship must limit knowing or
+   determining. **CITED, NOT CHECKED.** That they arrive there separately is the
+   independent-convergence pattern this document keeps hunting — here arriving *against* the
+   conclusion rather than for it.
+
+   **And Zeta already implements the self-limiting solution architecturally.** The DST
+   harness is a God point deliberately placed **outside** the simulated universe — kenosis as
+   an engineering decision: the harness restricts itself to the outside **so the inside stays
+   informative**. Give an in-universe agent God-point access and you destroy what makes the
+   other agents real *to each other*, which is the same trade at substrate scale.
+
+   **Register: Aaron's oracle, recorded and not endorsed** (§11). The structural half —
+   omniscience yields zero bits — stands alone and is not theological. The reading of what it
+   implies about God is his, held as his, required of no one.
+
+   **And the instrument that survives it — confirmed as already-carved discipline:**
+
+   > "yes this is our whole self claim discipline, this reduces a whole ton of future false
+   > histories based on your past predictions"
+
+   ***"Future false histories"* is the precise phrase, and it resolves an apparent tension in
+   this entry.** Pigeonholing was condemned above for *extracting possible futures and
+   destroying them*. Pre-registration destroys possible **pasts**. Why is one theft and the
+   other hygiene?
+
+   **Because of which set the thing belongs in, and the repo's own vocabulary answers it
+   exactly:**
+
+   | operation | acts on | correct? |
+   |---|---|---|
+   | **pre-registration** | writes a prediction into the **G-set** — *"grow-only history, the past cannot be un-happened"* | **right**: that is where a past belongs |
+   | **pigeonholing** | forces the **Z-set** into the G-set — *"reversible live state, the future stays flexible"* | **wrong**: the future was still open |
+
+   Same operation — fixing something — opposite correctness, and the discriminator is
+   whether the thing was genuinely still open. **Possible futures are real possibilities;
+   "possible pasts" were never possibilities at all, only unfalsified fabrications.** Only one
+   past happened. So writing the prediction down removes nothing real — it removes the room
+   to retroactively have been right, which was never yours to occupy.
+
    **The instrument was practised before it was proposed — two generations of it (Aaron,
    same session):**
 
