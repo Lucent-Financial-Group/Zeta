@@ -93,9 +93,11 @@ function htmlFilesUnder(root: string): string[] {
 // stripped: CSS references links as url(...), which this attribute regex never matches, so
 // stripping it would be an untestable branch. Widen both together if the regex ever grows.
 function withoutScriptBodies(html: string): string {
-  // The end tag permits whitespace before ">" (`</script >` is valid HTML). Matching only
-  // `</script>` would leave the body unstripped and its href= text would be read as links.
-  return html.replace(/<script\b[^>]*>[\s\S]*?<\/script\s*>/gi, " ");
+  // The end tag is `</script` + a word boundary + anything up to ">" — HTML accepts
+  // `</script >` and even `</script\t\n bar>`, and browsers end the script there. Matching
+  // only `</script>` leaves the body unstripped, and its href= text is then read as links
+  // (false danglers, or a false green). `\b` keeps `</scriptfoo>` from matching.
+  return html.replace(/<script\b[^>]*>[\s\S]*?<\/script\b[^>]*>/gi, " ");
 }
 
 /** True when the href is not an internal path we can resolve against the artifact. */

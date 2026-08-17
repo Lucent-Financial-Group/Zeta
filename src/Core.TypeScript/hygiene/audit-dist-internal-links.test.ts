@@ -135,14 +135,19 @@ describe("auditDistInternalLinks — resolution rules", () => {
     } finally { cleanup(); }
   });
 
-  // The end tag here is `</script >` WITH whitespace — valid HTML, and the exact case
-  // CodeQL flagged (js/bad-tag-filter) in the first version of this regex.
+  // Each end-tag form CodeQL's js/bad-tag-filter names is exercised: two rounds of that
+  // query drove this regex (`</script>` -> `</script\s*>` -> `</script\b[^>]*>`), so the
+  // forms are pinned here rather than rediscovered.
   // Uses a PLAIN dangling href inside the script — not a template expression — so this test
   // pins the stripping itself rather than leaning on the ${...} guard. (A surviving mutant
   // caught the weaker version: with a template-expression payload, removing the strip passed.)
-  test("script bodies are not scanned; CSS url() is outside the attribute regex", () => {
+  test.each([
+    ["plain", "</script>"],
+    ["space before >", "</script >"],
+    ["whitespace + junk", "</script\t\n bar>"],
+  ])("script bodies are not scanned — end tag %s", (_label, endTag) => {
     const { dist, cleanup } = fixture({
-      "p/index.html": `<script>document.write('<a href="./ghost.html">x</a>');</script >
+      "p/index.html": `<script>document.write('<a href="./ghost.html">x</a>');${endTag}
         <style>@import url("./ghost.css"); a{background:url("./ghost.png")}</style>
         <a href="./real.html">real</a>`,
       "p/real.html": "<html></html>",
@@ -157,6 +162,21 @@ describe("auditDistInternalLinks — resolution rules", () => {
 
   // Each suffix appears ALONE as well as combined — a combined-only fixture let a mutant
   // that stopped stripping "#" survive, because the "?" split still salvaged the path.
+  // `</scriptfoo>` is NOT an end tag — the `\b` is what stops the regex ending the script
+  // there and scanning the rest of the body. Without it this fixture reports a dangler.
+  test("a lookalike end tag does not terminate the script body", () => {
+    const { dist, cleanup } = fixture({
+      "p/index.html": `<script>var a = "</scriptfoo>"; document.write('<a href="./ghost.html">x</a>');</script>
+        <a href="./real.html">real</a>`,
+      "p/real.html": "<html></html>",
+    });
+    try {
+      const r = auditDistInternalLinks(dist, "/Zeta/");
+      expect(r.danglers).toEqual([]);
+      expect(r.checked).toBe(1);
+    } finally { cleanup(); }
+  });
+
   test.each([
     ["query only", "../t/index.html?v=2"],
     ["fragment only", "../t/index.html#frag"],
