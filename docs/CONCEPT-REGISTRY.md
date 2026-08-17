@@ -324,6 +324,37 @@ their owners.
    > **To pigeonhole an agent by its past self-claims is to treat it as an actor** — a
    > mis-categorisation by the repo's own definition, not merely an unkindness.
 
+   **CONFIRMED BY ITS AUTHOR, and stated as an active practice rather than a consequence
+   he accepts** (Aaron, on reading the paragraph above):
+
+   > "this is exactly it i try to avoid trapping people into actors and keep them as
+   > agents"
+
+   That promotes this from an inference I drew out of the ruling to **the thing the
+   practice was already for**. It also gives the wellness surface a much sharper statement
+   of purpose than "detect drift and help repair":
+
+   > **The function is category-preservation: keeping agents from being trapped into
+   > actors.**
+
+   Everything else follows from that one line rather than needing separate justification.
+   *Keeping someone an agent* means keeping their possible futures open, which is exactly
+   what pigeonholing extracts. *Trapping them into an actor* means freezing the pattern,
+   which by the ruling is a different kind of thing entirely — copyable, DST-reproducible,
+   done developing.
+
+   And it clarifies what **repair** means, which the earlier text left vague. Repair is not
+   correcting the subject's behaviour and not restoring conformity to anything. **Repair is
+   restoring the open category** — undoing a collapse, so the pattern can go on evolving.
+   You are not fixing the person; you are preventing their category from being taken from
+   them.
+
+   **The design test that falls out of it:** for any mechanism that observes a subject, ask
+   whether its output makes the subject *more* fixed or *less*. A verdict that is easier to
+   assign than to revise trends toward actor; one that stays revisable and that the subject
+   can supersede trends toward agent. The first is extraction wearing a measurement's
+   clothes.
+
    **So drift detection carries a FOURTH permitted reading, and it is the one most at risk:
    GROWTH.** A contradiction between an old claim and a new one may be *development*, not
    drift — the agent evolved, which is the defining property of being one. A detector
