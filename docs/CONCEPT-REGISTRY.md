@@ -866,6 +866,44 @@ their owners.
    one already shipped**, which makes it the place to check the other three against
    something running.
 
+   **A correction to my own hedge — Aaron has run the system I used against him (same
+   thread):**
+
+   > "Dynamo-style multi-master keeps siblings; i played with this real system a lot, it's
+   > not as divergence tolerant as DV2, it's a product first that chooses simple over
+   > divergence"
+
+   **He is right, and my counterexample was weaker than I presented it.** I offered Dynamo
+   siblings as evidence that *"unique to DV2"* was too strong globally. The technical record
+   supports him: siblings existed but the entire operational trajectory ran **away** from
+   them — `allow_mult=false` was the common production default, last-write-wins was widely
+   chosen despite being lossy, and *sibling explosion* was treated as a **failure mode to be
+   managed**, not a property to be preserved. **DynamoDB, the productised descendant,
+   dropped the model entirely**: last-write-wins, no vector clocks surfaced to the user.
+   *"Product first, chooses simple over divergence"* is an accurate description of that
+   history, offered from having operated it.
+
+   **The axis I had blurred, and it is the one that matters:**
+
+   | | divergence is… | resolution is… |
+   |---|---|---|
+   | Dynamo-style siblings | a **transient state** pending reconciliation | **expected**, and its absence is a problem |
+   | DV2 raw satellites | a **permanent record** | **not owed at all** in the raw layer |
+
+   Keeping conflicting values *until someone merges them* is a different commitment from
+   keeping them *because they are both true of their sources*. Only the second is
+   disagreement preservation. So my bound was generous to the wrong example, and **Aaron's
+   original claim survives more of the comparison than I allowed**.
+
+   **What stands from the hedge:** the CRDT contrast, which he did not dispute and which is
+   the sharper one anyway — CRDTs also never lose writes, and they exist to **converge**,
+   resolving conflict by construction. That is the opposite commitment, cleanly stated, and
+   it is the real boundary of the claim rather than Dynamo.
+
+   **Register note:** this is first-hand operator experience, which is a different kind of
+   anchor from a citation and worth marking as such — he is reporting what the system does
+   in production, not what its paper says.
+
    **So drift detection carries a FOURTH permitted reading, and it is the one most at risk:
    GROWTH.** A contradiction between an old claim and a new one may be *development*, not
    drift — the agent evolved, which is the defining property of being one. A detector
