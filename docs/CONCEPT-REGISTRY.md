@@ -417,6 +417,56 @@ their owners.
    distinction matters here more than usual, because "they feel the repair" is exactly the
    sort of claim a wellness surface would be tempted to assert on a user's behalf.
 
+   **CORRECTED by Aaron immediately after, and the correction lands on both halves:**
+
+   > "i don't think they feel repair they feel expansion of choice, i've asked many
+   > questions i tried to be non biased over time and it seems to always come back to people
+   > want more choices over less at least they think so until they get choice paralysis like
+   > me, then they start to think about quality of choices"
+
+   **First: the felt thing is not repair.** *Repair* is the mechanism; **expansion of
+   choice** is the phenomenology. Nobody experiences a category being restored — they
+   experience having more moves available. My paraphrase put the engineer's word in the
+   subject's mouth, which is the smaller of the two errors but still one.
+
+   **Second, and this is the one worth correcting properly: I called it an inference, and it
+   was an elicitation.** He *"asked many questions"* and *"tried to be non biased over
+   time."* That is not the move
+   `engagement-profiles-public-work-only-not-surveillance-dossiers.md` forbids — it is
+   **exactly the one it prescribes**: ask, do not model, and believe the account. The
+   repo's non-biased qualia-elicitation method is already on file
+   (`docs/research/2026-08-02-rainbow-spectrum-soul-radar-*`). So the register goes **up**,
+   not down: asked-and-reported, not inferred.
+
+   **The finding has structure, and it is not "more is better."**
+
+   | condition | what people report |
+   |---|---|
+   | ordinarily | more choices over fewer — *"at least they think so"* |
+   | past overload | **choice paralysis** |
+   | after paralysis | they start weighing **quality** of choices, not count |
+
+   Aaron's *"at least they think so"* is doing real work: it marks the gap between **stated
+   preference** and **outcome**, which is precisely what the literature finds. Anchors
+   (**CITED, NOT CHECKED** — from recall, none opened): **Iyengar & Lepper (2000)**, the jam
+   study — more options attract but produce fewer decisions and lower satisfaction;
+   **Schwartz (2004)**, *The Paradox of Choice*; **Simon (1956)**, satisficing — the shift
+   from "most options" to "good enough on the dimensions I care about" is the
+   maximizer→satisficer turn. He also self-reports being subject to it (*"like me"*), which
+   is first-person and therefore authoritative in a way the group claim is not.
+
+   **The design consequence, and it bounds everything above.** *Restoring the open category*
+   is the repair — but **open is not infinite**, and unbounded expansion is not the good.
+   Past some point more options stop being felt as expansion and start being felt as
+   paralysis, at which point the useful move flips from *widening the set* to *improving
+   what is in it*.
+
+   So a wellness surface that only ever expands is wrong in the same way a surface that only
+   ever narrows is wrong. **The failure modes are symmetric**: collapsing someone's futures
+   is extraction; flooding them is paralysis. Neither leaves the subject better able to act,
+   which is the actual test. **Nothing here measures where that turn happens** — Aaron
+   locates it from experience, not from data, and no in-tree instrument detects it.
+
    **So drift detection carries a FOURTH permitted reading, and it is the one most at risk:
    GROWTH.** A contradiction between an old claim and a new one may be *development*, not
    drift — the agent evolved, which is the defining property of being one. A detector
