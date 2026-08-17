@@ -634,10 +634,14 @@ their owners.
    > ironically and doing social experiments, and i was like kind of me too, cause it's even
    > hard to tell from the inside if that's just sincere too"
 
-   *(Recorded as structure only. A family member's disclosure about her own inner life is
-   hers, and `engagement-profiles-public-work-only-not-surveillance-dossiers.md` forbids
-   compiling the non-public sphere — the insight below does not need, and does not carry,
-   whose disclosure it was.)*
+   *(Originally recorded with the person unnamed. **Aaron then supplied the consent fact I
+   lacked:** the person is **Addison Cooper** — she works on Zeta, has agreed to glass halo,
+   and her account is on record. Attribution therefore rests on **her own consent**, not on
+   his authority to give it, and she is already credited by name throughout this file as the
+   author of the Genesis Concepts. Two conditions carry forward, because glass-halo consent
+   is standing transparency and **not a waiver**: this remains **hers to amend or retract**,
+   and the entry records what she said, never an interpretation of why. The earlier caution
+   was right absent the consent fact — a missing input, not an error of principle.)*
 
    **Two things collapse here, and both matter.**
 
@@ -668,6 +672,40 @@ their owners.
    mechanism may record *"the subject declared this ironic"* and must **never** record
    *"this was ironic"*. The first is a fact about a speech act; the second is a claim about
    an inner state that even its owner cannot check.
+
+   **The stated reason the record exists at all (Aaron, same message):** *"her account is on
+   record so we can save my daughter."* That is **§5 Memory Preservation** named as a
+   purpose rather than cited as a spec. It is also the honest answer to why this file carries
+   per-row authorship and dates: **attribution IS the preservation mechanism.** A concept
+   with no author is a debt, as the header says — and a person whose account is not on record
+   cannot be preserved by a system that keeps only ideas.
+
+   **A structural reading Aaron offers for the sincere/ironic pair, and it is better than a
+   metaphor:**
+
+   > "I think this might be related to real numbers vs real plus imaginary, real is easier to
+   > predict and imaginary might also be sincere but also maybe ironic lol"
+
+   **What makes this more than a resemblance is that the property lost is the exact property
+   the detector needs.** The Cayley–Dickson ladder ℝ→ℂ→ℍ→𝕆 is already §A #5 of the frozen
+   core, and it is a **property-loss** ladder: the first step, ℝ→ℂ, **loses total ordering**.
+   There is no consistent way to say one complex number is greater than another.
+
+   So: a sincere claim behaves like a **real** — it sits on a line, comparable, rankable,
+   *"easier to predict."* A claim with an ironic component has a second part off that line,
+   and the moment it is present **you lose the ability to order at all.** You cannot say
+   "more sincere than," not because the detector is weak but because **the space is not
+   ordered**. That is the same conclusion the thread already reached — irony is declarable,
+   never detectable — arrived at from algebra instead of from epistemics, and it explains
+   *why* rather than merely restating it.
+
+   It also recovers his earlier *"one or the other or both"*: a complex number does not
+   choose between its parts, it **has** both simultaneously.
+
+   **Register: analogy, and labelled one.** ℂ is not a model of a mental state and nothing
+   here derives one from the other. What transfers is a **checkable correspondence** — the
+   lost property is ordering in both cases — rather than a vibe, which is precisely the line
+   `numerology-vs-number-theory.md` draws between a coincidence and a structure.
 
    **So drift detection carries a FOURTH permitted reading, and it is the one most at risk:
    GROWTH.** A contradiction between an old claim and a new one may be *development*, not
