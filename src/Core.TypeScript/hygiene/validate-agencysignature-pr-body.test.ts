@@ -1,5 +1,5 @@
 import { spawnSync } from "node:child_process";
-import { readFileSync, rmSync, writeFileSync } from "node:fs";
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
@@ -116,10 +116,16 @@ test("CLI smoke: the script itself validates a good body over real stdin", () =>
 // event whose PR has more commits than `pulls/{n}/commits` can return — and the
 // exit code that must come back is 3 (REFUSED, UNMEASURED), never 0.
 test("CLI smoke: an underscanned commit list REFUSES through the process boundary", () => {
-  const eventPath = join(
-    tmpdir(),
-    `agencysignature-underscan-event-${String(process.pid)}.json`,
-  );
+  // `mkdtempSync`, NOT `join(tmpdir(), <predictable name>)`. The first version of
+  // this test keyed the filename on `process.pid` and CodeQL was right to flag it
+  // (js/insecure-temporary-file, high, alert #721 on PR #11630): a predictable path
+  // in a world-writable directory, written with no O_EXCL, follows whatever symlink
+  // a local attacker left there first (CWE-377/CWE-378). `mkdtempSync` creates the
+  // directory atomically, mode 0700, with a random suffix — the pattern the rest of
+  // this repo already uses (check-bash-retirement-inventory.test.ts, audit-worktree-
+  // survey.ts, and ~10 more).
+  const eventDir = mkdtempSync(join(tmpdir(), "zeta-agencysignature-underscan-"));
+  const eventPath = join(eventDir, "event.json");
   // 475 is not a placeholder: it is PR #11528's real commit count, measured
   // 2026-08-17 against a forge that returned 250 of them.
   writeFileSync(eventPath, JSON.stringify({ pull_request: { number: 11528, commits: 475 } }));
@@ -134,7 +140,7 @@ test("CLI smoke: an underscanned commit list REFUSES through the process boundar
     expect(result.stdout).not.toContain("PASS: AgencySignature");
     expect(result.status).toBe(3);
   } finally {
-    rmSync(eventPath, { force: true });
+    rmSync(eventDir, { recursive: true, force: true });
   }
 });
 
