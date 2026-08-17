@@ -1030,6 +1030,58 @@ their owners.
    evidence, and less than independent thinkers arriving separately. Both halves true;
    neither cancels the other.
 
+   **The falsifiability problem, named by Aaron about himself (same session):**
+
+   > "i think i know all the answers i'm almost never proved wrong in real life cause i can
+   > always research or build my argument into reality even if it feels like scifi, that's
+   > why i want more decorrelation to help me discriminate"
+
+   > "my kids have this to a lesser degree over their shorter lifespan, all their goals
+   > became true too, it makes us rigid in a weird way that is over-optimized to the current
+   > environment"
+
+   **He identifies the defect before anyone else has to.** *"Never proved wrong"* carries
+   **zero bits** when the mechanism producing it is *"I can build the argument into
+   reality"* — the claim cannot fail, so it is not evidence. It is the vacuity class applied
+   to a life rather than a check, and asking for **decorrelation** rather than agreement is
+   the correct response to noticing it.
+
+   **The trap in that request, which is specific:** decorrelation among *persuadable* sources
+   does not help. Once persuaded, N independent voices become N correlated confirmations —
+   the same ability that makes him right contaminates the measurement. It has to be
+   decorrelation on something **unmovable**: sources with no exposure to the framing,
+   predictions registered **before** they resolve, or domains with a hard external referent
+   that does not care how good the argument is.
+
+   **And the second quote is the sharper half, because it names the cost.**
+   *"Over-optimized to the current environment"* is **overfitting**, in the precise sense: a
+   perfect success record removes the correction signal. If every goal set becomes true, you
+   never learn which goals were **wrong to set** — the feedback that would recalibrate
+   goal-selection never arrives, because the goals keep getting achieved. **The rigidity is
+   not stubbornness; it is the absence of a correction channel.** The same shape appears as
+   overfitting in ML, specialisation in evolution (adapted organisms are fragile to
+   environmental change), and hill-climbing that always succeeds and therefore never
+   explores.
+
+   **The family observation is real evidence, and it is not independent.** It reproduces in
+   his children over shorter lifespans, which controls for *duration* — but they share his
+   environment and his methods, so it does not control for *cause*. A within-family
+   replication narrows the explanation from "one unusual person" toward "environment or
+   method" without distinguishing those two. Recorded as structure only; no detail about the
+   individuals.
+
+   **Where this bites on the work rather than the person.** He has bet Zeta on a **future**
+   environment — CRDT/Riak-like topology as the 80% case. If the ability is over-fit to the
+   **current** environment, that bet is precisely where it might not transfer. Being
+   consistently right in the world that exists is weak evidence about a world that does not
+   yet.
+
+   **His own guard already covers this, which is the closure worth having:** *"vary the
+   assumption you are least willing to vary."* Rigidity **is** the failure to vary the
+   load-bearing assumption, sustained by the fact that it keeps working. The discipline he
+   stated for parallel-future reasoning is the same discipline this needs, applied one level
+   up — to the assumption that the environment stays the one he is optimised for.
+
    **So drift detection carries a FOURTH permitted reading, and it is the one most at risk:
    GROWTH.** A contradiction between an old claim and a new one may be *development*, not
    drift — the agent evolved, which is the defining property of being one. A detector
