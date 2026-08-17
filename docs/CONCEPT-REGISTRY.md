@@ -817,6 +817,55 @@ their owners.
    changed. The observation is only that a reader arriving at that rule today would learn
    the convergent half and miss the distinctive one.
 
+   **The fourth route — jurisdictions — and it is the only one already implemented
+   end-to-end (Aaron, same thread):**
+
+   > "this is our multijurisdictional with each jurisdiction having its own world boundaries
+   > drawn, the disagreement between borders can be queried and reasoned about instead of
+   > dogma that locks you into one"
+
+   **Verified in code, and the docstring quotes him from the day before.**
+   `src/Core.TypeScript/planning/competence-attribution.ts` §5 — *"JURISDICTION — binding vs
+   persuasive"* — records Aaron 2026-08-16: *"we also support jurisdictional awareness so
+   these findings might be true for one jurisdiction but not another."* The mechanism is
+   stated there in one line:
+
+   > *"an out-of-jurisdiction authority is **persuasive, not binding** — evidence at reduced
+   > weight, **never discarded**."*
+
+   ***Never discarded* is disagreement preservation, in code.** The cross-border view is not
+   reconciled away and not thrown out; it is retained at a discount and remains available to
+   reason over. `persuasiveWeight` implements the discount, `temperedUpdate` applies it.
+
+   **The legal doctrine is the real anchor, not a metaphor.** *Binding* versus *persuasive*
+   precedent is exactly how courts handle another jurisdiction's rulings: they may inform
+   and they do not compel. Borrowing the distinction gives you a principled way to hold a
+   foreign verdict **without** either obeying it or discarding it — which is the operation
+   this whole thread has been circling.
+
+   **Two implementation details that keep it honest:**
+
+   - **The hierarchy is DERIVED, not invented** — jurisdictions are slash-separated scope
+     paths, so the containment relation falls out of the names rather than being asserted by
+     someone. An invented hierarchy would be the dogma the quote objects to, reintroduced
+     one level up.
+   - **Scopes are never summed.** The composition read (PR #11658) keeps a `binding` block
+     for the queried capability and separate `persuasive` blocks per other scope, and
+     refuses to add them — because summing is precisely what would let standing as a
+     verifier buy standing as a signer.
+
+   **And *"instead of dogma that locks you into one"* is §11 restated as topology.**
+   Multi-Oracle says no single mandatory locus of deference; jurisdictions are that with
+   borders drawn and queryable. Hirschman's **exit** is what makes it non-coercive: a
+   jurisdiction you may reason across is one you can leave, and the alternative — a single
+   world boundary with no outside — is dogma by construction rather than by intent.
+
+   **So the same line has now been reached four independent ways:** epistemic
+   (resolve ≠ verify), algebraic (ordering is lost at ℝ→ℂ), architectural (DV2 satellites
+   are not reconciled), and jurisdictional (persuasive ≠ binding). **The fourth is the only
+   one already shipped**, which makes it the place to check the other three against
+   something running.
+
    **So drift detection carries a FOURTH permitted reading, and it is the one most at risk:
    GROWTH.** A contradiction between an old claim and a new one may be *development*, not
    drift — the agent evolved, which is the defining property of being one. A detector
