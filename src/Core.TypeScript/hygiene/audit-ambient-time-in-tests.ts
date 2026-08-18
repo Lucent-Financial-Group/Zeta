@@ -218,7 +218,12 @@ export function scanSource(src: string): Omit<Violation, "path">[] {
       });
     }
   }
-  found.sort((a, b) => a.line - b.line || a.callee.localeCompare(b.callee));
+  // ORDINAL, never `localeCompare`. Caught by lint-no-culture-sensitive-collation's live
+  // tripwire on the first CI run of this file, which is the guard doing exactly its job:
+  // `localeCompare` is locale-dependent, so the ORDER of reported violations would differ by
+  // machine -- an ambient-culture channel in the output of a check about ambient channels.
+  // See .claude/rules/culture-invariant-by-default.md.
+  found.sort((a, b) => (a.line !== b.line ? a.line - b.line : a.callee < b.callee ? -1 : a.callee > b.callee ? 1 : 0));
   return found;
 }
 
