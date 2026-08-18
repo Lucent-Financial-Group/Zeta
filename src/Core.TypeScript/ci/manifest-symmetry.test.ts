@@ -108,6 +108,15 @@ test("git is present in manifests/windows (loop clone + repo-ops prerequisite)",
   expect(parseManifest("windows")).toContain("git");
 });
 
+test("byte-lock script runtimes use the cross-platform mise graph", () => {
+  expectMiseTool("go", "1.26.4");
+  expectMiseTool("lua", "5.4.8");
+
+  const linuxInstaller = readFileSync(join(setupDir, "linux.sh"), "utf8");
+  expect(linuxInstaller).not.toContain("golang-go");
+  expect(linuxInstaller).not.toContain("lua5.4");
+});
+
 test("USB/QEMU and cluster integration tools are declared in install substrate", () => {
   const apt = parseManifest("apt");
   const brew = parseManifest("brew");
