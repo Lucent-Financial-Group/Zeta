@@ -7,9 +7,14 @@
 repo's own code; the runbook is unexercised because no ceremony has been run. Every step is marked
 with who fires it.
 
-**Hardware state at time of writing:** a YubiHSM is in Aaron's hand; a YubiKey is in transit, expected
-today. **No device was touched, plugged in, unlocked, or read by the author of this note.** The probe
-output quoted below is from the machine as it stands, with nothing attached.
+**Hardware state:** the YubiHSM is now **attached** to Aaron's Mac and the macOS SDK is installed; the
+YubiKey is still in transit. **No device was touched, plugged in, unlocked, or configured by the
+author of this note** — Aaron attached it, and the probe readings below are detection-only. No PIN,
+no auth-key, no session.
+
+> **Update 2026-08-18, after the first fix met the first real device — read §0a.** The fix described
+> in §0 shipped green and was still WRONG on live hardware. The correction is recorded in full rather
+> than folded in silently, because the second failure is more instructive than the first.
 
 ---
 
@@ -49,6 +54,102 @@ This is the same bug class as the `081M00HVPGS...` finding of 2026-08-14 (_a PKC
 reported as attached hardware_), inverted: there, a driver was mistaken for a device; here, a device
 is invisible and reported as absent. Both make the probe's answer wrong, and the second is arguably
 worse, because "absent" reads as a finding rather than as a gap.
+
+## 0a. The fix was wrong on the first real device, for a different reason
+
+Aaron attached the HSM and installed the SDK. The fixed probe still said **Not detected**.
+
+```text
+probeYubiHsm2()        -> false          <-- WRONG
+probeYubiHsm2Pkcs11()  -> true  /usr/local/lib/pkcs11/yubihsm_pkcs11.dylib
+```
+
+Ground truth, measured on the same host at the same moment:
+
+```console
+$ system_profiler SPUSBDataType | wc -l
+0                                    # and EXIT STATUS 0
+
+$ ioreg -p IOUSB -w0 | grep -oE '\+-o [^<]+'
+  +-o USB2.0 Hub@00142000
+  +-o YubiHSM@00142200               # behind two hub levels on a Thunderbolt dock
+```
+
+`system_profiler SPUSBDataType` **returned nothing and succeeded.** `SPSmartCardsDataType` (25 lines)
+and `SPHardwareDataType` (18 lines) both work on the same machine, so the binary is fine — it is that
+one data type which yields nothing here.
+
+### Why this is the same defect I had just finished condemning
+
+The darwin branch was:
+
+```ts
+try {
+  return fx.run("system_profiler", ["SPUSBDataType"]).includes(MARKER);
+} catch {
+  return false;
+}
+```
+
+An empty string does not throw, so the `catch` was **dead code**, and an empty haystack matches no
+marker. **"No device", "the enumerator returned nothing", and "the enumerator failed" were one
+value.** Section 0 of this note says a probe that cannot see a device and reports it absent is how a
+probe becomes confidently wrong. That became true of the replacement within hours, for a different
+reason — and it is the _exact_ caveat the first draft wrote down: if C2 reports Not detected with the
+device attached, that is a probe bug, not evidence about the hardware.
+
+**The marker was never the problem.** `yubihsm` matches `YubiHSM@00142200` on sight. There was no
+text to match against. Anyone "fixing" this by loosening the matcher would have made the probe worse
+while making it pass.
+
+### The correction
+
+Three answers instead of two, mirroring the vocabulary the TPM path in the same file already uses
+(`Tpm2State` / `tpm2CheckRan`) rather than inventing a second one:
+
+| state           | meaning                                              | is it a finding?               |
+| --------------- | ---------------------------------------------------- | ------------------------------ |
+| `attached`      | an enumerator produced device text naming a YubiHSM  | yes                            |
+| `absent`        | an enumerator produced device text and it names none | yes                            |
+| `indeterminate` | no enumerator produced any text                      | **no — the check did not run** |
+
+And `ioreg -p IOUSB` becomes the **primary** enumerator, with `system_profiler` kept only as a
+fallback: `ioreg` reads the IOKit registry directly, `system_profiler` is a formatter layered above
+it, and the formatter is the layer that failed.
+
+`indeterminate` is **fail-closed** — it never clears `noHardwareDetected` and never offers a tier. It
+only changes what the operator is _told_: the refusal now says the bus was not enumerated and that
+absence was **not** established, instead of asserting that nothing is plugged in.
+
+### Measured after the correction, on the live device
+
+```text
+  YubiHSM 2:          ATTACHED (bulk USB — invisible to the reader/ykman probes above)
+                      (the check ran) a YubiHSM was named in the ioreg USB enumeration
+  yubihsm_pkcs11:     /usr/local/lib/pkcs11/yubihsm_pkcs11.dylib (a DRIVER — not evidence of a device)
+  PKCS#11 pair:       /usr/local/lib/pkcs11/yubihsm_pkcs11.dylib drives YubiHSM 2
+  Device present:     YES
+  Honourable tiers:   hardware-pkcs11
+```
+
+**This is the first honourable hardware seal tier this repository has ever reported on a real
+machine.** It is still L1 (at-rest sealing), exactly as section 3 says — the tier being honourable
+means the host _can_ seal to hardware, not that anything has been sealed, and not that invariant 2
+moved.
+
+### The lesson worth keeping
+
+An external command's **empty success** is a third outcome and it must never be folded into the
+negative. `try`/`catch` around a subprocess catches _failure_, not _silence_, and silence is the more
+dangerous of the two because it looks like an answer. The general rule already lives in this repo as
+`tpm2CheckRan`; what was missing was applying it to the second enumerator I wrote.
+
+**The test that would have caught it needs no hardware:** assert that an enumerator returning empty
+yields `indeterminate` rather than `false`. Every fixture in the original suite described a host
+whose enumerator either worked or threw; none described one that succeeded and said nothing, so
+nothing could fail. Mutation testing then found two further holes of the same shape (an unavailable
+enumerator and an unlistable Linux USB tree, both roundable to `absent`); tests for those are in the
+suite now. 53 tests, 8/8 mutants killed.
 
 ## 1. The second finding: a module is not a driver _for the device that is present_
 
@@ -172,8 +273,9 @@ standing invariant made operational: the machine does the work, Aaron approves.
 
 - **A1 [AGENT]** Run the probe on the untouched machine and keep the output as the _before_ baseline:
   `bun tools/setup/persona-keys/frost-hardware-probe.ts`
-  Recorded 2026-08-18 on the M2 Ultra: `YubiHSM 2: Not detected`, `Device present: NO`,
-  `Honourable tiers: (none)`, `Secure Enclave: Present`.
+  Recorded 2026-08-18 on the M2 Ultra **before the HSM was attached**: `Device present: NO`,
+  `Honourable tiers: (none)`, `Secure Enclave: Present`. With the HSM attached the same command now
+  reports `YubiHSM 2: ATTACHED` and `Honourable tiers: hardware-pkcs11` (§0a).
 - **A2 [AGENT]** Confirm the biometric precondition without firing a prompt:
   `bun tools/setup/persona-keys/biometric.ts` (reports platform + `pam_tid` chain analysis).
 - **A3 [AARON]** Decide the roster shape **before** provisioning: how many YubiKeys, how many shares,
@@ -216,13 +318,16 @@ standing invariant made operational: the machine does the work, Aaron approves.
 ### Phase C — the YubiHSM
 
 - **C1 [AARON]** Plug it in.
-- **C2 [AGENT]** Re-run the probe. **This step is the reason for this change:** expect
-  `YubiHSM 2: ATTACHED`. If it still reports `Not detected` with the device plugged in, the product
-  string differs from the marker — that is a probe bug to fix, _not_ evidence about the hardware, and
-  it must not be worked around by loosening the check until it passes.
+- **C2 [AGENT]** Re-run the probe. **DONE AND VERIFIED 2026-08-18** — reports `YubiHSM 2: ATTACHED`
+  via `ioreg`. This step already fired once and FAILED (§0a); the cause was an empty-but-successful
+  enumerator, **not** the marker. Standing guidance if it regresses: `Not detected` with the device
+  plugged in is a probe bug, _not_ evidence about the hardware, and it must never be worked around by
+  loosening the matcher until it merely passes. Read `yubiHsm2State` first — `indeterminate` means the
+  check did not run and is not a claim that the device is absent.
 - **C3 [AARON]** Install the YubiHSM SDK (`yubihsm-connector`, `yubihsm-shell`, `yubihsm_pkcs11`).
 - **C4 [AGENT]** Re-run the probe -> expect a `PKCS#11 pair:` naming `yubihsm_pkcs11` driving the
-  YubiHSM 2. If the pair is absent while both halves are present, the refusal now says which half is
+  YubiHSM 2. **DONE AND VERIFIED 2026-08-18** — the pair resolves and `hardware-pkcs11` is honourable
+  on this host, the first time that has been true on real hardware. If the pair is absent while both halves are present, the refusal now says which half is
   mismatched.
 - **C5 [AARON]** **Change the default authentication key.** A YubiHSM ships with a well-known default
   auth-key and password; leaving it in place is equivalent to having no HSM. Credential act, Aaron
@@ -242,18 +347,122 @@ standing invariant made operational: the machine does the work, Aaron approves.
 - **D3 [AARON]** Confirm the HSM model so `docs/inventory/hardware-to-buy.md` and `081M00S8RPS...`
   can be corrected from _procurement_ to _inventory_.
 
+## 4a. Controls vs hygiene, and the checked answer on erase
+
+Aaron asked, on the recommendation that nodes not carry `yubihsm-setup`:
+
+> _"Is there a way to protect erase even if `yubihsm-setup` is present? An attacker could
+> download it or bring it with them, possibly?"_
+
+**He is right, and the objection lands.** `yubihsm-setup` is a client-side binary speaking a
+documented protocol. An attacker brings it, downloads it, or reimplements it. **Absence of a tool
+is not a control.** The recommendation stands as _hygiene_ — it removes a foot-gun and narrows the
+accident surface — and this note previously let it read as a control. Correcting that, with the
+distinction stated once and used throughout:
+
+- **Control** — a mechanism an attacker who has the credential, the tools, and the intent cannot
+  defeat. It changes what is _possible_.
+- **Hygiene** — a measure that narrows accidents and slows or inconveniences an attacker. It
+  changes what is _likely_ or _convenient_. Valuable, and never to be counted as a control.
+
+### The checked answer (CHECKED against Yubico documentation 2026-08-18)
+
+**1. Capabilities ARE enforced per session, and they are a real control.** Every operation runs in
+an authenticated session bound to an auth key, and the capability set is checked per operation. A
+session cannot create an object carrying capabilities beyond the auth key's **delegated** set —
+"any operation attempting to create Objects with a Capability outside of this set fails" — so there
+is no documented privilege-escalation path from a low-capability session. An auth key **without**
+`reset-device` cannot issue the reset command.
+
+**2. AND THERE IS A PHYSICAL RESET THAT BYPASSES AUTHENTICATION ENTIRELY. This is the answer to
+Aaron's question, and it is a clean negative.**
+
+> "while inserting the YubiHSM 2 into a USB port, press the metal rim as you insert it and continue
+> to press the rim for a minimum of 10 seconds" — Yubico, _Reset YubiHSM to Factory Settings_
+
+Independently described by iqlusion's `tmkms` (Cosmos validator key management), which has every
+reason to have checked it:
+
+> "if you have _lost or forgotten_ the admin authentication key, you can _factory reset_ the
+> YubiHSM 2 to a default state (wiping all keys) by pushing down on the top (LED) immediately after
+> inserting it and continuing to push down on it for 10 seconds."
+
+It requires **no credential, no session, no tool, and no software at all** — it exists precisely as
+the recovery path for a lost auth key. There is no documented way to disable it.
+
+**Therefore:**
+
+| adversary                                                | can they erase? | what stops them                          |
+| -------------------------------------------------------- | --------------- | ---------------------------------------- |
+| remote, holds a session under a low-capability auth key  | **NO**          | the capability model — a genuine control |
+| anyone with ten seconds of physical access to the device | **YES**         | **nothing.** No control exists           |
+
+So the capability model is a control against the **remote** adversary and **provides zero
+protection against the physical one**. Any answer to "protect erase" that relies on the device is
+false for someone holding the box.
+
+### The reframe that makes this not a defect
+
+The ladder doc is titled _destruction, not leakage_, and this is that inversion showing up as a
+vendor feature rather than a gap. The design already decided that **destruction is the acceptable
+failure and extraction is not.** A device that can always be wiped, and can never be made to give
+up its key, is the shape we asked for. The physical reset is on the accepted side of that trade.
+
+Which relocates the whole question: the goal is not to prevent erasure, it is to make erasure
+**cheap**. That is the threshold, and it is already built —
+
+- `ca-cli.ts` (`frost-ca --frost 2-of-3`) and `ca-shamir-cli.ts` (Shamir k-of-n): wiping one device
+  costs **one share**, not the key. An availability event, survivable `n − k` times.
+- `frost-reshare.ts` — reshare without reconstitution is the recovery arm that makes tolerating a
+  wipe routine instead of catastrophic.
+
+This is the same conclusion as §3 by a second route: **the defence is the count, not the tier.**
+Note the sizing consequence — if a wipe costs one share and a physical adversary can always cause
+one, then `n − k` is not spare capacity, it is the number of wipes the roster survives. Choose it
+as a budget, not as slack.
+
+### What the capability model IS worth using for — the axis it can defend
+
+Capabilities cannot stop erasure, and they **can** stop export. Since extraction is the failure
+this design refuses outright, that is the axis worth spending the capability model on.
+
+**The operational (day-to-day signing) auth key should carry only the signing capabilities actually
+used** — e.g. `sign-eddsa` and/or `sign-ecdsa` — and its **delegated capability set should be
+empty**, so it can mint nothing.
+
+**It must NOT carry, and this list is the actionable part before the ceremony:**
+
+| capability                                            | why it must be excluded                                                                                                                                                 |
+| ----------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `export-wrapped`                                      | **the leakage path.** With it, key material can leave the device under a wrap key. Excluding it is the single most valuable capability decision.                        |
+| `put-wrap-key`, `import-wrapped`                      | lets a session introduce a wrap key and manufacture the export path above                                                                                               |
+| `put-authentication-key`, `change-authentication-key` | lets a compromised session mint or reseat credentials and persist                                                                                                       |
+| `delete-object`                                       | targeted destruction of individual keys without a full reset                                                                                                            |
+| `reset-device`                                        | full wipe over a session. Excluding it does **not** stop the physical reset — it stops the _remote_ one, which is the adversary the capability model can actually reach |
+| `set-option`                                          | can change device-wide behaviour, including audit settings                                                                                                              |
+
+Administrative capabilities belong on a **separate auth key used only during ceremonies**, not on
+the key a running agent holds. That separation is what makes "a compromised signing session cannot
+reconfigure the device" true rather than hoped.
+
+**Honest limits of the above.** Capability enforcement and the physical reset are read from
+Yubico's documentation, not exercised — no session has been opened and no auth key created. The
+capability names are as documented; the exact set the ceremony needs depends on the roster shape
+decided in step A3, and should be confirmed against the device before being written into a runbook
+as gospel.
+
 ## 5. What could go wrong irreversibly
 
 Key material is the one thing that cannot be re-derived. Ranked by how hard recovery is.
 
-| #   | Action                                                   | Reversible?                                                                            | Guard                                                                                                                                 |
-| --- | -------------------------------------------------------- | -------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| 1   | **Overwriting a slot that already holds a key**          | **NO** — the previous key is gone                                                      | Never provision into a slot without listing it first. The device will not warn.                                                       |
-| 2   | **Losing the only copy of a share with no reshare path** | **NO**                                                                                 | Set threshold `t < n`, and exercise `frost-reshare.ts` _before_ it is needed rather than discovering it is broken during an incident. |
-| 3   | **PIN / auth-key lockout**                               | **NO** — YubiKey PIV wipes the slot after the PIN and PUK retry counters are exhausted | Aaron enters PINs; agents never retry a credential. An agent that retries is a device-bricking machine.                               |
-| 4   | **Same wrapping key on every token** (B4)                | recoverable if caught, invisible if not                                                | `sealedByToken` binding + `assertRosterSound`. The danger is that it _looks_ correct.                                                 |
-| 5   | **Factory-reset to clear a mistake**                     | **NO**                                                                                 | Never the first response. Reset destroys every key on the device, including the ones that were fine.                                  |
-| 6   | Leaving the default auth-key (C5)                        | reversible                                                                             | Do it in the same sitting as C3.                                                                                                      |
+| #   | Action                                                   | Reversible?                                                                            | Guard                                                                                                                                                                                                                                                                |
+| --- | -------------------------------------------------------- | -------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | **Overwriting a slot that already holds a key**          | **NO** — the previous key is gone                                                      | Never provision into a slot without listing it first. The device will not warn.                                                                                                                                                                                      |
+| 2   | **Losing the only copy of a share with no reshare path** | **NO**                                                                                 | Set threshold `t < n`, and exercise `frost-reshare.ts` _before_ it is needed rather than discovering it is broken during an incident.                                                                                                                                |
+| 3   | **PIN / auth-key lockout**                               | **NO** — YubiKey PIV wipes the slot after the PIN and PUK retry counters are exhausted | Aaron enters PINs; agents never retry a credential. An agent that retries is a device-bricking machine.                                                                                                                                                              |
+| 4   | **Same wrapping key on every token** (B4)                | recoverable if caught, invisible if not                                                | `sealedByToken` binding + `assertRosterSound`. The danger is that it _looks_ correct.                                                                                                                                                                                |
+| 5   | **Factory-reset to clear a mistake**                     | **NO**                                                                                 | Never the first response. Reset destroys every key on the device, including the ones that were fine. Note it needs **no credential**: ten seconds of physical access is sufficient (§4a), so this row is also an _adversary_ capability, not only an operator error. |
+| 6   | Leaving the default auth-key (C5)                        | reversible                                                                             | Do it in the same sitting as C3.                                                                                                                                                                                                                                     |
 
 **The general shape:** every irreversible row above is an **[AARON]** step, and that is not a
 coincidence — it is the invariant working. An agent that could fire any row of this table is a
@@ -279,8 +488,15 @@ misconfigured agent.
 
 1. `docs/inventory/hardware-to-buy.md` §2 and workitem `081M00S8RPS...` say no HSM is owned.
    **Stale** — one is in hand. Left for Aaron to confirm the exact model (D3) rather than guessed.
-2. The ladder doc's exercised table records `Device present: NO` for the M2 Ultra. Still true today
-   with nothing attached; it goes stale the moment Phase B/C runs, and D1 is the step that fixes it.
+2. The ladder doc's exercised table records `Device present: NO` for the M2 Ultra and the row
+   **"L1 is reachable on this machine — NO"**. **Both are now FALSE with the HSM attached**: the probe
+   reports `Device present: YES` and `Honourable tiers: hardware-pkcs11`. That row was measured
+   honestly on 2026-08-14 and the hardware changed underneath it, which is exactly what a dated
+   exercised-table is for. Updating it is runbook step D1 — deliberately left as its own act rather
+   than folded in here, because it is a claim about the _ladder_, and the ladder doc is where a
+   reader looks for it.
+3. Note what has **not** changed: L2 remains unreachable, invariant 2 has not moved, and no share has
+   been sealed. An honourable tier means the host _can_ seal to hardware — the ceremony has not run.
 
 ## 8. Sources (CHECKED 2026-08-18)
 
@@ -293,6 +509,13 @@ misconfigured agent.
 - **RFC 9591** — FROST two-round threshold signatures (the protocol in `frost-partial-signer.ts`).
 - **PKCS#11 v3.1** — checked 2026-08-14 for the structural finding that a FROST partial cannot be
   composed from generic PKCS#11 mechanisms.
+- **The physical factory reset bypasses authentication** — Yubico, _Reset YubiHSM to Factory
+  Settings_ ("press the metal rim as you insert it ... minimum of 10 seconds"); independently
+  described by iqlusion's `tmkms` YubiHSM guide as the recovery path for a lost admin auth key.
+  Checked 2026-08-18 for §4a.
+- **Capabilities are enforced per session and cannot be escalated** — Yubico, _Core Concepts_
+  (Capabilities / Delegated Capabilities: an operation creating an object with a capability outside
+  the delegated set fails). Checked 2026-08-18 for §4a.
 
 In-repo: `tools/setup/persona-keys/frost-hardware-probe.ts` (+ `.test.ts`) ·
 `frost-share-adapter.ts` · `frost-token-roster.ts` · `frost-custody-contract.ts` · `biometric.ts` ·

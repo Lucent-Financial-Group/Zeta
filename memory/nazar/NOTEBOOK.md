@@ -68,6 +68,66 @@ construction.
 
 **Runbook:** `docs/research/2026-08-18-yubihsm-yubikey-readiness-the-probe-could-not-see-the-hsm-and-the-ceremony-runbook.md`.
 
+**SAME-DAY CORRECTION -- my fix was wrong on the real device.**
+Aaron attached the HSM; the fixed probe still said "Not detected".
+`system_profiler SPUSBDataType` returns ZERO LINES and EXIT 0 on his
+Mac (SPSmartCards and SPHardware both work, so it is that one data
+type). An empty string never throws, so my `catch` was dead code and
+an empty haystack matched no marker. **"No device", "returned
+nothing", and "failed" were one value** -- the third instance of the
+defect class, committed inside the fix for the first two.
+
+The reflex to resist: the marker was NOT wrong. `yubihsm` matches
+`YubiHSM@00142200` on sight. Loosening the matcher would have made
+the probe worse and green.
+
+Fixed with `YubiHsm2State` (attached/absent/indeterminate) +
+`yubiHsm2CheckRan`, mirroring `Tpm2State` already in the same file --
+one vocabulary, not two. `ioreg -p IOUSB` is now primary;
+`system_profiler` is a formatter above IOKit and is the layer that
+failed. `indeterminate` is fail-closed.
+
+Verified live: `Device present: YES`, `Honourable tiers:
+hardware-pkcs11` -- first honourable hardware tier on a real machine
+here. Still L1; invariant 2 unmoved; no share sealed.
+
+**ERASE CANNOT BE PREVENTED -- checked, clean negative.** Aaron
+asked whether erase can be protected even with `yubihsm-setup`
+present. Answer: no, and my "do not install the tool" line was
+HYGIENE presented as a control. Absence of a client binary defends
+nothing against someone who brings one.
+
+Verified against Yubico docs (+ iqlusion tmkms independently):
+
+- Capabilities ARE per-session and non-escalatable. An auth key
+  without `reset-device` cannot reset. Real control vs a REMOTE
+  adversary.
+- A PHYSICAL reset bypasses auth entirely: press the metal rim /
+  push the LED top while inserting, hold 10s, all keys wiped. It
+  exists AS the lost-auth-key recovery path. No way to disable.
+
+So: capability model = control against remote, ZERO against anyone
+with ten seconds of physical access.
+
+**The reframe worth keeping:** this is not a defect, it is
+"destruction, not leakage" showing up as a vendor feature. The design
+already accepted destruction and refuses extraction. So do not try to
+prevent erasure -- make it CHEAP. That is the threshold (wipe = one
+share) plus `frost-reshare.ts`. And size it honestly: n-k is not
+slack, it is the number of wipes the roster survives.
+
+**Where capabilities ARE worth spending:** they cannot stop erase and
+CAN stop export. Keep `export-wrapped` off the operational auth key
+(the leakage path), plus put-wrap-key / import-wrapped /
+put-authentication-key / delete-object / reset-device / set-option;
+delegated set empty; admin caps on a separate ceremony-only key.
+
+**Carry this one:** a subprocess `try`/`catch` catches FAILURE, not
+SILENCE. An external command's empty success is a THIRD outcome and
+must never fold into the negative. Mutation testing found two more
+holes of the same shape after my first pass, so run it before
+claiming a probe is sound -- 8/8 killed now.
+
 ## Round 34 — persona seeded (2026-04-19) — SUPERSEDED, see above
 
 **Context.** Persona landed via `skill-creator` workflow this

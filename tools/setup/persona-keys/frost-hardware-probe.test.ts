@@ -11,8 +11,11 @@ import {
   macReadersBlockIsNonEmpty,
   realProbeEffects,
   probeYubiHsm2,
+  probeYubiHsm2State,
   probeYubiHsm2Pkcs11,
   pkcs11MatchedPair,
+  enumerateDarwinUsb,
+  yubiHsm2CheckRan,
   type HardwareProbeEffects,
 } from "./frost-hardware-probe.ts";
 import type { ListOutcome, PathOutcome, Tpm2LinuxEffects } from "./tpm2-linux-probe.ts";
@@ -601,5 +604,180 @@ describe("a PKCS#11 module must MATCH the device it is asked to drive", () => {
     const res = probeHardwareSecurity(macWithYubiHsm());
     expect(availableHardwareSealTiers(res)).toEqual([]);
     expect(() => assertHardwareSealTierAvailable("hardware-pkcs11", res)).toThrow(/no PKCS#11 module on disk/);
+  });
+});
+
+// THE NEGATIVE CONTROL THAT WAS MISSING (2026-08-18, Nazar).
+//
+// The first fix for "the probe cannot see a YubiHSM" shipped green and was WRONG on the
+// first real device it met. system_profiler SPUSBDataType returned EMPTY OUTPUT and
+// EXIT 0 on the maintainer Mac with the HSM attached; the empty string never throws, so
+// the catch was dead code and an empty haystack matched no marker.
+//
+// Every fixture above described a host where the enumerator either WORKED or THREW. None
+// described the third case -- ran, succeeded, said nothing -- so nothing could fail.
+// These tests are that case, and they need no hardware.
+
+/** A macOS host where every USB enumerator succeeds and returns nothing. */
+function macEnumeratorsEmpty(over: Partial<HardwareProbeEffects> = {}): HardwareProbeEffects {
+  return host({
+    platform: "darwin",
+    run: (cmd) => {
+      if (cmd === "ioreg" || cmd === "system_profiler") return "";
+      throw new Error("absent");
+    },
+    ...over,
+  });
+}
+
+describe("an enumerator that succeeds and says nothing is NOT a negative finding", () => {
+  it("classifies empty-but-successful output as empty, not as an answer", () => {
+    expect(enumerateDarwinUsb(macEnumeratorsEmpty()).kind).toBe("empty");
+  });
+
+  it("yields indeterminate, NOT absent -- the mutation that would have caught the bug", () => {
+    const probe = probeYubiHsm2State(macEnumeratorsEmpty());
+    expect(probe.state).toBe("indeterminate");
+    expect(probe.state).not.toBe("absent");
+    expect(yubiHsm2CheckRan(probe.state)).toBeFalse();
+  });
+
+  it("distinguishes empty from unavailable -- non-answers with different causes", () => {
+    const gone = host({
+      platform: "darwin",
+      run: () => {
+        throw new Error("absent");
+      },
+    });
+    expect(enumerateDarwinUsb(gone).kind).toBe("unavailable");
+    expect(enumerateDarwinUsb(macEnumeratorsEmpty()).kind).toBe("empty");
+  });
+
+  it("still refuses the tier -- unknown is fail-closed, never an optimistic YES", () => {
+    const res = probeHardwareSecurity(macEnumeratorsEmpty({ exists: (q) => q === YUBIHSM_MODULE }));
+    expect(res.yubiHsm2Detected).toBeFalse();
+    expect(availableHardwareSealTiers(res)).toEqual([]);
+  });
+});
+
+describe("the refusal must not claim absence it did not establish", () => {
+  it("says the check did not run rather than claiming the device is absent", () => {
+    const res = probeHardwareSecurity(macEnumeratorsEmpty({ exists: (q) => q === YUBIHSM_MODULE }));
+    let message = "";
+    try {
+      assertHardwareSealTierAvailable("hardware-pkcs11", res);
+    } catch (e) {
+      message = (e as Error).message;
+    }
+    expect(message).toContain("attach-state is UNKNOWN");
+    expect(message).toContain("absence was NOT established");
+    // It must ALSO still say the driver bought nothing -- an earlier revision of this
+    // refusal replaced that clause instead of adding to it, and a test caught it.
+    expect(message).toContain("a PKCS#11 driver alone is not a device");
+  });
+
+  it("keeps the empty case out of absent on Linux too", () => {
+    const bare = host({ platform: "linux", readDir: () => [] });
+    expect(probeYubiHsm2State(bare).state).toBe("indeterminate");
+    const noProducts = host({
+      platform: "linux",
+      readDir: () => ["1-1", "1-2"],
+      readFile: () => {
+        throw new Error("absent");
+      },
+    });
+    expect(probeYubiHsm2State(noProducts).state).toBe("indeterminate");
+  });
+
+  it("reports a REAL negative as absent when the bus was genuinely read", () => {
+    const seen = host({
+      platform: "darwin",
+      run: (cmd) => {
+        if (cmd === "ioreg") return "+-o Root|+-o USB Keyboard@00100000";
+        throw new Error("absent");
+      },
+    });
+    const probe = probeYubiHsm2State(seen);
+    expect(probe.state).toBe("absent");
+    expect(yubiHsm2CheckRan(probe.state)).toBeTrue();
+  });
+});
+
+describe("ioreg is the primary enumerator and system_profiler the fallback", () => {
+  const IOREG_WITH_HSM = "+-o Root|  +-o USB2.0 Hub@00142000|  +-o YubiHSM@00142200";
+
+  it("finds the device through ioreg with system_profiler unusable", () => {
+    const fx = host({
+      platform: "darwin",
+      run: (cmd) => {
+        if (cmd === "ioreg") return IOREG_WITH_HSM;
+        throw new Error("absent");
+      },
+    });
+    const probe = probeYubiHsm2State(fx);
+    expect(probe.state).toBe("attached");
+    expect(probe.reason).toContain("ioreg");
+  });
+
+  it("falls back to system_profiler when ioreg returns empty", () => {
+    const fx = host({
+      platform: "darwin",
+      run: (cmd, args) => {
+        if (cmd === "ioreg") return "";
+        if (cmd === "system_profiler" && args[0] === "SPUSBDataType") return MAC_USB_WITH_YUBIHSM;
+        throw new Error("absent");
+      },
+    });
+    expect(probeYubiHsm2State(fx).state).toBe("attached");
+  });
+
+  it("finds the device when system_profiler is the empty one -- the measured live case", () => {
+    const fx = host({
+      platform: "darwin",
+      run: (cmd) => {
+        if (cmd === "ioreg") return IOREG_WITH_HSM;
+        if (cmd === "system_profiler") return "";
+        throw new Error("absent");
+      },
+    });
+    expect(probeYubiHsm2(fx)).toBeTrue();
+  });
+});
+
+describe("a check that could NOT RUN is never a confident absent (mutation-driven)", () => {
+  // Both of these survived a mutation run: the suite asserted the enumerator OUTCOME but
+  // never the resulting STATE, so flipping either branch to "absent" went unnoticed.
+  // "absent" is a claim about the hardware and only a completed look may make it.
+  it("darwin: no enumerator can be run at all -> indeterminate, not absent", () => {
+    const gone = host({
+      platform: "darwin",
+      run: () => {
+        throw new Error("absent");
+      },
+    });
+    expect(enumerateDarwinUsb(gone).kind).toBe("unavailable");
+    const probe = probeYubiHsm2State(gone);
+    expect(probe.state).toBe("indeterminate");
+    expect(probe.state).not.toBe("absent");
+    expect(yubiHsm2CheckRan(probe.state)).toBeFalse();
+  });
+
+  it("linux: the USB tree cannot be listed -> indeterminate, not absent", () => {
+    const unlistable = host({
+      platform: "linux",
+      readDir: () => {
+        throw new Error("permission denied");
+      },
+    });
+    const probe = probeYubiHsm2State(unlistable);
+    expect(probe.state).toBe("indeterminate");
+    expect(probe.state).not.toBe("absent");
+    expect(probe.reason).toContain("NOT consulted");
+  });
+
+  it("an unprobed platform is indeterminate, not absent", () => {
+    const probe = probeYubiHsm2State(host({ platform: "win32" }));
+    expect(probe.state).toBe("indeterminate");
+    expect(yubiHsm2CheckRan(probe.state)).toBeFalse();
   });
 });

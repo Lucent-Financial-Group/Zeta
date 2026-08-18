@@ -94,3 +94,52 @@ scheduled to go red the first time `yubihsm_pkcs11` + an HSM were the honourable
 
 - `docs/research/2026-08-18-yubihsm-yubikey-readiness-the-probe-could-not-see-the-hsm-and-the-ceremony-runbook.md`
   — the readiness note and the ordered ceremony runbook this was found while writing.
+
+## FOLLOW-UP, same day: the fix was wrong on the first real device
+
+Aaron attached the HSM and installed the SDK. The fixed probe still reported `Not detected`.
+A third instance of the same class, in the code written to fix the first two.
+
+```console
+$ system_profiler SPUSBDataType | wc -l
+0                                     # EXIT STATUS 0 -- succeeded, said nothing
+$ ioreg -p IOUSB -w0 | grep -oE '\+-o [^<]+'
+  +-o YubiHSM@00142200                # behind two hub levels on a Thunderbolt dock
+```
+
+`SPSmartCardsDataType` (25 lines) and `SPHardwareDataType` (18 lines) work on the same host,
+so the binary is fine -- that one data type yields nothing here.
+
+**The defect:** an empty string does not throw, so the `catch` was dead code and an empty
+haystack matched no marker. "No device", "the enumerator returned nothing", and "the
+enumerator failed" were ONE VALUE. The marker was never wrong -- `yubihsm` matches
+`YubiHSM@00142200` on sight; there was no text to match against. Loosening the matcher would
+have made the probe worse while making it pass.
+
+**Fix.** `YubiHsm2State` = `attached` / `absent` / `indeterminate`, plus `yubiHsm2CheckRan`,
+mirroring the `Tpm2State` vocabulary already in the same file rather than inventing a second
+one. `ioreg -p IOUSB` becomes the primary enumerator (it reads the IOKit registry directly;
+`system_profiler` is a formatter above it, and the formatter is the layer that failed).
+`indeterminate` is fail-closed -- it never clears `noHardwareDetected` and never offers a
+tier; it only changes what the operator is TOLD.
+
+**Verified on the live device:**
+
+```text
+  YubiHSM 2:          ATTACHED
+                      (the check ran) a YubiHSM was named in the ioreg USB enumeration
+  PKCS#11 pair:       /usr/local/lib/pkcs11/yubihsm_pkcs11.dylib drives YubiHSM 2
+  Device present:     YES
+  Honourable tiers:   hardware-pkcs11
+```
+
+First honourable hardware seal tier this repo has reported on a real machine. Still L1.
+
+**Evidence:** 53 tests (was 40), 608 pass across the persona-keys lane, 8/8 mutants killed.
+Mutation found two further holes of this exact shape after the first pass -- an unavailable
+enumerator and an unlistable Linux USB tree, both roundable to `absent` -- and tests for both
+are in the suite now.
+
+**The generalisable lesson.** A subprocess `try`/`catch` catches FAILURE, not SILENCE, and
+silence is the more dangerous of the two because it looks like an answer. An external
+command's empty success is a third outcome and must never fold into the negative.
