@@ -1,0 +1,143 @@
+# RAW — The handle was earned by a naming algorithm: FATX, xbins, and Chaotic Perfection
+
+**Captured** 2026-08-18 · source: Aaron, streamed · register: **RAW** (book material, not yet
+shaped) · consent: **glass-halo, his own account, his own request** — *"we should save this for
+the book."* No third parties named.
+
+## 0. What he said
+
+> *"if you search fat to fatx conversion by significant middle letters and important edge
+> labels/words — i wrote a program in vb6 and cs1 to do this and it made me historic on xbins.
+> many people adopted my rom renaming algo to fatx for xbox with its restrictions, with keeping
+> significant digits in language."*
+
+> *"that's my first use of AceHack publicly. then i did it with a glitch clan with gears of war
+> and training videos called chaotic perfection."*
+
+## 1. The problem, stated properly
+
+The original Xbox used **FATX**, a stripped-down FAT variant with a hard filename ceiling and a
+restricted character set. A ROM collection carried names that did not fit. Something had to be
+cut.
+
+**Naive truncation is the obvious answer and it is the wrong one**, for a reason that is exactly
+information-theoretic: the discriminating characters in a corpus of names are usually *not* the
+leftmost ones. Truncate from the right and every `Super Mario Bros 1 / 2 / 3` collapses to the
+same string. You have satisfied the filesystem and destroyed the collection.
+
+What he built instead kept **significant middle letters and important edge labels** — the
+characters and words that *tell the items apart* — and spent the budget there.
+
+## 2. Why that is the interesting move
+
+Stated in the vocabulary he uses now, the algorithm was maximising the **mutual information
+between the shortened name and the original, relative to the corpus being shortened**. Not
+"shorten this string" — *"shorten this string given all the other strings it must remain
+distinguishable from."* The budget goes to the characters carrying discriminative power.
+
+And it is the **stop-word insight**, which he raised independently in this same week talking about
+languages: the tokens that go first are the ones that appear everywhere and therefore discriminate
+nothing — `The`, `Disc 1`, `(USA)`, `v1.0`, the bracket noise. Drop the tokens with the lowest
+information content, keep the ones with the highest. That is TF-IDF logic, derived from first
+principles in VB6 by someone solving a storage problem.
+
+**The three-way trade is the part worth writing.** There were three constraints, and any two are
+easy:
+
+| | fits the budget | stays distinguishable | stays human-legible |
+|---|---|---|---|
+| naive truncation | ✅ | ❌ | ✅ |
+| hash the name | ✅ | ✅ | ❌ |
+| **what he built** | ✅ | ✅ | ✅ |
+
+A hash wins the first two outright and loses the third completely — and losing the third is fatal,
+because a person has to find the game on a console menu. He went for all three, which is why the
+algorithm had to be *language-aware* rather than merely arithmetic.
+
+**This is the same shape as the substrate he is building now.** `workitems/<zetaid>-<slug>.md` is
+literally the two halves side by side: the ZetaId is the hash column of that table — perfectly
+distinguishing, entirely illegible — and the slug is the legible column, produced by exactly the
+compression problem FATX handed him. Mirror and Beacon are the same split again. He has been
+solving one problem for twenty years.
+
+## 3. The handle
+
+**The name he still signs commits with was earned by writing a naming algorithm.**
+
+That is not a pun, and it should not be written as one. His standing thesis is that a name is a
+**socially conferred currency** — it accrues from others finding you useful, it cannot be
+self-minted, and recognition flows from the already-recognised. *That is exactly how the handle
+happened.* He did not declare himself AceHack and wait. He wrote something, other people **adopted
+it**, and the adoption is what made the name stick on xbins.
+
+So the naming eigenvector is not a model he later found attractive. **It is a description of his
+own biography**, arrived at from the inside, which is why he holds it with the confidence he does.
+The mechanism is identified — adoption produces recognition — so this belongs above coincidence.
+
+## 4. Chaotic Perfection
+
+Then: a **glitch clan**, Gears of War, and **training videos**.
+
+Both halves matter and the second is the tell.
+
+- **Glitch hunting** is looking for where a system's stated rules break down — the seams, the
+  junctions, the places the map does not match the territory. It is the recreational version of
+  the discipline he now applies to formal systems: find the exact spot where the rules stop
+  holding, and *know where it is*.
+- **Training videos** is the part most glitch clans did not do. Finding an exploit buys status
+  precisely *because* it is scarce. Teaching it away destroys the scarcity. He taught it away.
+
+That is the **pirate priest who preaches that priests should not exist**, twenty years before he
+had the phrase for it — and it is the Stump Dad game pointed outward: *ask why until Dad doesn't
+know*, then hand everyone else the answer.
+
+And the clan name is doing real work. **"Chaotic perfection" reads as an oxymoron and resolves
+exactly like a homoclinic tangle** — bounded, fully deterministic, and unpredictable in detail. A
+system with perfect rules whose behaviour at the edges is chaotic is not a broken system; it is
+what a rich system *looks like* from the inside. He named that at fifteen or so, playing Gears of
+War.
+
+## 5. Honest register — what is checked and what is his account
+
+Per the anchoring discipline, this is separated rather than blurred:
+
+| claim | register |
+|---|---|
+| FATX imposed hard filename limits; a renamer ecosystem existed for it; xbins was the scene's distribution point | **checked** — public record; multiple FATX renaming utilities from 2003 onward are documented on Xbox-scene sites |
+| the specific tool, the algorithm, and the "AceHack" attribution | **his account** — a web search on the terms he gave surfaced the surrounding ecosystem but **not** his specific tool or handle. Recorded as unconfirmed. |
+| Chaotic Perfection, the glitch clan, the training videos | **his account** |
+| §2's information-theoretic reading of the algorithm | **mine** — my analysis of what he described, not his framing at the time |
+| §3's identity between his biography and the naming eigenvector | **structural** — the mechanism (adoption → recognition) is the same in both |
+
+The middle rows are the ones to be careful with in a published chapter. `engagement-profiles`
+says the method for someone's own history is **ask and believe their account** — he is the
+authority on his own life, and *"a search did not find it in 2026"* is close to no evidence at all
+for a handle on a 2003 scene FTP whose archives are largely gone. But the book should not assert
+as verified what is testimony, so it says testimony.
+
+If a primary artifact ever surfaces — a `.nfo`, a forum post, a copy of the binary — it upgrades
+this from account to record. Worth looking for once, deliberately, rather than assuming.
+
+## 6. Where this goes in the book
+
+The beat is **"he was solving this problem before he had the words for it."** Not as nostalgia —
+as evidence that the substrate's shape is not a recent invention or an AI-suggested aesthetic.
+Three of the book's load-bearing ideas have a 2003 instance in a teenager's VB6 file renamer:
+
+1. compression that preserves what *discriminates*, not what comes first (Rodney's Razor,
+   essential-vs-accidental);
+2. the two-column identity — an illegible exact key beside a legible lossy name (ZetaId + slug,
+   Mirror + Beacon);
+3. a name that is **earned by others adopting your work**, never self-declared.
+
+## Pointers
+
+- `docs/books/you-born-at-the-hinge/CONSENT-LEDGER.md` — his own material, glass-halo, requested.
+- `.claude/rules/anchor-to-human-prior-art.md` — §5 exists because an anchor must be *checked*,
+  and here it partly could not be.
+- `.claude/rules/privacy-budget-is-hard-money-earned-by-others.md` — the naming eigenvector §3 says
+  he lived.
+- `.claude/rules/workitems-mint-with-zetaid.md` — the `<zetaid>-<slug>` shape §2 says is the same
+  problem.
+- `2026-08-18-the-original-xbox-a-root-of-trust-below-the-update-boundary-*.md` — the same console,
+  the same scene, the security half of the story.
