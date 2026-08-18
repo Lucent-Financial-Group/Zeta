@@ -133,6 +133,19 @@ genuinely _inherited_ from item 3's rather than being an independent fact.
 Not vacuous: perturbing one generator to weight 5 gives `integral: false, even: false,
 norm2: 128`.
 
+**Converged with parallel work, same day.** `ConstructionATheta.fs` and
+`tests/Tests.FSharp/Formal/ConstructionAThetaE8.Tests.fs` landed on `main` while this was in
+flight, computing the **theta series** of the same lattice and matching it against the
+Eisenstein series `E_4`: `1, 240, 2160, 6720, 17520, ...`. Their first shell is the same **240**
+counted here, reached from a different observable, and byte-locked in
+`src/Core/golden-vectors-construction-a-theta.json`.
+
+So the identification of `L_A([8,4])` with E8 now rests on **three independent observables**:
+the Cartan-matrix structure match (`CliffordE8Roots`), the theta series (`ConstructionATheta`),
+and the even-plus-unimodular-plus-minimal-vector count here. What this section adds that the
+other two do not is the **negative control** — the singly-even code — which is what separates
+the two hypotheses and makes the row a bridge rather than one more confirmation of E8.
+
 ### 3.2 Gauss–Milgram, executed — the 1 to 3 bridge
 
 Thirteen lattices, `sigma` from 0 to 8. Maximum deviation of the Gauss sum from
