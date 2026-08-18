@@ -470,7 +470,7 @@ fi
 # Substrates: WAT, LLVM/C, Emscripten, Rust, ASC, Zig (WASM)
 #             + JS/V8, Lua 5.4, Go (bytecode/script)
 #
-# WABT is declared in manifests/apt. Go and Lua are pinned cross-platform in
+# WABT and Lua are declared in manifests/apt; Go is pinned cross-platform in
 # .mise.toml. Zig and Rust retain the dedicated idempotent verification scripts.
 if [ "$IS_NIXOS" != 1 ]; then
   echo "-- installing Zig (wasm32-freestanding substrate) --"

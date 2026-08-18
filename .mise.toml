@@ -27,11 +27,6 @@ min_version = "2026.6.12"
 # Microsoft's dotnet-install.sh to mise (see header).
 dotnet = "10.0.302"
 go = "1.26.4"
-# Lua 5.4 script substrate for the cross-language byte-lock. Keep it in mise
-# beside Go so Linux, macOS, and Windows resolve the same runtime declaratively;
-# a late Linux-only apt install previously stalled unrelated CI jobs after the
-# shared installer had otherwise completed.
-lua = "5.4.8"
 golangci-lint = "2.12.2"
 # Rust stable. Edition 2024 requires >=1.85. The mise `core:rust`
 # backend wraps rustup and passes `components`/`targets` straight

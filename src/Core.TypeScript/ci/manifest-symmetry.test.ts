@@ -88,6 +88,7 @@ const WINDOWS_EXCEPTIONS: Record<string, string> = {
   // manifest would also force it into every constrained Windows installer smoke. Keep each
   // disposition explicit until Windows gains the same tier=standard/full parser as Unix.
   wabt: "WABT is available only in Scoop Extras, while install.ps1 intentionally bootstraps the Main bucket alone; Windows package-source expansion remains a separate installer decision.",
+  "lua5.4": "covered on Windows by the `lua` manifest line; apt includes the language version in its package id",
   binaryen:
     "WASM optimizer/compiler support is a full compiler-lane dependency; defer Windows installation until manifests/windows supports host tiers instead of forcing it onto every base host.",
   emscripten:
@@ -108,9 +109,12 @@ test("git is present in manifests/windows (loop clone + repo-ops prerequisite)",
   expect(parseManifest("windows")).toContain("git");
 });
 
-test("byte-lock script runtimes use the cross-platform mise graph", () => {
+test("byte-lock script runtimes are declared once per platform", () => {
   expectMiseTool("go", "1.26.4");
-  expectMiseTool("lua", "5.4.8");
+
+  expect(parseManifest("apt")).toContain("lua5.4");
+  expect(parseManifest("brew")).toContain("lua");
+  expect(parseManifest("windows")).toContain("lua");
 
   const linuxInstaller = readFileSync(join(setupDir, "linux.sh"), "utf8");
   expect(linuxInstaller).not.toContain("golang-go");
