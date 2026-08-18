@@ -2,6 +2,7 @@
 name: "\"What is our zeta function?\" — computed. The adinkra of the [8,4] code IS K_{8,8}; its Ihara zeta is (1−u²)^49(1−49u²)(1+7u²)^14; it IS Ramanujan; and it is provably silent on the unfolding — 2026-08-18"
 description: Aaron 2026-08-18 asked what our zeta function is, framing it as swapping zeta functions over the ages for other infinite generator functions. Reframed as "a zeta is an Euler product enumerating irreducibles", the Ihara zeta of a graph makes it computable — and an adinkra is a graph. Result derived from AdinkraCode.generator (not hand-drawn), computed in exact bigint arithmetic with mutation-checked falsifiers. Two claims earned, one explicitly refused.
 type: finding
+created: 2026-08-18
 ---
 
 Aaron 2026-08-18:
