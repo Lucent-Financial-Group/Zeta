@@ -208,6 +208,28 @@ module CliffordPeriodicity =
     /// Lie Groups*; Kostant). Not ours and not new — which is the point: it is *checkable*.
     let e8FromSpinors = (16, 248)
 
+    /// **The bridge between the two E8 routes — `248 = 8 + 240 = 120 + 128`.**
+    ///
+    /// Aaron asked (2026-08-18) whether there is a meaningful transformation between the two E8s.
+    /// There is, and it is not exotic: **they are two decompositions of the same 248-dimensional
+    /// Lie algebra against two different maximal subalgebras.**
+    ///
+    /// | route | decomposition | graded against |
+    /// |---|---|---|
+    /// | lattice / Construction A | `248 = 8 + 240` — Cartan ⊕ root spaces | the **Cartan** `h` (a `Z⁸` grading by roots) |
+    /// | spinor / uncoded tower | `248 = 120 + 128` — `so(16) ⊕ Δ⁺` | **`so(16)`** (a `Z₂` grading by parity) |
+    ///
+    /// The lattice route's 240 minimal-norm vectors **are** the 240 roots, and `e₈ = h ⊕ ⊕_α g_α`
+    /// with `dim h = 8`. So the two constructions are joined by the root system itself — the
+    /// lattice is where the algebra's roots live, and Construction A builds exactly that lattice.
+    ///
+    /// **What is genuinely interesting rather than merely arithmetic:** these are two *different*
+    /// what-remains / what-acts splits of one object. The Cartan is the maximal commuting
+    /// subalgebra — what remains under the adjoint action. `so(16)` is the even part — what remains
+    /// under the grading. Same algebra, two notions of "remains", and asking how they relate is a
+    /// real question rather than a restatement.
+    let e8RootDecomposition = (8, 240)
+
     /// **`f₄ = so(9) ⊕ Δ₉`** — `36 + 16 = 52`. The same recipe one exceptional algebra down, kept
     /// so the construction is tested at more than a single point. `n = 9` is odd, so there is no
     /// chirality split and the whole `16` is used.

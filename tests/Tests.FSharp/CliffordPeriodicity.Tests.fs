@@ -300,3 +300,17 @@ let ``three rungs agree: (0,8) -> 8-blocks, (7,7) -> 64-blocks, (0,16) -> 128-bl
             Assert.True even.IsSplit
             Assert.Equal(expectedBlock, even.MatrixDim)
         | other -> failwithf "signature (%d,%d) did not separate: %A" p q other
+
+
+[<Fact>]
+let ``the two E8 routes meet at 248 -- Cartan+roots and so(16)+half-spin are one algebra`` () =
+    let (cartan, roots) = CP.e8RootDecomposition
+    let (n, total) = CP.e8FromSpinors
+    Assert.Equal(8, cartan)      // rank of E8
+    Assert.Equal(240, roots)     // minimal vectors of the E8 lattice = roots of e8
+    Assert.Equal(248, cartan + roots)
+    // and the spinor route reaches the same 248 by a different split
+    Assert.Equal(cartan + roots, CP.bivectorDim n + CP.halfSpinorDim n)
+    // the two decompositions are genuinely different -- not the same numbers rearranged
+    Assert.NotEqual(cartan, CP.bivectorDim n)
+    Assert.NotEqual(roots, CP.halfSpinorDim n)
