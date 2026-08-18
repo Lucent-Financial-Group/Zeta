@@ -243,3 +243,36 @@ refuse, or a **cone** that cannot.
 **Register:** 6a–6b are **structural** — the top/cone distinction is checkable (can the holder be
 acted upon by the relation it participates in?). 6c is a **fair-statement correction** of my own
 earlier shorthand. 6d is **our floor**, cited rather than argued.
+
+### 6e. Where the reading comes from — and why it does logical work rather than decorative work
+
+Aaron: *"this seems like an obvious outcome from the short story The Egg."*
+
+**The Egg** (Andy Weir, 2009) — referenced, not reproduced — turns on a premise in which the
+narrator's own highest identity is something they are *becoming*, and in which every other person
+encountered is also them. It is already on file as **explicitly Aaron's oracle**, labelled as such
+rather than asserted as evidence
+(`docs/research/2026-08-09-the-delay-in-partition-is-where-life-happens-the-egg-aaron.md`, and the
+CTMU record's §7 grading).
+
+**Why it is not merely where the intuition came from.** Langan's own sentence is that God is *"the
+level that we all share with each other."* Take that premise and supply The Egg's **model** of what
+a shared highest level is, and the premise entails **Aaron's** conclusion rather than Langan's:
+
+> If the shared highest level is *one identity living every part*, then exclusion is a part being
+> excluded from a whole **that is also that part**. There is no excluder left who is not also the
+> excluded. Permanent disconnection does not become forbidden — it becomes **incoherent**.
+
+So the disagreement is not about the premise, which both accept. **It is about which model of
+"shared highest level" you take**, and the two models differ on exactly one property: whether the
+whole is *other* than its parts. Langan needs it to be other, or the exclusion in his §6c account
+has no agent. The Egg's model makes it not-other, and the exclusion loses its subject.
+
+**Register, stated carefully because fiction is doing work here.** The Egg is **not evidence** and
+nothing above treats it as such — it is a **model**, and Aaron's oracle by his own labelling. But a
+model that makes a shared premise entail a *different* conclusion is doing genuine logical work, not
+decorative work: it is the same service a countermodel performs in ordinary mathematics. §6b's
+argument stands or falls on its own; The Egg is what makes it *obvious* rather than what makes it
+*true*, and keeping those apart is the whole discipline
+([`numerology-vs-number-theory`](../../.claude/rules/numerology-vs-number-theory.md) — a generator is
+legitimate as a generator and never as a conclusion).
