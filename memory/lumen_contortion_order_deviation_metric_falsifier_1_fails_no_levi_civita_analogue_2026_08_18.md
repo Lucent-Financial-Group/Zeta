@@ -1,3 +1,10 @@
+---
+name: Contortion is not the order-deviation metric — falsifier 1 fails, no Levi-Civita analogue (Lumen 2026-08-18)
+description: Lumen 2026-08-18 negative result — contortion cannot serve as the order-deviation metric for the belief fold, because Fisher-Rao is already fixed (Cencov) and the whole Amari alpha-family is a scalar multiple of the fully symmetric Amari-Chentsov tensor, so torsion and contortion are identically zero for every member while the connections genuinely differ; the real deviation is NON-METRICITY, which contortion does not measure
+type: project
+created: 2026-08-18
+---
+
 # Contortion is not the order-deviation metric — falsifier 1 fails (Lumen 2026-08-18)
 
 The 2026-08-18 proposal to use **contortion** as the order-deviation metric for our fold rests on a
