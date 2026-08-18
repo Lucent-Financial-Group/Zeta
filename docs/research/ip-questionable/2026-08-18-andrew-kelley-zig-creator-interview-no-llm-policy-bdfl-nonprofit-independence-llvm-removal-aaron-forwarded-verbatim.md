@@ -79,6 +79,7 @@ uncompromising labor of love. We will not have to be stuck with any like bad dec
 Um, well, ultimately, Andrew Kelly, we already have C, C++,
 
 ### Why Create Zig? Andrew Kelley Explains
+
 0:48
 Rust, Go. What made you build Zig anyway? Well, it's funny that you listed
 0:54
@@ -103,6 +104,7 @@ Zigg Foundation on $670,000 a year. band AI.
 What problems exactly? The first thing that I tried to do was make the digital audio workstation in
 
 ### How Rust, Go and C All Failed
+
 1:57
 the browser using JavaScript. And what I quickly realized is that this is too
 2:03
@@ -161,6 +163,7 @@ than C++. I can do better than Rust. I can do better than Go. I can do better th
 That was my hubris. Now Zeke, what is Zeke used for? What
 
 ### What Is Zig Used For?
+
 4:57
 problems does it solve? Zigg is used when you want to have full control over the computer. You don't
 5:03
@@ -185,6 +188,7 @@ computer fundamentally do and how can I get it to do this using any possible
 tool chain. Maybe even one that I would make. Let's talk about applications. Where is
 
 ### Who Uses Zig in Production?
+
 6:03
 Zeke used? Uh today one application that comes to mind would be Ghosty. So this is a uh terminal
 6:11
@@ -219,6 +223,7 @@ predictable latency and what I would call the opposite of that which would be ki
 throughput if that makes sense. What about Bun? Bun is a JavaScript
 
 ### Bun, Anthropic and Zig for AI
+
 7:46
 engine that uses JavaScript core and a bunch of other C++ libraries and then
 7:53
@@ -229,6 +234,7 @@ Anthropic I think and we've seen a lot of people uh consequently getting into
 um using Zig for AI. I also heard that Uber is using Zig. Yes, Uber is using the tool chain. Uber
 
 ### How Uber Uses Zig With Go
+
 8:13
 uses uh Zigcc to build uh some of their things for to cross compile for um ARM
 8:20
@@ -243,6 +249,7 @@ Zigg as the C compiler along along with Go. And then now you have cross compilat
 that the Go code depends on. By the way, why why is it called zig? Why is it called zig?
 
 ### Why Is It Called "Zig"?
+
 8:52
 Uh, I wanted a short word that had zero Google results for
 8:58
@@ -257,6 +264,7 @@ Why do you have the iguana as a muscos? It's a ziguana. Zigguana.
 [laughter] Amazing. Well, uh Andrew, Zeke is in top five most admired programming languages.
 
 ### Why Zig Isn't 1.0 After 10 Years
+
 9:30
 Uh but no 1.0 release after 10 years.
 9:36
@@ -291,6 +299,7 @@ like a a true uncompromising labor of love. We will not have to be stuck with an
 to rush to to lock in. Well, I'll continue asking about that. Okay. Like there is a concept in
 
 ### "Worse is better"
+
 11:12
 software development called worse is better. Like ship fast, fix later. like PHP, Go,
 11:20
@@ -329,6 +338,7 @@ you race to try to get this this video uploaded and I will race to try to tag 01
 develop the language. You founded Zeke software foundation uh and in 2024 its total income was
 
 ### 670K Zig Foundation
+
 13:10
 $670,000. Who are your main sponsors? If you look at the blog post where I
 13:17
@@ -351,6 +361,7 @@ relationship but just with healthy boundaries between between the business organ
 Can someone of your sponsors uh influence how you develop Z? Well, they can influence it in the same
 
 ### Can Sponsors Influence Zig Development?
+
 14:11
 way that anyone can influence it. They can participate on the bug tracker. They can send poll requests. Um they can chat
 14:18
@@ -361,6 +372,7 @@ humans talking with humans. They don't have a secret high priority channel. You 
 here. Your salary is 154,000
 
 ### Andrew Kelley's $154K Salary
+
 14:36
 per year. Yes. Which is comparable to a senior engineer, but uh you are building the
 14:43
@@ -399,6 +411,7 @@ healthy organization and to me that benefit it fills me with satisfaction that
 having more income would would not fill. And if a large company offers Zeke say
 
 ### 100 Million Challenge
+
 16:32
 $100 million with no conditions, would you take it
 16:37
@@ -437,6 +450,7 @@ if you had the opportunity? And I think the answer is a little bit. I think we c
 think maybe more than 10 would be pushing it for me. So uh team of five your salary is that like all the money
 
 ### Where Zig Foundation Money Goes
+
 18:23
 from the foundation? Um the the foundation has one employee which is me and uh and then five
 18:30
@@ -473,6 +487,7 @@ marketing for us because we do good on these metrics. So it helps people to have
 job and it serves as an opportunity to fund raise as well. In 2022, you left Reddit and Twitter.
 
 ### Why Zig Left Reddit and Twitter
+
 20:18
 Why? I think that posting on these websites is is becoming a lot like posting on slash dot or dig. They're
 20:25
@@ -489,6 +504,7 @@ controls you know what gets seen and whatnot. Um this this is what we're current
 investment of our focus to to grow the community. Then in late 2025 you took another step.
 
 ### Why Zig Left GitHub
+
 21:02
 You moved Zigg's main repository from GitHub to code. Why GitHub simply stopped working for us? Uh
 21:10
@@ -517,6 +533,7 @@ party. So, you know, if someone stopped donating, I don't say, "Hey, you jerk. W
 It's no strings attached, right? And when we make these choices to move off GitHub or do this or that, I find that
 
 ### Why Codeberg?
+
 22:26
 people are very understanding and very gracious. By the way, why why Codeberg specifically, not GitLab, not hosting
 22:34
@@ -553,6 +570,7 @@ know. So, I think that this idea that it's a some kind of crisis of
 popularity, I I don't understand the reasoning behind this at all really. Let's talk about some things around Zeke
 
 ### Why Zig Moved Away From LLVM
+
 24:22
 that have sparked a lot of discussion. You moved away from LLVM. Why? I play a
 24:30
@@ -581,6 +599,7 @@ And I know more about compiler development than I did 10 years ago. And so I can
 this point. And so by owning our our core product dependency or by owning our
 
 ### 50ms Compile Time for a Million Lines
+
 25:52
 core product and and not having a dependency, this has enabled us to to unlock things that we could not do
 25:58
@@ -597,6 +616,7 @@ million line codebase. And this is simply not possible with LVM and but this is 
 now with our own code. Zeke has a strict no LLM no AI policy
 
 ### No LLM / No AI Policy
+
 26:39
 for issues for pull requests. Why? The first reason is just that those
 26:45
@@ -661,6 +681,7 @@ You know, if I tried to say, oh, only good AI PRs can come in. Now, I have to be
 none whatsoever, then it's a very easy policy to enforce. So, by the way, how do you detect AI
 
 ### How Zig Detects AI-Generated Content
+
 29:50
 generated contact? Is it easy? It's not always easy. I I'm sure that some have gotten through, some have
 29:56
@@ -681,6 +702,7 @@ um than the current policy which allows anyone to contribute. I think we might n
 in and getting the permission to send a contribution. Unfortunately, Z codebase uses the MIT license. So uh
 
 ### Zig's AI Paradox
+
 30:49
 what's that? It's very close to public domain. Um for people unfamiliar with
 30:54
@@ -721,6 +743,7 @@ success with Zigg. I've seen some people say it doesn't work well. I've seen som
 I recently read your Masteradon post. Um, VIP coding blogs are a snoozefest
 
 ### Andrew Kelley on Vibe Coding
+
 32:48
 like reading restaurant reviews instead of watching the chef cook.
 32:53
@@ -771,6 +794,7 @@ I I would never want to give up what I have in order to get
 the results of Genai in general. How do you feel about the future of programming? Like in 10 20
 
 ### Will Humans Still Write Code?
+
 35:34
 years will humans still write code? People will never stop writing code
 35:40
@@ -799,6 +823,7 @@ these these companies will try to become the bosses of our own hardware. Yeah. S
 projects like you often criticize blowed software like what are top three
 
 ### Top 3 Open Source Projects of All Time
+
 36:56
 software projects that you actually admire? Like what makes them great? Well, number one would have to be Linux.
 37:03
@@ -845,6 +870,7 @@ that I got to have there. And I was really impressed with how um with how JB
 handled the organization. And I mean who doesn't love VC, right? Everyone loves VC. I used to teach Blender to kids many
 
 ### The Firefox Problem
+
 39:19
 years ago. Uh of course I'm using VC and also our showrunner noticed that you
 39:27
@@ -881,6 +907,7 @@ projects being made, but uh you know until those come to fruition, I don't I don
 Andrew, Zeke is sometimes positioned as a C replacement, but uh C is everywhere.
 
 ### Why Zig better than C?
+
 41:07
 Linux kernel, embedded system, 7 million of developers. Uh what makes Zeke better
 41:13
@@ -905,6 +932,7 @@ foot guns and it can do it in a way that's more debugable if you run into a prob
 um in a in a way Zigg embraces C more than C embraces C only has optimized
 
 ### Zig Embraces C More Than C Itself
+
 42:19
 integers for signed integers and C only has wraparound
 42:24
@@ -919,6 +947,7 @@ you arguably it's being more seike than C is if that makes sense. But uh is it
 even possible to replace C? In order to replace C, you have to you
 
 ### Will Zig replace C?
+
 42:56
 have to be C at its own game. You have to offer people a way to write code that
 43:02
@@ -935,6 +964,7 @@ up what C has. And so that's why I think that Zigg will succeed in replacing C b
 C has. How Zeke is different from Rust. The core feature that's different from
 
 ### Zig vs Rust
+
 43:41
 Zig and Rust is the type system. So, Zigg is a simpler language than Rust in
 43:48
@@ -1007,6 +1037,7 @@ have this latter mentality, then Zigg will be a more natural fit for programming
 What's uh Zigg's killer feature and why? The killer feature is the tool chain.
 
 ### Zig's Killer Feature
+
 47:25
 When you use Zigg, you're using a software suite that has no dependencies on the system. So it will work on any
 47:32
@@ -1035,6 +1066,7 @@ zig tool chain offers projects is that all the contributors will need to do is z
 many people argue that zig is unnecessarily strict with uh unused
 
 ### Unused Variables
+
 48:48
 variables like why why are they treated as compilation errors that This is an opinion that tends to
 48:54
@@ -1071,6 +1103,7 @@ and then it just saves so much time when you don't have to solve these bugs from
 this error. Some developers struggle with the new IO interface. Is it too complex or just
 
 ### I/O Interface
+
 50:33
 different? I do think that I found an optimum here. So
 50:39
@@ -1113,6 +1146,7 @@ write reusable code that will make the computer do what you want it to do. And t
 priorities. in Zigg. So, Zigg has a lot of unique features.
 
 ### How to learn Zig
+
 52:36
 What's the best way to learn Zigg? I would highly recommend for new users to pick up Zigglings. And I want to
 52:44
@@ -1129,6 +1163,7 @@ new language feature and over the course of doing these exercises you you learn 
 So I would highly recommend for beginners to pick that up. If you know C is it easy to move to ZIK
 
 ### Moving From C to Zig
+
 53:22
 or is it a completely different mindset? I think that in C to Zigg is a
 53:28
@@ -1153,6 +1188,7 @@ skyrockets. So that is a very particularly smooth transition I think. But uh the
 Should someone learn Zeke as their first programming language? So what do you think about that?
 
 ### Should You Learn Zig as Your First Language?
+
 54:29
 I think that that really depends on the person and you know some people they have a functional mindset. They really
 54:36
@@ -1169,6 +1205,7 @@ you're not learning Zigg rules, you're learning computer rules. And so that info
 beginners even if they give up and decide to go to a higher level language. What's your personal setup for writing
 
 ### Andrew Kelley's Dev Setup
+
 55:14
 Zeke? Like what tools do you use? Well, because I make breaking changes a
 55:19
@@ -1199,6 +1236,7 @@ then I would I would suggest to visit their homepage and consider making a donat
 Zig's website also recommends some Jet Brains products. Have you used them
 
 ### JetBrains IDEs
+
 56:38
 yourself? I have never used the Jet Brains product because it's closed source.
 56:44
@@ -1229,6 +1267,7 @@ you're confident are correct because all of the changes verified that the type m
 this. Eventually I dream of these these like these productivity features.
 
 ### Why AI Tools Are Worse Than a Rename
+
 58:03
 One could say that AI agent can solve it for you but then I have to review it. If if I
 58:10
@@ -1243,6 +1282,7 @@ the AI tool, rename the variable, I still have to review the code. That's worse.
 longer than the other change. You know, your other belief fell benevolent
 
 ### What is BDFL
+
 58:44
 dictator for life. Can you explain what it is? Yeah, you know, it's funny. Every time I
 58:49
@@ -1267,6 +1307,7 @@ introduce a more democratic process into a project then BDFL is what you will ge
 by default. Why is one dictator better for language design than the committee
 
 ### Why One Dictator Beats a Committee
+
 59:50
 like in C++? The trade-off here is if you have one
 59:56
@@ -1295,6 +1336,7 @@ the trade-off of lacking the coherent vision for the software project. Don't
 you feel this model has a risk? Zig, today is you. What happens if you leave
 
 ### What Happens If Andrew Kelley Leaves?
+
 1:01:10
 tomorrow? Software engineering wise, I think we'll be fine because um my my colleagues are
 1:01:16
@@ -1325,6 +1367,7 @@ long-term sustainability and then the challenge is setting that up so that it
 does not get corrupted over time with the influence of money. You've been working on Zeke like for
 
 ### Zig Is a Shrine to Computers
+
 1:02:38
 over 10 years. Like what motivates you to keep going? I love my job. Uh I I wake up every day
 1:02:46
@@ -1385,6 +1428,7 @@ these these big changes they do require um they do require willpower and
 determination to get them finished. Yeah. Have you ever experienced a burnout as a programmer or as a leader?
 
 ### Burnout Advice for Developers
+
 1:05:52
 I think that burnout happens when you're putting in a lot of efforts but you're
 1:05:57
@@ -1429,6 +1473,7 @@ you if you work for a soulless corporation then stop trying you know uh go home 
 else. Don't try so hard. That would be my advice for people who feel burnt out. What brings you joy outside of
 
 ### Joy Outside of Programming
+
 1:08:05
 programming? When I finally quit working as an employee for my career, but at the time it was for OkayCid. Um, I went from
 1:08:14
@@ -1477,6 +1522,7 @@ picked up and, um, I I feel like motivated to keep studying every day. So, I wan
 How many hours per day? Maybe one every day. What does success look like for Zeke?
 
 ### What Does Success Look Like for Zig?
+
 1:10:38
 I think there's two answers to this. So, in one sense, you could say uh it's already been achieved because we have a
 1:10:46
@@ -1511,6 +1557,7 @@ to be boring, I do think that it would be a sign of a useful programming
 language that people are doing what's popular with it today. If you could go back to 2015, would you
 
 ### "I'm Basically Unemployable!"
+
 1:12:19
 still start Zigg? Absolutely. The day that I quit OkayCid and started
 1:12:25
