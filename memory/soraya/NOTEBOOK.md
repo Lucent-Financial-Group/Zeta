@@ -53,6 +53,11 @@ and 8 Z3 lemmas. Superseded: the TLA+ leg alone is now 52 gated model runs.
 - 2026-08-18: pruned `Round 41 -- RecursiveSigned tool-coverage audit` (843w, dispatched and
   landed) and `Safety-floor arc` (269w, 2026-06-07, all four floors closed). Both superseded by
   `docs/research/proof-tool-coverage.md`. Cap was breached at 3618w before this prune.
+- 2026-08-18 (second pass, after merging origin/main): pruned `Vacuity round -- the Landauer lane`
+  (483w, 2026-08-13). Superseded by the `consolidated map + vacuity sweep` round above; its
+  findings survive in the artefacts it names -- `tools/Z3Verify/landauer-floor-lemma.smt2`,
+  `LandauerFloor.lean`, `entropy-tracker.ts` `verifyLandauer`. Cap was 3414w after the merge
+  brought in a second round-entry.
 
 ---
 
@@ -70,56 +75,6 @@ Format: table with columns `Round | Trigger | Outcome | Artifact`. One row per r
 
 If this section saturates (NOTEBOOK approaches 3000-word cap from log entries alone), revisit Option 3: create a separate cross-cutting ledger (e.g., `docs/research/verification-routing-decisions.md` — does not yet exist; hypothetical destination).
 
-
-## Vacuity round — the Landauer lane (2026-08-13, PR pending)
-
-Third instance of the vacuity class this session, and the first one I fixed rather than flagged.
-Sibling cases: `QuorumCollateral` / `WagerSolvency` stutter (TLC deadlock checks vacuous, flagged
-against my own specs); B AC3 `= true` (2026-08-09 rule table).
-
-CHECKED, all by execution:
-
-- `entropy-tracker.ts` `verifyLandauer` — `heatPaid`, `floor`, `bitsErased` all read
-  `entropy_heat`, so the comparison was `x >= x`. #10476 named this.
-- **`second_law_satisfied` was ALSO vacuous, and #10476 did not name it.** The test was
-  `state + heat >= 0`; `measure(k)` moves `k` between ledgers and leaves the sum alone for
-  every `k`, so only `branch` (+1) ever moves it. Exhaustive sweep over the 6-op alphabet to
-  length 5: `false` occurred **zero times**. `holds` therefore reduced to `entropy_heat >= 0`.
-- `tools/Z3Verify/landauer-floor-lemma.smt2` — **vacuous**. Its second-law premise
-  `-k + heat >= 0` IS the conclusion `heat >= k`. Deleting only that premise flips the file
-  from unsat to **sat, model k=1.0 heat=0.0** (an erasure paying nothing). Header advertised
-  four lemmas F1-F4; the file contained one. **Not gated by any workflow** — that is why it
-  rotted unseen.
-- `LandauerFloor.lean` — NOT vacuous, but not faithful. Its `measure` carries `k <= s.state`,
-  which the TypeScript does not implement, and its heat-monotonicity theorems are discharged
-  by `Nat` rather than by the model. The implementation uses signed `number`, where the same
-  property is falsifiable — and was false. A formal artefact that discharges an obligation
-  using a type the implementation lacks has not discharged it. Gated (lean-proof.yml).
-
-Routing verdict: **no non-trivial Landauer invariant exists in normalized units** — the ledger
-pays exactly the floor by construction, so the honest fix is rename + narrow, not a stricter
-comparison. Real falsifiable invariants that DO exist here: heat monotonicity (arrow of time),
-heat non-negativity, erasures-fully-admitted. The third is **false in shipped callers by
-design** (`createNonAdjMap`, `event-sink-folder`), so it is reported, never enforced — a check
-that fails spuriously gets disabled, which is the other half of this defect class.
-
-Portfolio delta: Landauer lane goes from 1 gated artefact (Lean) to 2 (Lean + the SMT lemma,
-newly gated by `tools/Z3Verify/landauer-floor-lemma.test.ts`, z3 AND cvc5, BP-16). The SMT
-runner asserts the verdict sequence CONTAINS a `sat` — an all-unsat proof file is
-indistinguishable from a tautology, so non-vacuity is now a gate condition, not a review habit.
-
-Open for Kenji, CHECKED counts: 9 `.smt2` files. 4 now have an executing companion runner
-(chsh-band-gate-agreement, consolidate-quadratic-envelope, gen-denotation-splitmix64, and
-landauer as of this PR). 5 have none: externality-bound, light-time-endpoint-speed-envelope,
-predictive-advantage, privacy-budget-net-positive-regime, whitewash-economics.
-
-Sharper than the count: **every pre-existing runner asserts all-unsat**, so not one of them
-could have detected the defect I just found. An all-unsat expectation is satisfied by a
-tautology. The routing recommendation is that each lemma file carry a non-vacuity probe whose
-expected verdict is `sat`, and that the runner assert the SEQUENCE rather than "every verdict is
-unsat". That is a 4-file retrofit, not a rewrite.
-
----
 
 ## 2026-08-14 -- Meno braided ladder: Q3 then Q1. Balanced, and it stops there.
 
@@ -259,6 +214,65 @@ Not exposed to the bun 5s cap (`081KZZ3JHP1087G0R00027ARRR`, reproduced here: `b
 `timeout = 20000` is ignored, a 6s test dies at 5002ms). The gate is `dotnet test`; the bun-side
 TLC tests only run metadata commands. A comment in `run-tlc.test.ts` names the hazard so nobody
 adds a real model check there and reads a 5s truncation as a failed proof.
+
+---
+
+## 2026-08-18 -- consolidated map + vacuity sweep
+
+Deliverable: `docs/research/2026-08-18-formal-verification-consolidated-map-proofs-math-and-code-pushed-together.md`
+
+### Portfolio metric (this round)
+
+Gated formal artefacts, counted from the runners' own rosters (NOT from
+`audit-formal-artifacts.ts`, which mismeasures -- see below):
+
+- TLA+/TLC: 53 pinned model runs, 52 `gate` + 1 `extended`; 14 expect VIOLATION.
+- Lean 4: 48 files, ~30 headline lemma families under `#print axioms`, via `run-checked.ts`.
+- Z3/SMT: 9 `.smt2` + `Z3.Laws.Tests.fs`; z3 4.16.0 / cvc5 1.3.4 pinned in gate.
+- Alloy: 6 models via `Alloy.Runner.Tests.fs`.
+- FsCheck: 587 test attributes under `tests/Tests.FSharp/Formal/`.
+- Mutation: Stryker cannot fail (`break: 0`, 2 files); `mutation-runner.ts` not in gate.
+
+Ratio is NOT quoted this round. Both prior denominators are unusable: the
+`audit-formal-artifacts.ts` "unreferenced" count is a docs-mention count, not a
+wiring count. Reinstate once that tool reads the rosters.
+
+### Vacuity sweep -- 4 found, 3 repaired
+
+1. `lint-discharge-certificate-consistency.ts` scanned ZERO rows and printed a
+   tick. Added a section-A ANCHOR check with live jurisdiction (49 anchors); the
+   empty certificate scan is now reported as empty. Widening filed:
+   081M0B2R2BQ087G0R000EC2E9Y.
+2. Section-A row 25 cited `ReticulumTransport.fs` -- never existed. Repaired to
+   `src/Bayesian/MeshLatencyModel.fs`. Found BY the new check, on `main`.
+3. `ComputeReceipt.Tests.fs` CR-6/CR-7 -- dead `Some` arm, only reachable
+   statement was `Assert.True(true)`. Rewritten to construct `{ Candidates = [] }`
+   directly + a negative control. Mutation-proven (guard -> `if false`, both die;
+   mutant reveals `IV = infinity`).
+4. `Formal/NtpNoninterference.Tests.fs` -- `Assert.Equal(cardsOf links, cardsOf links)`.
+   Rewritten to exact grid extraction under both clocks. Mutation-proven, AND my
+   own first draft (`Assert.Contains`) survived the mutant. Run the mutant; do not
+   reason about it.
+
+### Standing rules produced this round
+
+- **A determinism assertion `f(x) = f(x)` is metered iff the callee's transitive
+  call graph can reach an ambient source.** Otherwise it is unmetered decoration.
+  41 F# + 33 TS instances triaged under this; most are genuine section-13
+  noninterference falsifiers and must NOT be deleted.
+- **Inside section A, backticks mean "this is an anchor."** Prose about a dead
+  name must not wear them, or the anchor check re-flags the repair note.
+- **New TLA+ specs land with a `registry/tlc-models.json` entry that names their
+  own vacuity, or they do not land.** 22 of 53 runs already declare
+  `deadlock: on-vacuous`. That registry is the honesty standard for the portfolio.
+
+### Not done, deliberately
+
+- Did not widen the discharge matcher blind (43-row table with nested sub-tables;
+  naive widening flags 23, mostly false).
+- Did not touch open PR #12014 (`CliffordPeriodicity`). Its two mod-8 predicates
+  ARE the same predicate -- Aaron's own find; routing call is refactor, not test.
+- `CliffordPeriodicity.fs` is NOT on main as of 90e96dc542.
 
 ---
 
