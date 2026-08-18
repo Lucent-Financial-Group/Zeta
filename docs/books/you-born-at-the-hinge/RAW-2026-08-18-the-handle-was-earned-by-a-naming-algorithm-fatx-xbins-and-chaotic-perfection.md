@@ -141,3 +141,85 @@ Three of the book's load-bearing ideas have a 2003 instance in a teenager's VB6 
   problem.
 - `2026-08-18-the-original-xbox-a-root-of-trust-below-the-update-boundary-*.md` — the same console,
   the same scene, the security half of the story.
+
+---
+
+## 7. The UI: composition was free, conflict was computed — and the grey is the model
+
+> *"my UI had tons of options that all composed with each other or greyed out the conflicting
+> options."*
+>
+> *"it's very hard to find the grey."*
+
+Those two sentences together are the most technically loaded thing in this capture, and the second
+one is what makes the first credible.
+
+### 7a. What greying-out actually is
+
+A UI where every option composes with every other is trivial to build. A UI that disables things
+arbitrarily is also trivial. What is **not** trivial is a UI that disables **exactly** the
+inconsistent combinations — because to do that you must have a **model of the constraint system**,
+and you must be able to solve it.
+
+That is a constraint-satisfaction problem, and it has a name in the literature: **feature modelling
+/ software product lines** (Kang et al., FODA 1990 — feature diagrams with `requires` and `excludes`
+edges), whose modern descendants are SAT-backed configurators — Linux `Kconfig`, Eclipse p2, and
+the SAT solvers now sitting inside package-dependency resolvers. Greying out an option correctly is
+asking *"is any satisfying assignment still reachable if I set this?"*
+
+He was doing this in VB6, for a ROM renamer, because the options genuinely interacted.
+
+### 7b. Why "it's very hard to find the grey" is the honest sentence
+
+The positive space is free: the enabled options are just the feature list, and you already have it.
+
+The **negative** space is the expensive one. There are `2^n` configurations, the conflicts live in
+the *interactions* rather than in any single option, and nobody hands you the list — you discover
+it. So:
+
+> **The grey is the negative space of the design, and that negative space *is* the model.** If you
+> can compute the grey correctly, you have formalised the system's constraints. If you are
+> guessing at it, you have not — and the UI will look equally confident either way.
+
+That last clause is the **vacuity class** in interface form, and it cuts both directions:
+
+- a UI that greys out **nothing** looks maximally capable and constrains nothing — it is a check
+  that never runs;
+- a UI that greys out **too much** looks safe and is silently wrong, forbidding valid work with no
+  way for the user to tell.
+
+Both look fine from outside. Only the model distinguishes them.
+
+### 7c. The rule it already is
+
+This is **`interfaces-free-classes-earned-under-rules`** rendered as an interface: **composition is
+free and is the default; a conflict must be *earned* — declared, justified, and computed.** Every
+grey cell is a place where somebody had to state a rule. The count of greyed combinations is
+therefore a rough measure of how much of the system has actually been modelled.
+
+It is also **Quantum Rodney's Razor** made visible. Rodney's second razor is *possibility-space
+pruning on pending decisions* — and a greyed-out option is precisely that, rendered at the moment
+of the decision rather than argued about afterward. He built the razor into a dialog box.
+
+### 7d. The design-language consequence: three greys that mean different things
+
+This is worth carrying into Iris's state-colour work, because it is a real legibility bug waiting
+to happen. Three states look similar on screen and mean entirely different things:
+
+| state | meaning | who could change it |
+|---|---|---|
+| **unavailable** (grey) | **structurally impossible** — no satisfying assignment includes this | nobody; it is a property of the model |
+| **frosted** | **deliberately withheld** — exists, and is being kept private | the owner, by spending budget |
+| **absent** | **not applicable** here at all | not a state; it should not render |
+
+Collapsing *unavailable* into *frosted* tells a user their permissions are the problem when the
+model is. Collapsing *frosted* into *unavailable* leaks that something is being withheld while
+pretending it is impossible — which is worse, because it is a false statement about the world made
+by the interface. **Grey must say "this cannot be", never "this is not for you."**
+
+### 7e. Where this goes in the book
+
+Same beat as §6, one layer up: he built a constraint solver into a UI before he had the words
+*constraint solver*, and the sentence he uses about it — *"it's very hard to find the grey"* — is a
+better statement of the difficulty than the formal literature's, because it names **where the work
+actually is**. Everyone builds the enabled options. The grey is the part you have to earn.
