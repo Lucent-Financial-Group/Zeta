@@ -137,3 +137,52 @@ operation the reindexer performs on memory.
 - `docs/research/ip-questionable/2026-08-18-holography-…-record.md` §2 — entanglement as connectivity
 - [`privacy-budget-is-hard-money-earned-by-others`](../../.claude/rules/privacy-budget-is-hard-money-earned-by-others.md) — mutual entangled memory pairs; `TravelerRankLedger` on whitewashing
 - [`numerology-vs-number-theory`](../../.claude/rules/numerology-vs-number-theory.md) — the grading, and why the physics is a generator not a warrant
+
+## 5. The worked example — a puzzle engineered so the junction is the ONLY channel
+
+Aaron's own 2015 puzzle (Puzzling StackExchange, *"Meta Knights and Knaves puzzle with hats"*,
+<https://puzzling.stackexchange.com/questions/22940/>), which he traces to a Great Courses lecture
+series. Structure, in brief:
+
+Two leaders on the knights-and-knaves island — one in a red hat, one in a blue hat, and the narrator
+cannot tell which leader is which. The narrator asks whether one specific leader is a knight; **only
+the blue hat answers**, and **the narrator does not remember what he said** — but does remember that
+*at that point he could tell who was who*. What colour was that leader's hat?
+
+**Why it is the exact instance of §1.** The *content* of the answer is useless: the object-level
+reply is consistent with several worlds no matter which way it goes. All the information lives in
+one meta-fact — **"I was able to tell."** Run it forward and one of the two possible answers leaves
+several worlds standing while the other collapses them to a single assignment; since the narrator
+*did* resolve it, the answer must have been the collapsing one, and the hat follows.
+
+So the puzzle is **constructed** so that:
+
+- the object language (the answer) **cannot discriminate**;
+- the metalanguage (*a decision was possible*) **fully determines** the result;
+- the junction between them is **tiny, explicit, and is the whole channel**.
+
+That is Aaron's design goal from §1 realised as a toy: no unknown residue, one nameable junction,
+and you **steer into it deliberately** because it is the only place information can enter.
+
+**A useful inversion of something I have been enforcing all session.** The vacuity rule says *a
+check that cannot fail is not a check*. This is its constructive dual: **a question whose answer
+cannot discriminate can still carry information — through whether it discriminated.** The object
+level is vacuous and the meta level is not, and knowing the difference is exactly what the junction
+discipline buys.
+
+**Live instance, mine, today.** I misread CI three separate times by reading conclusions off
+GitHub's rollup without checking *which run they came from* — object level read, meta level ignored.
+The fix was to group by check name and take only the newest, i.e. to start reading the junction. The
+puzzle is the clean statement of the error I kept making.
+
+**Anchor, and it is in the names.** Knights and knaves are **Raymond Smullyan**'s invention;
+**Martin Gardner** is who carried them to a general audience. The puzzle's two leaders are named
+*Raymond* and *Martin* — the construction names its own lineage
+([`anchor-to-human-prior-art`](../../.claude/rules/anchor-to-human-prior-art.md)).
+
+**Honest grading, because the framing invites an overclaim.** This is **not** a resolution of the
+liar paradox proper — nothing here defuses a self-negating sentence, and §3's exclude-vs-localize
+question stays open. What it *is*: a clean demonstration of the **technique** §1 advocates, on a
+problem small enough to check completely. Register: **structural as a demonstration of meta-level
+information extraction**, `toy` as anything about the liar. Keeping those apart is the whole
+discipline — a worked example that proves the method is not a proof of the thesis the method serves.
