@@ -10,6 +10,9 @@ import {
   assertHardwareSealTierAvailable,
   macReadersBlockIsNonEmpty,
   realProbeEffects,
+  probeYubiHsm2,
+  probeYubiHsm2Pkcs11,
+  pkcs11MatchedPair,
   type HardwareProbeEffects,
 } from "./frost-hardware-probe.ts";
 import type { ListOutcome, PathOutcome, Tpm2LinuxEffects } from "./tpm2-linux-probe.ts";
@@ -242,7 +245,7 @@ describe("the Secure Enclave is reported and is not a tier", () => {
     platform: "darwin",
     run: (cmd, args) => {
       if (cmd === "ioreg" && args.includes("AppleSEPManager")) {
-        return '+-o AppleSEPManager  <class AppleSEPManager, id 0x1000006ca, registered, matched, active>\n';
+        return "+-o AppleSEPManager  <class AppleSEPManager, id 0x1000006ca, registered, matched, active>\n";
       }
       if (cmd === "system_profiler") return MAC_PROFILER_NO_READER;
       throw new Error("command not found");
@@ -405,13 +408,18 @@ describe("the real host", () => {
   // every host rather than a fact about this one, so it stays true in CI.
   it("probes without crashing and keeps the driver-is-not-a-device invariant", () => {
     const res = probeHardwareSecurity(realProbeEffects());
-    if (!res.tpm2Available && !res.yubikeyDetected && !res.smartCardReaderAttached) {
+    if (!res.tpm2Available && !res.yubikeyDetected && !res.smartCardReaderAttached && !res.yubiHsm2Detected) {
       expect(res.noHardwareDetected).toBeTrue();
     }
     // Whatever this machine is, a tier is offered only when its device is present.
     const tiers = availableHardwareSealTiers(res);
     if (tiers.includes("hardware-tpm2")) expect(res.tpm2Available).toBeTrue();
-    if (tiers.includes("hardware-pkcs11")) expect(res.pkcs11ModuleFound).toBeTrue();
+    // NOT `pkcs11ModuleFound` alone: that assertion was true only while the token module
+    // was the only module this file knew about, and it would have gone red the first time
+    // a YubiHSM 2 and yubihsm_pkcs11 were the honourable pair -- on ceremony day, in a
+    // test named "the real host". A tier now requires a MATCHED pair, and that is what is
+    // asserted.
+    if (tiers.includes("hardware-pkcs11")) expect(pkcs11MatchedPair(res)).toBeDefined();
     if (res.noHardwareDetected) expect(tiers).toEqual([]);
   });
 
@@ -430,5 +438,168 @@ describe("the real host", () => {
     const res = probeHardwareSecurity(realProbeEffects());
     if (res.tpm2Available) expect(res.tpmDeviceNode).toBeDefined();
     expect(res.tpm2Reason.length).toBeGreaterThan(0);
+  });
+});
+
+// ============================================================================
+// YubiHSM 2 (2026-08-18, Nazar). Written BEFORE the device was plugged in, so what is
+// asserted here is the probe's logic, never a reading taken from a machine that had one.
+// Every fixture below is a described host.
+// ============================================================================
+
+/** `system_profiler SPUSBDataType` on a Mac with a YubiHSM 2 on the bus (abridged). */
+const MAC_USB_WITH_YUBIHSM = `USB:
+
+    USB 3.1 Bus:
+
+        YubiHSM:
+
+          Manufacturer: Yubico
+`;
+
+/** The same Mac with only a keyboard. The fixture that makes the marker falsifiable. */
+const MAC_USB_NO_YUBIHSM = `USB:
+
+    USB 3.1 Bus:
+
+        USB Keyboard:
+
+          Manufacturer: Apple Inc.
+`;
+
+const YUBIHSM_MODULE = "/usr/local/lib/yubihsm_pkcs11.dylib";
+const TOKEN_MODULE = "/opt/homebrew/lib/ykcs11.dylib";
+
+/** A Mac with a YubiHSM 2 attached and nothing else. */
+function macWithYubiHsm(over: Partial<HardwareProbeEffects> = {}): HardwareProbeEffects {
+  return host({
+    platform: "darwin",
+    run: (cmd, args) => {
+      if (cmd === "system_profiler" && args[0] === "SPUSBDataType") return MAC_USB_WITH_YUBIHSM;
+      if (cmd === "system_profiler" && args[0] === "SPSmartCardsDataType") return MAC_PROFILER_NO_READER;
+      throw new Error("command not found");
+    },
+    ...over,
+  });
+}
+
+describe("a YubiHSM 2 is a device the other probes cannot see", () => {
+  it("is detected on macOS by USB product string", () => {
+    expect(probeYubiHsm2(macWithYubiHsm())).toBeTrue();
+  });
+
+  it("is NOT reported when the USB tree holds no such device", () => {
+    const fx = host({
+      platform: "darwin",
+      run: (cmd, args) => {
+        if (cmd === "system_profiler" && args[0] === "SPUSBDataType") return MAC_USB_NO_YUBIHSM;
+        throw new Error("command not found");
+      },
+    });
+    expect(probeYubiHsm2(fx)).toBeFalse();
+  });
+
+  it("is detected on Linux by the sysfs product string", () => {
+    const fx = host({
+      platform: "linux",
+      readDir: (p) => (p === "/sys/bus/usb/devices" ? ["1-1", "1-2"] : []),
+      readFile: (p) => {
+        if (p === "/sys/bus/usb/devices/1-2/product") return "YubiHSM 2";
+        throw new Error("no such file");
+      },
+    });
+    expect(probeYubiHsm2(fx)).toBeTrue();
+  });
+
+  it("matches the product marker case-insensitively", () => {
+    const fx = host({ platform: "linux", readDir: () => ["1-1"], readFile: () => "yubihsm" });
+    expect(probeYubiHsm2(fx)).toBeTrue();
+  });
+
+  it("answers false rather than throwing when the platform is not probed", () => {
+    expect(probeYubiHsm2(host({ platform: "win32" }))).toBeFalse();
+  });
+
+  it("clears noHardwareDetected -- an attached HSM is a device", () => {
+    const res = probeHardwareSecurity(macWithYubiHsm());
+    expect(res.yubiHsm2Detected).toBeTrue();
+    expect(res.smartCardReaderAttached).toBeFalse();
+    expect(res.yubikeyDetected).toBeFalse();
+    expect(res.noHardwareDetected).toBeFalse();
+  });
+});
+
+describe("the yubihsm_pkcs11 module is a driver, not a device", () => {
+  it("is reported without clearing noHardwareDetected", () => {
+    const fx = host({ platform: "darwin", exists: (q) => q === YUBIHSM_MODULE });
+    const res = probeHardwareSecurity(fx);
+    expect(res.yubiHsm2Pkcs11ModuleFound).toBeTrue();
+    expect(res.yubiHsm2Pkcs11LibraryPath).toBe(YUBIHSM_MODULE);
+    expect(res.yubiHsm2Detected).toBeFalse();
+    expect(res.noHardwareDetected).toBeTrue();
+    expect(availableHardwareSealTiers(res)).toEqual([]);
+  });
+
+  it("finds nothing when no module is installed", () => {
+    expect(probeYubiHsm2Pkcs11(host()).found).toBeFalse();
+  });
+});
+
+describe("a PKCS#11 module must MATCH the device it is asked to drive", () => {
+  // The forcing case. Both halves are present and the pair is still wrong: ykcs11 speaks
+  // PIV to a CCID card and cannot address a YubiHSM 2. Flat module-and-device logic
+  // reported this host as able to honour hardware-pkcs11.
+  it("refuses ykcs11 + YubiHSM 2 -- a module for a different device is not a pair", () => {
+    const fx = macWithYubiHsm({ exists: (q) => q === TOKEN_MODULE });
+    const res = probeHardwareSecurity(fx);
+    expect(res.pkcs11ModuleFound).toBeTrue();
+    expect(res.yubiHsm2Detected).toBeTrue();
+    expect(res.yubiHsm2Pkcs11ModuleFound).toBeFalse();
+
+    expect(pkcs11MatchedPair(res)).toBeUndefined();
+    expect(availableHardwareSealTiers(res)).toEqual([]);
+  });
+
+  it("names the mismatch in the refusal instead of a generic not-attached", () => {
+    const res = probeHardwareSecurity(macWithYubiHsm({ exists: (q) => q === TOKEN_MODULE }));
+    let message = "";
+    try {
+      assertHardwareSealTierAvailable("hardware-pkcs11", res);
+    } catch (e) {
+      message = (e as Error).message;
+    }
+    expect(message).toContain("NOT a matched pair");
+    expect(message).toContain("yubihsm_pkcs11 is not installed");
+    // The old message claimed nothing was attached. Something IS attached.
+    expect(message).not.toContain("no smart-card reader, token, or YubiHSM 2 attached");
+  });
+
+  it("accepts yubihsm_pkcs11 + YubiHSM 2 as a pair", () => {
+    const res = probeHardwareSecurity(macWithYubiHsm({ exists: (q) => q === YUBIHSM_MODULE }));
+    expect(pkcs11MatchedPair(res)).toEqual({ module: YUBIHSM_MODULE, device: "YubiHSM 2" });
+    expect(availableHardwareSealTiers(res)).toEqual(["hardware-pkcs11"]);
+    expect(() => assertHardwareSealTierAvailable("hardware-pkcs11", res)).not.toThrow();
+  });
+
+  it("still accepts a token module + an attached CCID token (no regression)", () => {
+    const fx = host({
+      platform: "darwin",
+      exists: (q) => q === TOKEN_MODULE,
+      run: (cmd, args) => {
+        if (cmd === "system_profiler" && args[0] === "SPSmartCardsDataType") return MAC_PROFILER_WITH_READER;
+        if (cmd === "system_profiler" && args[0] === "SPUSBDataType") return MAC_USB_NO_YUBIHSM;
+        throw new Error("command not found");
+      },
+    });
+    const res = probeHardwareSecurity(fx);
+    expect(res.smartCardReaderAttached).toBeTrue();
+    expect(pkcs11MatchedPair(res)?.device).toBe("CCID token / smart-card reader");
+    expect(availableHardwareSealTiers(res)).toEqual(["hardware-pkcs11"]);
+  });
+
+  it("refuses a YubiHSM 2 with no module at all", () => {
+    const res = probeHardwareSecurity(macWithYubiHsm());
+    expect(availableHardwareSealTiers(res)).toEqual([]);
+    expect(() => assertHardwareSealTierAvailable("hardware-pkcs11", res)).toThrow(/no PKCS#11 module on disk/);
   });
 });

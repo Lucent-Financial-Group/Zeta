@@ -51,6 +51,32 @@
  * act on. It is ADVISORY: it never selects a tier for a caller.
  *
  * ============================================================================
+ * A YubiHSM 2 IS NOT A YubiKey, AND A MODULE MUST MATCH ITS DEVICE
+ * (2026-08-18, Nazar — written before the hardware landed, so the probe is not the
+ * thing that has to be debugged on ceremony day)
+ * ============================================================================
+ *
+ * Two devices arrived in the same conversation and they are not interchangeable at any
+ * layer — bus, tool, module, or custody gate:
+ *
+ *   - A **YubiKey** is a CCID smart card. The reader probe sees it, `ykman` names it, and
+ *     `ykcs11`/OpenSC drive it. It has a touch sensor, so it can carry a
+ *     `human-touch-present` custody gate.
+ *   - A **YubiHSM 2** is a USB **bulk** device (Yubico's own documentation is explicit
+ *     that it is not CCID). It is reached through `yubihsm-connector` or libusb and driven
+ *     by `yubihsm_pkcs11`. It has **no button and no biometric**, so it can only carry an
+ *     `autonomous-hsm` gate — which is precisely why the approval it acts under has to be
+ *     gated somewhere else (see the readiness note).
+ *
+ * Two consequences are encoded below rather than left to be discovered at 2am:
+ *
+ *   1. `probeYubiHsm2` exists because NOTHING else in this file can see one. Without it a
+ *      host with an HSM plugged in reports `Device present: NO`.
+ *   2. `pkcs11MatchedPair` exists because "a module is on disk AND a device is on the bus"
+ *      is not the same claim as "this module can drive this device". Installing
+ *      yubico-piv-tool and attaching a YubiHSM 2 satisfies the first and not the second.
+ *
+ * ============================================================================
  * THE TPM PATH IS A STATE, NOT A BOOLEAN (2026-08-17, 081M00VN9P1087G0R000FYTTVS)
  * ============================================================================
  *
@@ -155,6 +181,18 @@ export interface HardwareProbeResult {
   readonly pkcs11ModuleFound: boolean;
   readonly pkcs11LibraryPath?: string | undefined;
   /**
+   * A YubiHSM 2 is ATTACHED. It is a bulk-USB device, not CCID, so it is invisible to
+   * `smartCardReaderAttached` and to `ykman` -- this is the only field that reports it.
+   */
+  readonly yubiHsm2Detected: boolean;
+  /**
+   * The YubiHSM 2 own PKCS#11 module exists on disk. A DRIVER, not a device: it never
+   * clears `noHardwareDetected`, and it is tracked apart from `pkcs11ModuleFound` because
+   * a token module cannot drive an HSM nor an HSM module a token.
+   */
+  readonly yubiHsm2Pkcs11ModuleFound: boolean;
+  readonly yubiHsm2Pkcs11LibraryPath?: string | undefined;
+  /**
    * An Apple Secure Enclave is present. Real hardware, and NO `FrostSealTier` can reach
    * it, so it does not clear `noHardwareDetected` either. See the header.
    */
@@ -168,7 +206,9 @@ export interface HardwareProbeResult {
 }
 
 /**
- * Standard PKCS#11 library locations across macOS and Linux systems.
+ * PKCS#11 modules that drive a CCID **token** (a YubiKey's PIV applet via ykcs11, or any
+ * smart card via OpenSC). NONE of these can drive a YubiHSM 2 — see
+ * `YUBIHSM2_PKCS11_LIBRARY_PATHS` and the MATCHED PAIR section of the header.
  */
 const PKCS11_LIBRARY_PATHS: readonly string[] = [
   "/usr/local/lib/ykcs11.dylib",
@@ -179,8 +219,34 @@ const PKCS11_LIBRARY_PATHS: readonly string[] = [
   "/usr/lib/libykcs11.so",
 ];
 
+/**
+ * The YubiHSM 2's OWN PKCS#11 module, shipped in the YubiHSM SDK. A SEPARATE list from the
+ * token modules above, because the two are not interchangeable in either direction:
+ * `ykcs11` speaks PIV to a CCID card and cannot address a YubiHSM 2, and `yubihsm_pkcs11`
+ * speaks the YubiHSM session protocol (over yubihsm-connector or libusb) and cannot address
+ * a YubiKey. One flat list would let the module for one device vouch for the presence of
+ * the other.
+ */
+const YUBIHSM2_PKCS11_LIBRARY_PATHS: readonly string[] = [
+  "/usr/local/lib/yubihsm_pkcs11.dylib",
+  "/opt/homebrew/lib/yubihsm_pkcs11.dylib",
+  "/usr/local/lib/pkcs11/yubihsm_pkcs11.dylib",
+  "/usr/lib/x86_64-linux-gnu/pkcs11/yubihsm_pkcs11.so",
+  "/usr/local/lib/pkcs11/yubihsm_pkcs11.so",
+  "/usr/lib/pkcs11/yubihsm_pkcs11.so",
+];
+
 /** USB interface class 0x0B is "Smart Card" (USB-IF CCID). */
 const USB_CCID_INTERFACE_CLASS = "0b";
+
+/**
+ * Substring identifying a YubiHSM 2 in a USB product string, matched case-insensitively so
+ * "YubiHSM", "YubiHSM 2" and vendor casing variants all hit. Deliberately a product STRING
+ * and not a numeric VID/PID: the numeric pair is named but not printed in the Yubico
+ * documents checked while writing this, and an unverified magic constant inside a presence
+ * check is exactly how a probe becomes confidently wrong.
+ */
+const YUBIHSM2_USB_PRODUCT_MARKER = "yubihsm";
 
 /**
  * Probes for a usable TPM 2.0. LINUX ONLY — Apple Silicon has a Secure Enclave, which is
@@ -299,6 +365,72 @@ export function probePkcs11(fx: HardwareProbeEffects = realProbeEffects()): {
 }
 
 /**
+ * Probes for an ATTACHED YubiHSM 2 by USB product string.
+ *
+ * A YubiHSM 2 is invisible to every other probe in this file, and that is a property of
+ * the device rather than an oversight:
+ *
+ *   - It is a USB **bulk** interface, not CCID. `probeSmartCardReader` keys on USB
+ *     interface class 0x0B on Linux and on the `Readers:` block of SPSmartCardsDataType on
+ *     macOS; a YubiHSM 2 appears in neither, so it reads as "no reader attached".
+ *   - `ykman` enumerates YubiKeys, not YubiHSMs (the HSM CLI is `yubihsm-shell`), so
+ *     `probeYubikey` does not see one either.
+ *
+ * The consequence before this function existed: plugging a YubiHSM 2 into a machine left
+ * `noHardwareDetected` true and `availableHardwareSealTiers` empty, and
+ * `assertHardwareSealTierAvailable` refused with "no smart-card reader or token attached"
+ * -- a sentence that is FALSE about a host with an HSM in it. That is the same class as
+ * the driver-is-not-a-device bug in the header, inverted: a device the probe cannot see is
+ * reported as a device that is not there.
+ *
+ * Linux: the `product` string in the sysfs USB device tree, readable with no tools.
+ * macOS: `system_profiler SPUSBDataType`. Both are presence-of-DEVICE readings; the module
+ * that drives it is probed separately by `probeYubiHsm2Pkcs11`, and neither implies the
+ * other.
+ */
+export function probeYubiHsm2(fx: HardwareProbeEffects = realProbeEffects()): boolean {
+  if (fx.platform === "linux") {
+    try {
+      for (const dev of fx.readDir("/sys/bus/usb/devices")) {
+        try {
+          const product = fx.readFile("/sys/bus/usb/devices/" + dev + "/product");
+          if (product.toLowerCase().includes(YUBIHSM2_USB_PRODUCT_MARKER)) return true;
+        } catch {
+          // Not a device dir, or unreadable -- next.
+        }
+      }
+    } catch {
+      // No sysfs USB tree.
+    }
+    return false;
+  }
+  if (fx.platform === "darwin") {
+    try {
+      return fx.run("system_profiler", ["SPUSBDataType"]).toLowerCase().includes(YUBIHSM2_USB_PRODUCT_MARKER);
+    } catch {
+      return false;
+    }
+  }
+  return false;
+}
+
+/**
+ * Probes for the YubiHSM 2 own PKCS#11 module on disk. A DRIVER, not a device -- the same
+ * rule as `probePkcs11`, and it never clears `noHardwareDetected` on its own.
+ */
+export function probeYubiHsm2Pkcs11(fx: HardwareProbeEffects = realProbeEffects()): {
+  found: boolean;
+  path?: string;
+} {
+  for (const libPath of YUBIHSM2_PKCS11_LIBRARY_PATHS) {
+    if (fx.exists(libPath)) {
+      return { found: true, path: libPath };
+    }
+  }
+  return { found: false };
+}
+
+/**
  * Probes for an Apple Secure Enclave via the IOKit registry (AppleSEPManager). Real
  * hardware that no seal tier can currently use — reported, never counted as a tier.
  */
@@ -325,11 +457,13 @@ export function probeHardwareSecurity(fx: HardwareProbeEffects = realProbeEffect
   const yubi = probeYubikey(fx);
   const reader = yubi.detected || probeSmartCardReader(fx);
   const pkcs11 = probePkcs11(fx);
+  const hsm = probeYubiHsm2(fx);
+  const hsmPkcs11 = probeYubiHsm2Pkcs11(fx);
   const sep = probeSecureEnclave(fx);
 
   // A driver on disk is NOT a device, and the Secure Enclave is a device no tier reaches.
-  // Neither belongs in this disjunction.
-  const deviceAvailable = tpm.available || yubi.detected || reader;
+  // Neither belongs in this disjunction. A YubiHSM 2 IS a device and does belong.
+  const deviceAvailable = tpm.available || yubi.detected || reader || hsm;
 
   return {
     timestamp: new Date().toISOString(),
@@ -342,6 +476,9 @@ export function probeHardwareSecurity(fx: HardwareProbeEffects = realProbeEffect
     smartCardReaderAttached: reader,
     pkcs11ModuleFound: pkcs11.found,
     pkcs11LibraryPath: pkcs11.path,
+    yubiHsm2Detected: hsm,
+    yubiHsm2Pkcs11ModuleFound: hsmPkcs11.found,
+    yubiHsm2Pkcs11LibraryPath: hsmPkcs11.path,
     secureEnclaveAvailable: sep,
     noHardwareDetected: !deviceAvailable,
   };
@@ -367,10 +504,31 @@ export type HardwareSealTier = Extract<FrostSealTier, "hardware-pkcs11" | "hardw
 export function availableHardwareSealTiers(res: HardwareProbeResult): readonly HardwareSealTier[] {
   const tiers: HardwareSealTier[] = [];
   if (res.tpm2Available) tiers.push("hardware-tpm2");
-  if (res.pkcs11ModuleFound && (res.yubikeyDetected || res.smartCardReaderAttached)) {
-    tiers.push("hardware-pkcs11");
-  }
+  if (pkcs11MatchedPair(res) !== undefined) tiers.push("hardware-pkcs11");
   return tiers;
+}
+
+/**
+ * A PKCS#11 module and the device it can actually drive, or `undefined` when no such pair
+ * is present. THE PAIR IS THE UNIT: `module && device` over a flat list is a third
+ * instance of the bug this file exists to refuse.
+ *
+ * Concretely, and this is reachable on the maintainer machine the moment both devices are
+ * on the desk: `brew install yubico-piv-tool` puts `ykcs11.dylib` on disk, and plugging in
+ * a YubiHSM 2 puts a device on the bus. Flat-list logic reads `module found && device
+ * present` and reports `hardware-pkcs11` honourable — but `ykcs11` speaks PIV to a CCID
+ * card and cannot address a YubiHSM 2, so the seal attempt dies inside an FFI call having
+ * promised at preflight that it would not. Matching the module to the device it drives is
+ * what makes the preflight answer mean anything.
+ */
+export function pkcs11MatchedPair(res: HardwareProbeResult): { module: string; device: string } | undefined {
+  if (res.pkcs11ModuleFound && (res.yubikeyDetected || res.smartCardReaderAttached)) {
+    return { module: res.pkcs11LibraryPath ?? "(token PKCS#11 module)", device: "CCID token / smart-card reader" };
+  }
+  if (res.yubiHsm2Pkcs11ModuleFound && res.yubiHsm2Detected) {
+    return { module: res.yubiHsm2Pkcs11LibraryPath ?? "(yubihsm_pkcs11)", device: "YubiHSM 2" };
+  }
+  return undefined;
 }
 
 /**
@@ -395,9 +553,22 @@ export function assertHardwareSealTierAvailable(tier: HardwareSealTier, res: Har
     }
   }
   if (tier === "hardware-pkcs11") {
-    if (!res.pkcs11ModuleFound) why.push("no PKCS#11 module on disk");
-    if (!res.yubikeyDetected && !res.smartCardReaderAttached) {
-      why.push("no smart-card reader or token attached (a PKCS#11 driver alone is not a device)");
+    const anyModule = res.pkcs11ModuleFound || res.yubiHsm2Pkcs11ModuleFound;
+    const anyDevice = res.yubikeyDetected || res.smartCardReaderAttached || res.yubiHsm2Detected;
+    if (!anyModule) why.push("no PKCS#11 module on disk (neither a token module nor yubihsm_pkcs11)");
+    if (!anyDevice) {
+      why.push("no smart-card reader, token, or YubiHSM 2 attached (a PKCS#11 driver alone is not a device)");
+    }
+    if (anyModule && anyDevice) {
+      // Both halves present and still refused: the module cannot drive the device that is
+      // here. Naming the mismatch is the whole point -- "module found, device attached,
+      // refused" with no reason is indistinguishable from a broken check.
+      why.push(
+        "a PKCS#11 module and a device are both present but they are NOT a matched pair: " +
+          (res.yubiHsm2Detected && !res.yubiHsm2Pkcs11ModuleFound
+            ? "a YubiHSM 2 is attached and yubihsm_pkcs11 is not installed (ykcs11/OpenSC cannot drive an HSM)"
+            : "a CCID token is attached and no token module (ykcs11/OpenSC) is installed (yubihsm_pkcs11 cannot drive a token)"),
+      );
     }
   }
   throw new Error(
@@ -422,6 +593,16 @@ if (import.meta.main) {
   console.log(`  Smart-card reader:  ${res.smartCardReaderAttached ? "Attached" : "None attached"}`);
   console.log(
     `  PKCS#11 module:     ${res.pkcs11ModuleFound ? `${res.pkcs11LibraryPath} (a DRIVER — not evidence of a device)` : "Not found"}`,
+  );
+  console.log(
+    `  YubiHSM 2:          ${res.yubiHsm2Detected ? "ATTACHED (bulk USB — invisible to the reader/ykman probes above)" : "Not detected"}`,
+  );
+  console.log(
+    `  yubihsm_pkcs11:     ${res.yubiHsm2Pkcs11ModuleFound ? `${res.yubiHsm2Pkcs11LibraryPath} (a DRIVER — not evidence of a device)` : "Not found"}`,
+  );
+  const pair = pkcs11MatchedPair(res);
+  console.log(
+    `  PKCS#11 pair:       ${pair ? `${pair.module} drives ${pair.device}` : "(no matched module+device pair)"}`,
   );
   console.log(
     `  Secure Enclave:     ${res.secureEnclaveAvailable ? "Present (no seal tier can use it — see header)" : "Not present"}`,
