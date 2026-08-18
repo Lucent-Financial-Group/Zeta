@@ -214,9 +214,28 @@ attempt, the `dpkg --configure -a` recovery and every backoff draw a slice of wh
 _left_ of it. Three attempts therefore cannot exceed the budget whatever each one does,
 and the arithmetic survives a later change to the attempt count, the backoff, or
 `timeout-minutes` — which a fixed per-attempt timeout does not. Defaults:
-**150s under `GITHUB_ACTIONS`**, 1800s elsewhere, `ZETA_APT_BUDGET_SECONDS` overrides
+**420s under `GITHUB_ACTIONS`**, 1800s elsewhere, `ZETA_APT_BUDGET_SECONDS` overrides
 both. The healthy phase measures **38.2s** on `ubuntu-24.04` (run `32151321559`, 553 MB
-fetched), so the CI default is ~3.9× observed cost.
+fetched), so the CI default is ~11x observed cost.
+
+**The slice is WEIGHTED, and the first draft was wrong about that.** It shipped at a
+150s budget split evenly across the attempts, and job `95859213848` measured the result
+live: slices of **45s / 38s / 8s**. 45s against a 38.2s healthy cost bounds a _stall_
+correctly and false-fails a mirror that is merely _slow_ — a worse trade than the bug it
+replaced, because the two failure modes want opposite things. A slow mirror needs
+continuous time (one long attempt succeeds where three short ones all fail); a wedged one
+needs a fresh connection (only a retry gives that). So the first attempt now takes 60% and
+the retries share the rest, the last takes everything still on the clock, and backoff
+never spends more than a quarter of what remains — clamping backoff only to `remaining`
+let the sleeps drain the budget before the last attempt, which is the retry loop going
+decorative again by another route.
+
+What pinned the budget at 150s was three **five-minute** cadence jobs
+(`budget-snapshot-cadence`, `ci-cache-paths-lint`, `manifesto-citation-snapshot-cadence`),
+whose `timeout-minutes` is the ceiling on the whole fleet's apt budget. They were raised
+to 12 minutes: a timeout is a cap, not a reservation, and they finish in ~2.5 minutes, so
+on the healthy path it costs zero additional CI minutes. The binding job is now the 10
+minute `git-hotspot-cadence`: `420 + 10 + 120 = 550 ≤ 600`.
 
 Two defaults is not parity drift (GOVERNANCE §24): both legs run the identical deadline
 code and honour the identical override. Only the _constant_ differs, because the

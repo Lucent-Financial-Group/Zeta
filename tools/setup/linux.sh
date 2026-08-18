@@ -136,7 +136,7 @@ elif [ -f "$APT_MANIFEST" ]; then
     # constraint being reconciled here (an outer job timeout that turns an
     # overrun into `cancelled`) EXISTS ONLY IN CI. On a laptop or in a
     # devcontainer there is no outer killer, so the deadline's job is only to
-    # stop an unbounded hang, and a CI-sized 150s would false-fail a cold
+    # stop an unbounded hang, and a CI-sized 420s would false-fail a cold
     # 553 MB apt fetch over a home link. Both legs run the identical deadline
     # code path and honour the identical `ZETA_APT_BUDGET_SECONDS` override;
     # only the default differs, and it differs because the environments
@@ -146,12 +146,21 @@ elif [ -f "$APT_MANIFEST" ]; then
     # MEASURED HEALTHY COST, so the budget is sized rather than guessed: on
     # ubuntu-24.04, run 32151321559 (2026-08-18), the whole apt phase — update
     # + install of the full manifest, 553 MB fetched — took 38.2 seconds
-    # (14:55:52.96 -> 14:56:31.13). The 150s CI default is ~3.9x that, and it
-    # is what it is because the audit below requires
+    # (14:55:52.96 -> 14:56:31.13). The 420s CI default is ~11x that. It is
+    # sized by the audit's requirement
     #     ci_budget + kill_after + 120s pre-apt reserve <= tightest job timeout
-    # and the tightest job that runs install.sh is 5 minutes
-    # (ci-cache-paths-lint, budget-snapshot-cadence,
-    # manifesto-citation-snapshot-cadence): 150 + 10 + 120 = 280 <= 300.
+    # against the tightest job that runs install.sh — 600s, git-hotspot-cadence
+    # and helm-validate:structural: 420 + 10 + 120 = 550 <= 600.
+    #
+    # A FIRST DRAFT OF THIS SHIPPED AT 150s AND WAS WRONG, which is worth
+    # recording because the failure is subtle. 150s was pinned by three
+    # FIVE-minute cadence jobs, and under the even split below it left attempt 1
+    # with 45s — 1.2x the healthy cost. That bounds a STALL correctly and
+    # false-fails a mirror that is merely SLOW, which is a worse trade than the
+    # bug it replaced. Measured on job 95859213848: slices of 45s / 38s / 8s.
+    # The three cadence jobs were raised to 12 minutes in the same commit — a
+    # timeout is a cap, not a reservation, so on the healthy path (they finish
+    # in ~2.5 min) it costs zero additional CI minutes.
     #
     # `timeout` converts a stall into an ordinary non-zero exit, which the
     # retry loop below and the 5-attempt install.sh wrapper in gate.yml can
@@ -167,7 +176,7 @@ elif [ -f "$APT_MANIFEST" ]; then
     fi
     # Read by audit-apt-budget-fits-job-timeout.ts — ONE source, no duplicated
     # constant to drift. Keep the assignments on their own line, bare integer.
-    ZETA_APT_CI_BUDGET_DEFAULT_SECONDS=150
+    ZETA_APT_CI_BUDGET_DEFAULT_SECONDS=420
     ZETA_APT_LOCAL_BUDGET_DEFAULT_SECONDS=1800
     if [ "${GITHUB_ACTIONS:-}" = "true" ]; then
       apt_budget_default="$ZETA_APT_CI_BUDGET_DEFAULT_SECONDS"
@@ -241,17 +250,28 @@ elif [ -f "$APT_MANIFEST" ]; then
     apt_attempts=3
     apt_install_rc=0
     for apt_attempt in 1 2 3; do
-      # EVERY attempt is sized from what is LEFT, split evenly across the
-      # attempts still to come. That is what makes 3 attempts fit inside the
-      # wall budget instead of multiplying it: the sum of the slices is the
-      # remainder, not three times a constant.
+      # EVERY attempt is sized from what is LEFT. That is what makes 3 attempts
+      # fit inside the wall budget instead of multiplying it: the sum of the
+      # slices is the remainder, not three times a constant.
+      #
+      # The share is WEIGHTED, not even, because the two failure modes want
+      # opposite things. A mirror that is merely SLOW needs continuous time —
+      # one long attempt succeeds where three short ones all fail. A mirror
+      # that is WEDGED (the 2026-08-14 case: bytes trickling, socket never
+      # closed) needs a fresh connection, which only a retry gives. So the
+      # first attempt takes 60% and the retries share the rest; the last
+      # attempt takes everything still on the clock.
       apt_left="$(apt_remaining)"
       if [ "$apt_left" -le 0 ]; then
         echo "⚠ apt budget (${apt_budget}s) exhausted before attempt ${apt_attempt}/${apt_attempts}" >&2
         if [ "$apt_install_rc" -eq 0 ]; then apt_install_rc=124; fi
         break
       fi
-      apt_slice=$(( apt_left / (apt_attempts - apt_attempt + 1) ))
+      if [ "$apt_attempt" -eq "$apt_attempts" ]; then
+        apt_slice="$apt_left"
+      else
+        apt_slice=$(( apt_left * 3 / 5 ))
+      fi
       if [ "$apt_slice" -lt 1 ]; then apt_slice=1; fi
       apt_install_rc=0
       # shellcheck disable=SC2086
@@ -292,10 +312,15 @@ elif [ -f "$APT_MANIFEST" ]; then
         timeout --signal=TERM --kill-after="${apt_kill_after}s" "$apt_dpkg_slice" \
           $SUDO dpkg --configure -a || true
       fi
-      # Backoff is part of the budget too, so it is clamped to what is left.
+      # Backoff is part of the budget too, so it never spends more than a
+      # QUARTER of what is left. Clamping only to `remaining` was not enough: on
+      # a small budget the sleeps ate the clock and the later attempts were
+      # skipped for lack of time, which is the retry loop going decorative again
+      # by a different route.
       apt_backoff=$(( apt_attempt * 15 ))
       apt_left="$(apt_remaining)"
-      if [ "$apt_backoff" -gt "$apt_left" ]; then apt_backoff="$apt_left"; fi
+      apt_backoff_cap=$(( apt_left / 4 ))
+      if [ "$apt_backoff" -gt "$apt_backoff_cap" ]; then apt_backoff="$apt_backoff_cap"; fi
       if [ "$apt_backoff" -gt 0 ]; then sleep "$apt_backoff"; fi
     done
     # STRICT on exhaustion: the assert is preserved (see the update-vs-install

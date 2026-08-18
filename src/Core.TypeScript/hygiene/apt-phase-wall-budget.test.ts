@@ -37,7 +37,7 @@ const ROOT = resolve(import.meta.dir, "../../..");
 const LINUX_SH = join(ROOT, "tools/setup/linux.sh");
 
 /** Total wall budget handed to the script under test. Small so the test is fast. */
-const BUDGET_SECONDS = 8;
+const BUDGET_SECONDS = 20;
 /** The script must return within the budget plus SIGKILL grace plus process overhead. */
 const ELAPSED_CEILING_MS = 40_000;
 
@@ -103,9 +103,24 @@ describe("linux.sh apt phase — a stalled mirror must not outlive the budget", 
       expect(stderr).toContain("apt-get update exceeded its");
       // 4. Each install attempt draws a SLICE of the shared deadline...
       expect(stderr).toContain("apt-get install exceeded its");
-      // 5. ...and the deadline, not the attempt count, is what ends the loop.
-      expect(stderr).toContain("exhausted before attempt");
-      // 6. The exit names the budget, so a slow-link failure is not read as a
+      // 5. ALL THREE attempts are reachable inside the budget. A budget the sleeps
+      //    drain before the last attempt is the retry loop going decorative again,
+      //    which is the whole defect wearing another costume. (`slices[0]` is
+      //    `apt-get update`; the rest are the install attempts.)
+      const slices = [...stderr.matchAll(/exceeded its (\d+)s slice/g)].map((m) => Number.parseInt(m[1] ?? "0", 10));
+      expect(slices.length).toBe(4);
+      // 6. THE SHARED DEADLINE, stated arithmetically: update plus every attempt draw
+      //    from ONE budget. Under the pre-2026-08-18 per-attempt timeout this sum was
+      //    three times a constant and unrelated to any wall.
+      expect(slices.reduce((a, b) => a + b, 0)).toBeLessThanOrEqual(BUDGET_SECONDS);
+      // 7. The budget was SPENT, not exited early for some unrelated reason.
+      expect(elapsedMs).toBeGreaterThan(BUDGET_SECONDS * 1000 * 0.7);
+      // 8. The FIRST install attempt gets the largest share: a merely-slow mirror
+      //    needs continuous time, and an even split fails it where one long attempt
+      //    would have succeeded. Measured live on job 95859213848, where the even
+      //    split gave attempt 1 only 45s against a 38.2s healthy cost.
+      expect(slices[1]).toBeGreaterThan(slices[2] ?? 0);
+      // 9. The exit names the budget, so a slow-link failure is not read as a
       //    missing package.
       expect(stderr).toContain("ZETA_APT_BUDGET_SECONDS");
     } finally {
