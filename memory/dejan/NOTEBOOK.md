@@ -86,3 +86,40 @@ the first three runs of `gate.yml` after it lands.
   design it's manual/scheduled only, never per-PR. Cost
   estimate flagged for the scheduled-workflow PR when
   that lands.
+
+**Round: YubiHSM2 on Linux (2026-08-18).**
+
+- Cluster nodes are **NixOS**, not Debian. The apt
+  question was the wrong question — pinned nixpkgs
+  already has `yubihsm-connector` 3.0.7 +
+  `yubihsm-shell` 2.7.3. No third-party apt source
+  needed, no `.deb` to vendor.
+- **New parity DEBT:** macOS. Homebrew has no
+  `yubihsm-shell` formula (checked, 404), so
+  `manifests/brew` cannot close the laptop leg. Severity
+  low (one laptop has the device). Fix candidate:
+  `from-installer` row for Yubico's `.pkg`. Open Q7.
+- **CI cost fact worth reusing:** `install-v2` caches
+  only `$HOME` paths, so **every `manifests/apt` entry
+  is uncached and re-installed on 24 gate jobs every
+  run, forever.** And `linux.sh` skips apt on NixOS, so
+  an apt entry reaches zero cluster nodes. Worst
+  cost/benefit ratio available in this repo.
+- **Second cost fact:** the `install-v2` key hashes
+  `tools/setup/**` — ANY file there rotates the key for
+  19 consumers at once. Cache is already at 200% of
+  10 GiB. Bias node-only work to `full-ai-cluster/`.
+- **Found in someone else's open PR (#12042):** on
+  NixOS the pkcs11 module resolves to
+  `/run/current-system/sw/lib/pkcs11/yubihsm_pkcs11.so`,
+  matching none of the probe's three Linux paths. A
+  correctly provisioned node would report the module
+  absent. Reported, not edited — Nazar's constant.
+- **`from-deb` is unsafe and unused:** no sha256, no
+  signature, bare `dpkg -i` on a URL — while sibling
+  `from-url` refuses a row without `sha256=`. Also
+  cannot install a library-only package (binary-only
+  idempotence check). Filed as a separable finding.
+- Blocked on maintainer sign-off: 8 numbered questions.
+  Nothing landed but docs. Workitem
+  081M0B5V6Z5087G0R0026RANJ3.
