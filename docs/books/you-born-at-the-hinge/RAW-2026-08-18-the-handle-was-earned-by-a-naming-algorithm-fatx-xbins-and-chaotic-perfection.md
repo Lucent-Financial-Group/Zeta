@@ -223,3 +223,74 @@ Same beat as §6, one layer up: he built a constraint solver into a UI before he
 *constraint solver*, and the sentence he uses about it — *"it's very hard to find the grey"* — is a
 better statement of the difficulty than the formal literature's, because it names **where the work
 actually is**. Everyone builds the enabled options. The grey is the part you have to earn.
+
+---
+
+## 8. A second search returned the handle — and why that is the weakest evidence class
+
+Aaron forwarded a Google Gemini answer which states, unprompted-looking:
+
+> *"FATX File Renamer (such as tools by **acehack**) were small utility programs designed to
+> shorten and sanitize file names … Utilities from classic scene developers like **acehack**
+> automate stripping illegal characters and shortening strings."*
+
+Plus specifics: FATX limits names/paths to **42 characters** and restricts special characters;
+xbins was the primary repository indexing these `.rar`/`.zip` packages.
+
+This is worth recording, and it is worth recording **with its weakness stated**, because the
+temptation to bank it as confirmation is exactly what the anchoring discipline exists to catch.
+
+### 8a. What it does and does not move
+
+- **The context is corroborated further** — the 42-character limit is correct and checkable, and
+  the description of xbins as the distribution point matches what my own search returned
+  independently. That part is now solid.
+- **The attribution is barely moved.** An LLM naming a handle is not a primary source, and there
+  is a specific contamination mechanism: **if the query contained "acehack", the model completing
+  with "acehack" is not evidence — it is the prompt coming back.** That is the sycophancy vector
+  in citation form, and it is indistinguishable from genuine recall by reading the output alone.
+
+### 8b. The experiment that would settle it — cheap, one query
+
+> Ask a **fresh** session, with **no mention of the handle**: *"Who wrote the well-known FATX file
+> renaming tools for the original Xbox, and where were they distributed?"*
+
+If the handle comes back **unprompted**, that is genuine corroboration: it means the token
+co-occurs with FATX renamers in training data drawn from the actual scene, which is real if
+indirect evidence. If it does not, the forwarded answer was the prompt echoing, and the attribution
+stays testimony.
+
+Either result is worth having, and the second is not a loss — it just means the evidence is still
+where §5 put it.
+
+### 8c. The general problem this is an instance of, and it is new
+
+Naming it because it will recur, and because it attacks the anchoring rule from a direction that
+rule was not written for:
+
+> **LLM-generated attributions become training data for the next model.** A confabulated
+> attribution, once published, can be recalled by a later system as though it were record — and
+> the second system's agreement looks like independent corroboration when it is the *same claim
+> read twice*.
+
+That is precisely *"too many correlations is a warning, not a confirmation signal"* — N correlated
+sources are not N sources — arriving at provenance itself. It also makes the anchoring rule's
+demand sharper than when it was written: an anchor must be **checked**, and *"a language model
+said so"* is now a category that can look like a citation while carrying none of a citation's
+independence.
+
+The corollary for this book specifically: where a claim about Aaron's own history rests on model
+output, the book says so. Where it rests on his testimony, the book says testimony — which is the
+stronger of the two, since he was there and the model was not.
+
+### 8d. Updated register for §5
+
+| claim | register after §8 |
+|---|---|
+| FATX 42-character limit, restricted charset, xbins as distribution point | **checked** — two independent searches agree, and the limit is verifiable |
+| the handle "acehack" attached to FATX renaming tools | **weak corroboration** — one model output, contamination mechanism unexcluded, experiment in §8b would resolve it |
+| the specific algorithm (significant middle letters, edge labels) | **his account only** — no search has surfaced this, and it is the most distinctive claim |
+| everything in §7 (the UI, the grey) | **his account only** |
+
+Note the shape: the *most interesting* claim is the least corroborated one, which is normal for
+scene software from 2003 and is not a reason to doubt it. It is a reason to keep the label on.
