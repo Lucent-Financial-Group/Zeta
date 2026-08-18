@@ -246,3 +246,57 @@ let ``the Lorentz generators live in the even half, and spacetime does NOT chira
     match CP.halvesSeparateCleanly 1 3, CP.halvesSeparateCleanly 0 8, CP.halvesSeparateCleanly 7 7 with
     | Ok false, Ok true, Ok true -> ()
     | a, b, c -> failwithf "expected (false, true, true), got %A %A %A" a b c
+
+
+// ── The second tower: E8 without a code. ──
+// Construction A over the [8,4] code costs homoiconicity (the vertex module drops below
+// dim Cl(0,N)). The bivector-plus-half-spinor route quotients nothing, so it stays on the uncoded
+// tower -- a different construction reaching a different face of the same object.
+
+[<Fact>]
+let ``bivectors of Cl(0,n) have dimension so(n)`` () =
+    Assert.Equal(28, CP.bivectorDim 8)    // so(8) = D4, the triality case
+    Assert.Equal(120, CP.bivectorDim 16)  // so(16) = D8, the maximal subalgebra of E8
+    Assert.Equal(36, CP.bivectorDim 9)    // so(9)
+    Assert.Equal(6, CP.bivectorDim 4)     // so(4) -- and the 6 Lorentz generators of Cl(1,3)
+
+[<Fact>]
+let ``e8 = so(16) + half-spinor: 120 + 128 = 248`` () =
+    let (n, total) = CP.e8FromSpinors
+    Assert.Equal(16, n)
+    Assert.Equal(120, CP.bivectorDim n)
+    Assert.Equal(128, CP.halfSpinorDim n)
+    Assert.Equal(total, CP.bivectorDim n + CP.halfSpinorDim n)
+    Assert.Equal(248, total)
+
+[<Fact>]
+let ``f4 = so(9) + spinor: 36 + 16 = 52 -- the recipe at a second point`` () =
+    let (n, total) = CP.f4FromSpinors
+    Assert.Equal(36, CP.bivectorDim n)
+    Assert.Equal(16, CP.halfSpinorDim n)   // n odd: no chirality split, the whole 16
+    Assert.Equal(total, CP.bivectorDim n + CP.halfSpinorDim n)
+    Assert.Equal(52, total)
+
+[<Fact>]
+let ``the 128 exists BECAUSE of the clock -- Cl(0,16) at s=0 splits its even half`` () =
+    Assert.Equal(0, CP.signatureClass 0 16)
+    match CP.halvesSeparateCleanly 0 16 with
+    | Ok sep -> Assert.True sep
+    | Error e -> failwithf "%A" e
+    let even = ok (0, 15)
+    Assert.True even.IsSplit
+    Assert.Equal(CP.Real, even.Ground)
+    Assert.Equal(128, even.MatrixDim)
+    // the half-spinor dimension agrees with the block size the clock produced
+    Assert.Equal(CP.halfSpinorDim 16, even.MatrixDim)
+
+[<Fact>]
+let ``three rungs agree: (0,8) -> 8-blocks, (7,7) -> 64-blocks, (0,16) -> 128-blocks`` () =
+    for (p, q, expectedBlock) in [ (0, 8, 8); (7, 7, 64); (0, 16, 128) ] do
+        Assert.Equal(0, CP.signatureClass p q)
+        match CP.halvesSeparateCleanly p q with
+        | Ok true ->
+            let even = ok (p, q - 1)
+            Assert.True even.IsSplit
+            Assert.Equal(expectedBlock, even.MatrixDim)
+        | other -> failwithf "signature (%d,%d) did not separate: %A" p q other
