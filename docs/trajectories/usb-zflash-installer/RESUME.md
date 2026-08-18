@@ -21,7 +21,9 @@ sysfs; host probe stays injectable). Guest installer 6.95d prints the
 sysfs probe report to the serial log and writes `--serial-file` on
 success. Default persist remains FAT UUID. `ZETA_BIND_USB_ISERIAL=1`
 forwards `--usb-iserial` to the picker only when the probe succeeded.
-Opt-in `QEMU_USB_ISERIAL_PHASE1=1` asserts probe markers **and**
+Persist writes `zeta-creds.factor` next to the blob; restore reads it
+and `/etc/zeta/usb-iserial` with no UUID fallback. Opt-in
+`QEMU_USB_ISERIAL_PHASE1=1` asserts probe markers **and**
 persist-default UUID; ISO/cdrom does not. Not on `gate (required)`.
 See `docs/security/USB-IDENTITY-THREAT-MODEL.md` <!-- STALE-REF: ../../security/USB-IDENTITY-THREAT-MODEL.md -->:
 traveler → cluster → federation → ISociety/CTM, self-similar.

@@ -7,7 +7,8 @@ import { afterAll, beforeAll, describe, expect, it } from "bun:test";
 import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { buildBlob, composeBundle, parseArgs as parsePersistArgs } from "./zeta-creds-persist";
+import { buildBlob, composeBundle, parseArgs as parsePersistArgs, writePersistOutputs } from "./zeta-creds-persist";
+import { bindingFactorSidecarPath } from "./installer-binding-cli.ts";
 import { applyPlan, parseArgs as parseRestoreArgs, planRestore, resolveCredPaths } from "./zeta-creds-restore";
 import { DEFAULT_MANIFEST } from "./zeta-creds-manifest";
 
@@ -40,6 +41,7 @@ describe("parsePersistArgs", () => {
     if ("error" in result) throw new Error(result.error);
     expect(result.bindingMaterial).toBe("ZETA-STICK-001");
     expect(result.usbISerial).toBe("ZETA-STICK-001");
+    expect(result.bindingFactor).toBe("usbISerial");
   });
 
   it("rejects missing --output", () => {
@@ -396,5 +398,22 @@ describe("parseRestoreArgs", () => {
     const result = parseRestoreArgs(["--usb-uuid", UUID, "--input", "/x", "--passphrase-env", "PP"], { PP: "x" });
     if ("error" in result) throw new Error(result.error);
     expect(result.targetRoot).toBe("/");
+  });
+});
+
+describe("writePersistOutputs binding-factor sidecar", () => {
+  it("writes usbISerial next to the blob so restore does not guess UUID", () => {
+    const dir = mkdtempSync(join(tmpdir(), "zcreds-factor-"));
+    const blob = join(dir, "zeta-creds.enc");
+    writePersistOutputs(blob, Buffer.from("not-a-real-blob"), "usbISerial");
+    expect(readFileSync(blob).equals(Buffer.from("not-a-real-blob"))).toBe(true);
+    expect(readFileSync(bindingFactorSidecarPath(blob), "utf8")).toBe("usbISerial\n");
+  });
+
+  it("writes usbUuid for the default persist path", () => {
+    const dir = mkdtempSync(join(tmpdir(), "zcreds-factor-uuid-"));
+    const blob = join(dir, "zeta-creds.enc");
+    writePersistOutputs(blob, Buffer.from("x"), "usbUuid");
+    expect(readFileSync(bindingFactorSidecarPath(blob), "utf8")).toBe("usbUuid\n");
   });
 });

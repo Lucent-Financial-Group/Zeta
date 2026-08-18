@@ -286,6 +286,53 @@ const CROSS_FILE_ASSERTIONS: readonly CrossFileAssertion[] = [
     },
     rationale: "PR #5640 + #5644 surfaced producer/consumer path mismatch (picker --output / restore-service blobPath defaults). ESP partition is mounted at /mnt/boot during install (zeta-install.sh Step 5), /boot post-reboot (disko `mountpoint = \"/boot\"`). Same physical file across the install-vs-installed boundary. Producer MUST write to /mnt/boot/; consumer MUST read from /boot/. Drift = restore service ConditionPathExists always evaluates false = creds silently never restore.",
   },
+  {
+    name: "cred-factor-sidecar-producer-vs-consumer",
+    producerPath: "full-ai-cluster/usb-nixos-installer/zeta-install.sh",
+    consumerPath: "full-ai-cluster/nixos/modules/zeta-creds-restore.nix",
+    producerExtract: (content) => {
+      const m = content.match(/--output\s+(\S+\/zeta-creds\.enc)/);
+      if (!m?.[1]) return null;
+      return m[1].replace(/\.enc$/u, ".factor");
+    },
+    consumerExtract: (content) => {
+      const m = content.match(
+        /factorPath\s*=\s*lib\.mkOption\s*\{[\s\S]*?default\s*=\s*"(\S+\/zeta-creds\.factor)"/,
+      );
+      return m?.[1] ?? null;
+    },
+    consumerEquivalence: (producer) => {
+      if (producer.startsWith("/mnt/boot/")) {
+        return producer.replace(/^\/mnt\/boot\//, "/boot/");
+      }
+      return `INVALID-producer-must-be-on-mnt-boot-got:${producer}`;
+    },
+    rationale:
+      "Persist writes zeta-creds.factor next to the blob so restore does not guess the KDF factor. Install --output /mnt/boot/zeta-creds.enc ⇒ sidecar /mnt/boot/zeta-creds.factor; restore default factorPath must be /boot/zeta-creds.factor. Drift = iSerial persist + UUID restore = lockout.",
+  },
+  {
+    name: "cred-iserial-material-producer-vs-consumer",
+    producerPath: "full-ai-cluster/usb-nixos-installer/zeta-install.sh",
+    consumerPath: "full-ai-cluster/nixos/modules/zeta-creds-restore.nix",
+    producerExtract: (content) => {
+      const m = content.match(/tee\s+(\/mnt\/etc\/zeta\/usb-iserial)/);
+      return m?.[1] ?? null;
+    },
+    consumerExtract: (content) => {
+      const m = content.match(
+        /usbISerialPath\s*=\s*lib\.mkOption\s*\{[\s\S]*?default\s*=\s*"(\/etc\/zeta\/usb-iserial)"/,
+      );
+      return m?.[1] ?? null;
+    },
+    consumerEquivalence: (producer) => {
+      if (producer.startsWith("/mnt/etc/")) {
+        return producer.replace(/^\/mnt\/etc\//, "/etc/");
+      }
+      return `INVALID-producer-must-be-on-mnt-etc-got:${producer}`;
+    },
+    rationale:
+      "iSerial material is recorded on the installed rootfs the same way UUID is. Producer /mnt/etc/zeta/usb-iserial → consumer /etc/zeta/usb-iserial. Restore re-probes nothing at boot.",
+  },
 ];
 
 function auditFiles(): readonly AuditFailure[] {

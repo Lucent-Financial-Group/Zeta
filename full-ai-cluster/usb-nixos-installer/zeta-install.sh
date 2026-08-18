@@ -1895,6 +1895,8 @@ if [ -d "$ZETA_HOME" ]; then
     if [ "${ZETA_BIND_USB_ISERIAL:-0}" = "1" ] && [ -s "$ISERIAL_SERIAL_FILE" ]; then
       PICKER_BIND_FLAG="--usb-iserial"
       PICKER_BIND_VALUE="$(cat "$ISERIAL_SERIAL_FILE")"
+      echo "$PICKER_BIND_VALUE" | sudo tee /mnt/etc/zeta/usb-iserial >/dev/null
+      sudo chmod 0644 /mnt/etc/zeta/usb-iserial
     fi
     echo "[iter-5.5.0] ── 6.95-picker: 081KSKBP80008QG0R003AX2A69.3a cred-picker (DEFAULT-ON per 081KSKBP80008QG0R003AX2A69.3c) ──"
     echo "[iter-5.5.0]   passphrase from Step 6.56; binding $PICKER_BIND_FLAG (default FAT UUID; iSerial only if ZETA_BIND_USB_ISERIAL=1 and probe succeeded)"

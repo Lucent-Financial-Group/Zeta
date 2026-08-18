@@ -1,5 +1,13 @@
 import { describe, expect, it } from "bun:test";
-import { selectCliBindingMaterial, selectInstallPersistBinding } from "./installer-binding-cli.ts";
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
+import {
+  bindingFactorSidecarPath,
+  RESTORE_BINDING_SERIAL,
+  selectCliBindingMaterial,
+  selectInstallPersistBinding,
+  selectRestoreBinding,
+} from "./installer-binding-cli.ts";
 import { UEFI_KEYFILE_BYTES } from "./uefi-keyfile-esp.ts";
 import { readUsbSysfsDevice, USB_ISERIAL_SERIAL } from "./usb-iserial-probe.ts";
 import { parseUuidFromDiskutilInfo } from "../zflash/lib.ts";
@@ -257,5 +265,79 @@ describe("selectInstallPersistBinding", () => {
       bindUsbISerial: true,
     });
     expect("error" in selected).toBe(true);
+  });
+});
+
+describe("selectRestoreBinding", () => {
+  it("defaults to FAT UUID when the sidecar is missing", () => {
+    const selected = selectRestoreBinding({
+      recordedFactorRaw: null,
+      usbUuid: "uuid-1",
+      recordedISerial: "ZETA-QEMU-001",
+    });
+    expect("error" in selected).toBe(false);
+    if ("error" in selected) return;
+    expect(selected.factor).toBe("usbUuid");
+    expect(selected.flag).toBe("--usb-uuid");
+    expect(selected.material).toBe("uuid-1");
+    expect(selected.marker).toBe(RESTORE_BINDING_SERIAL.defaultUuid);
+  });
+
+  it("uses recorded iSerial and refuses UUID fallback when the sidecar says usbISerial", () => {
+    const selected = selectRestoreBinding({
+      recordedFactorRaw: "usbISerial\n",
+      usbUuid: "uuid-1",
+      recordedISerial: "ZETA-QEMU-001",
+    });
+    expect("error" in selected).toBe(false);
+    if ("error" in selected) return;
+    expect(selected.factor).toBe("usbISerial");
+    expect(selected.flag).toBe("--usb-iserial");
+    expect(selected.material).toBe("ZETA-QEMU-001");
+    expect(selected.marker).toBe(RESTORE_BINDING_SERIAL.iserial);
+  });
+
+  it("fails closed when sidecar says usbISerial but the serial file is missing", () => {
+    const selected = selectRestoreBinding({
+      recordedFactorRaw: "usbISerial",
+      usbUuid: "uuid-1",
+      recordedISerial: null,
+    });
+    expect("error" in selected).toBe(true);
+    if (!("error" in selected)) return;
+    expect(selected.marker).toBe(RESTORE_BINDING_SERIAL.iserialMissing);
+  });
+
+  it("does not decrypt an iSerial blob with the stored UUID", () => {
+    const selected = selectRestoreBinding({
+      recordedFactorRaw: "usbISerial",
+      usbUuid: "uuid-1",
+      recordedISerial: "",
+    });
+    expect("error" in selected).toBe(true);
+  });
+});
+
+describe("bindingFactorSidecarPath", () => {
+  it("maps zeta-creds.enc to zeta-creds.factor", () => {
+    expect(bindingFactorSidecarPath("/boot/zeta-creds.enc")).toBe("/boot/zeta-creds.factor");
+    expect(bindingFactorSidecarPath("/mnt/boot/zeta-creds.enc")).toBe("/mnt/boot/zeta-creds.factor");
+  });
+});
+
+describe("restore.nix stays coupled to the restore-binding markers", () => {
+  const nix = readFileSync(
+    resolve(import.meta.dir, "../../../full-ai-cluster/nixos/modules/zeta-creds-restore.nix"),
+    "utf8",
+  );
+
+  it("refuses UUID fallback when iSerial was recorded", () => {
+    expect(nix).toContain(RESTORE_BINDING_SERIAL.iserialMissing);
+    expect(nix).toContain(RESTORE_BINDING_SERIAL.iserial);
+    expect(nix).toContain(RESTORE_BINDING_SERIAL.defaultUuid);
+    expect(nix).toContain("$BIND_FLAG");
+    expect(nix).toContain("factorPath");
+    expect(nix).toContain("/boot/zeta-creds.factor");
+    expect(nix).toContain("/etc/zeta/usb-iserial");
   });
 });

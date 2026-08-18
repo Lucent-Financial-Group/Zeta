@@ -122,7 +122,7 @@ See `zeta-creds-crypto.ts` + research note on ephemeral UUID rebind.
 |---|---|---|---|---|---|
 | Passphrase only | Operator knowledge | Yes | Yes | No | Partial (with UUID today) |
 | USB FAT UUID | This filesystem instance | **No** (reformat breaks) | No | No | **Shipped — known flaw** |
-| USB iSerial | This physical stick | Yes | No | Probe-only | Sysfs probe + optional persist bind (`ZETA_BIND_USB_ISERIAL=1`); not default |
+| USB iSerial | This physical stick | Yes | No | Probe-only | Persist opt-in + restore sidecar; not default |
 | UEFI keyfile on ESP | Stick + firmware layout | Depends | No | No (QEMU-testable) | Planner + FAT round-trip landed (`uefi-keyfile-esp.ts`); not default persist |
 | TPM / PCR seal | This machine | Yes | Yes (wrong machine fails) | Yes for real TPM | Phase 3 |
 | Touch ID / FIDO | Human traveler present | Yes | Yes | Yes | Metal-gated |
@@ -250,7 +250,10 @@ GitHub-forever APIs into Nix modules. CI uses `mock`; metal may use
    (`usb-iserial-probe.ts` CLI from `zeta-install.sh` 6.95d) and writes
    `--serial-file` on success. Default persist remains `--usb-uuid`.
    `ZETA_BIND_USB_ISERIAL=1` forwards `--usb-iserial` to the picker only
-   when the probe produced a serial; otherwise it stays UUID. Opt-in
+   when the probe produced a serial; otherwise it stays UUID. Persist
+   writes `zeta-creds.factor` next to the blob (kind only). Restore
+   reads that sidecar and `/etc/zeta/usb-iserial` — it does **not**
+   fall back to UUID (that is a lockout). Opt-in
    `QEMU_USB_ISERIAL_PHASE1=1` (also implied by wifi ESP USB boot)
    asserts `serial=ZETA-QEMU-001` **and** persist-default UUID.
    ISO/cdrom cascade-5 does not. Not on `gate (required)`. No

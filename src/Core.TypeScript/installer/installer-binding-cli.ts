@@ -158,3 +158,80 @@ export function selectInstallPersistBinding(input: {
       : USB_ISERIAL_SERIAL.persistDefaultUuid,
   };
 }
+
+/** Sidecar next to the cred blob. Kind only — never the KDF material. */
+export function bindingFactorSidecarPath(blobPath: string): string {
+  if (blobPath.endsWith(".enc")) return `${blobPath.slice(0, -".enc".length)}.factor`;
+  return `${blobPath}.factor`;
+}
+
+export const RESTORE_BINDING_SERIAL = {
+  defaultUuid: "zeta-creds-restore: binding-factor usbUuid (default)",
+  iserial: "zeta-creds-restore: binding-factor usbISerial (recorded; not a live probe)",
+  iserialMissing:
+    "zeta-creds-restore: usb iSerial recorded but serial file missing; aborting (refusing UUID fallback)",
+  unknownFactor: "zeta-creds-restore: unknown binding-factor; aborting",
+  uefiUnwired: "zeta-creds-restore: uefiKeyfile restore is not wired; aborting",
+} as const;
+
+export type RecordedBindingFactor = "usbUuid" | "usbISerial" | "uefiKeyfile";
+
+/** Missing or empty sidecar = FAT UUID (backward compatible). */
+export function parseRecordedBindingFactor(
+  raw: string | null,
+): RecordedBindingFactor | { readonly error: string } {
+  if (raw === null) return "usbUuid";
+  const value = raw.replace(/\r?\n$/u, "");
+  if (value.length === 0) return "usbUuid";
+  if (value === "usbUuid" || value === "usbISerial" || value === "uefiKeyfile") return value;
+  return { error: `unknown binding-factor "${value}"` };
+}
+
+/**
+ * Boot-time restore factor. Reads the persist sidecar (kind only) plus
+ * recorded material files. usbISerial does NOT fall back to UUID — that
+ * would decrypt with the wrong key or unlock a UUID-bound blob by accident.
+ * Re-probe is install-time; restore uses the recorded serial the same way
+ * UUID restore uses /etc/zeta/usb-uuid (stick need not still be plugged in).
+ */
+export function selectRestoreBinding(input: {
+  readonly recordedFactorRaw: string | null;
+  readonly usbUuid: string | null;
+  readonly recordedISerial: string | null;
+}): InstallPersistBinding | { readonly error: string; readonly marker: string } {
+  const parsed = parseRecordedBindingFactor(input.recordedFactorRaw);
+  if (typeof parsed === "object") {
+    return { error: parsed.error, marker: RESTORE_BINDING_SERIAL.unknownFactor };
+  }
+  if (parsed === "uefiKeyfile") {
+    return { error: "uefiKeyfile restore is not wired", marker: RESTORE_BINDING_SERIAL.uefiUnwired };
+  }
+  if (parsed === "usbISerial") {
+    const selected = selectCliBindingMaterial({
+      usbUuid: null,
+      usbISerial: input.recordedISerial,
+      uefiKeyfileBytes: null,
+    });
+    if ("error" in selected) {
+      return { error: selected.error, marker: RESTORE_BINDING_SERIAL.iserialMissing };
+    }
+    return {
+      factor: "usbISerial",
+      flag: "--usb-iserial",
+      material: selected.material,
+      marker: RESTORE_BINDING_SERIAL.iserial,
+    };
+  }
+  const selected = selectCliBindingMaterial({
+    usbUuid: input.usbUuid,
+    usbISerial: null,
+    uefiKeyfileBytes: null,
+  });
+  if ("error" in selected) return { error: selected.error, marker: RESTORE_BINDING_SERIAL.defaultUuid };
+  return {
+    factor: "usbUuid",
+    flag: "--usb-uuid",
+    material: selected.material,
+    marker: RESTORE_BINDING_SERIAL.defaultUuid,
+  };
+}
