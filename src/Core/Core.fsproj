@@ -37,9 +37,11 @@
     <Compile Include="TangleNavigator.fs" />
     <Compile Include="PhasePortrait.fs" />
     <Compile Include="AdinkraCode.fs" />
+    <Compile Include="CliffordPeriodicity.fs" />
     <Compile Include="BinaryCode.fs" />
     <Compile Include="E8Lattice.fs" />
     <Compile Include="LatticeVoa.fs" />
+    <Compile Include="ConstructionATheta.fs" />
     <Compile Include="CliffordE8Bridge.fs" />
     <Compile Include="CliffordE8Roots.fs" />
     <Compile Include="CliffordE8BladeMask.fs" />
