@@ -186,3 +186,48 @@ question stays open. What it *is*: a clean demonstration of the **technique** §
 problem small enough to check completely. Register: **structural as a demonstration of meta-level
 information extraction**, `toy` as anything about the liar. Keeping those apart is the whole
 discipline — a worked example that proves the method is not a proof of the thesis the method serves.
+
+### 5a. Aaron's name for it: "simple steganography, 101"
+
+> *"to me this is just simple steganography, like 101."*
+
+Correct, and it is the better frame — not a loose analogy but the same information-theoretic
+structure. Steganography puts the payload in **properties of the carrier** rather than in the
+carrier's stated content. The puzzle puts the payload in the **decidability property** of the reply
+rather than in the reply. Same move; the meta-fact channel **is** a side channel.
+
+**And that identification does real work, because it connects §1 to a spec we already have.**
+Goguen–Meseguer **noninterference** — manifesto **§13** — says information/influence may enter only
+through **declared, metered channels**. Set the two side by side:
+
+| junction discipline (§1) | §13 noninterference |
+|---|---|
+| the residue lives at one **named** junction | influence enters only through **declared** channels |
+| "no **unknown** incompleteness" | no **undeclared** side channel |
+| map it, steer around or into it | meter every crossing at the membrane |
+
+**They are the same discipline stated for two different quantities** — undecidability in one case,
+entropy/influence in the other. That is a stronger claim than §1 made on its own, and it means the
+junction discipline is not a new principle needing its own justification; it is §13 pointed at
+Gödel.
+
+**Dual-use, and the security reading is the one that bites.** A meta-fact channel you *declared* is
+a feature; one you did not is a **leak**. Timing channels, error-message oracles, and
+which-check-ran are all payload-bearing whether or not anyone intended them. So the same technique
+that lets the narrator extract an answer from "I was able to tell" is what lets an attacker extract
+a secret from how long a comparison took. Per
+[`dual-use-detection-is-neutral-oracle-decides`](../../.claude/rules/dual-use-detection-is-neutral-oracle-decides.md):
+the mechanism is neutral, and here both readings are live at once.
+
+**A worked instance from today's own CI, and it runs the right direction.** A gate job killed by a
+stalling mirror used to report `cancelled` — the *only* way to learn the real cause was the
+meta-fact that it died at **exactly** its `timeout-minutes`. That is an undeclared side channel:
+real information, readable only by inference, and missed by everyone who read the conclusion
+instead. The apt-budget fix replaced it with an explicit message naming the stalled mirror and
+distinguishing it from a package error. **That is precisely moving a payload out of a side channel
+and into a declared one** — the junction discipline applied to CI diagnostics, arrived at
+independently and for ordinary engineering reasons.
+
+The symmetry is worth keeping: my three CI misreads today were **failing to read a channel that was
+there**; the security case is **someone reading a channel you forgot you had**. Same fact about the
+world, opposite failure.
