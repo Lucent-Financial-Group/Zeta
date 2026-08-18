@@ -22,5 +22,23 @@
     "callee": "setTimeout",
     "count": 1,
     "reason": "LIVE INTEGRATION against a real long-running worker process, and the sleep is the module's own `sleep(ms)` helper rather than an assertion. The file's subject is keep-alive behaviour over real elapsed time -- a keep-alive that fires instantly is not a keep-alive -- so wall-clock is the observable, not a stand-in for one. Kept under the count pin so a SECOND timer in this file still has to be argued for; the exemption is for the one helper, not for the file."
+  },
+  {
+    "path": "src/Core.TypeScript/hygiene/audit-ambient-time-in-tests.test.ts",
+    "callee": "setTimeout",
+    "count": 6,
+    "reason": "THE DETECTOR'S OWN FIXTURES -- input, not delay. Every match in this file is inside a string literal handed to scanSource() so the check can be proven to go red on the class it exists to catch; nothing in this file awaits a timer. It is the same distinction .claude/rules/no-binary-in-proof-lineage.md draws for the wasm modules: the thing under test is not evidence. DELIBERATELY NOT SOLVED BY TEACHING THE SCANNER TO SKIP STRING LITERALS. That would be an invisible exemption class -- silently true for every file, reviewable nowhere -- which is the exact property this check rejects Semgrep and ESLint for. An exemption belongs in the roster where a reviewer can refuse it, including when the author needing it is the check itself. The count pin still bites: a REAL awaited sleep added to this file makes the total disagree and fails, so exempting the falsifier did not exempt the falsifier's file."
+  },
+  {
+    "path": "src/Core.TypeScript/hygiene/audit-ambient-time-in-tests.test.ts",
+    "callee": "Bun.sleep",
+    "count": 1,
+    "reason": "THE DETECTOR'S OWN FIXTURES -- input, not delay. Every match in this file is inside a string literal handed to scanSource() so the check can be proven to go red on the class it exists to catch; nothing in this file awaits a timer. It is the same distinction .claude/rules/no-binary-in-proof-lineage.md draws for the wasm modules: the thing under test is not evidence. DELIBERATELY NOT SOLVED BY TEACHING THE SCANNER TO SKIP STRING LITERALS. That would be an invisible exemption class -- silently true for every file, reviewable nowhere -- which is the exact property this check rejects Semgrep and ESLint for. An exemption belongs in the roster where a reviewer can refuse it, including when the author needing it is the check itself. The count pin still bites: a REAL awaited sleep added to this file makes the total disagree and fails, so exempting the falsifier did not exempt the falsifier's file."
+  },
+  {
+    "path": "src/Core.TypeScript/hygiene/audit-ambient-time-in-tests.test.ts",
+    "callee": "setInterval",
+    "count": 1,
+    "reason": "THE DETECTOR'S OWN FIXTURES -- input, not delay. Every match in this file is inside a string literal handed to scanSource() so the check can be proven to go red on the class it exists to catch; nothing in this file awaits a timer. It is the same distinction .claude/rules/no-binary-in-proof-lineage.md draws for the wasm modules: the thing under test is not evidence. DELIBERATELY NOT SOLVED BY TEACHING THE SCANNER TO SKIP STRING LITERALS. That would be an invisible exemption class -- silently true for every file, reviewable nowhere -- which is the exact property this check rejects Semgrep and ESLint for. An exemption belongs in the roster where a reviewer can refuse it, including when the author needing it is the check itself. The count pin still bites: a REAL awaited sleep added to this file makes the total disagree and fails, so exempting the falsifier did not exempt the falsifier's file."
   }
 ]
