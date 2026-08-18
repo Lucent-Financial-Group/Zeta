@@ -169,6 +169,72 @@ module CliffordPeriodicity =
         evenSubalgebraClass p q
         |> Result.map (fun s -> s = 1 || s = 5)
 
+    // ═══════════════════════════════════════════════════════════════════
+    // THE SECOND TOWER — E8 from the UNCODED Clifford chain, no code involved.
+    // ═══════════════════════════════════════════════════════════════════
+
+    /// Dimension of the bivector space `Λ²(R^n)`, which **is** `so(n)` as a Lie algebra under the
+    /// Clifford commutator. `n(n−1)/2`.
+    ///
+    /// This is the door out of the coded tower. `AdinkraCode.fs` reaches E8 by Construction A over
+    /// the `[8,4]` code — which costs homoiconicity, because quotienting collapses the vertex
+    /// module below `dim Cl(0,N)`. The bivector route quotients nothing.
+    let bivectorDim (n: int) : int = n * (n - 1) / 2
+
+    /// Dimension of an irreducible spinor module for `Cl(0,n)`.
+    ///
+    /// Even `n`: the full space is `2^(n/2)` and splits by chirality into two halves of
+    /// `2^(n/2 − 1)`. Odd `n`: `2^((n−1)/2)`, no chirality split. Both are the mod-8 clock's
+    /// arithmetic showing up as a dimension rather than as a Morita class.
+    let halfSpinorDim (n: int) : int =
+        if n % 2 = 0 then pown 2 (n / 2 - 1) else pown 2 ((n - 1) / 2)
+
+    /// **`e₈ = so(16) ⊕ Δ⁺₁₆`** — the spinor construction of E8, reached without any code.
+    ///
+    /// `120 + 128 = 248`. The `so(16)` half is the bivectors of `Cl(0,16)`; the `128` is one
+    /// chirality half of its spinor module. And the reason that half exists at all is the clock:
+    /// `Cl(0,16)` sits at `s = 0`, so `Cl⁰(0,16) ≅ Cl(0,15)` sits at `s = 1` — **the split real
+    /// row** — giving `M₁₂₈(R) ⊕ M₁₂₈(R)`. The two 128s are the even-subalgebra splitting, exactly
+    /// as the two 64s were at `(7,7)` and the two 8s at `(0,8)`. One clock, three rungs.
+    ///
+    /// **This is a genuinely different route to E8 than Construction A**, and it answers Aaron's
+    /// question (2026-08-18) — *"maybe some E8 or other Lie groups can be generated from the
+    /// homoiconic version… we are never locked into one tower."* We are not. Note the two routes
+    /// do not produce the same *object*: Construction A yields the E8 **lattice**, this yields the
+    /// E8 **Lie algebra**. They are two faces of E8 (the lattice is the algebra's root lattice),
+    /// reached by constructions that share only the periodicity.
+    ///
+    /// Anchor: the standard spinorial construction of `e₈` (J. F. Adams, *Lectures on Exceptional
+    /// Lie Groups*; Kostant). Not ours and not new — which is the point: it is *checkable*.
+    let e8FromSpinors = (16, 248)
+
+    /// **The bridge between the two E8 routes — `248 = 8 + 240 = 120 + 128`.**
+    ///
+    /// Aaron asked (2026-08-18) whether there is a meaningful transformation between the two E8s.
+    /// There is, and it is not exotic: **they are two decompositions of the same 248-dimensional
+    /// Lie algebra against two different maximal subalgebras.**
+    ///
+    /// | route | decomposition | graded against |
+    /// |---|---|---|
+    /// | lattice / Construction A | `248 = 8 + 240` — Cartan ⊕ root spaces | the **Cartan** `h` (a `Z⁸` grading by roots) |
+    /// | spinor / uncoded tower | `248 = 120 + 128` — `so(16) ⊕ Δ⁺` | **`so(16)`** (a `Z₂` grading by parity) |
+    ///
+    /// The lattice route's 240 minimal-norm vectors **are** the 240 roots, and `e₈ = h ⊕ ⊕_α g_α`
+    /// with `dim h = 8`. So the two constructions are joined by the root system itself — the
+    /// lattice is where the algebra's roots live, and Construction A builds exactly that lattice.
+    ///
+    /// **What is genuinely interesting rather than merely arithmetic:** these are two *different*
+    /// what-remains / what-acts splits of one object. The Cartan is the maximal commuting
+    /// subalgebra — what remains under the adjoint action. `so(16)` is the even part — what remains
+    /// under the grading. Same algebra, two notions of "remains", and asking how they relate is a
+    /// real question rather than a restatement.
+    let e8RootDecomposition = (8, 240)
+
+    /// **`f₄ = so(9) ⊕ Δ₉`** — `36 + 16 = 52`. The same recipe one exceptional algebra down, kept
+    /// so the construction is tested at more than a single point. `n = 9` is odd, so there is no
+    /// chirality split and the whole `16` is used.
+    let f4FromSpinors = (9, 52)
+
     /// Spacetime: `Cl(1,3)`, the spacetime algebra whose **6 bivectors are the Lorentz
     /// generators** (3 rotations + 3 boosts) — the `HexCore.fs` six-wall rhyme.
     ///
