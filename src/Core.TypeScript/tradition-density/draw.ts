@@ -75,6 +75,15 @@ function wordAt(seed: bigint, iteration: number, attempt: number): bigint {
  * assume that, so a pathologically large corpus stays unbiased instead of silently truncating.
  */
 export function uniformIndex(seed: bigint, iteration: number, n: number): number {
+  // `iteration` is guarded HERE, not only in `drawAt`, because this function is exported and
+  // therefore reachable without passing through it. Unguarded, a non-integer index reaches
+  // `BigInt(iteration + 1)` as `BigInt(NaN)` and dies with a RangeError naming BigInt rather
+  // than the caller's mistake -- and an `undefined` index yields the same NaN silently one
+  // frame earlier. The type says `number`; the type is not present at runtime, and a JS
+  // caller (or a `JSON.parse`d draw sheet) is exactly the caller this surface will meet.
+  if (!Number.isInteger(iteration) || iteration < 0) {
+    throw new DrawError(`iteration must be a non-negative integer, got ${String(iteration)}`);
+  }
   if (!Number.isInteger(n) || n <= 0) throw new DrawError(`corpus cardinality must be a positive integer, got ${String(n)}`);
   const size = BigInt(n);
   // Largest multiple of `size` at or below 2^64; words at or above it would over-represent

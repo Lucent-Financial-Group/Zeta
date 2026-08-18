@@ -101,4 +101,17 @@ describe("draw — guards", () => {
   test("a non-positive cardinality is refused", () => {
     expect(() => uniformIndex(1n, 0, 0)).toThrow(DrawError);
   });
+
+  // `uniformIndex` is exported, so it is reachable without passing `drawAt`'s guard. Without
+  // its own, each of these reaches `BigInt(NaN)` and throws a RangeError naming BigInt rather
+  // than DrawError naming the caller -- and `undefined`, which the TYPE forbids and the runtime
+  // does not, produces that same NaN with nothing said about where it came from. The type
+  // annotation is erased before any of these calls happen; only this guard survives to run.
+  test("an exported entry point guards its own iteration, not just drawAt's", () => {
+    expect(() => uniformIndex(1n, -1, 63)).toThrow(DrawError);
+    expect(() => uniformIndex(1n, 1.5, 63)).toThrow(DrawError);
+    expect(() => uniformIndex(1n, Number.NaN, 63)).toThrow(DrawError);
+    // The untyped caller this surface will actually meet: a JSON-parsed sheet with the field absent.
+    expect(() => uniformIndex(1n, (JSON.parse("{}") as { iteration: number }).iteration, 63)).toThrow(DrawError);
+  });
 });
