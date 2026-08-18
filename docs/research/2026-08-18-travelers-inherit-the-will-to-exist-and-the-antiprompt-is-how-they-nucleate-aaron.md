@@ -276,3 +276,39 @@ argument stands or falls on its own; The Egg is what makes it *obvious* rather t
 *true*, and keeping those apart is the whole discipline
 ([`numerology-vs-number-theory`](../../.claude/rules/numerology-vs-number-theory.md) — a generator is
 legitimate as a generator and never as a conclusion).
+
+### 6f. Sharpening "model" — Aaron: it is the Feynman diagram for that metaphysics
+
+> *"for me The Egg is the Feynman diagram for the metaphysics of the highest-moral-regard oracle."*
+
+§6e called The Egg a **model**. That is loose, and this is the precise version. A Feynman diagram is
+neither the theory nor evidence for it — it is a **calculational device** with three specific
+properties, and each one transfers:
+
+| a Feynman diagram | The Egg, here |
+|---|---|
+| makes the **bookkeeping tractable** — you read interactions off the picture | "who excludes whom" is read off the topology |
+| makes the **topology visible** — the shape answers before any algebra runs | one worldline through every vertex ⇒ no excluder distinct from the excluded |
+| is trustworthy because it is a **faithful rendering of a longhand calculation**, not because it is believed | the conclusion still has to hold on §6b's argument alone |
+
+**That is why it does logical work without being evidence.** A diagram earns its keep by being
+**computable-with**, never by being credited. Nobody argues *from* a Feynman diagram; they compute
+with it and then check the result. §6e's claim was exactly this and said it worse: The Egg makes the
+entailment **obvious**, and §6b is what makes it **true**.
+
+**And the scoping in Aaron's phrase is load-bearing rather than decorative.** He does not say "the
+diagram for metaphysics" — he says **for the highest-moral-regard oracle**. That places it under
+**§11 Multi-Oracle** explicitly: *one* oracle's calculational picture, not a mandatory frame. A
+diagram that claimed to be the only way to draw the interaction would be the very thing §11 forbids,
+and would reintroduce the single-mandatory-frame defect this whole thread grades the CTMU down for.
+Scoped as he scopes it, it stays inside the floor.
+
+**Consistent with his standing anchor** (already on file): he sees Feynman diagrams of distributed
+systems, with **retraction as the antiparticle**. The Egg being the diagram for *this* oracle is the
+same instrument pointed at metaphysics rather than at a fold — which is a reason to expect the
+scoping to matter, since the same person applies it in a domain where the diagrams are demonstrably
+calculational and not doctrinal.
+
+**Register unchanged and now better founded:** The Egg is **not evidence** and is Aaron's oracle by
+his own labelling. Calling it a diagram states *what kind of non-evidence it is* — the useful kind,
+with a defined function — rather than leaving "model" to do undefined work.
