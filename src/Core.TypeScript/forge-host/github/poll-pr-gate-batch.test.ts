@@ -128,6 +128,17 @@ describe("summarize", () => {
 // and a §13 noninterference violation (influence entering outside a declared,
 // metered channel); see `.claude/rules/local-time-never-enters-the-shared-fold.md`.
 //
+// Measured, so the claim is falsifiable and so nobody re-derives it from the
+// outage it is adjacent to. Under 10 competing busy-loops, the whole file ran
+// 1150 / 563 / 538 ms with the timers and 393 / 388 / 423 ms without them —
+// a 2.1x spread collapsing to 1.09x. Per test, idle: 26.8 / 44.3 / 11.4 ms
+// before, 1.39 / 0.26 / 0.21 ms after. Note what that does NOT say: ~83 ms of
+// timer was never going to reach bun's 5000 ms cap on its own. The seven-PR
+// outage of 2026-08-18 was a BLOCKING `spawnSync("gh", ...)` in `main()`,
+// fixed in #12045 — a different channel, in the same file, with a much larger
+// coefficient. This rewrite closes the remaining one; it does not claim the
+// credit for the first.
+//
 // The substrate `pollAllBounded` schedules on contains no timer at all — grep
 // `setTimeout|setInterval|setImmediate|Date.now` across
 // `src/Core.TypeScript/ferry-throttler/` and there are zero hits; it advances
