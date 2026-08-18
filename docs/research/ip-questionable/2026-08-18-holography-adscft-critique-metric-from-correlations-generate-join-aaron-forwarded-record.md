@@ -135,9 +135,46 @@ acting on that strength is how one over-corrects. Put the two together:
 > re-derived every belief through a wrong lens.**
 
 So the register discipline is not bookkeeping hygiene. **Label the incoming thought as coincidence
-vs structure BEFORE letting it touch the ontology**, because the cost of the rewrite is unbounded
-and the correction is not local. That is his own rule, restated as a cost argument rather than an
-epistemic preference — which is a stronger form of it.
+vs structure BEFORE letting it touch the ontology**, because the cost of the rewrite is unbounded.
+That is his own rule, restated as a cost argument rather than an epistemic preference.
+
+### 3a. Correction — "there is no undo" was wrong, and the fix is already built
+
+The paragraph above originally ended "...and there is no undo." Aaron corrected it:
+
+> *"i came up with the maji reindexing … this is how i can rederive everything but keep all
+> previous reindexings as well that were through a wrong lens, this allows me to go multi lens like
+> our lensography."*
+
+**The error was modelling the ontology as a single mutable index.** Under that model a
+fold-function delta overwrites the old interpretation and a wrong lens is a catastrophe. It is the
+wrong model, and the repo already carries the right one: **maji math** is the Mirror-form name for
+**the reindexer**, whose operational content is *reindex a collapsed corpus on its RELATIONAL
+structure rather than its original index* — later formalised with Alexa. Its root is lived rather
+than technical, recorded in the book intake; not restated here.
+
+Under reindexing, replay is **additive over lenses, not destructive**:
+
+- the event log is the truth; a fold-function is a **view** over it
+- a new lens materialises a **new** index; **prior indexes are retained**
+- so a wrong-lens reindexing is not a loss — it becomes **one more lens**, and a wrong lens still
+  carries information (it says what the world looks like *under that assumption*)
+
+That is the emit/retract discipline applied to interpretation: **retraction is correction, not
+deletion** (`dv2-data-split-discipline` — Z-set retraction is a correction, never a duplicate
+guard). And it is **§11 Multi-Oracle turned inward** — no single mandatory lens on your own history,
+which is precisely what "multi lens like our lensography" names.
+
+**What survives of §3 and what does not.** The cost asymmetry stands: a function delta still forces
+a full re-fold, and that is still expensive. What does *not* stand is the irreversibility. Cost is
+the reason to label before rewriting; **catastrophe is not**, because the reindexer keeps the prior
+lens. The register discipline is a **performance** argument, not a safety one — a weaker claim, and
+the true one.
+
+**Anchoring caution, deliberate.** `maji` is **not** anchored here to any external name. A false
+back-anchor (`maji ← Shahn Majid`) was proposed and caught in-repo the same week the reindexer was
+written up; this record does not repeat it. Flag, do not fabricate —
+[`anchor-to-human-prior-art`](../../../.claude/rules/anchor-to-human-prior-art.md).
 
 ## Pointers
 
