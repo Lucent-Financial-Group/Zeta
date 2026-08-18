@@ -538,6 +538,24 @@ is. Authority differences belong at the port because the port is
 where the metering happens. Enumerating surfaces is enumerating
 **seams**, not processes.
 
+**Rooms contain surfaces**, and a surface is **simulated in tests,
+real in prod** (Aaron 2026-08-18). Same seam, two implementations —
+which is exactly the DST discipline: the port is where you swap the
+real channel for a metered fake, so one code path runs deterministic
+at DoP=1 and live at DoP=N with no special case.
+
+**That gives the term a falsifier, which is the useful part.** Asking
+*"is X a surface?"* is not a matter of taste:
+
+> **Can you substitute a simulated X in a test without changing the
+> code path?** If **yes**, X is a surface — a declared port. If
+> **no**, X is an **ambient channel**, and §13 says it should not
+> exist.
+
+So simulability is not a testing convenience that happens to be nice
+to have; it is the **evidence** that a thing is a declared channel at
+all. A seam you cannot fake was never a port.
+
 Aaron settled this as the standing term 2026-08-18 ("surfaces is a
 good name to land on for the different tick sources and interaction
 models").
