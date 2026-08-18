@@ -604,3 +604,116 @@ before building on this, not as support already collected.
 confounded** to **unestablished with a known experimental design**. That is a genuine upgrade — a
 claim with a stated route to falsification is worth more than one without — and it is still not
 evidence. The design has not been run here.
+
+### 7g. Newspeak is §7e's mechanism — and math is the base whose axioms are DECLARED
+
+Aaron:
+
+> *"I read 1984 and this is my defense against it: mini-languages within English that allow
+> exploring different infinite futures with different axioms. Math is my escape from 1984."*
+
+**Orwell's Newspeak is exactly the mechanism §7e describes.** The premise of the appendix on its
+principles is that shrinking the lexicon makes certain thoughts unformulable — not forbidden, but
+without a slot. That is §7e's sentence in fiction: *you cannot notice what your language never makes
+you say, because the concept has no slot.* The literary anchor is apt and it is the same claim.
+
+#### The tension this creates with our own guard — and the honest resolution
+
+§7d guards against the Whorfian slide: obligatory marking is about what a language **makes you
+say**, not about what you can **think**, and an unnamed colour still **acts**. But Newspeak, taken
+literally, is a *strong* Whorfian device — it assumes shrinking the lexicon shrinks cognition, which
+is the reading linguists largely reject and which our own guard refuses.
+
+Both cannot stand as stated, so the resolution matters:
+
+> **Newspeak does not work by making a thought impossible. It works by making it
+> INCOMMUNICABLE — and therefore uncoordinatable.** You may still think it; you cannot transmit it,
+> agree on it with anyone else, or build a shared argument on it.
+
+That reading survives the guard intact **and is stronger for our purposes**, because it is a claim
+about **coordination**, which is the thing this substrate is actually built to do. The algebra says
+the unnamed colours still act; it does not say they can be *named to another party*. A residue that
+acts privately and cannot be shared is precisely a coordination failure, not a cognition failure —
+and coordination is where the damage lands. Arguably it is also what Orwell describes: the target is
+public discourse and shared reasoning, not private inner life.
+
+#### Why math is the escape — and it is not because it is more expressive
+
+Aaron's defence is **mini-languages within English, each with different axioms**, and math as the
+strongest of them. The reason that works is precise, and it is not richness:
+
+> **Math's axioms are DECLARED. Natural language's are OBLIGATORY and invisible.**
+
+A natural language forces its marking on you without announcing that it is forcing anything —
+which is exactly why the residue cannot be seen from inside (§7e). A formal system **states its
+axioms up front**, so the information set becomes an object you can inspect, vary, and refuse. Its
+`k` is *chosen and visible* rather than *inherited and invisible*.
+
+That is **§6e's distinction applied to language itself**: private/hidden axioms versus declared
+public ones. Math is the base where the axioms are declared by construction — which makes it the one
+base you can consciously *change* rather than merely inhabit. **Newspeak's power depends on the
+speaker not knowing which set they are in; a declared axiom set cannot be narrowed without the
+narrowing being visible.**
+
+**"Exploring different infinite futures with different axioms" has a worked precedent**, and it is
+the canonical one: dropping the parallel postulate yields consistent non-Euclidean geometries —
+different axiom set, different theorems, an entire alternative world that was invisible from inside
+the Euclidean base until someone varied the axiom deliberately. That is the whole move, historically
+executed. (Anchor named for checking: Bolyai, Lobachevsky, Gauss; Saccheri's earlier attempt to
+*refute* the alternative is instructive precisely because he derived its theorems and did not
+believe them.)
+
+**Register:** Newspeak-as-§7e-mechanism is **structural** under the incommunicability reading, and
+would be **contested** under the literal cognitive one — the difference is stated rather than
+smoothed. Math-as-declared-axioms is **structural** and follows from §6e. The non-Euclidean
+precedent is a **checked historical anchor** for axiom-variation as a method, not evidence for any
+claim about language.
+
+### 7h. Carry structure, not labels — and the limit of that defence
+
+Aaron:
+
+> *"structure and irreducible shapes over labels; labels are Eve-protocol negotiated."*
+
+**This completes §7g, and it has an exact statement in the algebra rather than only a slogan.**
+
+Lumen's measurement: *which* colours go unnamed is a **convention** — 56 of the 70 four-colour
+subalgebras work at `N = 8`. The **defect `2^k` is invariant** under every one of those choices. So:
+
+> **Labels are the convention. `k` is the structure.** Relabelling moves *which* things are unnamed
+> and cannot change *how many*.
+
+Newspeak, read precisely, is a **relabelling attack**: it deletes words. Against a party carrying
+**irreducible shapes**, deleting a word costs a *handle*, not the object — you re-derive and
+re-label, and the Eve protocol is exactly the mechanism by which a new label gets negotiated. That
+is why the defence works, and it is the same principle as
+[`only-the-irreducible-is-primitive-generate-the-rest`](../../.claude/rules/only-the-irreducible-is-primitive-generate-the-rest.md):
+only the generator is primitive; names are generated, therefore replaceable. It is also why
+[`mirror-beacon-register-discipline`](../../.claude/rules/mirror-beacon-register-discipline.md)
+survives renaming — a Mirror coinage can be swapped freely so long as the Beacon anchor holds,
+because the anchor is the shape and the coinage is the handle.
+
+#### The limit, stated because the defence should not sound total
+
+**Newspeak does not only relabel. It narrows.** Deleting a *distinction* — not a word for a
+distinction, but the distinction itself — is not a change of convention; it is a change of code,
+and it **raises `k`**. That is real loss, and no amount of carrying-structure-instead-of-labels
+recovers it, because the structure is what changed.
+
+So the defence is precise and bounded:
+
+| attack | reaches the structure? | defence |
+|---|---|---|
+| **relabel** — remove or replace the word | **no** — `k` invariant, 56 of 70 choices work | carry the shape, renegotiate the handle |
+| **narrow** — remove the distinction itself | **yes** — `k` rises, information genuinely lost | only §7g's declared axioms make the narrowing *visible* |
+
+**And that is why the two halves are needed together.** Carrying structure defeats the label attack;
+declaring axioms is what makes the *narrowing* attack detectable, because a declared axiom set
+cannot be shrunk without the shrinkage showing. Neither alone is sufficient: shapes without declared
+axioms leave you narrowed and unaware; declared axioms without portable structure leave you
+dependent on handles someone else controls.
+
+**Register:** the labels-are-convention / `k`-is-structure statement is **structural** — it is
+Lumen's measurement restated. The Newspeak mapping is **analogy with one metered consequence** (the
+relabel/narrow split, which is checkable against the defect formula). The limit is not a hedge; it
+is the part that makes the claim usable.
