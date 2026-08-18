@@ -33,6 +33,19 @@
 // into the checker is a second source of truth, and a checker that agrees with
 // its own copy proves nothing. The shell assignment IS the value the runner uses.
 //
+// TWO CLASSES OF JOB, TWO BUDGETS. linux.sh picks its default from GITHUB_ACTIONS.
+// A job that runs the installer directly on the runner sees that variable and gets
+// the CI default; a job that runs it inside `docker build` does NOT (Docker passes
+// no ambient environment), so the container gets the LOCAL default — which is the
+// right budget there, because a cold container really does fetch the whole manifest.
+// Checking every job against the CI number would therefore have been checking the
+// wrong number for the docker legs, and missing them entirely (their `run:` names a
+// Dockerfile, not the installer) would have left a whole class unaudited. Both are
+// the failure this audit exists to prevent, so both are modelled.
+//
+// NixOS containers are excluded: linux.sh short-circuits the ENTIRE apt phase on the
+// /etc/NIXOS marker, so there is no budget to fit.
+//
 // Rule 0: TypeScript, no new .sh files (`.claude/rules/rule-0-no-sh-files.md`).
 //
 // Usage:
@@ -54,6 +67,12 @@ export const GITHUB_DEFAULT_TIMEOUT_MINUTES = 360;
 /** Paths whose presence in a `run:` block means "this job runs the apt phase". */
 const INSTALLER_PATHS = ["tools/setup/install.sh", "tools/setup/linux.sh"];
 
+/** Dockerfile references in a `run:` block — the indirect way a job runs the installer. */
+const DOCKERFILE_RE = /[\w./-]*dockerfiles\/[\w.-]+\/Dockerfile/g;
+
+/** Which default linux.sh will pick, given how the job invokes it. */
+export type BudgetKind = "ci" | "local";
+
 export interface AptBudget {
   /** Default wall budget for the whole apt phase under GITHUB_ACTIONS=true. */
   readonly ciDefaultSeconds: number;
@@ -69,13 +88,20 @@ export interface InstallerJob {
   /** null when the job declares none — GitHub's 360-minute default then applies. */
   readonly timeoutMinutes: number | null;
   readonly effectiveSeconds: number;
+  /** "ci" on the runner (GITHUB_ACTIONS is set); "local" inside `docker build`. */
+  readonly budgetKind: BudgetKind;
 }
 
 export interface Reconciliation {
   readonly ok: boolean;
   readonly budget: AptBudget;
-  readonly required: number;
-  readonly tightest: InstallerJob | null;
+  /** Per class: what the budget needs, and the tightest job that has to grant it. */
+  readonly perKind: readonly {
+    readonly kind: BudgetKind;
+    readonly required: number;
+    readonly tightest: InstallerJob;
+    readonly ok: boolean;
+  }[];
   readonly jobs: readonly InstallerJob[];
   readonly detail: string;
 }
@@ -111,8 +137,18 @@ function runsOnlyOnNonLinux(runsOn: unknown): boolean {
   return namesOther && !namesLinux;
 }
 
-/** Every job in one workflow whose steps invoke the installer on a Linux runner. */
-export function installerJobs(workflowYaml: string, workflowName: string): InstallerJob[] {
+/**
+ * Every job in one workflow whose steps invoke the installer on a Linux runner —
+ * directly (`run: ./tools/setup/install.sh`) or through a Dockerfile that does.
+ *
+ * `readDockerfile` returns the text of a repo-relative Dockerfile path, or null when
+ * it does not exist. Injected so the parsing is testable without a filesystem.
+ */
+export function installerJobs(
+  workflowYaml: string,
+  workflowName: string,
+  readDockerfile: (repoRelativePath: string) => string | null = () => null,
+): InstallerJob[] {
   const doc = parseYaml(workflowYaml) as { jobs?: Record<string, unknown> } | null;
   const jobs = doc?.jobs;
   if (!jobs || typeof jobs !== "object") return [];
@@ -120,8 +156,23 @@ export function installerJobs(workflowYaml: string, workflowName: string): Insta
   for (const [name, raw] of Object.entries(jobs)) {
     if (!raw || typeof raw !== "object") continue;
     const job = raw as Record<string, unknown>;
-    const steps = JSON.stringify(job["steps"] ?? "");
-    if (!INSTALLER_PATHS.some((p) => steps.includes(p))) continue;
+    const steps = JSON.stringify(job.steps ?? "");
+    let kind: BudgetKind | null = null;
+    if (INSTALLER_PATHS.some((p) => steps.includes(p))) {
+      kind = "ci";
+    } else {
+      for (const ref of steps.match(DOCKERFILE_RE) ?? []) {
+        const text = readDockerfile(ref.replace(/^\.\//, ""));
+        if (text === null) continue;
+        // A NixOS image short-circuits the whole apt phase — no budget to fit.
+        if (text.includes("/etc/NIXOS")) continue;
+        if (INSTALLER_PATHS.some((p) => text.includes(p))) {
+          kind = "local"; // `docker build` passes no GITHUB_ACTIONS into the container
+          break;
+        }
+      }
+    }
+    if (kind === null) continue;
     if (runsOnlyOnNonLinux(job["runs-on"])) continue;
     const declared = job["timeout-minutes"];
     const timeoutMinutes = typeof declared === "number" ? declared : null;
@@ -130,52 +181,71 @@ export function installerJobs(workflowYaml: string, workflowName: string): Insta
       job: name,
       timeoutMinutes,
       effectiveSeconds: (timeoutMinutes ?? GITHUB_DEFAULT_TIMEOUT_MINUTES) * 60,
+      budgetKind: kind,
     });
   }
   return out;
 }
 
 export function reconcile(budget: AptBudget, jobs: readonly InstallerJob[]): Reconciliation {
-  const required = budget.ciDefaultSeconds + budget.killAfterSeconds + PRE_APT_RESERVE_SECONDS;
   if (jobs.length === 0) {
     return {
       ok: false,
       budget,
-      required,
-      tightest: null,
+      perKind: [],
       jobs,
       detail:
         "no workflow job invokes tools/setup/install.sh — either the installer moved or " +
         "this audit stopped seeing it; an audit with nothing to check is not a passing audit",
     };
   }
-  const tightest = jobs.reduce((a, b) => (b.effectiveSeconds < a.effectiveSeconds ? b : a));
-  const ok = required <= tightest.effectiveSeconds;
+  const defaults: Record<BudgetKind, number> = {
+    ci: budget.ciDefaultSeconds,
+    local: budget.localDefaultSeconds,
+  };
+  const perKind: Reconciliation["perKind"] = (["ci", "local"] as const)
+    .map((kind) => {
+      const of = jobs.filter((j) => j.budgetKind === kind);
+      if (of.length === 0) return null;
+      const tightest = of.reduce((a, b) => (b.effectiveSeconds < a.effectiveSeconds ? b : a));
+      const required = defaults[kind] + budget.killAfterSeconds + PRE_APT_RESERVE_SECONDS;
+      return { kind, required, tightest, ok: required <= tightest.effectiveSeconds };
+    })
+    .filter((x): x is NonNullable<typeof x> => x !== null);
+
+  const ok = perKind.every((k) => k.ok);
+  const line = (k: Reconciliation["perKind"][number]) =>
+    `${k.kind}: ${String(k.required)}s needed vs ${String(k.tightest.effectiveSeconds)}s in ` +
+    `${k.tightest.workflow}:${k.tightest.job}` +
+    (k.ok ? ` (margin ${String(k.tightest.effectiveSeconds - k.required)}s)` : " — EXCEEDS");
   return {
     ok,
     budget,
-    required,
-    tightest,
+    perKind,
     jobs,
     detail: ok
-      ? `${required}s needed <= ${tightest.effectiveSeconds}s available in ` +
-        `${tightest.workflow}:${tightest.job} (margin ${tightest.effectiveSeconds - required}s)`
-      : `${required}s needed (${budget.ciDefaultSeconds}s budget + ` +
-        `${budget.killAfterSeconds}s kill grace + ${PRE_APT_RESERVE_SECONDS}s pre-apt reserve) ` +
-        `EXCEEDS the ${tightest.effectiveSeconds}s of ${tightest.workflow}:${tightest.job}. ` +
-        `On a stalled mirror that job is killed mid-apt and reports \`cancelled\` instead of ` +
-        `the installer's own error. Lower ZETA_APT_CI_BUDGET_DEFAULT_SECONDS in ` +
-        `tools/setup/linux.sh, or raise that job's timeout-minutes.`,
+      ? perKind.map(line).join("; ")
+      : perKind.map(line).join("; ") +
+        ". On a stalled mirror that job is killed mid-apt and reports `cancelled` instead of " +
+        "the installer's own error. Lower the matching default in tools/setup/linux.sh, or " +
+        "raise that job's timeout-minutes.",
   };
 }
 
 export function auditRepo(root: string): Reconciliation {
   const budget = parseAptBudget(readFileSync(join(root, "tools/setup/linux.sh"), "utf8"));
+  const readDockerfile = (rel: string): string | null => {
+    try {
+      return readFileSync(join(root, rel), "utf8");
+    } catch {
+      return null;
+    }
+  };
   const dir = join(root, ".github/workflows");
   const jobs: InstallerJob[] = [];
   for (const file of readdirSync(dir).sort()) {
     if (!file.endsWith(".yml") && !file.endsWith(".yaml")) continue;
-    jobs.push(...installerJobs(readFileSync(join(dir, file), "utf8"), file));
+    jobs.push(...installerJobs(readFileSync(join(dir, file), "utf8"), file, readDockerfile));
   }
   return reconcile(budget, jobs);
 }
@@ -186,13 +256,16 @@ export function main(argv: string[]): number {
   if (argv.includes("--human")) {
     const sorted = [...r.jobs].sort((a, b) => a.effectiveSeconds - b.effectiveSeconds).slice(0, 10);
     process.stdout.write(
-      `apt budget: ${r.budget.ciDefaultSeconds}s CI / ${r.budget.localDefaultSeconds}s local, ` +
-        `${r.budget.killAfterSeconds}s kill grace\n` +
-        `installer jobs: ${r.jobs.length}\n` +
+      `apt budget: ${String(r.budget.ciDefaultSeconds)}s CI / ` +
+        `${String(r.budget.localDefaultSeconds)}s local, ` +
+        `${String(r.budget.killAfterSeconds)}s kill grace, ` +
+        `${String(PRE_APT_RESERVE_SECONDS)}s pre-apt reserve\n` +
+        `installer jobs: ${String(r.jobs.length)}\n` +
         sorted
           .map(
             (j) =>
-              `  ${String(j.effectiveSeconds).padStart(6)}s  ${j.workflow}:${j.job}` +
+              `  ${String(j.effectiveSeconds).padStart(6)}s  [${j.budgetKind}] ` +
+              `${j.workflow}:${j.job}` +
               (j.timeoutMinutes === null ? "  (no timeout-minutes — GitHub default)" : ""),
           )
           .join("\n") +

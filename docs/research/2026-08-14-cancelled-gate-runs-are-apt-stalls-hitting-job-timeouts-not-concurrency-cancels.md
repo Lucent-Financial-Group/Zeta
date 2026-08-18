@@ -233,7 +233,13 @@ guard shipped with none, which is why nothing was red):
   symptom itself.
 - `src/Core.TypeScript/hygiene/audit-apt-budget-fits-job-timeout.ts` parses the budget out
   of `linux.sh` and every `timeout-minutes` out of every workflow that runs the installer,
-  and asserts `budget + kill-grace + 120s pre-apt reserve ≤ tightest job`. Currently
-  `280s ≤ 300s`. It is the edge between two numbers that live in different files and were
-  never diffed together; open question 3 above is now machine-checked rather than
-  "worth a pass".
+  and asserts `budget + kill-grace + 120s pre-apt reserve ≤ tightest job`, **per budget
+  class**: `docker build` passes no `GITHUB_ACTIONS`, so a containerized install leg gets
+  the local default and must be judged against it, and its `run:` names a Dockerfile
+  rather than the installer — checking only the direct-`run:` jobs against only the CI
+  number would have left that class silently unaudited, which is this document's own
+  defect wearing a checker's face. Currently `ci: 280s ≤ 300s`,
+  `local: 1930s ≤ 2700s`, 45 jobs. NixOS containers are excluded because `/etc/NIXOS`
+  short-circuits the whole apt phase. It is the edge between numbers that live in
+  different files and were never diffed together; open question 3 above is now
+  machine-checked rather than "worth a pass".
