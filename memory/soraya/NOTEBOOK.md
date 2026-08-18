@@ -53,110 +53,7 @@ and 8 Z3 lemmas. Superseded: the TLA+ leg alone is now 52 gated model runs.
 
 ---
 
-## Round 41 — RecursiveSigned tool-coverage audit
-
-Targets:
-
-- `src/Core/RecursiveSigned.fs` (82 LOC skeleton, not in Core.fsproj)
-- `tools/tla/specs/RecursiveSignedSemiNaive.tla` (233 LOC, real Step)
-- `tools/tla/specs/RecursiveSignedSemiNaive.cfg` (PosOne baseline,
-  NegOne/PosTwo/NegTwo exercised round 35)
-- Sibling: `tools/tla/specs/RecursiveCountingLFP.tla` (shipped)
-
-### Per-property tool verdict
-
-| Property | Primary | Cross-check | Rationale |
-|---|---|---|---|
-| S1 Terminates-in-bound | TLC | none | State-bound safety; TLC sweet spot. P1 (non-P0). |
-| S2 FixpointAtTerm | TLC | Z3 (QF_LIA) | Load-bearing algebraic claim `total = Seed + Body(total)` at done; P0 per BP-16 (silent fixpoint drift is unrecoverable). TLC checks over bounded Keys; Z3 discharges the pointwise identity independently of state enumeration. |
-| S3 GapMonotone | TLC | none | Pure state invariant on `total`; P1. |
-| S3' DeltaSingleSigned | TLC | none | Pure state invariant on `delta`; P1. Redundant-looking but catches a wrong-step bug S3 would miss (delta could be wrong while total stays in {0, SeedWeight} on a lucky trace). Keep. |
-| SupportMonotone | TLC | Alloy (optional) | Structural/shape claim; TLC is fine under the bounded chain body. Alloy at bound 4-6 is cheaper if the body ever generalises beyond a successor chain. Do not add Alloy today. |
-| S4 Sign-distribution | FsCheck (Z-linearity + negation over ZSet generator) | Lean (deferred) | Two-trace quantification (`total(-w) = -total(+w)`) is NOT a TLA+ property — TLC would need to enumerate the product state space of two runs, which is O(states^2) for a property F# can check in milliseconds. Anti-TLA+-hammer: hard no on stuffing S4 into this spec. Lean is the escalation path only if FsCheck finds a counterexample the team cannot triangulate. |
-| Refinement to counting (SeedWeight = 1) | FsCheck cross-trace | TLA+ refinement mapping (deferred) | See below. |
-
-### Round-35 author's plan — verdict: **right, with one tightening.**
-
-TLC for S1+S2+S3+S3'+SupportMonotone: correct. FsCheck for S4:
-correct. Tightening: **S2 needs a Z3 cross-check** under BP-16. S2
-is the only P0 on this spec (silent fixpoint drift corrupts
-downstream total, unrecoverable). Single-tool P0 evidence is
-insufficient (BP-16); TLC-only would ship if TLC's bounded scope
-accidentally dodges a pointwise identity failure. Z3 lemma on
-`total = Seed + Body(total)` at arbitrary SeedWeight closes the
-arithmetic axis TLC only samples. Effort: S (pointwise identity,
-add to `tests/Tests.FSharp/Formal/Z3.Laws.Tests.fs`). S1/S3/S3'/
-SupportMonotone are P1 — single tool is fine.
-
-### Refinement mapping — FsCheck cross-trace wins
-
-Three candidates:
-
-1. **TLA+ refinement mapping** (signed -> counting under SeedWeight=1).
-   Correct in theory; TLAPS-grade work, L effort, and the claim is
-   already visible by construction in the spec comments (closure[k] =
-   total[k], paths[k] = total[k]). Over-broad. **No.**
-2. **Lean lemma.** Would require lifting both iterations into Lean;
-   the counting spec has no Lean counterpart. Over-broad. **No.**
-3. **FsCheck cross-trace property** — run both `RecursiveCounting`
-   and `RecursiveSignedDelta` on the same (seed, body) under
-   SeedWeight = 1; assert `counting.closure[k] = signed.total[k]`
-   at every tick. Effort: S. Executes real code, catches divergence
-   between the two shipped combinators, and discharges the refinement
-   claim at the implementation level where it bites. **Yes.** Lives
-   in `tests/Tests.FSharp/Formal/` next to existing cross-checks.
-   Cites BP-16 (two independent tools on a P0-adjacent claim).
-
-### Readiness gate — TLA+ spec is ready to model-check
-
-`.cfg` has `SPECIFICATION Spec`, `INVARIANT Safety`, concrete
-constants (`MaxKey=3 MaxIter=6 SeedWeight<-PosOne`). Safety bundles
-TypeOK + TerminatesInBound + FixpointAtTerm + GapMonotone +
-DeltaSingleSigned + SupportMonotone. State space is bounded (Keys
-= 0..3, Weights = -4..4, MaxIter = 6); well under TLC's knee.
-Round-35 header comment records "All four values were verified
-round 35 (all invariants pass, 6 states / depth 5)" — spec is
-already model-checked at four SeedWeight points. **No pre-TLC pass
-needed.** One small follow-up for round 42: add `PROPERTY
-EventuallyDone` to the .cfg to exercise the liveness claim
-(currently only Safety is in the invariant list). Optional, not a
-blocker.
-
-### Graduation verdict — CONDITIONAL PASS
-
-`RecursiveSigned.fs` may graduate from skeleton to shipped in round
-42 subject to both:
-
-(a) **Tool-coverage prereqs landed in CI**, in priority order:
-
-    1. Wire `RecursiveSignedSemiNaive.cfg` into the TLC CI job
-       alongside the sibling counting spec (round-42 opener task).
-    2. Add Z3 lemma for S2 (`total = Seed + Body(total)` at
-       fixpoint, arbitrary SeedWeight) to the formal-laws test
-       suite.
-    3. Add FsCheck property for S4 (sign-distribution, two-trace).
-    4. Add FsCheck cross-trace refinement (signed vs counting at
-       SeedWeight = 1).
-
-(b) **F# implementation landed by round-42 author** matching the
-    planned signature in the skeleton comment, with P1/P2/P3
-    enforced at the caller (compile-time phantom type preferred;
-    runtime reject of Distinct-in-body acceptable).
-
-Blockers: none at routing level. The F# file is currently
-zero-risk (not in csproj, comment-only); leaving it in place
-through round 42 costs nothing. The TLA+ spec is already
-model-checked and can land in the CI gate today independently of
-the F# landing.
-
-### Portfolio delta
-
-Round 41 numerator grows by 1 (new TLA+ spec enters gate). Round
-42 numerator grows by 3 (Z3 lemma + two FsCheck properties).
-Denominator grows by 1 at round 41 (BUGS.md gains nothing; this
-was already on the "needs formal coverage" list since round 35).
-Ratio trends up. Routing keeping up with claim intake.
-
+## Round 41 -- PRUNED 2026-08-18 (3000-word cap). Landed; superseded.
 
 ## Trigger Recognition Log (081KSBMG30008QG0R000WJ9FMP landing — round-69 routing decision)
 
@@ -173,37 +70,7 @@ Format: table with columns `Round | Trigger | Outcome | Artifact`. One row per r
 If this section saturates (NOTEBOOK approaches 3000-word cap from log entries alone), revisit Option 3: create a separate cross-cutting ledger (e.g., `docs/research/verification-routing-decisions.md` — does not yet exist; hypothetical destination).
 
 
-## Safety-floor arc — full 3-leg BP-16 across all four floors (2026-06-07)
-
-Persisted via the shadow's writer clone (the formal-verification-expert role has no Write tool;
-the verification + close were done live in the view but the view is read-only — this is the durable
-record on origin). All figures below were verified by EXECUTION, not source-reading (verify-before-record).
-
-**non-register-collapse** (workitem 081KTFFFQ1C, FROZEN-CORE §B → DISCHARGED) — full 3-leg BP-16:
-
-- Facet-1 TLA+ `tools/tla/specs/NonRegisterCollapse.tla` (no-capture `lastRaiser[t]=t`; consent-guarded
-  `Capture` unreachable in the weight-free base; `SelfRaiseRightOpen`). TLC-green, gated. PR #6721.
-- Facet-2 Lean `tools/lean4/Safety/NonRegisterCollapse.lean` (axiom-free `non_collapse` etc.; corollary
-  of `IdentityForcesPrivacy.private_is_persistent_locus`, priv:=standing). Gated + sorry-free. PR #6721.
-- Leg-3 FsCheck `tests/Tests.FSharp/Formal/NonRegisterCollapseCrossVerify.Tests.fs` over deployed
-  `GCounter.Merge` (my routing: shipped combinator, NOT Binding.Standing). 4 properties green. PR #6723.
-  Scope (mine, verbatim in registry): ANALOGUE not replay — GCounter is a pure register, no
-  commons/standing split; corroborates the CRDT-join premises, not the standing-locus semantics.
-
-**bifurcation** — the "missing FsCheck leg" was a STALE-REGISTRY miscount, not reality. The leg already
-existed (`BifurcationCrossVerify.Tests.fs` over deployed `Binding.Divvy`); the registry row just said
-"not yet done". Corrected (PR #6724) + the omitted **associativity** property added (the 081KT07NV0008QG0R001YDB73K class:
-commutative+idempotent-but-non-associative passes the old 2 properties yet diverges under reorder).
-Verified by execution: **5 properties green** (`Divvy.merge` is a lawful join). Sub-item closed.
-
-**Corrected ratios (supersede the earlier 0.75):**
-
-- Safety-floor BP-16-compliant (≥2 independent tools) = **4/4 = 1.00**.
-- Safety-floor full-3-leg = **4/4 = 1.00** (was mis-stated 3/4 from the stale bifurcation row).
-
-The four floors: child-floor, right-to-refuse-binding, bifurcation, non-register-collapse — each at all
-three legs. No open bifurcation routing item for Kenji (the Face-3 item is retired — it already existed).
-
+## Safety-floor arc -- PRUNED 2026-08-18 (3000-word cap). Landed; superseded.
 
 ## Vacuity round — the Landauer lane (2026-08-13, PR pending)
 
@@ -393,3 +260,40 @@ Not exposed to the bun 5s cap (`081KZZ3JHP1087G0R00027ARRR`, reproduced here: `b
 `timeout = 20000` is ignored, a 6s test dies at 5002ms). The gate is `dotnet test`; the bun-side
 TLC tests only run metadata commands. A comment in `run-tlc.test.ts` names the hazard so nobody
 adds a real model check there and reads a 5s truncation as a failed proof.
+
+## 2026-08-18 -- ambient time in TESTS is a routing target, and the tool is NOT a prover
+
+Aaron authorized a CLASS fix for the ambient-time-in-tests pattern (it 'leads to the worse bugs
+and scaling issues'). Established instance: poll-pr-gate-batch.test.ts, 14 pure in-memory tests,
+MEASURED 1366ms idle vs 5.46s under load on the same machine class, red at exactly the 5000ms
+per-test cap on six PRs. A 4x spread on identical code IS the finding.
+
+ROUTING CALL, and it is the one worth remembering. The property is 'no test asserts on
+wall-clock' -- LEXICAL over source text, not semantic over a state space. TLA+/Z3 are the wrong
+axis outright (no transition system, no arithmetic). The real contest was Semgrep vs ESLint vs a
+bun lint script, and the decider was NOT expressiveness -- all three match the pattern. It was
+the SUPPRESSION MECHANISM: nosemgrep and eslint-disable-next-line are inline comments,
+invisible in any roster, added by the same edit that introduces the violation. For a check whose
+whole purpose is that an allowlist cannot silently swallow a new violation, the tool that offers
+inline suppression defeats the check. Chose a count-pinned registry file, copying
+DeterminismLint.Tests.fs (which pins EXACT occurrence counts in src/Core, for the same stated
+reason). Ratchet bites both ways: a 7th sleep behind 6 justified ones fails, and so does a stale
+row that has stopped constraining anything.
+
+GENERALIZATION worth carrying: when routing a guard, ask what its ESCAPE HATCH looks like before
+asking what it can express. A checker is only as strong as the weakest way to silence it.
+
+SWEEP RESULT, honest: 1061 test files, 25 sites, 9 files. The F# suite is essentially CLEAN --
+most F# Thread.Sleep is filesystem-retry backoff or starting-gun jitter that cannot flip a
+verdict; the one genuine case (SystemClock ticks forward: Thread.Sleep 5 then t1 > t0) is a
+Windows timer-granularity latent on a continue-on-error leg. Did not manufacture more.
+
+MY OWN VACUITY, recorded because it is the useful part: the first anti-vacuity assertion I wrote
+for the ferry backpressure test SURVIVED its mutation (raising maxQueueSize 2 -> 10000 left it
+green), because an async enqueue always costs a microtask whether or not the queue is full. A
+check that cannot fail is not a check, and it looked exactly like one that could. Fixed by
+measuring in TURNS instead of microtasks. Turns are the right unit for load-independence.
+
+PORTFOLIO NOTE: this adds a cell in the adversarial-input/taint row that is CHEAPER than Semgrep
+for the allowlist-integrity reason above. The routing table's cheapest-credible-tool column
+should record that the SUPPRESSION SURFACE is part of a tool's cost, not a footnote.
