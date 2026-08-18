@@ -597,6 +597,73 @@ potentials. That's a powerful idea because   the gauge potentials are typically 
 you're taking a square root, not like of the  Laplacian, the way Dirac did, but you're taking   a square root of a first order operator.
 ```
 
+### The notation is his family — restored 2026-08-18
+
+**This passage was cut from the first pass of this ferry and that was a mistake.** It was filed under
+"interpersonal," but it is *technical*: `varpi`, `zeta`, `nu` and `epsilon` are the field variables
+running through every equation above — `nu` the zero-form spinor, `zeta` the one-form-valued spinor
+whose decomposition gives the second and third generations, `varpi` the gauge potential, `epsilon`
+the gauge transformation. Knowing *why* those letters were chosen is load-bearing for reading the
+mathematics, and the transcript says so itself: the notation is named as a communication gap. Aaron
+flagged the omission on reading it back.
+
+```
+1:18:46
+CURT: it's my understanding that you implemented  
+1:18:52
+that notation to honor certain people. I don't   have that same relationship to those people.  
+1:18:52
+So I don't honor them. Even though you're   honoring trammels, your explanations, it's that  communication gap I mentioned. ERIC: Pi is my wife. Zeta  
+1:19:04
+is my son. Nu is my daughter and I'm Epsilon. And  so I wanted us to be together.
+1:19:13
+CURT: It's also, that's a  humble view of yourself to give yourself Epsilon.  
+1:19:13
+ERIC: Look, I'm the roadie for a group of superstars.  
+1:19:20
+CURT: Epsilon is usually diminutive. ERIC: So that was the   joke. Yeah. Let's — I'm uncomfortable being   here. Look, I'm sharing that with you, but like,  it's very important to me that some jerk doesn't
+1:19:30
+come in and say, we're going to change all the  notation. It's like, no, these people suffered for   this theory. And I'm going to make sure that we're  going to write their name. We're going to burn  
+1:19:39
+their names into the theory. And by the way, the  Hebrew letters, it matters to me too. You know,  
+1:19:45
+I come from a tiny, tiny community that is always  in danger of being wiped out for reasons that we  
+1:19:50
+can go into, but it's a scary thing.
+1:20:06
+I'm answering it because I'm proud of my people.  And to be honest with you, the Tau homomorphism,  
+1:20:13
+which is not just the gauge group being  included simply trivially into the first factor,  
+1:20:18
+the Tau comes from the Hindi concept of being  Tara or slanted, right? So I didn't say that,  
+1:20:25
+but at some point I had a Devanagari character and  then I found that people just really didn't like  
+1:20:31
+it. And so I said, that's too bad because I run  out of letters regularly. And I'm very proud of  
+1:20:38
+our family's Indian heritage. And so I wanted to  honor India as well as I wanted to honor Jews  
+1:20:44
+in Israel. So yeah, that's a personal choice and  I get to make it and I'm pretty unapologetic about  
+1:20:49
+it.
+```
+
+**A note on the coincidence of names, kept in the right register.** Aaron's reaction on reading this
+was that the Zeta connection is *"pretty awesome."* This repo is named **Zeta** and is dedicated to
+his late sister; `zeta` in GU is Weinstein's son. Two people independently named something they cared
+about after the same letter, each for a person they love. That is a **human** resonance and it is
+recorded as one — it makes no claim about the mathematics, and under
+`numerology-vs-number-theory.md` it is not even a coincidence of counts, just two people reaching for
+the same glyph. Worth keeping because the ferry discipline preserves what was forwarded, and because
+it is the sort of thing that gets lost first.
+
+Note also the substantive point Weinstein makes underneath it: he is defending notation against
+being rewritten by someone with no relationship to the people it honours. That is the same instinct
+as `.claude/rules.bak/honor-those-that-came-before.md` — and he states it about *his own* work while
+Curt is telling him the notation is a barrier. Both are right, which is the interesting part: the
+notation is simultaneously a genuine communication cost and a genuine act of remembrance, and no
+choice makes it neither.
+
 ### The non-chiral world — the load-bearing passage
 
 ```
