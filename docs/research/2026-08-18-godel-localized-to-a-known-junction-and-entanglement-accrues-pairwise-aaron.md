@@ -435,3 +435,67 @@ absorb *"the residue is structural."*
 **Register:** 7a–7b are **analogy with one metered consequence** (the which-not-how-many prediction,
 following from the convention measurement). 7c's separation is **structural** — it is the defect
 formula. The corpus-size claim is **unmetered**, and stays that way until someone measures a plateau.
+
+### 7d. English is not a superset — and that is the prediction confirming itself
+
+Aaron:
+
+> *"even English, which I think has more content, is missing certain syntax — maybe like having
+> masculine/feminine for most nouns, and also like restricting to merge he/her/they in Indonesian.
+> Things like this seem like A/B multi-experiments to me."*
+
+**This corrects a misreading §7a invites.** Saying "the choice of information set is the choice of
+source language" could be heard as English being the *largest* base — the one that names the most.
+It is not, and the algebra never said it was. **Every base has the same `k`.** English does not
+obligatorily mark gender on nouns the way Spanish or German do; Indonesian's `dia` does not
+distinguish he/she/they where English forces the choice. Neither language is short of the other —
+their **unnamed sets differ**.
+
+That is §7b confirming itself on data Aaron supplied independently of the algebra: *changing the
+base changes WHICH, not HOW MANY.*
+
+**Checked anchor, and it is the exact one — Roman Jakobson, "On Linguistic Aspects of Translation"
+(1959):** languages differ essentially in **what they must convey**, not in what they *may* convey.
+Obligatory grammatical marking is precisely the "named set"; what a language lets you leave implicit
+is precisely the residue that still acts. That Jakobson's essay is *about translation* is not a
+coincidence — it is the same problem, stated sixty-odd years earlier without the algebra.
+
+**Guard, because the neighbouring overclaim is famous and wrong.** This is a claim about
+**obligatory marking**, not a Whorfian claim about thought. Nothing here says a speaker cannot
+*think* what their language does not force them to say — only that the language does not make them
+say it. Conflating the two is the standard error and the algebra gives no licence for it: an unnamed
+colour still **acts**.
+
+**"A/B multi-experiments" is the right frame, and the experiment is natural rather than designed.**
+Human languages are independent draws of the information set — nobody arranged them as a trial, but
+the comparison is available for free.
+
+### 7e. The deliberate version — and why the residue is invisible from inside
+
+Aaron: *"I read* Seven Languages in Seven Weeks *and followed all the lessons — it expanded my mind
+in a way that is rare to most people I meet, even other programmers."*
+
+(Bruce A. Tate, *Seven Languages in Seven Weeks*, Pragmatic Bookshelf 2010 — anchor named, not
+summarised here.)
+
+Programming languages carry obligatory marking exactly as natural ones do: a language that forces
+effects to be named, or relations instead of functions, or supervision and failure to be declared,
+has put those things in its **named set**. What another language lets you leave implicit is its
+**unnamed** residue — operations that still act, unnamed. So working through seven of them is the
+**deliberate** form of the natural experiment in 7d: seven bases, seven different unnamed sets.
+
+**And this yields the load-bearing consequence, which is not a claim about anyone's ability:**
+
+> **Your own unnamed set is invisible from inside your base.** You cannot notice what your language
+> never makes you say — there is no gap where the concept would be, because the concept has no slot.
+> The only way to see it is a **second base where the same thing is named.**
+
+That is why multi-base exposure does something that deeper single-base expertise structurally
+cannot. It is not more resolution in one language; it is **more bases to difference against** — and
+per §7c, resolution and residue are different quantities. A programmer with one deep language has
+excellent resolution and no view of their own `k`.
+
+**Same shape as §6b, and that is the check on it:** plurality cannot be verified by asking the
+lenses, only by finding divergence. Here, the residue cannot be found from within the base, only by
+contrast with another. **The instrument is difference in both cases**, which is a reason to trust
+the pattern rather than a coincidence between two readings of it.
