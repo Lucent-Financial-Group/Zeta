@@ -113,6 +113,15 @@ describe("the sharp form of the lattice eight is about SIGNATURE, not dimension"
     const e = eighthRootOfUnity(0);
     expect(Math.hypot(g.re - e.re, g.im - e.im)).toBeLessThan(1e-9);
   });
+
+  it("and so is its double, in dimension 4", () => {
+    const uu = directSum(HYPERBOLIC, HYPERBOLIC);
+    expect(Math.abs(determinant(uu))).toBe(1);
+    for (let i = 0; i <= 3; i++) expect(uu[i]![i]! % 2).toBe(0);
+    const g = gaussMilgramSum(uu);
+    const e = eighthRootOfUnity(0);
+    expect(Math.hypot(g.re - e.re, g.im - e.im)).toBeLessThan(1e-9);
+  });
 });
 
 describe("Gleason, searched rather than assumed", () => {
