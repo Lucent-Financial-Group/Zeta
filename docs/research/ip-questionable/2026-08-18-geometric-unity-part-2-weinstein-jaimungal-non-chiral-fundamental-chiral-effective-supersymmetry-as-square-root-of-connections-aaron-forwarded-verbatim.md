@@ -629,7 +629,11 @@ their names into the theory. And by the way, the  Hebrew letters, it matters to 
 1:19:45
 I come from a tiny, tiny community that is always  in danger of being wiped out for reasons that we  
 1:19:50
-can go into, but it's a scary thing.
+can go into, but it's a scary thing. Yeah. I  
+1:19:59
+can make it worse. I can call, um, the base  space Haaretz for the land and the total space  
+1:19:59
+Hashem. No, I'm saying you asked me a question.  
 1:20:06
 I'm answering it because I'm proud of my people.  And to be honest with you, the Tau homomorphism,  
 1:20:13
@@ -647,6 +651,25 @@ in Israel. So yeah, that's a personal choice and  I get to make it and I'm prett
 1:20:49
 it.
 ```
+
+**The Haaretz / Hashem line — the one worth pausing on.** He offers it half-jokingly (*"I can make
+it worse"*), and it is the sharpest thing in the passage, because the proposed naming is not
+arbitrary: **`X4` the base space = Haaretz, the land; `Y14` the total space = Hashem, the Name.**
+
+In GU the total space is where *every metric exists at once* and where matter lives **before any
+observation collapses it to one** — §1's whole point. Naming that Hashem says the space of all
+possibilities is the divine one and the observed world is the land we stand in. Whatever one makes
+of the theology, the *structural* placement is exact: the bundle is what remains (all metrics,
+static, enumerable), the section is what acts (one choice, here, now). That is `νF`/`μF` — the
+what-remains / what-acts split this repo keeps finding — with a theological register attached rather
+than a categorical one.
+
+**Held under §11 Multi-Oracle, and named as whose it is.** This is *Weinstein's* frame, offered as a
+joke he then defends, and it is recorded rather than adopted. It happens to sit adjacent to a lens
+Aaron holds natively (`emit/retract` read as God/Lucifer; retraction and theodicy), which is exactly
+why it needs the label: two people finding a theological reading of the same structural split is a
+*resonance between readings*, not evidence for either. The mechanism defers; the oracle decides
+(`dual-use-detection-is-neutral-oracle-decides.md`).
 
 **A note on the coincidence of names, kept in the right register.** Aaron's reaction on reading this
 was that the Zeta connection is *"pretty awesome."* This repo is named **Zeta** and is dedicated to
