@@ -114,8 +114,14 @@ let ``a negative signature is refused as a value, not thrown`` () =
 
 // ── The three eights. ──
 
+// SCOPE, stated because this test is easy to over-read: both predicates reduce to `n % 8 = 0`,
+// so this CANNOT FAIL unless someone edits one and not the other. It is a consistency check on
+// two functions, NOT a verification of Construction A. Construction A itself is verified
+// elsewhere and far better: `CliffordE8Bridge.fs` / `CliffordE8Roots.fs` build the lattice from
+// the in-tree [8,4] code and check its Gram matrix against the E8 Cartan matrix. Reading a green
+// tick here as "the E8 path is formally verified" would be the vacuity class.
 [<Fact>]
-let ``the code and lattice predicates agree everywhere -- Construction A carries one to the other`` () =
+let ``the code and lattice residues agree -- a consistency check, NOT a proof of Construction A`` () =
     for n in 1 .. 200 do
         Assert.Equal(CP.admitsDoublyEvenSelfDualCode n, CP.admitsEvenUnimodularLattice n)
 
@@ -217,3 +223,26 @@ let ``q = 0 is refused rather than wrapped -- there is no even subalgebra to nam
     match CP.evenSubalgebraClass 3 0 with
     | Error (CP.NegativeSignature (3, 0)) -> ()
     | other -> failwithf "expected refusal, got %A" other
+
+
+[<Fact>]
+let ``the Lorentz generators live in the even half, and spacetime does NOT chirally separate`` () =
+    let (p, q) = CP.spacetimeSignature
+    // Cl(1,3): s = 6, the quaternionic row -- M2(H).
+    Assert.Equal(6, CP.signatureClass p q)
+    let full = ok (p, q)
+    Assert.Equal(CP.Quaternionic, full.Ground)
+    Assert.Equal(2, full.MatrixDim)
+    // Cl^0(1,3) = Cl(1,2) = M2(C), which is where SL(2,C) = Spin(1,3) lives. The 6 bivectors
+    // (3 rotations + 3 boosts) are grade 2, hence even, hence "what remains".
+    match CP.evenSubalgebraClass p q with
+    | Ok s' -> Assert.Equal(7, s')
+    | Error e -> failwithf "%A" e
+    let even = ok (1, 2)
+    Assert.Equal(CP.Complex, even.Ground)
+    Assert.Equal(2, even.MatrixDim)
+    Assert.Equal(8, CP.dimensionOfType even)
+    // The discriminator: spacetime does NOT separate, while the adinkra and GU signatures do.
+    match CP.halvesSeparateCleanly 1 3, CP.halvesSeparateCleanly 0 8, CP.halvesSeparateCleanly 7 7 with
+    | Ok false, Ok true, Ok true -> ()
+    | a, b, c -> failwithf "expected (false, true, true), got %A %A %A" a b c

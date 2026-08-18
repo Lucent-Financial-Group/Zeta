@@ -113,6 +113,27 @@ the work.** Applied to our decorrelation lane, that predicts the interesting que
 "what breaks the initial symmetry between agents" but "what amplifies a tiny initial divergence
 into a stable identity" — which is a question our ledger can actually measure.
 
+### 4b. OPEN THREAD — external chirality models to import from **[unverified, name pending]**
+
+Aaron 2026-08-18: *"there are new open source AIs trained on this problem and we can tie into it
+eventually — it can work within our models, or we can export/import from them to us as well.
+I'll find it later; I think it was Google or Microsoft or both, it's open in a lot of the latest
+research around this too."*
+
+**Recorded as a pointer with the name deliberately left blank.** I am not naming a specific model
+here, because guessing which one he means would manufacture a citation — the exact failure
+`anchor-to-human-prior-art.md` forbids (an anchor must be *checked*, not plausible). The
+candidate space is real and large — molecular/materials generative models and chirality-aware
+graph networks from several labs — and picking one from it on a hunch would be numerology with a
+vendor name attached.
+
+**What to do when the name arrives:** the import/export question is well-posed independently of
+which model it is. Our side of the interface is the `Z₂` grading (§2) and the amplification
+question (§4) — *what turns a tiny divergence into a stable one*. Any external model that
+predicts enantiomeric excess is answering the amplification question in a different substrate, so
+the exchange format is an **excess-over-time trajectory**, not a molecular structure. That is
+specifiable now and does not wait on the name.
+
 ### 5. The Eve protocol over adinkras — Aaron's aside, and it maps better than expected **[RESONANCE, tight]**
 
 Aaron: *"our Eve protocol should also be able to be expressed over adinkra — it's like the
