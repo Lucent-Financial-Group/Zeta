@@ -183,7 +183,7 @@ thing to test if anyone builds this.
   `docs/INTENTIONAL-DEBT.md` uses.
 - **The 14-manifold behaving like a 3-manifold**, by two independent routes (Chern–Simons on the
   bosonic side; a rolled-up de Rham complex that skips degrees 2–12 on the fermionic side).
-- **An unreleased `D² ` complex.** He describes a two-connection operator he says he has never
+- **An unreleased `D²` complex.** He describes a two-connection operator he says he has never
   published, and a claim that "on shell, a complex is birthed" — the Einstein condition read as a
   cohomological condition. Recorded because it is stated nowhere else, and flagged because *an
   unreleased result cannot be checked by anyone*, including us.
