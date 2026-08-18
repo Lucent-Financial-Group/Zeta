@@ -499,3 +499,108 @@ excellent resolution and no view of their own `k`.
 lenses, only by finding divergence. Here, the residue cannot be found from within the base, only by
 contrast with another. **The instrument is difference in both cases**, which is a reason to trust
 the pattern rather than a coincidence between two readings of it.
+
+### 7f. Stop words are a readout of the named set — and where the claim stops
+
+Aaron:
+
+> *"this is closely related to stop words, and I think the different common-use stop words in
+> different languages can predict behavior over time in an infinite chaos-theory way that also is
+> self-aware of etymology and the evolution of definitions."*
+
+Four claims bundled. They grade very differently, and separating them is the whole value.
+
+#### The strong one: stop words ARE the obligatory-marking layer [structural]
+
+Stop words are the high-frequency, low-content words — articles, pronouns, prepositions,
+conjunctions, auxiliaries. That is **exactly the layer grammar forces you to emit**. English makes
+you choose `the` or `a` (definiteness); Russian has no articles at all; Spanish forces a gendered
+article; Indonesian's `dia` refuses the he/she split English requires.
+
+So a language's **stop-word list is close to a lexical readout of its named set** — Jakobson's *what
+you must convey*, showing up as the words you cannot avoid using. That is not an analogy; it is the
+same set viewed from the lexicon instead of the grammar.
+
+**And it inverts the field's default handling.** Classical IR *discards* stop words as noise —
+which means the standard preprocessing step throws away precisely the layer that encodes the base.
+Content survives; the information set is deleted. (Modern transformer pipelines do not discard them,
+which is one concrete reason they carry more of what 7d is about.)
+
+**Checked anchor:** stylometry and authorship attribution work primarily on **function words**,
+because they are produced below conscious control and are near-independent of subject matter —
+Mosteller & Wallace's *Federalist Papers* work (1963–64) is the canonical case. That is direct
+evidence for the claim that stop words carry signal about the **producer and the base**, not about
+the content.
+
+#### The good one: etymology is the language's own reindexing log [structural analogy]
+
+"Self-aware of etymology and the evolution of definitions" is the sharpest part of the sentence.
+A language that retains etymology **retains its prior information sets** — a word's history records
+which base named what, and when. That is exactly the reindexer discipline from
+`ip-questionable/2026-08-18-holography-…` §3a: **prior lenses are retained, never overwritten**, and
+what you get is a traversable record rather than a replacement. Etymology is that log, kept by the
+language itself rather than by any speaker.
+
+#### The contested one: stop words → behaviour [NOT established; the independence guard applies]
+
+*"Can predict behaviour over time"* is a far stronger claim than the rest and does not follow from
+them. Obligatory marking is a fact about the grammar; behaviour is a fact about people, and the
+inference between them is the Whorfian slide 7d already guards against.
+
+There is a real literature attempting exactly this (Keith Chen's future-tense-marking and savings
+work is the best-known instance) and it drew **serious methodological criticism on precisely the
+independence problem** — languages are correlated by family, geography, and shared history, so a
+language↔behaviour correlation is very hard to separate from **common cause**. Flagged as an anchor
+to *check* rather than cite: the critique's details should be read before anyone leans on either
+side of it.
+
+That is today's guard restated: **N correlated languages are not N observations.** The same rule
+that makes a multi-oracle panel meaningful only under demonstrated divergence makes a
+cross-linguistic behavioural claim meaningful only under demonstrated independence — and language
+families are about as correlated as samples get.
+
+#### The resonance: "infinite chaos theory way" [generator only]
+
+Chaos has a technical meaning — deterministic dynamics with sensitive dependence on initial
+conditions. Applying it to language evolution is either a real dynamical-systems claim (which needs
+a state space, an update map, and something like a measured Lyapunov exponent) or it is a vibe.
+Nothing here supplies the first, so it stays **resonance**: a legitimate generator for where to
+look, never a conclusion, and stored with that label so it does not quietly become a belief.
+
+**Summary of registers:** stop-words-as-named-set is **structural** and checkable. Etymology-as-
+retained-lenses is a **structural analogy** to a mechanism we already run. Behaviour prediction is
+**unestablished and confounded**. Chaos is **resonance**. The first two are usable now; the third
+needs an independence design; the fourth needs a mechanism.
+
+#### 7f-i. "in geographic space and time" — the addition that points at the remedy
+
+Aaron's follow-on: the dynamics run **in geographic space and time**.
+
+That is worth separating carefully, because it is simultaneously **the confound** and **the way out
+of it**:
+
+- **As an unmodelled fact it is the confound.** Geography is precisely why languages are not
+  independent draws — neighbours borrow, families share ancestry, and both produce correlation with
+  no causal arrow between grammar and behaviour.
+- **As a MODELLED term it is the remedy.** A shared structure you *declare and estimate* stops being
+  a hidden common cause. This is exactly today's discipline in another domain: influence entering
+  through a **declared, metered channel** is accountable; the same influence entering unnamed is the
+  side channel that invalidates the reading.
+
+So the honest form of the claim is not *"stop words predict behaviour"* but *"stop words predict
+behaviour **after** phylogeny and areal contact are modelled"* — and that is a real, standard
+requirement in cross-linguistic work rather than an obstacle invented here: control for **language
+family** (shared descent) and for **areal/contact effects** (geographic neighbours), or the estimate
+is measuring relatedness.
+
+**Anchors to check, not asserted:** the **wave model** (*Wellentheorie*, Schmidt 1872) against the
+tree model is the classical framing for change propagating through geographic space over time;
+**Sprachbund / areal linguistics** is the established account of contact-driven convergence between
+unrelated languages; and spatial-autocorrelation statistics (Moran's I, Mantel tests) plus
+phylogenetic comparative methods are the standard instruments. Named as the literature to read
+before building on this, not as support already collected.
+
+**What this changes about the register:** behaviour-prediction moves from **unestablished and
+confounded** to **unestablished with a known experimental design**. That is a genuine upgrade — a
+claim with a stated route to falsification is worth more than one without — and it is still not
+evidence. The design has not been run here.
