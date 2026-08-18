@@ -55,8 +55,18 @@ Cluster nodes are **NixOS**, so this is not an apt question. The pinned nixpkgs
       three Linux paths in `frost-hardware-probe.ts` (PR #12042). A correctly provisioned
       node reports `yubiHsm2Pkcs11ModuleFound: false` until this is fixed — add the exact
       fourth path, never a wildcard or fallback.
-- [ ] Q8 answered: which darwin path Yubico's macOS `.pkg` actually writes. The probe's
-      three darwin paths are unverified against a real installation.
+- [x] **Q8 ANSWERED 2026-08-18** — measured on Aaron's Mac against the attached device:
+      the macOS `.pkg` writes `/usr/local/lib/pkcs11/yubihsm_pkcs11.dylib`, the third entry
+      on the probe's darwin list. That leg is verified, not assumed.
+- [ ] **Q9 (new, from the Q8 run):** node readiness must distinguish a provisioning fault
+      from an absent device. `probeYubiHsm2` returned `false` with the device attached
+      (`system_profiler` emitted zero lines; empty output and hard failure both collapse to
+      `false`). The **Linux branch has the same shape** — a `readDir` throw on
+      `/sys/bus/usb/devices` returns `false` identically to "no device". On headless metal
+      nobody can see the HSM, so "could not look" must not read as "not there". Mechanism
+      exists already: cross the unprivileged sysfs read with the connector's
+      `/connector/status` (`status=OK|NO_DEVICE`, and `usbCheck` really opens the device, so
+      it is permission-sensitive). See section 11 of the design doc for the five-way table.
 - [ ] Module lands and an ISO build validates it.
 
 ## Related

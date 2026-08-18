@@ -1,6 +1,6 @@
 # YubiHSM2 SDK on Linux: the cluster is NixOS, so the apt question was the wrong question
 
-**Status:** DESIGN — awaiting maintainer sign-off. No workflow, installer, or NixOS
+**Status:** DESIGN — awaiting maintainer sign-off. **Q8 ANSWERED 2026-08-18** (measured on Aaron's Mac against the attached device); Q1-Q7 open, plus a new Q9 raised by that measurement — see section 11. No workflow, installer, or NixOS
 module changed in this PR. Round-29 discipline: numbered open questions in section 8,
 answers land before YAML/Nix does. Sign-off date: _pending_.
 
@@ -290,7 +290,9 @@ surface.
 `.pkg`, or accept a documented manual step and log the DEBT?
 *Expected answer:* "close it" / "accept, log it".
 
-**Q8 — the one thing only Aaron can answer, and it costs ten seconds.** On the Mac with the
+**Q8 — ANSWERED 2026-08-18. Kept for the record; see section 11 for what it changed.**
+
+Originally: On the Mac with the
 SDK installed, which path actually holds the module?
 
     ls -l /usr/local/lib/yubihsm_pkcs11.dylib \
@@ -334,3 +336,115 @@ Every claim above was read at a pinned revision, not recalled:
   `.github/workflows/gate.yml`, `.github/workflows/build-ai-cluster-iso.yml`,
   `full-ai-cluster/nixos/modules/common.nix`, and PR #12042's
   `tools/setup/persona-keys/frost-hardware-probe.ts` (read-only).
+
+---
+
+## 11. Q8 answered, and the second-order finding it produced (2026-08-18)
+
+### 11a. The answer
+
+Measured on Aaron's Mac with the YubiHSM attached and the macOS SDK installed from
+Yubico's releases page, running `probeYubiHsm2Pkcs11` from #12042's branch:
+
+    yubihsm_pkcs11 module found: true   /usr/local/lib/pkcs11/yubihsm_pkcs11.dylib
+
+**The macOS `.pkg` writes to the third entry on the probe's darwin list, and that entry is
+correct.** The darwin *module* leg is now verified against a real installation rather than
+assumed. Section 5's NixOS finding is unaffected and remains the open one.
+
+### 11b. The finding that came with it — and it is my section 5 defect, one layer over
+
+`probeYubiHsm2` (**device** detection, not module) returned **`false` with the device
+physically attached**. On that machine `system_profiler SPUSBDataType` returns **zero
+lines** — not an error, empty output — and the darwin branch is
+`try { ...includes(MARKER) } catch { return false }`. So three distinct facts collapse to
+one value:
+
+| reality | reported |
+|---|---|
+| no device attached | `false` |
+| enumerator returned nothing | `false` |
+| enumerator failed outright | `false` |
+
+`ioreg -p IOUSB` saw it immediately (`+-o YubiHSM@00142200`, behind a USB2 hub on a
+Thunderbolt dock). Reported to the probe's author on #12042; the fix is theirs.
+
+**The remedy already exists in that same file, with a name.** `probeTpm2` was refactored
+for exactly this defect and answers a five-way `Tpm2State` — `present` / `absent` /
+`unreadable` / `unavailable` / `indeterminate` — precisely because `existsSync` returned
+`false` for every error and "a check that could not run" looked identical to "a check that
+ran and said no". `probeYubiHsm2` is still a boolean. The pattern is in-file, tested, and
+simply not applied here yet.
+
+### 11c. Why this lands on my node design, not only on the probe
+
+**The Linux branch has the same defect.** It is not inherited safety:
+
+```
+try {
+  for (const dev of fx.readDir("/sys/bus/usb/devices")) { ... }
+} catch { /* No sysfs USB tree. */ }
+return false;
+```
+
+`readDir` throwing — no sysfs, permission denied, a container without `/sys/bus/usb` —
+returns `false`, identically to an empty tree and to a genuinely absent device. sysfs is
+more reliable than `system_profiler`, which lowers the *probability* and does nothing to
+the *structure*.
+
+**On a headless node that structure is the whole problem.** Nobody is standing at the rack
+to see whether the HSM is seated. "No HSM" and "could not look" must not be one answer, and
+a provisioning failure must not be able to impersonate an absent device.
+
+### 11d. The mechanism — and it is already in the software we are installing
+
+The connector's own `/connector/status` endpoint (`api.go`, tag `3.0.7`) emits:
+
+    status=OK|NO_DEVICE
+    serial=<serial>|*
+    version=... pid=... address=... port=...
+
+and `usbCheck` — verified in `usb_libusb.go` — calls `usbopen` and then reads the device
+serial number. It **actually opens the device**, so it is *permission-sensitive*: a missing
+or unapplied udev rule yields `NO_DEVICE` with the HSM plugged in and healthy.
+
+That single endpoint separates two states a boolean cannot ("connector down" is an HTTP
+failure; `NO_DEVICE` is a live connector that cannot reach the device). It still cannot
+separate *absent* from *present-but-unopenable* — which is the udev failure this design
+exists to prevent. **Crossing it with the unprivileged sysfs read does:**
+
+| sysfs (`/sys/bus/usb/devices`) | connector `/connector/status` | node state |
+|---|---|---|
+| device found | `status=OK` | **healthy** |
+| device found | `status=NO_DEVICE` | **provisioning fault — udev rule missing or not applied** |
+| device found | HTTP unreachable | **provisioning fault — connector unit down** |
+| no device | `status=NO_DEVICE` | **genuinely absent** — no HSM seated |
+| unreadable / no sysfs | any | **inconclusive — the check could not run** |
+
+The second and third rows are the ones that matter, and a boolean cannot express either.
+They are exactly "a correctly-cabled node whose provisioning silently failed", which on
+headless metal is otherwise indistinguishable from "nobody plugged it in" — and the failure
+would surface mid-ceremony rather than at provisioning time.
+
+**Design consequence, folded into the recommendation:** the `yubihsm.nix` module should
+carry a node-side readiness check that reports this five-way state and **never a boolean**,
+and the systemd unit should not be considered `active` on the strength of the process
+having started. A daemon that started and cannot open the device is the false-green this
+whole document is trying to avoid.
+
+Note the scope boundary: every row above is reachable with **no session, no PIN, and no
+authentication** — `usbCheck` opens the USB device and reads a serial, nothing more. The
+readiness check needs no credential, which is what makes it safe to run unattended on a
+node at boot.
+
+### 11e. Open question this raises
+
+**Q9 — the node readiness check.** Ship the sysfs x `/connector/status` cross product above
+as a systemd readiness/health unit reporting a five-way state, or leave node health to
+ordinary `systemctl status` on the connector unit?
+*Expected answer:* "ship the five-way check" / "unit status is enough, accept that a udev
+fault reads as an absent device" / "ship it but as a manual diagnostic, not a boot-time unit".
+
+My recommendation is the first: the cross product costs one small TypeScript checker and no
+CI minutes, and it converts the single most likely provisioning failure on this surface from
+a silent one into a named one.

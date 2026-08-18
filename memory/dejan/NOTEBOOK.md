@@ -123,3 +123,36 @@ the first three runs of `gate.yml` after it lands.
 - Blocked on maintainer sign-off: 8 numbered questions.
   Nothing landed but docs. Workitem
   081M0B5V6Z5087G0R0026RANJ3.
+
+**Same round, after Q8 came back (2026-08-18).**
+
+- Q8 ANSWERED: macOS `.pkg` writes
+  `/usr/local/lib/pkcs11/yubihsm_pkcs11.dylib` — third
+  entry on the probe's darwin list, correct. Darwin
+  module leg now measured, not assumed. NixOS finding
+  unaffected.
+- **The measurement produced a bigger finding than the
+  answer.** `probeYubiHsm2` returned `false` with the
+  device attached: `system_profiler` emitted zero lines,
+  and empty-output / hard-failure / genuinely-absent all
+  collapse to one boolean.
+- **Do not assume the Linux branch is safer.** Same
+  shape: `readDir("/sys/bus/usb/devices")` throwing
+  returns `false` identically to "no device". sysfs
+  lowers the probability, not the structure.
+- Remedy already exists in that same file: `probeTpm2`
+  answers a five-way `Tpm2State` for exactly this
+  defect. `probeYubiHsm2` is still a boolean.
+- **Node-design consequence (new Q9):** on headless
+  metal a provisioning fault must not impersonate an
+  absent device. Cross the unprivileged sysfs read with
+  the connector's `/connector/status`
+  (`status=OK|NO_DEVICE`) — `usbCheck` calls `usbopen`
+  and reads the serial, so it is permission-sensitive
+  and a missing udev rule shows as `NO_DEVICE` on a
+  healthy attached HSM. Five-way state, never a boolean.
+  Costs no CI minutes; needs no PIN or session.
+- Lesson to carry: I wrote the udev section assuming
+  "device present" was a solved input to my design. It
+  was not. Check the state space of a signal before
+  building on it.
