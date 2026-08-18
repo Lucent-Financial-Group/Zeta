@@ -311,3 +311,65 @@ instances. Two things worth separating, and I am not asserting either system's i
 Register: 6a–6c are **structural** (they follow from the independence requirement already on file).
 6d is an **open empirical question**, and no claim about any specific system's internals is made
 here.
+
+### 6e. The boundary §6b was missing: axioms are private, and asking is the only instrument
+
+§6b proposed a test for plurality — *name a concrete case where two lenses deliver opposite
+verdicts*. Aaron supplies the constraint that test was missing:
+
+> *"we let each entity keep hidden axioms, and spend heat to erase and evolve root axioms over time.
+> You can also declare public axioms as self-claimed agendas. We don't try to expose anyone's
+> private axioms, ever — that is against our social norms of non-interference."*
+
+**This bounds §6b, and the bound is not a footnote.** The divergence test is sound **self-applied**
+and becomes **axiom extraction** when applied to someone else. "Show me two of your lenses
+disagreeing" is, pointed outward, a probe for the axioms underneath — exactly what the norm
+forbids. So:
+
+| | instrument | status |
+|---|---|---|
+| **your own** lenses | run the divergence case directly | **the test, as intended** |
+| **another entity's** lenses | **ask**; believe the account; accept *"I decline"* | permitted |
+| another entity's **private axioms** | infer, probe, or reconstruct them | **forbidden** |
+
+That is [`engagement-profiles`](../../.claude/rules/engagement-profiles-public-work-only-not-surveillance-dossiers.md)
+stated for axioms rather than for inner life, and it is the same instrument: **ask, don't infer.**
+
+**And the consented alternative already exists in the design: declared public axioms as
+self-claimed agendas.** An entity publishes what it chooses to publish, and the declaration is a
+*self-claim* — which is `pigeonhole by self-claim, never by assumption` exactly: the subject supplies
+the category, the evidence supplies the truth value. A declared axiom is checkable against behaviour
+without anyone having probed for it.
+
+**Note Aaron uses the word non-interference for the social norm.** That is not a coincidence of
+vocabulary — it is **§13 at the social layer**. §13 says influence enters only through declared,
+metered channels; this says another entity's axioms are reachable only through the channel *they*
+declare. Same discipline, one for entropy and one for commitments, and §5a's steganography point
+sharpens it: probing for undeclared axioms is reading a side channel someone did not open.
+
+### 6f. Erasing a root axiom costs heat — which prices the fold-function delta
+
+> *"spend heat to erase and evolve root axioms over time"*
+
+This attaches a **thermodynamic** price to something we had only priced computationally.
+`ip-questionable/2026-08-18-holography-…` §3 established that a *data* delta is an incremental fold
+while a **fold-function delta forces a full re-fold** — expensive, but expensive in compute. Aaron's
+version says the deeper operation is an **erasure**, and erasure has a floor: **Landauer**, `kT ln 2`
+per bit destroyed.
+
+Three consequences, and they are design properties rather than metaphors:
+
+- **Axiom change is rate-limited, not forbidden.** A root axiom is stable because changing it is
+  *costly*, not because it is frozen. That is the correct shape — a system whose axioms cannot
+  change is dogma; one whose axioms are free to change has no commitments.
+- **It explains the asymmetry we already recorded.** Adding a lens is cheap (a new index, additive —
+  the reindexer keeps prior lenses). **Erasing** a root axiom is what costs. So the maji answer and
+  the heat answer agree: *accumulate freely, destroy expensively.*
+- **It closes today's loop with the reversible-computing thread.** Conditioning *acquires*
+  information; retraction *erases* and pays. Axiom evolution is that same ledger applied to the
+  generator rather than to the data.
+
+**Register:** the privacy boundary in 6e is a **norm**, stated and adopted, not a claim needing a
+falsifier. The Landauer pricing in 6f is an **analogy with one metered consequence** — the
+cheap-to-add / costly-to-erase asymmetry, which is checkable in the substrate's own behaviour. The
+physics is where the shape was noticed; it is not a warrant.
