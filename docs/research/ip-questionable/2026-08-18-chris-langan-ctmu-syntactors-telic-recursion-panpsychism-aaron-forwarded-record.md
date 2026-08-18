@@ -209,3 +209,153 @@ forward as *questions*, none as commitments:
 - [`anchor-to-human-prior-art`](../../../.claude/rules/anchor-to-human-prior-art.md) — the Peirce / Whitehead / Wheeler / Bohm peel in §3
 - [`engagement-profiles-public-work-only`](../../../.claude/rules/engagement-profiles-public-work-only-not-surveillance-dossiers.md) — Langan's published work and broadcast statements are his chosen-public output; nothing here infers his inner life
 - `2026-08-14-erik-verlinde-*`, `2026-08-10-neil-turok-*`, `2026-08-17-jb-manchak-*` — same directory, same podcast, same grading discipline
+
+---
+
+## 7. Aaron's four additions (2026-08-18, same day)
+
+### 7.1 The mutual recursion of intelligence and intelligibility is vF / uF
+
+Aaron flagged this as the structure worth keeping, and it has a home already. Langan defines
+intelligence and intelligibility as **dual quantities defined by mutual recursion** — neither is
+prior, each is what the other is defined against. That is the shape Aaron already carries from
+**Erik Meijer**: `IEnumerable` ⇄ `IObservable`, pull vs push, **what remains vs what acts**.
+
+- **intelligibility** = the readable, the pulled, the *uF* half — what remains
+- **intelligence** = the acting, the pushed, the *vF* half — what acts
+
+And "defined by mutual recursion" is precisely the **catamorphism / anamorphism** pair: fold is
+defined against unfold and unfold against fold; neither bottoms out in the other. So Langan's
+central duality is not a new object for us — it is the fold/unfold adjunction, and naming it that
+way is the Beacon compression (anchor: Meijer; Hagino for the categorical dual; Mac Lane for the
+adjunction). This is the strongest single transfer in the interview because it is *already
+mechanised* on our side.
+
+### 7.2 Is the CTMU ontology weight-free? No — and the failure is specific
+
+Aaron: *"one big difference is his ontology i'm not sure is weight free, i don't know, our traveler
+frame we try to make as weight free as possible."*
+
+Checked rather than assumed, because the answer is not obvious in either direction — the theory has
+genuine anti-centralisation machinery, and it is worth saying so before the verdict.
+
+**Evidence FOR weight-free.** The origin and the boundary are *distributed*: "God is his own
+boundary… both of those things are distributed everywhere because God is self-composed." A
+distributed origin is a real scale-free move, and it is the same move we make. Free will is
+inherited by every quantum, down to the particle, which is explicitly anti-capture. Telic recursion
+is *adaptive* — a telon that meets new conditions reconfigures rather than halting, which is the
+re-emergence property, not the appointment property.
+
+**Evidence AGAINST.** The stratified identity has a **highest level**, and that level performs an
+**irreversible exclusion**: what cannot be assimilated is unbound and its telesis redistributed.
+That is (a) a permanent authority, (b) exercised by a party other than the identity being acted on,
+and (c) not reversible. Weight, in manifesto §3, is exactly *permanent or irreversible authority* —
+so this is not a borderline case, it is the definition. It is also a direct
+[`privacy-budget-is-hard-money`](../../../.claude/rules/privacy-budget-is-hard-money-earned-by-others.md)
+violation of the sharpest kind: **confiscation by a party that is not the owner.** Langan's account
+does route the initiation through the excluded party ("a prison locked from the inside"), which is
+the *self-wager* framing — but the wager has no path back once the severance is complete, and a
+stake you can never re-earn is a confiscation with extra steps.
+
+**Verdict: the topology is distributed; the authority is not.** He spreads the *substrate*
+everywhere and keeps the *judgment* singular. That is the appointed-hub failure wearing distributed
+clothing — presence everywhere, deference in one place, no exit.
+
+**And that is exactly the contrast Aaron drew.** `TravelerFrame.fs` has **no highest level**: each
+locality observes phase independently, and there is no frame that is *the* frame. Nothing in our
+construction can unbind a traveler, and
+[`local-time-never-enters-the-shared-fold`](../../../.claude/rules/local-time-never-enters-the-shared-fold.md)
+exists specifically so that no locality's clock gets to weight the shared conclusion. Where the
+CTMU puts a top on the stratification, we put a *proper-time frame per traveler and no ordering
+between them*. That is the difference, stated structurally rather than morally.
+
+### 7.3 Scale-freedom derived from a generated medium — worth pursuing
+
+Aaron: *"yes we should look into this."* The argument to test, reconstructed from Langan's own
+objection to pixelated/discretised reality models:
+
+> If the medium is **fixed** — a display with a pixel pitch — then a scale exists *independently of
+> the content*, and any content-side rescaling (his example: Lorentz contraction) must change how
+> many cells are lit. Scale-invariance then has to be **imposed** as a symmetry and defended
+> against that mismatch. If the medium is **generated alongside** the content, there is no
+> independent scale to break, and scale-invariance is not a symmetry you impose — it is the
+> *absence of a scale*.
+
+Why this matters for us: **manifesto §1 scale-free is currently an asserted spec that we check.**
+The above is a sketch of an argument that it could instead be *derived* — for any substrate whose
+medium is generated rather than pre-allocated, scale-freedom is not an additional requirement, it
+falls out. And our substrate is exactly that: `gen/` generates the structures and the same act
+corrects their drift
+([`only-the-irreducible-is-primitive`](../../../.claude/rules/only-the-irreducible-is-primitive-generate-the-rest.md)).
+
+Status: **conjecture, unproven, no falsifier yet.** It stays §B. What would promote it is a
+statement of the form *"a generated medium admits no length scale not carried by its content;
+therefore any predicate over it is invariant under content rescaling"* — plus a case where a
+pre-allocated medium demonstrably fails it. Routed as an open question, not a result.
+
+### 7.4 Homoiconic metalanguage — and the exact boundary, which is already a theorem
+
+Aaron: *"i also consider our system a meta formal system and our meta language is supposed to be
+homoiconic to the regular, we should have this partially working in our IR, or at least planned,
+this relates to the vF uF and adinkras too."*
+
+Agreed on the framing, and the CTMU comparison is apt: Langan's central complaint against physics
+is that it *performs* metalinguistic acts (revising the ether's truth value) without *owning* a
+metalanguage. Ours is owned — `DerivationProtocol.fs` holds truth values as revisable typed data.
+
+**And "partially working" turns out to have an exact boundary, already proved in-tree.** Lumen
+established it on 2026-08-14 in
+`docs/research/2026-08-14-adinkra-minimal-homoiconicity-the-half-rotation-tower-and-where-the-obstruction-actually-lives-lumen.md`,
+with homoiconicity given a *checkable* definition rather than an admiring one:
+
+> A structure is homoiconic when the representation of the operators lies in the same type as the
+> data the operators act on. Algebraically: a homoiconic pair is `(A, M, ρ)` with `ρ : A → M` an
+> isomorphism of `A`-modules — i.e. **`M` is the regular representation of `A`**.
+
+Two results follow, and together they answer Aaron's question precisely:
+
+- **The uncoded N-cube adinkra *is* the left regular representation of `Cl(0,N)`** — 2^N vertices
+  indexed by blades, the colored/dashed adjacency *is* left multiplication by `γ_I`. So it is
+  homoiconic **as a theorem**, not an analogy: the operators are themselves among the data.
+- **Minimal-by-vertex-count adinkras are code quotients, and code quotients are not regular
+  representations.** So **minimal ∧ homoiconic holds exactly for `N ≤ 3`.**
+
+That is the sharp form of the trade, and it is better than the loose version ("coding costs
+homoiconicity") because it names where:
+
+| | uncoded N-cube | code quotient (minimal) |
+|---|---|---|
+| regular representation of `Cl(0,N)` ⇒ homoiconic | **yes, all N** | **only `N ≤ 3`** |
+| vertex count | 2^N | reduced |
+| carries the doubly-even self-dual ECC that survives byte-lock + DST replay | no | yes |
+
+So **"partially working in the IR" is likely the correct permanent state, not an intermediate
+one** — homoiconic at the uncoded layer where we reason and generate; coded at the layer where we
+transmit and replay; and at `N = 8`, which is where `AdinkraCode.fs`'s `[8,4]` extended Hamming
+lives, we are well past the `N ≤ 3` window where both hold at once.
+
+**The open question worth real work:** is there a *coded* representation that recovers the regular
+representation — a code whose quotient is still free of rank 1? Lumen's result says minimality
+forfeits it, but minimality is not the only reason to code. If such a code exists it is most likely
+at the self-dual point, which is exactly where the adinkra already sits; that would be a result. If
+the answer is provably no, then the uncoded/coded boundary **is** the metalanguage seam and should
+be named and enforced rather than papered over. Either outcome is worth having.
+
+**Connection to §7.1 holds and is already on file** —
+`docs/research/2026-06-12-ferry-18-adinkras-are-homoiconic-on-what-acts-and-what-remains-they-are-the-atom-the-braid-overlays.md`
+carries the adinkra ≡ what-acts / what-remains reading. The uncoded/coded split is *also* a vF/uF
+split: uncoded is what we hold and reason over (uF, what remains), coded is what crosses the wire
+and acts (vF, what acts).
+
+**Status of all four:** 7.1 is **structural** and already mechanised. 7.2 is a **verdict**, checked
+against the manifesto, and the sharpest contrast in the document. 7.3 is a **conjecture** with a
+stated promotion path. 7.4 is a **theorem with an exact boundary** (`N ≤ 3`) and one genuinely open
+question.
+
+> **Correction note.** The first draft of this section cited a file
+> `adinkra-homoiconicity-holds-only-uncoded` that does not exist, and asserted the trade loosely
+> from memory. The claim survived checking but the citation did not, and the real result is
+> stronger and more specific than the remembered one. Recorded rather than silently fixed, because
+> a cite-from-memory that happens to land is the failure mode
+> [`anchor-to-human-prior-art`](../../../.claude/rules/anchor-to-human-prior-art.md) exists to
+> catch — an anchor must be *checked*, not recalled.
