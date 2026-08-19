@@ -967,7 +967,16 @@ function deriveDotnetTargets(root: string): readonly BuildTarget[] {
       // gate.yml builds the solution as one unit (`dotnet build Zeta.sln`), so
       // every .NET target shares one leg. The per-project edges are still
       // real and are what a finer-grained build would carve on.
-      legs: ["gate/build-and-test"],
+      //
+      // The two format legs are solution-scoped for the same reason, and were
+      // MISSING here until 2026-08-19: `lint/lint-fsharp.ts` and
+      // `lint/lint-csharp.ts` both run `dotnet format ... Zeta.sln`, i.e. over
+      // EVERY project in the solution, not over the language their name implies.
+      // Omitting them left `gate/lint-fsharp` and `gate/lint-csharp` claimed by
+      // no target at all, so selecting jobs from this graph would have stopped
+      // running both. Found by `hygiene/audit-build-graph-completeness.ts`
+      // direction C.
+      legs: ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
       origin: "derived",
       requiredQuorum: PLACEHOLDER_QUORUM,
     });
@@ -986,10 +995,20 @@ function deriveRustTargets(root: string): readonly BuildTarget[] {
       kind: "rust",
       sources: [`${rel}/**`],
       dependsOn: parseCargoPathDeps(readFileSync(manifest, "utf8"), rel).map((p) => `rust:${p}`),
-      // Only Core.Rust.Observe is wired into gate.yml today (line 1583). The
-      // other 35 crates are graph-visible but leg-less: `legs: []` states that
-      // coverage gap honestly rather than implying coverage that does not exist.
-      legs: rel === "src/Core.Rust.Observe" ? ["gate/full-verify"] : [],
+      // CORRECTED 2026-08-19. This used to read `legs: []` for all but
+      // Core.Rust.Observe, with a comment calling that an honest statement of a
+      // coverage gap. It was the opposite: it UNDER-reported real coverage.
+      // `gate/lint-rust` runs `lint/lint-rust.ts`, which walks
+      // `findCargoTomls(SRC_DIR)` and runs `cargo fmt --check` plus
+      // `cargo clippy --all-targets -- -D warnings` on EVERY crate under src/.
+      // So all 36 crates do carry a mechanical check; only the `cargo test` leg
+      // (full-verify) is Observe-only. Stating `[]` made 35 targets invisible to
+      // job selection — a wired graph would never have run lint-rust for a crate
+      // change. Found by `hygiene/audit-build-graph-completeness.ts` direction A.
+      legs:
+        rel === "src/Core.Rust.Observe"
+          ? ["gate/full-verify", "gate/lint-rust"]
+          : ["gate/lint-rust"],
       origin: "derived",
       requiredQuorum: PLACEHOLDER_QUORUM,
     });
@@ -1007,8 +1026,16 @@ function deriveLeanTargets(root: string): readonly BuildTarget[] {
       kind: "lean",
       sources: [`${rel}/**`],
       dependsOn: [],
-      // Core.Lean4.Cslib is explicitly opt-in and not on the main gate.
-      legs: rel === "src/Core.Lean4" ? ["lean-proof/build"] : [],
+      // Core.Lean4.Cslib is explicitly opt-in and not on the main gate; it is
+      // rostered as UNCOVERED in `hygiene/audit-build-graph-completeness.ts`.
+      //
+      // The job id was WRONG until 2026-08-19: `lean-proof.yml` declares its job
+      // as `type-check`, not `build`, so `lean-proof/build` named nothing. A
+      // dangling leg can never be selected, which means a wired graph would have
+      // skipped the Lean proof on every Lean change while direction A counted
+      // the target as covered. Found by
+      // `hygiene/audit-build-graph-completeness.ts` direction B.
+      legs: rel === "src/Core.Lean4" ? ["lean-proof/type-check"] : [],
       origin: "derived",
       requiredQuorum: PLACEHOLDER_QUORUM,
     });
