@@ -564,3 +564,72 @@ before it got written down as an eigenvector.
 honest split and is the load-bearing part. The "Pre XBox Copy Tool ≈ the renamer" reading is an
 **inference from a name**, explicitly not promoted. 11d is **record** as to times and **reading** as
 to what it meant.
+
+---
+
+## 12. CLOSED: the xbins catalogue names the tool, the function, and the author
+
+**Same day, minutes later.** §11b left exactly one row unpromoted — whether *"Pre XBox Copy Tool"*
+was the FATX renamer — and explicitly refused to infer it from the name. The xbins application list
+answers it directly:
+
+> **PreXBoxCopyTool** — *"A tool used to renamed files and directories using configurable
+> intelligence, to optimize for fatx partitioning. Very good for renaming ROM's."*
+> — **AceHack @ Project BombRock**
+
+Public, third-party, still live at `xbins.org/applist.php`. Not his archive, not his account, not a
+model's recall: the distributing archive's own catalogue.
+
+### 12a. Every row in §11b's table is now record
+
+| claim | status |
+|---|---|
+| the tool is a **FATX renamer** | **RECORD** — *"to optimize for fatx partitioning"* |
+| it renames **files and directories** | **RECORD** |
+| it targets **ROM sets** | **RECORD** — *"Very good for renaming ROM's"* |
+| it uses **intelligence, not naive truncation** | **RECORD** — *"configurable intelligence"* |
+| it is **configurable** | **RECORD** — and this is §7's UI, catalogued |
+| the author is **AceHack** | **RECORD** — attributed in the catalogue |
+
+The one inference §11b marked and refused to promote — *"Pre XBox Copy Tool" ≈ the renamer* —
+turned out to be right, and it is now held on the catalogue's evidence rather than on the guess.
+**The guess was correct and was still not good enough; that distinction is the discipline.**
+
+### 12b. What is STILL not established, and it is now a small, precise gap
+
+The catalogue says *"configurable intelligence."* It does not say **which** intelligence.
+
+So the mechanism Aaron described — significant middle letters, important edge labels, dropping the
+tokens that discriminate nothing — remains **his account**, now corroborated in shape but not in
+detail. What the record establishes is that the tool was *intelligent and configurable* rather than
+a truncator; what it does not establish is the rule that intelligence followed.
+
+That gap closes only by reading the binary, its `.nfo`, or its documentation. It is a genuinely
+small gap now, and naming it precisely is worth more than papering it over — **the corroborated
+shape is not the mechanism**, and §2's whole analysis is about the mechanism.
+
+### 12c. A new fact: **Project BombRock**
+
+The attribution is not bare — it reads **AceHack @ Project BombRock**, a group affiliation not
+previously in this record. It sits alongside *Chaotic Perfection* (§4) as a second named collective,
+and it predates it. Recorded as a lead, not developed; whatever it was, he was releasing under a
+group banner in February 2003.
+
+### 12d. The line the catalogue writes for the chapter
+
+A stranger running an archive wrote a one-sentence description of a teenager's tool, and that
+sentence is the earliest external statement of the idea this book is about:
+
+> *renaming files and directories using **configurable intelligence**, to optimize for a
+> constrained filesystem.*
+
+That is compression-that-preserves-what-discriminates, described by someone else, in someone else's
+words, in 2003 — before he had the vocabulary, and long before he had a substrate to put it in.
+§3's claim was that the name accrued because others found the work useful. Here is the archive
+saying so, in the catalogue, under his handle.
+
+### 12e. Register
+
+12a is **record** (public third-party catalogue). 12b is the **honest residue** and is the only row
+that did not close. 12c is **record** as to the string and a **lead** as to its meaning. 12d is a
+**reading** of a real quotation.
