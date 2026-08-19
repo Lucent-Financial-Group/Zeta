@@ -10,12 +10,7 @@ is canon (BP-08). This notebook supplements, never overrides.
 
 ## Round 35 -- verification-drift-auditor skill adopted
 
-Surface `.claude/skills/verification-drift-auditor/SKILL.md`; registry
-`docs/research/verification-registry.md`; first report
-`docs/research/verification-drift-audit-2026-04-19.md`. Motivating case: the `DbspChainRule`
-mis-citation (labelled Budiu Prop 3.2, actually a Thm 3.3 corollary). Six drift classes plus
-one pre-registration class, tool-agnostic. Cadence: every 5-10 rounds, or on any commit
-adding a cited theorem/property/spec.
+Surface `.claude/skills/verification-drift-auditor/SKILL.md`; registry `docs/research/verification-registry.md`. Motivating case: the `DbspChainRule` mis-citation. Six drift classes + one pre-registration class, tool-agnostic. Cadence: every 5-10 rounds, or on any commit adding a cited theorem/spec.
 
 ## Portfolio metric
 
@@ -50,9 +45,7 @@ and 8 Z3 lemmas. Superseded: the TLA+ leg alone is now 52 gated model runs.
 
 ## Trigger Recognition Log (081KSBMG30008QG0R000WJ9FMP landing — round-69 routing decision)
 
-Per-round trigger-fired-but-row-not-filed substrate. One line per round where a trigger fired and routing decision was made WITHOUT filing a new backlog row (substantive recognition that didn't produce row substrate). Forward-only logging; backfill optional.
-
-Format: table with columns `Round | Trigger | Outcome | Artifact`. One row per round where a trigger fired without row-filing; `Trigger` cites the PR / observation that fired; `Outcome` is `routed` / `held` / `escalated` / `recognition-without-row-filing` (with rationale parenthetical); `Artifact` is the resulting file/PR/section if any (or `n/a (chat-only)`).
+One line per round where a trigger fired and a routing decision was made WITHOUT filing a backlog row. Forward-only. Outcome in {routed, held, escalated, recognition-without-row-filing}.
 
 | Round | Trigger | Outcome | Artifact |
 |---|---|---|---|
@@ -315,3 +308,17 @@ Filed: 081M0DJSR8N087G0R000QCYBYW (Lean C3a), 081M0DJSY48087G0R001GVG3AT (Z3 C3b
 081M0DJSY79087G0R002FH5140 (TLA+ C4), 081M0DJSY88087G0R002JTPWKQ (Semgrep C4-NI),
 081M0DJSY9F087G0R002HV7KA7 (G1), 081M0DK2TW6087G0R001GHD9MJ (Alloy C6),
 081M0DK2TXD087G0R003674BAS (G7).
+
+**Three mid-round reframings, all adding sections rather than corrections.** (a) The local
+decision layer -- node-local OPA-like policy trust; C6 (hubs negotiate, never command) turned
+out to be RefuseBinding.tla generalised, non-penalty clause included, which is a routing gift.
+(b) Frost is a DECORRELATION mechanism, not only a consent one: full visibility is a
+correlating force, N_eff is metered, so never-confiscate has a second MECHANICAL failure mode.
+The register-collapse proof establishes privacy > 0 and must NOT be cited for the rho-pricing
+claim -- different falsifiers (G11). (c) The arc: S=4 at the origin, decorrelate without babel.
+Objective is decorrelate SUBJECT TO staying reconcilable. Both axes already instrumented
+(AntiSybil.correlation / largestLyapunov / effectiveN vs byte-lock / Collation / anchor audit)
+and never plotted together -- G13, 081M0DMH30Y087G0R001C2B1PT, composes with the register's
+open rho measurement. ClaimLane is the babel dial already built (G14). Also found an ACTIVE
+trajectory (local-trust-view-decentralized-identity) already carving C5 sharper than I did --
+C5 now defers to it (G10). Lesson: the duplication risk in this domain is real and I hit it.
