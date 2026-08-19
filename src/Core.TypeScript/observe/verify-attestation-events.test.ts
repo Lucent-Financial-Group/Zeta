@@ -208,10 +208,24 @@ describe("the committed corpus", () => {
     // A check that inspects nothing is not a passing check.
     expect(records.length).toBeGreaterThan(300);
     const report = verifyAll(records, buildPersonaRoster(discoverPersonaRosterPaths(REPO_ROOT)));
+
+    // THE INVARIANT, and the only one this test may assert: nothing is cryptographically
+    // BOUND. No key holder has signed a record, so `bound` must be exactly zero.
     expect(report.bound).toBe(0);
-    // Every one of them predates `attestedDigest` or is a leaked fixture, so nothing
-    // is merely `unbound` yet either. Both facts are reported; neither is a pass.
-    expect(report.refused).toBe(records.length);
+
+    // What this test may NOT assert is the refused/unbound SPLIT. It originally read
+    // `expect(report.refused).toBe(records.length)` — true when written, because every
+    // record predated `attestedDigest`. New records emitted by the fixed `emit-attestation`
+    // DO carry a digest, so they verify as `unbound` (well-formed, merely unsigned) rather
+    // than `refused`. The split therefore moves every time the emitter runs, and pinning it
+    // makes a GREEN CI depend on nobody using the feature. That is the vacuity class
+    // inverted: a check that fails precisely when the thing it guards starts working.
+    //
+    // Reproduced on `origin/main` 2026-08-19: 380 records, 377 refused, 3 unbound — the
+    // three being the first digest-carrying records the emitter produced.
+    expect(report.refused + report.unbound).toBe(records.length);
+    // And the accounting is exhaustive: every record lands in exactly one band.
+    expect(report.bound + report.unbound + report.refused).toBe(records.length);
   });
 
   test("the event dir constant points at a real directory", () => {
