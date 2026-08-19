@@ -180,8 +180,12 @@ forced to live** — concentrated at a boundary, not distributed through the the
 Tarski's hierarchy made an **engineering discipline**: since the junction is where it must live,
 make the junction small, explicit, and enumerable.
 
-**Rx (Erik Meijer et al.).** The same idea applied three times, and the reason this section exists
-in minimal form:
+**Rx — Erik Meijer, Brian Beckman, Bart Desmet and colleagues.** The same idea applied three
+times, and the reason this section exists in minimal form. (Anchoring the humans, per
+`.claude/rules/anchor-to-human-prior-art.md`: Meijer derived the `IEnumerable`/`IObservable`
+duality; Beckman's public teaching on monads and the mathematical grounding; Desmet's published
+work on Rx internals and schedulers, incl. *C# 5.0 Unleashed*. Cited for their **public** output —
+attribution is to the team's published record, not to private testimony about who decided what.)
 
 1. **The minimal dual interface** — `IObservable<T>` has one method, `IObserver<T>` three. The
    entire asynchronous, effectful world funnels through four methods, *derived* (the categorical
