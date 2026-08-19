@@ -42,12 +42,13 @@ import {
   unicodeNameOf,
   contrastRatio,
   GREYSCALE_SEPARATION_FLOOR,
+  asciiSkeletonKey,
 } from "./visual-skeleton.ts";
 
 const repoRoot = join(dirname(fileURLToPath(import.meta.url)), "..", "..", "..");
 
 export interface Finding {
-  readonly tier: 0 | 1 | 2;
+  readonly tier: 0 | 1 | 2 | 3;
   /** Stable identity, independent of prose. What the baseline matches on. */
   readonly key: string;
   readonly severity: "error" | "warn";
@@ -59,8 +60,12 @@ export interface Finding {
 
 export function auditCatalogIdentity(goldenDir: string): Finding[] {
   const byDigest = new Map<string, string[]>();
-  for (const file of readdirSync(goldenDir).filter((f) => f.endsWith(".svg")).sort()) {
-    const digest = createHash("sha256").update(readFileSync(join(goldenDir, file))).digest("hex");
+  for (const file of readdirSync(goldenDir)
+    .filter((f) => f.endsWith(".svg"))
+    .sort()) {
+    const digest = createHash("sha256")
+      .update(readFileSync(join(goldenDir, file)))
+      .digest("hex");
     byDigest.set(digest, [...(byDigest.get(digest) ?? []), file]);
   }
   const findings: Finding[] = [];
@@ -87,9 +92,10 @@ export function auditCatalogIdentity(goldenDir: string): Finding[] {
  * against controls in a test. A check that can only ever be run against the real data is a
  * check nobody can prove is capable of failing.
  */
-export function auditGlyphSkeletons(
-  members: readonly StateMember[] = STATE_DU,
-): { findings: Finding[]; unaudited: string[] } {
+export function auditGlyphSkeletons(members: readonly StateMember[] = STATE_DU): {
+  findings: Finding[];
+  unaudited: string[];
+} {
   const findings: Finding[] = [];
   const unaudited: string[] = [];
 
@@ -168,8 +174,7 @@ export function auditSingleChannelPairs(
       const textureSeparates = textureOf(a.id) !== textureOf(b.id);
       const sa = skeletonOf(a.glyph);
       const sb = skeletonOf(b.glyph);
-      const glyphSeparates =
-        sa !== undefined && sb !== undefined && skeletonKey(sa) !== skeletonKey(sb);
+      const glyphSeparates = sa !== undefined && sb !== undefined && skeletonKey(sa) !== skeletonKey(sb);
 
       if (greyscaleSeparates || textureSeparates || glyphSeparates) continue;
 
@@ -191,24 +196,52 @@ export function auditSingleChannelPairs(
   return findings;
 }
 
+// ── TIER 3 — the ASCII fallback channel ─────────────────────────────────────────────────────
 
-// ── The baseline — known-open collisions, each keyed to a work-item ─────────────────────────
+/**
+ * A reassignment that fixes the visual channel and collides the fallback has moved the bug, not
+ * closed it. This checks the channel a terminal actually renders.
+ */
+export function auditAsciiMarks(members: readonly StateMember[] = STATE_DU): Finding[] {
+  const findings: Finding[] = [];
+  for (let i = 0; i < members.length; i += 1) {
+    for (let j = i + 1; j < members.length; j += 1) {
+      const a = members[i]!;
+      const b = members[j]!;
+      const ka = asciiSkeletonKey(a.ascii);
+      const kb = asciiSkeletonKey(b.ascii);
+      if (ka !== kb) continue;
+      const crossesClaimClass = a.claim !== b.claim;
+      findings.push({
+        tier: 3,
+        key: `tier3:${a.id}~${b.id}`,
+        severity: crossesClaimClass ? "error" : "warn",
+        what: `${a.id} "${a.ascii}" and ${b.id} "${b.ascii}" collide in the ASCII channel [${ka}]`,
+        why:
+          "This is what a terminal, a log line, a plain-text export and an ASCII-only notebook " +
+          "render. Colour, texture and motion are all absent there, so the ASCII mark is the " +
+          "ONLY channel left" +
+          (crossesClaimClass ? ` — and this pair crosses ${a.claim}/${b.claim}.` : "."),
+      });
+    }
+  }
+  return findings;
+}
+
+// ── The baseline — empty, and that is the point ─────────────────────────────────────────────
 //
-// These three fire today on `main`. They are NOT suppressed: they print in full, every run.
-// What the baseline buys is that the check can be wired into CI now — so a NEW collision goes
-// red immediately — without the fix and the guard having to land in the same change.
+// This map held three entries when the guard landed (2026-08-19): the byte-identical catalogue
+// pair and the two cross-claim-class glyph collisions. All three are now closed, so it is empty.
 //
-// It is a work-item id, never a bare allowlist entry, and that is the difference between a
-// baseline and a licence: closing an item requires deleting its line here, which is a visible
-// act in a diff. An entry whose work-item is closed but whose line survives is itself a defect.
-export const KNOWN_OPEN: ReadonlyMap<string, string> = new Map([
-  [
-    "tier0:quantum-circuit-bell-coincidence-singlet.svg==quantum-circuit-singlet-chsh.svg",
-    "081M0DN8Y8R087G0R00101VSA2",
-  ],
-  ["tier1:cold~unobserved", "081M0DN91RK087G0R002X8MBWM"],
-  ["tier1:stale~sealed", "081M0DN91RK087G0R002X8MBWM"],
-]);
+// It is kept rather than deleted because the mechanism is load-bearing in BOTH directions. An
+// entry lets a real finding be tracked against a work-item while the fix is scheduled, WITHOUT
+// suppressing it — baselined findings still print in full on every run. And a line that outlives
+// its finding is reported as STALE and fails the audit, so a baseline cannot quietly become an
+// allowlist. That second half is not theoretical: it is what went red during this very change,
+// after the glyphs were reassigned and the two lines were still here.
+//
+// A new entry requires a work-item id. That is the difference between a baseline and a licence.
+export const KNOWN_OPEN: ReadonlyMap<string, string> = new Map([]);
 
 /** A stable key for a finding, so the baseline does not depend on prose wording. */
 export function findingKey(f: Finding): string {
@@ -221,8 +254,12 @@ export function runAudit(): { findings: Finding[]; unaudited: string[] } {
   const goldenDir = join(repoRoot, "db", "shapes", "golden");
   const cssPath = join(
     repoRoot,
-    "docs", "design", "root-site-iris", "_ds",
-    "design-system-f52fe130-fd0d-4310-93c2-19b6ce2a4ecc", "zeta-state.css",
+    "docs",
+    "design",
+    "root-site-iris",
+    "_ds",
+    "design-system-f52fe130-fd0d-4310-93c2-19b6ce2a4ecc",
+    "zeta-state.css",
   );
   const glyphs = auditGlyphSkeletons();
   return {
@@ -230,6 +267,7 @@ export function runAudit(): { findings: Finding[]; unaudited: string[] } {
       ...auditCatalogIdentity(goldenDir),
       ...glyphs.findings,
       ...auditSingleChannelPairs(readStateColours(cssPath)),
+      ...auditAsciiMarks(),
     ],
     unaudited: glyphs.unaudited,
   };
@@ -240,9 +278,9 @@ if (import.meta.main) {
   const errors = findings.filter((f) => f.severity === "error");
   const unbaselined = errors.filter((f) => !KNOWN_OPEN.has(f.key));
 
-  for (const tier of [0, 1, 2] as const) {
+  for (const tier of [0, 1, 2, 3] as const) {
     const inTier = findings.filter((f) => f.tier === tier);
-    const names = { 0: "IDENTITY", 1: "SKELETON", 2: "ONE CHANNEL" } as const;
+    const names = { 0: "IDENTITY", 1: "SKELETON", 2: "ONE CHANNEL", 3: "ASCII" } as const;
     console.log(`\n-- TIER ${String(tier)} ${names[tier]} -- ${String(inTier.length)} finding(s)`);
     if (inTier.length === 0) {
       // Names what was examined, so "no findings" is a measurement and not a silence.

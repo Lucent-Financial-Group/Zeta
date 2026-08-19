@@ -11,12 +11,13 @@ import { describe, expect, test } from "bun:test";
 import { mkdtempSync, writeFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import type { StateMember } from "../cluster/state-du.ts";
-import { skeletonOf, skeletonKey, collide, contrastRatio } from "./visual-skeleton.ts";
+import { STATE_DU, type StateMember } from "../cluster/state-du.ts";
+import { skeletonOf, skeletonKey, collide, contrastRatio, asciiSkeletonKey } from "./visual-skeleton.ts";
 import {
   auditCatalogIdentity,
   auditGlyphSkeletons,
   auditSingleChannelPairs,
+  auditAsciiMarks,
   runAudit,
   KNOWN_OPEN,
 } from "./audit-visual-confusability.ts";
@@ -180,24 +181,92 @@ describe("TIER 2 — hue-only distinctions", () => {
   });
 });
 
-describe("the live baseline", () => {
-  test("every baselined key is still a live finding — a stale line is itself a defect", () => {
-    const { findings } = runAudit();
-    const keys = new Set(findings.map((f) => f.key));
-    for (const k of KNOWN_OPEN.keys()) expect(keys).toContain(k);
+describe("TIER 3 — the ASCII fallback channel", () => {
+  test("fires when two fallbacks collide exactly", () => {
+    const findings = auditAsciiMarks([
+      member({ id: "a", glyph: "●", ascii: "(?)", claim: "observation" }),
+      member({ id: "b", glyph: "○", ascii: "(?)", claim: "withheld" }),
+    ]);
+    expect(findings).toHaveLength(1);
+    expect(findings[0]!.severity).toBe("error");
   });
 
-  test("no error is unbaselined — a NEW collision must break the build", () => {
-    const { findings } = runAudit();
-    const unbaselined = findings.filter((f) => f.severity === "error" && !KNOWN_OPEN.has(f.key));
-    expect(unbaselined.map((f) => f.what)).toEqual([]);
+  test("fires on a monospace-confusable interior, not just on equality", () => {
+    // `(!)` and `(|)` are different strings. In a terminal they are one mark.
+    const findings = auditAsciiMarks([
+      member({ id: "a", glyph: "●", ascii: "(!)", claim: "observation" }),
+      member({ id: "b", glyph: "○", ascii: "(|)", claim: "observation" }),
+    ]);
+    expect(findings).toHaveLength(1);
+    expect(findings[0]!.severity).toBe("warn"); // same claim class
   });
 
-  test("every baseline entry names a work-item, so closing one is a visible act", () => {
-    for (const [, item] of KNOWN_OPEN) expect(item).toMatch(/^[0-9A-Z]{26}$/);
+  test("does not fire on genuinely distinct interiors", () => {
+    expect(
+      auditAsciiMarks([
+        member({ id: "a", glyph: "●", ascii: "(x)", claim: "observation" }),
+        member({ id: "b", glyph: "○", ascii: "(#)", claim: "withheld" }),
+      ]),
+    ).toHaveLength(0);
+  });
+
+  test("the shipped fallbacks are pairwise distinct under the quotient", () => {
+    // Including `(!)` heat and `(/)` frost, which is the closest shipped pair: a vertical stroke
+    // and a diagonal are different classes. That is now the MODEL's claim rather than my eye's.
+    expect(auditAsciiMarks()).toHaveLength(0);
+    expect(asciiSkeletonKey("(!)")).not.toBe(asciiSkeletonKey("(/)"));
+  });
+});
+
+describe("the baseline mechanism — it must work in BOTH directions", () => {
+  test("the audit is green: every finding it once carried is closed", () => {
+    const { findings } = runAudit();
+    expect(findings.filter((f) => f.severity === "error").map((f) => f.what)).toEqual([]);
+  });
+
+  test("the baseline is empty, so no finding is being suppressed", () => {
+    expect([...KNOWN_OPEN.keys()]).toEqual([]);
+  });
+
+  test("a baseline line that outlives its finding is detectable as STALE", () => {
+    // The half that stops a baseline becoming an allowlist. Exercised against a control because
+    // the real map is empty — and this is exactly what went red mid-change on 2026-08-19, after
+    // the glyphs were reassigned while the two lines were still present.
+    const { findings } = runAudit();
+    const pretend = new Map([["tier1:no~such~finding", "081M0DN91RK087G0R002X8MBWM"]]);
+    const stale = [...pretend.keys()].filter((k) => !findings.some((f) => f.key === k));
+    expect(stale).toEqual(["tier1:no~such~finding"]);
   });
 
   test("coverage is total over the state DU — no glyph is silently unexamined", () => {
     expect(runAudit().unaudited).toEqual([]);
+  });
+});
+
+describe("the reassigned vocabulary — base form carries the claim class", () => {
+  test("observations are circles (plus the diamond alarm); withheld are squares", () => {
+    const form = (id: string): string => skeletonOf(STATE_DU.find((m) => m.id === id)!.glyph)!.baseForm;
+    expect([form("live"), form("stale"), form("cold")]).toEqual(["circle", "circle", "circle"]);
+    expect(form("heat")).toBe("diamond");
+    expect([form("unobserved"), form("sealed"), form("frost")]).toEqual(["square", "square", "square"]);
+  });
+
+  test("the withheld register is ordered by how much is actually there", () => {
+    const fill = (id: string): string => skeletonOf(STATE_DU.find((m) => m.id === id)!.glyph)!.fill;
+    // nothing measured -> exists but no content yet -> content present and withheld
+    expect(fill("unobserved")).toBe("empty");
+    expect(fill("sealed")).toBe("partial");
+    expect(fill("frost")).toBe("full");
+  });
+
+  test("unavailable shares cold's silhouette and is separated by the strike alone", () => {
+    // The one permitted cross-class base-form sharing, and the reason the strike is not
+    // quotiented away. If this ever stops being true the exemption should be revisited.
+    const cold = skeletonOf("○")!;
+    const unavailable = skeletonOf("∅")!;
+    expect(unavailable.baseForm).toBe(cold.baseForm);
+    expect(unavailable.fill).toBe(cold.fill);
+    expect(unavailable.struck).toBe(true);
+    expect(cold.struck).toBe(false);
   });
 });

@@ -1,11 +1,12 @@
 ---
 id: 081M0DN91RK087G0R002X8MBWM
 type: bug
-state: backlog
+state: done
 priority: P2
 slug: state-du-glyphs-collide-across-claim-classes-cold-unobserved
 title: "State DU glyphs collide across claim classes: cold/unobserved and stale/sealed reduce to the same mark"
 created: 2026-08-19T18:41:59.571Z
+completed: 2026-08-19T20:32:04.254Z
 depends_on: []
 composes_with: []
 ---

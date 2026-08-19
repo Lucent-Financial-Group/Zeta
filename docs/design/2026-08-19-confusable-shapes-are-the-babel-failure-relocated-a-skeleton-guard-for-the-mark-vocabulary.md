@@ -148,7 +148,14 @@ The quotient **over-approximates** deliberately: it merges more than a human doe
 over-flagging costs a redesign and under-flagging ships a mark that lies, and those costs are not
 symmetric.
 
-## 6. What fires today
+## 6. What fired — and what landed
+
+> **Status, 2026-08-19.** All three findings below were live on `main` when the guard was written.
+> **All three are now closed in this same change**, on Aaron's delegation (_"please try to solve
+> all of these without me"_). The guard was mutation-confirmed in both directions: **red on all
+> three before the fix, green after**, with the baseline emptied so nothing is suppressed. The
+> findings are kept in full below because a doc that erases what it found leaves the reader
+> unable to check the guard ever had teeth.
 
 `bun src/Core.TypeScript/hygiene/audit-visual-confusability.ts`, three tiers, weakest first.
 
@@ -169,7 +176,24 @@ This is the 2026-08-14 doc's **"agreement by construction"** defect appearing on
 golden lock compares each shape to _its own generator's output_ and never across entries, so a
 catalog-wide collision is structurally invisible to it. `ShapeAcceptance.fs` — the genuinely strong
 gate, which checks known-answer laws and fails closed — is a **per-shape** law and equally cannot
-see a pair. Filed: **`081M0DN8Y8R087G0R00101VSA2`**.
+see a pair. **RESOLVED — and the finding is not the one it looks like.** Not "the generator emitted wrong
+bytes", and not "the catalogue had a duplicate row". It is that **a single CHSH corner IS a
+coincidence measurement** at those analyzer angles — nothing distinguishes them because there is
+nothing to distinguish. Minting a second name for one experiment was the error.
+
+So the repair draws a corner a coincidence measurement _cannot_ be: `singletChsh` now renders
+**E(a1, b1)** (`a1 = π/2`, `b1 = −π/4`), the only corner carrying the `−1` coefficient in
+`S = E(a0,b0) + E(a0,b1) + E(a1,b0) − E(a1,b1)`, with both analyzers rotated. The angles are the
+canonical singlet configuration already pinned in `quantum-observable.test.ts:38`, so the file now
+agrees with the oracle's own corner table instead of restating one of its rows twice. Regenerating
+changed **only** that golden; the other three came back byte-identical, which is its own small
+determinism check.
+
+**Honest residual, and it is not discharged.** Ferry 25 says this SVG is in-tree _"precisely to
+draw the gap between Bertlmann's socks and the singlet."_ One corner cannot draw that gap — the gap
+is `S = 2` versus `S = 2√2` and exists only across all four settings. The fix makes the picture
+honest about being one corner; it does not make it the falsifier ferry 25 claims. Filed:
+**`081M0DVFPSK087G0R002CRCV6G`**. (Original: `081M0DN8Y8R087G0R00101VSA2`.)
 
 ### TIER 1 — skeleton collision, and both of them cross the claim-class boundary
 
@@ -210,7 +234,8 @@ The semantic cost is precise, not vague:
 - `stale` says **"aging past its declared cadence."** `sealed` says **"there is nothing operational
   to say here yet."** Reading `sealed` as `stale` reports decay where there is only silence.
 
-Filed: **`081M0DN91RK087G0R002X8MBWM`**, with the fix §8 recommends.
+**RESOLVED** — see §8, which also records that the landed fix is _better_ than the one this doc
+originally proposed. (`081M0DN91RK087G0R002X8MBWM`.)
 
 ### TIER 2 — pairs separated by hue alone: **none, and the design earned that**
 
@@ -254,36 +279,72 @@ Stated plainly, per `.claude/rules/toy-is-free-metered-must-be-earned.md`:
 should read a collision as a measured human error rate; read it as _"these two were not separated by
 a channel we have any evidence survives a glance."_
 
-## 8. The recommended fix, so the work-item is a lookup and not a debate
+## 8. The fix that landed — and why it beats the one this doc first proposed
 
-The capacity argument in §3 says where to spend base-form separation: **on the claim classes.** Give
-the withheld register its own base form, keep circles for observations, and the two collisions close
-together:
+The capacity argument in §3 says where to spend base-form separation: **on the claim classes.** The
+landed assignment gives the withheld register its own base form and then orders it by fill:
 
-| member              | claim       | now   | proposed                                   | skeleton                                                         |
-| ------------------- | ----------- | ----- | ------------------------------------------ | ---------------------------------------------------------------- |
-| live · stale · cold | observation | ● ◐ ○ | **unchanged**                              | circle / full · partial · empty                                  |
-| heat                | observation | ◆     | **unchanged**                              | diamond/full — deliberately breaking form is right for the alarm |
-| unavailable         | model       | ∅     | **unchanged**                              | circle/empty/struck — the strike already separates it            |
-| unobserved          | withheld    | ◌     | **□** WHITE SQUARE                         | square/empty                                                     |
-| sealed              | withheld    | ◍     | **▩** SQUARE WITH DIAGONAL CROSSHATCH FILL | square/partial                                                   |
-| frost               | withheld    | ▨     | **unchanged**                              | square/partial                                                   |
+| member              | claim       | was   | now           | skeleton                        |
+| ------------------- | ----------- | ----- | ------------- | ------------------------------- |
+| live · stale · cold | observation | ● ◐ ○ | **unchanged** | circle / full · partial · empty |
+| heat                | observation | ◆     | **unchanged** | diamond/full                    |
+| unavailable         | model       | ∅     | **unchanged** | circle/empty/**struck**         |
+| unobserved          | withheld    | ◌     | **□** U+25A1  | square/**empty**                |
+| sealed              | withheld    | ◍     | **▨** U+25A8  | square/**partial**              |
+| frost               | withheld    | ▨     | **■** U+25A0  | square/**full**                 |
 
-Result: **zero cross-class collisions**, and one remaining _within-class_ collision (`sealed` ▩ /
-`frost` ▨, both square/partial) which the guard grades as a **warning**, correctly — both are
-withheld claims, so a misread costs precision rather than truth, and their textures differ anyway
-(hatch vs blur).
+**The rule, now asserted in a test rather than described in prose:**
 
-**Iris is advisory here and this is deliberately not landed in this change.** The edit touches
-`state-du.ts`, `state-du-css.test.ts`, `Settlement.dc.html` and the shipped site markup — four
-surfaces, one of them shipped — which is a paired change with the DU's owner, not a unilateral one.
-The guard and the baseline land now so the analysis does not rot while the fix is scheduled.
+> **BASE FORM carries the CLAIM CLASS. FILL FRACTION carries the gradation within a class.**
 
-**Also unguarded, and named rather than fixed:** the ASCII fallbacks `(*) (~) ( ) (!) (x) (?) (#) (/)`
-are, ironically, **the better-designed channel** — a fixed-width frame around a distinct interior
-character, injective by construction. The constrained channel forced what the rich one did not. The
-closest ASCII pair is `(!)` heat / `(/)` frost, which crosses claim classes; it is within tolerance
-in my judgement and there is **no check on it**, which is the part worth recording.
+Circles are observations; the diamond is the alarm, deliberately breaking form because an alarm
+should not read as a _degree_ of the others; the struck circle is the model register; squares are
+withheld. `unavailable` ∅ is the single permitted cross-class base-form sharing — a full-diameter
+strike changes the silhouette and survives blur, which is why it does not collide with `cold` ○.
+That exemption is itself pinned by a test.
+
+**Why the withheld register is ordered the way it is.** Fill tracks _how much is actually there_:
+nothing was measured (`unobserved`, empty) → something exists with no operational content yet
+(`sealed`, partial) → content is present and deliberately withheld (`frost`, full). `frost` is the
+most-filled mark in the register because it is the only member with something behind it.
+
+**This is a better fix than the one §8 originally recommended, and the difference is worth
+recording.** The first proposal assigned `sealed` ▩ and left `sealed`/`frost` colliding as a
+within-class **warning** — defensible, since both are withheld claims and their textures differ.
+Ordering the whole register by fill removes that too. The DU now has **zero collisions of any
+grade**, not zero errors and one warning. The original proposal is preserved in work-item
+`081M0DN91RK087G0R002X8MBWM`; the improvement came from taking the criterion seriously rather than
+from new information.
+
+**One regression this change introduced and closed in the same breath.** `renderStateText`'s
+unknown-member fallback rendered as `◌` — which, once `unobserved` moved to a square, became
+`cold`'s silhouette. A failed map lookup would have drawn itself as the observation _"watched, and
+nothing is there."_ It now renders `◇` (diamond/empty), a base form no member uses, and a test pins
+that the unknown mark shares no silhouette with any member.
+
+**The surfaces touched** — a partial rename is worse than none, because it produces two
+vocabularies where there was one:
+
+- `src/Core.TypeScript/cluster/state-du.ts` — the table, plus `BASE_FORM_CARRIES_THE_CLAIM_CLASS`
+  stated at the definition site
+- `src/Core.TypeScript/cluster/state-du.test.ts` — the skeleton-uniqueness and base-form
+  assertions, **joining** the codepoint assertion at line 128 rather than replacing it
+- `src/Core.TypeScript/cluster/state-du-css.test.ts` — now reads `stateMember("sealed").glyph`
+  instead of hardcoding a mark, so the next reassignment is a one-file change
+- `docs/design/root-site-iris/Settlement.dc.html` — the one shipped occurrence
+
+`zeta-state.css` needed no glyph edit: it carries the _markup pattern_, and the only literal
+codepoint in it is `&#x2205;` for `unavailable`, which is unchanged.
+
+**The ASCII channel is now mechanically checked too** (TIER 3), because a reassignment that fixes
+the visual and collides the fallback has moved the bug rather than closed it. The shipped fallbacks
+`(*) (~) ( ) (!) (x) (?) (#) (/)` pass — a fixed-width frame around a distinct interior character,
+injective by construction. They are, ironically, the **better-designed** channel: the constrained
+one forced what the rich one did not. The closest shipped pair is `(!)` heat / `(/)` frost; §6 of
+the first draft called that _"within tolerance in my judgement"_, and judgement is exactly what a
+guard is supposed to replace — the quotient now says they separate (vertical stroke vs diagonal are
+distinct monospace-confusable classes), and that claim is the model's, checkable, and `unmetered`
+like the rest of the table.
 
 ## 9. Adjacent, and reported rather than claimed as this doc's finding
 
@@ -357,11 +418,11 @@ to the person it happens to**, so it cannot be caught by asking readers whether 
 
 ## 12. Open
 
-1. **Land the §8 glyph reassignment** — paired change with the DU's owner
+1. ~~Land the §8 glyph reassignment~~ — **done**, and improved on the proposal
    (`081M0DN91RK087G0R002X8MBWM`).
-2. **Decide what `quantum-circuit-singlet-chsh` should actually depict** — the CHSH corner needs
-   measurement angles that differ from the Bell-coincidence singlet, or the entry should be deleted
-   as a duplicate. A physics call, not a design one (`081M0DN8Y8R087G0R00101VSA2`).
+2. ~~Decide what `quantum-circuit-singlet-chsh` should depict~~ — **done**: it now draws the
+   E(a1,b1) corner (`081M0DN8Y8R087G0R00101VSA2`). The residual is real and open: one corner still
+   cannot draw the S=2 vs 2√2 gap ferry 25 claims for it (`081M0DVFPSK087G0R002CRCV6G`).
 3. **Extend Tier 0 from byte-identity to a low-pass occupancy skeleton** over the 23-shape vector
    catalog — 21 of 23 goldens are pure `polyline`, so an exact rasteriser is cheap and no
    dependency is needed. Near-miss pairs worth examining first: `braid`/`plait-move` (they share
@@ -369,9 +430,11 @@ to the person it happens to**, so it cannot be caught by asking readers whether 
    therefore the most likely true confusable in the set), `spiral`/`worldline` (single polyline
    each), `crossing`/`dynamicvalue` (three each). (`081M0DN91SH087G0R003NKKCTB`.)
 4. **`glyphOf` discards 96 bits on an identity surface** (`081M0DNCXZK087G0R003DEY5KF`).
-5. **No check on the ASCII channel**, and no `prefers-reduced-motion` block in `zeta-state.css`.
-   Both recorded in §6/§8; neither filed, because both are thin rather than broken and filing thin
-   things is how a backlog stops being read.
+5. ~~No check on the ASCII channel~~ — **done** (TIER 3). Still open: **no
+   `prefers-reduced-motion` block in `zeta-state.css`**, so a reader who has asked for reduced
+   motion loses the third channel separating `live` from `stale` (which are 1.068 apart in
+   luminance). Recorded rather than filed — it is thin rather than broken, and filing thin things
+   is how a backlog stops being read.
 6. **The quotient table wants an empirical falsifier.** Everything in §7's `unmetered` rows becomes
    `metered` the day someone runs even a small forced-choice trial at 12px. Until then the table is
    a declared model and says so at its definition site.

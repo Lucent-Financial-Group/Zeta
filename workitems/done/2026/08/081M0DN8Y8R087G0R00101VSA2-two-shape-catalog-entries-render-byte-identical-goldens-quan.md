@@ -1,11 +1,12 @@
 ---
 id: 081M0DN8Y8R087G0R00101VSA2
 type: bug
-state: backlog
+state: done
 priority: P2
 slug: two-shape-catalog-entries-render-byte-identical-goldens-quan
 title: "Two shape-catalog entries render byte-identical goldens: quantum-circuit-singlet-chsh and quantum-circuit-bell-coincidence-singlet"
 created: 2026-08-19T18:41:55.992Z
+completed: 2026-08-19T20:32:04.214Z
 depends_on: []
 composes_with: []
 ---

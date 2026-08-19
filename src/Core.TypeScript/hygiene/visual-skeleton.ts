@@ -202,3 +202,49 @@ export function contrastRatio(hexA: string, hexB: string): number {
  * the linter, owns that band.
  */
 export const GREYSCALE_SEPARATION_FLOOR = 1.5;
+
+// ── The ASCII channel ───────────────────────────────────────────────────────────────────────
+//
+// The DU's ASCII fallbacks — `(*) (~) ( ) (!) (x) (?) (#) (/)` — are the surface a terminal, a
+// log line, a plain-text export and an ASCII-only notebook (BP-09) actually render. They are, on
+// inspection, the BETTER-DESIGNED channel: a fixed-width frame around a distinct interior
+// character, injective by construction. The constrained channel forced what the rich one did not.
+//
+// That was luck plus taste, and neither is a guard. This is the same skeleton construction
+// applied to monospace text, so a future member cannot fix the visual channel and quietly
+// collide the fallback.
+//
+// THE QUOTIENT. Characters are mapped to a confusability CLASS; characters outside every class
+// are their own class. The classes below are the standard monospace/homoglyph groups — this is
+// the part of the problem UTS #39's `confusables.txt` genuinely does cover, and these are its
+// well-known members rather than an invention. Deliberately conservative (over-grouping): `-`
+// and `_` differ only in baseline position, and grouping them costs a rename while separating
+// them could ship two marks that read alike in a log.
+//
+// Register: `unmetered`, same as the geometric quotient. No monospace legibility study was run.
+// What is metered is that the detector fires and stays quiet on controls.
+const ASCII_CONFUSABLE_CLASSES: readonly string[] = [
+  "l1I|!", // vertical stroke with or without a gap
+  "O0oQ", // round bowl
+  ".,_", // low-baseline dot or dash
+  "'`\"", // high tick
+  ":;", // stacked dots
+  "/\\", // diagonal
+];
+
+const ASCII_CLASS_OF: ReadonlyMap<string, string> = new Map(
+  ASCII_CONFUSABLE_CLASSES.flatMap((cls) => [...cls].map((ch) => [ch, cls] as const)),
+);
+
+/**
+ * The skeleton of an ASCII mark: each character replaced by its confusability class.
+ *
+ * Total by construction — an unknown character is its own class — so unlike `skeletonOf` this
+ * cannot return `undefined`. That asymmetry is deliberate and worth stating: the geometric
+ * alphabet is open (any Unicode mark could be reached for, and one we have not modelled must
+ * report as UNAUDITED), while ASCII is closed at 95 printable characters and every one of them
+ * is covered here.
+ */
+export function asciiSkeletonKey(mark: string): string {
+  return [...mark].map((ch) => ASCII_CLASS_OF.get(ch) ?? ch).join("");
+}
