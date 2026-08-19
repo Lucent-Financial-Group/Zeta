@@ -26,8 +26,48 @@ This row tracks what it left open.
 > becomes the bottleneck, splitting it out actually can speed things up and
 > help decouple everything from everything"
 
-Holds on this tree. The conditional does not: the tooling is 90% built and
-unwired.
+Holds on this tree. And the conditional is SATISFIED, not falsified: the
+tooling is 90% built and **never invoked**, which at the outcome layer is the
+same as absent. The discovery changes only the PRICE of the remedy (wiring an
+existing graph costs less than adopting one) -- it strengthens the diagnosis,
+because the union persisted even with the graph sitting in the tree. The first
+draft said "the conditional is false"; that inference was wrong and is
+corrected in place in the doc's §0 rather than silently amended.
+
+## The thesis (Aaron, 2026-08-19)
+
+> "LLMs and Humans are both bad at holding increment graphs in their context
+> window ... this is why i'm trying to externalize it everywhere this is
+> similar to the agreement of meaning between AIs and Humans just on the
+> simplest level of 'why split'"
+
+- **REGISTER (Aaron's own label, and it is load-bearing):** this is *"an
+  assumption of mine"*, and it may be **unmeterable by direct observation** --
+  LLMs shift behaviour under evaluation, so "cannot hold it" and "did not hold
+  it while watched" are not separable by the observation. In-repo anchor:
+  `docs/ALIGNMENT.md` §"sleeping bear conjecture" (kept as conjecture; four
+  candidate mechanisms ranked by evidence). The doc may say **observed not to,
+  under conditions that cannot separate cannot from did-not** -- not "cannot".
+- My drafting went wrong twice here and both are corrected in place, not
+  softened: first pass filed it as cognitive load ("tedious, so skipped"),
+  second pass over-corrected to a flat capacity limit used as a premise.
+- **The recommendation does not depend on how the confound resolves**, which is
+  why it is safe: if the limit is real, externalizing is necessary; if it is
+  strategic or trust-conditional, externalizing is still what makes AI/human
+  agreement checkable rather than asserted. Same structure ALIGNMENT.md uses --
+  "the architecture works whether or not the strong version is true".
+- The measured findings (94% waste, 82% of real gate failures in install, 107
+  targets / 0 workflow references) are `metered` and carry the argument alone.
+- So externalization is the point; the 94% waste is a SYMPTOM. Third
+  evaluation criterion, applied to every option: **does this externalize the
+  increment graph into a checkable artifact?**
+- The externalized graph is a **shared external referent** -- what lets an AI
+  and a human check they mean the same thing rather than assert it.
+- **Externalizing was necessary and insufficient.** Both halves true:
+  build-graph.json exists and is a real referent; zero workflows read it.
+- Not a new discipline here -- same move as the carved-sentence rule, the
+  MEMORY.md 210KB->1.5KB hub, and DV2.0 hub/satellite. The build graph is the
+  instance the repo externalized and then never fetched.
 
 ## Settled (measured, re-runnable)
 
@@ -71,6 +111,58 @@ Four options in §13 of the doc. Not restated; the doc is the surface.
 2. **The §1 guard:** `git clone` at a pinned tag must stay SUFFICIENT forever,
    never merely transitional. A dependency-driven split makes an `ace`-shaped
    mandatory resolver MORE tempting, so this matters more now, not less.
+
+## The vacuity class, third instance today
+
+A capability that exists but is never invoked is indistinguishable from an
+absent one. A check that did not run looks like one that passed; an alarm whose
+label could never be created (heartbeat-liveness, #12429) looks like one that
+never fired; a query nothing calls looks like a graph never built. Three
+independent surfaces on 2026-08-19, one failure mode -- worth naming as a class
+rather than fixing three times.
+
+## Futamura: now a conditional claim with a falsifier
+
+Aaron: "it's only the same operation when your generator is complete over the
+domain you are trying to close over."
+
+- Complete generator over the domain => incremental build IS partial evaluation.
+- Incomplete => merely analogous, and asserting identity is the numerology error.
+
+**Anchor checked.** Futamura 1971 defines the projections for a specialiser over
+a given language; Jones/Gomard/Sestoft 1993 give the correctness condition as
+"same behaviour as the original on ALL INPUTS" -- the all-of-domain quantifier
+Aaron's formulation has. Jones-optimality is a QUALITY bar, not the completeness
+bar; conflating them would misuse the anchor. Aaron SHARPENS the literature by
+quantifying over "the domain you are closing over" rather than a language's
+inputs -- the right generalisation when the specialised object is a build graph,
+not a language. That generalisation is his and is not claimed to be in Futamura.
+
+**And the condition fails here, measurably:** 38 of 107 targets (36%) carry no
+CI leg, so the graph is prima facie NOT complete over the CI domain. The
+identity does not hold on this tree today.
+
+**Consequence, and it is the sharpest in the round:** wiring an INCOMPLETE graph
+buys incremental behaviour that is unsound at the edges -- jobs silently skipped
+for the 38 blind spots. Completeness over the CI domain is an ACCEPTANCE
+CONDITION for the wire-the-graph option, not a nice-to-have.
+
+## Open -- the completeness lint (does not exist)
+
+Every target must claim a CI leg; every CI job must be claimed by some target.
+Both directions -- the second catches a job running outside the graph's
+knowledge. Same shape as the existing hygiene/ audits. It is both the acceptance
+gate for Option 1 and the thing that moves the Futamura claim from `unmetered`
+to `metered`.
+
+## Open -- what stops it being wired a SECOND time
+
+The failure mode is already demonstrated in this repo. Design consequences,
+stated as acceptance criteria: (1) the change->job mapping must be DERIVED from
+the graph at run time, never hand-maintained as 20 `if:` guards -- a second copy
+nobody can diff against the first, whose drift is silent; (2) the graph must
+stay regenerable and drift-checked, which `derive --write` + `drift-check`
+already satisfy.
 
 ## Open -- unmeasured, and named as such
 

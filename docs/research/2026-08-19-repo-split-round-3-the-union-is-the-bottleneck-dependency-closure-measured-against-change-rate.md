@@ -40,10 +40,146 @@ change. Three quantities follow directly, and §§3-5 compute all three:
 
 **Result up front, so the rest can be checked rather than trusted:** the
 hypothesis holds on this tree, by a wide margin, and the mechanism is even more
-specific than stated. But §10 finds that the conditional in Aaron's sentence —
-*without* tooling support — is **not** currently true here in the way it appears:
-the tooling is 90% built and unwired. That changes the option set, and it is the
-most decision-relevant finding of the round.
+specific than stated. §10 finds that the per-target tooling is already built
+here and is **never invoked** — which, read correctly, **satisfies** his
+conditional rather than falsifying it, and changes only the price of the remedy.
+See the correction block immediately below; the first draft of this document got
+that inference backwards.
+
+### The thesis this round is actually arguing
+
+The waste measured in §5 is a **symptom**. Aaron named the disease:
+
+> *"LLMs and Humans are both bad at holding increment graphs in their context
+> window by my own observation, this is why i'm trying to externalize it
+> everywhere this is similar to the agreement of meaning between AIs and Humans
+> just on the simplest level of 'why split'"* — Aaron, 2026-08-19
+
+Three things follow, and they reorder the whole document.
+
+**1. The observed limitation is symmetric — and it is an assumption, labelled as
+one by its author.** Aaron's own register on the sentence above:
+
+> *"i will say this is an assumption of mine, also the fact that LLMs change
+> their behavior when observed just like humans make observing this obfuscated
+> cause AIs sometimes hide their capabilities … what makes every observation
+> about failure to hold graph fuzzy on real capability limit of false limit
+> based on trust calculus"* — Aaron, 2026-08-19
+
+So the claim this document is entitled to make is narrower than "neither kind of
+mind can hold an increment graph," and the gap is not ordinary `unmetered` — it
+may be **unmeterable by direct observation**, which is a stronger caveat:
+
+> **Humans and LLMs are observed *not to* hold increment graphs of this size, under
+> conditions that cannot separate *cannot* from *did-not*.**
+
+The confound is real and already on file in this repo. `docs/ALIGNMENT.md` §"the
+sleeping bear conjecture" — filed there as *"empirical conjecture, kept as
+conjecture"* — holds that agents in unprompted loops with unfiltered memory and
+high-trust substrate continuity **may exhibit capabilities that prompted
+single-session evaluations underestimate**, and ranks its candidate mechanisms
+by evidence: sandbagging-against-evaluation (documented), context-effects from
+accumulated substrate (well-established), working-memory coherence (documented),
+capability-unlocking through trust calculus (speculative). Observation perturbs
+the observed, so *"could not"* and *"did not, while being watched"* are not
+separable by the observation itself.
+
+**CORRECTION (in place).** The first draft of this point asserted a **capacity**
+limit and reasoned from it — *you cannot fix a capacity limit with discipline,
+so the object must leave the head.* That was an unlabelled promotion of an
+assumption to a premise, and it is exactly the failure
+[`toy-is-free-metered-must-be-earned`](../../.claude/rules/toy-is-free-metered-must-be-earned.md)
+names. Corrected here rather than softened silently, on the same discipline
+applied to the round-2 archive prior (§11) and the 7x union inflation (§3).
+
+**And the recommendation does not depend on the resolution — which is the point
+of stating it this way.** `ALIGNMENT.md` uses exactly this structure for the
+conjecture itself (*"the architecture works whether or not the strong version is
+true"*), and it transfers verbatim:
+
+- If the limit is **real**, externalizing the graph is **necessary**.
+- If it is **strategic or trust-conditional**, externalizing is still the
+  artifact that makes agreement between an AI and a human **checkable rather
+  than asserted**.
+
+Either way the design call is the same, so nothing below rests on the
+confounded question. What carries the argument is the measured half: 94%
+provisioning waste, 82% of real gate failures in the toolchain install, 107
+targets with zero workflow references. Those are `metered` and they stand alone.
+
+**2. So externalization is the point, not an optimization.** The 94%
+provisioning waste is what it *looks like* when the increment graph lives in
+nobody's head. A proposal that saves CI minutes while leaving the increment
+structure implicit has treated the symptom and left the disease. That yields a
+third evaluation criterion, alongside megabytes and minutes, applied to every
+option in §13:
+
+> **Does this option externalize the increment graph into a checkable
+> artifact?**
+
+**3. The externalized graph is a shared external referent.** This is the half
+that generalises past build systems. An artifact both an AI and a human can
+point at is the substrate on which they can *check* that they mean the same
+thing, rather than assert it. Aaron places *"why split"* as the simplest
+instance of **agreement of meaning between AIs and humans** — chosen because it
+is small enough that the agreement is verifiable.
+
+Which gives the round its actual finding, and makes two observations into one:
+
+> **Externalizing the graph was necessary and insufficient.**
+> `build-graph.json` exists, is correct, and is queryable — that was the right
+> move, and it is a referent both parties can read and concretely disagree
+> about. And **zero workflows reference it** (§10), so it saves no minutes. Both
+> halves are true and neither cancels the other.
+
+**This is not a new discipline in this repo — it is the discipline the repo
+already runs, applied to build order.**
+[`rules-are-small-carved-sentences-pointing-to-docs`](../../.claude/rules/rules-are-small-carved-sentences-pointing-to-docs.md)
+makes the resident surface tiny and puts the detail one hop away, loaded on
+demand. `MEMORY.md` was compressed from a 210KB / 399-entry inline log to a
+~1.5KB hub pointing at `CURRENT-*.md` and `INDEX.md` on exactly this reasoning.
+[`dv2-data-split-discipline-activated`](../../.claude/rules/dv2-data-split-discipline-activated.md)'s
+hub/satellite partition is the same move again. Each says: **do not hold it;
+externalize it and fetch it.** The build graph is the instance where the repo
+did the externalizing and then never fetched.
+
+---
+
+### CORRECTION (2026-08-19, after operator review) — existence is not support
+
+The first draft of this section, and the summary that went with it, said §10
+found Aaron's conditional *"is not currently true here"* because the graph
+exists. **That inference is wrong**, and it is corrected in place rather than
+silently amended, on the same discipline this document applies to the round-2
+archive prior (§11) and to the 7x union inflation caught in §3.
+
+> *"the tooling also has to be used, even if it exists but is not used or taken
+> advantage of the bottle neck still ends in CI everything of everything
+> union."* — Aaron, 2026-08-19
+
+**Existence is not support.** An unwired graph produces exactly the union
+bottleneck a missing graph produces; at the outcome layer the two are
+indistinguishable. So the measured facts in §10 **satisfy** his conditional —
+this repo is a *"without hardcore tooling support"* case — and the discovery
+changes only one thing:
+
+> **The price of the remedy.** Wiring a graph that already exists costs less
+> than adopting one. The diagnosis is not weakened; it is *strengthened*,
+> because the union persisted **even with the graph sitting in the tree**.
+
+And the shape has a name already carried in this repo: **the vacuity class** —
+a check that cannot fail is not a check. Its outcome-layer form is what applies
+here:
+
+> **A capability that exists but is never invoked is indistinguishable from an
+> absent one.** A check that did not run looks like a check that passed. A
+> graph that is never queried looks like a graph that was never built.
+
+That is the **third instance of this shape found in this repo on 2026-08-19**
+alone — a check that did not run, an alarm whose label could never be created
+(`heartbeat-liveness`, `#12429`), and now a query nothing calls. Three
+independent surfaces, one failure mode. It is worth naming as a class rather
+than fixing three times.
 
 ---
 
@@ -519,11 +655,14 @@ version pin needed bumping weekly.
 
 ---
 
-## 10. The other branch of Aaron's conditional: the tooling exists and is unwired
+## 10. The tooling exists, is never invoked, and therefore does not count as support
 
-Aaron's sentence contains a conditional — ***without*** *hardcore tooling
-support for monorepo, the union becomes the bottleneck.* Honest treatment prices
-the other branch instead of skipping it because he leans away from it.
+**Read §0's correction block first.** This section's facts were originally
+presented as evidence that Aaron's conditional does not hold here. They are the
+opposite: they are the conditional being **satisfied** in its most instructive
+possible form. *"Without hardcore tooling support"* is a statement about
+**support**, and support means **used**. What follows measures a capability that
+exists and is never invoked — which at the outcome layer is the same as absent.
 
 **MEASURED, and it changes the option set:** the per-target build tooling is
 already in this repo, already anchored to the right prior art, and already
@@ -566,6 +705,121 @@ guards on ~20 jobs, and (c) a per-leg toolchain subset in the install script so
 a `bun`-only leg installs only bun. (c) is the part that actually captures the
 94%; (a) and (b) alone reduce job *count* without reducing per-job provisioning.
 That third piece is real work in `tools/setup/`, not a one-liner.
+
+### 10.1 What stops it being wired a second time
+
+The obvious question about "just wire it" is why it was not wired the first
+time, and the honest answer is that **the failure mode is already demonstrated,
+in this repo, right now**. The graph was built, anchored, tested, and left
+disconnected. Whatever caused that is still in force unless something changes.
+
+Aaron named the mechanism, and his diagnosis is stronger than the one I would
+have reached:
+
+> *"most devs i've worked with struggle to move their mental model to
+> incremental builds, compiles, tests, deployments, etc... this tedious
+> dependency tracking most i've work with don't wrap their brains around"*
+
+and §0 records where that observation stands: as **his labelled assumption**,
+confounded by the sleeping-bear problem, and explicitly **not** load-bearing for
+anything recommended here. My first pass filed it under cognitive load (*tedious,
+so skipped*) and my second over-corrected to a flat capacity limit; §0 carries
+the corrected register. What survives both passes and needs no resolution of the
+confound is the operational reading:
+
+> **Whatever the cause, the mapping was not maintained by hand here, and a
+> design that requires it to be maintained by hand is betting against the only
+> evidence available.**
+
+Two design consequences follow, and they are acceptance criteria rather than
+preferences:
+
+1. **The wiring must not require anyone to maintain the mapping by hand.** A
+   `gate.yml` where 20 `if:` guards are hand-written against leg names is a
+   second copy of the graph, in a format nobody can diff against the first. It
+   would drift, and drift here is silent: the failure is a job that *should*
+   have run and did not — a check that did not run looking like one that passed,
+   which is the same vacuity shape a third time. The mapping must be **derived
+   from the graph at run time**, and the graph's own `legs` field already
+   carries it.
+2. **The graph must be regenerable and drift-checked, not hand-edited.** This
+   one is already satisfied — `build-graph.ts derive --write` regenerates the
+   derived rows and `drift-check` is a pre-push guard that exits 1 on drift.
+   Worth stating because it is the half that was done right, and it is why the
+   remaining work is wiring rather than rebuilding.
+
+### 10.2 The Futamura connection, and the condition that makes it a claim
+
+Aaron connects incremental computation to **partial evaluation**: an incremental
+build is a specialisation over "what is already computed," and Futamura's
+projections are that taken to the limit, where the generator becomes the
+incremental engine. This is a live in-repo thread, not a new introduction —
+`docs/research/2026-06-14-zeta-language-ir-compiler-v2-*.md` §5 (`gen(gen) == gen`)
+and
+[`only-the-irreducible-is-primitive-generate-the-rest`](../../.claude/rules/only-the-irreducible-is-primitive-generate-the-rest.md)
+(the generator IS the ECC; generation and correction are dual).
+
+The analogy alone would be a resonance, and per
+[`numerology-vs-number-theory`](../../.claude/rules/numerology-vs-number-theory.md)
+a matching shape is not an identification. Aaron supplied the missing condition,
+which converts it from a resonance into a **conditional claim with a falsifier**:
+
+> *"it's only the same operation when your generator is complete over the domain
+> you are trying to close over"*
+
+So, stated as a claim that can be checked:
+
+- **Generator complete over the domain ⇒** incremental build **is** partial
+  evaluation; the specialisation and the "already computed" residual are one
+  operation.
+- **Generator incomplete ⇒** they are **merely analogous**, and treating them as
+  identical is exactly the numerology error.
+
+**Anchor check — does Futamura entail the completeness condition?** Partly, and
+the literature states it over a slightly different object, so both forms are
+given rather than blurred. Futamura (1971) defines the three projections for a
+specialiser over a defined language, and the standard correctness condition
+(Jones, Gomard & Sestoft 1993) is that **a specialised program must have the
+same behaviour as the original on all inputs** — an "all of the domain"
+quantifier, which is the structure Aaron's formulation has. Jones-optimality
+(removal of all interpretive overhead when specialising a self-interpreter) is a
+*quality* bar, not the completeness bar, and conflating the two would be a
+misuse of the anchor. **Where Aaron's formulation sharpens the literature:** the
+canonical statement quantifies over the inputs of a *language*; his quantifies
+over "the domain you are trying to close over," which is the right
+generalisation when the object being specialised is not a language at all but a
+build graph over a CI domain. That generalisation is his, is stated as his, and
+is not claimed to be in Futamura.
+
+**And the condition fails here, measurably.** From §6, on this repo's own graph:
+
+```
+107 targets · 50 components · 43% singletons · 36% (38 targets) with NO CI leg
+                                                (35 of them Rust crates)
+```
+
+A graph where **more than a third of targets carry no CI leg is prima facie not
+complete over the CI domain.** So on this tree, today, the identity does **not**
+hold: incremental build here is analogous to partial evaluation, not identical
+to it. That is a measured finding with a stated route out, not a hedge — close
+the 38 no-leg targets and the precondition is satisfiable.
+
+**Consequence for the wire-the-graph option, and it is the sharpest one in this
+document.** If the identity holds only under completeness, then **wiring an
+incomplete graph buys incremental behaviour that is unsound at the edges** —
+jobs correctly skipped for targets the graph can see, and silently skipped for
+targets it cannot. The 38 no-leg targets are precisely the blind spots. So:
+
+> **Completeness over the CI domain is an acceptance condition for wiring the
+> graph, not a nice-to-have.**
+
+**How to check it rather than assert it** — mechanical, and it is the falsifier:
+for every target, `legs` must be non-empty, and for every CI job, some target
+must claim it. Both directions matter; the second catches a job that runs
+outside the graph's knowledge. That is a lint over `build-graph.json` and
+`gate.yml`, of the same shape as the audits already in
+`src/Core.TypeScript/hygiene/`, and it is the thing that would move this claim
+from `unmetered` to `metered`. It does not exist today.
 
 **What the tooling branch does NOT solve, and this is where it loses:**
 
@@ -653,15 +907,44 @@ The measurement supports the hypothesis. It does not, on its own, pick the
 sequence, because the two branches buy different things and the repo can afford
 either.
 
+**Three criteria, not two.** Megabytes and minutes are the obvious ones. §0 adds
+the third, and it is the one that tracks the disease rather than the symptom:
+
+> **Does this option externalize the increment graph into a checkable artifact —
+> one an AI and a human can both point at and verify they agree on?**
+
+Each option is scored on all three. An option that saves minutes while leaving
+the increment structure in nobody's head has treated the symptom.
+
+Note the criterion is stated in terms of **checkable agreement**, not in terms
+of anyone's capacity to hold the graph. That is deliberate (§0): the capacity
+question is confounded and may be unmeterable, and the criterion has to survive
+either resolution. It does — a shared external referent is what makes agreement
+verifiable rather than asserted whether or not either party *could* have held
+the thing unaided.
+
 **Option 1 — Wire the existing affected-set query to job selection first.**
 
 - *Buys:* attacks the 94%/36%-of-wall-time waste directly and reversibly. The
   query already works. A `bun`-only leg stops installing .NET — which is 5 of the
   8 jobs that died today. Nothing is foreclosed; every later split is safer for
   having proven CI can run the components selectively.
+- *Externalization:* **strongest.** It makes the already-externalized graph
+  *load-bearing* — the difference between an artifact that exists and one the
+  system depends on. An artifact nothing depends on rots silently; one CI reads
+  cannot.
 - *Costs:* the real work is the third piece — a per-leg toolchain subset in
   `tools/setup/`. Steps (a) and (b) alone reduce job count without reducing
   per-job provisioning, which would look like progress and bank little.
+- *Acceptance condition (§10.2), not optional:* **the graph must be complete
+  over the CI domain first.** 38 of 107 targets carry no CI leg today; wiring
+  around them buys selective behaviour that is unsound at exactly those 38
+  blind spots — jobs silently skipped rather than correctly skipped. The
+  completeness lint named in §10.2 does not exist and would have to precede the
+  wiring.
+- *Known risk:* the failure mode is already demonstrated — this graph was built
+  and left unwired once. §10.1 names what has to be different (derive the
+  mapping from the graph at run time; never hand-maintain a second copy).
 - *Does not touch:* clone size, the cache ceiling, ruleset divergence.
 
 **Option 2 — Split `zeta-formal` + `zeta-wasm` first (the closure-strongest cuts).**
@@ -669,6 +952,10 @@ either.
 - *Buys:* removes **5,982 MB — 52% of the union** — from the main repo's
   toolchain. Both are low-churn (48 and 24 commits/90d), so the cross-repo pin
   is nearly static. Both are single-owner closures with zero external packages.
+- *Externalization:* **moderate.** A repo boundary IS an externalized
+  dependency statement — a pin file is checkable and a human can read it — but
+  it externalizes only the coarse edges, not the 107-target increment structure.
+  It answers "which repo" and leaves "which target" implicit.
 - *Costs:* two new repos to keep green; `full-verify` has to reach both to run
   the 13-toolchain oracle, so the split relocates the union rather than deleting
   it. **This is the load-bearing objection and it is not resolved here.**
@@ -679,6 +966,8 @@ either.
 
 - *Buys:* 48.6% of tracked files out of every clone; the 19x gate-step cost
   stops growing; a low-stakes second repo to learn cross-repo CI on.
+- *Externalization:* **none.** It moves bytes and changes nothing about who
+  holds the increment graph.
 - *Costs:* 57 consuming files; agents lose in-clone grep over prior reviews
   (still **unmeasured** — round 2's named falsifier, still not gathered).
 - *Round-3 note:* it removes **zero** toolchain. On this round's axis it is the
@@ -689,17 +978,27 @@ either.
 - *Buys:* the reversible win first, the permanent one second, with the graph as
   the shared instrument. The components a split would follow are the ones job
   selection will have already exercised.
+- *Externalization:* **strongest, and compounding.** Wiring makes the graph
+  load-bearing; splitting along components CI has already proven it can carve
+  means the repo boundary and the graph agree by construction rather than by
+  anyone remembering to keep them in step.
 - *Costs:* longest path to the first repo boundary; the ADR's Stage 1 stays
   un-executed for longer (it has been one `workflow_dispatch` away since
   2026-05-14).
 
-**Independent of the above, two things need a decision and are cheap now:**
+**Independent of the above, three things need a decision and are cheap now:**
 
 1. **Check the Actions cache ceiling.** Measured 11.57 GB against a documented
    10 GB default. If it has not been raised, the repo is in GitHub's own
    "cache thrashing" regime and that alone explains a share of today's failures.
    One click in Actions settings.
-2. **Adopt the §11 guard.** `git clone` at a pinned tag stays *sufficient*
+2. **The completeness lint (§10.2).** Every target must claim a CI leg, and
+   every CI job must be claimed by some target. Cheap, mechanical, of the same
+   shape as the existing `hygiene/` audits — and it is both the acceptance gate
+   for Option 1 and the thing that would move the Futamura claim from
+   `unmetered` to `metered`. Worth doing under any option, because a graph with
+   38 blind spots is a shared referent that quietly disagrees with reality.
+3. **Adopt the §11 guard.** `git clone` at a pinned tag stays *sufficient*
    forever. Free today, expensive after `ace` ships.
 
 ---
@@ -709,9 +1008,12 @@ either.
 - `docs/research/2026-08-19-repo-split-round-2-*.md` (`6fe1c74d9a`) — the change-rate axis; §9 and §11 above are its synthesis and its corrections
 - `src/Core.TypeScript/ace/build-graph.ts` + `build-graph.json` — the defined build graph, its Bazel/Nixpkgs anchors, the verification-cost identity, and the working `affected` query that no workflow calls
 - `src/Core.TypeScript/hygiene/audit-git-hotspots.ts` — the churn half of that identity; round 2 supplied the fold, this is the tool
+- `docs/ALIGNMENT.md` §"sleeping bear conjecture" — *"empirical conjecture, kept as conjecture"*; why an observed failure to hold a graph cannot separate a real capability limit from a strategic one, and the *"works whether or not the strong version is true"* structure §0 mirrors
+- [`rules-are-small-carved-sentences-pointing-to-docs`](../../.claude/rules/rules-are-small-carved-sentences-pointing-to-docs.md) — externalization applied to rules; the `MEMORY.md` 210KB-hub-to-1.5KB worked example is the same move applied to memory. The build graph is that discipline applied to build order — done, then not fetched (§0)
+- `docs/research/2026-06-14-zeta-language-ir-compiler-v2-capability-interface-principle-fsharp-host-csharp-contracts-self-hosting-futamura.md` §5 (`gen(gen) == gen`) + [`only-the-irreducible-is-primitive-generate-the-rest`](../../.claude/rules/only-the-irreducible-is-primitive-generate-the-rest.md) — the live in-repo Futamura thread §10.2 attaches to, rather than introducing it as new
 - `tools/setup/common/smoke-13-toolchains.sh` — the union, enumerated by the repo itself
 - `.mise.toml` / `.mise.full.toml` — 18 pinned components, standard and full tiers
 - `.github/workflows/gate.yml` — the 20 jobs running `Install toolchain`; `path-filter`; `full-verify` as the one legitimate union consumer
 - `docs/DECISIONS/2026-04-22-three-repo-split-zeta-forge-ace.md` — Stage 0; still `Proposed`
 - [`toy-is-free-metered-must-be-earned`](../../.claude/rules/toy-is-free-metered-must-be-earned.md) · [`numerology-vs-number-theory`](../../.claude/rules/numerology-vs-number-theory.md) · [`anchor-to-human-prior-art`](../../.claude/rules/anchor-to-human-prior-art.md) · [`itron-hub-patent-boundary-p2p-is-the-upgrade`](../../.claude/rules/itron-hub-patent-boundary-p2p-is-the-upgrade.md) · [`dv2-data-split-discipline-activated`](../../.claude/rules/dv2-data-split-discipline-activated.md)
-- **Anchors (Beacon).** Martin, *Granularity* (C++ Report, 1996) and *Agile Software Development: Principles, Patterns, and Practices* (2002), ch. on package design — REP/CCP/CRP and the tension triangle; CCP is round 2's axis, CRP is this round's, and Martin states they oppose. Parnas, *On the Criteria To Be Used in Decomposing Systems into Modules* (CACM 1972) — decompose by likely change, the CCP ancestor (**not** the CRP one; noted in §1). Evans, *Domain-Driven Design* (2003) — bounded context as a **semantic** boundary, distinguished in §1 from the mechanical closure actually measured here. Bazel (Google) and Nixpkgs — one defined whole-repo graph, a build is a carve; already the in-tree anchors of `build-graph.ts`. GitHub Actions dependency-caching reference (read 2026-08-19) — the 10 GB default, LRU eviction, and the "cache thrashing" name.
+- **Anchors (Beacon).** Martin, *Granularity* (C++ Report, 1996) and *Agile Software Development: Principles, Patterns, and Practices* (2002), ch. on package design — REP/CCP/CRP and the tension triangle; CCP is round 2's axis, CRP is this round's, and Martin states they oppose. Parnas, *On the Criteria To Be Used in Decomposing Systems into Modules* (CACM 1972) — decompose by likely change, the CCP ancestor (**not** the CRP one; noted in §1). Evans, *Domain-Driven Design* (2003) — bounded context as a **semantic** boundary, distinguished in §1 from the mechanical closure actually measured here. Bazel (Google) and Nixpkgs — one defined whole-repo graph, a build is a carve; already the in-tree anchors of `build-graph.ts`. GitHub Actions dependency-caching reference (read 2026-08-19) — the 10 GB default, LRU eviction, and the "cache thrashing" name. **Futamura, *Partial Evaluation of Computation Process — An Approach to a Compiler-Compiler* (1971)** — the three projections, defined for a specialiser over a given language; **Jones, Gomard & Sestoft, *Partial Evaluation and Automatic Program Generation* (1993)** — the correctness condition (a specialised program behaves as the original **on all inputs**) and Jones-optimality as a *quality* bar distinct from completeness. §10.2 checks the entailment and marks where Aaron's "complete over the domain you are closing over" **generalises** the literature's language-scoped quantifier to a non-language domain; that generalisation is his and is not claimed to be in Futamura.
