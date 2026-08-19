@@ -208,10 +208,21 @@ fi
 # order does not matter. (Residual: a foreign branch name containing `{` could
 # mis-split. That direction fails toward standing down, and the 24h attempt
 # throttle bounds the other direction.)
+# Whitespace-tolerant on purpose: `gh --json` emits COMPACT JSON when stdout is a
+# pipe (the systemd case) but PRETTY-PRINTS to a TTY (the operator-runs-it-by-hand
+# case), and the pretty form has a space after each colon. A compact-only matcher
+# would silently miss an in-flight PR when a human ran the script, which is the
+# duplicate-PR direction. Dots in the prefix are escaped so a hostname's `.` cannot
+# act as a regex wildcard.
+BRANCH_PREFIX_RE="$(printf '%s' "$BRANCH_PREFIX" | sed 's/[.]/\\./g')"
+# `tr '\n' ' '` FIRST: the pretty form spans several lines per object, and the
+# per-object split below is line-based, so without flattening the branch name and
+# its number land on different lines and the number is never found.
 OPEN_PR="$(printf '%s' "$OPEN_PR_JSON" \
+  | tr '\n' ' ' \
   | tr '{' '\n' \
-  | grep -F "\"headRefName\":\"${BRANCH_PREFIX}" \
-  | sed -n 's/.*"number":[[:space:]]*\([0-9][0-9]*\).*/\1/p' \
+  | grep -E "\"headRefName\"[[:space:]]*:[[:space:]]*\"${BRANCH_PREFIX_RE}" \
+  | sed -n 's/.*"number"[[:space:]]*:[[:space:]]*\([0-9][0-9]*\).*/\1/p' \
   | head -1 || true)"
 if [ -n "$OPEN_PR" ]; then
   log "converging: registration PR #${OPEN_PR} already open for ${HOST} — not opening another"

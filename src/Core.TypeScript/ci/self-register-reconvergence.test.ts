@@ -51,6 +51,8 @@ interface World {
   readonly contentsUnreachable?: boolean;
   /** Simulate `gh pr list` failing outright. */
   readonly prListFails?: boolean;
+  /** Emit pretty-printed `gh --json` output (what gh does on a TTY). */
+  readonly prettyJson?: boolean;
 }
 
 const DEFAULT_WORLD: World = { authed: true, registeredOnMain: false, openPrs: [] };
@@ -98,8 +100,9 @@ if (argv[0] === "api" && argv[1]?.includes("/contents/")) {
 }
 if (argv[0] === "pr" && argv[1] === "list") {
   if (world.prListFails) { process.stderr.write("HTTP 503\\n"); process.exit(1); }
-  // Mirrors gh's compact single-line --json array, keys alphabetical.
-  process.stdout.write(JSON.stringify(world.openPrs) + "\\n");
+  // gh emits COMPACT json to a pipe and PRETTY-PRINTS to a TTY. Both shapes are
+  // real, so both are exercised (see the prettyJson world flag).
+  process.stdout.write((world.prettyJson ? JSON.stringify(world.openPrs, null, 2) : JSON.stringify(world.openPrs)) + "\\n");
   process.exit(0);
 }
 if (argv[0] === "pr" && argv[1] === "create") {
@@ -238,6 +241,22 @@ describe("the storm bounds this change is responsible for", () => {
   it("never opens a second PR while one is already open for this host", () => {
     const r = run({
       registeredOnMain: false,
+      openPrs: [{ headRefName: `register-${HOST}-20260819T000000Z`, number: 4242 }],
+    });
+    expect(r.status).toBe(0);
+    expect(createdPr(r)).toBe(false);
+    expect(r.receipt?.state).toBe("converging");
+    expect(r.receipt?.detail).toContain("4242");
+  });
+
+  // gh pretty-prints --json on a TTY (`"headRefName": "x"`) and emits compact JSON
+  // to a pipe (`"headRefName":"x"`). A compact-only matcher misses the in-flight PR
+  // in the operator-runs-it-by-hand case and opens a duplicate. Found in self-review,
+  // not by a failing test — so it gets one.
+  it("sees an in-flight PR in pretty-printed gh output too, not just compact", () => {
+    const r = run({
+      registeredOnMain: false,
+      prettyJson: true,
       openPrs: [{ headRefName: `register-${HOST}-20260819T000000Z`, number: 4242 }],
     });
     expect(r.status).toBe(0);

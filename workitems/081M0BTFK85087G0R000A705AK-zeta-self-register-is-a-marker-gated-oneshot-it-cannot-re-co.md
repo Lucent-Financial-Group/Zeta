@@ -92,6 +92,17 @@ script**, so they are falsifiers rather than decoration; 220 `src/Core.TypeScrip
 tests green; `tsc --noEmit` clean; `audit-installer-substrate` green, and its new
 `mustNotContain` sentinel verified to fire on the pre-fix module.
 
+**A second defect, found in self-review after the first push.** The in-flight-PR
+matcher was written against `gh --json`'s COMPACT output (`"headRefName":"x"`).
+`gh` pretty-prints to a TTY (`"headRefName": "x"`), which is the
+operator-runs-it-by-hand case — and the compact-only matcher missed the in-flight
+PR there, i.e. it failed in the duplicate-PR direction, defeating the very bound
+this design leans on. Two layers were wrong: the whitespace, and the fact that the
+per-object split is line-based while the pretty form spans several lines per
+object. Both fixed, and both now witnessed by a test that fails without the fix.
+It was found by reading the code, not by a failing test, which is exactly why it
+got one.
+
 **Checked in CI, and stronger than the line above claimed** (corrected after
 watching the run — the original text said "`nix-instantiate --parse`", which
 understated it): `build-ai-cluster-iso` went green on this branch, and it runs
