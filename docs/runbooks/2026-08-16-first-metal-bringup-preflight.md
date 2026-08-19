@@ -18,8 +18,8 @@ agent must not perform (`nothing operator-run, only operator-approved via biomet
 
 | Staged | Where | State |
 |---|---|---|
-| x86_64 installer ISO, built from `main` | `~/Downloads/zeta-installer-25.11-ci31954188104-2026-08-16-x86_64.iso` | 1 652 834 304 bytes; newest `zeta-installer-*` in `~/Downloads`, so `zflash` auto-discovery picks it |
-| Its sigstore bundle | same name + `.bundle` | 10 559 bytes |
+| x86_64 installer ISO, built from `main` | ~~`~/Downloads/zeta-installer-25.11-ci31954188104-2026-08-16-x86_64.iso`~~ | **GONE as of 2026-08-18** — re-checked by `ls`; neither the ISO nor its bundle is in `~/Downloads` any more. See the correction below. |
+| Its sigstore bundle | same name + `.bundle` | **GONE** (only `otto-agent-sovereign-keys.bundle` remains in that folder) |
 | ISO ↔ signature binding | — | **verified**: SHA-256 `d62ff70c509eb4bb3fe5337912f7f522e47ecffbfcaceb643498dfe3423c403f` equals the `messageSignature.messageDigest` in the bundle |
 | Signing identity | read from the bundle's Fulcio cert | SAN `https://github.com/Lucent-Financial-Group/Zeta/.github/workflows/build-ai-cluster-iso.yml@refs/heads/main`, OIDC issuer `https://token.actions.githubusercontent.com` |
 | ISO currency vs `main` | — | **verified**: `zeta-install.sh`, `installer/configuration.nix` and `operator-ssh-keys.nix` are byte-identical between the ISO's build commit `e034c5d` and `origin/main` |
@@ -28,6 +28,21 @@ agent must not perform (`nothing operator-run, only operator-approved via biomet
 
 Two older installer ISOs are still in `~/Downloads` (2026-06-09, 2026-06-21). They are **eight weeks
 stale**. `zflash` picks newest-by-mtime, so they will not be chosen — but do not hand-pick them.
+
+> **Correction, 2026-08-18 (re-measured, not re-read).** The staged ISO above **is no longer on
+> disk**, so any step in this document that passes that path by hand now fails at
+> `flash-usb.ts`'s ISO gate with `ISO file does not exist`. The two 2026-06 ISOs are the only
+> `zeta-installer-*.iso` files left, and **neither carries an arch token**, so
+> `selectDownloadedIsoForArch` takes its arch-less-fallback branch on this machine today.
+>
+> **Use the bare `zflash` form.** Auto-pull is architecture-aware (§4 #2) and a successful
+> `build-ai-cluster-iso` run exists on `main` from today, so `zflash` re-downloads the current
+> x86_64 artifact and caches it as `zeta-installer-<rel>-ci<run>-<date>-x86_64.iso`. Do not
+> re-stage a file by hand; that is the step this tool exists to remove.
+>
+> Consequence for §0's remaining rows: the digest and signing-identity verifications below were
+> performed against a file that is gone. They are **not** claims about whatever ISO you flash next
+> — re-verify per §4 #5 if you want the keyless chain checked.
 
 ---
 
@@ -107,16 +122,18 @@ auto-detects and a second stick makes the auto-detection ambiguous. Unplug the o
 
 ```bash
 cd /Users/acehack/Documents/src/repos/Zeta
-bun src/Core.TypeScript/zflash/cli.ts \
-  ~/Downloads/zeta-installer-25.11-ci31954188104-2026-08-16-x86_64.iso
+bun src/Core.TypeScript/zflash/cli.ts
 ```
 
-**Pass the ISO path explicitly** — do not rely on auto-pull. Reason in §4 (known unknown #2).
+**Use the bare form.** Auto-pull is architecture-aware as of 2026-08-18 (§4 known unknown #2,
+now closed), so `zflash` fetches the current x86_64 artifact itself. An explicit path is still the
+way to pin a *specific* build — but the file §0 used to name is **gone** (see the 2026-08-18
+correction there), so do not copy that path out of this document.
 
 **Expected, in order:**
 
 - `zflash: local checkout matches origin/main on install substrate ✓`
-- `ISO: …zeta-installer-25.11-ci31954188104-2026-08-16-x86_64.iso`
+- `ISO: …zeta-installer-25.11-ci<run>-<date>-x86_64.iso` — and, because `~/Downloads` currently holds only arch-less ISOs, possibly first a line reading `zflash: WARNING no ISO here names arch x86_64; falling back to <path>, whose arch cannot be read.` **Read that warning.** If it appears and auto-pull did *not* then replace the pick, you are about to flash an eight-week-old June image
 - `USB: /dev/diskN (…)` and a printed dump of what is on the stick now
 - `*** ALL DATA ON /dev/diskN WILL BE DESTROYED ***` and a challenge — you type `yes <nonce>`
 - **Touch ID prompt fires. Touch it.** This is the consent floor; no agent can satisfy it.
@@ -212,9 +229,17 @@ the `k3s-cluster-online` NixOS test makes in CI, so a green here means metal rep
 
 ## 4. Known unknowns — named, not smoothed
 
-**#1 — The aarch64 boot smoke-test reports green while timing out, but the image is NOT broken.**
+**#1 — The aarch64 boot smoke-test used to report green while timing out. Fixed since this was
+written; the paragraph below is kept because its conclusion still stands.**
 
-The CI step is `continue-on-error: true`, so the job is green whatever happens. In the latest `main`
+> **Update 2026-08-18.** `continue-on-error: true` is **gone** from that step. The workflow now
+> reads the harness exit code and routes it: `0` BOOTED passes, `1` BOOT-FAILED **fails the job**,
+> `3` TIMEOUT and `4` STALLED warn only. So a boot *break* now blocks and a *budget* overrun does
+> not — which is the distinction the paragraph below was arguing for. The honest limit the workflow
+> states in its own comment: a break that manifests as a silent hang past the bootloader still lands
+> in the advisory bucket.
+
+The step was `continue-on-error: true`, so the job was green whatever happened. In `main`
 run (31954188104) that step ran **exactly 1800 s** — `15:15:21Z → 15:45:22Z` — and its log ends:
 
 ```
@@ -257,20 +282,27 @@ Riven's PR #10959 (`riven/fix-qemu-uefi-serial`, merged) touches
 `src/Core.TypeScript/ci/qemu-boot-test.ts`, so this aarch64 step is a different, still-open lane.
 Nothing in that branch was modified here.
 
-**#2 — `zflash`'s CI auto-pull is architecture-blind.**
+**#2 — `zflash` CI auto-pull was architecture-blind. CLOSED 2026-08-18.**
 
-`autoDownloadFreshIsoIfNeeded` runs `gh run download <id>` with **no artifact filter**, then
-`findIsoUnder` returns the **first** file ending in `.iso` in `readdirSync` order. Since the aarch64
-job was added, a run contains **two** ISOs, and nothing in that walk prefers x86_64. The destination
-name it writes — `zeta-installer-25.11-ci<run>-<date>.iso` — records no architecture either.
+`autoDownloadFreshIsoIfNeeded` ran `gh run download <id>` with **no artifact filter**, then
+`findIsoUnder` returned the **first** file ending in `.iso` in `readdirSync` order. Since the
+aarch64 job was added a run carries **two** ISOs, and nothing in that walk preferred x86_64. The
+destination name it wrote — `zeta-installer-25.11-ci<run>-<date>.iso` — recorded no architecture
+either, so a wrong pick also became the newest file in `~/Downloads` and won every **later**
+auto-discovery. Sticky, and invisible in the filename.
 
-Reproduced the directory layout locally and the walk returned the x86_64 one — but `readdirSync`
-order on APFS is directory-hash order, not alphabetical, so **that is one observation, not a
-guarantee**. Failure signature if it ever picks wrong: the x86 target says "no bootable device" and
-the ISO filename gives no hint why.
+The fix (PR on `dejan/zflash-iso-arch-selection`): selection is now a pure, tested function.
+`selectIsoForArch` collects **every** `.iso` in the download tree, sorts them so the verdict does
+not depend on `readdirSync` order, and reads the architecture from the whole path — the artifact
+DIRECTORY as well as the name, because `configuration.nix` `mkForce`s an `isoName` carrying no arch
+token. It **refuses rather than guesses**: only-wrong-arch and genuinely-ambiguous trees are errors
+that name the failure, not picks. The cached copy is now stamped `...-<arch>.iso`, and
+`autoDiscoverIso` filters `~/Downloads` by arch so a stale wrong-arch file can no longer win on
+mtime alone. `--iso-arch x86_64|aarch64|host` overrides; the default is **x86_64**, because the
+cluster nodes are x86_64 and deriving it from the host would pick aarch64 on your Mac every time.
 
-Mitigation, and the reason step A2 passes a path: an explicit ISO argument (or `--skip-iso-pull`)
-bypasses the pull entirely.
+Falsifier: mutate `selectIsoForArch` back to "return the first ISO" and 7 tests in
+`src/Core.TypeScript/zflash/lib.test.ts` go red. Verified.
 
 **#3 — `~/.config/zeta/{keyring,keyset}` do not exist.** The
 `cluster-encryption-credential-substrate` RESUME (last refreshed 2026-06-21) describes a teardown
@@ -290,12 +322,17 @@ inclusion proof) was **not**. To close that:
 
 ```bash
 brew install cosign
+ISO=~/Downloads/<the zeta-installer-*-x86_64.iso zflash cached on this run>
 cosign verify-blob \
-  --bundle ~/Downloads/zeta-installer-25.11-ci31954188104-2026-08-16-x86_64.iso.bundle \
+  --bundle "$ISO.bundle" \
   --certificate-identity 'https://github.com/Lucent-Financial-Group/Zeta/.github/workflows/build-ai-cluster-iso.yml@refs/heads/main' \
   --certificate-oidc-issuer 'https://token.actions.githubusercontent.com' \
-  ~/Downloads/zeta-installer-25.11-ci31954188104-2026-08-16-x86_64.iso
+  "$ISO"
 ```
+
+2026-08-18: `zflash`'s auto-pull copies **only** the `.iso` into `~/Downloads` — the sigstore
+bundle is not fetched with it, so `$ISO.bundle` will not exist until you `gh run download` the
+`.cosign` sibling from the same run.
 
 ---
 
