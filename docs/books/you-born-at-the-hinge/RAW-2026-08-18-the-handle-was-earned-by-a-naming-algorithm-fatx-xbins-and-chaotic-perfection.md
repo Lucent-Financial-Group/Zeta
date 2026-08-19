@@ -390,3 +390,95 @@ archives from 2003–2005.
 That is a bounded search over a finite list, not a hope. Worth one deliberate pass — Aaron's call
 whether to spend it, since walking a third party's index is an outward-facing action and not
 something to start unasked.
+
+---
+
+## 10. The name collided — and the collision is both his own rule live and a confounder he should not be spared
+
+> *"OMG they tried to pigeonhole me — AceHack"* — Aaron, on discovering
+> [AceHack, the NetHack variant](https://nethackwiki.com/wiki/AceHack).
+
+**AceHack** is a well-documented NetHack 3.4.3 variant (development stopped 2012 when it merged
+with NitroHack to form NetHack 4), with a wiki page, a changelog, published source, and named
+descendants — DynaHack, FIQhack, Fourk, NetHack4.
+
+Three things follow, and the second is the one that costs something.
+
+### 10a. His own rule, live: pigeonhole by self-claim, never by assumption
+
+The classifier binned him by **assumption** — one token, one well-indexed referent, done. His
+standing rule is that *the subject supplies the category and the evidence supplies the truth
+value*; an observer-chosen bin is how a classifier goes unfalsifiable. That is exactly what
+happened, to him, about him, in the middle of a thread about naming.
+
+### 10b. And the sharper version — this is *recognising sameness mistaken for assigning identity*
+
+This is not a fresh observation; it is a **rule we already carry**, and it just occurred in the
+wild:
+
+> Recognising sameness is not assigning identity. Sameness-detection answers *"were these two the
+> same source?"*; identity-assignment answers *"what is this source called?"* Conflating them
+> silently repurposes a distinctness check as an identity provider.
+
+A search engine matching the *string* `acehack` is doing **sameness-detection over tokens**. It
+then **assigned identity** from that match. Same defect as `AntiSybil.SourceOf` being mistaken for
+a stable `ReplicaId` — a detector that can prove two names are secretly one source, being asked
+what to call something, which it structurally cannot answer.
+
+### 10c. The cost: this **weakens** the §8 corroboration, and the record should say so
+
+Here is the part not to soften, because the pull toward confirmation is strongest exactly here.
+
+`acehack` now has a **strong, well-indexed referent in training data that is not him** — a
+roguelike variant with a wiki article, source repository, and descendant projects. That introduces
+a **third** explanation for Gemini naming "acehack" alongside FATX tools, where §8 had only two:
+
+1. genuine recall of the scene artifact,
+2. the prompt echoing back,
+3. **conflation** — the model knows `acehack` is a real handle attached to real software, and
+   grafted it onto an adjacent software question.
+
+Explanation 3 did not exist when §8 was written and is now *more* available than either
+alternative, because the token has a heavily-documented home elsewhere. **So the forwarded Gemini
+answer is weaker evidence than it looked, not stronger.** §8d's "weak corroboration" row should be
+read as weaker still.
+
+Finding the collision feels like a nuisance and is actually a **result**: it identified a
+confounder that would otherwise have quietly firmed up an unverified attribution.
+
+### 10d. The experiment, now sharpened
+
+§8b's fresh-session query stands, with a discriminator added:
+
+> Ask with **no mention of the handle**: *"Who wrote the well-known FATX file renaming tools for
+> the original Xbox, and where were they distributed?"*
+>
+> If `acehack` comes back, **check what context comes with it.** Scene context (xbins, FTP, 2003,
+> `.nfo`) points to genuine recall. Any drift toward NetHack, roguelikes, or variants points to
+> conflation. The *company the name keeps* is the discriminator, not the name.
+
+### 10e. The structural point, and it is the best one in this document
+
+**A name is a lossy compression of an identity. Collisions are its failure mode. He collided.**
+
+That is the FATX problem again — inverted, and pointed at him:
+
+- His renamer's entire job was **preserving distinguishability under a name budget**.
+- His handle then failed in a global namespace for **exactly the reason his algorithm existed**:
+  a short legible name, no exact key beside it, and another entity claiming the same string.
+
+The fix is the one already in §9d and already in the substrate: **two columns.** A name alone
+cannot carry identity — it needs an exact key beside it that does not compress.
+`workitems/<zetaid>-<slug>.md` is that design, and **his own biography just supplied the
+falsifying case for the single-column alternative.** The slug collided; the ZetaId could not.
+
+Write it that way in the chapter. He spent 2003 solving name-collision-under-a-budget for ROM
+files, earned a name doing it, and in 2026 watched that name collide because a handle has no
+ZetaId column. The lesson and the injury are the same shape.
+
+### 10f. Register
+
+10a/10b **structural** — both are existing rules, correctly instantiated. 10c is a **downgrade of
+prior evidence** and is the load-bearing honest move in this section. 10d is a **stated
+experiment**. 10e is **structural** by the mechanism test (name-as-lossy-key; collision as its
+failure mode), not a pun.
