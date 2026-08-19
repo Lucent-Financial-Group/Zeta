@@ -633,3 +633,76 @@ saying so, in the catalogue, under his handle.
 12a is **record** (public third-party catalogue). 12b is the **honest residue** and is the only row
 that did not close. 12c is **record** as to the string and a **lead** as to its meaning. 12d is a
 **reading** of a real quotation.
+
+---
+
+## 13. A second scene, four years later — and the archive names him in its own voice
+
+**Brewology, 2 August 2007**, `PRX Installer v0.1` (`prxinstallerv0.1.rar`), PSP homebrew:
+
+> *"There's a new homebrew coder on the scene, and his name is **AceHack**. AceHack recently dropped
+> by our forums to announce his very first PSP homebrew: PRX Installer v0.1 … According to AceHack's
+> write-up, PRX Installer v0.1 **doesn't overwrite your plugins, but instead adds onto it**. It
+> automatically detects your PlayStation drive and will allow you to pick PRXs from your
+> Applications PRX folder."*
+
+Public, third-party, dated, still live. This is the release §11a had only as a file-extension index
+entry — now with a primary write-up.
+
+### 13a. What a second scene adds that a second file would not
+
+One record establishes a fact. Two records **four years and one platform apart** establish a
+*continuity*, which is a different claim:
+
+- **The handle persists across scenes.** Xbox/xbins 2003 → PSP/Brewology 2007. Not a one-scene
+  alias; a name he carried.
+- **The toolchain moved as expected.** 2003 was VB6/C#1 (§0, his account); 2007 requires
+  *"Microsoft's .Net Framework v2.0."* That is the natural four-year progression, and it
+  corroborates the *shape* of his recollection without anyone having to trust the memory.
+- **The instinct is the same.** *"Automatically detects your PlayStation drive"* is the same
+  do-the-tedious-part-for-the-user reflex as the FATX tool's configurable options and greyed
+  conflicts (§7). Different platform, same author's idea of what software owes a person.
+
+### 13b. §3, quoted from outside
+
+§3 argued the name was **socially conferred** — he wrote something, others adopted it, the adoption
+made the name stick — and that this is why he holds the naming-eigenvector thesis with the
+confidence he does.
+
+Here is an archive doing the conferring, in its own editorial voice, in public:
+
+> *"There's a new homebrew coder on the scene, and his name is AceHack."*
+
+Not a claim he made. A sentence somebody else wrote **about** him, announcing him to a community.
+That is the mechanism, on the record, twice — xbins cataloguing the tool under his handle in 2003
+(§12), Brewology introducing him by it in 2007.
+
+### 13c. A pattern candidate — labelled as a candidate
+
+*"Doesn't overwrite your plugins, but instead adds onto it."*
+
+That is **additive-rather-than-destructive**, chosen as the headline property of an installer in
+2007. It rhymes with two other things in this record:
+
+| era | artifact | the shape |
+|---|---|---|
+| 2003 | PreXBoxCopyTool | compress the name **without destroying what distinguishes** |
+| 2007 | PRX Installer | install **without overwriting** what is there |
+| now | Zeta | retraction, not erasure; §5 memory-preservation |
+
+Per [`numerology-vs-number-theory`](../../../.claude/rules/numerology-vs-number-theory.md) this is
+recorded as a **candidate**, not a result. The honest deflation: *don't clobber the user's config* is
+a sensible installer choice that many competent people make independently, so the middle row is the
+weak one and could easily be ordinary good sense rather than a signature. What makes it worth
+keeping at all is that the outer two are not ordinary — preserving discriminative information under
+a hard budget is a *design stance*, and so is a substrate whose correction primitive is a retraction
+rather than a delete.
+
+Three points is enough to notice and not enough to conclude. If it promotes, it promotes on a
+mechanism, not on a third instance.
+
+### 13d. Register
+
+13a and 13b are **record** (public, dated, third-party, quoted). 13c is an explicitly-labelled
+**candidate pattern** with its weakest link named. Nothing here touches §12b's residue — the
+*mechanism* of the FATX intelligence is still unestablished, and a second scene does not speak to it.
