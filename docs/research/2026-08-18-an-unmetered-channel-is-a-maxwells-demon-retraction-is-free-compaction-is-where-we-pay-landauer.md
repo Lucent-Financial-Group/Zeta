@@ -394,3 +394,42 @@ Whether squash-merge destroys the preimage in this repo's actual configuration (
 `consume-pr-archives.ts` may retain it); whether `git gc` runs on `refs/zeta/*`; and the
 Rust/C#/Q# oracles' Bloom/CountMin classifications, which were not swept. These are **unknown**,
 not "fine."
+
+### 11i. Amendment — the category error is deeper than §11b said, and §11e overstated
+
+A re-verification pass against `origin/main` (the first pass read a checkout 754 commits stale;
+every conclusion held, but two things sharpen and one was mis-stated).
+
+**The list is stated in operation NAMES; erasure is a property of the REPRESENTATION.**
+
+`IDeltaLog.TruncateAsync` is *one interface method with one call site*
+(`RecoverableSpine.fs:74`). It is preimage-**destroying** under `DeltaLog.fs:94–98`
+(`list.RemoveAll`) and preimage-**preserving** under `GitDeltaLog.fs:177–201`, which builds a tree
+with the low blobs removed and commits it **with the old commit as parent** — so every truncated
+delta stays reachable through the DAG. That file says so itself: *"git never rewrites history —
+Landauer-honest, Memory-Preservation §5."*
+
+**Same operation name, opposite thermodynamic class, decided by the injected backend.** So §11b's
+"meter by injectivity, not lifecycle stage" is right but not yet sharp enough: injectivity is a
+property of the *concrete implementation*, and no name-based list — mine or its replacement — can
+be completed or trusted. The declaration must live where the representation is chosen.
+
+**A whole category the list had no slot for.** `src/Core/GiftOfErasure.fs` (landed PR #11705, and
+absent from the stale tree) is *deliberate, cooperative, privacy-motivated forgetting* whose entire
+**purpose** is that the preimage be unrecoverable — it structurally removes sealed bytes and records
+only the fact. Not GC, not eviction, not a squash. And it is **quorum-shaped**: its thesis is
+literally *"you cannot forget alone."* So it is simultaneously §7's mutual-witness structure and
+§7e's falsifying witness — erasing with no member paying and no metered correlation-establishment
+anywhere (`mix` charges nothing). §7 was arguing about the very module that already implements it.
+
+**§11e overstated: §7e's conditional has a FALSE ANTECEDENT.** I wrote that the conditional *"if our
+ledger meters compaction but not witness-correlation formation"* is confirmed. It is not — the
+ledger meters **neither**, so the antecedent is false and a conditional with a false antecedent is
+not "confirmed," it is **unexercised**. The honest statement is that **the gap is both halves, and
+the worry was understated rather than validated.** Correcting my own correction, because "confirmed"
+was doing rhetorical work the logic did not support.
+
+**Unknown, not inferred:** whether the F# erasure tests pass on `main` today — they are compiled in,
+carry no `Skip`/`Ignore`, and are gated by `dotnet test Zeta.sln -c Release`, but non-vacuity is
+argued from the source's structure (exact-match on fibre *and* `BitsErasedPpm`, plus a reflection
+drift guard), not from an observed green run.
