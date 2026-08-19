@@ -39,11 +39,9 @@ and 8 Z3 lemmas. Superseded: the TLA+ leg alone is now 52 gated model runs.
 
 ---
 
-## Round 41 -- PRUNED 2026-08-18 (3000-word cap). Landed; superseded.
+## Trigger Recognition Log
 
-## Trigger Recognition Log (081KSBMG30008QG0R000WJ9FMP landing — round-69 routing decision)
-
-One line per round where a trigger fired and a routing decision was made WITHOUT filing a backlog row. Forward-only. Outcome in {routed, held, escalated, recognition-without-row-filing}.
+One line per round where a trigger fired and routing was decided WITHOUT filing a row. Forward-only.
 
 | Round | Trigger | Outcome | Artifact |
 |---|---|---|---|
@@ -53,10 +51,6 @@ One line per round where a trigger fired and a routing decision was made WITHOUT
 
 If this section saturates, revisit Option 3: a separate cross-cutting ledger.
 
-
-## Safety-floor arc -- PRUNED 2026-08-18 (3000-word cap). Landed; superseded.
-
-## Vacuity round -- PRUNED 2026-08-18 (3000-word cap). Landed; superseded.
 
 ## 2026-08-14 -- Meno braided ladder: Q3 then Q1. Balanced, and it stops there.
 
@@ -262,14 +256,11 @@ most-worked area of Zeta. Correct, and understated. Sweep found 37 TLA+ specs / 
 MAP -- so every attempt re-derives proven work. Deliverable:
 docs/research/2026-08-19-draft-the-distributed-identity-server-*.md (DRAFT).
 
-**Routing calls.** C1 capability-is-a-derivative -> F# private constructor (inexpressible beats
-unreachable) + Alloy for the shape; NOT TLA+. C2 witness-is-a-self-claimer -> Alloy;
-BftSybilConsensus.tla already holds the quorum leg, do not re-model. C3a the impossibility ->
-Lean 4 (FinMutualInfo / FinDataProcessing ladder already built). C3b the N_eff bound -> Z3
-UFNRA, uninterpreted-monotone per whitewash-economics-lemma. C4 accrual -> TLA+. C4-NI
-no-local-clock -> Semgrep (it is a grep; cheapest tool that can fail wins). C5 node-local
-decisions -> Alloy. C6 hubs-negotiate -> GENERALISE RefuseBinding.tla; the non-penalty clause is
-the whole property and a fresh spec would drop it.
+**Routing calls (full table in the doc §5, not restated here).** Headline: C1 -> F# private
+constructor + Alloy, NOT TLA+ (inexpressible beats unreachable). C3a -> Lean on the existing
+FinMutualInfo ladder; TLC categorically wrong (no reals -- QuorumPhaseCancellation precedent).
+C3b -> Z3 UFNRA uninterpreted-monotone. C4-NI -> Semgrep; it is a grep. C6 -> GENERALISE
+RefuseBinding.tla, whose non-penalty clause IS the property.
 
 **C3 formalised, anti-analogy check passed.** "Not embarrassingly parallel" = strength is not a
 functional of the per-claim MARGINALS. Theorem: marginals do not determine the joint (Shannon
@@ -295,11 +286,10 @@ a function nobody has written. Said so; did not write it -- not my lane.
 shipped bounded duration + rotation) and nothing recorded it. A design surface that does not know
 which of its gaps are closed keeps re-proposing closed work.
 
-**Portfolio, identity/trust domain.** Metered: BftConsensus, BftSybilConsensus, QuorumCollateral,
-WagerSolvency, RefuseBinding, TrustGraph, IdentityReissuable, IdentityForcesPrivacy,
-whitewash-economics, privacy-budget-net-positive, GossipTelemetry, row-15 N_eff. Unmetered:
-AntiSybil-as-theorem, PrivacyPreservingIdentity, C1, C4, C4-NI, C5. Absent: ClaimStrength, the
-three metered decision classes (share / compute / store).
+**Portfolio, identity/trust domain (full table in doc §7).** Metered: 12 artefacts incl. the
+BFT pair, the Quorum/Wager family, RefuseBinding, both Alloy models, whitewash-economics,
+row-15 N_eff. Unmetered: AntiSybil-as-theorem, PrivacyPreservingIdentity, C1, C4, C4-NI, C5,
+frost. Absent (not unmetered): ClaimStrength, the three decision classes.
 
 Filed: 081M0DJSR8N087G0R000QCYBYW (Lean C3a), 081M0DJSY48087G0R001GVG3AT (Z3 C3b),
 081M0DJSY5C087G0R00094DD3Z (FsCheck F3), 081M0DJSY6B087G0R0005PAA25 (Alloy C2),
@@ -310,10 +300,17 @@ Filed: 081M0DJSR8N087G0R000QCYBYW (Lean C3a), 081M0DJSY48087G0R001GVG3AT (Z3 C3b
 **Three mid-round reframings, all adding sections rather than corrections.** (a) The local
 decision layer -- node-local OPA-like policy trust; C6 (hubs negotiate, never command) turned
 out to be RefuseBinding.tla generalised, non-penalty clause included, which is a routing gift.
-(b) Frost is a DECORRELATION mechanism, not only a consent one: full visibility is a
-correlating force, N_eff is metered, so never-confiscate has a second MECHANICAL failure mode.
-The register-collapse proof establishes privacy > 0 and must NOT be cited for the rho-pricing
-claim -- different falsifiers (G11). (c) The arc: S=4 at the origin, decorrelate without babel.
+(b) Frost buys decorrelation -- then CORRECTED by Aaron: he runs with zero frost, fully
+public, and is decorrelated anyway. So opacity is ONE of three routes. The invariant is
+I(V;F), predictive mutual information: shrink V (frost), or keep F entropic at decision time
+(mixed strategy -- BitGan already has the meter, discriminatorEdge, and the anchor, von
+Neumann 1928: an optimal mixed strategy is safe to ANNOUNCE), or drift the policy
+(nonstationarity). Mechanisms 2-3 buy axis 1 without spending axis 2; frost spends both. Guard
+against the opposite overclaim: a deterministic stationary public agent IS predictable, so
+"transparency is free" is conditional. Frost was designed by someone who does not use it --
+not self-serving, also not dogfooded. F4 filed (081M0DRH1CW087G0R003Y3CAB6), both readings
+pre-registered. The register-collapse proof establishes privacy > 0 and must NOT be cited for
+the rho-pricing claim -- different falsifiers (G11). (c) The arc: S=4 at the origin, decorrelate without babel.
 Objective is decorrelate SUBJECT TO staying reconcilable. Both axes already instrumented
 (AntiSybil.correlation / largestLyapunov / effectiveN vs byte-lock / Collation / anchor audit)
 and never plotted together -- G13, 081M0DMH30Y087G0R001C2B1PT, composes with the register's
