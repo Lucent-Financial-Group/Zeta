@@ -92,9 +92,25 @@ script**, so they are falsifiers rather than decoration; 220 `src/Core.TypeScrip
 tests green; `tsc --noEmit` clean; `audit-installer-substrate` green, and its new
 `mustNotContain` sentinel verified to fire on the pre-fix module.
 
-**NOT checked — no NixOS node was booted, and none may be under this brief.**
-Timer elapse, `startLimitIntervalSec` interaction with timer-driven starts,
-`StateDirectory` ownership of the receipt, and ordering against
-`zeta-creds-restore` are **reviewed, not executed**. The stubs encode what we
-believe `gh --json` returns; a change in gh's output shape would break a node and
-not these tests. First real-hardware convergence remains unobserved.
+**Checked in CI, and stronger than the line above claimed** (corrected after
+watching the run — the original text said "`nix-instantiate --parse`", which
+understated it): `build-ai-cluster-iso` went green on this branch, and it runs
+`nix flake check --no-build --show-trace` over `full-ai-cluster`. That
+**evaluates** the `nixosConfigurations`, which import `common.nix`, which imports
+this module — so the option types (`ints.unsigned`, `str`), the
+`systemd.timers.zeta-self-register` block, and `startLimitIntervalSec` /
+`startLimitBurst` are validated by the real NixOS module system, not merely
+parsed. The installer ISO also built, so the module survives into a system
+closure.
+
+**NOT checked — no node ever STARTED this unit.** The correction above must not
+be read as more than it is: the NixOS VM tests in `full-ai-cluster/nixos/tests/`
+import specific modules (`k3s-server.nix`, `k3s-agent.nix`,
+`k3s-join-observer.nix`) and **do not import `common.nix`**, so none of them
+brings up `zeta-self-register` — checked, rather than assumed, before writing
+this. Evaluation proves the unit is well-formed; it proves nothing about
+behaviour. Timer elapse, jitter, the `startLimitIntervalSec` interaction with
+timer-driven starts, `StateDirectory` ownership of the receipt, and ordering
+against `zeta-creds-restore` are **reviewed, not executed**. The stubs encode
+what we believe `gh --json` returns; a change in gh's output shape would break a
+node and not these tests. First real convergence on hardware remains unobserved.
