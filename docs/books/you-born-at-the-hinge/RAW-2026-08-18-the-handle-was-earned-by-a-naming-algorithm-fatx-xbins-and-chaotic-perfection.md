@@ -706,3 +706,78 @@ mechanism, not on a third instance.
 13a and 13b are **record** (public, dated, third-party, quoted). 13c is an explicitly-labelled
 **candidate pattern** with its weakest link named. Nothing here touches §12b's residue — the
 *mechanism* of the FATX intelligence is still unestablished, and a second scene does not speak to it.
+
+---
+
+## 14. The residue probably cannot be closed — and the method was not what I framed it as
+
+Aaron, on §12b:
+
+> *"i think the nfo was lost before april 2003, that's as far back as i see xbox scene software
+> archives, mine was february 2003. Also the FATX stuff was trial and error on my part and reading
+> others' code to understand the FATX limitations."*
+
+Two separate things. The first closes a door; the second reopens a framing.
+
+### 14a. §12b's residue is probably permanently open
+
+His release is **February 2003**; the surviving Xbox-scene software archives appear to start
+**April 2003**. If that gap is real, the `.nfo` and the binary are gone — not misplaced,
+**destroyed by the archive's own history**, before anyone thought to keep it.
+
+So the record is likely final at what §12 established: the catalogue's *"configurable
+intelligence"* is the outermost external statement that will ever exist about this tool, and the
+**mechanism** stays testimony forever. That is worth stating rather than leaving as an open
+to-do that quietly implies someone should keep looking. **An unclosable gap named is honest; an
+unclosable gap left open is a debt nobody will retire.**
+
+Small irony worth one line and no more: a book chapter about a tool that compressed names to fit a
+constrained filesystem, and the thing that did not survive is the file describing it.
+
+### 14b. The correction: trial and error, not derivation
+
+> *"trial and error on my part and reading others' code to understand the FATX limitations."*
+
+§2 and §9 read the algorithm as corpus-relative mutual-information maximisation — TF-IDF logic,
+stop-word elimination, discriminative-power budgeting. **That analysis stands as a description of
+what the tool did. It was never an account of how he got there, and he is now saying plainly that
+it was not a derivation.**
+
+The register held here, and that is the point of having it: §5's table already recorded
+*"§2's information-theoretic reading of the algorithm — **mine**, my analysis of what he described,
+not his framing at the time."* Nothing has to be retracted, because nothing was claimed. Had that
+row said "his insight", this correction would be a retraction instead of a refinement.
+
+**And the honest version is the more interesting one.** Trial and error against a hard external
+constraint is a *search*, and a search can converge on a near-optimal policy without the searcher
+holding the theory — which is exactly why the outcome looks principled in hindsight. He did not
+know it was TF-IDF. He knew that truncating from the right destroyed his ROM set, and he kept
+changing the rule until it stopped doing that. The theory is a *post-hoc name* for a policy found
+by iteration, and the iteration is the real story: **a fifteen-year-old running gradient descent by
+hand against a filesystem.**
+
+That also fits everything else on file about how he works — the Stump Dad game, asking why until
+the answer runs out, externalising knowledge and relearning fast. It is craft knowledge, arrived at
+by contact with a real constraint. Presenting it as theory-first would have flattered it and
+falsified it.
+
+### 14c. Reading others' code — and which side of the wall that is
+
+*"reading others' code to understand the FATX limitations"* is worth naming precisely, because the
+repo has a rule about exactly this line.
+
+He read other people's code to learn **what the filesystem permits** — the constraint, the
+requirement, the shape of the problem. He did not lift **their solution to it**. That is the
+legitimate side of
+[`cleanroom-two-team-separation`](../../../.claude/rules/cleanroom-two-team-separation.md): the
+requirement is what you may learn, the expression is what you may not copy. In 2003, with no rule
+written down, he did the thing the rule now formalises — and the evidence that he did is the tool
+itself, since a copied solution would not have needed the trial and error.
+
+### 14d. Register
+
+14a is **his assessment of archive coverage**, plausible and not independently verified — the claim
+"archives start April 2003" is his observation, and the conclusion "therefore unrecoverable" is
+inference from it, not fact. 14b is **his account of method**, and it **downgrades nothing**,
+because §2's reading was already labelled as mine. 14c is **a reading** of what he described,
+against a rule that postdates the act by twenty-three years.
