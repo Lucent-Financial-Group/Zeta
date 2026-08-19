@@ -30,25 +30,15 @@ and 8 Z3 lemmas. Superseded: the TLA+ leg alone is now 52 gated model runs.
 
 ## Running observations
 
-- **2026-04-17 (round 21) — seeded.** Skill just landed. First
-  live routing reviews are the in-flight round-21 dispatches;
-  next-round recommendations captured above.
-- **2026-04-17 (round 21) — TLA+-hammer check.** Of the 14 TLA+
-  specs in the repo, 2 were properly TLA+-shaped safety
-  invariants; the other 12 are a mix of algebraic identities
-  (should have been Z3) and structural invariants (should have
-  been Alloy). Not urgent to refactor, but flag for next
-  portfolio review.
-- **2026-04-17 (round 21) — Stainless viability note.** Stainless
-  4.x with Scala 3 is finally stable enough to evaluate for our
-  termination claims. Put on the Assess row in `TECH-RADAR.md`
-  when the Tech-Radar Owner (Jun) runs his next sweep.
+- Round-21 running observations (seeded / TLA+-hammer check / Stainless viability) -- PRUNED 2026-08-19 (3000-word cap). Superseded: the TLA+-hammer finding is now a standing routing habit, and Stainless never left Assess.
+
 ### Round 21 targets -- PRUNED 2026-08-14, all dispatched and long landed.
 
 ---
 
 ## Pruning log
 
+- 2026-08-19 (identity-server lane): pruned the stale round-21 running observations to hold the cap after the distributed-identity-server routing entry.
 - 2026-08-18 (ambient-time lane): pruned Round 41, Safety-floor arc, Vacuity/Landauer
   round and the Z-EPS run to hold the 3000-word cap after two same-day entries merged.
 
@@ -271,3 +261,57 @@ measuring in TURNS instead of microtasks. Turns are the right unit for load-inde
 PORTFOLIO NOTE: this adds a cell in the adversarial-input/taint row that is CHEAPER than Semgrep
 for the allowlist-integrity reason above. The routing table's cheapest-credible-tool column
 should record that the SUPPRESSION SURFACE is part of a tool's cost, not a footnote.
+
+## 2026-08-19 -- distributed identity server: the map existed in pieces, nobody had it on one page
+
+Aaron routed the overall design for the distributed identity server and warned it is the
+most-worked area of Zeta. Correct, and understated. Sweep found 37 TLA+ specs / 54 TLC configs,
+6 Alloy models, 26+ Lean files, 9 Z3 lemmas, 8 Q# oracle modules, 23 identity-named F# modules,
+~80 research docs. The reason there was no overall design is not missing pieces, it is a missing
+MAP -- so every attempt re-derives proven work. Deliverable:
+docs/research/2026-08-19-draft-the-distributed-identity-server-*.md (DRAFT).
+
+**Routing calls.** C1 capability-is-a-derivative -> F# private constructor (inexpressible beats
+unreachable) + Alloy for the shape; NOT TLA+. C2 witness-is-a-self-claimer -> Alloy;
+BftSybilConsensus.tla already holds the quorum leg, do not re-model. C3a the impossibility ->
+Lean 4 (FinMutualInfo / FinDataProcessing ladder already built). C3b the N_eff bound -> Z3
+UFNRA, uninterpreted-monotone per whitewash-economics-lemma. C4 accrual -> TLA+. C4-NI
+no-local-clock -> Semgrep (it is a grep; cheapest tool that can fail wins). C5 node-local
+decisions -> Alloy. C6 hubs-negotiate -> GENERALISE RefuseBinding.tla; the non-penalty clause is
+the whole property and a fresh spec would drop it.
+
+**C3 formalised, anti-analogy check passed.** "Not embarrassingly parallel" = strength is not a
+functional of the per-claim MARGINALS. Theorem: marginals do not determine the joint (Shannon
+1948; Hoeffding 1940 / Frechet 1951; Sklar 1959). SocietyUsefulWork's rho is the SAME functional
+(N_eff = N/(1+(N-1)rho); Gaussian copula IS the Sklar decomposition) over DIFFERENT random
+variables -- competence over facts, not observation over claims. Theorem transfers, instantiation
+carries no measurement. Recorded as three graded lines, not one confident one.
+
+**Falsifier F3 already fired in production.** QuorumAlgebra bug B3: six agents on one stream,
+precision = 66.0 on a mean wrong by 5.66 -- configuration B scored as A. C3 is the generalisation
+of an observed failure, not a design preference.
+
+**Apparent contradiction with our own shipped proof, resolved.** BeliefConvergence proves the
+fold COMMUTES. C3 is not about order, it is about what the aggregation may DEPEND ON. Both hold.
+The next reader will hit this too.
+
+**Biggest finding is not a proof gap.** G1: no ClaimStrength surface exists. G7: Policy.fs has
+ONE instance and its own docstring says the trust interpreter is not built. The spine's central
+quantity and its evaluator are both absent, so every verification item routed this round verifies
+a function nobody has written. Said so; did not write it -- not my lane.
+
+**Stale-gap hazard, named as a class.** The 2026-08-09 IdP doc lists 4 gaps; 2 closed (KeyCustody
+shipped bounded duration + rotation) and nothing recorded it. A design surface that does not know
+which of its gaps are closed keeps re-proposing closed work.
+
+**Portfolio, identity/trust domain.** Metered: BftConsensus, BftSybilConsensus, QuorumCollateral,
+WagerSolvency, RefuseBinding, TrustGraph, IdentityReissuable, IdentityForcesPrivacy,
+whitewash-economics, privacy-budget-net-positive, GossipTelemetry, row-15 N_eff. Unmetered:
+AntiSybil-as-theorem, PrivacyPreservingIdentity, C1, C4, C4-NI, C5. Absent: ClaimStrength, the
+three metered decision classes (share / compute / store).
+
+Filed: 081M0DJSR8N087G0R000QCYBYW (Lean C3a), 081M0DJSY48087G0R001GVG3AT (Z3 C3b),
+081M0DJSY5C087G0R00094DD3Z (FsCheck F3), 081M0DJSY6B087G0R0005PAA25 (Alloy C2),
+081M0DJSY79087G0R002FH5140 (TLA+ C4), 081M0DJSY88087G0R002JTPWKQ (Semgrep C4-NI),
+081M0DJSY9F087G0R002HV7KA7 (G1), 081M0DK2TW6087G0R001GHD9MJ (Alloy C6),
+081M0DK2TXD087G0R003674BAS (G7).
