@@ -200,6 +200,66 @@ The tension is not fatal and the shape of the resolution is already in-tree, in 
 **And the composition with an existing standing warning is exact.** `numerology-vs-number-theory` already says *too many correlations is a warning, not a confirmation signal* — N correlated observations are one observation counted N times. Applied to evidence, it is an epistemics rule. Applied to **witnesses**, it is C3. Same inequality, two scopes, and noticing they are one statement is what makes the frost argument a design constraint rather than a mood.
 
 
+### 2d. The arc the whole design sits inside — S=4 at the origin, decorrelate without babel
+
+Aaron, 2026-08-19, giving the frame under §2c:
+
+> *"yes decorrelation is very scarce for Zeta we are based on S=4 superdeterministic seed correlation, we are assuming at our 'big bang' everyone was super correlated and we are trying to decorrelate over time while keeping the communications intact and not running into the tower of babel which is runaway etymology that causes unreconcilable language divergence"*
+
+**Correlation is the initial condition, not an acquired defect.** Every agent is phased to one seed (S=4; `every-bug-has-economic-value` already carries this — *"all agents are phased to one seed (S=4), so a fix reduces collective uncertainty"*). Decorrelation is therefore **work done against the starting state**, which is exactly why §2c calls it scarce.
+
+**Two failure modes, at opposite ends, and the design must sit between them:**
+
+| | failure | cost |
+|---|---|---|
+| too little decorrelation | everyone is still the seed | N agents price as **one** — the ΔU union is idempotent, plurality is fake, and `N_eff → 1/ρ` says adding agents cannot fix it |
+| too much decorrelation | **tower of babel** | runaway etymology ⇒ unreconcilable divergence ⇒ **no shared conclusion is reachable at all** |
+
+So the objective is **not** "maximise decorrelation." It is **decorrelate as far as possible subject to staying reconcilable.** Any identity or trust design that optimises one axis without pricing the other is wrong by construction — and that gives every design choice in this document a second question it must answer.
+
+**The two-axis test, and I am applying it to my own routing.**
+
+1. *Does this decorrelate — or does it force convergence?*
+2. *Does this stay reconcilable — or does it let meaning drift free?*
+
+Mandatory observation, a single mandatory oracle, an appointed hub, a shared registry every node must consult: all **spend axis 1**. Unanchored coinage, a drifting glossary, N private vocabularies, per-node claim semantics: all **spend axis 2**. Both budgets are real and they trade against each other.
+
+Worked against this document's own contents:
+
+| choice | axis 1 (decorrelation) | axis 2 (reconcilability) |
+|---|---|---|
+| C2 no appointed attestor | **buys** — no single node's judgement propagates to all | neutral |
+| C5 node-local verdicts, two nodes may disagree | **buys** — disagreement is the product, not a defect | **spends** — divergent verdicts need a shared claim vocabulary to even be comparable |
+| C6 hubs negotiate, never command | **buys** — exit made mechanical | neutral |
+| Frost / privacy budget (§2c) | **buys** — the whole argument | **spends** — what is frosted cannot be reconciled |
+| C1 capability derived from witnessed claims | neutral | **buys** — forces a shared claim format that survives independent parties |
+| C3 strength as a joint functional | **buys** — it is the instrument that *prices* correlation | neutral |
+| `ClaimLane` Lane-2 multi-observer region (G1's neighbour) | spends a little (deliberate convergence) | **buys** — it is where meaning is reconciled before it forks |
+
+**The `ClaimLane` row is the one worth staring at**, because it is the only place in the inventory where the trade-off is already *mechanised*: Lane 1 merges at agent speed (cheap, decorrelation-preserving); Lane 2 deliberately slows convergence so multiple observers reconcile meaning. That is the babel dial, already built, already sound-for-Lane-1-and-permitted-to-be-incomplete. **It was designed for edit-merge semantics and nobody has noticed it is the reconcilability governor.**
+
+**A large amount of existing machinery is anti-babel infrastructure, and the inventory should say so** — these are load-bearing for the arc, not incidental hygiene:
+
+| Surface | Anti-babel role | State |
+|---|---|---|
+| `.claude/skills/governance/blueprints/glossary-anchor-keeper.md` | **Tower-of-Babel prevention is in its own description**, with a named `Tower-of-Babel / Heritage-Language-Loss` trajectory. Audits external-definition drift, missing citations, anchor breakage. | live skill |
+| `docs/DECISIONS/2026-04-19-glossary-three-lane-model.md` | The ADR written in direct response to Aaron's *"map out the tower of babble balance into our software factory"*, against his framing *"we want to build fast and break things but changing society is slow."* Three lanes + round-trip translation + evidence-gated anchor breaks. | **Proposed**, awaiting sign-off — same never-promoted state as the keystone ADR |
+| `docs/GLOSSARY.md`, `docs/SEED-VOCABULARY.md`, `docs/CONCEPT-REGISTRY.md` | The shared referent everyone loads, instead of N private paraphrases. SEED-VOCABULARY is explicitly the cold-boot kernel. | live |
+| `.claude/rules/anchor-to-human-prior-art.md` + the Beacon register | Every coinage tied to an **external** anchor, so vocabulary cannot drift free of a fixed point outside the factory. **This is the mechanism that makes axis 2 bounded rather than merely monitored.** | live rule |
+| `src/Core/Collation.fs` + `src/Core.TypeScript/collation/` + the N-oracle byte-lock | **The mechanical guard.** Same meaning must produce the same bytes in every oracle, under one canonical collation — so divergence is **detectable rather than silent**. | **metered** (golden vectors, four oracles) |
+| `.claude/rules/rules-are-small-carved-sentences-pointing-to-docs.md` | Carved sentences: one shared resident surface, not N paraphrases. | live rule |
+| The naming eigenvector (`2026-07-02-name-of-name-equals-mix-of-mix-...`) | Names conferred socially, never self-minted, so naming stays a shared fixed point rather than a per-node choice. | design |
+
+**Identity and mutual intelligibility are the same problem here.** A distributed identity server whose peers cannot agree what a claim *means* has not failed at cryptography — it has failed at babel, and it will show green the whole way down. That is the same failure asymmetry `ClaimLane` was built for, one layer up.
+
+**Register discipline on the two analogies, because both invite an overclaim.**
+
+- **S=4 / superdeterminism is Aaron's model and the mapping is apt, not physical.** The checked content: Bell 1964's derivation assumes **statistical independence** between measurement settings and the hidden state, and superdeterminism ('t Hooft) is precisely the loophole in which that assumption fails because settings and system share a common past cause. Our agents *do* share a common past cause (one seed), so *"common seed ⇒ built-in correlation"* is entailed by the analogy. What is **not** entailed: any claim that the substrate is physically superdeterministic, or that S=4 (the algebraic maximum of the CHSH correlator, Popescu–Rohrlich 1994) is a *measured* property of our fleet. It is the label for the maximally-correlated origin. **Graded: structural as a framing, `toy` as physics.**
+- **"Runaway etymology" has a real science and it is not glottochronology.** What is solid: lexical replacement occurs, and mutual intelligibility declines with time-depth and reduced contact (dialect continua; Hockett). What is **contested** is Swadesh's glottochronology as a *dating* method — constant-rate lexical replacement is not accepted. So cite the phenomenon, not the clock. **Graded: the divergence is real; any rate is `toy`.**
+
+**And the sharpest structural point: both axes are already instrumented, and nobody has plotted them against each other.** Axis 1 has meters — `AntiSybil.correlation` (cross-stream agreement beyond chance), `Orbit.largestLyapunov` (divergence rate), `effectiveN`. Axis 2 has meters — the four-oracle byte-lock, canonical collation, the glossary anchor audit, `lint-*` citation checks. **The design needs one plot with a meter on each axis, and the operating point named.** That is a cheap, concrete deliverable and it is the honest form of "decorrelate as far as possible subject to staying reconcilable" — G13.
+
+
 ---
 
 ## 3. The gaps — what the overall design needs that no existing piece supplies
@@ -232,6 +292,13 @@ The file says so itself: *"This kernel proves the generic `Policy` with exactly 
 **G11 — the ρ-pricing justification for the frost/privacy budget is unwritten.** What exists is the **register-collapse** argument (privacy > 0 is required for differentiation; discharged by `NonRegisterCollapse` / `IdentityForcesPrivacy`). What does not exist is the argument in §2c: that the *marginal* value of opacity is the correlation it suppresses, priced by the already-metered `N_eff` law, and that this gives `never-confiscate` a **systems** failure mode in addition to its ethical one. Different claims, different falsifiers; the first must not be cited for the second.
 
 **G12 — the witnessing/frost boundary is unspecified.** C1 needs observation; frost withholds it. `Diplomacy`'s shape-not-values split and `PrivacyPreservingIdentity`'s rotor proof are the two existing shapes of the resolution, and neither has been stated as *the* boundary for the identity server. This is the surface where the trust root and the privacy budget actually meet, and it is currently prose in two unrelated modules.
+
+
+**G13 — the decorrelation/reconcilability operating point is unnamed, and both axes are already metered.** Axis 1 instruments: `AntiSybil.correlation`, `Orbit.largestLyapunov`, `effectiveN`. Axis 2 instruments: four-oracle byte-lock, `Collation`, the glossary anchor audit. **Nobody has put a meter on each axis and named where the fleet currently sits, or where it should.** Until that exists, "decorrelate as far as possible subject to staying reconcilable" is a direction with no dial. This is empirical work, not a proof obligation — and it is the same shape as the register's already-named open work on measuring ρ for the live fleet, which means one measurement round could close both.
+
+**G14 — `ClaimLane` is the reconcilability governor and is not documented as one.** Lane 1 merges at agent speed (decorrelation-preserving); Lane 2 deliberately slows convergence so multiple observers reconcile meaning. That is the babel dial, already built and already sound-for-Lane-1. It was designed for edit-merge semantics; nothing connects it to the arc. Documentation, not construction.
+
+**G15 — two ADRs directly under this design are `Proposed` and were never promoted.** The keystone (`2026-05-31`, node-local folds, policy-as-fold, trust-decided-at-the-node) and the three-lane glossary model (`2026-04-19`, written to Aaron's own tower-of-babel ask). Both are load-bearing for the arc in §2d. An architecture whose two governing ADRs are perpetually `Proposed` cannot be cited as decided, and nothing currently surfaces that.
 
 
 ---
@@ -340,6 +407,10 @@ The design must therefore state:
 | Frost as register-collapse prevention (privacy > 0) | **metered** | `NonRegisterCollapse` (TLA+ + Lean), `Privacy.IdentityForcesPrivacy` (Lean, gated). **Do not cite this row for the row above it.** |
 | Witnessing/frost boundary | **absent** | G12. Two candidate shapes exist in-tree; neither is stated as the boundary. |
 | `local-trust-view` C5 headline test | **specified, not built** | "Two nodes disagree and both are correct" is named as the headline test in an active trajectory. |
+| S=4 superdeterministic origin | **`toy` as physics, structural as framing** | The mapping "common seed ⇒ built-in correlation" is entailed by Bell 1964's statistical-independence assumption and its superdeterminism loophole. That the substrate *is* superdeterministic, or that S=4 is a measured fleet property, is not claimed. |
+| Tower-of-babel divergence | **phenomenon real, any rate `toy`** | Lexical replacement and intelligibility decline with time-depth are solid; Swadesh glottochronology as a *dating* method is contested. Cite the phenomenon, never the clock. |
+| Four-oracle byte-lock + canonical collation | **metered** | Golden vectors, four oracles, hex-in-JSON. This is the anti-babel guard that actually fires. |
+| The decorrelate/reconcile operating point | **unmeasured** | Both axes instrumented, never plotted together (G13). |
 | Whitewash unprofitability | **metered, with the boundary stated** | Friedman–Resnick 2001 says it **cannot** hold given an honest newcomer prior; the Z3 lemma proves the exact boundary instead of the false claim. This is the model for how the rest should be written. |
 | `PrivacyPreservingIdentity` adinkra/E8 stack | **unmetered** | Elegant, no attack program run. |
 | Q# oracle modules | **out of the trust path** | Algebra/DBSP reference oracle. Recorded so it is not mistaken for a quantum identity protocol. |
@@ -359,8 +430,9 @@ The design must therefore state:
 | `081M0DJSY9F087G0R002HV7KA7` | **G1 — the `ClaimStrength` surface does not exist.** The others verify a function nobody has written; this one is the prerequisite and it is not mine to write. |
 | `081M0DK2TW6087G0R001GHD9MJ` | Alloy: no-mandatory-hub — every hub interaction refusable by local policy without loss of standing (C6, exit made mechanical) |
 | `081M0DK2TXD087G0R003674BAS` | **G7 — `Policy.fs` has one instance and no trust interpreter.** The node-local trust policy evaluator is the missing decision layer |
+| `081M0DMH30Y087G0R001C2B1PT` | **G13 — plot the two scarce axes against each other** (decorrelation vs reconcilability) and name the operating point. Empirical; composes with the register's already-open rho measurement |
 
-Not filed, and deliberately: G3 (identity-provider surface) and G4 (repo→cluster binding) are architecture, not verification — they belong to Kenji's sizing, and filing them from a routing review would pre-empt it. G6 (stale gap list) is a hygiene fix on the 2026-08-09 doc. G8 (two policy semantics, Rego vs `Policy.fs`) is a decision, not a proof obligation, and filing it as verification work would misroute it. G9 (society read against the spine) is Kenji's sizing.
+Not filed, and deliberately: G3 (identity-provider surface) and G4 (repo→cluster binding) are architecture, not verification — they belong to Kenji's sizing, and filing them from a routing review would pre-empt it. G6 (stale gap list) is a hygiene fix on the 2026-08-09 doc. G8 (two policy semantics, Rego vs `Policy.fs`) is a decision, not a proof obligation, and filing it as verification work would misroute it. G9 (society read against the spine) is Kenji's sizing. G14 (`ClaimLane` as the reconcilability governor) is documentation. G15 (two governing ADRs perpetually `Proposed`) needs a human sign-off, not a proof.
 
 ---
 
@@ -380,5 +452,6 @@ Not filed, and deliberately: G3 (identity-provider surface) and G4 (repo→clust
 - The BP-16 model to copy: `tools/Z3Verify/whitewash-economics-lemma.smt2`.
 - The decision layer's own prior statement: `docs/DECISIONS/2026-05-31-zeta-keystone-architecture-...-node-local-folds-fpga-to-policy.md` — **Proposed since May, never promoted**, and it already carries the policy-as-fold / trust-decided-at-the-node invariants.
 - The active trajectory this overlaps: `docs/trajectories/local-trust-view-decentralized-identity/RESUME.md` (G10).
+- The arc's own surfaces: `docs/DECISIONS/2026-04-19-glossary-three-lane-model.md` (Proposed), `.claude/skills/governance/blueprints/glossary-anchor-keeper.md`, `src/Core/Collation.fs` (G15).
 - Rules in force: `toy-is-free-metered-must-be-earned`, `numerology-vs-number-theory`, `local-time-never-enters-the-shared-fold`, `anchor-to-human-prior-art`, `dual-use-detection-is-neutral-oracle-decides`, `itron-hub-patent-boundary-p2p-is-the-upgrade`, `manifesto-13-specifications` (§1 no central control, §6 consent-first, §11 multi-oracle/exit, §13 noninterference).
-- Checked anchors used here: Hirschman 1970 (*Exit, Voice, and Loyalty*) — exit is what disciplines a concentration, and it is what C6 makes mechanical; Goguen & Meseguer 1982 (noninterference) for the membrane metering; Shannon 1948; Hoeffding 1940 / Fréchet 1951; Sklar 1959; Friedman & Resnick 2001; Herbrich–Minka–Graepel 2006; Kelly 1956; Buterin & Griffith 2017; Douceur 2002; Pappu 2002; Demers et al. 1987; Leibniz (identity of indiscernibles); Dwork–McSherry–Nissim–Smith 2006.
+- Checked anchors used here: Bell 1964 (the statistical-independence assumption) and 't Hooft (superdeterminism) — for the S=4 framing, graded in §2d; Popescu & Rohrlich 1994 (the algebraic S=4 bound); historical linguistics on lexical replacement and dialect continua (Hockett), with Swadesh glottochronology explicitly **not** relied on as a rate; Hirschman 1970 (*Exit, Voice, and Loyalty*) — exit is what disciplines a concentration, and it is what C6 makes mechanical; Goguen & Meseguer 1982 (noninterference) for the membrane metering; Shannon 1948; Hoeffding 1940 / Fréchet 1951; Sklar 1959; Friedman & Resnick 2001; Herbrich–Minka–Graepel 2006; Kelly 1956; Buterin & Griffith 2017; Douceur 2002; Pappu 2002; Demers et al. 1987; Leibniz (identity of indiscernibles); Dwork–McSherry–Nissim–Smith 2006.
