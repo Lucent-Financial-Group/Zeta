@@ -3,8 +3,7 @@
 Running notes for Soraya. ASCII only (BP-09). 3000-word cap
 (BP-07). Pruned every third invocation.
 
-Frontmatter at `.claude/skills/formal-verification-expert/SKILL.md`
-is canon (BP-08). This notebook supplements, never overrides.
+Frontmatter at `.claude/skills/formal-verification-expert/SKILL.md` is canon (BP-08); this supplements, never overrides.
 
 ---
 
@@ -37,7 +36,6 @@ and 8 Z3 lemmas. Superseded: the TLA+ leg alone is now 52 gated model runs.
 - 2026-08-18 (ambient-time lane): pruned Round 41, Safety-floor arc, Vacuity/Landauer
   round and the Z-EPS run to hold the 3000-word cap after two same-day entries merged.
 
-- Round 21: seeded. First prune review: round 24.
 
 ---
 
@@ -50,10 +48,10 @@ One line per round where a trigger fired and a routing decision was made WITHOUT
 | Round | Trigger | Outcome | Artifact |
 |---|---|---|---|
 | 59 | PR #4795 (081KSBMG30008QG0R003B46GWG) merged | recognition-without-row-filing (umbrella covers subitem (b) acceptance criteria; execution is Kenji's lane) | n/a (chat-only) |
-| 66 | PR #4797 (081KS923C0008QG0R000TE1589) merged | recognition-without-row-filing (audit execution is Kenji's lane; Soraya does not pre-empt sizing) | n/a (chat-only — gap that 081KSBMG30008QG0R000WJ9FMP audit-of-audit then surfaced) |
-| 69 | PR #4810 (081KSBMG30008QG0R000WJ9FMP) merged | **routed to Option 1: NOTEBOOK Trigger Recognition Log** (this section); rejected Option 2 (081KS923C0008QG0R000TE1589 in-place — wrong change-rate partition) + Option 3 (new cross-cutting ledger — premature; no consumer demand) | this section |
+| 66 | PR #4797 merged | recognition-without-row-filing (audit execution is Kenji's lane) | n/a (chat-only) |
+| 69 | PR #4810 merged | routed to Option 1: this section; rejected in-place (wrong change-rate partition) and a new ledger (premature) | this section |
 
-If this section saturates (NOTEBOOK approaches 3000-word cap from log entries alone), revisit Option 3: create a separate cross-cutting ledger (e.g., `docs/research/verification-routing-decisions.md` — does not yet exist; hypothetical destination).
+If this section saturates, revisit Option 3: a separate cross-cutting ledger.
 
 
 ## Safety-floor arc -- PRUNED 2026-08-18 (3000-word cap). Landed; superseded.
