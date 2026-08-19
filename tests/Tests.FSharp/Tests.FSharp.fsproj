@@ -147,6 +147,7 @@
     <Compile Include="ZetaIrV3.Tests.fs" />
     <Compile Include="ZetaIrV4.Tests.fs" />
     <Compile Include="ZetaIrMinimalSet.Tests.fs" />
+    <Compile Include="HomoiconicSeam.Tests.fs" />
     <Compile Include="ZetaIrNormalizer.Tests.fs" />
     <Compile Include="ZetaIrCanonicalizer.Tests.fs" />
     <Compile Include="ZetaIrEval.Tests.fs" />
@@ -455,6 +456,7 @@
     <Compile Include="SoftRegimeStability.Tests.fs" />
     <Compile Include="SoftRegimeEquivariance.Tests.fs" />
     <Compile Include="AdinkraCode.Tests.fs" />
+    <Compile Include="CliffordPeriodicity.Tests.fs" />
     <Compile Include="AdinkraIdentity.Tests.fs" />
     <Compile Include="AdinkraOrbits.Tests.fs" />
     <Compile Include="Chip8DynamicalZeta.Tests.fs" />
@@ -631,6 +633,7 @@
     <Compile Include="Formal/WSet.Comonoid.Laws.Tests.fs" />
     <Compile Include="Formal/WSet.FourCornerTrace.Laws.Tests.fs" />
     <Compile Include="Formal/WSet.ErasureClassification.Laws.Tests.fs" />
+    <Compile Include="Formal/Erasure.Representation.Laws.Tests.fs" />
     <Compile Include="Formal/ByteCost.Laws.Tests.fs" />
     <Compile Include="Formal/Jaccard.Laws.Tests.fs" />
     <Compile Include="Formal/Clock.Laws.Tests.fs" />
@@ -651,6 +654,7 @@
     <Compile Include="Formal/AmplitudeEmuSignalling.Tests.fs" />
     <Compile Include="Formal/MenoBraidedBasisBijection.Tests.fs" />
     <Compile Include="Formal/LatticeVoaGradedDimensions.Tests.fs" />
+    <Compile Include="Formal/ConstructionAThetaE8.Tests.fs" />
 
     <!-- Properties/ last (they cross modules by design). -->
     <Compile Include="Properties/Math.Invariants.Tests.fs" />
