@@ -1601,9 +1601,9 @@
       "legs": ["gate/lint-no-conflict-markers"],
       "origin": "declared",
       "requiredQuorum": {
-        "tier": "T3",
+        "tier": "T1",
         "faultModel": {
-          "faultClass": "byzantine",
+          "faultClass": "omission",
           "f": 1
         },
         "reviewerClasses": [
@@ -1616,29 +1616,7 @@
           "reviewer:typescript",
           "reviewer:unknown:leg"
         ],
-        "evidence": [
-          {
-            "rule": "cross-oracle-bytelock",
-            "kind": "cross-oracle",
-            "witness": "src/Core.TypeScript/blake3/cross-verify.ts",
-            "count": 10,
-            "holder": "leg:repo-text"
-          },
-          {
-            "rule": "golden-vectors",
-            "kind": "golden-vector",
-            "witness": "src/Core.TypeScript/bag/golden-vectors.json",
-            "count": 65,
-            "holder": "leg:repo-text"
-          },
-          {
-            "rule": "treaty-transcript",
-            "kind": "treaty-transcript",
-            "witness": "src/Core.TypeScript/quantum-observable/quantum-treaty-transcript.json",
-            "count": 6,
-            "holder": "leg:repo-text"
-          }
-        ]
+        "evidence": []
       },
       "note": "conflict-marker scan runs over every tracked text file, so its surface is the text tree."
     },
@@ -1660,35 +1638,13 @@
       "legs": ["gate/lint", "gate/lint-semgrep-drift"],
       "origin": "declared",
       "requiredQuorum": {
-        "tier": "T3",
+        "tier": "T1",
         "faultModel": {
-          "faultClass": "byzantine",
+          "faultClass": "omission",
           "f": 1
         },
         "reviewerClasses": ["reviewer:unknown:leg"],
-        "evidence": [
-          {
-            "rule": "cross-oracle-bytelock",
-            "kind": "cross-oracle",
-            "witness": "src/Core.TypeScript/blake3/cross-verify.ts",
-            "count": 10,
-            "holder": "leg:semgrep"
-          },
-          {
-            "rule": "golden-vectors",
-            "kind": "golden-vector",
-            "witness": "src/Core.TypeScript/braid/golden-vectors.test.ts",
-            "count": 25,
-            "holder": "leg:semgrep"
-          },
-          {
-            "rule": "treaty-transcript",
-            "kind": "treaty-transcript",
-            "witness": "src/Core.TypeScript/quantum-observable/quantum-treaty-transcript.test.ts",
-            "count": 3,
-            "holder": "leg:semgrep"
-          }
-        ]
+        "evidence": []
       },
       "note": "semgrep scans every source surface plus the workflow YAML; the drift leg re-checks the ruleset against it."
     },
@@ -1735,9 +1691,9 @@
       "legs": ["gate/lint-no-empty-dirs", "gate/lint-structural-hygiene"],
       "origin": "declared",
       "requiredQuorum": {
-        "tier": "T3",
+        "tier": "T1",
         "faultModel": {
-          "faultClass": "byzantine",
+          "faultClass": "omission",
           "f": 1
         },
         "reviewerClasses": [
@@ -1750,29 +1706,7 @@
           "reviewer:typescript",
           "reviewer:unknown:leg"
         ],
-        "evidence": [
-          {
-            "rule": "cross-oracle-bytelock",
-            "kind": "cross-oracle",
-            "witness": "src/Core.TypeScript/blake3/cross-verify.ts",
-            "count": 10,
-            "holder": "leg:tree-structure"
-          },
-          {
-            "rule": "golden-vectors",
-            "kind": "golden-vector",
-            "witness": "src/Core.TypeScript/bag/golden-vectors.json",
-            "count": 69,
-            "holder": "leg:tree-structure"
-          },
-          {
-            "rule": "treaty-transcript",
-            "kind": "treaty-transcript",
-            "witness": "src/Core.TypeScript/quantum-observable/quantum-treaty-transcript.json",
-            "count": 6,
-            "holder": "leg:tree-structure"
-          }
-        ]
+        "evidence": []
       },
       "note": "structural hygiene and the empty-directory guard are properties of the TREE, not of any file, so the surface is the whole tree. This is the widest declared target and it is deliberate: these legs must run on any change that adds or removes a path."
     },

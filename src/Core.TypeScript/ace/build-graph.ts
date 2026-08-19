@@ -1204,6 +1204,35 @@ export function finestTargetsCovering(graph: BuildGraph, path: string): readonly
   let best = -1;
   const out: string[] = [];
   for (const t of graph.targets) {
+    // A LINT LEG NEVER HOLDS EVIDENCE. The paragraph above says a repo-wide glob
+    // is a lint leg and "a lint leg is not the artifact a byte-lock protects";
+    // until 2026-08-19 that was enforced only INDIRECTLY, by `globSpecificity`
+    // losing to a path-scoped target. That works while every leg is
+    // extension-scoped (`leg:markdown` = `**\/*.md`) and some path-scoped target
+    // happens to cover the evidence file. It collapses the moment a leg's glob is
+    // universal.
+    //
+    // MEASURED REGRESSION that forced this to become explicit (caught by
+    // `build-graph.test.ts` "a sample-app change does NOT", in the PR that
+    // introduced it): a `leg:tree-structure` target with `sources: ["**"]` --
+    // added because `lint-no-empty-dirs` and `lint-structural-hygiene` really are
+    // whole-tree properties -- became a covering target for EVERY file, so it
+    // absorbed `cross-oracle-bytelock` / `golden-vectors` / `treaty-transcript`
+    // evidence and went T3. Since it is also affected by every change, the
+    // required quorum for a README edit went from T1/2 reviewers to T3/4. Every
+    // change in the repo, not just the one the test sampled.
+    //
+    // The doctrine was right; only its implementation was incidental. Stated
+    // directly, it is total: a leg is a CI grouping, not an artifact, so it can
+    // never be the thing whose bytes are locked. `ts:repo` is deliberately NOT a
+    // leg -- it is a real source target and keeps inheriting T3 as before.
+    //
+    // What this gives up, stated rather than hidden: when an evidence file is
+    // covered by NO non-leg target, its evidence is now dropped instead of
+    // landing on the leg. That case is a real gap in the target set and deserves
+    // its own report; it does not deserve to be signalled by doubling the review
+    // quorum for the entire repository.
+    if (t.kind === "leg") continue;
     let spec = -1;
     for (const s of t.sources) {
       if (matchGlob(s, path)) spec = Math.max(spec, globSpecificity(s));
