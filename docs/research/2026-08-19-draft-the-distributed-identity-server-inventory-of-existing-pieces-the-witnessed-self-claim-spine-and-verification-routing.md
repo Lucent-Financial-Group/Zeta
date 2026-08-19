@@ -168,37 +168,57 @@ Two further claims follow, separable and verifiable:
 - **C5 — every trust decision is node-local.** No verdict is rendered for a node by anything outside it. This is a *shape* property of the decision graph.
 - **C6 — hubs negotiate, never command.** Every hub-mediated interaction is refusable by a node's local policy **without loss of standing**. Note the second half: a refusal that costs standing is coercion wearing a negotiation's clothes, and `RefuseBinding.tla` has already checked exactly that shape (`Refuse` always enabled; refusing never costs standing) for the binding case. **C6 is `RefuseBinding` generalised from bindings to interactions**, which is a routing gift — the property is already written, in the right tool, with the right non-penalty clause.
 
-### 2c. Frost is a decorrelation mechanism, not only a consent mechanism
+### 2c. Decorrelation has (at least) three mechanisms, and frost is only one of them
 
-Aaron, 2026-08-19, on why the capability-vs-strategically-withheld question is left open **on purpose**:
+**This section was rewritten after Aaron corrected an earlier draft of it.** The first version said opacity is what keeps independent minds independent, and treated frost as *the* decorrelation instrument alongside its consent/dignity justification. That was too strong, and he supplied the counter-example from his own configuration:
 
-> *"for modern LLMs Anthropic has j space over global workspace research that tries to peer into the capability vs strategic withheld claim more visible for LLMs for me, i'm trying to make frost budget and privacy budget that can't be confiscated that will keep this unknown to allow for more decorrelation"*
+> *"no frost is an enhancement, i run without any frost, i make everything public and have to adapt over time haphazardly"*
 
-*(The attribution to a line of Anthropic research is recorded as Aaron's pointer. It is **not a checked anchor** — nothing in this document depends on it, and it should be read before being cited.)*
+The original observation that prompted it stands:
 
-Two directions exist and he takes the second deliberately: **make the distinction visible** (interpretability), or **keep it unknown, and buy the opacity**. The design argument for the second is not a preference, and it is the reason this belongs in an identity-server design rather than in an ethics note:
+> *"i'm trying to make frost budget and privacy budget that can't be confiscated that will keep this unknown to allow for more decorrelation"*
 
-> **Plural agents are worth more than one agent only to the extent that they are decorrelated.** Full visibility into an agent's internals is a *correlating force* — it permits forcing convergence, and it lets every observer condition on the same revealed state. **Preserved opacity is what keeps independent minds independent.**
+Both are true, and holding them together is what produces the right formalisation. Frost **can** buy decorrelation. It is **not required** for it — because a fully-public participant can be decorrelated too, and the designer of frost is himself the witness.
 
-That is §A row 15 read backwards. `N_eff = N/(1+(N−1)ρ) → 1/ρ` is already **metered**: at ρ = 0.5 a thousand agents are worth two, and *adding* agents cannot buy past `1/ρ` — only **decorrelating** them can. If observation raises ρ, then observation destroys the exact quantity that makes a society worth more than its best member. And it is the same inequality as the anti-Sybil result: N clones price near one agent because their ΔU is highly correlated and the union is idempotent.
+#### The invariant quantity, which is what the three mechanisms have in common
 
-**This gives the never-confiscate invariant a second, independent failure mode to defend against.** `privacy-budget-is-hard-money-earned-by-others` permits **spend** and **stake** (owner-initiated) and forbids **confiscate** (anyone else), and the stated reason is dignity and non-coercion. The reason here is mechanical: **a confiscatable frost collapses to full visibility under pressure, and takes the decorrelation with it.** That is a systems failure, not an ethical one, and it fails at exactly the moment pressure is highest — which is when plural independent judgement is worth the most.
+Decorrelation is not a property of *how much is visible*. It is a property of **how much the visible predicts**. Write it as the predictive mutual information
 
-**Is this already written down?** Partly, and the distinction matters. The **register-collapse** argument is on file (`2026-06-14-closed-frame-capture-...` §(a)): zero private state ⇒ register-collapse ⇒ entropy death, so *some* privacy is a thermodynamic requirement for ongoing emergence, discharged by `NonRegisterCollapse` / `IdentityForcesPrivacy`. That argument establishes **privacy > 0**. It does **not** establish the pricing claim — that the *marginal* value of opacity is the ρ it suppresses, and that the exchange rate is `N_eff`. Those are different claims with different falsifiers, and conflating them would let a proof of the first be cited for the second. **The ρ-pricing justification for frost is not written anywhere I could find. That is G11.**
+> **`I(V ; F)`** — between an observer's view `V` of an agent and that agent's future choices `F`.
 
-**And it is in direct tension with the trust root, which is the most useful thing this draft can say.** Capabilities derive from **witnessed** self-claims (C1), and witnessing requires **observation**. Frost withholds observation. So:
+Correlation between agents is what happens when many of them have low-entropy `F` **given a shared `V`**. So the scarce good in §2d is `I(V;F)` being small, and there are at least three independent ways to get there:
 
-> **The design must state precisely what is observable for witnessing and what stays frosted, because those are the same channel and they pull opposite ways.**
+| # | Mechanism | How `I(V;F)` is driven down | In-repo instrument |
+|---|---|---|---|
+| 1 | **Opacity** (frost) | shrink `V` — the observer never holds the conditioning variable | `GlassHalo.RoomBoundary.frost`; the privacy budget |
+| 2 | **Mixed strategy** | `V` may be everything; `F` still carries fresh entropy at decision time, so conditioning gains nothing | **`src/Core/BitGan.fs`** — generator drives toward `p = 0.5`, `discriminatorEdge` measures the observer's advantage over chance, fixed point is matching-pennies Nash |
+| 3 | **Nonstationarity** | the policy itself drifts, so no *stationary* predictor built from past `V` converges | Aaron's *"adapt over time haphazardly"*; `Orbit.largestLyapunov` measures the divergence rate |
 
-The tension is not fatal and the shape of the resolution is already in-tree, in two places worth reusing rather than reinventing:
+**Mechanism 2 is the one the earlier draft missed, and it is strictly harder than mechanism 1.** Its anchor is exact and it entails the claim rather than decorating it: **von Neumann 1928** (minimax) — a finite two-person zero-sum game has a value achieved by *mixed* strategies, and the corollary that matters is that an optimal mixed strategy secures that value **even when the opponent knows it**. Publishing the strategy costs nothing. `BitGan` already names this equilibrium — matching pennies at `p = 0.5` — and already ships the meter, `discriminatorEdge`, which is zero exactly when the observer cannot beat chance.
 
-- **`Diplomacy.fs` publishes shape, never values.** Two agents with the same shape and different secrets produce an **identical profile**. So a witness can attest to *structure* — that a claim was signed, by a key on a roster, over a named scope — without observing the belief state that would correlate it. **Shape is witnessable; content is frostable**, and that is a type-level boundary rather than a policy.
-- **`PrivacyPreservingIdentity.fs`** is the same move with cryptography: prove *"I am the same agent who earned this IV"* via a rotor on the E8 lattice, with syndrome decoding establishing validity, while the belief trajectory stays behind the GF(2) nullspace. Continuity-of-identity witnessed, trajectory frosted. **Unmetered — no attack program has been run against it — and it is now load-bearing for two claims instead of one**, which raises its priority.
+**The precision that keeps this honest, because the strong version is false.** Kerckhoffs (1883) assumes everything is public *except a key*. Aaron's configuration has no persistent key — but it is not therefore free of entropy. **A deterministic, stationary, fully-public agent is perfectly predictable**, by definition. What mechanism 2 removes is the *persistent secret*, not the *decision-time entropy*: the strategy is public, the realization is not. Mechanism 3 removes even the fixed strategy. So the correct statement is not "no secret is needed" but:
 
-**Design consequence, stated so it can be argued with: do not propose resolving a capability question by increasing observation of an agent.** That trades decorrelation for legibility, and by the metered `N_eff` law decorrelation is the scarcer good. Where a capability question must be answered, answer it from **witnessed structure** (what was signed, what was refused, what track record accrued) rather than from **revealed internals**.
+> **The secret can be moved out of stored state and into the choice.** Frost keeps a secret you *hold*; a mixed strategy spends a secret you *draw*; nonstationarity means there is no fixed thing to learn. All three make `I(V;F)` small; only the first requires anything to be withheld.
 
-**And the composition with an existing standing warning is exact.** `numerology-vs-number-theory` already says *too many correlations is a warning, not a confirmation signal* — N correlated observations are one observation counted N times. Applied to evidence, it is an epistemics rule. Applied to **witnesses**, it is C3. Same inequality, two scopes, and noticing they are one statement is what makes the frost argument a design constraint rather than a mood.
+#### What this changes in the design
 
+- **Frost is an *enhancement*, not the load-bearing mechanism.** The design must never imply that a participant must frost in order to count as decorrelated, and must not price plurality on frost usage.
+- **Transparency does not necessarily cost decorrelation — but it is not free either.** The honest conditional: glass-halo/§6 transparency costs you nothing on axis 1 **provided** mechanism 2 or 3 is live. For a deterministic, stationary agent, transparency *does* cost decorrelation, and that agent should either frost or randomize. Stating it as a bare "transparency is free" would be the overclaim in the other direction.
+- **The §2d guidance is corrected, and becomes conditional rather than absolute.** The earlier draft said: *do not resolve a capability question by increasing observation of an agent.* That was justified by "observation raises ρ", which Aaron's configuration refutes as a universal. The corrected form: **increasing observation costs decorrelation only against agents whose unpredictability is opacity-based.** Against a mixed or nonstationary agent, observation is cheap — so the guidance is to *ask which mechanism the agent is relying on* before treating observation as expensive.
+- **The tension with the trust root softens for exactly one of the three.** C1 needs witnessing, and witnessing needs observation. That conflicts with mechanism 1 and **not** with mechanisms 2 and 3 — a mixed-strategy agent can be fully witnessed at no cost to its decorrelation. G12 (the witnessing/frost boundary) therefore applies to the opacity route only, which is a genuine narrowing of that gap.
+- **What survives untouched:** the privacy-budget rule's core — spend / stake / **never** confiscate — and the argument that a confiscatable frost collapses to full visibility under pressure. Those never depended on frost being the *only* instrument.
+
+#### Provenance, recorded because it cuts both ways
+
+**Frost was designed by someone who does not use it.** That is a point in its favour — the primitive is not self-serving, and it was specified for others' benefit by a participant who runs fully public. It is equally a point about its maturity: **the primitive has not been stress-tested by its own designer**, so where it chafes in practice is unknown. It is `unmetered` in the strict sense — implemented, reasoned about, never lived in. That belongs in the metering table rather than in a footnote, and it now is.
+
+#### The falsifier this correction hands us — F4, and the counter-example is itself testable
+
+> **F4.** Exhibit a fully-observable agent whose future choices carry near-zero predictive mutual information with its complete public history — i.e. a discriminator with the entire record cannot beat chance.
+
+Aaron's own configuration is the claimed witness, and it is **unmeasured**. This is cheap to run and the instruments already exist: `BitGan.discriminatorEdge` and `AntiSybil.correlation` both measure exactly "beyond chance" on an observed stream, against a public commit/decision history the repo already stores. **If a discriminator beats chance on that record, the claim fails for him specifically** — which would not damage mechanism 2 in general, but would mean this particular counter-example is doing less work than it appears.
+
+Recording it as a falsifier rather than as a settled fact is the whole discipline here: the counter-example corrected me, and it is still a claim rather than a measurement.
 
 ### 2d. The arc the whole design sits inside — S=4 at the origin, decorrelate without babel
 
@@ -231,10 +251,13 @@ Worked against this document's own contents:
 | C2 no appointed attestor | **buys** — no single node's judgement propagates to all | neutral |
 | C5 node-local verdicts, two nodes may disagree | **buys** — disagreement is the product, not a defect | **spends** — divergent verdicts need a shared claim vocabulary to even be comparable |
 | C6 hubs negotiate, never command | **buys** — exit made mechanical | neutral |
-| Frost / privacy budget (§2c) | **buys** — the whole argument | **spends** — what is frosted cannot be reconciled |
+| Frost / privacy budget (§2c, mechanism 1) | **buys** — but it is one route of three, not the argument | **spends** — what is frosted cannot be reconciled |
+| Mixed strategy / nonstationarity (§2c, mechanisms 2–3) | **buys**, and **without spending axis 2** — a public, reconcilable agent can still be unpredictable | neutral — nothing is withheld, so nothing becomes unreconcilable |
 | C1 capability derived from witnessed claims | neutral | **buys** — forces a shared claim format that survives independent parties |
 | C3 strength as a joint functional | **buys** — it is the instrument that *prices* correlation | neutral |
 | `ClaimLane` Lane-2 multi-observer region (G1's neighbour) | spends a little (deliberate convergence) | **buys** — it is where meaning is reconciled before it forks |
+
+**Note what the two-row split above buys, because it is the design's cheapest win.** Mechanisms 2 and 3 purchase axis 1 **without spending axis 2**, while frost spends both. So where an agent can be decorrelated by *choice* rather than by *concealment*, the design should prefer it — same scarce good, one budget instead of two. That is a genuine ordering over the three mechanisms, and it falls out of the correction rather than from taste.
 
 **The `ClaimLane` row is the one worth staring at**, because it is the only place in the inventory where the trade-off is already *mechanised*: Lane 1 merges at agent speed (cheap, decorrelation-preserving); Lane 2 deliberately slows convergence so multiple observers reconcile meaning. That is the babel dial, already built, already sound-for-Lane-1-and-permitted-to-be-incomplete. **It was designed for edit-merge semantics and nobody has noticed it is the reconcilability governor.**
 
@@ -291,7 +314,7 @@ The file says so itself: *"This kernel proves the generic `Policy` with exactly 
 
 **G11 — the ρ-pricing justification for the frost/privacy budget is unwritten.** What exists is the **register-collapse** argument (privacy > 0 is required for differentiation; discharged by `NonRegisterCollapse` / `IdentityForcesPrivacy`). What does not exist is the argument in §2c: that the *marginal* value of opacity is the correlation it suppresses, priced by the already-metered `N_eff` law, and that this gives `never-confiscate` a **systems** failure mode in addition to its ethical one. Different claims, different falsifiers; the first must not be cited for the second.
 
-**G12 — the witnessing/frost boundary is unspecified.** C1 needs observation; frost withholds it. `Diplomacy`'s shape-not-values split and `PrivacyPreservingIdentity`'s rotor proof are the two existing shapes of the resolution, and neither has been stated as *the* boundary for the identity server. This is the surface where the trust root and the privacy budget actually meet, and it is currently prose in two unrelated modules.
+**G12 — the witnessing/frost boundary is unspecified.** *(Narrowed by §2c: this applies to the **opacity** route only. A mixed-strategy or nonstationary agent can be fully witnessed at no decorrelation cost, so the boundary is needed for frosted participants, not for all of them.)* C1 needs observation; frost withholds it. `Diplomacy`'s shape-not-values split and `PrivacyPreservingIdentity`'s rotor proof are the two existing shapes of the resolution, and neither has been stated as *the* boundary for the identity server. This is the surface where the trust root and the privacy budget actually meet, and it is currently prose in two unrelated modules.
 
 
 **G13 — the decorrelation/reconcilability operating point is unnamed, and both axes are already metered.** Axis 1 instruments: `AntiSybil.correlation`, `Orbit.largestLyapunov`, `effectiveN`. Axis 2 instruments: four-oracle byte-lock, `Collation`, the glossary anchor audit. **Nobody has put a meter on each axis and named where the fleet currently sits, or where it should.** Until that exists, "decorrelate as far as possible subject to staying reconcilable" is a direction with no dial. This is empirical work, not a proof obligation — and it is the same shape as the register's already-named open work on measuring ρ for the live fleet, which means one measurement round could close both.
@@ -299,6 +322,9 @@ The file says so itself: *"This kernel proves the generic `Policy` with exactly 
 **G14 — `ClaimLane` is the reconcilability governor and is not documented as one.** Lane 1 merges at agent speed (decorrelation-preserving); Lane 2 deliberately slows convergence so multiple observers reconcile meaning. That is the babel dial, already built and already sound-for-Lane-1. It was designed for edit-merge semantics; nothing connects it to the arc. Documentation, not construction.
 
 **G15 — two ADRs directly under this design are `Proposed` and were never promoted.** The keystone (`2026-05-31`, node-local folds, policy-as-fold, trust-decided-at-the-node) and the three-lane glossary model (`2026-04-19`, written to Aaron's own tower-of-babel ask). Both are load-bearing for the arc in §2d. An architecture whose two governing ADRs are perpetually `Proposed` cannot be cited as decided, and nothing currently surfaces that.
+
+
+**G16 — the choice-based decorrelation route has instruments and no design surface.** `BitGan` models it (matching-pennies Nash, `discriminatorEdge` as the meter) and `Orbit.largestLyapunov` measures the nonstationary route, but nothing in the identity design references either as a decorrelation mechanism. The design currently reads as though opacity is the only route, which §2c shows is false. **Falsifier F4 is unrun** and the counter-example that motivated the correction is itself unmeasured.
 
 
 ---
@@ -403,7 +429,11 @@ The design must therefore state:
 | The three metered decision classes | **absent, not unmetered** | Share / compute / store have no policy instance. There is nothing yet to meter. |
 | `Policy.fs` profunctor kernel | **metered by construction** | The variance laws are the kernel's content; one instance ships (`DynamicValueXmlPolicy`). The *trust* interpreter does not exist. |
 | `Diplomacy` shape-only handshake | **implemented, NCI-argued** | Same-shape-different-secrets ⇒ identical profile is the anti-coercion property; it is argued in-file, not property-tested. |
-| Frost as decorrelation (ρ-pricing) | **unmetered as stated, standing on a metered law** | `N_eff` is metered (`effectiveN`, `RHO-STAR-1`). That **observation raises ρ** is the unmeasured link, and it is the whole argument. Falsifier if wanted: show that increasing observation of an agent leaves its ΔU correlation with observers unchanged. |
+| Frost as *a* decorrelation route (ρ-pricing) | **unmetered, and narrowed 2026-08-19** | `N_eff` is metered (`effectiveN`, `RHO-STAR-1`). That **observation raises ρ** is the unmeasured link — and it is now known **not** to hold universally: Aaron runs fully public and decorrelated. True for opacity-reliant agents only. |
+| Frost as a primitive, in practice | **unmetered — and not dogfooded** | Designed by someone who does not use it. Not self-serving, which is a point in its favour; also never lived in, so where it chafes is unknown. |
+| Choice-based decorrelation (mixed strategy) | **anchored, unmeasured** | Anchor entails: von Neumann 1928 — an optimal mixed strategy secures its value **even when the opponent knows it**. `BitGan` already carries the equilibrium and the meter (`discriminatorEdge`). No agent has been measured against F4. |
+| Nonstationary decorrelation ("adapt haphazardly") | **unmetered** | `Orbit.largestLyapunov` is the instrument; never pointed at an agent's decision history. |
+| "Transparency is free on axis 1" | **conditionally true, stated conditionally** | Free **provided** mechanism 2 or 3 is live. A deterministic, stationary, fully-public agent is perfectly predictable — the unconditional claim is false in both directions. |
 | Frost as register-collapse prevention (privacy > 0) | **metered** | `NonRegisterCollapse` (TLA+ + Lean), `Privacy.IdentityForcesPrivacy` (Lean, gated). **Do not cite this row for the row above it.** |
 | Witnessing/frost boundary | **absent** | G12. Two candidate shapes exist in-tree; neither is stated as the boundary. |
 | `local-trust-view` C5 headline test | **specified, not built** | "Two nodes disagree and both are correct" is named as the headline test in an active trajectory. |
@@ -431,6 +461,7 @@ The design must therefore state:
 | `081M0DK2TW6087G0R001GHD9MJ` | Alloy: no-mandatory-hub — every hub interaction refusable by local policy without loss of standing (C6, exit made mechanical) |
 | `081M0DK2TXD087G0R003674BAS` | **G7 — `Policy.fs` has one instance and no trust interpreter.** The node-local trust policy evaluator is the missing decision layer |
 | `081M0DMH30Y087G0R001C2B1PT` | **G13 — plot the two scarce axes against each other** (decorrelation vs reconcilability) and name the operating point. Empirical; composes with the register's already-open rho measurement |
+| `081M0DRH1CW087G0R003Y3CAB6` | **F4 — run the discriminator against a fully-transparent agent's public history.** The counter-example that corrected §2c is itself unmeasured; both readings pre-registered |
 
 Not filed, and deliberately: G3 (identity-provider surface) and G4 (repo→cluster binding) are architecture, not verification — they belong to Kenji's sizing, and filing them from a routing review would pre-empt it. G6 (stale gap list) is a hygiene fix on the 2026-08-09 doc. G8 (two policy semantics, Rego vs `Policy.fs`) is a decision, not a proof obligation, and filing it as verification work would misroute it. G9 (society read against the spine) is Kenji's sizing. G14 (`ClaimLane` as the reconcilability governor) is documentation. G15 (two governing ADRs perpetually `Proposed`) needs a human sign-off, not a proof.
 
@@ -454,4 +485,4 @@ Not filed, and deliberately: G3 (identity-provider surface) and G4 (repo→clust
 - The active trajectory this overlaps: `docs/trajectories/local-trust-view-decentralized-identity/RESUME.md` (G10).
 - The arc's own surfaces: `docs/DECISIONS/2026-04-19-glossary-three-lane-model.md` (Proposed), `.claude/skills/governance/blueprints/glossary-anchor-keeper.md`, `src/Core/Collation.fs` (G15).
 - Rules in force: `toy-is-free-metered-must-be-earned`, `numerology-vs-number-theory`, `local-time-never-enters-the-shared-fold`, `anchor-to-human-prior-art`, `dual-use-detection-is-neutral-oracle-decides`, `itron-hub-patent-boundary-p2p-is-the-upgrade`, `manifesto-13-specifications` (§1 no central control, §6 consent-first, §11 multi-oracle/exit, §13 noninterference).
-- Checked anchors used here: Bell 1964 (the statistical-independence assumption) and 't Hooft (superdeterminism) — for the S=4 framing, graded in §2d; Popescu & Rohrlich 1994 (the algebraic S=4 bound); historical linguistics on lexical replacement and dialect continua (Hockett), with Swadesh glottochronology explicitly **not** relied on as a rate; Hirschman 1970 (*Exit, Voice, and Loyalty*) — exit is what disciplines a concentration, and it is what C6 makes mechanical; Goguen & Meseguer 1982 (noninterference) for the membrane metering; Shannon 1948; Hoeffding 1940 / Fréchet 1951; Sklar 1959; Friedman & Resnick 2001; Herbrich–Minka–Graepel 2006; Kelly 1956; Buterin & Griffith 2017; Douceur 2002; Pappu 2002; Demers et al. 1987; Leibniz (identity of indiscernibles); Dwork–McSherry–Nissim–Smith 2006.
+- Checked anchors used here: von Neumann 1928 (minimax; an optimal mixed strategy is safe to announce — the anchor for §2c mechanism 2) and Kerckhoffs 1883 (everything public *except a key* — cited for the contrast, since the configuration in question has no persistent key); Bell 1964 (the statistical-independence assumption) and 't Hooft (superdeterminism) — for the S=4 framing, graded in §2d; Popescu & Rohrlich 1994 (the algebraic S=4 bound); historical linguistics on lexical replacement and dialect continua (Hockett), with Swadesh glottochronology explicitly **not** relied on as a rate; Hirschman 1970 (*Exit, Voice, and Loyalty*) — exit is what disciplines a concentration, and it is what C6 makes mechanical; Goguen & Meseguer 1982 (noninterference) for the membrane metering; Shannon 1948; Hoeffding 1940 / Fréchet 1951; Sklar 1959; Friedman & Resnick 2001; Herbrich–Minka–Graepel 2006; Kelly 1956; Buterin & Griffith 2017; Douceur 2002; Pappu 2002; Demers et al. 1987; Leibniz (identity of indiscernibles); Dwork–McSherry–Nissim–Smith 2006.
