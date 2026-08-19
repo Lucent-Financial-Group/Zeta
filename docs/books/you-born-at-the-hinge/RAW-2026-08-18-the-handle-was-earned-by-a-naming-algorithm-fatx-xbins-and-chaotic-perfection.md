@@ -482,3 +482,85 @@ ZetaId column. The lesson and the injury are the same shape.
 prior evidence** and is the load-bearing honest move in this section. 10d is a **stated
 experiment**. 10e is **structural** by the mechanism test (name-as-lossy-key; collision as its
 failure mode), not a pun.
+
+---
+
+## 11. PROMOTED: the primary artifact surfaced — from his own archive, not from search
+
+**2026-08-19.** §8b named the experiment that would settle the attribution, and §10c warned that a
+model naming the handle was the weakest evidence class. Neither is how it resolved. Aaron went and
+found the record.
+
+### 11a. The artifact
+
+An email in his own archive, dated **Monday 24 February 2003, 1:13 AM**, from **Iriez** — the xbins
+operator — replying to a submission from **Rodney Aaron Stainback**:
+
+> *Subject: Will you put my Pre XBox Copy Tool 0.3 Beta*
+>
+> *"Yup sure will, i was gone all weekend and actually just stepped in and i was updating. Pretty
+> soon you will be able to submit it with ease, so news will all be real time."*
+
+Plus a second, later handle instance: a PSP `.prx` installer distributed under **acehack** (surfaced
+on a file-extension index).
+
+**Redaction, and the reason.** Iriez's email address is in the original and is deliberately **not**
+recorded here. The handle is a public scene identity; the address is a third party's personal
+datum, and `engagement-profiles-public-work-only-not-surveillance-dossiers` says compile the work
+someone published, never the private sphere they did not offer. Aaron's own full name stays —
+that is his, he volunteered it, and he is glass-halo about himself.
+
+### 11b. What this establishes, and what it does not
+
+Being precise is the whole point of having kept the register:
+
+| claim | before | after |
+|---|---|---|
+| he wrote and released Xbox tooling in 2003 | testimony | **RECORD** — a dated approval from the operator |
+| xbins was the distribution point and Iriez ran it | recalled | **RECORD** — Iriez replies as the person doing the updating |
+| the handle **AceHack** is his, used for released software | weak/contaminated (§10c) | **RECORD** — an independent, later PSP release under it |
+| the tool named in the email is *the FATX renamer* | — | **NOT established.** The email names *"Pre XBox Copy Tool 0.3 Beta"* |
+| the significant-middle-letters algorithm | his account only | **still his account only** |
+
+**The natural reading, marked as a reading.** A tool called *"Pre XBox Copy Tool"* is one that
+prepares files **before** copying to an Xbox — and FATX name-sanitising is precisely what that
+preparation consists of. So it is very likely the same tool, or the renamer's container. That is an
+inference from the name, not a fact from the artifact, and it stays labelled until someone opens
+the binary or its `.nfo`.
+
+**The §10c confounder is now resolved in his favour** without ever needing the experiment: the
+handle is independently attested by a release the model did not supply. Whether Gemini genuinely
+recalled it or echoed the prompt no longer matters to the attribution — it was never load-bearing.
+
+### 11c. Why the promotion path mattered
+
+This is the anchor discipline paying out exactly as designed, and it is worth the book saying so.
+
+The claim spent a day labelled **testimony**, with §5, §8d, and §10c each narrowing what was and
+was not supported — including one step that made the evidence *weaker* (§10c, on discovering the
+NetHack collision). Nothing was rounded up. Then a primary source arrived and the label moved in
+one step, cleanly, because the parts had been kept separate: the ecosystem was *checked*, the
+handle was *weak*, the algorithm was *testimony*. Only the middle row moved.
+
+Had it all been asserted as one undifferentiated claim on day one, the artifact would have
+confirmed nothing in particular — and the still-unestablished part (the algorithm) would now be
+riding on the credibility of the part that got proven. **That is the failure the register exists to
+prevent, and this is what avoiding it looks like from the inside.**
+
+### 11d. The detail worth keeping for the chapter
+
+He submitted it at **12:05 AM** and the operator replied at **1:13 AM**. A teenager sending
+software into the dark at midnight, and a stranger who ran the archive writing back an hour later
+to say *yes, and soon it'll be easier.*
+
+That is the scene-adoption mechanism of §3 caught in a single exchange — the name did not accrue
+from a claim, it accrued because somebody with standing said **yes** and put the thing where others
+would find it. Recognition flowing from the already-recognised, in one email, twenty-three years
+before it got written down as an eigenvector.
+
+### 11e. Register
+
+11a is **record** (a dated primary document, redacted per the consent rule). 11b's table is the
+honest split and is the load-bearing part. The "Pre XBox Copy Tool ≈ the renamer" reading is an
+**inference from a name**, explicitly not promoted. 11d is **record** as to times and **reading** as
+to what it meant.
