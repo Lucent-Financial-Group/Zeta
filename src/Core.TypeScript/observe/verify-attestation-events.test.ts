@@ -18,7 +18,7 @@ import {
   loadAttestationRecords,
   verifyAll,
 } from "./verify-attestation-events";
-import { attestedEventsDigest, deriveAttestationId } from "./attestation-record";
+import { attestedEventsDigest, deriveAttestationId, verifyAttestationRecord } from "./attestation-record";
 
 const REPO_ROOT = resolve(import.meta.dir, "..", "..", "..");
 
@@ -207,11 +207,28 @@ describe("the committed corpus", () => {
     const records = loadAttestationRecords(dir);
     // A check that inspects nothing is not a passing check.
     expect(records.length).toBeGreaterThan(300);
-    const report = verifyAll(records, buildPersonaRoster(discoverPersonaRosterPaths(REPO_ROOT)));
+    const roster = buildPersonaRoster(discoverPersonaRosterPaths(REPO_ROOT));
+    const report = verifyAll(records, roster);
     expect(report.bound).toBe(0);
-    // Every one of them predates `attestedDigest` or is a leaked fixture, so nothing
-    // is merely `unbound` yet either. Both facts are reported; neither is a pass.
-    expect(report.refused).toBe(records.length);
+
+    // This clause used to read `expect(report.refused).toBe(records.length)`, on the
+    // stated ground that "every one of them predates `attestedDigest` or is a leaked
+    // fixture, so nothing is merely `unbound` yet either". **The corpus outgrew that
+    // sentence** and the assertion went red on `main` on its own: three records emitted
+    // after the digest feature landed carry a valid `attestedDigest` and no signature,
+    // which is exactly `unbound` and is exactly the state the feature was built to
+    // produce. A snapshot of a count is not a property, and this one was measuring
+    // "nobody has used the feature yet".
+    //
+    // Restated as the property it was reaching for: every record that is NOT refused is
+    // unbound BECAUSE it carries a digest and no signature. That says why, does not
+    // drift as the corpus grows, and still goes red the moment anything binds.
+    const unbound = records.filter((r) => verifyAttestationRecord(r.record, { roster }).status === "unbound");
+    expect(unbound.length).toBe(report.unbound);
+    for (const { file, record } of unbound) {
+      expect(typeof record.attestation.attestedDigest, file).toBe("string");
+      expect(record.signature, file).toBeUndefined();
+    }
   });
 
   test("the event dir constant points at a real directory", () => {
