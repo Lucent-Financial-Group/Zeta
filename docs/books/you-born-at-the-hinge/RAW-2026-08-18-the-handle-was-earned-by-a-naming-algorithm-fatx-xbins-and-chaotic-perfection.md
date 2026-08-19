@@ -294,3 +294,99 @@ stronger of the two, since he was there and the model was not.
 
 Note the shape: the *most interesting* claim is the least corroborated one, which is normal for
 scene software from 2003 and is not a reason to doubt it. It is a reason to keep the label on.
+
+---
+
+## 9. GoodTools is the missing detail — and it makes §2 provable rather than asserted
+
+Aaron, narrowing the problem: the sets in question were **GoodTools / GoodGames** ROM sets, *"with
+extensive parenthesis tags"*, against a FATX limit historically 42 characters and in practice
+safety-checked nearer 38, with brackets, commas, plus signs and semicolons stripped as illegal.
+
+This is the detail that turns §2 from a plausible reading into a demonstrable one.
+
+### 9a. GoodTools names are a grammar, not free text
+
+A GoodTools filename is structured:
+
+```
+Game Title (Region) (Version) [flags]
+```
+
+with a documented tag vocabulary — `(U)` `(E)` `(J)` `(UE)` for region, `(REV A)` / `(V1.1)` /
+`(PRG1)` for revision, and bracket flags carrying dump status: `[!]` verified good dump, `[a]`
+alternate, `[b]` bad dump, `[f]` fixed, `[h]` hack, `[o]` overdump, `[t]` trained, `[T+Eng]`
+translated.
+
+So "important edge labels/words" is not a vague phrase. **The edge labels are literally the
+parenthesised and bracketed tags at the right edge of the name**, and the "significant middle
+letters" are the title that has to stay recognisable between them.
+
+### 9b. Why naive truncation fails *catastrophically* here, not merely badly
+
+This is the provable part.
+
+In a GoodTools set, the **discriminating information is systematically positioned at the right
+edge**. Two entries differ by `(U)` vs `(J)`, or by `[!]` vs `[b]`, or by `(REV A)` — never by
+their opening characters, which are identical by construction because they share a title.
+
+Naive truncation cuts **from the right**. So on this corpus specifically, right-truncation deletes
+*exactly and only the bits that distinguish the files*, and preserves *exactly and only* the
+redundant shared prefix. It is not that truncation loses some information; it is that truncation
+loses **all of the information that mattered** and keeps all of the information that did not.
+
+An algorithm that works here must **invert the default direction of the cut**. That is a real
+design insight, and it is forced by the structure of the corpus rather than chosen.
+
+### 9c. And the tags are not equal — which is the corpus-relative half
+
+Even among the edge labels, information content varies *with the collection you happen to hold*:
+
+- `[!]` on a set where **every** entry is `[!]` carries **zero** information — it is a stop word in
+  that corpus, and goes first.
+- `[!]` in a mixed set where some entries are `[b]` is **the most important tag on the name**, and
+  must survive at any cost.
+- `(U)` matters only if you hold more than one region; otherwise it is pure overhead.
+
+So the same tag is droppable in one collection and load-bearing in another. **You cannot decide
+what to cut by looking at one filename.** You have to look at the whole set — which is precisely
+the corpus-relative mutual-information framing in §2, now with a concrete mechanism rather than an
+analogy. It is TF-IDF: a term appearing in every document has zero inverse document frequency.
+
+### 9d. The scene already documented the cost — and it is the two-column argument
+
+The LaunchBox / emulator-community view of mass renaming is **mixed**, for a specific and correct
+reason: renaming breaks **exact-match tracking**, because No-Intro and GoodSet workflows match
+against DAT files keyed on the precise original name.
+
+That is not an objection to his algorithm. **It is empirical evidence for the two-column design.**
+
+| | exact key | legible name |
+|---|---|---|
+| ROM sets | the DAT entry / checksum | the on-console filename |
+| Zeta | the ZetaId | the slug |
+| registers | Mirror (full, exact) | Beacon (compressed, anchored) |
+
+The scene's complaint is what happens when a collection keeps **only the second column**: you
+rename for the console, and the identity that tooling matched on is destroyed. The fix is not to
+stop renaming — it is to never let the lossy name *be* the key. `workitems/<zetaid>-<slug>.md`
+already has this right, and it has it right because it is the same problem.
+
+### 9e. Where the primary artifact would be, since three searches have not found it
+
+Stating this plainly rather than reassuringly: **three separate searches have now returned the
+FATX-renamer ecosystem and not his tool.** They surface CRP's *MP3 FAT-X Renamer* (Aug 2003),
+*FatX: File Renamer v1.0.0*, and a modern `leov30/fatx-renamer`. None is the one described here.
+That does not disconfirm anything — a 2003 scene utility distributed by FTP is exactly the kind of
+thing the open web does not index — but it does mean the attribution stays where §8d put it.
+
+The one promising lead, because it is an **enumerable index rather than a search problem**: xbins
+maintains an NFO database at `xbins.org/nfo.php?file=xboxnfoNNNN.nfo`, and the numbering runs into
+at least the four-digit range. Scene `.nfo` files carry release metadata **including author
+handles**. If the tool was released with an NFO, it is in that index, and the index can be walked
+rather than guessed at. Secondary: Wayback captures of `xbox-hq.com` and `xboxscene.org` news
+archives from 2003–2005.
+
+That is a bounded search over a finite list, not a hope. Worth one deliberate pass — Aaron's call
+whether to spend it, since walking a third party's index is an outward-facing action and not
+something to start unasked.
