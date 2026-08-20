@@ -109,8 +109,6 @@ const WINDOWS_EXCEPTIONS: Record<string, string> = {
     "brew's formula name for the same YubiKey Manager CLI as apt's yubikey-manager; same Windows disposition as that entry.",
   "yubico-piv-tool":
     "Yubico ships the PIV tool for Windows inside the YubiKey Manager/PIV MSI bundle rather than as a standalone scoop/winget package.",
-  "yubihsm-shell":
-    "Windows YubiHSM tooling ships inside the Yubico YubiHSM SDK installer (.msi); there is no standalone package id, and the SDK is not yet pinned on any platform.",
   pcscd:
     "Windows has a built-in smartcard service (SCardSvr); no package to install. The Linux-only entry exists because Linux has no equivalent running by default.",
   libpcsclite1:
