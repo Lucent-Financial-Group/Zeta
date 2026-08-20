@@ -946,6 +946,40 @@ Three cases where that bites, and none of them is a corner:
    exactly the information that it costs nothing to break. That is not a defect of contracts; it is
    what a contract is *for*.
 
+**And this is already typed in our own code — it is `ISelf` / `ISociety` / closure.** Aaron
+2026-08-20: *"this is continuing on ISociety and IWorld over ISelf."* The pointer is exact, with one
+correction the repo itself supplies: **there is no `IWorld`**, and `src/Core/Levels.fs` says so as
+its headline finding —
+
+> *"A world is not a different kind of thing from a society. It is a society that is **CLOSED**."*
+
+Closed means `outboundStaysInSociety ∧ routesAreMembers`, both already shipped in `Society.fs`;
+`WorldLaws.isWorld` is their conjunction and nothing more. So the levels are:
+
+| level | obligations | exit |
+|---|---|---|
+| **`ISelf`** | none beyond yourself | vacuous — there is nobody to leave |
+| **`ISociety`** | the **membrane contract** a member presents to and receives from society | **real** — you can leave the membership |
+| **world** = a **closed** society | everything, to everyone inside | **structurally impossible** — no outbound message, no route out |
+
+Two things fall out, and neither is a metaphor:
+
+1. **"Exit cannot be free" and "you are in a world rather than a society" are the same statement**,
+   and the repo already carries the predicate that decides it. The three cases above are all cases
+   where the parties are, for that obligation, *closed* with respect to each other — the second half
+   of a trade, a third party who already acted, a promise whose whole value is that leaving costs.
+2. **`ISociety` is described in `docs/SEED-VOCABULARY.md` as a *contract* already** — "the
+   bidirectional schedule/route contract a member presents to / receives from society (membrane)."
+   So the cluster/federation tension is not a new axis to add; it is **the one already sitting at
+   the `ISociety` membrane**, and the open question is how much of that contract is load-bearing.
+
+**And the seed vocabulary already answers the fairness half.** `ISociety <: CTM` is a recursive
+fixpoint — a society of CTMs *is-a* CTM — and the top layer *"carries the most information
+advantage **and** the most fairness obligation (three-body / Lagrange layering)."* That is a
+shipped commitment that **obligation scales with advantage**, which is the strongest existing
+argument that some obligations are necessary: the alternative is a level that accumulates advantage
+while owing nothing, and this vocabulary already refuses that.
+
 **This lands directly on our own endgame, which is the honest part.** Agents owning their own money
 — x402 authorizations, standing budgets, anything with settlement — is *precisely* the region where
 free exit is a bug rather than a feature. So the contract layer is not a rival to the cluster, it
