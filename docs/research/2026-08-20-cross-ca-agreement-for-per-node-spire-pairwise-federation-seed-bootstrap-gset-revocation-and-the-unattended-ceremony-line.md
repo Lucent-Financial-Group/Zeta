@@ -370,6 +370,42 @@ discriminator needed. "Must you route through it?" was too coarse; the real ques
 leave, at a price you can see?"* A federation whose exit costs something is legitimate; a hub is
 where the price is unpayable or unstated.
 
+### Cluster-grade is a POSITION, not a shortfall — and the two builders disagree
+
+The paragraph above says *"a real federation would need what this does not have"*, which frames
+federation as the mature end state and the cluster as a way-station. **That framing is wrong**, and
+Aaron corrected it 2026-08-20:
+
+> **"yes addison it trying to create this, i try to protomate non fedeeraion and only
+> correspondance/cluster."**
+
+So the two people building this hold **different positions on the same axis**, deliberately:
+
+| | position | what it buys |
+|---|---|---|
+| **Addison Cooper** | building **toward federation** — Lodge charters, stated obligations, the Universal Exit Principle | **enforceability** — obligations that outlive a mood, which is what lets anyone be held to a commitment |
+| **Aaron** | promotes **non-federation** — **correspondence / cluster only** | **non-coercion** — nothing binds anyone, so nothing can trap anyone |
+
+**This is the `ρ` band again, instantiated in social structure rather than in agents.** A contract is
+*enforced correlation*: it deliberately removes the freedom to diverge, which is exactly what makes
+a promise worth something. A relationship preserves the freedom to diverge, which is exactly what
+makes it non-coercive. Neither pole is the good direction — it is
+*Unification without Harmonious Division is a bomb; Harmonious Division without Unification is Higgs
+decay*, with two humans holding the two poles.
+
+**So this is not a disagreement to resolve, and the substrate should not try.** By the repo's own
+raw-vault discipline, both positions are recorded with their sources and neither is conformed away
+— the disagreement carries information about the design space that collapsing it would destroy.
+Recorded here because a reader meeting `federated-identity/` a year from now will otherwise assume
+the cluster was a stepping stone, and build the contracts nobody asked for.
+
+**A note on "correspondence", which is a third term and weaker than both.** Aaron pairs it with
+cluster rather than treating it as a synonym. Taken plainly it is thinner than a cluster: not a
+group at all, just **peers exchanging directly** — no membership, no shared structure, nothing that
+persists between exchanges. That reading is *inferred from the pairing and is not yet checked*
+against a definition in `docs/CONCEPT-REGISTRY.md`, which does not carry the term. Flagged as a
+vocabulary gap rather than silently defined.
+
 **Nothing in the code changes on this finding** — the mechanism is right, and a cluster is the
 correct starting point when no contracts exist yet. What changes is the **claim**: this is
 cluster-grade trust, and calling it federation-grade would promise enforceability that is not
