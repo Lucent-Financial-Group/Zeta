@@ -468,3 +468,87 @@ already said that is fine:
 
 No dogma: this is registered as a **modelling hypothesis with three named falsifiers**, not a
 commitment. Nothing in code changes on it today.
+
+## 23. Correction to §18 — collapse is contained, not avoided. And ρ is the leak meter
+
+Aaron: *"we can collapse as experiments and such but the overall goal is to try to never
+collapse. We assume we will either have experiments where we do, or mistakes where we do, so
+this is where we try to isolate collapse into individual tests/rooms so the collapse does not
+spread. It's got catastrophic collapse protection built in, by having small bounded rooms that
+are separated by Markov boundaries."*
+
+§18 had me concluding "a system that never decides never pays." That is brittle and, taken
+literally, absurd — something has to decide eventually. The actual architecture is **not
+avoidance, it is containment**, and it is already the canonical definition of a room.
+`docs/SEED-VOCABULARY.md`, in the cold-boot kernel:
+
+> "Rooms/cells are bounded execution membranes **(Markov boundaries)** that schedule work
+> through typed interfaces."
+
+So the design already assumed what I treated as a failure to achieve: collapse *will* happen,
+by experiment and by mistake, and the engineering question was never "how do we avoid it" but
+**"how far does it get."**
+
+**Anchor.** Pearl (1988), *Probabilistic Reasoning in Intelligent Systems* — the Markov
+blanket: the set of variables that renders a node conditionally independent of the rest of the
+network. Given the boundary, the inside tells you nothing further about the outside. That is
+exactly the containment property: **a collapse inside a room cannot inform anything past its
+boundary, because past the boundary the inside is conditionally independent.** The boundary is
+not a wall that blocks a signal; it is the condition under which there is no signal to block.
+
+Sibling shapes, same family as §4 and again not an isomorphism: ship bulkheads, circuit
+breakers (Nygard), process isolation, bounded contexts (Evans, DDD), cell-based architecture.
+Every one of them is "assume the failure, bound its radius."
+
+This also re-reads the verb pair correctly. `sim` is not "never measure" — it is *keep the
+tension open at the level that matters*. `measure` is not the enemy — it is **collapse inside a
+room**. The gap named in §18 stands (`sim` is a stub with no `ISim<'a>` introduction form) but
+the framing was wrong: what is missing is not a way to avoid collapse, it is the *held-open*
+half of a pair whose collapsing half already ships.
+
+### The part that is new: containment is only as good as room independence, and we already measure that
+
+Here is the consequence nobody has stated, and it turns an instrument we shipped yesterday
+into a check on this architecture.
+
+Containment by Markov boundary **assumes the rooms are actually separated**. If two rooms are
+correlated — if what happens inside one is predictive of what happens inside another — then the
+boundary is not a Markov boundary, whatever the type signature says. Correlated rooms **fail
+together**, which is precisely the catastrophic mode the design exists to prevent. Bulkheads
+welded to a common frame transmit the shock.
+
+And correlation between agents working in separate rooms is exactly what
+`src/Core.TypeScript/society/effective-agent-count.ts` measures.
+
+> **ρ is the leak meter for Markov boundaries.** If the boundaries held perfectly, findings
+> from separate rooms would be independent and ρ would sit near 0. Measured today: **ρ = 0.4647**,
+> rising monotonically from 0.400 → 0.439 → 0.4647 across three measurements.
+
+So the boundaries leak, and they are leaking *more* over time. Three agents are worth 1.555
+independent ones. A "contained" collapse in one room propagates a large fraction of the way
+into the others, because the rooms were never conditionally independent to begin with.
+
+That reframes the ρ measurement from a decorrelation curiosity into **an integrity check on the
+catastrophic-collapse protection**, and it costs nothing to adopt — the instrument is already
+shipped, already wired into CI, already producing a number every run.
+
+Two things follow:
+
+1. **The rising ρ is a safety signal, not only a philosophy signal.** §16(b)'s claim that a
+   closed wall abolishes Phase 0 concerned failures we cannot debug; this concerns failures
+   that *spread*. Rising ρ means the blast radius is growing.
+2. **A room's boundary is falsifiable.** Claiming a Markov boundary is a claim of conditional
+   independence, and conditional independence is measurable. So "is this actually a room?" stops
+   being an architectural assertion and becomes a number — which is the move this whole note
+   keeps making.
+
+Honest limits. ρ here is measured over `db/mutation-findings/` — agreement on *bug findings*,
+which is a proxy for room independence, not a direct measurement of it. Two agents could share
+findings for reasons unrelated to boundary leakage (the same bug being genuinely obvious), and
+Manski's reflection problem applies: shared-cause and contagion are not separable from
+correlation alone. So this is **evidence about boundary integrity, not proof of leakage** —
+the honest register, and the same one §4 and §21 were filed under.
+
+The clean version would measure conditional independence directly: does knowing room A's
+interior improve prediction of room B's, *given* their boundaries? That is a well-posed
+experiment and nobody has run it. Filed here as the obvious next rung rather than asserted.
