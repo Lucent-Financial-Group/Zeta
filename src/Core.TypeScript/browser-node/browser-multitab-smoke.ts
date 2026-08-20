@@ -11,7 +11,7 @@ import type {
 import type { ZetaDbTickReadout } from "../zetadb/zeta-db-node";
 import type { BrowserDatabaseIntentReadout } from "./browser-database-intent-outbox";
 
-export const BROWSER_MULTITAB_SMOKE_SCHEMA = "zeta.browser-multitab-smoke.v12" as const;
+export const BROWSER_MULTITAB_SMOKE_SCHEMA = "zeta.browser-multitab-smoke.v14" as const;
 
 interface IrisPeerReadout {
   readonly id: string;
@@ -70,6 +70,14 @@ export interface BrowserMultitabPageObservation {
       readonly state: string;
     }[];
     readonly sourceLocalState: string;
+    readonly causalHandoff: {
+      readonly schema: string;
+      readonly status: string;
+      readonly direction: string;
+      readonly handoffId: string;
+      readonly peerTabId: string;
+      readonly text: string;
+    };
     readonly irisLabel: string;
     readonly databaseExecutor: string;
     readonly databaseRevision: string;
@@ -239,6 +247,7 @@ async function observe(page: Page): Promise<BrowserMultitabPageObservation> {
     const root = globalThis as unknown as BrowserSmokeGlobal;
     const sourceElements = Array.from(root.document.querySelectorAll("[data-tab]"));
     const sourceRoot = root.document.querySelector("[data-browser-local-state]");
+    const causalHandoff = root.document.querySelector(".zeta-causal-handoff");
     const databaseRoot = root.document.querySelector("[data-database-readout]");
     const databaseRows = Array.from(root.document.querySelectorAll(".zeta-database-row"));
     const irisLabel = root.document.querySelector("#iris-mesh button");
@@ -258,6 +267,14 @@ async function observe(page: Page): Promise<BrowserMultitabPageObservation> {
           state: element.getAttribute("data-state") ?? "",
         })),
         sourceLocalState: sourceRoot?.getAttribute("data-browser-local-state") ?? "",
+        causalHandoff: {
+          schema: sourceRoot?.getAttribute("data-causal-handoff-readout") ?? "",
+          status: sourceRoot?.getAttribute("data-causal-handoff-status") ?? "",
+          direction: sourceRoot?.getAttribute("data-causal-handoff-direction") ?? "",
+          handoffId: sourceRoot?.getAttribute("data-causal-handoff-id") ?? "",
+          peerTabId: sourceRoot?.getAttribute("data-causal-handoff-peer") ?? "",
+          text: causalHandoff?.textContent?.trim() ?? "",
+        },
         irisLabel: irisLabel?.textContent?.trim() ?? "",
         databaseExecutor: databaseRoot?.getAttribute("data-database-executor") ?? "",
         databaseRevision: databaseRoot?.getAttribute("data-database-revision") ?? "",
@@ -403,7 +420,7 @@ async function waitForSinglePage(page: Page, tabId: string): Promise<void> {
 async function waitForCausalHandoff(
   page: Page,
   direction: "outbound" | "inbound",
-  status: "offered" | "received" | "duplicate",
+  status: "offered" | "acknowledged" | "received" | "duplicate",
   peerTabId: string,
 ): Promise<void> {
   await page.waitForFunction(
@@ -411,10 +428,16 @@ async function waitForCausalHandoff(
       const root = globalThis as unknown as Partial<BrowserSmokeGlobal>;
       const source = root.__zetaBrowserSmoke?.read();
       const handoff = source?.ok === true ? source.value.causal.handoff : null;
+      const room = root.document?.querySelector("[data-causal-handoff-readout]");
       return (
         handoff?.direction === expected.direction &&
         handoff.status === expected.status &&
-        handoff.peerTabId === expected.peerTabId
+        handoff.peerTabId === expected.peerTabId &&
+        handoff.handoffId !== null &&
+        room?.getAttribute("data-causal-handoff-direction") === expected.direction &&
+        room.getAttribute("data-causal-handoff-status") === expected.status &&
+        room.getAttribute("data-causal-handoff-id") === handoff.handoffId &&
+        room.getAttribute("data-causal-handoff-peer") === expected.peerTabId
       );
     },
     { direction, status, peerTabId },
@@ -714,14 +737,27 @@ function validateCausalCheckpointRestart(transcript: BrowserMultitabSmokeTranscr
   if (transcript.afterRetraction.pageC.source.ok) {
     const offered = transcript.afterRetraction.pageC.source.value.causal.handoff;
     if (
-      offered.status !== "offered" ||
+      offered.status !== "duplicate" ||
       offered.direction !== "outbound" ||
+      offered.handoffId === null ||
       offered.peerTabId !== "tab-d" ||
       offered.correctionCount !== 1 ||
       offered.admittedCorrections !== 0 ||
       offered.feedback !== null
     ) {
-      failures.push("page C did not expose its recovered causal history as an outbound peer offer");
+      failures.push("page C did not expose page D's duplicate acknowledgement of its outbound causal offer");
+    }
+    const rendered = transcript.afterRetraction.pageC.rendered.causalHandoff;
+    if (
+      rendered.schema !== "zeta.darkhall.causal-handoff-readout.v2" ||
+      rendered.status !== "duplicate" ||
+      rendered.direction !== "outbound" ||
+      rendered.handoffId !== offered.handoffId ||
+      rendered.peerTabId !== "tab-d" ||
+      !rendered.text.includes("peer handoff") ||
+      !rendered.text.includes("duplicate · outbound")
+    ) {
+      failures.push("page C did not render the acknowledged outbound causal peer offer on the room surface");
     }
   } else {
     failures.push("page C failed while exposing the causal peer offer");
@@ -731,12 +767,25 @@ function validateCausalCheckpointRestart(transcript: BrowserMultitabSmokeTranscr
     if (
       received.status !== "duplicate" ||
       received.direction !== "inbound" ||
+      received.handoffId === null ||
       received.peerTabId !== "tab-c" ||
       received.correctionCount !== 1 ||
       received.admittedCorrections !== 0 ||
       received.feedback !== null
     ) {
       failures.push("page D did not expose idempotent admission of page C's recovered causal history");
+    }
+    const rendered = transcript.afterRetraction.pageD.rendered.causalHandoff;
+    if (
+      rendered.schema !== "zeta.darkhall.causal-handoff-readout.v2" ||
+      rendered.status !== "duplicate" ||
+      rendered.direction !== "inbound" ||
+      rendered.handoffId !== received.handoffId ||
+      rendered.peerTabId !== "tab-c" ||
+      !rendered.text.includes("peer handoff") ||
+      !rendered.text.includes("duplicate · inbound")
+    ) {
+      failures.push("page D did not render idempotent causal peer admission on the room surface");
     }
   }
 }
@@ -1033,7 +1082,7 @@ export async function runBrowserMultitabSmoke(): Promise<BrowserMultitabSmokeRes
     await pageD.evaluate("globalThis.ZetaMesh.announce()");
     await Promise.all([waitForTwoPages(pageC), waitForTwoPages(pageD)]);
     await Promise.all([
-      waitForCausalHandoff(pageC, "outbound", "offered", "tab-d"),
+      waitForCausalHandoff(pageC, "outbound", "duplicate", "tab-d"),
       waitForCausalHandoff(pageD, "inbound", "duplicate", "tab-c"),
     ]);
 
