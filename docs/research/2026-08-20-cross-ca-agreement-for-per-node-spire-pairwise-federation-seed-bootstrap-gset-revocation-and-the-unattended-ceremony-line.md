@@ -317,3 +317,59 @@ Lists?* (1998); the design consequence implemented here (expiry needs no coopera
 exactly that paper's argument, so the anchor is **checked**, not merely cited. CRDTs — Shapiro, Preguiça,
 Baquero & Zawirski (2011). Data Vault 2.0 — Linstedt & Olschimke (2015). Exit as the discipline on
 concentration — Hirschman (1970).
+
+---
+
+## Correction — what we built is a CLUSTER, not a FEDERATION (Addison's distinction)
+
+Aaron 2026-08-20 pointed at the org root site: *"look up addison federation over cluster in our
+root lfg website … this is the dinstinction."*
+
+`docs/CONCEPT-REGISTRY.md` carries it, attributed to **Addison Cooper (2026-06-20)**, and the
+live concepts page states it plainly:
+
+> *"Clusters are not organizations. They are relationship structures. Federations are not social
+> groups. They are contract-bound institutions."*
+
+| term | held together by | enforceable |
+|---|---|---|
+| **Cluster** | **relationships** | **never** |
+| **Federation** | **contracts** | **yes — with exits** |
+
+**The word "federation" throughout this document and in the module name is SPIFFE's, not ours**,
+and the two senses diverge exactly where it matters. SPIFFE calls trust-bundle exchange
+"federation"; Zeta reserves that word for something with *contracts and enforceable obligations*.
+
+**And this design's own cost statement is the proof it is the other thing.** It says: *"no node
+can be told it is wrong."* That is **non-enforceability, stated as a feature** — which is the
+definition of a **cluster**. Acceptance here is a relationship: revocable at will, at zero cost, by
+either side, with no obligation surviving the withdrawal.
+
+So the honest reading of what runs today:
+
+- **It is a cluster.** Pairwise acceptance held by relationships. Every property claimed for it —
+  local policy, directed `accepts(A,B)`, asymmetry as a legal steady state, no repair path — is a
+  *cluster* property, and each one is a **consequence of non-enforceability**, not an achievement
+  on top of it.
+- **A real federation would need what this does not have:** a charter (the registry's **Lodge** —
+  a named federation instance with its own constitution), stated obligations that outlive a mood,
+  and an exit with a **defined cost** rather than a free walk-away.
+
+**This sharpens the exit rule rather than contradicting it.** The registry also carries the
+**Universal Exit Principle** (Addison, 2026-07-31): *"No human, agent, vault, cluster, or
+federation may be trapped indefinitely. Exit may cost (notice period, buyout, reputation hit) but
+must exist."* So **costly exit is still exit** — which is the refinement the hub/oracle
+discriminator needed. "Must you route through it?" was too coarse; the real question is *"can you
+leave, at a price you can see?"* A federation whose exit costs something is legitimate; a hub is
+where the price is unpayable or unstated.
+
+**Nothing in the code changes on this finding** — the mechanism is right, and a cluster is the
+correct starting point when no contracts exist yet. What changes is the **claim**: this is
+cluster-grade trust, and calling it federation-grade would promise enforceability that is not
+there. Renaming the module is deferred rather than done, because `federated-identity` also names
+the SPIFFE mechanism a reader will search for; the collision is recorded here so the next reader
+meets it at the claim rather than discovering it later.
+
+*(Register: the distinction is **checked** — read from `docs/CONCEPT-REGISTRY.md` rows 35–36, 54–55
+and the shipped concepts page. The judgement that this build is cluster-grade follows from its own
+stated "no node can be told it is wrong", not from an outside opinion.)*
