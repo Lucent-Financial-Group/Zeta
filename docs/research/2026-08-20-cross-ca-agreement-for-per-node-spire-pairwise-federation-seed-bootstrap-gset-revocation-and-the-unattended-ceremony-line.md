@@ -325,8 +325,15 @@ concentration — Hirschman (1970).
 Aaron 2026-08-20 pointed at the org root site: *"look up addison federation over cluster in our
 root lfg website … this is the dinstinction."*
 
-`docs/CONCEPT-REGISTRY.md` carries it, attributed to **Addison Cooper (2026-06-20)**, and the
-live concepts page states it plainly:
+**Addison Cooper realized this distinction** (2026-06-20). Aaron 2026-08-20, confirming:
+*"Addison realized this."* `docs/CONCEPT-REGISTRY.md` and the shipped concepts page **record** it;
+they are not its source. Stating that plainly because the registry's passive voice makes an
+originator look like a row author, and because getting this backwards is a live failure mode here —
+a homoiconicity result of Lumen's was read back off Aaron and credited to him earlier the same day
+(fixed in #12792). **The insight is hers**, and so are three more of the concepts this design leans
+on: **Federation**, the **Universal Exit Principle** (2026-07-31), and **Lodge**.
+
+The live concepts page states it plainly:
 
 > *"Clusters are not organizations. They are relationship structures. Federations are not social
 > groups. They are contract-bound institutions."*
@@ -356,7 +363,7 @@ So the honest reading of what runs today:
   and an exit with a **defined cost** rather than a free walk-away.
 
 **This sharpens the exit rule rather than contradicting it.** The registry also carries the
-**Universal Exit Principle** (Addison, 2026-07-31): *"No human, agent, vault, cluster, or
+**Universal Exit Principle** (Addison Cooper, 2026-07-31): *"No human, agent, vault, cluster, or
 federation may be trapped indefinitely. Exit may cost (notice period, buyout, reputation hit) but
 must exist."* So **costly exit is still exit** — which is the refinement the hub/oracle
 discriminator needed. "Must you route through it?" was too coarse; the real question is *"can you
