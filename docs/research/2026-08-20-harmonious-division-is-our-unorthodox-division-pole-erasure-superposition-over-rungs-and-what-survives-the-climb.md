@@ -92,6 +92,36 @@ unique only up to the path taken, and going around a branch point returns a *dif
 which is precisely why §4's superposition reading is the right one rather than a flourish. **Which
 sheet you land on is a choice, and choices are recorded.**
 
+**Aaron sharpens where the choice actually lives (2026-08-20):**
+
+> ### **"the path is what makes the uniqueness, not the calculation/continuation"**
+
+Exactly right, and it is the difference between a caveat and a design. The continuation is a
+*deterministic procedure* — it carries no freedom at all. **All of the non-uniqueness is in the
+path**, and the classical statement is precise about it: by the **monodromy theorem**, continuation
+along two *homotopic* paths gives the *same* value; different homotopy classes give different
+sheets. So uniqueness is a property of `π₁(domain ∖ branch points)`, not of the arithmetic.
+
+Three consequences, and they are not decorative:
+
+1. **Recording the calculation is worthless; recording the route is everything.** If the value is a
+   function of the path, then the path is the datum and the value is derived. That is
+   event-sourcing stated as a theorem rather than a preference — and it is today's
+   Futamura-for-observables thesis with a *reason*: the value is regenerable **because** the path
+   was kept.
+2. **Two travelers who circled the pole differently *should* disagree, and both are correct.**
+   Their disagreement is not an error to reconcile — it *measures the monodromy*. Forcing agreement
+   there is precisely the collapse we are trying not to perform, and it would destroy a real
+   measurement to do it.
+3. **So monodromy is the formal name for legitimate persistent disagreement.** It is the
+   both-accounts-held discipline arriving from complex analysis: the disagreement is *load-bearing
+   information about the domain*, and a substrate that resolves it by fiat has erased data, not
+   settled a dispute.
+
+This also says what a *malicious* continuation looks like, which is worth naming before it is built:
+**an unrecorded path**. Same arithmetic, undisclosed route, a value nobody can reproduce or dispute —
+the vacuity class wearing an analytic-continuation costume.
+
 ## 3. Our own candidate metric already buys division-by-zero *on purpose*
 
 The 2026-05-13 memory lists, as a decision **owed to Aaron**, the metric signature for the type
