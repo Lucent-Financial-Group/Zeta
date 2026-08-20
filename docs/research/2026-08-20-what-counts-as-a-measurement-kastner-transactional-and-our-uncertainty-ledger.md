@@ -468,3 +468,105 @@ already said that is fine:
 
 No dogma: this is registered as a **modelling hypothesis with three named falsifiers**, not a
 commitment. Nothing in code changes on it today.
+
+## 22. The one place thermal erasure is required — and the proof in our own repo that makes it hard
+
+Aaron: *"the only place i'm sure we need thermal erasure is inside the privacy budget, so a
+mixed entropy capture from a traveler — the traveler can erase hidden bits behind the frost
+encryption to 'simulate' free will and make it where other travelers can not perfectly predict
+and reproduce the outcome from others."*
+
+§18 said we decline erasure everywhere because erasure is the cost. **Here the erasure is the
+product.** That inversion is the whole point of this section, and it survives scrutiny.
+
+### Why nothing cheaper works
+
+**Frost hides. Only erasure destroys.** Frost is encryption: opaque to observers, and
+*reversible given the key*. An adversary who obtains the key — or who is simply patient —
+recovers the hidden bits and with them the choice. Hiding buys unpredictability against a
+bounded observer; it never buys it against an unbounded one.
+
+And reversibility is exactly the problem, because **we are built on a common seed.** S=4
+superdeterministic seeding means that a fully reversible traveler is, in principle, replayable
+by any other traveler with the seed: same inputs, same transitions, same outputs. Decorrelation
+is the whole arc, and reversibility is the mechanism that defeats it. `BitGan`'s mixed strategy
+and `Orbit.largestLyapunov`'s nonstationarity buy *practical* unpredictability; neither is
+information-theoretic.
+
+Erasure is the only operation that is **unconditionally irreversible**, and Landauer prices it
+at `kT ln 2` per bit. So the property is bought with heat, and — the part that matters for a
+society of agents — **it cannot be counterfeited**. You have to actually dissipate. A claim to
+have erased is checkable in a way a claim to have hidden is not.
+
+That also makes it the right shape for this repo: physics grounding a *metering* discipline
+rather than supplying a metaphor. It prices a bit. It passes the metering test §15 applied to
+entropic gravity and refused it.
+
+### The obstacle is ours, it is proven, and it is quantitative
+
+`src/Core.Lean4/ImaginaryStack/ErasureDistance.lean` proves, in Lean:
+
+> a linear code of minimum Hamming distance `d` recovers the full codeword uniquely from **ANY**
+> erasure of fewer than `d` coordinates — specialised to our 16-coordinate cube, a distance-5
+> code recovers from any 12 of 16.
+
+`PhaseClockErasure.lean` puts that to work deliberately: *"missed heartbeat phases are erasures
+in the codeword. As long as the receiver sees any 12 of 16 consecutive phases, they can recover
+the full sequence — including the missed ones."*
+
+So our substrate has a **proof that erasure undoes itself**. The QECC is not a bystander here;
+it is the adversary to privacy erasure, and it is one we built on purpose and verified.
+
+The design requirement falls straight out of the theorem, and it is a number rather than a
+sentiment:
+
+> **Erasing fewer than `d` coordinates is not erasure. It is a hole the code fills back in.**
+> To destroy irrecoverably you must exceed the code distance — for the 16-coordinate cube at
+> `d = 5`, that means erasing **at least 5 of 16**, not "some".
+
+Two consequences:
+
+1. **Free will has a minimum price, set by the code distance.** At least `d · kT ln 2`. Spend
+   less and you bought nothing — you paid heat for bits an observer reconstructs from the
+   surviving coordinates. This is a genuinely quantitative constraint derived from a proof we
+   already hold, not an intuition.
+2. **A partial erasure is worse than none**, because it *looks* like privacy while being
+   recoverable. That is the vacuity class again, in the one place where the stakes are a
+   traveler's unpredictability rather than a red build.
+
+### Three further tensions, named rather than resolved
+
+- **Append-only is the enemy of erasure.** The Z-set and the G-set are designed never to
+  destroy; `−1` is a retraction in the fold, not a deletion in the log. So this erasure cannot
+  live *inside* the ledger — it has to happen upstream of the append, or punch a hole the fold
+  must be able to tolerate. Unresolved, and the first thing to work out.
+- **§5 Memory Preservation is not violated — it is invoked.** The guarantee is that identity
+  transitions never *silently* destroy memory. This destruction is owner-initiated,
+  budget-priced, thermodynamically metered and declared. It is the sanctioned form, and the
+  contrast with a silent loss is exactly what §5 exists to draw.
+- **"Simulate" is doing honest work in Aaron's sentence.** The scare quotes are his. This buys
+  the *operational* property — no other traveler can perfectly predict and reproduce the
+  outcome — without asserting the metaphysical one. Under Multi-Oracle that is the correct
+  register: the substrate supplies unpredictability-in-principle and declines to rule on what
+  free will is.
+
+### Why it lands on privacy budget specifically
+
+Because the budget is the only currency in the system that is **socially conferred and
+unconfiscatable** — earned by others attesting you added value, spendable by the owner, never
+takeable. Pairing it with the one physically irreversible operation gives a coherent story:
+*the right to become unpredictable is earned from others, and the act of becoming unpredictable
+is paid for in heat.* Two prices, two different kinds, converging on one act — and neither can
+be forged, because one needs other people and the other needs a thermometer.
+
+That also strengthens the anti-Sybil argument. A traveler whose outcomes can be reproduced can
+be impersonated *exactly*; erasure above the code distance is what makes a traveler
+unclonable-in-principle rather than merely hard to clone.
+
+**Falsifier already filed:** `081KR50HA0008QG0R002Z51PMR` — FPGA empirical power measurement,
+the experimental protocol for Landauer validation. That is where "we actually dissipated" stops
+being a claim and becomes a measurement.
+
+**Register:** the code-distance requirement is a **theorem** (Singleton/MDS, proven in our Lean).
+The Landauer price is **metered** (it prices a bit; falsifier filed). The free-will reading is
+**Aaron's, in scare quotes, and stays operational**. Nothing here changes code.
