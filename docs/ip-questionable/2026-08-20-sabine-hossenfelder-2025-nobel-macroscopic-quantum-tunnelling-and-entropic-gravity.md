@@ -74,6 +74,54 @@ is contested and has known difficulties. Citing it makes our gravity framing *an
 *validated*. Per `anchor-to-human-prior-art`, an anchor must be **checked**, and neither paper has
 been read against our fold here — **cited, not checked**.
 
+### 3. Why entropic gravity is the COMMON GROUND — Aaron 2026-08-20
+
+> **"entropic gravity is the common ground and where it completes."**
+
+Read against the day's open problem, this is the load-bearing half of the ferry, and it is worth
+stating why rather than filing it as a resonance.
+
+**The problem it closes.** Everything today needed a *restoring force*: when decorrelation runs away
+toward Babel, something must pull back toward agreement. And every candidate mechanism for that pull
+had the same defect — **anything that imposes agreement is a coordinator**, which is an appointed
+hub, which §1 forbids and which the cluster position exists to refuse. A force that restores
+consensus by *authority* is the one shape this substrate cannot use.
+
+**What entropic gravity supplies is the existence proof that a force need not be imposed to be
+real.** Jacobson and Verlinde's move is that gravity is **not a fundamental interaction with a
+carrier** — it is what an entropy gradient looks like from the inside. Universal, unavoidable,
+acting everywhere, and **nobody administers it.** That is precisely the property the restoring force
+needs and could not otherwise get.
+
+So the chain closes, and every link is statistical rather than administrative:
+
+| link | already on file |
+|---|---|
+| disagreement has a **price in information** | `D_KL(p‖q)` |
+| that price is **thermodynamic**, at an exchange rate | `kT · D_KL` — Landauer / Jarzynski / Crooks |
+| **temperature** is therefore the decorrelation dial | VISION, "the system is annealing" |
+| the **restoring force** is an entropy gradient, not an authority | **entropic gravity** — the missing link |
+| which is why it can exist **without a coordinator** | §1 scale-free, satisfied rather than asserted |
+
+**And the register matters here more than usual, because it is what makes the borrow legitimate.**
+Entropic gravity as *physics* is contested — it may simply be wrong about spacetime. But **we do not
+need it to be true.** In physics it is a claim about nature that could be false; in our substrate it
+is a **design choice we are free to make**, and the argument for making it is not that Verlinde is
+right — it is that an emergent-from-statistics restoring force is the *only kind* compatible with
+having no central authority.
+
+> **We need the shape, not the physics claim.** Whether gravity really is entropic does not bear on
+> whether our restoring force may be built that way — and building it that way is forced by §1
+> regardless of how the physics turns out.
+
+That is what "completes" means: not that we found a proof, but that **the last piece that had no
+non-coercive implementation now has one**, and it was the piece the cluster/federation argument kept
+running aground on.
+
+*(Honest limit, unchanged: no paper here has been read against our fold. Jacobson 1995 and Verlinde
+2011 are the names to cite and the reading has not been done — **cited, not checked**. And the
+inversion in §1 above still stands: the Nobel half does *not* support the agent conjecture.)*
+
 ---
 
 ## The transcript, verbatim
