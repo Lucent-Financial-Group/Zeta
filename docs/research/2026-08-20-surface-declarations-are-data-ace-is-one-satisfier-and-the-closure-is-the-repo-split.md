@@ -99,11 +99,61 @@ Two mechanical consequences follow from §0, and both are small:
    the honest one the clone-at-tag rule already names: **clone at a tag on a machine with no `ace`
    on `PATH`, read the declaration, satisfy it by hand, and build.**
 
-## 6. What this note deliberately does NOT do
+## 6. The enumeration heuristic — one surface per language CLI (Aaron)
 
-**It does not enumerate the surfaces.** That is Aaron's to draw, and inventing a plausible-looking
-list would be exactly the failure this repo keeps catching — a confident artifact standing in for a
-decision nobody made. The four named in §3 are *illustrations of non-nesting*, not a proposal.
+Asked for the surface set, Aaron 2026-08-20:
+
+> **"imagine each cli based on each computer language — this is roughly the most enumerated
+> surfaces if we tried to enumerate."**
+
+That is a *generating rule*, not a list, which is what makes it usable: the surfaces are **the
+per-language toolchains**, and the upper bound on how finely you would ever split is one surface per
+language CLI.
+
+**And that enumeration already exists — in the CI job matrix.** These are current job names, not a
+proposal:
+
+`lint (TS)` · `lint (Rust)` · `lint (Go)` · `lint (Python)` · `lint (C#)` ·
+`Analyze (java-kotlin)` · `Analyze (javascript-typescript)` · `Analyze (csharp)` ·
+`Analyze (python)` · `Analyze (go)` · `full-verify (7-lang oracle + cost + proofs)` ·
+`cross-verify (trust-core oracles + ace suite)`
+
+plus the six byte-lock substrates named in
+[`no-binary-in-proof-lineage`](../../.claude/rules/no-binary-in-proof-lineage.md) —
+`dla-canonical-{wat,llvm,emcc,rust,asc,zig}` — and the "no oracle = fail" roster in
+`src/Core.TypeScript/ci/cross-verify-all.ts`.
+
+**So the surfaces are already declared. They are just declared as job names rather than as data, and
+nothing reads them.**
+
+### 6a. The over-install cost is not hypothetical — it was today's most expensive failure
+
+Every one of those per-language jobs runs the **same shared install step**, so a job that needs only
+Go still installs .NET, Lean/elan, the TLA and Alloy jars, and the rest of the union. That is the
+monorepo bottleneck reproduced inside CI.
+
+It is measurable because it *failed*, repeatedly, on 2026-08-20. Jobs observed failing at the step
+**"Install toolchain via three-way-parity script"** with `exit 124` (timeout) across three separate
+PRs included `build-and-test (ubuntu-24.04)`, `lint (tick-history order)`, `lint (no conflict
+markers)`, and — on #12361 — a wall of thirteen spanning `lint (Rust)`, `lint (Go)`, `lint (Python)`,
+`lint (markdownlint)`, `lint (semgrep)` and `cross-verify`. Each cleared on a plain retry.
+
+> **A single-language lint timing out while installing the other six languages' toolchains is the
+> union cost, priced, in wall-clock, on the critical path of every PR.**
+
+**Honest limit, because this is the tempting over-claim:** the failures are consistent with a stalled
+archive mirror, and `linux.sh` itself names that as the expected cause. What is *established* is that
+the cost structure is union-shaped and paid per job; what is **not** measured is how much a
+per-surface install would actually save, or whether it would have prevented these specific timeouts.
+That measurement is the obvious first falsifier once one surface is declared.
+
+### 6b. What this note still deliberately does NOT do
+
+**It does not commit to the surface list.** A generating rule is not a roster: which languages get
+their own surface, whether `markdownlint` and `semgrep` are surfaces or shared infrastructure, and
+where the proof stack sits are all decisions Aaron has not made, and a plausible-looking list would
+be exactly the failure this repo keeps catching — a confident artifact standing in for a decision
+nobody made.
 
 Nothing here is measured. There is no implementation, no manifest format, and no claim that the
 closure is currently computable — `user_aaron_incremental_dependency_tracking_is_the_mental_model_wall`
