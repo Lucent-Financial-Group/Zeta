@@ -147,13 +147,53 @@ the cost structure is union-shaped and paid per job; what is **not** measured is
 per-surface install would actually save, or whether it would have prevented these specific timeouts.
 That measurement is the obvious first falsifier once one surface is declared.
 
-### 6b. What this note still deliberately does NOT do
+### 6b. Not-deciding is the METHOD — and the repo split is the one place it breaks
+
+An earlier draft said the surface list comprises "decisions Aaron has not made," which framed
+deferral as an omission. Aaron 2026-08-20 corrects that, and the correction is the more useful half:
+
+> **"the repo tried not to make decisions and only make separate towers instead that can be chosen
+> at runtime. repo split is one of those that forces a decision or else you are monorepo like we
+> are — we can test out different variations."**
+
+So deferral is not a gap here, it is **the design method**, and it is the same move recorded
+elsewhere in this repo under several names: the Multi-Oracle Principle (no single mandatory
+morality), free-object-over-quotient (do not commit to a special case, generate it), interfaces-free
+/ classes-earned, and *defer the commitment when structure is discovered*. Build towers; choose at
+runtime; commit to nothing you can keep plural.
+
+**The repo split is the exception, and it is worth naming exactly why.** Towers coexist — a surface
+declaration for Go and one for Lean can both be true at once and be selected per job. **A repo
+boundary cannot.** Either a file is in one repo or another; there is no runtime selection over
+directory layout. The split is **exclusive, one-way, and expensive to reverse** — the only structure
+here that refuses the method outright.
+
+And crucially, **abstaining is not neutral in this one case**: not-deciding *is* deciding, and what
+it decides is **monorepo** — which is precisely the union-of-everything bottleneck
+(`user_aaron_monorepo_union_of_everything_is_the_bottleneck`), now visible in CI as §6a's per-job
+union cost. Everywhere else deferral is free; here it has a running price.
+
+**Which is what surface declarations are actually for.** If a surface's needs are data, then a
+candidate split is a **query over the closure**, not a migration:
+
+> **You evaluate split variations by computing them, and you only move files once.**
+
+That restores the method's central property — *stay plural until you must commit* — to the one
+structure that otherwise denies it. It is Aaron's "we can test out different variations" made
+mechanical, and it is why declarations should come **before** the split rather than after: they turn
+an irreversible decision into a reversible experiment right up until the moment files move.
+
+Note the shape: the split is **declared** structure (someone must commit to it), while a closure is
+**discovered** (computed from the graph). So the move is to *declare surfaces in order to discover
+the split* — rather than declaring the split and discovering afterwards whether it was right.
+
+### 6c. What this note still deliberately does NOT do
 
 **It does not commit to the surface list.** A generating rule is not a roster: which languages get
 their own surface, whether `markdownlint` and `semgrep` are surfaces or shared infrastructure, and
-where the proof stack sits are all decisions Aaron has not made, and a plausible-looking list would
-be exactly the failure this repo keeps catching — a confident artifact standing in for a decision
-nobody made.
+where the proof stack sits remain open — and per §6b they can *stay* open, because surfaces are
+towers. A plausible-looking list invented here would be exactly the failure this repo keeps
+catching: a confident artifact standing in for a decision nobody made.
 
 Nothing here is measured. There is no implementation, no manifest format, and no claim that the
 closure is currently computable — `user_aaron_incremental_dependency_tracking_is_the_mental_model_wall`
