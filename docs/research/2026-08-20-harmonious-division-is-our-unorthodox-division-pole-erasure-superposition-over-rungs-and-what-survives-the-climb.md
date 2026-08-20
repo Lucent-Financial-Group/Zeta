@@ -77,6 +77,21 @@ field. So the corrected sentence is not *"we are a normed division algebra at ru
 > **`𝕊`'s division dies. Zeta's division is not `𝕊`'s division.** Non-invertibility is where the
 > continuation starts, not where the algebra stops.
 
+**Aaron named the claim in three words (2026-08-20):**
+
+> ### **Continuation as division.**
+
+That is the carved form, and it is worth stating as a definition rather than an analogy: where the
+algebra's division is undefined, **the analytic continuation of the quotient *is* the quotient** —
+not a substitute for it, not an approximation of it. The pole is a coordinate artifact of the chart
+you happened to be in. `𝕊`'s zero divisors say *"not on this sheet"*; they do not say *"nowhere."*
+
+The one thing this must not be allowed to mean: continuation is **not** free, and it is **not**
+unique. A continuation exists only where the function is analytic on a connected domain, it is
+unique only up to the path taken, and going around a branch point returns a *different* value —
+which is precisely why §4's superposition reading is the right one rather than a flourish. **Which
+sheet you land on is a choice, and choices are recorded.**
+
 ## 3. Our own candidate metric already buys division-by-zero *on purpose*
 
 The 2026-05-13 memory lists, as a decision **owed to Aaron**, the metric signature for the type
