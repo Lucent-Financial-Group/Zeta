@@ -112,7 +112,8 @@ export function isRepoAnchored(raw: string, topLevelDirs: ReadonlySet<string>): 
     // no test can detect is a check that cannot fail — the same class this auditor exists
     // to find, so it does not get to live here.
     if (PLACEHOLDER_PATTERNS.some((re) => re.test(raw))) return false;
-    return topLevelDirs.has(raw.split("/")[0]);
+    const head = raw.split("/")[0];
+    return head !== undefined && topLevelDirs.has(head);
 }
 
 export function classify(
@@ -140,6 +141,7 @@ export function auditSkillPathRefs(root: string = SKILLS_DIR): SkillRef[] {
         const text = readFileSync(file, "utf8");
         for (const match of text.matchAll(REF_RE)) {
             const raw = match[1];
+            if (raw === undefined) continue;
             if (!isRepoAnchored(raw, topLevelDirs)) continue;
             const { state, foundAt } = classify(raw);
             refs.push(foundAt === undefined ? { file, raw, state } : { file, raw, state, foundAt });
@@ -205,8 +207,9 @@ if (import.meta.main) {
     const stale = refs.filter((r) => r.state === "stale").length;
     const archived = refs.filter((r) => r.state === "archived").length;
 
-    if (reportIdx !== -1 && argv[reportIdx + 1] !== undefined) {
-        writeFileSync(argv[reportIdx + 1], renderReport(refs), "utf8");
+    const reportPath = reportIdx === -1 ? undefined : argv[reportIdx + 1];
+    if (reportPath !== undefined) {
+        writeFileSync(reportPath, renderReport(refs), "utf8");
     }
 
     console.log(
