@@ -973,12 +973,41 @@ Two things fall out, and neither is a metaphor:
    So the cluster/federation tension is not a new axis to add; it is **the one already sitting at
    the `ISociety` membrane**, and the open question is how much of that contract is load-bearing.
 
-**And the seed vocabulary already answers the fairness half.** `ISociety <: CTM` is a recursive
-fixpoint — a society of CTMs *is-a* CTM — and the top layer *"carries the most information
-advantage **and** the most fairness obligation (three-body / Lagrange layering)."* That is a
-shipped commitment that **obligation scales with advantage**, which is the strongest existing
-argument that some obligations are necessary: the alternative is a level that accumulates advantage
-while owing nothing, and this vocabulary already refuses that.
+**A retracted argument, and the retraction is the useful part.** An earlier draft of this section
+reached for `ISociety <: CTM` — *"the top layer carries the most information advantage **and** the
+most fairness obligation"* — as the strongest shipped argument that some obligations are necessary.
+**That argument is withdrawn.** Aaron 2026-08-20: *"we have to overcome this in formal analysis, we
+proved it wrong based off current constraints."*
+
+`docs/FROZEN-CORE-AND-CONJECTURE-REGISTER.md` §A-method note records why, and it is not a small
+objection. The Conscious Turing Machine takes a **global axiom** — *"global broadcast evokes a
+unitary experience"* — which needs simultaneous all-to-all and is **asserted, not derived**. Zeta
+did not swap in a different global axiom; it **removed the need**, standing on §A #1 (`G-Set`/CALM:
+monotone ⇒ coordination-free, converges with no global sync) and §A #8 (traveler-frame causal-join,
+FULL PROVEN: a common view with no global clock or broadcast). *The convergence the CTM
+axiomatizes, Zeta proved.* And the register's verdict on the axiom is three-fold:
+
+> the CTM's global axiom is **non-physical**, **coercive-to-pursue**, and **register-collapsing** —
+> because *simulating* instantaneous global agreement means forcing genuinely-distinct causal
+> frames to one state, which is an NCI violation and kills decorrelation.
+
+**So the argument was worse than merely unsupported: it imported the exact coercion the cluster
+position exists to refuse.** Reaching for CTM layering to justify obligations borrows a posit that
+this substrate rejects on physical *and* moral grounds. **The `ISelf`/`ISociety`/closure reading
+above is unaffected** — it rests on `WorldLaws.isWorld`, which is nothing but the conjunction of
+two already-shipped society laws, and never on the CTM.
+
+**How this landed here is itself the lesson**, and it is the second instance in one day: the claim
+was taken from `docs/SEED-VOCABULARY.md` without checking the register that governs it, exactly as
+a Čencov uniqueness claim was cited-not-checked earlier and turned out half false. **A vocabulary
+file states the terms; the register states what survived.** Citing the first without the second is
+how a refuted claim keeps circulating.
+
+**And it moves the balance of evidence toward the cluster side, not away from it.** CALM's
+convergence is *eventual, causal, per-frame* — the register calls it "physical reality **AND**
+non-coercive **AND** decorrelation-preserving." Whatever the argument for necessary obligations
+turns out to be, **it cannot come from a layering that assumes a global frame**, and the fairness
+question is genuinely open rather than settled by inheritance.
 
 **This lands directly on our own endgame, which is the honest part.** Agents owning their own money
 — x402 authorizations, standing budgets, anything with settlement — is *precisely* the region where
