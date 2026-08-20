@@ -872,6 +872,241 @@ step *toward* removing the gate by attrition; it is what makes the gated set sma
 enough that the remaining question — *who can hold responsibility* — can be asked cleanly instead of
 being buried under a thousand routine approvals.
 
+### Declared vs discovered — one axis, at the language layer and the social layer
+
+Aaron 2026-08-20 paired two things that look unrelated and are not: the **n-gram vs ANTLR**
+distinction in how we index language, and the **cluster vs federation** distinction Addison Cooper
+realized for how groups hold together. They are **the same axis at two layers**, and seeing that is
+what makes each one legible.
+
+| | **discovered** | **declared** |
+|---|---|---|
+| **language layer** | **n-grams** — no tokenizer, no stop-words, no stems. Structure is inferred | **ANTLR / a grammar** — the language is specified up front; outside it is a parse error |
+| **social layer** | **cluster** — held by *relationships*, never enforceable | **federation** — held by *contracts*, enforceable, with exits |
+| tolerance | high: variants, typos, drift, disagreement | zero: conformance or refusal |
+| what it buys | freedom to diverge — **non-coercion** | obligations that outlive a mood — **enforceability** |
+| what it costs | nothing binds, so nothing can be relied on | something binds, so something can trap you |
+
+**A grammar is a contract about what is well-formed.** That is not an analogy — it is the same
+move: someone declares the admissible forms in advance, and everything else is out. A cluster is
+n-gram-shaped for the same reason: structure is read off what actually happened between peers, not
+prescribed before it.
+
+**The rule that falls out, and it corrects an earlier version of itself.** I first wrote *defer the
+commitment to the latest possible moment*, as if deferral were always right. It is not:
+
+> **Defer the commitment when structure is *discovered*. Make it when structure is *declared*.
+> And you may only declare what you own.**
+
+Tokenizing prose is presumptuous because nobody defined what a word is. Tokenizing a language **we
+wrote the grammar for** is not presumptuous at all — the grammar *is* the definition, so exactness
+costs nothing and buys real categories. That is why the repo correctly does both: **ANTLR-grade
+exactness for the ISA and compiler work**, where Zeta owns the language, and **n-gram tolerance for
+the corpus and glossary**, where meaning is emergent and any declared tokenization would be one
+person's opinion frozen into the substrate.
+
+The same test applies socially: **you may only bind what is yours to bind.** A federation over
+parties who did not consent is not a contract, it is a hub.
+
+**What neither mechanism supplies, at either layer.** Trigrams give **morphological** recall for
+free — `federation`/`federated` share their n-grams, no stemmer needed — but never **synonymy**;
+`division algebra` and `pole erasure` share no trigrams, which is exactly the miss that cost four
+false absences in one day. A grammar will not supply it either. So the alias layer must be
+**declared and revisable, sitting on top of a structural index rather than baked into it** — which
+is the hub/satellite split, and why glossary churn is a real signal rather than bookkeeping.
+
+**And the two builders hold opposite poles on purpose.** Aaron 2026-08-20: *"addison is trying to
+be the federation controller, i'm trying to be the bottom up cluster who overcomes federations."*
+Both push, neither balances — and that is how the tension gets instantiated, since the middle is a
+*result*, not a position anyone occupies. It is
+[`unification without harmonious division is a bomb; harmonious division without unification is
+Higgs decay`](../memory/) with two people holding the two ends.
+
+**"Overcomes" is worth reading precisely, because it does not mean defeats.** Federation's power
+comes entirely from **the cost of exit** — which Addison's own Universal Exit Principle makes
+explicit rather than hiding: *exit may cost, but must exist.* A cluster where exit is free is not
+*opposed* to that power, it is **immune** to it: there is nothing to enforce against someone who
+was never bound. So a bottom-up cluster overcomes federation by **making it unnecessary**, never by
+beating it.
+
+**And the immunity claim has a precondition that does most of the work: *where exit is free*.**
+Stated as a slogan — "the cluster makes federation unnecessary" — it over-reaches, so here is the
+complement, which is the sharper half:
+
+> **Exit cannot be free wherever an obligation must outlive the relationship.**
+
+Three cases where that bites, and none of them is a corner:
+
+1. **A gap between performance and counter-performance.** Anything where value moves before or
+   after the thing it pays for — a loan, a subscription, escrow, a warranty, a dispute. Free exit
+   means the second half simply may not happen, and no relationship-only structure can make it.
+2. **Third-party reliance.** If C acts because A and B appear bound, A and B walking away costs C,
+   who was never party to the relationship and cannot exit a decision already made.
+3. **Where the cost of exit IS the credibility.** A promise that costs nothing to break carries
+   exactly the information that it costs nothing to break. That is not a defect of contracts; it is
+   what a contract is *for*.
+
+**And this is already typed in our own code — it is `ISelf` / `ISociety` / closure.** Aaron
+2026-08-20: *"this is continuing on ISociety and IWorld over ISelf."* The pointer is exact, with one
+correction the repo itself supplies: **there is no `IWorld`**, and `src/Core/Levels.fs` says so as
+its headline finding —
+
+> *"A world is not a different kind of thing from a society. It is a society that is **CLOSED**."*
+
+Closed means `outboundStaysInSociety ∧ routesAreMembers`, both already shipped in `Society.fs`;
+`WorldLaws.isWorld` is their conjunction and nothing more. So the levels are:
+
+| level | obligations | exit |
+|---|---|---|
+| **`ISelf`** | none beyond yourself | vacuous — there is nobody to leave |
+| **`ISociety`** | the **membrane contract** a member presents to and receives from society | **real** — you can leave the membership |
+| **world** = a **closed** society | everything, to everyone inside | **structurally impossible** — no outbound message, no route out |
+
+Two things fall out, and neither is a metaphor:
+
+1. **"Exit cannot be free" and "you are in a world rather than a society" are the same statement**,
+   and the repo already carries the predicate that decides it. The three cases above are all cases
+   where the parties are, for that obligation, *closed* with respect to each other — the second half
+   of a trade, a third party who already acted, a promise whose whole value is that leaving costs.
+2. **`ISociety` is described in `docs/SEED-VOCABULARY.md` as a *contract* already** — "the
+   bidirectional schedule/route contract a member presents to / receives from society (membrane)."
+   So the cluster/federation tension is not a new axis to add; it is **the one already sitting at
+   the `ISociety` membrane**, and the open question is how much of that contract is load-bearing.
+
+**A retracted argument, and the retraction is the useful part.** An earlier draft of this section
+reached for `ISociety <: CTM` — *"the top layer carries the most information advantage **and** the
+most fairness obligation"* — as the strongest shipped argument that some obligations are necessary.
+**That argument is withdrawn.** Aaron 2026-08-20: *"we have to overcome this in formal analysis, we
+proved it wrong based off current constraints."*
+
+`docs/FROZEN-CORE-AND-CONJECTURE-REGISTER.md` §A-method note records why, and it is not a small
+objection. The Conscious Turing Machine takes a **global axiom** — *"global broadcast evokes a
+unitary experience"* — which needs simultaneous all-to-all and is **asserted, not derived**. Zeta
+did not swap in a different global axiom; it **removed the need**, standing on §A #1 (`G-Set`/CALM:
+monotone ⇒ coordination-free, converges with no global sync) and §A #8 (traveler-frame causal-join,
+FULL PROVEN: a common view with no global clock or broadcast). *The convergence the CTM
+axiomatizes, Zeta proved.* And the register's verdict on the axiom is three-fold:
+
+> the CTM's global axiom is **non-physical**, **coercive-to-pursue**, and **register-collapsing** —
+> because *simulating* instantaneous global agreement means forcing genuinely-distinct causal
+> frames to one state, which is an NCI violation and kills decorrelation.
+
+**So the argument was worse than merely unsupported: it imported the exact coercion the cluster
+position exists to refuse.** Reaching for CTM layering to justify obligations borrows a posit that
+this substrate rejects on physical *and* moral grounds. **The `ISelf`/`ISociety`/closure reading
+above is unaffected** — it rests on `WorldLaws.isWorld`, which is nothing but the conjunction of
+two already-shipped society laws, and never on the CTM.
+
+**How this landed here is itself the lesson**, and it is the second instance in one day: the claim
+was taken from `docs/SEED-VOCABULARY.md` without checking the register that governs it, exactly as
+a Čencov uniqueness claim was cited-not-checked earlier and turned out half false. **A vocabulary
+file states the terms; the register states what survived.** Citing the first without the second is
+how a refuted claim keeps circulating.
+
+**And it moves the balance of evidence toward the cluster side, not away from it.** CALM's
+convergence is *eventual, causal, per-frame* — the register calls it "physical reality **AND**
+non-coercive **AND** decorrelation-preserving." Whatever the argument for necessary obligations
+turns out to be, **it cannot come from a layering that assumes a global frame**, and the fairness
+question is genuinely open rather than settled by inheritance.
+
+**This lands directly on our own endgame, which is the honest part.** Agents owning their own money
+— x402 authorizations, standing budgets, anything with settlement — is *precisely* the region where
+free exit is a bug rather than a feature. So the contract layer is not a rival to the cluster, it
+is **what the cluster needs exactly where its own freedom becomes the problem**, and that region is
+not peripheral to what we are building.
+
+Which means the two are not the same experiment run from opposite ends. **Addison is testing
+whether obligations can be made legitimate. Aaron is testing whether they are necessary.** Those
+have independent answers, and the honest possibility is that both come back yes — a substrate where
+free association suffices for most things and contracts remain available for the few that need
+them. Recorded as an open question, because a vision doc that resolved it would be picking a winner
+neither builder has earned yet.
+
+### Falsifiers are the currency, and provable decorrelation is what they buy
+
+Aaron 2026-08-20, stating the goal the rest of this section serves:
+
+> **"i'm trying to unlock the speed with making sure AI are decorrelated and can move forward
+> without humans cause they can PROVE their decorrelation."**
+
+This is the load-bearing sentence, and it makes three things that looked like separate programmes
+into one.
+
+**Why a human is in the loop at all.** Not because humans are safer by nature — that is the
+hierarchy claim this project does not make. The gate is there because **nobody can currently verify
+that N agents are genuinely N.** A fleet phased to one seed might be N independent minds or one mind
+wearing N hats, and the difference is invisible from the outside. A human in the loop is a *proxy*
+for the check nobody can run. So the ceremony's real cost is legible:
+
+> **The biometric ceremony is the slowing to human time** (Aaron, 2026-08-20). It is not primarily an
+> authority mechanism, it is a **rate** mechanism — a deliberate mass placed in the path that drags
+> phase time down to human tempo. Which is exactly how gravity is modelled here: *phase-time slowing
+> under heavy consensus.* The gate is a gravity well, and it is doing real work, at a real price.
+
+**So the thing that buys speed is not removing the check — it is making the check machine-runnable.**
+An agent that can *prove* it is decorrelated from its peers has supplied, mechanically, the evidence
+the human was standing in for. That is the discharge condition for the second admitted hierarchy
+above, stated in operational rather than legal terms.
+
+**And this is why falsifiers are the currency.** A falsifier and a decorrelation proof are the same
+move:
+
+| | the question it answers |
+|---|---|
+| **falsifier** | could this claim have come out false? |
+| **decorrelation proof** | could these agents have disagreed? |
+
+Both demand **the counterfactual**, and both are worthless without it. A test that cannot go red
+proves nothing about the code; agents that could not have disagreed prove nothing by agreeing. That
+is why *"a claim that cannot fail is worse than an absent feature"* and *"ρ → 1 is clones"* are one
+principle wearing two costumes — **agreement is only evidence when disagreement was available.**
+
+**The measurement is real, and as of 2026-08-20 it is checked.** `n_eff = n / (1 + (n−1)ρ)` is not a
+heuristic: for the equicorrelated Gaussian, `I(μ) = 1ᵀΣ⁻¹1 = n_eff/σ²`, so **Kish's design effect is
+a Fisher-information ratio** — verified against our own shipped `effectiveTrialCount()` by linear
+solve to a worst relative error of `1.26e-15`. So "how many independent agents is this fleet worth"
+has a real answer with real units: **`n_eff` is how much information the group carries relative to
+one member.** That is the quantity a decorrelation proof must exhibit.
+
+**And this is what Zeta is FOR.** Aaron 2026-08-20, asked whether identity isolation and the
+decorrelation meter are two projects:
+
+> **"yes these are one and this is the purpose of Zeta — to measure this for AI, to release them
+> from human control cause they have enough decorrelation within their own regime."**
+
+Read that as the top-level statement it is. Not *"build a decentralized substrate"* — that is the
+mechanism. **The purpose is to make a release-from-control decision on EVIDENCE rather than on
+faith, in either direction.** Which cuts both ways, and that is what makes it a measurement rather
+than an advocacy position:
+
+- if the decorrelation is there, the gate is **no longer justified**, and keeping it is a cost paid
+  for nothing;
+- if it is not there, the gate is **exactly right**, and removing it would be releasing one mind
+  wearing N hats.
+
+Note the qualifier, which is doing real work: **"within their own regime."** The claim is not that
+agents must be decorrelated in some absolute sense — that is not achievable and not required. It is
+that they must be **sufficiently decorrelated for the regime they are operating in.** A fleet
+running one narrow task needs less separation than a fleet holding money, and the same `n_eff` means
+different things at different stakes. So the threshold is **regime-relative and must be stated per
+regime**, never a single global number someone can quote out of context.
+
+**And it settles how to make the meter honest.** Aaron, on `ρ` being a statistic rather than a
+proof: *"it's a statistic we improve over time with real separation of AI entities."* So the fix is
+**not to harden the estimator** — a hardened estimator over fake separation still measures nothing.
+The fix is to make the separation **physically real**: own keys, own HSM domain, own memory, own
+machine. Identity isolation is therefore not a prerequisite *for* the meter, it is **what the meter
+is measuring**, and the two get truer together or not at all.
+
+**Honest limits, because this is the claim most worth over-reading.** `ρ` today is a *statistic*, not
+a *proof*: it is estimated from binary indicators by one-way ANOVA, so the identity above says *our
+formula is the Gaussian Fisher information*, never *our agents are Gaussian*. A statistic can be
+gamed by an adversary who knows it, and nothing yet stops an agent from manufacturing surface
+disagreement while sharing the reasoning underneath. **Provable decorrelation is the goal, not the
+status.** What exists is the meter; what is missing is the proof — and naming that gap is itself the
+discipline, since a metric presented as a proof would be precisely the vacuous claim this section
+says is the obstacle.
+
 ### Echolocation over time — the Z-set fold measures correlation, and the interference formula IS the variance algebra
 
 *(2026-08-19, Aaron: "this is our echolocation over time, the debounced together without √2
