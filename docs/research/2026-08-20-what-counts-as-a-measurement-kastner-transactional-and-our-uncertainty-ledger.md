@@ -833,3 +833,211 @@ variant in the tree — the standard fact that low-`N` adinkras carry no non-tri
 the literature (Doran, Faux, Gates, Hübsch, Iga, Landweber), and Aaron's statement that we have
 them is recorded as his, unverified by me. **Not found is not absent**, and after this morning I
 am saying which one I mean.
+
+## 28. Futamura for observables — and why garbage collection is thermodynamically free
+
+Aaron: *"this is the whole Futamura taken to observables too — recompute everything you can, and
+don't worry if it gets garbage collected, it can get regenerated."*
+
+That names the principle several of today's fixes were instances of without anyone saying it.
+
+### The statement
+
+A Futamura projection specialises an interpreter against a program and gets a compiled program —
+and the compiled artifact **never had to be stored**, because it is recoverable by re-running the
+specialiser. Taken to observables:
+
+> **Any metric, index, report, or view is a specialisation of (generator, corpus). It is
+> therefore regenerable, therefore a CACHE, therefore evictable. Store the log; derive
+> everything else; let the rest be garbage-collected without ceremony.**
+
+The corollaries are the useful part:
+
+- **Drift becomes impossible rather than policed.** A derived value cannot disagree with its
+  source, because there is no second surface to disagree from. Every drift check is a confession
+  that something derivable got stored.
+- **DST replay is free.** A pure function of the log replays by construction.
+- **Storage is the liability and compute is the safety** — which inverts the usual caching
+  intuition, where storage buys safety and compute is the cost. Here the stored copy is the thing
+  that can be wrong.
+
+### The thermodynamic payoff, which I do not think either of us has stated
+
+This closes a loop with §22 and §24 and it is the strongest thing in this section.
+
+Landauer prices **erasure** at `kT ln 2` per bit — but erasure means *destroying information that
+exists nowhere else*. Discarding a cache whose contents remain implied by the log destroys
+nothing: the information is still in the system, and the discard is **logically reversible**.
+
+> **Garbage-collecting a derived observable is not erasure. It is therefore Landauer-free.**
+> You only pay `kT ln 2` when you destroy the last copy.
+
+So "recompute, don't store" is not merely a hygiene preference — **it is the discipline that
+makes garbage collection thermodynamically free.** And it composes exactly with the rules already
+carved:
+
+- `forgetting-costs-energy-remembering-is-cheap` (Landauer-bounded axiom preservation) — *and
+  regenerable forgetting costs nothing at all*, which is the missing third case.
+- §18's non-collapse posture: reversible up to the outcome. A regenerable cache is reversible;
+  dropping it never reaches an outcome.
+- §22's erasure-as-product: the *one* place we deliberately pay is where destruction is the
+  point. Everywhere else, if you can regenerate it, the discard is free — and if you cannot, you
+  are about to pay.
+
+**That gives a clean test with a physical meaning:** *can this be regenerated from the log?* If
+yes, drop it freely. If no, you are holding the last copy, and dropping it is an erasure with a
+price and — per §24 — possibly a moral valence, depending on whose bits they are.
+
+### Today's reds, re-read
+
+Most of what went red today was a **stored derivative drifting from its source**:
+
+| red | stored thing | derivable from |
+|---|---|---|
+| `test (TS hermetic)` — `nEff ≈ 1.666` | a snapshot of a computed value | the corpus |
+| memory-index drift (`081M0DY...`) | the "Last reindex" date, written into the artifact | the heap |
+| 218 stale skill path refs | pointers copied into prose | the tree |
+| `yubihsm-shell` unavailable | my *claim* that a 200 meant installable | the runner's sources |
+
+Each was a second surface that could disagree with the first, and each fix was the same move:
+**make it a pure function of content and the whole failure class disappears.** Stated once, that
+is this section.
+
+(Not every red was: the MD046 fence was an ordinary lint violation, and the cluster-tree roster
+carries *dispositions* — a human judgement about what a path means — which is exactly the kind of
+thing that cannot be derived and legitimately must be stored.)
+
+### The honest limits, because "recompute everything" is not quite the rule
+
+Three things must be stored, and knowing which is the whole skill:
+
+1. **The log itself.** Everything derives from it; it derives from nothing. Event sourcing, stated
+   as a thermodynamic principle rather than an architectural preference.
+2. **Decisions and dispositions.** A roster's `prose` / `migrateTo: NONE` is a judgement, not a
+   computation. There is no generator that recovers *why we decided*, and pretending otherwise
+   loses the reason.
+3. **Measurements of the outside world.** A power reading, an attestation, a witness — captured
+   entropy is not regenerable by construction (§13 noninterference: it entered through a metered
+   channel and that crossing happened once).
+
+And the real cost is time: regeneration is compute, sometimes a lot of it. The ρ series walked
+from git history is cheap; a full corpus replay may not be. So the rule is not "never store" but:
+
+> **Store only what cannot be regenerated, and treat everything else as evictable cache — because
+> what cannot be regenerated is exactly what costs `kT ln 2` to lose.**
+
+**Register.** The Futamura framing and the "don't worry about GC" posture are Aaron's. The
+thermodynamic argument — that regenerable discard is not Landauer erasure — is an argument made
+here, resting on the standard reading of Landauer's principle as pricing *irreversible*
+information destruction. It is a **rule candidate** and deliberately not written as a rule today:
+`.claude/rules/` additions are razored, and this wants a cooling period and at least one instance
+where the *cost* side bites before it earns a carved sentence.
+
+## 29. What overwrite looks like geometrically — the Clifford answer, and it is crisper than hoped
+
+Aaron: *"this is a great question to answer — what does overwrite look like geometrically,
+hopefully in Clifford algebra, i hope we can represent our metric here too"* and, on the
+Lagrangian chain: *"this is what i hope in Clifford or something similar."*
+
+Three answers, and the first removes a "hope" entirely.
+
+### 1. You do not represent a metric in Clifford — Clifford is *built from* one
+
+`Cl(V, Q)` is the algebra generated by `V` subject to `v² = Q(v)`. **The quadratic form is the
+construction data.** There is nothing to hope for: hand me a metric and the algebra follows,
+uniquely up to isomorphism.
+
+That makes Clifford the natural home for §21/§26 rather than a lucky fit:
+
+> **Each oracle generates its own Clifford algebra.** Different `Q` ⇒ different `Cl`. "A metric is
+> indexed by (oracle, tower, rung)" becomes "an *algebra* is indexed by (oracle, tower, rung)",
+> and the multi-oracle plurality is carried by the construction instead of bolted onto it.
+
+### 2. Overwrite is multiplication by a zero divisor
+
+This is the answer to the question in `081M0FPWB1C087G0R000V5QBQK`, and it is sharp:
+
+| element | property | reversible? |
+|---|---|---|
+| **rotor** `R ∈ Spin` | `R R̃ = 1` — invertible by reversion | **yes** — nothing lost |
+| **non-trivial idempotent** `P` | `P² = P` ⇒ `P(P−1) = 0`, neither factor zero | **no** — a *zero divisor* |
+
+> **Overwrite = multiplication by a zero divisor.** The algebra itself says which operations
+> destroy: exactly the non-invertible ones. "How much was destroyed" is the norm of the
+> annihilated component.
+
+And this lands directly on §13. Kastner's transaction is the **outer product of offer and
+confirmation — a projection operator** — and `bornProb = |amplitude|²` is where amplitudes become
+probabilities. So:
+
+> **collapse = applying a projector = applying an idempotent = multiplying by a zero divisor =
+> the irreversible step = where Landauer is paid.**
+
+One algebraic object unifies §13 (merge/Born), §18 (non-collapse), §22 (erasure as product) and
+§24 (overwrite as the harm). That is the tightest knot in this note.
+
+### 3. Non-metricity, in Clifford terms — the work item's question, made tractable
+
+The geometric-algebra formulation of gravity (Lasenby, Doran & Gull, *Gauge Theory Gravity*, 1998)
+writes the connection as a **bivector-valued 1-form** `ω(a)`, and transport as the rotor it
+generates. Bivectors exponentiate into `Spin`; rotors preserve `Q` by construction, since
+`R v R̃` has the same square as `v`.
+
+Therefore:
+
+> **Non-metricity is exactly "the transport operator left the Spin group."** Stay inside Spin and
+> lengths are preserved — metric-compatible, reversible, no harm. Leave Spin and `Q` is not
+> preserved — non-metricity, irreversibility, and (§24) harm.
+
+That converts the work item from a resemblance into a computation with a yes/no answer:
+**does our fold's transport stay rotor-valued?** The falsifier doc already measured non-metricity
+at `0.0925872` on the `α = 1` connection and `~0` at `α = 0`, so the numeric handle exists; what
+this adds is the *reason* the number is the right one to look at, and a test shape — check whether
+the transport operator is expressible as `exp(bivector)`.
+
+### 4. Where overwriting becomes possible at all — a threshold on the tower
+
+Composing with §26, and this is the part worth flagging as a genuine result:
+
+- **Hurwitz (1898):** the only normed division algebras over ℝ are `ℝ, ℂ, ℍ, 𝕆` (dims 1, 2, 4, 8).
+  A division algebra has **no zero divisors**.
+- Cayley–Dickson doubling past `𝕆` gives the **sedenions** (dim 16), which **do** have zero
+  divisors.
+
+> On the Cayley–Dickson tower, **no overwrite is expressible in `ℝ, ℂ, ℍ, 𝕆`** — there is nothing
+> to multiply by that destroys. **Overwriting first becomes possible at the sedenions.**
+
+**And the Clifford tower has its own, earlier threshold — the two towers are not the same and
+must not be merged.** Among Clifford algebras only `Cl(0,0) ≅ ℝ`, `Cl(0,1) ≅ ℂ`, `Cl(0,2) ≅ ℍ` are
+division algebras; `Cl(0,3) ≅ ℍ ⊕ ℍ` already has zero divisors (a direct sum always does), and
+everything above does too. Note also that `𝕆` is **not** a Clifford algebra at all — it is
+non-associative — which is precisely where the towers diverge.
+
+So §26's "which base layer you choose changes what harm is" sharpens to a threshold with a name:
+
+> **Below the threshold, harm is not merely bounded — it is inexpressible.** Above it, the
+> algebra contains elements that destroy. Choosing the rung chooses whether overwriting is in the
+> vocabulary.
+
+That also reframes the Cayley–Dickson chain already derived in the register (octonion product →
+Fano `S(2,3,7)` → `[7,4]` Hamming → `[8,4]` doubly-even): our adinkra generator sits at `𝕆`,
+**the last rung before zero divisors appear.**
+
+### Register — what is theorem, what is argued, what is unearned
+
+| claim | register |
+|---|---|
+| `Cl(V,Q)` is generated by `Q`; the metric is the construction data | **definition** |
+| non-trivial idempotents are zero divisors, hence non-invertible | **theorem**, one line |
+| `ℝ, ℂ, ℍ, 𝕆` are the only normed division algebras | **theorem** (Hurwitz 1898) |
+| sedenions have zero divisors; `Cl(0,3) ≅ ℍ⊕ℍ` does too | **standard** |
+| rotors preserve `Q`; non-metricity ⟺ transport leaves Spin | **standard** in GTG (Lasenby–Doran–Gull) |
+| **our substrate's operations are Clifford multiplications** | **UNEARNED** — the antecedent everything above hangs on |
+| overwrite ≡ zero-divisor multiplication *in our system* | **argued**, and only as strong as the row above |
+
+The last two rows are the honest load. Every result here is real *given* that our transport is
+Clifford transport; nothing in this note establishes that, and `CliffordE8Bridge` /
+`PrivacyPreservingIdentity.fs` use rotors for identity continuity without claiming the whole fold
+is a Clifford action. **That is the next rung, and it is a smaller question than it looks:** the
+`α = 1` connection either is or is not `exp(bivector)`-generated, and the falsifier harness that
+computed `0.0925872` is already the place to ask.
