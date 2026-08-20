@@ -118,6 +118,34 @@ Three consequences, and they are not decorative:
    information about the domain*, and a substrate that resolves it by fiat has erased data, not
    settled a dispute.
 
+**And we already built the store for it.** Aaron 2026-08-20: *"yes this is what DV2.0 raw vault is
+trying to solve."* That is the right anchor and it upgrades an existing rule.
+
+Data Vault 2.0's **Raw Vault** (Dan Linstedt) loads source data *as it arrives* and forbids applying
+business rules, conforming, or reconciling at load time. Linstedt's formulation is the one to quote:
+
+> **a single version of the *facts*, not a single version of the *truth*.**
+
+Contradictory records from different sources coexist, each carrying its **record source** and **load
+datetime**; reconciliation is pushed downstream into the **Business Vault**, where it is a *derived,
+re-computable opinion* rather than a destructive edit. Read against §2 above, that is not merely
+good hygiene — **the record source is the path**, the load datetime orders it, and a satellite row is
+therefore a *path-indexed value*. Which is exactly what a multi-sheet function requires: a value
+without its path is ambiguous, so a store that discards the path has not saved space, it has
+**destroyed the ability to say which value it holds.**
+
+So DV2.0 acquires a second and deeper justification than the one carried in
+[`dv2-data-split-discipline-activated`](../../.claude/rules/dv2-data-split-discipline-activated.md),
+which justifies it by **change rate** (hub/link/satellite). The stronger statement:
+
+> **Raw-vault discipline is non-collapse, implemented.** Conforming at load time *is* the collapse
+> operation — it keeps one value and discards the paths — and DV2.0 forbids it structurally, in a
+> warehouse-modelling standard from long before we needed the word for it.
+
+Two travelers who circled the pole differently produce two satellite rows with two record sources.
+Nothing is wrong; nothing needs fixing; the disagreement is queryable, and the Business Vault may
+form an opinion **without destroying the evidence it formed it from.**
+
 This also says what a *malicious* continuation looks like, which is worth naming before it is built:
 **an unrecorded path**. Same arithmetic, undisclosed route, a value nobody can reproduce or dispute —
 the vacuity class wearing an analytic-continuation costume.
