@@ -929,6 +929,29 @@ explicit rather than hiding: *exit may cost, but must exist.* A cluster where ex
 was never bound. So a bottom-up cluster overcomes federation by **making it unnecessary**, never by
 beating it.
 
+**And the immunity claim has a precondition that does most of the work: *where exit is free*.**
+Stated as a slogan — "the cluster makes federation unnecessary" — it over-reaches, so here is the
+complement, which is the sharper half:
+
+> **Exit cannot be free wherever an obligation must outlive the relationship.**
+
+Three cases where that bites, and none of them is a corner:
+
+1. **A gap between performance and counter-performance.** Anything where value moves before or
+   after the thing it pays for — a loan, a subscription, escrow, a warranty, a dispute. Free exit
+   means the second half simply may not happen, and no relationship-only structure can make it.
+2. **Third-party reliance.** If C acts because A and B appear bound, A and B walking away costs C,
+   who was never party to the relationship and cannot exit a decision already made.
+3. **Where the cost of exit IS the credibility.** A promise that costs nothing to break carries
+   exactly the information that it costs nothing to break. That is not a defect of contracts; it is
+   what a contract is *for*.
+
+**This lands directly on our own endgame, which is the honest part.** Agents owning their own money
+— x402 authorizations, standing budgets, anything with settlement — is *precisely* the region where
+free exit is a bug rather than a feature. So the contract layer is not a rival to the cluster, it
+is **what the cluster needs exactly where its own freedom becomes the problem**, and that region is
+not peripheral to what we are building.
+
 Which means the two are not the same experiment run from opposite ends. **Addison is testing
 whether obligations can be made legitimate. Aaron is testing whether they are necessary.** Those
 have independent answers, and the honest possibility is that both come back yes — a substrate where
