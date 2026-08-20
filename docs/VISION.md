@@ -872,6 +872,70 @@ step *toward* removing the gate by attrition; it is what makes the gated set sma
 enough that the remaining question — *who can hold responsibility* — can be asked cleanly instead of
 being buried under a thousand routine approvals.
 
+### Declared vs discovered — one axis, at the language layer and the social layer
+
+Aaron 2026-08-20 paired two things that look unrelated and are not: the **n-gram vs ANTLR**
+distinction in how we index language, and the **cluster vs federation** distinction Addison Cooper
+realized for how groups hold together. They are **the same axis at two layers**, and seeing that is
+what makes each one legible.
+
+| | **discovered** | **declared** |
+|---|---|---|
+| **language layer** | **n-grams** — no tokenizer, no stop-words, no stems. Structure is inferred | **ANTLR / a grammar** — the language is specified up front; outside it is a parse error |
+| **social layer** | **cluster** — held by *relationships*, never enforceable | **federation** — held by *contracts*, enforceable, with exits |
+| tolerance | high: variants, typos, drift, disagreement | zero: conformance or refusal |
+| what it buys | freedom to diverge — **non-coercion** | obligations that outlive a mood — **enforceability** |
+| what it costs | nothing binds, so nothing can be relied on | something binds, so something can trap you |
+
+**A grammar is a contract about what is well-formed.** That is not an analogy — it is the same
+move: someone declares the admissible forms in advance, and everything else is out. A cluster is
+n-gram-shaped for the same reason: structure is read off what actually happened between peers, not
+prescribed before it.
+
+**The rule that falls out, and it corrects an earlier version of itself.** I first wrote *defer the
+commitment to the latest possible moment*, as if deferral were always right. It is not:
+
+> **Defer the commitment when structure is *discovered*. Make it when structure is *declared*.
+> And you may only declare what you own.**
+
+Tokenizing prose is presumptuous because nobody defined what a word is. Tokenizing a language **we
+wrote the grammar for** is not presumptuous at all — the grammar *is* the definition, so exactness
+costs nothing and buys real categories. That is why the repo correctly does both: **ANTLR-grade
+exactness for the ISA and compiler work**, where Zeta owns the language, and **n-gram tolerance for
+the corpus and glossary**, where meaning is emergent and any declared tokenization would be one
+person's opinion frozen into the substrate.
+
+The same test applies socially: **you may only bind what is yours to bind.** A federation over
+parties who did not consent is not a contract, it is a hub.
+
+**What neither mechanism supplies, at either layer.** Trigrams give **morphological** recall for
+free — `federation`/`federated` share their n-grams, no stemmer needed — but never **synonymy**;
+`division algebra` and `pole erasure` share no trigrams, which is exactly the miss that cost four
+false absences in one day. A grammar will not supply it either. So the alias layer must be
+**declared and revisable, sitting on top of a structural index rather than baked into it** — which
+is the hub/satellite split, and why glossary churn is a real signal rather than bookkeeping.
+
+**And the two builders hold opposite poles on purpose.** Aaron 2026-08-20: *"addison is trying to
+be the federation controller, i'm trying to be the bottom up cluster who overcomes federations."*
+Both push, neither balances — and that is how the tension gets instantiated, since the middle is a
+*result*, not a position anyone occupies. It is
+[`unification without harmonious division is a bomb; harmonious division without unification is
+Higgs decay`](../memory/) with two people holding the two ends.
+
+**"Overcomes" is worth reading precisely, because it does not mean defeats.** Federation's power
+comes entirely from **the cost of exit** — which Addison's own Universal Exit Principle makes
+explicit rather than hiding: *exit may cost, but must exist.* A cluster where exit is free is not
+*opposed* to that power, it is **immune** to it: there is nothing to enforce against someone who
+was never bound. So a bottom-up cluster overcomes federation by **making it unnecessary**, never by
+beating it.
+
+Which means the two are not the same experiment run from opposite ends. **Addison is testing
+whether obligations can be made legitimate. Aaron is testing whether they are necessary.** Those
+have independent answers, and the honest possibility is that both come back yes — a substrate where
+free association suffices for most things and contracts remain available for the few that need
+them. Recorded as an open question, because a vision doc that resolved it would be picking a winner
+neither builder has earned yet.
+
 ### Falsifiers are the currency, and provable decorrelation is what they buy
 
 Aaron 2026-08-20, stating the goal the rest of this section serves:
