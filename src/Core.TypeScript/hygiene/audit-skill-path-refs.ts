@@ -160,8 +160,12 @@ function renderReport(refs: readonly SkillRef[]): string {
         list.push(r.file);
         byPath.set(r.raw, list);
     }
+    // Ordinal tiebreak, NOT localeCompare: the report is a byte-for-byte diffable
+    // artifact and localeCompare is culture-SENSITIVE, so its order varies by the
+    // runner's locale. Caught here by the culture-collation ratchet, on this file.
+    // Per .claude/rules/culture-invariant-by-default.md.
     const ranked = [...byPath.entries()].sort(
-        (a, b) => b[1].length - a[1].length || a[0].localeCompare(b[0]),
+        (a, b) => b[1].length - a[1].length || (a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0),
     );
 
     const lines: string[] = [
