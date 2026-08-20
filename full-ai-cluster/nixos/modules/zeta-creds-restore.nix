@@ -111,13 +111,24 @@ in
       '';
     };
 
+    uefiKeyfilePath = lib.mkOption {
+      type = lib.types.str;
+      default = "/boot/EFI/ZETA/keyfile";
+      description = ''
+        ESP keyfile when persist bound uefiKeyfile (ZETA_BIND_UEFI_KEYFILE=1).
+        The binding IS this file — not copied to /etc. Install writes it
+        at /mnt/boot/EFI/ZETA/keyfile; after reboot the same ESP is /boot.
+        Missing file = fail closed (no UUID fallback).
+      '';
+    };
+
     factorPath = lib.mkOption {
       type = lib.types.str;
       default = "/boot/zeta-creds.factor";
       description = ''
         Sidecar next to the cred blob naming the binding factor kind
-        (usbUuid / usbISerial). Persist writes it. Missing file = usbUuid
-        (backward compatible). Does not contain KDF material.
+        (usbUuid / usbISerial / uefiKeyfile). Persist writes it. Missing
+        file = usbUuid (backward compatible). Does not contain KDF material.
       '';
     };
 
@@ -224,8 +235,13 @@ in
             BIND_FLAG="--usb-iserial"
             log_restore "zeta-creds-restore: binding-factor usbISerial (recorded; not a live probe)"
           elif [ "$FACTOR" = "uefiKeyfile" ]; then
-            log_restore "zeta-creds-restore: uefiKeyfile restore is not wired; aborting"
-            exit 1
+            if [ ! -s ${cfg.uefiKeyfilePath} ]; then
+              log_restore "zeta-creds-restore: uefiKeyfile recorded but ESP keyfile missing; aborting (refusing UUID fallback)"
+              exit 1
+            fi
+            BIND_FLAG="--uefi-keyfile"
+            BIND_VALUE="${cfg.uefiKeyfilePath}"
+            log_restore "zeta-creds-restore: binding-factor uefiKeyfile (ESP file; not copied to /etc)"
           elif [ -n "$FACTOR" ] && [ "$FACTOR" != "usbUuid" ]; then
             log_restore "zeta-creds-restore: unknown binding-factor; aborting"
             exit 1
