@@ -727,3 +727,103 @@ this section is **Landauer cost** — a property of a transformation. They are d
 quantities that meet at one point: the Hamming distance sets the threshold below which Landauer
 cost buys no separation. Same word, two meanings, one real relationship. Conflating them would
 be exactly the error this note keeps cataloguing.
+
+## 25. Slow explosions — and an honest downgrade of my own evidence
+
+Aaron: *"this is our slow explosion warning system, for explosions that are too hard to see in
+real time."*
+
+That is the right name, and naming it exposes something I have been overstating.
+
+### What a slow explosion is
+
+An explosion whose timescale exceeds any single observation window. **Every individual
+measurement looks fine.** The system is detonating and no one sample shows it, because the
+information is not in any sample — it is in the *sequence*.
+
+ρ is exactly that: `0.400 → 0.439 → 0.4647`. Every one of those passed the `(0.35, 0.45)` band
+**at the time it was taken**, until one didn't. No tick was alarming. Only the ordering is.
+
+### This sharpens why the band was wrong, beyond the reason I gave
+
+In #12733 I removed the band because "a static window over a drifting quantity re-expires on a
+timer." True, and shallow. The real reason:
+
+> **A threshold on a slow explosion fires at detonation, not during it.** It is not a warning
+> system, it is a post-mortem with an alarm bell attached.
+
+And the tempting repair — re-centre the band each time it fires — has a name and a case study.
+**Diane Vaughan, *The Challenger Launch Decision* (1996): normalization of deviance.** Every
+individual O-ring erosion event fell within accumulated experience, the acceptable envelope was
+adjusted to match observation, and the pattern that constituted the disaster was never
+represented anywhere. Re-centring a band on a drifting quantity *is* that mechanism, implemented
+in CI.
+
+So the thing I did — refusing to re-centre — was right, and now it has a reason with a body
+count behind it rather than a taste.
+
+### But my replacement is not a warning system either, and I should say so
+
+What I put in place was an estimator sanity check plus **the trajectory recorded in a code
+comment**. A comment does not watch anything. Right now:
+
+- ρ is computed **every CI run** and the number is **thrown away**.
+- The three-point series exists only in a comment and three PR descriptions.
+- **Nothing computes the derivative.** `dρ/dt` — the actual alarm quantity — is not calculated
+  anywhere, by anything.
+
+So we have the sensor and no monitor. That is a *better* failure than a re-centring band, but it
+is not the warning system Aaron just described, and describing it as one would be the vacuity
+class wearing a safety label.
+
+### The honest downgrade
+
+I have written "monotone rise across three independent measurements" four times today in a tone
+that implies it is strong evidence. Under a null of exchangeable ordering it is not:
+
+> Three samples have `3! = 6` orderings; exactly one is strictly increasing.
+> **p = 1/6 ≈ 0.17.** Four samples: `1/24 ≈ 0.042`. Five: `1/120 ≈ 0.008`.
+
+So the current trend is **suggestive and not significant**, and reaching conventional
+significance on monotonicity alone needs a fourth and probably fifth measurement. Every
+statement I made about the rise stands as *directionally reported*; none of it was ever
+statistically established, and I did not say so at the time. Saying it now.
+
+(The measurements are also not independent in the way that test assumes — each is computed over
+a corpus that *contains* the previous one, so successive values are strongly autocorrelated.
+That makes the naive p-value optimistic, not conservative. The real test wants either
+differenced series or a trend test that models the dependence.)
+
+### What the instrument actually needs
+
+Three properties, and the third is the one that keeps it honest:
+
+1. **Watch the derivative, not the level.** The level is lagging by construction.
+2. **The series must exist.** You cannot fit a trend to one sample.
+3. **Do not store the series — recompute it from history.** ρ is a pure function of the corpus,
+   and the corpus is in git. So the time series is *derivable* by walking commits and
+   recomputing, which means it is idempotent, replayable under DST, and cannot drift from the
+   thing it describes. Appending ρ to a running file each CI run would recreate exactly the
+   append-only-growing-corpus problem fixed this morning in
+   `081M0DY68KN087G0R002MQ1BDR` — a stored series is a second surface that can disagree with
+   the first.
+
+That third property is the whole design, and it follows from the same rule as the memory-index
+fix: **make it a pure function of content and the drift class disappears.**
+
+Filed as `081M0FQ2FKS087G0R002V6EB9E` rather than built here.
+
+### Where else slow explosions hide
+
+The generalisation is worth stating because ρ will not be the only one:
+
+> Any quantity we sample per-run and discard is a slow explosion we have chosen not to see.
+
+Candidates already on the floor, each measured and each thrown away: cache size (measured 11.58
+→ 8.73 → 10.18 GB in one hour and never trended), heartbeat cron delay (observed at 18, 22, 26,
+28, 31 minutes across a night — that IS a rising series nobody plotted), CI wall-clock, the
+count of `stale` skill path refs, `blocking+derived` in the cluster-tree roster. Each of those is
+a sensor with no monitor.
+
+**Register:** the framing is Aaron's and it is good. The p-value downgrade is arithmetic. The
+"derive the series from git rather than storing it" design is argued, small, and unbuilt.
