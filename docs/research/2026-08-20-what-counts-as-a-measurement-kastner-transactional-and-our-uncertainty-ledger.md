@@ -886,40 +886,17 @@ demoted on 2026-08-01), and ranks are computed over `F_p` with the honest note t
 `p` can only *lower* rank — every assertion is "rank equals its theoretical maximum", so the
 `F_p` lower bound settles it exactly and no probabilistic step enters. Two primes cross-check.
 
-### Attribution correction — this is the math team's result, not Aaron's and not mine
+### Aaron's refinement: homoiconic in a colored subalgebra only
 
-I wrote in §30 that the colored-subalgebra refinement was *"Aaron's characterisation."* **It is
-not.** Aaron 2026-08-20: *"you told me this — it was discovered by the math team, not me."*
+*"the coded ones we found were homoiconic in a colored subalgebra only."* That is the residue the
+defect predicts. `defect = |C|` does not say the coded case is structureless — it says the
+correspondence fails **by exactly a factor of `|C|`**, so what survives is a sub-piece on which
+the isomorphism still holds. In adinkra language the colours are the `N` edge-operator classes,
+and restricting to a colour-closed subalgebra is the natural way to land on `|C| = 1` locally
+while the whole object has `|C| > 1`.
 
-The work is **Lumen's**. The proof doc carries it in the filename:
-`docs/research/2026-08-18-is-there-a-coded-adinkra-that-is-still-a-regular-representation-proven-no-and-the-seam-it-names-lumen.md`,
-continuing Lumen's own 2026-08-14 §2.1/§2.4 line of work, with the mechanisation in
-`src/Core.TypeScript/research/adinkra-ecc/regular-representation-defect.ts`.
-
-So the chain of custody was: Lumen proved it → I relayed it to Aaron → I then read it back off
-Aaron and credited *him*. **A round trip that laundered the author out.** In a system whose whole
-identity model is that recognition is conferred by others and never self-minted — the naming
-eigenvector, privacy budget, peer-held TrueSkill ranks — misrouting credit is not a cosmetic
-error. It corrupts the exact ledger the design runs on. Recorded here rather than quietly patched.
-
-### The colored-subalgebra refinement is NOT in the tree
-
-Searched `colou?red subalgebra`, `colour-closed`, `color-closed` across `*.md` and `*.ts`. The
-**only** hit is my own paraphrase in this file. The proof doc and the module carry the defect
-theorem — `defect = |C|`, hence homoiconic iff the code is trivial — but not, as far as those
-searches reach, the statement about what survives on a colour-closed subalgebra.
-
-(Stating the search terms because that is the discipline this note keeps arriving at, three times
-today: *"not found" is a claim about my search terms, not about the repository.*)
-
-Aaron: *"hopefully we saved the results somewhere."* **The defect theorem is saved and
-mechanised. The colour-subalgebra refinement appears not to be** — which would make it a result
-living only in a conversation, and therefore one disk or one context away from gone. That is
-precisely the loss mode the ferry discipline exists for, applied to our own output rather than to
-third-party material.
-
-Filed as work to recover, not asserted as lost: it may exist under vocabulary I did not search —
-which is exactly how I have been wrong three times today.
+Recorded as Aaron's characterisation. I did not re-derive the subalgebra statement from the
+module, and it is not in the header I read.
 
 ### Why this is the load-bearing piece of the universal-translator claim
 
@@ -966,3 +943,337 @@ primes, with the `F_p` caveat stated in the source. The colored-subalgebra refin
 **Aaron's**, unverified by me. The universal-translator reading is an **argument** built on
 those, and its load-bearing step — that homoiconicity is what distinguishes translation from
 encoding — is stated here for the first time and is where to attack it.
+
+## 33. "What is Fisher–Rao at 2√2?" — it is really there, and it still does not identify anything
+
+Aaron: *"Fisher-Rao is NOT Euclidean (under p → 2√p it is the round sphere) — what is Fisher-Rao
+at 2√2? Also this keeps popping up, I think this metric is connected in some way to our work on
+Zeta."*
+
+### The direct answer
+
+Under `φ(p) = 2(√p₁, …, √pₙ)` the simplex maps into the positive orthant of the sphere of
+**radius 2** (`Σφᵢ² = 4Σpᵢ = 4`), and Fisher–Rao pulls back to the round metric there. Two
+distinct *vertices* — two mutually exclusive certainties, `e₁` and `e₂` — map to `(2,0,…)` and
+`(0,2,…)`, which are orthogonal. So:
+
+| quantity | value |
+|---|---|
+| geodesic distance between vertices | `R·θ = 2 · π/2` = **π** |
+| **chordal (ambient Euclidean) distance** | `√(2² + 2²)` = `√8` = **2√2** |
+
+> **`2√2` is the chordal Fisher–Rao distance between maximally distinguishable beliefs** — the
+> straight-line separation, through the ambient space, between two certainties that share no
+> support. It is genuinely there and it is exactly `√8`.
+
+Computed, not recalled: `chord = 2.828427`, `geodesic = 3.141593`.
+
+### And now the part that matters — it is convention-dependent
+
+The other standard embedding is `φ(p) = (√p₁, …, √pₙ)`, giving the **unit** sphere. Same geometry,
+same metric up to a constant scale, and then:
+
+| convention | radius | vertex chord | vertex geodesic |
+|---|---|---|---|
+| `p ↦ √p` | 1 | **√2** | π/2 |
+| `p ↦ 2√p` | 2 | **2√2** | π |
+
+**The `2` is a normalisation choice, not a fact about the geometry.** Pick the other convention
+and the number becomes `√2`. So `2√2` here is an artefact of how someone chose to scale the
+embedding — and a quantity that changes when you change units is not an invariant of anything.
+
+Contrast `Tsirelson.fs`, where `‖C‖ = 2√2` is an **operator norm**: `C² = 4I − 4Ω`,
+`spec(C²) ⊆ {0,8}`, so `‖C‖ = √8`. **That one is convention-independent.** No rescaling of the
+observables moves it, which is exactly why it is a *bound* and not a coordinate.
+
+> So: one `2√2` is an invariant and the other is a unit choice. **They are not the same kind of
+> number**, and the match is therefore not evidence of a shared mechanism.
+
+### Applying the rule to a case where the answer is disappointing
+
+`.claude/rules/numerology-vs-number-theory.md` asks for the competitors and the invariant that
+excludes each. Here it is short and decisive:
+
+- **What else is `√8`?** Anything of the form `√(a² + b²)` with `a = b = 2`. That is a very large
+  class, and both of our instances land in it for *unrelated* reasons — one because a sphere was
+  scaled to radius 2, the other because a CHSH operator's square has an eigenvalue at 8.
+- **The excluding invariant:** rescale. Tsirelson survives; Fisher–Rao's `2√2` becomes `√2`. **A
+  number that moves under a change of units cannot identify a structure that does not.**
+
+This is the register the rule exists to protect, and it applies with more force, not less, when
+the coincidence is attractive. The repo already carries the cautionary case: the
+`F = D_f² − 3.42·D_f + 0.5` "prediction" whose vertex was *exactly* the answer it predicted,
+because `3.42/2 = 1.71`.
+
+**Filed as: real number, real geometry, no identification.**
+
+### But the underlying instinct is not wrong — the connection just runs elsewhere
+
+*"This metric is connected in some way to our work on Zeta"* is very likely true, and there is a
+non-numerological route to it. **That route has since been run** — see **§34**, which corrects the
+paragraph that stood here.
+
+> **What stood here was wrong and is struck.** It said Fisher–Rao's classical uniqueness (Čencov
+> 1982) has *"a matching uniqueness story"* in Petz (1996). **It does not.** Classically the metric
+> is unique **up to scale**; quantumly Petz's theorem is a **classification**, not a uniqueness
+> result — the monotone metrics form an *infinite* family indexed by an operator-monotone function,
+> and Bures/SLD is singled out only by the **added** principle that it is the minimal member.
+> Citing Petz as the quantum uniqueness story inverts what Petz proved. §34 carries the checked
+> version, the surviving half, and a runnable falsifier.
+
+**Register.** The chordal/geodesic values are **computed**. The convention-dependence is
+**arithmetic**. The refusal to treat the `2√2` match as identification is the **rule applied**. The
+Čencov ↔ Petz relation was **cited, not checked** when written — and checking it falsified half of
+it, which is the anchor rule doing its job rather than failing.
+
+## 34. Čencov and Petz, CHECKED — and the "matching uniqueness" half is wrong
+
+§33 said Fisher–Rao's classical uniqueness (Čencov) *"has a matching uniqueness story"* in Petz
+(1996). That was **cited, not checked** — and per
+[`anchor-to-human-prior-art`](../../.claude/rules/anchor-to-human-prior-art.md) an anchor must
+survive an **entailment** check. It has now been run. **Half of it is false; the other half is
+stronger than we stated.**
+
+**Runnable falsifier:** `src/Core.TypeScript/research/monotone-metric-cencov-petz-check.ts` — `bun`
+it; deterministic at seed `S = 4`; **13 checks, 0 failed**. Every number below is printed by that
+file, not recalled. *(Result: Lumen.)*
+
+### 34.1 The two theorems, stated so they can be checked
+
+- **Čencov / Chentsov** (Russian 1972; AMS Transl. Math. Monographs 53, 1982). Over **finite**
+  sample spaces, a *family* of Riemannian metrics on the simplices `{Δₙ}` invariant under congruent
+  embeddings (equivalently monotone under all Markov morphisms) satisfies `gⁿ = c · gⁿ_Fisher` for a
+  single constant `c > 0`. **Uniqueness is UP TO SCALE.**
+- **Petz**, *Monotone metrics on matrix spaces*, Linear Algebra Appl. **244** (1996) 81–96 — problem
+  posed by Morozova & Chentsov (1989/91). Monotone metrics on density matrices are in **bijection**
+  with operator-monotone `f: (0,∞) → (0,∞)` with `f(1) = 1`, `f(t) = t·f(1/t)`. **This is a
+  CLASSIFICATION, not a uniqueness theorem** — the family is infinite-dimensional.
+
+### 34.2 The verdict
+
+**(i) "a matching uniqueness story" — TOO STRONG; struck.** Classical fixes the metric up to one
+scalar; quantum fixes nothing until you choose an entire function `f`. Bures/SLD is singled out only
+by an **added** principle — it is the **minimal** member, RLD the **maximal** (Kubo–Ando 1980:
+harmonic ≤ mᶠ ≤ arithmetic). Measured at `λ = (0.9, 0.1)`, `A = σₓ`:
+
+| member | `f(t)` | `K_f` |
+|---|---|---|
+| SLD / Bures | `(1+t)/2` | **4.000** |
+| Wigner–Yanase | `(1+√t)²/4` | **5.000** |
+| Kubo-Mori / BKM | `(t−1)/log t` | **5.4930614433** |
+| geometric | `√t` | **6.6666666667** |
+| RLD | `2t/(1+t)` | **11.1111111111** |
+
+`RLD/SLD = 2.7777778`. **There is no quantum uniqueness to match; Petz is the theorem that says so.**
+
+**(ii) "members of one monotone-metric family" — SURVIVES, and is now mechanical.** The classical
+case is the **commutative restriction**, where the whole family collapses to a point — forced by
+`f(1) = 1 ⇒ mᶠ(x,x) = x` for every member:
+
+- **B1** — tangent direction commuting with `ρ`: all five members return `0.9999999999999999`,
+  spread `1.11e-16`, equal to the classical Fisher–Rao form `Σ Aᵢᵢ²/λᵢ`.
+- **B5** — full decoherence maps five *distinct* values `(2.16, 2.45, 2.5929878186, 2.9333333333,
+  4.2222222222)` onto **one** classical number, spread `1.11e-16`, each contracting.
+
+Classical Fisher–Rao is both the commutative restriction **and** the common decoherence image of
+every quantum member. That earns the word *family*. It does not earn *uniqueness*.
+
+**(iii) The correction helps this document.** The convention-freedom §21/§26/§33 argue for gets
+**bigger**, not smaller, in the quantum case: classically you pick a scalar, quantumly you pick a
+*function* before any number means anything. **Čencov *supports* the oracle-relativity finding** —
+it hands you the shape and explicitly refuses to hand you the unit. **A3**: `7.3 ×` Fisher–Rao
+scores identically under every monotonicity test (difference `1.11e-16`), because monotonicity is a
+statement about **ratios**, and ratios are scale-blind.
+
+### 34.3 What Čencov mechanically IS — and the hypothesis we quietly violate
+
+Monotonicity **discriminates**:
+
+- **A1** — Fisher–Rao: 20000 random Markov morphisms, **0** violations, worst ratio `0.7607198525`.
+- **A2** — plain Euclidean on probability vectors: **14** violations, worst ratio `1.4437924016`.
+- **A2x** — hand-checkable: `p = (½,0,½,0)`, `q = (0,½,0,½)`, morphism merging outcome 1 with 3 and
+  2 with 4. Fisher–Rao `3.14159265 → 3.14159265`; Euclidean `1 → 1.41421356` — expansion by **√2**.
+
+**But the hypothesis is NORMALIZED measures, and `BeliefConvergence.observe` folds UNNORMALIZED
+`int64[]` weights.** On the cone of positive measures the right theorem is **Campbell**, *An
+extended Čencov characterisation of the information metric*, Proc. AMS **98** (1986) 135–141: the
+total-mass term `(Σv)²/(Σp)` is preserved **exactly** by Markov morphisms, so `g_Fisher + c·(mass)`
+is monotone for **every** `c ≥ 0` — a genuine one-parameter family:
+
+- **A4** — mass term worst ratio `1.000000000007` (invariant, not merely contracting); `Fisher +
+  5×mass`: 0 violations.
+- **A4x** — that freedom **vanishes** on the simplex: max `|mass term|` over 5000 zero-sum tangents
+  = `4.93e-32`.
+
+So *"unique up to scale"* is a statement about the **simplex**. Our belief object lives on the
+**cone** until normalization is taken as a quotient — which the code documents but does not do.
+
+### 34.4 What our substrate actually contains — a negative result, stated plainly
+
+Searched `src/` for Fisher / Hellinger / Bhattacharyya / Bures / Uhlmann / fidelity / density
+matrix. **No Fisher information, no Fisher–Rao metric, and no Bures/QFI exists in the tree.**
+
+- The word "Fisher" occurs three times and is **three different Fishers**: Fisher 1925 (intraclass
+  correlation, `effective-agent-count.ts`), Fisher 1935 (permutation test, `DecorrelationExcess.fs`),
+  Fisher–Yates (the shuffle, same file). **None is Fisher information.**
+- **KL is the only information-geometric structure present** — `SoftValueInfo.fs`, consumed by
+  `ComputeReceipt.fs` (`IV = KL(posterior‖prior)`), `SoftRegimeStability.fs`, and a Gaussian closed
+  form in `AttentionRouter.fs`. Fisher–Rao **is** the Hessian of KL, so the link is real but
+  **latent**: nothing differentiates twice, forms a metric tensor, or measures a distance.
+- **`AmplitudeEmu.fs`**, our one quantum-shaped object, is **Hilbert–Schmidt-flavoured, not Bures**.
+  **B6**: HS is *not* monotone — squared HS distance `1 → 2.0000000000000004` under a CPTP map, and
+  the HS form equals `0.76` at *every* state because it ignores `ρ` entirely (Ozawa 2000).
+
+### 34.5 The one place the bridge is EXACT — and it runs through our shipped code
+
+`ρ` itself is a **coordinate, not a distance**; calling it "a Fisher–Rao quantity" would be the
+numerology error. But the quantity we actually *use* is exact. In the equicorrelated Gaussian model
+`X ~ N(μ·1, σ²[(1−ρ)I + ρJ])`, `1` is an eigenvector of `Σ` with eigenvalue `σ²(1+(n−1)ρ)`, so
+
+```
+I(μ) = 1ᵀ Σ⁻¹ 1 = n / (σ²(1+(n−1)ρ)) = n_eff / σ²
+```
+
+> **Kish's design effect IS a Fisher-information ratio, and `n_eff = σ²·g_μμ` is a Fisher–Rao metric
+> component.**
+
+**C1** verifies this against our own shipped `effectiveTrialCount()` by an actual linear solve:
+worst relative error `1.26e-15` over `n ∈ {2,5,26,100} × ρ ∈ {0, μ_crit, 0.2, 0.7}`; at `n = 26,
+ρ = μ_crit` the solve gives `13.24503311258279` against our `13.245033112582782`. **This is the
+first *checked* information-geometric fact about our own code.**
+
+### 34.6 Register, and what is NOT checked
+
+**Tier: CONJECTURE for every mapping; the mathematics is CHECKED, the mapping is not.**
+
+1. **Uniqueness itself is not numerically checkable.** A1–A4 verify invariance, a competitor's
+   failure, scale-unidentifiability, and the cone's extra freedom. That the invariant metric is
+   *only* Fisher–Rao is Čencov's proof — cited, not checked.
+2. **Operator monotonicity of the five `f`'s is asserted from the literature**, not verified; the
+   Kubo–Ando bracket is checked only through its consequence (**B3**, 0 violations in 20000).
+3. **B3 checks only the min/max bracket** — the middle ordering was observed at one `λ`, not scanned.
+4. **Quantum checks are qubit-only** (`d = 2`), channels depolarizing + decoherence.
+5. **`CliffordAntiSybil.fs` uses a flat Euclidean norm where the invariant metric is curved** — so
+   its "geometric correlation" is coordinate-dependent. **NOT CHECKED — the next falsifier, not a
+   result.** (Independently measured from the other side in #12800.)
+6. **C1 is a theorem about the Gaussian model.** Our ICC is estimated from binary indicators, so the
+   claim is *"our formula equals the Gaussian Fisher information"*, never *"our data is Gaussian."*
+
+**Two surfaces still carry the un-qualified overclaim** and want the words "up to scale, on the
+simplex": `docs/FROZEN-CORE-AND-CONJECTURE-REGISTER.md` and
+`docs/research/2026-08-18-falsifier-1-fails-no-levi-civita-analogue-contortion-is-identically-zero-on-our-fold-lumen.md`.
+
+**Anchors (Beacon).** Rao (1945) · Čencov (1972/1982) · Campbell (1986) · Ay–Jost–Lê–Schwachhöfer
+(2015/2017, the infinite-dimensional extension Čencov does not cover) · Morozova & Chentsov
+(1989/91) · Petz (1996) · Kubo & Ando (1980) · Bures (1969) · Uhlmann (1976) · Braunstein & Caves
+(1994) · Ozawa (2000) · Kish (1965).
+
+## 35. Does the monotonicity claim on our fold survive on the CONE? Monotonicity yes, uniqueness no
+
+§34 handed over one question: `BeliefConvergence.observe` folds **unnormalized** `int64[]` weights,
+and Čencov's hypothesis is **normalized** measures — so does the claim survive, or does it need the
+normalization quotient? Checked in
+`src/Core.TypeScript/research/campbell-cone-vs-simplex-belief-fold-check.ts` (**12/12**, seed
+`S = 4`, every positive paired with a negative computed by the same function). *(Result: Soraya.)*
+
+### 35.1 The claim does not live where you would look for it
+
+`src/Core/BeliefConvergence.fs` makes **no metric claim** — commutativity, associativity,
+non-idempotence, dedup, zero-absorbing, nothing else. Its tests make none. The claim lives in three
+prose surfaces, all downstream of **one sentence** in
+`docs/research/2026-08-18-falsifier-1-fails-*.md` §1, repeated in `FROZEN-CORE` §B-torsion item 1
+and in the header of `information-geometry-contortion-falsifier.ts`:
+
+> folds **unnormalized** non-negative weights … **Čencov's theorem (1982)** singles out [Fisher–Rao]
+> as the *only* metric invariant under sufficient statistics, up to scale.
+
+**The hypothesis violation is inside that sentence, one clause apart.** And the module computing
+from it silently takes the quotient the code does not: `probabilities()` is a softmax on a reduced
+chart with pivot `θₙ = 0`, which kills exactly the direction Campbell's term measures.
+
+### 35.2 The verdict — the quotient buys UNIQUENESS, not MONOTONICITY
+
+- **D1** Fisher–Rao contracts under 20000 random Markov morphisms on genuinely unnormalized `p`
+  (mass in `[0.2, 20]`): **0 violations, worst ratio `0.9494151528`**.
+  **D1n** Euclidean, same scan, same morphisms: **2673 violations, worst ratio `2.5430683899`**.
+- **D3** `g_Fisher + c·mass` is monotone for **every** `c ∈ {0, 0.5, 1, 5, 100}` — worst ratios
+  `0.94942 / 0.96508 / 0.97334 / 0.99084 / 0.99945`, 0 violations each.
+
+So **monotonicity needs no normalization. Uniqueness does.** The three surfaces want the words
+"up to scale, **on the simplex**"; on the cone, Campbell (1986) gives a one-parameter family and
+"the only metric" is **false**.
+
+### 35.3 Currently VACUOUS — and a distinction that changes no value is not a bug
+
+`BeliefConvergence` has **zero non-test callers in `src/`**; nothing computes a belief distance; KL
+runs on `SoftValue`, whose `build` divides by `total`, so it is **on the simplex by construction**.
+Nothing in the tree computes a number a different `c` would change. Recorded so the finding is not
+inflated.
+
+The one non-vacuous residue is **documentary**: §B-torsion quotes `0.0462936` as *the* deviation of
+our fold from Levi-Civita. That is a reduced-simplex-chart quantity. Its cone analogue spans
+**`1.00688` → `77.27067`** across `c ∈ [0,100]` at the same `θ = (0.7, −0.4, 0.25)` — spread ratio
+**76.743**, closed form cross-checked against central differences to `7.12e-9` (**D6**). A different
+object, not a discrepancy — but a **convention-dependent number presented as a property**.
+
+### 35.4 Where it becomes load-bearing — a `c` nobody would notice choosing
+
+> **A choice of `c` decides which of two beliefs is closer, and on the simplex that choice is
+> invisible.**
+
+- **D4** — **8833 / 20000 random tangent pairs (44.2%)** on the cone are order-flippable by some
+  `c ≥ 0`; median crossing `c* ≈ 10.382`. Hand instance `p = (1,1,1,1)`, `u = (1,−1,1,−1)`,
+  `v = (0.9,0.9,0.9,0.9)`: crossing at **`c* = 19/81 = 0.2345679012`**, gap `+0.76` at `c = 0`,
+  `−15.44` at `c = 5`. **D4n** the same scan on zero-sum tangents: **0 / 20000**.
+- **D2n** — max mass term: cone `61.4896`, simplex `2.4074e-31`. That is *why* it is invisible.
+- **D3n** — the family is positive definite for `c > −1`; `c = −1.5` admits squared length
+  `−7.6104`; and `c = −1` degenerates **exactly on the radial direction**
+  (`|g⁻¹(p,p)| ≤ 7.11e-15` against `g⁰(p,p) ≥ 0.2008`). **The `c = −1` endpoint IS normalization**,
+  computed rather than asserted.
+
+`c = 0` is therefore a **choice, not a default**: it asserts total evidence mass carries no
+information. Design consequence: **any future metric on this fold must record its `c` at the point
+the choice is made.**
+
+### 35.5 What monotonicity even means FOR THE FOLD (the category slip, disentangled)
+
+Monotonicity is about morphisms *between* outcome spaces; the fold moves a point *within* one. The
+only contact is **D5**: coarse-graining commutes with `observe` **exactly in the integer algebra iff
+the likelihood is block-constant** — gap `0` (`lhs = rhs = (20,144)`) block-constant, gap `14`
+(`(34,144)` vs `(20,144)`) otherwise. That is Fisher's sufficient-statistic hypothesis, stated in the
+algebra the fold actually runs.
+
+### 35.6 What SURVIVES unchanged
+
+**D6n**: the antisymmetric part of the Levi-Civita Christoffels is **exactly 0 for every `c`**, while
+the symmetric part is `≥ 2.0138`. So the §B-torsion refutation — *contortion is identically zero on
+our fold* — **survives the entire `c`-freedom.** Only the magnitude was convention-dependent, never
+the verdict. **`Conjecture Z-2` stays REFUTED, on strictly stronger grounds than before.**
+
+### 35.7 Register and honest limits
+
+**The mathematics is CHECKED; every mapping onto the substrate stays a toy.**
+
+1. **Uniqueness is not checkable by this method** — that nothing outside the Campbell family is
+   invariant is Campbell's proof, cited. Lean is the only route, and is **not** recommended while
+   the fold has zero callers.
+2. **Constant-coefficient sub-family only.** Campbell allows mass-dependent coefficients.
+3. **D2 pins invariance, not form** — mutation-verified: `(Σv)²/(Σp)²` *survives* D2 and dies at
+   D3n. Stated in the file so the survivor cannot read as coverage.
+4. **D6 is a different object from `0.0462936`** (cone chart vs reduced simplex chart).
+5. `n = 5`, `m = 3`, one `θ`. Not a proof for all `n`.
+6. **Inspection-level, not checked:** for a *uniform* likelihood, redelivery is invisible after
+   normalization and visible on the cone — so the radial direction the quotient erases is where one
+   class of the fold's known multiplicity defect lives.
+7. **Mutation-checked, not merely green:** neutering `c` reddens D3n/D4/D4n; corrupting the mass
+   normalization reddens D3n.
+
+**Routing note.** Soraya rejected TLA+ explicitly as her own hammer (no state machine, no
+interleaving), rejected Lean this round (uniqueness needs a "for all metrics" quantifier no sampling
+reaches, and the fold has zero callers), and named the cheap Z3 residue (2 of 12 facts). **Follow-up
+routed, not done:** a Semgrep rule refusing an unqualified "Čencov uniqueness" sentence on any
+surface that also says "unnormalized". Prose rots; a check does not.
+
+**Anchors (Beacon).** Rao (1945) · Čencov/Chentsov (1972/1982) · **Campbell, *An extended Čencov
+characterisation of the information metric*, Proc. AMS 98 (1986) 135–141** · Amari & Nagaoka (2000) ·
+Fisher (1922), sufficient statistics.

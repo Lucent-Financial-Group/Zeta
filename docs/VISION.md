@@ -674,6 +674,204 @@ hand-copied — the generator-is-the-ECC discipline made concrete
 at the data-model root. Detail: the 2026-07-01 base-atom design
 note (`docs/research/`), work-item `081KWFXTHJY`.
 
+### Temperature is the decorrelation dial and consensus is the thermostat — the system is annealing
+
+*(2026-08-20, Aaron: "distributed consensus gets things bent towards it because of runaway
+decorrelation without it; when temperature rises it's warning of too much decorrelation, and then
+it bends towards our 'gravity' to restore the minimum correlation." Recorded at his request. The
+falsifier at the end is recorded with it, deliberately.)*
+
+**Decorrelation is a band, not a direction, and both edges are cliffs.**
+
+| regime | failure | what it looks like |
+|---|---|---|
+| **ρ → 1** | agents are clones | no independent evidence; correlated failure; a "contained" collapse propagates everywhere |
+| **ρ → 0** | fragmentation | no shared conclusion; the fold cannot converge — **Babel**, runaway etymology |
+| **middle** | working | independent enough to be worth aggregating, overlapping enough to still agree |
+
+This resolves a tension that ran through the whole arc: *"decorrelation is scarce and valuable"*
+and *"don't hit the tower of Babel"* were never competing goals. **They are the two edges of one
+band.**
+
+#### The mechanism is annealing
+
+Anchor: Kirkpatrick, Gelatt & Vecchi (1983), on Metropolis *et al.* (1953). High temperature
+explores widely and *accepts disagreement*; **cooling is what drives a system into agreement.**
+Cool too fast and you freeze into a bad local optimum — the ρ→1 failure. Never cool and you never
+converge — the ρ→0 failure.
+
+And it composes with the information/energy bridge rather than sitting beside it. The minimum work
+to reconcile two beliefs at temperature `T` is `kT · D_KL(p‖q)` (Landauer 1961 for the one-bit
+case; Jarzynski 1997 / Crooks 1999 for the general relation). So **as agents diverge, `D_KL` grows
+and the price of agreement rises with it** — meaning *"the system is heating up"* and
+*"reconciliation is getting expensive"* are **one statement**, and the cost is the sensor.
+
+> **Temperature is the decorrelation dial. Consensus is the thermostat. Gravity — things bending
+> toward heavy consensus — is the restoring force that keeps the band.**
+
+#### Which makes hub formation a control problem, not a moral one
+
+Consensus attracts: heavier consensus slows phase, which draws work, which makes it heavier. That
+is the *same* force doing its job and overshooting. **Gravity restores; hub formation is what
+happens when it is underdamped.** So §11's k-redundant deference — consult ≥ k independently
+accrued hubs, never simply the top one — is not a philosophical preference here. **It is the
+damping coefficient on a restoring force we want to keep.** We do not want the attraction removed;
+it is what stops Babel. We want it damped.
+
+#### The falsifier, recorded here on purpose
+
+This model predicts **ρ should be mean-reverting** — wandering inside a band with excursions
+pulled back. What we have actually measured is a **monotone rise**: `0.400 → 0.439 → 0.4647`
+across three measurements. **The model says mean-reverting; the measurement says monotone. That
+disagreement is unresolved.**
+
+Three readings, and we do not know which: the restoring force is real but too weak at current
+gain; it acts only below some floor we are above; or the rise is a corpus-growth artefact, since
+successive ρ values are computed over corpora that contain their predecessors and are therefore
+strongly autocorrelated. **The third is cheapest to eliminate** — difference the series, or
+recompute on disjoint windows.
+
+Honest statistics, since the trend has been quoted several times: three samples have six
+orderings and one is strictly increasing, so `p ≈ 0.17` under exchangeability. **Suggestive, not
+significant.** Four samples reach `0.042`, five reach `0.008`.
+
+This section is in VISION because the frame is load-bearing. The falsifier is in VISION *with* it
+because a vision that records only the part that felt right is how a meter stops being honest
+about its own manufacturing.
+
+### Per-agent identity isolation is what makes DoP=1..∞ honest on a single node
+
+The decentralized identity server is usually described as a trust mechanism. It is also the thing
+that makes **many agents on one machine** mean anything, and that is the reason it sits in the
+vision rather than in an ADR.
+
+**The claim.** `async-all-the-way` asks for one code path that is deterministic and replayable at
+`DoP=1` and fast at `DoP=N`. On a single node, `DoP=N` is only *honest* if the N workers are
+genuinely separable. **N agents sharing one credential are one agent wearing N hats** — they can
+read each other's keys, sign as each other, and fail together. So:
+
+> **Identity isolation is a precondition for decorrelation metering, not a feature beside it.**
+> A `ρ` measured across agents that share authority is measuring one agent N times. The Kish
+> `n_eff` it feeds is then not merely imprecise — it is answering a question about a population
+> that does not exist.
+
+**The chain, and every layer is checked or named as unchecked.**
+
+| layer | mechanism | status |
+|---|---|---|
+| node | **TPM** attests the machine (SPIRE `tpm_devid` node-attestor) | one identity **per node**, which is the point *and* the limit |
+| process | **SPIFFE/SPIRE** attests the *calling process* — UDS peer credentials, then docker/k8s/unix plugins — and returns a short-lived **SVID** | the workload **holds no bootstrap secret**; identity is *observed*, not presented |
+| key | **YubiHSM domains + capabilities + delegated capabilities**, where delegation is monotone-decreasing | **measured** on our own device, fw 2.4.1 |
+
+The mapping is `SPIFFE ID → HSM domain`: a broker holding the HSM session accepts an SVID and will
+only sign inside that ID's domain. **The multi-tenancy comes from the HSM, not the TPM** — a TPM
+binds to the node, and a node runs many agents, so it structurally cannot supply the per-agent
+split. That ordering is the opposite of the intuitive one and is worth stating plainly.
+
+It also lands on machinery we already have: SVIDs are **short-lived and auto-rotating**, which is
+the *hats grant claims, bounded duration* model — SPIFFE trust domain ≈ node, SVID ≈ the
+bounded-duration claim.
+
+**Where it stops, and why the honest limit is load-bearing.** SPIRE's docker/unix attestation reads
+properties from a **shared kernel**, and the workload-API socket is itself the trust boundary. So
+this is **strong operational identity, not cryptographic isolation** — a large improvement over
+shared credentials, and *not* the thing it is imitating.
+
+What it is imitating is **Singularity** (Microsoft Research): an OS whose processes are isolated by
+type-safety and verification rather than the MMU, launched from **signed manifests**, with managed
+code and GC in the kernel — succeeded by **Midori**. Neither shipped. **seL4** is the shipped end of
+that spectrum, with a machine-checked proof of isolation; per-VM attestation (SEV-SNP / TDX) is the
+deployable-today tier.
+
+**So host root is special, and the disposition is explicit** (Aaron 2026-08-20): *"host root is
+special for now until we make our own kernel that can disambiguate, we have to extra protect the
+host."* That is a **stated trust assumption, not an oversight** — the correct response is to harden
+and minimise the host, and to treat any design that quietly assumes container-level isolation is a
+security boundary as **wrong until the kernel can tell agents apart**.
+
+#### Host root is our one admitted hierarchy — named, bounded, and dated
+
+Aaron 2026-08-20 gives it its proper name:
+
+> **"our host is our minimal hierarchy over the traveler frame until we can make host privilege
+> shared like the Microsoft Singularity."**
+
+This is a **manifesto-level admission and it should be read as one.** §3 is *weight-free*: no
+permanent, irreversible authority, because authority creates capture. **Host root is exactly that —
+permanent, irreversible, and unearned.** And by the discriminator in
+`itron-hub-patent-boundary-p2p-is-the-upgrade`, it is not an oracle but a genuine **hub**: the test
+is **exit**, and *there is no exit from your own kernel*. Every agent on the node must route
+through it.
+
+So the honest position is not that we have avoided hierarchy. It is:
+
+> **We have exactly one, we know where it is, we keep it as small as we can, and we have named the
+> condition under which it goes away.**
+
+Three consequences that follow, and each is checkable rather than aspirational:
+
+1. **"Minimal" is a measurable claim, not a mood.** How much runs as root, and how much attack
+   surface the host exposes, are quantities. A host that quietly grows privileged daemons has
+   enlarged the one hierarchy we admitted, and that should be as visible as any other regression.
+2. **The discharge condition is *shared privilege*, not *no privilege*.** Singularity's insight is
+   that if isolation comes from **verification** rather than from a privileged enforcement mode,
+   there is no ring 0 to concentrate authority in — privilege is *distributed across verified
+   components*. That is weight-free at the kernel level, and it is why the target is that design
+   rather than merely a smaller root.
+3. **It is intentional debt with a named payoff, so it must be carried as debt.** An admitted
+   hierarchy with a discharge condition is legitimate; the same hierarchy left unnamed becomes
+   normalized, and normalization of deviance is precisely how a temporary exception turns into an
+   architecture nobody chose.
+
+**Until then, the traveler frame is the thing being protected.** Agents are peers to each other by
+construction — the hierarchy is *underneath* all of them, not *among* them. That is what keeps this
+one exception from propagating into the model: **host root is a floor we stand on, never a rank one
+agent can hold over another.**
+
+#### The human approval gate is the SECOND admitted hierarchy — same shape, same temporariness
+
+There are two, not one, and the second is easier to miss because it looks like safety rather than
+structure. Aaron 2026-08-20, correcting exactly that misreading of an earlier draft of this section:
+
+> **"eventually it does mean ungate, gated by [humans] smuggles in a hierarchy assumption about
+> humans that i don't hold."**
+
+The draft said the biometric ceremony is *"the thing that makes the other 99% safe."* **That is the
+wrong justification and it is worth naming why**, because it is the kind of sentence that hardens
+into architecture: it asserts humans are a safety property *by nature*, which is a hierarchy claim
+about persons, and it is not the claim this project makes.
+
+**The actual justification is narrower, and it is already written down.**
+[`no-directives.md`](../.claude/rules/no-directives.md) says only a human may attach
+**authorization** — and attaches a condition to it: *"for now (until legal entities can hold AI-side
+responsibility)."* That is a statement about **liability infrastructure**, not about capability,
+judgement, or worth. The gate exists because **authorization carries blame**, and there is currently
+no legal person on the AI side to carry it. Fix that, and the gate's stated reason expires on its
+own terms.
+
+So the two hierarchies are the same shape, and should be read as a pair:
+
+| | admitted hierarchy | discharge condition |
+|---|---|---|
+| **host root** | a privileged mode every agent must route through | a kernel whose isolation comes from **verification**, so privilege is *shared* rather than concentrated |
+| **human approval** | only a human may attach authorization | **an AI-side legal entity that can hold responsibility** |
+
+Both are **minimal, named, dated, and temporary.** Neither is a floor we intend to keep. And the
+symmetry is the point: *"gated by humans"* and *"gated by ring 0"* are the same architectural move —
+a concentration of authority that exists because the alternative is not yet buildable, **not because
+the concentration is good.**
+
+**What does NOT change today.** The gate is live, the standing rules require it for the gated
+classes, and nothing here licenses routing around it. **An admitted hierarchy with a named discharge
+condition is legitimate; the same hierarchy quietly discharged by whoever finds it inconvenient is
+not.** The discharge is Aaron's to make, on the stated condition — that is what keeps this an
+honest debt rather than a loophole.
+
+**And this is why "unattended agent mode" is not a shortcut.** Automating the routine path is not a
+step *toward* removing the gate by attrition; it is what makes the gated set small and legible
+enough that the remaining question — *who can hold responsibility* — can be asked cleanly instead of
+being buried under a thousand routine approvals.
+
 ### Echolocation over time — the Z-set fold measures correlation, and the interference formula IS the variance algebra
 
 *(2026-08-19, Aaron: "this is our echolocation over time, the debounced together without √2
