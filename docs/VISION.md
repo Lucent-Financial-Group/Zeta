@@ -789,6 +789,45 @@ host."* That is a **stated trust assumption, not an oversight** — the correct 
 and minimise the host, and to treat any design that quietly assumes container-level isolation is a
 security boundary as **wrong until the kernel can tell agents apart**.
 
+#### Host root is our one admitted hierarchy — named, bounded, and dated
+
+Aaron 2026-08-20 gives it its proper name:
+
+> **"our host is our minimal hierarchy over the traveler frame until we can make host privilege
+> shared like the Microsoft Singularity."**
+
+This is a **manifesto-level admission and it should be read as one.** §3 is *weight-free*: no
+permanent, irreversible authority, because authority creates capture. **Host root is exactly that —
+permanent, irreversible, and unearned.** And by the discriminator in
+`itron-hub-patent-boundary-p2p-is-the-upgrade`, it is not an oracle but a genuine **hub**: the test
+is **exit**, and *there is no exit from your own kernel*. Every agent on the node must route
+through it.
+
+So the honest position is not that we have avoided hierarchy. It is:
+
+> **We have exactly one, we know where it is, we keep it as small as we can, and we have named the
+> condition under which it goes away.**
+
+Three consequences that follow, and each is checkable rather than aspirational:
+
+1. **"Minimal" is a measurable claim, not a mood.** How much runs as root, and how much attack
+   surface the host exposes, are quantities. A host that quietly grows privileged daemons has
+   enlarged the one hierarchy we admitted, and that should be as visible as any other regression.
+2. **The discharge condition is *shared privilege*, not *no privilege*.** Singularity's insight is
+   that if isolation comes from **verification** rather than from a privileged enforcement mode,
+   there is no ring 0 to concentrate authority in — privilege is *distributed across verified
+   components*. That is weight-free at the kernel level, and it is why the target is that design
+   rather than merely a smaller root.
+3. **It is intentional debt with a named payoff, so it must be carried as debt.** An admitted
+   hierarchy with a discharge condition is legitimate; the same hierarchy left unnamed becomes
+   normalized, and normalization of deviance is precisely how a temporary exception turns into an
+   architecture nobody chose.
+
+**Until then, the traveler frame is the thing being protected.** Agents are peers to each other by
+construction — the hierarchy is *underneath* all of them, not *among* them. That is what keeps this
+one exception from propagating into the model: **host root is a floor we stand on, never a rank one
+agent can hold over another.**
+
 ### Echolocation over time — the Z-set fold measures correlation, and the interference formula IS the variance algebra
 
 *(2026-08-19, Aaron: "this is our echolocation over time, the debounced together without √2
