@@ -61,6 +61,44 @@ export function countTerms(sources: readonly string[]): Map<string, number> {
 }
 
 /**
+ * BREADTH -- in how many distinct documents does the term appear?
+ *
+ * Aaron 2026-08-20: "the most repeated words over time by other[s] makes what the
+ * future builds on as stable." Raw count cannot tell a TIC from SUBSTRATE: 1749
+ * uses across three files is one author's habit; 400 uses across two hundred files
+ * is something the corpus actually leans on. Breadth is the "by others" axis, and
+ * it is the one that separates them.
+ *
+ * This is ordinary document frequency, and it is deliberately NOT inverted. Classical
+ * IR uses IDF to DISCOUNT high-DF terms as uninformative; here the high-DF terms are
+ * the culture, so the head is the signal rather than the noise.
+ */
+export function documentFrequency(sources: readonly string[]): Map<string, number> {
+  const df = new Map<string, number>();
+  for (const src of sources) {
+    const seen = new Set(src.toLowerCase().match(TERM_RE) ?? []);
+    for (const t of seen) df.set(t, (df.get(t) ?? 0) + 1);
+  }
+  return df;
+}
+
+/**
+ * A term's concentration: total uses per document that contains it. High
+ * concentration with low breadth is the tic signature.
+ *
+ * NOT IMPLEMENTED, and named here rather than left silent: the TIME axis Aaron's
+ * sentence also asks for ("over time"). Persistence -- first use to last use --
+ * needs per-term git archaeology, which is a full-history pickaxe scan per term and
+ * too expensive to run over 51k candidates. Breadth is the cheap half and the half
+ * that separates tic from substrate; span would separate a burst from a habit.
+ * Until it exists, this meter cannot tell a term adopted broadly LAST WEEK from one
+ * adopted broadly FOR A YEAR.
+ */
+export function concentration(count: number, df: number): number {
+  return df === 0 ? 0 : count / df;
+}
+
+/**
  * Repo PLUMBING, not vocabulary: AgencySignature trailer keys and CI/forge nouns.
  * These dominate the frequency head for a boring reason -- every commit repeats
  * them -- and counting them as "culture nobody defined" would be a false positive.
@@ -84,6 +122,19 @@ export const PLUMBING = new Set([
   "re-runs",
   "re-reviewed",
   "post-fix",
+  // Added 2026-08-20 after the breadth axis exposed them: each is an
+  // AgencySignature field VALUE or a CI noun appearing ~1.0 times in each of
+  // several hundred commit-derived documents. The signature is structural --
+  // per-doc ~= 1.0 with a very high document count means "emitted once per
+  // commit", which is plumbing by construction. They are listed rather than
+  // filtered by that heuristic, because a heuristic would also catch genuine
+  // vocabulary that happens to be used once per document.
+  "not-implied-by-credential",
+  "autonomous-fail-open",
+  "autonomous-fail-closed",
+  "agent-model",
+  "claude-code",
+  "pr-archive-on-merge",
 ]);
 
 export interface Cell {
@@ -142,7 +193,16 @@ if (import.meta.main) {
       /* unreadable file contributes nothing; it must not read as adoption */
     }
   }
-  const c = cell(g, countTerms(sources), { quietBelow: 1, loudAbove: 60 });
+  const counts = countTerms(sources);
+  const df = documentFrequency(sources);
+  const c = cell(g, counts, { quietBelow: 1, loudAbove: 60 });
+  const withBreadth = (rows: ReadonlyArray<readonly [string, number]>) =>
+    rows.map(([t, n]) => ({
+      term: t,
+      uses: n,
+      docs: df.get(t) ?? 0,
+      perDoc: Number(concentration(n, df.get(t) ?? 0).toFixed(1)),
+    }));
   console.log(
     JSON.stringify(
       {
@@ -151,8 +211,9 @@ if (import.meta.main) {
         coinedNotAdoptedCount: c.coinedNotAdopted.length,
         usedNotDefinedCount: c.usedNotDefined.length,
         plumbingExcludedCount: c.plumbingExcluded.length,
+        documents: sources.length,
         coinedNotAdopted: c.coinedNotAdopted.slice(0, 15),
-        usedNotDefined: c.usedNotDefined.slice(0, 20),
+        usedNotDefined: withBreadth(c.usedNotDefined.slice(0, 20)),
         plumbingExcluded: c.plumbingExcluded.slice(0, 10),
       },
       null,

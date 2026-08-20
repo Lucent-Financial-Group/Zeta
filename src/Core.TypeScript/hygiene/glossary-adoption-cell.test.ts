@@ -1,5 +1,13 @@
 import { expect, test, describe } from "bun:test";
-import { glossaryTerms, countTerms, cell, PLUMBING, TERM_RE } from "./glossary-adoption-cell";
+import {
+  glossaryTerms,
+  countTerms,
+  cell,
+  PLUMBING,
+  TERM_RE,
+  documentFrequency,
+  concentration,
+} from "./glossary-adoption-cell";
 
 // Per BP-29: every positive is paired with a negative computed by the SAME function.
 
@@ -74,5 +82,33 @@ describe("the two halves of the cell", () => {
     // and the glossary term IS flagged as un-adopted, because zero use is the
     // strongest form of not-adopted -- absence must not read as adoption
     expect(c.coinedNotAdopted).toEqual([["orphan-term", 0]]);
+  });
+});
+
+describe("breadth — the 'by others' axis that separates a tic from substrate", () => {
+  test("document frequency counts DOCUMENTS, not occurrences", () => {
+    const df = documentFrequency(["alpha-beta alpha-beta alpha-beta", "alpha-beta"]);
+    expect(df.get("alpha-beta")).toBe(2);
+  });
+
+  test("PAIRED NEGATIVE: raw count cannot make that distinction — which is why breadth exists", () => {
+    // 4 uses either way; only breadth tells the two corpora apart.
+    const oneDoc = ["alpha-beta alpha-beta alpha-beta alpha-beta"];
+    const fourDocs = ["alpha-beta", "alpha-beta", "alpha-beta", "alpha-beta"];
+    expect(countTerms(oneDoc).get("alpha-beta")).toBe(countTerms(fourDocs).get("alpha-beta"));
+    expect(documentFrequency(oneDoc).get("alpha-beta")).not.toBe(documentFrequency(fourDocs).get("alpha-beta"));
+  });
+
+  test("concentration is the tic signature: many uses, few documents", () => {
+    // the live case: sub-target measured 416 uses across 31 docs = 13.4/doc
+    expect(concentration(416, 31)).toBeCloseTo(13.4, 1);
+    // against genuinely broad adoption
+    expect(concentration(1208, 1097)).toBeLessThan(1.2);
+  });
+
+  test("PAIRED NEGATIVE: a term in zero documents is 0, never Infinity", () => {
+    // division by df must not produce a number that would sort to the top of a
+    // "most concentrated" list purely because nothing uses the term
+    expect(concentration(5, 0)).toBe(0);
   });
 });
