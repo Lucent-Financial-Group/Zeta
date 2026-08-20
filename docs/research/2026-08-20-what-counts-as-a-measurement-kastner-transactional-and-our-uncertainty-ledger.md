@@ -833,3 +833,205 @@ variant in the tree — the standard fact that low-`N` adinkras carry no non-tri
 the literature (Doran, Faux, Gates, Hübsch, Iga, Landweber), and Aaron's statement that we have
 them is recorded as his, unverified by me. **Not found is not absent**, and after this morning I
 am saying which one I mean.
+
+## 31. Gravity is the RESTORING force, not the collapse risk — and ρ is two-sided
+
+Aaron: *"distributed consensus gets things bent towards it because of runaway decorrelation
+without distributed consensus. In our system, when temperature rises it's warning of too much
+decorrelation, and then it bends towards our 'gravity' — to use distributed consensus to restore
+the minimum correlation."*
+
+This reverses the causal direction I had in §27, and it corrects §23. Both of my framings were
+one-sided; his is the control loop they are each half of.
+
+### What I had wrong
+
+**§27** ran the feedback as *positive*: heavy consensus → slow phase → attracts work → heavier
+consensus → hub formation → capture. **§23** treated rising ρ as monotonically bad — boundaries
+leaking, blast radius growing.
+
+Neither is false, and neither is the mechanism. Aaron's is:
+
+> **Runaway decorrelation is the danger. Temperature is its warning. Consensus is the restoring
+> force that bends things back to a minimum correlation.**
+
+Gravity here is **negative** feedback — a stabiliser against dispersal — not an attractor toward
+capture.
+
+### ρ has two failure modes, and I only wrote about one
+
+That is the correction that matters, because it changes what the meter means:
+
+| regime | failure | what it looks like |
+|---|---|---|
+| **ρ → 1** | agents are clones | no independent evidence; correlated failure; a "contained" collapse propagates everywhere; the §23 reading |
+| **ρ → 0** | fragmentation | no shared conclusion; the fold cannot converge; **Babel** — Aaron's "runaway etymology" |
+| **middle band** | working | enough independence to be worth aggregating, enough overlap to still agree |
+
+So the meter is not "lower is better." **It is a band, and both edges are cliffs.** §23's "rising ρ
+is a safety signal" is true and incomplete: *falling* ρ is also a safety signal, of the opposite
+failure, and the slow-explosion monitor (`081M0FQ2FKS087G0R002V6EB9E`) must watch both directions
+rather than one. That is a concrete change to a filed design, and it came from this.
+
+It also finally makes sense of a tension that has been in the arc all along: Aaron has always said
+*both* "decorrelation is scarce and valuable" *and* "don't hit the tower of Babel." Those are not
+in tension — **they are the two edges of one band.**
+
+### Temperature as the decorrelation dial — and the anchor is annealing
+
+The natural reading is not exotic, it is the standard one:
+
+- **Simulated annealing** (Kirkpatrick, Gelatt & Vecchi 1983, on Metropolis *et al.* 1953): high
+  temperature explores widely and accepts disagreement; **cooling is what drives a system into
+  agreement.** Cool too fast and you freeze into a bad local optimum — the ρ→1 failure. Never
+  cool and you never converge — the ρ→0 failure.
+- And it composes with §15/§24 rather than sitting beside them: at temperature `T` the work to
+  reconcile two beliefs is `kT·D_KL(p‖q)`. **As agents diverge, `D_KL` grows and the price of
+  agreement rises with it.** So "the system is heating up" and "reconciliation is getting
+  expensive" are the same statement, and the cost is the sensor.
+
+> **Temperature is the decorrelation dial; consensus is the thermostat.**
+
+### Both readings of gravity are the same mechanism at different gain
+
+§27 and §31 stop competing once you say it in control terms:
+
+- **Aaron's (§31)** — consensus is the **restoring force**. Dispersal builds, the force pulls
+  back, minimum correlation is maintained. This is the *function*.
+- **Mine (§27)** — heavy consensus attracts more work, which makes it heavier. This is the
+  *failure mode of the same force*: **a restoring force that overshoots produces collapse.**
+
+That is exactly what gravity does in the physical case too — it restores, until it does not stop,
+and then you get a horizon. So:
+
+> **Gravity is the restoring force; hub formation is what happens when it is underdamped.**
+
+And the damping term is already named in the rules: §11's **k-redundant deference** — consult ≥ k
+independently accrued hubs, never simply the top one. That is not a philosophical preference in
+this reading, it is *the damping coefficient on a restoring force we want to keep*.
+
+Which also resolves the worry §27 left open. We do not want to remove the attraction toward
+consensus — it is what stops Babel. **We want it damped, not deleted.**
+
+### What this predicts, and how it could be wrong
+
+The model now makes a claim with a shape a measurement could contradict:
+
+> **ρ should be mean-reverting, not monotone.** If consensus genuinely acts as a restoring force,
+> ρ should wander inside a band with excursions pulled back — not drift steadily in one
+> direction. The observed `0.400 → 0.439 → 0.4647` is a **monotone rise**, which is the signature
+> of a restoring force that is *absent, too weak, or acting on the wrong side*.
+
+Three readings, and I do not know which:
+
+1. the restoring force is real but too weak at the current gain — under-damped toward ρ→1;
+2. it acts only below some floor, and we are above it, so nothing is pulling;
+3. the rise is not decorrelation dynamics at all but corpus-growth artefact (§25's caveat: the
+   samples are strongly autocorrelated, each computed over a corpus containing the last).
+
+**Reading 3 is the one to eliminate first**, because it is cheap: differencing the series or
+recomputing ρ on disjoint corpus windows separates a real trend from an accumulation artefact.
+That is the same experiment already filed, and this section gives it a second reason to run.
+
+**Register.** The two-sided band is a **correction** to §23 and I am confident in it — it follows
+from what the meter measures. The annealing reading is a **standard anchor**, used for its control
+law rather than its imagery. The restoring-force/overshoot unification of §27 and §31 is an
+**argument**. The mean-reversion prediction is **falsifiable and currently unsupported by our own
+data**, which is the honest headline: *the model says mean-reverting, the measurement says
+monotone, and that disagreement is unresolved.*
+
+## 32. "We already have Clifford in code — what's the metric behind it?" — answered, and it disagrees with §28
+
+Aaron's question is the right one to ask of §29: if `Cl(V,Q)` is *built from* a metric, then
+every Clifford algebra already in the tree has silently **committed** to one. So which?
+
+### The answer: Euclidean, and it is committed in the Bayesian layer
+
+Counting named signatures across `src/`, `docs/` and the rules:
+
+| signature | mentions | where it lives |
+|---|---|---|
+| **`Cl(3,0)`** | 171 | the dominant one — `CliffordE8Bridge.fs`, `CliffordAntiSybil.fs`, `PrivacyPreservingIdentity.fs` |
+| `Cl(1,3)` | 74 | spacetime algebra (Hestenes convention) |
+| `Cl(8,0)` | 56 | the E8 reflection construction (Dechant 2016, `v ↦ −αvα⁻¹`) |
+| `Cl(3,1)` | 47 | spacetime algebra, **the other convention** |
+| `Cl(7,7)` | 4 | the split signature the mod-8 periodicity argument runs through |
+
+`Cl(3,0)` is `Q = diag(+1,+1,+1)` — **positive-definite Euclidean.** And `CliffordE8Bridge.fs`
+states its own scope precisely: an *isometric* identification of E8's ambient `ℝ⁸` with `Cl(3,0)`'s
+8-dimensional blade space, preserving **norm²**, plus a grade labelling by `popcount`. It is
+explicit that this is the **basis/metric bridge** and does *not* claim the geometric product is
+E8's group operation — good hygiene, already written down.
+
+So: **the metric behind our Clifford code is the flat Euclidean one.**
+
+### And that is where it gets interesting — `CliffordAntiSybil.fs`
+
+The load-bearing commitment is not in the E8 work, it is in the Bayesian layer:
+
+> *"Maps a Gaussian belief to a vector in `Cl(3,0)` space"* … *"computes the geometric correlation
+> between two belief streams"* … *"if B is a rotated clone of A, the geometric product `B * ~A`
+> will yield"* a rotor.
+
+That is a **beliefs-into-Euclidean-Clifford embedding**, used to detect Sybil clones by whether one
+stream is a rotation of another. Which is elegant — §29 said rotors are exactly the reversible,
+information-preserving elements, so "is B a rotor away from A?" is precisely "is B the same
+information re-oriented?" **A Sybil is a rotor; an independent agent is not.** That is a better
+statement of anti-Sybil than I would have guessed was already implemented.
+
+### The tension with #12776
+
+But #12776 established, via the falsifier that killed the contortion proposal, that the natural
+metric on our belief manifold is **Fisher–Rao** — and that Čencov's theorem makes it *essentially
+unique* among metrics invariant under sufficient statistics.
+
+**Fisher–Rao is not Euclidean.** On a categorical simplex, the substitution `p ↦ 2√p` carries
+Fisher–Rao onto the round sphere: constant positive curvature, not flat. So:
+
+> **We embed beliefs into a flat `Cl(3,0)` while our own falsifier work says the belief manifold's
+> canonical metric is curved.** Two metrics on the same objects, and nothing in the tree
+> reconciles them.
+
+Three readings, and I do not know which holds:
+
+1. **Deliberate flat approximation.** Locally, Fisher–Rao is Euclidean to first order — that is
+   exactly the `D_KL` second-order expansion from #12776. If the Sybil test only ever compares
+   *nearby* streams, flat is right and cheap, and the module should say so.
+2. **Latent mismatch.** If streams can be far apart in `D_KL`, Euclidean geometric correlation
+   does not respect the information geometry, and "rotated clone" is being tested in the wrong
+   space. Clones that are far apart in FR could read as unrelated, or vice versa.
+3. **Different oracle.** Per §21 and §29, these may simply be *two different oracles' metrics* —
+   the anti-Sybil question may genuinely not be an information-geometric one. But then it should
+   be named, because right now the same word "belief" appears on both sides.
+
+**Reading 1 is the most likely and the cheapest to confirm**, and it is also the one that most
+needs writing down: a flat approximation that nobody labelled is indistinguishable from an
+unnoticed mismatch. That is the same class as everything else this week — *the check that did not
+run looks like the check that passed.*
+
+### A second, smaller finding: `Cl(1,3)` and `Cl(3,1)` are both in the tree
+
+They are **not isomorphic** — `Cl(1,3) ≅ M₂(ℍ)` while `Cl(3,1) ≅ M₄(ℝ)`. Having both is fine if
+two scopes deliberately chose different conventions (this is a genuine and famous split in the
+physics literature), and is a latent bug if any code assumes they are interchangeable. `#12018`
+already scoped "a Lorentz for one oracle", so the plurality may well be intentional — but the
+mod-8 periodicity work (`CliffordPeriodicity.fs`, Atiyah–Bott–Shapiro 1964) is exactly the machinery
+that makes signature differences *matter*, since `Cl(p,q)` is classified by `p − q (mod 8)` and
+`1−3 = −2` while `3−1 = +2`. **Different Morita classes.** Worth an explicit statement of which
+scope uses which and why.
+
+### What this adds to §29
+
+§29 argued that each oracle generates its own Clifford algebra, and treated that as a design
+consequence. **We already have a dozen signatures in the tree** — so the plurality is not
+prospective, it is present and undocumented:
+
+> **We have multiple oracles' geometries in code already. What we do not have is a statement of
+> which oracle each signature belongs to.** That is a small, tractable piece of work, and it is
+> the prerequisite for the metric being *explicable from the oracle's English* (§24's requirement)
+> rather than merely chosen.
+
+**Register.** The signature inventory is **counted**. The `Cl(3,0)` Euclidean commitment and the
+`CliffordAntiSybil` embedding are **quoted from source**. The Fisher–Rao/Euclidean tension is
+**argued and unresolved** — I am not claiming it is a bug, I am claiming it is unlabelled. The
+`Cl(1,3)`/`Cl(3,1)` observation is a **fact about the tree** with an unknown disposition.
