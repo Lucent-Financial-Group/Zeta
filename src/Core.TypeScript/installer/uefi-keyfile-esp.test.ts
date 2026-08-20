@@ -181,22 +181,19 @@ describe("uefi-keyfile write helper", () => {
   it("writes 32 bytes and mkdirs the parent directory", () => {
     const dirs: string[] = [];
     let writtenPath = "";
-    let written: Uint8Array | null = null;
     const result = writeUefiKeyfile("/mnt/boot/EFI/ZETA/keyfile", () => new Uint8Array(UEFI_KEYFILE_BYTES).fill(0x7e), {
       mkdir: (dir) => {
         dirs.push(dir);
       },
-      writeFile: (path, data) => {
+      writeFile: (path, _data) => {
         writtenPath = path;
-        written = data;
       },
     });
     expect(isUefiKeyfileError(result)).toBe(false);
     if (isUefiKeyfileError(result)) return;
     expect(dirs).toContain("/mnt/boot/EFI/ZETA");
     expect(writtenPath).toBe("/mnt/boot/EFI/ZETA/keyfile");
-    expect(written).not.toBeNull();
-    expect(written?.length).toBe(UEFI_KEYFILE_BYTES);
+    expect(result.bytes.length).toBe(UEFI_KEYFILE_BYTES);
   });
 
   it("CLI --write uses the injected RNG and reports the wrote marker", () => {

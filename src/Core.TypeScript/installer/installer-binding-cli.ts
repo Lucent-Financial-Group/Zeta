@@ -54,8 +54,11 @@ import type { CredentialBindingFactorKind } from "./credential-binding-model.ts"
 import { isUefiKeyfileError, keyfileBindingMaterial, UEFI_KEYFILE_SERIAL } from "./uefi-keyfile-esp.ts";
 import { USB_ISERIAL_SERIAL } from "./usb-iserial-probe.ts";
 
+/** CLI persist/restore factors. `tpmSeal` is not a CLI flag. */
+export type PersistBindingFactorKind = Exclude<CredentialBindingFactorKind, "tpmSeal">;
+
 export type CliBindingSelection = {
-  readonly factor: CredentialBindingFactorKind;
+  readonly factor: PersistBindingFactorKind;
   readonly material: string;
 };
 

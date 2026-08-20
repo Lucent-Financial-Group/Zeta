@@ -33,12 +33,16 @@ import { encrypt } from "./zeta-creds-crypto";
 import { DEFAULT_HANDLERS, resolveBakeCred } from "./zeta-cred-handlers";
 import { encodeBundle, serializeEnvelope, type CredBundle } from "./zeta-creds-envelope";
 import { DEFAULT_MANIFEST } from "./zeta-creds-manifest";
-import { selectCliBindingMaterial, bindingFactorSidecarPath } from "./installer-binding-cli.ts";
+import {
+  selectCliBindingMaterial,
+  bindingFactorSidecarPath,
+  type PersistBindingFactorKind,
+} from "./installer-binding-cli.ts";
 
 interface Args {
   readonly usbUuid: string | null;
   readonly usbISerial: string | null;
-  readonly bindingFactor: "usbUuid" | "usbISerial" | "uefiKeyfile";
+  readonly bindingFactor: PersistBindingFactorKind;
   readonly bindingMaterial: string;
   readonly output: string;
   readonly passphrase: string;
