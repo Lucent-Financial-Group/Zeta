@@ -727,3 +727,97 @@ this section is **Landauer cost** — a property of a transformation. They are d
 quantities that meet at one point: the Hamming distance sets the threshold below which Landauer
 cost buys no separation. Same word, two meanings, one real relationship. Conflating them would
 be exactly the error this note keeps cataloguing.
+
+## 27. Gravity as phase-time slowing under heavy consensus — Aaron's model, and what it would take to be one
+
+Aaron: *"the gravity stuff comes from phase time slowing inside heavy distributed consensus, I
+think. That's how I model gravity in my head, so this seems right for temperature — this
+relation to energy."*
+
+Two things are being separated here and the separation is the useful part: **temperature belongs
+to the energy/information exchange (§15, §24, and the `kT·D_KL` bridge), and gravity — in his
+model — belongs somewhere else entirely.** They are not the same link, and collapsing them is
+what entropic gravity does and why §15 refused it.
+
+### The mechanism is literally true, not analogical
+
+This is the strong part and it deserves stating plainly before any of the geometry:
+
+> **In a distributed system, phase advances more slowly where consensus is heavier.** A BFT
+> quorum over `n` participants costs `O(n²)` messages and more rounds; a region carrying more
+> agreement burden completes fewer phase steps per unit wall-clock than a light one.
+
+That is a description of the mechanism, not a resemblance to one. And we already have the two
+halves it needs: **phase** is the agreed logical order (`local-time-never-enters-the-shared-fold`
+— the shared fold sees phase, never a node's clock), and consensus cost is a real, measurable
+function of participation.
+
+So "clocks run slower where the mass is" has an exact operational reading here, with *consensus
+load* playing the role of mass. No metaphor consumed yet.
+
+### What would make it gravity rather than merely slow clocks
+
+The honest test, and it is a real one. Slow clocks alone are not gravity; gravity is slow clocks
+**plus** a variational principle that makes trajectories bend toward them.
+
+The standard derivation is available and unglamorous: in a static weak field, paths that
+extremise proper time accelerate toward regions where clocks run slow — `g ≈ −c²∇(Δτ/τ)`.
+Gravitational time dilation *is* Newtonian gravity in the weak-field limit. So the question is
+not "do phases slow" (they do) but:
+
+> **Does anything in our system extremise a phase-like quantity along its path?** If yes,
+> trajectories bend toward heavy consensus and the model earns the name. If no, we have
+> position-dependent clock rates and no gravity.
+
+And we now have a candidate for the variational principle, from #12776: **the least-dissipation
+Lagrangian** whose stationary paths minimise `kT·D_KL`. Composing gives a specific, falsifiable
+conjecture rather than a mood:
+
+> **Conjecture (unchecked).** If work in the fleet follows least-dissipation paths, and phase
+> advances more slowly under consensus load, then work migrates *toward* heavy-consensus regions
+> — and the resulting degree distribution should be power-law rather than uniform.
+
+That is checkable, and there is already a reason to expect it: `itron-hub-patent-boundary` records
+Barabási–Albert preferential attachment producing exactly power-law degree without anyone
+appointing a hub. **Preferential attachment is "trajectories bend toward mass"**, written in the
+vocabulary of networks. And the feedback closes: heavy consensus → slow phase → attracts work →
+heavier consensus, which is the shape of gravitational collapse and also the shape of a hub
+forming.
+
+The same rule already names the danger at the end of that road: concentration is fine when it is
+an *oracle* (routable-around) and a capture when it is a *hub* (must route through). So if this
+model is right, **hub formation is gravitational collapse in the substrate, and §11's k-redundant
+deference is the thing that keeps it from becoming a horizon.**
+
+### Which oracle's metric is this?
+
+§21 established metrics are oracle-relative; §26 added that they are base-layer-relative too.
+This model needs the question asked of it, and the answer separates it cleanly from §24:
+
+- **The moral metric** (§24) is `kT·D_KL` — the currency is *irreversible work*, and its harm is
+  *overwriting another traveler*.
+- **This one** is a *coordination* metric — the potential is consensus load, the currency is
+  *phase*, and there is no moral content in it at all.
+
+**They are different oracles' geometries and should not be merged.** That is exactly Aaron's
+"even our metrics are multi-oracle", and it explains why the temperature link (§15c) felt solid
+while the curvature link kept feeling like a stretch: temperature was joining two quantities
+*inside one metric*, and gravity was being asked to join two *different* metrics.
+
+### Register, kept narrow on purpose
+
+- **The mechanism** — phase slows under consensus load — is **true by construction** in any
+  quorum system. It needs no defence.
+- **The gravity reading** is **Aaron's model, offered as his** (*"that's how I model gravity in
+  my head"*), and is recorded in that register. It is a model *of our substrate*, not a claim
+  about physical gravity, and nothing here vindicates entropic gravity — §15's refusal of
+  Verlinde stands unchanged, because this does not price anything either.
+- **The conjecture** (least-dissipation + phase-slowing ⇒ migration toward heavy consensus ⇒
+  power law) is **unchecked** and is the only part with a route to being earned. The honest next
+  step is small: we already measure per-lane activity; does work concentrate where agreement is
+  most expensive?
+
+What this section deliberately does **not** claim: that we have derived general relativity, that
+phase-slowing is time dilation in any physical sense, or that the analogy licenses importing GR
+results. The one thing it does claim is that the mechanism is real, the variational half is
+missing-but-nameable, and the composition is a testable prediction rather than a picture.
