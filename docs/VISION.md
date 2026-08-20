@@ -739,6 +739,56 @@ This section is in VISION because the frame is load-bearing. The falsifier is in
 because a vision that records only the part that felt right is how a meter stops being honest
 about its own manufacturing.
 
+### Per-agent identity isolation is what makes DoP=1..∞ honest on a single node
+
+The decentralized identity server is usually described as a trust mechanism. It is also the thing
+that makes **many agents on one machine** mean anything, and that is the reason it sits in the
+vision rather than in an ADR.
+
+**The claim.** `async-all-the-way` asks for one code path that is deterministic and replayable at
+`DoP=1` and fast at `DoP=N`. On a single node, `DoP=N` is only *honest* if the N workers are
+genuinely separable. **N agents sharing one credential are one agent wearing N hats** — they can
+read each other's keys, sign as each other, and fail together. So:
+
+> **Identity isolation is a precondition for decorrelation metering, not a feature beside it.**
+> A `ρ` measured across agents that share authority is measuring one agent N times. The Kish
+> `n_eff` it feeds is then not merely imprecise — it is answering a question about a population
+> that does not exist.
+
+**The chain, and every layer is checked or named as unchecked.**
+
+| layer | mechanism | status |
+|---|---|---|
+| node | **TPM** attests the machine (SPIRE `tpm_devid` node-attestor) | one identity **per node**, which is the point *and* the limit |
+| process | **SPIFFE/SPIRE** attests the *calling process* — UDS peer credentials, then docker/k8s/unix plugins — and returns a short-lived **SVID** | the workload **holds no bootstrap secret**; identity is *observed*, not presented |
+| key | **YubiHSM domains + capabilities + delegated capabilities**, where delegation is monotone-decreasing | **measured** on our own device, fw 2.4.1 |
+
+The mapping is `SPIFFE ID → HSM domain`: a broker holding the HSM session accepts an SVID and will
+only sign inside that ID's domain. **The multi-tenancy comes from the HSM, not the TPM** — a TPM
+binds to the node, and a node runs many agents, so it structurally cannot supply the per-agent
+split. That ordering is the opposite of the intuitive one and is worth stating plainly.
+
+It also lands on machinery we already have: SVIDs are **short-lived and auto-rotating**, which is
+the *hats grant claims, bounded duration* model — SPIFFE trust domain ≈ node, SVID ≈ the
+bounded-duration claim.
+
+**Where it stops, and why the honest limit is load-bearing.** SPIRE's docker/unix attestation reads
+properties from a **shared kernel**, and the workload-API socket is itself the trust boundary. So
+this is **strong operational identity, not cryptographic isolation** — a large improvement over
+shared credentials, and *not* the thing it is imitating.
+
+What it is imitating is **Singularity** (Microsoft Research): an OS whose processes are isolated by
+type-safety and verification rather than the MMU, launched from **signed manifests**, with managed
+code and GC in the kernel — succeeded by **Midori**. Neither shipped. **seL4** is the shipped end of
+that spectrum, with a machine-checked proof of isolation; per-VM attestation (SEV-SNP / TDX) is the
+deployable-today tier.
+
+**So host root is special, and the disposition is explicit** (Aaron 2026-08-20): *"host root is
+special for now until we make our own kernel that can disambiguate, we have to extra protect the
+host."* That is a **stated trust assumption, not an oversight** — the correct response is to harden
+and minimise the host, and to treat any design that quietly assumes container-level isolation is a
+security boundary as **wrong until the kernel can tell agents apart**.
+
 ### Echolocation over time — the Z-set fold measures correlation, and the interference formula IS the variance algebra
 
 *(2026-08-19, Aaron: "this is our echolocation over time, the debounced together without √2
