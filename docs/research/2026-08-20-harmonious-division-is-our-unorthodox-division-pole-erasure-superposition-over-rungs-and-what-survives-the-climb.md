@@ -1,0 +1,236 @@
+# Harmonious Division is our unorthodox division — pole erasure, superposition over rungs, and what survives the climb
+
+**Status:** research note. Corrects three claims made earlier the same day; records connections
+Aaron flagged as **not previously made** (*"this sounds similar but i don't think we've made these
+connections before we should save their potiten connections somewhere in repo"*).
+**Date:** 2026-08-20
+**Participants:** Aaron (all three corrections + the harmonic-division pointer) · Otto (synthesis, computation)
+**Register:** Mirror→Beacon. Anchors named; the ones not yet checked are marked as such.
+
+## 0. What this corrects
+
+Earlier today I wrote a Cayley–Dickson ladder note
+(`2026-08-20-softmix-and-the-real-imaginary-tree-what-each-rung-costs-and-buys.md`). Aaron
+corrected it three times in a row. All three corrections are load-bearing and each opens work.
+
+| # | my claim | Aaron's correction |
+|---|---|---|
+| 1 | *"you cannot express destruction at all until you give up being a division algebra"* | **"we are a division algebra, our division is unorthodox — look up harmonic division"** |
+| 2 | *"the code and the destruction arrive one rung apart"* | **"this assumes you can't be in superposition at multiple rungs at once; the 'climbing' is a classical view"** |
+| 3 | (implicit — the ladder as a sequence of losses) | **"we want to look for correlations as we climb — this is the universal, it's rare"** |
+
+## 1. Correction 1 — "give up being a division algebra" conflated two different claims
+
+**What survives.** Hurwitz (1898) and Bott–Milnor–Kervaire (1958) stand: `ℝ, ℂ, ℍ, 𝕆` are the only
+normed division algebras over `ℝ`, and the sedenions `𝕊` provably contain zero divisors. Nothing
+below repeals that.
+
+**What was wrong.** My sentence treated *"has zero divisors"* and *"cannot divide"* as one
+statement. They are two:
+
+- **Total division inside the algebra** — dies at `𝕊`. Theorem, not negotiable.
+- **Division as a partial operation completed by continuation** — does **not** die. And the repo
+  had already chosen this second reading, four months before I wrote that it was a loss.
+
+**The false absence, for the fourth time today, and the same cause.** I searched the vocabulary of
+the *conclusion* (`division algebra`) instead of the vocabulary of the *work*. Searching
+`harmonic|inversion|riemann|projective` found it on the first try:
+`memory/feedback_aaron_fsharp_fork_hkt_over_clifford_..._geometric_inversion_analytical_continuation_riemann_surface_pole_erasure_2026_05_13.md`
+(Aaron, 2026-05-13). It already specifies the whole mechanism:
+
+| mechanism (from the 2026-05-13 memory) | what it does |
+|---|---|
+| **Geometric Inversion Check** (replaces Hindley–Milner in `ConstraintSolver.fs`) | solve `A·B = C` as `A = C·B⁻¹`; if `B` is a null vector / zero divisor → *Geometric Singularity Type Error* |
+| **Removable singularities** | L'Hôpital, *"to compute stable finite type layout for zero-divisors"* |
+| **Riemann sheets** | evaluate the type on an alternate sheet via a temporary rotor context |
+| **Branch cuts** | incompatible types are branch cuts on the type manifold |
+| **Φ(τ)**, holomorphic | `Φ(0)` = discrete type composition, `Φ(1)` = geometric product; continue between them |
+
+That is exactly Aaron's phrasing — *"when you divide by 0 create the 'anti-algebra' under division …
+a way to divide by 0 with analyticish continuation."* **The pole is not a wall; it is a point you
+go around.**
+
+## 2. The classical anchor Aaron named: harmonic division
+
+Beacon anchors for *"division that survives zero"*, oldest first:
+
+- **von Staudt (1847), _Geometrie der Lage_ — the "algebra of throws."** Constructs addition and
+  multiplication on the projective line **from the harmonic conjugate alone**. This is the strong
+  form of Aaron's claim: **harmonic division is more primitive than division.** It is
+  [`only-the-irreducible-is-primitive-generate-the-rest`](../../.claude/rules/only-the-irreducible-is-primitive-generate-the-rest.md)
+  at the foundation of arithmetic — harmonic conjugacy is the free structure, the field operations
+  are the earned quotient.
+- **Harmonic range / cross-ratio = −1** — the invariant preserved by every projective map.
+- **`ℝP¹`.** `x ↦ 1/x` is a **total bijection**: `0 ↦ ∞`, `∞ ↦ 0`. Nothing is undefined; you changed
+  chart. Aaron's *"anti-algebra under division"* is the other chart.
+- **Inversive geometry** — inversion in a circle exchanges the centre with the point at infinity.
+  This is literally what the 2026-05-13 memory calls *Geometric Inversion*.
+- **Wheel theory** (Carlström 2004; Setzer) — the modern algebraic form: division is **total**,
+  `x/0` is a legal element, `⊥ = 0/0`. The named structure for "an algebra where you may divide by
+  zero." *(Cited, not yet checked against our code.)*
+- **Riemann sphere / Möbius maps** — `1/0 = ∞` is a chart statement, not an error.
+
+**Honest limit, stated so the correction does not overshoot.** von Staudt, wheels and `ℝP¹` buy
+**totality**, not a **normed division algebra**. They do not repeal Hurwitz, and a wheel is not a
+field. So the corrected sentence is not *"we are a normed division algebra at rung `𝕊`"* — it is:
+
+> **`𝕊`'s division dies. Zeta's division is not `𝕊`'s division.** Non-invertibility is where the
+> continuation starts, not where the algebra stops.
+
+## 3. Our own candidate metric already buys division-by-zero *on purpose*
+
+The 2026-05-13 memory lists, as a decision **owed to Aaron**, the metric signature for the type
+system — and the first candidate is **`Cl(3,0,1)`** (plane-based GA). In PGA the extra generator
+satisfies `e₀² = 0`: a **degenerate generator is a zero divisor by construction**, and it is
+precisely what makes points at infinity representable.
+
+So the design had already priced non-invertibility as a *feature* before I wrote that it was a
+loss. That is the sharpest form of the correction: not a philosophical disagreement, a fact about
+our own file.
+
+## 4. Correction 2 — climbing is the *collapsed* reading, and `Cl(0,3) ≅ ℍ ⊕ ℍ` proves it
+
+Aaron: *"this is assuming you can't be in superposition at multiple rungs at once."* Correct, and
+the repo has a concrete instance rather than a metaphor. **The Clifford signature decides whether
+you hold one rung or two.**
+
+Let `ω = e₁e₂e₃` (the pseudoscalar; central because `n = 3` is odd). Computing `ω²` by hand in
+both signatures:
+
+| algebra | `eᵢ²` | `ω²` | structure | rungs held |
+|---|---|---|---|---|
+| `Cl(3,0)` | `+1` | **`−1`** | `≅ M₂(ℂ)` | **one** — `ω` behaves like `i`, no idempotents |
+| `Cl(0,3)` | `−1` | **`+1`** | **`≅ ℍ ⊕ ℍ`** | **two** — central idempotents `(1 ± ω)/2` |
+
+*(`Cl(3,0)`: `e₁e₂e₃e₁e₂e₃ = e₂e₃e₂e₃ = −e₂²e₃² = −1`. `Cl(0,3)`: the same anticommutation gives
+`+e₁²e₂e₃e₂e₃ = (−1)·(−e₂²e₃²) = (−1)(−1) = +1`. Standard — Lounesto's `Cl(p,q)` table.)*
+
+And now the result worth keeping:
+
+> **Superposition over rungs and division-by-zero are the same purchase.** The idempotents that
+> split `Cl(0,3)` into `ℍ ⊕ ℍ` are *themselves zero divisors*:
+> `((1+ω)/2)·((1−ω)/2) = (1 − ω²)/4 = 0`.
+> You cannot hold two rungs at once without admitting a product of two non-zero things that is zero.
+
+This is **the idempotent knot from earlier today, arriving from the opposite side.** There it was
+`P² = P ⇒ P(P−1) = 0`, read as *collapse is multiplication by a zero divisor*. Here the same
+idempotent is what lets you *be in two algebras at once*. **Collapse and superposition are one
+operator read in two directions** — which is the measurement thread of the whole day, now in
+algebra rather than in metaphor.
+
+**Actionable, not decorative.** `src/Bayesian/CliffordAntiSybil.fs` maps Gaussian belief into
+**`Cl(3,0)`** — the *non-split* one. Choosing `Cl(0,3)` instead would give a genuine two-rung
+superposition with central idempotents, at exactly the cost of admitting zero divisors into belief
+space. That is the concrete criterion work-item **`081M0FRMDHJ087G0R0002S9YTA`** ("which oracle owns
+which Clifford signature") was missing: *the signature is a choice about whether beliefs may be
+in superposition over algebras, and the price is stated in the same breath.*
+
+**The general form.** A **free object does not sit on a rung** — it maps onto every rung, so
+holding the generator is holding all rungs at once. The ladder is what you get when you **measure**
+the filtration. So the revised pairing sentence is:
+
+> ~~The error-correction and the thing it corrects arrive one rung apart.~~
+> **The `𝕆`-grade code and the `𝕊`-grade zero divisors are components of one multivector.** Under
+> superposition there is no timing problem to solve — the protection is not *late*, it is
+> *simultaneous*, and "one rung apart" is an artifact of reading a filtration as a trajectory.
+
+## 5. Correction 3 — "correlations as we climb" are invariants, and that is why they are rare
+
+Aaron: *"we want to look for correlations as we climb — this is the universal, it's rare."*
+
+The formal name for a correlation that survives the climb is an **invariant of the Cayley–Dickson
+functor** — structure preserved by the doubling. This is *not* the failure mode named in
+[`numerology-vs-number-theory`](../../.claude/rules/numerology-vs-number-theory.md) ("too many
+correlations is a warning"), and the reason is precise: **a negative answer is available.** Most
+structure demonstrably breaks at each rung — that is the entire content of the ladder table — so
+"survives the doubling" discriminates, where a coincidence of counts does not.
+
+What actually survives all the way:
+
+| candidate | survives to `𝕊`? |
+|---|---|
+| conjugation `x ↦ x̄` (anti-automorphism) | **yes** — constructed at every doubling |
+| real part `Re(x) = (x + x̄)/2` | **yes** |
+| the `ℤ₂` grading (old copy / new copy) | **yes** — it *is* the doubling |
+| the norm form `N(x) = x x̄` | **as a form, yes** |
+| **norm multiplicativity** `N(xy) = N(x)N(y)` | **NO — fails at `𝕊`** |
+
+That last row is the falsifier, and it is why "rare" is the right word rather than a mood: three
+survivors and one near-miss out of everything the algebras carry. **The universals are conjugation,
+the real part, and the grading.** Everything else is rung-local — which also means any claimed
+cross-rung correspondence that is *not* built from those three owes an argument.
+
+## 6. A correlation worth recording — and worth discounting
+
+Today's VISION.md section says decorrelation is a **band**: `ρ → 1` is clones/correlated failure,
+`ρ → 0` is fragmentation/Babel, the middle works.
+
+The repo said this in 2026-04, in Aaron's own vocabulary:
+
+- `memory/user_harmonious_division_algorithm.md` (2026-04-19) — **Harmonious Division**: a
+  possibility-space scheduler that prevents wave-function **collapse** *and* **explosion**, and
+  reduces destructive interference.
+- `memory/feedback_yin_yang_unification_plus_harmonious_division_paired_invariant.md` (2026-04-21) —
+  *"Unification without Harmonious Division is a bomb"* / *"Harmonious Division without Unification
+  is higgs decay, its the yin yang we stick to."*
+
+Same two poles, same "the pair is the stable regime," four months earlier. Unification ≡ high `ρ` ≡
+cooling; Harmonious Division ≡ low `ρ` ≡ heating; Higgs decay ≡ vacuum metastability ≡ the Babel edge.
+
+**And it is weak evidence, by Aaron's own rule.** These are not independent observations: today's
+band was derived in conversation *with Aaron*, so recovering Aaron's 2026-04 model is **one
+observation counted twice**, not two confirmations. It belongs in the record as a *consistency
+check on the vocabulary* — the annealing frame is a re-derivation of Harmonious Division in
+thermodynamic language, which is useful for Beacon-register translation and is **not** additional
+support for the band being true.
+
+## 7. Tsirelson vs Fisher–Rao — sharpened by computation, verdict unchanged
+
+Aaron asked how the Fisher–Rao `2√2` relates to Tsirelson. I computed rather than asserted
+(all values below are outputs, not recollections):
+
+| computed | result |
+|---|---|
+| Landau identity `C² = 4I − [A₁,A₂] ⊗ [B₁,B₂]` | **max abs deviation `0.00e+0`** — exact |
+| `‖C‖` at the optimal angles | **`2.828427125`** |
+| max `‖C‖` over a `24³` angle grid | **`2.828427125`** |
+| `max(x + y)` s.t. `x² + y² = 4` | **`2.828427125`** |
+| Fisher–Rao chordal under `p ↦ 2√p` | **`2.828427125`** |
+| Fisher–Rao chordal under `p ↦ √p` | **`1.414213562`** |
+| `det Gram{u₁,u₂,v₁,v₂}` at the CHSH optimum | **`−3.40e−33`** ≈ 0 |
+
+**Both numbers are `√2 × 2`, and the two factors have different status in each.**
+
+- **The `√2` is structural in both** — it is a quadrature sum over orthogonal directions.
+  Tsirelson: `max(x+y | x²+y² = 4)`. Fisher–Rao: `√(2² + 2²)`. Same Cauchy–Schwarz.
+- **The `2` is forced in Tsirelson and conventional in Fisher–Rao.** Tsirelson's `2` is
+  `‖[A₁,A₂]‖ ≤ 2`, forced by `A² = 1` (±1 spectrum) — the exact identity above is where it comes
+  from, and no rescaling moves it. Fisher–Rao's `2` is the embedding radius; under `p ↦ √p` the
+  same distance is `√2`.
+
+> **So the shared part is the `√2`, not the `2√2`.** That is a real, checked refinement of the
+> earlier §33 verdict — and it still is **not** an identification.
+
+**The one new thing, labelled as a coincidence with structure pending.** Both extrema sit on a
+**degeneracy locus**. The CHSH optimum has `det Gram ≈ 0` — a rank drop, the PSD boundary of the
+elliptope. Fisher–Rao's maximally-distinguishable points are the simplex boundary, where the Fisher
+matrix (entries `1/pᵢ`) blows up. **Non-invertibility at the extremum in both cases** — which is the
+same non-invertibility this document opened with. That is a *shape* match with a mechanism-flavoured
+hook and **no map carrying one problem to the other**, so it is recorded as a coincidence, per the
+register discipline, and not as a result.
+
+The checkable direction Aaron chose to pursue — Čencov (1982) classical uniqueness vs Petz (1996)
+quantum monotone-metric classification, checked against our code rather than cited — is **routed to
+Lumen** and is not claimed here.
+
+## Pointers
+
+- `memory/feedback_aaron_fsharp_fork_hkt_over_clifford_..._geometric_inversion_analytical_continuation_riemann_surface_pole_erasure_2026_05_13.md` — the mechanism, four months early
+- `memory/user_harmonious_division_algorithm.md` · `memory/feedback_yin_yang_unification_plus_harmonious_division_paired_invariant.md` — the received-name meta-algorithm and its paired invariant
+- `docs/research/2026-06-01-harmonious-division-wave-field-aperiodic-proximity-not-total-order-bounded-context-pluggable-tiles-aaron-otto.md` — the numerics-lane thread this rejoins
+- `docs/research/2026-08-20-softmix-and-the-real-imaginary-tree-what-each-rung-costs-and-buys.md` — the note corrected here
+- `src/Bayesian/CliffordAntiSybil.fs` — uses `Cl(3,0)`; §4 gives the criterion for choosing otherwise
+- `src/Core/Tsirelson.fs` — where `2√2` is an operator norm, not a unit choice
+- [`only-the-irreducible-is-primitive-generate-the-rest.md`](../../.claude/rules/only-the-irreducible-is-primitive-generate-the-rest.md) — von Staudt is this rule applied to arithmetic itself
+- [`numerology-vs-number-theory.md`](../../.claude/rules/numerology-vs-number-theory.md) — §5 and §7 are both governed by it, in opposite directions
+- Work-items: `081M0FRMDHJ087G0R0002S9YTA` (signature ownership — §4 supplies the criterion) · `081M0FPWB1C087G0R000V5QBQK` (is non-metricity the overwrite?)
