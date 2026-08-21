@@ -398,7 +398,7 @@ describe("MUTATION -- scrape opt-in coherence", () => {
     const dir = tempTree();
     const text = readFile(dir, "hat-system", "deployment.yaml")
       .split("\n")
-      .filter((l) => !l.includes("prometheus.io/"))
+      .filter((l) => !/^\s*"?prometheus\.io\//.test(l))
       .join("\n");
     writeFile(dir, "hat-system", "deployment.yaml", text);
     const fails = checkScrapeOptIn(readAuthoredDocs(appsOf(dir)));
