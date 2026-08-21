@@ -327,6 +327,57 @@ recorded as a **resonance**, not a result: nobody has shown the mechanisms corre
 shape is the generator, not the conclusion. (Anchor for the mechanism itself: Barrangou et al. 2007;
 the editing tool is Jinek/Doudna/Charpentier 2012.)
 
+### 3c. We already formalized this — Aurora's immune math, and it is typed over LANGUAGE
+
+Aaron 2026-08-21, on the CRISPR note above: *"we have a document called like standardized immune
+system math or something, it was one of our first formal analysis and went thorough several rounds
+of review. This is similar to adaptive immune memory but it's geared twards LLMs and english
+memetic infections of language, can affect humans too."*
+
+His recall is accurate. **`docs/research/aurora-immune-math-standardization-2026-04-26.md`** — the
+Aurora Immune System math, Amara's original frame **canonicalized after a 5-pass cross-AI review**
+(Otto rigor pass, Gemini surface, Gemini Deep Think, Amara's review-of-the-review, Round-2 Deep
+Think). Amara's direction is the register the whole doc is written in: *"the winning move is to
+canonicalize the strict version, not the flattering version."*
+
+**Two things make it the right sibling for this ferry rather than a loose association:**
+
+1. **It is typed over language, not over hosts.** The state table defines `L_t` as **"language
+   state — distribution over emission strategies"**, and `Legibility_H ≥ θ_H` gates *cipher drift*
+   — an emission the membrane rejects when shared meaning has decayed. So the immune system's
+   antigen space is emissions, which is exactly the panel's threat surface.
+2. **Its memory operator has CRISPR's shape.** `M_t = archive ∪ active`, with archive re-grounded
+   as **the antibody ledger — "write-the-pattern-down"**. A stored record of past encounters,
+   read to classify what arrives next. That is the spacer array's function, arrived at
+   independently and for a different substrate.
+
+**This closes the loop the panel opens.** Barenholtz and Hahn state the threat and stop there:
+language is an OS *"downloaded against your will"* that *"makes people do things"*, humans have a
+jailbreak surface, and the attack can now be A/B tested at machine speed against a simulated
+person. They offer no defence. Aurora **is** the defence, typed months earlier, and it carries the
+operators the panel's threat model would need — self/non-self, BFT quarantine thresholds,
+`CoordRisk` via `ρ(A_t)` / `λ₂(L_t)` for cult-hub and cartel detection,
+`cap_allowed = cap_requester ∩ cap_source` for the confused deputy, and a time-bounded harm horizon.
+
+**And it is the third independent arrival in this one ferry.** EVE reaches "vocabulary carries
+control" from protocol design; the panel reaches it from cognitive science; Aurora reaches
+"emissions need an immune system" from governance. None shares a mechanism with the others.
+
+**Register, held rather than upgraded.** Aurora is stamped *"Research-grade hypothesis. NOT
+operational guidance. NOT Aurora core canon."*, carries an explicit *"what not to claim yet"*
+section and a non-fusion disclaimer, and Amara's binding correction was *"not 'ready for
+deployment,' but 'ready for a formal standardization PR and prototype test harness.'"* Finding it
+does **not** promote the CRISPR link from resonance to result — what changed is that the resonance
+now has a **formal object on our side of the analogy**, which is a better place to stand and still
+not a proof that the mechanisms correspond.
+
+**Live open work, not a closed file.**
+`docs/research/2026-06-16-aurora-immune-math-reconciliation-scoping-reground-on-proven-identity-primitive.md`
+records that Aurora typed its operators *before* the identity legs were discharged, and routes the
+re-grounding — self/non-self onto proven identity distinctness, BFT thresholds onto counts of
+*proven-distinct* anti-Sybil identities rather than Sybil-blind node counts. Trajectory:
+`docs/trajectories/aurora-immune-reground`.
+
 ---
 
 ## 4. Register
