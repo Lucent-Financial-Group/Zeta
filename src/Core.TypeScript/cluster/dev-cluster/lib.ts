@@ -30,6 +30,18 @@ export const DEV_STORAGE_ALIAS_MANIFEST_RELPATHS = {
 /** The StorageClass name the dev/CI longhorn alias is required to declare. */
 export const DEV_LONGHORN_ALIAS_CLASS_NAME = "longhorn";
 
+/**
+ * Provisioners a dev/CI substrate can actually satisfy.
+ *
+ * The alias check is NOT "is there a StorageClass by that name" -- that is
+ * satisfied by `provisioner: driver.longhorn.io`, which is exactly the thing a
+ * kind node cannot run. An edit that "restored parity" by pointing the dev
+ * manifest at the real Longhorn driver would then unlock ten Applications onto
+ * a class that can provision nothing, and every one of their PVCs would pend.
+ * So the provisioner is pinned to what the dev substrate ships.
+ */
+export const DEV_SATISFIABLE_PROVISIONERS: ReadonlySet<string> = new Set(["rancher.io/local-path"]);
+
 /** Absolute path of a dev alias manifest, for the bring-up use-cases. */
 export function devStorageAliasManifestPath(key: keyof typeof DEV_STORAGE_ALIAS_MANIFEST_RELPATHS): string {
   return join(REPO_ROOT, DEV_STORAGE_ALIAS_MANIFEST_RELPATHS[key]);

@@ -55,7 +55,12 @@ const SMOKE_APPLICATION_LIST = JSON.stringify({
 });
 
 async function withFakeClusterCli(
-  mode: "invalid-list-json" | "drift-read-fails" | "storageclass-missing" | "storageclass-present",
+  mode:
+    | "invalid-list-json"
+    | "drift-read-fails"
+    | "storageclass-missing"
+    | "storageclass-present"
+    | "storageclass-wrong-provisioner",
   action: () => Promise<void>,
 ): Promise<void> {
   const cliDir = mkdtempSync(join(tmpdir(), "zeta-argocd-health-cli-"));
@@ -75,7 +80,10 @@ async function withFakeClusterCli(
     'if [ "${1:-}" = get ] && [ "${2:-}" = namespace ]; then exit 0; fi',
     'if [ "${1:-}" = get ] && [ "${2:-}" = storageclass ]; then',
     '  if [ "$mode" = storageclass-missing ]; then echo "Error from server (NotFound): storageclasses.storage.k8s.io \\"longhorn\\" not found" >&2; exit 1; fi',
-    '  echo "storageclass.storage.k8s.io/longhorn"',
+    // Exits 0 with the REAL Longhorn driver: the name is right, the substrate is
+    // not. An existence-only check would pass here.
+    '  if [ "$mode" = storageclass-wrong-provisioner ]; then printf "driver.longhorn.io"; exit 0; fi',
+    '  printf "rancher.io/local-path"',
     "  exit 0",
     "fi",
     'if [ "${1:-}" = wait ]; then exit 0; fi',
@@ -280,7 +288,7 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test manifest parsing", () =>
   });
 
   /**
-   * 081M0V5R41H087G0R000GQ5CGB — the longhorn rule is CONDITIONAL on substrate,
+   * 081M0JXF6MS087G0R001HC34TM — the longhorn rule is CONDITIONAL on substrate,
    * not deleted. These four tests pin both branches plus the RWX carve-out;
    * without the pair, "we made those apps testable" would be indistinguishable
    * from "we stopped checking".
@@ -303,21 +311,30 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test manifest parsing", () =>
     }
   });
 
-  test("a ReadWriteMany claim stays excluded even with the alias — local-path cannot serve it", () => {
+  test("a ReadWriteMany claim stays excluded regardless of which class it names", () => {
+    // The access mode is the hazard, not the class name: EVERY dev class is
+    // rancher.io/local-path, which is RWO-only. So the RWX rule must gate on its
+    // own, not nested inside the longhorn branch -- otherwise an RWX claim
+    // against zeta-local-path, against kind's default, or against no class at
+    // all sails through and hangs.
     const repoRoot = mkdtempSync(join(tmpdir(), "zeta-argocd-health-rwx-"));
     try {
-      const appDir = join(repoRoot, "full-ai-cluster/k8s/applications/demo");
-      mkdirSync(appDir, { recursive: true });
-      writeFileSync(
-        join(appDir, "Application.yaml"),
-        "apiVersion: argoproj.io/v1alpha1\nkind: Application\nmetadata:\n  name: demo\nspec: {}\n",
-      );
-      writeFileSync(
-        join(appDir, "cache-pvc.yaml"),
+      const claims = [
         "kind: PersistentVolumeClaim\nspec:\n  accessModes: [ ReadWriteMany ]\n  storageClassName: longhorn\n",
-      );
-      const appText = readFileSync(join(appDir, "Application.yaml"), "utf8");
-      expect(isExcludedFromIncludedProof("demo", appText, appDir, true)).toBe(true);
+        "kind: PersistentVolumeClaim\nspec:\n  accessModes: [ ReadWriteMany ]\n  storageClassName: zeta-local-path\n",
+        "kind: PersistentVolumeClaim\nspec:\n  accessModes: [ ReadWriteMany ]\n",
+      ];
+      for (const [index, claim] of claims.entries()) {
+        const appDir = join(repoRoot, `full-ai-cluster/k8s/applications/demo${String(index)}`);
+        mkdirSync(appDir, { recursive: true });
+        writeFileSync(
+          join(appDir, "Application.yaml"),
+          "apiVersion: argoproj.io/v1alpha1\nkind: Application\nmetadata:\n  name: demo\nspec: {}\n",
+        );
+        writeFileSync(join(appDir, "cache-pvc.yaml"), claim);
+        const appText = readFileSync(join(appDir, "Application.yaml"), "utf8");
+        expect(isExcludedFromIncludedProof("demo", appText, appDir, true), claim).toBe(true);
+      }
     } finally {
       rmSync(repoRoot, { recursive: true, force: true });
     }
@@ -346,8 +363,24 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test manifest parsing", () =>
         "apiVersion: storage.k8s.io/v1\nkind: StorageClass\nmetadata:\n  name: longhorn\n",
       );
       expect(devLonghornStorageClassAliasDeclared(repoRoot)).toBe(false);
+      // THE FAIL-OPEN THAT WOULD OTHERWISE BITE: right name, right kind, but
+      // bound to the real Longhorn driver, which a kind node cannot run. An edit
+      // "restoring parity" this way would unlock ten Applications onto a class
+      // that provisions nothing, and every PVC would pend.
+      writeFileSync(
+        manifest,
+        "apiVersion: storage.k8s.io/v1\nkind: StorageClass\nmetadata:\n  name: longhorn\nprovisioner: driver.longhorn.io\n",
+      );
+      expect(devLonghornStorageClassAliasDeclared(repoRoot)).toBe(false);
       // Unparseable.
       writeFileSync(manifest, "kind: StorageClass\n\tname: longhorn\n  : :\n");
+      expect(devLonghornStorageClassAliasDeclared(repoRoot)).toBe(false);
+      // Multi-document: `parseYaml` throws on `---` separators rather than
+      // silently taking the first document, so this lands in the catch.
+      writeFileSync(
+        manifest,
+        "apiVersion: storage.k8s.io/v1\nkind: StorageClass\nmetadata:\n  name: longhorn\nprovisioner: rancher.io/local-path\n---\nkind: ConfigMap\n",
+      );
       expect(devLonghornStorageClassAliasDeclared(repoRoot)).toBe(false);
       // The real shape.
       writeFileSync(
@@ -836,7 +869,7 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test live failure shaping", (
   });
 
   /**
-   * 081M0V5R41H087G0R000GQ5CGB — the live half of the substrate condition.
+   * 081M0JXF6MS087G0R001HC34TM — the live half of the substrate condition.
    *
    * The repo-side check says dev PROMISED a `longhorn` StorageClass. If the
    * promise is not kept in the cluster, every one of the ten newly-asserted
@@ -857,6 +890,25 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test live failure shaping", (
       expect(result.ok).toBe(false);
       if (result.ok) throw new Error("expected a missing dev StorageClass to fail the harness");
       expect(result.failure.kind).toBe("DevStorageClassMissing");
+    });
+  });
+
+  test("included scope REFUSES a longhorn-NAMED class bound to a provisioner the lane cannot run", async () => {
+    // `kubectl get storageclass longhorn` exits 0 here. Existence is not the
+    // property; being able to provision is. Without the provisioner comparison
+    // this run would proceed and every PVC would pend.
+    await withFakeClusterCli("storageclass-wrong-provisioner", async () => {
+      const parsed = parseArgs(
+        ["--run", "--provider", "kind", "--scope", "included", "--existing", "--timeout-sec", "1", "--poll-sec", "1"],
+        {},
+      );
+      if ("kind" in parsed) throw new Error(parsed.message);
+
+      const result = await runHarness(parsed);
+      expect(result.ok).toBe(false);
+      if (result.ok) throw new Error("expected a non-provisionable dev StorageClass to fail the harness");
+      expect(result.failure.kind).toBe("DevStorageClassMissing");
+      expect(result.failure.message).toContain("driver.longhorn.io");
     });
   });
 

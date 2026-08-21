@@ -34,8 +34,23 @@
 # ReadWriteOnce only. It cannot satisfy a `ReadWriteMany` claim, and it does not
 # enforce the requested capacity (the volume is a directory on the node's
 # filesystem, so a 100Gi request binds on a runner with far less). So an
-# Application asking for RWX stays excluded -- structurally, by a rule that
-# reads the access mode, not by a hand-maintained list.
+# Application asking for RWX stays excluded -- by a rule that reads the access
+# mode rather than a hand-maintained list. Honest limit on that rule: it can
+# only read the CHECKED-IN tree, and every Application this alias unlocks pulls
+# its PVC spec from an upstream chart, so the rule is a floor, not a proof.
+#
+# A DIVERGENCE FROM PROD, STATED RATHER THAN GLOSSED. Prod's Longhorn class is
+# `volumeBindingMode: Immediate`; this is `WaitForFirstConsumer`, matching
+# `zeta-local-path` and what local-path actually needs -- the provisioner has to
+# know which node the volume lands on. The consequence is real and worth knowing
+# before someone debugs one: under `WaitForFirstConsumer` a PVC does not bind
+# until a pod that mounts it is SCHEDULED. So on the single-node kind CI cluster
+# a pod that cannot be scheduled (resource pressure, hard anti-affinity) leaves
+# its PVC unbound, and a bare PVC with no consuming pod never binds at all --
+# both of which bind fine in prod. Neither fails loudly: ArgoCD reports a
+# pending PVC as Progressing, so the symptom is a slow run, not a red one.
+# `Immediate` is NOT the fix -- it would have local-path choose a node before
+# the scheduler does, which is wrong on any multi-node k3d cluster.
 #
 # Do NOT deploy a second local-path provisioner Deployment: kind already ships
 # one, and a duplicate fights it. This declares a NAME only.

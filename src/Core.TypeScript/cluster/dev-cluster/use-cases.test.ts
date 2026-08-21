@@ -1,4 +1,5 @@
 import { describe, expect, test } from "bun:test";
+import { readFileSync } from "node:fs";
 import { buildRootDevCatalogManifest } from "../ports.ts";
 import { devStorageAliasManifestPath } from "./lib.ts";
 import { bringUpK3dDevCluster, bringUpKindCiCluster } from "./use-cases.ts";
@@ -76,7 +77,7 @@ describe("kind CI use case", () => {
   });
 
   /**
-   * 081M0V5R41H087G0R000GQ5CGB — THE WIRING FALSIFIER.
+   * 081M0JXF6MS087G0R001HC34TM — THE WIRING FALSIFIER.
    *
    * `isExcludedFromIncludedProof` stops excluding ten longhorn-backed
    * Applications because `dev-cluster/manifests/longhorn.yaml` exists in the
@@ -126,5 +127,22 @@ describe("kind CI use case", () => {
     const catalogAt = log.findIndex((entry) => entry.startsWith("catalog:"));
     expect(catalogAt).toBeGreaterThan(-1);
     expect(log.indexOf(longhorn)).toBeLessThan(catalogAt);
+  });
+
+  /**
+   * THE THIRD DOOR. `apply-root-app.ts` applies the root catalogue without going
+   * through either bring-up, so the two tests above could both be green while
+   * that entrypoint synced longhorn-backed Applications into a cluster with no
+   * such class. This asserts the shared helper exists and is what all three
+   * routes call -- the source-level half of that guarantee, since
+   * `applyRootApp` builds its own live ports and cannot be driven with fakes.
+   */
+  test("applyRootApp routes through the same shared alias helper, before the catalog", () => {
+    const source = readFileSync(new URL("./apply-root-app.ts", import.meta.url), "utf8");
+    const aliasAt = source.indexOf("applyDevStorageClassAliases(ports)");
+    const catalogAt = source.indexOf("applyRootDevCatalog(gitRef, gitRepoUrl)");
+    expect(aliasAt).toBeGreaterThan(-1);
+    expect(catalogAt).toBeGreaterThan(-1);
+    expect(aliasAt).toBeLessThan(catalogAt);
   });
 });

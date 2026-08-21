@@ -13,8 +13,13 @@ import { devStorageAliasManifestPath } from "./lib.ts";
  * is provider-independent, so if only one provider created the `longhorn` alias
  * the harness would assert longhorn-backed Applications on a substrate that
  * cannot bind them, and they would hang `Pending` instead of failing.
+ *
+ * EXPORTED because `apply-root-app.ts` is a THIRD entrypoint that applies the
+ * root catalogue without going through either bring-up. Left alone it would
+ * sync longhorn-backed Applications into a cluster with no such class -- the
+ * same hazard, reached by a door the bring-up falsifiers do not watch.
  */
-function applyDevStorageClassAliases(ports: DevClusterPorts): void {
+export function applyDevStorageClassAliases(ports: DevClusterPorts): void {
   console.log("Ensuring dev/CI alias StorageClasses (zeta-local-path, longhorn) ...");
   ports.controlPlane.applyFileManifest(devStorageAliasManifestPath("zetaLocalPath"));
   ports.controlPlane.applyFileManifest(devStorageAliasManifestPath("longhorn"));

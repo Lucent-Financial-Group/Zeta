@@ -70,7 +70,7 @@ requests changes; that file lives under `dev-cluster/`, which ArgoCD
 never reads, and on bare metal the Longhorn chart creates the real class
 over `driver.longhorn.io`.
 
-The exclusion is **conditional, not deleted** (081M0V5R41H087G0R000GQ5CGB),
+The exclusion is **conditional, not deleted** (081M0JXF6MS087G0R001HC34TM),
 because an unbindable PVC does not fail — it sits `Pending` until the
 harness times out, and a timeout prints no verdict at all. So:
 
