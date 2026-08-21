@@ -141,6 +141,43 @@ book drafts to a private repo and publish only cleared chapters; (c) keep third-
 committed drafts entirely, using placeholders until a passage clears. (a) is the smallest change and
 the only one that needs nothing moved.
 
+### 2026-08-21 (same day, later) — CORRECTION to the note above: the drafts are **disclosed**
+
+Aaron 2026-08-21: *"before publish is a real book publishing for sale, not the draft versions,
+everyone knows my drafts are on github i've sent them the links."*
+
+**That is the fact the note above was missing, and it retracts its central claim.** I wrote that the
+protection was *"positioned wrong"* — a gate firing after the event it exists to guard. That framing
+assumed the public draft surface was an **unnoticed** exposure. It is not: the people named **know
+the drafts are public and were sent the links directly.** With disclosure, this is not a defect; it
+is a deliberate two-stage arrangement, and a coherent one:
+
+| stage | status |
+|---|---|
+| **draft, in the public repo** | open by design, and **disclosed to the people named** — consistent with the repo's transparency posture |
+| **the book published for sale** | **proofread veto for everyone named**, before it goes to a store |
+
+Consent obtained knowing the drafts are public is *informed*, which is the thing that was actually in
+question. The earlier note's alarm does not survive it.
+
+**What does survive, stated smaller and without the alarm:**
+
+1. **Git history is still permanent.** Not a consent gap now, but a fact worth someone holding: a
+   later *"please take that out"* removes it from the working tree and **not** from the history,
+   absent a rewrite (force-push, gated). Anyone consenting to a public draft is consenting to that
+   too, and probably should be told so once rather than assumed to have inferred it.
+2. **Houman's solo-story boundary stands independent of any gate.** A passage about material that is
+   his alone should not be *drafted*, because drafting is publishing here. The proofread veto is not
+   the guard for that one — not-writing-it is.
+3. **The disclosure premise has to be maintained, not assumed.** It holds because Aaron sent links to
+   the people currently named. **Anyone added later must also be told**, or it lapses for them
+   silently — and silently is how it would fail, since nothing in the repo checks it.
+
+**Register on my own note above:** it was a real check (repo visibility, verified) attached to a
+wrong premise (that nobody had been told). Recording the retraction next to it rather than deleting
+it, because a corrected finding is more useful than a vanished one — and because the missing fact was
+one question away and I did not ask it before writing the conclusion.
+
 **Rule of thumb:** Aaron's own experience = glass-halo (his to make transparent). Facts about *other*
 identifiable living people = their frost — tracked here, protected until consented; **minors protected
 regardless.** Update this row-by-row as consents change (e.g. mother's therapy-condition clears).
