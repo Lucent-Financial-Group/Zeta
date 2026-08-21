@@ -775,6 +775,23 @@ jobs:
       - name: Cluster-tree consumer roster — mutation suite (proves it goes red)
         run: bun test src/Core.TypeScript/hygiene/audit-cluster-tree-consumers.test.ts
 
+      # 2026-08-20 — the observability chain was broken at every link and every
+      # break was values-only, so helm template, kubeconform and yamllint were
+      # all green on all of them. Measured on the tree as it shipped: Alloy had
+      # three sinks and zero sources, its Loki sink named a Service the chart
+      # does not render, and every alert routed to a receiver named "null".
+      # This audit refuses all three classes. It needs no network and no helm:
+      # Service names come from a rendered roster that is freshness-keyed to the
+      # target Application, so a chart bump without --refresh fails as STALE
+      # rather than asserting a stale render. MEASURED: 0.4 s, bun + yaml only.
+      - name: Observability chain (no sink without a source, no alert into /dev/null)
+        run: bun src/Core.TypeScript/hygiene/audit-observability-chain.ts
+
+      # Proves the audit above can go red, including against the exact pre-fix
+      # content of the tree. MEASURED: 22 tests, 40 assertions, 0.5 s.
+      - name: Observability chain — mutation suite (proves it goes red)
+        run: bun test src/Core.TypeScript/hygiene/audit-observability-chain.test.ts
+
       - name: Install narrow YAML lint tools
         run: |
           set -euo pipefail
