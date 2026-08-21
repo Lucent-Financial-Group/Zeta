@@ -61,6 +61,7 @@ locally, which is an equal part of a global network. Shutting down peers causes 
 to transparently move work to others; he says Freenet "literally roots around censorship."
 
 **Two primitives.**
+
 - **Contracts** hold shared state on the peer-to-peer network. A contract is both the shared
   data and the WebAssembly code governing it: what state is valid, whether it may be
   transmitted, how and under what conditions it may be updated, and how state is efficiently
@@ -135,6 +136,7 @@ spam and abuse, and because they helped competitors — concluding the internet 
 interoperable but deliberately is not.
 
 **Q&A.**
+
 - *Why River before Mail?* Group chat scales down as well as up — useful with two or five
   people — whereas email must be pervasive to be useful, and a two-person social network is
   uninteresting.
