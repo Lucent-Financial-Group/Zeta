@@ -425,6 +425,29 @@ describe("seal-stanza-requires-vault-enterprise", () => {
     expect(rendersHashiCorpVault({})).toBe(true);
     expect(rendersHashiCorpVault({ repoURL: "https://helm.releases.hashicorp.com", chart: "vault" })).toBe(true);
     expect(rendersHashiCorpVault({ repoURL: "https://helm.releases.hashicorp.com", chart: "consul" })).toBe(false);
+
+    // The chart gate matches the HOST, not a substring. CodeQL flagged the
+    // original `repo.includes(...)` and it was right that the check was loose.
+    // Direction matters and is easy to overstate: a spoofed match returned TRUE,
+    // which makes the Enterprise-seal rule APPLY -- the strict branch -- so the
+    // defect was false FINDINGS, never a bypass. A coherence rule that fires on
+    // a chart it did not identify teaches reviewers to ignore it, which is why
+    // it is worth a falsifier rather than a shrug.
+    expect(
+      rendersHashiCorpVault({ repoURL: "https://example.invalid/?m=helm.releases.hashicorp.com", chart: "vault" }),
+    ).toBe(false);
+    expect(
+      rendersHashiCorpVault({ repoURL: "https://helm.releases.hashicorp.com.example.invalid", chart: "vault" }),
+    ).toBe(false);
+
+    // Still identified when it really is the HashiCorp repo, including OCI and
+    // a bare host -- the guard above must not be satisfied by rejecting all.
+    expect(rendersHashiCorpVault({ repoURL: "oci://helm.releases.hashicorp.com/vault", chart: "vault" })).toBe(true);
+    expect(rendersHashiCorpVault({ repoURL: "helm.releases.hashicorp.com", chart: "vault" })).toBe(true);
+
+    // Unparseable stays STRICT: we cannot prove it is a different chart, so the
+    // rule keeps applying rather than standing itself down on malformed input.
+    expect(rendersHashiCorpVault({ repoURL: "::not a url::", chart: "vault" })).toBe(true);
     expect(rendersHashiCorpVault({ repoURL: "https://openbao.github.io/openbao-helm", chart: "vault" })).toBe(false);
   });
 });

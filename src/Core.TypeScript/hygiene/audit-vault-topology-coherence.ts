@@ -194,12 +194,45 @@ export const VAULT_ENTERPRISE_ONLY_SEALS: readonly string[] = ["pkcs11"];
  * correct, and exercised in both directions by the tests so the non-firing
  * branch cannot go quietly dark.
  */
+const HASHICORP_HELM_HOST = "helm.releases.hashicorp.com";
+
+/**
+ * Host of a Helm source, or `null` when it cannot be determined.
+ *
+ * Helm sources appear as `https://…`, `oci://…`, or occasionally a bare host,
+ * so a missing scheme is supplied rather than treated as a parse failure.
+ */
+function helmRepoHost(raw: string): string | null {
+  const candidate = /^[a-z][a-z0-9+.-]*:\/\//i.test(raw) ? raw : `https://${raw}`;
+  try {
+    return new URL(candidate).hostname.toLowerCase();
+  } catch {
+    return null;
+  }
+}
+
 export function rendersHashiCorpVault(source: unknown): boolean {
   const s = (source ?? {}) as Record<string, unknown>;
   const repo = typeof s["repoURL"] === "string" ? s["repoURL"] : "";
   const chart = typeof s["chart"] === "string" ? s["chart"] : "";
   if (chart !== "" && chart !== "vault") return false;
-  if (repo !== "" && !repo.includes("helm.releases.hashicorp.com")) return false;
+  if (repo !== "") {
+    // Compare the HOST, not a substring. CodeQL flagged the original
+    // `repo.includes("helm.releases.hashicorp.com")` as incomplete URL
+    // sanitization, and it was right that the check was loose: the marker can
+    // sit anywhere, so `https://example.invalid/?m=helm.releases.hashicorp.com`
+    // matched.
+    //
+    // Stated precisely, because the direction matters and is easy to overstate:
+    // a spoofed match made this return TRUE, which makes the Enterprise-seal
+    // rule APPLY. That is the strict branch, so the defect was false FINDINGS,
+    // never a bypass. Fixed because a coherence rule that fires on a chart it
+    // did not identify teaches reviewers to ignore it.
+    const host = helmRepoHost(repo);
+    // Unparseable => we cannot prove this is a DIFFERENT chart, so stay strict
+    // rather than standing the rule down. Fail-closed on unknown, as before.
+    if (host !== null && host !== HASHICORP_HELM_HOST) return false;
+  }
   return true;
 }
 
