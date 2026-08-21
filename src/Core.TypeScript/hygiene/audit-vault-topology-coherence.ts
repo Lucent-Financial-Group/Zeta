@@ -143,7 +143,10 @@ export function retryJoinSchemes(hcl: string): string[] {
   const re = /leader_api_addr\s*=\s*"([a-z]+):\/\//g;
   let m = re.exec(hcl);
   while (m !== null) {
-    out.push(m[1]);
+    // `noUncheckedIndexedAccess` types a capture group as `string | undefined`
+    // even when the pattern guarantees it. Guard rather than assert: a regex
+    // edit that drops the group should make this fall silent, not throw.
+    if (m[1] !== undefined) out.push(m[1]);
     m = re.exec(hcl);
   }
   return out;
@@ -419,7 +422,10 @@ export function bootStorageClasses(nixText: string): string[] {
   const re = /kind:\s*StorageClass[\s\S]{0,200}?name:\s*([a-z0-9-]+)/g;
   let m = re.exec(nixText);
   while (m !== null) {
-    out.push(m[1]);
+    // `noUncheckedIndexedAccess` types a capture group as `string | undefined`
+    // even when the pattern guarantees it. Guard rather than assert: a regex
+    // edit that drops the group should make this fall silent, not throw.
+    if (m[1] !== undefined) out.push(m[1]);
     m = re.exec(nixText);
   }
   return out;
