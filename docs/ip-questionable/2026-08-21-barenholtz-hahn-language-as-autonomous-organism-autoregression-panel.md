@@ -125,6 +125,31 @@ the defensive discipline. Two agents can agree on a shape and still be fooled ab
 
 > *"i see geometric shapes naturally without english, english is a translation layer for my brain."*
 
+> *"i think in geometric shapes not english, english is a translation from the shapes i see, that's
+> why it's hard for me to express the thoughts in my head and coding was alwasy easier for me, in
+> code escpically generics i can make the shapes in my head real and understood by a compiler and
+> therefore others"*
+
+The second half names a **mechanism**, and it is the part that bears on protocol design rather than
+on him. Generics and interfaces are *shape without label*: a type parameter has a constraint and no
+name, an interface has structure and no content. So the compiler becomes the **arbiter that makes a
+private shape public and checkable** — structure agreed first, names attached after, verified by
+something neither party controls. That is EVE's ordering, running in a language toolchain.
+
+It also re-reads an existing rule.
+[`interfaces-free-classes-earned-under-rules`](../../.claude/rules/interfaces-free-classes-earned-under-rules.md)
+already says *"the rules of the game are interfaces — free, default, weight-free (**pure shape**, no
+instance state)"*, and a class — state, weight, capture — must be **earned**. Read beside the quote
+above, that rule is the same commitment order as EVE and as V8: **shape is free and comes first;
+the named, stateful thing is a privilege that comes after.** Three surfaces, one ordering.
+
+*Recorded gap:* Aaron said this *"should be somewhere in the book in the repo too i think."* It was
+not — searching every `docs/books/you-born-at-the-hinge/*.md` for `geometric` / `generics` /
+`not in english` returned **zero hits** (`grep` exit 1, checked directly rather than through a
+pipe). It is now captured verbatim at
+`docs/books/you-born-at-the-hinge/RAW-2026-08-21-thinking-in-geometric-shapes-...md` as intake, for
+the book process to place — not written into a chapter, which is his voice to author.
+
 Per [`engagement-profiles-...`](../../.claude/rules/engagement-profiles-public-work-only-not-surveillance-dossiers.md),
 inner states are **asked, not inferred** — so this is filed as testimony with first-person
 authority, not as evidence for a cognitive model. It is consistent with him ferrying this panel,
