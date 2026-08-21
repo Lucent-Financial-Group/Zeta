@@ -92,7 +92,7 @@ export interface CommandResult {
  * element -- argv is visible in `ps` inside the pod and in any apiserver audit
  * record of the exec, and stdin is neither.
  */
-export type VaultExec = (args: readonly string[], stdin?: string) => CommandResult;
+export type VaultExec = (args: readonly string[], stdin?: string, stdinIsToken?: boolean) => CommandResult;
 
 export interface EphemeralVaultInitGateInput {
   /** True when the caller attached to a cluster it did not create (`--existing`). */
@@ -340,12 +340,39 @@ export function redact(text: string, needles: readonly string[]): string {
   return out;
 }
 
-/** Production `VaultExec`: `kubectl exec -i -n <ns> <pod> -- vault <args>`. */
+/**
+ * Production `VaultExec`: `kubectl exec -i -n <ns> <pod> -- vault <args>`.
+ *
+ * `stdinIsToken` switches to a shell form that reads one line from stdin and
+ * exports it as `VAULT_TOKEN` before exec-ing vault. Needed because
+ * `token revoke -self` must AUTHENTICATE as the token it is revoking, and the
+ * root token exists nowhere in the pod -- `operator init` printed it to us and
+ * to nobody else.
+ *
+ * The three obvious ways to supply it are all worse:
+ *   * as an argv element -- visible in `ps` inside the pod and in any apiserver
+ *     audit record of the exec;
+ *   * via `env VAULT_TOKEN=... vault ...` -- same problem, it is still argv;
+ *   * via `vault login` -- which WRITES the token to ~/.vault-token inside the
+ *     container. Persisting the material is the one thing this module may not do,
+ *     even onto a filesystem that dies with the cluster.
+ * Reading it from stdin into a shell variable puts it in the child's environment
+ * and nowhere else.
+ */
 export function kubectlVaultExec(namespace: string, pod: string, timeoutMs = 120_000): VaultExec {
-  return (args, stdin) => {
+  return (args, stdin, stdinIsToken) => {
+    const command = stdinIsToken === true
+      ? [
+          "exec", "-i", "-n", namespace, pod, "--",
+          "sh", "-c",
+          'read -r zeta_token; VAULT_TOKEN="$zeta_token" exec vault "$@"',
+          "sh",
+          ...args,
+        ]
+      : ["exec", "-i", "-n", namespace, pod, "--", "vault", ...args];
     const result = spawnSync(
       "kubectl",
-      ["exec", "-i", "-n", namespace, pod, "--", "vault", ...args],
+      command,
       {
         encoding: "utf8",
         input: stdin ?? "",
@@ -479,7 +506,10 @@ export async function runEphemeralVaultInit(deps: EphemeralVaultInitDeps): Promi
   // --- section 5 step 4: the root token is the single most valuable standing
   // credential; revoke it. Nothing in this lane needs it, so it is revoked
   // immediately rather than "after use".
-  const revoke = deps.exec(["token", "revoke", "-self"], undefined);
+  //
+  // The token is passed on STDIN (see kubectlVaultExec's third argument), which
+  // is the last surface it touches before going out of scope below.
+  const revoke = deps.exec(["token", "revoke", "-self"], material.rootToken, true);
   const rootTokenRevoked = revoke.status === 0;
   if (!rootTokenRevoked) {
     deps.log(

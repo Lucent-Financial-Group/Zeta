@@ -419,10 +419,46 @@ const DEV_INCLUDED_PROOF_DEFERRED_DIRS = new Set([
   // .../zeta-portal:latest. portal.yaml also pins `storageClassName: longhorn`,
   // so the longhorn rule catches it independently.
   "platform",
-  // Vault upstream CA + kind PVC wiring not ready in included CI
-  // (081KSXN940008QG0R000SCP2H1). The chart's `upstreamAuthority.vault` block is
-  // commented out pending a Vault that is INITIALISED -- which is why this one
-  // cannot be unblocked ahead of `vault` below.
+  // MEASURED 2026-08-21, run 32528419577 on `main`: `OutOfSync`/`Missing`, event
+  // `Sync operation to 0.24.2 failed: one or more synchronization tasks are not
+  // valid (retried 5 times)`, and ZERO spire pods in the namespace -- the sync
+  // aborts before any workload is created.
+  //
+  // THE OLD REASON WAS STALE ON BOTH HALVES and is corrected rather than
+  // re-copied. It read: "Vault upstream CA + kind PVC wiring not ready in
+  // included CI. The chart's `upstreamAuthority.vault` block is commented out
+  // pending a Vault that is INITIALISED -- which is why this one cannot be
+  // unblocked ahead of `vault`."
+  //
+  //   * The PVC half was already known stale: spire asks RWO/5Gi on
+  //     `zeta-local-path`, which this lane serves.
+  //   * The Vault half is ALSO wrong, and it is the more interesting error. A
+  //     commented-out block is not a pending dependency. `helm template` of
+  //     chart 0.24.2 with this Application's values renders ZERO occurrences of
+  //     `upstream` in 1386 lines; the server self-signs (`ca_subject:
+  //     zeta-spire-ca`). SPIRE does not contact Vault at runtime and would not
+  //     start doing so when Vault is initialised -- only uncommenting those lines
+  //     would. So `spire` was never gated behind `vault` at all, and initialising
+  //     Vault (which this lane now does) changes nothing here.
+  //
+  // The REAL blockers, neither of which involves Vault:
+  //   1. No `spire-crds` source in the ArgoCD/kind lane. Chart 0.24.2 ships no
+  //      `crds/` and no `spire-crds` dependency, yet renders 3 `ClusterSPIFFEID`
+  //      resources -- which is what "synchronization tasks are not valid" is
+  //      reporting. The repo knows this only on the k3s path:
+  //      `k8s/bootstrap/spire-install.yaml` installs `spire-crds` as a k3s-only
+  //      `helm.cattle.io/v1 HelmChart`, and the kind bring-up never applies that
+  //      directory.
+  //   2. The chart's `pre-upgrade` hook Job. gitops-engine maps `pre-upgrade` to
+  //      PreSync unconditionally, so on the FIRST sync a Job runs `kubectl patch`
+  //      against a ValidatingWebhookConfiguration that does not exist yet. The
+  //      chart documents its own escape hatch for template-rendering consumers:
+  //      `global.installAndUpgradeHooks.enabled: false`.
+  //      DERIVED, not observed -- blocker 1 aborts the sync first, so this one has
+  //      never had the chance to fire. It is recorded as a derivation and says so.
+  //
+  // LIFTS WHEN: the lane has a source for the SPIRE CRDs, and blocker 2 is
+  // either measured to be absent or disabled per the chart's own advice.
   "spire",
   // go.temporal.io/temporal 0.59.0 with `cassandra.enabled: false` and no
   // `server.config.persistence` override: the chart is left with NO datastore,
@@ -508,7 +544,10 @@ export const APPLIED_BUT_UNASSERTED_REASONS: ReadonlyMap<string, string> = new M
     "kube-prometheus-stack",
     "NOT storage -- MEASURED run 32519516070: its own prometheus and alertmanager PVCs bound over the dev longhorn alias and both pods run 2/2. Grafana is CreateContainerConfigError, `secret \"grafana-admin-credentials\" not found` -- a secret this lane has no material to mint, the same class of blocker as arc-runner-set.",
   ],
-  ["spire", "Vault upstream CA + kind PVC wiring not ready in included CI (DEV_INCLUDED_PROOF_DEFERRED_DIRS)."],
+  [
+    "spire",
+    "NOT Vault, and NOT storage -- both halves of the previous reason were stale. MEASURED 2026-08-21 run 32528419577: OutOfSync/Missing with `Sync operation to 0.24.2 failed: one or more synchronization tasks are not valid (retried 5 times)` and no spire pods at all. Chart 0.24.2 renders 3 ClusterSPIFFEID resources and ships no CRDs for them; the only `spire-crds` install in the repo is a k3s-only helm.cattle.io HelmChart the kind lane never applies. The `upstreamAuthority.vault` block is entirely commented out (helm template: zero occurrences of `upstream`, server self-signs), so initialising Vault does not unblock this (DEV_INCLUDED_PROOF_DEFERRED_DIRS).",
+  ],
   [
     "weaviate",
     "NOT storage -- MEASURED run 32519516070: weaviate-0 is 1/1 Running on a bound 100Gi PVC over the dev longhorn alias. The Application nevertheless re-syncs every ~3 minutes, logging `Partial sync operation to 17.6.0 succeeded` while staying OutOfSync/Progressing for the full 40-minute window. A sync-convergence defect against chart 17.6.0, not a volume that failed to bind.",

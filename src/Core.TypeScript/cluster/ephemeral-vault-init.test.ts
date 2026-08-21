@@ -52,6 +52,7 @@ const ALLOWED: GateVerdict = { allowed: true, reason: "test" };
 interface Call {
   readonly args: readonly string[];
   readonly stdin: string | undefined;
+  readonly stdinIsToken: boolean | undefined;
 }
 
 /** Scripted Vault, sealed until unsealed threshold-many times. */
@@ -61,8 +62,8 @@ function fakeVault(overrides: Partial<Record<string, CommandResult>> = {}): {
 } {
   const calls: Call[] = [];
   let unsealCount = 0;
-  const exec: VaultExec = (args, stdin) => {
-    calls.push({ args, stdin });
+  const exec: VaultExec = (args, stdin, stdinIsToken) => {
+    calls.push({ args, stdin, stdinIsToken });
     const key = args.join(" ");
     const override = overrides[key];
     if (override !== undefined) return override;
@@ -316,6 +317,24 @@ describe("the leak scan is capable of failing -- without this the check above is
       podLogs: `core: post-unseal setup ${SENTINEL_KEYS[2] ?? ""}`,
     });
     expect(outcome.ok).toBe(false);
+  });
+
+  test("the root token reaches `token revoke -self` on STDIN, so the revoke can actually authenticate", async () => {
+    // Regression guard for a real defect in the first draft: `token revoke -self`
+    // must authenticate AS the token it revokes, and the root token exists
+    // nowhere in the pod -- `operator init` printed it to us and to nobody else.
+    // Without a token the call is a guaranteed 403 that reported itself as a
+    // non-fatal miss, i.e. a step that never worked wearing the face of one that
+    // was merely unlucky.
+    const { exec, calls } = fakeVault();
+    const outcome = await runEphemeralVaultInit({ exec, gate: ALLOWED, ...emptyScanDeps([]) });
+    expect(outcome.ok).toBe(true);
+    if (!outcome.ok) return;
+    const revoke = calls.find((call) => call.args.join(" ") === "token revoke -self");
+    expect(revoke?.stdin).toBe(SENTINEL_ROOT);
+    expect(revoke?.stdinIsToken).toBe(true);
+    expect(revoke?.args.join(" ")).not.toContain(SENTINEL_ROOT);
+    expect(outcome.report.rootTokenRevoked).toBe(true);
   });
 
   test("a scan root that is a single FILE is opened, not silently skipped", () => {
