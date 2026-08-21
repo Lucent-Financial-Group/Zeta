@@ -32,6 +32,11 @@ function fakePorts(log: string[]): DevClusterPorts {
     applyInlineManifest: () => log.push("inline-manifest"),
     ensureNamespace: (ns) => log.push(`ns:${ns}`),
     waitForCrdEstablished: (crd) => log.push(`crd:${crd}`),
+    mergePatch: (ref, ns, patch) => log.push(`patch:${ref}@${ns ?? "-"}:${patch}`),
+    waitForResource: (ref, ns, expr) => {
+      log.push(`wait:${ref}@${ns ?? "-"}:${expr}`);
+      return true;
+    },
     clearContextIfCurrent: () => log.push("clear-context"),
   };
   const packages: PackageDriver = {

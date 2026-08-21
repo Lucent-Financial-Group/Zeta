@@ -33,6 +33,18 @@ export function kubectlControlPlane(runner: ProcessRunner): ClusterControlPlane 
       }
       runOrExit(runner, "kubectl", args, { stdio: "inherit" });
     },
+    mergePatch: (resourceRef, namespace, patchJson) => {
+      const args = ["patch", resourceRef];
+      if (namespace !== null) args.push("-n", namespace);
+      args.push("--type=merge", "--patch", patchJson);
+      runOrExit(runner, "kubectl", args, { stdio: "inherit" });
+    },
+    waitForResource: (resourceRef, namespace, forExpression, timeoutSec) => {
+      const args = ["wait", resourceRef];
+      if (namespace !== null) args.push("-n", namespace);
+      args.push(`--for=${forExpression}`, `--timeout=${timeoutSec}s`);
+      return runOptional(runner, "kubectl", args);
+    },
     clearContextIfCurrent: (context) => {
       const current = runner.run("kubectl", ["config", "current-context"]).stdout.trim();
       if (current === context) {

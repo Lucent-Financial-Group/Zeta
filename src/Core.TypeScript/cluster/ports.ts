@@ -78,6 +78,28 @@ export interface ClusterControlPlane {
   ensureNamespace(name: string): void;
   waitForCrdEstablished(crdName: string, timeoutSec: number, optional?: boolean): void;
   clearContextIfCurrent(context: string): void;
+  /**
+   * Merge-patch one already-applied object. Separate from `applyFileManifest`
+   * on purpose: a patch is how a lane adapts a manifest it must NOT edit --
+   * `full-ai-cluster/k8s/applications/kubevirt/kubevirt-cr.yaml` is captured
+   * verbatim from node-5b2dfa and staying verbatim is the point, so the CI-only
+   * `useEmulation` flip is applied on top rather than forked into a second copy.
+   */
+  mergePatch(resourceRef: string, namespace: string | null, patchJson: string): void;
+  /**
+   * Wait for one object to satisfy a `kubectl wait --for=` expression.
+   *
+   * Returns a boolean rather than exiting, unlike every other method on this
+   * port. The virt proof runs two INDEPENDENT phases (CDI, then KubeVirt) and
+   * has to report each one; exiting on the first failure would report "CDI is
+   * broken" as "the lane is broken" and hide whichever phase never ran.
+   */
+  waitForResource(
+    resourceRef: string,
+    namespace: string | null,
+    forExpression: string,
+    timeoutSec: number,
+  ): boolean;
 }
 
 export interface ChartInstallSpec {
