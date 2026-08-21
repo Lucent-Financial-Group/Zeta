@@ -242,6 +242,84 @@ withdraw it. Two flags for him rather than silent edits: the in-repo memory hub 
 *"Lillian Eve"*, which disagrees with what he wrote today; and the name is doing real work — a
 protocol whose whole subject is control embedded in language, named for Freedom and Control.
 
+### 3a. Uncertainty is what BUYS commutativity — never-collapse is the mechanism, not the caution
+
+Aaron 2026-08-21, on the commuting property above:
+
+> *"yes we do everything to never collapse the uncertany so this out of order holds, uncertany is
+> what gives us commutivity"*
+
+This inverts the naive reading and is the sharper statement of the whole design. Uncertainty looks
+like a cost to be driven out; here it is the **enabling condition** for order-independence:
+
+| you do this | and you get |
+|---|---|
+| **collapse** to a definite value on first sufficient evidence | a *commitment*. Later evidence must be reconciled against a choice already made, so **order matters** |
+| **hold** the distribution | evidence *multiplies* — `posterior ∝ prior · L₁ · L₂` — and multiplication **commutes**, so order does not matter |
+
+So `SoftValue.resolve` returning `None` below threshold is not conservatism bolted onto the design;
+it is **load-bearing**. The instant a party collapses early, it has introduced an ordering
+dependence — a hidden clock — into a protocol that claims not to have one. Never-collapse and
+order-independence are the same property viewed from two sides.
+
+This also sharpens the requirement in the Gödel ferry
+(`2026-08-21-godel-rotating-universe-...md`). There I wrote that *"these two events are not causally
+ordered"* must be a **representable answer**. Aaron's principle is the general form of that, and
+strictly stronger: **never collapsing is what makes a partial order sufficient.** You do not need to
+manufacture a total order — you need to stop forcing decisions that would require one. Gödel says a
+global causal ordering is not handed to you; this says you can decline to need it.
+
+**Anchors (Beacon), because this is a real and named result, not a house idiom:**
+
+- **Bayesian commutativity of independent evidence** — order-invariance of likelihood
+  multiplication; the property `SoftValue.observe` implements and its docstring proves.
+- **CRDTs** (Shapiro et al. 2011) — join-semilattice merge is commutative, associative, idempotent,
+  and works *precisely because* it does not collapse to one value before it must.
+- **Kleene's three-valued logic** — keeping `UNKNOWN` rather than forcing true/false; the repo's own
+  `TriBoolean.Tri.N` / `Predicate3`, which `SoftValue.fs` names as the truth-axis sibling it
+  generalizes to the value axis.
+- [`anti-babel-preserve-reconcilability`](../../.claude/rules/anti-babel-preserve-reconcilability.md)
+  — *"reintegration is NOT reconvergence"*: both branches held with their paths recorded. Same
+  refusal to collapse, at the vocabulary layer.
+
+### 3b. DNA as a non-human problem-solving engine — Hahn's claim, and a first-hand anchor
+
+Hahn's segment argues DNA is not merely a mapping to proteins but instantiates *"a kind of a
+proto-intelligence … some non-human kind of problem solving engine"*, invoking Levin's lab work and
+Turing's morphogenesis question — the gap between a genetic sequence and the fact of hands and faces.
+
+Aaron 2026-08-21: *"i'm certain DNA is a complex optimization engine from my work at MacVector and
+with polymerace and chrispr."* That is **domain-informed rather than speculative** — he worked at
+MacVector on molecular-biology software (sequence analysis, cloning and primer design, alignment,
+restriction mapping). Per the standing handle on this: informed ≠ automatically correct; it means the
+intuition has a real source and should be anchored to bioinformatics prior art rather than treated as
+naive. *(Clean-room, per the Itron precedent: the expertise is usable, any employer's code is not.)*
+
+Split by what each half can carry:
+
+| claim | register |
+|---|---|
+| **evolution is optimization over a fitness landscape** | **established** — Holland, *Adaptation in Natural and Artificial Systems* (1975) formalizes it as genetic algorithms; Kauffman's NK landscapes (1993); Wagner on neutral networks, robustness and evolvability |
+| **replication carries error correction** | **established fact, and the strongest anchor here** — DNA polymerase 3′→5′ exonuclease **proofreading** plus mismatch repair; this is literal ECC on a self-propagating pattern |
+| **cells/DNA perform non-neural problem-solving within a lifetime** | **Levin's active research programme** — real, published, and genuinely contested. Interesting, not settled |
+| **morphogenesis is under-explained by sequence alone** | **Turing**, *The Chemical Basis of Morphogenesis* (1952); **Waddington's** epigenetic landscape (1957) — canalization is an optimization-landscape framing predating the computational one |
+
+**Why the middle row matters most to us.** [`only-the-irreducible-is-primitive-generate-the-rest`](../../.claude/rules/only-the-irreducible-is-primitive-generate-the-rest.md)
+carries the claim that *the generator **IS** the error-correcting code* — generation and correction
+are dual. Polymerase proofreading is that claim as **observed biological mechanism** rather than as
+analogy: the machine that copies the pattern is the same machine that detects and repairs the copy.
+Aaron's polymerase work is a checked anchor for a line the repo currently supports mostly from the
+adinkra/Gates side.
+
+**And CRISPR's native function is worth stating precisely**, because the gene-editing use has almost
+buried it: in bacteria CRISPR is an **adaptive immune memory** — spacers captured from past infections,
+stored in an array, and used to recognise the same threat later. An append-only log of encounters,
+read to classify what arrives next. The resonance with event-sourced identity here is obvious and is
+recorded as a **resonance**, not a result: nobody has shown the mechanisms correspond, and per
+[`numerology-vs-number-theory`](../../.claude/rules/numerology-vs-number-theory.md) noticing the
+shape is the generator, not the conclusion. (Anchor for the mechanism itself: Barrangou et al. 2007;
+the editing tool is Jinek/Doudna/Charpentier 2012.)
+
 ---
 
 ## 4. Register
