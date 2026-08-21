@@ -30,10 +30,17 @@ spec:
     # ArgoCD supplies it. See https://argo-cd.readthedocs.io/en/stable/user-guide/helm/
     # ("note: the oci:// syntax is not included"). Same shape as arc-controller/,
     # arc-runner-set/ and hindsight/ in this tree.
+    #
+    # Chart 17.1.5 -> Forgejo 15.0.7, the newest tag. The previous pin `9.0.6` was
+    # never published: that registry's 169 tags hold exactly one 9.x, `9.0.0`.
+    #
+    # Keep repoURL/chart/targetRevision on ADJACENT lines. `pinnedChartVersion` in
+    # src/Core.TypeScript/cluster/storage-profiles.ts finds the pin by probing at
+    # most three lines either side of `chart:`, and it returns "" rather than
+    # failing when it cannot -- so a comment wedged between them would silently
+    # unpin this app from the resource catalogue's acknowledgement key.
     repoURL: code.forgejo.org/forgejo-helm
     chart: forgejo
-    # Chart 17.1.5 -> Forgejo 15.0.7. The previous pin `9.0.6` was never published:
-    # that registry's 169 tags hold exactly one 9.x, `9.0.0`.
     targetRevision: 17.1.5
     helm:
       releaseName: forgejo

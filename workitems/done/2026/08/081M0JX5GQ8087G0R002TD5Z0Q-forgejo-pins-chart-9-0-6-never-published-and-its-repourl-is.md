@@ -123,3 +123,37 @@ design.
 `audit-chart-target-revisions.ts` exits 0 with the `ACKNOWLEDGED_UNPUBLISHED` entry for
 this pin **removed**; `ratchet-app-failures.ts` 21 → 19 (both forgejo failures cleared),
 baseline updated in the same change.
+
+## A third register was keyed to the old pin (2026-08-21)
+
+`full-ai-cluster/k8s/storage-profiles.json` carried `acknowledgedUnmeasuredRequests:
+["forgejo@9.0.6", "oz@1.4.5"]` — PR #13348 measured every Application's chart-default
+CPU/memory requests by `helm pull`ing each pin, and forgejo could not be pulled *because
+the pin never existed*. That acknowledgement is keyed by pin precisely so a bump
+invalidates it, and this bump did. **The register worked.**
+
+The response was to **measure it, not re-key it.** Re-keying to `forgejo@17.1.5` would
+have preserved a "we cannot measure this" claim that had stopped being true — the same
+shape as an acknowledgement outliving its own defect, which is the failure this whole
+apparatus exists to catch.
+
+**Measured** — `helm template` at 17.1.5 with this Application's own `valuesObject`:
+one Deployment, `replicas: 1`; the sole app container declares **no** requests; three
+init containers (`init-directories`, `init-app-ini`, `configure-gitea`) each declare
+`100m` / `128Mi`. Init containers run **sequentially**, so the pod's effective request is
+`max(highest init request, sum of app-container requests)` = **100m / 128Mi** — *not* the
+`300m / 384Mi` a naive sum over all four containers would report (Kubernetes, "Init
+Containers" → resource sharing within containers). The chart's `forgejo-test-connection`
+Pod is a `helm.sh/hook: test` ArgoCD never applies on sync, and declares no requests
+anyway, so it is 0 under either convention.
+
+Totals moved by exactly that, at both rungs: dev applied `1806m/6079Mi` → **`1906m/6207Mi`**
+(budget `2500m/9216Mi`, still green), metal applied `4131m/11299Mi` → **`4231m/11427Mi`**,
+all-45 metal `9756m/23400Mi` → **`9856m/23528Mi`**. `oz@1.4.5` stays acknowledged; that
+pin is still fictional and belongs to `081M0JVD5YG087G0R002QDFR9H`.
+
+One hardening came out of it: `pinnedChartVersion` locates the pin by probing at most
+three lines either side of `chart:` and returns `""` rather than failing when it cannot,
+so a comment wedged between `chart:` and `targetRevision:` would silently unpin the app
+from its acknowledgement key. The manifest now keeps those three lines adjacent, with a
+comment saying why.
