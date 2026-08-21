@@ -135,6 +135,47 @@ governs whether it reaches the book. Compiling a list of people who could be ask
 dossier move the rule forbids, and a witness pool cited as a *number* is the honest form: it makes
 the claim checkable without conscripting anyone into it.
 
+## 6. He stakes it — and the stake is not uniformly strong
+
+> *"yes i'd risk my reputation in the book to find anyone who things i'm not one of the most
+> technically capabile people they've ever met, some people don't like me but everyone agrees i can
+> build anyting with a computer, and teach others to do it well too"*
+
+This is a **stake** in the exact sense
+`.claude/rules/privacy-budget-is-hard-money-earned-by-others.md` defines: owner-initiated, never
+coerced, and placed on an attestation being true. It is the sanctioned operation — spend and stake
+are his to make, confiscate is nobody's — and it is what separates a claim someone is willing to lose
+something over from one they merely assert.
+
+**Held to the register he asks for elsewhere, the four claims here are not equally strong**, and
+saying so is the point of recording it rather than applauding it:
+
+| the claim | how refutable |
+|---|---|
+| *"some people don't like me but everyone agrees i can build…"* | **strongest.** A detractor conceding capability is cheap to refute and hasn't been. The partition makes it *narrower*, and narrower is harder to fake |
+| *"teach others to do it well too"* | **strong and the book's actual thesis.** Checkable in outcomes that are not about him — did the people he taught become good |
+| *"one of the most technically capabile people they've ever met"* | **weak as stated.** Superlative-with-slack, over a *selected* sample (people who chose to work with him). Hard to refute cleanly even if false |
+| *"build anyting with a computer"* | **unfalsifiable as written** — unbounded scope, no failing case admitted |
+
+**The strongest form of his own claim is the one he almost throws away in a subordinate clause.**
+*"Some people don't like me but everyone agrees…"* is the load-bearing sentence: it separates
+**likeability** from **capability** and stakes only the second. A claim that everyone thinks well of
+him would be soft and unsurprising; a claim that **people who dislike him still concede the
+capability** is exactly the kind a hostile witness could destroy in one sentence, and evidently
+hasn't. That is the version worth putting in a book.
+
+**And the teaching claim is the one the book needs**, not the capability claim. Capability is
+individual and terminal; **transmission is the whole thesis** — the Stump Dad game, WHY-before-HOW,
+the choice architecture, the daughter named as proof-of-transmission. A book arguing that what
+matters is what survives you cannot rest its personal warrant on a superlative about the author. It
+rests better on: *the people he taught can do it, and can teach it onward.*
+
+**The adversarial reading is guaranteed and he expects it.** Per
+`feedback_grief_and_emotion_are_attack_surface_...`, the honest register — not validation — is what
+he asked for standing. So: staking reputation in a book invites exactly the reader who goes looking
+for the one engineer who disagrees, and the superlative row above is where they will aim. Stake the
+rows that survive contact.
+
 ## Register
 
 Testimony under first-person authority per
