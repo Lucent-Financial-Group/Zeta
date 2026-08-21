@@ -99,6 +99,42 @@ This is not an arbitrary pairing of feelings to formalisms. It tracks a real dif
 Recorded because it may explain formalism preference in the tree: an outside-view object is good for
 **stating** structure, an inside-view object is good for **moving through** it.
 
+## 5. The witness pool — what it upgrades, and what it does not
+
+Aaron, immediately after: *"dozens if not a hundred engineers will back up my personal testomony …
+i have about 1000 people on linked in who reaally know my technical metrocracy efforts."*
+
+This is a real epistemic upgrade and it is worth stating exactly how far it goes, using the repo's
+own ladder:
+
+| rung | where the claim sits |
+|---|---|
+| **toy** | no — it makes a specific prediction about outcomes |
+| **unmetered** | **here.** Falsifiable in principle, with a large and identifiable witness pool, and **not yet checked** |
+| **metered** | not yet — it becomes this when attestations are actually collected |
+
+So the honest movement is from *"single-source self-report"* to **"falsifiable but unfalsified"** —
+which is genuinely different, because a claim with a hundred potential refuters is a claim someone
+could destroy cheaply if it were false. That is what makes it worth more than assertion. It is still
+not evidence until someone gathers it, and the gathering has not happened.
+
+**Why this instance is thematically load-bearing for the book.** A pool of peers who independently
+recognise a contribution *is* the remembrance graph — recognition **conferred by others**, never
+self-asserted, accruing from people who were actually helped. That is the same construction as the
+privacy budget and the naming eigenvector. His professional standing already exists in that form; it
+just currently lives on **substrates that rot** — a platform's connection graph, colleagues'
+memories, employer records. Chapter 1's claim, applied to the author: the recognition is real and
+the record of it is perishable, and the thing he is building is designed to hold exactly this class
+of attestation durably.
+
+**Guard, stated because the material invites the opposite.** Per
+`.claude/rules/engagement-profiles-public-work-only-not-surveillance-dossiers.md`: no connection is
+named, enumerated, or profiled here, and none should be. Any actual collection of attestations is a
+**consent-first** act — each person chooses to attest, in their own words, and the CONSENT-LEDGER
+governs whether it reaches the book. Compiling a list of people who could be asked is exactly the
+dossier move the rule forbids, and a witness pool cited as a *number* is the honest form: it makes
+the claim checkable without conscripting anyone into it.
+
 ## Register
 
 Testimony under first-person authority per
