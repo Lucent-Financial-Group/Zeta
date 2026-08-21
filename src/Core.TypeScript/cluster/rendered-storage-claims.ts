@@ -60,7 +60,17 @@
 // checked must never read as an app that passed. Every such app is named, with
 // its reason, in the report and in the exit status.
 
-import { readFileSync, existsSync, readdirSync, mkdirSync, writeFileSync, rmSync, type Dirent } from "node:fs";
+import {
+  readFileSync,
+  readdirSync,
+  mkdirSync,
+  writeFileSync,
+  renameSync,
+  rmSync,
+  openSync,
+  closeSync,
+  type Dirent,
+} from "node:fs";
 import { resolve, join, dirname } from "node:path";
 import { spawnSync } from "node:child_process";
 import { parseAllDocuments, stringify as yamlStringify } from "yaml";
@@ -116,12 +126,36 @@ function readIfPresent(abs: string): string | null {
   }
 }
 
-/** `readdirSync` with Dirents, or an empty list when the directory is not there. */
-function readdirIfPresent(abs: string): Dirent[] {
+/**
+ * Is the chart archive already in the cache?
+ *
+ * `openSync`/`closeSync` rather than `existsSync`, so the answer comes from an
+ * operation that either succeeded or failed rather than from a prediction about
+ * a later one — the same one-syscall-one-answer discipline as `readIfPresent`,
+ * for a file whose bytes we do not want to read.
+ */
+function archiveIsCached(abs: string): boolean {
+  try {
+    closeSync(openSync(abs, "r"));
+    return true;
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === "ENOENT") return false;
+    throw error;
+  }
+}
+
+/**
+ * `readdirSync` with Dirents, or `null` when the directory is not there.
+ *
+ * `null` and `[]` are DIFFERENT answers — "no such directory" and "an empty
+ * one" — and a caller that needs to tell them apart must not have to ask the
+ * filesystem a second time to find out.
+ */
+function readdirIfPresent(abs: string): Dirent[] | null {
   try {
     return readdirSync(abs, { withFileTypes: true });
   } catch (error) {
-    if ((error as NodeJS.ErrnoException).code === "ENOENT") return [];
+    if ((error as NodeJS.ErrnoException).code === "ENOENT") return null;
     throw error;
   }
 }
@@ -137,17 +171,17 @@ export function applicationManifestPaths(repoRoot = REPO_ROOT): readonly string[
     const abs = resolve(repoRoot, root);
     // `withFileTypes` so the kind arrives WITH the listing: a separate stat is
     // a second syscall racing a fact the first one already returned.
-    const entries = readdirIfPresent(abs);
+    const entries = readdirIfPresent(abs) ?? [];
     for (const entry of entries.sort((a, b) => stringCompare(a.name, b.name))) {
       if (!entry.isDirectory()) continue;
       const entryAbs = join(abs, entry.name);
-      for (const nested of readdirIfPresent(entryAbs).sort((a, b) => stringCompare(a.name, b.name))) {
+      for (const nested of (readdirIfPresent(entryAbs) ?? []).sort((a, b) => stringCompare(a.name, b.name))) {
         if (nested.isFile() && nested.name === "Application.yaml") {
           out.push(`${root}/${entry.name}/Application.yaml`);
           continue;
         }
         if (!nested.isDirectory()) continue;
-        for (const deeper of readdirIfPresent(join(entryAbs, nested.name))) {
+        for (const deeper of readdirIfPresent(join(entryAbs, nested.name)) ?? []) {
           if (deeper.isFile() && deeper.name === "Application.yaml") {
             out.push(`${root}/${entry.name}/${nested.name}/Application.yaml`);
           }
@@ -287,7 +321,7 @@ export function includeMatcher(glob: string): (baseName: string) => boolean {
 function renderGitPath(source: ApplicationSource, repoRoot: string): RenderResult {
   const abs = resolve(repoRoot, source.gitPath);
   const entries = readdirIfPresent(abs);
-  if (entries.length === 0 && !existsSync(abs)) {
+  if (entries === null) {
     return { ok: false, reason: "git-path-missing", detail: `${source.gitPath} does not exist in the tree` };
   }
   const matches = includeMatcher(source.includeGlob);
@@ -330,7 +364,12 @@ export function renderApplication(source: ApplicationSource, options: RenderOpti
   }
 
   const archive = chartArchivePath(cacheDir, source);
-  if (!existsSync(archive)) {
+  // ATTEMPT the cached read; do not `existsSync` first. The check-then-use pair
+  // is a TOCTOU window (`js/file-system-race`, and the repo's own
+  // `lint-check-then-use-file-races`): between the check and the write the path
+  // can be created, deleted or replaced, so the answer the check returned is
+  // already stale. One syscall, one answer — a miss IS the ENOENT.
+  if (!archiveIsCached(archive)) {
     // Pull into a per-chart scratch directory rather than guessing the archive
     // name. `helm pull node-feature-discovery` writes
     // `node-feature-discovery-chart-0.17.1.tgz` -- the PACKAGED chart name, not
@@ -368,7 +407,10 @@ export function renderApplication(source: ApplicationSource, options: RenderOpti
         detail: `${source.chart}@${source.targetRevision}: pull reported success and left ${String(produced.length)} archives`,
       };
     }
-    writeFileSync(archive, readFileSync(join(scratch, produced[0] ?? "")));
+    // `renameSync` rather than read-then-write: one syscall that either moves
+    // the archive into the cache or fails, with no window in which the bytes
+    // exist under two names or under neither.
+    renameSync(join(scratch, produced[0] ?? ""), archive);
     rmSync(scratch, { recursive: true, force: true });
   }
 
