@@ -175,6 +175,40 @@ kind of corroboration, because the derivations do not share a mechanism.
   the same meet-in-the-middle-on-structure move applied between travelers rather than between
   vocabularies.
 
+**Where this is already implemented — the shapes ARE `DynamicValue`, and the probabilistic half
+is `SoftValue`.** Aaron 2026-08-21: *"these shapes map to our dyanimc value and also soft value in
+a probabilistic fashion."* This is not an analogy waiting to be built; the source says it directly.
+
+`src/Core/DynamicValue.fs` opens by calling its type tag the answer to **"what shape are you?"**
+asked of a value with no compile-time type, names it *"the `QueryInterface` surface of the
+**polymorphic-shape primitive**"*, and cites it as *"the **Eve-Protocol polymorphic-diplomacy
+primitive**, 081KRW63S0008QG0R0030F8ZXA"*. Its case set — `Null | Bool | Int | Float | String |
+Bytes | Array | Object` — is chosen as the common self-describing core of CBOR / msgpack / JSON /
+YAML, i.e. the structure two parties can share **before** either supplies a vocabulary.
+
+`src/Core/SoftValue.fs` is the probabilistic half: **a normalized distribution over candidate
+`DynamicValue`s**, whose stated safety property is not *"always certain"* but *"**always knows its
+uncertainty** — calibration / never falsely certain"*. `resolve` collapses to a definite value only
+above a confidence threshold and otherwise returns `None` (held, never silently collapsed), and
+`observe` is a Bayesian update that **commutes for independent evidence**.
+
+**This dissolves the honest limit I stated above**, and it is the sharper reading of Aaron's
+sentence. The weakness of the V8 analogy is that V8 shapes are *exact* — same transitions, same
+shape, names included. Zeta's shape agreement is a **distribution over candidate shapes with
+calibrated confidence**, which is what lets two parties converge on structure *without* first
+agreeing on names: you do not need an exact structural match, you need a posterior over shapes
+that refuses to resolve while it is still ambiguous. V8 gives the commitment order; `SoftValue`
+gives the part V8 has no need for.
+
+And the commuting property is load-bearing for the protocol, not incidental: if independent
+evidence commutes, **two parties can exchange structural evidence in any order and reach the same
+shape** — order-independence in exactly the sense
+[`local-time-never-enters-the-shared-fold`](../../.claude/rules/local-time-never-enters-the-shared-fold.md)
+requires of the shared belief fold, and the property the Gödel ferry
+(`docs/ip-questionable/2026-08-21-godel-rotating-universe-...md`) argues you must *impose* rather
+than assume. A negotiation that only converged in one message order would be a protocol with a
+hidden clock in it.
+
 **The name.** Aaron 2026-08-21: EVE is named for his daughter — *"Lillith (Freedom) Eve
 (Control)"* — and he states she has given permission to be mentioned in his book. Recorded because
 he volunteered it as the naming lineage; **the consent he described is scoped to the book**, so it
