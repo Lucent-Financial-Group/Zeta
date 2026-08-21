@@ -39,7 +39,6 @@
 > repaired: wave order sequences bring-up on a real cluster and a wrong reorder
 > is a broken bootstrap.
 
-
 ArgoCD reconciles all Applications under the root App-of-Apps
 in parallel by default. That breaks for apps with cross-app
 dependencies (e.g., a workload needs Vault before it can pull
