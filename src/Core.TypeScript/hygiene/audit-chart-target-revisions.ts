@@ -92,7 +92,7 @@
 // Exit codes: 0 clean, 1 findings (or, under --refresh, roster changed / a
 // fetch failed), 2 usage or IO.
 
-import { existsSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
+import { readFileSync, readdirSync, writeFileSync, type Dirent } from "node:fs";
 import { join, relative, resolve } from "node:path";
 import { parseAllDocuments, parse as parseYaml } from "yaml";
 import semver from "semver";
@@ -739,8 +739,17 @@ function newestPublished(versions: readonly string[]): readonly string[] {
 // ---------------------------------------------------------------------------
 
 function listYamlFiles(dir: string): readonly string[] {
-  if (!existsSync(dir)) return [];
-  return readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
+  // Same check-then-use class as the roster read below: `readdirSync` on a
+  // missing directory throws ENOENT, so ask it directly instead of testing
+  // existence first and racing the answer.
+  let entries: readonly Dirent[];
+  try {
+    entries = readdirSync(dir, { withFileTypes: true });
+  } catch (err) {
+    if ((err as NodeJS.ErrnoException).code === "ENOENT") return [];
+    throw err;
+  }
+  return entries.flatMap((entry) => {
     const path = join(dir, entry.name);
     if (entry.isDirectory()) return listYamlFiles(path);
     if (entry.isFile() && (entry.name.endsWith(".yaml") || entry.name.endsWith(".yml"))) return [path];
@@ -888,7 +897,15 @@ async function refresh(repoRoot: string): Promise<number> {
   // refresh", which is advice that cannot work and reads as a tooling gap
   // rather than as the wrong-coordinate defect it is. So the failure itself is
   // recorded, verbatim, with the instant it was observed.
-  const previous = existsSync(ROSTER_PATH) ? readRoster().entries : {};
+  // Read-then-interpret, not exists-then-read. An absent roster is the
+  // first-run case and yields no previous entries.
+  let previous: Readonly<Record<string, RosterEntry>>;
+  try {
+    previous = readRoster().entries;
+  } catch (err) {
+    if ((err as NodeJS.ErrnoException).code !== "ENOENT") throw err;
+    previous = {};
+  }
   for (const [key, coordinate] of wanted) {
     if (entries[key] !== undefined) continue;
     const kept = previous[key];
@@ -918,7 +935,18 @@ async function refresh(repoRoot: string): Promise<number> {
   };
 
   const serialized = JSON.stringify(roster, null, 2) + "\n";
-  const before = existsSync(ROSTER_PATH) ? readFileSync(ROSTER_PATH, "utf8") : "";
+  // READ, then interpret ENOENT. `existsSync` followed by a read is
+  // check-then-use: the file can change between the two, and CodeQL flags it
+  // HIGH. Reading first removes the window rather than narrowing it, and an
+  // absent roster is still the empty string, so the "unchanged" comparison
+  // below is unaffected.
+  let before: string;
+  try {
+    before = readFileSync(ROSTER_PATH, "utf8");
+  } catch (err) {
+    if ((err as NodeJS.ErrnoException).code !== "ENOENT") throw err;
+    before = "";
+  }
   const unchanged = sameIgnoringTimestamps(before, serialized);
 
   // Write only when something was LEARNED. Rewriting on every run would leave a
