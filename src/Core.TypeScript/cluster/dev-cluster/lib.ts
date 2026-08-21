@@ -8,6 +8,33 @@ import { join, resolve } from "node:path";
 export const REPO_ROOT = resolve(import.meta.dir, "../../../..");
 export const DEV_CLUSTER_SUBSTRATE_DIR = join(REPO_ROOT, "full-ai-cluster/dev-cluster");
 
+/**
+ * Repo-relative paths of the dev/CI alias StorageClass manifests.
+ *
+ * ONE constant, TWO consumers, and that is the whole point. `use-cases.ts`
+ * APPLIES these at bring-up; `argocd-health-test.ts` reads the longhorn one to
+ * decide whether an Application that requests `storageClass: longhorn` may be
+ * asserted in the dev lane. If those two named the file separately, the harness
+ * could believe a StorageClass exists that bring-up no longer creates -- an
+ * assertion resting on absent substrate, which is the exact shape of a check
+ * that did not run looking like a check that passed.
+ *
+ * Repo-RELATIVE (not absolute) because the harness resolves them against a
+ * caller-supplied `repoRoot`, which its unit tests point at fixture trees.
+ */
+export const DEV_STORAGE_ALIAS_MANIFEST_RELPATHS = {
+  zetaLocalPath: "full-ai-cluster/dev-cluster/manifests/zeta-local-path.yaml",
+  longhorn: "full-ai-cluster/dev-cluster/manifests/longhorn.yaml",
+} as const;
+
+/** The StorageClass name the dev/CI longhorn alias is required to declare. */
+export const DEV_LONGHORN_ALIAS_CLASS_NAME = "longhorn";
+
+/** Absolute path of a dev alias manifest, for the bring-up use-cases. */
+export function devStorageAliasManifestPath(key: keyof typeof DEV_STORAGE_ALIAS_MANIFEST_RELPATHS): string {
+  return join(REPO_ROOT, DEV_STORAGE_ALIAS_MANIFEST_RELPATHS[key]);
+}
+
 const GITHUB_REPO_URL =
   /^https:\/\/github\.com\/[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+(\.git)?$/;
 

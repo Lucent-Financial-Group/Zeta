@@ -11,9 +11,9 @@ ArgoCD reads `full-ai-cluster/k8s/applications/` as an App-of-Apps,
 recursively. The dev cluster runs ArgoCD configured against the
 same path. The parity lane proves the shared App-of-Apps wiring and
 the workloads whose substrate exists in dev/CI. Workloads that require
-bare-metal-only substrate, such as Longhorn-backed storage, stay visible
-in the same manifest tree but are not claimed as healthy in dev/CI until
-that substrate is installed or overlaid.
+bare-metal-only substrate stay visible in the same manifest tree but are
+not claimed as healthy in dev/CI until that substrate is installed or
+aliased.
 
 What differs between dev and prod:
 
@@ -24,16 +24,21 @@ What differs between dev and prod:
   plus workers.
 - **CNI** - k3d runs Cilium as a kube-proxy replacement, kind CI uses
   kindnet unless a CNI test opts in, and prod runs Cilium.
-- **Storage** - dev/CI use local ephemeral storage. Prod uses
-  Longhorn multi-disk storage.
+- **Storage** - dev/CI use local ephemeral storage behind
+  `rancher.io/local-path`. Prod uses Longhorn multi-disk storage. The
+  two are reconciled by NAME, not by changing the manifests: bring-up
+  applies alias StorageClasses called `zeta-local-path` AND `longhorn`
+  (`manifests/*.yaml`), both pointing at the local-path provisioner, so
+  a chart asking for `storageClass: longhorn` binds unmodified.
 - **GPU** - dev/CI have none by default. Prod can use NVIDIA, AMD, or
   Intel GPUs.
-- **Identity** - SPIRE is present in the shared manifest tree, but the
-  current values request Longhorn storage, so dev/CI health assertions
-  exclude it until a storage overlay exists.
-- **Secrets** - Vault is present in the shared manifest tree, but the
-  current values request Longhorn storage, so dev/CI health assertions
-  exclude it until a storage overlay exists.
+- **Identity** - SPIRE is present in the shared manifest tree, but its
+  Vault upstream-CA wiring is not ready in dev/CI, so health assertions
+  exclude it. (This is no longer a storage reason.)
+- **Secrets** - Vault is present in the shared manifest tree and now
+  syncs in dev/CI, but it comes up SEALED by design and readiness needs
+  the gated operator-init ceremony CI must never run, so health
+  assertions exclude it.
 - **Network MTU** - dev/CI use the runtime default. Prod uses the real
   NIC MTU.
 - **Persistence** - dev/CI data is removed by `k3d-down` or
@@ -48,11 +53,41 @@ App-of-Apps `exclude:` glob in `apply-root-app.ts`:
   GPU. Remove from the exclude list if you have an Apple Silicon
   Mac + a model server that runs on MPS (vLLM nightly does).
 
-The 081KSXN940008QG0R000SCP2H1 health harness also excludes Applications whose
-`Application.yaml` requests Longhorn storage via `storageClass` or
-`storageClassName` from dev/CI health assertions. That includes apps
-such as Vault and SPIRE until a local Longhorn-compatible storage
-overlay exists.
+### The `longhorn` alias, and why the exclusion is conditional rather than gone
+
+The 081KSXN940008QG0R000SCP2H1 health harness used to exclude EVERY
+Application whose YAML tree mentioned `storageClass: longhorn`. That rule
+was circular: the apps were excluded because Longhorn was excluded, and
+Longhorn was excluded because a kind node has no second disk. It cost ten
+Applications' worth of assertion — most of the stateful core — and the
+included proof covered 19 of 45.
+
+`manifests/longhorn.yaml` cuts the circle at the cheapest possible point.
+A StorageClass is a NAME bound to a provisioner, and the workloads only
+ever name it, so dev binds `longhorn` to `rancher.io/local-path` and the
+same unmodified manifests bind on a kind node. Nothing production
+requests changes; that file lives under `dev-cluster/`, which ArgoCD
+never reads, and on bare metal the Longhorn chart creates the real class
+over `driver.longhorn.io`.
+
+The exclusion is **conditional, not deleted** (081M0V5R41H087G0R000GQ5CGB),
+because an unbindable PVC does not fail — it sits `Pending` until the
+harness times out, and a timeout prints no verdict at all. So:
+
+- If `manifests/longhorn.yaml` is absent or does not declare a
+  StorageClass named `longhorn`, the old blanket exclusion applies in
+  full. `devLonghornStorageClassAliasDeclared()` fails closed.
+- `ReadWriteMany` claims stay excluded even with the alias present:
+  local-path is node-local and RWO-only, so an RWX claim never binds.
+  That is read off the access mode, not off a hand-kept list.
+- Before an included-scope run waits on anything, it checks the class is
+  really in the cluster and fails in seconds if not, rather than
+  discovering it at the 2400s cap.
+
+Still excluded, each for a named NON-storage reason:
+`arc-runner-set` (needs a GitHub App credential CI cannot bind, and its
+model cache is RWX), `forgejo`, `spire` (Vault upstream CA wiring),
+`vault` (sealed by design).
 
 ## Bring it up
 
