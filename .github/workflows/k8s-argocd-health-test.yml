@@ -242,6 +242,33 @@ jobs:
       # UNASSERTED), an Application no root glob matches (exit 1,
       # NEVER-DISCOVERED). Making the glob path-segment bounded also turns it
       # red, which is the point: the semantics is the load-bearing claim.
+      # THE FALSIFIERS FOR THE EPHEMERAL VAULT CEREMONY, and they get their own
+      # step because this job runs EXPLICITLY NAMED test files -- there is no
+      # repo-wide `bun test src/Core.TypeScript/cluster/` anywhere in
+      # .github/workflows/. A new test file here is therefore orphaned by
+      # default: green, passing locally, and never once executed by CI. That is
+      # the purest form of "a check that did not run looks like a check that
+      # passed", and it is why this step exists rather than the file being left
+      # to be picked up by something.
+      #
+      # What it pins, offline and in ~1.5s: the gate refuses `--existing` (the
+      # metal case wearing the harness's clothes) and three other conditions,
+      # each with its own reachable refusal; the ceremony follows
+      # vault/TOPOLOGY.md section 5's order; the unseal share travels on stdin
+      # and never argv; no share or root token reaches the report, the log, or a
+      # failure detail -- including the init failure path, where stdout would
+      # still be material; and the leak scan both FIRES on planted material and
+      # reports a zero-byte scan as VACUOUS rather than clean.
+      #
+      # Mutation-checked, every mutation proven applied by byte-level `cmp`
+      # against a saved pristine copy before its result was read: gate stops
+      # refusing --existing, scan never matches, vacuity flag never fires, unseal
+      # threshold 3 -> 2, redact replaces first occurrence only, failing init
+      # echoes its stdout, root token never revoked, revoke sent without a token,
+      # token passed in argv. 9/9 go red.
+      - name: Run ephemeral Vault init falsifiers
+        run: bun test src/Core.TypeScript/cluster/ephemeral-vault-init.test.ts
+
       - name: Run app-of-apps discovery unit tests
         run: bun test src/Core.TypeScript/cluster/app-of-apps-discovery.test.ts
 
