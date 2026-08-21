@@ -7,8 +7,10 @@ import {
   includedManifestPaths,
   renderPlan,
   splitOperatorAndCr,
+  runPhase,
   summarise,
 } from "./kubevirt-cdi-emulation-test.ts";
+import type { ClusterControlPlane } from "./ports.ts";
 
 // ---------------------------------------------------------------------------
 // THE PATCH ITSELF
@@ -238,5 +240,82 @@ describe("summarise", () => {
     ]);
     expect(text.split("\n").filter((line) => line.startsWith("PROVED"))).toHaveLength(2);
     expect(text).not.toContain("FAILED");
+  });
+});
+
+// ---------------------------------------------------------------------------
+// THE RUNNER HALF, over a recording fake of the control-plane port.
+//
+// These exist because the plan being right says nothing about the executor
+// honouring it -- and two of the properties below are ones a reviewer cannot
+// see by reading the plan: that manifests go on SERVER-SIDE (the vendored
+// KubeVirt CRD is at 91% of the client-side annotation ceiling, and the
+// Application declares ServerSideApply=true), and that a failed wait REPORTS
+// rather than exits.
+// ---------------------------------------------------------------------------
+function recordingControlPlane(waitResult: (expr: string) => boolean) {
+  const log: string[] = [];
+  const controlPlane: ClusterControlPlane = {
+    selectContext: () => {},
+    waitForAllNodesReady: () => {},
+    waitForApiReady: () => {},
+    applyRemoteManifest: () => {},
+    applyFileManifest: (path, ssa) => log.push(`apply${ssa === true ? "-ssa" : "-client"}:${path}`),
+    applyInlineManifest: () => {},
+    ensureNamespace: () => {},
+    waitForCrdEstablished: (crd) => log.push(`crd:${crd}`),
+    mergePatch: (ref, ns, patch) => log.push(`patch:${ref}@${ns ?? "-"}:${patch}`),
+    waitForResource: (ref, _ns, expr) => {
+      log.push(`wait:${ref}:${expr}`);
+      return waitResult(expr);
+    },
+    clearContextIfCurrent: () => {},
+  };
+  return { controlPlane, log };
+}
+
+describe("runPhase", () => {
+  const plan = buildProofPlan({ timeoutSec: 5 });
+  const kubevirtPhase = plan.phases.find((p) => p.name === "kubevirt")!;
+
+  test("applies every manifest SERVER-SIDE, never client-side", () => {
+    const { controlPlane, log } = recordingControlPlane(() => true);
+    for (const phase of plan.phases) runPhase(controlPlane, phase);
+    const applies = log.filter((line) => line.startsWith("apply"));
+    expect(applies).toHaveLength(4);
+    expect(applies.filter((line) => line.startsWith("apply-ssa:"))).toHaveLength(4);
+    expect(applies.some((line) => line.startsWith("apply-client:"))).toBe(false);
+  });
+
+  test("executes the steps in plan order", () => {
+    const { controlPlane, log } = recordingControlPlane(() => true);
+    runPhase(controlPlane, kubevirtPhase);
+    expect(log.map((line) => line.split(":")[0])).toEqual(["apply-ssa", "crd", "apply-ssa", "patch", "wait"]);
+  });
+
+  test("a failed wait REPORTS rather than throwing -- the other phase must still run", () => {
+    const { controlPlane } = recordingControlPlane(() => false);
+    const result = runPhase(controlPlane, kubevirtPhase);
+    expect(result.ok).toBe(false);
+    expect(result.name).toBe("kubevirt");
+    expect(result.reason).toContain("condition=Available");
+    expect(result.reason).toContain("5s");
+  });
+
+  test("a failed CDI wait does not stop the kubevirt phase from being run and reported", () => {
+    // Only the CDI expression fails. Both phases are still executed and both
+    // verdicts survive -- "can CDI be tested independently of KubeVirt" is half
+    // the question this lane answers, and it is answered in both directions.
+    const { controlPlane } = recordingControlPlane((expr) => !expr.startsWith("jsonpath="));
+    const results = plan.phases.map((phase) => runPhase(controlPlane, phase));
+    expect(results.map((r) => [r.name, r.ok])).toEqual([
+      ["cdi", false],
+      ["kubevirt", true],
+    ]);
+  });
+
+  test("a phase that passes reports an empty reason", () => {
+    const { controlPlane } = recordingControlPlane(() => true);
+    expect(runPhase(controlPlane, kubevirtPhase)).toEqual({ name: "kubevirt", ok: true, reason: "" });
   });
 });

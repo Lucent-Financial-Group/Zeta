@@ -28,7 +28,7 @@ function fakePorts(log: string[]): DevClusterPorts {
     waitForAllNodesReady: () => log.push("nodes-ready"),
     waitForApiReady: () => log.push("api-ready"),
     applyRemoteManifest: (url) => log.push(`remote:${url}`),
-    applyFileManifest: (path) => log.push(`file:${path}`),
+    applyFileManifest: (path, ssa) => log.push(`file:${path}${ssa === true ? ":ssa" : ""}`),
     applyInlineManifest: () => log.push("inline-manifest"),
     ensureNamespace: (ns) => log.push(`ns:${ns}`),
     waitForCrdEstablished: (crd) => log.push(`crd:${crd}`),

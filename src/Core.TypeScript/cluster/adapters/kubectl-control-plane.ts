@@ -21,7 +21,12 @@ export function kubectlControlPlane(runner: ProcessRunner): ClusterControlPlane 
       args.push("-f", url);
       runOrExit(runner, "kubectl", args, { stdio: "inherit" });
     },
-    applyFileManifest: (path) => runOrExit(runner, "kubectl", ["apply", "-f", path], { stdio: "inherit" }),
+    applyFileManifest: (path, serverSideApply = false) => {
+      const args = ["apply"];
+      if (serverSideApply) args.push("--server-side", "--force-conflicts");
+      args.push("-f", path);
+      runOrExit(runner, "kubectl", args, { stdio: "inherit" });
+    },
     applyInlineManifest: (yaml) =>
       runOrExit(runner, "kubectl", ["apply", "-f", "-"], { stdin: yaml, stdio: "inherit" }),
     ensureNamespace: (name) => runOptional(runner, "kubectl", ["create", "namespace", name]),

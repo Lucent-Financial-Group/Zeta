@@ -93,7 +93,7 @@ import { join, resolve } from "node:path";
 import { parse as parseYaml } from "yaml";
 import { assertContainerHostReady, assertProcessToolReady } from "./adapters/container-host.ts";
 import { liveDevClusterPorts } from "./dev-cluster/deps.ts";
-import type { DevClusterPorts } from "./ports.ts";
+import type { ClusterControlPlane } from "./ports.ts";
 
 const REPO_ROOT = resolve(import.meta.dir, "../../..");
 
@@ -319,13 +319,15 @@ export function renderPlan(plan: ProofPlan): string {
  * own run-or-exit behaviour; the wait returns a boolean so a phase can fail
  * without taking the other phase's result down with it.
  */
-function runPhase(ports: DevClusterPorts, phase: ProofPhase): PhaseResult {
-  const { controlPlane } = ports;
+export function runPhase(controlPlane: ClusterControlPlane, phase: ProofPhase): PhaseResult {
   for (const step of phase.steps) {
     console.log(`[${phase.name}] ${step.label}`);
     switch (step.kind) {
       case "apply":
-        controlPlane.applyFileManifest(join(REPO_ROOT, step.path));
+        // Server-side, matching the Application's own
+        // `syncOptions: [ ServerSideApply=true ]`. See the port's docstring:
+        // the KubeVirt CRD is at 91% of the client-side annotation ceiling.
+        controlPlane.applyFileManifest(join(REPO_ROOT, step.path), true);
         break;
       case "wait-crd":
         controlPlane.waitForCrdEstablished(step.crd, step.timeoutSec);
@@ -430,7 +432,7 @@ function main(argv: readonly string[]): void {
   controlPlane.selectContext(localCluster.contextName(clusterName));
   controlPlane.waitForAllNodesReady(300);
 
-  const results = plan.phases.map((phase) => runPhase(ports, phase));
+  const results = plan.phases.map((phase) => runPhase(controlPlane, phase));
   console.log(`\n${summarise(results)}`);
   process.exit(results.every((r) => r.ok) ? 0 : 1);
 }

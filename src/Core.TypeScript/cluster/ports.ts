@@ -73,7 +73,17 @@ export interface ClusterControlPlane {
   waitForAllNodesReady(timeoutSec: number): void;
   waitForApiReady(maxAttempts: number, pollMs: number): void;
   applyRemoteManifest(url: string, serverSideApply?: boolean): void;
-  applyFileManifest(path: string): void;
+  /**
+   * `serverSideApply` is not a nicety. The vendored `kubevirts.kubevirt.io` CRD
+   * serialises to 238350 bytes -- 91% of the 262144-byte ceiling on the
+   * `last-applied-configuration` annotation a CLIENT-side apply writes. It fits
+   * today and would stop fitting on an upstream bump, and the failure would look
+   * like "KubeVirt cannot be installed here". It is also what the Application
+   * itself declares (`syncOptions: [ ServerSideApply=true ]`), so a proof of
+   * those bytes has to apply them the same way ArgoCD does or it is proving a
+   * different thing. Defaults false: existing callers are unchanged.
+   */
+  applyFileManifest(path: string, serverSideApply?: boolean): void;
   applyInlineManifest(yaml: string): void;
   ensureNamespace(name: string): void;
   waitForCrdEstablished(crdName: string, timeoutSec: number, optional?: boolean): void;
