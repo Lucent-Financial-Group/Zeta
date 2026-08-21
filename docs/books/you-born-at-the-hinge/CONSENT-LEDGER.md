@@ -96,6 +96,51 @@ confidence is precisely why the asking is cheap.
 Aaron's to publish unilaterally. This says the **unshared** portion is not his either. Between them:
 *joint material needs joint consent; solo material belongs to whoever it is solely about.*
 
+### 2026-08-21 — universal proofread gate, and the surface it does **not** cover
+
+Aaron 2026-08-21: *"i'm going to let everyone in the book proofread before publish to amazon books
+or whever i publish it."*
+
+**Recorded as a standing policy**, and it is a real improvement: it generalizes Diana's individual
+condition into a guarantee for **everyone named**, so no one has to negotiate for it individually.
+Two clarifications keep it from being read as more than it is:
+
+- **A proofread is a veto on portrayal, not a substitute for consent.** Being shown a passage before
+  publication is not the same as having agreed to appear, and neither is consent to have **words
+  attributed**. The rows above stand unchanged.
+- **It does not license drafting anything.** Houman's solo-story boundary means such passages should
+  not be *written*, not that they may be written and then vetoed. A gate at the end does not make
+  the middle safe.
+
+**The structural finding — the gate binds later than the exposure.** Checked, not assumed:
+`gh repo view Lucent-Financial-Group/Zeta` reports **`visibility=PUBLIC`**. So
+`docs/books/you-born-at-the-hinge/` — the chapters, every `RAW-*` intake, and this ledger itself —
+is **world-readable the moment it is pushed**, and has been throughout. Consequences, stated plainly:
+
+1. *"Before publish to Amazon"* binds **after** the material is already public in the ordinary sense:
+   readable by anyone, indexable, linkable.
+2. **Git history is permanent.** Deleting a passage later does not unpublish it — it remains in the
+   history unless the history is rewritten, which is a force-push and a gated class. **The
+   pre-publish veto cannot reach anything already committed.**
+3. This ledger's own header — *"so nothing is published beyond what's agreed"* — is therefore
+   describing an intent the current surface does not enforce.
+
+**Nothing here says a wrong has occurred.** Most third-party material on file is consented, and the
+narrow scopes above were being honoured. The finding is that the **protection is positioned wrong**:
+it is a check that fires after the event it exists to gate. That is the vacuity class applied to
+consent — a guard everyone believes protects them, which cannot fire in time.
+
+**Disclosure, since it is mine:** the shadow added `RAW-2026-08-21-*` intakes containing third-party
+material to this public surface earlier the same day, following the existing pattern of the
+directory. Following precedent is not the same as the precedent being safe, and the precedent was
+not checked before it was followed.
+
+**Options, for Aaron to decide — not actioned:** (a) accept it, treating the repo as the publication
+and moving the proofread gate *before commit* for any passage naming a living third party; (b) move
+book drafts to a private repo and publish only cleared chapters; (c) keep third-party names out of
+committed drafts entirely, using placeholders until a passage clears. (a) is the smallest change and
+the only one that needs nothing moved.
+
 **Rule of thumb:** Aaron's own experience = glass-halo (his to make transparent). Facts about *other*
 identifiable living people = their frost — tracked here, protected until consented; **minors protected
 regardless.** Update this row-by-row as consents change (e.g. mother's therapy-condition clears).
