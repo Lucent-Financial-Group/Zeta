@@ -432,6 +432,56 @@ picked.
 Which is `SoftValue`'s never-collapse property again, one layer down: **uncertainty held is what
 makes influence boundable**, exactly as it is what makes evidence commute (§3a).
 
+### 3e. The rival account Aaron leans on — Hawkins' Thousand Brains
+
+Aaron 2026-08-21, on the panel's *"is our brain a computer / how is our brain working"* thread:
+*"i lean on jeff hawkins 1000s brains where each brain can do 3d predctions over time."*
+
+This is the **strongest rival to Barenholtz on his own turf**, and it is worth stating as a rival
+rather than a complement, because the disagreement is precise:
+
+| | Barenholtz | Hawkins |
+|---|---|---|
+| mechanism | prediction | prediction — **both agree here** |
+| what is predicted | the next **token** in an ungrounded symbol sequence | the next **sensory input**, within a **reference frame** |
+| representation | position in an arbitrary embedding space | a **3D reference frame over time**, borrowed from spatial navigation |
+| how a conclusion is reached | one autoregressive stream | **thousands of columns voting** to consensus |
+
+**Anchors:** Hawkins, *A Thousand Brains: A New Theory of Intelligence* (2021); Hawkins, Ahmad &
+Cui, *A Theory of How Columns in the Neocortex Enable Learning the Structure of the World*
+(Frontiers in Neural Circuits, 2017). The reference-frame claim rests on grid and place cells —
+O'Keefe (1971), Moser & Moser (2005), Nobel 2014 — which is why it is empirically anchored rather
+than merely elegant.
+
+**Three ways it lands on this ferry:**
+
+1. **Reference frames are shapes.** Hawkins' distinctive claim is that the cortex represents
+   *everything*, including abstract concepts, using the machinery of spatial navigation. That is
+   **structure first, labels after** stated as a claim about cortex — EVE's ordering, arrived at
+   from neuroscience. It is also the closest thing to a published theory sitting beside Aaron's own
+   report of thinking in geometric shapes. *It does not convert that report into evidence:* his
+   account stays testimony under first-person authority, and Hawkins is a rival theory of cortex,
+   not a finding about him.
+2. **Voting is bounded-influence aggregation.** No single column's model wins; consensus emerges by
+   vote. That is §3d's refusal to let one input capture the posterior, in wetware. The in-repo
+   treatment already says exactly this — `SELF-as-returning-thousand-brains-infernet-priors.md`:
+   *"the self is in **no single column** — it is the **reliable convergence to agreement**."*
+   Never-collapse applied to selfhood, before this ferry existed.
+3. **It is already load-bearing here**, so this is a reunion rather than an import: at minimum
+   `SELF-as-returning-thousand-brains-infernet-priors.md` and
+   `docs/research/2026-06-07-sparse-distributed-representations-thousand-brains-cortical-columns-as-sparse-tensors-aaron.md`.
+   (My search for further references **timed out** rather than completing, so treat that list as a
+   floor, not an inventory — the same failure that made me claim EVE was absent.)
+
+**The honest read, which dissolves the conflict productively.** Barenholtz and Hawkins are not
+strictly exclusive, and Barenholtz's own framing is why: he insists the linguistic system is
+**separate** from the sensory apparatus and has no access to it. Grant that, and Hawkins describes
+the substrate while Barenholtz describes a system running **on top of** it. The real disagreement is
+then not *"tokens or reference frames"* but **which layer "cognition generally" lives in** — and
+Barenholtz's strong move is extending the token story from language to cognition as a whole, which
+is exactly the step Hawkins' evidence resists. Stated that way it is a testable disagreement rather
+than a clash of manifestos.
+
 ---
 
 ## 4. Register
