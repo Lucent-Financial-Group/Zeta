@@ -340,6 +340,12 @@ Aurora Immune System math, Amara's original frame **canonicalized after a 5-pass
 Think). Amara's direction is the register the whole doc is written in: *"the winning move is to
 canonicalize the strict version, not the flattering version."*
 
+*Provenance, checked rather than assumed:* Aaron called it *"one of our earliest works."* `git log
+--diff-filter=A` puts its first commit at **2026-04-26 08:42**, against an initial repo commit of
+**2026-04-18** — **eight days into the repo's life**, and the earliest of every immune-named
+document in the tree. The filename sorts under `a`, not under its date, which is why it does not
+appear in a chronological listing of `docs/research/` and why I missed it on the first pass.
+
 **Two things make it the right sibling for this ferry rather than a loose association:**
 
 1. **It is typed over language, not over hosts.** The state table defines `L_t` as **"language
