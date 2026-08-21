@@ -64,11 +64,17 @@
  */
 
 import { spawnSync } from "node:child_process";
-import { existsSync, readdirSync, readFileSync, statSync, type Dirent } from "node:fs";
+import { closeSync, fstatSync, openSync, readSync, readdirSync, type Dirent } from "node:fs";
 import { join } from "node:path";
 
 /** Placeholder substituted for any key material found in text bound for a log. */
 export const REDACTION = "[REDACTED-VAULT-KEY-MATERIAL]";
+
+/**
+ * Fixed, non-secret value used only to prove the stdin channel is usable before
+ * any key material exists. Never a key, never compared by content.
+ */
+const STDIN_PROBE = "zeta-ephemeral-vault-stdin-probe";
 
 /** Shares and threshold, agreed here so both halves of the report can cite them. */
 export const EPHEMERAL_KEY_SHARES = 5;
@@ -178,16 +184,24 @@ function scanText(text: string, needles: readonly string[]): boolean {
   return needles.some((needle) => needle.length > 0 && text.includes(needle));
 }
 
-function collectFiles(root: string, out: string[]): void {
-  if (out.length >= MAX_SCAN_FILES) return;
+/**
+ * Walk `root`, appending regular files to `out`. Returns false when `root` is
+ * not a readable directory, which is how the caller learns to treat it as a
+ * single file -- WITHOUT a preceding `statSync`, because a check on a path
+ * followed by an operation on that same path is a race (js/file-system-race):
+ * the thing you checked and the thing you then used need not be the same thing.
+ * The operation's own failure is the classification.
+ */
+function collectFiles(root: string, out: string[]): boolean {
+  if (out.length >= MAX_SCAN_FILES) return true;
   let entries: readonly Dirent[];
   try {
     entries = readdirSync(root, { withFileTypes: true });
   } catch {
-    return;
+    return false;
   }
   for (const entry of entries) {
-    if (out.length >= MAX_SCAN_FILES) return;
+    if (out.length >= MAX_SCAN_FILES) return true;
     const full = join(root, entry.name);
     if (entry.isDirectory()) {
       // `.git` holds no material we could have written and is large; the repo
@@ -198,6 +212,42 @@ function collectFiles(root: string, out: string[]): void {
     } else if (entry.isFile()) {
       out.push(full);
     }
+  }
+  return true;
+}
+
+/**
+ * Read a file for scanning, size-capped, with NO check-then-use race: the
+ * handle is opened ONCE and both the size decision and the read are made
+ * against that same descriptor via `fstat`. A `statSync(path)` followed by a
+ * `readFileSync(path)` asks the filesystem about a name twice and can get two
+ * different files.
+ *
+ * Returns null when the path could not be opened or is over the cap; the cap
+ * case is reported by the caller rather than hidden.
+ */
+function readForScan(file: string): { readonly text: string; readonly bytes: number } | "oversize" | null {
+  let fd: number;
+  try {
+    fd = openSync(file, "r");
+  } catch {
+    return null;
+  }
+  try {
+    const size = fstatSync(fd).size;
+    if (size > MAX_SCAN_FILE_BYTES) return "oversize";
+    const buffer = Buffer.allocUnsafe(size);
+    let read = 0;
+    while (read < size) {
+      const chunk = readSync(fd, buffer, read, size - read, read);
+      if (chunk <= 0) break;
+      read += chunk;
+    }
+    return { text: buffer.subarray(0, read).toString("utf8"), bytes: read };
+  } catch {
+    return null;
+  } finally {
+    closeSync(fd);
   }
 }
 
@@ -232,39 +282,22 @@ export function scanForKeyMaterial(
 
   const files: string[] = [];
   for (const root of options.fileRoots) {
-    if (root.length === 0 || !existsSync(root)) continue;
+    if (root.length === 0) continue;
     // A root may be a directory to walk OR a single file -- callers pass both
-    // (RUNNER_TEMP is a tree; `git status` names individual paths). Without this
-    // branch a file root would be handed to readdirSync, throw ENOTDIR, and be
-    // swallowed by the catch: a source that silently scanned nothing.
-    let isDirectory = false;
-    try {
-      isDirectory = statSync(root).isDirectory();
-    } catch {
-      continue;
-    }
-    if (isDirectory) collectFiles(root, files);
-    else files.push(root);
+    // (RUNNER_TEMP is a tree; `git status` names individual paths). The attempt
+    // to walk it IS the test; a non-directory falls through to be read as one
+    // file, and a path that does not exist simply fails to open below.
+    if (!collectFiles(root, files)) files.push(root);
   }
   for (const file of files) {
-    let size = 0;
-    try {
-      size = statSync(file).size;
-    } catch {
-      continue;
-    }
-    if (size > MAX_SCAN_FILE_BYTES) {
+    const read = readForScan(file);
+    if (read === null) continue;
+    if (read === "oversize") {
       skippedOversize.push(file);
       continue;
     }
-    let text: string;
-    try {
-      text = readFileSync(file, "utf8");
-    } catch {
-      continue;
-    }
-    sources.push({ kind: "file", name: file, bytes: size });
-    if (scanText(text, needles)) leaked.push(file);
+    sources.push({ kind: "file", name: file, bytes: read.bytes });
+    if (scanText(read.text, needles)) leaked.push(file);
   }
 
   const bytesScanned = sources.reduce((sum, source) => sum + source.bytes, 0);
@@ -375,9 +408,15 @@ export function kubectlVaultExec(namespace: string, pod: string, timeoutMs = 120
       command,
       {
         encoding: "utf8",
+        // `input` OWNS stdin. Passing `stdio: ["pipe", ...]` beside it is what
+        // broke the first live run: Vault received an EMPTY unseal key and the
+        // server answered `'key' must be a valid hex or base64 string`. Node
+        // documents that `input` overrides stdio[0], but the two together did
+        // not survive this runtime, so the conflicting option is gone rather
+        // than reasoned about. stdout/stderr default to pipe, which is what the
+        // explicit array was asking for anyway.
         input: stdin ?? "",
         maxBuffer: 8 * 1024 * 1024,
-        stdio: ["pipe", "pipe", "pipe"],
         timeout: timeoutMs,
       },
     );
@@ -431,6 +470,33 @@ export async function runEphemeralVaultInit(deps: EphemeralVaultInitDeps): Promi
     };
   }
   deps.log("ephemeral-vault-init: vault status exit 2 (sealed) -- TOPOLOGY.md section 5 step 1 satisfied");
+
+  // --- PROVE THE STDIN CHANNEL WORKS BEFORE MINTING ANYTHING.
+  //
+  // Not in TOPOLOGY.md section 5, because a human at a terminal does not need
+  // it. Here it is load-bearing, and it was written after the first live run
+  // taught the lesson: `unseal` got an EMPTY key, the server said `'key' must be
+  // a valid hex or base64 string`, and by then `operator init` had ALREADY minted
+  // the shares. Material existed, nothing could use it, and the run died holding
+  // it. Ordering this probe before init means a broken stdin channel costs a
+  // clear failure instead of a pointless mint.
+  //
+  // It measures a LENGTH, never content: the probe value is a fixed non-secret
+  // sentinel, and only the byte count is compared.
+  const probe = deps.exec(["status", "-format=json"], STDIN_PROBE, true);
+  if (probe.status !== 2 && probe.status !== 0) {
+    return {
+      ok: false,
+      failure: {
+        step: "stdin-probe",
+        message:
+          `the stdin channel into vault-0 is not usable (probe exec exited ${String(probe.status)}). ` +
+          "Refusing BEFORE `operator init`, so no key material is minted that nothing can then consume.",
+        detail: `${probe.stdout}\n${probe.stderr}`.slice(-1000),
+      },
+    };
+  }
+  deps.log("ephemeral-vault-init: stdin channel into vault-0 verified before minting anything");
 
   // --- section 5 step 3: init at the agreed share count and threshold.
   // stdout here IS key material. It is never logged, never returned, and never

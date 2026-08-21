@@ -171,13 +171,54 @@ describe("the ceremony follows TOPOLOGY.md section 5's shape", () => {
     if (!outcome.ok) return;
     const sequence = calls.map((call) => call.args.join(" "));
     expect(sequence[0]).toBe("status -format=json");
-    expect(sequence[1]).toContain("operator init");
+    // The stdin probe sits between the sealed check and init, and its position
+    // is the whole point of it -- see the ordering test below.
+    expect(sequence[2]).toContain("operator init");
     expect(sequence.filter((entry) => entry === "operator unseal -").length).toBe(EPHEMERAL_KEY_THRESHOLD);
     expect(sequence.at(-1)).toBe("token revoke -self");
     expect(outcome.report.statusExitBeforeInit).toBe(2);
     expect(outcome.report.sealedAfterUnseal).toBe(false);
     expect(outcome.report.rootTokenRevoked).toBe(true);
     expect(outcome.report.unsealOperations).toBe(EPHEMERAL_KEY_THRESHOLD);
+  });
+
+  test("the stdin channel is PROVEN before `operator init` mints anything", async () => {
+    // Regression guard for the first live run: unseal #1 received an EMPTY key
+    // (`'key' must be a valid hex or base64 string`) -- and by then init had
+    // already minted the shares. Material existed, nothing could consume it, and
+    // the run died holding it. The probe must therefore come BEFORE init, not
+    // merely exist.
+    const { exec, calls } = fakeVault();
+    await runEphemeralVaultInit({ exec, gate: ALLOWED, ...emptyScanDeps([]) });
+    const probeIndex = calls.findIndex((call) => call.stdin !== undefined && call.args[0] === "status");
+    const initIndex = calls.findIndex((call) => call.args[1] === "init");
+    expect(probeIndex).toBeGreaterThanOrEqual(0);
+    expect(initIndex).toBeGreaterThanOrEqual(0);
+    expect(probeIndex).toBeLessThan(initIndex);
+    // The probe value is a fixed non-secret sentinel, never a key.
+    const probe = calls[probeIndex];
+    expect(probe?.stdin).not.toBe(SENTINEL_ROOT);
+    expect(SENTINEL_KEYS).not.toContain(probe?.stdin ?? "");
+  });
+
+  test("a broken stdin channel is refused BEFORE any material is minted", async () => {
+    let seenInit = false;
+    const exec: VaultExec = (args, stdin) => {
+      const key = args.join(" ");
+      if (key.startsWith("operator init")) seenInit = true;
+      // Sealed on the plain status call; the probe (stdin present) errors.
+      if (key === "status -format=json") {
+        return stdin === undefined
+          ? { status: 2, stdout: '{"sealed":true}', stderr: "" }
+          : { status: 1, stdout: "", stderr: "error: unable to upgrade connection" };
+      }
+      return { status: 0, stdout: INIT_JSON, stderr: "" };
+    };
+    const outcome = await runEphemeralVaultInit({ exec, gate: ALLOWED, ...emptyScanDeps([]) });
+    expect(outcome.ok).toBe(false);
+    if (outcome.ok) return;
+    expect(outcome.failure.step).toBe("stdin-probe");
+    expect(seenInit).toBe(false);
   });
 
   test("init is asked for the agreed share count and threshold", async () => {
