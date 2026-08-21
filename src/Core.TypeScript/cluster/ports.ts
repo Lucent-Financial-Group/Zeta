@@ -73,11 +73,43 @@ export interface ClusterControlPlane {
   waitForAllNodesReady(timeoutSec: number): void;
   waitForApiReady(maxAttempts: number, pollMs: number): void;
   applyRemoteManifest(url: string, serverSideApply?: boolean): void;
-  applyFileManifest(path: string): void;
+  /**
+   * `serverSideApply` is not a nicety. The vendored `kubevirts.kubevirt.io` CRD
+   * serialises to 238350 bytes -- 91% of the 262144-byte ceiling on the
+   * `last-applied-configuration` annotation a CLIENT-side apply writes. It fits
+   * today and would stop fitting on an upstream bump, and the failure would look
+   * like "KubeVirt cannot be installed here". It is also what the Application
+   * itself declares (`syncOptions: [ ServerSideApply=true ]`), so a proof of
+   * those bytes has to apply them the same way ArgoCD does or it is proving a
+   * different thing. Defaults false: existing callers are unchanged.
+   */
+  applyFileManifest(path: string, serverSideApply?: boolean): void;
   applyInlineManifest(yaml: string): void;
   ensureNamespace(name: string): void;
   waitForCrdEstablished(crdName: string, timeoutSec: number, optional?: boolean): void;
   clearContextIfCurrent(context: string): void;
+  /**
+   * Merge-patch one already-applied object. Separate from `applyFileManifest`
+   * on purpose: a patch is how a lane adapts a manifest it must NOT edit --
+   * `full-ai-cluster/k8s/applications/kubevirt/kubevirt-cr.yaml` is captured
+   * verbatim from node-5b2dfa and staying verbatim is the point, so the CI-only
+   * `useEmulation` flip is applied on top rather than forked into a second copy.
+   */
+  mergePatch(resourceRef: string, namespace: string | null, patchJson: string): void;
+  /**
+   * Wait for one object to satisfy a `kubectl wait --for=` expression.
+   *
+   * Returns a boolean rather than exiting, unlike every other method on this
+   * port. The virt proof runs two INDEPENDENT phases (CDI, then KubeVirt) and
+   * has to report each one; exiting on the first failure would report "CDI is
+   * broken" as "the lane is broken" and hide whichever phase never ran.
+   */
+  waitForResource(
+    resourceRef: string,
+    namespace: string | null,
+    forExpression: string,
+    timeoutSec: number,
+  ): boolean;
 }
 
 export interface ChartInstallSpec {
@@ -120,12 +152,33 @@ export interface RootDevCatalogSpec {
   readonly excludeGlob: string;
 }
 
+/**
+ * What the dev/CI app-of-apps root NEVER APPLIES. Ground truth for "what
+ * reaches the cluster" -- `argocd-health-test.ts` derives its view of the
+ * applied set from this string rather than restating it.
+ *
+ * A directory belongs here when applying it to a kind/k3d CI cluster would
+ * fail or would cost substrate the lane does not have. It does NOT belong here
+ * merely because the workload is scaled to zero or is aspirational: an
+ * Application whose declared resources all reconcile is a real Synced+Healthy
+ * proof of the manifests, and excluding it buys nothing while hiding whether
+ * the manifests still parse and apply.
+ *
+ * 2026-08-21 (081M0JXXFV0087G0R001PGEEM4): `deepseek-coder`, `qwen-coder` and
+ * `orleans` were removed from this glob. Measured, not assumed -- see
+ * `docs/research/2026-08-21-what-each-deferred-argocd-application-needs-to-boot.md`:
+ * the first two render exactly one Namespace + one ConfigMap between them (no
+ * image, no PVC, no GPU, no CRD), and `orleans` renders Namespace + SA + Role +
+ * RoleBinding + ConfigMap + 3 Services + a StatefulSet at `replicas: 0`. They
+ * were swept up by a blanket "GPU / local-models" and "deferred until dev
+ * wiring" label that never matched what the manifests actually ask for.
+ */
 export const DEFAULT_ROOT_DEV_CATALOG: RootDevCatalogSpec = {
   gitRef: "main",
   gitRepoUrl: process.env.ZETA_ARGOCD_GIT_REPO_URL ?? "https://github.com/Lucent-Financial-Group/Zeta",
   applicationsPath: "full-ai-cluster/k8s/applications",
   excludeGlob:
-    "{cilium/**,cilium-lb-ipam/**,longhorn/**,ollama/**,vllm/**,deepseek-coder/**,qwen-coder/**,gitlab/**,orleans/**,temporal/**,agent-memory/**,platform/**}",
+    "{cilium/**,cilium-lb-ipam/**,longhorn/**,ollama/**,vllm/**,gitlab/**,temporal/**,agent-memory/**,platform/**}",
 };
 
 export function buildRootDevCatalogManifest(spec: RootDevCatalogSpec): string {

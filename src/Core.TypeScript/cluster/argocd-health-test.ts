@@ -220,18 +220,47 @@ const K3D_CLUSTER_NAME_PATTERN = /^\s+name:\s*([A-Za-z\d-]+)\s*$/;
 const DNS_LABEL_PATTERN = /^[a-z\d]([-a-z\d]*[a-z\d])?$/;
 const SMOKE_MIN_APPLICATIONS = 20;
 
+/**
+ * Never applied by the dev/CI root, and therefore never asserted. Each entry
+ * names a substrate the kind/k3d lane does not have.
+ *
+ * 2026-08-21: `deepseek-coder` and `qwen-coder` LEFT this set. They were listed
+ * under a blanket "GPU model-serving" label, but neither declares a GPU, an
+ * image, a pod or a volume -- between them they render one Namespace and two
+ * ConfigMaps, and both carry `automated: { prune: true, selfHeal: true }`. The
+ * GPU is a property of `ollama`/`vllm`, which SERVE those models; it was never
+ * a property of the two structural Applications that describe them.
+ */
 const DEV_EXCLUDED_DIRS = new Set([
-  "cilium",
-  "cilium-lb-ipam",
-  "longhorn",
-  "ollama",
-  "vllm",
-  "deepseek-coder",
-  "qwen-coder",
+  "cilium", // kind CI uses its default CNI; k3d bootstraps Cilium outside the app-of-apps
+  "cilium-lb-ipam", // CiliumLoadBalancerIPPool CRDs exist only where cilium is installed
+  "longhorn", // needs real block devices + open-iscsi on the node; absent on a kind runner
+  "ollama", // nvidia.com/gpu request + nodeSelector zeta.io/gpu + a 200Gi longhorn PVC
+  "vllm", // CUDA image + nvidia.com/gpu request + a 200Gi longhorn PVC
 ]);
 
-/** Deferred from included Synced+Healthy proof until dev wiring/substrate exists (081KSXN940008QG0R000SCP2H1). */
+/**
+ * Deferred from the included Synced+Healthy proof until dev wiring/substrate
+ * exists (081KSXN940008QG0R000SCP2H1).
+ *
+ * EVERY entry states WHY, and the why must name a BLOCKER -- a missing
+ * dependency, secret, CRD, storage class or ceremony -- never "not wired yet".
+ * Six of these carried no recorded reason at all until 2026-08-21; the reasons
+ * below were established FROM the manifests and are written up in
+ * `docs/research/2026-08-21-what-each-deferred-argocd-application-needs-to-boot.md`.
+ *
+ * `orleans` LEFT this set on 2026-08-21: every resource it declares reconciles
+ * on a bare kind cluster, and its StatefulSet ships `replicas: 0`, which
+ * gitops-engine's `getAppsv1StatefulSetHealth` reports Healthy (`ReadyReplicas
+ * 0 < Replicas 0` is false, and the API-server-defaulted RollingUpdate
+ * partition is 0 so `UpdatedReplicas 0 < 0 - 0` is false too). It was deferred
+ * for a silo image it never pulls.
+ */
 const DEV_INCLUDED_PROOF_DEFERRED_DIRS = new Set([
+  // volumeClaimTemplates pin `storageClassName: longhorn`, which is excluded
+  // above, so the PVC never binds. Independently caught by the longhorn rule
+  // in isExcludedFromIncludedProof -- this entry is redundant, and kept only so
+  // the deferral stays legible next to its siblings.
   "agent-memory",
   // Needs a GitHub App credential + a live runner registration that CI has no
   // secret to bind. Listed EXPLICITLY even though `requestsReadWriteMany` below
@@ -240,28 +269,70 @@ const DEV_INCLUDED_PROOF_DEFERRED_DIRS = new Set([
   // stand and must not silently stop applying.
   "arc-runner-set",
   // ----------------------------------------------------------------------
-  // MEASURED 2026-08-21 on run 32519516070, the first run in which these four
-  // were asserted at all. The dev `longhorn` alias WORKED for every one of
-  // them -- their PVCs bound and their pods run -- and each then failed for a
-  // reason that has nothing to do with storage. They are deferred with the
-  // observed evidence, not with a guess, and each carries its symptom in
-  // APPLIED_BUT_UNASSERTED_REASONS below so it stays findable.
+  // FOUR MEASURED DEFERRALS, marked `MEASURED 2026-08-21` inline below.
+  // Run 32519516070 was the first in which they were asserted at all. The dev
+  // `longhorn` alias WORKED for every one -- their PVCs bound and their pods
+  // ran -- and each then failed for a reason that has nothing to do with
+  // storage. They are deferred on observed evidence, not on a guess, and each
+  // carries its symptom inline so it stays findable.
   //
   // This is a DEFERRAL OF FOUR NAMED DEFECTS, not a restored blanket rule: the
   // other six Applications the alias unlocked (headscale, mimir, nats, oz,
-  // redis, tempo) are asserted from this commit on.
+  // redis, tempo) are asserted from that commit on.
   // ----------------------------------------------------------------------
-  "cockroachdb", // 3/3 pods Running (PVCs BOUND), readiness 503 for 38m -- a 3-replica cluster nobody ran `cockroach init` on
+  // MEASURED 2026-08-21: 3/3 pods Running (PVCs BOUND), readiness 503 for 38m
+  // -- a 3-replica cluster nobody ran `cockroach init` on.
+  "cockroachdb",
+  // Standby half of the either/or Git-host pair (gitlab is the default-on one),
+  // so it ships manual-sync BY DESIGN. Asserting it here would assert the
+  // manual-sync contract -- exists + compared, never synced -- which is exactly
+  // the cdi/kubevirt vacuity #13084 had to fix. Testing it for real means
+  // running BOTH Git hosts at once, the configuration its own header forbids.
   "forgejo",
+  // charts.gitlab.io/gitlab 8.7.0: ~40 subcharts, a `gitlab-initial-root-password`
+  // Secret CI has no source for, and a Postgres/Redis/Gitaly/MinIO stack wanting
+  // several PVCs plus multi-GB images. A kind runner cannot schedule that inside
+  // the lane's assertion budget.
   "gitlab",
-  "hindsight", // hindsight-postgresql-0 FailedScheduling "Insufficient cpu" on the 1-node runner; api + control-plane CrashLoop waiting on it
-  "kube-prometheus-stack", // grafana CreateContainerConfigError: secret "grafana-admin-credentials" not found. Its own prometheus + alertmanager PVCs bound and run 2/2
-  "orleans",
+  // MEASURED 2026-08-21: hindsight-postgresql-0 FailedScheduling "Insufficient
+  // cpu" on the 1-node runner; api + control-plane CrashLoop waiting on it.
+  "hindsight",
+  // MEASURED 2026-08-21: grafana CreateContainerConfigError, secret
+  // "grafana-admin-credentials" not found. Its own prometheus + alertmanager
+  // PVCs bound and run 2/2.
+  "kube-prometheus-stack",
+  // `orleans` is NOT here: main established by measurement that its
+  // `replicas: 0` StatefulSet reaches Synced+Healthy, and removed it. Recorded
+  // so the deferral is not reinstated by a future merge.
+  //
+  // Renders `monitoring.coreos.com/v1` ServiceMonitor + PrometheusRule (CRDs
+  // owned by kube-prometheus-stack, itself longhorn-blocked here) and a
+  // `gateway.networking.k8s.io/v1` Gateway, and runs two images no registry
+  // serves: ghcr.io/lucent-financial-group/zeta-platform-controller:latest and
+  // .../zeta-portal:latest. portal.yaml also pins `storageClassName: longhorn`,
+  // so the longhorn rule catches it independently.
   "platform",
-  "spire", // Vault upstream CA + kind PVC wiring not ready in included CI (081KSXN940008QG0R000SCP2H1)
+  // Vault upstream CA + kind PVC wiring not ready in included CI
+  // (081KSXN940008QG0R000SCP2H1). The chart's `upstreamAuthority.vault` block is
+  // commented out pending a Vault that is INITIALISED -- which is why this one
+  // cannot be unblocked ahead of `vault` below.
+  "spire",
+  // go.temporal.io/temporal 0.59.0 with `cassandra.enabled: false` and no
+  // `server.config.persistence` override: the chart is left with NO datastore,
+  // so the schema-setup job has nothing to migrate against. The commented-out
+  // CockroachDB wiring is the missing half, and cockroachdb is itself
+  // longhorn-blocked in this lane.
   "temporal",
-  "vault", // comes up SEALED by design; readiness needs the gated operator-init ceremony CI must not run
-  "weaviate", // weaviate-0 is 1/1 Running on its bound 100Gi PVC, but the Application re-syncs every ~3m ("Partial sync ... succeeded") and never reaches Synced
+  // comes up SEALED by design; readiness needs the gated operator-init ceremony
+  // CI must not run -- `vault operator init` + `unseal` MINT root and unseal key
+  // material, a gated class (vault/Application.yaml, TOPOLOGY.md). Not a wiring
+  // gap: a lane that could make Vault Healthy would be a lane that performs the
+  // ceremony, and it must not.
+  "vault",
+  // MEASURED 2026-08-21: weaviate-0 is 1/1 Running on its bound 100Gi PVC, but
+  // the Application re-syncs every ~3m ("Partial sync ... succeeded") and never
+  // reaches Synced.
+  "weaviate",
 ]);
 
 /**
@@ -905,7 +976,7 @@ export function buildPlan(options: CliOptions, repoRoot = REPO_ROOT): HarnessPla
     ],
     notes: [
       "081KSXN940008QG0R000SCP2H1 is separate from 081KSNY2Z0008QG0R0008PN7RQ; this harness does not test USB reformat retention.",
-      "Dev health assertions exclude cilium, the Longhorn chart itself, GPU model-serving, and apps deferred for a named reason in APPLIED_BUT_UNASSERTED_REASONS; k3d bootstraps Cilium directly and kind CI uses its default CNI.",
+      "Dev health assertions exclude cilium, the Longhorn chart itself, GPU model-SERVING (ollama/vllm), ReadWriteMany claims, and apps deferred on a named blocker recorded in APPLIED_BUT_UNASSERTED_REASONS; k3d bootstraps Cilium directly and kind CI uses its default CNI.",
       "Longhorn-BACKED manifests are no longer storage-excluded: dev applies a StorageClass named longhorn over rancher.io/local-path (dev-cluster/manifests/longhorn.yaml), so those PVCs bind. MEASURED on run 32519516070: 6 of the 11 formerly-excluded apps now reach Synced+Healthy (headscale, mimir, nats, oz, redis, tempo); the other 5 bound their volumes and then failed for named NON-storage defects, now visible for the first time. Still excluded outright are ReadWriteMany claims, which no dev provisioner can serve, and the whole rule returns if that manifest is absent (081M0JXF6MS087G0R001HC34TM).",
       "ZETA_CONTAINER_RUNTIME is the repo-wide OCI runtime switch; use --runtime for one-off explicit harness runs.",
     ],
