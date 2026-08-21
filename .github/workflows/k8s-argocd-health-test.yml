@@ -612,6 +612,25 @@ jobs:
       - name: Install bun dependencies
         run: bun install --frozen-lockfile
 
+      # `--ephemeral-vault-init` (2026-08-21). The harness performs
+      # vault/TOPOLOGY.md section 5's init+unseal procedure against THIS kind
+      # cluster, which the teardown step below destroys unconditionally.
+      #
+      # THE METAL PATH IS UNCHANGED. TOPOLOGY.md section 5 still describes a
+      # human ceremony behind the biometric gate, with a witness, and nothing in
+      # this PR automates, wraps or softens it. The maintainer authorised the
+      # EPHEMERAL case only -- "if we init key materials and throw it away not a
+      # bit deal" -- and every word of that condition is enforced in code:
+      # src/Core.TypeScript/cluster/ephemeral-vault-init.ts refuses `--existing`,
+      # refuses a non-disposable provider, writes no material anywhere, and runs
+      # a leak scan over RUNNER_TEMP + the dirty working tree + this job's own
+      # stdout WHILE STILL HOLDING the shares -- the only moment such a scan is
+      # possible. It fails if it finds them AND it fails if it scanned 0 bytes,
+      # so a scan that did not run cannot read as a scan that passed.
+      #
+      # This is what lets `vault` be asserted under the FULL auto-sync contract
+      # rather than deferred. It is not a weakening: Vault reaches genuinely
+      # Synced+Healthy, sealed-to-unsealed, or the job goes red.
       - name: Run live kind included ArgoCD health proof
         id: proof
         env:
@@ -632,6 +651,7 @@ jobs:
             --git-ref "$ZETA_ARGOCD_GIT_REF" \
             --timeout-sec 2400 \
             --poll-sec 15 \
+            --ephemeral-vault-init \
             | tee "$RUNNER_TEMP/included-proof.log"
 
       # The other half of making the failure loud. Runs even when the proof failed --

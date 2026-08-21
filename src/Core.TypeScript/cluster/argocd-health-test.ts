@@ -34,6 +34,12 @@ import {
 } from "./dev-cluster/lib.ts";
 import { DEFAULT_ROOT_DEV_CATALOG } from "./ports.ts";
 import { classifySyncPolicy, manualSyncAssertion, type AssertionOutcome } from "./manual-sync-policy.ts";
+import {
+  ephemeralVaultInitGate,
+  kubectlVaultExec,
+  runEphemeralVaultInit,
+  type EphemeralVaultInitReport,
+} from "./ephemeral-vault-init.ts";
 
 export type Provider = "k3d" | "kind";
 export type Mode = "dry-run" | "preflight" | "run";
@@ -53,6 +59,7 @@ export type FailureKind =
   | "ArgoCdTimeout"
   | "ApplicationMissing"
   | "ApplicationUnhealthy"
+  | "EphemeralVaultInitFailed"
   | "DriftRepairTimeout";
 
 export interface Failure {
@@ -75,6 +82,12 @@ export interface CliOptions {
   readonly scope: Scope;
   readonly scopeExplicit: boolean;
   readonly runtime: ContainerRuntime;
+  /**
+   * Run the ephemeral Vault init+unseal ceremony against the cluster THIS
+   * process created (`./ephemeral-vault-init.ts`). Opt-in only: never defaulted
+   * on, and refused outright with `--existing`.
+   */
+  readonly ephemeralVaultInit: boolean;
 }
 
 export interface ToolCheck {
@@ -138,6 +151,7 @@ export type HarnessResult =
       readonly plan: HarnessPlan;
       readonly preflight?: readonly ToolCheck[];
       readonly applications?: readonly ApplicationVerdict[];
+      readonly ephemeralVaultInit?: EphemeralVaultInitReport;
       readonly driftRepair?: "not-requested" | "passed";
     }
   | {
@@ -145,6 +159,7 @@ export type HarnessResult =
       readonly plan?: HarnessPlan;
       readonly preflight?: readonly ToolCheck[];
       readonly applications?: readonly ApplicationVerdict[];
+      readonly ephemeralVaultInit?: EphemeralVaultInitReport;
       readonly driftRepair?: "not-requested" | "failed";
       readonly failure: Failure;
     };
@@ -163,6 +178,7 @@ interface MutableCliOptions {
   scope: Scope;
   scopeExplicit: boolean;
   runtime: ContainerRuntime;
+  ephemeralVaultInit: boolean;
 }
 
 interface ParseNumberSuccess {
@@ -208,7 +224,7 @@ const DEFAULT_TIMEOUT_SECONDS = 900;
 const DEFAULT_POLL_SECONDS = 10;
 const SPAWN_MAX_BUFFER = 64 * 1024 * 1024;
 const HELP_TEXT =
-  "usage: bun src/Core.TypeScript/cluster/argocd-health-test.ts [--dry-run|--preflight|--run] [--provider k3d|kind] [--scope smoke|included|full] [--runtime docker|podman] [--git-ref REF] [--cluster-name NAME] [--config PATH] [--existing] [--timeout-sec N] [--poll-sec N] [--drift-check]";
+  "usage: bun src/Core.TypeScript/cluster/argocd-health-test.ts [--dry-run|--preflight|--run] [--provider k3d|kind] [--scope smoke|included|full] [--runtime docker|podman] [--git-ref REF] [--cluster-name NAME] [--config PATH] [--existing] [--timeout-sec N] [--poll-sec N] [--drift-check] [--ephemeral-vault-init]";
 const MODE_FLAGS: Readonly<Record<string, Mode>> = {
   "--dry-run": "dry-run",
   "--preflight": "preflight",
@@ -414,12 +430,23 @@ const DEV_INCLUDED_PROOF_DEFERRED_DIRS = new Set([
   // CockroachDB wiring is the missing half, and cockroachdb is itself
   // longhorn-blocked in this lane.
   "temporal",
-  // comes up SEALED by design; readiness needs the gated operator-init ceremony
-  // CI must not run -- `vault operator init` + `unseal` MINT root and unseal key
-  // material, a gated class (vault/Application.yaml, TOPOLOGY.md). Not a wiring
-  // gap: a lane that could make Vault Healthy would be a lane that performs the
-  // ceremony, and it must not.
-  "vault",
+  // `vault` is NOT here. It LEFT this set on 2026-08-21, and the condition that
+  // lifted it is recorded rather than the line silently deleted.
+  //
+  //   WAS: "comes up SEALED by design; readiness needs the gated operator-init
+  //   ceremony CI must not run -- `vault operator init` + `unseal` MINT root and
+  //   unseal key material, a gated class (vault/Application.yaml, TOPOLOGY.md).
+  //   Not a wiring gap: a lane that could make Vault Healthy would be a lane
+  //   that performs the ceremony, and it must not."
+  //
+  //   LIFTED BY: the maintainer authorising the EPHEMERAL case on 2026-08-20 --
+  //   "if we init key materials and throw it away not a bit deal". The old
+  //   reason's last sentence is still true for the METAL cluster and
+  //   vault/TOPOLOGY.md section 5 is unchanged: that ceremony is still a human
+  //   one, behind the biometric gate. What changed is that a kind cluster
+  //   destroyed at the end of the run is not custody, so the lane may perform
+  //   the same procedure there. `./ephemeral-vault-init.ts` is that lane, its
+  //   gate refuses `--existing`, and its leak scan runs holding the material.
   // MEASURED 2026-08-21: weaviate-0 is 1/1 Running on its bound 100Gi PVC, but
   // the Application re-syncs every ~3m ("Partial sync ... succeeded") and never
   // reaches Synced.
@@ -482,10 +509,6 @@ export const APPLIED_BUT_UNASSERTED_REASONS: ReadonlyMap<string, string> = new M
     "NOT storage -- MEASURED run 32519516070: its own prometheus and alertmanager PVCs bound over the dev longhorn alias and both pods run 2/2. Grafana is CreateContainerConfigError, `secret \"grafana-admin-credentials\" not found` -- a secret this lane has no material to mint, the same class of blocker as arc-runner-set.",
   ],
   ["spire", "Vault upstream CA + kind PVC wiring not ready in included CI (DEV_INCLUDED_PROOF_DEFERRED_DIRS)."],
-  [
-    "vault",
-    "storage moved to zeta-local-path, so it now SYNCS in this lane -- but it comes up SEALED by design and readiness requires the gated operator-init ceremony, which CI must never run (081M0H19QD3087G0R003GV76ZY).",
-  ],
   [
     "weaviate",
     "NOT storage -- MEASURED run 32519516070: weaviate-0 is 1/1 Running on a bound 100Gi PVC over the dev longhorn alias. The Application nevertheless re-syncs every ~3 minutes, logging `Partial sync operation to 17.6.0 succeeded` while staying OutOfSync/Progressing for the full 40-minute window. A sync-convergence defect against chart 17.6.0, not a volume that failed to bind.",
@@ -771,6 +794,7 @@ function defaultCliOptions(env: NodeJS.ProcessEnv): ParseOptionsResult {
       scope: provider === "kind" ? "smoke" : "full",
       scopeExplicit: false,
       runtime,
+      ephemeralVaultInit: false,
     },
   };
 }
@@ -867,6 +891,10 @@ function parseArg(argv: readonly string[], index: number, options: MutableCliOpt
     options.driftCheck = true;
     return { ok: true, nextIndex: index + 1 };
   }
+  if (arg === "--ephemeral-vault-init") {
+    options.ephemeralVaultInit = true;
+    return { ok: true, nextIndex: index + 1 };
+  }
   if (arg === "--help" || arg === "-h") {
     return { ok: false, failure: usageFailure(HELP_TEXT) };
   }
@@ -889,6 +917,15 @@ function validateOptions(options: CliOptions): Failure | null {
     return usageFailure(
       "kind provider supports smoke or included scope; use --scope included or --provider k3d for full",
     );
+  }
+  if (options.ephemeralVaultInit && options.existing) {
+    return usageFailure(
+      "--ephemeral-vault-init cannot be combined with --existing: the ceremony is authorised only for a " +
+        "cluster this process creates and destroys. See ephemeral-vault-init.ts and vault/TOPOLOGY.md section 5.",
+    );
+  }
+  if (options.ephemeralVaultInit && options.mode !== "run") {
+    return usageFailure("--ephemeral-vault-init requires --run");
   }
   const configFile = basename(options.configPath).toLowerCase();
   if (options.provider === "kind" && configFile.includes("k3d")) {
@@ -1767,6 +1804,123 @@ async function runDriftRepairCheck(options: CliOptions): Promise<Failure | null>
   });
 }
 
+/**
+ * Budget for "wait until vault-0 is up and reports SEALED".
+ *
+ * Bounded SEPARATELY from `--timeout-sec` and deliberately smaller. ArgoCD
+ * reconciles asynchronously, so blocking here does not delay any other
+ * Application -- but it does consume the 60-minute job cap, and a Vault that
+ * never appears must surface as a named failure long before the cap turns the
+ * run into "no verdict at all".
+ */
+const EPHEMERAL_VAULT_SEALED_WAIT_SECONDS = 900;
+
+/**
+ * Surfaces the key-material leak scan walks, on top of the in-memory transcript
+ * and report.
+ *
+ * RUNNER_TEMP is where this job's `tee` writes `included-proof.log` -- the one
+ * file in CI that receives our stdout verbatim. The `git status` paths are the
+ * other realistic vector: anything a later step could commit. Both are computed
+ * rather than assumed, and the count of what was actually opened is reported,
+ * so a scan that found nothing because it walked nothing is visible as such.
+ */
+function ephemeralVaultScanRoots(): readonly string[] {
+  const roots: string[] = [];
+  const runnerTemp = process.env.RUNNER_TEMP;
+  if (runnerTemp !== undefined && runnerTemp.length > 0) roots.push(runnerTemp);
+  const dirty = runCommand("git", ["status", "--porcelain"], 30_000);
+  if (dirty.status === 0) {
+    for (const line of dirty.stdout.split("\n")) {
+      const path = line.slice(3).trim();
+      if (path.length > 0 && !path.includes("->")) roots.push(join(REPO_ROOT, path));
+    }
+  }
+  return roots;
+}
+
+/**
+ * The ephemeral Vault ceremony, run between "ArgoCD is up" and "assert every
+ * Application". Returns null when it was not requested -- the harness behaves
+ * exactly as it did before in that case, which keeps the opt-in honest.
+ *
+ * Placed BEFORE `waitForApplications` on purpose. Vault syncs at wave -60, the
+ * earliest wave in the catalogue, so it is running long before the later
+ * Applications settle; and because ArgoCD is reconciling the whole tree in the
+ * background regardless of what this process is doing, the wait costs nothing
+ * the run was not already spending.
+ */
+async function runEphemeralVaultInitStep(
+  options: CliOptions,
+  transcript: string,
+): Promise<{ readonly report: EphemeralVaultInitReport | null; readonly failure: Failure | null }> {
+  if (!options.ephemeralVaultInit) return { report: null, failure: null };
+
+  const gate = ephemeralVaultInitGate({
+    existingCluster: options.existing,
+    provider: options.provider,
+    requested: options.ephemeralVaultInit,
+    teardownGuaranteed: !options.existing,
+  });
+  if (!gate.allowed) {
+    return { report: null, failure: { kind: "EphemeralVaultInitFailed", message: gate.reason } };
+  }
+
+  const exec = kubectlVaultExec("vault", "vault-0");
+
+  // TOPOLOGY.md section 5 step 1, as a WAIT: exit 2 is the sealed signal, and
+  // it is also the only exit this loop accepts. A pod that is not there yet,
+  // or a `kubectl exec` into a container that has not started, is neither exit
+  // 2 nor a reason to proceed -- so the loop keeps waiting and, if the budget
+  // runs out, fails naming the last exit code it saw rather than guessing.
+  let lastStatus: number | null = null;
+  const sealedFailure = await waitFor(EPHEMERAL_VAULT_SEALED_WAIT_SECONDS, options.pollSeconds, () => {
+    lastStatus = exec(["status", "-format=json"]).status;
+    if (lastStatus === 2) return null;
+    return {
+      kind: "EphemeralVaultInitFailed",
+      message:
+        `vault-0 never reported the sealed signal within ${String(EPHEMERAL_VAULT_SEALED_WAIT_SECONDS)}s ` +
+        `(last \`vault status\` exit: ${String(lastStatus)}; TOPOLOGY.md section 5 step 1 wants 2)`,
+    };
+  });
+  if (sealedFailure !== null) return { report: null, failure: sealedFailure };
+
+  const logs = kubectl(["-n", "vault", "logs", "vault-0", "--tail=2000"], 60);
+
+  const outcome = await runEphemeralVaultInit({
+    exec,
+    gate,
+    scanRoots: ephemeralVaultScanRoots(),
+    podLogs: `${logs.stdout}\n${logs.stderr}`,
+    transcript,
+    log: (line) => {
+      console.log(line);
+    },
+  });
+  if (outcome.ok) return { report: outcome.report, failure: null };
+  return {
+    report: outcome.report ?? null,
+    failure: {
+      kind: "EphemeralVaultInitFailed",
+      message: `${outcome.failure.step}: ${outcome.failure.message}`,
+      ...(outcome.failure.detail === undefined ? {} : { detail: outcome.failure.detail }),
+    },
+  };
+}
+
+/**
+ * Spread helper. Under `exactOptionalPropertyTypes` an ABSENT field and a field
+ * present-but-undefined are different types, and absent is the honest one here:
+ * a run that did not request the ceremony should carry no ceremony key at all,
+ * not a null one that reads like a ceremony which returned nothing.
+ */
+function vaultReportField(
+  report: EphemeralVaultInitReport | null,
+): { readonly ephemeralVaultInit?: EphemeralVaultInitReport } {
+  return report === null ? {} : { ephemeralVaultInit: report };
+}
+
 export async function runHarness(options: CliOptions): Promise<HarnessResult> {
   const arch = architectureFailure();
   const plan = buildPlan(options);
@@ -1801,9 +1955,14 @@ export async function runHarness(options: CliOptions): Promise<HarnessResult> {
     return { ok: false, plan, preflight, failure: argoFailure };
   }
 
+  const vault = await runEphemeralVaultInitStep(options, JSON.stringify(plan));
+  if (vault.failure !== null) {
+    return { ok: false, plan, preflight, ...vaultReportField(vault.report), failure: vault.failure };
+  }
+
   const apps = await waitForApplications(plan, options);
   if (isFailure(apps)) {
-    return { ok: false, plan, preflight, failure: apps };
+    return { ok: false, plan, preflight, ...vaultReportField(vault.report), failure: apps };
   }
 
   if (options.driftCheck) {
@@ -1814,14 +1973,29 @@ export async function runHarness(options: CliOptions): Promise<HarnessResult> {
         plan,
         preflight,
         applications: apps,
+        ...vaultReportField(vault.report),
         driftRepair: "failed",
         failure: driftFailure,
       };
     }
-    return { ok: true, plan, preflight, applications: apps, driftRepair: "passed" };
+    return {
+      ok: true,
+      plan,
+      preflight,
+      applications: apps,
+      ...vaultReportField(vault.report),
+      driftRepair: "passed",
+    };
   }
 
-  return { ok: true, plan, preflight, applications: apps, driftRepair: "not-requested" };
+  return {
+    ok: true,
+    plan,
+    preflight,
+    applications: apps,
+    ...vaultReportField(vault.report),
+    driftRepair: "not-requested",
+  };
 }
 
 function exitCode(result: HarnessResult): 0 | 1 | 2 {
