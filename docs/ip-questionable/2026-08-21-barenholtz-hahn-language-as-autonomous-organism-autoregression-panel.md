@@ -384,6 +384,54 @@ re-grounding — self/non-self onto proven identity distinctness, BFT thresholds
 *proven-distinct* anti-Sybil identities rather than Sybil-blind node counts. Trajectory:
 `docs/trajectories/aurora-immune-reground`.
 
+### 3d. The detector Aurora is missing may already be shipped — `HeavyTailFold`
+
+Aaron 2026-08-21, on Aurora being typed but not metered: *"i've been building this into my own AI
+slowely from the grouund up in our BNN and basyian that handles non guassian outliers and such …
+we should get around to this for our network code and LLMs too eventually so LLMs can be wrapped in
+this immunesystem too since they lack defenses for memetic attacks in many cases."*
+
+**An observation worth checking, offered as that and not as a result.** The 2026-06-16 reground doc
+says Aurora's operators were typed before the identity legs were discharged — self/non-self rests on
+an undefined "self", and BFT thresholds count Sybil-blind nodes. Two pieces that shipped *after*
+Aurora was written look like exactly those missing primitives:
+
+**`src/Bayesian/HeavyTailFold.fs` states a memetic attack in Bayesian clothing.** Its defect
+section: `SocietyBootstrap` folds beliefs by exponential-family product, so the joint location is
+the precision-weighted mean — *"unbounded in each member's influence: a member may move the answer
+arbitrarily far by raising the precision it **claims**."* With the measured configuration, a correct
+member at `μ=10, τ=1` folded against an overconfident one at `μ=0, τ=1000` yields a joint mean of
+**0.009990** at precision **1001** — *"the correct member is annihilated and the society is more
+confident than either of them."*
+
+That is the memetic attack, priced: **capture the shared conclusion by asserting confidence.** The
+fix is the Student-t redescending influence `ψ(z) = z(ν+1)/(ν+z²)` — the same weight
+[`numerology-vs-number-theory`](../../.claude/rules/numerology-vs-number-theory.md) already cites —
+and the file is explicit that Student-t alone *"is true and it is not sufficient."*
+
+**`Attested` / B3(b)** fixed the sibling defect, one source counted N times, and `HeavyTailFold`
+names it a **precondition**: *"deduplication makes members countable, and a robust fold needs to
+count."*
+
+Those two are, respectively, **bounded influence per member** and **countable-because-deduplicated
+members** — which is what Aurora's BFT thresholds need in order to mean anything, and what
+self/non-self needs in order to have a "self" that is not undefined. So the reground may not need
+new mathematics so much as a wiring pass onto primitives that landed later. **Not verified:** I have
+not checked that `HeavyTailFold`'s guarantees actually satisfy Aurora's stated operator
+requirements. That check is the work, and it is a different thing from noticing the shape.
+
+**Why this is the LLM-wrapper answer specifically.** An LLM has no defence against a memetic attack
+because it has **no bounded-influence aggregation** — context is absorbed at face value, and a
+sufficiently confident assertion in the prompt simply wins. A redescending influence function is
+precisely the mechanism that denies a single input unbounded pull on the conclusion. The wrapper is
+not a filter on content; it is a **fold that refuses to let any one emission capture the posterior**,
+and `MultilayerBnn` (exact marginals on a chain via the Rauch–Tung–Striebel smoother) carries
+calibrated uncertainty end-to-end so the refusal is principled rather than a threshold someone
+picked.
+
+Which is `SoftValue`'s never-collapse property again, one layer down: **uncertainty held is what
+makes influence boundable**, exactly as it is what makes evidence commute (§3a).
+
 ---
 
 ## 4. Register
