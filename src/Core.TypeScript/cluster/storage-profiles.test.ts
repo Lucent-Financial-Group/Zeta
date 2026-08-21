@@ -1230,9 +1230,21 @@ describe("the checked-in resource ladder", () => {
 
   // The dev lane's applied set comes from ports.ts's excludeGlob, so this
   // number moves only when that constant does.
-  test("the dev lane applies 33 of the 45 Applications", () => {
+  //
+  // 2026-08-21: 33 -> 36. The constant DID move -- `deepseek-coder`,
+  // `qwen-coder` and `orleans` left the glob (081M0JXXFV0087G0R001PGEEM4), so
+  // 12 excluded directories became 9 and 45 - 9 = 36. The comment above is the
+  // contract and it held; only this literal was left behind, which is why main
+  // went red on a change that was correct.
+  //
+  // The two resource-total tests below did NOT move with it, and that is not an
+  // oversight: all three departing Applications render zero CPU and zero memory
+  // (two of them are Namespace + ConfigMap, `orleans` is a StatefulSet at
+  // `replicas: 0`), so the lane's totals are arithmetically unchanged. If a
+  // future glob change moves this count, expect those to move too.
+  test("the dev lane applies 36 of the 45 Applications", () => {
     expect(applicationDirs()).toHaveLength(45);
-    expect(devLaneAppliedDirs()).toHaveLength(33);
+    expect(devLaneAppliedDirs()).toHaveLength(36);
   });
 
   // MEASURED 2026-08-21 by `helm pull` at each pinned targetRevision followed
