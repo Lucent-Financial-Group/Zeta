@@ -235,12 +235,19 @@ than assume. A negotiation that only converged in one message order would be a p
 hidden clock in it.
 
 **The name.** Aaron 2026-08-21: EVE is named for his daughter — *"Lillith (Freedom) Eve
-(Control)"* — and he states she has given permission to be mentioned in his book. Recorded because
-he volunteered it as the naming lineage; **the consent he described is scoped to the book**, so it
-is noted here rather than treated as blanket permission for public surfaces, and he can widen or
-withdraw it. Two flags for him rather than silent edits: the in-repo memory hub records the name as
-*"Lillian Eve"*, which disagrees with what he wrote today; and the name is doing real work — a
-protocol whose whole subject is control embedded in language, named for Freedom and Control.
+(Control)"*. Asked about the memory hub recording her as *"Lillian Eve"*, he resolved it: *"Lillian
+is what her mom put on the birth certificate she will always be Lillith to me."* So both names are
+correct and neither supersedes the other — the legal name and the name her father uses, **held
+together rather than reconciled to one.** Recorded that way deliberately: collapsing it to a single
+"real" name would be the exact move this protocol exists to refuse.
+
+He states she has given permission to be mentioned in his book. **That consent is scoped to the
+book as he described it**, so it is noted here rather than treated as blanket permission for public
+surfaces, and he can widen or withdraw it.
+
+Worth saying plainly because it is not decoration: the protocol whose entire subject is *control
+carried by language* is named **Freedom** and **Control**, after a person who carries two names at
+once.
 
 ### 3a. Uncertainty is what BUYS commutativity — never-collapse is the mechanism, not the caution
 
