@@ -20,7 +20,7 @@
  * from this tree.
  */
 import { describe, expect, test } from "bun:test";
-import { readdirSync, readFileSync, statSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { parseAllDocuments } from "yaml";
@@ -31,10 +31,14 @@ interface Doc { kind?: string; metadata?: { name?: string; labels?: Record<strin
 
 function docsIn(dir: string): { file: string; doc: Doc }[] {
   const out: { file: string; doc: Doc }[] = [];
-  for (const entry of readdirSync(dir)) {
-    const p = join(dir, entry);
-    if (statSync(p).isDirectory()) continue;
-    if (!entry.endsWith(".yaml") && !entry.endsWith(".yml")) continue;
+  // `withFileTypes` rather than readdir-then-stat: CodeQL flagged the latter as
+  // a check-then-use race (the entry can change between the check and the
+  // read). Reading the type off the directory entry removes the second syscall
+  // entirely, so there is no window rather than a narrow one.
+  for (const entry of readdirSync(dir, { withFileTypes: true })) {
+    const p = join(dir, entry.name);
+    if (entry.isDirectory()) continue;
+    if (!entry.name.endsWith(".yaml") && !entry.name.endsWith(".yml")) continue;
     for (const d of parseAllDocuments(readFileSync(p, "utf8"))) {
       const js = d.toJS() as Doc | null;
       if (js !== null && js !== undefined) out.push({ file: p, doc: js });
@@ -46,9 +50,9 @@ function docsIn(dir: string): { file: string; doc: Doc }[] {
 /** Namespaces in this tree that ENFORCE restricted, keyed by their app directory. */
 function restrictedAppDirs(): string[] {
   const dirs: string[] = [];
-  for (const entry of readdirSync(APPS)) {
-    const dir = join(APPS, entry);
-    if (!statSync(dir).isDirectory()) continue;
+  for (const entry of readdirSync(APPS, { withFileTypes: true })) {
+    const dir = join(APPS, entry.name);
+    if (!entry.isDirectory()) continue;
     const enforced = docsIn(dir).some(
       ({ doc }) =>
         doc.kind === "Namespace" &&
