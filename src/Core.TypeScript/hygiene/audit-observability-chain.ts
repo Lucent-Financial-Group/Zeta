@@ -151,11 +151,12 @@ export function alloyEdges(comps: AlloyComponent[]): AlloyEdge[] {
     for (const producer of comps) {
       if (producer.id === consumer.id) continue;
       if (producer.label === "") continue;
-      // Escape EVERY regex metacharacter, not just `.` — CodeQL high-severity
-      // "Incomplete string escaping" (fixed identically on the base branch).
-      // `producer.id` comes from a parsed Helm valuesObject, and this is the
-      // function that decides whether a sink has a SOURCE: a mis-matching edge
-      // check reports a sink as sourced when it is not, which is the exact
+      // Escape EVERY regex metacharacter, not just `.`. CodeQL flagged the
+      // original (`replace(/\./g, "\\.")`) as "Incomplete string escaping" and
+      // it was right: `producer.id` is parsed out of a Helm valuesObject, so a
+      // component label containing `\`, `(`, `[` or `*` built a malformed or
+      // silently-misbehaving pattern -- and a reference-edge check that
+      // mis-matches reports a sink as sourced when it is not, which is the exact
       // false-green this audit exists to prevent.
       const esc = producer.id.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
       const re = new RegExp(esc + "\\.[a-z][a-z0-9_]*", "g");
