@@ -159,7 +159,15 @@ export interface RosterEntry {
   readonly repoURL: string;
   readonly chart: string;
   readonly kind: "helm-index" | "oci";
-  /** ISO-8601 UTC instant the version list below was read from upstream. */
+  /**
+   * ISO-8601 UTC instant the version list below was recorded from upstream.
+   *
+   * A LOWER BOUND on freshness, not the last time it was read: `--refresh` does
+   * not rewrite the file when it learned nothing, so a list confirmed
+   * unchanged for months keeps the date it last differed. Said here rather than
+   * left to be inferred, because the audit's own message quotes this field as
+   * "published as of <fetchedAt>".
+   */
   readonly fetchedAt: string;
   /**
    * Every version string the upstream repository published for this chart, in
@@ -911,21 +919,47 @@ async function refresh(repoRoot: string): Promise<number> {
 
   const serialized = JSON.stringify(roster, null, 2) + "\n";
   const before = existsSync(ROSTER_PATH) ? readFileSync(ROSTER_PATH, "utf8") : "";
-  writeFileSync(ROSTER_PATH, serialized);
+  const unchanged = sameIgnoringTimestamps(before, serialized);
+
+  // Write only when something was LEARNED. Rewriting on every run would leave a
+  // 35-line timestamp-only diff behind each scheduled refresh and dirty any
+  // local tree that ran one, which is how a checked-in snapshot stops being
+  // reviewable. The cost is stated where it lands: `fetchedAt` is then a LOWER
+  // BOUND on when a list was last confirmed, not the last time it was read.
+  if (!unchanged) writeFileSync(ROSTER_PATH, serialized);
 
   if (failures.length > 0) {
-    process.stderr.write("\nrefresh PARTIAL -- " + String(failures.length) + " coordinate(s) unreachable:\n");
+    process.stderr.write("\n" + String(failures.length) + " coordinate(s) unreachable this run:\n");
     for (const failure of failures) process.stderr.write("  " + failure + "\n");
     process.stderr.write(
       "Any versions previously snapshotted for those are KEPT, so a registry outage cannot " +
         "turn into an `unpublished` verdict offline; a coordinate never once reached is " +
-        "recorded as `unreachable` with the error above. This lane is allowed to fail; it " +
-        "blocks no PR.\n",
+        "recorded as `unreachable` with the error above.\n",
     );
-    return 1;
   }
-  if (sameIgnoringTimestamps(before, serialized)) {
-    process.stdout.write("\nrefresh clean -- " + String(Object.keys(entries).length) + " coordinate(s), no change.\n");
+
+  // THE EXIT CODE TRACKS THE SNAPSHOT, NOT THE FETCHES -- deliberately.
+  //
+  // The first version returned 1 whenever any fetch failed. Two coordinates in
+  // this tree are PERMANENTLY unreachable (wrong repoURLs, 081M0JX4M7H087G0R00
+  // 29R5QG6), so that lane would have been red on every single run from the
+  // day it landed -- and this file's own argument about `fetchedAt` applies to
+  // it: a signal that is always on carries no information, and a lane nobody
+  // can ever see go green is a lane nobody reads.
+  //
+  // So the division of labour is: THIS lane reports whether the snapshot
+  // CHANGED (commit the diff), and the OFFLINE audit reports the verdict on
+  // every PR, where an unreachable repository is a finding it prints by name.
+  // A repository that goes from reachable to unreachable still surfaces here,
+  // because that is a change to the snapshot.
+  if (unchanged) {
+    process.stdout.write(
+      "\nrefresh clean -- " +
+        String(Object.keys(entries).length) +
+        " coordinate(s), no change; " +
+        ROSTER_FILENAME +
+        " left untouched.\n",
+    );
     return 0;
   }
   process.stdout.write("\nrefresh CHANGED " + ROSTER_FILENAME + " -- commit the diff.\n");

@@ -17,12 +17,19 @@ name: chart-version-refresh
 # is ALLOWED TO FAIL. A registry outage here delays a snapshot update and blocks
 # nobody.
 #
-# WHY IT EXITS NON-ZERO ON A CLEAN-BUT-CHANGED RUN. `--refresh` returns 1 when
-# the snapshot actually changed, which is the signal that the diff needs
-# committing. It does NOT open a PR: the snapshot is evidence, and the run's
-# artifact is reviewed before it becomes the thing the blocking lane trusts.
-# `fetchedAt` alone is not a change (see sameIgnoringTimestamps) — a signal that
-# is on every single run carries no information.
+# WHAT THE EXIT CODE MEANS. `--refresh` returns 1 when the snapshot actually
+# CHANGED — the signal that the diff needs committing — and 0 otherwise. It does
+# NOT open a PR: the snapshot is evidence, and the run's artifact is reviewed
+# before it becomes the thing the blocking lane trusts.
+#
+# It deliberately does NOT return 1 merely because a fetch failed. Two
+# coordinates in this tree are permanently unreachable (wrong repoURLs,
+# 081M0JX4M7H087G0R0029R5QG6), so that rule would have made this lane red on
+# every run from the day it landed — and a lane nobody can ever see go green is
+# a lane nobody reads. The same reasoning is why `fetchedAt` alone is not a
+# change (sameIgnoringTimestamps): a signal that is always on carries no
+# information. Unreachable coordinates are still printed here, and the offline
+# audit names them as findings on every PR.
 #
 # Composes with:
 #   src/Core.TypeScript/hygiene/audit-chart-target-revisions.ts  (both halves)
