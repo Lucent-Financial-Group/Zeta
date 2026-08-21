@@ -98,7 +98,24 @@ export interface CommandResult {
  * element -- argv is visible in `ps` inside the pod and in any apiserver audit
  * record of the exec, and stdin is neither.
  */
-export type VaultExec = (args: readonly string[], stdin?: string, stdinIsToken?: boolean) => CommandResult;
+/**
+ * How a secret supplied on stdin reaches the `vault` process INSIDE the pod.
+ *
+ *   "raw"  -- stdin is handed to `vault` untouched (used where vault genuinely
+ *             reads stdin, and for the pre-mint channel probe).
+ *   "arg"  -- a shell reads one line and appends it as vault's LAST argument.
+ *   "env"  -- a shell reads one line and exports it as VAULT_TOKEN.
+ *
+ * In every mode the secret is on STDIN as far as `kubectl` is concerned, so it
+ * never appears in the kubectl command line, never in an apiserver audit record
+ * of the exec, and never in this job's log. "arg" costs one further thing and it
+ * is stated rather than glossed: the value is briefly visible in the `vault`
+ * process's own argv to anything already inside that container. See the unseal
+ * call site for why that is the available trade.
+ */
+export type StdinMode = "raw" | "arg" | "env";
+
+export type VaultExec = (args: readonly string[], stdin?: string, mode?: StdinMode) => CommandResult;
 
 export interface EphemeralVaultInitGateInput {
   /** True when the caller attached to a cluster it did not create (`--existing`). */
@@ -393,16 +410,20 @@ export function redact(text: string, needles: readonly string[]): string {
  * and nowhere else.
  */
 export function kubectlVaultExec(namespace: string, pod: string, timeoutMs = 120_000): VaultExec {
-  return (args, stdin, stdinIsToken) => {
-    const command = stdinIsToken === true
-      ? [
-          "exec", "-i", "-n", namespace, pod, "--",
-          "sh", "-c",
-          'read -r zeta_token; VAULT_TOKEN="$zeta_token" exec vault "$@"',
-          "sh",
-          ...args,
-        ]
-      : ["exec", "-i", "-n", namespace, pod, "--", "vault", ...args];
+  return (args, stdin, mode) => {
+    const prefix = ["exec", "-i", "-n", namespace, pod, "--"];
+    // `read -r` returns non-zero on a final line with no newline, so each script
+    // uses `;` rather than `&&` -- the variable is still set either way, and
+    // making the read's exit status load-bearing would break on exactly the
+    // input we send.
+    const script =
+      mode === "env"
+        ? 'read -r zeta_v; VAULT_TOKEN="$zeta_v" exec vault "$@"'
+        : 'read -r zeta_v; exec vault "$@" "$zeta_v"';
+    const command =
+      mode === "env" || mode === "arg"
+        ? [...prefix, "sh", "-c", script, "sh", ...args]
+        : [...prefix, "vault", ...args];
     const result = spawnSync(
       "kubectl",
       command,
@@ -483,7 +504,7 @@ export async function runEphemeralVaultInit(deps: EphemeralVaultInitDeps): Promi
   //
   // It measures a LENGTH, never content: the probe value is a fixed non-secret
   // sentinel, and only the byte count is compared.
-  const probe = deps.exec(["status", "-format=json"], STDIN_PROBE, true);
+  const probe = deps.exec(["status", "-format=json"], STDIN_PROBE, "env");
   if (probe.status !== 2 && probe.status !== 0) {
     return {
       ok: false,
@@ -539,9 +560,23 @@ export async function runEphemeralVaultInit(deps: EphemeralVaultInitDeps): Promi
   );
 
   // --- section 5 step 5: unseal threshold-many times, share over stdin.
+  //
+  // MEASURED TWICE (runs 32530981167 and 32532153181): `vault operator unseal -`
+  // does NOT read the key from stdin in this Vault build. Both runs died with
+  // `Code: 400 * 'key' must be a valid hex or base64 string` -- an EMPTY key --
+  // and the second run had already PROVEN the stdin channel works, which is what
+  // isolated the cause to vault's own `-` handling rather than to kubectl.
+  //
+  // So the share is carried on stdin to a shell inside the pod, which appends it
+  // as vault's last argument. The honest cost, stated rather than glossed: the
+  // share is briefly visible in the `vault` process's argv to anything already
+  // inside that container. What that buys is everything outside it -- the share
+  // is absent from the kubectl command line, from any apiserver audit record of
+  // the exec, from this job's log, and from the harness's own process table. The
+  // container is destroyed with the cluster minutes later.
   let unsealOperations = 0;
   for (const key of material.unsealKeys.slice(0, EPHEMERAL_KEY_THRESHOLD)) {
-    const unseal = deps.exec(["operator", "unseal", "-"], key);
+    const unseal = deps.exec(["operator", "unseal"], key, "arg");
     unsealOperations += 1;
     if (unseal.status !== 0) {
       return {
@@ -575,7 +610,7 @@ export async function runEphemeralVaultInit(deps: EphemeralVaultInitDeps): Promi
   //
   // The token is passed on STDIN (see kubectlVaultExec's third argument), which
   // is the last surface it touches before going out of scope below.
-  const revoke = deps.exec(["token", "revoke", "-self"], material.rootToken, true);
+  const revoke = deps.exec(["token", "revoke", "-self"], material.rootToken, "env");
   const rootTokenRevoked = revoke.status === 0;
   if (!rootTokenRevoked) {
     deps.log(

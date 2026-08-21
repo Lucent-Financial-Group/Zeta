@@ -27,6 +27,7 @@ import {
   scanForKeyMaterial,
   type CommandResult,
   type GateVerdict,
+  type StdinMode,
   type VaultExec,
 } from "./ephemeral-vault-init.ts";
 import { parseArgs } from "./argocd-health-test.ts";
@@ -52,7 +53,7 @@ const ALLOWED: GateVerdict = { allowed: true, reason: "test" };
 interface Call {
   readonly args: readonly string[];
   readonly stdin: string | undefined;
-  readonly stdinIsToken: boolean | undefined;
+  readonly mode: StdinMode | undefined;
 }
 
 /** Scripted Vault, sealed until unsealed threshold-many times. */
@@ -62,8 +63,8 @@ function fakeVault(overrides: Partial<Record<string, CommandResult>> = {}): {
 } {
   const calls: Call[] = [];
   let unsealCount = 0;
-  const exec: VaultExec = (args, stdin, stdinIsToken) => {
-    calls.push({ args, stdin, stdinIsToken });
+  const exec: VaultExec = (args, stdin, mode) => {
+    calls.push({ args, stdin, mode });
     const key = args.join(" ");
     const override = overrides[key];
     if (override !== undefined) return override;
@@ -73,7 +74,7 @@ function fakeVault(overrides: Partial<Record<string, CommandResult>> = {}): {
         : { status: 2, stdout: '{"sealed":true}', stderr: "" };
     }
     if (key.startsWith("operator init")) return { status: 0, stdout: INIT_JSON, stderr: "" };
-    if (key === "operator unseal -") {
+    if (key === "operator unseal") {
       unsealCount += 1;
       return { status: 0, stdout: '{"sealed":true}', stderr: "" };
     }
@@ -174,7 +175,7 @@ describe("the ceremony follows TOPOLOGY.md section 5's shape", () => {
     // The stdin probe sits between the sealed check and init, and its position
     // is the whole point of it -- see the ordering test below.
     expect(sequence[2]).toContain("operator init");
-    expect(sequence.filter((entry) => entry === "operator unseal -").length).toBe(EPHEMERAL_KEY_THRESHOLD);
+    expect(sequence.filter((entry) => entry === "operator unseal").length).toBe(EPHEMERAL_KEY_THRESHOLD);
     expect(sequence.at(-1)).toBe("token revoke -self");
     expect(outcome.report.statusExitBeforeInit).toBe(2);
     expect(outcome.report.sealedAfterUnseal).toBe(false);
@@ -266,9 +267,14 @@ describe("key material never reaches a surface anything can read", () => {
         expect(arg).not.toContain(SENTINEL_ROOT);
       }
     }
-    const unseals = calls.filter((call) => call.args.join(" ") === "operator unseal -");
+    const unseals = calls.filter((call) => call.args.join(" ") === "operator unseal");
     expect(unseals.length).toBe(EPHEMERAL_KEY_THRESHOLD);
-    for (const unseal of unseals) expect(SENTINEL_KEYS).toContain(unseal.stdin ?? "");
+    for (const unseal of unseals) {
+      expect(SENTINEL_KEYS).toContain(unseal.stdin ?? "");
+      // The share crosses the kubectl boundary on stdin. `arg` describes what a
+      // shell does with it INSIDE the pod; kubectl's own argv never carries it.
+      expect(unseal.mode).toBe("arg");
+    }
   });
 
   test("no share and no root token appears in the returned report or in any logged line", async () => {
@@ -304,7 +310,7 @@ describe("key material never reaches a surface anything can read", () => {
 
   test("a FAILING unseal redacts the material out of its detail", async () => {
     const { exec } = fakeVault({
-      "operator unseal -": { status: 1, stdout: `bad key ${SENTINEL_KEYS[0] ?? ""}`, stderr: "" },
+      "operator unseal": { status: 1, stdout: `bad key ${SENTINEL_KEYS[0] ?? ""}`, stderr: "" },
     });
     const outcome = await runEphemeralVaultInit({ exec, gate: ALLOWED, ...emptyScanDeps([]) });
     expect(outcome.ok).toBe(false);
@@ -373,7 +379,7 @@ describe("the leak scan is capable of failing -- without this the check above is
     if (!outcome.ok) return;
     const revoke = calls.find((call) => call.args.join(" ") === "token revoke -self");
     expect(revoke?.stdin).toBe(SENTINEL_ROOT);
-    expect(revoke?.stdinIsToken).toBe(true);
+    expect(revoke?.mode).toBe("env");
     expect(revoke?.args.join(" ")).not.toContain(SENTINEL_ROOT);
     expect(outcome.report.rootTokenRevoked).toBe(true);
   });
