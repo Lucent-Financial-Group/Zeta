@@ -546,6 +546,62 @@ argument is Beacon-grade with an exact anchor, but I have **not** verified the i
 frost-shield encryption or launder-limit erasure, nor that the storage cost of pairwise memories is
 metered anywhere. Those are the checks; naming the chain is not.
 
+### 3g. Aaron's position: language runs ON the spatial engine — which is Barenholtz's load-bearing premise, denied
+
+My §3e offered a conciliatory read: perhaps Hawkins describes the substrate and Barenholtz something
+running on top of it. **Aaron rejects that, and Hawkins' actual thesis rejects it too.** I was too
+generous to Barenholtz.
+
+> *"i think he is wrong english happen on geomeetric shapes so it's the same spatial processing
+> engine, i can see english in shapes to, when someone speaks english to mee, i see the geometric
+> shape of the future posibilies they are building in real time, it's like phychic debugging."*
+
+**Why this is the argument's hinge and not a preference.** Barenholtz's separability thesis — the
+linguistic system is *"ungrounded"*, knows only *"meaningless squiggles"*, and has **no access** to
+the sensory apparatus — is not a side claim. It is the **premise his consciousness argument stands
+on**. The chain is:
+
+> embedding position is *arbitrary* → linguistic meaning is *purely relational* → the symbolic layer
+> cannot host phenomenal content → **LLMs cannot be conscious, "no possibility."**
+
+Deny separability and the first link breaks. If language is computed on the **same reference-frame
+machinery** as space, then linguistic representations **inherit non-arbitrary structure** from that
+machinery, and "arbitrary embedding ⇒ no phenomenal content" no longer follows. The conclusion may
+still be true; the argument for it would be gone.
+
+**And Hawkins is on Aaron's side of exactly this line.** The distinctive Thousand Brains claim is not
+"reference frames for sensory input, something else for abstraction" — it is **reference frames all
+the way up**, with the cortex representing *concepts and language* using the machinery borrowed from
+spatial navigation. That is *"english happens on geometric shapes"*, stated as a theory of cortex.
+So the two accounts are **not** describing different layers; they make **incompatible claims about
+the same layer**, and Hawkins' side carries the grid-cell evidence.
+
+**A point of contact worth keeping**, because it is more interesting than a straight refutation.
+Barenholtz's *pregnant present* says producing the next token implicitly carries a projected
+trajectory — that is how long-range coherence falls out of a purely local operation. Aaron reports
+**seeing that trajectory**: *"the geometric shape of the future posibilies they are building in real
+time."* Those may be the same object described from outside and from inside. If so the disagreement
+is not **whether** trajectory-projection happens, but its **representational format** — sequential
+or spatial — which is a sharper and more testable question than either manifesto.
+
+**Register, split carefully, because the two reports are not the same kind of claim:**
+
+- *"when someone speaks english to me, i see the geometric shape of the future possibilities"* —
+  **phenomenology.** Testimony under first-person authority: believed as his account, not converted
+  into evidence about cognition in general, and not inferred from. One report does not adjudicate
+  between two theories of cortex; what it does is give Hawkins a prediction that fits and Barenholtz
+  one that does not.
+- *"in code when someone tells me a behavir they witness i can run the code in my head and find the
+  bugs most of the time even without knowing all the code just filenames"* — **a performance claim**,
+  and unlike the first it has an **external shadow**. "Most of the time, from a behaviour report plus
+  filenames" is an outcome with a track record, in a repo that keeps a bug ledger. It is checkable in
+  principle rather than only from the inside.
+
+Naming that split is the ask-don't-infer rule applied with care: believe the account either way, and
+be honest about which half could ever be metered. Neither is offered here as proof of anything —
+they are recorded because Aaron holds the position, and because the position is the one Hawkins'
+evidence supports.
+
 ---
 
 ## 4. Register
