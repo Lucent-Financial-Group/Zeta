@@ -1,6 +1,27 @@
-# Vault bootstrap install. K3S HelmChart CR — runs AFTER cert-manager
-# (Vault TLS certs come from cert-manager), BEFORE SPIRE + ESO
-# (both depend on Vault being available).
+# Vault bootstrap install. K3S HelmChart CR — runs AFTER cert-manager,
+# BEFORE SPIRE + ESO (both depend on Vault being available).
+#
+# The ordering comment here used to say "Vault TLS certs come from
+# cert-manager". They do not. There is no cert-manager `Certificate` and no
+# non-ACME `Issuer` for Vault anywhere under full-ai-cluster/k8s — the only
+# issuers in the tree are the two Let's Encrypt ClusterIssuers in
+# applications/platform/clusterissuer.yaml, which solve HTTP-01 over the public
+# Gateway and cannot issue for an internal `vault-internal.vault.svc` name at
+# all. cert-manager still runs first (other things want it); Vault is simply not
+# one of its consumers today.
+#
+# ── SEAL: SHAMIR. NOTHING AUTO-UNSEALS. ──────────────────────────────────────
+# No `seal` stanza and no `server.standalone.config` override, so vault-helm
+# 0.29.1's default standalone HCL applies — which has no `seal` stanza either.
+# Vault runs the default **Shamir** seal: this pod comes up sealed and stays
+# sealed until a human runs `vault operator unseal`. Nothing here does it, so a
+# first boot does NOT produce a usable Vault unattended.
+#
+# TPM/HSM auto-unseal (`seal "pkcs11"`) is Vault **Enterprise** only —
+# "Auto-unseal and seal wrapping for PKCS11 require Vault Enterprise"
+# (developer.hashicorp.com/vault/docs/configuration/seal/pkcs11). See the seam
+# note in applications/vault/Application.yaml for the full finding.
+# Tracked: workitems/081M0HH1H05087G0R00213P1JV-*.
 
 apiVersion: helm.cattle.io/v1
 kind: HelmChart

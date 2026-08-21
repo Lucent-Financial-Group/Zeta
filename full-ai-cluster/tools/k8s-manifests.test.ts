@@ -195,3 +195,106 @@ describe("session-added apps: required objects present", () => {
     expect(read("cilium-lb-ipam/l2-policy.yaml")).toContain("kind: CiliumL2AnnouncementPolicy");
   });
 });
+
+// ─────────────────────────────────────────────────────────────────────────────
+// VAULT SEAL + VAULT TLS — pin what the manifests ACTUALLY configure.
+//
+// These tests do not claim Vault is well-configured. They pin the PROSE in the
+// Vault and cert-manager manifests to the manifests, so a future edit cannot
+// leave a comment asserting a guarantee the tree does not provide. The tree
+// already carried one: three surfaces said "Vault TLS certs come from
+// cert-manager" while no Certificate for Vault has ever existed here.
+//
+// Measured 2026-08-21 against vault-helm 0.29.1:
+//   * Neither Vault manifest carries a `seal` stanza, and neither overrides
+//     `server.standalone.config` / `server.ha.raft.config`. The chart's default
+//     HCL for both carries no `seal` stanza either (only a commented-out
+//     gcpckms example), so Vault runs its built-in default — the SHAMIR seal.
+//     Nothing in this repo unseals it; a pod restart needs a human.
+//   * The hardware-rooted alternative, `seal "pkcs11"`, is Vault ENTERPRISE
+//     only — "Auto-unseal and seal wrapping for PKCS11 require Vault
+//     Enterprise" (developer.hashicorp.com/vault/docs/configuration/seal/
+//     pkcs11). So the empty seam is a licensing floor, not an oversight, and
+//     these tests are the tripwire for anyone who tries to fill it.
+//
+// EVERY NEGATIVE BELOW IS PRECEDED BY A POSITIVE THAT PROVES ITS DETECTOR CAN
+// FIRE. A "no seal stanza found" from a regex that can never match is a check
+// that did not run wearing the uniform of a check that passed.
+// ─────────────────────────────────────────────────────────────────────────────
+
+/** An ACTIVE `seal "<type>" {` stanza. A commented-out one does not match. */
+const hasSealStanza = (t: string): boolean => /^[\t ]*seal\s+"[a-z0-9]+"\s*\{/m.test(t);
+
+/** A `config: |` block — the only place a seal stanza can reach the chart. */
+const hasServerConfigOverride = (t: string): boolean => /^[\t ]*config:\s*\|/m.test(t);
+
+/** A cert-manager Certificate resource that concerns Vault. */
+const hasVaultCertificate = (t: string): boolean =>
+  /^[\t ]*kind:\s*Certificate\b/m.test(t) && /vault/i.test(t);
+
+describe("vault seal: Shamir, and the TPM/HSM seam is empty because it is Enterprise-gated", () => {
+  const vaultManifests = allYaml.filter((f) =>
+    /\/(vault\/Application|vault-install)\.yaml$/.test(f.replace(/\\/g, "/")),
+  );
+
+  test("both Vault manifests are reachable from the manifest walk", () => {
+    // Sourced from the walk, not from a hardcoded path: if a tree goes dark or a
+    // file is renamed, the assertions below stop being about anything and this
+    // is what says so.
+    expect(vaultManifests.length).toBe(2);
+  });
+
+  test("NON-VACUITY: the seal detector fires on a real seal stanza and ignores a commented one", () => {
+    expect(hasSealStanza('        seal "pkcs11" {\n          lib = "/usr/lib/softhsm2.so"\n        }')).toBe(true);
+    expect(hasSealStanza('        # seal "gcpckms" {\n        #   project = "x"\n        # }')).toBe(false);
+  });
+
+  test("NON-VACUITY: the server-config-override detector fires on a `config: |` block", () => {
+    expect(hasServerConfigOverride("    server:\n      ha:\n        raft:\n          config: |\n            ui = true\n")).toBe(true);
+    expect(hasServerConfigOverride("    server:\n      ha:\n        enabled: true\n")).toBe(false);
+  });
+
+  test("no Vault manifest declares a seal stanza — the deployment runs the chart-default Shamir seal", () => {
+    const withSeal = vaultManifests.filter((f) => hasSealStanza(readFileSync(f, "utf8")));
+    // RED means a seal stanza landed. That is not a failure of the deployment —
+    // it is the signal that the "SEAL: SHAMIR. NOTHING AUTO-UNSEALS." prose in
+    // both Vault manifests is now false and must be rewritten.
+    expect(withSeal.map((f) => f.replace(REPO, ""))).toEqual([]);
+  });
+
+  test("no Vault manifest overrides the chart's server config, so the chart's seal-less default HCL applies", () => {
+    // Without this, "no seal stanza in our YAML" would not entail "no seal": a
+    // `config: |` override replaces the chart default wholesale, and the seal
+    // could arrive inside it (or arrive by the override being templated in from
+    // elsewhere). This is the second half of the Shamir claim, not a duplicate.
+    const withOverride = vaultManifests.filter((f) => hasServerConfigOverride(readFileSync(f, "utf8")));
+    expect(withOverride.map((f) => f.replace(REPO, ""))).toEqual([]);
+  });
+});
+
+describe("vault TLS: cert-manager does not issue Vault's certificate, and the manifests now say so", () => {
+  test("NON-VACUITY: the Vault-Certificate detector fires on a Certificate that names Vault", () => {
+    expect(
+      hasVaultCertificate(
+        "apiVersion: cert-manager.io/v1\nkind: Certificate\nspec:\n  dnsNames:\n    - vault-internal.vault.svc\n",
+      ),
+    ).toBe(true);
+    expect(hasVaultCertificate("apiVersion: v1\nkind: Service\nmetadata:\n  name: vault\n")).toBe(false);
+  });
+
+  test("NON-VACUITY: the corpus being scanned really does contain cert-manager issuer objects", () => {
+    // Proves the scan reaches cert-manager resources at all. Without it, "found
+    // no Certificate for Vault" would also be the reading of a scan that found
+    // no cert-manager resources whatsoever, including because it walked nothing.
+    const issuers = allYaml.filter((f) => /^[\t ]*kind:\s*ClusterIssuer\b/m.test(readFileSync(f, "utf8")));
+    expect(issuers.length).toBeGreaterThanOrEqual(1);
+  });
+
+  test("no manifest issues Vault a TLS certificate — three comments used to claim otherwise", () => {
+    // RED means someone wired Vault a Certificate. Good — and the corrected
+    // prose in bootstrap/vault-install.yaml, applications/cert-manager/
+    // Application.yaml and nixos/modules/k3s-server.nix has to change back.
+    const certs = allYaml.filter((f) => hasVaultCertificate(readFileSync(f, "utf8")));
+    expect(certs.map((f) => f.replace(REPO, ""))).toEqual([]);
+  });
+});

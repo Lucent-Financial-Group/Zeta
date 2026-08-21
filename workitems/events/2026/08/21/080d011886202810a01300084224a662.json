@@ -1,0 +1,14 @@
+{
+  "id": "080d011886202810a01300084224a662",
+  "at": "2026-08-21T06:44:56.453Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0HH1H05087G0R00213P1JV",
+    "type": "task",
+    "title": "Vault runs the chart-default Shamir seal and nothing unseals it; TPM/HSM auto-unseal (seal pkcs11) is Vault Enterprise-only, so decide between seal transit, an unseal operator, or accepting a human at every pod restart",
+    "slug": "vault-runs-the-chart-default-shamir-seal-and-nothing-unseals",
+    "priority": "P2",
+    "filename": "081M0HH1H05087G0R00213P1JV-vault-runs-the-chart-default-shamir-seal-and-nothing-unseals.md"
+  }
+}

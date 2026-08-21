@@ -83,7 +83,9 @@
     #
     # Order (per Aaron 2026-05-25):
     #   1. Cilium  (CNI + KPR + Hubble + Cilium Service Mesh + BPF MASQUERADE)
-    #   2. cert-manager  (TLS certs; Vault depends on these)
+    #   2. cert-manager  (TLS certs for Gateway listeners; NOT for Vault —
+    #      no Certificate resource for Vault exists in k8s/, see
+    #      k8s/bootstrap/vault-install.yaml)
     #   3. Vault   (most other tools depend on it)
     #   4. SPIRE   (chains to Vault as upstream CA)
     #   5. Trust Manager  (distributes SPIRE + cert-manager bundles)

@@ -1,6 +1,35 @@
 # HashiCorp Vault — runtime secrets engine + Vault Agent injector
 # for pods. Pair with Sealed Secrets (above): Sealed for config-style
 # secrets, Vault for dynamic + rotated secrets + audit trail.
+#
+# ── SEAL: SHAMIR. NOTHING AUTO-UNSEALS. ──────────────────────────────────────
+# There is no `seal` stanza below, and no `server.ha.raft.config` override, so
+# vault-helm 0.29.1's default HCL applies — and that default carries no `seal`
+# stanza either (only a commented-out `seal "gcpckms"` example). Vault therefore
+# runs its built-in default: the **Shamir** seal. Concretely: every `vault-N` pod
+# that starts is SEALED until a human runs `vault operator unseal` three times
+# with key shares held outside this repo. No manifest, script, or Job here does
+# that. `full-ai-cluster/tools/k8s-manifests.test.ts` (§"vault seal") pins this
+# and goes red the day a `seal` stanza lands.
+#
+# ── SEAM: WHERE A TPM/HSM AUTO-UNSEAL WOULD ATTACH, AND WHY IT IS EMPTY ───────
+# A hardware-rooted auto-unseal is `seal "pkcs11"`, which would attach as a
+# `server.ha.raft.config` override right here. It is NOT wired, and cannot be
+# from this deployment: PKCS#11 seal is Vault **Enterprise** only —
+# "Auto-unseal and seal wrapping for PKCS11 require Vault Enterprise"
+# (developer.hashicorp.com/vault/docs/configuration/seal/pkcs11). The same gate
+# applies to Managed Keys, the Enterprise feature that would keep a PKI CA key
+# inside an HSM. So the absence below is a licensing floor, not an oversight;
+# writing a `seal "pkcs11"` block here would produce a Vault that refuses to
+# start, not a Vault backed by the TPM.
+# What Community Edition *does* reach: `seal "transit"` (auto-unseal against a
+# second Vault) — which relocates the root of trust rather than hardware-rooting
+# it, so it is recorded as an option, not as a fix.
+# The repo's existing hardware-seal work is at the persona-key layer, not here:
+# `tools/setup/persona-keys/frost-share-adapter.ts` (`hardware-tpm2` /
+# `hardware-pkcs11` tiers) + `tpm2-linux-probe.ts`. Nothing connects it to Vault.
+# Tracked: workitems/081M0HH1H05087G0R00213P1JV-* (the seal) and
+# workitems/081M0HH1GYN087G0R003BER494-* (the TLS/readiness defect below).
 
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -21,7 +50,19 @@ spec:
       valuesObject:
         global:
           enabled: true
-          tlsDisable: false   # generate TLS via cert-manager or self-signed
+          # KNOWN CONTRADICTION — do not read this as "Vault serves TLS".
+          # `tlsDisable: false` only flips vault-helm's `vault.scheme` helper to
+          # `https`, which is what VAULT_ADDR and the probes use. The LISTENER is
+          # whatever `server.ha.raft.config` says, and that is not overridden
+          # here, so the chart default `tls_disable = 1` (plaintext) applies. The
+          # default readinessProbe is `exec: vault status -tls-skip-verify` over
+          # VAULT_ADDR=https://127.0.0.1:8200 — https against a plaintext
+          # listener. And no cert-manager Certificate for Vault exists anywhere
+          # in this tree, so there is nothing for it to serve either way.
+          # Left as-is rather than silently flipped: choosing between
+          # "plaintext in-cluster, behind Cilium WireGuard" and "issue Vault a
+          # cert" is a posture decision for the maintainer.
+          tlsDisable: false
         server:
           ha:
             enabled: true

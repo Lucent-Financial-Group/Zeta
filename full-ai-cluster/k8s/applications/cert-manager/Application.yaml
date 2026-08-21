@@ -1,6 +1,15 @@
 # cert-manager — TLS cert provisioning for the cluster.
-# Installed by K3S at bootstrap (BEFORE Vault — Vault needs TLS
-# certs for its API). ArgoCD then adopts and reconciles ongoing.
+# Installed by K3S at bootstrap, before Vault. ArgoCD then adopts and
+# reconciles ongoing.
+#
+# NOT TRUE, THOUGH IT USED TO BE WRITTEN HERE: cert-manager does not provide
+# Vault's API certificate. No `Certificate` resource for Vault exists under
+# full-ai-cluster/k8s, and the only issuers in the tree are the two Let's
+# Encrypt ACME ClusterIssuers (applications/platform/clusterissuer.yaml), whose
+# HTTP-01-over-Gateway solver cannot issue for an in-cluster service name.
+# cert-manager's actual consumer today is the Gateway: see the
+# `cert-manager.io/cluster-issuer` annotation at
+# applications/platform/gateway.yaml:25.
 
 apiVersion: argoproj.io/v1alpha1
 kind: Application

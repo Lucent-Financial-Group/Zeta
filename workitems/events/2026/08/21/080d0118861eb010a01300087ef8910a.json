@@ -1,0 +1,14 @@
+{
+  "id": "080d0118861eb010a01300087ef8910a",
+  "at": "2026-08-21T06:44:56.406Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0HH1GYN087G0R003BER494",
+    "type": "bug",
+    "title": "Vault pods cannot become Ready as configured: global.tlsDisable=false sets VAULT_ADDR to https while the un-overridden vault-helm listener default is tls_disable=1, and no Certificate for Vault exists in the tree",
+    "slug": "vault-pods-cannot-become-ready-as-configured-global-tlsdisab",
+    "priority": "P2",
+    "filename": "081M0HH1GYN087G0R003BER494-vault-pods-cannot-become-ready-as-configured-global-tlsdisab.md"
+  }
+}

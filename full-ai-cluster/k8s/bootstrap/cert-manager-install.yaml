@@ -1,6 +1,9 @@
 # cert-manager bootstrap install. K3S HelmChart CR — runs at first
-# boot AFTER Cilium, BEFORE Vault. Vault needs TLS certs for its
-# API; cert-manager provides them.
+# boot AFTER Cilium, BEFORE Vault.
+#
+# The ordering is real; the reason previously given for it was not. Vault does
+# not consume a cert-manager Certificate — none exists for it in this tree. See
+# applications/cert-manager/Application.yaml and bootstrap/vault-install.yaml.
 
 apiVersion: helm.cattle.io/v1
 kind: HelmChart
