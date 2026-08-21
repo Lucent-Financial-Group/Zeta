@@ -178,6 +178,31 @@ wrong premise (that nobody had been told). Recording the retraction next to it r
 it, because a corrected finding is more useful than a vanished one — and because the missing fact was
 one question away and I did not ask it before writing the conclusion.
 
+### 2026-08-21 — the rationale: a public WIP is a **correction surface**, not only an exposure
+
+Aaron 2026-08-21: *"this book is a WIP that anyone can claim factual inaccurasion on so it offers
+protection, once the book is publish that requirest their further consent casue it's harder to
+retract."*
+
+This inverts the usual reading and is the reason the two-stage design is a **protection rather than a
+compromise**, so it is recorded as the rationale rather than as a caveat:
+
+| | draft, public | published for sale |
+|---|---|---|
+| what a subject can do | **contest a fact and have it changed**, cheaply, before it hardens | little — retraction is expensive and incomplete |
+| so the gate is | openness, plus disclosure so people know to look | **further consent, because the cost of being wrong has risen** |
+
+Publishing the draft openly gives the people in it the ability to **refute** it while refutation is
+still cheap. That is the same discipline the rest of this repo runs on — expose a claim early so it
+can be falsified at low cost, and treat the expensive, hard-to-reverse step as the one that needs
+fresh authorization. A book kept private until launch offers its subjects **no** window; this one
+offers a long one.
+
+**The single invariant that keeps it true**, unchanged from the note above: the protection is real
+only for people who **know to look**. It holds today because Aaron sent the links to the people
+named. **Anyone added later must also be told** — and nothing in the repo checks that, so it is a
+human obligation, not an enforced one.
+
 **Rule of thumb:** Aaron's own experience = glass-halo (his to make transparent). Facts about *other*
 identifiable living people = their frost — tracked here, protected until consented; **minors protected
 regardless.** Update this row-by-row as consents change (e.g. mother's therapy-condition clears).
