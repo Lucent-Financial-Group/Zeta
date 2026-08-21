@@ -19,6 +19,8 @@ import {
   classifyApplications,
   classifySmokeApplications,
   discoverExpectedApplications,
+  DEV_EXCLUDED_REASONS,
+  auditDevExclusionReasons,
   isExcludedFromIncludedProof,
   isApplicationSynced,
   isIncludedScope,
@@ -730,5 +732,48 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test live failure shaping", (
       expect(result.failure.message).toContain("could not read ArgoCD Application drift state");
       expect(result.driftRepair).toBe("failed");
     });
+  });
+});
+
+// ---------------------------------------------------------------------------
+// The reasoned dev-exclusion registry (081M0... CNI lane, 2026-08-21).
+//
+// Appended as its own block rather than folded into the roster tests above so
+// that a concurrent change to the exclusion LOGIC and this change to the
+// exclusion RECORD do not land on the same lines.
+// ---------------------------------------------------------------------------
+
+describe("DEV_EXCLUDED_REASONS", () => {
+  test("every excluded directory carries a reason -- there is no bare membership left", () => {
+    for (const dir of DEV_EXCLUDED_REASONS.keys()) {
+      expect((DEV_EXCLUDED_REASONS.get(dir) ?? "").length).toBeGreaterThan(60);
+    }
+  });
+
+  test("every reason names a condition that would LIFT it", () => {
+    // A deferral with no exit condition is how 26 of 45 Applications became
+    // untested without anyone deciding to stop testing them.
+    for (const [dir, reason] of DEV_EXCLUDED_REASONS) {
+      expect(`${dir}: ${reason}`).toContain("LIFTS WHEN:");
+    }
+  });
+
+  test("the audit is green on the live tree in both directions", () => {
+    const drift = auditDevExclusionReasons();
+    expect(drift.unreasoned).toEqual([]);
+    expect(drift.stale).toEqual([]);
+  });
+
+  test("the CNI entries still name the lane that DOES exercise them", () => {
+    expect(DEV_EXCLUDED_REASONS.get("cilium")).toContain("ci.cilium.kind-config.yaml");
+    expect(DEV_EXCLUDED_REASONS.get("cilium-lb-ipam")).toContain("cilium");
+  });
+
+  test("the registry is what the exclusion set is BUILT from, so the two cannot disagree", () => {
+    const applications = discoverExpectedApplications();
+    for (const dir of DEV_EXCLUDED_REASONS.keys()) {
+      const app = applications.find((candidate) => candidate.dir === dir);
+      if (app !== undefined) expect(app.excludedFromDev).toBe(true);
+    }
   });
 });
