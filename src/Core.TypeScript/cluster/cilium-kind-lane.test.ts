@@ -9,6 +9,7 @@
 import { describe, expect, test } from "bun:test";
 import {
   CILIUM_1_16_REQUIRED_GATEWAY_API_CRDS,
+  IFNAME_MAX_LENGTH,
   CILIUM_SURFACE_DELTA_REASONS,
   GATEWAY_API_CRD_GAP_REASONS,
   auditCiliumSurfaceDrift,
@@ -23,6 +24,8 @@ import {
   metalClusterShape,
   readCiliumValueSurfaces,
   renderValuesYaml,
+  wireguardProbeInterface,
+  wireguardProbeInterfaceIsValid,
 } from "./cilium-kind-lane.ts";
 
 const SHIPPED_ENCRYPTION = {
@@ -249,5 +252,36 @@ describe("ciliumKindValues — the delta set is enumerated, not implicit", () =>
     const rendered = renderValuesYaml({ encryption: { enabled: true, type: "wireguard" } });
     expect(rendered.endsWith("\n")).toBe(true);
     expect(JSON.parse(rendered)).toEqual({ encryption: { enabled: true, type: "wireguard" } });
+  });
+});
+
+describe("WireGuard preflight probe device — the falsifier for a real CI failure", () => {
+  // 2026-08-21: the CI preflight restated the device name as `zeta-wg-preflight`
+  // (17 chars). IFNAMSIZ is 16 including the NUL, so the kernel rejected
+  // IFLA_IFNAME with `Error: Attribute failed policy validation` -- which reads
+  // exactly like "this runner has no WireGuard" and was nothing of the kind;
+  // `modprobe wireguard` had already succeeded. These cases are what makes that
+  // mistake cost a test run instead of a CI run.
+  test("the name is READ from the nix module, not restated", () => {
+    expect(wireguardProbeInterface()).toBe("zeta-wgprobe0");
+  });
+
+  test("the checked-in name is one the kernel will accept", () => {
+    const iface = wireguardProbeInterface();
+    expect(iface.length).toBeLessThanOrEqual(IFNAME_MAX_LENGTH);
+    expect(wireguardProbeInterfaceIsValid(iface)).toBe(true);
+  });
+
+  test("the exact name that failed in CI is rejected offline", () => {
+    expect("zeta-wg-preflight".length).toBe(17);
+    expect(wireguardProbeInterfaceIsValid("zeta-wg-preflight")).toBe(false);
+  });
+
+  test("empty, over-long, whitespace and slash names are all refused", () => {
+    expect(wireguardProbeInterfaceIsValid("")).toBe(false);
+    expect(wireguardProbeInterfaceIsValid("x".repeat(IFNAME_MAX_LENGTH))).toBe(true);
+    expect(wireguardProbeInterfaceIsValid("x".repeat(IFNAME_MAX_LENGTH + 1))).toBe(false);
+    expect(wireguardProbeInterfaceIsValid("has space")).toBe(false);
+    expect(wireguardProbeInterfaceIsValid("has/slash")).toBe(false);
   });
 });

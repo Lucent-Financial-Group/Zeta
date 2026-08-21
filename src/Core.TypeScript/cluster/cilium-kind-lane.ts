@@ -59,6 +59,15 @@ export const NODE_LEDGER = "full-ai-cluster/k8s/single-node-budget.json";
 /** The kind profile that brings up a cluster with NO default CNI, for Cilium to fill. */
 export const CILIUM_KIND_PROFILE = "full-ai-cluster/dev-cluster/profiles/ci.cilium.kind-config.yaml";
 
+/** The nix module that owns the WireGuard preflight probe, including the device name it uses. */
+export const CILIUM_WIREGUARD_PREFLIGHT_NIX = "full-ai-cluster/nixos/modules/cilium-wireguard-preflight-checks.nix";
+
+/**
+ * Longest interface name the kernel accepts: `IFNAMSIZ` is 16 including the
+ * terminating NUL, so 15 usable characters.
+ */
+export const IFNAME_MAX_LENGTH = 15;
+
 /**
  * Gateway API CRDs Cilium 1.16.5 REQUIRES before it will start its Gateway API
  * controller, transcribed from the pinned release's own source:
@@ -115,6 +124,40 @@ export function ciliumValueSurfacePaths(repoRoot = REPO_ROOT): readonly string[]
     );
   }
   return paths;
+}
+
+/**
+ * The WireGuard probe device name, READ from the nix preflight module.
+ *
+ * WHY THIS IS DERIVED AND NOT WRITTEN DOWN AGAIN. The CI preflight originally
+ * restated the name as `zeta-wg-preflight` -- 17 characters. `IFNAMSIZ` is 16
+ * including the NUL, so the kernel's netlink policy for `IFLA_IFNAME` rejected
+ * it and iproute2 printed `Error: Attribute failed policy validation`, which
+ * reads exactly like "this kernel cannot do WireGuard" and is not that at all.
+ * `modprobe wireguard` had already succeeded. The correct name was one file
+ * away with a comment saying `Under IFNAMSIZ (16)` beside it.
+ *
+ * So the name is read from that file, and `wireguardProbeInterfaceIsValid`
+ * below is the offline falsifier that would have caught the mistake without
+ * spending a runner.
+ */
+export function wireguardProbeInterface(repoRoot = REPO_ROOT): string {
+  const path = join(repoRoot, CILIUM_WIREGUARD_PREFLIGHT_NIX);
+  if (!existsSync(path)) throw new Error(`WireGuard preflight module not found: ${CILIUM_WIREGUARD_PREFLIGHT_NIX}`);
+  const match = /^\s*probeIface\s*=\s*"([^"]+)"\s*;/m.exec(readFileSync(path, "utf8"));
+  const name = match?.[1] ?? "";
+  if (name.length === 0) {
+    throw new Error(
+      `Could not read probeIface from ${CILIUM_WIREGUARD_PREFLIGHT_NIX}. Refusing to fall back to a ` +
+        `hard-coded name: restating it is what produced the IFNAMSIZ bug this function exists to prevent.`,
+    );
+  }
+  return name;
+}
+
+/** A probe name the kernel will accept: non-empty, within IFNAMSIZ-1, no `/` or whitespace. */
+export function wireguardProbeInterfaceIsValid(name: string): boolean {
+  return name.length > 0 && name.length <= IFNAME_MAX_LENGTH && !/[\s/]/.test(name);
 }
 
 /**
@@ -634,6 +677,17 @@ function reportPlan(options: PlanOptions, repoRoot = REPO_ROOT): number {
     }
   }
 
+  const probeIface = wireguardProbeInterface(repoRoot);
+  console.log(`\nWireGuard preflight probe device (read from ${CILIUM_WIREGUARD_PREFLIGHT_NIX}): ${probeIface}`);
+  if (!wireguardProbeInterfaceIsValid(probeIface)) {
+    failures++;
+    console.log(
+      `  REFUSED: "${probeIface}" is ${probeIface.length} characters; the kernel accepts at most ` +
+        `${IFNAME_MAX_LENGTH} (IFNAMSIZ-1) and rejects the rest with "Attribute failed policy validation", ` +
+        `which reads like a missing WireGuard kernel and is not one.`,
+    );
+  }
+
   const kindValues = ciliumKindValues(argocdSurface.values, options.clusterName);
   console.log(`\nkind-lane value deltas from ${argocdSurface.path} (${kindValues.deltas.length}):`);
   for (const delta of kindValues.deltas) {
@@ -654,7 +708,7 @@ function reportPlan(options: PlanOptions, repoRoot = REPO_ROOT): number {
 
 function usage(): never {
   console.error(
-    "usage: bun src/Core.TypeScript/cluster/cilium-kind-lane.ts --plan [--cluster-name NAME] [--emit-values PATH]",
+    "usage: bun src/Core.TypeScript/cluster/cilium-kind-lane.ts --plan [--cluster-name NAME] [--emit-values PATH] | --print-wg-probe-iface",
   );
   process.exit(2);
 }
@@ -669,6 +723,20 @@ function main(argv: readonly string[]): void {
     if (arg === "--plan") {
       sawPlan = true;
       continue;
+    }
+    // Prints ONLY the name, so a shell can capture it. The CI preflight uses
+    // this rather than spelling the device name out a second time -- see
+    // `wireguardProbeInterface` for the bug that taught us why.
+    if (arg === "--print-wg-probe-iface") {
+      const iface = wireguardProbeInterface();
+      if (!wireguardProbeInterfaceIsValid(iface)) {
+        console.error(
+          `ERROR: probe interface "${iface}" is not a name the kernel will accept (IFNAMSIZ-1 = ${IFNAME_MAX_LENGTH}).`,
+        );
+        process.exit(1);
+      }
+      console.log(iface);
+      process.exit(0);
     }
     if (arg === "--cluster-name") {
       const value = argv[i + 1];

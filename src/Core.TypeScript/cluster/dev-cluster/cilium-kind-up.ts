@@ -303,8 +303,13 @@ function main(argv: readonly string[]): void {
     });
   }
 
-  console.log("\nWaiting for the Cilium agent + operator to roll out ...");
-  for (const target of ["daemonset/cilium", "deployment/cilium-operator"]) {
+  // CoreDNS is in this list because one of the checks below reads its pod IP to
+  // prove Cilium's IPAM is the one allocating. Node-Ready arrives the moment the
+  // CNI config lands; CoreDNS gets its sandbox a beat later, so reading the IP
+  // without this wait is a race, and a racing assertion in a blocking job is a
+  // flake that teaches people to ignore the job.
+  console.log("\nWaiting for the Cilium agent + operator + CoreDNS to roll out ...");
+  for (const target of ["daemonset/cilium", "deployment/cilium-operator", "deployment/coredns"]) {
     const rollout = runner.run(
       "kubectl",
       ["-n", "kube-system", "rollout", "status", target, `--timeout=${timeoutSec}s`],
