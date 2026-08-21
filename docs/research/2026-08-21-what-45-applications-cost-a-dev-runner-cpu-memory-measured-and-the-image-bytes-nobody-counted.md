@@ -45,6 +45,14 @@ DaemonSets are counted at one pod, because the dev lane's kind cluster is one no
 cluster those rows multiply and the arithmetic below no longer holds; that is stated in the
 catalogue rows themselves.
 
+**Depth-1, and the 46th.** "45" is the count of `applications/<dir>/Application.yaml`. ArgoCD's
+include glob is not path-segment bounded, so the root also applies
+`applications/game-hosting/gmod/Application.yaml`. It contributes **0m / 0Mi** — in-repo manifests
+with no requests, and it fails its sync on every reconcile against gatekeeper's webhook — so no total
+here is wrong. What the coverage check does not guard is a _future_ nested Application that does
+request something; `app-of-apps-discovery.ts` enumerates depth-2 and exits 1 on a second nested
+Application, so that case forces a human to look before it can hide in this catalogue.
+
 ## 2. What they request
 
 | cohort                                          | apps | CPU requests | memory requests |
