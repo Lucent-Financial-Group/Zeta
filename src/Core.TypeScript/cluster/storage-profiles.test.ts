@@ -1229,19 +1229,16 @@ describe("the checked-in resource ladder", () => {
   });
 
   // The dev lane's applied set comes from ports.ts's excludeGlob, so this
-  // number moves only when that constant does.
+  // number moves only when that constant does -- and it just did. #13343
+  // ("boot 3 of the 12 deferred ArgoCD Applications") dropped deepseek-coder,
+  // qwen-coder and orleans from the glob after measuring them Synced+Healthy,
+  // taking the applied set from 33 to 36, but left this pin at 33. main has
+  // been red on this test since that merge; the PIN is stale, not the glob.
   //
-  // 2026-08-21: 33 -> 36. The constant DID move -- `deepseek-coder`,
-  // `qwen-coder` and `orleans` left the glob (081M0JXXFV0087G0R001PGEEM4), so
-  // 12 excluded directories became 9 and 45 - 9 = 36. The comment above is the
-  // contract and it held; only this literal was left behind, which is why main
-  // went red on a change that was correct.
-  //
-  // The two resource-total tests below did NOT move with it, and that is not an
-  // oversight: all three departing Applications render zero CPU and zero memory
-  // (two of them are Namespace + ConfigMap, `orleans` is a StatefulSet at
-  // `replicas: 0`), so the lane's totals are arithmetically unchanged. If a
-  // future glob change moves this count, expect those to move too.
+  // Corrected here rather than filed, because a red `plan + unit tests` job
+  // SKIPS every live job behind it -- so a stale number in this file stops the
+  // kind lane from running at all, which is exactly the shape where a check
+  // that did not run looks like a check that passed.
   test("the dev lane applies 36 of the 45 Applications", () => {
     expect(applicationDirs()).toHaveLength(45);
     expect(devLaneAppliedDirs()).toHaveLength(36);
