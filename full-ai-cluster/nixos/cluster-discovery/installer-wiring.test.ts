@@ -58,7 +58,7 @@ function refusalReasonsFromDecide(): readonly string[] {
   if (block === null) {
     throw new Error("could not find the RefusalReason union in decide.ts");
   }
-  const reasons = [...block[1].matchAll(/"([a-z0-9-]+)"/g)].map((m) => m[1] ?? "");
+  const reasons = [...(block[1] ?? "").matchAll(/"([a-z0-9-]+)"/g)].map((m) => m[1] ?? "");
   if (reasons.length === 0) {
     throw new Error("RefusalReason union parsed to zero reasons");
   }
