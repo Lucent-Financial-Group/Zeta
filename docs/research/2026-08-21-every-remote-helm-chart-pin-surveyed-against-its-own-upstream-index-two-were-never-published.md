@@ -51,6 +51,25 @@ Two mechanical notes, because they bit during the survey and will bite the next 
    list came from the registry's `/v2/<repo>/tags/list` endpoint using an anonymous pull token. Those rows say
    so in §2's source column.
 
+### 1a. Cross-verified against a second oracle
+
+The parser above is mine, so its output is cross-checked against `helm search repo --versions`
+(helm v4.2.0), which reads the same indexes through upstream's own code path. Spot-checked on the
+five rows where a parser bug would have been most costly — the two largest indexes, the one that
+already broke a naive parser, and both broken coordinates:
+
+| chart | this survey | `helm search repo` |
+|---|---|---|
+| `mimir-distributed` | `6.2.0` | `6.2.0` (app `3.2.0`) |
+| `loki` | `7.3.0` | `7.3.0` (app `3.6.12`) |
+| `cilium` | `1.20.1` | `1.20.1` (app `1.20.1`) — *not* the `v2` a naive grep reports |
+| `ziti-controller` | `3.2.1`, **no `1.4.x` exists** | `3.2.1` (app `2.0.1`); `awk '$2 ~ /^1\.4/'` returns empty |
+| `sealed-secrets` (new repo) | `2.19.3` | `2.19.3` (app `0.39.1`) |
+
+Agreement between two readers of the same index is weaker evidence than it looks — they share the
+input — but it does falsify the failure mode that actually occurred here, which was mine and not
+upstream's.
+
 ---
 
 ## 2. The survey
