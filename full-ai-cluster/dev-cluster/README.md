@@ -58,7 +58,7 @@ App-of-Apps `exclude:` glob in `apply-root-app.ts`:
 The 081KSXN940008QG0R000SCP2H1 health harness used to exclude EVERY
 Application whose YAML tree mentioned `storageClass: longhorn`. That rule
 was circular: the apps were excluded because Longhorn was excluded, and
-Longhorn was excluded because a kind node has no second disk. It cost ten
+Longhorn was excluded because a kind node has no second disk. It cost eleven
 Applications' worth of assertion — most of the stateful core — and the
 included proof covered 19 of 45.
 
@@ -84,10 +84,32 @@ harness times out, and a timeout prints no verdict at all. So:
   really in the cluster and fails in seconds if not, rather than
   discovering it at the 2400s cap.
 
-Still excluded, each for a named NON-storage reason:
-`arc-runner-set` (needs a GitHub App credential CI cannot bind, and its
-model cache is RWX), `forgejo`, `spire` (Vault upstream CA wiring),
-`vault` (sealed by design).
+### What it bought, measured
+
+Run `32519516070` is the first in which the eleven were asserted at all.
+**Six reach Synced+Healthy and are asserted from now on**: `headscale`,
+`mimir`, `nats`, `oz` (openziti-controller), `redis`, `tempo`. The proof
+went from **19 of 45 to 25 of 45**.
+
+The alias worked for the other five as well, in the sense that matters:
+their PVCs **bound** and their pods run. Each then failed for a defect
+that has nothing to do with storage — and each of those defects was
+**invisible before this change**, because the storage rule excluded the
+Application carrying it:
+
+| Application | observed | storage? |
+| --- | --- | --- |
+| `cockroachdb` | 3/3 pods Running on bound PVCs, readiness 503 for 38m — a 3-replica cluster nobody ran `cockroach init` on | no |
+| `hindsight` | `hindsight-postgresql-0` FailedScheduling, `Insufficient cpu` on the 1-node runner; api + control-plane CrashLoop waiting on it | no — capacity |
+| `kube-prometheus-stack` | prometheus + alertmanager bound and Running 2/2; grafana `CreateContainerConfigError`, secret `grafana-admin-credentials` not found | no — missing secret |
+| `weaviate` | `weaviate-0` 1/1 Running on a bound 100Gi PVC; Application re-syncs every ~3m and never converges | no — sync convergence |
+| `arc-runner-set` | `ReadWriteMany` 100Gi claim local-path cannot serve, plus a GitHub App credential CI has no secret for | partly — RWX |
+
+Those five are deferred with the measured evidence in
+`APPLIED_BUT_UNASSERTED_REASONS`, alongside the pre-existing
+`forgejo`, `spire` (Vault upstream CA wiring) and `vault` (sealed by
+design). A deferral there is not a waiver: `auditAppliedButUnasserted`
+goes red the moment one goes stale.
 
 ## Bring it up
 

@@ -239,13 +239,29 @@ const DEV_INCLUDED_PROOF_DEFERRED_DIRS = new Set([
   // the RWX claim were ever narrowed to RWO the credential blocker would still
   // stand and must not silently stop applying.
   "arc-runner-set",
+  // ----------------------------------------------------------------------
+  // MEASURED 2026-08-21 on run 32519516070, the first run in which these four
+  // were asserted at all. The dev `longhorn` alias WORKED for every one of
+  // them -- their PVCs bound and their pods run -- and each then failed for a
+  // reason that has nothing to do with storage. They are deferred with the
+  // observed evidence, not with a guess, and each carries its symptom in
+  // APPLIED_BUT_UNASSERTED_REASONS below so it stays findable.
+  //
+  // This is a DEFERRAL OF FOUR NAMED DEFECTS, not a restored blanket rule: the
+  // other six Applications the alias unlocked (headscale, mimir, nats, oz,
+  // redis, tempo) are asserted from this commit on.
+  // ----------------------------------------------------------------------
+  "cockroachdb", // 3/3 pods Running (PVCs BOUND), readiness 503 for 38m -- a 3-replica cluster nobody ran `cockroach init` on
   "forgejo",
   "gitlab",
+  "hindsight", // hindsight-postgresql-0 FailedScheduling "Insufficient cpu" on the 1-node runner; api + control-plane CrashLoop waiting on it
+  "kube-prometheus-stack", // grafana CreateContainerConfigError: secret "grafana-admin-credentials" not found. Its own prometheus + alertmanager PVCs bound and run 2/2
   "orleans",
   "platform",
   "spire", // Vault upstream CA + kind PVC wiring not ready in included CI (081KSXN940008QG0R000SCP2H1)
   "temporal",
   "vault", // comes up SEALED by design; readiness needs the gated operator-init ceremony CI must not run
+  "weaviate", // weaviate-0 is 1/1 Running on its bound 100Gi PVC, but the Application re-syncs every ~3m ("Partial sync ... succeeded") and never reaches Synced
 ]);
 
 /**
@@ -290,11 +306,27 @@ export const APPLIED_BUT_UNASSERTED_REASONS: ReadonlyMap<string, string> = new M
     "arc-runner-set",
     "TWO independent blockers, either alone sufficient: it needs a GitHub App credential + a live runner registration that CI has no secret to bind, AND model-cache-pvc.yaml claims ReadWriteMany, which rancher.io/local-path behind the dev longhorn alias cannot serve (081KSXN940008QG0R000SCP2H1).",
   ],
+  [
+    "cockroachdb",
+    "NOT storage -- MEASURED run 32519516070: all three PVCs bound over the dev longhorn alias and cockroachdb-0/1/2 Run for 38m, but every readiness probe returns 503. `single-node: false` + statefulset.replicas 3 gives a cluster nobody ever ran `cockroach init` against; no init Job appears in the namespace. Fix is a cluster-init step or a single-node dev value, neither of which is a storage change.",
+  ],
   ["forgejo", "deferred until dev wiring exists (DEV_INCLUDED_PROOF_DEFERRED_DIRS)."],
+  [
+    "hindsight",
+    "NOT storage -- MEASURED run 32519516070: hindsight-postgresql-0 never scheduled, FailedScheduling `0/1 nodes are available: 1 Insufficient cpu`, so hindsight-api and hindsight-control-plane CrashLoopBackOff waiting on a database that has nowhere to run. A CAPACITY fact about the single control-plane CI runner (the PVC is unbound only because WaitForFirstConsumer waits for a pod that never schedules), not a fact about the StorageClass.",
+  ],
+  [
+    "kube-prometheus-stack",
+    "NOT storage -- MEASURED run 32519516070: its own prometheus and alertmanager PVCs bound over the dev longhorn alias and both pods run 2/2. Grafana is CreateContainerConfigError, `secret \"grafana-admin-credentials\" not found` -- a secret this lane has no material to mint, the same class of blocker as arc-runner-set.",
+  ],
   ["spire", "Vault upstream CA + kind PVC wiring not ready in included CI (DEV_INCLUDED_PROOF_DEFERRED_DIRS)."],
   [
     "vault",
     "storage moved to zeta-local-path, so it now SYNCS in this lane -- but it comes up SEALED by design and readiness requires the gated operator-init ceremony, which CI must never run (081M0H19QD3087G0R003GV76ZY).",
+  ],
+  [
+    "weaviate",
+    "NOT storage -- MEASURED run 32519516070: weaviate-0 is 1/1 Running on a bound 100Gi PVC over the dev longhorn alias. The Application nevertheless re-syncs every ~3 minutes, logging `Partial sync operation to 17.6.0 succeeded` while staying OutOfSync/Progressing for the full 40-minute window. A sync-convergence defect against chart 17.6.0, not a volume that failed to bind.",
   ],
 ]);
 
@@ -873,8 +905,8 @@ export function buildPlan(options: CliOptions, repoRoot = REPO_ROOT): HarnessPla
     ],
     notes: [
       "081KSXN940008QG0R000SCP2H1 is separate from 081KSNY2Z0008QG0R0008PN7RQ; this harness does not test USB reformat retention.",
-      "Dev health assertions exclude cilium, the Longhorn chart itself, GPU model-serving, and apps deferred for a named non-storage reason (gitlab/orleans/temporal/agent-memory/forgejo/spire/vault/arc-runner-set); k3d bootstraps Cilium directly and kind CI uses its default CNI.",
-      "Longhorn-BACKED manifests are no longer excluded: dev applies a StorageClass named longhorn over rancher.io/local-path (dev-cluster/manifests/longhorn.yaml), so those Applications bind and are asserted. Still excluded are ReadWriteMany claims, which a node-local provisioner cannot serve, and the exclusion returns in full if that manifest is absent (081M0JXF6MS087G0R001HC34TM).",
+      "Dev health assertions exclude cilium, the Longhorn chart itself, GPU model-serving, and apps deferred for a named reason in APPLIED_BUT_UNASSERTED_REASONS; k3d bootstraps Cilium directly and kind CI uses its default CNI.",
+      "Longhorn-BACKED manifests are no longer storage-excluded: dev applies a StorageClass named longhorn over rancher.io/local-path (dev-cluster/manifests/longhorn.yaml), so those PVCs bind. MEASURED on run 32519516070: 6 of the 11 formerly-excluded apps now reach Synced+Healthy (headscale, mimir, nats, oz, redis, tempo); the other 5 bound their volumes and then failed for named NON-storage defects, now visible for the first time. Still excluded outright are ReadWriteMany claims, which no dev provisioner can serve, and the whole rule returns if that manifest is absent (081M0JXF6MS087G0R001HC34TM).",
       "ZETA_CONTAINER_RUNTIME is the repo-wide OCI runtime switch; use --runtime for one-off explicit harness runs.",
     ],
   };

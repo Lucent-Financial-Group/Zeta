@@ -52,12 +52,36 @@ the substrate is absent:
 3. New `DevStorageClassMissing` failure: an included-scope run verifies the class
    is actually in the cluster before waiting on anything.
 
-## Measured
+## Measured on run 32519516070
 
-19 -> 29 asserted. Newly asserted: cockroachdb, headscale, hindsight,
-kube-prometheus-stack, mimir, nats, oz (openziti-controller), redis, tempo,
-weaviate. Still deferred for named NON-storage reasons: arc-runner-set (GitHub App
-credential + RWX model cache), forgejo, spire, vault.
+**19 -> 25 asserted.** Six of the eleven storage-excluded Applications reach
+Synced+Healthy in the kind lane and are asserted from now on: `headscale`,
+`mimir`, `nats`, `oz` (openziti-controller), `redis`, `tempo`.
 
-Six mutations, all killed; each byte-verified with `cmp` against a saved pristine
-copy before its result was read. See PR #13326.
+The alias worked for the other five in the sense that matters -- their PVCs
+BOUND and their pods run. Each then failed for a NON-storage defect, and every
+one of those defects was invisible before this change because the storage rule
+excluded the Application carrying it:
+
+| Application | observed | storage? |
+| --- | --- | --- |
+| `cockroachdb` | 3/3 pods Running on bound PVCs, readiness 503 for 38m -- a 3-replica cluster nobody ran `cockroach init` on | no |
+| `hindsight` | `hindsight-postgresql-0` FailedScheduling `Insufficient cpu` on the 1-node runner; api + control-plane CrashLoop | no -- capacity |
+| `kube-prometheus-stack` | prometheus + alertmanager bound and Running 2/2; grafana `CreateContainerConfigError`, secret `grafana-admin-credentials` not found | no -- missing secret |
+| `weaviate` | `weaviate-0` 1/1 Running on a bound 100Gi PVC; Application re-syncs every ~3m, never converges | no -- sync convergence |
+| `arc-runner-set` | RWX 100Gi claim local-path cannot serve + a GitHub App credential CI has no secret for | partly -- RWX |
+
+Each is deferred with that evidence in `APPLIED_BUT_UNASSERTED_REASONS`, so
+`auditAppliedButUnasserted` keeps them findable rather than forgotten.
+
+## Follow-ups this surfaced (not done here)
+
+1. `cockroachdb` needs a cluster-init step or a single-node dev value.
+2. `hindsight` needs CPU requests that fit a 1-node runner, or deferral by policy.
+3. `kube-prometheus-stack` needs a dev grafana admin secret.
+4. `weaviate` chart 17.6.0 never converges its sync -- diagnose the partial sync.
+5. The RWX guard reads only checked-in YAML; the ten unlocked apps are chart-sourced,
+   so closing it properly means reading access modes out of a `helm template` render.
+
+Eleven mutations, all killed; each byte-verified with `cmp` against a saved
+pristine copy before its result was read. See PR #13326.
