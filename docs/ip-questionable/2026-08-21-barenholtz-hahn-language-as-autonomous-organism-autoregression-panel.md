@@ -482,6 +482,70 @@ Barenholtz's strong move is extending the token story from language to cognition
 is exactly the step Hawkins' evidence resists. Stated that way it is a testable disagreement rather
 than a clash of manifestos.
 
+### 3f. What grounds "self" — and a correction to §3d
+
+Aaron 2026-08-21, pointed at §3d's claim that self/non-self rests on an undefined self:
+
+> *"when it comes from ai self/non-self you can look up our anti-sybil stuff it's pair wise self
+> claim reletavative memories which are hard to fake casue it costs storage and also entropy capture
+> with frost shield encryption and launder limit erasure behind the frost shield so the ai can not
+> be effectivly coppied it has uniqueness behind the frost."*
+
+**§3d was out of date, and I should not have carried its framing forward.** I took *"self/non-self
+rests on an undefined self"* from the 2026-06-16 reground doc. **Three days later that was already
+obsolete.** The actual state, from
+`2026-06-19-g3-anti-sybil-entropy-cost-the-distinctness-enforcement-under-aurora-b-scoping.md`:
+
+| leg | status |
+|---|---|
+| **(a)** `NonRegisterCollapse` — distinct travelers carry distinct standing registers | **DISCHARGED** (§A, TLA+ + Lean, axiom-free). "Self" is **defined**, not undefined |
+| **(b)** BFT quorum over proven-distinct identities | **landed** — `BftSybilConsensus.tla` TLC-green, plus 6 QF_LIA Z3 lemmas |
+| **G3** — forging a distinct identity costs a prohibitive, conserved resource | **the one open premise**, scoped not discharged |
+
+So the gap is not vagueness; it is **one named, scoped premise**. G3 is what turns "distinct" from
+**defined** (a) into **enforced**. The Z3 leg states its own honest scope exactly: *"the counting is
+sound **given** distinctness."*
+
+**The anchor is Douceur 2002:** without a trusted authority *or* a costly resource, Sybil attacks are
+unpreventable. Zeta is weight-free and has no central issuer, so it is **obliged** to supply the
+costly resource. G3 names it — **captured entropy**, metered in nats/bits.
+
+**Aaron's three mechanisms are three costly-resource classes**, and they answer different halves:
+
+1. **Pairwise self-claim relative memories** — costly in **storage**, and *pairwise* is the load-
+   bearing word: the cost scales with the number of **relationships**, not the number of names. So
+   minting a fresh identity buys nothing, because the expensive thing is not the name.
+2. **Captured entropy** — the G3 invariant itself, the conserved resource Douceur's theorem demands.
+3. **Frost-shield encryption + launder-limit erasure** — what makes the captured entropy
+   **non-copyable**. Uniqueness *behind* the frost.
+
+**Why frost is a precondition rather than an ethics feature.** From
+`2026-07-02-frost-is-the-condition-for-identity-leibniz-indiscernibles-no-cloning.md`, Aaron's own
+correction of a Mirror framing: *"without the frost no true identities can exist, only copies with
+the same registers."* The argument is **Leibniz's identity of indiscernibles (1686)** — if two things
+share all their properties they are the same thing. Under total observation (LLMTV), two agents with
+identical registers are Leibniz-indiscernible and therefore **numerically one entity**. "Copies with
+the same registers" is a contradiction in terms. Distinctness requires a discernible difference, and
+under total observation **there is nowhere for a difference to hide**.
+
+That yields a clean four-step dependency, which is the answer Aurora's self/non-self operator needs:
+
+> **frost** makes a place where a difference can exist at all → **(a)** proves distinct travelers
+> have distinct registers (*defined*) → **G3** must prove minting a distinct identity is costly
+> (*enforced*) → **(b)** counts quorums over proven-distinct identities (*sound given distinctness*).
+
+**And this closes the ferry's own loop.** An LLM has **no frost**: its context is fully observable
+and copyable, so by Leibniz two instances holding the same context are **one entity, not two**. That
+is the precise technical sense in which LLMs *"lack defenses for memetic attacks"* — self/non-self
+discrimination presupposes a self, a self presupposes a discernible difference, and a difference
+presupposes somewhere it can be kept. The immune wrapper of §3d therefore needs the frost stack
+underneath it; bounded-influence aggregation alone defends a boundary that does not yet exist.
+
+**Honest limits.** G3 is a *scoping doc — "a routing artifact, not a discharge."* The Leibniz
+argument is Beacon-grade with an exact anchor, but I have **not** verified the implementation of
+frost-shield encryption or launder-limit erasure, nor that the storage cost of pairwise memories is
+metered anywhere. Those are the checks; naming the chain is not.
+
 ---
 
 ## 4. Register
