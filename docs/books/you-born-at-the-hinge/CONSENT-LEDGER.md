@@ -203,6 +203,48 @@ only for people who **know to look**. It holds today because Aaron sent the link
 named. **Anyone added later must also be told** — and nothing in the repo checks that, so it is a
 human obligation, not an enforced one.
 
+### 2026-08-21 — standing policy: notify everyone named, and accept their refutations
+
+Aaron 2026-08-21: *"i plan on sending link to anyone i name for their consent and ablility to refute
+anything long term, i even hold if they refute something these are all my good friends i'll just
+accept their refutation, they have proven over and over they mean 0 harm to me."*
+
+**Recorded as standing policy.** It closes the invariant flagged above — the correction surface only
+protects people who know to look, and notifying everyone named is what makes it hold going forward
+rather than only for the people already told. Combined with the draft/publish split, a named person
+gets **notice, a long window, and an effective veto** over facts about them. That is consent-first
+taken seriously rather than declared.
+
+**One honest note, because it is the register he asks for and not a doubt about his friends.**
+
+The stated warrant is *"they mean 0 harm to me."* That is almost certainly true and it is about the
+wrong axis. The risk in accept-every-refutation is not **malice toward the author** — it is
+**accuracy of the record**. A subject can, in complete good faith, refute something that is true and
+unflattering *to them*. Everyone remembers their own part more kindly; that is not a character
+defect, it is how memory works.
+
+And this is **his own recorded thesis**, turned on his own process: *history optimizes the flattering
+reading — for everyone* (`user_aaron_history_optimizes_the_flattering_reading_...`, 2026-08-19),
+where he treats the aggregate bias as an objective to be **metered**, not as noise. A policy of
+accepting every refutation from a subject is a mechanism that **systematically implements** that
+bias — applied to everyone in the book except the author, who has no one to refute him.
+
+**The fix is not to overrule friends, and should not be.** It is *never-collapse*, applied to the
+book:
+
+> When a refutation lands, **record that it was refuted** rather than silently deleting the passage.
+> The subject's account stands in the text — theirs is the version that runs. The **fact of the
+> disagreement** stays in the ledger.
+
+That is the raw-vault discipline this repo already runs on: **a single version of the facts, never a
+single version of the truth** (`dv2-data-split-discipline-activated`), and
+`anti-babel-preserve-reconcilability`'s *reintegration is not reconvergence* — both branches held,
+each with its path recorded. It costs the subject nothing they were promised: they still win the
+text. It costs the record nothing either, which is the whole point.
+
+Cheapest possible form, so it survives contact: one line per refutation here — *who, what, when,
+accepted* — with no requirement that the disputed content itself be preserved anywhere.
+
 **Rule of thumb:** Aaron's own experience = glass-halo (his to make transparent). Facts about *other*
 identifiable living people = their frost — tracked here, protected until consented; **minors protected
 regardless.** Update this row-by-row as consents change (e.g. mother's therapy-condition clears).
