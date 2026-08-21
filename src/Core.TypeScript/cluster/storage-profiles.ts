@@ -465,8 +465,23 @@ export function applyProfile(
   }
   for (const [path, claims] of [...byPath.entries()].sort((a, b) => stringCompare(a[0], b[0]))) {
     const abs = resolve(repoRoot, path);
-    if (!existsSync(abs)) throw new Error(`${path}: catalogue references a manifest that does not exist`);
-    const docs = parseAllDocuments(readFileSync(abs, "utf8"));
+    // READ, then interpret ENOENT -- rather than existsSync() then read, which
+    // CodeQL flagged HIGH as a check-then-use race: the manifest can vanish
+    // between the check and the read, and the failure would then surface as a
+    // raw ENOENT rather than as this catalogue's own refusal. Reading first
+    // removes the window entirely instead of narrowing it, and the refusal is
+    // unchanged -- deleting a manifest the catalogue claims is still an error,
+    // it is simply now detected by the operation that actually depends on it.
+    let source: string;
+    try {
+      source = readFileSync(abs, "utf8");
+    } catch (err) {
+      if ((err as NodeJS.ErrnoException).code === "ENOENT") {
+        throw new Error(`${path}: catalogue references a manifest that does not exist`);
+      }
+      throw err;
+    }
+    const docs = parseAllDocuments(source);
     let touched = false;
     for (const claim of claims) {
       const doc = docs[claim.docIndex];
