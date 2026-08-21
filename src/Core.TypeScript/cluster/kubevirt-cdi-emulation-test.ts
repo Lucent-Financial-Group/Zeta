@@ -91,6 +91,7 @@
 import { existsSync, readFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { parse as parseYaml } from "yaml";
+import { assertContainerHostReady, assertProcessToolReady } from "./adapters/container-host.ts";
 import { liveDevClusterPorts } from "./dev-cluster/deps.ts";
 import type { DevClusterPorts } from "./ports.ts";
 
@@ -413,6 +414,14 @@ function main(argv: readonly string[]): void {
   }
 
   const ports = liveDevClusterPorts({ clusterShape: "kind-in-docker" });
+  // Assert the substrate BEFORE the plan touches it. Without this a missing
+  // docker or kind surfaces as an opaque spawn failure two steps later, and the
+  // job then reads as "kubevirt does not work here" -- the one conclusion this
+  // lane exists to stop anyone drawing by accident. `helm` is deliberately not
+  // required: this lane installs no chart.
+  assertContainerHostReady(ports.containerHost, REPO_ROOT);
+  assertProcessToolReady(ports.process, "kind", REPO_ROOT);
+  assertProcessToolReady(ports.process, "kubectl", REPO_ROOT);
   const { localCluster, controlPlane } = ports;
   if (!localCluster.list().includes(clusterName)) {
     console.log(`Creating kind cluster ${clusterName} ...`);
