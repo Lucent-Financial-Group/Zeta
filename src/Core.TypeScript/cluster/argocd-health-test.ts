@@ -233,6 +233,13 @@ const SMOKE_MIN_APPLICATIONS = 20;
  * These directories are ALSO named in `DEFAULT_ROOT_DEV_CATALOG.excludeGlob`
  * (ports.ts), so they never reach the cluster either -- excluded on both sides,
  * which is why they are not part of the applied-but-unasserted shadow.
+ *
+ * 2026-08-21: `deepseek-coder` and `qwen-coder` LEFT this set (081M0JXXFV0087G0R001PGEEM4).
+ * They were listed under a blanket "GPU model-serving" label, but neither
+ * declares a GPU, an image, a pod or a volume -- between them they render one
+ * Namespace and two ConfigMaps. The GPU is a property of `ollama`/`vllm`, which
+ * SERVE those models; it was never a property of the two structural
+ * Applications that describe them. They are asserted under the full contract now.
  */
 export const DEV_EXCLUDED_REASONS: ReadonlyMap<string, string> = new Map([
   [
@@ -257,7 +264,8 @@ export const DEV_EXCLUDED_REASONS: ReadonlyMap<string, string> = new Map([
   [
     "longhorn",
     "Replicated block storage wants real disks and more than one node; a single kind node inside a runner has " +
-      "neither. This entry is also the ROOT of the largest deferral group in this file: every " +
+      "neither -- it needs real block devices plus open-iscsi on the node. This entry is also the ROOT of the " +
+      "largest deferral group in this file: every " +
       "APPLIED_BUT_UNASSERTED_REASONS row reading 'requests storageClass: longhorn' is downstream of it, so " +
       "lifting this one collapses several. " +
       "LIFTS WHEN: a dev StorageClass provides the `longhorn` name in this lane, or the Applications that " +
@@ -265,26 +273,16 @@ export const DEV_EXCLUDED_REASONS: ReadonlyMap<string, string> = new Map([
   ],
   [
     "ollama",
-    "Model-serving workload: multi-GiB image pull plus a GPU node selector. A GitHub-hosted runner has no GPU, " +
-      "and the pull alone outruns the job timeout, so the Application would hang rather than fail. " +
+    "Requests nvidia.com/gpu with nodeSelector zeta.io/gpu, and a 200Gi longhorn PVC. A GitHub-hosted runner " +
+      "has neither, and the multi-GiB image pull alone outruns the job timeout -- so the Application would " +
+      "HANG rather than fail, which is the worse of the two. " +
       "LIFTS WHEN: the lane runs on a GPU-bearing self-hosted runner (arc-runner-set), or this Application " +
-      "grows a CPU-only dev profile with a small model.",
+      "grows a CPU-only dev profile with a small model and a substrate-default StorageClass.",
   ],
   [
     "vllm",
-    "Same class as ollama -- GPU-only inference server, multi-GiB image, no GPU on a hosted runner. " +
+    "Same class as ollama: CUDA image, nvidia.com/gpu request, 200Gi longhorn PVC. " +
       "LIFTS WHEN: a GPU-bearing self-hosted runner exists for this lane, or a CPU-only dev profile ships.",
-  ],
-  [
-    "deepseek-coder",
-    "A model deployment, not a service: it exists to pull weights onto a GPU node. Nothing about it is " +
-      "exercisable without one. " +
-      "LIFTS WHEN: a GPU-bearing self-hosted runner exists for this lane.",
-  ],
-  [
-    "qwen-coder",
-    "Same class as deepseek-coder -- a GPU model deployment whose whole content is the weights it pulls. " +
-      "LIFTS WHEN: a GPU-bearing self-hosted runner exists for this lane.",
   ],
 ]);
 
@@ -325,15 +323,65 @@ export function auditDevExclusionReasons(repoRoot = REPO_ROOT): DevExclusionDrif
 }
 
 /** Deferred from included Synced+Healthy proof until dev wiring/substrate exists (081KSXN940008QG0R000SCP2H1). */
+
+/**
+ * Deferred from the included Synced+Healthy proof until dev wiring/substrate
+ * exists (081KSXN940008QG0R000SCP2H1).
+ *
+ * EVERY entry states WHY, and the why must name a BLOCKER -- a missing
+ * dependency, secret, CRD, storage class or ceremony -- never "not wired yet".
+ * Six of these carried no recorded reason at all until 2026-08-21; the reasons
+ * below were established FROM the manifests and are written up in
+ * `docs/research/2026-08-21-what-each-deferred-argocd-application-needs-to-boot.md`.
+ *
+ * `orleans` LEFT this set on 2026-08-21: every resource it declares reconciles
+ * on a bare kind cluster, and its StatefulSet ships `replicas: 0`, which
+ * gitops-engine's `getAppsv1StatefulSetHealth` reports Healthy (`ReadyReplicas
+ * 0 < Replicas 0` is false, and the API-server-defaulted RollingUpdate
+ * partition is 0 so `UpdatedReplicas 0 < 0 - 0` is false too). It was deferred
+ * for a silo image it never pulls.
+ */
 const DEV_INCLUDED_PROOF_DEFERRED_DIRS = new Set([
+  // volumeClaimTemplates pin `storageClassName: longhorn`, which is excluded
+  // above, so the PVC never binds. Independently caught by the longhorn rule
+  // in isExcludedFromIncludedProof -- this entry is redundant, and kept only so
+  // the deferral stays legible next to its siblings.
   "agent-memory",
+  // Standby half of the either/or Git-host pair (gitlab is the default-on one),
+  // so it ships manual-sync BY DESIGN. Asserting it here would assert the
+  // manual-sync contract -- exists + compared, never synced -- which is exactly
+  // the cdi/kubevirt vacuity #13084 had to fix. Testing it for real means
+  // running BOTH Git hosts at once, the configuration its own header forbids.
   "forgejo",
+  // charts.gitlab.io/gitlab 8.7.0: ~40 subcharts, a `gitlab-initial-root-password`
+  // Secret CI has no source for, and a Postgres/Redis/Gitaly/MinIO stack wanting
+  // several PVCs plus multi-GB images. A kind runner cannot schedule that inside
+  // the lane's assertion budget.
   "gitlab",
-  "orleans",
+  // Renders `monitoring.coreos.com/v1` ServiceMonitor + PrometheusRule (CRDs
+  // owned by kube-prometheus-stack, itself longhorn-blocked here) and a
+  // `gateway.networking.k8s.io/v1` Gateway, and runs two images no registry
+  // serves: ghcr.io/lucent-financial-group/zeta-platform-controller:latest and
+  // .../zeta-portal:latest. portal.yaml also pins `storageClassName: longhorn`,
+  // so the longhorn rule catches it independently.
   "platform",
-  "spire", // Vault upstream CA + kind PVC wiring not ready in included CI (081KSXN940008QG0R000SCP2H1)
+  // Vault upstream CA + kind PVC wiring not ready in included CI
+  // (081KSXN940008QG0R000SCP2H1). The chart's `upstreamAuthority.vault` block is
+  // commented out pending a Vault that is INITIALISED -- which is why this one
+  // cannot be unblocked ahead of `vault` below.
+  "spire",
+  // go.temporal.io/temporal 0.59.0 with `cassandra.enabled: false` and no
+  // `server.config.persistence` override: the chart is left with NO datastore,
+  // so the schema-setup job has nothing to migrate against. The commented-out
+  // CockroachDB wiring is the missing half, and cockroachdb is itself
+  // longhorn-blocked in this lane.
   "temporal",
-  "vault", // comes up SEALED by design; readiness needs the gated operator-init ceremony CI must not run
+  // comes up SEALED by design; readiness needs the gated operator-init ceremony
+  // CI must not run -- `vault operator init` + `unseal` MINT root and unseal key
+  // material, a gated class (vault/Application.yaml, TOPOLOGY.md). Not a wiring
+  // gap: a lane that could make Vault Healthy would be a lane that performs the
+  // ceremony, and it must not.
+  "vault",
 ]);
 
 /**
@@ -835,7 +883,7 @@ export function buildPlan(options: CliOptions, repoRoot = REPO_ROOT): HarnessPla
     ],
     notes: [
       "081KSXN940008QG0R000SCP2H1 is separate from 081KSNY2Z0008QG0R0008PN7RQ; this harness does not test USB reformat retention.",
-      "Dev health assertions exclude cilium, Longhorn, GPU model-serving, Longhorn-backed manifests, and apps deferred until dev wiring exists (gitlab/orleans/temporal/agent-memory); k3d bootstraps Cilium directly and kind CI uses its default CNI.",
+      "Dev health assertions exclude cilium, Longhorn, GPU model-SERVING (ollama/vllm), Longhorn-backed manifests, and apps deferred on a named blocker (gitlab/temporal/agent-memory/platform/forgejo/spire/vault); k3d bootstraps Cilium directly and kind CI uses its default CNI.",
       "ZETA_CONTAINER_RUNTIME is the repo-wide OCI runtime switch; use --runtime for one-off explicit harness runs.",
     ],
   };
