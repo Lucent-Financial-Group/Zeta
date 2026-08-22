@@ -256,6 +256,16 @@ describe("the real tree", () => {
     expect(must(oz, "the openziti-controller roster entry").catalogueKey).toBe("oz");
     expect(model.catalogue.rows.has("oz")).toBe(true);
     // MUTATION CAUGHT: joining storage-profiles on metadata.name loses `oz`.
+    //
+    // DEPTH-2: the key is the directory itself, not the last path segment.
+    // `game-hosting/gmod` looked up as `gmod` misses the catalogue row and
+    // becomes UNPRICED — a silent 1000m / 2Gi hole. The last-segment form is
+    // what this used to do; the directory form is what `applicationDirs()`
+    // and `ungovernedRequests[].dir` already use.
+    const gmod = model.roster.find((r) => r.dir === "game-hosting/gmod");
+    expect(must(gmod, "the game-hosting/gmod roster entry").catalogueKey).toBe("game-hosting/gmod");
+    expect(model.catalogue.rows.has("game-hosting/gmod")).toBe(true);
+    expect(model.catalogue.rows.has("gmod")).toBe(false);
   });
 
   test("connected components do NOT solve this — one component holds most of the tree", () => {

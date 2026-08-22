@@ -119,10 +119,19 @@ export function loadRoster(repoRoot = REPO_ROOT): readonly RosterEntry[] {
     const doc = docs.find((d): d is Record<string, unknown> => d !== null && d.kind === "Application");
     if (doc === undefined) throw new Error(`${rel}: no kind: Application document`);
     const meta = doc.metadata as Record<string, unknown> | undefined;
-    const name = typeof meta?.name === "string" ? (meta.name) : "";
+    const name = typeof meta?.name === "string" ? meta.name : "";
     if (name === "") throw new Error(`${rel}: Application has no metadata.name`);
     const dir = rel.slice(0, rel.lastIndexOf("/"));
-    out.push({ name, dir, appId: `full-ai-cluster/${dir}`, catalogueKey: dir.slice(dir.lastIndexOf("/") + 1) });
+    // `catalogueKey` is the catalogue's OWN key, which is the repo-relative
+    // directory -- `applicationDirs()` produces it and `resourceClaims[].dir`
+    // and `ungovernedRequests[].dir` are matched against it. This used to take
+    // the last path segment, which is a no-op for the depth-1 directories that
+    // were all this tree had, and became wrong the moment a depth-2 Application
+    // was priced: `game-hosting/gmod` would have been looked up as `gmod`,
+    // missed, and counted as UNPRICED -- a silent 1000m / 2Gi hole in every
+    // lane that contains it, in a module whose whole point is that an unpriced
+    // app is never zero.
+    out.push({ name, dir, appId: `full-ai-cluster/${dir}`, catalogueKey: dir });
   }
   return out;
 }
@@ -257,7 +266,12 @@ export function loadCatalogue(rung: string, repoRoot = REPO_ROOT): Catalogue {
   const raw = JSON.parse(readFileSync(resolve(repoRoot, CATALOGUE_PATH), "utf8")) as {
     runnerEnvelope: RunnerEnvelope;
     resourceProfiles: string[];
-    resourceClaims: { dir: string; pods?: number; cpuMillis: Record<string, number>; memoryMib: Record<string, number> }[];
+    resourceClaims: {
+      dir: string;
+      pods?: number;
+      cpuMillis: Record<string, number>;
+      memoryMib: Record<string, number>;
+    }[];
     ungovernedRequests: { dir: string; cpuMillis: number; memoryMib: number }[];
   };
   if (!raw.resourceProfiles.includes(rung)) {
@@ -320,8 +334,7 @@ export function buildModel(options: BuildOptions = {}): PartitionModel {
   const graph = options.graph ?? loadGraph(repoRoot);
   const catalogue = options.catalogue ?? loadCatalogue(rung, repoRoot);
   const footprints =
-    options.footprints ??
-    (JSON.parse(readFileSync(resolve(repoRoot, FOOTPRINTS_PATH), "utf8")) as LaneFootprints);
+    options.footprints ?? (JSON.parse(readFileSync(resolve(repoRoot, FOOTPRINTS_PATH), "utf8")) as LaneFootprints);
 
   if (graph.unadjudicated.length > 0) {
     throw new Error(
@@ -340,7 +353,9 @@ export function buildModel(options: BuildOptions = {}): PartitionModel {
   }
   const noRender = roster.filter((r) => footprints.imagesByApp[r.appId] === undefined).map((r) => r.appId);
   if (noRender.length > 0) {
-    throw new Error(`Applications with no entry in ${FOOTPRINTS_PATH} (re-run measure-lane-footprints.ts): ${noRender.join(", ")}`);
+    throw new Error(
+      `Applications with no entry in ${FOOTPRINTS_PATH} (re-run measure-lane-footprints.ts): ${noRender.join(", ")}`,
+    );
   }
 
   const deps = new Map<string, readonly string[]>(graph.nodes.map((n) => [n, [] as readonly string[]]));
