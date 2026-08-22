@@ -1005,6 +1005,44 @@ export function adjudicate(findings: readonly RenderedFinding[], baseline: Basel
   return { refused, acknowledged, staleBaselineKeys: [...stale].sort((a, b) => stringCompare(a, b)) };
 }
 
+/**
+ * Acknowledged UNRENDERABLE apps that no longer match anything.
+ *
+ * `adjudicate` above computes staleness over `baseline.findings` only. The
+ * `unrenderable` list had no equivalent, so a chart that STARTED rendering left
+ * its acknowledgement behind and the gate stayed green — while the baseline
+ * file's own `$comment` says "STALE ENTRIES FAIL. An entry matching nothing is
+ * a claim about the tree that stopped being true, and it is refused exactly
+ * like a catalogue row matching no claim." That sentence was true of one of the
+ * two lists.
+ *
+ * MEASURED 2026-08-22 while wiring temporal's datastore: the change's whole
+ * point was to RETIRE `full-ai-cluster/temporal@0.59.0` from that list, and
+ * re-adding the retired entry as a mutation was NOT refused. Nothing in the
+ * repo would have made anyone delete it — the acknowledgement would simply have
+ * kept asserting that a chart which renders does not, forever, in a file whose
+ * job is to be believed.
+ *
+ * FOUND TWICE, INDEPENDENTLY, ON THE SAME DAY. The unrenderable-apps change
+ * reached this hole from the other side — it retired FOUR entries by hand and
+ * noticed nothing had required the hand — and the two branches met in a merge.
+ * That is worth recording rather than smoothing over: two agents auditing
+ * different apps derived the same missing check, which is the strongest evidence
+ * available that it was missing. The two implementations are folded into one
+ * here rather than kept side by side, because two copies of a rule are two
+ * copies free to drift.
+ *
+ * Keyed `<appId>@<targetRevision>`, matching the acknowledgement lookup, so
+ * bumping a pin invalidates the old entry rather than letting it inherit.
+ */
+export function staleUnrenderableKeys(
+  baseline: Baseline,
+  unrenderable: readonly UnrenderableApp[],
+): readonly string[] {
+  const live = new Set(unrenderable.map((app) => `${app.appId}@${app.targetRevision}`));
+  return baseline.unrenderable.filter((entry) => !live.has(entry.key)).map((entry) => entry.key);
+}
+
 export interface AdjudicatedUnrenderable {
   /** Apps whose failure NO baseline entry covers — including ones covered by a DISAGREEING entry. */
   readonly unacknowledged: readonly UnrenderableApp[];
@@ -1013,27 +1051,21 @@ export interface AdjudicatedUnrenderable {
 }
 
 /**
- * Adjudicate the UNRENDERABLE list the same way findings are adjudicated — and
- * for the same reason.
+ * Adjudicate the UNRENDERABLE list the same way findings are adjudicated.
  *
- * Until 2026-08-21 this was a set membership test on `key` alone, which left
- * two holes that the rest of this file exists to refuse:
+ * Staleness is `staleUnrenderableKeys` above — ONE implementation, called from
+ * here, not a second one that agrees today. What this adds is the other half of
+ * the same hole:
  *
- *   1. `observed` WAS INERT. Every unrenderable entry carries one (they read
- *      `helm-pull-failed`, `helm-template-failed`), the loader REQUIRES it
- *      non-empty, and nothing ever compared it. So an app could stop failing at
- *      `helm-pull` — the pin resolves now — and start failing at `helm-template`
- *      for an entirely unrelated reason, and the acknowledgement written about
- *      the FIRST defect would go on quietly covering the SECOND. That is the
- *      vacuity class inside the file whose own header calls a baseline that
- *      keeps matching after the thing it excused has moved "the vacuity class
- *      with a filename". It was true of the findings half and not of this one.
- *
- *   2. A STALE ENTRY COST NOTHING. An app that became renderable left its
- *      acknowledgement behind as a claim about the tree that had stopped being
- *      true, and no exit code noticed. Four such entries were retired by hand in
- *      the change that added this function; without it, nothing would have
- *      required that hand.
+ *   `observed` WAS INERT ON THIS LIST. Every unrenderable entry carries one
+ *   (they read `helm-pull-failed`, `helm-template-failed`), the loader REQUIRES
+ *   it non-empty, and nothing ever compared it. So an app could stop failing at
+ *   `helm-pull` — the pin resolves now — and start failing at `helm-template`
+ *   for an entirely unrelated reason, and the acknowledgement written about the
+ *   FIRST defect would go on quietly covering the SECOND. That is the vacuity
+ *   class inside the file whose own header calls a baseline that keeps matching
+ *   after the thing it excused has moved "the vacuity class with a filename".
+ *   It was true of the findings half and not of this one.
  *
  * WHAT `observed` IS COMPARED AGAINST, and why it is the REASON and not the
  * DETAIL. The reason is the failure CLASS — `helm-pull-failed` means the pin
@@ -1049,7 +1081,6 @@ export function adjudicateUnrenderable(
   baseline: Baseline,
 ): AdjudicatedUnrenderable {
   const byKey = new Map(baseline.unrenderable.map((entry) => [entry.key, entry]));
-  const used = new Set<string>();
   const unacknowledged: UnrenderableApp[] = [];
   for (const app of unrenderable) {
     const entry = byKey.get(`${app.appId}@${app.targetRevision}`);
@@ -1057,23 +1088,16 @@ export function adjudicateUnrenderable(
       unacknowledged.push(app);
       continue;
     }
-    used.add(entry.key);
     if (entry.observed !== app.reason) {
       unacknowledged.push({
         ...app,
         detail:
-          `${app.detail}
-      (acknowledged, but this is a DIFFERENT failure than the one acknowledged — ` +
+          `${app.detail}\n      (acknowledged, but this is a DIFFERENT failure than the one acknowledged — ` +
           `the baseline pinned "${entry.observed}" and this is "${app.reason}")`,
       });
-      continue;
     }
   }
-  const staleKeys = baseline.unrenderable
-    .filter((entry) => !used.has(entry.key))
-    .map((entry) => `${entry.key} (acknowledged as UNRENDERABLE, and it renders)`)
-    .sort((a, b) => stringCompare(a, b));
-  return { unacknowledged, staleKeys };
+  return { unacknowledged, staleKeys: staleUnrenderableKeys(baseline, unrenderable) };
 }
 
 // ---------------------------------------------------------------------------
