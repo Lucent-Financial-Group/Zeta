@@ -30,40 +30,47 @@ function silenceCell(row: DashboardRow): string {
 
 function detailOf(row: DashboardRow): string {
   const v = row.verdict;
-  const base = v.kind === "green" || v.kind === "running" ? "" : escText(v.detail);
+  const base = v.kind === "green" || v.kind === "running" ? "" : cellText(v.detail);
   return row.undeclared ? `${base}${base === "" ? "" : " · "}**no source declared this check in this pass**` : base;
 }
 
 /**
- * Cell-structure escaping only: `|` would end the cell and a newline would end the
- * row. Applied to EVERY cell, including ones this file formats deliberately, so it
- * must never touch emphasis — `**NEVER observed**` is markup we meant.
- */
-function esc(s: string): string {
-  return s.replace(/\|/g, "\\|").replace(/\n/g, " ");
-}
-
-/**
- * Escaping for text that came from OUTSIDE this file — a producer's detail string, an
- * expectation's declaration. Such text is data, never markup, so its `*` must not be
- * read as emphasis.
+ * Escape one cell of EXTERNAL text — a producer's detail, an expectation's
+ * declaration, a check's id. Data, never markup.
  *
- * The concrete reason: a cron like `7 17 * * 0` contains `* *`, which Markdown reads
- * as an emphasis span and markdownlint rejects (MD037). A generated artifact that
- * cannot pass the repo's own lint cannot be committed, so the generator owns this.
- * Text already inside a code span is left alone, so no backslash reaches a reader.
+ * Three things, and the ORDER is the correctness argument:
+ *   1. `\` first. An escape function that does not escape its own escape character is
+ *      defeatable: `\|` would become `\\|` — an escaped backslash followed by a BARE
+ *      pipe, which ends the cell and shifts every column after it. CodeQL flagged
+ *      exactly this on the first run of this PR (`js/incomplete-sanitization`, high),
+ *      and it was right.
+ *   2. `|` — would end the cell. GFM resolves `\|` before code spans, so this is
+ *      correct inside backticks too.
+ *   3. `*` — a cron like `7 17 * * 0` contains `* *`, which Markdown reads as an
+ *      emphasis span and markdownlint rejects (MD037). A generated artifact that
+ *      cannot pass the repo's own lint cannot be committed, so the generator owns it.
+ *      Skipped inside code spans, where no backslash should reach a reader.
+ *
+ * Text this file formats DELIBERATELY does not come through here — `**NEVER observed**`
+ * is markup we meant, and escaping it would break the one row that must not be missed.
+ * That is why `table` no longer escapes anything: the caller says which kind it has.
  */
-function escText(s: string): string {
+function cellText(s: string): string {
   return s
     .split("`")
-    .map((part, i) => (i % 2 === 1 ? part : part.replace(/\*/g, "\\*")))
-    .join("`");
+    .map((part, i) =>
+      i % 2 === 1
+        ? part.replace(/\|/g, "\\|")
+        : part.replace(/\\/g, "\\\\").replace(/\|/g, "\\|").replace(/\*/g, "\\*"),
+    )
+    .join("`")
+    .replace(/\n/g, " ");
 }
 
 function table(headers: readonly string[], rows: readonly (readonly string[])[]): string {
   if (rows.length === 0) return "_none_\n";
   const head = `| ${headers.join(" | ")} |\n| ${headers.map(() => "---").join(" | ")} |`;
-  return `${head}\n${rows.map((r) => `| ${r.map(esc).join(" | ")} |`).join("\n")}\n`;
+  return `${head}\n${rows.map((r) => `| ${r.join(" | ")} |`).join("\n")}\n`;
 }
 
 /** The committed markdown artifact. */
@@ -98,7 +105,7 @@ export function renderMarkdown(report: DashboardReport): string {
   out.push(`## RED — ${c.red}\n`);
   out.push("Oldest first: a check red since the 16th outranks one red five minutes ago.\n");
   out.push(table(["check", "red for", "expectation", "detail"], by("red").map((r) => [
-    `\`${r.checkId}\``, silenceCell(r), r.expectation.kind, detailOf(r),
+    `\`${cellText(r.checkId)}\``, silenceCell(r), r.expectation.kind, detailOf(r),
   ])));
 
   out.push(`\n## UNKNOWN — ${c.unknown}\n`);
@@ -112,7 +119,7 @@ export function renderMarkdown(report: DashboardReport): string {
   out.push("`expectation-unknown` (cannot tell whether it should run at all) · `source-error` (we failed");
   out.push("to ask, which is not the same as a correct silence).\n");
   out.push(table(["check", "silent for", "why unknown", "expectation", "detail"], by("unknown").map((r) => [
-    `\`${r.checkId}\``,
+    `\`${cellText(r.checkId)}\``,
     silenceCell(r),
     r.verdict.kind === "unknown" ? r.verdict.reason : "",
     r.expectation.kind,
@@ -122,7 +129,7 @@ export function renderMarkdown(report: DashboardReport): string {
   if (c.running > 0 || c.skipped > 0) {
     out.push(`\n## Running (${c.running}) / skipped (${c.skipped})\n`);
     out.push(table(["check", "state", "detail"], [...by("running"), ...by("skipped")].map((r) => [
-      `\`${r.checkId}\``, r.band, detailOf(r),
+      `\`${cellText(r.checkId)}\``, r.band, detailOf(r),
     ])));
   }
 
@@ -130,13 +137,13 @@ export function renderMarkdown(report: DashboardReport): string {
   out.push("Declared to fire only on request, so silence on this ref is **correct**. Listed, not");
   out.push("hidden, and deliberately not called green — a distinction laundered is a distinction lost.\n");
   out.push("<details><summary>show</summary>\n");
-  out.push(table(["check", "expectation"], by("not-applicable").map((r) => [`\`${r.checkId}\``, escText(r.expectation.detail)])));
+  out.push(table(["check", "expectation"], by("not-applicable").map((r) => [`\`${cellText(r.checkId)}\``, cellText(r.expectation.detail)])));
   out.push("\n</details>\n");
 
   out.push(`\n## Green — ${c.green}\n`);
   out.push("<details><summary>show</summary>\n");
   out.push(table(["check", "verdict age", "expectation"], by("green").map((r) => [
-    `\`${r.checkId}\``, silenceCell(r), r.expectation.kind,
+    `\`${cellText(r.checkId)}\``, silenceCell(r), r.expectation.kind,
   ])));
   out.push("\n</details>\n");
 

@@ -93,8 +93,12 @@ describe("html", () => {
 
   it("is self-contained: no external asset, CDN, or script fetch", () => {
     expect(html).not.toContain("http://");
-    expect(html).not.toMatch(/<script[\s>]/);
-    expect(html).not.toMatch(/<link[\s>]/);
+    // Case-insensitive on purpose: `/<script[\s>]/` without `i` does not match
+    // `<SCRIPT>`, so the assertion would pass on a page that had one. CodeQL flagged
+    // exactly that (`js/bad-tag-filter`, high) — in the FALSIFIER, not the code, which
+    // is the more expensive place to have a hole.
+    expect(html).not.toMatch(/<script[\s>]/i);
+    expect(html).not.toMatch(/<link[\s>]/i);
     expect(html).not.toContain("https://fonts");
     expect(html).not.toContain("cdn.");
   });
@@ -155,5 +159,29 @@ describe("the generated markdown must pass the repo's own lint — a rule the ge
       now: NOW,
     });
     expect(renderMarkdown(report)).toContain("`a*b`");
+  });
+});
+
+describe("the escapes escape their own escape character", () => {
+  function reportWithDetail(detail: string) {
+    return foldDashboard({
+      roster: mergeDefinitions(emptyRoster("main", NOW), [def("x", { kind: "on-change", detail })], NOW),
+      observations: [],
+      now: NOW,
+    });
+  }
+
+  it("a backslash in producer text cannot smuggle a bare pipe out of its cell", () => {
+    // Without escaping `\` first, `\|` becomes `\\|` — an escaped backslash followed
+    // by a BARE pipe, which ends the table cell and corrupts every column after it.
+    const md = renderMarkdown(reportWithDetail("path C:\\| and more"));
+    const row = md.split("\n").find((l) => l.startsWith("| `x`"));
+    expect(row).toBeDefined();
+    expect((row ?? "").split(/(?<!\\)\|/).length).toBe(7); // 5 columns ⇒ 6 separators + trailing ""
+  });
+
+  it("a backslash in producer text cannot smuggle a bare asterisk past escText", () => {
+    const md = renderMarkdown(reportWithDetail("cron \\* * 0"));
+    expect(md).not.toMatch(/[^\\]\* \* 0/);
   });
 });

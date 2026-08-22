@@ -9,7 +9,7 @@ check is an unbounded number of unknown failures, so it is ranked ABOVE green an
 | | |
 |---|---|
 | ref | `main` |
-| pass at | 2026-08-22T17:49:01.596Z |
+| pass at | 2026-08-22T18:02:56.733Z |
 | producers | github-actions |
 | roster | 81 known checks — 67 expected to report on this ref, 14 on-demand, 0 retired |
 | coverage | **62 / 67** — **SHORTFALL 5** |
@@ -22,12 +22,12 @@ Oldest first: a check red since the 16th outranks one red five minutes ago.
 | --- | --- | --- | --- |
 | `chart-version-refresh` | **NEVER observed** | periodic | declared to run every 7d and has NEVER produced a verdict on this ref (schedule: '7 17 \* \* 0') |
 | `budget-snapshot-cadence` | 6d | periodic | run 31959534906 concluded 'failure' |
-| `tlaps-proof` | 16h | on-change | run 32542476787 concluded 'failure' |
+| `tlaps-proof` | 17h | on-change | run 32542476787 concluded 'failure' |
 | `manifesto-citation-snapshot-cadence` | 11h | periodic | run 32558211949 concluded 'failure' |
 | `context-cost-trend-cadence` | 10h | periodic | run 32559948214 concluded 'failure' |
 | `pr-manifest-integrity` | 5h | periodic | run 32573347920 concluded 'failure' |
-| `k8s-lane-partition` | 32m | on-change | run 32587132920 concluded 'failure' |
-| `gate` | 6m | on-change | run 32587966659 concluded 'failure' |
+| `k8s-lane-partition` | 46m | on-change | run 32587132920 concluded 'failure' |
+| `gate` | 20m | on-change | run 32587966659 concluded 'failure' |
 
 ## UNKNOWN — 5
 
@@ -55,7 +55,7 @@ to ask, which is not the same as a correct silence).
 | check | state | detail |
 | --- | --- | --- |
 | `mirror-to-fork` | skipped | run 32572803781 was skipped |
-| `rerun-cancelled-gate` | skipped | run 32588873662 was skipped |
+| `rerun-cancelled-gate` | skipped | run 32589572208 was skipped |
 
 ## Not applicable — 10
 
@@ -86,22 +86,22 @@ hidden, and deliberately not called green — a distinction laundered is a disti
 | check | verdict age | expectation |
 | --- | --- | --- |
 | `accelerator-move-next` | 85d | on-demand |
-| `agencysignature-enforcement` | 17m | on-change |
-| `agent-heartbeat` | 6m | periodic |
+| `agencysignature-enforcement` | 2m | on-change |
+| `agent-heartbeat` | 7m | periodic |
 | `agent-proposal-gated-commit` | 5d | on-demand |
-| `auto-submission` | 5m | unknown |
+| `auto-submission` | 69s | unknown |
 | `backlog-index-integrity` | 2d | on-change |
 | `build-ai-cluster-iso` | 5h | on-change |
-| `build-platform-images` | 35h | on-change |
+| `build-platform-images` | 36h | on-change |
 | `bytelock` | 5d | on-change |
-| `ci-cache-paths-lint` | 30m | on-change |
-| `codeql` | 2m | unknown |
+| `ci-cache-paths-lint` | 44m | on-change |
+| `codeql` | 4m | unknown |
 | `copilot-pull-request-reviewer` | 22d | unknown |
-| `dependabot-updates` | 2h | unknown |
+| `dependabot-updates` | 3h | unknown |
 | `docker-nixos-install-sh-test` | 6h | on-change |
 | `docker-ubuntu-jammy-install-sh-test` | 6h | on-change |
-| `docker-windows-install-ps1-test` | 5h | on-change |
-| `drift-sweep` | 4m | periodic |
+| `docker-windows-install-ps1-test` | 6h | on-change |
+| `drift-sweep` | 18m | periodic |
 | `factory-hygiene-audit-cadence` | 3h | periodic |
 | `git-hotspot-cadence` | 6d | periodic |
 | `gitbash-install-routing-test` | 6h | on-change |
@@ -110,36 +110,36 @@ hidden, and deliberately not called green — a distinction laundered is a disti
 | `helm-validate` | 2h | periodic |
 | `installer-unit-tests` | 17h | on-change |
 | `inventory-hardening-check` | 3d | on-change |
-| `inventory-heartbeat` | 11h | periodic |
-| `k8s-argocd-health-test` | 19m | periodic |
+| `inventory-heartbeat` | 12h | periodic |
+| `k8s-argocd-health-test` | 33m | periodic |
 | `keyring-dst1000` | 17h | on-change |
 | `lean-proof` | 5d | on-change |
-| `lint-autofix-apply` | 67s | on-demand |
-| `lockfile-healer` | 7m | periodic |
-| `low-memory` | 11h | periodic |
+| `lint-autofix-apply` | 4m | on-demand |
+| `lockfile-healer` | 5m | periodic |
+| `low-memory` | 12h | periodic |
 | `macos-install-sh-test` | 6h | on-change |
 | `memory-index-drift` | 42h | on-change |
 | `memory-index-duplicate-lint` | 3d | on-change |
 | `memory-index-integrity` | 42h | on-change |
 | `memory-reference-existence-lint` | 42h | on-change |
 | `multiboot-qemu-uefi-smoke` | 6d | on-change |
-| `mux-swarm-tick` | 43m | periodic |
+| `mux-swarm-tick` | 57m | periodic |
 | `pages-build-deployment` | 15d | unknown |
-| `pages-deploy` | 8m | periodic |
+| `pages-deploy` | 9m | periodic |
 | `proof-closure-drift` | 5h | periodic |
-| `razor-cadence` | 8h | periodic |
+| `razor-cadence` | 9h | periodic |
 | `role-ref-current-state-surfaces-lint` | 2d | on-change |
 | `scorecard` | 5d | periodic |
 | `skill-description-lint` | 2d | on-change |
-| `society-heartbeat` | 9m | periodic |
+| `society-heartbeat` | 23m | periodic |
 | `soraya-formal-coverage-cadence` | 8h | periodic |
 | `stryker-mutation` | 7d | on-change |
-| `tick-metrics` | 10m | periodic |
-| `udp-lossy-tests` | 18m | on-change |
+| `tick-metrics` | 11m | periodic |
+| `udp-lossy-tests` | 2m | on-change |
 | `update-graph` | 21d | unknown |
 | `vocab-hygiene` | 12d | on-change |
 | `wsl-install-sh-test` | 6h | on-change |
-| `zetadb-scheduled-node` | 17s | periodic |
+| `zetadb-scheduled-node` | 14m | periodic |
 | `zflash-harness-lint` | 6d | periodic |
 
 </details>
