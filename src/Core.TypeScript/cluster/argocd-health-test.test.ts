@@ -1041,10 +1041,135 @@ describe("DEV_EXCLUDED_REASONS", () => {
     }
   });
 
-  test("the audit is green on the live tree in both directions", () => {
+  test("the audit is green on the live tree in all four directions", () => {
     const drift = auditDevExclusionReasons();
     expect(drift.unreasoned).toEqual([]);
     expect(drift.stale).toEqual([]);
+    expect(drift.globExcludedWithoutReason).toEqual([]);
+    expect(drift.reasonedButApplied).toEqual([]);
+  });
+
+  // -------------------------------------------------------------------------
+  // THE GLOB DIRECTIONS (081M0M9TRQ8087G0R000CS3F1X).
+  //
+  // These two were missing, and their absence is why `platform` sat excluded
+  // from every CI cluster behind a reason that was FALSE. The registry was
+  // checked against the filesystem and against itself, never against
+  // `DEFAULT_ROOT_DEV_CATALOG.excludeGlob` -- the list that actually decides
+  // what the lane applies. Measured on `main` at f332a61a with the new
+  // direction added and no reasons yet written, it returned
+  // ["agent-memory","gitlab","platform","temporal"]: four directories deferred
+  // from CI with no recorded why and no lift condition, under two audits that
+  // both reported green.
+  // -------------------------------------------------------------------------
+
+  test("every directory the dev catalog's excludeGlob defers carries a reason here", () => {
+    // The set equality is the property: the glob decides what is deferred, this
+    // registry says why, and neither may move without the other.
+    expect([...DEV_EXCLUDED_REASONS.keys()].sort()).toEqual([...rootDevCatalogExcludedDirs()].sort());
+  });
+
+  test("a glob entry with no reason IS caught -- driven, not asserted", () => {
+    // `redis` is asserted under the full contract and is not in the glob, so
+    // naming it in a synthetic glob is a deferral nobody explained.
+    const drift = auditDevExclusionReasons(undefined, "{redis/**}");
+    expect(drift.globExcludedWithoutReason).toEqual(["redis"]);
+  });
+
+  test("a reason for an app the lane DOES apply is caught as stale deferral", () => {
+    // Every live reason becomes stale against a glob that defers only `redis`:
+    // each one claims the lane does not apply something the lane now applies.
+    const drift = auditDevExclusionReasons(undefined, "{redis/**}");
+    expect(drift.reasonedButApplied).toContain("platform");
+    expect(drift.reasonedButApplied.length).toBe(DEV_EXCLUDED_REASONS.size);
+  });
+
+  // -------------------------------------------------------------------------
+  // THE PLATFORM REASON ITSELF.
+  //
+  // The prose is the finding, so these pin the load-bearing clauses rather than
+  // the wording. What was corrected was not a typo: "no registry serves them"
+  // points a reader at BUILDING an image that already exists, and would have
+  // sent the next person to write a workflow that has been green since June.
+  // -------------------------------------------------------------------------
+
+  test("the platform reason names the credential, not a missing image", () => {
+    const reason = DEV_EXCLUDED_REASONS.get("platform") ?? "";
+    // Pin the DIAGNOSIS clause, not the bare word. `imagePullSecrets` also
+    // appears in the LIFTS WHEN half, so `toContain("imagePullSecrets")` alone
+    // survived a mutation that softened the diagnosis to "a pull credential" --
+    // the same vacuity shape as the `metal` assertion below, caught the same way.
+    expect(reason).toContain(
+      "both packages are `visibility: private`, and neither controller.yaml nor portal.yaml declares " +
+        "`imagePullSecrets`",
+    );
+    expect(reason).toContain("returns HTTP 401");
+    expect(reason).toContain("the same GET with a credential returns HTTP 200");
+    // The refuted claim IS quoted here, deliberately -- a correction that does
+    // not say what it corrects leaves the next reader free to rediscover the
+    // wrong thing. What is refused is the quote surviving without its
+    // refutation, so the two are pinned together rather than the claim banned.
+    expect(reason).toContain("`runs two images no registry serves`, and that was FALSE");
+  });
+
+  test("the platform reason records that the blocker is not dev-lane-only", () => {
+    // ImagePullBackOff on a private image is substrate-independent: the metal
+    // cluster has no credential either. A reason that read as a CI-only gap
+    // would leave the live cluster's dead control plane looking intentional.
+    //
+    // `toContain("metal")` was the first form of this assertion and it was
+    // VACUOUS -- the word appears twice in the reason, so a mutation that
+    // deleted the substrate-independence sentence outright still passed. The
+    // whole clause is pinned instead; that is what the claim actually is.
+    expect(DEV_EXCLUDED_REASONS.get("platform") ?? "").toContain(
+      "the pods take ImagePullBackOff on EVERY substrate, CI and metal alike",
+    );
+  });
+
+  // -------------------------------------------------------------------------
+  // THE TEMPORAL REASON, CORRECTED WITHIN THE HOUR OF BEING WRITTEN.
+  //
+  // #13472 wrote "its chart has no persistence store configured, so it does not
+  // render". #13469 landed in between and made that false. Both audits stayed
+  // green through it, because a false sentence with a LIFTS WHEN: clause has
+  // every mechanical property the registry requires. These tests pin the
+  // corrected claim, and one of them refuses the refuted one by name.
+  // -------------------------------------------------------------------------
+
+  test("the temporal reason no longer claims the chart fails to render", () => {
+    const reason = DEV_EXCLUDED_REASONS.get("temporal") ?? "";
+    expect(reason).not.toContain("so it does not render");
+    expect(reason).not.toContain("Please specify cassandra port");
+  });
+
+  test("the temporal reason names both live blockers, not the retired one", () => {
+    const reason = DEV_EXCLUDED_REASONS.get("temporal") ?? "";
+    // (1) visibility schema, (2) TLS-only CockroachDB with no material here.
+    expect(reason).toContain("btree_gin");
+    expect(reason).toContain("`tls.enabled: true` with the selfSigner");
+  });
+
+  test("the correction records that it was the author's own stale reason", () => {
+    // A reason quietly overwritten teaches nobody. The registry's whole value
+    // is that a wrong reason is refutable by a reader, so the refutation is
+    // kept rather than the error erased.
+    expect(DEV_EXCLUDED_REASONS.get("temporal") ?? "").toContain("CORRECTED WITHIN THE HOUR, BY ITS OWN AUTHOR");
+  });
+
+  test("the `:latest` pin is recorded as a separate, already-known defect", () => {
+    // Two syncs of one commit can land different bytes. Recorded rather than
+    // fixed, and the reason says who owns the trade -- an unrecorded known
+    // defect and an undiscovered one read identically to the next reader.
+    const reason = DEV_EXCLUDED_REASONS.get("platform") ?? "";
+    // The CITATION is the claim, so the citation is what is pinned. `:latest`
+    // and `DEPLOY.md` both occur elsewhere in the reason, so asserting the two
+    // words survived a mutation that replaced the quoted follow-up with "a
+    // follow-up is recorded there" -- which is exactly the vague gesture this
+    // test exists to refuse.
+    expect(reason).toContain("full-ai-cluster/portal/DEPLOY.md:122");
+    expect(reason).toContain("Digest-pin the manifests + have CI bump them, instead of :latest + Always");
+    // And it must still say who owns the trade, or "not fixed here" reads as an oversight.
+    expect(reason).toContain("a maintainer's trade, not a lint's");
   });
 
   test("the CNI entries still name the lane that DOES exercise them", () => {
