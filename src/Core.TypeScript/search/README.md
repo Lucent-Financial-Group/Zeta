@@ -4,7 +4,7 @@
 
 ```bash
 # Safe by default. Refuses an over-budget scope in ~2s instead of hanging.
-bun src/Core.TypeScript/search/search.ts <pattern> [paths...] [--ext ts,md] [-i] [-e] [--files]
+bun src/Core.TypeScript/search/search.ts <pattern> [paths...] [--ext ts,md] [-i] [--files]
 
 # Deliberate search of an excluded tree (supported — check docs/PRIOR-ART-LIST.md first):
 bun src/Core.TypeScript/search/search.ts <pattern> references/prior-art --allow references/prior-art
@@ -77,6 +77,27 @@ bun src/Core.TypeScript/search/exclusions.ts --check-ignore
 exact tool that caused the incident is untouched by that file. You can make
 *some* external tools carry a constraint; you can never make all of them. That
 asymmetry is the argument for the CLI, not against it.
+
+## Matching is literal — regex is refused, with a pointer
+
+CodeQL flagged `js/regex-injection` (high) on the first push of this file: a
+RegExp built from CLI input can backtrack catastrophically, and JS has no regex
+timeout — an unbounded search, which is exactly what this tool exists to refuse.
+Shipping it inside the guard would have been the guard undoing itself.
+
+So: **literal here, regex in ripgrep**, whose engine is linear-time and cannot
+backtrack (Cox 2007, *Regular Expression Matching Can Be Simple And Fast*) — and
+which the `.ignore` in this PR now keeps off the heavy trees anyway.
+
+```bash
+rg <your-regex>          # regex, safe by default via .ignore
+search.ts <literal-text> # literal, with the scope budget
+```
+
+`-e` / `--regex` is **refused with that message**, never silently ignored:
+dropping the flag would search the pattern literally and return confidently wrong
+results — the same "believed empty answer" failure the excluded-target refusal
+exists to prevent.
 
 ## The other files here
 

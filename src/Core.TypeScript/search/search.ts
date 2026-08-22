@@ -91,7 +91,6 @@ export interface SearchOptions {
   readonly pattern: string;
   readonly targets: readonly string[];
   readonly ignoreCase: boolean;
-  readonly regex: boolean;
   readonly exts?: ReadonlySet<string> | undefined;
   readonly maxFiles: number;
   /** Excluded trees the caller opted INTO, by repo-relative path. */
@@ -288,7 +287,6 @@ function readTextCapped(abs: string): string | null {
 /** Search the approved candidate set. Only called after `checkScope` says ok. */
 export function searchFiles(root: string, candidates: Candidates, opts: SearchOptions): SearchMatch[] {
   const out: SearchMatch[] = [];
-  const rx = opts.regex ? new RegExp(opts.pattern, opts.ignoreCase ? "i" : "") : null;
   const needle = opts.ignoreCase ? opts.pattern.toLowerCase() : opts.pattern;
 
   for (const rel of candidates.files) {
@@ -297,12 +295,43 @@ export function searchFiles(root: string, candidates: Candidates, opts: SearchOp
     const lines = content.split(/\r?\n/);
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i]!;
-      const hit = rx ? rx.test(line) : (opts.ignoreCase ? line.toLowerCase() : line).includes(needle);
+      const hit = (opts.ignoreCase ? line.toLowerCase() : line).includes(needle);
       if (hit) out.push({ file: rel, line: i + 1, text: line });
     }
   }
   return out;
 }
+
+/**
+ * Regex search is REFUSED here, with a pointer rather than a shrug.
+ *
+ * Building a RegExp from a command-line argument is `js/regex-injection` (CodeQL
+ * flagged exactly that on the first push of this file, at high severity), and the
+ * concrete risk is catastrophic backtracking: JavaScript's engine has no timeout,
+ * so one adversarial-or-careless pattern hangs the process with no budget able to
+ * stop it. That is the SAME failure this tool exists to prevent — an unbounded
+ * scope wearing a different costume — and shipping it inside the guard would have
+ * been the guard undoing itself. `grep.ts` had already reasoned its way to literal
+ * matching for this reason in 2026-05-31; this file regressed it and is corrected.
+ *
+ * The honest division of labour: literal search here, where the scope budget is;
+ * regex in ripgrep, which has a linear-time engine that CANNOT backtrack (Cox
+ * 2007, "Regular Expression Matching Can Be Simple And Fast") — and which the
+ * `.ignore` shipped in this PR now makes safe by default on this tree.
+ */
+export const REGEX_REFUSAL = [
+  "regex search is not supported by this tool, on purpose.",
+  "",
+  "  A RegExp built from CLI input can backtrack catastrophically, and JS has no",
+  "  regex timeout — an unbounded search, which is what this tool exists to refuse.",
+  "",
+  "  Use ripgrep, whose engine is linear-time and cannot backtrack. The .ignore",
+  "  file in this repo already keeps it off the heavy trees:",
+  "",
+  "    rg <your-regex>",
+  "",
+  "  Or search literally here:  bun src/Core.TypeScript/search/search.ts <text>",
+].join("\n");
 
 export interface ParsedArgs extends SearchOptions {
   readonly filesOnly: boolean;
@@ -313,7 +342,6 @@ export function parseArgs(argv: string[], cwd: string): ParsedArgs | { error: st
   let root = cwd;
   let maxFiles = DEFAULT_MAX_FILES;
   let ignoreCase = false;
-  let regex = false;
   let filesOnly = false;
   let quiet = false;
   let exts: Set<string> | undefined;
@@ -340,7 +368,7 @@ export function parseArgs(argv: string[], cwd: string): ParsedArgs | { error: st
       if (!v) return { error: "--ext requires a comma-separated list" };
       exts = new Set(v.split(",").map((s) => s.trim().replace(/^\./, "")).filter(Boolean));
     } else if (a === "-i") ignoreCase = true;
-    else if (a === "-e" || a === "--regex") regex = true;
+    else if (a === "-e" || a === "--regex") return { error: REGEX_REFUSAL };
     else if (a === "--files") filesOnly = true;
     else if (a === "--quiet") quiet = true;
     else if (a.startsWith("-")) return { error: `unknown flag: ${a}` };
@@ -352,24 +380,16 @@ export function parseArgs(argv: string[], cwd: string): ParsedArgs | { error: st
     return {
       error:
         "usage: bun src/Core.TypeScript/search/search.ts <pattern> [paths...] " +
-        "[--ext ts,md] [-i] [-e] [--files] [--max-files N] [--allow <tree>] [--root <dir>]",
+        "[--ext ts,md] [-i] [--files] [--max-files N] [--allow <tree>] [--root <dir>]",
     };
   }
   const targets = positionals.slice(1);
-  if (regex) {
-    try {
-      new RegExp(pattern);
-    } catch (err) {
-      return { error: `invalid regex: ${String(err)}` };
-    }
-  }
 
   return {
     root,
     pattern,
     targets: targets.length > 0 ? targets : ["."],
     ignoreCase,
-    regex,
     exts,
     maxFiles,
     allow,

@@ -59,7 +59,6 @@ function opts(over: Partial<SearchOptions> = {}): SearchOptions {
     pattern: "needle",
     targets: ["."],
     ignoreCase: false,
-    regex: false,
     exts: undefined,
     maxFiles: DEFAULT_MAX_FILES,
     allow: [],
@@ -194,7 +193,7 @@ test("the Core.Rust.<crate>/target glob matches every crate, not just the one me
 // SEARCH SEMANTICS (so the tool is actually usable).
 // ─────────────────────────────────────────────────────────────────────────────
 
-test("literal by default; -i matches mixed case; -e enables regex", () => {
+test("matching is literal; -i matches mixed case", () => {
   const base = opts({ targets: ["src"], maxFiles: 1000 });
   const lit = searchFiles(root, collectCandidates(base), base);
   expect(lit.some((m) => m.file === "src/case.ts")).toBe(false);
@@ -202,18 +201,28 @@ test("literal by default; -i matches mixed case; -e enables regex", () => {
   const ci = { ...base, ignoreCase: true };
   expect(searchFiles(root, collectCandidates(ci), ci).some((m) => m.file === "src/case.ts")).toBe(true);
 
-  const re = { ...base, regex: true, pattern: "n[e]edle" };
-  expect(searchFiles(root, collectCandidates(re), re).length).toBeGreaterThan(0);
+  // A regex metacharacter is matched LITERALLY — proof no RegExp is built from
+  // the pattern. If someone reintroduces regex support this fails, which is the
+  // point: `js/regex-injection` was flagged high-severity on the first push here.
+  const meta = { ...base, pattern: "n[e]edle" };
+  expect(searchFiles(root, collectCandidates(meta), meta).length).toBe(0);
+});
+
+test("regex is REFUSED with a pointer to ripgrep, not silently ignored", () => {
+  // Silently dropping -e would search for the pattern literally and return
+  // confidently wrong results — the same "believed empty answer" failure the
+  // excluded-target refusal exists to prevent.
+  const r = parseArgs(["n[e]+dle", "-e"], root);
+  expect(r).toHaveProperty("error");
+  if (!("error" in r)) throw new Error("unreachable");
+  expect(r.error).toContain("rg ");
+  expect(parseArgs(["x", "--regex"], root)).toHaveProperty("error");
 });
 
 test("parseArgs rejects a non-positive --max-files rather than defaulting quietly", () => {
   expect(parseArgs(["x", "--max-files", "0"], root)).toHaveProperty("error");
   expect(parseArgs(["x", "--max-files", "-5"], root)).toHaveProperty("error");
   expect(parseArgs(["x", "--max-files", "abc"], root)).toHaveProperty("error");
-});
-
-test("parseArgs rejects an invalid regex instead of throwing mid-walk", () => {
-  expect(parseArgs(["([", "-e"], root)).toHaveProperty("error");
 });
 
 test("parseArgs defaults the target to the whole tree — so the DEFAULT is the guarded case", () => {
