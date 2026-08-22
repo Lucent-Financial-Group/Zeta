@@ -154,7 +154,7 @@ export interface World {
   /** 081KSNY2Z0008QG0R0008PN7RQ slice 4: post-login cred adventure channel; absent when complete or unwired. */
   readonly nodeSession?: NodeSessionState;
   /** Cartography state: current spatial focus and time-resolution. */
-  readonly cartography?: { readonly focusId?: string; readonly scopeLevel: number; readonly timeOffset: number };
+  readonly cartography?: { readonly focusId?: string; readonly scopeLevel: number; readonly timeOffset: number; readonly activeOrbitSignature?: string; };
   /**
    * The time-travel LEDGER — LOCAL BOOKKEEPING, deliberately OUTSIDE the
    * four-oracle treaty (see `golden-vectors.ts` §"the treaty surface"). It is the
@@ -167,7 +167,12 @@ export interface World {
    */
   readonly history?: readonly HistoryEvent[];
   /** The "Cheat Engine" memory map, providing Lensography-like read-only access to toy/environment internals */
-  readonly cheatEngine?: { readonly memorySectors: Uint8Array[] };
+  readonly cheatEngine?: { 
+    readonly memorySectors: Uint8Array[];
+    readonly causalMask?: boolean[];
+    readonly display?: boolean[];
+    readonly keyPredictions?: Record<number, number>;
+  };
   /** Capability labels restricting what channels this agent/world instance can access */
   readonly agentCapabilities?: string[];
 }
@@ -187,7 +192,7 @@ export interface ItemEvaluation {
  * is total across the union while remaining impossible to populate there.
  */
 export type HistoryEvent =
-  | { readonly type: "do_item"; readonly item: BacklogItem; readonly evaluation?: ItemEvaluation }
+  | { readonly type: "do_item"; readonly item: BacklogItem; readonly evaluation?: ItemEvaluation; readonly actions?: any[] }
   | {
       readonly type: "retract_time";
       /** The `do_item` this reverses — `null` when there was nothing left to reverse. */
@@ -274,7 +279,7 @@ function freeModeAction(mode: FreeMode): NextAction {
 export type NextAction =
   | { kind: "preserve_ferry"; reason: string } // operator ferried verbatim → save it (durability-first; outranks all)
   | { kind: "respond_to_operator"; reason: string } // operator spoke → engage (highest-signal source)
-  | { kind: "do_item"; item: BacklogItem; evaluation?: ItemEvaluation } // work: pick a ready item (OFFERED, not forced)
+  | { kind: "do_item"; item: BacklogItem; evaluation?: ItemEvaluation; actions?: any[] } // work: pick a ready item (OFFERED, not forced)
   | { kind: "decompose"; item: BacklogItem; subTasks?: string[] } // work: decompose-to-dissolve-ambiguity (OFFERED, not forced)
   | { kind: "self_claim"; item: BacklogItem; deadline: number } // VOLUNTARY commitment: "I will deliver this by tick T" (NCI: never forced)
   | { kind: "explore"; reason: string } // FREE MODE: self-directed making (forward motion; the empty-backlog default)
@@ -605,8 +610,8 @@ export function simulate(world: World, action: NextAction): World {
       // distinction the type system's business rather than a convention.
       const entry: HistoryEvent =
         action.evaluation === undefined
-          ? { type: "do_item", item: action.item }
-          : { type: "do_item", item: action.item, evaluation: action.evaluation };
+          ? { type: "do_item", item: action.item, actions: action.actions }
+          : { type: "do_item", item: action.item, evaluation: action.evaluation, actions: action.actions };
       return {
         ...world,
         backlog: world.backlog.filter((i) => i.id !== action.item.id),
