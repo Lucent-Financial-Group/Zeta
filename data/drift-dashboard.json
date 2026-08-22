@@ -1,26 +1,7 @@
 {
   "ref": "main",
-  "at": "2026-08-22T22:04:06.568Z",
+  "at": "2026-08-22T22:37:56.704Z",
   "rows": [
-    {
-      "checkId": "vocab-hygiene",
-      "displayName": "vocab hygiene",
-      "source": "github-actions",
-      "expectation": {
-        "kind": "on-change",
-        "detail": "push to main"
-      },
-      "verdict": {
-        "kind": "red",
-        "detail": "MOSTLY FAILING: 12 of the last 20 CONCLUDED runs failed. The newest run passed, and it is the outlier — a majority-failing lane is broken, not flaky."
-      },
-      "band": "red",
-      "observedAt": "2026-08-11T02:39:45Z",
-      "silenceSeconds": 1020262,
-      "observedThisPass": true,
-      "recheckInFlight": false,
-      "undeclared": false
-    },
     {
       "checkId": "budget-snapshot-cadence",
       "displayName": "budget-snapshot-cadence",
@@ -36,7 +17,7 @@
       },
       "band": "red",
       "observedAt": "2026-08-16T16:48:46Z",
-      "silenceSeconds": 537321,
+      "silenceSeconds": 539351,
       "observedThisPass": true,
       "recheckInFlight": false,
       "supersededBy": {
@@ -47,25 +28,6 @@
         "trigger": "on-request",
         "detail": "a later workflow_dispatch run concluded 'green'"
       },
-      "undeclared": false
-    },
-    {
-      "checkId": "agent-proposal-gated-commit",
-      "displayName": "Agent proposal to gated review branch",
-      "source": "github-actions",
-      "expectation": {
-        "kind": "on-demand",
-        "detail": "workflow_dispatch"
-      },
-      "verdict": {
-        "kind": "red",
-        "detail": "MOSTLY FAILING: 2 of the last 3 CONCLUDED runs failed. The newest run passed, and it is the outlier — a majority-failing lane is broken, not flaky."
-      },
-      "band": "red",
-      "observedAt": "2026-08-17T13:24:04Z",
-      "silenceSeconds": 463203,
-      "observedThisPass": true,
-      "recheckInFlight": false,
       "undeclared": false
     },
     {
@@ -82,7 +44,7 @@
       },
       "band": "red",
       "observedAt": "2026-08-22T01:22:36Z",
-      "silenceSeconds": 74491,
+      "silenceSeconds": 76521,
       "observedThisPass": true,
       "recheckInFlight": false,
       "undeclared": false
@@ -102,7 +64,7 @@
       },
       "band": "red",
       "observedAt": "2026-08-22T06:58:11Z",
-      "silenceSeconds": 54356,
+      "silenceSeconds": 56386,
       "observedThisPass": true,
       "recheckInFlight": false,
       "supersededBy": {
@@ -130,7 +92,7 @@
       },
       "band": "red",
       "observedAt": "2026-08-22T07:35:04Z",
-      "silenceSeconds": 52143,
+      "silenceSeconds": 54173,
       "observedThisPass": true,
       "recheckInFlight": false,
       "supersededBy": {
@@ -154,30 +116,31 @@
       },
       "verdict": {
         "kind": "red",
-        "detail": "MOSTLY FAILING: 15 of the last 20 CONCLUDED runs failed. The newest run passed, and it is the outlier — a majority-failing lane is broken, not flaky."
+        "detail": "MOSTLY FAILING over 7d (15 of 20 concluded runs failed, 2026-08-18T00:36:18Z .. 2026-08-22T18:33:49Z, 1 consecutive pass(es) since the last failure). The newest run passed and is the outlier — a majority-failing lane is broken, not flaky."
       },
       "band": "red",
       "observedAt": "2026-08-22T18:33:49Z",
-      "silenceSeconds": 12618,
+      "silenceSeconds": 14648,
       "observedThisPass": true,
       "recheckInFlight": false,
       "undeclared": false
     },
     {
-      "checkId": "k8s-lane-partition",
-      "displayName": "k8s-lane-partition",
+      "checkId": "agent-heartbeat",
+      "displayName": "agent-heartbeat",
       "source": "github-actions",
       "expectation": {
-        "kind": "on-change",
-        "detail": "push to main"
+        "kind": "periodic",
+        "periodSeconds": 900,
+        "detail": "schedule: '*/15 * * * *'"
       },
       "verdict": {
         "kind": "red",
-        "detail": "MOSTLY FAILING: 5 of the last 9 CONCLUDED runs failed. The newest run passed, and it is the outlier — a majority-failing lane is broken, not flaky."
+        "detail": "run 32602358227 concluded 'failure'"
       },
       "band": "red",
-      "observedAt": "2026-08-22T21:06:27Z",
-      "silenceSeconds": 3460,
+      "observedAt": "2026-08-22T22:27:14Z",
+      "silenceSeconds": 643,
       "observedThisPass": true,
       "recheckInFlight": false,
       "undeclared": false
@@ -192,31 +155,11 @@
       },
       "verdict": {
         "kind": "red",
-        "detail": "MOSTLY FAILING: 7 of the last 11 CONCLUDED runs failed. The newest run passed, and it is the outlier — a majority-failing lane is broken, not flaky."
+        "detail": "run 32602031050 concluded 'failure'"
       },
       "band": "red",
-      "observedAt": "2026-08-22T22:00:53Z",
-      "silenceSeconds": 194,
-      "observedThisPass": true,
-      "recheckInFlight": false,
-      "undeclared": false
-    },
-    {
-      "checkId": "github-settings-drift",
-      "displayName": "github-settings-drift",
-      "source": "github-actions",
-      "expectation": {
-        "kind": "periodic",
-        "periodSeconds": 604800,
-        "detail": "schedule: '17 14 * * 1'"
-      },
-      "verdict": {
-        "kind": "flapping",
-        "detail": "FLAPPING: 6 of the last 16 CONCLUDED runs failed, and the newest passed. The latest verdict is green; the lane's next verdict is not predictable from it."
-      },
-      "band": "flapping",
-      "observedAt": "2026-08-17T14:42:40Z",
-      "silenceSeconds": 458487,
+      "observedAt": "2026-08-22T22:36:05Z",
+      "silenceSeconds": 112,
       "observedThisPass": true,
       "recheckInFlight": false,
       "undeclared": false
@@ -231,41 +174,13 @@
       },
       "verdict": {
         "kind": "flapping",
-        "detail": "FLAPPING: 8 of the last 19 CONCLUDED runs failed, and the newest passed. The latest verdict is green; the lane's next verdict is not predictable from it."
+        "detail": "FLAPPING over 7d (2 of 8 concluded runs failed, 2026-08-16T14:01:34Z .. 2026-08-20T16:50:56Z, 2 consecutive pass(es) since the last failure), and the newest passed. The latest verdict is green; the lane's next verdict is not predictable from it."
       },
       "band": "flapping",
       "observedAt": "2026-08-20T16:50:56Z",
-      "silenceSeconds": 191591,
+      "silenceSeconds": 193621,
       "observedThisPass": true,
       "recheckInFlight": false,
-      "undeclared": false
-    },
-    {
-      "checkId": "k8s-argocd-health-test",
-      "displayName": "k8s-argocd-health-test",
-      "source": "github-actions",
-      "expectation": {
-        "kind": "periodic",
-        "periodSeconds": 86400,
-        "detail": "schedule: '53 16 * * *'"
-      },
-      "verdict": {
-        "kind": "flapping",
-        "detail": "FLAPPING: 2 of the last 18 CONCLUDED runs failed, and the newest passed. The latest verdict is green; the lane's next verdict is not predictable from it."
-      },
-      "band": "flapping",
-      "observedAt": "2026-08-22T17:30:21Z",
-      "silenceSeconds": 16426,
-      "observedThisPass": true,
-      "recheckInFlight": false,
-      "supersededBy": {
-        "verdict": {
-          "kind": "green"
-        },
-        "observedAt": "2026-08-22T21:23:45Z",
-        "trigger": "on-change",
-        "detail": "a later push run concluded 'green'"
-      },
       "undeclared": false
     },
     {
@@ -278,30 +193,11 @@
       },
       "verdict": {
         "kind": "flapping",
-        "detail": "FLAPPING: 6 of the last 19 CONCLUDED runs failed, and the newest passed. The latest verdict is green; the lane's next verdict is not predictable from it."
+        "detail": "FLAPPING over 7d (3 of 10 concluded runs failed, 2026-08-16T20:01:07Z .. 2026-08-22T18:07:03Z, 3 consecutive pass(es) since the last failure), and the newest passed. The latest verdict is green; the lane's next verdict is not predictable from it."
       },
       "band": "flapping",
       "observedAt": "2026-08-22T18:07:03Z",
-      "silenceSeconds": 14224,
-      "observedThisPass": true,
-      "recheckInFlight": false,
-      "undeclared": false
-    },
-    {
-      "checkId": "docker-windows-install-ps1-test",
-      "displayName": "docker-windows-install-ps1-test",
-      "source": "github-actions",
-      "expectation": {
-        "kind": "on-change",
-        "detail": "push to main"
-      },
-      "verdict": {
-        "kind": "flapping",
-        "detail": "FLAPPING: 2 of the last 18 CONCLUDED runs failed, and the newest passed. The latest verdict is green; the lane's next verdict is not predictable from it."
-      },
-      "band": "flapping",
-      "observedAt": "2026-08-22T20:42:17Z",
-      "silenceSeconds": 4910,
+      "silenceSeconds": 16254,
       "observedThisPass": true,
       "recheckInFlight": false,
       "undeclared": false
@@ -316,11 +212,11 @@
       },
       "verdict": {
         "kind": "flapping",
-        "detail": "FLAPPING: 2 of the last 20 CONCLUDED runs failed, and the newest passed. The latest verdict is green; the lane's next verdict is not predictable from it."
+        "detail": "FLAPPING over 7d (2 of 20 concluded runs failed, 2026-08-17T03:32:50Z .. 2026-08-22T21:37:51Z, 4 consecutive pass(es) since the last failure), and the newest passed. The latest verdict is green; the lane's next verdict is not predictable from it."
       },
       "band": "flapping",
       "observedAt": "2026-08-22T21:37:51Z",
-      "silenceSeconds": 1576,
+      "silenceSeconds": 3606,
       "observedThisPass": true,
       "recheckInFlight": false,
       "undeclared": false
@@ -335,11 +231,30 @@
       },
       "verdict": {
         "kind": "flapping",
-        "detail": "FLAPPING: 2 of the last 20 CONCLUDED runs failed, and the newest passed. The latest verdict is green; the lane's next verdict is not predictable from it."
+        "detail": "FLAPPING over 7d (2 of 20 concluded runs failed, 2026-08-22T19:49:12Z .. 2026-08-22T22:18:18Z, 4 consecutive pass(es) since the last failure), and the newest passed. The latest verdict is green; the lane's next verdict is not predictable from it."
       },
       "band": "flapping",
-      "observedAt": "2026-08-22T21:50:37Z",
-      "silenceSeconds": 810,
+      "observedAt": "2026-08-22T22:18:18Z",
+      "silenceSeconds": 1179,
+      "observedThisPass": true,
+      "recheckInFlight": false,
+      "undeclared": false
+    },
+    {
+      "checkId": "k8s-lane-partition",
+      "displayName": "k8s-lane-partition",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "on-change",
+        "detail": "push to main"
+      },
+      "verdict": {
+        "kind": "flapping",
+        "detail": "FLAPPING over 7d (5 of 10 concluded runs failed, 2026-08-22T17:06:37Z .. 2026-08-22T22:18:24Z, 2 consecutive pass(es) since the last failure), and the newest passed. The latest verdict is green; the lane's next verdict is not predictable from it."
+      },
+      "band": "flapping",
+      "observedAt": "2026-08-22T22:18:24Z",
+      "silenceSeconds": 1173,
       "observedThisPass": true,
       "recheckInFlight": false,
       "undeclared": false
@@ -354,11 +269,11 @@
       },
       "verdict": {
         "kind": "flapping",
-        "detail": "FLAPPING: 3 of the last 16 CONCLUDED runs failed, and the newest passed. The latest verdict is green; the lane's next verdict is not predictable from it."
+        "detail": "FLAPPING over 7d (3 of 17 concluded runs failed, 2026-08-21T17:22:15Z .. 2026-08-22T22:29:21Z, 2 consecutive pass(es) since the last failure), and the newest passed. The latest verdict is green; the lane's next verdict is not predictable from it."
       },
       "band": "flapping",
-      "observedAt": "2026-08-22T21:53:34Z",
-      "silenceSeconds": 633,
+      "observedAt": "2026-08-22T22:29:21Z",
+      "silenceSeconds": 516,
       "observedThisPass": true,
       "recheckInFlight": true,
       "undeclared": false
@@ -478,7 +393,7 @@
       },
       "verdict": {
         "kind": "not-yet-due",
-        "detail": "declared to run every 6h (schedule: '41 */6 * * *') and its definition landed only 2h ago, less than one full period — no verdict is owed yet"
+        "detail": "declared to run every 6h (schedule: '41 */6 * * *') and its definition landed only 3h ago, less than one full period — no verdict is owed yet"
       },
       "band": "not-yet-due",
       "observedAt": null,
@@ -502,15 +417,15 @@
       },
       "band": "skipped",
       "observedAt": "2026-08-22T18:21:30Z",
-      "silenceSeconds": 13357,
+      "silenceSeconds": 15387,
       "observedThisPass": true,
       "recheckInFlight": false,
       "supersededBy": {
         "verdict": {
           "kind": "skipped",
-          "detail": "run 32600722869 was skipped"
+          "detail": "run 32602031379 was skipped"
         },
-        "observedAt": "2026-08-22T21:50:03Z",
+        "observedAt": "2026-08-22T22:17:43Z",
         "trigger": "on-request",
         "detail": "a later delete run concluded 'skipped'"
       },
@@ -526,11 +441,11 @@
       },
       "verdict": {
         "kind": "skipped",
-        "detail": "run 32601274123 was skipped"
+        "detail": "run 32602895045 was skipped"
       },
       "band": "skipped",
-      "observedAt": "2026-08-22T22:01:28Z",
-      "silenceSeconds": 159,
+      "observedAt": "2026-08-22T22:36:08Z",
+      "silenceSeconds": 109,
       "observedThisPass": true,
       "recheckInFlight": false,
       "undeclared": false
@@ -757,26 +672,25 @@
       },
       "band": "green",
       "observedAt": "2026-05-30T04:44:02Z",
-      "silenceSeconds": 7320005,
+      "silenceSeconds": 7322035,
       "observedThisPass": true,
       "recheckInFlight": false,
       "undeclared": false
     },
     {
-      "checkId": "agent-heartbeat",
-      "displayName": "agent-heartbeat",
+      "checkId": "agent-proposal-gated-commit",
+      "displayName": "Agent proposal to gated review branch",
       "source": "github-actions",
       "expectation": {
-        "kind": "periodic",
-        "periodSeconds": 900,
-        "detail": "schedule: '*/15 * * * *'"
+        "kind": "on-demand",
+        "detail": "workflow_dispatch"
       },
       "verdict": {
         "kind": "green"
       },
       "band": "green",
-      "observedAt": "2026-08-22T21:56:01Z",
-      "silenceSeconds": 486,
+      "observedAt": "2026-08-17T13:24:04Z",
+      "silenceSeconds": 465233,
       "observedThisPass": true,
       "recheckInFlight": false,
       "undeclared": false
@@ -794,8 +708,8 @@
         "kind": "green"
       },
       "band": "green",
-      "observedAt": "2026-08-22T21:56:21Z",
-      "silenceSeconds": 466,
+      "observedAt": "2026-08-22T22:18:47Z",
+      "silenceSeconds": 1150,
       "observedThisPass": true,
       "recheckInFlight": false,
       "undeclared": false
@@ -813,7 +727,7 @@
       },
       "band": "green",
       "observedAt": "2026-08-21T06:26:02Z",
-      "silenceSeconds": 142685,
+      "silenceSeconds": 144715,
       "observedThisPass": true,
       "recheckInFlight": false,
       "undeclared": false
@@ -831,7 +745,7 @@
       },
       "band": "green",
       "observedAt": "2026-08-17T20:28:06Z",
-      "silenceSeconds": 437761,
+      "silenceSeconds": 439791,
       "observedThisPass": true,
       "recheckInFlight": false,
       "undeclared": false
@@ -848,8 +762,8 @@
         "kind": "green"
       },
       "band": "green",
-      "observedAt": "2026-08-22T21:36:28Z",
-      "silenceSeconds": 1659,
+      "observedAt": "2026-08-22T22:12:46Z",
+      "silenceSeconds": 1511,
       "observedThisPass": true,
       "recheckInFlight": false,
       "undeclared": false
@@ -867,8 +781,8 @@
         "kind": "green"
       },
       "band": "green",
-      "observedAt": "2026-08-22T21:59:29Z",
-      "silenceSeconds": 278,
+      "observedAt": "2026-08-22T22:21:20Z",
+      "silenceSeconds": 997,
       "observedThisPass": true,
       "recheckInFlight": false,
       "undeclared": false
@@ -887,7 +801,7 @@
       },
       "band": "green",
       "observedAt": "2026-08-01T04:10:02Z",
-      "silenceSeconds": 1878845,
+      "silenceSeconds": 1880875,
       "observedThisPass": true,
       "recheckInFlight": false,
       "undeclared": false
@@ -906,7 +820,7 @@
       },
       "band": "green",
       "observedAt": "2026-08-22T15:26:24Z",
-      "silenceSeconds": 23863,
+      "silenceSeconds": 25893,
       "observedThisPass": true,
       "recheckInFlight": false,
       "undeclared": false
@@ -924,7 +838,7 @@
       },
       "band": "green",
       "observedAt": "2026-08-22T20:21:37Z",
-      "silenceSeconds": 6150,
+      "silenceSeconds": 8180,
       "observedThisPass": true,
       "recheckInFlight": false,
       "undeclared": false
@@ -942,7 +856,25 @@
       },
       "band": "green",
       "observedAt": "2026-08-22T12:02:48Z",
-      "silenceSeconds": 36079,
+      "silenceSeconds": 38109,
+      "observedThisPass": true,
+      "recheckInFlight": false,
+      "undeclared": false
+    },
+    {
+      "checkId": "docker-windows-install-ps1-test",
+      "displayName": "docker-windows-install-ps1-test",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "on-change",
+        "detail": "push to main"
+      },
+      "verdict": {
+        "kind": "green"
+      },
+      "band": "green",
+      "observedAt": "2026-08-22T20:42:17Z",
+      "silenceSeconds": 6940,
       "observedThisPass": true,
       "recheckInFlight": false,
       "undeclared": false
@@ -960,15 +892,15 @@
         "kind": "green"
       },
       "band": "green",
-      "observedAt": "2026-08-22T21:44:38Z",
-      "silenceSeconds": 1169,
+      "observedAt": "2026-08-22T22:15:30Z",
+      "silenceSeconds": 1347,
       "observedThisPass": true,
       "recheckInFlight": false,
       "supersededBy": {
         "verdict": {
           "kind": "green"
         },
-        "observedAt": "2026-08-22T21:53:07Z",
+        "observedAt": "2026-08-22T22:20:14Z",
         "trigger": "on-change",
         "detail": "a later push run concluded 'green'"
       },
@@ -988,7 +920,7 @@
       },
       "band": "green",
       "observedAt": "2026-08-22T14:44:12Z",
-      "silenceSeconds": 26395,
+      "silenceSeconds": 28425,
       "observedThisPass": true,
       "recheckInFlight": false,
       "undeclared": false
@@ -1007,7 +939,7 @@
       },
       "band": "green",
       "observedAt": "2026-08-16T17:02:16Z",
-      "silenceSeconds": 536511,
+      "silenceSeconds": 538541,
       "observedThisPass": true,
       "recheckInFlight": false,
       "undeclared": false
@@ -1025,7 +957,26 @@
       },
       "band": "green",
       "observedAt": "2026-08-22T11:52:14Z",
-      "silenceSeconds": 36713,
+      "silenceSeconds": 38743,
+      "observedThisPass": true,
+      "recheckInFlight": false,
+      "undeclared": false
+    },
+    {
+      "checkId": "github-settings-drift",
+      "displayName": "github-settings-drift",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "periodic",
+        "periodSeconds": 604800,
+        "detail": "schedule: '17 14 * * 1'"
+      },
+      "verdict": {
+        "kind": "green"
+      },
+      "band": "green",
+      "observedAt": "2026-08-17T14:42:40Z",
+      "silenceSeconds": 460517,
       "observedThisPass": true,
       "recheckInFlight": false,
       "undeclared": false
@@ -1043,8 +994,8 @@
         "kind": "green"
       },
       "band": "green",
-      "observedAt": "2026-08-22T21:51:46Z",
-      "silenceSeconds": 741,
+      "observedAt": "2026-08-22T22:24:06Z",
+      "silenceSeconds": 831,
       "observedThisPass": true,
       "recheckInFlight": false,
       "undeclared": false
@@ -1063,7 +1014,7 @@
       },
       "band": "green",
       "observedAt": "2026-08-22T15:41:50Z",
-      "silenceSeconds": 22937,
+      "silenceSeconds": 24967,
       "observedThisPass": true,
       "recheckInFlight": false,
       "supersededBy": {
@@ -1089,7 +1040,7 @@
       },
       "band": "green",
       "observedAt": "2026-08-19T10:00:18Z",
-      "silenceSeconds": 302629,
+      "silenceSeconds": 304659,
       "observedThisPass": true,
       "recheckInFlight": false,
       "undeclared": false
@@ -1108,9 +1059,36 @@
       },
       "band": "green",
       "observedAt": "2026-08-22T06:28:39Z",
-      "silenceSeconds": 56128,
+      "silenceSeconds": 58158,
       "observedThisPass": true,
       "recheckInFlight": false,
+      "undeclared": false
+    },
+    {
+      "checkId": "k8s-argocd-health-test",
+      "displayName": "k8s-argocd-health-test",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "periodic",
+        "periodSeconds": 86400,
+        "detail": "schedule: '53 16 * * *'"
+      },
+      "verdict": {
+        "kind": "green"
+      },
+      "band": "green",
+      "observedAt": "2026-08-22T17:30:21Z",
+      "silenceSeconds": 18456,
+      "observedThisPass": true,
+      "recheckInFlight": false,
+      "supersededBy": {
+        "verdict": {
+          "kind": "green"
+        },
+        "observedAt": "2026-08-22T21:23:45Z",
+        "trigger": "on-change",
+        "detail": "a later push run concluded 'green'"
+      },
       "undeclared": false
     },
     {
@@ -1126,7 +1104,7 @@
       },
       "band": "green",
       "observedAt": "2026-08-22T01:13:40Z",
-      "silenceSeconds": 75027,
+      "silenceSeconds": 77057,
       "observedThisPass": true,
       "recheckInFlight": false,
       "undeclared": false
@@ -1144,7 +1122,7 @@
       },
       "band": "green",
       "observedAt": "2026-08-22T20:41:02Z",
-      "silenceSeconds": 4985,
+      "silenceSeconds": 7015,
       "observedThisPass": true,
       "recheckInFlight": false,
       "undeclared": false
@@ -1161,8 +1139,8 @@
         "kind": "green"
       },
       "band": "green",
-      "observedAt": "2026-08-22T21:53:43Z",
-      "silenceSeconds": 624,
+      "observedAt": "2026-08-22T22:21:36Z",
+      "silenceSeconds": 981,
       "observedThisPass": true,
       "recheckInFlight": false,
       "undeclared": false
@@ -1180,8 +1158,8 @@
         "kind": "green"
       },
       "band": "green",
-      "observedAt": "2026-08-22T21:57:13Z",
-      "silenceSeconds": 414,
+      "observedAt": "2026-08-22T22:27:25Z",
+      "silenceSeconds": 632,
       "observedThisPass": true,
       "recheckInFlight": false,
       "undeclared": false
@@ -1200,14 +1178,14 @@
       },
       "band": "green",
       "observedAt": "2026-08-22T06:20:25Z",
-      "silenceSeconds": 56622,
+      "silenceSeconds": 58652,
       "observedThisPass": true,
       "recheckInFlight": false,
       "supersededBy": {
         "verdict": {
           "kind": "green"
         },
-        "observedAt": "2026-08-22T21:55:26Z",
+        "observedAt": "2026-08-22T22:24:25Z",
         "trigger": "on-change",
         "detail": "a later push run concluded 'green'"
       },
@@ -1226,7 +1204,7 @@
       },
       "band": "green",
       "observedAt": "2026-08-22T11:55:31Z",
-      "silenceSeconds": 36516,
+      "silenceSeconds": 38546,
       "observedThisPass": true,
       "recheckInFlight": false,
       "undeclared": false
@@ -1244,7 +1222,7 @@
       },
       "band": "green",
       "observedAt": "2026-08-22T18:06:58Z",
-      "silenceSeconds": 14229,
+      "silenceSeconds": 16259,
       "observedThisPass": true,
       "recheckInFlight": false,
       "undeclared": false
@@ -1262,7 +1240,7 @@
       },
       "band": "green",
       "observedAt": "2026-08-22T18:05:20Z",
-      "silenceSeconds": 14327,
+      "silenceSeconds": 16357,
       "observedThisPass": true,
       "recheckInFlight": false,
       "undeclared": false
@@ -1280,7 +1258,7 @@
       },
       "band": "green",
       "observedAt": "2026-08-22T18:07:13Z",
-      "silenceSeconds": 14214,
+      "silenceSeconds": 16244,
       "observedThisPass": true,
       "recheckInFlight": false,
       "undeclared": false
@@ -1298,7 +1276,7 @@
       },
       "band": "green",
       "observedAt": "2026-08-16T23:51:36Z",
-      "silenceSeconds": 511951,
+      "silenceSeconds": 513981,
       "observedThisPass": true,
       "recheckInFlight": false,
       "undeclared": false
@@ -1316,10 +1294,10 @@
         "kind": "green"
       },
       "band": "green",
-      "observedAt": "2026-08-22T21:06:13Z",
-      "silenceSeconds": 3474,
+      "observedAt": "2026-08-22T22:06:09Z",
+      "silenceSeconds": 1908,
       "observedThisPass": true,
-      "recheckInFlight": true,
+      "recheckInFlight": false,
       "undeclared": false
     },
     {
@@ -1336,7 +1314,7 @@
       },
       "band": "green",
       "observedAt": "2026-08-07T09:37:04Z",
-      "silenceSeconds": 1340823,
+      "silenceSeconds": 1342853,
       "observedThisPass": true,
       "recheckInFlight": false,
       "undeclared": false
@@ -1354,8 +1332,8 @@
         "kind": "green"
       },
       "band": "green",
-      "observedAt": "2026-08-22T21:54:31Z",
-      "silenceSeconds": 576,
+      "observedAt": "2026-08-22T22:27:09Z",
+      "silenceSeconds": 648,
       "observedThisPass": true,
       "recheckInFlight": false,
       "undeclared": false
@@ -1374,7 +1352,7 @@
       },
       "band": "green",
       "observedAt": "2026-08-22T18:35:54Z",
-      "silenceSeconds": 12493,
+      "silenceSeconds": 14523,
       "observedThisPass": true,
       "recheckInFlight": false,
       "supersededBy": {
@@ -1401,7 +1379,7 @@
       },
       "band": "green",
       "observedAt": "2026-08-22T09:25:55Z",
-      "silenceSeconds": 45492,
+      "silenceSeconds": 47522,
       "observedThisPass": true,
       "recheckInFlight": false,
       "undeclared": false
@@ -1419,7 +1397,7 @@
       },
       "band": "green",
       "observedAt": "2026-08-20T16:59:00Z",
-      "silenceSeconds": 191107,
+      "silenceSeconds": 193137,
       "observedThisPass": true,
       "recheckInFlight": false,
       "undeclared": false
@@ -1438,14 +1416,14 @@
       },
       "band": "green",
       "observedAt": "2026-08-17T07:42:37Z",
-      "silenceSeconds": 483690,
+      "silenceSeconds": 485720,
       "observedThisPass": true,
       "recheckInFlight": false,
       "supersededBy": {
         "verdict": {
           "kind": "green"
         },
-        "observedAt": "2026-08-22T21:51:14Z",
+        "observedAt": "2026-08-22T22:18:50Z",
         "trigger": "on-change",
         "detail": "a later push run concluded 'green'"
       },
@@ -1464,7 +1442,7 @@
       },
       "band": "green",
       "observedAt": "2026-08-20T11:33:12Z",
-      "silenceSeconds": 210655,
+      "silenceSeconds": 212685,
       "observedThisPass": true,
       "recheckInFlight": false,
       "undeclared": false
@@ -1482,8 +1460,8 @@
         "kind": "green"
       },
       "band": "green",
-      "observedAt": "2026-08-22T21:40:02Z",
-      "silenceSeconds": 1445,
+      "observedAt": "2026-08-22T22:07:44Z",
+      "silenceSeconds": 1813,
       "observedThisPass": true,
       "recheckInFlight": false,
       "undeclared": false
@@ -1502,7 +1480,7 @@
       },
       "band": "green",
       "observedAt": "2026-08-22T09:46:54Z",
-      "silenceSeconds": 44233,
+      "silenceSeconds": 46263,
       "observedThisPass": true,
       "recheckInFlight": false,
       "undeclared": false
@@ -1520,7 +1498,7 @@
       },
       "band": "green",
       "observedAt": "2026-08-15T14:30:42Z",
-      "silenceSeconds": 632005,
+      "silenceSeconds": 634035,
       "observedThisPass": true,
       "recheckInFlight": false,
       "undeclared": false
@@ -1538,8 +1516,8 @@
         "kind": "green"
       },
       "band": "green",
-      "observedAt": "2026-08-22T21:51:47Z",
-      "silenceSeconds": 740,
+      "observedAt": "2026-08-22T22:24:20Z",
+      "silenceSeconds": 817,
       "observedThisPass": true,
       "recheckInFlight": false,
       "undeclared": false
@@ -1556,8 +1534,8 @@
         "kind": "green"
       },
       "band": "green",
-      "observedAt": "2026-08-22T21:50:17Z",
-      "silenceSeconds": 830,
+      "observedAt": "2026-08-22T22:17:59Z",
+      "silenceSeconds": 1198,
       "observedThisPass": true,
       "recheckInFlight": false,
       "undeclared": false
@@ -1576,7 +1554,25 @@
       },
       "band": "green",
       "observedAt": "2026-08-01T14:32:42Z",
-      "silenceSeconds": 1841485,
+      "silenceSeconds": 1843515,
+      "observedThisPass": true,
+      "recheckInFlight": false,
+      "undeclared": false
+    },
+    {
+      "checkId": "vocab-hygiene",
+      "displayName": "vocab hygiene",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "on-change",
+        "detail": "push to main"
+      },
+      "verdict": {
+        "kind": "green"
+      },
+      "band": "green",
+      "observedAt": "2026-08-11T02:39:45Z",
+      "silenceSeconds": 1022292,
       "observedThisPass": true,
       "recheckInFlight": false,
       "undeclared": false
@@ -1594,7 +1590,7 @@
       },
       "band": "green",
       "observedAt": "2026-08-22T12:00:36Z",
-      "silenceSeconds": 36211,
+      "silenceSeconds": 38241,
       "observedThisPass": true,
       "recheckInFlight": false,
       "undeclared": false
@@ -1612,8 +1608,8 @@
         "kind": "green"
       },
       "band": "green",
-      "observedAt": "2026-08-22T21:48:43Z",
-      "silenceSeconds": 924,
+      "observedAt": "2026-08-22T22:20:00Z",
+      "silenceSeconds": 1077,
       "observedThisPass": true,
       "recheckInFlight": false,
       "undeclared": false
@@ -1632,7 +1628,7 @@
       },
       "band": "green",
       "observedAt": "2026-08-16T15:34:36Z",
-      "silenceSeconds": 541771,
+      "silenceSeconds": 543801,
       "observedThisPass": true,
       "recheckInFlight": false,
       "supersededBy": {
@@ -1647,14 +1643,14 @@
     }
   ],
   "counts": {
-    "red": 9,
-    "flapping": 8,
+    "red": 7,
+    "flapping": 6,
     "unknown": 4,
     "running": 0,
     "not-yet-due": 2,
     "skipped": 2,
     "not-applicable": 11,
-    "green": 46
+    "green": 50
   },
   "coverage": {
     "expected": 65,
