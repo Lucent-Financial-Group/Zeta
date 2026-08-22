@@ -19,7 +19,7 @@ import {
   withSuperseding,
   type GhRun,
 } from "./check-observations.ts";
-import { isPlainApiGet, resetGitHubTokenForTest, resolveGitHubToken } from "./gh-cli.ts";
+import { isPlainApiGet, pickToken, resetGitHubTokenForTest, resolveGitHubToken } from "./gh-cli.ts";
 
 function run(over: Partial<GhRun>): GhRun {
   return { id: 1, status: "completed", conclusion: "success", created_at: "2026-08-22T00:00:00Z", updated_at: "2026-08-22T00:00:00Z", ...over };
@@ -288,28 +288,43 @@ describe("the transport is spawn-free for plain reads, and narrowly so", () => {
   });
 
   it("prefers an already-present token over spawning anything", () => {
-    resetGitHubTokenForTest();
-    const prior = process.env["GH_TOKEN"];
-    process.env["GH_TOKEN"] = "token-from-env";
-    try {
-      expect(resolveGitHubToken()).toBe("token-from-env");
-    } finally {
-      if (prior === undefined) delete process.env["GH_TOKEN"]; else process.env["GH_TOKEN"] = prior;
-      resetGitHubTokenForTest();
-    }
+    // Injected sources rather than `process.env` writes: a test that sets GH_TOKEN
+    // hands it to every child `bun test` spawns, which is the exposure
+    // `lint-no-ambient-credential-hoist` exists to prevent. It caught this in the first
+    // version of this test, and the fix was a seam, not an exemption.
+    let spawned = 0;
+    const token = pickToken({
+      env: (n) => (n === "GH_TOKEN" ? "token-from-env" : undefined),
+      ghAuthToken: () => { spawned += 1; return "token-from-gh"; },
+    });
+    expect(token).toBe("token-from-env");
+    expect(spawned).toBe(0); // env hit ⇒ zero subprocesses, which is the point
+  });
+
+  it("falls back to GITHUB_TOKEN, then to one `gh auth token`", () => {
+    expect(pickToken({ env: (n) => (n === "GITHUB_TOKEN" ? "ci-token" : undefined), ghAuthToken: () => null })).toBe("ci-token");
+    let spawned = 0;
+    expect(pickToken({ env: () => undefined, ghAuthToken: () => { spawned += 1; return "gh-token"; } })).toBe("gh-token");
+    expect(spawned).toBe(1);
+  });
+
+  it("an empty value is not a token — it must fall through, never be used as one", () => {
+    expect(pickToken({ env: (n) => (n === "GH_TOKEN" ? "" : undefined), ghAuthToken: () => "gh-token" })).toBe("gh-token");
+    expect(pickToken({ env: () => undefined, ghAuthToken: () => "" })).toBeNull();
+  });
+
+  it("no token anywhere yields null, so the caller keeps the subprocess path", () => {
+    expect(pickToken({ env: () => undefined, ghAuthToken: () => null })).toBeNull();
   });
 
   it("memoises, so N requests cost at most ONE token resolution", () => {
     resetGitHubTokenForTest();
-    const prior = process.env["GH_TOKEN"];
-    process.env["GH_TOKEN"] = "t1";
-    try {
-      expect(resolveGitHubToken()).toBe("t1");
-      process.env["GH_TOKEN"] = "t2";
-      expect(resolveGitHubToken()).toBe("t1"); // memoised, not re-read
-    } finally {
-      if (prior === undefined) delete process.env["GH_TOKEN"]; else process.env["GH_TOKEN"] = prior;
-      resetGitHubTokenForTest();
-    }
+    let resolutions = 0;
+    const sources = { env: () => undefined, ghAuthToken: () => { resolutions += 1; return "once"; } };
+    expect(resolveGitHubToken(sources)).toBe("once");
+    expect(resolveGitHubToken(sources)).toBe("once");
+    expect(resolveGitHubToken(sources)).toBe("once");
+    expect(resolutions).toBe(1);
+    resetGitHubTokenForTest();
   });
 });

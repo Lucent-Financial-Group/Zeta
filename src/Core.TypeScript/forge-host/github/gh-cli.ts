@@ -204,22 +204,54 @@ const GITHUB_API = "https://api.github.com";
 let tokenResolved = false;
 let cachedToken: string | null = null;
 
-/** The token `gh api` would use: env first (CI supplies it), then ONE `gh auth token`. */
-export function resolveGitHubToken(): string | null {
+/**
+ * Where a token may come from. Injected so the resolution can be tested WITHOUT
+ * writing `process.env`.
+ *
+ * That is not a testing nicety, it is the rule: `lint-no-ambient-credential-hoist`
+ * refuses assignment of a credential into `process.env` because an environment
+ * variable crosses `exec` regardless of the child's code identity — §13
+ * noninterference stated for credentials. A test that sets `GH_TOKEN` to exercise this
+ * function hands that value to every child `bun test` spawns, which is the exposure the
+ * rule exists to prevent, in miniature. The linter caught exactly that in my first
+ * version of the test, and the honest fix is a seam rather than an exemption.
+ */
+export interface TokenSources {
+  readonly env: (name: string) => string | undefined;
+  readonly ghAuthToken: () => string | null;
+}
+
+/** Pure token selection. Env first (CI already supplies it), then one `gh auth token`. */
+export function pickToken(sources: TokenSources): string | null {
+  const fromEnv = sources.env("GH_TOKEN") ?? sources.env("GITHUB_TOKEN");
+  if (fromEnv !== undefined && fromEnv !== "") return fromEnv;
+  const fromGh = sources.ghAuthToken();
+  return fromGh !== null && fromGh !== "" ? fromGh : null;
+}
+
+const defaultTokenSources: TokenSources = {
+  env: (name) => process.env[name],
+  ghAuthToken: () => {
+    try {
+      const proc = Bun.spawnSync(["gh", "auth", "token"], { stdout: "pipe", stderr: "pipe" });
+      const out = new TextDecoder().decode(proc.stdout).trim();
+      return proc.exitCode === 0 && out !== "" ? out : null;
+    } catch {
+      return null;
+    }
+  },
+};
+
+/**
+ * The token `gh api` would use, resolved at most ONCE per process.
+ *
+ * Memoised because the whole point is that N requests cost at most one `gh auth token`
+ * spawn. The value is held in a module-local and never written back to `process.env`.
+ */
+export function resolveGitHubToken(sources: TokenSources = defaultTokenSources): string | null {
   if (tokenResolved) return cachedToken;
   tokenResolved = true;
-  const fromEnv = process.env["GH_TOKEN"] ?? process.env["GITHUB_TOKEN"];
-  if (fromEnv !== undefined && fromEnv !== "") {
-    cachedToken = fromEnv;
-    return cachedToken;
-  }
-  try {
-    const proc = Bun.spawnSync(["gh", "auth", "token"], { stdout: "pipe", stderr: "pipe" });
-    const out = new TextDecoder().decode(proc.stdout).trim();
-    cachedToken = proc.exitCode === 0 && out !== "" ? out : null;
-  } catch {
-    cachedToken = null;
-  }
+  cachedToken = pickToken(sources);
   return cachedToken;
 }
 
