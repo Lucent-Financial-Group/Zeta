@@ -495,9 +495,6 @@ li { margin-bottom: .35rem; }
   function fam(name) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
   function mono(px, weight) { return (weight || 400) + " " + px + "px " + fam("--mono"); }
 
-  /* deterministic jitter so the shape is stable across reloads (same seed, same picture) */
-  function rnd(i) { var x = Math.sin(i * 12.9898 + 78.233) * 43758.5453; return x - Math.floor(x); }
-
   /* ============================ 1. THE CRITICAL STRIP ========================
      Design note. N = 60 marks, chosen because 60 divides exactly by 3, 6, 12 and 5,
      so 1/3, 2/5, 5/12, 2/3 and 5/6 all land on a whole number of marks: counting the
@@ -634,7 +631,7 @@ li { margin-bottom: .35rem; }
   /* ==================== 2. PROPORTION BAR + ZERO-WIDTH CALIPER =============== */
   function drawBar() {
     var cv = document.getElementById("barCanvas");
-    var s = setup(cv), ctx = s.ctx, W = s.w, H = s.h, c = pal();
+    var s = setup(cv), ctx = s.ctx, W = s.w, c = pal();
     var p = valueAt(state.year, state.mode, state.windowed).v;
 
     var padL = 18, padR = 18;
@@ -849,7 +846,7 @@ li { margin-bottom: .35rem; }
   /* ============================ 4. THE CEILING =============================== */
   function drawCeiling() {
     var cv = document.getElementById("ceilCanvas");
-    var s = setup(cv), ctx = s.ctx, W = s.w, H = s.h, c = pal();
+    var s = setup(cv), ctx = s.ctx, W = s.w, c = pal();
     var padL = 18, padR = 18, x0 = padL, x1 = W - padR, bw = x1 - x0;
 
     /* full-scale bar 0..1 */
