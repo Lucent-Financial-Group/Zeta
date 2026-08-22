@@ -1,0 +1,1245 @@
+{
+  "version": 1,
+  "ref": "main",
+  "updatedAt": "2026-08-22T17:31:54.231Z",
+  "checks": [
+    {
+      "checkId": "accelerator-local-llm-validate",
+      "displayName": "accelerator-local-llm-validate",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "on-demand",
+        "detail": "push, but not to main"
+      },
+      "firstSeenAt": "2026-08-22T17:31:54.231Z",
+      "lastDeclaredAt": "2026-08-22T17:31:54.231Z",
+      "declaredNow": true,
+      "lastObservedAt": null,
+      "lastVerdictKind": null,
+      "lastDeclaredTriggerAt": null
+    },
+    {
+      "checkId": "accelerator-move-next",
+      "displayName": "accelerator-move-next",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "on-demand",
+        "detail": "workflow_dispatch"
+      },
+      "firstSeenAt": "2026-08-22T17:31:54.231Z",
+      "lastDeclaredAt": "2026-08-22T17:31:54.231Z",
+      "declaredNow": true,
+      "lastObservedAt": "2026-05-30T04:44:02Z",
+      "lastVerdictKind": "green",
+      "lastDeclaredTriggerAt": "2026-05-30T04:44:02Z"
+    },
+    {
+      "checkId": "agencysignature-enforcement",
+      "displayName": "agencysignature-enforcement",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "on-change",
+        "detail": "push to main"
+      },
+      "firstSeenAt": "2026-08-22T17:31:54.231Z",
+      "lastDeclaredAt": "2026-08-22T17:31:54.231Z",
+      "declaredNow": true,
+      "lastObservedAt": "2026-08-22T17:31:43Z",
+      "lastVerdictKind": "green",
+      "lastDeclaredTriggerAt": "2026-08-22T17:31:43Z"
+    },
+    {
+      "checkId": "agent-heartbeat",
+      "displayName": "agent-heartbeat",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "periodic",
+        "periodSeconds": 900,
+        "detail": "schedule: '*/15 * * * *'"
+      },
+      "firstSeenAt": "2026-08-22T17:31:54.231Z",
+      "lastDeclaredAt": "2026-08-22T17:31:54.231Z",
+      "declaredNow": true,
+      "lastObservedAt": "2026-08-22T17:28:41Z",
+      "lastVerdictKind": "green",
+      "lastDeclaredTriggerAt": "2026-08-22T17:28:41Z"
+    },
+    {
+      "checkId": "agent-proposal-gated-commit",
+      "displayName": "Agent proposal to gated review branch",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "on-demand",
+        "detail": "workflow_dispatch"
+      },
+      "firstSeenAt": "2026-08-22T17:31:54.231Z",
+      "lastDeclaredAt": "2026-08-22T17:31:54.231Z",
+      "declaredNow": true,
+      "lastObservedAt": "2026-08-17T13:24:04Z",
+      "lastVerdictKind": "green",
+      "lastDeclaredTriggerAt": "2026-08-17T13:24:04Z"
+    },
+    {
+      "checkId": "agent-reviewer",
+      "displayName": "agent-reviewer",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "on-demand",
+        "detail": "pull_request"
+      },
+      "firstSeenAt": "2026-08-22T17:31:54.231Z",
+      "lastDeclaredAt": "2026-08-22T17:31:54.231Z",
+      "declaredNow": true,
+      "lastObservedAt": null,
+      "lastVerdictKind": null,
+      "lastDeclaredTriggerAt": null
+    },
+    {
+      "checkId": "arc-swarm-fanout",
+      "displayName": "arc-swarm-fanout",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "on-demand",
+        "detail": "workflow_dispatch"
+      },
+      "firstSeenAt": "2026-08-22T17:31:54.231Z",
+      "lastDeclaredAt": "2026-08-22T17:31:54.231Z",
+      "declaredNow": true,
+      "lastObservedAt": null,
+      "lastVerdictKind": null,
+      "lastDeclaredTriggerAt": null
+    },
+    {
+      "checkId": "auto-submission",
+      "displayName": "Automatic Dependency Submission",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "unknown",
+        "reason": "underivable",
+        "detail": "host-managed check 'dynamic/dependency-graph/auto-submission' — never declared in this repository, so its trigger cannot be read from the tree"
+      },
+      "firstSeenAt": "2026-08-22T17:31:54.231Z",
+      "lastDeclaredAt": "2026-08-22T17:31:54.231Z",
+      "declaredNow": true,
+      "lastObservedAt": "2026-08-22T17:27:54Z",
+      "lastVerdictKind": "green",
+      "lastDeclaredTriggerAt": null
+    },
+    {
+      "checkId": "backlog-index-integrity",
+      "displayName": "backlog-index-integrity",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "on-change",
+        "detail": "push to main"
+      },
+      "firstSeenAt": "2026-08-22T17:31:54.231Z",
+      "lastDeclaredAt": "2026-08-22T17:31:54.231Z",
+      "declaredNow": true,
+      "lastObservedAt": "2026-08-20T16:50:56Z",
+      "lastVerdictKind": "green",
+      "lastDeclaredTriggerAt": "2026-08-20T16:50:56Z"
+    },
+    {
+      "checkId": "budget-snapshot-cadence",
+      "displayName": "budget-snapshot-cadence",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "periodic",
+        "periodSeconds": 604800,
+        "detail": "schedule: '23 16 * * 0'"
+      },
+      "firstSeenAt": "2026-08-22T17:31:54.231Z",
+      "lastDeclaredAt": "2026-08-22T17:31:54.231Z",
+      "declaredNow": true,
+      "lastObservedAt": "2026-08-16T16:48:46Z",
+      "lastVerdictKind": "red",
+      "lastDeclaredTriggerAt": "2026-08-16T16:48:46Z"
+    },
+    {
+      "checkId": "build-ai-cluster-iso",
+      "displayName": "build-ai-cluster-iso",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "on-change",
+        "detail": "push to main"
+      },
+      "firstSeenAt": "2026-08-22T17:31:54.231Z",
+      "lastDeclaredAt": "2026-08-22T17:31:54.231Z",
+      "declaredNow": true,
+      "lastObservedAt": "2026-08-22T12:39:38Z",
+      "lastVerdictKind": "green",
+      "lastDeclaredTriggerAt": "2026-08-22T12:39:38Z"
+    },
+    {
+      "checkId": "build-platform-images",
+      "displayName": "build-platform-images",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "on-change",
+        "detail": "push to main"
+      },
+      "firstSeenAt": "2026-08-22T17:31:54.231Z",
+      "lastDeclaredAt": "2026-08-22T17:31:54.231Z",
+      "declaredNow": true,
+      "lastObservedAt": "2026-08-21T06:26:02Z",
+      "lastVerdictKind": "green",
+      "lastDeclaredTriggerAt": "2026-08-21T06:26:02Z"
+    },
+    {
+      "checkId": "bytelock",
+      "displayName": "bytelock",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "on-change",
+        "detail": "push to main"
+      },
+      "firstSeenAt": "2026-08-22T17:31:54.231Z",
+      "lastDeclaredAt": "2026-08-22T17:31:54.231Z",
+      "declaredNow": true,
+      "lastObservedAt": "2026-08-17T20:28:06Z",
+      "lastVerdictKind": "green",
+      "lastDeclaredTriggerAt": "2026-08-17T20:28:06Z"
+    },
+    {
+      "checkId": "chart-version-refresh",
+      "displayName": "chart-version-refresh",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "periodic",
+        "periodSeconds": 604800,
+        "detail": "schedule: '7 17 * * 0'"
+      },
+      "firstSeenAt": "2026-08-22T17:31:54.231Z",
+      "lastDeclaredAt": "2026-08-22T17:31:54.231Z",
+      "declaredNow": true,
+      "lastObservedAt": null,
+      "lastVerdictKind": null,
+      "lastDeclaredTriggerAt": null
+    },
+    {
+      "checkId": "ci-cache-paths-lint",
+      "displayName": "ci-cache-paths-lint",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "on-change",
+        "detail": "push to main"
+      },
+      "firstSeenAt": "2026-08-22T17:31:54.231Z",
+      "lastDeclaredAt": "2026-08-22T17:31:54.231Z",
+      "declaredNow": true,
+      "lastObservedAt": "2026-08-22T17:19:01Z",
+      "lastVerdictKind": "green",
+      "lastDeclaredTriggerAt": "2026-08-22T17:19:01Z"
+    },
+    {
+      "checkId": "codeql",
+      "displayName": "CodeQL",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "unknown",
+        "reason": "underivable",
+        "detail": "host-managed check 'dynamic/github-code-scanning/codeql' — never declared in this repository, so its trigger cannot be read from the tree"
+      },
+      "firstSeenAt": "2026-08-22T17:31:54.231Z",
+      "lastDeclaredAt": "2026-08-22T17:31:54.231Z",
+      "declaredNow": true,
+      "lastObservedAt": "2026-08-22T17:30:54Z",
+      "lastVerdictKind": "green",
+      "lastDeclaredTriggerAt": null
+    },
+    {
+      "checkId": "context-cost-trend-cadence",
+      "displayName": "context-cost-trend-cadence",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "periodic",
+        "periodSeconds": 86400,
+        "detail": "schedule: '23 7 * * *'"
+      },
+      "firstSeenAt": "2026-08-22T17:31:54.231Z",
+      "lastDeclaredAt": "2026-08-22T17:31:54.231Z",
+      "declaredNow": true,
+      "lastObservedAt": "2026-08-22T07:35:04Z",
+      "lastVerdictKind": "red",
+      "lastDeclaredTriggerAt": "2026-08-22T07:35:04Z"
+    },
+    {
+      "checkId": "copilot",
+      "displayName": "Copilot cloud agent",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "unknown",
+        "reason": "underivable",
+        "detail": "host-managed check 'dynamic/copilot-swe-agent/copilot' — never declared in this repository, so its trigger cannot be read from the tree"
+      },
+      "firstSeenAt": "2026-08-22T17:31:54.231Z",
+      "lastDeclaredAt": "2026-08-22T17:31:54.231Z",
+      "declaredNow": true,
+      "lastObservedAt": null,
+      "lastVerdictKind": null,
+      "lastDeclaredTriggerAt": null
+    },
+    {
+      "checkId": "copilot-pull-request-reviewer",
+      "displayName": "Copilot code review",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "unknown",
+        "reason": "underivable",
+        "detail": "host-managed check 'dynamic/copilot-pull-request-reviewer/copilot-pull-request-reviewer' — never declared in this repository, so its trigger cannot be read from the tree"
+      },
+      "firstSeenAt": "2026-08-22T17:31:54.231Z",
+      "lastDeclaredAt": "2026-08-22T17:31:54.231Z",
+      "declaredNow": true,
+      "lastObservedAt": "2026-08-01T04:10:02Z",
+      "lastVerdictKind": "green",
+      "lastDeclaredTriggerAt": null
+    },
+    {
+      "checkId": "dependabot-updates",
+      "displayName": "Dependabot Updates",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "unknown",
+        "reason": "underivable",
+        "detail": "host-managed check 'dynamic/dependabot/dependabot-updates' — never declared in this repository, so its trigger cannot be read from the tree"
+      },
+      "firstSeenAt": "2026-08-22T17:31:54.231Z",
+      "lastDeclaredAt": "2026-08-22T17:31:54.231Z",
+      "declaredNow": true,
+      "lastObservedAt": "2026-08-22T15:26:24Z",
+      "lastVerdictKind": "green",
+      "lastDeclaredTriggerAt": null
+    },
+    {
+      "checkId": "docker-nixos-install-sh-test",
+      "displayName": "docker-nixos-install-sh-test",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "on-change",
+        "detail": "push to main"
+      },
+      "firstSeenAt": "2026-08-22T17:31:54.231Z",
+      "lastDeclaredAt": "2026-08-22T17:31:54.231Z",
+      "declaredNow": true,
+      "lastObservedAt": "2026-08-22T11:57:33Z",
+      "lastVerdictKind": "green",
+      "lastDeclaredTriggerAt": "2026-08-22T11:57:33Z"
+    },
+    {
+      "checkId": "docker-ubuntu-install-sh-test",
+      "displayName": "docker-ubuntu-install-sh-test",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "on-demand",
+        "detail": "push, but not to main"
+      },
+      "firstSeenAt": "2026-08-22T17:31:54.231Z",
+      "lastDeclaredAt": "2026-08-22T17:31:54.231Z",
+      "declaredNow": true,
+      "lastObservedAt": null,
+      "lastVerdictKind": null,
+      "lastDeclaredTriggerAt": null
+    },
+    {
+      "checkId": "docker-ubuntu-jammy-install-sh-test",
+      "displayName": "docker-ubuntu-jammy-install-sh-test",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "on-change",
+        "detail": "push to main"
+      },
+      "firstSeenAt": "2026-08-22T17:31:54.231Z",
+      "lastDeclaredAt": "2026-08-22T17:31:54.231Z",
+      "declaredNow": true,
+      "lastObservedAt": "2026-08-22T12:02:48Z",
+      "lastVerdictKind": "green",
+      "lastDeclaredTriggerAt": "2026-08-22T12:02:48Z"
+    },
+    {
+      "checkId": "docker-windows-install-ps1-test",
+      "displayName": "docker-windows-install-ps1-test",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "on-change",
+        "detail": "push to main"
+      },
+      "firstSeenAt": "2026-08-22T17:31:54.231Z",
+      "lastDeclaredAt": "2026-08-22T17:31:54.231Z",
+      "declaredNow": true,
+      "lastObservedAt": "2026-08-22T12:20:55Z",
+      "lastVerdictKind": "green",
+      "lastDeclaredTriggerAt": "2026-08-22T12:20:55Z"
+    },
+    {
+      "checkId": "drift-sweep",
+      "displayName": "drift-sweep",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "periodic",
+        "periodSeconds": 1800,
+        "detail": "schedule: '7,37 * * * *'"
+      },
+      "firstSeenAt": "2026-08-22T17:31:54.231Z",
+      "lastDeclaredAt": "2026-08-22T17:31:54.231Z",
+      "declaredNow": true,
+      "lastObservedAt": "2026-08-22T16:47:12Z",
+      "lastVerdictKind": "green",
+      "lastDeclaredTriggerAt": "2026-08-22T16:47:12Z"
+    },
+    {
+      "checkId": "factory-hygiene-audit-cadence",
+      "displayName": "factory-hygiene-audit-cadence",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "periodic",
+        "periodSeconds": 86400,
+        "detail": "schedule: '37 14 * * *'"
+      },
+      "firstSeenAt": "2026-08-22T17:31:54.231Z",
+      "lastDeclaredAt": "2026-08-22T17:31:54.231Z",
+      "declaredNow": true,
+      "lastObservedAt": "2026-08-22T14:44:12Z",
+      "lastVerdictKind": "green",
+      "lastDeclaredTriggerAt": "2026-08-22T14:44:12Z"
+    },
+    {
+      "checkId": "gate",
+      "displayName": "gate",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "on-change",
+        "detail": "push to main"
+      },
+      "firstSeenAt": "2026-08-22T17:31:54.231Z",
+      "lastDeclaredAt": "2026-08-22T17:31:54.231Z",
+      "declaredNow": true,
+      "lastObservedAt": "2026-08-22T17:31:24Z",
+      "lastVerdictKind": "red",
+      "lastDeclaredTriggerAt": "2026-08-22T17:31:24Z"
+    },
+    {
+      "checkId": "git-hotspot-cadence",
+      "displayName": "git-hotspot-cadence",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "periodic",
+        "periodSeconds": 604800,
+        "detail": "schedule: '43 16 * * 0'"
+      },
+      "firstSeenAt": "2026-08-22T17:31:54.231Z",
+      "lastDeclaredAt": "2026-08-22T17:31:54.231Z",
+      "declaredNow": true,
+      "lastObservedAt": "2026-08-16T17:02:16Z",
+      "lastVerdictKind": "green",
+      "lastDeclaredTriggerAt": "2026-08-16T17:02:16Z"
+    },
+    {
+      "checkId": "gitbash-install-routing-test",
+      "displayName": "gitbash-install-routing-test",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "on-change",
+        "detail": "push to main"
+      },
+      "firstSeenAt": "2026-08-22T17:31:54.231Z",
+      "lastDeclaredAt": "2026-08-22T17:31:54.231Z",
+      "declaredNow": true,
+      "lastObservedAt": "2026-08-22T11:52:14Z",
+      "lastVerdictKind": "green",
+      "lastDeclaredTriggerAt": "2026-08-22T11:52:14Z"
+    },
+    {
+      "checkId": "github-settings-drift",
+      "displayName": "github-settings-drift",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "periodic",
+        "periodSeconds": 604800,
+        "detail": "schedule: '17 14 * * 1'"
+      },
+      "firstSeenAt": "2026-08-22T17:31:54.231Z",
+      "lastDeclaredAt": "2026-08-22T17:31:54.231Z",
+      "declaredNow": true,
+      "lastObservedAt": "2026-08-17T14:42:40Z",
+      "lastVerdictKind": "green",
+      "lastDeclaredTriggerAt": "2026-08-17T14:42:40Z"
+    },
+    {
+      "checkId": "heartbeat-liveness",
+      "displayName": "heartbeat-liveness",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "periodic",
+        "periodSeconds": 900,
+        "detail": "schedule: '*/15 * * * *'"
+      },
+      "firstSeenAt": "2026-08-22T17:31:54.231Z",
+      "lastDeclaredAt": "2026-08-22T17:31:54.231Z",
+      "declaredNow": true,
+      "lastObservedAt": "2026-08-22T17:24:14Z",
+      "lastVerdictKind": "green",
+      "lastDeclaredTriggerAt": "2026-08-22T17:24:14Z"
+    },
+    {
+      "checkId": "helm-validate",
+      "displayName": "helm-validate",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "periodic",
+        "periodSeconds": 86400,
+        "detail": "schedule: '29 15 * * *'"
+      },
+      "firstSeenAt": "2026-08-22T17:31:54.231Z",
+      "lastDeclaredAt": "2026-08-22T17:31:54.231Z",
+      "declaredNow": true,
+      "lastObservedAt": "2026-08-22T15:41:50Z",
+      "lastVerdictKind": "green",
+      "lastDeclaredTriggerAt": "2026-08-22T15:41:50Z"
+    },
+    {
+      "checkId": "installer-unit-tests",
+      "displayName": "installer-unit-tests",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "on-change",
+        "detail": "push to main"
+      },
+      "firstSeenAt": "2026-08-22T17:31:54.231Z",
+      "lastDeclaredAt": "2026-08-22T17:31:54.231Z",
+      "declaredNow": true,
+      "lastObservedAt": "2026-08-22T01:14:59Z",
+      "lastVerdictKind": "green",
+      "lastDeclaredTriggerAt": "2026-08-22T01:14:59Z"
+    },
+    {
+      "checkId": "inventory-hardening-check",
+      "displayName": "inventory-hardening-check",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "on-change",
+        "detail": "push to main"
+      },
+      "firstSeenAt": "2026-08-22T17:31:54.231Z",
+      "lastDeclaredAt": "2026-08-22T17:31:54.231Z",
+      "declaredNow": true,
+      "lastObservedAt": "2026-08-19T10:00:18Z",
+      "lastVerdictKind": "green",
+      "lastDeclaredTriggerAt": "2026-08-19T10:00:18Z"
+    },
+    {
+      "checkId": "inventory-heartbeat",
+      "displayName": "inventory-heartbeat",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "periodic",
+        "periodSeconds": 86400,
+        "detail": "schedule: '17 6 * * *'"
+      },
+      "firstSeenAt": "2026-08-22T17:31:54.231Z",
+      "lastDeclaredAt": "2026-08-22T17:31:54.231Z",
+      "declaredNow": true,
+      "lastObservedAt": "2026-08-22T06:28:39Z",
+      "lastVerdictKind": "green",
+      "lastDeclaredTriggerAt": "2026-08-22T06:28:39Z"
+    },
+    {
+      "checkId": "inventory-phase5-proof",
+      "displayName": "inventory-phase5-proof",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "unknown",
+        "reason": "definition-absent",
+        "detail": "workflow file '.github/workflows/inventory-phase5-proof.yml' is registered ACTIVE on the forge host but is ABSENT from the repository"
+      },
+      "firstSeenAt": "2026-08-22T17:31:54.231Z",
+      "lastDeclaredAt": "2026-08-22T17:31:54.231Z",
+      "declaredNow": true,
+      "lastObservedAt": null,
+      "lastVerdictKind": null,
+      "lastDeclaredTriggerAt": null
+    },
+    {
+      "checkId": "k8s-argocd-health-test",
+      "displayName": "k8s-argocd-health-test",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "periodic",
+        "periodSeconds": 86400,
+        "detail": "schedule: '53 16 * * *'"
+      },
+      "firstSeenAt": "2026-08-22T17:31:54.231Z",
+      "lastDeclaredAt": "2026-08-22T17:31:54.231Z",
+      "declaredNow": true,
+      "lastObservedAt": "2026-08-22T17:30:21Z",
+      "lastVerdictKind": "green",
+      "lastDeclaredTriggerAt": "2026-08-22T17:30:21Z"
+    },
+    {
+      "checkId": "k8s-lane-partition",
+      "displayName": "k8s-lane-partition",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "unknown",
+        "reason": "definition-absent",
+        "detail": "workflow file '.github/workflows/k8s-lane-partition.yml' is registered ACTIVE on the forge host but is ABSENT from the repository"
+      },
+      "firstSeenAt": "2026-08-22T17:31:54.231Z",
+      "lastDeclaredAt": "2026-08-22T17:31:54.231Z",
+      "declaredNow": true,
+      "lastObservedAt": "2026-08-22T17:16:53Z",
+      "lastVerdictKind": "red",
+      "lastDeclaredTriggerAt": null
+    },
+    {
+      "checkId": "keyring-dst1000",
+      "displayName": "keyring 1000x DST",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "on-change",
+        "detail": "push to main"
+      },
+      "firstSeenAt": "2026-08-22T17:31:54.231Z",
+      "lastDeclaredAt": "2026-08-22T17:31:54.231Z",
+      "declaredNow": true,
+      "lastObservedAt": "2026-08-22T01:13:40Z",
+      "lastVerdictKind": "green",
+      "lastDeclaredTriggerAt": "2026-08-22T01:13:40Z"
+    },
+    {
+      "checkId": "lean-proof",
+      "displayName": "lean-proof",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "on-change",
+        "detail": "push to main"
+      },
+      "firstSeenAt": "2026-08-22T17:31:54.231Z",
+      "lastDeclaredAt": "2026-08-22T17:31:54.231Z",
+      "declaredNow": true,
+      "lastObservedAt": "2026-08-17T16:47:57Z",
+      "lastVerdictKind": "green",
+      "lastDeclaredTriggerAt": "2026-08-17T16:47:57Z"
+    },
+    {
+      "checkId": "lint-autofix",
+      "displayName": "lint-autofix",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "on-demand",
+        "detail": "pull_request"
+      },
+      "firstSeenAt": "2026-08-22T17:31:54.231Z",
+      "lastDeclaredAt": "2026-08-22T17:31:54.231Z",
+      "declaredNow": true,
+      "lastObservedAt": null,
+      "lastVerdictKind": null,
+      "lastDeclaredTriggerAt": null
+    },
+    {
+      "checkId": "lint-autofix-apply",
+      "displayName": "lint-autofix-apply",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "on-demand",
+        "detail": "workflow_run"
+      },
+      "firstSeenAt": "2026-08-22T17:31:54.231Z",
+      "lastDeclaredAt": "2026-08-22T17:31:54.231Z",
+      "declaredNow": true,
+      "lastObservedAt": "2026-08-22T17:31:53Z",
+      "lastVerdictKind": "green",
+      "lastDeclaredTriggerAt": "2026-08-22T17:31:53Z"
+    },
+    {
+      "checkId": "lockfile-healer",
+      "displayName": "lockfile-healer",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "periodic",
+        "periodSeconds": 1020,
+        "detail": "schedule: '*/17 * * * *'"
+      },
+      "firstSeenAt": "2026-08-22T17:31:54.231Z",
+      "lastDeclaredAt": "2026-08-22T17:31:54.231Z",
+      "declaredNow": true,
+      "lastObservedAt": "2026-08-22T17:27:01Z",
+      "lastVerdictKind": "green",
+      "lastDeclaredTriggerAt": "2026-08-22T17:27:01Z"
+    },
+    {
+      "checkId": "low-memory",
+      "displayName": "low-memory",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "periodic",
+        "periodSeconds": 86400,
+        "detail": "schedule: '0 6 * * *'"
+      },
+      "firstSeenAt": "2026-08-22T17:31:54.231Z",
+      "lastDeclaredAt": "2026-08-22T17:31:54.231Z",
+      "declaredNow": true,
+      "lastObservedAt": "2026-08-22T06:20:25Z",
+      "lastVerdictKind": "green",
+      "lastDeclaredTriggerAt": "2026-08-22T06:20:25Z"
+    },
+    {
+      "checkId": "macos-install-sh-test",
+      "displayName": "macos-install-sh-test",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "on-change",
+        "detail": "push to main"
+      },
+      "firstSeenAt": "2026-08-22T17:31:54.231Z",
+      "lastDeclaredAt": "2026-08-22T17:31:54.231Z",
+      "declaredNow": true,
+      "lastObservedAt": "2026-08-22T11:55:31Z",
+      "lastVerdictKind": "green",
+      "lastDeclaredTriggerAt": "2026-08-22T11:55:31Z"
+    },
+    {
+      "checkId": "manifesto-citation-snapshot-cadence",
+      "displayName": "manifesto-citation-snapshot-cadence",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "periodic",
+        "periodSeconds": 86400,
+        "detail": "schedule: '37 6 * * *'"
+      },
+      "firstSeenAt": "2026-08-22T17:31:54.231Z",
+      "lastDeclaredAt": "2026-08-22T17:31:54.231Z",
+      "declaredNow": true,
+      "lastObservedAt": "2026-08-22T06:58:11Z",
+      "lastVerdictKind": "red",
+      "lastDeclaredTriggerAt": "2026-08-22T06:58:11Z"
+    },
+    {
+      "checkId": "memory-index-drift",
+      "displayName": "memory-index-drift",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "on-change",
+        "detail": "push to main"
+      },
+      "firstSeenAt": "2026-08-22T17:31:54.231Z",
+      "lastDeclaredAt": "2026-08-22T17:31:54.231Z",
+      "declaredNow": true,
+      "lastObservedAt": "2026-08-20T23:57:55Z",
+      "lastVerdictKind": "green",
+      "lastDeclaredTriggerAt": "2026-08-20T23:57:55Z"
+    },
+    {
+      "checkId": "memory-index-duplicate-lint",
+      "displayName": "memory-index-duplicate-lint",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "on-change",
+        "detail": "push to main"
+      },
+      "firstSeenAt": "2026-08-22T17:31:54.231Z",
+      "lastDeclaredAt": "2026-08-22T17:31:54.231Z",
+      "declaredNow": true,
+      "lastObservedAt": "2026-08-19T21:55:39Z",
+      "lastVerdictKind": "green",
+      "lastDeclaredTriggerAt": "2026-08-19T21:55:39Z"
+    },
+    {
+      "checkId": "memory-index-integrity",
+      "displayName": "memory-index-integrity",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "on-change",
+        "detail": "push to main"
+      },
+      "firstSeenAt": "2026-08-22T17:31:54.231Z",
+      "lastDeclaredAt": "2026-08-22T17:31:54.231Z",
+      "declaredNow": true,
+      "lastObservedAt": "2026-08-20T23:55:57Z",
+      "lastVerdictKind": "green",
+      "lastDeclaredTriggerAt": "2026-08-20T23:55:57Z"
+    },
+    {
+      "checkId": "memory-reference-existence-lint",
+      "displayName": "memory-reference-existence-lint",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "on-change",
+        "detail": "push to main"
+      },
+      "firstSeenAt": "2026-08-22T17:31:54.231Z",
+      "lastDeclaredAt": "2026-08-22T17:31:54.231Z",
+      "declaredNow": true,
+      "lastObservedAt": "2026-08-20T23:58:18Z",
+      "lastVerdictKind": "green",
+      "lastDeclaredTriggerAt": "2026-08-20T23:58:18Z"
+    },
+    {
+      "checkId": "mirror-to-fork",
+      "displayName": "mirror-to-fork",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "periodic",
+        "periodSeconds": 21600,
+        "detail": "schedule: '13 */6 * * *'"
+      },
+      "firstSeenAt": "2026-08-22T17:31:54.231Z",
+      "lastDeclaredAt": "2026-08-22T17:31:54.231Z",
+      "declaredNow": true,
+      "lastObservedAt": "2026-08-22T12:22:15Z",
+      "lastVerdictKind": "skipped",
+      "lastDeclaredTriggerAt": "2026-08-22T12:22:15Z"
+    },
+    {
+      "checkId": "multiboot-qemu-uefi-smoke",
+      "displayName": "multiboot-qemu-uefi-smoke",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "on-change",
+        "detail": "push to main"
+      },
+      "firstSeenAt": "2026-08-22T17:31:54.231Z",
+      "lastDeclaredAt": "2026-08-22T17:31:54.231Z",
+      "declaredNow": true,
+      "lastObservedAt": "2026-08-16T23:51:36Z",
+      "lastVerdictKind": "green",
+      "lastDeclaredTriggerAt": "2026-08-16T23:51:36Z"
+    },
+    {
+      "checkId": "mux-swarm-tick",
+      "displayName": "mux-swarm-tick",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "periodic",
+        "periodSeconds": 3600,
+        "detail": "schedule: '0 * * * *'"
+      },
+      "firstSeenAt": "2026-08-22T17:31:54.231Z",
+      "lastDeclaredAt": "2026-08-22T17:31:54.231Z",
+      "declaredNow": true,
+      "lastObservedAt": "2026-08-22T17:06:07Z",
+      "lastVerdictKind": "green",
+      "lastDeclaredTriggerAt": "2026-08-22T17:06:07Z"
+    },
+    {
+      "checkId": "pages-build-deployment",
+      "displayName": "pages-build-deployment",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "unknown",
+        "reason": "underivable",
+        "detail": "host-managed check 'dynamic/pages/pages-build-deployment' — never declared in this repository, so its trigger cannot be read from the tree"
+      },
+      "firstSeenAt": "2026-08-22T17:31:54.231Z",
+      "lastDeclaredAt": "2026-08-22T17:31:54.231Z",
+      "declaredNow": true,
+      "lastObservedAt": "2026-08-07T09:37:04Z",
+      "lastVerdictKind": "green",
+      "lastDeclaredTriggerAt": null
+    },
+    {
+      "checkId": "pages-deploy",
+      "displayName": "Deploy to GitHub Pages",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "periodic",
+        "periodSeconds": 900,
+        "detail": "schedule: '*/15 * * * *'"
+      },
+      "firstSeenAt": "2026-08-22T17:31:54.231Z",
+      "lastDeclaredAt": "2026-08-22T17:31:54.231Z",
+      "declaredNow": true,
+      "lastObservedAt": "2026-08-22T17:26:22Z",
+      "lastVerdictKind": "green",
+      "lastDeclaredTriggerAt": "2026-08-22T17:26:22Z"
+    },
+    {
+      "checkId": "passkey-proposal-gated-commit",
+      "displayName": "Passkey proposal → gated commit",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "on-demand",
+        "detail": "issues"
+      },
+      "firstSeenAt": "2026-08-22T17:31:54.231Z",
+      "lastDeclaredAt": "2026-08-22T17:31:54.231Z",
+      "declaredNow": true,
+      "lastObservedAt": null,
+      "lastVerdictKind": null,
+      "lastDeclaredTriggerAt": null
+    },
+    {
+      "checkId": "pr-archive-on-merge",
+      "displayName": "pr-archive-on-merge",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "on-demand",
+        "detail": "pull_request"
+      },
+      "firstSeenAt": "2026-08-22T17:31:54.231Z",
+      "lastDeclaredAt": "2026-08-22T17:31:54.231Z",
+      "declaredNow": true,
+      "lastObservedAt": null,
+      "lastVerdictKind": null,
+      "lastDeclaredTriggerAt": null
+    },
+    {
+      "checkId": "pr-manifest-integrity",
+      "displayName": "pr-manifest-integrity",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "periodic",
+        "periodSeconds": 21600,
+        "detail": "schedule: '23 */6 * * *'"
+      },
+      "firstSeenAt": "2026-08-22T17:31:54.231Z",
+      "lastDeclaredAt": "2026-08-22T17:31:54.231Z",
+      "declaredNow": true,
+      "lastObservedAt": "2026-08-22T12:34:39Z",
+      "lastVerdictKind": "red",
+      "lastDeclaredTriggerAt": "2026-08-22T12:34:39Z"
+    },
+    {
+      "checkId": "proof-closure-drift",
+      "displayName": "proof-closure-drift",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "periodic",
+        "periodSeconds": 21600,
+        "detail": "schedule: '23 */6 * * *'"
+      },
+      "firstSeenAt": "2026-08-22T17:31:54.231Z",
+      "lastDeclaredAt": "2026-08-22T17:31:54.231Z",
+      "declaredNow": true,
+      "lastObservedAt": "2026-08-22T12:36:37Z",
+      "lastVerdictKind": "green",
+      "lastDeclaredTriggerAt": "2026-08-22T12:36:37Z"
+    },
+    {
+      "checkId": "razor-cadence",
+      "displayName": "razor-cadence",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "periodic",
+        "periodSeconds": 86400,
+        "detail": "schedule: '17 9 * * *'"
+      },
+      "firstSeenAt": "2026-08-22T17:31:54.231Z",
+      "lastDeclaredAt": "2026-08-22T17:31:54.231Z",
+      "declaredNow": true,
+      "lastObservedAt": "2026-08-22T09:25:55Z",
+      "lastVerdictKind": "green",
+      "lastDeclaredTriggerAt": "2026-08-22T09:25:55Z"
+    },
+    {
+      "checkId": "rerun-cancelled-gate",
+      "displayName": "rerun-cancelled-gate",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "on-demand",
+        "detail": "workflow_run"
+      },
+      "firstSeenAt": "2026-08-22T17:31:54.231Z",
+      "lastDeclaredAt": "2026-08-22T17:31:54.231Z",
+      "declaredNow": true,
+      "lastObservedAt": "2026-08-22T17:31:28Z",
+      "lastVerdictKind": "skipped",
+      "lastDeclaredTriggerAt": "2026-08-22T17:31:28Z"
+    },
+    {
+      "checkId": "resume-diff",
+      "displayName": "resume-diff",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "on-demand",
+        "detail": "pull_request"
+      },
+      "firstSeenAt": "2026-08-22T17:31:54.231Z",
+      "lastDeclaredAt": "2026-08-22T17:31:54.231Z",
+      "declaredNow": true,
+      "lastObservedAt": null,
+      "lastVerdictKind": null,
+      "lastDeclaredTriggerAt": null
+    },
+    {
+      "checkId": "role-ref-current-state-surfaces-lint",
+      "displayName": "role-ref-current-state-surfaces-lint",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "on-change",
+        "detail": "push to main"
+      },
+      "firstSeenAt": "2026-08-22T17:31:54.231Z",
+      "lastDeclaredAt": "2026-08-22T17:31:54.231Z",
+      "declaredNow": true,
+      "lastObservedAt": "2026-08-20T16:59:00Z",
+      "lastVerdictKind": "green",
+      "lastDeclaredTriggerAt": "2026-08-20T16:59:00Z"
+    },
+    {
+      "checkId": "scaffold-stage1-create-repos",
+      "displayName": "scaffold-stage1-create-repos",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "on-demand",
+        "detail": "workflow_dispatch"
+      },
+      "firstSeenAt": "2026-08-22T17:31:54.231Z",
+      "lastDeclaredAt": "2026-08-22T17:31:54.231Z",
+      "declaredNow": true,
+      "lastObservedAt": null,
+      "lastVerdictKind": null,
+      "lastDeclaredTriggerAt": null
+    },
+    {
+      "checkId": "scorecard",
+      "displayName": "scorecard",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "periodic",
+        "periodSeconds": 604800,
+        "detail": "schedule: '0 7 * * 1'"
+      },
+      "firstSeenAt": "2026-08-22T17:31:54.231Z",
+      "lastDeclaredAt": "2026-08-22T17:31:54.231Z",
+      "declaredNow": true,
+      "lastObservedAt": "2026-08-17T07:42:37Z",
+      "lastVerdictKind": "green",
+      "lastDeclaredTriggerAt": "2026-08-17T07:42:37Z"
+    },
+    {
+      "checkId": "skill-description-lint",
+      "displayName": "skill-description-lint",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "on-change",
+        "detail": "push to main"
+      },
+      "firstSeenAt": "2026-08-22T17:31:54.231Z",
+      "lastDeclaredAt": "2026-08-22T17:31:54.231Z",
+      "declaredNow": true,
+      "lastObservedAt": "2026-08-20T11:33:12Z",
+      "lastVerdictKind": "green",
+      "lastDeclaredTriggerAt": "2026-08-20T11:33:12Z"
+    },
+    {
+      "checkId": "society-heartbeat",
+      "displayName": "society-heartbeat",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "periodic",
+        "periodSeconds": 1800,
+        "detail": "schedule: '*/30 * * * *'"
+      },
+      "firstSeenAt": "2026-08-22T17:31:54.231Z",
+      "lastDeclaredAt": "2026-08-22T17:31:54.231Z",
+      "declaredNow": true,
+      "lastObservedAt": "2026-08-22T17:08:16Z",
+      "lastVerdictKind": "green",
+      "lastDeclaredTriggerAt": "2026-08-22T17:08:16Z"
+    },
+    {
+      "checkId": "soraya-formal-coverage-cadence",
+      "displayName": "soraya-formal-coverage-cadence",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "periodic",
+        "periodSeconds": 86400,
+        "detail": "schedule: '37 9 * * *'"
+      },
+      "firstSeenAt": "2026-08-22T17:31:54.231Z",
+      "lastDeclaredAt": "2026-08-22T17:31:54.231Z",
+      "declaredNow": true,
+      "lastObservedAt": "2026-08-22T09:46:54Z",
+      "lastVerdictKind": "green",
+      "lastDeclaredTriggerAt": "2026-08-22T09:46:54Z"
+    },
+    {
+      "checkId": "stryker-mutation",
+      "displayName": "stryker-mutation",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "on-change",
+        "detail": "push to main"
+      },
+      "firstSeenAt": "2026-08-22T17:31:54.231Z",
+      "lastDeclaredAt": "2026-08-22T17:31:54.231Z",
+      "declaredNow": true,
+      "lastObservedAt": "2026-08-15T14:30:42Z",
+      "lastVerdictKind": "green",
+      "lastDeclaredTriggerAt": "2026-08-15T14:30:42Z"
+    },
+    {
+      "checkId": "substrate-claim-checker",
+      "displayName": "Substrate Claim Checker",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "unknown",
+        "reason": "definition-absent",
+        "detail": "workflow file '.github/workflows/substrate-claim-checker.yml' is registered ACTIVE on the forge host but is ABSENT from the repository"
+      },
+      "firstSeenAt": "2026-08-22T17:31:54.231Z",
+      "lastDeclaredAt": "2026-08-22T17:31:54.231Z",
+      "declaredNow": true,
+      "lastObservedAt": null,
+      "lastVerdictKind": null,
+      "lastDeclaredTriggerAt": null
+    },
+    {
+      "checkId": "tick-metrics",
+      "displayName": "tick-metrics",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "periodic",
+        "periodSeconds": 900,
+        "detail": "schedule: '*/15 * * * *'"
+      },
+      "firstSeenAt": "2026-08-22T17:31:54.231Z",
+      "lastDeclaredAt": "2026-08-22T17:31:54.231Z",
+      "declaredNow": true,
+      "lastObservedAt": "2026-08-22T17:23:55Z",
+      "lastVerdictKind": "green",
+      "lastDeclaredTriggerAt": "2026-08-22T17:23:55Z"
+    },
+    {
+      "checkId": "tlaps-proof",
+      "displayName": "tlaps-proof",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "on-change",
+        "detail": "push to main"
+      },
+      "firstSeenAt": "2026-08-22T17:31:54.231Z",
+      "lastDeclaredAt": "2026-08-22T17:31:54.231Z",
+      "declaredNow": true,
+      "lastObservedAt": "2026-08-22T01:22:36Z",
+      "lastVerdictKind": "red",
+      "lastDeclaredTriggerAt": "2026-08-22T01:22:36Z"
+    },
+    {
+      "checkId": "udp-lossy-tests",
+      "displayName": "udp-lossy-tests",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "on-change",
+        "detail": "push to main"
+      },
+      "firstSeenAt": "2026-08-22T17:31:54.231Z",
+      "lastDeclaredAt": "2026-08-22T17:31:54.231Z",
+      "declaredNow": true,
+      "lastObservedAt": "2026-08-22T17:31:22Z",
+      "lastVerdictKind": "green",
+      "lastDeclaredTriggerAt": "2026-08-22T17:31:22Z"
+    },
+    {
+      "checkId": "update-graph",
+      "displayName": "Dependency Graph",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "unknown",
+        "reason": "underivable",
+        "detail": "host-managed check 'dynamic/dependabot/update-graph' — never declared in this repository, so its trigger cannot be read from the tree"
+      },
+      "firstSeenAt": "2026-08-22T17:31:54.231Z",
+      "lastDeclaredAt": "2026-08-22T17:31:54.231Z",
+      "declaredNow": true,
+      "lastObservedAt": "2026-08-01T14:32:42Z",
+      "lastVerdictKind": "green",
+      "lastDeclaredTriggerAt": null
+    },
+    {
+      "checkId": "verify-ollama-pin",
+      "displayName": "verify-ollama-pin",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "on-demand",
+        "detail": "pull_request"
+      },
+      "firstSeenAt": "2026-08-22T17:31:54.231Z",
+      "lastDeclaredAt": "2026-08-22T17:31:54.231Z",
+      "declaredNow": true,
+      "lastObservedAt": null,
+      "lastVerdictKind": null,
+      "lastDeclaredTriggerAt": null
+    },
+    {
+      "checkId": "vocab-hygiene",
+      "displayName": "vocab hygiene",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "on-change",
+        "detail": "push to main"
+      },
+      "firstSeenAt": "2026-08-22T17:31:54.231Z",
+      "lastDeclaredAt": "2026-08-22T17:31:54.231Z",
+      "declaredNow": true,
+      "lastObservedAt": "2026-08-11T02:39:45Z",
+      "lastVerdictKind": "green",
+      "lastDeclaredTriggerAt": "2026-08-11T02:39:45Z"
+    },
+    {
+      "checkId": "wsl-install-sh-test",
+      "displayName": "wsl-install-sh-test",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "on-change",
+        "detail": "push to main"
+      },
+      "firstSeenAt": "2026-08-22T17:31:54.231Z",
+      "lastDeclaredAt": "2026-08-22T17:31:54.231Z",
+      "declaredNow": true,
+      "lastObservedAt": "2026-08-22T12:00:36Z",
+      "lastVerdictKind": "green",
+      "lastDeclaredTriggerAt": "2026-08-22T12:00:36Z"
+    },
+    {
+      "checkId": "zetadb-scheduled-node",
+      "displayName": "zetadb-scheduled-node",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "periodic",
+        "periodSeconds": 1800,
+        "detail": "schedule: '13,43 * * * *'"
+      },
+      "firstSeenAt": "2026-08-22T17:31:54.231Z",
+      "lastDeclaredAt": "2026-08-22T17:31:54.231Z",
+      "declaredNow": true,
+      "lastObservedAt": "2026-08-22T17:20:00Z",
+      "lastVerdictKind": "green",
+      "lastDeclaredTriggerAt": "2026-08-22T17:20:00Z"
+    },
+    {
+      "checkId": "zflash-harness-lint",
+      "displayName": "zflash-harness-lint",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "periodic",
+        "periodSeconds": 604800,
+        "detail": "schedule: '17 15 * * 0'"
+      },
+      "firstSeenAt": "2026-08-22T17:31:54.231Z",
+      "lastDeclaredAt": "2026-08-22T17:31:54.231Z",
+      "declaredNow": true,
+      "lastObservedAt": "2026-08-16T15:34:36Z",
+      "lastVerdictKind": "green",
+      "lastDeclaredTriggerAt": "2026-08-16T15:34:36Z"
+    },
+    {
+      "checkId": "zz-rustup-cache-probe",
+      "displayName": "zz-rustup-cache-probe",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "unknown",
+        "reason": "definition-absent",
+        "detail": "workflow file '.github/workflows/zz-rustup-cache-probe.yml' is registered ACTIVE on the forge host but is ABSENT from the repository"
+      },
+      "firstSeenAt": "2026-08-22T17:31:54.231Z",
+      "lastDeclaredAt": "2026-08-22T17:31:54.231Z",
+      "declaredNow": true,
+      "lastObservedAt": null,
+      "lastVerdictKind": null,
+      "lastDeclaredTriggerAt": null
+    }
+  ]
+}
