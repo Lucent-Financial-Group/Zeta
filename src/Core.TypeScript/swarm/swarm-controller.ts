@@ -12,6 +12,7 @@ import type { HatDefinition } from "./hats";
 import { fetchTransport } from "../model-backend/fetch-transport";
 import { openAiCompatBackend } from "../model-backend/backend";
 import { getPersona, localLlmPersona } from "../service/persona-registry";
+import { executeSkillSequence } from "../arc-solver/grid-skills";
 import { evaluateGrid } from "../arc-solver/grid-evaluator";
 import { CelegansController, loadFromCsv } from "../chip8/celegans-controller";
 import { BnnSocietyPredictor } from "../bayesian/bnn-key-predictor";
@@ -122,7 +123,7 @@ export class SwarmController {
 
         // Ask LLM to optimize worm hyperparameters on orbit shift (Outer Loop)
         const activePilot = this.nodes.find(n => n.hat.name === "Pilot");
-        if (activePilot && this.wormController) {
+        if (activePilot && this.wormSociety.length > 0) {
           console.log(`[SwarmController] LLM Outer Loop: Analyzing C. elegans performance and tuning hyperparameters...`);
           try {
             const prompt = `The C. elegans worm Pilot has successfully shifted the CHIP-8 causal orbit from ${prevSig} to ${sig}.
@@ -182,7 +183,7 @@ Output a JSON array of tool calls you wish to execute. Example: [{"tool": "setWo
       const pilotHat = this.nodes.find(n => n.hat.name === "Pilot")!.hat;
       results = [{
         hat: pilotHat,
-        action: { kind: "do_item", item: world.backlog[0] ?? { title: "CHIP-8 Game", description: "" }, actions: outerLoopActions }
+        action: { kind: "do_item", item: world.backlog[0] ?? { id: "chip8", title: "CHIP-8 Game", ready: true, ambiguous: false }, actions: outerLoopActions }
       }];
     } else {
       // Concurrently ask all 4 hats for their preferred NextAction

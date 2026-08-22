@@ -137,9 +137,9 @@ export function step(f: Frame): Frame {
     case 0x8000:
       switch (n) {
         case 0x0: f.v[x] = f.v[y]!; break;
-        case 0x1: f.v[x] |= f.v[y]!; break;
-        case 0x2: f.v[x] &= f.v[y]!; break;
-        case 0x3: f.v[x] ^= f.v[y]!; break;
+        case 0x1: f.v[x] = f.v[x]! | f.v[y]!; break;
+        case 0x2: f.v[x] = f.v[x]! & f.v[y]!; break;
+        case 0x3: f.v[x] = f.v[x]! ^ f.v[y]!; break;
         case 0x4: {
           const sum = f.v[x]! + f.v[y]!;
           f.v[0xf] = sum > 255 ? 1 : 0;

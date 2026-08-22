@@ -402,7 +402,10 @@ export function renderAction(a: NextAction): string {
     case "retract_time":
       return `[retract]   ${a.reason}`;
     case "replay_time":
+    case "replay_time":
       return `[replay]    ${a.reason}`;
+    default:
+      return `[unknown]   (unrecognized action)`;
   }
 }
 
@@ -438,7 +441,9 @@ export function actionLabel(a: NextAction): string {
     case "retract_time":
       return `retract / undo back in time (${a.reason})`;
     case "replay_time":
-      return `replay / redo forward in time (${a.reason})`;
+      return `replay time forward (${a.reason})`;
+    default:
+      return `take an unrecognized action`;
   }
 }
 
@@ -610,8 +615,8 @@ export function simulate(world: World, action: NextAction): World {
       // distinction the type system's business rather than a convention.
       const entry: HistoryEvent =
         action.evaluation === undefined
-          ? { type: "do_item", item: action.item, actions: action.actions }
-          : { type: "do_item", item: action.item, evaluation: action.evaluation, actions: action.actions };
+          ? { type: "do_item", item: action.item, ...(action.actions ? { actions: action.actions } : {}) }
+          : { type: "do_item", item: action.item, evaluation: action.evaluation, ...(action.actions ? { actions: action.actions } : {}) };
       return {
         ...world,
         backlog: world.backlog.filter((i) => i.id !== action.item.id),
@@ -762,7 +767,6 @@ export function simulate(world: World, action: NextAction): World {
           ...world.cartography,
           scopeLevel: world.cartography?.scopeLevel ?? 0,
           timeOffset: world.cartography?.timeOffset ?? 0,
-          inspections: ((world.cartography as any)?.inspections ?? 0) + 1
         }
       };
     }
@@ -777,7 +781,6 @@ export function simulate(world: World, action: NextAction): World {
           ...world.cartography,
           scopeLevel: world.cartography?.scopeLevel ?? 0,
           timeOffset: world.cartography?.timeOffset ?? 0,
-          inspections: ((world.cartography as any)?.inspections ?? 0) + 1
         }
       };
     }

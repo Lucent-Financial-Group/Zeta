@@ -1,9 +1,7 @@
-import { createLevel, stepToy, mapToyToMemory } from "./toy-environment";
+import { createLevel, mapToyToMemory } from "./toy-environment";
 import { runLoop, classify } from "../observe/observe";
-import type { World, BacklogItem, NextAction } from "../observe/observe";
+import type { World } from "../observe/observe";
 import { ollamaBackend } from "../accelerator/local-llm";
-import { SWARM_HATS, buildHatInstruction } from "./hats";
-
 async function main() {
   const layout = [
     "#####",

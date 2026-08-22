@@ -22,7 +22,10 @@ export class BnnSocietyPredictor {
   // For a multi-agent society, we can have N agents, each maintaining beliefs about the 16 keys.
   private agents: Map<string, Record<number, StudentTState>> = new Map();
 
-  constructor(public agentCount: number = 3) {
+  public agentCount: number;
+
+  constructor(agentCount: number = 3) {
+    this.agentCount = agentCount;
     this.initializeSociety();
   }
 
@@ -86,18 +89,19 @@ export class BnnSocietyPredictor {
       if (dist > 0) {
         const nx = dx / dist;
         const ny = dy / dist;
-        if (ny < 0) observations[2] += Math.abs(ny) * this.priors.targetTrackingWeight;
-        if (ny > 0) observations[8] += Math.abs(ny) * this.priors.targetTrackingWeight;
-        if (nx < 0) observations[4] += Math.abs(nx) * this.priors.targetTrackingWeight;
-        if (nx > 0) observations[6] += Math.abs(nx) * this.priors.targetTrackingWeight;
+        if (ny < 0) observations[2] = (observations[2] ?? 0) + Math.abs(ny) * this.priors.targetTrackingWeight;
+        if (ny > 0) observations[8] = (observations[8] ?? 0) + Math.abs(ny) * this.priors.targetTrackingWeight;
+        if (nx < 0) observations[4] = (observations[4] ?? 0) + Math.abs(nx) * this.priors.targetTrackingWeight;
+        if (nx > 0) observations[6] = (observations[6] ?? 0) + Math.abs(nx) * this.priors.targetTrackingWeight;
       }
     }
 
     // 2. Update each agent's Student-t belief with the new observations (EP Update)
     // The robust Student-t likelihood will automatically downweight extreme outliers
-    for (const [agentId, beliefs] of this.agents.entries()) {
+    for (const beliefs of this.agents.values()) {
       for (let k = 0; k <= 0xF; k++) {
-        const y = observations[k]! + ((Math.random() - 0.5) * 0.05); // Add slight subjective noise per agent
+        const obsValue = observations[k] ?? 0.0;
+        const y = obsValue + ((Math.random() - 0.5) * 0.05); // Add slight subjective noise per agent
         const result = updateStudentT(beliefs[k]!, y);
         beliefs[k] = result.state; // Persist the updated posterior
       }

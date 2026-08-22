@@ -52,7 +52,7 @@ async function main() {
     for (let i = 0; i < STEPS_PER_TICK; i++) {
       // If waiting for key press, we should stop stepping and let the swarm tick
       if (frame.pc > 0 && frame.pc < 4096) {
-        const op = (frame.mem[frame.pc]! << 8) | frame.mem[frame.pc + 1]!;
+        const op = ((frame.mem.get(frame.pc) ?? 0) << 8) | (frame.mem.get(frame.pc + 1) ?? 0);
         if ((op & 0xF000) === 0xF000 && (op & 0x00FF) === 0x000A) {
           // Waiting for key press (FX0A)
           break;
@@ -62,7 +62,11 @@ async function main() {
     }
 
     // Capture Causal Footprint & Visuals
-    const memorySectors = [frame.mem];
+    const memArray = new Uint8Array(4096);
+    for (const [addr, val] of frame.mem.entries()) {
+      if (addr < 4096) memArray[addr] = val;
+    }
+    const memorySectors = [memArray];
     const causalMask = Array.from(frame.causalMask);
     const displayArray = new Array(64 * 32).fill(false);
     for (let i = 0; i < displayArray.length; i++) {
@@ -81,12 +85,15 @@ async function main() {
 
     // Keep item in backlog so the Swarm keeps playing
     if (!world.backlog.find(i => i.id === "chip8-play-1")) {
-      world.backlog = [...world.backlog, {
-        id: "chip8-play-1",
-        title: "Play CHIP-8 Game",
-        ready: true,
-        ambiguous: false
-      }];
+      world = {
+        ...world,
+        backlog: [...world.backlog, {
+          id: "chip8-play-1",
+          title: "Play CHIP-8 Game",
+          ready: true,
+          ambiguous: false
+        }]
+      };
     }
 
     // Tick the Swarm!
@@ -134,7 +141,7 @@ async function main() {
         cycle,
         causalSignature: world.cartography?.activeOrbitSignature || "unknown",
         hat: "Commander",
-        keyPredictions: world.cheatEngine?.keyPredictions
+        ...(world.cheatEngine?.keyPredictions ? { keyPredictions: world.cheatEngine.keyPredictions } : {})
       });
       const distDir = path.join(__dirname, "../../../dist");
       if (!fs.existsSync(distDir)) {

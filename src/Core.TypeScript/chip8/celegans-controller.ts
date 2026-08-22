@@ -163,7 +163,10 @@ export function injectDisplay(display: Map<number, boolean>, connectome: Connect
       }
     }
     const brightness = total > 0 ? lit / total : 0.0;
-    newPhase[sensoryIdx[k]!] += brightness * Math.PI / 4.0;
+    const idx = sensoryIdx[k];
+    if (idx !== undefined) {
+      newPhase[idx] = (newPhase[idx] ?? 0) + brightness * Math.PI / 4.0;
+    }
   }
   return { ...osc, phase: newPhase };
 }
@@ -184,8 +187,12 @@ export function step(connectome: Connectome, osc: OscillatorState, gain: number 
       }
     }
     newPhase[i] = osc.phase[i]! + dt * (osc.omega[i]! + (coupling * gain) / n);
-    newPhase[i] %= (2.0 * Math.PI);
-    if (newPhase[i]! < 0.0) newPhase[i]! += 2.0 * Math.PI;
+    let p = newPhase[i];
+    if (p !== undefined) {
+      p %= (2.0 * Math.PI);
+      if (p < 0.0) p += 2.0 * Math.PI;
+      newPhase[i] = p;
+    }
   }
   return { ...osc, phase: newPhase };
 }
@@ -237,8 +244,10 @@ export function motorReadout(connectome: Connectome, osc: OscillatorState): numb
 
 export class CelegansController {
   public osc: OscillatorState;
+  public connectome: Connectome;
   
-  constructor(public connectome: Connectome, seed: bigint) {
+  constructor(connectome: Connectome, seed: bigint) {
+    this.connectome = connectome;
     this.osc = warmUp(connectome, 200, initOscillator(seed, connectome.neurons.length));
   }
   

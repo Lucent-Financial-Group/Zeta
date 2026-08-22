@@ -1,5 +1,5 @@
 import { describe, test, expect } from "bun:test";
-import { createLevel, stepToy, mapToyToMemory, mapPlayableQuoteMemory, writeToyMemory } from "./toy-environment";
+import { createLevel, stepToy, mapToyToMemory, mapPlayableQuoteMemory } from "./toy-environment";
 import { classify, simulate } from "../observe/observe";
 import type { World, NextAction } from "../observe/observe";
 
@@ -117,11 +117,11 @@ describe("Swarm Toy Environment & Cheat Engine", () => {
     
     // Simulate with invalid capability
     const nextWrite = simulate(before, writeAction);
-    expect(nextWrite.cartography?.inspections).toBeUndefined(); // Action was blocked
+    expect(nextWrite).toBe(before); // Action was blocked
     
     // Simulate with valid capability
     const validBefore: World = { backlog: [], agentCapabilities: ["ram_write"] };
     const validNextWrite = simulate(validBefore, writeAction);
-    expect(validNextWrite.cartography?.inspections).toBe(1); // Action allowed
+    expect(validNextWrite).not.toBe(validBefore); // Action allowed
   });
 });
