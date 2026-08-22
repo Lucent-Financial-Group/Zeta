@@ -275,7 +275,11 @@ zeta_tpm_read_facts() {
     if printf '%s' "$_lserr" | grep -qi 'permission denied'; then
       printf 'sysclass=permission-denied|\n'
     else
-      _entries="$(ls -1 /sys/class/tpm 2>/dev/null | tr '\n' ' ' || true)"
+      # find, not ls: SC2012. `-mindepth/-maxdepth 1` lists the immediate
+      # entries only; `sed` strips the directory prefix to match ls -1's
+      # basenames; `sort` restores the ordering ls gives and find does not,
+      # so the probe record stays byte-comparable across runs.
+      _entries="$(find /sys/class/tpm -mindepth 1 -maxdepth 1 2>/dev/null | sed 's|.*/||' | sort | tr '\n' ' ' || true)"
       printf 'sysclass=listed|%s\n' "$_entries"
     fi
   else
