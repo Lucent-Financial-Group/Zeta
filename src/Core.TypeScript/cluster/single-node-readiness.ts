@@ -1095,6 +1095,16 @@ export function findStorageProfileDrift(
 
 export const DEFAULT_LEDGER_PATH = "full-ai-cluster/k8s/single-node-budget.json";
 
+/** The file's bytes, or `null` when it is not there. One syscall, one answer. */
+function readIfPresent(abs: string): string | null {
+  try {
+    return readFileSync(abs, "utf8");
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === "ENOENT") return null;
+    throw error;
+  }
+}
+
 // ---------------------------------------------------------------------------
 // The RENDER's reading, and the prose figures that quote it
 // ---------------------------------------------------------------------------
@@ -1137,9 +1147,14 @@ export function readRenderedTotals(
   repoRoot = REPO_ROOT,
   snapshotPath = DEFAULT_RENDER_SNAPSHOT_PATH,
 ): RenderedClassTotals | null {
-  const abs = resolve(repoRoot, snapshotPath);
-  if (!existsSync(abs)) return null;
-  const parsed = JSON.parse(readFileSync(abs, "utf8")) as {
+  // ATTEMPT the read; do not `existsSync` first. The check-then-use pair is a
+  // TOCTOU window (`js/file-system-race`, and the repo's own
+  // `lint-check-then-use-file-races`): the snapshot can be rewritten or removed
+  // between the check and the read, so the answer the check gave is already
+  // stale. One syscall, one answer — a miss IS the ENOENT.
+  const text = readIfPresent(resolve(repoRoot, snapshotPath));
+  if (text === null) return null;
+  const parsed = JSON.parse(text) as {
     measuredOn?: unknown;
     clusterDefaultStorageClass?: unknown;
     rendered?: unknown;
@@ -1203,9 +1218,9 @@ export function quotedFigures(comments: readonly string[], knownClasses: Readonl
 
 /** Every `$comment*` string in the ledger JSON, flattened. */
 export function ledgerComments(path: string, repoRoot = REPO_ROOT): readonly string[] {
-  const abs = resolve(repoRoot, path);
-  if (!existsSync(abs)) return [];
-  const parsed = JSON.parse(readFileSync(abs, "utf8")) as Record<string, unknown>;
+  const text = readIfPresent(resolve(repoRoot, path));
+  if (text === null) return [];
+  const parsed = JSON.parse(text) as Record<string, unknown>;
   const out: string[] = [];
   for (const [key, value] of Object.entries(parsed)) {
     if (!key.startsWith("$comment")) continue;
