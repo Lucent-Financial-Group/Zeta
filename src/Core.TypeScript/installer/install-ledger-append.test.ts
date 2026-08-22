@@ -112,7 +112,16 @@ function runLedgerShell(
   if (r.status !== 0) {
     throw new Error("ledger shell exited " + String(r.status) + ": " + String(r.stderr));
   }
-  const syncLog = existsSync(syncLogPath) ? readFileSync(syncLogPath, "utf8") : "";
+  // One syscall, one answer. The `existsSync(...) ? readFileSync(...)` idiom on
+  // the line below is grandfathered in lint-check-then-use-file-races.baseline
+  // and is NOT a licence to write a new one -- caught by that lint on the first
+  // push of this change, which is the lint working.
+  let syncLog = "";
+  try {
+    syncLog = readFileSync(syncLogPath, "utf8");
+  } catch (e) {
+    if ((e as NodeJS.ErrnoException).code !== "ENOENT") throw e;
+  }
   return {
     out: String(r.stdout).trim(),
     ledger: existsSync(ledgerPath) ? readFileSync(ledgerPath, "utf8") : "",
