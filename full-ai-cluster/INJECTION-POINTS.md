@@ -367,7 +367,6 @@ alone** — it is recorded here as the alternative, not advocated. The two optio
 are genuinely different trades: operator-typed keeps the images closed and costs a
 manual step per cluster; public costs disclosure and buys unattended bring-up.
 
-
 ## Source-of-truth pointers
 
 - `src/Core.TypeScript/zflash/cli.ts` — flash-time orchestrator + USB ESP injection
