@@ -269,7 +269,10 @@ function display(repoRoot: string, eventDir: string): void {
   const ciRunsPath = join(repoRoot, "data", "ci-runs.jsonl");
   const ciRuns = loadJSONL<{ workflow: string; conclusion: string; at: string }>(ciRunsPath);
   if (ciRuns.length > 0) {
-    const { computeDrift, formatDrift } = require("./drift-rate") as typeof import("./drift-rate");
+    // `formatDrift` is deliberately NOT pulled in: it renders "[drift-rate] <summary>",
+    // and this caller prints its own "CI Drift:" label, so importing it would either
+    // double-label the line or sit unused. Unused is what it was, and TS6133 is right.
+    const { computeDrift } = require("./drift-rate") as typeof import("./drift-rate");
     const drift = computeDrift(ciRuns as any);
     console.log(`\nCI Drift: ${drift.summary}`);
   }
