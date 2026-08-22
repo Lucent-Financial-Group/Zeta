@@ -120,6 +120,12 @@ on:
       # The disk half of the runner envelope, and its measurer.
       - "src/Core.TypeScript/cluster/runner-disk.ts"
       - "src/Core.TypeScript/cluster/runner-disk.test.ts"
+      # Which Applications the disk is actually spent on. The measurement is a
+      # dated artifact like the storage snapshot, so it is watched beside its
+      # reader for the same reason: editing one without the other is the drift.
+      - "src/Core.TypeScript/cluster/image-footprint.ts"
+      - "src/Core.TypeScript/cluster/image-footprint.test.ts"
+      - "src/Core.TypeScript/cluster/image-footprint.measured.json"
       # Does a DECLARED storage claim correspond to a PVC the chart actually
       # renders? The snapshot is the measured render; the checker compares the
       # catalogue against it offline. Editing either without re-measuring is
@@ -212,6 +218,12 @@ on:
       # The disk half of the runner envelope, and its measurer.
       - "src/Core.TypeScript/cluster/runner-disk.ts"
       - "src/Core.TypeScript/cluster/runner-disk.test.ts"
+      # Which Applications the disk is actually spent on. The measurement is a
+      # dated artifact like the storage snapshot, so it is watched beside its
+      # reader for the same reason: editing one without the other is the drift.
+      - "src/Core.TypeScript/cluster/image-footprint.ts"
+      - "src/Core.TypeScript/cluster/image-footprint.test.ts"
+      - "src/Core.TypeScript/cluster/image-footprint.measured.json"
       # Does a DECLARED storage claim correspond to a PVC the chart actually
       # renders? The snapshot is the measured render; the checker compares the
       # catalogue against it offline. Editing either without re-measuring is
@@ -607,6 +619,17 @@ jobs:
       # this step and that check can no longer be green about different trees.
       - name: Run runner-disk falsifiers
         run: bun test src/Core.TypeScript/cluster/runner-disk.test.ts
+
+      - name: Run image-footprint falsifiers
+        run: bun test src/Core.TypeScript/cluster/image-footprint.test.ts
+
+      # Printed, not gated. Gating on "the images do not fit" would be a red
+      # lane every run for a fact everyone already knows; what this buys is that
+      # the ranking is READ on every run, so a measurement nobody looks at
+      # cannot quietly go stale. The cohorts come from the live tree, so an
+      # Application added or excluded moves this output without a re-measure.
+      - name: Print the per-app image footprint (offline, from the measurement)
+        run: bun src/Core.TypeScript/cluster/image-footprint.ts --report
 
       - name: Verify the runner is as big as the catalogue claims
         run: bun src/Core.TypeScript/cluster/storage-profiles.ts --measure-runner
