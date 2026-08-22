@@ -467,7 +467,8 @@ describe("swallow-green write lanes (the #12066 unique)", () => {
         expect(flush).toContain(`--lane ${lane}`);
         expect(flush).not.toMatch(/git\s+push\s+\|\|\s+echo/);
         expect(flush).not.toMatch(/git\s+push\s+origin\s+HEAD:main/);
-        expect(flush).not.toMatch(/\[skip ci\]/);
+        // Comments may name the old defect. The unique is the flush MESSAGE.
+        expect(flush).not.toMatch(/--message[^\n]*\[skip ci\]/);
       });
 
       test("the checkout that pushes carries the leftover PAT ladder", () => {
