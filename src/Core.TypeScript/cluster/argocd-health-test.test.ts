@@ -10,6 +10,8 @@ import {
   writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
+import { parse as parseYaml } from "yaml";
+import { DEV_GRAFANA_ADMIN_SECRET } from "./dev-cluster/lib.ts";
 import { join, resolve } from "node:path";
 import {
   APPLIED_BUT_UNASSERTED_REASONS,
@@ -18,7 +20,10 @@ import {
   buildPlan,
   classifyApplications,
   classifySmokeApplications,
+  devLonghornStorageClassAliasDeclared,
   discoverExpectedApplications,
+  DEV_EXCLUDED_REASONS,
+  auditDevExclusionReasons,
   isExcludedFromIncludedProof,
   isApplicationSynced,
   isIncludedScope,
@@ -54,7 +59,13 @@ const SMOKE_APPLICATION_LIST = JSON.stringify({
 });
 
 async function withFakeClusterCli(
-  mode: "invalid-list-json" | "drift-read-fails",
+  mode:
+    | "invalid-list-json"
+    | "drift-read-fails"
+    | "storageclass-missing"
+    | "storageclass-present"
+    | "storageclass-wrong-provisioner"
+    | "grafana-secret-missing",
   action: () => Promise<void>,
 ): Promise<void> {
   const cliDir = mkdtempSync(join(tmpdir(), "zeta-argocd-health-cli-"));
@@ -72,6 +83,22 @@ async function withFakeClusterCli(
     "if [ \"${1:-}\" = version ]; then echo 'clientVersion: {}'; exit 0; fi",
     'if [ "${1:-}" = config ] && [ "${2:-}" = use-context ]; then exit 0; fi',
     'if [ "${1:-}" = get ] && [ "${2:-}" = namespace ]; then exit 0; fi',
+    'if [ "${1:-}" = get ] && [ "${2:-}" = storageclass ]; then',
+    '  if [ "$mode" = storageclass-missing ]; then echo "Error from server (NotFound): storageclasses.storage.k8s.io \\"longhorn\\" not found" >&2; exit 1; fi',
+    // Exits 0 with the REAL Longhorn driver: the name is right, the substrate is
+    // not. An existence-only check would pass here.
+    '  if [ "$mode" = storageclass-wrong-provisioner ]; then printf "driver.longhorn.io"; exit 0; fi',
+    '  printf "rancher.io/local-path"',
+    "  exit 0",
+    "fi",
+    // The dev Grafana admin credential the included proof now refuses without.
+    // Present in every mode except the one that exists to remove it, so the
+    // OTHER guards' tests still reach the code they are about.
+    'if [ "${1:-}" = get ] && [ "${2:-}" = secret ]; then',
+    '  if [ "$mode" = grafana-secret-missing ]; then echo "Error from server (NotFound): secrets \\"grafana-admin-credentials\\" not found" >&2; exit 1; fi',
+    '  printf "secret/grafana-admin-credentials"',
+    "  exit 0",
+    "fi",
     'if [ "${1:-}" = wait ]; then exit 0; fi',
     'if [ "${1:-}" = -n ] && [ "${2:-}" = argocd ] && [ "${3:-}" = rollout ]; then exit 0; fi',
     'if [ "${1:-}" = -n ] && [ "${2:-}" = argocd ] && [ "${3:-}" = get ] && [ "${4:-}" = application ] && [ "${5:-}" = zeta-root-dev ]; then exit 0; fi',
@@ -242,10 +269,12 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test manifest parsing", () =>
     expect(applications.some((app) => app.dir === "cilium" && app.excludedFromDev)).toBe(true);
     expect(applications.some((app) => app.dir === "cilium-lb-ipam" && app.excludedFromDev)).toBe(true);
     expect(applications.some((app) => app.dir === "longhorn" && app.excludedFromDev)).toBe(true);
-    expect(applications.some((app) => app.dir === "vault" && app.excludedFromDev)).toBe(true);
+    // `vault` LIFTED 2026-08-21: the ephemeral init ceremony runs in this lane,
+    // so it is asserted rather than deferred. Pinned as NOT excluded, which is
+    // the assertion that goes red if someone re-defers it.
+    expect(applications.some((app) => app.dir === "vault" && !app.excludedFromDev)).toBe(true);
     expect(applications.some((app) => app.dir === "agent-memory" && app.excludedFromDev)).toBe(true);
     expect(applications.some((app) => app.dir === "gitlab" && app.excludedFromDev)).toBe(true);
-    expect(applications.some((app) => app.dir === "orleans" && app.excludedFromDev)).toBe(true);
     expect(applications.some((app) => app.dir === "temporal" && app.excludedFromDev)).toBe(true);
     const included = applications.filter((app) => !app.excludedFromDev);
     expect(included.length).toBeGreaterThan(10);
@@ -253,7 +282,44 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test manifest parsing", () =>
     expect(included.some((app) => app.name === "forgejo")).toBe(false);
   });
 
-  test("isExcludedFromIncludedProof catches Longhorn in child manifests", () => {
+  /**
+   * 081M0JXXFV0087G0R001PGEEM4 -- the three Applications that came OFF the
+   * deferred lists on 2026-08-21 stay asserted.
+   *
+   * Without this, a later edit could quietly return any of them to
+   * DEV_EXCLUDED_DIRS / DEV_INCLUDED_PROOF_DEFERRED_DIRS / the excludeGlob and
+   * the included proof would go green again having stopped asserting them --
+   * a check that did not run wearing the face of one that passed.
+   *
+   * They are asserted under the FULL auto-sync contract (Synced + Healthy), not
+   * the manual-sync one, which is the difference between this and the
+   * cdi/kubevirt defect: `manualSync` must be false for all three.
+   */
+  test("deepseek-coder, qwen-coder, orleans, vault, spire and spire-crds are asserted under the full Synced+Healthy contract", () => {
+    const applications = discoverExpectedApplications();
+    // `vault` joined this guard on 2026-08-21. It is the one that matters most
+    // here: the whole point of running the ephemeral init ceremony is that Vault
+    // reaches GENUINELY Synced+Healthy. Asserting it under the manual-sync
+    // contract instead -- exists + compared, never synced -- would reproduce the
+    // exact cdi/kubevirt vacuity #13084 had to fix, and would let the lane go
+    // green while Vault sat sealed.
+    // `spire` and `spire-crds` joined 2026-08-22. spire is the SPIFFE identity
+    // substrate the federated-identity and per-node-CA work stands on, so a lane
+    // that reports green without asserting it is reporting on the wrong thing.
+    // spire-crds is here too because the pair is the assertion: the CRD provider
+    // reaching Synced is what makes spire's own Synced mean anything.
+    for (const dir of ["deepseek-coder", "qwen-coder", "orleans", "vault", "spire", "spire-crds"]) {
+      const app = applications.find((candidate) => candidate.dir === dir);
+      expect(app, `${dir} must be discovered`).toBeDefined();
+      expect(app?.excludedFromDev, `${dir} must not be excluded from the included proof`).toBe(false);
+      expect(app?.manualSync, `${dir} must be asserted under the auto-sync contract`).toBe(false);
+    }
+  });
+
+  // Title qualified on this branch: dev now applies a StorageClass NAMED
+  // longhorn, so the rule this test pins is the one that still holds when no
+  // such class exists. Both halves matter and neither replaces the other.
+  test("isExcludedFromIncludedProof catches Longhorn in child manifests when dev has no such class", () => {
     const repoRoot = mkdtempSync(join(tmpdir(), "zeta-argocd-health-longhorn-"));
     try {
       const appDir = join(repoRoot, "full-ai-cluster/k8s/applications/demo");
@@ -267,10 +333,132 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test manifest parsing", () =>
         "spec:\n  volumeClaimTemplates:\n    - spec:\n        storageClassName: longhorn\n",
       );
       const appText = readFileSync(join(appDir, "Application.yaml"), "utf8");
-      expect(isExcludedFromIncludedProof("demo", appText, appDir)).toBe(true);
+      expect(isExcludedFromIncludedProof("demo", appText, appDir, false)).toBe(true);
     } finally {
       rmSync(repoRoot, { recursive: true, force: true });
     }
+  });
+
+  /**
+   * 081M0JXF6MS087G0R001HC34TM — the longhorn rule is CONDITIONAL on substrate,
+   * not deleted. These four tests pin both branches plus the RWX carve-out;
+   * without the pair, "we made those apps testable" would be indistinguishable
+   * from "we stopped checking".
+   */
+  test("the longhorn rule stops applying once dev declares a StorageClass by that name", () => {
+    const repoRoot = mkdtempSync(join(tmpdir(), "zeta-argocd-health-alias-on-"));
+    try {
+      const appDir = join(repoRoot, "full-ai-cluster/k8s/applications/demo");
+      mkdirSync(appDir, { recursive: true });
+      writeFileSync(
+        join(appDir, "Application.yaml"),
+        "apiVersion: argoproj.io/v1alpha1\nkind: Application\nmetadata:\n  name: demo\nspec:\n  source:\n    helm:\n      values: |\n        storageClass: longhorn\n",
+      );
+      const appText = readFileSync(join(appDir, "Application.yaml"), "utf8");
+      // Same Application, same manifest text -- only the substrate answer moves.
+      expect(isExcludedFromIncludedProof("demo", appText, appDir, false)).toBe(true);
+      expect(isExcludedFromIncludedProof("demo", appText, appDir, true)).toBe(false);
+    } finally {
+      rmSync(repoRoot, { recursive: true, force: true });
+    }
+  });
+
+  test("a ReadWriteMany claim stays excluded regardless of which class it names", () => {
+    // The access mode is the hazard, not the class name: EVERY dev class is
+    // rancher.io/local-path, which is RWO-only. So the RWX rule must gate on its
+    // own, not nested inside the longhorn branch -- otherwise an RWX claim
+    // against zeta-local-path, against kind's default, or against no class at
+    // all sails through and hangs.
+    const repoRoot = mkdtempSync(join(tmpdir(), "zeta-argocd-health-rwx-"));
+    try {
+      const claims = [
+        "kind: PersistentVolumeClaim\nspec:\n  accessModes: [ ReadWriteMany ]\n  storageClassName: longhorn\n",
+        "kind: PersistentVolumeClaim\nspec:\n  accessModes: [ ReadWriteMany ]\n  storageClassName: zeta-local-path\n",
+        "kind: PersistentVolumeClaim\nspec:\n  accessModes: [ ReadWriteMany ]\n",
+      ];
+      for (const [index, claim] of claims.entries()) {
+        const appDir = join(repoRoot, `full-ai-cluster/k8s/applications/demo${String(index)}`);
+        mkdirSync(appDir, { recursive: true });
+        writeFileSync(
+          join(appDir, "Application.yaml"),
+          "apiVersion: argoproj.io/v1alpha1\nkind: Application\nmetadata:\n  name: demo\nspec: {}\n",
+        );
+        writeFileSync(join(appDir, "cache-pvc.yaml"), claim);
+        const appText = readFileSync(join(appDir, "Application.yaml"), "utf8");
+        expect(isExcludedFromIncludedProof("demo", appText, appDir, true), claim).toBe(true);
+      }
+    } finally {
+      rmSync(repoRoot, { recursive: true, force: true });
+    }
+  });
+
+  test("devLonghornStorageClassAliasDeclared fails CLOSED on absent, wrong-kind and wrong-name manifests", () => {
+    const repoRoot = mkdtempSync(join(tmpdir(), "zeta-argocd-health-alias-parse-"));
+    const manifestDir = join(repoRoot, "full-ai-cluster/dev-cluster/manifests");
+    const manifest = join(manifestDir, "longhorn.yaml");
+    try {
+      mkdirSync(manifestDir, { recursive: true });
+      // Absent.
+      expect(devLonghornStorageClassAliasDeclared(repoRoot)).toBe(false);
+      // Present but not a StorageClass.
+      writeFileSync(manifest, "kind: ConfigMap\nmetadata:\n  name: longhorn\n");
+      expect(devLonghornStorageClassAliasDeclared(repoRoot)).toBe(false);
+      // A StorageClass under a different name -- claims nothing about `longhorn`.
+      writeFileSync(
+        manifest,
+        "apiVersion: storage.k8s.io/v1\nkind: StorageClass\nmetadata:\n  name: not-longhorn\nprovisioner: rancher.io/local-path\n",
+      );
+      expect(devLonghornStorageClassAliasDeclared(repoRoot)).toBe(false);
+      // A StorageClass with no provisioner binds to nothing.
+      writeFileSync(
+        manifest,
+        "apiVersion: storage.k8s.io/v1\nkind: StorageClass\nmetadata:\n  name: longhorn\n",
+      );
+      expect(devLonghornStorageClassAliasDeclared(repoRoot)).toBe(false);
+      // THE FAIL-OPEN THAT WOULD OTHERWISE BITE: right name, right kind, but
+      // bound to the real Longhorn driver, which a kind node cannot run. An edit
+      // "restoring parity" this way would unlock ten Applications onto a class
+      // that provisions nothing, and every PVC would pend.
+      writeFileSync(
+        manifest,
+        "apiVersion: storage.k8s.io/v1\nkind: StorageClass\nmetadata:\n  name: longhorn\nprovisioner: driver.longhorn.io\n",
+      );
+      expect(devLonghornStorageClassAliasDeclared(repoRoot)).toBe(false);
+      // Unparseable.
+      writeFileSync(manifest, "kind: StorageClass\n\tname: longhorn\n  : :\n");
+      expect(devLonghornStorageClassAliasDeclared(repoRoot)).toBe(false);
+      // Multi-document: `parseYaml` throws on `---` separators rather than
+      // silently taking the first document, so this lands in the catch.
+      writeFileSync(
+        manifest,
+        "apiVersion: storage.k8s.io/v1\nkind: StorageClass\nmetadata:\n  name: longhorn\nprovisioner: rancher.io/local-path\n---\nkind: ConfigMap\n",
+      );
+      expect(devLonghornStorageClassAliasDeclared(repoRoot)).toBe(false);
+      // The real shape.
+      writeFileSync(
+        manifest,
+        "apiVersion: storage.k8s.io/v1\nkind: StorageClass\nmetadata:\n  name: longhorn\nprovisioner: rancher.io/local-path\n",
+      );
+      expect(devLonghornStorageClassAliasDeclared(repoRoot)).toBe(true);
+    } finally {
+      rmSync(repoRoot, { recursive: true, force: true });
+    }
+  });
+
+  test("the shipped tree declares the dev longhorn alias — the assertions above rest on it", () => {
+    // Not decoration. Every one of the ten newly-asserted Applications is
+    // asserted BECAUSE this returns true against the real repo. If the manifest
+    // is deleted or renamed, this goes red here rather than silently reverting
+    // ten Applications to unasserted, which `auditAppliedButUnasserted` would
+    // then report as unexplained drift instead of as the intended state.
+    expect(devLonghornStorageClassAliasDeclared()).toBe(true);
+  });
+
+  test("longhorn stays glob-excluded from the dev catalog, so the alias cannot collide", () => {
+    // The alias is a cluster-scoped object named `longhorn`. If the Longhorn
+    // chart were ever admitted to the dev catalog it would create a second
+    // object of that name and the two would fight. This is the guard.
+    expect(rootDevCatalogExcludedDirs().has("longhorn")).toBe(true);
   });
 
   /**
@@ -308,13 +496,10 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test manifest parsing", () =>
         "agent-memory",
         "cilium",
         "cilium-lb-ipam",
-        "deepseek-coder",
         "gitlab",
         "longhorn",
         "ollama",
-        "orleans",
         "platform",
-        "qwen-coder",
         "temporal",
         "vllm",
       ]),
@@ -356,6 +541,22 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test manifest parsing", () =>
    * laptop without a real cluster. What it does is PIN the gap at its measured
    * size so it cannot grow silently: add a second nested Application and this
    * goes red, forcing the decision instead of absorbing it.
+   *
+   * TWO CORRECTIONS since this was written, both measured — see
+   * `app-of-apps-discovery.ts` for the derivation:
+   *
+   *   1. The tempting reading of "depth 1" is that ArgoCD never applies the
+   *      nested Application. FALSE. ArgoCD matches `directory.include` with
+   *      `glob.Match(include, relPath)` and passes NO separator runes, so
+   *      gobwas/glob lets `*` cross `/`. The root DOES apply
+   *      `game-hosting/gmod`, and the included lane's own diagnostics show it
+   *      in the cluster. The depth-1 assumption is OURS, not ArgoCD's.
+   *   2. `gmod` is therefore not merely unasserted, it is FAILING — its sync
+   *      is denied by gatekeeper's check-ignore-label webhook on every
+   *      reconcile — while this lane is green.
+   *
+   * This test stays as the cheap structural pin; the reach-vs-roster
+   * comparison and its registry live in `app-of-apps-discovery.ts`.
    */
   test("the depth-1 discovery gap stays exactly one known Application", () => {
     const appsDir = resolve(import.meta.dir, "../../../full-ai-cluster/k8s/applications");
@@ -549,18 +750,21 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test Application verdicts", (
           dir: "argocd",
           name: "argocd",
           excludedFromDev: false,
+          manualSync: false,
           path: "full-ai-cluster/k8s/applications/argocd/Application.yaml",
         },
         {
           dir: "cilium",
           name: "cilium",
           excludedFromDev: true,
+          manualSync: false,
           path: "full-ai-cluster/k8s/applications/cilium/Application.yaml",
         },
         {
           dir: "vault",
           name: "vault",
           excludedFromDev: false,
+          manualSync: false,
           path: "full-ai-cluster/k8s/applications/vault/Application.yaml",
         },
       ],
@@ -617,7 +821,13 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test planning", () => {
     expect(included).not.toContain("gitlab");
     expect(included).not.toContain("forgejo");
     expect(included).not.toContain("agent-memory");
-    expect(included).not.toContain("spire");
+    // `spire` FLIPPED SIDES 2026-08-22 -- it was pinned as NOT included here
+    // while it was deferred, and it is pinned as INCLUDED now that the CRD
+    // source exists. Both directions matter: this is the assertion that goes
+    // red if someone re-defers the SPIFFE identity substrate, which is the one
+    // Application the federated-identity work stands on.
+    expect(included).toContain("spire");
+    expect(included).toContain("spire-crds");
   });
 
   test("detects repo-backed child Applications that should track the harness git ref", () => {
@@ -711,5 +921,417 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test live failure shaping", (
       expect(result.failure.message).toContain("could not read ArgoCD Application drift state");
       expect(result.driftRepair).toBe("failed");
     });
+  });
+
+  /**
+   * 081M0JXF6MS087G0R001HC34TM — the live half of the substrate condition.
+   *
+   * The repo-side check says dev PROMISED a `longhorn` StorageClass. If the
+   * promise is not kept in the cluster, every one of the ten newly-asserted
+   * Applications sits `Pending` until the 2400s cap and the harness prints NO
+   * verdict -- worse than a failure, because a timeout is unreadable. These two
+   * tests pin that the harness refuses in seconds instead, and that it does not
+   * refuse when the class IS there.
+   */
+  test("included scope REFUSES when the promised dev StorageClass is absent from the cluster", async () => {
+    await withFakeClusterCli("storageclass-missing", async () => {
+      const parsed = parseArgs(
+        ["--run", "--provider", "kind", "--scope", "included", "--existing", "--timeout-sec", "1", "--poll-sec", "1"],
+        {},
+      );
+      if ("kind" in parsed) throw new Error(parsed.message);
+
+      const result = await runHarness(parsed);
+      expect(result.ok).toBe(false);
+      if (result.ok) throw new Error("expected a missing dev StorageClass to fail the harness");
+      expect(result.failure.kind).toBe("DevStorageClassMissing");
+    });
+  });
+
+  test("included scope REFUSES a longhorn-NAMED class bound to a provisioner the lane cannot run", async () => {
+    // `kubectl get storageclass longhorn` exits 0 here. Existence is not the
+    // property; being able to provision is. Without the provisioner comparison
+    // this run would proceed and every PVC would pend.
+    await withFakeClusterCli("storageclass-wrong-provisioner", async () => {
+      const parsed = parseArgs(
+        ["--run", "--provider", "kind", "--scope", "included", "--existing", "--timeout-sec", "1", "--poll-sec", "1"],
+        {},
+      );
+      if ("kind" in parsed) throw new Error(parsed.message);
+
+      const result = await runHarness(parsed);
+      expect(result.ok).toBe(false);
+      if (result.ok) throw new Error("expected a non-provisionable dev StorageClass to fail the harness");
+      expect(result.failure.kind).toBe("DevStorageClassMissing");
+      expect(result.failure.message).toContain("driver.longhorn.io");
+    });
+  });
+
+  /**
+   * The same live-half discipline, for the credential
+   * `kube-prometheus-stack` needs to pre-exist. Grafana with no
+   * `grafana-admin-credentials` is `CreateContainerConfigError`, which ArgoCD
+   * reports as Progressing, so without this guard the run burns 2400s and then
+   * names a Progressing Deployment rather than a missing Secret.
+   */
+  test("included scope REFUSES when the dev Grafana admin credential is absent", async () => {
+    await withFakeClusterCli("grafana-secret-missing", async () => {
+      const parsed = parseArgs(
+        ["--run", "--provider", "kind", "--scope", "included", "--existing", "--timeout-sec", "1", "--poll-sec", "1"],
+        {},
+      );
+      if ("kind" in parsed) throw new Error(parsed.message);
+
+      const result = await runHarness(parsed);
+      expect(result.ok).toBe(false);
+      if (result.ok) throw new Error("expected a missing dev Grafana credential to fail the harness");
+      expect(result.failure.kind).toBe("DevGrafanaAdminSecretMissing");
+      expect(result.failure.message).toContain("grafana-admin-credentials");
+    });
+  });
+
+  /**
+   * And the SMOKE roster does not assert kube-prometheus-stack, so it has no
+   * business failing on that Application's credential. A guard that fires
+   * outside the scope it belongs to is a check reporting on something it was
+   * never asked about.
+   */
+  test("smoke scope does NOT refuse on the Grafana credential", async () => {
+    await withFakeClusterCli("grafana-secret-missing", async () => {
+      const parsed = parseArgs(
+        ["--run", "--provider", "kind", "--scope", "smoke", "--existing", "--timeout-sec", "1", "--poll-sec", "1"],
+        {},
+      );
+      if ("kind" in parsed) throw new Error(parsed.message);
+
+      const result = await runHarness(parsed);
+      if (!result.ok) expect(result.failure.kind).not.toBe("DevGrafanaAdminSecretMissing");
+    });
+  });
+
+  test("the same run does NOT refuse when the dev StorageClass is present", async () => {
+    await withFakeClusterCli("storageclass-present", async () => {
+      const parsed = parseArgs(
+        ["--run", "--provider", "kind", "--scope", "included", "--existing", "--timeout-sec", "1", "--poll-sec", "1"],
+        {},
+      );
+      if ("kind" in parsed) throw new Error(parsed.message);
+
+      const result = await runHarness(parsed);
+      // It still fails -- the fake cluster serves a smoke-sized Application list
+      // against an included-scope roster. The POINT is which failure: anything
+      // other than DevStorageClassMissing means the guard passed and the run
+      // proceeded, which is the property under test.
+      expect(result.ok).toBe(false);
+      if (result.ok) throw new Error("expected the fake smoke list to fail an included-scope run");
+      expect(result.failure.kind).not.toBe("DevStorageClassMissing");
+    });
+  });
+});
+
+// ---------------------------------------------------------------------------
+// The reasoned dev-exclusion registry (081M0... CNI lane, 2026-08-21).
+//
+// Appended as its own block rather than folded into the roster tests above so
+// that a concurrent change to the exclusion LOGIC and this change to the
+// exclusion RECORD do not land on the same lines.
+// ---------------------------------------------------------------------------
+
+describe("DEV_EXCLUDED_REASONS", () => {
+  test("every excluded directory carries a reason -- there is no bare membership left", () => {
+    for (const dir of DEV_EXCLUDED_REASONS.keys()) {
+      expect((DEV_EXCLUDED_REASONS.get(dir) ?? "").length).toBeGreaterThan(60);
+    }
+  });
+
+  test("every reason names a condition that would LIFT it", () => {
+    // A deferral with no exit condition is how 26 of 45 Applications became
+    // untested without anyone deciding to stop testing them.
+    for (const [dir, reason] of DEV_EXCLUDED_REASONS) {
+      expect(`${dir}: ${reason}`).toContain("LIFTS WHEN:");
+    }
+  });
+
+  test("the audit is green on the live tree in all four directions", () => {
+    const drift = auditDevExclusionReasons();
+    expect(drift.unreasoned).toEqual([]);
+    expect(drift.stale).toEqual([]);
+    expect(drift.globExcludedWithoutReason).toEqual([]);
+    expect(drift.reasonedButApplied).toEqual([]);
+  });
+
+  // -------------------------------------------------------------------------
+  // THE GLOB DIRECTIONS (081M0M9TRQ8087G0R000CS3F1X).
+  //
+  // These two were missing, and their absence is why `platform` sat excluded
+  // from every CI cluster behind a reason that was FALSE. The registry was
+  // checked against the filesystem and against itself, never against
+  // `DEFAULT_ROOT_DEV_CATALOG.excludeGlob` -- the list that actually decides
+  // what the lane applies. Measured on `main` at f332a61a with the new
+  // direction added and no reasons yet written, it returned
+  // ["agent-memory","gitlab","platform","temporal"]: four directories deferred
+  // from CI with no recorded why and no lift condition, under two audits that
+  // both reported green.
+  // -------------------------------------------------------------------------
+
+  test("every directory the dev catalog's excludeGlob defers carries a reason here", () => {
+    // The set equality is the property: the glob decides what is deferred, this
+    // registry says why, and neither may move without the other.
+    expect([...DEV_EXCLUDED_REASONS.keys()].sort()).toEqual([...rootDevCatalogExcludedDirs()].sort());
+  });
+
+  test("a glob entry with no reason IS caught -- driven, not asserted", () => {
+    // `redis` is asserted under the full contract and is not in the glob, so
+    // naming it in a synthetic glob is a deferral nobody explained.
+    const drift = auditDevExclusionReasons(undefined, "{redis/**}");
+    expect(drift.globExcludedWithoutReason).toEqual(["redis"]);
+  });
+
+  test("a reason for an app the lane DOES apply is caught as stale deferral", () => {
+    // Every live reason becomes stale against a glob that defers only `redis`:
+    // each one claims the lane does not apply something the lane now applies.
+    const drift = auditDevExclusionReasons(undefined, "{redis/**}");
+    expect(drift.reasonedButApplied).toContain("platform");
+    expect(drift.reasonedButApplied.length).toBe(DEV_EXCLUDED_REASONS.size);
+  });
+
+  // -------------------------------------------------------------------------
+  // THE PLATFORM REASON ITSELF.
+  //
+  // The prose is the finding, so these pin the load-bearing clauses rather than
+  // the wording. What was corrected was not a typo: "no registry serves them"
+  // points a reader at BUILDING an image that already exists, and would have
+  // sent the next person to write a workflow that has been green since June.
+  // -------------------------------------------------------------------------
+
+  test("the platform reason names the credential, not a missing image", () => {
+    const reason = DEV_EXCLUDED_REASONS.get("platform") ?? "";
+    // Pin the DIAGNOSIS clause, not the bare word. `imagePullSecrets` also
+    // appears in the LIFTS WHEN half, so `toContain("imagePullSecrets")` alone
+    // survived a mutation that softened the diagnosis to "a pull credential" --
+    // the same vacuity shape as the `metal` assertion below, caught the same way.
+    expect(reason).toContain(
+      "both packages are `visibility: private`, and neither controller.yaml nor portal.yaml declares " +
+        "`imagePullSecrets`",
+    );
+    expect(reason).toContain("returns HTTP 401");
+    expect(reason).toContain("the same GET with a credential returns HTTP 200");
+    // The refuted claim IS quoted here, deliberately -- a correction that does
+    // not say what it corrects leaves the next reader free to rediscover the
+    // wrong thing. What is refused is the quote surviving without its
+    // refutation, so the two are pinned together rather than the claim banned.
+    expect(reason).toContain("`runs two images no registry serves`, and that was FALSE");
+  });
+
+  test("the platform reason records that the blocker is not dev-lane-only", () => {
+    // ImagePullBackOff on a private image is substrate-independent: the metal
+    // cluster has no credential either. A reason that read as a CI-only gap
+    // would leave the live cluster's dead control plane looking intentional.
+    //
+    // `toContain("metal")` was the first form of this assertion and it was
+    // VACUOUS -- the word appears twice in the reason, so a mutation that
+    // deleted the substrate-independence sentence outright still passed. The
+    // whole clause is pinned instead; that is what the claim actually is.
+    expect(DEV_EXCLUDED_REASONS.get("platform") ?? "").toContain(
+      "the pods take ImagePullBackOff on EVERY substrate, CI and metal alike",
+    );
+  });
+
+  // -------------------------------------------------------------------------
+  // THE TEMPORAL REASON, CORRECTED WITHIN THE HOUR OF BEING WRITTEN.
+  //
+  // #13472 wrote "its chart has no persistence store configured, so it does not
+  // render". #13469 landed in between and made that false. Both audits stayed
+  // green through it, because a false sentence with a LIFTS WHEN: clause has
+  // every mechanical property the registry requires. These tests pin the
+  // corrected claim, and one of them refuses the refuted one by name.
+  // -------------------------------------------------------------------------
+
+  test("the temporal reason no longer claims the chart fails to render", () => {
+    const reason = DEV_EXCLUDED_REASONS.get("temporal") ?? "";
+    expect(reason).not.toContain("so it does not render");
+    expect(reason).not.toContain("Please specify cassandra port");
+  });
+
+  test("the temporal reason names both live blockers, not the retired one", () => {
+    const reason = DEV_EXCLUDED_REASONS.get("temporal") ?? "";
+    // (1) visibility schema, (2) TLS-only CockroachDB with no material here.
+    expect(reason).toContain("btree_gin");
+    expect(reason).toContain("`tls.enabled: true` with the selfSigner");
+  });
+
+  test("the correction records that it was the author's own stale reason", () => {
+    // A reason quietly overwritten teaches nobody. The registry's whole value
+    // is that a wrong reason is refutable by a reader, so the refutation is
+    // kept rather than the error erased.
+    expect(DEV_EXCLUDED_REASONS.get("temporal") ?? "").toContain("CORRECTED WITHIN THE HOUR, BY ITS OWN AUTHOR");
+  });
+
+  test("the `:latest` pin is recorded as a separate, already-known defect", () => {
+    // Two syncs of one commit can land different bytes. Recorded rather than
+    // fixed, and the reason says who owns the trade -- an unrecorded known
+    // defect and an undiscovered one read identically to the next reader.
+    const reason = DEV_EXCLUDED_REASONS.get("platform") ?? "";
+    // The CITATION is the claim, so the citation is what is pinned. `:latest`
+    // and `DEPLOY.md` both occur elsewhere in the reason, so asserting the two
+    // words survived a mutation that replaced the quoted follow-up with "a
+    // follow-up is recorded there" -- which is exactly the vague gesture this
+    // test exists to refuse.
+    expect(reason).toContain("full-ai-cluster/portal/DEPLOY.md:122");
+    expect(reason).toContain("Digest-pin the manifests + have CI bump them, instead of :latest + Always");
+    // And it must still say who owns the trade, or "not fixed here" reads as an oversight.
+    expect(reason).toContain("a maintainer's trade, not a lint's");
+  });
+
+  test("the CNI entries still name the lane that DOES exercise them", () => {
+    expect(DEV_EXCLUDED_REASONS.get("cilium")).toContain("ci.cilium.kind-config.yaml");
+    expect(DEV_EXCLUDED_REASONS.get("cilium-lb-ipam")).toContain("cilium");
+  });
+
+  test("the registry is what the exclusion set is BUILT from, so the two cannot disagree", () => {
+    const applications = discoverExpectedApplications();
+    for (const dir of DEV_EXCLUDED_REASONS.keys()) {
+      const app = applications.find((candidate) => candidate.dir === dir);
+      if (app !== undefined) expect(app.excludedFromDev).toBe(true);
+    }
+  });
+});
+
+// ---------------------------------------------------------------------------
+// THE THREE MEASURED DEFERRALS THAT WERE FIXED RATHER THAN RE-DEFERRED
+// (cockroachdb, kube-prometheus-stack, weaviate).
+//
+// Appended as its own block for the same reason the registry block above was:
+// a concurrent change to the exclusion LOGIC and this change to the exclusion
+// RECORD must not land on the same lines.
+//
+// Each test below asserts the MECHANISM that made the app assertable, not just
+// that it is assertable. Removing a fix from a manifest while leaving the app
+// on the asserted roster is the exact shape #13084 had to remove -- an app that
+// passes because less is asked of it -- and these are what refuse it.
+// ---------------------------------------------------------------------------
+describe("081M0JXXFV0087G0R00...: the four newly-visible non-storage defects", () => {
+  const applicationsRoot = resolve(import.meta.dir, "../../../full-ai-cluster/k8s/applications");
+  const readApp = (dir: string): string => readFileSync(join(applicationsRoot, dir, "Application.yaml"), "utf8");
+
+  test("the two LIVE-PROVEN fixes are asserted; the two unproven ones are not", () => {
+    const applications = discoverExpectedApplications();
+    const excluded = (dir: string): boolean => {
+      const app = applications.find((candidate) => candidate.dir === dir);
+      if (app === undefined) throw new Error(`no Application discovered for ${dir}`);
+      return app.excludedFromDev;
+    };
+    // Both reached Synced+Healthy on live run 32532470499. That run is the
+    // warrant for these two lines; nothing else is.
+    expect(excluded("cockroachdb")).toBe(false);
+    expect(excluded("kube-prometheus-stack")).toBe(false);
+    // And the honest half. `weaviate` was asserted for a few hours on the
+    // strength of an offline byte diff and the SAME live run refuted it -- two
+    // LoadBalancer Services cannot be Healthy on a kind node. `hindsight` was
+    // never fixed. Neither may drift back onto the roster without a live run
+    // saying so.
+    expect(excluded("weaviate")).toBe(true);
+    expect(excluded("hindsight")).toBe(true);
+  });
+
+  test("no stale registry entry survives for the two that left the shadow", () => {
+    for (const dir of ["cockroachdb", "kube-prometheus-stack"]) {
+      expect(APPLIED_BUT_UNASSERTED_REASONS.has(dir)).toBe(false);
+    }
+    // ...and the one that came BACK carries a reason again, naming the cause
+    // the first attempt missed rather than the one it found.
+    const weaviate = APPLIED_BUT_UNASSERTED_REASONS.get("weaviate") ?? "";
+    expect(weaviate).toContain("LoadBalancer");
+    expect(weaviate).toContain("LIFTS WHEN:");
+    const drift = auditAppliedButUnasserted();
+    expect(drift.unexplained).toEqual([]);
+    expect(drift.stale).toEqual([]);
+  });
+
+  test("hindsight's recorded reason names its blockers and an exit condition", () => {
+    const reason = APPLIED_BUT_UNASSERTED_REASONS.get("hindsight") ?? "";
+    expect(reason).toContain("LIFTS WHEN:");
+    // The three findings, each nameable: capacity, the unreachable dev rung,
+    // and the valuesObject written against a schema the chart does not have.
+    expect(reason).toContain("Insufficient cpu");
+    expect(reason).toContain("--resource-profile dev --apply");
+    expect(reason).toContain("postgresql.persistence");
+  });
+
+  /**
+   * COCKROACHDB. The init Job must be a SYNC-phase hook. Left on the chart's
+   * `helm.sh/hook: post-install` it becomes an ArgoCD PostSync hook, and
+   * PostSync waits for the Sync phase to be healthy -- which cannot happen
+   * until the very init this Job performs. Deleting this annotation restores a
+   * deadlock that presents as 3/3 Running pods answering 503 forever.
+   */
+  test("cockroachdb pins its init Job into the Sync phase", () => {
+    const text = readApp("cockroachdb");
+    expect(text).toContain("jobAnnotations:");
+    expect(text).toContain("argocd.argoproj.io/hook: Sync");
+    // `single-node: false` is what makes the init Job render at all. If a future
+    // edit flips it to true the annotation becomes dead configuration, and this
+    // pins the pair together rather than leaving one true half.
+    expect(text).toContain("single-node: false");
+  });
+
+  /**
+   * KUBE-PROMETHEUS-STACK. The chart is deliberately configured with
+   * `existingSecret`, so the credential is minted by the dev bring-up. That is
+   * ONE constant with three consumers, and this is the consumer that reads the
+   * Application to make sure the chart still asks for exactly what the mint
+   * still creates. A rename on either side goes red here rather than in a
+   * CreateContainerConfigError forty minutes into a live run.
+   */
+  test("the Grafana credential the bring-up mints is the one the chart asks for", () => {
+    const text = readApp("kube-prometheus-stack");
+    expect(text).toContain(`existingSecret: ${DEV_GRAFANA_ADMIN_SECRET.name}`);
+    expect(text).toContain(`userKey: ${DEV_GRAFANA_ADMIN_SECRET.userKey}`);
+    expect(text).toContain(`passwordKey: ${DEV_GRAFANA_ADMIN_SECRET.passwordKey}`);
+    // The namespace the mint targets has to be the Application's destination,
+    // or the Secret lands where kubelet will not look for it.
+    expect(text).toContain(`namespace: ${DEV_GRAFANA_ADMIN_SECRET.namespace}`);
+    // And the fix must NOT have been "let the chart make its own password":
+    // that would be asserting less about the app to make the lane green.
+    expect(text).not.toContain("adminPassword");
+  });
+
+  /**
+   * WEAVIATE. The ignore rule must stay the NARROWEST one ArgoCD allows: one
+   * named Secret, two named keys. `data` as a whole, or a nameless Secret rule,
+   * would hide real drift -- and an ignoreDifferences entry that hides a real
+   * mutation is a check that stopped running. This is the widening guard the
+   * Application's own comment promises.
+   */
+  test("weaviate's ignore rule is KEPT and stays scoped to two keys of one named Secret", () => {
+    // The rule survives the re-deferral: the render nondeterminism it removes is
+    // proven, and on metal (where LB addresses are assigned) it may be the whole
+    // story. What is NOT claimed any more is that it closes the resync loop.
+    const document = parseYaml(readApp("weaviate")) as {
+      spec?: {
+        ignoreDifferences?: readonly {
+          group?: string;
+          kind?: string;
+          name?: string;
+          jsonPointers?: readonly string[];
+          jqPathExpressions?: readonly string[];
+          managedFieldsManagers?: readonly string[];
+        }[];
+        syncPolicy?: { syncOptions?: readonly string[] };
+      };
+    };
+    const rules = document.spec?.ignoreDifferences ?? [];
+    expect(rules.length).toBe(1);
+    const rule = rules[0]!;
+    expect(rule.kind).toBe("Secret");
+    expect(rule.name).toBe("weaviate-cluster-api-basic-auth");
+    expect(rule.jsonPointers).toEqual(["/data/username", "/data/password"]);
+    // No escape hatches: a jq expression or a managed-fields manager would each
+    // be a way to widen the rule past what the pointers say.
+    expect(rule.jqPathExpressions).toBeUndefined();
+    expect(rule.managedFieldsManagers).toBeUndefined();
+    // Without this the ignored fields are still PUSHED on every sync, rotating
+    // the cluster credential for no reason.
+    expect(document.spec?.syncPolicy?.syncOptions ?? []).toContain("RespectIgnoreDifferences=true");
   });
 });

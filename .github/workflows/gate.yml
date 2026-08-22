@@ -775,6 +775,36 @@ jobs:
       - name: Cluster-tree consumer roster — mutation suite (proves it goes red)
         run: bun test src/Core.TypeScript/hygiene/audit-cluster-tree-consumers.test.ts
 
+      # ADDED 2026-08-21, and it relaxes this job's stated "node builtins only"
+      # design ON PURPOSE. The observability-chain audit below parses Helm
+      # `valuesObject` YAML, and the honest options were (a) install the `yaml`
+      # package this repo already declares, or (b) hand-roll YAML extraction
+      # with regexes. (b) was refused: a regex YAML reader that silently
+      # mis-parses a nested block would produce a GREEN audit over a config it
+      # never understood, which is precisely the false-green class this audit
+      # exists to catch. Paying ~seconds of install to avoid inventing a
+      # fragile parser is the correct trade. First observed as
+      # `Cannot find package 'yaml'` in run 96651130473.
+      - name: Install bun dependencies (the chain audit needs `yaml`)
+        run: bun install --frozen-lockfile
+
+      # 2026-08-20 — the observability chain was broken at every link and every
+      # break was values-only, so helm template, kubeconform and yamllint were
+      # all green on all of them. Measured on the tree as it shipped: Alloy had
+      # three sinks and zero sources, its Loki sink named a Service the chart
+      # does not render, and every alert routed to a receiver named "null".
+      # This audit refuses all three classes. It needs no network and no helm:
+      # Service names come from a rendered roster that is freshness-keyed to the
+      # target Application, so a chart bump without --refresh fails as STALE
+      # rather than asserting a stale render. MEASURED: 0.4 s, bun + yaml only.
+      - name: Observability chain (no sink without a source, no alert into /dev/null)
+        run: bun src/Core.TypeScript/hygiene/audit-observability-chain.ts
+
+      # Proves the audit above can go red, including against the exact pre-fix
+      # content of the tree. MEASURED: 22 tests, 40 assertions, 0.5 s.
+      - name: Observability chain — mutation suite (proves it goes red)
+        run: bun test src/Core.TypeScript/hygiene/audit-observability-chain.test.ts
+
       - name: Install narrow YAML lint tools
         run: |
           set -euo pipefail
@@ -1436,11 +1466,21 @@ jobs:
       - name: Clone-at-a-tag is still sufficient (no ace-as-resolver)
         run: bun src/Core.TypeScript/hygiene/lint-clone-at-tag-is-sufficient.ts
 
+      # A flake ref evaluates PURE by default, and pure-eval `builtins.pathExists`
+      # on an absolute path returns FALSE rather than erroring (measured 2026-08-21,
+      # Nix 2.34.6). Every full-ai-cluster module reading /etc/zeta guards its
+      # readFile behind that pathExists, so a rebuild without --impure silently
+      # reverts hostname / k3s join endpoint / segment address and DROPS the
+      # operator's authorized SSH keys. Guarded here because the failure is silent.
+      - name: Documented flake rebuilds still carry --impure (silent-revert guard)
+        run: bun src/Core.TypeScript/hygiene/lint-nixos-rebuild-needs-impure.ts
+
       - name: Audit + selector unit tests (a check that cannot fail is not a check)
         run: |
           bun test \
             src/Core.TypeScript/hygiene/audit-build-graph-completeness.test.ts \
             src/Core.TypeScript/hygiene/lint-clone-at-tag-is-sufficient.test.ts \
+            src/Core.TypeScript/hygiene/lint-nixos-rebuild-needs-impure.test.ts \
             src/Core.TypeScript/ci/affected-legs.test.ts
 
       # OBSERVE-ONLY. Nothing reads these outputs yet, and that is deliberate: the
@@ -1604,51 +1644,19 @@ jobs:
           # must be present for the PR-scoped markdown diff below.
           fetch-depth: 2
 
-      - name: Cache install.sh outputs (mise runtimes + dotnet tools + verifier jars)
-        # Comprehensive cache — see lint-shell job above for the
-        # rationale. PR #23 2026-04-28 root-cause was a transient
-        # 502 on bun-1.3.13 download from GitHub releases CDN
-        # (bun is what mise's npm: backend uses to run
-        # markdownlint-cli2); cache hit avoids the CDN entirely.
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      # This job needs Bun, markdownlint-cli2, and tracked TypeScript only.
+      # Running the full workstation/cluster bootstrap made a 553 MB apt
+      # manifest download capable of consuming its 12-minute job cap before
+      # markdownlint began. `packageManager` pins this runtime and
+      # `bun.lock` pins the linter; the full setup graph remains the path for
+      # developer machines, cluster nodes, and jobs that consume its tools.
+      - name: Setup pinned Bun
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
-          path: |
-            ~/.local/bin/mise
-            ~/.local/share/mise
-            ~/.cache/mise
-            ~/.dotnet/tools
-            ~/.elan
-            ~/.config/zeta
-            ~/.rustup/toolchains/1.87.0-*
-            ~/.rustup/settings.toml
-            ~/.rustup/update-hashes
-            ~/.cargo
-            ~/.cache/zeta/from-autotools-tarball/*.tgz
-          key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
+          bun-version: "1.3.13"
 
-      - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
-        # See lint-shell job above for retry rationale (Aaron 2026-04-28
-        # PR #23 mise+bun-1.3.13 502).
-        run: |
-          set -euo pipefail
-          for attempt in 1 2 3 4 5; do
-            if ./tools/setup/install.sh; then exit 0; fi
-            [ "$attempt" = "5" ] && { echo "install.sh failed after 5 attempts"; exit 1; }
-            # Backoff: 10s, 30s, 60s, 120s — covers transient CDN
-            # blips from short-burst-and-recover up to multi-minute
-            # outages. Aaron 2026-04-28 input: bumped from 3 to 5
-            # because PR #23's bun-1.3.13 502 burned all 3 prior
-            # mise-internal retries and a 3-attempt wrapper on top
-            # didn't add enough margin.
-            case "$attempt" in
-              1) backoff=10 ;;
-              2) backoff=30 ;;
-              3) backoff=60 ;;
-              4) backoff=120 ;;
-            esac
-            echo "install.sh attempt $attempt failed; retrying in ${backoff}s..." >&2
-            sleep "$backoff"
-          done
+      - name: Install JavaScript dependencies from the locked graph
+        run: bun install --frozen-lockfile
 
       - name: Run markdownlint (scoped to the PR's own diff on pull_request)
         # Drift-and-heal ADR item 4 (workitem 081KX3KA3ES08QG0R003TW3XDE, the
@@ -1667,11 +1675,11 @@ jobs:
           if [ "$GITHUB_EVENT_NAME" = "pull_request" ]; then
             git diff --name-only HEAD^1 HEAD > /tmp/changed-files.txt
             git ls-files > /tmp/tracked-files.txt
-            { mise exec -- markdownlint-cli2 "**/*.md" 2>&1 || true; } \
-              | mise exec -- bun src/Core.TypeScript/hygiene/scoped-lint.ts \
+            { bunx --no-install markdownlint-cli2 "**/*.md" 2>&1 || true; } \
+              | bun src/Core.TypeScript/hygiene/scoped-lint.ts \
                   --changed /tmp/changed-files.txt --tracked /tmp/tracked-files.txt
           else
-            mise exec -- markdownlint-cli2 "**/*.md"
+            bunx --no-install markdownlint-cli2 "**/*.md"
           fi
 
   lint-typescript:
@@ -1694,45 +1702,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - name: Cache install.sh outputs (mise runtimes + dotnet tools + verifier jars)
-        # Comprehensive cache — see lint-shell job above for the
-        # rationale. Bun is what mise installs and what the tsc step
-        # consumes; cache hit avoids the bun-1.3.13 GitHub releases
-        # CDN entirely (same flake class as PR #23 2026-04-28).
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      # Strict TypeScript analysis consumes only the repository's Bun runtime
+      # and lockfile-managed dev dependencies. Do not download the complete
+      # apt workstation/cluster manifest before this narrow check starts.
+      - name: Setup pinned Bun
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
-          path: |
-            ~/.local/bin/mise
-            ~/.local/share/mise
-            ~/.cache/mise
-            ~/.dotnet/tools
-            ~/.elan
-            ~/.config/zeta
-            ~/.rustup/toolchains/1.87.0-*
-            ~/.rustup/settings.toml
-            ~/.rustup/update-hashes
-            ~/.cargo
-            ~/.cache/zeta/from-autotools-tarball/*.tgz
-          key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
-
-      - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
-        # Provides bun via mise's `bun = "1.3"` pin in .mise.toml.
-        # See lint-shell job above for retry rationale (Aaron 2026-04-28
-        # PR #23 mise+bun-1.3.13 502).
-        run: |
-          set -euo pipefail
-          for attempt in 1 2 3 4 5; do
-            if ./tools/setup/install.sh; then exit 0; fi
-            [ "$attempt" = "5" ] && { echo "install.sh failed after 5 attempts"; exit 1; }
-            case "$attempt" in
-              1) backoff=10 ;;
-              2) backoff=30 ;;
-              3) backoff=60 ;;
-              4) backoff=120 ;;
-            esac
-            echo "install.sh attempt $attempt failed; retrying in ${backoff}s..." >&2
-            sleep "$backoff"
-          done
+          bun-version: "1.3.13"
 
       - name: Install npm devDependencies (typescript@6.0.3 + eslint stack)
         # tsc lives in node_modules/.bin via the typescript devDep
@@ -1982,40 +1958,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - name: Cache install.sh outputs (mise runtimes + dotnet tools + verifier jars)
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      # The committed oracle comparisons, Ace suite, and Q# source oracles
+      # intentionally do not execute the F#/Rust/QDK toolchains. Their actual
+      # dependency graph is Bun plus the repository lockfile (including
+      # z3-solver), so use that declared narrow graph instead of the full apt
+      # workstation/cluster installation.
+      - name: Setup pinned Bun
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
-          path: |
-            ~/.local/bin/mise
-            ~/.local/share/mise
-            ~/.cache/mise
-            ~/.dotnet/tools
-            ~/.elan
-            ~/.config/zeta
-            ~/.rustup/toolchains/1.87.0-*
-            ~/.rustup/settings.toml
-            ~/.rustup/update-hashes
-            ~/.cargo
-            ~/.cache/zeta/from-autotools-tarball/*.tgz
-          key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
-
-      - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
-        # Provides bun via mise (.mise.toml pin); shellenv wires BASH_ENV so later run: steps
-        # have bun on PATH. Retry rationale per lint-typescript (mise+bun CDN 502 flake class).
-        run: |
-          set -euo pipefail
-          for attempt in 1 2 3 4 5; do
-            if ./tools/setup/install.sh; then exit 0; fi
-            [ "$attempt" = "5" ] && { echo "install.sh failed after 5 attempts"; exit 1; }
-            case "$attempt" in
-              1) backoff=10 ;;
-              2) backoff=30 ;;
-              3) backoff=60 ;;
-              4) backoff=120 ;;
-            esac
-            echo "install.sh attempt $attempt failed; retrying in ${backoff}s..." >&2
-            sleep "$backoff"
-          done
+          bun-version: "1.3.13"
 
       - name: Install npm devDependencies (z3-solver for the ace solver Z3 differential, etc.)
         # The ace suite's solver.z3.test.ts spawns node to require('z3-solver') (assert-dont-skip:
@@ -2052,6 +2003,53 @@ jobs:
       - name: Proof-lineage binary exception (no-binary-in-proof-lineage.md)
         run: bun src/Core.TypeScript/hygiene/audit-proof-lineage-binaries.ts
 
+      # Every zflash host arm must reach the ISO integrity gate before it writes to a block
+      # device. Measured on main 2026-08-21: the manifest check existed in the macOS arm and
+      # NOWHERE ELSE, so flash-usb-linux.ts and flash-usb-windows.ts wrote an image with no
+      # integrity verification at all (081M0HG7X7B087G0R002A05DAP). A missing check is
+      # invisible to a test suite — the arms that have one stay green, and the arms that lack
+      # one have nothing to test — so only something that reads the call sites can see it.
+      #
+      # HERE rather than in build-ai-cluster-iso.yml on purpose, and this is the placement
+      # that workflow's own note asked for. The ISO lane runs on a subset of pushes, and when
+      # this step lived there and referenced a script that did not exist it silently killed
+      # ISO production for every run (#13102). On the cross-verify floor it blocks every PR,
+      # beside the other audits whose subject is "a check that did not run must never look
+      # like a check that passed".
+      - name: zflash host-arm parity (every arm verifies the ISO before writing)
+        run: bun src/Core.TypeScript/hygiene/audit-flash-entrypoint-parity.ts
+
+      # Every ArgoCD `targetRevision` must name a chart version upstream actually published.
+      # Measured on main 2026-08-20: applications/oz pins ziti-controller at 1.4.5, a version
+      # OpenZiti never shipped (their 1.x line ends at 1.3.4), so that Application can never
+      # sync — invisible because `oz` is one of 26 of 45 Applications no CI lane exercises, so
+      # nothing ever asked the registry for the chart (081M0JVD5YG087G0R002QDFR9H, #13313).
+      #
+      # OFFLINE. It resolves every coordinate against the checked-in snapshot
+      # `published-chart-versions.json` and opens no socket, so this step cannot redden a PR
+      # because a third-party registry is down — which is the only reason a resolvability
+      # check survives past its first outage. The network half is `--refresh`, and it runs on
+      # a schedule in chart-version-refresh.yml where it is allowed to fail loudly.
+      - name: ArgoCD chart targetRevisions resolve (offline, against the committed snapshot)
+        run: bun src/Core.TypeScript/hygiene/audit-chart-target-revisions.ts
+
+      # ARE THE DEFERRAL REASONS STILL TRUE? Every reasoned-exclusion registry in the cluster
+      # tree was audited for a reason being PRESENT and naming a lift condition, and by nothing
+      # for the reason being TRUE. Measured twice on 2026-08-21: `temporal`'s reason cited a
+      # baseline acknowledgement that had been deleted forty minutes earlier (#13472 -> #13483),
+      # and `oz`'s cited a chart pin the tree had already corrected (#13313 -> #13471). Both
+      # audits stayed green through both, because a false sentence with a `LIFTS WHEN:` clause
+      # has every mechanical property those checks look for.
+      #
+      # HERE rather than in k8s-argocd-health-test.yml, and the placement is the point: this
+      # checker resolves citations into `.github/workflows/` (a CI job a reason names) and into
+      # the chart roster, so a PR that renames a job would never trigger a path-filtered cluster
+      # workflow and would silently strand the reason that cites it. The cross-verify floor runs
+      # on every PR. OFFLINE, ~1s, no sockets -- it reads the committed baseline, the committed
+      # render snapshot and the committed roster.
+      - name: ArgoCD deferral reasons — every cited anchor still holds (offline)
+        run: bun src/Core.TypeScript/cluster/reason-truth.ts
+
       # A tracked source file holding a raw 0x00 byte reads as BINARY to grep/rg, so every
       # text audit silently skips it -- a check that did not run, looking exactly like one
       # that passed. `rg 'foldChain' key-epoch-ledger.ts` printed "binary file matches" and
@@ -2072,6 +2070,33 @@ jobs:
       # silently reworded definition, which is the case a term-name-only check would miss.
       - name: Concept registry vs published page (docs/CONCEPT-REGISTRY.md)
         run: bun src/Core.TypeScript/hygiene/audit-concept-registry-drift.ts
+
+      # A filesystem EXISTENCE test whose result gates a later operation on the same
+      # path. Check-then-use; TOCTOU; CWE-367. THREE instances landed on 2026-08-20, in
+      # one day, from three INDEPENDENT agents, all in code that had already been
+      # written and reviewed: cluster/restricted-namespace-workloads.test.ts
+      # (readdir + statSync().isDirectory() + readFileSync),
+      # cluster/storage-profiles.ts (existsSync -> readFileSync), and
+      # hygiene/audit-chart-target-revisions.ts (three sites in one file). Each was
+      # found by CodeQL one at a time, AFTER merge, because nothing in the tree looked
+      # for the shape. The pattern READS as defensive and prevents nothing.
+      #
+      # HERE rather than in codeql.yml on purpose. CodeQL runs on a schedule and
+      # reports into the security tab, so its verdict arrives after the merge that
+      # caused it -- which is how all three shipped. This step is offline, needs no
+      # database build, and blocks the PR.
+      #
+      # --baseline grandfathers the 288 pre-existing instances measured on main when
+      # this landed (AUDIT-LIFECYCLE.md step 5: the gate has to be landable without a
+      # 288-file cleanup first). NEW instances fail, and so does an edit that renames
+      # the path expression at a grandfathered site. --min-files is the scan floor: an
+      # audit that inspected nothing must not report success.
+      - name: No check-then-use filesystem races (TOCTOU, CWE-367)
+        run: |
+          bun src/Core.TypeScript/hygiene/lint-check-then-use-file-races.ts \
+            src/Core.TypeScript \
+            --min-files 1500 \
+            --baseline src/Core.TypeScript/hygiene/lint-check-then-use-file-races.baseline.json
 
       # Executes mumps_zeta_id.m (subset interpreter). compare.ts already pins
       # the committed JSON; this step runs the routine so a layout edit in the

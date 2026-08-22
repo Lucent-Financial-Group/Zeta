@@ -87,7 +87,7 @@ full-ai-cluster/
 
 - **OS layer** is reconciled by **Nix + NixOS**. Everything in
   `./nixos/` lands on a target machine via `nixos-install --flake`
-  (initial install) or `nixos-rebuild switch --flake` (updates).
+  (initial install) or `nixos-rebuild switch --impure --flake` (updates).
 - **Cluster layer** is reconciled by **ArgoCD**. K3S auto-applies
   the bootstrap manifests at `./k8s/bootstrap/` on first boot
   (Cilium → ArgoCD → root Application); ArgoCD then reads
@@ -215,8 +215,20 @@ Add new `nixosConfigurations.<host>` entries to `flake.nix` as needed.
 - ✅ **Hindsight** wired: vectorize-io OCI Helm chart at
   `ghcr.io/vectorize-io/charts/hindsight` v0.3.0. Bundled
   PostgreSQL by default (longhorn-backed); swap to external
-  CockroachDB once that Application is healthy. LLM key sourced
-  from a Vault-backed ExternalSecret (`hindsight-llm-api-key`).
+  CockroachDB once that Application is healthy. Reachable at
+  `http://hindsight-api.hindsight.svc.cluster.local` — the chart
+  names its Services `<release>-api` / `-control-plane` /
+  `-postgresql`, never plain `hindsight`.
+  - ❌ **The LLM key is NOT wired.** This line claimed a
+    "Vault-backed ExternalSecret (`hindsight-llm-api-key`)" from
+    PR #4913 until 2026-08-22, and there was never such an object:
+    `grep -rn "kind: ExternalSecret" full-ai-cluster infra` returns
+    nothing, and the Application's `api.llm.existingSecret` was a key
+    chart 0.3.0 does not read, so it rendered nothing either. The
+    chart's real key is a TOP-LEVEL `existingSecret: <name>` consumed
+    as `envFrom`, so the Secret must carry `HINDSIGHT_API_LLM_API_KEY`
+    as a KEY NAME. Wiring it before the ExternalSecret exists would
+    hold the api pod in `CreateContainerConfigError`.
 
 ## Secrets
 
@@ -255,7 +267,7 @@ replacement, and network policy.
 
 - **OS layer** changes: edit the relevant file under `./nixos/`,
   commit, push. Then on each target:
-  `sudo nixos-rebuild switch --flake /etc/zeta/full-ai-cluster#<host>`
+  `sudo nixos-rebuild switch --impure --flake /etc/zeta/full-ai-cluster#<host>`
 - **Cluster layer** changes: edit the relevant `Application.yaml`
   or referenced manifest, commit, push. ArgoCD reconciles within
   ~3 minutes.

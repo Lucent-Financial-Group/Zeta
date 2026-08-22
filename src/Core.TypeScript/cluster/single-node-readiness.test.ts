@@ -13,26 +13,49 @@ import {
   antiAffinityOf,
   appNameFor,
   auditAll,
+  capacityShortfallKey,
   classifyRedundancy,
+  collectLonghornReserves,
+  collectMeasuredNodes,
   collectRootAppIdentities,
+  deviceLineToGib,
+  longhornUsableFraction,
+  mostConservativeUsableFraction,
+  schedulableBoundGib,
+  OS_ROOT_ALLOWANCE_GIB,
   extractReplicaClaims,
   extractStorageClaims,
+  findCapacityProvenance,
   findFalseRedundancy,
   findRootAppCollisions,
+  findLedgerFigureDrift,
   findStorageBudgetOverruns,
+  instantiatedBlueprints,
+  ledgerComments,
+  lsblkSizeToGib,
+  quotedFigures,
+  readRenderedTotals,
   parseYamlDocuments,
   quantityToGib,
   storageTotals,
+  verifiedNodeCapacity,
   type AppManifest,
   type Ledger,
+  type MeasuredNode,
 } from "./single-node-readiness.ts";
 
 const LEDGER: Ledger = {
+  // Synthetic-tree fixture. The name is deliberately NOT one of the real
+  // catalogue's rungs: these tests audit trees that have no storage-profile
+  // catalogue, and pinning a real rung here would imply a check that is not
+  // running in them.
+  activeStorageProfile: "test-fixture",
   nodeDiskGib: 100,
   nodeCount: 1,
   budgetedStorageClasses: ["longhorn"],
   acknowledgedFalseRedundancy: [],
   acknowledgedRootAppDuplicates: [],
+  acknowledgedCapacityShortfall: [],
 };
 
 function manifest(path: string, yaml: string): AppManifest {
@@ -299,6 +322,245 @@ describe("findFalseRedundancy", () => {
   });
 });
 
+// ---------------------------------------------------------------------------
+// capacity-provenance: the comparator that has provenance
+// ---------------------------------------------------------------------------
+
+const NODE_2TB = `apiVersion: zeta.lucent-financial-group.com/v1
+kind: ClusterNode
+metadata:
+  name: node-fixture
+spec:
+  hostname: node-fixture
+  hardware:
+    storage:
+      - "/dev/nvme0n1 2048G"
+`;
+
+const NODE_SMALL = NODE_2TB.replace("2048G", "200G");
+
+/** A registration written by the post-boot self-register path: no storage at all. */
+const NODE_NO_STORAGE = `apiVersion: zeta.lucent-financial-group.com/v1
+kind: ClusterNode
+metadata:
+  name: node-blind
+spec:
+  hostname: node-blind
+  hardware:
+    cpu: "Intel(R) Core(TM) Ultra 9 185H"
+`;
+
+function nodesFixture(files: Readonly<Record<string, string>>): string {
+  const root = mkdtempSync(join(tmpdir(), "zeta-snr-nodes-"));
+  for (const [rel, text] of Object.entries(files)) {
+    mkdirSync(join(root, rel.slice(0, rel.lastIndexOf("/"))), { recursive: true });
+    writeFileSync(join(root, rel), text);
+  }
+  return root;
+}
+
+const LONGHORN_CLAIM = {
+  app: "tree/crdb",
+  path: "tree/k8s/applications/crdb/Application.yaml",
+  field: "spec.storageClassName",
+  storageClass: "longhorn",
+  gibibytes: 500,
+  replicas: 3,
+} as const;
+
+describe("lsblkSizeToGib — lsblk sizes are BINARY, unlike Kubernetes quantities", () => {
+  test.each([
+    ["931.5G", 931.5],
+    ["2048G", 2048],
+    ["1T", 1024],
+    ["1024M", 1],
+    ["115.5G", 115.5],
+  ])("%s -> %p GiB", (raw, expected) => {
+    expect(lsblkSizeToGib(raw as string)).toBeCloseTo(expected as number, 6);
+  });
+
+  // The whole reason this parser exists instead of reusing quantityToGib. If
+  // lsblk's "931.5G" went through the Kubernetes parser it would read as
+  // 867.5 GiB and the hardware bound would silently tighten by ~7%.
+  test("RED: the Kubernetes parser disagrees with lsblk on the same string", () => {
+    const lsblk = lsblkSizeToGib("931.5G");
+    const kubernetes = quantityToGib("931.5G");
+    expect(lsblk).toBeCloseTo(931.5, 6);
+    expect(kubernetes).not.toBeNull();
+    expect(kubernetes as number).toBeLessThan(900);
+  });
+
+  test("RED: a non-size yields null rather than a silent zero", () => {
+    expect(lsblkSizeToGib("nvme0n1")).toBeNull();
+    expect(lsblkSizeToGib("")).toBeNull();
+    expect(lsblkSizeToGib("12X")).toBeNull();
+  });
+
+  test("deviceLineToGib reads the size off a full lsblk line", () => {
+    expect(deviceLineToGib("/dev/nvme0n1 931.5G")).toBeCloseTo(931.5, 6);
+    expect(deviceLineToGib("  /dev/sda   115.5G  ")).toBeCloseTo(115.5, 6);
+    expect(deviceLineToGib("/dev/nvme0n1")).toBeNull();
+  });
+});
+
+describe("collectMeasuredNodes / verifiedNodeCapacity", () => {
+  test("sums every block device on a registration", () => {
+    const root = nodesFixture({
+      "maintainers/a/cluster-nodes/n1/node.yaml": NODE_2TB.replace(
+        '      - "/dev/nvme0n1 2048G"\n',
+        '      - "/dev/nvme0n1 931.5G"\n      - "/dev/sda 115.5G"\n',
+      ),
+    });
+    try {
+      const nodes = collectMeasuredNodes(root);
+      expect(nodes).toHaveLength(1);
+      expect(nodes[0]?.devices).toHaveLength(2);
+      expect(nodes[0]?.totalGib).toBeCloseTo(1047, 6);
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+
+  // The load-bearing distinction: an unmeasured node must not read as a node
+  // with zero disks, because `min` over a zero would drag the bound to 0 and
+  // turn every catalogue into a false blocker.
+  test("RED: a registration with no hardware.storage is null, not zero", () => {
+    const root = nodesFixture({ "maintainers/a/cluster-nodes/n1/node.yaml": NODE_NO_STORAGE });
+    try {
+      const nodes = collectMeasuredNodes(root);
+      expect(nodes).toHaveLength(1);
+      expect(nodes[0]?.totalGib).toBeNull();
+      expect(verifiedNodeCapacity(nodes)).toBeNull();
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+
+  test("the floor is the SMALLEST measured node, and skips unmeasured ones", () => {
+    const root = nodesFixture({
+      "maintainers/a/cluster-nodes/big/node.yaml": NODE_2TB,
+      "maintainers/a/cluster-nodes/small/node.yaml": NODE_SMALL,
+      "maintainers/b/cluster-nodes/blind/node.yaml": NODE_NO_STORAGE,
+    });
+    try {
+      const nodes = collectMeasuredNodes(root);
+      expect(nodes).toHaveLength(3);
+      expect(verifiedNodeCapacity(nodes)?.totalGib).toBeCloseTo(200, 6);
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+
+  test("a YAML file outside cluster-nodes/ is not read as a registration", () => {
+    const root = nodesFixture({ "maintainers/a/keyring.yaml": NODE_2TB });
+    try {
+      expect(collectMeasuredNodes(root)).toEqual([]);
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+});
+
+describe("findCapacityProvenance", () => {
+  const big: MeasuredNode = { path: "m/n.yaml", hostname: "big", devices: ["/dev/a 2048G"], totalGib: 2048 };
+  const small: MeasuredNode = { path: "m/s.yaml", hostname: "small", devices: ["/dev/a 1047G"], totalGib: 1047 };
+  const blind: MeasuredNode = { path: "m/b.yaml", hostname: "blind", devices: [], totalGib: null };
+
+  test("green when the catalogue fits inside measured hardware", () => {
+    expect(findCapacityProvenance([LONGHORN_CLAIM], LEDGER, [big])).toEqual([]);
+  });
+
+  test("RED: exceeding every disk on the smallest node is a blocker", () => {
+    const findings = findCapacityProvenance([LONGHORN_CLAIM], LEDGER, [big, small]);
+    expect(findings).toHaveLength(1);
+    expect(findings[0]?.check).toBe("capacity-provenance");
+    expect(findings[0]?.severity).toBe("blocker");
+    expect(findings[0]?.message).toContain("small");
+    expect(findings[0]?.detail.at(-1)).toBe("acknowledge with: longhorn=1500GiB>>1047GiB@small");
+  });
+
+  // THE CORE CASE. Without a measured comparator the auditor used to compare
+  // against ledger.nodeDiskGib -- a number the ledger itself records as
+  // unsigned -- and print "no blockers.". A gate that cannot know must refuse.
+  test("RED: nothing measured REFUSES rather than falling back to nodeDiskGib", () => {
+    const generous: Ledger = { ...LEDGER, nodeDiskGib: 999_999 };
+    const findings = findCapacityProvenance([LONGHORN_CLAIM], generous, [blind]);
+    expect(findings).toHaveLength(1);
+    expect(findings[0]?.check).toBe("capacity-provenance");
+    expect(findings[0]?.severity).toBe("blocker");
+    expect(findings[0]?.message).toContain("UNVERIFIED");
+    expect(findings[0]?.detail.some((line) => line.includes("m/b.yaml"))).toBe(true);
+  });
+
+  test("RED: no registrations AT ALL refuses too — an empty set is not a pass", () => {
+    const findings = findCapacityProvenance([LONGHORN_CLAIM], LEDGER, []);
+    expect(findings).toHaveLength(1);
+    expect(findings[0]?.message).toContain("UNVERIFIED");
+  });
+
+  // The storage-profile override replaces the DECLARED side of the comparison.
+  // It must not be able to reach the MEASURED side: a profile small enough to
+  // fit anything still has nothing to be compared against when no hardware is
+  // registered, and "it would have fitted" is not a measurement.
+  test("RED: a storage-profile override does NOT bypass the UNVERIFIED refusal", () => {
+    const tiny = new Map<string, number>([["longhorn", 1]]);
+    const findings = findCapacityProvenance([LONGHORN_CLAIM], LEDGER, [], tiny);
+    expect(findings).toHaveLength(1);
+    expect(findings[0]?.message).toContain("UNVERIFIED");
+  });
+
+  // ...and it must not be able to make an oversubscription disappear either.
+  // The override is the CHECKED number, so it convicts on its own arithmetic.
+  test("a storage-profile override convicts on ITS total, not the derived one", () => {
+    const over = new Map<string, number>([["longhorn", 9_000]]);
+    const findings = findCapacityProvenance([LONGHORN_CLAIM], LEDGER, [big], over);
+    expect(findings).toHaveLength(1);
+    expect(findings[0]?.message).toContain("9000 GiB");
+    // ...and the same claims WITHOUT the override are fine against `big`,
+    // so the finding is the override's doing rather than the fixture's.
+    expect(findCapacityProvenance([LONGHORN_CLAIM], LEDGER, [big])).toEqual([]);
+  });
+
+  test("the UNVERIFIED refusal is NOT suppressible by an acknowledgement", () => {
+    const key = capacityShortfallKey("longhorn", 1500, blind);
+    const ledger: Ledger = { ...LEDGER, acknowledgedCapacityShortfall: [key, "longhorn"] };
+    expect(findCapacityProvenance([LONGHORN_CLAIM], ledger, [blind])).toHaveLength(1);
+  });
+
+  test("an acknowledgement must pin the exact arithmetic", () => {
+    const key = "longhorn=1500GiB>>1047GiB@small";
+    expect(
+      findCapacityProvenance([LONGHORN_CLAIM], { ...LEDGER, acknowledgedCapacityShortfall: [key] }, [small]),
+    ).toEqual([]);
+    // RED: the bare class, a stale declared side, and a stale measured side all
+    // fail to suppress. This is what stops the entry absorbing later drift.
+    for (const stale of ["longhorn", "longhorn=1400GiB>>1047GiB@small", "longhorn=1500GiB>>2048GiB@small"]) {
+      expect(
+        findCapacityProvenance([LONGHORN_CLAIM], { ...LEDGER, acknowledgedCapacityShortfall: [stale] }, [small]),
+      ).toHaveLength(1);
+    }
+  });
+
+  test("RED: an acknowledged shortfall re-opens when a PVC grows", () => {
+    const key = "longhorn=1500GiB>>1047GiB@small";
+    const ledger: Ledger = { ...LEDGER, acknowledgedCapacityShortfall: [key] };
+    const grown = { ...LONGHORN_CLAIM, gibibytes: 501 };
+    expect(findCapacityProvenance([grown], ledger, [small])).toHaveLength(1);
+  });
+
+  test("RED: an acknowledged shortfall re-opens when a SMALLER node registers", () => {
+    const key = "longhorn=1500GiB>>1047GiB@small";
+    const ledger: Ledger = { ...LEDGER, acknowledgedCapacityShortfall: [key] };
+    const tiny: MeasuredNode = { path: "m/t.yaml", hostname: "tiny", devices: ["/dev/a 100G"], totalGib: 100 };
+    expect(findCapacityProvenance([LONGHORN_CLAIM], ledger, [small, tiny])).toHaveLength(1);
+  });
+
+  test("an unbudgeted StorageClass is out of scope, so no comparator is demanded", () => {
+    const local = { ...LONGHORN_CLAIM, storageClass: "zeta-local-path" };
+    expect(findCapacityProvenance([local], LEDGER, [])).toEqual([]);
+  });
+});
+
 describe("appNameFor tree-qualifies, so two trees never merge", () => {
   test.each([
     ["full-ai-cluster/k8s/applications/cockroachdb/Application.yaml", "full-ai-cluster/cockroachdb"],
@@ -336,12 +598,19 @@ describe("appNameFor tree-qualifies, so two trees never merge", () => {
 });
 
 describe("auditAll end-to-end over a synthetic tree", () => {
+  // 2048 GiB measured, deliberately ABOVE the 1024 GiB nodeDiskGib these tests
+  // budget with. That gap is what keeps `storage-budget` and
+  // `capacity-provenance` separable: the budget tests below can push the
+  // catalogue past 1024 without also tripping the hardware bound, which proves
+  // the two checks are different comparators rather than one wearing two names.
   function fixture(): string {
     const root = mkdtempSync(join(tmpdir(), "zeta-snr-"));
     mkdirSync(join(root, "tree/k8s/applications/cockroachdb"), { recursive: true });
     mkdirSync(join(root, "tree/k8s/bootstrap"), { recursive: true });
+    mkdirSync(join(root, "maintainers/tester/cluster-nodes/node-fixture"), { recursive: true });
     writeFileSync(join(root, "tree/k8s/applications/cockroachdb/Application.yaml"), CRDB);
     writeFileSync(join(root, "tree/k8s/bootstrap/root-application.yaml"), ROOT_A);
+    writeFileSync(join(root, "maintainers/tester/cluster-nodes/node-fixture/node.yaml"), NODE_2TB);
     return root;
   }
 
@@ -397,6 +666,41 @@ describe("auditAll end-to-end over a synthetic tree", () => {
     }
   });
 
+  // End-to-end form of the defect this check was written for: an enormous
+  // nodeDiskGib keeps `storage-budget` quiet, and with no measured registration
+  // the OLD auditor printed "no blockers." and exited 0. It must refuse instead.
+  test("RED: deleting the node registration makes the whole audit refuse, not pass", () => {
+    const root = fixture();
+    try {
+      rmSync(join(root, "maintainers"), { recursive: true, force: true });
+      const report = auditAll(
+        { ...LEDGER, nodeDiskGib: 999_999, acknowledgedFalseRedundancy: ["tree/cockroachdb"] },
+        roots,
+        root,
+      );
+      expect(report.findings.map((finding) => finding.check)).toEqual(["capacity-provenance"]);
+      expect(report.findings[0]?.message).toContain("UNVERIFIED");
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+
+  test("RED: shrinking the registered node below the catalogue is caught", () => {
+    const root = fixture();
+    try {
+      writeFileSync(join(root, "maintainers/tester/cluster-nodes/node-fixture/node.yaml"), NODE_SMALL);
+      const report = auditAll(
+        { ...LEDGER, nodeDiskGib: 999_999, acknowledgedFalseRedundancy: ["tree/cockroachdb"] },
+        roots,
+        root,
+      );
+      expect(report.findings.map((finding) => finding.check)).toEqual(["capacity-provenance"]);
+      expect(report.findings[0]?.detail.at(-1)).toBe("acknowledge with: longhorn=300GiB>>200GiB@node-fixture");
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+
   test("RED: a new unacknowledged multi-replica workload is caught", () => {
     const root = fixture();
     try {
@@ -428,10 +732,593 @@ describe("auditAll end-to-end over a synthetic tree", () => {
   });
 });
 
+// ---------------------------------------------------------------------------
+// SCHEDULABLE capacity. The gate compares declared capacity against the RAW sum
+// of every block device, which Longhorn will never hand out in full. These pin
+// the estimate that gets printed beside it, and — because the estimate is a
+// report and not a gate — they also pin that it is derived from the DEPLOYED
+// settings rather than from a number somebody remembered.
+// ---------------------------------------------------------------------------
+
+function manifestOf(path: string, body: string): AppManifest {
+  return { app: path, path, docs: parseYamlDocuments(body, path) };
+}
+
+const LONGHORN_CHART_DEFAULTS = `apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata: { name: longhorn }
+spec:
+  source:
+    chart: longhorn
+    helm:
+      valuesObject:
+        defaultSettings:
+          defaultDataPath: /var/lib/longhorn
+`;
+
+const LONGHORN_EXPLICIT = `apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata: { name: longhorn }
+spec:
+  source:
+    chart: longhorn
+    helm:
+      valuesObject:
+        defaultSettings:
+          storageOverProvisioningPercentage: 200
+          storageMinimalAvailablePercentage: 15
+`;
+
+describe("longhornUsableFraction", () => {
+  test("chart defaults give 75% — min(100, 100 - 25)", () => {
+    expect(longhornUsableFraction(null, null)).toBe(0.75);
+  });
+
+  test("explicit 200/15 gives 85%", () => {
+    expect(longhornUsableFraction(200, 15)).toBe(0.85);
+  });
+
+  // The bug this shape prevents. Over-provisioning is a THIN-provisioning
+  // allowance; the minimal-available floor is about real free bytes and does
+  // not care what was promised. Multiplying them would let a thin-provisioning
+  // knob buy physical capacity — 200% x 75% = 150% of a disk — which is exactly
+  // the arithmetic behind the ReplicaSchedulingFailure in this file's header.
+  test("RED: over-provisioning cannot buy more than the disk", () => {
+    expect(longhornUsableFraction(200, 25)).toBe(0.75);
+    expect(longhornUsableFraction(200, 25)).toBeLessThanOrEqual(1);
+  });
+
+  test("a 100% minimal-available floor leaves nothing, and never goes negative", () => {
+    expect(longhornUsableFraction(100, 100)).toBe(0);
+    expect(longhornUsableFraction(100, 150)).toBe(0);
+  });
+});
+
+describe("collectLonghornReserves", () => {
+  test("an unset percentage reads as null, not as zero", () => {
+    const [reserve] = collectLonghornReserves([manifestOf("a/Application.yaml", LONGHORN_CHART_DEFAULTS)]);
+    expect(reserve?.overProvisioningPercentage).toBeNull();
+    expect(reserve?.minimalAvailablePercentage).toBeNull();
+    expect(reserve?.usableFraction).toBe(0.75);
+  });
+
+  test("a set percentage is read off the manifest", () => {
+    const [reserve] = collectLonghornReserves([manifestOf("b/Application.yaml", LONGHORN_EXPLICIT)]);
+    expect(reserve?.overProvisioningPercentage).toBe(200);
+    expect(reserve?.usableFraction).toBe(0.85);
+  });
+
+  test("Applications for other charts are not Longhorn reserves", () => {
+    expect(collectLonghornReserves([manifestOf("c/Application.yaml", CRDB)])).toEqual([]);
+  });
+
+  // The two trees disagree and only one can own the cluster, so the tighter one
+  // is taken. A guess between them would put an assumption inside a bound.
+  test("mostConservativeUsableFraction takes the tighter of a disagreeing pair", () => {
+    const reserves = collectLonghornReserves([
+      manifestOf("b/Application.yaml", LONGHORN_EXPLICIT),
+      manifestOf("a/Application.yaml", LONGHORN_CHART_DEFAULTS),
+    ]);
+    expect(reserves).toHaveLength(2);
+    expect(mostConservativeUsableFraction(reserves)).toBe(0.75);
+  });
+
+  // RED: no Longhorn in the tree must not read as an unlimited disk.
+  test("RED: an empty reserve list falls back to the chart default, not to 100%", () => {
+    expect(mostConservativeUsableFraction([])).toBe(0.75);
+  });
+});
+
+describe("schedulableBoundGib", () => {
+  test("holds back the OS root, then applies the usable fraction", () => {
+    expect(schedulableBoundGib(1047, 0.75, 1, 30)).toBeCloseTo(762.75, 2);
+  });
+
+  test("scales with node count", () => {
+    expect(schedulableBoundGib(100, 0.75, 3, 0)).toBe(225);
+  });
+
+  test("RED: a disk smaller than the OS allowance is zero schedulable, never negative", () => {
+    expect(schedulableBoundGib(10, 0.75, 1, 30)).toBe(0);
+  });
+
+  test("the OS root allowance is a named constant, not a literal", () => {
+    expect(OS_ROOT_ALLOWANCE_GIB).toBe(30);
+  });
+});
+
 describe("the checked-in ledger keeps main green", () => {
+  // Mirrors main() exactly, catalogue included. A version of this test that
+  // omitted the catalogue would audit the repo against the DERIVED longhorn
+  // total instead of the checked one -- i.e. it would assert green on a
+  // comparison the CI command does not make.
   test("the repo audits clean against its own ledger", async () => {
-    const { readLedger, DEFAULT_LEDGER_PATH } = await import("./single-node-readiness.ts");
-    const report = auditAll(readLedger(DEFAULT_LEDGER_PATH));
+    const { readLedger, DEFAULT_LEDGER_PATH, DEFAULT_ROOTS, DEFAULT_REGISTRATIONS_ROOT } =
+      await import("./single-node-readiness.ts");
+    const { loadCatalogue } = await import("./storage-profiles.ts");
+    const report = auditAll(
+      readLedger(DEFAULT_LEDGER_PATH),
+      DEFAULT_ROOTS,
+      undefined,
+      DEFAULT_REGISTRATIONS_ROOT,
+      loadCatalogue(),
+    );
     expect(report.findings).toEqual([]);
+  });
+
+  // Proof the catalogue override is load-bearing rather than decorative.
+  //
+  // This test used to get that proof for free: the acknowledged shortfall key
+  // pinned the CHECKED total, so auditing without the catalogue produced the
+  // DERIVED total, the key stopped matching, and the capacity finding fired.
+  // Shrinking the cluster to fit its measured hardware retired that
+  // acknowledgement -- which is the point of the round -- and took the free
+  // proof with it. Both totals now sit under the measured bound, so neither
+  // convicts, and the old assertion would have gone green for the wrong reason:
+  // a check that stopped being able to fail, wearing the face of one that
+  // passed. The same claim is therefore made directly.
+  test("RED: the catalogue override changes the verdict — the two oracles still disagree", async () => {
+    const readiness = await import("./single-node-readiness.ts");
+    const { loadCatalogue, profileTotalGib } = await import("./storage-profiles.ts");
+    const ledger = readiness.readLedger(readiness.DEFAULT_LEDGER_PATH);
+    const checked = profileTotalGib(loadCatalogue(), ledger.activeStorageProfile);
+    const claims = readiness
+      .loadManifests(readiness.DEFAULT_ROOTS)
+      .flatMap((manifest) => readiness.extractStorageClaims(manifest));
+    const derived = new Map(readiness.storageTotals(claims)).get("longhorn") ?? 0;
+
+    // The extractor cannot see mimir's zone-aware chart-default pod counts, so
+    // it reads LOW. If these ever converge the override has stopped doing
+    // anything and the mechanism should be deleted rather than believed.
+    expect(derived).toBeLessThan(checked);
+
+    // A node sized BETWEEN the two readings convicts on the checked total and
+    // acquits on the derived one. That difference is the override's whole job:
+    // comparing a disk against the smaller of two numbers because it is the one
+    // we happened to derive is how a gate stops being one.
+    const midpoint = (derived + checked) / 2;
+    const between: MeasuredNode = {
+      path: "synthetic/node.yaml",
+      hostname: "node-between",
+      devices: [`/dev/synthetic ${midpoint.toFixed(1)}G`],
+      totalGib: midpoint,
+    };
+    const withOverride = findCapacityProvenance(claims, ledger, [between], new Map([["longhorn", checked]]));
+    const withoutOverride = findCapacityProvenance(claims, ledger, [between], null);
+    expect(withOverride.map((finding) => finding.check)).toEqual(["capacity-provenance"]);
+    expect(withoutOverride).toEqual([]);
+  });
+
+  test("RED: readLedger refuses a ledger with no activeStorageProfile", async () => {
+    const { readLedger } = await import("./single-node-readiness.ts");
+    const dir = mkdtempSync(join(tmpdir(), "zeta-ledger-"));
+    try {
+      const path = join(dir, "ledger.json");
+      writeFileSync(path, JSON.stringify({ nodeDiskGib: 100, nodeCount: 1 }), "utf8");
+      expect(() => readLedger(path, dir)).toThrow(/activeStorageProfile/);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+});
+
+// ---------------------------------------------------------------------------
+// A BLANK storageClassName, a TEMPLATE that provisions nothing, and the prose
+// figures that quote the answer. All three landed 2026-08-22.
+// ---------------------------------------------------------------------------
+
+const BLANK_CLASS = `
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+spec:
+  source:
+    helm:
+      valuesObject:
+        persistence:
+          storageClassName: ""
+          size: 12Gi
+`;
+
+const BLUEPRINT = `
+apiVersion: platform.zeta.io/v1alpha1
+kind: Blueprint
+metadata:
+  name: mssql
+spec:
+  storage: { size: "8Gi", mountPath: /var/opt/mssql }
+  storageClassName: zeta-local-path
+`;
+
+const DEPLOYABLE = `
+apiVersion: platform.zeta.io/v1alpha1
+kind: Deployable
+metadata:
+  name: orders-db
+spec:
+  blueprint: mssql
+`;
+
+describe("extractStorageClaims — a blank storageClassName is the cluster DEFAULT, not absence", () => {
+  test("a blank class resolves to the supplied default and is counted", () => {
+    const claims = extractStorageClaims(manifest("t/k8s/applications/x/Application.yaml", BLANK_CLASS), {
+      clusterDefault: "zeta-local-path",
+    });
+    expect(claims).toHaveLength(1);
+    expect(claims[0]?.storageClass).toBe("zeta-local-path");
+    expect(claims[0]?.gibibytes).toBe(12);
+  });
+
+  test("RED: with no default declared the claim is DROPPED rather than guessed onto a named class", () => {
+    // The failure this refuses is the acquitting one: inventing a class would
+    // add 12 GiB to whichever class happened to be nearest, and comparing a
+    // disk against a total built that way is worse than not comparing it.
+    expect(extractStorageClaims(manifest("t/k8s/applications/x/Application.yaml", BLANK_CLASS), {})).toEqual([]);
+  });
+
+  test("the OLD behaviour — dropping a blank class outright — is what changed", () => {
+    // Pinned as a pair so the change is legible: same manifest, same code path,
+    // and the only difference is whether a default was known.
+    const withDefault = extractStorageClaims(manifest("t/k8s/applications/x/Application.yaml", BLANK_CLASS), {
+      clusterDefault: "zeta-local-path",
+    });
+    const without = extractStorageClaims(manifest("t/k8s/applications/x/Application.yaml", BLANK_CLASS), {
+      clusterDefault: null,
+    });
+    expect(withDefault.length - without.length).toBe(1);
+  });
+
+  test("HONEST LIMIT: no manifest in the real tree writes a blank class today", async () => {
+    // So the paragraph above closes a hole rather than fixing an observed miss,
+    // and saying so is the point of the test. If this ever goes red, a real
+    // claim started depending on the resolution and the ledger's prose about
+    // "changes no number right now" has to be re-measured.
+    const readiness = await import("./single-node-readiness.ts");
+    const manifests = readiness.loadManifests(readiness.DEFAULT_ROOTS);
+    const withDefault = manifests.flatMap((entry) =>
+      readiness.extractStorageClaims(entry, { clusterDefault: "zeta-local-path" }),
+    );
+    const without = manifests.flatMap((entry) => readiness.extractStorageClaims(entry, { clusterDefault: null }));
+    expect(withDefault).toHaveLength(without.length);
+  });
+});
+
+describe("extractStorageClaims — a Blueprint is a template until a Deployable names it", () => {
+  test("a Blueprint nothing instantiates provisions nothing, so it is not counted", () => {
+    const claims = extractStorageClaims(manifest("t/k8s/applications/platform/blueprints.yaml", BLUEPRINT), {
+      instantiated: new Set<string>(),
+    });
+    expect(claims).toEqual([]);
+  });
+
+  test("RED: a Deployable naming it brings the capacity back, with no edit to the denylist", () => {
+    const deployables = instantiatedBlueprints([
+      manifest("t/k8s/applications/platform/examples/orders.yaml", DEPLOYABLE),
+    ]);
+    expect([...deployables]).toEqual(["mssql"]);
+    const claims = extractStorageClaims(manifest("t/k8s/applications/platform/blueprints.yaml", BLUEPRINT), {
+      instantiated: deployables,
+    });
+    expect(claims).toHaveLength(1);
+    expect(claims[0]?.gibibytes).toBe(8);
+  });
+
+  test("a Deployable naming a DIFFERENT blueprint does not resurrect this one", () => {
+    const other = instantiatedBlueprints([
+      manifest("t/x.yaml", DEPLOYABLE.replace("blueprint: mssql", "blueprint: postgres")),
+    ]);
+    expect(
+      extractStorageClaims(manifest("t/k8s/applications/platform/blueprints.yaml", BLUEPRINT), {
+        instantiated: other,
+      }),
+    ).toEqual([]);
+  });
+
+  test("the real tree: flowdent's mssql Blueprint is the 8 GiB that left the total", async () => {
+    const readiness = await import("./single-node-readiness.ts");
+    const manifests = readiness.loadManifests(readiness.DEFAULT_ROOTS);
+    const instantiated = readiness.instantiatedBlueprints(manifests);
+    expect(instantiated.has("mssql")).toBe(false);
+    const asIs = manifests.flatMap((entry) => readiness.extractStorageClaims(entry, { instantiated }));
+    // The counterfactual, not the old code path: write a Deployable naming
+    // `mssql` and this is what the total becomes. That the difference is
+    // exactly 8 GiB is what identifies the flowdent Blueprint as the whole of
+    // the overcount, rather than merely showing that SOMETHING moved.
+    const ifInstantiated = manifests.flatMap((entry) =>
+      readiness.extractStorageClaims(entry, { instantiated: new Set(["mssql"]) }),
+    );
+    const delta =
+      (new Map(readiness.storageTotals(ifInstantiated)).get("zeta-local-path") ?? 0) -
+      (new Map(readiness.storageTotals(asIs)).get("zeta-local-path") ?? 0);
+    expect(delta).toBe(8);
+  });
+});
+
+describe("readRenderedTotals — the render, per tree, because the trees are mutually exclusive", () => {
+  test("blank classes fold into the snapshot's own declared default, and trees stay separate", () => {
+    const dir = mkdtempSync(join(tmpdir(), "zeta-render-"));
+    try {
+      mkdirSync(join(dir, "src/Core.TypeScript/cluster"), { recursive: true });
+      writeFileSync(
+        join(dir, "src/Core.TypeScript/cluster/rendered-storage-claims.snapshot.json"),
+        JSON.stringify({
+          measuredOn: "2026-08-22",
+          clusterDefaultStorageClass: "zeta-local-path",
+          rendered: [
+            { appId: "full-ai-cluster/loki", storageClassName: "", gibibytes: 10, count: 2 },
+            { appId: "full-ai-cluster/vault", storageClassName: "zeta-local-path", gibibytes: 20, count: 1 },
+            { appId: "infra/gitlab", storageClassName: "", gibibytes: 8, count: 1 },
+            { appId: "full-ai-cluster/crdb", storageClassName: "longhorn", gibibytes: 48, count: 3 },
+          ],
+        }),
+        "utf8",
+      );
+      const totals = readRenderedTotals(dir);
+      expect(totals?.total.get("zeta-local-path")).toBe(48);
+      expect(totals?.byTree.get("zeta-local-path")?.get("full-ai-cluster")).toBe(40);
+      expect(totals?.byTree.get("zeta-local-path")?.get("infra")).toBe(8);
+      expect(totals?.total.get("longhorn")).toBe(144);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  test("RED: an unparseable rendered size is skipped, never counted as zero", () => {
+    const dir = mkdtempSync(join(tmpdir(), "zeta-render-"));
+    try {
+      mkdirSync(join(dir, "src/Core.TypeScript/cluster"), { recursive: true });
+      writeFileSync(
+        join(dir, "src/Core.TypeScript/cluster/rendered-storage-claims.snapshot.json"),
+        JSON.stringify({
+          measuredOn: "2026-08-22",
+          clusterDefaultStorageClass: "zeta-local-path",
+          rendered: [{ appId: "full-ai-cluster/x", storageClassName: "longhorn", gibibytes: null, count: 1 }],
+        }),
+        "utf8",
+      );
+      // Absent, NOT 0: a class whose only claim is unmeasurable must not read
+      // as a class that asks for nothing.
+      expect(readRenderedTotals(dir)?.total.has("longhorn")).toBe(false);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  // Mutation M17 (2026-08-22): replacing the ENOENT guard with a bare `catch {
+  // return null }` survived every other test. It must not, because "the file is
+  // not there" and "I could not read the file" are different answers and only
+  // the first one is safely null -- an unreadable snapshot swallowed as absent
+  // is a reading that silently stopped happening.
+  test("RED: an UNREADABLE snapshot throws — only ENOENT is null", () => {
+    const dir = mkdtempSync(join(tmpdir(), "zeta-render-"));
+    try {
+      // A directory where the file should be: readFileSync raises EISDIR (or
+      // EPERM on some platforms), never ENOENT.
+      mkdirSync(join(dir, "src/Core.TypeScript/cluster/rendered-storage-claims.snapshot.json"), {
+        recursive: true,
+      });
+      expect(() => readRenderedTotals(dir)).toThrow();
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  test("an absent snapshot is null, not an empty reading", () => {
+    const dir = mkdtempSync(join(tmpdir(), "zeta-render-"));
+    try {
+      expect(readRenderedTotals(dir)).toBeNull();
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+});
+
+describe("findLedgerFigureDrift — the ledger's PROSE numbers are checked too", () => {
+  const CLAIMS = [
+    { app: "t/a", path: "t/a.yaml", field: "f", storageClass: "zeta-local-path", gibibytes: 95, replicas: 1 },
+  ];
+
+  function ledgerAt(dir: string, comment: readonly string[]): string {
+    writeFileSync(
+      join(dir, "budget.json"),
+      JSON.stringify({
+        $comment_nodeDiskGib: comment,
+        activeStorageProfile: "measured",
+        nodeDiskGib: 2048,
+        nodeCount: 1,
+        budgetedStorageClasses: ["longhorn"],
+      }),
+      "utf8",
+    );
+    return "budget.json";
+  }
+
+  test("a quoted figure that equals the derived reading passes", () => {
+    const dir = mkdtempSync(join(tmpdir(), "zeta-figures-"));
+    try {
+      const path = ledgerAt(dir, ["    zeta-local-path    95 GiB   (the extractor's reading)"]);
+      expect(findLedgerFigureDrift(LEDGER, CLAIMS, null, path, dir)).toEqual([]);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  test("RED: the exact regression this exists for — 95 hand-edited back to 103", () => {
+    const dir = mkdtempSync(join(tmpdir(), "zeta-figures-"));
+    try {
+      const path = ledgerAt(dir, ["    zeta-local-path   103 GiB   (the extractor's reading)"]);
+      const findings = findLedgerFigureDrift(LEDGER, CLAIMS, null, path, dir);
+      expect(findings).toHaveLength(1);
+      expect(findings[0]?.check).toBe("ledger-figures");
+      expect(findings[0]?.severity).toBe("blocker");
+      expect(findings[0]?.detail.join("\n")).toContain("103 GiB");
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  test("a token that is not a known StorageClass is prose, not a figure", () => {
+    // `measured     967 GiB declared` is a rung name, not a class, and must not
+    // be adjudicated as one — otherwise the check fires on its own comment.
+    expect(quotedFigures(["    measured     967 GiB declared"], new Set(["longhorn"]))).toEqual([]);
+    expect(quotedFigures(["    longhorn      967 GiB   (x)"], new Set(["longhorn"]))).toHaveLength(1);
+  });
+
+  test("an inline mention with no alignment is not a figure", () => {
+    // `longhorn=1599GiB>>1047GiB@node-ad1efd` is an acknowledgement KEY, and
+    // those are checked by findCapacityProvenance, not here.
+    expect(quotedFigures(["  longhorn=1599GiB>>1047GiB@node-ad1efd"], new Set(["longhorn"]))).toEqual([]);
+  });
+
+  // THE WIRING, not just the function. Mutation M14 (2026-08-22) deleted the
+  // `findLedgerFigureDrift(...)` line from `auditAll` and every test above
+  // stayed green, because each of them calls the check DIRECTLY. A gate nothing
+  // invokes is a check that did not run wearing the face of one that passed --
+  // the exact class this file exists to refuse -- so the invocation is pinned
+  // here through auditAll's own findings.
+  test("RED: auditAll SURFACES the drift — deleting the call from the pipeline goes red", () => {
+    const root = mkdtempSync(join(tmpdir(), "zeta-snr-wired-"));
+    try {
+      mkdirSync(join(root, "tree/k8s/applications/cockroachdb"), { recursive: true });
+      writeFileSync(join(root, "tree/k8s/applications/cockroachdb/Application.yaml"), CRDB);
+      const budget = {
+        $comment_nodeDiskGib: ["    longhorn          999 GiB   (a figure nothing computes)"],
+        activeStorageProfile: "test-fixture",
+        nodeDiskGib: 1024,
+        nodeCount: 1,
+        budgetedStorageClasses: ["longhorn"],
+      };
+      writeFileSync(join(root, "budget.json"), JSON.stringify(budget), "utf8");
+      const report = auditAll(
+        { ...LEDGER, nodeDiskGib: 1024, acknowledgedFalseRedundancy: ["tree/cockroachdb"] },
+        ["tree/k8s/applications"],
+        root,
+        "maintainers",
+        null,
+        "budget.json",
+      );
+      expect(report.findings.map((finding) => finding.check)).toContain("ledger-figures");
+
+      // And the same tree with the figure CORRECTED (300 GiB is what the
+      // synthetic manifest derives) is green — so the check discriminates.
+      writeFileSync(
+        join(root, "budget.json"),
+        JSON.stringify({
+          ...budget,
+          $comment_nodeDiskGib: ["    longhorn          300 GiB   (the YAML-derived total)"],
+        }),
+        "utf8",
+      );
+      const green = auditAll(
+        { ...LEDGER, nodeDiskGib: 1024, acknowledgedFalseRedundancy: ["tree/cockroachdb"] },
+        ["tree/k8s/applications"],
+        root,
+        "maintainers",
+        null,
+        "budget.json",
+      );
+      expect(green.findings.map((finding) => finding.check)).not.toContain("ledger-figures");
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+
+  test("ledgerComments flattens every $comment* key and nothing else", () => {
+    const dir = mkdtempSync(join(tmpdir(), "zeta-figures-"));
+    try {
+      writeFileSync(
+        join(dir, "b.json"),
+        JSON.stringify({ $comment: ["a"], $comment_x: "b", nodeCount: 1, other: ["not a comment"] }),
+        "utf8",
+      );
+      expect(ledgerComments("b.json", dir)).toEqual(["a", "b"]);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  test("the REAL ledger's prose figures all still match a reading the auditor computes", async () => {
+    const readiness = await import("./single-node-readiness.ts");
+    const { loadCatalogue } = await import("./storage-profiles.ts");
+    const ledger = readiness.readLedger(readiness.DEFAULT_LEDGER_PATH);
+    const manifests = readiness.loadManifests(readiness.DEFAULT_ROOTS);
+    const claims = manifests.flatMap((entry) =>
+      readiness.extractStorageClaims(entry, {
+        clusterDefault: "zeta-local-path",
+        instantiated: readiness.instantiatedBlueprints(manifests),
+      }),
+    );
+    expect(
+      findLedgerFigureDrift(ledger, claims, loadCatalogue(), readiness.DEFAULT_LEDGER_PATH),
+    ).toEqual([]);
+    // And the check is NOT vacuous on the real file: it found figures to check.
+    const known = new Set([...ledger.budgetedStorageClasses, "zeta-local-path"]);
+    expect(
+      quotedFigures(ledgerComments(readiness.DEFAULT_LEDGER_PATH), known).length,
+    ).toBeGreaterThanOrEqual(6);
+  });
+});
+
+describe("the hindsight manifest renders what it declares", () => {
+  test("RED: no key the pinned chart does not read — api.llm and a top-level service are gone", async () => {
+    const { readFileSync } = await import("node:fs");
+    const { parseAllDocuments } = await import("yaml");
+    const text = readFileSync("full-ai-cluster/k8s/applications/hindsight/Application.yaml", "utf8");
+    const values = (parseAllDocuments(text)[0]?.toJS() as Record<string, unknown>).spec as Record<string, unknown>;
+    const helm = ((values["source"] as Record<string, unknown>)["helm"] ?? {}) as Record<string, unknown>;
+    const obj = (helm["valuesObject"] ?? {}) as Record<string, unknown>;
+    const api = (obj["api"] ?? {}) as Record<string, unknown>;
+
+    // hindsight 0.3.0 has NO `api.llm`, NO top-level `service`, and NO
+    // `postgresql.primary`. Each of those was in this file and rendered nothing.
+    expect(api["llm"]).toBeUndefined();
+    expect(obj["service"]).toBeUndefined();
+    expect(((obj["postgresql"] ?? {}) as Record<string, unknown>)["primary"]).toBeUndefined();
+
+    // And the keys it DOES read carry the intent the dead ones expressed.
+    expect((api["env"] as Record<string, unknown>)["HINDSIGHT_API_LLM_PROVIDER"]).toBe("groq");
+    expect((api["service"] as Record<string, unknown>)["port"]).toBe(80);
+    expect(
+      ((obj["postgresql"] as Record<string, unknown>)["persistence"] as Record<string, unknown>)["storageClass"],
+    ).toBe("longhorn");
+  });
+
+  test("the LLM API key is still unwired, and the file says so rather than implying otherwise", async () => {
+    // The honest half. `existingSecret` is the chart's real key for it, and
+    // setting it before an ExternalSecret exists would hold the pod in
+    // CreateContainerConfigError -- so its ABSENCE is the correct state today
+    // and this test pins it together with the reason.
+    const { readFileSync } = await import("node:fs");
+    const { parseAllDocuments } = await import("yaml");
+    const text = readFileSync("full-ai-cluster/k8s/applications/hindsight/Application.yaml", "utf8");
+    const obj = (
+      (
+        (
+          (parseAllDocuments(text)[0]?.toJS() as Record<string, unknown>).spec as Record<string, unknown>
+        )["source"] as Record<string, unknown>
+      )["helm"] as Record<string, unknown>
+    )["valuesObject"] as Record<string, unknown>;
+    expect(obj["existingSecret"]).toBeUndefined();
+    expect(text).toContain("HINDSIGHT_API_LLM_API_KEY");
+    expect(text).toContain("CreateContainerConfigError");
   });
 });

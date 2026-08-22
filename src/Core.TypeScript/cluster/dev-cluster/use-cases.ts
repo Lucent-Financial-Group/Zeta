@@ -1,6 +1,72 @@
-import { join } from "node:path";
+import { randomBytes } from "node:crypto";
 import type { DevClusterPorts } from "../ports.ts";
-import { DEV_CLUSTER_SUBSTRATE_DIR } from "./lib.ts";
+import { buildDevGrafanaAdminSecretManifest, DEV_GRAFANA_ADMIN_SECRET, devStorageAliasManifestPath } from "./lib.ts";
+
+/**
+ * Apply the dev/CI alias StorageClasses, BEFORE the app-of-apps root syncs.
+ *
+ * Order is load-bearing: a PVC created by a synced Application before its class
+ * exists sits `Pending` and only a `WaitForFirstConsumer` retry saves it. Both
+ * aliases bind to `rancher.io/local-path`, the provisioner kind and k3s already
+ * run -- this declares NAMES, never a second provisioner Deployment.
+ *
+ * Shared by the kind and k3d bring-ups on purpose. `isExcludedFromIncludedProof`
+ * is provider-independent, so if only one provider created the `longhorn` alias
+ * the harness would assert longhorn-backed Applications on a substrate that
+ * cannot bind them, and they would hang `Pending` instead of failing.
+ *
+ * EXPORTED because `apply-root-app.ts` is a THIRD entrypoint that applies the
+ * root catalogue without going through either bring-up. Left alone it would
+ * sync longhorn-backed Applications into a cluster with no such class -- the
+ * same hazard, reached by a door the bring-up falsifiers do not watch.
+ */
+export function applyDevStorageClassAliases(ports: DevClusterPorts): void {
+  console.log("Ensuring dev/CI alias StorageClasses (zeta-local-path, longhorn) ...");
+  ports.controlPlane.applyFileManifest(devStorageAliasManifestPath("zetaLocalPath"));
+  ports.controlPlane.applyFileManifest(devStorageAliasManifestPath("longhorn"));
+}
+
+/**
+ * Mint the dev/CI credentials that Applications expect to find ALREADY PRESENT,
+ * BEFORE the app-of-apps root syncs.
+ *
+ * Today that is exactly one Secret: `kube-prometheus-stack` points Grafana at
+ * `grafana.admin.existingSecret: grafana-admin-credentials`, on purpose, so that
+ * no admin password is committed to this repository. Nothing in the dev lane
+ * ever created that Secret, so Grafana sat in `CreateContainerConfigError`
+ * (`secret "grafana-admin-credentials" not found`) while the rest of the
+ * Application -- prometheus and alertmanager, both on bound PVCs -- ran 2/2.
+ *
+ * ORDER IS LOAD-BEARING for the same reason the StorageClass aliases are:
+ * kubelet resolves `envFrom`/`env.valueFrom` at container-create time and a
+ * missing Secret is a hard config error, so the Secret has to exist before the
+ * Application that consumes it syncs.
+ *
+ * THE PASSWORD IS DRAWN FRESH PER CLUSTER, never committed and never printed.
+ * A well-known constant would also have worked and would have been simpler; a
+ * drawn one cannot be promoted to a real deployment by anybody copying it,
+ * because there is nothing to copy. This is the ONLY place entropy enters --
+ * `buildDevGrafanaAdminSecretManifest` is pure and takes the value.
+ *
+ * AND IT IS IDEMPOTENT BY ASKING FIRST. Re-running a bring-up against a cluster
+ * that already exists is a supported path (both bring-ups say so), and a bare
+ * apply would rotate Grafana's admin password every time. `resourceExists`
+ * makes the second run a no-op instead.
+ *
+ * EXPORTED for the same reason `applyDevStorageClassAliases` is: `apply-root-app.ts`
+ * is a third door into the root catalogue that neither bring-up guards.
+ */
+export function applyDevBootstrapSecrets(ports: DevClusterPorts): void {
+  const { namespace, name } = DEV_GRAFANA_ADMIN_SECRET;
+  const ref = `secret/${name}`;
+  ports.controlPlane.ensureNamespace(namespace);
+  if (ports.controlPlane.resourceExists(ref, namespace)) {
+    console.log(`Dev/CI credential ${namespace}/${name} already present; leaving it alone.`);
+    return;
+  }
+  console.log(`Minting dev/CI credential ${namespace}/${name} (value is per-cluster and never logged) ...`);
+  ports.controlPlane.applyInlineManifest(buildDevGrafanaAdminSecretManifest(randomBytes(24).toString("base64url")));
+}
 
 export interface KindCiBringUpOptions {
   readonly configPath: string;
@@ -40,8 +106,8 @@ export function bringUpKindCiCluster(ports: DevClusterPorts, options: KindCiBrin
     true,
   );
 
-  console.log("Ensuring zeta-local-path StorageClass alias (dev/CI parity) ...");
-  controlPlane.applyFileManifest(join(DEV_CLUSTER_SUBSTRATE_DIR, "manifests", "zeta-local-path.yaml"));
+  applyDevStorageClassAliases(ports);
+  applyDevBootstrapSecrets(ports);
 
   if (!packages.releaseInstalled("argocd", "argocd")) {
     console.log("Installing ArgoCD ...");
@@ -131,6 +197,9 @@ export function bringUpK3dDevCluster(ports: DevClusterPorts, options: K3dDevBrin
   }
 
   controlPlane.waitForCrdEstablished("applications.argoproj.io", 120, true);
+
+  applyDevStorageClassAliases(ports);
+  applyDevBootstrapSecrets(ports);
 
   appCatalog.applyRootDevCatalog(options.gitRef, options.gitRepoUrl);
 }
