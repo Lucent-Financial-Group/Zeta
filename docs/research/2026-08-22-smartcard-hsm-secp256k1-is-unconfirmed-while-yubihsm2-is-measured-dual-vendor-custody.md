@@ -129,6 +129,49 @@ A TPM-only design has **no** device-layer recovery — losing the board loses th
 DKEK-capable token means the threshold exists **before** the cluster is large enough to provide it
 across nodes, which is precisely the window where the single-machine risk bites.
 
+## The actual inventory reframes the design — two TIERS, not two-per-node
+
+Aaron 2026-08-22: *"so we have one yubihsm and two of these comming, we will order what makes sense
+next, we are trying to create mini distributed conputer fleets with nation state resistant security
+like Itron."*
+
+**One YubiHSM 2 and two SmartCard-HSMs is not a shortfall of the two-per-node design — it is a
+better shape**, because the two device classes are not interchangeable:
+
+| tier | device | where it lives | role |
+|---|---|---|---|
+| **online / node** | YubiHSM 2 (1) | attached to a node, always powered | operational signing; secp256k1 **measured present** |
+| **offline / human** | SmartCard-HSM (2) | in Aaron's and Max's hands, unpowered | **DKEK threshold shares** — recovery, not operation |
+
+Two-per-node buys **vendor diversity against a firmware defect**. Two *tiers* buys something the
+custody problem actually needs: a key that is online and non-exportable, and a recovery path that is
+**offline, portable, and in separate hands**. The offline tier is the one that survives the failure
+the metal work identified — board loss — and it survives it *because* it is not in the board.
+
+So the near-term arrangement writes itself, and it needs no further hardware to be coherent:
+**YubiHSM signs, SmartCard-HSMs hold the threshold.** What to order next is then a real question with
+a shape — more YubiHSMs to extend the online tier as nodes are added, versus more SmartCard-HSMs to
+widen the threshold — rather than a shopping guess.
+
+## "Nation-state resistant like Itron" — the boundary, stated because it is load-bearing
+
+Aaron built Itron's mesh hardware, firmware, PKI and secure boot, and the security posture is the
+right target. **The topology is not**, and the distinction is already carved:
+`.claude/rules/itron-hub-patent-boundary-p2p-is-the-upgrade.md` records that the hub-and-agent
+patent (US10834144B2) is **assigned to Itron**, and — more importantly — that a mediating hub solves
+an asymmetry Zeta does not have. *Take the posture; never take the hub.*
+
+**And an honest limit on what an HSM buys against that adversary.** An HSM resists **key
+extraction**. A nation-state adversary does not have to extract a key:
+
+- **coercion of the holder** — which is precisely what a threshold across separate people mitigates and a single HSM does not
+- **supply-chain compromise** — which is why two vendors with different silicon and firmware lineage is the relevant diversity, and why Knight & Leveson's correlation warning below is not academic
+- **compromise of the host that asks the HSM to sign** — the HSM signs what it is asked; it does not judge
+
+So the hardware is necessary and nowhere near sufficient, and the parts of this design that actually
+carry the claim are the **threshold** and the **separation of hands**, not the tokens. Any writeup
+that leads with the HSM brand has the argument backwards.
+
 ## The threshold choice, which is not a detail
 
 Two HSMs per node is not one design, it is two, and they trade in opposite directions:
