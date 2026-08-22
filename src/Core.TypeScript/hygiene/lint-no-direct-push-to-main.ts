@@ -90,7 +90,7 @@
 //   1   at least one does
 //   2   configuration error (workflow dir missing)
 
-import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
+import { readFileSync, readdirSync, statSync } from "node:fs";
 import { dirname, join, relative, resolve } from "node:path";
 
 export const DRIFT_CLASS = "PM001";
@@ -206,7 +206,10 @@ export function importsOf(root: string, relPath: string, src: string): string[] 
     const spec = m[1]!;
     const base = resolve(root, dirname(relPath), spec);
     for (const cand of [base, `${base}.ts`, `${base}.mts`, `${base}.js`, `${base}.mjs`, join(base, "index.ts")]) {
-      if (existsSync(cand) && statSync(cand).isFile()) {
+      // ONE syscall, not exists-then-stat: `throwIfNoEntry: false` returns undefined for
+      // a missing path, so "does it exist" and "what is it" are answered by the same
+      // observation and there is no window for the entry to change in between.
+      if (statSync(cand, { throwIfNoEntry: false })?.isFile() === true) {
         out.add(relative(root, cand));
         break;
       }
@@ -333,7 +336,9 @@ export function runAudit(root: string = repoRoot()): AuditResult {
   while (queue.length > 0) {
     const rel = queue.shift()!;
     const abs = resolve(root, rel);
-    if (!existsSync(abs) || !statSync(abs).isFile()) continue;
+    // No stat at all: the only question is "can this be read as text", and `readFileSync`
+    // answers it in one syscall. A stat here would be a check-then-use race against the
+    // read that follows, and it would tell us nothing the read does not.
     let src: string;
     try {
       src = readFileSync(abs, "utf8");
