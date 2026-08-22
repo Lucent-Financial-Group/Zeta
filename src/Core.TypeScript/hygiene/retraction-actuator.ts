@@ -6,10 +6,40 @@
 // edge only GATHERS facts, STEPS the machine, and EXECUTES its commands.
 //
 // Per sovereign doctrine the command is push_retraction: a `git revert`
-// commit pushed directly to main. Known trap handled: GITHUB_TOKEN pushes
-// do not trigger workflows, so after pushing the edge DISPATCHES gate.yml
-// on main and the next tick's post_push_gate event reads build-and-test
-// check-runs on the pushed head by SHA (any event type).
+// commit that lands on main.
+//
+// HOW IT LANDS (changed 2026-08-22 — it previously could not land at all).
+// This edge used to run `git push origin HEAD:main`. That push cannot
+// succeed: ruleset "CI Gate" (16134995) makes `gate (required)` a required
+// status check on `main`, and a required check is evaluated at PUSH time
+// against the pushed tip, so a commit that has never been through a check
+// run is rejected before any check could start:
+//
+//     remote: - Required status check "gate (required)" is expected.
+//
+// `drift-sweep.yml` runs this file on every sweep and was GREEN throughout,
+// because `push_retraction` is only ever emitted after main has been red for
+// several consecutive ticks with no fleet heal in flight — a state the fleet
+// has not reached. That is the same latent vacuity class as the two workflows
+// fixed alongside this (`lockfile-healer`, `zetadb-scheduled-node`), one level
+// deeper: the fatal push is not in any workflow's YAML, it is behind a bun
+// invocation, so grepping `.github/workflows/**` never finds it. The failure
+// would have arrived at the worst possible moment — main already red, the
+// healer's one job now also failing, and the cause months old.
+//
+// The retraction now parks on `heartbeat/retraction-<sha>` and lands through a
+// PR with squash auto-merge armed, the same proven route as the telemetry
+// lanes. Three consequences worth naming:
+//   - The gate.yml-dispatch-on-main workaround is GONE. It existed because
+//     GITHUB_TOKEN pushes do not trigger workflows; a PAT-opened PR triggers
+//     them normally, so `gate` now runs on the retraction itself rather than
+//     being kicked off separately against main.
+//   - `pushedSha` is the revert commit on the staging branch, which is exactly
+//     the SHA `gate` reports its `build-and-test` check-runs against. The next
+//     tick's post_push_gate lookup is unchanged and still reads by SHA.
+//   - The revert commit carries its own AgencySignature block, because
+//     `squash_merge_commit_message` is COMMIT_MESSAGES: the landed commit
+//     message is built from the branch's commit messages, not the PR body.
 //
 // Fact-gathering (pure functions over plain data; the CLI fetches):
 //   openTicks   — trailing sweeps whose findings include BD001 (ledger).
@@ -28,8 +58,10 @@
 // bookkeeping commit (Riven-2: recipe verbatim).
 
 import { execSync } from "node:child_process";
-import { existsSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 
+import { openMergePR } from "../agent-heartbeats/merge-heartbeats-to-main.ts";
+import { isValidLane, stagingRef } from "../forge-host/github/flush-via-staging.ts";
 import { readLedger } from "./drift-ledger.ts";
 import { IDLE, step, type EpisodeEvent, type EpisodeState } from "./episode-protocol.ts";
 
@@ -95,6 +127,42 @@ function writeEpisodes(e: EpisodeFile): void {
 
 function sh(cmd: string): string {
   return execSync(cmd, { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] }).trim();
+}
+
+/**
+ * The retraction commit's message, signature block last and contiguous.
+ *
+ * It must be on the COMMIT and not only on the PR: the repository's
+ * `squash_merge_commit_message` is COMMIT_MESSAGES, so what lands on `main` is built
+ * from the branch's commit messages. `git revert` writes no trailers of its own, so a
+ * bare revert would arrive on main unsigned.
+ *
+ * `Action-Mode: autonomous-fail-closed` is the honest value: the actuator refuses and
+ * stands down (the `push_result: pushed=false` transition) rather than proceeding when
+ * the route fails.
+ */
+export function retractionCommitMessage(breakSha: string, episodeId: string, openTicks: number): string {
+  return [
+    `revert: retract ${breakSha.slice(0, 9)} (LD/BD001 sovereign auto-revert, episode ${episodeId})`,
+    "",
+    `main's build-and-test was red for ${String(openTicks)} consecutive tick(s) with no`,
+    "fleet heal in flight, and the break isolated to a single commit. A retraction is a",
+    "retraction of bytes, never a judgment of the lane.",
+    "",
+    `This reverts commit ${breakSha}.`,
+    "",
+    "Agency-Signature-Version: 1",
+    "Agent: retraction-actuator",
+    "Agent-Runtime: GitHub Actions",
+    "Agent-Model: deterministic TypeScript state machine (episode-protocol.ts)",
+    "Credential-Identity: github-actions[bot]",
+    "Credential-Mode: dedicated-agent",
+    "Human-Review: not-implied-by-credential",
+    "Human-Review-Evidence: none",
+    "Action-Mode: autonomous-fail-closed",
+    "Task: 081KZHGP45V",
+    "Co-authored-by: github-actions[bot] <github-actions[bot]@users.noreply.github.com>",
+  ].join("\n");
 }
 
 async function gh(path: string): Promise<unknown> {
@@ -183,19 +251,47 @@ if (invokedDirectly) {
       sh(`git config user.email "github-actions[bot]@users.noreply.github.com"`);
       sh("git fetch origin main");
       sh("git checkout -B retraction-work origin/main");
+      const lane = `retraction-${sha.slice(0, 9)}`;
+      if (!isValidLane(lane)) throw new Error(`retraction lane name is not a safe ref: ${lane}`);
+      const ref = stagingRef(lane);
+      const msgFile = `.git/RETRACTION_MSG_${sha.slice(0, 9)}`;
       try {
-        sh(`git revert --no-edit ${sha}`);
-        sh("git push origin HEAD:main");
+        // `--no-commit` so the message is ours: the revert must carry an
+        // AgencySignature block to arrive on main signed (see retractionCommitMessage).
+        sh(`git revert --no-commit ${sha}`);
+        writeFileSync(msgFile, `${retractionCommitMessage(sha, episodeId, openTicks)}\n`);
+        sh(`git commit --no-verify --file=${msgFile}`);
         pushedSha = sh("git rev-parse HEAD");
+        // `heartbeat/*` (ruleset 16934633) carries `deletion` only — no required checks,
+        // no non-fast-forward rule — so parking here always succeeds and the retraction
+        // is never lost even if the PR is slow to land.
+        sh(`git push --force-with-lease origin HEAD:refs/heads/${ref}`);
+        const opened = openMergePR(
+          repo,
+          ref,
+          "main",
+          `revert: retract ${sha.slice(0, 9)} — sovereign auto-revert (episode ${episodeId})`,
+          [
+            `Automated retraction of \`${sha}\` by the sovereign auto-revert healer (081KZHGP45V).`,
+            "",
+            `main's \`build-and-test\` was red for ${String(openTicks)} consecutive tick(s) with no fleet`,
+            "heal in flight, and the break isolated to this single commit.",
+            "",
+            "This PR exists rather than a direct push because ruleset \"CI Gate\" makes",
+            "`gate (required)` a required status check on `main`, evaluated at push time — a",
+            "direct push of a never-checked commit is rejected before any check can start.",
+            "The signature block that lands on `main` rides the revert COMMIT, not this body,",
+            "because `squash_merge_commit_message` is COMMIT_MESSAGES.",
+          ].join("\n"),
+        );
+        if ("error" in opened) throw new Error(opened.error);
         const pr = step(episodeId, machine, { kind: "push_result", tick: latestTick, pushed: true });
         machine = pr.state;
-        console.log(`actuator: retraction pushed ${pushedSha.slice(0, 9)} (reverts ${sha.slice(0, 9)})`);
-        // Bot pushes don't trigger workflows — dispatch the gate on main.
-        await fetch(`https://api.github.com/repos/${repo}/actions/workflows/gate.yml/dispatches`, {
-          method: "POST",
-          headers: { Authorization: `Bearer ${process.env["GH_TOKEN"]}`, Accept: "application/vnd.github+json" },
-          body: JSON.stringify({ ref: "main" }),
-        });
+        console.log(
+          `actuator: retraction ${pushedSha.slice(0, 9)} (reverts ${sha.slice(0, 9)}) parked on ${ref}; ` +
+            `PR #${String(opened.ok.number)} ${opened.ok.reused ? "re-used" : "opened"} (${opened.ok.url})` +
+            (opened.ok.armed ? ", squash auto-merge armed" : `, auto-merge NOT armed: ${opened.ok.armError ?? "unknown"}`),
+        );
         // Riven-2: the letter, recipe verbatim.
         const letter = `docs/letters/to-${r.command.notifyAuthor.persona.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-retraction-${sha.slice(0, 9)}.md`;
         writeFileSync(letter, [
@@ -220,6 +316,7 @@ if (invokedDirectly) {
         machine = pr.state;
         console.log(`actuator: push failed → ${machine.kind}: ${(err as Error).message.slice(0, 200)}`);
       } finally {
+        rmSync(msgFile, { force: true });
         sh("git checkout --detach origin/main 2>/dev/null || true");
       }
     }

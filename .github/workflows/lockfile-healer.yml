@@ -42,9 +42,38 @@
 # touches package.json or bun.lock — so the common case heals in one build cycle
 # rather than waiting for the next tick.
 #
-# Loop safety: the push uses the workflow's GITHUB_TOKEN, whose pushes do not
-# trigger workflows, and the commit message carries [skip ci]. Belt and suspenders,
-# matching drift-sweep.yml.
+# HOW IT LANDS (changed 2026-08-22 — it previously could not land at all)
+# ----------------------------------------------------------------------
+# This lane used to end in `git push origin HEAD:main`. That push cannot succeed:
+# ruleset "CI Gate" (16134995) makes `gate (required)` a required status check on
+# `main`, and a required check is evaluated at PUSH time against the pushed tip, so
+# a commit that has never been through a check run is rejected before any check
+# could start:
+#
+#     remote: - Required status check "gate (required)" is expected.
+#
+# The lane was nonetheless GREEN, because it only reaches the push on real lockfile
+# drift and its last heal landed 2026-08-09 — it was green for never doing its work,
+# and would have failed the first time it was actually needed. That is the vacuity
+# class: a check that cannot fail is not a check, and a lane that is green because it
+# no-ops is not a healed lane.
+#
+# It now lands the same way `tick-metrics`, `society` and the three cadences fixed in
+# #13808 do: `flush-via-staging.ts` parks the regenerated lockfile on
+# `heartbeat/lockfile-healer` and opens a PR with squash auto-merge armed. `gate`
+# runs on that PR — and it passes there precisely because the PR head carries the
+# healed lockfile — then GitHub squashes it onto main. The ruleset is not weakened
+# and nothing is disabled; the route is simply the legal one.
+#
+# COST OF THE CHANGE, STATED HONESTLY: a heal is no longer one push away, it is one
+# PR away, so the fix arrives a gate-run later than the old design intended. That
+# design's speed was never real — the push it depended on had been rejected since the
+# ruleset landed.
+#
+# Loop safety: the flush commit deliberately carries NO `[skip ci]`. On a direct push
+# to main it was harmless; on this route it is fatal, because it would suppress the
+# `pull_request` run of `gate` and the required check would never report, leaving the
+# PR unmergeable forever. `flush-via-staging.ts` refuses a skip token outright.
 
 name: lockfile-healer
 
@@ -60,7 +89,8 @@ on:
   workflow_dispatch: {}
 
 permissions:
-  contents: write # commits the regenerated lockfile
+  contents: write # pushes the heartbeat/lockfile-healer staging branch
+  pull-requests: write # opens the flush PR that carries the heal onto main
 
 concurrency:
   group: lockfile-healer
@@ -74,9 +104,20 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
 
       - name: Install bun
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+
+      # Start from `origin/main` unioned with anything still parked on
+      # `heartbeat/lockfile-healer` from a previous heal whose PR has not landed yet.
+      # Without the union, a second heal arriving while the first PR is still waiting
+      # on `gate` would reset to main, regenerate, and force-push over content that had
+      # not landed — and the detect below would re-diagnose a desync that is already
+      # fixed and queued.
+      - name: Prepare staging working tree
+        run: bun src/Core.TypeScript/forge-host/github/flush-via-staging.ts prepare --lane lockfile-healer
 
       - name: Detect (authoritative — the same command every consumer runs)
         id: detect
@@ -103,9 +144,17 @@ jobs:
           # ever rewrite the lockfile; if it has touched package.json or anything
           # else, the situation is not the one this healer was built for and a human
           # should look.
-          changed=$(git diff --name-only)
-          if [ "$changed" != "bun.lock" ]; then
-            echo "::error::expected only bun.lock to change, got: ${changed:-<nothing>}"
+          #
+          # Stated as "nothing OTHER than bun.lock moved" rather than "the changed set
+          # IS exactly bun.lock". The safety property is the same one — package.json is
+          # untouched — but the exact-equality form became wrong once `prepare` runs
+          # first: a heal still parked on the staging branch arrives ALREADY STAGED in
+          # the index, so if `bun install` reproduces it byte-for-byte the unstaged diff
+          # is empty and the old test failed the run for healing correctly. Staged and
+          # unstaged are both inspected, so nothing can hide in the index either.
+          other=$(git status --porcelain -- . | awk '{ print $NF }' | grep -v '^bun\.lock$' || true)
+          if [ -n "$other" ]; then
+            echo "::error::expected only bun.lock to change, got: $other"
             exit 1
           fi
 
@@ -116,23 +165,19 @@ jobs:
           # very condition that summoned the healer.
           bun install --frozen-lockfile
 
-      - name: Commit and push
+      - name: Flush the heal to main via staging branch + PR
         if: steps.detect.outputs.code == '1'
+        env:
+          # The enterprise forbids the Actions identity from creating pull requests, so
+          # a fine-grained PAT is required to OPEN the PR. Without one the healed
+          # lockfile still parks safely on `heartbeat/lockfile-healer` and the step
+          # reports why it could go no further — the heal is never lost, only delayed.
+          GH_TOKEN: ${{ secrets.ZETA_TELEMETRY_FLUSH_TOKEN || secrets.ZETA_PR_ARCHIVE_TOKEN || secrets.GITHUB_TOKEN }}
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add bun.lock
-          git commit -m "fix(deps): regenerate bun.lock (LD001 auto-heal) [skip ci]
-
-          package.json dependencies moved without a regenerated lockfile, so
-          \`bun install --frozen-lockfile\` was failing for every consumer.
-
-          Healed automatically: bun.lock only, verified with --frozen-lockfile
-          before pushing. package.json untouched."
-          # Rebase: the fleet pushes to main constantly and this lane only ever
-          # appends one regenerated file.
-          git pull --rebase --autostash origin main
-          git push origin HEAD:main
+          bun src/Core.TypeScript/forge-host/github/flush-via-staging.ts flush \
+            --lane lockfile-healer \
+            --paths bun.lock \
+            --message "fix(deps): regenerate bun.lock (LD001 auto-heal)"
 
       - name: Summary
         if: always()
@@ -142,7 +187,7 @@ jobs:
             echo
             case "${{ steps.detect.outputs.code }}" in
               0) echo "In sync — no action." ;;
-              1) echo "**Healed.** bun.lock regenerated, verified, and pushed." ;;
+              1) echo "**Healed.** bun.lock regenerated, verified, and flushed to \`heartbeat/lockfile-healer\` for a squash-merge PR onto main." ;;
               *) echo "**Indeterminate** — bun could not determine sync state. Refused to act; no lockfile was written." ;;
             esac
           } >> "$GITHUB_STEP_SUMMARY"

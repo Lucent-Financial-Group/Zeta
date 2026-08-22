@@ -1567,6 +1567,21 @@ jobs:
       - name: Run lint-workflow-job-timeouts (unbounded-runner-slot guard)
         run: bun src/Core.TypeScript/hygiene/lint-workflow-job-timeouts.ts
 
+      # PM001 — no automated lane may push at `main`. Ruleset "CI Gate" makes
+      # `gate (required)` a required check evaluated at PUSH time, so a direct push of a
+      # never-checked commit is rejected before any check can start. Every such line is
+      # dead code that stays GREEN until the lane finally has something to land: three
+      # cadences were red for days (#13808) and two more — lockfile-healer,
+      # zetadb-scheduled-node — were green purely because they no-op'd before the push.
+      # Scans workflow YAML AND the transitive import closure of the scripts workflows
+      # invoke, because the worst instance (retraction-actuator.ts, run by drift-sweep)
+      # was not in any YAML at all.
+      - name: Run lint-no-direct-push-to-main (PM001 — ruleset-fatal push guard)
+        run: bun src/Core.TypeScript/hygiene/lint-no-direct-push-to-main.ts
+
+      - name: Run lint-no-direct-push-to-main falsifiers
+        run: bun test src/Core.TypeScript/hygiene/lint-no-direct-push-to-main.test.ts
+
   lint-no-empty-dirs:
     # Fail if a committed directory has no files — almost always a
     # forgotten artefact (an agent-created skill folder without a
