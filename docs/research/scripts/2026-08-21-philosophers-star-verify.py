@@ -14,8 +14,16 @@ for i in range(5):
 def on(p,a,b): return abs((b[0]-a[0])*(p[1]-a[1])-(b[1]-a[1])*(p[0]-a[0]))<1e-9
 lines=[tuple(sorted(i for i,p in enumerate(pts) if on(p,tips[u],tips[v]))) for (u,v) in chords]
 def close(pt):
+    """Index of the point matching pt, or None if pt is not one of the 10.
+
+    The None is load-bearing, not an oversight: a candidate symmetry that maps
+    a point off the figure is not a symmetry, and the caller relies on exactly
+    that -- `if all(p is not None for p in perm)` is what rejects it. Returned
+    explicitly so the two exits are both visible.
+    """
     for i,q in enumerate(pts):
         if math.dist(pt,q)<1e-7: return i
+    return None
 syms=set()
 for k in range(5):
     for refl in (False,True):
