@@ -148,6 +148,25 @@ function sh(cmd: string): string {
  * stands down (the `push_result: pushed=false` transition) rather than proceeding when
  * the route fails.
  */
+/**
+ * A full 40-hex git object name, and nothing else.
+ *
+ * `breakSha` reaches this edge from the GitHub API (`workflow_runs[].head_sha`) via
+ * `isolateBreak`, and it is then interpolated into a SHELL COMMAND
+ * (`git revert --no-commit <sha>`) and into two FILE PATHS (the commit-message temp file
+ * and the author letter). CodeQL flags exactly that shape — `js/http-to-file-access`,
+ * "write to file system depends on untrusted data" — and it is right to: nothing between
+ * the network read and those uses had ever asserted what the value is.
+ *
+ * A git object name is `[0-9a-f]{40}` with no exceptions, so the check costs nothing and
+ * is total. Refusing here is fail-closed and keeps the machine's bookkeeping honest: the
+ * caller records `push_result: pushed=false` and stands down, rather than running a
+ * shell command built from an unvalidated string.
+ */
+export function isFullCommitSha(value: string): boolean {
+  return /^[0-9a-f]{40}$/.test(value);
+}
+
 export function retractionCommitMessage(breakSha: string, episodeId: string, openTicks: number): string {
   return [
     `revert: retract ${breakSha.slice(0, 9)} (LD/BD001 sovereign auto-revert, episode ${episodeId})`,
@@ -265,11 +284,16 @@ if (invokedDirectly) {
       sh(`git config user.email "github-actions[bot]@users.noreply.github.com"`);
       sh("git fetch origin main");
       sh("git checkout -B retraction-work origin/main");
-      const lane = `retraction-${sha.slice(0, 9)}`;
-      if (!isValidLane(lane)) throw new Error(`retraction lane name is not a safe ref: ${lane}`);
-      const ref = stagingRef(lane);
-      const msgFile = `.git/RETRACTION_MSG_${sha.slice(0, 9)}`;
+      let msgFile = "";
       try {
+        // Validate BEFORE the value reaches a shell command or a path. See
+        // `isFullCommitSha`; inside the try so a refusal is recorded as
+        // `push_result: pushed=false` and the machine stands down.
+        if (!isFullCommitSha(sha)) throw new Error(`breakSha is not a 40-hex git object name: ${sha}`);
+        const lane = `retraction-${sha.slice(0, 9)}`;
+        if (!isValidLane(lane)) throw new Error(`retraction lane name is not a safe ref: ${lane}`);
+        const ref = stagingRef(lane);
+        msgFile = `.git/RETRACTION_MSG_${sha.slice(0, 9)}`;
         // `--no-commit` so the message is ours: the revert must carry an
         // AgencySignature block to arrive on main signed (see retractionCommitMessage).
         sh(`git revert --no-commit ${sha}`);
@@ -335,7 +359,7 @@ if (invokedDirectly) {
         machine = pr.state;
         console.log(`actuator: push failed → ${machine.kind}: ${(err as Error).message.slice(0, 200)}`);
       } finally {
-        rmSync(msgFile, { force: true });
+        if (msgFile !== "") rmSync(msgFile, { force: true });
         sh("git checkout --detach origin/main 2>/dev/null || true");
       }
     }

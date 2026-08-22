@@ -12,7 +12,7 @@
 
 import { describe, expect, test } from "bun:test";
 
-import { retractionCommitMessage } from "./retraction-actuator.ts";
+import { isFullCommitSha, retractionCommitMessage } from "./retraction-actuator.ts";
 
 const SHA = "0123456789abcdef0123456789abcdef01234567";
 const msg = retractionCommitMessage(SHA, "ep-012345678", 3);
@@ -76,5 +76,40 @@ describe("retractionCommitMessage", () => {
 
   test("the subject line stays within a readable git subject budget", () => {
     expect((msg.split("\n")[0] ?? "").length).toBeLessThanOrEqual(100);
+  });
+});
+
+describe("isFullCommitSha — the guard between the network and a shell command", () => {
+  test("accepts a full 40-hex object name", () => {
+    expect(isFullCommitSha(SHA)).toBe(true);
+  });
+
+  test("rejects an abbreviated sha — the value is interpolated, so partial is not enough", () => {
+    expect(isFullCommitSha(SHA.slice(0, 9))).toBe(false);
+  });
+
+  test("rejects shell metacharacters", () => {
+    // The value reaches `git revert --no-commit <sha>` as a shell string. This is the
+    // assertion that makes that safe rather than merely lucky.
+    expect(isFullCommitSha(`${SHA}; rm -rf /`)).toBe(false);
+    expect(isFullCommitSha("$(whoami)")).toBe(false);
+    expect(isFullCommitSha(`${SHA} --force`)).toBe(false);
+  });
+
+  test("rejects path traversal — it also becomes a file path", () => {
+    expect(isFullCommitSha("../../etc/passwd")).toBe(false);
+    expect(isFullCommitSha(`../${SHA.slice(3)}`)).toBe(false);
+  });
+
+  test("rejects uppercase hex and empty", () => {
+    // Anchored and lowercase-only: git object names are lowercase, and accepting a
+    // superset here would weaken the guard for no gain.
+    expect(isFullCommitSha(SHA.toUpperCase())).toBe(false);
+    expect(isFullCommitSha("")).toBe(false);
+  });
+
+  test("is anchored at BOTH ends", () => {
+    expect(isFullCommitSha(`x${SHA}`)).toBe(false);
+    expect(isFullCommitSha(`${SHA}x`)).toBe(false);
   });
 });
