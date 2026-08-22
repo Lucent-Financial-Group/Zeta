@@ -17,35 +17,27 @@ import { join } from "node:path";
 const repoRoot = process.cwd();
 let issues = 0;
 
-/**
- * Read a file, or `null` when it is not there.
- *
- * Replaces four `existsSync(p)`-then-`readFileSync(p)` pairs. The check answers a
- * question about a moment that has already passed by the time the read runs (CWE-367),
- * so it reads as defensive and prevents nothing — `lint-check-then-use-file-races`
- * refuses the shape. One syscall, one answer, no window; and "the file is not there
- * yet" is a REAL state this script reports on, so it must come from the read itself.
- */
-function readOrNull(path: string): string | null {
-  try {
-    return readFileSync(path, "utf-8");
-  } catch (e) {
-    if ((e as NodeJS.ErrnoException).code === "ENOENT") return null;
-    throw e;
-  }
-}
-
 function check(name: string, ok: boolean, detail: string): void {
   const icon = ok ? "✓" : "✗";
   console.log(`${icon} ${name}: ${detail}`);
   if (!ok) issues++;
 }
 
+/** Read, then map ENOENT. existsSync-then-read is a check-then-use race. */
+function readTextIfPresent(path: string): string | undefined {
+  try {
+    return readFileSync(path, "utf-8");
+  } catch (err) {
+    if ((err as NodeJS.ErrnoException).code === "ENOENT") return undefined;
+    throw err;
+  }
+}
+
 // 1. Drift-rate accumulating
 const ciRunsPath = join(repoRoot, "data", "ci-runs.jsonl");
-const ciRuns = readOrNull(ciRunsPath);
-if (ciRuns !== null) {
-  const lines = ciRuns.trim().split("\n").filter((l) => l);
+const ciRunsText = readTextIfPresent(ciRunsPath);
+if (ciRunsText !== undefined) {
+  const lines = ciRunsText.trim().split("\n").filter((l) => l);
   check("Drift-rate", lines.length > 0, `${lines.length} run(s) recorded`);
 } else {
   check("Drift-rate", false, "data/ci-runs.jsonl does not exist yet — wait for next heartbeat tick");
@@ -53,9 +45,9 @@ if (ciRuns !== null) {
 
 // 2. RS blocks with real phase ranges
 const rsBlocksPath = join(repoRoot, "data", "rs-blocks.jsonl");
-const rsBlocks = readOrNull(rsBlocksPath);
-if (rsBlocks !== null) {
-  const lines = rsBlocks.trim().split("\n").filter((l) => l);
+const rsBlocksText = readTextIfPresent(rsBlocksPath);
+if (rsBlocksText !== undefined) {
+  const lines = rsBlocksText.trim().split("\n").filter((l) => l);
   const blocks = lines.map((l) => { try { return JSON.parse(l); } catch { return null; } }).filter(Boolean);
   const realBlocks = blocks.filter((b: any) => b.endPhase - b.startPhase > 1);
   check("RS blocks", realBlocks.length > 0,
@@ -67,20 +59,14 @@ if (rsBlocks !== null) {
 }
 
 // 3. Vault status
+// 4. Connectivity capped
 const vaultPath = join(repoRoot, "data", "vault-state.json");
-const vaultText = readOrNull(vaultPath);
-if (vaultText !== null) {
+const vaultText = readTextIfPresent(vaultPath);
+if (vaultText !== undefined) {
   const vault = JSON.parse(vaultText);
   const liveVaults = vault.vaults.filter((v: any) => v.status === "live").length;
   check("Vault status", liveVaults >= 3,
     `${liveVaults}/5 vaults live (action-recognition fix ${liveVaults >= 3 ? "confirmed" : "pending"})`);
-} else {
-  check("Vault status", false, "data/vault-state.json does not exist");
-}
-
-// 4. Connectivity capped
-if (vaultText !== null) {
-  const vault = JSON.parse(vaultText);
   const connectivity = vault.connectivity ?? [];
   const allCapped = connectivity.every((c: any) => c.connectivity <= 1.0);
   check("Connectivity", allCapped && connectivity.length > 0,
@@ -88,6 +74,7 @@ if (vaultText !== null) {
       ? `all agents ≤100% (max: ${Math.max(...connectivity.map((c: any) => c.connectivity)) * 100}%)`
       : "no connectivity data");
 } else {
+  check("Vault status", false, "data/vault-state.json does not exist");
   check("Connectivity", false, "no vault-state");
 }
 
