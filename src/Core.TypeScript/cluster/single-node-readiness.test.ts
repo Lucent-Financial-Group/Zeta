@@ -1103,6 +1103,25 @@ describe("readRenderedTotals — the render, per tree, because the trees are mut
     }
   });
 
+  // Mutation M17 (2026-08-22): replacing the ENOENT guard with a bare `catch {
+  // return null }` survived every other test. It must not, because "the file is
+  // not there" and "I could not read the file" are different answers and only
+  // the first one is safely null -- an unreadable snapshot swallowed as absent
+  // is a reading that silently stopped happening.
+  test("RED: an UNREADABLE snapshot throws — only ENOENT is null", () => {
+    const dir = mkdtempSync(join(tmpdir(), "zeta-render-"));
+    try {
+      // A directory where the file should be: readFileSync raises EISDIR (or
+      // EPERM on some platforms), never ENOENT.
+      mkdirSync(join(dir, "src/Core.TypeScript/cluster/rendered-storage-claims.snapshot.json"), {
+        recursive: true,
+      });
+      expect(() => readRenderedTotals(dir)).toThrow();
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
   test("an absent snapshot is null, not an empty reading", () => {
     const dir = mkdtempSync(join(tmpdir(), "zeta-render-"));
     try {
