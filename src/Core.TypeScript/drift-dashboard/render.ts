@@ -61,17 +61,21 @@ function detailOf(row: DashboardRow): string {
  * That is why `table` no longer escapes anything: the caller says which kind it has.
  */
 function cellText(s: string): string {
-  // Steps 1 and 2 apply to the WHOLE string, code spans included. An earlier version
-  // skipped the backslash inside code spans to keep them pretty, and CodeQL flagged it
-  // again — correctly: inside a code span `\|` still became `\\|`, an escaped
-  // backslash followed by a bare pipe. Correctness beats cosmetics; a literal
-  // backslash rendering as `\\` inside a code span is a cosmetic cost, a cell that
-  // ends early is a corrupted row. Escaping backslashes does not move the backtick
-  // positions, so the code-span split below is still accurate.
-  const structural = s.replace(/\\/g, "\\\\").replace(/\|/g, "\\|");
-  return structural
+  // ONE chain per segment, and the backslash comes FIRST in it. Written this way on
+  // purpose: the ordering is now a property of the expression rather than a claim in a
+  // comment, so neither a reader nor a static analyser has to carry the invariant
+  // across a `split`/`map` boundary to see that the escape character is escaped
+  // before anything that uses it. Two earlier shapes of this function each shipped a
+  // real hole here and CodeQL caught both.
+  const escapeSegment = (part: string, insideCodeSpan: boolean): string => {
+    const structural = part.replace(/\\/g, "\\\\").replace(/\|/g, "\\|");
+    // `*` is emphasis, and only outside a code span — a cron like `7 17 * * 0` would
+    // otherwise be read as an emphasis span and rejected by markdownlint (MD037).
+    return insideCodeSpan ? structural : structural.replace(/\*/g, "\\*");
+  };
+  return s
     .split("`")
-    .map((part, i) => (i % 2 === 1 ? part : part.replace(/\*/g, "\\*")))
+    .map((part, i) => escapeSegment(part, i % 2 === 1))
     .join("`")
     .replace(/\n/g, " ");
 }

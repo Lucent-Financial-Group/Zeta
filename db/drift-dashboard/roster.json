@@ -1,7 +1,7 @@
 {
   "version": 1,
   "ref": "main",
-  "updatedAt": "2026-08-22T18:41:16.047Z",
+  "updatedAt": "2026-08-22T19:22:26.570Z",
   "checks": [
     {
       "checkId": "accelerator-local-llm-validate",
@@ -12,7 +12,7 @@
         "detail": "push, but not to main"
       },
       "firstSeenAt": "2026-08-22T18:41:16.047Z",
-      "lastDeclaredAt": "2026-08-22T18:41:16.047Z",
+      "lastDeclaredAt": "2026-08-22T19:22:26.570Z",
       "declaredNow": true,
       "definitionSince": "2026-05-30T11:20:08-04:00",
       "lastObservedAt": null,
@@ -28,7 +28,7 @@
         "detail": "workflow_dispatch"
       },
       "firstSeenAt": "2026-08-22T18:41:16.047Z",
-      "lastDeclaredAt": "2026-08-22T18:41:16.047Z",
+      "lastDeclaredAt": "2026-08-22T19:22:26.570Z",
       "declaredNow": true,
       "definitionSince": "2026-05-30T00:38:05-04:00",
       "lastObservedAt": "2026-05-30T04:44:02Z",
@@ -44,12 +44,12 @@
         "detail": "push to main"
       },
       "firstSeenAt": "2026-08-22T18:41:16.047Z",
-      "lastDeclaredAt": "2026-08-22T18:41:16.047Z",
+      "lastDeclaredAt": "2026-08-22T19:22:26.570Z",
       "declaredNow": true,
       "definitionSince": "2026-08-14T14:47:19Z",
-      "lastObservedAt": "2026-08-22T18:33:08Z",
+      "lastObservedAt": "2026-08-22T19:13:53Z",
       "lastVerdictKind": "green",
-      "lastDeclaredTriggerAt": "2026-08-22T18:33:08Z"
+      "lastDeclaredTriggerAt": "2026-08-22T19:13:53Z"
     },
     {
       "checkId": "agent-heartbeat",
@@ -61,12 +61,12 @@
         "detail": "schedule: '*/15 * * * *'"
       },
       "firstSeenAt": "2026-08-22T18:41:16.047Z",
-      "lastDeclaredAt": "2026-08-22T18:41:16.047Z",
+      "lastDeclaredAt": "2026-08-22T19:22:26.570Z",
       "declaredNow": true,
       "definitionSince": "2026-07-08T17:31:42-04:00",
-      "lastObservedAt": "2026-08-22T18:29:40Z",
+      "lastObservedAt": "2026-08-22T19:12:07Z",
       "lastVerdictKind": "green",
-      "lastDeclaredTriggerAt": "2026-08-22T18:29:40Z"
+      "lastDeclaredTriggerAt": "2026-08-22T19:12:07Z"
     },
     {
       "checkId": "agent-proposal-gated-commit",
@@ -77,7 +77,7 @@
         "detail": "workflow_dispatch"
       },
       "firstSeenAt": "2026-08-22T18:41:16.047Z",
-      "lastDeclaredAt": "2026-08-22T18:41:16.047Z",
+      "lastDeclaredAt": "2026-08-22T19:22:26.570Z",
       "declaredNow": true,
       "definitionSince": "2026-08-14T11:57:24Z",
       "lastObservedAt": "2026-08-17T13:24:04Z",
@@ -93,7 +93,7 @@
         "detail": "pull_request"
       },
       "firstSeenAt": "2026-08-22T18:41:16.047Z",
-      "lastDeclaredAt": "2026-08-22T18:41:16.047Z",
+      "lastDeclaredAt": "2026-08-22T19:22:26.570Z",
       "declaredNow": true,
       "definitionSince": "2026-07-08T19:06:11-04:00",
       "lastObservedAt": null,
@@ -109,7 +109,7 @@
         "detail": "workflow_dispatch"
       },
       "firstSeenAt": "2026-08-22T18:41:16.047Z",
-      "lastDeclaredAt": "2026-08-22T18:41:16.047Z",
+      "lastDeclaredAt": "2026-08-22T19:22:26.570Z",
       "declaredNow": true,
       "definitionSince": "2026-08-16T17:04:07Z",
       "lastObservedAt": null,
@@ -126,9 +126,9 @@
         "detail": "host-managed check 'dynamic/dependency-graph/auto-submission' — never declared in this repository, so its trigger cannot be read from the tree"
       },
       "firstSeenAt": "2026-08-22T18:41:16.047Z",
-      "lastDeclaredAt": "2026-08-22T18:41:16.047Z",
+      "lastDeclaredAt": "2026-08-22T19:22:26.570Z",
       "declaredNow": true,
-      "lastObservedAt": "2026-08-22T18:33:35Z",
+      "lastObservedAt": "2026-08-22T19:14:20Z",
       "lastVerdictKind": "green",
       "lastDeclaredTriggerAt": null
     },
@@ -141,7 +141,7 @@
         "detail": "push to main"
       },
       "firstSeenAt": "2026-08-22T18:41:16.047Z",
-      "lastDeclaredAt": "2026-08-22T18:41:16.047Z",
+      "lastDeclaredAt": "2026-08-22T19:22:26.570Z",
       "declaredNow": true,
       "definitionSince": "2026-04-25T11:11:55-04:00",
       "lastObservedAt": "2026-08-20T16:50:56Z",
@@ -158,7 +158,7 @@
         "detail": "schedule: '23 16 * * 0'"
       },
       "firstSeenAt": "2026-08-22T18:41:16.047Z",
-      "lastDeclaredAt": "2026-08-22T18:41:16.047Z",
+      "lastDeclaredAt": "2026-08-22T19:22:26.570Z",
       "declaredNow": true,
       "definitionSince": "2026-04-28T12:22:10-04:00",
       "lastObservedAt": "2026-08-16T16:48:46Z",
@@ -174,12 +174,12 @@
         "detail": "push to main"
       },
       "firstSeenAt": "2026-08-22T18:41:16.047Z",
-      "lastDeclaredAt": "2026-08-22T18:41:16.047Z",
+      "lastDeclaredAt": "2026-08-22T19:22:26.570Z",
       "declaredNow": true,
       "definitionSince": "2026-05-25T13:33:56-04:00",
-      "lastObservedAt": "2026-08-22T12:39:38Z",
-      "lastVerdictKind": "green",
-      "lastDeclaredTriggerAt": "2026-08-22T12:39:38Z"
+      "lastObservedAt": "2026-08-22T19:07:46Z",
+      "lastVerdictKind": "red",
+      "lastDeclaredTriggerAt": "2026-08-22T19:07:46Z"
     },
     {
       "checkId": "build-platform-images",
@@ -190,7 +190,7 @@
         "detail": "push to main"
       },
       "firstSeenAt": "2026-08-22T18:41:16.047Z",
-      "lastDeclaredAt": "2026-08-22T18:41:16.047Z",
+      "lastDeclaredAt": "2026-08-22T19:22:26.570Z",
       "declaredNow": true,
       "definitionSince": "2026-06-09T17:08:35-04:00",
       "lastObservedAt": "2026-08-21T06:26:02Z",
@@ -206,7 +206,7 @@
         "detail": "push to main"
       },
       "firstSeenAt": "2026-08-22T18:41:16.047Z",
-      "lastDeclaredAt": "2026-08-22T18:41:16.047Z",
+      "lastDeclaredAt": "2026-08-22T19:22:26.570Z",
       "declaredNow": true,
       "definitionSince": "2026-08-01T10:14:54-04:00",
       "lastObservedAt": "2026-08-17T20:28:06Z",
@@ -223,7 +223,7 @@
         "detail": "schedule: '7 17 * * 0'"
       },
       "firstSeenAt": "2026-08-22T18:41:16.047Z",
-      "lastDeclaredAt": "2026-08-22T18:41:16.047Z",
+      "lastDeclaredAt": "2026-08-22T19:22:26.570Z",
       "declaredNow": true,
       "definitionSince": "2026-08-21T20:18:43Z",
       "lastObservedAt": null,
@@ -239,7 +239,7 @@
         "detail": "push to main"
       },
       "firstSeenAt": "2026-08-22T18:41:16.047Z",
-      "lastDeclaredAt": "2026-08-22T18:41:16.047Z",
+      "lastDeclaredAt": "2026-08-22T19:22:26.570Z",
       "declaredNow": true,
       "definitionSince": "2026-05-03T09:27:58-04:00",
       "lastObservedAt": "2026-08-22T18:34:47Z",
@@ -256,7 +256,7 @@
         "detail": "host-managed check 'dynamic/github-code-scanning/codeql' — never declared in this repository, so its trigger cannot be read from the tree"
       },
       "firstSeenAt": "2026-08-22T18:41:16.047Z",
-      "lastDeclaredAt": "2026-08-22T18:41:16.047Z",
+      "lastDeclaredAt": "2026-08-22T19:22:26.570Z",
       "declaredNow": true,
       "definitionSince": "2026-04-19T06:57:56-04:00",
       "lastObservedAt": "2026-08-11T08:02:08Z",
@@ -273,7 +273,7 @@
         "detail": "schedule: '23 7 * * *'"
       },
       "firstSeenAt": "2026-08-22T18:41:16.047Z",
-      "lastDeclaredAt": "2026-08-22T18:41:16.047Z",
+      "lastDeclaredAt": "2026-08-22T19:22:26.570Z",
       "declaredNow": true,
       "definitionSince": "2026-06-04T14:10:30-04:00",
       "lastObservedAt": "2026-08-22T07:35:04Z",
@@ -290,7 +290,7 @@
         "detail": "host-managed check 'dynamic/copilot-swe-agent/copilot' — never declared in this repository, so its trigger cannot be read from the tree"
       },
       "firstSeenAt": "2026-08-22T18:41:16.047Z",
-      "lastDeclaredAt": "2026-08-22T18:41:16.047Z",
+      "lastDeclaredAt": "2026-08-22T19:22:26.570Z",
       "declaredNow": true,
       "lastObservedAt": null,
       "lastVerdictKind": null,
@@ -306,7 +306,7 @@
         "detail": "host-managed check 'dynamic/copilot-pull-request-reviewer/copilot-pull-request-reviewer' — never declared in this repository, so its trigger cannot be read from the tree"
       },
       "firstSeenAt": "2026-08-22T18:41:16.047Z",
-      "lastDeclaredAt": "2026-08-22T18:41:16.047Z",
+      "lastDeclaredAt": "2026-08-22T19:22:26.570Z",
       "declaredNow": true,
       "lastObservedAt": "2026-08-01T04:10:02Z",
       "lastVerdictKind": "green",
@@ -322,7 +322,7 @@
         "detail": "host-managed check 'dynamic/dependabot/dependabot-updates' — never declared in this repository, so its trigger cannot be read from the tree"
       },
       "firstSeenAt": "2026-08-22T18:41:16.047Z",
-      "lastDeclaredAt": "2026-08-22T18:41:16.047Z",
+      "lastDeclaredAt": "2026-08-22T19:22:26.570Z",
       "declaredNow": true,
       "lastObservedAt": "2026-08-22T15:26:24Z",
       "lastVerdictKind": "green",
@@ -337,7 +337,7 @@
         "detail": "push to main"
       },
       "firstSeenAt": "2026-08-22T18:41:16.047Z",
-      "lastDeclaredAt": "2026-08-22T18:41:16.047Z",
+      "lastDeclaredAt": "2026-08-22T19:22:26.570Z",
       "declaredNow": true,
       "definitionSince": "2026-05-27T00:05:14-04:00",
       "lastObservedAt": "2026-08-22T11:57:33Z",
@@ -353,7 +353,7 @@
         "detail": "push, but not to main"
       },
       "firstSeenAt": "2026-08-22T18:41:16.047Z",
-      "lastDeclaredAt": "2026-08-22T18:41:16.047Z",
+      "lastDeclaredAt": "2026-08-22T19:22:26.570Z",
       "declaredNow": true,
       "definitionSince": "2026-05-30T11:20:08-04:00",
       "lastObservedAt": null,
@@ -369,7 +369,7 @@
         "detail": "push to main"
       },
       "firstSeenAt": "2026-08-22T18:41:16.047Z",
-      "lastDeclaredAt": "2026-08-22T18:41:16.047Z",
+      "lastDeclaredAt": "2026-08-22T19:22:26.570Z",
       "declaredNow": true,
       "definitionSince": "2026-06-20T13:59:39-04:00",
       "lastObservedAt": "2026-08-22T12:02:48Z",
@@ -385,7 +385,7 @@
         "detail": "push to main"
       },
       "firstSeenAt": "2026-08-22T18:41:16.047Z",
-      "lastDeclaredAt": "2026-08-22T18:41:16.047Z",
+      "lastDeclaredAt": "2026-08-22T19:22:26.570Z",
       "declaredNow": true,
       "definitionSince": "2026-05-30T11:22:20-04:00",
       "lastObservedAt": "2026-08-22T12:20:55Z",
@@ -402,12 +402,12 @@
         "detail": "schedule: '7,37 * * * *'"
       },
       "firstSeenAt": "2026-08-22T18:41:16.047Z",
-      "lastDeclaredAt": "2026-08-22T18:41:16.047Z",
+      "lastDeclaredAt": "2026-08-22T19:22:26.570Z",
       "declaredNow": true,
       "definitionSince": "2026-08-01T09:41:38-04:00",
-      "lastObservedAt": "2026-08-22T18:15:06Z",
+      "lastObservedAt": "2026-08-22T19:15:39Z",
       "lastVerdictKind": "green",
-      "lastDeclaredTriggerAt": "2026-08-22T18:15:06Z"
+      "lastDeclaredTriggerAt": "2026-08-22T19:15:39Z"
     },
     {
       "checkId": "factory-hygiene-audit-cadence",
@@ -419,7 +419,7 @@
         "detail": "schedule: '37 14 * * *'"
       },
       "firstSeenAt": "2026-08-22T18:41:16.047Z",
-      "lastDeclaredAt": "2026-08-22T18:41:16.047Z",
+      "lastDeclaredAt": "2026-08-22T19:22:26.570Z",
       "declaredNow": true,
       "definitionSince": "2026-05-14T15:53:37-04:00",
       "lastObservedAt": "2026-08-22T14:44:12Z",
@@ -435,12 +435,12 @@
         "detail": "push to main"
       },
       "firstSeenAt": "2026-08-22T18:41:16.047Z",
-      "lastDeclaredAt": "2026-08-22T18:41:16.047Z",
+      "lastDeclaredAt": "2026-08-22T19:22:26.570Z",
       "declaredNow": true,
       "definitionSince": "2026-04-18T17:19:36-04:00",
-      "lastObservedAt": "2026-08-22T18:39:06Z",
-      "lastVerdictKind": "green",
-      "lastDeclaredTriggerAt": "2026-08-22T18:39:06Z"
+      "lastObservedAt": "2026-08-22T19:03:11Z",
+      "lastVerdictKind": "red",
+      "lastDeclaredTriggerAt": "2026-08-22T19:03:11Z"
     },
     {
       "checkId": "git-hotspot-cadence",
@@ -452,7 +452,7 @@
         "detail": "schedule: '43 16 * * 0'"
       },
       "firstSeenAt": "2026-08-22T18:41:16.047Z",
-      "lastDeclaredAt": "2026-08-22T18:41:16.047Z",
+      "lastDeclaredAt": "2026-08-22T19:22:26.570Z",
       "declaredNow": true,
       "definitionSince": "2026-05-03T12:08:33-04:00",
       "lastObservedAt": "2026-08-16T17:02:16Z",
@@ -468,7 +468,7 @@
         "detail": "push to main"
       },
       "firstSeenAt": "2026-08-22T18:41:16.047Z",
-      "lastDeclaredAt": "2026-08-22T18:41:16.047Z",
+      "lastDeclaredAt": "2026-08-22T19:22:26.570Z",
       "declaredNow": true,
       "definitionSince": "2026-06-01T12:58:59-04:00",
       "lastObservedAt": "2026-08-22T11:52:14Z",
@@ -485,7 +485,7 @@
         "detail": "schedule: '17 14 * * 1'"
       },
       "firstSeenAt": "2026-08-22T18:41:16.047Z",
-      "lastDeclaredAt": "2026-08-22T18:41:16.047Z",
+      "lastDeclaredAt": "2026-08-22T19:22:26.570Z",
       "declaredNow": true,
       "definitionSince": "2026-04-21T10:36:30-04:00",
       "lastObservedAt": "2026-08-17T14:42:40Z",
@@ -502,12 +502,12 @@
         "detail": "schedule: '*/15 * * * *'"
       },
       "firstSeenAt": "2026-08-22T18:41:16.047Z",
-      "lastDeclaredAt": "2026-08-22T18:41:16.047Z",
+      "lastDeclaredAt": "2026-08-22T19:22:26.570Z",
       "declaredNow": true,
       "definitionSince": "2026-08-17T01:33:07Z",
-      "lastObservedAt": "2026-08-22T18:25:22Z",
+      "lastObservedAt": "2026-08-22T19:11:47Z",
       "lastVerdictKind": "green",
-      "lastDeclaredTriggerAt": "2026-08-22T18:25:22Z"
+      "lastDeclaredTriggerAt": "2026-08-22T19:11:47Z"
     },
     {
       "checkId": "helm-validate",
@@ -519,7 +519,7 @@
         "detail": "schedule: '29 15 * * *'"
       },
       "firstSeenAt": "2026-08-22T18:41:16.047Z",
-      "lastDeclaredAt": "2026-08-22T18:41:16.047Z",
+      "lastDeclaredAt": "2026-08-22T19:22:26.570Z",
       "declaredNow": true,
       "definitionSince": "2026-08-08T14:40:33-07:00",
       "lastObservedAt": "2026-08-22T15:41:50Z",
@@ -536,7 +536,7 @@
         "detail": "workflow file '.github/workflows/image-pull-measurement.yml' is registered ACTIVE on the forge host but is ABSENT from the repository"
       },
       "firstSeenAt": "2026-08-22T18:41:16.047Z",
-      "lastDeclaredAt": "2026-08-22T18:41:16.047Z",
+      "lastDeclaredAt": "2026-08-22T19:22:26.570Z",
       "declaredNow": true,
       "lastObservedAt": null,
       "lastVerdictKind": null,
@@ -551,7 +551,7 @@
         "detail": "push to main"
       },
       "firstSeenAt": "2026-08-22T18:41:16.047Z",
-      "lastDeclaredAt": "2026-08-22T18:41:16.047Z",
+      "lastDeclaredAt": "2026-08-22T19:22:26.570Z",
       "declaredNow": true,
       "definitionSince": "2026-08-07T12:17:06-07:00",
       "lastObservedAt": "2026-08-22T18:28:09Z",
@@ -567,7 +567,7 @@
         "detail": "push to main"
       },
       "firstSeenAt": "2026-08-22T18:41:16.047Z",
-      "lastDeclaredAt": "2026-08-22T18:41:16.047Z",
+      "lastDeclaredAt": "2026-08-22T19:22:26.570Z",
       "declaredNow": true,
       "definitionSince": "2026-06-20T20:24:48-04:00",
       "lastObservedAt": "2026-08-19T10:00:18Z",
@@ -584,7 +584,7 @@
         "detail": "schedule: '17 6 * * *'"
       },
       "firstSeenAt": "2026-08-22T18:41:16.047Z",
-      "lastDeclaredAt": "2026-08-22T18:41:16.047Z",
+      "lastDeclaredAt": "2026-08-22T19:22:26.570Z",
       "declaredNow": true,
       "definitionSince": "2026-06-20T20:24:48-04:00",
       "lastObservedAt": "2026-08-22T06:28:39Z",
@@ -601,7 +601,7 @@
         "detail": "workflow file '.github/workflows/inventory-phase5-proof.yml' is registered ACTIVE on the forge host but is ABSENT from the repository"
       },
       "firstSeenAt": "2026-08-22T18:41:16.047Z",
-      "lastDeclaredAt": "2026-08-22T18:41:16.047Z",
+      "lastDeclaredAt": "2026-08-22T19:22:26.570Z",
       "declaredNow": true,
       "lastObservedAt": null,
       "lastVerdictKind": null,
@@ -617,7 +617,7 @@
         "detail": "schedule: '53 16 * * *'"
       },
       "firstSeenAt": "2026-08-22T18:41:16.047Z",
-      "lastDeclaredAt": "2026-08-22T18:41:16.047Z",
+      "lastDeclaredAt": "2026-08-22T19:22:26.570Z",
       "declaredNow": true,
       "definitionSince": "2026-06-01T16:27:42-04:00",
       "lastObservedAt": "2026-08-22T17:30:21Z",
@@ -633,7 +633,7 @@
         "detail": "push to main"
       },
       "firstSeenAt": "2026-08-22T18:41:16.047Z",
-      "lastDeclaredAt": "2026-08-22T18:41:16.047Z",
+      "lastDeclaredAt": "2026-08-22T19:22:26.570Z",
       "declaredNow": true,
       "definitionSince": "2026-08-22T16:57:35Z",
       "lastObservedAt": "2026-08-22T18:34:53Z",
@@ -649,7 +649,7 @@
         "detail": "push to main"
       },
       "firstSeenAt": "2026-08-22T18:41:16.047Z",
-      "lastDeclaredAt": "2026-08-22T18:41:16.047Z",
+      "lastDeclaredAt": "2026-08-22T19:22:26.570Z",
       "declaredNow": true,
       "definitionSince": "2026-06-09T12:54:56-04:00",
       "lastObservedAt": "2026-08-22T01:13:40Z",
@@ -665,7 +665,7 @@
         "detail": "push to main"
       },
       "firstSeenAt": "2026-08-22T18:41:16.047Z",
-      "lastDeclaredAt": "2026-08-22T18:41:16.047Z",
+      "lastDeclaredAt": "2026-08-22T19:22:26.570Z",
       "declaredNow": true,
       "definitionSince": "2026-05-03T08:26:56-04:00",
       "lastObservedAt": "2026-08-17T16:47:57Z",
@@ -681,7 +681,7 @@
         "detail": "pull_request"
       },
       "firstSeenAt": "2026-08-22T18:41:16.047Z",
-      "lastDeclaredAt": "2026-08-22T18:41:16.047Z",
+      "lastDeclaredAt": "2026-08-22T19:22:26.570Z",
       "declaredNow": true,
       "definitionSince": "2026-06-01T06:30:24-04:00",
       "lastObservedAt": null,
@@ -697,12 +697,12 @@
         "detail": "workflow_run"
       },
       "firstSeenAt": "2026-08-22T18:41:16.047Z",
-      "lastDeclaredAt": "2026-08-22T18:41:16.047Z",
+      "lastDeclaredAt": "2026-08-22T19:22:26.570Z",
       "declaredNow": true,
       "definitionSince": "2026-06-01T06:30:24-04:00",
-      "lastObservedAt": "2026-08-22T18:36:39Z",
+      "lastObservedAt": "2026-08-22T19:17:21Z",
       "lastVerdictKind": "green",
-      "lastDeclaredTriggerAt": "2026-08-22T18:36:39Z"
+      "lastDeclaredTriggerAt": "2026-08-22T19:17:21Z"
     },
     {
       "checkId": "lockfile-healer",
@@ -714,12 +714,12 @@
         "detail": "schedule: '*/17 * * * *'"
       },
       "firstSeenAt": "2026-08-22T18:41:16.047Z",
-      "lastDeclaredAt": "2026-08-22T18:41:16.047Z",
+      "lastDeclaredAt": "2026-08-22T19:22:26.570Z",
       "declaredNow": true,
       "definitionSince": "2026-08-10T14:44:59-04:00",
-      "lastObservedAt": "2026-08-22T18:28:45Z",
+      "lastObservedAt": "2026-08-22T19:01:39Z",
       "lastVerdictKind": "green",
-      "lastDeclaredTriggerAt": "2026-08-22T18:28:45Z"
+      "lastDeclaredTriggerAt": "2026-08-22T19:01:39Z"
     },
     {
       "checkId": "low-memory",
@@ -731,7 +731,7 @@
         "detail": "schedule: '0 6 * * *'"
       },
       "firstSeenAt": "2026-08-22T18:41:16.047Z",
-      "lastDeclaredAt": "2026-08-22T18:41:16.047Z",
+      "lastDeclaredAt": "2026-08-22T19:22:26.570Z",
       "declaredNow": true,
       "definitionSince": "2026-04-27T12:17:32-04:00",
       "lastObservedAt": "2026-08-22T06:20:25Z",
@@ -747,7 +747,7 @@
         "detail": "push to main"
       },
       "firstSeenAt": "2026-08-22T18:41:16.047Z",
-      "lastDeclaredAt": "2026-08-22T18:41:16.047Z",
+      "lastDeclaredAt": "2026-08-22T19:22:26.570Z",
       "declaredNow": true,
       "definitionSince": "2026-05-31T16:06:36-04:00",
       "lastObservedAt": "2026-08-22T11:55:31Z",
@@ -764,7 +764,7 @@
         "detail": "schedule: '37 6 * * *'"
       },
       "firstSeenAt": "2026-08-22T18:41:16.047Z",
-      "lastDeclaredAt": "2026-08-22T18:41:16.047Z",
+      "lastDeclaredAt": "2026-08-22T19:22:26.570Z",
       "declaredNow": true,
       "definitionSince": "2026-05-23T15:50:28-04:00",
       "lastObservedAt": "2026-08-22T06:58:11Z",
@@ -780,7 +780,7 @@
         "detail": "push to main"
       },
       "firstSeenAt": "2026-08-22T18:41:16.047Z",
-      "lastDeclaredAt": "2026-08-22T18:41:16.047Z",
+      "lastDeclaredAt": "2026-08-22T19:22:26.570Z",
       "declaredNow": true,
       "definitionSince": "2026-05-14T02:07:30-04:00",
       "lastObservedAt": "2026-08-22T18:07:03Z",
@@ -796,7 +796,7 @@
         "detail": "push to main"
       },
       "firstSeenAt": "2026-08-22T18:41:16.047Z",
-      "lastDeclaredAt": "2026-08-22T18:41:16.047Z",
+      "lastDeclaredAt": "2026-08-22T19:22:26.570Z",
       "declaredNow": true,
       "definitionSince": "2026-04-28T12:22:10-04:00",
       "lastObservedAt": "2026-08-22T18:06:58Z",
@@ -812,7 +812,7 @@
         "detail": "push to main"
       },
       "firstSeenAt": "2026-08-22T18:41:16.047Z",
-      "lastDeclaredAt": "2026-08-22T18:41:16.047Z",
+      "lastDeclaredAt": "2026-08-22T19:22:26.570Z",
       "declaredNow": true,
       "definitionSince": "2026-04-23T19:41:18-04:00",
       "lastObservedAt": "2026-08-22T18:05:20Z",
@@ -828,7 +828,7 @@
         "detail": "push to main"
       },
       "firstSeenAt": "2026-08-22T18:41:16.047Z",
-      "lastDeclaredAt": "2026-08-22T18:41:16.047Z",
+      "lastDeclaredAt": "2026-08-22T19:22:26.570Z",
       "declaredNow": true,
       "definitionSince": "2026-04-23T20:43:33-04:00",
       "lastObservedAt": "2026-08-22T18:07:13Z",
@@ -845,7 +845,7 @@
         "detail": "schedule: '13 */6 * * *'"
       },
       "firstSeenAt": "2026-08-22T18:41:16.047Z",
-      "lastDeclaredAt": "2026-08-22T18:41:16.047Z",
+      "lastDeclaredAt": "2026-08-22T19:22:26.570Z",
       "declaredNow": true,
       "definitionSince": "2026-06-13T16:06:34-04:00",
       "lastObservedAt": "2026-08-22T18:21:30Z",
@@ -861,7 +861,7 @@
         "detail": "push to main"
       },
       "firstSeenAt": "2026-08-22T18:41:16.047Z",
-      "lastDeclaredAt": "2026-08-22T18:41:16.047Z",
+      "lastDeclaredAt": "2026-08-22T19:22:26.570Z",
       "declaredNow": true,
       "definitionSince": "2026-08-16T15:04:24Z",
       "lastObservedAt": "2026-08-16T23:51:36Z",
@@ -878,12 +878,12 @@
         "detail": "schedule: '0 * * * *'"
       },
       "firstSeenAt": "2026-08-22T18:41:16.047Z",
-      "lastDeclaredAt": "2026-08-22T18:41:16.047Z",
+      "lastDeclaredAt": "2026-08-22T19:22:26.570Z",
       "declaredNow": true,
       "definitionSince": "2026-08-11T23:32:10-04:00",
-      "lastObservedAt": "2026-08-22T18:05:29Z",
+      "lastObservedAt": "2026-08-22T19:08:29Z",
       "lastVerdictKind": "green",
-      "lastDeclaredTriggerAt": "2026-08-22T18:05:29Z"
+      "lastDeclaredTriggerAt": "2026-08-22T19:08:29Z"
     },
     {
       "checkId": "pages-build-deployment",
@@ -895,7 +895,7 @@
         "detail": "host-managed check 'dynamic/pages/pages-build-deployment' — never declared in this repository, so its trigger cannot be read from the tree"
       },
       "firstSeenAt": "2026-08-22T18:41:16.047Z",
-      "lastDeclaredAt": "2026-08-22T18:41:16.047Z",
+      "lastDeclaredAt": "2026-08-22T19:22:26.570Z",
       "declaredNow": true,
       "lastObservedAt": "2026-08-07T09:37:04Z",
       "lastVerdictKind": "green",
@@ -911,12 +911,12 @@
         "detail": "schedule: '*/15 * * * *'"
       },
       "firstSeenAt": "2026-08-22T18:41:16.047Z",
-      "lastDeclaredAt": "2026-08-22T18:41:16.047Z",
+      "lastDeclaredAt": "2026-08-22T19:22:26.570Z",
       "declaredNow": true,
       "definitionSince": "2026-05-28T14:51:01-04:00",
-      "lastObservedAt": "2026-08-22T18:27:53Z",
+      "lastObservedAt": "2026-08-22T19:10:48Z",
       "lastVerdictKind": "green",
-      "lastDeclaredTriggerAt": "2026-08-22T18:27:53Z"
+      "lastDeclaredTriggerAt": "2026-08-22T19:10:48Z"
     },
     {
       "checkId": "passkey-proposal-gated-commit",
@@ -927,7 +927,7 @@
         "detail": "issues"
       },
       "firstSeenAt": "2026-08-22T18:41:16.047Z",
-      "lastDeclaredAt": "2026-08-22T18:41:16.047Z",
+      "lastDeclaredAt": "2026-08-22T19:22:26.570Z",
       "declaredNow": true,
       "definitionSince": "2026-08-13T23:53:45Z",
       "lastObservedAt": null,
@@ -943,7 +943,7 @@
         "detail": "pull_request"
       },
       "firstSeenAt": "2026-08-22T18:41:16.047Z",
-      "lastDeclaredAt": "2026-08-22T18:41:16.047Z",
+      "lastDeclaredAt": "2026-08-22T19:22:26.570Z",
       "declaredNow": true,
       "definitionSince": "2026-05-06T04:30:40-04:00",
       "lastObservedAt": null,
@@ -960,7 +960,7 @@
         "detail": "schedule: '23 */6 * * *'"
       },
       "firstSeenAt": "2026-08-22T18:41:16.047Z",
-      "lastDeclaredAt": "2026-08-22T18:41:16.047Z",
+      "lastDeclaredAt": "2026-08-22T19:22:26.570Z",
       "declaredNow": true,
       "definitionSince": "2026-08-14T00:56:35Z",
       "lastObservedAt": "2026-08-22T18:33:49Z",
@@ -977,7 +977,7 @@
         "detail": "schedule: '23 */6 * * *'"
       },
       "firstSeenAt": "2026-08-22T18:41:16.047Z",
-      "lastDeclaredAt": "2026-08-22T18:41:16.047Z",
+      "lastDeclaredAt": "2026-08-22T19:22:26.570Z",
       "declaredNow": true,
       "definitionSince": "2026-08-10T12:17:10-04:00",
       "lastObservedAt": "2026-08-22T18:35:54Z",
@@ -994,7 +994,7 @@
         "detail": "schedule: '17 9 * * *'"
       },
       "firstSeenAt": "2026-08-22T18:41:16.047Z",
-      "lastDeclaredAt": "2026-08-22T18:41:16.047Z",
+      "lastDeclaredAt": "2026-08-22T19:22:26.570Z",
       "declaredNow": true,
       "definitionSince": "2026-05-05T00:17:42-04:00",
       "lastObservedAt": "2026-08-22T09:25:55Z",
@@ -1010,12 +1010,12 @@
         "detail": "workflow_run"
       },
       "firstSeenAt": "2026-08-22T18:41:16.047Z",
-      "lastDeclaredAt": "2026-08-22T18:41:16.047Z",
+      "lastDeclaredAt": "2026-08-22T19:22:26.570Z",
       "declaredNow": true,
       "definitionSince": "2026-08-14T21:20:24Z",
-      "lastObservedAt": "2026-08-22T18:40:25Z",
+      "lastObservedAt": "2026-08-22T19:23:01Z",
       "lastVerdictKind": "skipped",
-      "lastDeclaredTriggerAt": "2026-08-22T18:40:25Z"
+      "lastDeclaredTriggerAt": "2026-08-22T19:23:01Z"
     },
     {
       "checkId": "resume-diff",
@@ -1026,7 +1026,7 @@
         "detail": "pull_request"
       },
       "firstSeenAt": "2026-08-22T18:41:16.047Z",
-      "lastDeclaredAt": "2026-08-22T18:41:16.047Z",
+      "lastDeclaredAt": "2026-08-22T19:22:26.570Z",
       "declaredNow": true,
       "definitionSince": "2026-04-25T08:48:35-04:00",
       "lastObservedAt": null,
@@ -1042,7 +1042,7 @@
         "detail": "push to main"
       },
       "firstSeenAt": "2026-08-22T18:41:16.047Z",
-      "lastDeclaredAt": "2026-08-22T18:41:16.047Z",
+      "lastDeclaredAt": "2026-08-22T19:22:26.570Z",
       "declaredNow": true,
       "definitionSince": "2026-05-04T13:17:07-04:00",
       "lastObservedAt": "2026-08-20T16:59:00Z",
@@ -1058,7 +1058,7 @@
         "detail": "workflow_dispatch"
       },
       "firstSeenAt": "2026-08-22T18:41:16.047Z",
-      "lastDeclaredAt": "2026-08-22T18:41:16.047Z",
+      "lastDeclaredAt": "2026-08-22T19:22:26.570Z",
       "declaredNow": true,
       "definitionSince": "2026-05-13T12:25:42-04:00",
       "lastObservedAt": null,
@@ -1075,7 +1075,7 @@
         "detail": "schedule: '0 7 * * 1'"
       },
       "firstSeenAt": "2026-08-22T18:41:16.047Z",
-      "lastDeclaredAt": "2026-08-22T18:41:16.047Z",
+      "lastDeclaredAt": "2026-08-22T19:22:26.570Z",
       "declaredNow": true,
       "definitionSince": "2026-04-25T08:48:35-04:00",
       "lastObservedAt": "2026-08-17T07:42:37Z",
@@ -1091,7 +1091,7 @@
         "detail": "push to main"
       },
       "firstSeenAt": "2026-08-22T18:41:16.047Z",
-      "lastDeclaredAt": "2026-08-22T18:41:16.047Z",
+      "lastDeclaredAt": "2026-08-22T19:22:26.570Z",
       "declaredNow": true,
       "definitionSince": "2026-06-01T17:23:16-04:00",
       "lastObservedAt": "2026-08-20T11:33:12Z",
@@ -1108,12 +1108,12 @@
         "detail": "schedule: '*/30 * * * *'"
       },
       "firstSeenAt": "2026-08-22T18:41:16.047Z",
-      "lastDeclaredAt": "2026-08-22T18:41:16.047Z",
+      "lastDeclaredAt": "2026-08-22T19:22:26.570Z",
       "declaredNow": true,
       "definitionSince": "2026-08-09T19:43:20Z",
-      "lastObservedAt": "2026-08-22T18:09:02Z",
+      "lastObservedAt": "2026-08-22T19:10:02Z",
       "lastVerdictKind": "green",
-      "lastDeclaredTriggerAt": "2026-08-22T18:09:02Z"
+      "lastDeclaredTriggerAt": "2026-08-22T19:10:02Z"
     },
     {
       "checkId": "soraya-formal-coverage-cadence",
@@ -1125,7 +1125,7 @@
         "detail": "schedule: '37 9 * * *'"
       },
       "firstSeenAt": "2026-08-22T18:41:16.047Z",
-      "lastDeclaredAt": "2026-08-22T18:41:16.047Z",
+      "lastDeclaredAt": "2026-08-22T19:22:26.570Z",
       "declaredNow": true,
       "definitionSince": "2026-06-02T14:49:25-04:00",
       "lastObservedAt": "2026-08-22T09:46:54Z",
@@ -1141,7 +1141,7 @@
         "detail": "push to main"
       },
       "firstSeenAt": "2026-08-22T18:41:16.047Z",
-      "lastDeclaredAt": "2026-08-22T18:41:16.047Z",
+      "lastDeclaredAt": "2026-08-22T19:22:26.570Z",
       "declaredNow": true,
       "definitionSince": "2026-05-03T11:13:52-04:00",
       "lastObservedAt": "2026-08-15T14:30:42Z",
@@ -1158,7 +1158,7 @@
         "detail": "workflow file '.github/workflows/substrate-claim-checker.yml' is registered ACTIVE on the forge host but is ABSENT from the repository"
       },
       "firstSeenAt": "2026-08-22T18:41:16.047Z",
-      "lastDeclaredAt": "2026-08-22T18:41:16.047Z",
+      "lastDeclaredAt": "2026-08-22T19:22:26.570Z",
       "declaredNow": true,
       "lastObservedAt": null,
       "lastVerdictKind": null,
@@ -1174,12 +1174,12 @@
         "detail": "schedule: '*/15 * * * *'"
       },
       "firstSeenAt": "2026-08-22T18:41:16.047Z",
-      "lastDeclaredAt": "2026-08-22T18:41:16.047Z",
+      "lastDeclaredAt": "2026-08-22T19:22:26.570Z",
       "declaredNow": true,
       "definitionSince": "2026-07-08T16:18:48-04:00",
-      "lastObservedAt": "2026-08-22T18:25:04Z",
+      "lastObservedAt": "2026-08-22T19:11:44Z",
       "lastVerdictKind": "green",
-      "lastDeclaredTriggerAt": "2026-08-22T18:25:04Z"
+      "lastDeclaredTriggerAt": "2026-08-22T19:11:44Z"
     },
     {
       "checkId": "tlaps-proof",
@@ -1190,7 +1190,7 @@
         "detail": "push to main"
       },
       "firstSeenAt": "2026-08-22T18:41:16.047Z",
-      "lastDeclaredAt": "2026-08-22T18:41:16.047Z",
+      "lastDeclaredAt": "2026-08-22T19:22:26.570Z",
       "declaredNow": true,
       "definitionSince": "2026-06-05T23:35:29-04:00",
       "lastObservedAt": "2026-08-22T01:22:36Z",
@@ -1206,12 +1206,12 @@
         "detail": "push to main"
       },
       "firstSeenAt": "2026-08-22T18:41:16.047Z",
-      "lastDeclaredAt": "2026-08-22T18:41:16.047Z",
+      "lastDeclaredAt": "2026-08-22T19:22:26.570Z",
       "declaredNow": true,
       "definitionSince": "2026-08-10T19:45:06-04:00",
-      "lastObservedAt": "2026-08-22T18:32:46Z",
+      "lastObservedAt": "2026-08-22T19:13:29Z",
       "lastVerdictKind": "green",
-      "lastDeclaredTriggerAt": "2026-08-22T18:32:46Z"
+      "lastDeclaredTriggerAt": "2026-08-22T19:13:29Z"
     },
     {
       "checkId": "update-graph",
@@ -1223,7 +1223,7 @@
         "detail": "host-managed check 'dynamic/dependabot/update-graph' — never declared in this repository, so its trigger cannot be read from the tree"
       },
       "firstSeenAt": "2026-08-22T18:41:16.047Z",
-      "lastDeclaredAt": "2026-08-22T18:41:16.047Z",
+      "lastDeclaredAt": "2026-08-22T19:22:26.570Z",
       "declaredNow": true,
       "lastObservedAt": "2026-08-01T14:32:42Z",
       "lastVerdictKind": "green",
@@ -1238,7 +1238,7 @@
         "detail": "pull_request"
       },
       "firstSeenAt": "2026-08-22T18:41:16.047Z",
-      "lastDeclaredAt": "2026-08-22T18:41:16.047Z",
+      "lastDeclaredAt": "2026-08-22T19:22:26.570Z",
       "declaredNow": true,
       "definitionSince": "2026-08-16T16:13:15Z",
       "lastObservedAt": null,
@@ -1254,7 +1254,7 @@
         "detail": "push to main"
       },
       "firstSeenAt": "2026-08-22T18:41:16.047Z",
-      "lastDeclaredAt": "2026-08-22T18:41:16.047Z",
+      "lastDeclaredAt": "2026-08-22T19:22:26.570Z",
       "declaredNow": true,
       "definitionSince": "2026-06-09T15:44:55-04:00",
       "lastObservedAt": "2026-08-11T02:39:45Z",
@@ -1270,7 +1270,7 @@
         "detail": "push to main"
       },
       "firstSeenAt": "2026-08-22T18:41:16.047Z",
-      "lastDeclaredAt": "2026-08-22T18:41:16.047Z",
+      "lastDeclaredAt": "2026-08-22T19:22:26.570Z",
       "declaredNow": true,
       "definitionSince": "2026-05-31T15:10:34-04:00",
       "lastObservedAt": "2026-08-22T12:00:36Z",
@@ -1287,12 +1287,12 @@
         "detail": "schedule: '13,43 * * * *'"
       },
       "firstSeenAt": "2026-08-22T18:41:16.047Z",
-      "lastDeclaredAt": "2026-08-22T18:41:16.047Z",
+      "lastDeclaredAt": "2026-08-22T19:22:26.570Z",
       "declaredNow": true,
       "definitionSince": "2026-08-09T12:02:07-07:00",
-      "lastObservedAt": "2026-08-22T18:20:49Z",
+      "lastObservedAt": "2026-08-22T19:20:10Z",
       "lastVerdictKind": "green",
-      "lastDeclaredTriggerAt": "2026-08-22T18:20:49Z"
+      "lastDeclaredTriggerAt": "2026-08-22T19:20:10Z"
     },
     {
       "checkId": "zflash-harness-lint",
@@ -1304,7 +1304,7 @@
         "detail": "schedule: '17 15 * * 0'"
       },
       "firstSeenAt": "2026-08-22T18:41:16.047Z",
-      "lastDeclaredAt": "2026-08-22T18:41:16.047Z",
+      "lastDeclaredAt": "2026-08-22T19:22:26.570Z",
       "declaredNow": true,
       "definitionSince": "2026-06-01T08:28:45-04:00",
       "lastObservedAt": "2026-08-16T15:34:36Z",
@@ -1321,7 +1321,7 @@
         "detail": "workflow file '.github/workflows/zz-rustup-cache-probe.yml' is registered ACTIVE on the forge host but is ABSENT from the repository"
       },
       "firstSeenAt": "2026-08-22T18:41:16.047Z",
-      "lastDeclaredAt": "2026-08-22T18:41:16.047Z",
+      "lastDeclaredAt": "2026-08-22T19:22:26.570Z",
       "declaredNow": true,
       "lastObservedAt": null,
       "lastVerdictKind": null,
