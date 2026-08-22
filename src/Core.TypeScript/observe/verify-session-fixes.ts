@@ -11,7 +11,7 @@
  * Exit 0 = all confirmed. Exit 1 = some still pending.
  */
 
-import { readFileSync, existsSync } from "node:fs";
+import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
 const repoRoot = process.cwd();
@@ -23,19 +23,46 @@ function check(name: string, ok: boolean, detail: string): void {
   if (!ok) issues++;
 }
 
+/**
+ * The file's bytes, or `null` when it is not there.
+ *
+ * ONE SYSCALL, ONE ANSWER. `existsSync(p)` followed by `readFileSync(p)` is a
+ * check-then-use race: between the two the path can be created, deleted or
+ * replaced, so the answer the check returned is already stale when the read
+ * runs. The check reads as defensive and prevents nothing — the read has to be
+ * able to fail either way, so let it fail and interpret the failure.
+ *
+ * This is the shape `cluster/rendered-storage-claims.ts` already uses. Refused
+ * by `src/Core.TypeScript/hygiene/lint-check-then-use-file-races.ts`.
+ *
+ * ENOENT is the ordinary "the tick has not written it yet" case that this script
+ * exists to report. Anything else — unreadable, a directory, EIO — is rethrown
+ * rather than reported as "does not exist", because a script whose whole job is
+ * to say whether a fix landed must not answer "no" when it means "I could not
+ * tell". That distinction is the reason the catch is narrow.
+ */
+function readIfPresent(abs: string): string | null {
+  try {
+    return readFileSync(abs, "utf-8");
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === "ENOENT") return null;
+    throw error;
+  }
+}
+
 // 1. Drift-rate accumulating
-const ciRunsPath = join(repoRoot, "data", "ci-runs.jsonl");
-if (existsSync(ciRunsPath)) {
-  const lines = readFileSync(ciRunsPath, "utf-8").trim().split("\n").filter((l) => l);
+const ciRunsText = readIfPresent(join(repoRoot, "data", "ci-runs.jsonl"));
+if (ciRunsText !== null) {
+  const lines = ciRunsText.trim().split("\n").filter((l) => l);
   check("Drift-rate", lines.length > 0, `${lines.length} run(s) recorded`);
 } else {
   check("Drift-rate", false, "data/ci-runs.jsonl does not exist yet — wait for next heartbeat tick");
 }
 
 // 2. RS blocks with real phase ranges
-const rsBlocksPath = join(repoRoot, "data", "rs-blocks.jsonl");
-if (existsSync(rsBlocksPath)) {
-  const lines = readFileSync(rsBlocksPath, "utf-8").trim().split("\n").filter((l) => l);
+const rsBlocksText = readIfPresent(join(repoRoot, "data", "rs-blocks.jsonl"));
+if (rsBlocksText !== null) {
+  const lines = rsBlocksText.trim().split("\n").filter((l) => l);
   const blocks = lines.map((l) => { try { return JSON.parse(l); } catch { return null; } }).filter(Boolean);
   const realBlocks = blocks.filter((b: any) => b.endPhase - b.startPhase > 1);
   check("RS blocks", realBlocks.length > 0,
@@ -47,9 +74,14 @@ if (existsSync(rsBlocksPath)) {
 }
 
 // 3. Vault status
-const vaultPath = join(repoRoot, "data", "vault-state.json");
-if (existsSync(vaultPath)) {
-  const vault = JSON.parse(readFileSync(vaultPath, "utf-8"));
+//
+// READ ONCE, not once per check. Sections 3 and 4 both need vault-state.json and
+// previously read it twice, so a write landing between the two reads could have
+// reported a vault count from one file and a connectivity list from another —
+// two checks disagreeing about the same tick. One read, one snapshot.
+const vaultText = readIfPresent(join(repoRoot, "data", "vault-state.json"));
+if (vaultText !== null) {
+  const vault = JSON.parse(vaultText);
   const liveVaults = vault.vaults.filter((v: any) => v.status === "live").length;
   check("Vault status", liveVaults >= 3,
     `${liveVaults}/5 vaults live (action-recognition fix ${liveVaults >= 3 ? "confirmed" : "pending"})`);
@@ -58,8 +90,8 @@ if (existsSync(vaultPath)) {
 }
 
 // 4. Connectivity capped
-if (existsSync(vaultPath)) {
-  const vault = JSON.parse(readFileSync(vaultPath, "utf-8"));
+if (vaultText !== null) {
+  const vault = JSON.parse(vaultText);
   const connectivity = vault.connectivity ?? [];
   const allCapped = connectivity.every((c: any) => c.connectivity <= 1.0);
   check("Connectivity", allCapped && connectivity.length > 0,
