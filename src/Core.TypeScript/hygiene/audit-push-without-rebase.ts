@@ -15,9 +15,10 @@
 //
 // Live instance (2026-08-10): `tick-metrics` (run 31428773872) computed a correct metric
 // frame, committed it, and lost it to a non-fast-forward rejection. It was the last
-// commit-back lane still pushing bare; `lockfile-healer` and `drift-sweep` already
-// rebased. Two lockfile breaks the same day were the same class — a lane that is fine in
-// isolation and fails only under fleet concurrency.
+// commit-back lane still pushing bare; `lockfile-healer` and `drift-sweep` then rebased,
+// and later moved onto `flush-via-staging.ts` (the write itself is no longer a bare
+// `git push` in those YAML run-blocks). Two lockfile breaks the same day were the same
+// class — a lane that is fine in isolation and fails only under fleet concurrency.
 //
 // Why this is mechanically checkable when "waste" is not
 // ------------------------------------------------------
@@ -58,7 +59,7 @@ const PUSH_TO_MAIN =
 const FORCE_PUSH = /(?<![\w-])git\s+push\b[^\n]*(--force|--force-with-lease|\+refs)/;
 /**
  * ANY form that re-expresses local work onto a moved base. Both shapes count:
- *   - rebase-then-push           (lockfile-healer, drift-sweep, tick-metrics)
+ *   - rebase-then-push           (any remaining YAML commit-back lane)
  *   - push-then-replay-on-reject (agent-heartbeat's retry loop — arguably better, since
  *     it pays the re-expression only when it actually races)
  * Requiring the rebase to come FIRST was too narrow and flagged the best-handled lane in

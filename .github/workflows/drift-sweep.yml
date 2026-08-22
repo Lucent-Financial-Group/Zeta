@@ -20,10 +20,35 @@
 # matches .mise.toml). --tracked (git ls-files) keeps path-shaped tool
 # preamble out of the permanent ledger.
 #
-# Loop safety: the commit-back uses the workflow's GITHUB_TOKEN, whose
-# pushes do not trigger workflows, and the message carries [skip ci] —
-# belt and suspenders. Cron is off-minute per the thundering-herd
-# convention.
+# HOW THE TICK LANDS (changed 2026-08-18 — read this before "simplifying"
+# it back to a direct push). This lane used to commit "[skip ci]" and
+# `git push` straight at main. Ruleset "CI Gate" (16134995) makes
+# `gate (required)` a required status check on the default branch, and a
+# required check is evaluated at PUSH time against the pushed tip — so a
+# commit that has never been through a check run is rejected before any
+# check could start:
+#
+#     remote: - Required status check "gate (required)" is expected.
+#
+# That rejection is DETERMINISTIC AND PERMANENT, not a race: "[skip ci]"
+# guarantees no `gate` run is ever scheduled for that commit, so the
+# condition can never clear by retrying. It was swallowed by
+# `git push || echo "push race — next tick re-records (idempotent)"`,
+# which named a transient cause that was not the one occurring, and the
+# step reported success. The ledger froze at tick 000247 on 2026-08-13
+# and 300+ green sweeps recorded nothing for five days while the Pages
+# panel published `latestTick: 247, openCount: 0` as current.
+#
+# The route now is `flush-via-staging.ts`, already proven on four lanes
+# (agent-heartbeat, society-heartbeat, tick-metrics, proof-closure-drift):
+# park the tick on `heartbeat/drift-sweep` — which ruleset "Heartbeat
+# Branch Protection" (16934633) covers with `deletion` only — then open a
+# PR and arm squash auto-merge so `gate` actually runs and the tick lands
+# checked. Cron is off-minute per the thundering-herd convention.
+#
+# NO "[skip ci]" IN THE FLUSH MESSAGE. The flush commit is the PR head; a
+# skip token there stops `gate` from ever reporting and the PR hangs
+# unmergeable forever. `flush-via-staging.ts` refuses such a message.
 #
 # Safe-pattern compliance (mirrors tick-metrics.yml): SHA-pinned actions,
 # explicit minimal permissions, concurrency without cancel-in-progress,
@@ -34,21 +59,30 @@ name: drift-sweep
 on:
   # EVENT-DRIVEN TICK (Aaron 2026-08-10, "how do we speed it up"): the tick
   # fires on every real push to main — drift is measured the moment it can
-  # exist. Loop-safe by construction: the sweep's own bookkeeping (and the
-  # retraction actuator's pushes) use GITHUB_TOKEN, which never triggers
-  # workflows; only human/agent-credential landings mint ticks. The cron
-  # drops to a twice-hourly HEARTBEAT (catches token-pushed drift + proves
-  # liveness). Because every budget and MTTH is denominated in TICKS, not
-  # wallclock, the whole organism speeds up proportionally with zero
-  # recalibration — the phase-clock design's dividend.
+  # exist. The old loop-safety ("GITHUB_TOKEN + [skip ci] so bookkeeping
+  # never retriggers") is the leftover that made a rejected write look
+  # green: it is also why the write could never land. Bookkeeping now
+  # lands through a PAT-opened flush PR, which DOES retrigger `push: main`.
+  # `sweep` always mints a new tick file, so without ignoring the ledger's
+  # own outputs a landed tick remints forever. paths-ignore is the
+  # tick-metrics leftover shape: real landings still mint; a bookkeeping-
+  # only squash does not. Cron stays the twice-hourly HEARTBEAT.
   push:
     branches: [main]
+    paths-ignore:
+      - "docs/drift-events/**"
+      - "data/drift-mtth.json"
+      - "data/drift-genome.json"
+      - "data/drift-evolution.json"
+      - "data/drift-proposal.json"
+      - "data/platform-drift.json"
   schedule:
     - cron: "7,37 * * * *" # twice-hourly heartbeat, off-minute
   workflow_dispatch: {}
 
 permissions:
-  contents: write # commits the tick event back to docs/drift-events/
+  contents: write      # push the lane's heartbeat/drift-sweep staging branch
+  pull-requests: write # open + arm the flush PR that lands the tick on main
 
 concurrency:
   group: drift-sweep
@@ -69,6 +103,15 @@ jobs:
           # NOT deepen a shallow clone, so it cannot rescue this. Six other workflows in this repo
           # already set `fetch-depth: 0` for the same reason; this one was the exception.
           fetch-depth: 0
+          # THIS CHECKOUT'S CREDENTIAL IS THE ONE THAT PUSHES `heartbeat/drift-sweep`.
+          # The Flush step's GH_TOKEN opens the PR; this token is what `git push`
+          # authenticates with, and THAT actor is what decides whether `gate
+          # (required)` ever runs on the flush PR. A GITHUB_TOKEN-actored
+          # synchronize parks gate as `action_required` — write looks green,
+          # never lands. Same leftover PAT ladder as tick-metrics / #13808
+          # cadence lanes. Do not add the TREATED preflight here.
+          persist-credentials: true
+          token: ${{ secrets.ZETA_TELEMETRY_FLUSH_TOKEN || secrets.GITHUB_TOKEN }}
 
       - name: Sync to origin tip (event-driven ticks race pushes)
         # The checkout is pinned to the TRIGGERING commit, which can predate
@@ -143,6 +186,16 @@ jobs:
 
       - name: Install dependencies (yaml parser for the SLO registry)
         run: bun install --frozen-lockfile
+
+      - name: Prepare the staging working tree (flush-via-staging lane)
+        # MUST run before the tick is minted. `nextTick` is max(existing
+        # event file) + 1 read from docs/drift-events/, so if the previous
+        # tick is still parked on heartbeat/drift-sweep awaiting its PR,
+        # starting from origin/main alone would re-mint the SAME number and
+        # the two would collide. `prepare` unions the unlanded payload in
+        # as index state (no commits — it ratchets on that), so the counter
+        # continues correctly across an in-flight flush.
+        run: bun src/Core.TypeScript/forge-host/github/flush-via-staging.ts prepare --lane drift-sweep
 
       - name: Record the tick
         run: |
@@ -244,23 +297,30 @@ jobs:
         # registry. Status published to data/drift-proposal.json every tick.
         run: bun src/Core.TypeScript/hygiene/drift-proposer.ts
 
-      - name: Commit and push the tick event (and any SLO filings)
+      - name: Flush the tick event to main via staging branch + PR
+        # THE RECORDING STEP. It is the ONLY thing that makes a sweep durable,
+        # so it fails the job when it fails — no `|| echo`, no `exit 0`, no
+        # "next tick re-records" reassurance. A tick that was not recorded must
+        # not be able to read as a green run; that inversion is what kept this
+        # ledger frozen for five days while every sweep reported success.
+        #
+        # What still exits 0, deliberately and narrowly:
+        #   - nothing staged at all -> genuine no-op (§12 idempotency);
+        #   - PR open but auto-merge not armed -> the tick IS parked and
+        #     recoverable, and flush-via-staging emits a ::warning naming the
+        #     PR and the cause rather than passing silently.
+        # Every other outcome — commit failed, staging push rejected, PR could
+        # not be opened — exits 3 and turns this job red.
+        env:
+          # A PAT is required to OPEN the PR: the enterprise forbids the Actions
+          # identity from creating pull requests, and a GITHUB_TOKEN-opened PR
+          # would not trigger `gate` anyway. Same fallback chain as the four
+          # lanes already on this route.
+          GH_TOKEN: ${{ secrets.ZETA_TELEMETRY_FLUSH_TOKEN || secrets.ZETA_PR_ARCHIVE_TOKEN || secrets.GITHUB_TOKEN }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add docs/drift-events docs/letters workitems data/drift-mtth.json data/drift-genome.json data/drift-evolution.json data/drift-proposal.json data/platform-drift.json
-          if git diff --cached --quiet; then
-            echo "Nothing staged — no tick recorded."
-          else
-            git commit -m "drift: record sweep tick + certified heals [skip ci]"
-            # Bookkeeping races are NON-FATAL by design: findings are
-            # recomputed and heals are certified-idempotent, so a lost tick
-            # is a skipped heartbeat, not an error — the next tick
-            # re-records everything. Red runs here would just be noise.
-            if ! git pull --rebase origin main; then
-              git rebase --abort || true
-              echo "tick bookkeeping lost a push race — next tick re-records (idempotent)"
-              exit 0
-            fi
-            git push || echo "push race — next tick re-records (idempotent)"
-          fi
+          bun src/Core.TypeScript/forge-host/github/flush-via-staging.ts flush \
+            --lane drift-sweep \
+            --paths docs/drift-events docs/letters workitems data/drift-mtth.json data/drift-genome.json data/drift-evolution.json data/drift-proposal.json data/platform-drift.json \
+            --message "drift: record sweep tick + certified heals"

@@ -430,3 +430,93 @@ describe("telemetry-lane push credential (the held-gate cure)", () => {
     });
   }
 });
+
+// ---------------------------------------------------------------------------
+// THE UNIQUE (PR #12066): drift-sweep + lockfile-healer writes were rejected,
+// swallowed, and reported green. These two are NOT added to LANES above —
+// that list is the leftover TREATED/UNTREATED credential-classification pin
+// (tick-metrics / society / red-state). Classifying these lanes there would
+// either demand the leftover TREATED preflight or forbid the leftover #13808
+// PAT-on-checkout ladder. The pin below is the unique: a rejected write
+// cannot look green, and a leftover bookkeeping path cannot be dropped.
+// ---------------------------------------------------------------------------
+
+const SWALLOW_GREEN_LANES = [
+  { lane: "drift-sweep", file: "drift-sweep.yml" },
+  { lane: "lockfile-healer", file: "lockfile-healer.yml" },
+] as const;
+
+function flushRunBlock(yaml: string): string {
+  const start = yaml.indexOf("flush-via-staging.ts flush");
+  if (start < 0) return "";
+  const from = yaml.lastIndexOf("\n      - name:", start);
+  const next = yaml.indexOf("\n      - name:", start);
+  const begin = from < 0 ? start : from;
+  return next < 0 ? yaml.slice(begin) : yaml.slice(begin, next);
+}
+
+describe("swallow-green write lanes (the #12066 unique)", () => {
+  for (const { lane, file } of SWALLOW_GREEN_LANES) {
+    describe(`${lane} (${file})`, () => {
+      const yaml = workflow(file);
+      const flush = flushRunBlock(yaml);
+
+      test("prepare runs, and flush is the write — not a swallowed git push", () => {
+        expect(yaml).toContain(`flush-via-staging.ts prepare --lane ${lane}`);
+        expect(flush).toContain(`flush-via-staging.ts flush`);
+        expect(flush).toContain(`--lane ${lane}`);
+        expect(flush).not.toMatch(/git\s+push\s+\|\|\s+echo/);
+        expect(flush).not.toMatch(/git\s+push\s+origin\s+HEAD:main/);
+        expect(flush).not.toMatch(/\[skip ci\]/);
+      });
+
+      test("the checkout that pushes carries the leftover PAT ladder", () => {
+        // Without this, flush exits 0, the job is green, and gate parks.
+        // That is the leftover that makes a write look green when it did
+        // not land. Same ladder leftover #13808 put on the cadence lanes.
+        expect(yaml).toContain(
+          "token: ${{ secrets.ZETA_TELEMETRY_FLUSH_TOKEN || secrets.GITHUB_TOKEN }}",
+        );
+        expect(yaml).toContain("persist-credentials: true");
+      });
+    });
+  }
+
+  test("drift-sweep flush keeps the leftover platform-drift write", () => {
+    // Main added data/platform-drift.json to the git-add list after #12066
+    // opened. Dropping it from --paths makes a leftover write a green no-op.
+    const flush = flushRunBlock(workflow("drift-sweep.yml"));
+    expect(flush).toContain("data/platform-drift.json");
+  });
+
+  test("drift-sweep ignores its own bookkeeping so a landed tick cannot remint", () => {
+    // sweep always writes a new tick file. A PAT-opened flush PR merge is a
+    // real push to main. Without paths-ignore the leftover "GITHUB_TOKEN +
+    // [skip ci] is loop-safe" claim returns as an infinite green mill.
+    const yaml = workflow("drift-sweep.yml");
+    expect(yaml).toContain("paths-ignore:");
+    expect(yaml).toContain("docs/drift-events/**");
+    expect(yaml).toContain("data/platform-drift.json");
+  });
+
+  test("lockfile-healer summary reads the flush outcome, never the detector", () => {
+    const yaml = workflow("lockfile-healer.yml");
+    expect(yaml).toContain('steps.flush.outcome');
+    expect(yaml).not.toMatch(
+      /\*\*Healed\.\*\* bun\.lock regenerated, verified, and pushed\./,
+    );
+  });
+
+  test("leftover #13808 cadence lanes still do not push HEAD:main", () => {
+    // Do not weaken that leftover unique while landing this one.
+    for (const file of [
+      "budget-snapshot-cadence.yml",
+      "context-cost-trend-cadence.yml",
+      "manifesto-citation-snapshot-cadence.yml",
+    ]) {
+      const yaml = workflow(file);
+      expect(yaml).toContain("flush-via-staging.ts flush");
+      expect(yaml).not.toMatch(/git\s+push\s+origin\s+HEAD:main/);
+    }
+  });
+});
