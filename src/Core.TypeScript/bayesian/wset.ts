@@ -24,10 +24,13 @@ export const RealAlgebra: IStarRing<number> = {
 export type KVPair<K, W> = { key: K; weight: W };
 
 export class WSet<K, W> {
-  constructor(
-    public readonly ring: IStarRing<W>,
-    public readonly entries: KVPair<K, W>[]
-  ) {}
+  public readonly ring: IStarRing<W>;
+  public readonly entries: KVPair<K, W>[];
+
+  constructor(ring: IStarRing<W>, entries: KVPair<K, W>[]) {
+    this.ring = ring;
+    this.entries = entries;
+  }
 
   /** Δ fan-out (Comonoid copy) */
   copy(): WSet<[K, K], W> {
