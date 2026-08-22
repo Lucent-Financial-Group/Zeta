@@ -1,5 +1,6 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
+import { describe, expect, test } from "bun:test";
 
 const GATE_PATH = join(import.meta.dir, "..", "..", "..", ".github", "workflows", "gate.yml");
 const workflow = readFileSync(GATE_PATH, "utf8");
