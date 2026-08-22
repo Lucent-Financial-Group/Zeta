@@ -45,6 +45,10 @@ export class SwarmController {
   public wormSociety: CelegansController[] = [];
   public bnnSociety?: BnnSocietyPredictor;
   
+  // CHIP-8 Superorganism State
+  private pheromoneField: Map<number, number> = new Map();
+  private scarcity: number = 0.8; // High scarcity defaults trigger tower formation
+  
   constructor() {
     this.hwRegistry = new HardwareRegistry();
     this.hwRegistry.start();
@@ -311,35 +315,63 @@ Output ONLY a valid JSON array of strings representing the sub-tasks. Example: [
             if (world.cheatEngine!.display![i]) displayMap.set(i, true);
           }
           
-          // Tri-Boolean Cooperation: Poll the society of worms
-          const wormVotes = new Map<number, number>();
-          for (const worm of this.wormSociety) {
-            const key = worm.tick(displayMap);
-            // Apply cooperate() identity to simulate non-collapsing quantum identity engagement
-            // The worms technically cooperate by sharing the same environment, but we can tally their votes.
-            cooperate(null as any); // just referencing it to satisfy the prompt's math mention :)
-            wormVotes.set(key, (wormVotes.get(key) || 0) + 1);
+          // Initialize Pheromone field if needed
+          if (this.pheromoneField.size === 0) {
+            for (let i = 0; i <= 0xF; i++) this.pheromoneField.set(i, 0.0);
           }
           
-          let wormConsensusKey = 0;
-          let maxVotes = 0;
-          for (const [key, votes] of wormVotes.entries()) {
-            if (votes > maxVotes) { maxVotes = votes; wormConsensusKey = key; }
-          }
-          
+          // BNN Key Predictor computes its consensus separately
           const bnnPredictions = this.bnnSociety.predict(world.cheatEngine!.display!);
           
-          // Fusion: we'll bias the biological worms consensus with the BNN society consensus
+          // If BNN is highly uncertain (max prob < 0.2), scarcity is high!
+          let maxProb = 0;
           let bestBnnKey = 0;
-          let maxProb = -1;
           for (const [key, prob] of Object.entries(bnnPredictions)) {
-            if (prob > maxProb) {
-              maxProb = prob;
-              bestBnnKey = parseInt(key, 10);
+            if (prob > maxProb) { maxProb = prob; bestBnnKey = parseInt(key, 10); }
+          }
+          this.scarcity = maxProb < 0.2 ? 0.9 : 0.4;
+          
+          // Tri-Boolean Cooperation: Superorganism Tower Formation (Perez & Ding 2025)
+          const cooperativeThreshold = 0.15; // Requires some signal to commit to the collective
+          
+          let towerCount = 0;
+          let towerKey = -1;
+          
+          for (const worm of this.wormSociety) {
+            // Integrate-as-Choice Locus & Food Scarcity Trigger
+            const result = worm.tickWithSuperorganism(
+              displayMap, 
+              this.scarcity, 
+              this.pheromoneField, 
+              cooperativeThreshold
+            );
+            
+            // Tonal Momentum: Agent emits pheromones to signal intent
+            if (result.pheromoneEmit) {
+              const current = this.pheromoneField.get(result.pheromoneEmit.key) || 0;
+              this.pheromoneField.set(result.pheromoneEmit.key, current + result.pheromoneEmit.amount);
+            }
+            
+            // Did it cross threshold and commit?
+            if (result.joinedTower) {
+              towerCount++;
+              towerKey = result.key;
             }
           }
           
-          // Simple Fusion Policy: if max BNN prob is strong enough, use BNN consensus; otherwise use worm consensus
+          // Pheromone Decay (environmental dissipation)
+          for (const [key, val] of this.pheromoneField.entries()) {
+            this.pheromoneField.set(key, val * 0.9);
+          }
+          
+          // Apply cooperate() identity to simulate non-collapsing quantum identity engagement
+          cooperate(null as any); 
+
+          // Consensus: The superorganism tower formed if at least 2 worms joined the same locus
+          let wormConsensusKey = towerCount >= 2 ? towerKey : 0;
+          
+          
+          // Simple Fusion Policy: if max BNN prob is strong enough, use BNN consensus; otherwise use biological tower
           const chosenKey = maxProb > 0.4 ? bestBnnKey : wormConsensusKey;
 
           if (chosenAction.kind === "do_item") {

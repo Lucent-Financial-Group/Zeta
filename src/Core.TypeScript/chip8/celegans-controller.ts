@@ -257,6 +257,49 @@ export class CelegansController {
     return motorReadout(this.connectome, this.osc);
   }
   
+  /**
+   * Superorganism behavior (Perez & Ding 2025)
+   * 1. Triggered by food scarcity
+   * 2. Pheromone emission (Tonal Momentum)
+   * 3. Cooperative threshold for joining the tower
+   * 4. Integrate-as-choice locus (simulate before committing)
+   */
+  public tickWithSuperorganism(
+    display: Map<number, boolean>, 
+    scarcity: number, 
+    pheromoneField: Map<number, number>, 
+    threshold: number
+  ): { key: number, pheromoneEmit: { key: number, amount: number } | null, joinedTower: boolean } {
+    
+    // Base sensorimotor loop
+    this.osc = injectDisplay(display, this.connectome, this.osc);
+    this.osc = step(this.connectome, this.osc, 1.0);
+    const intendedKey = motorReadout(this.connectome, this.osc);
+
+    let joinedTower = false;
+    let emit = null;
+    
+    // Condition 1: Food Scarcity Trigger
+    if (scarcity > 0.5) {
+      
+      // Condition 2: Pheromone Field (Tonal Momentum)
+      // Agent emits a scalar pheromone representing its intended action
+      emit = { key: intendedKey, amount: scarcity * 0.1 };
+
+      // Condition 4: Integrate-as-Choice Locus
+      // The worm simulates joining and evaluates the collective signal before committing.
+      const localPheromone = pheromoneField.get(intendedKey) || 0;
+      
+      // Condition 3: Cooperative Threshold
+      // Only join the "tower" (commit to the collective action) if local pheromone exceeds threshold
+      if (localPheromone >= threshold) {
+         joinedTower = true;
+      }
+    }
+
+    return { key: intendedKey, pheromoneEmit: emit, joinedTower };
+  }
+
   public getOrderParameter(): number {
     let sumSin = 0;
     let sumCos = 0;

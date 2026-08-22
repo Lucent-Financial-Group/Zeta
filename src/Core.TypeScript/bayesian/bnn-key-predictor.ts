@@ -1,4 +1,5 @@
 import { createStudentTState, updateStudentT, type StudentTState } from "../planning/student-t-bnn";
+import { WSet, RealAlgebra } from "./wset";
 
 export interface BnnPriors {
   explorationRate: number; // 0.0 - 1.0 (how uniform the distribution is)
@@ -8,9 +9,7 @@ export interface BnnPriors {
 /**
  * A Society of Student-t BNNs for predicting the optimal CHIP-8 key.
  * 
- * Instead of a single model, we run a small society of BNNs. Each BNN acts as a
- * reservoir node with its own state. We aggregate their predictions to form a consensus.
- * The Student-t likelihood ensures robustness against non-Gaussian outliers (e.g. noise flashes).
+ * Uses the latest Bayesian Categorical Tensors (WSet) for multilayer EP inference.
  */
 export class BnnSocietyPredictor {
   private priors: BnnPriors = {
@@ -18,10 +17,7 @@ export class BnnSocietyPredictor {
     targetTrackingWeight: 0.9,
   };
 
-  // The society of BNNs. We map each of the 16 keys to a StudentTState (its probability belief).
-  // For a multi-agent society, we can have N agents, each maintaining beliefs about the 16 keys.
   private agents: Map<string, Record<number, StudentTState>> = new Map();
-
   public agentCount: number;
 
   constructor(agentCount: number = 3) {
@@ -33,7 +29,6 @@ export class BnnSocietyPredictor {
     for (let i = 0; i < this.agentCount; i++) {
       const agentBeliefs: Record<number, StudentTState> = {};
       for (let k = 0; k <= 0xF; k++) {
-        // Each agent has slightly different prior variance to encourage diversity in the society
         const diversityVariance = 1.0 + (Math.random() * 0.5); 
         agentBeliefs[k] = createStudentTState(0.0, diversityVariance, 4.0, 0.1);
       }
@@ -41,9 +36,6 @@ export class BnnSocietyPredictor {
     }
   }
 
-  /**
-   * The Commander LLM can tune the priors on the fly.
-   */
   public setPriors(priors: Partial<BnnPriors>) {
     this.priors = { ...this.priors, ...priors };
   }
@@ -53,10 +45,10 @@ export class BnnSocietyPredictor {
   }
 
   /**
-   * Calculates the probability distribution for all 16 hex keys using consensus.
+   * Calculates the probability distribution for all 16 hex keys using WSet Comonoid consensus.
    */
   public predict(display: boolean[]): Record<number, number> {
-    // 1. Calculate heuristic visual gradients (simulating an observation 'y')
+    // 1. Calculate heuristic visual gradients
     let leftX = 0, leftY = 0, leftCount = 0;
     let rightX = 0, rightY = 0, rightCount = 0;
 
@@ -96,32 +88,46 @@ export class BnnSocietyPredictor {
       }
     }
 
-    // 2. Update each agent's Student-t belief with the new observations (EP Update)
-    // The robust Student-t likelihood will automatically downweight extreme outliers
+    // 2. Online EP Training (Training = Running the Sim)
+    const agentWSets: WSet<number, number>[] = [];
+    
     for (const beliefs of this.agents.values()) {
+      const wsetEntries: { key: number, weight: number }[] = [];
       for (let k = 0; k <= 0xF; k++) {
         const obsValue = observations[k] ?? 0.0;
-        const y = obsValue + ((Math.random() - 0.5) * 0.05); // Add slight subjective noise per agent
+        const y = obsValue + ((Math.random() - 0.5) * 0.05); // Add subjective noise
         const result = updateStudentT(beliefs[k]!, y);
-        beliefs[k] = result.state; // Persist the updated posterior
+        beliefs[k] = result.state;
+        
+        // The weight is the raw unnormalized probability (posterior mean)
+        const weight = Math.max(0, result.state.posterior.mu);
+        wsetEntries.push({ key: k, weight });
       }
+      agentWSets.push(new WSet(RealAlgebra, wsetEntries));
     }
 
-    // 3. Reservoir Readout (Consensus)
-    // We average the posterior means across the society.
+    // 3. Comonoid Wiring for Consensus
+    // We combine all agent WSets by mapping them into a unified WSet and consolidating.
+    const allEntries: { key: number, weight: number }[] = [];
+    for (const wset of agentWSets) {
+      allEntries.push(...wset.entries);
+    }
+    
+    // Create a unified WSet and use `consolidate` (which sums weights for same keys)
+    const unifiedSet = new WSet(RealAlgebra, allEntries);
+    const consensusSet = unifiedSet.consolidate();
+
+    // 4. Normalize and apply exploration rate
     const consensusProbs: Record<number, number> = {};
-    for (let k = 0; k <= 0xF; k++) {
-      let sumMu = 0;
-      for (const beliefs of this.agents.values()) {
-        sumMu += beliefs[k]!.posterior.mu;
-      }
-      const meanMu = sumMu / this.agents.size;
-      consensusProbs[k] = Math.max(0, meanMu + (this.priors.explorationRate / 16));
+    for (let i = 0; i <= 0xF; i++) consensusProbs[i] = 0.0;
+    
+    let sum = 0;
+    for (const entry of consensusSet.entries) {
+      const w = entry.weight / this.agentCount; // Average across agents
+      consensusProbs[entry.key] = w + (this.priors.explorationRate / 16);
+      sum += consensusProbs[entry.key]!;
     }
 
-    // Normalize consensus distribution
-    let sum = 0;
-    for (let i = 0; i <= 0xF; i++) sum += consensusProbs[i]!;
     if (sum > 0) {
       for (let i = 0; i <= 0xF; i++) consensusProbs[i] = consensusProbs[i]! / sum;
     }

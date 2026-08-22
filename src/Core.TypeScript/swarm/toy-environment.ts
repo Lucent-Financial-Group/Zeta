@@ -9,6 +9,8 @@ export interface ToyState {
   readonly moves: number;
   readonly won: boolean;
   readonly causalMask: boolean[];
+  readonly pheromoneField: Record<string, number>;
+  readonly scarcity: number;
 }
 
 export type ToyAction = "move_up" | "move_down" | "move_left" | "move_right";
@@ -36,7 +38,11 @@ export function createLevel(width: number, height: number, layout: string[]): To
   // Initial player position is always causally relevant
   causalMask[pY * width + pX] = true;
 
-  return { width, height, grid, playerX: pX, playerY: pY, moves: 0, won: false, causalMask };
+  return { 
+    width, height, grid, playerX: pX, playerY: pY, moves: 0, won: false, causalMask,
+    pheromoneField: {},
+    scarcity: 0.0 // Initially no scarcity
+  };
 }
 
 export function stepToy(state: ToyState, action: ToyAction): ToyState {
@@ -75,6 +81,15 @@ export function stepToy(state: ToyState, action: ToyAction): ToyState {
     newGrid[nIdx] = "player";
   }
 
+  // Decay pheromones
+  const newPheromones: Record<string, number> = {};
+  for (const [k, v] of Object.entries(state.pheromoneField)) {
+    if (v > 0.01) newPheromones[k] = v * 0.9;
+  }
+
+  // Scarcity increases linearly with moves
+  const newScarcity = Math.min(1.0, (state.moves + 1) / 100.0);
+
   return {
     ...state,
     grid: newGrid,
@@ -82,7 +97,9 @@ export function stepToy(state: ToyState, action: ToyAction): ToyState {
     playerY: ny,
     moves: state.moves + 1,
     won,
-    causalMask: newCausalMask
+    causalMask: newCausalMask,
+    pheromoneField: newPheromones,
+    scarcity: newScarcity
   };
 }
 
