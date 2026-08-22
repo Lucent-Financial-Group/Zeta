@@ -685,15 +685,21 @@ export async function runConvergentZetaDbNodeTick(
   request: ZetaDbTickRequest,
   policy: ZetaDbConvergencePolicy,
 ): Promise<ZetaDbResult<ZetaDbTickReadout>> {
-  if (!Number.isSafeInteger(policy.maxAttempts) || policy.maxAttempts < 1) {
+  if (
+    !isRecord(policy) ||
+    typeof policy.maxAttempts !== "number" ||
+    !Number.isSafeInteger(policy.maxAttempts) ||
+    policy.maxAttempts < 1
+  ) {
     return failed(
       "database-request-invalid",
       "A database convergence policy requires a positive safe-integer attempt budget.",
     );
   }
 
+  const maxAttempts = policy.maxAttempts;
   let lastConflict: ZetaDbFeedback | null = null;
-  for (let attempt = 1; attempt <= policy.maxAttempts; attempt += 1) {
+  for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
     const result = await runZetaDbNodeTick(port, request);
     if (result.ok || result.feedback.code !== "database-revision-conflict") return result;
     if (request.expectedRevision !== undefined) return result;
@@ -702,7 +708,7 @@ export async function runConvergentZetaDbNodeTick(
 
   return failed(
     "database-revision-conflict",
-    `Database tick spent its ${String(policy.maxAttempts)}-attempt convergence budget. Last conflict: ${lastConflict?.detail ?? "revision changed"}`,
+    `Database tick spent its ${String(maxAttempts)}-attempt convergence budget. Last conflict: ${lastConflict?.detail ?? "revision changed"}`,
     "backpressure",
   );
 }
