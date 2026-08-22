@@ -207,7 +207,15 @@ export function main(argv: string[]): number {
   const priorReason = new Map((prior.unmeasured ?? []).map((u) => [u.key, u.reason]));
   const measured: Record<string, unknown>[] = [];
   const unmeasured: { key: string; reason: string }[] = [];
-  for (const j of [...governed].sort((a, b) => `${a.workflow}:${a.job}`.localeCompare(`${b.workflow}:${b.job}`))) {
+  // Ordinal, never `localeCompare`: the emitted file is a committed artifact and its row
+  // order must not depend on the locale of whoever refreshed it
+  // (`.claude/rules/culture-invariant-by-default.md`).
+  const ordinal = (a: InstallerJob, b: InstallerJob): number => {
+    const ka = `${a.workflow}:${a.job}`;
+    const kb = `${b.workflow}:${b.job}`;
+    return ka < kb ? -1 : ka > kb ? 1 : 0;
+  };
+  for (const j of [...governed].sort(ordinal)) {
     const key = `${j.workflow}:${j.job}`;
     const s = samplesFor(j, root);
     if (s.length === 0) {
