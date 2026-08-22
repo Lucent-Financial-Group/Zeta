@@ -1,11 +1,11 @@
 namespace Zeta.Core
 
-/// **AdinkraIharaZeta — "what is our zeta function", answered for the adinkra of the `[8,4]` code.**
+/// **AdinkraIharaZeta — Ihara zeta of the graph of the `[8,4]` adinkra.**
 ///
 /// A zeta function is an Euler product that **enumerates irreducibles**: Riemann's over primes,
 /// Dedekind's over prime ideals, **Ihara's over the primitive closed geodesics of a graph**. An
-/// adinkra *is* a graph, so the question has a finite, computable answer for the concrete generator
-/// pinned in `AdinkraCode`.
+/// adinkra *is* a graph, so Ihara is a finite, computable zeta of that graph for the concrete
+/// generator pinned in `AdinkraCode`. Ihara is *a* zeta, not *the* zeta of the factory.
 ///
 /// ── **The graph, derived (not drawn)** ───────────────────────────────────────────────────────────
 ///
@@ -23,8 +23,9 @@ namespace Zeta.Core
 /// > Adding an odd-weight vector flips parity, and the eight odd vectors are *all* of them, so every
 /// > even-parity coset is joined to **every** odd-parity coset, once each.
 ///
-/// **The adinkra of the `[8,4]` extended Hamming code is `K_{8,8}`** — the complete bipartite graph on
-/// 8 + 8 vertices. 16 nodes, 8-regular, 64 edges, circuit rank `r = 64 − 16 + 1 = 49`. The bipartition
+/// **The underlying graph of the `[8,4]` extended Hamming adinkra is `K_{8,8}`** — the complete
+/// bipartite graph on 8 + 8 vertices. 16 nodes, 8-regular, 64 edges, circuit rank
+/// `r = 64 − 16 + 1 = 49`. The bipartition
 /// is the physics one: 8 bosons and 8 fermions, each boson joined to each fermion by exactly one of
 /// the 8 supercharge colours. `bipartitionIsCodeParity` proves the split is the coset-parity map, and
 /// `isCompleteBipartite` proves completeness — both from the derived adjacency, not asserted.
@@ -43,7 +44,7 @@ namespace Zeta.Core
 ///
 /// | pole | multiplicity | modulus | class |
 /// |---|---|---|---|
-/// | `u = ±1` | 49 each | 1 | trivial (the `(1−u²)^(r−1)` factor + the Perron/bipartite pair) |
+/// | `u = ±1` | 49 each | 1 | trivial — closed-form `(1−u²)^r` with `r = 49` (Bass writes `(1−u²)^{r−1}`; det adds one more `(1−u²)`) |
 /// | `u = ±1/7` | 1 each | `1/q` | trivial (Perron `λ = 8` and its bipartite mirror `λ = −8`) |
 /// | `u = ±i/√7` | **14 each** | **`q^(−1/2)`** | **non-trivial — and exactly on the critical circle** |
 ///
@@ -57,8 +58,9 @@ namespace Zeta.Core
 ///
 /// Honest deflation of that verdict: `K_{n,n}` is Ramanujan for *every* `n` (non-trivial spectrum is
 /// `{0}`), so this is a property of complete-bipartiteness, not a discovery about supersymmetry. What
-/// the computation genuinely establishes is the **identification** — the adinkra of *this* code is
-/// `K_{8,8}` — and that identification is what makes the zeta closed-form and the verdict exact.
+/// the computation genuinely establishes is the **identification** — the underlying graph of *this*
+/// code's adinkra is `K_{8,8}` — and that identification is what makes the zeta closed-form and the
+/// verdict exact.
 ///
 /// ── **The Euler product: what the "primes" are** ─────────────────────────────────────────────────
 ///
@@ -148,7 +150,8 @@ module AdinkraIharaZeta =
     /// Undirected edge count `|E| = 64`.
     let edges = IharaZeta.edgeCount adjacency
 
-    /// Circuit rank `r = |E| − |V| + 1 = 49` — the Bass exponent.
+    /// Circuit rank `r = |E| − |V| + 1 = 49` — the closed-form `(1 − u²)` exponent.
+    /// Bass writes `(1 − u²)^{r−1}`; `inverseZetaClosedForm` uses `r`, not `r−1`.
     let circuitRank = IharaZeta.circuitRank adjacency
 
     /// `q = valence − 1 = 7`. The critical circle for the graph RH is `|u| = q^(−1/2) = 1/√7`.

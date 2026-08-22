@@ -1,10 +1,11 @@
-# What is our zeta function? The Ihara zeta of the `[8,4]` adinkra — it is `K_{8,8}`, it is Ramanujan, and it is silent on the unfolding
+# Ihara zeta of the `[8,4]` adinkra graph — the graph is `K_{8,8}`; Ramanujan (deflated); silent on unfolding
 
 **Date:** 2026-08-18
 **Status:** computed, exact, with falsifiers. One claim earned, one claim explicitly *not* earned.
 **Code:** `src/Core/IharaZeta.fs`, `src/Core/AdinkraIharaZeta.fs`
-**Falsifier:** `tests/Tests.FSharp/Formal/AdinkraIharaZeta.Tests.fs` (16 tests; both computation routes
-mutated and confirmed to turn the suite red)
+**Falsifier:** `tests/Tests.FSharp/Formal/AdinkraIharaZeta.Tests.fs` (16 tests). The
+non-backtracking guard is shown load-bearing by the existing negative-control test
+named in §7; no author-reported mutation counts are claimed.
 
 ---
 
@@ -16,7 +17,8 @@ Aaron, 2026-08-18:
 > for other infinite generator functions."*
 
 "What is our zeta function" is unanswerable as posed, because "zeta function" names a family, not an
-object. The reframing that makes it finite:
+object. Ihara is *a* zeta of the adinkra's underlying graph, not *the* zeta of the factory. The
+reframing that makes this one finite:
 
 > **A zeta function is an Euler product that enumerates irreducibles.**
 
@@ -26,9 +28,9 @@ object. The reframing that makes it finite:
 | Dedekind `ζ_K` | prime ideals of `O_K` |
 | **Ihara `ζ_G(u) = Π_[P] (1 − u^ℓ(P))^(−1)`** | **primitive closed geodesics of a graph** |
 
-**An adinkra is a graph.** So the question has a concrete, finite, computable candidate answer: the
-Ihara zeta of the adinkra of the `[8,4]` extended Hamming code that `src/Core/AdinkraCode.fs` already
-pins as our concrete Adinkra generator.
+**An adinkra is a graph.** So one concrete, finite, computable candidate is the Ihara zeta of the
+*graph* of the `[8,4]` extended Hamming adinkra that `src/Core/AdinkraCode.fs` already pins. The
+graph is `K_{8,8}`; the zeta is the Bass polynomial below. Ihara is silent on the unfolding.
 
 ---
 
@@ -53,7 +55,7 @@ That is **all eight odd-weight vectors of `GF(2)^4`**, and nothing else. Adding 
 flips parity, so from any even-parity coset the eight colours reach all eight odd-parity cosets, once
 each. Hence:
 
-> ### The adinkra of the `[8,4]` extended Hamming code is `K_{8,8}` — the complete bipartite graph.
+> ### The underlying graph of the `[8,4]` extended Hamming adinkra is `K_{8,8}` — the complete bipartite graph.
 
 16 nodes, 8-regular, 64 edges, circuit rank `r = 64 − 16 + 1 = 49`. The bipartition is the physical
 one: 8 bosons, 8 fermions, one edge per supercharge between every pair. This is an **identification,
@@ -65,10 +67,13 @@ completely different code.
 
 ## 2. The zeta function
 
-Bass's determinant formula (1992): `ζ(u)^(−1) = (1 − u²)^(r−1) · det(I − Au + Qu²)`, with `Q = D − I`.
-For our graph `Q = 7I` and the adjacency spectrum is exactly `{8, −8, 0^14}` (verified as an exact
-integer factorisation of the characteristic polynomial: `x^14 (x − 8)(x + 8)`). The determinant
-factors as `Π_λ (1 − λu + 7u²)`, and everything collapses:
+Bass's determinant formula (1992): `ζ(u)^(−1) = (1 − u²)^{r−1} · det(I − Au + Qu²)`, with `Q = D − I`
+and circuit rank `r = |E| − |V| + 1 = 64 − 16 + 1 = 49`. The code implements that formula as written
+— the Bass factor is `(1 − u²)^{48}`. For this graph `Q = 7I` and the adjacency spectrum is exactly
+`{8, −8, 0^14}` (verified as an exact integer factorisation of the characteristic polynomial:
+`x^14 (x − 8)(x + 8)`). The determinant factors as `Π_λ (1 − λu + 7u²)` and contributes one more
+`(1 − u²)` from the Perron / bipartite pair `(1 − u)(1 + u)`, so the collapsed closed form carries
+`(1 − u²)^r` with **`r = 49`**, not `r−1`:
 
 > ```
 > ζ(u)^(−1)  =  (1 − u²)^49 · (1 − 49u²) · (1 + 7u²)^14
@@ -82,7 +87,7 @@ fraction-free integer determinant evaluated at 33 points and interpolated, versu
 
 | pole | multiplicity | `\|u\|` | class |
 |---|---|---|---|
-| `u = ±1` | 49 each | 1 | trivial — `(1 − u²)^(r−1)` plus the Perron/bipartite pair |
+| `u = ±1` | 49 each | 1 | trivial — closed-form `(1 − u²)^r` with `r = 49` (Bass's `(1 − u²)^{r−1}` times the extra `(1 − u²)` from det) |
 | `u = ±1/7` | 1 each | `1/q` | trivial — from `λ = ±8` |
 | **`u = ±i/√7`** | **14 each** | **`q^(−1/2)`** | **non-trivial, on the critical circle** |
 
@@ -109,7 +114,7 @@ exact, and the verdict is an integer comparison. There is no error bound for it 
 **The deflation, stated plainly.** `K_{n,n}` is Ramanujan for *every* `n`, because its non-trivial
 spectrum is `{0}`. So "our adinkra is Ramanujan" is a property of complete-bipartiteness and carries
 no supersymmetric content on its own. What is genuinely earned is the **identification** — the
-adinkra of *this* code is `K_{8,8}` — and that identification is what makes the zeta closed-form and
+underlying graph of *this* code's adinkra is `K_{8,8}` — and that identification is what makes the zeta closed-form and
 the verdict exact rather than numerical.
 
 ---
@@ -137,10 +142,10 @@ N_2m   = 98 + 2·49^m + 28·(−7)^m
 
 **`π(4) = 1568` is the hand-check that anchors the whole edifice**: `K_{8,8}` has `C(8,2)² = 28² = 784`
 four-cycles, each traversable in two directions, and `784 × 2 = 1568`. There is no length-2 geodesic
-because a length-2 closed walk must backtrack. The shortest irreducible in our zeta has length 4 — the
-smallest supersymmetry "loop" is `Q_I Q_J Q_I Q_J`, which is exactly the anticommutator structure
-`{Q_I, Q_J}` that `AdinkraCode.anticommutingPairs = 28` counts. (Noted as a **resonance**, not a
-theorem — see §5.)
+because a length-2 closed walk must backtrack. The shortest irreducible in this Ihara zeta has length
+4 — the smallest supersymmetry "loop" is `Q_I Q_J Q_I Q_J`, which is the same *shape* as the
+anticommutator `{Q_I, Q_J}` that `AdinkraCode.anticommutingPairs = 28` counts. That is a
+**math-shape correspondence**, not a theorem and not physics-proves-us — see §5.
 
 ---
 
@@ -169,11 +174,11 @@ So the register (`toy-is-free-metered-must-be-earned` · `numerology-vs-number-t
 
 | claim | register |
 |---|---|
-| the adinkra of the `[8,4]` code is `K_{8,8}` | **verified** — adjacency checked entry-wise, and against an independently built `K_{8,8}` |
-| `ζ(u)^(−1) = (1−u²)^49 (1−49u²) (1+7u²)^14` | **verified** — two independent computation routes, both mutated to red |
+| the underlying graph of the `[8,4]` adinkra is `K_{8,8}` | **verified** — adjacency checked entry-wise, and against an independently built `K_{8,8}` |
+| `ζ(u)^(−1) = (1−u²)^49 (1−49u²) (1+7u²)^14` | **verified** — two independent computation routes (Hashimoto traces vs Bass determinant) |
 | the graph is Ramanujan / satisfies the graph RH | **verified**, exactly — and **deflated**: true of every `K_{n,n}` |
 | `π(4) = 1568`, `π(6) = 37632`, `π(8) = 1448832` | **verified** — Hashimoto traces, Bass log-derivative, and a hand count all agree |
-| shortest geodesic length 4 ↔ the `{Q_I, Q_J}` anticommutator | **coincidence / resonance** — the shapes match, no mechanism is checked |
+| shortest geodesic length 4 ↔ the `{Q_I, Q_J}` anticommutator | **math-shape correspondence** — the shapes match; no mechanism is checked; physics does not prove us |
 | this zeta enumerates the irreducibles of the unfolding | **NOT CLAIMED** — and provably out of reach for *this* zeta |
 
 **A beautiful polynomial that means nothing for the unfolding is still a negative result worth
@@ -229,8 +234,11 @@ None of that is built. It is named here so the next person does not re-derive th
 5. **Negative controls** — the non-backtracking restriction shown load-bearing; `NotRamanujan`
    demonstrated reachable (two disjoint `K₄`s: 3-regular, second eigenvalue 3 > 2√2); `NotRegular`
    demonstrated reachable; the zeta shown to separate the 4-cube from the `[8,4]` adinkra.
-6. **Mutation-checked** — deleting the `f ≠ reverse(e)` guard turns 4 tests red; an off-by-one in the
-   circuit rank turns 7 red, including both external anchors.
+6. **Non-backtracking is load-bearing, in CI** — the existing negative-control test
+   `NEGATIVE CONTROL: non-backtracking is load-bearing - the plain directed-edge operator
+   breaks the identity at u^2` drops the `f ≠ reverse(e)` guard, shows `tr(W'²) > 0`, and
+   shows the true `N₂ = 0`. Author-reported suite-red counts from mutating that guard or
+   the circuit-rank exponent are **not in CI** and are not claimed here.
 
 ## Anchors
 

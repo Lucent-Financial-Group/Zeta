@@ -24,8 +24,9 @@ namespace Zeta.Core
 /// computed by *completely different* routes — traces of a `2|E|`-dimensional operator versus a
 /// `|V|`-dimensional determinant — so their coefficient-by-coefficient agreement is a genuine
 /// cross-check rather than a program agreeing with itself.
-/// `tests/Tests.FSharp/Formal/AdinkraIharaZeta.Tests.fs` runs exactly that disagreement test, and
-/// shows it failing under mutation of either route.
+/// `tests/Tests.FSharp/Formal/AdinkraIharaZeta.Tests.fs` runs exactly that disagreement test.
+/// The non-backtracking restriction is shown load-bearing by the existing negative-control
+/// that drops the `f ≠ reverse(e)` guard and watches `N₂` leave 0.
 ///
 /// **Everything here is exact.** Polynomials are `bigint` coefficient arrays; the `|V| × |V|`
 /// polynomial determinant is obtained by evaluating at `2|V| + 1` integer points with a fraction-free
@@ -48,7 +49,8 @@ namespace Zeta.Core
 /// reproduces the hand-checked counts of the older test-local implementation in
 /// `tests/Tests.FSharp/IharaZeta.Tests.fs` (deliberately left in place as an independent oracle),
 /// and cross-checks the Bass and Hashimoto routes against each other on every graph it touches.
-/// Both routes were mutated and confirmed to turn the suite red.
+/// Author-reported mutation-red counts are not claimed; the suite cites the load-bearing
+/// negative controls it actually contains.
 [<RequireQualifiedAccess>]
 module IharaZeta =
 
@@ -201,7 +203,9 @@ module IharaZeta =
         (adjacency |> Array.sumBy Array.sum) / 2
 
     /// Circuit rank (first Betti number) `r = |E| − |V| + 1`. For a connected graph this is the rank
-    /// of the fundamental group — the number of independent cycles, and the exponent in Bass.
+    /// of the fundamental group — the number of independent cycles. Bass writes `(1 − u²)^{r−1}`;
+    /// the collapsed closed form after `det` contributes one more `(1 − u²)` is `(1 − u²)^r`.
+    /// For the `[8,4]` adinkra, `r = 64 − 16 + 1 = 49`. Do not call 49 `r−1`, or 48 `r`.
     let circuitRank (adjacency: int[][]) : int =
         edgeCount adjacency - nodeCount adjacency + 1
 

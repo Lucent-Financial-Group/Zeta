@@ -1,6 +1,6 @@
 ---
-name: "\"What is our zeta function?\" — computed. The adinkra of the [8,4] code IS K_{8,8}; its Ihara zeta is (1−u²)^49(1−49u²)(1+7u²)^14; it IS Ramanujan; and it is provably silent on the unfolding — 2026-08-18"
-description: Aaron 2026-08-18 asked what our zeta function is, framing it as swapping zeta functions over the ages for other infinite generator functions. Reframed as "a zeta is an Euler product enumerating irreducibles", the Ihara zeta of a graph makes it computable — and an adinkra is a graph. Result derived from AdinkraCode.generator (not hand-drawn), computed in exact bigint arithmetic with mutation-checked falsifiers. Two claims earned, one explicitly refused.
+name: "Ihara zeta of the [8,4] adinkra graph. The graph is K_{8,8}; its Ihara zeta is (1−u²)^49(1−49u²)(1+7u²)^14; Ramanujan (deflated); silent on the unfolding — 2026-08-18"
+description: Aaron 2026-08-18 asked what our zeta function is, framing it as swapping zeta functions over the ages for other infinite generator functions. Ihara is a zeta of the adinkra graph, not THE factory zeta. The GRAPH of the [8,4] adinkra is K_{8,8}; its Ihara zeta is the Bass polynomial; Ramanujan follows from complete-bipartiteness; Ihara is silent on unfolding. Derived from AdinkraCode.generator, exact bigint arithmetic. Two claims earned, one explicitly refused.
 type: finding
 created: 2026-08-18
 ---
@@ -13,12 +13,12 @@ Aaron 2026-08-18:
 The reframing that made it tractable: **a zeta function is an Euler product that
 enumerates irreducibles.** Riemann's runs over primes; Dedekind's over prime ideals;
 **Ihara's over the primitive closed geodesics of a graph**. An adinkra *is* a graph,
-so the question has a finite, computable answer.
+so Ihara is a finite, computable zeta of that graph — not *the* zeta of the factory.
 
 ## What was found
 
-- **The identification (verified).** The adinkra of the `[8,4]` extended Hamming code
-  in `src/Core/AdinkraCode.fs` is **`K_{8,8}`**, the complete bipartite graph. The
+- **The identification (verified).** The underlying graph of the `[8,4]` extended Hamming
+  adinkra in `src/Core/AdinkraCode.fs` is **`K_{8,8}`**, the complete bipartite graph. The
   connection set — the syndromes of the eight `e_I`, i.e. the eight *columns* of
   `[I₄ | A]` — is exactly the eight odd-weight vectors of `GF(2)^4`, so every boson
   coset joins every fermion coset once. 16 nodes, 8-regular, 64 edges, circuit rank 49.
@@ -54,7 +54,8 @@ Under `numerology-vs-number-theory`: the `K_{8,8}` identification is **structure
 entry-wise and against an independently built graph, not a count match). The resonance
 "shortest geodesic has length 4 ↔ the `{Q_I, Q_J}` anticommutator, and
 `AdinkraCode.anticommutingPairs = 28` = the number of 2-subsets" is recorded as a
-**coincidence**, not a theorem — no mechanism was checked.
+**math-shape correspondence**, not a theorem and not physics-proves-us — no mechanism
+was checked.
 
 ## Where it lives
 
@@ -66,7 +67,9 @@ entry-wise and against an independently built graph, not a count match). The res
 - `tests/Tests.FSharp/Formal/AdinkraIharaZeta.Tests.fs` — 16 tests. External anchors (Terras's
   published K₄ closed form, K_{3,3}'s spectral form), the in-tree prior-art anchor
   (`tests/Tests.FSharp/IharaZeta.Tests.fs`, deliberately left as an independent oracle),
-  a two-route cross-check, and negative controls. Both routes mutated and confirmed to go red.
+  a two-route cross-check, and negative controls. The non-backtracking guard is shown
+  load-bearing by the existing `tr(W'²) > 0` / `N₂ = 0` test. Author-reported 4/7
+  mutation-red counts are not in CI and are not claimed.
 
 Anchors: Ihara 1966 · Hashimoto 1989 · Bass 1992 · Terras 2010 · Lubotzky–Phillips–Sarnak 1988 ·
 Bareiss 1968 · Doran–Faux–Gates–Hübsch–Iga–Landweber 2008 (arXiv:0806.0051).

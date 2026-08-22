@@ -1,10 +1,11 @@
 module Zeta.Tests.Formal.AdinkraIharaZetaTests
 
-// **"What is our zeta function?" — computed, with falsifiers.**
+// **Ihara zeta of the [8,4] adinkra graph — computed, with falsifiers.**
 //
 // A zeta function is an Euler product enumerating irreducibles. Ihara's runs over the primitive
-// closed geodesics of a graph, and an adinkra IS a graph — so the question has a finite, computable
-// answer for the concrete [8,4] extended Hamming generator pinned in `AdinkraCode`.
+// closed geodesics of a graph, and an adinkra IS a graph — so Ihara is a finite, computable zeta
+// of that graph for the concrete [8,4] extended Hamming generator pinned in `AdinkraCode`.
+// The GRAPH is K_{8,8}; the zeta is the Bass polynomial. Ihara is not THE factory zeta.
 //
 // The falsifier structure, in order of how much it would hurt to lose:
 //
@@ -238,7 +239,8 @@ let ``NEGATIVE CONTROL: non-backtracking is load-bearing - the plain directed-ed
             tr2 <- tr2 + backtracking.[i].[j] * backtracking.[j].[i]
     Assert.True(tr2 > 0L, "the backtracking operator must have length-2 closed walks")
     // …while the true N₂, from both correct routes, is 0. The identity is exactly as strong as the
-    // non-backtracking restriction.
+    // non-backtracking restriction. This is the CI check that the `f ≠ reverse(e)` guard is
+    // load-bearing — not an author-reported suite-red count.
     let trueN2 = (IharaZeta.geodesicCountsFromZeta AdinkraIharaZeta.inverseZeta 2).[1]
     Assert.Equal(bi 0, trueN2)
 
