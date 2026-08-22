@@ -277,24 +277,10 @@ describe("the real tree", () => {
     // if someone later reads the lane count and assumes components produced it.
   });
 
-  test("all applications together do NOT fit one runner — both axes blow, disk hardest", () => {
-    // THE PIN IS ON A DECISION THAT IS NOT OURS TO TAKE.
-    //
-    // `runnerEnvelope.freeDiskGib` is 14 -- the vendor figure -- and
-    // `measuredFreeDiskGib` beside it is 77, read off two live runners. The gap
-    // is real and the correction is WRITTEN DOWN AND DELIBERATELY NOT TAKEN:
-    // storage-profiles.json calls it "PROPOSED CORRECTION, for a human to take
-    // or refuse: freeDiskGib 14 -> 70", and names this assertion as one of the
-    // three that flip when it is taken.
-    //
-    // So this test pins 14, and it pins it BECAUSE the number is contested. The
-    // pin is what makes taking the correction a deliberate act that shows up as
-    // three red tests rather than a quiet re-pricing of the whole partition.
-    //
-    // WHEN A HUMAN TAKES IT, the measured 70-world values are:
-    //   budget disk 66 (70-4), all.diskGib unchanged at 74.54, diskRatio 1.13x,
-    //   cpuRatio still 2.47x, and CPU becomes the binding axis instead of disk.
-    // Nothing below needs to be re-measured, only re-pinned.
+  test("all applications together do NOT fit the declared runner bound", () => {
+    // The lane model intentionally prices against the published 14 GiB bound,
+    // not a larger point measurement. The measured 77 GiB observation remains
+    // evidence about one runner and must not silently reprice every lane.
     expect(model.catalogue.envelope.freeDiskGib).toBe(14);
     const budget = budgetOf(model.catalogue.envelope, 1);
     expect(budget.diskGib).toBe(10);
@@ -305,6 +291,7 @@ describe("the real tree", () => {
     const diskRatio = all.diskGib / budget.diskGib;
     const cpuRatio = all.cpuMillis / budget.cpuMillis;
     expect(cpuRatio).toBeGreaterThan(2);
+    expect(diskRatio).toBeGreaterThan(1);
     expect(diskRatio).toBeGreaterThan(7);
     expect(diskRatio).toBeGreaterThan(cpuRatio);
   });
@@ -340,18 +327,12 @@ describe("the real tree", () => {
     // "test every chart" is only true if nothing falls between the buckets.
   });
 
-  test("hindsight and vllm are the measured self-hosted case — they do not fit a lane", () => {
-    // ~22.5 GiB each against an 8.5 GiB 0.85-margin budget (10 usable * 0.85).
-    // Being oversize is not a defect in them; it is the measurement that says a
-    // hosted runner cannot carry them and something self-hosted must.
-    //
-    // WHEN THE 14 -> 70 CORRECTION IS TAKEN these two stop being oversize: the
-    // budget becomes 56.1 GiB and both pack into a lane. That is the second of
-    // the three assertions storage-profiles.json names as flipping, and the
-    // per-app figures (22.49 / 22.65) do not move -- only the budget does.
+  test("hindsight and vllm exceed the declared runner bound and remain quarantined", () => {
+    // A larger observed runner can hold these images, but the declared 14 GiB
+    // envelope intentionally remains the portable lane-planning constraint.
     const p = packLanes(model, { margin: 0.85 });
     expect(p.budget.diskGib).toBeCloseTo(8.5, 1);
-    expect(p.oversize.map((q) => q.name)).toEqual(["hindsight", "vllm"]);
+    expect(p.oversize.map((q) => q.name).sort()).toEqual(["hindsight", "vllm"]);
     const hindsight = priceSet(model, ["hindsight"]);
     const vllm = priceSet(model, ["vllm"]);
     expect(hindsight.diskGib).toBeCloseTo(22.49, 1);
@@ -363,17 +344,10 @@ describe("the real tree", () => {
     expect(assigned.has("vllm")).toBe(false);
   });
 
-  test("dropping intent edges changes the partition NOT AT ALL, as claimed in the graph", () => {
-    // The honest negative result, and it is worth keeping precisely because it
-    // is unflattering: the declared-intent edges buy nothing at the LANE level.
-    // The two applications they would have moved -- hindsight and vllm -- never
-    // reach the packer, because they are oversize before intent is consulted.
-    //
-    // WHEN THE 14 -> 70 CORRECTION IS TAKEN this inverts: those two pack, and
-    // dropping intent then DOES move lane membership. Third of the three
-    // assertions storage-profiles.json names. The closure claim below holds in
-    // both worlds -- intent genuinely grows the dependency closure either way,
-    // which is why it is asserted separately from the packing claim.
+  test("at the declared runner bound, intent edges change closure but not the oversize-excluded partition", () => {
+    // The intent edge still enlarges hindsight's closure. It cannot move lane
+    // membership while hindsight is quarantined as oversize under the declared
+    // 14 GiB runner bound.
     const withIntent = packLanes(buildModel({ repoRoot: REPO_ROOT, rung: "dev" }), { margin: 0.85 });
     const without = packLanes(buildModel({ repoRoot: REPO_ROOT, rung: "dev", dropIntentEdges: true }), { margin: 0.85 });
     expect(without.lanes.map((l) => l.members.join(","))).toEqual(withIntent.lanes.map((l) => l.members.join(",")));

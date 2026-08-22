@@ -32,6 +32,8 @@
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 
+import { computeDrift, loadCIRuns, loadRosterCheckIds } from "./drift-rate.ts";
+
 // ═══ Data Loading (forge-agnostic — reads file contracts, not APIs) ═══════════
 
 interface TickFrame {
@@ -92,18 +94,36 @@ function assessAgents(eventDir: string, nowMs: number): AgentHealth[] {
     let lastAt: string | null = null;
     let maxPhase = 0;
 
-    const files = readdirSync(eventDir).filter((f) => f.endsWith(".json")).sort();
-    // Scan last 500 events — enough to cover ~5 days of heartbeats while staying fast.
-    // ZetaId filenames are time-ordered, so the tail is the most recent.
-    const recentFiles = files.slice(-500);
-    for (const f of recentFiles) {
-      try {
-        const e = JSON.parse(readFileSync(join(eventDir, f), "utf-8"));
-        if (e.by !== agent) continue;
-        count++;
-        if (!lastAt || e.at > lastAt) lastAt = e.at;
-        if (e.phase?.phase > maxPhase) maxPhase = e.phase.phase;
-      } catch { /* skip */ }
+    // FAST PATH: read from vault-state.json (pre-computed on each tick by the bridge).
+    // Only fall back to event scanning if vault-state is unavailable.
+    const vaultState = loadJSON<VaultState>(join(eventDir, "..", "..", "data", "vault-state.json"));
+    if (vaultState) {
+      for (const vault of vaultState.vaults) {
+        for (const room of (vault as any).rooms ?? []) {
+          for (const dweller of room.dwellers ?? []) {
+            if (dweller.agent_id === agent && dweller.last_seen) {
+              if (!lastAt || dweller.last_seen > lastAt) lastAt = dweller.last_seen;
+            }
+          }
+        }
+      }
+      maxPhase = vaultState.max_phase ?? 0;
+      count = vaultState.total_events_read;
+    }
+
+    // If vault-state didn't give us data, do a quick tail scan (last 100 only)
+    if (!lastAt) {
+      const files = readdirSync(eventDir).filter((f) => f.endsWith(".json")).sort();
+      const recentFiles = files.slice(-100);
+      for (const f of recentFiles) {
+        try {
+          const e = JSON.parse(readFileSync(join(eventDir, f), "utf-8"));
+          if (e.by !== agent) continue;
+          count++;
+          if (!lastAt || e.at > lastAt) lastAt = e.at;
+          if (e.phase?.phase > maxPhase) maxPhase = e.phase.phase;
+        } catch { /* skip */ }
+      }
     }
 
     const ageMs = lastAt ? nowMs - new Date(lastAt).getTime() : null;
@@ -247,6 +267,24 @@ function display(repoRoot: string, eventDir: string): void {
   console.log(`  Agents active: ${forge.agentsActive}`);
   console.log(`  Work ratio: ${(forge.workRatio * 100).toFixed(0)}% (edit_grammar+decompose vs explore)`);
 
+  // CI drift rate (from data/ci-runs.jsonl if available).
+  //
+  // Routed through drift-rate's OWN loader rather than `loadJSONL(...) as any`. The
+  // cast was the whole risk: `computeDrift` keys on `checkId`/`outcome`, a raw legacy
+  // line carries `workflow`/`conclusion`, and `as any` would have let every run through
+  // with both fields `undefined` — silently tallying the entire log as cancelled and
+  // reporting a plausible-looking summary off a completely miscounted fold. Normalizing
+  // at the boundary is what makes the legacy shape *supported* instead of *coincidental*.
+  //
+  // The roster is the shared denominator with the drift dashboard, so a check that
+  // stopped reporting still occupies a slot here.
+  const ciRunsPath = join(repoRoot, "data", "ci-runs.jsonl");
+  const ciRuns = loadCIRuns(ciRunsPath);
+  if (ciRuns.length > 0) {
+    const roster = loadRosterCheckIds(join(repoRoot, "db", "drift-dashboard", "roster.json"));
+    const drift = computeDrift(ciRuns, { roster });
+    console.log(`\nCI Drift: ${drift.summary}`);
+  }
   // Vault status
   if (vaultState) {
     console.log("\nVaults:");
