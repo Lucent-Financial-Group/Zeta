@@ -34,6 +34,7 @@
 import type {
   CheckExpectation,
   CheckId,
+  AttemptSummary,
   CheckObservation,
   CheckObservationFailure,
   TriggerClass,
@@ -53,14 +54,29 @@ export interface FoldConfig {
    * run, and "its last answer was yes" is not an answer about today.
    */
   readonly stalenessFactor: number;
+  /**
+   * A check is **dark** when inconclusive attempts newer than its last verdict span
+   * more than this. Time, not count, is the discriminator: `gate` is cancelled by its
+   * own concurrency group on most pushes and still concludes every few minutes (alive,
+   * churning); `tlaps-proof` went 33-of-40 cancelled with no success since 2026-07-01
+   * (dark). A count threshold would flag the first; a span threshold flags only the
+   * second.
+   */
+  readonly darkSpanSeconds: number;
+  /** At least this many inconclusive attempts before "dark" is considered at all. */
+  readonly darkMinAttempts: number;
 }
 
-export const DEFAULT_FOLD_CONFIG: FoldConfig = { stalenessFactor: 3 };
+export const DEFAULT_FOLD_CONFIG: FoldConfig = {
+  stalenessFactor: 3,
+  darkSpanSeconds: 6 * 3600,
+  darkMinAttempts: 2,
+};
 
 // ─── Report shape ───────────────────────────────────────────────────────────
 
 /** Why a row sits where it sits. Rendered, so the ranking is auditable, not magic. */
-export type RowBand = "red" | "unknown" | "running" | "skipped" | "not-applicable" | "green";
+export type RowBand = "red" | "unknown" | "running" | "not-yet-due" | "skipped" | "not-applicable" | "green";
 
 export interface DashboardRow {
   readonly checkId: CheckId;
@@ -78,6 +94,12 @@ export interface DashboardRow {
   readonly silenceSeconds: number | null;
   /** True when this pass saw a verdict for this check. */
   readonly observedThisPass: boolean;
+  /**
+   * A newer attempt is in flight; this row shows the last CONCLUDED verdict, which may
+   * be superseded shortly. An annotation, never a replacement — the optimistic read of
+   * an unfinished run is how `gate`'s red hid behind an `in_progress` on 2026-08-22.
+   */
+  readonly recheckInFlight: boolean;
   /** True when no source declared this check in this pass, though the roster remembers it. */
   readonly undeclared: boolean;
 }
@@ -209,14 +231,23 @@ export function verdictForAbsence(
   lastObservedAt: string | null,
   now: string,
   config: FoldConfig,
+  definitionSince?: string,
 ): Verdict {
   if (lastObservedAt === null) {
     switch (expectation.kind) {
-      case "periodic":
+      case "periodic": {
+        const due = firstOpportunityPassed(expectation, definitionSince, now);
+        if (!due.passed) {
+          return {
+            kind: "not-yet-due",
+            detail: `declared to run every ${humanDuration(expectation.periodSeconds)} (${expectation.detail}) and ${due.why} — no verdict is owed yet`,
+          };
+        }
         return {
           kind: "red",
           detail: `declared to run every ${humanDuration(expectation.periodSeconds)} and has NEVER produced a verdict on this ref (${expectation.detail})`,
         };
+      }
       case "on-change":
         return unknown(
           "never-observed",
@@ -290,6 +321,69 @@ function applyStaleness(
 }
 
 /**
+ * Has this check had an OPPORTUNITY to run yet?
+ *
+ * A never-fired trigger is only a finding once the trigger could have fired. Without
+ * this, every newly-added scheduled check is flagged broken on the day it lands — a
+ * false-positive generator, and a guard that cries wolf gets muted, which is worse
+ * than not having the guard.
+ *
+ * **Honest limit, stated rather than hidden:** this is *one full period elapsed since
+ * the definition landed*, not *a matching cron instant has occurred*. It is a sound
+ * over-approximation — it never raises a false alarm, and at worst it delays a true
+ * one by less than one period. Computing real cron instants needs a cron evaluator and
+ * a timezone, and the cheap version is honest about what it is.
+ *
+ * An unknown definition age **declines to alarm**. That direction is deliberate: an
+ * unknown rendered as red burns credibility, and this branch has already been wrong
+ * once in exactly that direction.
+ */
+export function firstOpportunityPassed(
+  expectation: Extract<CheckExpectation, { kind: "periodic" }>,
+  definitionSince: string | undefined,
+  now: string,
+): { readonly passed: boolean; readonly why: string } {
+  if (definitionSince === undefined) {
+    return { passed: false, why: "its definition's age is unknown, so no opportunity to fire can be established" };
+  }
+  const age = secondsBetween(definitionSince, now);
+  if (age < expectation.periodSeconds) {
+    return {
+      passed: false,
+      why: `its definition landed only ${humanDuration(Math.max(age, 0))} ago, less than one full period`,
+    };
+  }
+  return { passed: true, why: `its definition has existed for ${humanDuration(age)}` };
+}
+
+/**
+ * **Is this lane DARK?** — inconclusive attempts piling up newer than the last verdict.
+ *
+ * `tlaps-proof`, measured 2026-08-22 over its last 40 runs: 33 cancelled, 7 failure,
+ * last success 2026-07-01. Seven weeks of a gated proof lane switched off, rendering
+ * as "not failing" to every conclusion-only dashboard. The fact was even already
+ * written down in `apt-job-timings.measured.json` — recorded, and on no surface anyone
+ * looked at, which is this dashboard's entire reason to exist.
+ *
+ * The threshold is a SPAN, not a count, and that is what keeps it honest: `gate` is
+ * cancelled by its own concurrency group on most pushes (265 of 300 measured) and is
+ * perfectly alive, because it still concludes something every few minutes. A count
+ * threshold would call `gate` dark and be muted within a day.
+ */
+export function verdictForDarkLane(
+  attempts: AttemptSummary | undefined,
+  config: FoldConfig,
+): Verdict | null {
+  if (attempts === undefined) return null;
+  if (attempts.newerThanVerdict < config.darkMinAttempts) return null;
+  if (attempts.newerSpanSeconds <= config.darkSpanSeconds) return null;
+  return {
+    kind: "red",
+    detail: `DARK LANE: ${attempts.newerThanVerdict} attempt(s) newer than this verdict produced nothing, spanning ${humanDuration(attempts.newerSpanSeconds)} (${attempts.withoutVerdict} of the last ${attempts.inspected} inspected attempts concluded no verdict). A check that keeps being killed is not passing.`,
+  };
+}
+
+/**
  * **Has the DECLARED trigger ever fired?**
  *
  * The sharpest instance of the whole defect class, and it is invisible to any model
@@ -306,10 +400,19 @@ export function verdictForNeverFiredTrigger(
   lastDeclaredTriggerAt: string | null,
   thisPassViaDeclaredTrigger: boolean,
   observedThisPass: boolean,
+  definitionSince: string | undefined,
+  now: string,
 ): Verdict | null {
   if (expectation.kind !== "periodic") return null;
   if (thisPassViaDeclaredTrigger || lastDeclaredTriggerAt !== null) return null;
   if (!observedThisPass) return null; // absence is already handled, and more loudly
+  const due = firstOpportunityPassed(expectation, definitionSince, now);
+  if (!due.passed) {
+    return {
+      kind: "not-yet-due",
+      detail: `declares ${expectation.detail}, has only ever run from another trigger, and ${due.why} — no scheduled run is owed yet`,
+    };
+  }
   return {
     kind: "red",
     detail: `the DECLARED SCHEDULE HAS NEVER FIRED — every verdict for this check arrived from another trigger, though it declares ${expectation.detail}`,
@@ -368,8 +471,14 @@ export function foldDashboard(input: FoldInput): DashboardReport {
     let observedAt: string | null;
     if (obs !== undefined) {
       const viaDeclared = triggerMatchesExpectation(obs.trigger, entry.expectation);
+      // Order matters and is argued, not incidental: a DARK lane outranks everything,
+      // because "we have not been able to conclude anything for weeks" is a stronger
+      // fact than whatever the last stale verdict happened to say.
       verdict =
-        verdictForNeverFiredTrigger(entry.expectation, entry.lastDeclaredTriggerAt, viaDeclared, true) ??
+        verdictForDarkLane(obs.attempts, config) ??
+        verdictForNeverFiredTrigger(
+          entry.expectation, entry.lastDeclaredTriggerAt, viaDeclared, true, entry.definitionSince, now,
+        ) ??
         applyStaleness(obs.verdict, entry.expectation, obs.observedAt, now, config);
       observedAt = obs.observedAt;
     } else if (failure !== undefined) {
@@ -379,10 +488,14 @@ export function foldDashboard(input: FoldInput): DashboardReport {
       verdict = unknown("source-error", `producer could not answer for this check: ${failure}`);
       observedAt = entry.lastObservedAt;
     } else {
-      verdict = verdictForAbsence(entry.expectation, entry.lastObservedAt, now, config);
+      verdict = verdictForAbsence(entry.expectation, entry.lastObservedAt, now, config, entry.definitionSince);
       observedAt = entry.lastObservedAt;
     }
-    if (isExpected && verdict.kind !== "unknown") observedExpected += 1;
+    // `not-yet-due` does not count as covered either: nobody has told us anything about
+    // this check. It is excluded from the coverage DENOMINATOR instead, below, because
+    // a check that is not owed a verdict is not a gap in our watching.
+    if (isExpected && verdict.kind !== "unknown" && verdict.kind !== "not-yet-due") observedExpected += 1;
+    if (isExpected && verdict.kind === "not-yet-due") expected -= 1;
 
     rows.push({
       checkId: entry.checkId,
@@ -394,6 +507,7 @@ export function foldDashboard(input: FoldInput): DashboardReport {
       observedAt,
       silenceSeconds: observedAt === null ? null : secondsBetween(observedAt, now),
       observedThisPass: obs !== undefined,
+      recheckInFlight: obs?.attempts?.recheckInFlight ?? false,
       undeclared: !entry.declaredNow,
     });
   }
@@ -401,7 +515,7 @@ export function foldDashboard(input: FoldInput): DashboardReport {
   rows.sort(compareRows);
 
   const counts: Record<RowBand, number> = {
-    red: 0, unknown: 0, running: 0, skipped: 0, "not-applicable": 0, green: 0,
+    red: 0, unknown: 0, running: 0, "not-yet-due": 0, skipped: 0, "not-applicable": 0, green: 0,
   };
   for (const row of rows) counts[row.band] += 1;
 
@@ -457,7 +571,7 @@ export function foldDashboard(input: FoldInput): DashboardReport {
  */
 export function compareRows(a: DashboardRow, b: DashboardRow): number {
   const order: Record<RowBand, number> = {
-    red: 0, unknown: 1, running: 2, skipped: 3, "not-applicable": 4, green: 5,
+    red: 0, unknown: 1, running: 2, "not-yet-due": 3, skipped: 4, "not-applicable": 5, green: 6,
   };
   if (order[a.band] !== order[b.band]) return order[a.band] - order[b.band];
 
@@ -496,6 +610,7 @@ export function headline(report: DashboardReport): string {
     `coverage ${cov.observed}/${cov.expected}${cov.shortfall > 0 ? ` (SHORTFALL ${cov.shortfall})` : ""}`,
     `green ${c.green}`,
   ];
+  if (c["not-yet-due"] > 0) parts.push(`not-yet-due ${c["not-yet-due"]}`);
   if (cov.onDemand > 0) parts.push(`on-demand ${cov.onDemand}`);
   if (report.sourceErrors.length > 0) parts.push(`SOURCE ERRORS ${report.sourceErrors.length}`);
   return `${report.ok ? "OK" : "NOT OK"} — ${parts.join(" · ")}`;

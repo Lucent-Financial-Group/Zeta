@@ -15,8 +15,10 @@ import {
   foldDashboard,
   headline,
   latestPerCheck,
+  firstOpportunityPassed,
   triggerMatchesExpectation,
   verdictForAbsence,
+  verdictForDarkLane,
   verdictForNeverFiredTrigger,
 } from "./fold.ts";
 import { emptyRoster, mergeDefinitions, recordObservations, type Roster } from "./roster.ts";
@@ -284,7 +286,7 @@ describe("coverage shortfall is surfaced as red, not as a passing run with a sma
 
 describe("expected-absent vs unexpectedly-absent — collapsing them is what makes the grey wall", () => {
   it("a scheduled check with no runs is RED, not unknown (chart-version-refresh's shape)", () => {
-    const v = verdictForAbsence({ kind: "periodic", periodSeconds: 7 * DAY, detail: "cron weekly" }, null, NOW, DEFAULT_FOLD_CONFIG);
+    const v = verdictForAbsence({ kind: "periodic", periodSeconds: 7 * DAY, detail: "cron weekly" }, null, NOW, DEFAULT_FOLD_CONFIG, "2026-06-01T00:00:00.000Z");
     expect(v.kind).toBe("red");
     expect(v.kind === "red" && v.detail).toContain("NEVER");
   });
@@ -518,7 +520,7 @@ describe("registered-but-absent — roster-versus-repository drift gets its own 
 describe("a declared trigger that has NEVER fired is red, however green its other runs are", () => {
   it("chart-version-refresh's exact shape: weekly cron, every run from pull_request", () => {
     const report = foldDashboard({
-      roster: rosterOf([def("chart-version-refresh", { kind: "periodic", periodSeconds: 7 * DAY, detail: "schedule: '7 17 * * 0'" })]),
+      roster: rosterOf([{ ...def("chart-version-refresh", { kind: "periodic", periodSeconds: 7 * DAY, detail: "schedule: '7 17 * * 0'" }), definitionSince: "2026-06-01T00:00:00.000Z" }]),
       observations: [
         { checkId: "chart-version-refresh", verdict: { kind: "green" }, observedAt: "2026-08-22T17:00:00.000Z", source: "s", trigger: "on-request" },
       ],
@@ -557,7 +559,7 @@ describe("a declared trigger that has NEVER fired is red, however green its othe
   it("an observation with NO trigger information never counts as the declared trigger firing", () => {
     // Absent and "unknown" both mean: do not conclude the schedule fired.
     const report = foldDashboard({
-      roster: rosterOf([def("weekly", { kind: "periodic", periodSeconds: 7 * DAY, detail: "cron" })]),
+      roster: rosterOf([{ ...def("weekly", { kind: "periodic", periodSeconds: 7 * DAY, detail: "cron" }), definitionSince: "2026-06-01T00:00:00.000Z" }]),
       observations: [obs("weekly", { kind: "green" }, "2026-08-22T17:00:00.000Z")],
       now: NOW,
     });
@@ -576,7 +578,155 @@ describe("a declared trigger that has NEVER fired is red, however green its othe
 
   it("the never-fired red does not fire for on-change or on-demand checks", () => {
     for (const expectation of [{ kind: "on-change", detail: "d" }, { kind: "on-demand", detail: "d" }] as const) {
-      expect(verdictForNeverFiredTrigger(expectation, null, false, true)).toBeNull();
+      expect(verdictForNeverFiredTrigger(expectation, null, false, true, "2020-01-01T00:00:00.000Z", NOW)).toBeNull();
     }
+  });
+});
+
+// ───────────────────────────────────────────────────────────────────────────
+// "Not yet due" — the direction I was wrong in, and it costs credibility not
+// safety, which is why it needs its own state rather than a threshold tweak.
+// ───────────────────────────────────────────────────────────────────────────
+
+describe("a never-fired trigger is only a finding once the trigger COULD have fired", () => {
+  it("chart-version-refresh's real story: landed Friday, cron is Sunday, checked Saturday", () => {
+    const weekly = { kind: "periodic", periodSeconds: 7 * DAY, detail: "schedule: '7 17 * * 0'" } as const;
+    const v = verdictForAbsence(weekly, null, "2026-08-22T18:00:00.000Z", DEFAULT_FOLD_CONFIG, "2026-08-21T20:18:00.000Z");
+    expect(v.kind).toBe("not-yet-due");
+    expect(v.kind === "not-yet-due" && v.detail).toContain("less than one full period");
+  });
+
+  it("not-yet-due is NOT green and NOT unknown — both alternatives are wrong in different directions", () => {
+    const weekly = { kind: "periodic", periodSeconds: 7 * DAY, detail: "cron" } as const;
+    const v = verdictForAbsence(weekly, null, NOW, DEFAULT_FOLD_CONFIG, "2026-08-21T20:18:00.000Z");
+    expect(v.kind).not.toBe("green");
+    expect(v.kind).not.toBe("unknown");
+    expect(v.kind).not.toBe("red");
+  });
+
+  it("once a full period has elapsed it becomes red again", () => {
+    const weekly = { kind: "periodic", periodSeconds: 7 * DAY, detail: "cron" } as const;
+    expect(verdictForAbsence(weekly, null, NOW, DEFAULT_FOLD_CONFIG, "2026-08-01T00:00:00.000Z").kind).toBe("red");
+  });
+
+  it("an UNKNOWN definition age declines to alarm — an unknown rendered red mutes the alarm", () => {
+    const weekly = { kind: "periodic", periodSeconds: 7 * DAY, detail: "cron" } as const;
+    const v = verdictForAbsence(weekly, null, NOW, DEFAULT_FOLD_CONFIG, undefined);
+    expect(v.kind).toBe("not-yet-due");
+    expect(v.kind === "not-yet-due" && v.detail).toContain("age is unknown");
+  });
+
+  it("the same gate applies to the never-fired-trigger red", () => {
+    const weekly = { kind: "periodic", periodSeconds: 7 * DAY, detail: "cron" } as const;
+    expect(verdictForNeverFiredTrigger(weekly, null, false, true, "2026-08-21T20:18:00.000Z", NOW)?.kind).toBe("not-yet-due");
+    expect(verdictForNeverFiredTrigger(weekly, null, false, true, "2026-06-01T00:00:00.000Z", NOW)?.kind).toBe("red");
+  });
+
+  it("not-yet-due is excluded from the coverage DENOMINATOR — it is not a gap in our watching", () => {
+    const report = foldDashboard({
+      roster: rosterOf([
+        { ...def("brand-new", { kind: "periodic", periodSeconds: 7 * DAY, detail: "cron" }), definitionSince: "2026-08-21T20:18:00.000Z" },
+        def("established", { kind: "on-change", detail: "push" }),
+      ]),
+      observations: [obs("established", { kind: "green" }, "2026-08-22T17:00:00.000Z")],
+      now: NOW,
+    });
+    expect(report.counts["not-yet-due"]).toBe(1);
+    expect(report.coverage.expected).toBe(1);
+    expect(report.coverage.shortfall).toBe(0);
+    expect(report.ok).toBe(true);
+  });
+
+  it("firstOpportunityPassed is a stated over-approximation: one full period, not a cron instant", () => {
+    const weekly = { kind: "periodic", periodSeconds: 7 * DAY, detail: "cron" } as const;
+    expect(firstOpportunityPassed(weekly, "2026-08-15T00:00:00.000Z", NOW).passed).toBe(true);
+    expect(firstOpportunityPassed(weekly, "2026-08-17T00:00:00.000Z", NOW).passed).toBe(false);
+  });
+});
+
+// ───────────────────────────────────────────────────────────────────────────
+// In-progress masking, and the dark lane.
+// ───────────────────────────────────────────────────────────────────────────
+
+describe("a running check ANNOTATES the last concluded verdict — it never overwrites it", () => {
+  const inFlight = {
+    inspected: 5, withoutVerdict: 4, newerThanVerdict: 4, newerSpanSeconds: 447, recheckInFlight: true,
+  } as const;
+
+  it("gate's exact shape: RUNNING, cancelled, cancelled, RUNNING, failure — the row is RED", () => {
+    const report = foldDashboard({
+      roster: rosterOf([def("gate", { kind: "on-change", detail: "push to main" })]),
+      observations: [{
+        checkId: "gate",
+        verdict: { kind: "red", detail: "run 4de7a4ee2 concluded 'failure'" },
+        observedAt: "2026-08-22T17:31:02.000Z",
+        source: "github-actions",
+        trigger: "on-change",
+        attempts: inFlight,
+      }],
+      now: NOW,
+    });
+    const row = rowFor(report, "gate");
+    expect(row.verdict.kind).toBe("red");
+    expect(row.recheckInFlight).toBe(true);
+  });
+
+  it("the annotation reaches the rendered row rather than staying in the data", async () => {
+    const { renderMarkdown } = await import("./render.ts");
+    const report = foldDashboard({
+      roster: rosterOf([def("gate", { kind: "on-change", detail: "push" })]),
+      observations: [{
+        checkId: "gate", verdict: { kind: "red", detail: "failure" },
+        observedAt: "2026-08-22T17:31:02.000Z", source: "s", trigger: "on-change", attempts: inFlight,
+      }],
+      now: NOW,
+    });
+    expect(renderMarkdown(report)).toContain("recheck in flight");
+  });
+});
+
+describe("a dark lane is red — a check that keeps being killed is not passing", () => {
+  it("tlaps-proof's shape: attempts pile up over weeks with nothing concluding", () => {
+    const v = verdictForDarkLane(
+      { inspected: 40, withoutVerdict: 33, newerThanVerdict: 12, newerSpanSeconds: 40 * DAY, recheckInFlight: false },
+      DEFAULT_FOLD_CONFIG,
+    );
+    expect(v?.kind).toBe("red");
+    expect(v?.kind === "red" && v.detail).toContain("DARK LANE");
+  });
+
+  it("gate's churn is NOT dark — the discriminator is SPAN, not count", () => {
+    // gate is cancelled by its own concurrency group on ~88% of pushes (265/300
+    // measured) and still concludes every few minutes. A count threshold would call it
+    // dark and be muted inside a day.
+    expect(verdictForDarkLane(
+      { inspected: 20, withoutVerdict: 17, newerThanVerdict: 4, newerSpanSeconds: 447, recheckInFlight: true },
+      DEFAULT_FOLD_CONFIG,
+    )).toBeNull();
+  });
+
+  it("one inconclusive attempt is never dark, however old", () => {
+    expect(verdictForDarkLane(
+      { inspected: 20, withoutVerdict: 1, newerThanVerdict: 1, newerSpanSeconds: 30 * DAY, recheckInFlight: false },
+      DEFAULT_FOLD_CONFIG,
+    )).toBeNull();
+  });
+
+  it("no attempt information means no dark claim — absence of data is not evidence", () => {
+    expect(verdictForDarkLane(undefined, DEFAULT_FOLD_CONFIG)).toBeNull();
+  });
+
+  it("dark outranks a stale green: 'nothing has concluded for weeks' beats whatever the old verdict said", () => {
+    const report = foldDashboard({
+      roster: rosterOf([{ ...def("tlaps-proof", { kind: "on-change", detail: "push" }), definitionSince: "2026-01-01T00:00:00.000Z" }]),
+      observations: [{
+        checkId: "tlaps-proof", verdict: { kind: "green" }, observedAt: "2026-07-01T00:00:00.000Z",
+        source: "s", trigger: "on-change",
+        attempts: { inspected: 40, withoutVerdict: 33, newerThanVerdict: 33, newerSpanSeconds: 52 * DAY, recheckInFlight: false },
+      }],
+      now: NOW,
+    });
+    expect(rowFor(report, "tlaps-proof").verdict.kind).toBe("red");
+    expect(report.counts.green).toBe(0);
   });
 });

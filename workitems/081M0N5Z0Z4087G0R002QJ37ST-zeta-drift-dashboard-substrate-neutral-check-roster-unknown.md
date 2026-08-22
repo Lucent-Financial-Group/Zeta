@@ -109,3 +109,69 @@ Found the four known reds, plus `tlaps-proof`, `gate`, `k8s-lane-partition`, and
    call, the same class as 081M05E28P5087G0R003JAXC2W — left for Aaron.
 3. **`chart-version-refresh`'s dead cron is reported, not fixed.**
 4. **The 4 `registered-but-absent` workflows** are reported, not adjudicated.
+
+## The seven-mode taxonomy — every one measured in this repo on 2026-08-22
+
+Each is a distinct way *a check that did not run looks like one that passed*, and none
+is detectable by "read the latest run's conclusion."
+
+| # | mode | how it hides | state in this model |
+|---|---|---|---|
+| 1 | **Sampling** | a 200-run window held 22 of 81 workflows | roster + latest-per-check; a window is never sampled |
+| 2 | **Frozen roster** | a cached workflow list cannot grow, so new checks are invisible | the roster is re-derived every pass and merged; the denominator grows |
+| 3 | **In-progress masking** | `gate`'s newest run was `in_progress`, so its last concluded `failure` did not show | the last **concluded** verdict is displayed; a running run **annotates** (`recheckInFlight`), never overwrites |
+| 4 | **Cancelled-as-clean** | a killed run reads as an absence of failure | `cancelled` ⇒ `unknown`, never satisfies a check, never counts toward coverage; repeated cancellation is its own red (**dark lane**) |
+| 5 | **Registered-but-absent** | active on the forge host, no file in the repository — invisible to a run check *and* a file check | `unknown{registered-but-absent}` |
+| 6 | **Never-fired trigger** | a declared cron that has never produced a scheduled run | the producer asks the declared trigger directly (`?event=schedule`); red **only once the trigger has had an opportunity** |
+| 7 | **Green-but-never-exercised** | `lockfile-healer` / `zetadb-scheduled-node` are green because they **no-op before the forbidden `git push origin HEAD:main`** | **NOT MODELLED — see below** |
+
+### Why mode 7 is named and not modelled
+
+`lockfile-healer.yml` and `zetadb-scheduled-node.yml` both still contain
+`git push origin HEAD:main`, which the ruleset now forbids (`gate (required)`,
+`bypass_actors: []`, evaluated at push time). Both are green **only because they exit
+before reaching the push** — one prints `No new database events to checkpoint.`, the
+other has had no lockfile drift since 08-09. They will fail the first time they have
+work to land.
+
+I am not adding a verdict case for this, and the refusal is the point. **A model slot
+no producer can fill and no test can falsify is the vacuity class wearing a taxonomy
+entry** — it would read as coverage and constrain nothing, which is the exact defect
+this whole surface exists to refuse. Detecting it needs *path coverage inside a run*
+(did the branch that does the real work execute?), which is a different instrument
+from a verdict roster.
+
+Recorded as the strongest open, with its two live instances named, so it is a gap
+someone can pick up rather than a gap nobody knows about.
+
+### Both directions of error are real, and I made one of each
+
+- **Unknown rendered as green** hides a failure. That is the whole occasion for this work.
+- **Unknown rendered as red** burns the alarm's credibility until someone mutes it —
+  worse than not having the alarm. `chart-version-refresh` was reported as a never-fired
+  weekly cron; it landed on `main` on Friday, its cron is Sunday, and the report was
+  written on Saturday. The run history was consistent with both stories and the
+  alarming one got reported.
+
+Hence `not-yet-due` as **its own state**, gated on the definition's age rather than on
+the dashboard's. The computation is *one full period since the definition landed*, not
+*a matching cron instant has occurred* — a sound over-approximation that never raises a
+false alarm and at worst delays a true one by under one period. An unknown definition
+age **declines to alarm**, deliberately.
+
+### The dark-lane discriminator is SPAN, not count
+
+`tlaps-proof` over its last 40 runs: 33 cancelled, 7 failure, **last success
+2026-07-01** — seven weeks of a gated proof lane switched off, rendering as "not
+failing" everywhere. That fact was already written down in
+`apt-job-timings.measured.json` and sat on no surface anyone looked at, which is this
+dashboard's whole reason to exist.
+
+But `gate` is cancelled by its own concurrency group on ~88% of pushes (265 of 300
+measured in `platform-drift-report.ts`) and is perfectly alive. A **count** threshold
+calls `gate` dark and gets muted within a day; a **span** threshold — inconclusive
+attempts newer than the last verdict spanning more than 6h — catches only the lane that
+has actually stopped concluding anything.
+
+`runsPerCheck` is 20, not 5, for the same reason: `gate`'s last real verdict sat behind
+four inconclusive runs, and `tlaps-proof` behind far more.

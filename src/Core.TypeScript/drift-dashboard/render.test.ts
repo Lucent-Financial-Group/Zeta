@@ -185,3 +185,17 @@ describe("the escapes escape their own escape character", () => {
     expect(md).not.toMatch(/[^\\]\* \* 0/);
   });
 });
+
+describe("escaping holds inside code spans too", () => {
+  it("a backslash inside a code span cannot smuggle a bare pipe out of the cell", () => {
+    const report = foldDashboard({
+      roster: mergeDefinitions(emptyRoster("main", NOW), [
+        def("x", { kind: "on-change", detail: "matches `a\\|b` exactly" }),
+      ], NOW),
+      observations: [],
+      now: NOW,
+    });
+    const row = renderMarkdown(report).split("\n").find((l) => l.startsWith("| `x`"));
+    expect((row ?? "").split(/(?<!\\)\|/).length).toBe(7);
+  });
+});

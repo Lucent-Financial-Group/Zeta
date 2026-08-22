@@ -33,6 +33,7 @@ import type {
   CheckObservation,
   CheckObservationFailure,
   CheckObservationOpts,
+  AttemptSummary,
   CheckExpectation,
   CheckObservationPass,
   ForgeError,
@@ -148,7 +149,25 @@ export function observationForRuns(
   if (chosen === undefined) return null;
   const skipped = conclusiveIndex === -1 ? 0 : conclusiveIndex;
   const verdict: Verdict = verdictForRun(chosen);
+
+  // What we saw while looking. A verdict alone cannot say "a newer run is in flight"
+  // or "nothing has concluded here for weeks", and both of those hid a real failure in
+  // this repo on 2026-08-22.
+  const newer = runs.slice(0, Math.max(skipped, 0));
+  const newerTimes = newer.map((r) => Date.parse(r.updated_at ?? r.created_at)).filter((t) => Number.isFinite(t));
+  const attempts: AttemptSummary = {
+    inspected: runs.length,
+    withoutVerdict: runs.filter((r) => !(r.status === "completed" && isConclusive(r.conclusion))).length,
+    newerThanVerdict: newer.length,
+    newerSpanSeconds:
+      newerTimes.length === 0
+        ? 0
+        : Math.round((Math.max(...newerTimes) - Math.min(...newerTimes, Date.parse(chosen.updated_at ?? chosen.created_at))) / 1000),
+    recheckInFlight: runs[0] !== undefined && runs[0].status !== "completed",
+  };
+
   return {
+    attempts,
     checkId,
     verdict,
     observedAt: chosen.updated_at ?? chosen.created_at,
@@ -205,7 +224,14 @@ export function expectationForWorkflow(
 export interface GhCheckSourceOptions {
   /** Root of the working tree, for reading workflow sources to derive expectations. */
   readonly repoRoot: string;
-  /** How many recent runs to inspect per workflow when looking for a real verdict. */
+  /**
+   * How many recent runs to inspect per workflow when looking for a real verdict.
+   *
+   * 20, not 5. `gate`'s last concluded verdict sat behind two `in_progress` and two
+   * `cancelled` runs; `tlaps-proof` had 33 cancelled runs in its last 40. A window too
+   * short to reach past the inconclusive ones reproduces the very defect this file
+   * exists to remove, one layer down.
+   */
   readonly runsPerCheck?: number;
 }
 
@@ -215,6 +241,24 @@ export interface GhCheckSourceOptions {
  * `per_page=100` with explicit pagination: a roster that silently truncates is the
  * same defect as a window sample, one layer down.
  */
+/**
+ * When did this workflow file first land? Read from the repository's own history —
+ * the commit that ADDED the path.
+ *
+ * This is what separates "a scheduled check that never fires" from "a scheduled check
+ * added yesterday", and getting that wrong once, in the alarming direction, is what
+ * put this function here.
+ */
+export function definitionSinceForPath(repoRoot: string, path: string): string | undefined {
+  const proc = Bun.spawnSync(
+    ["git", "-C", repoRoot, "log", "--diff-filter=A", "--follow", "--format=%aI", "--", path],
+    { stdout: "pipe", stderr: "pipe" },
+  );
+  if (proc.exitCode !== 0) return undefined;
+  const lines = new TextDecoder().decode(proc.stdout).trim().split("\n").filter((l) => l !== "");
+  return lines.at(-1);
+}
+
 export async function listGitHubCheckDefinitions(
   nwo: string,
   ref: string,
@@ -236,11 +280,13 @@ export async function listGitHubCheckDefinitions(
     .map((w): CheckDefinition => {
       const abs = join(options.repoRoot, w.path);
       const expectation = expectationForWorkflow(w.path, existsSync(abs) ? readFileSync(abs, "utf8") : null, ref);
+      const definitionSince = existsSync(abs) ? definitionSinceForPath(options.repoRoot, w.path) : undefined;
       return {
         checkId: checkIdForWorkflow(w.path),
         displayName: w.name,
         expectation,
         source: sourceName,
+        ...(definitionSince === undefined ? {} : { definitionSince }),
         sourceDetail: { workflowId: String(w.id), path: w.path, state: w.state },
       };
     });
@@ -266,7 +312,7 @@ export async function listGitHubCheckObservations(
   sourceName: string,
   opts?: CheckObservationOpts,
 ): Promise<Result<CheckObservationPass, ForgeError>> {
-  const perCheck = options.runsPerCheck ?? 5;
+  const perCheck = options.runsPerCheck ?? 20;
   const branch = ref.replace(/^refs\/heads\//, "");
   const observations: CheckObservation[] = [];
   const failures: CheckObservationFailure[] = [];

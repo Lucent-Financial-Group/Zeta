@@ -41,6 +41,14 @@ export interface RosterEntry {
   /** Producer that most recently declared this check. Provenance, never authority. */
   readonly source: string;
   readonly expectation: CheckExpectation;
+  /**
+   * ISO-8601 of when the check's DEFINITION first existed, as the producer establishes
+   * it — NOT `firstSeenAt`, which is only when this dashboard first looked. The
+   * distinction is the whole of the `not-yet-due` verdict: a scheduled check added
+   * yesterday owes nothing today, and confusing "new to us" with "new" is how a
+   * detector cries wolf on every workflow anyone adds.
+   */
+  readonly definitionSince?: string;
   /** ISO-8601. First pass in which any source declared this check. */
   readonly firstSeenAt: string;
   /** ISO-8601. Most recent pass in which any source declared this check. */
@@ -114,6 +122,11 @@ export function mergeDefinitions(
       firstSeenAt: existing?.firstSeenAt ?? now,
       lastDeclaredAt: now,
       declaredNow: true,
+      ...(def.definitionSince === undefined
+        ? existing?.definitionSince === undefined
+          ? {}
+          : { definitionSince: existing.definitionSince }
+        : { definitionSince: def.definitionSince }),
       lastObservedAt: existing?.lastObservedAt ?? null,
       lastVerdictKind: existing?.lastVerdictKind ?? null,
       lastDeclaredTriggerAt: existing?.lastDeclaredTriggerAt ?? null,

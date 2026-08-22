@@ -328,6 +328,21 @@ export type Verdict =
   | { readonly kind: "running" }
   | { readonly kind: "skipped"; readonly detail: string }
   | { readonly kind: "not-applicable"; readonly detail: string }
+  /**
+   * The check is declared, correct, and **has not yet had an opportunity to run**.
+   *
+   * Its own state, and it has to be, because both alternatives are wrong. Rendering it
+   * green claims a verdict nobody gave; rendering it red burns the alarm's credibility
+   * on every newly-added scheduled check, and **a guard that cries wolf gets muted**,
+   * which is worse than not having it.
+   *
+   * Measured the hard way 2026-08-22: `chart-version-refresh` was reported as a
+   * never-fired weekly cron. It landed on `main` Friday 20:18, its cron is Sundays at
+   * 17:07, and the report was written on Saturday. The run history and the alarming
+   * story were consistent; so was the innocent one. Only the definition's AGE
+   * separates them.
+   */
+  | { readonly kind: "not-yet-due"; readonly detail: string }
   | { readonly kind: "unknown"; readonly reason: UnknownReason; readonly detail: string };
 
 export type VerdictKind = Verdict["kind"];
@@ -371,6 +386,17 @@ export interface CheckDefinition {
   readonly expectation: CheckExpectation;
   /** Which producer declared it. Provenance, never authority. */
   readonly source: string;
+  /**
+   * ISO-8601 of when this check's DEFINITION first existed, as best the producer can
+   * establish it (for a repository workflow: the commit that added the file).
+   *
+   * Load-bearing for `not-yet-due`: "has this ever fired" is only a finding once the
+   * trigger has had an opportunity to fire, and the first opportunity is derived from
+   * when the definition landed — never from when the dashboard started looking.
+   * `undefined` ⇒ unknown age, and the fold then declines to raise a never-fired alarm
+   * rather than raising a possibly-false one.
+   */
+  readonly definitionSince?: string;
   /** Substrate-specific detail for humans. Never folded on. */
   readonly sourceDetail?: Readonly<Record<string, string>>;
 }
@@ -409,7 +435,41 @@ export interface CheckObservation {
    * declared trigger fired".
    */
   readonly trigger?: TriggerClass;
+  /**
+   * What the producer saw while looking for this verdict.
+   *
+   * A verdict alone cannot express two of the ways a check hides a failure, and both
+   * were measured in this repo on 2026-08-22:
+   *
+   * **In-progress masking.** `gate`'s newest run on `main` was `in_progress`, so a
+   * scanner that reads "the latest run" found no failure and main read as clean —
+   * while the last CONCLUDED verdict was `failure`, with two cancelled runs in
+   * between. A running check must never overwrite the last concluded verdict; it
+   * **annotates** it. `recheckInFlight` is that annotation.
+   *
+   * **A dark lane.** `tlaps-proof` over its last 40 runs: 33 cancelled, 7 failure,
+   * last success 2026-07-01 — seven weeks with the gate effectively switched off, and
+   * every conclusion-only dashboard would render it as "not failing". The
+   * discriminator against a lane that is merely *churning* (`gate` is cancelled by its
+   * own concurrency group on ~88% of pushes and is perfectly alive) is **time, not
+   * count**: how long has the check gone without concluding anything?
+   */
+  readonly attempts?: AttemptSummary;
   readonly sourceDetail?: Readonly<Record<string, string>>;
+}
+
+/** What a producer saw while looking for one check's verdict. */
+export interface AttemptSummary {
+  /** Recent attempts the producer inspected. */
+  readonly inspected: number;
+  /** Of those, how many produced no verdict at all (cancelled, killed, still running). */
+  readonly withoutVerdict: number;
+  /** Inconclusive attempts NEWER than the verdict being reported. */
+  readonly newerThanVerdict: number;
+  /** Wall-time span covered by those newer inconclusive attempts, in seconds. */
+  readonly newerSpanSeconds: number;
+  /** The newest attempt is still in flight — annotate, never overwrite. */
+  readonly recheckInFlight: boolean;
 }
 
 /**

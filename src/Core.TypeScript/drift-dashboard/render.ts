@@ -30,8 +30,13 @@ function silenceCell(row: DashboardRow): string {
 
 function detailOf(row: DashboardRow): string {
   const v = row.verdict;
-  const base = v.kind === "green" || v.kind === "running" ? "" : cellText(v.detail);
-  return row.undeclared ? `${base}${base === "" ? "" : " · "}**no source declared this check in this pass**` : base;
+  const parts: string[] = [];
+  if (v.kind !== "green" && v.kind !== "running") parts.push(cellText(v.detail));
+  // The annotation, and it must be visible on the row rather than implied: this is the
+  // last CONCLUDED verdict and a newer run is in flight. It is not "probably fine now".
+  if (row.recheckInFlight) parts.push("**recheck in flight — this is the last CONCLUDED verdict, not a current one**");
+  if (row.undeclared) parts.push("**no source declared this check in this pass**");
+  return parts.filter((p) => p !== "").join(" · ");
 }
 
 /**
@@ -56,13 +61,17 @@ function detailOf(row: DashboardRow): string {
  * That is why `table` no longer escapes anything: the caller says which kind it has.
  */
 function cellText(s: string): string {
-  return s
+  // Steps 1 and 2 apply to the WHOLE string, code spans included. An earlier version
+  // skipped the backslash inside code spans to keep them pretty, and CodeQL flagged it
+  // again — correctly: inside a code span `\|` still became `\\|`, an escaped
+  // backslash followed by a bare pipe. Correctness beats cosmetics; a literal
+  // backslash rendering as `\\` inside a code span is a cosmetic cost, a cell that
+  // ends early is a corrupted row. Escaping backslashes does not move the backtick
+  // positions, so the code-span split below is still accurate.
+  const structural = s.replace(/\\/g, "\\\\").replace(/\|/g, "\\|");
+  return structural
     .split("`")
-    .map((part, i) =>
-      i % 2 === 1
-        ? part.replace(/\|/g, "\\|")
-        : part.replace(/\\/g, "\\\\").replace(/\|/g, "\\|").replace(/\*/g, "\\*"),
-    )
+    .map((part, i) => (i % 2 === 1 ? part : part.replace(/\*/g, "\\*")))
     .join("`")
     .replace(/\n/g, " ");
 }
@@ -126,6 +135,14 @@ export function renderMarkdown(report: DashboardReport): string {
     detailOf(r),
   ])));
 
+  out.push(`\n## Not yet due — ${c["not-yet-due"]}\n`);
+  out.push("Declared, correct, and **not yet owed a verdict** — its definition has not existed for a");
+  out.push("full period. Its own state on purpose: calling it green claims a verdict nobody gave, and");
+  out.push("calling it red cries wolf on every scheduled check anyone adds, which gets the alarm muted.\n");
+  out.push(table(["check", "expectation", "detail"], by("not-yet-due").map((r) => [
+    `\`${cellText(r.checkId)}\``, r.expectation.kind, detailOf(r),
+  ])));
+
   if (c.running > 0 || c.skipped > 0) {
     out.push(`\n## Running (${c.running}) / skipped (${c.skipped})\n`);
     out.push(table(["check", "state", "detail"], [...by("running"), ...by("skipped")].map((r) => [
@@ -167,6 +184,7 @@ const BAND_COLOR: Record<DashboardRow["band"], string> = {
   red: "#c62828",
   unknown: "#8e6c00",
   running: "#1565c0",
+  "not-yet-due": "#4a4a6a",
   skipped: "#546e7a",
   "not-applicable": "#455a64",
   green: "#2e7d32",
@@ -220,7 +238,7 @@ export function renderHtml(report: DashboardReport): string {
  <b>ref</b> ${escapeHtml(report.ref)} · <b>pass</b> ${escapeHtml(report.at)} · <b>producers</b> ${escapeHtml(report.sources.join(", ") || "none")}<br>
  <b>roster</b> ${cov.known} known · ${cov.expected} expected on this ref · ${cov.onDemand} on-demand · ${cov.retired} retired<br>
  <b>coverage</b> ${cov.observed}/${cov.expected}${cov.shortfall > 0 ? ` — SHORTFALL ${cov.shortfall}` : ""} ·
- <b>red</b> ${c.red} · <b>unknown</b> ${c.unknown} · <b>green</b> ${c.green}
+ <b>red</b> ${c.red} · <b>unknown</b> ${c.unknown} · <b>not-yet-due</b> ${c["not-yet-due"]} · <b>green</b> ${c.green}
 </div>
 <table><thead><tr><th>check</th><th>verdict</th><th>why</th><th>age</th><th>expectation</th><th>detail</th></tr></thead>
 <tbody>
