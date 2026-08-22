@@ -48,6 +48,7 @@ on:
     paths:
       - "src/Core.TypeScript/cluster/lane-partition.ts"
       - "src/Core.TypeScript/cluster/lane-partition.test.ts"
+      - "src/Core.TypeScript/cluster/assert-runner-envelope.ts"
       - "src/Core.TypeScript/cluster/measure-lane-footprints.ts"
       - "full-ai-cluster/k8s/lane-footprints.json"
       - "full-ai-cluster/k8s/sync-wave-dependency-graph.yaml"
@@ -65,6 +66,7 @@ on:
     paths:
       - "src/Core.TypeScript/cluster/lane-partition.ts"
       - "src/Core.TypeScript/cluster/lane-partition.test.ts"
+      - "src/Core.TypeScript/cluster/assert-runner-envelope.ts"
       - "src/Core.TypeScript/cluster/measure-lane-footprints.ts"
       - "full-ai-cluster/k8s/lane-footprints.json"
       - "full-ai-cluster/k8s/sync-wave-dependency-graph.yaml"
@@ -86,6 +88,13 @@ concurrency:
 jobs:
   plan:
     name: derive the lane matrix
+    # The cluster toolchain lives in `.mise.full.toml` and the shim resolve
+    # needs MISE_ENV=full at install AND run time -- job-level, never
+    # step-level (workitem 081KTWQZY7F). Without it `bun` is not on PATH and
+    # the first run of this workflow failed with `bun: command not found`.
+    env:
+      ZETA_HOST_TIER: full
+      MISE_ENV: full
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     outputs:
@@ -94,6 +103,23 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Cache install.sh outputs (mise runtimes + dotnet tools + verifier jars)
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: |
+            ~/.local/bin/mise
+            ~/.local/share/mise
+            ~/.cache/mise
+            ~/.dotnet/tools
+            ~/.elan
+            ~/.config/zeta
+          key: install-${{ runner.os }}-${{ runner.arch }}-full-${{ hashFiles('.mise.toml', '.mise.full.toml', 'tools/setup/**', 'global.json') }}
+
+      - name: Install toolchain via three-way-parity script
+        env:
+          MISE_GITHUB_TOKEN: ${{ github.token }}
+        run: ./tools/setup/install.sh
 
       - name: Install bun dependencies
         run: bun install --frozen-lockfile
@@ -145,6 +171,9 @@ jobs:
   lane:
     name: lane ${{ matrix.lane }}
     needs: plan
+    env:
+      ZETA_HOST_TIER: full
+      MISE_ENV: full
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     strategy:
@@ -155,6 +184,23 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
+      - name: Cache install.sh outputs (mise runtimes + dotnet tools + verifier jars)
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: |
+            ~/.local/bin/mise
+            ~/.local/share/mise
+            ~/.cache/mise
+            ~/.dotnet/tools
+            ~/.elan
+            ~/.config/zeta
+          key: install-${{ runner.os }}-${{ runner.arch }}-full-${{ hashFiles('.mise.toml', '.mise.full.toml', 'tools/setup/**', 'global.json') }}
+
+      - name: Install toolchain via three-way-parity script
+        env:
+          MISE_GITHUB_TOKEN: ${{ github.token }}
+        run: ./tools/setup/install.sh
+
       - name: Install bun dependencies
         run: bun install --frozen-lockfile
 
@@ -163,26 +209,19 @@ jobs:
       # `reservationEvidence`. This convicts it against the machine we are
       # actually on, because a budget computed from a spec the runner does not
       # meet is a check that did not run.
+      # `assert-runner-envelope.ts` rather than an inline `bun -e`: a check that
+      # exists only inside a YAML string cannot be run locally and cannot be
+      # tested, and shellcheck cannot see through `${...}` in a single-quoted
+      # heredoc either (SC2016 -- this workflow's first run went red on it).
       - name: The runner really has the envelope's capacity
-        env:
-          LANE: ${{ matrix.lane }}
         run: |
           set -euo pipefail
-          CPU_MILLIS=$(( $(nproc) * 1000 ))
-          MEM_MIB=$(( $(awk '/MemTotal/{print $2}' /proc/meminfo) / 1024 ))
-          FREE_GIB=$(df -BG --output=avail / | tail -1 | tr -dc '0-9')
-          echo "measured runner: ${CPU_MILLIS}m / ${MEM_MIB}Mi / ${FREE_GIB}Gi free on /"
-          bun -e '
-            const sp = JSON.parse(await Bun.file("full-ai-cluster/k8s/storage-profiles.json").text());
-            const e = sp.runnerEnvelope;
-            const [cpu, mem, disk] = process.argv.slice(2).map(Number);
-            const bad = [];
-            if (cpu < e.cpuMillis) bad.push(`cpu ${cpu}m < recorded ${e.cpuMillis}m`);
-            if (mem < e.memoryMib) bad.push(`memory ${mem}Mi < recorded ${e.memoryMib}Mi`);
-            if (disk < e.freeDiskGib) bad.push(`free disk ${disk}Gi < recorded ${e.freeDiskGib}Gi`);
-            if (bad.length) { console.error("runnerEnvelope OVERSTATES this runner: " + bad.join("; ")); process.exit(1); }
-            console.log("runnerEnvelope is met or exceeded by this runner");
-          ' "$CPU_MILLIS" "$MEM_MIB" "$FREE_GIB"
+          cpu_millis=$(( $(nproc) * 1000 ))
+          mem_mib=$(( $(awk '/MemTotal/{print $2}' /proc/meminfo) / 1024 ))
+          free_gib=$(df -BG --output=avail / | tail -1 | tr -dc '0-9')
+          echo "measured runner: ${cpu_millis}m / ${mem_mib}Mi / ${free_gib}Gi free on /"
+          bun src/Core.TypeScript/cluster/assert-runner-envelope.ts \
+            --cpu-millis "$cpu_millis" --memory-mib "$mem_mib" --free-disk-gib "$free_gib"
 
       - name: Render every chart in this lane
         env:

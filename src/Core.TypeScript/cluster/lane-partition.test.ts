@@ -29,6 +29,7 @@ import {
   type PartitionModel,
   type RosterEntry,
 } from "./lane-partition.ts";
+import { envelopeOverstatements, loadRecordedEnvelope } from "./assert-runner-envelope.ts";
 import { collectImages, FOOTPRINTS_PATH, parseImageRef, type LaneFootprints } from "./measure-lane-footprints.ts";
 
 const REPO_ROOT = resolve(import.meta.dir, "../../..");
@@ -382,6 +383,35 @@ describe("the real tree", () => {
   });
 });
 
+describe("runner envelope assertion", () => {
+  const recorded = loadRecordedEnvelope(REPO_ROOT);
+
+  test("a runner smaller than the record is CONVICTED, on every short axis", () => {
+    const small = { cpuMillis: recorded.cpuMillis - 1, memoryMib: recorded.memoryMib - 1, freeDiskGib: recorded.freeDiskGib - 1 };
+    expect(envelopeOverstatements(recorded, small)).toHaveLength(3);
+    expect(envelopeOverstatements(recorded, { ...small, memoryMib: recorded.memoryMib, freeDiskGib: recorded.freeDiskGib })).toHaveLength(1);
+    // MUTATION CAUGHT: an always-empty return, and a disk-only comparison.
+  });
+
+  test("a runner that MEETS or EXCEEDS the record is quiet", () => {
+    expect(envelopeOverstatements(recorded, recorded)).toEqual([]);
+    expect(
+      envelopeOverstatements(recorded, {
+        cpuMillis: recorded.cpuMillis * 2,
+        memoryMib: recorded.memoryMib * 2,
+        freeDiskGib: recorded.freeDiskGib * 2,
+      }),
+    ).toEqual([]);
+    // A bigger runner does not invalidate a budget computed for a smaller one.
+  });
+
+  test("the conviction names BOTH numbers, not just the verdict", () => {
+    const [only] = envelopeOverstatements(recorded, { ...recorded, freeDiskGib: 1 });
+    expect(only).toContain("1Gi");
+    expect(only).toContain(String(recorded.freeDiskGib));
+  });
+});
+
 describe("image reference parsing", () => {
   test("a bare name is docker.io/library", () => {
     expect(parseImageRef("nats:2.10.23-alpine")).toEqual({
@@ -452,6 +482,8 @@ describe("image collection", () => {
 //   M13  an app absent from the footprints file is skipped, not refused killed (1)
 //   M14  the matrix drops replicated deps from `members`                killed (1)
 //   M15  closureOf returns the app alone                                killed (6)
+//   M16  envelopeOverstatements always returns []                        killed
+//   M17  only disk compared; cpu/memory shortfalls pass                  killed
 //
 // M13 SURVIVED THE FIRST RUN, and that is the useful entry. Nothing here tested
 // that an Application missing from the measured footprints refuses the build —
