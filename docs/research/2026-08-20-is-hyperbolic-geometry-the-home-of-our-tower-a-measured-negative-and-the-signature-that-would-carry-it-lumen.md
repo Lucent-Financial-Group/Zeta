@@ -52,12 +52,7 @@ Earlier on 2026-08-20 (commit `0ac05aa5b8`) I landed
 `docs/research/2026-08-20-the-belief-manifold-is-hyperbolic-not-spherical-cl21-not-cl41-and-the-flat-rotor-verdict-moves-with-the-units-lumen.md`.
 Read the two together or neither, because in isolation each is misleading.
 
-> **Provenance note (stated because it matters for how much weight to put on §0).** At the time
-> this document was written, the companion was committed on a local branch and **not yet on
-> `origin/main`**. Its numbers are quoted from that commit, not re-derived here. If it lands
-> changed, this section is the thing to re-check first — and if it never lands, the _only_ claim
-> below that weakens is the "two objects, opposite verdicts" framing. **The measured negative in
-> §4 stands on its own** and depends on nothing in the companion.
+> Companion is on origin/main (`0ac05aa5b8`). §4 does not depend on it.
 
 |                     | **belief manifold** (that doc)                                                              | **tower / hierarchy graph** (this doc)                          |
 | ------------------- | ------------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
@@ -125,7 +120,8 @@ Hyperbolic _n_-space is the upper sheet of the unit pseudosphere in Minkowski sp
 
 Its isometry group is O⁺(n,1). **Therefore the Clifford algebra that carries H^n is `Cl(n,1)`** —
 not because the numbers work out, but because the quadratic form defining the model _is_ the one
-the algebra is generated from. `Cl(n,1)` and no other. (THEOREM.)
+the algebra is generated from. The usual model algebra is `Cl(n,1)` (or `Cl(1,n)`); a definite
+form has no null cone.
 
 The single structural reason `Cl(p,0)` cannot do this: a **definite** quadratic form has no
 isotropic (null) vectors, hence no light cone, hence no ideal boundary and no exponential volume
@@ -223,10 +219,10 @@ radius, while hyperbolic volume grows exponentially.
 - The **algebraic tower** (register §A row 5): ℝ → ℂ → ℍ → 𝕆. Four nodes, branching factor 1.
 - The **Futamura tower**: interpreter → compiler → compiler-generator. Three nodes, branching 1.
 
-A path embeds in ℝ¹ **isometrically** — distortion exactly 1, not merely low. This is pinned as a
-test rather than asserted (`"a path is 0-hyperbolic AND isometrically Euclidean"`). So for the
+A path is 0-hyperbolic (test) and embeds in R^1 isometrically (standard metric geometry, not
+instrumented). Distortion 1 is the theorem; the test pins only δ=0. So for the
 towers specifically, the entire motivating advantage is zero: there is nothing hyperbolic space
-does for a path that the real line does not already do perfectly. (MEASURED.)
+does for a path that the real line does not already do perfectly.
 
 This distinction — **tower ≠ hierarchy** — is the single most useful thing in this document,
 because "tower" and "hierarchy" have been used interchangeably and only one of them is the shape
@@ -303,11 +299,11 @@ result below is a negative rather than the positive my first pass produced.
 | ANCHOR tree(3,6)  | 1093  | 1093  | 12    | 0     | **0.000** | tree-like             | incomparable (0.2× diam) |
 | ANCHOR grid(30)   | 900   | 900   | 56    | 23    | **0.821** | flat, NOT hyperbolic  | incomparable (6.3× diam) |
 | ANCHOR cycle(200) | 200   | 200   | 100   | 49    | **0.980** | flat, NOT hyperbolic  | incomparable (1.6× diam) |
-| `ts-imports`      | 1810  | 930   | 19    | 4.5   | **0.474** | middle of tree↔grid   | incomparable (2.0× diam) |
+| `ts-imports`      | 1805  | 930   | 19    | 4.5   | **0.474** | middle of tree↔grid   | incomparable (2.0× diam) |
 | `fs-modules`      | 570   | 478   | 12    | 2.5   | **0.417** | middle of tree↔grid   | **INSIDE the null band** |
-| `docs-links`      | 14662 | 1501  | 14    | 1.5   | **0.214** | tree side of middle   | incomparable (2.1× diam) |
+| `docs-links`      | 14668 | 1501  | 14    | 1.5   | **0.214** | tree side of middle   | incomparable (2.1× diam) |
 | `skills+rules`    | 338   | 25    | 2     | 0     | 0.000     | degenerate (lcc = 25) | degenerate               |
-| `commit-dag`      | 13535 | 13535 | 13457 | 0     | 0.000     | a path, degenerate    | inside null band         |
+| `commit-dag`      | 13541 | 13541 | 13535 | 0     | 0.000     | a path, degenerate    | INCOMPARABLE (1.8× diam) |
 
 **Reading it honestly:**
 
@@ -318,8 +314,9 @@ result below is a negative rather than the positive my first pass produced.
   degree-preserving null band.** Its hyperbolicity is fully explained by its degree sequence.
   Hyperbolicity adds nothing on top.
 - **`commit-dag` and `skills+rules` are degenerate.** The commit DAG is essentially a path
-  (diam 13457 on 13535 nodes), which is trivially 0-hyperbolic _and_ trivially Euclidean — it
-  carries no information either way. The skills/rules link graph has a largest component of **25
+  (n=13541, diam 13535), INCOMPARABLE (1.8× diam) — a degenerate path, not inside the null
+  band. It is trivially 0-hyperbolic _and_ trivially Euclidean — it carries no information
+  either way. The skills/rules link graph has a largest component of **25
   nodes out of 338**: it is almost entirely disconnected, which is itself a finding worth
   reporting but not one δ can speak to.
 - **The workitem dependency graph could not be measured at all**: 303 of 311 `workitems/*.md`
@@ -428,7 +425,7 @@ State them so the negative is refutable rather than merely asserted:
 
 ## 8. Proposed register row (for `docs/FROZEN-CORE-AND-CONJECTURE-REGISTER.md` §B)
 
-> **Conjecture Z-3: Hyperbolic geometry is the natural home of Zeta's tower/hierarchy structure**
+> **Conjecture Z-3H: Hyperbolic geometry is the natural home of Zeta's tower/hierarchy structure**
 > (proposed and tested 2026-08-20).
 >
 > **Status: NOT ESTABLISHED — measured negative on all five available graphs.** Filed as a row so

@@ -50,10 +50,9 @@ it("a tree is EXACTLY 0-hyperbolic -- no quadruple can witness anything", () => 
   expect(r.deltaRelative).toBe(0);
 });
 
-it("a path is 0-hyperbolic AND isometrically Euclidean -- the tower shape needs no curvature", () => {
-  // The Cayley-Dickson and Futamura 'towers' are PATHS, not branching trees. A path embeds in
-  // R^1 with zero distortion, so hyperbolic space buys it nothing. This test is the reason the
-  // research doc separates 'tower' from 'hierarchy'.
+it("a path is 0-hyperbolic -- the tower shape is a path, not a branching tree", () => {
+  // The Cayley-Dickson and Futamura 'towers' are PATHS, not branching trees. This test pins
+  // only delta=0. Distortion 1 is the theorem (standard metric geometry), not instrumented.
   const edges: [string, string][] = [];
   for (let i = 0; i < 60; i++) edges.push([`${i}`, `${i + 1}`]);
   const p = graphFromEdges(edges);
