@@ -68,7 +68,9 @@ import { IDLE, step, type EpisodeEvent, type EpisodeState } from "./episode-prot
 // ── Pure fact computations ──────────────────────────────────────────────────
 
 /** Trailing consecutive sweeps whose findings include a BD001 entry. */
-export function bd001OpenTicks(ledger: ReadonlyArray<{ readonly tick: number; readonly findings: ReadonlyArray<{ readonly rule: string }> }>): number {
+export function bd001OpenTicks(
+  ledger: ReadonlyArray<{ readonly tick: number; readonly findings: ReadonlyArray<{ readonly rule: string }> }>,
+): number {
   const sorted = [...ledger].sort((a, b) => a.tick - b.tick);
   let n = 0;
   for (let i = sorted.length - 1; i >= 0; i -= 1) {
@@ -85,12 +87,17 @@ export interface GateRunFact {
 
 /** From newest-first push-run facts: the first red run after the last green,
  * with its predecessor green head — or null when the picture is not clean. */
-export function isolateBreak(runsNewestFirst: readonly GateRunFact[]): { readonly redHead: string; readonly greenHead: string } | null {
+export function isolateBreak(
+  runsNewestFirst: readonly GateRunFact[],
+): { readonly redHead: string; readonly greenHead: string } | null {
   const completed = runsNewestFirst.filter((r) => r.conclusion === "success" || r.conclusion === "failure");
   if (completed.length === 0 || completed[0]!.conclusion !== "failure") return null; // newest completed must be red
   let redHead = completed[0]!.headSha;
   for (const r of completed.slice(1)) {
-    if (r.conclusion === "failure") { redHead = r.headSha; continue; } // walk to the FIRST red
+    if (r.conclusion === "failure") {
+      redHead = r.headSha;
+      continue;
+    } // walk to the FIRST red
     return { redHead, greenHead: r.headSha };
   }
   return null; // no green in window
@@ -196,7 +203,11 @@ if (invokedDirectly) {
   const iso = isolateBreak(runs);
 
   const episodes = readEpisodes();
-  const episodeId = iso ? `ep-${iso.redHead.slice(0, 9)}` : latestTick > 0 ? `ep-tick-${String(latestTick)}` : "ep-none";
+  const episodeId = iso
+    ? `ep-${iso.redHead.slice(0, 9)}`
+    : latestTick > 0
+      ? `ep-tick-${String(latestTick)}`
+      : "ep-none";
   const rec: EpisodeRecord = episodes[episodeId] ?? { machine: IDLE, updatedTick: latestTick };
   let machine = rec.machine;
   let pushedSha = rec.pushedSha;
@@ -230,7 +241,8 @@ if (invokedDirectly) {
     const fleetInFlight = anyRunning || mainHead !== iso.redHead;
     const candidates = sh(`git rev-list ${iso.greenHead}..${iso.redHead}`).split("\n").filter(Boolean);
     const single = candidates.length === 1 ? candidates[0]! : null;
-    const paths = single === null ? [] : sh(`git diff-tree --no-commit-id --name-only -r ${single}`).split("\n").filter(Boolean);
+    const paths =
+      single === null ? [] : sh(`git diff-tree --no-commit-id --name-only -r ${single}`).split("\n").filter(Boolean);
     const author = single === null ? "unknown" : sh(`git log -1 --format=%an ${single}`);
     const event: EpisodeEvent = {
       kind: "break_detected",
@@ -243,7 +255,9 @@ if (invokedDirectly) {
     };
     const r = step(episodeId, machine, event);
     machine = r.state;
-    console.log(`actuator: break_detected → ${machine.kind} (${r.command.kind}: ${"reason" in r.command ? r.command.reason : r.command.breakSha})`);
+    console.log(
+      `actuator: break_detected → ${machine.kind} (${r.command.kind}: ${"reason" in r.command ? r.command.reason : r.command.breakSha})`,
+    );
 
     if (r.command.kind === "push_retraction") {
       const sha = r.command.breakSha;
@@ -277,7 +291,7 @@ if (invokedDirectly) {
             `main's \`build-and-test\` was red for ${String(openTicks)} consecutive tick(s) with no fleet`,
             "heal in flight, and the break isolated to this single commit.",
             "",
-            "This PR exists rather than a direct push because ruleset \"CI Gate\" makes",
+            'This PR exists rather than a direct push because ruleset "CI Gate" makes',
             "`gate (required)` a required status check on `main`, evaluated at push time — a",
             "direct push of a never-checked commit is rejected before any check can start.",
             "The signature block that lands on `main` rides the revert COMMIT, not this body,",
@@ -290,26 +304,31 @@ if (invokedDirectly) {
         console.log(
           `actuator: retraction ${pushedSha.slice(0, 9)} (reverts ${sha.slice(0, 9)}) parked on ${ref}; ` +
             `PR #${String(opened.ok.number)} ${opened.ok.reused ? "re-used" : "opened"} (${opened.ok.url})` +
-            (opened.ok.armed ? ", squash auto-merge armed" : `, auto-merge NOT armed: ${opened.ok.armError ?? "unknown"}`),
+            (opened.ok.armed
+              ? ", squash auto-merge armed"
+              : `, auto-merge NOT armed: ${opened.ok.armError ?? "unknown"}`),
         );
         // Riven-2: the letter, recipe verbatim.
         const letter = `docs/letters/to-${r.command.notifyAuthor.persona.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-retraction-${sha.slice(0, 9)}.md`;
-        writeFileSync(letter, [
-          `# Retraction notice — ${sha.slice(0, 9)} (episode ${episodeId})`,
-          "",
-          `Your commit ${sha.slice(0, 9)} was retracted by the sovereign`,
-          "auto-revert healer: main's build-and-test was red for",
-          `${String(openTicks)} consecutive tick(s) with no fleet heal in flight.`,
-          "A retraction is a retraction of bytes, never a judgment of the",
-          "lane. Re-land is one command:",
-          "",
-          "```bash",
-          r.command.notifyAuthor.relandRecipe,
-          "```",
-          "",
-          "— the retraction actuator (081KZHGP45V), on behalf of the fleet",
-          "",
-        ].join("\n"));
+        writeFileSync(
+          letter,
+          [
+            `# Retraction notice — ${sha.slice(0, 9)} (episode ${episodeId})`,
+            "",
+            `Your commit ${sha.slice(0, 9)} was retracted by the sovereign`,
+            "auto-revert healer: main's build-and-test was red for",
+            `${String(openTicks)} consecutive tick(s) with no fleet heal in flight.`,
+            "A retraction is a retraction of bytes, never a judgment of the",
+            "lane. Re-land is one command:",
+            "",
+            "```bash",
+            r.command.notifyAuthor.relandRecipe,
+            "```",
+            "",
+            "— the retraction actuator (081KZHGP45V), on behalf of the fleet",
+            "",
+          ].join("\n"),
+        );
         console.log(`actuator: letter written ${letter}`);
       } catch (err) {
         const pr = step(episodeId, machine, { kind: "push_result", tick: latestTick, pushed: false });
@@ -324,7 +343,10 @@ if (invokedDirectly) {
     console.log("actuator: no clean red/green picture — nothing to do");
   }
 
-  const next: EpisodeFile = { ...episodes, [episodeId]: { machine, updatedTick: latestTick, ...(pushedSha !== undefined ? { pushedSha } : {}) } };
+  const next: EpisodeFile = {
+    ...episodes,
+    [episodeId]: { machine, updatedTick: latestTick, ...(pushedSha !== undefined ? { pushedSha } : {}) },
+  };
   // Persist only meaningful state: never mint brand-new idle records (one
   // per tick of quiet would be ledger noise, not bookkeeping).
   if (episodeId !== "ep-none" && (machine.kind !== "idle" || episodes[episodeId] !== undefined)) writeEpisodes(next);

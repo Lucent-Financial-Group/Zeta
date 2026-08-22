@@ -108,8 +108,7 @@ function repoRoot(): string {
  * Deliberately NOT matched: `HEAD:refs/heads/heartbeat/...` and any other ref. This
  * check is about the ONE ref whose ruleset makes the push impossible.
  */
-const MAIN_DESTINATION =
-  /(?:HEAD|[\w./-]*)?:(?:refs\/heads\/)?main\b|origin["'\s,]+["']?main["']?(?:\s|,|\)|\]|$)/;
+const MAIN_DESTINATION = /(?:HEAD|[\w./-]*)?:(?:refs\/heads\/)?main\b|origin["'\s,]+["']?main["']?(?:\s|,|\)|\]|$)/;
 
 /**
  * `push` as a git verb: the shell spelling, or the argv-array spelling that
@@ -120,6 +119,33 @@ const PUSH_VERB = /git\s+push\b|["']push["']\s*,/g;
 
 /** How far after the verb the destination may appear (covers a wrapped argv array). */
 const WINDOW = 160;
+
+/**
+ * A test file. NOT scanned — and this is a scope boundary, stated out loud, not an
+ * exemption that happens to be convenient.
+ *
+ * The check's subject is AUTOMATION: a lane with a schedule, whose push at `main` is
+ * dead code that stays green until the day the lane finally has something to land. A
+ * test file is not a lane. It has no cadence, it cannot be green-because-it-no-op'd in
+ * the way this check exists to catch, and a test that really pushed at `main` would
+ * fail loudly on its first run rather than silently on some future one.
+ *
+ * It is also forced. This check's own falsifiers must QUOTE the forbidden command to
+ * assert that it is caught — `expect(at("git push origin HEAD:main")).toHaveLength(1)`
+ * — and a push inside a string literal is indistinguishable from `sh("git push origin
+ * HEAD:main")`, which is exactly the real defect found in `retraction-actuator.ts`. So
+ * there is no filter that keeps the fixtures and catches the real thing; the honest move
+ * is to declare the boundary. (Discovered by this check flagging its own test file the
+ * moment `gate.yml` named it.)
+ *
+ * THE LIMIT, NAMED: a production push hidden in a file named `*.test.ts` and invoked by
+ * a workflow as a lane would not be caught. Nothing in the repo does that today, and
+ * closing it would mean distinguishing "run as a test" from "run as a lane", which the
+ * workflow text does not reliably say.
+ */
+export function isTestFile(relPath: string): boolean {
+  return /\.(test|spec)\.[mc]?[jt]sx?$/.test(relPath);
+}
 
 /** A line that documents a push rather than performing one. */
 function isProse(line: string): boolean {
@@ -297,6 +323,7 @@ export function runAudit(root: string = repoRoot()): AuditResult {
     }
     findings.push(...scanText(rel, src, "workflow"));
     for (const s of scriptsInvokedBy(src)) if (!reachable.has(s)) reachable.set(s, rel);
+    // (workflow YAML itself is never a test file, so no filter is needed here)
   }
 
   // Transitive closure over relative imports: a push three modules deep is still a push
@@ -314,7 +341,7 @@ export function runAudit(root: string = repoRoot()): AuditResult {
       continue;
     }
     const via = reachable.get(rel) ?? "workflow";
-    findings.push(...scanText(rel, src, via));
+    if (!isTestFile(rel)) findings.push(...scanText(rel, src, via));
     for (const dep of importsOf(root, rel, src)) {
       if (!reachable.has(dep)) {
         reachable.set(dep, via);

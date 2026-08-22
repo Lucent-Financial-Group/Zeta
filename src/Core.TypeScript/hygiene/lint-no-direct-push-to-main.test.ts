@@ -11,6 +11,7 @@ import { describe, expect, test } from "bun:test";
 import {
   applyRoster,
   importsOf,
+  isTestFile,
   scanText,
   scriptsInvokedBy,
   type Finding,
@@ -99,6 +100,24 @@ describe("scanText — the shapes that must NOT be caught", () => {
   });
 });
 
+describe("isTestFile — the declared scope boundary", () => {
+  test("test files are out of scope, by convention name", () => {
+    // Pinned so the boundary is a decision and not an accident. It exists because this
+    // suite must QUOTE the forbidden command to assert that it is caught, and a push in
+    // a string literal is indistinguishable from the real `sh("git push origin
+    // HEAD:main")` defect. See the header for the limit this leaves open.
+    expect(isTestFile("src/Core.TypeScript/hygiene/lint-no-direct-push-to-main.test.ts")).toBe(true);
+    expect(isTestFile("a/b.spec.mts")).toBe(true);
+  });
+
+  test("production modules are IN scope — the boundary is narrow", () => {
+    expect(isTestFile("src/Core.TypeScript/hygiene/retraction-actuator.ts")).toBe(false);
+    // A file that merely has "test" in its name is not a test file.
+    expect(isTestFile("src/Core.TypeScript/hygiene/test-harness.ts")).toBe(false);
+    expect(isTestFile("src/Core.TypeScript/latest.ts")).toBe(false);
+  });
+});
+
 describe("scriptsInvokedBy — the indirection that hid the third defect", () => {
   test("finds the bun-invoked script in a workflow run block", () => {
     const wf = "      - name: Act\n        run: |\n          bun src/Core.TypeScript/hygiene/retraction-actuator.ts\n";
@@ -135,12 +154,19 @@ describe("importsOf — resolution is by existence, never by guess", () => {
   });
 
   test("bare package specifiers are not repo files", () => {
-    expect(importsOf(process.cwd(), "src/Core.TypeScript/hygiene/x.ts", 'import { z } from "node:fs";')).toHaveLength(0);
+    expect(importsOf(process.cwd(), "src/Core.TypeScript/hygiene/x.ts", 'import { z } from "node:fs";')).toHaveLength(
+      0,
+    );
   });
 });
 
 describe("applyRoster — the ratchet, which is the whole difference from an allowlist", () => {
-  const f = (file: string, line: number): Finding => ({ file, line, snippet: "git push origin HEAD:main", via: "workflow" });
+  const f = (file: string, line: number): Finding => ({
+    file,
+    line,
+    snippet: "git push origin HEAD:main",
+    via: "workflow",
+  });
   const roster = { "a.ts": { sites: 2, reason: "known" } };
 
   test("an unrostered file fails outright", () => {
