@@ -699,12 +699,14 @@ jobs:
       # second disk at /mnt that no arithmetic here has ever counted), and
       # measures the preinstalled toolchains a k8s lane never invokes.
       #
-      # It REPORTS and does not convict, deliberately and temporarily: the
-      # envelope's declared 14 GiB has no measured comparator yet, so gating on
-      # it would be gating on the vendor number a second time. `--check-envelope`
-      # is the gate, and it is armed once a run has printed what the machine has.
-      - name: Measure the runner's disk (report only)
-        run: bun src/Core.TypeScript/cluster/runner-disk.ts --measure
+      # ARMED as of run 32585090483, which is what the first (report-only) pass
+      # bought. It measured 77.06 GiB available on `ubuntu-24.04` and 99.02 GiB
+      # on `ubuntu-24.04-arm` -- one filesystem, no /mnt -- against a declared
+      # 14. The catalogue's disk row now reads 70 GiB, a conservative floor
+      # beneath both, so this step convicts on a materially smaller machine and
+      # not on ordinary runner-image variation.
+      - name: Measure the runner's disk and check it against the envelope
+        run: bun src/Core.TypeScript/cluster/runner-disk.ts --check-envelope
 
       - name: Run live kind ArgoCD health check
         env:
@@ -1014,12 +1016,14 @@ jobs:
       # second disk at /mnt that no arithmetic here has ever counted), and
       # measures the preinstalled toolchains a k8s lane never invokes.
       #
-      # It REPORTS and does not convict, deliberately and temporarily: the
-      # envelope's declared 14 GiB has no measured comparator yet, so gating on
-      # it would be gating on the vendor number a second time. `--check-envelope`
-      # is the gate, and it is armed once a run has printed what the machine has.
-      - name: Measure the runner's disk (report only)
-        run: bun src/Core.TypeScript/cluster/runner-disk.ts --measure
+      # ARMED as of run 32585090483, which is what the first (report-only) pass
+      # bought. It measured 77.06 GiB available on `ubuntu-24.04` and 99.02 GiB
+      # on `ubuntu-24.04-arm` -- one filesystem, no /mnt -- against a declared
+      # 14. The catalogue's disk row now reads 70 GiB, a conservative floor
+      # beneath both, so this step convicts on a materially smaller machine and
+      # not on ordinary runner-image variation.
+      - name: Measure the runner's disk and check it against the envelope
+        run: bun src/Core.TypeScript/cluster/runner-disk.ts --check-envelope
 
       - name: Run live kind included ArgoCD health proof
         id: proof
