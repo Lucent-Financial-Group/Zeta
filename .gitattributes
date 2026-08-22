@@ -147,6 +147,42 @@ docs/github/prs/manifest.jsonl           merge=union
 # this line must go.
 data/rs-blocks.jsonl                     merge=union
 #
+# `data/ci-runs.jsonl` — added 2026-08-22. EIGHTH member of the class, and the first that was
+# born from a file ARRIVING on main rather than from the partial-flush window widening. It took
+# all three lanes down at 22:05Z (runs 32601483043, 32602358227) with
+# `CONFLICT (add/add): Merge conflict in data/ci-runs.jsonl`.
+#
+# WHAT CHANGED, precisely: the drift-rate recorder has appended to this file on every tick for a
+# long time, but #13935 was what made the append actually COMMIT, so the file first reached main
+# at 21:54:47Z in #13955 — between the last green tick (21:52:16Z) and the first red (22:05:54Z).
+# Until then it existed only on the lanes, where nothing could conflict with it. Both sides
+# having independently CREATED it is why the merge base has neither, hence add/add rather than
+# the content conflict the entries above describe.
+#
+# MEASURED on the live refs, not assumed:
+#   - append-only — all six commits touching it across main and the three lanes are `+N -0`,
+#     no line ever modified
+#   - 9 rows across the four copies, 7 distinct rows, 7 distinct `(lane, runId)`. Distinct-rows
+#     EQUALS distinct-keys, so no key has ever appeared in two spellings — which is the exact
+#     precondition under which union cannot duplicate a key.
+#   - single-writer PER ROW: `otto`, `alexa` and `soraya` each hold only rows whose `lane` field
+#     is their own (checked whole-file on all three). Main's copy is this lane's already-flushed
+#     rows plus other lanes' rows, never a rival edit to the same row.
+#
+# The partial-flush overlap is the case union has to get right, and it is live right now: main
+# holds soraya's first two rows, soraya's lane holds those two plus a third. Git resolves an
+# identical addition on both sides as ONE change and emits a single copy — reproduced locally in
+# both directions before this shipped (with the attribute: exit 0 and three rows; without it: the
+# observed add/add, whose HEAD side of the hunk is EMPTY, i.e. the same vacuous conflict this
+# whole block exists for).
+#
+# STATED LIMIT, in the same terms as `data/rs-blocks.jsonl` above: `(lane, runId)` uniqueness is
+# NOT enforced by any check, and `drift-rate.ts` reads `runId` without ever folding on it — so a
+# duplicated row would silently double-count one run in the Wilson interval rather than being
+# caught. Union is safe here on the append-only + per-row-single-writer argument alone. If rows
+# ever become editable, or a lane ever writes another lane's row, this line must go.
+data/ci-runs.jsonl                       merge=union
+#
 # Regenerated-per-tick snapshots -> `theirs` (the lane's). `union` is WRONG for these and was
 # measured producing two concatenated objects, i.e. invalid JSON: .rs-buffer-*.json is a
 # single-line rolling buffer and vault-state/roster are whole-file rollups. The tick rewrites
