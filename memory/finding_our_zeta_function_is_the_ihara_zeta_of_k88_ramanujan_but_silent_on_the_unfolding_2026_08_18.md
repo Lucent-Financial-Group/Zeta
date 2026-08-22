@@ -59,7 +59,7 @@ was checked.
 
 ## Where it lives
 
-- `docs/research/2026-08-18-what-is-our-zeta-function-the-ihara-zeta-of-the-8-4-adinkra-is-k88-ramanujan-and-silent-on-the-unfolding.md`
+- `docs/research/2026-08-18-ihara-zeta-of-the-8-4-adinkra-graph-is-k88-ramanujan-deflated-silent-on-unfolding.md`
   — full derivation, poles, prime counts, the negative result, the anchors.
 - `src/Core/IharaZeta.fs` — general exact machinery (Bass, Hashimoto, Möbius, exact spectrum,
   `Verdict` DU whose `SpectrumNotIntegral` case is a deliberate refusal to approximate).

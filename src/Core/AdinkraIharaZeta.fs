@@ -93,7 +93,7 @@ namespace Zeta.Core
 /// Full derivation, poles, prime counts, the negative result, and where a zeta that COULD see the
 /// unfolding would have to live (Terras's edge/multivariable zeta; a dashing-twisted Artin–Ihara
 /// L-function):
-/// `docs/research/2026-08-18-what-is-our-zeta-function-the-ihara-zeta-of-the-8-4-adinkra-is-k88-ramanujan-and-silent-on-the-unfolding.md`.
+/// `docs/research/2026-08-18-ihara-zeta-of-the-8-4-adinkra-graph-is-k88-ramanujan-deflated-silent-on-unfolding.md`.
 ///
 /// Anchors: Ihara 1966; Hashimoto 1989; Bass 1992; Terras 2010, *Zeta Functions of Graphs*;
 /// Lubotzky–Phillips–Sarnak 1988; Doran–Faux–Gates–Hübsch–Iga–Landweber 2008 (arXiv:0806.0051).
