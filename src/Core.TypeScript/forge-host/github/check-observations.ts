@@ -23,7 +23,7 @@
  * would be the vacuity class with an API response attached.
  */
 
-import { existsSync, readFileSync } from "node:fs";
+import { readFileSync } from "node:fs";
 import { basename, join } from "node:path";
 
 import { FerryThrottler, withFerries } from "../../ferry-throttler/ferry-throttler.ts";
@@ -241,6 +241,16 @@ export interface GhCheckSourceOptions {
  * `per_page=100` with explicit pagination: a roster that silently truncates is the
  * same defect as a window sample, one layer down.
  */
+/** Read a file, or `null` if it is not there. One syscall, one answer, no TOCTOU window. */
+export function readFileOrNull(path: string): string | null {
+  try {
+    return readFileSync(path, "utf8");
+  } catch (e) {
+    if ((e as NodeJS.ErrnoException).code === "ENOENT" || (e as NodeJS.ErrnoException).code === "EISDIR") return null;
+    throw e;
+  }
+}
+
 /**
  * When did this workflow file first land? Read from the repository's own history —
  * the commit that ADDED the path.
@@ -279,8 +289,13 @@ export async function listGitHubCheckDefinitions(
     .filter((w) => w.state === "active")
     .map((w): CheckDefinition => {
       const abs = join(options.repoRoot, w.path);
-      const expectation = expectationForWorkflow(w.path, existsSync(abs) ? readFileSync(abs, "utf8") : null, ref);
-      const definitionSince = existsSync(abs) ? definitionSinceForPath(options.repoRoot, w.path) : undefined;
+      // Read and interpret the failure, never `existsSync`-then-read: the answer to the
+      // check is already stale when the read runs (CWE-367), and "the workflow is
+      // registered but has no file here" is a REAL and load-bearing state — it is the
+      // `registered-but-absent` verdict — so it must come from the read itself.
+      const source = readFileOrNull(abs);
+      const expectation = expectationForWorkflow(w.path, source, ref);
+      const definitionSince = source === null ? undefined : definitionSinceForPath(options.repoRoot, w.path);
       return {
         checkId: checkIdForWorkflow(w.path),
         displayName: w.name,

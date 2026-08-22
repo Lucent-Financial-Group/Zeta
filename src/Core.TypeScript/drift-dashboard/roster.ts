@@ -27,7 +27,7 @@
  * recorded in the file, which is the only form of that decision that leaves a trace.
  */
 
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname } from "node:path";
 
 import type { CheckDefinition, CheckExpectation, CheckId, VerdictKind } from "../forge-host/types.ts";
@@ -179,8 +179,17 @@ export function recordObservations(
 // ─── Edge: I/O only, no decisions ───────────────────────────────────────────
 
 export function loadRoster(path: string, ref: string, at: string): Roster {
-  if (!existsSync(path)) return emptyRoster(ref, at);
-  const parsed = JSON.parse(readFileSync(path, "utf8")) as Roster;
+  // Read and interpret the failure, rather than asking `existsSync` a question whose
+  // answer is stale before the read runs (CWE-367). One syscall, one answer, no window
+  // — and "first pass, no roster yet" is a legitimate state, not an error.
+  let text: string;
+  try {
+    text = readFileSync(path, "utf8");
+  } catch (e) {
+    if ((e as NodeJS.ErrnoException).code === "ENOENT") return emptyRoster(ref, at);
+    throw e;
+  }
+  const parsed = JSON.parse(text) as Roster;
   if (parsed.version !== ROSTER_VERSION) {
     throw new Error(`roster ${path}: unsupported version ${String(parsed.version)} (expected ${ROSTER_VERSION})`);
   }
