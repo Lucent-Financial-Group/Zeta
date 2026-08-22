@@ -251,14 +251,20 @@ export function parseFileBackedZflashArgs(args: readonly string[]): FileBackedZf
 
   let qemuCredsPassphrase: string | undefined;
   if (qemuCredsPassphraseFile !== undefined) {
-    if (!existsSync(qemuCredsPassphraseFile)) {
-      return { kind: "error", error: "--qemu-creds-passphrase-file not found" };
+    // Read, then map ENOENT. existsSync-then-read is a check-then-use race
+    // (lint-check-then-use-file-races). Never echo the path or contents.
+    try {
+      const raw = readFileSync(qemuCredsPassphraseFile, "utf8").replace(/\r?\n$/, "");
+      if (raw.length === 0) {
+        return { kind: "error", error: "--qemu-creds-passphrase-file is empty" };
+      }
+      qemuCredsPassphrase = raw;
+    } catch (err) {
+      if ((err as NodeJS.ErrnoException).code === "ENOENT") {
+        return { kind: "error", error: "--qemu-creds-passphrase-file not found" };
+      }
+      return { kind: "error", error: "--qemu-creds-passphrase-file read failed" };
     }
-    const raw = readFileSync(qemuCredsPassphraseFile, "utf8").replace(/\r?\n$/, "");
-    if (raw.length === 0) {
-      return { kind: "error", error: "--qemu-creds-passphrase-file is empty" };
-    }
-    qemuCredsPassphrase = raw;
   }
 
   return {

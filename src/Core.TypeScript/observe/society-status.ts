@@ -269,7 +269,7 @@ function display(repoRoot: string, eventDir: string): void {
   const ciRunsPath = join(repoRoot, "data", "ci-runs.jsonl");
   const ciRuns = loadJSONL<{ workflow: string; conclusion: string; at: string }>(ciRunsPath);
   if (ciRuns.length > 0) {
-    const { computeDrift, formatDrift } = require("./drift-rate") as typeof import("./drift-rate");
+    const { computeDrift } = require("./drift-rate") as typeof import("./drift-rate");
     const drift = computeDrift(ciRuns as any);
     console.log(`\nCI Drift: ${drift.summary}`);
   }

@@ -106,6 +106,26 @@ describe("parseFileBackedZflashArgs", () => {
       },
     });
   });
+
+  test("maps a missing --qemu-creds-passphrase-file to not found without echoing the path", () => {
+    const missingPath = join(tmpdir(), "zeta-qemu-pp-missing", "no-such-passphrase.txt");
+    const parsed = parseFileBackedZflashArgs([
+      "--iso",
+      "artifacts/zeta-installer.iso",
+      "--output",
+      "artifacts/zflash-baked.img",
+      "--esp-offset-bytes",
+      "1048576",
+      "--qemu-creds-passphrase-file",
+      missingPath,
+    ]);
+
+    expect(parsed).toEqual({
+      kind: "error",
+      error: "--qemu-creds-passphrase-file not found",
+    });
+    expect(JSON.stringify(parsed)).not.toContain(missingPath);
+  });
 });
 
 describe("runFileBackedZflashCli", () => {
