@@ -1,10 +1,10 @@
 {
   "schema": "zeta.vault-state.v1",
-  "status": "live",
-  "reason": "latest frame within 30min",
-  "generated_at_ms": 1787412379208,
+  "status": "stale",
+  "reason": "latest frame 35min ago",
+  "generated_at_ms": 1787413233540,
   "tick_frame_t": "2026-08-22T15:05:22.836Z",
-  "total_events_read": 3969,
+  "total_events_read": 3970,
   "max_phase": 78,
   "vaults": [
     {
@@ -41,14 +41,14 @@
               "summary": "attest_peer: verified 1 events from society"
             },
             {
-              "at": "2026-08-22T15:26:15.279Z",
+              "at": "2026-08-22T15:40:20.367Z",
               "agent": "otto",
               "kind": "explore",
               "summary": "explore: self-directed making — code / docs / research the agent chooses (forward motion, not idle)"
             },
             {
-              "at": "2026-08-22T15:08:10.188Z",
-              "agent": "alexa",
+              "at": "2026-08-22T15:26:15.279Z",
+              "agent": "otto",
               "kind": "explore",
               "summary": "explore: self-directed making — code / docs / research the agent chooses (forward motion, not idle)"
             }
@@ -81,14 +81,14 @@
               "summary": "attest_peer: verified 1 events from society"
             },
             {
-              "at": "2026-08-22T15:26:15.279Z",
+              "at": "2026-08-22T15:40:20.367Z",
               "agent": "otto",
               "kind": "explore",
               "summary": "explore: self-directed making — code / docs / research the agent chooses (forward motion, not idle)"
             },
             {
-              "at": "2026-08-22T15:08:10.188Z",
-              "agent": "alexa",
+              "at": "2026-08-22T15:26:15.279Z",
+              "agent": "otto",
               "kind": "explore",
               "summary": "explore: self-directed making — code / docs / research the agent chooses (forward motion, not idle)"
             }
@@ -124,15 +124,15 @@
           "dwellers": [
             {
               "agent_id": "otto",
-              "last_seen": "2026-08-22T15:26:18.969Z",
+              "last_seen": "2026-08-22T15:40:20.367Z",
               "hat_id": "healer",
               "last_action": {
-                "kind": "attest_peer",
-                "at": "2026-08-22T15:26:18.969Z"
+                "kind": "explore",
+                "at": "2026-08-22T15:40:20.367Z"
               },
               "reputation": {
                 "value": 1.05,
-                "epsilon": -0.033482476509121256,
+                "epsilon": -0.033463724070512735,
                 "silent": false
               },
               "reputation_history": [
@@ -224,7 +224,7 @@
         {
           "id": "archive-stacks",
           "confidence": {
-            "value": 1,
+            "value": 0.97,
             "epsilon": 0.1
           },
           "activity_log": [
@@ -269,14 +269,14 @@
                 "at": "2026-08-22T14:27:55.750Z"
               },
               "reputation": {
-                "value": 1.0298611111111111,
+                "value": 1.03125,
                 "epsilon": 0.03494282789073061,
                 "silent": false
               },
               "reputation_history": [
                 0,
                 1,
-                0.71875,
+                0.7395833333333334,
                 1,
                 1,
                 1,
@@ -395,14 +395,14 @@
               "summary": "attest_peer: verified 1 events from society"
             },
             {
-              "at": "2026-08-22T15:26:15.279Z",
+              "at": "2026-08-22T15:40:20.367Z",
               "agent": "otto",
               "kind": "explore",
               "summary": "explore: self-directed making — code / docs / research the agent chooses (forward motion, not idle)"
             },
             {
-              "at": "2026-08-22T15:08:10.188Z",
-              "agent": "alexa",
+              "at": "2026-08-22T15:26:15.279Z",
+              "agent": "otto",
               "kind": "explore",
               "summary": "explore: self-directed making — code / docs / research the agent chooses (forward motion, not idle)"
             }
