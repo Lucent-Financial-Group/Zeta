@@ -43,7 +43,7 @@ import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 
 import { discoverExpectedApplications } from "./argocd-health-test.ts";
-import { applicationDirs, devLaneAppliedDirs } from "./storage-profiles.ts";
+import { applicationDirs, devLaneAppliedDirs, envelopeBudget, loadResourceCatalogue } from "./storage-profiles.ts";
 
 const REPO_ROOT = resolve(import.meta.dir, "../../..");
 export const DEFAULT_MEASUREMENT_PATH = "src/Core.TypeScript/cluster/image-footprint.measured.json";
@@ -51,6 +51,12 @@ export const DEFAULT_MEASUREMENT_PATH = "src/Core.TypeScript/cluster/image-footp
 // ---------------------------------------------------------------------------
 // Image references out of a rendered chart
 // ---------------------------------------------------------------------------
+
+/** Ordinal string order — the repo default, and stable across locales. */
+function compareStrings(a: string, b: string): number {
+  if (a === b) return 0;
+  return a < b ? -1 : 1;
+}
 
 /**
  * Every `image:` string anywhere in a rendered document tree.
@@ -76,7 +82,7 @@ export function imagesInDocuments(documents: readonly unknown[]): readonly strin
     }
   };
   walk(documents);
-  return [...found].sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
+  return [...found].sort(compareStrings);
 }
 
 // ---------------------------------------------------------------------------
@@ -206,6 +212,13 @@ function sizeIndex(measurement: Measurement): ReadonlyMap<string, MeasuredImage>
   return new Map(measurement.images.map((image) => [image.reference, image]));
 }
 
+/** Which cohort a directory is in. Named rather than nested-ternaried at the call site. */
+function cohortOf(dir: string, sets: Cohorts): AppFootprint["cohort"] {
+  if (sets.asserted.has(dir)) return "asserted";
+  if (sets.applied.has(dir)) return "applied";
+  return "excluded";
+}
+
 export function appFootprints(measurement: Measurement, sets: Cohorts): readonly AppFootprint[] {
   const sizes = sizeIndex(measurement);
   const rows: AppFootprint[] = [];
@@ -214,19 +227,19 @@ export function appFootprints(measurement: Measurement, sets: Cohorts): readonly
     let compressedBytes = 0;
     const unsized: string[] = [];
     for (const reference of app.images) {
-      const size = sizes.get(reference);
-      if (size === undefined || size.compressedBytes === null) unsized.push(reference);
-      else compressedBytes += size.compressedBytes;
+      const bytes = sizes.get(reference)?.compressedBytes ?? null;
+      if (bytes === null) unsized.push(reference);
+      else compressedBytes += bytes;
     }
     rows.push({
       dir: app.dir,
-      cohort: sets.asserted.has(app.dir) ? "asserted" : sets.applied.has(app.dir) ? "applied" : "excluded",
+      cohort: cohortOf(app.dir, sets),
       compressedBytes,
       unsized,
       imageCount: app.images.length,
     });
   }
-  return rows.sort((a, b) => b.compressedBytes - a.compressedBytes || (a.dir < b.dir ? -1 : 1));
+  return rows.sort((a, b) => b.compressedBytes - a.compressedBytes || compareStrings(a.dir, b.dir));
 }
 
 /**
@@ -252,9 +265,9 @@ export function cohortTotal(
   let compressedBytes = 0;
   let unsized = 0;
   for (const reference of images) {
-    const size = sizes.get(reference);
-    if (size === undefined || size.compressedBytes === null) unsized += 1;
-    else compressedBytes += size.compressedBytes;
+    const bytes = sizes.get(reference)?.compressedBytes ?? null;
+    if (bytes === null) unsized += 1;
+    else compressedBytes += bytes;
   }
   return { label, apps: dirs.size, distinctImages: images.size, compressedBytes, unsized };
 }
@@ -381,7 +394,7 @@ export async function measureAll(repoRoot = REPO_ROOT): Promise<Measurement> {
     });
     if (!rendered.ok) console.error(`UNRENDERABLE ${source.appId}: ${rendered.reason} — ${rendered.detail}`);
   }
-  const distinct = [...new Set(apps.flatMap((app) => app.images))].sort((a, b) => (a < b ? -1 : 1));
+  const distinct = [...new Set(apps.flatMap((app) => app.images))].sort(compareStrings);
   const tokens = new Map<string, string>();
   const images: MeasuredImage[] = [];
   for (const reference of distinct) {
@@ -409,6 +422,33 @@ export async function measureAll(repoRoot = REPO_ROOT): Promise<Measurement> {
 
 function gb(bytes: number): string {
   return (bytes / 1e9).toFixed(2);
+}
+
+const GIB = 1024 ** 3;
+
+/**
+ * Does a cohort's image estimate fit the disk the envelope declares?
+ *
+ * THE UNITS ARE THE POINT. Registry sizes are DECIMAL bytes summed into GB;
+ * `df` and the envelope's `freeDiskGib` are BINARY GiB. 80 "GB" of images
+ * against "77 GiB" free looks like a 3-unit overrun and is actually 80 against
+ * 82.7 — it fits. Getting that backwards is how a lane gets partitioned to
+ * solve a problem it does not have, so the comparison is computed here, once, in
+ * bytes, rather than left to whoever is reading two numbers in two units.
+ */
+export function fitsDeclaredDisk(
+  compressedBytes: number,
+  ratio: number,
+  budgetGib: number,
+): { estimatedBytes: number; budgetBytes: number; fits: boolean; headroomBytes: number } {
+  const estimatedBytes = compressedBytes * ratio;
+  const budgetBytes = budgetGib * GIB;
+  return {
+    estimatedBytes,
+    budgetBytes,
+    fits: estimatedBytes <= budgetBytes,
+    headroomBytes: budgetBytes - estimatedBytes,
+  };
 }
 
 export function formatReport(measurement: Measurement, sets: Cohorts): string {
@@ -449,6 +489,19 @@ export function formatReport(measurement: Measurement, sets: Cohorts): string {
       `compressed — ${(top.fraction * 100).toFixed(1)}% — or ~${gb(top.topBytes * measurement.uncompressedRatio)} GB of ` +
       `~${gb(allTotal * measurement.uncompressedRatio)} GB unpacked.`,
   );
+  const budget = envelopeBudget(loadResourceCatalogue().envelope);
+  lines.push("");
+  lines.push(
+    `AGAINST THE DECLARED DISK — ${String(budget.diskGib)} GiB usable (envelope freeDiskGib minus reservedDiskGib), ` +
+      `which is ${gb(budget.diskGib * GIB)} GB decimal. Image sizes are decimal; disk is binary; the comparison is in bytes.`,
+  );
+  for (const total of totals) {
+    const verdict = fitsDeclaredDisk(total.compressedBytes, measurement.uncompressedRatio, budget.diskGib);
+    lines.push(
+      `  ${total.label.padEnd(9)} est. ${gb(verdict.estimatedBytes).padStart(6)} GB  ` +
+        `${verdict.fits ? "FITS" : "OVER"} by ${gb(Math.abs(verdict.headroomBytes)).padStart(6)} GB`,
+    );
+  }
   const unsizedRefs = measurement.images.filter((image) => image.compressedBytes === null);
   lines.push("");
   lines.push(`UNSIZED (${String(unsizedRefs.length)}) — counted in no total above, and NOT zero:`);

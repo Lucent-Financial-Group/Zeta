@@ -3,6 +3,7 @@ import {
   appFootprints,
   cohortTotal,
   concentration,
+  fitsDeclaredDisk,
   imagesInDocuments,
   parseImageReference,
   type Cohorts,
@@ -131,5 +132,30 @@ describe("concentration", () => {
 
   test("a zero total does not divide by zero", () => {
     expect(concentration([], 0, 5).fraction).toBe(0);
+  });
+});
+
+describe("fitsDeclaredDisk", () => {
+  // The Mars-Climate-Orbiter shape of this measurement: image bytes are summed
+  // into DECIMAL GB and disk is reported in BINARY GiB, so "80 GB of images
+  // against 77 GiB free" reads as a 3-unit overrun and is a 2.7 GB fit.
+  test("80 decimal GB of images FITS 77 binary GiB of disk", () => {
+    const verdict = fitsDeclaredDisk(80e9 / 2.67, 2.67, 77);
+    expect(verdict.fits).toBe(true);
+    expect(verdict.budgetBytes).toBeGreaterThan(82e9);
+  });
+
+  test("the same 80 GB does NOT fit a 70 GiB budget", () => {
+    expect(fitsDeclaredDisk(80e9 / 2.67, 2.67, 70).fits).toBe(false);
+  });
+
+  test("headroom is signed the way the verdict reads", () => {
+    expect(fitsDeclaredDisk(1e9, 2, 100).headroomBytes).toBeGreaterThan(0);
+    expect(fitsDeclaredDisk(1e12, 2, 1).headroomBytes).toBeLessThan(0);
+  });
+
+  test("an exact fit is a fit, not an overrun", () => {
+    const budgetBytes = 10 * 1024 ** 3;
+    expect(fitsDeclaredDisk(budgetBytes / 2, 2, 10).fits).toBe(true);
   });
 });

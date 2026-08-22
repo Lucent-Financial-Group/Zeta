@@ -119,7 +119,7 @@ describe("reclaim", () => {
     const { run, seen } = fakeRunner({ "/opt/ghc": 3 * GIB, "/usr/share/swift": 1 * GIB });
     const outcome = reclaim(run, () => 0);
     const removed = seen.filter((call) => call[0] === "sudo" && call[1] === "rm").map((call) => call[3]);
-    expect(removed.sort()).toEqual(["/opt/ghc", "/usr/share/swift"]);
+    expect(removed.toSorted()).toEqual(["/opt/ghc", "/usr/share/swift"]);
     expect(outcome.deleted.length).toBe(2);
   });
 

@@ -59,14 +59,24 @@ export function parseDf(text: string): readonly FilesystemRow[] {
   const rows: FilesystemRow[] = [];
   for (const line of text.split("\n").slice(1)) {
     if (line.trim() === "") continue;
-    const match = /^(.+?)\s+(\d+)\s+(\d+)\s+(\d+)\s+\d+%\s+(\/.*)$/.exec(line);
-    if (match === null) continue;
+    // Tokenised rather than matched with one big regex: a device name may
+    // contain spaces on the left of the capacity column and a mount point may
+    // contain them on the right, so the only fixed landmark is the `NN%` field.
+    // Anchoring on it also keeps the parse linear — a lazy `(.+?)` prefix over
+    // an adversarial line is the super-linear backtracking case.
+    const tokens = line.trim().split(/\s+/);
+    const percentIndex = tokens.findIndex((token) => token.endsWith("%"));
+    if (percentIndex < 4 || percentIndex === tokens.length - 1) continue;
+    const total = Number(tokens[percentIndex - 3]);
+    const used = Number(tokens[percentIndex - 2]);
+    const available = Number(tokens[percentIndex - 1]);
+    if (!Number.isFinite(total) || !Number.isFinite(used) || !Number.isFinite(available)) continue;
     rows.push({
-      filesystem: match[1] ?? "",
-      totalBytes: Number(match[2]) * 1024,
-      usedBytes: Number(match[3]) * 1024,
-      availableBytes: Number(match[4]) * 1024,
-      mountedOn: match[5] ?? "",
+      filesystem: tokens.slice(0, percentIndex - 3).join(" "),
+      totalBytes: total * 1024,
+      usedBytes: used * 1024,
+      availableBytes: available * 1024,
+      mountedOn: tokens.slice(percentIndex + 1).join(" "),
     });
   }
   return rows;
@@ -189,13 +199,14 @@ export interface DiskMeasurement {
   readonly candidateBytes: number;
 }
 
-export interface Runner {
-  (command: string, args: readonly string[]): { status: number; stdout: string; stderr: string };
-}
+export type Runner = (
+  command: string,
+  args: readonly string[],
+) => { status: number; stdout: string; stderr: string };
 
 export const defaultRunner: Runner = (command, args) => {
   const result = spawnSync(command, [...args], { encoding: "utf8", timeout: 600_000 });
-  return { status: result.status ?? 1, stdout: result.stdout ?? "", stderr: result.stderr ?? "" };
+  return { status: result.status ?? 1, stdout: result.stdout, stderr: result.stderr };
 };
 
 /** `docker info` knows where images live; `/var/lib/docker` is the fallback, and it is labelled as one. */
@@ -316,6 +327,11 @@ function gib(bytes: number): string {
   return (bytes / GIB).toFixed(2);
 }
 
+/** `absent` is a real answer and must not print as a size. */
+function sizeLabel(bytes: number | null): string {
+  return bytes === null ? "absent" : `${gib(bytes)} GiB`;
+}
+
 export function formatMeasurement(measurement: DiskMeasurement): string {
   const lines: string[] = [];
   lines.push("FILESYSTEMS (df -kP)");
@@ -336,7 +352,7 @@ export function formatMeasurement(measurement: DiskMeasurement): string {
   lines.push("");
   lines.push("RECLAIM CANDIDATES (measured, not deleted)");
   for (const candidate of measurement.candidates) {
-    lines.push(`  ${candidate.path.padEnd(34)} ${candidate.bytes === null ? "absent" : `${gib(candidate.bytes)} GiB`}`);
+    lines.push(`  ${candidate.path.padEnd(34)} ${sizeLabel(candidate.bytes)}`);
   }
   lines.push(`  ${"TOTAL".padEnd(34)} ${gib(measurement.candidateBytes)} GiB`);
   lines.push("");
@@ -354,9 +370,7 @@ export function formatReclaim(outcome: ReclaimOutcome): string {
   lines.push("");
   lines.push(`DELETED in ${(outcome.elapsedMs / 1000).toFixed(1)}s`);
   for (const entry of outcome.deleted) {
-    lines.push(
-      `  ${entry.path.padEnd(34)} ${entry.bytes === null ? "absent" : `${gib(entry.bytes)} GiB`}  rm exit ${String(entry.status)}`,
-    );
+    lines.push(`  ${entry.path.padEnd(34)} ${sizeLabel(entry.bytes)}  rm exit ${String(entry.status)}`);
   }
   lines.push("");
   lines.push("AFTER");
