@@ -77,7 +77,7 @@
 // to disagree about. Absence is not agreement. `snapshotDrift` below compares
 // the APP-ID SET per rung first and only then the rows.
 
-import { readFileSync, writeFileSync, existsSync } from "node:fs";
+import { readFileSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { stringCompare } from "../collation/collation.ts";
 import {
@@ -224,8 +224,7 @@ function containersOf(podSpec: Record<string, unknown>): ContainerRequest[] {
       const requests = asRecord(asRecord(container.resources).requests);
       const cpuRaw = requests.cpu;
       const memRaw = requests.memory;
-      const effectiveRole =
-        role === "init" && container.restartPolicy === "Always" ? "sidecar" : (role);
+      const effectiveRole = role === "init" && container.restartPolicy === "Always" ? "sidecar" : role;
       out.push({
         workload: "",
         container: typeof container.name === "string" ? container.name : "(unnamed)",
@@ -493,10 +492,27 @@ export function measureSnapshot(catalogue: ResourceCatalogue, options: RenderOpt
   };
 }
 
+/**
+ * Read a file, or `null` when it is not there.
+ *
+ * ATTEMPT the read; do not `existsSync` first. The check-then-use pair is a
+ * TOCTOU window (`js/file-system-race`, and this repo's own
+ * `lint-check-then-use-file-races`): between the check and the read the path can
+ * be created, deleted or replaced, so the answer the check returned is already
+ * stale. One syscall, one answer — a miss IS the ENOENT.
+ */
+function readIfPresent(abs: string): string | null {
+  try {
+    return readFileSync(abs, "utf8");
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === "ENOENT") return null;
+    throw error;
+  }
+}
+
 export function loadSnapshot(path = DEFAULT_SNAPSHOT_PATH, repoRoot = REPO_ROOT): RenderSnapshot | null {
-  const abs = resolve(repoRoot, path);
-  if (!existsSync(abs)) return null;
-  return JSON.parse(readFileSync(abs, "utf8")) as RenderSnapshot;
+  const text = readIfPresent(resolve(repoRoot, path));
+  return text === null ? null : (JSON.parse(text) as RenderSnapshot);
 }
 
 export function writeSnapshot(snapshot: RenderSnapshot, path = DEFAULT_SNAPSHOT_PATH, repoRoot = REPO_ROOT): void {
@@ -743,9 +759,9 @@ export function findingKey(finding: ResourceFinding): string {
 }
 
 export function loadBaseline(path = DEFAULT_BASELINE_PATH, repoRoot = REPO_ROOT): Baseline {
-  const abs = resolve(repoRoot, path);
-  if (!existsSync(abs)) return { entries: [] };
-  const parsed = JSON.parse(readFileSync(abs, "utf8")) as { entries?: unknown };
+  const text = readIfPresent(resolve(repoRoot, path));
+  if (text === null) return { entries: [] };
+  const parsed = JSON.parse(text) as { entries?: unknown };
   const entries = Array.isArray(parsed.entries) ? (parsed.entries as Record<string, unknown>[]) : [];
   return {
     entries: entries.map((entry, index) => {
