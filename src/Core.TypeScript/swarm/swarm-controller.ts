@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 /**
  * swarm-controller.ts
- * 
+ *
  * Orchestrates the 4-Hat Swarm over the UDP Lossy Mesh.
  * Instantiates Cartographer, Pilot, Recursive Composer, and Chronologist.
  */
@@ -29,7 +29,9 @@ export interface UdpMeshNode {
 // still documents the contract without asserting behaviour the stub does not have.
 function createLossyUdpMesh(size: number, _dropRate: number): UdpMeshNode[] {
   return Array.from({ length: size }, () => ({
-    send: (_data: Buffer) => { /* dummy */ }
+    send: (_data: Buffer) => {
+      /* dummy */
+    },
   }));
 }
 
@@ -44,38 +46,41 @@ export class SwarmController {
   private hwRegistry: HardwareRegistry;
   public wormSociety: CelegansController[] = [];
   public bnnSociety?: BnnSocietyPredictor;
-  
+
   // CHIP-8 Superorganism State
   private pheromoneField: Map<number, number> = new Map();
   private scarcity: number = 0.8; // High scarcity defaults trigger tower formation
-  
+
   constructor() {
     this.hwRegistry = new HardwareRegistry();
     this.hwRegistry.start();
   }
-  
+
   async init(dropRate = 0) {
     const meshNodes = createLossyUdpMesh(4, dropRate);
     const useLocalLlm = process.env.ZETA_SWARM_USE_LOCAL_LLM === "1";
-    
+
     for (let i = 0; i < 4; i++) {
       const hat = SWARM_HATS[i]!;
       let config = getPersona(hat.personaName);
       if (!config) throw new Error(`Missing persona: ${hat.personaName}`);
-      
+
       // Override for free GitHub Actions tier
       if (useLocalLlm) {
         console.log(`[SwarmController] Forcing local-llm for hat ${hat.name}`);
         config = localLlmPersona(hat.personaName, { model: "qwen2.5:0.5b" });
       }
-      
+
       const transport = fetchTransport();
-      const backend = openAiCompatBackend({ baseUrl: config.harness.host ?? "http://localhost:11434", apiKey: "dummy", model: config.preferredModel }, transport);
-      
+      const backend = openAiCompatBackend(
+        { baseUrl: config.harness.host ?? "http://localhost:11434", apiKey: "dummy", model: config.preferredModel },
+        transport,
+      );
+
       this.nodes.push({ hat, mesh: meshNodes[i]!, backend });
     }
   }
-  
+
   /**
    * Run one tick of the swarm.
    * All 4 hats observe the world simultaneously.
@@ -89,7 +94,7 @@ export class SwarmController {
       console.log(`Current World Mode: ${world.mode}`);
       console.log(`Backlog size: ${world.backlog.length}`);
     }
-    
+
     // Broadcast state to all nodes via UDP (simulated sync)
     for (const node of this.nodes) {
       node.mesh.send(Buffer.from(JSON.stringify(world)));
@@ -97,7 +102,12 @@ export class SwarmController {
 
     // [Causal Orbit Detection]
     // If the world has an attached CheatEngine emulator frame, we hash the Playable Quote footprint
-    if (world.cheatEngine && world.cheatEngine.memorySectors.length > 0 && world.cheatEngine.causalMask && world.cheatEngine.display) {
+    if (
+      world.cheatEngine &&
+      world.cheatEngine.memorySectors.length > 0 &&
+      world.cheatEngine.causalMask &&
+      world.cheatEngine.display
+    ) {
       const { detectCausalSignature } = await import("./signature-detector");
       const { renderDisplay } = await import("../chip8/chip8");
       const fs = await import("fs");
@@ -106,13 +116,13 @@ export class SwarmController {
       const mem = world.cheatEngine.memorySectors[0]!;
       const mask = world.cheatEngine.causalMask;
       const display = world.cheatEngine.display;
-      
+
       const sig = detectCausalSignature(mem, mask, display);
       const prevSig = world.cartography?.activeOrbitSignature;
-      
+
       if (prevSig && sig !== prevSig) {
         console.log(`[SwarmController] 🪐 CAUSAL ORBIT SHIFT DETECTED! (${prevSig} -> ${sig})`);
-        
+
         // Render human-readable visual state
         console.log(`[SwarmController] 👁️  Visual State for Orbit ${sig}:`);
         // We construct a fake frame just for renderDisplay to work cleanly since we changed signature
@@ -126,9 +136,11 @@ export class SwarmController {
         console.log(`[SwarmController] Swarm shifting Hats to adapt to new ruleset...`);
 
         // Ask LLM to optimize worm hyperparameters on orbit shift (Outer Loop)
-        const activePilot = this.nodes.find(n => n.hat.name === "Pilot");
+        const activePilot = this.nodes.find((n) => n.hat.name === "Pilot");
         if (activePilot && this.wormSociety.length > 0) {
-          console.log(`[SwarmController] LLM Outer Loop: Analyzing C. elegans performance and tuning hyperparameters...`);
+          console.log(
+            `[SwarmController] LLM Outer Loop: Analyzing C. elegans performance and tuning hyperparameters...`,
+          );
           try {
             const prompt = `The C. elegans worm Pilot has successfully shifted the CHIP-8 causal orbit from ${prevSig} to ${sig}.
 You are optimizing the biological controller AND the environment (Cheat Engine). 
@@ -140,7 +152,10 @@ Available tools:
 Output a JSON array of tool calls you wish to execute. Example: [{"tool": "setWormCouplingGain", "args": {"gain": 1.2}}, {"tool": "freezeMemory", "args": {"address": 512, "value": 255}}]`;
             const completion = await activePilot.backend.complete({ messages: [{ role: "user", content: prompt }] });
             if (completion.ok) {
-              const raw = completion.result.content.replace(/^```json/, "").replace(/```$/, "").trim();
+              const raw = completion.result.content
+                .replace(/^```json/, "")
+                .replace(/```$/, "")
+                .trim();
               try {
                 const parsed = JSON.parse(raw);
                 console.log(`[SwarmController] LLM Tuning Output:`, parsed);
@@ -151,7 +166,7 @@ Output a JSON array of tool calls you wish to execute. Example: [{"tool": "setWo
                 // ignore LLM json parse errors on outer loop for now
               }
             }
-          } catch(e) {
+          } catch (e) {
             console.error(`[SwarmController] LLM Tuning failed:`, e);
           }
         }
@@ -159,8 +174,18 @@ Output a JSON array of tool calls you wish to execute. Example: [{"tool": "setWo
         // Persist signature to known-signatures.json
         const sigFile = path.join(__dirname, "known-signatures.json");
         let known = [];
-        if (fs.existsSync(sigFile)) {
+        // ATTEMPT the read; do not `existsSync` first. The check-then-use pair
+        // is a TOCTOU window (CWE-367, `js/file-system-race`): between the check
+        // and the read the path can be created, deleted or replaced, so the
+        // answer the check returned is already stale when the read runs. Here it
+        // is a live race and not a theoretical one -- several controllers write
+        // this same file, so the window is between two writers, not just between
+        // this process and the disk. One syscall, one answer: the miss IS the
+        // ENOENT.
+        try {
           known = JSON.parse(fs.readFileSync(sigFile, "utf-8"));
+        } catch (e) {
+          if ((e as NodeJS.ErrnoException).code !== "ENOENT") throw e;
         }
         if (!known.includes(sig)) {
           known.push(sig);
@@ -168,27 +193,33 @@ Output a JSON array of tool calls you wish to execute. Example: [{"tool": "setWo
           console.log(`[SwarmController] 💾 Saved new signature ${sig} to known-signatures.json`);
         }
       }
-      
-      world = { 
-        ...world, 
-        cartography: { 
+
+      world = {
+        ...world,
+        cartography: {
           ...world.cartography,
           scopeLevel: world.cartography?.scopeLevel ?? 0,
           timeOffset: world.cartography?.timeOffset ?? 0,
-          activeOrbitSignature: sig 
-        } 
+          activeOrbitSignature: sig,
+        },
       };
     }
-    
+
     let results: { hat: HatDefinition; action: NextAction }[] = [];
-    
+
     // If CHIP-8, we skip LLM for the other hats to run at high biological speed
     if (world.cheatEngine && world.cheatEngine.causalMask) {
-      const pilotHat = this.nodes.find(n => n.hat.name === "Pilot")!.hat;
-      results = [{
-        hat: pilotHat,
-        action: { kind: "do_item", item: world.backlog[0] ?? { id: "chip8", title: "CHIP-8 Game", ready: true, ambiguous: false }, actions: outerLoopActions }
-      }];
+      const pilotHat = this.nodes.find((n) => n.hat.name === "Pilot")!.hat;
+      results = [
+        {
+          hat: pilotHat,
+          action: {
+            kind: "do_item",
+            item: world.backlog[0] ?? { id: "chip8", title: "CHIP-8 Game", ready: true, ambiguous: false },
+            actions: outerLoopActions,
+          },
+        },
+      ];
     } else {
       // Concurrently ask all 4 hats for their preferred NextAction
       const promises = this.nodes.map(async (node) => {
@@ -199,21 +230,21 @@ Output a JSON array of tool calls you wish to execute. Example: [{"tool": "setWo
       });
       results = await Promise.all(promises);
     }
-    
+
     // Resolve Priority
-    const chronologist = results.find(r => r.hat.name === "Chronologist");
-    const composer = results.find(r => r.hat.name === "Recursive Composer");
-    const pilot = results.find(r => r.hat.name === "Pilot");
-    const cartographer = results.find(r => r.hat.name === "Cartographer");
-    
+    const chronologist = results.find((r) => r.hat.name === "Chronologist");
+    const composer = results.find((r) => r.hat.name === "Recursive Composer");
+    const pilot = results.find((r) => r.hat.name === "Pilot");
+    const cartographer = results.find((r) => r.hat.name === "Cartographer");
+
     let chosenAction: NextAction | null = null;
     let chosenBy = "";
-    
+
     // 1. Chronologist wins if retracting time
     if (chronologist && (chronologist.action.kind === "retract_time" || chronologist.action.kind === "replay_time")) {
       chosenAction = chronologist.action;
       chosenBy = chronologist.hat.name;
-    } 
+    }
     // 2. Composer wins if decomposing
     else if (composer && composer.action.kind === "decompose") {
       chosenAction = composer.action;
@@ -228,43 +259,52 @@ Output a JSON array of tool calls you wish to execute. Example: [{"tool": "setWo
     else if (cartographer) {
       chosenAction = cartographer.action;
       chosenBy = cartographer.hat.name;
-    }
-    else {
+    } else {
       // Fallback to Pilot
       chosenAction = pilot!.action;
       chosenBy = "Pilot (Fallback)";
     }
-    
+
     if (!isChip8) {
       console.log(`>>> PRIORITY RESOLUTION: ${chosenBy} wins with '${chosenAction.kind}'`);
     }
-    
+
     if (chosenAction.kind === "decompose") {
       if (!isChip8) console.log(`[SwarmController] Decompose won. Requesting semantic sub-tasks from ${chosenBy}...`);
-      const decomposerNode = results.find(r => r.hat.name === chosenBy)?.hat ? this.nodes.find(n => n.hat.name === chosenBy) : this.nodes[0];
+      const decomposerNode = results.find((r) => r.hat.name === chosenBy)?.hat
+        ? this.nodes.find((n) => n.hat.name === chosenBy)
+        : this.nodes[0];
       if (decomposerNode) {
         const item = chosenAction.item;
-        
+
         // --- HOT-SWAP HARDWARE NODE ---
         let backend = decomposerNode.backend;
         const activeHw = this.hwRegistry.getActiveNode(chosenBy);
         if (activeHw) {
-          console.log(`[SwarmController] ⚡ HOT-SWAP: Routing ${chosenBy} to physical hardware at ${activeHw.host} (${activeHw.model})`);
-          backend = openAiCompatBackend({ baseUrl: activeHw.host, apiKey: "dummy", model: activeHw.model }, fetchTransport());
+          console.log(
+            `[SwarmController] ⚡ HOT-SWAP: Routing ${chosenBy} to physical hardware at ${activeHw.host} (${activeHw.model})`,
+          );
+          backend = openAiCompatBackend(
+            { baseUrl: activeHw.host, apiKey: "dummy", model: activeHw.model },
+            fetchTransport(),
+          );
         }
-        
+
         const prompt = `You are decomposing a complex task: "${item.title}".
 Analyze the following context if any, and break the task down into a flat list of smaller sub-tasks.
 Output ONLY a valid JSON array of strings representing the sub-tasks. Example: ["Extract blue shapes", "Find translation vector", "Apply to test grid"]
 `;
         try {
           const completion = await backend.complete({
-            messages: [{ role: "user", content: prompt }]
+            messages: [{ role: "user", content: prompt }],
           });
           if (completion.ok) {
-            const raw = completion.result.content.replace(/^```json/, "").replace(/```$/, "").trim();
+            const raw = completion.result.content
+              .replace(/^```json/, "")
+              .replace(/```$/, "")
+              .trim();
             const parsed = JSON.parse(raw);
-            if (Array.isArray(parsed) && parsed.every(s => typeof s === "string")) {
+            if (Array.isArray(parsed) && parsed.every((s) => typeof s === "string")) {
               chosenAction = { ...chosenAction, subTasks: parsed };
               console.log(`[SwarmController] Successfully generated semantic sub-tasks:`, parsed);
             } else {
@@ -278,21 +318,31 @@ Output ONLY a valid JSON array of strings representing the sub-tasks. Example: [
         }
       }
     } else if (chosenAction.kind === "do_item") {
-      if (!isChip8) console.log(`[SwarmController] Pilot won with do_item. Requesting deterministic grid tool calls from ${chosenBy}...`);
-      const pilotNode = results.find(r => r.hat.name === chosenBy)?.hat ? this.nodes.find(n => n.hat.name === chosenBy) : this.nodes[0];
+      if (!isChip8)
+        console.log(
+          `[SwarmController] Pilot won with do_item. Requesting deterministic grid tool calls from ${chosenBy}...`,
+        );
+      const pilotNode = results.find((r) => r.hat.name === chosenBy)?.hat
+        ? this.nodes.find((n) => n.hat.name === chosenBy)
+        : this.nodes[0];
       if (pilotNode) {
         const item = chosenAction.item;
-        
+
         // --- HOT-SWAP HARDWARE NODE ---
         let backend = pilotNode.backend;
         const activeHw = this.hwRegistry.getActiveNode(chosenBy);
         if (activeHw) {
-          console.log(`[SwarmController] ⚡ HOT-SWAP: Routing ${chosenBy} to physical hardware at ${activeHw.host} (${activeHw.model})`);
-          backend = openAiCompatBackend({ baseUrl: activeHw.host, apiKey: "dummy", model: activeHw.model }, fetchTransport());
+          console.log(
+            `[SwarmController] ⚡ HOT-SWAP: Routing ${chosenBy} to physical hardware at ${activeHw.host} (${activeHw.model})`,
+          );
+          backend = openAiCompatBackend(
+            { baseUrl: activeHw.host, apiKey: "dummy", model: activeHw.model },
+            fetchTransport(),
+          );
         }
 
         const isChip8 = world.cheatEngine && world.cheatEngine.causalMask;
-        
+
         if (isChip8) {
           // Inner Loop: Fast path using Society of C. elegans worms & Society of BNNs
           if (this.wormSociety.length === 0) {
@@ -308,77 +358,76 @@ Output ONLY a valid JSON array of strings representing the sub-tasks. Example: [
             console.log("[SwarmController] Initializing Society of BNN Key Predictors for CHIP-8 (Inner Loop)...");
             this.bnnSociety = new BnnSocietyPredictor(3);
           }
-          
+
           // Inject display and step Kuramoto oscillator
           const displayMap = new Map<number, boolean>();
           for (let i = 0; i < world.cheatEngine!.display!.length; i++) {
             if (world.cheatEngine!.display![i]) displayMap.set(i, true);
           }
-          
+
           // Initialize Pheromone field if needed
           if (this.pheromoneField.size === 0) {
-            for (let i = 0; i <= 0xF; i++) this.pheromoneField.set(i, 0.0);
+            for (let i = 0; i <= 0xf; i++) this.pheromoneField.set(i, 0.0);
           }
-          
+
           // BNN Key Predictor computes its consensus separately
           const bnnPredictions = this.bnnSociety.predict(world.cheatEngine!.display!);
-          
+
           // If BNN is highly uncertain (max prob < 0.2), scarcity is high!
           let maxProb = 0;
           let bestBnnKey = 0;
           for (const [key, prob] of Object.entries(bnnPredictions)) {
-            if (prob > maxProb) { maxProb = prob; bestBnnKey = parseInt(key, 10); }
+            if (prob > maxProb) {
+              maxProb = prob;
+              bestBnnKey = parseInt(key, 10);
+            }
           }
           this.scarcity = maxProb < 0.2 ? 0.9 : 0.4;
-          
+
           // Tri-Boolean Cooperation: Superorganism Tower Formation (Perez & Ding 2025)
           const cooperativeThreshold = 0.15; // Requires some signal to commit to the collective
-          
+
           let towerCount = 0;
           let towerKey = -1;
-          
+
           for (const worm of this.wormSociety) {
             // Integrate-as-Choice Locus & Food Scarcity Trigger
             const result = worm.tickWithSuperorganism(
-              displayMap, 
-              this.scarcity, 
-              this.pheromoneField, 
-              cooperativeThreshold
+              displayMap,
+              this.scarcity,
+              this.pheromoneField,
+              cooperativeThreshold,
             );
-            
+
             // Tonal Momentum: Agent emits pheromones to signal intent
             if (result.pheromoneEmit) {
               const current = this.pheromoneField.get(result.pheromoneEmit.key) || 0;
               this.pheromoneField.set(result.pheromoneEmit.key, current + result.pheromoneEmit.amount);
             }
-            
+
             // Did it cross threshold and commit?
             if (result.joinedTower) {
               towerCount++;
               towerKey = result.key;
             }
           }
-          
+
           // Pheromone Decay (environmental dissipation)
           for (const [key, val] of this.pheromoneField.entries()) {
             this.pheromoneField.set(key, val * 0.9);
           }
-          
+
           // Apply cooperate() identity to simulate non-collapsing quantum identity engagement
-          cooperate(null as any); 
+          cooperate(null as any);
 
           // Consensus: The superorganism tower formed if at least 2 worms joined the same locus
           let wormConsensusKey = towerCount >= 2 ? towerKey : 0;
-          
-          
+
           // Simple Fusion Policy: if max BNN prob is strong enough, use BNN consensus; otherwise use biological tower
           const chosenKey = maxProb > 0.4 ? bestBnnKey : wormConsensusKey;
 
           if (chosenAction.kind === "do_item") {
-            chosenAction.actions = [
-              ...(chosenAction.actions || []),
-              {"tool": "pressKey", "args": {"key": chosenKey}}
-            ];
+            chosenAction.actions = [...(chosenAction.actions || []), { tool: "pressKey", args: { key: chosenKey } }];
           }
           const nextWorld = simulate(world, chosenAction);
           // Attach BNN predictions to cheatEngine so TV can render them
@@ -386,13 +435,13 @@ Output ONLY a valid JSON array of strings representing the sub-tasks. Example: [
             ...nextWorld,
             cheatEngine: {
               ...nextWorld.cheatEngine!,
-              keyPredictions: bnnPredictions
-            }
+              keyPredictions: bnnPredictions,
+            },
           };
         }
-        
+
         let prompt = "";
-        
+
         prompt = `You are executing a sub-task on an ARC grid: "${item.title}".
 Available deterministic tools:
 - {"tool": "readGridLensography", "args": {"sector": 0}}
@@ -406,26 +455,31 @@ You MUST wrap your response in an array [ ... ]. Do NOT output a single object w
 `;
         try {
           const completion = await backend.complete({
-            messages: [{ role: "user", content: prompt }]
+            messages: [{ role: "user", content: prompt }],
           });
           if (completion.ok) {
-            const raw = completion.result.content.replace(/^```json/, "").replace(/```$/, "").trim();
+            const raw = completion.result.content
+              .replace(/^```json/, "")
+              .replace(/```$/, "")
+              .trim();
             const parsed = JSON.parse(raw);
             if (Array.isArray(parsed)) {
               if (chosenAction.kind === "do_item") {
                 chosenAction.actions = parsed;
               }
-              
+
               if (item.gridData) {
                 const initialGrid = item.gridData.input;
                 const expectedGrid = item.gridData.output;
-                
+
                 console.log(`[SwarmController] Executing skills on grid substrate...`);
                 const actualGrid = executeSkillSequence(initialGrid, parsed);
-                
+
                 const evaluation = evaluateGrid(actualGrid, expectedGrid);
                 console.log(`\n[Cartographer KPI] Pixel Accuracy: ${evaluation.accuracy.toFixed(2)}%`);
-                console.log(`[Cartographer KPI] Difference: ${evaluation.diffPixels} pixels off out of ${evaluation.totalPixels} total.\n`);
+                console.log(
+                  `[Cartographer KPI] Difference: ${evaluation.diffPixels} pixels off out of ${evaluation.totalPixels} total.\n`,
+                );
                 if (chosenAction.kind === "do_item") {
                   chosenAction.evaluation = evaluation;
                 }
@@ -442,7 +496,7 @@ You MUST wrap your response in an array [ ... ]. Do NOT output a single object w
           console.error(`[SwarmController] Failed to generate grid tool calls:`, e);
         }
       }
-    }    // Advance world
+    } // Advance world
     return simulate(world, chosenAction);
   }
 }
@@ -451,14 +505,14 @@ async function main() {
   console.log("Initializing Mux-Duplex Swarm (4-Roles)...");
   const swarm = new SwarmController();
   await swarm.init(0.0); // 0% drop rate for local test
-  
+
   let world: World = {
     // `mode` is optional and documented as "absent = unset", which is what "idle" meant here.
     backlog: [],
     history: [],
-    cartography: { scopeLevel: 0, timeOffset: 0 }
+    cartography: { scopeLevel: 0, timeOffset: 0 },
   };
-  
+
   // Just run 1 tick for test
   world = await swarm.tick(world);
   console.log("Swarm test tick complete.");
@@ -466,10 +520,12 @@ async function main() {
 }
 
 if (import.meta.main) {
-  main().then((code) => {
-    process.exit(code);
-  }).catch(e => {
-    console.error(e);
-    process.exit(1);
-  });
+  main()
+    .then((code) => {
+      process.exit(code);
+    })
+    .catch((e) => {
+      console.error(e);
+      process.exit(1);
+    });
 }

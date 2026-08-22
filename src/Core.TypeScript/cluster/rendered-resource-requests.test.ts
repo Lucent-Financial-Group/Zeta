@@ -23,9 +23,9 @@
  */
 
 import { describe, expect, test } from "bun:test";
-import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { join, resolve } from "node:path";
 import {
   cpuToMillis,
   memoryToMib,
@@ -57,6 +57,9 @@ import {
   type ResourceCatalogue,
 } from "./storage-profiles.ts";
 import { envelopeOverstatements, loadRecordedEnvelope } from "./assert-runner-envelope.ts";
+
+/** Repo root, resolved the same way every module under `cluster/` resolves it. */
+const REPO_ROOT_FOR_TESTS = resolve(import.meta.dir, "../../..");
 import type { ApplicationSource } from "./rendered-storage-claims.ts";
 
 const container = (
@@ -407,7 +410,10 @@ describe("eight mutations against the live validators", () => {
   const liveCatalogue = loadResourceCatalogue();
 
   function auditMutated(
-    mutate: (snapshot: RenderSnapshot, baseline: Baseline) => {
+    mutate: (
+      snapshot: RenderSnapshot,
+      baseline: Baseline,
+    ) => {
       snapshot: RenderSnapshot;
       baseline: Baseline;
     },
@@ -535,18 +541,60 @@ describe("eight mutations against the live validators", () => {
     // `runner-disk.ts --check-envelope` by leftover-on-main #13784). Inflating
     // the recorded axis past a machine that matches the live record is the
     // same defect class: a claimed machine larger than the one that exists.
+    //
+    // THIS TEST FAILED ON `main` AT 8cec12d05 AND THE MUTANT WAS NEVER RUN.
+    // It opened `expect(recorded.freeDiskGib).toBe(70)` — a precondition pinned
+    // to the value that was itself the DEFECT. #13830 reverted `freeDiskGib`
+    // 70 -> 14 and recorded the measurement beside it as `measuredFreeDiskGib`,
+    // so the pin threw at setup and the run reported "mutation 6 survives".
+    // It did not survive: measured directly at that SHA,
+    // `envelopeOverstatements({...recorded, freeDiskGib: 15}, {freeDiskGib: 14})`
+    // returns `["free disk 14Gi < recorded 15Gi"]`. The guard was intact the
+    // whole time and the harness was manufacturing a survivor — the in-test form
+    // of `MUTATION DID NOT APPLY — result NOT read`, which the CLI harness
+    // reported and this one could not.
+    //
+    // So the parameter is READ, never pinned: the mutation is "one more GiB than
+    // whatever the tree currently declares", which is the defect class at 14, at
+    // 70, and at whatever the maintainer settles on. Both guards below exist
+    // because removing the pin without them would leave a test that passes when
+    // the mutation does nothing.
     const recorded = loadRecordedEnvelope();
-    expect(recorded.freeDiskGib).toBe(70);
+
+    // GUARD A — the mutation must be a real change. A zero-delta mutation is a
+    // check that cannot fail.
+    expect(Number.isFinite(recorded.freeDiskGib)).toBe(true);
+    const inflated = { ...recorded, freeDiskGib: recorded.freeDiskGib + 1 };
+    expect(inflated.freeDiskGib).not.toBe(recorded.freeDiskGib);
+
+    // GUARD B — the validator must consult the field the mutation patches.
+    // This is the hazard the revert created: `runnerEnvelope` now carries BOTH
+    // `freeDiskGib` (the budget) and `measuredFreeDiskGib` (the measurement),
+    // and if `loadRecordedEnvelope` or `envelopeOverstatements` were ever
+    // repointed at the other one, this mutation would patch a value nothing
+    // reads and survive for a reason that has nothing to do with the guard.
+    // Measured at 8cec12d05: `measuredFreeDiskGib` is consumed only by
+    // `image-footprint.ts`, which reports rather than convicts.
+    const catalogue = JSON.parse(
+      readFileSync(resolve(REPO_ROOT_FOR_TESTS, "full-ai-cluster/k8s/storage-profiles.json"), "utf8"),
+    ) as { runnerEnvelope: { freeDiskGib: number; measuredFreeDiskGib?: number } };
+    expect(recorded.freeDiskGib).toBe(catalogue.runnerEnvelope.freeDiskGib);
+
+    // CONTROL — a machine that matches the record is not an overstatement, so
+    // any conviction below is attributable to the mutation and not to a
+    // shortfall that was already there.
     const measured = {
       cpuMillis: recorded.cpuMillis,
       memoryMib: recorded.memoryMib,
       freeDiskGib: recorded.freeDiskGib,
     };
     expect(envelopeOverstatements(recorded, measured)).toEqual([]);
-    const inflated = { ...recorded, freeDiskGib: recorded.freeDiskGib + 1 };
+
+    // THE MUTATION.
     const bad = envelopeOverstatements(inflated, measured);
     expect(bad.length).toBeGreaterThan(0);
-    expect(bad.join(" ")).toContain(String(recorded.freeDiskGib));
+    expect(bad.join(" ")).toContain(`recorded ${String(inflated.freeDiskGib)}Gi`);
+    expect(bad.join(" ")).toContain(`free disk ${String(measured.freeDiskGib)}Gi`);
   });
 
   test("7 acknowledgement key detuned by 1m — STALE, and dropping it convicts", () => {

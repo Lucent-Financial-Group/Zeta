@@ -144,7 +144,10 @@ describe("pricing", () => {
 
   test("an application with no catalogue row is unpriced, not free", () => {
     const m = toyModel();
-    const stripped = { ...m, catalogue: { ...m.catalogue, rows: new Map([...m.catalogue.rows].filter(([k]) => k !== "core")) } };
+    const stripped = {
+      ...m,
+      catalogue: { ...m.catalogue, rows: new Map([...m.catalogue.rows].filter(([k]) => k !== "core")) },
+    };
     const f = priceSet(stripped, closureOf(stripped, "a"));
     expect(f.unpricedApps).toEqual(["core"]);
     expect(isFullyPriced(f)).toBe(false);
@@ -155,11 +158,32 @@ describe("pricing", () => {
 describe("budget", () => {
   test("the budget subtracts the runner's reservation before applying the margin", () => {
     const b = budgetOf(
-      { runner: "x", cpuMillis: 4000, memoryMib: 15360, freeDiskGib: 14, reservedCpuMillis: 1500, reservedMemoryMib: 6144, reservedDiskGib: 4 },
+      {
+        runner: "x",
+        cpuMillis: 4000,
+        memoryMib: 15360,
+        freeDiskGib: 14,
+        reservedCpuMillis: 1500,
+        reservedMemoryMib: 6144,
+        reservedDiskGib: 4,
+      },
       1,
     );
     expect(b).toEqual({ cpuMillis: 2500, memoryMib: 9216, diskGib: 10 });
-    expect(budgetOf({ runner: "x", cpuMillis: 4000, memoryMib: 15360, freeDiskGib: 14, reservedCpuMillis: 1500, reservedMemoryMib: 6144, reservedDiskGib: 4 }, 0.85).diskGib).toBeCloseTo(8.5, 6);
+    expect(
+      budgetOf(
+        {
+          runner: "x",
+          cpuMillis: 4000,
+          memoryMib: 15360,
+          freeDiskGib: 14,
+          reservedCpuMillis: 1500,
+          reservedMemoryMib: 6144,
+          reservedDiskGib: 4,
+        },
+        0.85,
+      ).diskGib,
+    ).toBeCloseTo(8.5, 6);
     // MUTATION CAUGHT: using capacity instead of capacity-reserved gives 14.
   });
 
@@ -188,7 +212,11 @@ describe("packing", () => {
   test("a and b do NOT share a lane when their union would exceed the budget", () => {
     // budget disk = (12 - 2) * 1 = 10 GiB. a alone = 10, b alone = 10, a+b = 18.
     const p = packLanes(toyModel(), { margin: 1 });
-    const laneOf = (name: string): string => must(p.lanes.find((l) => l.assigned.includes(name)), `a lane holding ${name}`).id;
+    const laneOf = (name: string): string =>
+      must(
+        p.lanes.find((l) => l.assigned.includes(name)),
+        `a lane holding ${name}`,
+      ).id;
     expect(laneOf("a")).not.toBe(laneOf("b"));
     // MUTATION CAUGHT: pricing a lane as the sum of its members' closures
     // rather than the union of them still separates these two; pricing it as
@@ -277,27 +305,54 @@ describe("the real tree", () => {
     // if someone later reads the lane count and assumes components produced it.
   });
 
-  test("all applications together do NOT fit one runner — CPU is what blows, not disk", () => {
-    // leftover-on-main #13784 measured the runner at 77 GiB free and declared
-    // 70. The 14 GiB vendor figure made this assertion look like
-    // `74.54 > 330` (budget disk 10 * 5). Against 70 the same 74.54 GiB is
-    // 1.13x a 66 GiB budget (70 - 4 reserved). CPU is 6166m against 2500m —
-    // 2.47x. Sharding is still the only route; the binding axis inverted.
-    // Pinning 70 and 74.54 makes a silent revert to 14 fail this test rather
-    // than look like the old 5x thesis coming back.
-    expect(model.catalogue.envelope.freeDiskGib).toBe(70);
+  test("all applications together do NOT fit one runner — on BOTH axes, whatever the disk is", () => {
+    // THIS TEST WAS WRITTEN TWICE AND FAILED BOTH WAYS IN ONE AFTERNOON, which
+    // is the whole reason it is shaped like this now. It first pinned the
+    // 14-world ("disk is what blows", ratio > 5); leftover-on-main #13784
+    // measured the runner at 77 GiB free and declared 70, so it was rewritten to
+    // pin the 70-world ("CPU is what blows"); #13830 then reverted
+    // `freeDiskGib` 70 -> 14 and recorded the measurement beside it as
+    // `measuredFreeDiskGib`, and the rewrite failed in the other direction.
+    //
+    // BOTH SIDES WERE RIGHT. The measurement is real (hosted runners do have
+    // ~77 GiB) and so is the refusal to raise a bound several consumers price
+    // against on one runner's `df`. #13830 says in terms that the correction is
+    // "for a human to take or refuse. It is deliberately not taken." So this
+    // test must not vote: `freeDiskGib` is READ, never pinned.
+    //
+    // What is invariant, and is the conclusion this module exists for: the whole
+    // tree is over the budget on BOTH axes at either setting, so sharding is the
+    // only route. What is parameter-dependent is only WHICH axis binds, and that
+    // is derived from a crossover this test pins instead.
     const budget = budgetOf(model.catalogue.envelope, 1);
-    expect(budget.diskGib).toBe(66);
-    const all = priceSet(model, model.roster.map((r) => r.name));
+    expect(budget.diskGib).toBe(model.catalogue.envelope.freeDiskGib - model.catalogue.envelope.reservedDiskGib);
+
+    // MEASUREMENTS stay hard — these are sums of extracted image sizes and of
+    // catalogue rows, and neither moves when the envelope does.
+    const all = priceSet(
+      model,
+      model.roster.map((r) => r.name),
+    );
     expect(all.diskGib).toBeCloseTo(74.54, 2);
+    expect(all.cpuMillis).toBe(6166);
+
+    // THE INVARIANT: over on both axes. True at 14 (7.45x disk, 2.47x CPU) and
+    // at 70 (1.13x disk, 2.47x CPU).
     expect(all.cpuMillis).toBeGreaterThan(budget.cpuMillis);
     expect(all.diskGib).toBeGreaterThan(budget.diskGib);
     const diskRatio = all.diskGib / budget.diskGib;
     const cpuRatio = all.cpuMillis / budget.cpuMillis;
     expect(cpuRatio).toBeGreaterThan(2);
     expect(diskRatio).toBeGreaterThan(1);
-    expect(diskRatio).toBeLessThan(2);
-    expect(cpuRatio).toBeGreaterThan(diskRatio);
+
+    // THE CROSSOVER, pinned because it is a fact about the measurements rather
+    // than about the pending decision: CPU binds exactly when the disk budget
+    // exceeds `all.diskGib / cpuRatio`. It depends on the CPU budget, which the
+    // 14-vs-70 question does not touch, so it is stable across that decision.
+    const flipDiskGib = all.diskGib / cpuRatio;
+    expect(flipDiskGib).toBeCloseTo(30.22, 1);
+    const bindingAxis = cpuRatio >= diskRatio ? "cpu" : "disk";
+    expect(bindingAxis).toBe(budget.diskGib > flipDiskGib ? "cpu" : "disk");
   });
 
   test("every real lane fits the real budget on all three axes", () => {
@@ -331,34 +386,57 @@ describe("the real tree", () => {
     // "test every chart" is only true if nothing falls between the buckets.
   });
 
-  test("hindsight and vllm FIT the 70-world budget — oversize is empty", () => {
-    // Against 14 GiB they were the self-hosted case (~23 GiB each vs ~10 GiB
-    // usable). Against 70 they fit a 56.1 GiB 0.85-margin budget and pack
-    // into a lane. Claiming they are still oversize would paper 70 to look
-    // like 14.
+  test("hindsight and vllm are oversize EXACTLY WHEN they exceed the declared budget", () => {
+    // Same story as the test above: this asserted "they are the self-hosted
+    // case" at 14, then "oversize is empty" at 70, and the tree has been both
+    // today. Their SIZES are measurements and stay pinned; whether those sizes
+    // fit is a comparison against a parameter the maintainer has not settled,
+    // so it is derived.
     const p = packLanes(model, { margin: 0.85 });
-    expect(p.budget.diskGib).toBeCloseTo(56.1, 1);
-    expect(p.oversize.map((q) => q.name)).toEqual([]);
+    expect(p.budget.diskGib).toBeCloseTo(budgetOf(model.catalogue.envelope, 1).diskGib * 0.85, 6);
+
+    // MEASUREMENTS — extracted image footprints, envelope-independent.
     const hindsight = priceSet(model, ["hindsight"]);
     const vllm = priceSet(model, ["vllm"]);
     expect(hindsight.diskGib).toBeCloseTo(22.49, 1);
     expect(vllm.diskGib).toBeCloseTo(22.65, 1);
-    expect(hindsight.diskGib).toBeLessThan(p.budget.diskGib);
-    expect(vllm.diskGib).toBeLessThan(p.budget.diskGib);
+
+    // THE INVARIANT — oversize is exactly the set that does not fit, and every
+    // app is either packed or quarantined, never both and never neither. That
+    // is the property the packer must have at any envelope; "the set is empty"
+    // is not.
+    const oversize = new Set(p.oversize.map((q) => q.name));
     const assigned = new Set(p.lanes.flatMap((l) => l.assigned));
-    expect(assigned.has("hindsight")).toBe(true);
-    expect(assigned.has("vllm")).toBe(true);
+    for (const [name, footprint] of [
+      ["hindsight", hindsight],
+      ["vllm", vllm],
+    ] as const) {
+      const fits = footprint.diskGib <= p.budget.diskGib;
+      expect(oversize.has(name)).toBe(!fits);
+      expect(assigned.has(name)).toBe(fits);
+    }
   });
 
-  test("dropping intent edges DOES change the partition — hindsight/vllm now pack", () => {
-    // In the 14-world those two were oversize, so intent edges never reached
-    // the packer. In the 70-world they land in a lane, and dropping intent
-    // edges moves membership. The closure still grows when intent is kept.
+  test("dropping intent edges changes the partition EXACTLY WHEN the intent-linked apps pack", () => {
+    // Third instance of the same shape. Whether the partition moves depends on
+    // whether `hindsight`/`vllm` reach the packer at all, and that depends on
+    // the declared disk: quarantined at 14, packed at 70. The CLOSURE
+    // comparison below does not depend on it and is the real content.
     const withIntent = packLanes(buildModel({ repoRoot: REPO_ROOT, rung: "dev" }), { margin: 0.85 });
-    const without = packLanes(buildModel({ repoRoot: REPO_ROOT, rung: "dev", dropIntentEdges: true }), { margin: 0.85 });
-    expect(without.lanes.map((l) => l.members.join(","))).not.toEqual(withIntent.lanes.map((l) => l.members.join(",")));
+    const without = packLanes(buildModel({ repoRoot: REPO_ROOT, rung: "dev", dropIntentEdges: true }), {
+      margin: 0.85,
+    });
+    const quarantined = new Set(withIntent.oversize.map((q) => q.name));
+    const intentLinkedPack = !quarantined.has("hindsight") && !quarantined.has("vllm");
+    const membershipMoved =
+      JSON.stringify(without.lanes.map((l) => l.members.join(","))) !==
+      JSON.stringify(withIntent.lanes.map((l) => l.members.join(",")));
+    expect(membershipMoved).toBe(intentLinkedPack);
     expect(without.coveredApplications).toBe(withIntent.coveredApplications);
-    const closureWith = priceSet(buildModel({ repoRoot: REPO_ROOT }), closureOf(buildModel({ repoRoot: REPO_ROOT }), "hindsight"));
+    const closureWith = priceSet(
+      buildModel({ repoRoot: REPO_ROOT }),
+      closureOf(buildModel({ repoRoot: REPO_ROOT }), "hindsight"),
+    );
     const mNo = buildModel({ repoRoot: REPO_ROOT, dropIntentEdges: true });
     const closureWithout = priceSet(mNo, closureOf(mNo, "hindsight"));
     expect(closureWith.diskGib).toBeGreaterThan(closureWithout.diskGib);
@@ -376,11 +454,14 @@ describe("the real tree", () => {
   test("the graph's adjudication map covers exactly the citations that mention intent", () => {
     const text = readFileSync(resolve(REPO_ROOT, GRAPH_PATH), "utf8");
     const graph = loadGraph(REPO_ROOT);
-    const intent = graph.edges.filter((e) => e.edgeClass === "intent").map((e) => edgeKey(e.from, e.to)).sort();
+    const intent = graph.edges
+      .filter((e) => e.edgeClass === "intent")
+      .map((e) => edgeKey(e.from, e.to))
+      .sort();
     expect(intent).toEqual(["hindsight -> cockroachdb", "spire -> vault"]);
     // temporal's citation contains the phrase and is adjudicated OBSERVED: the
     // case a grep would get backwards.
-    expect(text.includes('temporal -> cockroachdb')).toBe(true);
+    expect(text.includes("temporal -> cockroachdb")).toBe(true);
     const temporalEdge = graph.edges.find((e) => e.from === "temporal" && e.to === "cockroachdb");
     expect(must(temporalEdge, "the temporal -> cockroachdb edge").edgeClass).toBe("observed");
   });
@@ -401,7 +482,9 @@ describe("the real tree", () => {
     const footprints = JSON.parse(readFileSync(resolve(REPO_ROOT, FOOTPRINTS_PATH), "utf8")) as LaneFootprints;
     const withoutLonghorn = {
       ...footprints,
-      imagesByApp: Object.fromEntries(Object.entries(footprints.imagesByApp).filter(([k]) => k !== "full-ai-cluster/longhorn")),
+      imagesByApp: Object.fromEntries(
+        Object.entries(footprints.imagesByApp).filter(([k]) => k !== "full-ai-cluster/longhorn"),
+      ),
     };
     expect(() => buildModel({ repoRoot: REPO_ROOT, footprints: withoutLonghorn })).toThrow(/no entry in/);
     expect(() => buildModel({ repoRoot: REPO_ROOT, footprints: withoutLonghorn })).toThrow(/longhorn/);
@@ -424,9 +507,15 @@ describe("runner envelope assertion", () => {
   const recorded = loadRecordedEnvelope(REPO_ROOT);
 
   test("a runner smaller than the record is CONVICTED, on every short axis", () => {
-    const small = { cpuMillis: recorded.cpuMillis - 1, memoryMib: recorded.memoryMib - 1, freeDiskGib: recorded.freeDiskGib - 1 };
+    const small = {
+      cpuMillis: recorded.cpuMillis - 1,
+      memoryMib: recorded.memoryMib - 1,
+      freeDiskGib: recorded.freeDiskGib - 1,
+    };
     expect(envelopeOverstatements(recorded, small)).toHaveLength(3);
-    expect(envelopeOverstatements(recorded, { ...small, memoryMib: recorded.memoryMib, freeDiskGib: recorded.freeDiskGib })).toHaveLength(1);
+    expect(
+      envelopeOverstatements(recorded, { ...small, memoryMib: recorded.memoryMib, freeDiskGib: recorded.freeDiskGib }),
+    ).toHaveLength(1);
     // MUTATION CAUGHT: an always-empty return, and a disk-only comparison.
   });
 
