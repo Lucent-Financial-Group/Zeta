@@ -291,3 +291,12 @@ src/Core.Agda/_build/
 # and took `gate (required)` down with it. `arc-harness.ts` states the intent plainly:
 # "Ensure 'data/ARC-AGI' is cloned." Ignored so it cannot be re-added by accident.
 data/ARC-AGI/
+
+# Chart archives pulled by `rendered-storage-claims.ts` to measure a render.
+# `.helm-render-cache/<chart>-<version>.tgz` is a CACHE of bytes the upstream
+# registry already serves, keyed by the pin — re-derivable by re-running the
+# tool, and binary, which is why it must never reach the tree (see
+# .claude/rules/no-binary-in-proof-lineage.md: the PROOF is the hex/JSON
+# snapshot beside the checker, and it stays text). Untracked and unignored, the
+# first `--write-snapshot` on a fresh clone leaves ~40 tarballs in `git status`.
+.helm-render-cache/

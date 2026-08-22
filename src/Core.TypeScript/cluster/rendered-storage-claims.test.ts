@@ -16,6 +16,7 @@ import {
   effectiveStorageClass,
   clusterDefaultStorageClass,
   adjudicate,
+  adjudicateUnrenderable,
   loadBaseline,
   loadSnapshot,
   snapshotDrift,
@@ -33,7 +34,7 @@ import {
   type UnrenderableApp,
   type ApplicationSource,
 } from "./rendered-storage-claims.ts";
-import { loadCatalogue } from "./storage-profiles.ts";
+import { loadCatalogue, loadResourceCatalogue } from "./storage-profiles.ts";
 
 const pvc = (over: Partial<RenderedPvc> = {}): RenderedPvc => ({
   appId: "t/app",
@@ -334,9 +335,100 @@ describe("unrenderable", () => {
   });
 
   test("the acknowledgement key carries the VERSION, so a bump invalidates rather than inherits", () => {
+    // `full-ai-cluster/oz@1.4.5` used to be the example asserted here. It is gone
+    // BECAUSE the mechanism worked: the pin moved to 3.1.1 and the key stopped
+    // matching, which is the whole point of putting the version in it.
     const baseline = loadBaseline();
-    expect(baseline.unrenderable.map((entry) => entry.key)).toContain("full-ai-cluster/oz@1.4.5");
+    expect(baseline.unrenderable.map((entry) => entry.key)).toContain("full-ai-cluster/temporal@0.59.0");
     for (const entry of baseline.unrenderable) expect(entry.key).toMatch(/@\S+$/);
+  });
+
+  // -------------------------------------------------------------------------
+  // `observed` ON THE UNRENDERABLE LIST IS LOAD-BEARING (2026-08-21)
+  //
+  // It was required by the loader, written on every entry, and READ BY NOTHING.
+  // These are the falsifiers for the version that reads it. Each one fails
+  // against the pre-2026-08-21 set-membership implementation.
+  // -------------------------------------------------------------------------
+  const ackBaseline = {
+    findings: [],
+    unrenderable: [
+      {
+        key: "t/app@1.0.0",
+        reason: "the pin was withdrawn upstream",
+        liftsWhen: "the pin moves to a published version",
+        observed: "helm-pull-failed",
+      },
+    ],
+  };
+
+  test("an acknowledgement covers the failure CLASS it was written about", () => {
+    expect(adjudicateUnrenderable([broken], ackBaseline).unacknowledged).toEqual([]);
+    expect(adjudicateUnrenderable([broken], ackBaseline).staleKeys).toEqual([]);
+  });
+
+  test("and STOPS covering the app when the failure class changes", () => {
+    // The pin now resolves and the chart fails to TEMPLATE instead — a different
+    // defect, needing a different fix, wearing the same key. Set membership on
+    // the key alone cannot tell these apart and would report it acknowledged.
+    const nowTemplateFails = { ...broken, reason: "helm-template-failed", detail: "values are wrong" };
+    const result = adjudicateUnrenderable([nowTemplateFails], ackBaseline);
+    expect(result.unacknowledged.length).toBe(1);
+    expect(result.unacknowledged[0]?.detail).toContain("DIFFERENT failure");
+    expect(result.unacknowledged[0]?.detail).toContain("helm-pull-failed");
+  });
+
+  test("an acknowledgement for an app that now RENDERS is stale, and stale fails", () => {
+    // Four entries in this repo's own baseline would have been left behind by the
+    // change that wrote this test if nothing required otherwise.
+    const result = adjudicateUnrenderable([], ackBaseline);
+    expect(result.staleKeys.length).toBe(1);
+    expect(result.staleKeys[0]).toContain("t/app@1.0.0");
+    expect(
+      auditExitCode({
+        profile: "measured",
+        appsDiscovered: 1,
+        appsRendered: 1,
+        unrenderable: [],
+        unacknowledgedUnrenderable: [],
+        rendered: [],
+        expectations: [],
+        refused: [],
+        acknowledged: [],
+        staleBaselineKeys: [...result.staleKeys],
+        clusterDefault: null,
+      }),
+    ).toBe(1);
+  });
+
+  test("the snapshot path adjudicates the same way the live path does", () => {
+    // Not "both are green today": the offline path is the one CI runs, so a
+    // weaker copy of the rule there is the check that reads like the check that ran.
+    const nowTemplateFails = { ...broken, reason: "helm-template-failed", detail: "values are wrong" };
+    const dir = mkdtempSync(join(tmpdir(), "unrenderable-ack-"));
+    try {
+      // An ABSOLUTE baselinePath, so the real catalogue still loads and only the
+      // baseline is substituted. The assertions below are on the unrenderable
+      // channel alone -- never on the exit code, which the real tree's other
+      // acknowledgements could satisfy for an unrelated reason (the trap this
+      // file already records against mutation M5).
+      const baselinePath = join(dir, "baseline.json");
+      writeFileSync(baselinePath, JSON.stringify(ackBaseline), "utf8");
+      const result = auditAgainstSnapshot(
+        {
+          measuredOn: "2026-08-21",
+          clusterDefaultStorageClass: null,
+          rendered: [],
+          unrenderable: [nowTemplateFails],
+          appsDiscovered: 1,
+        },
+        { baselinePath },
+      );
+      expect(result.unacknowledgedUnrenderable.map((app) => app.appId)).toEqual(["t/app"]);
+      expect(result.unacknowledgedUnrenderable[0]?.detail).toContain("DIFFERENT failure");
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
   });
 });
 
@@ -427,21 +519,64 @@ describe("the live catalogue against the measured render", () => {
 
   // The numbers, pinned. Not decoration: this is what makes a declaration edit
   // that nobody re-measured go red offline, with no helm and no network.
-  test("MEASURED 2026-08-21 — declared 967 GiB, rendered 831 GiB on longhorn", () => {
+  test("RE-MEASURED 2026-08-21 — declared 967 GiB, rendered 837 GiB on longhorn", () => {
     const result = auditAgainstSnapshot(snapshot!, {});
     expect(declaredTotalGib(result.expectations)).toBe(967);
     const totals = renderedTotalsByClass(result.rendered, result.clusterDefault);
-    expect(totals.get("longhorn")).toBe(831);
-    expect(totals.get("zeta-local-path")).toBe(201);
+    // 831 -> 837: headscale's 3 GiB and oz's 3 GiB were declared on longhorn all
+    // along and rendered by nothing, because neither Application would template.
+    // The disk did not grow; it stopped being invisible.
+    expect(totals.get("longhorn")).toBe(837);
+    // 201 -> 277: full-ai-cluster/gitlab renders the same 76 GiB its sibling in
+    // infra/ already did. Same reason — it is newly COUNTED, not newly real.
+    expect(totals.get("zeta-local-path")).toBe(277);
   });
 
-  test("the two live inert-values defects are still exactly two apps", () => {
+  test("the declared-side acknowledgements are the two inert-values apps plus the orphaned cache", () => {
     const result = auditAgainstSnapshot(snapshot!, {});
     const declaredSide = result.acknowledged.filter((finding) => finding.kind !== "undeclared-rendered-pvc");
+    // arc-runner-set joined this list on 2026-08-21 and it is NOT a new defect —
+    // it is a defect that could not be seen. Its chart calls `lookup`, so it never
+    // rendered, so the 100 GiB row could never be compared against a render. Now
+    // that it renders, the comparison says what the catalogue's own bringUpNote
+    // has said all along: nothing applies the manifest that declares that PVC.
     expect([...new Set(declaredSide.map((finding) => finding.claimId))].sort()).toEqual([
+      "full-ai-cluster/arc-runner-set/model-cache",
       "full-ai-cluster/hindsight/postgres",
       "full-ai-cluster/nats/jetstream",
     ]);
+  });
+
+  test("the four apps that could not be rendered at all now can be, and are CHECKED", () => {
+    // The strongest single assertion in this file: an app on the unrenderable list
+    // contributes no findings and no totals, so "clean" and "invisible" look the
+    // same from every other test here. These four were invisible.
+    const result = auditAgainstSnapshot(snapshot!, {});
+    const stillUnrenderable = result.unrenderable.map((app) => app.appId);
+    for (const app of [
+      "full-ai-cluster/headscale",
+      "full-ai-cluster/oz",
+      "full-ai-cluster/gitlab",
+      "full-ai-cluster/arc-runner-set",
+    ]) {
+      expect(stillUnrenderable).not.toContain(app);
+    }
+    // headscale and oz do not merely render — their declared claims now MATCH a
+    // real PVC, which is what "checked" means. Neither appears on either side of
+    // the findings list.
+    const named = [...result.refused, ...result.acknowledged].map((finding) => finding.claimId);
+    expect(named).not.toContain("full-ai-cluster/headscale/config");
+    expect(named).not.toContain("full-ai-cluster/oz/data");
+    const pvcNames = result.rendered.map((pvc) => `${pvc.appId} ${pvc.name}`);
+    expect(pvcNames).toContain("full-ai-cluster/headscale headscale-config");
+    expect(pvcNames).toContain("full-ai-cluster/oz ziti-controller");
+  });
+
+  test("nothing in the tree is excused from having its requests measured any more", () => {
+    // `acknowledgedUnmeasuredRequests` held exactly one entry, `oz@1.4.5`, a pin
+    // no registry ever served. It is empty now. An entry returning here means an
+    // app whose CPU/memory nobody could read off a rendered chart.
+    expect(loadResourceCatalogue().acknowledgedUnmeasured).toEqual([]);
   });
 
   test("every catalogue row carries a rendered coordinate, and every pattern compiles", () => {
