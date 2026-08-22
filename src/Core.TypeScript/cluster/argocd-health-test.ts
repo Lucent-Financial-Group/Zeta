@@ -276,7 +276,7 @@ export const DEV_EXCLUDED_REASONS: ReadonlyMap<string, string> = new Map([
       "likely spent, and NOBODY HAS MEASURED IT, because the glob keeps this Application off every CI " +
       "cluster and an app that never syncs never produces a verdict to read. " +
       "LIFTS WHEN: `agent-memory/**` is dropped from `DEFAULT_ROOT_DEV_CATALOG.excludeGlob` and one included " +
-      "run reports its actual verdict -- pass or fail, either is information; the current state is neither." +
+      "run reports its actual verdict -- pass or fail, either is information; the current state is neither. " +
       "ANCHORS, CHECKED BY `reason-truth.ts`: each names an artifact this tree holds, so a claim that outlives its artifact goes red instead of reading on. " +
       "[cite: path statefulset.yaml:83] " +
       "[cite: path full-ai-cluster/dev-cluster/manifests/longhorn.yaml] " +
@@ -292,7 +292,7 @@ export const DEV_EXCLUDED_REASONS: ReadonlyMap<string, string> = new Map([
       "from THIS Application's own valuesObject on a profile with no default CNI " +
       "(full-ai-cluster/dev-cluster/profiles/ci.cilium.kind-config.yaml). " +
       "LIFTS WHEN: the app-of-apps included proof runs on that profile, so ArgoCD is reconciling a cluster " +
-      "whose CNI slot Cilium already owns." +
+      "whose CNI slot Cilium already owns. " +
       "ANCHORS, CHECKED BY `reason-truth.ts`: each names an artifact this tree holds, so a claim that outlives its artifact goes red instead of reading on. " +
       "[cite: path full-ai-cluster/dev-cluster/profiles/ci.cilium.kind-config.yaml] " +
       '[cite: workflow-job k8s-argocd-health-test.yml "live kind Cilium CNI"] ' +
@@ -305,7 +305,7 @@ export const DEV_EXCLUDED_REASONS: ReadonlyMap<string, string> = new Map([
       "meaning inside a container network -- LB IPs would be ASSIGNED (enough for ArgoCD to call it Healthy) " +
       "and routable from nothing, which is a worse outcome than not running it. " +
       "LIFTS WHEN: `cilium` above lifts AND the pool is parameterised per substrate rather than pinned to one " +
-      "maintainer's subnet." +
+      "maintainer's subnet. " +
       "ANCHORS, CHECKED BY `reason-truth.ts`: each names an artifact this tree holds, so a claim that outlives its artifact goes red instead of reading on. " +
       "[cite: glob-defers cilium-lb-ipam] " +
       "[cite: glob-defers cilium] ",
@@ -354,7 +354,7 @@ export const DEV_EXCLUDED_REASONS: ReadonlyMap<string, string> = new Map([
       "APPLIED_BUT_UNASSERTED_REASONS row reading 'requests storageClass: longhorn' is downstream of it, so " +
       "lifting this one collapses several. " +
       "LIFTS WHEN: a dev StorageClass provides the `longhorn` name in this lane, or the Applications that " +
-      "request it are parameterised to the substrate's default class." +
+      "request it are parameterised to the substrate's default class. " +
       "ANCHORS, CHECKED BY `reason-truth.ts`: each names an artifact this tree holds, so a claim that outlives its artifact goes red instead of reading on. " +
       "[cite: path full-ai-cluster/dev-cluster/manifests/longhorn.yaml] " +
       "[cite: chart-pin full-ai-cluster/longhorn longhorn 1.7.2] " +
@@ -366,7 +366,7 @@ export const DEV_EXCLUDED_REASONS: ReadonlyMap<string, string> = new Map([
       "has neither, and the multi-GiB image pull alone outruns the job timeout -- so the Application would " +
       "HANG rather than fail, which is the worse of the two. " +
       "LIFTS WHEN: the lane runs on a GPU-bearing self-hosted runner (arc-runner-set), or this Application " +
-      "grows a CPU-only dev profile with a small model and a substrate-default StorageClass." +
+      "grows a CPU-only dev profile with a small model and a substrate-default StorageClass. " +
       "ANCHORS, CHECKED BY `reason-truth.ts`: each names an artifact this tree holds, so a claim that outlives its artifact goes red instead of reading on. " +
       "[cite: pvc-class full-ai-cluster/ollama longhorn] " +
       "[cite: pvc-total full-ai-cluster/ollama 200] " +
@@ -400,7 +400,7 @@ export const DEV_EXCLUDED_REASONS: ReadonlyMap<string, string> = new Map([
       "gain an `imagePullSecrets` bound to a token this lane can mint -- AND `platform/**` leaves " +
       "`DEFAULT_ROOT_DEV_CATALOG.excludeGlob`. Neither half alone is enough: without the credential the " +
       "Application would sync and then sit in ImagePullBackOff, which ArgoCD reports as Progressing rather " +
-      "than Degraded, so it would burn the whole timeout and report the symptom instead of the cause." +
+      "than Degraded, so it would burn the whole timeout and report the symptom instead of the cause. " +
       "ANCHORS, CHECKED BY `reason-truth.ts`: each names an artifact this tree holds, so a claim that outlives its artifact goes red instead of reading on. " +
       "[cite: path full-ai-cluster/portal/DEPLOY.md:122] " +
       "[cite: path .github/workflows/build-platform-images.yml] " +
@@ -431,7 +431,7 @@ export const DEV_EXCLUDED_REASONS: ReadonlyMap<string, string> = new Map([
       "LIFTS WHEN: the CRDB CA is distributed into the `temporal` namespace (trust-manager is already in " +
       "the cluster for exactly this) and a `temporal` SQL user plus its sealed password Secret exist, AND " +
       "the visibility store is pointed somewhere that accepts its schema; then `temporal/**` can leave " +
-      "`DEFAULT_ROOT_DEV_CATALOG.excludeGlob` and a live run reports the rest." +
+      "`DEFAULT_ROOT_DEV_CATALOG.excludeGlob` and a live run reports the rest. " +
       "ANCHORS, CHECKED BY `reason-truth.ts`: each names an artifact this tree holds, so a claim that outlives its artifact goes red instead of reading on. " +
       "[cite: no-unrenderable full-ai-cluster/temporal] " +
       "[cite: renders full-ai-cluster/temporal] " +
@@ -442,7 +442,7 @@ export const DEV_EXCLUDED_REASONS: ReadonlyMap<string, string> = new Map([
   [
     "vllm",
     "Same class as ollama: CUDA image, nvidia.com/gpu request, 200Gi longhorn PVC. " +
-      "LIFTS WHEN: a GPU-bearing self-hosted runner exists for this lane, or a CPU-only dev profile ships." +
+      "LIFTS WHEN: a GPU-bearing self-hosted runner exists for this lane, or a CPU-only dev profile ships. " +
       "ANCHORS, CHECKED BY `reason-truth.ts`: each names an artifact this tree holds, so a claim that outlives its artifact goes red instead of reading on. " +
       "[cite: pvc-class full-ai-cluster/vllm longhorn] " +
       "[cite: pvc-total full-ai-cluster/vllm 200] " +
@@ -779,7 +779,7 @@ const DEV_INCLUDED_PROOF_DEFERRED_DIRS = new Set([
 export const APPLIED_BUT_UNASSERTED_REASONS: ReadonlyMap<string, string> = new Map([
   [
     "arc-runner-set",
-    "TWO independent blockers, either alone sufficient: it needs a GitHub App credential + a live runner registration that CI has no secret to bind, AND model-cache-pvc.yaml claims ReadWriteMany, which rancher.io/local-path behind the dev longhorn alias cannot serve (081KSXN940008QG0R000SCP2H1)." +
+    "TWO independent blockers, either alone sufficient: it needs a GitHub App credential + a live runner registration that CI has no secret to bind, AND model-cache-pvc.yaml claims ReadWriteMany, which rancher.io/local-path behind the dev longhorn alias cannot serve (081KSXN940008QG0R000SCP2H1). " +
       "ANCHORS, CHECKED BY `reason-truth.ts`: each names an artifact this tree holds, so a claim that outlives its artifact goes red instead of reading on. " +
       "[cite: path full-ai-cluster/k8s/applications/arc-runner-set/model-cache-pvc.yaml] " +
       "[cite: glob-applies arc-runner-set] ",
@@ -794,7 +794,7 @@ export const APPLIED_BUT_UNASSERTED_REASONS: ReadonlyMap<string, string> = new M
     "THREE independent blockers, established 2026-08-21 by rendering hindsight 0.3.0 against this Application's own valuesObject; any ONE of them defers it. " +
       "(1) CAPACITY, MEASURED run 32519516070: hindsight-postgresql-0 never scheduled -- FailedScheduling `0/1 nodes are available: 1 Insufficient cpu` -- so hindsight-api and hindsight-control-plane CrashLoopBackOff waiting on a database with nowhere to run. The chart's own defaults are 500m (api) + 250m (control-plane) + 250m (postgresql), against an applied-set total of 4131m on a 4-vCPU runner whose kind system pods already reserve ~950m. " +
       "(2) THE `dev` RESOURCE RUNG CANNOT REACH THIS LANE, which is the part that looked like the fix and is not. `storage-profiles.ts --resource-profile dev --apply` rewrites the WORKING TREE; ArgoCD syncs the COMMITTED tree at `--git-ref`, and the only rung CI runs is `--budget`, a report. So there is no dev-only resource override today -- lowering these numbers would lower them for the metal cluster too, where the cost of an under-request is a pod that is evictable under node pressure rather than one that is refused a node. That trade is a maintainer call, not a CI convenience. " +
-      "(3) THE valuesObject IS STILL PARTLY INERT against this chart, which is a defect in its own right -- and the STORAGE half of it is now FIXED, so this reason is narrowed rather than left standing. Fixed 2026-08-22: the Application wrote `postgresql.primary.persistence.{storageClass,size}` (the bitnami subchart layout) where hindsight 0.3.0 reads `postgresql.persistence.*`; the `.primary` level is gone and the re-render is 10Gi on `longhorn` instead of the chart default 8Gi with NO storageClassName. What REMAINS inert, re-checked against the same render on the same day: `api.llm.{provider,existingSecret}` and a top-level `service`, against a chart that reads `api.env`/`api.secrets`/top-level `existingSecret` and `api.service`/`controlPlane.service` -- rendered proof, still true, is that no HINDSIGHT_API_LLM_API_KEY env reaches the api container (the api Deployment carries only HINDSIGHT_API_DATABASE_URL and HINDSIGHT_API_LLM_MODEL). LIFTS WHEN: the REST of the valuesObject is rewritten against the schema the pinned chart actually has, AND a per-substrate resource override exists (or the maintainer accepts the metal-side cost of the dev numbers)." +
+      "(3) THE valuesObject IS STILL PARTLY INERT against this chart, which is a defect in its own right -- and the STORAGE half of it is now FIXED, so this reason is narrowed rather than left standing. Fixed 2026-08-22: the Application wrote `postgresql.primary.persistence.{storageClass,size}` (the bitnami subchart layout) where hindsight 0.3.0 reads `postgresql.persistence.*`; the `.primary` level is gone and the re-render is 10Gi on `longhorn` instead of the chart default 8Gi with NO storageClassName. What REMAINS inert, re-checked against the same render on the same day: `api.llm.{provider,existingSecret}` and a top-level `service`, against a chart that reads `api.env`/`api.secrets`/top-level `existingSecret` and `api.service`/`controlPlane.service` -- rendered proof, still true, is that no HINDSIGHT_API_LLM_API_KEY env reaches the api container (the api Deployment carries only HINDSIGHT_API_DATABASE_URL and HINDSIGHT_API_LLM_MODEL). LIFTS WHEN: the REST of the valuesObject is rewritten against the schema the pinned chart actually has, AND a per-substrate resource override exists (or the maintainer accepts the metal-side cost of the dev numbers). " +
       "ANCHORS, CHECKED BY `reason-truth.ts`: each names an artifact this tree holds, so a claim that outlives its artifact goes red instead of reading on. " +
       "[cite: glob-applies hindsight] " +
       "[cite: pvc-class full-ai-cluster/hindsight longhorn] " +
@@ -806,7 +806,7 @@ export const APPLIED_BUT_UNASSERTED_REASONS: ReadonlyMap<string, string> = new M
     "NOT the sync loop it was briefly un-deferred for, and not storage -- MEASURED LIVE on run 32532470499, the run that refuted the fix. " +
       "weaviate renders TWO `type: LoadBalancer` Services (`weaviate`, `weaviate-grpc`), and gitops-engine `getCorev1ServiceHealth` reports a LoadBalancer Service whose `status.loadBalancer.ingress` is empty as PROGRESSING, unconditionally. A kind node runs no LoadBalancer implementation, so those two Services never get an address and this Application can NEVER be Healthy in this lane whatever its sync status does -- `weaviate-0` was 1/1 Running for 39m while that held, which is how the blocker stayed hidden behind the one that was found. " +
       "The `randAlphaNum` render nondeterminism established by byte diff is real and its narrow `ignoreDifferences` rule is KEPT, because on metal cilium-lb-ipam does assign LB addresses and it may there be the whole story. But the resync loop SURVIVED that rule live, so 'the rule closes the loop' is UNMETERED rather than proven: the OutOfSync cause was checked and the Progressing cause was not, and one confirmed cause was read as THE cause. " +
-      "LIFTS WHEN: the dev/CI substrate provides a LoadBalancer implementation (cloud-provider-kind or MetalLB) -- the same shape as the dev `longhorn` StorageClass alias, one resource type over -- AND the residual OutOfSync is NAMED by the per-resource diagnostics rather than guessed at a second time." +
+      "LIFTS WHEN: the dev/CI substrate provides a LoadBalancer implementation (cloud-provider-kind or MetalLB) -- the same shape as the dev `longhorn` StorageClass alias, one resource type over -- AND the residual OutOfSync is NAMED by the per-resource diagnostics rather than guessed at a second time. " +
       "ANCHORS, CHECKED BY `reason-truth.ts`: each names an artifact this tree holds, so a claim that outlives its artifact goes red instead of reading on. " +
       "[cite: glob-applies weaviate] " +
       "[cite: renders full-ai-cluster/weaviate] ",

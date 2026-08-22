@@ -209,6 +209,18 @@ describe("the live registries", () => {
     expect(auditReasonTruth(subjects, EVIDENCE).uncited).toEqual([]);
   });
 
+  test("no citation is glued to the sentence before it", () => {
+    // A REAL DEFECT, and it was found by review rather than by me: appending
+    // the citation block to eleven reasons produced `...is neither.ANCHORS,
+    // CHECKED BY...` in the rendered string, because the segment before it
+    // ended without a trailing space. Concatenated TypeScript string literals
+    // hide it perfectly -- the source reads correctly line by line and only the
+    // joined value is wrong, which is why the falsifier asserts on the VALUE.
+    for (const [key, reason] of [...DEV_EXCLUDED_REASONS, ...APPLIED_BUT_UNASSERTED_REASONS]) {
+      expect(`${key}: ${reason}`).not.toMatch(/\S(ANCHORS|\[cite:)/);
+    }
+  });
+
   test("the gitlab reason no longer claims the chart cannot render", () => {
     const reason = DEV_EXCLUDED_REASONS.get("gitlab") ?? "";
     expect(reason).not.toContain("IT DOES NOT EVEN RENDER: `helm template`");
