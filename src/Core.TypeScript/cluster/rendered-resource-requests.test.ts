@@ -23,6 +23,9 @@
  */
 
 import { describe, expect, test } from "bun:test";
+import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import {
   cpuToMillis,
   memoryToMib,
@@ -37,15 +40,23 @@ import {
   adjudicate,
   findingKey,
   formatCpuQuantity,
+  auditRenderedResourceRequests,
+  auditExitCode,
+  loadSnapshot,
+  loadBaseline,
   type RenderSnapshot,
+  type Baseline,
   type ContainerRequest,
 } from "./rendered-resource-requests.ts";
 import {
   loadResourceCatalogue,
   applicationDirs,
   devLaneAppliedDirs,
+  auditRunnerBudget,
+  verifyResourceProfileApplied,
   type ResourceCatalogue,
 } from "./storage-profiles.ts";
+import { envelopeOverstatements, loadRecordedEnvelope } from "./assert-runner-envelope.ts";
 import type { ApplicationSource } from "./rendered-storage-claims.ts";
 
 const container = (
@@ -372,5 +383,198 @@ describe("comparison", () => {
       ],
     };
     expect(compareRenderedToDeclared({ catalogue, snapshot })[0]?.kind).toBe("unrenderable");
+  });
+});
+
+/**
+ * Eight load-bearing mutations against the real validate functions.
+ *
+ * The PR body claimed these as a one-off CLI harness (`cmp` then restore).
+ * A comment is not a mutation. Each case here writes the mutated snapshot /
+ * baseline (or calls the live catalogue / envelope / --check function) and
+ * asserts the validator exits 1 / returns findings. Dropping a check, or
+ * making the mutation a no-op, turns the test red.
+ *
+ * Mutations 6–8 used to target the withdrawn `resource-substrates.ts`. They
+ * are retargeted at the landed functions that now own those questions —
+ * `envelopeOverstatements` (#13784), `auditRunnerBudget` (this PR's 2906
+ * debt), `verifyResourceProfileApplied` (the tree's carried rung). The
+ * withdrawn module is not restored beside them.
+ */
+describe("eight mutations against the live validators", () => {
+  const liveSnapshot = loadSnapshot();
+  const liveBaseline = loadBaseline();
+  const liveCatalogue = loadResourceCatalogue();
+
+  function auditMutated(
+    mutate: (snapshot: RenderSnapshot, baseline: Baseline) => {
+      snapshot: RenderSnapshot;
+      baseline: Baseline;
+    },
+  ): { exit: number; result: ReturnType<typeof auditRenderedResourceRequests>["result"] } {
+    if (liveSnapshot === null) throw new Error("checked-in snapshot missing");
+    const dir = mkdtempSync(join(tmpdir(), "zeta-rrr-mut-"));
+    try {
+      const { snapshot, baseline } = mutate(liveSnapshot, liveBaseline);
+      const snapshotPath = join(dir, "snapshot.json");
+      const baselinePath = join(dir, "baseline.json");
+      writeFileSync(snapshotPath, `${JSON.stringify(snapshot)}\n`);
+      writeFileSync(baselinePath, `${JSON.stringify(baseline)}\n`);
+      const { result } = auditRenderedResourceRequests({ snapshotPath, baselinePath });
+      return { exit: auditExitCode(result), result };
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  }
+
+  test("CONTROL: the live snapshot and baseline audit exit 0", () => {
+    const { result } = auditRenderedResourceRequests({});
+    expect(result.snapshot).not.toBeNull();
+    expect(auditExitCode(result)).toBe(0);
+  });
+
+  test("1 snapshot total bumped — declared-total-mismatch, exit 1", () => {
+    const { exit, result } = auditMutated((snapshot, baseline) => ({
+      snapshot: {
+        ...snapshot,
+        profiles: snapshot.profiles.map((profile) =>
+          profile.profile !== "metal"
+            ? profile
+            : {
+                ...profile,
+                apps: profile.apps.map((app) =>
+                  app.appId === "full-ai-cluster/mimir" ? { ...app, cpuMillis: app.cpuMillis + 1 } : app,
+                ),
+              },
+        ),
+      },
+      baseline,
+    }));
+    expect(exit).toBe(1);
+    expect(result.findings.some((finding) => finding.kind === "declared-total-mismatch")).toBe(true);
+  });
+
+  test("2 snapshot app deleted — coverage drift, not silent agreement, exit 1", () => {
+    const { exit, result } = auditMutated((snapshot, baseline) => ({
+      snapshot: {
+        ...snapshot,
+        appsDiscovered: snapshot.appsDiscovered.filter((id) => id !== "full-ai-cluster/mimir"),
+        profiles: snapshot.profiles.map((profile) => ({
+          ...profile,
+          apps: profile.apps.filter((app) => app.appId !== "full-ai-cluster/mimir"),
+        })),
+      },
+      baseline,
+    }));
+    expect(exit).toBe(1);
+    expect(result.coverageDrift.join(" ")).toContain("full-ai-cluster/mimir");
+  });
+
+  test("3 a rung made inert — both renders agree while the catalogue cuts, exit 1", () => {
+    const { exit, result } = auditMutated((snapshot, baseline) => {
+      const low = snapshot.profiles
+        .find((entry) => entry.profile === "dev")
+        ?.apps.find((app) => app.appId === "full-ai-cluster/mimir");
+      if (low === undefined) throw new Error("mimir missing from the live dev snapshot");
+      return {
+        snapshot: {
+          ...snapshot,
+          profiles: snapshot.profiles.map((profile) =>
+            profile.profile !== "metal"
+              ? profile
+              : {
+                  ...profile,
+                  apps: profile.apps.map((app) =>
+                    app.appId === "full-ai-cluster/mimir"
+                      ? { ...app, cpuMillis: low.cpuMillis, memoryMib: low.memoryMib }
+                      : app,
+                  ),
+                },
+          ),
+        },
+        baseline,
+      };
+    });
+    expect(exit).toBe(1);
+    expect(result.findings.some((finding) => finding.kind === "inert-rung")).toBe(true);
+  });
+
+  test("4 a baseline entry deleted — a known finding becomes open, exit 1", () => {
+    expect(liveBaseline.entries.length).toBeGreaterThan(0);
+    const { exit, result } = auditMutated((snapshot, baseline) => ({
+      snapshot,
+      baseline: { entries: baseline.entries.slice(1) },
+    }));
+    expect(exit).toBe(1);
+    expect(result.adjudicated.open.length).toBeGreaterThan(0);
+  });
+
+  test("5 a stale baseline entry added — acknowledgement outlives its defect, exit 1", () => {
+    const { exit, result } = auditMutated((snapshot, baseline) => ({
+      snapshot,
+      baseline: {
+        entries: [
+          ...baseline.entries,
+          {
+            key: "gone|dev|full-ai-cluster/not-an-app",
+            reason: "a mutation that must not be ignored as agreement",
+            liftsWhen: "LIFTS WHEN: this key matches no finding",
+          },
+        ],
+      },
+    }));
+    expect(exit).toBe(1);
+    expect(result.adjudicated.stale).toContain("gone|dev|full-ai-cluster/not-an-app");
+  });
+
+  test("6 recorded envelope inflated past the measured machine — overstatement, not a pass", () => {
+    // Retarget of "metal envelope inflated past the summed nodes". The
+    // withdrawn substrate module declared a metal envelope and falsified it
+    // against ClusterNode registrations. Main's landed form is the runner
+    // envelope against the machine (`envelopeOverstatements`, armed as
+    // `runner-disk.ts --check-envelope` by leftover-on-main #13784). Inflating
+    // the recorded axis past a machine that matches the live record is the
+    // same defect class: a claimed machine larger than the one that exists.
+    const recorded = loadRecordedEnvelope();
+    expect(recorded.freeDiskGib).toBe(70);
+    const measured = {
+      cpuMillis: recorded.cpuMillis,
+      memoryMib: recorded.memoryMib,
+      freeDiskGib: recorded.freeDiskGib,
+    };
+    expect(envelopeOverstatements(recorded, measured)).toEqual([]);
+    const inflated = { ...recorded, freeDiskGib: recorded.freeDiskGib + 1 };
+    const bad = envelopeOverstatements(inflated, measured);
+    expect(bad.length).toBeGreaterThan(0);
+    expect(bad.join(" ")).toContain(String(recorded.freeDiskGib));
+  });
+
+  test("7 acknowledgement key detuned by 1m — STALE, and dropping it convicts", () => {
+    expect(liveCatalogue.acknowledgedLaneBudgetShortfall.map((entry) => entry.key)).toEqual(["dev cpu 2906>2500"]);
+    expect(auditRunnerBudget(liveCatalogue, "dev")).toEqual([]);
+    const detuned = {
+      ...liveCatalogue,
+      acknowledgedLaneBudgetShortfall: liveCatalogue.acknowledgedLaneBudgetShortfall.map((entry) =>
+        entry.key === "dev cpu 2906>2500" ? { ...entry, key: "dev cpu 2905>2500" } : entry,
+      ),
+    };
+    const stale = auditRunnerBudget(detuned, "dev");
+    expect(stale.some((finding) => finding.problem.includes("outlived"))).toBe(true);
+    expect(stale.some((finding) => finding.problem.includes("dev cpu 2906>2500"))).toBe(true);
+    const dropped = { ...liveCatalogue, acknowledgedLaneBudgetShortfall: [] };
+    const convicted = auditRunnerBudget(dropped, "dev");
+    expect(convicted.length).toBeGreaterThan(0);
+    expect(convicted[0]?.problem).toContain("dev cpu 2906>2500");
+  });
+
+  test("8 activeResourceProfile flipped to a rung the tree does not carry", () => {
+    // The tree carries `metal`. `dev` is a real rung of the catalogue and a
+    // rung the manifests do not carry — 54 drifts, MEASURED. Flipping the
+    // declared carried-rung to `dev` must not read as applied. The withdrawn
+    // substrate module owned `activeResourceProfile` in storage-profiles.json;
+    // the landed check is `verifyResourceProfileApplied`.
+    expect(verifyResourceProfileApplied(liveCatalogue, "metal")).toEqual([]);
+    const flipped = verifyResourceProfileApplied(liveCatalogue, "dev");
+    expect(flipped.length).toBeGreaterThan(0);
   });
 });
