@@ -113,6 +113,25 @@ export interface ProfileClaim {
   readonly governors: Readonly<Record<string, Readonly<Record<string, string>>>>;
   /** Required (non-empty) whenever `governors` is non-empty — where each value comes from. */
   readonly governorEvidence: string;
+  /**
+   * WHERE THIS ROW'S PVC SHOWS UP IN A RENDER — the coordinate
+   * `rendered-storage-claims.ts` needs to ask the chart whether the declared
+   * number reaches a PersistentVolumeClaim at all.
+   *
+   * `renderedApp` is the Application identity (`full-ai-cluster/mimir`) and
+   * `renderedPvcPattern` is an anchored regular expression over the rendered
+   * claim's name — `<template>/<workload>` for a volumeClaimTemplate, the
+   * object name for a standalone PVC. A pattern rather than a literal because
+   * one declared claim legitimately renders as SEVERAL PVCs: mimir's ingester
+   * is three zone StatefulSets, so `^storage/mimir-ingester-zone-[a-c]$`
+   * matches the three objects that one row prices.
+   *
+   * Both are REQUIRED. A row with no rendered coordinate is a row nothing can
+   * check, and an uncheckable row that still contributes GiB to a total is the
+   * exact shape this catalogue exists to refuse.
+   */
+  readonly renderedApp: string;
+  readonly renderedPvcPattern: string;
 }
 
 export interface ProfileCatalogue {
@@ -159,6 +178,21 @@ export function parseFieldPath(field: string): readonly (string | number)[] {
 // ---------------------------------------------------------------------------
 // Loading + validation
 // ---------------------------------------------------------------------------
+
+/**
+ * A pattern that does not compile addresses NOTHING, and a row whose selector
+ * matches nothing reads exactly like a row whose chart renders nothing. Reject
+ * it at load rather than let a typo become a finding about the cluster.
+ */
+function requireRegex(value: unknown, label: string): string {
+  const text = requireString(value, label);
+  try {
+    void new RegExp(text);
+  } catch (error) {
+    throw new Error(`${label} is not a valid regular expression: ${String(error)}`);
+  }
+  return text;
+}
 
 function requireString(value: unknown, label: string): string {
   if (typeof value !== "string") throw new Error(`${label}: expected a string`);
@@ -302,6 +336,8 @@ export function loadCatalogue(path = DEFAULT_CATALOGUE_PATH, repoRoot = REPO_ROO
       pods: podsByProfile,
       governors,
       governorEvidence,
+      renderedApp: requireString(raw.renderedApp, `${path}: ${id}.renderedApp`),
+      renderedPvcPattern: requireRegex(raw.renderedPvcPattern, `${path}: ${id}.renderedPvcPattern`),
     });
   }
   return { profiles: names, claims: [...claims].sort((a, b) => stringCompare(a.id, b.id)) };
@@ -1147,19 +1183,36 @@ export function auditRunnerBudget(
   return findings;
 }
 
-/** The `targetRevision` pinned beside this Application's `chart:`, or "" when it sources git. */
+/**
+ * The `targetRevision` this Application pins its `chart:` at, or "" when it sources git.
+ *
+ * PARSED, NOT SCANNED — corrected 2026-08-21, and the bug it had is the reason
+ * the docstring says so. This used to find the line matching `chart:` and probe
+ * the SIX lines nearest it for `targetRevision:`. That works right up until
+ * somebody writes a comment between the two keys, at which point the function
+ * returns "" — and "" is not an error here, it is a WRONG ANSWER that keeps
+ * going: `auditRunnerBudget` builds the acknowledgement key `${dir}@${pin}`, so
+ * an app pinned at 3.1.1 silently starts being looked up as `oz@`, every
+ * acknowledgement for it misses, and the finding it produces names a version
+ * nobody wrote. Caught by adding a 35-line comment to oz/Application.yaml
+ * explaining why its pin had changed — i.e. the check was broken by documenting
+ * the thing the check exists to watch.
+ *
+ * Reading the parsed document costs nothing here (these files are already
+ * parsed elsewhere in this module) and makes the answer independent of layout,
+ * comments, key order and indentation. `chart:` is still required, so a git-path
+ * source still returns "" exactly as before.
+ */
 export function pinnedChartVersion(dir: string, repoRoot = REPO_ROOT): string {
   const abs = resolve(repoRoot, APPLICATIONS_DIR, dir, "Application.yaml");
   if (!existsSync(abs)) return "";
-  const text = readFileSync(abs, "utf8");
-  const lines = text.split("\n");
-  for (let index = 0; index < lines.length; index += 1) {
-    if (!/^\s*chart:\s*\S/.test(lines[index] ?? "")) continue;
-    // targetRevision sits in the same `source:` block, either side of `chart:`.
-    for (const probe of [index + 1, index - 1, index + 2, index - 2, index + 3, index - 3]) {
-      const match = /^\s*targetRevision:\s*(\S+)\s*$/.exec(lines[probe] ?? "");
-      if (match?.[1] !== undefined) return match[1];
-    }
+  for (const doc of parseAllDocuments(readFileSync(abs, "utf8"))) {
+    const source = (doc.toJS() as { spec?: { source?: { chart?: unknown; targetRevision?: unknown } } } | null)?.spec
+      ?.source;
+    if (source === undefined || source === null) continue;
+    if (typeof source.chart !== "string" || source.chart === "") continue;
+    if (typeof source.targetRevision !== "string") continue;
+    return source.targetRevision;
   }
   return "";
 }

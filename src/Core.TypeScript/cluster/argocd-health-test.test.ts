@@ -295,7 +295,7 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test manifest parsing", () =>
    * the manual-sync one, which is the difference between this and the
    * cdi/kubevirt defect: `manualSync` must be false for all three.
    */
-  test("deepseek-coder, qwen-coder, orleans and vault are asserted under the full Synced+Healthy contract", () => {
+  test("deepseek-coder, qwen-coder, orleans, vault, spire and spire-crds are asserted under the full Synced+Healthy contract", () => {
     const applications = discoverExpectedApplications();
     // `vault` joined this guard on 2026-08-21. It is the one that matters most
     // here: the whole point of running the ephemeral init ceremony is that Vault
@@ -303,7 +303,12 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test manifest parsing", () =>
     // contract instead -- exists + compared, never synced -- would reproduce the
     // exact cdi/kubevirt vacuity #13084 had to fix, and would let the lane go
     // green while Vault sat sealed.
-    for (const dir of ["deepseek-coder", "qwen-coder", "orleans", "vault"]) {
+    // `spire` and `spire-crds` joined 2026-08-22. spire is the SPIFFE identity
+    // substrate the federated-identity and per-node-CA work stands on, so a lane
+    // that reports green without asserting it is reporting on the wrong thing.
+    // spire-crds is here too because the pair is the assertion: the CRD provider
+    // reaching Synced is what makes spire's own Synced mean anything.
+    for (const dir of ["deepseek-coder", "qwen-coder", "orleans", "vault", "spire", "spire-crds"]) {
       const app = applications.find((candidate) => candidate.dir === dir);
       expect(app, `${dir} must be discovered`).toBeDefined();
       expect(app?.excludedFromDev, `${dir} must not be excluded from the included proof`).toBe(false);
@@ -816,7 +821,13 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test planning", () => {
     expect(included).not.toContain("gitlab");
     expect(included).not.toContain("forgejo");
     expect(included).not.toContain("agent-memory");
-    expect(included).not.toContain("spire");
+    // `spire` FLIPPED SIDES 2026-08-22 -- it was pinned as NOT included here
+    // while it was deferred, and it is pinned as INCLUDED now that the CRD
+    // source exists. Both directions matter: this is the assertion that goes
+    // red if someone re-defers the SPIFFE identity substrate, which is the one
+    // Application the federated-identity work stands on.
+    expect(included).toContain("spire");
+    expect(included).toContain("spire-crds");
   });
 
   test("detects repo-backed child Applications that should track the harness git ref", () => {
@@ -1041,10 +1052,135 @@ describe("DEV_EXCLUDED_REASONS", () => {
     }
   });
 
-  test("the audit is green on the live tree in both directions", () => {
+  test("the audit is green on the live tree in all four directions", () => {
     const drift = auditDevExclusionReasons();
     expect(drift.unreasoned).toEqual([]);
     expect(drift.stale).toEqual([]);
+    expect(drift.globExcludedWithoutReason).toEqual([]);
+    expect(drift.reasonedButApplied).toEqual([]);
+  });
+
+  // -------------------------------------------------------------------------
+  // THE GLOB DIRECTIONS (081M0M9TRQ8087G0R000CS3F1X).
+  //
+  // These two were missing, and their absence is why `platform` sat excluded
+  // from every CI cluster behind a reason that was FALSE. The registry was
+  // checked against the filesystem and against itself, never against
+  // `DEFAULT_ROOT_DEV_CATALOG.excludeGlob` -- the list that actually decides
+  // what the lane applies. Measured on `main` at f332a61a with the new
+  // direction added and no reasons yet written, it returned
+  // ["agent-memory","gitlab","platform","temporal"]: four directories deferred
+  // from CI with no recorded why and no lift condition, under two audits that
+  // both reported green.
+  // -------------------------------------------------------------------------
+
+  test("every directory the dev catalog's excludeGlob defers carries a reason here", () => {
+    // The set equality is the property: the glob decides what is deferred, this
+    // registry says why, and neither may move without the other.
+    expect([...DEV_EXCLUDED_REASONS.keys()].sort()).toEqual([...rootDevCatalogExcludedDirs()].sort());
+  });
+
+  test("a glob entry with no reason IS caught -- driven, not asserted", () => {
+    // `redis` is asserted under the full contract and is not in the glob, so
+    // naming it in a synthetic glob is a deferral nobody explained.
+    const drift = auditDevExclusionReasons(undefined, "{redis/**}");
+    expect(drift.globExcludedWithoutReason).toEqual(["redis"]);
+  });
+
+  test("a reason for an app the lane DOES apply is caught as stale deferral", () => {
+    // Every live reason becomes stale against a glob that defers only `redis`:
+    // each one claims the lane does not apply something the lane now applies.
+    const drift = auditDevExclusionReasons(undefined, "{redis/**}");
+    expect(drift.reasonedButApplied).toContain("platform");
+    expect(drift.reasonedButApplied.length).toBe(DEV_EXCLUDED_REASONS.size);
+  });
+
+  // -------------------------------------------------------------------------
+  // THE PLATFORM REASON ITSELF.
+  //
+  // The prose is the finding, so these pin the load-bearing clauses rather than
+  // the wording. What was corrected was not a typo: "no registry serves them"
+  // points a reader at BUILDING an image that already exists, and would have
+  // sent the next person to write a workflow that has been green since June.
+  // -------------------------------------------------------------------------
+
+  test("the platform reason names the credential, not a missing image", () => {
+    const reason = DEV_EXCLUDED_REASONS.get("platform") ?? "";
+    // Pin the DIAGNOSIS clause, not the bare word. `imagePullSecrets` also
+    // appears in the LIFTS WHEN half, so `toContain("imagePullSecrets")` alone
+    // survived a mutation that softened the diagnosis to "a pull credential" --
+    // the same vacuity shape as the `metal` assertion below, caught the same way.
+    expect(reason).toContain(
+      "both packages are `visibility: private`, and neither controller.yaml nor portal.yaml declares " +
+        "`imagePullSecrets`",
+    );
+    expect(reason).toContain("returns HTTP 401");
+    expect(reason).toContain("the same GET with a credential returns HTTP 200");
+    // The refuted claim IS quoted here, deliberately -- a correction that does
+    // not say what it corrects leaves the next reader free to rediscover the
+    // wrong thing. What is refused is the quote surviving without its
+    // refutation, so the two are pinned together rather than the claim banned.
+    expect(reason).toContain("`runs two images no registry serves`, and that was FALSE");
+  });
+
+  test("the platform reason records that the blocker is not dev-lane-only", () => {
+    // ImagePullBackOff on a private image is substrate-independent: the metal
+    // cluster has no credential either. A reason that read as a CI-only gap
+    // would leave the live cluster's dead control plane looking intentional.
+    //
+    // `toContain("metal")` was the first form of this assertion and it was
+    // VACUOUS -- the word appears twice in the reason, so a mutation that
+    // deleted the substrate-independence sentence outright still passed. The
+    // whole clause is pinned instead; that is what the claim actually is.
+    expect(DEV_EXCLUDED_REASONS.get("platform") ?? "").toContain(
+      "the pods take ImagePullBackOff on EVERY substrate, CI and metal alike",
+    );
+  });
+
+  // -------------------------------------------------------------------------
+  // THE TEMPORAL REASON, CORRECTED WITHIN THE HOUR OF BEING WRITTEN.
+  //
+  // #13472 wrote "its chart has no persistence store configured, so it does not
+  // render". #13469 landed in between and made that false. Both audits stayed
+  // green through it, because a false sentence with a LIFTS WHEN: clause has
+  // every mechanical property the registry requires. These tests pin the
+  // corrected claim, and one of them refuses the refuted one by name.
+  // -------------------------------------------------------------------------
+
+  test("the temporal reason no longer claims the chart fails to render", () => {
+    const reason = DEV_EXCLUDED_REASONS.get("temporal") ?? "";
+    expect(reason).not.toContain("so it does not render");
+    expect(reason).not.toContain("Please specify cassandra port");
+  });
+
+  test("the temporal reason names both live blockers, not the retired one", () => {
+    const reason = DEV_EXCLUDED_REASONS.get("temporal") ?? "";
+    // (1) visibility schema, (2) TLS-only CockroachDB with no material here.
+    expect(reason).toContain("btree_gin");
+    expect(reason).toContain("`tls.enabled: true` with the selfSigner");
+  });
+
+  test("the correction records that it was the author's own stale reason", () => {
+    // A reason quietly overwritten teaches nobody. The registry's whole value
+    // is that a wrong reason is refutable by a reader, so the refutation is
+    // kept rather than the error erased.
+    expect(DEV_EXCLUDED_REASONS.get("temporal") ?? "").toContain("CORRECTED WITHIN THE HOUR, BY ITS OWN AUTHOR");
+  });
+
+  test("the `:latest` pin is recorded as a separate, already-known defect", () => {
+    // Two syncs of one commit can land different bytes. Recorded rather than
+    // fixed, and the reason says who owns the trade -- an unrecorded known
+    // defect and an undiscovered one read identically to the next reader.
+    const reason = DEV_EXCLUDED_REASONS.get("platform") ?? "";
+    // The CITATION is the claim, so the citation is what is pinned. `:latest`
+    // and `DEPLOY.md` both occur elsewhere in the reason, so asserting the two
+    // words survived a mutation that replaced the quoted follow-up with "a
+    // follow-up is recorded there" -- which is exactly the vague gesture this
+    // test exists to refuse.
+    expect(reason).toContain("full-ai-cluster/portal/DEPLOY.md:122");
+    expect(reason).toContain("Digest-pin the manifests + have CI bump them, instead of :latest + Always");
+    // And it must still say who owns the trade, or "not fixed here" reads as an oversight.
+    expect(reason).toContain("a maintainer's trade, not a lint's");
   });
 
   test("the CNI entries still name the lane that DOES exercise them", () => {
@@ -1078,25 +1214,35 @@ describe("081M0JXXFV0087G0R00...: the four newly-visible non-storage defects", (
   const applicationsRoot = resolve(import.meta.dir, "../../../full-ai-cluster/k8s/applications");
   const readApp = (dir: string): string => readFileSync(join(applicationsRoot, dir, "Application.yaml"), "utf8");
 
-  test("all three fixed apps are on the asserted roster, and hindsight is not", () => {
+  test("the two LIVE-PROVEN fixes are asserted; the two unproven ones are not", () => {
     const applications = discoverExpectedApplications();
     const excluded = (dir: string): boolean => {
       const app = applications.find((candidate) => candidate.dir === dir);
       if (app === undefined) throw new Error(`no Application discovered for ${dir}`);
       return app.excludedFromDev;
     };
+    // Both reached Synced+Healthy on live run 32532470499. That run is the
+    // warrant for these two lines; nothing else is.
     expect(excluded("cockroachdb")).toBe(false);
     expect(excluded("kube-prometheus-stack")).toBe(false);
-    expect(excluded("weaviate")).toBe(false);
-    // The honest half of the same claim: hindsight was NOT fixed and must not
-    // quietly join the roster on the strength of the other three.
+    // And the honest half. `weaviate` was asserted for a few hours on the
+    // strength of an offline byte diff and the SAME live run refuted it -- two
+    // LoadBalancer Services cannot be Healthy on a kind node. `hindsight` was
+    // never fixed. Neither may drift back onto the roster without a live run
+    // saying so.
+    expect(excluded("weaviate")).toBe(true);
     expect(excluded("hindsight")).toBe(true);
   });
 
-  test("no stale registry entry survives for the three that left the shadow", () => {
-    for (const dir of ["cockroachdb", "kube-prometheus-stack", "weaviate"]) {
+  test("no stale registry entry survives for the two that left the shadow", () => {
+    for (const dir of ["cockroachdb", "kube-prometheus-stack"]) {
       expect(APPLIED_BUT_UNASSERTED_REASONS.has(dir)).toBe(false);
     }
+    // ...and the one that came BACK carries a reason again, naming the cause
+    // the first attempt missed rather than the one it found.
+    const weaviate = APPLIED_BUT_UNASSERTED_REASONS.get("weaviate") ?? "";
+    expect(weaviate).toContain("LoadBalancer");
+    expect(weaviate).toContain("LIFTS WHEN:");
     const drift = auditAppliedButUnasserted();
     expect(drift.unexplained).toEqual([]);
     expect(drift.stale).toEqual([]);
@@ -1157,7 +1303,10 @@ describe("081M0JXXFV0087G0R00...: the four newly-visible non-storage defects", (
    * mutation is a check that stopped running. This is the widening guard the
    * Application's own comment promises.
    */
-  test("weaviate's ignore rule is scoped to two keys of one named Secret", () => {
+  test("weaviate's ignore rule is KEPT and stays scoped to two keys of one named Secret", () => {
+    // The rule survives the re-deferral: the render nondeterminism it removes is
+    // proven, and on metal (where LB addresses are assigned) it may be the whole
+    // story. What is NOT claimed any more is that it closes the resync loop.
     const document = parseYaml(readApp("weaviate")) as {
       spec?: {
         ignoreDifferences?: readonly {

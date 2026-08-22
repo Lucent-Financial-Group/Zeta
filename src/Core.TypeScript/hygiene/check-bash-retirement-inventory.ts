@@ -99,6 +99,7 @@ export const EXPECTED_RETAINED_SHELL: readonly string[] = [
   "tools/setup/common/tlaps.sh",
   "tools/setup/doctor.sh",
   "tools/setup/host-loop-bootstrap.sh",
+  "tools/setup/hsm/dkek-ceremony-preflight.sh",
   "tools/setup/install.sh",
   "tools/setup/linux.sh",
   "tools/setup/macos.sh",
@@ -159,6 +160,10 @@ export const RETAINED_SHELL_CATEGORY_BY_FILE: Readonly<Record<string, RetainedSh
   "tools/setup/common/tlaps.sh": "setup/bootstrap",
   "tools/setup/doctor.sh": "setup/bootstrap",
   "tools/setup/host-loop-bootstrap.sh": "setup/bootstrap",
+  // 081M0KCWPGV dual-HSM custody ceremony: a PREFLIGHT that must run before any
+  // PKCS#11 tooling exists on the host -- it checks whether the ceremony can
+  // safely proceed, so it cannot depend on the toolchain it is gating.
+  "tools/setup/hsm/dkek-ceremony-preflight.sh": "setup/bootstrap",
   "tools/setup/install.sh": "setup/bootstrap",
   "tools/setup/linux.sh": "setup/bootstrap",
   "tools/setup/macos.sh": "setup/bootstrap",

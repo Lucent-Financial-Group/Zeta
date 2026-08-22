@@ -267,6 +267,18 @@ const SMOKE_MIN_APPLICATIONS = 20;
  */
 export const DEV_EXCLUDED_REASONS: ReadonlyMap<string, string> = new Map([
   [
+    "agent-memory",
+    "HELD BY THE GLOB, NOT BY A MEASUREMENT -- and that distinction is the honest part of this entry. It " +
+      "went into `excludeGlob` because statefulset.yaml:71-83 asks RWO/8Gi on `storageClassName: longhorn`, " +
+      "and at the time nothing in the dev lane answered to that name. `dev-cluster/manifests/longhorn.yaml` " +
+      "now does, and RWO/8Gi is exactly what `rancher.io/local-path` behind that alias serves -- the same " +
+      "condition that un-deferred ten other Applications on 2026-08-21. So the recorded blocker is very " +
+      "likely spent, and NOBODY HAS MEASURED IT, because the glob keeps this Application off every CI " +
+      "cluster and an app that never syncs never produces a verdict to read. " +
+      "LIFTS WHEN: `agent-memory/**` is dropped from `DEFAULT_ROOT_DEV_CATALOG.excludeGlob` and one included " +
+      "run reports its actual verdict -- pass or fail, either is information; the current state is neither.",
+  ],
+  [
     "cilium",
     "The CNI itself. The default kind profile brings up kind's own CNI (kindnetd) BEFORE ArgoCD exists -- " +
       "nothing can schedule otherwise -- so applying this Application there would install a second CNI over a " +
@@ -284,6 +296,21 @@ export const DEV_EXCLUDED_REASONS: ReadonlyMap<string, string> = new Map([
       "and routable from nothing, which is a worse outcome than not running it. " +
       "LIFTS WHEN: `cilium` above lifts AND the pool is parameterised per substrate rather than pinned to one " +
       "maintainer's subnet.",
+  ],
+  [
+    "gitlab",
+    "TWO independent blockers, either alone sufficient. (1) IT DOES NOT EVEN RENDER: `helm template` of " +
+      "charts.gitlab.io/gitlab 8.7.0 against this Application's own valuesObject fails with `execution error " +
+      "at (gitlab/charts/certmanager-issuer/templates/cert-manager.yml:14:3): You must provide an email to " +
+      "associate with your TLS certificates` -- measured by `rendered-storage-claims.ts` and carried as an " +
+      "acknowledged `helm-template-failed` row in its baseline, which is also why four of its PVCs sit in " +
+      "that report as undeclared. A chart that cannot render cannot sync, whatever the substrate does. " +
+      "(2) CAPACITY AND CREDENTIALS: ~40 subcharts, a `gitlab-initial-root-password` Secret this lane has no " +
+      "source for, and a Postgres/Redis/Gitaly/MinIO stack wanting several PVCs plus multi-GB images, which " +
+      "a single kind node cannot schedule inside the assertion budget. " +
+      "LIFTS WHEN: the valuesObject supplies `certmanager-issuer.email` (or disables that subchart) so the " +
+      "chart renders, AND the lane has a runner that can hold the stack plus a source for the root-password " +
+      "Secret. Blocker 1 is cheap and is the one to fix first -- it is a missing value, not a missing machine.",
   ],
   [
     "longhorn",
@@ -304,6 +331,63 @@ export const DEV_EXCLUDED_REASONS: ReadonlyMap<string, string> = new Map([
       "grows a CPU-only dev profile with a small model and a substrate-default StorageClass.",
   ],
   [
+    "platform",
+    "ITS TWO IMAGES ARE REAL AND FRESHLY PUBLISHED; WHAT IT LACKS IS A CREDENTIAL. The reason this " +
+      "Application carried until 2026-08-21 said it `runs two images no registry serves`, and that was " +
+      "FALSE in the way that matters -- it pointed at building an image that already exists. Measured: " +
+      "`full-ai-cluster/platform-controller/` is 20 committed files including six test files and a " +
+      "Dockerfile; `.github/workflows/build-platform-images.yml` builds BOTH images on every push to main " +
+      "touching those paths, pushes `:latest` + `:sha-<12>` to GHCR and cosign-signs by digest; its last " +
+      "push-to-main run (32454324648) was green at 2026-08-21T06:25:22Z, and both GHCR packages carry 36 " +
+      "versions updated at 06:25:5x the same morning. " +
+      "THE ACTUAL BLOCKER: both packages are `visibility: private`, and neither controller.yaml nor " +
+      "portal.yaml declares `imagePullSecrets` -- there is no `imagePullSecrets` on any pod spec in " +
+      "full-ai-cluster at all. An anonymous manifest GET against " +
+      "ghcr.io/v2/lucent-financial-group/zeta-platform-controller/manifests/latest returns HTTP 401; the " +
+      "same GET with a credential returns HTTP 200 and digest " +
+      "sha256:a4f3a81511b5eaec5c67761adb5f23121dfec472956bb3e37f2f18ce7c5fafaf. So the registry serves them " +
+      "to a principal that can log in, and the kubelet is not one -- the pods take ImagePullBackOff on " +
+      "EVERY substrate, CI and metal alike. This is not a dev-lane gap; it is why the metal cluster's " +
+      "platform control plane has never started either. " +
+      "SEPARATELY AND ALREADY KNOWN: both manifests pin `:latest`, so two syncs of one commit can land " +
+      "different bytes -- recorded as a follow-up at `full-ai-cluster/portal/DEPLOY.md:122` " +
+      "(`Digest-pin the manifests + have CI bump them, instead of :latest + Always`). Not fixed here " +
+      "because pinning replaces the documented `push -> rebuild -> rollout restart` delivery model with one " +
+      "that needs a manifest commit per build, and that is a maintainer's trade, not a lint's. " +
+      "LIFTS WHEN: the pull path exists -- either the two GHCR packages are made public, or the pod specs " +
+      "gain an `imagePullSecrets` bound to a token this lane can mint -- AND `platform/**` leaves " +
+      "`DEFAULT_ROOT_DEV_CATALOG.excludeGlob`. Neither half alone is enough: without the credential the " +
+      "Application would sync and then sit in ImagePullBackOff, which ArgoCD reports as Progressing rather " +
+      "than Degraded, so it would burn the whole timeout and report the symptom instead of the cause.",
+  ],
+  [
+    "temporal",
+    "CORRECTED WITHIN THE HOUR, BY ITS OWN AUTHOR (#13472 -> this). The reason written into #13472 said " +
+      "temporal's chart HAS NO PERSISTENCE STORE CONFIGURED and does not render. That was true when it was " +
+      "measured and FALSE when it merged: #13469 landed between the two, wired the datastore to the " +
+      "CockroachDB already in the cluster, and re-measured the render as OK -- 6 Deployments, 8 Services, " +
+      "2 ConfigMaps, 1 Job, ZERO PVCs -- retiring the `helm-template-failed` acknowledgement this reason " +
+      "cited. Writing that down rather than quietly overwriting it is the point: a stale reason is the " +
+      "exact defect #13472 existed to remove from `platform`, and it took ten minutes to reintroduce. " +
+      "THE REAL BLOCKERS, both established by #13469 and both in temporal/Application.yaml's header with " +
+      "their own exits. (1) THE VISIBILITY SCHEMA DOES NOT APPLY TO COCKROACHDB: temporal v1.27.2's " +
+      "`schema/postgresql/v12/visibility/versioned/v1.2/advanced_visibility.sql` opens with " +
+      "`CREATE EXTENSION IF NOT EXISTS btree_gin` and uses a plpgsql function inside " +
+      "`GENERATED ALWAYS AS (...) STORED` columns; CockroachDB implements neither " +
+      "(cockroachdb/cockroach#51992 open; computed columns may not reference UDFs, #122945). The DEFAULT " +
+      "store is unaffected, which is why this is a split rather than 'temporal does not work on " +
+      "CockroachDB'. It fails at the `update-visibility-store` init container of `temporal-schema-1`. " +
+      "(2) NO TLS MATERIAL, AND THIS COCKROACHDB IS TLS-ONLY: the cockroachdb Application sets " +
+      "`tls.enabled: true` with the selfSigner, so the SQL port refuses a plaintext client; the CA lives " +
+      "in a Secret in the `cockroachdb` namespace, this app runs in `temporal`, and no `temporal` SQL user " +
+      "exists. Declaring `sql.tls` today would point a values block at a Secret nothing creates -- the " +
+      "declaration-governing-a-nonexistent-path defect -- so it is named instead of declared. " +
+      "LIFTS WHEN: the CRDB CA is distributed into the `temporal` namespace (trust-manager is already in " +
+      "the cluster for exactly this) and a `temporal` SQL user plus its sealed password Secret exist, AND " +
+      "the visibility store is pointed somewhere that accepts its schema; then `temporal/**` can leave " +
+      "`DEFAULT_ROOT_DEV_CATALOG.excludeGlob` and a live run reports the rest.",
+  ],
+  [
     "vllm",
     "Same class as ollama: CUDA image, nvidia.com/gpu request, 200Gi longhorn PVC. " +
       "LIFTS WHEN: a GPU-bearing self-hosted runner exists for this lane, or a CPU-only dev profile ships.",
@@ -317,18 +401,61 @@ export interface DevExclusionDrift {
   readonly unreasoned: readonly string[];
   /** Reasons for directories that no longer exist under the applications tree. */
   readonly stale: readonly string[];
+  /**
+   * Named in `DEFAULT_ROOT_DEV_CATALOG.excludeGlob` -- so the dev/CI lane never
+   * applies them -- and carrying NO reason in this registry. The glob is what
+   * actually defers; this registry is what has to say why.
+   */
+  readonly globExcludedWithoutReason: readonly string[];
+  /**
+   * The reverse: a reason claiming the lane does not apply a directory that the
+   * glob does apply. A deferral that stopped being real still reads as one.
+   */
+  readonly reasonedButApplied: readonly string[];
 }
 
 /**
- * Both directions on the reasoned-exclusion registry.
+ * All four directions on the reasoned-exclusion registry.
  *
  * `unreasoned` cannot fire while `DEV_EXCLUDED_DIRS` is derived from the map's
  * own keys -- that derivation is what makes an unreasoned entry unwritable, and
  * the check stays so the property is asserted rather than merely arranged. It
  * DOES fire on a reason with no `LIFTS WHEN:` clause, which is the failure mode
  * that survives the derivation: a sentence that explains and commits to nothing.
+ *
+ * THE TWO GLOB DIRECTIONS WERE MISSING, AND THAT WAS THE HOLE
+ * (081M0M9TRQ8087G0R000CS3F1X). This registry's own header says it describes
+ * "Applications the dev/CI lane neither applies nor asserts", and the thing
+ * that decides what the lane applies is `DEFAULT_ROOT_DEV_CATALOG.excludeGlob`
+ * in `ports.ts` -- which this function never read. So the registry was checked
+ * against the filesystem and against itself, and never against the list that
+ * actually defers. Measured 2026-08-21 on `main`: the glob excluded NINE
+ * directories and the registry reasoned about FIVE. `agent-memory`, `gitlab`,
+ * `platform` and `temporal` were excluded from every CI cluster with no
+ * recorded why and no lift condition, and both audit directions were green.
+ *
+ * That is the same vacuity the registry was built to remove, one list over: a
+ * check that cannot fail is not a check. `platform` is the instance that
+ * exposed it -- its only recorded reason was a source comment claiming its two
+ * images were served by no registry, which was FALSE (see the corrected reason
+ * in the map above), and no audit could notice because no audit looked.
+ *
+ * THE HONEST LIMIT, AND IT IS NOT SMALL: all four directions check that a
+ * reason is PRESENT and names a lift condition. NONE of them checks that the
+ * reason is TRUE. Nothing here can, and the proof arrived immediately -- the
+ * `temporal` reason written in #13472 was refuted by #13469 in the interval
+ * between measuring it and merging it, and this audit stayed green through
+ * both, because a false sentence with a `LIFTS WHEN:` clause satisfies every
+ * mechanical property it has. What the registry buys is that a reason is
+ * WRITTEN DOWN and therefore refutable by a reader; what it cannot buy is the
+ * reading. Reasons citing a render, a run id or an HTTP status are cheap to
+ * re-check on purpose -- that is the mitigation, and it is a convention, not
+ * an enforcement.
  */
-export function auditDevExclusionReasons(repoRoot = REPO_ROOT): DevExclusionDrift {
+export function auditDevExclusionReasons(
+  repoRoot = REPO_ROOT,
+  excludeGlob: string = DEFAULT_ROOT_DEV_CATALOG.excludeGlob,
+): DevExclusionDrift {
   const applicationsRoot = join(repoRoot, "full-ai-cluster/k8s/applications");
   const present = existsSync(applicationsRoot)
     ? new Set(
@@ -337,12 +464,15 @@ export function auditDevExclusionReasons(repoRoot = REPO_ROOT): DevExclusionDrif
           .map((entry) => entry.name),
       )
     : new Set<string>();
+  const globExcluded = rootDevCatalogExcludedDirs(excludeGlob);
 
   return {
     unreasoned: [...DEV_EXCLUDED_DIRS]
       .filter((dir) => !(DEV_EXCLUDED_REASONS.get(dir) ?? "").includes("LIFTS WHEN:"))
       .sort(),
     stale: [...DEV_EXCLUDED_REASONS.keys()].filter((dir) => !present.has(dir)).sort(),
+    globExcludedWithoutReason: [...globExcluded].filter((dir) => !DEV_EXCLUDED_REASONS.has(dir)).sort(),
+    reasonedButApplied: [...DEV_EXCLUDED_REASONS.keys()].filter((dir) => !globExcluded.has(dir)).sort(),
   };
 }
 
@@ -365,7 +495,7 @@ export function auditDevExclusionReasons(repoRoot = REPO_ROOT): DevExclusionDrif
  * partition is 0 so `UpdatedReplicas 0 < 0 - 0` is false too). It was deferred
  * for a silo image it never pulls.
  *
- * THREE OF THE FOUR MEASURED DEFERRALS LEFT this set on 2026-08-21, and each
+ * TWO OF THE FOUR MEASURED DEFERRALS LEFT this set on 2026-08-21, and each
  * left because its DEFECT WAS FIXED -- never because the assertion was
  * weakened. They are asserted under the same full auto-sync contract as every
  * other member of the roster:
@@ -380,11 +510,11 @@ export function auditDevExclusionReasons(repoRoot = REPO_ROOT): DevExclusionDrif
  *      per dev cluster by `applyDevBootstrapSecrets`, and
  *      `assertDevGrafanaAdminSecretPresent` below refuses an included run whose
  *      cluster does not have it.
- *   `weaviate`              -- the chart mints `randAlphaNum` credentials on
- *      every render because ArgoCD's `helm template` cannot run its `lookup`,
- *      so the DESIRED state moved every reconcile. Two named keys of one named
- *      Secret are now in `ignoreDifferences`; the byte diff proving that is the
- *      whole drift is in the Application.
+ *
+ * `weaviate` was in that list for a few hours on 2026-08-21 and IS NOT NOW. The
+ * live run refuted it: two `type: LoadBalancer` Services can never be Healthy on
+ * a kind node, which no amount of sync convergence changes. It is deferred below
+ * on that measurement, and that episode is why this paragraph says TWO.
  *
  * `hindsight` stays, with a reason that now names three independent blockers
  * instead of one -- see APPLIED_BUT_UNASSERTED_REASONS.
@@ -432,55 +562,70 @@ const DEV_INCLUDED_PROOF_DEFERRED_DIRS = new Set([
   // `replicas: 0` StatefulSet reaches Synced+Healthy, and removed it. Recorded
   // so the deferral is not reinstated by a future merge.
   //
-  // Renders `monitoring.coreos.com/v1` ServiceMonitor + PrometheusRule (CRDs
-  // owned by kube-prometheus-stack, which IS asserted here as of 2026-08-21, so
-  // this half of the reason no longer stands on its own) and a
-  // `gateway.networking.k8s.io/v1` Gateway, and runs two images no registry
-  // serves: ghcr.io/lucent-financial-group/zeta-platform-controller:latest and
-  // .../zeta-portal:latest. portal.yaml also pins `storageClassName: longhorn`,
-  // so the longhorn rule catches it independently.
+  // CORRECTED 2026-08-21 (081M0M9TRQ8087G0R000CS3F1X). This comment used to end
+  // "runs two images NO REGISTRY SERVES", and that clause was false. Both
+  // images are built and pushed by `.github/workflows/build-platform-images.yml`
+  // on every push to main touching their paths, and both GHCR packages exist
+  // with 36 versions each, last updated the same morning this was written. What
+  // is true is that the packages are PRIVATE and no pod spec in full-ai-cluster
+  // declares `imagePullSecrets`, so an anonymous pull takes HTTP 401 while a
+  // credentialed one takes HTTP 200. The full measurement, and why the two read
+  // differently for anyone deciding what to do about it, is the `platform` entry
+  // in DEV_EXCLUDED_REASONS -- which is where this Application's reason now
+  // lives, because `platform/**` is in `DEFAULT_ROOT_DEV_CATALOG.excludeGlob`
+  // and that registry is the one the glob audit checks.
+  //
+  // Still true, and independent: it renders `monitoring.coreos.com/v1`
+  // ServiceMonitor + PrometheusRule (CRDs owned by kube-prometheus-stack, which
+  // IS asserted here as of 2026-08-21, so this half no longer stands on its
+  // own) and a `gateway.networking.k8s.io/v1` Gateway, and portal.yaml pins
+  // `storageClassName: longhorn`.
   "platform",
-  // MEASURED 2026-08-21, run 32528419577 on `main`: `OutOfSync`/`Missing`, event
-  // `Sync operation to 0.24.2 failed: one or more synchronization tasks are not
-  // valid (retried 5 times)`, and ZERO spire pods in the namespace -- the sync
-  // aborts before any workload is created.
+  // `spire` is NOT here. It LEFT this set on 2026-08-22, and both blockers that
+  // held it are recorded as CLOSED rather than the lines silently deleted.
   //
-  // THE OLD REASON WAS STALE ON BOTH HALVES and is corrected rather than
-  // re-copied. It read: "Vault upstream CA + kind PVC wiring not ready in
-  // included CI. The chart's `upstreamAuthority.vault` block is commented out
-  // pending a Vault that is INITIALISED -- which is why this one cannot be
-  // unblocked ahead of `vault`."
+  //   WAS (corrected 2026-08-21 from an older reason that was stale on both
+  //   halves -- it blamed a Vault upstream-CA dependency that does not exist and
+  //   a kind PVC gap this lane already serves):
+  //     "1. No `spire-crds` source in the ArgoCD/kind lane. Chart 0.24.2 ships
+  //      no `crds/` and no `spire-crds` dependency, yet renders 3
+  //      ClusterSPIFFEID resources. 2. The chart's `pre-upgrade` hook Job --
+  //      DERIVED, not observed."
   //
-  //   * The PVC half was already known stale: spire asks RWO/5Gi on
-  //     `zeta-local-path`, which this lane serves.
-  //   * The Vault half is ALSO wrong, and it is the more interesting error. A
-  //     commented-out block is not a pending dependency. `helm template` of
-  //     chart 0.24.2 with this Application's values renders ZERO occurrences of
-  //     `upstream` in 1386 lines; the server self-signs (`ca_subject:
-  //     zeta-spire-ca`). SPIRE does not contact Vault at runtime and would not
-  //     start doing so when Vault is initialised -- only uncommenting those lines
-  //     would. So `spire` was never gated behind `vault` at all, and initialising
-  //     Vault (which this lane now does) changes nothing here.
+  //   BLOCKER 1 CLOSED BY: full-ai-cluster/k8s/applications/spire-crds/
+  //   Application.yaml -- the same spire-crds 0.5.0 chart the k3s bootstrap
+  //   installs, at sync-wave -55, with the edge `spire -> spire-crds` DECLARED
+  //   in sync-wave-dependency-graph.yaml so derive-sync-waves.ts refuses if the
+  //   ordering ever stops being a linear extension. The ordering is declared,
+  //   not timed.
   //
-  // The REAL blockers, neither of which involves Vault:
-  //   1. No `spire-crds` source in the ArgoCD/kind lane. Chart 0.24.2 ships no
-  //      `crds/` and no `spire-crds` dependency, yet renders 3 `ClusterSPIFFEID`
-  //      resources -- which is what "synchronization tasks are not valid" is
-  //      reporting. The repo knows this only on the k3s path:
-  //      `k8s/bootstrap/spire-install.yaml` installs `spire-crds` as a k3s-only
-  //      `helm.cattle.io/v1 HelmChart`, and the kind bring-up never applies that
-  //      directory.
-  //   2. The chart's `pre-upgrade` hook Job. gitops-engine maps `pre-upgrade` to
-  //      PreSync unconditionally, so on the FIRST sync a Job runs `kubectl patch`
-  //      against a ValidatingWebhookConfiguration that does not exist yet. The
-  //      chart documents its own escape hatch for template-rendering consumers:
-  //      `global.installAndUpgradeHooks.enabled: false`.
-  //      DERIVED, not observed -- blocker 1 aborts the sync first, so this one has
-  //      never had the chance to fire. It is recorded as a derivation and says so.
+  //   BLOCKER 2 CONFIRMED, THEN CLOSED. It was recorded as a derivation because
+  //   blocker 1 aborted the sync before it could fire. With blocker 1 fixed it
+  //   fired exactly as derived, and is now OBSERVED (kind + argo-cd 2.13.2,
+  //   2026-08-22): five `spire-server-pre-upgrade` pods in Error with
+  //     Error from server (NotFound): validatingwebhookconfigurations
+  //     .admissionregistration.k8s.io
+  //     "spire-spire-controller-manager-webhook" not found
+  //   and the Application pinned at `waiting for completion of hook
+  //   batch/Job/spire-server-pre-upgrade` with zero workload pods. Closed with
+  //   the chart's own documented setting for template-rendering consumers,
+  //   `global.installAndUpgradeHooks.enabled: false`.
   //
-  // LIFTS WHEN: the lane has a source for the SPIRE CRDs, and blocker 2 is
-  // either measured to be absent or disabled per the chart's own advice.
-  "spire",
+  //   A THIRD blocker was found only because the first two were fixed, and it
+  //   was invisible behind them: `ServerSideApply=true` makes the spire-server
+  //   StatefulSet permanently OutOfSync on a `volumeClaimTemplates` artifact
+  //   ArgoCD's own `ignoreDifferences` cannot reach. The 2x2 is measured in the
+  //   Application. This is the weaviate lesson applied in advance -- one
+  //   confirmed cause is not THE cause -- and it is why the verification below
+  //   is a clean-slate run rather than a patch on the cluster that found it.
+  //
+  //   PROVEN, clean cluster, both Applications applied together so nothing
+  //   depended on hand-timing: spire-crds Synced/Healthy, spire Synced/Healthy,
+  //   spire-server 2/2, spire-agent 1/1, spire-spiffe-csi-driver 2/2, all three
+  //   ClusterSPIFFEIDs bound, and -- past what ArgoCD can tell you -- one agent
+  //   attested `k8s_psat` holding
+  //   `spiffe://zeta.local/spire/agent/k8s_psat/zeta/...` with 7 registration
+  //   entries issued.
   // go.temporal.io/temporal 0.59.0 with `cassandra.enabled: false` and no
   // `server.config.persistence` override: the chart is left with NO datastore,
   // so the schema-setup job has nothing to migrate against. The commented-out
@@ -507,6 +652,35 @@ const DEV_INCLUDED_PROOF_DEFERRED_DIRS = new Set([
   //   destroyed at the end of the run is not custody, so the lane may perform
   //   the same procedure there. `./ephemeral-vault-init.ts` is that lane, its
   //   gate refuses `--existing`, and its leak scan runs holding the material.
+  // MEASURED live, run 32532470499 -- and NOT the reason this Application was
+  // deferred for earlier on 2026-08-21, which is exactly why it is back.
+  //
+  // weaviate renders TWO `type: LoadBalancer` Services (`weaviate`,
+  // `weaviate-grpc`). gitops-engine `getCorev1ServiceHealth` reports a
+  // LoadBalancer Service whose `status.loadBalancer.ingress` is empty as
+  // PROGRESSING, unconditionally and forever. A kind node runs no LoadBalancer
+  // implementation, so those two Services never receive an address and this
+  // Application can never be Healthy in this lane -- whatever its sync status
+  // does. `weaviate-0` was 1/1 Running for 39 minutes while that held, which is
+  // exactly how the blocker stayed invisible behind the one that was found.
+  //
+  // THE HONEST ACCOUNTING OF THE ATTEMPT THAT FAILED: the `randAlphaNum` render
+  // nondeterminism is real and stays proven by byte diff, and its
+  // `ignoreDifferences` rule is KEPT (see the Application) because on metal,
+  // where cilium-lb-ipam does assign LB addresses, it may well be the whole
+  // story. What was wrong was the inference, not the measurement -- the
+  // OutOfSync cause was established and the PROGRESSING cause was never
+  // checked, so one confirmed cause was read as THE cause. The live run also
+  // shows the resync loop survived the ignore rule, so "that rule closes the
+  // loop" is UNMETERED -- implemented, plausible, unfalsified -- and this lane
+  // cannot meter it until the health half lifts.
+  //
+  // LIFTS WHEN: the dev/CI substrate provides a LoadBalancer implementation
+  // (cloud-provider-kind or MetalLB), the same shape as the dev `longhorn`
+  // StorageClass alias one resource type over, AND the residual OutOfSync is
+  // then NAMED by the per-resource diagnostics added alongside this entry
+  // rather than guessed at a second time.
+  "weaviate",
 ]);
 
 /**
@@ -557,11 +731,14 @@ export const APPLIED_BUT_UNASSERTED_REASONS: ReadonlyMap<string, string> = new M
     "THREE independent blockers, established 2026-08-21 by rendering hindsight 0.3.0 against this Application's own valuesObject; any ONE of them defers it. " +
       "(1) CAPACITY, MEASURED run 32519516070: hindsight-postgresql-0 never scheduled -- FailedScheduling `0/1 nodes are available: 1 Insufficient cpu` -- so hindsight-api and hindsight-control-plane CrashLoopBackOff waiting on a database with nowhere to run. The chart's own defaults are 500m (api) + 250m (control-plane) + 250m (postgresql), against an applied-set total of 4131m on a 4-vCPU runner whose kind system pods already reserve ~950m. " +
       "(2) THE `dev` RESOURCE RUNG CANNOT REACH THIS LANE, which is the part that looked like the fix and is not. `storage-profiles.ts --resource-profile dev --apply` rewrites the WORKING TREE; ArgoCD syncs the COMMITTED tree at `--git-ref`, and the only rung CI runs is `--budget`, a report. So there is no dev-only resource override today -- lowering these numbers would lower them for the metal cluster too, where the cost of an under-request is a pod that is evictable under node pressure rather than one that is refused a node. That trade is a maintainer call, not a CI convenience. " +
-      "(3) THE valuesObject IS LARGELY INERT against this chart, which is a defect in its own right: it sets `postgresql.primary.persistence.{storageClass,size}`, `api.llm.{provider,existingSecret}` and a top-level `service`, and hindsight 0.3.0 reads `postgresql.persistence.*`, `api.env`/`api.secrets`/top-level `existingSecret`, and `api.service`/`controlPlane.service`. Rendered proof: the PVC comes out with NO storageClassName (so it takes the cluster default, not longhorn) at 8Gi (the chart default, not the 10Gi the storage profile governs), and no HINDSIGHT_API_LLM_API_KEY env reaches the api container. LIFTS WHEN: the valuesObject is rewritten against the schema the pinned chart actually has, AND a per-substrate resource override exists (or the maintainer accepts the metal-side cost of the dev numbers).",
+      "(3) THE valuesObject IS STILL PARTLY INERT against this chart, which is a defect in its own right -- and the STORAGE half of it is now FIXED, so this reason is narrowed rather than left standing. Fixed 2026-08-22: the Application wrote `postgresql.primary.persistence.{storageClass,size}` (the bitnami subchart layout) where hindsight 0.3.0 reads `postgresql.persistence.*`; the `.primary` level is gone and the re-render is 10Gi on `longhorn` instead of the chart default 8Gi with NO storageClassName. What REMAINS inert, re-checked against the same render on the same day: `api.llm.{provider,existingSecret}` and a top-level `service`, against a chart that reads `api.env`/`api.secrets`/top-level `existingSecret` and `api.service`/`controlPlane.service` -- rendered proof, still true, is that no HINDSIGHT_API_LLM_API_KEY env reaches the api container (the api Deployment carries only HINDSIGHT_API_DATABASE_URL and HINDSIGHT_API_LLM_MODEL). LIFTS WHEN: the REST of the valuesObject is rewritten against the schema the pinned chart actually has, AND a per-substrate resource override exists (or the maintainer accepts the metal-side cost of the dev numbers).",
   ],
   [
-    "spire",
-    "NOT Vault, and NOT storage -- both halves of the previous reason were stale. MEASURED 2026-08-21 run 32528419577: OutOfSync/Missing with `Sync operation to 0.24.2 failed: one or more synchronization tasks are not valid (retried 5 times)` and no spire pods at all. Chart 0.24.2 renders 3 ClusterSPIFFEID resources and ships no CRDs for them; the only `spire-crds` install in the repo is a k3s-only helm.cattle.io HelmChart the kind lane never applies. The `upstreamAuthority.vault` block is entirely commented out (helm template: zero occurrences of `upstream`, server self-signs), so initialising Vault does not unblock this (DEV_INCLUDED_PROOF_DEFERRED_DIRS).",
+    "weaviate",
+    "NOT the sync loop it was briefly un-deferred for, and not storage -- MEASURED LIVE on run 32532470499, the run that refuted the fix. " +
+      "weaviate renders TWO `type: LoadBalancer` Services (`weaviate`, `weaviate-grpc`), and gitops-engine `getCorev1ServiceHealth` reports a LoadBalancer Service whose `status.loadBalancer.ingress` is empty as PROGRESSING, unconditionally. A kind node runs no LoadBalancer implementation, so those two Services never get an address and this Application can NEVER be Healthy in this lane whatever its sync status does -- `weaviate-0` was 1/1 Running for 39m while that held, which is how the blocker stayed hidden behind the one that was found. " +
+      "The `randAlphaNum` render nondeterminism established by byte diff is real and its narrow `ignoreDifferences` rule is KEPT, because on metal cilium-lb-ipam does assign LB addresses and it may there be the whole story. But the resync loop SURVIVED that rule live, so 'the rule closes the loop' is UNMETERED rather than proven: the OutOfSync cause was checked and the Progressing cause was not, and one confirmed cause was read as THE cause. " +
+      "LIFTS WHEN: the dev/CI substrate provides a LoadBalancer implementation (cloud-provider-kind or MetalLB) -- the same shape as the dev `longhorn` StorageClass alias, one resource type over -- AND the residual OutOfSync is NAMED by the per-resource diagnostics rather than guessed at a second time.",
   ],
 ]);
 
@@ -1156,7 +1333,7 @@ export function buildPlan(options: CliOptions, repoRoot = REPO_ROOT): HarnessPla
     notes: [
       "081KSXN940008QG0R000SCP2H1 is separate from 081KSNY2Z0008QG0R0008PN7RQ; this harness does not test USB reformat retention.",
       "Dev health assertions exclude cilium, the Longhorn chart itself, GPU model-SERVING (ollama/vllm), ReadWriteMany claims, and apps deferred on a named blocker recorded in APPLIED_BUT_UNASSERTED_REASONS; k3d bootstraps Cilium directly and kind CI uses its default CNI.",
-      "Longhorn-BACKED manifests are no longer storage-excluded: dev applies a StorageClass named longhorn over rancher.io/local-path (dev-cluster/manifests/longhorn.yaml), so those PVCs bind. MEASURED on run 32519516070: 6 of the 11 formerly-excluded apps reached Synced+Healthy (headscale, mimir, nats, oz, redis, tempo); the other 5 bound their volumes and then failed for named NON-storage defects, visible for the first time. THREE of those five are fixed as of 2026-08-21 and are asserted here now -- cockroachdb (the chart init Job moved out of ArgoCD PostSync, which deadlocks against the health it is needed to produce), kube-prometheus-stack (Grafana admin Secret minted at bring-up), weaviate (the chart re-mints randAlphaNum credentials on every render because ArgoCD cannot run Helm lookup, so two named keys are in ignoreDifferences). hindsight remains, on three independent blockers. Still excluded outright are ReadWriteMany claims, which no dev provisioner can serve, and the whole rule returns if that manifest is absent (081M0JXF6MS087G0R001HC34TM).",
+      "Longhorn-BACKED manifests are no longer storage-excluded: dev applies a StorageClass named longhorn over rancher.io/local-path (dev-cluster/manifests/longhorn.yaml), so those PVCs bind. MEASURED on run 32519516070: 6 of the 11 formerly-excluded apps reached Synced+Healthy (headscale, mimir, nats, oz, redis, tempo); the other 5 bound their volumes and then failed for named NON-storage defects, visible for the first time. TWO of those five are fixed as of 2026-08-21 and are PROVEN so by live run 32532470499 -- cockroachdb (the chart init Job moved out of ArgoCD PostSync, which deadlocks against the health it is needed to produce) and kube-prometheus-stack (Grafana admin Secret minted at bring-up). weaviate was asserted alongside them for a few hours and the same run refuted it: two `type: LoadBalancer` Services can never be Healthy on a kind node, a blocker independent of the render nondeterminism that was fixed. hindsight remains, on three independent blockers. Still excluded outright are ReadWriteMany claims, which no dev provisioner can serve, and the whole rule returns if that manifest is absent (081M0JXF6MS087G0R001HC34TM).",
       "ZETA_CONTAINER_RUNTIME is the repo-wide OCI runtime switch; use --runtime for one-off explicit harness runs.",
     ],
   };

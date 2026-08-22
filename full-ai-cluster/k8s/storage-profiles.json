@@ -168,20 +168,32 @@
     "  cohort                                       CPU        memory",
     "  asserted by --scope included (19 apps)     1221m      3.91 GiB",
     "  applied by the dev/CI root   (33 apps)     4231m     11.16 GiB",
-    "  every Application            (45 apps)     9856m     22.98 GiB",
+    "  every Application            (45 apps)     8106m     19.29 GiB",
+    "",
+    "THE `all 45` ROW MOVED 2026-08-22, DOWNWARD, AND NOT BY SHRINKING ANYTHING.",
+    "It read 9856m / 22.98 GiB until `temporal` was wired to CockroachDB. Its old",
+    "number (3000m / 6144Mi) was measured from CHART DEFAULTS -- nobody could render",
+    "temporal against its own valuesObject, because the chart refused to template at",
+    "all -- and 3000m of it was the bundled elasticsearch-master StatefulSet, which",
+    "that Application had always set `enabled: false`. So the catalogue was carrying",
+    "6 GiB for a subchart the cluster was never going to install. The four governed",
+    "temporal rows below (1250m / 2368Mi at `metal`) are the first numbers for this",
+    "app that came from rendering the values we actually ship. That is the difference",
+    "between a measurement and a placeholder, and it is worth 1750m / 3776Mi.",
     "",
     "So the honest answer to 'can all 45 fit in 4 vCPU / 16 GB': NO, and CPU runs out",
-    "first -- 9856m of requests against 4000m of runner. The 19 the lane asserts today",
+    "first -- 8106m of requests against 4000m of runner. The 19 the lane asserts today",
     "fit with room, which is why it is green; the 33 it APPLIES do not, and the only",
     "reason that has not bitten is that 14 of them hang `Missing` on a longhorn",
     "StorageClass the dev catalog excludes, so they never schedule a pod. That is a",
     "reprieve, not a fit, and it evaporates the moment the StorageClass exists.",
     "",
     "At the `dev` rung the applied set is 1906m / 6.06 GiB, inside the budget.",
-    "All 45 at `dev` is still 7531m / 17.88 GiB -- over. Shrinking gitlab (2475m /",
-    "5.6 GiB) and temporal (3000m / 6.0 GiB) is what would close that, and neither is",
-    "governed here because neither is applied to a dev cluster; the dev rung does not",
-    "price apps the dev lane never runs.",
+    "All 45 at `dev` is still 5016m / 13.04 GiB -- over. gitlab (2475m / 5.6 GiB) is",
+    "now the single largest unshrunk Application and is what would close most of the",
+    "rest; it is not governed here because it is not applied to a dev cluster, and the",
+    "dev rung does not price apps the dev lane never runs. temporal USED to be named",
+    "beside it and no longer is: it is governed now, at 485m / 1184Mi on `dev`.",
     "",
     "== A REQUEST IS A RESERVATION, NOT A MEASUREMENT ========================",
     "Cutting a request below the app's real working set does not make the app smaller.",
@@ -770,6 +782,82 @@
         "dev": 512,
         "metal": 1024
       }
+    },
+    {
+      "id": "full-ai-cluster/temporal/admintools",
+      "dir": "temporal",
+      "path": "full-ai-cluster/k8s/applications/temporal/Application.yaml",
+      "docIndex": 0,
+      "requestsField": "spec.source.helm.valuesObject.admintools.resources.requests",
+      "pods": 1,
+      "metalSource": "manifest",
+      "evidence": "temporal 0.59.0 templates/admintools-deployment.yaml:70 renders `resources` from `.Values.admintools.resources`; one Deployment, replicaCount not set (chart default 1). Rendered 2026-08-22 against this Application's own valuesObject: 6 Deployments, 8 Services, 2 ConfigMaps, 1 Job, 0 PersistentVolumeClaims.",
+      "consequence": "A `tail -f /dev/null` sidecar pod that exists so an operator can exec `temporal` / `tctl` against the frontend. It does nothing until someone shells into it, so 32Mi is sized for idle: a large `tctl` export run against a big namespace is what would OOMKill it, and the cost of that is a failed one-off command, not a service outage.",
+      "cpuMillis": {
+        "dev": 10,
+        "metal": 50
+      },
+      "memoryMib": {
+        "dev": 32,
+        "metal": 64
+      }
+    },
+    {
+      "id": "full-ai-cluster/temporal/schema",
+      "dir": "temporal",
+      "path": "full-ai-cluster/k8s/applications/temporal/Application.yaml",
+      "docIndex": 0,
+      "requestsField": "spec.source.helm.valuesObject.schema.resources.requests",
+      "pods": 1,
+      "metalSource": "manifest",
+      "evidence": "temporal 0.59.0 templates/server-job.yaml renders ONE Job (`temporal-schema-1`) with SIX init containers -- create/setup/update x {default, visibility} -- and one `done` container, each carrying `.Values.schema.resources`. Init containers run SEQUENTIALLY, so the pod's effective request is max(init) = one unit of this value, NOT six. `pods: 1` is that arithmetic, not a guess. Rendered 2026-08-22.",
+      "consequence": "Transient: the Job runs `temporal-sql-tool` once per sync and then the pod exits (ttlSecondsAfterFinished 86400). A cut starves the schema tool, and its failure mode is a Job that retries to backoffLimit 100 rather than a running service degrading -- loud and bounded. Note this Job is ALSO where the CockroachDB visibility-schema block bites: `update-visibility-store` cannot succeed until that is resolved (see the Application header).",
+      "cpuMillis": {
+        "dev": 50,
+        "metal": 100
+      },
+      "memoryMib": {
+        "dev": 64,
+        "metal": 128
+      }
+    },
+    {
+      "id": "full-ai-cluster/temporal/server",
+      "dir": "temporal",
+      "path": "full-ai-cluster/k8s/applications/temporal/Application.yaml",
+      "docIndex": 0,
+      "requestsField": "spec.source.helm.valuesObject.server.resources.requests",
+      "pods": 4,
+      "metalSource": "manifest",
+      "evidence": "FOUR pods from ONE values key, which is exactly the mimir trap this field exists for. temporal 0.59.0 templates/server-deployment.yaml:156 is `toYaml (default $.Values.server.resources $serviceValues.resources)` and the template ranges over frontend, history, matching and worker; no per-service `resources` is set in this Application, so `server.resources` applies to all four. Each is a Deployment at `server.replicaCount: 1`. MEASURED by rendering this Application's own valuesObject 2026-08-22: temporal-frontend, temporal-history, temporal-matching, temporal-worker.",
+      "consequence": "These four ARE Temporal. 256Mi per service is a working-set bet and not a measurement: history is the one that will find the floor first, because it caches mutable workflow state per shard and this deployment runs `numHistoryShards: 512`. Under-request without a limit does not make it smaller -- it moves the failure from a Pending pod to the kernel OOM killer, and an OOMKilled history pod means every workflow on its shards stalls until the shard is re-acquired. The dev rung is safe only because `temporal/**` is glob-excluded from the dev lane (ports.ts DEFAULT_ROOT_DEV_CATALOG.excludeGlob) and never schedules there.",
+      "cpuMillis": {
+        "dev": 100,
+        "metal": 250
+      },
+      "memoryMib": {
+        "dev": 256,
+        "metal": 512
+      }
+    },
+    {
+      "id": "full-ai-cluster/temporal/web",
+      "dir": "temporal",
+      "path": "full-ai-cluster/k8s/applications/temporal/Application.yaml",
+      "docIndex": 0,
+      "requestsField": "spec.source.helm.valuesObject.web.resources.requests",
+      "pods": 1,
+      "metalSource": "manifest",
+      "evidence": "temporal 0.59.0 templates/web-deployment.yaml:57 renders `resources` from `.Values.web.resources`; one Deployment at `web.replicaCount` (chart default 1). Rendered 2026-08-22 against this Application's own valuesObject.",
+      "consequence": "The read-only UI. Losing it costs visibility into workflows, never a workflow: it holds no state and the server does not depend on it. 64Mi is sized for a Node process serving a handful of operators; a wide workflow-list query is what would push it past that, and the cost is a reloaded browser tab.",
+      "cpuMillis": {
+        "dev": 25,
+        "metal": 100
+      },
+      "memoryMib": {
+        "dev": 64,
+        "metal": 128
+      }
     }
   ],
 
@@ -932,9 +1020,9 @@
     },
     {
       "dir": "oz",
-      "cpuMillis": null,
-      "memoryMib": null,
-      "evidence": "UNMEASURED: `helm pull ziti-controller --version 1.4.5 --repo https://docs.openziti.io/helm-charts/` fails -- that index carries only 3.2.x, and the GitHub release tag ziti-controller-1.4.5 404s. Same shape as forgejo: the pin does not resolve, so neither this measurement nor ArgoCD can render it."
+      "cpuMillis": 0,
+      "memoryMib": 0,
+      "evidence": "MEASURED 2026-08-21, and no longer null: ziti-controller 3.1.1 (the corrected pin -- 1.4.5 was never published) rendered with this Application's own valuesObject declares `resources: {}` on the controller container (chart values.yaml:426 leaves it unset by design). 0 is the real answer here, not a missing one: the container reserves nothing."
     },
     {
       "dir": "platform",
@@ -961,16 +1049,16 @@
       "evidence": "spire 0.24.2 rendered with this Application's valuesObject, 2026-08-21: chart default resources are unset."
     },
     {
+      "dir": "spire-crds",
+      "cpuMillis": 0,
+      "memoryMib": 0,
+      "evidence": "spire-crds 0.5.0 rendered 2026-08-22: the chart's templates/ holds exactly three files and all three are CustomResourceDefinitions (clusterspiffeids, clusterfederatedtrustdomains, clusterstaticentries). It renders no Pod, Deployment, DaemonSet, StatefulSet or Job, so zero here is a MEASURED zero rather than an unfilled field - there is no container to request anything. Rendered manifest is 19460 bytes and `grep '^kind:'` on it returns 3 CustomResourceDefinition and nothing else."
+    },
+    {
       "dir": "tempo",
       "cpuMillis": 0,
       "memoryMib": 0,
       "evidence": "tempo 1.18.0 rendered with this Application's valuesObject, 2026-08-21: chart default resources are unset."
-    },
-    {
-      "dir": "temporal",
-      "cpuMillis": 3000,
-      "memoryMib": 6144,
-      "evidence": "temporal 0.59.0 rendered from chart defaults 2026-08-21: the bundled elasticsearch-master StatefulSet is 3 x 1000m / 2048Mi and is the whole of it. Second largest Application in the tree. Glob-excluded from the dev lane."
     },
     {
       "dir": "trust-manager",
@@ -998,7 +1086,12 @@
     }
   ],
 
-  "acknowledgedUnmeasuredRequests": ["oz@1.4.5"],
+  "$comment_acknowledgedUnmeasuredRequests": [
+    "EMPTY, and it is meant to stay that way. The last entry was `oz@1.4.5`, a pin\nno registry ever served; it was retired 2026-08-21 when the pin was corrected to\nziti-controller 3.1.1 and the chart was measured for real. Nothing in this tree is\nnow excused from having its requests measured.",
+    "",
+    "An entry here is keyed `<dir>@<pin>`, so it dies the moment the pin moves. Adding\none back is adding an app whose CPU/memory nobody could read off a rendered chart --\nwrite down why the fetch failed and what lifts it, or fix the pin instead."
+  ],
+  "acknowledgedUnmeasuredRequests": [],
 
   "$comment_profiles": [
     "Order is smallest-first and is load-bearing: storage-profiles.ts refuses a",
@@ -1029,7 +1122,53 @@
     "One row per `longhorn` PVC claim in the tree. The row's (path, storageClassField)",
     "pair is the SAME coordinate the readiness auditor's extractor produces, so the",
     "two are cross-checkable in both directions: a claim with no row fails, and a row",
-    "with no claim fails. Neither can go stale in silence."
+    "with no claim fails. Neither can go stale in silence.",
+    "",
+    "== AND DOES THE ROW CORRESPOND TO A PVC THE CHART ACTUALLY RENDERS? =====",
+    "The cross-check above compares two readings of OUR OWN YAML. Neither side",
+    "asks the chart. `renderedApp` + `renderedPvcPattern` are the coordinate that",
+    "does: src/Core.TypeScript/cluster/rendered-storage-claims.ts renders every",
+    "Application at its pinned targetRevision with its own valuesObject and refuses",
+    "a declared claim no rendered PVC matches, a rendered PVC no row covers, a size",
+    "or storageClass the chart does not produce, and a pod count the render",
+    "disagrees with. Both are required on every row: a row with no rendered",
+    "coordinate is a row nothing can check, and an uncheckable row that still",
+    "contributes GiB is what this whole file exists to refuse.",
+    "",
+    "MEASURED 2026-08-21: the ladder WAS governing two paths that do not exist. Both",
+    "were repaired the next day, 2026-08-22. Kept in full, because a defect that leaves",
+    "no trace once fixed is one nobody can learn from -- and because the render each",
+    "claim was re-measured against is the only reason to believe the repair:",
+    "  hindsight/postgres  declared postgresql.PRIMARY.persistence.* -- the bitnami",
+    "                      subchart layout. Chart 0.3.0 ships its own StatefulSet",
+    "                      reading postgresql.persistence.*, so both values were inert:",
+    "                      the PVC rendered 8Gi with NO storageClassName, which binds",
+    "                      the cluster default `zeta-local-path` (rancher.io/local-path,",
+    "                      reclaimPolicy: DELETE), not replicated longhorn at 10Gi. The",
+    "                      durability was the larger half: the semantic-memory Postgres",
+    "                      was on node-local delete-on-reclaim disk while this catalogue",
+    "                      said `longhorn`. FIXED: the `.primary` level is gone, and the",
+    "                      re-render is 10Gi on \"longhorn\" (+10 GiB longhorn, -8 GiB",
+    "                      zeta-local-path).",
+    "  nats/jetstream      declared a TOP-LEVEL `cluster: {replicas: 3}`. Chart 1.2.7",
+    "                      reads `config.cluster` and has no top-level `cluster` key,",
+    "                      so the block was inert and the StatefulSet rendered replicas: 1.",
+    "                      This row's `consequence` asserted that `measured` keeps the",
+    "                      JetStream quorum. IT DID NOT -- there was no quorum at any",
+    "                      rung, the generated nats.conf carried no cluster section, and",
+    "                      a stream with replicas > 1 refused to create. Storage",
+    "                      under-provisioned by 20 GiB; the HA claim was the larger",
+    "                      error, so the text was corrected and not just the values.",
+    "                      FIXED: the block is under `config:`, the re-render is",
+    "                      replicas: 3 with routes to nats-0/1/2 (+20 GiB longhorn,",
+    "                      +2 pods).",
+    "",
+    "Both were recorded in rendered-storage-claims.baseline.json when the checker",
+    "found them; all three acknowledgements are now RETIRED rather than carried, because",
+    "a baseline entry that outlives its defect is itself a finding. The declared",
+    "\"measured\" total is 967 GiB; 861 GiB of longhorn renders as declared, 106 GiB",
+    "sits behind apps that could not be rendered at all, and 0 GiB of the declaration",
+    "fails to render."
   ],
   "claims": [
     {
@@ -1044,6 +1183,8 @@
       "scheduledAtBringUp": true,
       "bringUpNote": "automated sync, wave 0",
       "consequence": "minimal drops the Raft group from 3 members to 1 and the store from 100Gi to 32Gi per member. THE HA LOSS IS REAL AND IS NOT HIDDEN: a 1-member CockroachDB has no quorum, no replication, and no survivable node failure. It is also the only HONEST setting on one box — the ledger already carries full-ai-cluster/cockroachdb in acknowledgedFalseRedundancy precisely because the chart's soft podAntiAffinity co-schedules all three members onto the single node today, so what minimal removes is nominal redundancy, not real redundancy. At nodeCount >= 3 use standard.",
+      "renderedApp": "full-ai-cluster/cockroachdb",
+      "renderedPvcPattern": "^datadir/cockroachdb$",
       "sizes": { "minimal": "32Gi", "standard": "48Gi", "measured": "48Gi", "large": "100Gi" },
       "pods": { "minimal": 1, "standard": 3, "measured": 3, "large": 3 }
     },
@@ -1059,6 +1200,8 @@
       "scheduledAtBringUp": true,
       "bringUpNote": "automated sync, wave 0",
       "consequence": "The ingester holds only the in-flight head block before shipping to object storage (blocks_storage.backend: s3 -> in-cluster MinIO), so shrinking it costs headroom, not history: at 8Gi per ingester a compaction or upload backlog fills the volume sooner and writes are rejected until it drains. Long-term metrics still live in MinIO and are unaffected.",
+      "renderedApp": "full-ai-cluster/mimir",
+      "renderedPvcPattern": "^storage/mimir-ingester-zone-[a-c]$",
       "sizes": { "minimal": "8Gi", "standard": "16Gi", "measured": "16Gi", "large": "50Gi" },
       "pods": { "minimal": 3, "standard": 3, "measured": 3, "large": 3 }
     },
@@ -1074,6 +1217,8 @@
       "scheduledAtBringUp": true,
       "bringUpNote": "automated sync, wave 0",
       "consequence": "The store-gateway volume is a CACHE of block index-headers fetched from object storage. Shrinking it is a latency cost, never a data loss: long-range queries re-fetch index headers from MinIO instead of reading them locally.",
+      "renderedApp": "full-ai-cluster/mimir",
+      "renderedPvcPattern": "^storage/mimir-store-gateway-zone-[a-c]$",
       "sizes": { "minimal": "8Gi", "standard": "16Gi", "measured": "16Gi", "large": "50Gi" },
       "pods": { "minimal": 3, "standard": 3, "measured": 3, "large": 3 }
     },
@@ -1089,6 +1234,8 @@
       "scheduledAtBringUp": true,
       "bringUpNote": "automated sync, wave 0",
       "consequence": "Compaction scratch space. At 8Gi the compactor can only work a smaller block set at a time; if a tenant's block set outgrows it, compaction stalls and query performance degrades over time. Nothing is deleted — the blocks stay in object storage uncompacted.",
+      "renderedApp": "full-ai-cluster/mimir",
+      "renderedPvcPattern": "^storage/mimir-compactor$",
       "sizes": { "minimal": "8Gi", "standard": "16Gi", "measured": "16Gi", "large": "50Gi" },
       "pods": { "minimal": 1, "standard": 1, "measured": 1, "large": 1 }
     },
@@ -1104,6 +1251,8 @@
       "scheduledAtBringUp": false,
       "bringUpNote": "zeta.io/sync-policy: manual — the Application is never applied on a fresh sync, so no PVC object exists. NOT because replicaCount is 0: Longhorn's StorageClass is volumeBindingMode Immediate, so an applied PVC would provision at once with no pods.",
       "consequence": "minimal keeps only ~10Gi of local model cache: room for one small quantised model, not a library. The local-models phase is deferred anyway, so this is planning capacity today; it becomes real the moment someone runs `argocd app sync ollama`.",
+      "renderedApp": "full-ai-cluster/ollama",
+      "renderedPvcPattern": "^ollama$",
       "sizes": { "minimal": "10Gi", "standard": "48Gi", "measured": "200Gi", "large": "200Gi" },
       "pods": { "minimal": 1, "standard": 1, "measured": 1, "large": 1 }
     },
@@ -1119,6 +1268,8 @@
       "scheduledAtBringUp": false,
       "bringUpNote": "zeta.io/sync-policy: manual on vllm/Application.yaml, so deployment.yaml (which carries the PVC) is never applied on a fresh sync. `replicas: 0` on the Deployment is NOT what makes it free — the PVC is a separate object and would bind immediately if applied.",
       "consequence": "minimal keeps ~10Gi of HuggingFace cache: enough for one small model's weights, not a 33B. Deferred phase, same as ollama.",
+      "renderedApp": "full-ai-cluster/vllm",
+      "renderedPvcPattern": "^vllm-cache$",
       "sizes": { "minimal": "10Gi", "standard": "48Gi", "measured": "200Gi", "large": "200Gi" },
       "pods": { "minimal": 1, "standard": 1, "measured": 1, "large": 1 }
     },
@@ -1134,6 +1285,8 @@
       "scheduledAtBringUp": false,
       "bringUpNote": "ORPHANED, and this is a BUG not a design: no Application applies this file. The root App-of-Apps includes only '{*/Application.yaml,Application.yaml}' (bootstrap/root-application.yaml), and arc-runner-set/Application.yaml sources a REMOTE Helm chart (repoURL ghcr.io/actions/actions-runner-controller-charts, chart gha-runner-scale-set) rather than this git path — so it cannot apply its own sibling. The file's header comment claims 'Reconciled by the arc-runner-set Application', which is false. The conclusion does not depend on how ArgoCD matches directory.include: the base name 'model-cache-pvc.yaml' matches neither alternative of '{*/Application.yaml,Application.yaml}', and neither does its path relative to the source, so it is unreachable under both readings. Consequence beyond the storage: arc-runner-set ships minRunners: 1 mounting claimName arc-model-cache, so the warm runner stays Pending on a PVC that does not exist. Tracked separately from this ladder; sizing it here keeps the capacity honest either way.",
       "consequence": "minimal keeps ~8Gi of runner model cache. Below the ~16GB the cache exists to stop re-pulling per tick, so on minimal the cache does not do its job and runners re-download; that is the accepted cost of a 300 GiB box. On standard (32Gi) it works as designed.",
+      "renderedApp": "full-ai-cluster/arc-runner-set",
+      "renderedPvcPattern": "^arc-model-cache$",
       "sizes": { "minimal": "8Gi", "standard": "32Gi", "measured": "100Gi", "large": "100Gi" },
       "pods": { "minimal": 1, "standard": 1, "measured": 1, "large": 1 }
     },
@@ -1158,6 +1311,8 @@
         }
       },
       "governorEvidence": "kube-prometheus-stack 65.5.0 values.yaml:3732 ships prometheus.prometheusSpec.retentionSize: \"\" — UNSET, so Prometheus applies NO size-based retention and grows until the volume is full; retention: 15d is a TIME bound and cannot see the disk. The Prometheus CRD (crd-prometheuses.yaml:7656) defines retentionSize as \"Maximum number of bytes used by the Prometheus data\" and its pattern requires a B suffix, so 24Gi is INVALID here and 24GiB is the form. Both bounds are applied by Prometheus and whichever triggers first wins, so adding this cannot lengthen retention — it can only stop the disk filling. THE 75% FRACTION IS A BUDGET CHOICE, NOT A DERIVED REQUIREMENT: size-based retention deletes the oldest block only after the limit is crossed, so the volume needs room for the head block and the WAL on top of the retained set, and we have not measured this cluster's ingest rate to say how much. 75% is round, conservative, and stated as a choice rather than smuggled in as a minimum.",
+      "renderedApp": "full-ai-cluster/kube-prometheus-stack",
+      "renderedPvcPattern": "^storage/kube-prometheus-stack-prometheus$",
       "sizes": { "minimal": "16Gi", "standard": "32Gi", "measured": "32Gi", "large": "100Gi" },
       "pods": { "minimal": 1, "standard": 1, "measured": 1, "large": 1 }
     },
@@ -1173,6 +1328,8 @@
       "scheduledAtBringUp": true,
       "bringUpNote": "automated sync",
       "consequence": "Vector index capacity drops to ~1/8 of large. Weaviate does not evict: once the volume is full, ingest fails. minimal sizes the vector store for a demo corpus, not a working memory.",
+      "renderedApp": "full-ai-cluster/weaviate",
+      "renderedPvcPattern": "^weaviate-data/weaviate$",
       "sizes": { "minimal": "12Gi", "standard": "32Gi", "measured": "32Gi", "large": "100Gi" },
       "pods": { "minimal": 1, "standard": 1, "measured": 1, "large": 1 }
     },
@@ -1182,12 +1339,14 @@
       "docIndex": 0,
       "storageClassField": "spec.source.helm.valuesObject.config.jetstream.fileStore.pvc.storageClassName",
       "sizeField": "spec.source.helm.valuesObject.config.jetstream.fileStore.pvc.size",
-      "podsField": "spec.source.helm.valuesObject.cluster.replicas",
+      "podsField": "spec.source.helm.valuesObject.config.cluster.replicas",
       "podsSource": "manifest",
       "podsEvidence": "",
       "scheduledAtBringUp": true,
       "bringUpNote": "automated sync",
-      "consequence": "minimal drops the JetStream cluster from 3 nodes to 1 and the file store from 20Gi to 4Gi. HA LOSS, STATED: a 1-node JetStream has no R3 streams and no quorum — a stream configured with replicas > 1 will refuse to create. As with cockroachdb this is nominal redundancy on one box (full-ai-cluster/nats is already in acknowledgedFalseRedundancy), so minimal makes the manifest tell the truth rather than removing a guarantee that existed. Stream retention limits must be cut to fit 4Gi or publishes are rejected / aged out sooner.",
+      "consequence": "minimal drops the JetStream cluster from 3 nodes to 1 and the file store from 20Gi to 4Gi. HA LOSS, STATED: a 1-node JetStream has no R3 streams and no quorum — a stream configured with replicas > 1 will refuse to create. As with cockroachdb this is nominal redundancy on one box (full-ai-cluster/nats is already in acknowledgedFalseRedundancy), so minimal makes the manifest tell the truth rather than removing a guarantee that existed. Stream retention limits must be cut to fit 4Gi or publishes are rejected / aged out sooner. CORRECTION, 2026-08-22: until this date the sentence above was FALSE AT EVERY RUNG, not just at minimal. The Application declared a TOP-LEVEL `cluster: {replicas: 3}` and chart 1.2.7 reads `config.cluster`, so the block was inert, the StatefulSet rendered replicas: 1, and the nats.conf carried no cluster section at all — `measured` had the single-node JetStream this row attributed only to `minimal`, and a replicas > 1 stream refused to create. The block moved under `config:` and the render was re-measured at replicas: 3; the row's 3 pods now cost the 30 GiB they always claimed instead of the 10 GiB that was actually provisioned.",
+      "renderedApp": "full-ai-cluster/nats",
+      "renderedPvcPattern": "^nats-js/nats$",
       "sizes": { "minimal": "4Gi", "standard": "10Gi", "measured": "10Gi", "large": "20Gi" },
       "pods": { "minimal": 1, "standard": 3, "measured": 3, "large": 3 }
     },
@@ -1203,6 +1362,8 @@
       "scheduledAtBringUp": true,
       "bringUpNote": "automated sync",
       "consequence": "Trace retention window shrinks roughly proportionally, 50Gi -> 8Gi. Old traces are dropped sooner; nothing else degrades.",
+      "renderedApp": "full-ai-cluster/tempo",
+      "renderedPvcPattern": "^storage/tempo$",
       "sizes": { "minimal": "8Gi", "standard": "20Gi", "measured": "20Gi", "large": "50Gi" },
       "pods": { "minimal": 1, "standard": 1, "measured": 1, "large": 1 }
     },
@@ -1218,6 +1379,8 @@
       "scheduledAtBringUp": true,
       "bringUpNote": "automated sync",
       "consequence": "Redis is a cache; the volume is RDB/AOF spill. 4Gi bounds how much can be persisted across a restart, not how much can be cached in memory.",
+      "renderedApp": "full-ai-cluster/redis",
+      "renderedPvcPattern": "^redis-data/redis-master$",
       "sizes": { "minimal": "4Gi", "standard": "8Gi", "measured": "8Gi", "large": "10Gi" },
       "pods": { "minimal": 1, "standard": 1, "measured": 1, "large": 1 }
     },
@@ -1233,6 +1396,8 @@
       "scheduledAtBringUp": true,
       "bringUpNote": "automated sync",
       "consequence": "minimal drops from 2 read replicas to 1. HA LOSS, STATED — but the smallest of the three: bitnami redis replication is ASYNCHRONOUS, so there is no quorum to lose, and full-ai-cluster/redis is already in acknowledgedFalseRedundancy for the same single-node reason. What is lost is read fan-out and one warm standby.",
+      "renderedApp": "full-ai-cluster/redis",
+      "renderedPvcPattern": "^redis-data/redis-replicas$",
       "sizes": { "minimal": "4Gi", "standard": "8Gi", "measured": "8Gi", "large": "10Gi" },
       "pods": { "minimal": 1, "standard": 2, "measured": 2, "large": 2 }
     },
@@ -1248,6 +1413,8 @@
       "scheduledAtBringUp": true,
       "bringUpNote": "automated sync, but NESTED one level deeper than every other app (full-ai-cluster/k8s/applications/game-hosting/gmod/), and whether the root App-of-Apps reaches it depends on how ArgoCD matches directory.include ('{*/Application.yaml,Application.yaml}') — against a file BASE NAME, in which case it is picked up, or against the path relative to the source, in which case it is not. That is not resolved here and is NOT claimed either way: the repo already pins the same nesting as a known gap in the health harness (argocd-health-test.test.ts, 'the depth-1 discovery gap stays exactly one known Application'). It is counted as scheduled because that is the LESS favourable reading for the disk, which is the one a capacity bound has to take.",
       "consequence": "Game-server sample workload, not on the PoC critical path. 4Gi holds the base game content and few addons/maps.",
+      "renderedApp": "full-ai-cluster/game-hosting/gmod",
+      "renderedPvcPattern": "^data/gmod$",
       "sizes": { "minimal": "4Gi", "standard": "10Gi", "measured": "10Gi", "large": "20Gi" },
       "pods": { "minimal": 1, "standard": 1, "measured": 1, "large": 1 }
     },
@@ -1255,14 +1422,16 @@
       "id": "full-ai-cluster/hindsight/postgres",
       "path": "full-ai-cluster/k8s/applications/hindsight/Application.yaml",
       "docIndex": 0,
-      "storageClassField": "spec.source.helm.valuesObject.postgresql.primary.persistence.storageClass",
-      "sizeField": "spec.source.helm.valuesObject.postgresql.primary.persistence.size",
+      "storageClassField": "spec.source.helm.valuesObject.postgresql.persistence.storageClass",
+      "sizeField": "spec.source.helm.valuesObject.postgresql.persistence.size",
       "podsField": null,
       "podsSource": "singleton",
-      "podsEvidence": "postgresql subchart primary: one StatefulSet pod, one PVC.",
+      "podsEvidence": "hindsight 0.3.0 templates/postgresql-statefulset.yaml hardcodes `replicas: 1` -- the chart ships its OWN postgresql StatefulSet, NOT the bitnami subchart, so there is no `primary` and no replica scalar to turn. Rendered 2026-08-21: one pod, one PVC.",
       "scheduledAtBringUp": true,
       "bringUpNote": "automated sync",
-      "consequence": "Semantic-memory Postgres. 8Gi caps how much agent memory can be retained before the database refuses writes; this is DATA LOSS-adjacent (writes fail, nothing is silently discarded) and is the cut to revisit first if a minimal box has spare room.",
+      "consequence": "Semantic-memory Postgres. 8Gi caps how much agent memory can be retained before the database refuses writes; this is DATA LOSS-adjacent (writes fail, nothing is silently discarded) and is the cut to revisit first if a minimal box has spare room. CORRECTION, 2026-08-22: until this date neither number nor the class reached the chart. The Application wrote `postgresql.primary.persistence.*` (the bitnami subchart layout) and hindsight 0.3.0 ships its own StatefulSet reading `postgresql.persistence.*`, so EVERY rung rendered the chart default 8Gi with no storageClassName — which binds the cluster default `zeta-local-path`, rancher.io/local-path with reclaimPolicy: DELETE. The durability was the larger error: this row said `longhorn` while the volume was node-local and deleted on reclaim. The `.primary` level is gone and the render was re-measured at 10Gi on longhorn.",
+      "renderedApp": "full-ai-cluster/hindsight",
+      "renderedPvcPattern": "^data/hindsight-postgresql$",
       "sizes": { "minimal": "8Gi", "standard": "10Gi", "measured": "10Gi", "large": "20Gi" },
       "pods": { "minimal": 1, "standard": 1, "measured": 1, "large": 1 }
     },
@@ -1278,6 +1447,8 @@
       "scheduledAtBringUp": true,
       "bringUpNote": "automated sync, wave 10",
       "consequence": "Per-persona durable file memory, 10Gi -> 4Gi. Manifesto §5 (memory preservation) applies: this volume is agent memory, so filling it is a memory-loss surface, not a performance one. Retain policy is unchanged.",
+      "renderedApp": "full-ai-cluster/agent-memory",
+      "renderedPvcPattern": "^memory/agent-memory$",
       "sizes": { "minimal": "4Gi", "standard": "8Gi", "measured": "8Gi", "large": "10Gi" },
       "pods": { "minimal": 1, "standard": 1, "measured": 1, "large": 1 }
     },
@@ -1293,6 +1464,8 @@
       "scheduledAtBringUp": true,
       "bringUpNote": "automated sync",
       "consequence": "Grafana's sqlite + dashboards. 2Gi is comfortable; this row is small in every profile.",
+      "renderedApp": "full-ai-cluster/kube-prometheus-stack",
+      "renderedPvcPattern": "^kube-prometheus-stack-grafana$",
       "sizes": { "minimal": "2Gi", "standard": "5Gi", "measured": "5Gi", "large": "10Gi" },
       "pods": { "minimal": 1, "standard": 1, "measured": 1, "large": 1 }
     },
@@ -1308,21 +1481,25 @@
       "scheduledAtBringUp": true,
       "bringUpNote": "automated sync",
       "consequence": "Silences and the notification log. 2Gi is ample.",
+      "renderedApp": "full-ai-cluster/kube-prometheus-stack",
+      "renderedPvcPattern": "^storage/kube-prometheus-stack-alertmanager$",
       "sizes": { "minimal": "2Gi", "standard": "5Gi", "measured": "5Gi", "large": "10Gi" },
       "pods": { "minimal": 1, "standard": 1, "measured": 1, "large": 1 }
     },
     {
-      "id": "full-ai-cluster/headscale/data",
+      "id": "full-ai-cluster/headscale/config",
       "path": "full-ai-cluster/k8s/applications/headscale/Application.yaml",
       "docIndex": 0,
-      "storageClassField": "spec.source.helm.valuesObject.persistence.data.storageClass",
-      "sizeField": "spec.source.helm.valuesObject.persistence.data.size",
+      "storageClassField": "spec.source.helm.valuesObject.persistence.config.storageClass",
+      "sizeField": "spec.source.helm.valuesObject.persistence.config.size",
       "podsField": null,
       "podsSource": "singleton",
       "podsEvidence": "headscale runs one pod against a sqlite node database.",
       "scheduledAtBringUp": true,
       "bringUpNote": "automated sync",
-      "consequence": "sqlite node database. 2Gi holds the control-plane state for far more nodes than this cluster will have.",
+      "consequence": "sqlite node database, node private key and noise private key -- headscale 0.4.0 puts all three under /etc/headscale, which is the chart's `config` persistence item. RENAMED from `.../headscale/data` 2026-08-21: the row used to point at `persistence.data`, a key the chart mounts at /data and never writes to, while the database and both private keys sat on the container's ephemeral layer. 2Gi holds the control-plane state for far more nodes than this cluster will have.",
+      "renderedApp": "full-ai-cluster/headscale",
+      "renderedPvcPattern": "^headscale-config$",
       "sizes": { "minimal": "2Gi", "standard": "3Gi", "measured": "3Gi", "large": "5Gi" },
       "pods": { "minimal": 1, "standard": 1, "measured": 1, "large": 1 }
     },
@@ -1338,6 +1515,8 @@
       "scheduledAtBringUp": true,
       "bringUpNote": "automated sync",
       "consequence": "Small service state, one pod. 2Gi is ample in every profile; this row exists for completeness of the total, not because it is a meaningful cut.",
+      "renderedApp": "full-ai-cluster/oz",
+      "renderedPvcPattern": "^ziti-controller$",
       "sizes": { "minimal": "2Gi", "standard": "3Gi", "measured": "3Gi", "large": "5Gi" },
       "pods": { "minimal": 1, "standard": 1, "measured": 1, "large": 1 }
     },
@@ -1353,6 +1532,8 @@
       "scheduledAtBringUp": true,
       "bringUpNote": "automated sync",
       "consequence": "The portal StatefulSet is the SINGLE WRITER of the Room log and the manifest says the volume IS the source of truth, so this is the riskiest small cut in the table: at 4Gi the Room log is bounded by disk rather than by policy. Pod count stays 1 in every profile — dropping it was never on the table and raising it would be incorrect.",
+      "renderedApp": "full-ai-cluster/platform",
+      "renderedPvcPattern": "^rooms/portal$",
       "sizes": { "minimal": "4Gi", "standard": "5Gi", "measured": "5Gi", "large": "5Gi" },
       "pods": { "minimal": 1, "standard": 1, "measured": 1, "large": 1 }
     },
@@ -1368,6 +1549,8 @@
       "scheduledAtBringUp": true,
       "bringUpNote": "automated sync — but in the OTHER app-of-apps tree. argocd/zeta-root is declared twice (see acknowledgedRootAppDuplicates), and only one tree can own that identity in a cluster, so in practice at most one of this row and full-ai-cluster/cockroachdb/data is live. Both are counted anyway: a bound that assumes the favourable tree is a bound that cannot convict.",
       "consequence": "minimal drops this Raft group from 3 to 1 for the same reason as the full-ai-cluster row, and it is the same HA statement: no quorum, no replication, no survivable failure.",
+      "renderedApp": "infra/cockroachdb",
+      "renderedPvcPattern": "^datadir/cockroachdb$",
       "sizes": { "minimal": "8Gi", "standard": "8Gi", "measured": "8Gi", "large": "8Gi" },
       "pods": { "minimal": 1, "standard": 3, "measured": 3, "large": 3 }
     }
