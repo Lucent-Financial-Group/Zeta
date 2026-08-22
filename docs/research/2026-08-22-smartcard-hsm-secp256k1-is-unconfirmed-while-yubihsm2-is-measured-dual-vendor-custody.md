@@ -49,7 +49,31 @@ vendors add extensions"* — and then someone attached a device and enumerated i
 its mechanism list with `pkcs11-tool -M` / `sc-hsm-tool`, and read the curve OIDs. Until then this
 row stays UNCONFIRMED. At **$79.26** the falsifier costs less than an hour of arguing about it.
 
-### The exact enumeration, for when the device arrives
+### Two devices were ordered, which makes the *second* falsifier runnable too
+
+Aaron 2026-08-22: *"okay i just ordered two one for me and max."*
+
+That matters more than redundancy. **One device tests only the mechanism list.** Two devices test the
+thing this note actually argues for — **DKEK n-of-m backup and restore across devices** — because a
+threshold scheme cannot be exercised against a single token. So the acquisition promotes two claims
+at once:
+
+| claim | testable with 1 | testable with 2 |
+|---|---|---|
+| secp256k1 present | **yes** — enumerate mechanisms | yes |
+| **DKEK share import → key restore onto a second token** | **no** | **yes** |
+
+And two *holders* — Aaron and Max — makes it a **custody** test rather than a lab exercise. A 2-party
+DKEK arrangement is the smallest real instance of the n-of-m story, and it is worth noting that the
+failure it protects against (one device lost, destroyed, or held by someone unavailable) is only
+observable when the shares are genuinely in different hands.
+
+**Consent note:** Max is on file in `docs/books/you-born-at-the-hinge/CONSENT-LEDGER.md` as a
+business partner with a standing agreement, but **holding a custody share is not a book mention** —
+it is an operational role with real obligations (availability, secure storage, and a say in any
+threshold change). Nothing here assigns him that role; Aaron and Max settle it between them.
+
+### The exact enumeration, for when the devices arrive
 
 Unauthenticated where possible — the YubiHSM run established that precedent deliberately: *"no
 authenticated session was opened and no key material was created, read, or handled."* Do the same
