@@ -1,6 +1,6 @@
 {
   "ref": "main",
-  "at": "2026-08-22T17:31:54.231Z",
+  "at": "2026-08-22T17:49:01.596Z",
   "rows": [
     {
       "checkId": "chart-version-refresh",
@@ -36,7 +36,7 @@
       },
       "band": "red",
       "observedAt": "2026-08-16T16:48:46Z",
-      "silenceSeconds": 520988,
+      "silenceSeconds": 522016,
       "observedThisPass": true,
       "undeclared": false
     },
@@ -54,7 +54,7 @@
       },
       "band": "red",
       "observedAt": "2026-08-22T01:22:36Z",
-      "silenceSeconds": 58158,
+      "silenceSeconds": 59186,
       "observedThisPass": true,
       "undeclared": false
     },
@@ -73,7 +73,7 @@
       },
       "band": "red",
       "observedAt": "2026-08-22T06:58:11Z",
-      "silenceSeconds": 38023,
+      "silenceSeconds": 39051,
       "observedThisPass": true,
       "undeclared": false
     },
@@ -92,7 +92,7 @@
       },
       "band": "red",
       "observedAt": "2026-08-22T07:35:04Z",
-      "silenceSeconds": 35810,
+      "silenceSeconds": 36838,
       "observedThisPass": true,
       "undeclared": false
     },
@@ -111,7 +111,7 @@
       },
       "band": "red",
       "observedAt": "2026-08-22T12:34:39Z",
-      "silenceSeconds": 17835,
+      "silenceSeconds": 18863,
       "observedThisPass": true,
       "undeclared": false
     },
@@ -120,9 +120,8 @@
       "displayName": "k8s-lane-partition",
       "source": "github-actions",
       "expectation": {
-        "kind": "unknown",
-        "reason": "definition-absent",
-        "detail": "workflow file '.github/workflows/k8s-lane-partition.yml' is registered ACTIVE on the forge host but is ABSENT from the repository"
+        "kind": "on-change",
+        "detail": "push to main"
       },
       "verdict": {
         "kind": "red",
@@ -130,7 +129,7 @@
       },
       "band": "red",
       "observedAt": "2026-08-22T17:16:53Z",
-      "silenceSeconds": 901,
+      "silenceSeconds": 1929,
       "observedThisPass": true,
       "undeclared": false
     },
@@ -144,11 +143,11 @@
       },
       "verdict": {
         "kind": "red",
-        "detail": "run 32587132916 concluded 'failure'"
+        "detail": "run 32587966659 concluded 'failure'"
       },
       "band": "red",
-      "observedAt": "2026-08-22T17:31:24Z",
-      "silenceSeconds": 30,
+      "observedAt": "2026-08-22T17:43:22Z",
+      "silenceSeconds": 340,
       "observedThisPass": true,
       "undeclared": false
     },
@@ -165,6 +164,26 @@
         "kind": "unknown",
         "reason": "expectation-unknown",
         "detail": "cannot tell whether this check should run on this ref (host-managed check 'dynamic/copilot-swe-agent/copilot' — never declared in this repository, so its trigger cannot be read from the tree), and it has never produced a verdict"
+      },
+      "band": "unknown",
+      "observedAt": null,
+      "silenceSeconds": null,
+      "observedThisPass": false,
+      "undeclared": false
+    },
+    {
+      "checkId": "image-pull-measurement",
+      "displayName": "image-pull-measurement",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "unknown",
+        "reason": "definition-absent",
+        "detail": "workflow file '.github/workflows/image-pull-measurement.yml' is registered ACTIVE on the forge host but is ABSENT from the repository"
+      },
+      "verdict": {
+        "kind": "unknown",
+        "reason": "registered-but-absent",
+        "detail": "REGISTERED with the producer but its definition is ABSENT from the repository (workflow file '.github/workflows/image-pull-measurement.yml' is registered ACTIVE on the forge host but is ABSENT from the repository) — roster-versus-repository drift, invisible to a run-list check and to a file-tree check alike"
       },
       "band": "unknown",
       "observedAt": null,
@@ -247,7 +266,7 @@
       },
       "band": "skipped",
       "observedAt": "2026-08-22T12:22:15Z",
-      "silenceSeconds": 18579,
+      "silenceSeconds": 19607,
       "observedThisPass": true,
       "undeclared": false
     },
@@ -261,11 +280,11 @@
       },
       "verdict": {
         "kind": "skipped",
-        "detail": "run 32587986007 was skipped"
+        "detail": "run 32588873662 was skipped"
       },
       "band": "skipped",
-      "observedAt": "2026-08-22T17:31:28Z",
-      "silenceSeconds": 26,
+      "observedAt": "2026-08-22T17:49:02Z",
+      "silenceSeconds": 0,
       "observedThisPass": true,
       "undeclared": false
     },
@@ -462,7 +481,7 @@
       },
       "band": "green",
       "observedAt": "2026-05-30T04:44:02Z",
-      "silenceSeconds": 7303672,
+      "silenceSeconds": 7304700,
       "observedThisPass": true,
       "undeclared": false
     },
@@ -479,7 +498,7 @@
       },
       "band": "green",
       "observedAt": "2026-08-22T17:31:43Z",
-      "silenceSeconds": 11,
+      "silenceSeconds": 1039,
       "observedThisPass": true,
       "undeclared": false
     },
@@ -496,8 +515,8 @@
         "kind": "green"
       },
       "band": "green",
-      "observedAt": "2026-08-22T17:28:41Z",
-      "silenceSeconds": 193,
+      "observedAt": "2026-08-22T17:42:53Z",
+      "silenceSeconds": 369,
       "observedThisPass": true,
       "undeclared": false
     },
@@ -514,7 +533,7 @@
       },
       "band": "green",
       "observedAt": "2026-08-17T13:24:04Z",
-      "silenceSeconds": 446870,
+      "silenceSeconds": 447898,
       "observedThisPass": true,
       "undeclared": false
     },
@@ -531,8 +550,8 @@
         "kind": "green"
       },
       "band": "green",
-      "observedAt": "2026-08-22T17:27:54Z",
-      "silenceSeconds": 240,
+      "observedAt": "2026-08-22T17:44:02Z",
+      "silenceSeconds": 300,
       "observedThisPass": true,
       "undeclared": false
     },
@@ -549,7 +568,7 @@
       },
       "band": "green",
       "observedAt": "2026-08-20T16:50:56Z",
-      "silenceSeconds": 175258,
+      "silenceSeconds": 176286,
       "observedThisPass": true,
       "undeclared": false
     },
@@ -566,7 +585,7 @@
       },
       "band": "green",
       "observedAt": "2026-08-22T12:39:38Z",
-      "silenceSeconds": 17536,
+      "silenceSeconds": 18564,
       "observedThisPass": true,
       "undeclared": false
     },
@@ -583,7 +602,7 @@
       },
       "band": "green",
       "observedAt": "2026-08-21T06:26:02Z",
-      "silenceSeconds": 126352,
+      "silenceSeconds": 127380,
       "observedThisPass": true,
       "undeclared": false
     },
@@ -600,7 +619,7 @@
       },
       "band": "green",
       "observedAt": "2026-08-17T20:28:06Z",
-      "silenceSeconds": 421428,
+      "silenceSeconds": 422456,
       "observedThisPass": true,
       "undeclared": false
     },
@@ -617,7 +636,7 @@
       },
       "band": "green",
       "observedAt": "2026-08-22T17:19:01Z",
-      "silenceSeconds": 773,
+      "silenceSeconds": 1801,
       "observedThisPass": true,
       "undeclared": false
     },
@@ -634,8 +653,8 @@
         "kind": "green"
       },
       "band": "green",
-      "observedAt": "2026-08-22T17:30:54Z",
-      "silenceSeconds": 60,
+      "observedAt": "2026-08-22T17:47:14Z",
+      "silenceSeconds": 108,
       "observedThisPass": true,
       "undeclared": false
     },
@@ -653,7 +672,7 @@
       },
       "band": "green",
       "observedAt": "2026-08-01T04:10:02Z",
-      "silenceSeconds": 1862512,
+      "silenceSeconds": 1863540,
       "observedThisPass": true,
       "undeclared": false
     },
@@ -671,7 +690,7 @@
       },
       "band": "green",
       "observedAt": "2026-08-22T15:26:24Z",
-      "silenceSeconds": 7530,
+      "silenceSeconds": 8558,
       "observedThisPass": true,
       "undeclared": false
     },
@@ -688,7 +707,7 @@
       },
       "band": "green",
       "observedAt": "2026-08-22T11:57:33Z",
-      "silenceSeconds": 20061,
+      "silenceSeconds": 21089,
       "observedThisPass": true,
       "undeclared": false
     },
@@ -705,7 +724,7 @@
       },
       "band": "green",
       "observedAt": "2026-08-22T12:02:48Z",
-      "silenceSeconds": 19746,
+      "silenceSeconds": 20774,
       "observedThisPass": true,
       "undeclared": false
     },
@@ -722,7 +741,7 @@
       },
       "band": "green",
       "observedAt": "2026-08-22T12:20:55Z",
-      "silenceSeconds": 18659,
+      "silenceSeconds": 19687,
       "observedThisPass": true,
       "undeclared": false
     },
@@ -739,8 +758,8 @@
         "kind": "green"
       },
       "band": "green",
-      "observedAt": "2026-08-22T16:47:12Z",
-      "silenceSeconds": 2682,
+      "observedAt": "2026-08-22T17:45:04Z",
+      "silenceSeconds": 238,
       "observedThisPass": true,
       "undeclared": false
     },
@@ -758,7 +777,7 @@
       },
       "band": "green",
       "observedAt": "2026-08-22T14:44:12Z",
-      "silenceSeconds": 10062,
+      "silenceSeconds": 11090,
       "observedThisPass": true,
       "undeclared": false
     },
@@ -776,7 +795,7 @@
       },
       "band": "green",
       "observedAt": "2026-08-16T17:02:16Z",
-      "silenceSeconds": 520178,
+      "silenceSeconds": 521206,
       "observedThisPass": true,
       "undeclared": false
     },
@@ -793,7 +812,7 @@
       },
       "band": "green",
       "observedAt": "2026-08-22T11:52:14Z",
-      "silenceSeconds": 20380,
+      "silenceSeconds": 21408,
       "observedThisPass": true,
       "undeclared": false
     },
@@ -811,7 +830,7 @@
       },
       "band": "green",
       "observedAt": "2026-08-17T14:42:40Z",
-      "silenceSeconds": 442154,
+      "silenceSeconds": 443182,
       "observedThisPass": true,
       "undeclared": false
     },
@@ -828,8 +847,8 @@
         "kind": "green"
       },
       "band": "green",
-      "observedAt": "2026-08-22T17:24:14Z",
-      "silenceSeconds": 460,
+      "observedAt": "2026-08-22T17:38:21Z",
+      "silenceSeconds": 641,
       "observedThisPass": true,
       "undeclared": false
     },
@@ -847,7 +866,7 @@
       },
       "band": "green",
       "observedAt": "2026-08-22T15:41:50Z",
-      "silenceSeconds": 6604,
+      "silenceSeconds": 7632,
       "observedThisPass": true,
       "undeclared": false
     },
@@ -864,7 +883,7 @@
       },
       "band": "green",
       "observedAt": "2026-08-22T01:14:59Z",
-      "silenceSeconds": 58615,
+      "silenceSeconds": 59643,
       "observedThisPass": true,
       "undeclared": false
     },
@@ -881,7 +900,7 @@
       },
       "band": "green",
       "observedAt": "2026-08-19T10:00:18Z",
-      "silenceSeconds": 286296,
+      "silenceSeconds": 287324,
       "observedThisPass": true,
       "undeclared": false
     },
@@ -899,7 +918,7 @@
       },
       "band": "green",
       "observedAt": "2026-08-22T06:28:39Z",
-      "silenceSeconds": 39795,
+      "silenceSeconds": 40823,
       "observedThisPass": true,
       "undeclared": false
     },
@@ -917,7 +936,7 @@
       },
       "band": "green",
       "observedAt": "2026-08-22T17:30:21Z",
-      "silenceSeconds": 93,
+      "silenceSeconds": 1121,
       "observedThisPass": true,
       "undeclared": false
     },
@@ -934,7 +953,7 @@
       },
       "band": "green",
       "observedAt": "2026-08-22T01:13:40Z",
-      "silenceSeconds": 58694,
+      "silenceSeconds": 59722,
       "observedThisPass": true,
       "undeclared": false
     },
@@ -951,7 +970,7 @@
       },
       "band": "green",
       "observedAt": "2026-08-17T16:47:57Z",
-      "silenceSeconds": 434637,
+      "silenceSeconds": 435665,
       "observedThisPass": true,
       "undeclared": false
     },
@@ -967,8 +986,8 @@
         "kind": "green"
       },
       "band": "green",
-      "observedAt": "2026-08-22T17:31:53Z",
-      "silenceSeconds": 1,
+      "observedAt": "2026-08-22T17:47:55Z",
+      "silenceSeconds": 67,
       "observedThisPass": true,
       "undeclared": false
     },
@@ -985,8 +1004,8 @@
         "kind": "green"
       },
       "band": "green",
-      "observedAt": "2026-08-22T17:27:01Z",
-      "silenceSeconds": 293,
+      "observedAt": "2026-08-22T17:41:33Z",
+      "silenceSeconds": 449,
       "observedThisPass": true,
       "undeclared": false
     },
@@ -1004,7 +1023,7 @@
       },
       "band": "green",
       "observedAt": "2026-08-22T06:20:25Z",
-      "silenceSeconds": 40289,
+      "silenceSeconds": 41317,
       "observedThisPass": true,
       "undeclared": false
     },
@@ -1021,7 +1040,7 @@
       },
       "band": "green",
       "observedAt": "2026-08-22T11:55:31Z",
-      "silenceSeconds": 20183,
+      "silenceSeconds": 21211,
       "observedThisPass": true,
       "undeclared": false
     },
@@ -1038,7 +1057,7 @@
       },
       "band": "green",
       "observedAt": "2026-08-20T23:57:55Z",
-      "silenceSeconds": 149639,
+      "silenceSeconds": 150667,
       "observedThisPass": true,
       "undeclared": false
     },
@@ -1055,7 +1074,7 @@
       },
       "band": "green",
       "observedAt": "2026-08-19T21:55:39Z",
-      "silenceSeconds": 243375,
+      "silenceSeconds": 244403,
       "observedThisPass": true,
       "undeclared": false
     },
@@ -1072,7 +1091,7 @@
       },
       "band": "green",
       "observedAt": "2026-08-20T23:55:57Z",
-      "silenceSeconds": 149757,
+      "silenceSeconds": 150785,
       "observedThisPass": true,
       "undeclared": false
     },
@@ -1089,7 +1108,7 @@
       },
       "band": "green",
       "observedAt": "2026-08-20T23:58:18Z",
-      "silenceSeconds": 149616,
+      "silenceSeconds": 150644,
       "observedThisPass": true,
       "undeclared": false
     },
@@ -1106,7 +1125,7 @@
       },
       "band": "green",
       "observedAt": "2026-08-16T23:51:36Z",
-      "silenceSeconds": 495618,
+      "silenceSeconds": 496646,
       "observedThisPass": true,
       "undeclared": false
     },
@@ -1124,7 +1143,7 @@
       },
       "band": "green",
       "observedAt": "2026-08-22T17:06:07Z",
-      "silenceSeconds": 1547,
+      "silenceSeconds": 2575,
       "observedThisPass": true,
       "undeclared": false
     },
@@ -1142,7 +1161,7 @@
       },
       "band": "green",
       "observedAt": "2026-08-07T09:37:04Z",
-      "silenceSeconds": 1324490,
+      "silenceSeconds": 1325518,
       "observedThisPass": true,
       "undeclared": false
     },
@@ -1159,8 +1178,8 @@
         "kind": "green"
       },
       "band": "green",
-      "observedAt": "2026-08-22T17:26:22Z",
-      "silenceSeconds": 332,
+      "observedAt": "2026-08-22T17:40:54Z",
+      "silenceSeconds": 488,
       "observedThisPass": true,
       "undeclared": false
     },
@@ -1178,7 +1197,7 @@
       },
       "band": "green",
       "observedAt": "2026-08-22T12:36:37Z",
-      "silenceSeconds": 17717,
+      "silenceSeconds": 18745,
       "observedThisPass": true,
       "undeclared": false
     },
@@ -1196,7 +1215,7 @@
       },
       "band": "green",
       "observedAt": "2026-08-22T09:25:55Z",
-      "silenceSeconds": 29159,
+      "silenceSeconds": 30187,
       "observedThisPass": true,
       "undeclared": false
     },
@@ -1213,7 +1232,7 @@
       },
       "band": "green",
       "observedAt": "2026-08-20T16:59:00Z",
-      "silenceSeconds": 174774,
+      "silenceSeconds": 175802,
       "observedThisPass": true,
       "undeclared": false
     },
@@ -1231,7 +1250,7 @@
       },
       "band": "green",
       "observedAt": "2026-08-17T07:42:37Z",
-      "silenceSeconds": 467357,
+      "silenceSeconds": 468385,
       "observedThisPass": true,
       "undeclared": false
     },
@@ -1248,7 +1267,7 @@
       },
       "band": "green",
       "observedAt": "2026-08-20T11:33:12Z",
-      "silenceSeconds": 194322,
+      "silenceSeconds": 195350,
       "observedThisPass": true,
       "undeclared": false
     },
@@ -1265,8 +1284,8 @@
         "kind": "green"
       },
       "band": "green",
-      "observedAt": "2026-08-22T17:08:16Z",
-      "silenceSeconds": 1418,
+      "observedAt": "2026-08-22T17:40:21Z",
+      "silenceSeconds": 521,
       "observedThisPass": true,
       "undeclared": false
     },
@@ -1284,7 +1303,7 @@
       },
       "band": "green",
       "observedAt": "2026-08-22T09:46:54Z",
-      "silenceSeconds": 27900,
+      "silenceSeconds": 28928,
       "observedThisPass": true,
       "undeclared": false
     },
@@ -1301,7 +1320,7 @@
       },
       "band": "green",
       "observedAt": "2026-08-15T14:30:42Z",
-      "silenceSeconds": 615672,
+      "silenceSeconds": 616700,
       "observedThisPass": true,
       "undeclared": false
     },
@@ -1318,8 +1337,8 @@
         "kind": "green"
       },
       "band": "green",
-      "observedAt": "2026-08-22T17:23:55Z",
-      "silenceSeconds": 479,
+      "observedAt": "2026-08-22T17:38:37Z",
+      "silenceSeconds": 625,
       "observedThisPass": true,
       "undeclared": false
     },
@@ -1336,7 +1355,7 @@
       },
       "band": "green",
       "observedAt": "2026-08-22T17:31:22Z",
-      "silenceSeconds": 32,
+      "silenceSeconds": 1060,
       "observedThisPass": true,
       "undeclared": false
     },
@@ -1354,7 +1373,7 @@
       },
       "band": "green",
       "observedAt": "2026-08-01T14:32:42Z",
-      "silenceSeconds": 1825152,
+      "silenceSeconds": 1826180,
       "observedThisPass": true,
       "undeclared": false
     },
@@ -1371,7 +1390,7 @@
       },
       "band": "green",
       "observedAt": "2026-08-11T02:39:45Z",
-      "silenceSeconds": 1003929,
+      "silenceSeconds": 1004957,
       "observedThisPass": true,
       "undeclared": false
     },
@@ -1388,7 +1407,7 @@
       },
       "band": "green",
       "observedAt": "2026-08-22T12:00:36Z",
-      "silenceSeconds": 19878,
+      "silenceSeconds": 20906,
       "observedThisPass": true,
       "undeclared": false
     },
@@ -1405,8 +1424,8 @@
         "kind": "green"
       },
       "band": "green",
-      "observedAt": "2026-08-22T17:20:00Z",
-      "silenceSeconds": 714,
+      "observedAt": "2026-08-22T17:48:45Z",
+      "silenceSeconds": 17,
       "observedThisPass": true,
       "undeclared": false
     },
@@ -1424,26 +1443,26 @@
       },
       "band": "green",
       "observedAt": "2026-08-16T15:34:36Z",
-      "silenceSeconds": 525438,
+      "silenceSeconds": 526466,
       "observedThisPass": true,
       "undeclared": false
     }
   ],
   "counts": {
     "red": 8,
-    "unknown": 4,
+    "unknown": 5,
     "running": 0,
     "skipped": 2,
     "not-applicable": 10,
     "green": 56
   },
   "coverage": {
-    "expected": 66,
+    "expected": 67,
     "observed": 62,
-    "shortfall": 4,
+    "shortfall": 5,
     "onDemand": 14,
     "retired": 0,
-    "known": 80
+    "known": 81
   },
   "oldestUnknownSilenceSeconds": null,
   "hasNeverObserved": true,

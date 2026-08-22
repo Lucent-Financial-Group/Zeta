@@ -126,3 +126,34 @@ describe("json", () => {
     expect(JSON.parse(text).coverage.shortfall).toBe(2);
   });
 });
+
+describe("the generated markdown must pass the repo's own lint — a rule the generator owns", () => {
+  it("escapes the asterisks in a cron, which Markdown would otherwise read as emphasis (MD037)", () => {
+    // `7 17 * * 0` contains `* *`. Caught by markdownlint on the first generated file.
+    const report = foldDashboard({
+      roster: mergeDefinitions(emptyRoster("main", NOW), [
+        def("chart-version-refresh", { kind: "periodic", periodSeconds: 7 * 86_400, detail: "schedule: '7 17 * * 0'" }),
+      ], NOW),
+      observations: [],
+      now: NOW,
+    });
+    const md = renderMarkdown(report);
+    expect(md).toContain("7 17 \\* \\* 0");
+    expect(md).not.toContain("* * 0'");
+  });
+
+  it("never emits two consecutive blank lines (MD012)", () => {
+    expect(renderMarkdown(sample())).not.toMatch(/\n\n\n/);
+  });
+
+  it("leaves text inside a code span alone, so no backslash leaks into what a reader sees", () => {
+    const report = foldDashboard({
+      roster: mergeDefinitions(emptyRoster("main", NOW), [
+        def("x", { kind: "on-change", detail: "matches `a*b` exactly" }),
+      ], NOW),
+      observations: [],
+      now: NOW,
+    });
+    expect(renderMarkdown(report)).toContain("`a*b`");
+  });
+});

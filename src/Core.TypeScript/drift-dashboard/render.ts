@@ -30,12 +30,34 @@ function silenceCell(row: DashboardRow): string {
 
 function detailOf(row: DashboardRow): string {
   const v = row.verdict;
-  const base = v.kind === "green" || v.kind === "running" ? "" : v.detail;
+  const base = v.kind === "green" || v.kind === "running" ? "" : escText(v.detail);
   return row.undeclared ? `${base}${base === "" ? "" : " · "}**no source declared this check in this pass**` : base;
 }
 
+/**
+ * Cell-structure escaping only: `|` would end the cell and a newline would end the
+ * row. Applied to EVERY cell, including ones this file formats deliberately, so it
+ * must never touch emphasis — `**NEVER observed**` is markup we meant.
+ */
 function esc(s: string): string {
   return s.replace(/\|/g, "\\|").replace(/\n/g, " ");
+}
+
+/**
+ * Escaping for text that came from OUTSIDE this file — a producer's detail string, an
+ * expectation's declaration. Such text is data, never markup, so its `*` must not be
+ * read as emphasis.
+ *
+ * The concrete reason: a cron like `7 17 * * 0` contains `* *`, which Markdown reads
+ * as an emphasis span and markdownlint rejects (MD037). A generated artifact that
+ * cannot pass the repo's own lint cannot be committed, so the generator owns this.
+ * Text already inside a code span is left alone, so no backslash reaches a reader.
+ */
+function escText(s: string): string {
+  return s
+    .split("`")
+    .map((part, i) => (i % 2 === 1 ? part : part.replace(/\*/g, "\\*")))
+    .join("`");
 }
 
 function table(headers: readonly string[], rows: readonly (readonly string[])[]): string {
@@ -108,7 +130,7 @@ export function renderMarkdown(report: DashboardReport): string {
   out.push("Declared to fire only on request, so silence on this ref is **correct**. Listed, not");
   out.push("hidden, and deliberately not called green — a distinction laundered is a distinction lost.\n");
   out.push("<details><summary>show</summary>\n");
-  out.push(table(["check", "expectation"], by("not-applicable").map((r) => [`\`${r.checkId}\``, r.expectation.detail])));
+  out.push(table(["check", "expectation"], by("not-applicable").map((r) => [`\`${r.checkId}\``, escText(r.expectation.detail)])));
   out.push("\n</details>\n");
 
   out.push(`\n## Green — ${c.green}\n`);
@@ -123,7 +145,10 @@ export function renderMarkdown(report: DashboardReport): string {
   out.push("`db/drift-dashboard/roster.json` — a new check appearing and a known check vanishing are");
   out.push("both events you can see in a `git diff`. A vanished check keeps its slot and keeps being");
   out.push("counted; retirement is written by hand, with a reason, and by nothing else.\n");
-  return out.join("\n");
+  // Collapse runs of blank lines: the section builders each end with their own blank
+  // line, and markdownlint (MD012) refuses two in a row. A generated artifact that
+  // cannot pass the repo's own lint cannot be committed, so the generator owns this.
+  return out.join("\n").replace(/\n{3,}/g, "\n\n");
 }
 
 /** Machine-readable artifact for other tools. Text, diffable, no schema surprises. */
