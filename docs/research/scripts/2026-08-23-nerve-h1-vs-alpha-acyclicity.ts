@@ -25,9 +25,12 @@ import { isAlphaAcyclic, type Cover } from "../../../src/Core.TypeScript/cover-a
 
 function intersectNonempty(sets: readonly ReadonlySet<string>[], idxs: readonly number[]): boolean {
   if (idxs.length === 0) return true;
-  let acc = [...sets[idxs[0]]!];
+  // `noUncheckedIndexedAccess` types `idxs[k]` as `number | undefined`, so the index
+  // itself needs the assertion, not just the lookup. Both are safe: the early return
+  // above establishes `idxs.length > 0`, and `k` is bounded by `idxs.length` below.
+  let acc = [...sets[idxs[0]!]!];
   for (let k = 1; k < idxs.length; k++) {
-    const s = sets[idxs[k]]!;
+    const s = sets[idxs[k]!]!;
     acc = acc.filter((a) => s.has(a));
     if (acc.length === 0) return false;
   }
