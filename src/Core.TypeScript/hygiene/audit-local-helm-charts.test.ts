@@ -1,9 +1,9 @@
 /**
- * infra/k8s/tests/validate-local-charts.test.ts
+ * src/Core.TypeScript/hygiene/audit-local-helm-charts.test.ts
  *
- * MUTATION SUITE — proves `validate-local-charts.ts` can go RED.
+ * MUTATION SUITE — proves `audit-local-helm-charts.ts` can go RED.
  *
- * Same discipline as validate-applications.test.ts, for the same reason: a
+ * Same discipline as infra/k8s/tests/validate-applications.test.ts, for the same reason: a
  * green check is worth nothing until someone has watched it fail. Each case
  * copies the REAL example chart tree to a temp dir, applies ONE mutation, runs
  * the validator as a subprocess, and asserts BOTH exit code 1 AND the specific
@@ -31,7 +31,7 @@ import { fileURLToPath } from "node:url";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const repoRoot = resolve(here, "../../..");
-const validator = join(here, "validate-local-charts.ts");
+const validator = join(here, "audit-local-helm-charts.ts");
 const realExample = join(repoRoot, "examples", "helm-dependency-graph");
 
 interface RunResult {
@@ -69,7 +69,7 @@ function edit(path: string, fn: (text: string) => string): void {
   writeFileSync(path, fn(readFileSync(path, "utf-8")), "utf-8");
 }
 
-describe("validate-local-charts mutation suite", () => {
+describe("audit-local-helm-charts mutation suite", () => {
   test("control: the unmutated example tree passes", () => {
     const r = runWithMutation(() => {});
     expect(r.output).toContain("Discovered 2 in-repo chart(s)");

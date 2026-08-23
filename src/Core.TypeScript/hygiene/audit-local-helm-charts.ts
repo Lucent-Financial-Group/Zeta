@@ -8,6 +8,15 @@
 //   - occurrences of `helm lint` anywhere in the repository ........... 0
 //   - workflows whose `paths:` filter matches examples/ ............... 0
 //
+// HOME. This deliberately does NOT live in infra/k8s/tests/ alongside the
+// Application validators, even though that is the k8s test directory. That tree
+// is scheduled for deletion and its own roster entry in
+// hygiene/cluster-tree-consumers.json already carries the instruction "move the
+// validator out of infra/k8s/tests/". Landing new code there would have created
+// fresh coupling to a doomed tree -- which `audit-cluster-tree-consumers.ts`
+// caught on the first CI run of this change, correctly. These charts live under
+// examples/ and have nothing to do with infra/k8s anyway.
+//
 // The existing helm-validate.yml lane is real and does render charts, but it
 // validates ArgoCD *Application* manifests that pin THIRD-PARTY charts. It
 // filters on infra/k8s/**, full-ai-cluster/** and infra/nixos/**, so the two

@@ -54,9 +54,9 @@ No manual copy-paste of connection strings between charts.
 Run locally:
 
 ```bash
-bun infra/k8s/tests/validate-local-charts.ts          # offline: no helm needed
-bun infra/k8s/tests/validate-local-charts.ts --helm   # adds helm lint + template + kubeconform
-bun test infra/k8s/tests/validate-local-charts.test.ts # proves the validator can go red
+bun src/Core.TypeScript/hygiene/audit-local-helm-charts.ts        # offline: no helm needed
+bun src/Core.TypeScript/hygiene/audit-local-helm-charts.ts --helm # adds helm lint + template + kubeconform
+bun test src/Core.TypeScript/hygiene/audit-local-helm-charts.test.ts # proves it can go red
 ```
 
 In CI both halves run from `.github/workflows/helm-validate.yml` — the offline
@@ -93,7 +93,7 @@ half in the full-tier `charts` job.
   `connection-url` into `database.url` needs a live cluster and is the manual
   procedure in [`OPERATOR-VERIFY.md`](OPERATOR-VERIFY.md), not this lane.
 - **Third-party charts pinned by ArgoCD `Application` manifests** are a
-  different lane entirely — `infra/k8s/tests/validate-applications.ts`.
+  different lane entirely, with its own validator.
 
 ## Further reading
 
