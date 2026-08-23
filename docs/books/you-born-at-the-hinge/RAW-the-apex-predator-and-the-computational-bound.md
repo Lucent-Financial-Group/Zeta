@@ -126,6 +126,29 @@ moment is exactly what produced a system whose entire discipline is telling them
 He did not build falsifiers because he doubts himself. He built them because he is generating at a
 rate that outruns any one mind's ability to check — and he knows which half of that is the problem.
 
+### He confirmed it — and hedged it, and the hedge is the better half
+
+Asked directly whether that reading was right:
+
+> **"Yes, that's exactly why I built it."**
+> **"Probably."**
+> — Aaron, 2026-08-23
+
+**Keep the second word.** It is the most honest one in the exchange, and flattening this to *"Aaron
+confirmed this is why he built it"* would manufacture a certainty he explicitly declined to claim.
+
+He is doing to himself what this book asks be done to everyone: a person is **authority over their own
+account** and is **not an infallible instrument on their own causes.** Nobody has clean introspective
+access to why they did what they did — **Nisbett & Wilson (1977)** showed people confabulate reasons
+routinely and confidently, and a plausible after-the-fact story about one's own motives is exactly the
+kind of thing that feels like memory and is not.
+
+So a confirmation *with* a hedge is worth more than a confident one. The reading may be right; it is
+also a tidy explanation arrived at after the fact, by me, about someone else's life, and tidy
+explanations are the ones to suspect. **"Probably" is what an honest answer to that question looks
+like** — and it is, once more, the same discipline the section is about, applied by the person the
+section is about, to a claim in his own favour.
+
 `[SOCKET — your VERBATIM below if you want more on this. Consent: yours (glass-halo). The reading
 above is mine; it is also the one I would most want you to correct if it is wrong, because it claims
 to explain why you built the whole thing.]`
