@@ -1519,6 +1519,55 @@ jobs:
       - name: Run lint-workflow-job-timeouts (unbounded-runner-slot guard)
         run: bun src/Core.TypeScript/hygiene/lint-workflow-job-timeouts.ts
 
+      # A lane that COMPUTES a drift artifact must be able to PUBLISH it, and must fail when
+      # it cannot. `drift-sweep` pushed its ledger at `main` from 2026-08-13, was refused
+      # every run by the "CI Gate" ruleset, swallowed the refusal with
+      # `git push || echo "push race"`, and concluded SUCCESS 1,597 times while
+      # `docs/drift-events/` stayed frozen at tick 000247 — ten days of dashboard data
+      # served from behind a green check (081M0QPZD9C087G0R002W8QC2A). The `||` is the
+      # sharp part: it misfiled a PERMANENT rule rejection as a TRANSIENT race, so the lane
+      # kept "recovering" from something that could never resolve.
+      #
+      # Three rules over lanes derived from content (never a hand-kept allowlist): no
+      # publication push at `main`, no publish failure routed into a non-fatal handler, and
+      # a real `git push --dry-run` capability probe — presence of a token is not capability,
+      # which is the check that would have caught this on day one instead of day ten. The
+      # `continue-on-error` half cannot be caught downstream at all: the REST jobs API
+      # reports a swallowed STEP's conclusion as `success`, so static text is the only
+      # channel that carries it.
+      - name: Run lint-drift-publication-lands (stale-behind-green guard)
+        run: bun src/Core.TypeScript/hygiene/lint-drift-publication-lands.ts
+
+      # Tsirelson's bound is S <= 2*sqrt(2) ~= 2.828 on the CHSH correlator, implemented at
+      # src/Core/Tsirelson.fs. 1/(3*sqrt(2)) ~= 0.2357 is a DIFFERENT number: the image of
+      # S = 2*sqrt(2) under the freely chosen linear map rho = S/12, adjudicated as a DESIGN
+      # CHOICE. It is a legitimate design threshold and every current use of it is
+      # behaviourally correct -- but every time the physicist's name got attached to it,
+      # something broke. Z-3 and Z-5 were DEMOTED section-A -> section-B and the
+      # Zeta-Conjecture keystone claim was REFUTED, all over this one constant.
+      # Aaron 2026-08-23: "most 1/(3sqrt2) have turned out to be bugs."
+      #
+      # The 2026-08-01 response was a hand-propagated prose caveat. A prose sweep is a
+      # SNAPSHOT: not idempotent, and it does not survive new files. Measured 2026-08-23, the
+      # two 2026-07-16 sibling docs had drifted into DISAGREEING WITH EACH OTHER -- one
+      # carried the banner, one did not, and neither could know. This guard is that same
+      # correction expressed as a check instead of prose: the repo's own doctrine (prose rots,
+      # a check does not) applied to its own correction.
+      #
+      # It refuses the NAME, never the NUMBER -- no value and no behaviour is in its scope.
+      # Its caveat markers are DERIVED from the provenance doc, which it DISCOVERS by shape
+      # rather than hardcoding, so renaming that doc reddens every stale citation instead of
+      # silently disabling the guard. Sibling from the same 2026-08-01 audit:
+      # lint-discharge-certificate-consistency.ts (in the lint (no empty dirs) job).
+      - name: Run lint-tsirelson-constant-caveat (1/(3√2) is not a Tsirelson bound)
+        run: bun src/Core.TypeScript/hygiene/lint-tsirelson-constant-caveat.ts
+
+      # The guard above is only worth its runtime if it can still FIRE. Two of these tests
+      # exist because earlier drafts of it were VACUOUS on the real tree -- markers that
+      # green-lit the very files they were written for. Pinned so they cannot come back.
+      - name: Tsirelson-caveat guard unit tests (a check that cannot fail is not a check)
+        run: bun test src/Core.TypeScript/hygiene/lint-tsirelson-constant-caveat.test.ts
+
   lint-no-empty-dirs:
     # Fail if a committed directory has no files — almost always a
     # forgotten artefact (an agent-created skill folder without a
@@ -1672,6 +1721,52 @@ jobs:
       - name: Run TypeScript Lint Script
         # Type check and lint checks for TypeScript files via dedicated orchestrator
         run: bun src/Core.TypeScript/lint/lint-typescript.ts
+
+  lint-twitch-ai:
+    # twitch-ai is a self-contained Vite workspace (own tsconfig: lib DOM +
+    # vite/client types, own bun.lock) that NO CI job ran — the app's real
+    # build was invisible until someone ran it by hand
+    # (workitems/081M0QF7ZVY087G0R003Q4Q18D; two main-is-red workitems came
+    # out of that gap). The root `lint (TS)` reaches these files only
+    # incidentally, under ROOT settings (bun types, no DOM), not the app's.
+    # This job runs the workspace's OWN typecheck, the repo ESLint config
+    # over the app tree — the first narrow-path slice of
+    # workitems/081M0RBXF6J087G0R0023EX9X2 ("eslint configured, pinned and
+    # named in CI but never invoked"; that workitem's own prescription is
+    # "turn the tool on for a narrow path first and widen") — and the real
+    # `vite build`.
+    # Drift check, not floor: adding a job to `gate (required)`'s needs is a
+    # treaty amendment (see the floor comment there); that decision stays
+    # with the consent path.
+    name: lint (twitch-ai app)
+    timeout-minutes: 12
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Setup pinned Bun
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: "1.3.13"
+
+      - name: Install root devDependencies (the eslint stack)
+        run: bun install --frozen-lockfile
+
+      - name: Install app dependencies (the app's own lockfile)
+        run: bun install --frozen-lockfile
+        working-directory: src/apps/twitch-ai
+
+      - name: Typecheck under the app's own tsconfig
+        run: bun run typecheck
+        working-directory: src/apps/twitch-ai
+
+      - name: ESLint over the app tree (repo config; rc captured directly)
+        run: bunx eslint src/apps/twitch-ai/src
+
+      - name: Vite build (the app's real build, exactly what deploys)
+        run: bun run build
+        working-directory: src/apps/twitch-ai
 
   # Per-language lint jobs (split from the former single sequential
   # "lint (F#, C#, Go, Python, Rust)" job, 2026-06-13). The combined job ran the
@@ -2009,6 +2104,41 @@ jobs:
       # a schedule in chart-version-refresh.yml where it is allowed to fail loudly.
       - name: ArgoCD chart targetRevisions resolve (offline, against the committed snapshot)
         run: bun src/Core.TypeScript/hygiene/audit-chart-target-revisions.ts
+
+      # NO MANIFEST IN THE PUBLIC TREE MAY REFERENCE AN IMAGE NOBODY OUTSIDE CAN PULL.
+      # `applications/platform/blueprints-flowdent.yaml` shipped here for months naming
+      # ghcr.io/flowdent/cloudservice and ghcr.io/flowdent/fd-webclient -- images out of
+      # Flowdent/fd-core (private) and Flowdent/fd-webclient (internal), in an org with
+      # public_repos: 0. An agent wrote to the wrong repository in a multi-repo setup and
+      # nothing caught it; it took months and a partitioner that could not MEASURE the images
+      # to surface it, and a human to remove it (#14250). This is that accident as a red check.
+      #
+      # Aaron 2026-08-23: "zeta should not have any private repo dependencies." The invariant is
+      # ONE-WAY: Flowdent (closed) may depend on Zeta (open); Zeta may never depend on Flowdent.
+      #
+      # HERE, on the floor that runs on EVERY PR, rather than in k8s-lane-partition.yml: that
+      # workflow's path filter watches full-ai-cluster/k8s only, and this check's scope is every
+      # tracked YAML outside docs/references/.github -- infra/k8s, agentic-organization/deploy,
+      # samples/, and whatever directory the next multi-repo accident lands in. A path filter is
+      # exactly the wrong shape for a check whose whole job is to notice a manifest somewhere
+      # nobody declared.
+      #
+      # OFFLINE. It resolves every reference against the committed measurement
+      # `full-ai-cluster/k8s/image-source-provenance.json` and opens no socket; the network half
+      # is `--refresh` and it runs weekly in chart-version-refresh.yml. MEASURED 2026-08-23:
+      # 0.43s, 49 files parsed of 209 scanned.
+      - name: No private-source image dependencies (offline, against the committed provenance)
+        run: bun src/Core.TypeScript/cluster/image-source-provenance.ts
+
+      # The check above is only worth its slot if it can go red. The suite reconstructs the two
+      # FlowDent Blueprints in a throwaway git tree and asserts they are refused with the REMOVE
+      # remedy, asserts bitnami/weaviate/ich777/postgres/kubevirt are NOT tripped, and asserts an
+      # unresolvable package with no source label is refused rather than admitted. 35 cases;
+      # 16 targeted mutants applied and byte-`cmp` verified before reading each result -- 15
+      # landed and were all killed, and the 16th reported PATTERN NOT FOUND rather than a
+      # result, which is the discipline working.
+      - name: Private-source image dependencies — falsifiers (proves it goes red)
+        run: bun test src/Core.TypeScript/cluster/image-source-provenance.test.ts
 
       # ARE THE DEFERRAL REASONS STILL TRUE? Every reasoned-exclusion registry in the cluster
       # tree was audited for a reason being PRESENT and naming a lift condition, and by nothing
@@ -2735,6 +2865,19 @@ jobs:
   # This is not decoration and it is not a test double: it is the falsifier that keeps an
   # observability layer from becoming the next thing that quietly stopped working — the
   # class this repo has now rediscovered three times. Do not "fix" the failing step.
+  #
+  # IT PAID FOR ITSELF ON ITS FIRST RUN (run 32651748761, 2026-08-23). `drift (loud)`
+  # went red with DETECTOR WENT QUIET while this job was running two feet away, because
+  # the REST jobs API reports a swallowed step's conclusion as `success` — the failing
+  # step above reads `"conclusion": "success"` in
+  # GET /actions/runs/32651748761/jobs. `outcome` is workflow-local and not on the REST
+  # payload at all, so the class is not merely unsurfaced, it is UNREPRESENTABLE in the
+  # data every earlier surface reads. The note further up this file that "the API reports
+  # a continue-on-error leg's conclusion as `failure`" is true of JOBS and false of STEPS.
+  # The channel that does carry it: GET /check-runs/97224512630/annotations returns
+  # `annotation_level: "failure"` on a check run whose conclusion is `success`. That is
+  # what the reporter reads now. A test would not have found this — only a live specimen
+  # against the live API could.
   drift-canary:
     name: drift-canary
     runs-on: ubuntu-24.04

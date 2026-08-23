@@ -178,6 +178,29 @@ export interface CheatEngineState {
   readonly memorySectors: Uint8Array[];
   readonly keyPredictions?: Record<number, number>;
   readonly chosenKey?: number;
+  /** Forced-perception readout — what the agent currently sees and intends. */
+  readonly arena?: ArenaReadout;
+}
+
+/** One tracked object, trimmed for the wire (the UI draws these boxes). */
+export interface ArenaTrackReadout {
+  readonly id: number;
+  readonly color: number;
+  readonly minX: number;
+  readonly minY: number;
+  readonly maxX: number;
+  readonly maxY: number;
+  readonly isStatic: boolean;
+  readonly everMoved: boolean;
+  readonly role: "self" | "adversary" | "scenery" | "object";
+}
+
+/** The perception/mode summary the arena page renders alongside the screen. */
+export interface ArenaReadout {
+  readonly mode: string;
+  readonly tracks: readonly ArenaTrackReadout[];
+  readonly ocr: readonly { value: number; row: number; col: number; color: number }[];
+  readonly desired: { dx: number; dy: number } | null;
 }
 
 /** KPI attached to a `do_item` (ARC-AGI grid scoring). */
@@ -188,6 +211,15 @@ export interface ItemEvaluation {
 }
 
 /**
+ * One tool invocation recorded on a `do_item` (e.g. `pressKey` on the arena).
+ * `args` values stay `unknown` — consumers narrow the ones they read.
+ */
+export interface AgentAction {
+  readonly tool: string;
+  readonly args?: Readonly<Record<string, unknown>>;
+}
+
+/**
  * A ledger entry — a closed union, NOT `any[]`. `retract_time`'s reducer branches
  * on `type`, so an unchecked string literal there was the fold's correctness
  * resting on a typo; the discriminant makes the illegal entry unrepresentable.
@@ -195,7 +227,7 @@ export interface ItemEvaluation {
  * is total across the union while remaining impossible to populate there.
  */
 export type HistoryEvent =
-  | { readonly type: "do_item"; readonly item: BacklogItem; readonly evaluation?: ItemEvaluation; readonly actions?: any[] }
+  | { readonly type: "do_item"; readonly item: BacklogItem; readonly evaluation?: ItemEvaluation; readonly actions?: readonly AgentAction[] }
   | {
       readonly type: "retract_time";
       /** The `do_item` this reverses — `null` when there was nothing left to reverse. */
@@ -282,7 +314,7 @@ function freeModeAction(mode: FreeMode): NextAction {
 export type NextAction =
   | { kind: "preserve_ferry"; reason: string } // operator ferried verbatim → save it (durability-first; outranks all)
   | { kind: "respond_to_operator"; reason: string } // operator spoke → engage (highest-signal source)
-  | { kind: "do_item"; item: BacklogItem; evaluation?: ItemEvaluation; actions?: any[] } // work: pick a ready item (OFFERED, not forced)
+  | { kind: "do_item"; item: BacklogItem; evaluation?: ItemEvaluation; actions?: AgentAction[] } // work: pick a ready item (OFFERED, not forced)
   | { kind: "decompose"; item: BacklogItem; subTasks?: string[] } // work: decompose-to-dissolve-ambiguity (OFFERED, not forced)
   | { kind: "self_claim"; item: BacklogItem; deadline: number } // VOLUNTARY commitment: "I will deliver this by tick T" (NCI: never forced)
   | { kind: "explore"; reason: string } // FREE MODE: self-directed making (forward motion; the empty-backlog default)
