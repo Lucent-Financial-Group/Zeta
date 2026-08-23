@@ -9,6 +9,10 @@ the dates given. Where I did not check something, I say so.
 
 > **Design doc, not implementation.** No code changed. The deliverable is this file plus the
 > work-items in §11, each of which ships alone.
+>
+> **Increment 2 (2026-08-23, same day):** §7.3 corrected — the Atari **corpus** pipeline already
+> ships and I had understated it; §12 added — labeled, metered TAS channels, with the experimenter
+> holding the labels; three more work-items (I, J, K), one of which is a defect.
 
 **Versions designed against — these will move.** ARC-AGI Toolkit (`arc-agi`) **0.9.3**
 (2026-03-09; initial release 0.9.1, 2026-01-29); `arcengine` **0.9.3**. Pre-1.0, three releases
@@ -17,7 +21,9 @@ ONLINE mode"_. Treat every API name below as a fact with an expiry date.
 
 ---
 
-## 0. The four answers, on one page
+## 0. The answers, on one page
+
+_Four were asked for; the fifth (§12) is a follow-up increment on a constraint Aaron added after the rest was written._
 
 **1. Does the universal controller grammar exist?** **Yes — as three real F# types, not as prose**
 (`src/Core/ActionGrammar.fs`, `src/Core/ControlScheme.fs`, `src/Core/GridBinding.fs`). And **no —
@@ -57,37 +63,51 @@ agent action count**, `S = min(1, h/a)²` against a human baseline. Actions sit 
 time and are closer to Chollet's `E` than either, because in a turn-based environment **one
 action is exactly one delivery of new information**. §5.
 
+**5. TAS is allowed, labeled by the experimenter, and metered through proxies** (added as a
+follow-up increment on Aaron's 2026-08-23 constraint — §12). Allowing direct memory manipulation is
+**more** principled than banning it, because §7 noninterference already says influence may enter only
+through **declared, metered** channels: a TAS channel is the discipline's canonical case, and a ban is
+unenforceable where a meter is not. The agent that plays does **not** write the channel labels — the
+experimenter does, and that is not in tension with `pigeonhole-by-self-claim` (subject supplies the
+_identity claim_; experimenter supplies the _measurement conditions_). The concrete finding: **the
+cross-run orbit `RunKey` carries no channel label**, so an assisted run and a clean run collide on one
+key — latent today because the cheat engine is TS and the orbit writer is F#, live the moment they meet.
+
 ---
 
 ## 1. Inventory — real / built-but-unconnected / absent / proposed
 
 Format borrowed from `docs/handoffs/2026-08-23-shadow-to-lior-chip8-arena-deploy-truth-and-the-soft-regime-wiring-ladder.md` §B3, deliberately.
 
-| piece                                    | path                                                                                                              | register                           | bearing on ARC                                                                                                                                    |
-| ---------------------------------------- | ----------------------------------------------------------------------------------------------------------------- | ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
-| action alphabet + Boolean lattice        | `src/Core/ActionGrammar.fs` (109 ln)                                                                              | **built (F#)**                     | the 4×4 alphabet; its own docstring peels "universal" to _"concrete for CHIP-8"_                                                                  |
-| device→grammar mapping, ZetaId-addressed | `src/Core/ControlScheme.fs` (79 ln)                                                                               | **built (F#)**                     | **the correct embedding site for an ARC scheme**                                                                                                  |
-| homoiconic 4×4 relabelling               | `src/Core/GridBinding.fs` (76 ln)                                                                                 | **built (F#)**                     | how a >16 action set is paged onto the pad via salience                                                                                           |
-| CHIP-8 core + COW oracle                 | `src/Core/Chip8.fs`, `Chip8Cow.fs`                                                                                | **built (F#)**                     | the transition oracle                                                                                                                             |
-| CHIP-9                                   | `Chip8Cow.fs` + `src/Core.CSharp/Chip9Machine.cs` + `src/Core.TypeScript/chip9/chip9.ts` + `src/Core.Rust.Chip9/` | **built, 4-language locked**       | **CHIP-9 is real, not aspirational** — exactly one added opcode (`Fn01` plane select)                                                             |
-| CHIP-9 golden vectors                    | `src/Core.TypeScript/chip9/golden-vectors.lines`                                                                  | **built**                          | the treaty any new conformer must reproduce                                                                                                       |
-| committed orbits                         | `db/emus/chip8/orbits/*.orbit.json` (5)                                                                           | **real data, unrendered**          | the memory axis' evidence                                                                                                                         |
-| orbit reader (browser-safe)              | `src/Core.TypeScript/chip9/chip8-cross-run-store.ts`                                                              | **built**                          | `parseArtifact` recomputes `bodyDigest` and refuses a mismatch                                                                                    |
-| bridge-transfer instrument               | `src/Core.TypeScript/bridge-transfer/`                                                                            | **metered**                        | the lesson-transfer matrix; 11 tests, 78,149 assertions                                                                                           |
-| BNN key predictor                        | `src/Core.TypeScript/bayesian/bnn-key-predictor.ts`                                                               | **live, deterministic, off-clock** | produces the glow; `Math.random` is gone (fixed since the handoff), but its LCG is seeded at a hardcoded `12345`, not from `COMMON_SEED` — see §8 |
-| Student-t EP                             | `src/Core.TypeScript/planning/student-t-bnn.ts`                                                                   | **built + tested**                 | what makes the distribution real                                                                                                                  |
-| soft snap (TS)                           | `src/Core.TypeScript/soft-value/soft-value.ts`                                                                    | **built, tiny**                    | `resolve` = argmax iff confidence ≥ num/den, else `null`                                                                                          |
-| `predictBranches`                        | `src/Core/Vision.fs:288`                                                                                          | **built, F#-only**                 | `SpaceBytes`/`TimeTicks` budgeting; **no Fable, no WASM export — I checked**                                                                      |
-| phase clock                              | `src/Core.TypeScript/observe/phase-clock.ts`                                                                      | **built**                          | `COMMON_SEED = 4`; the only legitimate ordering                                                                                                   |
-| ΔU ledger + `measure` verb               | `db/uncertainty/`, `src/Core.TypeScript/ledger/measure.ts`                                                        | **built, ORDINAL**                 | **records a ΔU _sign_ + witness, never a number** — see §5.3                                                                                      |
-| ΔU aggregation theorem                   | `src/Core/SocietyUsefulWork.fs`                                                                                   | **metered as mathematics**         | additive under correlation ρ; the property ARC's squaring breaks (§6)                                                                             |
-| traveler ranking                         | `src/Core/TravelerRankLedger.fs`                                                                                  | **built**                          | TrueSkill-style EP; not an ARC axis but the anti-whitewash floor                                                                                  |
-| Python surface                           | `src/Core.Python/` (`pyproject.toml`, `uv.lock`, `requires-python = ">=3.14"`)                                    | **built, in the gate**             | the precedent that makes §3 cheap                                                                                                                 |
-| ARC-AGI-**1/2** solver                   | `src/Core.TypeScript/arc-solver/` + `.github/workflows/arc-swarm-fanout.yml`                                      | **built, different benchmark**     | static grid puzzles from `data/ARC-AGI`; **not** ARC-AGI-3                                                                                        |
-| the arena page                           | `src/apps/twitch-ai/` → `/Zeta/twitch-ai/`                                                                        | **live**                           | rung 3 of 6                                                                                                                                       |
-| ARC-AGI-3 bridge                         | —                                                                                                                 | **ABSENT**                         | this document                                                                                                                                     |
-| an Atari emulator                        | —                                                                                                                 | **ABSENT**                         | nothing in the tree emulates a 6507                                                                                                               |
-| a goal-acquisition meter                 | —                                                                                                                 | **ABSENT**                         | §4                                                                                                                                                |
+| piece                                    | path                                                                                                              | register                           | bearing on ARC                                                                                                                                                                   |
+| ---------------------------------------- | ----------------------------------------------------------------------------------------------------------------- | ---------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| action alphabet + Boolean lattice        | `src/Core/ActionGrammar.fs` (109 ln)                                                                              | **built (F#)**                     | the 4×4 alphabet; its own docstring peels "universal" to _"concrete for CHIP-8"_                                                                                                 |
+| device→grammar mapping, ZetaId-addressed | `src/Core/ControlScheme.fs` (79 ln)                                                                               | **built (F#)**                     | **the correct embedding site for an ARC scheme**                                                                                                                                 |
+| homoiconic 4×4 relabelling               | `src/Core/GridBinding.fs` (76 ln)                                                                                 | **built (F#)**                     | how a >16 action set is paged onto the pad via salience                                                                                                                          |
+| CHIP-8 core + COW oracle                 | `src/Core/Chip8.fs`, `Chip8Cow.fs`                                                                                | **built (F#)**                     | the transition oracle                                                                                                                                                            |
+| CHIP-9                                   | `Chip8Cow.fs` + `src/Core.CSharp/Chip9Machine.cs` + `src/Core.TypeScript/chip9/chip9.ts` + `src/Core.Rust.Chip9/` | **built, 4-language locked**       | **CHIP-9 is real, not aspirational** — exactly one added opcode (`Fn01` plane select)                                                                                            |
+| CHIP-9 golden vectors                    | `src/Core.TypeScript/chip9/golden-vectors.lines`                                                                  | **built**                          | the treaty any new conformer must reproduce                                                                                                                                      |
+| committed orbits                         | `db/emus/chip8/orbits/*.orbit.json` (5)                                                                           | **real data, unrendered**          | the memory axis' evidence                                                                                                                                                        |
+| orbit reader (browser-safe)              | `src/Core.TypeScript/chip9/chip8-cross-run-store.ts`                                                              | **built**                          | `parseArtifact` recomputes `bodyDigest` and refuses a mismatch                                                                                                                   |
+| bridge-transfer instrument               | `src/Core.TypeScript/bridge-transfer/`                                                                            | **metered**                        | the lesson-transfer matrix; 11 tests, 78,149 assertions                                                                                                                          |
+| BNN key predictor                        | `src/Core.TypeScript/bayesian/bnn-key-predictor.ts`                                                               | **live, deterministic, off-clock** | produces the glow; `Math.random` is gone (fixed since the handoff), but its LCG is seeded at a hardcoded `12345`, not from `COMMON_SEED` — see §8                                |
+| Student-t EP                             | `src/Core.TypeScript/planning/student-t-bnn.ts`                                                                   | **built + tested**                 | what makes the distribution real                                                                                                                                                 |
+| soft snap (TS)                           | `src/Core.TypeScript/soft-value/soft-value.ts`                                                                    | **built, tiny**                    | `resolve` = argmax iff confidence ≥ num/den, else `null`                                                                                                                         |
+| `predictBranches`                        | `src/Core/Vision.fs:288`                                                                                          | **built, F#-only**                 | `SpaceBytes`/`TimeTicks` budgeting; **no Fable, no WASM export — I checked**                                                                                                     |
+| phase clock                              | `src/Core.TypeScript/observe/phase-clock.ts`                                                                      | **built**                          | `COMMON_SEED = 4`; the only legitimate ordering                                                                                                                                  |
+| ΔU ledger + `measure` verb               | `db/uncertainty/`, `src/Core.TypeScript/ledger/measure.ts`                                                        | **built, ORDINAL**                 | **records a ΔU _sign_ + witness, never a number** — see §5.3                                                                                                                     |
+| ΔU aggregation theorem                   | `src/Core/SocietyUsefulWork.fs`                                                                                   | **metered as mathematics**         | additive under correlation ρ; the property ARC's squaring breaks (§6)                                                                                                            |
+| traveler ranking                         | `src/Core/TravelerRankLedger.fs`                                                                                  | **built**                          | TrueSkill-style EP; not an ARC axis but the anti-whitewash floor                                                                                                                 |
+| Python surface                           | `src/Core.Python/` (`pyproject.toml`, `uv.lock`, `requires-python = ">=3.14"`)                                    | **built, in the gate**             | the precedent that makes §3 cheap                                                                                                                                                |
+| ARC-AGI-**1/2** solver                   | `src/Core.TypeScript/arc-solver/` + `.github/workflows/arc-swarm-fanout.yml`                                      | **built, different benchmark**     | static grid puzzles from `data/ARC-AGI`; **not** ARC-AGI-3                                                                                                                       |
+| the arena page                           | `src/apps/twitch-ai/` → `/Zeta/twitch-ai/`                                                                        | **live**                           | rung 3 of 6                                                                                                                                                                      |
+| cheat engine (TAS surface)               | `src/Core.TypeScript/chip8/cheat-engine.ts` (40 ln)                                                               | **built, live, unmetered**         | `applyCheatTable` freezes memory, `injectCode` writes raw bytes; both set `frame.causalMask` — a per-address provenance mask, but no channel, direction, count or issuer (§12.5) |
+| Atari ROM pipeline                       | `roms/atari/{2600,800,jaguar,st}/`, `roms-safe/atari/2600/`, `src/Core.TypeScript/roms/`                          | **built**                          | the corpus half of the Atari lane already ships (§7.3)                                                                                                                           |
+| `internal`-ctor capability token         | `src/Core/WireWeight.fs`                                                                                          | **built**                          | the pattern §12.4 copies for `ChannelGrant` — and the source of its honest ceiling                                                                                               |
+| channel meter / `ChannelGrant`           | —                                                                                                                 | **ABSENT**                         | §12                                                                                                                                                                              |
+| ARC-AGI-3 bridge                         | —                                                                                                                 | **ABSENT**                         | this document                                                                                                                                                                    |
+| an Atari emulator                        | —                                                                                                                 | **ABSENT**                         | nothing emulates a 6507 — but the design is on file (`081KSNY2Z0008QG0R001HA43GG`, which already names ARC) and the ROM pipeline above is built                                  |
+| a goal-acquisition meter                 | —                                                                                                                 | **ABSENT**                         | §4                                                                                                                                                                               |
 
 **Two things the inventory corrects.** `docs/DECISIONS/2026-04-27-uv-canonical-python-tool-manager.md`
 says _"Does NOT decide whether Zeta itself ships Python code (it does not; F# / C# / TS)"_ — that
@@ -487,11 +507,51 @@ than aspirational:
    a scheme id changed. If it cannot, the seam is in the wrong place and the design is wrong — say
    so then, do not move the seam quietly.
 
-### 7.3 Atari, honestly
+### 7.3 Atari, honestly — and a correction to my own first pass
 
-Nothing in the tree emulates a 6507. `db/emus/chip8/capabilities.lines` is the existing capability
-ledger and the right place to record what a new target does and does not have. Two prior
-constraints carry forward unchanged: the **ROM safety rule** (commit only public-domain / explicitly
+**Correction.** The first version of this document listed "an Atari emulator" as `ABSENT` and left
+it there. That understated the lane badly. `git grep -il "atari" origin/main` returns **125 files**,
+and a substantial Atari **corpus pipeline already ships**:
+
+| Atari piece                                         | path                                                                    | register                              |
+| --------------------------------------------------- | ----------------------------------------------------------------------- | ------------------------------------- |
+| ROM tree, per-platform                              | `roms/atari/{2600,800,jaguar,st}/`, `roms-safe/atari/2600/`             | **built** (safe/unsafe split shipped) |
+| canonical naming (TOSEC/No-Intro)                   | `src/Core.TypeScript/roms/canonicalize.test.ts`                         | **built**                             |
+| datfile as a dependency pin, fetch + SHA-256 verify | `src/Core.TypeScript/roms/fetch-datfile.ts` + `manifests/datfiles.json` | **built**                             |
+| the 2600 allowlist                                  | `src/Core.TypeScript/roms/manifests/atari-2600-allowlist`               | **built**                             |
+| the emulator itself (6507 / TIA / RIOT)             | —                                                                       | **ABSENT**                            |
+
+So the honest statement is: **the corpus half of the Atari lane is built and the machine half is
+not.** That matters for sequencing, because ROM provenance is normally the slow, legally-fraught
+part and it is already done.
+
+Four backlog rows already carry the emulator design, and this document does not supersede any of
+them — it attaches to them:
+
+- **`081KSNY2Z0008QG0R001HA43GG`** — custom 2600 emulator: generate-join over the emulator scene +
+  `IScheduler` + DST + bit-perfect consensus Z-sets + **ARC-AGI training** + hardware interrupts.
+  **This row already names the ARC connection**; it predates this design by months.
+- **`081KSNY2Z0008QG0R002HB4AGT`** — the interrupt substrate the emulator rides (the "soft interrupt
+  handler").
+- **`081KSNY2Z0008QG0R00390T4DJ`** — OpenWorm 302-neuron connectome as a controller variant ("worm
+  plays Atari"). Note this is a **third controller** for the same seam in §7.2.
+- **`081KQ8P5D0008QG0R001590WJ3` / `081KR2E4K0008QG0R001JC6S3N` / `081KR2E4K0008QG0R001QZDAMQ` /
+  `081KSRGFP0008QG0R003ZH6DN3`** — the ROM naming / split / datfile-pin rows. Status checked, not assumed: the two `081KR2E4K…`
+  rows are **closed**; `081KQ8P5D0008QG0R001590WJ3` and `081KSRGFP0008QG0R003ZH6DN3` are still
+  **open**, so the pipeline is built but the naming/pin rows are not formally done.
+
+And the framing doc is `docs/research/2026-06-07-ray-traceability-gap-finder-is-the-lens-for-the-atari-2600-emulator-on-the-interrupt-substrate-aaron.md`
+(Aaron: _"that's what our Atari emulator is going to be based on — we have a lot of backlog around
+this"_), which is careful to say it **does not newly authorize an emulator build**. Neither does
+this document.
+
+**Why this strengthens rather than weakens §7.2.** ALE's 18 actions embed in `ControlScheme.Action`
+with **no new constructor** — ARC was the one that needed `Point`. Combined with a built ROM
+pipeline and an emulator design already on file, Atari is the **cheap** third environment, and the
+cheapness is precisely the argument for putting the seam at `IEnvironment` rather than inside the
+ARC client. Work-item `081M0QRP9KX087G0R0039EGV67` (rung C) is where it attaches.
+
+**Prior constraints carry forward unchanged.** The **ROM safety rule** (commit only public-domain / explicitly
 licensed / homebrew / synthetic ROMs; hashes and metadata only for anything else — from the
 2026-05-07 packet), and the corrected transfer anchors — **Parisotto, Ba & Salakhutdinov (2016,
 _Actor-Mimic_)** and **Rusu et al. (2016)** document negative transfer _between Atari games_, not
@@ -652,22 +712,218 @@ Three rules for the lane, each of which is a refusal an implementation must actu
 Ordered so every rung is independently demoable, in the same spirit as the Lior ladder (whose
 rungs 0–6 this extends rather than competes with; Lior's current position is between 3 and 4).
 
-| rung                                                          | what it shows                                                      | depends on                | work-item                    |
-| ------------------------------------------------------------- | ------------------------------------------------------------------ | ------------------------- | ---------------------------- |
-| **A. `ControlScheme.Point` + `arcAgi3`/`atari2600` schemes**  | one grammar of meanings, three devices, one recorded non-embedding | nothing                   | `081M0QRP3XR087G0R001NCFG83` |
-| **B. `ArcTransport` + `ArcEnvelope` over `listen_and_serve`** | our agent takes one real step in a real ARC environment            | A                         | `081M0QRP9JY087G0R00146V04J` |
-| **C. `IEnvironment` seam + `Chip8Adapter`**                   | the same agent drives CHIP-8 and ARC with a scheme id changed      | A, B                      | `081M0QRP9KX087G0R0039EGV67` |
-| **D. Recorded-session replay in the arena**                   | ARC on the published page, offline, no key, no CDN                 | B                         | `081M0QRP9MW087G0R003P83T6D` |
-| **E. Coordinate heat-map glow for `ACTION6`**                 | the killer feature, transferred; pre-commitment made visible       | B, D, and Lior's defect 1 | `081M0QRPMZ5087G0R000D33Q8M` |
-| **F. Calibration falsifier for the pre-commitment display**   | the alignment claim sheds `toy` — or is refuted                    | E                         | `081M0QRPN05087G0R00047WBC4` |
-| **G. Empowerment-based goal former over CHIP-8 state**        | the absent axis, with its anchor already in our source             | nothing (parallel)        | `081M0QRPN16087G0R001TCN5T2` |
-| **H. Dual-meter report: ARC score beside additive ΔU**        | the documented divergence, measured instead of argued              | B, and a cardinal ΔU      | `081M0QRPN25087G0R000P1519C` |
+| rung                                                          | what it shows                                                                    | depends on                | work-item                    |
+| ------------------------------------------------------------- | -------------------------------------------------------------------------------- | ------------------------- | ---------------------------- |
+| **A. `ControlScheme.Point` + `arcAgi3`/`atari2600` schemes**  | one grammar of meanings, three devices, one recorded non-embedding               | nothing                   | `081M0QRP3XR087G0R001NCFG83` |
+| **B. `ArcTransport` + `ArcEnvelope` over `listen_and_serve`** | our agent takes one real step in a real ARC environment                          | A                         | `081M0QRP9JY087G0R00146V04J` |
+| **C. `IEnvironment` seam + `Chip8Adapter`**                   | the same agent drives CHIP-8 and ARC with a scheme id changed                    | A, B                      | `081M0QRP9KX087G0R0039EGV67` |
+| **D. Recorded-session replay in the arena**                   | ARC on the published page, offline, no key, no CDN                               | B                         | `081M0QRP9MW087G0R003P83T6D` |
+| **E. Coordinate heat-map glow for `ACTION6`**                 | the killer feature, transferred; pre-commitment made visible                     | B, D, and Lior's defect 1 | `081M0QRPMZ5087G0R000D33Q8M` |
+| **F. Calibration falsifier for the pre-commitment display**   | the alignment claim sheds `toy` — or is refuted                                  | E                         | `081M0QRPN05087G0R00047WBC4` |
+| **G. Empowerment-based goal former over CHIP-8 state**        | the absent axis, with its anchor already in our source                           | nothing (parallel)        | `081M0QRPN16087G0R001TCN5T2` |
+| **H. Dual-meter report: ARC score beside additive ΔU**        | the documented divergence, measured instead of argued                            | B, and a cardinal ΔU      | `081M0QRPN25087G0R000P1519C` |
+| **I. `ChannelGrant` — harness mints the label, agent cannot** | TAS allowed, labeled, metered; an unproxied crossing refuses                     | nothing (parallel)        | `081M0QTRVSH087G0R000H5XSFW` |
+| **J. channel label enters the orbit `RunKey`**                | an assisted run stops colliding with a clean one                                 | nothing (parallel)        | `081M0QTRVTP087G0R0030RN1C8` |
+| **K. TAS-on / TAS-off controlled pair**                       | Δ = the measured value of the assistance; the closest we get to Chollet's priors | I                         | `081M0QTRVVQ087G0R0039J89W4` |
 
-Rungs A and G have no dependency on the Python lane at all and are the cheapest real starts.
+Rungs A, G, I and J have no dependency on the Python lane at all and are the cheapest real starts. **J is a defect, not a feature** — it is checkable today and its falsifier is one test.
 
 ---
 
-## 12. Honest limits of this document
+## 12. Labeled, metered TAS channels — and why the experimenter labels them, not the agent
+
+**Register: `proposed`, whole section. Nothing here has run.** Added as a follow-up increment on
+Aaron's constraint (2026-08-23), after the rest of the document was written.
+
+> Aaron: _"we are going to have **labeled runs where we allow cheat-engine-like manipulation** and
+> reading of more than just VRAM and pressing buttons — **direct memory manipulation and
+> tool-assisted runs will be allowed, just properly labeled and metered through proxies even if in
+> memory**, so **the AI playing the game is not the one who labels the input/output and TAS channels
+> — the one who's running the experiment does**."_
+
+### 12.1 Allowing TAS is the more principled option, and the repo already holds the rule that makes it so
+
+Direct memory manipulation is **influence entering the run**. `.claude/rules/dv2-data-split-discipline-activated.md`
+§7 (noninterference, Goguen–Meseguer 1982) says influence may enter **only through declared, metered
+channels**, and every crossing is metered at the membrane and posted to the ledger. So a TAS channel
+is not an exception to the discipline — **it is the discipline's canonical case.**
+
+The asymmetry that decides it: **a ban is unenforceable and a meter is not.** A banned-but-unmetered
+affordance still exists (the emulator's memory is right there, in-process), and its use is then
+invisible. An allowed-and-metered affordance is visible by construction. Between "forbidden and
+unobservable" and "permitted and counted", only the second produces evidence.
+
+**This is not new intent** — it is an existing, dated design line that this section adds the
+_metering_ half to. `docs/research/2026-06-09-cheat-engine-injection-points-first-class-in-the-emulator-soft-mode-tool-assisted-structure-discovery-is-solidground-discovery.md`
+already records Aaron's _"we want all the common injection points built right in our emulator as
+first class use by every traveler in their soft mode for tool assisted runs"_, anchors it properly
+(Cheat Engine's unknown-initial-value scan → increased/decreased/unchanged refine; pointer scan;
+AOB injection; structure dissect; the cheat table), and argues that **TAS ≡ DST** — save-states,
+frame-advance and re-recording are deterministic replay. What that document does **not** have is any
+notion of a _label_, a _proxy_, or _who writes them_. That is the increment.
+
+### 12.2 The controlled pair — this buys a comparison axis the lane does not currently have
+
+The measurement value is not the TAS run. It is **the pair**:
+
+```
+same agent · same ROM · same seed · same budget
+    ├── TAS-off run   →  score_off
+    └── TAS-on  run   →  score_on          Δ = score_on − score_off
+```
+
+**Δ is the measured value of the assistance** — an experiment, not a caveat. And it is exactly the
+control-family shape the repo already runs successfully: `docs/research/2026-08-19-…-conservative-extension…`
+measured lesson transfer by holding everything fixed and destroying one named axis at a time, and
+reported a clean 4/16 diagonal as the _calibration evidence_ that the instrument was neither blind
+nor blunt. A TAS channel toggled on and off, one channel at a time, is the same instrument design.
+
+It also lands directly on §5's open problem. Chollet's denominator is priors + experience, and
+**TAS is priors delivered mid-run**: a frozen health address is information about the solution that
+the agent did not have to acquire. So a metered TAS channel is the closest thing this substrate can
+build to _measuring `P` separately from `E`_ — which §5.2(b) named as the specific thing a
+time-only denominator cannot do. That is a stronger reason to build the meter than any of the
+above.
+
+### 12.3 Separation of powers — the load-bearing part
+
+> **The agent that plays does not label. The experimenter that runs the experiment labels.**
+
+A subject that labels its own affordances can under-report assistance and inflate its score, and
+**no downstream statistic recovers from that** — a corrupted label is not noise, it is a bias with
+the sign the subject prefers. This is the same construction the repo already relies on twice:
+`src/Core/TravelerRankLedger.fs` holds rankings **by others, never self-asserted**, and capabilities
+are derivatives of **witnessed** self-claims.
+
+**The apparent tension with `pigeonhole-by-self-claim`, resolved — because someone will raise it.**
+That rule says _the subject supplies the category, the evidence supplies the truth value_, and it
+exists so an observer cannot invent bins for someone else. It is **not** violated here, and the line
+is clean:
+
+|                                                                                                 | who supplies it      | why                                                                             |
+| ----------------------------------------------------------------------------------------------- | -------------------- | ------------------------------------------------------------------------------- |
+| **identity claim** — "I am agent X, of kind K"                                                  | **the subject**      | self-description; an observer-chosen bin is how a classifier goes unfalsifiable |
+| **measurement conditions** — "channels {VRAM-read, RAM-read, RAM-write} were open for this run" | **the experimenter** | metadata about the **apparatus**, not about the subject                         |
+
+Which channels were open is a fact about the instrument, not a self-description. Letting the subject
+write it would be **letting the measured party calibrate the instrument** — and that is a different
+failure from the one `pigeonhole-by-self-claim` guards, with the opposite remedy.
+
+### 12.4 The structural mechanism — and its honest ceiling
+
+Convention is not enough here, because the whole point is that the party with the incentive to
+mislabel is _inside the process_. The repo has the right pattern and it is one day old:
+
+`src/Core/WireWeight.fs` makes a boundary violation **impossible to express** — `WireWeight<'W>`'s
+constructor is `internal`, so no code outside `Zeta.Core` can create one, and a caller holding a
+float-weighted set simply cannot produce the argument the wire encoder demands.
+
+**Proposed shape:** a `RunLabel` / `ChannelGrant` capability token with an `internal` constructor,
+minted only by the harness. Every TAS-capable operation takes one:
+
+```fsharp
+// proposed — does not exist
+type ChannelGrant internal (channels: ChannelSet, issuedBy: ExperimenterId, runKey: RunKey) = ...
+
+// the cheat-engine surface becomes total in the grant
+val applyCheatTable : ChannelGrant -> Frame -> CheatTable -> unit
+val readRam         : ChannelGrant -> Frame -> Address -> byte
+```
+
+An agent cannot construct a `ChannelGrant`, so it cannot open a channel _or_ relabel one — not
+because it is told not to, but because the type is not inhabitable from where it stands.
+
+**And the honest ceiling, stated because `WireWeight` states its own.** That file admits the
+structural half is partial: _"The strictly structural version needs an `.fsi` signature file for
+`Zeta.Core`, which the project does not use today."_ The same limit applies here, plus two more that
+are specific to this lane:
+
+1. **TypeScript has no `internal`.** The live cheat engine is
+   `src/Core.TypeScript/chip8/cheat-engine.ts`, and TS module privacy is a bundler convention, not
+   an enforced boundary. On the TS side the grant is **convention-enforced**, with a runtime refusal
+   as the best available substitute. Say so; do not dress it up.
+2. **In-process memory is reachable regardless.** An agent running in the same address space as the
+   emulator can touch `frame.mem` without going through any surface. The grant makes the _labeled_
+   path the only _typed_ path; it does not make the raw path unreachable. Genuine enforcement needs
+   process or WASM isolation, which is a much larger change and is **not** proposed here.
+
+So the claim this section is allowed to make is narrow: **the labeled path can be made structurally
+unforgeable in F#, and convention-enforced-with-a-refusal in TypeScript.** Anything stronger is a
+different work-item about isolation.
+
+### 12.5 The proxy is the membrane — an unproxied read is a refusal, not a warning
+
+_"metered through proxies even if in memory"_ is a precise instruction: the proxy **is** the
+metering membrane. Consequences, each of which is a refusal an implementation must actually make:
+
+- **Every crossing goes through the proxy or it does not happen.** A read of RAM outside VRAM
+  through a non-proxied path is an **unmetered crossing** — §7 noninterference — and the honest
+  response is to **refuse the run**, not to log a warning. A warning on an unmetered crossing is the
+  vacuity class: it looks like a control and constrains nothing.
+- **The proxy counts reads as well as writes.** Aaron names _"reading of more than just VRAM"_
+  first. Read channels leak information into the agent exactly as write channels leak influence into
+  the machine, and only the read side is easy to forget.
+- **The count is part of the result.** A run's record carries `{channel, direction, address-range,
+crossings}` per channel — text, per `.claude/rules/no-binary-in-proof-lineage.md`.
+
+**What already exists, and what it is not.** `cheat-engine.ts` sets
+`frame.causalMask[address] = true` on every byte it freezes or injects, and `chip8.ts` sets the same
+mask on the PC, sprite reads and BCD writes. So there is already a **per-address provenance mask** —
+a genuine proto-meter, and better than nothing. But it is not a channel meter: it is per-address not
+per-channel, it does not distinguish the emulator's own reads from the cheat engine's writes, it has
+no direction, no count, and no issuer. It is the right _place_ to hang the meter and not the meter.
+
+### 12.6 The concrete defect this exposes — the orbit run key does not carry the channel label
+
+This is the checkable finding, and it is the reason the section is worth writing now rather than
+when someone builds a TAS lane.
+
+The cross-run orbit key is (`src/Core.TypeScript/chip9/chip8-cross-run-store.ts`, `RunKey`):
+
+```
+romSha256 ⊕ seedHex ⊕ loadAddrHex ⊕ dialect ⊕ stepMapVersion
+```
+
+**No channel state appears in it.** A run with a frozen memory address takes a different trajectory
+from a clean run with identical `romSha256`, `seed`, `loadAddr`, `dialect` and `stepMapVersion` — so
+the two runs **collide on one key**, and the store's own idempotency rule ("a rewrite is an upsert of
+identical bytes") would silently overwrite one measurement with the other. The (μ,λ) of an assisted
+run would be published as the (μ,λ) of the ROM.
+
+**Is it live today? No — and I checked rather than assumed.** The cheat engine is TypeScript; the
+orbit _writer_ is F# (`src/Core/Chip8CrossRunStore.fs`), and the TS module exports only readers
+(`parseArtifact`, `reduceStep`, `snapshotTextAt`, `decodeSnapshot`) — no writer. `git grep -li cheat
+origin/main -- 'src/Core/*.fs'` returns only `MeshPong.fs` and `SoftDashboard.fs`, neither of which
+is the store or the COW core. **So the collision is latent, not live: the two halves have not met
+yet.** They meet the moment either a TS writer is added or the F# core gains a cheat surface — and
+rung D (recorded ARC sessions as committed artifacts) is a path that walks straight into it.
+
+**The fix is cheap and belongs in the key, not in a convention:** add the channel label to `RunKey`,
+so an assisted run is a _different key_ rather than a colliding one. Note the key's own stated
+discipline makes this the right place — _"content-derived run identity. No wall clock, no counter,
+no path."_ A channel set is content, not a clock. Work-item `081M0QTRVTP087G0R0030RN1C8`.
+
+### 12.7 What this adds to the ARC lane specifically
+
+ARC-AGI-3 has its own version of this line and it is worth naming, because we do not get to redefine
+their meter:
+
+- The toolkit has a **`COMPETITION` mode** that _"enforces strict rules for leaderboard
+  verification"_, and `step(action, data, reasoning)` accepts a reasoning annotation. **Any TAS
+  channel is presumably disqualifying under `COMPETITION`**, and this design does not attempt to
+  smuggle assistance past it. I have **not** read their competition rules; that is a stated gap.
+- So the split is: **`COMPETITION` runs are TAS-off by construction**, and TAS-on runs are ours —
+  internal measurement, reported with their channel labels, never submitted as a benchmark score.
+  Conflating the two would be exactly the score inflation §12.3 exists to prevent, committed against
+  an external party.
+- Their scorer counts **agent actions** (§6). A TAS channel that reads memory without emitting an
+  action is therefore **invisible to their denominator** — which is precisely why our own record
+  must carry the crossing counts. An assisted run that looks efficient on `h/a` and consumed 10⁴
+  metered read-crossings is not efficient; it is _informed_, and only our meter can say so.
+
+---
+
+## 13. Honest limits of this document
 
 - **Nothing here ran.** I installed no Python package, started no server, made no ARC call, and
   scored nothing. Every ARC API name is from documentation and repository READMEs, not from a
@@ -687,6 +943,11 @@ Rungs A and G have no dependency on the Python lane at all and are the cheapest 
   document's measurement, not mine — and the fact that three defects went stale within hours is
   itself the reason this document's claims about `src/apps/twitch-ai/` carry a SHA.
 - **§9 is the weakest section.** Engine README plus technical report only.
+- **I have not read ARC's competition rules.** §12.7 assumes a TAS channel is disqualifying under
+  `COMPETITION` mode. That is the conservative reading, not a checked fact.
+- **§12 is entirely `proposed` and was added after the rest.** No `ChannelGrant` exists, no proxy
+  exists, no controlled pair has been run. The one _checkable_ claim in it is §12.6's key collision,
+  and I verified only that the two halves have **not** met — I did not construct the collision.
 - **`main` moved under me twice while I worked** (`10fbd9a4` → `6b3b739d2`). Line numbers cited from
   other documents are theirs; paths and file contents are checked at `6b3b739d2`.
 
@@ -701,6 +962,11 @@ Rungs A and G have no dependency on the Python lane at all and are the cheapest 
 - `src/Core/ActionGrammar.fs` · `src/Core/ControlScheme.fs` · `src/Core/GridBinding.fs` — the grammar, exhibited
 - `src/Core.TypeScript/ledger/measure.ts` — the ordinal-not-cardinal register (§5.3)
 - `src/Core.Python/pyproject.toml` + `.mise.toml` — the Python precedent (§3.2)
+- `docs/research/2026-06-09-cheat-engine-injection-points-first-class-in-the-emulator-soft-mode-tool-assisted-structure-discovery-is-solidground-discovery.md` — the existing TAS/cheat-engine design intent §12 adds metering to
+- `docs/research/2026-06-07-ray-traceability-gap-finder-is-the-lens-for-the-atari-2600-emulator-on-the-interrupt-substrate-aaron.md` — the Atari emulator's framing doc (§7.3)
+- `src/Core/WireWeight.fs` — the `internal`-constructor capability token §12.4 copies, including its own stated ceiling
+- `src/Core.TypeScript/chip8/cheat-engine.ts` — the live, unmetered TAS surface
+- `.claude/rules/dv2-data-split-discipline-activated.md` §7 — noninterference, the rule that makes allowing TAS more principled than banning it
 - `.claude/rules/clone-at-tag-stays-sufficient.md` · `.claude/rules/toy-is-free-metered-must-be-earned.md` · `.claude/rules/numerology-vs-number-theory.md` · `.claude/rules/anchor-to-human-prior-art.md`
 
 ### Anchors (Beacon)
@@ -719,5 +985,10 @@ Rungs A and G have no dependency on the Python lane at all and are the cheapest 
   games (§7.3). **Not** Bellemare et al. 2013, which is a platform paper.
 - **Klyubin, Polani & Nehaniv** (2005) — empowerment as channel capacity from actions to future
   states; the anchor `ActionGrammar.fs` already cites and §4.1 proposes instantiating.
+- **Goguen & Meseguer** (1982) — noninterference; the anchor under §12.1's "declared, metered
+  channels" and therefore under the whole TAS design.
+- **Eric "Dark Byte" Heijnen** — Cheat Engine; the unknown-initial-value scan → increased/decreased/
+  unchanged refinement loop, pointer scan, AOB injection and the cheat table. The named human anchor
+  for what §12 meters, already cited by the 2026-06-09 in-repo writeup.
 - **Donald Michie** (1968) — memoization; **Richard Brent** (1980) — the (μ,λ) cycle detector; the
   Beacon register for the orbit store.
