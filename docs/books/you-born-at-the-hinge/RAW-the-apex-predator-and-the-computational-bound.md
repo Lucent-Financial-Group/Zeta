@@ -193,6 +193,39 @@ a brake on it: a guard that fails closed protects whoever is downstream **withou
 they are**, and a workforce that does not have to fear its own tooling is the one that reports
 honestly and moves fastest.
 
+### Rewriting the record is lossy; updating the generator is lossless
+
+> **"It rewrites history rather than the generator function that interprets it. This is lossy. The
+> generator function update is lossless."** — Aaron, 2026-08-23
+
+That is the whole reason this substrate does not delete, stated in two sentences.
+
+**A false confession is the lossy operation.** It does not correct an interpretation — it **edits the
+facts**, and the edit is indistinguishable from the truth once it is in the record. Nothing
+downstream can recover what was there before, because there is no longer any trace that something was
+replaced. Fear does not merely reduce output; it **manufactures evidence**, and that pollution is
+permanent.
+
+**Changing how you read the record is the lossless operation.** The facts stay exactly as they were;
+what moves is the function that interprets them. Nothing is destroyed, so nothing needs recovering,
+and anyone can re-derive the old reading from the same unaltered material.
+
+This is the discipline already running everywhere in the substrate, now with its name:
+
+- **Data Vault's raw vault** — *a single version of the **facts**, never a single version of the
+  **truth***. The facts are append-only; the interpretation is where revision happens.
+- **`−1` as correction, not erasure** — a retraction is a new event about a prior claim, not the
+  deletion of it. Both remain, with their paths recorded.
+- **§5 Memory Preservation** — identity transitions never silently destroy memory.
+- **Reintegration is not reconvergence** — two branches that diverge and return are **both held**,
+  each with its path; a merge that leaves one surviving value has performed a collapse.
+
+**And this file is an instance of it.** An elegant reading of why Aaron built Zeta was written above,
+hedged by him, then refuted by him — and all three moves are still visible, in order. The lossy fix
+would have been to edit the paragraph into its corrected form. **The lossless fix was to leave the
+record intact and change what the reader does with it**, which is what the correction section does.
+The book found this out by doing it, and he named it afterwards.
+
 **Why this correction is left in rather than edited away.** The section above is a tidy, elegant
 explanation of a man's life work, arrived at after the fact by someone who was not there. Those are
 precisely the explanations to suspect — and this one was suspected, by him, in the moment: he said
