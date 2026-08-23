@@ -69,6 +69,29 @@ this one.
    `TieredCompilation=0` (JIT straight to full opt), and `JitStress=2` — with
    **zero** invariant breaks.
 
+## Direct reproduction attempt ON windows-2025 (the failing platform)
+
+A throwaway branch (`diag/spanserializer-windows-repro`, run 32650672659, job
+97221646468) built the solution with the gate's own command on windows-2025 and
+then:
+
+1. **Targeted stress**, the serializer path alone: 8 threads × 60 s,
+   `ServerGC=true`, 4 vCPU — **41,543,447 round-trips, 0 invariant breaks**.
+2. **Twelve consecutive full-solution `dotnet test Zeta.sln` runs**, each carrying
+   an added 200,000-iteration in-suite round-trip test (2.4 M more round-trips
+   inside the real suite, under the real parallelism) — **0 SpanSerializer
+   failures, the invariant test passed 12/12**.
+
+**Not reproduced.** ~44 M round-trips on the exact platform and 12 full-suite
+executions did not produce it, against an observed field rate of ~1 in 35 legs.
+
+Side observation from that loop, worth knowing but not a product defect: from the
+second iteration onward, 506 `Zeta.Tests.Git.*` tests fail with
+`UnauthorizedAccessException` deleting their temp repo directories. Running the
+suite REPEATEDLY IN PLACE on Windows is not idempotent — the previous iteration's
+git objects are still locked/read-only. It never bites the gate, which runs the
+suite once per job.
+
 ## What is still OPEN
 
 For the exception to fire, the count in the header must disagree with the bytes
