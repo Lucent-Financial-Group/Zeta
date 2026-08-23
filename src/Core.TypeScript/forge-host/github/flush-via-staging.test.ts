@@ -1,5 +1,5 @@
 import { spawnSync } from "node:child_process";
-import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
@@ -183,7 +183,14 @@ describe("the flush lane buffers without invalidating an active PR (real git)", 
 
       // --- the generator appends a tick frame
       const telemetryPath = join(workDir, "telemetry.json");
-      const prior = existsSync(telemetryPath) ? readFileSync(telemetryPath, "utf8") : "";
+      let prior = "";
+      try {
+        prior = readFileSync(telemetryPath, "utf8");
+      } catch (error) {
+        if ((error as NodeJS.ErrnoException).code !== "ENOENT") {
+          throw error;
+        }
+      }
       writeFileSync(join(workDir, "telemetry.json"), `${prior}tick ${String(i)}\n`);
 
       // --- flush
