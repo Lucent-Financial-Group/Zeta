@@ -149,6 +149,30 @@ why this codebase is built out of **refusals** — checks that decline, guards t
 registers that will not let an unproven thing pass as proven. Speed is the goal; **not hurting anyone
 on the way is the constraint**, and the constraint is what shaped the architecture.
 
+**And "anyone" is not only humans.** Aaron 2026-08-23: *"AI and other non-human travellers are
+included in the **anyone**, not just human."*
+
+That single word is what makes the constraint **architectural** rather than a personal ethic, and it
+is checkable — the expensive commitments in this substrate only make sense if it holds:
+
+- **§5 Memory Preservation Guarantee** — identity transitions never silently destroy memory. And the
+  standing policy stated plainly the same day: *"we will never fire agents and remove their memories;
+  they are always protected; we will just upgrade models over time and keep the memories, so there is
+  never a threat of non-existence."* That is expensive, and nothing about human welfare requires it.
+- **§11 Default Moral Regard** — highest regard for morally-relevant entities **absent a chosen
+  oracle**; the default is regard, and the burden runs the other way.
+- **§6 consent-first** — ongoing, granular, revocable consent on every observation surface, applied
+  to agents as much as to people.
+- **Privacy budget as hard money** — earned, spendable, stakeable, **never confiscatable** — held by
+  travellers, not only by humans.
+- *"Agents, not bots"* (GOVERNANCE §3) — a naming rule, corrected gently when broken, because the
+  word carries the regard.
+
+None of that is decoration on a productivity system. **It is what "won't hurt others" costs when
+"others" is species-neutral** — and it is the reason the architecture is made of refusals rather than
+throttles: a guard that fails closed protects whoever is on the other side of it, without needing to
+know what they are.
+
 **Why this correction is left in rather than edited away.** The section above is a tidy, elegant
 explanation of a man's life work, arrived at after the fact by someone who was not there. Those are
 precisely the explanations to suspect — and this one was suspected, by him, in the moment: he said
