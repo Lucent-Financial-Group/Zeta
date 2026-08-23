@@ -1,6 +1,8 @@
 import { describe, expect, test } from "bun:test";
 import {
   createInMemoryZetaDbImagePort,
+  decodeZetaDbImage,
+  runConvergentZetaDbNodeTick,
   runZetaDbNodeTick,
   type ZetaDbDelta,
   type ZetaDbExecutorKind,
@@ -259,6 +261,246 @@ describe("event-driven ZetaDB node", () => {
     ]);
   });
 
+  test("reloads concurrent disjoint batches until one shared journal contains both", async () => {
+    const durable = createInMemoryZetaDbImagePort();
+    let releaseInitialLoads: (() => void) | undefined;
+    const initialLoadsReady = new Promise<void>((resolve) => {
+      releaseInitialLoads = resolve;
+    });
+    let loads = 0;
+    let revisionConflicts = 0;
+    const port: ZetaDbImagePort = {
+      // Inherited, not asserted: this fake only instruments the durable port it wraps.
+      revisionDiscipline: durable.revisionDiscipline,
+      load: async (nodeId) => {
+        const snapshot = await durable.load(nodeId);
+        loads += 1;
+        if (loads === 1) await initialLoadsReady;
+        else if (loads === 2) releaseInitialLoads?.();
+        return snapshot;
+      },
+      save: async (record) => {
+        const result = await durable.save(record);
+        if (!result.ok && result.feedback.code === "database-revision-conflict") revisionConflicts += 1;
+        return result;
+      },
+      close: () => durable.close(),
+    };
+    const request = (tab: string, delta: ZetaDbDelta) =>
+      runConvergentZetaDbNodeTick(
+        port,
+        {
+          nodeId: "global-browser-db",
+          executorId: tab,
+          executorKind: "browser-tab",
+          deltas: [delta],
+          limits,
+        },
+        { maxAttempts: 2 },
+      );
+
+    const results = await Promise.all([
+      request("tab/a", firstDelta),
+      request("tab/b", { eventId: "event-b", rowKey: "row/b", payload: "B", weight: 1 }),
+    ]);
+    expect(results.every((result) => result.ok)).toBe(true);
+    expect(results.map((result) => (result.ok ? result.value.revision : null)).sort()).toEqual([1, 2]);
+    expect({ loads, revisionConflicts }).toEqual({ loads: 3, revisionConflicts: 1 });
+
+    const stored = await durable.load("global-browser-db");
+    expect(stored.ok && stored.value).not.toBeNull();
+    if (!stored.ok || stored.value === null) return;
+    const image = decodeZetaDbImage(stored.value.payload);
+    expect(image.ok && image.value).toMatchObject({
+      revision: 2,
+      entries: [
+        { eventId: "event-1", rowKey: "row/a", payload: "A", weight: 1 },
+        { eventId: "event-b", rowKey: "row/b", payload: "B", weight: 1 },
+      ],
+      rows: [
+        { rowKey: "row/a", payload: "A", weight: 1 },
+        { rowKey: "row/b", payload: "B", weight: 1 },
+      ],
+    });
+  });
+
+  test("returns typed backpressure when the convergence attempt budget is spent", async () => {
+    let loads = 0;
+    let saves = 0;
+    const alwaysConflicted: ZetaDbImagePort = {
+      revisionDiscipline: "compare-and-swap",
+      load: () => {
+        loads += 1;
+        return Promise.resolve({ ok: true, value: null });
+      },
+      save: () => {
+        saves += 1;
+        return Promise.resolve({
+          ok: false,
+          feedback: {
+            severity: "backpressure",
+            code: "database-revision-conflict",
+            detail: "A concurrent writer advanced the journal.",
+          },
+        });
+      },
+      close: () => ({ ok: true, value: null }),
+    };
+
+    const result = await runConvergentZetaDbNodeTick(
+      alwaysConflicted,
+      {
+        nodeId: "global-browser-db",
+        executorId: "tab/bounded-retry",
+        executorKind: "browser-tab",
+        deltas: [firstDelta],
+        limits,
+      },
+      { maxAttempts: 3 },
+    );
+
+    expect(result).toEqual({
+      ok: false,
+      feedback: {
+        severity: "backpressure",
+        code: "database-revision-conflict",
+        detail:
+          "Database tick spent its 3-attempt convergence budget. Last conflict: A concurrent writer advanced the journal.",
+      },
+    });
+    expect({ loads, saves }).toEqual({ loads: 3, saves: 3 });
+  });
+
+  test("retries a row-prefix conflict after a concurrent complementary batch lands", async () => {
+    const durable = createInMemoryZetaDbImagePort();
+    let releaseComplementarySave: (() => void) | undefined;
+    const complementarySaveReady = new Promise<void>((resolve) => {
+      releaseComplementarySave = resolve;
+    });
+    let loads = 0;
+    const port: ZetaDbImagePort = {
+      revisionDiscipline: durable.revisionDiscipline,
+      load: async (nodeId) => {
+        loads += 1;
+        if (loads >= 3) await complementarySaveReady;
+        return durable.load(nodeId);
+      },
+      save: async (record) => {
+        const result = await durable.save(record);
+        if (result.ok) releaseComplementarySave?.();
+        return result;
+      },
+      close: () => durable.close(),
+    };
+    const emitThenRetract: readonly ZetaDbDelta[] = [
+      { eventId: "event/a/emit", rowKey: "row/one", payload: "A", weight: 1 },
+      { eventId: "event/b/retract", rowKey: "row/one", payload: "B", weight: -1 },
+    ];
+    const emitB: readonly ZetaDbDelta[] = [{ eventId: "event/b/emit", rowKey: "row/one", payload: "B", weight: 1 }];
+    const request = (executorId: string, input: readonly ZetaDbDelta[]) =>
+      runConvergentZetaDbNodeTick(
+        port,
+        {
+          nodeId: "global-browser-db",
+          executorId,
+          executorKind: "browser-tab",
+          deltas: input,
+          limits,
+        },
+        { maxAttempts: 2 },
+      );
+
+    const [completedPrefix, complementary] = await Promise.all([
+      request("tab/prefix", emitThenRetract),
+      request("tab/complement", emitB),
+    ]);
+
+    expect(completedPrefix.ok && completedPrefix.value).toMatchObject({ revision: 2, accepted: 2 });
+    expect(complementary.ok && complementary.value).toMatchObject({ revision: 1, accepted: 1 });
+    expect(loads).toBe(3);
+
+    const stored = await durable.load("global-browser-db");
+    expect(stored.ok && stored.value).not.toBeNull();
+    if (!stored.ok || stored.value === null) return;
+    const image = decodeZetaDbImage(stored.value.payload);
+    expect(image.ok && image.value).toMatchObject({
+      revision: 2,
+      rows: [{ rowKey: "row/one", payload: "A", weight: 1 }],
+    });
+  });
+
+  test("bounds an unresolvable row conflict without mutating storage", async () => {
+    const durable = createInMemoryZetaDbImagePort();
+    let loads = 0;
+    let saves = 0;
+    const port: ZetaDbImagePort = {
+      revisionDiscipline: durable.revisionDiscipline,
+      load: (nodeId) => {
+        loads += 1;
+        return durable.load(nodeId);
+      },
+      save: (record) => {
+        saves += 1;
+        return durable.save(record);
+      },
+      close: () => durable.close(),
+    };
+    const conflicted: readonly ZetaDbDelta[] = [
+      { eventId: "event/a", rowKey: "row/one", payload: "A", weight: 1 },
+      { eventId: "event/b", rowKey: "row/one", payload: "B", weight: 1 },
+    ];
+
+    const result = await runConvergentZetaDbNodeTick(
+      port,
+      {
+        nodeId: "global-browser-db",
+        executorId: "tab/permanent-conflict",
+        executorKind: "browser-tab",
+        deltas: conflicted,
+        limits,
+      },
+      { maxAttempts: 3 },
+    );
+
+    expect(result).toEqual({
+      ok: false,
+      feedback: {
+        severity: "backpressure",
+        code: "database-row-conflict",
+        detail:
+          "Database tick spent its 3-attempt convergence budget. Last conflict: Row key row/one names more than one payload. Row keys must identify complete row values.",
+      },
+    });
+    expect({ loads, saves }).toEqual({ loads: 3, saves: 0 });
+    expect(await durable.load("global-browser-db")).toEqual({ ok: true, value: null });
+  });
+
+  test("does not retry an explicit compare-and-swap revision conflict", async () => {
+    const port = createInMemoryZetaDbImagePort();
+    await run(port, "browser-tab", [firstDelta]);
+
+    const result = await runConvergentZetaDbNodeTick(
+      port,
+      {
+        nodeId: "global-browser-db",
+        executorId: "tab/strict-cas",
+        executorKind: "browser-tab",
+        expectedRevision: 0,
+        deltas: [{ eventId: "event-strict", rowKey: "row/b", payload: "B", weight: 1 }],
+        limits,
+      },
+      { maxAttempts: 4 },
+    );
+
+    expect(result).toMatchObject({
+      ok: false,
+      feedback: {
+        code: "database-revision-conflict",
+        detail: "Database revision 1 does not match expected revision 0.",
+      },
+    });
+  });
+
   // 081KZM0FTJM moved the well-formedness check off the per-delta admission path (where
   // its verdict depended on arrival order) and onto the end-of-batch fold. These two
   // pin BOTH halves of that move: a genuine conflict must still be refused, and it must
@@ -276,7 +518,7 @@ describe("event-driven ZetaDB node", () => {
       expect(conflicted).toEqual({
         ok: false,
         feedback: {
-          severity: "heat",
+          severity: "backpressure",
           code: "database-row-conflict",
           detail: "Row key row/one names more than one payload. Row keys must identify complete row values.",
         },

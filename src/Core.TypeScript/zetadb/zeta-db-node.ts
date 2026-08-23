@@ -57,7 +57,48 @@ export type ZetaDbResult<T> =
   | { readonly ok: true; readonly value: T }
   | { readonly ok: false; readonly feedback: ZetaDbFeedback };
 
+/**
+ * The revision contract an image port ACTUALLY enforces on `save`.
+ *
+ * 081M0Q8TQYE087G0R001WBX1ZC — this type exists because two shipped implementations of `ZetaDbImagePort`
+ * enforced two different contracts and nothing said so. The in-memory reference
+ * demands a successor revision (`existing.revision + 1`, first write at 1) — a genuine
+ * compare-and-swap. The browser/IndexedDB path reaches the same interface through
+ * `createBrowserZetaDbImagePort` and refuses only `<` and `===`-with-different-bytes,
+ * admitting ANY strictly greater revision and any revision at all into an empty slot.
+ * That is monotone last-writer-wins.
+ *
+ * Neither is wrong. The BROWSER one is deliberate and load-bearing: `BrowserCheckpointPort`
+ * predates the ZetaDB kernel, serves three non-database record kinds ("room",
+ * "causal-corrections", "causal-handoffs"), was specified as "atomic monotonic revisions"
+ * in #9943, and the Chromium multi-tab proof depends on it — `browser-multitab-smoke.ts`
+ * saves room revision 250, REMOVES it, then saves 300 into the empty slot and requires
+ * both to be admitted. Compare-and-swap would refuse both.
+ *
+ * What was wrong was the SILENCE. `ZetaDbImagePort` carried no contract at all, so the
+ * adapter could present a monotone store as an image port and nothing could notice. A
+ * port with an unwritten contract has as many contracts as it has implementations.
+ *
+ * Declaring it is not choosing it. Which discipline the browser-backed IMAGE store ought
+ * to enforce is a design decision for the architect (081M0Q8TQYE087G0R001WBX1ZC); this type only makes the
+ * divergence impossible to hold accidentally, and lets the conformance suite hold each
+ * implementation to what it claims.
+ */
+export type ZetaDbRevisionDiscipline =
+  /** `save` admits only `existing.revision + 1` (and a byte-identical re-save). First write is revision 1. */
+  | "compare-and-swap"
+  /** `save` admits any strictly greater revision, and any revision into an empty slot. */
+  | "monotone-last-writer-wins";
+
 export interface ZetaDbImagePort {
+  /**
+   * The contract this implementation enforces — declared, never assumed.
+   *
+   * `runConvergentZetaDbNodeTick`'s bounded-retry convergence (#13929) is proved against
+   * `compare-and-swap`. Against a `monotone-last-writer-wins` port that result does not
+   * transfer by argument; it would have to be re-established.
+   */
+  readonly revisionDiscipline: ZetaDbRevisionDiscipline;
   load(nodeId: string): Promise<ZetaDbResult<ZetaDbImageRecord | null>>;
   save(record: ZetaDbImageRecord): Promise<ZetaDbResult<ZetaDbImageRecord>>;
   close(): ZetaDbResult<null>;
@@ -93,6 +134,11 @@ export interface ZetaDbTickReadout {
   readonly nextDeltaIndex: number;
   readonly rows: readonly ZetaDbRow[];
   readonly feedback: readonly ZetaDbFeedback[];
+}
+
+export interface ZetaDbConvergencePolicy {
+  /** Total finite attempts, including the first execution. */
+  readonly maxAttempts: number;
 }
 
 const EXECUTOR_KINDS: ReadonlySet<ZetaDbExecutorKind> = new Set([
@@ -256,6 +302,7 @@ function foldRows(entries: readonly ZetaDbDelta[]): ZetaDbResult<readonly ZetaDb
       return failed(
         "database-row-conflict",
         `Row key ${rowKey} names more than one payload. Row keys must identify complete row values.`,
+        "backpressure",
       );
     }
     for (const [payload, weight] of surviving) rows.push({ rowKey, payload, weight });
@@ -668,6 +715,58 @@ export async function runZetaDbNodeTick(
   });
 }
 
+/**
+ * Reapply one logical tick after a transient conflict at the durable boundary.
+ *
+ * Explicit `expectedRevision` requests are compare-and-swap operations, so their
+ * predicate is never weakened by retrying. Ordinary idempotent event batches may
+ * reload and fold again after either a revision race or a row prefix that another
+ * concurrent batch can complete, but only within the caller's finite attempt budget.
+ *
+ * PRECONDITION on the port (081M0Q8TQYE087G0R001WBX1ZC): the convergence this retry provides was established
+ * against a `revisionDiscipline: "compare-and-swap"` port, because the retry is driven by
+ * the port REFUSING a revision another writer already took. A port declaring
+ * `"monotone-last-writer-wins"` refuses strictly fewer writes, so the argument does not
+ * transfer to it — it would have to be re-established, not assumed. This is stated rather
+ * than enforced on purpose: refusing a monotone port here would silently change the
+ * browser path's behaviour, and which discipline that path should hold is the architect's
+ * call, not this function's.
+ */
+export async function runConvergentZetaDbNodeTick(
+  port: ZetaDbImagePort,
+  request: ZetaDbTickRequest,
+  policy: ZetaDbConvergencePolicy,
+): Promise<ZetaDbResult<ZetaDbTickReadout>> {
+  if (
+    !isRecord(policy) ||
+    typeof policy.maxAttempts !== "number" ||
+    !Number.isSafeInteger(policy.maxAttempts) ||
+    policy.maxAttempts < 1
+  ) {
+    return failed(
+      "database-request-invalid",
+      "A database convergence policy requires a positive safe-integer attempt budget.",
+    );
+  }
+
+  const maxAttempts = policy.maxAttempts;
+  let lastConflict: ZetaDbFeedback | null = null;
+  for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+    const result = await runZetaDbNodeTick(port, request);
+    if (result.ok) return result;
+    if (result.feedback.code !== "database-revision-conflict" && result.feedback.code !== "database-row-conflict")
+      return result;
+    if (request.expectedRevision !== undefined) return result;
+    lastConflict = result.feedback;
+  }
+
+  return failed(
+    lastConflict?.code ?? "database-revision-conflict",
+    `Database tick spent its ${String(maxAttempts)}-attempt convergence budget. Last conflict: ${lastConflict?.detail ?? "durable state changed"}`,
+    "backpressure",
+  );
+}
+
 /** Reference durable port used by local, cloud, and deterministic-simulation tests. */
 export function createInMemoryZetaDbImagePort(): ZetaDbImagePort {
   const records = new Map<string, ZetaDbImageRecord>();
@@ -676,6 +775,7 @@ export function createInMemoryZetaDbImagePort(): ZetaDbImagePort {
   const unavailable = (): ZetaDbResult<never> =>
     failed("database-read-failed", "The in-memory database image port is closed.");
   return {
+    revisionDiscipline: "compare-and-swap",
     load: (nodeId) => {
       if (closed) return Promise.resolve(unavailable());
       const value = records.get(nodeId);
