@@ -322,6 +322,59 @@ allowed to live in, before anyone writes a spec.
 constructible universe appears in **zero**. For a repository whose verification strategy *is* fragment
 selection, that is thin, and it is the second routed item.
 
+### The same gap is the hard problem of adversarial ML — and it supplies the falsifier from outside
+
+Aaron 2026-08-23, on the Rice-present-but-unjoined finding: **"yes this is the hard problem of
+adversarial GAN AI I think."**
+
+The mapping is close and worth stating precisely, because it converts an in-house observation into
+one with **published measurements attached.**
+
+**A discriminator's blind spot is structural, not parametric.** The generator does not usually find a
+region where the discriminator is *wrong*; it finds a region the discriminator has **no feature for**
+— an unjoined part of its own representation. More training does not repair that, because training
+moves weights **within a fixed feature geometry**; it does not add the missing edge. That is exactly
+the Rice-in-fifteen-files shape: **both components present, the connection absent**, and nothing looks
+missing from the inside.
+
+**And the empirical payload is the part that matters here — it tests this document's own thesis.**
+
+> **Adversarial examples transfer between independently trained models.** Different initialisation,
+> different architecture, different data sample — and the *same* crafted input fools them all
+> (Szegedy et al. 2014, first noted; Papernot, McDaniel & Goodfellow 2016; Liu et al., ICLR 2017 for
+> targeted transfer).
+
+**Transferability is measured `ρ → 1` between models that were constructed independently**, and it is
+the strongest available outside evidence for the claim §4b's closing rests on:
+
+> **Independent construction does not guarantee decorrelation.**
+
+That is this repository's own S=4 common-seed worry, confirmed from a field that had no stake in it
+and arrived at it by measurement rather than by argument. It also **cuts at us**, which is why it is
+recorded here rather than cited approvingly:
+
+- **The four-oracle byte-lock assumes that independent implementations decorrelate.** Transferability
+  is a documented case where that assumption *fails empirically*. Whether it fails for our oracles is
+  **open** — four hand-written implementations of a specified algorithm are not four models trained
+  on overlapping data, and the mechanisms of correlation are different. But *the assumption has been
+  falsified somewhere*, and the right response is to measure `ρ` between oracles rather than infer it
+  from how they were built.
+- **The `2026-07-16` echolocation doc already says this in its own terms:** prime seed offsets
+  guarantee `L > 0` *in the seed domain* and **do not** guarantee it in the fractal-dimension domain
+  — two different seeds could still land on the same `D_f`. That open question and adversarial
+  transferability are **the same open question**, twice.
+
+**Register, and the limit.** GAN training dynamics and a detector ensemble are different objects, and
+nothing here identifies them — per `numerology-vs-number-theory`, a shared failure *shape* is not a
+shared mechanism. What is claimed is narrow and checkable: **the blind-spot-is-structural observation
+and the transferability measurement both say that constructing observers separately does not make
+their errors independent.** That is enough to make it a design constraint, and not enough to make it
+an identification.
+
+**Measured in-tree (2026-08-23):** `adversarial example` **0 files**, `Papernot` **0**, `GAN` **1**.
+The transferability literature is absent, and given that decorrelation is load-bearing here in the
+strict sense established above, that is the fourth routed item.
+
 ## 5. The triage — five domains clicking is a warning, and this is that condition
 
 Aaron's own rule (`numerology-vs-number-theory.md`): **"too many correlations is a warning, not a
