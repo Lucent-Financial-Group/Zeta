@@ -39,7 +39,7 @@
 //        2 — the lint could not establish its own ground (provenance doc missing/ambiguous,
 //            derived marker set too weak, or no scan surface) — never a silent pass
 
-import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import { join } from "node:path";
 
@@ -120,8 +120,15 @@ export const SCAN_DIRS: readonly string[] = ["docs", "src", "demo", "tests", "un
 // bundles, never authored claim surfaces, and a minified bundle is a pathological input.
 const SCAN_EXTENSIONS = /\.(md|ts|tsx|fs|fsx|cs|html|py|rs)$/u;
 
-/** Above this, a file is generated, not authored. Keeps a vendored blob out of the regex. */
-const MAX_FILE_BYTES = 2_000_000;
+/** Never authored claim surfaces; walking them costs time and finds nothing. */
+const SKIP_DIRS: ReadonlySet<string> = new Set(["node_modules", "bin", "obj", "dist", "artifacts"]);
+
+/**
+ * Above this a file is generated, not authored. Checked on the STRING after reading rather than
+ * on a `statSync` size before it — same protection, and no second syscall to race against
+ * (CWE-367; lint-check-then-use-file-races.ts went red on the earlier `statSync` form).
+ */
+const MAX_FILE_CHARS = 2_000_000;
 
 export function isFrozenRecord(path: string): string | null {
   const norm = path.replace(/\\/gu, "/");
@@ -283,6 +290,7 @@ export function collidingLines(text: string): readonly Finding[] {
 }
 
 export function scanText(file: string, text: string, markers: CaveatMarkers): readonly Finding[] {
+  if (text.length > MAX_FILE_CHARS) return [];
   if (isFrozenRecord(file)) return [];
   if (file.replace(/\\/gu, "/") === markers.provenancePath) return [];
   // Cheap line-wise scan FIRST. `carriesCaveat` flattens the whole file, and flattening a
@@ -303,25 +311,25 @@ export function scanText(file: string, text: string, markers: CaveatMarkers): re
 }
 
 function walk(p: string, acc: string[] = []): string[] {
-  let st;
+  // `withFileTypes` so the entry's KIND arrives with the listing. Asking `statSync` again would
+  // be a check-then-use race (CWE-367): an entry can vanish or change kind between the listing
+  // and the stat, and the listing already knew. Caught by lint-check-then-use-file-races.ts,
+  // which went red twice on the earlier form — once on the cross-verify floor, once inside the
+  // hygiene suite's no-NEW-race assertion.
+  let entries;
   try {
-    st = statSync(p);
-  } catch {
-    return acc;
-  }
-  if (st.isFile()) {
-    if (SCAN_EXTENSIONS.test(p) && st.size <= MAX_FILE_BYTES) acc.push(p);
-    return acc;
-  }
-  let entries: string[];
-  try {
-    entries = readdirSync(p);
+    entries = readdirSync(p, { withFileTypes: true });
   } catch {
     return acc;
   }
   for (const e of entries) {
-    if (e === "node_modules" || e === "bin" || e === "obj" || e === "dist" || e.startsWith(".git")) continue;
-    walk(join(p, e), acc);
+    const full = join(p, e.name);
+    if (e.isDirectory()) {
+      if (SKIP_DIRS.has(e.name) || e.name.startsWith(".git")) continue;
+      walk(full, acc);
+    } else if (e.isFile() && SCAN_EXTENSIONS.test(full)) {
+      acc.push(full);
+    }
   }
   return acc;
 }
