@@ -313,12 +313,22 @@ interface PackageJson {
 export function main(argv: readonly string[] = process.argv.slice(2)): number {
   const asJson = argv.includes("--json");
 
-  if (!existsSync(RADAR_PATH) || !existsSync("package.json")) {
-    console.error(`audit-tech-radar-claims: ${RADAR_PATH} or package.json not found — run from the repo root.`);
+  // ATTEMPT, don't check-then-use. An `existsSync` guard in front of these reads is
+  // CWE-367 (lint-check-then-use-file-races.ts caught exactly that here on the PR that
+  // added this file), and it buys nothing: the read already tells you whether the file
+  // is there, and it tells you the truth at the moment it matters.
+  let radar: string;
+  let pkg: PackageJson;
+  try {
+    radar = readFileSync(RADAR_PATH, "utf-8");
+    pkg = JSON.parse(readFileSync("package.json", "utf-8")) as PackageJson;
+  } catch (err) {
+    console.error(
+      `audit-tech-radar-claims: could not read ${RADAR_PATH} + package.json — run from the repo root. ` +
+        `(${err instanceof Error ? err.message : String(err)})`,
+    );
     return 2;
   }
-  const radar = readFileSync(RADAR_PATH, "utf-8");
-  const pkg = JSON.parse(readFileSync("package.json", "utf-8")) as PackageJson;
   const devDeps = Object.keys(pkg.devDependencies ?? {});
   const testFiles = trackedTestFiles();
 
