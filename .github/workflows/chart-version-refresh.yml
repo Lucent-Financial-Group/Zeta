@@ -111,6 +111,36 @@ jobs:
       - name: Refresh the published-version snapshot (network; red here is the signal, non-required job)
         run: bun src/Core.TypeScript/hygiene/audit-chart-target-revisions.ts --refresh
 
+      # THE SECOND NETWORK HALF, riding this lane rather than earning its own schedule.
+      # `src/Core.TypeScript/cluster/image-source-provenance.ts` gates every PR OFFLINE against
+      # `full-ai-cluster/k8s/image-source-provenance.json`; this re-measures every image
+      # reference in the tree as an ANONYMOUS client would -- which is the whole predicate:
+      # can someone who cloned this public repository actually pull what its manifests name?
+      #
+      # It is here and not in its own workflow for the same reason currency is: a second cron
+      # buys nothing. The two answer different questions off different endpoints, but both are
+      # "ask upstream what it publishes", both are non-blocking, and both write a committed
+      # snapshot whose DIFF is the signal. `--refresh` exits 1 when the snapshot CHANGED, which
+      # on this job means "the provenance moved, commit the diff" -- so `continue-on-error`
+      # keeps that from reading as a failure.
+      #
+      # It uses `gh` for the GHCR packages API (the route the original FlowDent investigation
+      # took) and degrades honestly without it: `packagePresence` is recorded `unreadable`,
+      # never `absent`, so an unauthenticated run cannot invent the difference between a private
+      # package and a missing one.
+      - name: Refresh the image-provenance snapshot (network; anonymous pull is the measurement)
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: bun src/Core.TypeScript/cluster/image-source-provenance.ts --refresh
+
+      # Re-run the OFFLINE gate against whatever the refresh just wrote. A provenance change
+      # that would redden every PR should be seen HERE first, in the lane that is allowed to be
+      # red, rather than by the next contributor to touch an unrelated file.
+      - name: Re-audit image provenance against the freshly refreshed snapshot
+        continue-on-error: true
+        run: bun src/Core.TypeScript/cluster/image-source-provenance.ts
+
       # Always uploaded, including on the failing path — the diff IS the output.
       - name: Upload the refreshed snapshot
         if: always()
