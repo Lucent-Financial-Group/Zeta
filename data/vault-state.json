@@ -2,9 +2,9 @@
   "schema": "zeta.vault-state.v1",
   "status": "cold",
   "reason": "no recent activity",
-  "generated_at_ms": 1787525701835,
+  "generated_at_ms": 1787526496888,
   "tick_frame_t": "2026-08-23T20:52:19.844Z",
-  "total_events_read": 4520,
+  "total_events_read": 4521,
   "max_phase": 78,
   "vaults": [
     {
@@ -41,13 +41,13 @@
               "summary": "attest_peer: verified 1 events from society"
             },
             {
-              "at": "2026-08-23T22:55:00.786Z",
+              "at": "2026-08-23T23:08:12.147Z",
               "agent": "otto",
               "kind": "explore",
               "summary": "explore: self-directed making — code / docs / research the agent chooses (forward motion, not idle)"
             },
             {
-              "at": "2026-08-23T22:53:58.316Z",
+              "at": "2026-08-23T22:55:00.786Z",
               "agent": "otto",
               "kind": "explore",
               "summary": "explore: self-directed making — code / docs / research the agent chooses (forward motion, not idle)"
@@ -81,13 +81,13 @@
               "summary": "attest_peer: verified 1 events from society"
             },
             {
-              "at": "2026-08-23T22:55:00.786Z",
+              "at": "2026-08-23T23:08:12.147Z",
               "agent": "otto",
               "kind": "explore",
               "summary": "explore: self-directed making — code / docs / research the agent chooses (forward motion, not idle)"
             },
             {
-              "at": "2026-08-23T22:53:58.316Z",
+              "at": "2026-08-23T22:55:00.786Z",
               "agent": "otto",
               "kind": "explore",
               "summary": "explore: self-directed making — code / docs / research the agent chooses (forward motion, not idle)"
@@ -124,15 +124,15 @@
           "dwellers": [
             {
               "agent_id": "otto",
-              "last_seen": "2026-08-23T22:55:00.869Z",
+              "last_seen": "2026-08-23T23:08:12.147Z",
               "hat_id": "healer",
               "last_action": {
-                "kind": "attest_peer",
-                "at": "2026-08-23T22:55:00.869Z"
+                "kind": "explore",
+                "at": "2026-08-23T23:08:12.147Z"
               },
               "reputation": {
                 "value": 1.05,
-                "epsilon": -0.03075831259604325,
+                "epsilon": -0.030743773095067282,
                 "silent": false
               },
               "reputation_history": [
@@ -335,20 +335,20 @@
           ],
           "dwellers": [
             {
-              "agent_id": "otto",
-              "last_seen": "2026-08-23T22:55:00.869Z",
+              "agent_id": "soraya",
+              "last_seen": "2026-08-23T22:26:14.950Z",
               "hat_id": "codegen",
               "last_action": {
-                "kind": "attest_peer",
-                "at": "2026-08-23T22:55:00.869Z"
+                "kind": "explore",
+                "at": "2026-08-23T22:26:14.950Z"
               },
               "reputation": {
                 "value": 1.05,
-                "epsilon": -0.03075831259604325,
+                "epsilon": -0.031686212526223896,
                 "silent": false
               },
               "reputation_history": [
-                1,
+                0.90625,
                 1,
                 1,
                 1,
@@ -395,13 +395,13 @@
               "summary": "attest_peer: verified 1 events from society"
             },
             {
-              "at": "2026-08-23T22:55:00.786Z",
+              "at": "2026-08-23T23:08:12.147Z",
               "agent": "otto",
               "kind": "explore",
               "summary": "explore: self-directed making — code / docs / research the agent chooses (forward motion, not idle)"
             },
             {
-              "at": "2026-08-23T22:53:58.316Z",
+              "at": "2026-08-23T22:55:00.786Z",
               "agent": "otto",
               "kind": "explore",
               "summary": "explore: self-directed making — code / docs / research the agent chooses (forward motion, not idle)"
