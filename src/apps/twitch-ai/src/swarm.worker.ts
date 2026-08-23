@@ -127,21 +127,26 @@ async function handleMessage(message: MainToWorkerMessage): Promise<void> {
       break;
     }
     case "KEY_DOWN": {
-      const key = validKeyIndex(message.payload.key);
-      if (key !== null) manualKeys[key] = true;
+      setManualKey(message.payload.key, true);
       break;
     }
     case "KEY_UP": {
-      const key = validKeyIndex(message.payload.key);
-      if (key !== null) manualKeys[key] = false;
+      setManualKey(message.payload.key, false);
       break;
     }
   }
 }
 
-/** The CHIP-8 keypad has exactly 16 keys; anything else is not a key. */
-function validKeyIndex(raw: number): number | null {
-  return Number.isInteger(raw) && raw >= 0 && raw < 16 ? raw : null;
+/**
+ * The CHIP-8 keypad has exactly 16 keys; anything else is not a key. The
+ * written index is the LOOP variable, never the message value — the message
+ * only selects which of the sixteen fixed slots matches, so no
+ * message-derived value ever becomes a property name.
+ */
+function setManualKey(requested: number, down: boolean): void {
+  for (let k = 0; k < 16; k++) {
+    if (k === requested) manualKeys[k] = down;
+  }
 }
 
 const KNOWN_MESSAGE_TYPES: ReadonlySet<string> = new Set([
@@ -169,6 +174,15 @@ function isMainToWorkerMessage(data: unknown): data is MainToWorkerMessage {
 }
 
 self.onmessage = (e: MessageEvent<unknown>) => {
+  // Origin check, stated exactly: a DEDICATED worker's messages come only
+  // from the page that constructed it, and their MessageEvent.origin is
+  // always the empty string. A non-empty origin therefore cannot occur on
+  // this channel, and rejecting it asserts that invariant rather than
+  // decorating it.
+  if (e.origin !== "") {
+    console.warn("[SwarmWorker] Dropped message with unexpected origin");
+    return;
+  }
   if (!isMainToWorkerMessage(e.data)) {
     console.warn("[SwarmWorker] Dropped malformed message");
     return;
