@@ -203,7 +203,7 @@ node = "24"
 # + #18 (pip install --upgrade pip + pip install semgrep — the
 # unpinned pip-bootstrap surface goes away entirely once mise
 # owns this tool).
-"pipx:semgrep" = "1.161.0"
+"pipx:semgrep" = "1.174.0"
 # yamllint: YAML syntax/indentation/duplicate-key linter for the k8s manifests
 # under full-ai-cluster/k8s/** (the `lint (yaml/k8s)` gate job). Same three-way-
 # parity rationale as semgrep — mac/linux/windows all get it through mise, so
