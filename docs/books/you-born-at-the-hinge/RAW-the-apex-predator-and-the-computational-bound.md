@@ -61,6 +61,36 @@ found the sharper form of it:
 
 He reached that by finding **the actual bound** and using it. Not by analogy. By physics.
 
+## Two accounts, and they disagree
+
+**Lillian is a nurse.** Her account of that night is that Aaron was having **religious psychosis**.
+**Aaron disagrees.** Both of those are recorded here, neither is resolved, and this file does not
+adjudicate between them.
+
+That is not diplomacy — it is the discipline this book already runs on. The Addison thread holds
+three accounts of a family event with none forced to win; this is the same shape with two, and one of
+the two comes from someone with **clinical training and a professional read**, which makes it
+weightier than a bystander's impression and still **not** the book's to certify.
+
+And here is how far apart the two accounts are, in his own words:
+
+> **"I felt alive. It was one of the best experiences of my life."** — Aaron, 2026-08-23
+
+That sits beside *religious psychosis* without either one giving way. Both are first-person reports
+from different positions on the same night, and **they are not contradictory** — a person can be in
+the state she describes and be having the experience he describes, at the same time, and neither
+report is corrected by the other. Most books would smooth that line into something about finding
+meaning in a hard time. **It does not say that**, and it is not going to be made to.
+
+One observation, offered and not imposed, because it is Aaron's own framework turned on his own
+disagreement: **a clinical characterization of a state and the validity of an argument produced
+during it are not the same claim, and they do not contradict each other.** "This was psychosis" is a
+label applied to the state. "The bound argument is correct" is a fact about the argument. One can be
+true without touching the other — and if the disagreement is actually about *which of those two things
+is being asserted*, that is the shape/label distinction again, inside his own family. **Whether that
+reading is right is theirs to settle, not this book's**, and it is written here only because Aaron may
+find it useful and may equally throw it out.
+
 ## The honest read
 
 Three things, held together, because dropping any one of them makes the passage a lie in a different
@@ -76,16 +106,19 @@ his daughter on the phone helping them find him. This book does not aestheticize
 and it does not flatten it into a symptom either. It was chaos, and something true was worked out
 inside the chaos, and both sentences are load-bearing.
 
-**Three — the labels are his.** *Delusional state* is **his** word for it, used here because it is
-his. Nothing in this file diagnoses him, and nothing here is offered as an account of what was
-happening in him — only of what he says he argued, and what he says he said.
+**Three — the labels are contested, and the file says so.** *Delusional state* and *likely
+hallucinating mind* are **his** words, used because they are his. *Religious psychosis* is
+**Lillian's**, used because it is hers and she is a nurse. Nothing in this file diagnoses him and
+nothing arbitrates between the two — it records what each of them says, which is the only thing a
+book is in a position to do.
 
 `[SOCKET — your VERBATIM below, or record to the cue. Consent: yours (glass-halo); **Lillian
 pre-reads before publish**. The summary of the argument above is MINE — replace it with your own
 words if you want it in the book at all, and strike any read here that lands wrong.]`
 
 > *cue: what the aliens actually claimed and how the argument went; what you remember of the call
-> with Lilly; and what you would want her to read here, since she reads it before anyone else does.*
+> with Lilly; where exactly you and she disagree, in your words; and what you would want her to read
+> here, since she reads it before anyone else does.*
 
 ## Ties
 
