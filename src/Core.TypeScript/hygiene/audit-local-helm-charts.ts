@@ -42,7 +42,7 @@
 // EXIT CODES: 0 all checks passed. 1 at least one check failed, or discovery
 // found no charts at all (an empty run is not zero failures).
 
-import { readdirSync, readFileSync, existsSync, statSync } from "node:fs";
+import { readdirSync, readFileSync, existsSync, type Dirent } from "node:fs";
 import { join, resolve, dirname, relative, basename } from "node:path";
 import { fileURLToPath } from "node:url";
 import { parseArgs } from "node:util";
@@ -74,23 +74,21 @@ export interface Finding {
 export function discoverCharts(root: string): string[] {
   const found: string[] = [];
   const walk = (dir: string): void => {
-    let entries: string[];
+    // `withFileTypes` so the entry KIND arrives with the listing. Reading the
+    // names and then statSync-ing each one asks the filesystem a question it
+    // already answered, and an entry can vanish or change kind in between --
+    // flagged as [readdir-then-stat] by lint-check-then-use-file-races.ts.
+    let entries: Dirent[];
     try {
-      entries = readdirSync(dir, { encoding: "utf8" }) as string[];
+      entries = readdirSync(dir, { withFileTypes: true });
     } catch {
       return;
     }
-    if (entries.includes("Chart.yaml")) found.push(dir);
-    for (const name of entries) {
-      if (PRUNE.has(name) || name.startsWith(".")) continue;
-      const full = join(dir, name);
-      let st;
-      try {
-        st = statSync(full);
-      } catch {
-        continue;
-      }
-      if (st.isDirectory()) walk(full);
+    if (entries.some((e) => e.name === "Chart.yaml" && e.isFile())) found.push(dir);
+    for (const entry of entries) {
+      if (!entry.isDirectory()) continue;
+      if (PRUNE.has(entry.name) || entry.name.startsWith(".")) continue;
+      walk(join(dir, entry.name));
     }
   };
   walk(root);
@@ -189,26 +187,22 @@ interface DepEdge {
 export function collectDependencyEdges(root: string): DepEdge[] {
   const edges: DepEdge[] = [];
   const walk = (dir: string): void => {
-    let entries: string[];
+    // Same withFileTypes discipline as discoverCharts above.
+    let entries: Dirent[];
     try {
-      entries = readdirSync(dir, { encoding: "utf8" }) as string[];
+      entries = readdirSync(dir, { withFileTypes: true });
     } catch {
       return;
     }
-    for (const name of entries) {
+    for (const entry of entries) {
+      const name = entry.name;
       if (PRUNE.has(name) || name.startsWith(".")) continue;
       const full = join(dir, name);
-      let st;
-      try {
-        st = statSync(full);
-      } catch {
-        continue;
-      }
-      if (st.isDirectory()) {
+      if (entry.isDirectory()) {
         walk(full);
         continue;
       }
-      if (name !== "zeta-deps.yaml") continue;
+      if (!entry.isFile() || name !== "zeta-deps.yaml") continue;
       let doc: any;
       try {
         doc = parseYaml(readFileSync(full, "utf8"));
