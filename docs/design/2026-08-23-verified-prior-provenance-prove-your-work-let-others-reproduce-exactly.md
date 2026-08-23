@@ -88,17 +88,22 @@ under the priors. I nearly recorded the opposite; the timestamps refuted it. (Lo
 ### Why — the mechanism
 
 The trainer's dependency closure calls `Math.hypot` (`perception.ts`), and `Math.cbrt`, `Math.cos`,
-`Math.exp`, `Math.log`, `Math.log1p`, `Math.sqrt` (`student-t-bnn.ts`). ECMAScript specifies these
-as **implementation-approximated** — engines are not required to agree in the last place. Measured
-directly on this machine, JavaScriptCore (bun) against V8 (node), same inputs:
+`Math.exp`, `Math.log`, `Math.log1p`, `Math.sqrt` (`student-t-bnn.ts`). ECMAScript marks the
+transcendental ones **implementation-approximated** — the spec defers their definition and only
+*recommends* an ideal result, so engines are not required to agree in the last place. **`Math.sqrt`
+is the exception and is not in that class:** it is required to return the correctly-rounded result,
+which is a genuinely stronger guarantee. Measured directly on this machine, JavaScriptCore (bun)
+against V8 (node), same inputs:
 
 ```text
 functions that differ at 1 ULP: cbrt cos exp hypot log1p
 ```
 
 One ULP per operation, compounded over 1200 ticks of EP updates, lands at the ~149 ULP / 3.3e-14
-relative divergence measured above. `Math.sqrt` is IEEE-754 correctly-rounded in practice and did
-not differ; `Math.log` did not differ on the probed inputs, which is not a guarantee.
+relative divergence measured above. The measurement and the spec agree on `sqrt`: it is required to
+be correctly-rounded and it did not differ. `Math.log` also did not differ on the probed inputs —
+but it *is* implementation-approximated, so that is luck on this input set, not a guarantee, and the
+distinction between those two "did not differ" results is exactly the one worth keeping.
 
 **The manifest declares `cart`, `trainedTicks`, and `seed` — and not the runtime.** The runtime is
 load-bearing and undeclared, so the recipe is incomplete exactly where it fails.
