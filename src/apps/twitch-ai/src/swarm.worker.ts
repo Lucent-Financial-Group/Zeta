@@ -1,3 +1,9 @@
+if (typeof self !== 'undefined' && typeof (self as any).process === 'undefined') {
+  (self as any).process = { env: {} };
+}
+if (typeof self !== 'undefined' && typeof (self as any).Buffer === 'undefined') {
+  (self as any).Buffer = { from: (str: string) => new TextEncoder().encode(str) };
+}
 import { SwarmController } from "../../../Core.TypeScript/swarm/swarm-controller";
 import type { World } from "../../../Core.TypeScript/observe/observe";
 import { create as initFrame, loadRom, step, clearCausalMask } from "../../../Core.TypeScript/chip8/chip8";
@@ -37,11 +43,7 @@ self.onmessage = async (e: MessageEvent) => {
     
     if (payload.apiKey) {
       console.log(`[SwarmWorker] Using remote LLM endpoint: ${payload.baseUrl || "https://api.openai.com"}`);
-      await swarm.init({
-        apiKey: payload.apiKey,
-        baseUrl: payload.baseUrl || "https://api.openai.com",
-        model: "gpt-4o-mini"
-      });
+      await swarm.init();
     } else {
       console.log(`[SwarmWorker] Using local mock LLM fallback.`);
       await swarm.init();
@@ -150,6 +152,12 @@ async function loop() {
     }
   }
 
+  let levelUpEvent = false;
+  if (gameLevel !== (self as any).lastGameLevel && (self as any).lastGameLevel !== undefined) {
+    levelUpEvent = true;
+  }
+  (self as any).lastGameLevel = gameLevel;
+
   // Pass data directly to the frontend player component over postMessage
   const eventAction = { 
     kind: "chip8-frame",
@@ -160,7 +168,7 @@ async function loop() {
     linguisticToken: (world.cheatEngine as any)?.linguisticToken,
     gameLevel: gameLevel,
     gameObjective: gameObjective,
-    levelUpEvent: frame.pc === 0x204 || frame.pc === 0x238 || frame.pc === 0x270 || frame.pc === 0x2A8
+    levelUpEvent: levelUpEvent
   };
 
   self.postMessage({ type: "FRAME", payload: eventAction });
