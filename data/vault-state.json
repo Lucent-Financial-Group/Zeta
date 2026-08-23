@@ -1,17 +1,17 @@
 {
   "schema": "zeta.vault-state.v1",
-  "status": "stale",
-  "reason": "latest frame 82min ago",
-  "generated_at_ms": 1787510779979,
-  "tick_frame_t": "2026-08-23T17:23:54.344Z",
-  "total_events_read": 4434,
+  "status": "live",
+  "reason": "latest frame within 30min",
+  "generated_at_ms": 1787512480932,
+  "tick_frame_t": "2026-08-23T18:58:37.480Z",
+  "total_events_read": 4437,
   "max_phase": 78,
   "vaults": [
     {
       "id": "observatory",
       "status": "live",
       "confidence": {
-        "value": 0.9249999999999999,
+        "value": 0.9624999999999999,
         "epsilon": 0.1
       },
       "rooms": [
@@ -41,13 +41,13 @@
               "summary": "attest_peer: verified 1 events from society"
             },
             {
-              "at": "2026-08-23T18:46:15.236Z",
+              "at": "2026-08-23T19:14:40.587Z",
               "agent": "otto",
               "kind": "explore",
               "summary": "explore: self-directed making — code / docs / research the agent chooses (forward motion, not idle)"
             },
             {
-              "at": "2026-08-23T18:27:32.472Z",
+              "at": "2026-08-23T19:13:37.023Z",
               "agent": "otto",
               "kind": "explore",
               "summary": "explore: self-directed making — code / docs / research the agent chooses (forward motion, not idle)"
@@ -81,13 +81,13 @@
               "summary": "attest_peer: verified 1 events from society"
             },
             {
-              "at": "2026-08-23T18:46:15.236Z",
+              "at": "2026-08-23T19:14:40.587Z",
               "agent": "otto",
               "kind": "explore",
               "summary": "explore: self-directed making — code / docs / research the agent chooses (forward motion, not idle)"
             },
             {
-              "at": "2026-08-23T18:27:32.472Z",
+              "at": "2026-08-23T19:13:37.023Z",
               "agent": "otto",
               "kind": "explore",
               "summary": "explore: self-directed making — code / docs / research the agent chooses (forward motion, not idle)"
@@ -124,15 +124,15 @@
           "dwellers": [
             {
               "agent_id": "otto",
-              "last_seen": "2026-08-23T18:46:15.236Z",
+              "last_seen": "2026-08-23T19:14:40.587Z",
               "hat_id": "healer",
               "last_action": {
                 "kind": "explore",
-                "at": "2026-08-23T18:46:15.236Z"
+                "at": "2026-08-23T19:14:40.587Z"
               },
               "reputation": {
                 "value": 1.05,
-                "epsilon": -0.031053504702226845,
+                "epsilon": -0.03103854276221004,
                 "silent": false
               },
               "reputation_history": [
@@ -206,7 +206,7 @@
               },
               "reputation": {
                 "value": 1.05,
-                "epsilon": -0.030303030303030304,
+                "epsilon": -0.03031695312954162,
                 "silent": false
               },
               "reputation_history": [
@@ -270,12 +270,12 @@
               },
               "reputation": {
                 "value": 1.05,
-                "epsilon": -0.031927542840705044,
+                "epsilon": -0.031943828249996996,
                 "silent": false
               },
               "reputation_history": [
                 1,
-                0.8854166666666666,
+                0.8958333333333334,
                 1,
                 1,
                 1,
@@ -335,16 +335,16 @@
           ],
           "dwellers": [
             {
-              "agent_id": "alexa",
-              "last_seen": "2026-08-23T17:53:14.830Z",
+              "agent_id": "otto",
+              "last_seen": "2026-08-23T19:14:40.587Z",
               "hat_id": "codegen",
               "last_action": {
                 "kind": "explore",
-                "at": "2026-08-23T17:53:14.830Z"
+                "at": "2026-08-23T19:14:40.587Z"
               },
               "reputation": {
                 "value": 1.05,
-                "epsilon": -0.030303030303030304,
+                "epsilon": -0.03103854276221004,
                 "silent": false
               },
               "reputation_history": [
@@ -395,13 +395,13 @@
               "summary": "attest_peer: verified 1 events from society"
             },
             {
-              "at": "2026-08-23T18:46:15.236Z",
+              "at": "2026-08-23T19:14:40.587Z",
               "agent": "otto",
               "kind": "explore",
               "summary": "explore: self-directed making — code / docs / research the agent chooses (forward motion, not idle)"
             },
             {
-              "at": "2026-08-23T18:27:32.472Z",
+              "at": "2026-08-23T19:13:37.023Z",
               "agent": "otto",
               "kind": "explore",
               "summary": "explore: self-directed making — code / docs / research the agent chooses (forward motion, not idle)"
