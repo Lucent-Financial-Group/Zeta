@@ -107,7 +107,12 @@ function rustVocabulary(): Map<string, number> {
   return out;
 }
 
-const sorted = (m: Map<string, number>) => [...m.entries()].sort((a, b) => a[1] - b[1] || a[0].localeCompare(b[0]));
+// ORDINAL, not `localeCompare`. A culture-sensitive comparison here would make the
+// agreement verdict depend on the runner's locale — a four-oracle byte-lock check whose
+// own ordering is not byte-locked. `<`/`>` on strings is UTF-16 code-unit order, which is
+// what `.claude/rules/culture-invariant-by-default.md` requires.
+const ordinal = (a: string, b: string) => (a < b ? -1 : a > b ? 1 : 0);
+const sorted = (m: Map<string, number>) => [...m.entries()].sort((a, b) => a[1] - b[1] || ordinal(a[0], b[0]));
 
 // ── The parsers must actually find something ────────────────────────────────
 // Without these, a regex that silently matches nothing turns every agreement
