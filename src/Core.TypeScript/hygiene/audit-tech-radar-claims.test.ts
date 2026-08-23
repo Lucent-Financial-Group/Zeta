@@ -6,6 +6,20 @@
 // twin, because a lint that flagged a prose mention of `docs/GLOSSARY.md` or demanded
 // a radar row for `pg` would be disabled within a week — and a disabled guard is worse
 // than none.
+//
+// ── A RULE THIS FILE MUST FOLLOW, LEARNED THE HARD WAY ────────────────────────
+// THIS FILE IS INSIDE THE CORPUS THE AUDIT SCANS. It is a tracked `*.test.ts`, so
+// every import specifier written here as a FIXTURE STRING is indistinguishable to
+// check B from a real dependency. The first version of this suite used
+// `import { chromium } from "playwright"` as a parser fixture; `playwright` is a
+// real devDependency, so the audit dutifully reported it as an unringed in-use tool
+// and went red in CI (job 97201065831) while passing locally against the earlier,
+// line-anchored regex. The finding was true of the fixture and false of the repo.
+//
+// So: **fixtures must name packages that cannot be devDependencies.** The parser
+// tests below use `example-not-a-real-dep` for exactly this reason. The alternative
+// — exempting this file from the scan — would be an allowlist of one, and an audit
+// that skips a file is an audit that can be silenced by moving code into it.
 
 import { describe, expect, test } from "bun:test";
 import {
@@ -16,6 +30,7 @@ import {
   importedPackages,
   namedInRadar,
   packageOf,
+  stripComments,
 } from "./audit-tech-radar-claims.ts";
 
 const nothingExists = (): boolean => false;
@@ -74,6 +89,8 @@ describe("check A — path claims", () => {
 describe("check B — a devDependency used to verify must carry a ring", () => {
   const radarWithoutFastCheck = "| FsCheck 3 property tests | Adopt | 1 | In CI |";
   const testFile = "src/Core.TypeScript/observe/schema-aware-join.test.ts";
+  // `fast-check` is safe to name here even under the header's rule: it now HAS a radar
+  // row, so a self-report is impossible — check B fires on unringed tools only.
   const read = (): string => `import { describe } from "bun:test";\nimport fc from "fast-check";\n`;
 
   test("FIRES on the real 2026-08-22 finding: fast-check in use, no ring", () => {
@@ -123,13 +140,24 @@ describe("import parsing", () => {
   });
 
   test("importedPackages handles default, named, and side-effect imports", () => {
+    // Every specifier here is deliberately NOT a real devDependency — see the file
+    // header. A fixture naming a real one makes this suite report itself.
     const src = [
-      `import fc from "fast-check";`,
-      `import { chromium } from "playwright";`,
-      `import "some-polyfill";`,
-      `import type { A } from "./local.ts";`,
+      `import a from "example-not-a-real-dep";`,
+      `import { b } from "example-also-not-real";`,
+      `import "example-side-effect-only";`,
+      `import type { C } from "./local.ts";`,
     ].join("\n");
-    expect([...importedPackages(src)].sort()).toEqual(["fast-check", "playwright", "some-polyfill"]);
+    expect([...importedPackages(src)].sort()).toEqual([
+      "example-also-not-real",
+      "example-not-a-real-dep",
+      "example-side-effect-only",
+    ]);
+  });
+
+  test("also sees `export … from` and multi-line specifiers (the simplified regex)", () => {
+    const src = `export { x } from "example-reexported-dep";\nimport {\n  y,\n} from "example-multiline-dep";`;
+    expect([...importedPackages(src)].sort()).toEqual(["example-multiline-dep", "example-reexported-dep"]);
   });
 
   test("STATED LIMIT, pinned as a test: a require() inside a spawned process is invisible", () => {
@@ -137,6 +165,41 @@ describe("import parsing", () => {
     // under-reports rather than inventing; if that ever changes, this test tells you.
     const src = `const script = "const { init } = require('z3-solver/build/node.js');";`;
     expect(importedPackages(src)).toHaveLength(0);
+  });
+});
+
+describe("comments are not imports — the self-report class", () => {
+  test("REPRODUCES the CI failure: a specifier quoted in a LINE COMMENT", () => {
+    // The shape that took cross-verify red on job 97201065831. Note the fixture names
+    // a package that is deliberately not a real devDependency — see the file header;
+    // a string literal holding a real one would re-create the failure a third time,
+    // because stripComments handles comments and cannot handle strings.
+    const src = ['// the first version used  import x from "example-in-a-comment";', "const y = 1;"].join("\n");
+    expect(importedPackages(src)).toHaveLength(0);
+  });
+
+  test("block comments too", () => {
+    expect(importedPackages(`/*\n * import x from "example-in-a-block";\n */\n`)).toHaveLength(0);
+  });
+
+  test("a REAL import beside a commented one still counts", () => {
+    const src = ['// import old from "example-retired-dep";', 'import x from "example-live-dep";'].join("\n");
+    expect(importedPackages(src)).toEqual(["example-live-dep"]);
+  });
+
+  test("`//` inside a string is NOT a comment — the reason this is a scanner, not a regex", () => {
+    const src = ['const u = "https://example.com/x";', 'import x from "example-live-dep";'].join("\n");
+    expect(importedPackages(src)).toEqual(["example-live-dep"]);
+    expect(stripComments(src)).toContain("https://example.com/x");
+  });
+
+  test("stripComments preserves length, so offsets stay true", () => {
+    const src = "a // b\nc /* d */ e";
+    expect(stripComments(src)).toHaveLength(src.length);
+  });
+
+  test("an unterminated block comment swallows the rest — under-report, never invent", () => {
+    expect(importedPackages('/* oops\nimport x from "example-live-dep";')).toHaveLength(0);
   });
 });
 

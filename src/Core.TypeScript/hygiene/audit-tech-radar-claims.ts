@@ -150,9 +150,102 @@ export function packageOf(specifier: string): string | null {
  */
 const STATIC_IMPORT = /\bfrom\s*["']([^"']+)["']|\bimport\s*["']([^"']+)["']/gu;
 
+/**
+ * Blank out `//` and block comments so a package named in PROSE is not read as a
+ * dependency.
+ *
+ * This audit does not parse TypeScript, it regexes — and to a regex a specifier in a
+ * comment is identical to a real import. That is not hypothetical: this file's own
+ * test suite is inside the corpus, and a header comment explaining a past false
+ * positive re-created it, because the comment quoted `from "playwright"` verbatim.
+ *
+ * A character scanner rather than a regex, because `"https://…"` contains `//` inside
+ * a string and a regex that strips it would corrupt real specifiers. String state is
+ * tracked for all three quote forms; escapes are honoured. Comment bodies are replaced
+ * with spaces rather than deleted so byte offsets — and therefore any future line
+ * reporting — stay true.
+ *
+ * STATED LIMIT: regex literals are not tracked, so `/"/` could in principle open a
+ * phantom string. No such construct exists in the corpus today and the failure mode is
+ * to see FEWER imports, which keeps this audit's bias (under-report, never invent).
+ */
+/** Copy a quoted string verbatim from `i` (which points at the opening quote). */
+function copyString(src: string, i: number): { readonly text: string; readonly next: number } {
+  const quote = src[i] ?? "";
+  let out = quote;
+  let k = i + 1;
+  while (k < src.length) {
+    const c = src[k] ?? "";
+    if (c === "\\") {
+      out += c + (src[k + 1] ?? "");
+      k += 2;
+      continue;
+    }
+    out += c;
+    k += 1;
+    if (c === quote) break;
+  }
+  return { text: out, next: k };
+}
+
+/** Blank a region to spaces, keeping newlines, so byte offsets survive. */
+function blank(src: string, from: number, to: number): string {
+  let out = "";
+  for (let k = from; k < to; k += 1) out += src[k] === "\n" ? "\n" : " ";
+  return out;
+}
+
+/**
+ * Blank out `//` and block comments so a package named in PROSE is not read as a
+ * dependency.
+ *
+ * This audit does not parse TypeScript, it regexes — and to a regex a specifier in a
+ * comment is identical to a real import. Not hypothetical: this file's own test suite
+ * is inside the scanned corpus, and a header comment explaining a past false positive
+ * RE-CREATED it, because the comment quoted the specifier verbatim.
+ *
+ * A character scanner rather than a regex, because `"https://…"` contains `//` inside
+ * a string and a regex that stripped it would corrupt real specifiers. Comment bodies
+ * become spaces rather than disappearing, so byte offsets stay true.
+ *
+ * TWO STATED LIMITS, both biased toward seeing FEWER imports (under-report, never
+ * invent):
+ *  1. Regex literals are not tracked, so `/"/` could open a phantom string.
+ *  2. A specifier inside a STRING LITERAL is still indistinguishable from a real
+ *     import — comments are handled, string fixtures are not and cannot be. That is
+ *     why the test suite's fixtures must never name a real devDependency.
+ */
+export function stripComments(source: string): string {
+  let out = "";
+  let i = 0;
+  while (i < source.length) {
+    const c = source[i] ?? "";
+    const next = source[i + 1] ?? "";
+    if (c === '"' || c === "'" || c === "`") {
+      const copied = copyString(source, i);
+      out += copied.text;
+      i = copied.next;
+    } else if (c === "/" && next === "/") {
+      const nl = source.indexOf("\n", i);
+      const stop = nl === -1 ? source.length : nl;
+      out += blank(source, i, stop);
+      i = stop;
+    } else if (c === "/" && next === "*") {
+      const end = source.indexOf("*/", i + 2);
+      const stop = end === -1 ? source.length : end + 2;
+      out += blank(source, i, stop);
+      i = stop;
+    } else {
+      out += c;
+      i += 1;
+    }
+  }
+  return out;
+}
+
 export function importedPackages(source: string): readonly string[] {
   const out = new Set<string>();
-  for (const m of source.matchAll(STATIC_IMPORT)) {
+  for (const m of stripComments(source).matchAll(STATIC_IMPORT)) {
     const spec = m[1] ?? m[2];
     if (spec === undefined) continue;
     const pkg = packageOf(spec);

@@ -326,10 +326,10 @@ allowlist. Green on this branch after the corrections, so **no baseline file exi
 
 ## §4 — Two things found on the way that are not radar rows
 
-### 4.1 `main` is red, and it is not this change
+### 4.1 `main` was red — and half of it fixed itself while this was being written
 
-`bun src/Core.TypeScript/lint/lint-typescript.ts` — the exact command the `lint (TS)` gate job
-runs — exits 1 on `origin/main`:
+**Measured 2026-08-23T12:35Z.** `bun src/Core.TypeScript/lint/lint-typescript.ts` — the exact
+command the `lint (TS)` gate job runs — exited 1 on `origin/main`:
 
 ```text
 src/apps/twitch-ai/src/swarm.worker.ts(40,24): error TS2345:
@@ -337,14 +337,30 @@ src/apps/twitch-ai/src/swarm.worker.ts(40,24): error TS2345:
   is not assignable to parameter of type 'number'.
 ```
 
-Confirmed in CI as well as locally: `gate.yml` run **32639819848** on `main` (`ba965f8636`)
-failed `test (TS hermetic)`, `lint (TS)`, and therefore **`gate (required)`**. Introduced by
-`3d40e4589` — _"feat: restore twitch-ai and mutual-sim after revert (#14159)"_.
+`gate.yml` run **32639819848** on `main` (`ba965f8636`) failed `test (TS hermetic)`,
+`lint (TS)`, and therefore **`gate (required)`**. Introduced by `3d40e4589` (#14159).
 
-Every open PR inherits it, including this one. Not fixed here on purpose: `SwarmController.init`
-takes a `number` and the call site passes an options object, so which side is wrong is an intent
-question inside someone else's in-flight feature, and guessing is the exact defect this document
-is about. Routed with evidence as `081M0QC66N5087G0R003R3ARYH` (P0).
+**Corrected at 13:40Z — and the correction is the point of writing this section at all.**
+
+- The `lint (TS)` half was fixed on `main` by **`7a2339db3`** (#14169) roughly thirty minutes
+  later. The current source now reads `await swarm.init();` with the reason written beside it:
+  _"SwarmController.init takes a UDP drop-rate number, not LLM settings."_ Verified: run
+  **32641157957** at `7a2339db36` has `lint (TS)` **green**. That is also the answer to the
+  intent question this audit declined to guess at, and the resolving commit answered it the
+  other way from the call site.
+- **`test (TS hermetic)` is still red on `main`** at that same commit, for an unrelated reason
+  (the bootstrap/`db/mutation-findings/` measurement suite), so `gate (required)` remains red.
+
+**And a methodological catch worth keeping.** This branch's CI passed `lint (TS)` while a local
+run on the same branch failed, and the two are both correct: `actions/checkout` on a
+`pull_request` event resolves `refs/pull/N/merge` — **head merged into base** — so CI was
+testing a tree that already contained `main`'s fix, and the local checkout was not. A branch-only
+local run and a PR CI run disagree by exactly the contents of the base. That is the
+_verify-the-tree-not-just-the-command_ discipline in a new costume: same command, two trees, two
+truthful answers.
+
+The workitem `081M0QC66N5087G0R003R3ARYH` is retargeted accordingly — the twitch-ai half is
+recorded as **resolved by `7a2339db3`**, the `test (TS hermetic)` half stays open.
 
 ### 4.2 Prettier is a script nothing runs — and `docs/TECH-RADAR.md` was already dirty
 
