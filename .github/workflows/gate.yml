@@ -1955,6 +1955,18 @@ jobs:
       - name: Proof-lineage binary exception (no-binary-in-proof-lineage.md)
         run: bun src/Core.TypeScript/hygiene/audit-proof-lineage-binaries.ts
 
+      # The .NET SDK version is declared in TWO files and, until 2026-08-23, nothing checked
+      # that they agreed: `global.json` carried `rollForward: latestPatch` (which reads like
+      # automatic security uptake and is not — it only selects among ALREADY-INSTALLED SDKs)
+      # while `.mise.toml`, the file that actually acquires the SDK, pinned it exactly. A
+      # reader of one believed a property only the other could grant. `.mise.toml` is now the
+      # single declared source and `global.json` a checked restatement, so the two can no
+      # longer disagree silently. Text-only and offline — it runs where no SDK is installed,
+      # unlike its runtime sibling `audit-codeanalysis-sdk-match.ts`, which reads the SDK's
+      # own `csc -version` in the build job.
+      - name: .NET SDK pin declared once (.mise.toml canonical, global.json restates)
+        run: bun src/Core.TypeScript/hygiene/audit-dotnet-pin-parity.ts
+
       # Every zflash host arm must reach the ISO integrity gate before it writes to a block
       # device. Measured on main 2026-08-21: the manifest check existed in the macOS arm and
       # NOWHERE ELSE, so flash-usb-linux.ts and flash-usb-windows.ts wrote an image with no

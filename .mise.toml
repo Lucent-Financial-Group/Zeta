@@ -22,10 +22,41 @@
 min_version = "2026.6.12"
 
 [tools]
-# .NET 10 SDK (latest). Kept in sync with `global.json` — Zeta's
-# own `.NET`-native pin contract. Round-34 flip from
-# Microsoft's dotnet-install.sh to mise (see header).
-dotnet = "10.0.302"
+# .NET 10 SDK. THIS LINE IS THE SINGLE DECLARED SOURCE of the SDK
+# version; `global.json` restates it and is held in agreement by
+# `src/Core.TypeScript/hygiene/audit-dotnet-pin-parity.ts`.
+#
+# Why this file and not `global.json`: mise is the only one of the two
+# that ACQUIRES an SDK. `global.json`'s `rollForward` is a RESOLUTION
+# policy over already-installed SDKs — it has never downloaded one — so
+# `rollForward: latestPatch` was never an update mechanism and reading it
+# as one is the belief this split existed to create. The exact pin here
+# is also what keeps installs deterministic across laptops + CI (§7 DST);
+# a loose pin would trade that away for an uptake it still would not get.
+#
+# 10.0.302 -> 10.0.303 (2026-08-11): SECURITY roll, runtime 10.0.10 ->
+# 10.0.11, 10 CVEs (CVE-2026-62871/62886/62897/62898/62899/62900/62901/
+# 62902/62909, CVE-2026-70354). Verified locally, not inferred: the
+# bundled Roslyn is UNCHANGED at 5.6.0 across the roll --
+#   10.0.302 -> 5.6.0-2.26329.109
+#   10.0.303 -> 5.6.0-2.26377.103
+# so the `Microsoft.CodeAnalysis.*` ceiling in Directory.Packages.props
+# (5.6.0) and its dependabot `ignore:` entry both stay exactly as they
+# are. A patch-band roll keeps the Roslyn minor; a FEATURE-band roll
+# (10.0.3xx -> 10.0.4xx, currently 10.0.400) is what moves it, and that
+# is the change that must carry the CodeAnalysis + FSharp.Core bumps
+# with it in one commit.
+#
+# macOS trap, measured 2026-08-23: `mise install dotnet@<newer>` replaces
+# the shared host binary at `~/.local/share/mise/dotnet-root/dotnet` IN
+# PLACE, and the kernel keeps the previous binary's code-signature cache
+# entry for that vnode -- every later `dotnet` invocation is then SIGKILLed
+# (exit 137, no stdout, no stderr). mise's own post-install `dotnet
+# --version` probe fails the same way ("exited with non-zero status: no
+# exit status"). It is not a bad download: `codesign -v` passes and a
+# copy of the same bytes at a new path runs. Fix is to give the file a new
+# vnode -- `cp` it aside, `rm`, `cp` back.
+dotnet = "10.0.303"
 go = "1.26.4"
 golangci-lint = "2.12.2"
 # Rust stable. Edition 2024 requires >=1.85. The mise `core:rust`
