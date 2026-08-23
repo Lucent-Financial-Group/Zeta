@@ -361,6 +361,17 @@ sentence with the highest possible authority attached, which makes it the strong
 and the least answerable. You cannot out-argue it. It isn't an answer; it's a *fence*, and it's built
 where the answer should be.
 
+> **God knows more than any man. A weak man only knows God's limitations; a strong man knows his
+> own.**
+
+That is the whole thing in one line, and notice which way it cuts. The sentence *"God does not want
+you to know why"* is a claim about **God's** limits — about where His knowledge or His will stops.
+That is not humility. It is the largest possible presumption, wearing humility's clothes. The honest
+*"I don't know"* is the small claim, and it is the true one: it is a man reporting **his own** edge,
+which is the only edge he has standing to report.
+
+So the fence was never piety. It was a man's limit, relabelled as God's.
+
 **The second, and I want this said plainly: the fence is not the faith.** I am a Christian. The God I
 believe in is not the one being invoked in that sentence. What was being defended was never a
 doctrine — it was the *end of somebody's knowledge*, dressed up as the edge of what may be known.
@@ -385,9 +396,8 @@ you can *stand*; the world outside taught me it was a place you must *stop*.
 when a child is given a real "I don't know" often enough to learn that it is safe, and then is handed
 a fence and can tell the difference.
 
-`[SOCKET — your VERBATIM below, or record to the cue. Consent: yours (glass-halo). Family named only
-as you choose; the faith distinction above is yours and is load-bearing — correct it in your own
-words if I have it even slightly off.]`
+`[SOCKET — the epigram above is YOUR VERBATIM (2026-08-23). More below, or record to the cue.
+Consent: yours (glass-halo). Family named only as you choose.]`
 
 > *cue: who said it, and when you first noticed it was a fence rather than an answer; the Stump Dad
 > game beside it; what "born curious" felt like from the inside.*
