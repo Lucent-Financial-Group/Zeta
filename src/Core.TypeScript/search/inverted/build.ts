@@ -13,7 +13,7 @@
 // rev must produce byte-identical files, and `idempotency.test.ts` fails if it
 // does not.
 
-import { mkdirSync, writeFileSync, readdirSync, rmSync, existsSync } from "node:fs";
+import { mkdirSync, writeFileSync, readdirSync, rmSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { createHash } from "node:crypto";
 
@@ -166,11 +166,20 @@ export function buildIndex(opts: BuildOptions): BuildResult {
 
   // Remove stale shard files so a term class that disappeared does not linger.
   // Idempotency is about the whole directory, not one file at a time.
-  if (existsSync(outDir)) {
-    for (const name of readdirSync(outDir)) {
-      if (name.startsWith("terms-") && name.endsWith(".jsonl")) {
-        rmSync(join(outDir, name));
-      }
+  //
+  // No `existsSync` guard: `mkdirSync` above already created it, and a
+  // check-then-use pair is a race (CWE-367) even when the window looks
+  // impossible — `lint-check-then-use-file-races.ts` is right to refuse it.
+  // Act, and treat "not there" as the outcome it is.
+  let existing: string[];
+  try {
+    existing = readdirSync(outDir);
+  } catch {
+    existing = [];
+  }
+  for (const name of existing) {
+    if (name.startsWith("terms-") && name.endsWith(".jsonl")) {
+      rmSync(join(outDir, name), { force: true });
     }
   }
 

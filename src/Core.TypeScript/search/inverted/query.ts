@@ -43,7 +43,7 @@
 // you can see what you got; an EMPTY one is a confident claim of absence, which
 // is the exact shape of the original bug.
 
-import { readFileSync, existsSync } from "node:fs";
+import { readFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { spawnSync } from "node:child_process";
 
@@ -115,12 +115,31 @@ export function loadIndex(dir: string): LoadedIndex {
   return { manifest, pathOf, dir };
 }
 
+/**
+ * Read a file, treating absence as a value rather than an exception.
+ *
+ * Deliberately NOT `if (existsSync(f)) readFileSync(f)`: that is a check-then-use
+ * race (CWE-367, `lint-check-then-use-file-races.ts`). A shard can vanish between
+ * the two calls — during a rebuild, which for THIS artifact happens every 6 hours
+ * — and the failure mode is the one this whole CLI exists to prevent: a shard
+ * that disappeared mid-query would surface as "term not found" rather than as an
+ * error. Absence is answered once, atomically, by the read itself.
+ */
+function readIfPresent(file: string): string | null {
+  try {
+    return readFileSync(file, "utf8");
+  } catch (e) {
+    if ((e as NodeJS.ErrnoException).code === "ENOENT") return null;
+    throw e;
+  }
+}
+
 /** Postings for one term, or `null` when the term is absent from its shard. */
 export function postingsFor(idx: LoadedIndex, term: string): Map<DocId, number> | null {
   const file = join(idx.dir, shardFile(shardOf(term)));
-  if (!existsSync(file)) return null;
   const needle = `{"t":${JSON.stringify(term)},`;
-  const body = readFileSync(file, "utf8");
+  const body = readIfPresent(file);
+  if (body === null) return null;
   // Shards are sorted, so a binary search over line offsets is the O(log n)
   // read. At the measured shard sizes (largest 2.0 MiB) a scan is already
   // ~10 ms and the simpler code is the one that is obviously correct; the
@@ -138,9 +157,9 @@ export function postingsFor(idx: LoadedIndex, term: string): Map<DocId, number> 
 /** Document frequency of a term suppressed by the df cap, or null if not capped. */
 export function highDfOf(idx: LoadedIndex, term: string): number | null {
   const file = join(idx.dir, HIGH_DF_FILE);
-  if (!existsSync(file)) return null;
   const needle = `{"t":${JSON.stringify(term)},`;
-  const body = readFileSync(file, "utf8");
+  const body = readIfPresent(file);
+  if (body === null) return null;
   let at = body.startsWith(needle) ? 0 : body.indexOf("\n" + needle);
   if (at < 0) return null;
   if (at > 0) at += 1;
@@ -413,7 +432,7 @@ export function main(argv: readonly string[]): number {
   }
   const repoRoot = resolve(import.meta.dir, "../../../..");
   const indexDir = args.indexDir ? resolve(args.indexDir) : join(repoRoot, INDEX_DIR);
-  if (!existsSync(join(indexDir, MANIFEST_FILE))) {
+  if (readIfPresent(join(indexDir, MANIFEST_FILE)) === null) {
     process.stderr.write(
       `REFUSED: no index at ${indexDir}\n` +
         `  An absent index must not read as an empty corpus.\n` +
