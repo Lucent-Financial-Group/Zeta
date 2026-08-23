@@ -142,3 +142,63 @@ FLP 1985 + Gilbert & Lynch 2002 (why the tier boundary is a computability class)
 degradation on trust gradients is **recorded design** (208 files carry both terms; the L0–L4 ladder
 dates to 2026-05-28), not a claim needing proof. What is new is the **criterion**, which §11.6
 measured to be absent from the tree.
+
+---
+
+## D5 (added 2026-08-23, §12) — the strict containment, and what CALM already settles
+
+Aaron: *"I'm almost certain **CALM theorem** is going to apply here."* It does — and it does most of
+the work, so this item shrinks rather than grows.
+
+**D5a — `B ⊊ A`, strictly (Lean 4, short).** With `A` = aggregations that push forward freely along
+every coarsening (commutative monoid) and `B` = CvRDT state-merges (join-semilattice):
+`B ⊆ A` because a join is commutative + associative with a bottom; and `(ℕ, +, 0) ∈ A \ B` because
+`x + x = x` only at `0`, so no order on `ℕ` makes `+` a join. **The converse direction is empty:**
+there is no statistic that is CvRDT-mergeable whose pushforward needs a condition, since idempotence
+is an extra axiom rather than a weakening. That was the direction nobody had an intuition for.
+
+**D5b — the free CvRDT representation, and its cost.** For any commutative monoid `(M, ⊕, 0)`, the
+G-Set of uniquely-tagged operations merged by **union** is a CvRDT whose read is the freely
+pushed-forward aggregate. So `A` and `B` are co-extensive **on what is constructible**, while
+differing as conditions. The cost is unbounded state — measured at `O(#ops)` versus the G-Counter's
+`O(#sources)` (500 ops → 500 entries vs 3). **The compression, not the construction, is what "a
+count is CRDT" asserts.** A sufficient condition for compressibility is that per-source
+contributions are monotone in an order with joins; **necessity is not established** — register that
+as open, not as proved.
+
+**NOT in scope — do not re-prove CALM.** *A program has a consistent, coordination-free
+implementation **iff** it is monotone* is a borrowed theorem (Hellerstein 2010 conjecture; Ameloot,
+Neven & Van den Bussche, JACM 2013; Hellerstein & Alvaro, CACM 2020). It is a **citation-check**
+obligation, filed the same way as the Amari–Nagaoka results in §3.5.
+
+**But the citation check is real and it bites.** The **set** form of CALM makes `COUNT`/`SUM`
+**non-monotone** (a new fact retracts the old answer), which would say a counter needs coordination
+— the opposite of what a G-Counter does. The form that applies is the **lattice** generalisation,
+`Bloom^L` (**Conway, Marczak, Alvaro, Hellerstein & Maier**, *Logic and Lattices for Distributed
+Programming*, SoCC 2012), where monotonicity is ascent in a bounded join-semilattice. Verify that
+the statistics we actually carry meet **that** hypothesis, not the set one.
+
+**D5c — idempotence ≡ monotonicity (record, do not litigate).** They are not competing candidates at
+different depths: a commutative associative **idempotent** `⊔` is equivalent to a partial order with
+joins via `x ≤ y ⟺ x ⊔ y = y`. Idempotence is the algebraic form, monotonicity the order-theoretic
+form, of one condition.
+
+**D5d — the one genuinely open statement, and it is ours.** *DBSP is not a third coordination-free
+regime; it is an orthogonal axis.* Z-sets are non-monotone (`ZSet.fs:91`, the abelian-group
+inverse), so CALM's necessity applies and DBSP is not coordination-free — but it never claimed to
+be. Budiu et al. 2023 is a theorem about **incremental view maintenance** and takes the **agreed
+input stream as a hypothesis**. So DBSP buys *exactness without recomputation*, not *consistency
+without coordination*, and the coordination it needs is exactly the agreed logical order that
+`.claude/rules/local-time-never-enters-the-shared-fold.md` already requires of the shared fold.
+**Argued, not proved.** A precise statement would fix a formal notion of coordination-freedom
+(Ameloot et al.'s transducer-network definition is the natural one) and show the Z-set fold is
+coordination-free *relative to* an agreed phase order and not otherwise.
+
+**Corollary worth keeping:** δ-CRDT deltas (Almeida, Shoker & Baquero, arXiv:1603.01529 — already
+cited in `Crdt.fs`'s header) are join-irreducible **lattice** elements, hence monotone and
+re-delivery-safe, and belong in the lattice regime; Z-set deltas are **group** elements and do not.
+Two things called "delta", opposite re-delivery properties.
+
+**Witnesses:** `docs/research/scripts/2026-08-23-geometry-as-root-pushforward-vs-crdt-verify.py`
+(`ALL PASS`, exit 0) — T1 strict containment, T2 free representation, T3 compression, T4 the two
+delta regimes, T5 an `OrSet` model, T6 converge-vs-act.
