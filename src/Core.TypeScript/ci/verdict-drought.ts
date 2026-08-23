@@ -247,14 +247,34 @@ export function constrainSha(value: unknown): string {
   return typeof value === "string" && SHA_RE.test(value) ? value : UNRECOGNISED_SHA;
 }
 
-/** The instant if it is a strict ISO-8601 UTC instant, else the sentinel. */
+/**
+ * The instant, CANONICALISED, else the sentinel.
+ *
+ * Validated for shape and then RE-EMITTED from its parsed epoch milliseconds, rather than
+ * passed through. Two reasons, and the first is the one that matters day to day: every
+ * instant in the report then has one format, so `…:52Z` and `…:52.000Z` stop rendering as
+ * two different values in a table that gets compared across runs. The second is that the
+ * returned string is built by the runtime from a number, so no byte of the response body
+ * survives into it.
+ */
 export function constrainInstant(value: unknown): string {
-  return typeof value === "string" && INSTANT_RE.test(value) ? value : UNRECOGNISED_INSTANT;
+  if (typeof value !== "string" || !INSTANT_RE.test(value)) return UNRECOGNISED_INSTANT;
+  const ms = Date.parse(value);
+  if (Number.isNaN(ms)) return UNRECOGNISED_INSTANT;
+  return new Date(ms).toISOString();
 }
 
-/** The conclusion if GitHub is known to produce it, else the sentinel. Never a verdict. */
+/**
+ * The conclusion, as OUR OWN literal, else the sentinel. Never a verdict when unknown.
+ *
+ * Returns the element from `KNOWN_CONCLUSIONS` rather than the argument that matched it.
+ * The two are equal strings; the difference is that the result is guaranteed by
+ * CONSTRUCTION to be one of our constants instead of merely happening to equal one.
+ */
 export function constrainConclusion(value: unknown): string {
-  return typeof value === "string" && KNOWN_CONCLUSIONS.has(value) ? value : UNRECOGNISED_CONCLUSION;
+  if (typeof value !== "string") return UNRECOGNISED_CONCLUSION;
+  for (const known of KNOWN_CONCLUSIONS) if (known === value) return known;
+  return UNRECOGNISED_CONCLUSION;
 }
 
 /** The id if it is a safe integer, else the sentinel. Keeps ordering total. */

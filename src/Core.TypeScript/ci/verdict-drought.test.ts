@@ -410,7 +410,16 @@ describe("the API -> model boundary constrains every network-derived value", () 
     expect(o.id).toBe(32654718640);
     expect(o.sha).toBe("3168e5411a2b3c4d5e6f708192a3b4c5d6e7f809");
     expect(o.conclusion).toBe("failure");
+    // CANONICALISED, not passed through: instants are re-emitted from parsed epoch ms, so
+    // `…:18Z` and `…:18.000Z` stop being two different strings in a diffed table.
     expect(o.endedAt).toBe("2026-08-23T17:37:52.123Z");
+    expect(o.startedAt).toBe("2026-08-23T17:24:18.000Z");
+  });
+
+  test("an instant is canonicalised to one format regardless of which the API sent", () => {
+    const withZ = toObservation({ id: 1, head_sha: "abcdef1", status: "completed", conclusion: "success", created_at: "2026-08-23T17:24:18Z", updated_at: "2026-08-23T17:24:18Z" });
+    const withMillis = toObservation({ id: 1, head_sha: "abcdef1", status: "completed", conclusion: "success", created_at: "2026-08-23T17:24:18.000Z", updated_at: "2026-08-23T17:24:18.000Z" });
+    expect(withZ.endedAt).toBe(withMillis.endedAt);
   });
 
   test("AN UNRECOGNISED CONCLUSION IS NEVER A VERDICT -- the direction that turns a drought green", () => {
