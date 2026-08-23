@@ -83,15 +83,38 @@ golangci-lint = "2.12.2"
 # rust-std-wasm32-unknown-unknown, and that toolchain compiled a
 # real `--target wasm32-unknown-unknown` binary.
 #
-# A version bump must also move the `1.87.0-*` rustup-toolchain
-# cache globs in `.github/workflows/gate.yml` +
-# `installer-unit-tests.yml`; a stale glob silently degrades the
-# offline path to a CDN fetch.
+# A version bump must also move every OTHER site that restates this
+# version. That used to read "the `1.87.0-*` rustup-toolchain cache
+# globs in `.github/workflows/gate.yml` + `installer-unit-tests.yml`",
+# which was true and short by an order of magnitude: measured
+# 2026-08-23 there are 17 operative restatements, and one of them is
+# `.mise.full.toml`, which carries its OWN `rust = { version = ... }`
+# pin -- so a bump here alone leaves full-tier hosts (dev laptops,
+# cluster nodes, the k8s CI lanes) on a different compiler from
+# slim/standard hosts. Nothing in the tree said that.
+#
+# Every one of these fails SILENTLY: a stale cache glob degrades the
+# offline path to a CDN fetch, and a stale second mise config just
+# provisions the wrong thing. So the constraint is no longer prose --
+# `src/Core.TypeScript/hygiene/audit-mise-toolchain-couplings.ts`
+# discovers the sites and reddens on disagreement, on the
+# `cross-verify` floor. Bump this line and run it; it names every
+# file and line that still has to move.
 rust = { version = "1.87.0", components = ["rustfmt", "clippy"], targets = ["wasm32-unknown-unknown"] }
 # Zig 0.13.0 -- wasm32-freestanding compiler substrate (Oracle 11).
 # Builds the 1,314-byte `src/wasm-dla/bytelock/dla-canonical-zig.wasm` byte-lock
 # substrate; the exact command lives in `bytelock/build-substrates.mjs`. Verified
 # byte-identical on rebuild under this pin (sha256 c28210dc..., 2026-08-17).
+# THE COMMITTED ARTIFACT DOES NOT MOVE WHEN THIS PIN DOES, and that is the quiet
+# failure: the byte-lock compares the artifact to its golden vectors, both are
+# unchanged, every check stays green, and the module has silently stopped being
+# reproducible from the pinned toolchain -- condition 3 of the
+# no-binary-in-proof-lineage exception. So the (version, sha256) pairing is
+# recorded in
+# `src/Core.TypeScript/hygiene/audit-mise-toolchain-couplings.provenance.json`
+# and checked BOTH ways. To bump zig: regenerate via
+# `node src/wasm-dla/bytelock/build-substrates.mjs`, re-run the byte-lock, and
+# move the provenance record in the SAME commit.
 # The 951-byte figure quoted here previously was a SECOND, non-canonical Zig module
 # under `src/wasm-dla/zig/`, removed 2026-08-17: it was in no byte-lock roster, was
 # pinned by no golden vector, and returned cluster size 1 at every seed.

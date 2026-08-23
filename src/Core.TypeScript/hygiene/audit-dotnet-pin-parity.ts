@@ -64,7 +64,7 @@ export const RESTATEMENT_FILE = "global.json";
  */
 export function parseMisePin(text: string): string[] {
   const re = /^[ \t]*dotnet[ \t]*=[ \t]*"([^"]+)"/gm;
-  return [...text.matchAll(re)].map((m) => m[1] as string);
+  return [...text.matchAll(re)].flatMap((m) => (m[1] === undefined ? [] : [m[1]]));
 }
 
 /** `sdk.version` out of a global.json body. Parsed as JSON — not grepped. */
@@ -80,8 +80,9 @@ export function isExactVersion(v: string): boolean {
 
 /** `10.0.303` -> `10.0.3xx`. The band a `latestPatch` roll may move inside. */
 export function featureBand(v: string): string | null {
-  const m = v.match(/^(\d+)\.(\d+)\.(\d)\d\d$/);
-  return m ? `${m[1]}.${m[2]}.${m[3]}xx` : null;
+  const m = /^(\d+)\.(\d+)\.(\d)\d\d$/.exec(v);
+  if (!m?.[1] || !m[2] || !m[3]) return null;
+  return `${m[1]}.${m[2]}.${m[3]}xx`;
 }
 
 export interface Finding {
@@ -94,16 +95,16 @@ export function checkPins(miseText: string, globalJsonText: string): Finding[] {
   const out: Finding[] = [];
   const pins = parseMisePin(miseText);
 
-  if (pins.length !== 1) {
+  if (pins.length !== 1 || pins[0] === undefined) {
     out.push({
       ok: false,
       message:
-        `${CANONICAL_PIN_FILE}: expected exactly ONE \`dotnet = "…"\` declaration, found ${pins.length}. ` +
+        `${CANONICAL_PIN_FILE}: expected exactly ONE \`dotnet = "…"\` declaration, found ${String(pins.length)}. ` +
         `The canonical source cannot be ambiguous.`,
     });
     return out;
   }
-  const canonical = pins[0] as string;
+  const canonical: string = pins[0];
 
   if (!isExactVersion(canonical)) {
     out.push({
