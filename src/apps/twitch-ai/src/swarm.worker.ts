@@ -9,7 +9,7 @@ if (typeof self !== 'undefined' && typeof (self as any).Buffer === 'undefined') 
 
 import { SwarmController } from "../../../Core.TypeScript/swarm/swarm-controller";
 import type { World } from "../../../Core.TypeScript/observe/observe";
-import { create as initFrame, loadRom, step, clearCausalMask } from "../../../Core.TypeScript/chip8/chip8";
+import { create as initFrame, loadRom, step, clearCausalMask, colorAt } from "../../../Core.TypeScript/chip8/chip8";
 
 import { buildMutualSimRom } from "../../../Core.TypeScript/chip8/games/mutual-sim";
 import { createCheatTable, applyCheatTable } from "../../../Core.TypeScript/chip8/cheat-engine";
@@ -36,6 +36,7 @@ let isRunning = false;
 
 const STEPS_PER_TICK = 10;
 const agentId = "browser-node";
+const manualKeys: boolean[] = new Array(16).fill(false);
 
 self.onmessage = async (e: MessageEvent) => {
   try {
@@ -81,6 +82,10 @@ self.onmessage = async (e: MessageEvent) => {
       // The structural bounds of the game are reset to the new fingerprint,
       // and the Swarm's Bayesian predictors organically adapt to the new causal footprint.
       activeRom = uploadedRom;
+    } else if (type === "KEY_DOWN") {
+      manualKeys[payload.key] = true;
+    } else if (type === "KEY_UP") {
+      manualKeys[payload.key] = false;
     }
   } catch (err) {
     console.error(`[SwarmWorker] Fatal error in onmessage:`, err);
@@ -128,9 +133,9 @@ async function loop() {
   }
   const memorySectors = [memArray];
   const causalMask = Array.from(frame.causalMask);
-  const displayArray = new Array(64 * 32).fill(false);
+  const displayArray = new Array(64 * 32).fill(0);
   for (let i = 0; i < displayArray.length; i++) {
-    displayArray[i] = frame.display.has(i) && frame.display.get(i)!;
+    displayArray[i] = colorAt(i % 64, Math.floor(i / 64), frame);
   }
 
   world = {
@@ -147,15 +152,24 @@ async function loop() {
 
   world = await swarm.tick(world);
   frame.keys.fill(false);
+  for (let k = 0; k < 16; k++) {
+    if (manualKeys[k]) frame.keys[k] = true;
+  }
+
+  // Detect Tag (Player V0,V1 and AI V3,V4)
+  const dx = Math.abs((frame.v[0] ?? 0) - (frame.v[3] ?? 0));
+  const dy = Math.abs((frame.v[1] ?? 0) - (frame.v[4] ?? 0));
+  if (dx < 4 && dy < 4 && cycle % 10 === 0) {
+    frame.v[9] = (frame.v[9] ?? 0) + 1; // Increment tags
+    // Teleport AI to random safe-ish spot to reset the chase
+    frame.v[3] = Math.floor(Math.random() * 40) + 10;
+    frame.v[4] = Math.floor(Math.random() * 20) + 5;
+  }
 
   // Sniff Gamification Level Transitions (Mutual Sim logic)
-  if (frame.v[8] === 0) {
-    gameLevel = 1;
-    gameObjective = "Hide & Seek: Simulator is 'It'!";
-  } else if (frame.v[8] === 1) {
-    gameLevel = 2;
-    gameObjective = "Tag! You're 'It'!";
-  }
+  const tags = frame.v[9] ?? 0;
+  gameLevel = tags + 1;
+  gameObjective = `Tags: ${tags} | Objective: ${frame.v[8] === 0 ? "Flee!" : "Hunt!"}`;
 
   if (world.history && world.history.length > 0) {
     const lastEvent = world.history[world.history.length - 1];
@@ -180,6 +194,7 @@ async function loop() {
     kind: "chip8-frame",
     display: displayArray,
     cycle: cycle,
+    keys: Array.from(frame.keys),
     keyPredictions: world.cheatEngine?.keyPredictions || {},
     activeConcept: (world.cheatEngine as { activeConcept?: string })?.activeConcept ?? "Observing...",
     linguisticToken: (world.cheatEngine as { linguisticToken?: string })?.linguisticToken,
