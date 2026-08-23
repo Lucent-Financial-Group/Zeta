@@ -670,9 +670,11 @@ describe("keys and folding", () => {
   });
 
   test("the fold is why one sampled tag cannot decide a repository", () => {
-    // `ghcr.io/ich777/steamcmd` is referenced at three tags in the real tree;
-    // `armareforger` 404s and the other two are 200. Sampling `armareforger`
-    // alone would have set the whole repository's verdict.
+    // Measured on main 2026-08-23: `ghcr.io/ich777/steamcmd` was referenced at
+    // three tags, `armareforger` 404ing and the other two 200. Sampling
+    // `armareforger` alone would have set the whole repository's verdict. Main
+    // has since swapped that tag out, which is why the case is pinned here as a
+    // unit rather than left to the tree to keep demonstrating.
     expect(foldAccess({ armareforger: 404, garrysmod: 200, unturned: 200 })).toBe("public");
   });
 });

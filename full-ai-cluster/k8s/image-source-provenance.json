@@ -2,6 +2,18 @@
   "$comment": "MEASURED image provenance — what an ANONYMOUS client got from each registry, and whose source repository the image names. Written ONLY by `bun src/Core.TypeScript/cluster/image-source-provenance.ts --refresh`; never hand-edited except for `note`. This file is EVIDENCE WITH A DATE, not an oracle: each row says 'as of resolvedAt, an anonymous pull returned this'. The VERDICT is not stored here — it is derived on every run by classify(), because a stored verdict is a hand-written allowlist wearing a measurement's clothes. See the module header for the incident (ghcr.io/flowdent/*, #14250) and the one-way rule this encodes.",
   "entries": [
     {
+      "repository": "ghcr.io/acemod/arma-reforger",
+      "tags": {
+        "sha256:90883ce2f3d8b3b5b132ae7f4b3377afdc9e6be7e7c8cb1a290f8bd7b39d079c": 200
+      },
+      "artifact": "public",
+      "sourceRepo": "acemod/docker-reforger",
+      "sourceEvidence": "oci-label",
+      "sourceVisibility": "public",
+      "packagePresence": "found",
+      "resolvedAt": "2026-08-23"
+    },
+    {
       "repository": "ghcr.io/actions/actions-runner",
       "tags": {
         "2.330.0": 200
@@ -16,7 +28,6 @@
     {
       "repository": "ghcr.io/ich777/steamcmd",
       "tags": {
-        "armareforger": 404,
         "garrysmod": 200,
         "unturned": 200
       },

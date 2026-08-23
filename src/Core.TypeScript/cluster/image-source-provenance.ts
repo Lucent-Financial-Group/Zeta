@@ -327,9 +327,12 @@ export interface LedgerEntry {
    * request returned for it.
    *
    * Per-TAG rather than one sample, because one sample lies in a way that is
-   * silent: `ghcr.io/ich777/steamcmd` is referenced at three tags here, of which
-   * `armareforger` 404s and the other two are 200. Whichever the refresh had
-   * happened to pick would have set the repository's whole verdict.
+   * silent. The case that forced it, measured 2026-08-23:
+   * `ghcr.io/ich777/steamcmd` was referenced at three tags, of which
+   * `armareforger` 404d and the other two were 200 — whichever the refresh had
+   * happened to pick would have set the repository's whole verdict. (Main
+   * replaced that tag with `ghcr.io/acemod/arma-reforger` hours later, which is
+   * the point: the shape recurs, the instance does not last.)
    */
   readonly tags: Readonly<Record<string, number>>;
   readonly artifact: ArtifactAccess;
