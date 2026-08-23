@@ -1,7 +1,5 @@
 namespace Zeta.Core
 
-open System.Collections.Generic
-
 /// **SoftValue — the value-axis "soft" DynamicValue seed (calibrated / probabilistic).**
 ///
 /// A normalized distribution over candidate `DynamicValue`s. The safety property is NOT
@@ -24,42 +22,85 @@ open System.Collections.Generic
 [<RequireQualifiedAccess>]
 module SoftValue =
 
+    /// **The distribution IS a `WeightedSet` now, not "effectively" one.**
+    ///
+    /// Held as `WeightedSet<CandidateKey, float>` over `LocalFloatRing` — the semiring-generic
+    /// sparse tensor in `src/Core/WeightedSet.fs`, whose `add`/`scale`/`weight`/`inner` this
+    /// module now calls instead of re-implementing them over an association list. The key wrapper
+    /// exists because `WeightedSet` needs `'K : comparison` and `DynamicValue` is `NoComparison`
+    /// (see `src/Core/CandidateKey.fs`); that constraint, not inattention, is why the old comment
+    /// in `SoftValueNumeric.fs` said "effectively" and stopped there.
+    ///
+    /// The weight is `float` **on purpose**: this is a LOCAL posterior. It has no `WireWeight`
+    /// (`src/Core/WireWeight.fs`), so it cannot be encoded into shared state; `toExact` below is
+    /// the one exit, and it is explicit about what it rounds.
+    ///
     /// Invariant (maintained by every constructor): non-empty, all weights > 0, weights sum to 1.
-    type SoftValue = { Candidates: (DynamicValue * float) list }
+    /// The representation is private so that invariant cannot be bypassed by building the record
+    /// directly — `Candidates` is the same read surface it always was.
+    [<NoComparison>]
+    type SoftValue =
+        private
+            { Weights: WeightedSet.WeightedSet<CandidateKey, float> }
+
+        /// The candidate distribution (normalized, sums to 1), in **ordinal candidate order**.
+        ///
+        /// ⚠ CHANGED: this used to be first-seen (arrival) order. A `WeightedSet` is a `Map`, so
+        /// the order is now a property of the value rather than of how it was assembled. Reported,
+        /// not buried — and it is the direction the rest of the fleet already went: the C#, TS and
+        /// Rust `SoftValue` oracles all break `resolve` ties by ascending key, which the old F#
+        /// `List.maxBy` (first maximum in arrival order) did not.
+        member this.Candidates: (DynamicValue * float) list =
+            this.Weights |> WeightedSet.toSeq |> Seq.map (fun (k, w) -> k.Value, w) |> List.ofSeq
 
     [<Literal>]
     let private EPS = 1e-12
 
-    /// Merge equal candidates (first-seen order), drop non-positive weights, normalize.
+    /// The weight ring. `float`, local, and with no `WireWeight` — the boundary in one line.
+    let private R = LocalFloatRing.Instance
+
+    /// Merge equal candidates, drop non-positive weights, normalize.
     /// `None` if nothing positive remains (empty or total ≈ 0) — no fabricated certainty.
+    ///
+    /// Merging is now `WeightedSet.ofSeq` (duplicate coordinates combine via ⊕) and normalizing is
+    /// `WeightedSet.scale`. The total is summed over the MERGED tensor in ordinal order rather
+    /// than over the raw input in arrival order — same value in exact arithmetic, and the ordinal
+    /// one is the reproducible one when the weights are floats.
     let private build (xs: (DynamicValue * float) list) : SoftValue option =
-        let positions = Dictionary<DynamicValue, int>()
-        let merged = ResizeArray<DynamicValue * float>()
-        let mutable total = 0.0
+        let merged =
+            xs
+            |> Seq.filter (fun (_, w) -> w > 0.0)
+            |> Seq.map (fun (d, w) -> CandidateKey d, w)
+            |> WeightedSet.ofSeq R
 
-        for d, w in xs do
-            if w > 0.0 then
-                total <- total + w
-                match positions.TryGetValue d with
-                | true, i ->
-                    let existing, existingWeight = merged.[i]
-                    merged.[i] <- existing, existingWeight + w
-                | false, _ ->
-                    positions.Add(d, merged.Count)
-                    merged.Add(d, w)
+        let total = merged |> WeightedSet.toSeq |> Seq.sumBy snd
 
-        if merged.Count = 0 || total <= EPS then None
+        if WeightedSet.isEmpty merged || total <= EPS then
+            None
         else
-            Some
-                { Candidates =
-                    [ for d, w in merged do
-                          d, w / total ] }
+            Some { Weights = WeightedSet.scale R (1.0 / total) merged }
 
     /// A point mass — fully certain at `dv` (confidence 1).
-    let certain (dv: DynamicValue) : SoftValue = { Candidates = [ dv, 1.0 ] }
+    let certain (dv: DynamicValue) : SoftValue =
+        { Weights = WeightedSet.singleton R (CandidateKey dv) 1.0 }
 
     /// Build from weighted candidates (merged + normalized). `None` if no positive weight.
     let ofWeighted (xs: (DynamicValue * float) list) : SoftValue option = build xs
+
+    /// **Build WITHOUT normalizing — the invariant-violating route, named so it cannot be taken
+    /// by accident.**
+    ///
+    /// Before this change the representation was a public record, so `{ Candidates = [] }` built
+    /// an empty (invariant-violating) `SoftValue` silently, and two downstream suites relied on
+    /// exactly that to test their guards — `ComputeReceipt.Tests.fs` CR-6/CR-7 need a value that
+    /// `ofWeighted` refuses to produce, because "the guard exists for values that arrive by any
+    /// route". Sealing the representation without replacing that route would have deleted a
+    /// falsifier, so the route is kept and given a name that states what it is.
+    ///
+    /// Duplicate candidates still merge (that is the tensor, not the invariant); what is skipped
+    /// is normalization and the non-empty check.
+    let unnormalized (xs: (DynamicValue * float) list) : SoftValue =
+        { Weights = xs |> Seq.map (fun (d, w) -> CandidateKey d, w) |> WeightedSet.ofSeq R }
 
     /// **Functor map** — relabel each candidate by `f`, merging collisions; weights preserved.
     /// `SoftValue` is the finite-support distribution (Giry) monad; `certain` is its unit.
@@ -102,10 +143,10 @@ module SoftValue =
         if p >= threshold then Some best else None
 
     /// The weight `sv` assigns to candidate `d` (0 if `d` is absent from the support).
+    /// (Now a direct `WeightedSet.weight` lookup — `O(log n)` instead of the old linear scan,
+    /// and the semiring supplies the `0` rather than this function hardcoding one.)
     let weightOf (d: DynamicValue) (sv: SoftValue) : float =
-        sv.Candidates
-        |> List.tryPick (fun (c, w) -> if c = d then Some w else None)
-        |> Option.defaultValue 0.0
+        WeightedSet.weight R (CandidateKey d) sv.Weights
 
     /// **combine — independent-evidence product of two soft values.** The commutative + associative
     /// monoid that lets a soft fold **banana-split and fuse in uncertainty space** without ever
@@ -291,7 +332,10 @@ module SoftValue =
             else
                 let u = 1.0 / float n
                 let a = (1.0 - lambda) / (1.0 - t)
-                { Candidates = sv.Candidates |> List.map (fun (d, p) -> d, a * (p - t * u) + lambda * u) }
+                { Weights =
+                    sv.Candidates
+                    |> Seq.map (fun (d, p) -> CandidateKey d, a * (p - t * u) + lambda * u)
+                    |> WeightedSet.ofSeq R }
 
     // ── (B) Widening as RETRACTION — the commutative route ──
     //
@@ -413,3 +457,75 @@ module SoftValue =
                     let m = min (schedule maxPhase e.Phase) MAX_MULTIPLICITY
                     applyN e.Likelihood m acc)
                 (Some prior)
+
+    // ══════════════════════════════════════════════════════════════════════════
+    // THE FLOAT / EXACT BOUNDARY — the one sanctioned exit to shared state
+    // ══════════════════════════════════════════════════════════════════════════
+    //
+    // Everything above is float and LOCAL. A `SoftValue` therefore cannot be encoded for the
+    // wire: `WeightedSetWire.toDynamicValue` demands a `WireWeight<'W>`, and `WireWeight<float>`
+    // does not exist (`src/Core/WireWeight.fs`). The crossing has to be an explicit, lossy,
+    // NAMED projection — which is the point. A silent float→wire path is how "floating point
+    // errors become the cause of cross machine communication corruptions."
+
+    /// Why a `SoftValue` could not be projected onto exact weights. Data, never thrown.
+    [<RequireQualifiedAccess>]
+    type ExactError =
+        /// The denominator must be in `[1, 1_000_000_000]`. Above that, products of two
+        /// numerators can exceed `int64` inside `ProbabilitySemiring.rat`, which does not check
+        /// for overflow — an exact ring that silently wraps is worse than an honest float.
+        | DenominatorOutOfRange
+        /// The projected tensor could not be canonically encoded (a candidate whose
+        /// `DynamicValue` has no canonical CBOR form). Surfaced, never thrown.
+        | NotEncodable of EncodeError
+
+    /// **toExact — project the local float posterior onto exact ℚ with a stated denominator.**
+    ///
+    /// Each candidate's weight becomes `nᵢ / denominator` with `nᵢ = round(pᵢ · denominator)`
+    /// (banker's rounding, so the rounding itself is not biased). The residual from rounding is
+    /// then assigned to the largest-weight candidate — ties broken by ordinal candidate order —
+    /// so the projected weights sum to **exactly** `1`, which the floats never quite did.
+    ///
+    /// This is deliberately NOT an exact re-encoding of the float. An exact one is available
+    /// (every finite double IS a rational) and is the wrong choice here: `0.3` is
+    /// `5404319552844595 / 18014398509481984`, and multiplying two such weights overflows `int64`
+    /// on the first step. Bounded denominator, stated in the signature, is the honest version.
+    /// The unbounded version needs a `bigint` rational — which the TypeScript sibling
+    /// `src/Core.TypeScript/algebra/exact-weight.ts` already has, and F# does not yet.
+    let toExact
+        (denominator: int64)
+        (sv: SoftValue)
+        : Result<WeightedSet.WeightedSet<CandidateKey, ProbabilitySemiring.Rational>, ExactError> =
+        if denominator < 1L || denominator > 1_000_000_000L then
+            Error ExactError.DenominatorOutOfRange
+        else
+            let d = float denominator
+
+            let rounded =
+                sv.Candidates
+                |> List.map (fun (c, p) -> CandidateKey c, int64 (System.Math.Round(p * d, System.MidpointRounding.ToEven)))
+
+            let residual = denominator - (rounded |> List.sumBy snd)
+
+            // Give the residual to the heaviest candidate; `List.maxBy` over the ordinal-ordered
+            // list takes the FIRST maximum, so ties resolve by candidate order, not by chance.
+            let anchor = rounded |> List.maxBy snd |> fst
+
+            let adjusted =
+                rounded
+                |> List.map (fun (k, n) -> k, (if k = anchor then n + residual else n))
+                |> List.filter (fun (_, n) -> n > 0L)
+                |> List.map (fun (k, n) -> k, ProbabilitySemiring.rat n denominator)
+
+            Ok(WeightedSet.ofSeq ProbabilitySemiring.RationalRing.Instance adjusted)
+
+    /// **toWire — the complete crossing: local float belief → exact ℚ → canonical bytes.**
+    ///
+    /// The only route from a `SoftValue` into shared state, and every step of it is named.
+    let toWire (denominator: int64) (sv: SoftValue) : Result<byte[], ExactError> =
+        match toExact denominator sv with
+        | Error e -> Error e
+        | Ok exact ->
+            match WeightedSetWire.toCanonicalCbor WireWeight.rational (fun (k: CandidateKey) -> k.Value) exact with
+            | Ok bytes -> Ok bytes
+            | Error e -> Error(ExactError.NotEncodable e)
