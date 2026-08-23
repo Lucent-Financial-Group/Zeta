@@ -116,6 +116,65 @@ conjecture worth routing rather than admiring.
 
 ---
 
+## 4b. You cannot eliminate it — you localize it, then choose
+
+Aaron 2026-08-23, and this is the half that turns the observation into engineering:
+
+> **"Local moves can't eliminate it — he proved that. But then you can pigeonhole it into a limited
+> known subset that is avoided or played within."**
+
+Both clauses matter and the second is the useful one.
+
+**Clause 1 — no local repair exists.** That is what incompleteness *is*: no amount of adding axioms
+closes the gap, because the construction reruns against the enlarged system. You cannot patch a
+global obstruction with local moves, and this generalises past logic — it is why "add another check"
+never fixes a class of defect whose defining property is that no local check can see it.
+
+**Clause 2 — but you can confine it, and the confinement is a design act.** The pathology is not
+smeared evenly; it lives in identifiable structure, and removing that structure removes it. Five
+instances, and Gödel supplied one of them himself:
+
+| restriction | what is given up | what is bought |
+|---|---|---|
+| **Presburger arithmetic** | multiplication | complete **and** decidable — the pathology was localized to `×` |
+| **Tarski, real closed fields** | the integers (reals only) | decidable by quantifier elimination — so it was never "arithmetic", it was **ℤ** |
+| **Gödel's `L`** (1938, constructible universe) | sets that are not constructible | CH settled — *his own* pigeonhole, ten years after the theorem |
+| **Total functional languages** (Coq, Agda) | Turing-completeness | decidable termination |
+| **The closed command set** (Itron, in-tree) | the ability to *define* a command remotely | compromising the far side buys **no arbitrary execution** |
+
+That last row is this rule at the security layer, and it is already carved in
+`.claude/rules/itron-hub-patent-boundary-p2p-is-the-upgrade.md`: the far side may **name** a command
+and can never **define** one. You do not eliminate the vulnerability class — **you restrict the local
+move set until the exploit path cannot be assembled.** Same move as Presburger, different alphabet.
+
+### "Avoided **or** played within" — and knowing which is the whole discipline
+
+The two are not interchangeable, and the failure mode is doing one while believing you did the other:
+
+- **Avoided** — you stay in the fragment and your guarantees are real.
+- **Played within** — you knowingly enter the undecidable region and accept heuristics, timeouts and
+  no guarantee. Legitimate, often necessary, and honest **only if declared**.
+- **The failure** — you left the fragment without noticing, and your tooling reports success anyway.
+  That is the vacuity class in its most expensive form: **a guarantee that stopped applying and did
+  not stop being printed.**
+
+**And the in-tree instrument for this already exists, under a name that reads like a shrug.** An SMT
+solver returns `unknown` **precisely when you have left the pigeonhole** — linear arithmetic, arrays,
+bitvectors and uninterpreted functions are decidable; nonlinear integer arithmetic with quantifiers is
+not. So `unknown` is not the solver failing. **It is the solver correctly reporting the boundary
+crossing**, and a solver that returned `sat`/`unsat` there would be manufacturing a verdict.
+
+That is this repo's four-register discipline — *let unknown be unknown* — arriving from proof theory
+rather than from epistemics, and it means Soraya's routing job (TLA+ / Z3 / Lean / Alloy / FsCheck)
+is **not tool preference. It is fragment selection**: choosing which pigeonhole the property is
+allowed to live in, before anyone writes a spec.
+
+**Measured in-tree status (2026-08-23):** decidable-fragment treatment appears in **two** files
+(`.claude/skills/formal-methods/blueprints/z3-expert.md` and
+`docs/research/2026-08-13-soraya-light-time-asymmetry-envelope-routing-and-proof.md`); the
+constructible universe appears in **zero**. For a repository whose verification strategy *is* fragment
+selection, that is thin, and it is the second routed item.
+
 ## 5. The triage — five domains clicking is a warning, and this is that condition
 
 Aaron's own rule (`numerology-vs-number-theory.md`): **"too many correlations is a warning, not a
