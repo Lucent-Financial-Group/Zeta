@@ -4,6 +4,10 @@
 > compatible with Android and Apple, that can invite anyone at any time; make it feel like FF6 —
 > you have 2–10 minutes to explore the world in each turn."*
 >
+> **Follow-up** — Aaron 2026-08-22: *"the text message should be playable and rewatchable — like
+> the turn-based games Apple has, to play between messages. Not just text: little programs/images
+> that go back and forth."*
+>
 > **Status: toy / unmetered design.** Nothing below is measured; every number is a hypothesis
 > with a named falsifier (§Metering). Working title "Worldfold" pending naming-expert review.
 
@@ -19,7 +23,9 @@ inside it: an ensemble cast the size of a server, battles with filling gauges, g
 and shape, and one mid-season event that breaks the world in half.
 
 Anyone with a phone number can be **summoned** into the current story at any moment — first
-turns playable by SMS reply before any install. iPhone and Android replay the *same battle from
+turns playable by SMS reply before any install. In rich threads the turn is not prose at all: it
+is a **playable balloon** — a small program living in the message, tapped to play your window,
+tapped by anyone to rewatch the battle. iPhone and Android replay the *same battle from
 the same 160 characters*, byte-for-byte, because combat is a deterministic fold over the same
 ring algebra this repo already byte-locks across seven languages.
 
@@ -40,7 +46,7 @@ Step in: wf.example/t/K7Q2-1842
 
 | # | Pillar | Meaning |
 |---|--------|---------|
-| P1 | **The message is the game** | A turn is a small text envelope. Push, SMS, chat thread, even a git commit are just ports on the same envelope. If it can't be said in ~2 SMS segments + a link, it isn't a turn. |
+| P1 | **The message is the game** | A turn is a small text envelope. Push, SMS, chat thread, even a git commit are just ports on the same envelope. If it can't be said in ~2 SMS segments + a link, it isn't a turn. In rich threads the envelope *renders as a small program* — playable, rewatchable — but the program is a costume; the envelope stays canonical. |
 | P2 | **Ten minutes is sacred** | Every traveler gets the same bounded window per tick. Nobody can grind 6 hours; nobody falls behind by living a life. The cap is the *egalitarian mechanic*, not a paywall lever. |
 | P3 | **Anyone can be summoned mid-story** | Joining is coordination-free: a new traveler is a new keyed delta in the world fold. No reset, no season gate, no lobby. Your friend spawns *near you*, this tick. |
 | P4 | **16-bit ensemble feel** | No single protagonist — the server is the cast. Gauge-timed battles, socketed growth, learned-from-the-world abilities, a scheduled world-flip. Writing-forward: text was always the true medium of the 16-bit JRPG. |
@@ -171,8 +177,9 @@ Reply LOOK to open your eyes, or step through: wf.example/j/K7Q2
   install, works on a flip phone. The envelope codec is the whole client.
 - **T1 — the PWA**: the link opens the full client — installable on both platforms from the web,
   push-capable (iOS ≥16.4 web push; Android natively). Zero app-store friction to *play*.
-- **T2 — store apps**: thin native wrappers (contacts for summons, richer push, share-sheet /
-  iMessage-extension invites) when warranted. GamePigeon proved the invite-inside-the-thread loop.
+- **T2 — store apps**: the native tier (contacts for summons, richer push) — and on iOS the
+  **iMessage app**, where turns are playable balloons in the thread itself. GamePigeon proved the
+  loop; §The playable balloon adopts it wholesale.
 - **Join semantics are coordination-free**: a summon mints a ZetaId locally, spawns the newcomer
   *adjacent to the summoner* in the current tick, and party-links them — one delta in the next
   fold. No account gate before first play; the persona hardens (recovery keys, device links)
@@ -192,12 +199,39 @@ One canonical **turn envelope**; every surface is a port (hexagonal — literall
 | Push (APNs/FCM/web-push) | out | The digest *is* the notification (Lifeline lineage) |
 | SMS (A2P) | in/out | Invites + T0 play. At-least-once delivery, duplicates expected → turn keys are idempotent **because the medium demands it**. Segment budget: digest ≤3, commit ≤2. Real costs (A2P 10DLC registration, per-segment pricing) confine SMS to summons + text-only players by default |
 | PWA thread | in/out | The primary client; offline-tolerant (window is client-local; commit syncs) |
-| iMessage extension / share sheet | out | Rich invites on iOS; share sheet on Android |
+| iMessage app (MSMessage + MSSession) | in/out | The **playable balloon**: one interactive balloon per encounter, updated in place turn-by-turn; play your full window inside Messages (GamePigeon model) |
+| App Clip / Play Instant / Live Activities | out | Tap-to-play without install outside Messages; a standing raid's filling gauges on the lock screen between ticks |
 | Git port | in/out | Agents can play by commit — a turn envelope in a file. The factory's own agents are players with no extra machinery |
 
-Presentation tiers derive from the same replay: T0 prose → T1 thread + choice chips → T2 a
-16-bit-style viewport rendering the deterministic battle replay as animation. One truth, three
-costumes.
+### The playable balloon — little programs that go back and forth
+
+The GamePigeon lesson, adopted wholesale: on iOS the turn renders as an **interactive message
+balloon** (Apple's Messages framework — `MSMessage` + `MSSession`), and the session semantics are
+the important part: **one balloon per encounter, updated in place** as turns land, so a battle is
+a single evolving object in the thread, not a spam of texts. The balloon shows a poster frame —
+the scene, the gauges, whose turn it is — and tapping it opens the extension *inside Messages*,
+where you play your full 2–10 minute window without leaving the thread. Non-participants in the
+chat see the summary line ("Kestra cleared the tide-cave").
+
+**Rewatchable is free because replay is deterministic.** The balloon carries only the envelope
+(seed + order log — kilobytes, never state, never video); any client re-executes it into the same
+cinematic. So *tap-to-rewatch* costs no storage and no server round-trip — and the rewatch on an
+Android phone is outcome-identical to the iPhone that recorded it, which is the byte-lock earning
+its keep as a *feature*, not just a test. Replays are shareable beyond the party, consent-gated
+(glass halo).
+
+Android has no iMessage, so parity comes from the same renderer behind different doors: the
+in-app party thread renders the identical balloon natively; a summon or turn card shared into any
+Android messenger deep-links to **instant play** (the PWA today; Google Play Instant if
+warranted) with the balloon as its landing state; RCS rich cards carry the poster frame + link
+where the carrier supports them. On iOS outside Messages, **App Clips** fill the same
+instant-play role.
+
+The architectural line that keeps all of this honest: **the balloon is a renderer, never a
+transport of state.** The canonical turn stays the tiny text envelope; the images and the
+interactivity are derived from its replay. Presentation tiers are that one truth in three
+costumes — T0 prose (SMS players remain first-class citizens of the same world) → T1 thread +
+choice chips → T2 the 16-bit-style viewport animating the deterministic battle.
 
 ---
 
@@ -279,8 +313,10 @@ expired). No FF6 names, characters, script, art, or music. Original setting thro
   egalitarian action-budget cap, proven for years at scale.
 - **Diplomacy** (Calhamer 1959) & play-by-mail (VGA Planets) — simultaneous order resolution and
   standing orders; the fairness core of the fold.
-- **Lifeline** (3 Minute Games 2015) — a game lived through notifications; **GamePigeon** — the
-  invite-in-the-thread loop; **chat fiction** (Hooked) — message-thread narrative at scale.
+- **Lifeline** (3 Minute Games 2015) — a game lived through notifications; **GamePigeon** on
+  Apple's Messages framework (`MSMessage`/`MSSession`) — the playable, in-place-updated balloon
+  and the invite-in-the-thread loop; **App Clips / Google Play Instant** — tap-to-play without
+  install; **chat fiction** (Hooked) — message-thread narrative at scale.
 - **Neptune's Pride** (Iron Helmet 2010) — slow-real-time multiplayer strategy; cautionary anchor
   on cadence-induced burnout (why the cap and camp-forgiveness exist).
 - **Serialized fiction** (Dickens installments) — the digest/cliffhanger sandwich.
@@ -304,13 +340,17 @@ Falsifiers, named up front (all thresholds toy until a playtest exists):
    gap #3 of the interface-matrix reviews — this game is that gap's forcing function).
 5. **The fairness claim**: outcome distribution of contested folds is independent of envelope
    arrival time (statistical test over DST runs). Fails → local time leaked into the fold.
+6. **The balloon claim**: on balloon-capable surfaces, ≥40% of turns are played without leaving
+   the thread, and shared battles average ≥2 rewatches. Fails → the balloon is decoration; keep
+   the plain thread and cut the extension honestly.
 
 ## MVP cut (v0.1, one shard)
 
 One region (Vesper Reach, ~12 locations, one 5-room delve, one town), 4 hats, solo encounters +
-one 2-party cross-tick boss, Andante tempo, summon-by-SMS → PWA, camp + standing orders, batch
-market with one commodity. Explicitly deferred: raids, Opera Tick, the Worldfold event, native
-wrappers, agent NPCs beyond one innkeeper.
+one 2-party cross-tick boss, Andante tempo, summon-by-SMS → PWA, the web **playable balloon**
+(tap-to-play, tap-to-rewatch) as the PWA's turn card, camp + standing orders, batch market with
+one commodity. Explicitly deferred: raids, Opera Tick, the Worldfold event, the native iMessage
+extension and other store wrappers, agent NPCs beyond one innkeeper.
 
 Build sketch on the existing tree: envelope codec + fold as `src/Core.TypeScript` first (the
 green column), golden envelope vectors under `tests/cross-verification/worldfold/`, combat kernel
