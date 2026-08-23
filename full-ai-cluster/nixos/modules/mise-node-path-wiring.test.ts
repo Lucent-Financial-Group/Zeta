@@ -108,11 +108,10 @@ describe("cluster node: mise-pinned tools resolve outside the checkout", () => {
 
   test("4. shims are APPENDED, so in-checkout resolution keeps the direct fast path", () => {
     const snippet = profileSnippet();
-    const appended = /export PATH="\$PATH:\$HOME\/\.local\/share\/mise\/shims"/.test(snippet);
-    expect(appended).toBe(true);
+    expect(snippet).toContain('export PATH="$PATH:$HOME/.local/share/mise/shims"');
     // Prepending would route every in-repo call through the shim (~4x slower,
     // measured) and defeat the reason activation is pure-PATH in the first place.
-    expect(snippet).not.toMatch(/export PATH="\$HOME\/\.local\/share\/mise\/shims:\$PATH"/);
+    expect(snippet).not.toContain('export PATH="$HOME/.local/share/mise/shims:$PATH"');
   });
 
   test("5. the interim appointed-hub dependency stays labelled with its work-item", () => {
