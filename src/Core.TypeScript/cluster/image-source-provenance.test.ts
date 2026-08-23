@@ -44,6 +44,12 @@ import {
 // Fixture plumbing
 // ---------------------------------------------------------------------------
 
+// Fixture manifests live under `fixture/k8s/` rather than a real tree path on
+// purpose. These cases are about the SCAN, not about any directory, and naming a
+// real one couples them to a tree that may move or be deleted --
+// `audit-cluster-tree-consumers.ts` refused the first draft of this file for
+// exactly that, and it was right to. It also exercises the property that matters:
+// the scan is not restricted to declared roots.
 interface Fixture {
   readonly root: string;
   readonly dispose: () => void;
@@ -234,7 +240,7 @@ spec:
         - name: kubevirt
           image: quay.io/kubevirt/virt-operator:v1.8.4
 `;
-    const fx = makeTree({ "infra/k8s/app.yaml": manifest }, [
+    const fx = makeTree({ "fixture/k8s/app.yaml": manifest }, [
       entry({ repository: "registry-1.docker.io/bitnamilegacy/kubectl", tags: { "1.32.3": 200 } }),
       entry({ repository: "cr.weaviate.io/semitechnologies/weaviate", tags: { "1.28.2": 200 } }),
       entry({
@@ -262,7 +268,7 @@ spec:
     // absent label were a refusal on its own, this check would fail most of the
     // tree on day one and be deleted on day two.
     const fx = makeTree(
-      { "infra/k8s/app.yaml": "kind: Pod\nspec:\n  containers:\n    - image: postgres:16-alpine\n" },
+      { "fixture/k8s/app.yaml": "kind: Pod\nspec:\n  containers:\n    - image: postgres:16-alpine\n" },
       [entry({ repository: "registry-1.docker.io/library/postgres", tags: { "16-alpine": 200 }, sourceRepo: null })],
     );
     try {
@@ -274,7 +280,7 @@ spec:
 
   test("a 404 tag on an OPEN repository is reported, not refused — lane-partition owns broken pins", () => {
     const fx = makeTree(
-      { "infra/k8s/app.yaml": "kind: Pod\nspec:\n  containers:\n    - image: ghcr.io/ich777/steamcmd:armareforger\n" },
+      { "fixture/k8s/app.yaml": "kind: Pod\nspec:\n  containers:\n    - image: ghcr.io/ich777/steamcmd:armareforger\n" },
       [entry({ repository: "ghcr.io/ich777/steamcmd", tags: { armareforger: 404 }, packagePresence: "found" })],
     );
     try {
@@ -294,7 +300,7 @@ spec:
 describe("unknown provenance does not pass", () => {
   test("no ledger entry at all is a finding, and the message says what to add", () => {
     const fx = makeTree(
-      { "infra/k8s/app.yaml": "kind: Pod\nspec:\n  containers:\n    - image: ghcr.io/someone/mystery:v1\n" },
+      { "fixture/k8s/app.yaml": "kind: Pod\nspec:\n  containers:\n    - image: ghcr.io/someone/mystery:v1\n" },
       [],
     );
     try {
@@ -311,7 +317,7 @@ describe("unknown provenance does not pass", () => {
 
   test("no source label AND an unresolvable package goes red", () => {
     const fx = makeTree(
-      { "infra/k8s/app.yaml": "kind: Pod\nspec:\n  containers:\n    - image: ghcr.io/someone/mystery:v1\n" },
+      { "fixture/k8s/app.yaml": "kind: Pod\nspec:\n  containers:\n    - image: ghcr.io/someone/mystery:v1\n" },
       [
         entry({
           repository: "ghcr.io/someone/mystery",
@@ -334,7 +340,7 @@ describe("unknown provenance does not pass", () => {
 
   test("a tag the ledger never measured is a finding — a tag bump is a new artifact", () => {
     const fx = makeTree(
-      { "infra/k8s/app.yaml": "kind: Pod\nspec:\n  containers:\n    - image: ghcr.io/someone/mystery:v2\n" },
+      { "fixture/k8s/app.yaml": "kind: Pod\nspec:\n  containers:\n    - image: ghcr.io/someone/mystery:v2\n" },
       [entry({ repository: "ghcr.io/someone/mystery", tags: { v1: 200 }, packagePresence: "found" })],
     );
     try {
@@ -346,7 +352,7 @@ describe("unknown provenance does not pass", () => {
 
   test("a hand-edited verdict that does not fold from its own statuses is refused", () => {
     const fx = makeTree(
-      { "infra/k8s/app.yaml": "kind: Pod\nspec:\n  containers:\n    - image: ghcr.io/someone/mystery:v1\n" },
+      { "fixture/k8s/app.yaml": "kind: Pod\nspec:\n  containers:\n    - image: ghcr.io/someone/mystery:v1\n" },
       [
         {
           repository: "ghcr.io/someone/mystery",
@@ -434,7 +440,7 @@ describe("ours and foreign get opposite remedies", () => {
 describe("the acknowledgement register", () => {
   test("an acknowledgement absorbs an ours finding but is still PRINTED", () => {
     const fx = makeTree(
-      { "infra/k8s/app.yaml": "kind: Pod\nspec:\n  containers:\n    - image: ghcr.io/lucent-financial-group/x:v1\n" },
+      { "fixture/k8s/app.yaml": "kind: Pod\nspec:\n  containers:\n    - image: ghcr.io/lucent-financial-group/x:v1\n" },
       [entry({ repository: "ghcr.io/lucent-financial-group/x", tags: { v1: 401 }, packagePresence: "found" })],
     );
     try {
@@ -451,7 +457,7 @@ describe("the acknowledgement register", () => {
 
   test("an acknowledgement whose image became obtainable goes STALE and fails", () => {
     const fx = makeTree(
-      { "infra/k8s/app.yaml": "kind: Pod\nspec:\n  containers:\n    - image: ghcr.io/lucent-financial-group/x:v1\n" },
+      { "fixture/k8s/app.yaml": "kind: Pod\nspec:\n  containers:\n    - image: ghcr.io/lucent-financial-group/x:v1\n" },
       [entry({ repository: "ghcr.io/lucent-financial-group/x", tags: { v1: 200 }, packagePresence: "found" })],
     );
     try {
@@ -569,11 +575,11 @@ describe("scope and drift", () => {
   });
 
   test("an UNTRACKED manifest cannot smuggle a reference past the scan or into it", () => {
-    const fx = makeTree({ "infra/k8s/app.yaml": "kind: Pod\nspec:\n  containers:\n    - image: postgres:16-alpine\n" }, [
+    const fx = makeTree({ "fixture/k8s/app.yaml": "kind: Pod\nspec:\n  containers:\n    - image: postgres:16-alpine\n" }, [
       entry({ repository: "registry-1.docker.io/library/postgres", tags: { "16-alpine": 200 } }),
     ]);
     try {
-      writeFileSync(join(fx.root, "infra/k8s/sneaky.yaml"), "kind: Pod\nspec:\n  containers:\n    - image: ghcr.io/flowdent/cloudservice:latest\n");
+      writeFileSync(join(fx.root, "fixture/k8s/sneaky.yaml"), "kind: Pod\nspec:\n  containers:\n    - image: ghcr.io/flowdent/cloudservice:latest\n");
       // Untracked: not scanned. Recorded so the boundary is a decision, not an
       // accident -- `git add` is what puts a manifest in scope, and CI only
       // ever sees tracked files.
@@ -584,7 +590,7 @@ describe("scope and drift", () => {
   });
 
   test("a ledger row for an image the tree no longer references is a finding", () => {
-    const fx = makeTree({ "infra/k8s/app.yaml": "kind: Pod\nspec:\n  containers:\n    - image: postgres:16-alpine\n" }, [
+    const fx = makeTree({ "fixture/k8s/app.yaml": "kind: Pod\nspec:\n  containers:\n    - image: postgres:16-alpine\n" }, [
       entry({ repository: "registry-1.docker.io/library/postgres", tags: { "16-alpine": 200 } }),
       entry({ repository: "ghcr.io/flowdent/cloudservice", tags: { latest: 401 } }),
     ]);
@@ -598,15 +604,15 @@ describe("scope and drift", () => {
   test("an unparseable manifest is a finding, never a skip", () => {
     const fx = makeTree(
       {
-        "infra/k8s/app.yaml": "kind: Pod\nspec:\n  containers:\n    - image: postgres:16-alpine\n",
+        "fixture/k8s/app.yaml": "kind: Pod\nspec:\n  containers:\n    - image: postgres:16-alpine\n",
         // Must mention `image` or the prefilter (correctly) skips it: a file
         // that cannot carry an image reference is not this check's business.
-        "infra/k8s/broken.yaml": "kind: Pod\nspec:\n  image: a: b: c\n  x: [1, 2\n",
+        "fixture/k8s/broken.yaml": "kind: Pod\nspec:\n  image: a: b: c\n  x: [1, 2\n",
       },
       [entry({ repository: "registry-1.docker.io/library/postgres", tags: { "16-alpine": 200 } })],
     );
     try {
-      expect(hardFindings(fx.root)).toEqual(["manifest-unparseable:infra/k8s/broken.yaml"]);
+      expect(hardFindings(fx.root)).toEqual(["manifest-unparseable:fixture/k8s/broken.yaml"]);
     } finally {
       fx.dispose();
     }
@@ -618,8 +624,8 @@ describe("scope and drift", () => {
     // that is the correct scope rather than a silent gap.
     const fx = makeTree(
       {
-        "infra/k8s/app.yaml": "kind: Pod\nspec:\n  containers:\n    - image: postgres:16-alpine\n",
-        "infra/k8s/not-a-manifest.yaml": "a: [1, 2\n  b: : :\n",
+        "fixture/k8s/app.yaml": "kind: Pod\nspec:\n  containers:\n    - image: postgres:16-alpine\n",
+        "fixture/k8s/not-a-manifest.yaml": "a: [1, 2\n  b: : :\n",
       },
       [entry({ repository: "registry-1.docker.io/library/postgres", tags: { "16-alpine": 200 } })],
     );
@@ -631,7 +637,7 @@ describe("scope and drift", () => {
   });
 
   test("a tree with manifests but no images REFUSES rather than reporting green", () => {
-    const fx = makeTree({ "infra/k8s/app.yaml": "kind: ConfigMap\ndata:\n  a: b\n" }, []);
+    const fx = makeTree({ "fixture/k8s/app.yaml": "kind: ConfigMap\ndata:\n  a: b\n" }, []);
     try {
       expect(hardFindings(fx.root)).toEqual(["no-images-found:(tree)"]);
     } finally {
@@ -643,7 +649,7 @@ describe("scope and drift", () => {
     for (const p of EXCLUDED_PREFIXES) expect(p).toEndWith("/");
     for (const p of EXCLUDED_PREFIXES) {
       expect("full-ai-cluster/k8s/applications/platform/blueprints.yaml".startsWith(p)).toBe(false);
-      expect("infra/k8s/bootstrap/initial-orleans.yaml".startsWith(p)).toBe(false);
+      expect("fixture/k8s/bootstrap/initial-orleans.yaml".startsWith(p)).toBe(false);
       expect("agentic-organization/deploy/k8s/30-worker.yaml".startsWith(p)).toBe(false);
     }
   });
