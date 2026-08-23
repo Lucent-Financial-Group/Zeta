@@ -48,7 +48,7 @@
 //
 // Exit codes: 0 ok · 2 usage error / category unallocated.
 
-import { mkdirSync, writeFileSync, existsSync, readFileSync } from "node:fs";
+import { mkdirSync, writeFileSync, readFileSync } from "node:fs";
 import { join, normalize } from "node:path";
 import { packGeneric } from "../zeta-id/zeta-id";
 import { format } from "../zeta-id/encoding";
@@ -295,6 +295,49 @@ const USAGE =
   '       [--shaping-vectors "a,b"] [--supersedes <zetaid>,...] [--withdraws <zetaid>,...]\n' +
   "       [--dir agendas] [--dry-run]\n";
 
+/**
+ * Did this process create the declaration file, or was the id already taken?
+ *
+ * `already-declared` is a real outcome, not an error: two declarers are meant to be
+ * able to run concurrently in the same directory and exactly one of them wins a
+ * given path.
+ */
+export type WriteOutcome = "written" | "already-declared";
+
+/**
+ * Create the declaration file, or refuse — in ONE syscall.
+ *
+ * `flag: "wx"` is `O_CREAT | O_EXCL`: the kernel decides atomically whether this
+ * process is the creator, so there is no window to lose. It replaces an
+ * `existsSync(path)` gate in front of `writeFileSync(path)`, which was a
+ * check-then-use race (TOCTOU — Abbott et al. 1976; Bishop & Dilger 1996; CWE-367;
+ * CodeQL `js/file-system-race`, HIGH). The gate READ as care and prevented nothing:
+ * the answer `existsSync` returned was already stale when the write ran, so a
+ * concurrent declarer landing between the two calls had its file silently clobbered
+ * by the very branch that existed to protect it.
+ *
+ * `src/Core.TypeScript/hygiene/lint-check-then-use-file-races.ts` refuses this class
+ * on the `cross-verify` floor (#13382), and deliberately scopes its `GATED_USES` to
+ * READS so that each refusal can name one correct remedy — which is why this write
+ * shape was outside that lint and still inside its class. The remedy for the write
+ * shape is this one: exclusive create, and interpret the failure.
+ *
+ * ONLY `EEXIST` BECOMES A REFUSAL. Every other errno — `EACCES`, `ENOSPC`, `EROFS`,
+ * `ENOENT` on a vanished directory — is rethrown. Catching broadly here would be
+ * worse than the race it replaces: the caller would print "refusing to overwrite",
+ * exit 2, and report a taken id when in fact nothing was written and the filesystem
+ * failed. A false statement about the substrate is not a safer failure than a loud one.
+ */
+export function writeDeclaration(path: string, content: string): WriteOutcome {
+  try {
+    writeFileSync(path, content, { encoding: "utf8", flag: "wx" });
+    return "written";
+  } catch (e) {
+    if ((e as NodeJS.ErrnoException).code !== "EEXIST") throw e;
+    return "already-declared";
+  }
+}
+
 function main(argv: readonly string[]): number {
   const args = parseArgs(argv);
   if (args["help"] || args["h"] || argv.length === 0) {
@@ -356,11 +399,10 @@ function main(argv: readonly string[]): number {
     return 0;
   }
   mkdirSync(dir, { recursive: true });
-  if (existsSync(path)) {
+  if (writeDeclaration(path, minted.content) === "already-declared") {
     process.stderr.write(`new-agenda: refusing to overwrite existing ${path}\n`);
     return 2;
   }
-  writeFileSync(path, minted.content, "utf8");
   process.stdout.write(`declared ${path}\n  zetaid: ${minted.zetaid}\n`);
   return 0;
 }

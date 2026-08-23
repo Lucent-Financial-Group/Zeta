@@ -1,11 +1,14 @@
 import { test, expect } from "bun:test";
-import { readFileSync } from "node:fs";
+import { readFileSync, mkdtempSync, writeFileSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import {
   mintAgenda,
   resolveCategoryByName,
   unallocatedCategoryMessage,
   AGENDA_CATEGORY_NAME,
   CATEGORY_REGISTRY_PATH,
+  writeDeclaration,
   SYSTEM_ENV,
   type AgendaEnv,
   type AgendaSpec,
@@ -168,4 +171,61 @@ test("the REAL registry resolves Agenda to the same slot the TypeScript oracle c
   const real = resolveCategoryByName(readFileSync(CATEGORY_REGISTRY_PATH, "utf8"), AGENDA_CATEGORY_NAME);
   expect(real).toBe(Category.Agenda);
   expect(real).toBe(12);
+});
+
+// ── THE WRITE IS ONE SYSCALL (TOCTOU) ────────────────────────────────────────
+// `writeDeclaration` replaced `if (existsSync(path)) refuse; writeFileSync(path)`
+// — a check-then-use race (CWE-367; CodeQL js/file-system-race, HIGH; the class
+// `src/Core.TypeScript/hygiene/lint-check-then-use-file-races.ts` refuses on the
+// cross-verify floor, #13382). These are the falsifiers for the two properties the
+// exclusive-create form has and the gate did not: it never clobbers, and it never
+// reports a filesystem failure as an ordinary refusal.
+
+const withTempDir = <T>(f: (dir: string) => T): T => {
+  const dir = mkdtempSync(join(tmpdir(), "zeta-agenda-"));
+  try {
+    return f(dir);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+};
+
+test("writes the declaration when the path is free", () => {
+  withTempDir((dir) => {
+    const p = join(dir, "a.md");
+    expect(writeDeclaration(p, "body")).toBe("written");
+    expect(readFileSync(p, "utf8")).toBe("body");
+  });
+});
+
+test("REFUSES an occupied path and does NOT clobber it — the whole point of O_EXCL", () => {
+  withTempDir((dir) => {
+    const p = join(dir, "a.md");
+    writeFileSync(p, "the first declarer's file", "utf8");
+    expect(writeDeclaration(p, "the second declarer's file")).toBe("already-declared");
+    // If this ever reads the second string, the exclusive flag was dropped and a
+    // concurrent declaration is being silently destroyed.
+    expect(readFileSync(p, "utf8")).toBe("the first declarer's file");
+  });
+});
+
+test("a NON-EEXIST failure THROWS rather than reporting 'already-declared'", () => {
+  // The discriminator against a broad `catch`. A missing parent directory fails with
+  // ENOENT: nothing was written and the id is NOT taken, so answering
+  // "already-declared" here would make the CLI print "refusing to overwrite" and
+  // exit 2 on a filesystem that had simply failed — a false statement about the
+  // substrate, which is worse than the race being removed.
+  withTempDir((dir) => {
+    expect(() => writeDeclaration(join(dir, "no-such-dir", "a.md"), "body")).toThrow();
+  });
+});
+
+test("two declarers racing the same path: exactly one wins", () => {
+  withTempDir((dir) => {
+    const p = join(dir, "same.md");
+    const outcomes = [writeDeclaration(p, "A"), writeDeclaration(p, "B")];
+    expect(outcomes.filter((o) => o === "written").length).toBe(1);
+    expect(outcomes.filter((o) => o === "already-declared").length).toBe(1);
+    expect(readFileSync(p, "utf8")).toBe("A");
+  });
 });
