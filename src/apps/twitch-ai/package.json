@@ -5,8 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
-    "build:gh-pages": "tsc && vite build --base=./",
+    "build": "vite build",
+    "build:gh-pages": "vite build --base=./",
     "preview": "vite preview"
   },
   "devDependencies": {
