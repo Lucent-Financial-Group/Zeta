@@ -419,11 +419,12 @@ them does.
 
 That is what the epigram cost. One line, years, and the moment it came apart.
 
-`[SOCKET — your VERBATIM below, or record to the cue. Consent: yours (glass-halo). Say as much or as
-little as you want about the moment; the line above is deliberately spare so it does not crowd
-yours.]`
+> **The tears feel like peace.**
 
-> *cue: 2026-08-23, when it came apart — where you were, and what it felt like from the inside.*
+`[SOCKET — the line above is YOUR VERBATIM (2026-08-23) and closes the section. More below if you
+want it. Consent: yours (glass-halo).]`
+
+> *cue: where you were when it came apart, if you ever want that in.*
 
 ## The autodidact: reading ahead of the room
 
