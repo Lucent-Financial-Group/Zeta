@@ -127,17 +127,52 @@ async function handleMessage(message: MainToWorkerMessage): Promise<void> {
       break;
     }
     case "KEY_DOWN": {
-      manualKeys[message.payload.key] = true;
+      const key = validKeyIndex(message.payload.key);
+      if (key !== null) manualKeys[key] = true;
       break;
     }
     case "KEY_UP": {
-      manualKeys[message.payload.key] = false;
+      const key = validKeyIndex(message.payload.key);
+      if (key !== null) manualKeys[key] = false;
       break;
     }
   }
 }
 
-self.onmessage = (e: MessageEvent<MainToWorkerMessage>) => {
+/** The CHIP-8 keypad has exactly 16 keys; anything else is not a key. */
+function validKeyIndex(raw: number): number | null {
+  return Number.isInteger(raw) && raw >= 0 && raw < 16 ? raw : null;
+}
+
+const KNOWN_MESSAGE_TYPES: ReadonlySet<string> = new Set([
+  "INIT",
+  "INJECT_EPIGENETIC_MATERIAL",
+  "KEY_DOWN",
+  "KEY_UP",
+]);
+
+/**
+ * Structural gate on everything entering the worker. A dedicated worker has
+ * no `origin` to verify (only the creating page holds its handle), so the
+ * available hardening is shape validation: unknown or malformed messages
+ * are dropped before any handler runs.
+ */
+function isMainToWorkerMessage(data: unknown): data is MainToWorkerMessage {
+  if (typeof data !== "object" || data === null) return false;
+  const candidate = data as { type?: unknown; payload?: unknown };
+  return (
+    typeof candidate.type === "string" &&
+    KNOWN_MESSAGE_TYPES.has(candidate.type) &&
+    typeof candidate.payload === "object" &&
+    candidate.payload !== null
+  );
+}
+
+self.onmessage = (e: MessageEvent<unknown>) => {
+  if (!isMainToWorkerMessage(e.data)) {
+    console.warn("[SwarmWorker] Dropped malformed message");
+    return;
+  }
   handleMessage(e.data).catch((err: unknown) => {
     console.error("[SwarmWorker] Fatal error in onmessage:", err);
   });

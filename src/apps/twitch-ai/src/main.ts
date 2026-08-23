@@ -66,6 +66,7 @@ app.innerHTML = `
       </div>
 
       <div style="display: flex; justify-content: flex-end; gap: 1rem;">
+        <button id="settings-clear-key" class="upload-btn" style="background: transparent; margin-right: auto;">Clear saved key</button>
         <button id="settings-cancel" class="upload-btn" style="background: transparent;">Cancel</button>
         <button id="settings-save" class="upload-btn" style="background: var(--primary);">Save & Reload</button>
       </div>
@@ -77,18 +78,33 @@ app.innerHTML = `
 const settingsModal = mustGet("settings-modal");
 const settingsBtn = mustGet("settings-btn");
 const settingsCancel = mustGet("settings-cancel");
+const settingsClear = mustGet("settings-clear-key");
 const settingsSave = mustGet("settings-save");
 const baseUrlInput = mustGet("api-base-url") as HTMLInputElement;
 const apiKeyInput = mustGet("api-key") as HTMLInputElement;
 
 settingsBtn.addEventListener("click", () => {
   baseUrlInput.value = localStorage.getItem("zeta_llm_base_url") ?? "";
-  apiKeyInput.value = localStorage.getItem("zeta_llm_api_key") ?? "";
+  // The saved API key is never echoed back into the DOM — the field stays
+  // empty and the placeholder says whether one exists. (Round-tripping the
+  // secret through an input value re-exposes it to anything that can read
+  // the page; leaving it in storage only is strictly less surface.)
+  apiKeyInput.value = "";
+  apiKeyInput.placeholder =
+    localStorage.getItem("zeta_llm_api_key") !== null
+      ? "•••••• saved — leave blank to keep, type to replace"
+      : "sk-...";
   settingsModal.style.display = "flex";
 });
 
 settingsCancel.addEventListener("click", () => {
   settingsModal.style.display = "none";
+});
+
+settingsClear.addEventListener("click", () => {
+  localStorage.removeItem("zeta_llm_api_key");
+  apiKeyInput.value = "";
+  apiKeyInput.placeholder = "sk-...";
 });
 
 settingsSave.addEventListener("click", () => {
@@ -98,10 +114,10 @@ settingsSave.addEventListener("click", () => {
     localStorage.removeItem("zeta_llm_base_url");
   }
 
+  // Blank keeps the saved key (it is no longer echoed into the field);
+  // clearing is the explicit button above.
   if (apiKeyInput.value.trim()) {
     localStorage.setItem("zeta_llm_api_key", apiKeyInput.value.trim());
-  } else {
-    localStorage.removeItem("zeta_llm_api_key");
   }
 
   settingsModal.style.display = "none";
