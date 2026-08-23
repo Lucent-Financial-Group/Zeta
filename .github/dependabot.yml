@@ -193,7 +193,7 @@ updates:
       # which is the same failure the FsCheck entry below records.
       #
       # LIFTS WHEN: the TS 7 migration is done as its own change, with the
-      # byte-lock vectors re-verified. Tracked in the currency work-item.
+      # byte-lock vectors re-verified. Tracked: 081M0QJYR80087G0R000F2YVF5.
       - dependency-name: "typescript"
         update-types:
           - "version-update:semver-major"
