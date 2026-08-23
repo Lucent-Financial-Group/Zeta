@@ -49,6 +49,52 @@ with a ⭐ below and add a row there.
   (Wi-Fi/BT), proximal D2D bus with no cloud/broker — the Reticulum shape a decade
   earlier. Lesson carried: AllJoyn died of consortium fragmentation (AllSeen vs
   OCF) — the format-war lesson (zetamax doc): be open AND better, or be Betamax.
+- **Signature files, and the over-including filter family** — **Christos
+  Faloutsos & Stavros Christodoulakis**, _Signature Files: An Access Method for
+  Documents and Its Analytical Performance Evaluation_ (ACM TOIS 2(4), 1984):
+  superimposed coding, **false drops permitted**, resolved by a verification pass
+  they named _false-drop resolution_. This — not the inverted file — is the
+  tradition our signature index belongs to, because the property we buy is a
+  **soundness direction** (never a false negative, therefore never a false zero)
+  rather than precision. Signature files _lost_ to inverted files in the 1990s on
+  scan cost; why that verdict does not bind a 271 MiB local git corpus with a
+  measured 0.05% candidate set is argued in
+  `docs/research/2026-08-23-signature-index-*.md` §9. Family: **Burton Bloom**,
+  _Space/Time Trade-offs in Hash Coding with Allowable Errors_ (CACM 13(7), 1970)
+  — the canonical false-positive-only filter; **Jack Orenstein**, SIGMOD 1986 —
+  **filter-and-refine** in spatial databases, the same soundness direction with a
+  bounding box.
+- **Consonant-skeleton keys** — **Russell & Odell**, Soundex (US patent 1,261,167,
+  1918); **Lawrence Philips**, Metaphone (1990) / Double Metaphone (2000). Older
+  lineage: **abjad** scripts (Hebrew, Arabic) and Semitic consonantal roots, where
+  the consonant skeleton carries the lexeme and the vowels inflect it. Vowel
+  dropping is old and principled, not a coinage. **Checked, and Soundex's
+  keep-the-first-letter rule was DECLINED**: measured on our corpus it moves
+  unique-key from 93.0% to 94.4%, which does not pay for the special case — it is
+  a claim about English surnames, and this corpus is code and technical prose.
+- **Corpus-derived spelling correction** — **Fred Damerau** (CACM 7(3), 1964) and
+  **Vladimir Levenshtein** (1966) for the edit model, Damerau specifically because
+  **transposition** is the typo class a consonant skeleton already absorbs;
+  **Peter Norvig**, _How to Write a Spelling Corrector_ (2007) for frequency from
+  the corpus rather than a dictionary — the constraint Aaron insisted on, because
+  a general dictionary "corrects" `ZSet`→`Set`, `argv`→`argue`, `DBSP`→`DBS`;
+  **Wolf Garbe**, SymSpell, for deletion-neighbourhood lookup _if_ naive candidate
+  generation proves too slow (measure first — an unnecessary optimisation is its
+  own debt).
+- **Code search is the same cascade with a different signature** — **Russ Cox**,
+  _Regular Expression Matching with a Trigram Index_ (2012), the design behind
+  Google Code Search: query trigrams filter candidate documents, then **a real
+  regex engine verifies**; **`zoekt`** (Han-Wen Nienhuys), which Sourcegraph runs.
+  The load-bearing fact is that this tradition **converged independently** on the
+  same two-tier structure with an order-preserving `sig`, which is evidence the
+  abstraction is real rather than a tidy story told afterwards.
+- **Florian Deißenböck & Markus Pizka**, _Concise and Consistent Naming_ (IWPC
+  2005; Software Quality Journal 14(3), 2006) — identifier naming formalised as
+  **one concept, one name** (no synonyms) and **one name, one concept** (no
+  homonyms). The model behind the variable-name registry: once names carry
+  definitions, a name recurring across dozens of files under one definition is a
+  detectable **un-extracted constant or shared library**, not merely untidy
+  vocabulary. Adjacent: Arnaoudova et al. on linguistic antipatterns.
 - **Apache Lucene** — **Doug Cutting**, first released 1999; Apache project since 2001. The inverted-file literature below tells you the data structure; Lucene
   tells you which parts bite at scale, because it has been forced to solve them
   for real for two decades — **Apache Solr** and **Elasticsearch** are both built
@@ -268,6 +314,7 @@ EverParse. Closest active ancestor for the refinement-type
 class of checks we would have used LiquidF# for; evaluated
 round 35 and sitting on TECH-RADAR at Assess pending the
 F# extraction backend audit. See`docs/research/liquidfsharp-findings.md`Path A and`docs/research/refinement-type-feature-catalog.md`.
+
 - **LiquidHaskell** — Vazou et al.; canonical refinement-type
   checker for Haskell. Not directly usable from F#, but the
   feature set (measures, termination proofs, totality, bounded
@@ -1064,9 +1111,9 @@ notes: [pause-not-death + Orleans criterion] and
   the asymptotics. Same object family, different regime; the link is "our exact case sits inside the
   family whose asymptotics others study," never a contribution to the asymptotic result.
 - **Construction A as the code↔lattice↔packing bridge (Conway–Sloane, _SPLAG_ ch. 5)** — the
-  executable content of `E8Lattice.fs`: a binary code C gives a lattice L_A(C), and the doubly-even
+  executable content of `E8Lattice.fs`: a binary code C gives a lattice L*A(C), and the doubly-even
   self-dual [8,4] adinkra code gives E8, the densest 8D packing. This is the **same mechanism** by
-  which a spherical/binary-code construction _recovers a sphere-packing exponent_ — i.e. codes
+  which a spherical/binary-code construction \_recovers a sphere-packing exponent* — i.e. codes
   produce packings. We have it running in four oracles; we **reproduce** Conway–Sloane/Viazovska,
   we improve no code bound.
 - **OpenAI "Ten advances in mathematics" (Astra, announced 2026-08-01; Noam Brown,
@@ -1506,3 +1553,151 @@ it, not from a summary.
   MIT/LCS/TR-429). The origin of the question _what can a routing protocol still guarantee when
   participating routers lie?_ — and the reason the requirement here is stated as a **bound** rather
   than as correctness. A relay can always decline to forward; no mechanism makes a metric true.
+
+## Extensive vs intensive — the wait-free / consensus boundary (added 2026-08-23, Lumen)
+
+The anchors behind §11 of
+`docs/research/2026-08-23-geometry-as-the-root-of-the-soft-regime-five-questions-*.md`, which asks
+whether Aaron's _"a count is CRDT and a condition is CASPaxos-ish"_ is a theorem. Answer: the two
+conditions are **co-extensive on the examples and separated by idempotence**, and checking these
+anchors is what produced the separation rather than a confirmation.
+
+- **Richard C. Tolman (1917) — "The Measurable Quantities of Physics"** (_Phys. Rev._ **9**, 237).
+  The terms **extensive** and **intensive** are conventionally traced here. Load-bearing for us
+  beyond vocabulary: thermodynamics _defines_ an intensive quantity as a **ratio of extensives**
+  (density = mass/volume, `T = ∂U/∂S`), which is exactly the repair that keeps densities, rates and
+  means on the wait-free tier — carry both measures, divide at read. Measure-theoretic twin:
+  the **Radon–Nikodym derivative** `dν/dμ`. The anchor supplies the _fix_, not just the words.
+- **Marc Shapiro, Nuno Preguiça, Carlos Baquero & Marek Zawirski (2011) — "A comprehensive study of
+  Convergent and Commutative Replicated Data Types"** (INRIA RR-7506; and _"Conflict-free Replicated
+  Data Types"_, SSS 2011). The **CvRDT / CmRDT** split and the **join-semilattice** condition. This
+  is the anchor that **corrected** the mapping: a raw count under `+` is commutative and associative
+  and **not idempotent**, so it is a `CmRDT` and **not** a `CvRDT` state — the `G-Counter`'s
+  per-replica keying + elementwise `max` is a _change of the carried object_, not a property of
+  counting. `src/Core/Crdt.fs` implements exactly that shape (merge = `max`, read = `Σ`), and its
+  header comment misnames the structure (it lists the commutative-monoid axioms under the
+  "join-semilattice" label). Already cited in that file; promoted here because it is now
+  load-bearing for a _criterion_, not only for an implementation.
+- **Denis Rystsov (2018) — "CASPaxos: Replicated State Machines without logs"** (arXiv:1802.07000).
+  Single-decree Paxos as a **replicated CAS register**: clients submit a change function applied
+  under compare-and-swap. The right primitive for the one tier that genuinely needs coordination —
+  and the reason is **non-commutativity of the update** (a read-modify-write result depends on what
+  was already there), _not_ intensiveness of the quantity.
+- **Michael J. Fischer, Nancy A. Lynch & Michael S. Paterson (1985) — "Impossibility of Distributed
+  Consensus with One Faulty Process"** (_JACM_ **32**(2), 374–382). Why the tier boundary is a
+  **computability class** rather than a message count: consensus is impossible in an asynchronous
+  system with a single crash fault, while a commutative merge is wait-free.
+- **Seth Gilbert & Nancy Lynch (2002) — "Brewer's conjecture and the feasibility of consistent,
+  available, partition-tolerant web services"** (_SIGACT News_ **33**(2), 51–59). The other half of
+  the cost: the commutative tier stays available under partition; the consensus tier does not. This
+  is what makes _"prefer the extensive formulation"_ a manifesto §2 (wait-free) requirement rather
+  than a style preference.
+
+Pairs with `.claude/rules/dv2-data-split-discipline-activated.md` (#1 scale-free, #2 lock/wait-free,
+and #6 idempotency) and `.claude/rules/local-time-never-enters-the-shared-fold.md` — a _rate_ carries a
+duration in its denominator, so carrying counts rather than rates satisfies both constraints from
+one argument. **Brian Beckman** is already in this list as REQUIRED READING and is the stated source
+for the physics/category convergence that opened §10.
+
+## Exploitability, weird machines, and decidable fragments — the langsec lineage (added 2026-08-23, shadow, per Aaron: "yes lets save these human anchors i think they might be new")
+
+Added after Aaron refused the claim _"restrict the local move set until the exploit path cannot be
+assembled"_ and asked for proof: _"I think it can always be assembled in expressive systems, but it
+can be detected and routed around."_ He was right, and this is the literature that establishes it.
+
+**Measured before adding** (`git grep -licE <term> origin/main`, 2026-08-23): Shacham **0**, Dullien
+**0**, `weird machine` **0**, Presburger **0**, `constructible universe` **0**; `langsec` **3**
+(thin), `return-oriented` **1**. **Rice's theorem was already at 15 files** — so the gap was never
+Rice's absence but its **disconnection** from exploitability, which is the harder gap to notice
+because nothing looks missing.
+
+### The refutation — exploitation as computation
+
+- **Shacham, Hovav.** _The Geometry of Innocent Flesh on the Bone: Return-into-libc without Function
+  Calls (on the x86)._ ACM CCS 2007. — **The counterexample to prevention-by-restriction.** The
+  attacker **defines no new code**; every gadget is a pre-existing legal instruction sequence ending
+  in `ret`. That is exactly _may name, may never define_ — and the libc gadget set is shown
+  **Turing-complete**. Establishes that a closed command set is safe only under an additional,
+  usually unstated condition: **non-composability**.
+- **Dullien, Thomas (Halvar Flake).** _Weird Machines, Exploitability, and Provable Unexploitability._
+  IEEE Transactions on Emerging Topics in Computing, 2020. — Formalises exploitation as **programming
+  a weird machine out of legal state transitions**, and gives conditions under which unexploitability
+  is _provable_. They are strong and rarely met. This is the security literature independently
+  arriving at the local-legal / global-illegal shape.
+- **Bratus, Locasto, Patterson, Sassaman, Shubina.** _Exploit Programming: From Buffer Overflows to
+  Weird Machines and Theory of Computation._ ;login: 36(6), 2011. — Names the weird machine and
+  positions exploitation as a computation-theory problem rather than a bug-hunting one.
+- **Sassaman, Patterson, Bratus, Locasto.** _Security Applications of Formal Language Theory._ IEEE
+  Systems Journal 7(3), 2013 (and _The Halting Problems of Network Stack Insecurity_, ;login: 2011).
+  — **LANGSEC.** Confine the _input language_ to a decidable class and reject everything else,
+  because an input language expressive enough to be undecidable **is** a weird machine by
+  construction. Full recogniser before any semantic action.
+- **Rice, Henry Gordon.** _Classes of Recursively Enumerable Sets and Their Decision Problems._
+  Transactions of the AMS 74(2), 1953. — **Already in-tree (15 files), listed here for the
+  connection that was missing:** every non-trivial semantic property of a Turing-complete system is
+  undecidable, so once the _compositions_ of a restricted move set are Turing-complete, no decision
+  procedure separates the benign composition from the exploit. Prevention is not hard — it is
+  unavailable, and detection must therefore be probabilistic and iterated.
+
+### The pigeonhole — restrictions that make the pathology decidable
+
+Aaron 2026-08-23: _"local moves can't eliminate it, he proved that — but then you can pigeonhole it
+into a limited known subset that is avoided or played within."_
+
+- **Presburger, Mojżesz.** _Über die Vollständigkeit eines gewissen Systems der Arithmetik ganzer
+  Zahlen, in welchem die Addition als einzige Operation hervortritt._ 1929. — Drop multiplication;
+  arithmetic becomes **complete and decidable**. Localises the pathology to `×`.
+- **Tarski, Alfred.** _A Decision Method for Elementary Algebra and Geometry._ RAND, 1951. —
+  **Already well covered in-tree (58 files)**; listed here for the specific result that matters to
+  this lineage: real closed fields are decidable by quantifier elimination, so the undecidability
+  was never "arithmetic" — it was **ℤ**.
+- **Gödel, Kurt.** _The Consistency of the Axiom of Choice and of the Generalized Continuum Hypothesis
+  with the Axioms of Set Theory._ Princeton, 1940 (results announced 1938). — **The constructible
+  universe `L`**: restrict the universe and CH is settled. Gödel's own pigeonhole, a decade after his
+  own incompleteness theorem, which is why he is the anchor for both halves of the pattern.
+- **Gödel, Kurt.** _Die Vollständigkeit der Axiome des logischen Funktionenkalküls_ (1929,
+  completeness) · _Über formal unentscheidbare Sätze…_ (1931, incompleteness) · _An Example of a New
+  Type of Cosmological Solution…_ Rev. Mod. Phys. 21, 1949 (rotating cosmology, CTCs). — The
+  boundary marker, the obstruction, and the closed timelike curve. Aaron 2026-08-23: _"Gödel taught
+  me this."_
+
+### Why the detector must be plural
+
+- **Demers, Greene, Hauser, Irish, Larson, Shenker, Sturgis, Swinehart, Terry.** _Epidemic Algorithms
+  for Replicated Database Maintenance._ PODC 1987. — **Already in-tree (19 files)**; the connection
+  recorded here is that gossip is the right substrate for detection **because it has no coordinator**,
+  and a central detector would be both a §1 central point of control and the single most valuable
+  node to compromise.
+- **Condorcet, Marquis de.** _Essai sur l'application de l'analyse à la probabilité des décisions…_
+  1785. — **Already load-bearing in-tree**; listed here for the step that makes it structural rather
+  than statistical: a jury of _correlated_ jurors is no better than **one** juror, so a fleet of
+  correlated detectors cannot exceed a single static detector — **which Rice already ruled out.**
+  Decorrelation is therefore not an improvement to the ensemble; it is the reason the ensemble can
+  see anything past the barrier at all.
+
+### Why the connection was missed — a taxonomy was substituted for a theorem
+
+Aaron 2026-08-23, on learning Rice was already at 15 files: **"yes we put in Wolfram automata instead
+of Rice."**
+
+That names the mechanism, and it generalises past this instance. Wolfram's **class 4 / computational
+irreducibility** and Rice's theorem point at the same territory and are **different kinds of object**:
+
+| | what it is | what it gives you |
+|---|---|---|
+| **Wolfram class 4 / PCE** | an **empirical taxonomy** of observed behaviour, resting on the Principle of Computational Equivalence — a **conjecture** | a vocabulary: _this looks irreducible_ |
+| **Rice 1953** | a **theorem** | a **bound**: the property is undecidable, so no amount of engineering produces the decider |
+
+**Reaching for the taxonomy where the theorem applied cost the impossibility result.** A taxonomy
+describes; it never tells you that prevention is _unavailable_, so the design question stays open
+("build a better detector") when the theorem had already closed it ("no such detector exists —
+build an ensemble instead"). And by this repo's own register discipline, substituting a **conjecture**
+(PCE) for a **theorem** (Rice) is a promotion in the wrong direction: it reads as the stronger claim
+while carrying less.
+
+**Generalised, this is a search failure with a specific shape and worth watching for:** when a
+concept has both an empirical-taxonomy form and a theorem form, the taxonomy is usually the more
+memorable and gets indexed first — so the theorem sits in the tree, cited, and never reached from
+the place that needed it.
+
+**Cross-reference:** `docs/research/2026-08-23-local-interactions-global-norms-acehack-godel-and-the-local-to-global-obstruction.md` — where these are used, with the register of each claim stated.

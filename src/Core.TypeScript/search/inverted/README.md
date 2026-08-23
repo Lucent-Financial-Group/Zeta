@@ -77,19 +77,18 @@ and the CLI prints on stderr with every answer:
 The index returns **no file that `git grep` does not**. The accounting is how
 the two tokenizer defects below were found; the totals alone looked fine.
 
-## Two defects found by diffing against `git grep`, not by reasoning
+## Four defects this index has had — every one found by checking output, not code
 
-Both were the _same failure this work-item exists to remove_, reproduced inside
-the fix for it: a clean, confident, wrong "not here".
+Recorded together because the method is the point. Two were caught before merge by **diffing the index's coverage against `git grep` and accounting for every missing file**; two were caught after merge by **reading the first query on `main`**. None was visible in the totals, and none would have been found by re-reading the source.
 
-1. **`verifyLandauer`** — the tokenizer emitted maximal runs of `[A-Za-z0-9_]`,
-   so a camelCase identifier and an underscore-joined memory filename were each
-   one token. 20 files went missing. Fixed by decomposing compounds and emitting
-   the parts _alongside_ the original — Lucene's `WordDelimiterGraphFilter` with
-   `preserveOriginal`.
-2. **`Landauer–Bennett`** — with a **U+2013 EN DASH**. The tokenizer treated
-   every codepoint ≥ U+0080 as a word character, welding the two names into one
-   token. Fixed with a pinned table of non-ASCII separator ranges.
+The first two were the _same failure this index exists to remove_ — a clean, confident, wrong "not here" — reproduced inside the fix for it.
+
+1. **`verifyLandauer`** — the tokenizer emitted maximal runs of `[A-Za-z0-9_]`, so a camelCase identifier and an underscore-joined memory filename were each one token. **20 files went missing.** Fixed by decomposing compounds and emitting the parts _alongside_ the original — Lucene's `WordDelimiterGraphFilter` with `preserveOriginal`.
+2. **`Landauer–Bennett`** — with a **U+2013 EN DASH**. The tokenizer treated every codepoint ≥ U+0080 as a word character, welding the two names into one token. Fixed with a pinned table of non-ASCII separator ranges.
+3. **The index indexed itself.** Seven of the artifact's own files sit _under_ the 512 KiB blob cap (`high-df.jsonl` 57,366 B, `manifest.json` 10,165 B, `terms-{j,q,x,y,z}.jsonl` 173–339 KB), so the next rebuild would have indexed the previous one — every term in the index becoming a term _in_ the index, every path in `files.txt` a hit for itself. The large shards were excluded only by the size cap, which is **luck, not design**. `db/search-index/` is now an excluded tree.
+4. **A repaired stale index could disagree with a fresh one** — the worst of the four. `isIndexablePath` answers from the **path** alone; the builder _also_ applies a **blob-size cap**. So the changed set admitted files the index would never contain, the verifier grepped them, and a stale query returned a hit a fresh query does not: the same question with two answers, decided by how stale the index happened to be. Now split in two — `changed` (wider, what to **withdraw**, since a fresh index would not list a deleted or newly-oversize file either) and `verifiable` (what to **read**, matching the builder's corpus exactly). A test asserts the two paths agree.
+
+And one design error caught by measurement rather than by output: a **df cap of 100**, picked off the size table, **refused `landauer`** (447 files) — the very query this exists to answer. A cap tuned only against the size column has no opinion about what anyone searches for.
 
 ## What this index cannot do — say so, do not discover it later
 
@@ -221,6 +220,22 @@ Three layers, three jobs — this is the middle one, and none replaces another:
   Answers _"which files mention landauer?"_.
 - `../search.ts` — a scope-budgeted literal **scan** with no index. Answers
   anything, including phrases and stop words, at scan cost.
+
+## Where this is going — the signature redesign
+
+Aaron 2026-08-23 specified a **deliberate divergence from Lucene**: the key
+becomes a **vowel-free word signature**, a **phrase** is the _set_ of its word
+signatures (word order discarded, kept only for ranking), and the index becomes
+a **two-tier cascade** whose tier 1 **over-includes and never under-includes** —
+so it cannot produce a false zero, which is the defect this whole directory
+exists to remove.
+
+`signature.ts` (+ its falsifiers) ships that key function, measured. The index
+build, the corpus-derived spell-check pre-filter, the naming registry and the
+code index are **filed, not built**.
+
+Full design, with every measurement:
+`docs/research/2026-08-23-signature-index-over-includes-never-under-includes-vowel-free-word-keys-order-free-phrases-two-tier-cascade.md`
 
 ## Prior art (Beacon)
 
