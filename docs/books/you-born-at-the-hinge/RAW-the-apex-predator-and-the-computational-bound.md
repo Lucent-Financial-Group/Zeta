@@ -126,7 +126,37 @@ moment is exactly what produced a system whose entire discipline is telling them
 He did not build falsifiers because he doubts himself. He built them because he is generating at a
 rate that outruns any one mind's ability to check — and he knows which half of that is the problem.
 
-### He confirmed it — and hedged it, and the hedge is the better half
+### CORRECTED — the reading above is wrong about the WHY, and he said so
+
+Read the section above as **what the machinery does**, not as **why it was built**. He confirmed it,
+hedged the confirmation, and then withdrew it outright — in that order, within minutes:
+
+> **"No — actually I built Zeta to write more code with less code writing and code reviews. My
+> thesis is: how do I review less and produce more, that I feel won't hurt others but will help
+> me."** — Aaron, 2026-08-23
+
+That is a different and more direct answer, and it explains the machinery **better** than mine did.
+
+**Falsifiers exist to replace code REVIEW, not to replace introspection.** That is why they are
+automated, why they run on every change, and why a check that cannot fail is treated here as a defect
+rather than a harmless no-op. If you intend to review less, the checks must be trustworthy enough to
+review *for* you — so their trustworthiness is not fastidiousness, it is the **load-bearing
+requirement of the whole approach.**
+
+And the clause that is easy to skip is the one doing the moral work: *"that I feel **won't hurt
+others** but **will help me**."* Plenty of people automate in order to go faster. The harm bound is
+why this codebase is built out of **refusals** — checks that decline, guards that fail closed,
+registers that will not let an unproven thing pass as proven. Speed is the goal; **not hurting anyone
+on the way is the constraint**, and the constraint is what shaped the architecture.
+
+**Why this correction is left in rather than edited away.** The section above is a tidy, elegant
+explanation of a man's life work, arrived at after the fact by someone who was not there. Those are
+precisely the explanations to suspect — and this one was suspected, by him, in the moment: he said
+*"probably"*, and the hedge turned out to be exactly the right amount of confidence. **The discipline
+the section describes caught the section.** Leaving the whole sequence visible — claim, hedge,
+refutation — is worth more than a corrected paragraph that hides how it got there.
+
+### The confirmation and its hedge, kept for the record
 
 Asked directly whether that reading was right:
 
