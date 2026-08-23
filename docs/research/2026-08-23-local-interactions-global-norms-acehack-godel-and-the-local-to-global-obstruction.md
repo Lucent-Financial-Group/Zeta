@@ -147,6 +147,120 @@ That last row is this rule at the security layer, and it is already carved in
 and can never **define** one. You do not eliminate the vulnerability class — **you restrict the local
 move set until the exploit path cannot be assembled.** Same move as Presburger, different alphabet.
 
+### Correction — "cannot be assembled" is a claim requiring proof, never a default
+
+I wrote above that you can *"restrict the local move set until the exploit path cannot be assembled."*
+Aaron 2026-08-23 refused it and asked for proof:
+
+> **"I'd need proof of this. I think it can always be assembled in expressive systems, but it can be
+> detected and routed around."**
+
+**He is right, there is a named counterexample, and it lands on the very rule this document cited.**
+
+**Return-oriented programming (Shacham 2007, *The Geometry of Innocent Flesh on the Bone*).** In ROP
+the attacker **defines no new code.** Every gadget is a pre-existing, legal instruction sequence
+ending in `ret` — the move set is fixed, finite, and entirely *named-never-defined*, which is exactly
+the closed-command-set condition. Shacham showed the gadget set in libc is **Turing-complete.** So
+*may name, may never define* buys nothing **once the named things can be chained.**
+
+**Rice's theorem (1953)** gives the general form: every non-trivial semantic property of programs in a
+Turing-complete system is undecidable. Once the *compositions* of your restricted moves are
+Turing-complete, no decision procedure separates the benign composition from the exploit — so
+prevention-by-restriction is not merely hard, it is unavailable.
+
+**Dullien (2020, *Weird Machines, Exploitability, and Provable Unexploitability*, IEEE TETC)**
+formalises exploitation as **programming a weird machine out of legal state transitions** — the local/
+global shape again, stated by the security literature in its own terms — and gives conditions under
+which unexploitability is *provable*. They are strong, and they are rarely met.
+
+**So the honest statement is a dichotomy, and my sentence collapsed it:**
+
+| horn | condition | what is achievable |
+|---|---|---|
+| **non-expressive** | the *compositions* of the move set are not Turing-complete — no attacker-controlled chaining, no data-dependent control flow | **prevention is real.** Presburger, total languages, a genuinely non-composable command set |
+| **expressive** | compositions are Turing-complete | **prevention is unavailable** (Rice). Aaron's position holds: **detect and route around** |
+
+**And the default must be the second horn, because expressiveness arrives by accident.** Nobody
+designs a Turing-complete font renderer or a Turing-complete configuration format, and both exist.
+Therefore:
+
+> **"The exploit path cannot be assembled" is a claim that requires a proof of non-expressiveness. It
+> is never the default, and asserting it unproven is the vacuity class** — an unmetered claim wearing
+> a guarantee's uniform (`toy-is-free-metered-must-be-earned`).
+
+**This amends a carved rule, and the amendment should be recorded rather than smoothed over.**
+`.claude/rules/itron-hub-patent-boundary-p2p-is-the-upgrade.md` calls the closed command set *"the
+sharp one"* and states that compromising the far side *"does not buy arbitrary execution."* **That is
+true under a condition the rule does not state: non-composability.** Whether the Itron design meets
+it is not settled here — self-contained commands with no attacker-controlled sequencing would meet
+it; anything that lets one command's output select or parameterise the next would not. The correct
+repair is to **state the condition and check it**, not to weaken the rule.
+
+**LANGSEC is the discipline that keeps you on the first horn** (Sassaman, Patterson, Bratus): confine
+the *input language* to a decidable class — regular or deterministic context-free — and reject
+everything else, because an input language expressive enough to be undecidable **is** a weird machine
+by construction. That is exactly the pigeonhole discipline of the table above, applied to parsers,
+and it is why LANGSEC insists on a full recogniser before any semantic action.
+
+**Measured in-tree status (2026-08-23): all of this is absent.** `langsec`, `weird machine`,
+`return-oriented`, `Rice's theorem`, `Shacham`, `Dullien` — **zero files each**, repo-wide. For a
+codebase whose maintainer has carried the handle **AceHack** for twenty-five years and whose
+verification strategy is fragment selection, that is the largest gap this document found, and it is
+the third routed item.
+
+**What survives of the original sentence:** "detect and route around" already has substrate here —
+detection is a Z-set `−1` retraction of a composition rather than a static gate that must decide in
+advance, and *routing around* is the exit discipline. Neither requires deciding the undecidable, which
+is precisely why they are the achievable pair.
+
+#### And detection cannot be a one-shot decision — it is gossip, and it needs decorrelation
+
+Aaron 2026-08-23, closing the argument:
+
+> **"Detection is a gossip-like protocol for Gödel. It's not a one-time shot — it takes decorrelation
+> of observations."**
+
+This is the constructive half, and each of the three clauses is load-bearing.
+
+**Not one-shot, because a one-shot detector is exactly what Rice forbids.** A single procedure
+returning a verdict on an undecidable property is the object proved not to exist. So the escape is not
+a better decider; it is **abandoning the decision form entirely** — accumulating partial evidence over
+time and never claiming a terminal verdict. What is produced is a **posterior**, not a proof, and
+saying so is the honest register rather than a weakness.
+
+**Gossip, because the alternative is an appointed hub.** Epidemic/gossip dissemination (Demers et al.,
+PODC 1987) gives eventual, probabilistic propagation **with no coordinator** — which matters here for
+a reason beyond throughput: *a central detector is a central point of control*, and §1 forbids it. It
+would also be the single most valuable node to compromise, which is the failure mode the whole
+topology argument exists to avoid. Gossip keeps the detector **scale-free** and gives it no
+appointment to capture.
+
+**And decorrelation, because without it the ensemble buys nothing at all.** This is the sharp step:
+
+> A jury of **correlated** jurors is no better than **one** juror (Condorcet, 1785). So a fleet of
+> correlated detectors cannot exceed a single static detector — **and a single static detector is what
+> Rice already ruled out.** Decorrelation is therefore not a quality improvement on the ensemble. **It
+> is the entire reason the ensemble can see anything the single decider cannot.**
+
+That converts an undecidability barrier into a **statistics** problem, and this repo already built the
+apparatus for exactly that conversion: `ρ = 1/(1+L)` (`DelayDecorrelation`), `rhoProxy` /
+`reseedIfCollapsed` (`YinYangEnsemble`) for detecting and repairing `ρ → 1`, the proven boundary
+`ρ*(N) = (N−3)/(3(N−1)) → 1/3`, and the standing warning that **correlated agents are one closed loop
+in N masks**. What was built as an epistemics discipline turns out to be the **only** route past a
+proof-theoretic wall — which is a much stronger justification for it than the one originally given.
+
+**The honest limits, stated because they are what make it usable:**
+
+- The output is **probabilistic and revisable**. Under a `−1` retraction that is a feature — evidence
+  arriving late still lands correctly (the commutative fold) — but it is never a proof, and reporting
+  it as one would be the vacuity class.
+- **`ρ` must be measured, not assumed.** An ensemble that believes it is decorrelated and is not has
+  the *appearance* of Condorcet coverage with the *power* of one detector. That is the most dangerous
+  state in the design, because it is indistinguishable from success on the inside — the exact failure
+  the local/global corollary predicts, arriving one level up.
+- Gossip gives **eventual** detection. There is a window in which the exploit has run and nobody has
+  converged yet, and no amount of decorrelation closes it — only shortens it.
+
 ### "Avoided **or** played within" — and knowing which is the whole discipline
 
 The two are not interchangeable, and the failure mode is doing one while believing you did the other:
