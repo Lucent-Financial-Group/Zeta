@@ -40,7 +40,9 @@ const parity = (attrs: string): Relation => {
     const bits = [...attrs].map((_, i) => (m >> i) & 1);
     if (bits.reduce((a, b) => a ^ b, 0) === 0) {
       const t: Record<string, number> = {};
-      attrs.split("").forEach((a, i) => { t[a] = bits[i]!; });
+      attrs.split("").forEach((a, i) => {
+        t[a] = bits[i]!;
+      });
       out.push(t);
     }
   }
@@ -62,14 +64,19 @@ console.log(`  ... equals R_ABC? ${relationsEqual(project(j1, ["A", "B", "C"]), 
 
 // === (2) The arity gap on the 3-cycle =======================================
 
-const neq: Relation = [{ x: 0, y: 1 }, { x: 1, y: 0 }];
+const neq: Relation = [
+  { x: 0, y: 1 },
+  { x: 1, y: 0 },
+];
 const rel = (p: string, q: string): Relation => neq.map((t) => ({ [p]: t.x!, [q]: t.y! }));
 
 const full = cov({ R_AB: "AB", R_BC: "BC", R_CA: "CA" });
 const instFull: Instance = { R_AB: rel("A", "B"), R_BC: rel("B", "C"), R_CA: rel("C", "A") };
 
 console.log("\n=== (2) ARITY GAP on the 3-cycle {AB},{BC},{CA} ===");
-console.log(`  whole cover: pairwise=${isPairwiseConsistent(full, instFull)} global=${isGloballyConsistent(full, instFull)}`);
+console.log(
+  `  whole cover: pairwise=${isPairwiseConsistent(full, instFull)} global=${isGloballyConsistent(full, instFull)}`,
+);
 
 const names = ["R_AB", "R_BC", "R_CA"] as const;
 let allSubGlue = true;
@@ -78,7 +85,9 @@ for (const drop of names) {
   const si: Instance = Object.fromEntries(Object.entries(instFull).filter(([k]) => k !== drop));
   const g = isGloballyConsistent(sub, si);
   allSubGlue &&= g;
-  console.log(`  drop ${drop}: sub-cover {${sub.map((e) => [...e.attributes].sort().join("")).join("},{")}}  pairwise=${isPairwiseConsistent(sub, si)} global=${g}  <- SAME local data`);
+  console.log(
+    `  drop ${drop}: sub-cover {${sub.map((e) => [...e.attributes].sort().join("")).join("},{")}}  pairwise=${isPairwiseConsistent(sub, si)} global=${g}  <- SAME local data`,
+  );
 }
 console.log(`\n  every proper sub-cover glues on identical local data? ${allSubGlue}`);
 console.log(`  therefore: no predicate P(instance) = AND_i p_i(R_i) can equal "globally consistent".`);
@@ -87,5 +96,7 @@ console.log(`  But dropping any OTHER element leaves a gluing instance containin
 console.log(`  which P must accept, so every p_i(R_i)=true. Contradiction.`);
 
 // The same for pairwise checks: pairwise consistency HOLDS and global fails.
-console.log(`\n  arity-2 (pairwise) checks: pairwise=${isPairwiseConsistent(full, instFull)} while global=${isGloballyConsistent(full, instFull)}`);
+console.log(
+  `\n  arity-2 (pairwise) checks: pairwise=${isPairwiseConsistent(full, instFull)} while global=${isGloballyConsistent(full, instFull)}`,
+);
 console.log(`  => any SOUND check of arity <= 2 accepts a globally inconsistent instance. Arity gap = 3.`);

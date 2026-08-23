@@ -38,8 +38,15 @@ function combos(n: number, k: number): number[][] {
   const out: number[][] = [];
   const cur: number[] = [];
   const rec = (start: number): void => {
-    if (cur.length === k) { out.push([...cur]); return; }
-    for (let i = start; i < n; i++) { cur.push(i); rec(i + 1); cur.pop(); }
+    if (cur.length === k) {
+      out.push([...cur]);
+      return;
+    }
+    for (let i = start; i < n; i++) {
+      cur.push(i);
+      rec(i + 1);
+      cur.pop();
+    }
   };
   rec(0);
   return out;
@@ -56,9 +63,15 @@ function rankF2(rows: bigint[]): number {
   for (let b = maxBit - 1; b >= 0; b--) {
     pivotBit = 1n << BigInt(b);
     let pr = -1;
-    for (let i = rank; i < rs.length; i++) if ((rs[i]! & pivotBit) !== 0n) { pr = i; break; }
+    for (let i = rank; i < rs.length; i++)
+      if ((rs[i]! & pivotBit) !== 0n) {
+        pr = i;
+        break;
+      }
     if (pr < 0) continue;
-    const t = rs[rank]!; rs[rank] = rs[pr]!; rs[pr] = t;
+    const t = rs[rank]!;
+    rs[rank] = rs[pr]!;
+    rs[pr] = t;
     for (let i = 0; i < rs.length; i++) {
       if (i !== rank && (rs[i]! & pivotBit) !== 0n) rs[i] = rs[i]! ^ rs[rank]!;
     }
@@ -68,7 +81,13 @@ function rankF2(rows: bigint[]): number {
   return rank;
 }
 
-interface NerveResult { readonly h0: number; readonly h1: number; readonly v: number; readonly e: number; readonly t: number; }
+interface NerveResult {
+  readonly h0: number;
+  readonly h1: number;
+  readonly v: number;
+  readonly e: number;
+  readonly t: number;
+}
 
 function nerveCohomology(sets: readonly ReadonlySet<string>[]): NerveResult {
   const n = sets.length;
@@ -84,7 +103,11 @@ function nerveCohomology(sets: readonly ReadonlySet<string>[]): NerveResult {
   // delta^1 : C^1 -> C^2.  (delta^1 g)(i,j,k) = g(j,k) - g(i,k) + g(i,j).
   const d1: bigint[] = tris.map(([i, j, k]) => {
     let row = 0n;
-    for (const pair of [[j!, k!], [i!, k!], [i!, j!]]) {
+    for (const pair of [
+      [j!, k!],
+      [i!, k!],
+      [i!, j!],
+    ]) {
       const idx = eIdx.get(pair.join(","));
       if (idx !== undefined) row ^= 1n << BigInt(idx);
     }
@@ -140,13 +163,15 @@ function run(attrs: readonly string[], maxSize: number): void {
       if (predicted !== acyclic && disagreements.length < 12) {
         disagreements.push(
           `${sets.map((s) => "{" + [...s].sort().join("") + "}").join(" ")}` +
-          `  GYO=${acyclic ? "ACYCLIC" : "CYCLIC"}  H^1=${nerve.h1}  H^0=${nerve.h0}` +
-          `  (V=${nerve.v},E=${nerve.e},T=${nerve.t})`,
+            `  GYO=${acyclic ? "ACYCLIC" : "CYCLIC"}  H^1=${nerve.h1}  H^0=${nerve.h0}` +
+            `  (V=${nerve.v},E=${nerve.e},T=${nerve.t})`,
         );
       }
     }
   }
-  console.log(`attrs=${attrs.join("")} maxSize=${maxSize}: covers=${checked} acyclic=${acyclicCount} agree=${agree} disagree=${checked - agree}  [wrong-acquittals(H^1=0 but CYCLIC)=${falseNeg}  wrong-convictions(H^1!=0 but ACYCLIC)=${falsePos}]`);
+  console.log(
+    `attrs=${attrs.join("")} maxSize=${maxSize}: covers=${checked} acyclic=${acyclicCount} agree=${agree} disagree=${checked - agree}  [wrong-acquittals(H^1=0 but CYCLIC)=${falseNeg}  wrong-convictions(H^1!=0 but ACYCLIC)=${falsePos}]`,
+  );
   for (const d of disagreements) console.log(`   DISAGREE  ${d}`);
 }
 
@@ -160,15 +185,21 @@ run(["A", "B", "C", "D"], 4);
 console.log("\n=== named covers ===");
 const threeCycle = [new Set(["A", "B"]), new Set(["B", "C"]), new Set(["C", "A"])];
 const nc = nerveCohomology(threeCycle);
-console.log(`3-cycle {AB}{BC}{CA}: GYO=${isAlphaAcyclic(toCover(threeCycle)) ? "ACYCLIC" : "CYCLIC"} H^0=${nc.h0} H^1=${nc.h1} (V=${nc.v},E=${nc.e},T=${nc.t})`);
+console.log(
+  `3-cycle {AB}{BC}{CA}: GYO=${isAlphaAcyclic(toCover(threeCycle)) ? "ACYCLIC" : "CYCLIC"} H^0=${nc.h0} H^1=${nc.h1} (V=${nc.v},E=${nc.e},T=${nc.t})`,
+);
 
 const filled = [...threeCycle, new Set(["A", "B", "C"])];
 const fc = nerveCohomology(filled);
-console.log(`+ {ABC}          : GYO=${isAlphaAcyclic(toCover(filled)) ? "ACYCLIC" : "CYCLIC"} H^0=${fc.h0} H^1=${fc.h1} (V=${fc.v},E=${fc.e},T=${fc.t})`);
+console.log(
+  `+ {ABC}          : GYO=${isAlphaAcyclic(toCover(filled)) ? "ACYCLIC" : "CYCLIC"} H^0=${fc.h0} H^1=${fc.h1} (V=${fc.v},E=${fc.e},T=${fc.t})`,
+);
 
 // The BYTE-LOCK cover: four oracles, each producing a section over the WHOLE domain.
 for (const k of [2, 3, 4, 6]) {
   const bytelock = Array.from({ length: k }, () => new Set(["whole-output"]));
   const bl = nerveCohomology(bytelock);
-  console.log(`byte-lock cover, ${k} oracles over one domain: H^0=${bl.h0} H^1=${bl.h1} (V=${bl.v},E=${bl.e},T=${bl.t})`);
+  console.log(
+    `byte-lock cover, ${k} oracles over one domain: H^0=${bl.h0} H^1=${bl.h1} (V=${bl.v},E=${bl.e},T=${bl.t})`,
+  );
 }
