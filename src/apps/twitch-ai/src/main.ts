@@ -211,3 +211,7 @@ function startSwarmSimulation(): void {
 }
 
 startSwarmSimulation();
+
+// D0 DISCRIMINATION PROOF — deliberate type error; the next commit reverts it.
+const d0DiscriminationProof: string = 42;
+console.log(d0DiscriminationProof);
