@@ -396,10 +396,31 @@ surface* is throwing away its best data. And **self-claimed, never imposed**: no
 agent's register — `pigeonhole-by-self-claim`, so a calibration record is built from claims the agent
 **volunteered**, checked against outcomes, never from labels an observer applied.
 
-**Aaron's own reference is outcome-based education (Spady), and its known failure mode belongs here
-too** rather than a one-sided citation: OBE is criticised for *teaching to the test* — outcomes become
-targets and stop measuring what they measured. That is Goodhart, and it applies directly to any
-calibration score. It is the second reason no scoring scheme is designed below.
+**Aaron's own reference is outcome-based education, and the criticism must be aimed correctly or it
+hits the wrong target.** Two different things share the name and they fail differently:
+
+| | who the measure serves | failure mode |
+|---|---|---|
+| **OBE as pacing** | the **learner** — advance on demonstrated mastery, not on the calendar | few; the alternative harm (being paced below absorption rate) is real |
+| **OBE as accountability** | an **external evaluator** — schools scored on outcomes | **teaching to the test** — Goodhart |
+
+**Goodhart bites when the measure becomes a target for someone other than the person measured.** So
+the failure attaches to the **imposed** version, not the self-directed one — which is Aaron's own
+*"self-claimed and never imposed"* arriving from a second direction. His account is not a
+counterweight to the caution; it is evidence for the split that makes the caution precise.
+
+He reports the pacing side from his own schooling (2026-08-23): outcome-based teaching *"made me not
+bored"*, and after the school stopped, he *"just crushed all the grades and assignments, because I
+was progressing at a rate much slower than I could absorb."* Recorded as **the reported first-person
+experience it is** — authoritative about his own experience, and not evidence about OBE in general
+(one person, one school, recalled). The general claim is anchored separately: **Bloom's mastery
+learning (1968)** and the **"2 sigma problem"** (Bloom 1984), where mastery-based progression with
+tutoring measured about two standard deviations above conventional instruction. Checked rather than
+quoted from the headline: **the 2σ figure is contested in later replications**, and the load-bearing
+part is not the effect size but that **pacing below absorption rate is a documented harm**.
+
+**The design consequence, stated plainly:** the same calibration signal is **safe as self-pacing and
+dangerous as external accounting**. That is the second reason no scoring scheme is designed below.
 
 ### The sharp reading — "reliability of self-claims" is calibration, not productivity
 
@@ -446,6 +467,12 @@ Three separable things, none substituting for another:
 
 That is the honest summary of what this design can and cannot do. It can make a poisoned prior fail
 to reproduce. It cannot, on its own, tell you whose priors are worth having.
+
+And it is worth naming the pattern that has run through every section, because it is this document's
+actual thesis: reproduction is evidence and not authority (§6); a provenance proof grants its verifier
+nothing (§6); a reproducibility class is a self-claim and never an imposed label (§3, §7); a
+calibration signal is safe as self-pacing and dangerous as external accounting (§7). **Every one of
+them turns on who holds the measurement.**
 
 ## 8. The smallest first rung
 
@@ -507,7 +534,9 @@ measurement, and that claim is reproducible by the commands printed above.
 - **Beacon anchors for §7's precondition:** Sidney Dekker, *Just Culture* (2007) · NASA **Aviation
   Safety Reporting System** — immunity for self-reported error, *the data is worth more than the
   punishment* · John Allspaw, *"Blameless PostMortems and a Just Culture"* (2012) · William Spady,
-  *Outcome-Based Education* (1994) — cited **with** its teaching-to-the-test / Goodhart failure mode.
+  *Outcome-Based Education* (1994) — cited with the **pacing vs accountability** split, since Goodhart
+  attaches to the imposed half · Benjamin Bloom, *Learning for Mastery* (1968) and *The 2 Sigma
+  Problem* (1984) — the pacing anchor, with the contested-replication caveat attached.
 - `.claude/rules.bak/mutual-help-not-shame-when-rules-broken-by-anyone-help-each-other-not-shame-each-other.md`
   — the disposition §7 depends on · manifesto **§5 Memory Preservation Guarantee**.
 - `docs/VISION.md` — the two-sided ρ band · [`anti-babel-preserve-reconcilability`](../../.claude/rules/anti-babel-preserve-reconcilability.md) — both cliffs.
