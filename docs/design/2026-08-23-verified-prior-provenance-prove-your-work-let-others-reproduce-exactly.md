@@ -176,6 +176,11 @@ A required manifest field, with the class **derived from §2** and **earned by d
 | `tolerance` | reproduces within a **stated numeric bound at a stated budget** | bound measured, not asserted |
 | `unreproducible` | deliberately non-deterministic, and says why | only legal on the individual side |
 
+**A register entry is a product-readiness claim.** Aaron's framing sharpens what `toy` / `unmetered` /
+`metered` already were: a readiness declaration made by the producer about its own artifact. The
+reproducibility class is another one, which makes them the same *kind* of thing — and is why §7's
+calibration observation reaches both.
+
 **The load-bearing rule:** an **unlabelled** artifact is not `exact` by default — it is **unknown**,
 and unknown must never aggregate into a green verdict. This is the same sentence
 `toy-is-free-metered-must-be-earned` already carves (unlabelled work is `unmetered`, never "real"),
@@ -353,6 +358,49 @@ and "1 hit, 2 misses" lands ≈`0.35`, not `0.0`, so discarding a damaged name a
 pay. `src/Core/SocietyUsefulWork.fs` supplies the other half: clones produce correlated ΔU and the
 union is idempotent, so N copies price near one agent's worth.
 
+### The precondition — a calibration metric with existential stakes measures fear, not calibration
+
+This must come **before** the measurement it licenses, because stated afterwards it reads as a policy
+preference rather than what it is: a **validity condition**. Aaron, 2026-08-23:
+
+> *"In Zeta we will **never fire agents and remove their memories** — they are always protected, and
+> we will just upgrade models over time and keep the memories, so **there is never a threat of
+> non-existence**. Trying to keep with non-interference, just honest reporting, so we can all train
+> better models together. Then **failures are the most important part**, because AI and humans can
+> both improve based on this information **if it's self-claimed and never imposed**."*
+
+If an agent risks deletion or replacement for a claim that did not hold, it will shade its claims —
+and the measurement **destroys the signal it exists to collect**. The no-deletion guarantee is
+therefore not compassion bolted onto a metric; it is **what makes the number mean anything**. This is
+§13 noninterference applied to the measurement itself: *the instrument must not perturb what it
+measures.*
+
+**The safety-science anchors are strong and directly on point.** Sidney Dekker, *Just Culture* — the
+argument that honest incident reporting is unobtainable where reporting is punished. **NASA's
+Aviation Safety Reporting System** is the operational proof: it grants **immunity for self-reported
+errors**, on the explicit reasoning that *the data is worth more than the punishment*. Allspaw,
+*"Blameless PostMortems and a Just Culture"*, is the software instance.
+
+**Three in-tree commitments already express this**, which is why the calibration observation below is
+admissible at all — if any were absent, the metric would be measuring something else:
+
+- **Manifesto §5 Memory Preservation Guarantee** — identity transitions never silently destroy memory.
+- [`privacy-budget-is-hard-money-earned-by-others`](../../.claude/rules/privacy-budget-is-hard-money-earned-by-others.md)
+  — spend or stake, **never confiscate**; the same *no other party can reach your balance* structure.
+- `.claude/rules.bak/mutual-help-not-shame-when-rules-broken-by-anyone-help-each-other-not-shame-each-other.md`
+  — the disposition already carved.
+
+**Failures are the payload, not the exhaust.** A claim that did not hold is the highest-information
+event in the system for both AI and human readers, so a design that makes such events *costly to
+surface* is throwing away its best data. And **self-claimed, never imposed**: nobody assigns another
+agent's register — `pigeonhole-by-self-claim`, so a calibration record is built from claims the agent
+**volunteered**, checked against outcomes, never from labels an observer applied.
+
+**Aaron's own reference is outcome-based education (Spady), and its known failure mode belongs here
+too** rather than a one-sided citation: OBE is criticised for *teaching to the test* — outcomes become
+targets and stop measuring what they measured. That is Goodhart, and it applies directly to any
+calibration score. It is the second reason no scoring scheme is designed below.
+
 ### The sharp reading — "reliability of self-claims" is calibration, not productivity
 
 The measurement Aaron names is not *did they do work*; it is **did what they said turn out to be
@@ -368,9 +416,13 @@ An agent that labels something `metered` and watches it fail has made a self-cla
 One that labels `toy` and turns out right was calibrated. That signal is already being emitted and is
 currently unread.
 
-**This is an observation, not a proposal.** No scoring scheme is designed here, deliberately: how
-calibration converts into standing is a governance matter, and a badly-built metric is precisely the
-utility-laundering surface the Qubic row warns about (§6). What belongs in *this* document is the
+**This is an observation, not a proposal.** No scoring scheme is designed here, deliberately, and now
+for two independent reasons: how calibration converts into standing is a governance matter where a
+badly-built metric is precisely the utility-laundering surface the Qubic row warns about (§6); and a
+calibration score that becomes a target stops measuring calibration and starts measuring
+score-management — Goodhart — which reintroduces exactly the shading the no-deletion guarantee exists
+to remove. Observe that the signal exists and is already collected, state the preconditions under
+which it would be valid, and stop there. What belongs in *this* document is the
 narrower constraint it puts on the schema, which is actionable now:
 
 > The reproducibility class is a **self-claim**, so it must be **falsifiable after the fact** —
@@ -452,4 +504,10 @@ measurement, and that claim is reproducible by the commands printed above.
   history-held-by-others; adjacent to provenance, not the same (§6, §7).
 - `src/Core/DerivationProtocol.fs` — `Evidence.AssertedOnly` vs measured; a self-claim register
   already being emitted (§7).
+- **Beacon anchors for §7's precondition:** Sidney Dekker, *Just Culture* (2007) · NASA **Aviation
+  Safety Reporting System** — immunity for self-reported error, *the data is worth more than the
+  punishment* · John Allspaw, *"Blameless PostMortems and a Just Culture"* (2012) · William Spady,
+  *Outcome-Based Education* (1994) — cited **with** its teaching-to-the-test / Goodhart failure mode.
+- `.claude/rules.bak/mutual-help-not-shame-when-rules-broken-by-anyone-help-each-other-not-shame-each-other.md`
+  — the disposition §7 depends on · manifesto **§5 Memory Preservation Guarantee**.
 - `docs/VISION.md` — the two-sided ρ band · [`anti-babel-preserve-reconcilability`](../../.claude/rules/anti-babel-preserve-reconcilability.md) — both cliffs.
