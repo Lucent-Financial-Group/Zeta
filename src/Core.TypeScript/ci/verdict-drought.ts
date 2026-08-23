@@ -618,7 +618,28 @@ export function severityOfRegister(register: VerdictRegister): "error" | null {
   return register === "ok" ? null : "error";
 }
 
-/** `::error::` lines. Empty only when the register is `ok` AND the detector is live. */
+/**
+ * The annotation lines. Empty only when the register is `ok`, the cancellation rate is
+ * below its mark, and the detector is live.
+ *
+ * TWO BANDS, and the second was missing until the first live CI run proved it.
+ *
+ * `drift (loud)` run 32657724476 (2026-08-23T18:35Z) reported register `ok` -- a `failure`
+ * verdict 1 minute old, 4 commits on top -- with a **60% cancellation rate** and a
+ * 112-minute success drought, and emitted NO ANNOTATION AT ALL. The rate was in the step
+ * summary and nowhere else. That is the leading indicator of the very condition this file
+ * exists for, sitting silent behind an `ok`.
+ *
+ * So the rate is annotated INDEPENDENTLY of the register, at `::warning::` rather than
+ * `::error::`. The ordering is deliberate and is the same rule as `severityOfRegister`:
+ * the register says whether main is CHECKED (error when it is not), the rate says the gate
+ * is being OUTRUN (warning -- a forecast, not yet a fault). Merges outrunning the gate is
+ * how the drought is produced, so it is worth saying before the drought arrives.
+ *
+ * It is emitted only when the register is `ok`, because every other register already
+ * carries the rate inside its own reason list -- annotating it twice is how a real signal
+ * gets tuned out.
+ */
 export function droughtAnnotations(report: DroughtReport, liveness: DroughtLiveness): readonly string[] {
   const out: string[] = [];
   const sev = severityOfRegister(report.register);
@@ -626,6 +647,15 @@ export function droughtAnnotations(report: DroughtReport, liveness: DroughtLiven
     out.push(
       `::${sev} title=main gate-verdict ${report.register}::${report.reasons.join(" | ")} ` +
         "This is a DRIFT signal about the CI lane itself: it is loud on purpose and it blocks nothing.",
+    );
+  } else if (report.cancelRate >= report.thresholds.cancelRateWarn && report.windowRuns > 0) {
+    out.push(
+      `::warning title=gate cancellation rate::${(report.cancelRate * 100).toFixed(1)}% of the last ` +
+        `${String(report.windowRuns)} gate runs on main were CANCELLED ` +
+        `(${String(report.cancelledRuns)} of them), at or above the ` +
+        `${(report.thresholds.cancelRateWarn * 100).toFixed(1)}% mark. main currently HAS a completed verdict, ` +
+        "so this is not yet a drought -- it is the mechanism that produces one: merges are landing faster than " +
+        "the gate can finish, and each new merge cancels the run in flight. Loud on purpose, blocks nothing.",
     );
   }
   if (!liveness.live) out.push(`::error title=verdict-drought detector went quiet::${liveness.reason}`);

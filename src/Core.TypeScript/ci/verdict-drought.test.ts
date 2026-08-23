@@ -150,8 +150,16 @@ describe("FALSIFIER 2 -- a `failure` IS a verdict (presence, not colour)", () =>
     expect(report.minutesSinceSuccess).not.toBe(report.minutesSinceVerdict);
   });
 
-  test("the ok register emits no annotation -- an alarm that is always lit is muted", () => {
-    expect(droughtAnnotations(report, assertDroughtDetectorLive(report))).toEqual([]);
+  test("the ok register emits no REGISTER annotation -- an alarm always lit is muted", () => {
+    // 3 cancelled of 5 = 60%, so the RATE band fires; the register band must not.
+    const lines = droughtAnnotations(report, assertDroughtDetectorLive(report));
+    expect(lines.some((l) => l.includes("main gate-verdict"))).toBe(false);
+  });
+
+  test("a quiet lane with a low cancellation rate emits NOTHING at all", () => {
+    const calm = foldDrought([obs(2101, "success", 3), obs(2102, "success", 20)], 1, NOW);
+    expect(calm.register).toBe("ok");
+    expect(droughtAnnotations(calm, assertDroughtDetectorLive(calm))).toEqual([]);
   });
 });
 
@@ -511,5 +519,38 @@ describe("an unmeasurable age is `unknown`, never `ok` (the hole the boundary wo
   test("an unparseable injected `now` is likewise `unknown`", () => {
     const report = foldDrought([obs(1, "success", 1)], 0, "not-a-clock");
     expect(report.register).toBe("unknown");
+  });
+});
+
+
+describe("the cancellation rate is annotated INDEPENDENTLY of the register", () => {
+  // The live gap, found by the first CI run rather than by a test: `drift (loud)` run
+  // 32657724476 reported register `ok` with a 60% cancellation rate and a 112-minute
+  // success drought, and emitted NO annotation at all. The rate is the leading indicator
+  // of the drought -- merges outrunning the gate is the mechanism that produces one -- so
+  // it must not be silent just because a verdict happens to be recent.
+  const okButOutrun = foldDrought([obs(9401, "failure", 1), ...allCancelled(9)], 4, NOW);
+
+  test("register `ok` with a high cancellation rate STILL emits a loud line", () => {
+    expect(okButOutrun.register).toBe("ok");
+    expect(okButOutrun.cancelRate).toBeGreaterThanOrEqual(DEFAULT_DROUGHT_THRESHOLDS.cancelRateWarn);
+    const lines = droughtAnnotations(okButOutrun, assertDroughtDetectorLive(okButOutrun));
+    expect(lines.length).toBe(1);
+    expect(lines[0]).toContain("::warning title=gate cancellation rate::");
+    expect(lines[0]).toContain("CANCELLED");
+  });
+
+  test("it is a WARNING, not an error -- the rate is a forecast, the register is the fault", () => {
+    const lines = droughtAnnotations(okButOutrun, assertDroughtDetectorLive(okButOutrun));
+    expect(lines[0]).not.toContain("::error");
+  });
+
+  test("it is NOT emitted twice when the register is already loud", () => {
+    // A drought's own reason list already carries the rate; annotating it again is how a
+    // real signal gets tuned out.
+    const drought = foldDrought(allCancelled(12), 4, NOW);
+    const lines = droughtAnnotations(drought, assertDroughtDetectorLive(drought));
+    expect(lines.filter((l) => l.includes("gate cancellation rate")).length).toBe(0);
+    expect(lines[0]).toContain("CANCELLATION RATE");
   });
 });
