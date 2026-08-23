@@ -158,38 +158,95 @@ _(Named as the shape it resembles; no cohomological claim is being made here.)_
 ### The third diagnosis — and it is what `anti-babel` actually needs
 
 **Register: `proposed`.** No data yet. What follows from the schema is the
-_ability_ to compute this; that the three states **mean** what the table says is
-an interpretation awaiting evidence.
+_ability_ to compute this; that the states **mean** what the table says is an
+interpretation awaiting evidence.
 
-| cluster churn      | proposed diagnosis                                                    |
-| ------------------ | --------------------------------------------------------------------- |
-| uniformly **low**  | a settled concept — one name won                                      |
-| uniformly **high** | a concept still forming                                               |
-| **disagreeing**    | **a rename in progress** — an old name going quiet as a new one rises |
+| cluster churn                   | proposed diagnosis                                           |
+| ------------------------------- | ------------------------------------------------------------ |
+| uniformly **low**               | a settled concept — one name won                             |
+| uniformly **high**              | a concept still forming                                      |
+| **anti-correlated derivatives** | **a rename in progress** — one name falling as another rises |
 
 **The third row is the strongest argument for the registry existing at all**, and
 it is not "a nicer glossary". `anti-babel`'s entire concern is vocabulary drift
 becoming irreconcilable, and today drift is only noticed _after_ it has happened.
-A disagreeing-churn cluster lets you watch a term turn over **while it is turning
-over**. That is the difference between a post-mortem and an instrument — the
-missing measurement for a rule that has been asserting an invariant it could not
-observe.
+This lets you watch a term turn over **while it is turning over** — the
+difference between a post-mortem and an instrument, and the missing measurement
+for a rule that has been asserting an invariant it could not observe.
 
-**No churn metric is invented here, and none is claimed as measured.** What
-_would_ be measured is per-name posting counts across revs — available precisely
+### The statistic: frequency over time, and watch the derivatives
+
+Aaron 2026-08-23 named the method:
+
+> _"**frequency over time**, like **Google search term frequency results** — is
+> how to see this in real time **by region**, or very similar. **Watching the
+> derivatives**."_
+
+A first draft of this section said _"disagreeing churn"_, which is vague —
+disagreement could be anything. His version is specific and testable:
+
+> A rename is **two names in one cluster whose frequency derivatives are
+> ANTI-CORRELATED**: one falling as the other rises.
+
+So the statistic is per-name frequency as a **time series over revs** — derivable
 because the index is rev-stamped, which is the one requirement that has survived
-every revision of this design. The choice of statistic is left open.
+every revision of this design — then the **correlation of first derivatives
+between name pairs within a cluster**. Strongly negative ⇒ substitution.
 
-**What would refute it**, per `numerology-vs-number-theory.md` — three tidy
-states is exactly the kind of scheme that feels confirmed because it is neat, and
-_"too many correlations is a warning, not a confirmation signal"_:
+**Why anti-correlation and not variance — this is the argument for the
+statistic.** Mere variance in churn could be noise, differing file lifetimes, or
+one name simply being newer. Anti-correlation is a **signature**: it says the two
+names are _substituting for each other_, which is what a rename is. And it
+directly discriminates against the confound this design has to guard —
+**file churn and author count would move both names together, not in
+opposition.** That is the reason to prefer it.
 
-> If disagreeing churn turns out to track **file churn** or **author count**
-> rather than anything etymological, the table is measuring the repo's commit
-> pattern and calling it culture.
+### "By region" — and a region here is a real thing
 
-That is a real and cheap confound, and it must be checked **before** the table is
-believed, not after it is built on.
+Google Trends' regional breakdown answers a different question: **who is driving
+the rename.** The index already knows each posting's file, so every candidate
+region is cheap:
+
+- **directory subtree** — is the new name confined to one lane, or has it spread?
+- **author / agent** — is one agent renaming unilaterally, or is the fleet converging?
+- **document class** — `docs/` versus `src/`.
+
+The last is the interesting one here: a coinage appearing in **`docs/` before
+`src/`** is a term being _proposed_; the reverse is **code drifting ahead of its
+documentation**. `anti-babel` cares about both directions and can currently see
+neither.
+
+### Anchor, and the normalisation problem it already solved
+
+**Google Books Ngram Viewer / "Culturomics"** (Michel et al., _Science_ 331(6014), 2011) is the better anchor than Google Trends, because it is about **written
+corpora over time**, which is exactly our case — and diachronic linguistics has a
+name for the pattern, **lexical replacement**.
+
+**Worth checking rather than citing:** corpus size changes over time in both
+their case and ours (this repo grows every day), so **raw counts mislead** and
+they had to normalise against corpus size per year. Our equivalent is per-rev
+document count, which the manifest already records. Whether their normalisation
+transfers cleanly is an open question to settle when the statistic is built, not
+an assumption to inherit.
+
+### What would refute it
+
+Per `numerology-vs-number-theory.md` — three tidy states is exactly the kind of
+scheme that feels confirmed for being neat, and _"too many correlations is a
+warning, not a confirmation signal"_:
+
+- **The direct falsifier:** find a cluster whose names are strongly
+  anti-correlated and which is **not** a rename. The signal is then weaker than
+  claimed. This is cheap to look for and must be looked for.
+- **The confound:** if anti-correlation tracks **file churn** or **author count**
+  rather than anything etymological, the table is measuring the repo's commit
+  pattern and calling it culture. Anti-correlation is _chosen_ partly because it
+  addresses this — co-movement is the confound's signature and opposition is
+  not — but choosing a statistic for that reason is not the same as having
+  checked it.
+
+**Anti-correlation is not presented as proven to indicate renames.** It is a
+hypothesis with a clear falsifier, and the falsifier is named above.
 
 ### A resonance, recorded and left open — not an identification
 

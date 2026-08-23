@@ -30,3 +30,22 @@ itself is the readout. Same move `anti-babel-preserve-reconcilability.md` alread
 makes for monodromy: _"that difference is information, not error"_. See design
 §2a for the proposed three-state table, its `proposed` register, and the confound
 (file churn / author count) that must be excluded before it is believed.
+
+## The statistic (Aaron 2026-08-23)
+
+Not "disagreeing churn" — **anti-correlated first derivatives** of per-name
+frequency time series over revs. One name falling as another rises is a
+_substitution signature_; mere variance is not. It also discriminates against the
+confound: file churn and author count move both names **together**, not in
+opposition.
+
+"By region" is real here — subtree, author/agent, and `docs/` vs `src/` (a term
+appearing in prose first is being _proposed_; the reverse is code drifting ahead
+of its docs). Anchor: Michel et al., _Culturomics_ (Science, 2011) / Google Books
+Ngram Viewer — written corpora over time, and the **normalisation** problem
+(corpus size grows, so raw counts mislead) is already solved there and must be
+checked against our per-rev document count rather than assumed to transfer.
+
+**Register: `proposed`, with a named falsifier** — find a strongly
+anti-correlated cluster that is NOT a rename and the signal is weaker than
+claimed. See design §2a.
