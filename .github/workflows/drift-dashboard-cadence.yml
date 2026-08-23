@@ -98,6 +98,13 @@ jobs:
             git push origin HEAD:main || echo "::warning::[dashboard] push failed — token may lack capability"
           fi
 
+      # The expression goes through `env:`, never into the script text. Two reasons,
+      # and the second is the one that matters: shellcheck cannot parse `exit ${{ ... }}`
+      # (it reads the literal `${{` as the status and reports SC2242), so `lint (actionlint)`
+      # has been red on every PR since #14314 landed; and interpolating a workflow expression
+      # directly into a shell body is the injection shape this repository routes around
+      # everywhere else (see k8s-lane-partition.yml, which records the same lesson as SC2016).
       - name: Fail if dashboard is not OK
-        run: |
-          exit ${{ steps.pass.outputs.pass_status || 0 }}
+        env:
+          PASS_STATUS: ${{ steps.pass.outputs.pass_status || 0 }}
+        run: exit "$PASS_STATUS"
