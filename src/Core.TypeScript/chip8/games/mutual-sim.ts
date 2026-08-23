@@ -22,6 +22,7 @@ export function buildMutualSimRom(): Uint8Array {
     
     "CLS",
     // Draw Environment Threat (Wall 1)
+    "BYTE 0xF101", // Plane 1 (Environment/AI)
     "LD I, shape_wall",
     "LD VA, 32",
     "LD VB, 10",
@@ -32,8 +33,10 @@ export function buildMutualSimRom(): Uint8Array {
     "DRW VA, VB, 4",
 
     // Initial Draw
+    "BYTE 0xF201", // Plane 2 (Player)
     "LD I, shape_p",
     "DRW V0, V1, 2",
+    "BYTE 0xF101", // Plane 1 (AI)
     "LD I, shape_ai",
     "DRW V3, V4, 4",
 
@@ -51,6 +54,7 @@ export function buildMutualSimRom(): Uint8Array {
     
     // -- PLAYER MOVEMENT --
     // Erase Player
+    "BYTE 0xF201", // Plane 2 (Player)
     "LD I, shape_p",
     "DRW V0, V1, 2",
     
@@ -75,6 +79,7 @@ export function buildMutualSimRom(): Uint8Array {
     "ADD V0, VE", // Right
 
     // Draw Player at new pos
+    "BYTE 0xF201", // Plane 2 (Player)
     "DRW V0, V1, 2",
     "SNE VF, 1", // If VF == 1, collision!
     "JMP p_collide",
@@ -82,6 +87,7 @@ export function buildMutualSimRom(): Uint8Array {
 
     "p_collide:",
     // Undo move
+    "BYTE 0xF201",
     "DRW V0, V1, 2", // Erase from new pos
     "LD V0, VA",
     "LD V1, VB",
@@ -95,6 +101,7 @@ export function buildMutualSimRom(): Uint8Array {
     "LD V7, 3", // Reset AI speed timer
     
     // Erase AI
+    "BYTE 0xF101", // Plane 1 (AI)
     "LD I, shape_ai",
     "DRW V3, V4, 4",
     
@@ -113,7 +120,7 @@ export function buildMutualSimRom(): Uint8Array {
     "ai_do_left:",
     "LD VE, 1",
     "SUB V3, VE",
-    "JMP ai_x_done",
+    "JMP ai_y_logic",
 
     "ai_move_right:",
     "SNE V8, 1",
@@ -122,8 +129,7 @@ export function buildMutualSimRom(): Uint8Array {
     "LD VE, 1",
     "ADD V3, VE",
 
-    "ai_x_done:",
-    
+    "ai_y_logic:",
     // Y Axis Logic
     "LD VC, V4",
     "SUB VC, V1",
@@ -136,7 +142,7 @@ export function buildMutualSimRom(): Uint8Array {
     "ai_do_up:",
     "LD VE, 1",
     "SUB V4, VE",
-    "JMP ai_y_done",
+    "JMP ai_draw",
 
     "ai_move_down:",
     "SNE V8, 1",
@@ -145,9 +151,9 @@ export function buildMutualSimRom(): Uint8Array {
     "LD VE, 1",
     "ADD V4, VE",
 
-    "ai_y_done:",
-    
+    "ai_draw:",
     // Draw AI at new pos
+    "BYTE 0xF101",
     "LD I, shape_ai",
     "DRW V3, V4, 4",
     "SNE VF, 1",
@@ -155,32 +161,32 @@ export function buildMutualSimRom(): Uint8Array {
     "JMP frame_end",
 
     "ai_collide:",
-    // Collision happened! Reset game entirely.
-    "JMP init",
+    // Collision happened! Undo move (bounce off walls/player)
+    "BYTE 0xF101",
+    "DRW V3, V4, 4", // Erase from new pos
+    "LD V3, VA",
+    "LD V4, VB",
+    "DRW V3, V4, 4", // Draw at old pos
+    "JMP frame_end",
 
     "frame_end:",
     "JMP main_loop",
 
 
     // --- DATA SECTION ---
-    // Player is a solid 2x2 square
+    // Player is a solid 2x2 square (2 bytes = 1 WORD)
     "shape_p:",
-    "BYTE 0xC0", // 11000000
-    "BYTE 0xC0", // 11000000
+    "BYTE 0xC0C0",
 
-    // AI is a hollow 4x4 square
+    // AI is a hollow 4x4 square (4 bytes = 2 WORDs)
     "shape_ai:",
-    "BYTE 0xF0", // 11110000
-    "BYTE 0x90", // 10010000
-    "BYTE 0x90", // 10010000
-    "BYTE 0xF0", // 11110000
+    "BYTE 0xF090",
+    "BYTE 0x90F0",
 
-    // Wall is 4x4 solid
+    // Wall is 4x4 solid (4 bytes = 2 WORDs)
     "shape_wall:",
-    "BYTE 0xF0", // 11110000
-    "BYTE 0xF0", // 11110000
-    "BYTE 0xF0", // 11110000
-    "BYTE 0xF0", // 11110000
+    "BYTE 0xF0F0",
+    "BYTE 0xF0F0",
   ];
 
   return assemble(code);

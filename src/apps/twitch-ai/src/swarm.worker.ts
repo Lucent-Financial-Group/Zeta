@@ -1,9 +1,20 @@
+console.log("[SwarmWorker] Worker script evaluating...");
+
+if (typeof self !== 'undefined' && typeof (self as any).process === 'undefined') {
+  (self as any).process = { env: {} };
+}
+if (typeof self !== 'undefined' && typeof (self as any).Buffer === 'undefined') {
+  (self as any).Buffer = { from: (str: string) => new TextEncoder().encode(str) };
+}
+
 import { SwarmController } from "../../../Core.TypeScript/swarm/swarm-controller";
 import type { World } from "../../../Core.TypeScript/observe/observe";
-import { create as initFrame, loadRom, step, clearCausalMask } from "../../../Core.TypeScript/chip8/chip8";
+import { create as initFrame, loadRom, step, clearCausalMask, colorAt } from "../../../Core.TypeScript/chip8/chip8";
 
 import { buildMutualSimRom } from "../../../Core.TypeScript/chip8/games/mutual-sim";
 import { createCheatTable, applyCheatTable } from "../../../Core.TypeScript/chip8/cheat-engine";
+
+console.log("[SwarmWorker] Imports resolved successfully. Building ROM...");
 
 function computeSpectralFingerprint(buf: Uint8Array): string {
   let hash = 2166136261;
@@ -25,71 +36,68 @@ let isRunning = false;
 
 const STEPS_PER_TICK = 10;
 const agentId = "browser-node";
+const manualKeys: boolean[] = new Array(16).fill(false);
 
 self.onmessage = async (e: MessageEvent) => {
-  const { type, payload } = e.data;
+  try {
+    const { type, payload } = e.data;
 
-  if (type === "INIT") {
-    console.log(`[SwarmWorker] Initializing swarm (LLM host/model come from persona-registry).`);
+    if (type === "INIT") {
+      console.log(`[SwarmWorker] Initializing swarm (LLM host/model come from persona-registry).`);
 
-    swarm = new SwarmController();
+      console.log(`[SwarmWorker] About to instantiate SwarmController`);
+      swarm = new SwarmController();
+      if (payload?.apiKey || payload?.baseUrl || payload?.model) {
+        console.warn(
+          `[SwarmWorker] Ignoring the LLM settings in this INIT payload — SwarmController ` +
+            `resolves host and model from persona-registry and exposes no override.`,
+        );
+      }
+      console.log(`[SwarmWorker] About to call swarm.init()`);
+      await swarm.init();
+      console.log(`[SwarmWorker] swarm.init() finished`);
 
-    // SwarmController.init takes a UDP drop-rate number, not LLM settings.
-    // Every backend it builds is resolved inside init() from persona-registry
-    // (`config.harness.host`, `config.preferredModel`) with a hardcoded
-    // `apiKey: "dummy"` -- there is no seam through which an apiKey/baseUrl/model
-    // arriving on this payload could reach a backend.
-    //
-    // #14159 restored a call passing `{apiKey, baseUrl, model}` here (a type error,
-    // fixed in #14169 by deleting the argument). Deleting the argument left the
-    // BRANCH behind: it still logged "Using remote LLM endpoint: <baseUrl>" for a
-    // remote endpoint this worker cannot reach, and "local mock LLM fallback" for a
-    // backend that is neither local-by-choice nor a mock. Both lines announced a
-    // capability that is absent, which is worse than silence.
-    //
-    // The capability REMAINS ABSENT. Wiring these settings through would mean giving
-    // init() a per-node host/model/key override, i.e. changing the contract that
-    // persona-registry owns -- a design decision for whoever owns twitch-ai, not a
-    // CI-unblock. Until then the honest thing is to say the settings are ignored,
-    // because the page still sends them and dropping them silently is its own lie.
-    if (payload?.apiKey || payload?.baseUrl || payload?.model) {
-      console.warn(
-        `[SwarmWorker] Ignoring the LLM settings in this INIT payload — SwarmController ` +
-          `resolves host and model from persona-registry and exposes no override.`,
-      );
+      cheatTable = createCheatTable();
+      world = {
+        backlog: [{ id: "chip8-play-1", title: "Play CHIP-8 Game", ready: true, ambiguous: false }],
+        history: [],
+        cartography: { scopeLevel: 0, timeOffset: 0 },
+      };
+
+      console.log(`[SwarmWorker] About to call initFrame() and loadRom()`);
+      frame = initFrame();
+      loadRom(activeRom, frame);
+      currentRomRef = activeRom;
+
+      isRunning = true;
+      console.log(`[SwarmWorker] About to start loop()`);
+      loop(); // Kick off the loop
+    } else if (type === "INJECT_EPIGENETIC_MATERIAL") {
+      const uploadedRom = new Uint8Array(payload.buffer);
+      const fingerprint = computeSpectralFingerprint(uploadedRom);
+      console.log(`[SwarmWorker] 🧬 Received Epigenetic Material. Spectral Fingerprint: ${fingerprint}`);
+      console.log(`[SwarmWorker] Integrating Epigenetic Material into the Soft Value Regime...`);
+
+      // As per Zeta research, we avoid Kinetic Offsets (byte-by-byte corruption of brittle machine code).
+      // The structural bounds of the game are reset to the new fingerprint,
+      // and the Swarm's Bayesian predictors organically adapt to the new causal footprint.
+      activeRom = uploadedRom;
+    } else if (type === "KEY_DOWN") {
+      manualKeys[payload.key] = true;
+    } else if (type === "KEY_UP") {
+      manualKeys[payload.key] = false;
     }
-    await swarm.init();
-
-    cheatTable = createCheatTable();
-    world = {
-      backlog: [{ id: "chip8-play-1", title: "Play CHIP-8 Game", ready: true, ambiguous: false }],
-      history: [],
-      cartography: { scopeLevel: 0, timeOffset: 0 },
-    };
-
-    frame = initFrame();
-    loadRom(activeRom, frame);
-    currentRomRef = activeRom;
-
-    isRunning = true;
-    loop(); // Kick off the loop
-  } else if (type === "INJECT_EPIGENETIC_MATERIAL") {
-    const uploadedRom = new Uint8Array(payload.buffer);
-    const fingerprint = computeSpectralFingerprint(uploadedRom);
-    console.log(`[SwarmWorker] 🧬 Received Epigenetic Material. Spectral Fingerprint: ${fingerprint}`);
-    console.log(`[SwarmWorker] Integrating Epigenetic Material into the Soft Value Regime...`);
-
-    // As per Zeta research, we avoid Kinetic Offsets (byte-by-byte corruption of brittle machine code).
-    // The structural bounds of the game are reset to the new fingerprint,
-    // and the Swarm's Bayesian predictors organically adapt to the new causal footprint.
-    activeRom = uploadedRom;
+  } catch (err) {
+    console.error(`[SwarmWorker] Fatal error in onmessage:`, err);
   }
 };
 
 let gameLevel = 1;
+let lastGameLevel: number | undefined;
 let gameObjective = "Replicate Pattern";
 
 async function loop() {
+  console.log(`[SwarmWorker] loop() cycle=${cycle}`);
   if (!isRunning || !swarm) return;
 
   if (activeRom !== currentRomRef) {
@@ -109,13 +117,14 @@ async function loop() {
 
   // Run physical simulation
   for (let i = 0; i < STEPS_PER_TICK; i++) {
-    if (frame.pc > 0 && frame.pc < 4096) {
-      const op = ((frame.mem.get(frame.pc) ?? 0) << 8) | (frame.mem.get(frame.pc + 1) ?? 0);
-      if ((op & 0xf000) === 0xf000 && (op & 0x00ff) === 0x000a) {
-        if (!frame.keys.some((k) => k)) break;
-      }
-    }
     step(frame);
+    if (frame.fault) {
+      console.error("[SwarmWorker] CHIP8 FAULT:", frame.fault);
+      break;
+    }
+  }
+  if (cycle % 30 === 0) {
+    console.log(`[SwarmWorker] cycle=${cycle}, PC=${frame.pc}, I=${frame.i}, display_pixels=${frame.display.size}`);
   }
 
   const memArray = new Uint8Array(4096);
@@ -124,9 +133,9 @@ async function loop() {
   }
   const memorySectors = [memArray];
   const causalMask = Array.from(frame.causalMask);
-  const displayArray = new Array(64 * 32).fill(false);
+  const displayArray = new Array(64 * 32).fill(0);
   for (let i = 0; i < displayArray.length; i++) {
-    displayArray[i] = frame.display.has(i) && frame.display.get(i)!;
+    displayArray[i] = colorAt(i % 64, Math.floor(i / 64), frame);
   }
 
   world = {
@@ -143,15 +152,24 @@ async function loop() {
 
   world = await swarm.tick(world);
   frame.keys.fill(false);
+  for (let k = 0; k < 16; k++) {
+    if (manualKeys[k]) frame.keys[k] = true;
+  }
+
+  // Detect Tag (Player V0,V1 and AI V3,V4)
+  const dx = Math.abs((frame.v[0] ?? 0) - (frame.v[3] ?? 0));
+  const dy = Math.abs((frame.v[1] ?? 0) - (frame.v[4] ?? 0));
+  if (dx < 4 && dy < 4 && cycle % 10 === 0) {
+    frame.v[9] = (frame.v[9] ?? 0) + 1; // Increment tags
+    // Teleport AI to random safe-ish spot to reset the chase
+    frame.v[3] = Math.floor(Math.random() * 40) + 10;
+    frame.v[4] = Math.floor(Math.random() * 20) + 5;
+  }
 
   // Sniff Gamification Level Transitions (Mutual Sim logic)
-  if (frame.v[8] === 0) {
-    gameLevel = 1;
-    gameObjective = "Hide & Seek: Simulator is 'It'!";
-  } else if (frame.v[8] === 1) {
-    gameLevel = 2;
-    gameObjective = "Tag! You're 'It'!";
-  }
+  const tags = frame.v[9] ?? 0;
+  gameLevel = tags + 1;
+  gameObjective = `Tags: ${tags} | Objective: ${frame.v[8] === 0 ? "Flee!" : "Hunt!"}`;
 
   if (world.history && world.history.length > 0) {
     const lastEvent = world.history[world.history.length - 1];
@@ -165,17 +183,24 @@ async function loop() {
     }
   }
 
+  let levelUpEvent = false;
+  if (gameLevel !== lastGameLevel && lastGameLevel !== undefined) {
+    levelUpEvent = true;
+  }
+  lastGameLevel = gameLevel;
+
   // Pass data directly to the frontend player component over postMessage
   const eventAction = {
     kind: "chip8-frame",
     display: displayArray,
     cycle: cycle,
+    keys: Array.from(frame.keys),
     keyPredictions: world.cheatEngine?.keyPredictions || {},
-    activeConcept: (world.cheatEngine as any)?.activeConcept,
-    linguisticToken: (world.cheatEngine as any)?.linguisticToken,
+    activeConcept: (world.cheatEngine as { activeConcept?: string })?.activeConcept ?? "Observing...",
+    linguisticToken: (world.cheatEngine as { linguisticToken?: string })?.linguisticToken,
     gameLevel: gameLevel,
     gameObjective: gameObjective,
-    levelUpEvent: frame.pc === 0x204 || frame.pc === 0x238 || frame.pc === 0x270 || frame.pc === 0x2a8,
+    levelUpEvent: levelUpEvent
   };
 
   self.postMessage({ type: "FRAME", payload: eventAction });
