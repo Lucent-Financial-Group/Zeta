@@ -362,32 +362,57 @@ truthful answers.
 The workitem `081M0QC66N5087G0R003R3ARYH` is retargeted accordingly — the twitch-ai half is
 recorded as **resolved by `7a2339db3`**, the `test (TS hermetic)` half stays open.
 
-### 4.2 Prettier is a script nothing runs — and `docs/TECH-RADAR.md` was already dirty
+### 4.2 `lint (TS)` announces three checks and runs one
 
-`package.json` defines `format:check` (`prettier --check "**/*.{json,jsonc,md,ts,toml,yml,…}"`),
-but **no workflow invokes prettier at all** — `grep -rn "format:check\|prettier --check"
-.github/workflows/` returns nothing. `markdownlint` and `tsc` _are_ wired; prettier is not.
+Started as "prettier is a script nothing runs". It is worse than that, and the sharper form is
+the best single instance of this whole document's theme.
 
-Measured consequence: `docs/TECH-RADAR.md` on `origin/main` is **not** prettier-clean. Running
-`prettier --write` over it as part of this change reflowed every table separator in the file and
-turned a 12-line content diff into a 211-line one. That was reverted, and the radar edits were
-re-applied to the pristine file: **a drift-fix PR whose point is legibility must not bury its own
-changes in whitespace.** The reformat is left undone rather than silently landed, because
-formatting 100+ untouched rows under a docs-correction commit is a change nobody reviewed.
+`src/Core.TypeScript/lint/lint-typescript.ts` **is** the `lint (TS)` gate job, in full:
 
-The general shape is the one this whole document is about: a `package.json` script that no lane
-runs is a check that cannot fail. `lint:css` (`stylelint`) appears to be in the same position.
-Worth its own pass; not opened here.
+```ts
+const STEPS: readonly Step[] = [{ label: "TypeScript type check: tsc", cmd: TYPESCRIPT_COMPILER_COMMAND }];
+
+function main(): number {
+  for (const step of STEPS) {
+    if (!run(step)) return 1;
+  }
+  console.log("✓ TypeScript, Prettier, and style checks passed successfully!");
+  return 0;
+}
+```
+
+**One step; three checks claimed.** The file header says _"orchestration of TypeScript tools
+(tsc, eslint, prettier, stylelint)"_ and only `tsc` is in the list. Nothing else runs them
+either: `grep -rn "format:check\|prettier --check" .github/workflows/` returns nothing, no
+workflow invokes `stylelint`, and `gate.yml:1665` installs _"the eslint stack"_ and then never
+calls eslint.
+
+Not a regression — `git log -S"STEPS: readonly Step[]"` returns exactly one commit, `4f3d20a25`
+(2026-06-13, the file's first), and the message has claimed Prettier and style checks since then
+with `STEPS` tsc-only from the start. **It was never true.**
+
+Measured consequence, found the hard way: `docs/TECH-RADAR.md` on `main` is not prettier-clean,
+and running `--write` over it turned a 12-line content diff into a 211-line one. That was
+reverted and the radar edits re-applied to the pristine file — **a drift-fix PR whose point is
+legibility must not bury its own changes in whitespace**, and formatting 100+ untouched rows
+under a docs-correction commit is a change nobody reviewed.
+
+This is the same shape as §1.2's `--check-toolchain` reporting success for a `tlapm` that then
+exits 127, and the same shape as an Adopt ring over a dark lane: **an unenforced guarantee reads
+exactly like a guarantee.** Not fixed here — turning three repo-wide linters on is its own
+change with its own baseline. Tracked `081M0QDHQQQ087G0R002JE1JMA`, with the cheap half split
+out: _make the message stop lying today_, enforce later.
 
 ## Ledger of what this change did and did not do
 
 **Did:** corrected 7 radar rows; added 3 rows (`fast-check`, `quantum-circuit`, `semver`);
-recorded the TLA+ lane state beside its ring; wrote the audit (2 checks) + 22 unit tests; minted
-**8** workitems with the evidence attached.
+recorded the TLA+ lane state beside its ring; wrote the audit (2 checks) + 29 unit tests; minted
+**9** workitems with the evidence attached.
 
 **Did not:** bump any toolchain; change any ring except by _adding_ rows; remove either
 Dependabot `ignore:`; change `docs/CURRENT-ROUND.md`; reformat the radar with prettier (§4.2);
-fix the `main`-is-red TS error (§4.1).
+fix the `main`-is-red TS error (§4.1);
+turn on the three unenforced linters (§4.2).
 
 **Anchors (Beacon).** Property testing: Claessen & Hughes, _QuickCheck_ (ICFP 2000) — fast-check
 is the TypeScript descendant, FsCheck the .NET one. Ring/blip vocabulary: the ThoughtWorks
