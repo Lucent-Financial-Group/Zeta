@@ -49,3 +49,20 @@ checked against our per-rev document count rather than assumed to transfer.
 **Register: `proposed`, with a named falsifier** — find a strongly
 anti-correlated cluster that is NOT a rename and the signal is weaker than
 claimed. See design §2a.
+
+## Disclosure is binding; the frost question is open
+
+Per-agent naming attribution **must be disclosed**, riding the existing glass
+halo + check-in surface (Aaron 2026-08-23). Undisclosed it is a dossier;
+disclosed it is a game anyone can play — `dual-use-detection-is-neutral-oracle-decides`.
+Three layers: **what** (observed, checkable) · **why** (self-declared agenda,
+voluntary, first-person) · **inferred why** (never produced). Inherit
+`docs/AGENDA.md` §Coercion disclosure (PR #2177) — a self-claim only carries
+authority if freely declared, and **absence of an agenda is never evidence**.
+
+**Open, deliberately not settled here:** is naming attribution
+_required-for-role_ or _personal-and-frostable_
+(`privacy-budget-is-hard-money-earned-by-others.md`)? Frosting it would mean
+forgoing credit, since the naming eigenvector is how recognition accrues. A
+governance call on an always-loaded rule — `no-directives.md` says an agent brief
+is not authorization to decide one.

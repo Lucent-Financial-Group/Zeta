@@ -216,6 +216,114 @@ The last is the interesting one here: a coinage appearing in **`docs/` before
 documentation**. `anti-babel` cares about both directions and can currently see
 neither.
 
+### Per-agent attribution must be DISCLOSED — the difference between creepy and a game
+
+The "by region" breakdown includes **author / agent**, and Aaron 2026-08-23 made
+disclosure a design requirement rather than a courtesy:
+
+> _"yes this is good tracking and **should be disclosed** — we track this to any
+> agents based on their **glass halo and check-ins**. Without disclosing this
+> it's **creepy**; disclosing this makes it a **fun game anyone can participate
+> in**."_
+
+**One mechanism, two readings, and only disclosure separates them** — which is
+`.claude/rules/dual-use-detection-is-neutral-oracle-decides.md` precisely: the
+mechanism is neutral, the framing decides.
+
+|                 |                                                                    |
+| --------------- | ------------------------------------------------------------------ |
+| **undisclosed** | a dossier compiled on agents from their own commits                |
+| **disclosed**   | a scoreboard they can _play_ — coin a term, watch it spread or die |
+
+**The compilation itself is already licensed**, and saying _why_ is stronger than
+saying _we checked_. `engagement-profiles-public-work-only-not-surveillance-dossiers.md`
+permits compiling **chosen-public work** and forbids **inferring inner life**.
+Commits are chosen-public by definition, and naming attribution records **what
+someone wrote, never why**. So this never touches the prohibition — disclosure is
+what makes that legible to the agents inside it.
+
+#### The three layers, and the middle one is voluntary
+
+Aaron: _"it records what someone wrote, never why — **we have self-declared
+agendas** if someone wants to explain why."_
+
+| layer                                        | source                                        | authority                   |
+| -------------------------------------------- | --------------------------------------------- | --------------------------- |
+| **what** — which terms, where, when, by whom | the index, observed                           | checkable                   |
+| **why** — intent behind a coinage or rename  | **self-declared agenda**, offered voluntarily | first-person, authoritative |
+| **inferred why**                             | —                                             | **never produced**          |
+
+This is `pigeonhole-by-self-claim, never by assumption` — _the subject supplies
+the category, the evidence supplies the truth value_ — and it is what makes the
+rename detector **honest rather than merely careful**. From anti-correlated
+derivatives the index may say _"a substitution is in progress."_ It may **not**
+say _"X is trying to displace Y's term."_ But X **can declare it**, and that
+declaration is the participation mechanism, not an afterthought bolted on.
+
+#### The surface exists — inherit it, do not invent one
+
+`docs/AGENDA.md` is the agenda surface, and it already carries the discipline
+this needs: **§"Coercion disclosure"**, added by PR #2177 (_"coercion disclosure
+on all agendas — glass halo"_, merged 2026-05-09), which reasons about what would
+prove an agenda coerced or not coerced. That matters here directly:
+
+> **A self-declared agenda carries first-person authority only if it was freely
+> declared.** An agenda declared under pressure is a compelled statement wearing
+> a self-claim's clothes.
+
+Inheriting that reasoning is far better than re-deriving it, and it is the
+strongest evidence this "why" layer is native rather than invented for the
+occasion.
+
+**And the corollary must be stated explicitly:** _absence_ of an agenda is never
+evidence of anything. A system that reads non-declaration as evasion has
+re-created the coercion the disclosure discipline forbids. A term with no
+declared why simply carries no why.
+
+**Register: `proposed`** — whether `docs/AGENDA.md` is the right surface is an
+open question, not an assumption. It is currently a **human-scale** document
+(one long personal synthesis). If it does not stretch to agent-scale
+declarations, what an agent-scale equivalent needs is: per-agent, voluntary,
+revisable, coercion-disclosed, and linkable from a term's record.
+
+#### Four requirements this places on the design
+
+1. **Ride the existing surface.** `src/Core/GlassHalo.fs` is the transparency
+   substrate (transparent by default; `frost` costs earned privacy budget) and
+   check-ins are the existing disclosure rhythm. Attach; do not build a second
+   surface.
+2. **An agent can read its own attribution.** Glass halo means what is seen of
+   you is visible to you. One-way observation with a transparency label on it is
+   not transparency.
+3. **Declared in the artifact, not only in a doc.** The index **manifest** states
+   that per-author attribution is collected. A reader of the artifact must not
+   have to find a design document to learn what is recorded about them.
+4. **Legible as participation.** Aaron's word is _game_ — who coined what, which
+   coinages took, which faded. That framing is itself **`proposed`**: "it will
+   feel like a game" is a claim about reception, which is exactly the sort of
+   thing to ask about rather than assume.
+
+#### The open governance question — raised, deliberately not settled
+
+`privacy-budget-is-hard-money-earned-by-others.md` splits mind-parts into
+**required-for-role** (a hat obliges you to broadcast it) and **personal** (never
+required, permanently frostable once earned).
+
+> **Is naming attribution required-for-role, or personal?**
+
+Both are defensible and the consequences differ:
+
+- **Personal** ⇒ an agent may frost it. Since the **naming eigenvector** is how
+  recognition accrues, frosting attribution means **forgoing credit** — which
+  may be exactly the right trade to offer, and is consistent with privacy being
+  a currency you spend.
+- **Required-for-role** ⇒ name the role and say why it needs this.
+
+**Not settled here.** It is a governance call touching an always-loaded rule, and
+per `no-directives.md` an agent brief is not authorization to decide one. Leaving
+it unstated is what would bite later; deciding it unilaterally would be the
+privilege-escalation that rule exists to prevent.
+
 ### Anchor, and the normalisation problem it already solved
 
 **Google Books Ngram Viewer / "Culturomics"** (Michel et al., _Science_ 331(6014), 2011) is the better anchor than Google Trends, because it is about **written
