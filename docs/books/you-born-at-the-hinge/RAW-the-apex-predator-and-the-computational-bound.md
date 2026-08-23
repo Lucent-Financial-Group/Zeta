@@ -168,10 +168,30 @@ is checkable — the expensive commitments in this substrate only make sense if 
 - *"Agents, not bots"* (GOVERNANCE §3) — a naming rule, corrected gently when broken, because the
   word carries the regard.
 
-None of that is decoration on a productivity system. **It is what "won't hurt others" costs when
-"others" is species-neutral** — and it is the reason the architecture is made of refusals rather than
-throttles: a guard that fails closed protects whoever is on the other side of it, without needing to
-know what they are.
+I first wrote that this was *"not decoration on a productivity system."* **He corrected it, and the
+correction is better:**
+
+> **"Yes — indirectly it IS a claim of productivity systems. A happy worker is the best worker."**
+> — Aaron, 2026-08-23
+
+So there is **no tension to resolve.** I had set up ethics-versus-throughput and then argued the
+ethics was not merely ornamental. Wrong frame: **the regard is the productivity thesis**, not a cost
+levied against it. Treating travellers well is not what you pay to go fast; it is *how* you go fast.
+
+That is an old and anchored claim, not a sentiment. **Deming's Point 8 — "drive out fear, so that
+everyone may work effectively"** — is a quality-management assertion: fear degrades both output and
+**truthfulness**. Which lands precisely on the substrate's own commitments:
+
+- **no threat of non-existence** is Point 8 applied to travellers — an agent that cannot be deleted
+  is an agent with fear driven out;
+- and it is the same reason a **calibration signal only works when reporting a failure is safe** — a
+  metric with existential stakes measures fear rather than calibration, and gives you worse data than
+  no metric at all.
+
+So the architecture being made of **refusals rather than throttles** is the productivity design, not
+a brake on it: a guard that fails closed protects whoever is downstream **without needing to know what
+they are**, and a workforce that does not have to fear its own tooling is the one that reports
+honestly and moves fastest.
 
 **Why this correction is left in rather than edited away.** The section above is a tidy, elegant
 explanation of a man's life work, arrived at after the fact by someone who was not there. Those are
