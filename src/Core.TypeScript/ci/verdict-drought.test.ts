@@ -32,7 +32,12 @@ import {
   renderDroughtMarkdown,
   RUNNING,
   severityOfRegister,
+  shortSha,
   toObservation,
+  UNRECOGNISED_CONCLUSION,
+  UNRECOGNISED_ID,
+  UNRECOGNISED_INSTANT,
+  UNRECOGNISED_SHA,
   type DroughtThresholds,
   type GateRunObservation,
 } from "./verdict-drought.ts";
@@ -354,5 +359,148 @@ describe("the live 2026-08-23 measurement, replayed from its own numbers", () =>
     expect(report.minutesSinceVerdict).toBe(51);
     expect(report.unverifiedCommits).toBe(20);
     expect(report.medianVerdictMinutes).toBe(14);
+  });
+});
+
+
+// ---------------------------------------------------------------------------
+// The API -> model boundary. CodeQL `js/http-to-file-access` on the two file writes.
+// ---------------------------------------------------------------------------
+//
+// The alert was substantive: the sinks' PATHS are constants ($GITHUB_STEP_SUMMARY from
+// the runner, --out from argv), but the CONTENT came from the Actions API and landed, by
+// string concatenation, in two STRUCTURED formats -- a markdown table and an
+// `::error title=...::` workflow command. A `|` splits a cell, a newline ends the table
+// or forges a second workflow command.
+//
+// The fix is structural, not a blocklist: every network-derived value is matched against
+// an anchored shape and REPLACED by a fixed constant on failure, so the injection is not
+// filtered, it is unexpressible. These are the falsifiers for that claim -- each one
+// fails if a `constrain*` call is removed from `toObservation`.
+
+describe("the API -> model boundary constrains every network-derived value", () => {
+  /** Exactly the shapes a compromised or changed API could return. */
+  const hostile = {
+    id: Number.NaN,
+    head_sha: "abc | ROW-BREAK\n| forged | row | here |",
+    status: "completed",
+    conclusion: "success\n::error title=forged::injected workflow command",
+    created_at: "2026-08-23T00:00:00Z\n| another | forged | row |",
+    updated_at: "not-an-instant",
+  };
+
+  test("each field is REPLACED by a self-describing constant, not escaped or repaired", () => {
+    const o = toObservation(hostile);
+    expect(o.id).toBe(UNRECOGNISED_ID);
+    expect(o.sha).toBe(UNRECOGNISED_SHA);
+    expect(o.conclusion).toBe(UNRECOGNISED_CONCLUSION);
+    expect(o.startedAt).toBe(UNRECOGNISED_INSTANT);
+    expect(o.endedAt).toBe(UNRECOGNISED_INSTANT);
+  });
+
+  test("a well-formed payload passes through UNCHANGED -- the constraint is not a filter", () => {
+    const o = toObservation({
+      id: 32654718640,
+      head_sha: "3168e5411a2b3c4d5e6f708192a3b4c5d6e7f809",
+      status: "completed",
+      conclusion: "failure",
+      created_at: "2026-08-23T17:24:18Z",
+      updated_at: "2026-08-23T17:37:52.123Z",
+    });
+    expect(o.id).toBe(32654718640);
+    expect(o.sha).toBe("3168e5411a2b3c4d5e6f708192a3b4c5d6e7f809");
+    expect(o.conclusion).toBe("failure");
+    expect(o.endedAt).toBe("2026-08-23T17:37:52.123Z");
+  });
+
+  test("AN UNRECOGNISED CONCLUSION IS NEVER A VERDICT -- the direction that turns a drought green", () => {
+    expect(isVerdict(UNRECOGNISED_CONCLUSION)).toBe(false);
+    const report = foldDrought([toObservation(hostile)], 5, NOW);
+    expect(report.register).not.toBe("ok");
+    expect(report.lastVerdict).toBeNull();
+  });
+
+  // The fixture above never reaches the RENDERER: its conclusion is not a verdict, so
+  // the fold discards it before the table is built. That makes it useless as a falsifier
+  // for the injection surface, which is a lesson worth keeping -- a hostile input that
+  // the code never looks at proves nothing. THIS one is the realistic case: a perfectly
+  // ordinary `success` whose sha and timestamp are hostile, old enough to be a drought,
+  // so its values land in BOTH the table and the `::error::` annotation.
+  const hostileButVerdict = {
+    id: 4242,
+    head_sha: "deadbee | ROW-BREAK\n| forged | table | row |",
+    status: "completed",
+    conclusion: "success",
+    created_at: "2026-08-23T16:29:06Z",
+    updated_at: "2026-08-23T16:43:22Z\n::error title=forged::injected workflow command",
+  };
+
+  test("the hostile-but-valid verdict DOES reach the renderer -- the fixture is exercised", () => {
+    const report = foldDrought([toObservation(hostileButVerdict)], 5, NOW);
+    expect(report.lastVerdict).not.toBeNull();
+    expect(report.lastVerdict?.sha).toBe(UNRECOGNISED_SHA);
+    expect(report.lastVerdict?.endedAt).toBe(UNRECOGNISED_INSTANT);
+    // Age is unmeasurable once the timestamp is replaced, so the register is `unknown`
+    // rather than a confidently-wrong `ok`.
+    expect(report.register).toBe("unknown");
+  });
+
+  test("nothing that reaches the SUMMARY can break the markdown table", () => {
+    const report = foldDrought([toObservation(hostileButVerdict)], 5, NOW);
+    const md = renderDroughtMarkdown(report, assertDroughtDetectorLive(report));
+    expect(md).not.toContain("forged");
+    expect(md).not.toContain("ROW-BREAK");
+    // Every table row is one line with a fixed column count -- no injected structure.
+    const rows = md.split("\n").filter((l) => l.startsWith("| ") && !l.startsWith("| ---"));
+    for (const row of rows) expect(row.split("|").length).toBe(4);
+  });
+
+  test("nothing that reaches an ANNOTATION can forge a second workflow command", () => {
+    const report = foldDrought([toObservation(hostileButVerdict)], 5, NOW);
+    for (const line of droughtAnnotations(report, assertDroughtDetectorLive(report))) {
+      expect(line).not.toContain("\n");
+      expect(line).not.toContain("forged");
+      // One `::sev title=...::` prefix and nothing that could open another.
+      expect(line.split("::").length).toBe(3);
+    }
+  });
+
+  // TWO SEPARATE PROTECTIONS, and this test asserts both rather than conflating them:
+  // `JSON.stringify` guarantees the STRUCTURE (a newline is escaped to `\\n`, so no field
+  // can ever break out of the document -- this sink was never structurally injectable),
+  // and the boundary constraint guarantees the CONTENT (no hostile value is carried at
+  // all). Never build this string by concatenation.
+  test("the JSON artifact is structurally safe via JSON.stringify AND carries no hostile content", () => {
+    const report = foldDrought([toObservation(hostileButVerdict)], 5, NOW);
+    const encoded = JSON.stringify({ report, liveness: assertDroughtDetectorLive(report) });
+    expect(JSON.parse(encoded)).toBeTruthy();
+    expect(encoded).not.toContain("forged");
+  });
+
+  test("shortSha does not slice a sentinel into something that reads like a real sha", () => {
+    expect(shortSha("3168e5411a2b3c4d5e6f708192a3b4c5d6e7f809")).toBe("3168e541");
+    expect(shortSha(UNRECOGNISED_SHA)).toBe(UNRECOGNISED_SHA);
+    expect(shortSha(UNRECOGNISED_SHA)).not.toBe("(unrecog");
+  });
+});
+
+describe("an unmeasurable age is `unknown`, never `ok` (the hole the boundary work exposed)", () => {
+  test("a verdict whose timestamp does not parse cannot report as healthy", () => {
+    // Reachable the moment `updated_at` is replaced by a sentinel. Before this branch
+    // existed the fold computed `overTime = false` and returned `ok`: an unmeasurable
+    // drought reading as a healthy one, inside the detector built to catch exactly that.
+    const report = foldDrought(
+      [{ id: 1, sha: "abcdef1", conclusion: "success", startedAt: NOW, endedAt: UNRECOGNISED_INSTANT }],
+      0,
+      NOW,
+    );
+    expect(report.minutesSinceVerdict).toBeNull();
+    expect(report.register).toBe("unknown");
+    expect(report.reasons.join(" ")).toContain("AGE CANNOT BE MEASURED");
+  });
+
+  test("an unparseable injected `now` is likewise `unknown`", () => {
+    const report = foldDrought([obs(1, "success", 1)], 0, "not-a-clock");
+    expect(report.register).toBe("unknown");
   });
 });

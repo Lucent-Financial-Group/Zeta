@@ -168,6 +168,116 @@ export function isVerdict(conclusion: string): boolean {
   return VERDICT_CONCLUSIONS.has(conclusion);
 }
 
+// ---------------------------------------------------------------------------
+// The API -> model boundary. EVERY network-derived string is constrained HERE.
+// ---------------------------------------------------------------------------
+//
+// CodeQL `js/http-to-file-access` ("Network data written to file") flagged the two
+// writes at the bottom of this file, and it was RIGHT -- not about the path, which is a
+// constant in both cases (`$GITHUB_STEP_SUMMARY` from the runner, `--out` from argv), but
+// about the CONTENT. Fields from the Actions API reached two STRUCTURED formats by string
+// concatenation:
+//
+//   * the `$GITHUB_STEP_SUMMARY` markdown TABLE -- a `|` splits a cell, a newline ends the
+//     row and the table, and everything after it renders as fresh document structure;
+//   * the `::error title=...::message` WORKFLOW COMMAND -- a newline there forges a second
+//     command in the runner's log stream, which is the well-known Actions command-injection
+//     surface.
+//
+// It is tempting to call this a false positive because the fields are, in fact,
+// well-formed today: the listing is filtered to `?branch=main&event=push`, so `head_sha`
+// is a git-computed sha and `conclusion` is a GitHub enum. But that argument is a claim
+// about the SERVER, checked nowhere, restated every time the query changes -- and this
+// file exists because "a check that did not run must not look like one that passed".
+// A response body is untrusted input; the honest answer is to make the injection
+// impossible to EXPRESS rather than to argue it will not occur.
+//
+// So each value is matched against an anchored shape and, on failure, REPLACED by a fixed
+// self-describing constant. Not sanitised, not escaped, not repaired -- replaced. No
+// value that reaches the renderer can carry a `|`, a newline, a backtick or a `::`,
+// because no value that reaches the renderer came from the network unchecked.
+//
+// TWO PROPERTIES THIS MUST NOT BREAK, and both are tested:
+//   1. Replacement is LOUD, never silent normalisation into something that looks fine.
+//      The sentinels are visibly not shas, not instants, not conclusions.
+//   2. An unrecognised conclusion is NEVER a verdict. `isVerdict` is an allow-list of
+//      exactly two strings, so an unknown value cannot become one by being replaced --
+//      which is the direction that would turn a drought green.
+
+/** A run id that was not a safe integer. Never a real id, and never matches a run. */
+export const UNRECOGNISED_ID = -1;
+
+/** A `head_sha` that did not match `^[0-9a-f]{7,64}$`. */
+export const UNRECOGNISED_SHA = "(unrecognised-sha)";
+
+/** A timestamp that did not match a strict ISO-8601 UTC instant. Never parses. */
+export const UNRECOGNISED_INSTANT = "(unrecognised-instant)";
+
+/** A conclusion outside GitHub's documented set. NOT a verdict -- see `isVerdict`. */
+export const UNRECOGNISED_CONCLUSION = "unrecognised";
+
+/** Lowercase hex, 7..64 -- covers both sha1 (40) and a future sha256 (64). Ordinal. */
+const SHA_RE = /^[0-9a-f]{7,64}$/;
+
+/** Strict ISO-8601 UTC. No offsets, no whitespace, nothing a table or log can read. */
+const INSTANT_RE = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,9})?Z$/;
+
+/**
+ * GitHub's documented run conclusions, plus our in-flight sentinel.
+ *
+ * DELIBERATELY WIDER than `VERDICT_CONCLUSIONS`. This set says "a string GitHub is known
+ * to produce"; that one says "a string that settles whether main was checked". Collapsing
+ * the two would be the exact mistake this file is about.
+ */
+const KNOWN_CONCLUSIONS: ReadonlySet<string> = new Set([
+  "success",
+  "failure",
+  "cancelled",
+  "skipped",
+  "timed_out",
+  "stale",
+  "neutral",
+  "action_required",
+  "startup_failure",
+  RUNNING,
+]);
+
+/** `sha` if it is a real sha, else the sentinel. */
+export function constrainSha(value: unknown): string {
+  return typeof value === "string" && SHA_RE.test(value) ? value : UNRECOGNISED_SHA;
+}
+
+/** The instant if it is a strict ISO-8601 UTC instant, else the sentinel. */
+export function constrainInstant(value: unknown): string {
+  return typeof value === "string" && INSTANT_RE.test(value) ? value : UNRECOGNISED_INSTANT;
+}
+
+/** The conclusion if GitHub is known to produce it, else the sentinel. Never a verdict. */
+export function constrainConclusion(value: unknown): string {
+  return typeof value === "string" && KNOWN_CONCLUSIONS.has(value) ? value : UNRECOGNISED_CONCLUSION;
+}
+
+/** The id if it is a safe integer, else the sentinel. Keeps ordering total. */
+export function constrainId(value: unknown): number {
+  return typeof value === "number" && Number.isSafeInteger(value) ? value : UNRECOGNISED_ID;
+}
+
+/**
+ * Short sha for display, which must not slice a sentinel into nonsense.
+ *
+ * `"(unrecognised-sha)".slice(0, 8)` is `"(unrecog"`, which reads like a truncated real
+ * value -- the opposite of the loudness the replacement exists for.
+ */
+export function shortSha(sha: string): string {
+  return sha === UNRECOGNISED_SHA ? sha : sha.slice(0, 8);
+}
+
+/**
+ * API run -> observation. THE ONLY door network data walks through.
+ *
+ * A run that has not completed is `RUNNING`, never a verdict.
+ */
+
 /** One gate run on `main`, reduced to what the drought fold needs. */
 export interface GateRunObservation {
   readonly id: number;
@@ -342,13 +452,25 @@ export function foldDrought(
         "`cancelled` is neither a pass nor a fail, so NOTHING in this window says whether main is checked. " +
         "A check that did not run must never look like a check that passed.",
     );
+  } else if (minutesSinceVerdict === null) {
+    // A VERDICT EXISTS AND ITS AGE CANNOT BE COMPUTED. Reachable since the boundary
+    // constraint above replaces an unparseable `updated_at` with a sentinel, and equally
+    // if `--now` is garbage. The old code fell through to `overTime = false` and returned
+    // `ok` -- an unmeasurable drought reading as a healthy one, which is this file's own
+    // defect committed inside the detector for it. `unknown`, loudly.
+    register = "unknown";
+    reasons.push(
+      `A VERDICT EXISTS BUT ITS AGE CANNOT BE MEASURED: run ${String(lastVerdict.id)} ended ` +
+        `\`${lastVerdict.endedAt}\` and now is \`${nowIso}\` -- at least one is not a parseable ` +
+        "instant. An unmeasurable drought is not a short one, so this is `unknown`, never `ok`.",
+    );
   } else {
-    const overTime = minutesSinceVerdict !== null && minutesSinceVerdict >= thresholds.droughtMinutes;
+    const overTime = minutesSinceVerdict >= thresholds.droughtMinutes;
     const overCommits = unverifiedCommits !== null && unverifiedCommits >= thresholds.maxUnverifiedCommits;
     if (overTime) {
       reasons.push(
         `LAST COMPLETED VERDICT on main was ${String(minutesSinceVerdict)} min ago ` +
-          `(run ${String(lastVerdict.id)}, ${lastVerdict.sha.slice(0, 8)}, \`${lastVerdict.conclusion}\`, ` +
+          `(run ${String(lastVerdict.id)}, ${shortSha(lastVerdict.sha)}, \`${lastVerdict.conclusion}\`, ` +
           `ended ${lastVerdict.endedAt}) -- at or past the ${String(thresholds.droughtMinutes)} min threshold.`,
       );
     }
@@ -496,11 +618,11 @@ export function renderDroughtMarkdown(report: DroughtReport, liveness: DroughtLi
   const verdictCell =
     r.lastVerdict === null
       ? "**none in window**"
-      : `run ${String(r.lastVerdict.runId)} \`${r.lastVerdict.conclusion}\` ${r.lastVerdict.sha.slice(0, 8)} (${r.lastVerdict.endedAt})`;
+      : `run ${String(r.lastVerdict.runId)} \`${r.lastVerdict.conclusion}\` ${shortSha(r.lastVerdict.sha)} (${r.lastVerdict.endedAt})`;
   const successCell =
     r.lastSuccess === null
       ? "**none in window**"
-      : `run ${String(r.lastSuccess.runId)} ${r.lastSuccess.sha.slice(0, 8)} (${r.lastSuccess.endedAt})`;
+      : `run ${String(r.lastSuccess.runId)} ${shortSha(r.lastSuccess.sha)} (${r.lastSuccess.endedAt})`;
 
   const out: string[] = [
     "## main gate-verdict drought -- loud, and blocking nothing",
@@ -568,14 +690,19 @@ async function ghJson<T>(url: string, token: string): Promise<T> {
   return (await res.json()) as T;
 }
 
-/** API run -> observation. A run that has not completed is `RUNNING`, never a verdict. */
+/**
+ * API run -> observation. THE ONLY door network data walks through.
+ *
+ * Every field is constrained by the shape checks above (see "The API -> model boundary").
+ * A run that has not completed is `RUNNING`, never a verdict.
+ */
 export function toObservation(run: ApiRun): GateRunObservation {
   return {
-    id: run.id,
-    sha: run.head_sha,
-    conclusion: run.status === "completed" ? (run.conclusion ?? "unknown") : RUNNING,
-    startedAt: run.created_at,
-    endedAt: run.updated_at,
+    id: constrainId(run.id),
+    sha: constrainSha(run.head_sha),
+    conclusion: run.status === "completed" ? constrainConclusion(run.conclusion) : RUNNING,
+    startedAt: constrainInstant(run.created_at),
+    endedAt: constrainInstant(run.updated_at),
   };
 }
 
