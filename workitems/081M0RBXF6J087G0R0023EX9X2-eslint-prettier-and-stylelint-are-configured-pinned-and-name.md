@@ -51,6 +51,35 @@ one thing absent is the invocation.
 > **A check that did not run must never look like a check that passed.** Here it does not merely look
 > like one — the code *documents* a behaviour it does not have.
 
+## ESCALATION — it is not an omission, it is a FALSE ASSERTION printed on every green run
+
+Independently confirmed by Lumen 2026-08-23 and re-verified here against `origin/main`. The runner
+does not merely fail to run three tools — **it announces that they passed.** `main()`, line 173,
+immediately after the loop over the one-element `STEPS`:
+
+```ts
+function main(): number {
+  for (const step of STEPS) {          // STEPS = [ tsc ]
+    if (!run(step)) return 1;
+  }
+  console.log("✓ TypeScript, Prettier, and style checks passed successfully!");
+  return 0;
+}
+```
+
+**It names three tools and runs one.** "Prettier and style checks passed" is printed on every green CI
+run, in the CI log, when neither executed.
+
+That is a strictly worse defect than the one originally filed, and it changes the severity of the
+class. A missing invocation is a **gap** — someone reading the workflow could notice it. **A runner
+that states two checks passed when they did not execute actively defeats the reader**, because the
+log is exactly where a person goes to confirm what ran.
+
+**Minimum fix, independent of every other decision in this workitem:** that string must not name a
+tool the runner did not invoke. Even if the answer to "should we wire eslint up" is *no*, printing an
+accurate `✓ TypeScript type check passed` is a one-line change that removes a false statement from
+every CI log. **Do this first; it is not coupled to the profile debate below.**
+
 ## The falsifier that exposed it (measured, not hypothetical)
 
 PR #14501 added the first two `.ts` files to `docs/research/scripts/` (23 prior files, all `.py` and
@@ -150,6 +179,39 @@ Enabling everything at once is off the table. The viable shape is:
 - **Do not** wire it in and then add blanket disables or ignore entries to get green. Widening a check
   to make it pass is forbidden here, and doing it to a check whose defect *is* that it never ran would
   be self-refuting.
+
+## The profile question — two agents disagree, and both positions are recorded
+
+The workitem asks whether research measurement scripts should be held to the same strict profile as
+`src/`. **shadow leaned yes-with-a-carve-out; Lumen argued no carve-out at all, and supplied evidence
+rather than preference.** Recorded unresolved rather than collapsed, per
+`anti-babel-preserve-reconcilability` — reintegration keeps both branches with their paths, and the
+decision is the human maintainer's.
+
+**Lumen's position — same ruleset, no directory carve-out:**
+
+1. **The "one-shot script" defence did not survive contact.** All 25 `no-non-null-assertion` hits came
+   out by restructuring `combos(n,k)` (index tuples) into `combosOf(items,k)` (element tuples), output
+   byte-identical, and **not one assertion turned out to be load-bearing.** Lumen states it predicted
+   otherwise before doing the work — which is what makes this evidence rather than opinion.
+2. **A measurement script is evidence, not tooling.** Its numbers are load-bearing, so the code sits in
+   the **proof lineage**, and `no-binary-in-proof-lineage` requires evidence be auditable. A *weaker*
+   profile for the code that generates evidence is backwards.
+3. **`restrict-template-expressions` is not cosmetic for this file class specifically** — it is what
+   stops an object rendering as `[object Object]` into a published measurement. More of a
+   research-script hazard than a `src/` one.
+
+**And a redirection worth more than the debate:** the real risk to research scripts is **bit-rot** — a
+script that no longer runs — and eslint addresses none of it. *"Does every research script still
+execute and reproduce its committed output"* would be worth more than any profile choice here.
+
+**If a carve-out is ever declared: per-rule with a stated reason, never per-directory.** A
+directory-shaped exemption is the shape that silently grows — which is the same mechanism as the
+markdownlint research carve-out that made `rc=0` meaningless on this repo's research docs.
+
+**Side effect worth noting:** Lumen's restructure means TS2538 **cannot recur** in that file rather
+than being currently satisfied — with no index there is nothing to assert. That is the difference
+between a fix and a patch, and it is the shape to prefer wherever these 3,429 assertions get touched.
 
 ## Acceptance
 
