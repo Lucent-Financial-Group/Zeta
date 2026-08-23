@@ -202,11 +202,36 @@ everything else, because an input language expressive enough to be undecidable *
 by construction. That is exactly the pigeonhole discipline of the table above, applied to parsers,
 and it is why LANGSEC insists on a full recogniser before any semantic action.
 
-**Measured in-tree status (2026-08-23): all of this is absent.** `langsec`, `weird machine`,
-`return-oriented`, `Rice's theorem`, `Shacham`, `Dullien` — **zero files each**, repo-wide. For a
-codebase whose maintainer has carried the handle **AceHack** for twenty-five years and whose
-verification strategy is fragment selection, that is the largest gap this document found, and it is
-the third routed item.
+**Measured in-tree status (2026-08-23) — and the first measurement was wrong, which is worth keeping
+in the record.** The initial sweep reported *"zero files each"* for six terms. That was a **defect in
+the query, not a fact about the repository**: the pattern used `\|` (BRE alternation) under `grep -E`,
+where `\|` matches a **literal pipe character**, so every alternated term silently matched nothing.
+A search that cannot match is a check that did not run — the exact class this document is about,
+committed while writing about it.
+
+Re-measured with correct ERE:
+
+| term | files | reading |
+|---|---|---|
+| **Rice's theorem** | **15** | **already well covered** — in the Wolfram class-4 / shadow-taxonomy work |
+| `langsec` | 3 | present, thin |
+| `return-oriented` | 1 | barely present |
+| `weird machine` | **0** | absent |
+| **Shacham** | **0** | absent |
+| **Dullien** | **0** | absent |
+| **Presburger** | **0** | absent |
+| **constructible universe** | **0** | absent |
+
+**And the corrected finding is sharper than the one it replaces.** The gap is *not* that Rice is
+missing — this repository has reasoned about Rice's theorem across fifteen files for months, in a
+cellular-automata undecidability context. **The gap is that it was never connected to
+exploitability.** A missing anchor is cheap to fix; **two anchors already present and never joined**
+is the expensive kind, because nothing looks absent and so nothing prompts the search. That is the
+local/global corollary applied to a bibliography: each citation is locally fine, and the *connection*
+is the object nobody was positioned to see.
+
+Routed as the third item, restated accordingly: **connect the existing Rice treatment to the
+exploitability literature**, and add the five genuinely absent anchors.
 
 **What survives of the original sentence:** "detect and route around" already has substrate here —
 detection is a Z-set `−1` retraction of a composition rather than a static gate that must decide in
@@ -258,6 +283,14 @@ proof-theoretic wall — which is a much stronger justification for it than the 
   the *appearance* of Condorcet coverage with the *power* of one detector. That is the most dangerous
   state in the design, because it is indistinguishable from success on the inside — the exact failure
   the local/global corollary predicts, arriving one level up.
+
+  Aaron 2026-08-23 confirms this is the standing design intent, not a new requirement: *"yes exactly,
+  and [that is] what all our meters are designed to measure precisely and fail loudly when they have
+  ambiguity."* **Both halves are the specification.** *Measure precisely* is what makes `ρ` a number
+  rather than an assumption; ***fail loudly on ambiguity*** is what stops an unmeasurable `ρ` from
+  defaulting to the flattering reading. A meter that goes quiet under ambiguity reports the
+  correlated ensemble and the decorrelated one identically — which is the one failure that would
+  invalidate the entire escape above, since the escape's whole force is that `ρ` is known.
 - Gossip gives **eventual** detection. There is a window in which the exploit has run and nobody has
   converged yet, and no amount of decorrelation closes it — only shortens it.
 
