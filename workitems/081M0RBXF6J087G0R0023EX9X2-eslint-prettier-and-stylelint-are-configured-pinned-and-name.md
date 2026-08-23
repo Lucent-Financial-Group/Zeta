@@ -73,6 +73,62 @@ The repo-wide error count is **unknown**. Wiring eslint on without knowing it co
 across hundreds of files, and reddening `main` to fix a lint gap would be a worse outcome than the
 gap. **Measure first.**
 
+## MEASURED (2026-08-23, shadow) — `src/Core.TypeScript` alone: **14,218 errors**
+
+```text
+bunx eslint src/Core.TypeScript > out.txt 2>&1; echo "ESLINT_RC=$?" >> out.txt
+  ✖ 14218 problems (14218 errors, 0 warnings)
+    2078 errors potentially fixable with --fix
+  ESLINT_RC=1
+```
+
+This is **one directory**, not the repo. `**/*.ts` also covers `demo/`, `genesis/`,
+`docs/research/scripts/`, `src/apps/`, `tests/` — the true total is higher and still unmeasured.
+
+**This settles the "measure before wiring" call decisively.** Switching eslint on would have turned
+`main` red across five figures of findings.
+
+**Top classes:**
+
+| count | rule |
+|---|---|
+| 3,429 | `@typescript-eslint/no-non-null-assertion` |
+| 2,810 | `@typescript-eslint/restrict-template-expressions` |
+| 659 | `@typescript-eslint/no-unsafe-member-access` |
+| 526 | `sonarjs/cognitive-complexity` |
+| 520 | `@typescript-eslint/no-unnecessary-condition` |
+| 487 | `@typescript-eslint/dot-notation` |
+| **438** | **`sonarjs/no-os-command-from-path`** |
+| 427 | `@typescript-eslint/no-unsafe-assignment` |
+| 408 | `@typescript-eslint/array-type` |
+| **331** | **`sonarjs/publicly-writable-directories`** |
+| 316 | `@typescript-eslint/require-await` |
+
+### Two classes are not style, and should be triaged separately from the bulk
+
+- **`sonarjs/no-os-command-from-path` (438)** — a command resolved through `PATH` rather than by
+  absolute path. In a repo that shells out as much as this one, `PATH` order is an injection surface,
+  and it is exactly the kind of thing the security personas would want to see.
+- **`sonarjs/publicly-writable-directories` (331)** — `/tmp` and friends, which are shared and
+  predictable-path. Relevant here specifically: parallel agents already share `/tmp`, and this session
+  ran its own work out of `/tmp` clones.
+
+**Honestly scoped:** both rules are **heuristics with real false-positive rates**. A CI script calling
+`git` from `PATH` is not a vulnerability, and a test fixture in `/tmp` is usually fine. The claim is
+**"769 sites deserve a look by someone with security context"**, NOT "769 vulnerabilities". Filing
+them as findings without that qualifier would be the same overclaiming this workitem is about.
+
+### What the number implies for the fix
+
+Enabling everything at once is off the table. The viable shape is:
+
+1. **Enable a small rule set repo-wide** — start with the two security-shaped rules above and anything
+   with near-zero false positives, since those carry real signal and low volume.
+2. **Enable the full profile on a narrow path** and widen — new code held to the standard, existing
+   code migrated deliberately.
+3. **Never** blanket-disable to reach green. 3,429 non-null assertions is a genuine finding about the
+   codebase, not noise to suppress.
+
 ## What the fix requires — a decision, not just an invocation
 
 1. **Measure** the repo-wide count per tool (`eslint`, `format:check`, `lint:css`) and report it.
