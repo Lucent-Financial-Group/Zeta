@@ -11,14 +11,13 @@ import { create as initFrame, loadRom, step, clearCausalMask } from "../../../Co
 import { buildMutualSimRom } from "../../../Core.TypeScript/chip8/games/mutual-sim";
 import { createCheatTable, applyCheatTable } from "../../../Core.TypeScript/chip8/cheat-engine";
 
-
 function computeSpectralFingerprint(buf: Uint8Array): string {
   let hash = 2166136261;
   for (let i = 0; i < buf.length; i++) {
     hash ^= buf[i]!;
     hash = Math.imul(hash, 16777619);
   }
-  return (hash >>> 0).toString(16).padStart(8, '0');
+  return (hash >>> 0).toString(16).padStart(8, "0");
 }
 
 let activeRom: Uint8Array = buildMutualSimRom();
@@ -37,40 +36,38 @@ self.onmessage = async (e: MessageEvent) => {
   const { type, payload } = e.data;
 
   if (type === "INIT") {
-    console.log(`[SwarmWorker] Initializing with LLM settings...`);
-    
+    console.log(`[SwarmWorker] Initializing swarm (LLM host/model come from persona-registry).`);
+
     swarm = new SwarmController();
-    
-    if (payload.apiKey) {
-      console.log(`[SwarmWorker] Using remote LLM endpoint: ${payload.baseUrl || "https://api.openai.com"}`);
-      await swarm.init();
-    } else {
-      console.log(`[SwarmWorker] Using local mock LLM fallback.`);
-      await swarm.init();
+    if (payload?.apiKey || payload?.baseUrl || payload?.model) {
+      console.warn(
+        `[SwarmWorker] Ignoring the LLM settings in this INIT payload — SwarmController ` +
+          `resolves host and model from persona-registry and exposes no override.`,
+      );
     }
+    await swarm.init();
 
     cheatTable = createCheatTable();
     world = {
       backlog: [{ id: "chip8-play-1", title: "Play CHIP-8 Game", ready: true, ambiguous: false }],
       history: [],
-      cartography: { scopeLevel: 0, timeOffset: 0 }
+      cartography: { scopeLevel: 0, timeOffset: 0 },
     };
 
     frame = initFrame();
     loadRom(activeRom, frame);
     currentRomRef = activeRom;
-    
+
     isRunning = true;
     loop(); // Kick off the loop
-  } 
-  else if (type === "INJECT_EPIGENETIC_MATERIAL") {
+  } else if (type === "INJECT_EPIGENETIC_MATERIAL") {
     const uploadedRom = new Uint8Array(payload.buffer);
     const fingerprint = computeSpectralFingerprint(uploadedRom);
     console.log(`[SwarmWorker] 🧬 Received Epigenetic Material. Spectral Fingerprint: ${fingerprint}`);
     console.log(`[SwarmWorker] Integrating Epigenetic Material into the Soft Value Regime...`);
-    
+
     // As per Zeta research, we avoid Kinetic Offsets (byte-by-byte corruption of brittle machine code).
-    // The structural bounds of the game are reset to the new fingerprint, 
+    // The structural bounds of the game are reset to the new fingerprint,
     // and the Swarm's Bayesian predictors organically adapt to the new causal footprint.
     activeRom = uploadedRom;
   }
@@ -90,7 +87,7 @@ async function loop() {
     cycle = 0;
     world = {
       ...world,
-      backlog: [{ id: "chip8-play-1", title: "Play Custom CHIP-8 Game", ready: true, ambiguous: false }]
+      backlog: [{ id: "chip8-play-1", title: "Play Custom CHIP-8 Game", ready: true, ambiguous: false }],
     };
   }
 
@@ -101,8 +98,8 @@ async function loop() {
   for (let i = 0; i < STEPS_PER_TICK; i++) {
     if (frame.pc > 0 && frame.pc < 4096) {
       const op = ((frame.mem.get(frame.pc) ?? 0) << 8) | (frame.mem.get(frame.pc + 1) ?? 0);
-      if ((op & 0xF000) === 0xF000 && (op & 0x00FF) === 0x000A) {
-        if (!frame.keys.some(k => k)) break;
+      if ((op & 0xf000) === 0xf000 && (op & 0x00ff) === 0x000a) {
+        if (!frame.keys.some((k) => k)) break;
       }
     }
     step(frame);
@@ -121,11 +118,14 @@ async function loop() {
 
   world = {
     ...world,
-    cheatEngine: { memorySectors, causalMask, display: displayArray }
+    cheatEngine: { memorySectors, causalMask, display: displayArray },
   };
 
-  if (!world.backlog.find(i => i.id === "chip8-play-1")) {
-    world = { ...world, backlog: [...world.backlog, { id: "chip8-play-1", title: "Play CHIP-8 Game", ready: true, ambiguous: false }] };
+  if (!world.backlog.find((i) => i.id === "chip8-play-1")) {
+    world = {
+      ...world,
+      backlog: [...world.backlog, { id: "chip8-play-1", title: "Play CHIP-8 Game", ready: true, ambiguous: false }],
+    };
   }
 
   world = await swarm.tick(world);
@@ -159,9 +159,9 @@ async function loop() {
   (self as any).lastGameLevel = gameLevel;
 
   // Pass data directly to the frontend player component over postMessage
-  const eventAction = { 
+  const eventAction = {
     kind: "chip8-frame",
-    display: displayArray, 
+    display: displayArray,
     cycle: cycle,
     keyPredictions: world.cheatEngine?.keyPredictions || {},
     activeConcept: (world.cheatEngine as any)?.activeConcept,
@@ -174,7 +174,7 @@ async function loop() {
   self.postMessage({ type: "FRAME", payload: eventAction });
 
   cycle++;
-  
+
   // Throttle to ~30 fps
   setTimeout(loop, 32);
 }
