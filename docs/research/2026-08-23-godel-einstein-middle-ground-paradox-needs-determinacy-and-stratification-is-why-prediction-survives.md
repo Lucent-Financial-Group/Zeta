@@ -29,6 +29,50 @@ themselves forbid CTCs — not descriptive.
 So: causality holds **locally and exactly**; the **global** structure is not guaranteed to. The
 middle is where those two facts have to live together.
 
+## The hacker's reading of the same split — and it is a diagnostic, not a metaphor
+
+Aaron 2026-08-23, from twenty-five years under the handle **AceHack**:
+
+> **"The global structure is where hacks happen. The local structure is where you exploit it."**
+
+That is the security-practitioner's statement of the middle ground, and it is operationally sharper
+than the physics framing:
+
+- **The vulnerability lives in the GLOBAL structure** — the topology, the composition, the emergent
+  property that nobody designed and no component owns.
+- **The exploit executes through LOCAL operations, every one of which is legal.** Nothing on the path
+  violates a rule. The rule-violation is a property of the *path*, not of any step on it.
+
+Applied to the Gödel–Einstein middle it is exact: **you cannot violate a light cone locally** — every
+segment of a closed timelike curve is a perfectly ordinary future-directed worldline. **The loop is
+the illegal object, and no point on it is illegal.** That is precisely the shape of a real exploit.
+
+**And it is the unifying diagnosis of a day's worth of defects in this repo** (2026-08-23), which is
+why it is recorded here rather than admired:
+
+| defect | every local step legal | the global property that broke |
+|---|---|---|
+| TOCTOU in `new-agenda.ts` | `existsSync` legal, `writeFileSync` legal | the **window between them** |
+| four-oracle tie-break divergence | each oracle self-consistent | **no shared tie in the seed**, so agreement was never tested |
+| `drift-sweep` publishing nothing | **1,597 runs concluded `success`** | the push was rejected **every time**, and the lane was dead |
+| `--frozen-lockfile` | seven jobs each failed correctly | **one manifest change**, upstream of all of them |
+| priors not reproducing | trainer deterministic **within** an environment | **across** environments, `Math.*` differs by 1 ULP |
+
+**The corollary is the useful part, and it is a rule for writing checks:**
+
+> **A local check cannot see a global property.**
+
+Which is exactly how the vacuous checks got built. `--verify` trains twice **in one process** — local,
+and structurally incapable of failing on the cross-environment divergence that matters. The tie-break
+golden vectors were **locally complete and globally blind**. A check that runs inside the thing it is
+checking cannot observe the thing it is checking *about*.
+
+**So the stratification argument below is not a separate idea from this one.** Tarski says a language
+cannot define its own truth predicate — you must ascend a level. The hacker's version says the same
+thing in the register where it gets used: **you cannot audit a global property from inside a local
+one.** Both are statements that the answer lives one level up, and both are why the middle ground is
+a place to work rather than a paradox to resolve.
+
 ## Aaron's claim: prediction survives, and the reason is stratification
 
 The worry is that CTCs destroy prediction — if the past is revisable, no forecast is stable. His
