@@ -25,12 +25,18 @@ export class BnnSocietyPredictor {
     this.initializeSociety();
   }
 
+  private seed = 12345;
+  private nextRandom(): number {
+    this.seed = (this.seed * 9301 + 49297) % 233280;
+    return this.seed / 233280;
+  }
+
   private initializeSociety() {
     for (let i = 0; i < this.agentCount; i++) {
       const agentBeliefs: Record<number, StudentTState> = {};
       for (let k = 0; k <= 0xF; k++) {
-        const diversityVariance = 1.0 + (Math.random() * 0.5); 
-        agentBeliefs[k] = createStudentTState(0.0, diversityVariance, 4.0, 0.1);
+        const diversityVariance = 1.0 + (this.nextRandom() * 0.5); 
+        agentBeliefs[k] = createStudentTState(4.0, 0.0, diversityVariance, 0.1);
       }
       this.agents.set(`agent_${i}`, agentBeliefs);
     }
@@ -47,20 +53,19 @@ export class BnnSocietyPredictor {
   /**
    * Calculates the probability distribution for all 16 hex keys using WSet Comonoid consensus.
    */
-  public predict(display: boolean[]): Record<number, number> {
-    // 1. Calculate heuristic visual gradients
-    let leftX = 0, leftY = 0, leftCount = 0;
-    let rightX = 0, rightY = 0, rightCount = 0;
+  public predict(display: number[]): Record<number, number> {
+    // 1. Calculate heuristic visual gradients based on Color Planes
+    let playerX = 0, playerY = 0, playerCount = 0;
+    let targetX = 0, targetY = 0, targetCount = 0;
 
     for (let y = 0; y < 32; y++) {
       for (let x = 0; x < 64; x++) {
         const idx = x + y * 64;
-        if (display[idx]) {
-          if (x < 32) {
-            leftX += x; leftY += y; leftCount++;
-          } else {
-            rightX += x; rightY += y; rightCount++;
-          }
+        const color = display[idx];
+        if (color === 2) {
+          playerX += x; playerY += y; playerCount++;
+        } else if (color === 1) {
+          targetX += x; targetY += y; targetCount++;
         }
       }
     }
@@ -68,19 +73,21 @@ export class BnnSocietyPredictor {
     const observations: Record<number, number> = {};
     for (let i = 0; i <= 0xF; i++) observations[i] = 0.0;
 
-    if (leftCount > 0 && rightCount > 0) {
-      const pX = leftX / leftCount;
-      const pY = leftY / leftCount;
-      const tX = rightX / rightCount;
-      const tY = rightY / rightCount;
+    if (playerCount > 0 && targetCount > 0) {
+      const pX = playerX / playerCount;
+      const pY = playerY / playerCount;
+      const tX = targetX / targetCount;
+      const tY = targetY / targetCount;
 
       const dx = tX - pX;
       const dy = tY - pY;
       const dist = Math.sqrt(dx * dx + dy * dy);
       
       if (dist > 0) {
-        const nx = dx / dist;
-        const ny = dy / dist;
+        // Run AWAY from the target (Target is Hunters)
+        const nx = -(dx / dist);
+        const ny = -(dy / dist);
+        
         if (ny < 0) observations[2] = (observations[2] ?? 0) + Math.abs(ny) * this.priors.targetTrackingWeight;
         if (ny > 0) observations[8] = (observations[8] ?? 0) + Math.abs(ny) * this.priors.targetTrackingWeight;
         if (nx < 0) observations[4] = (observations[4] ?? 0) + Math.abs(nx) * this.priors.targetTrackingWeight;
@@ -95,7 +102,7 @@ export class BnnSocietyPredictor {
       const wsetEntries: { key: number, weight: number }[] = [];
       for (let k = 0; k <= 0xF; k++) {
         const obsValue = observations[k] ?? 0.0;
-        const y = obsValue + ((Math.random() - 0.5) * 0.05); // Add subjective noise
+        const y = obsValue + ((this.nextRandom() - 0.5) * 0.05); // Add subjective noise
         const result = updateStudentT(beliefs[k]!, y);
         beliefs[k] = result.state;
         

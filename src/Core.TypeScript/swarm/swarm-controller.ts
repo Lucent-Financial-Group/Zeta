@@ -101,8 +101,16 @@ export class SwarmController {
     if (world.cheatEngine && world.cheatEngine.memorySectors.length > 0 && world.cheatEngine.causalMask && world.cheatEngine.display) {
       const { detectCausalSignature } = await import("./signature-detector");
       const { renderDisplay } = await import("../chip8/chip8");
-      const fs = await import("fs");
-      const path = await import("path");
+      let fs: any = null;
+      let path: any = null;
+      if (typeof process !== 'undefined' && process.versions && process.versions.node) {
+        try {
+          const fsName = "fs";
+          const pathName = "path";
+          fs = await import(/* @vite-ignore */ fsName);
+          path = await import(/* @vite-ignore */ pathName);
+        } catch(e) {}
+      }
 
       const mem = world.cheatEngine.memorySectors[0]!;
       const mask = world.cheatEngine.causalMask;
@@ -159,7 +167,7 @@ Output a JSON array of tool calls you wish to execute. Example: [{"tool": "setWo
 
         // Persist signature to known-signatures.json
         let known: string[] = [];
-        if (typeof fs !== 'undefined' && fs.readFileSync && fs.writeFileSync && typeof __dirname !== 'undefined') {
+        if (fs && typeof fs !== 'undefined' && fs.readFileSync && fs.writeFileSync && typeof __dirname !== 'undefined') {
           const sigFile = path.join(__dirname, "known-signatures.json");
           known = readKnownSignatures(
             (filePath) => fs.readFileSync(filePath, "utf-8"),
@@ -392,12 +400,13 @@ Output ONLY a valid JSON array of strings representing the sub-tasks. Example: [
             ];
           }
           const nextWorld = simulate(world, chosenAction);
-          // Attach BNN predictions to cheatEngine so TV can render them
+          // Attach BNN predictions and the chosen key to cheatEngine so TV can render them
           return {
             ...nextWorld,
             cheatEngine: {
               ...nextWorld.cheatEngine!,
-              keyPredictions: bnnPredictions
+              keyPredictions: bnnPredictions,
+              chosenKey: chosenKey
             }
           };
         }
