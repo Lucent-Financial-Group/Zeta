@@ -131,6 +131,66 @@ smaller and more defensible amendment, and that is what the work item proposes.
   the number of clusters, not the number of tokens.** §9a could only bound that
   count from below and above; this gives it a way to be computed.
 
+### Disagreement inside a cluster is not an obstacle — it IS the measurement
+
+The obvious worry about measuring change-rate over a cluster is that it is a
+**pushforward**: well-defined only if the members' rates cohere. The natural
+response is to make coherence a precondition — check it, refuse if violated.
+
+Aaron 2026-08-23 inverts that, and the inversion is the design:
+
+> _"I think if your change rates disagree, it's telling you something about the
+> **etymology of the word** and **where it is in its current lifetime within the
+> current culture**."_
+
+> Not _"check coherence, refuse if violated."_
+> But _"**measure the obstruction** — its magnitude and shape are the readout."_
+
+**This is native to the repo, not imported.**
+`.claude/rules/anti-babel-preserve-reconcilability.md` already makes exactly this
+move for a different object: _"two paths around a pole yield genuinely different
+results, and **that difference is information, not error**"_ (monodromy). Aaron's
+inversion is the same principle applied to name-clusters. Mathematically it is an
+**obstruction**: the failure of a local measurement to descend along a quotient,
+which obstruction theory treats as a computable class rather than an error.
+_(Named as the shape it resembles; no cohomological claim is being made here.)_
+
+### The third diagnosis — and it is what `anti-babel` actually needs
+
+**Register: `proposed`.** No data yet. What follows from the schema is the
+_ability_ to compute this; that the three states **mean** what the table says is
+an interpretation awaiting evidence.
+
+| cluster churn      | proposed diagnosis                                                    |
+| ------------------ | --------------------------------------------------------------------- |
+| uniformly **low**  | a settled concept — one name won                                      |
+| uniformly **high** | a concept still forming                                               |
+| **disagreeing**    | **a rename in progress** — an old name going quiet as a new one rises |
+
+**The third row is the strongest argument for the registry existing at all**, and
+it is not "a nicer glossary". `anti-babel`'s entire concern is vocabulary drift
+becoming irreconcilable, and today drift is only noticed _after_ it has happened.
+A disagreeing-churn cluster lets you watch a term turn over **while it is turning
+over**. That is the difference between a post-mortem and an instrument — the
+missing measurement for a rule that has been asserting an invariant it could not
+observe.
+
+**No churn metric is invented here, and none is claimed as measured.** What
+_would_ be measured is per-name posting counts across revs — available precisely
+because the index is rev-stamped, which is the one requirement that has survived
+every revision of this design. The choice of statistic is left open.
+
+**What would refute it**, per `numerology-vs-number-theory.md` — three tidy
+states is exactly the kind of scheme that feels confirmed because it is neat, and
+_"too many correlations is a warning, not a confirmation signal"_:
+
+> If disagreeing churn turns out to track **file churn** or **author count**
+> rather than anything etymological, the table is measuring the repo's commit
+> pattern and calling it culture.
+
+That is a real and cheap confound, and it must be checked **before** the table is
+believed, not after it is built on.
+
 ### A resonance, recorded and left open — not an identification
 
 The embedding space here is the same _kind_ of space as the geometric root in the
