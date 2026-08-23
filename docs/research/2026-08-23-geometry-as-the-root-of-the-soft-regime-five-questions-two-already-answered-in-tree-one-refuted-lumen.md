@@ -921,6 +921,234 @@ ambiguity arriving at the coarsening question by a different door, and it means 
 |---|---|---|
 | `081M0R34AZY087G0R001H9N6YS` | descent along a coarsening: the exact iff, the extensive/intensive split, and Pythagorean = within-fibre Bregman information | Soraya, **Lean 4** (the descent theorem) + a computed witness (the two barycentres) |
 
+---
+
+## 11. ADDENDUM TO THE ADDENDUM — is "a count is CRDT, a condition is CASPaxos" a theorem?
+
+> Aaron, on §10's extensive/intensive split: *"for me **a count is CRDT** and **a condition is
+> CASPaxos or CASRaft**-ish."*
+
+**Verdict: directionally right, off by one refinement in *each* column — and the refinements are
+the useful part. The two conditions are NOT equivalent: they are co-extensive on the examples and
+separated by IDEMPOTENCE**, which belongs to the delivery channel rather than to the statistic
+(§11.2). The correspondence is a **theorem** where it is stated over commutative monoids (§11.8)
+and an **analogy that parts** where it is stated over counts. The left column understates what is needed (a count is a `CmRDT`, not a `CvRDT`);
+the right column overstates it (**most intensive quantities need no consensus at all**). The
+corrected invariant is **commutativity of the update**, and it is the *same* invariant on both
+sides of the correspondence. The four-way agreement is **recorded design recognised in a new place**,
+not a coincidence needing triage — checked, with counts, in §11.6.
+
+Numbers from `docs/research/scripts/2026-08-23-geometry-as-root-extensive-crdt-verify.py`
+(`ALL PASS`, exit 0).
+
+### 11.1 The one distinction, stated once
+
+> **Descent along a coarsening is free exactly when the aggregation is invariant under the
+> symmetries of the fibre.** The fibre is *unordered* ⇒ the aggregation must be **commutative and
+> associative**. The fibre arrives over a channel that may **duplicate** ⇒ additionally
+> **idempotent**. The fibre is *ordered and the order matters* ⇒ you must **agree the order**, and
+> agreeing an order is consensus.
+
+Three tiers, one condition, and everything below is that sentence in a different vocabulary.
+
+### 11.2 Left column — a raw count is a CmRDT, **not** a CvRDT
+
+`+` on counts is commutative and associative and **not idempotent** (`x + x ≠ x`, C1). Those are
+the **commutative monoid** axioms, not the **join-semilattice** axioms — the semilattice needs
+exactly the one that fails. So:
+
+- **extensive ⇒ concurrent operations commute ⇒ `CmRDT` (op-based).** True, unconditionally.
+- **extensive ⇒ `CvRDT` (state-based).** **False** — the state is not a join-semilattice.
+
+The standard repair is the **G-Counter**, and it is *not* a property of counting: it **re-indexes
+the fibre by source**, merges with elementwise `max` (which *is* idempotent, C2), and recovers the
+count only at **read** time as `Σ`. That is a **change of the carried object** — you decline to
+quotient by replica identity — which in §10.1's language is *keeping a section of the coarsening*.
+
+**And `src/Core/Crdt.fs` is the in-tree witness**, exactly this shape: `GCounter` is a `ZSet` keyed
+by `replicaId`, `Merge` is elementwise `max`, `Value` is the sum. **The merge and the aggregation
+are two different operations on two different objects**, which is precisely where the categorical
+condition and the CRDT condition part company.
+
+> **In-tree defect, found by this check.** `src/Core/Crdt.fs:9` reads *"DBSP Z-sets with integer
+> weights are already a **signed-multiset join-semilattice** — commutative, associative, with an
+> identity."* Those three axioms are the **commutative monoid**; a join-semilattice additionally
+> requires **idempotence**, which `ZSet.add` does not have and cannot have (it is a group — it has
+> *inverses*, which is the opposite of idempotent). **The code is correct and the comment names the
+> wrong structure** — and the tell is that `GCounter.Merge` reaches for `max` precisely *because*
+> `+` is not idempotent. Reported for the code phase, not filed as implementation.
+
+**Idempotence is a property of DELIVERY, not of the statistic** (C3): redeliver one increment and
+raw `+` reads `10` where the truth is `5`, while keyed-max reads `5`. This is the cleanest
+statement of the boundary — commutativity/associativity are about **the meter** (does the answer
+depend on how you grouped the fibre?), idempotence is about **the channel** (does it depend on how
+many times you heard it?). Which is Aaron's own split from a different thread: *"reproducibility is
+where the meter and the communications live."* Two conditions, two halves, and only the first is
+what §10's pushforward asks for.
+
+### 11.3 Right column — "intensive ⇒ consensus" is **false**, and the thermodynamics says why
+
+The bigger correction. An intensive quantity that is a **ratio of two extensives** needs **no
+coordination whatsoever**: carry both measures, merge both freely, divide at read.
+
+| | value |
+|---|---|
+| `(sum, count)` merged across two uneven partitions, then divided | **6.2857142857** |
+| direct global mean | **6.2857142857** — equal |
+| average of the two partition averages | **7.7000000000** — wrong by **1.414** |
+
+*"You cannot average averages"* is true and is **not** an argument for consensus; it is an argument
+for **carrying the right pair**. And this is not a trick — it is the thermodynamic definition:
+**an intensive quantity IS a ratio of extensives** (density = mass/volume, `T = ∂U/∂S`). So the
+older anchor supplies the **repair**, not merely the vocabulary, which is what makes it a checked
+anchor rather than a decorative one. Measure-theoretically it is the **Radon–Nikodym derivative**
+`dν/dμ`: §10.1 said measures push forward freely, so *any* density recoverable from two
+freely-pushing measures inherits that freedom.
+
+**So what actually forces consensus?** **Non-commutativity** (C5): `f(g(s)) = 26 ≠ 23 = g(f(s))`
+for a read-modify-write pair, and no merge function repairs an order-dependent result. **CAS is the
+canonical non-commutative operation** — its result depends on what was already there — so
+**CASPaxos (Rystsov 2018) is the right primitive, reached by the right reason.** Aaron's right-hand
+box is correct; its label was.
+
+### 11.4 The corrected table
+
+| | free / wait-free | needs coordination |
+|---|---|---|
+| **categorical** | aggregation invariant under fibre symmetry | order-dependent aggregation |
+| **algebraic** | commutative monoid (+ idempotent ⇒ semilattice) | non-commutative operation |
+| **thermodynamic** | extensive, **or** intensive expressed as a ratio of extensives | a quantity with no ratio-of-extensives form |
+| **distributed** | `CmRDT` (commuting ops); `CvRDT` after per-source keying | **CASPaxos / CASRaft** |
+| **Zeta §2** | **wait-free** | requires coordination |
+
+The one row that changed is the thermodynamic one, and changing it moves a large class of
+quantities — every density, every rate, every mean — from the right column to the left.
+
+### 11.5 The practical payoff survives, and gets a lower bound behind it
+
+*"Prefer the extensive formulation because it is wait-free"* (manifesto §2) is **not** a style
+preference. Merging a commutative aggregation is wait-free and available **under partition**
+(Strong Eventual Consistency, Shapiro et al. 2011). Consensus is **impossible** in an asynchronous
+system with a single crash fault (**Fischer, Lynch & Paterson 1985**) and unavailable under
+partition (**Gilbert & Lynch 2002**). The gap is a **computability class**, not a message count.
+
+**And the naming-registry consequence converges with a rule already resident.** A *rate* is
+`Δcount / Δtime` — the denominator is a **duration**, and agreeing a duration is agreeing a clock,
+which is exactly what
+[`local-time-never-enters-the-shared-fold`](../../.claude/rules/local-time-never-enters-the-shared-fold.md)
+forbids entering the shared fold. So:
+
+> **Carry the count. Never carry the rate.** The count is extensive, merges wait-free, and contains
+> no clock. Let the *reader* divide by an agreed phase interval. One design rule satisfying §10's
+> pushforward condition and the local-time rule simultaneously, from the same argument — and
+> derived from the math rather than imposed on it.
+
+The §10 rider still stands and is now sharper: publish the **within-fibre dispersion** beside the
+cluster's count, because that dispersion is what says whether the cluster merged a hub with a
+satellite. Dispersion is itself a ratio of extensives (`Σx²`, `Σx`, `Σ1`), so it is **also
+wait-free**. Nothing in the DV2.0 measurement needs consensus.
+
+### 11.6 Recognition, not discovery — and the correction I am recording rather than hiding
+
+My first draft of this section triaged the four-way agreement (categorical / algebraic /
+thermodynamic / distributed) as a **dense resonance** needing an independence check, per
+`.claude/rules/numerology-vs-number-theory.md`. **That applied the right rule to the wrong case.**
+
+> Aaron: *"you don't remember this history — this is one of the **primary things we keep checking
+> are correlated, over and over, since the project started**. It's **database and CRDT and DBSP
+> oriented**. **Zeta since its conception is a distributed consensus algorithm that gracefully
+> degrades to slower operations based on trust gradients.**"*
+
+Checked at `cdc2227156` rather than taken on trust:
+
+| measurement | count |
+|---|---|
+| files mentioning `CRDT` | **661** |
+| files mentioning `DBSP` | **1628** |
+| files carrying **both** | **208** |
+| `trust gradient` / `gracefully degrades` | `docs/VISION.md`, `docs/PROVEN-CORE-MAP.md`, `docs/DECISIONS/`, four backlog rows, and `rules.bak/useful-output-is-evidence-not-authority.md` — the **L0–L4 absorption ladder**, Amara 3rd ferry, **2026-05-28** |
+
+The rule says a dense resonance is a prompt to check independence. **Here the independence check has
+been running since inception, across 208 files.** So the register is **recorded design recognised in
+a new place**, not a coincidence requiring triage — and presenting it as evidence would have been
+double-counting a commitment the project already made.
+
+I am recording the correction instead of quietly rewriting, because that rule's own worked example
+is that *an unlabelled coincidence promoted to a belief is the failure* — and an unlabelled
+**correction** is the same defect with the sign flipped.
+
+**What is actually new is small, and it is the part worth having:**
+
+| | status at `cdc2227156` |
+|---|---|
+| the **architecture** — CRDT/DBSP correlation, graceful degradation on trust gradients | **old and pervasive.** 208 files; the ladder dates to 2026-05-28 |
+| the **criterion** — extensive ⇒ wait-free, non-commutative ⇒ consensus | **absent.** `git grep -in "extensive.*intensive"` over `src/`, `docs/`, `.claude/` returns **only this document**; `git grep -in "needs consensus\|requires consensus\|degrade.*consensus"` over `src/` and `.claude/rules/` returns **nothing** |
+
+> **The substrate has been making this call by judgement, and making it well, without a stated
+> test.** The contribution is therefore neither a new architecture nor a new correspondence — it is
+> a **decision procedure** for a choice that was already being made correctly by hand. The
+> architecture being old is what makes the criterion worth writing down, not what makes it
+> redundant.
+
+### 11.7 The degradation tier — what the result is *for*
+
+The operational statement is *"Zeta gracefully degrades to slower operations based on trust
+gradients."* §10's descent condition is then not an analogy to a coordination requirement — in this
+substrate it **selects the degradation tier**:
+
+| statistic | merge | mode | cost | what the trust gradient decides |
+|---|---|---|---|---|
+| **count** (extensive) | unconditional | **CRDT** | **wait-free** (§2) | nothing — always affordable |
+| **ratio of counts** (density / rate / mean / variance) | unconditional, on the pair | **CRDT** | **wait-free** | nothing — §11.3 moved this row *down* |
+| **order-dependent update** (a decision, a CAS, a canonical-name election) | none exists | **CASPaxos / CASRaft** | coordination | **whether you can afford the round** |
+| duplicating channel, any of the above | per-source keying | **CvRDT** | free | orthogonal — costs no coordination |
+
+**The §11.3 correction earns its keep exactly here.** *"Rate ⇒ consensus"* would have pushed every
+density, rate, mean and variance onto the consensus tier. Because most intensive quantities are
+**secretly a pair of extensive ones**, the criterion moves them back to wait-free — which is
+strictly the right direction for an architecture whose stated goal is to degrade *as rarely as
+possible*. A criterion that over-escalates is worse than no criterion, because it spends the
+gradient's budget on work that never needed it.
+
+**The procedure, in the form a designer can apply:**
+
+1. Is the statistic a **count**? → wait-free CRDT. Done.
+2. Is it a **ratio of counts**? → carry numerator and denominator as separate counts and divide at
+   read. **Still wait-free.** Do not reach for consensus here.
+3. Is the update **order-dependent**? → this is the **only** tier that needs CASPaxos/CASRaft, and
+   the trust gradient decides whether the round is affordable.
+4. Can the channel **duplicate**? → per-source keying (G-Counter). Orthogonal to 1–3, free.
+
+Applied to the naming registry: per-agent change **counts** and their **dispersion** are tier 1–2
+and need no coordination at all; only *deciding* something about a cluster — its canonical name,
+its hub-or-satellite classification — reaches tier 3. **Registry measurement is wait-free;
+registry adjudication is not**, and the line between them is now a test rather than a judgement
+call.
+
+*Register: the procedure is **derived** from §10's descent condition; the ladder it selects on is
+**recorded design**; the mathematical tier boundaries are §11.8's `iff`.*
+
+### 11.8 Routing
+
+**Not a new work-item.** The precise half is folded into the existing descent item
+`081M0R34AZY087G0R001H9N6YS` as **D4**, because it is the same theorem family and a sixth
+investigation is not what the evidence asks for. The statement is precise enough to be worth Lean:
+
+> An aggregation `⊕ : Multiset(X) → X` descends along **every** coarsening **iff** it factors
+> through multiset equality — i.e. iff `(X, ⊕)` is a **commutative monoid**. It descends along
+> every coarsening whose fibres arrive with **unknown multiplicity** **iff** it is additionally
+> **idempotent** — i.e. iff `(X, ⊔)` is a **join-semilattice**.
+
+Two tiers, an `iff` each, and they are **exactly** the `CmRDT` and `CvRDT` conditions of Shapiro et
+al. — which is what upgrades the mapping from analogy to theorem in the one place where it is one,
+and simultaneously names the place where it is not (§11.2). Short in Lean 4 (`Multiset`,
+`Multiset.sum`, `Finset.sup`).
+
+**Anchors added to `docs/PRIOR-ART-LIST.md`:** Shapiro–Preguiça–Baquero–Zawirski 2011 (the
+CvRDT/CmRDT split and the semilattice condition — the anchor that **corrected** §11.2 rather than
+confirming it); Rystsov 2018 (CASPaxos); Tolman 1917 (extensive/intensive); FLP 1985 and
+Gilbert–Lynch 2002 (the cost). Beckman was already resident as REQUIRED READING.
+
 ## Pointers
 
 - `src/Core/WeightedSet.fs` · `src/Core/WSet.fs` · `src/Core.TypeScript/algebra/wset.ts` — Q1's subjects.
@@ -933,5 +1161,7 @@ ambiguity arriving at the coarsening question by a different door, and it means 
 - `docs/research/2026-08-23-what-discretisation-costs-the-bnn-lane-*.md` — the monoid-not-semiring finding §1.4 scopes.
 - `docs/research/scripts/2026-08-23-geometry-as-root-ng-convexity-verify.py` — every number in §3.
 - `docs/research/scripts/2026-08-23-geometry-as-root-bregman-coarsening-verify.py` — every number in §10.
+- `docs/research/scripts/2026-08-23-geometry-as-root-extensive-crdt-verify.py` — every number in §11.
+- `src/Core/Crdt.fs` — §11.2's witness (merge is `max`, read is `Σ`) and its doc-comment defect.
 - `.claude/rules/numerology-vs-number-theory.md` — why §4.3's table is invariants, not counts.
 - `.claude/rules/toy-is-free-metered-must-be-earned.md` — why §3.5 and §7.1 exist.

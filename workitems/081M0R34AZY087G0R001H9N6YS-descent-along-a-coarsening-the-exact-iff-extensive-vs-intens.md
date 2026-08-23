@@ -97,3 +97,48 @@ D1's iff), **or** a Bregman divergence and a cluster for which the D3 decomposit
 
 Implementation. And the **Gärdenfors** half of Q3 — a coarsening yields a quotient, not a convex
 region, so §3.3's problem is untouched by this item.
+
+---
+
+## D4 (added 2026-08-23, §11) — the descent condition IS the CmRDT/CvRDT condition
+
+Aaron mapped §10's extensive/intensive split onto distributed primitives: *"a count is CRDT and a
+condition is CASPaxos or CASRaft-ish."* Checking it produced a **two-tier `iff`** that is precise
+enough for Lean and that answers the mapping's real question (equivalent, or merely co-extensive?).
+
+> **D4.** An aggregation `⊕ : Multiset(X) → X` descends along **every** coarsening **iff** it
+> factors through multiset equality — i.e. iff `(X, ⊕)` is a **commutative monoid**. It descends
+> along every coarsening whose fibres arrive with **unknown multiplicity** **iff** it is
+> additionally **idempotent** — i.e. iff `(X, ⊔)` is a **join-semilattice**.
+
+The two tiers are **exactly** Shapiro et al.'s `CmRDT` and `CvRDT` conditions. So the mapping is a
+**theorem** over commutative monoids and an **analogy that parts** over counts: `+` on counts is
+commutative and associative and **not idempotent**, so a raw count is a `CmRDT` and **not** a
+`CvRDT` state. The separator is **idempotence**, and idempotence is a property of the **delivery
+channel**, not of the statistic.
+
+**Lean 4, short.** Mathlib has `Multiset`, `Multiset.sum`, `Finset.sup`. The value is the `iff` in
+both directions — the forward direction is routine; the **converse** (descent along *every*
+coarsening forces commutativity) is what makes it a characterisation rather than a sufficient
+condition, and it is the half worth machine-checking.
+
+**Falsifier.** Exhibit a non-commutative `⊕` that nevertheless descends along every coarsening
+(refutes tier 1), or a non-idempotent `⊕` that descends along every duplicating-channel coarsening
+(refutes tier 2).
+
+**Computed witnesses already written** —
+`docs/research/scripts/2026-08-23-geometry-as-root-extensive-crdt-verify.py` (`ALL PASS`, exit 0):
+count is commutative + associative + **not** idempotent; per-source keying + `max` **is** a
+semilattice; redelivery double-counts under `+` and not under keyed-max; `(sum, count)` merges to
+the exact global mean while average-of-averages is wrong by `1.414`; and a non-commutative pair
+diverges under reordering.
+
+**Anchors:** Shapiro, Preguiça, Baquero & Zawirski 2011 (CvRDT/CmRDT, the semilattice condition);
+Rystsov 2018 (CASPaxos); Tolman 1917 (extensive/intensive, and the ratio-of-extensives repair);
+FLP 1985 + Gilbert & Lynch 2002 (why the tier boundary is a computability class). Rows added to
+`docs/PRIOR-ART-LIST.md`.
+
+**Not in scope.** The architectural correspondence itself — CRDT/DBSP correlation and graceful
+degradation on trust gradients is **recorded design** (208 files carry both terms; the L0–L4 ladder
+dates to 2026-05-28), not a claim needing proof. What is new is the **criterion**, which §11.6
+measured to be absent from the tree.
