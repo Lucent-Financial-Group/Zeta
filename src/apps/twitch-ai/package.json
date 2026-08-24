@@ -5,11 +5,13 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "typecheck": "tsc --noEmit",
     "build": "tsc && vite build",
-    "build:gh-pages": "tsc && vite build --base=./",
+    "build:gh-pages": "tsc && vite build --base=/Zeta/twitch-ai/",
     "preview": "vite preview"
   },
   "devDependencies": {
+    "@types/node": "^26.2.0",
     "typescript": "~6.0.2",
     "vite": "^8.2.0"
   }
