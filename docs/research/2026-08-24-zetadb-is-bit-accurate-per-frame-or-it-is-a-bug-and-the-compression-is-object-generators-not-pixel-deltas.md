@@ -158,9 +158,33 @@ Aaron, correcting the caveat above:
 | **Mechanised orbit detection** | can a machine find the objects in *this* running title? | **bigger machines are the harder test** — §7's falsifier is right for this one |
 | **Superdeterministic general conclusions** | can we reason over *all possible states* and conclude something general? | **CHIP-8 is already at the edge**; every newer generation is *less* tractable |
 
-For the second, **scaling up is scaling away**. CHIP-8 → Atari → NES is not a ladder toward the goal; it is a retreat from the only regime where the method applies. That is precisely what makes it *"an ideal arena for theory"* — the theory needs a machine small enough to be exhausted and rich enough to be interesting, and CHIP-8/CHIP-9 was picked to sit on that line.
+For the second, **exhaustive reasoning does not scale up**. CHIP-8 → Atari → NES leaves the only regime where exhaustion is possible, which is precisely what makes CHIP-8 *"an ideal arena for theory"* — the theory needs a machine small enough to be exhausted and rich enough to be interesting, and CHIP-8/CHIP-9 was picked to sit on that line.
 
-**A resonance worth recording and not asserting:** this repo already uses *superdeterminism* in the Bell/CHSH sense — `src/Bayesian/YinYangEnsemble.fs:170`, *"S = 4 (ρ > 1/3): superdeterminism / common seed — groupthink, useless ensemble"* — the regime of **total determination**, where nothing is independently free. A deterministic emulator is that regime made literal: exhaustive reasoning is possible *because* nothing is free. Whether that is one idea or two words is not settled here; per `numerology-vs-number-theory` it is a **shape match, recorded as a coincidence worth watching**, not an identification. (`superdetermin*` appears in 119 files, `chip9` in 180.)
+**But the ladder is not a dead end, and my first phrasing ("scaling up is scaling away") was too pessimistic.** Aaron:
+
+> *"I'm hoping we use techniques learned from the smaller to make the larger more tractable **with less watts**."*
+
+**What does not transfer is the exhaustion; what transfers is what the exhaustion taught you.** Exhaust CHIP-8, learn which decompositions hold, which approximations are safe, which object shapes recur — then carry those to a machine you can never exhaust. On the larger machine you are not reasoning over all states; you are applying structure whose validity was *established* where all states were reachable.
+
+**This is §5c's generator-library argument one level up.** There, a shape learned on one title makes the next title cheaper. Here, structure learned on one *machine* makes the next machine tractable. The asset is the same in both cases: **a vocabulary of validated shapes, amortised across everything that comes after.**
+
+**And "less watts" is the right metric, not "faster."** Energy per unit of analysis is measurable, it is the honest currency for a method whose alternative is brute force, and it makes the claim falsifiable: *techniques learned on CHIP-8 reduce the joules needed to reach a given confidence on Atari, versus not having them.* That is a comparison someone can actually run. It is also the same denominator as the novelty work — ΔU per available compute — rather than a new idea.
+
+**Unmeasured:** no technique has yet been transferred from CHIP-8 to a larger machine, and no watt-comparison exists. The ladder is a plan with a stated metric, which is better than a plan without one and is not a result.
+
+**Not a coincidence — one regime, used deliberately in both places.** I first recorded the `superdeterminism` overlap as a shape match worth watching. Aaron settled it:
+
+> *"I use superdeterminism plus seed correlation to explain many of our S=4 results, cause **we are not violating any causality — we are working with the regime that circumvents them.** This is why **decorrelation is our scarce resource, not correlation**. We start at S=4."*
+
+**The mechanism is measurement independence, and naming it is what makes this not hand-waving.** Superdeterminism does not beat Bell by signalling or by breaking causality. It beats it by denying the **measurement-independence** (free-choice) assumption — that the measurement settings are statistically independent of the hidden variables. Deny that, and S = 4 is reachable with no causal violation whatsoever.
+
+**An agent fleet from a common seed literally lacks measurement independence.** What each agent examines and the prior it examines with have a *common cause* — the seed. So S = 4 is not a violation the system commits; **it is the assumption failing by construction, which is the starting condition.** The same is true of a deterministic emulator, and for the same reason: nothing in it is independently free.
+
+**Hence the inversion that organises the whole project.** Most distributed systems spend effort *acquiring* correlation — consensus, agreement, synchronisation. This one begins fully correlated and spends effort *escaping* it. That is why `ρ = 1/(1+L)` buys decorrelation with **delay**, why *"the delay that resolves the check has to come from outside the seed"*, and why correlated agents are *"one closed loop in N masks"* rather than an ensemble. (Already stated in `docs/VISION.md` and three research docs — recorded here for the link to the emulator case, not as a new claim.)
+
+**Measured gap worth flagging:** `S=4` appears in **313 files** and `superdetermin*` in **119**, but **`measurement independence` in 5**. The regime is used pervasively; the assumption it actually denies is barely written down. That is the thin part of an otherwise well-covered idea.
+
+**What is still NOT established:** that the emulator case and the ensemble case share a regime does **not** mean results transfer between them. Exhaustive reasoning over a 4 KB machine and Condorcet accuracy over N agents are different problems that happen to sit in the same corner of the correlation axis. Per `numerology-vs-number-theory`, the shared regime is structural; **transfer of results is unclaimed.** (`chip9` appears in 180 files.)
 
 **Recorded status:** a few easy orbits in CHIP-8 is the entire measured base. Everything downstream — the compression, the generator library, the per-frame store efficiency — rests on a mechanisability claim that is currently supported by expert instinct and one small machine. That is a legitimate place to start and an illegitimate place to stop, and saying which is the point of writing it down.
 
