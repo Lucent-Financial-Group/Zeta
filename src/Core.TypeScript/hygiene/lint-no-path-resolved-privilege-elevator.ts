@@ -199,7 +199,14 @@ export function collectFiles(root: string, rel: string, acc: string[]): void {
       collectFiles(root, r, acc);
       continue;
     }
-    if (!entry.isFile()) continue;
+    // `isFile()` alone would silently DROP a symlinked source file: a Dirent does not
+    // follow links, so a symlink to a real `.ts` reports `isSymbolicLink()` and neither
+    // `isDirectory()` nor `isFile()`. The previous `statSync` walk followed links and
+    // scanned it. Shrinking a security lint's corpus while it keeps printing OK is the
+    // failure this repo names as "a check that did not run looking like one that passed",
+    // so links are scanned. (Measured 2026-08-24: 0 symlinked sources under the roots
+    // today, but 7 symlinks exist there — the mechanism is live, the instance is not yet.)
+    if (!entry.isFile() && !entry.isSymbolicLink()) continue;
     if (!/\.(ts|mts|cts|js|mjs|cjs)$/.test(name)) continue;
     if (/\.test\.(ts|mts|cts|js|mjs|cjs)$/.test(name)) continue; // stated gap, see header
     acc.push(r);
@@ -232,7 +239,7 @@ export function countShellElevatorUses(repoRoot: string): {
         walk(r);
         continue;
       }
-      if (entry.isFile() && name.endsWith(".sh")) acc.push(r);
+      if ((entry.isFile() || entry.isSymbolicLink()) && name.endsWith(".sh")) acc.push(r);
     }
   };
   walk("");
@@ -254,6 +261,14 @@ export function countShellElevatorUses(repoRoot: string): {
   }
   return { files, uses, shellFiles };
 }
+
+/** The corpus floor. A scope regression — a `SKIP_DIRS` addition, a moved directory, a
+ *  predicate that stops matching — must not be able to report OK while scanning nothing.
+ *  Set to roughly half the live count (1289 on 2026-08-24) so ordinary growth and deletion
+ *  never trip it and a collapse always does. Same discipline as
+ *  `hygiene:no-ambient-credential-hoist`, which exits 2 below its own floor after
+ *  `lint:markdown` (#10712) reported success having narrowed its glob to nothing. */
+export const MIN_SCANNED_FILES = 640;
 
 export function main(repoRoot: string): number {
   const all: { rel: string; abs: string }[] = [];
@@ -284,6 +299,14 @@ export function main(repoRoot: string): number {
       `in ${String(shell.files)} of ${String(shell.shellFiles)} non-archive shell scripts. Shell is out of ` +
       `this lint's reach AND out of eslint's -- nothing here should be read as covering it.\n`,
   );
+  if (all.length < MIN_SCANNED_FILES) {
+    process.stdout.write(
+      `\nREFUSED (scope regression): scanned ${String(all.length)} file(s), floor is ` +
+        `${String(MIN_SCANNED_FILES)}. A clean result over a collapsed corpus is not a clean ` +
+        "result — it is a check that did not run wearing the report of one that passed.\n",
+    );
+    return 2;
+  }
   if (findings.length === 0) {
     process.stdout.write("  OK — no privilege elevator named in a command position.\n");
     return 0;

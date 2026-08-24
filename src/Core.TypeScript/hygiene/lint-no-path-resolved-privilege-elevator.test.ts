@@ -3,9 +3,15 @@
 // argv-prefix array, a program chosen through a variable — which is why the P1 in
 // docs/BUGS.md (2026-08-24) was live on main while that rule was available.
 import { expect, test, describe } from "bun:test";
+import { mkdtempSync, mkdirSync, writeFileSync, symlinkSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import {
   blankComments,
+  collectFiles,
   commandPositionReason,
+  main,
+  MIN_SCANNED_FILES,
   scanSource,
   WAIVER_RE,
 } from "./lint-no-path-resolved-privilege-elevator.ts";
@@ -107,5 +113,62 @@ describe("mechanics", () => {
     for (const n of ["sudo", "doas", "pkexec", "gsudo", "runas"]) {
       expect(one(`spawnSync("${n}", []);`).length).toBe(1);
     }
+  });
+});
+
+// ── SCOPE REGRESSIONS: a clean result over a shrunken corpus is not a clean result ───────
+// Both cases below are ways this lint could keep printing OK while checking less than it
+// claims -- the same class as `lint:markdown` (#10712) narrowing its glob to nothing and
+// reporting success. Neither is hypothetical: the symlink case was introduced by fixing a
+// check-then-use race, and caught before it shipped.
+
+describe("the corpus cannot silently collapse", () => {
+  test("a symlinked source file is SCANNED — `isFile()` alone would drop it", () => {
+    const root = mkdtempSync(join(tmpdir(), "zeta-elev-sym-"));
+    try {
+      mkdirSync(join(root, "real"), { recursive: true });
+      writeFileSync(join(root, "real", "bad.ts"), 'const r = run("sudo", ["rm", "-rf", p]);\n');
+      symlinkSync("real/bad.ts", join(root, "linked.ts"));
+      const acc: string[] = [];
+      collectFiles(root, "", acc);
+      // A Dirent does not follow links: `linked.ts` reports isSymbolicLink(), and neither
+      // isDirectory() nor isFile(). Dropping it would remove a real file from a SECURITY
+      // lint's corpus while the report still said OK.
+      expect(acc.toSorted()).toEqual(["linked.ts", "real/bad.ts"]);
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+
+  test("a directory symlink is not recursed twice — the link is not a directory to the walker", () => {
+    const root = mkdtempSync(join(tmpdir(), "zeta-elev-dir-"));
+    try {
+      mkdirSync(join(root, "real"), { recursive: true });
+      writeFileSync(join(root, "real", "a.ts"), "const x = 1;\n");
+      symlinkSync("real", join(root, "alias"));
+      const acc: string[] = [];
+      collectFiles(root, "", acc);
+      expect(acc).toEqual(["real/a.ts"]);
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+
+  test("a collapsed corpus REFUSES (exit 2) rather than reporting OK", () => {
+    const root = mkdtempSync(join(tmpdir(), "zeta-elev-floor-"));
+    try {
+      mkdirSync(join(root, "src"), { recursive: true });
+      writeFileSync(join(root, "src", "a.ts"), "const x = 1;\n");
+      // One clean file: zero findings, so without a floor this would print OK and exit 0.
+      expect(main(root)).toBe(2);
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+
+  test("the floor is below the live corpus, so ordinary growth and deletion never trip it", () => {
+    const acc: string[] = [];
+    for (const r of ["src", "tools"]) collectFiles(r, "", acc);
+    expect(acc.length).toBeGreaterThan(MIN_SCANNED_FILES);
   });
 });
