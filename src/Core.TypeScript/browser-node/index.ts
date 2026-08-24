@@ -142,6 +142,17 @@ export {
 } from "./browser-checkpoint-port";
 
 export {
+  compareAndSwapRevisionPolicy,
+  monotoneLastWriterWinsRevisionPolicy,
+  type RevisionPolicyDecision,
+  type RevisionPolicyId,
+  type RevisionPolicyPort,
+  type RevisionPolicyRefusal,
+  type RevisionPolicyResult,
+  type RevisionedBytes,
+} from "../persistence/revision-policy";
+
+export {
   openNativeIndexedDbCheckpointPort,
   type NativeIndexedDbCheckpointFeedback,
   type NativeIndexedDbCheckpointOptions,
@@ -149,6 +160,7 @@ export {
 } from "./browser-indexeddb-checkpoint";
 
 export {
+  DEFAULT_BROWSER_ZETA_DB_CONVERGENCE_POLICY,
   createBrowserZetaDbImagePort,
   loadBrowserZetaDbImage,
   openBrowserZetaDbImagePort,
