@@ -76,6 +76,7 @@
     "tests/Tests.FSharp/SchedulerZeta.Tests.fs": 3,
     "tests/Tests.FSharp/SerializationSeed.FullVertical.Tests.fs": 1,
     "tests/Tests.FSharp/ShivaGc.Tests.fs": 2,
+    "tests/Tests.FSharp/ShivaGcRegen.Tests.fs": 1,
     "tests/Tests.FSharp/Sim.Tests.fs": 1,
     "tests/Tests.FSharp/Skadium.Tests.fs": 1,
     "tests/Tests.FSharp/SocietyEmergence.Tests.fs": 2,
