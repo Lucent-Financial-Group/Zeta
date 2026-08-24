@@ -15,8 +15,8 @@ import { getPersona, localLlmPersona } from "../service/persona-registry";
 import { executeSkillSequence } from "../arc-solver/grid-skills";
 import { evaluateGrid } from "../arc-solver/grid-evaluator";
 import { CelegansController, loadFromCsv } from "../chip8/celegans-controller";
-import { BnnSocietyPredictor, type SocietySnapshot } from "../bayesian/bnn-key-predictor";
-import type { ArenaReadout, ArenaTrackReadout } from "../observe/observe";
+import { ATTENTION_TOP_K, BnnSocietyPredictor, thompsonKeyOf, type SocietySnapshot } from "../bayesian/bnn-key-predictor";
+import type { ArenaReadout, ArenaTrackReadout, AttentionReadoutWire } from "../observe/observe";
 import { ArcExplorer } from "../bayesian/arc-explorer";
 import { cooperate } from "../tri-boolean/tri-boolean";
 import { readKnownSignatures } from "./swarm-known-signatures";
@@ -413,10 +413,11 @@ Output ONLY a valid JSON array of strings representing the sub-tasks. Example: [
           }
           
           // If BNN is highly uncertain (max prob < 0.2), scarcity is high!
+          // (The argmax key itself is no longer read here — the committed key
+          // comes from posterior sampling below, not from a thresholded peak.)
           let maxProb = -1;
-          let bestBnnKey = -1;
-          for (const [key, prob] of Object.entries(bnnPredictions)) {
-            if (prob > maxProb) { maxProb = prob; bestBnnKey = parseInt(key, 10); }
+          for (const prob of Object.values(bnnPredictions)) {
+            if (prob > maxProb) maxProb = prob;
           }
           this.scarcity = maxProb < 0.2 ? 0.9 : 0.4;
           
@@ -460,8 +461,18 @@ Output ONLY a valid JSON array of strings representing the sub-tasks. Example: [
           let wormConsensusKey = towerCount >= 2 ? towerKey : -1;
           
           
-          // Simple Fusion Policy: if max BNN prob is strong enough, use BNN consensus; otherwise use biological tower
-          const chosenKey = maxProb > 0.4 ? bestBnnKey : wormConsensusKey;
+          // Fusion policy: POSTERIOR SAMPLING, not an absolute confidence gate.
+          //
+          // This line used to read `maxProb > 0.4 ? bestBnnKey : wormConsensusKey`.
+          // Measured 2026-08-24: the consensus over 17 keys peaks at 0.3818
+          // (p50 0.3433), so that gate was crossed 0 times in 900 ticks and the
+          // agent committed NOTHING once its 300-tick explorer expired — the
+          // "buttons go random for a while, then it stops moving" report. See
+          // `thompsonKeyOf` for why the fix deletes the constant instead of
+          // lowering it. The worm tower stays as the tie-break for when the
+          // distribution is degenerate and sampling names nothing.
+          const sampledKey = thompsonKeyOf(bnnPredictions, () => this.bnnSociety!.gaussianDraw());
+          const chosenKey = sampledKey >= 0 ? sampledKey : wormConsensusKey;
           this.lastChosenKey = chosenKey >= 0 ? chosenKey : undefined;
 
           if (chosenAction.kind === "do_item") {
@@ -499,6 +510,26 @@ Output ONLY a valid JSON array of strings representing the sub-tasks. Example: [
             desired: bnn.lastDesired ? { dx: bnn.lastDesired.dx, dy: bnn.lastDesired.dy } : null,
           };
 
+          // D1-D4 (#14503): the attention field, fixation, meter and measured
+          // society-rho ride the same readout as the frame they label.
+          const fieldReadout = bnn.attentionField.readout();
+          const attention: AttentionReadoutWire = {
+            cols: fieldReadout.cols,
+            rows: fieldReadout.rows,
+            variance: fieldReadout.variance,
+            mean: fieldReadout.mean,
+            attended: bnn.lastAttendedTiles,
+            fixation: bnn.lastFixationTile,
+            usefulWork: bnn.lastUsefulWork,
+            rho: bnn.societyRho(),
+            topK: ATTENTION_TOP_K,
+          };
+
+          // D5 (#14503): the WHY chain's input — the deciding state itself,
+          // assembled by the predictor so the UI's answers cite the numbers
+          // that actually drove this tick.
+          const why = bnn.whyContext();
+
           const nextWorld = simulate(world, chosenAction);
           // Attach BNN predictions and the chosen key to cheatEngine so TV can render them
           return {
@@ -507,7 +538,9 @@ Output ONLY a valid JSON array of strings representing the sub-tasks. Example: [
               ...nextWorld.cheatEngine!,
               keyPredictions: bnnPredictions,
               chosenKey: chosenKey,
-              arena
+              arena,
+              attention,
+              why
             }
           };
         }

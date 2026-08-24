@@ -56,13 +56,22 @@ import {
   type PerceptionState,
   type TrackedObject,
 } from "../chip8/perception";
-import { readScreen, COL_PITCH as OCR_COL_PITCH, GLYPH_H as OCR_GLYPH_H, type ReadNumber } from "../chip8/ocr";
+import {
+  readScreenFoveated,
+  COL_PITCH as OCR_COL_PITCH,
+  GLYPH_H as OCR_GLYPH_H,
+  type GlyphGrid,
+  type ReadNumber,
+} from "../chip8/ocr";
 import {
   ModeValueLearner,
   type ModeBucket,
   type ModeChoice,
   type ModeValueSnapshot,
 } from "./mode-value-learner";
+import { TILE_COUNT, TileAttentionField, type AttentionSnapshot } from "./attention-field";
+import { societyRho as computeSocietyRho, type SocietyRho } from "./society-rho";
+import type { WhyContext } from "./why-chain";
 
 export interface BnnPriors {
   explorationRate: number; // 0.0 - 1.0 (how uniform the distribution is)
@@ -93,13 +102,49 @@ const MODE_HYSTERESIS = 8;
 const HUNTER_AREA_MIN = 10;
 /** Closing-speed (px/tick) above which the gap counts as shrinking. */
 const CLOSING_SPEED_MIN = 0.05;
+/** D2: tiles granted full perception per tick (tunable, displayed on the page). */
+export const ATTENTION_TOP_K = 8;
+/** D2: a reading change below this is noise, not useful work. */
+const USEFUL_WORK_EPS = 0.5;
+/** D4: ticks a candidate must hold top rank before the fixation moves. */
+const FIXATION_MIN_DELAY = 6;
 /** Obstacle lookahead distance (pixels) for steering penalties. */
 const LOOKAHEAD = 6;
+/**
+ * Hysteresis on the IDENTITY latch: a challenger must out-score the held body
+ * by this margin before it takes over. Same Schmitt-trigger idiom as
+ * MODE_HYSTERESIS, and bought for the same reason — motor smoothing, not
+ * policy. Without it the self flickers between two near-tied tracks and the
+ * steering vector thrashes every tick.
+ */
+const SELF_LATCH_MARGIN = 1.0;
+/**
+ * Exponential forgetting on the per-key beliefs — the fix for a HABIT that
+ * outlived its evidence.
+ *
+ * MEASURED DEFECT (2026-08-24). `updateStudentT` accumulates with no decay, so
+ * a key's posterior mean is an average over ALL history. The arena is 64×32 —
+ * twice as wide as it is tall — so the desired vector's |dx| (mean 0.863)
+ * dominates its |dy| (mean 0.395) permanently, and the society converged to
+ * RIGHT μ=0.391, LEFT μ=0.302, DOWN μ=0.118, UP μ=0.062. Over 1461 decision
+ * ticks the steering layer asked for a VERTICAL move 188 times and the
+ * consensus committed vertical ZERO times. The agent had learned "right is
+ * usually good" and could no longer answer the geometry in front of it.
+ *
+ * Inflating the posterior variance before each absorption is the standard
+ * fading-memory filter (Jazwinski 1970, *Stochastic Processes and Filtering
+ * Theory* §7.3 — exponential age-weighting of past data): old evidence stays,
+ * but it grows less certain, so present evidence can move the mean. Same
+ * discipline the tile attention field already earned (FORGET there = 0.98).
+ */
+const KEY_BELIEF_FORGET = 0.90;
+/** Never let a belief's variance inflate past this — forgetting, not amnesia. */
+const KEY_BELIEF_MAX_SIGMA2 = 4.0;
 
 /** Serializable snapshot of the society — the priors that live in source. */
 export interface SocietySnapshot {
-  /** v1: keys only. v2: adds the learned hunt/flee value table. */
-  readonly version: 1 | 2;
+  /** v1: keys only. v2: + the learned hunt/flee table. v3: + the tile attention field. */
+  readonly version: 1 | 2 | 3;
   readonly seed: number;
   readonly agentCount: number;
   /** Per agent, per key (-1..15): the EP posterior. */
@@ -117,6 +162,8 @@ export interface SocietySnapshot {
   readonly priors: BnnPriors;
   /** v2: the learned mode policy (absent in v1 snapshots — fresh prior then). */
   readonly modeValues?: ModeValueSnapshot;
+  /** v3: the tile attention field (absent before v3 — fresh prior then). */
+  readonly attention?: AttentionSnapshot;
 }
 
 export class BnnSocietyPredictor {
@@ -172,6 +219,42 @@ export class BnnSocietyPredictor {
   private committedSelfColor: number | null = null;
   /** The context bucket the last mode decision was made in (UI + tests). */
   public lastModeBucket: ModeBucket | null = null;
+  /**
+   * D5: the self↔adversary relation AS USED by the last mode decision —
+   * stored at the decision site so the WHY chain cites the numbers that
+   * actually drove the latch, not a later recomputation.
+   */
+  public lastRelation: { readonly dist: number; readonly closingSpeed: number } | null = null;
+
+  /**
+   * The tile attention field (D1 of #14503) — per-tile uncertainty on the
+   * same Student-t carrier as every other belief, part of this society's
+   * snapshot (v3). Its posterior variance is the frost channel; its top-K
+   * is where the foveated OCR spends full perception.
+   */
+  public readonly attentionField = new TileAttentionField();
+  /** The tiles fully attended this tick (top-K by variance + the sweep tile). */
+  public lastAttendedTiles: readonly number[] = [];
+  /**
+   * D2's meter: OCR match attempts that CHANGED a reading, over attempts —
+   * or "ambiguous" when the variance field is flat and the allocator had no
+   * signal (the loud half: a quiet fallback would report the attentive
+   * system and the blind one identically).
+   */
+  public lastUsefulWork: number | "ambiguous" = "ambiguous";
+  /** Per-cell previous OCR reading ("x,y" → glyph value), for the meter. */
+  private prevGlyphAt = new Map<string, number>();
+  /** Tiles that have ever held a recognised glyph — instruments, always read. */
+  private readonly knownGlyphTiles = new Set<number>();
+  /**
+   * D4: the fixation tile — top-variance tile held through a dwell latch.
+   * The same suppress-inside-MinDelay shape as src/Core/DebouncedOracle.fs:
+   * a candidate must hold top rank for FIXATION_MIN_DELAY consecutive ticks
+   * before the fixation MOVES (the move is the saccade the UI sweeps).
+   */
+  public lastFixationTile: number | null = null;
+  private fixationCandidate: number | null = null;
+  private fixationCharge = 0;
 
   constructor(agentCount: number = 3, seed: number = COMMON_SEED) {
     this.agentCount = agentCount;
@@ -218,13 +301,14 @@ export class BnnSocietyPredictor {
       agents.push({ beliefs: rows });
     }
     return {
-      version: 2,
+      version: 3,
       seed: this.seed,
       agentCount: this.agentCount,
       agents,
       exploreTicksDone: this.exploreTicksDone,
       priors: { ...this.priors },
       modeValues: this.modeLearner.exportSnapshot(),
+      attention: this.attentionField.exportSnapshot(),
     };
   }
 
@@ -234,7 +318,7 @@ export class BnnSocietyPredictor {
    * whole point of priors in source: never starting from zero.
    */
   public importSnapshot(snap: SocietySnapshot): void {
-    if (snap.version !== 1 && snap.version !== 2) throw new RangeError(`unknown SocietySnapshot version ${String((snap as { version: unknown }).version)}`);
+    if (snap.version !== 1 && snap.version !== 2 && snap.version !== 3) throw new RangeError(`unknown SocietySnapshot version ${String((snap as { version: unknown }).version)}`);
     const agentEntries = [...this.agents.values()];
     for (let i = 0; i < Math.min(agentEntries.length, snap.agents.length); i++) {
       const beliefs = agentEntries[i]!;
@@ -258,6 +342,7 @@ export class BnnSocietyPredictor {
     // v1 snapshots carry no mode table: the learner stays at its prior,
     // which reproduces the retired hardcoded rule exactly.
     if (snap.modeValues) this.modeLearner.importSnapshot(snap.modeValues);
+    if (snap.attention) this.attentionField.importSnapshot(snap.attention);
   }
 
   // ── Layer 4→6 bridge: the OCR scoreboards are the reward sensor ──────────
@@ -285,6 +370,110 @@ export class BnnSocietyPredictor {
   }
 
   /**
+   * D2's meter, both halves of Aaron's meter spec: measure precisely (a
+   * reading-change fraction over actual match attempts) and fail loudly
+   * (a flat variance field gives the allocator NO signal, so the meter says
+   * `ambiguous` instead of quietly printing a number over uniform sampling).
+   * "Useful" = an attempted cell whose recognised value appeared or changed;
+   * disappearances are not counted (the cell is simply absent), which is
+   * stated here so the meter's blind spot is on the record.
+   */
+  private updateUsefulWorkMeter(scan: { readonly grid: GlyphGrid; readonly attempts: number }): void {
+    if (this.attentionField.isFlat()) {
+      this.lastUsefulWork = "ambiguous";
+      return;
+    }
+    let changed = 0;
+    for (const cell of scan.grid.cells) {
+      const key = `${String(cell.x)},${String(cell.y)}`;
+      const val = parseInt(cell.char, 16);
+      const prev = this.prevGlyphAt.get(key);
+      if (prev === undefined || Math.abs(val - prev) >= USEFUL_WORK_EPS) changed += 1;
+      this.prevGlyphAt.set(key, val);
+    }
+    this.lastUsefulWork = scan.attempts > 0 ? changed / scan.attempts : 0;
+  }
+
+  /**
+   * D4: fixation moves only after a new top-variance tile holds its rank
+   * for FIXATION_MIN_DELAY consecutive ticks — the suppress-inside-MinDelay
+   * split of src/Core/DebouncedOracle.fs, one granularity down: readings
+   * inside the delay are the SACCADE (prediction step, the UI's fast dim
+   * sweep); the accepted move is the FIXATION (update step, bright settle).
+   */
+  private updateFixation(): void {
+    const top = this.attentionField.topK(1)[0];
+    if (top === undefined) return;
+    if (top === this.lastFixationTile) {
+      this.fixationCandidate = null;
+      this.fixationCharge = 0;
+      return;
+    }
+    if (top === this.fixationCandidate) {
+      this.fixationCharge += 1;
+      if (this.fixationCharge >= FIXATION_MIN_DELAY || this.lastFixationTile === null) {
+        this.lastFixationTile = top; // the saccade lands
+        this.fixationCandidate = null;
+        this.fixationCharge = 0;
+      }
+    } else {
+      this.fixationCandidate = top;
+      this.fixationCharge = 1;
+    }
+  }
+
+  /**
+   * One standard-normal draw from the society's own seeded stream
+   * (Box–Muller). Exposed so the live fusion can Thompson-sample without
+   * reaching for ambient entropy — same seed, same run, same keys.
+   */
+  public gaussianDraw(): number {
+    const u1 = Math.max(1e-9, this.rng.next());
+    const u2 = this.rng.next();
+    return Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
+  }
+
+  /** Measured belief-similarity between society members (never assumed). */
+  public societyRho(): SocietyRho {
+    const vectors: number[][] = [];
+    for (const beliefs of this.agents.values()) {
+      const v: number[] = [];
+      for (let k = -1; k <= 0xf; k++) v.push(beliefs[k]!.posterior.mu);
+      vectors.push(v);
+    }
+    return computeSocietyRho(vectors);
+  }
+
+  /**
+   * D5 (#14503): the state that drove THIS tick's decision, assembled for
+   * the WHY chain. Every value is read from the live deciding state — the
+   * latch's mode and bucket, the learner's posterior means and reward
+   * count, the relation stored AT the decision site, the fixation tile
+   * with its current predictive variance. Plain data: it rides the frame
+   * payload verbatim, so the UI's answers cite exactly what the wire
+   * carried (the acceptance test asserts the round-trip).
+   */
+  public whyContext(): WhyContext {
+    const bucket = this.lastModeBucket;
+    return {
+      mode: this.lastMode,
+      bucket: bucket ? { bigAdversary: bucket.bigAdversary, closing: bucket.closing } : null,
+      huntValue: bucket ? this.modeLearner.valueOf(bucket, "hunt") : null,
+      fleeValue: bucket ? this.modeLearner.valueOf(bucket, "flee") : null,
+      rewardEvents: this.modeLearner.rewardEvents,
+      adversary: this.lastRelation,
+      explore: { done: Math.min(this.exploreTicksDone, EXPLORE_TICKS), total: EXPLORE_TICKS },
+      fixation:
+        this.lastFixationTile !== null
+          ? {
+              tile: this.lastFixationTile,
+              variance: this.attentionField.varianceAt(this.lastFixationTile),
+            }
+          : null,
+    };
+  }
+
+  /**
    * Layer 4 informing layer 5: tracks whose centroid sits inside an
    * OCR-recognised number's glyph box are READOUT, not agents — they can
    * never be self or the adversary. (Before this, a scoreboard digit that
@@ -309,54 +498,118 @@ export class BnnSocietyPredictor {
 
   // ── Layer 5: which object is me? (empowerment probe) ────────────────────
 
+  /**
+   * The empowerment probe, BOTH branches.
+   *
+   * What separates my body from everything else is CONTINGENCY, not
+   * correlation: it moves when I command it *and holds still when I do not*.
+   * Measuring only the commanded branch measures half a channel, and the half
+   * it drops is the half that matters here — the AI opponent CHASES me, so
+   * when I move right it moves right too and scores as well as I do on
+   * agreement alone. It cannot fake the other branch: it keeps moving on the
+   * ticks I command nothing, and I do not. (Measured: with the commanded
+   * branch only, track #69 — the c3 opponent — held the body at t2999 while
+   * the real player sat at evidence 6.99, labelled adversary.)
+   *
+   * Anchors: Klyubin, Polani & Nehaniv, *Empowerment: A Universal
+   * Agent-Centric Measure of Control* (IEEE CEC 2005) — empowerment is the
+   * channel capacity from actuators to sensors, and a channel is defined by
+   * what it does across ALL inputs including the null one; Watson (1966,
+   * 1994) on contingency detection as the infant's self-recognition cue.
+   */
   private updateSelfEvidence(pressedKey: number | undefined): void {
-    if (pressedKey === undefined) return;
-    const dir = DIRECTION_KEYS.find((d) => d.key === pressedKey);
-    if (!dir) return;
+    const dir =
+      pressedKey === undefined ? undefined : DIRECTION_KEYS.find((d) => d.key === pressedKey);
+    // A non-direction key commands nothing about movement — no reading either
+    // way. Distinct from `undefined`, which is the null action and IS a reading.
+    if (pressedKey !== undefined && !dir) return;
     for (const t of this.lastPerception.tracks) {
       const speed = Math.hypot(t.vx, t.vy);
-      if (speed < 1e-3) continue;
-      const dot = (t.vx / speed) * dir.dx + (t.vy / speed) * dir.dy;
-      // Reward agreement, decay disagreement — a leaky accumulator.
+      if (speed < 1e-3) continue; // held still: expected under the null action,
+      // and unreadable under a commanded one (a wall I pushed into looks the
+      // same as a body that ignored me). Either way, no evidence.
       const prev = this.selfEvidence.get(t.id) ?? 0;
-      this.selfEvidence.set(t.id, prev * 0.95 + dot);
+      // Reward agreement, decay disagreement — a leaky accumulator. Motion
+      // under the NULL action is full disagreement: nothing I did caused it.
+      const reading = dir ? (t.vx / speed) * dir.dx + (t.vy / speed) * dir.dy : -1;
+      this.selfEvidence.set(t.id, prev * 0.95 + reading);
     }
   }
 
+  /**
+   * MEASURED DEFECT (2026-08-24), and the reason this reads the way it does.
+   *
+   * The previous version committed the body on a CLOCK
+   * (`exploreTicksDone >= EXPLORE_TICKS`) and `mutual-sim.priors` bakes
+   * `exploreTicksDone: 240` into its snapshot — so exploration was already
+   * spent before tick 0 and the election was final on the FIRST tick that had
+   * any track at all. On tick 1 the only things drawn are the two walls (the
+   * player and the AI first appear on tick 2), so the agent committed to
+   * WALL 1 at (34,12), with `committedSelfColor = 1`. That second field then
+   * sealed it: `elect(committedSelfColor) ?? elect(null)` only falls through
+   * when the colour-filtered election finds NOTHING, and a wall is always on
+   * screen — so the unfiltered election was unreachable for the rest of the
+   * run. At t239 the real player carried empowerment evidence 15.06 and was
+   * labelled the ADVERSARY while a wall with evidence 0.00 stayed "self", and
+   * every hunt/flee vector for 3000 ticks was steered from a wall's position.
+   *
+   * Three changes, all the same correction — the probe, not a clock or a
+   * costume, says which body is mine:
+   *   1. commit only once `selfEvidence` is actually POSITIVE;
+   *   2. colour is a tie-break BONUS, never a filter, so a wrong commitment
+   *      can be escaped;
+   *   3. the latch is revisable — a challenger that out-scores the held body
+   *      by SELF_LATCH_MARGIN takes it, and since the evidence accumulator
+   *      leaks (×0.95) a wrong self decays out on its own.
+   */
   private pickSelf(): TrackedObject | null {
-    // Committed identity persists while its track lives (coasting included).
-    if (this.committedSelfId !== null) {
-      const alive = this.lastPerception.tracks.find((t) => t.id === this.committedSelfId);
-      if (alive) return alive;
-      this.committedSelfId = null; // track died — re-elect below
-    }
-    const elect = (colorFilter: number | null): TrackedObject | null => {
-      let best: TrackedObject | null = null;
-      let bestScore = -Infinity;
-      for (const t of this.lastPerception.tracks) {
-        if (this.scoreboardTrackIds.has(t.id)) continue; // readout, not an agent
-        if (colorFilter !== null && t.color !== colorFilter) continue;
-        // Correlation evidence (the empowerment probe), plus a small prior on
-        // the player plane (color 2) so the first frames are not rudderless,
-        // minus a nudge against furniture (static since birth, no evidence).
-        // A STILL self stays selectable — standing still is a legal move.
-        const evidence = this.selfEvidence.get(t.id) ?? 0;
-        const score =
-          evidence + (t.color === 2 ? 0.5 : 0) - (t.isStatic && !t.everMoved ? 0.25 : 0);
-        if (score > bestScore || (score === bestScore && best !== null && t.id < best.id)) {
-          bestScore = score;
-          best = t;
-        }
+    const candidates = this.lastPerception.tracks.filter(
+      (t) => !this.scoreboardTrackIds.has(t.id), // readout, not an agent
+    );
+    if (candidates.length === 0) return null;
+
+    // Snapshot the continuity colour so the mutations below cannot change
+    // this tick's scoring under it.
+    const continuityColor = this.committedSelfColor;
+    // Correlation evidence (the empowerment probe) leads. The plane-2 prior
+    // and the appearance-continuity bonus are PRIORS: they break ties before
+    // any evidence exists and are dominated by it afterwards. A STILL self
+    // stays selectable — standing still is a legal move.
+    const scoreOf = (t: TrackedObject): number =>
+      (this.selfEvidence.get(t.id) ?? 0) +
+      (t.color === 2 ? 0.5 : 0) +
+      (continuityColor !== null && t.color === continuityColor ? 0.25 : 0) -
+      (t.isStatic && !t.everMoved ? 0.25 : 0);
+
+    let best = candidates[0]!;
+    let bestScore = scoreOf(best);
+    for (const t of candidates) {
+      const score = scoreOf(t);
+      if (score > bestScore || (score === bestScore && t.id < best.id)) {
+        best = t;
+        bestScore = score;
       }
-      return best;
-    };
-    // Appearance continuity: after death (a seam crossing, a win flood), the
-    // returning self WEARS THE SAME COLOR — prefer it before free election.
-    const best =
-      (this.committedSelfColor !== null ? elect(this.committedSelfColor) : null) ?? elect(null);
-    // Elections stay open while the probe rota runs; the winner is committed
-    // once exploration ends (chases are correlation-degenerate — see above).
-    if (best && this.exploreTicksDone >= EXPLORE_TICKS) {
+    }
+
+    if (this.committedSelfId !== null) {
+      const held = candidates.find((t) => t.id === this.committedSelfId);
+      if (held) {
+        // Latched while it remains the best-supported body (coasting included).
+        if (bestScore < scoreOf(held) + SELF_LATCH_MARGIN) return held;
+        // Out-evidenced: the appearance we were following was wrong too, so
+        // the continuity bonus goes with it.
+        this.committedSelfId = null;
+        this.committedSelfColor = null;
+      } else {
+        // The track merely DIED (a seam crossing, a win flood). Keep the
+        // colour — the returning body wears the same costume.
+        this.committedSelfId = null;
+      }
+    }
+
+    // Commit only once the probe has SPOKEN. A clock cannot know which body
+    // is mine; only motion that answered to my own keys can.
+    if ((this.selfEvidence.get(best.id) ?? 0) > 0) {
       this.committedSelfId = best.id;
       this.committedSelfColor = best.color;
     }
@@ -408,11 +661,13 @@ export class BnnSocietyPredictor {
   private updateMode(self: TrackedObject | null, adversary: TrackedObject | null): void {
     if (this.exploreTicksDone < EXPLORE_TICKS) {
       this.lastMode = "explore";
+      this.lastRelation = null;
       return;
     }
     if (!self || !adversary) {
       // Nothing to hunt or flee; hold the previous non-explore mode.
       this.lastModeBucket = null;
+      this.lastRelation = null;
       if (this.lastMode === "explore") this.lastMode = "hunt";
       return;
     }
@@ -422,6 +677,7 @@ export class BnnSocietyPredictor {
     // hardcoded rule (big→flee, small→hunt) persists only as the learner's
     // prior, so a cart with no score events behaves as before.
     const rel = relationBetween(this.lastPerception, self.id, adversary.id);
+    this.lastRelation = rel ? { dist: rel.dist, closingSpeed: rel.closingSpeed } : null;
     const closing = rel ? rel.closingSpeed : 0;
     const bucket: ModeBucket = {
       bigAdversary: adversary.area >= HUNTER_AREA_MIN,
@@ -479,10 +735,36 @@ export class BnnSocietyPredictor {
   public predict(display: number[], pressedKey?: number): Record<number, number> {
     this.tickCount += 1;
 
-    // Layers 1–3: objects, tracks, relations.
+    // Layers 1–3: objects, tracks, relations. The connected-component pass
+    // stays GLOBAL deliberately: field coherence is a global property and a
+    // local check cannot see it (#14503 session-context §1) — foveation
+    // applies one layer up, where work is per-tile.
     this.lastPerception = perceive(this.lastPerception, display);
+
+    // D1: the tile attention field absorbs the same composite every tick
+    // (the cheap path runs everywhere; only FULL perception is rationed).
+    this.attentionField.observe(display);
+    // D2: full OCR on the top-K variance tiles, plus one deterministic
+    // peripheral-sweep tile per tick so no tile can starve into a stale
+    // belief (tick-indexed, no ambient entropy), plus every tile that has
+    // EVER held a recognised glyph: a discovered scoreboard is an
+    // INSTRUMENT, and an instrument sampled one tick in thirty-two cannot
+    // produce the consecutive readings the reward channel's two-tick
+    // agreement requires. The sweep discovers instruments; stickiness keeps
+    // them read.
+    const attended = new Set<number>(this.attentionField.topK(ATTENTION_TOP_K));
+    attended.add(this.tickCount % TILE_COUNT);
+    for (const t of this.knownGlyphTiles) attended.add(t);
+    this.lastAttendedTiles = [...attended].sort((a, b) => a - b);
+
     // Layer 4: symbols — and the reward channel: score deltas grade the mode.
-    this.lastOcr = readScreen(display).numbers;
+    const scan = readScreenFoveated(display, attended);
+    this.lastOcr = scan.numbers;
+    for (const cell of scan.grid.cells) {
+      this.knownGlyphTiles.add(((cell.y / 8) | 0) * 8 + ((cell.x / 8) | 0));
+    }
+    this.updateUsefulWorkMeter(scan);
+    this.updateFixation();
     this.absorbScoreboardReward();
     this.markScoreboardTracks();
     // Layer 5: roles.
@@ -551,7 +833,17 @@ export class BnnSocietyPredictor {
       for (let k = -1; k <= 0xf; k++) {
         const obsValue = observations[k] ?? 0.0;
         const y = obsValue + (this.rng.next() - 0.5) * 0.05;
-        const result = updateStudentT(beliefs[k]!, y);
+        // Forget before absorbing: age the belief's certainty so the present
+        // observation can still move it (see KEY_BELIEF_FORGET).
+        const aged = beliefs[k]!;
+        const faded: StudentTState = {
+          ...aged,
+          posterior: {
+            mu: aged.posterior.mu,
+            sigma2: Math.min(KEY_BELIEF_MAX_SIGMA2, aged.posterior.sigma2 / KEY_BELIEF_FORGET),
+          },
+        };
+        const result = updateStudentT(faded, y);
         beliefs[k] = result.state;
         const weight = Math.max(0, result.state.posterior.mu);
         wsetEntries.push({ key: k, weight });
@@ -593,11 +885,57 @@ export class BnnSocietyPredictor {
 }
 
 /**
+ * Commit to a key by POSTERIOR SAMPLING (Thompson 1933; Russo, Van Roy,
+ * Kazerouni, Osband & Wen, *A Tutorial on Thompson Sampling*, FnT ML 2018,
+ * arXiv:1707.02038) — draw one score per key from that key's own belief and
+ * take the argmax OF THE DRAW.
+ *
+ * WHY THIS REPLACES A THRESHOLD, rather than tuning one. The live fusion asked
+ * `maxProb > 0.4`, and the consensus distribution over 17 keys is bounded far
+ * below that: measured over 900 post-exploration ticks the max was 0.3818
+ * (p50 0.3433), so the gate was crossed **0 times** and the agent committed
+ * nothing at all once its 300-tick explorer expired. The agent was six times
+ * more confident than uniform (0.0588) and still structurally forbidden to
+ * act. Lowering the constant would only move the cliff to the next cart; a
+ * decision rule with no constant in it cannot have a cliff.
+ *
+ * It is also the honest JUMPSTART. Sampling spreads in proportion to the
+ * belief's own uncertainty, so a cold agent explores because it is unsure and
+ * a warm one commits because it is not — one rule, annealing itself, with no
+ * explore/exploit switch to schedule and no game knowledge injected. The
+ * spread is drawn from the predictor's seeded stream, so replay stays
+ * byte-identical (noninterference §13: no ambient entropy).
+ */
+export function thompsonKeyOf(
+  probs: Readonly<Record<number, number>>,
+  draw: () => number,
+): number {
+  let bestScore = -Infinity;
+  let bestKey = -1;
+  for (let k = -1; k <= 0xf; k++) {
+    const p = probs[k] ?? 0;
+    // Bernoulli-style spread: a key's uncertainty is widest at p≈0.5 and
+    // vanishes as the society approaches agreement either way.
+    const sd = Math.sqrt(Math.max(1e-9, p * (1 - p)));
+    const score = p + sd * draw();
+    if (score > bestScore) {
+      bestScore = score;
+      bestKey = k;
+    }
+  }
+  return bestKey;
+}
+
+/**
  * The direction key the predictor's own steering intent names, if any —
- * what a headless harness (trainer, tests) should press. Mirrors the live
- * fusion's behaviour where the worm-tower fallback keeps the agent moving:
- * without it a bare argmax over 17 normalized keys rarely clears a
- * confidence threshold and the agent stands still.
+ * what a headless harness (trainer, tests) should press.
+ *
+ * HISTORICAL NOTE, kept because it names the defect this file now fixes: this
+ * helper existed because "a bare argmax over 17 normalized keys rarely clears
+ * a confidence threshold and the agent stands still". That was true, it was
+ * measured, and the workaround was handed to the trainer while the LIVE agent
+ * was left standing still. The gate is gone (see `thompsonKeyOf`); this stays
+ * as the steering-intent accessor the WHY chain and the tests read.
  */
 export function desiredKeyOf(p: BnnSocietyPredictor): number | undefined {
   const d = p.lastDesired;
