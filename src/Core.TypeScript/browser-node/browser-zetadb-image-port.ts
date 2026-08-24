@@ -74,6 +74,8 @@ function mapRecordResult(
 /** Adapt browser persistence without making the database kernel depend on browser APIs. */
 export function createBrowserZetaDbImagePort(checkpoints: BrowserCheckpointPort): ZetaDbImagePort {
   return {
+    // Inherit the executable policy the checkpoint adapter applies inside its transaction.
+    revisionPolicy: checkpoints.revisionPolicy,
     load: async (nodeId) => mapRecordResult(await checkpoints.load(nodeId), "read"),
     save: async (record) => {
       const saved = mapRecordResult(

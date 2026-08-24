@@ -36,8 +36,10 @@ import type {
   CheckId,
   AttemptSummary,
   CheckObservation,
+  ConcludedOutcome,
   CheckObservationFailure,
   TriggerClass,
+  SupersedingVerdict,
   UnknownReason,
   Verdict,
   VerdictKind,
@@ -65,18 +67,63 @@ export interface FoldConfig {
   readonly darkSpanSeconds: number;
   /** At least this many inconclusive attempts before "dark" is considered at all. */
   readonly darkMinAttempts: number;
+  /**
+   * Concluded FAILURES in the inspected window, at or above which a check whose newest
+   * verdict is green is reported `flapping` rather than green.
+   *
+   * 2 rather than 1: one failure among twenty concluded runs is a flake, and promoting
+   * every flake to its own band would bury the lanes that are genuinely oscillating.
+   * `build-ai-cluster-iso` sat at 2 failures in its last 8 concluded runs, inside three
+   * hours, which is the shape this is for.
+   */
+  readonly flappingMinRed: number;
+  /**
+   * A failure RATE is only a finding over a window recent enough to describe the
+   * PRESENT. Concluded runs older than this do not enter the rate.
+   *
+   * The rule this bounds went out time-blind and produced two false positives on its
+   * first day. `vocab-hygiene`: "12 of the last 20 concluded runs failed" — every
+   * failure from June, the lane fixed and passing every run since 2026-06-10, and the
+   * 20-run window still reaching back two months. For a high-frequency lane 20 runs is
+   * an hour and the rate means what it says; for a rarely-run one it can be a quarter,
+   * and a single old incident then dominates the verdict FOREVER because passing runs
+   * arrive too slowly to dilute the window.
+   *
+   * This is `not-yet-due` on the other axis. That one refuses to call a trigger dead
+   * before it has had an opportunity to fire; this one refuses to call a lane broken
+   * off evidence that has stopped describing it.
+   */
+  readonly rateWindowSeconds: number;
+  /**
+   * Below this many concluded runs inside the window there is no rate, only a small
+   * sample. Reported as insufficient data — never as a clean bill of health, and never
+   * as a verdict.
+   */
+  readonly minConcludedForRate: number;
+  /**
+   * Consecutive passes since the last failure that clear a rate finding.
+   *
+   * "Recency should be able to clear it" — a lane that broke, was fixed, and has passed
+   * this many times running has earned its way out, and a rule that never lets it is
+   * the cries-wolf generator with extra steps.
+   */
+  readonly recoveryPassStreak: number;
 }
 
 export const DEFAULT_FOLD_CONFIG: FoldConfig = {
   stalenessFactor: 3,
   darkSpanSeconds: 6 * 3600,
   darkMinAttempts: 2,
+  flappingMinRed: 2,
+  rateWindowSeconds: 7 * 86_400,
+  minConcludedForRate: 5,
+  recoveryPassStreak: 5,
 };
 
 // ─── Report shape ───────────────────────────────────────────────────────────
 
 /** Why a row sits where it sits. Rendered, so the ranking is auditable, not magic. */
-export type RowBand = "red" | "unknown" | "running" | "not-yet-due" | "skipped" | "not-applicable" | "green";
+export type RowBand = "red" | "flapping" | "unknown" | "running" | "not-yet-due" | "skipped" | "not-applicable" | "green";
 
 export interface DashboardRow {
   readonly checkId: CheckId;
@@ -102,6 +149,12 @@ export interface DashboardRow {
   readonly recheckInFlight: boolean;
   /** True when no source declared this check in this pass, though the roster remembers it. */
   readonly undeclared: boolean;
+  /**
+   * A newer verdict that arrived by a different trigger. Rendered beside the verdict so
+   * a reader can see the evidence that qualifies it rather than having to run a second
+   * instrument and wonder which one is lying.
+   */
+  readonly supersededBy?: SupersedingVerdict;
 }
 
 export interface Coverage {
@@ -356,6 +409,135 @@ export function firstOpportunityPassed(
   return { passed: true, why: `its definition has existed for ${humanDuration(age)}` };
 }
 
+/** The concluded outcomes that are recent enough to describe the present, and what they say. */
+export interface RateWindow {
+  /** Concluded outcomes inside the window, newest first. */
+  readonly considered: readonly ConcludedOutcome[];
+  readonly passed: number;
+  readonly failed: number;
+  readonly oldestAt: string | null;
+  readonly newestAt: string | null;
+  /** Enough concluded runs inside the window to speak of a rate at all. */
+  readonly sufficient: boolean;
+  /** Consecutive passes at the newest end of the window, before the first failure. */
+  readonly passStreak: number;
+  /**
+   * The lane has passed enough times IN A ROW since its last failure to have earned
+   * its way out.
+   *
+   * **A streak, not merely "the newest run passed".** The first version of this rule
+   * defined recovery as "every failure predates the newest pass", which is true of
+   * ANY lane whose most recent run passed — and since the rate rules only run when the
+   * newest verdict is green, that definition nullified the entire rule. It was caught
+   * by four of its own tests going red, which is the tests doing their job.
+   *
+   * A run of consecutive passes is evidence and must be able to clear a rate finding;
+   * one pass after four failures is not that evidence.
+   */
+  readonly recovered: boolean;
+}
+
+/**
+ * Restrict the concluded history to what still describes the present, and read it.
+ *
+ * Pure and total. Everything the rate rules decide is decided from this, so the window
+ * is computed in exactly one place and can be printed in the row that used it.
+ */
+export function rateWindow(
+  attempts: AttemptSummary | undefined,
+  now: string,
+  config: FoldConfig,
+): RateWindow | null {
+  if (attempts === undefined) return null;
+  const cutoffMs = Date.parse(now) - config.rateWindowSeconds * 1000;
+  const considered = attempts.concluded.filter((c) => {
+    const t = Date.parse(c.at);
+    return Number.isFinite(t) && t >= cutoffMs;
+  });
+  const passed = considered.filter((c) => c.passed).length;
+  const failed = considered.length - passed;
+  const times = considered.map((c) => c.at).sort(ordinal);
+  // `considered` is newest-first, so the leading run of passes is the current streak.
+  let passStreak = 0;
+  for (const c of considered) {
+    if (!c.passed) break;
+    passStreak += 1;
+  }
+  return {
+    considered,
+    passed,
+    failed,
+    oldestAt: times[0] ?? null,
+    newestAt: times.at(-1) ?? null,
+    sufficient: considered.length >= config.minConcludedForRate,
+    passStreak,
+    recovered: failed > 0 && passStreak >= config.recoveryPassStreak,
+  };
+}
+
+/** How the window reads in a row, so nobody has to re-derive it to judge the claim. */
+export function describeWindow(w: RateWindow): string {
+  if (w.considered.length === 0) return "no concluded runs inside the rate window";
+  return `${w.failed} of ${w.considered.length} concluded runs failed, ${w.oldestAt} .. ${w.newestAt}, ${w.passStreak} consecutive pass(es) since the last failure`;
+}
+
+/**
+ * **Is this lane FLAPPING?** — its recent concluded history contains both outcomes.
+ *
+ * The finding that produced this: on 2026-08-22 this dashboard reported
+ * `build-ai-cluster-iso` green and a hand-rolled scanner reported it red, at the same
+ * time, about the same repo. Both read the truth. Its concluded runs on `main` that
+ * afternoon were success 21:53, failure 21:18, success 20:37, success 20:03, failure
+ * 19:07 — a latest-verdict reader's answer depends on when it happened to look.
+ *
+ * A lane whose next verdict is a coin flip has no colour, so it gets its own. Green
+ * would launder a 90% claim as a 100% one; red would make an oscillating lane
+ * permanently red and get the alarm muted.
+ *
+ * Only applies when the newest verdict is GREEN — if it is red, the row is already red
+ * and saying "and also unstable" adds nothing to the action.
+ */
+export function verdictForFlapping(
+  verdict: Verdict,
+  attempts: AttemptSummary | undefined,
+  config: FoldConfig,
+  now: string,
+): Verdict | null {
+  if (verdict.kind !== "green") return null;
+  const w = rateWindow(attempts, now, config);
+  if (w === null) return null;
+
+  // Four refusals before any rate claim, and each one is a false positive this rule
+  // already produced or would have produced. A guard that cries wolf gets muted, and a
+  // muted guard is worse than none — the same reasoning that made `not-yet-due` its own
+  // state rather than a threshold tweak.
+  //
+  // 1. Too few runs inside the window is a small sample, not a rate.
+  if (!w.sufficient) return null;
+  // 2. A sustained streak of passes since the last failure has earned its way out.
+  if (w.recovered) return null;
+  // 3. Below the flake floor there is nothing to say.
+  if (w.failed < config.flappingMinRed) return null;
+
+  const span = `over ${humanDuration(config.rateWindowSeconds)} (${describeWindow(w)})`;
+
+  // **A MAJORITY of failures is RED, not flapping.** One band lumped
+  // `pr-manifest-integrity` (15 of 20) with `agencysignature-enforcement` (2 of 20).
+  // Those are not the same claim: when most concluded runs fail, the newest passing run
+  // is the OUTLIER, and calling that "unstable" undersells a lane that is broken.
+  if (w.failed > w.passed) {
+    return {
+      kind: "red",
+      detail: `MOSTLY FAILING ${span}. The newest run passed and is the outlier — a majority-failing lane is broken, not flaky.`,
+    };
+  }
+
+  return {
+    kind: "flapping",
+    detail: `FLAPPING ${span}, and the newest passed. The latest verdict is green; the lane's next verdict is not predictable from it.`,
+  };
+}
+
 /**
  * **Is this lane DARK?** — inconclusive attempts piling up newer than the last verdict.
  *
@@ -474,12 +656,14 @@ export function foldDashboard(input: FoldInput): DashboardReport {
       // Order matters and is argued, not incidental: a DARK lane outranks everything,
       // because "we have not been able to conclude anything for weeks" is a stronger
       // fact than whatever the last stale verdict happened to say.
+      const base = applyStaleness(obs.verdict, entry.expectation, obs.observedAt, now, config);
       verdict =
         verdictForDarkLane(obs.attempts, config) ??
+        verdictForFlapping(base, obs.attempts, config, now) ??
         verdictForNeverFiredTrigger(
           entry.expectation, entry.lastDeclaredTriggerAt, viaDeclared, true, entry.definitionSince, now,
         ) ??
-        applyStaleness(obs.verdict, entry.expectation, obs.observedAt, now, config);
+        base;
       observedAt = obs.observedAt;
     } else if (failure !== undefined) {
       // The producer was asked and could not answer. That is an absence of evidence,
@@ -508,6 +692,7 @@ export function foldDashboard(input: FoldInput): DashboardReport {
       silenceSeconds: observedAt === null ? null : secondsBetween(observedAt, now),
       observedThisPass: obs !== undefined,
       recheckInFlight: obs?.attempts?.recheckInFlight ?? false,
+      ...(obs?.supersededBy === undefined ? {} : { supersededBy: obs.supersededBy }),
       undeclared: !entry.declaredNow,
     });
   }
@@ -515,7 +700,7 @@ export function foldDashboard(input: FoldInput): DashboardReport {
   rows.sort(compareRows);
 
   const counts: Record<RowBand, number> = {
-    red: 0, unknown: 0, running: 0, "not-yet-due": 0, skipped: 0, "not-applicable": 0, green: 0,
+    red: 0, flapping: 0, unknown: 0, running: 0, "not-yet-due": 0, skipped: 0, "not-applicable": 0, green: 0,
   };
   for (const row of rows) counts[row.band] += 1;
 
@@ -526,6 +711,14 @@ export function foldDashboard(input: FoldInput): DashboardReport {
     : unknownRows.reduce<number | null>((max, r) => (r.silenceSeconds !== null && (max === null || r.silenceSeconds > max) ? r.silenceSeconds : max), null);
 
   const shortfall = expected - observedExpected;
+  const coverage: Coverage = {
+    expected,
+    observed: observedExpected,
+    shortfall,
+    onDemand,
+    retired,
+    known: expected + onDemand,
+  };
   const sourceErrors = [...(input.sourceErrors ?? [])].sort(ordinal);
   const sources = [...new Set(rows.map((r) => r.source))].sort(ordinal);
 
@@ -534,20 +727,22 @@ export function foldDashboard(input: FoldInput): DashboardReport {
     at: now,
     rows,
     counts,
-    coverage: {
-      expected,
-      observed: observedExpected,
-      shortfall,
-      onDemand,
-      retired,
-      known: expected + onDemand,
-    },
+    coverage,
     oldestUnknownSilenceSeconds,
     hasNeverObserved,
     sources,
     sourceErrors,
+    // **An empty roster is never OK.** Caught 2026-08-22 while measuring the offline
+    // path: with no producer AND no persisted roster the report read
+    // `OK — RED 0 · UNKNOWN 0 · coverage 0/0 · green 0`. That is "0 of 0 observed
+    // renders green" — the exact vacuity this file refuses everywhere else, and the
+    // reason `GitLabAdapter` returns `not-supported` rather than an empty roster.
+    // A dashboard that knows of no checks has not passed; it has never successfully
+    // enumerated anything, and saying so is the whole discipline.
     ok:
+      coverage.known > 0 &&
       counts.red === 0 &&
+      counts.flapping === 0 &&
       counts.unknown === 0 &&
       shortfall === 0 &&
       sourceErrors.length === 0,
@@ -571,11 +766,11 @@ export function foldDashboard(input: FoldInput): DashboardReport {
  */
 export function compareRows(a: DashboardRow, b: DashboardRow): number {
   const order: Record<RowBand, number> = {
-    red: 0, unknown: 1, running: 2, "not-yet-due": 3, skipped: 4, "not-applicable": 5, green: 6,
+    red: 0, flapping: 1, unknown: 2, running: 3, "not-yet-due": 4, skipped: 5, "not-applicable": 6, green: 7,
   };
   if (order[a.band] !== order[b.band]) return order[a.band] - order[b.band];
 
-  if (a.band === "red") {
+  if (a.band === "red" || a.band === "flapping") {
     // Oldest red first: infinite silence (never observed) is the oldest of all.
     const as = a.silenceSeconds ?? Number.POSITIVE_INFINITY;
     const bs = b.silenceSeconds ?? Number.POSITIVE_INFINITY;
@@ -604,8 +799,12 @@ export function headline(report: DashboardReport): string {
     : report.oldestUnknownSilenceSeconds === null
       ? ""
       : `, oldest silence ${humanDuration(report.oldestUnknownSilenceSeconds)}`;
+  if (cov.known === 0) {
+    return "NOT OK — the roster is EMPTY: no check has ever been enumerated, so this dashboard is uninitialised, not clean";
+  }
   const parts = [
     `RED ${c.red}`,
+    ...(c.flapping > 0 ? [`FLAPPING ${c.flapping}`] : []),
     `UNKNOWN ${c.unknown}${silence}`,
     `coverage ${cov.observed}/${cov.expected}${cov.shortfall > 0 ? ` (SHORTFALL ${cov.shortfall})` : ""}`,
     `green ${c.green}`,

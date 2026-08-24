@@ -343,6 +343,21 @@ export type Verdict =
    * separates them.
    */
   | { readonly kind: "not-yet-due"; readonly detail: string }
+  /**
+   * The check's recent CONCLUDED history contains both passes and failures.
+   *
+   * Its own state because neither neighbour is honest about it. Two instruments
+   * disagreed about `build-ai-cluster-iso` on 2026-08-22 and **both were right**: its
+   * concluded runs on `main` that afternoon went success 21:53, failure 21:18, success
+   * 20:37, success 20:03, failure 19:07. A latest-verdict reader sampling at 21:55 says
+   * green; one sampling at 21:20 says red. Neither is wrong and neither is useful,
+   * because a lane whose next verdict is a coin flip has no colour.
+   *
+   * Reporting it as green would launder a 90% claim as a 100% one. Reporting it as red
+   * would make an oscillating lane permanently red and get the alarm muted. So it is
+   * named, ranked directly under red, and it says the mix out loud.
+   */
+  | { readonly kind: "flapping"; readonly detail: string }
   | { readonly kind: "unknown"; readonly reason: UnknownReason; readonly detail: string };
 
 export type VerdictKind = Verdict["kind"];
@@ -455,7 +470,37 @@ export interface CheckObservation {
    * count**: how long has the check gone without concluding anything?
    */
   readonly attempts?: AttemptSummary;
+  /**
+   * A NEWER verdict for this check that arrived by a different trigger than the one
+   * this observation reports.
+   *
+   * The reconciling field. A `periodic` check's verdict is deliberately drawn from its
+   * SCHEDULED runs — a green from a hand-run proves the code works and does not prove
+   * the cadence does, and letting a manual dispatch clear a scheduled lane's red would
+   * be a snooze button anyone could press. But suppressing that dispatch entirely is
+   * what made this dashboard and a hand-rolled scanner tell two different stories about
+   * the same three cadence lanes on 2026-08-22, with no way for a reader to see why.
+   *
+   * So the stronger claim stays the verdict, and the weaker evidence is carried beside
+   * it and rendered. Both instruments' answers become visible in one row.
+   */
+  readonly supersededBy?: SupersedingVerdict;
   readonly sourceDetail?: Readonly<Record<string, string>>;
+}
+
+/** A newer verdict from a trigger other than the one the observation reports. */
+export interface SupersedingVerdict {
+  readonly verdict: Verdict;
+  readonly observedAt: string;
+  readonly trigger: TriggerClass;
+  readonly detail: string;
+}
+
+/** One attempt that established a verdict, and when. */
+export interface ConcludedOutcome {
+  /** ISO-8601 of when the verdict was established. */
+  readonly at: string;
+  readonly passed: boolean;
 }
 
 /** What a producer saw while looking for one check's verdict. */
@@ -470,6 +515,20 @@ export interface AttemptSummary {
   readonly newerSpanSeconds: number;
   /** The newest attempt is still in flight — annotate, never overwrite. */
   readonly recheckInFlight: boolean;
+  /**
+   * Every attempt in the inspected slice that ESTABLISHED a verdict, newest first,
+   * **with its timestamp**.
+   *
+   * Timestamps rather than counts, and that is the whole point. A bare
+   * `concludedRed: 12` is time-blind: for an hourly lane it describes the last hour,
+   * and for a rarely-run one it can reach back a quarter. `vocab-hygiene` was reported
+   * broken off "12 of the last 20 concluded runs failed" when **every one of those
+   * failures was from June** and the lane had passed every run since 2026-06-10.
+   *
+   * Reporting the outcomes and letting the FOLD do the windowing is also the right
+   * split: the producer says what it saw, the policy decides what counts as recent.
+   */
+  readonly concluded: readonly ConcludedOutcome[];
 }
 
 /**
