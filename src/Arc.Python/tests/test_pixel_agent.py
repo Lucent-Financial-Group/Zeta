@@ -80,7 +80,10 @@ def test_pixel_agent_clears_level_zero_without_reading_sprites() -> None:
 
 def test_pixel_agent_beats_a_random_walk() -> None:
     """The benchmark has to discriminate, or the score above means nothing."""
-    assert play(agent="pixel", seed=4)["environment_score"] > play(agent="random", seed=4)["environment_score"]
+    assert (
+        play(agent="pixel", seed=4)["environment_score"]
+        > play(agent="random", seed=4)["environment_score"]
+    )
 
 
 def test_episodes_replay_byte_identically() -> None:
@@ -197,9 +200,13 @@ def test_the_occupancy_map_is_relearned_when_the_world_resets() -> None:
         # on the first frame of a new level that evidence does not exist yet.
         # What must not survive is staleness that PERSISTS past the evidence.
         if level == 2 and since >= 2:
-            off_grid = {c for c in agent.blocked if not (0 <= c[0] < 8 and 0 <= c[1] < 8)}
+            off_grid = {
+                c for c in agent.blocked if not (0 <= c[0] < 8 and 0 <= c[1] < 8)
+            }
             stale = agent.blocked - set(_WALLS[2]) - off_grid
-            assert not stale, f"believes cells solid that are open on this level: {stale}"
+            assert not stale, (
+                f"believes cells solid that are open on this level: {stale}"
+            )
             checked += 1
         frame = advance(game, agent.act(_grid(game, frame)))
         since += 1

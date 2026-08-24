@@ -32,7 +32,7 @@ from arcengine import GameAction
 
 from zeta_arc.agent import PixelAgent
 from zeta_arc.driver import advance, reset
-from zeta_arc.environments.chase import CELL, GRID, _MOVES, _STARTS, _WALLS, ZetaChase
+from zeta_arc.environments.chase import _MOVES, _STARTS, _WALLS, CELL, GRID, ZetaChase
 
 #: Fixed action order, so a "random" agent is reproducible from its seed.
 _ACTION_ORDER: tuple[GameAction, ...] = tuple(_MOVES.keys())
@@ -103,7 +103,9 @@ def choose(
     return GameAction.ACTION4
 
 
-def play(agent: str = "greedy", seed: int = 0, max_actions_per_level: int = 300) -> dict:
+def play(
+    agent: str = "greedy", seed: int = 0, max_actions_per_level: int = 300
+) -> dict:
     """One full episode. Returns per-level and aggregate scores."""
     # Constructed to prove the toolkit's own offline path initialises with no
     # key and no network — the fact this whole lane rests on.
@@ -172,7 +174,9 @@ def play(agent: str = "greedy", seed: int = 0, max_actions_per_level: int = 300)
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Play ZetaChase offline and score it.")
-    parser.add_argument("--agent", choices=("pixel", "greedy", "random"), default="greedy")
+    parser.add_argument(
+        "--agent", choices=("pixel", "greedy", "random"), default="greedy"
+    )
     parser.add_argument("--seed", type=int, default=0)
     args = parser.parse_args()
     print(json.dumps(play(agent=args.agent, seed=args.seed), indent=2))

@@ -34,7 +34,7 @@ class Component:
     cx: float
     cy: float
 
-    def distance_to(self, other: "Component") -> float:
+    def distance_to(self, other: Component) -> float:
         return abs(self.cx - other.cx) + abs(self.cy - other.cy)
 
 
@@ -69,7 +69,12 @@ def components(grid: Grid, background: int | None = None) -> list[Component]:
             while queue:
                 cxi, cyi = queue.popleft()
                 cells.append((cxi, cyi))
-                for nx, ny in ((cxi + 1, cyi), (cxi - 1, cyi), (cxi, cyi + 1), (cxi, cyi - 1)):
+                for nx, ny in (
+                    (cxi + 1, cyi),
+                    (cxi - 1, cyi),
+                    (cxi, cyi + 1),
+                    (cxi, cyi - 1),
+                ):
                     if not (0 <= nx < width and 0 <= ny < height):
                         continue
                     if seen[ny][nx] or grid[ny][nx] != colour:

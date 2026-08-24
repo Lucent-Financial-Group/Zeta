@@ -80,7 +80,7 @@ class PixelAgent:
     def _cell_of(self, c: Component) -> tuple[int, int]:
         """Component centroid in grid cells, using the learned step size."""
         step = self._step_px or 1.0
-        return (int(round((c.cx - step / 2) / step)), int(round((c.cy - step / 2) / step)))
+        return (round((c.cx - step / 2) / step), round((c.cy - step / 2) / step))
 
     def _note_blocked_cell(self, me: Component) -> None:
         """A commanded move that produced NO displacement means something is in
@@ -92,7 +92,11 @@ class PixelAgent:
         cost is honest — a few bumps — and that cost is the price of not being
         handed the map.
         """
-        if self._last_action is None or self._step_px is None or self._last_self_cell is None:
+        if (
+            self._last_action is None
+            or self._step_px is None
+            or self._last_self_cell is None
+        ):
             return
         here = self._cell_of(me)
         if here != self._last_self_cell:
@@ -121,7 +125,11 @@ class PixelAgent:
         if self._step_px is None or self._last_self_cell is None:
             return False
         here = self._cell_of(me)
-        return abs(here[0] - self._last_self_cell[0]) + abs(here[1] - self._last_self_cell[1]) > 1
+        return (
+            abs(here[0] - self._last_self_cell[0])
+            + abs(here[1] - self._last_self_cell[1])
+            > 1
+        )
 
     def _route_plan(
         self, me: Component, targets: list[Component], width: int, height: int
@@ -200,7 +208,9 @@ class PixelAgent:
             if magnitude < 1e-9:
                 continue  # did not move: unreadable (a wall may have blocked me)
             agreement = (dx * dx_cmd + dy * dy_cmd) / magnitude
-            self.evidence[key] = self.evidence.get(key, 0.0) * EVIDENCE_DECAY + agreement
+            self.evidence[key] = (
+                self.evidence.get(key, 0.0) * EVIDENCE_DECAY + agreement
+            )
 
     def _elect_self(self, now: list[Component]) -> Component | None:
         """The body is whichever component the probe best supports."""
@@ -244,7 +254,9 @@ class PixelAgent:
             # frame after. Acting on a half-drawn world is precisely what put a
             # wall in the body's place in the CHIP-8 arena, so the rule here is
             # the same — when the world is not fully there, probe, do not decide.
-            action = GameAction.ACTION4 if self._last_action is None else self._last_action
+            action = (
+                GameAction.ACTION4 if self._last_action is None else self._last_action
+            )
             self._previous, self._last_action = now, action
             return action
 
