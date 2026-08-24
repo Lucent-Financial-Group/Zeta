@@ -164,6 +164,10 @@ export function observationForRuns(
         ? 0
         : Math.round((Math.max(...newerTimes) - Math.min(...newerTimes, Date.parse(chosen.updated_at ?? chosen.created_at))) / 1000),
     recheckInFlight: runs[0] !== undefined && runs[0].status !== "completed",
+    concludedGreen: runs.filter((r) => r.status === "completed" && r.conclusion === "success").length,
+    concludedRed: runs.filter(
+      (r) => r.status === "completed" && ["failure", "timed_out", "startup_failure", "action_required"].includes(r.conclusion ?? ""),
+    ).length,
   };
 
   return {
@@ -219,6 +223,31 @@ export function expectationForWorkflow(
   };
 }
 
+/**
+ * Attach a newer, different-trigger verdict to an observation as qualifying evidence.
+ *
+ * Only attaches when the rival is genuinely NEWER and genuinely from a DIFFERENT
+ * trigger — otherwise it is the same fact twice and adds noise to a row whose whole
+ * job is to be readable.
+ */
+export function withSuperseding(
+  primary: CheckObservation,
+  rival: CheckObservation | null,
+): CheckObservation {
+  if (rival === null) return primary;
+  if (rival.trigger === primary.trigger) return primary;
+  if (!(rival.observedAt > primary.observedAt)) return primary;
+  return {
+    ...primary,
+    supersededBy: {
+      verdict: rival.verdict,
+      observedAt: rival.observedAt,
+      trigger: rival.trigger ?? "unknown",
+      detail: `a later ${rival.sourceDetail?.event ?? rival.trigger ?? "non-scheduled"} run concluded '${rival.verdict.kind}'`,
+    },
+  };
+}
+
 // ─── I/O edge ───────────────────────────────────────────────────────────────
 
 export interface GhCheckSourceOptions {
@@ -252,21 +281,77 @@ export function readFileOrNull(path: string): string | null {
 }
 
 /**
- * When did this workflow file first land? Read from the repository's own history —
- * the commit that ADDED the path.
+ * Parse `git log --diff-filter=A --name-only --format=C%aI` output into
+ * path → when the path was first added.
  *
- * This is what separates "a scheduled check that never fires" from "a scheduled check
- * added yesterday", and getting that wrong once, in the alarming direction, is what
- * put this function here.
+ * Pure, so the parse is testable without a repository, and separated from the spawn so
+ * the **one spawn** is a property a test can hold the implementation to.
+ *
+ * Commits arrive newest-first, so the LAST record naming a path is its earliest add;
+ * this simply overwrites and ends holding the oldest.
  */
-export function definitionSinceForPath(repoRoot: string, path: string): string | undefined {
-  const proc = Bun.spawnSync(
-    ["git", "-C", repoRoot, "log", "--diff-filter=A", "--follow", "--format=%aI", "--", path],
-    { stdout: "pipe", stderr: "pipe" },
-  );
-  if (proc.exitCode !== 0) return undefined;
-  const lines = new TextDecoder().decode(proc.stdout).trim().split("\n").filter((l) => l !== "");
-  return lines.at(-1);
+export function parseFirstAddDates(logOutput: string): ReadonlyMap<string, string> {
+  const out = new Map<string, string>();
+  let current: string | null = null;
+  for (const raw of logOutput.split("\n")) {
+    const line = raw.trim();
+    if (line === "") continue;
+    if (line.startsWith("C")) {
+      current = line.slice(1);
+      continue;
+    }
+    if (current !== null) out.set(line, current);
+  }
+  return out;
+}
+
+/**
+ * When did each workflow file first land? **ONE `git log`, for every path at once.**
+ *
+ * The shape of this function is the fix for a measured failure, so the measurement is
+ * recorded here rather than in a commit message nobody will find. The first version
+ * called `git log --diff-filter=A --follow` **once per workflow**, inside a phase with
+ * no degree-of-parallelism knob at all, via blocking `spawnSync`:
+ *
+ *   * measured with a counting shim on PATH: **73 `git` spawns + 87 `gh` spawns = 160
+ *     subprocesses per pass**;
+ *   * one `--follow` call costs ~0.22s here, so ~16s of pure serial subprocess time on
+ *     an idle machine — and the first user of this tool, on a loaded machine with
+ *     on-access AV scanning every spawn, **timed out at 540s and went back to their
+ *     hand-rolled scan**;
+ *   * the bulk call below costs **~0.22s for all 80 paths**.
+ *
+ * The lesson generalises past this function, and the sibling incident makes it a rule:
+ * `src/Core.TypeScript/search/grep.ts` was built for exactly the incident it was meant
+ * to prevent and failed because it was too slow to use. **A guard slower than the
+ * unsafe path selects for the unsafe path** — being correct does not exempt a tool
+ * from being reached for.
+ *
+ * **Honest limit:** the bulk form cannot use `--follow`, so a RENAMED workflow reports
+ * the rename date rather than its original creation. That biases `definitionSince`
+ * YOUNGER, which biases the verdict toward `not-yet-due` — the direction that declines
+ * to alarm. Given `not-yet-due` exists precisely because a false alarm gets the guard
+ * muted, trading rename fidelity for a usable tool is the right way round, and a
+ * renamed workflow re-earns its full age one period later.
+ */
+export type GitLogRunner = (args: readonly string[]) => string | null;
+
+const spawnGitLog: GitLogRunner = (args) => {
+  const proc = Bun.spawnSync(["git", ...args], { stdout: "pipe", stderr: "pipe" });
+  return proc.exitCode === 0 ? new TextDecoder().decode(proc.stdout) : null;
+};
+
+export function definitionSinceForPaths(
+  repoRoot: string,
+  paths: readonly string[],
+  // Injected so a test can COUNT the spawns. "One subprocess regardless of check
+  // count" is the property that was violated; a property that matters is one a test
+  // holds you to, not one a comment claims.
+  run: GitLogRunner = spawnGitLog,
+): ReadonlyMap<string, string> {
+  if (paths.length === 0) return new Map();
+  const out = run(["-C", repoRoot, "log", "--diff-filter=A", "--name-only", "--format=C%aI", "--", ".github/workflows/"]);
+  return out === null ? new Map() : parseFirstAddDates(out);
 }
 
 export async function listGitHubCheckDefinitions(
@@ -285,6 +370,9 @@ export async function listGitHubCheckDefinitions(
     if (workflows.length >= res.value.total_count || res.value.workflows.length === 0) break;
   }
 
+  // ONE git log for every path, before the map — not one per workflow inside it.
+  const firstAdds = definitionSinceForPaths(options.repoRoot, workflows.map((w) => w.path));
+
   const definitions = workflows
     .filter((w) => w.state === "active")
     .map((w): CheckDefinition => {
@@ -295,7 +383,7 @@ export async function listGitHubCheckDefinitions(
       // `registered-but-absent` verdict — so it must come from the read itself.
       const source = readFileOrNull(abs);
       const expectation = expectationForWorkflow(w.path, source, ref);
-      const definitionSince = source === null ? undefined : definitionSinceForPath(options.repoRoot, w.path);
+      const definitionSince = source === null ? undefined : firstAdds.get(w.path);
       return {
         checkId: checkIdForWorkflow(w.path),
         displayName: w.name,
@@ -347,23 +435,45 @@ export async function listGitHubCheckObservations(
         // fired still accumulates pull_request and workflow_dispatch runs, and a
         // "latest run" query happily reports one of those as the check's verdict —
         // which is how a dead cadence renders green. `chart-version-refresh` is the
-        // live instance: 14 runs in its history, every one `event=pull_request`,
-        // against a declared `7 17 * * 0`.
+        // live instance: every run in its history is `event=pull_request` against a
+        // declared `7 17 * * 0`.
+        //
+        // **But we now fetch BOTH.** Reporting only the scheduled verdict is the
+        // stronger and correct claim, and suppressing the other one entirely is what
+        // made this dashboard and a hand-rolled scanner tell different stories about
+        // three cadence lanes on 2026-08-22 with no way for a reader to see why: the
+        // lanes were fixed and manually re-run green, while this reported their last
+        // SCHEDULED failure with a `detail` that read like a plain latest-verdict.
+        // The scheduled verdict stays the verdict; the dispatch becomes `supersededBy`.
         if (def.expectation.kind === "periodic") {
-          const sched = await runGhJsonAsync<{ workflow_runs: GhRun[] }>([
-            "api",
-            `repos/${nwo}/actions/workflows/${workflowId}/runs?event=schedule&per_page=${perCheck}`,
+          const [sched, other] = await Promise.all([
+            runGhJsonAsync<{ workflow_runs: GhRun[] }>([
+              "api",
+              `repos/${nwo}/actions/workflows/${workflowId}/runs?event=schedule&per_page=${perCheck}`,
+            ]),
+            runGhJsonAsync<{ workflow_runs: GhRun[] }>([
+              "api",
+              `repos/${nwo}/actions/workflows/${workflowId}/runs?branch=${encodeURIComponent(branch)}&per_page=${perCheck}`,
+            ]),
           ]);
           if (sched.ok && sched.value.workflow_runs.length > 0) {
             const obs = observationForRuns(def.checkId, sched.value.workflow_runs, sourceName);
             if (obs !== null) {
-              observations.push(obs);
+              const rival = other.ok ? observationForRuns(def.checkId, other.value.workflow_runs, sourceName) : null;
+              observations.push(withSuperseding(obs, rival));
               continue;
             }
           }
-          // No scheduled run at all. Fall through to the ordinary query, whose
-          // observation will carry a NON-periodic trigger — which is precisely what
-          // makes the fold report "the declared schedule has never fired".
+          // No scheduled run at all. Fall through to the ordinary result, whose
+          // observation carries a NON-periodic trigger — which is precisely what makes
+          // the fold report "the declared schedule has never fired".
+          if (!other.ok) {
+            failures.push({ checkId: def.checkId, detail: `${other.error.kind}: ${other.error.message.slice(0, 160)}` });
+            continue;
+          }
+          const fallback = observationForRuns(def.checkId, other.value.workflow_runs, sourceName);
+          if (fallback !== null) observations.push(fallback);
+          continue;
         }
 
         const res = await runGhJsonAsync<{ workflow_runs: GhRun[] }>([
