@@ -1,3 +1,9 @@
+import {
+  compareAndSwapRevisionPolicy,
+  type RevisionPolicyPort,
+  type RevisionPolicyRefusal,
+} from "../persistence/revision-policy";
+
 export const ZETA_DB_IMAGE_SCHEMA = "zeta.db.image.v1" as const;
 export const ZETA_DB_TICK_SCHEMA = "zeta.db.tick.v1" as const;
 
@@ -58,6 +64,13 @@ export type ZetaDbResult<T> =
   | { readonly ok: false; readonly feedback: ZetaDbFeedback };
 
 export interface ZetaDbImagePort {
+  /**
+   * Executable revision contract. The adapter applies its decision atomically with `save`.
+   *
+   * `runConvergentZetaDbNodeTick`'s bounded-retry convergence (#13929) is proved against
+   * `compareAndSwapRevisionPolicy`. Other policies require their own convergence evidence.
+   */
+  readonly revisionPolicy: RevisionPolicyPort;
   load(nodeId: string): Promise<ZetaDbResult<ZetaDbImageRecord | null>>;
   save(record: ZetaDbImageRecord): Promise<ZetaDbResult<ZetaDbImageRecord>>;
   close(): ZetaDbResult<null>;
@@ -120,6 +133,14 @@ function failed(
   severity: ZetaDbFeedback["severity"] = "heat",
 ): { readonly ok: false; readonly feedback: ZetaDbFeedback } {
   return { ok: false, feedback: { severity, code, detail } };
+}
+
+function revisionRefused(refusal: RevisionPolicyRefusal): { readonly ok: false; readonly feedback: ZetaDbFeedback } {
+  return failed(
+    refusal.reason === "node-mismatch" ? "database-image-invalid" : "database-revision-conflict",
+    refusal.detail,
+    refusal.reason === "node-mismatch" ? "heat" : "backpressure",
+  );
 }
 
 function isRecord(value: unknown): value is Readonly<Record<string, unknown>> {
@@ -261,6 +282,7 @@ function foldRows(entries: readonly ZetaDbDelta[]): ZetaDbResult<readonly ZetaDb
       return failed(
         "database-row-conflict",
         `Row key ${rowKey} names more than one payload. Row keys must identify complete row values.`,
+        "backpressure",
       );
     }
     for (const [payload, weight] of surviving) rows.push({ rowKey, payload, weight });
@@ -674,11 +696,18 @@ export async function runZetaDbNodeTick(
 }
 
 /**
- * Reapply one logical tick after concurrent writers change the durable revision.
+ * Reapply one logical tick after a transient conflict at the durable boundary.
  *
  * Explicit `expectedRevision` requests are compare-and-swap operations, so their
  * predicate is never weakened by retrying. Ordinary idempotent event batches may
- * reload and fold again, but only within the caller's finite attempt budget.
+ * reload and fold again after either a revision race or a row prefix that another
+ * concurrent batch can complete, but only within the caller's finite attempt budget.
+ *
+ * PRECONDITION on the port (081M0Q8TQYE087G0R001WBX1ZC): the convergence this retry provides was established
+ * against `compareAndSwapRevisionPolicy`, because the retry is driven by the port REFUSING
+ * a revision another writer already took. A policy that refuses fewer writes needs its own
+ * convergence evidence. This remains a documented precondition rather than silently
+ * changing the browser path's established monotone behavior.
  */
 export async function runConvergentZetaDbNodeTick(
   port: ZetaDbImagePort,
@@ -701,14 +730,16 @@ export async function runConvergentZetaDbNodeTick(
   let lastConflict: ZetaDbFeedback | null = null;
   for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
     const result = await runZetaDbNodeTick(port, request);
-    if (result.ok || result.feedback.code !== "database-revision-conflict") return result;
+    if (result.ok) return result;
+    if (result.feedback.code !== "database-revision-conflict" && result.feedback.code !== "database-row-conflict")
+      return result;
     if (request.expectedRevision !== undefined) return result;
     lastConflict = result.feedback;
   }
 
   return failed(
-    "database-revision-conflict",
-    `Database tick spent its ${String(maxAttempts)}-attempt convergence budget. Last conflict: ${lastConflict?.detail ?? "revision changed"}`,
+    lastConflict?.code ?? "database-revision-conflict",
+    `Database tick spent its ${String(maxAttempts)}-attempt convergence budget. Last conflict: ${lastConflict?.detail ?? "durable state changed"}`,
     "backpressure",
   );
 }
@@ -721,6 +752,7 @@ export function createInMemoryZetaDbImagePort(): ZetaDbImagePort {
   const unavailable = (): ZetaDbResult<never> =>
     failed("database-read-failed", "The in-memory database image port is closed.");
   return {
+    revisionPolicy: compareAndSwapRevisionPolicy,
     load: (nodeId) => {
       if (closed) return Promise.resolve(unavailable());
       const value = records.get(nodeId);
@@ -731,30 +763,11 @@ export function createInMemoryZetaDbImagePort(): ZetaDbImagePort {
     save: (candidate) => {
       if (closed)
         return Promise.resolve(failed("database-write-failed", "The in-memory database image port is closed."));
-      const existing = records.get(candidate.nodeId);
-      if (existing === undefined && candidate.revision !== 1) {
-        return Promise.resolve(
-          failed(
-            "database-revision-conflict",
-            "The first durable database image must have revision 1.",
-            "backpressure",
-          ),
-        );
-      }
-      if (existing !== undefined) {
-        if (candidate.revision === existing.revision && sameBytes(candidate.payload, existing.payload)) {
-          return Promise.resolve(succeeded({ ...candidate, payload: new Uint8Array(candidate.payload) }));
-        }
-        if (candidate.revision !== existing.revision + 1) {
-          return Promise.resolve(
-            failed(
-              "database-revision-conflict",
-              `Database revision ${String(candidate.revision)} cannot follow stored revision ${String(existing.revision)}.`,
-              "backpressure",
-            ),
-          );
-        }
-      }
+      const existing = records.get(candidate.nodeId) ?? null;
+      const decision = compareAndSwapRevisionPolicy.decide(existing, candidate);
+      if (!decision.ok) return Promise.resolve(revisionRefused(decision.refusal));
+      if (decision.value.action === "idempotent")
+        return Promise.resolve(succeeded({ ...candidate, payload: new Uint8Array(candidate.payload) }));
       const stored = { ...candidate, payload: new Uint8Array(candidate.payload) };
       records.set(candidate.nodeId, stored);
       return Promise.resolve(succeeded({ ...stored, payload: new Uint8Array(stored.payload) }));

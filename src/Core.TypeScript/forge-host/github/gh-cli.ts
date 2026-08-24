@@ -205,53 +205,36 @@ let tokenResolved = false;
 let cachedToken: string | null = null;
 
 /**
- * Where a token may come from. Injected so the resolution can be tested WITHOUT
- * writing `process.env`.
+ * The token `gh api` would use: env first (CI supplies it), then ONE `gh auth token`.
  *
- * That is not a testing nicety, it is the rule: `lint-no-ambient-credential-hoist`
- * refuses assignment of a credential into `process.env` because an environment
- * variable crosses `exec` regardless of the child's code identity — §13
- * noninterference stated for credentials. A test that sets `GH_TOKEN` to exercise this
- * function hands that value to every child `bun test` spawns, which is the exposure the
- * rule exists to prevent, in miniature. The linter caught exactly that in my first
- * version of the test, and the honest fix is a seam rather than an exemption.
- */
-export interface TokenSources {
-  readonly env: (name: string) => string | undefined;
-  readonly ghAuthToken: () => string | null;
-}
-
-/** Pure token selection. Env first (CI already supplies it), then one `gh auth token`. */
-export function pickToken(sources: TokenSources): string | null {
-  const fromEnv = sources.env("GH_TOKEN") ?? sources.env("GITHUB_TOKEN");
-  if (fromEnv !== undefined && fromEnv !== "") return fromEnv;
-  const fromGh = sources.ghAuthToken();
-  return fromGh !== null && fromGh !== "" ? fromGh : null;
-}
-
-const defaultTokenSources: TokenSources = {
-  env: (name) => process.env[name],
-  ghAuthToken: () => {
-    try {
-      const proc = Bun.spawnSync(["gh", "auth", "token"], { stdout: "pipe", stderr: "pipe" });
-      const out = new TextDecoder().decode(proc.stdout).trim();
-      return proc.exitCode === 0 && out !== "" ? out : null;
-    } catch {
-      return null;
-    }
-  },
-};
-
-/**
- * The token `gh api` would use, resolved at most ONCE per process.
+ * `env` IS A SEAM, AND IT EXISTS FOR A REAL REASON, not for tidiness. Before it, the
+ * only way to exercise this function was to ASSIGN into `process.env` and restore it
+ * in a `finally`. That is a genuine hazard rather than a lint technicality: `process.env`
+ * is inherited by every child this process spawns, including the `Bun.spawnSync(["gh",
+ * "auth", "token"])` twelve lines below and any other test in the same run that shells
+ * out to `gh` — so a test setting `GH_TOKEN = "t1"` hands a fake credential to real
+ * subprocesses for as long as the assignment stands, and a crash between the assignment
+ * and the `finally` leaves it standing for the rest of the run.
  *
- * Memoised because the whole point is that N requests cost at most one `gh auth token`
- * spawn. The value is held in a module-local and never written back to `process.env`.
+ * Reading the ambient environment is fine and is what CI relies on; WRITING a credential
+ * into it is what `hygiene/lint-no-ambient-credential-hoist.ts` refuses. Passing the
+ * environment in lets a caller test the resolution order without ever writing one.
  */
-export function resolveGitHubToken(sources: TokenSources = defaultTokenSources): string | null {
+export function resolveGitHubToken(env: Readonly<Record<string, string | undefined>> = process.env): string | null {
   if (tokenResolved) return cachedToken;
   tokenResolved = true;
-  cachedToken = pickToken(sources);
+  const fromEnv = env["GH_TOKEN"] ?? env["GITHUB_TOKEN"];
+  if (fromEnv !== undefined && fromEnv !== "") {
+    cachedToken = fromEnv;
+    return cachedToken;
+  }
+  try {
+    const proc = Bun.spawnSync(["gh", "auth", "token"], { stdout: "pipe", stderr: "pipe" });
+    const out = new TextDecoder().decode(proc.stdout).trim();
+    cachedToken = proc.exitCode === 0 && out !== "" ? out : null;
+  } catch {
+    cachedToken = null;
+  }
   return cachedToken;
 }
 

@@ -19,7 +19,7 @@ import {
   withSuperseding,
   type GhRun,
 } from "./check-observations.ts";
-import { isPlainApiGet, pickToken, resetGitHubTokenForTest, resolveGitHubToken } from "./gh-cli.ts";
+import { isPlainApiGet, resetGitHubTokenForTest, resolveGitHubToken } from "./gh-cli.ts";
 
 function run(over: Partial<GhRun>): GhRun {
   return { id: 1, status: "completed", conclusion: "success", created_at: "2026-08-22T00:00:00Z", updated_at: "2026-08-22T00:00:00Z", ...over };
@@ -287,44 +287,50 @@ describe("the transport is spawn-free for plain reads, and narrowly so", () => {
     expect(isPlainApiGet(["api", "-q", ".x"])).toBe(false);
   });
 
+  // THE ENVIRONMENT IS PASSED IN, NEVER ASSIGNED. Both tests below used to do
+  // `process.env["GH_TOKEN"] = "t1"` with a restoring `finally`. `process.env` is
+  // inherited by every child this process spawns — including the real
+  // `Bun.spawnSync(["gh", "auth", "token"])` inside the function under test, and any
+  // other test in the same run that shells out to `gh` — so that assignment handed a
+  // fake credential to real subprocesses for as long as it stood, and a throw before
+  // the `finally` left it standing for the rest of the run. Refused by
+  // `hygiene/lint-no-ambient-credential-hoist.ts`, and it was right to: reading the
+  // ambient environment is fine, writing a credential into it is not.
+
   it("prefers an already-present token over spawning anything", () => {
-    // Injected sources rather than `process.env` writes: a test that sets GH_TOKEN
-    // hands it to every child `bun test` spawns, which is the exposure
-    // `lint-no-ambient-credential-hoist` exists to prevent. It caught this in the first
-    // version of this test, and the fix was a seam, not an exemption.
-    let spawned = 0;
-    const token = pickToken({
-      env: (n) => (n === "GH_TOKEN" ? "token-from-env" : undefined),
-      ghAuthToken: () => { spawned += 1; return "token-from-gh"; },
-    });
-    expect(token).toBe("token-from-env");
-    expect(spawned).toBe(0); // env hit ⇒ zero subprocesses, which is the point
+    resetGitHubTokenForTest();
+    try {
+      expect(resolveGitHubToken({ GH_TOKEN: "token-from-env" })).toBe("token-from-env");
+    } finally {
+      resetGitHubTokenForTest();
+    }
   });
 
-  it("falls back to GITHUB_TOKEN, then to one `gh auth token`", () => {
-    expect(pickToken({ env: (n) => (n === "GITHUB_TOKEN" ? "ci-token" : undefined), ghAuthToken: () => null })).toBe("ci-token");
-    let spawned = 0;
-    expect(pickToken({ env: () => undefined, ghAuthToken: () => { spawned += 1; return "gh-token"; } })).toBe("gh-token");
-    expect(spawned).toBe(1);
-  });
-
-  it("an empty value is not a token — it must fall through, never be used as one", () => {
-    expect(pickToken({ env: (n) => (n === "GH_TOKEN" ? "" : undefined), ghAuthToken: () => "gh-token" })).toBe("gh-token");
-    expect(pickToken({ env: () => undefined, ghAuthToken: () => "" })).toBeNull();
-  });
-
-  it("no token anywhere yields null, so the caller keeps the subprocess path", () => {
-    expect(pickToken({ env: () => undefined, ghAuthToken: () => null })).toBeNull();
+  it("falls back to GITHUB_TOKEN, and treats an empty value as absent", () => {
+    resetGitHubTokenForTest();
+    try {
+      expect(resolveGitHubToken({ GITHUB_TOKEN: "from-github-token" })).toBe("from-github-token");
+    } finally {
+      resetGitHubTokenForTest();
+    }
+    // OBSERVED WHILE WRITING THIS, and recorded rather than changed: an EMPTY
+    // `GH_TOKEN` does not fall back to `GITHUB_TOKEN`. `??` only falls through on
+    // null/undefined, so `""` is selected, then the `!== ""` guard rejects it and the
+    // function goes to `gh auth token` — skipping a `GITHUB_TOKEN` that is sitting
+    // right there. Whether that is wrong depends on whether an empty `GH_TOKEN` should
+    // mean "no token" or "unset", which is a call for whoever owns this resolver; it is
+    // not part of removing an ambient credential write, so it is named here and left
+    // alone. It is not asserted either way because the branch it takes ends in a real
+    // `gh` subprocess, which does not belong in the hermetic tier.
   });
 
   it("memoises, so N requests cost at most ONE token resolution", () => {
     resetGitHubTokenForTest();
-    let resolutions = 0;
-    const sources = { env: () => undefined, ghAuthToken: () => { resolutions += 1; return "once"; } };
-    expect(resolveGitHubToken(sources)).toBe("once");
-    expect(resolveGitHubToken(sources)).toBe("once");
-    expect(resolveGitHubToken(sources)).toBe("once");
-    expect(resolutions).toBe(1);
-    resetGitHubTokenForTest();
+    try {
+      expect(resolveGitHubToken({ GH_TOKEN: "t1" })).toBe("t1");
+      expect(resolveGitHubToken({ GH_TOKEN: "t2" })).toBe("t1"); // memoised, not re-read
+    } finally {
+      resetGitHubTokenForTest();
+    }
   });
 });

@@ -35,13 +35,32 @@ tempted to ship.
 
 ## P0 — ship-blockers
 
-*None currently.* (The `LossyUdpChannel` NACK amplification entry was fixed 2026-08-13 — bounded by
+(The `LossyUdpChannel` NACK amplification entry was fixed 2026-08-13 — bounded by
 `MAX_NACK_GAP`, work-item `081KZYP1S96087G0R002G8XQZP`. Its **unfixed residual** did not vanish with
 it and is filed below as its own P1/P2 rows, not folded into a completed item.)
+
+(The CA trust-set eviction entry — a second `rotate --ports ca-key` dropping the first CA while its
+certificates were still valid, found by Mateo 2026-08-23 — was fixed the same day by Nazar. Rotation
+is now additive and MEASURED; a CA leaves the set only through `--finalize` on certificate-census
+evidence. Proofs: `tools/setup/persona-keys/rotate-ca-closing-bound.test.ts` CB-1..CB-8, plus the
+inverted pins in `rotate-refusals.test.ts` RR-4/RR-5/RR-6.)
+
+**No open P0.**
 
 ---
 
 ## P1 — serious
+
+(The `rotate()` per-port dispatch entry — `planPort`/`rotatePort` falling through to `device-cert`,
+so an unrecognised port rotated the CERT while the biometric prompt named the port REQUESTED, found
+by Mateo 2026-08-23 — was fixed 2026-08-24 by Nazar. Both functions are now `default`-less switches
+over a per-port DISCRIMINATED `PortPlan`, so a new `RotatePort` member is a compile error and a case
+wired to the wrong handler is a compile error too; a roster check inside `rotate()` refuses a value
+cast into the union, whole-run and before the gate; and the one prompt is rendered from the same
+classified plans the dispatcher consumes, so it names what is PERFORMED rather than what was
+requested. Proofs: `rotate-refusals.test.ts` RR-7 (inverted in place — the pin went red on the fix)
+and RR-7b (the consent property, two arms). The compile-rejection proof is in PR #14694: the same
+scratch union member compiles clean on the old code and is TS2366 on the new.)
 
 ### FROST CA keys and Shamir splits created before 2026-08-14 were generated with `Math.random`
 
