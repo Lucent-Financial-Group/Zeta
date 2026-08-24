@@ -368,7 +368,7 @@ repo-wide. The measurement decides it, and it decides against the rule set:
    (Mateo), not to CI.** The honest claim about those 784 is *"these sites deserve review"*, never
    *"784 vulnerabilities"* — and a claim awaiting review is not a claim CI can gate on.
 3. **The rule strategy is also the weaker enforcement.** A repo-wide two-rule set says nothing about
-   the 3,922 non-null assertions. The path strategy says everything about 107 files and is honest
+   the 3,922 non-null assertions. The path strategy says everything about 102 files and is honest
    about saying nothing about the rest.
 
 So the rule strategy is **deferred to Mateo with the counts attached**, not rejected. It becomes
@@ -378,15 +378,14 @@ attractive the moment someone with security context has triaged the 784.
 
 `package.json` gains `lint:eslint`, and the existing `lint (TS)` gate job gains one step that runs it.
 **No new job, no new runner, no new install** — `lint (TS)` already provisions bun and the eslint
-stack for `tsc`. Cost measured at **~13 s** for the roster (typed-linting program load dominates, not
-the 107 files).
+stack for `tsc`. Cost measured at **~13 s** locally and **20 s** in CI for the roster (typed-linting program
+load dominates, not the 102 files).
 
 The roster is exactly the directories that measured **zero**, minus three deliberate exclusions:
 
 | path | files |
 |---|---:|
 | `eslint.config.ts` | 1 |
-| `infra/k8s` | 5 |
 | `src/Core.QSharp.ReferenceOracle` | 10 |
 | `src/Core.TypeScript/agent-bus` | 8 |
 | `src/Core.TypeScript/ansi` | 3 |
@@ -409,11 +408,41 @@ The roster is exactly the directories that measured **zero**, minus three delibe
 | `src/Core.TypeScript/watermark` | 2 |
 | `src/Core.TypeScript/z-set` | 3 |
 | `src/Core.TypeScript/zetadb` | 8 |
-| **total** | **107** |
+| **total** | **102** |
 
 Widening is a one-token diff: add a path to `lint:eslint` once it measures zero. The same script is
 what a laptop and a devcontainer run (`bun run lint:eslint`), so the three surfaces cannot drift —
 there is no CI-only invocation to fall out of sync (GOVERNANCE §24).
+
+### `infra/k8s` measured zero and was still dropped — CI caught it, on this PR
+
+The first push of this change enrolled `infra/k8s` (5 files, 0 errors). Two gate jobs went red:
+
+```text
+lint (yaml/k8s)                                        -> FAILURE
+lint (bash retirement inventory + hygiene unit tests)  -> FAILURE
+
+cluster-tree consumers: 32 file(s) outside infra/ name infra/k8s or infra/nixos
+1 finding(s):
+  [unrostered-consumer] package.json
+      names the stale tree (infra/k8s | infra/nixos) but is not in the roster.
+```
+
+`infra/k8s` is the **stale** cluster declaration awaiting deletion
+(081M00QCHWA087G0R000GKKRXD) — it collides with `full-ai-cluster/` on
+`Application/argocd/zeta-root`, and its consumer roster is designed to only ever **shrink**.
+
+**Dropped, not rostered.** The roster offers a documented escape hatch — add the path with a
+disposition and a migration target — and taking it would have been the wrong call: a lint roster is
+not a reason to keep a doomed tree alive, and adding a consumer to a tree scheduled for deletion is
+new coupling bought for five files. `full-ai-cluster/` is not a substitute either; it measured
+dirty (portal 455, platform-controller 175, tools 73, nixos 45).
+
+Worth stating plainly: **the failing check was right and I was wrong.** "This directory measures
+zero" was a sufficient reason to enrol under my own criterion, and my criterion was incomplete — it
+had no term for whether the directory should exist at all. Recorded rather than quietly fixed,
+because a criterion that needed a red build to find its missing term is the interesting artefact
+here, not the five files.
 
 ### Clean but deliberately NOT enrolled
 
@@ -620,13 +649,14 @@ visible at a glance in the table.
 `bun run lint:eslint`, exit status captured directly on the following line, never through a pipe.
 
 **1 — existing file, `src/Core.TypeScript/*`** (`@typescript-eslint/no-non-null-assertion`) and
-**2 — existing file, `infra/k8s`** (`sonarjs/publicly-writable-directories`), both sabotaged at once:
+**2 — existing file, `src/Core.QSharp.ReferenceOracle`** (`sonarjs/publicly-writable-directories`), both
+sabotaged at once:
 
 ```text
 LINT_ESLINT_RC=1
 
-/…/infra/k8s/tests/validate-bootstrap.ts
-  435:32  error  Make sure publicly writable directories are used safely here  sonarjs/publicly-writable-directories
+/…/src/Core.QSharp.ReferenceOracle/generate-treaty-transcript.ts
+  282:32  error  Make sure publicly writable directories are used safely here  sonarjs/publicly-writable-directories
 
 /…/src/Core.TypeScript/splitmix64/splitmix64.ts
   23:14  error  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
@@ -674,7 +704,7 @@ exit status of the same command, on the same commit, against the same lockfile.
       `format:check` and `lint:css` are still **unmeasured** — out of scope for this slice, still owed.
 - [ ] **Profile boundary NOT decided.** Two positions on the record; `docs/research/scripts/` left
       untouched on purpose. Maintainer's call.
-- [x] Landed incrementally — 107 files, zero remediation, no PR holding unrelated fixes.
+- [x] Landed incrementally — 102 files, zero remediation, no PR holding unrelated fixes.
 - [x] Documentation matches behaviour — the gate step is named for exactly what it runs, and the
       roster is in a script both CI and a laptop invoke.
 - [x] Discrimination proof for eslint: RED → restore → GREEN, three sabotages, real output above.
