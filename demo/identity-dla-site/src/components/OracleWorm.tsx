@@ -29,10 +29,6 @@
 
 import { useEffect, useRef, useState } from "react";
 
-// DELIBERATE BREAK — discrimination proof for gate/lint-identity-dla (PR #14606).
-// Reverted in the next commit; the two runs bracketing this line are the evidence.
-const dlaDiscriminationProof: string = 42;
-
 // ── Real connectome loader ────────────────────────────────────────────────────
 interface ConnectomeData {
   neurons: string[];
