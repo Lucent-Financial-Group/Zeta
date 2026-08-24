@@ -12,11 +12,7 @@ import {
   planFileBackedZflashImageExecution,
   resolveZetaTestInfraPubkeyFromZflashModule,
 } from "./lib.ts";
-import {
-  firstbootRoleFromFlags,
-  validateJoinTokenMaterial,
-  type ZetaFirstbootRole,
-} from "./firstboot-role.ts";
+import { firstbootRoleFromFlags, validateJoinTokenMaterial, type ZetaFirstbootRole } from "./firstboot-role.ts";
 import type {
   FileBackedZflashImageExecution,
   FileBackedZflashImageExecutionFeedback,
@@ -39,6 +35,9 @@ export interface FileBackedZflashCliOptions {
   /** 081KSNY2Z0008QG0R0008PN7RQ scenario 5 — see firstboot-role.ts. */
   readonly firstbootRole?: ZetaFirstbootRole;
   readonly joinTokenSourcePath?: string;
+  readonly bindUefiKeyfileMarker?: boolean;
+  /** QEMU-only test passphrase for `/zeta-qemu-creds-passphrase`. Never log. */
+  readonly qemuCredsPassphrase?: string;
 }
 
 export type FileBackedZflashCliParseResult =
@@ -81,7 +80,9 @@ const USAGE =
   "  --role <first-control-plane|joiner>  write /zeta-firstboot.conf naming the node's role\n" +
   "  --flake-host <attr>          flake host attribute for --role (defaults per role)\n" +
   "  --join-server-url <url>      https://host[:port] of the existing control plane (joiner only)\n" +
-  "  --join-token <path>          copy k3s node-token material to /zeta-join-token (joiner only)\n";
+  "  --join-token <path>          copy k3s node-token material to /zeta-join-token (joiner only)\n" +
+  "  --bind-uefi-keyfile-marker   write /zeta-bind-uefi-keyfile (guest persist-opt-in; not default)\n" +
+  "  --qemu-creds-passphrase-file <path>  write /zeta-qemu-creds-passphrase from a file (QEMU; not argv)\n";
 
 function resolveTestInfraPubkeyPath(): string {
   return resolveZetaTestInfraPubkeyFromZflashModule(import.meta.url);
@@ -175,12 +176,18 @@ export function parseFileBackedZflashArgs(args: readonly string[]): FileBackedZf
   let joinServerUrlFlag: string | undefined;
   let joinTokenSourcePath: string | undefined;
   let testMode = false;
+  let bindUefiKeyfileMarker = false;
+  let qemuCredsPassphraseFile: string | undefined;
 
   for (let index = 0; index < args.length; index++) {
     const arg = args[index]!;
     if (arg === "-h" || arg === "--help") return { kind: "help" };
     if (arg === "--test") {
       testMode = true;
+      continue;
+    }
+    if (arg === "--bind-uefi-keyfile-marker") {
+      bindUefiKeyfileMarker = true;
       continue;
     }
 
@@ -198,7 +205,8 @@ export function parseFileBackedZflashArgs(args: readonly string[]): FileBackedZf
       arg === "--role" ||
       arg === "--flake-host" ||
       arg === "--join-server-url" ||
-      arg === "--join-token"
+      arg === "--join-token" ||
+      arg === "--qemu-creds-passphrase-file"
     ) {
       const value = requireValue(args, index, arg);
       if (typeof value !== "string") return { kind: "error", error: value.error };
@@ -220,6 +228,7 @@ export function parseFileBackedZflashArgs(args: readonly string[]): FileBackedZf
       else if (arg === "--flake-host") flakeHostFlag = value;
       else if (arg === "--join-server-url") joinServerUrlFlag = value;
       else if (arg === "--join-token") joinTokenSourcePath = value;
+      else if (arg === "--qemu-creds-passphrase-file") qemuCredsPassphraseFile = value;
       else inlineStagingDirectory = value;
       index++;
       continue;
@@ -240,6 +249,24 @@ export function parseFileBackedZflashArgs(args: readonly string[]): FileBackedZf
   });
   if (!firstbootRole.ok) return { kind: "error", error: firstbootRole.error };
 
+  let qemuCredsPassphrase: string | undefined;
+  if (qemuCredsPassphraseFile !== undefined) {
+    // Read, then map ENOENT. existsSync-then-read is a check-then-use race
+    // (lint-check-then-use-file-races). Never echo the path or contents.
+    try {
+      const raw = readFileSync(qemuCredsPassphraseFile, "utf8").replace(/\r?\n$/, "");
+      if (raw.length === 0) {
+        return { kind: "error", error: "--qemu-creds-passphrase-file is empty" };
+      }
+      qemuCredsPassphrase = raw;
+    } catch (err) {
+      if ((err as NodeJS.ErrnoException).code === "ENOENT") {
+        return { kind: "error", error: "--qemu-creds-passphrase-file not found" };
+      }
+      return { kind: "error", error: "--qemu-creds-passphrase-file read failed" };
+    }
+  }
+
   return {
     kind: "run",
     options: {
@@ -256,6 +283,8 @@ export function parseFileBackedZflashArgs(args: readonly string[]): FileBackedZf
       ...(inlineStagingDirectory === undefined ? {} : { inlineStagingDirectory }),
       ...(firstbootRole.value === undefined ? {} : { firstbootRole: firstbootRole.value }),
       ...(joinTokenSourcePath === undefined ? {} : { joinTokenSourcePath }),
+      ...(bindUefiKeyfileMarker ? { bindUefiKeyfileMarker: true } : {}),
+      ...(qemuCredsPassphrase === undefined ? {} : { qemuCredsPassphrase }),
     },
   };
 }
@@ -287,11 +316,7 @@ export function runFileBackedZflashCli(
     }
     authorizedKeysContent = authorizedKeys;
   }
-  const wifiCredentials = resolveWifiCredentials(
-    options.wifiCredentialsPath,
-    options.wifiSsid,
-    options.wifiPassword,
-  );
+  const wifiCredentials = resolveWifiCredentials(options.wifiCredentialsPath, options.wifiSsid, options.wifiPassword);
   if (wifiCredentials !== undefined && "error" in wifiCredentials) {
     return { ok: false, error: wifiCredentials.error };
   }
@@ -335,13 +360,16 @@ export function runFileBackedZflashCli(
     ...(wifiCredentials === undefined ? {} : { wifiCredentials }),
     ...(options.firstbootRole === undefined ? {} : { firstbootRole: options.firstbootRole }),
     ...(options.joinTokenSourcePath === undefined ? {} : { joinTokenSourcePath: options.joinTokenSourcePath }),
+    ...(options.bindUefiKeyfileMarker === true ? { bindUefiKeyfileMarker: true } : {}),
+    ...(options.qemuCredsPassphrase === undefined ? {} : { qemuCredsPassphrase: options.qemuCredsPassphrase }),
   };
   const planned = planFileBackedZflashImage(planInput);
   if (!planned.ok) return { ok: false, error: planned.error };
 
   const needsInlineStaging = planned.value.espWrites.some((write) => write.content !== undefined);
   const inlineStagingDirectory = needsInlineStaging
-    ? options.inlineStagingDirectory ?? (deps.createInlineStagingDirectory ?? createNodeFileBackedZflashInlineStagingDirectory)()
+    ? (options.inlineStagingDirectory ??
+      (deps.createInlineStagingDirectory ?? createNodeFileBackedZflashInlineStagingDirectory)())
     : options.inlineStagingDirectory;
   const executionPlan = planFileBackedZflashImageExecution({
     plan: planned.value,
@@ -364,7 +392,7 @@ export function runFileBackedZflashCli(
   // finish the root cause. Defaults ON for a real (non-injected) executor — production + the
   // `zeta flash` CLI — and OFF when a mock executor is injected (plan/execute unit tests);
   // override via deps.verifyEspWrites. Skipped when there are no ESP writes to verify.
-  const shouldVerify = deps.verifyEspWrites ?? (deps.executor === undefined);
+  const shouldVerify = deps.verifyEspWrites ?? deps.executor === undefined;
   if (shouldVerify && planned.value.espWrites.length > 0) {
     const listing = executor.runCommand({
       command: "mdir",
@@ -419,7 +447,9 @@ function main(): void {
     process.exit(1);
   }
 
-  process.stdout.write(`ZFLASH_QEMU_RETENTION_BOOT_IMAGE=${result.value.retentionBootImageEnvironment.ZFLASH_QEMU_RETENTION_BOOT_IMAGE}\n`);
+  process.stdout.write(
+    `ZFLASH_QEMU_RETENTION_BOOT_IMAGE=${result.value.retentionBootImageEnvironment.ZFLASH_QEMU_RETENTION_BOOT_IMAGE}\n`,
+  );
   if (result.value.inlineStagingDirectory !== undefined) {
     process.stdout.write(`ZFLASH_INLINE_STAGING_DIR=${result.value.inlineStagingDirectory}\n`);
   }

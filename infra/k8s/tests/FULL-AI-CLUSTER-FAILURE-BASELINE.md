@@ -2,9 +2,10 @@
 
 <!-- Machine-readable. The ratchet parses EXACTLY this line; keep the format. -->
 
-    BASELINE_FAILURES: 21
+    BASELINE_FAILURES: 13
 
-**Measured:** 2026-08-21 · **at commit:** `sealed-secrets repoURL fix (PR #13339)`
+**Measured:** 2026-08-22 · **at commit:** `the four unrenderable Applications fixed (this PR)`
+**Previous:** 18, `temporal datastore wired to CockroachDB` (#13469)
 **Toolchain:** helm `v4.2.0+g0646808` · kubeconform `v0.7.0` · bun `1.3.14` · `--kube-version 1.33.0`
 **Reproduce:** `bun infra/k8s/tests/ratchet-app-failures.ts` (it prints the count it measured)
 
@@ -34,17 +35,19 @@ The step fails on any count that is **not exactly** `BASELINE_FAILURES`.
 Lowering it is one line, and the ratchet prints the exact delta and the new
 number to write when it refuses.
 
-## Composition of the 23 — measured, not estimated
+## Composition of the 13 — measured, not estimated
 
 | n   | class                                                                                                                                                                                                                                                                                                                                                      | verdict                        |
 | --- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------ |
 | 13  | ArgoCD contract: missing `syncPolicy.automated.prune` / `.selfHeal`, or `CreateNamespace=true` absent from `syncOptions`                                                                                                                                                                                                                                   | **real** — but read the caveat |
-| 2   | `oz` pins `ziti-controller` **1.4.5**; the repo publishes **96** versions and the newest is **3.2.1**. The pin is fictional. Counted twice: version check + render                                                                                                                                                                                         | **real**, unambiguous          |
-| 2   | `forgejo` chart repo returns HTTP 404 (`code.forgejo.org/forgejo-helm/`; the chart is OCI-only now) AND its pin `9.0.6` was never published — the 9.x line has exactly one release, `9.0.0`. Counted twice: version check + render. `sealed-secrets` LEFT this row 2026-08-21: its repoURL moved `bitnami-labs` -> `bitnami` and was corrected, taking both of its failures with it | **real**, upstream gone/moved  |
-| 4   | chart refuses to render with the values we hand it: `gitlab` (no `certmanager-issuer.email`), `headscale` (no `accessMode` for PVC `headscale-data`), `temporal` (no cassandra port for the default store), `arc-runner-set` (chart does label-discovery for a `gha-rs-controller` deployment at template time; needs `controllerServiceAccount.name` set) | **real**                       |
+| 0   | _(empty — kept as the ledger of what left it.)_ `oz` LEFT 2026-08-22, taking **2** with it (version check + render): it pinned `ziti-controller` **1.4.5**, which openziti has never published — its 1.x line ends at 1.3.4 and `1.4.x` exists there only as an _appVersion_. Corrected to **3.1.1**, the newest chart still on appVersion 1.7.2, so the pin moves as far forward as it can WITHOUT changing which OpenZiti server runs (3.2.1 is appVersion 2.0.1 and additionally requires `cluster.mode`). Measured across 1.3.4 / 2.1.2 / 3.1.1 / 3.2.1: every key this manifest sets survives all three majors and the storage contract is identical, so the earlier "not drop-in" reason for deferring did not hold. The render half needed a second fix the bad pin had been hiding — `clientApi.advertisedHost`, required by every published version | **cleared**, both fixed        |
+| 0   | _(empty — kept as the ledger of what left it.)_ `sealed-secrets` LEFT 2026-08-21: repoURL moved `bitnami-labs` -> `bitnami`, corrected, both failures with it. `forgejo` LEFT 2026-08-21: `https://code.forgejo.org/forgejo-helm/` is an organisation page whose `index.yaml` 404s and the chart is OCI-only, so the source became the bare `code.forgejo.org/forgejo-helm`; and the pin `9.0.6` was never published (169 tags, exactly one 9.x — `9.0.0`), so it moved to `17.1.5` (Forgejo 15.0.7). Both of its failures — version check and render — went with it | **cleared**, both fixed        |
+| 0   | _(empty — kept as the ledger of what left it.)_ **"the chart refuses to render with the values we hand it" IS NOW AN EMPTY CLASS.** All four left on 2026-08-22 and not one was a limitation of the renderer — every one would have failed inside ArgoCD in the same place. `temporal`: refused with "Please specify cassandra port for default store" because its `valuesObject` disabled the bundled Cassandra without naming a replacement; both stores are now wired to the CockroachDB already in the cluster over `postgres12` (#13469). `gitlab`: needed `global.ingress.configureCertmanager: false`, which `certmanager.install: false` does NOT imply — the sibling gitlab Application in the other cluster tree already carried it, which is exactly why that one rendered. `headscale`: passed `persistence.data`, a key the chart mounts at `/data` and never writes to, with no `accessMode`; renamed to the chart's own `persistence.config` (mountPath `/etc/headscale`) so the volume is where the sqlite DB and both private keys actually live. `arc-runner-set`: the chart discovers the `gha-rs-controller` ServiceAccount with `lookup` at template time, and ships `controllerServiceAccount.{name,namespace}` to skip it — BOTH keys, since `name` alone then fails on the namespace lookup | **cleared**, all four fixed    |
 
 Per-app split of the 13: `cdi` 3, `kubevirt` 3, `forgejo` 2, `ollama` 2,
-`vllm` 2, `cilium-lb-ipam` 1.
+`vllm` 2, `cilium-lb-ipam` 1. (`forgejo` keeps its 2 here: it is the
+manual-sync standby half of the `gitlab`/`forgejo` pair, so its missing
+`automated:` block is the documented convention, not a defect — see the caveat.)
 
 > **Caveat on the 13 — do not "fix" them blindly to lower this number.**
 > `root-application.yaml`'s own header documents an either/or gating convention:
@@ -74,7 +77,21 @@ were fixed in `validate-applications.ts` in the same commit as this file:
    it must sit on the `services.k3s.manifests` roster. New `--root-app` flag.
 
 The OCI fix **added one genuine failure it had been masking** — `arc-runner-set`
-now renders far enough to fail on real values. `29 − 7 + 1 = 23`.
+now renders far enough to fail on real values. `29 − 7 + 1 = 23`. It has since
+come down four times, each time by correcting a real manifest: `23 − 2 = 21`
+(`sealed-secrets`, PR #13339), `21 − 2 = 19` (`forgejo`), `19 − 1 = 18`
+(`temporal`, a render failure cleared by giving the chart the datastore it was
+never told about), and `18 − 5 = 13` — this file's current measurement — from
+the four Applications that would not render at all: `oz` (2: a pin no registry
+has ever served, plus the missing `advertisedHost` behind it), `gitlab`,
+`headscale` and `arc-runner-set` (1 each).
+
+**Note what the last drop was made of.** All five were defects in our own
+manifests, and four of them had been sitting behind an app the storage checker
+reported as UNRENDERABLE — a state in which nothing about the app is verified
+and nothing about it is refuted. 106 GiB of declared storage sat behind those
+four. That is why an unrenderable app is worse than a failing one: a failure is
+a measurement, and this was the absence of one.
 
 That is the point of fixing the validator before setting the baseline: a
 baseline that banks false reds is a number that can be "improved" by fixing

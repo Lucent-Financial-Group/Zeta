@@ -113,6 +113,25 @@ export interface ProfileClaim {
   readonly governors: Readonly<Record<string, Readonly<Record<string, string>>>>;
   /** Required (non-empty) whenever `governors` is non-empty — where each value comes from. */
   readonly governorEvidence: string;
+  /**
+   * WHERE THIS ROW'S PVC SHOWS UP IN A RENDER — the coordinate
+   * `rendered-storage-claims.ts` needs to ask the chart whether the declared
+   * number reaches a PersistentVolumeClaim at all.
+   *
+   * `renderedApp` is the Application identity (`full-ai-cluster/mimir`) and
+   * `renderedPvcPattern` is an anchored regular expression over the rendered
+   * claim's name — `<template>/<workload>` for a volumeClaimTemplate, the
+   * object name for a standalone PVC. A pattern rather than a literal because
+   * one declared claim legitimately renders as SEVERAL PVCs: mimir's ingester
+   * is three zone StatefulSets, so `^storage/mimir-ingester-zone-[a-c]$`
+   * matches the three objects that one row prices.
+   *
+   * Both are REQUIRED. A row with no rendered coordinate is a row nothing can
+   * check, and an uncheckable row that still contributes GiB to a total is the
+   * exact shape this catalogue exists to refuse.
+   */
+  readonly renderedApp: string;
+  readonly renderedPvcPattern: string;
 }
 
 export interface ProfileCatalogue {
@@ -159,6 +178,21 @@ export function parseFieldPath(field: string): readonly (string | number)[] {
 // ---------------------------------------------------------------------------
 // Loading + validation
 // ---------------------------------------------------------------------------
+
+/**
+ * A pattern that does not compile addresses NOTHING, and a row whose selector
+ * matches nothing reads exactly like a row whose chart renders nothing. Reject
+ * it at load rather than let a typo become a finding about the cluster.
+ */
+function requireRegex(value: unknown, label: string): string {
+  const text = requireString(value, label);
+  try {
+    void new RegExp(text);
+  } catch (error) {
+    throw new Error(`${label} is not a valid regular expression: ${String(error)}`);
+  }
+  return text;
+}
 
 function requireString(value: unknown, label: string): string {
   if (typeof value !== "string") throw new Error(`${label}: expected a string`);
@@ -302,6 +336,8 @@ export function loadCatalogue(path = DEFAULT_CATALOGUE_PATH, repoRoot = REPO_ROO
       pods: podsByProfile,
       governors,
       governorEvidence,
+      renderedApp: requireString(raw.renderedApp, `${path}: ${id}.renderedApp`),
+      renderedPvcPattern: requireRegex(raw.renderedPvcPattern, `${path}: ${id}.renderedPvcPattern`),
     });
   }
   return { profiles: names, claims: [...claims].sort((a, b) => stringCompare(a.id, b.id)) };
@@ -749,6 +785,22 @@ export interface UngovernedApp {
   readonly evidence: string;
 }
 
+/**
+ * One dev-lane budget shortfall carried as debt, pinned to its arithmetic.
+ *
+ * NOT the same thing as the ledger's `acknowledgedRungBudgetGap`. That one
+ * carries a disagreement between the rung CI budgets and the rung the tree
+ * carries; this one carries a rung not fitting the runner AT ALL. Before
+ * 2026-08-22 only the first could happen, because `dev` fit with 594m to spare.
+ */
+export interface LaneBudgetAcknowledgement {
+  /** `<rung> <resource> <total>><budget>` — one millicore of movement retires it. */
+  readonly key: string;
+  readonly reason: string;
+  /** The condition that retires it, phrased so a gate can decide it. */
+  readonly liftsWhen: string;
+}
+
 export interface ResourceCatalogue {
   /** Smallest first; the order is checked, not decorative. */
   readonly profiles: readonly string[];
@@ -757,6 +809,7 @@ export interface ResourceCatalogue {
   readonly ungoverned: readonly UngovernedApp[];
   /** `<dir>@<pinned chart version>` entries whose UNMEASURED total is carried as debt. */
   readonly acknowledgedUnmeasured: readonly string[];
+  readonly acknowledgedLaneBudgetShortfall: readonly LaneBudgetAcknowledgement[];
 }
 
 const APPLICATIONS_DIR = "full-ai-cluster/k8s/applications";
@@ -939,12 +992,38 @@ export function loadResourceCatalogue(path = DEFAULT_CATALOGUE_PATH, repoRoot = 
     requireString(entry, `${path}: acknowledgedUnmeasuredRequests[${String(index)}]`),
   );
 
+  const rawLaneAck = parsed.acknowledgedLaneBudgetShortfall;
+  if (rawLaneAck !== undefined && !Array.isArray(rawLaneAck)) {
+    throw new Error(`${path}: "acknowledgedLaneBudgetShortfall" must be an array`);
+  }
+  const acknowledgedLaneBudgetShortfall = ((rawLaneAck ?? []) as readonly Record<string, unknown>[]).map(
+    (raw, index) => {
+      const key = requireString(raw.key, `${path}: acknowledgedLaneBudgetShortfall[${String(index)}].key`);
+      const reason = raw.reason;
+      const liftsWhen = raw.liftsWhen;
+      if (typeof reason !== "string" || reason.trim().length < 40) {
+        throw new Error(
+          `${path}: ${key} is acknowledged with no reason — a shortfall carried as debt with nothing written ` +
+            `beside it is a shortfall that was hidden`,
+        );
+      }
+      if (typeof liftsWhen !== "string" || !liftsWhen.startsWith("LIFTS WHEN:")) {
+        throw new Error(
+          `${path}: ${key}.liftsWhen must start with "LIFTS WHEN:" — an acknowledgement with no lift condition ` +
+            `never leaves, and outliving its defect is how a baseline becomes a lie`,
+        );
+      }
+      return { key, reason, liftsWhen };
+    },
+  );
+
   return {
     profiles,
     envelope,
     claims: [...claims].sort((a, b) => stringCompare(a.id, b.id)),
     ungoverned: [...ungoverned].sort((a, b) => stringCompare(a.dir, b.dir)),
     acknowledgedUnmeasured,
+    acknowledgedLaneBudgetShortfall,
   };
 }
 
@@ -953,17 +1032,49 @@ export function loadResourceCatalogue(path = DEFAULT_CATALOGUE_PATH, repoRoot = 
 // ---------------------------------------------------------------------------
 
 /**
- * Directories with a top-level `Application.yaml`. Depth-1 on purpose: that is
- * what the root App-of-Apps `include` glob matches, so this is the same set the
- * cluster gets, not a wider one.
+ * Directories with an `Application.yaml`, at DEPTH 1 **AND DEPTH 2**.
+ *
+ * This used to be depth-1 "on purpose", with the stated reason that depth-1 is
+ * what the root App-of-Apps `include` glob matches. That reason was wrong, and
+ * the file that disproves it is already in this repo:
+ * `app-of-apps-discovery.ts` establishes — against a LIVE cluster, not by
+ * reading the spec — that ArgoCD compiles `directory.include` with
+ * `gobwas/glob` and no separator argument, so `*` binds across `/` and
+ * `{*\/Application.yaml,Application.yaml}` DOES match
+ * `game-hosting/gmod/Application.yaml`. The `--scope included` lane's own
+ * diagnostics list a `gmod` Application in the cluster.
+ *
+ * The cost of the old assumption was 1000m. `game-hosting/gmod` is an in-repo
+ * StatefulSet whose manifest carries a literal `requests: { cpu: "1", memory:
+ * "2Gi" }`, it is applied by the dev root (no exclude covers it), and every
+ * rung total in this file was computed without it. The catalogue's own
+ * `$comment_resources` said in writing that it "contributes 0m / 0Mi today (in-repo
+ * manifests, no requests)" — a sentence measurably false when written, and
+ * unfalsifiable from inside this module because the enumerator could not see
+ * the file that refutes it.
+ *
+ * Depth 2 and not deeper because depth 2 is what exists; `app-of-apps-discovery.ts`
+ * is the check that refuses a third level, so a deeper Application forces a
+ * human to look before it can hide from this sum.
  */
 export function applicationDirs(repoRoot = REPO_ROOT): readonly string[] {
   const base = resolve(repoRoot, APPLICATIONS_DIR);
   if (!existsSync(base)) return [];
-  return readdirSync(base, { withFileTypes: true })
-    .filter((entry) => entry.isDirectory() && existsSync(resolve(base, entry.name, "Application.yaml")))
-    .map((entry) => entry.name)
-    .sort((a, b) => stringCompare(a, b));
+  const dirs: string[] = [];
+  for (const entry of readdirSync(base, { withFileTypes: true })) {
+    if (!entry.isDirectory()) continue;
+    if (existsSync(resolve(base, entry.name, "Application.yaml"))) {
+      dirs.push(entry.name);
+      continue;
+    }
+    for (const nested of readdirSync(resolve(base, entry.name), { withFileTypes: true })) {
+      if (!nested.isDirectory()) continue;
+      if (existsSync(resolve(base, entry.name, nested.name, "Application.yaml"))) {
+        dirs.push(`${entry.name}/${nested.name}`);
+      }
+    }
+  }
+  return dirs.sort((a, b) => stringCompare(a, b));
 }
 
 /**
@@ -979,15 +1090,101 @@ export function devLaneAppliedDirs(
   repoRoot = REPO_ROOT,
   excludeGlob = DEFAULT_ROOT_DEV_CATALOG.excludeGlob,
 ): readonly string[] {
-  const excluded = new Set(
-    excludeGlob
-      .replace(/^\{/, "")
-      .replace(/\}$/, "")
-      .split(",")
-      .map((entry) => entry.trim().replace(/\/\*\*$/, ""))
-      .filter((entry) => entry.length > 0),
+  const excluded = [
+    ...new Set(
+      excludeGlob
+        .replace(/^\{/, "")
+        .replace(/\}$/, "")
+        .split(",")
+        .map((entry) => entry.trim().replace(/\/\*\*$/, ""))
+        .filter((entry) => entry.length > 0),
+    ),
+  ];
+  // PREFIX, not equality. `cilium/**` excludes `cilium` and everything under
+  // it; with depth-2 directories now in `applicationDirs`, an equality test
+  // would leave `<excluded>/<nested>` in the applied set while ArgoCD's own
+  // exclude glob drops it — a cohort wider than the cluster's, which makes the
+  // budget pessimistic in a way nobody could account for.
+  return applicationDirs(repoRoot).filter(
+    (dir) => !excluded.some((entry) => dir === entry || dir.startsWith(`${entry}/`)),
   );
-  return applicationDirs(repoRoot).filter((dir) => !excluded.has(dir));
+}
+
+/** One level of a parsed YAML mapping, or `undefined`. Total on any input. */
+function field(node: unknown, key: string): unknown {
+  return typeof node === "object" && node !== null ? (node as Record<string, unknown>)[key] : undefined;
+}
+
+export const METAL_ROOT_APPLICATION_PATH = "full-ai-cluster/k8s/bootstrap/root-application.yaml";
+
+/**
+ * The METAL cluster's applied set — every Application the checked-in bootstrap
+ * root reaches, minus whatever its own exclude glob drops.
+ *
+ * READ OFF THE ROOT, NOT ASSUMED TO BE "ALL OF THEM". The bootstrap root
+ * carries no `directory.exclude` today, so this returns the same 46 directories
+ * `applicationDirs` does — and hardcoding 46 would have been correct today and
+ * silently wrong the first time somebody narrowed the metal root. The metal
+ * cohort is the one number every hardware-facing total is computed over; it has
+ * to come from the artifact that decides it.
+ *
+ * `null` when the root Application cannot be read or does not point at the
+ * applications path. That is REFUSED by the caller, never defaulted to the full
+ * set: guessing wide would understate nothing but guessing at all is how a
+ * comparator stops having provenance.
+ */
+export function metalAppliedDirs(repoRoot = REPO_ROOT): readonly string[] | null {
+  const abs = resolve(repoRoot, METAL_ROOT_APPLICATION_PATH);
+  if (!existsSync(abs)) return null;
+  const docs = parseAllDocuments(readFileSync(abs, "utf8"));
+  for (const doc of docs) {
+    const root: unknown = doc.toJS();
+    if (field(root, "kind") !== "Application") continue;
+    const source = field(field(root, "spec"), "source");
+    if (field(source, "path") !== APPLICATIONS_DIR) continue;
+    const rawExclude = field(field(source, "directory"), "exclude");
+    const excludeGlob = typeof rawExclude === "string" ? rawExclude : "";
+    if (excludeGlob === "") return applicationDirs(repoRoot);
+    const excluded = new Set(
+      excludeGlob
+        .replace(/^\{/, "")
+        .replace(/\}$/, "")
+        .split(",")
+        .map((entry) => entry.trim().replace(/\/\*\*$/, ""))
+        .filter((entry) => entry.length > 0),
+    );
+    return applicationDirs(repoRoot).filter((dir) => !excluded.has(dir));
+  }
+  return null;
+}
+
+export const HEALTH_WORKFLOW_PATH = ".github/workflows/k8s-argocd-health-test.yml";
+
+const WORKFLOW_BUDGET_STEP = /storage-profiles\.ts\s+--resource-profile\s+([A-Za-z0-9._-]+)\s+--budget/g;
+
+/**
+ * Which rung CI actually budgets, read off the workflow's own `run:` line.
+ *
+ * DERIVED, NOT RESTATED. A constant here saying "CI budgets dev" would be a
+ * second source of truth that can disagree with the workflow, and a coverage
+ * check whose inputs can drift apart is checking its own copy of the world.
+ * The regex reads the command CI runs.
+ *
+ * Returns `null` when no step budgets a rung and refuses (also `null`) when
+ * more than one distinct rung is budgeted — two answers is not an answer, and
+ * the caller must treat it as an absent comparator rather than pick one.
+ */
+export function ciBudgetedProfile(repoRoot = REPO_ROOT, workflowPath = HEALTH_WORKFLOW_PATH): string | null {
+  const abs = resolve(repoRoot, workflowPath);
+  if (!existsSync(abs)) return null;
+  const text = readFileSync(abs, "utf8");
+  const found = new Set<string>();
+  WORKFLOW_BUDGET_STEP.lastIndex = 0;
+  for (let match = WORKFLOW_BUDGET_STEP.exec(text); match !== null; match = WORKFLOW_BUDGET_STEP.exec(text)) {
+    const name = match[1];
+    if (name !== undefined) found.add(name);
+  }
+  return found.size === 1 ? ([...found][0] ?? null) : null;
 }
 
 // ---------------------------------------------------------------------------
@@ -1124,42 +1321,97 @@ export function auditRunnerBudget(
         `stale acknowledgement, delete it`,
     });
   }
-  if (total.cpuMillis > budget.cpuMillis) {
+  // A SHORTFALL MAY BE CARRIED AS DEBT, pinned to its arithmetic.
+  //
+  // Added 2026-08-22 because `dev` stopped fitting: the lane went from 1906m to
+  // 2906m when `applicationDirs` started counting the depth-2 Application
+  // ArgoCD had always applied. Widening the envelope would have made the gate
+  // agree with the machine that does not exist; refusing outright would have
+  // blocked every unrelated PR on a decision only the maintainer can make. The
+  // acknowledgement is the third answer, and it is only honest because the key
+  // carries BOTH numbers -- one millicore of movement in either and it stops
+  // matching, which is reported as STALE below rather than ignored.
+  const laneAcknowledged = new Set(catalogue.acknowledgedLaneBudgetShortfall.map((entry) => entry.key));
+  const live = new Set<string>();
+  for (const [resource, label, got, cap, unit, machine] of [
+    [
+      "cpu",
+      "CPU",
+      total.cpuMillis,
+      budget.cpuMillis,
+      "m",
+      `${String(catalogue.envelope.cpuMillis)}m on ${catalogue.envelope.runner} less ${String(catalogue.envelope.reservedCpuMillis)}m reserved`,
+    ],
+    [
+      "memory",
+      "memory",
+      total.memoryMib,
+      budget.memoryMib,
+      "Mi",
+      `${String(catalogue.envelope.memoryMib)}Mi on ${catalogue.envelope.runner} less ${String(catalogue.envelope.reservedMemoryMib)}Mi reserved`,
+    ],
+  ] as const) {
+    if (got <= cap) continue;
+    const key = laneShortfallKey(profile, resource, got, cap);
+    live.add(key);
+    if (laneAcknowledged.has(key)) continue;
     findings.push({
       claimId: "runner-budget",
       problem:
-        `profile "${profile}" requests ${String(total.cpuMillis)}m of CPU across the ${String(dirs.length)} ` +
-        `Applications the dev lane applies; the budget is ${String(budget.cpuMillis)}m ` +
-        `(${String(catalogue.envelope.cpuMillis)}m on ${catalogue.envelope.runner} less ` +
-        `${String(catalogue.envelope.reservedCpuMillis)}m reserved). Pods above the line go Pending, forever`,
+        `profile "${profile}" requests ${String(got)}${unit} of ${label} across the ${String(dirs.length)} ` +
+        `Applications the dev lane applies; the budget is ${String(cap)}${unit} (${machine}). ` +
+        (resource === "cpu" ? "Pods above the line go Pending, forever. " : "") +
+        `Resolve it or carry it as stated debt: acknowledge with "${key}"`,
     });
   }
-  if (total.memoryMib > budget.memoryMib) {
+  for (const entry of catalogue.acknowledgedLaneBudgetShortfall) {
+    if (live.has(entry.key)) continue;
+    if (!entry.key.startsWith(`${profile} `)) continue;
     findings.push({
       claimId: "runner-budget",
       problem:
-        `profile "${profile}" requests ${String(total.memoryMib)}Mi of memory across the ${String(dirs.length)} ` +
-        `Applications the dev lane applies; the budget is ${String(budget.memoryMib)}Mi ` +
-        `(${String(catalogue.envelope.memoryMib)}Mi on ${catalogue.envelope.runner} less ` +
-        `${String(catalogue.envelope.reservedMemoryMib)}Mi reserved)`,
+        `"${entry.key}" is acknowledged and nothing reports it any more — the arithmetic moved and the ` +
+        `acknowledgement outlived the shortfall it was written about. Delete the entry`,
     });
   }
   return findings;
 }
 
-/** The `targetRevision` pinned beside this Application's `chart:`, or "" when it sources git. */
+/** `<rung> <resource> <total>><budget>` — the acknowledgement key, pinned to both numbers. */
+export function laneShortfallKey(profile: string, resource: "cpu" | "memory", total: number, budget: number): string {
+  return `${profile} ${resource} ${String(total)}>${String(budget)}`;
+}
+
+/**
+ * The `targetRevision` this Application pins its `chart:` at, or "" when it sources git.
+ *
+ * PARSED, NOT SCANNED — corrected 2026-08-21, and the bug it had is the reason
+ * the docstring says so. This used to find the line matching `chart:` and probe
+ * the SIX lines nearest it for `targetRevision:`. That works right up until
+ * somebody writes a comment between the two keys, at which point the function
+ * returns "" — and "" is not an error here, it is a WRONG ANSWER that keeps
+ * going: `auditRunnerBudget` builds the acknowledgement key `${dir}@${pin}`, so
+ * an app pinned at 3.1.1 silently starts being looked up as `oz@`, every
+ * acknowledgement for it misses, and the finding it produces names a version
+ * nobody wrote. Caught by adding a 35-line comment to oz/Application.yaml
+ * explaining why its pin had changed — i.e. the check was broken by documenting
+ * the thing the check exists to watch.
+ *
+ * Reading the parsed document costs nothing here (these files are already
+ * parsed elsewhere in this module) and makes the answer independent of layout,
+ * comments, key order and indentation. `chart:` is still required, so a git-path
+ * source still returns "" exactly as before.
+ */
 export function pinnedChartVersion(dir: string, repoRoot = REPO_ROOT): string {
   const abs = resolve(repoRoot, APPLICATIONS_DIR, dir, "Application.yaml");
   if (!existsSync(abs)) return "";
-  const text = readFileSync(abs, "utf8");
-  const lines = text.split("\n");
-  for (let index = 0; index < lines.length; index += 1) {
-    if (!/^\s*chart:\s*\S/.test(lines[index] ?? "")) continue;
-    // targetRevision sits in the same `source:` block, either side of `chart:`.
-    for (const probe of [index + 1, index - 1, index + 2, index - 2, index + 3, index - 3]) {
-      const match = /^\s*targetRevision:\s*(\S+)\s*$/.exec(lines[probe] ?? "");
-      if (match?.[1] !== undefined) return match[1];
-    }
+  for (const doc of parseAllDocuments(readFileSync(abs, "utf8"))) {
+    const source = (doc.toJS() as { spec?: { source?: { chart?: unknown; targetRevision?: unknown } } } | null)?.spec
+      ?.source;
+    if (source === undefined || source === null) continue;
+    if (typeof source.chart !== "string" || source.chart === "") continue;
+    if (typeof source.targetRevision !== "string") continue;
+    return source.targetRevision;
   }
   return "";
 }
