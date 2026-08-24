@@ -62,6 +62,48 @@ requested. Proofs: `rotate-refusals.test.ts` RR-7 (inverted in place — the pin
 and RR-7b (the consent property, two arms). The compile-rejection proof is in PR #14694: the same
 scratch union member compiles clean on the old code and is TS2366 on the new.)
 
+### `revoke.ts` gates on whether a door was INJECTED, not on whether approval was GRANTED
+
+- **Site:** `tools/setup/persona-keys/revoke.ts:141` — `if (opts.biometricAuth) { … }`
+- **Found:** 2026-08-24 by Iris while shipping the consent/UX half (#14747); flagged rather than
+  touched because it is auth-adjacent. Independently confirmed the same day by Nazar.
+- **Severity:** P1 (a consumer-visible, hard-to-reverse ceremony runs with no operator approval)
+- **Symptom:** `requireBiometric(undefined, …)` is fail-closed BY DESIGN — it returns
+  `{ok:false, platform:"unsupported"}` precisely so that a caller which forgot to wire the gate
+  aborts instead of acting. `revoke.ts` never reaches that path: it wraps the whole gate in
+  `if (opts.biometricAuth)`, so a caller that injects **no** door does not fail closed, it
+  **skips the gate entirely** and proceeds to `fx.revokeCertInKrl(...)`. The guard tests the
+  presence of the door, which is a fact about the CALLER, instead of the outcome of the
+  approval, which is the fact that matters.
+
+  The sibling ceremonies show the correct shape, and the difference is one line. `ca.ts:357` and
+  `machine.ts:239` branch on *whether real work is happening* (`if (alreadyExists) … else`) and
+  then call `requireBiometric` **unconditionally**, so an absent door aborts:
+
+  ```text
+  ca.ts:356      // BIOMETRIC GATE — fail-closed. A real keygen creates private material.
+  ca.ts:357      biometric = await requireBiometric(opts.biometricAuth, "Approve: generate ...");
+  ca.ts:358      if (!biometric.ok) { return { action: "aborted-biometric", ... }; }
+
+  revoke.ts:141  if (opts.biometricAuth) {            // <-- the defect
+  revoke.ts:142    biometric = await requireBiometric(opts.biometricAuth, "revoke SSH device cert (KRL)");
+  revoke.ts:143    if (!biometric.ok) { return { action: "skipped-biometric", ... }; }
+  revoke.ts:157  }                                     // no door => straight past the gate
+  ```
+
+- **Blast radius:** (a) *affected* — any operator or downstream consumer of a KRL produced by this
+  path; (b) *observed* — a device certificate is revoked and staged with no Touch ID prompt and no
+  `biometric` field on the result, so the readout cannot distinguish "approved" from "never asked";
+  (c) *action* — treat any KRL entry whose result carries no `biometric` as unattested and
+  re-derive it under an approved run; (d) *SLA* — fix within the current round. It is one line, and
+  it is on the revocation path, which this repo requires Architect + human sign-off to fire.
+- **Deliberately NOT fixed in the P1 PR (#14727).** That change is about the elevator being the real
+  binary; this one is about the gate being reached at all. They are different defects on the same
+  guarantee and they deserve separate review — bundling a revocation-semantics change into a
+  green supply-chain fix is how a reviewer ends up approving two things by looking at one.
+- **Who:** Nazar (security-operations-engineer) to draft; revocation semantics are consumer-visible,
+  so Kenji (architect) approves before it lands.
+
 ### FIXED (a) — the biometric approval gate was forgeable by a `PATH` entry; the attested-presence half (b) stays open
 
 **STATUS (2026-08-24, Nazar): fix (a) SHIPPED.** Every privilege elevator in live non-test
