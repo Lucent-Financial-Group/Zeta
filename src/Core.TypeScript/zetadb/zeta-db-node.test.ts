@@ -8,6 +8,8 @@ import {
   type ZetaDbExecutorKind,
   type ZetaDbImagePort,
 } from "./zeta-db-node";
+import { compareAndSwapRevisionPolicy } from "../persistence/revision-policy";
+import type { ZetaDbAdmissionPolicyPort, ZetaDbAdmissionProposal } from "./admission-policy";
 
 const limits = { maxDeltas: 16, maxEntries: 32, maxCheckpointBytes: 32 * 1024 };
 
@@ -181,6 +183,158 @@ describe("event-driven ZetaDB node", () => {
     });
   });
 
+  test("executes an injected admission policy over exact resource proposals", async () => {
+    const proposals: ZetaDbAdmissionProposal[] = [];
+    const reserveOneEntry: ZetaDbAdmissionPolicyPort = {
+      id: "test-reserve-one-entry",
+      decide: (proposal) => {
+        proposals.push(proposal);
+        return proposal.resource === "retained-events" && proposal.candidate > 1
+          ? { action: "backpressure", detail: "The test policy reserved the final entry." }
+          : { action: "admit" };
+      },
+    };
+    const result = await runZetaDbNodeTick(
+      createInMemoryZetaDbImagePort(),
+      {
+        nodeId: "global-browser-db",
+        executorId: "tab/policy",
+        executorKind: "browser-tab",
+        deltas: deltas.slice(0, 2),
+        limits,
+      },
+      reserveOneEntry,
+    );
+
+    expect(result.ok && result.value).toMatchObject({
+      admission: "backpressured",
+      accepted: 1,
+      nextDeltaIndex: 1,
+      feedback: [{ detail: "The test policy reserved the final entry." }],
+    });
+    expect(proposals).toHaveLength(3);
+    expect(proposals.at(0)).toEqual({
+      resource: "retained-events",
+      current: 0,
+      candidate: 1,
+      limit: limits.maxEntries,
+    });
+    const checkpointProposal = proposals.at(1);
+    expect(checkpointProposal?.resource).toBe("checkpoint-bytes");
+    expect(typeof checkpointProposal?.current).toBe("number");
+    expect(proposals.at(2)).toEqual({
+      resource: "retained-events",
+      current: 1,
+      candidate: 2,
+      limit: limits.maxEntries,
+    });
+  });
+
+  test("keeps hard capacity limits authoritative over an always-admit policy", async () => {
+    let decisions = 0;
+    const alwaysAdmit: ZetaDbAdmissionPolicyPort = {
+      id: "test-always-admit",
+      decide: () => {
+        decisions += 1;
+        return { action: "admit" };
+      },
+    };
+    const port = createInMemoryZetaDbImagePort();
+    const result = await runZetaDbNodeTick(
+      port,
+      {
+        nodeId: "global-browser-db",
+        executorId: "tab/hard-limit",
+        executorKind: "browser-tab",
+        deltas: deltas.slice(0, 2),
+        limits: { ...limits, maxEntries: 1 },
+      },
+      alwaysAdmit,
+    );
+
+    expect(result.ok && result.value).toMatchObject({
+      admission: "backpressured",
+      accepted: 1,
+      nextDeltaIndex: 1,
+      feedback: [{ code: "database-capacity-exhausted" }],
+    });
+    expect(decisions).toBe(2);
+    const stored = await port.load("global-browser-db");
+    expect(stored.ok && stored.value?.revision).toBe(1);
+
+    const byteResult = await runZetaDbNodeTick(
+      createInMemoryZetaDbImagePort(),
+      {
+        nodeId: "global-browser-db",
+        executorId: "tab/hard-byte-limit",
+        executorKind: "browser-tab",
+        deltas: [firstDelta],
+        limits: { ...limits, maxCheckpointBytes: 1 },
+      },
+      alwaysAdmit,
+    );
+    expect(byteResult.ok && byteResult.value).toMatchObject({
+      admission: "backpressured",
+      accepted: 0,
+      nextDeltaIndex: 0,
+      feedback: [{ code: "database-capacity-exhausted" }],
+    });
+    expect(decisions).toBe(3);
+  });
+
+  test("contains throwing and malformed policies as typed feedback", async () => {
+    const throwing: ZetaDbAdmissionPolicyPort = {
+      id: "test-throwing",
+      decide: (proposal) => {
+        if (proposal.resource === "retained-events") return { action: "admit" };
+        throw new Error("deliberate failure");
+      },
+    };
+    const malformed = {
+      id: "test-malformed",
+      decide: () => ({ action: "unknown" }),
+    } as unknown as ZetaDbAdmissionPolicyPort;
+    const unnamed: ZetaDbAdmissionPolicyPort = { id: "", decide: () => ({ action: "admit" }) };
+    const request = {
+      nodeId: "global-browser-db",
+      executorId: "tab/policy-failure",
+      executorKind: "browser-tab" as const,
+      deltas: [firstDelta],
+      limits,
+    };
+
+    const throwingPort = createInMemoryZetaDbImagePort();
+    const thrownResult = await runZetaDbNodeTick(throwingPort, request, throwing);
+    expect(thrownResult).toMatchObject({
+      ok: false,
+      feedback: {
+        severity: "heat",
+        code: "database-admission-policy-failed",
+        detail: "Database admission policy test-throwing failed: Error: deliberate failure",
+      },
+    });
+    const afterThrow = await throwingPort.load("global-browser-db");
+    expect(afterThrow.ok && afterThrow.value).toBeNull();
+    const malformedResult = await runZetaDbNodeTick(createInMemoryZetaDbImagePort(), request, malformed);
+    expect(malformedResult).toMatchObject({
+      ok: false,
+      feedback: {
+        severity: "heat",
+        code: "database-admission-policy-failed",
+        detail: "Database admission policy test-malformed returned an invalid decision.",
+      },
+    });
+    const unnamedResult = await runZetaDbNodeTick(createInMemoryZetaDbImagePort(), request, unnamed);
+    expect(unnamedResult).toMatchObject({
+      ok: false,
+      feedback: {
+        severity: "heat",
+        code: "database-admission-policy-failed",
+        detail: "The injected database admission policy does not implement a named decide function.",
+      },
+    });
+  });
+
   test("rejects conflicting reuse of an event identifier", async () => {
     const port = createInMemoryZetaDbImagePort();
     await run(port, "browser-tab", [firstDelta]);
@@ -255,7 +409,7 @@ describe("event-driven ZetaDB node", () => {
         feedback: {
           severity: "backpressure",
           code: "database-revision-conflict",
-          detail: "Database revision 1 cannot follow stored revision 1.",
+          detail: "Revision 1 already names different bytes.",
         },
       },
     ]);
@@ -271,7 +425,7 @@ describe("event-driven ZetaDB node", () => {
     let revisionConflicts = 0;
     const port: ZetaDbImagePort = {
       // Inherited, not asserted: this fake only instruments the durable port it wraps.
-      revisionDiscipline: durable.revisionDiscipline,
+      revisionPolicy: durable.revisionPolicy,
       load: async (nodeId) => {
         const snapshot = await durable.load(nodeId);
         loads += 1;
@@ -328,7 +482,7 @@ describe("event-driven ZetaDB node", () => {
     let loads = 0;
     let saves = 0;
     const alwaysConflicted: ZetaDbImagePort = {
-      revisionDiscipline: "compare-and-swap",
+      revisionPolicy: compareAndSwapRevisionPolicy,
       load: () => {
         loads += 1;
         return Promise.resolve({ ok: true, value: null });
@@ -371,6 +525,37 @@ describe("event-driven ZetaDB node", () => {
     expect({ loads, saves }).toEqual({ loads: 3, saves: 3 });
   });
 
+  test("forwards an injected admission policy through the bounded-retry runner", async () => {
+    let decisions = 0;
+    const stopBeforeWrite: ZetaDbAdmissionPolicyPort = {
+      id: "test-stop-before-write",
+      decide: () => {
+        decisions += 1;
+        return { action: "backpressure", detail: "The test policy refused this proposal." };
+      },
+    };
+    const result = await runConvergentZetaDbNodeTick(
+      createInMemoryZetaDbImagePort(),
+      {
+        nodeId: "global-browser-db",
+        executorId: "tab/policy",
+        executorKind: "browser-tab",
+        deltas: [firstDelta],
+        limits,
+      },
+      { maxAttempts: 3 },
+      stopBeforeWrite,
+    );
+
+    expect(result.ok && result.value).toMatchObject({
+      admission: "backpressured",
+      accepted: 0,
+      nextDeltaIndex: 0,
+      feedback: [{ detail: "The test policy refused this proposal." }],
+    });
+    expect(decisions).toBe(1);
+  });
+
   test("retries a row-prefix conflict after a concurrent complementary batch lands", async () => {
     const durable = createInMemoryZetaDbImagePort();
     let releaseComplementarySave: (() => void) | undefined;
@@ -379,7 +564,7 @@ describe("event-driven ZetaDB node", () => {
     });
     let loads = 0;
     const port: ZetaDbImagePort = {
-      revisionDiscipline: durable.revisionDiscipline,
+      revisionPolicy: durable.revisionPolicy,
       load: async (nodeId) => {
         loads += 1;
         if (loads >= 3) await complementarySaveReady;
@@ -434,7 +619,7 @@ describe("event-driven ZetaDB node", () => {
     let loads = 0;
     let saves = 0;
     const port: ZetaDbImagePort = {
-      revisionDiscipline: durable.revisionDiscipline,
+      revisionPolicy: durable.revisionPolicy,
       load: (nodeId) => {
         loads += 1;
         return durable.load(nodeId);
