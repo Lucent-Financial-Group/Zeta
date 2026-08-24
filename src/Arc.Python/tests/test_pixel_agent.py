@@ -108,3 +108,51 @@ def test_the_probe_costs_exactly_one_blind_action() -> None:
     agent.act(_grid(game, frame))
     assert agent._self_key is not None
     assert max(agent.evidence.values()) > 0
+
+
+def test_the_wall_level_is_cleared_and_the_wall_is_learned_by_bumping() -> None:
+    """Level 1 puts a wall between start and goal. The agent is never told
+    where it is — `_WALLS` is not imported here or in the agent.
+
+    Non-vacuous three ways: level 1 is UNSOLVED without an occupancy map (the
+    coordinate-reading `greedy` baseline still fails it), the agent must have
+    learned at least one blocked cell to route around, and every blocked cell
+    it learned must be a REAL wall cell rather than a guess.
+    """
+    from zeta_arc.environments.chase import _WALLS  # ground truth, assertions only
+
+    game = ZetaChase(seed=4)
+    frame = reset(game)
+    agent = PixelAgent()
+    for _ in range(120):
+        frame = advance(game, agent.act(_grid(game, frame)))
+        if game.level_index >= 2:
+            break
+
+    assert game.level_index >= 2, "level 1 (the wall level) was not cleared"
+    assert agent.blocked, "nothing was learned to be solid — no occupancy map was built"
+    real_walls = set(_WALLS[1]) | set(_WALLS[0])
+    off_grid = {c for c in agent.blocked if not (0 <= c[0] < 8 and 0 <= c[1] < 8)}
+    invented = agent.blocked - real_walls - off_grid
+    assert not invented, f"marked cells solid that are not walls: {invented}"
+
+
+def test_the_step_size_is_measured_not_imported() -> None:
+    """The agent derives pixels-per-cell from its own displacement, so it does
+    not depend on the environment's CELL constant."""
+    game = ZetaChase(seed=4)
+    frame = reset(game)
+    agent = PixelAgent()
+    assert agent._step_px is None
+    for _ in range(4):
+        frame = advance(game, agent.act(_grid(game, frame)))
+    assert agent._step_px == float(CELL)
+
+
+def test_the_wall_model_improves_the_score() -> None:
+    """Routing must beat the coordinate-reading baseline, which has no
+    occupancy map and dies on level 1."""
+    pixel = play(agent="pixel", seed=4)
+    greedy = play(agent="greedy", seed=4)
+    assert pixel["levels_cleared"] > greedy["levels_cleared"]
+    assert pixel["environment_score"] > greedy["environment_score"]
