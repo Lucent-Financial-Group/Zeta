@@ -1,7 +1,22 @@
 import { describe, expect, test } from "bun:test";
+import {
+  closeSync,
+  constants,
+  existsSync,
+  mkdtempSync,
+  openSync,
+  rmSync,
+  symlinkSync,
+  writeSync,
+} from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 
 import {
   agentPlist,
+  ERROR_RING_SEGMENTS,
+  segmentName,
+  segmentsToDelete,
   censusFromComm,
   isSymbolCatalogEntry,
   parseLoadavg,
@@ -189,5 +204,80 @@ describe("agentPlist", () => {
     const k = xml.indexOf("snapshot");
     expect(i).toBeLessThan(j);
     expect(j).toBeLessThan(k);
+  });
+});
+
+describe("error ring rotation — race-free by construction", () => {
+  test("segment names sort chronologically, so no stat is needed to order them", () => {
+    const names = [segmentName(2), segmentName(10), segmentName(1)];
+    expect([...names].sort()).toEqual([segmentName(1), segmentName(2), segmentName(10)]);
+  });
+
+  test("keeps the N newest and deletes the rest", () => {
+    const all = [0, 1, 2, 3, 4, 5].map(segmentName);
+    expect(segmentsToDelete(all, ERROR_RING_SEGMENTS)).toEqual(
+      [0, 1].map(segmentName).slice(0, all.length - ERROR_RING_SEGMENTS),
+    );
+    expect(segmentsToDelete(all, ERROR_RING_SEGMENTS)).toHaveLength(all.length - ERROR_RING_SEGMENTS);
+  });
+
+  test("deletes nothing when the ring is not yet full", () => {
+    expect(segmentsToDelete([segmentName(0)], ERROR_RING_SEGMENTS)).toEqual([]);
+    expect(segmentsToDelete([], ERROR_RING_SEGMENTS)).toEqual([]);
+  });
+
+  test("MUTANT: never touches a file that is not a ring segment", () => {
+    const mixed = [segmentName(0), segmentName(1), segmentName(2), segmentName(3), segmentName(4),
+      "vitals-2026.ndjson", "index.json", "panic-full-2026-08-24.panic", ".DS_Store"];
+    const doomed = segmentsToDelete(mixed, ERROR_RING_SEGMENTS);
+    expect(doomed).toEqual([segmentName(0)]);
+    // The one that matters: a panic report in the same directory is never a
+    // rotation candidate. Deleting evidence to make room is the worst possible
+    // failure mode for a forensics tool.
+    expect(doomed.some((n) => n.includes("panic"))).toBe(false);
+  });
+
+  test("a zero-padded sequence is what makes lexicographic == chronological", () => {
+    // Without padding, "errors-10.log" < "errors-2.log" and the ring would
+    // delete its NEWEST segment.
+    expect(segmentName(10) > segmentName(2)).toBe(true);
+    expect("errors-10.log" > "errors-2.log").toBe(false);
+  });
+});
+
+describe("error ring open flags — the CodeQL js/file-system-race finding, falsified", () => {
+  /**
+   * The first version rotated with `rm b; mv a b; open(a, "w")`. Between the
+   * rename and the open, anything can create `a` — including a symlink — and
+   * `open(a, "w")` follows it. This test plants exactly that and shows the two
+   * flag sets behave differently, so the fix is not a matter of opinion.
+   */
+  test("MUTANT: open(path, 'w') FOLLOWS a planted symlink; the ring's flags REFUSE it", () => {
+    const dir = mkdtempSync(join(tmpdir(), "zeta-ring-race-"));
+    const planted = join(dir, "planted.log");
+    const victim = join(dir, "VICTIM");
+    symlinkSync(victim, planted);
+
+    // The flags cmdErrorRing uses.
+    const HARDENED =
+      constants.O_WRONLY | constants.O_CREAT | constants.O_EXCL | constants.O_NOFOLLOW;
+    let hardenedCode: string | null = null;
+    try {
+      const fd = openSync(planted, HARDENED, 0o600);
+      writeSync(fd, "pwned");
+      closeSync(fd);
+    } catch (e) {
+      hardenedCode = (e as NodeJS.ErrnoException).code ?? "unknown";
+    }
+    expect(hardenedCode).not.toBeNull();
+    expect(existsSync(victim)).toBe(false); // nothing written through the link
+
+    // The mutant: the original flags.
+    const fd = openSync(planted, "w");
+    writeSync(fd, "pwned");
+    closeSync(fd);
+    expect(existsSync(victim)).toBe(true); // it followed, and wrote the victim
+
+    rmSync(dir, { recursive: true, force: true });
   });
 });

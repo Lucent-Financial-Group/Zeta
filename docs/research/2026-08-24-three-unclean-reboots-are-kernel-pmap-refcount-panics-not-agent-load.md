@@ -229,7 +229,7 @@ rather than emitting plausible-looking garbage.
 | command | what it preserves | cost |
 |---|---|---|
 | `vitals` | 1 Hz NDJSON, **`fsync` per sample** — the only thing that survives the blackout | 34.5 MB/day |
-| `error-ring` | live `log stream` Error+Fault into a two-file byte-capped ring | **fixed 64 MB** |
+| `error-ring` | live `log stream` Error+Fault into a byte-capped 4-segment ring | **fixed 64 MB** |
 | `snapshot` | nvram/panicmedic, kmutil, sysextensions, pmset, ps, iostat, **copies of every `.panic`** | 48 MB/day @ 96/day |
 | `archive` | `log collect` + APFS-clone dedup of the symbol catalog | 124 MB real/archive |
 | `boot` | classifies the boot; **archives the previous boot's tail immediately if unclean** | one archive |
@@ -314,6 +314,14 @@ retention, plus a one-time 447 MB catalog.** On 1.8 TB free.
 4. **I printed logical size as "on disk"** for a deduplicated archive,
    overstating the cost 5x — in a document whose whole point is that a cost
    must be measured before it is published.
+5. **The error ring rotated by `rm b; mv a b; open(a, "w")`.** CodeQL's
+   `js/file-system-race` caught it and was right: between the rename and the
+   open, anything may create `a`, including a symlink, and `open(a, "w")`
+   follows it. Demonstrated rather than argued — planting a symlink and running
+   both flag sets, the old one writes through to the victim and the new one
+   refuses with `EEXIST`. Rotation is now by fresh unique name with
+   `O_EXCL | O_NOFOLLOW`, which cannot be raced and never renames a file out
+   from under a reader.
 
 ---
 

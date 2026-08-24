@@ -55,6 +55,7 @@ import {
   writeSync,
 } from "node:fs";
 import type { Stats } from "node:fs";
+import { constants } from "node:fs";
 import { homedir, platform } from "node:os";
 import { join } from "node:path";
 
@@ -808,13 +809,52 @@ interface RingOptions {
   readonly maxSeconds: number;
 }
 
+/** Segments the ring keeps. Total disk = `segments * (capBytes / segments)`. */
+export const ERROR_RING_SEGMENTS = 4;
+
+export const ERROR_RING_PREFIX = "errors-";
+
+/**
+ * Which segment files to delete to keep only the `keep` newest.
+ *
+ * Segment names embed a zero-padded sequence number, so lexicographic order IS
+ * chronological order and no `stat` is needed — which matters because stat-ing
+ * a file you are about to delete is another check-then-use.
+ */
+export function segmentsToDelete(names: readonly string[], keep: number): readonly string[] {
+  const segs = names.filter((n) => n.startsWith(ERROR_RING_PREFIX) && n.endsWith(".log")).sort();
+  return segs.slice(0, Math.max(0, segs.length - keep));
+}
+
+export function segmentName(seq: number): string {
+  return `${ERROR_RING_PREFIX}${String(seq).padStart(6, "0")}.log`;
+}
+
+/**
+ * Bounded live capture of Error/Fault messages.
+ *
+ * `log stream` at Error+Fault level measured 28.6 KB/s on this machine — 2.5
+ * GB/day, far too much to keep. So it is written into a fixed number of
+ * segments with a hard byte cap: the cost is CONSTANT, and what it always
+ * holds is the most recent window, which is the only window a crash
+ * investigation wants anyway.
+ *
+ * ROTATION IS BY FRESH NAME, NEVER BY RENAME. The obvious two-file ring
+ * (`rm b; mv a b; open a`) has a real race that CodeQL's `js/file-system-race`
+ * caught in the first version of this function: between the rename and the
+ * open, anything may create `a` — including a symlink — and `open(a, "w")`
+ * would then truncate and write wherever it points. Opening a UNIQUE name with
+ * `O_EXCL | O_NOFOLLOW` cannot be raced: the create either wins or fails
+ * loudly, and it will never follow a link someone else planted.
+ *
+ * It is also better for readers. Nothing is ever renamed out from under a
+ * `tail -f`, and the segment a crash landed in keeps its name.
+ */
 export async function cmdErrorRing(o: RingOptions): Promise<number> {
   guardPlatform();
   const l = layout(o.root);
   ensure(l.errorRing);
-  const a = join(l.errorRing, "errors.0.log");
-  const b = join(l.errorRing, "errors.1.log");
-  const half = Math.max(1, Math.floor(o.capBytes / 2));
+  const segmentBytes = Math.max(1, Math.floor(o.capBytes / ERROR_RING_SEGMENTS));
 
   const proc = Bun.spawn(
     [
@@ -828,11 +868,18 @@ export async function cmdErrorRing(o: RingOptions): Promise<number> {
     { stdout: "pipe", stderr: "ignore" },
   );
 
-  let fd = openSync(a, "w");
+  // O_EXCL makes the create unraceable; O_NOFOLLOW refuses a planted symlink.
+  const OPEN_FLAGS = constants.O_WRONLY | constants.O_CREAT | constants.O_EXCL | constants.O_NOFOLLOW;
+
+  let seq = nextSegmentSeq(l.errorRing);
+  let fd = openSync(join(l.errorRing, segmentName(seq)), OPEN_FLAGS, 0o600);
   let cur = 0;
   let sinceSync = 0;
   const deadline = o.maxSeconds > 0 ? Date.now() + o.maxSeconds * 1000 : Number.POSITIVE_INFINITY;
-  process.stderr.write(`error-ring -> ${l.errorRing} (cap ${humanBytes(o.capBytes)})\n`);
+  process.stderr.write(
+    `error-ring -> ${l.errorRing} (cap ${humanBytes(o.capBytes)} = ` +
+      `${ERROR_RING_SEGMENTS} x ${humanBytes(segmentBytes)})\n`,
+  );
   try {
     for await (const chunk of proc.stdout) {
       cur += writeSync(fd, chunk);
@@ -842,13 +889,14 @@ export async function cmdErrorRing(o: RingOptions): Promise<number> {
         fsyncSync(fd);
         sinceSync = 0;
       }
-      if (cur >= half) {
+      if (cur >= segmentBytes) {
         fsyncSync(fd);
         closeSync(fd);
-        rmSync(b, { force: true });
-        renameSync(a, b);
-        fd = openSync(a, "w");
+        seq += 1;
+        fd = openSync(join(l.errorRing, segmentName(seq)), OPEN_FLAGS, 0o600);
         cur = 0;
+        sinceSync = 0;
+        pruneSegments(l.errorRing);
       }
       if (Date.now() > deadline) break;
     }
@@ -859,9 +907,25 @@ export async function cmdErrorRing(o: RingOptions): Promise<number> {
     } catch {
       /* already closed */
     }
+    pruneSegments(l.errorRing);
     proc.kill();
   }
   return 0;
+}
+
+/** One past the highest sequence already on disk, so O_EXCL always succeeds. */
+function nextSegmentSeq(dir: string): number {
+  const segs = segmentsToDelete(readdirOrNull(dir) ?? [], 0);
+  const last = segs[segs.length - 1];
+  if (last === undefined) return 0;
+  const n = Number.parseInt(last.slice(ERROR_RING_PREFIX.length), 10);
+  return Number.isFinite(n) ? n + 1 : 0;
+}
+
+function pruneSegments(dir: string): void {
+  for (const n of segmentsToDelete(readdirOrNull(dir) ?? [], ERROR_RING_SEGMENTS)) {
+    rmSync(join(dir, n), { force: true });
+  }
 }
 
 // ---------------------------------------------------------------------------
