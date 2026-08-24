@@ -1157,12 +1157,19 @@ jobs:
         # only on NEW debt. Nothing was added to the baseline to land this step and no
         # allowlist entry was created -- the check goes on exactly as it already was.
         #
-        # Cost: MEASURED ON THE RUNNER -- see the PR body for the job id and timing. It is
-        # a single pass over the ~3,176 tracked files `git ls-files` reports, scanning for a
-        # closed list of named APIs (localeCompare, the Intl family, toLocale*). It scales
-        # with tracked-file count, not with rule count. Runs in THIS job because bun and the
-        # locked dependency graph are already provisioned nine steps up -- no new job, no new
-        # runner, no new install, exactly as the linter-coverage step above.
+        # Cost: 1.64 s MEASURED ON THE RUNNER (job 97432756112, 12:34:18.98Z -> 12:34:20.62Z),
+        # over the 3,178 tracked files `git ls-files` reports. The laptop number was 2.34 s
+        # warm / 6.39 s cold and is NOT the one quoted -- here the laptop would have OVERstated
+        # the cost, where in the linter-coverage step above it understated it. That is the
+        # argument for quoting the runner either way: a laptop figure is not conservative, it
+        # is just the wrong machine.
+        #
+        # It is a single pass scanning for a closed list of named APIs (localeCompare, the Intl
+        # family, toLocale*), so it scales with tracked-file count, not with rule count. At
+        # ~1,100 gate runs/month the two steps added here together cost ~0.52 runner-hours/
+        # month, against the ~6.4 the linter-coverage step above costs and the ~95 the eslint
+        # roster costs. Runs in THIS job because bun and the locked dependency graph are already
+        # provisioned nine steps up -- no new job, no new runner, no new install.
         run: bun run hygiene:no-culture-sensitive-collation
 
       - name: mise pin parity (GOVERNANCE §24 three-way parity)
@@ -1179,10 +1186,11 @@ jobs:
         # is covered the moment it exists) and VALUE (every site restating the pin agrees with
         # `.mise.toml`, which is read as canonical rather than restated here).
         #
-        # Green on main today, so it goes on with no backlog and no suppression. Cost is
-        # negligible: it reads a handful of flake.nix files plus `.mise.toml` -- well under a
-        # second, dominated by bun start-up. Its sibling `hygiene:dotnet-pin-parity` is already
-        # invoked; this closes the asymmetry between the two.
+        # Green on main today, so it goes on with no backlog and no suppression. Cost: 0.044 s
+        # MEASURED ON THE RUNNER (job 97432756112, 12:34:20.623Z -> 12:34:20.668Z) -- it reads a
+        # handful of flake.nix files plus `.mise.toml`, and the figure is dominated by bun
+        # start-up. Its sibling `hygiene:dotnet-pin-parity` is already invoked; this closes the
+        # asymmetry between the two.
         run: bun run hygiene:mise-pin-parity
 
       - name: Hygiene unit-test suite (closes the per-PR coverage gap)
