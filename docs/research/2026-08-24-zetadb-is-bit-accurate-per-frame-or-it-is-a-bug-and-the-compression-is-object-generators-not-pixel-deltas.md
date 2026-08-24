@@ -140,8 +140,27 @@ The discriminator has to exclude the expert's own annotation, or it measures the
 Weaker forms that would NOT discharge it, and are easy to mistake for it:
 
 - Detecting orbits Aaron already annotated. That measures agreement with a label he supplied.
-- Detecting orbits in CHIP-8 only. The machine is 4 KB with 16 registers; success there is consistent with the method working *and* with the problem being trivial at that scale. **The interesting question begins where the state space does.**
+- Detecting orbits in CHIP-8 only — **but see §7b, which corrects why.** My first phrasing here said success in CHIP-8 is *"consistent with the problem being trivial at that scale"*. That is wrong about the platform choice and is corrected below.
 - Detecting *some* objects. Partial decomposition does not compress — §4's generators need the scene, not a sample of it.
+
+### 7b. Why CHIP-8/CHIP-9 — the platform was chosen for being at the EDGE, not for being easy
+
+Aaron, correcting the caveat above:
+
+> *"CHIP-8 and our CHIP-9 derivative were chosen to test the limits of **superdeterminism**, where you can reason about **all possible spaces** in a game and come to **general conclusions**. Even for CHIP-8 this likely requires massive GPUs — like an array of latest consumer graphics cards — to make it tractable. **Every newer generation makes general conclusions less tractable.** This is why this is an ideal arena for theory."*
+
+**So CHIP-8 is not the easy case. It is the largest machine where "reason about everything" is on the table at all** — and even there, exhaustively is expensive enough to want a GPU array. That reverses the implication I drew.
+
+**Two distinct programmes were conflated in §7, and they scale in opposite directions:**
+
+| programme | question | scaling |
+|---|---|---|
+| **Mechanised orbit detection** | can a machine find the objects in *this* running title? | **bigger machines are the harder test** — §7's falsifier is right for this one |
+| **Superdeterministic general conclusions** | can we reason over *all possible states* and conclude something general? | **CHIP-8 is already at the edge**; every newer generation is *less* tractable |
+
+For the second, **scaling up is scaling away**. CHIP-8 → Atari → NES is not a ladder toward the goal; it is a retreat from the only regime where the method applies. That is precisely what makes it *"an ideal arena for theory"* — the theory needs a machine small enough to be exhausted and rich enough to be interesting, and CHIP-8/CHIP-9 was picked to sit on that line.
+
+**A resonance worth recording and not asserting:** this repo already uses *superdeterminism* in the Bell/CHSH sense — `src/Bayesian/YinYangEnsemble.fs:170`, *"S = 4 (ρ > 1/3): superdeterminism / common seed — groupthink, useless ensemble"* — the regime of **total determination**, where nothing is independently free. A deterministic emulator is that regime made literal: exhaustive reasoning is possible *because* nothing is free. Whether that is one idea or two words is not settled here; per `numerology-vs-number-theory` it is a **shape match, recorded as a coincidence worth watching**, not an identification. (`superdetermin*` appears in 119 files, `chip9` in 180.)
 
 **Recorded status:** a few easy orbits in CHIP-8 is the entire measured base. Everything downstream — the compression, the generator library, the per-frame store efficiency — rests on a mechanisability claim that is currently supported by expert instinct and one small machine. That is a legitimate place to start and an illegitimate place to stop, and saying which is the point of writing it down.
 
