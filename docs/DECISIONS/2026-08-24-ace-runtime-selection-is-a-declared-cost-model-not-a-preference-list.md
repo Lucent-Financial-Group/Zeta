@@ -208,7 +208,26 @@ runtimes reach rc=0. Not the 773-package dev install.
 
 `runtime-candidates.ts` now carries both corrections with their methods.
 
-### 10.4 What this does NOT resolve
+### 10.4 One measured limit: `ace deps` + out-of-subset YAML is bun-only
+
+Found by measurement, not predicted, and recorded because a rung's limits must be as legible as
+its capabilities. `ace deps validate` on a graph that uses flow sequences (`needs: [cilium]`) or
+folded block scalars (`>-`) falls out of the hand-rolled subset reader and into `yaml/vendor.ts`,
+whose adapter is **`Bun.YAML`** — a Bun built-in with no node equivalent.
+
+| input                                  | bun                   | node                                                               |
+| -------------------------------------- | --------------------- | ------------------------------------------------------------------ |
+| graph inside the YAML subset           | rc=0                  | rc=0, **stdout byte-identical**                                    |
+| graph using flow style / block scalars | rc=0 (vendor adapter) | **rc=1, named refusal**: `Bun.YAML is unavailable on this runtime` |
+
+This is the adapter behaving as designed — it _probes_ for the built-in and returns a named
+refusal rather than a `TypeError` — and it is pinned by a test that asserts the refusal is named
+and that stdout stays empty. It is not closed here: widening the TS subset unilaterally is
+explicitly forbidden (081KT7YW00008QG0R002T1XNWT — the six-oracle byte-lock rests on every oracle
+declining the _same_ inputs), so closing it properly means a node-side vendor adapter, which is
+its own decision. Every other ace surface is at full parity.
+
+### 10.5 What this does NOT resolve
 
 - **`clone-at-tag` is not violated** — that rule is about `ace`-as-resolver, and the repo's own
   bootstrap already runs `bun install --frozen-lockfile`. But §5's implied story ("run the source

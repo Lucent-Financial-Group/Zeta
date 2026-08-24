@@ -108,7 +108,12 @@ export const CANDIDATES: readonly RuntimeCandidate[] = [
         "BLAKE3 digests and an Ed25519 signature. Ablation measured which specifiers were load-bearing: " +
         "of the 16, ELEVEN break node when reverted; the other five sit behind `import type` and are " +
         "erased by node's type-stripping. All 16 are fixed anyway — leaving five as a trap for the next " +
-        "reader is how the rung rots back to broken.",
+        "reader is how the rung rots back to broken. ONE MEASURED LIMIT, stated because a rung's " +
+        "limits must be as legible as its capabilities: `ace deps` on a graph using out-of-subset " +
+        "YAML (flow sequences, folded block scalars) routes through `yaml/vendor.ts`, whose adapter " +
+        "is the Bun built-in `Bun.YAML`. On node that path REFUSES BY NAME (rc=1, 'Bun.YAML is " +
+        "unavailable on this runtime') rather than crashing or answering differently. Subset-YAML " +
+        "graphs validate identically on both. Every other ace surface is at full parity.",
     },
   },
   {

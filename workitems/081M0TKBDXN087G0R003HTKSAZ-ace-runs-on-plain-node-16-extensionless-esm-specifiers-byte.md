@@ -56,6 +56,17 @@ merely claimed: 13 scenarios compared byte-for-byte outside the repo, and 8 comm
 inside it. The transcript compared is not a smoke test — it carries BLAKE3 digests computed
 on both the write and read paths and an Ed25519 signature, all identical across runtimes.
 
+## One measured limit: `ace deps` + out-of-subset YAML is bun-only
+
+Found by measurement while closing a coverage gap (the parity scenarios did not originally
+exercise the YAML modules this change touched). `ace deps validate` on a graph using flow
+sequences or folded block scalars routes through `yaml/vendor.ts`, whose adapter is the Bun
+built-in **`Bun.YAML`**. On node that path returns a **named refusal** (rc=1,
+`Bun.YAML is unavailable on this runtime`) — not a crash, not a different answer. Subset-YAML
+graphs validate byte-identically on both. Pinned by a test asserting the refusal is named and
+stdout stays empty. Not closed here: widening the TS subset unilaterally is forbidden
+(081KT7YW00008QG0R002T1XNWT), so the fix is a node-side vendor adapter and its own decision.
+
 ## Open — named, not silently assumed
 
 - **`clone-at-tag` is NOT violated**, but the one-liner story is weaker than §5 implied: the

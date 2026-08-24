@@ -30,7 +30,7 @@
 
 import { describe, expect, test } from "bun:test";
 import { spawnSync } from "node:child_process";
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, join, relative, resolve } from "node:path";
 import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
@@ -59,21 +59,36 @@ const SPECIFIER =
 
 const CANDIDATE_EXTENSIONS = [".ts", ".tsx", ".js", ".mjs", ".mts"] as const;
 
-function resolveSpecifier(fromDir: string, spec: string): string | null {
+interface Source {
+  readonly path: string;
+  readonly text: string;
+}
+
+/**
+ * Read a file, or null if it is absent / a directory / unreadable.
+ *
+ * Deliberately ONE syscall with a catch, never `existsSync` followed by `readFileSync`:
+ * that pair is check-then-use (CWE-367) and `lint-check-then-use-file-races.ts` refuses it
+ * repo-wide. The `catch` is not swallowing an error — "cannot be read as a file" IS the
+ * answer this resolver wants, and it is the same answer for every reason it might hold.
+ */
+function tryRead(path: string): string | null {
+  try {
+    return readFileSync(path, "utf8");
+  } catch {
+    return null;
+  }
+}
+
+/** Resolve one relative specifier the way bun would, returning its contents. */
+function loadSpecifier(fromDir: string, spec: string): Source | null {
   const base = resolve(fromDir, spec);
-  if (existsSync(base) && !existsSync(join(base, "package.json"))) {
-    try {
-      readFileSync(base);
-      return base;
-    } catch {
-      /* it is a directory */
-    }
+  const candidates = [base, ...CANDIDATE_EXTENSIONS.map((e) => base + e), join(base, "index.ts")];
+  for (const path of candidates) {
+    const text = tryRead(path);
+    if (text !== null) return { path, text };
   }
-  for (const ext of CANDIDATE_EXTENSIONS) {
-    if (existsSync(base + ext)) return base + ext;
-  }
-  const idx = join(base, "index.ts");
-  return existsSync(idx) ? idx : null;
+  return null;
 }
 
 interface ClosureReport {
@@ -87,19 +102,20 @@ function walkClosure(entry: string): ClosureReport {
   const seenFiles = new Set<string>();
   const extensionless: string[] = [];
   const bare = new Set<string>();
-  const queue: string[] = [entry];
+  const entryText = tryRead(entry);
+  if (entryText === null) throw new Error(`ace entry point is unreadable: ${entry}`);
+  const queue: Source[] = [{ path: entry, text: entryText }];
 
   while (queue.length > 0) {
-    const file = queue.pop();
-    if (file === undefined || seenFiles.has(file) || !existsSync(file)) continue;
-    seenFiles.add(file);
-    const src = readFileSync(file, "utf8");
+    const current = queue.pop();
+    if (current === undefined || seenFiles.has(current.path)) continue;
+    seenFiles.add(current.path);
     SPECIFIER.lastIndex = 0;
     const seenHere = new Set<string>();
-    let m: RegExpExecArray | null = SPECIFIER.exec(src);
+    let m: RegExpExecArray | null = SPECIFIER.exec(current.text);
     while (m !== null) {
       const spec = m[1] ?? m[2] ?? m[3];
-      m = SPECIFIER.exec(src);
+      m = SPECIFIER.exec(current.text);
       if (spec === undefined || seenHere.has(spec)) continue;
       seenHere.add(spec);
       if (spec.startsWith("node:")) continue;
@@ -108,9 +124,9 @@ function walkClosure(entry: string): ClosureReport {
         continue;
       }
       if (!/\.(ts|tsx|js|mjs|cjs|mts|json)$/.test(spec)) {
-        extensionless.push(`${relative(REPO_ROOT, file)} :: "${spec}"`);
+        extensionless.push(`${relative(REPO_ROOT, current.path)} :: "${spec}"`);
       }
-      const target = resolveSpecifier(dirname(file), spec);
+      const target = loadSpecifier(dirname(current.path), spec);
       if (target !== null) queue.push(target);
     }
   }
@@ -187,7 +203,28 @@ function runAce(bin: string, sandbox: string, commands: readonly (readonly strin
 const PKG_FILES = { "README.md": "hello ace\n", "bin/run.sh": "#!/bin/sh\necho hi\n" } as const;
 const PKG_HASH = "blake3:3630696ecfdda908313eb3bf86130d0b7ccfdca071cdef07346d4ce2e2687cfd";
 
+/**
+ * A dependency graph inside the hand-rolled YAML subset (`yaml/reader.ts`): block
+ * mappings and block sequences only, no flow style, no block scalars, no anchors.
+ * Chosen deliberately — see the `ace deps` boundary test below.
+ */
+const SUBSET_GRAPH = [
+  "apiVersion: ace.zeta/v1",
+  "kind: AppDependencyGraph",
+  "metadata:",
+  "  name: subset-demo",
+  "spec:",
+  "  dependsOn:",
+  "    - chart: alpha",
+  "      needs:",
+  "        - beta",
+  "    - chart: beta",
+  "      needs:",
+  "",
+].join("\n");
+
 function seedSandbox(sandbox: string): void {
+  writeFileSync(join(sandbox, "graph.yaml"), SUBSET_GRAPH);
   writeFileSync(
     join(sandbox, "pkg.json"),
     JSON.stringify({
@@ -214,6 +251,10 @@ describe("ace produces byte-identical output under bun and under node", () => {
         ["registry", "add", "demo", "1.0.0", "https://example.invalid/demo.json", "--hash", PKG_HASH],
         ["registry", "list"],
       ],
+    },
+    {
+      name: "deps validate on subset YAML (exercises the hand-rolled reader + DAG resolver)",
+      commands: [["deps", "validate", "--graph", "./graph.yaml"]],
     },
   ];
 
@@ -247,6 +288,66 @@ describe("ace produces byte-identical output under bun and under node", () => {
       // A comparison of two empty strings would pass every assertion above.
       expect(nodeRun.stdout.length).toBeGreaterThan(200);
       expect(nodeRun.stdout).toContain(PKG_HASH);
+    } finally {
+      rmSync(sandbox, { recursive: true, force: true });
+    }
+  });
+});
+
+// ------------------------------------------------------- the ONE measured divergence
+
+describe("ace deps + out-of-subset YAML is the node rung's honest boundary", () => {
+  // FOUND BY MEASUREMENT, not predicted. `ace deps` on a graph that uses flow sequences
+  // (`needs: [cilium]`) or folded block scalars (`>-`) falls out of the hand-rolled subset
+  // reader and into `yaml/vendor.ts`, whose adapter is **`Bun.YAML`** — a Bun built-in with
+  // no node equivalent. So on node that path REFUSES.
+  //
+  // This is not a regression and not a bug: the adapter probes for the built-in and returns
+  // a NAMED refusal rather than a TypeError, which is the behaviour `yaml/vendor.ts` was
+  // written to have. It is recorded here because a rung's limits must be as legible as its
+  // capabilities — "ace runs on node" would otherwise read as a promise this one command
+  // does not keep, and silence about it is how the next reader gets surprised in production.
+  //
+  // Widening the subset to close the gap is explicitly forbidden unilaterally: the six-oracle
+  // byte-lock rests on every oracle declining the SAME inputs (081KT7YW00008QG0R002T1XNWT).
+  // Closing it properly means a node-side vendor adapter, which is a separate decision.
+  const OUT_OF_SUBSET_GRAPH = [
+    "apiVersion: ace.zeta/v1",
+    "kind: AppDependencyGraph",
+    "metadata:",
+    "  name: flow-demo",
+    "spec:",
+    "  dependsOn:",
+    "    - chart: alpha",
+    "      needs: [beta]",
+    "    - chart: beta",
+    "      needs:",
+    "",
+  ].join("\n");
+
+  test("bun parses it via the Bun.YAML adapter; node refuses BY NAME rather than crashing", () => {
+    const node = nodeBin();
+    const sandbox = mkdtempSync(join(tmpdir(), "ace-parity-yaml-"));
+    try {
+      const write = (): void => {
+        writeFileSync(join(sandbox, "flow.yaml"), OUT_OF_SUBSET_GRAPH);
+      };
+      mkdirSync(join(sandbox, "home"), { recursive: true });
+      write();
+      const argv = [ACE_ENTRY, "deps", "validate", "--graph", "./flow.yaml"];
+      const opts = { cwd: sandbox, encoding: "utf8" as const, env: { ...process.env, HOME: join(sandbox, "home") } };
+
+      const underBun = spawnSync(process.execPath, argv, opts);
+      const underNode = spawnSync(node, argv, opts);
+
+      // bun: the vendor adapter answers, so the graph validates.
+      expect(underBun.status).toBe(0);
+
+      // node: a NAMED refusal on stderr, not a stack trace and not a silent wrong answer.
+      expect(underNode.status).toBe(1);
+      expect(underNode.stderr).toContain("Bun.YAML is unavailable on this runtime");
+      expect(underNode.stderr).not.toContain("TypeError");
+      expect(underNode.stdout).toBe("");
     } finally {
       rmSync(sandbox, { recursive: true, force: true });
     }
