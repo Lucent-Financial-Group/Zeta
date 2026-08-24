@@ -48,7 +48,7 @@
 // Exit 0 = ran. Exit 1 = fatal invocation/environment error.
 
 import { spawnSync } from "node:child_process";
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname } from "node:path";
 
 const REPO = process.env.ZETA_REAPER_REPO ?? "Lucent-Financial-Group/Zeta";
@@ -157,13 +157,20 @@ function protectionPredicates(defaultBranch: string): { patterns: string[]; test
 
 function loadPrMap(): Map<string, Pr> {
   const path = `${CACHE_DIR}/all-prs.json`;
-  if (!existsSync(path)) {
+  // One syscall, one answer. An `existsSync` gate here would return an answer that is
+  // already stale by the time the read runs, and would read as defensive while
+  // preventing nothing -- the vacuity class in file-system form.
+  let raw: string;
+  try {
+    raw = readFileSync(path, "utf8");
+  } catch (e) {
+    if ((e as NodeJS.ErrnoException).code !== "ENOENT") throw e;
     process.stderr.write(`FATAL: ${path} missing. Run:\n` +
       `  gh pr list --repo ${REPO} --state all --limit 30000 ` +
       `--json number,state,headRefName,baseRefName,mergedAt,closedAt,updatedAt > ${path}\n`);
     process.exit(1);
   }
-  const prs = JSON.parse(readFileSync(path, "utf8")) as Pr[];
+  const prs = JSON.parse(raw) as Pr[];
   // Highest PR number wins when a branch was reused across several PRs: the most
   // recent PR is the one whose state describes the branch as it stands now. An
   // older MERGED PR on a reused branch must never mask a newer OPEN one.
@@ -231,8 +238,16 @@ function writeLines(path: string, lines: readonly string[]): void {
 }
 
 function readJsonl<T>(path: string): T[] {
-  if (!existsSync(path)) return [];
-  return readFileSync(path, "utf8")
+  // Absent file == empty list, decided by the read itself rather than by a prior
+  // existence check whose answer is stale before it is used.
+  let text: string;
+  try {
+    text = readFileSync(path, "utf8");
+  } catch (e) {
+    if ((e as NodeJS.ErrnoException).code === "ENOENT") return [];
+    throw e;
+  }
+  return text
     .split("\n")
     .filter((l) => l.trim().length > 0)
     .map((l) => JSON.parse(l) as T);
@@ -266,7 +281,18 @@ function census(windowDays: number): number {
 
   const rows: Row[] = [];
   for (const line of refs) {
-    const [refShort, sha, tipIso] = line.split("\t");
+    // `--format` above asks for exactly three tab-separated fields. If git ever returns
+    // fewer, the assumption behind every downstream field is broken -- so this REFUSES
+    // rather than coercing with `!`. A malformed ref line that silently became a row
+    // would be a census entry nobody could trace back to a real ref: the vacuity class,
+    // wearing a plausible branch name.
+    const parts = line.split("\t");
+    if (parts.length !== 3) {
+      throw new Error(
+        `for-each-ref returned ${parts.length} field(s), expected 3: ${JSON.stringify(line)}`,
+      );
+    }
+    const [refShort, sha, tipIso] = parts as [string, string, string];
     const branch = refShort.replace(new RegExp(`^${REMOTE}/`), "");
     if (branch === "HEAD" || branch === defaultBranch) continue;
     const ageDays = (nowMs - new Date(tipIso).getTime()) / 86400000;
@@ -393,7 +419,13 @@ function reap(batch: number, confirmed: boolean): number {
     // chunks must not lose the cursor. This machine kernel-panicked four times
     // on 2026-08-24, which is why this is a per-chunk write and not a final one.
     mkdirSync(dirname(EXECUTED), { recursive: true });
-    const prior = existsSync(EXECUTED) ? readFileSync(EXECUTED, "utf8") : "";
+    let prior: string;
+    try {
+      prior = readFileSync(EXECUTED, "utf8");
+    } catch (e) {
+      if ((e as NodeJS.ErrnoException).code !== "ENOENT") throw e;
+      prior = "";
+    }
     writeFileSync(EXECUTED, `${prior}${appended.slice(-slice.length).join("\n")}\n`);
     if (i + CHUNK < todo.length) Bun.sleepSync(2000);
   }
