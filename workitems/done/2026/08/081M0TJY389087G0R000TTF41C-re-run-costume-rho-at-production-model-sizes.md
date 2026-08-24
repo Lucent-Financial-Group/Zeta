@@ -1,11 +1,12 @@
 ---
 id: 081M0TJY389087G0R000TTF41C
 type: task
-state: in-progress
+state: done
 priority: P1
 slug: re-run-costume-rho-at-production-model-sizes
 title: "Re-run costume-rho at production model sizes — give N_eff a reading"
 created: 2026-08-24T00:00:00.000Z
+completed: 2026-08-24T20:01:31.582Z
 depends_on: []
 composes_with: []
 ---
