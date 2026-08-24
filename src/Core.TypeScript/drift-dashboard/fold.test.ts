@@ -18,7 +18,10 @@ import {
   firstOpportunityPassed,
   triggerMatchesExpectation,
   verdictForAbsence,
+  describeWindow,
+  rateWindow,
   verdictForDarkLane,
+  verdictForFlapping,
   verdictForNeverFiredTrigger,
 } from "./fold.ts";
 import { emptyRoster, mergeDefinitions, recordObservations, type Roster } from "./roster.ts";
@@ -650,7 +653,7 @@ describe("a never-fired trigger is only a finding once the trigger COULD have fi
 
 describe("a running check ANNOTATES the last concluded verdict — it never overwrites it", () => {
   const inFlight = {
-    inspected: 5, withoutVerdict: 4, newerThanVerdict: 4, newerSpanSeconds: 447, recheckInFlight: true,
+    inspected: 5, withoutVerdict: 4, newerThanVerdict: 4, newerSpanSeconds: 447, recheckInFlight: true, concluded: concluded([true]),
   } as const;
 
   it("gate's exact shape: RUNNING, cancelled, cancelled, RUNNING, failure — the row is RED", () => {
@@ -688,7 +691,7 @@ describe("a running check ANNOTATES the last concluded verdict — it never over
 describe("a dark lane is red — a check that keeps being killed is not passing", () => {
   it("tlaps-proof's shape: attempts pile up over weeks with nothing concluding", () => {
     const v = verdictForDarkLane(
-      { inspected: 40, withoutVerdict: 33, newerThanVerdict: 12, newerSpanSeconds: 40 * DAY, recheckInFlight: false },
+      { inspected: 40, withoutVerdict: 33, newerThanVerdict: 12, newerSpanSeconds: 40 * DAY, recheckInFlight: false, concluded: concluded([true]) },
       DEFAULT_FOLD_CONFIG,
     );
     expect(v?.kind).toBe("red");
@@ -700,14 +703,14 @@ describe("a dark lane is red — a check that keeps being killed is not passing"
     // measured) and still concludes every few minutes. A count threshold would call it
     // dark and be muted inside a day.
     expect(verdictForDarkLane(
-      { inspected: 20, withoutVerdict: 17, newerThanVerdict: 4, newerSpanSeconds: 447, recheckInFlight: true },
+      { inspected: 20, withoutVerdict: 17, newerThanVerdict: 4, newerSpanSeconds: 447, recheckInFlight: true, concluded: concluded([true]) },
       DEFAULT_FOLD_CONFIG,
     )).toBeNull();
   });
 
   it("one inconclusive attempt is never dark, however old", () => {
     expect(verdictForDarkLane(
-      { inspected: 20, withoutVerdict: 1, newerThanVerdict: 1, newerSpanSeconds: 30 * DAY, recheckInFlight: false },
+      { inspected: 20, withoutVerdict: 1, newerThanVerdict: 1, newerSpanSeconds: 30 * DAY, recheckInFlight: false, concluded: concluded([true]) },
       DEFAULT_FOLD_CONFIG,
     )).toBeNull();
   });
@@ -722,11 +725,363 @@ describe("a dark lane is red — a check that keeps being killed is not passing"
       observations: [{
         checkId: "tlaps-proof", verdict: { kind: "green" }, observedAt: "2026-07-01T00:00:00.000Z",
         source: "s", trigger: "on-change",
-        attempts: { inspected: 40, withoutVerdict: 33, newerThanVerdict: 33, newerSpanSeconds: 52 * DAY, recheckInFlight: false },
+        attempts: { inspected: 40, withoutVerdict: 33, newerThanVerdict: 33, newerSpanSeconds: 52 * DAY, recheckInFlight: false, concluded: concluded([true]) },
       }],
       now: NOW,
     });
     expect(rowFor(report, "tlaps-proof").verdict.kind).toBe("red");
     expect(report.counts.green).toBe(0);
+  });
+});
+
+describe("an empty roster is never OK — 0 of 0 must not render green", () => {
+  it("no checks known and no producer is NOT a pass", () => {
+    // Found 2026-08-22 while measuring the offline path on a fresh checkout: the
+    // report read `OK — RED 0 · UNKNOWN 0 · coverage 0/0 · green 0`. That is the exact
+    // vacuity this whole surface refuses, and the reason GitLabAdapter returns
+    // `not-supported` rather than an empty roster.
+    const report = foldDashboard({ roster: emptyRoster("main", NOW), observations: [], now: NOW });
+    expect(report.coverage.known).toBe(0);
+    expect(report.ok).toBe(false);
+    expect(headline(report)).toContain("uninitialised, not clean");
+  });
+
+  it("says the roster is empty rather than reporting zeroes that look like health", () => {
+    const h = headline(foldDashboard({ roster: emptyRoster("main", NOW), observations: [], now: NOW }));
+    expect(h).toContain("NOT OK");
+    expect(h).not.toContain("green 0");
+  });
+
+  it("one known and satisfied check IS ok — the guard is emptiness, not pessimism", () => {
+    const report = foldDashboard({
+      roster: rosterOf([def("only", { kind: "on-change", detail: "push" })]),
+      observations: [obs("only", { kind: "green" }, "2026-08-22T17:00:00.000Z")],
+      now: NOW,
+    });
+    expect(report.ok).toBe(true);
+  });
+
+  it("offline against a POPULATED roster is all-unknown and not ok — the correct offline answer", () => {
+    const defs = Array.from({ length: 66 }, (_, i) => def(`c${i}`, { kind: "on-change", detail: "push" }));
+    const report = foldDashboard({ roster: rosterOf(defs), observations: [], now: NOW });
+    expect(report.counts.unknown).toBe(66);
+    expect(report.counts.green).toBe(0);
+    expect(report.coverage.shortfall).toBe(66);
+    expect(report.ok).toBe(false);
+  });
+});
+
+// ───────────────────────────────────────────────────────────────────────────
+// Two instruments disagreed about the same repo on 2026-08-22 and BOTH were
+// right. These are the falsifiers for the two mechanisms that caused it.
+// ───────────────────────────────────────────────────────────────────────────
+
+/** Concluded outcomes spaced one hour apart ending `agoSeconds` before NOW, newest first. */
+function concluded(pattern: readonly boolean[], agoSeconds = 3600): readonly { at: string; passed: boolean }[] {
+  const end = Date.parse(NOW) - agoSeconds * 1000;
+  return pattern.map((passed, i) => ({ at: new Date(end - i * 3600_000).toISOString(), passed }));
+}
+
+function attempts(over: Partial<import("../forge-host/types.ts").AttemptSummary> = {}) {
+  return {
+    inspected: 20, withoutVerdict: 0, newerThanVerdict: 0, newerSpanSeconds: 0,
+    recheckInFlight: false, concluded: concluded([true, true, true, true, true, true]), ...over,
+  };
+}
+
+describe("FLAPPING — a lane whose next verdict is a coin flip has no colour", () => {
+  it("build-ai-cluster-iso's exact shape: newest concluded passed, two of the last eight failed", () => {
+    const report = foldDashboard({
+      roster: rosterOf([def("build-ai-cluster-iso", { kind: "on-change", detail: "push to main" })]),
+      observations: [{
+        checkId: "build-ai-cluster-iso", verdict: { kind: "green" },
+        observedAt: "2026-08-22T21:53:34.000Z", source: "github-actions", trigger: "on-change",
+        attempts: attempts({ concluded: concluded([true, false, true, true, false, true, true, true]) }),
+      }],
+      now: NOW,
+    });
+    const row = rowFor(report, "build-ai-cluster-iso");
+    expect(row.verdict.kind).toBe("flapping");
+    expect(row.band).toBe("flapping");
+    expect(report.counts.green).toBe(0);
+    expect(report.ok).toBe(false);
+  });
+
+  it("says the MIX out loud — the number is the finding, not the colour", () => {
+    const v = verdictForFlapping({ kind: "green" }, attempts({ concluded: concluded([true, false, true, true, false, true, true, true]) }), DEFAULT_FOLD_CONFIG, NOW);
+    expect(v?.kind === "flapping" && v.detail).toContain("2 of 8 concluded runs failed");
+  });
+
+  it("one failure in twenty is a flake, not a flap — promoting every flake would bury the real ones", () => {
+    expect(verdictForFlapping({ kind: "green" }, attempts({ concluded: concluded([true, false, ...Array<boolean>(18).fill(true)]) }), DEFAULT_FOLD_CONFIG, NOW)).toBeNull();
+  });
+
+  it("a clean history is not flapping", () => {
+    expect(verdictForFlapping({ kind: "green" }, attempts({ concluded: concluded([true, true, true, true, true, true]) }), DEFAULT_FOLD_CONFIG, NOW)).toBeNull();
+  });
+
+  it("only applies when the newest verdict is GREEN — a red row is already actionable", () => {
+    expect(verdictForFlapping({ kind: "red", detail: "x" }, attempts({ concluded: concluded([false, true, false, true, false, true, false, true, false]) }), DEFAULT_FOLD_CONFIG, NOW)).toBeNull();
+  });
+
+  it("no attempt data means no flapping claim — absence of evidence is not evidence", () => {
+    expect(verdictForFlapping({ kind: "green" }, undefined, DEFAULT_FOLD_CONFIG, NOW)).toBeNull();
+  });
+
+  it("flapping ranks under red and above unknown, so it cannot hide among the greys", () => {
+    const report = foldDashboard({
+      roster: rosterOf([
+        def("a-red", { kind: "on-change", detail: "push" }),
+        def("b-flap", { kind: "on-change", detail: "push" }),
+        def("c-unknown", { kind: "on-change", detail: "push" }),
+        def("d-green", { kind: "on-change", detail: "push" }),
+      ]),
+      observations: [
+        obs("a-red", { kind: "red", detail: "x" }, "2026-08-22T17:00:00.000Z"),
+        { checkId: "b-flap", verdict: { kind: "green" }, observedAt: "2026-08-22T17:00:00.000Z", source: "s", trigger: "on-change", attempts: attempts({ concluded: concluded([true, false, true, false, true, false, true, true]) }) },
+        obs("d-green", { kind: "green" }, "2026-08-22T17:00:00.000Z"),
+      ],
+      now: NOW,
+    });
+    expect(report.rows.map((r) => r.checkId)).toEqual(["a-red", "b-flap", "c-unknown", "d-green"]);
+  });
+});
+
+describe("SUPERSEDING EVIDENCE — the scheduled verdict stands, and the dispatch is shown", () => {
+  const weekly = { kind: "periodic", periodSeconds: 7 * DAY, detail: "schedule: '0 9 * * 0'" } as const;
+
+  function cadenceRow() {
+    return foldDashboard({
+      roster: rosterOf([{ ...def("budget-snapshot-cadence", weekly), definitionSince: "2026-05-01T00:00:00.000Z" }]),
+      observations: [{
+        checkId: "budget-snapshot-cadence",
+        verdict: { kind: "red", detail: "run 31959534906 concluded 'failure'" },
+        observedAt: "2026-08-16T09:00:00.000Z",
+        source: "github-actions",
+        trigger: "periodic",
+        supersededBy: {
+          verdict: { kind: "green" },
+          observedAt: "2026-08-22T17:32:00.000Z",
+          trigger: "on-request",
+          detail: "a later workflow_dispatch run concluded 'green'",
+        },
+      }],
+      now: NOW,
+    });
+  }
+
+  it("a manual dispatch does NOT clear a scheduled lane's red — that would be a snooze button", () => {
+    // Anyone could clear any red by dispatching manually. The scheduled path is what
+    // the check DECLARES, and a hand-run proves the code, not the cadence.
+    expect(rowFor(cadenceRow(), "budget-snapshot-cadence").verdict.kind).toBe("red");
+  });
+
+  it("but the dispatch IS carried, so the other instrument's answer is visible in the same row", () => {
+    const row = rowFor(cadenceRow(), "budget-snapshot-cadence");
+    expect(row.supersededBy?.verdict.kind).toBe("green");
+    expect(row.supersededBy?.observedAt).toBe("2026-08-22T17:32:00.000Z");
+  });
+
+  it("and the rendered row SAYS the verdict is about the scheduled path, not the current one", async () => {
+    const { renderMarkdown } = await import("./render.ts");
+    const md = renderMarkdown(cadenceRow());
+    expect(md).toContain("awaiting scheduled confirmation");
+    expect(md).toContain("DECLARED (scheduled) path");
+    expect(md).toContain("clears when the next scheduled run passes");
+  });
+
+  it("a check with no superseding evidence renders no such claim", async () => {
+    const { renderMarkdown } = await import("./render.ts");
+    const md = renderMarkdown(foldDashboard({
+      roster: rosterOf([def("plain", { kind: "on-change", detail: "push" })]),
+      observations: [obs("plain", { kind: "red", detail: "failure" }, "2026-08-22T17:00:00.000Z")],
+      now: NOW,
+    }));
+    expect(md).not.toContain("awaiting scheduled confirmation");
+  });
+});
+
+describe("a MAJORITY of failures is red, not flapping — the split the first live pass forced", () => {
+  it("pr-manifest-integrity's shape (15 of 20 failed) is RED — the newest pass is the outlier", () => {
+    const v = verdictForFlapping({ kind: "green" }, attempts({ concluded: concluded([true, false, false, false, false, true, false, false, false, false, true, false, false, false, false, true, false, false, false, true]) }), DEFAULT_FOLD_CONFIG, NOW);
+    expect(v?.kind).toBe("red");
+    expect(v?.kind === "red" && v.detail).toContain("MOSTLY FAILING");
+    expect(v?.kind === "red" && v.detail).toContain("15 of 20 concluded runs failed");
+  });
+
+  it("agencysignature-enforcement's shape (2 of 20 failed) stays FLAPPING", () => {
+    const v = verdictForFlapping({ kind: "green" }, attempts({ concluded: concluded([true, false, true, true, false, ...Array<boolean>(15).fill(true)]) }), DEFAULT_FOLD_CONFIG, NOW);
+    expect(v?.kind).toBe("flapping");
+  });
+
+  it("an exact tie is flapping, not red — a majority means MORE, and a coin flip is what flapping is", () => {
+    expect(verdictForFlapping({ kind: "green" }, attempts({ concluded: concluded([true, false, true, false, true, false, true, false, true, false]) }), DEFAULT_FOLD_CONFIG, NOW)?.kind).toBe("flapping");
+  });
+
+  it("the two bands stay separable, so one cannot bury the other", () => {
+    const report = foldDashboard({
+      roster: rosterOf([
+        def("mostly-broken", { kind: "on-change", detail: "push" }),
+        def("occasionally-flaky", { kind: "on-change", detail: "push" }),
+      ]),
+      observations: [
+        { checkId: "mostly-broken", verdict: { kind: "green" }, observedAt: "2026-08-22T17:00:00.000Z", source: "s", trigger: "on-change", attempts: attempts({ concluded: concluded([true, false, false, false, false, true, false, false, false, false, true, false, false, false, false, true, false, false, false, true]) }) },
+        { checkId: "occasionally-flaky", verdict: { kind: "green" }, observedAt: "2026-08-22T17:00:00.000Z", source: "s", trigger: "on-change", attempts: attempts({ concluded: concluded([true, false, true, true, false, ...Array<boolean>(15).fill(true)]) }) },
+      ],
+      now: NOW,
+    });
+    expect(report.counts.red).toBe(1);
+    expect(report.counts.flapping).toBe(1);
+    expect(report.rows[0]?.checkId).toBe("mostly-broken");
+  });
+});
+
+// ───────────────────────────────────────────────────────────────────────────
+// The rate rule shipped TIME-BLIND and produced two false positives on its
+// first day. Both are fixtures now, by name, with their real timestamps.
+// ───────────────────────────────────────────────────────────────────────────
+
+/** Concluded outcomes at explicit ISO times, newest first. */
+function at(entries: readonly (readonly [string, boolean])[]) {
+  return entries.map(([iso, passed]) => ({ at: iso, passed }));
+}
+
+describe("a failure rate is only a finding over a window that describes the PRESENT", () => {
+  it("vocab-hygiene: 12 of 20 failed, every failure from JUNE, passing since 2026-06-10 — NOT red", () => {
+    // The lane broke, was fixed, and has passed every run since. A 20-run window on a
+    // rarely-run workflow still reached back two months, and the old incident dominated
+    // the verdict permanently: passing runs arrive too slowly to dilute it.
+    const june = Array.from({ length: 12 }, (_, i) => [`2026-06-09T${String(9 + (i % 12)).padStart(2, "0")}:05:46.000Z`, false] as const);
+    const since = [
+      ["2026-08-11T02:39:23.000Z", true], ["2026-07-20T02:39:23.000Z", true],
+      ["2026-07-01T02:39:23.000Z", true], ["2026-06-20T02:39:23.000Z", true],
+    ] as const;
+    const v = verdictForFlapping(
+      { kind: "green" },
+      attempts({ concluded: at([...since, ...june]) }),
+      DEFAULT_FOLD_CONFIG,
+      NOW,
+    );
+    expect(v).toBeNull();
+  });
+
+  it("agent-proposal-gated-commit: 2 of 3 failed, all three runs within an hour on 08-17 — NOT red", () => {
+    // Its entire history is failure, failure, success inside about an hour. That is a
+    // fix landing. It was still reported RED five days later.
+    const v = verdictForFlapping(
+      { kind: "green" },
+      attempts({ concluded: at([
+        ["2026-08-17T14:41:00.000Z", true],
+        ["2026-08-17T14:02:00.000Z", false],
+        ["2026-08-17T13:38:00.000Z", false],
+      ]) }),
+      DEFAULT_FOLD_CONFIG,
+      NOW,
+    );
+    expect(v).toBeNull();
+  });
+
+  it("gate SURVIVES the bound: 7 of 11 failed, all within hours — still RED", () => {
+    // The thing the rule was built for, and the check that it did not get bounded into
+    // uselessness. Every one of these is from the same evening.
+    const v = verdictForFlapping(
+      { kind: "green" },
+      attempts({ concluded: concluded([true, false, false, true, false, false, true, false, false, true, false], 60) }),
+      DEFAULT_FOLD_CONFIG,
+      NOW,
+    );
+    expect(v?.kind).toBe("red");
+    expect(v?.kind === "red" && v.detail).toContain("MOSTLY FAILING");
+  });
+
+  it("build-ai-cluster-iso SURVIVES the bound: interleaved today — still FLAPPING", () => {
+    const v = verdictForFlapping(
+      { kind: "green" },
+      attempts({ concluded: concluded([true, false, true, true, false, true, true, true], 60) }),
+      DEFAULT_FOLD_CONFIG,
+      NOW,
+    );
+    expect(v?.kind).toBe("flapping");
+  });
+
+  it("too few concluded runs inside the window is insufficient data, never a verdict", () => {
+    const w = rateWindow(attempts({ concluded: concluded([true, false, false], 60) }), NOW, DEFAULT_FOLD_CONFIG);
+    expect(w?.sufficient).toBe(false);
+    expect(verdictForFlapping({ kind: "green" }, attempts({ concluded: concluded([true, false, false], 60) }), DEFAULT_FOLD_CONFIG, NOW)).toBeNull();
+  });
+
+  it("and insufficient data does NOT become green — the row keeps its own latest verdict", () => {
+    const report = foldDashboard({
+      roster: rosterOf([def("thin", { kind: "on-change", detail: "push" })]),
+      observations: [{
+        checkId: "thin", verdict: { kind: "red", detail: "newest run failed" },
+        observedAt: "2026-08-22T17:00:00.000Z", source: "s", trigger: "on-change",
+        attempts: attempts({ concluded: concluded([false, true], 60) }),
+      }],
+      now: NOW,
+    });
+    expect(rowFor(report, "thin").verdict.kind).toBe("red");
+  });
+});
+
+describe("recency can clear a rate finding — a streak, not merely 'the newest run passed'", () => {
+  it("a sustained pass streak since the last failure clears it", () => {
+    const v = verdictForFlapping(
+      { kind: "green" },
+      attempts({ concluded: concluded([true, true, true, true, true, false, false, false, false], 60) }),
+      DEFAULT_FOLD_CONFIG,
+      NOW,
+    );
+    expect(v).toBeNull();
+  });
+
+  it("ONE pass after four failures is not a streak and does NOT clear it", () => {
+    // The first version of this rule defined recovery as "every failure predates the
+    // newest pass" — true of ANY lane whose most recent run passed, and since the rate
+    // rules only run when the newest verdict is green, that nullified the entire rule.
+    // Four of its own tests went red and caught it.
+    const v = verdictForFlapping(
+      { kind: "green" },
+      attempts({ concluded: concluded([true, false, false, false, false, true, true], 60) }),
+      DEFAULT_FOLD_CONFIG,
+      NOW,
+    );
+    expect(v?.kind).toBe("red");
+  });
+
+  it("the streak is counted from the newest end, and stops at the first failure", () => {
+    const w = rateWindow(attempts({ concluded: concluded([true, true, false, true, true, true, true], 60) }), NOW, DEFAULT_FOLD_CONFIG);
+    expect(w?.passStreak).toBe(2);
+  });
+});
+
+describe("the window is PRINTED, so a reader can judge without re-deriving it", () => {
+  it("names the counts, the span, and the streak", () => {
+    const w = rateWindow(attempts({ concluded: concluded([true, false, false, true, true, false], 60) }), NOW, DEFAULT_FOLD_CONFIG);
+    const text = describeWindow(w!);
+    expect(text).toContain("3 of 6 concluded runs failed");
+    expect(text).toContain("consecutive pass(es) since the last failure");
+    expect(text).toMatch(/2026-08-\d\dT/);
+  });
+
+  it("the rendered RED row carries the window — this is what would have stopped a false relay", async () => {
+    const { renderMarkdown } = await import("./render.ts");
+    const md = renderMarkdown(foldDashboard({
+      roster: rosterOf([def("gate", { kind: "on-change", detail: "push" })]),
+      observations: [{
+        checkId: "gate", verdict: { kind: "green" }, observedAt: "2026-08-22T17:55:00.000Z",
+        source: "s", trigger: "on-change",
+        attempts: attempts({ concluded: concluded([true, false, false, true, false, false, true, false, false, true, false], 60) }),
+      }],
+      now: NOW,
+    }));
+    expect(md).toContain("MOSTLY FAILING over 7d");
+    expect(md).toContain("concluded runs failed");
+  });
+
+  it("an empty window says so rather than reporting a rate of nothing", () => {
+    const w = rateWindow(attempts({ concluded: at([["2026-01-01T00:00:00.000Z", false]]) }), NOW, DEFAULT_FOLD_CONFIG);
+    expect(w?.considered).toHaveLength(0);
+    expect(describeWindow(w!)).toContain("no concluded runs inside the rate window");
   });
 });
