@@ -2,7 +2,7 @@
 // equal to the generic `WeightedSet.add` specialised to the 4-element key set?
 // If YES: ngFuse is the RESIDUAL PROGRAM of a first-Futamura specialisation that
 // nobody ran — the output shape without the projection.
-import { ngFuse, ngToNp, ngFromNp, type NormalGammaNp } from "../bayesian/toy-bnn-rgba-codec.ts";
+import { ngFuse, ngToNp, type NormalGammaNp } from "../bayesian/toy-bnn-rgba-codec.ts";
 
 // --- a generic WeightedSet over an additive semiring, mirroring src/Core/WeightedSet.fs
 type Semiring<W> = { zero: W; add: (a: W, b: W) => W };

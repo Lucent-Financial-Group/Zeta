@@ -58,19 +58,29 @@ for (const [op, law, f] of laws) {
   console.log(op.padEnd(54) + law.padEnd(42) + cells.join(""));
 }
 
-// Zero divisors: does a nonzero product of nonzeros vanish? (breaks Zero-pruning soundness on ⊗)
+// Zero divisors: does a nonzero product of nonzeros vanish? (breaks Zero-pruning soundness on the MUL side)
+const basis = (dim: number, k: number): CD => {
+  const build = (lo: number, hi: number): CD => {
+    if (hi - lo === 1) return lo === k ? 1 : 0;
+    const mid = lo + (hi - lo) / 2;
+    return { re: build(lo, mid), im: build(mid, hi) };
+  };
+  return build(0, dim);
+};
+
 console.log("\nzero divisors (a!=0, b!=0, ab==0) — breaks consolidate/prune soundness on the MUL side:");
 for (const [name, d] of RUNGS) {
-  let found = 0;
+  let verdict = "none found by construction";
   if (d === 16) {
-    // the classic sedenion zero divisor: (e1+e10)(e5+e14) = 0
-    const e = (k: number): CD => { const c = new Array(16).fill(0); c[k] = 1;
-      const build = (arr: number[]): CD => arr.length === 1 ? arr[0] : { re: build(arr.slice(0, arr.length/2)), im: build(arr.slice(arr.length/2)) };
-      return build(c); };
-    const a = add(e(1), e(10)), b = add(e(5), e(14));
-    if (norm(a) > 0 && norm(b) > 0 && norm(mul(a, b)) < 1e-12) found = 1;
+    // the classic sedenion zero divisor: (e1 + e10)(e5 + e14) = 0
+    const a = add(basis(16, 1), basis(16, 10));
+    const b = add(basis(16, 5), basis(16, 14));
+    const prod = norm(mul(a, b));
+    if (norm(a) > 0 && norm(b) > 0 && prod < 1e-12) {
+      verdict = `YES — (e1+e10)(e5+e14) = 0  (|a|=${norm(a).toFixed(3)}, |b|=${norm(b).toFixed(3)}, |ab|=${prod.toExponential(1)})`;
+    }
   }
-  console.log(`  ${name.padEnd(10)} ${found ? "YES — e1+e10 times e5+e14 = 0 (norm " + norm(mul(add(((k)=>{const c=new Array(16).fill(0);c[k]=1;const bd=(arr:number[]):CD=>arr.length===1?arr[0]:{re:bd(arr.slice(0,arr.length/2)),im:bd(arr.slice(arr.length/2))};return bd(c);})(1),((k)=>{const c=new Array(16).fill(0);c[k]=1;const bd=(arr:number[]):CD=>arr.length===1?arr[0]:{re:bd(arr.slice(0,arr.length/2)),im:bd(arr.slice(arr.length/2))};return bd(c);})(10)),add(((k)=>{const c=new Array(16).fill(0);c[k]=1;const bd=(arr:number[]):CD=>arr.length===1?arr[0]:{re:bd(arr.slice(0,arr.length/2)),im:bd(arr.slice(arr.length/2))};return bd(c);})(5),((k)=>{const c=new Array(16).fill(0);c[k]=1;const bd=(arr:number[]):CD=>arr.length===1?arr[0]:{re:bd(arr.slice(0,arr.length/2)),im:bd(arr.slice(arr.length/2))};return bd(c);})(14)))).toExponential(1) + ")" : "none found by construction"}`);
+  console.log(`  ${name.padEnd(10)} ${verdict}`);
 }
 
 // Total order: needed by tropical / Viterbi / max-product and by any threshold test.

@@ -3,8 +3,10 @@
 import { consolidateWSet, tensorWSet, type WSet, type StarRing } from "../algebra/wset.ts";
 
 const ProbRing: StarRing<number> = {
-  zero: 0, one: 1, add: (a, b) => a + b, mul: (a, b) => a * b,
-  negate: (a) => -a, star: (a) => 1 / (1 - a), conjugate: (a) => a,
+  zero: 0, one: 1,
+  add: (a: number, b: number) => a + b,
+  mul: (a: number, b: number) => a * b,
+  negate: (a: number) => -a,
 };
 const isZero = (w: number) => w === 0;
 // WSet.mapKeys (src/Core/WSet.fs) — deterministic re-keying
@@ -29,7 +31,11 @@ for (let t = 0; t < 3000; t++) {
   const sumB = fb.reduce((s, e) => s + e.weight, 0);
   const direct = fa.map((e) => ({ key: e.key, weight: e.weight * sumB })).sort((x, y) => (x.key < y.key ? -1 : 1));
 
-  for (let i = 0; i < direct.length; i++) worst = Math.max(worst, Math.abs(marg[i].weight - direct[i].weight));
+  for (let i = 0; i < direct.length; i++) {
+    const m = marg[i], d = direct[i];
+    if (m === undefined || d === undefined) throw new Error("length mismatch");
+    worst = Math.max(worst, Math.abs(m.weight - d.weight));
+  }
 }
 console.log(`D  sum-product marginalisation == tensor -> mapKeys -> consolidate`);
 console.log(`D  max abs diff = ${worst.toExponential(3)} over 3000 random 3x3 factor pairs`);
@@ -44,6 +50,10 @@ for (let t = 0; t < 300; t++) {
   const wrong = sortW(consolidateWSet(ProbRing, isZero, (k: string) => k, mapKeys(([, b]: [string, string]) => b, joint)));
   const sumB = fb.reduce((s, e) => s + e.weight, 0);
   const direct = fa.map((e) => ({ key: e.key, weight: e.weight * sumB })).sort((x, y) => (x.key < y.key ? -1 : 1));
-  for (let i = 0; i < direct.length; i++) sab = Math.max(sab, Math.abs(wrong[i].weight - direct[i].weight));
+  for (let i = 0; i < direct.length; i++) {
+    const w = wrong[i], d = direct[i];
+    if (w === undefined || d === undefined) continue;
+    sab = Math.max(sab, Math.abs(w.weight - d.weight));
+  }
 }
 console.log(`D' sabotage control (marginalise wrong axis): max abs diff = ${sab.toExponential(3)} — ${sab > 1e-12 ? "PROBE CAN FAIL (control passes)" : "PROBE IS VACUOUS"}`);

@@ -4,7 +4,7 @@
 // src/Core/BeliefConvergence.fs:33  ->  let observe likelihood belief = Array.map2 (*) likelihood belief
 //   ... over int64[] NON-NEGATIVE weights.
 
-const observe = (lik: bigint[], bel: bigint[]) => bel.map((b, i) => b * lik[i]);
+const observe = (lik: bigint[], bel: bigint[]) => bel.map((b, i) => b * (lik[i] as bigint));
 let seed = 24680;
 const rnd = () => { seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x7fffffff; };
 const randBelief = (n: number) => Array.from({ length: n }, () => BigInt(1 + Math.floor(rnd() * 50)));
