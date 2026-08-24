@@ -418,10 +418,7 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test manifest parsing", () =>
       );
       expect(devLonghornStorageClassAliasDeclared(repoRoot)).toBe(false);
       // A StorageClass with no provisioner binds to nothing.
-      writeFileSync(
-        manifest,
-        "apiVersion: storage.k8s.io/v1\nkind: StorageClass\nmetadata:\n  name: longhorn\n",
-      );
+      writeFileSync(manifest, "apiVersion: storage.k8s.io/v1\nkind: StorageClass\nmetadata:\n  name: longhorn\n");
       expect(devLonghornStorageClassAliasDeclared(repoRoot)).toBe(false);
       // THE FAIL-OPEN THAT WOULD OTHERWISE BITE: right name, right kind, but
       // bound to the real Longhorn driver, which a kind node cannot run. An edit
@@ -1311,16 +1308,32 @@ describe("081M0JXXFV0087G0R00...: the four newly-visible non-storage defects", (
   test("hindsight's reason says it is the symptom, not the cause", () => {
     const reason = APPLIED_BUT_UNASSERTED_REASONS.get("hindsight") ?? "";
     expect(reason).toContain("HINDSIGHT IS THE SYMPTOM, NOT THE CAUSE");
-    expect(reason).toContain("Take hindsight to ZERO and the lane is still 3231m");
+    expect(reason).toContain("Take hindsight to ZERO and the lane is still 4231m");
+    // AND THE SECOND HALF OF THE SENTENCE, which has changed answer TWICE and
+    // is pinned separately for exactly that reason: the lane-wide cut closed
+    // the gap (1906m), then did not (2906m, over by 406m), and now closes it
+    // again (2006m) -- not by excluding anything, but because the rung learned
+    // to reach raw in-repo manifests. A future edit that restores the
+    // comfortable version of this claim without restoring the arithmetic has to
+    // delete this line to do it, and `reason-truth.ts` checks the number itself
+    // against the ladder so the sentence cannot drift from it.
+    expect(reason).toContain("Take the WHOLE lane to `dev` and it is 1081m, which FITS with 1419m of spare");
+    // AND THE TWO SUPERSEDED ANSWERS ARE STILL IN THE PROSE, deliberately, so a
+    // reader meeting "2906/406" or "2006/494" in an older PR can find out what
+    // happened to them instead of concluding the record was quietly tidied.
+    expect(reason).toContain("2906m over by 406m");
+    expect(reason).toContain("then 2006m fits");
+    // The superseded claim must be GONE, not merely joined by the new one.
+    expect(reason).not.toContain("STILL OVER by 406m. So the only cut");
     // The four capacity citations are the checked half. Their VALUES are
     // verified by reason-truth.test.ts against the ladder; what is pinned here
     // is that the reason still binds them at all -- a reason that keeps the
     // prose and drops the citations is back to an unattached number.
     for (const cited of [
       "[cite: resource-rung hindsight metal 1000]",
-      "[cite: resource-rung hindsight dev 400]",
-      "[cite: lane-cpu metal 4231 over]",
-      "[cite: lane-cpu dev 1906 fits]",
+      "[cite: resource-rung hindsight dev 75]",
+      "[cite: lane-cpu metal 5231 over]",
+      "[cite: lane-cpu dev 1081 fits]",
     ]) {
       expect(reason).toContain(cited);
     }
@@ -1435,26 +1448,19 @@ describe("081M0JXXFV0087G0R00...: the four newly-visible non-storage defects", (
     const application = parseYaml(readApp("trust-manager")) as {
       spec?: { source?: { helm?: { valuesObject?: { app?: { trust?: { namespace?: string } } } } } };
     };
-    expect(application.spec?.source?.helm?.valuesObject?.app?.trust?.namespace).toBe(
-      DEV_ZITI_ADMIN_SECRET.namespace,
-    );
+    expect(application.spec?.source?.helm?.valuesObject?.app?.trust?.namespace).toBe(DEV_ZITI_ADMIN_SECRET.namespace);
 
     // The k3s first-boot install of the SAME Helm release must agree. Two
     // reconcilers own release `trust-manager` in namespace `cert-manager`; if
     // they disagreed on this flag they would flip it against each other, and
     // the Bundle would resolve or not depending on which ran last.
-    const bootstrap = readFileSync(
-      join(bootstrapRoot, "trust-manager-install.yaml"),
-      "utf8",
-    );
+    const bootstrap = readFileSync(join(bootstrapRoot, "trust-manager-install.yaml"), "utf8");
     expect(bootstrap).toContain(`namespace: ${DEV_ZITI_ADMIN_SECRET.namespace}`);
 
     // And that namespace must be created before trust-manager's Role lands in
     // it. On metal that is a bootstrap manifest; the k3s deploy controller
     // applies files in lexical order and `o` < `t`.
-    expect(
-      existsSync(join(bootstrapRoot, "openziti-namespace.yaml")),
-    ).toBe(true);
+    expect(existsSync(join(bootstrapRoot, "openziti-namespace.yaml"))).toBe(true);
   });
 
   /**
