@@ -1259,9 +1259,13 @@ export function formatRotate(res: RotateResult): string {
         `(mechanism ${res.biometric.platform}, factor established: ${establishedFactor(res.biometric)}).`,
     );
   }
-  lines.push(
-    `  Staged for PR: ${res.stagedPaths.length} path(s). Commit + open a PR to land the changed public artifacts.`,
-  );
+  if (res.stagedPaths.length > 0) {
+    lines.push(
+      `  Staged for PR: ${res.stagedPaths.length} path(s). Commit + open a PR to land the changed public artifacts.`,
+    );
+  } else {
+    lines.push("  Nothing staged — no public artifact changed on this run.");
+  }
   lines.push(...trustSetLines(res));
   return lines.join("\n");
 }
@@ -1279,7 +1283,18 @@ function trustSetLines(res: RotateResult): readonly string[] {
         `  Trust set NARROWED on purpose: ${t.before.length} -> ${t.after.length} CA(s); dropped ` +
           `[${t.dropped.join(", ")}]. Certificates signed by those CAs no longer verify.`,
       );
-    } else if (t.supersetOfBefore) {
+      // State the evidence the narrowing stood on, NOT the forward-looking advisory — a finalize
+      // that just dropped CAs has no closed windows left to report, and printing the advisory's
+      // "nothing to finalize yet" wording here would describe the run that just did.
+      out.push(
+        t.census === undefined
+          ? "  Evidence: NONE — this should be unreachable; a finalize without a census cannot drop."
+          : `  Evidence: census of ${t.census.certificatesFound} certificate(s), complete — none of them ` +
+            "unexpired and naming a dropped CA.",
+      );
+      continue;
+    }
+    if (t.supersetOfBefore) {
       out.push(
         `  ∅-blast-radius VERIFIED (measured, not asserted): trusted CA set ${t.before.length} -> ` +
           `${t.after.length}; every CA trusted before this run is still trusted (0 dropped), so every ` +
