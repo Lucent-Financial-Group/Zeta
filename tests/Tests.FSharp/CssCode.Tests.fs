@@ -127,8 +127,9 @@ let ``the dim-0 row is the UNCODED adinkra and it is the WORST row, not a missin
     let dim0 = rows |> List.find (fun (d, _) -> d = 0) |> snd
     Assert.Equal(1, dim0.D)
     Assert.Equal(8, dim0.K)
+    // it is the WORST row: no other dimension does worse on distance
     Assert.Equal(1, rows |> List.map (fun (_, p) -> p.D) |> List.min)
-    Assert.Equal(1, dim0.D)
+    Assert.Equal(1, rows |> List.filter (fun (_, p) -> p.D = 1) |> List.length)
 
 [<Fact>]
 let ``the closure enumerates 902 distinct doubly-even codes of length 8`` () =
