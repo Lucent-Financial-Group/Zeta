@@ -191,6 +191,17 @@ multiplication on the module, and right multiplication commutes with the left ac
 can shrink `M` and can never touch `A`. (That mechanism is Lumen's, `regular-representation-defect`
 §3.1; the measurement is new.)
 
+### Result 1b — the codeless tower, asked directly
+
+Result 1 answers Aaron's question indirectly, by showing the clock cannot see the code. Asked
+directly of the codeless tower through its **own operators** (Route M, `k = 0`, N = 1…8): the
+reading matches the blade route at every N, and it separates at **N = 4 and N = 8**. So yes — the
+codeless tower carries the clock, and carries the same one.
+
+Control, so the agreement has content: the codeless reading is **not** constant in N — all eight
+values of N give distinct readings. An instrument that returned one answer regardless would make
+"coded and codeless agree" unfalsifiable.
+
 ### Result 2 — the separation clock has period **4**, not 8
 
 Swept N = 1…16 by searching for the smallest invariant shift — never by asking `N % 8` — the

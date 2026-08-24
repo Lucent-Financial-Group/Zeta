@@ -148,6 +148,46 @@ describe("EXPERIMENT 1 — within one object: can the code move the clock?", () 
   });
 });
 
+describe("EXPERIMENT 1b — the CODELESS tower, asked directly", () => {
+  // Aaron's question was literally "does the codeless tower have a mod-8 clock?" Experiment 1
+  // answers it indirectly, by showing the clock cannot see the code. This asks the codeless tower
+  // itself, through its OWN operators (Route M) rather than through the blade formula — so the
+  // answer does not rest on the identification A_graph = Cl(0,N) being taken on trust.
+  it("YES — the codeless tower carries the same clock, operator for operator", () => {
+    let compared = 0;
+    for (let n = 1; n <= 8; n++) {
+      const codeless = buildCodedAdinkra(n, [], -1);
+      expect(cliffordRelationsHold(codeless, -1)).toBe(true);
+      const all = Array.from({ length: n }, (_, i) => i);
+      const viaOperators = clockByMatrices(codeless, all);
+      const viaBlades = clockByBlades((1 << n) - 1, -1);
+      expect(readingsEqual(viaOperators, viaBlades)).toBe(true);
+      compared++;
+    }
+    expect(compared).toBe(8);
+  });
+
+  it("and it separates at N = 4 and N = 8 — measured on the operators, not the formula", () => {
+    const seen: number[] = [];
+    for (let n = 1; n <= 8; n++) {
+      const all = Array.from({ length: n }, (_, i) => i);
+      if (clockByMatrices(buildCodedAdinkra(n, [], -1), all).separates) seen.push(n);
+    }
+    expect(seen).toEqual([4, 8]);
+  });
+
+  it("CONTROL: the codeless reading is NOT constant in N, so the agreement above has content", () => {
+    // If every N read the same, "the coded and codeless towers agree" would be unfalsifiable.
+    const readings = new Set<string>();
+    for (let n = 1; n <= 8; n++) {
+      const all = Array.from({ length: n }, (_, i) => i);
+      const r = clockByMatrices(buildCodedAdinkra(n, [], -1), all);
+      readings.add(`${r.algebraDim}|${r.centreDim}|${r.omegaSquare}|${r.evenCentreDim}|${r.evenOmegaSquare}`);
+    }
+    expect(readings.size).toBe(8);
+  });
+});
+
 describe("EXPERIMENT 2 — the period of the separation clock", () => {
   it("RESULT: period 4, measured by searching for the smallest invariant shift", () => {
     for (const square of [-1, 1] as const) {
