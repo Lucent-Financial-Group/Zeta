@@ -62,7 +62,18 @@ requested. Proofs: `rotate-refusals.test.ts` RR-7 (inverted in place — the pin
 and RR-7b (the consent property, two arms). The compile-rejection proof is in PR #14694: the same
 scratch union member compiles clean on the old code and is TS2366 on the new.)
 
-### The biometric approval gate is forgeable by a `PATH` entry — `sudo` is resolved by name
+### FIXED (a) — the biometric approval gate was forgeable by a `PATH` entry; the attested-presence half (b) stays open
+
+**STATUS (2026-08-24, Nazar): fix (a) SHIPPED.** Every privilege elevator in live non-test
+TypeScript now resolves through `src/Core.TypeScript/privilege/elevator.ts` — an absolute
+path from a platform allowlist, required to be a regular file, root-owned, setuid, and not
+group/other-writable, with **no fallback to `PATH`, ever**. 17 elevator sites across 8 files.
+The class is held by `lint-no-path-resolved-privilege-elevator.ts` in the
+`lint (structural hygiene)` gate job. **Fix (b) — an ATTESTED presence signal rather than a
+child process's exit status — is unchanged and still belongs to Aminata + Kenji;** it is
+restated at the bottom of this row so closing (a) does not read as closing the row.
+
+The original report follows, kept intact because the reproduction is the falsifier.
 
 - **Site:** `tools/setup/persona-keys/biometric.ts:271,280` (`realSudoGateEffects`) — the gate itself.
   Same root cause, same fix: `src/Core.TypeScript/zflash/setup.ts:106` (writes `/etc/pam.d/sudo`),
@@ -122,16 +133,57 @@ scratch union member compiles clean on the old code and is TS2366 on the new.)
   **escalation across that boundary**, not a consequence of having already crossed it. That matters
   most at `setup.ts:106` specifically, which `sudo tee`s **`/etc/pam.d/sudo`** — the very file
   `analyzeSudoAuthChain` later reads to decide whether the gate is trustworthy.
-- **Fix:** two parts, and the second is a design change with real cost — do not let it block the first.
-  (a) Resolve the elevator from an **absolute-path allowlist** (`/usr/bin/sudo`, `/run/wrappers/bin/sudo`,
-  `/usr/local/bin/sudo`) and require the chosen file be root-owned and setuid before spawning; refuse
-  otherwise. Roughly 15 call sites, no behaviour change on a healthy host, and it closes the
-  leaves-no-diff channel. (b) `status === 0` from a child process is **not** proof of physical
+- **Fix (a) — SHIPPED 2026-08-24.** `src/Core.TypeScript/privilege/elevator.ts` is now the ONE place
+  an elevator's program path is decided. It refuses anything that is not a root-owned, setuid,
+  non-world-writable regular file at an allowlisted absolute path, and never consults `PATH`. On
+  darwin the `sudo` allowlist is the single entry `/usr/bin/sudo` — the only SIP-`restricted`
+  location, so a narrower list is a stronger one; on Linux it is a short list of root-owned system
+  paths with `/run/wrappers/bin` first (NixOS has no `/usr/bin/sudo`). Call sites converted:
+  `persona-keys/biometric.ts` (the gate, ×2), `zflash/setup.ts`, `zflash/cli.ts` (×6),
+  `zflash/flash-usb.ts` (×2), `zflash/flash-usb-linux.ts` (`escalationArgv` now REQUIRES an absolute
+  elevator path, and the availability probe moved off `fx.which` onto the same resolver so plan and
+  spawn cannot disagree), `ace/install-pinned-artifact.ts`, `ace/setup-realizers/from-deb.ts`,
+  `cluster/runner-disk.ts`.
+
+  **Proved, not asserted** (macOS 26.5.2, `f62d7fbd`): the shim reproduction above was re-run against
+  pre-fix code and returned `ok:true` with the shim log showing `-k` and `-p  true`; the same shim
+  against the fixed code leaves the shim log EMPTY and raises a real `SecurityAgent` dialog from
+  `/usr/bin/sudo`; and the same shim file presented AT `/usr/bin/sudo` is refused —
+  `{"ok":false,"factor":"none","reason":"operator-approval gate refused to run: … not root-owned
+  (uid 501)"}` with **0 spawns attempted**.
+
+- **The false suppression is gone.** `zflash/setup.ts` no longer carries
+  `eslint-disable-next-line sonarjs/no-os-command-from-path`; the measurements that refute both
+  halves of its rationale are written where the suppression stood, so the argument cannot be
+  re-derived from scratch.
+
+- **The class guard.** `src/Core.TypeScript/hygiene/lint-no-path-resolved-privilege-elevator.ts`,
+  wired into the existing `lint (structural hygiene)` gate job. It matches on the ARGUMENT rather
+  than the callee, which is the whole point: `sonarjs/no-os-command-from-path` matched 10 of the 17
+  live sites and **would not have caught this P1** — it cannot see `run("sudo", …)`,
+  `["sudo"] as const`, or `needsSudo ? "sudo" : "tar"`. Non-argv literals (a PAM service name, a
+  shell parser's vocabulary) carry an explicit `zeta-elevator-not-argv: <reason>` marker; a marker
+  with no reason does not waive.
+
+- **STILL UNGUARDED, stated rather than implied.** (i) `*.test.ts` is excluded — live privileged test
+  harnesses (`installer/repair-mode-existing-install.test.ts` alone is ~25 sites) still run `sudo` by
+  name on CI runners. (ii) **Shell scripts are not covered at all**, by this lint or by eslint: 199
+  `sudo` occurrences in 5 of 31 non-archive `.sh` files (of 37 tracked). The lint prints that count on
+  every run so the gap stays visible. (iii) A program name assembled at run time is invisible to a
+  source-text check; what catches that is the resolver's structural refusal, not the lint.
+
+- **Fix (b) — OPEN, unchanged.** `status === 0` from a child process is **not** proof of physical
   presence, and absolute-pathing does not make it one — a caller with code execution can still stub
   `SudoGateEffects`. The sound form is an attested result (`LAContext.evaluatePolicy`) or a hardware
-  touch, which the YubiHSM/`frost-hardware-probe` work is already heading toward. Name the honest
-  register in the meantime: the gate proves *an operator factor answered*, never *a human was present*.
-- **Who:** Nazar (security-operations-engineer) for (a); (b) is a design row for Aminata + Kenji.
+  touch, which the YubiHSM/`frost-hardware-probe` work is already heading toward. `LAContext` was
+  investigated as part of (a) and deliberately NOT adopted: it is reachable (an ad-hoc-signed Swift
+  CLI reports `canEvaluatePolicy(biometrics) = true`, `biometryType = 1` on this host), but it
+  returns through the same in-process seam, it would put a Swift toolchain on a ceremony path, and
+  what it buys is ATTRIBUTION — which is the separate row `081M06DSQ0Q087G0R000H91391`, already
+  honestly reported as `factor: "unattributed"`. The reasoning is written into
+  `realSudoGateEffects` so the next reader does not have to re-derive it. Honest register meanwhile:
+  the gate proves *an operator factor answered on this host*, never *a human was present*.
+- **Who:** Nazar (security-operations-engineer) shipped (a); (b) is a design row for Aminata + Kenji.
 
 ### FROST CA keys and Shamir splits created before 2026-08-14 were generated with `Math.random`
 
