@@ -979,12 +979,14 @@ describe("ACCOUNTABILITY SPLIT: who carries blame is not whether a human looked"
       ["not-implied-by-credential", "explicit", "none"],
     ]) {
       const resolved = reconcileHumanReview(set);
-      expect(resolved).not.toBe("explicit");
-      expect(set).toContain(resolved); // never invents a value
+      expect(resolved).not.toBeNull();
+      const value = resolved ?? "";
+      expect(value).not.toBe("explicit");
+      expect(set).toContain(value); // never invents a value
       const ranks = set.map((v) => HUMAN_REVIEW_BY_HUMAN_AUTHORITY.indexOf(v));
-      expect(HUMAN_REVIEW_BY_HUMAN_AUTHORITY.indexOf(resolved ?? "")).toBe(Math.min(...ranks));
+      expect(HUMAN_REVIEW_BY_HUMAN_AUTHORITY.indexOf(value)).toBe(Math.min(...ranks));
       // order must not matter — last-wins is exactly what this replaces
-      expect(reconcileHumanReview([...set].reverse())).toBe(resolved);
+      expect(reconcileHumanReview([...set].reverse()) ?? "").toBe(value);
     }
   });
 
