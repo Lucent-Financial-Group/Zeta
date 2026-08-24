@@ -96,7 +96,7 @@ function main(): number {
   console.log(`N = ${models.length}   rhoStarAlgebraic(N=${models.length}) = ${rhoStarAlgebraic(models.length).toFixed(4)}`);
   console.log(`every pair is CROSS-FAMILY; there are no within-family pairs by construction.\n`);
 
-  const perPersonaRho: { persona: string; rho: number; lo: number; hi: number; n: number }[] = [];
+  const perPersonaRho: { persona: string; rho: number; lo: number; hi: number; n: number; minC: number; belowChance: number }[] = [];
 
   for (const persona of personas) {
     const agents = models.map((m) => `${m}|${persona}`);
@@ -129,6 +129,14 @@ function main(): number {
     const full = pairRho(common.map((_, t) => t));
     const rho = full.length ? mean(full) : NaN;
 
+    // COMPETENCE FIRST. Condorcet's theorem — and therefore N_eff, which is only meaningful as an
+    // input to it — assumes jurors better than chance. Below c = 0.5 the majority is WORSE than a
+    // single juror and adding lanes makes it worse still, so an N_eff printed there is not a
+    // conservative estimate of fleet value; it is a category error wearing a number.
+    const comps = agents.map((a) => 1 - mean(errByAgent.get(a)!));
+    const minC = Math.min(...comps);
+    const belowChance = comps.filter((c) => c <= 0.5).length;
+
     // Cluster bootstrap over item strata — identical scheme to estimate-rho.ts.
     const strata = common.map((id) => itemById.get(id)!.stratum);
     const stratumList = [...new Set(strata)];
@@ -146,25 +154,53 @@ function main(): number {
     }
     const lo = boots.length ? quantile(boots, 0.025) : NaN;
     const hi = boots.length ? quantile(boots, 0.975) : NaN;
-    perPersonaRho.push({ persona, rho, lo, hi, n });
+    perPersonaRho.push({ persona, rho, lo, hi, n, minC, belowChance });
 
     console.log(`  persona ${persona.padEnd(8)} n=${n}  rho-hat = ${rho.toFixed(4)}  95% CI [${lo.toFixed(4)}, ${hi.toFixed(4)}]`);
     const pairNames: string[] = [];
     for (let i = 0; i < agents.length; i++) for (let j = i + 1; j < agents.length; j++) pairNames.push(`${agents[i]!.split("|")[0]} x ${agents[j]!.split("|")[0]}`);
     full.forEach((r, k) => console.log(`      ${pairNames[k]!.padEnd(30)} rho = ${r >= 0 ? " " : ""}${r.toFixed(4)}`));
-    console.log(`      N_eff = ${effectiveN(models.length, rho).toFixed(3)}  (CI [${effectiveN(models.length, hi).toFixed(3)}, ${effectiveN(models.length, lo).toFixed(3)}])`);
+    console.log(`      competence c-hat per lane = [${comps.map((c) => c.toFixed(3)).join(", ")}]` +
+      `${belowChance > 0 ? `   *** ${belowChance}/${agents.length} AT OR BELOW CHANCE ***` : ""}`);
+    if (belowChance > 0) {
+      console.log(`      N_eff = REFUSED — Condorcet assumes c > 0.5; ${belowChance} lane(s) are not. ` +
+        `Majority vote here is worse than one lane, so no N_eff is reportable as fleet value.`);
+    } else {
+      console.log(`      N_eff = ${effectiveN(models.length, rho).toFixed(3)}  (CI [${effectiveN(models.length, hi).toFixed(3)}, ${effectiveN(models.length, lo).toFixed(3)}])`);
+    }
   }
 
   if (perPersonaRho.length > 0) {
     const rhos = perPersonaRho.map((p) => p.rho);
     const pooled = mean(rhos);
+    const anyBelow = perPersonaRho.reduce((acc, p) => acc + p.belowChance, 0);
     console.log(`\n═══ POOLED OVER PERSONAS (each persona is one realisation of the production shape) ═══`);
     console.log(`  rho-hat (mean over ${perPersonaRho.length} personas) = ${pooled.toFixed(4)}`);
     console.log(`  range across personas = [${Math.min(...rhos).toFixed(4)}, ${Math.max(...rhos).toFixed(4)}]`);
-    console.log(`  N_eff at N=${models.length} = ${effectiveN(models.length, pooled).toFixed(3)} independent voters (of ${models.length} lanes)`);
-    console.log(`  1/rho ceiling (N -> inf) = ${(1 / pooled).toFixed(3)} — correlation CAPS N_eff; more lanes cannot pass this.`);
-    console.log(`  boundary: rhoStarAlgebraic(${models.length}) = ${rhoStarAlgebraic(models.length).toFixed(4)} — ` +
-      `${pooled > rhoStarAlgebraic(models.length) ? "rho-hat EXCEEDS it: the majority does NOT beat the best single lane" : "rho-hat is below it"}`);
+
+    if (anyBelow > 0) {
+      console.log(`\n  ═══ N_eff IS REFUSED — THE CONDORCET PRECONDITION FAILS ═══`);
+      console.log(`  ${anyBelow} lane-instances across the panels sit AT OR BELOW chance (c <= 0.5).`);
+      console.log(`  N_eff = N/(1+(N-1)rho) is only meaningful as an input to P(majority correct | N_eff, c),`);
+      console.log(`  and that quantity assumes c > 0.5. Below it the theorem RUNS BACKWARDS: the majority is`);
+      console.log(`  worse than the best single lane and MORE lanes make it worse. Reporting a number here`);
+      console.log(`  would be the vacuity class -- an instrument reading taken while the instrument is off.`);
+      if (pooled < 0) {
+        console.log(`\n  On the NEGATIVE rho-hat specifically: do not read it as decorrelation.`);
+        console.log(`  Negative pairwise ERROR correlation between near-constant responders with OPPOSITE`);
+        console.log(`  modal answers is what opposing response bias looks like, not complementary judgment.`);
+        console.log(`  Two lanes that mostly say "killed" and mostly say "survived" disagree by construction.`);
+      }
+    } else {
+      console.log(`  N_eff at N=${models.length} = ${effectiveN(models.length, pooled).toFixed(3)} independent voters (of ${models.length} lanes)`);
+      if (pooled > 0) {
+        console.log(`  1/rho ceiling (N -> inf) = ${(1 / pooled).toFixed(3)} -- correlation CAPS N_eff; more lanes cannot pass this.`);
+      } else {
+        console.log(`  1/rho ceiling: NOT REPORTED -- rho-hat <= 0, for which 1/rho is not a ceiling on anything.`);
+      }
+      console.log(`  boundary: rhoStarAlgebraic(${models.length}) = ${rhoStarAlgebraic(models.length).toFixed(4)} -- ` +
+        `${pooled > rhoStarAlgebraic(models.length) ? "rho-hat EXCEEDS it: the majority does NOT beat the best single lane" : "rho-hat is below it"}`);
+    }
   }
   return 0;
 }
