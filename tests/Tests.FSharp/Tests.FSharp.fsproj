@@ -311,6 +311,7 @@
     <Compile Include="Ball.Tests.fs" />
     <Compile Include="Resolution.Tests.fs" />
     <Compile Include="RxAdapter.Tests.fs" />
+    <Compile Include="RxJoin.Tests.fs" />
     <Compile Include="WaveSim.Tests.fs" />
     <Compile Include="AdinkraViz.Tests.fs" />
     <Compile Include="CptSymmetry.Tests.fs" />
@@ -460,6 +461,7 @@
     <Compile Include="SoftRegimeStability.Tests.fs" />
     <Compile Include="SoftRegimeEquivariance.Tests.fs" />
     <Compile Include="AdinkraCode.Tests.fs" />
+    <Compile Include="CssCode.Tests.fs" />
     <Compile Include="CliffordPeriodicity.Tests.fs" />
     <Compile Include="AdinkraIdentity.Tests.fs" />
     <Compile Include="AdinkraOrbits.Tests.fs" />
@@ -471,6 +473,7 @@
     <Compile Include="Formal/CliffordE8Bridge.Tests.fs" />
     <Compile Include="Formal/CliffordE8Roots.Tests.fs" />
     <Compile Include="Formal/CliffordE8BladeMask.Tests.fs" />
+    <Compile Include="Formal/E8LieAlgebra.Tests.fs" />
     <Compile Include="Formal/FrequencyMachZehnder.Tests.fs" />
     <Compile Include="Formal/CliffordStarRing.Laws.Tests.fs" />
     <Compile Include="Formal/CliffordReflection.Laws.Tests.fs" />

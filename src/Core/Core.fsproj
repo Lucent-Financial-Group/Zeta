@@ -39,6 +39,7 @@
     <Compile Include="TangleNavigator.fs" />
     <Compile Include="PhasePortrait.fs" />
     <Compile Include="AdinkraCode.fs" />
+    <Compile Include="CssCode.fs" />
     <Compile Include="IharaZeta.fs" />
     <Compile Include="AdinkraIharaZeta.fs" />
     <Compile Include="CliffordPeriodicity.fs" />
@@ -49,6 +50,7 @@
     <Compile Include="CliffordE8Bridge.fs" />
     <Compile Include="CliffordE8Roots.fs" />
     <Compile Include="CliffordE8BladeMask.fs" />
+    <Compile Include="E8LieAlgebra.fs" />
     <Compile Include="IcosahedralH3.fs" />
     <Compile Include="Tsirelson.fs" />
     <Compile Include="HexCore.fs" />
