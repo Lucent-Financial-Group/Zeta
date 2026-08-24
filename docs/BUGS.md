@@ -59,8 +59,8 @@ wired to the wrong handler is a compile error too; a roster check inside `rotate
 cast into the union, whole-run and before the gate; and the one prompt is rendered from the same
 classified plans the dispatcher consumes, so it names what is PERFORMED rather than what was
 requested. Proofs: `rotate-refusals.test.ts` RR-7 (inverted in place — the pin went red on the fix)
-and RR-7b (the consent property, two arms). The compile-rejection proof is in the PR that closed this
-row: the same scratch union member compiles clean on the old code and is TS2366 on the new.)
+and RR-7b (the consent property, two arms). The compile-rejection proof is in PR #14694: the same
+scratch union member compiles clean on the old code and is TS2366 on the new.)
 
 ### FROST CA keys and Shamir splits created before 2026-08-14 were generated with `Math.random`
 
