@@ -28,6 +28,18 @@ on:
     types: [opened, reopened, synchronize, ready_for_review]
     paths:
       - "src/Core.TypeScript/installer/**"
+      # Two tests in that directory read zeta-install.sh and execute blocks
+      # extracted from it (disk-preflight-shell-parity.test.ts,
+      # hardware-config-capture.test.ts). Without this path the installer
+      # script could change the very logic they pin and this lane would not
+      # run -- a check that did not run, looking like a check that passed.
+      - "full-ai-cluster/usb-nixos-installer/zeta-install.sh"
+      # The Touch ID sudo installer/verifier. Its PURE core (assess/render/parse)
+      # is exercised here; the LIVE check can only run on a Mac, so the logic is
+      # a total function over a facts record precisely so CI can still test it.
+      - "tools/setup/touchid-sudo.ts"
+      - "tools/setup/touchid-sudo-config.ts"
+      - "tools/setup/touchid-sudo-config.test.ts"
       - ".github/workflows/installer-unit-tests.yml"
       - ".mise.toml"
       - "package.json"
@@ -37,6 +49,18 @@ on:
     branches: [main]
     paths:
       - "src/Core.TypeScript/installer/**"
+      # Two tests in that directory read zeta-install.sh and execute blocks
+      # extracted from it (disk-preflight-shell-parity.test.ts,
+      # hardware-config-capture.test.ts). Without this path the installer
+      # script could change the very logic they pin and this lane would not
+      # run -- a check that did not run, looking like a check that passed.
+      - "full-ai-cluster/usb-nixos-installer/zeta-install.sh"
+      # The Touch ID sudo installer/verifier. Its PURE core (assess/render/parse)
+      # is exercised here; the LIVE check can only run on a Mac, so the logic is
+      # a total function over a facts record precisely so CI can still test it.
+      - "tools/setup/touchid-sudo.ts"
+      - "tools/setup/touchid-sudo-config.ts"
+      - "tools/setup/touchid-sudo-config.test.ts"
       - ".github/workflows/installer-unit-tests.yml"
       - ".mise.toml"
       - "package.json"
@@ -92,3 +116,10 @@ jobs:
 
       - name: Run installer unit tests
         run: bun test src/Core.TypeScript/installer/
+
+      # Touch ID sudo: the durability logic that decides RED vs GREEN. This runs
+      # on ubuntu, which is the point -- the verdict is a pure function of a
+      # `PamFacts` record, so the OS-update-revert case can be pinned as a
+      # fixture here rather than only being observable on a Mac after an update.
+      - name: Run Touch ID sudo config tests
+        run: bun test tools/setup/touchid-sudo-config.test.ts
