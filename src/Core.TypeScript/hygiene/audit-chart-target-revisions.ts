@@ -70,20 +70,40 @@
 // which is a git-path source into this repository and so has no chart version
 // to resolve either way. Nothing else in the tree declares an Application.
 //
-// -- THE ACKNOWLEDGEMENT REGISTER -----------------------------------------
-// `oz` is unpublished on main today and choosing its replacement version is a
-// human call (1.3.4 is the newest 1.x; separate 2.x and 3.x lines exist and
-// are not drop-in). So the finding is recorded in ACKNOWLEDGED_UNPUBLISHED
-// with a workitem, a date, and a reason, and printed loudly on every run --
-// never suppressed into silence. The register is drift-checked in BOTH
-// directions: an acknowledgement whose pin no longer exists, or whose pin has
-// become resolvable, is itself a finding. That is what separates a dated
-// acknowledgement from an allowlist -- an allowlist only ever grows quiet.
+// -- THE ACKNOWLEDGEMENT REGISTER, NOW EMPTY ------------------------------
+// It held one entry, for `oz`, recorded on the day this file was written and
+// retired the day after. The retirement is the register working, and the shape
+// of it is worth keeping: the entry said the replacement version was "not
+// mechanical" and "not drop-in for the pinned values in this manifest", and
+// that turned out to be FALSE when someone measured it. `helm template` of
+// 1.3.4, 2.1.2, 3.1.1 and 3.2.1 against that Application's own valuesObject
+// produces the identical storage contract in all four; every key the manifest
+// actually sets survives all three major lines. What was really blocking `oz`
+// was a different, unrecorded defect the bad pin had been hiding -- a missing
+// `clientApi.advertisedHost`, which every published version requires. So the
+// acknowledgement was carrying a REASON nobody had checked, which is the failure
+// mode a register is supposed to be immune to, and the register caught it in the
+// end only because the pin moved and the entry went stale.
+//
+// The register is drift-checked in BOTH directions: an acknowledgement whose pin
+// no longer exists, or whose pin has become resolvable, is itself a finding.
+// That is what separates a dated acknowledgement from an allowlist -- an
+// allowlist only ever grows quiet. That check is what refused this tree the
+// moment the pin was corrected and the entry was left behind.
 //
 // Anchor (Beacon): this is dependency *resolvability* checking, the property
 // `cargo`/`npm` get from a committed lockfile and Helm's `Chart.lock` gives a
 // chart's own dependencies -- ArgoCD has no equivalent for an Application's
 // `targetRevision`, which is why it must be audited rather than resolved.
+//
+// -- THE SECOND SNAPSHOT: PUBLISH DATES -----------------------------------
+// `--refresh` also writes `published-chart-dates.json` (see
+// chart-publish-dates.ts). Resolvability and CURRENCY are different questions
+// -- a pin can resolve perfectly and be twenty-three majors behind -- and the
+// currency answer needs one extra fact per version: when upstream published
+// it. That fact is ALREADY in the `index.yaml` this file downloads, so it is
+// recorded here rather than fetched again on a second schedule. Nothing in the
+// PR-blocking path above reads it; `report-chart-currency.ts` does.
 //
 // Usage:
 //   bun src/Core.TypeScript/hygiene/audit-chart-target-revisions.ts
@@ -96,6 +116,13 @@ import { readFileSync, readdirSync, writeFileSync, type Dirent } from "node:fs";
 import { join, relative, resolve } from "node:path";
 import { parseAllDocuments, parse as parseYaml } from "yaml";
 import semver from "semver";
+import {
+  DATES_FILENAME,
+  OCI_DATES_UNAVAILABLE,
+  readChartDatesOrEmpty,
+  writeChartDatesIfChanged,
+  type ChartDatesEntry,
+} from "./chart-publish-dates.ts";
 
 const REPO_ROOT = resolve(import.meta.dir, "../../..");
 const APPLICATIONS_TREE = "full-ai-cluster/k8s/applications";
@@ -103,6 +130,7 @@ export const ROSTER_FILENAME = "published-chart-versions.json";
 const ROSTER_PATH = join(import.meta.dir, ROSTER_FILENAME);
 
 const REFRESH_COMMAND = "bun src/Core.TypeScript/hygiene/audit-chart-target-revisions.ts --refresh";
+const CURRENCY_REPORT_COMMAND = "bun src/Core.TypeScript/hygiene/report-chart-currency.ts --write";
 
 // ---------------------------------------------------------------------------
 // Coordinates extracted from the tree
@@ -491,48 +519,18 @@ export function acknowledgementKey(coordinate: {
  * the pin is audited afresh.
  */
 export const ACKNOWLEDGED_UNPUBLISHED: ReadonlyMap<string, Acknowledgement> = new Map([
-  [
-    "full-ai-cluster/k8s/applications/oz/Application.yaml|ziti-controller|1.4.5",
-    {
-      workitem: "081M0JVD5YG087G0R002QDFR9H",
-      recordedOn: "2026-08-21",
-      reason:
-        "The defect this audit was written for. OpenZiti's ziti-controller 1.x line ends at " +
-        "1.3.4 and 1.4.5 was never published (1.4.2 exists in that repository only as an " +
-        "appVersion). The replacement is not mechanical -- 1.3.4 is the newest 1.x, while " +
-        "separate 2.x and 3.x lines exist and are not drop-in for the pinned values in this " +
-        "manifest -- so the version is the maintainer's call and is left to PR #13313. " +
-        "Recorded here so the check can land on a tree that contains the defect it reports.",
-    },
-  ],
-  [
-    "full-ai-cluster/k8s/applications/sealed-secrets/Application.yaml|sealed-secrets|2.16.2",
-    {
-      workitem: "081M0JX4M7H087G0R0029R5QG6",
-      recordedOn: "2026-08-21",
-      reason:
-        "Found by this audit's own first --refresh. `bitnami-labs.github.io/sealed-secrets` " +
-        "returns GitHub Pages' `Site not found`; upstream's README now publishes the chart at " +
-        "`bitnami.github.io/sealed-secrets` (no `-labs`), whose index does carry 2.16.2 -- so " +
-        "the version is right and the host is wrong. Changing what a cluster Application " +
-        "deploys is the maintainer's call, so it is reported rather than edited here.",
-    },
-  ],
-  [
-    "full-ai-cluster/k8s/applications/forgejo/Application.yaml|forgejo|9.0.6",
-    {
-      workitem: "081M0JX4M7H087G0R0029R5QG6",
-      recordedOn: "2026-08-21",
-      reason:
-        "Found by this audit's own first --refresh, and a DOUBLE defect. " +
-        "`code.forgejo.org/forgejo-helm/` is an organisation page, not a chart repository " +
-        "(index.yaml -> 404); upstream distributes via `oci://code.forgejo.org/forgejo-helm/" +
-        "forgejo`. Correcting the protocol is not enough: that registry's 169 tags contain " +
-        "exactly one 9.x -- `9.0.0` -- so 9.0.6 was never published either. Picking between " +
-        "9.0.0, 10.x and 11.x moves the values schema under a hand-written valuesObject, " +
-        "which is a maintainer decision.",
-    },
-  ],
+  // EMPTY, and empty is the target state rather than a suspicious one. The only
+  // entry this register has ever held -- `oz@1.4.5`, workitem
+  // 081M0JVD5YG087G0R002QDFR9H -- was retired on 2026-08-21 when the pin was
+  // corrected to ziti-controller 3.1.1 and the app was rendered for real. It was
+  // not re-keyed to `oz@3.1.1`: re-keying preserves a "this pin does not resolve"
+  // claim that has stopped being true, which is the one thing a dated
+  // acknowledgement is supposed to make impossible.
+  //
+  // Adding an entry means a pin no registry serves, which means an Application
+  // that cannot sync. Give it a workitem, a date, and a reason that has been
+  // CHECKED -- the retired entry's reason ("not drop-in for the pinned values")
+  // was never checked and was wrong.
 ]);
 
 // ---------------------------------------------------------------------------
@@ -814,7 +812,22 @@ export function ociTarget(repoURL: string, chart: string): { host: string; repos
   return { host, repository: [...rest, chart].filter((s) => s !== "").join("/") };
 }
 
-async function fetchHelmIndexVersions(repoURL: string, chart: string): Promise<readonly string[]> {
+/**
+ * What a Helm index hands back, both halves of it.
+ *
+ * `created` rides along because it is ALREADY IN THE RESPONSE this function
+ * parses -- a Helm index entry carries `version` and `created` side by side.
+ * Currency (how far behind, and is upstream still alive) needs the dates;
+ * collecting them here costs zero additional requests and zero additional
+ * schedule, which is the only reason a second question gets to be asked at all
+ * from a lane that exists to be cheap.
+ */
+interface HelmIndexRead {
+  readonly versions: readonly string[];
+  readonly created: Readonly<Record<string, string>>;
+}
+
+async function fetchHelmIndexVersions(repoURL: string, chart: string): Promise<HelmIndexRead> {
   const url = normalizeRepoUrl(repoURL) + "/index.yaml";
   const response = await fetch(url, { headers: { accept: "application/x-yaml, text/yaml, */*" } });
   if (!response.ok) throw new Error("GET " + url + " -> HTTP " + String(response.status));
@@ -822,7 +835,20 @@ async function fetchHelmIndexVersions(repoURL: string, chart: string): Promise<r
   if (!isRecord(index) || !isRecord(index.entries)) throw new Error(url + " has no `entries` map");
   const charts = index.entries[chart];
   if (!Array.isArray(charts)) throw new Error(url + " publishes no chart named `" + chart + "`");
-  return charts.map((c) => (isRecord(c) ? stringAt(c, "version") : "")).filter((v) => v !== "");
+  const versions: string[] = [];
+  const created: Record<string, string> = {};
+  for (const entry of charts) {
+    if (!isRecord(entry)) continue;
+    const version = stringAt(entry, "version");
+    if (version === "") continue;
+    versions.push(version);
+    // An index entry without `created` is left ABSENT, never defaulted. A
+    // missing date must reach the report as "unknown"; a substituted one would
+    // be the check-that-did-not-run wearing a plausible number.
+    const when = stringAt(entry, "created");
+    if (when !== "") created[version] = when;
+  }
+  return { versions, created };
 }
 
 async function fetchOciTags(repoURL: string, chart: string): Promise<readonly string[]> {
@@ -865,15 +891,21 @@ async function refresh(repoRoot: string): Promise<number> {
 
   const fetchedAt = new Date().toISOString().replace(/\.\d{3}Z$/, "Z");
   const entries: Record<string, RosterEntry> = {};
+  const dates: Record<string, ChartDatesEntry> = {};
   const failures: string[] = [];
 
   for (const [key, coordinate] of [...wanted].sort((a, b) => (a[0] < b[0] ? -1 : 1))) {
     try {
-      const versions =
+      const read =
         coordinate.kind === "oci"
-          ? await fetchOciTags(coordinate.repoURL, coordinate.chart)
+          ? { versions: await fetchOciTags(coordinate.repoURL, coordinate.chart), created: undefined }
           : await fetchHelmIndexVersions(coordinate.repoURL, coordinate.chart);
+      const versions = read.versions;
       if (versions.length === 0) throw new Error("upstream listed zero versions");
+      dates[key] =
+        read.created === undefined
+          ? { source: "unavailable", unavailable: OCI_DATES_UNAVAILABLE, created: {} }
+          : { source: "helm-index-created", created: read.created };
       entries[key] = {
         repoURL: normalizeRepoUrl(coordinate.repoURL),
         chart: coordinate.chart,
@@ -906,7 +938,23 @@ async function refresh(repoRoot: string): Promise<number> {
     if ((err as NodeJS.ErrnoException).code !== "ENOENT") throw err;
     previous = {};
   }
+  const previousDates = readChartDatesOrEmpty().entries;
   for (const [key, coordinate] of wanted) {
+    if (dates[key] === undefined) {
+      // Same carry-forward reasoning as the versions below: an outage must not
+      // erase dates we already hold, and a coordinate never once reached gets
+      // an explicit `unavailable` rather than a silent gap.
+      const keptDates = previousDates[key];
+      const failure = failures.find((f) => f.startsWith(key + ": "));
+      dates[key] =
+        keptDates !== undefined && Object.keys(keptDates.created).length > 0
+          ? keptDates
+          : {
+              source: "unavailable",
+              unavailable: failure === undefined ? "not fetched" : failure.slice(key.length + 2),
+              created: {},
+            };
+    }
     if (entries[key] !== undefined) continue;
     const kept = previous[key];
     if (kept !== undefined && kept.versions.length > 0) {
@@ -947,14 +995,23 @@ async function refresh(repoRoot: string): Promise<number> {
     if ((err as NodeJS.ErrnoException).code !== "ENOENT") throw err;
     before = "";
   }
-  const unchanged = sameIgnoringTimestamps(before, serialized);
+  const rosterUnchanged = sameIgnoringTimestamps(before, serialized);
+
+  // The dates snapshot is written from the SAME fetches, in the same pass, so
+  // the two files can never describe different network reads. It is written
+  // INDEPENDENTLY of the roster, and that independence is the point: folding
+  // the two into one "something changed" flag would make a dates-only change
+  // rewrite the roster, whose only difference would then be `fetchedAt` -- the
+  // timestamp-only weekly diff this function's own comment refuses to produce.
+  const datesChanged = writeChartDatesIfChanged(dates);
+  const unchanged = rosterUnchanged && !datesChanged;
 
   // Write only when something was LEARNED. Rewriting on every run would leave a
   // 35-line timestamp-only diff behind each scheduled refresh and dirty any
   // local tree that ran one, which is how a checked-in snapshot stops being
   // reviewable. The cost is stated where it lands: `fetchedAt` is then a LOWER
   // BOUND on when a list was last confirmed, not the last time it was read.
-  if (!unchanged) writeFileSync(ROSTER_PATH, serialized);
+  if (!rosterUnchanged) writeFileSync(ROSTER_PATH, serialized);
 
   if (failures.length > 0) {
     process.stderr.write("\n" + String(failures.length) + " coordinate(s) unreachable this run:\n");
@@ -986,11 +1043,20 @@ async function refresh(repoRoot: string): Promise<number> {
         String(Object.keys(entries).length) +
         " coordinate(s), no change; " +
         ROSTER_FILENAME +
+        " and " +
+        DATES_FILENAME +
         " left untouched.\n",
     );
     return 0;
   }
-  process.stdout.write("\nrefresh CHANGED " + ROSTER_FILENAME + " -- commit the diff.\n");
+  process.stdout.write(
+    "\nrefresh CHANGED " +
+      (rosterUnchanged ? "" : ROSTER_FILENAME + " ") +
+      (datesChanged ? DATES_FILENAME + " " : "") +
+      "-- commit the diff, then regenerate the currency report:\n  " +
+      CURRENCY_REPORT_COMMAND +
+      "\n",
+  );
   return 1;
 }
 

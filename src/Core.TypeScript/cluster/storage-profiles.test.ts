@@ -89,6 +89,8 @@ function catalogueJson(overrides: Record<string, unknown> = {}): string {
         scheduledAtBringUp: true,
         bringUpNote: "automated sync",
         consequence: "minimal drops the Raft group to one member: no quorum, no replication.",
+        renderedApp: "tree/db",
+        renderedPvcPattern: "^data/db$",
         sizes: { minimal: "20Gi", large: "100Gi" },
         pods: { minimal: 1, large: 3 },
         ...overrides,
@@ -211,6 +213,23 @@ describe("loadCatalogue refusals — each one keeps the ladder from meaning noth
         }),
       ),
     ).toThrow(/no podsField/);
+  });
+
+  // A row with no rendered coordinate is a row `rendered-storage-claims.ts`
+  // cannot check — and an uncheckable row that still contributes GiB to the
+  // profile total is exactly the shape this catalogue exists to refuse.
+  test("RED: a claim with no renderedApp is refused", () => {
+    expect(() => load(catalogueJson({ renderedApp: undefined }))).toThrow(/renderedApp/);
+  });
+
+  test("RED: a claim with no renderedPvcPattern is refused", () => {
+    expect(() => load(catalogueJson({ renderedPvcPattern: undefined }))).toThrow(/renderedPvcPattern/);
+  });
+
+  test("RED: a renderedPvcPattern that does not compile is refused at load, not at use", () => {
+    expect(() => load(catalogueJson({ renderedPvcPattern: "^data/[unclosed" }))).toThrow(
+      /renderedPvcPattern is not a valid regular expression/,
+    );
   });
 
   test("RED: a duplicate claim id is refused", () => {
@@ -456,6 +475,8 @@ describe("applyProfile", () => {
       scheduledAtBringUp: true,
       bringUpNote: "",
       consequence: "a synthetic multi-document fixture, sized down in minimal to prove the applier survives it",
+      renderedApp: "t/multi",
+      renderedPvcPattern: "^data/multi$",
       sizes: { minimal: "20Gi", large: "100Gi" },
       pods: { minimal: 1, large: 1 },
     });
@@ -1229,42 +1250,141 @@ describe("the checked-in resource ladder", () => {
   });
 
   // The dev lane's applied set comes from ports.ts's excludeGlob, so this
-  // number moves only when that constant does.
-  test("the dev lane applies 33 of the 45 Applications", () => {
-    expect(applicationDirs()).toHaveLength(45);
-    expect(devLaneAppliedDirs()).toHaveLength(33);
+  // number moves only when that constant does -- and it just did. #13343
+  // ("boot 3 of the 12 deferred ArgoCD Applications") dropped deepseek-coder,
+  // qwen-coder and orleans from the glob after measuring them Synced+Healthy,
+  // taking the applied set from 33 to 36, but left this pin at 33. main has
+  // been red on this test since that merge; the PIN is stale, not the glob.
+  //
+  // Corrected here rather than filed, because a red `plan + unit tests` job
+  // SKIPS every live job behind it -- so a stale number in this file stops the
+  // kind lane from running at all, which is exactly the shape where a check
+  // that did not run looks like a check that passed.
+  //
+  // 45 -> 46 and 36 -> 37 on 2026-08-22: the `spire-crds` Application joined the
+  // tree, and it is applied by the dev lane (it is in no excludeGlob). Both
+  // numbers move together because a new Application that is not glob-excluded is
+  // BOTH shipped and applied; if only one of them had needed to move, that would
+  // itself have been the finding.
+  //
+  // 46 -> 47 and 37 -> 38 on 2026-08-22, and NOTHING WAS ADDED TO THE TREE.
+  // `applicationDirs` was depth-1 and the App-of-Apps root's include glob is
+  // not path-segment bounded, so `game-hosting/gmod` had always been applied
+  // and had never been counted. It requests a literal `cpu: "1", memory: "2Gi"`.
+  // Both counts move together for the same reason as spire-crds: an Application
+  // no exclude covers is BOTH shipped and applied.
+  test("the dev lane applies 38 of the 47 Applications", () => {
+    expect(applicationDirs()).toHaveLength(47);
+    expect(devLaneAppliedDirs()).toHaveLength(38);
+    expect(applicationDirs()).toContain("game-hosting/gmod");
   });
 
   // MEASURED 2026-08-21 by `helm pull` at each pinned targetRevision followed
   // by `helm template` against that Application's own valuesObject. These are
   // pinned so the ladder cannot drift away from what was actually rendered.
+  //
+  // THE `all` PAIR MOVED 2026-08-22, 9856m/23528Mi -> 8106m/19752Mi, and the
+  // dev-lane pair did NOT. Nothing was shrunk: `temporal` was UNRENDERABLE, so
+  // its ungoverned row carried 3000m/6144Mi measured from CHART DEFAULTS, and
+  // 3000m of that was the bundled elasticsearch-master StatefulSet its own
+  // valuesObject had always set `enabled: false`. Wiring its datastore to
+  // CockroachDB made the chart template, and the four governed rows that
+  // replaced it total 1250m/2368Mi -- the first temporal numbers ever taken
+  // from the values we actually ship. The dev-lane pair is unchanged because
+  // `temporal/**` is in ports.ts's excludeGlob and was never in that cohort.
+  //
+  // ALL FOUR NUMBERS MOVED 2026-08-22 by exactly gmod's 1000m / 2048Mi, and
+  // again nothing was added and nothing was measured differently: the
+  // enumerator started seeing an Application the cluster had always applied.
+  // 4231 -> 5231, 11427 -> 13475, 8106 -> 9256, 19752 -> 21810. All four are
+  // now cross-checked against a full render of every chart at this rung by
+  // `rendered-resource-requests.ts`, which agrees to the millicore.
   test("metal is exactly what the manifests render today", () => {
     expect(verifyResourceProfileApplied(catalogue, "metal")).toEqual([]);
     const lane = resourceTotal(catalogue, "metal", devLaneAppliedDirs());
-    expect(lane.cpuMillis).toBe(4131);
-    expect(lane.memoryMib).toBe(11299);
+    expect(lane.cpuMillis).toBe(5231);
+    expect(lane.memoryMib).toBe(13475);
     const all = resourceTotal(catalogue, "metal", applicationDirs());
-    expect(all.cpuMillis).toBe(9756);
-    expect(all.memoryMib).toBe(23400);
+    expect(all.cpuMillis).toBe(9256);
+    expect(all.memoryMib).toBe(21810);
   });
 
   // Aaron 2026-08-20: "make things small enough to fit for disk and ram on the
   // runners." This is that, and it is a test so it cannot drift upward without
   // somebody deciding to let it.
-  test("dev fits the runner and metal does not — the ladder is not decorative", () => {
-    expect(auditRunnerBudget(catalogue, "dev")).toEqual([]);
-    expect(auditRunnerBudget(catalogue, "metal").length).toBeGreaterThan(0);
-    const lane = resourceTotal(catalogue, "dev", devLaneAppliedDirs());
+  //
+  // THIS TEST HAS INVERTED TWICE AND BOTH INVERSIONS ARE KEPT IN THE NAME,
+  // because the sequence is the finding and a quietly-rewritten assertion would
+  // erase it.
+  //
+  //   originally  `dev` FITS       1906m against 2500m, 594m of spare
+  //   2026-08-22  NEITHER FITS     2906m -- `game-hosting/gmod` was applied by
+  //                                the dev root all along and a depth-1
+  //                                enumerator could not see it. 406m OVER.
+  //   2026-08-23  `dev` FITS AGAIN 1081m -- and NOT by excluding gmod or by
+  //                                widening the envelope. Three git-path
+  //                                Applications whose requests no rung could
+  //                                reach are now governed rows, so the `dev`
+  //                                rung reaches them. THREE, not five: `cdi`
+  //                                and `kubevirt` are reachable by the same
+  //                                mechanism and are deliberately left alone,
+  //                                because their manifests are vendored
+  //                                byte-for-byte and `--apply` would rewrite
+  //                                them. 120m was available there and refused.
+  //
+  // The 2026-08-22 comment said "No rung reaches gmod: it is a git-path source
+  // with no valuesObject, so `applyResourceProfile` cannot express it". The
+  // first half was true and the second half was FALSE ABOUT ITS OWN MODULE:
+  // `applyResourceProfile` addresses `path` + `docIndex` + `requestsField` as a
+  // dotted path into an ARBITRARY manifest and always could write into
+  // statefulset.yaml. Only the render-side reader (`overlayRung`) demanded the
+  // `spec.source.helm.valuesObject.` prefix.
+  //
+  // `metal` IS UNCHANGED THROUGHOUT and that is asserted below, because the
+  // whole point of a rung is that shrinking one does not touch the other.
+  test("`dev` FITS AGAIN at 1081m — the rung reaches the raw manifests, and the governed rows are floored", () => {
     const budget = envelopeBudget(catalogue.envelope);
-    expect(lane.cpuMillis).toBe(1806);
-    expect(lane.memoryMib).toBe(6079);
-    expect(lane.cpuMillis).toBeLessThan(budget.cpuMillis);
-    expect(lane.memoryMib).toBeLessThan(budget.memoryMib);
+    const dev = resourceTotal(catalogue, "dev", devLaneAppliedDirs());
+    expect(dev.cpuMillis).toBe(1081);
+    expect(dev.memoryMib).toBe(8255);
+    expect(dev.cpuMillis).toBeLessThan(budget.cpuMillis);
+    expect(dev.memoryMib).toBeLessThan(budget.memoryMib);
+
+    // THE REGISTER IS EMPTY, and it is empty because the arithmetic moved --
+    // not because anyone deleted a row they found inconvenient.
+    expect(catalogue.acknowledgedLaneBudgetShortfall).toEqual([]);
+    expect(auditRunnerBudget(catalogue, "dev")).toEqual([]);
+
+    // An acknowledgement re-added now would be STALE: it describes a shortfall
+    // that no longer exists, and outliving its defect is how a baseline becomes
+    // a lie. This is the falsifier for the deletion above.
+    const revived = {
+      ...catalogue,
+      acknowledgedLaneBudgetShortfall: [
+        { key: "dev cpu 2906>2500", reason: "r".repeat(60), liftsWhen: "LIFTS WHEN: never" },
+      ],
+    };
+    expect(auditRunnerBudget(revived, "dev").some((finding) => finding.problem.includes("outlived"))).toBe(true);
+
+    // `metal` still does not fit, and MUST NOT have moved. The dev-rung cuts
+    // are rung-scoped; a change that shrank both rungs would have quietly
+    // re-sized the hardware this rung exists to describe.
+    expect(auditRunnerBudget(catalogue, "metal").length).toBeGreaterThan(0);
+    const metal = resourceTotal(catalogue, "metal", devLaneAppliedDirs());
+    expect(metal.cpuMillis).toBe(5231);
+    expect(metal.memoryMib).toBe(13475);
+
+    // gmod is still COUNTED -- reachability is not exclusion. It contributes
+    // 100m at `dev` where it used to contribute 1000m, and 1000m at `metal`
+    // where it always did.
+    const withoutGmod = devLaneAppliedDirs().filter((dir) => dir !== "game-hosting/gmod");
+    expect(dev.cpuMillis - resourceTotal(catalogue, "dev", withoutGmod).cpuMillis).toBe(100);
+    expect(metal.cpuMillis - resourceTotal(catalogue, "metal", withoutGmod).cpuMillis).toBe(1000);
   });
 
   // Stated because it is the honest answer to the question that was asked, and
   // a test is the only place it cannot quietly stop being true.
-  test("ALL 45 do not fit, at either rung — CPU runs out before memory does", () => {
+  test("ALL 46 do not fit, at either rung — CPU runs out before memory does", () => {
     const budget = envelopeBudget(catalogue.envelope);
     for (const rung of catalogue.profiles) {
       const all = resourceTotal(catalogue, rung, applicationDirs());
@@ -1276,20 +1396,94 @@ describe("the checked-in resource ladder", () => {
     );
   });
 
-  // The two apps nobody could measure. The acknowledgement is keyed by the pin
-  // so a chart bump invalidates it instead of inheriting it.
-  test("the unmeasured apps are named, pinned and acknowledged — not counted as free", () => {
+  // THE REGISTER IS EMPTY, and how it emptied is the whole lesson.
+  //
+  // It held TWO entries. Both were the same defect wearing two names: a
+  // targetRevision no registry had ever published, so nothing could pull the
+  // chart, so nobody could measure the app, so it was acknowledged.
+  //
+  //   forgejo@9.0.6  left 2026-08-21. Correcting the pin to 17.1.5 moved the key
+  //                  and invalidated the acknowledgement exactly as designed —
+  //                  and the answer to that was to MEASURE the app, not to
+  //                  re-key it to `forgejo@17.1.5`.
+  //   oz@1.4.5       left 2026-08-21, the same way. `ziti-controller` 1.4.5 was
+  //                  never published (that repository's 1.x line ends at 1.3.4;
+  //                  `1.4.x` exists there only as an appVersion). The pin is now
+  //                  3.1.1 and the chart renders `resources: {}` — 0m/0Mi, which
+  //                  is a MEASUREMENT that the container reserves nothing, not a
+  //                  missing value.
+  //
+  // Re-keying either one would have preserved a "we cannot measure this" claim
+  // that had stopped being true — an acknowledgement outliving its own defect.
+  // Neither was re-keyed. Nothing in this tree is excused from measurement now.
+  test("nothing is acknowledged as unmeasurable any more — the register is empty", () => {
     const lane = resourceTotal(catalogue, "dev", devLaneAppliedDirs());
-    expect(lane.unmeasured).toEqual(["forgejo", "oz"]);
-    expect([...catalogue.acknowledgedUnmeasured].sort()).toEqual(["forgejo@9.0.6", "oz@1.4.5"]);
-    expect(pinnedChartVersion("forgejo")).toBe("9.0.6");
-    expect(pinnedChartVersion("oz")).toBe("1.4.5");
+    expect(lane.unmeasured).toEqual([]);
+    expect([...catalogue.acknowledgedUnmeasured]).toEqual([]);
+    expect(pinnedChartVersion("oz")).toBe("3.1.1");
+    const oz = catalogue.ungoverned.find((app) => app.dir === "oz");
+    expect(oz?.cpuMillis).toBe(0);
+    expect(oz?.memoryMib).toBe(0);
+  });
+
+  // forgejo is the worked example of the register releasing an app: it is now
+  // pinned to a published chart, measured, and carries NO acknowledgement.
+  test("forgejo left the acknowledged set by being measured, not by being re-keyed", () => {
+    expect(pinnedChartVersion("forgejo")).toBe("17.1.5");
+    expect(catalogue.acknowledgedUnmeasured.some((key) => key.startsWith("forgejo@"))).toBe(false);
+    const row = catalogue.ungoverned.find((app) => app.dir === "forgejo");
+    expect(row).toBeDefined();
+    // The pod's effective request is max(highest init request, sum of app-container
+    // requests) because init containers run sequentially — 100m/128Mi, not the
+    // 300m/384Mi a naive sum over all four containers would report.
+    expect(row?.cpuMillis).toBe(100);
+    expect(row?.memoryMib).toBe(128);
+    expect(resourceTotal(catalogue, "dev", ["forgejo"]).unmeasured).toEqual([]);
+  });
+
+  test("the pin is read from the PARSED document, so a comment cannot change it", () => {
+    // The falsifier for the 2026-08-21 correction. The old line-scanner probed
+    // the six lines nearest `chart:` and returned "" once anything longer than
+    // that sat between the two keys -- a wrong answer that propagates into the
+    // acknowledgement key `<dir>@<pin>` rather than an error that stops.
+    // oz/Application.yaml now carries ~35 lines of comment there, on purpose.
+    expect(pinnedChartVersion("oz")).toBe("3.1.1");
+    expect(pinnedChartVersion("arc-runner-set")).toBe("0.12.1");
+    // A git-path source has no chart version, and "" is the RIGHT answer there.
+    expect(pinnedChartVersion("orleans")).toBe("");
+    expect(pinnedChartVersion("no-such-application-dir")).toBe("");
   });
 
   test("an acknowledgement whose pin has moved stops applying", () => {
-    const stale: ResourceCatalogue = { ...catalogue, acknowledgedUnmeasured: ["forgejo@8.0.0", "oz@1.4.5"] };
+    // Synthesised now that the live register is empty: an app whose measurement
+    // is genuinely unknown (null), acknowledged at a pin that is NOT the one the
+    // tree carries. The acknowledgement must not reach it.
+    const unmeasurable: ResourceCatalogue = {
+      ...catalogue,
+      ungoverned: [
+        ...catalogue.ungoverned.filter((app) => app.dir !== "oz"),
+        { dir: "oz", cpuMillis: null, memoryMib: null, evidence: "UNMEASURED: synthesised for this test." },
+      ],
+      acknowledgedUnmeasured: ["oz@9.9.9"],
+    };
+    const findings = auditRunnerBudget(unmeasurable, "dev");
+    expect(findings.some((finding) => finding.claimId === "oz")).toBe(true);
+    // ...and the SAME catalogue acknowledged at the pin the tree really carries
+    // does cover it, so the test above fails for the pin and not for the shape.
+    const covered: ResourceCatalogue = { ...unmeasurable, acknowledgedUnmeasured: ["oz@3.1.1"] };
+    expect(auditRunnerBudget(covered, "dev").some((finding) => finding.claimId === "oz")).toBe(false);
+  });
+
+  // The other direction, and it is the one that just fired on forgejo: an
+  // acknowledgement for an app the total no longer reports as unmeasured is
+  // stale, and stale is a finding rather than a silent no-op.
+  test("an acknowledgement for an app that IS measured is reported stale", () => {
+    const stale: ResourceCatalogue = {
+      ...catalogue,
+      acknowledgedUnmeasured: ["forgejo@17.1.5"],
+    };
     const findings = auditRunnerBudget(stale, "dev");
-    expect(findings.some((finding) => finding.claimId === "forgejo")).toBe(true);
+    expect(findings.some((finding) => finding.claimId === "forgejo@17.1.5")).toBe(true);
   });
 
   test("every row that cuts a request states what the cut costs", () => {

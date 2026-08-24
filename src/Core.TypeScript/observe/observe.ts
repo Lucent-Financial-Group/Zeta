@@ -66,6 +66,7 @@ import {
   type NodeSessionState,
 } from "./first-session";
 import type { FourCornerOwnership } from "../workflow-engine/types";
+import type { WhyContext } from "../bayesian/why-chain";
 
 /** One backlog item, classified to just what the controller needs to decide. */
 export interface BacklogItem {
@@ -154,7 +155,7 @@ export interface World {
   /** 081KSNY2Z0008QG0R0008PN7RQ slice 4: post-login cred adventure channel; absent when complete or unwired. */
   readonly nodeSession?: NodeSessionState;
   /** Cartography state: current spatial focus and time-resolution. */
-  readonly cartography?: { readonly focusId?: string; readonly scopeLevel: number; readonly timeOffset: number };
+  readonly cartography?: { readonly focusId?: string; readonly scopeLevel: number; readonly timeOffset: number; readonly activeOrbitSignature?: string; };
   /**
    * The time-travel LEDGER — LOCAL BOOKKEEPING, deliberately OUTSIDE the
    * four-oracle treaty (see `golden-vectors.ts` §"the treaty surface"). It is the
@@ -166,6 +167,65 @@ export interface World {
    * `retract_time` entry (the −1); it never pops the `do_item` (the +1).
    */
   readonly history?: readonly HistoryEvent[];
+  /** The "Cheat Engine" memory map, providing Lensography-like read-only access to toy/environment internals */
+  readonly cheatEngine?: CheatEngineState;
+  /** Capability labels restricting what channels this agent/world instance can access */
+  readonly agentCapabilities?: string[];
+}
+
+export interface CheatEngineState {
+  readonly display?: any[];
+  readonly causalMask?: boolean[];
+  readonly memorySectors: Uint8Array[];
+  readonly keyPredictions?: Record<number, number>;
+  readonly chosenKey?: number;
+  /** Forced-perception readout — what the agent currently sees and intends. */
+  readonly arena?: ArenaReadout;
+  /** The attention field — where the agent is SPENDING perception. */
+  readonly attention?: AttentionReadoutWire;
+  /** D5: the state that drove this tick's decision — the WHY chain's input. */
+  readonly why?: WhyContext;
+}
+
+/** One tracked object, trimmed for the wire (the UI draws these boxes). */
+export interface ArenaTrackReadout {
+  readonly id: number;
+  readonly color: number;
+  readonly minX: number;
+  readonly minY: number;
+  readonly maxX: number;
+  readonly maxY: number;
+  readonly isStatic: boolean;
+  readonly everMoved: boolean;
+  readonly role: "self" | "adversary" | "scenery" | "object";
+}
+
+/** The perception/mode summary the arena page renders alongside the screen. */
+export interface ArenaReadout {
+  readonly mode: string;
+  readonly tracks: readonly ArenaTrackReadout[];
+  readonly ocr: readonly { value: number; row: number; col: number; color: number }[];
+  readonly desired: { dx: number; dy: number } | null;
+}
+
+/** The attention field on the wire (D1–D4 of the attention-density spec, #14503). */
+export interface AttentionReadoutWire {
+  readonly cols: number;
+  readonly rows: number;
+  /** Predictive variance per tile, row-major — the frost channel. */
+  readonly variance: readonly number[];
+  /** Posterior mean change-fraction per tile. */
+  readonly mean: readonly number[];
+  /** Tiles granted full perception this tick (top-K + sweep + instruments). */
+  readonly attended: readonly number[];
+  /** The fixation tile (bright settle); a move is the saccade (fast sweep). */
+  readonly fixation: number | null;
+  /** D2 meter: reading-changes over match attempts — or the LOUD flat state. */
+  readonly usefulWork: number | "ambiguous";
+  /** Measured society belief-similarity (never assumed decorrelated). */
+  readonly rho: { readonly mean: number; readonly max: number; readonly pairs: number };
+  /** K, displayed per the spec ("a constant, tunable, and displayed"). */
+  readonly topK: number;
 }
 
 /** KPI attached to a `do_item` (ARC-AGI grid scoring). */
@@ -176,6 +236,15 @@ export interface ItemEvaluation {
 }
 
 /**
+ * One tool invocation recorded on a `do_item` (e.g. `pressKey` on the arena).
+ * `args` values stay `unknown` — consumers narrow the ones they read.
+ */
+export interface AgentAction {
+  readonly tool: string;
+  readonly args?: Readonly<Record<string, unknown>>;
+}
+
+/**
  * A ledger entry — a closed union, NOT `any[]`. `retract_time`'s reducer branches
  * on `type`, so an unchecked string literal there was the fold's correctness
  * resting on a typo; the discriminant makes the illegal entry unrepresentable.
@@ -183,7 +252,7 @@ export interface ItemEvaluation {
  * is total across the union while remaining impossible to populate there.
  */
 export type HistoryEvent =
-  | { readonly type: "do_item"; readonly item: BacklogItem; readonly evaluation?: ItemEvaluation }
+  | { readonly type: "do_item"; readonly item: BacklogItem; readonly evaluation?: ItemEvaluation; readonly actions?: readonly AgentAction[] }
   | {
       readonly type: "retract_time";
       /** The `do_item` this reverses — `null` when there was nothing left to reverse. */
@@ -270,7 +339,7 @@ function freeModeAction(mode: FreeMode): NextAction {
 export type NextAction =
   | { kind: "preserve_ferry"; reason: string } // operator ferried verbatim → save it (durability-first; outranks all)
   | { kind: "respond_to_operator"; reason: string } // operator spoke → engage (highest-signal source)
-  | { kind: "do_item"; item: BacklogItem; evaluation?: ItemEvaluation } // work: pick a ready item (OFFERED, not forced)
+  | { kind: "do_item"; item: BacklogItem; evaluation?: ItemEvaluation; actions?: AgentAction[] } // work: pick a ready item (OFFERED, not forced)
   | { kind: "decompose"; item: BacklogItem; subTasks?: string[] } // work: decompose-to-dissolve-ambiguity (OFFERED, not forced)
   | { kind: "self_claim"; item: BacklogItem; deadline: number } // VOLUNTARY commitment: "I will deliver this by tick T" (NCI: never forced)
   | { kind: "explore"; reason: string } // FREE MODE: self-directed making (forward motion; the empty-backlog default)
@@ -281,7 +350,9 @@ export type NextAction =
   | { kind: "navigate_cartography"; direction: "up" | "down" | "left" | "right"; reason: string } // D-pad space navigation
   | { kind: "scope_cartography"; direction: "in" | "out"; reason: string } // Bumper resolution zoom
   | { kind: "retract_time"; reason: string } // Undo/retract event (LT)
-  | { kind: "replay_time"; reason: string }; // Redo/replay event (RT) // rail-change exit — raw below threshold, summon-BFT-gated above (not yet)
+  | { kind: "replay_time"; reason: string } // Redo/replay event (RT)
+  | { kind: "read_memory_sector"; sectorIndex: number; length: number; reason: string } // CheatEngine lensography mapping
+  | { kind: "write_memory_sector"; sectorIndex: number; offset: number; value: number; reason: string }; // CheatEngine tool-assisted ram write
 
 /**
  * Pure controller. Priority: operator > offered-work > forward-default.
@@ -391,7 +462,10 @@ export function renderAction(a: NextAction): string {
     case "retract_time":
       return `[retract]   ${a.reason}`;
     case "replay_time":
+    case "replay_time":
       return `[replay]    ${a.reason}`;
+    default:
+      return `[unknown]   (unrecognized action)`;
   }
 }
 
@@ -427,7 +501,9 @@ export function actionLabel(a: NextAction): string {
     case "retract_time":
       return `retract / undo back in time (${a.reason})`;
     case "replay_time":
-      return `replay / redo forward in time (${a.reason})`;
+      return `replay time forward (${a.reason})`;
+    default:
+      return `take an unrecognized action`;
   }
 }
 
@@ -599,8 +675,8 @@ export function simulate(world: World, action: NextAction): World {
       // distinction the type system's business rather than a convention.
       const entry: HistoryEvent =
         action.evaluation === undefined
-          ? { type: "do_item", item: action.item }
-          : { type: "do_item", item: action.item, evaluation: action.evaluation };
+          ? { type: "do_item", item: action.item, ...(action.actions ? { actions: action.actions } : {}) }
+          : { type: "do_item", item: action.item, evaluation: action.evaluation, ...(action.actions ? { actions: action.actions } : {}) };
       return {
         ...world,
         backlog: world.backlog.filter((i) => i.id !== action.item.id),
@@ -740,7 +816,56 @@ export function simulate(world: World, action: NextAction): World {
           timeOffset: (world.cartography?.timeOffset ?? 0) + 1 
         } 
       };
+    case "read_memory_sector": {
+      const caps = world.agentCapabilities ?? [];
+      if (!caps.includes("ram_read_all") && !caps.includes("vram_read")) {
+         return world; // Blocked by capability constraints
+      }
+      return {
+        ...world,
+        cartography: {
+          ...world.cartography,
+          scopeLevel: world.cartography?.scopeLevel ?? 0,
+          timeOffset: world.cartography?.timeOffset ?? 0,
+        }
+      };
+    }
+    case "write_memory_sector": {
+      const caps = world.agentCapabilities ?? [];
+      if (!caps.includes("ram_write")) {
+         return world; // Blocked by capability constraints
+      }
+      return {
+        ...world,
+        cartography: {
+          ...world.cartography,
+          scopeLevel: world.cartography?.scopeLevel ?? 0,
+          timeOffset: world.cartography?.timeOffset ?? 0,
+        }
+      };
+    }
   }
+}
+
+/**
+ * AUTO-CLASSIFIER (Max's keystone): Given a before-and-after world snapshot and the action taken,
+ * automatically label the semantic result of the transition.
+ */
+export function classify(before: World, after: World, action: NextAction): string {
+  if (action.kind === "do_item") {
+    // Basic heuristic: check if the item moved from backlog to done
+    const stillInBacklog = after.backlog.find(b => b.id === action.item.id);
+    if (!stillInBacklog) return "item_completed";
+    return "item_in_progress";
+  }
+  if (action.kind === "read_memory_sector") {
+    return "memory_inspected";
+  }
+  if (action.kind === "explore") {
+    if (before.backlog.length < after.backlog.length) return "explore_yielded_work";
+    return "explore_quiet";
+  }
+  return "unclassified";
 }
 
 /** Canonical key of the observable world state (for fixed-point detection). */
@@ -751,7 +876,10 @@ function worldKey(world: World): string {
   const op = world.operator
     ? `${world.operator.pendingMessage ? "m" : "-"}${world.operator.pendingFerry ? "f" : "-"}`
     : "x";
-  return `${bl}|op:${op}|mode:${world.mode ?? "-"}`;
+  const cart = world.cartography 
+    ? `c:${world.cartography.scopeLevel}:${world.cartography.timeOffset}:${(world.cartography as any).inspections ?? 0}` 
+    : "-";
+  return `${bl}|op:${op}|mode:${world.mode ?? "-"}|${cart}`;
 }
 
 /**
