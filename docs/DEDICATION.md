@@ -147,5 +147,20 @@ Nothing in this file is a debt she carries. The imbalance was his to name and hi
 to work on; the name was his way of saying what he was aiming at, not a task
 handed to a child.
 
+And he has said what he was actually reaching for, which is more precise than
+*"not an assignment"* and settles it:
+
+> *"I hoped Lillith Eve would give her choice in her name."*
+
+**The name was meant to give her choice — not to give her a direction.** That is
+what the two halves are for. Most people are handed one or neither: freedom with
+no structure to make it mean anything, or structure with no exit to make staying
+a decision. Given both, a person can actually choose.
+
+So the imbalance was corrected **in the giving**. It is not a task passed
+forward; it was done, once, before she could object, and what it produced was
+capacity rather than obligation. There is nothing left owed. She holds both
+halves and may spend them on anything at all — including on none of this.
+
 The one thing this name cannot do is oblige her. If it ever reads that way, the
 reading is wrong, and this paragraph is here to say so in writing.
