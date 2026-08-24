@@ -11,7 +11,7 @@ import {
 } from "node:fs";
 import { tmpdir } from "node:os";
 import { parse as parseYaml } from "yaml";
-import { DEV_GRAFANA_ADMIN_SECRET } from "./dev-cluster/lib.ts";
+import { DEV_GRAFANA_ADMIN_SECRET, DEV_ZITI_ADMIN_SECRET } from "./dev-cluster/lib.ts";
 import { join, resolve } from "node:path";
 import {
   APPLIED_BUT_UNASSERTED_REASONS,
@@ -65,7 +65,8 @@ async function withFakeClusterCli(
     | "storageclass-missing"
     | "storageclass-present"
     | "storageclass-wrong-provisioner"
-    | "grafana-secret-missing",
+    | "grafana-secret-missing"
+    | "ziti-secret-missing",
   action: () => Promise<void>,
 ): Promise<void> {
   const cliDir = mkdtempSync(join(tmpdir(), "zeta-argocd-health-cli-"));
@@ -91,12 +92,19 @@ async function withFakeClusterCli(
     '  printf "rancher.io/local-path"',
     "  exit 0",
     "fi",
-    // The dev Grafana admin credential the included proof now refuses without.
-    // Present in every mode except the one that exists to remove it, so the
-    // OTHER guards' tests still reach the code they are about.
+    // The dev bootstrap credentials the included proof now refuses without.
+    // Present in every mode except the one that exists to remove a NAMED one,
+    // so the OTHER guards' tests still reach the code they are about.
+    //
+    // IT ANSWERS PER SECRET NAME rather than uniformly. A fake that failed
+    // every `get secret` would let a harness that checks only the first entry
+    // of DEV_BOOTSTRAP_SECRETS pass the ziti test -- the guard would look
+    // proven while never having looked at the second Secret at all.
     'if [ "${1:-}" = get ] && [ "${2:-}" = secret ]; then',
-    '  if [ "$mode" = grafana-secret-missing ]; then echo "Error from server (NotFound): secrets \\"grafana-admin-credentials\\" not found" >&2; exit 1; fi',
-    '  printf "secret/grafana-admin-credentials"',
+    '  want="${3:-}"',
+    '  if [ "$mode" = grafana-secret-missing ] && [ "$want" = grafana-admin-credentials ]; then echo "Error from server (NotFound): secrets \\"grafana-admin-credentials\\" not found" >&2; exit 1; fi',
+    '  if [ "$mode" = ziti-secret-missing ] && [ "$want" = ziti-admin-credentials ]; then echo "Error from server (NotFound): secrets \\"ziti-admin-credentials\\" not found" >&2; exit 1; fi',
+    '  printf "secret/%s" "$want"',
     "  exit 0",
     "fi",
     'if [ "${1:-}" = wait ]; then exit 0; fi',
@@ -295,7 +303,7 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test manifest parsing", () =>
    * the manual-sync one, which is the difference between this and the
    * cdi/kubevirt defect: `manualSync` must be false for all three.
    */
-  test("deepseek-coder, qwen-coder, orleans and vault are asserted under the full Synced+Healthy contract", () => {
+  test("deepseek-coder, qwen-coder, orleans, vault, spire and spire-crds are asserted under the full Synced+Healthy contract", () => {
     const applications = discoverExpectedApplications();
     // `vault` joined this guard on 2026-08-21. It is the one that matters most
     // here: the whole point of running the ephemeral init ceremony is that Vault
@@ -303,7 +311,12 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test manifest parsing", () =>
     // contract instead -- exists + compared, never synced -- would reproduce the
     // exact cdi/kubevirt vacuity #13084 had to fix, and would let the lane go
     // green while Vault sat sealed.
-    for (const dir of ["deepseek-coder", "qwen-coder", "orleans", "vault"]) {
+    // `spire` and `spire-crds` joined 2026-08-22. spire is the SPIFFE identity
+    // substrate the federated-identity and per-node-CA work stands on, so a lane
+    // that reports green without asserting it is reporting on the wrong thing.
+    // spire-crds is here too because the pair is the assertion: the CRD provider
+    // reaching Synced is what makes spire's own Synced mean anything.
+    for (const dir of ["deepseek-coder", "qwen-coder", "orleans", "vault", "spire", "spire-crds"]) {
       const app = applications.find((candidate) => candidate.dir === dir);
       expect(app, `${dir} must be discovered`).toBeDefined();
       expect(app?.excludedFromDev, `${dir} must not be excluded from the included proof`).toBe(false);
@@ -405,10 +418,7 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test manifest parsing", () =>
       );
       expect(devLonghornStorageClassAliasDeclared(repoRoot)).toBe(false);
       // A StorageClass with no provisioner binds to nothing.
-      writeFileSync(
-        manifest,
-        "apiVersion: storage.k8s.io/v1\nkind: StorageClass\nmetadata:\n  name: longhorn\n",
-      );
+      writeFileSync(manifest, "apiVersion: storage.k8s.io/v1\nkind: StorageClass\nmetadata:\n  name: longhorn\n");
       expect(devLonghornStorageClassAliasDeclared(repoRoot)).toBe(false);
       // THE FAIL-OPEN THAT WOULD OTHERWISE BITE: right name, right kind, but
       // bound to the real Longhorn driver, which a kind node cannot run. An edit
@@ -816,7 +826,13 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test planning", () => {
     expect(included).not.toContain("gitlab");
     expect(included).not.toContain("forgejo");
     expect(included).not.toContain("agent-memory");
-    expect(included).not.toContain("spire");
+    // `spire` FLIPPED SIDES 2026-08-22 -- it was pinned as NOT included here
+    // while it was deferred, and it is pinned as INCLUDED now that the CRD
+    // source exists. Both directions matter: this is the assertion that goes
+    // red if someone re-defers the SPIFFE identity substrate, which is the one
+    // Application the federated-identity work stands on.
+    expect(included).toContain("spire");
+    expect(included).toContain("spire-crds");
   });
 
   test("detects repo-backed child Applications that should track the harness git ref", () => {
@@ -974,28 +990,59 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test live failure shaping", (
       const result = await runHarness(parsed);
       expect(result.ok).toBe(false);
       if (result.ok) throw new Error("expected a missing dev Grafana credential to fail the harness");
-      expect(result.failure.kind).toBe("DevGrafanaAdminSecretMissing");
+      expect(result.failure.kind).toBe("DevBootstrapSecretMissing");
       expect(result.failure.message).toContain("grafana-admin-credentials");
     });
   });
 
   /**
-   * And the SMOKE roster does not assert kube-prometheus-stack, so it has no
-   * business failing on that Application's credential. A guard that fires
-   * outside the scope it belongs to is a check reporting on something it was
-   * never asked about.
+   * THE SECOND ENTRY IN THE ROSTER, checked separately and on purpose.
+   *
+   * `oz` left the deferred set on 2026-08-22 partly because
+   * `openziti/ziti-admin-credentials` is now minted at bring-up. If the guard
+   * only ever looked at the first `DEV_BOOTSTRAP_SECRETS` entry it would still
+   * pass the Grafana test above while asserting nothing about this one, and
+   * ziti-controller would return to `CreateContainerConfigError` with the
+   * harness reporting a Progressing Deployment 2400 seconds later. The fake
+   * kubectl answers per secret NAME so that this test can only pass by the
+   * guard actually reaching the second entry.
    */
-  test("smoke scope does NOT refuse on the Grafana credential", async () => {
-    await withFakeClusterCli("grafana-secret-missing", async () => {
+  test("included scope REFUSES when the dev ziti admin credential is absent", async () => {
+    await withFakeClusterCli("ziti-secret-missing", async () => {
       const parsed = parseArgs(
-        ["--run", "--provider", "kind", "--scope", "smoke", "--existing", "--timeout-sec", "1", "--poll-sec", "1"],
+        ["--run", "--provider", "kind", "--scope", "included", "--existing", "--timeout-sec", "1", "--poll-sec", "1"],
         {},
       );
       if ("kind" in parsed) throw new Error(parsed.message);
 
       const result = await runHarness(parsed);
-      if (!result.ok) expect(result.failure.kind).not.toBe("DevGrafanaAdminSecretMissing");
+      expect(result.ok).toBe(false);
+      if (result.ok) throw new Error("expected a missing dev ziti credential to fail the harness");
+      expect(result.failure.kind).toBe("DevBootstrapSecretMissing");
+      expect(result.failure.message).toContain("ziti-admin-credentials");
+      expect(result.failure.message).toContain("openziti");
     });
+  });
+
+  /**
+   * And the SMOKE roster does not assert kube-prometheus-stack or oz, so it has
+   * no business failing on those Applications' credentials. A guard that fires
+   * outside the scope it belongs to is a check reporting on something it was
+   * never asked about.
+   */
+  test("smoke scope does NOT refuse on the bootstrap credentials", async () => {
+    for (const mode of ["grafana-secret-missing", "ziti-secret-missing"] as const) {
+      await withFakeClusterCli(mode, async () => {
+        const parsed = parseArgs(
+          ["--run", "--provider", "kind", "--scope", "smoke", "--existing", "--timeout-sec", "1", "--poll-sec", "1"],
+          {},
+        );
+        if ("kind" in parsed) throw new Error(parsed.message);
+
+        const result = await runHarness(parsed);
+        if (!result.ok) expect(result.failure.kind).not.toBe("DevBootstrapSecretMissing");
+      });
+    }
   });
 
   test("the same run does NOT refuse when the dev StorageClass is present", async () => {
@@ -1202,6 +1249,7 @@ describe("DEV_EXCLUDED_REASONS", () => {
 describe("081M0JXXFV0087G0R00...: the four newly-visible non-storage defects", () => {
   const applicationsRoot = resolve(import.meta.dir, "../../../full-ai-cluster/k8s/applications");
   const readApp = (dir: string): string => readFileSync(join(applicationsRoot, dir, "Application.yaml"), "utf8");
+  const bootstrapRoot = resolve(import.meta.dir, "../../../full-ai-cluster/k8s/bootstrap");
 
   test("the two LIVE-PROVEN fixes are asserted; the two unproven ones are not", () => {
     const applications = discoverExpectedApplications();
@@ -1248,6 +1296,91 @@ describe("081M0JXXFV0087G0R00...: the four newly-visible non-storage defects", (
   });
 
   /**
+   * THE READING THIS REASON HAS TO REFUSE, and it is the obvious one: that
+   * `hindsight` is over-sized and shrinking it fixes the lane.
+   *
+   * The ladder says otherwise -- the applied set is over the runner budget with
+   * hindsight at ZERO -- and `reason-truth.ts` now checks the four numbers that
+   * say so (`resource-rung` x2, `lane-cpu` x2). This test pins the SENTENCE, so
+   * a future edit cannot keep the citations and quietly drop the conclusion
+   * they were gathered to support.
+   */
+  test("hindsight's reason says it is the symptom, not the cause", () => {
+    const reason = APPLIED_BUT_UNASSERTED_REASONS.get("hindsight") ?? "";
+    expect(reason).toContain("HINDSIGHT IS THE SYMPTOM, NOT THE CAUSE");
+    expect(reason).toContain("Take hindsight to ZERO and the lane is still 4231m");
+    // AND THE SECOND HALF OF THE SENTENCE, which has changed answer TWICE and
+    // is pinned separately for exactly that reason: the lane-wide cut closed
+    // the gap (1906m), then did not (2906m, over by 406m), and now closes it
+    // again (2006m) -- not by excluding anything, but because the rung learned
+    // to reach raw in-repo manifests. A future edit that restores the
+    // comfortable version of this claim without restoring the arithmetic has to
+    // delete this line to do it, and `reason-truth.ts` checks the number itself
+    // against the ladder so the sentence cannot drift from it.
+    expect(reason).toContain("Take the WHOLE lane to `dev` and it is 1081m, which FITS with 1419m of spare");
+    // AND THE TWO SUPERSEDED ANSWERS ARE STILL IN THE PROSE, deliberately, so a
+    // reader meeting "2906/406" or "2006/494" in an older PR can find out what
+    // happened to them instead of concluding the record was quietly tidied.
+    expect(reason).toContain("2906m over by 406m");
+    expect(reason).toContain("then 2006m fits");
+    // The superseded claim must be GONE, not merely joined by the new one.
+    expect(reason).not.toContain("STILL OVER by 406m. So the only cut");
+    // The four capacity citations are the checked half. Their VALUES are
+    // verified by reason-truth.test.ts against the ladder; what is pinned here
+    // is that the reason still binds them at all -- a reason that keeps the
+    // prose and drops the citations is back to an unattached number.
+    for (const cited of [
+      "[cite: resource-rung hindsight metal 1000]",
+      "[cite: resource-rung hindsight dev 75]",
+      "[cite: lane-cpu metal 5231 over]",
+      "[cite: lane-cpu dev 1081 fits]",
+    ]) {
+      expect(reason).toContain(cited);
+    }
+  });
+
+  /**
+   * THE `headscale` TRAP, APPLIED TO THIS ENTRY BEFORE IT COSTS A CYCLE.
+   *
+   * `headscale`'s exit condition said "prints `sync=Synced health=Healthy`" and
+   * the lane does not require `Synced` -- seven Applications pass at
+   * `sync=Unknown health=Healthy` in the same green run. A LIFTS WHEN stricter
+   * than the gate it names keeps a deferral alive after its defect is gone,
+   * which is the acknowledgement-outliving-its-cause shape in its cheapest
+   * form. hindsight's exit condition is written against the gate the lane
+   * actually applies, and this refuses the stricter form by name.
+   */
+  test("hindsight's exit condition is not stricter than the gate it names", () => {
+    const reason = APPLIED_BUT_UNASSERTED_REASONS.get("hindsight") ?? "";
+    const liftsWhen = reason.slice(reason.indexOf("LIFTS WHEN:"));
+    // THE FIRST FORM OF THIS TEST WAS `not.toContain("sync=Synced
+    // health=Healthy")`, AND IT WENT RED ON A CORRECT REASON -- the sentence
+    // quotes the stricter gate in order to REFUSE it. That is the exact defect
+    // reason-truth.ts's own header describes ("a scanner that reddens on the
+    // token reddens the honest correction; one that tries to detect negation is
+    // guessing at English in a gate"), reproduced by the person who had just
+    // read it. Polarity has to be DECLARED, so what is pinned is the refusal
+    // clause itself, not the absence of a string.
+    expect(liftsWhen).toContain("`health=Healthy` -- NOT `sync=Synced health=Healthy`");
+    // ...and WHY, so the next reader does not "tighten" it back.
+    expect(liftsWhen).toContain("sync=Unknown health=Healthy");
+    expect(liftsWhen).toContain("kept `headscale` deferred for a cycle after its defect was gone");
+  });
+
+  /**
+   * The third blocker is a DEFECT and is deliberately not claimed to be a
+   * scheduling blocker: nobody has run hindsight-api without an LLM key, so
+   * whether it can reach Healthy that way is unknown. Recording the unknown as
+   * unknown is what stops a plausible sentence from becoming the reason a
+   * deferral outlives its cause -- the two measured false reasons this tree
+   * already carries (temporal, oz) were both plausible.
+   */
+  test("hindsight's reason records the unknown instead of guessing it", () => {
+    const reason = APPLIED_BUT_UNASSERTED_REASONS.get("hindsight") ?? "";
+    expect(reason).toContain("nobody has measured whether hindsight-api can reach Healthy WITHOUT an LLM API key");
+  });
+
+  /**
    * COCKROACHDB. The init Job must be a SYNC-phase hook. Left on the chart's
    * `helm.sh/hook: post-install` it becomes an ArgoCD PostSync hook, and
    * PostSync waits for the Sync phase to be healthy -- which cannot happen
@@ -1283,6 +1416,51 @@ describe("081M0JXXFV0087G0R00...: the four newly-visible non-storage defects", (
     // And the fix must NOT have been "let the chart make its own password":
     // that would be asserting less about the app to make the lane green.
     expect(text).not.toContain("adminPassword");
+  });
+
+  /**
+   * OZ / OPENZITI. The other half of the same shape, and the two properties the
+   * `oz` deferral was lifted on.
+   *
+   * The Application asks for an EXISTING admin Secret by name, and the trust
+   * bundle it mounts is only resolvable if trust-manager is pointed at the
+   * namespace where that bundle's source Secret is minted. Those two facts live
+   * in three files -- oz's Application, trust-manager's Application, and
+   * `DEV_ZITI_ADMIN_SECRET` -- and nothing but this test holds them together.
+   * Move any one and it goes red here, rather than as a `FailedMount` on
+   * `ziti-controller-ctrl-plane-cas` forty minutes into a live run.
+   */
+  test("the ziti credential the bring-up mints is the one the chart asks for", () => {
+    const text = readApp("oz");
+    expect(text).toContain("useCustomAdminSecret: true");
+    expect(text).toContain(`customAdminSecretName: ${DEV_ZITI_ADMIN_SECRET.name}`);
+    // The namespace the mint targets has to be the Application's destination,
+    // or the Secret lands where kubelet will not look for it.
+    expect(text).toContain(`namespace: ${DEV_ZITI_ADMIN_SECRET.namespace}`);
+  });
+
+  test("trust-manager's trust namespace is the namespace ziti's Bundle source is minted into", () => {
+    // trust-manager v0.15.0 resolves Bundle `sources[].secret` from ONE
+    // namespace and creates its Secrets-reading Role only there, so this single
+    // value decides whether `ziti-controller-ctrl-plane-cas` is ever written.
+    // Asserted against DEV_ZITI_ADMIN_SECRET.namespace rather than the literal
+    // so the two cannot drift apart silently.
+    const application = parseYaml(readApp("trust-manager")) as {
+      spec?: { source?: { helm?: { valuesObject?: { app?: { trust?: { namespace?: string } } } } } };
+    };
+    expect(application.spec?.source?.helm?.valuesObject?.app?.trust?.namespace).toBe(DEV_ZITI_ADMIN_SECRET.namespace);
+
+    // The k3s first-boot install of the SAME Helm release must agree. Two
+    // reconcilers own release `trust-manager` in namespace `cert-manager`; if
+    // they disagreed on this flag they would flip it against each other, and
+    // the Bundle would resolve or not depending on which ran last.
+    const bootstrap = readFileSync(join(bootstrapRoot, "trust-manager-install.yaml"), "utf8");
+    expect(bootstrap).toContain(`namespace: ${DEV_ZITI_ADMIN_SECRET.namespace}`);
+
+    // And that namespace must be created before trust-manager's Role lands in
+    // it. On metal that is a bootstrap manifest; the k3s deploy controller
+    // applies files in lexical order and `o` < `t`.
+    expect(existsSync(join(bootstrapRoot, "openziti-namespace.yaml"))).toBe(true);
   });
 
   /**

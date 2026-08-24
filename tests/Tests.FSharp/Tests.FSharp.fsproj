@@ -116,6 +116,7 @@
     <Compile Include="MixIr.Tests.fs" />
     <Compile Include="MixCogen.Tests.fs" />
     <Compile Include="ShivaGc.Tests.fs" />
+    <Compile Include="ShivaGcRegen.Tests.fs" />
     <Compile Include="Ephemeron.Tests.fs" />
     <Compile Include="DebounceObservation.Tests.fs" />
     <Compile Include="Netlist.Tests.fs" />
@@ -427,6 +428,8 @@
     <Compile Include="Protobuf.Swap.Tests.fs" />
     <Compile Include="SoftValue.Tests.fs" />
     <Compile Include="SoftValue.CrossVerify.Tests.fs" />
+    <Compile Include="SoftValueWidening.Tests.fs" />
+    <Compile Include="SoftValueWeightedSet.Tests.fs" />
     <Compile Include="TravelerFrame.Tests.fs" />
     <Compile Include="DecorrelationMetrology.Tests.fs" />
     <Compile Include="DecorrelationMeter.Tests.fs" />
@@ -460,6 +463,7 @@
     <Compile Include="CliffordPeriodicity.Tests.fs" />
     <Compile Include="AdinkraIdentity.Tests.fs" />
     <Compile Include="AdinkraOrbits.Tests.fs" />
+    <Compile Include="Formal/AdinkraIharaZeta.Tests.fs" />
     <Compile Include="Chip8DynamicalZeta.Tests.fs" />
     <Compile Include="SchedulerZeta.Tests.fs" />
     <Compile Include="TimeDilation.Tests.fs" />

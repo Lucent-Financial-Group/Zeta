@@ -144,9 +144,11 @@ elif [ -f "$APT_MANIFEST" ]; then
     # the arithmetic stays correct if someone later changes the attempt count,
     # the backoff, or `timeout-minutes` — which a fixed per-attempt timeout does
     # not. `src/Core.TypeScript/hygiene/audit-apt-budget-fits-job-timeout.ts`
-    # asserts the CI default below still fits inside the tightest job that runs
-    # install.sh, so a `timeout-minutes` edit that breaks the relation goes red
-    # instead of going silent.
+    # asserts the default below still fits inside EVERY job that runs install.sh,
+    # alongside that job's own measured non-apt work, so a `timeout-minutes` edit
+    # that breaks the relation goes red instead of going silent. It also reads the
+    # `ZETA_APT_BUDGET_SECONDS` override below wherever a workflow declares it, so
+    # raising the budget for one lane is checked the same way as raising it for all.
     #
     # WHY TWO DEFAULTS, AND WHY THAT IS NOT PARITY DRIFT (GOVERNANCE §24).
     # Parity is one script, one mechanism, one knob — not one constant. The
@@ -164,10 +166,16 @@ elif [ -f "$APT_MANIFEST" ]; then
     # ubuntu-24.04, run 32151321559 (2026-08-18), the whole apt phase — update
     # + install of the full manifest, 553 MB fetched — took 38.2 seconds
     # (14:55:52.96 -> 14:56:31.13). The 420s CI default is ~11x that. It is
-    # sized by the audit's requirement
-    #     ci_budget + kill_after + 120s pre-apt reserve <= tightest job timeout
-    # against the tightest job that runs install.sh — 600s, git-hotspot-cadence
-    # and helm-validate:structural: 420 + 10 + 120 = 550 <= 600.
+    # sized by the audit's requirement, which as of 2026-08-22 reads
+    #     budget + kill_after + THIS JOB's measured non-apt seconds <= its timeout
+    # per job, not once for the tightest. The earlier form of that line said
+    # "+ 120s pre-apt reserve", and the reserve was defined in the audit itself as
+    # "the work that PRECEDES it" — with NO term for the work that FOLLOWS. It
+    # therefore passed `low-memory.yml` at 420 + 10 + 120 = 550 <= 840 while that
+    # lane's non-apt work measured 571s at p90, i.e. it certified the one lane that
+    # provably could not fit. The binding job now is helm-validate:structural —
+    # 420 + 10 + 143 = 573 <= 600 — and low-memory is a recorded, reasoned exception
+    # in audit-apt-budget-fits-job-timeout.baseline.json rather than a silent pass.
     #
     # A FIRST DRAFT OF THIS SHIPPED AT 150s AND WAS WRONG, which is worth
     # recording because the failure is subtle. 150s was pinned by three
@@ -251,7 +259,7 @@ elif [ -f "$APT_MANIFEST" ]; then
     apt_update_rc=0
     # shellcheck disable=SC2086
     if timeout --signal=TERM --kill-after="${apt_kill_after}s" "$apt_update_slice" \
-         $SUDO apt-get update -y 2>&1 | tee "$apt_log"; then :; else apt_update_rc="${PIPESTATUS[0]}"; fi
+         $SUDO env DEBIAN_FRONTEND=noninteractive apt-get update -y 2>&1 | tee "$apt_log"; then :; else apt_update_rc="${PIPESTATUS[0]}"; fi
     if [ "$apt_update_rc" -eq 124 ]; then
       echo "⚠ apt-get update exceeded its ${apt_update_slice}s slice of the" >&2
       echo "  ${apt_budget}s apt budget — stalled mirror. Continuing to install;" >&2
@@ -292,8 +300,15 @@ elif [ -f "$APT_MANIFEST" ]; then
       if [ "$apt_slice" -lt 1 ]; then apt_slice=1; fi
       apt_install_rc=0
       # shellcheck disable=SC2086
+      # DEBIAN_FRONTEND=noninteractive + confdef/confold keep dpkg from stalling
+      # on a conffile prompt (e.g. fuse3's fuse.conf) when this runs headless —
+      # on a dev laptop, CI runner, devcontainer, or a fresh Cloud Agent base
+      # image where the package is installed for the first time. Without it the
+      # install dies with "end of file on stdin at conffile prompt" (rc=100).
       timeout --signal=TERM --kill-after="${apt_kill_after}s" "$apt_slice" \
-        $SUDO apt-get install -y --no-install-recommends \
+        $SUDO env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+          -o Dpkg::Options::=--force-confdef \
+          -o Dpkg::Options::=--force-confold \
           -o Acquire::Retries=3 \
           -o Acquire::http::Timeout=30 \
           -o Acquire::https::Timeout=30 \
@@ -352,9 +367,13 @@ elif [ -f "$APT_MANIFEST" ]; then
           apt_dpkg_left=$(( apt_dpkg_deadline - $(date +%s) ))
           [ "$apt_dpkg_left" -le 0 ] && break
           apt_dpkg_rc=0
+          # DEBIAN_FRONTEND=noninteractive + confdef/confold so a conffile prompt
+          # (e.g. fuse3's fuse.conf on a fresh headless base image) is answered
+          # with the default instead of stalling on "end of file on stdin at
+          # conffile prompt" — the same non-interactive guard as the install above.
           # shellcheck disable=SC2086
           timeout --signal=TERM --kill-after="${apt_kill_after}s" "$apt_dpkg_left" \
-            $SUDO dpkg --configure -a >"$apt_dpkg_log" 2>&1 || apt_dpkg_rc=$?
+            $SUDO env DEBIAN_FRONTEND=noninteractive dpkg --force-confdef --force-confold --configure -a >"$apt_dpkg_log" 2>&1 || apt_dpkg_rc=$?
           if [ "$apt_dpkg_rc" -eq 0 ]; then
             if [ "$apt_dpkg_waited" -gt 0 ]; then
               echo "✓ dpkg database repaired after waiting ${apt_dpkg_waited}s for the lock" >&2

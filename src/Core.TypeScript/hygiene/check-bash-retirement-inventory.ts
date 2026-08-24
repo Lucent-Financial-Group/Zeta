@@ -103,7 +103,6 @@ export const EXPECTED_RETAINED_SHELL: readonly string[] = [
   "tools/setup/install.sh",
   "tools/setup/linux.sh",
   "tools/setup/macos.sh",
-  "tools/setup/op-token-setup.sh",
   "tools/setup/persona-keys/keyring.sh",
   "tools/setup/secret-clip.sh",
 ];
@@ -160,6 +159,9 @@ export const RETAINED_SHELL_CATEGORY_BY_FILE: Readonly<Record<string, RetainedSh
   "tools/setup/common/tlaps.sh": "setup/bootstrap",
   "tools/setup/doctor.sh": "setup/bootstrap",
   "tools/setup/host-loop-bootstrap.sh": "setup/bootstrap",
+  // 081M0KCWPGV dual-HSM custody ceremony: a PREFLIGHT that must run before any
+  // PKCS#11 tooling exists on the host -- it checks whether the ceremony can
+  // safely proceed, so it cannot depend on the toolchain it is gating.
   "tools/setup/hsm/dkek-ceremony-preflight.sh": "setup/bootstrap",
   "tools/setup/install.sh": "setup/bootstrap",
   "tools/setup/linux.sh": "setup/bootstrap",
@@ -167,15 +169,19 @@ export const RETAINED_SHELL_CATEGORY_BY_FILE: Readonly<Record<string, RetainedSh
   // Secret-edge scripts (Aaron 2026-06-21): capture a secret via masked TTY / secure dialog /
   // clipboard and write it to the OS keystore (Keychain). Retained shell at the security edge
   // (same rationale as keyring.sh) — secure input + `security`/`osascript` are OS-edge ops.
-  "tools/setup/op-token-setup.sh": "setup/bootstrap",
+  //
+  // NOTE (op-token-setup): that rationale did NOT survive being tested. `osascript` and
+  // `security` are SPAWNED processes, not shell builtins, so nothing about the edge required a
+  // shell — unlike `keyring.sh`, whose `read -s` and shred-on-exit trap are genuinely in-process
+  // shell. The retention was habit wearing a security argument, and it was costing the property
+  // it claimed to protect: the shell put the token on `security(1)`'s argv
+  // (`docs/SHELL-DEPRECATION-SEQUENCE.md`, `argv-secret@83`). `tools/setup/op-token-setup.ts`
+  // replaces it and the value now crosses on stdin. `secret-clip.sh` still carries the same argv
+  // leak at line 93 and is NOT yet converted — it stays allowlisted, honestly, until it is.
   "tools/setup/secret-clip.sh": "setup/bootstrap",
   // keyring.sh is the intentionally-retained thin security EDGE: in-process seed
   // handling (`read -s`, umask-077, shred-on-exit) that must stay in shell; the
   // typed operational logic lives in keyset.ts ("bash only calls the edge").
-  // 081M0KCWPGV dual-HSM custody ceremony: a PREFLIGHT that must run before any
-  // PKCS#11 tooling exists on the host -- it checks whether the ceremony can
-  // safely proceed, so it cannot depend on the toolchain it is gating.
-  "tools/setup/hsm/dkek-ceremony-preflight.sh": "setup/bootstrap",
   "tools/setup/persona-keys/keyring.sh": "setup/bootstrap",
 };
 
