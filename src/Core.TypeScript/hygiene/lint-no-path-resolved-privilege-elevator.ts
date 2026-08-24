@@ -41,7 +41,7 @@
 // Anchors (Beacon): CWE-426 Untrusted Search Path / CWE-427 Uncontrolled Search Path
 // Element. Saltzer & Schroeder (1975) — complete mediation: one door, and a check that
 // names what it does not mediate.
-import { readdirSync, readFileSync, statSync } from "node:fs";
+import { readdirSync, readFileSync, type Dirent } from "node:fs";
 import { join } from "node:path";
 
 /** Elevator names that may never appear in a command position. */
@@ -182,28 +182,26 @@ const SKIP_DIRS: ReadonlySet<string> = new Set([
 export const SCAN_ROOTS: readonly string[] = ["src", "tools", "clis", "scripts"];
 
 export function collectFiles(root: string, rel: string, acc: string[]): void {
-  let entries: readonly string[];
+  // `withFileTypes` so the KIND arrives with the listing. Asking `statSync` afterwards is a
+  // second syscall against a name the listing already resolved, and an entry can vanish or
+  // change kind in between — the check-then-use race this repo lints for.
+  let entries: readonly Dirent[];
   try {
-    entries = readdirSync(join(root, rel));
+    entries = readdirSync(join(root, rel), { withFileTypes: true });
   } catch {
     return;
   }
   for (const entry of entries) {
-    const r = rel === "" ? entry : `${rel}/${entry}`;
-    const abs = join(root, r);
-    let s;
-    try {
-      s = statSync(abs);
-    } catch {
-      continue;
-    }
-    if (s.isDirectory()) {
-      if (SKIP_DIRS.has(entry)) continue;
+    const name = entry.name;
+    const r = rel === "" ? name : `${rel}/${name}`;
+    if (entry.isDirectory()) {
+      if (SKIP_DIRS.has(name)) continue;
       collectFiles(root, r, acc);
       continue;
     }
-    if (!/\.(ts|mts|cts|js|mjs|cjs)$/.test(entry)) continue;
-    if (/\.test\.(ts|mts|cts|js|mjs|cjs)$/.test(entry)) continue; // stated gap, see header
+    if (!entry.isFile()) continue;
+    if (!/\.(ts|mts|cts|js|mjs|cjs)$/.test(name)) continue;
+    if (/\.test\.(ts|mts|cts|js|mjs|cjs)$/.test(name)) continue; // stated gap, see header
     acc.push(r);
   }
 }
@@ -220,26 +218,21 @@ export function countShellElevatorUses(repoRoot: string): {
   // surface this lint does NOT mediate, and under-counting it would be the same failure as
   // a check that did not run looking like one that passed.
   const walk = (rel: string): void => {
-    let entries: readonly string[];
+    let entries: readonly Dirent[];
     try {
-      entries = readdirSync(join(repoRoot, rel));
+      entries = readdirSync(join(repoRoot, rel), { withFileTypes: true });
     } catch {
       return;
     }
     for (const entry of entries) {
-      const r = rel === "" ? entry : `${rel}/${entry}`;
-      let s;
-      try {
-        s = statSync(join(repoRoot, r));
-      } catch {
-        continue;
-      }
-      if (s.isDirectory()) {
-        if (SKIP_DIRS.has(entry)) continue;
+      const name = entry.name;
+      const r = rel === "" ? name : `${rel}/${name}`;
+      if (entry.isDirectory()) {
+        if (SKIP_DIRS.has(name)) continue;
         walk(r);
         continue;
       }
-      if (entry.endsWith(".sh")) acc.push(r);
+      if (entry.isFile() && name.endsWith(".sh")) acc.push(r);
     }
   };
   walk("");
