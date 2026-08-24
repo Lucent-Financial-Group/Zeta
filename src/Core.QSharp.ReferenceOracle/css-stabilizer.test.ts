@@ -101,8 +101,7 @@ const dimension = (code: Set<number>): number => Math.log2(code.size);
 const isDoublyEven = (code: Set<number>): boolean => [...code].every((c) => weight(c) % 4 === 0);
 const isSelfOrthogonal = (code: Set<number>): boolean =>
   [...code].every((a) => [...code].every((b) => dot(a, b) === 0));
-const setEq = (a: Set<number>, b: Set<number>): boolean =>
-  a.size === b.size && [...a].every((x) => b.has(x));
+const setEq = (a: Set<number>, b: Set<number>): boolean => a.size === b.size && [...a].every((x) => b.has(x));
 
 /**
  * Resolve a treaty entry, refusing rather than coercing when it is absent.
@@ -129,23 +128,44 @@ const reedMuller = (r: number, m: number): Set<number> => {
 };
 
 /** Reduced row echelon basis, ascending insertion — must match the F# `echelonBasis` exactly. */
+const lead = (v: number): number => 31 - Math.clz32(v);
+
+/** Reduce `word` by the pivots already recorded, leaving 0 when it is already in their span. */
+const reduceByPivots = (word: number, pivots: (number | undefined)[]): number => {
+  // Narrowed via a local rather than an assertion: `no-non-null-assertion` forbids `!` and
+  // `non-nullable-type-assertion-style` forbids the `as` cast, so the only form that satisfies
+  // both is the one that actually proves the value is present.
+  let v = word;
+  for (;;) {
+    if (v === 0) break;
+    const pivot = pivots[lead(v)];
+    if (pivot === undefined) break;
+    v ^= pivot;
+  }
+  return v;
+};
+
+/** Back-substitute a fresh pivot into every row already recorded — what makes the form REDUCED. */
+const backSubstitute = (n: number, v: number, pivots: (number | undefined)[]): void => {
+  const p = lead(v);
+  for (let b = 0; b <= n; b++) {
+    const r = pivots[b];
+    if (r !== undefined && (r & (1 << p)) !== 0) pivots[b] = r ^ v;
+  }
+  pivots[p] = v;
+};
+
 const echelonBasis = (n: number, code: Set<number>): number[] => {
   const pivots = new Array<number | undefined>(n + 1).fill(undefined);
-  const lead = (v: number): number => 31 - Math.clz32(v);
   for (const word of [...code].sort((a, b) => a - b)) {
-    let v = word;
-    while (v !== 0 && pivots[lead(v)] !== undefined) v ^= pivots[lead(v)] as number;
-    if (v !== 0) {
-      const p = lead(v);
-      for (let b = 0; b <= n; b++) {
-        const r = pivots[b];
-        if (r !== undefined && (r & (1 << p)) !== 0) pivots[b] = r ^ v;
-      }
-      pivots[p] = v;
-    }
+    const v = reduceByPivots(word, pivots);
+    if (v !== 0) backSubstitute(n, v, pivots);
   }
   const rows: number[] = [];
-  for (let b = n; b >= 0; b--) if (pivots[b] !== undefined) rows.push(pivots[b] as number);
+  for (let b = n; b >= 0; b--) {
+    const r = pivots[b];
+    if (r !== undefined) rows.push(r);
+  }
   return rows;
 };
 
@@ -274,10 +294,8 @@ describe("CSS stabilizer treaty — second oracle (TypeScript re-derivation)", (
     // The third oracle. Q# cannot be executed on every lane (QDK is an opt-in install), but its
     // source is text and its declared rows either match the computed ones or they do not. The
     // first draft of the Q# file got the Steane rows wrong; this test is what caught it.
-    const steaneMatch = qsharpSource.match(/function SteaneCheckRows\(\)[^}]*return \[([^\]]*)\]/);
-    const rmMatch = qsharpSource.match(
-      /function QuantumReedMullerCheckRows\(\)[^}]*return \[([^\]]*)\]/,
-    );
+    const steaneMatch = /function SteaneCheckRows\(\)[^}]*return \[([^\]]*)\]/.exec(qsharpSource);
+    const rmMatch = /function QuantumReedMullerCheckRows\(\)[^}]*return \[([^\]]*)\]/.exec(qsharpSource);
     expect(steaneMatch).not.toBeNull();
     expect(rmMatch).not.toBeNull();
     const parse = (m: RegExpMatchArray | null): number[] =>

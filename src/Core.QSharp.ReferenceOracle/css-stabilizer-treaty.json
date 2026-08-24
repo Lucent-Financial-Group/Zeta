@@ -14,7 +14,11 @@
       "selfOrthogonal": true,
       "selfDual": true,
       "basisHex": ["87", "4b", "2d", "1e"],
-      "weightDistribution": [[0, 1], [4, 14], [8, 1]],
+      "weightDistribution": [
+        [0, 1],
+        [4, 14],
+        [8, 1]
+      ],
       "codewordSetSha256": "8198366667a58e7ad6358ecd07cc28ba31f231803dc9f0e037de6308608ee9cf"
     },
     "steane_punctured_7_4_3": {
@@ -25,7 +29,12 @@
       "selfOrthogonal": false,
       "selfDual": false,
       "basisHex": ["43", "25", "16", "0f"],
-      "weightDistribution": [[0, 1], [3, 7], [4, 7], [7, 1]],
+      "weightDistribution": [
+        [0, 1],
+        [3, 7],
+        [4, 7],
+        [7, 1]
+      ],
       "codewordSetSha256": "13eddb6a5ffef1c697be84d08f605663778cfc5ea4df58c7c3034fb3bf89952a"
     },
     "rm_1_4": {
@@ -36,28 +45,41 @@
       "selfOrthogonal": true,
       "selfDual": false,
       "basisHex": ["9669", "5555", "3333", "0f0f", "00ff"],
-      "weightDistribution": [[0, 1], [8, 30], [16, 1]],
+      "weightDistribution": [
+        [0, 1],
+        [8, 30],
+        [16, 1]
+      ],
       "codewordSetSha256": "dc546013821259057503467dde34324d78cfff60c8e1f18a270145a3e9fab027"
     }
   },
   "cssCodes": {
     "adinkra_8_0_4": {
       "note": "k=0 IDENTICALLY: self-duality forces dim C = n/2. A stabilizer STATE, encoding nothing.",
-      "n": 8, "k": 0, "d": 4, "isStabilizerStateNotACode": true,
+      "n": 8,
+      "k": 0,
+      "d": 4,
+      "isStabilizerStateNotACode": true,
       "stabilizerGeneratorCount": 8,
       "xStabilizerRowsHex": ["87", "4b", "2d", "1e"],
       "zStabilizerRowsHex": ["87", "4b", "2d", "1e"]
     },
     "steane_7_1_3": {
       "note": "Steane. Provenance from our own matrix by one puncture -- NOT inheritance; the puncture destroys doubly-evenness.",
-      "n": 7, "k": 1, "d": 3, "isStabilizerStateNotACode": false,
+      "n": 7,
+      "k": 1,
+      "d": 3,
+      "isStabilizerStateNotACode": false,
       "stabilizerGeneratorCount": 6,
       "xStabilizerRowsHex": ["55", "33", "0f"],
       "zStabilizerRowsHex": ["55", "33", "0f"]
     },
     "quantum_rm_16_6_4": {
       "note": "Quantum Reed-Muller [[16,6,4]] (Calderbank-Shor 1996, Steane 1996). Defining code RM(1,4) stays INSIDE the adinkra category.",
-      "n": 16, "k": 6, "d": 4, "isStabilizerStateNotACode": false,
+      "n": 16,
+      "k": 6,
+      "d": 4,
+      "isStabilizerStateNotACode": false,
       "stabilizerGeneratorCount": 10,
       "xStabilizerRowsHex": ["9669", "5555", "3333", "0f0f", "00ff"],
       "zStabilizerRowsHex": ["9669", "5555", "3333", "0f0f", "00ff"]
