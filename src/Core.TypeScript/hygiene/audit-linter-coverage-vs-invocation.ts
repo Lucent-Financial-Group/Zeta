@@ -334,6 +334,9 @@ export const TOOLS: readonly ToolRow[] = [
  * rather than on a fixture. A coverage audit that does not notice its own findings being
  * closed is the vacuity class it was built to catch, one level up.
  */
+/** DELIBERATE SABOTAGE -- reverted in the next commit. Proves the new gate step fails. */
+const SABOTAGE_PROBE = (a: string, b: string): number => a.localeCompare(b);
+
 export const DECLARED_UNINVOKED: Readonly<Record<string, string>> = {
   "format:check": "prettier -- see the TOOLS row; turning it on reddens main on 20,354 files",
   "format:write": "the write half of the above; a formatter, never a gate",
