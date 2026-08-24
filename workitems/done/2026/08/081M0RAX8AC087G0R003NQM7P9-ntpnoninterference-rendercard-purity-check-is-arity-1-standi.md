@@ -300,6 +300,31 @@ that looks like a measurement.
   existed since 2026-08-13 (`unexecuted-test-files.ts`); **the F# half did not exist**, which is how
   an uncompiled 1000-case property sat on `main` since #2329.
 
+### One collateral finding from the lint's own walk
+
+CI went red on `lint-check-then-use-file-races` (one root cause, two jobs — that script runs inside
+the hygiene unit suite AND as its own `cross-verify` step). The scanner's directory walk was
+`readdirSync` followed by `statSync`, the readdir-then-stat race. Fixed by
+`readdirSync(dir, { withFileTypes: true })` with ENOENT interpreted from the listing itself and every
+other error **rethrown** — no baseline row, because a guard shipping its own violation exempted would
+be the vacuity class on a PR about checks that cannot fail. The linter's suggested `d.isFile()`
+predicate was deliberately **not** adopted: it silently drops non-regular entries the previous branch
+accepted, which is a scope change wearing a correctness fix.
+
+Running both walks side by side over `tests/` before trusting the new one — because a fix that
+quietly scans less looks green — turned up something real:
+
+```
+raw paths     old=1222  new=1128  only-old=95  only-new=1
+SCANNED set   old=754   new=754   only-old=0   only-new=0   (identical both directions)
+```
+
+All 95 are `.txt` under `tests/cross-verification/experience/fixtures/tree1/subdir1/`, whose
+`link_to_parent -> ..` is a deliberate **symlink cycle**. The old walk descended it and stopped only
+when the OS returned ELOOP. So the change is an improvement and touches no file this audit reads —
+and `MIN_SCANNED_FILES = 700` now makes a future silent narrowing fail loudly, since the scanner had
+no floor and a narrowed scan would otherwise report a clean census by seeing nothing.
+
 **Register: `unmetered`.** The lint has falsifiers in both ratchet directions and fires on the known
 instances, so it is not decoration; but no bug has yet been *caught* by it in the wild, and the four
 regions above are unsearched. It is not `metered` and this row does not claim it is.

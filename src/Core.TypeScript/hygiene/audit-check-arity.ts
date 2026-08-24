@@ -85,7 +85,7 @@
 //   docs/research/2026-08-23-local-to-global-obstruction-byte-lock-is-h0-not-h1-and-the-arity-gap-is-the-shippable-linter-lumen.md s5
 //   workitems/081M0RAX8AC087G0R003NQM7P9-*.md -- the sweep that produced the census.
 
-import { readdirSync, readFileSync, statSync } from "node:fs";
+import { type Dirent, readdirSync, readFileSync } from "node:fs";
 import { join, relative, sep } from "node:path";
 
 export const RULE_ANCHORS = [
@@ -565,27 +565,57 @@ export function auditSources(
 
 const SCAN_ROOTS = ["tests"] as const;
 
+/**
+ * One syscall per directory, no check-then-use window.
+ *
+ * `withFileTypes` returns each entry's KIND with the listing, so there is no second `statSync`
+ * that could observe a different filesystem than the `readdirSync` did (the readdir-then-stat
+ * race `lint-check-then-use-file-races.ts` forbids). ENOENT is interpreted from the listing call
+ * itself rather than pre-tested with `existsSync`; any other error is RETHROWN, because a scanner
+ * that swallows EACCES and reports a smaller file set is a check quietly narrowing its own scope.
+ *
+ * Deliberately NOT `d.isFile()`, which the linter suggests: that silently DROPS every non-regular
+ * entry the previous `statSync` branch accepted, which is a scope change wearing a correctness fix.
+ * The predicate stays "directory => recurse, anything else => candidate", exactly as before.
+ *
+ * ONE semantic difference, MEASURED rather than assumed, because a "fix" that quietly scans less
+ * would look green and this scanner is the thing that would have to notice. `Dirent.isDirectory()`
+ * does not follow symlinks where `statSync` did, so a symlinked DIRECTORY is emitted as a path
+ * instead of traversed. Running both walks side by side over `tests/` on 2026-08-23:
+ *
+ *   raw paths        old=1222  new=1128  only-old=95  only-new=1
+ *   SCANNED set      old=754   new=754   only-old=0   only-new=0   (identical both directions)
+ *
+ * All 95 are `.txt` inside `tests/cross-verification/experience/fixtures/tree1/subdir1/`, whose
+ * `link_to_parent -> ..` is a deliberate symlink CYCLE. The old walk descended it and terminated
+ * only when the OS returned ELOOP; the new one lists the link once and stops. So the difference is
+ * real, is an improvement, and does not touch a single file this audit actually reads. The floor
+ * below is what keeps that claim checkable rather than a one-time observation.
+ */
 function walk(dir: string, out: string[] = []): string[] {
-  let entries: string[];
+  let entries: Dirent[];
   try {
-    entries = readdirSync(dir);
-  } catch {
-    return out;
+    entries = readdirSync(dir, { withFileTypes: true });
+  } catch (e) {
+    if ((e as NodeJS.ErrnoException).code === "ENOENT") return out;
+    throw e;
   }
-  for (const e of entries) {
-    if (e === "node_modules" || e === ".git" || e === "bin" || e === "obj") continue;
-    const p = join(dir, e);
-    let st;
-    try {
-      st = statSync(p);
-    } catch {
-      continue;
-    }
-    if (st.isDirectory()) walk(p, out);
+  for (const d of entries) {
+    if (d.name === "node_modules" || d.name === ".git" || d.name === "bin" || d.name === "obj") continue;
+    const p = join(dir, d.name);
+    if (d.isDirectory()) walk(p, out);
     else out.push(p);
   }
   return out;
 }
+
+/**
+ * MIN_SCANNED_FILES -- a floor, because a scanner with no floor cannot report its own narrowing.
+ * `tests/` held 754 scannable files on 2026-08-23. If a future walk change silently stops
+ * descending somewhere, the census would go quiet and every rule would pass by seeing nothing.
+ * This is the one number that makes that failure loud. Raise it when the tree genuinely grows.
+ */
+export const MIN_SCANNED_FILES = 700;
 
 function collect(repoRoot: string): { path: string; text: string }[] {
   const out: { path: string; text: string }[] = [];
@@ -617,6 +647,15 @@ export function main(argv: readonly string[]): number {
     census = JSON.parse(readFileSync(join(repoRoot, CENSUS_PATH), "utf8")) as Census;
   } catch (e) {
     console.error(`FAIL: cannot read ${CENSUS_PATH}: ${String(e)}`);
+    return 1;
+  }
+
+  if (sources.length < MIN_SCANNED_FILES) {
+    console.error(
+      `FAIL: scanned only ${sources.length} test file(s), below the ${MIN_SCANNED_FILES} floor.\n` +
+        `    A scanner that quietly stops descending reports a clean census by seeing nothing, which is\n` +
+        `    this file's own subject: a check that cannot fail. Fix the walk or move the floor deliberately.`,
+    );
     return 1;
   }
 
