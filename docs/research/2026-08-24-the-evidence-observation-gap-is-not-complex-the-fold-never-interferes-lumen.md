@@ -22,7 +22,10 @@ stays in that register.
 | Can the probe detect interference at all? | **Yes — 50 000/50 000** in the control lane, where two opposite-phase paths give strictly less support than one |
 | So is ℂ doing real work in the fold? | **No.** ℂ is decoration there. Aaron's conjecture fails for the fold |
 | Is there ℂ in the repo? | **Yes, and it is genuine** — `AmplitudeEmu.fs` / `ZSetISA.qs`. But ℂ was **put in by construction**, not derived from the evidence/observation split |
-| Does the metering argument buy quantum behaviour? | **The weak version only** (§5), and the weak version is about *mathematical structure*, not physics |
+| Does the metering argument buy quantum behaviour? | **No — it buys the DEMARCATION LINE** (§6, Aaron's correction). What is measurable-here vs not, checkably partitioned |
+| Is the interference answer therefore "no"? | **Two answers, two layers** — impossible in the belief fold, **reachable** in the quorum/amplitude layer (`QuorumPhaseCancellation.tla`, Soraya 2026-08-13). **The line runs between them** (§6.1) |
+| Is metered noninterference a decoherence-free subspace? | **No — and not dynamical decoupling either.** Passive in *class*, but it does not satisfy DFS's defining symmetry. The honest match is the **closed-system idealisation** both approximate (§6.2) |
+| Does ρ = 1/(1+L) settle "how far can one instance stretch"? | **Could not settle — the formula has a free scale.** `L` is "ticks, seconds, or any monotonic unit", so any latency fits. Fix the normalisation first (§6.4) |
 
 ---
 
@@ -197,15 +200,145 @@ Tsirelson bound**. Tsirelson's bound is `S ≤ 2√2 ≈ 2.828` on the CHSH corr
 (`src/Core/Tsirelson.fs`). The former is the image of `S = 2√2` under a freely chosen linear map
 `ρ = S/12`, adopted for homoiconicity. Enforced by `lint-tsirelson-constant-caveat.ts`.
 
-## 6. Anchors (Beacon)
+## 6. The demarcation is the deliverable — and the repo already draws it in two places
+
+Aaron, 2026-08-24, on the weak/strong split: *"yes this is what the meter buys exactly is
+the distinction between which is measurable."*
+
+That supersedes §5's framing and improves it. The meter's product is **not** quantum behaviour,
+and not even a hedged claim about it — **the meter's product is the demarcation line itself**: a
+checkable partition of quantities into measurable-here and not-measurable-here. It is the vacuity
+class stated for physics — *a quantity that was not measured must never look like one that was.*
+
+**And the repo already contains that sentence, in `docs/VISION.md`:**
+
+> *"You can only distinguish coherent from incoherent addition if every contribution arrived through
+> a declared, metered channel. An ambient path … is an undeclared coupling that makes two
+> 'independent' sources coherent without either knowing. §13 is what keeps the channel list complete
+> enough for the √N-vs-N test to mean anything."*
+
+Metering does not make sources coherent or incoherent. **It makes the difference measurable** —
+`Var(ΣX) = Nσ² + N(N−1)ρσ²`, so amplitude scaling as √N vs N *is* the correlation measurement. That
+is Aaron's sentence, already written down, and it is the strongest support in this thread.
+
+### 6.1 The interference falsifier has TWO answers, because there are two layers — this is the line
+
+§1 measured the belief fold and found no interference. That is **half** the picture, and the other
+half was already verified two weeks earlier by Soraya in
+`src/Core.TLA/specs/QuorumPhaseCancellation.tla` (2026-08-13), which I found only after measuring:
+
+| layer | combination rule | interference | register |
+|---|---|---|---|
+| **Belief fold** (`BeliefConvergence.observe`) | pointwise × over non-negative `int64`, **no path sum** | **impossible** — 0/800 000 measured | classical, and provably so |
+| **Quorum / amplitude** (`AmplitudeEmu.merge`, the TLA spec) | **sums amplitudes** over one frame | **reachable** — and modelled as such | amplitude-like, by construction |
+
+**The demarcation runs exactly between those two rows**, and it is mechanical rather than
+rhetorical: *does the combination rule sum contributions, and can the weights carry a sign?* Both
+must hold. The belief fold fails both; the quorum layer satisfies both.
+
+The TLA spec also already states Aaron's frame better than §5 did — *"cancellation is the honest
+MEASUREMENT INSTRUMENT, not a vulnerability to design away … report the neutral fact — destructive
+interference occurred at magnitude X — and let policy attach the reading."* And it is scrupulous
+about which direction its results travel: it restricts the adversary to the 4th roots of unity so
+every amplitude is a **Gaussian integer and every sum is exact**, then notes that **reachability
+transfers up but non-reachability does not**. That is the demarcation discipline applied to a proof
+tool, and it is why the spec is trustworthy where a discretisation would not be.
+
+**So Aaron's "imaginary numbers come from the difference between evidence and observation" does have
+a home in existing verified work** — just not the home the conjecture proposed. ℂ is real in the
+quorum layer, where someone put it there deliberately and Soraya verified what it buys. It is
+decoration in the belief fold. §2's algebraic checks stand unchanged: neither layer derives ℂ *from*
+the evidence/observation gap.
+
+### 6.2 Which decoherence literature does metered noninterference actually match? **Neither — and the near-miss is the finding**
+
+There are two named literatures, and the temptation is to claim the passive one:
+
+- **Dynamical decoupling** — *active*: pulse sequences that time-average the system–environment
+  coupling to zero (Viola & Lloyd 1998; Viola, Knill & Lloyd 1999).
+- **Decoherence-free subspaces** — *passive*: encode in a subspace the environment cannot
+  distinguish, so there is nothing to decohere (Zanardi & Rasetti 1997; Lidar, Chuang & Whaley 1998).
+
+**Mechanism class: ours is passive**, clearly. A metered membrane applies no corrective pulses; it
+constrains which channels exist. So it is not DD.
+
+**But it is not a DFS either, and the reason is worth stating precisely, because it is the difference
+between an anchor and an over-claim.** A DFS is defined by a **symmetry of the coupling operators**
+that makes the system–environment interaction act as a multiple of the identity on a subspace. The
+environment is still there and still couples; it simply **cannot distinguish** states inside the
+subspace. Our metering asserts something different in kind: **that the channel list is complete** —
+there is no *undeclared* environment at all. Those are not the same condition, and neither implies
+the other.
+
+> **The honest match is not a decoherence-avoidance technique. It is the closed-system idealisation
+> that DD and DFS both exist to approximate.** Metering is an attempt to make that idealisation
+> *true by construction* rather than *approached asymptotically*.
+
+That is a **weaker** claim than "definition match with DFS" and a **more interesting** one, because
+it is falsifiable in our own terms: the idealisation holds exactly as far as the channel enumeration
+is complete, and completeness is auditable. Every ambient clock, allocator, or `Task.Run` leak is a
+counterexample — which is precisely why the `async-all-the-way` and
+`local-time-never-enters-the-shared-fold` rules exist. **Zurek's einselection / quantum Darwinism**
+is the third literature and is about how an environment *redundantly records* pointer states; it is
+the right frame for "which quantities a given observer can reconstruct", and it is not what a
+membrane provides.
+
+**Register: `toy`.** No falsifier has been run on the DFS/closed-system correspondence, and none is
+proposed here.
+
+### 6.3 "How far can you stretch one AI instance" — a real referent, and NO decoherence term
+
+Confirmed and stated so it cannot be over-read: there is **no established "coherence AI" term**, and
+I am not coining one. What is actually studied is **collective-communication cost** in tensor /
+pipeline / expert parallelism — all-reduce latency, interconnect domain boundaries, the step-time
+budget. In this repo the terms `NCCL` and `all-reduce` appear in exactly **two** files, both a
+backlog row and its PR-review archive (`081KT2T2J0008QG0R003BT1RS7`, distributed tensor inference
+over sharded factor graphs) — so there is no in-repo work to build on, and no term to borrow.
+
+The honest statement, with no physics in it: **a sharded model is one instance exactly while the
+synchronising collective completes inside the step cadence, and is two things when it does not.**
+
+### 6.4 The ρ = 1/(1+L) connection — **I could not settle it, and the reason is the useful part**
+
+The formula is real and in-repo: `ρ(L) = 1/(1+L)`, from `DelayDecorrelation` /
+`docs/research/2026-07-16-echolocation-debounce-and-the-real-sensor-fusion-proof.md`, with
+`DebouncedOracle.MinDelay` as the shipped `L`. The proposal — that interconnect latency *is* the `L`,
+making "how far can you stretch one instance" a measurement rather than a metaphor — is attractive
+and I think worth pursuing.
+
+**It is not checkable as stated, and here is the blocker:** `1/(1+L)` requires `L` to be
+**dimensionless**, and the source table gives `L` in *"ticks, seconds, or any monotonic unit."* Those
+are not interchangeable. With the unit free, **any** latency number can be made to fit by choosing
+the unit — which is exactly the Titius–Bode failure mode `numerology-vs-number-theory` names: a
+formula that fits beautifully and never found its structure.
+
+> **So the falsifier "the fitted `L` from published multi-node inference numbers should *track* the
+> formula, not merely correlate" cannot yet be run — because the formula has a free scale, and a free
+> scale makes tracking unfalsifiable.** What must be fixed first is the **normalisation**: `L` has to
+> be expressed relative to a stated reference interval (the step cadence is the natural candidate, and
+> it is the one quantity the parallelism literature actually publishes). Fix that, and the claim
+> becomes falsifiable in one afternoon against vendor numbers.
+
+**This is an instance of the demarcation being undrawable, which §6's own frame says is the most
+valuable result available here.** The quantity "is a sharded model one instance" is *not currently
+measurable* by our meter, not because the physics is hard but because our own formula has an
+unfixed unit. That belongs on the not-measurable-here side of the line until the normalisation is
+stated — and saying so is the meter working, not failing.
+
+## 7. Anchors (Beacon)
 
 - **Frobenius (1878)**; **Hurwitz (1898)** — ℝ, ℂ, ℍ, 𝕆 are the only normed division algebras; ℂ is
   the unique 2-dimensional one. This is the theorem doing the excluding in §2.4.
 - **Jordan / Hahn decomposition** (measure theory) — `μ = μ⁺ − μ⁻`, the seen/unseen split that our
   fold actually has, with a **ℤ/2** hidden part.
 - **Tsirelson (1980)** — `S ≤ 2√2`, the correlator bound §5 keeps distinct from the design constant.
-- **Zurek (1991, 2003)** — decoherence as uncontrolled environment coupling; the physics §5's strong
-  version would need and does not have.
+- **Zurek (1991, 2003)** — decoherence as uncontrolled environment coupling, einselection and quantum
+  Darwinism; the physics §5's strong version would need and does not have, and the right frame for
+  "which quantities can this observer reconstruct" (§6.2).
+- **Viola & Lloyd (1998)**; **Viola, Knill & Lloyd (1999)** — dynamical decoupling (the *active*
+  technique our metering is **not**).
+- **Zanardi & Rasetti (1997)**; **Lidar, Chuang & Whaley (1998)** — decoherence-free subspaces (the
+  *passive* one, whose defining symmetry condition our metering also does **not** satisfy — §6.2).
 - **Goguen & Meseguer (1982)** — noninterference; manifesto §13's actual anchor.
 - **Peyton Jones & Wadler (1993)** — imperative functional programming / the `IO` monad; the exact
   reference for "all effects declared at the type level".
@@ -213,7 +346,7 @@ Tsirelson bound**. Tsirelson's bound is `S ≤ 2√2 ≈ 2.828` on the CHSH corr
 **Provenance:** math-shape correspondences only. Math grounds validity; physics grounds the metering,
 by analogy. Nothing here is evidence that physics proves our system.
 
-## 7. Reproduce
+## 8. Reproduce
 
 ```bash
 bun src/Core.TypeScript/research/belief-fold-destructive-interference-falsifier.ts
@@ -221,7 +354,7 @@ bun src/Core.TypeScript/research/belief-fold-destructive-interference-falsifier.
 
 Row F is the control: it must report 50 000/50 000 or row E1's zero means nothing.
 
-## 8. Pointers
+## 9. Pointers
 
 - `src/Core/BeliefConvergence.fs` — `observe`, the fold that was measured.
 - `src/Core/AmplitudeEmu.fs` · `src/Core.QSharp.ReferenceOracle/ZSetISA.qs` · `src/Core/WSet.fs`
