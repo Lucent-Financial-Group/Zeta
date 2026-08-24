@@ -140,9 +140,19 @@ def test_the_wall_level_is_cleared_and_the_wall_is_learned_by_bumping() -> None:
     assert not invented, f"marked cells solid that are not walls: {invented}"
 
 
-def test_the_step_size_is_measured_not_imported() -> None:
-    """The agent derives pixels-per-cell from its own displacement, so it does
-    not depend on the environment's CELL constant."""
+def test_the_step_size_starts_unknown_and_becomes_the_measured_displacement() -> None:
+    """The agent derives pixels-per-cell from its own displacement.
+
+    KNOWN WEAKNESS, stated rather than hidden: this test cannot tell "measured"
+    from "imported". It catches a step size hardcoded AT CONSTRUCTION (the
+    `is None` line below), and nothing more — an agent that quietly assigned
+    `float(CELL)` on its first move instead of measuring passes every assertion
+    here. Measured: with that cheat applied, all 21 tests in this file pass.
+
+    So the real falsifier for the name is
+    `test_the_agent_survives_a_world_it_was_never_tuned_on` below, which changes
+    what a cell IS. This one is kept because the two catch different cheats.
+    """
     game = ZetaChase(seed=4)
     frame = reset(game)
     agent = PixelAgent()
@@ -150,6 +160,74 @@ def test_the_step_size_is_measured_not_imported() -> None:
     for _ in range(4):
         frame = advance(game, agent.act(_grid(game, frame)))
     assert agent._step_px == float(CELL)
+
+
+def _rescale_and_recolour(
+    grid: list[list[int]], scale: int, shift: int
+) -> list[list[int]]:
+    """Blow each pixel up into a scale x scale block and shift every colour.
+
+    The GAME is untouched — only what the agent sees. So the optimal action
+    count is unchanged by construction, and any difference in the agent's
+    behaviour is the agent's own.
+    """
+    out: list[list[int]] = []
+    for row in grid:
+        wide = [v + shift for v in row for _ in range(scale)]
+        out.extend([list(wide) for _ in range(scale)])
+    return out
+
+
+def _play_transformed(scale: int, shift: int) -> tuple[dict[int, int], float | None]:
+    """Run a full episode through the transform; return per-level action counts."""
+    from zeta_arc.environments.chase import _WALLS
+
+    game = ZetaChase(seed=4)
+    frame = reset(game)
+    agent = PixelAgent()
+    per_level: dict[int, int] = {}
+    level, used = game.level_index, 0
+    while game.level_index < len(_WALLS) and used < 300:
+        if not frame.frame:
+            break
+        if game.level_index != level:
+            per_level[level] = used
+            level, used = game.level_index, 0
+        frame = advance(
+            game, agent.act(_rescale_and_recolour(_grid(game, frame), scale, shift))
+        )
+        used += 1
+    per_level[level] = used
+    return per_level, agent._step_px
+
+
+def test_the_agent_survives_a_world_it_was_never_tuned_on() -> None:
+    """Change what a cell IS and what colour the floor is; nothing should move.
+
+    This is the falsifier the docstrings actually need. `background_colour` and
+    `_step_px` both claim to be MEASURED rather than imported, and the only way
+    to test that claim is to make the imported answer WRONG.
+
+    Non-vacuous, measured: with `_step_px` assigned `float(CELL)` on first move
+    instead of measured — a cheat that passes every other test in this file —
+    the agent dies on level 1 at every scale except 1, burning the whole
+    300-action budget with `_step_px` stuck at 8.0.
+    """
+    baseline, base_step = _play_transformed(1, 0)
+    assert base_step == float(CELL)
+    assert len(baseline) >= 2, "baseline episode did not get past the first level"
+
+    for scale, shift in ((2, 0), (1, 100), (3, 57), (2, -3)):
+        actions, step = _play_transformed(scale, shift)
+        # The step size is whatever a cell is IN THIS WORLD, not what it was in
+        # the world the agent was written against.
+        assert step == float(CELL * scale), (
+            f"scale={scale}: step_px {step} is not measured"
+        )
+        # ...and the trajectory is untouched, action for action.
+        assert actions == baseline, (
+            f"scale={scale} shift={shift} diverged: {actions} != {baseline}"
+        )
 
 
 def test_the_third_level_is_cleared_by_committing_to_a_route() -> None:
