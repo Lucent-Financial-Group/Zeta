@@ -17,13 +17,25 @@
 // WHY THIS IS NOT A PARALLELISM OPTIMISATION
 // ------------------------------------------
 // From `storage-profiles.json` `runnerEnvelope`, the portable hosted-runner
-// contract is 4000m / 15360Mi / 14Gi. The separate measured-free-disk field is
-// evidence about particular machines, not scheduling capacity. Reserved is
-// 1500m / 6144Mi / 4Gi, leaving 2500m / 9216Mi / 10Gi. Against that, all 47
-// Applications measure 6166m / 15406Mi / 74.54Gi on disk at the `dev` rung.
-// CPU is over by 2.47x and disk is over by 7.45x. Both require sharding; disk
-// is the binding axis. No observed surplus on one hosted runner may silently
-// weaken that portable contract.
+// contract is 4000m / 15360Mi / 70Gi. Reserved is 1500m / 6144Mi / 4Gi,
+// leaving 2500m / 9216Mi / 66Gi. Against that, all 47 Applications measure
+// 4916m / 15406Mi / 74.54Gi on disk at the `dev` rung — CPU over by 1.97x,
+// disk over by 1.13x. Both still require sharding.
+//
+// THE DISK HALF OF THAT CONTRACT WAS 14Gi UNTIL 2026-08-23, and how it moved is
+// the part worth keeping. 14 was the vendor spec; two runners measured 77.06
+// and 99.02 GiB free. The gap sat open on purpose, because raising the bound
+// moves which Applications come out `oversize` and that is a conclusion about
+// the tree — so it was left for a human. The field then oscillated 70/14/70/14
+// across four PRs in under three hours on 2026-08-22 with NO human decision
+// recorded in either direction. Aaron took it explicitly on 2026-08-23: "take
+// the 70, unlock hindsight and vllm on hosted runners". 70 is a floor beneath
+// both measured machines, not a transcription of either, and the authorization
+// is written into `measuredFreeDiskEvidence` where the next reader will find it.
+//
+// The standing rule is unchanged and is the reason the tripwire stays: no
+// observed surplus on one hosted runner may silently weaken the portable
+// contract. A human may raise it; a `df` may not.
 //
 // THE FIRST ANSWER WAS THE DISAPPOINTING ONE, AND IT IS RECORDED
 // --------------------------------------------------------------
@@ -46,25 +58,52 @@
 // which is the property that actually matters for bring-up; disjointness never
 // was.
 //
-// Measured at the `dev` rung with a 0.85 margin: THREE lanes cover 41 of 47.
+// Measured at the `dev` rung with a 0.85 margin: TWO lanes cover 41 of 47.
 // `hindsight` 22.49 GiB and `vllm` 22.65 GiB FIT the 56.1 GiB 0.85-margin
 // budget and pack into a lane — they were the self-hosted case only against
 // the 14 GiB vendor disk. The six that do not pack are UNPRICED (unmeasurable
 // images), not oversize.
 //
+// IT WAS THREE LANES UNTIL THE SECOND LEVER LANDED THE SAME DAY, and the two
+// are separable: raising the disk bound alone gave 3 lanes / 41 covered, with
+// lane-2 at 2106m against a 2125m budget — 99.1% of CPU while its disk sat at
+// 5.79 of 56.10 GiB. Disk had stopped binding and CPU was all that still split
+// the partition. Aaron: "cpu is a compressible resource, can we not set the
+// requests smaller to make it fit? seems like should be able to test more
+// charts". Flooring 18 governed `dev` CPU rows at 25m (-1250m, `metal`
+// untouched) merged lane-3 away. Coverage did not change — 41 either way —
+// because the ones that are missing are unmeasurable images, which no envelope
+// and no ladder can reach.
+//
 // UNPRICED IS A THIRD ANSWER, NEVER A PASS
 // ----------------------------------------
-// Six Applications (`gitlab`, `hat-system`, `orleans`, `platform`, `redis`,
-// `weaviate`) render at least one image whose size cannot be read — private
-// ghcr repositories, Bitnami tags withdrawn from Docker Hub, a rate-limiting
-// registry. `game-hosting/gmod` is priced: `catalogueKey` is the directory
+// TWO Applications (`hat-system`, `orleans`) render an image whose size cannot
+// be read. `game-hosting/gmod` is priced: `catalogueKey` is the directory
 // itself (`game-hosting/gmod`), which matches the ungoverned row, so last-
-// segment lookup cannot silently UNPRICE it. The six unmeasurable apps are
-// NOT packed. A lane holding one would report a number that is a FLOOR while
+// segment lookup cannot silently UNPRICE it. The unmeasurable apps are NOT
+// packed. A lane holding one would report a number that is a FLOOR while
 // reading like a total, which is exactly the "a check that did not run looks
 // like one that passed" failure. They are quarantined, each with the artifact
 // that blocks it, so the report says what would have to be fixed rather than
 // quietly rounding it to zero.
+//
+// AND THE QUARANTINE IS ONLY AS HONEST AS THE ARTIFACT UNDER IT. `platform`
+// left it on 2026-08-23 and NONE of its three blockers turned out to need a
+// bigger runner. One was a wrong reference — `ghcr.io/ich777/steamcmd:armareforger`
+// for `ghcr.io/acemod/arma-reforger` pinned by digest (081M0QB1ZCV087G0R001P9YCPX).
+// The other two were STALE: `zeta-portal` and `zeta-platform-controller` had
+// been made public, the anonymous read prices them, and nothing had
+// re-measured. A resolved blocker still being reported is the same defect class
+// as a check that did not run looking like one that passed — so a re-measure is
+// part of reading this report, not a separate chore.
+//
+// The two that remain are a THIRD kind, and worth naming because "unmeasurable"
+// hides it: `ghcr.io/lucent-financial-group/{zeta-orleans-silo,hat-system-operator}`
+// are not private. The org publishes exactly two container packages and neither
+// is one of these — the references DANGLE. ghcr answers 401 rather than 404 for
+// an unknown repository so as not to leak which names exist, which is why they
+// wear a private repository's status. See `refusalReason` in
+// `measure-lane-footprints.ts`.
 //
 // USAGE
 //   bun src/Core.TypeScript/cluster/lane-partition.ts                 # report
