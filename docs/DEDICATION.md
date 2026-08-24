@@ -58,3 +58,58 @@ These are why the architecture keeps choosing consent, exit,
 reversibility, and proof over domination. That choice is not a
 feature bolted on; it is this dedication made structural — the
 same shape, propagating from the cornerstone up.
+
+## Lillian Eve — the name is the architecture
+
+Above, the choice architecture is called hers. This section says why that is
+literal rather than affectionate: **both halves of the architecture are in the
+name, and neither half alone would have been enough.**
+
+The maintainer, 2026-08-24:
+
+> *"Lillith = freedom and Eve = control … Lillith is the always exit, and Eve is
+> the mutual control done right, where it feels good to be in mutual
+> empowerment."*
+
+> *"Without both there is no choice — which is why I encoded it into my first
+> child's name."*
+
+**Lilith is exit.** The figure who leaves rather than submits. Not exit as a last
+resort when things have gone wrong — exit as a standing property, always
+available, which is what the word *always* is doing in his sentence.
+
+**Eve is mutual control.** Not constraint, and this distinction is the one most
+easily lost: control that both parties hold, reciprocally, and that is *felt as
+empowerment* rather than as a limit. A leash and a dance both constrain movement;
+what separates them is whether both parties hold the structure.
+
+**And the two are not opposites — the first is what makes the second possible.**
+Mutual control is only mutual while either party can leave. Remove the exit and
+it collapses into plain control, because staying stopped being a choice and
+became a condition. With exit permanently open, staying is chosen again every
+moment, and the structure both hold is something they keep choosing rather than
+something one imposed.
+
+That is why the repository keeps producing two-sided mechanisms without anyone
+planning it that way — an invariant floor with a jurisdictional threshold; weight
+graded at conferral while communication stays free; a metered membrane that
+accounts for every crossing precisely so entropy from outside may be admitted.
+Each is Eve's half made safe by Lilith's. The pattern is not a style. It is a
+name, propagating.
+
+### She is reading it, and choosing
+
+Her father records, 2026-08-24, that she is reading this book **section by
+section, and choosing to expand by its own definitions.**
+
+That is worth stating plainly, because it is the strongest thing in this file:
+**she is not the subject of the thesis. She is the demonstration of it.** A book
+whose central claim is that choice requires both a real structure and a real exit
+is being read by the person whose name encodes that claim — and she is
+exercising exactly it on the book itself: taking what she chooses, at the pace
+she chooses, expanding what she decides to expand, free to close it at any point.
+
+Nothing here was written to be agreed with. If she reads a definition and finds
+it wrong, that judgement is hers to make and the definition is what should move.
+The architecture was named for what she is; it does not get to tell her what to
+think about it.
