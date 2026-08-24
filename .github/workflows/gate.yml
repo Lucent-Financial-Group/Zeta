@@ -1117,12 +1117,16 @@ jobs:
         # It turns NOTHING on and removes NO carve-out. Every carve-out may be deliberate;
         # this step makes the blindness legible and fails when it CHANGES.
         #
-        # Cost: ~13 s, of which ~12 s is the markdownlint-cli2 probe that asks the linter
-        # itself which files it opens (reimplementing its ignore semantics here would drift
-        # from the gate within a release). Runs in this job because bun and the locked
-        # dependency graph are already provisioned four steps up -- no new job, no new
-        # runner, no new install. At ~1,100 gate runs/month that is ~4.0 runner-hours/month,
-        # against the ~95 the eslint roster already costs.
+        # Cost: 21 s MEASURED ON THE RUNNER (job 97406378383, 10:53:56Z -> 10:54:17Z), not
+        # the 13 s the same command takes on a dev laptop -- the laptop number was the first
+        # one written here and it was replaced rather than kept, because a cost estimate that
+        # quotes the wrong machine is the same defect as a check that quotes the wrong file.
+        # Nearly all of it is the markdownlint-cli2 probe that asks the linter itself which
+        # files it opens; reimplementing its ignore semantics here would drift from the gate
+        # within a release. Runs in this job because bun and the locked dependency graph are
+        # already provisioned four steps up -- no new job, no new runner, no new install. At
+        # ~1,100 gate runs/month that is ~6.4 runner-hours/month, against the ~95 the eslint
+        # roster already costs. It scales with `.md` count, not with rule count.
         run: bun run hygiene:linter-coverage
       - name: Hygiene unit-test suite (closes the per-PR coverage gap)
         # Runs every src/Core.TypeScript/hygiene/*.test.ts. These are
