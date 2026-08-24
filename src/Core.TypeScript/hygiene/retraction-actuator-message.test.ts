@@ -10,9 +10,11 @@
 // heal in flight — so what IS testable is tested, and the rest is named as untested in
 // the change that introduced it rather than implied to be covered.
 
+import { readFileSync } from "node:fs";
+
 import { describe, expect, test } from "bun:test";
 
-import { isFullCommitSha, retractionCommitMessage } from "./retraction-actuator.ts";
+import { isFullCommitSha, normalizeFullCommitSha, retractionCommitMessage } from "./retraction-actuator.ts";
 
 const SHA = "0123456789abcdef0123456789abcdef01234567";
 const msg = retractionCommitMessage(SHA, "ep-012345678", 3);
@@ -111,5 +113,122 @@ describe("isFullCommitSha — the guard between the network and a shell command"
   test("is anchored at BOTH ends", () => {
     expect(isFullCommitSha(`x${SHA}`)).toBe(false);
     expect(isFullCommitSha(`${SHA}x`)).toBe(false);
+  });
+});
+describe("normalizeFullCommitSha — a value the sinks can use, not a verdict about one", () => {
+  // WHY THIS EXISTS ALONGSIDE `isFullCommitSha`. CodeQL's `js/http-to-file-access` flagged
+  // the two file paths built from `breakSha` even with the boolean guard in place, and it
+  // was RIGHT to: a predicate returns a verdict while the value reaching the sink is still
+  // the original HTTP response string. These falsify the replacement's actual claim —
+  // that the returned string is assembled from a literal in our own source.
+
+  const HEX = "0123456789abcdef";
+
+  test("accepts a full 40-hex object name and round-trips it exactly", () => {
+    expect(normalizeFullCommitSha(SHA)).toBe(SHA);
+  });
+
+  test("every character of the result comes from the hex alphabet", () => {
+    // The provenance claim cannot be tested by identity — JS strings compare by value, so
+    // a reconstruction of a valid sha is `===` to its input, and must be. What IS testable
+    // is that the output alphabet is closed: nothing outside `HEX` can survive.
+    const out = normalizeFullCommitSha(SHA);
+    expect(out).not.toBeNull();
+    for (const ch of out ?? "") expect(HEX).toContain(ch);
+  });
+
+  test("the result is always exactly 40 characters", () => {
+    expect((normalizeFullCommitSha(SHA) ?? "").length).toBe(40);
+  });
+
+  // The rejection table. Each row is a value that must never reach a path or a shell.
+  test("rejects a 39-character sha (one short)", () => {
+    expect(normalizeFullCommitSha(SHA.slice(0, 39))).toBeNull();
+  });
+
+  test("rejects a 41-character sha (one long)", () => {
+    expect(normalizeFullCommitSha(`${SHA}0`)).toBeNull();
+  });
+
+  test("rejects uppercase hex", () => {
+    expect(normalizeFullCommitSha(SHA.toUpperCase())).toBeNull();
+  });
+
+  test("rejects path traversal", () => {
+    expect(normalizeFullCommitSha("../../etc/passwd")).toBeNull();
+  });
+
+  test("rejects 40 characters with exactly one non-hex character", () => {
+    // The sharpest row: correct length, correct shape, one byte wrong. A length check or
+    // a `slice` would pass this; only a per-character parse refuses it.
+    expect(normalizeFullCommitSha(`${SHA.slice(0, 39)}z`)).toBeNull();
+    expect(normalizeFullCommitSha(`/${SHA.slice(1)}`)).toBeNull();
+    expect(normalizeFullCommitSha(`${SHA.slice(0, 20)}.${SHA.slice(21)}`)).toBeNull();
+  });
+
+  test("rejects shell metacharacters and the empty string", () => {
+    expect(normalizeFullCommitSha(`${SHA}; rm -rf /`)).toBeNull();
+    expect(normalizeFullCommitSha("$(whoami)")).toBeNull();
+    expect(normalizeFullCommitSha("")).toBeNull();
+  });
+
+  test("rejects whitespace padding that a trim-then-check would have accepted", () => {
+    expect(normalizeFullCommitSha(` ${SHA}`)).toBeNull();
+    expect(normalizeFullCommitSha(`${SHA}\n`)).toBeNull();
+  });
+
+  test("agrees with the predicate on every row — one definition, two shapes", () => {
+    // `isFullCommitSha` now delegates. This is the falsifier for that delegation: if the
+    // two ever disagree, the file has two notions of "is a git object name" again.
+    const rows = [
+      SHA,
+      SHA.slice(0, 39),
+      `${SHA}0`,
+      SHA.toUpperCase(),
+      "../../etc/passwd",
+      `${SHA.slice(0, 39)}z`,
+      "",
+      `${SHA}\n`,
+    ];
+    for (const row of rows) expect(isFullCommitSha(row)).toBe(normalizeFullCommitSha(row) !== null);
+  });
+});
+
+describe("the sinks consume the reconstructed value, not the parameter", () => {
+  // This is a SOURCE-level falsifier for the non-local property that the boolean guard
+  // could not carry. The letter path exists on `main` today with no guard above it at all
+  // (CodeQL alert #670) — the sink was written first and the guard arrived later, covering
+  // it by accident of ordering. If a future edit reintroduces the raw `sha` at a path or a
+  // shell, this fails loudly instead of silently re-opening the alert.
+  const source = readFileSync(new URL("./retraction-actuator.ts", import.meta.url), "utf8");
+  const body = source.slice(
+    source.indexOf('if (r.command.kind === "push_retraction")'),
+    source.indexOf("} catch (err)"),
+  );
+
+  test("the commit-message temp path is built from safeSha", () => {
+    expect(body).toContain(".git/RETRACTION_MSG_${safeSha.slice(0, 9)}");
+  });
+
+  test("the author letter path is built from safeSha", () => {
+    expect(body).toContain("-retraction-${safeSha.slice(0, 9)}.md");
+  });
+
+  test("the revert shell command is built from safeSha", () => {
+    expect(body).toContain("git revert --no-commit ${safeSha}");
+  });
+
+  test("no raw `sha` interpolation survives past the guard", () => {
+    // The guard line itself interpolates the raw value into the Error message, and that
+    // is the ONE permitted use: a refusal has to name what it refused, and an Error
+    // string is neither a path nor a shell word. So the window opens on the line AFTER
+    // the throw — everything from there to the catch must speak only in `safeSha`.
+    const guard = "if (safeSha === null) throw new Error(";
+    const guardEnd = body.indexOf("\n", body.indexOf(guard));
+    expect(guardEnd).toBeGreaterThan(0);
+    const afterGuard = body.slice(guardEnd);
+    expect(afterGuard).not.toContain("${sha}");
+    expect(afterGuard).not.toContain("${sha.");
+    expect(afterGuard).toContain("${safeSha.");
   });
 });

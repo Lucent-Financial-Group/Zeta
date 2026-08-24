@@ -149,22 +149,67 @@ function sh(cmd: string): string {
  * the route fails.
  */
 /**
- * A full 40-hex git object name, and nothing else.
+ * The sixteen bytes a git object name may contain — and the ONLY source of bytes
+ * `normalizeFullCommitSha` returns. Every character of that function's result is read
+ * out of this literal, so it is the whole provenance of every sanitised sha in this file.
+ */
+const HEX_DIGITS = "0123456789abcdef";
+
+/**
+ * Parse a full 40-hex git object name and RE-EMIT it from `HEX_DIGITS`, or refuse.
  *
  * `breakSha` reaches this edge from the GitHub API (`workflow_runs[].head_sha`) via
  * `isolateBreak`, and it is then interpolated into a SHELL COMMAND
  * (`git revert --no-commit <sha>`) and into two FILE PATHS (the commit-message temp file
  * and the author letter). CodeQL flags exactly that shape — `js/http-to-file-access`,
- * "write to file system depends on untrusted data" — and it is right to: nothing between
- * the network read and those uses had ever asserted what the value is.
+ * "write to file system depends on untrusted data" — and it is right to.
  *
- * A git object name is `[0-9a-f]{40}` with no exceptions, so the check costs nothing and
- * is total. Refusing here is fail-closed and keeps the machine's bookkeeping honest: the
- * caller records `push_result: pushed=false` and stands down, rather than running a
- * shell command built from an unvalidated string.
+ * A boolean predicate cannot fix that, and the earlier `isFullCommitSha(sha)` guard did
+ * not: a predicate returns a VERDICT while the value that goes on to the sink is still
+ * the original response byte-string. Any tool that treated a boolean as a barrier would
+ * be unsound, so the tool was correct and the code was merely safe-in-fact.
+ *
+ * This function returns the SANITISED VALUE instead. Each character is looked up in
+ * `HEX_DIGITS` and the copy appended to the result comes from `HEX_DIGITS`, never from
+ * `value` — so no byte of the HTTP response body survives into the returned string. The
+ * input is used only to choose indices; the output is assembled from a literal in this
+ * file. (Same discipline as re-emitting a timestamp from parsed epoch milliseconds:
+ * validate, then rebuild from something we own.)
+ *
+ * The improvement is structural, not cosmetic. With a predicate, the safety of a sink is
+ * a NON-LOCAL property — the author-letter path is safe only because a guard happens to
+ * sit above it in the same `try`, which the type system cannot see and a reviewer reading
+ * that line alone cannot either. That is not hypothetical: the identical letter-path sink
+ * exists on `main` today with no guard at all (alert #670) — the sink was written first
+ * and the guard arrived later, covering it by accident of ordering. Returning
+ * `string | null` makes the safe value a DIFFERENT BINDING from the tainted one, so a
+ * future sink that reaches for `sha` instead of `safeSha` is a visible mistake in review
+ * rather than an invisible one.
+ *
+ * Fail-closed: `null` makes the caller record `push_result: pushed=false` and stand down.
+ */
+export function normalizeFullCommitSha(value: string): string | null {
+  if (value.length !== 40) return null;
+  const out: string[] = [];
+  for (const ch of value) {
+    const i = HEX_DIGITS.indexOf(ch);
+    if (i < 0) return null;
+    out.push(HEX_DIGITS[i]!);
+  }
+  // Code-point count, not UTF-16 length: 40 units containing a surrogate pair would
+  // yield fewer iterations. Belt-and-braces — an astral character fails the lookup above.
+  if (out.length !== 40) return null;
+  return out.join("");
+}
+
+/**
+ * Predicate form, kept for the existing callers and tests that ask a yes/no question.
+ * Delegates so there is exactly ONE definition of "is a git object name" in this file.
+ * Prefer `normalizeFullCommitSha` anywhere the value then reaches a shell or a path:
+ * a boolean is an assertion about the input, the returned string IS the safe value.
  */
 export function isFullCommitSha(value: string): boolean {
-  return /^[0-9a-f]{40}$/.test(value);
+  return normalizeFullCommitSha(value) !== null;
 }
 
 export function retractionCommitMessage(breakSha: string, episodeId: string, openTicks: number): string {
@@ -286,18 +331,24 @@ if (invokedDirectly) {
       sh("git checkout -B retraction-work origin/main");
       let msgFile = "";
       try {
-        // Validate BEFORE the value reaches a shell command or a path. See
-        // `isFullCommitSha`; inside the try so a refusal is recorded as
-        // `push_result: pushed=false` and the machine stands down.
-        if (!isFullCommitSha(sha)) throw new Error(`breakSha is not a 40-hex git object name: ${sha}`);
-        const lane = `retraction-${sha.slice(0, 9)}`;
+        // Parse-and-RECONSTRUCT before the value reaches a shell command or a path.
+        // `safeSha` is rebuilt character-by-character out of `HEX_DIGITS`, a literal in
+        // this file, so no byte of the GitHub API response survives into it — the sinks
+        // below consume OUR bytes, not the network's. A boolean predicate could not give
+        // that property: it returns a verdict while the tainted string travels on.
+        // Inside the try so a refusal is recorded as `push_result: pushed=false` and the
+        // machine stands down. The raw `sha` appears ONLY in the diagnostic below, which
+        // is what makes a refusal legible; it never reaches a path or a shell.
+        const safeSha = normalizeFullCommitSha(sha);
+        if (safeSha === null) throw new Error(`breakSha is not a 40-hex git object name: ${sha}`);
+        const lane = `retraction-${safeSha.slice(0, 9)}`;
         if (!isValidLane(lane)) throw new Error(`retraction lane name is not a safe ref: ${lane}`);
         const ref = stagingRef(lane);
-        msgFile = `.git/RETRACTION_MSG_${sha.slice(0, 9)}`;
+        msgFile = `.git/RETRACTION_MSG_${safeSha.slice(0, 9)}`;
         // `--no-commit` so the message is ours: the revert must carry an
         // AgencySignature block to arrive on main signed (see retractionCommitMessage).
-        sh(`git revert --no-commit ${sha}`);
-        writeFileSync(msgFile, `${retractionCommitMessage(sha, episodeId, openTicks)}\n`);
+        sh(`git revert --no-commit ${safeSha}`);
+        writeFileSync(msgFile, `${retractionCommitMessage(safeSha, episodeId, openTicks)}\n`);
         sh(`git commit --no-verify --file=${msgFile}`);
         pushedSha = sh("git rev-parse HEAD");
         // `heartbeat/*` (ruleset 16934633) carries `deletion` only — no required checks,
@@ -308,9 +359,9 @@ if (invokedDirectly) {
           repo,
           ref,
           "main",
-          `revert: retract ${sha.slice(0, 9)} — sovereign auto-revert (episode ${episodeId})`,
+          `revert: retract ${safeSha.slice(0, 9)} — sovereign auto-revert (episode ${episodeId})`,
           [
-            `Automated retraction of \`${sha}\` by the sovereign auto-revert healer (081KZHGP45V).`,
+            `Automated retraction of \`${safeSha}\` by the sovereign auto-revert healer (081KZHGP45V).`,
             "",
             `main's \`build-and-test\` was red for ${String(openTicks)} consecutive tick(s) with no fleet`,
             "heal in flight, and the break isolated to this single commit.",
@@ -326,20 +377,20 @@ if (invokedDirectly) {
         const pr = step(episodeId, machine, { kind: "push_result", tick: latestTick, pushed: true });
         machine = pr.state;
         console.log(
-          `actuator: retraction ${pushedSha.slice(0, 9)} (reverts ${sha.slice(0, 9)}) parked on ${ref}; ` +
+          `actuator: retraction ${pushedSha.slice(0, 9)} (reverts ${safeSha.slice(0, 9)}) parked on ${ref}; ` +
             `PR #${String(opened.ok.number)} ${opened.ok.reused ? "re-used" : "opened"} (${opened.ok.url})` +
             (opened.ok.armed
               ? ", squash auto-merge armed"
               : `, auto-merge NOT armed: ${opened.ok.armError ?? "unknown"}`),
         );
         // Riven-2: the letter, recipe verbatim.
-        const letter = `docs/letters/to-${r.command.notifyAuthor.persona.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-retraction-${sha.slice(0, 9)}.md`;
+        const letter = `docs/letters/to-${r.command.notifyAuthor.persona.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-retraction-${safeSha.slice(0, 9)}.md`;
         writeFileSync(
           letter,
           [
-            `# Retraction notice — ${sha.slice(0, 9)} (episode ${episodeId})`,
+            `# Retraction notice — ${safeSha.slice(0, 9)} (episode ${episodeId})`,
             "",
-            `Your commit ${sha.slice(0, 9)} was retracted by the sovereign`,
+            `Your commit ${safeSha.slice(0, 9)} was retracted by the sovereign`,
             "auto-revert healer: main's build-and-test was red for",
             `${String(openTicks)} consecutive tick(s) with no fleet heal in flight.`,
             "A retraction is a retraction of bytes, never a judgment of the",
