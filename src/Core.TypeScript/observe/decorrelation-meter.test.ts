@@ -12,7 +12,7 @@
  */
 
 import { describe, expect, it } from "bun:test";
-import { mkdirSync, rmSync, writeFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 
@@ -47,6 +47,14 @@ const dec = (agent: string, tick: number, chosenIndex: number, options: readonly
 const loaded = (decisions: readonly TickDecision[]): DecisionLoad =>
   ({ decisions, unreadable: false, malformedLines: 0, fallbackLines: 0 });
 
+/**
+ * The AS-MERGED chance formula, reconstructed here so §4's comparisons name what they are
+ * measuring against instead of carrying bare literals. Keeping it executable is the point: it
+ * shows the two formulas disagree rather than asserting that they do.
+ */
+const asMergedChance = (a: readonly string[], b: readonly string[]): number =>
+  1 / ((a.length + b.length) / 2);
+
 /** N ticks where A and B both choose the SAME option every time. */
 const identicalStreams = (n: number): TickDecision[] =>
   Array.from({ length: n }, (_, i) => [dec("A", i, i % 4), dec("B", i, i % 4)]).flat();
@@ -55,9 +63,14 @@ const identicalStreams = (n: number): TickDecision[] =>
 const chanceStreams = (n: number): TickDecision[] =>
   Array.from({ length: n }, (_, i) => [dec("A", i, i % 4), dec("B", i, (i + Math.floor(i / 4)) % 4)]).flat();
 
+/**
+ * `mkdtempSync`, never a predictable `join(tmpdir(), name)`. A guessable path in a world-writable
+ * directory is a symlink-substitution target, and CodeQL flagged exactly that on the first draft
+ * of this file (alert 773, "insecure creation of file in the os temp dir"). `mkdtempSync` creates
+ * the directory itself with a random suffix and 0700, so there is nothing to pre-create.
+ */
 function withFixture(name: string, lines: readonly unknown[] | null, f: (root: string) => void): void {
-  const root = join(tmpdir(), `zeta-decorr-${name}-${process.pid}`);
-  rmSync(root, { recursive: true, force: true });
+  const root = mkdtempSync(join(tmpdir(), `zeta-decorr-${name}-`));
   try {
     mkdirSync(join(root, "data"), { recursive: true });
     if (lines !== null) {
@@ -190,13 +203,13 @@ describe("§4 chanceAgreement", () => {
 
   it("disjoint menus give 0 — the old 1/mean formula gave a positive number for menus that cannot agree", () => {
     expect(chanceAgreement(["a", "b"], ["c", "d"])).toBe(0);
-    expect(1 / ((2 + 2) / 2)).toBe(0.5); // what the as-merged formula would have said
+    expect(asMergedChance(["a", "b"], ["c", "d"])).toBe(0.5); // what the as-merged formula said
   });
 
   it("partially overlapping, different-sized menus: |A∩B|/(|A|·|B|)", () => {
     // A = {a,b}, B = {b,c,d} → shared {b} → 1/(2*3)
     expect(chanceAgreement(["a", "b"], ["b", "c", "d"])).toBeCloseTo(1 / 6, 12);
-    expect(1 / ((2 + 3) / 2)).toBeCloseTo(0.4, 12); // the as-merged formula, 2.4x too high
+    expect(asMergedChance(["a", "b"], ["b", "c", "d"])).toBeCloseTo(0.4, 12); // as-merged: 2.4x too high
   });
 
   it("is symmetric", () => {
