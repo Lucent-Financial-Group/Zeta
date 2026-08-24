@@ -735,9 +735,11 @@ function tracked(root: string, ...patterns: string[]): string[] {
  * linter's own glob-and-ignore resolution via a probe rule that only records names.
  *
  * Reimplementing the ignore semantics here would drift from the linter within a release;
- * asking the linter is the only answer that stays true. Costs ~12 s over this tree, paid
- * in a job that already installs the linter -- and it is the one number that makes the
- * markdownlint carve-outs a measured quantity instead of a comment.
+ * asking the linter is the only answer that stays true. Costs ~20 s of the gate step's
+ * measured 21 s on the CI runner (~12 s on a dev laptop; the runner number is the one that
+ * matters, and gate.yml quotes it), paid in a job that already installs the linter -- and it
+ * is the one number that makes the markdownlint carve-outs a measured quantity rather than
+ * a comment.
  */
 async function markdownlintExaminedCount(root: string): Promise<number> {
   const { main } = await import("markdownlint-cli2");
