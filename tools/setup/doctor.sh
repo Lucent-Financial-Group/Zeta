@@ -238,7 +238,13 @@ if [ "$(uname -s)" = "Darwin" ]; then
       pass "Touch ID sudo is configured in /etc/pam.d/sudo_local (survives OS updates)"
     else
       warn "Touch ID sudo is NOT durably configured"
-      echo "$touchid_out" | sed 's/^/    /'
+      # Indent each line without `sed s/^/.../` (SC2001): read the captured
+      # output line by line so the whole report stays attributable to this check.
+      while IFS= read -r _touchid_line; do
+        echo "    $_touchid_line"
+      done <<EOF_TOUCHID
+$touchid_out
+EOF_TOUCHID
       echo "    Fix (needs sudo once; this script deliberately does not change system settings):"
       echo "      bun tools/setup/touchid-sudo.ts --apply"
     fi
