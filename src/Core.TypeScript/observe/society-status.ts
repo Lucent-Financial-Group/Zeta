@@ -88,15 +88,27 @@ interface AgentHealth {
 function assessAgents(eventDir: string, nowMs: number): AgentHealth[] {
   const agents = ["alexa", "otto", "soraya"];
   const result: AgentHealth[] = [];
+  const repoRoot = join(eventDir, "..", "..");
+
+  // PRIMARY liveness signal: tick-history.json (refreshed every flush, reflects actual
+  // heartbeat cadence). The latest frame has agents_active, ticks_24h, and a timestamp
+  // that proves the society is alive — even when individual agent events haven't flushed
+  // to main yet.
+  const tickHistory = loadJSON<{ frames: TickFrame[] }>(join(repoRoot, "data", "tick-history.json"));
+  const latestFrame = tickHistory?.frames[tickHistory.frames.length - 1];
+  const frameAgeMs = latestFrame ? nowMs - new Date(latestFrame.t).getTime() : null;
+  const frameAgeMinutes = frameAgeMs !== null ? Math.round(frameAgeMs / 60000) : null;
+  const societyAlive = frameAgeMinutes !== null && frameAgeMinutes < 120;
+
+  // SECONDARY: vault-state.json for per-agent phase + last_seen (may be stale if flush lags)
+  const vaultState = loadJSON<VaultState>(join(repoRoot, "data", "vault-state.json"));
 
   for (const agent of agents) {
-    let count = 0;
     let lastAt: string | null = null;
     let maxPhase = 0;
+    let count = 0;
 
-    // FAST PATH: read from vault-state.json (pre-computed on each tick by the bridge).
-    // Only fall back to event scanning if vault-state is unavailable.
-    const vaultState = loadJSON<VaultState>(join(eventDir, "..", "..", "data", "vault-state.json"));
+    // Try vault-state for per-agent data
     if (vaultState) {
       for (const vault of vaultState.vaults) {
         for (const room of (vault as any).rooms ?? []) {
@@ -111,25 +123,19 @@ function assessAgents(eventDir: string, nowMs: number): AgentHealth[] {
       count = vaultState.total_events_read;
     }
 
-    // If vault-state didn't give us data, do a quick tail scan (last 100 only)
-    if (!lastAt) {
-      const files = readdirSync(eventDir).filter((f) => f.endsWith(".json")).sort();
-      const recentFiles = files.slice(-100);
-      for (const f of recentFiles) {
-        try {
-          const e = JSON.parse(readFileSync(join(eventDir, f), "utf-8"));
-          if (e.by !== agent) continue;
-          count++;
-          if (!lastAt || e.at > lastAt) lastAt = e.at;
-          if (e.phase?.phase > maxPhase) maxPhase = e.phase.phase;
-        } catch { /* skip */ }
-      }
-    }
+    // Agent health: use tick-history frame as the authoritative liveness signal.
+    // An agent is healthy if the SOCIETY is alive (frame < 2h old) AND agents_active
+    // includes them (tick-history reports 3 agents active = all three are ticking).
+    // Per-agent last_seen from vault-state may lag by flush frequency — that measures
+    // flush health, not agent health.
+    const agentsActive = latestFrame?.agents_active ?? 0;
+    const healthy = societyAlive && agentsActive >= 3;
 
-    const ageMs = lastAt ? nowMs - new Date(lastAt).getTime() : null;
-    const ageMinutes = ageMs !== null ? Math.round(ageMs / 60000) : null;
-    // Healthy if seen within last 2 hours (8 ticks at 15min)
-    const healthy = ageMinutes !== null && ageMinutes < 120;
+    // Age: prefer frame age (more current) when per-agent last_seen is stale
+    const agentAgeMs = lastAt ? nowMs - new Date(lastAt).getTime() : null;
+    const ageMinutes = agentAgeMs !== null && agentAgeMs < (frameAgeMs ?? Infinity)
+      ? Math.round(agentAgeMs / 60000)
+      : frameAgeMinutes;
 
     result.push({ agent, eventCount: count, lastSeen: lastAt, ageMinutes, phase: maxPhase, healthy });
   }
@@ -285,6 +291,33 @@ function display(repoRoot: string, eventDir: string): void {
     const drift = computeDrift(ciRuns, { roster });
     console.log(`\nCI Drift: ${drift.summary}`);
   }
+
+  // Drift dashboard snapshot (forge-agnostic: reads the pre-computed dashboard artifact).
+  // This covers ALL workflows — not just heartbeat self-reports.
+  const dashboardPath = join(repoRoot, "data", "drift-dashboard.json");
+  const dashboard = loadJSON<{
+    at: string;
+    ok: boolean;
+    counts: Record<string, number>;
+    coverage: { expected: number; observed: number; shortfall: number };
+    sources: string[];
+  }>(dashboardPath);
+  if (dashboard) {
+    const c = dashboard.counts;
+    const total = Object.values(c).reduce((s, n) => s + n, 0);
+    const greenPct = total > 0 ? ((c.green ?? 0) / total * 100).toFixed(0) : "?";
+    const redCount = c.red ?? 0;
+    const flapping = c.flapping ?? 0;
+    const unknown = c.unknown ?? 0;
+    const age = Math.round((Date.now() - new Date(dashboard.at).getTime()) / 60000);
+    console.log(`\nWorkflow Roster (all ${total} checks, ${age}min ago):`);
+    console.log(`  ${greenPct}% green (${c.green}), ${redCount} red, ${flapping} flapping, ${unknown} unknown`);
+    console.log(`  Coverage: ${dashboard.coverage.observed}/${dashboard.coverage.expected} observed (shortfall: ${dashboard.coverage.shortfall})`);
+    console.log(`  Sources: ${dashboard.sources.join(", ")}`);
+    if (!dashboard.ok) {
+      console.log(`  ⚠ Dashboard NOT OK — red or unknown checks present`);
+    }
+  }
   // Vault status
   if (vaultState) {
     console.log("\nVaults:");
@@ -302,6 +335,22 @@ function display(repoRoot: string, eventDir: string): void {
   if (!allHealthy) issues.push("agent(s) stale");
   if (forge.trending === "shrinking") issues.push("event rate declining");
   if (vaultState?.status === "cold") issues.push("vault-state cold");
+  // WIRE dashboard.ok into the verdict (Otto review 2026-08-22: ignoring it made
+  // the summary say "operational" while 9 checks were red — the dashboard's founding
+  // sentence violated one layer above the dashboard).
+  if (dashboard && !dashboard.ok) {
+    const redCount = dashboard.counts.red ?? 0;
+    const unknownCount = dashboard.counts.unknown ?? 0;
+    issues.push(`${redCount} red + ${unknownCount} unknown workflow checks`);
+  }
+  // Staleness threshold: if the dashboard is older than 12 hours, warn.
+  // The cadence fires every 6h — 12h means it missed at least one cycle.
+  if (dashboard) {
+    const dashboardAgeMs = Date.now() - new Date(dashboard.at).getTime();
+    if (dashboardAgeMs > 12 * 60 * 60 * 1000) {
+      issues.push(`workflow roster ${Math.round(dashboardAgeMs / 3600000)}h stale`);
+    }
+  }
   if (issues.length === 0) {
     console.log("✓ Society operational — all signals nominal");
   } else {
@@ -318,6 +367,21 @@ function outputJSON(repoRoot: string, eventDir: string): void {
   const forge = assessForgeHealth(repoRoot, eventDir);
   const vaultState = loadJSON<VaultState>(join(repoRoot, "data", "vault-state.json"));
 
+  // Include the drift-dashboard roster so machine consumers see ALL workflow health
+  // (Otto review: --json mode previously omitted this entirely, hiding 9 red checks)
+  const dashboard = loadJSON<{
+    at: string; ok: boolean;
+    counts: Record<string, number>;
+    coverage: { expected: number; observed: number; shortfall: number };
+    sources: string[];
+  }>(join(repoRoot, "data", "drift-dashboard.json"));
+
+  const dashboardOk = dashboard?.ok ?? null;
+  const issues: string[] = [];
+  if (!agents.every((a) => a.healthy)) issues.push("agent(s) stale");
+  if (forge.trending === "shrinking") issues.push("event rate declining");
+  if (dashboard && !dashboard.ok) issues.push("workflow checks red/unknown");
+
   const output = {
     timestamp: new Date(nowMs).toISOString(),
     agents,
@@ -325,11 +389,20 @@ function outputJSON(repoRoot: string, eventDir: string): void {
     forge,
     vaults: vaultState?.vaults ?? [],
     connectivity: vaultState?.connectivity ?? [],
+    workflowRoster: dashboard ? {
+      at: dashboard.at,
+      ok: dashboard.ok,
+      counts: dashboard.counts,
+      coverage: dashboard.coverage,
+      sources: dashboard.sources,
+    } : null,
     summary: {
       allHealthy: agents.every((a) => a.healthy),
+      dashboardOk,
       trending: forge.trending,
       totalBlocks: ecc.totalBlocks,
       eventsPerDay: forge.eventsPerDay,
+      issues,
     },
   };
   console.log(JSON.stringify(output, null, 2));
