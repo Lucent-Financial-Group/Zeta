@@ -180,3 +180,72 @@ extrapolation past N = 12 — is **not** metered and is labelled as such.
 - `src/Bayesian/CondorcetBoundary.fs` — `N_eff = N / (1 + (N−1)ρ) → 1/ρ`: correlation **caps** effective identity, it does not merely discount it
 - `db/effective-agent-count/README.md` — a **different** ρ (ICC(1) on file-sampling overlap). Not this quantity; not comparable; not conflated here.
 - `.github/workflows/agent-heartbeat.yml` — the roster §0 corrects
+
+---
+
+## APPENDED CORRECTION — 2026-08-24, after the run started, before any result was read
+
+**§0's roster claim is WRONG, and the brief it "corrected" was right.** Recorded
+here as an append rather than an edit: the original text stands above, the git
+history holds both, and nothing is quietly rewritten.
+
+**What happened.** I checked `.github/workflows/agent-heartbeat.yml` in the shared
+checkout at `/Users/acehack/Documents/src/repos/Zeta`. That checkout is at
+`0a4a7b41aa` — **50 commits behind `origin/main`** (`49a16f6a`). The `case
+"$AGENT"` block does not exist at that commit. It **does** exist on `origin/main`:
+
+```
+  case "$AGENT" in
+    alexa)  HEARTBEAT_MODEL="qwen2.5:0.5b" ;;
+    otto)   HEARTBEAT_MODEL="llama3.2:1b" ;;
+    soraya) HEARTBEAT_MODEL="gemma2:2b" ;;
+    *) echo "::error::no heartbeat model declared for agent '$AGENT'" >&2; exit 1 ;;
+  esac
+```
+
+with the comment *"Heterogeneous by design: three model FAMILIES, so a wrong
+answer from one agent is not automatically the wrong answer from the others."*
+The roster **is** `0.5b/1b/2b` across three families, exactly as the brief said.
+
+This is the `verify-the-tree-not-just-the-command` failure in its textbook form:
+a check that ran against a stale tree is **a check that did not run**, and it
+reported a confident negative. `grep` returning nothing is a claim about the tree
+you grepped, never about the repository. The control I should have run first, and
+did not, is `git rev-parse origin/main` against the tree I was reading.
+
+**What survives §0, re-verified on `origin/main` at `49a16f6a`:**
+
+- **The no-persona finding stands.** The tick exports
+  `ZETA_PARTICIPANT="local-llm:${MODEL}"` and calls `--participant
+  "local-llm:${MODEL}"`; `resolveParticipant` (`run-loop-real.ts:100-103`) routes
+  a `local-llm:` spec to `localLlmParticipant({ model })` — **model only, no
+  persona, no agent id.** Production varies *weights* across lanes and injects
+  *no costume at all*.
+- The determinism entailment stands: `temperature 0` + fixed seed + pinned model.
+  It now says something *weaker* than §0 claimed, because the three lanes no
+  longer run the same weights — identical inputs no longer force identical
+  outputs. So production ρ is a quantity to be **measured**, not entailed. Good:
+  that is what Arm A measures.
+- ρ\*(N=3) = 0 stands. It is algebra and never depended on the roster. Confirmed
+  by execution: `validate.ts` prints `rhoStarAlgebraic: N=3 -> 0.0000`.
+
+**What this changes about the reading, stated before the numbers are seen.**
+Production is now **three families, three lanes, no persona**. The quantity that
+prices the fleet is therefore the **cross-family ρ̂ with persona held fixed** — the
+sub-panel of Arm A in which the *only* thing that differs between agents is the
+model weights, which is exactly what differs between the production lanes. That
+panel is N = 3, so its boundary is ρ\*(3) = 0 and its
+`N_eff = 3 / (1 + 2ρ̂)`.
+
+**Predictions P1–P7 are untouched by this correction.** They are predictions about
+ρ̂ at 0.5b/1b/2b on this item set, which is precisely the run that is executing;
+none of them was derived from the roster claim. They stand as written, unamended,
+and I do not get to revise them now that I know the roster is heterogeneous.
+
+**One further correction to §4, found by execution rather than reasoning.** §4
+asserts that `alexa` and `soraya` have no `CURRENT-*.md` at the pinned commit and
+so run on the preamble alone. The run log says otherwise — all four personas load
+context (`alexa` 3818 bytes, `otto` 8594, `riven` 7424), because `loadContext`
+falls back to `memory/<persona>/NOTEBOOK.md` when `CURRENT-<persona>.md` is
+absent, and I read only the `CURRENT-*` glob. The condition is identical in the
+prior 7b/8b/9b run, so the like-for-like comparison is unaffected.
