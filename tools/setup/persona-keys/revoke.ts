@@ -23,6 +23,7 @@ import {
   ceremonyPromptLine,
   realBriefEffects,
   renderCeremonyBrief,
+  requestedBy,
   type CeremonyBrief,
   type CeremonyBriefEffects,
 } from "./ceremony-brief.ts";
@@ -160,7 +161,7 @@ export async function revokeCert(fx: RevokeEffects, opts: RevokeOptions): Promis
       ifDeclined:
         "the KRL is not written and nothing is staged; the certificate stays VALID and this " +
         "command exits reporting 'skipped-biometric'. Re-run when you are ready.",
-      requestedBy: fx.requester?.(),
+      ...requestedBy(fx.requester),
     };
     fx.notify?.(renderCeremonyBrief(brief));
     biometric = await requireBiometric(opts.biometricAuth, ceremonyPromptLine(brief));

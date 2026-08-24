@@ -101,6 +101,7 @@ import {
   ceremonyPromptLine,
   realBriefEffects,
   renderCeremonyBrief,
+  requestedBy,
   type CeremonyBrief,
   type CeremonyBriefEffects,
 } from "./ceremony-brief.ts";
@@ -502,7 +503,7 @@ export async function rotate(fx: RotateEffects, opts: RotateOptions): Promise<Ro
       "nothing is swapped, minted, promoted or retired; the keys currently in use stay in " +
       "use and this command exits reporting the rotation as not confirmed. Declining is " +
       "safe at this point precisely because no port has been touched yet.",
-    requestedBy: fx.requester?.(),
+    ...requestedBy(fx.requester),
   };
   fx.notify?.(renderCeremonyBrief(rotateBrief));
   const biometric = await requireBiometric(session.door, ceremonyPromptLine(rotateBrief));

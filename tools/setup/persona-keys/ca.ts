@@ -48,6 +48,7 @@ import {
   ceremonyPromptLine,
   realBriefEffects,
   renderCeremonyBrief,
+  requestedBy,
   type CeremonyBrief,
   type CeremonyBriefEffects,
 } from "./ceremony-brief.ts";
@@ -386,7 +387,7 @@ export async function ensureCa(
         "no keypair is generated and no file is written; this command exits reporting " +
         "'aborted-biometric' and the machine is exactly as it was. Nothing that already " +
         "trusts an existing CA is affected.",
-      requestedBy: fx.requester?.(),
+      ...requestedBy(fx.requester),
     };
     fx.notify?.(renderCeremonyBrief(brief));
     biometric = await requireBiometric(opts.biometricAuth, ceremonyPromptLine(brief));
@@ -553,7 +554,7 @@ export async function signMachineCert(
     ifDeclined:
       "no certificate is signed and nothing is written; this command exits reporting " +
       "'aborted-biometric'. Any certificate this machine already holds keeps working.",
-    requestedBy: fx.requester?.(),
+    ...requestedBy(fx.requester),
   };
   fx.notify?.(renderCeremonyBrief(certBrief));
   const biometric = await requireBiometric(opts.biometricAuth, ceremonyPromptLine(certBrief));

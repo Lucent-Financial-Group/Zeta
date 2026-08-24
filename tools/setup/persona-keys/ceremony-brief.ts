@@ -302,6 +302,25 @@ export interface CeremonyBriefEffects {
   readonly requester?: () => CeremonyRequester;
 }
 
+/**
+ * Build the optional `requestedBy` fragment for a brief, spread-style.
+ *
+ * `tsconfig` runs with `exactOptionalPropertyTypes: true`, under which an optional field and
+ * a field explicitly set to `undefined` are DIFFERENT types — so `requestedBy: fx.requester?.()`
+ * does not typecheck. That strictness is worth conforming to rather than widening the type:
+ * "the caller wired no requester" and "the requester resolved to nothing" are genuinely
+ * different states, and this module's whole discipline is that an absent fact renders as
+ * absent rather than as a guess.
+ *
+ * Usage matches the conditional-spread idiom already used across this package:
+ *   `...requestedBy(fx.requester)`
+ */
+export function requestedBy(probe: (() => CeremonyRequester) | undefined): { requestedBy?: CeremonyRequester } {
+  if (probe === undefined) return {};
+  const resolved = probe();
+  return { requestedBy: resolved };
+}
+
 /** The real doors: the block goes to STDERR, beside the gate's own `🔐` line, so that
  *  redirecting a ceremony's stdout to a file never silently discards the one text the
  *  operator is supposed to read before touching the sensor. */

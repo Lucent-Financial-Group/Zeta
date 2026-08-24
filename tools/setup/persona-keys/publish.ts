@@ -54,6 +54,7 @@ import {
   ceremonyPromptLine,
   realBriefEffects,
   renderCeremonyBrief,
+  requestedBy,
   type CeremonyBrief,
   type CeremonyBriefEffects,
 } from "./ceremony-brief.ts";
@@ -238,7 +239,7 @@ export async function publishKey(fx: PublishEffects, opts: PublishOptions): Prom
     ifDeclined:
       "nothing is sent to GitHub and the account is unchanged; this command exits reporting " +
       "'aborted-biometric'. The key file on disk is untouched either way.",
-    requestedBy: fx.requester?.(),
+    ...requestedBy(fx.requester),
   };
   const wouldPrompt = ceremonyPromptLine(brief);
 
