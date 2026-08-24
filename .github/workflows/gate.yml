@@ -1094,6 +1094,142 @@ jobs:
         # Its own falsifier runs in the step below: audit-check-arity.test.ts feeds each rule a
         # deliberately-broken fixture and requires it to go red, R2 in both ratchet directions.
         run: bun run hygiene:check-arity
+
+      - name: Check arity -- the NON-EQUALITY half (a taint claim is not a string search)
+        # The step above inspects EQUALITY only. Its own PR named the gap and declined to size
+        # it: "Non-equality checks are entirely outside the detector ... Largest unsearched
+        # region, unsized." It is now sized -- 24,805 non-equality assertion sites across 1,928
+        # test files -- and two live instances were fixed:
+        #
+        #   * tools/setup/persona-keys/machine.test.ts claimed "no private bytes anywhere in it"
+        #     and discharged it with `not.toContain("PRIVATE")` plus a PEM-armor regex.
+        #     Publishing the COMPLETE private key base64-encoded passed all of it: 27 tests,
+        #     128 expect() calls, green. That is a 2-safety property tested by a one-run string
+        #     search, and it sat on a key-publication path.
+        #   * DurableDiplomacyRankGate.Tests.fs asserted `Set.count caps >= 0`, which is
+        #     non-negative by construction -- and the match arm holding it was never reached,
+        #     so it was arity ZERO rather than merely vacuous.
+        #
+        # Two rules, and only one of them gates. R4 gates provably-unfalsifiable comparisons:
+        # every pattern is a THEOREM about the expression's type (a length is non-negative;
+        # `X >= X` is reflexivity), so Rice does not bite -- nothing semantic is decided.
+        # R5 is a census ratchet over absence-assertions discharging a taint / 2-safety claim,
+        # failing when a file's count goes UP and equally when it goes DOWN.
+        #
+        # R5 is deliberately NOT a gate: of the 10 sites where an absence assertion sits under a
+        # 2-safety name, SIX are correct -- backed by an exact-equality pin on the whole output
+        # or by a positive capability assertion. A gate at 60% false positives is not a gate, it
+        # is a nuisance that gets suppressed. `Assert.True(true)` is likewise NOT flagged: all 8
+        # live instances are the success leg of a discriminating match whose other leg is
+        # `Assert.True(false, ...)`, so the enclosing check can fail.
+        #
+        # Scanned REPO-WIDE, unlike the step above whose SCAN_ROOTS is ["tests"]: 1,194 of the
+        # tree's 1,230 *.test.ts files -- 97% -- live outside tests/, and BOTH bugs above were
+        # in that region.
+        #
+        # Its own falsifier runs in the step below: audit-check-arity-nonequality.test.ts feeds
+        # each rule a broken fixture and requires it to go red, R5 in both ratchet directions,
+        # plus controls asserting the shapes that must NOT be flagged.
+        run: bun run hygiene:check-arity-nonequality
+
+      - name: Linter coverage vs CI invocation (a configured linter must be an invoked one)
+        # THE CLASS: a linter is present, configured, believed to be checking a file, and does
+        # not examine it -- while the invocation exits 0. Every instance produces a check that
+        # did not run and looks like a check that passed. Three were found by hand on
+        # 2026-08-24 (the markdownlint research/workitem carve-outs, prettier+stylelint
+        # invoked nowhere, 81 unformatted files under tools/setup/persona-keys/), which is the
+        # argument for a machine rather than a fourth point fix. #10712 -- `lint:markdown`
+        # linting ZERO files and exiting 0 for months -- is the same class, already paid for.
+        #
+        # Four checks: every lint-family package.json script is invoked or declared uninvoked
+        # WITH ITS REASON (both directions -- a ledger you can only add to is a suppression
+        # list); every linter discovered in the tree through three independent routes is
+        # claimed by a ledger row whose declared disposition matches the workflows; every
+        # GATED tool asserts a floor on the corpus its invocation actually reaches, so exit 0
+        # over zero files stops being indistinguishable from exit 0 over 2,843; and
+        # tsconfig.json#exclude vs eslint.config.ts#ignorePatterns -- two lists of one fact,
+        # maintained separately, 11 divergences covering 619 .ts files -- must match the
+        # declared set exactly.
+        #
+        # It turns NOTHING on and removes NO carve-out. Every carve-out may be deliberate;
+        # this step makes the blindness legible and fails when it CHANGES.
+        #
+        # Cost: 21 s MEASURED ON THE RUNNER (job 97406378383, 10:53:56Z -> 10:54:17Z), not
+        # the 13 s the same command takes on a dev laptop -- the laptop number was the first
+        # one written here and it was replaced rather than kept, because a cost estimate that
+        # quotes the wrong machine is the same defect as a check that quotes the wrong file.
+        # Nearly all of it is the markdownlint-cli2 probe that asks the linter itself which
+        # files it opens; reimplementing its ignore semantics here would drift from the gate
+        # within a release. Runs in this job because bun and the locked dependency graph are
+        # already provisioned four steps up -- no new job, no new runner, no new install. At
+        # ~1,100 gate runs/month that is ~6.4 runner-hours/month, against the ~95 the eslint
+        # roster already costs. It scales with `.md` count, not with rule count.
+        run: bun run hygiene:linter-coverage
+
+      - name: No culture-sensitive collation in TypeScript (.claude/rules/culture-invariant-by-default.md)
+        # THE CHECK EXISTED AND DID NOT RUN. This is the mechanical enforcement of a carved
+        # rule, it has had a baseline file since it landed, and until this step no workflow
+        # invoked it -- neither by script name nor by path. My own linter-coverage audit
+        # (four steps up) classified it `A GENUINE HOLE` and declined to close it, because
+        # that audit does not widen checks. This step is the separate, measured change it
+        # named.
+        #
+        # WHY THIS ONE AND WHY NOW -- it would have caught a regression shipped TODAY.
+        # The rule's cited live failure is 081KT07NV0008QG0R001YDB73K: `ZSet.ofSeq` sorted
+        # culture-sensitively, which made `GCounter.Merge` NON-ASSOCIATIVE -- a CRDT law
+        # broken by a collation choice. On 2026-08-24 an agent shipped two `localeCompare`
+        # calls into a PR, reintroducing that exact class, and said so in its own words:
+        # "I introduced the class I was arming a check against, twelve files away." It was
+        # caught by hand, late. The machine that exists for precisely this was not wired in.
+        #
+        # WHY C# DOES NOT NEED THIS AND TYPESCRIPT DOES: `.editorconfig` sets CA1304/1305/
+        # 1307/1310/2007 to `error`, so the C# compiler refuses culture-sensitive comparison
+        # outright. TypeScript has no equivalent analyzer. The same carved rule was a wall in
+        # one language and a suggestion in the other -- that asymmetry, not carelessness, is
+        # why these keep reappearing.
+        #
+        # A COLD START CANNOT REDDEN main. The baseline records the 151 pre-existing
+        # instances across 77 files as a RATCHET, not an allowlist: a file's count may fall,
+        # never rise, and a file absent from the baseline may have none at all. So this fails
+        # only on NEW debt. Nothing was added to the baseline to land this step and no
+        # allowlist entry was created -- the check goes on exactly as it already was.
+        #
+        # Cost: 1.64 s MEASURED ON THE RUNNER (job 97432756112, 12:34:18.98Z -> 12:34:20.62Z),
+        # over the 3,178 tracked files `git ls-files` reports. The laptop number was 2.34 s
+        # warm / 6.39 s cold and is NOT the one quoted -- here the laptop would have OVERstated
+        # the cost, where in the linter-coverage step above it understated it. That is the
+        # argument for quoting the runner either way: a laptop figure is not conservative, it
+        # is just the wrong machine.
+        #
+        # It is a single pass scanning for a closed list of named APIs (localeCompare, the Intl
+        # family, toLocale*), so it scales with tracked-file count, not with rule count. At
+        # ~1,100 gate runs/month the two steps added here together cost ~0.52 runner-hours/
+        # month, against the ~6.4 the linter-coverage step above costs and the ~95 the eslint
+        # roster costs. Runs in THIS job because bun and the locked dependency graph are already
+        # provisioned nine steps up -- no new job, no new runner, no new install.
+        run: bun run hygiene:no-culture-sensitive-collation
+
+      - name: mise pin parity (GOVERNANCE §24 three-way parity)
+        # The second hole the linter-coverage audit named and declined to close. A pin audit
+        # that ran in no workflow: work-item 081KZKS9A6B08QG0R0008EG72M shipped an installer
+        # ISO carrying nixpkgs' mise 2025.11.7 where CI carried the pinned 2026.6.12, because
+        # a second flake built the SAME installer configuration without the mise-pin overlay.
+        # An unpinned mise is below `.mise.toml`'s min_version and falls into a tarball branch
+        # that is deliberately fatal on NixOS -- so the divergence surfaced only at FIRST BOOT,
+        # which is the worst possible place for a parity defect to be discovered.
+        #
+        # Two checks, one per way to re-diverge: STRUCTURAL (any flake building the installer
+        # config must apply the overlay -- discovered by `git ls-files`, so a newly added flake
+        # is covered the moment it exists) and VALUE (every site restating the pin agrees with
+        # `.mise.toml`, which is read as canonical rather than restated here).
+        #
+        # Green on main today, so it goes on with no backlog and no suppression. Cost: 0.044 s
+        # MEASURED ON THE RUNNER (job 97432756112, 12:34:20.623Z -> 12:34:20.668Z) -- it reads a
+        # handful of flake.nix files plus `.mise.toml`, and the figure is dominated by bun
+        # start-up. Its sibling `hygiene:dotnet-pin-parity` is already invoked; this closes the
+        # asymmetry between the two.
+        run: bun run hygiene:mise-pin-parity
+
       - name: Hygiene unit-test suite (closes the per-PR coverage gap)
         # Runs every src/Core.TypeScript/hygiene/*.test.ts. These are
         # fixture/in-memory tests (no MEMORY.md / user-scope deps), so they
@@ -1565,6 +1701,24 @@ jobs:
       # channel that carries it.
       - name: Run lint-drift-publication-lands (stale-behind-green guard)
         run: bun src/Core.TypeScript/hygiene/lint-drift-publication-lands.ts
+
+      # A privilege elevator resolved by NAME is substitutable by any writable directory
+      # earlier on PATH, and planting one leaves NO GIT DIFF -- so review, AgencySignature
+      # and byte-lock, all of which watch the repo, cannot see it. That was live on main as
+      # a P1 (docs/BUGS.md, 2026-08-24): the shared biometric approval gate returned
+      # ok:true from a shim that executed nothing. Deliberately NOT
+      # `sonarjs/no-os-command-from-path` repo-wide: that rule was available and did not
+      # catch this one -- it matches on the CALLEE, so a `run()` wrapper, an argv-prefix
+      # array and a program held in a variable are all invisible to it.
+      - name: Run lint-no-path-resolved-privilege-elevator (PATH-forgeable sudo guard)
+        run: bun src/Core.TypeScript/hygiene/lint-no-path-resolved-privilege-elevator.ts
+
+      - name: Elevator resolver + lint falsifiers (a check that cannot fail is not a check)
+        run: |
+          bun test \
+            src/Core.TypeScript/privilege/elevator.test.ts \
+            src/Core.TypeScript/hygiene/lint-no-path-resolved-privilege-elevator.test.ts \
+            tools/setup/persona-keys/biometric.test.ts
 
       # Tsirelson's bound is S <= 2*sqrt(2) ~= 2.828 on the CHSH correlator, implemented at
       # src/Core/Tsirelson.fs. 1/(3*sqrt(2)) ~= 0.2357 is a DIFFERENT number: the image of

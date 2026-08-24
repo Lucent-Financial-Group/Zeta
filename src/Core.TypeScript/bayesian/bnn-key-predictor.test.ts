@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { BnnSocietyPredictor, EXPLORE_TICKS } from "./bnn-key-predictor";
+import { BnnSocietyPredictor, EXPLORE_TICKS, thompsonKeyOf } from "./bnn-key-predictor";
 import { WHY_TERMINAL, whyChain, type WhyContext } from "./why-chain";
 
 const W = 64;
@@ -311,5 +311,142 @@ describe("WHY chain payload (D5 of #14503)", () => {
       const isBoundary = answer.includes("where my reasons stop");
       expect(cites || isBoundary).toBe(true);
     }
+  });
+});
+
+describe("the agent can act at all (the frozen-agent regression)", () => {
+  const named: Record<number, string> = { 2: "UP", 8: "DOWN", 4: "LEFT", 6: "RIGHT" };
+
+  test("posterior sampling commits a key without any absolute confidence gate", () => {
+    // The live fusion asked `maxProb > 0.4`; the consensus over 17 keys peaks
+    // near 0.38, so the gate was crossed ZERO times and the agent froze. A
+    // rule with no constant in it cannot have that failure mode: sampling
+    // always names a key.
+    const flat: Record<number, number> = {};
+    for (let k = -1; k <= 0xf; k++) flat[k] = 1 / 17;
+    let draws = 0;
+    const key = thompsonKeyOf(flat, () => {
+      draws += 1;
+      return 0;
+    });
+    expect(key).toBeGreaterThanOrEqual(-1);
+    expect(draws).toBe(17); // every key got its own sample
+  });
+
+  test("a decisive belief still wins: sampling is not a coin flip", () => {
+    const sharp: Record<number, number> = {};
+    for (let k = -1; k <= 0xf; k++) sharp[k] = 0.001;
+    sharp[6] = 0.9;
+    // Zero-noise draw ⇒ pure argmax of the means.
+    expect(thompsonKeyOf(sharp, () => 0)).toBe(6);
+  });
+
+  test("the key beliefs FORGET, so a stale habit cannot outlive its evidence", () => {
+    // Feed one direction hard, then the opposite. Without forgetting the
+    // posterior mean is an all-history average and the first direction wins
+    // forever — measured live as RIGHT μ=0.391 vs UP μ=0.062, with vertical
+    // intent honoured 0 times in 188 asks.
+    const p = warmed(new BnnSocietyPredictor(3, 4));
+    const paint = (x: number, y: number): number[] => {
+      const d = blank();
+      paintRect(d, 12, 14, 2, 2, 2); // self
+      paintRect(d, x, y, 2, 2, 1); // adversary
+      return d;
+    };
+    // 150 ticks with the adversary far to the RIGHT (horizontal pull).
+    for (let i = 0; i < 150; i++) p.predict(paint(50, 14));
+    const afterRight = p.predict(paint(50, 14));
+    // Now 150 ticks with it directly BELOW (purely vertical pull).
+    for (let i = 0; i < 150; i++) p.predict(paint(12, 30));
+    const afterDown = p.predict(paint(12, 30));
+
+    const rightPull = (afterRight[6] ?? 0) - (afterRight[8] ?? 0);
+    const downPull = (afterDown[8] ?? 0) - (afterDown[6] ?? 0);
+    // The distribution must have MOVED with the geometry, not stayed put.
+    expect(rightPull).toBeGreaterThan(0);
+    expect(downPull).toBeGreaterThan(0);
+    expect(named[8]).toBe("DOWN");
+  });
+});
+
+describe("which body is mine (the wall-as-self regression)", () => {
+  const KEY_RIGHT = 6;
+
+  test("a wall drawn before the movers does not become the body", () => {
+    // The EXACT live sequence. mutual-sim draws its two walls one frame before
+    // the player and the AI exist, and `mutual-sim.priors` bakes
+    // exploreTicksDone: 240 into its snapshot — so the retired clock-gated
+    // election ("commit once exploration ends") was already satisfied on the
+    // first frame that had any track at all, and that frame contains ONLY
+    // walls. It committed to wall 1 and set committedSelfColor = 1, after
+    // which `elect(committedSelfColor) ?? elect(null)` could never fall
+    // through, because a wall is always on screen. Measured on the merged
+    // arena: the body was correct on 0 of 2999 ticks, on every one of 6 seeds.
+    const p = warmed(new BnnSocietyPredictor(3, 4));
+    const wallsOnly = (): number[] => {
+      const d = blank();
+      paintRect(d, 32, 10, 4, 4, 1);
+      paintRect(d, 32, 20, 4, 4, 1);
+      return d;
+    };
+    // Frames 0–1: walls only. This is where the old election was decided.
+    p.predict(wallsOnly());
+    p.predict(wallsOnly());
+
+    // Then the movers appear and the body answers to the key it is given.
+    let bodyX = 8;
+    for (let i = 0; i < 60; i++) {
+      const d = wallsOnly();
+      paintRect(d, bodyX, 15, 2, 2, 2); // the body — moves under RIGHT
+      paintRect(d, 50, 25, 2, 2, 3); // the opponent, elsewhere
+      p.predict(d, KEY_RIGHT);
+      if (bodyX < 26) bodyX += 1;
+    }
+
+    const self = p.lastPerception.tracks.find((t) => t.id === p.lastSelfId);
+    expect(self).toBeDefined();
+    // A wall is a 4×4 block pinned at column 32; the body is a 2×2 that has
+    // travelled. Both assertions, because either alone could pass by accident.
+    expect(self!.area).toBe(4);
+    expect(Math.abs(self!.cx - bodyX)).toBeLessThanOrEqual(3);
+    expect(self!.cx).toBeLessThan(30);
+  });
+
+  test("the null action is evidence: a pursuer that moves when I command nothing is not me", () => {
+    // Agreement alone cannot separate my body from something that CHASES it —
+    // when I go right, my pursuer goes right too, and scores just as well.
+    // Contingency can: my body moves when I command it AND holds still when I
+    // do not. Here the pursuer is deliberately the BETTER match on agreement
+    // (the body is blocked every 4th key tick, as a real body against a wall
+    // is), so a test that passes on agreement-only evidence cannot exist.
+    const p = warmed(new BnnSocietyPredictor(3, 4));
+    let bodyX = 6;
+    let pursuerX = 40;
+    // The pursuer is painted on the UPPER row deliberately: tracks are born in
+    // scan order, so it takes the lower id and therefore wins every tie. The
+    // retired election welded itself to that first-past-the-post winner and
+    // never revisited it, so without a revisable latch this test cannot pass
+    // by luck — the body has to actually out-evidence the pursuer and TAKE the
+    // identity back.
+    const paint = (): number[] => {
+      const d = blank();
+      paintRect(d, pursuerX, 8, 2, 2, 1); // same colour: no plane prior to lean on
+      paintRect(d, bodyX, 24, 2, 2, 1);
+      return d;
+    };
+    for (let i = 0; i < 80; i++) {
+      const commanded = i % 2 === 0;
+      p.predict(paint(), commanded ? KEY_RIGHT : undefined);
+      // The pursuer drifts right EVERY tick — including the ones where I
+      // commanded nothing at all. That is the tell, and it is the only one.
+      if (pursuerX < 58) pursuerX += 1;
+      // The body moves only when commanded, and not even always.
+      if (commanded && i % 8 !== 0 && bodyX < 28) bodyX += 1;
+    }
+
+    const self = p.lastPerception.tracks.find((t) => t.id === p.lastSelfId);
+    expect(self).toBeDefined();
+    // The pursuer sits on row 8; the body on row 24. Rows are the identity here.
+    expect(self!.cy).toBeGreaterThan(16);
   });
 });
