@@ -237,11 +237,15 @@ jobs:
           #
           # All three fit in ~2GB RAM (well within the 7GB runner limit).
           # The 7b codegen model is pulled separately for the work tick.
-          HEARTBEAT_MODELS_alexa="qwen2.5:0.5b"
-          HEARTBEAT_MODELS_otto="llama3.2:1b"
-          HEARTBEAT_MODELS_soraya="gemma2:2b"
-          HEARTBEAT_MODEL_VAR="HEARTBEAT_MODELS_${AGENT}"
-          HEARTBEAT_MODEL="${!HEARTBEAT_MODEL_VAR}"
+          case "$AGENT" in
+            alexa) HEARTBEAT_MODEL="qwen2.5:0.5b" ;;
+            otto) HEARTBEAT_MODEL="llama3.2:1b" ;;
+            soraya) HEARTBEAT_MODEL="gemma2:2b" ;;
+            *)
+              echo "::error title=heartbeat configuration invalid::No heartbeat model is assigned to agent $AGENT"
+              exit 1
+              ;;
+          esac
           echo "[models] $AGENT heartbeat model: $HEARTBEAT_MODEL"
           ollama pull "$HEARTBEAT_MODEL"
           # Smart model for codegen/decompose work (5GB, fits in 7GB runner)
@@ -285,11 +289,15 @@ jobs:
           AGENT: ${{ matrix.agent }}
         run: |
           # Each agent uses its own model family (structural decorrelation)
-          HEARTBEAT_MODELS_alexa="qwen2.5:0.5b"
-          HEARTBEAT_MODELS_otto="llama3.2:1b"
-          HEARTBEAT_MODELS_soraya="gemma2:2b"
-          MODEL_VAR="HEARTBEAT_MODELS_${AGENT}"
-          MODEL="${!MODEL_VAR}"
+          case "$AGENT" in
+            alexa) MODEL="qwen2.5:0.5b" ;;
+            otto) MODEL="llama3.2:1b" ;;
+            soraya) MODEL="gemma2:2b" ;;
+            *)
+              echo "::error title=heartbeat configuration invalid::No heartbeat model is assigned to agent $AGENT"
+              exit 1
+              ;;
+          esac
 
           mkdir -p /tmp && echo "2026-07-08" > /tmp/zeta-first-session-complete
           export ZETA_PARTICIPANT="local-llm:${MODEL}"
