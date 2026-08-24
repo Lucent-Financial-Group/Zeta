@@ -430,6 +430,34 @@ jobs:
       - name: Build kubevirt/cdi emulation proof plan (offline)
         run: bun src/Core.TypeScript/cluster/kubevirt-cdi-emulation-test.ts --dry-run
 
+      # THE VENDORED-BYTES CLAIM, CHECKED. `cdi/cdi-operator.yaml` and
+      # `kubevirt/kubevirt-operator.yaml` are the ONLY two upstream copies in the
+      # tree -- every other Application references a pinned upstream chart and
+      # overrides it with a valuesObject. Both file headers say the copies are
+      # byte-for-byte upstream, and `single-node-budget.json` REFUSES an edit on
+      # the strength of that sentence ("would make the checked-in copy diverge
+      # from the cluster it documents"). Until now the sentence was asserted and
+      # nothing re-measured it, which is the same shape as a rung whose
+      # provenance is a one-time manual render.
+      #
+      # Offline here: sha256 the committed bytes against the pinned upstream
+      # digest, and require every file the Application's own `directory.include`
+      # glob applies to be classified as upstream's or ours. `--fetch` (not run
+      # in this job) re-checks what the pinned URL serves today, which is the
+      # release-asset-replaced-in-place case.
+      #
+      # Mutation-checked in the unit tests, each class reached by mutating a
+      # scratch tree rather than by constructing a Finding: one byte changed in
+      # the copy, a `cpu: 25m` added to it, the copy deleted, the roster URL
+      # moved to a branch, a third file added to the glob, a rostered file
+      # dropped from the glob, upstream serving different bytes, and a fetch
+      # that fails. All eight go red; a file the glob EXCLUDES stays green.
+      - name: Run vendored-upstream parity unit tests
+        run: bun test src/Core.TypeScript/cluster/vendored-upstream-parity.test.ts
+
+      - name: Check the vendored operator manifests against their pinned upstream digests (offline)
+        run: bun src/Core.TypeScript/cluster/vendored-upstream-parity.ts
+
       # THE CILIUM LANE'S OFFLINE HALF. Pure, ~1s, so it rides in this job
       # rather than paying a fresh runner -- same reasoning as the single-node
       # readiness steps below.
@@ -735,14 +763,21 @@ jobs:
 
       # WHAT DISK THIS RUNNER ACTUALLY HAS, measured rather than quoted.
       #
-      # `storage-profiles.json`'s runnerEnvelope carries `freeDiskGib: 14`, and
-      # its own evidence string admits the capacity half is "a vendor number,
-      # not one we measured". `--measure-runner` reads /proc for CPU and memory
-      # and reads NO disk -- so the number the image-footprint argument divides
-      # by (~77 GB of images against ~14 GB free) had never been read off a
-      # runner. This step reads it, prints every mount (a hosted runner has a
-      # second disk at /mnt that no arithmetic here has ever counted), and
-      # measures the preinstalled toolchains a k8s lane never invokes.
+      # `storage-profiles.json`'s runnerEnvelope carried `freeDiskGib: 14` when
+      # this step was written -- a vendor number nobody had measured.
+      # `--measure-runner` reads /proc for CPU and memory and reads NO disk, so
+      # the number the image-footprint argument divided by (~77 GB of images
+      # against ~14 GB free) had never been read off a runner. This step reads
+      # it, prints every mount, and measures the preinstalled toolchains a k8s
+      # lane never invokes.
+      #
+      # THE BOUND IS 70 SINCE 2026-08-23, taken by the maintainer against these
+      # very measurements (77.06 GiB x64 / 99.02 GiB arm). That makes this step
+      # MORE load-bearing, not less: `--check-envelope` convicts a runner with
+      # LESS free disk than the envelope declares, and at 14 it could only ever
+      # have caught a machine no hosted runner resembles. At 70 it catches a
+      # runner that cannot hold what the lanes were planned against -- so if
+      # GitHub ever ships a smaller image, this is where it surfaces.
       #
       # ARMED as of run 32585090483, which is what the first (report-only) pass
       # bought. It measured 77.06 GiB available on `ubuntu-24.04` and 99.02 GiB
@@ -1052,14 +1087,21 @@ jobs:
       # Synced+Healthy, sealed-to-unsealed, or the job goes red.
       # WHAT DISK THIS RUNNER ACTUALLY HAS, measured rather than quoted.
       #
-      # `storage-profiles.json`'s runnerEnvelope carries `freeDiskGib: 14`, and
-      # its own evidence string admits the capacity half is "a vendor number,
-      # not one we measured". `--measure-runner` reads /proc for CPU and memory
-      # and reads NO disk -- so the number the image-footprint argument divides
-      # by (~77 GB of images against ~14 GB free) had never been read off a
-      # runner. This step reads it, prints every mount (a hosted runner has a
-      # second disk at /mnt that no arithmetic here has ever counted), and
-      # measures the preinstalled toolchains a k8s lane never invokes.
+      # `storage-profiles.json`'s runnerEnvelope carried `freeDiskGib: 14` when
+      # this step was written -- a vendor number nobody had measured.
+      # `--measure-runner` reads /proc for CPU and memory and reads NO disk, so
+      # the number the image-footprint argument divided by (~77 GB of images
+      # against ~14 GB free) had never been read off a runner. This step reads
+      # it, prints every mount, and measures the preinstalled toolchains a k8s
+      # lane never invokes.
+      #
+      # THE BOUND IS 70 SINCE 2026-08-23, taken by the maintainer against these
+      # very measurements (77.06 GiB x64 / 99.02 GiB arm). That makes this step
+      # MORE load-bearing, not less: `--check-envelope` convicts a runner with
+      # LESS free disk than the envelope declares, and at 14 it could only ever
+      # have caught a machine no hosted runner resembles. At 70 it catches a
+      # runner that cannot hold what the lanes were planned against -- so if
+      # GitHub ever ships a smaller image, this is where it surfaces.
       #
       # ARMED as of run 32585090483, which is what the first (report-only) pass
       # bought. It measured 77.06 GiB available on `ubuntu-24.04` and 99.02 GiB

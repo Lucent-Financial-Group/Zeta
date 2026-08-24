@@ -22,6 +22,14 @@ export {
 } from "./zeta-db-node";
 
 export {
+  noForgetBackpressureAdmissionPolicy,
+  type ZetaDbAdmissionDecision,
+  type ZetaDbAdmissionPolicyPort,
+  type ZetaDbAdmissionProposal,
+  type ZetaDbAdmissionResource,
+} from "./admission-policy";
+
+export {
   ZETA_DB_PROCEDURE_READOUT_SCHEMA,
   ZETA_DB_PROCEDURE_REQUEST_SCHEMA,
   createNativeZetaDbWasmHost,
@@ -41,3 +49,14 @@ export {
   type ZetaDbScheduledJournal,
   type ZetaDbScheduledRunReadout,
 } from "./scheduled-node";
+
+export {
+  compareAndSwapRevisionPolicy,
+  monotoneLastWriterWinsRevisionPolicy,
+  type RevisionPolicyDecision,
+  type RevisionPolicyId,
+  type RevisionPolicyPort,
+  type RevisionPolicyRefusal,
+  type RevisionPolicyResult,
+  type RevisionedBytes,
+} from "../persistence/revision-policy";
