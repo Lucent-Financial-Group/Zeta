@@ -161,11 +161,30 @@ already cites both.)
 Aaron 2026-08-24: *"since the declaration surface is small i think the derivation
 should be versioned and checked in too."*
 
-That **dissolves** the `clone-at-tag-stays-sufficient` constraint rather than
-negotiating with it. A clone at a tag with no `ace` on `PATH` already has the
-graph; nothing resolves at build time. It also makes a new dependency appear as a
-**line in a PR diff**, which is where supply-chain control actually starts, and it
-makes the artifact byte-lockable.
+Four reasons, and the first is the strongest:
+
+1. **Scientific reproducibility — an uncommitted derivation is UNFALSIFIABLE.**
+   A graph that exists only transiently cannot be checked by anyone else; a third
+   party has to take our word for what the dependencies were. Committed, anyone
+   can re-derive at any revision and compare. That turns *"these are the
+   dependencies"* from an assertion into a **checkable claim**, which is the
+   whole difference between the two registers this repo runs on. Aaron's standing
+   standard, quoted rather than paraphrased: *"prove your work lets others
+   reproduce exactly"* and *"reproducibility is where the meter and the
+   communications live, decorrelation is where the individual lives"* (both
+   2026-08-23). **A committed derivation is a meter reading someone else can
+   check.**
+2. **`clone-at-tag-stays-sufficient` satisfied for free.** A clone at a tag with
+   no `ace` on `PATH` already has the graph; nothing resolves at build time. The
+   constraint dissolves rather than being negotiated with.
+3. **The diff is the review surface.** A new dependency appears as a line in a
+   PR instead of entering silently through an import.
+4. **Byte-lockable.** A committed artifact can carry a golden vector; a
+   computed-on-demand one cannot.
+
+Reason 1 is also why the re-derive-and-compare guard below is not bureaucracy:
+**without it the committed file is a *claim about* a derivation rather than the
+derivation itself** — unfalsifiable again, with extra steps.
 
 **The failure mode is the entire design:** a committed derivation that nobody
 re-derives is the stale manifest it replaced, wearing the authority of a
@@ -196,6 +215,60 @@ this repo, even though something that looks like it does.** Notably the machiner
 is half-built already: there is a `build-graph:derive` verb and a
 `derivationInputsTouched()` helper (build-graph.ts:1439) whose stated purpose is
 deciding when skipping re-derivation is sound. Nothing calls it in CI.
+
+
+### The guard is scaffolding, and its successor is named
+
+Stated so nobody hardens a workaround into an invariant.
+
+**Re-derive-and-compare is the MANUAL version of what DBSP does automatically.**
+The check is needed because git *recomputes* derived state and never *maintains*
+it. DBSP is precisely "maintain a view under insertion and retraction". Aaron
+2026-08-24:
+
+> *"DBSP is how i plan to replace git with a mono repo alternative based on our
+> zetafs/db … content-based addressing, multi-foldered files, symlinks as first
+> class, and merkle dags / dagfs … all this rounds up to zsets, gsets, dbsp —
+> that's the deepest core and what the project was started on."*
+
+Note what the replacement is **not**: git is *already* a content-addressed Merkle
+DAG, so a better DAG is not the point. What git lacks is **incrementality over**
+that DAG. The successor is a DAG whose derived views are maintained.
+
+**REGISTER: this is a design claim, not a measured one — `unmetered`.** The
+substrate is real (measured on `origin/main` 2026-08-24, case-insensitive, with a
+zero-hit control term to prove the search discriminates: `DBSP` 1,639 files ·
+`ZSet` 1,432 · `content-addressed` 549 · `merkle` 538 · `GSet` 352 · `symlink`
+251, plus `src/Core.CSharp.Merkle`, `src/Core.Rust.Merkle`,
+`experiments/zetafs-webdav`). But **nothing in the tree demonstrates
+"drift becomes structurally impossible" end to end**, and that sentence is the
+load-bearing one. What would demonstrate it: a derived view materialised in the
+store, a retraction applied, and the view observed correct without any
+recompute-and-compare step — with a golden vector over the result.
+
+Also worth keeping honest per `numerology-vs-number-theory`: *git is a Merkle DAG
+and Zeta is a Merkle DAG* is a **structural match worth stating**; it is not
+evidence that the replacement works.
+
+**The successor must keep BOTH guarantees, and they are different.** Maintenance
+buys the drift property; it does **not** buy reproducibility. A maintained view
+that is never materialised and addressable is not checkable by a third party, so
+the falsifiability of reason 1 would be lost exactly while the drift problem was
+solved. Do not trade the first away to get the second.
+
+**Git's one-path-per-blob tree model is the other named limitation** ("multi-
+foldered files, symlinks as first class"). A content-addressed DAG naturally lets
+one blob be reachable from many paths; git's tree model does not. That is
+load-bearing here rather than cosmetic: a shared tool required by many code units
+is exactly a node with several parents — **and `pam-reattach` is that shape the
+moment a second consumer appears.**
+
+**And every lockfile in this tree is the same scaffolding.** `bun.lock`,
+`flake.lock`, `build-graph.json` are all committed derivations with (or, as §5
+shows, without) a re-derive check, existing for the same reason. If the DBSP
+store lands they are one thing, and all removable. That is the scale of the
+eventual payoff, and the reason not to invest heavily in bespoke per-artifact
+guards now.
 
 ### The model to copy instead: `bun.lock`
 
