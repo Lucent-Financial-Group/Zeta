@@ -353,3 +353,60 @@ describe("ace deps + out-of-subset YAML is the node rung's honest boundary", () 
     }
   });
 });
+
+// ------------------------------------------------- the highest-stakes surface: signing
+
+describe("ace's Ed25519 signing path is byte-identical across runtimes", () => {
+  // The integrity gate (BLAKE3) is covered by the install/list transcript above. The
+  // AUTHENTICITY gate is separate and is the one an attacker cares about, so it gets its
+  // own falsifier: if node and bun derived different key ids, or produced different
+  // signature bytes for the same key and payload, a package signed on one runtime would
+  // fail verification on the other — and the byte-identity claim would be false exactly
+  // where it matters most.
+  //
+  // Ed25519 signatures are deterministic by construction (RFC 8032 §5.1.6: the nonce is
+  // derived from the key and message, never from an RNG). That is what makes this a
+  // legitimate byte comparison rather than a comparison of two random draws — and it is
+  // also why a divergence here would be a real defect rather than expected noise.
+  test("same key + same payload -> identical key id and identical signature bytes", () => {
+    const node = nodeBin();
+    const sandbox = mkdtempSync(join(tmpdir(), "ace-parity-sign-"));
+    try {
+      const home = join(sandbox, "home");
+      mkdirSync(home, { recursive: true });
+      seedSandbox(sandbox);
+      const opts = { cwd: sandbox, encoding: "utf8" as const, env: { ...process.env, HOME: home } };
+
+      // The keypair is generated ONCE (it is genuinely random), then both runtimes sign
+      // with it. Generating one per runtime would compare two different keys and prove
+      // nothing — the vacuity class wearing a crypto test's clothes.
+      const keygen = spawnSync(process.execPath, [ACE_ENTRY, "keygen", "--out", "demo"], opts);
+      expect(keygen.status).toBe(0);
+
+      // BOTH write to the SAME `--out` path, and the first result is read before the second
+      // run overwrites it. Giving each runtime its own filename would put that filename in
+      // the success message and make stdout differ for a reason that has nothing to do with
+      // the runtimes — a false red that hides a real one. (Caught by exactly that.)
+      const signArgv = [ACE_ENTRY, "sign", "./pkg.json", "--key", "./demo.key", "--out", "./sig.json"];
+
+      const bunSign = spawnSync(process.execPath, signArgv, opts);
+      expect(bunSign.status).toBe(0);
+      const fromBun = readFileSync(join(sandbox, "sig.json"), "utf8");
+
+      const nodeSign = spawnSync(node, signArgv, opts);
+      expect(nodeSign.status).toBe(0);
+      const fromNode = readFileSync(join(sandbox, "sig.json"), "utf8");
+
+      // stdout carries the derived key id — identical means both runtimes agree on identity.
+      expect(nodeSign.stdout).toBe(bunSign.stdout);
+      expect(fromNode).toBe(fromBun);
+
+      // Not vacuous: a signature was actually produced, over the payload we meant.
+      const signed = JSON.parse(fromBun) as { manifest?: { signature?: { algo?: string; sig?: string } } };
+      expect(signed.manifest?.signature?.algo).toBe("ed25519");
+      expect((signed.manifest?.signature?.sig ?? "").length).toBeGreaterThan(60);
+    } finally {
+      rmSync(sandbox, { recursive: true, force: true });
+    }
+  });
+});
