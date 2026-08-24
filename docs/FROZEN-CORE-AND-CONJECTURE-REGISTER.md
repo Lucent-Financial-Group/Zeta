@@ -801,6 +801,38 @@ extensions. Schur's lemma — the centre of a full matrix algebra is the scalars
 the canonical commutation relation as the definition of a quantization. S. J. Gates Jr. et al. — adinkras
 and the `{Q_I,Q_J} = 2δ_IJ ∂_τ` algebra whose `∂_τ` is central.
 
+### B-doubling. Which soft-regime operations survive a Cayley-Dickson doubling is decidable from the laws they consume (Lumen 2026-08-24)
+
+**Conjecture Z-3: the doubling ceiling of an operation is computable from its call graph.** For any operation `f` in the soft regime expressed over `WeightedSet<'K,'W>`, the highest Cayley-Dickson rung at which `f` is well-defined is determined by the **weakest law `f`'s implementation invokes**, and is computable **without running `f`**.
+
+*What is METERED (2026-08-24, `src/Core.TypeScript/research/wset-doubling-transfer-table.ts`, 4 000 pairs per cell, calibrated against the classical ladder):* `add`/`subtract` hold at **every** rung R->C->H->O->S; `Mul` commutativity dies at **H**; `Mul` associativity at **O**; norm-multiplicativity at **S** (Hurwitz); a total order at **C**; sedenion zero divisors confirmed via `(e1+e10)(e5+e14) = 0`. Independently reproduces `tests/Tests.FSharp/CayleyWeightedSet.Tests.fs` from the algebra side.
+
+*The transfer consequence:* `IMessage<'M>` = `{Uniform, Product, Divide}` = `{empty, add, subtract}` consumes **only the additive commutative group**, so the **entire EP/BP message algebra transfers to every rung** — conjugate fusion, the EP cavity, the flat-message identity, retraction. The discrete sum-product graph consumes both `Mul` laws and dies at H/O. Viterbi/tropical dies at C. **The most transferable part of the soft regime is the part that looks least like tensor algebra.**
+
+*Falsifier:* exhibit an operation invoking only `Add`/`Negate`/`Zero` that nonetheless fails at some rung; or one invoking `Mul` associatively that survives O. Either refutes derivability.
+
+*Scheme-independence required:* the verdict must not depend on the tower's **representation** (nested pairs vs flat coordinate arrays vs a basis-multiplication table) — only on the laws.
+
+*HONEST LIMIT — algebraic survival is not Bayesian meaning.* That `add` remains a commutative group over sedenions says the **fold** is well-defined; it does not say the result is a **posterior**. An exponential family needs `eta.T(x)` real and `A(eta)` a real convex log-partition. The row that sets the ceiling is **normalisation**, not associativity: a multiplicative norm ends at **O** (Hurwitz). Metered as algebra; **unmetered** as a claim about probability. Derivation: `docs/research/2026-08-24-wset-carries-the-bnn-and-the-factor-graph-the-texel-is-a-residual-program-nobody-generated-lumen.md` §4.
+
+### B-evidence-observation. Imaginary numbers from the evidence/observation gap - **REFUTED for the shared belief fold** (Aaron 2026-08-24; measured by Lumen same day)
+
+**Conjecture Z-4 (Aaron, flagged as "I think"):** the difference between *evidence entering the commutative fold* and *a value being observed* is where imaginary numbers come from.
+
+*Falsifier verdict:* **fails on the decisive test. CLOSED as refuted in the stated form for `BeliefConvergence`. Nothing was implemented; nothing in SectionA depended on it.**
+
+The discriminator is **destructive interference** — classical probability cannot reduce support by adding a path; amplitude addition can. Measured (`src/Core.TypeScript/research/belief-fold-destructive-interference-falsifier.ts`): **0 cancellations in 800 000 weights**, 0 negative weights, 0 trials where support grew. The **control** proves the probe can see interference: the C-ring lane cancels **50 000/50 000**. `observe` is `Array.map2 (*)` over non-negative `int64` — pointwise multiplication with **no path sum**, so there is nothing that could cancel.
+
+The three supporting checks, each settled: (1) **no phase to add** — this repo's *phase* is a **total order**, QM's is an **angle in U(1)**; orders are not a group and do not add mod 2pi, so the shared word is a pun. (2) **`ZSet` retraction is NOT conjugation** — conjugation fixes the observable part (on R it is the *identity*); retraction is `w -> -w`, the additive inverse, which negates it. Being an involution identifies nothing. (3) **the observable is not a norm** — the fold reports a **ratio** `w_i / sum w`; the genuine Born rule `|w|^2/sum|w|^2` exists only in `WSet.bornProb`, i.e. in the lane that already declared its ring to be C.
+
+*Competitors excluded (the `numerology-vs-number-theory` step):* signed measures (hidden part is **Z/2**, not U(1) — and this is the closest match to what our fold actually has), R^2 (no multiplication), split-complex (indefinite norm, zero divisors), dual numbers (degenerate norm). **C is excluded by Frobenius (1878) / Hurwitz (1898)**: it is the *unique* 2-dimensional real normed division algebra, so earning it requires a positive-definite multiplicative norm and a continuous composition-additive phase. The fold has neither.
+
+*What survives, as `toy`:* the **shape** "load-bearing in the computation, absent from any single observation" does occur — it is the **phase-canonical order** (no node observes it; each has only its local receive-order). Recorded as a **coincidence with its register attached**, never a belief. It would formalise **Z**, not **C**.
+
+*And the ladder does not need it:* `ISectionB-doubling` already gives R->C a measured operational meaning — **C is the rung at which a total order is lost** — which excludes things and needs no observation story.
+
+*Register discipline on the adjacent metering claim:* the **weak** version (*the mathematical structure of QM applies to any system with linear evolution, metered boundaries, and observables-as-norms*) is defensible and partially satisfied **by construction** in `AmplitudeEmu.fs`/`ZSetISA.qs`. The **strong** version (*physical quantum effects occur*) is **not bought by metering** and must not be implied. The measurement narrows even the weak version: the shared fold has neither observables-as-norms nor signed superposition. Full derivation: `docs/research/2026-08-24-the-evidence-observation-gap-is-not-complex-the-fold-never-interferes-lumen.md`.
+
 ### B-other. The rest of the penumbra (each open, each one-directional on §A)
 
 | Conjecture | State | Discharge = |
