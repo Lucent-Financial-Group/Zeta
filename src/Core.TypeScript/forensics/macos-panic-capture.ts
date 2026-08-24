@@ -42,7 +42,6 @@
 import { spawnSync } from "node:child_process";
 import {
   closeSync,
-  existsSync,
   fstatSync,
   fsyncSync,
   mkdirSync,
@@ -55,6 +54,7 @@ import {
   writeFileSync,
   writeSync,
 } from "node:fs";
+import type { Stats } from "node:fs";
 import { homedir, platform } from "node:os";
 import { join } from "node:path";
 
@@ -196,6 +196,38 @@ export function layout(root: string): Layout {
 
 function ensure(dir: string): void {
   mkdirSync(dir, { recursive: true });
+}
+
+/**
+ * ENOENT/ENOTDIR/EACCES-tolerant `readdir`. Returns null when the directory is
+ * not there to be listed.
+ *
+ * NOT `if (existsSync(d)) readdirSync(d)`. That pattern is a TOCTOU race
+ * everywhere, and here it is a race we are GUARANTEED to lose eventually: the
+ * one directory this harness reads most is `/var/db/diagnostics/Persist`, a
+ * ring whose files `logd` is actively rolling out from under us — measured
+ * rolling every ~4 minutes under agent load. The answer `existsSync` returns
+ * is already stale when `readdirSync` runs. Doing the operation and
+ * interpreting its failure is both correct and one syscall cheaper.
+ *
+ * A forensics tool that crashes on a file that rotated mid-capture loses the
+ * capture, which is the one outcome it exists to prevent.
+ */
+export function readdirOrNull(dir: string): string[] | null {
+  try {
+    return readdirSync(dir);
+  } catch {
+    return null;
+  }
+}
+
+/** `statSync` that yields null instead of throwing when the path is gone. */
+export function statOrNull(p: string): Stats | null {
+  try {
+    return statSync(p);
+  } catch {
+    return null;
+  }
 }
 
 /** ISO-8601 with `:` replaced so the string is a legal filename everywhere. */
@@ -449,13 +481,8 @@ export function crashReportCensus(): Record<string, number> {
   ];
   const out: Record<string, number> = {};
   for (const d of dirs) {
-    if (!existsSync(d)) continue;
-    let names: string[];
-    try {
-      names = readdirSync(d);
-    } catch {
-      continue;
-    }
+    const names = readdirOrNull(d);
+    if (names === null) continue;
     for (const n of names) {
       if (!n.endsWith(".ips") && !n.endsWith(".panic")) continue;
       const proc = n.split("-")[0] ?? n;
@@ -469,26 +496,21 @@ export function crashReportCensus(): Record<string, number> {
 /** Observe the Persist ring so retention can be computed, not guessed. */
 export function observeRing(): RingObservation | null {
   const dir = "/var/db/diagnostics/Persist";
-  if (!existsSync(dir)) return null;
-  let names: string[];
-  try {
-    names = readdirSync(dir).filter((n) => n.endsWith(".tracev3"));
-  } catch {
-    return null;
-  }
+  const all = readdirOrNull(dir);
+  if (all === null) return null;
+  const names = all.filter((n) => n.endsWith(".tracev3"));
   if (names.length === 0) return null;
   let bytes = 0;
   let min = Number.POSITIVE_INFINITY;
   let max = 0;
   for (const n of names) {
-    try {
-      const s = statSync(join(dir, n));
-      bytes += s.size;
-      min = Math.min(min, s.mtimeMs);
-      max = Math.max(max, s.mtimeMs);
-    } catch {
-      /* a file rolling out from under us is expected; skip it */
-    }
+    // A file rolling out between the listing and the stat is the NORMAL case
+    // on this directory, not an error condition.
+    const st = statOrNull(join(dir, n));
+    if (st === null) continue;
+    bytes += st.size;
+    min = Math.min(min, st.mtimeMs);
+    max = Math.max(max, st.mtimeMs);
   }
   if (!Number.isFinite(min)) return null;
   return { ringBytes: bytes, fileCount: names.length, spanSeconds: (max - min) / 1000 };
@@ -622,8 +644,9 @@ export function dedupSymbolCatalog(archivePath: string, catalogDir: string): {
   reason: string;
   savedBytes: number;
 } {
-  if (!existsSync(archivePath)) return { deduped: false, reason: "archive missing", savedBytes: 0 };
-  const entries = readdirSync(archivePath).filter(isSymbolCatalogEntry);
+  const archiveEntries = readdirOrNull(archivePath);
+  if (archiveEntries === null) return { deduped: false, reason: "archive missing", savedBytes: 0 };
+  const entries = archiveEntries.filter(isSymbolCatalogEntry);
   if (entries.length === 0) return { deduped: false, reason: "no catalog entries", savedBytes: 0 };
 
   let savedBytes = 0;
@@ -635,7 +658,7 @@ export function dedupSymbolCatalog(archivePath: string, catalogDir: string): {
     }
   }
 
-  if (!existsSync(catalogDir)) {
+  if (readdirOrNull(catalogDir) === null) {
     // First archive seeds the canonical catalog by MOVING its own out. The
     // move is why the first capture is not more expensive than the rest.
     ensure(catalogDir);
@@ -646,10 +669,9 @@ export function dedupSymbolCatalog(archivePath: string, catalogDir: string): {
   const stash = `${archivePath}.catalog-stash`;
   ensure(stash);
   for (const e of entries) {
-    const src = join(archivePath, e);
-    if (existsSync(src)) renameSync(src, join(stash, e));
+    moveIfPresent(join(archivePath, e), join(stash, e));
   }
-  for (const e of readdirSync(catalogDir)) {
+  for (const e of readdirOrNull(catalogDir) ?? []) {
     const r = runProbe(["/bin/cp", "-c", "-R", join(catalogDir, e), join(archivePath, e)], 300_000);
     if (!r.ok) {
       // `cp -c` fails on a non-APFS target; fall back to the archive's own copy.
@@ -676,13 +698,21 @@ export function dedupSymbolCatalog(archivePath: string, catalogDir: string): {
   return { deduped: true, reason: "verified readable after clone", savedBytes };
 }
 
+/** Rename that treats a vanished source as a no-op rather than a throw. */
+function moveIfPresent(src: string, dest: string): void {
+  try {
+    renameSync(src, dest);
+  } catch {
+    /* not there is the same outcome as moved, for our purposes */
+  }
+}
+
 function restoreStash(archivePath: string, stash: string, entries: readonly string[]): void {
-  for (const e of readdirSync(archivePath).filter(isSymbolCatalogEntry)) {
+  for (const e of (readdirOrNull(archivePath) ?? []).filter(isSymbolCatalogEntry)) {
     rmSync(join(archivePath, e), { recursive: true, force: true });
   }
   for (const e of entries) {
-    const src = join(stash, e);
-    if (existsSync(src)) renameSync(src, join(archivePath, e));
+    moveIfPresent(join(stash, e), join(archivePath, e));
   }
   rmSync(stash, { recursive: true, force: true });
 }
@@ -700,27 +730,23 @@ function restoreStash(archivePath: string, stash: string, entries: readonly stri
  */
 export function archiveRealBytes(archivePath: string): number {
   let total = 0;
-  for (const n of readdirSync(archivePath)) {
+  for (const n of readdirOrNull(archivePath) ?? []) {
     if (isSymbolCatalogEntry(n)) continue;
-    try {
-      total += dirSize(join(archivePath, n));
-    } catch {
-      /* skip */
-    }
+    total += dirSize(join(archivePath, n));
   }
   return total;
 }
 
 export function dirSize(p: string): number {
-  const s = statSync(p);
-  if (!s.isDirectory()) return s.size;
+  const st = statOrNull(p);
+  if (st === null) return 0;
+  if (!st.isDirectory()) return st.size;
   let total = 0;
-  for (const n of readdirSync(p)) {
-    try {
-      total += dirSize(join(p, n));
-    } catch {
-      /* races are expected under a live log store */
-    }
+  // `readdirOrNull` rather than a guarded `readdirSync`: between the stat above
+  // and this listing the directory can be removed, and under a live log store
+  // it sometimes is.
+  for (const n of readdirOrNull(p) ?? []) {
+    total += dirSize(join(p, n));
   }
   return total;
 }
@@ -863,16 +889,14 @@ export interface BootVerdict {
  */
 export function lastPersistedBeforeMs(panicMs: number): number | null {
   const dir = "/var/db/diagnostics/Persist";
-  if (!existsSync(dir)) return null;
+  const names = readdirOrNull(dir);
+  if (names === null) return null;
   let best: number | null = null;
-  for (const n of readdirSync(dir)) {
+  for (const n of names) {
     if (!n.endsWith(".tracev3")) continue;
-    try {
-      const m = statSync(join(dir, n)).mtimeMs;
-      if (m <= panicMs && (best === null || m > best)) best = m;
-    } catch {
-      /* skip */
-    }
+    const st = statOrNull(join(dir, n));
+    if (st === null) continue;
+    if (st.mtimeMs <= panicMs && (best === null || st.mtimeMs > best)) best = st.mtimeMs;
   }
   return best;
 }
@@ -1032,8 +1056,12 @@ export async function cmdTriage(root: string): Promise<number> {
 
 export async function cmdVitalsTail(root: string, aroundIso: string, windowS: number): Promise<number> {
   const l = layout(root);
-  if (!existsSync(l.vitals)) {
-    process.stderr.write(`vitals-tail: no vitals directory at ${l.vitals}\n`);
+  const vitalsFiles = readdirOrNull(l.vitals);
+  if (vitalsFiles === null) {
+    process.stderr.write(
+      `vitals-tail: no vitals directory at ${l.vitals}.\n` +
+        `That is NO MEASUREMENT, not a quiet machine — the heartbeat was never running here.\n`,
+    );
     return 1;
   }
   const centre = Date.parse(aroundIso);
@@ -1044,9 +1072,14 @@ export async function cmdVitalsTail(root: string, aroundIso: string, windowS: nu
   const lo = centre - windowS * 1000;
   const hi = centre + windowS * 1000;
   const rows: string[] = [];
-  for (const f of readdirSync(l.vitals).sort()) {
+  for (const f of [...vitalsFiles].sort()) {
     if (!f.endsWith(".ndjson")) continue;
-    const body = readFileSync(join(l.vitals, f), "utf8");
+    let body: string;
+    try {
+      body = readFileSync(join(l.vitals, f), "utf8");
+    } catch {
+      continue;
+    }
     for (const line of body.split("\n")) {
       if (line.trim().length === 0) continue;
       let s: VitalsSample;
@@ -1092,24 +1125,21 @@ export async function cmdPrune(root: string, keepDays: number, keepArchives: num
   let freed = 0;
 
   for (const dir of [l.vitals, l.snapshots, l.reports]) {
-    if (!existsSync(dir)) continue;
-    for (const n of readdirSync(dir)) {
+    for (const n of readdirOrNull(dir) ?? []) {
       const p = join(dir, n);
-      try {
-        if (statSync(p).mtimeMs < cutoff) {
-          freed += dirSize(p);
-          rmSync(p, { recursive: true, force: true });
-        }
-      } catch {
-        /* skip */
+      const st = statOrNull(p);
+      if (st === null) continue;
+      if (st.mtimeMs < cutoff) {
+        freed += dirSize(p);
+        rmSync(p, { recursive: true, force: true });
       }
     }
   }
 
-  if (existsSync(l.archives)) {
-    const arcs = readdirSync(l.archives)
+  {
+    const arcs = (readdirOrNull(l.archives) ?? [])
       .filter((n) => n.endsWith(".logarchive"))
-      .map((n) => ({ n, m: statSync(join(l.archives, n)).mtimeMs }))
+      .map((n) => ({ n, m: statOrNull(join(l.archives, n))?.mtimeMs ?? 0 }))
       .sort((a, b) => b.m - a.m);
     // Archives are kept by COUNT, not age: they are the expensive artifact and
     // an unbounded count is how a forensics directory eats a disk.
@@ -1130,17 +1160,20 @@ export async function cmdPrune(root: string, keepDays: number, keepArchives: num
 export async function cmdCost(root: string): Promise<number> {
   const l = layout(root);
   const vitalsBytes = (() => {
-    if (!existsSync(l.vitals)) return 420;
-    const files = readdirSync(l.vitals).filter((n) => n.endsWith(".ndjson"));
+    const files = (readdirOrNull(l.vitals) ?? []).filter((n) => n.endsWith(".ndjson"));
     const f = files[files.length - 1];
     if (f === undefined) return 420;
-    const body = readFileSync(join(l.vitals, f), "utf8");
+    let body: string;
+    try {
+      body = readFileSync(join(l.vitals, f), "utf8");
+    } catch {
+      return 420;
+    }
     const lines = body.split("\n").filter((x) => x.trim().length > 0);
     return lines.length === 0 ? 420 : Math.round(body.length / lines.length);
   })();
   const archiveBytes = (() => {
-    if (!existsSync(l.archives)) return 90 * 1024 * 1024;
-    const arcs = readdirSync(l.archives).filter((n) => n.endsWith(".logarchive"));
+    const arcs = (readdirOrNull(l.archives) ?? []).filter((n) => n.endsWith(".logarchive"));
     if (arcs.length === 0) return 90 * 1024 * 1024;
     // The LARGEST real cost across the archives on hand, not the first one and
     // not the mean: a cost estimate that can be beaten by an ordinary capture
@@ -1149,11 +1182,7 @@ export async function cmdCost(root: string): Promise<number> {
     // that visible instead of averaging it away.
     let worst = 0;
     for (const a of arcs) {
-      try {
-        worst = Math.max(worst, archiveRealBytes(join(l.archives, a)));
-      } catch {
-        /* skip */
-      }
+      worst = Math.max(worst, archiveRealBytes(join(l.archives, a)));
     }
     return worst === 0 ? 90 * 1024 * 1024 : worst;
   })();

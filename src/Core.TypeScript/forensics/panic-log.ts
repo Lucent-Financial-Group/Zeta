@@ -51,7 +51,7 @@
  * addresses would report every repeat as a new, unrelated panic.
  */
 
-import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
+import { readdirSync, readFileSync, statSync } from "node:fs";
 import { homedir } from "node:os";
 import { join } from "node:path";
 
@@ -78,19 +78,22 @@ export function findPanicReports(dirs: readonly string[] = panicSearchDirs()): P
   const searched: string[] = [];
   const unsearchable: string[] = [];
   for (const d of dirs) {
-    if (!existsSync(d)) {
+    // One syscall, and its failure IS the answer. An `existsSync` gate here
+    // would be both a TOCTOU race and a worse report: it cannot distinguish
+    // "absent" from "present but unreadable", and this function's whole
+    // contract is that `unsearchable` and `found none` are different values.
+    let names: string[];
+    try {
+      names = readdirSync(d);
+    } catch {
       unsearchable.push(d);
       continue;
     }
-    try {
-      for (const n of readdirSync(d)) {
-        // `.contents.panic` is a macOS bookkeeping stub, not a report.
-        if (n.endsWith(".panic") && !n.startsWith(".")) paths.push(join(d, n));
-      }
-      searched.push(d);
-    } catch {
-      unsearchable.push(d);
+    for (const n of names) {
+      // `.contents.panic` is a macOS bookkeeping stub, not a report.
+      if (n.endsWith(".panic") && !n.startsWith(".")) paths.push(join(d, n));
     }
+    searched.push(d);
   }
   return { paths, searched, unsearchable };
 }
