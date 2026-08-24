@@ -23,7 +23,7 @@
  * `gromov-hyperbolicity.ts`.
  */
 
-import { readdirSync, readFileSync, statSync } from "node:fs";
+import { readdirSync, readFileSync, type Dirent } from "node:fs";
 import { dirname, join, relative, resolve } from "node:path";
 import {
   articulationPoints,
@@ -63,23 +63,21 @@ const REPO_SHA = (() => {
 
 function walk(dir: string, pred: (p: string) => boolean, out: string[] = [], depth = 0): string[] {
   if (depth > 12) return out;
-  let entries: string[];
+  // `withFileTypes` so the KIND arrives with the listing. A `readdirSync` then
+  // `statSync` pair asks the filesystem twice: an entry can vanish or change kind
+  // between the two, and the second call is racing an answer the first already had.
+  let entries: Dirent[];
   try {
-    entries = readdirSync(dir);
+    entries = readdirSync(dir, { withFileTypes: true });
   } catch {
     return out;
   }
-  for (const e of entries) {
+  for (const entry of entries) {
+    const e = entry.name;
     if (e === "node_modules" || e === ".git" || e === "prior-art" || e === "bin" || e === "obj") continue;
     const p = join(dir, e);
-    let st;
-    try {
-      st = statSync(p);
-    } catch {
-      continue;
-    }
-    if (st.isDirectory()) walk(p, pred, out, depth + 1);
-    else if (pred(p)) out.push(p);
+    if (entry.isDirectory()) walk(p, pred, out, depth + 1);
+    else if (entry.isFile() && pred(p)) out.push(p);
   }
   return out;
 }
