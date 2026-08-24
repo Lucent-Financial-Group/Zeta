@@ -149,6 +149,63 @@ def test_the_step_size_is_measured_not_imported() -> None:
     assert agent._step_px == float(CELL)
 
 
+def test_the_third_level_is_cleared_by_committing_to_a_route() -> None:
+    """Level 2 boxes the goal in on two sides, and it is where replanning from
+    scratch every frame dies.
+
+    Non-vacuous, measured: with the router returning only its FIRST step and
+    the plan discarded each tick, level 2 runs the full 300-action budget
+    unsolved — a clean two-cycle between (4,3) and (4,2), because against an
+    optimistic map each cell's believed-shortest route runs through the other
+    and BOTH moves succeed, so the agent never bumps and never learns better.
+    Committing to the whole path is what breaks the tie: 24 actions, solved.
+    """
+    result = play(agent="pixel", seed=4)
+    assert result["levels_cleared"] == 3
+    level2 = result["levels"][2]
+    assert level2["solved"] is True
+    # Well inside the budget, and loose enough not to pin an exact trajectory.
+    assert level2["actions"] < 100
+
+
+def test_the_occupancy_map_is_relearned_when_the_world_resets() -> None:
+    """A new level is a new world; what was learned about the old one is stale.
+
+    The agent is never told a level changed. It infers it: one action moves the
+    body at most one cell, so a body that moved further was PLACED, not steered.
+
+    Non-vacuous, measured: without that inference the map still holds (3,1) and
+    (3,2) — level 1's wall — for the whole of level 2, where both are open
+    floor. Note this test does NOT claim a better score: level 2 takes the same
+    24 actions either way, because the router simply detours around the phantom
+    cells. What is asserted is that the map is TRUE, which is the property that
+    would stop being free on a level where the detour is not available.
+    """
+    from zeta_arc.environments.chase import _WALLS  # ground truth, assertions only
+
+    game = ZetaChase(seed=4)
+    frame = reset(game)
+    agent = PixelAgent()
+    level, since, checked = game.level_index, 0, 0
+    for _ in range(400):
+        if game.level_index >= len(_WALLS) or not frame.frame:
+            break
+        if game.level_index != level:
+            level, since = game.level_index, 0
+        # ONE tick of lag is honest and is not asserted away: the agent learns
+        # the world reset by SEEING that it moved further than it commanded, so
+        # on the first frame of a new level that evidence does not exist yet.
+        # What must not survive is staleness that PERSISTS past the evidence.
+        if level == 2 and since >= 2:
+            off_grid = {c for c in agent.blocked if not (0 <= c[0] < 8 and 0 <= c[1] < 8)}
+            stale = agent.blocked - set(_WALLS[2]) - off_grid
+            assert not stale, f"believes cells solid that are open on this level: {stale}"
+            checked += 1
+        frame = advance(game, agent.act(_grid(game, frame)))
+        since += 1
+    assert checked >= 5, f"only {checked} frames of level 2 were actually asserted on"
+
+
 def test_the_wall_model_improves_the_score() -> None:
     """Routing must beat the coordinate-reading baseline, which has no
     occupancy map and dies on level 1."""

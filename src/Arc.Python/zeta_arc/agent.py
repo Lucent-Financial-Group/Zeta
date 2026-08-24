@@ -69,6 +69,13 @@ class PixelAgent:
     #: different one.
     _step_px: float | None = None
     _last_self_cell: tuple[int, int] | None = None
+    #: The route currently being followed. Replanning from scratch every frame
+    #: against an OPTIMISTIC map oscillates: at (4,3) the believed-shortest path
+    #: runs through (4,2) and at (4,2) it runs back through (4,3), and because
+    #: both moves SUCCEED the agent never bumps and so never learns better.
+    #: Measured on level 2: a clean two-cycle, 300 actions, unsolved. Committing
+    #: to a route until something contradicts it is what breaks the tie.
+    _plan: list[GameAction] = field(default_factory=list)
 
     def _cell_of(self, c: Component) -> tuple[int, int]:
         """Component centroid in grid cells, using the learned step size."""
@@ -93,23 +100,52 @@ class PixelAgent:
         dx, dy = ACTION_VECTORS[self._last_action]
         self.blocked.add((here[0] + dx, here[1] + dy))
 
-    def _route_step(
+    def _world_changed_under_me(self, me: Component) -> bool:
+        """Did the world reset beneath me? Measured, not announced.
+
+        One action moves the body at most one cell, so a body that has moved
+        MORE than one cell in a single tick was not moved by me — it was placed,
+        which is what a new level does. That is the same contingency logic as
+        everything else here: the signal is a command whose effect contradicts
+        the model.
+
+        An earlier version detected this as "a frame holding one component",
+        reasoning that a level opens with the agent drawn before the goal. It
+        was measured to NEVER FIRE (the run carried level 1's wall at (3,1) and
+        (3,2) all the way through level 2 with the check in place) — because on
+        a level that HAS walls, the walls are components too, so the count is
+        never one. Recorded rather than quietly replaced: a level-transition
+        detector that cannot fire on levels with walls is exactly backwards,
+        since those are the levels where a stale map costs something.
+        """
+        if self._step_px is None or self._last_self_cell is None:
+            return False
+        here = self._cell_of(me)
+        return abs(here[0] - self._last_self_cell[0]) + abs(here[1] - self._last_self_cell[1]) > 1
+
+    def _route_plan(
         self, me: Component, targets: list[Component], width: int, height: int
-    ) -> GameAction | None:
-        """Breadth-first step toward the nearest target that is not known-blocked.
+    ) -> list[GameAction]:
+        """Breadth-first ROUTE to the nearest target that is not known-blocked.
 
         The search runs over the OCCUPANCY THE AGENT HAS LEARNED, so early on it
         is optimistic and walks into walls, and each bump makes it less wrong.
-        Returns None when nothing is reachable yet, leaving the caller's greedy
-        fallback in charge.
+        Returns the empty list when nothing is reachable yet, leaving the
+        caller's greedy fallback in charge.
+
+        The whole path is returned rather than its first step because a
+        first-step-only router replans against a map that changed by one cell
+        and can prefer a different equal-length route each frame — which is the
+        two-cycle measured on level 2. The plan is a COMMITMENT, dropped the
+        moment evidence contradicts it (a bump, or a new level).
         """
         if self._step_px is None:
-            return None
+            return []
         cols, rows = int(width / self._step_px), int(height / self._step_px)
         start = self._cell_of(me)
         goals = {self._cell_of(t) for t in targets} - self.blocked
         if not goals:
-            return None
+            return []
 
         # Deterministic: actions are explored in their fixed declared order, so
         # equal-length routes always resolve the same way and an episode replays.
@@ -132,11 +168,15 @@ class PixelAgent:
                     break
                 queue.append(nxt)
         if found is None:
-            return None
+            return []
+        route: list[GameAction] = []
         step = found
-        while previous[step][0] != start:
-            step = previous[step][0]
-        return previous[step][1]
+        while step != start:
+            prior, action = previous[step]
+            route.append(action)
+            step = prior
+        route.reverse()
+        return route
 
     @staticmethod
     def _key(c: Component) -> int:
@@ -209,16 +249,26 @@ class PixelAgent:
             return action
 
         self._learn_step_size(me)
+        if self._world_changed_under_me(me):
+            # A new level. Everything learned describes a world that is gone:
+            # level 1's wall at (3,1)/(3,2) is open floor on level 2, and a
+            # router that still believes in it avoids cells that are free.
+            self.blocked.clear()
+            self._plan.clear()
+        before_bump = len(self.blocked)
         self._note_blocked_cell(me)
+        if len(self.blocked) != before_bump:
+            self._plan.clear()  # the map changed under the route; replan
         self._last_self_cell = self._cell_of(me) if self._step_px else None
 
         targets = [c for c in now if self._key(c) != self._key(me)]
         # Route around what has been learned to be solid. Falls through to the
         # greedy heading while the occupancy map is still empty — which is most
         # of level 0, where there is nothing to route around.
-        routed = self._route_step(me, targets, len(grid[0]), len(grid))
-        if routed is not None:
-            action = routed
+        if not self._plan:
+            self._plan = self._route_plan(me, targets, len(grid[0]), len(grid))
+        if self._plan:
+            action = self._plan.pop(0)
         else:
             # Greedy heading toward the nearest non-self component.
             target = min(targets, key=me.distance_to)
