@@ -1095,6 +1095,43 @@ jobs:
         # deliberately-broken fixture and requires it to go red, R2 in both ratchet directions.
         run: bun run hygiene:check-arity
 
+      - name: Check arity -- the NON-EQUALITY half (a taint claim is not a string search)
+        # The step above inspects EQUALITY only. Its own PR named the gap and declined to size
+        # it: "Non-equality checks are entirely outside the detector ... Largest unsearched
+        # region, unsized." It is now sized -- 24,805 non-equality assertion sites across 1,928
+        # test files -- and two live instances were fixed:
+        #
+        #   * tools/setup/persona-keys/machine.test.ts claimed "no private bytes anywhere in it"
+        #     and discharged it with `not.toContain("PRIVATE")` plus a PEM-armor regex.
+        #     Publishing the COMPLETE private key base64-encoded passed all of it: 27 tests,
+        #     128 expect() calls, green. That is a 2-safety property tested by a one-run string
+        #     search, and it sat on a key-publication path.
+        #   * DurableDiplomacyRankGate.Tests.fs asserted `Set.count caps >= 0`, which is
+        #     non-negative by construction -- and the match arm holding it was never reached,
+        #     so it was arity ZERO rather than merely vacuous.
+        #
+        # Two rules, and only one of them gates. R4 gates provably-unfalsifiable comparisons:
+        # every pattern is a THEOREM about the expression's type (a length is non-negative;
+        # `X >= X` is reflexivity), so Rice does not bite -- nothing semantic is decided.
+        # R5 is a census ratchet over absence-assertions discharging a taint / 2-safety claim,
+        # failing when a file's count goes UP and equally when it goes DOWN.
+        #
+        # R5 is deliberately NOT a gate: of the 10 sites where an absence assertion sits under a
+        # 2-safety name, SIX are correct -- backed by an exact-equality pin on the whole output
+        # or by a positive capability assertion. A gate at 60% false positives is not a gate, it
+        # is a nuisance that gets suppressed. `Assert.True(true)` is likewise NOT flagged: all 8
+        # live instances are the success leg of a discriminating match whose other leg is
+        # `Assert.True(false, ...)`, so the enclosing check can fail.
+        #
+        # Scanned REPO-WIDE, unlike the step above whose SCAN_ROOTS is ["tests"]: 1,194 of the
+        # tree's 1,230 *.test.ts files -- 97% -- live outside tests/, and BOTH bugs above were
+        # in that region.
+        #
+        # Its own falsifier runs in the step below: audit-check-arity-nonequality.test.ts feeds
+        # each rule a broken fixture and requires it to go red, R5 in both ratchet directions,
+        # plus controls asserting the shapes that must NOT be flagged.
+        run: bun run hygiene:check-arity-nonequality
+
       - name: Linter coverage vs CI invocation (a configured linter must be an invoked one)
         # THE CLASS: a linter is present, configured, believed to be checking a file, and does
         # not examine it -- while the invocation exits 0. Every instance produces a check that
@@ -1664,6 +1701,24 @@ jobs:
       # channel that carries it.
       - name: Run lint-drift-publication-lands (stale-behind-green guard)
         run: bun src/Core.TypeScript/hygiene/lint-drift-publication-lands.ts
+
+      # A privilege elevator resolved by NAME is substitutable by any writable directory
+      # earlier on PATH, and planting one leaves NO GIT DIFF -- so review, AgencySignature
+      # and byte-lock, all of which watch the repo, cannot see it. That was live on main as
+      # a P1 (docs/BUGS.md, 2026-08-24): the shared biometric approval gate returned
+      # ok:true from a shim that executed nothing. Deliberately NOT
+      # `sonarjs/no-os-command-from-path` repo-wide: that rule was available and did not
+      # catch this one -- it matches on the CALLEE, so a `run()` wrapper, an argv-prefix
+      # array and a program held in a variable are all invisible to it.
+      - name: Run lint-no-path-resolved-privilege-elevator (PATH-forgeable sudo guard)
+        run: bun src/Core.TypeScript/hygiene/lint-no-path-resolved-privilege-elevator.ts
+
+      - name: Elevator resolver + lint falsifiers (a check that cannot fail is not a check)
+        run: |
+          bun test \
+            src/Core.TypeScript/privilege/elevator.test.ts \
+            src/Core.TypeScript/hygiene/lint-no-path-resolved-privilege-elevator.test.ts \
+            tools/setup/persona-keys/biometric.test.ts
 
       # Tsirelson's bound is S <= 2*sqrt(2) ~= 2.828 on the CHSH correlator, implemented at
       # src/Core/Tsirelson.fs. 1/(3*sqrt(2)) ~= 0.2357 is a DIFFERENT number: the image of
