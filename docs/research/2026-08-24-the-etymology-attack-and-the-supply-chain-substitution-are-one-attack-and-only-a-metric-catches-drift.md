@@ -81,6 +81,24 @@ Aaron: *"we have Futamura, F# type providers and computational expressions, Rosl
 
 **The tension it resolves:** a maintained view that nobody can point at is unfalsifiable, so a DBSP-native store must keep *both* drift-freedom and addressability. Re-derivable-on-demand keeps both without paying storage for either.
 
+## 7. Path-from-a-stable-root is the same operation three times
+
+Aaron, same conversation: *"for our dynamic memory allocation work we have CHIP-8 and our ISR reversal, trying to decompose them into non-DMA orbits based on characters and objects in the game. This is our cheat-engine reverse engineering — it's all about DMA traces over pointers from root."*
+
+**A heap object cannot be addressed by its address**, because dynamic allocation moves it every run. So it is addressed by a **path from a stable root** — which is what a Cheat Engine pointer scan produces, and it is the same shape as a Merkle path and as a GC trace:
+
+| operation | from | finds |
+|---|---|---|
+| **GC trace** (ShivaGC) | roots | what is **reachable** |
+| **Pointer scan** (cheat engine) | a static base | **a path** to a moving target |
+| **Merkle address** | the root hash | **a leaf**, by path |
+
+Three uses of one operation: *name a thing whose location is not stable, by its route from something that is.* The addressing scheme §3 describes is therefore not only how artifacts are named — it is how a **running heap** is named, which is why the emulator work and the store work are the same programme rather than two.
+
+**And it explains the goal of the CHIP-8/ISR reversal.** Decomposing the heap into *"non-DMA orbits based on characters and objects"* is the claim that objects presented as dynamically allocated actually occupy **bounded, discoverable orbits** — and a bounded orbit can be statically allocated. That converts a pointer chase into a fixed offset, which is precisely how §6's zero-dynamic-allocation discipline becomes reachable for code that was not written under it. **Reverse-engineering the allocation is the method; static allocation is the result.**
+
+Register: `toy`. The orbit-decomposition claim is a research programme, not a result — a game object *may* have an unbounded orbit, and nothing here shows the CHIP-8 corpus decomposes. Prior work: `docs/research/2026-06-09-cheat-engine-injection-points-first-class-in-the-emulator-*.md` and `docs/research/2026-06-09-content-addressing-rooms-give-free-deduplication-of-the-chip8-memory-*.md` already join cheat-engine discovery to content addressing; **this section adds only the three-way identity with GC tracing**, and defers to those for the emulator design.
+
 ## Pointers
 
 - `.claude/rules/anti-babel-preserve-reconcilability.md` — the name→meaning guard, and the reconstruction falsifier §4 reads as a distance test.
