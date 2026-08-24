@@ -253,32 +253,48 @@ describe("error ring open flags — the CodeQL js/file-system-race finding, fals
    * `open(a, "w")` follows it. This test plants exactly that and shows the two
    * flag sets behave differently, so the fix is not a matter of opinion.
    */
-  test("MUTANT: open(path, 'w') FOLLOWS a planted symlink; the ring's flags REFUSE it", () => {
+  /** The flags `cmdErrorRing` opens each new segment with. */
+  const HARDENED =
+    constants.O_WRONLY | constants.O_CREAT | constants.O_EXCL | constants.O_NOFOLLOW;
+
+  /**
+   * Each arm gets its OWN temp directory and performs exactly one open, so
+   * neither test contains a check-then-use chain of its own. (The first
+   * version ran both arms against one directory with an `existsSync` between
+   * them, which is itself the pattern this codebase refuses — CodeQL flagged
+   * the test, and it was right about the shape even though the intent was a
+   * demonstration.)
+   */
+  function plantSymlink(): { planted: string; victim: string; dir: string } {
     const dir = mkdtempSync(join(tmpdir(), "zeta-ring-race-"));
     const planted = join(dir, "planted.log");
     const victim = join(dir, "VICTIM");
     symlinkSync(victim, planted);
+    return { planted, victim, dir };
+  }
 
-    // The flags cmdErrorRing uses.
-    const HARDENED =
-      constants.O_WRONLY | constants.O_CREAT | constants.O_EXCL | constants.O_NOFOLLOW;
-    let hardenedCode: string | null = null;
+  test("the ring's flags REFUSE a planted symlink", () => {
+    const { planted, victim, dir } = plantSymlink();
+    let code: string | null = null;
     try {
       const fd = openSync(planted, HARDENED, 0o600);
       writeSync(fd, "pwned");
       closeSync(fd);
     } catch (e) {
-      hardenedCode = (e as NodeJS.ErrnoException).code ?? "unknown";
+      code = (e as NodeJS.ErrnoException).code ?? "unknown";
     }
-    expect(hardenedCode).not.toBeNull();
+    expect(code).toBe("EEXIST");
     expect(existsSync(victim)).toBe(false); // nothing written through the link
+    rmSync(dir, { recursive: true, force: true });
+  });
 
-    // The mutant: the original flags.
+  test("MUTANT: the original open(path, 'w') FOLLOWS it and writes the victim", () => {
+    const { planted, victim, dir } = plantSymlink();
     const fd = openSync(planted, "w");
     writeSync(fd, "pwned");
     closeSync(fd);
-    expect(existsSync(victim)).toBe(true); // it followed, and wrote the victim
-
+    // This is what the rotation used to do, and why it had to change.
+    expect(existsSync(victim)).toBe(true);
     rmSync(dir, { recursive: true, force: true });
   });
 });
