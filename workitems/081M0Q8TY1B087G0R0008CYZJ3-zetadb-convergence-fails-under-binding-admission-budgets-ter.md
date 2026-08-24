@@ -53,3 +53,33 @@ what "budget" means).
 
 So the boundary of the convergence claim is now visible in the test output instead of
 being an unstated assumption.
+
+## Progress 2026-08-24 - the policy boundary is now executable
+
+The current choice is no longer buried in the admission loop. `src/Core.TypeScript/zetadb/admission-policy.ts`
+defines an injected `ZetaDbAdmissionPolicyPort`, and `runZetaDbNodeTick` plus
+`runConvergentZetaDbNodeTick` execute the supplied policy. The built-in
+`noForgetBackpressureAdmissionPolicy` preserves the existing behavior exactly: a candidate that
+crosses either the retained-event or checkpoint-byte bound is refused without displacing an
+admitted event.
+
+Focused tests pin exact-boundary admission, both typed capacity refusals, custom-policy injection,
+and forwarding through the bounded-retry runner. The existing BIND witness remains unchanged and
+green as a witness of the known limitation.
+
+This extraction does **not** resolve terminal replica divergence. A policy that promises convergence
+while a finite bound is binding must explicitly choose and test one of the costs named above:
+coordination/refusal, history displacement with a heat receipt, or a weaker convergence contract.
+The no-forget policy cannot provide unbounded, order-independent availability from finite storage.
+
+## Progress 2026-08-24 - hard limits remain kernel facts
+
+The injected policy is advisory inside the caller's hard envelope: it may reserve capacity or
+backpressure earlier, but it cannot admit a proposal whose retained-event count or encoded
+checkpoint bytes exceed `ZetaDbTickLimits`. The kernel evaluates that ceiling before invoking the
+policy, so an always-admit plugin cannot rewrite byte accounting.
+
+The plugin boundary also contains thrown exceptions, unnamed implementations, and malformed
+decisions as `database-admission-policy-failed` heat. No policy failure reaches persistence and no
+exception escapes the tick API. This closes the safety precondition for experimenting with richer
+policies; it still does not change the BIND convergence boundary above.
