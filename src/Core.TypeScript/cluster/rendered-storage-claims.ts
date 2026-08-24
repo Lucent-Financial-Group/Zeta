@@ -127,7 +127,14 @@ import { spawnSync } from "node:child_process";
 import { parseAllDocuments, stringify as yamlStringify } from "yaml";
 import { stringCompare } from "../collation/collation.ts";
 import { quantityToGib } from "./single-node-readiness.ts";
-import { loadCatalogue, type ProfileCatalogue, type ProfileClaim, type ProfileFinding } from "./storage-profiles.ts";
+import {
+  loadCatalogue,
+  parseFieldPath,
+  type ProfileCatalogue,
+  type ProfileClaim,
+  type ProfileFinding,
+} from "./storage-profiles.ts";
+import { clusterDefaultStorageClass, effectiveStorageClass } from "./cluster-default-storage-class.ts";
 
 const REPO_ROOT = resolve(import.meta.dir, "../../..");
 
@@ -324,6 +331,12 @@ export interface RenderOptions {
   readonly timeoutMs?: number | undefined;
   /** Injected for tests: replaces the real `helm` invocation. */
   readonly runHelm?: (args: readonly string[], cwd: string) => { status: number; stdout: string; stderr: string };
+  /**
+   * Rung values to write into a `git-path` source's own manifests before
+   * parsing them — the git-path analogue of `valuesObject`. Ignored for
+   * `helm-remote`, which has a values surface of its own.
+   */
+  readonly manifestOverlays?: readonly ManifestOverlay[] | undefined;
 }
 
 function defaultRunHelm(
@@ -369,7 +382,77 @@ export function includeMatcher(glob: string): (baseName: string) => boolean {
   return (name) => regexes.some((re) => re.test(name));
 }
 
-function renderGitPath(source: ApplicationSource, repoRoot: string): RenderResult {
+/**
+ * One overlay onto an in-repo manifest, applied at RENDER time and never on disk.
+ *
+ * A helm-remote Application has a `valuesObject` a rung can be written into
+ * before templating. A git-path Application has no such surface — ArgoCD reads
+ * the committed YAML verbatim — so the only place a rung can enter its render
+ * is here, at exactly the coordinate the catalogue row names.
+ *
+ * `value: null` means DELETE the key. A zero reservation in Kubernetes is an
+ * absent request, not `cpu: 0`, and `applyResourceProfile` reads zero the same
+ * way; the two readings have to agree or the checker and the applier would
+ * disagree about a rung neither of them got wrong.
+ */
+export interface ManifestOverlay {
+  /** Repo-relative path of the manifest the coordinate lives in. */
+  readonly path: string;
+  /** Index of the YAML document WITHIN that file. */
+  readonly docIndex: number;
+  /** Dotted/bracketed field path, as `parseFieldPath` reads it. */
+  readonly field: string;
+  readonly value: string | null;
+}
+
+interface OverlayableDocument {
+  setIn: (path: readonly (string | number)[], value: unknown) => void;
+  deleteIn: (path: readonly (string | number)[]) => void;
+  getIn: (path: readonly (string | number)[], keepScalar?: boolean) => unknown;
+}
+
+/**
+ * Apply the overlays for one file to its parsed documents, in memory.
+ *
+ * Returns the coordinates that MISSED — a field path addressing nothing. A miss
+ * is returned rather than swallowed because an overlay that lands nowhere is
+ * the vacuity class exactly: the render would agree with every rung equally and
+ * would look like a rung that had been applied.
+ */
+function applyManifestOverlays(
+  docs: readonly OverlayableDocument[],
+  overlays: readonly ManifestOverlay[],
+): string[] {
+  const missed: string[] = [];
+  for (const overlay of overlays) {
+    const doc = docs[overlay.docIndex];
+    if (doc === undefined) {
+      missed.push(`${overlay.path}#${String(overlay.docIndex)}: no document at that index`);
+      continue;
+    }
+    const fieldPath = parseFieldPath(overlay.field);
+    if (overlay.value === null) {
+      doc.deleteIn(fieldPath);
+      continue;
+    }
+    // The PARENT must exist. Creating one would invent a `resources.requests`
+    // on a container the manifest never gave one, which is a request the
+    // cluster will never see reported as a request it will.
+    const parent = fieldPath.slice(0, -1);
+    if (parent.length > 0 && doc.getIn(parent) === undefined) {
+      missed.push(`${overlay.path}#${String(overlay.docIndex)} has nothing at ${parent.join(".")}`);
+      continue;
+    }
+    doc.setIn(fieldPath, overlay.value);
+  }
+  return missed;
+}
+
+function renderGitPath(
+  source: ApplicationSource,
+  repoRoot: string,
+  overlays: readonly ManifestOverlay[],
+): RenderResult {
   const abs = resolve(repoRoot, source.gitPath);
   const entries = readdirIfPresent(abs);
   if (entries === null) {
@@ -377,14 +460,39 @@ function renderGitPath(source: ApplicationSource, repoRoot: string): RenderResul
   }
   const matches = includeMatcher(source.includeGlob);
   const documents: Record<string, unknown>[] = [];
+  const missed: string[] = [];
+  const applied = new Set<string>();
   for (const entry of entries.sort((a, b) => stringCompare(a.name, b.name))) {
     if (!entry.isFile() || !matches(entry.name)) continue;
+    const relative = `${source.gitPath}/${entry.name}`;
     const text = readIfPresent(join(abs, entry.name));
     if (text === null) continue;
-    for (const doc of parseAllDocuments(text)) {
+    const docs = parseAllDocuments(text);
+    const mine = overlays.filter((overlay) => overlay.path === relative);
+    if (mine.length > 0) {
+      applied.add(relative);
+      missed.push(...applyManifestOverlays(docs, mine));
+    }
+    for (const doc of docs) {
       const obj = doc.toJS() as Record<string, unknown> | null;
       if (obj !== null && typeof obj === "object") documents.push(obj);
     }
+  }
+  // An overlay whose FILE was never read is a worse miss than one whose field
+  // missed: the file is outside the Application's `directory.include` glob, so
+  // ArgoCD does not apply it either and the catalogue is pricing a manifest the
+  // cluster never gets.
+  for (const overlay of overlays) {
+    if (!applied.has(overlay.path)) {
+      missed.push(`${overlay.path} is not among the files ${source.gitPath} syncs (directory.include)`);
+    }
+  }
+  if (missed.length > 0) {
+    return {
+      ok: false,
+      reason: "manifest-overlay-missed",
+      detail: [...new Set(missed)].sort((a, b) => stringCompare(a, b)).join(" / "),
+    };
   }
   return { ok: true, documents };
 }
@@ -404,7 +512,7 @@ function chartArchivePath(cacheDir: string, source: ApplicationSource): string {
  */
 export function renderApplication(source: ApplicationSource, options: RenderOptions = {}): RenderResult {
   const repoRoot = options.repoRoot ?? REPO_ROOT;
-  if (source.kind === "git-path") return renderGitPath(source, repoRoot);
+  if (source.kind === "git-path") return renderGitPath(source, repoRoot, options.manifestOverlays ?? []);
 
   const cacheDir = options.cacheDir ?? join(repoRoot, ".helm-render-cache");
   mkdirSync(cacheDir, { recursive: true });
@@ -619,44 +727,19 @@ export function extractRenderedPvcs(
 // ---------------------------------------------------------------------------
 // The cluster's default StorageClass
 // ---------------------------------------------------------------------------
+//
+// MOVED to `cluster-default-storage-class.ts` on 2026-08-22 and re-exported
+// here, so this module's public surface is unchanged. It moved because
+// `single-node-readiness.ts` now resolves a blank class the same way, and a
+// second copy of the reading would let the two oracles drift apart on the one
+// term that has to mean the same thing in both.
 
-const DEFAULT_STORAGE_CLASS_SOURCE = "full-ai-cluster/nixos/modules/local-storage.nix";
+export {
+  DEFAULT_STORAGE_CLASS_SOURCE,
+  clusterDefaultStorageClass,
+  effectiveStorageClass,
+} from "./cluster-default-storage-class.ts";
 
-/**
- * The name annotated `storageclass.kubernetes.io/is-default-class: "true"`, or
- * `null` when the tree does not declare one.
- *
- * AN ABSENT `storageClassName` IS NOT "NO DISK" AND IS NOT "longhorn". It is
- * whatever class the cluster marks default, and on this cluster that is
- * `zeta-local-path` — `rancher.io/local-path`, a hostPath directory with
- * `reclaimPolicy: Delete`, declared in the nixos module above. Longhorn ships
- * `defaultClass: false` in `full-ai-cluster`, so nothing falls back to the
- * replicated class by accident.
- *
- * That distinction is the whole reason storageClass is compared and not just
- * size: a claim that declares `longhorn` and renders blank does not merely
- * land on a different disk, it lands on a class whose reclaim policy DELETES
- * the data. Returning `null` rather than guessing keeps an unknown unknown —
- * a comparison against an unknown default is refused, not resolved favourably.
- */
-export function clusterDefaultStorageClass(repoRoot = REPO_ROOT): string | null {
-  const text = readIfPresent(resolve(repoRoot, DEFAULT_STORAGE_CLASS_SOURCE));
-  if (text === null) return null;
-  const lines = text.split("\n");
-  for (let index = 0; index < lines.length; index += 1) {
-    if (!/storageclass\.kubernetes\.io\/is-default-class:\s*"true"/.test(lines[index] ?? "")) continue;
-    for (let back = index; back >= 0 && index - back < 12; back -= 1) {
-      const match = /^\s*name:\s*(\S+)\s*$/.exec(lines[back] ?? "");
-      if (match?.[1] !== undefined) return match[1];
-    }
-  }
-  return null;
-}
-
-/** `""` -> the cluster default, or `null` when there is no default to fall back to. */
-export function effectiveStorageClass(declared: string, clusterDefault: string | null): string | null {
-  return declared === "" ? clusterDefault : declared;
-}
 
 // ---------------------------------------------------------------------------
 // Comparison
@@ -1035,10 +1118,7 @@ export function adjudicate(findings: readonly RenderedFinding[], baseline: Basel
  * Keyed `<appId>@<targetRevision>`, matching the acknowledgement lookup, so
  * bumping a pin invalidates the old entry rather than letting it inherit.
  */
-export function staleUnrenderableKeys(
-  baseline: Baseline,
-  unrenderable: readonly UnrenderableApp[],
-): readonly string[] {
+export function staleUnrenderableKeys(baseline: Baseline, unrenderable: readonly UnrenderableApp[]): readonly string[] {
   const live = new Set(unrenderable.map((app) => `${app.appId}@${app.targetRevision}`));
   return baseline.unrenderable.filter((entry) => !live.has(entry.key)).map((entry) => entry.key);
 }
@@ -1286,6 +1366,22 @@ export function snapshotDrift(live: RenderSnapshot, snapshot: RenderSnapshot): r
   const snapUnrenderable = new Set(snapshot.unrenderable.map((app) => `${app.appId}@${app.targetRevision}`));
   for (const id of liveUnrenderable) if (!snapUnrenderable.has(id)) drift.push(`NEWLY unrenderable: ${id}`);
   for (const id of snapUnrenderable) if (!liveUnrenderable.has(id)) drift.push(`NO LONGER unrenderable: ${id}`);
+  // COVERAGE, not content -- and it was missing (081M0KRQP56087G0R000BK28QS).
+  //
+  // Everything above compares the ROWS, so an Application that renders no
+  // PersistentVolumeClaim at all is invisible to every one of those loops. On
+  // 2026-08-22 the tree grew `spire-crds` (#13488), which renders none; the
+  // snapshot went on saying `appsDiscovered: 53` against a tree of 54, and
+  // `--check-snapshot` printed "snapshot matches the live render" -- true of the
+  // rows and false of the scope. A snapshot that no longer covers the tree is
+  // the load-bearing artifact for two offline gates, and under-coverage is
+  // precisely a check that did not run wearing the face of one that passed.
+  if (live.appsDiscovered !== snapshot.appsDiscovered) {
+    drift.push(
+      `COVERAGE: the snapshot measured ${String(snapshot.appsDiscovered)} Applications, the tree now has ` +
+        `${String(live.appsDiscovered)} -- rows can agree while the snapshot no longer covers the tree`,
+    );
+  }
   return [...drift].sort((a, b) => stringCompare(a, b));
 }
 
