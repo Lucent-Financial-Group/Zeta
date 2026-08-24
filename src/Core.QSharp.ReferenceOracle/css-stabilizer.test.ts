@@ -104,6 +104,17 @@ const isSelfOrthogonal = (code: Set<number>): boolean =>
 const setEq = (a: Set<number>, b: Set<number>): boolean =>
   a.size === b.size && [...a].every((x) => b.has(x));
 
+/**
+ * Resolve a treaty entry, refusing rather than coercing when it is absent.
+ * `noUncheckedIndexedAccess` is on, and the honest response to that is a real check: a missing
+ * entry means the treaty lost a code, which must fail loudly here rather than be silenced with a
+ * non-null assertion that would also hide a genuine regression.
+ */
+const must = <T>(value: T | undefined, name: string): T => {
+  if (value === undefined) throw new Error(`treaty is missing the entry: ${name}`);
+  return value;
+};
+
 /** Reed-Muller RM(r, m), built from the monomial basis — the definition, not a committed matrix. */
 const reedMuller = (r: number, m: number): Set<number> => {
   const n = 1 << m;
@@ -184,7 +195,7 @@ describe("CSS stabilizer treaty — second oracle (TypeScript re-derivation)", (
     expect(css).toBeDefined();
     expect(css?.k).toBe(0);
     expect(css?.d).toBe(4);
-    const committed = treaty.cssCodes.adinkra_8_0_4;
+    const committed = must(treaty.cssCodes.adinkra_8_0_4, "cssCodes.adinkra_8_0_4");
     expect([committed.n, committed.k, committed.d]).toEqual([8, 0, 4]);
     expect(committed.isStabilizerStateNotACode).toBe(true);
   });
@@ -205,7 +216,7 @@ describe("CSS stabilizer treaty — second oracle (TypeScript re-derivation)", (
     const css = cssFromContainingDual(16, reedMuller(2, 4));
     expect(css).toBeDefined();
     expect([css?.n, css?.k, css?.d]).toEqual([16, 6, 4]);
-    const committed = treaty.cssCodes.quantum_rm_16_6_4;
+    const committed = must(treaty.cssCodes.quantum_rm_16_6_4, "cssCodes.quantum_rm_16_6_4");
     expect([committed.n, committed.k, committed.d]).toEqual([16, 6, 4]);
     expect(committed.stabilizerGeneratorCount).toBe(16 - 6);
   });
@@ -228,7 +239,7 @@ describe("CSS stabilizer treaty — second oracle (TypeScript re-derivation)", (
       ["rm_1_4", 16, reedMuller(1, 4)],
     ];
     for (const [name, n, code] of cases) {
-      const committed = treaty.classicalCodes[name];
+      const committed = must(treaty.classicalCodes[name], `classicalCodes.${name}`);
       expect(committed.length).toBe(n);
       expect(committed.dimension).toBe(dimension(code));
       expect(committed.doublyEven).toBe(isDoublyEven(code));
@@ -272,10 +283,10 @@ describe("CSS stabilizer treaty — second oracle (TypeScript re-derivation)", (
     const parse = (m: RegExpMatchArray | null): number[] =>
       (m?.[1] ?? "").split(",").map((s) => Number.parseInt(s.trim(), 16));
     expect(parse(steaneMatch).map((r) => toHex(7, r))).toEqual([
-      ...treaty.cssCodes.steane_7_1_3.xStabilizerRowsHex,
+      ...must(treaty.cssCodes.steane_7_1_3, "cssCodes.steane_7_1_3").xStabilizerRowsHex,
     ]);
     expect(parse(rmMatch).map((r) => toHex(16, r))).toEqual([
-      ...treaty.cssCodes.quantum_rm_16_6_4.xStabilizerRowsHex,
+      ...must(treaty.cssCodes.quantum_rm_16_6_4, "cssCodes.quantum_rm_16_6_4").xStabilizerRowsHex,
     ]);
   });
 
@@ -283,7 +294,9 @@ describe("CSS stabilizer treaty — second oracle (TypeScript re-derivation)", (
     // This is the condition that makes a codespace exist at all, so a wrong matrix fails here
     // rather than producing a plausible-looking code with the wrong parameters.
     for (const name of Object.keys(treaty.cssCodes)) {
-      const rows = treaty.cssCodes[name]!.xStabilizerRowsHex.map((h) => Number.parseInt(h, 16));
+      const rows = must(treaty.cssCodes[name], `cssCodes.${name}`).xStabilizerRowsHex.map((h) =>
+        Number.parseInt(h, 16),
+      );
       expect(rows.length).toBeGreaterThan(0);
       for (const x of rows) for (const z of rows) expect(dot(x, z)).toBe(0);
     }
