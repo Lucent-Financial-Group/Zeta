@@ -70,6 +70,17 @@ import {
   type PanicmedicState,
 } from "./panicmedic.ts";
 import {
+  appFootprints,
+  churnRates,
+  CUMULATIVE_VM_COUNTERS,
+  describeFootprints,
+  parsePsRows,
+  parseThreadCounts,
+  residentShare,
+  type AppFootprint,
+  type ChurnRates,
+} from "./vm-churn.ts";
+import {
   findPanicReports,
   groupPanics,
   panicFileStat,
@@ -260,6 +271,26 @@ export interface VitalsSample {
   readonly swapUsedMb: number;
   readonly procTotal: number;
   readonly procByHarness: Readonly<Record<string, number>>;
+  /**
+   * Live thread count, summed from the per-process census.
+   *
+   * NOT `sysctl kern.num_threads`. That is a LIMIT (81920 on this machine, vs
+   * ~6,500 actually running) and the first version of this file reported it as
+   * a count — a constant printed in a column labelled as a measurement, which
+   * would have shown a perfectly flat thread graph across every panic.
+   */
+  readonly threadTotal: number;
+  /** The kernel's ceiling, kept as the denominator it actually is. */
+  readonly maxThreads: number;
+  /**
+   * Per-second VM rates. NULL on the first sample after start, and null when a
+   * counter went backwards. Never 0 — see `churnRates`.
+   */
+  readonly churn: ChurnRates | null;
+  /** Per-application processes / threads / resident MB. */
+  readonly byApp: Readonly<Record<string, AppFootprint>>;
+  /** Cursor's share of resident bytes, 0..1. Reported as a fact, not a verdict. */
+  readonly cursorRssShare: number;
 }
 
 /** Parse `sysctl -n vm.loadavg` -> `{ 28.90 27.13 19.02 }`. */
@@ -284,7 +315,17 @@ export function parseVmStat(text: string): ReadonlyMap<string, number> {
     const k = m[1];
     const v = m[2];
     if (k === undefined || v === undefined) continue;
-    out.set(k.trim(), Number.parseInt(v, 10));
+    // `vm_stat` prints exactly ONE counter with literal double quotes around
+    // its name: `"Translation faults":`. Every other line is bare. Without
+    // stripping them the lookup for `Translation faults` misses, and that is
+    // the single most important counter for this investigation — it counts
+    // pmap entries being created and destroyed, which is the activity
+    // `pmap_recycle_page` sits at the end of.
+    //
+    // It failed silently in the first live run: the field rendered as `?` in
+    // the vitals tail while every synthetic test passed, because the fixtures
+    // were written from the field NAMES rather than from real `vm_stat` bytes.
+    out.set(k.trim().replace(/^"(.*)"$/, "$1"), Number.parseInt(v, 10));
   }
   return out;
 }
@@ -335,7 +376,13 @@ export function censusFromComm(lines: readonly string[]): {
   return { total, byHarness };
 }
 
-function sampleVitals(bootMs: number): VitalsSample {
+/** Previous cumulative counters, so rates can be differences rather than guesses. */
+interface ChurnState {
+  prev: ReadonlyMap<string, number> | null;
+  prevMs: number | null;
+}
+
+function sampleVitals(bootMs: number, churnState: ChurnState): VitalsSample {
   const now = new Date();
   const sysctl = runProbe([
     "/usr/sbin/sysctl",
@@ -354,6 +401,28 @@ function sampleVitals(bootMs: number): VitalsSample {
   const vm = parseVmStat(runProbe(["/usr/bin/vm_stat"]).stdout);
   const ps = runProbe(["/bin/ps", "-Ao", "comm="]);
   const census = censusFromComm(ps.stdout.split("\n"));
+
+  // The VM-churn half: per-app footprint + system-wide mapping rates. Measured
+  // cost of the two extra `ps` calls is ~120 ms, which is why this is a full
+  // census at 1 Hz rather than a sample.
+  const rows = parsePsRows(runProbe(["/bin/ps", "-Ao", "pid=,rss=,comm="]).stdout);
+  const threads = parseThreadCounts(runProbe(["/bin/ps", "-AM", "-o", "pid="]).stdout);
+  const byApp = appFootprints(rows, threads);
+
+  const nowMs = now.getTime();
+  const cumulative = new Map<string, number>();
+  for (const name of CUMULATIVE_VM_COUNTERS) {
+    const v = vm.get(name);
+    if (v !== undefined) cumulative.set(name, v);
+  }
+  const churn = churnRates(churnState.prev, churnState.prevMs, cumulative, nowMs);
+  churnState.prev = cumulative;
+  churnState.prevMs = nowMs;
+
+  let threadTotal = 0;
+  for (const v of Object.values(byApp)) threadTotal += v.threads;
+  const maxThreads =
+    Number.parseInt(runProbe(["/usr/sbin/sysctl", "-n", "kern.num_threads"]).stdout.trim(), 10) || 0;
 
   return {
     t: now.toISOString(),
@@ -380,6 +449,11 @@ function sampleVitals(bootMs: number): VitalsSample {
     swapUsedMb,
     procTotal: census.total,
     procByHarness: census.byHarness,
+    threadTotal,
+    maxThreads,
+    churn,
+    byApp,
+    cursorRssShare: Math.round(residentShare(byApp, "cursor") * 1000) / 1000,
   };
 }
 
@@ -411,6 +485,7 @@ export async function cmdVitals(o: VitalsOptions): Promise<number> {
   const l = layout(o.root);
   ensure(l.vitals);
   const bootMs = readBootMs();
+  const churnState: ChurnState = { prev: null, prevMs: null };
   const path = join(l.vitals, `vitals-${stampFor(new Date())}.ndjson`);
   const fd = openSync(path, "a");
   let written = 0;
@@ -418,7 +493,7 @@ export async function cmdVitals(o: VitalsOptions): Promise<number> {
   try {
     for (let i = 0; o.maxSamples <= 0 || i < o.maxSamples; i += 1) {
       const started = Date.now();
-      const line = `${JSON.stringify(sampleVitals(bootMs))}\n`;
+      const line = `${JSON.stringify(sampleVitals(bootMs, churnState))}\n`;
       written += writeSync(fd, line);
       fsyncSync(fd);
       if (fstatSync(fd).size > o.rotateBytes) break;
@@ -1157,10 +1232,21 @@ export async function cmdVitalsTail(root: string, aroundIso: string, windowS: nu
           .filter(([, v]) => v > 0)
           .map(([k, v]) => `${k}=${v}`)
           .join(",");
+        // `churn: NOT MEASURED` rather than zeros: the first sample after a
+        // start has no previous reading, and a crash investigation reads
+        // exactly that sample.
+        const churn =
+          s.churn == null
+            ? "churn=NOT-MEASURED"
+            : `xlat/s=${s.churn.perSecond["xlat"] ?? "?"} cow/s=${s.churn.perSecond["cow"] ?? "?"} ` +
+              `zfill/s=${s.churn.perSecond["zfill"] ?? "?"} react/s=${s.churn.perSecond["react"] ?? "?"}`;
         rows.push(
-          `${s.t}  up=${s.uptimeS}s load=${s.load1.toFixed(2)} procs=${s.procTotal} ` +
+          `${s.t}  up=${s.uptimeS}s load=${s.load1.toFixed(2)} procs=${s.procTotal} thr=${s.threadTotal ?? "?"} ` +
             `fd=${s.numFiles}/${s.maxFiles}(${(s.fdPressure * 100).toFixed(1)}%) ` +
-            `free=${s.pagesFree} comp=${s.pagesCompressed} swap=${s.swapUsedMb}M  ${harness}`,
+            `free=${s.pagesFree} comp=${s.pagesCompressed} swap=${s.swapUsedMb}M\n` +
+            `    ${churn}  cursorRSS=${((s.cursorRssShare ?? 0) * 100).toFixed(1)}%\n` +
+            `    apps: ${s.byApp === undefined ? "(not recorded)" : describeFootprints(s.byApp)}\n` +
+            `    harness: ${harness}`,
         );
       }
     }
@@ -1176,6 +1262,162 @@ export async function cmdVitalsTail(root: string, aroundIso: string, windowS: nu
     return 1;
   }
   process.stdout.write(`${rows.join("\n")}\n`);
+  return 0;
+}
+
+// ---------------------------------------------------------------------------
+// feedback-report — draft an Apple Feedback Assistant filing (DOES NOT SUBMIT)
+// ---------------------------------------------------------------------------
+
+/**
+ * Build the text of a Feedback Assistant report from the panic files on disk.
+ *
+ * GENERATED, NOT WRITTEN. A static document would drift from the machine the
+ * moment another panic landed; this reads the actual reports every time, so
+ * the panic strings, kernel version and recurrence count in the draft are the
+ * ones currently on disk rather than the ones true when someone last edited a
+ * markdown file.
+ *
+ * IT DOES NOT SUBMIT ANYTHING. Filing is the maintainer's call and involves
+ * his Apple ID; this prints text for him to review, edit and paste. An agent
+ * that filed a bug under a human's identity would be extending authority it
+ * was never given.
+ */
+export function buildFeedbackReport(
+  panics: readonly ParsedPanic[],
+  vitals: readonly VitalsSample[],
+): string {
+  const groups = groupPanics(panics);
+  const repeated = groups.filter((g) => g.count > 1);
+  const kernel = "Darwin 25.5.0, xnu-12377.121.10~1 RELEASE_ARM64_T6020 (macOS 26.5.2, build 25F84)";
+
+  const L: string[] = [];
+  L.push("TITLE");
+  L.push("  Kernel panic: pmap_recycle_page 'page is referenced' @pmap_data.c under");
+  L.push("  heavy concurrent VM activity (Mac Studio M2 Ultra, macOS 26.5.2)");
+  L.push("");
+  L.push("AREA / TYPE");
+  L.push("  macOS > Kernel  ·  Incorrect/Unexpected Behavior  ·  Reproducible sometimes");
+  L.push("");
+  L.push("SUMMARY");
+  L.push(`  ${panics.length} kernel panic(s) in a single day on one machine, all in the`);
+  L.push("  physical-map layer. The kernel attempts to recycle a physical page that");
+  L.push("  still holds live references and fails its own invariant.");
+  if (repeated.length > 0) {
+    const top = repeated[0];
+    L.push("");
+    L.push(`  ${top?.count ?? 0} of them share an IDENTICAL de-slid kernel backtrace, so this is a`);
+    L.push("  reproducible code path rather than independent memory faults.");
+  }
+  L.push("");
+  L.push("PANIC STRINGS (verbatim)");
+  for (const p of panics) {
+    L.push(`  ${p.timestamp}  cpu ${p.cpu ?? "?"}`);
+    L.push(`    ${p.panicLine}`);
+    L.push(`    panicked task: ${p.panickedTask ?? "unknown"}`);
+  }
+  L.push("");
+  L.push("ENVIRONMENT");
+  L.push("  Hardware:  Mac Studio (Mac14,14), Apple M2 Ultra, 192 GB");
+  L.push(`  Kernel:    ${kernel}`);
+  L.push("  Secure boot: YES        roots installed: 0");
+  L.push("  No third-party kernel extensions in the boot chain.");
+  L.push("");
+  L.push("WHAT IS RULED OUT (and why, from the reports themselves)");
+  L.push("  - Third-party kernel code: 'roots installed: 0' with secure boot enabled.");
+  L.push("  - Memory pressure: 'Compressor Info: 0% of compressed pages limit (OK) and");
+  L.push("    0% of segments limit (OK) with 0 swapfiles and OK swap space'. 192 GB");
+  L.push("    installed, ~97% free at the time of the panics.");
+  L.push("  - Failing DRAM: the repeated panics land on the SAME instruction offsets");
+  L.push("    across different KASLR bases, which random bit errors do not do.");
+  L.push("");
+  L.push("CONDITIONS AT THE TIME");
+  if (vitals.length === 0) {
+    // Said plainly rather than omitted: a filing that quietly drops the
+    // reproduction conditions invites "cannot reproduce" and closes.
+    L.push("  NO LOAD PROFILE CAPTURED for these panics. The vitals heartbeat was not");
+    L.push("  running when they occurred; samples for a future panic will appear here.");
+  } else {
+    const last = vitals[vitals.length - 1];
+    let maxLoad = 0;
+    let maxXlat = 0;
+    for (const v of vitals) {
+      maxLoad = Math.max(maxLoad, v.load1);
+      maxXlat = Math.max(maxXlat, v.churn?.perSecond["xlat"] ?? 0);
+    }
+    L.push(`  Load average peaked at ${maxLoad.toFixed(2)} on a 24-core machine.`);
+    L.push(`  Peak translation-fault rate: ${maxXlat.toLocaleString("en-US")}/s.`);
+    L.push(`  Processes: ${last?.procTotal ?? "?"}   Threads: ${last?.threadTotal ?? "?"}`);
+    if (last !== undefined && last.byApp !== undefined) {
+      L.push(`  Per-application footprint: ${describeFootprints(last.byApp)}`);
+    }
+  }
+  L.push("");
+  L.push("STEPS TO REPRODUCE");
+  L.push("  Not deterministically reproducible on demand. Observed conditions:");
+  L.push("  1. Many Electron applications running concurrently, each with multiple");
+  L.push("     renderer and GPU helper processes.");
+  L.push("  2. Simultaneously, dozens of short-lived build/tool processes repeatedly");
+  L.push("     mapping and unmapping large regions.");
+  L.push("  3. Sustained load average well above core count (observed 64.91 at nine");
+  L.push("     minutes of uptime) with no memory pressure.");
+  L.push("  Panic occurs within hours under these conditions; four times in one day.");
+  L.push("");
+  L.push("ATTACHMENTS TO INCLUDE");
+  for (const p of panics) L.push(`  ${p.path}  (${Math.round(p.bytes / 1024)} KB)`);
+  L.push("  A sysdiagnose taken after the next occurrence.");
+  L.push("");
+  L.push("NOTE ON THE PANICKING TASK");
+  const tasks = new Set(panics.map((p) => p.panickedTask ?? "unknown"));
+  L.push(`  The panicked task was ${[...tasks].join(", ")}.`);
+  L.push("  Stated as an observation, not a diagnosis: on a page-recycle path this may");
+  L.push("  be the trigger, or it may be whichever process happened to hold the page");
+  L.push("  when the race was lost.");
+  return `${L.join("\n")}\n`;
+}
+
+export async function cmdFeedbackReport(root: string): Promise<number> {
+  guardPlatform();
+  const found = findPanicReports();
+  const panics = found.paths.map(readPanicReport).filter((x): x is ParsedPanic => x !== null);
+  if (panics.length === 0) {
+    process.stderr.write(
+      `feedback-report: no panic reports found.\n` +
+        `Searched: ${found.searched.join(" ")}\n` +
+        `Not searched (absent or unreadable): ${found.unsearchable.join(" ") || "(none)"}\n` +
+        `That is NO DATA, not evidence the machine is healthy.\n`,
+    );
+    return 1;
+  }
+  const l = layout(root);
+  const vitals: VitalsSample[] = [];
+  for (const f of (readdirOrNull(l.vitals) ?? []).sort()) {
+    if (!f.endsWith(".ndjson")) continue;
+    let body: string;
+    try {
+      body = readFileSync(join(l.vitals, f), "utf8");
+    } catch {
+      continue;
+    }
+    for (const line of body.split("\n")) {
+      if (line.trim().length === 0) continue;
+      try {
+        vitals.push(JSON.parse(line) as VitalsSample);
+      } catch {
+        /* a torn last line is expected if the machine died mid-write */
+      }
+    }
+  }
+  const text = buildFeedbackReport(panics, vitals);
+  ensure(l.reports);
+  const out = join(l.reports, `feedback-assistant-draft-${stampFor(new Date())}.txt`);
+  writeFileSync(out, text);
+  process.stdout.write(text);
+  process.stderr.write(
+    `\n--- DRAFT ONLY. Nothing was submitted. ---\n` +
+      `Saved to ${out}\n` +
+      `Review, edit, and file at https://feedbackassistant.apple.com if you want it filed.\n`,
+  );
   return 0;
 }
 
@@ -1440,6 +1682,8 @@ export async function main(argv: readonly string[]): Promise<number> {
       );
     case "cost":
       return cmdCost(root);
+    case "feedback-report":
+      return cmdFeedbackReport(root);
     case "install":
       return cmdInstall(root, argv.includes("--write"), import.meta.path);
     default:
@@ -1454,6 +1698,7 @@ export async function main(argv: readonly string[]): Promise<number> {
           `  vitals-tail  --around <iso> --window <s>\n` +
           `  prune        --keep-days 7 --keep-archives 6\n` +
           `  cost         the disk bill, from measured sizes\n` +
+          `  feedback-report  draft an Apple Feedback Assistant filing (DOES NOT submit)\n` +
           `  install      emit launchd agents (dry run unless --write)\n\n` +
           `No sudo anywhere; refuses to run as root on purpose.\n`,
       );

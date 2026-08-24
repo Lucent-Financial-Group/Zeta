@@ -14,6 +14,7 @@ import { join } from "node:path";
 
 import {
   agentPlist,
+  buildFeedbackReport,
   ERROR_RING_SEGMENTS,
   segmentName,
   segmentsToDelete,
@@ -279,5 +280,56 @@ describe("error ring open flags — the CodeQL js/file-system-race finding, fals
     expect(existsSync(victim)).toBe(true); // it followed, and wrote the victim
 
     rmSync(dir, { recursive: true, force: true });
+  });
+});
+
+describe("buildFeedbackReport — a draft for a human, never a submission", () => {
+  const panic = (ts: string, line: string, task: string) => ({
+    path: `/Library/Logs/DiagnosticReports/Retired/panic-${ts}.panic`,
+    timestamp: ts, osVersion: "macOS 26.5.2 (25F84)", product: "Mac14,14",
+    panicLine: line, sourceSite: "pmap_data.c:2334", cpu: 9, panickedTask: task,
+    backtraceOffsets: ["0x55808", "0x1d4014", "0x1d2054", "0x597c", "0x55b18", "0x94486c", "0x1c9358", "0x16ae0c"],
+    lastStartedKext: "com.apple.filesystems.smbfs\t6.0.1", bytes: 4_483_637,
+  });
+  const panics = [
+    panic("2026-08-24 07:41:09.00 -0400", "pmap_recycle_page: page 0x109bba68000 is referenced @pmap_data.c:2334", "Cursor Helper (Renderer)"),
+    panic("2026-08-24 09:29:44.00 -0400", "pmap_recycle_page: page 0x11226018000 is referenced @pmap_data.c:2334", "Cursor Helper (Renderer)"),
+  ];
+
+  test("carries the verbatim panic strings and the kernel version", () => {
+    const t = buildFeedbackReport(panics, []);
+    expect(t).toContain("page 0x11226018000 is referenced @pmap_data.c:2334");
+    expect(t).toContain("xnu-12377.121.10~1 RELEASE_ARM64_T6020");
+    expect(t).toContain("roots installed: 0");
+  });
+
+  test("reports the repeat as a reproducible code path", () => {
+    expect(buildFeedbackReport(panics, [])).toContain("IDENTICAL de-slid kernel backtrace");
+  });
+
+  test("MISSING LOAD DATA IS STATED, not omitted", () => {
+    // A filing that quietly drops its reproduction conditions invites
+    // "cannot reproduce" and gets closed. Absence is declared.
+    const t = buildFeedbackReport(panics, []);
+    expect(t).toContain("NO LOAD PROFILE CAPTURED");
+    expect(t).not.toContain("Load average peaked at 0");
+  });
+
+  test("the panicking task is framed as an observation, never a diagnosis", () => {
+    const t = buildFeedbackReport(panics, []);
+    expect(t).toContain("not a diagnosis");
+    // The verdict form must not appear anywhere in a report a human will file.
+    expect(t).not.toMatch(/Cursor (causes|caused|is responsible|is the cause)/i);
+  });
+
+  test("MUTANT: with vitals present it reports the measured peak, not a placeholder", () => {
+    const v = [
+      { load1: 12.5, procTotal: 900, threadTotal: 5000, churn: { perSecond: { xlat: 100_000 }, intervalS: 1 }, byApp: {} },
+      { load1: 64.91, procTotal: 940, threadTotal: 5700, churn: { perSecond: { xlat: 648_837 }, intervalS: 1 }, byApp: {} },
+    ] as unknown as Parameters<typeof buildFeedbackReport>[1];
+    const t = buildFeedbackReport(panics, v);
+    expect(t).toContain("64.91");
+    expect(t).toContain("648,837");
+    expect(t).not.toContain("NO LOAD PROFILE CAPTURED");
   });
 });

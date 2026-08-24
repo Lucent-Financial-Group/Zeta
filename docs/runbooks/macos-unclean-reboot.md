@@ -48,11 +48,15 @@ from the artifacts; nothing below can be done at all if the ring rolls first.
 ls -la /Library/Logs/DiagnosticReports/Retired/*.panic
 ```
 
-**This directory is the whole lesson.** A previous investigation concluded "no
-`.panic` files" and moved on to indirect evidence; there were three, and they
-named the root cause in their first line. macOS ages reports out of
-`DiagnosticReports/` into `DiagnosticReports/Retired/` within hours, so on a
-machine crashing several times a day, `Retired/` is where the evidence *is*.
+**This directory is the whole lesson, and it has now caught two readers.** A
+first investigation concluded "no `.panic` files"; there were three. Hours later
+a second reader checked the same two top-level paths, concluded "panic files are
+NOT landing on disk", and a human copied the report out of the crash dialog by
+hand — while the file sat in `Retired/`.
+
+**Measured retirement latency: under four minutes.** The 09:29 report was written
+at `09:29:48` and was already in `Retired/` by `09:33`. A top-level glob will
+essentially always miss. Always search recursively, or just run `triage`.
 
 The format is **two JSON documents** — a one-line header, a newline, then the
 body. `JSON.parse` on the whole file fails; `panic-log.ts` partitions at the

@@ -4,6 +4,29 @@
 **Machine:** `AceHacks-Mac-Studio`, Mac14,14 (M2 Ultra), macOS 26.5.2 (25F84), 192 GB
 **Continues:** `docs/research/2026-08-15-139-and-134-are-signal-deaths-147-of-them-in-one-week-on-one-machine.md`
 
+> **UPDATE, 09:29 the same day — a FOURTH panic, and the search error repeated.**
+> While this was being written the machine panicked again (21:35, 07:40, 08:17,
+> 09:29). The coordinator relaying the report checked
+> `/Library/Logs/DiagnosticReports/*.panic` and `~/Library/...`, found nothing,
+> and concluded *"panic files are NOT landing on disk"* — so Aaron pasted the
+> report out of the crash dialog by hand.
+>
+> **The file was on disk the whole time**, as
+> `Retired/panic-full-2026-08-24-092944.0002.panic`, and the shipped harness
+> found and parsed it automatically. Everything the human copied by hand — the
+> panic string, `secure boot?: YES`, `roots installed: 0`, the compressor line,
+> the panicked task — is recoverable from that file.
+>
+> This is the SAME non-recursive-search error, made twice, hours apart, by two
+> different readers. Timing measured this round: the report was written at
+> **09:29:48** and was already in `Retired/` by **09:33** — under four minutes.
+> A top-level glob will essentially always miss. That is now the first thing the
+> runbook says, and `findPanicReports()` is why the harness does not repeat it.
+>
+> The 4th panic also promoted claim **C** from "the same code path twice" to
+> **three times**, and the harness said so on data it had never seen:
+> `*** 3 panics share an IDENTICAL kernel backtrace ***`.
+
 ---
 
 ## 0. The answer, and the two premises it required falsifying
@@ -37,6 +60,8 @@ produced the root cause in the first twenty minutes.
 | **E** | The agent fleet is the proximate trigger | **REFUTED** — no fleet process in any report |
 | **F** | Cursor *causes* the bug | **not established** — §4 |
 | **G** | One kernel page-lifecycle fault explains both these panics and the 147 userspace crashes of 08-15 | **hypothesis, consistent with both datasets** — §5 |
+| **H** | Third-party kexts (Paragon) or Defender are involved | **REFUTED** — `roots installed: 0` + secure boot; Defender's ES extension is userspace and cannot reach `pmap_data.c` |
+| **I** | Memory pressure is involved | **REFUTED** — `Compressor Info: 0% ... 0 swapfiles, OK swap space` |
 
 ### The two falsified premises
 
@@ -162,11 +187,17 @@ and the answer is no:
    race that needs a narrow window gets many more chances to hit it at load
    average 29 than at 2. Refuting *"the fleet is the culprit"* is not the same
    as refuting *"the fleet makes it more likely."*
-3. `panicmedic-auxkc-present: true` and two idle Paragon filesystem kexts —
-   `com.paragon-software.filesystems.ntfs (488.0.17)` and `.extfs (46.0.14)`,
-   both at **retain count 0**, on a machine with no non-APFS volumes mounted —
-   remain an untested candidate. Neither appears in any backtrace, which is
-   evidence but not exclusion.
+3. ~~The Paragon kexts remain an untested candidate.~~ **RETRACTED, and the
+   reasoning behind it was wrong.** The full panic report settles it:
+   `roots installed: 0` with `secure boot?: YES` means no third-party kernel
+   code was in the boot chain at all. I had treated
+   `panicmedic-auxkc-present: true` as evidence a third-party auxiliary
+   collection was implicated; that flag records only that an auxiliary
+   collection **exists**, not that it was loaded into the panicking kernel or
+   had anything to do with the fault. Microsoft Defender is excluded on
+   structure rather than evidence: an EndpointSecurity extension is a userspace
+   client and has no path to `pmap_data.c`. Both candidates are closed, and
+   neither should be chased further.
 
 **This is the better outcome, as briefed.** A refutation narrows the search;
 a confirmation of the thing already suspected would not have.
@@ -270,6 +301,42 @@ retention, plus a one-time 447 MB catalog.** On 1.8 TB free.
 
 ---
 
+## 6b. The load profile, and the measurement that discriminates
+
+The cause is known; the open question is what conditions trigger it. Load
+average was **64.91 at nine minutes of uptime** at the 09:29 panic, which is why
+`vitals` now records VM churn rather than only process counts:
+
+- **`Translation faults/s` and `copy-on-write/s`** — both count pmap entries
+  being created and destroyed, which is the lifecycle `pmap_recycle_page` sits
+  at the end of. This is what "VM churn" means concretely instead of as a
+  feeling. Measured range on this machine: ~30k/s idle, **648,837/s** under a
+  deliberately injected 10-process mapping load.
+- **Per-application processes, threads and resident bytes**, so the next panic
+  arrives with a profile rather than a guess.
+
+**The discriminator for claim F.** `Cursor Helper (Renderer)` was the panicking
+task in three of four, but the panicked task is only the process on-CPU when the
+assertion fired — it may be the trigger or the unlucky bystander. What separates
+those, over several panics, is **which application dominates VM activity**, not
+which one died. The first live census is already interesting:
+
+```
+chrome:48p/1400t/17052M   cursor:16p/420t/7569M   apple-index:49p/219t/4299M
+```
+
+Chrome holds **more than twice** Cursor's resident bytes and **three times** its
+threads — yet Cursor is the panicking task in 4 of 4. If Cursor were merely the
+most numerous mapper and therefore the likeliest bystander, Chrome should have
+been hit first and more often. **That disfavours the bystander reading.**
+
+Stated at the confidence it has earned: this is **one sample, and resident bytes
+are not a mapping rate** — a mostly-idle Chrome and a churning Cursor would
+produce these numbers too. Per-process fault rates are not cheaply available on
+macOS, which is a real limit of this instrument and is written into the module
+rather than glossed. What the harness can do is accumulate this profile across
+several panics, which is what turns a suggestive single reading into a result.
+
 ## 7. What I would do next — named, cheap, and discriminating
 
 1. **Run Apple Diagnostics** (hold `D` at boot). Still open from 2026-08-15,
@@ -289,7 +356,14 @@ retention, plus a one-time 447 MB catalog.** On 1.8 TB free.
    crypto paths and nothing for the repo, `~/zeta-clones`, `/tmp` or
    `node_modules`. Both are **his** calls. Nothing here touched either, and
    nothing here should.
-5. **`kern.num_files` is worth watching**: 13.4k of a hard 65536 at idle, and a
+5. **File the Apple bug.** `macos-panic-capture.ts feedback-report` generates
+   the filing text from the panic files on disk — title, area, verbatim panic
+   strings, kernel version, what the reports themselves rule out, the load
+   profile, and the attachment list. It **does not submit**: filing runs under
+   Aaron's Apple ID and is his call. It also declares a missing load profile
+   rather than omitting it, because a filing without reproduction conditions
+   gets closed as "cannot reproduce".
+6. **`kern.num_files` is worth watching**: 13.4k of a hard 65536 at idle, and a
    deliberately-injected 24-process burst took it to 23.4k (35.6%) instantly. It
    is not a panic mechanism and is not claimed as one, but it is one of the few
    fixed ceilings on this box.
@@ -314,7 +388,17 @@ retention, plus a one-time 447 MB catalog.** On 1.8 TB free.
 4. **I printed logical size as "on disk"** for a deduplicated archive,
    overstating the cost 5x — in a document whose whole point is that a cost
    must be measured before it is published.
-5. **The error ring rotated by `rm b; mv a b; open(a, "w")`.** CodeQL's
+5. **Three parse bugs that only live data could catch**, all shipped because the
+   fixtures were written from field *names* rather than from real bytes:
+   `vm_stat` prints exactly one counter quoted (`"Translation faults":`) so the
+   most important counter in this investigation rendered as `?`; `ps -AM -o pid=`
+   silently ignores `-o` and prints the default columns, so every process fell
+   back to a thread count of 1; and `kern.num_threads` is a **limit** (81920)
+   not a count (~5,700), so a constant was printed in a column labelled as a
+   measurement — it would have shown a perfectly flat thread graph across every
+   panic. All three now have verbatim-bytes fixtures, and the thread count is
+   cross-checked against `top` (17 `ps -AM` lines = 16 threads).
+6. **The error ring rotated by `rm b; mv a b; open(a, "w")`.** CodeQL's
    `js/file-system-race` caught it and was right: between the rename and the
    open, anything may create `a`, including a symlink, and `open(a, "w")`
    follows it. Demonstrated rather than argued — planting a symlink and running

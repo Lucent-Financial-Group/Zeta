@@ -21,6 +21,7 @@ worse, so this is a hard constraint rather than a nicety.
 | `panicmedic.ts` | decodes the NVRAM `panicmedic-*` keys; classifies a boot clean/unclean |
 | `panic-log.ts` | finds (**including `Retired/`**), parses, de-slides and groups `.panic` reports |
 | `log-store-retention.ts` | the blackout and ring-retention math, and the disk bill |
+| `vm-churn.ts` | VM-churn rates + per-application process/thread/RSS census — the load profile for the next panic |
 
 ## Start here
 
@@ -38,9 +39,22 @@ Then `docs/runbooks/macos-unclean-reboot.md`.
    08:16:59.664. That hole is why `vitals` exists and why it `fsync`s.
 2. **The log store is a ~4-hour ring under load.** 509 MB filling at
    ~130 MB/hour. Investigating "later" means investigating nothing.
-3. **`.panic` files hide in `Retired/`.** Not finding them there is how a root
-   cause goes unnoticed for a day. `findPanicReports` reports `unsearchable`
+3. **`.panic` files hide in `Retired/`, within four minutes.** Two separate
+   readers checked only the top-level directories on 2026-08-24 and both
+   concluded no panic reports existed; all four were in `Retired/`, and the
+   second time a human ended up copying the report out of a crash dialog by
+   hand. `findPanicReports` searches recursively and reports `unsearchable`
    separately from `found none`, because those are different values.
+
+## The bug this now serves
+
+Apple's own reports name it: `pmap_recycle_page: page ... is referenced
+@pmap_data.c:2334` — an XNU physical-map bug, with `roots installed: 0` and
+`0% compressor / 0 swapfiles` ruling out third-party kernel code and memory
+pressure. **The cause is known; the open question is what conditions trigger
+it.** So `vitals` records translation-fault and copy-on-write rates plus a
+per-application footprint, and `feedback-report` drafts the Apple filing (it
+does **not** submit — that is the maintainer's call and his Apple ID).
 
 ## Cost
 
