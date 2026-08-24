@@ -115,6 +115,39 @@ topological sort.
 
 ---
 
+### Regenerable forgetting is free (the GC thesis)
+
+**Plain:** Throwing away something you can rebuild costs nothing —
+the information never left, you just stopped keeping a copy. Throwing
+away the *last* copy is different: that genuinely destroys something,
+and physics charges for it. So: recompute what you can, store only
+what you cannot rebuild.
+
+**Precise:** Landauer prices *logically irreversible* operations.
+Evicting a value still implied by the log is reversible (the generator
+is its inverse), so no `kT ln 2` floor applies. Only the last copy is
+an erasure. Bennett-style uncomputation is the anchor.
+
+**Full:** `docs/research/2026-08-20-the-reversible-computing-garbage-collection-thesis-regenerable-forgetting-is-free.md`
+
+### The idempotent knot (collapse = erasure = overwrite)
+
+**Plain:** Four things we talk about in four different vocabularies —
+a quantum measurement collapsing, a bit being erased, a conclusion
+being consumed, and one traveler overwriting another — are the same
+single act. In algebra it is *multiplication by something that is not
+invertible*. Everything invertible is free and costs nothing; the
+non-invertible step is the only thing you ever pay for, in heat and
+(when the bits are someone else's) in harm.
+
+**Precise:** In a Clifford algebra the reversible elements are rotors
+(`R R̃ = 1`); the irreversible ones are non-trivial idempotents
+(`P² = P` ⇒ `P(P−1) = 0` ⇒ zero divisor ⇒ non-invertible). Collapse is
+a projector, Landauer prices erasure, and the oracle's single named harm
+is overwriting — one object, four readings.
+
+**Full:** `docs/research/2026-08-20-the-idempotent-knot-collapse-erasure-overwrite-and-non-collapse-are-one-algebraic-act.md`
+
 ## Sketches and approximate counting
 
 ### Bloom filter
@@ -516,6 +549,91 @@ ES vocabulary helps disambiguate (see §3 of
 `docs/research/event-storming-evaluation.md`).
 **Do not confuse with** *expert* or *agent persona* — those
 are agent-side.
+
+### Surface (= host-boundary seam; the metered port)
+
+**Plain:** *Where* something runs — cli / ide / cell / container.
+The no-roles "where" component of a bus address
+(`persona ⊕ surface ⊕ instance ⊕ topology`).
+
+**Technical, and this is the load-bearing half:** a surface **is a
+host-boundary seam** — the hexagonal **port** through which we plug
+in and through which **§13-metered entropy crosses**. Surface and
+*host* are the same thing seen from two sides: the surface is the
+port, the host is what sits behind it
+(`docs/writer-actor-routing-model.md` §"The Host abstraction").
+
+**Consequence worth stating, because it is easy to re-derive badly:**
+since a surface is by definition the metered port, *"different
+surfaces at different access levels"* is **not** an access-control
+scheme layered on top of the topology — it is what a surface already
+is. Authority differences belong at the port because the port is
+where the metering happens. Enumerating surfaces is enumerating
+**seams**, not processes.
+
+**Rooms contain surfaces**, and a surface is **simulated in tests,
+real in prod** (Aaron 2026-08-18). Same seam, two implementations —
+which is exactly the DST discipline: the port is where you swap the
+real channel for a metered fake, so one code path runs deterministic
+at DoP=1 and live at DoP=N with no special case.
+
+**That gives the term a falsifier, which is the useful part.** Asking
+*"is X a surface?"* is not a matter of taste:
+
+> **Can you substitute a simulated X in a test without changing the
+> code path?** If **yes**, X is a surface — a declared port. If
+> **no**, X is an **ambient channel**, and §13 says it should not
+> exist.
+
+So simulability is not a testing convenience that happens to be nice
+to have; it is the **evidence** that a thing is a declared channel at
+all. A seam you cannot fake was never a port.
+
+Aaron settled this as the standing term 2026-08-18 ("surfaces is a
+good name to land on for the different tick sources and interaction
+models").
+
+### Tick source
+
+**Plain:** What *drives* an actor — the thing that makes it take a
+step.
+
+**Technical:** A tick source **crosses at a surface**, which makes it
+a **declared, metered channel** in the §13 noninterference sense
+rather than an ambient clock. That is why "different tick sources
+with different access levels" is a restatement of §13 and not a new
+concept: influence enters through the port, and the port is where it
+is metered.
+
+**Not an actor.** A tick source drives an actor; it is not one. See
+the disambiguation below.
+
+### Actor / entity / persona — the routing-model senses (disambiguation)
+
+`docs/writer-actor-routing-model.md` uses a specific vocabulary that
+**collides with two other in-repo senses**. Always qualify:
+
+| routing-model term | means | contrast |
+|---|---|---|
+| **persona** = *owner* | **what remains** — spans surfaces, not located at any one | **not** the *agent persona / expert* sense above, and **not** *user persona* |
+| **actor** = clone/loop | **what acts** — `persona ⊕ surface ⊕ instance` | **not** the ES-native *actor* used above as a synonym for *user persona* |
+| **surface** | the metered seam (above) | — |
+| **tick source** | what drives an actor (above) | — |
+
+**The collision to watch:** the `Persona (overloaded)` entry above
+recommends *actor* for the **consumer/user-archetype** side. The
+routing model uses *actor* for the **running clone/loop**. These are
+different objects. In routing/topology prose, *actor* means the
+running instance; in product/UX prose it means the user archetype.
+Bare *actor* in newly-written prose is a lint smell for the same
+reason bare *persona* is.
+
+**An entity is not a service.** One entity (routing-model persona)
+holds **a set of (tick source, authority) pairs** across several
+surfaces at once, and may span a cluster boundary — so a service
+decomposition enumerates **surfaces an entity acts through**, never
+the entities themselves. And a **bus/routing address is not
+identity** (`.claude/rules/shared-checkout-is-view-only.md`).
 
 ### Hook
 
@@ -1258,6 +1376,13 @@ cross-refs `docs/ROADMAP.md`, `docs/INSTALLED.md`.
 
 ## Society identity (Genesis Concepts — Iris / Addison UI)
 
+**The concept list itself lives in [`docs/CONCEPT-REGISTRY.md`](CONCEPT-REGISTRY.md)** — one
+editable table of Addison Cooper's 23 published concepts plus the newer ones, each with its
+author and date, checked against the published page by
+`src/Core.TypeScript/hygiene/audit-concept-registry-drift.ts`. Add a concept there.
+The four entries below are the ones this glossary carries in full prose; note they are
+registered as **not yet on the published page**.
+
 Canonical UI source:
 [`docs/design/root-site-iris/Genesis Concepts.dc.html`](design/root-site-iris/Genesis%20Concepts.dc.html).
 Operational threat-model use:
@@ -1329,6 +1454,95 @@ wired. Same STRIDE questions as lower scales, with stronger fairness
 obligations.
 
 ---
+
+## Data Vault 2.0 terms
+
+Data Vault 2.0 (Dan Linstedt) is one of the seven always-active
+substrate-engineering disciplines
+(`.claude/rules/dv2-data-split-discipline-activated.md` §5). These are
+the DV terms the repo corpus **actually uses** — each was measured with
+`git grep -l` before being given an entry, because a glossary entry the
+corpus never picks up is a coinage that did not take. Full construct
+taxonomy: `docs/DATA-VAULT-2-STANDARDS.md`.
+
+### Hub / link / satellite (the DV2.0 triad)
+
+The three shapes DV2.0 decomposes an entity into, partitioned by how
+fast each part changes:
+
+- **Hub** — the stable business key, and nothing else. No context, no
+  history. Changes almost never.
+- **Link** — that two or more hubs stand in a relationship. No context,
+  no history. Always physically many-to-many.
+- **Satellite** — the context and its history, hanging off exactly one
+  hub or link. Changes constantly.
+
+3NF and dimensional modelling mix all three in one table. Separating
+them is what buys parallel loading (no order dependencies), cheap
+history (only the changing part is duplicated), and additive schema
+change. Zeta uses the triad as a *change-rate lens* well beyond
+databases — repo-split, skill design, master data.
+
+### Business key
+
+The identifier the business actually uses for a thing, as opposed to a
+database's internal row id. DV2.0 ranks them by **scope**, worst to
+best: application surrogate → application business → organisation-wide →
+globally unique. A hub keyed at the top of that ladder survives having
+its source system replaced; one keyed at the bottom does not. This is
+what "hubs are stable" means operationally.
+
+### Raw vault / business vault
+
+Two layers, split by whether a transformation can be undone.
+
+- **Raw vault** — source-faithful. Only **hard rules** (reversible: type
+  alignment, hashing). Every source's claim is kept in its own
+  satellite, and conflicting claims are **not** reconciled. *A single
+  version of the facts, never a single version of the truth.*
+- **Business vault** — where **soft rules** (one-way: aggregation,
+  cleansing, deduplication, exclusion) are applied, and where any
+  reconciliation happens.
+
+The direction of reconstructability is the test: staging must be
+rebuildable from the raw vault; the raw vault need **not** be rebuildable
+from the business vault. Zeta leans on the raw layer's conflict
+retention directly — see
+`.claude/rules/anti-babel-preserve-reconcilability.md` (reintegration is
+not reconvergence).
+
+### Record source
+
+A mandatory column on every row naming where it came from — a source
+system and table, or a marker such as `Generated Data`, or an identifier
+pointing at the business rule that produced it. Provenance as a required
+column rather than an optional audit log. It is what makes "auditable"
+a property of the schema instead of a promise.
+
+### Load date
+
+A mandatory column: when the row entered the vault. Not the source's
+timestamp — a source-supplied date is *context* and lives in a
+satellite, because it may be in any time zone and is outside the
+warehouse's control. The load date also **replaces batch identifiers**:
+the timestamp is the batch key.
+
+### Hash diff
+
+A hash over a satellite's descriptive columns only (as distinct from the
+hash key, which is over the business key). Change detection becomes one
+comparison rather than a column-by-column diff, and a satellite load
+where the hash diff is unchanged is a **no-op** — which is what makes
+satellite loading idempotent by construction.
+
+### PIT table (point-in-time table)
+
+A **derived, disposable** query-assist structure holding the current key
+and timestamp from each of one hub's or link's satellites, so reading
+across many satellites is one join instead of many. A bridge table is
+the same idea across many hubs and links. Both are performance
+structures: they may be dropped and rebuilt, and a PIT table that starts
+*computing* values has become a computed satellite instead.
 
 ## Git-native Agile mapping (Vera 2026-05-07)
 

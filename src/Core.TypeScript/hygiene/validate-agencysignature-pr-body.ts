@@ -25,13 +25,30 @@
 // Usage:
 //   gh pr view <number> --json body --jq '.body' \
 //     | bun src/Core.TypeScript/hygiene/validate-agencysignature-pr-body.ts \
+//         --source pr-body \
 //         [--pr-created-at ISO] [--grandfather-cutover ISO] [--author-identity ID]
+//
+// `--source` is REQUIRED at the command line (pr-body | commit-messages). This
+// one binary is run against two OPPOSITE artifacts — the PR description and the
+// concatenated commit messages — and until 2026-08-18 it could not tell them
+// apart, so its parse-failure text hardcoded one provenance and was false
+// whenever the other job emitted it. Measured cost: a correct PR closed and its
+// branch rebuilt (#11707 -> #11710) chasing a commit-side defect that was not
+// there, and a second agent caught by the same sentence within the hour
+// (#11712). Work item 081M092W2E7087G0R000KDKHWS.
 //
 // Exit codes:
 //   0 — all required trailers present and enums valid, OR the author is a
 //       rostered external actor carrying a repo-asserted attribution
 //   1 — validation failed (specific failure printed)
 //   2 — tooling / input error
+//   3 — REFUSED, UNMEASURED: the commit list handed in does not cover the whole
+//       proposal (or its size could not be established), so a PASS would be a
+//       claim about text nobody read. Distinct from 1 on purpose — "your block
+//       is wrong" and "I could not see all of it" are different sentences, and
+//       collapsing them is how an underscan gets filed as a normal failure and
+//       worked around. See agencysignature-commit-coverage.ts for the measured
+//       defect (PR #11528: 475 commits, 250 readable).
 //
 // SOVEREIGN-MODE SEAM (Aaron 2026-08-15: "we want all their checks to be able to
 // run anywhere on our git-native / ZetaDB-native stuff … GitHub's dependabot is
@@ -54,6 +71,14 @@
 // fixed that, because two implementations of one rule drift again — which is how
 // the divergence arose. Now there is no second opinion to hold.
 import {
+  commitCoverage,
+  refusesPass,
+  renderRefusal,
+  resolveCoverageFacts,
+  type CoverageEnv,
+} from "./agencysignature-commit-coverage.ts";
+import {
+  ACCOUNTABILITY_KEYS,
   CANONICAL_VERSION_KEY,
   ENUMS,
   MISSPELLED_VERSION_KEY,
@@ -62,6 +87,7 @@ import {
   hasMisspelledVersionKey,
   isUnfilledPlaceholder,
   validateText,
+  type Reconciliation,
   type Violation,
 } from "./agencysignature-block.ts";
 
@@ -71,7 +97,7 @@ import {
 // real rather than a parallel copy left behind.
 export { hasMisspelledVersionKey, isUnfilledPlaceholder };
 
-type ExitCode = 0 | 1 | 2;
+type ExitCode = 0 | 1 | 2 | 3;
 
 const SPEC_DOC =
   "docs/research/2026-04-26-gemini-deep-think-agencysignature-commit-attribution-convention-validation-and-refinement.md";
@@ -160,22 +186,126 @@ export function diagnoseParseFailure(stripped: string): ParseFailureDiagnosis {
   };
 }
 
-function emitParseFailure(stripped: string): ExitCode {
+/**
+ * WHICH ARTIFACT THE CALLER PIPED IN.
+ *
+ * The workflow runs this ONE binary over two opposite texts -- the PR
+ * description (`printf` of the PR body) and the squash preimage (the PR's
+ * commit messages, from the forge API) -- and stdin cannot say which it is.
+ * Naming it is therefore the caller's job, and the caller must actually do it.
+ *
+ * `unspecified` is a REGISTER, not a reading: it means "nobody declared this",
+ * and the text it produces names NEITHER artifact rather than guessing one. It
+ * is reachable only from in-process callers (`main([])`, e.g. the coverage
+ * suite); at the command line an absent `--source` is a usage error -- see the
+ * `import.meta.main` block at the bottom of this file for why the two levels
+ * differ.
+ */
+export type TrailerSource = "pr-body" | "commit-messages" | "unspecified";
+
+/** The values a caller may state. `unspecified` is a register, never an input. */
+const SOURCE_VALUES: readonly string[] = ["pr-body", "commit-messages"];
+
+/**
+ * How each artifact is NAMED and REMEDIED, as data rather than as branches, so
+ * that "the message names the artifact it was handed" is one lookup with no
+ * path that can fall through to the other artifact's prose.
+ *
+ * The two `absentFix` texts are deliberately DISJOINT -- the pr-body remedy is
+ * a description edit and never mentions the commit, the commit-messages remedy
+ * is a push and never mentions the description edit -- which is what makes the
+ * falsifier in the test suite possible: before this change both invocations
+ * emitted byte-identical output, so a test asserting each names its own remedy
+ * and not the other's cannot pass without it.
+ */
+interface SourceProse {
+  /** Names the artifact in the FAIL headline. */
+  readonly artifact: string;
+  /** The `Cause:` lines for the `absent` diagnosis. */
+  readonly absentCause: readonly string[];
+  /** The `Fix:` lines for the `absent` diagnosis. */
+  readonly absentFix: readonly string[];
+  /** Short noun phrase for the missing-keys diagnosis. */
+  readonly shortName: string;
+  /** Where a missing trailer gets added, per artifact. */
+  readonly addWhere: string;
+}
+
+const SOURCE_PROSE: Readonly<Record<TrailerSource, SourceProse>> = {
+  "pr-body": {
+    artifact: "the PR DESCRIPTION",
+    absentCause: [
+      `the PR DESCRIPTION carries no '${CANONICAL_VERSION_KEY}:' line. This job`,
+      "read the PR DESCRIPTION and nothing else. The squash preimage is judged",
+      "by a SEPARATE job in the same workflow; BOTH are required, and this one",
+      "is not satisfied by a block that exists only on the commit.",
+    ],
+    absentFix: [
+      "add the 10-trailer block (see .github/PULL_REQUEST_TEMPLATE.md) at the",
+      "bottom of the PR DESCRIPTION -- `gh pr edit <N> --body-file <file>`.",
+      "No push, no rebase, no rebuilt branch: editing the description is the",
+      "whole remedy for THIS job.",
+    ],
+    shortName: "the PR description",
+    addWhere: "the bottom of the PR description",
+  },
+  "commit-messages": {
+    artifact: "the PR's COMMIT MESSAGES",
+    absentCause: [
+      `no commit on this PR carries a '${CANONICAL_VERSION_KEY}:' line. This job`,
+      "read the COMMIT MESSAGES and nothing else -- they are what the forge",
+      "squashes into the landed commit. The PR description is judged by a",
+      "SEPARATE job in the same workflow; BOTH are required, and this one is",
+      "not satisfied by a block that exists only in the description.",
+    ],
+    absentFix: [
+      "append the 10-trailer block (see .github/PULL_REQUEST_TEMPLATE.md) as the",
+      "FINAL trailer paragraph of the commit message, then push. Verify first:",
+      "`git log -1 --format='%B' | git interpret-trailers --parse` must print",
+      "all 11 lines -- one blank line inside the block ends the paragraph and",
+      "silently degrades the rest to prose.",
+    ],
+    shortName: "the commit messages",
+    addWhere: "the end of the commit message's final trailer paragraph",
+  },
+  unspecified: {
+    artifact: "the text this check was handed",
+    absentCause: [
+      `the input carries no '${CANONICAL_VERSION_KEY}:' line. The caller did NOT`,
+      "declare which artifact this was (no `--source`), so this message names",
+      "neither: it may have been the PR description or the commit messages.",
+    ],
+    absentFix: [
+      "the block is required in BOTH places, so satisfy both: the bottom of the",
+      "PR description, AND the final trailer paragraph of the commit message.",
+      "Re-run with `--source pr-body` or `--source commit-messages` for the",
+      "artifact-specific remedy.",
+    ],
+    shortName: "the input",
+    addWhere: "the bottom of the block in whichever artifact was checked",
+  },
+};
+
+function emitParseFailure(stripped: string, source: TrailerSource): ExitCode {
   const d = diagnoseParseFailure(stripped);
-  process.stdout.write("FAIL: no parseable git trailers found in the PR's COMMIT MESSAGES\n");
+  const prose = SOURCE_PROSE[source];
+  process.stdout.write(
+    `FAIL: no parseable git trailers found in ${prose.artifact}\n`,
+  );
   process.stdout.write("  Class:  Trailer Contiguity Survival Failure\n");
   if (d.cause === "absent") {
-    process.stdout.write(
-      `  Cause:  no commit on this PR carries a '${CANONICAL_VERSION_KEY}:' line. NOTE:\n`,
-    );
-    process.stdout.write(
-      "          this check reads COMMIT MESSAGES, not the PR description — a perfect\n",
-    );
-    process.stdout.write("          block in the PR description does NOT satisfy it.\n");
-    process.stdout.write(
-      "  Fix:    append the 10-trailer block (see .github/PULL_REQUEST_TEMPLATE.md)\n",
-    );
-    process.stdout.write("          at the very bottom of the COMMIT MESSAGE (not the PR description).\n");
+    // The artifact is NAMED, from the caller's declaration, never assumed. Until
+    // 2026-08-18 these lines asserted COMMIT MESSAGES unconditionally, so the PR
+    // body job emitted a paragraph in which every sentence was false for the
+    // text it had actually read -- and it denied the one fix that worked.
+    process.stdout.write(`  Cause:  ${prose.absentCause[0] ?? ""}\n`);
+    for (const line of prose.absentCause.slice(1)) {
+      process.stdout.write(`          ${line}\n`);
+    }
+    process.stdout.write(`  Fix:    ${prose.absentFix[0] ?? ""}\n`);
+    for (const line of prose.absentFix.slice(1)) {
+      process.stdout.write(`          ${line}\n`);
+    }
   } else {
     process.stdout.write(
       `  Cause:  '${CANONICAL_VERSION_KEY}:' IS present, at line ${String(d.keyLine)} of the\n`,
@@ -220,7 +350,12 @@ function emitParseFailure(stripped: string): ExitCode {
   return 1;
 }
 
-function emitMissingKeys(missing: readonly string[], body = ""): ExitCode {
+function emitMissingKeys(
+  missing: readonly string[],
+  body = "",
+  source: TrailerSource = "unspecified",
+): ExitCode {
+  const prose = SOURCE_PROSE[source];
   process.stdout.write(
     `FAIL: missing required AgencySignature v1 trailer keys: ${missing.join(" ")}\n`,
   );
@@ -243,16 +378,16 @@ function emitMissingKeys(missing: readonly string[], body = ""): ExitCode {
     "            when keys appear textually but blank-line breaks parsing\n",
   );
   process.stdout.write(
-    "  Cause:    PR body trailer block is incomplete OR a blank line splits the\n",
+    `  Cause:    the block in ${prose.shortName} is incomplete OR a blank line\n`,
   );
   process.stdout.write(
-    "            block such that only the final contiguous group parses\n",
+    "            splits it such that only the final contiguous group parses\n",
   );
   process.stdout.write(
-    "  Fix:      add the missing trailers at the PR body bottom OR remove the\n",
+    `  Fix:      add the missing trailers at ${prose.addWhere}\n`,
   );
   process.stdout.write(
-    "            blank line that splits the contiguous block\n",
+    "            OR remove the blank line that splits the contiguous block\n",
   );
   process.stdout.write(
     "  Principle: Substrate Truth Principle — text presence is\n",
@@ -279,8 +414,8 @@ function emitEnumFailure(key: string, found: string, allowed: readonly string[])
  * diagnostics is the point of a renderer: the two instruments must agree on the
  * verdict, not on the prose.
  */
-function emitViolation(v: Violation, body: string): ExitCode {
-  if (v.code === "missing-keys") return emitMissingKeys(v.key.split(" "), body);
+function emitViolation(v: Violation, body: string, source: TrailerSource): ExitCode {
+  if (v.code === "missing-keys") return emitMissingKeys(v.key.split(" "), body, source);
   if (v.code === "invalid-enum") {
     const spec = ENUMS.find((e) => e.key === v.key);
     return emitEnumFailure(v.key, v.found, spec?.allowed ?? []);
@@ -361,6 +496,44 @@ function emitViolation(v: Violation, body: string): ExitCode {
     process.stdout.write(
       "  Fix:      make the blocks agree on the fields above, or leave ONE block.\n",
     );
+    // The non-authoring maintainer's case, spelled out because the obvious two
+    // "fixes" available to them are both dishonest — copy the branch's block, or
+    // overwrite your own values with the branch's — and a diagnostic that stops
+    // at "make them agree" reads as an instruction to do exactly that.
+    process.stdout.write(
+      "  If you are MAINTAINING SOMEONE ELSE'S BRANCH (merging main in, rebasing):\n",
+    );
+    process.stdout.write(
+      "            * Carry NO block. A commit that makes no content decision asserts\n",
+    );
+    process.stdout.write(
+      "              nothing, contributes no block, and cannot disagree. Git's default\n",
+    );
+    process.stdout.write(
+      "              `Merge branch 'main' into X` message already passes this check.\n",
+    );
+    process.stdout.write(
+      "            * Do NOT copy the branch's block. Nothing here can tell a copied\n",
+    );
+    process.stdout.write(
+      "              attestation from an earned one — a copy is byte-identical — so the\n",
+    );
+    process.stdout.write("              only thing stopping it is you.\n");
+    process.stdout.write(
+      "            * If you DID decide content (resolved a conflict, fixed a lint), sign\n",
+    );
+    process.stdout.write(
+      "              as YOURSELF with your own honest values; and if that honest block\n",
+    );
+    process.stdout.write(
+      "              disagrees with the branch's, the disagreement is TRUE — hand the PR\n",
+    );
+    process.stdout.write(
+      "              back to its owner rather than editing either block to match.\n",
+    );
+    process.stdout.write(
+      "  Rule:     .claude/rules/maintenance-commit-on-another-agents-branch-carries-no-block.md\n",
+    );
     process.stdout.write(`  Spec:     ${SPEC_DOC} Section 5.3 / 7.6\n`);
     return 1;
   }
@@ -373,7 +546,22 @@ function emitViolation(v: Violation, body: string): ExitCode {
   return 1;
 }
 
-function emitPass(trailers: string): ExitCode {
+/**
+ * THE PASS REPORT.
+ *
+ * `reconciliations` is threaded in rather than read off `trailers` for the reason
+ * stated on `TextVerdict.reconciliations`: for a squash whose constituents mixed
+ * `Action-Mode`, the authoritative block still literally carries whatever the LAST
+ * commit wrote. Printing that value would report `human-directed` for a squash the
+ * canonical rule resolved as autonomous — the manufacture the reconciliation
+ * exists to prevent, re-entering through the report. The resolved value is printed
+ * instead, and the values it was resolved FROM are printed beside it so the reader
+ * can see that something was discarded and what.
+ */
+function emitPass(
+  trailers: string,
+  reconciliations: readonly Reconciliation[] = [],
+): ExitCode {
   const version = getValue(trailers, "Agency-Signature-Version");
   process.stdout.write(`PASS: AgencySignature v${version} trailer block valid\n`);
   process.stdout.write(
@@ -392,16 +580,45 @@ function emitPass(trailers: string): ExitCode {
   process.stdout.write(
     `  Credential-Mode:          ${getValue(trailers, "Credential-Mode")}\n`,
   );
+  // EVERY reconcilable key reports its RESOLVED value, not the last block's — the
+  // #14594 lesson, which generalises the moment a second key becomes reconcilable.
+  // Printing `trailers`' own `Human-Review` for an anchored squash would report
+  // `explicit` for a change the canonical rule resolved as unreviewed: the exact
+  // manufacture the reconciliation exists to prevent, re-entering through the report.
+  const reconciled = (key: string): Reconciliation | undefined =>
+    reconciliations.find((r) => r.key === key);
+  const note = (r: Reconciliation | undefined): void => {
+    if (r === undefined) return;
+    process.stdout.write(
+      `    RECONCILED from ${r.from.map((v) => `'${v}'`).join(" + ")} to the WEAKEST ` +
+        "claim present. The squash mixes commits made different ways; the value reported above is " +
+        "the one reading that cannot overstate human involvement.\n",
+    );
+  };
+  const humanReview = reconciled("Human-Review");
+  const reviewEvidence = reconciled("Human-Review-Evidence");
+  const actionMode = reconciled("Action-Mode");
   process.stdout.write(
-    `  Human-Review:             ${getValue(trailers, "Human-Review")}\n`,
+    `  Human-Review:             ${humanReview?.resolved ?? getValue(trailers, "Human-Review")}\n`,
   );
+  note(humanReview);
   process.stdout.write(
-    `  Human-Review-Evidence:    ${getValue(trailers, "Human-Review-Evidence")}\n`,
+    `  Human-Review-Evidence:    ${reviewEvidence?.resolved ?? getValue(trailers, "Human-Review-Evidence")}\n`,
   );
+  note(reviewEvidence);
   process.stdout.write(
-    `  Action-Mode:              ${getValue(trailers, "Action-Mode")}\n`,
+    `  Action-Mode:              ${actionMode?.resolved ?? getValue(trailers, "Action-Mode")}\n`,
   );
+  note(actionMode);
   process.stdout.write(`  Task:                     ${getValue(trailers, "Task")}\n`);
+  // Optional; printed only when recorded, because printing `Accountable-Party: ` on
+  // a v1 block would render silence as an empty answer to a question that was asked.
+  for (const key of ACCOUNTABILITY_KEYS) {
+    const value = getValue(trailers, key);
+    if (value !== "") {
+      process.stdout.write(`  ${key}:${" ".repeat(Math.max(1, 25 - key.length))}${value}\n`);
+    }
+  }
   if (getValue(trailers, "Agency-Signature-Version") === "2") {
     const persona = getValue(trailers, "Persona");
     if (persona !== "") process.stdout.write(`  Persona:                  ${persona}\n`);
@@ -616,32 +833,87 @@ interface ValidatorOptions {
   readonly cutover: string;
   /** The proposal AUTHOR's identity. Forge-agnostic string; empty means unknown. */
   readonly authorIdentity: string;
+  /** Commits the forge says the proposal has. `null` = not stated on the command line. */
+  readonly commitTotal: number | null;
+  /** Commit messages the caller actually piped in. `null` = the caller cannot say. */
+  readonly commitsSupplied: number | null;
+  /**
+   * WHICH artifact was piped in, as declared by the caller. `unspecified` when
+   * `--source` was omitted -- which the CLI refuses outright, and which
+   * in-process callers get as a message that names no artifact at all.
+   */
+  readonly source: TrailerSource;
 }
 
+/** A non-negative integer, or `null` if the text is not one. */
+function parseCount(text: string): number | null {
+  if (!/^\d+$/.test(text)) return null;
+  const n = Number.parseInt(text, 10);
+  return Number.isSafeInteger(n) ? n : null;
+}
+
+/**
+ * Every flag this tool takes carries exactly one value, so the parse is a table
+ * walk rather than a chain of branches — one row per flag, and an unknown flag
+ * or a missing value is a usage error.
+ *
+ * A malformed COUNT is a usage error too, never a silently-ignored flag:
+ * `--commit-total ""` degrading to "no coverage claim was made" would be an
+ * underscan you could buy with a typo.
+ */
 function parseOptions(argv: readonly string[]): ValidatorOptions | null {
-  let createdAt = "";
-  let cutover = "";
-  let authorIdentity = "";
-  for (let i = 0; i < argv.length; i++) {
-    const arg = argv[i] ?? "";
-    const next = argv[i + 1];
-    if (arg === "--pr-created-at") {
-      if (next === undefined) return null;
-      createdAt = next;
-      i++;
-    } else if (arg === "--grandfather-cutover") {
-      if (next === undefined) return null;
-      cutover = next;
-      i++;
-    } else if (arg === "--author-identity") {
-      if (next === undefined) return null;
-      authorIdentity = next;
-      i++;
-    } else {
-      return null;
+  const text = new Map<string, string>([
+    ["--pr-created-at", ""],
+    ["--grandfather-cutover", ""],
+    ["--author-identity", ""],
+  ]);
+  // An ENUM flag, validated here: `--source prbody` is a usage error, never a
+  // silent fall-back to "unspecified". A typo that degraded to the neutral
+  // register would be this bug's shape again -- a provenance claim decided by
+  // something other than the caller's statement.
+  let source: TrailerSource = "unspecified";
+  const counts = new Map<string, number | null>([
+    ["--commit-total", null],
+    ["--commits-supplied", null],
+  ]);
+  for (let i = 0; i < argv.length; i += 2) {
+    const flag = argv[i] ?? "";
+    const value = argv[i + 1];
+    if (value === undefined) return null;
+    if (flag === "--source") {
+      if (!SOURCE_VALUES.includes(value)) return null;
+      source = value as TrailerSource;
+      continue;
     }
+    if (text.has(flag)) {
+      text.set(flag, value);
+      continue;
+    }
+    if (!counts.has(flag)) return null;
+    const count = parseCount(value);
+    if (count === null) return null;
+    counts.set(flag, count);
   }
-  return { createdAt, cutover, authorIdentity };
+  return {
+    createdAt: text.get("--pr-created-at") ?? "",
+    cutover: text.get("--grandfather-cutover") ?? "",
+    authorIdentity: text.get("--author-identity") ?? "",
+    commitTotal: counts.get("--commit-total") ?? null,
+    commitsSupplied: counts.get("--commits-supplied") ?? null,
+    source,
+  };
+}
+
+/** Ambient process environment, read ONCE and only here (noninterference §13). */
+function processEnv(): CoverageEnv {
+  return {
+    vars: process.env,
+    readFile: (path: string): string => {
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      const fs = require("node:fs") as typeof import("node:fs");
+      return fs.readFileSync(path, "utf8");
+    },
+  };
 }
 
 /**
@@ -653,11 +925,15 @@ function parseOptions(argv: readonly string[]): ValidatorOptions | null {
  *   fix is not a trade worth making, and one CLI smoke test still covers the
  *   process boundary.)
  */
-export function main(argv: readonly string[] = [], body?: string): ExitCode {
+export function main(
+  argv: readonly string[] = [],
+  body?: string,
+  env: CoverageEnv = processEnv(),
+): ExitCode {
   const options = parseOptions(argv);
   if (options === null) {
     process.stderr.write(
-      "usage: ... | validate-agencysignature-pr-body.ts [--pr-created-at ISO] [--grandfather-cutover ISO] [--author-identity ID]\n",
+      "usage: ... | validate-agencysignature-pr-body.ts --source pr-body|commit-messages [--pr-created-at ISO] [--grandfather-cutover ISO] [--author-identity ID] [--commit-total N] [--commits-supplied N]\n",
     );
     return 2;
   }
@@ -727,14 +1003,85 @@ export function main(argv: readonly string[] = [], body?: string): ExitCode {
   // raises `block-disagreement` before validating anything.
   // ---------------------------------------------------------------------
   const verdict = validateText(stripped);
-  if (verdict.block === null) return emitParseFailure(stripped);
+  if (verdict.block === null) return emitParseFailure(stripped, options.source);
 
   const first = verdict.violations[0];
-  if (first !== undefined) return emitViolation(first, stripped);
+  if (first !== undefined) return emitViolation(first, stripped, options.source);
 
-  return emitPass(verdict.block.join("\n"));
+  // ---------------------------------------------------------------------
+  // COVERAGE — the last gate, and it guards exactly ONE outcome: the PASS.
+  //
+  // Everything above judges the text that arrived. This asks whether the text
+  // that arrived is all of it. Measured 2026-08-17 on PR #11528, the squash
+  // preimage step handed this validator the oldest 250 of 475 commit messages
+  // and got the ordinary verdict back — a check that did not fully run,
+  // reported as one that passed.
+  //
+  // Placed HERE, after validation, on purpose:
+  //   * a FAIL over a truncated prefix is SOUND (the violating commit is really
+  //     in the PR), so it is still reported as a FAIL and keeps its diagnosis;
+  //   * the GRANDFATHERED and REPO-ASSERTED exits above are declared exemptions
+  //     that measure nothing and say so loudly — they are not passes;
+  //   * only the PASS makes the claim "every block in this proposal is valid",
+  //     and only that claim needs the whole proposal to have been read.
+  // ---------------------------------------------------------------------
+  const coverage = commitCoverage(
+    resolveCoverageFacts(
+      { commitTotal: options.commitTotal, commitsSupplied: options.commitsSupplied },
+      input,
+      env,
+    ),
+  );
+  if (refusesPass(coverage)) {
+    process.stdout.write(renderRefusal(coverage));
+    return 3;
+  }
+
+  return emitPass(verdict.block.join("\n"), verdict.reconciliations);
 }
 
+/**
+ * THE CLI BOUNDARY FAILS CLOSED ON AN OMITTED `--source`.
+ *
+ * Stated deliberately, because "what happens when nobody says" is the whole
+ * defect (work item 081M092W2E7087G0R000KDKHWS): the old code had exactly one
+ * answer baked in, was right for one caller and false for the other, and cost a
+ * closed PR and a rebuilt branch.
+ *
+ * Two levels, two answers, both explicit:
+ *
+ *   * COMMAND LINE (here) -- `--source` is REQUIRED. Exit 2, "tooling / input
+ *     error", before a byte of stdin is judged. A CI step that forgets the flag
+ *     goes red immediately and loudly; it can never emit an undeclared-provenance
+ *     diagnostic that a reader might act on. This is the level the bug lived at,
+ *     so this is the level that refuses.
+ *   * IN-PROCESS `main([])` -- allowed, and registers as `unspecified`, whose
+ *     text names NEITHER artifact and prescribes both remedies. Callers like the
+ *     commit-coverage suite genuinely have no artifact to declare; forcing them
+ *     to invent one would manufacture the false provenance this fix removes.
+ *
+ * The exit code is 2 rather than 1 on purpose: this is not "your block is
+ * wrong", it is "this invocation is not answerable".
+ */
 if (import.meta.main) {
-  process.exit(main(process.argv.slice(2)));
+  const argv = process.argv.slice(2);
+  if (!argv.includes("--source")) {
+    process.stderr.write(
+      "error: --source is required (pr-body | commit-messages)\n",
+    );
+    process.stderr.write(
+      "  This one validator is run against two opposite artifacts, and its failure\n",
+    );
+    process.stderr.write(
+      "  text names the artifact it was handed. Undeclared, it would have to guess,\n",
+    );
+    process.stderr.write(
+      "  and a guess printed as a diagnosis is what work item\n",
+    );
+    process.stderr.write(
+      "  081M092W2E7087G0R000KDKHWS was filed about. Declare it.\n",
+    );
+    process.exit(2);
+  }
+  process.exit(main(argv));
 }

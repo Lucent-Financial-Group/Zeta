@@ -92,6 +92,11 @@
     .causal-lane[data-correction-admission="backpressure"] .causal-band { color:var(--c-hot); }
     .causal-band i { flex:1; height:1px; background:currentColor; opacity:0.45; }
     .causal-band b { color:currentColor; font-weight:400; white-space:nowrap; }
+    .causal-handoff { display:grid; grid-template-columns:minmax(4.6rem,0.8fr) minmax(0,1.2fr) auto; gap:0.35rem; align-items:center; margin-top:0.45rem; padding-left:0.4rem; border-left:2px solid var(--c-cool); color:var(--txt2); font-size:0.56rem; }
+    .causal-handoff span { min-width:0; overflow-wrap:anywhere; }
+    .causal-handoff b { color:var(--c-cool); font-weight:400; white-space:nowrap; }
+    .causal-handoff[data-handoff-status="backpressured"], .causal-handoff[data-handoff-status="heat"] { border-left-color:var(--c-hot); }
+    .causal-handoff[data-handoff-status="backpressured"] b, .causal-handoff[data-handoff-status="heat"] b { color:var(--c-hot); }
     .causal-rows { display:grid; gap:0.25rem; margin:0.45rem 0 0; padding:0; list-style:none; }
     .causal-rows li { display:grid; grid-template-columns:minmax(3rem,0.7fr) minmax(0,1.4fr) minmax(2rem,0.35fr); gap:0.35rem; color:var(--txt2); font-size:0.56rem; }
     .causal-rows li span { min-width:0; overflow-wrap:anywhere; }

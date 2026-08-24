@@ -101,6 +101,37 @@ in
       description = "Path to file containing the USB UUID used as KDF binding (iter-4.2 ESP write).";
     };
 
+    usbISerialPath = lib.mkOption {
+      type = lib.types.str;
+      default = "/etc/zeta/usb-iserial";
+      description = ''
+        Recorded USB iSerial when persist bound that factor
+        (ZETA_BIND_USB_ISERIAL=1). Kind is in factorPath; this file
+        is the material. Not a live sysfs probe at boot.
+      '';
+    };
+
+    uefiKeyfilePath = lib.mkOption {
+      type = lib.types.str;
+      default = "/boot/EFI/ZETA/keyfile";
+      description = ''
+        ESP keyfile when persist bound uefiKeyfile (ZETA_BIND_UEFI_KEYFILE=1).
+        The binding IS this file — not copied to /etc. Install writes it
+        at /mnt/boot/EFI/ZETA/keyfile; after reboot the same ESP is /boot.
+        Missing file = fail closed (no UUID fallback).
+      '';
+    };
+
+    factorPath = lib.mkOption {
+      type = lib.types.str;
+      default = "/boot/zeta-creds.factor";
+      description = ''
+        Sidecar next to the cred blob naming the binding factor kind
+        (usbUuid / usbISerial / uefiKeyfile). Persist writes it. Missing
+        file = usbUuid (backward compatible). Does not contain KDF material.
+      '';
+    };
+
     passphraseMode = lib.mkOption {
       type = lib.types.enum [ "file" "interactive" ];
       default = "file";
@@ -121,6 +152,11 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    # QEMU guests expose fw_cfg via this module. Metal probe is a no-op.
+    # Needed so phase-2 restore can stage /run/zeta-creds-passphrase from
+    # `-fw_cfg file=` without persisting the QEMU test secret on the ESP.
+    boot.kernelModules = [ "qemu_fw_cfg" ];
+
     systemd.services.zeta-creds-restore = {
       description = "Zeta credential restore from ESP at boot (B-0852.4a)";
       wantedBy = [ "multi-user.target" ];
@@ -159,10 +195,7 @@ in
           # fires on ANY exit path — success or failure.
           cleanup() {
             rm -f /run/zeta-creds-passphrase-temp
-            ${lib.optionalString (cfg.passphraseMode == "file") ''
-              # File-mode: also delete the operator-staged passphrase
-              rm -f ${cfg.passphraseFile}
-            ''}
+            rm -f ${cfg.passphraseFile}
           }
           trap cleanup EXIT
 
@@ -183,40 +216,85 @@ in
             fi
           }
 
-          log_restore "zeta-creds-restore: reading preserved ESP blob"
-
-          # Strip whitespace from UUID (Copilot P1 finding): `cat`
-          # includes trailing newline if file ends with one.
-          USB_UUID="$(tr -d '[:space:]' < ${cfg.usbUuidPath})"
-          if [ -z "$USB_UUID" ]; then
-            log_restore "zeta-creds-restore: empty USB UUID at ${cfg.usbUuidPath}; aborting"
-            exit 1
+          # QEMU-only staging: hypervisor `-fw_cfg name=opt/org.zeta/creds-passphrase,file=`
+          # copies into ${cfg.passphraseFile}. Never log the contents. Metal has
+          # no such sysfs node, so interactive ask-password is unchanged.
+          ${pkgs.kmod}/bin/modprobe qemu_fw_cfg >/dev/null 2>&1 || true
+          FWCFG_RAW="/sys/firmware/qemu_fw_cfg/by_name/opt/org.zeta/creds-passphrase/raw"
+          if [ -r "$FWCFG_RAW" ]; then
+            umask 0177
+            head -c 4096 "$FWCFG_RAW" > ${cfg.passphraseFile}
+            chmod 0400 ${cfg.passphraseFile}
+            log_restore "zeta-creds-restore: passphrase staged from qemu fw_cfg"
           fi
 
-          ${
-            if cfg.passphraseMode == "file" then ''
-              PASSPHRASE_PATH="${cfg.passphraseFile}"
-              if [ ! -f "$PASSPHRASE_PATH" ]; then
-                log_restore "zeta-creds-restore: passphrase file $PASSPHRASE_PATH missing (passphraseMode=file)"
+          log_restore "zeta-creds-restore: reading preserved ESP blob"
+
+          FACTOR="usbUuid"
+          if [ -f ${cfg.factorPath} ]; then
+            FACTOR="$(tr -d '[:space:]' < ${cfg.factorPath})"
+          fi
+          BIND_FLAG="--usb-uuid"
+          BIND_VALUE=""
+          if [ "$FACTOR" = "usbISerial" ]; then
+            if [ ! -s ${cfg.usbISerialPath} ]; then
+              log_restore "zeta-creds-restore: usb iSerial recorded but serial file missing; aborting (refusing UUID fallback)"
+              exit 1
+            fi
+            BIND_VALUE="$(tr -d '\r\n' < ${cfg.usbISerialPath})"
+            if [ -z "$BIND_VALUE" ]; then
+              log_restore "zeta-creds-restore: usb iSerial recorded but serial file missing; aborting (refusing UUID fallback)"
+              exit 1
+            fi
+            BIND_FLAG="--usb-iserial"
+            log_restore "zeta-creds-restore: binding-factor usbISerial (recorded; not a live probe)"
+          elif [ "$FACTOR" = "uefiKeyfile" ]; then
+            if [ ! -s ${cfg.uefiKeyfilePath} ]; then
+              log_restore "zeta-creds-restore: uefiKeyfile recorded but ESP keyfile missing; aborting (refusing UUID fallback)"
+              exit 1
+            fi
+            BIND_FLAG="--uefi-keyfile"
+            BIND_VALUE="${cfg.uefiKeyfilePath}"
+            log_restore "zeta-creds-restore: binding-factor uefiKeyfile (ESP file; not copied to /etc)"
+          elif [ -n "$FACTOR" ] && [ "$FACTOR" != "usbUuid" ]; then
+            log_restore "zeta-creds-restore: unknown binding-factor; aborting"
+            exit 1
+          else
+            # Strip whitespace from UUID (Copilot P1 finding): `cat`
+            # includes trailing newline if file ends with one.
+            BIND_VALUE="$(tr -d '[:space:]' < ${cfg.usbUuidPath})"
+            if [ -z "$BIND_VALUE" ]; then
+              log_restore "zeta-creds-restore: empty USB UUID at ${cfg.usbUuidPath}; aborting"
+              exit 1
+            fi
+            log_restore "zeta-creds-restore: binding-factor usbUuid (default)"
+          fi
+
+          if [ -s ${cfg.passphraseFile} ]; then
+            PASSPHRASE_PATH="${cfg.passphraseFile}"
+          else
+            ${
+              if cfg.passphraseMode == "file" then ''
+                log_restore "zeta-creds-restore: passphrase file ${cfg.passphraseFile} missing (passphraseMode=file)"
                 exit 1
-              fi
-            '' else ''
-              # interactive mode: prompt operator via systemd-ask-password
-              # Write to temp file (root-readable) so restore CLI can consume
-              PASSPHRASE_PATH="/run/zeta-creds-passphrase-temp"
-              PASSPHRASE="$(${pkgs.systemd}/bin/systemd-ask-password \
-                --timeout=300 \
-                "Zeta cred-blob passphrase: ")"
-              if [ -z "$PASSPHRASE" ]; then
-                log_restore "zeta-creds-restore: empty passphrase from systemd-ask-password"
-                exit 1
-              fi
-              umask 0177
-              echo -n "$PASSPHRASE" > "$PASSPHRASE_PATH"
-              chmod 0400 "$PASSPHRASE_PATH"
-              unset PASSPHRASE
-            ''
-          }
+              '' else ''
+                # interactive mode: prompt operator via systemd-ask-password
+                # unless QEMU (or an operator) already staged passphraseFile.
+                PASSPHRASE_PATH="/run/zeta-creds-passphrase-temp"
+                PASSPHRASE="$(${pkgs.systemd}/bin/systemd-ask-password \
+                  --timeout=300 \
+                  "Zeta cred-blob passphrase: ")"
+                if [ -z "$PASSPHRASE" ]; then
+                  log_restore "zeta-creds-restore: empty passphrase from systemd-ask-password"
+                  exit 1
+                fi
+                umask 0177
+                echo -n "$PASSPHRASE" > "$PASSPHRASE_PATH"
+                chmod 0400 "$PASSPHRASE_PATH"
+                unset PASSPHRASE
+              ''
+            }
+          fi
 
           PERSONA_ARGS=""
           ${lib.optionalString (cfg.persona != null) ''
@@ -231,14 +309,14 @@ in
           # Tee CLI stdout/stderr so "already-present" / "wrote N" hit serial.
           if [ -n "$_serial" ]; then
             ${bunShimPath} ${cfg.scriptPath} \
-              --usb-uuid "$USB_UUID" \
+              "$BIND_FLAG" "$BIND_VALUE" \
               --input ${cfg.blobPath} \
               --passphrase-file "$PASSPHRASE_PATH" \
               --target-root / \
               $PERSONA_ARGS 2>&1 | ${pkgs.coreutils}/bin/tee -a "$_serial"
           else
             ${bunShimPath} ${cfg.scriptPath} \
-              --usb-uuid "$USB_UUID" \
+              "$BIND_FLAG" "$BIND_VALUE" \
               --input ${cfg.blobPath} \
               --passphrase-file "$PASSPHRASE_PATH" \
               --target-root / \

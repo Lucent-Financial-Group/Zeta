@@ -810,6 +810,55 @@ jobs:
             echo "::warning::[archive] archive-pr-reviews.ts exited $ARCHIVE_RC (non-fatal; see log above)"
           fi
 
+          # RECONCILE THE MERGE-TIME RACE (081M08MVPR9087G0R000NCF8PV).
+          #
+          # The sweep above archives PRs that have NO doc. This one repairs docs that exist
+          # and are WRONG: pr-archive-on-merge.yml fetches review threads the instant a PR
+          # closes, and the automated reviewer posts its threads after that, so the archiver
+          # records a count that was already stale when it was written and nothing ever
+          # revisits. Measured 2026-08-18 over 150 uniformly sampled docs: 20.0% of docs
+          # under-report; thread-level capture 74.3%. Against what was FETCHABLE when the
+          # archiver looked, capture was 191/191 = 100% — the loss is entirely the race.
+          #
+          # WHY HERE AND NOT AS A WAIT IN THE MERGE JOB. Only 55 of the 1,997 most recent
+          # merged PRs (2.8%) ever acquire a review thread, so waiting out the reviewer tail
+          # on every merge would spend ~165 runner-hours a month to help 2.8% of runs — and a
+          # fixed wait is only correct until the reviewer population changes, at which point
+          # it is wrong SILENTLY. A sweep keyed on "live count exceeds recorded count" is
+          # correct for any tail length, is idempotent (§12 — once they agree it does
+          # nothing), and costs a few batched queries per tick (~50 s measured).
+          #
+          # IT ENUMERATES FROM THE REPO, NOT FROM `gh pr list`. Candidates are archive docs
+          # joined to their PR shards (which carry `fetched_at`), so the scan is complete by
+          # construction with no cap and no ordering assumption. The first draft listed merged
+          # PRs and filtered by merge time; that listing is ordered by CREATION, so a PR
+          # created weeks before it merged fell off the end and was never judged. Caught by
+          # doctoring PR #10367 (created 08-13, merged 08-17, 12 threads) and finding the
+          # guard cheerfully passed — a scan reporting success while missing rows, which is
+          # the same family as the defect this whole change set is repairing.
+          #
+          # IT CAN ONLY ADD. A re-archive is a whole-file rewrite, so the tool re-reads the
+          # doc afterwards and restores the previous bytes if the count went DOWN. Losing a
+          # thread already captured would be worse than the bug being fixed (§5 memory
+          # preservation), and "repair" that destroys is not repair.
+          #
+          # --limit 5 for the same reason --limit 3 is used above: the bound is a blast-radius
+          # knob, not a throughput dial. Under-reporting docs run at roughly 2-3/day, so 5 per
+          # tick drains faster than they accrue with room to spare.
+          #
+          # NO PIPE on the command (a pipeline's exit status is the last command's, which is
+          # what hid the --batch failure on this step for months). Output captured, printed
+          # separately, exit code checked explicitly.
+          echo "[archive] Reconciling archive docs that under-report review threads..."
+          set +e
+          RECONCILE_OUT=$(bun src/Core.TypeScript/forge-host/github/reconcile-review-archive.ts \
+            --write --since-hours 48 --min-age-minutes 30 --limit 5 2>&1)
+          RECONCILE_RC=$?
+          printf '%s\n' "$RECONCILE_OUT" | tail -20
+          if [ "$RECONCILE_RC" -ne 0 ]; then
+            echo "::warning::[archive] reconcile-review-archive.ts exited $RECONCILE_RC (non-fatal; see log above)"
+          fi
+
           # THIS STEP IS THE SINGLE SERIALISED WRITER OF THE DERIVED MANIFEST INDEX
           # (081KZYP7MNV087G0R002X0E3V9). pr-archive-on-merge.yml no longer stages
           # docs/github/prs/manifest.jsonl, because N concurrent archive PRs writing one shared
@@ -835,6 +884,35 @@ jobs:
           # derive-pr-manifest.ts themselves. pr-manifest-integrity.yml fails loudly if this
           # cadence stops repairing at all.
           bun src/Core.TypeScript/forge-host/github/derive-pr-manifest.ts --write             || echo "::warning::[archive] manifest derive failed (non-fatal; shards are the ledger)"
+
+          # WATCHDOG FOR STRANDED ARCHIVE PRs (added 2026-08-22).
+          #
+          # The two archive writers -- pr-archive-on-merge.yml (event-driven) and this backfill
+          # duty -- can archive the SAME PR from different bases. Both are idempotent, so
+          # neither is wrong; but whichever copy lands on main second becomes an unresolvable
+          # add/add conflict on its own shard path, carrying a markdown that is byte-identical
+          # to main's and a shard whose fetched_at is strictly OLDER. It can never merge
+          # anything new.
+          #
+          # Nothing noticed that, and that silence -- not the conflict -- is the accumulation
+          # generator. A stranded archive PR is ARMED, so the "Auto-merge clean PRs" step
+          # filters it out (auto_merge != null); --auto can never merge a CONFLICTING PR; and
+          # no reaper existed. Measured 2026-08-22: PR #13843 (archiving #12059, whose record
+          # landed on main at 18:25:04 via #13850) sat open ~3 hours and was found by hand.
+          # This lane has now accumulated four times; every prior round drained the symptom.
+          #
+          # NON-FATAL BY DESIGN, and the restraint is the point: this reports the condition and
+          # never closes anything. Whether a record is truly redundant is a judgement that
+          # belongs to a reviewer who can diff it -- detection is a measurement, not a verdict.
+          echo "[archive] Auditing the archive lane for stranded PRs..."
+          set +e
+          LANE_OUT=$(bun src/Core.TypeScript/hygiene/audit-archive-pr-lane.ts 2>&1)
+          LANE_RC=$?
+          printf '%s\n' "$LANE_OUT" | tail -20
+          if [ "$LANE_RC" -ne 0 ]; then
+            echo "::warning::[archive] audit-archive-pr-lane.ts exited $LANE_RC -- the lane is now UNAUDITED, which is the condition it exists to prevent"
+          fi
+          set -e
 
           # Stage + commit what the archive wrote. It writes into TRACKED paths
           # (docs/github/prs/ -- shards + the derived manifest) but previously never staged them,
@@ -1026,6 +1104,107 @@ jobs:
 
           if [ "$VERIFY_RC" -ne 0 ]; then
             echo "::warning::[rs-verify] ECC verification FAILED — at least one block is not recoverable"
+          fi
+
+      - name: Phase coverage summary (gap visibility per tick)
+        env:
+          AGENT: ${{ matrix.agent }}
+        run: |
+          # Only otto reports (same as verify — avoid 3x duplicate output)
+          if [ "$AGENT" != "otto" ]; then
+            exit 0
+          fi
+          if [ ! -f data/rs-blocks.jsonl ]; then
+            exit 0
+          fi
+          bun src/Core.TypeScript/observe/phase-history-cli.ts --summary 2>&1 || true
+
+      - name: Record CI drift + report trend
+        env:
+          AGENT: ${{ matrix.agent }}
+        run: |
+          # All agents record their own tick outcome — builds the denominator for
+          # per-check drift measurement over time.
+          #
+          # CHECK IDENTITY IS SHARED WITH THE DRIFT DASHBOARD, DELIBERATELY.
+          # `--check` takes a CheckId — the workflow file's basename, the same key
+          # `db/drift-dashboard/roster.json` uses. This used to record
+          # `--workflow "heartbeat-$AGENT"`, which is not a workflow basename and is in
+          # no roster, so the two features would have accumulated separate vocabularies
+          # and told two disagreeing health stories about the same repository. The agent
+          # goes in `--lane`, which is a satellite: carried for humans, never a key.
+          set +e
+          bun src/Core.TypeScript/observe/drift-rate-cli.ts \
+            --record --check agent-heartbeat --lane "$AGENT" --outcome green \
+            --run-id "${GITHUB_RUN_ID:-}" 2>&1
+          RECORD_RC=$?
+          set -e
+          if [ "$RECORD_RC" -ne 0 ]; then
+            echo "::warning title=drift-rate::recorder exited $RECORD_RC — this tick's outcome was NOT recorded"
+          fi
+
+          # Only otto reports the aggregate drift trend (one output per tick).
+          #
+          # WHY THIS IS NO LONGER `|| true`, AND WHY IT IS STILL NON-FATAL.
+          # Swallowing the status is defensible for telemetry — a broken reporter must
+          # not break the heartbeat — but `|| true` alone means a permanently-broken
+          # reporter and a working one produce byte-identical evidence, forever. That is
+          # the exact class this repo keeps finding (`lockfile-healer.yml` and
+          # `zetadb-scheduled-node.yml` were green today solely because they never
+          # reached their push).
+          #
+          # So the status is CAPTURED and ANNOUNCED instead of discarded. The reporter
+          # exits 0 whether the news is good or bad — it is a measurement, not a gate
+          # (SDV) — and non-zero ONLY when the reporter itself failed. A `::warning::`
+          # is therefore never noise, and it is visible in the run summary and to the
+          # dashboard without failing the tick. Same shape as `Verify RS block
+          # integrity` above; this step was the odd one out.
+          if [ "$AGENT" = "otto" ]; then
+            set +e
+            bun src/Core.TypeScript/observe/drift-rate-cli.ts --report --annotate 2>&1
+            REPORT_RC=$?
+            set -e
+            if [ "$REPORT_RC" -ne 0 ]; then
+              echo "::warning title=drift-rate::reporter exited $REPORT_RC — the drift trend for this tick is UNKNOWN, not green"
+            fi
+          fi
+
+          # COMMIT, not just stage. THIS IS THE FIX THAT MAKES THE LANE REAL.
+          # Until 2026-08-22 this step ran `git add data/ci-runs.jsonl` and nothing
+          # else. The next step is `git push`, and git does not push a staged-but-
+          # uncommitted file — so every tick appended a line to a working-tree file that
+          # was discarded when the runner was torn down. `data/ci-runs.jsonl` has never
+          # existed on `main`: `git log -- data/ci-runs.jsonl` is empty and the path is
+          # absent from `git ls-files`. The step was green on every tick and produced
+          # nothing, which is the silent-no-op pattern in its purest form.
+          if [ -f data/ci-runs.jsonl ]; then
+            git config user.name "${AGENT}[bot]"
+            git config user.email "${AGENT}[bot]@users.noreply.github.com"
+            git add data/ci-runs.jsonl
+            if git diff --cached --quiet -- data/ci-runs.jsonl; then
+              echo "[drift-rate] ci-runs.jsonl unchanged"
+            else
+              git commit --no-verify -q -m "telemetry(drift-rate): $AGENT tick outcome $(date -u +%Y-%m-%dT%H:%M:%SZ)
+
+          Appends one CI outcome to data/ci-runs.jsonl — the denominator for
+          'is the society making the code healthier or sicker?'. Flushed to main via
+          the heartbeat/* staging path, never pushed at main.
+
+          Agency-Signature-Version: 1
+          Agent: $AGENT
+          Agent-Runtime: github-actions/.github/workflows/agent-heartbeat.yml
+          Agent-Model: qwen2.5:0.5b
+          Credential-Identity: AceHack
+          Credential-Mode: shared
+          Human-Review: not-implied-by-credential
+          Human-Review-Evidence: none
+          Action-Mode: autonomous-fail-open
+          Task: 081KSKBP80008QG0R001KK9WV6
+          Co-authored-by: Kiro <noreply@kiro.dev>"
+              echo "[drift-rate] committed ci-runs.jsonl"
+            fi
+          else
+            echo "::warning title=drift-rate::data/ci-runs.jsonl absent after --record — nothing to commit"
           fi
 
       - name: Push heartbeat branch
@@ -1229,8 +1408,88 @@ jobs:
           # opened by a fine-grained PAT (pull_requests: write + metadata: read). If the
           # secret is absent this degrades to GITHUB_TOKEN, `gh pr create` fails, and the
           # events wait safely on the staging branch — same posture as before, just red.
+          #
+          # "ABSENT" IS NOT THE CONDITION THAT OCCURS (2026-08-17). `||` in this expression
+          # selects on the secret being EMPTY, never on it being DENIED, and the production
+          # failure is denial: the PAT is set and unauthorized. On 2026-08-17 that put every
+          # lane — otto, alexa AND soraya — into `compare failed: gh: Not Found (HTTP 404)`
+          # at 13:46 and again at 14:10. GitHub answers 404, not 403, for a resource the
+          # token cannot see, so a denied PAT looks exactly like a missing repository.
+          #
+          # Measured, so this is not inferred from the error string alone: the identical
+          # `gh api repos/{repo}/compare/main...heartbeat/otto-flush-<sha>` call returns
+          # `status=diverged` under an authorized credential. Endpoint, URL form and the
+          # slash-bearing branch name are all fine; only the credential differs.
+          #
+          # The preflight step above already solves this for GIT, and solves it properly —
+          # probe, swap the extraheader, then RE-PROBE, with its own comment naming the
+          # vacuity class it is avoiding. It repairs `git push` only. `gh api` kept the
+          # denied PAT, which is why the log shows the snapshot branch pushing successfully
+          # and the very next compare 404ing. The preamble below extends that same
+          # discipline to the API credential.
           GH_TOKEN: ${{ secrets.ZETA_TELEMETRY_FLUSH_TOKEN || secrets.ZETA_PR_ARCHIVE_TOKEN || secrets.GITHUB_TOKEN }}
+          FALLBACK_GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          # Probe → swap → RE-PROBE, mirroring the git preflight. The re-probe is the part
+          # that matters: a fallback that is applied and never checked is indistinguishable
+          # from one that worked, and #10913 was exactly that failure.
+          #
+          # ONLY AN AUTHORIZATION ANSWER IS ELIGIBLE FOR THE SWAP — the same rule the git
+          # preflight states, and for the same reason: "a network blip or an unexpected
+          # refusal must NOT silently re-point the credential — that would hide a different
+          # failure behind a credential story."
+          #
+          # This is not hypothetical here. During the GitHub degradation on 2026-08-17
+          # (429s, then 503/504 on action downloads) `rerun-cancelled-gate` took a bare
+          # `{"message":"Not Found","status":"404"}` while running under an ordinary,
+          # perfectly valid GITHUB_TOKEN. So a 404 alone does not prove denial, and a probe
+          # that swapped on ANY failure would have quietly demoted a healthy lane to the
+          # lesser credential — losing `gate (required)` on its flush PR — on the strength
+          # of a transient blip. 5xx and transport failures are therefore left alone and
+          # reported as inconclusive rather than acted on.
+          # PROBE THE SCOPE THE WORK ACTUALLY USES, NOT MERELY "can I see the repo".
+          #
+          # The first version of this probe called `GET /repos/{owner}/{repo}`, and it was
+          # VACUOUS for the fault it guards. Measured on run 32044425464 (16:07Z 2026-08-17),
+          # the first heartbeat after that fix landed: the probe PASSED — neither the denial
+          # warning nor the inconclusive warning appears anywhere in the log — and the very
+          # next call still died on `compare failed: gh: Not Found (HTTP 404)`. A check that
+          # cannot fail under the condition it exists to detect is not a check.
+          #
+          # The reason is a scope boundary. `GET /repos/{owner}/{repo}` is satisfied by
+          # Metadata alone, which this fine-grained PAT has. `GET /repos/{...}/compare/...`
+          # is a CONTENTS-scope endpoint, which it does not. So the credential can see the
+          # repository and cannot read its commits — and GitHub renders that second refusal
+          # as 404, not 403.
+          #
+          # That also sharpens the diagnosis rather than replacing it: the fault is not "the
+          # token sees no repository", it is precisely the missing **Contents** permission
+          # named in 081M010H4KE.
+          #
+          # The probe is `commits?per_page=1`: a Contents-scope read, one page, one request.
+          # `compare/main...main` was tried first and REJECTED — it 404s even under a fully
+          # authorized credential (verified by hand against this repository), so it would
+          # have reported denial unconditionally and demoted every lane forever. That is a
+          # worse failure than the vacuous probe it replaced: a check that cannot pass is as
+          # useless as one that cannot fail, and it does damage on the way. Both directions
+          # were therefore checked against a real credential before this shipped.
+          probe_api() { { gh api "repos/$GITHUB_REPOSITORY/commits?per_page=1" --jq '.[0].sha' >/dev/null; } 2>&1; }
+          if ! OUT=$(probe_api); then
+            if printf '%s' "$OUT" | grep -qE 'HTTP (401|403|404)'; then
+              echo "::warning title=Heartbeat API credential denied::$AGENT: ZETA_TELEMETRY_FLUSH_TOKEN cannot read this repository over the API; falling back to GITHUB_TOKEN. FIX: grant that fine-grained PAT 'Contents: read and write' on Lucent-Financial-Group/Zeta (081M010H4KE)."
+              export GH_TOKEN="$FALLBACK_GH_TOKEN"
+              if OUT2=$(probe_api); then
+                echo "[flush] $AGENT: fallback API credential verified; lane is DEGRADED but alive."
+              else
+                echo "$OUT2"
+                echo "::error title=Heartbeat has no working API credential::$AGENT: BOTH the PAT and GITHUB_TOKEN were refused by the API. Not a credential-swap case — do not treat this as the known PAT denial."
+              fi
+            else
+              echo "$OUT"
+              echo "::warning title=Heartbeat API probe inconclusive::$AGENT: the probe failed, but not with an authorization answer. Leaving the credential alone — this is not evidence of denial."
+            fi
+          fi
+
           AHEAD=$(git rev-list --count "origin/main..origin/heartbeat/$AGENT")
           echo "[flush] $AGENT: $AHEAD heartbeat commits to flush"
 
@@ -1426,8 +1685,56 @@ jobs:
       - name: Fail if a heartbeat PR is old and gate never started
         if: always() && matrix.agent == 'alexa'
         env:
+          # Same denied-vs-absent defect as the flush step above, and the same repair. This
+          # one matters differently: the check's whole job is to READ a PR's check rollup, so
+          # a denied credential does not merely degrade it — it makes the instrument report
+          # on nothing while still going red, which is how a credential fault gets misread as
+          # a gate fault. The rollup tool distinguishes "unavailable" (rc=2) from "absent",
+          # but it cannot distinguish either from "I was handed a token that sees no repo."
           GH_TOKEN: ${{ secrets.ZETA_TELEMETRY_FLUSH_TOKEN || secrets.ZETA_PR_ARCHIVE_TOKEN || secrets.GITHUB_TOKEN }}
+          FALLBACK_GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          # Authorization answers only — see the flush step for why a bare 404 is not
+          # sufficient evidence of denial during a GitHub degradation.
+          # PROBE THE SCOPE THE WORK ACTUALLY USES, NOT MERELY "can I see the repo".
+          #
+          # The first version of this probe called `GET /repos/{owner}/{repo}`, and it was
+          # VACUOUS for the fault it guards. Measured on run 32044425464 (16:07Z 2026-08-17),
+          # the first heartbeat after that fix landed: the probe PASSED — neither the denial
+          # warning nor the inconclusive warning appears anywhere in the log — and the very
+          # next call still died on `compare failed: gh: Not Found (HTTP 404)`. A check that
+          # cannot fail under the condition it exists to detect is not a check.
+          #
+          # The reason is a scope boundary. `GET /repos/{owner}/{repo}` is satisfied by
+          # Metadata alone, which this fine-grained PAT has. `GET /repos/{...}/compare/...`
+          # is a CONTENTS-scope endpoint, which it does not. So the credential can see the
+          # repository and cannot read its commits — and GitHub renders that second refusal
+          # as 404, not 403.
+          #
+          # That also sharpens the diagnosis rather than replacing it: the fault is not "the
+          # token sees no repository", it is precisely the missing **Contents** permission
+          # named in 081M010H4KE.
+          #
+          # The probe is `commits?per_page=1`: a Contents-scope read, one page, one request.
+          # `compare/main...main` was tried first and REJECTED — it 404s even under a fully
+          # authorized credential (verified by hand against this repository), so it would
+          # have reported denial unconditionally and demoted every lane forever. That is a
+          # worse failure than the vacuous probe it replaced: a check that cannot pass is as
+          # useless as one that cannot fail, and it does damage on the way. Both directions
+          # were therefore checked against a real credential before this shipped.
+          probe_api() { { gh api "repos/$GITHUB_REPOSITORY/commits?per_page=1" --jq '.[0].sha' >/dev/null; } 2>&1; }
+          if ! OUT=$(probe_api); then
+            if printf '%s' "$OUT" | grep -qE 'HTTP (401|403|404)'; then
+              echo "::warning title=Heartbeat gate-check credential denied::ZETA_TELEMETRY_FLUSH_TOKEN cannot read this repository over the API; falling back to GITHUB_TOKEN before judging gate state."
+              export GH_TOKEN="$FALLBACK_GH_TOKEN"
+              probe_api >/dev/null \
+                || echo "::error title=Gate check has no working credential::BOTH credentials were refused; the verdict below is about the credential, not about the gate."
+            else
+              echo "$OUT"
+              echo "::warning title=Gate-check API probe inconclusive::the probe failed without an authorization answer; leaving the credential alone."
+            fi
+          fi
+
           # 081M010H4KE / 081M005FXAB. "All present checks are green" was the
           # lie: gate never started. This exits 1 when a heartbeat/* PR older
           # than one tick has no `gate (required)` in its rollup. Young PRs
