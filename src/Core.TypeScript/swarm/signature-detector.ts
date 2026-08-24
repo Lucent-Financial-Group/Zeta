@@ -1,5 +1,11 @@
-
-import { createHash } from "node:crypto";
+let createHash: any = null;
+if (typeof process !== 'undefined' && process.versions && process.versions.node) {
+  try {
+    const cryptoName = "node:crypto";
+    const crypto = await import(/* @vite-ignore */ cryptoName);
+    createHash = crypto.createHash;
+  } catch (e) {}
+}
 
 /**
  * Signature Detector
@@ -28,6 +34,21 @@ export function detectCausalSignature(mem: Uint8Array, mask: boolean[], display:
   }
 
   // Hash the Playable Quote footprint + Visual State
+  if (typeof createHash !== 'function') {
+    // Browser fallback: 64-bit FNV-1a hash
+    const combined = new Uint8Array(maskedMem.length + displayBytes.length);
+    combined.set(maskedMem);
+    combined.set(displayBytes, maskedMem.length);
+    
+    let hval = 0xcbf29ce484222325n;
+    const prime = 0x00000100000001B3n;
+    for (let i = 0; i < combined.length; i++) {
+        hval ^= BigInt(combined[i]!);
+        hval = (hval * prime) & 0xffffffffffffffffn;
+    }
+    return hval.toString(16).padStart(16, '0');
+  }
+
   const hash = createHash("sha256");
   hash.update(maskedMem);
   hash.update(displayBytes);
