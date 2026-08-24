@@ -114,6 +114,37 @@ So compression is **not per-title flat**: the first title pays to discover its s
 - **"Physical rules" for an arbitrary emulator is not a small ask.** For CHIP-8 it is plausible; for an Atari with undocumented behaviour it is a research problem. Say which machines are in scope.
 - **Nothing here is measured.** No bit-accuracy test exists, no object decomposition has been demonstrated end-to-end, no compression ratio has been observed. §3 is the cheapest step and the one that unblocks the rest.
 
+## 7. What is actually measured — and why expert success is not evidence of mechanisability
+
+Aaron, asked directly about §6's "nothing here is measured":
+
+> *"yes, nothing is measured other than the CHIP-8 — we have a few easy orbits detected. I've spent years working on the latest games as they come out to hack them; it's instinct for me to think this is possible cause I can always do it manually with enough effort. **But it's not measured to be mechanisable.**"*
+
+**That last clause is the whole epistemic status of this document, and it is his own distinction, not an outside critique.** Two claims usually collapsed into one:
+
+| claim | evidence | status |
+|---|---|---|
+| *the objects and orbits are there to be found* | years of manual reverse-engineering across many titles, by a practitioner | **strong** |
+| *finding them can be MECHANISED* | a few easy orbits detected in CHIP-8 | **weak — one small case** |
+
+**An expert succeeding with unlimited effort establishes that the problem is solvable in principle. It says nothing about whether the method is automatable.** The expert is applying judgement that has not been externalised — which is precisely why "can a machine do it" is a different question, and the harder one.
+
+This is the repo's recurring theme pointed at its own author's instinct: the increment graph nobody can hold, the knowledge externalised to lectures, the coincidence-index that stores resonance without evidence. **A practitioner's confident intuition is a high-quality hypothesis source and not a result** — exactly the dual-use status `numerology-vs-number-theory` assigns to coincidence, and Aaron applies it to himself here unprompted.
+
+### The falsifier that separates the two claims
+
+The discriminator has to exclude the expert's own annotation, or it measures the annotation rather than the mechanism:
+
+> **An automated pass detects orbits on a title the practitioner has NOT personally reverse-engineered, with no hand-supplied object list — and the orbits it reports are then confirmed independently** (by the emulator, not by asking him whether they look right).
+
+Weaker forms that would NOT discharge it, and are easy to mistake for it:
+
+- Detecting orbits Aaron already annotated. That measures agreement with a label he supplied.
+- Detecting orbits in CHIP-8 only. The machine is 4 KB with 16 registers; success there is consistent with the method working *and* with the problem being trivial at that scale. **The interesting question begins where the state space does.**
+- Detecting *some* objects. Partial decomposition does not compress — §4's generators need the scene, not a sample of it.
+
+**Recorded status:** a few easy orbits in CHIP-8 is the entire measured base. Everything downstream — the compression, the generator library, the per-frame store efficiency — rests on a mechanisability claim that is currently supported by expert instinct and one small machine. That is a legitimate place to start and an illegitimate place to stop, and saying which is the point of writing it down.
+
 ## Pointers
 
 - `docs/research/2026-08-24-the-etymology-attack-and-the-supply-chain-substitution-are-one-attack-*.md` §6–§7 — generator-as-storage and path-from-a-stable-root.
