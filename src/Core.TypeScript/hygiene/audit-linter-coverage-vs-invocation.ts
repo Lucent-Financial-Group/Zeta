@@ -700,11 +700,24 @@ const dropComments = (yaml: string): string =>
     .filter((l) => !/^\s*#/.test(l))
     .join("\n");
 
-/** Every workflow's non-comment body. A tool named only in a comment has not run. */
+/**
+ * Every workflow's non-comment body. A tool named only in a comment has not run.
+ *
+ * One syscall, one answer: a missing directory is read from `readdirSync`'s own ENOENT
+ * rather than pre-checked, and it returns an empty map so the `workflows` route floor is
+ * what names the failure. An `existsSync` gate here would be a check-then-use window AND
+ * would swallow the one condition worth shouting about.
+ */
 export function workflowBodies(dir: string): Map<string, string> {
   const out = new Map<string, string>();
-  if (!existsSync(dir)) return out;
-  for (const f of readdirSync(dir).sort()) {
+  let entries: string[];
+  try {
+    entries = readdirSync(dir);
+  } catch (e) {
+    if ((e as NodeJS.ErrnoException).code === "ENOENT") return out;
+    throw e;
+  }
+  for (const f of entries.sort()) {
     if (!/\.ya?ml$/.test(f)) continue;
     out.set(f, dropComments(readFileSync(join(dir, f), "utf8")));
   }
