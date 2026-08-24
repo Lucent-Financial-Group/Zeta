@@ -61,7 +61,7 @@
 //        1 — a restatement disagrees, or the zig provenance is stale
 
 import { createHash } from "node:crypto";
-import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { join, relative } from "node:path";
 
 /** The one file every other value is compared against. Holds no expected version itself. */
@@ -142,15 +142,31 @@ export function findZigRestatements(file: string, text: string): Restatement[] {
   return out;
 }
 
-/** Recursively list files under a root, skipping the usual noise. */
+/**
+ * Recursively list files under a root, skipping the usual noise.
+ *
+ * One syscall per question, deliberately. An `existsSync(root)` gate before the
+ * listing would answer about a root that can be created, deleted or replaced
+ * before `readdirSync` runs, so the guard reads as defensive and prevents
+ * nothing -- ENOENT is interpreted from the listing itself instead. Likewise the
+ * kind of each entry arrives WITH the listing via `withFileTypes`, so there is
+ * no second `statSync` to race against. Both are the check-then-use class that
+ * `lint-check-then-use-file-races.ts` refuses, and it caught this function.
+ */
 function walk(root: string, acc: string[] = []): string[] {
-  if (!existsSync(root)) return acc;
-  for (const entry of readdirSync(root)) {
-    if (entry === "node_modules" || entry === ".git" || entry === "target") continue;
-    const p = join(root, entry);
-    const st = statSync(p);
-    if (st.isDirectory()) walk(p, acc);
-    else if (/\.(ya?ml|sh|toml|ps1|bash)$/.test(entry)) acc.push(p);
+  let entries;
+  try {
+    entries = readdirSync(root, { withFileTypes: true });
+  } catch (e) {
+    if ((e as NodeJS.ErrnoException).code === "ENOENT") return acc;
+    throw e;
+  }
+  for (const entry of entries) {
+    const name = entry.name;
+    if (name === "node_modules" || name === ".git" || name === "target") continue;
+    const p = join(root, name);
+    if (entry.isDirectory()) walk(p, acc);
+    else if (/\.(ya?ml|sh|toml|ps1|bash)$/.test(name)) acc.push(p);
   }
   return acc;
 }
