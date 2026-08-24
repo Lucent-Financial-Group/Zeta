@@ -12,7 +12,21 @@
 
 **"If it can't be, it's a bug" is an invariant, not an aspiration** — it names a class of defect rather than a hope. That makes it falsifiable, which makes it exactly the kind of claim this repo requires a test for.
 
-**Measured on `origin/main` (2026-08-24):** `zetadb` appears in **118 files** and `deterministic.*frame` in **110** — but **`bit.accurate` appears in 1**, and `content.based compression` / `semantic compression` in **0**. *The design goal Aaron calls "the point" is essentially unwritten*, and nothing enforces it.
+**A measurement I got wrong, corrected here rather than quietly.** I first reported that `bit.accurate` appears in **1 file** and concluded *"the design goal Aaron calls 'the point' is essentially unwritten."* **That was false — the pattern was too narrow.** The concept is pervasive under other spellings:
+
+| spelling | files |
+|---|---|
+| `byte-identical` | **606** |
+| `byte-for-byte` | 260 |
+| `bit-perfect` | 103 |
+| `bit-identical` | 49 |
+| `bit-for-bit` | 46 |
+| `bit-exact` | 37 |
+| **`bit-accurate`** | **1** |
+
+Aaron expected 5–10 and was **low, not high**. The dominant term is *byte-identical*; only the phrase is rare. (This is the seventh instance in one session of a narrow pattern producing a false "absent" — see `list-the-directory-before-grepping-for-structure`.)
+
+**What IS absent is narrower and still worth stating:** no **frame-level round-trip test** for ZetaDB. Searched `*.test.ts`/`*.Tests.fs` for a test that persists a frame, reloads it, and compares byte-for-byte — none found. `content.based compression` / `semantic compression` genuinely return **0**. So the invariant is well-*stated* across the corpus and un-*enforced* at the frame boundary.
 
 ## 2. Why the invariant is load-bearing rather than a nicety
 
@@ -65,6 +79,33 @@ The frame store is the same operation as two others recorded the same day (`docs
 **Store the generator, derive the artifact.** That is `only-the-irreducible-is-primitive-generate-the-rest` at three scales, and it is why these are one programme rather than three projects.
 
 **And the CHIP-8 / ISR orbit reversal is how the objects are OBTAINED.** Decomposing a heap into *"non-DMA orbits based on characters and objects in the game"* produces exactly the object inventory whose generators §4 needs. The reverse-engineering is not adjacent to the compression — **it is its input stage.**
+
+## 5b. The whole DB in one sentence — and three of its four parts are already carved
+
+Aaron, same conversation:
+
+> *"**bit accurate** plus **FoundationDB and TigerBeetle-like deterministic simulation testing** standard, and **degrees of parallelism = 1 and everything still works — scale-free, can scale up to infinite DoP** — is our DB in a nutshell, **plus DBSP semantics**."*
+
+Four parts, measured on `origin/main`:
+
+| part | in-tree | status |
+|---|---|---|
+| bit-accuracy | 606 `byte-identical` + variants | stated everywhere, **unenforced at the frame boundary** (§3) |
+| DST, FoundationDB/TigerBeetle standard | `foundationdb` 141 · `tigerbeetle` 38 · `deterministic simulation` 239 | carved (manifesto §7) |
+| DoP=1 works, scales to ∞, same code path | `DoP` 1,547 · `scale-free` 349 | carved — [`async-all-the-way-truthful-signatures`](../../.claude/rules/async-all-the-way-truthful-signatures.md) states it almost verbatim |
+| DBSP semantics | `DBSP` 1,284 | the substrate |
+
+**So the sentence is a compression of things already carved, with one exception — and the exception is the one this document is about.** Three parts have rules and consumers; bit-accuracy has 606 mentions and no frame-level falsifier. That asymmetry is the finding.
+
+## 5c. The payoff is a generator library, and it amortises
+
+Aaron: *"this is step one to emulator replay compression — hopefully we end up with a whole library of similar shapes/generators over object properties."*
+
+**The generator library is a shared codebook, and that changes the economics.** A ball with a velocity, a paddle constrained to one axis, a sprite under constant gravity, a counter that increments on an event — these recur across titles. Once a generator is in the library, every later title that contains that shape stores a *reference plus parameters* rather than a new generator.
+
+So compression is **not per-title flat**: the first title pays to discover its shapes, the hundredth mostly matches existing ones. **The asset being built is the library, not any individual compression result** — which also means the right early metric is *how many shapes recur across titles*, not the ratio achieved on one.
+
+**And it is the same structure as the anchor sets elsewhere in this repo:** a small stable vocabulary that many things compress *to*, where the value is in the reuse rather than in any single compression. `unmetered` — no library exists, no cross-title recurrence has been measured, and whether emulator objects recur enough to amortise is exactly the open empirical question.
 
 ## 6. Honest limits
 
