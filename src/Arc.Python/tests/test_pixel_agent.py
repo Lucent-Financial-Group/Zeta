@@ -6,8 +6,6 @@ touches it; that is the whole point of the file.
 
 from __future__ import annotations
 
-from arcengine import GameAction
-
 from zeta_arc.agent import PixelAgent
 from zeta_arc.driver import advance, reset
 from zeta_arc.environments.chase import CELL, ZetaChase
