@@ -184,7 +184,32 @@ For the second, **exhaustive reasoning does not scale up**. CHIP-8 → Atari →
 
 **Measured gap worth flagging:** `S=4` appears in **313 files** and `superdetermin*` in **119**, but **`measurement independence` in 5**. The regime is used pervasively; the assumption it actually denies is barely written down. That is the thin part of an otherwise well-covered idea.
 
-**What is still NOT established:** that the emulator case and the ensemble case share a regime does **not** mean results transfer between them. Exhaustive reasoning over a 4 KB machine and Condorcet accuracy over N agents are different problems that happen to sit in the same corner of the correlation axis. Per `numerology-vs-number-theory`, the shared regime is structural; **transfer of results is unclaimed.** (`chip9` appears in 180 files.)
+**What is still NOT established:** that the emulator case and the ensemble case share a regime does **not** mean results transfer between them. Exhaustive reasoning over a 4 KB machine and Condorcet accuracy over N agents are different problems that happen to sit in the same corner of the correlation axis. Per `numerology-vs-number-theory`, the shared regime is structural; **transfer of results is unclaimed** — but see §7c, which names where the claim would be made. (`chip9` appears in 180 files.)
+
+### 7c. Transfer here is ALGEBRAIC, not empirical — and that makes it decidable
+
+Asked where transfer is meant to come from, Aaron:
+
+> *"For transfer learning look at our **WSets and universal tensor** and apply it over **different algebras** and **Cayley–Dickson imaginary stack doublings** — this is where we are trying to get a hold on transfer learning. And I've only mentioned transfer learning maybe 5 times since the start of the project, most of them recent."*
+
+**His estimate is close and the asymmetry is the finding.** `transfer learning` appears in **3 files** (a memory note, `src/Core/Persona.fs`, `src/Core/TrustCalculus.fs`) — **none in `docs/research/`**. Meanwhile the machinery is deep: `cayley-dickson` **226**, `WSet`/`WeightedSet` **194**, `doubling` **160**, `imaginary stack` **53** — and `universal tensor` only **6**. **The mechanism is heavily built and almost never framed as what it is for.**
+
+**And the framing matters, because this is not the ML notion.** Machine-learning transfer is empirical — train on A, fine-tune on B, measure whether it helped; the transfer itself is opaque. This is structural: **one universal shape (`WSet` as the tensor) instantiated over successive algebras, with Cayley–Dickson doubling generating the ladder.**
+
+**The doubling is a principled transfer test because each rung is known to LOSE a specific property:**
+
+| rung | loses |
+|---|---|
+| ℝ → ℂ | ordering |
+| ℂ → ℍ | commutativity |
+| ℍ → 𝕆 | associativity |
+| 𝕆 → 𝕊 | alternativity; gains zero divisors |
+
+**So "does this result transfer?" becomes "which properties does the proof use, and does the next rung still have them?"** A result depending on commutativity cannot survive ℂ → ℍ, and you know that *before* testing it. That is a decision procedure where ML transfer only ever offers a measurement — and it is exactly the check `only-the-irreducible-is-primitive-generate-the-rest` already implies, since it names Cayley–Dickson as **the doubling generator** and the structured algebras as *"earned quotients obtained by declaring relations."* Transfer is then: **does the result survive the next declaration?**
+
+**What this would give the CHIP-8 ladder**, and why it belongs in this document: §7b's technique-transfer hope is currently a hope. If the techniques are expressed over `WSet` rather than over a particular machine, then which of them survive a change of algebra is **derivable from the properties each proof consumes**, not discovered by trying. That is the difference between a transfer *plan* and a transfer *argument*.
+
+**Unmeasured, and the gap is the point:** no result has been carried across a doubling and reported as such; `universal tensor` at 6 files is thin for something described as the carrier; and nothing yet expresses an emulator-analysis technique over `WSet` at all. **The substrate exists, the framing does not, and the demonstration does not.**
 
 **Recorded status:** a few easy orbits in CHIP-8 is the entire measured base. Everything downstream — the compression, the generator library, the per-frame store efficiency — rests on a mechanisability claim that is currently supported by expert instinct and one small machine. That is a legitimate place to start and an illegitimate place to stop, and saying which is the point of writing it down.
 
