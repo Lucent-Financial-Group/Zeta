@@ -325,6 +325,23 @@ when the OS returned ELOOP. So the change is an improvement and touches no file 
 and `MIN_SCANNED_FILES = 700` now makes a future silent narrowing fail loudly, since the scanner had
 no floor and a narrowed scan would otherwise report a clean census by seeing nothing.
 
+### And a second one, from the same lint, with a pointed lesson
+
+`lint (bash retirement inventory + hygiene unit tests)` stayed red after the walk fix. Reproduced
+locally only after `bun install` (without deps, 25 unrelated failures masked it). One finding:
+
+```
++   "src/Core.TypeScript/hygiene/audit-check-arity.ts (2 > 0)"
+```
+
+Two `localeCompare` calls sorting the census — **culture-sensitive collation**, forbidden by
+`.claude/rules/culture-invariant-by-default.md`. Worth recording rather than quietly fixing: the live
+failure that rule cites is **081KT07NV0008QG0R001YDB73K**, a collation mismatch that made
+`ZSet.ofSeq` non-associative — *the exact bug the replacement PolicyRelocation property in this same
+PR was written to guard*. I introduced the class I was arming a check against, twelve files away.
+Replaced with an ordinal comparator; the emitted census is **byte-identical**, which is the check
+that the sort order was not silently changed. No baseline row. Hygiene suite: 2380 pass, 0 fail.
+
 **Register: `unmetered`.** The lint has falsifiers in both ratchet directions and fires on the known
 instances, so it is not decoration; but no bug has yet been *caught* by it in the wild, and the four
 regions above are unsearched. It is not `metered` and this row does not claim it is.
