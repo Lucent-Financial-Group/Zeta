@@ -3,6 +3,12 @@ import {
   type RevisionPolicyPort,
   type RevisionPolicyRefusal,
 } from "../persistence/revision-policy";
+import {
+  noForgetBackpressureAdmissionPolicy,
+  type ZetaDbAdmissionDecision,
+  type ZetaDbAdmissionPolicyPort,
+  type ZetaDbAdmissionProposal,
+} from "./admission-policy";
 
 export const ZETA_DB_IMAGE_SCHEMA = "zeta.db.image.v1" as const;
 export const ZETA_DB_TICK_SCHEMA = "zeta.db.tick.v1" as const;
@@ -53,6 +59,7 @@ export interface ZetaDbFeedback {
     | "database-row-conflict"
     | "database-weight-overflow"
     | "database-capacity-exhausted"
+    | "database-admission-policy-failed"
     | "database-read-failed"
     | "database-write-failed"
     | "database-revision-conflict";
@@ -551,15 +558,62 @@ function candidateRowCount(state: ZetaDbAdmissionState, transition: ZetaDbRowTra
   return count;
 }
 
+function validAdmissionDecision(value: unknown): value is ZetaDbAdmissionDecision {
+  if (!isRecord(value)) return false;
+  if (value.action === "admit") return true;
+  return value.action === "backpressure" && typeof value.detail === "string" && value.detail.length > 0;
+}
+
+function decideAdmission(
+  policy: ZetaDbAdmissionPolicyPort,
+  proposal: ZetaDbAdmissionProposal,
+): ZetaDbResult<ZetaDbAdmissionDecision> {
+  const hardLimit = noForgetBackpressureAdmissionPolicy.decide(proposal);
+  if (hardLimit.action === "backpressure") return succeeded(hardLimit);
+
+  let policyId = "<unreadable>";
+  try {
+    if (!isRecord(policy) || typeof policy.id !== "string" || policy.id.length === 0) {
+      return failed(
+        "database-admission-policy-failed",
+        "The injected database admission policy does not implement a named decide function.",
+      );
+    }
+    policyId = policy.id;
+    if (typeof policy.decide !== "function") {
+      return failed(
+        "database-admission-policy-failed",
+        "The injected database admission policy does not implement a named decide function.",
+      );
+    }
+    const decision: unknown = policy.decide(proposal);
+    return validAdmissionDecision(decision)
+      ? succeeded(decision)
+      : failed(
+          "database-admission-policy-failed",
+          `Database admission policy ${policyId} returned an invalid decision.`,
+        );
+  } catch (error) {
+    return failed("database-admission-policy-failed", `Database admission policy ${policyId} failed: ${String(error)}`);
+  }
+}
+
 function admitNewDelta(
   state: ZetaDbAdmissionState,
   delta: ZetaDbDelta,
   baseBytes: number,
   limits: ZetaDbTickLimits,
+  policy: ZetaDbAdmissionPolicyPort,
 ): ZetaDbResult<string | null> {
-  if (state.entries.length >= limits.maxEntries) {
-    return succeeded(`The retained event ledger reached its ${String(limits.maxEntries)}-entry no-forget budget.`);
-  }
+  const entryDecision = decideAdmission(policy, {
+    resource: "retained-events",
+    current: state.entries.length,
+    candidate: state.entries.length + 1,
+    limit: limits.maxEntries,
+  });
+  if (!entryDecision.ok) return entryDecision;
+  if (entryDecision.value.action === "backpressure") return succeeded(entryDecision.value.detail);
+
   const transition = planRowTransition(state, delta);
   if (!transition.ok) return transition;
   const currentRowBytes = transition.value.current === undefined ? 0 : jsonByteLength(transition.value.current);
@@ -567,15 +621,22 @@ function admitNewDelta(
   const nextEntryItemBytes = state.entryItemBytes + jsonByteLength(delta);
   const nextRowItemBytes = state.rowItemBytes - currentRowBytes + nextRowBytes;
   const nextRowCount = candidateRowCount(state, transition.value);
+  const currentBytes =
+    baseBytes +
+    collectionByteLength(state.entryItemBytes, state.entries.length) +
+    collectionByteLength(state.rowItemBytes, state.rowWeights.size);
   const candidateBytes =
     baseBytes +
     collectionByteLength(nextEntryItemBytes, state.entries.length + 1) +
     collectionByteLength(nextRowItemBytes, nextRowCount);
-  if (candidateBytes > limits.maxCheckpointBytes) {
-    return succeeded(
-      `The next database image needs ${String(candidateBytes)} bytes; the no-forget checkpoint budget is ${String(limits.maxCheckpointBytes)} bytes.`,
-    );
-  }
+  const checkpointDecision = decideAdmission(policy, {
+    resource: "checkpoint-bytes",
+    current: currentBytes,
+    candidate: candidateBytes,
+    limit: limits.maxCheckpointBytes,
+  });
+  if (!checkpointDecision.ok) return checkpointDecision;
+  if (checkpointDecision.value.action === "backpressure") return succeeded(checkpointDecision.value.detail);
 
   state.entries.push(delta);
   state.existingEvents.set(delta.eventId, delta);
@@ -592,6 +653,7 @@ function admitZetaDbDeltas(
   image: ZetaDbImage,
   deltas: readonly ZetaDbDelta[],
   limits: ZetaDbTickLimits,
+  policy: ZetaDbAdmissionPolicyPort,
 ): ZetaDbResult<ZetaDbAdmissionReadout> {
   const state: ZetaDbAdmissionState = {
     existingEvents: new Map(image.entries.map((entry) => [entry.eventId, entry])),
@@ -616,7 +678,7 @@ function admitZetaDbDeltas(
       state.nextDeltaIndex = index + 1;
       continue;
     }
-    const admitted = admitNewDelta(state, delta, baseBytes, limits);
+    const admitted = admitNewDelta(state, delta, baseBytes, limits, policy);
     if (!admitted.ok) return admitted;
     if (admitted.value !== null) return admissionReadout(state, admitted.value);
     state.nextDeltaIndex = index + 1;
@@ -636,6 +698,7 @@ function admitZetaDbDeltas(
 export async function runZetaDbNodeTick(
   port: ZetaDbImagePort,
   request: ZetaDbTickRequest,
+  admissionPolicy: ZetaDbAdmissionPolicyPort = noForgetBackpressureAdmissionPolicy,
 ): Promise<ZetaDbResult<ZetaDbTickReadout>> {
   const validated = validateRequest(request);
   if (!validated.ok) return validated;
@@ -648,7 +711,7 @@ export async function runZetaDbNodeTick(
       "backpressure",
     );
   }
-  const admission = admitZetaDbDeltas(image.value, validated.value, request.limits);
+  const admission = admitZetaDbDeltas(image.value, validated.value, request.limits, admissionPolicy);
   if (!admission.ok) return admission;
   if (request.requireComplete === true && admission.value.capacityDetail !== null) {
     return failed("database-capacity-exhausted", admission.value.capacityDetail, "backpressure");
@@ -713,6 +776,7 @@ export async function runConvergentZetaDbNodeTick(
   port: ZetaDbImagePort,
   request: ZetaDbTickRequest,
   policy: ZetaDbConvergencePolicy,
+  admissionPolicy: ZetaDbAdmissionPolicyPort = noForgetBackpressureAdmissionPolicy,
 ): Promise<ZetaDbResult<ZetaDbTickReadout>> {
   if (
     !isRecord(policy) ||
@@ -729,7 +793,7 @@ export async function runConvergentZetaDbNodeTick(
   const maxAttempts = policy.maxAttempts;
   let lastConflict: ZetaDbFeedback | null = null;
   for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
-    const result = await runZetaDbNodeTick(port, request);
+    const result = await runZetaDbNodeTick(port, request, admissionPolicy);
     if (result.ok) return result;
     if (result.feedback.code !== "database-revision-conflict" && result.feedback.code !== "database-row-conflict")
       return result;
