@@ -94,7 +94,45 @@ mkdir -p "$ZETA_ENV_DIR"
   # Ubuntu + macOS matrix. If CI surfaces a step that needs
   # shims, flip back to `mise activate bash --shims` and file
   # a DEBT entry explaining which step failed and why.
+  #
+  # PROJECT-SCOPED RESOLUTION IS INTENTIONAL HERE — NOT A GAP TO CLOSE
+  # (Aaron 2026-08-22). `mise activate` without `--shims` rewrites PATH per
+  # directory from the nearest .mise.toml, so a tool pinned there resolves
+  # INSIDE the repo and deliberately does NOT resolve from `~`. Aaron, shown
+  # that `op` was "command not found" from his home directory: *"it's like
+  # local scoped dotnet or npm or other similar tools, that works great we
+  # don't need to global … i see op when i'm in zeta"*. That is the same
+  # contract as a local `dotnet tool` manifest or node_modules/.bin — the
+  # pinned version travels with the project — and this file is the
+  # DEVELOPER WORKSTATION surface, where a checkout is always present. The
+  # `--shims` escape hatch above is for a CI STEP that needs shims, never
+  # for global reach on a workstation.
+  # Measured 2026-08-22 (100 × `op --version`, Aaron's Mac): direct 1.47s vs
+  # shim 5.98s — ~4x, same direction as the ~10x the docs claim.
+  #
+  # THE OTHER HOST CLASS IS DIFFERENT, so do not generalise this comment. On
+  # LINUX CLUSTER HARDWARE there is no checkout to scope to — a node
+  # bootstrapping shared secrets is a login shell in $HOME or a systemd
+  # unit — and Aaron 2026-08-22: *"for the linux real hardware we might need
+  # it global for op"*. That case is handled in
+  # full-ai-cluster/nixos/modules/common.nix (shims on PATH +
+  # MISE_GLOBAL_CONFIG_FILE pointed at the node's own checkout, so the pin
+  # is still .mise.toml's). Two host classes, two correct answers; the
+  # falsifier that keeps them apart is
+  # full-ai-cluster/nixos/modules/mise-node-path-wiring.test.ts.
   echo "export MISE_PYTHON_GITHUB_ATTESTATIONS=\"\${MISE_PYTHON_GITHUB_ATTESTATIONS:-0}\""
+  # Trust this checkout's .mise.toml by default. `mise activate` reads the
+  # nearest config and REFUSES untrusted files (QEMU 6.95-picker, 2026-08-23:
+  # "Config files in ~/Zeta/.mise.toml are not trusted"). A HOME-local
+  # `mise trust` store is not durable across install-time /mnt/home/zeta →
+  # post-reboot $HOME. MISE_TRUSTED_CONFIG_PATHS is the env-var contract
+  # install.sh already uses; persist it here so every later shell inherits
+  # it. Must emit BEFORE `mise activate` below.
+  _zeta_repo_root="$(cd "$(dirname "$0")/../../.." && pwd)"
+  echo "case \":\${MISE_TRUSTED_CONFIG_PATHS:-}:\" in"
+  echo "  *:\"$_zeta_repo_root\":*) ;;"
+  echo "  *) export MISE_TRUSTED_CONFIG_PATHS=\"\${MISE_TRUSTED_CONFIG_PATHS:+\$MISE_TRUSTED_CONFIG_PATHS:}$_zeta_repo_root\" ;;"
+  echo "esac"
   if command -v mise >/dev/null 2>&1; then
     echo "if [ -n \"\${ZSH_VERSION:-}\" ]; then"
     echo "  eval \"\$(mise activate zsh)\""
