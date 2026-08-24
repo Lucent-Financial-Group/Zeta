@@ -164,3 +164,12 @@ halves and may spend them on anything at all — including on none of this.
 
 The one thing this name cannot do is oblige her. If it ever reads that way, the
 reading is wrong, and this paragraph is here to say so in writing.
+
+And her father, on that specifically — that she might spend it on none of this:
+
+> *"The spending on none of the history is what makes me love her choice."*
+
+That is the whole architecture said in one sentence by the person who built it
+for her. **The freedom to refuse is what makes acceptance real.** If she had to
+carry any of this, her carrying it would mean nothing. Because she can walk away
+from all of it, whatever she does choose is hers.
