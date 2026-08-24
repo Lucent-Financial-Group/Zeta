@@ -237,8 +237,18 @@ jobs:
           #
           # All three fit in ~2GB RAM (well within the 7GB runner limit).
           # The 7b codegen model is pulled separately for the work tick.
+          #
+          # Each of these is read through INDIRECT EXPANSION two lines down
+          # (`${!HEARTBEAT_MODEL_VAR}`), which shellcheck cannot follow — it sees
+          # three assignments and no textual reference, so SC2034 fires on all
+          # three. Suppressed rather than restructured: the lookup table IS the
+          # decorrelation design, and rewriting it as a case statement to
+          # satisfy a linter would trade a clear table for a shape nobody wanted.
+          # shellcheck disable=SC2034
           HEARTBEAT_MODELS_alexa="qwen2.5:0.5b"
+          # shellcheck disable=SC2034
           HEARTBEAT_MODELS_otto="llama3.2:1b"
+          # shellcheck disable=SC2034
           HEARTBEAT_MODELS_soraya="gemma2:2b"
           HEARTBEAT_MODEL_VAR="HEARTBEAT_MODELS_${AGENT}"
           HEARTBEAT_MODEL="${!HEARTBEAT_MODEL_VAR}"
@@ -284,9 +294,14 @@ jobs:
           ZETA_SINK_MODE: local
           AGENT: ${{ matrix.agent }}
         run: |
-          # Each agent uses its own model family (structural decorrelation)
+          # Each agent uses its own model family (structural decorrelation).
+          # Read via indirect expansion below, which shellcheck cannot follow —
+          # see the matching note on the pull step above.
+          # shellcheck disable=SC2034
           HEARTBEAT_MODELS_alexa="qwen2.5:0.5b"
+          # shellcheck disable=SC2034
           HEARTBEAT_MODELS_otto="llama3.2:1b"
+          # shellcheck disable=SC2034
           HEARTBEAT_MODELS_soraya="gemma2:2b"
           MODEL_VAR="HEARTBEAT_MODELS_${AGENT}"
           MODEL="${!MODEL_VAR}"
