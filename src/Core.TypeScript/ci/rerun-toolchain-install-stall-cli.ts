@@ -123,7 +123,6 @@ export function worthFetchingLogs(jobs: readonly Job[]): boolean {
 
 interface RunListItem extends WorkflowRun {
   workflow_id: number;
-  html_url: string;
 }
 
 async function listRecentFailedRuns(sinceMinutes: number): Promise<RunListItem[]> {
@@ -153,11 +152,36 @@ function emit(obj: Record<string, unknown>): void {
   console.log(JSON.stringify({ at: new Date().toISOString(), ...obj }));
 }
 
+/**
+ * ALLOW-LIST for anything attacker-influenceable that reaches the job summary.
+ *
+ * The job summary is rendered as Markdown on a GitHub page. A run's `name` comes from the
+ * `name:` key of a workflow file — which, for a `pull_request` run, a contributor controls —
+ * and `head_branch` is whatever the contributor called their branch. Writing either verbatim
+ * into a Markdown table lets a branch name close the cell, inject a link, or forge a row.
+ * CodeQL flagged exactly this on the first push of this file (`js/http-to-file-access`,
+ * "Write to file system depends on Untrusted data"), and it was right.
+ *
+ * Allow-list rather than escape-list: an escape-list has to enumerate every dangerous
+ * character and is wrong the moment the renderer gains a feature. `?` is deliberately
+ * lossy — the summary is a human convenience, and the authoritative record is the JSON
+ * emitted to the log, where `JSON.stringify` is the containment.
+ */
+export function sanitizeForSummary(raw: string | undefined, max = 100): string {
+  if (raw === undefined || raw === "") return "?";
+  const cleaned = [...raw].map((ch) => (/[A-Za-z0-9._/+\- ]/.test(ch) ? ch : "?")).join("");
+  return cleaned.length > max ? `${cleaned.slice(0, max)}...` : cleaned;
+}
+
 function summaryRow(run: RunListItem, d: RerunDecision, applied: boolean): string {
+  // `run.id` is a number and `d.action`/`d.reason` are closed unions from the policy, so the
+  // only free-form values here are the two that go through the allow-list. The link target is
+  // rebuilt from the numeric id rather than taken from `html_url`, so no attacker-influenced
+  // string reaches the URL either.
   const cells = [
-    `[${run.id}](${run.html_url})`,
-    run.name ?? "?",
-    run.head_branch,
+    `[${run.id}](https://github.com/${sanitizeForSummary(REPO, 80)}/actions/runs/${run.id})`,
+    sanitizeForSummary(run.name, 60),
+    sanitizeForSummary(run.head_branch, 60),
     d.action,
     d.reason,
     applied ? "yes" : "no",

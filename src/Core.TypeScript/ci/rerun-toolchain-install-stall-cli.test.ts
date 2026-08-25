@@ -1,7 +1,7 @@
 import { test, expect, describe } from "bun:test";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { worthFetchingLogs, toJob } from "./rerun-toolchain-install-stall-cli.ts";
+import { worthFetchingLogs, toJob, sanitizeForSummary } from "./rerun-toolchain-install-stall-cli.ts";
 import type { Job } from "./toolchain-install-stall.ts";
 
 const fixture = JSON.parse(
@@ -68,5 +68,44 @@ describe("toJob — a job the API returned with no steps array must not crash th
   test("missing steps becomes an empty list, which classifies as unexplained", () => {
     const j = toJob({ id: 7, name: "x", conclusion: "failure" });
     expect(j.steps).toEqual([]);
+  });
+});
+
+describe("sanitizeForSummary — untrusted strings must not reach a rendered surface", () => {
+  // CodeQL flagged the unsanitised version of this on PR #15440 (js/http-to-file-access,
+  // "Write to file system depends on Untrusted data"). It was right: for a `pull_request`
+  // run, both the workflow `name:` and the branch name are contributor-controlled.
+  test("a branch name cannot close the table cell or forge a row", () => {
+    expect(sanitizeForSummary("x | evil | rerun | yes |")).not.toContain("|");
+    expect(sanitizeForSummary("a\nb")).not.toContain("\n");
+  });
+
+  test("a branch name cannot inject a markdown link", () => {
+    const out = sanitizeForSummary("[click](javascript:alert(1))");
+    expect(out).not.toContain("[");
+    expect(out).not.toContain("]");
+    expect(out).not.toContain("(");
+  });
+
+  test("a branch name cannot inject raw HTML", () => {
+    const out = sanitizeForSummary("<img src=x onerror=alert(1)>");
+    expect(out).not.toContain("<");
+    expect(out).not.toContain(">");
+    expect(out).not.toContain("=");
+  });
+
+  test("ordinary branch names survive intact", () => {
+    for (const b of ["main", "claim/081M0XC0CYN-rerun-toolchain-install-stall", "heartbeat/soraya-flush", "fix_v1.2+3"]) {
+      expect(sanitizeForSummary(b)).toBe(b);
+    }
+  });
+
+  test("length is capped so one row cannot bury the table", () => {
+    expect(sanitizeForSummary("a".repeat(500), 20)).toBe(`${"a".repeat(20)}...`);
+  });
+
+  test("absent is `?`, never the empty string that would silently shift a row", () => {
+    expect(sanitizeForSummary(undefined)).toBe("?");
+    expect(sanitizeForSummary("")).toBe("?");
   });
 });
