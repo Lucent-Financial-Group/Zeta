@@ -84,7 +84,7 @@
 //   1   at least one generator emits a colliding or fabricated identity
 //   2   configuration error (no scan root resolved)
 
-import { readdirSync, readFileSync, statSync } from "node:fs";
+import { type Dirent, readdirSync, readFileSync } from "node:fs";
 import { join, relative, resolve } from "node:path";
 
 export const DRIFT_CLASS = "AH005";
@@ -303,23 +303,21 @@ export function isScannable(relPath: string): boolean {
 }
 
 function walk(abs: string, out: string[]): void {
-  let entries: string[];
+  // `withFileTypes` so the entry KIND arrives with the listing. A `readdir` then `stat`
+  // pair asks the filesystem twice and races in between (TOCTOU, CWE-367) — and the
+  // listing already knew the answer.
+  let entries: Dirent[];
   try {
-    entries = readdirSync(abs, { encoding: "utf8" }) as string[];
+    entries = readdirSync(abs, { withFileTypes: true });
   } catch {
     return;
   }
-  for (const name of entries.sort()) {
-    if (name === "node_modules" || name === ".git") continue;
-    const child = join(abs, name);
-    let st;
-    try {
-      st = statSync(child);
-    } catch {
-      continue;
-    }
-    if (st.isDirectory()) walk(child, out);
-    else if (st.isFile()) out.push(child);
+  entries.sort((a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0));
+  for (const entry of entries) {
+    if (entry.name === "node_modules" || entry.name === ".git") continue;
+    const child = join(abs, entry.name);
+    if (entry.isDirectory()) walk(child, out);
+    else if (entry.isFile()) out.push(child);
   }
 }
 
@@ -328,14 +326,12 @@ export function runAudit(roots: readonly string[] = SCAN_ROOTS): AuditResult {
   const files: string[] = [];
   for (const r of roots) {
     const abs = resolve(root, r);
-    let st;
-    try {
-      st = statSync(abs);
-    } catch {
-      continue; // a root that does not exist in this checkout is not a finding
-    }
-    if (st.isDirectory()) walk(abs, files);
-    else files.push(abs);
+    const before = files.length;
+    walk(abs, files);
+    // `walk` returns empty for a non-directory (readdir throws ENOTDIR) and for a path that
+    // does not exist. A root that is a single FILE is the first case, so offer it directly
+    // and let the read decide — no stat to race against. A missing root is not a finding.
+    if (files.length === before) files.push(abs);
   }
 
   const findings: Finding[] = [];
@@ -356,7 +352,10 @@ export function runAudit(roots: readonly string[] = SCAN_ROOTS): AuditResult {
     findings.push(...r.findings);
   }
 
-  findings.sort((a, b) => a.klass - b.klass || a.file.localeCompare(b.file) || a.line - b.line);
+  // Ordinal, never `localeCompare`: linguistic collation is locale/ICU-dependent, so two
+  // machines can order the same findings differently. `.claude/rules/culture-invariant-by-default.md`.
+  const ordinal = (x: string, y: string): number => (x < y ? -1 : x > y ? 1 : 0);
+  findings.sort((a, b) => a.klass - b.klass || ordinal(a.file, b.file) || a.line - b.line);
   return { driftClass: DRIFT_CLASS, filesScanned, identitiesSeen, findings };
 }
 
@@ -399,19 +398,14 @@ export function renderHuman(r: AuditResult): string {
 
 export function main(argv: string[]): number {
   const root = repoRoot();
-  const anyRoot = SCAN_ROOTS.some((r) => {
-    try {
-      statSync(resolve(root, r));
-      return true;
-    } catch {
-      return false;
-    }
-  });
-  if (!anyRoot) {
-    process.stderr.write(`error: none of the ${SCAN_ROOTS.length} scan roots exist under ROOT=${root}\n`);
+  const r = runAudit();
+  // Configuration error, derived from what was actually READ rather than from a prior
+  // stat: if not one file under any of the roots could be opened, the audit did not run
+  // and must not report a clean result. A check that did not run is not one that passed.
+  if (r.filesScanned === 0) {
+    process.stderr.write(`error: no file readable under any of the ${SCAN_ROOTS.length} scan roots (ROOT=${root})\n`);
     return 2;
   }
-  const r = runAudit();
   process.stdout.write((argv.includes("--json") ? JSON.stringify(r, null, 2) : renderHuman(r)) + "\n");
   return r.findings.length > 0 ? 1 : 0;
 }
