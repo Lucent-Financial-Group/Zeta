@@ -67,7 +67,9 @@ export interface LocalTickArgs {
   readonly dryRun: boolean;
 }
 
-export type ParsedArgs = { readonly ok: true; readonly value: LocalTickArgs } | { readonly ok: false; readonly error: string };
+export type ParsedArgs =
+  | { readonly ok: true; readonly value: LocalTickArgs }
+  | { readonly ok: false; readonly error: string };
 
 /**
  * Default runtime label: `launchd/<host>` etc. is decided by the CALLER, because only the caller
@@ -154,7 +156,9 @@ if (import.meta.main) {
   const parsed = parseArgs(process.argv.slice(2));
   if (!parsed.ok) {
     console.error(`local-tick: ${parsed.error}`);
-    console.error("usage: local-tick.ts --agent <lane> [--repo-root <p>] [--model <m>] [--runtime <label>] [--remote <name>] [--dry-run]");
+    console.error(
+      "usage: local-tick.ts --agent <lane> [--repo-root <p>] [--model <m>] [--runtime <label>] [--remote <name>] [--dry-run]",
+    );
     process.exit(2);
   }
 

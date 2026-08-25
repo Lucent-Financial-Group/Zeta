@@ -364,7 +364,8 @@ async function main(argv: readonly string[]): Promise<number> {
     // second source is what is keeping the fleet alive - the watchdog would then report an
     // outage caused by its own parser.
     const parsed: unknown = JSON.parse(await Bun.file(evidenceArg).text());
-    if (!Array.isArray(parsed)) throw new Error(`evidence file ${evidenceArg} must contain a JSON array of { source, at }`);
+    if (!Array.isArray(parsed))
+      throw new Error(`evidence file ${evidenceArg} must contain a JSON array of { source, at }`);
     extra = parsed as readonly FleetTickObservation[];
   }
 
@@ -372,9 +373,13 @@ async function main(argv: readonly string[]): Promise<number> {
   const verdict = assessFleetLiveness(observations, new Date(), staleAfterMinutes);
 
   console.log(`[heartbeat-liveness] ${verdict.summary}`);
-  console.log(`[heartbeat-liveness] observations considered: ${verdict.consideredObservations} (actions runs: ${runs.length}, lane evidence: ${extra.length})`);
+  console.log(
+    `[heartbeat-liveness] observations considered: ${verdict.consideredObservations} (actions runs: ${runs.length}, lane evidence: ${extra.length})`,
+  );
   for (const source of verdict.sources) {
-    console.log(`[heartbeat-liveness]   ${source.fresh ? "FRESH" : "STALE"} ${source.source} ${source.ageMinutes}min ago`);
+    console.log(
+      `[heartbeat-liveness]   ${source.fresh ? "FRESH" : "STALE"} ${source.source} ${source.ageMinutes}min ago`,
+    );
   }
   if (!verdict.alive) {
     // `::error::` so the annotation lands on the run summary, not just in the log body.
@@ -384,7 +389,9 @@ async function main(argv: readonly string[]): Promise<number> {
   // A degraded-but-alive fleet must still be LOUD, or a permanently dead Actions lane becomes
   // invisible the moment a second source covers for it - trading one blind spot for another.
   for (const source of verdict.sources.filter((s) => !s.fresh)) {
-    console.log(`::warning::[heartbeat-liveness] tick source ${source.source} has not ticked in ${source.ageMinutes}min, but the fleet is alive on another source`);
+    console.log(
+      `::warning::[heartbeat-liveness] tick source ${source.source} has not ticked in ${source.ageMinutes}min, but the fleet is alive on another source`,
+    );
   }
   return 0;
 }

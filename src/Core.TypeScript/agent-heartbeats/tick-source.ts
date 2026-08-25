@@ -35,14 +35,21 @@
  * implementation of the same thing.
  */
 
-import { prepareHeartbeatBranch } from "./prepare-heartbeat-branch";
+import { mkdirSync, writeFileSync } from "node:fs";
+import { join } from "node:path";
+import { prepareHeartbeatBranch, type PrepareHeartbeatResult } from "./prepare-heartbeat-branch";
+import { packGeneric } from "../zeta-id/zeta-id";
 
 /** Result of one attempt at anything that can fail with a legible reason. */
 export type TickResult<T> = { readonly ok: true; readonly value: T } | { readonly ok: false; readonly error: string };
 
 /** A single command execution, injected so every branch below is reachable from a test. */
 export interface CommandRunner {
-  (command: string, args: readonly string[], options: { readonly cwd: string; readonly env?: Record<string, string> }): {
+  (
+    command: string,
+    args: readonly string[],
+    options: { readonly cwd: string; readonly env?: Record<string, string> },
+  ): {
     readonly status: number;
     readonly stdout: string;
     readonly stderr: string;
@@ -142,6 +149,64 @@ export function buildCommitMessage(config: TickSourceConfig, timestamp: string):
   ].join("\n");
 }
 
+/** ZetaId category 3 = Heartbeat, per registry/categories.yaml. */
+const ZETA_CATEGORY_HEARTBEAT = 3;
+
+/** Format a ZetaId bigint as 32-char zero-padded hex, matching the event-folder convention. */
+export function zetaIdHex(id: bigint): string {
+  return id.toString(16).padStart(32, "0");
+}
+
+/**
+ * The tick's OWN event - written unconditionally, whatever the tick body did.
+ *
+ * WHY THIS IS NOT OPTIONAL, and why the Actions lane's not having it is the false-green defect.
+ *
+ * The tick body picks an action from a menu and executes it. Plenty of picks produce no event:
+ * measured on this adapter's first live run, the body chose `navigate_cartography` and exited 1
+ * with "not-yet-executable", leaving nothing staged. In agent-heartbeat.yml that path ends at
+ * "no new events to commit", the step succeeds, the job concludes `success`, and the liveness
+ * watchdog reads that green run as proof of life - for a tick that produced nothing.
+ *
+ * So LIVENESS MUST NOT DEPEND ON THE ACTION MENU. Whether this substrate is alive is a fact about
+ * the substrate, not about whether today's pick happened to be executable. This event records the
+ * tick itself: that it ran, on what, choosing what, with what outcome. It is the honest minimum,
+ * and it is what makes a heartbeat a heartbeat rather than a side effect of successful work.
+ *
+ * `bodyStatus` is recorded rather than hidden. A tick that ran and whose body failed is a
+ * DIFFERENT fact from a tick that ran cleanly, and collapsing the two would rebuild the vacuity
+ * this function exists to remove.
+ */
+export function emitTickEvent(config: TickSourceConfig, now: Date, bodyStatus: number): string {
+  const dir = join(config.repoRoot, config.eventDir);
+  mkdirSync(dir, { recursive: true });
+
+  // Payload is time-ordered so filenames sort chronologically, with a random low word so two
+  // sources ticking in the same millisecond cannot collide on a filename.
+  const payload = (BigInt(now.getTime()) << 40n) | BigInt(Math.floor(Math.random() * 2 ** 40));
+  const id = packGeneric(1, ZETA_CATEGORY_HEARTBEAT, payload);
+  const name = `${zetaIdHex(id)}.json`;
+
+  const event = {
+    id: `heartbeat-${config.agent}-${now.toISOString()}`,
+    at: now.toISOString(),
+    // `by` is the AGENT, matching every other observe-event, because the cadence measurement in
+    // agent-heartbeat.yml filters on exactly this field. A tick source that named itself here
+    // would be invisible to the measurement it exists to feed.
+    by: config.agent,
+    kind: "heartbeat",
+    // The substrate that produced it - the same value as the `Agent-Runtime:` trailer, so lane
+    // evidence and event evidence attribute a tick identically.
+    source: config.runtime,
+    model: config.model,
+    bodyStatus,
+    lane: `heartbeat/${config.agent}`,
+  };
+
+  writeFileSync(join(dir, name), `${JSON.stringify(event, null, 2)}\n`, "utf8");
+  return name;
+}
+
 /**
  * Run one heartbeat tick, provider-neutrally.
  *
@@ -152,7 +217,22 @@ export function buildCommitMessage(config: TickSourceConfig, timestamp: string):
  * that ordering wrong, and a second implementation that quietly reintroduced it would be a second
  * outage rather than a second source.
  */
-export function runTick(config: TickSourceConfig, run: CommandRunner, now: Date): TickResult<TickOutcome> {
+export type LanePreparer = (agent: string, cwd: string) => PrepareHeartbeatResult;
+
+export function runTick(
+  config: TickSourceConfig,
+  run: CommandRunner,
+  now: Date,
+  // INJECTED, with the real preparer as the default.
+  //
+  // This was a hard import until a test caught it: `runTick` could not be exercised at all
+  // without a real repository, a real `git fetch` to the network, and a real `checkout -B` that
+  // would have moved the caller's branch. A seam that only has one implementation and cannot be
+  // substituted is the exact defect this whole file exists to remove -- it was worth fixing here
+  // rather than excusing, since the argument of the module is that unsubstitutable seams are how
+  // a provider assumption hides.
+  prepareLane: LanePreparer = prepareHeartbeatBranch,
+): TickResult<TickOutcome> {
   const { repoRoot, agent } = config;
   const git = (...args: readonly string[]): ReturnType<CommandRunner> => run("git", args, { cwd: repoRoot });
 
@@ -165,7 +245,7 @@ export function runTick(config: TickSourceConfig, run: CommandRunner, now: Date)
   // STEP 1 — rebuild the lane over current main, squash-carrying unflushed state.
   // Reused, not reimplemented: a second copy of this logic would drift from the first, and the
   // per-path merge semantics it encodes were derived from measured partial-flush conflicts.
-  const prepared = prepareHeartbeatBranch(agent, repoRoot);
+  const prepared = prepareLane(agent, repoRoot);
   if (!prepared.ok) return { ok: false, error: `prepare lane failed: ${prepared.error}` };
 
   // STEP 2 — the tick body. Non-fatal by design, matching the Actions lane: a tick body that
@@ -176,6 +256,9 @@ export function runTick(config: TickSourceConfig, run: CommandRunner, now: Date)
     // condition under which a green run produces no tick at all.
     console.error(`[tick] body exited ${body.status} (non-fatal): ${body.stderr.trim().slice(0, 400)}`);
   }
+
+  // STEP 2b — record the tick itself, whatever the body decided. See `emitTickEvent`.
+  emitTickEvent(config, now, body.status);
 
   // STEP 3 — commit. "Nothing to commit" is a NO-OP, never an error: the tick body legitimately
   // produces no event when there is no work to observe.
@@ -205,7 +288,13 @@ export function runTick(config: TickSourceConfig, run: CommandRunner, now: Date)
   if (config.dryRun) {
     return {
       ok: true,
-      value: { lane: prepared.value.head, carriedUnflushedState: prepared.value.carried, committed: hasChanges, pushed: false, ...(commitSubject === undefined ? {} : { commitSubject }) },
+      value: {
+        lane: prepared.value.head,
+        carriedUnflushedState: prepared.value.carried,
+        committed: hasChanges,
+        pushed: false,
+        ...(commitSubject === undefined ? {} : { commitSubject }),
+      },
     };
   }
 
@@ -214,6 +303,12 @@ export function runTick(config: TickSourceConfig, run: CommandRunner, now: Date)
 
   return {
     ok: true,
-    value: { lane: prepared.value.head, carriedUnflushedState: prepared.value.carried, committed: hasChanges, pushed: true, ...(commitSubject === undefined ? {} : { commitSubject }) },
+    value: {
+      lane: prepared.value.head,
+      carriedUnflushedState: prepared.value.carried,
+      committed: hasChanges,
+      pushed: true,
+      ...(commitSubject === undefined ? {} : { commitSubject }),
+    },
   };
 }
