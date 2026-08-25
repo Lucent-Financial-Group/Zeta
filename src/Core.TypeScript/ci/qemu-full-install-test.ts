@@ -1106,13 +1106,19 @@ export function reclaimLargeTempArtifacts(paths: readonly string[]): {
   let bytesReclaimed = 0;
   for (const path of paths) {
     try {
-      if (!existsSync(path)) continue;
-      bytesReclaimed += statSync(path).size;
+      // No existsSync pre-check: that is a check-then-use race
+      // (lint-check-then-use-file-races), and here it would also be a lie —
+      // the size must be read from the file we actually unlink, not from a
+      // file that existed a syscall ago. Stat, unlink, then count, so a
+      // failed unlink never reports bytes it did not reclaim.
+      const { size } = statSync(path);
       unlinkSync(path);
+      bytesReclaimed += size;
       removed.push(path);
     } catch {
-      // Best-effort reclaim: a file we cannot delete must never turn a green
-      // run red. The ENOSPC it guards against is reported by the runner.
+      // Absent (the run exited before creating it) or undeletable. Best-effort:
+      // a file we cannot remove must never turn a green run red. The ENOSPC
+      // this guards against is reported by the runner itself.
     }
   }
   return { removed, bytesReclaimed };

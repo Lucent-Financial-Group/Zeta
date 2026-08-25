@@ -772,7 +772,9 @@ describe("reclaimLargeTempArtifacts", () => {
     // reportResult prints "Full serial log preserved at: <path>" for exactly
     // this file when SERIAL_LOG_OUT_PATH is unset. Reclaiming it would make
     // that line a lie.
-    expect(existsSync(serial)).toBe(true);
+    // Read it directly rather than existsSync-then-read: the pre-check is a
+    // check-then-use race and buys nothing here — a reclaimed log makes
+    // readFileSync throw, which fails this test just as loudly.
     expect(readFileSync(serial, "utf8")).toBe("phase-1 boot output");
     rmSync(dir, { recursive: true, force: true });
   });
