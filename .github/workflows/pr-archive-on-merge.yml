@@ -78,13 +78,28 @@ jobs:
     # a recursive archive-of-archive chain, so local claim/archive-pr-* repair
     # branches and automation/pr-archive-* bot branches are intentionally
     # skipped here. Fork PRs with matching branch names must still be archived.
+    #
+    # `heartbeat/pr-archive` JOINED THAT LIST when the lane moved onto the shared
+    # staging ref, and it is the load-bearing addition rather than tidiness. The
+    # lane's own flush PR is itself a merged PR, so without this the lane archives
+    # its own flush, which produces a record, which is flushed, which merges, which
+    # is archived — a self-sustaining loop that keeps flushing forever with no real
+    # merges feeding it. The `automation/pr-archive-*` entry above closed exactly
+    # this loop for the per-record branches it replaced; the batched lane needs the
+    # same exclusion for the same reason.
+    #
+    # Only the archive lane's own ref is excluded. The other `heartbeat/*` flush
+    # PRs (tick-metrics, society, drift-sweep, the three agents) still get archived
+    # as before — they are ordinary merged PRs and each produces one bounded record,
+    # not a cycle.
     if: >
       github.event.pull_request.merged == true &&
       !(
         github.event.pull_request.head.repo.full_name == github.repository &&
         (
           startsWith(github.event.pull_request.head.ref, 'claim/archive-pr-') ||
-          startsWith(github.event.pull_request.head.ref, 'automation/pr-archive-')
+          startsWith(github.event.pull_request.head.ref, 'automation/pr-archive-') ||
+          github.event.pull_request.head.ref == 'heartbeat/pr-archive'
         )
       )
 
