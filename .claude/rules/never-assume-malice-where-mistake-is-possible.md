@@ -82,6 +82,35 @@ work-item id, and a guard that swallowed its own error and defaulted to
 better, several by the agent that later found them. Read as intent, that day is
 a conspiracy; read as error, it is an ordinary and productive Tuesday.
 
+## The threshold — what WOULD warrant it
+
+A prohibition with no boundary is unfalsifiable in the other direction: "never
+assume malice" gives no account of when the judgement is ever warranted, which
+makes it a sentiment rather than a rule. Aaron 2026-08-25 supplies the bar:
+
+> *"personally i only assume maliciousness with repeated irreversible harm to
+> other travelers."*
+
+Three conditions, and they are **conjunctive** — all three, or the answer is
+still mistake:
+
+| condition | fails the bar when |
+|---|---|
+| **repeated** | it happened once. A single instance is the base rate of error, not a pattern. |
+| **irreversible** | the harm can be undone. A retractable action is a correction waiting to happen — and this substrate is *retraction-native*, so most of it is. |
+| **harm to other travelers** | the cost lands on the actor. Breaking your own thing is a mistake by definition; the rule is about harm you impose on someone else. |
+
+Note what the bar is **not** built from: not intent, not tone, not how bad the
+outcome felt. It is built from *observable, countable properties of the acts
+themselves* — how many, how recoverable, who paid. That is deliberate. Intent is
+an inner state, and inner states are asked about, never inferred; a threshold
+made of inner states would just relocate the guess. A threshold made of counts
+and reversibility can be checked by anyone, including by the accused.
+
+**And it is a threshold for a JUDGEMENT, never for a punishment.** Crossing it
+licenses the belief that something adversarial is happening. What follows from
+that belief is a separate question this rule does not answer.
+
 ## What it does NOT mean
 
 It is **not** a ban on naming defects plainly, and not a reason to soften a
