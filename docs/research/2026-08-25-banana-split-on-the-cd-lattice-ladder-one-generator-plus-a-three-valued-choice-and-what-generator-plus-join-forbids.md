@@ -426,12 +426,14 @@ it forbids three concrete things:
 both on clause 3.**
 
 - **The algebraic ladder** (this document): three maximal orders, no top, computed.
-- **`ace`** (the repo's own code and design docs): its resolver is _"deterministic newest-first
-  backtracking (pubgrub-shape)"_, differentially tested against Z3, and its cross-package-manager
-  design doc says outright that it _"doesn't claim to auto-resolve every conflict"_ — genuine
-  conflicts are surfaced as compile-time errors for a human or a policy to settle. A backtracking
-  search is a **selection**, not a lub. There is no least-upper-bound conflict semantics anywhere in
-  `docs/research/*ace*`, `docs/agendas/ace-package-manager/`, or `src/Core.TypeScript/ace/`.
+- **`ace`** (the repo's own code and design docs): its solver is _"deterministic newest-first
+  backtracking"_ (`docs/agendas/ace-package-manager/2026-06-01-ace-cli-slice5.2-implementation-plan.md`,
+  verbatim), differentially tested against Z3 (`src/Core.TypeScript/ace/solver.z3.test.ts`), and its
+  cross-package-manager design doc says outright that it _"Doesn't claim to auto-resolve every
+  conflict — it claims to surface them as compile-time errors"_. A backtracking search is a
+  **selection**, not a lub. There is no least-upper-bound conflict semantics anywhere in
+  `docs/research/*ace*`, `docs/agendas/ace-package-manager/`, or `src/Core.TypeScript/ace/` —
+  reported as "not found by explicit-target search of those three locations", not as proof of absence.
 
 This is not a demolition, and it should not be read as one. It is the location of the "**mostly**" in
 _"each generator is mostly composable."_ The **generators** compose fine — `D` is total, uniform and
@@ -468,8 +470,9 @@ So the two ledgers are the same object:
 
 That last row is the one that makes this more than an analogy: **both systems already handle the
 no-solution case the same way — by refusing and escalating** — and neither one calls that a join.
-`ace`'s `ResolveReason = "unsatisfiable" | "version-skew" | "pin-mismatch"` is the same disposition as
-"the sedenions admit no maximal order."
+`ace`'s `ResolveReason` — a 16-member union in `src/Core.TypeScript/ace/resolve.ts`, of which
+`"unsatisfiable"` is the relevant member — is the same disposition as "the sedenions admit no maximal
+order."
 
 **Honest limit on this section.** The correspondence above is a **structural analogy with one
 computed side and one documented side**, not a theorem. I computed the lattice column; I read the
