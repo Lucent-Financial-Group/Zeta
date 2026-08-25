@@ -211,6 +211,13 @@ export function isVerdict(conclusion: string): boolean {
 // the alert was not stale and was not noise; it was pointing at the one door still open.
 // `constrainCount` closes it, and it is the only value here whose sentinel is `null`
 // rather than a string, because the report already has a NOT-MEASURED register for counts.
+//
+// EVERY function here now RE-EMITS the value it accepts rather than passing the argument
+// through -- instants from parsed epoch ms, conclusions from `KNOWN_CONCLUSIONS`, shas
+// from `HEX_DIGITS`, numbers through `Math.trunc`. CodeQL kept the alert alive through
+// `constrainId` and would have moved to `constrainSha` next, and it was right both times
+// in the narrow sense that matters here: those two were checking the value and then
+// handing on the ARGUMENT, which is a weaker statement than the block claims to make.
 
 /** A run id that was not a safe integer. Never a real id, and never matches a run. */
 export const UNRECOGNISED_ID = -1;
@@ -250,9 +257,29 @@ const KNOWN_CONCLUSIONS: ReadonlySet<string> = new Set([
   RUNNING,
 ]);
 
-/** `sha` if it is a real sha, else the sentinel. */
+/** The sixteen characters `SHA_RE` admits, and the only ones a constrained sha carries. */
+const HEX_DIGITS = "0123456789abcdef";
+
+/**
+ * The sha, RE-EMITTED from `HEX_DIGITS`, else the sentinel.
+ *
+ * Same construction as `constrainConclusion`: the returned characters are OURS, matched
+ * against the argument rather than taken from it, so no byte of the response body survives
+ * into the report. `SHA_RE` has already proved every character is in the alphabet, so this
+ * is a COPY, never a repair -- the result equals the argument, and the boundary's own
+ * falsifier asserts that equality on a well-formed payload.
+ *
+ * The regex alone was enough to make injection unexpressible (a `|`, a newline and a `::`
+ * are all outside `[0-9a-f]`). What the re-emission adds is that the block's claim -- "no
+ * value that reaches the renderer came from the network unchecked" -- is now literally
+ * true byte for byte, for every field, instead of true for four of the six and argued for
+ * the other two.
+ */
 export function constrainSha(value: unknown): string {
-  return typeof value === "string" && SHA_RE.test(value) ? value : UNRECOGNISED_SHA;
+  if (typeof value !== "string" || !SHA_RE.test(value)) return UNRECOGNISED_SHA;
+  let out = "";
+  for (const ch of value) for (const digit of HEX_DIGITS) if (digit === ch) out += digit;
+  return out;
 }
 
 /**
@@ -285,9 +312,16 @@ export function constrainConclusion(value: unknown): string {
   return UNRECOGNISED_CONCLUSION;
 }
 
-/** The id if it is a safe integer, else the sentinel. Keeps ordering total. */
+/**
+ * The id if it is a safe integer, else the sentinel. Keeps ordering total.
+ *
+ * Re-emitted with `Math.trunc`, which on an already-safe integer is a copy -- the same
+ * move as `constrainCount` below and for the same reason: the number handed on is computed
+ * here. The id reaches the summary table through `lastVerdict.id`, so it is a network value
+ * on its way to a file like any other.
+ */
 export function constrainId(value: unknown): number {
-  return typeof value === "number" && Number.isSafeInteger(value) ? value : UNRECOGNISED_ID;
+  return typeof value === "number" && Number.isSafeInteger(value) ? Math.trunc(value) : UNRECOGNISED_ID;
 }
 
 /**

@@ -23,6 +23,8 @@ import { describe, expect, test } from "bun:test";
 import {
   assertDroughtDetectorLive,
   constrainCount,
+  constrainId,
+  constrainSha,
   DEFAULT_DROUGHT_THRESHOLDS,
   droughtAnnotations,
   foldDrought,
@@ -493,6 +495,30 @@ describe("the API -> model boundary constrains every network-derived value", () 
     const encoded = JSON.stringify({ report, liveness: assertDroughtDetectorLive(report) });
     expect(JSON.parse(encoded)).toBeTruthy();
     expect(encoded).not.toContain("forged");
+  });
+
+  // The two functions that used to hand back the ARGUMENT now re-emit -- shas from
+  // `HEX_DIGITS`, ids through `Math.trunc`. There is NO behavioural falsifier for that:
+  // in JavaScript a re-emitted string is indistinguishable from the one it copies, which
+  // is exactly the property that makes it safe. What IS falsifiable is that the copy is
+  // exact, which is the risk the loop introduces, so that is what these assert.
+  test("a re-emitted sha is byte-for-byte its argument, at both ends of the length range", () => {
+    const sha1 = "3168e5411a2b3c4d5e6f708192a3b4c5d6e7f809";
+    const sha256 = "0123456789abcdef".repeat(4);
+    expect(constrainSha(sha1)).toBe(sha1);
+    expect(constrainSha(sha256)).toBe(sha256);
+    expect(constrainSha("0000000")).toBe("0000000");
+    expect(constrainSha("f".repeat(64))).toBe("f".repeat(64));
+    // One character past the ends of the shape, in both directions.
+    expect(constrainSha("000000")).toBe(UNRECOGNISED_SHA);
+    expect(constrainSha("0".repeat(65))).toBe(UNRECOGNISED_SHA);
+  });
+
+  test("a re-emitted id is its argument, and a non-integer is still the sentinel", () => {
+    expect(constrainId(32654718640)).toBe(32654718640);
+    expect(constrainId(0)).toBe(0);
+    expect(constrainId(1.5)).toBe(UNRECOGNISED_ID);
+    expect(constrainId(Number.NaN)).toBe(UNRECOGNISED_ID);
   });
 
   test("shortSha does not slice a sentinel into something that reads like a real sha", () => {
