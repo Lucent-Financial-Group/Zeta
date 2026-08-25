@@ -2425,6 +2425,41 @@ jobs:
       - name: Proof-lineage binary exception (no-binary-in-proof-lineage.md)
         run: bun src/Core.TypeScript/hygiene/audit-proof-lineage-binaries.ts
 
+      # The falsifier for the PR-free heartbeat lane. Design:
+      # docs/research/2026-08-25-pr-free-heartbeat-lane-attestation-instead-of-gate.md
+      #
+      # The lane's proposal is that a bypass actor on ruleset `CI Gate` (16134995) pushes
+      # telemetry straight to `main`, skipping `gate (required)`, and that the lane verifies
+      # ITSELF. A bypass actor is a permanent hole, so that self-verification has to be a
+      # checkable fact rather than a claim -- this is the check. For every commit the lane
+      # produced it requires a content-bound attestation (`Verification-Subject` is the
+      # commit's own tree sha, so a COPIED attestation fails), a path allowlist, and a
+      # change-mode check in which `append-only` means the pre-image is a byte PREFIX of the
+      # post-image -- NOT `deletions == 0`, which `docs/github/prs/manifest.jsonl` satisfies
+      # 13 times in 40 while inserting its rows in sorted order.
+      #
+      # HERE on the cross-verify floor because it is offline (no sockets, reads only committed
+      # git objects) and because a bypass-lane guard must run on exactly the lane a path filter
+      # would exclude. Collection is two-phase for CORRECTNESS, not speed: this job checks out
+      # at fetch-depth 1, where the tip has no parent, so `git show --name-status` would report
+      # the entire 45k-file tree as added and `<sha>^` would not resolve. Metadata alone decides
+      # NOT-LANE, so a commit the audit does not judge never enters that path -- and where the
+      # parent genuinely is unreachable it exits 2 rather than reading a missing object as a
+      # violation. Measured on a full clone: 6.9 s for a 300-commit metadata-only window.
+      #
+      # HONEST STATE, so nobody quotes a green run as evidence: `cutoverIso` in the registry
+      # is 2099-01-01 and the lane identity does not exist yet, so TODAY this returns clean
+      # over 300 commits with all 300 classified NOT-LANE -- armed, and vacuous until step 4
+      # of the design doc's section 12. It was proven able to fail against real history
+      # first: with the cutover moved back and the current flush identity registered it
+      # reports 290 violations of 300. The unit tests below are what keep it non-vacuous in
+      # the meantime.
+      - name: PR-free heartbeat lane attestations (armed; vacuous until the lane exists)
+        run: bun src/Core.TypeScript/hygiene/audit-heartbeat-lane-attestations.ts --max 300
+
+      - name: Heartbeat-lane audit unit tests (a check that cannot fail is not a check)
+        run: bun test src/Core.TypeScript/hygiene/audit-heartbeat-lane-attestations.test.ts
+
       # Two commit-back-lane audits, both of which existed as code and NEITHER of which any
       # workflow invoked. `audit-push-without-rebase.ts` (AH001) shipped 2026-08-10 with a
       # named live instance and zero callers — the guard against a lane erasing its own
@@ -2443,6 +2478,27 @@ jobs:
 
       - name: Commit-back lane can actually land (AH002)
         run: bun src/Core.TypeScript/hygiene/audit-skip-token-cannot-land.ts
+
+      # AH003 — the archive lane's record actually reached `main`.
+      #
+      # The third instance of the same class as the two above, and the most expensive to date.
+      # `pr-archive-on-merge.yml` was changed SEVENTEEN times; its recent runs read 12 success
+      # / 8 skipped / 0 failures — green, while 1,290 `automation/pr-archive-*` refs sat on the
+      # remote. Every check it had asked a PROXY question ("did the tool run", "did I create a
+      # PR"), and its sibling `audit-archive-pr-lane.ts` takes `gh pr list` as its input, so it
+      # is structurally blind to a ref that never had a PR at all — which is what these were.
+      #
+      # This one takes REFS as input and asks the only question that is the point: is the
+      # record ON MAIN? It runs HERE, on the pre-merge floor and fatal, rather than as the
+      # non-fatal warning its sibling gets inside the heartbeat tick. A lane that leaked
+      # because one failure was tolerated does not get its falsifier installed as another
+      # tolerated failure.
+      #
+      # It gates on a high-water mark that may only be lowered, so the pre-existing backlog
+      # cannot hold the floor red while any NEW strand fails immediately. Deleting a stranded
+      # ref does not make it pass — the record is still absent from main.
+      - name: Archive lane record reached main (AH003)
+        run: bun src/Core.TypeScript/hygiene/audit-orphaned-archive-refs.ts
 
       # The .NET SDK version is declared in TWO files and, until 2026-08-23, nothing checked
       # that they agreed: `global.json` carried `rollForward: latestPatch` (which reads like
