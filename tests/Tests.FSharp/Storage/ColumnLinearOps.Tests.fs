@@ -557,10 +557,31 @@ let ``ColumnLinear vectorized filter is measurably faster on unpredictable data`
             bestVector <- min bestVector sw2.Elapsed.TotalMilliseconds
         sink |> should be (greaterThan 0)
 
+        // The gate is build-configuration-dependent for the same reason the
+        // allocation goldens are: the JIT optimises both paths in Release and
+        // neither in Debug, which COMPRESSES the ratio. Measured on this host:
+        // Release 3.45x, Debug 1.37x. A single threshold covering both would
+        // have to sit under 1.37 and would then be slack in Release, which is
+        // the configuration that ships — so the threshold is exact per
+        // configuration, matching `BenPort.Tests.fs`'s treatment of allocation
+        // goldens. Both values still discriminate a bypassed vector path,
+        // which measures 1.02x in Release and ~1.00x in Debug (mutation M1).
+        //
+        // Stated plainly: the DEBUG margin is thinner (1.15 gate against a
+        // 1.37 measurement) than the Release one (1.5 against 3.45). If this
+        // flakes on a loaded runner it will flake in Debug first, and the fix
+        // is to skip it in Debug rather than to lower it further -- a gate
+        // below ~1.05 could not tell a vector path from a scalar one and
+        // would be a check that cannot fail.
+#if DEBUG
+        let gate = 1.15
+#else
+        let gate = 1.5
+#endif
         let speedup = bestScalar / bestVector
         Assert.True(
-            speedup >= 1.5,
-            $"vectorised filter should be >= 1.5x the scalar filter on {n} unpredictable keys "
+            speedup >= gate,
+            $"vectorised filter should be >= {gate}x the scalar filter on {n} unpredictable keys "
             + $"at 50%% selectivity, measured {speedup:F2}x (scalar {bestScalar:F3} ms, "
             + $"vector {bestVector:F3} ms, Vector<int64>.Count = {ColumnLinearKernel.VectorWidth}). "
             + "A ratio near 1.0 means the vector path is no longer vectorised.")
