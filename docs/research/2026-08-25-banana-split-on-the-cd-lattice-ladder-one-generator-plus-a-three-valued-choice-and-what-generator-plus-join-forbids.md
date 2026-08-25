@@ -194,7 +194,14 @@ sample; it decides.
 | ℝ → ℂ | ℤ ⊕ ℤ = `ℤ[i]`     | 4     | 1 (itself)                          | 1                  | **1**      |
 | ℂ → ℍ | Lipschitz `ℤ⁴`     | 16    | 2 (itself + Hurwitz)                | **1** proper       | **2**      |
 | ℍ → 𝕆 | `D₄ ⊕ D₄`          | 16    | 16 (9 at index 2, **6** at index 4) | **3**              | **4**      |
-| 𝕆 → 𝕊 | `E₈ ⊕ E₈`          | **1** | 1 (itself)                          | 1                  | **1**      |
+| 𝕆 → 𝕊 | `E₈ ⊕ E₈`          | **1** | 1 (itself) †                        | n/a †              | **1**      |
+
+**† The last row is DERIVED, not enumerated, and the distinction matters.** The enumerator is capped
+at rank 12 and was not run at 16; what is computed there is `det = 1`, and the index then follows
+from `index² · det(L') = det(L)` with `det(L') ≥ 1` for any integral lattice. The "rings" cell is
+`n/a` rather than `1` because 𝕊 is measured to be neither alternative nor normed (§3), so it is not a
+composition algebra and Coxeter's `Tr, N ∈ ℤ` criterion does not _define_ an order there at all. Two
+independent things fail at that rung and they should not be reported as one — see §7.
 
 **Three.** Not one. At the octonion rung the "take the maximal order" step is a **three-valued
 relation**, and an `F`-algebra step must be a function. So there is no catamorphism to be had, with or
