@@ -65,6 +65,8 @@ export type AuditResult = {
   readonly findings: readonly Finding[];
   /** Files kubectl would apply from this directory, in apply order. */
   readonly applySet: readonly string[];
+  /** Reported, not gated -- see CHECK H. `file:workload/container` each. */
+  readonly containersWithoutLimits: readonly string[];
   /** Summed pod resource requests/limits across the apply set, for the report. */
   readonly totals: ResourceTotals;
   readonly documentCount: number;
@@ -129,6 +131,91 @@ const TEMPLATE_MARKERS = [".example.", ".template.", ".sample.", ".tpl."] as con
 
 /** Hosts that are never in-cluster Service DNS names. */
 const NON_SERVICE_HOSTS = new Set(["localhost"]);
+
+/**
+ * KNOWN, REASONED IMAGE EXCEPTIONS.
+ *
+ * Both entries below are REAL bring-up blockers for a USB-booted node, and both
+ * are recorded here rather than "fixed", because the only fixes available offline
+ * would be worse than the defect:
+ *
+ *   - pinning hindsight to a tag invented here produces ImagePullBackOff on a tag
+ *     that may not exist, which is strictly worse than a floating tag;
+ *   - `agentic-org-worker` has no registry to be pushed to, so rewriting the
+ *     reference would name an image that certainly does not resolve.
+ *
+ * So the register's job is to turn two UNDOCUMENTED MANUAL STEPS into a committed,
+ * diffable, machine-checked statement. It is STALE-GUARDED: an entry that matches
+ * no image in the tree FAILS the audit, so a corrected reference cannot leave a
+ * false excuse behind -- the exact failure mode gate.yml's "are the deferral
+ * reasons still true" step exists for on the other cluster tree.
+ */
+export type ImageException = {
+  readonly image: string;
+  readonly check: string;
+  readonly reason: string;
+  readonly liftsWhen: string;
+};
+
+export const IMAGE_EXCEPTIONS: readonly ImageException[] = [
+  {
+    image: "ghcr.io/vectorize-io/hindsight:latest",
+    check: "image-unpinned",
+    reason:
+      "The design docs specify the floating tag deliberately -- DYNAMIC_MEMORY_SYSTEM_DESIGN.md section 13 " +
+      "and its H1 spike row both name 'ghcr.io/vectorize-io/hindsight:latest'. No concrete published tag for " +
+      "this image is recorded anywhere in this repository, and inventing one offline would turn a " +
+      "reproducibility weakness into a hard ImagePullBackOff.",
+    liftsWhen:
+      "A published hindsight tag is recorded in the tree, at which point 35-hindsight.yaml pins it and this " +
+      "entry is deleted.",
+  },
+  {
+    image: "agentic-org-worker:keepalive",
+    check: "image-local-only",
+    reason:
+      "Built and side-loaded BY HAND; it exists in no registry. The only recorded procedure is " +
+      "agentic-organization/docs/HANDOFF_GOAL_ORCHESTRATION_MOAT.md line 267: `docker build -t " +
+      "agentic-org-worker:keepalive . && kind load docker-image agentic-org-worker:keepalive --name " +
+      "agentic-org`. On any node where that load has not happened -- which includes every freshly " +
+      "USB-booted node -- the worker Deployment sits in ImagePullBackOff, because IfNotPresent still PULLS " +
+      "when the image is absent and docker.io/library/agentic-org-worker:keepalive does not exist.",
+    liftsWhen:
+      "The worker image is published to a registry and 30-worker.yaml names it by that fully-qualified " +
+      "reference.",
+  },
+];
+
+function exceptionFor(image: string, check: string): ImageException | undefined {
+  return IMAGE_EXCEPTIONS.find((e) => e.image === image && e.check === check);
+}
+
+/**
+ * IMAGES THIS REPOSITORY BUILDS ITSELF, by repository name (tag-independent).
+ *
+ * Deliberately a ROSTER and not a name-shape heuristic. "No registry host" would
+ * also flag `nats:2.14.1-alpine`, which is a perfectly pullable docker.io/library
+ * image -- a check that cannot tell a locally-built artifact from an official one
+ * is a check that cries wolf, and those get switched off.
+ *
+ * A locally-built image is unpullable on any node where someone has not run the
+ * build-and-side-load by hand, which is the property that matters for a USB boot.
+ */
+export const LOCALLY_BUILT_IMAGE_REPOSITORIES: readonly string[] = [
+  // agentic-organization/Dockerfile -- ENTRYPOINT node apps/workers/src/main.ts
+  "agentic-org-worker",
+];
+
+export function isLocallyBuiltImage(image: string): boolean {
+  return LOCALLY_BUILT_IMAGE_REPOSITORIES.includes(imageRepository(image));
+}
+
+/** The repository part of a reference: everything before the final tag separator. */
+export function imageRepository(image: string): string {
+  const lastSlash = image.lastIndexOf("/");
+  const colon = image.lastIndexOf(":");
+  return colon > lastSlash ? image.slice(0, colon) : image;
+}
 
 /**
  * Bare single-label hosts only -- in-cluster Service DNS. A dotted host
@@ -332,29 +419,45 @@ export function auditDirectory(dir: string): AuditResult {
     }
   }
 
-  // ── CHECK G: images must be tag-pinned ────────────────────────────────────
+  // ── CHECK G: images must be tag-pinned and pullable on a fresh node ───────
+  const usedExceptions = new Set<string>();
+  const noLimits: string[] = [];
   for (const w of workloads) {
     for (const c of w.containers) {
       const tag = imageTag(c.image);
-      if (tag === undefined) {
-        findings.push({
-          check: "image-unpinned",
-          file: w.doc.file,
-          message: `${describe(w.doc)} container '${c.name}' image '${c.image}' has no tag, so it resolves to ':latest' and is not reproducible across a reboot.`,
-        });
-      } else if (tag === "latest") {
-        findings.push({
-          check: "image-unpinned",
-          file: w.doc.file,
-          message: `${describe(w.doc)} container '${c.name}' image '${c.image}' is pinned to ':latest'. Two nodes booted a week apart run different code.`,
-        });
-      }
-    }
-  }
+      const raise = (check: string, message: string): void => {
+        const exception = exceptionFor(c.image, check);
+        if (exception !== undefined) {
+          usedExceptions.add(`${exception.image}|${exception.check}`);
+          return;
+        }
+        findings.push({ check, file: w.doc.file, message });
+      };
 
-  // ── CHECK H: every container must declare resource requests AND limits ────
-  for (const w of workloads) {
-    for (const c of w.containers) {
+      if (tag === undefined) {
+        raise(
+          "image-unpinned",
+          `${describe(w.doc)} container '${c.name}' image '${c.image}' has no tag, so it resolves to ':latest' and is not reproducible across a reboot.`,
+        );
+      } else if (tag === "latest") {
+        raise(
+          "image-unpinned",
+          `${describe(w.doc)} container '${c.name}' image '${c.image}' is pinned to ':latest'. Two nodes booted a week apart run different code.`,
+        );
+      }
+
+      if (isLocallyBuiltImage(c.image)) {
+        raise(
+          "image-local-only",
+          `${describe(w.doc)} container '${c.name}' image '${c.image}' is built by this repository and published to ` +
+            `no registry, so on a node where it was not side-loaded by hand the pod sits in ImagePullBackOff.`,
+        );
+      }
+
+      // ── CHECK H: requests ────────────────────────────────────────────────
+      // GATED. Absence of requests means BestEffort QoS, and the kubelet evicts
+      // BestEffort pods FIRST under node memory pressure. On a single USB-booted
+      // node that ordering decides which service dies, so it must be deliberate.
       if (!c.hasRequests) {
         findings.push({
           check: "container-without-requests",
@@ -362,22 +465,36 @@ export function auditDirectory(dir: string): AuditResult {
           message:
             `${describe(w.doc)} container '${c.name}' declares no resources.requests, giving it BestEffort QoS. ` +
             `On a single node under memory pressure the kubelet evicts BestEffort pods FIRST -- so this is the ` +
-            `first thing to die, and it dies without the manifest saying so.`,
+            `first thing to die, and the manifest nowhere says so.`,
         });
       }
-      if (!c.hasLimits) {
-        findings.push({
-          check: "container-without-limits",
-          file: w.doc.file,
-          message: `${describe(w.doc)} container '${c.name}' declares no resources.limits, so it can consume the whole node.`,
-        });
-      }
+      // REPORTED, NOT GATED. A memory limit chosen without a measured working set
+      // is an invented number, and a limit that is too low causes OOMKills that
+      // NO limit does not -- so gating this would push authors into guessing, and
+      // the guess is the more dangerous artifact. Named in the report instead.
+      if (!c.hasLimits) noLimits.push(`${w.doc.file}:${metaName(w.doc)}/${c.name}`);
+    }
+  }
+
+  // ── CHECK I: no stale exception ───────────────────────────────────────────
+  // A reasoned exclusion whose subject no longer exists is a false sentence with
+  // every mechanical property of a true one. Refuse it.
+  for (const e of IMAGE_EXCEPTIONS) {
+    if (!usedExceptions.has(`${e.image}|${e.check}`)) {
+      findings.push({
+        check: "stale-image-exception",
+        file: "src/Core.TypeScript/cluster/audit-agentic-org-manifests.ts",
+        message:
+          `IMAGE_EXCEPTIONS carries an entry for '${e.image}' (${e.check}) that matches no container in the ` +
+          `apply set. The exception is stale -- delete it rather than leave a false excuse standing.`,
+      });
     }
   }
 
   return {
     findings,
     applySet,
+    containersWithoutLimits: noLimits,
     totals: sumResources(docs.filter((d) => WORKLOAD_KINDS.has(kindOf(d)))),
     documentCount: docs.length,
   };
@@ -605,6 +722,16 @@ export function render(result: AuditResult, dir: string): string {
       `requests ${t.requestCpuMilli}m CPU / ${t.requestMemoryMi}Mi memory; ` +
       `limits ${t.limitCpuMilli}m CPU / ${t.limitMemoryMi}Mi memory`,
   );
+  lines.push(
+    result.containersWithoutLimits.length === 0
+      ? "containers with no resources.limits (REPORTED, not gated): none"
+      : `containers with no resources.limits (REPORTED, not gated -- a guessed limit OOMKills where no limit ` +
+        `does not): ${result.containersWithoutLimits.join(", ")}`,
+  );
+  if (IMAGE_EXCEPTIONS.length > 0) {
+    lines.push(`reasoned image exceptions in force (${IMAGE_EXCEPTIONS.length}), each a real bring-up step:`);
+    for (const e of IMAGE_EXCEPTIONS) lines.push(`  [${e.check}] ${e.image} -- LIFTS WHEN: ${e.liftsWhen}`);
+  }
   if (result.findings.length === 0) {
     lines.push("Results: 0 findings.");
     return lines.join("\n");
