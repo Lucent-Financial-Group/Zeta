@@ -1,7 +1,7 @@
 import { test, expect, describe } from "bun:test";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { worthFetchingLogs, toJob, sanitizeForSummary } from "./rerun-toolchain-install-stall-cli.ts";
+import { worthFetchingLogs, toJob, safeRunId } from "./rerun-toolchain-install-stall-cli.ts";
 import type { Job } from "./toolchain-install-stall.ts";
 
 const fixture = JSON.parse(
@@ -71,41 +71,34 @@ describe("toJob — a job the API returned with no steps array must not crash th
   });
 });
 
-describe("sanitizeForSummary — untrusted strings must not reach a rendered surface", () => {
-  // CodeQL flagged the unsanitised version of this on PR #15440 (js/http-to-file-access,
-  // "Write to file system depends on Untrusted data"). It was right: for a `pull_request`
-  // run, both the workflow `name:` and the branch name are contributor-controlled.
-  test("a branch name cannot close the table cell or forge a row", () => {
-    expect(sanitizeForSummary("x | evil | rerun | yes |")).not.toContain("|");
-    expect(sanitizeForSummary("a\nb")).not.toContain("\n");
+describe("safeRunId — the only API-derived value the job summary is allowed to carry", () => {
+  // CodeQL flagged the first two drafts of the summary writer (js/http-to-file-access, medium).
+  // The resolution was to stop writing free-form API strings to the file at all; what remains
+  // is this, and it must not be a string passthrough.
+  test("an ordinary run id renders as itself", () => {
+    expect(safeRunId(32890184155)).toBe("32890184155");
   });
 
-  test("a branch name cannot inject a markdown link", () => {
-    const out = sanitizeForSummary("[click](javascript:alert(1))");
-    expect(out).not.toContain("[");
-    expect(out).not.toContain("]");
-    expect(out).not.toContain("(");
+  test("a string that LOOKS like an id is refused, not coerced", () => {
+    // The forcing case: if this coerced, the whole sink argument collapses, because a string
+    // is exactly what an attacker-influenced field is.
+    expect(safeRunId("32890184155")).toBe("?");
+    expect(safeRunId("1 | evil | rerun | yes |")).toBe("?");
+    expect(safeRunId("[x](javascript:alert(1))")).toBe("?");
   });
 
-  test("a branch name cannot inject raw HTML", () => {
-    const out = sanitizeForSummary("<img src=x onerror=alert(1)>");
-    expect(out).not.toContain("<");
-    expect(out).not.toContain(">");
-    expect(out).not.toContain("=");
+  test("non-integers, negatives and absent values are refused", () => {
+    expect(safeRunId(1.5)).toBe("?");
+    expect(safeRunId(-1)).toBe("?");
+    expect(safeRunId(0)).toBe("?");
+    expect(safeRunId(Number.NaN)).toBe("?");
+    expect(safeRunId(Number.MAX_SAFE_INTEGER + 2)).toBe("?");
+    expect(safeRunId(undefined)).toBe("?");
+    expect(safeRunId(null)).toBe("?");
   });
 
-  test("ordinary branch names survive intact", () => {
-    for (const b of ["main", "claim/081M0XC0CYN-rerun-toolchain-install-stall", "heartbeat/soraya-flush", "fix_v1.2+3"]) {
-      expect(sanitizeForSummary(b)).toBe(b);
-    }
-  });
-
-  test("length is capped so one row cannot bury the table", () => {
-    expect(sanitizeForSummary("a".repeat(500), 20)).toBe(`${"a".repeat(20)}...`);
-  });
-
-  test("absent is `?`, never the empty string that would silently shift a row", () => {
-    expect(sanitizeForSummary(undefined)).toBe("?");
-    expect(sanitizeForSummary("")).toBe("?");
+  test("the rendering carries no exponent or separator a table could not hold", () => {
+    expect(safeRunId(1e15)).toBe("1000000000000000");
+    expect(safeRunId(1e15)).not.toContain("e");
   });
 });

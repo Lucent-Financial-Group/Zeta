@@ -153,39 +153,32 @@ function emit(obj: Record<string, unknown>): void {
 }
 
 /**
- * ALLOW-LIST for anything attacker-influenceable that reaches the job summary.
+ * NOTHING ATTACKER-INFLUENCEABLE REACHES THE JOB SUMMARY. The summary is rendered as Markdown
+ * on a GitHub page, and it is a FILE WRITE — so anything derived from an API response body is
+ * a taint sink. A run's `name` comes from a workflow file's `name:` key (which a contributor
+ * controls on a `pull_request` run) and `head_branch` is whatever they called their branch;
+ * verbatim in a Markdown table either can close a cell, inject a link, or forge a row.
  *
- * The job summary is rendered as Markdown on a GitHub page. A run's `name` comes from the
- * `name:` key of a workflow file — which, for a `pull_request` run, a contributor controls —
- * and `head_branch` is whatever the contributor called their branch. Writing either verbatim
- * into a Markdown table lets a branch name close the cell, inject a link, or forge a row.
- * CodeQL flagged exactly this on the first push of this file (`js/http-to-file-access`,
- * "Write to file system depends on Untrusted data"), and it was right.
+ * The first draft wrote both through a character allow-list. CodeQL still flagged it
+ * (`js/http-to-file-access`), and rather than reshape the sanitiser until the analyser stops
+ * objecting — which is appeasing a tool, not removing a risk — the free-form values are simply
+ * NOT WRITTEN. The summary carries only:
  *
- * Allow-list rather than escape-list: an escape-list has to enumerate every dangerous
- * character and is wrong the moment the renderer gains a feature. `?` is deliberately
- * lossy — the summary is a human convenience, and the authoritative record is the JSON
- * emitted to the log, where `JSON.stringify` is the containment.
+ *   - local counters (`sinceMinutes`, `candidates.length`, `rerun`, `maxReruns`)
+ *   - the run id, revalidated here as a safe integer and re-rendered as a number
+ *   - `action` / `reason`, which are closed unions produced by the policy, never by the API
+ *   - a boolean
+ *
+ * Workflow name and branch remain in the JSON emitted to the LOG, where `JSON.stringify` is
+ * the containment and there is no file write at all — and the log is the authoritative record
+ * this module's visibility contract names. One click on the run link recovers both anyway.
  */
-export function sanitizeForSummary(raw: string | undefined, max = 100): string {
-  if (raw === undefined || raw === "") return "?";
-  const cleaned = [...raw].map((ch) => (/[A-Za-z0-9._/+\- ]/.test(ch) ? ch : "?")).join("");
-  return cleaned.length > max ? `${cleaned.slice(0, max)}...` : cleaned;
+export function safeRunId(id: unknown): string {
+  return typeof id === "number" && Number.isSafeInteger(id) && id > 0 ? id.toFixed(0) : "?";
 }
 
 function summaryRow(run: RunListItem, d: RerunDecision, applied: boolean): string {
-  // `run.id` is a number and `d.action`/`d.reason` are closed unions from the policy, so the
-  // only free-form values here are the two that go through the allow-list. The link target is
-  // rebuilt from the numeric id rather than taken from `html_url`, so no attacker-influenced
-  // string reaches the URL either.
-  const cells = [
-    `[${run.id}](https://github.com/${sanitizeForSummary(REPO, 80)}/actions/runs/${run.id})`,
-    sanitizeForSummary(run.name, 60),
-    sanitizeForSummary(run.head_branch, 60),
-    d.action,
-    d.reason,
-    applied ? "yes" : "no",
-  ];
+  const cells = [safeRunId(run.id), d.action, d.reason, applied ? "yes" : "no"];
   return `| ${cells.join(" | ")} |`;
 }
 
@@ -287,7 +280,13 @@ export async function main(argv: string[]): Promise<number> {
       `Window ${sinceMinutes}min · evaluated ${candidates.length} failed run(s) · re-ran ${rerun}/${maxReruns}${apply ? "" : " (dry run)"}${capHit ? " · **CAP HIT**" : ""}`,
       ``,
       ...(rows.length > 0
-        ? ["| run | workflow | branch | action | reason | applied |", "| --- | --- | --- | --- | --- | --- |", ...rows]
+        ? [
+            "| run id | action | reason | applied |",
+            "| --- | --- | --- | --- |",
+            ...rows,
+            ``,
+            `_Workflow name and branch are in the step log (\`kind: toolchain-install-stall-decision\`), not here — see the sink note above \`safeRunId\`._`,
+          ]
         : ["_No failed run in the window carried the apt wall-budget signature._"]),
     ].join("\n");
     // APPEND — the step summary is shared with any other step in the job; overwriting it
