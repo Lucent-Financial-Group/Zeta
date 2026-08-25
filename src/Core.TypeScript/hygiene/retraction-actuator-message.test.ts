@@ -214,8 +214,35 @@ describe("the sinks consume the reconstructed value, not the parameter", () => {
     expect(body).toContain("-retraction-${safeSha.slice(0, 9)}.md");
   });
 
-  test("the revert shell command is built from safeSha", () => {
-    expect(body).toContain("git revert --no-commit ${safeSha}");
+  test("the revert's sha ARGUMENT is the reconstructed value, and there is no shell at all", () => {
+    // This assertion used to read `git revert --no-commit ${safeSha}` — a template string
+    // handed to a shell. That is no longer what the actuator does: the merge from `main`
+    // brought the `git(...)` helper (`execFileSync`, no shell), so the sha is passed as an
+    // argv element rather than interpolated into a command line. Both hardenings are kept
+    // and this row now pins the surviving one. Note it is STRICTLY stronger than the
+    // string it replaced: argv removes the quoting question entirely, and `safeSha` still
+    // removes the argument-injection one.
+    expect(body).toContain('git("revert", "--no-commit", safeSha)');
+    // And the shell form must not creep back in beside it.
+    expect(body).not.toContain("git revert --no-commit");
+  });
+
+  test("no raw `sha` reaches a `git(...)` argument past the guard", () => {
+    // The interpolation test below catches `${sha}` in a template. Under the argv form the
+    // dangerous shape is different and would slip past it: `git("revert", ..., sha)` passes
+    // the raw response string as a bare identifier, with no `${}` anywhere to match on.
+    const guard = "if (safeSha === null) throw new Error(";
+    const guardEnd = body.indexOf("\n", body.indexOf(guard));
+    expect(guardEnd).toBeGreaterThan(0);
+    const afterGuard = body.slice(guardEnd);
+    // Every `git(` call site in the window, checked for a bare `sha` argument.
+    const calls = afterGuard.match(/git\([^)]*\)/g) ?? [];
+    for (const call of calls) {
+      const args = call.slice(call.indexOf("(") + 1, -1).split(",");
+      for (const arg of args) expect(arg.trim()).not.toBe("sha");
+    }
+    // A control: the loop above is only meaningful if it saw the revert call at all.
+    expect(calls).toContain('git("revert", "--no-commit", safeSha)');
   });
 
   test("no raw `sha` interpolation survives past the guard", () => {
