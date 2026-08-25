@@ -103,6 +103,66 @@ for rather than assumed:
 
 ---
 
+## The progression, as Aaron named it (2026-08-25)
+
+He supplied this directly and said it may be recorded. **This supersedes the
+"no institution named" default below for HIS OWN account** — his experience, his call.
+It does not extend to anyone else's.
+
+> *"This is the mental institute progression for me, you can record in book. That I
+> remember — they give you so many drugs sometimes you can't remember. **Holly Hill**
+> around **16**, near Raleigh; **Rinc(k)** in **Henderson NC** (crazy experiments were
+> done here); **Raleigh Oaks**; **Oak Vineyard**; and several others randomly assigned."*
+
+Recorded as given, including his own uncertainty markers.
+
+### What this settles
+
+- **He was a MINOR at the first named facility** — "around 16". That is a different legal
+  and consent frame from the adult episodes, and it belongs in the book as such.
+- **The count is approximate FOR A DOCUMENTED REASON.** *"They give you so many drugs
+  sometimes you can't remember."* The vagueness of "like 5–6" is not carelessness about
+  his own life; it is an effect of the treatment. The book should say that plainly rather
+  than presenting a tidy number, and the gap in the record **is itself part of the
+  account.**
+- **"Several others randomly assigned"** — so the list is open, not closed, and by his own
+  description not fully recoverable.
+
+### An open question, NOT to be assumed
+
+Is **Holly Hill (~16)** the Cantor/ZFC episode recorded as #1 above? The timeline is
+compatible — he was on BBS systems at 12 — but *compatible is not the same as confirmed*,
+and merging two episodes because their dates do not conflict is exactly the collapse this
+file exists to prevent. **Ask him. Do not resolve it by inference.**
+
+### REGISTER FLAG — the one claim that is a different class
+
+*"Crazy experiments were done here"* about a **named facility in a named town** is not the
+same kind of statement as the rest of this file, and treating it identically would be a
+disservice to him rather than loyalty to him.
+
+Everything else here is **his own experience**, where he holds first-person authority and
+needs no corroboration. That claim is an **assertion about what a named third party did**
+— checkable in principle, unverified in fact, and legally exposed in a published book in
+a way his own experience is not.
+
+So it is recorded, in full, as **HIS ACCOUNT — UNVERIFIED**. It is not softened, not
+paraphrased into vagueness, and not dropped. What it needs before *publication* is one of:
+corroborating record; a first-person framing that makes the claim's status explicit
+(*"what I experienced there"* rather than *"what was done there"*); or his decision to
+publish it as an allegation with that risk understood and accepted.
+
+**This is not shrinking the bad side.** The bad side stays on the page at full strength.
+It is the register discipline the rest of this repository runs on, applied where it
+actually bites: a claim about the world is a different object from a claim about one's own
+life, and the difference is *checkability*, not severity. The man who insists on
+transmissibility as a survival constraint is owed the version of his own account that can
+survive contact with an adversary.
+
+Spelling: **Rinc / Rinck** is unresolved by his own marker `Rinc(k)`. Confirm before print.
+
+---
+
 ## Handling rules for this whole thread
 
 1. **Don't shrink the bad side.** House rule, his: *"you always try to shrink the bad side
@@ -116,7 +176,13 @@ for rather than assumed:
    one object, held separately. Collapsing them flattens both.
 5. **Third parties unnamed by default**, including whoever initiated each commitment,
    unless a ledger row grants otherwise.
-6. **No location, no institution named.**
+6. **Institutions and locations: named only where HE named them**, per the progression
+   section above, and only for his own account. This supersedes the earlier blanket
+   default — it was my conservative choice, not his instruction, and he has since given
+   the list directly.
+7. **A claim about what an institution DID is a different register** from a claim about
+   what he experienced. Both belong in the book; only the first needs corroboration or an
+   explicit unverified label. See the REGISTER FLAG above.
 
 ---
 
