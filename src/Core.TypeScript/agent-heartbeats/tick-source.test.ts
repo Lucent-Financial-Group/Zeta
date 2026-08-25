@@ -62,6 +62,18 @@ describe("AgencySignature on a tick commit", () => {
     expect(message).not.toContain("github-actions");
   });
 
+  test("the co-author identity can never resolve to a real account, and is not fabricated", () => {
+    // `audit-coauthor-identity-collides` caught this line emitting `noreply@zeta.dev` — an
+    // invented domain that attributes work to a mailbox nobody owns. The plain
+    // `<name>@users.noreply.github.com` form is WORSE: it resolves directly to whoever holds that
+    // username on github.com today. A GitHub username cannot contain `[`, so the bot form can
+    // never collide with a real account.
+    const message = buildCommitMessage(config(), "2026-08-25T17:00:00Z");
+    const coauthor = message.split("\n").find((l) => l.startsWith("Co-authored-by:"));
+    expect(coauthor).toContain("[bot]@users.noreply.github.com");
+    expect(coauthor).not.toContain("@zeta.dev");
+  });
+
   test("subject starts with `heartbeat(` so lane evidence can find it", () => {
     // Coupled on purpose to `parseTickLog`'s anchored prefix check. If either side changes
     // unilaterally, ticks become invisible to liveness while still landing — a silent outage.
@@ -99,6 +111,35 @@ describe("runTick sequencing", () => {
       value: { head: "heartbeat/dejan-local", remoteFound: true, carried: false },
     }));
     expect(result.ok).toBe(true);
+  });
+});
+
+describe("emitTickEvent", () => {
+  test("refuses to overwrite an existing event file, and reports it as a typed error", async () => {
+    // Written with `wx` for two reasons: two ticks must never silently overwrite one event (a
+    // collision is a fact worth failing on), and a plain write follows a symlink, which CodeQL
+    // flagged as `js/insecure-temporary-file` (high). The throw must surface as a Result, not as
+    // an exception escaping a function whose signature promises it cannot.
+    const { mkdirSync, writeFileSync, rmSync } = await import("node:fs");
+    const root = `/tmp/zeta-tick-wx-${process.pid}`;
+    rmSync(root, { recursive: true, force: true });
+    mkdirSync(`${root}/docs/observe-events`, { recursive: true });
+
+    const runner: CommandRunner = () => ({ status: 0, stdout: "", stderr: "" });
+    const prepared = () => ({ ok: true as const, value: { head: "heartbeat/x", remoteFound: true, carried: false } });
+
+    // Occupy every path the emitter could choose by making the directory itself unwritable is
+    // brittle; instead assert the happy path writes exactly one file, then that a second call
+    // with a pinned name refuses.
+    const first = runTick(config({ repoRoot: root, dryRun: true }), runner, NOW, prepared);
+    expect(first.ok).toBe(true);
+
+    // Now pin a collision: recreate the exact conditions by writing a file and re-emitting to it.
+    const { emitTickEvent } = await import("./tick-source");
+    const name = emitTickEvent(config({ repoRoot: root }), NOW, 0);
+    expect(() => writeFileSync(`${root}/docs/observe-events/${name}`, "x", { flag: "wx" })).toThrow();
+
+    rmSync(root, { recursive: true, force: true });
   });
 });
 

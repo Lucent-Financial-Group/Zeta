@@ -145,7 +145,13 @@ export function buildCommitMessage(config: TickSourceConfig, timestamp: string):
     "Human-Review-Evidence: none",
     "Action-Mode: autonomous-fail-open",
     `Task: ${config.task}`,
-    "Co-authored-by: Dejan <noreply@zeta.dev>",
+    // `<name>[bot]@users.noreply.github.com` is the ONLY safe noreply form for a generated
+    // identity. `audit-coauthor-identity-collides` caught this line emitting `noreply@zeta.dev`,
+    // an invented domain: a fabricated address attributes work to a mailbox nobody owns, and the
+    // plain `<name>@users.noreply.github.com` form is worse still because it resolves DIRECTLY to
+    // whoever holds that username on github.com today. A username cannot contain `[`, so the bot
+    // form can never collide with a real account.
+    `Co-authored-by: ${config.agent}[bot] <${config.agent}[bot]@users.noreply.github.com>`,
   ].join("\n");
 }
 
@@ -203,7 +209,16 @@ export function emitTickEvent(config: TickSourceConfig, now: Date, bodyStatus: n
     lane: `heartbeat/${config.agent}`,
   };
 
-  writeFileSync(join(dir, name), `${JSON.stringify(event, null, 2)}\n`, "utf8");
+  // `wx` — create-exclusive. Two things at once:
+  //
+  // CORRECTNESS: two ticks must never silently overwrite one event file. A collision is a fact
+  // worth failing on, not one worth losing.
+  //
+  // SECURITY: CodeQL flagged the previous unflagged write as `js/insecure-temporary-file` (high).
+  // A plain write follows an existing symlink, so anything that can predict the path can redirect
+  // the write. `wx` refuses to open an existing entry at all, which is the standard remediation
+  // and costs nothing here because a fresh ZetaId is supposed to be fresh.
+  writeFileSync(join(dir, name), `${JSON.stringify(event, null, 2)}\n`, { encoding: "utf8", flag: "wx" });
   return name;
 }
 
@@ -258,7 +273,16 @@ export function runTick(
   }
 
   // STEP 2b — record the tick itself, whatever the body decided. See `emitTickEvent`.
-  emitTickEvent(config, now, body.status);
+  //
+  // Wrapped because `emitTickEvent` writes with `wx` and therefore THROWS on collision or on an
+  // unwritable directory. `runTick` returns a Result, and a function that returns a Result and
+  // also throws is lying about its own signature -- the caller writes no try/catch because the
+  // type says it does not need one. Surfacing it as a typed error keeps the contract honest.
+  try {
+    emitTickEvent(config, now, body.status);
+  } catch (error) {
+    return { ok: false, error: `record tick event failed: ${error instanceof Error ? error.message : String(error)}` };
+  }
 
   // STEP 3 — commit. "Nothing to commit" is a NO-OP, never an error: the tick body legitimately
   // produces no event when there is no work to observe.
