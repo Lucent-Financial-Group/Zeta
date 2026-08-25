@@ -142,4 +142,3 @@ did not agree to.
 A chapter in which every disagreement appears downstream of the author's account, or in
 which no dissenting party is quoted at length in their own voice, has performed balance
 rather than transmitted dissent.
-
