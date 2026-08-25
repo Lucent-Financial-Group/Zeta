@@ -131,10 +131,10 @@ Recorded as given, including his own uncertainty markers.
 
 ### An open question, NOT to be assumed
 
-Is **Holly Hill (~16)** the Cantor/ZFC episode recorded as #1 above? The timeline is
-compatible — he was on BBS systems at 12 — but *compatible is not the same as confirmed*,
-and merging two episodes because their dates do not conflict is exactly the collapse this
-file exists to prevent. **Ask him. Do not resolve it by inference.**
+~~Is **Holly Hill (~16)** the Cantor/ZFC episode?~~ **ANSWERED 2026-08-25: NO.** Two
+distinct episodes. See *Holly Hill (~16) is NOT the Cantor/ZFC episode* below — the
+answer came back against the tidy inference, which is why the question was asked instead
+of resolved.
 
 ### REGISTER FLAG — the one claim that is a different class
 
@@ -233,6 +233,78 @@ here, and the book should not upgrade it.
 claim about what the evaluators *concluded* is his experience of being evaluated, not an
 assertion about any individual clinician — a different register from the named-facility
 claim flagged above, and it does not carry the same corroboration burden.
+
+---
+
+## Holly Hill (~16) is NOT the Cantor/ZFC episode — answered, against the inference
+
+The file asked this and warned against resolving it by inference. Aaron answered, and the
+answer is **no** — which is why the warning was there.
+
+His account, 2026-08-25, in the register he chose:
+
+> *"To be in the most honest register: I was there because I was in love with
+> [**the young woman he would later marry**] and I could not handle her rejection, and
+> threatened suicide — even though I researched how many aspirin I could take **without
+> dying**. This was **fully manipulation on my part** and I'm happy to put it in the book,
+> cause maybe it can teach others from my mistake. We later became married and had four
+> children together."*
+
+### The detail that carries the whole thing
+
+He researched a **sub-lethal** dose. That single fact is what makes his own verdict —
+*fully manipulation* — the accurate one rather than a harsh one, and it is why this
+belongs in the book at full strength. He is not confessing to despair. He is reporting
+that at sixteen he engineered the appearance of despair as leverage over someone who had
+rejected him, and he did the arithmetic to make sure it stayed an appearance.
+
+He volunteered it unprompted, in answer to a question about something else, and named it
+himself before anyone else could. **Do not soften this and do not editorialise it upward
+into a redemption arc.** The house rule is *don't shrink the bad side*, and the whole
+teaching value is that the person telling it is the one who did it.
+
+### What it corrects structurally
+
+1. **Two distinct episodes.** Holly Hill (~16, this one) and Cantor/ZFC (the
+   intellectual-isolation one) are **not the same event**. The dates merely failed to
+   conflict, which is not evidence — and merging them is the collapse this file exists to
+   prevent. The count and ordering shift accordingly.
+2. **The mechanism does not explain every episode, and it never claimed to.** He said
+   *3–5* of five or six were the explaining-mathematics-to-clinicians pattern. This is one
+   of the **others** — and that is a point in the pattern's favour, not against it. A
+   mechanism that explained all of them would explain everything and forbid nothing, which
+   is the failure mode this repository names by hand.
+
+### THIRD-PARTY CONSENT — her name is withheld, and here is why
+
+He named her: a full name plus two further surnames across the marriage. **I have not
+written any of them into this file, and they must not go to print without her own consent
+row.** Not caution for its own sake — three specific reasons:
+
+- **She is a private individual with no ledger row.** The book's discipline is per-person
+  consent; the existing rows name *(mother)*, *(father)*, *(son — OMITTED entirely)* by
+  role rather than name for exactly this reason. She gets the same protection by default.
+- **This is her private life too, not only his.** The account attaches a named living
+  person to a suicide threat used as leverage against her, when she was a teenager. His
+  right to tell his own story is total; it does not extend to publishing her identity
+  inside it.
+- **Her name adds nothing to the lesson.** The teaching value is entirely in *his* half —
+  what he did, why, and the arithmetic that proves he knew what he was doing. Every word
+  of that survives with her unnamed. The name buys the reader nothing and costs her
+  everything.
+
+She is also the mother of four of his children, two of whom (Addison, Lillian) are
+consented and named in the book. **Naming her further identifies them**, including the son
+the ledger already OMITS ENTIRELY as an identifiable minor — so her name would breach a
+protection already granted to someone else.
+
+**Action required before this can be written into a chapter:** a CONSENT-LEDGER row for
+her — granted, declined, or role-only. Aaron's call whether to ask her. Until then she
+appears by role.
+
+**Not a safety concern in the present tense.** A historical account, decades old, disclosed
+voluntarily by the person himself in a self-critical frame, in answer to a question about
+something else entirely. Recorded as biography.
 
 ---
 
