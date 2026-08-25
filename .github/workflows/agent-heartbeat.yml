@@ -1715,7 +1715,7 @@ jobs:
           if PR_PROBE_OUT=$(probe_pr_create_scope); then
             echo "::warning title=Heartbeat PR-scope probe unexpectedly succeeded::$AGENT: the probe create was supposed to fail on a nonexistent head. Check for a stray PR."
           elif printf '%s' "$PR_PROBE_OUT" | grep -q 'HTTP 403'; then
-            echo "::error title=Heartbeat PR-CREATE credential lacks the scope::$AGENT: the PR-create credential is refused `POST /repos/.../pulls` with HTTP 403, so this flush WILL fail at `gh pr create` no matter what the contents probe says. FIX: grant that fine-grained PAT 'Pull requests: read and write' on Lucent-Financial-Group/Zeta. This is a DIFFERENT scope from the 'Contents: read and write' denial tracked by 081M05G8D36087G0R0034D3QPA."
+            echo "::error title=Heartbeat PR-CREATE credential lacks the scope::$AGENT: the PR-create credential is refused POST /repos/.../pulls with HTTP 403, so this flush WILL fail at 'gh pr create' no matter what the contents probe says. FIX: grant that fine-grained PAT 'Pull requests: read and write' on Lucent-Financial-Group/Zeta. This is a DIFFERENT scope from the 'Contents: read and write' denial tracked by 081M05G8D36087G0R0034D3QPA."
           elif printf '%s' "$PR_PROBE_OUT" | grep -q 'HTTP 422'; then
             echo "[flush] $AGENT: PR-create scope confirmed (422 on an invalid head = permitted)."
           else
