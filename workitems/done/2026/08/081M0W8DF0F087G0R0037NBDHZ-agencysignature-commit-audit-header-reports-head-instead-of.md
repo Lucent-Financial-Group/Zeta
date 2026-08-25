@@ -1,7 +1,7 @@
 ---
 id: 081M0W8DF0F087G0R0037NBDHZ
 type: bug
-state: backlog
+state: done
 priority: P2
 slug: agencysignature-commit-audit-header-reports-head-instead-of
 title: "AgencySignature commit audit header reports HEAD instead of the audited commit"
@@ -39,3 +39,12 @@ diagnostically self-contradictory: it names one object while checking another.
 - In commit mode, `target_rev` names the exact requested revision and its resolved object ID.
 - Head, max, since, and explicit-branch modes retain their current target semantics.
 - A regression test audits a non-HEAD commit and rejects a header that still names `HEAD`.
+
+## Resolution 2026-08-25
+
+Commit mode now derives the displayed and resolved target from `args.commitSha`; every other mode
+continues to use the selected branch target. The existing real-git fixture captures a second audit
+of `HEAD~1` and requires both the requested revision and its resolved object ID in `target_rev`.
+
+Measured verification: 52 focused audit tests pass, including the non-HEAD falsifier, and the root
+TypeScript project passes `tsc --noEmit`.
