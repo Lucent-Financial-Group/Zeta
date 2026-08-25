@@ -1,11 +1,12 @@
 ---
 id: 081M0XA4S79087G0R0021TYKPM
 type: bug
-state: backlog
+state: done
 priority: P1
 slug: restore-typescript-gate-after-scaled-model-benchmark-merge
 title: "Restore TypeScript gate after scaled model benchmark merge"
 created: 2026-08-25T20:35:16.329Z
+completed: 2026-08-25T20:41:22.167Z
 depends_on: []
 composes_with: []
 ---
@@ -28,3 +29,14 @@ the TypeScript portion of `bun run preflight:quick`.
 - The relative best-model energy value is used by the existing report instead
   of being duplicated as a literal.
 - TypeScript lint and quick preflight pass without suppressions.
+
+## Resolution
+
+The unused trial alias was removed. The existing `bestEnergy` value now drives
+the best-model report, preserving the relative-energy output without a duplicate
+literal or a diagnostic suppression.
+
+## Verification
+
+- `bunx tsc --noEmit` - pass.
+- `bun run preflight:quick` - all 13 executed checks passed.
