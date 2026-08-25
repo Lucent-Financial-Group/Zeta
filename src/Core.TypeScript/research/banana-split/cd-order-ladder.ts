@@ -39,7 +39,7 @@
 //      different pi2 output => `pi2 . chi = psi . F pi2` is unsatisfiable => NOT a banana split.
 //   4. The rank-16 control that PR #15415 asked for and nobody had run: the CD double of the
 //      octavian order is E8 (+) E8, which is ALREADY unimodular, so the completion step has
-//      nothing to do. The glue-index sequence is 2, 4, 1 -- and the "1" is the step going vacuous.
+//      nothing to do. The glue-index sequence is 1, 2, 4, 1 -- and the last "1" is it going vacuous.
 //   5. Root-system component counts, which is the invariant that makes "the join fuses the
 //      generator's output" a measurement rather than a slogan: 4 -> 1, 2 -> 1, then 2 -> 2.
 //
@@ -497,7 +497,7 @@ export function integralOverlattices(
 
   const subgroups = new Map<string, GlueClass[]>();
   const record = (members: Set<string>): void => {
-    const key = [...members].sort().join("|");
+    const key = [...members].sort(ordinalCompare).join("|");
     if (subgroups.has(key)) return;
     subgroups.set(
       key,
@@ -867,23 +867,31 @@ export function conjugationAutomorphism(u: Vec): (v: Vec) => Vec {
   };
 }
 
-/** The three ring-completions of D(Hurwitz), in a fixed order (glue-tag lexicographic). */
+/**
+ * Ordinal (code-unit) string comparison.
+ *
+ * NOT `localeCompare`, which is culture-SENSITIVE and forbidden by
+ * `.claude/rules/culture-invariant-by-default.md` — the repo's `hygiene:no-culture-sensitive-collation`
+ * lint caught exactly that call here on the first CI run of this file. The ordering below is the
+ * one the rule prescribes, and for the ASCII `0`/`1` tags in use it is codepoint order.
+ */
+function ordinalCompare(a: string, b: string): number {
+  return a < b ? -1 : a > b ? 1 : 0;
+}
+
+/** The glue subgroup's tags, sorted ordinally and joined — a stable key for one overlattice. */
+const glueKey = (o: Overlattice): string =>
+  o.glue
+    .map((g) => g.tag)
+    .sort(ordinalCompare)
+    .join("|");
+
+/** The three ring-completions of D(Hurwitz), in a fixed, ordinal order of their glue tags. */
 export function octavianCompletions(): Overlattice[] {
   const dh = cdDoubleOrder(hurwitzOrder());
   return integralOverlattices(dh)
     .filter((o) => o.index === 4 && o.multiplicativelyClosed && o.allIntegral)
-    .sort((a, b) =>
-      a.glue
-        .map((g) => g.tag)
-        .sort()
-        .join()
-        .localeCompare(
-          b.glue
-            .map((g) => g.tag)
-            .sort()
-            .join(),
-        ),
-    );
+    .sort((a, b) => ordinalCompare(glueKey(a), glueKey(b)));
 }
 
 /** Do two bases generate the same lattice? */

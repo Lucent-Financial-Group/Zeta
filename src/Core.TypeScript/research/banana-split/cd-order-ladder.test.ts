@@ -142,7 +142,8 @@ describe("rung H -> O: the completion is THREE-VALUED, so here the join is NOT a
       expect(sig).not.toBeNull();
       expect(o.multiplicativelyClosed).toBe(sig.parity === "odd");
     }
-    const perms = unimodular.map((o) => glueSignature(o)!.permutation).sort();
+    // Ordinal, not localeCompare (.claude/rules/culture-invariant-by-default.md).
+    const perms = unimodular.map((o) => glueSignature(o)!.permutation).sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
     expect(perms).toEqual(["ABC", "ACB", "BAC", "BCA", "CAB", "CBA"]);
     // The IDENTITY gluing -- the one a naive `double then glue diagonally` would pick -- fails.
     expect(unimodular.find((o) => glueSignature(o)!.permutation === "ABC")!.multiplicativelyClosed).toBe(false);
@@ -179,7 +180,9 @@ describe("rung H -> O: the completion is THREE-VALUED, so here the join is NOT a
     for (const u of dhb) for (const v of dhb) expect(vkey(psi(cdMul(u, v)))).toBe(vkey(cdMul(psi(u), psi(v)))); // it is an automorphism
     const c = octavianCompletions();
     const image = c.map((r) => c.findIndex((s) => sameLattice(r.basis.map(psi), s.basis)));
-    expect([...image].sort()).toEqual([0, 1, 2]); // a permutation of the three (note: COPY, not sort-in-place)
+    // COPY before sorting (sort mutates), and NUMERIC comparator -- a bare .sort() on numbers is
+    // lexicographic, which is a real trap even though it happens to be harmless for 0..2.
+    expect([...image].sort((a, b) => a - b)).toEqual([0, 1, 2]);
     expect(image.some((x, i) => x === i)).toBe(false); // with no fixed point: a single 3-orbit
   }, 60_000);
 

@@ -6,7 +6,7 @@
 was started; both are cited by section below.
 
 **Register.** Every number in this document is produced by
-`src/Core.TypeScript/research/banana-split/cd-order-ladder.ts` and pinned by 25 assertions in
+`src/Core.TypeScript/research/banana-split/cd-order-ladder.ts` and pinned by 25 tests (286 assertions) in
 `cd-order-ladder.test.ts`, **wired into the `full-verify` job of `.github/workflows/gate.yml`** — which
 is in the required floor. That is the one thing both predecessors could not say: #15417 explicitly
 self-labelled `unmetered` because its arithmetic "ran in a scratch worktree, not committed and not in
