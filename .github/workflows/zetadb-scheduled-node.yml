@@ -66,6 +66,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          # THIS CHECKOUT'S CREDENTIAL IS THE ONE THAT PUSHES `heartbeat/zetadb-scheduled-node`.
+          # ROLE: BRANCH-PUSH. One role, one secret —
+          # docs/security/2026-08-17-society-heartbeat-token-boundary-and-gate-start-failure.md
+          # assigns ZETA_TELEMETRY_FLUSH_TOKEN this role and only this role. Same shape as
+          # `lockfile-healer.yml`, which is the lane this one is being brought into line with.
+          token: ${{ secrets.ZETA_TELEMETRY_FLUSH_TOKEN }}
           fetch-depth: 0
 
       - name: Install Bun
@@ -97,8 +103,20 @@ jobs:
           # a fine-grained PAT is required to OPEN the PR. Without one the checkpoint
           # still parks safely on the staging branch and the step reports why it could
           # go no further — the fold is never lost, only delayed.
-          GH_TOKEN: ${{ secrets.ZETA_TELEMETRY_FLUSH_TOKEN || secrets.ZETA_PR_ARCHIVE_TOKEN || secrets.GITHUB_TOKEN }}
+          #
+          # ROLE: PR-CREATE. One role, one secret. A `||` chain stood here and collapsed
+          # three roles into one variable: `||` selects on the left secret being EMPTY, so
+          # an absent ZETA_TELEMETRY_FLUSH_TOKEN would have been silently replaced by a
+          # credential with DIFFERENT authority, and the `secrets.GITHUB_TOKEN` rung would
+          # additionally have parked the flush PR's `gate (required)` behind GitHub's
+          # recursion guard — a checkpoint that looks flushed and can never merge.
+          # `audit-workflow-credential-role-separation.ts` (cross-verify floor) refuses it.
+          # Absence is a NAMED refusal, not a substitution: `openMergePR` refuses an empty
+          # GH_TOKEN and names the secret and the scope.
+          GH_TOKEN: ${{ secrets.ZETA_PR_ARCHIVE_TOKEN }}
         run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           bun src/Core.TypeScript/forge-host/github/flush-via-staging.ts flush \
             --lane zetadb-scheduled-node \
             --paths data/zetadb/checkpoint.json \
