@@ -15,10 +15,12 @@ import { getPersona, localLlmPersona } from "../service/persona-registry";
 import { executeSkillSequence } from "../arc-solver/grid-skills";
 import { evaluateGrid } from "../arc-solver/grid-evaluator";
 import { CelegansController, loadFromCsv } from "../chip8/celegans-controller";
-import { BnnSocietyPredictor } from "../bayesian/bnn-key-predictor";
+import { ATTENTION_TOP_K, BnnSocietyPredictor, thompsonKeyOf, type SocietySnapshot } from "../bayesian/bnn-key-predictor";
+import type { ArenaReadout, ArenaTrackReadout, AttentionReadoutWire } from "../observe/observe";
+import { ArcExplorer } from "../bayesian/arc-explorer";
 import { cooperate } from "../tri-boolean/tri-boolean";
 import { readKnownSignatures } from "./swarm-known-signatures";
-import * as path from "path";
+// removed path
 
 import { HardwareRegistry } from "../discovery/hardware-registry";
 
@@ -44,20 +46,53 @@ export class SwarmController {
   private nodes: SwarmNode[] = [];
   private hwRegistry: HardwareRegistry;
   public wormSociety: CelegansController[] = [];
-  public bnnSociety?: BnnSocietyPredictor;
+  public bnnSociety: BnnSocietyPredictor | undefined;
+  public arcExplorer?: ArcExplorer;
+  private previousDisplay: number[] = [];
+  private visualDeltaLog: string[] = [];
   
   // CHIP-8 Superorganism State
   private pheromoneField: Map<number, number> = new Map();
   private scarcity: number = 0.8; // High scarcity defaults trigger tower formation
-  
+
+  /** The key committed LAST tick — feeds the predictor's self-identification. */
+  private lastChosenKey: number | undefined;
+  /** Priors to restore into the BNN society when it is (lazily) created. */
+  private pendingGamePriors: SocietySnapshot | null = null;
+  /** Outer-loop LLM tuning fires ONLY on explicit opt-in — never in the browser. */
+  private llmTuningEnabled = false;
+
   constructor() {
     this.hwRegistry = new HardwareRegistry();
     this.hwRegistry.start();
   }
+
+  /**
+   * Install per-cart priors (from a committed priors module) and reset the
+   * live society so the next tick rebuilds it — restored from the snapshot
+   * when one exists, fresh otherwise. Called at boot and on every cart
+   * switch: the learned posteriors are per-cart, while the STRUCTURAL layers
+   * (objects/OCR/roles) are stateless and transfer to any cart — that split
+   * is the soft-regime continual-learning story.
+   */
+  setGamePriors(snapshot: SocietySnapshot | null) {
+    this.pendingGamePriors = snapshot;
+    this.bnnSociety = undefined;
+    this.lastChosenKey = undefined;
+  }
   
   async init(dropRate = 0) {
+    // 300 TICKS (~10s at 30fps) of exploration — counted on the worker's own
+    // cycle counter, never wall-clock, and drawn from the seeded stream. The
+    // predictor's own layer-5 probing does the purposeful part; this is the
+    // outer safety net.
+    this.arcExplorer = new ArcExplorer(300);
     const meshNodes = createLossyUdpMesh(4, dropRate);
     const useLocalLlm = process.env.ZETA_SWARM_USE_LOCAL_LLM === "1";
+    // The outer-loop tuning fetch previously fired on every orbit shift even
+    // where no LLM can exist (the browser) — a guaranteed-failing request in
+    // the console. It now requires the same explicit opt-in.
+    this.llmTuningEnabled = useLocalLlm;
     
     for (let i = 0; i < 4; i++) {
       const hat = SWARM_HATS[i]!;
@@ -96,13 +131,42 @@ export class SwarmController {
       node.mesh.send(Buffer.from(JSON.stringify(world)));
     }
 
+    // [Visual Delta Log for ARC-AGI-3 Tracking]
+    if (world.cheatEngine && world.cheatEngine.display) {
+      if (this.previousDisplay.length === world.cheatEngine.display.length) {
+        let deltaCount = 0;
+        const deltas = [];
+        for (let i = 0; i < this.previousDisplay.length; i++) {
+          if (this.previousDisplay[i] !== world.cheatEngine.display[i]) {
+            deltas.push(`(${i % 64}, ${Math.floor(i / 64)})`);
+            deltaCount++;
+          }
+        }
+        if (deltaCount > 0) {
+          const lastEvent = world.history && world.history.length > 0 ? world.history[world.history.length - 1] as any : null;
+          const actionLog = lastEvent?.actions?.map((a: any) => JSON.stringify(a)).join(", ") ?? "Unknown";
+          this.visualDeltaLog.push(`Action: ${actionLog} -> Changed ${deltaCount} pixels at: ${deltas.slice(0, 10).join(', ')}${deltaCount > 10 ? '...' : ''}`);
+          if (this.visualDeltaLog.length > 10) this.visualDeltaLog.shift(); // keep last 10
+        }
+      }
+      this.previousDisplay = [...world.cheatEngine.display];
+    }
+
     // [Causal Orbit Detection]
     // If the world has an attached CheatEngine emulator frame, we hash the Playable Quote footprint
     if (world.cheatEngine && world.cheatEngine.memorySectors.length > 0 && world.cheatEngine.causalMask && world.cheatEngine.display) {
       const { detectCausalSignature } = await import("./signature-detector");
       const { renderDisplay } = await import("../chip8/chip8");
-      const fs = await import("fs");
-      const path = await import("path");
+      let fs: any = null;
+      let path: any = null;
+      if (typeof process !== 'undefined' && process.versions && process.versions.node) {
+        try {
+          const fsName = "fs";
+          const pathName = "path";
+          fs = await import(/* @vite-ignore */ fsName);
+          path = await import(/* @vite-ignore */ pathName);
+        } catch(e) {}
+      }
 
       const mem = world.cheatEngine.memorySectors[0]!;
       const mask = world.cheatEngine.causalMask;
@@ -128,11 +192,14 @@ export class SwarmController {
 
         // Ask LLM to optimize worm hyperparameters on orbit shift (Outer Loop)
         const activePilot = this.nodes.find(n => n.hat.name === "Pilot");
-        if (activePilot && this.wormSociety.length > 0) {
+        if (this.llmTuningEnabled && activePilot && this.wormSociety.length > 0) {
           console.log(`[SwarmController] LLM Outer Loop: Analyzing C. elegans performance and tuning hyperparameters...`);
           try {
+            const deltaContext = this.visualDeltaLog.length > 0 ? `Recent Visual Deltas:\n${this.visualDeltaLog.join('\\n')}` : `No visual deltas yet.`;
             const prompt = `The C. elegans worm Pilot has successfully shifted the CHIP-8 causal orbit from ${prevSig} to ${sig}.
 You are optimizing the biological controller AND the environment (Cheat Engine). 
+${deltaContext}
+
 Available tools:
 - {"tool": "setWormCouplingGain", "args": {"gain": 1.5}}
 - {"tool": "freezeMemory", "args": {"address": 512, "value": 255}}
@@ -158,18 +225,26 @@ Output a JSON array of tool calls you wish to execute. Example: [{"tool": "setWo
         }
 
         // Persist signature to known-signatures.json
-        const sigFile = path.join(__dirname, "known-signatures.json");
-        // One read, one answer: a separate existsSync gate is a check-then-use
-        // race. The shared reader treats only ENOENT as first-run empty history;
-        // unreadable or malformed persistence remains visible evidence.
-        const known = readKnownSignatures(
-          (filePath) => fs.readFileSync(filePath, "utf-8"),
-          sigFile,
-        );
-        if (!known.includes(sig)) {
-          known.push(sig);
-          fs.writeFileSync(sigFile, JSON.stringify(known, null, 2));
-          console.log(`[SwarmController] 💾 Saved new signature ${sig} to known-signatures.json`);
+        let known: string[] = [];
+        if (fs && typeof fs !== 'undefined' && fs.readFileSync && fs.writeFileSync && typeof __dirname !== 'undefined') {
+          const sigFile = path.join(__dirname, "known-signatures.json");
+          known = readKnownSignatures(
+            (filePath) => fs.readFileSync(filePath, "utf-8"),
+            sigFile,
+          );
+          if (!known.includes(sig)) {
+            known.push(sig);
+            fs.writeFileSync(sigFile, JSON.stringify(known, null, 2));
+            console.log(`[SwarmController] 💾 Saved new signature ${sig} to known-signatures.json`);
+          }
+        } else if (typeof localStorage !== 'undefined') {
+          const stored = localStorage.getItem("zeta_known_signatures");
+          known = stored ? JSON.parse(stored) : [];
+          if (!known.includes(sig)) {
+            known.push(sig);
+            localStorage.setItem("zeta_known_signatures", JSON.stringify(known));
+            console.log(`[SwarmController] 💾 Saved new signature ${sig} to localStorage`);
+          }
         }
       }
       
@@ -301,8 +376,7 @@ Output ONLY a valid JSON array of strings representing the sub-tasks. Example: [
           // Inner Loop: Fast path using Society of C. elegans worms & Society of BNNs
           if (this.wormSociety.length === 0) {
             console.log("[SwarmController] Initializing Society of C. elegans biological substrates (Inner Loop)...");
-            const csvPath = path.resolve(__dirname, "../../Core/data/celegans-connectome-chemical.csv");
-            const connectome = loadFromCsv(csvPath);
+            const connectome = loadFromCsv();
             // Instantiate 5 worms cooperating
             for (let i = 0; i < 5; i++) {
               this.wormSociety.push(new CelegansController(connectome, BigInt(1337 + i)));
@@ -311,6 +385,10 @@ Output ONLY a valid JSON array of strings representing the sub-tasks. Example: [
           if (!this.bnnSociety) {
             console.log("[SwarmController] Initializing Society of BNN Key Predictors for CHIP-8 (Inner Loop)...");
             this.bnnSociety = new BnnSocietyPredictor(3);
+            if (this.pendingGamePriors) {
+              this.bnnSociety.importSnapshot(this.pendingGamePriors);
+              console.log(`[SwarmController] 🧠 Restored game priors (${this.pendingGamePriors.exploreTicksDone} explore ticks pre-spent).`);
+            }
           }
           
           // Inject display and step Kuramoto oscillator
@@ -324,14 +402,22 @@ Output ONLY a valid JSON array of strings representing the sub-tasks. Example: [
             for (let i = 0; i <= 0xF; i++) this.pheromoneField.set(i, 0.0);
           }
           
-          // BNN Key Predictor computes its consensus separately
-          const bnnPredictions = this.bnnSociety.predict(world.cheatEngine!.display!);
+          // BNN Key Predictor computes its consensus separately. The key we
+          // committed LAST tick closes the action→perception loop: it is how
+          // the predictor learns which on-screen object answers to the keys.
+          let bnnPredictions = this.bnnSociety.predict(world.cheatEngine!.display!, this.lastChosenKey);
+          
+          if (this.arcExplorer && this.arcExplorer.tick()) {
+            // Override with pure uniform exploration if in exploration phase
+            bnnPredictions = this.arcExplorer.explore();
+          }
           
           // If BNN is highly uncertain (max prob < 0.2), scarcity is high!
-          let maxProb = 0;
-          let bestBnnKey = 0;
-          for (const [key, prob] of Object.entries(bnnPredictions)) {
-            if (prob > maxProb) { maxProb = prob; bestBnnKey = parseInt(key, 10); }
+          // (The argmax key itself is no longer read here — the committed key
+          // comes from posterior sampling below, not from a thresholded peak.)
+          let maxProb = -1;
+          for (const prob of Object.values(bnnPredictions)) {
+            if (prob > maxProb) maxProb = prob;
           }
           this.scarcity = maxProb < 0.2 ? 0.9 : 0.4;
           
@@ -372,11 +458,22 @@ Output ONLY a valid JSON array of strings representing the sub-tasks. Example: [
           cooperate(null as any); 
 
           // Consensus: The superorganism tower formed if at least 2 worms joined the same locus
-          let wormConsensusKey = towerCount >= 2 ? towerKey : 0;
+          let wormConsensusKey = towerCount >= 2 ? towerKey : -1;
           
           
-          // Simple Fusion Policy: if max BNN prob is strong enough, use BNN consensus; otherwise use biological tower
-          const chosenKey = maxProb > 0.4 ? bestBnnKey : wormConsensusKey;
+          // Fusion policy: POSTERIOR SAMPLING, not an absolute confidence gate.
+          //
+          // This line used to read `maxProb > 0.4 ? bestBnnKey : wormConsensusKey`.
+          // Measured 2026-08-24: the consensus over 17 keys peaks at 0.3818
+          // (p50 0.3433), so that gate was crossed 0 times in 900 ticks and the
+          // agent committed NOTHING once its 300-tick explorer expired — the
+          // "buttons go random for a while, then it stops moving" report. See
+          // `thompsonKeyOf` for why the fix deletes the constant instead of
+          // lowering it. The worm tower stays as the tie-break for when the
+          // distribution is degenerate and sampling names nothing.
+          const sampledKey = thompsonKeyOf(bnnPredictions, () => this.bnnSociety!.gaussianDraw());
+          const chosenKey = sampledKey >= 0 ? sampledKey : wormConsensusKey;
+          this.lastChosenKey = chosenKey >= 0 ? chosenKey : undefined;
 
           if (chosenAction.kind === "do_item") {
             chosenAction.actions = [
@@ -384,13 +481,66 @@ Output ONLY a valid JSON array of strings representing the sub-tasks. Example: [
               {"tool": "pressKey", "args": {"key": chosenKey}}
             ];
           }
+
+          // The forced-perception readout: boxes, roles, mode, OCR — so the
+          // page can SHOW what the agent sees instead of asking for trust.
+          const bnn = this.bnnSociety;
+          const arenaTracks: ArenaTrackReadout[] = bnn.lastPerception.tracks.map((t) => ({
+            id: t.id,
+            color: t.color,
+            minX: Math.round(t.minX),
+            minY: Math.round(t.minY),
+            maxX: Math.round(t.maxX),
+            maxY: Math.round(t.maxY),
+            isStatic: t.isStatic,
+            everMoved: t.everMoved,
+            role:
+              t.id === bnn.lastSelfId
+                ? "self"
+                : t.id === bnn.lastAdversaryId
+                  ? "adversary"
+                  : t.isStatic && !t.everMoved
+                    ? "scenery"
+                    : "object",
+          }));
+          const arena: ArenaReadout = {
+            mode: bnn.lastMode,
+            tracks: arenaTracks,
+            ocr: bnn.lastOcr.map((n) => ({ value: n.value, row: n.row, col: n.col, color: n.color })),
+            desired: bnn.lastDesired ? { dx: bnn.lastDesired.dx, dy: bnn.lastDesired.dy } : null,
+          };
+
+          // D1-D4 (#14503): the attention field, fixation, meter and measured
+          // society-rho ride the same readout as the frame they label.
+          const fieldReadout = bnn.attentionField.readout();
+          const attention: AttentionReadoutWire = {
+            cols: fieldReadout.cols,
+            rows: fieldReadout.rows,
+            variance: fieldReadout.variance,
+            mean: fieldReadout.mean,
+            attended: bnn.lastAttendedTiles,
+            fixation: bnn.lastFixationTile,
+            usefulWork: bnn.lastUsefulWork,
+            rho: bnn.societyRho(),
+            topK: ATTENTION_TOP_K,
+          };
+
+          // D5 (#14503): the WHY chain's input — the deciding state itself,
+          // assembled by the predictor so the UI's answers cite the numbers
+          // that actually drove this tick.
+          const why = bnn.whyContext();
+
           const nextWorld = simulate(world, chosenAction);
-          // Attach BNN predictions to cheatEngine so TV can render them
+          // Attach BNN predictions and the chosen key to cheatEngine so TV can render them
           return {
             ...nextWorld,
             cheatEngine: {
               ...nextWorld.cheatEngine!,
-              keyPredictions: bnnPredictions
+              keyPredictions: bnnPredictions,
+              chosenKey: chosenKey,
+              arena,
+              attention,
+              why
             }
           };
         }

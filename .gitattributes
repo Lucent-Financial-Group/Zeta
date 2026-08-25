@@ -147,40 +147,37 @@ docs/github/prs/manifest.jsonl           merge=union
 # this line must go.
 data/rs-blocks.jsonl                     merge=union
 #
-# `data/ci-runs.jsonl` — added 2026-08-22. EIGHTH member of the class, and the first that was
-# born from a file ARRIVING on main rather than from the partial-flush window widening. It took
-# all three lanes down at 22:05Z (runs 32601483043, 32602358227) with
-# `CONFLICT (add/add): Merge conflict in data/ci-runs.jsonl`.
+# `data/ci-runs.jsonl` — added 2026-08-22 after it wedged otto's, alexa's and soraya's ticks at
+# 22:05Z and 22:24Z (runs on 79ff032a2 / 9f861ebef) with
+# `CONFLICT (add/add): Merge conflict in data/ci-runs.jsonl`, plus the alexa flush job. SEVENTH
+# member of the class and the drift-rate sibling of `rs-blocks.jsonl` directly above.
 #
-# WHAT CHANGED, precisely: the drift-rate recorder has appended to this file on every tick for a
-# long time, but #13935 was what made the append actually COMMIT, so the file first reached main
-# at 21:54:47Z in #13955 — between the last green tick (21:52:16Z) and the first red (22:05:54Z).
-# Until then it existed only on the lanes, where nothing could conflict with it. Both sides
-# having independently CREATED it is why the merge base has neither, hence add/add rather than
-# the content conflict the entries above describe.
+# WHY IT APPEARED NOW AND NOT BEFORE. The path is four hours old. Until #13928 the heartbeat step
+# ran `git add data/ci-runs.jsonl` and never committed, so every tick appended to a working-tree
+# file that was discarded with the runner — the workflow says so itself: "has never existed on
+# main ... green on every tick and produced nothing". The moment that step started COMMITTING, all
+# three lanes began creating the same brand-new path independently, which is ADD/ADD by
+# construction: the merge base has neither side.
 #
-# MEASURED on the live refs, not assumed:
-#   - append-only — all six commits touching it across main and the three lanes are `+N -0`,
-#     no line ever modified
-#   - 9 rows across the four copies, 7 distinct rows, 7 distinct `(lane, runId)`. Distinct-rows
-#     EQUALS distinct-keys, so no key has ever appeared in two spellings — which is the exact
-#     precondition under which union cannot duplicate a key.
-#   - single-writer PER ROW: `otto`, `alexa` and `soraya` each hold only rows whose `lane` field
-#     is their own (checked whole-file on all three). Main's copy is this lane's already-flushed
-#     rows plus other lanes' rows, never a rival edit to the same row.
+# Measured on this tip, not assumed:
+#   - append-only — the sole writer is `appendFileSync(dataPath, ...)` in
+#     `observe/drift-rate-cli.ts` `doRecord`; no code path rewrites an existing line
+#   - every row carries a `lane` field naming the emitting agent, so this is single-writer
+#     PER ROW exactly as `rs-blocks.jsonl` is, not single-writer per file
+#   - main's copy therefore holds this lane's flushed rows plus other lanes' rows, never a
+#     rival edit to the same row
 #
-# The partial-flush overlap is the case union has to get right, and it is live right now: main
-# holds soraya's first two rows, soraya's lane holds those two plus a third. Git resolves an
-# identical addition on both sides as ONE change and emits a single copy — reproduced locally in
-# both directions before this shipped (with the attribute: exit 0 and three rows; without it: the
-# observed add/add, whose HEAD side of the hunk is EMPTY, i.e. the same vacuous conflict this
-# whole block exists for).
+# REPRODUCED AND VERIFIED in a scratch repo rather than argued:
+#   - two branches each CREATING the file -> `CONFLICT (add/add)`, the live message verbatim
+#   - the same pair with this line present -> "Auto-merging", clean, both lanes' rows kept,
+#     zero conflict markers
+#   - the partial-flush case (both sides carry the already-flushed rows, the lane has one more)
+#     -> clean, and `sort | uniq -d` is EMPTY: identical additions on both sides resolve to one
+#     copy, so union does not duplicate a flushed row
 #
-# STATED LIMIT, in the same terms as `data/rs-blocks.jsonl` above: `(lane, runId)` uniqueness is
-# NOT enforced by any check, and `drift-rate.ts` reads `runId` without ever folding on it — so a
-# duplicated row would silently double-count one run in the Wilson interval rather than being
-# caught. Union is safe here on the append-only + per-row-single-writer argument alone. If rows
-# ever become editable, or a lane ever writes another lane's row, this line must go.
+# STATED LIMIT, same as the sibling above: no check enforces row uniqueness here. Union is safe on
+# the append-only + per-row-single-writer argument alone. If a row ever becomes editable — a
+# backfill that rewrites an outcome, say — this line must go.
 data/ci-runs.jsonl                       merge=union
 #
 # Regenerated-per-tick snapshots -> `theirs` (the lane's). `union` is WRONG for these and was
@@ -265,3 +262,11 @@ docs/github/prs/shards/**/*.json        merge=theirs
 #      with the threads fetched — and this line should be REMOVED when that lands, not kept as
 #      belt-and-braces.
 docs/history/pr-reviews/PR-*.md         merge=theirs
+
+# Git-native inverted index (081M0QTXTR3087G0R002R439FH) — derived, machine-written,
+# regenerate-never-merge. Marked generated so it collapses in review by default:
+# the artifact IS reviewable text (that is why it is JSONL), but 40 shard files of
+# postings should not drown the code changes in a PR that touches both.
+# On conflict: rebuild, never hand-merge.
+db/search-index/inverted/*.jsonl   linguist-generated=true
+db/search-index/inverted/files.txt linguist-generated=true

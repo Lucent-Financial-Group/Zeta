@@ -74,7 +74,6 @@ const ENV_OPTIONS_WITH_INLINE_OPERAND: readonly string[] = ["--argv0=", "--chdir
 const INACTIVE_SHELL_INVENTORY_PREFIXES: readonly string[] = ["db/", "docs/recovered-orphan-branches-"];
 
 export const EXPECTED_RETAINED_SHELL: readonly string[] = [
-  ".cursor/install.sh",
   ".gemini/service/install-lior-service.sh",
   ".gemini/service/lior-loop.sh",
   "full-ai-cluster/usb-nixos-installer/zeta-first-boot.sh",
@@ -104,7 +103,6 @@ export const EXPECTED_RETAINED_SHELL: readonly string[] = [
   "tools/setup/install.sh",
   "tools/setup/linux.sh",
   "tools/setup/macos.sh",
-  "tools/setup/op-token-setup.sh",
   "tools/setup/persona-keys/keyring.sh",
   "tools/setup/secret-clip.sh",
 ];
@@ -120,10 +118,6 @@ const RETAINED_SHELL_CATEGORY_ORDER: readonly RetainedShellCategory[] = [
 ];
 
 export const RETAINED_SHELL_CATEGORY_BY_FILE: Readonly<Record<string, RetainedShellCategory>> = {
-  // Cursor Cloud Agent environment bootstrap (.cursor/environment.json install):
-  // runs on a bare VM before Bun exists (it installs mise + bun), so it is
-  // retained shell at the setup/bootstrap edge, same class as tools/setup/*.sh.
-  ".cursor/install.sh": "setup/bootstrap",
   ".gemini/service/install-lior-service.sh": "host-service wrappers",
   ".gemini/service/lior-loop.sh": "host-service wrappers",
   "full-ai-cluster/usb-nixos-installer/zeta-first-boot.sh": "nixos installer",
@@ -175,7 +169,15 @@ export const RETAINED_SHELL_CATEGORY_BY_FILE: Readonly<Record<string, RetainedSh
   // Secret-edge scripts (Aaron 2026-06-21): capture a secret via masked TTY / secure dialog /
   // clipboard and write it to the OS keystore (Keychain). Retained shell at the security edge
   // (same rationale as keyring.sh) — secure input + `security`/`osascript` are OS-edge ops.
-  "tools/setup/op-token-setup.sh": "setup/bootstrap",
+  //
+  // NOTE (op-token-setup): that rationale did NOT survive being tested. `osascript` and
+  // `security` are SPAWNED processes, not shell builtins, so nothing about the edge required a
+  // shell — unlike `keyring.sh`, whose `read -s` and shred-on-exit trap are genuinely in-process
+  // shell. The retention was habit wearing a security argument, and it was costing the property
+  // it claimed to protect: the shell put the token on `security(1)`'s argv
+  // (`docs/SHELL-DEPRECATION-SEQUENCE.md`, `argv-secret@83`). `tools/setup/op-token-setup.ts`
+  // replaces it and the value now crosses on stdin. `secret-clip.sh` still carries the same argv
+  // leak at line 93 and is NOT yet converted — it stays allowlisted, honestly, until it is.
   "tools/setup/secret-clip.sh": "setup/bootstrap",
   // keyring.sh is the intentionally-retained thin security EDGE: in-process seed
   // handling (`read -s`, umask-077, shred-on-exit) that must stay in shell; the

@@ -229,8 +229,29 @@ jobs:
             sleep 1
           done
 
-          # Tiny model for heartbeat (fast, 400MB)
-          ollama pull qwen2.5:0.5b
+          # STRUCTURAL DECORRELATION (2026-08-24, Alexa): each agent uses a different
+          # model family so their errors are orthogonal. The decorrelation meter
+          # (decorrelation-meter.ts) measures whether this actually helps — if all three
+          # used the same model, S ≈ 2 (correlated, useless redundancy). With different
+          # families, S should exceed 2 (genuinely independent).
+          #
+          # All three fit in ~2GB RAM (well within the 7GB runner limit).
+          # The 7b codegen model is pulled separately for the work tick.
+          # Heterogeneous by design: three model FAMILIES, so a wrong answer from one
+          # agent is not automatically the wrong answer from the others. Selected by
+          # `case` rather than indirect expansion (`${!VAR}`) -- shellcheck cannot follow
+          # an indirect reference and reports the roster as unused (SC2034), and the
+          # honest fix is to stop being indirect rather than to silence the rule.
+          case "$AGENT" in
+            alexa)  HEARTBEAT_MODEL="qwen2.5:0.5b" ;;
+            otto)   HEARTBEAT_MODEL="llama3.2:1b" ;;
+            soraya) HEARTBEAT_MODEL="gemma2:2b" ;;
+            # FAIL-CLOSED. Indirect expansion yielded "" for an unknown agent and the
+            # failure surfaced later as `ollama pull ""`. An unknown agent halts here.
+            *) echo "::error::no heartbeat model declared for agent '$AGENT'" >&2; exit 1 ;;
+          esac
+          echo "[models] $AGENT heartbeat model: $HEARTBEAT_MODEL"
+          ollama pull "$HEARTBEAT_MODEL"
           # Smart model for codegen/decompose work (5GB, fits in 7GB runner)
           ollama pull qwen2.5:7b
           ollama list
@@ -268,14 +289,24 @@ jobs:
         env:
           ZETA_FIRST_SESSION_MARKER: /tmp/zeta-first-session-complete
           ZETA_AGENT_ID: ${{ matrix.agent }}
-          ZETA_PARTICIPANT: local-llm
           ZETA_SINK_MODE: local
+          AGENT: ${{ matrix.agent }}
         run: |
+          # Each agent uses its own model family (structural decorrelation)
+          # Same roster as the pull step above; same `case` for the same reason.
+          case "$AGENT" in
+            alexa)  MODEL="qwen2.5:0.5b" ;;
+            otto)   MODEL="llama3.2:1b" ;;
+            soraya) MODEL="gemma2:2b" ;;
+            *) echo "::error::no heartbeat model declared for agent '$AGENT'" >&2; exit 1 ;;
+          esac
+
           mkdir -p /tmp && echo "2026-07-08" > /tmp/zeta-first-session-complete
+          export ZETA_PARTICIPANT="local-llm:${MODEL}"
           bun src/Core.TypeScript/observe/run-loop-real.ts \
             --by "$ZETA_AGENT_ID" \
             --event-dir docs/observe-events \
-            --participant local-llm || echo "[heartbeat] tick failed (non-fatal)"
+            --participant "local-llm:${MODEL}" || echo "[heartbeat] tick failed (non-fatal)"
 
       - name: Commit accumulated heartbeat tick
         env:
@@ -884,6 +915,35 @@ jobs:
           # derive-pr-manifest.ts themselves. pr-manifest-integrity.yml fails loudly if this
           # cadence stops repairing at all.
           bun src/Core.TypeScript/forge-host/github/derive-pr-manifest.ts --write             || echo "::warning::[archive] manifest derive failed (non-fatal; shards are the ledger)"
+
+          # WATCHDOG FOR STRANDED ARCHIVE PRs (added 2026-08-22).
+          #
+          # The two archive writers -- pr-archive-on-merge.yml (event-driven) and this backfill
+          # duty -- can archive the SAME PR from different bases. Both are idempotent, so
+          # neither is wrong; but whichever copy lands on main second becomes an unresolvable
+          # add/add conflict on its own shard path, carrying a markdown that is byte-identical
+          # to main's and a shard whose fetched_at is strictly OLDER. It can never merge
+          # anything new.
+          #
+          # Nothing noticed that, and that silence -- not the conflict -- is the accumulation
+          # generator. A stranded archive PR is ARMED, so the "Auto-merge clean PRs" step
+          # filters it out (auto_merge != null); --auto can never merge a CONFLICTING PR; and
+          # no reaper existed. Measured 2026-08-22: PR #13843 (archiving #12059, whose record
+          # landed on main at 18:25:04 via #13850) sat open ~3 hours and was found by hand.
+          # This lane has now accumulated four times; every prior round drained the symptom.
+          #
+          # NON-FATAL BY DESIGN, and the restraint is the point: this reports the condition and
+          # never closes anything. Whether a record is truly redundant is a judgement that
+          # belongs to a reviewer who can diff it -- detection is a measurement, not a verdict.
+          echo "[archive] Auditing the archive lane for stranded PRs..."
+          set +e
+          LANE_OUT=$(bun src/Core.TypeScript/hygiene/audit-archive-pr-lane.ts 2>&1)
+          LANE_RC=$?
+          printf '%s\n' "$LANE_OUT" | tail -20
+          if [ "$LANE_RC" -ne 0 ]; then
+            echo "::warning::[archive] audit-archive-pr-lane.ts exited $LANE_RC -- the lane is now UNAUDITED, which is the condition it exists to prevent"
+          fi
+          set -e
 
           # Stage + commit what the archive wrote. It writes into TRACKED paths
           # (docs/github/prs/ -- shards + the derived manifest) but previously never staged them,

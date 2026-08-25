@@ -1,3 +1,17 @@
+import {
+  compareAndSwapRevisionPolicy,
+  type RevisionPolicyPort,
+  type RevisionPolicyRefusal,
+} from "../persistence/revision-policy";
+import {
+  noForgetBackpressureAdmissionPolicy,
+  type ZetaDbAdmissionAccounting,
+  type ZetaDbAdmissionDecision,
+  type ZetaDbAdmissionPolicyPort,
+  type ZetaDbAdmissionProposal,
+  type ZetaDbAdmissionReceipt,
+} from "./admission-policy";
+
 export const ZETA_DB_IMAGE_SCHEMA = "zeta.db.image.v1" as const;
 export const ZETA_DB_TICK_SCHEMA = "zeta.db.tick.v1" as const;
 
@@ -47,10 +61,13 @@ export interface ZetaDbFeedback {
     | "database-row-conflict"
     | "database-weight-overflow"
     | "database-capacity-exhausted"
+    | "database-admission-policy-failed"
     | "database-read-failed"
     | "database-write-failed"
     | "database-revision-conflict";
   readonly detail: string;
+  /** Exact resource accounting when an admission policy produced the feedback. */
+  readonly admissionReceipt?: ZetaDbAdmissionReceipt;
 }
 
 export type ZetaDbResult<T> =
@@ -58,6 +75,13 @@ export type ZetaDbResult<T> =
   | { readonly ok: false; readonly feedback: ZetaDbFeedback };
 
 export interface ZetaDbImagePort {
+  /**
+   * Executable revision contract. The adapter applies its decision atomically with `save`.
+   *
+   * `runConvergentZetaDbNodeTick`'s bounded-retry convergence (#13929) is proved against
+   * `compareAndSwapRevisionPolicy`. Other policies require their own convergence evidence.
+   */
+  readonly revisionPolicy: RevisionPolicyPort;
   load(nodeId: string): Promise<ZetaDbResult<ZetaDbImageRecord | null>>;
   save(record: ZetaDbImageRecord): Promise<ZetaDbResult<ZetaDbImageRecord>>;
   close(): ZetaDbResult<null>;
@@ -118,8 +142,19 @@ function failed(
   code: ZetaDbFeedback["code"],
   detail: string,
   severity: ZetaDbFeedback["severity"] = "heat",
+  admissionReceipt?: ZetaDbAdmissionReceipt,
 ): { readonly ok: false; readonly feedback: ZetaDbFeedback } {
-  return { ok: false, feedback: { severity, code, detail } };
+  return admissionReceipt === undefined
+    ? { ok: false, feedback: { severity, code, detail } }
+    : { ok: false, feedback: { severity, code, detail, admissionReceipt } };
+}
+
+function revisionRefused(refusal: RevisionPolicyRefusal): { readonly ok: false; readonly feedback: ZetaDbFeedback } {
+  return failed(
+    refusal.reason === "node-mismatch" ? "database-image-invalid" : "database-revision-conflict",
+    refusal.detail,
+    refusal.reason === "node-mismatch" ? "heat" : "backpressure",
+  );
 }
 
 function isRecord(value: unknown): value is Readonly<Record<string, unknown>> {
@@ -261,6 +296,7 @@ function foldRows(entries: readonly ZetaDbDelta[]): ZetaDbResult<readonly ZetaDb
       return failed(
         "database-row-conflict",
         `Row key ${rowKey} names more than one payload. Row keys must identify complete row values.`,
+        "backpressure",
       );
     }
     for (const [payload, weight] of surviving) rows.push({ rowKey, payload, weight });
@@ -434,6 +470,17 @@ interface ZetaDbAdmissionReadout {
   readonly duplicates: number;
   readonly nextDeltaIndex: number;
   readonly capacityDetail: string | null;
+  readonly capacityReceipt: ZetaDbAdmissionReceipt | null;
+}
+
+interface ZetaDbAdmissionRefusal {
+  readonly detail: string;
+  readonly receipt: ZetaDbAdmissionReceipt | null;
+}
+
+interface ZetaDbEvaluatedAdmissionDecision {
+  readonly decision: ZetaDbAdmissionDecision;
+  readonly policyId: string;
 }
 
 interface ZetaDbAdmissionState {
@@ -488,7 +535,7 @@ function collectionByteLength(itemBytes: number, count: number): number {
  */
 function admissionReadout(
   state: ZetaDbAdmissionState,
-  capacityDetail: string | null,
+  refusal: ZetaDbAdmissionRefusal | null,
 ): ZetaDbResult<ZetaDbAdmissionReadout> {
   const rows = foldRows(state.entries);
   if (!rows.ok) return rows;
@@ -498,7 +545,8 @@ function admissionReadout(
     accepted: state.accepted,
     duplicates: state.duplicates,
     nextDeltaIndex: state.nextDeltaIndex,
-    capacityDetail,
+    capacityDetail: refusal?.detail ?? null,
+    capacityReceipt: refusal?.receipt ?? null,
   });
 }
 
@@ -529,15 +577,124 @@ function candidateRowCount(state: ZetaDbAdmissionState, transition: ZetaDbRowTra
   return count;
 }
 
+function validAdmissionAccounting(
+  value: unknown,
+  proposal: ZetaDbAdmissionProposal,
+): value is ZetaDbAdmissionAccounting {
+  if (!isRecord(value)) return false;
+  return (
+    value.resource === proposal.resource &&
+    value.current === proposal.current &&
+    value.candidate === proposal.candidate &&
+    value.hardLimit === proposal.limit &&
+    typeof value.reserved === "number" &&
+    Number.isSafeInteger(value.reserved) &&
+    value.reserved >= 0 &&
+    value.reserved <= proposal.limit &&
+    typeof value.effectiveLimit === "number" &&
+    Number.isSafeInteger(value.effectiveLimit) &&
+    value.effectiveLimit === proposal.limit - value.reserved
+  );
+}
+
+function snapshotAdmissionAccounting(value: unknown): unknown {
+  if (!isRecord(value)) return value;
+  return {
+    resource: value.resource,
+    current: value.current,
+    candidate: value.candidate,
+    hardLimit: value.hardLimit,
+    effectiveLimit: value.effectiveLimit,
+    reserved: value.reserved,
+  };
+}
+
+function snapshotAdmissionDecision(value: unknown): unknown {
+  if (!isRecord(value)) return value;
+  const action = value.action;
+  if (action === "admit") return { action };
+  const accounting = value.accounting;
+  return accounting === undefined
+    ? { action, detail: value.detail }
+    : { action, detail: value.detail, accounting: snapshotAdmissionAccounting(accounting) };
+}
+
+function validAdmissionDecision(value: unknown, proposal: ZetaDbAdmissionProposal): value is ZetaDbAdmissionDecision {
+  if (!isRecord(value)) return false;
+  if (value.action === "admit") return true;
+  return (
+    value.action === "backpressure" &&
+    typeof value.detail === "string" &&
+    value.detail.length > 0 &&
+    (value.accounting === undefined || validAdmissionAccounting(value.accounting, proposal))
+  );
+}
+
+function decideAdmission(
+  policy: ZetaDbAdmissionPolicyPort,
+  proposal: ZetaDbAdmissionProposal,
+): ZetaDbResult<ZetaDbEvaluatedAdmissionDecision> {
+  const hardLimit = noForgetBackpressureAdmissionPolicy.decide(proposal);
+  if (hardLimit.action === "backpressure") {
+    return succeeded({ decision: hardLimit, policyId: noForgetBackpressureAdmissionPolicy.id });
+  }
+
+  let policyId = "<unreadable>";
+  try {
+    if (!isRecord(policy) || typeof policy.id !== "string" || policy.id.length === 0) {
+      return failed(
+        "database-admission-policy-failed",
+        "The injected database admission policy does not implement a named decide function.",
+      );
+    }
+    policyId = policy.id;
+    if (typeof policy.decide !== "function") {
+      return failed(
+        "database-admission-policy-failed",
+        "The injected database admission policy does not implement a named decide function.",
+      );
+    }
+    const decision = snapshotAdmissionDecision(policy.decide(proposal));
+    return validAdmissionDecision(decision, proposal)
+      ? succeeded({ decision, policyId })
+      : failed(
+          "database-admission-policy-failed",
+          `Database admission policy ${policyId} returned an invalid decision.`,
+        );
+  } catch (error) {
+    return failed("database-admission-policy-failed", `Database admission policy ${policyId} failed: ${String(error)}`);
+  }
+}
+
+function admissionRefusal(value: ZetaDbEvaluatedAdmissionDecision): ZetaDbAdmissionRefusal | null {
+  if (value.decision.action === "admit") return null;
+  const receipt =
+    value.decision.accounting === undefined
+      ? null
+      : {
+          ...value.decision.accounting,
+          policyId: value.policyId,
+        };
+  return { detail: value.decision.detail, receipt };
+}
+
 function admitNewDelta(
   state: ZetaDbAdmissionState,
   delta: ZetaDbDelta,
   baseBytes: number,
   limits: ZetaDbTickLimits,
-): ZetaDbResult<string | null> {
-  if (state.entries.length >= limits.maxEntries) {
-    return succeeded(`The retained event ledger reached its ${String(limits.maxEntries)}-entry no-forget budget.`);
-  }
+  policy: ZetaDbAdmissionPolicyPort,
+): ZetaDbResult<ZetaDbAdmissionRefusal | null> {
+  const entryDecision = decideAdmission(policy, {
+    resource: "retained-events",
+    current: state.entries.length,
+    candidate: state.entries.length + 1,
+    limit: limits.maxEntries,
+  });
+  if (!entryDecision.ok) return entryDecision;
+  const entryRefusal = admissionRefusal(entryDecision.value);
+  if (entryRefusal !== null) return succeeded(entryRefusal);
+
   const transition = planRowTransition(state, delta);
   if (!transition.ok) return transition;
   const currentRowBytes = transition.value.current === undefined ? 0 : jsonByteLength(transition.value.current);
@@ -545,15 +702,23 @@ function admitNewDelta(
   const nextEntryItemBytes = state.entryItemBytes + jsonByteLength(delta);
   const nextRowItemBytes = state.rowItemBytes - currentRowBytes + nextRowBytes;
   const nextRowCount = candidateRowCount(state, transition.value);
+  const currentBytes =
+    baseBytes +
+    collectionByteLength(state.entryItemBytes, state.entries.length) +
+    collectionByteLength(state.rowItemBytes, state.rowWeights.size);
   const candidateBytes =
     baseBytes +
     collectionByteLength(nextEntryItemBytes, state.entries.length + 1) +
     collectionByteLength(nextRowItemBytes, nextRowCount);
-  if (candidateBytes > limits.maxCheckpointBytes) {
-    return succeeded(
-      `The next database image needs ${String(candidateBytes)} bytes; the no-forget checkpoint budget is ${String(limits.maxCheckpointBytes)} bytes.`,
-    );
-  }
+  const checkpointDecision = decideAdmission(policy, {
+    resource: "checkpoint-bytes",
+    current: currentBytes,
+    candidate: candidateBytes,
+    limit: limits.maxCheckpointBytes,
+  });
+  if (!checkpointDecision.ok) return checkpointDecision;
+  const checkpointRefusal = admissionRefusal(checkpointDecision.value);
+  if (checkpointRefusal !== null) return succeeded(checkpointRefusal);
 
   state.entries.push(delta);
   state.existingEvents.set(delta.eventId, delta);
@@ -570,6 +735,7 @@ function admitZetaDbDeltas(
   image: ZetaDbImage,
   deltas: readonly ZetaDbDelta[],
   limits: ZetaDbTickLimits,
+  policy: ZetaDbAdmissionPolicyPort,
 ): ZetaDbResult<ZetaDbAdmissionReadout> {
   const state: ZetaDbAdmissionState = {
     existingEvents: new Map(image.entries.map((entry) => [entry.eventId, entry])),
@@ -594,17 +760,30 @@ function admitZetaDbDeltas(
       state.nextDeltaIndex = index + 1;
       continue;
     }
-    const admitted = admitNewDelta(state, delta, baseBytes, limits);
+    const admitted = admitNewDelta(state, delta, baseBytes, limits, policy);
     if (!admitted.ok) return admitted;
     if (admitted.value !== null) return admissionReadout(state, admitted.value);
     state.nextDeltaIndex = index + 1;
   }
 
-  const capacityDetail =
+  const capacityRefusal =
     state.nextDeltaIndex < deltas.length
-      ? `The tick spent its ${String(limits.maxDeltas)}-delta execution budget.`
+      ? {
+          detail: `The tick spent its ${String(limits.maxDeltas)}-delta execution budget.`,
+          receipt: null,
+        }
       : null;
-  return admissionReadout(state, capacityDetail);
+  return admissionReadout(state, capacityRefusal);
+}
+
+function admissionFeedback(value: ZetaDbAdmissionReadout): readonly ZetaDbFeedback[] {
+  if (value.capacityDetail === null) return [];
+  const feedback: ZetaDbFeedback = {
+    severity: "backpressure",
+    code: "database-capacity-exhausted",
+    detail: value.capacityDetail,
+  };
+  return value.capacityReceipt === null ? [feedback] : [{ ...feedback, admissionReceipt: value.capacityReceipt }];
 }
 
 /**
@@ -614,6 +793,7 @@ function admitZetaDbDeltas(
 export async function runZetaDbNodeTick(
   port: ZetaDbImagePort,
   request: ZetaDbTickRequest,
+  admissionPolicy: ZetaDbAdmissionPolicyPort = noForgetBackpressureAdmissionPolicy,
 ): Promise<ZetaDbResult<ZetaDbTickReadout>> {
   const validated = validateRequest(request);
   if (!validated.ok) return validated;
@@ -626,10 +806,15 @@ export async function runZetaDbNodeTick(
       "backpressure",
     );
   }
-  const admission = admitZetaDbDeltas(image.value, validated.value, request.limits);
+  const admission = admitZetaDbDeltas(image.value, validated.value, request.limits, admissionPolicy);
   if (!admission.ok) return admission;
   if (request.requireComplete === true && admission.value.capacityDetail !== null) {
-    return failed("database-capacity-exhausted", admission.value.capacityDetail, "backpressure");
+    return failed(
+      "database-capacity-exhausted",
+      admission.value.capacityDetail,
+      "backpressure",
+      admission.value.capacityReceipt ?? undefined,
+    );
   }
 
   let revision = image.value.revision;
@@ -648,16 +833,7 @@ export async function runZetaDbNodeTick(
     if (!saved.ok) return mapPortFailure(saved.feedback, "write");
   }
 
-  const feedback: readonly ZetaDbFeedback[] =
-    admission.value.capacityDetail === null
-      ? []
-      : [
-          {
-            severity: "backpressure",
-            code: "database-capacity-exhausted",
-            detail: admission.value.capacityDetail,
-          },
-        ];
+  const feedback = admissionFeedback(admission.value);
   return succeeded({
     schema: ZETA_DB_TICK_SCHEMA,
     nodeId: request.nodeId,
@@ -674,16 +850,24 @@ export async function runZetaDbNodeTick(
 }
 
 /**
- * Reapply one logical tick after concurrent writers change the durable revision.
+ * Reapply one logical tick after a transient conflict at the durable boundary.
  *
  * Explicit `expectedRevision` requests are compare-and-swap operations, so their
  * predicate is never weakened by retrying. Ordinary idempotent event batches may
- * reload and fold again, but only within the caller's finite attempt budget.
+ * reload and fold again after either a revision race or a row prefix that another
+ * concurrent batch can complete, but only within the caller's finite attempt budget.
+ *
+ * PRECONDITION on the port (081M0Q8TQYE087G0R001WBX1ZC): the convergence this retry provides was established
+ * against `compareAndSwapRevisionPolicy`, because the retry is driven by the port REFUSING
+ * a revision another writer already took. A policy that refuses fewer writes needs its own
+ * convergence evidence. This remains a documented precondition rather than silently
+ * changing the browser path's established monotone behavior.
  */
 export async function runConvergentZetaDbNodeTick(
   port: ZetaDbImagePort,
   request: ZetaDbTickRequest,
   policy: ZetaDbConvergencePolicy,
+  admissionPolicy: ZetaDbAdmissionPolicyPort = noForgetBackpressureAdmissionPolicy,
 ): Promise<ZetaDbResult<ZetaDbTickReadout>> {
   if (
     !isRecord(policy) ||
@@ -700,15 +884,17 @@ export async function runConvergentZetaDbNodeTick(
   const maxAttempts = policy.maxAttempts;
   let lastConflict: ZetaDbFeedback | null = null;
   for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
-    const result = await runZetaDbNodeTick(port, request);
-    if (result.ok || result.feedback.code !== "database-revision-conflict") return result;
+    const result = await runZetaDbNodeTick(port, request, admissionPolicy);
+    if (result.ok) return result;
+    if (result.feedback.code !== "database-revision-conflict" && result.feedback.code !== "database-row-conflict")
+      return result;
     if (request.expectedRevision !== undefined) return result;
     lastConflict = result.feedback;
   }
 
   return failed(
-    "database-revision-conflict",
-    `Database tick spent its ${String(maxAttempts)}-attempt convergence budget. Last conflict: ${lastConflict?.detail ?? "revision changed"}`,
+    lastConflict?.code ?? "database-revision-conflict",
+    `Database tick spent its ${String(maxAttempts)}-attempt convergence budget. Last conflict: ${lastConflict?.detail ?? "durable state changed"}`,
     "backpressure",
   );
 }
@@ -721,6 +907,7 @@ export function createInMemoryZetaDbImagePort(): ZetaDbImagePort {
   const unavailable = (): ZetaDbResult<never> =>
     failed("database-read-failed", "The in-memory database image port is closed.");
   return {
+    revisionPolicy: compareAndSwapRevisionPolicy,
     load: (nodeId) => {
       if (closed) return Promise.resolve(unavailable());
       const value = records.get(nodeId);
@@ -731,30 +918,11 @@ export function createInMemoryZetaDbImagePort(): ZetaDbImagePort {
     save: (candidate) => {
       if (closed)
         return Promise.resolve(failed("database-write-failed", "The in-memory database image port is closed."));
-      const existing = records.get(candidate.nodeId);
-      if (existing === undefined && candidate.revision !== 1) {
-        return Promise.resolve(
-          failed(
-            "database-revision-conflict",
-            "The first durable database image must have revision 1.",
-            "backpressure",
-          ),
-        );
-      }
-      if (existing !== undefined) {
-        if (candidate.revision === existing.revision && sameBytes(candidate.payload, existing.payload)) {
-          return Promise.resolve(succeeded({ ...candidate, payload: new Uint8Array(candidate.payload) }));
-        }
-        if (candidate.revision !== existing.revision + 1) {
-          return Promise.resolve(
-            failed(
-              "database-revision-conflict",
-              `Database revision ${String(candidate.revision)} cannot follow stored revision ${String(existing.revision)}.`,
-              "backpressure",
-            ),
-          );
-        }
-      }
+      const existing = records.get(candidate.nodeId) ?? null;
+      const decision = compareAndSwapRevisionPolicy.decide(existing, candidate);
+      if (!decision.ok) return Promise.resolve(revisionRefused(decision.refusal));
+      if (decision.value.action === "idempotent")
+        return Promise.resolve(succeeded({ ...candidate, payload: new Uint8Array(candidate.payload) }));
       const stored = { ...candidate, payload: new Uint8Array(candidate.payload) };
       records.set(candidate.nodeId, stored);
       return Promise.resolve(succeeded({ ...stored, payload: new Uint8Array(stored.payload) }));

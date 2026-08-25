@@ -12,9 +12,17 @@
 // onMessage decodes to null and is dropped, and vice versa). The wire is TEXT (JSON) — no
 // binary in the proof lineage.
 
-import * as dgram from "node:dgram";
+import type * as dgramTypes from "node:dgram";
 import type { DiscoveryTransport } from "./discovery-beacon";
 import type { BroadcastTransport } from "./llmtv-broadcast";
+
+let dgram: any = null;
+if (typeof process !== 'undefined' && process.versions && process.versions.node) {
+  try {
+    const dgramName = "node:dgram";
+    dgram = await import(/* @vite-ignore */ dgramName);
+  } catch(e) {}
+}
 
 export interface UdpMeshConfig {
   /// The multicast group (e.g. "239.255.42.99" — an admin-scoped IPv4 multicast address).
@@ -33,11 +41,24 @@ export interface UdpMeshTransport extends DiscoveryTransport, BroadcastTransport
 /// fires once the socket has joined the group and is sending. The core never sees any of
 /// this — it only holds the DiscoveryTransport/BroadcastTransport interface.
 export function createUdpMeshTransport(cfg: UdpMeshConfig, onReady?: () => void): UdpMeshTransport {
+  if (typeof dgram === 'undefined' || !dgram || typeof dgram.createSocket !== 'function') {
+    console.warn("[udp-transport] dgram.createSocket is not supported. Using mock transport.");
+    const send = (_text: string) => {};
+    if (onReady) setTimeout(onReady, 0);
+    return {
+      broadcast: send,
+      publish: send,
+      onMessage: () => {},
+      onFrame: () => {},
+      close: () => {}
+    };
+  }
+
   const sock = dgram.createSocket({ type: "udp4", reuseAddr: true });
   const handlers: Array<(text: string, from: string) => void> = [];
   let ready = false;
 
-  sock.on("message", (buf: Buffer, rinfo: dgram.RemoteInfo) => {
+  sock.on("message", (buf: Buffer, rinfo: dgramTypes.RemoteInfo) => {
     const text = buf.toString("utf8");
     const from = `${rinfo.address}:${rinfo.port}`;
     for (const h of handlers) h(text, from);

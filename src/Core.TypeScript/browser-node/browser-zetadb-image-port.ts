@@ -17,6 +17,7 @@ import type {
   ZetaDbTickRequest,
 } from "../zetadb/zeta-db-node";
 import { runConvergentZetaDbNodeTick } from "../zetadb/zeta-db-node";
+import { noForgetBackpressureAdmissionPolicy, type ZetaDbAdmissionPolicyPort } from "../zetadb/admission-policy";
 
 export const DEFAULT_BROWSER_ZETA_DB_CONVERGENCE_POLICY: ZetaDbConvergencePolicy = { maxAttempts: 3 };
 
@@ -74,6 +75,8 @@ function mapRecordResult(
 /** Adapt browser persistence without making the database kernel depend on browser APIs. */
 export function createBrowserZetaDbImagePort(checkpoints: BrowserCheckpointPort): ZetaDbImagePort {
   return {
+    // Inherit the executable policy the checkpoint adapter applies inside its transaction.
+    revisionPolicy: checkpoints.revisionPolicy,
     load: async (nodeId) => mapRecordResult(await checkpoints.load(nodeId), "read"),
     save: async (record) => {
       const saved = mapRecordResult(
@@ -130,10 +133,11 @@ export async function runBrowserZetaDbWake(
   options: NativeIndexedDbCheckpointOptions,
   request: ZetaDbTickRequest,
   convergencePolicy: ZetaDbConvergencePolicy = DEFAULT_BROWSER_ZETA_DB_CONVERGENCE_POLICY,
+  admissionPolicy: ZetaDbAdmissionPolicyPort = noForgetBackpressureAdmissionPolicy,
 ): Promise<ZetaDbResult<ZetaDbTickReadout>> {
   const opened = await openBrowserZetaDbImagePort(root, options);
   if (!opened.ok) return opened;
-  const result = await runConvergentZetaDbNodeTick(opened.value, request, convergencePolicy);
+  const result = await runConvergentZetaDbNodeTick(opened.value, request, convergencePolicy, admissionPolicy);
   const closed = opened.value.close();
   if (result.ok && !closed.ok) return closed;
   return result;
