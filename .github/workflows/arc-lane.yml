@@ -116,7 +116,7 @@ jobs:
           # makes the unbound variable exit non-zero, so the check cannot be
           # removed by accident without the job going red. (Measured: with the
           # variable unset the step exits 1.)
-          ARC_MIN_TESTS: "83"
+          ARC_MIN_TESTS: "87"
         run: |
           set -euo pipefail
           uv run --project src/Arc.Python pytest src/Arc.Python/tests -q --junitxml=/tmp/arc-junit.xml
@@ -294,6 +294,13 @@ jobs:
               f"levels_cleared={sweep['levels_cleared_total']} "
               f"mean_score={sweep['mean_environment_score']}"
           )
+          # WHY EACH LEVEL ENDED, counted across the whole roster. This is the
+          # read that says whether the CEILINGS are wrong rather than the agent:
+          # `level-budget` heavy means levels are defeating the policy, while
+          # `episode-budget` heavy means runs are being cut off before the
+          # levels ever get a fair attempt and raising the per-level budget
+          # would change nothing.
+          print(f"  ended: {sweep['ended_breakdown']}")
           for row in sweep["results"]:
               if "error" in row:
                   print(f"  {row['game_id']}: FAILED {row['error']} {row.get('detail','')}")
@@ -301,7 +308,7 @@ jobs:
                   print(
                       f"  {row['game_id']}: cleared {row['levels_cleared']}"
                       f"/{row['levels_declared']} score {row['environment_score']}"
-                      f" ({row['terminated']})"
+                      f" ({row['terminated']}; {row.get('ended_breakdown', {})})"
                   )
           # LIVENESS, the same failure this lane already guards against once.
           # A sweep that sees zero environments prints a tidy zero and exits 0 —

@@ -420,7 +420,7 @@ def test_environment_score_denominator_is_declared_levels_not_played_levels() ->
     """Otherwise quitting after level 1 is the highest-scoring strategy available."""
     from zeta_arc.hosted import LevelResult
 
-    cleared_one = [LevelResult(0, 10, 10, True, 1.0)]
+    cleared_one = [LevelResult(0, 10, 10, True, 1.0, "cleared")]
     assert environment_score(cleared_one, total_levels=1) == 1.0
     assert environment_score(cleared_one, total_levels=8) < 0.05
 
@@ -490,6 +490,111 @@ def test_the_episode_budget_bounds_a_world_that_clears_every_action() -> None:
     )
     assert result["terminated"] == "episode-budget"
     assert result["actions_total"] == 40
+
+
+def test_the_two_budget_exits_are_DISTINGUISHABLE_not_merely_both_zero() -> None:
+    """The divergence, and why it is not a logging nit.
+
+    Both budget exits score zero, so `environment_score` never noticed the
+    difference — which is exactly why the asymmetry survived: the number was
+    right and the evidence was gone. Aaron 2026-08-25: "this is divergence worth
+    tracking in our base BNNs."
+
+    They are different evidence about the agent. `level-budget` says THIS LEVEL
+    defeated the policy. `episode-budget` says cumulative slowness ran the clock
+    out while the agent happened to be standing here — evidence about pacing
+    across levels, and none at all about this one. A learner that cannot tell
+    them apart attributes a cumulative failure to whichever level it landed on,
+    and teaches itself something false about a level it never got a fair attempt
+    at.
+
+    PAIRED, because the claim is about the DIFFERENCE. Two runs of the same
+    unsolvable world, identical in score and in `solved`, separated only by
+    which ceiling was reached first — a single-run assertion cannot express
+    that, and would pass against a hardcoded constant.
+    """
+    by_level = play_environment(
+        ScriptedWrapper(every=10_000, levels=1),
+        references=[10],
+        max_actions_per_level=25,
+        max_actions_per_episode=10_000,
+    )
+    by_episode = play_environment(
+        ScriptedWrapper(every=10_000, levels=1),
+        references=[10],
+        max_actions_per_level=10_000,
+        max_actions_per_episode=25,
+    )
+
+    # Indistinguishable on everything the score can see...
+    for result in (by_level, by_episode):
+        assert result["levels_cleared"] == 0
+        assert result["environment_score"] == 0.0
+        assert len(result["levels"]) == 1
+        assert result["levels"][0]["actions"] == 25
+        assert result["levels"][0]["solved"] is False
+
+    # ...and separated exactly where the cause lives.
+    assert by_level["levels"][0]["ended"] == "level-budget"
+    assert by_episode["levels"][0]["ended"] == "episode-budget"
+    assert by_level["ended_breakdown"] == {"level-budget": 1}
+    assert by_episode["ended_breakdown"] == {"episode-budget": 1}
+
+
+def test_the_episode_budget_no_longer_drops_the_level_it_was_playing() -> None:
+    """The fix itself: the level-budget exit always recorded the unfinished
+    level; this one used to break without recording anything."""
+    result = play_environment(
+        ScriptedWrapper(every=10_000, levels=1),
+        references=[10],
+        max_actions_per_level=10_000,
+        max_actions_per_episode=13,
+    )
+    assert result["terminated"] == "episode-budget"
+    assert result["levels"], "the level in progress was dropped"
+    assert result["levels"][0]["actions"] == 13, result["levels"]
+
+
+def test_a_level_never_played_gets_no_row_at_all() -> None:
+    """The guard on the fix, and it needs one.
+
+    The episode-budget check runs at the TOP of the loop, so a budget reached
+    exactly as a level is cleared would record the NEXT level with zero actions
+    — a row claiming a 0-action failure on a level nobody ever attempted, which
+    is worse than the silent drop this change is fixing.
+
+    Built to hit that boundary precisely: the wrapper clears a level on action
+    10 and the episode ceiling is 10, so the loop returns to the top with the
+    level advanced and `actions_this_level` back to zero.
+    """
+    result = play_environment(
+        ScriptedWrapper(every=10, levels=5),
+        references=[10] * 5,
+        total_levels=5,
+        max_actions_per_level=10_000,
+        max_actions_per_episode=10,
+    )
+    assert result["terminated"] == "episode-budget"
+    assert [entry["ended"] for entry in result["levels"]] == ["cleared"], result[
+        "levels"
+    ]
+    assert all(entry["actions"] > 0 for entry in result["levels"])
+
+
+def test_the_breakdown_key_order_is_deterministic() -> None:
+    """This lands in JSON that gets diffed across runs.
+
+    Insertion order would track which reason happened first, so two identical
+    outcomes would render as a change.
+    """
+    from zeta_arc.hosted import _tally
+
+    assert list(_tally(["win", "cleared", "level-budget", "cleared"])) == [
+        "cleared",
+        "level-budget",
+        "win",
+    ]
+    assert _tally([]) == {}
 
 
 def test_the_loop_sends_coordinates_with_a_coordinate_action() -> None:
@@ -643,6 +748,14 @@ def test_the_hosted_loop_records_a_zero_rather_than_inventing_progress() -> None
     assert result["terminated"] == "level-budget"
     assert result["actions_total"] == 120, "it stopped early or overran the budget"
     assert result["levels"] == [
-        {"level": 0, "actions": 120, "reference": 8, "solved": False, "score": 0.0}
+        {
+            "level": 0,
+            "actions": 120,
+            "reference": 8,
+            "solved": False,
+            "score": 0.0,
+            "ended": "level-budget",
+        }
     ]
+    assert result["ended_breakdown"] == {"level-budget": 1}
     assert result["environment_score"] == 0.0

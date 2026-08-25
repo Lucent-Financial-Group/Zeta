@@ -35,6 +35,7 @@ reference and are comparable in a way the offline ones are not.
 
 from __future__ import annotations
 
+from collections.abc import Iterable
 from dataclasses import dataclass
 from typing import Any, Protocol
 
@@ -75,6 +76,19 @@ class LevelResult:
     reference: int | None
     solved: bool
     score: float
+    #: WHY THIS LEVEL ENDED — not the same question as why the episode ended,
+    #: and conflating them is a credit-assignment error rather than a lost log
+    #: line. `level-budget` says THIS LEVEL defeated the policy: evidence about
+    #: this level and this policy on it. `episode-budget` says cumulative
+    #: slowness ran the clock out while the agent happened to be standing here:
+    #: evidence about pacing ACROSS levels, and none at all about this one.
+    #:
+    #: A learner that cannot tell them apart attributes a cumulative failure to
+    #: whichever level it landed on — it teaches itself something false about a
+    #: level it was never actually given a fair attempt at. Aaron 2026-08-25, on
+    #: the asymmetry that produced this field: "this is divergence worth
+    #: tracking in our base BNNs."
+    ended: str
 
 
 def score_level(actions: int, reference: int | None) -> float:
@@ -165,11 +179,36 @@ def play_environment(
     while True:
         if actions_total >= max_actions_per_episode:
             terminated = "episode-budget"
+            # RECORD THE LEVEL IN PROGRESS. The level-budget exit below always
+            # did; this one used to drop it silently. Both score zero, so the
+            # environment score never noticed — and that is precisely why it
+            # went unnoticed: the number was right and the evidence was gone.
+            #
+            # Guarded on actions spent: the check runs at the top of the loop,
+            # so hitting the episode budget immediately after clearing a level
+            # would otherwise record a level that was never played. A row
+            # claiming a 0-action failure is worse than no row.
+            if actions_this_level > 0:
+                results.append(
+                    LevelResult(
+                        level,
+                        actions_this_level,
+                        _reference(references, level),
+                        False,
+                        0.0,
+                        "episode-budget",
+                    )
+                )
             break
         if actions_this_level >= max_actions_per_level:
             results.append(
                 LevelResult(
-                    level, actions_this_level, _reference(references, level), False, 0.0
+                    level,
+                    actions_this_level,
+                    _reference(references, level),
+                    False,
+                    0.0,
+                    "level-budget",
                 )
             )
             terminated = "level-budget"
@@ -194,6 +233,7 @@ def play_environment(
                     reference,
                     True,
                     score_level(actions_this_level, reference),
+                    "cleared",
                 )
             )
             if state == GameState.WIN:
@@ -207,7 +247,12 @@ def play_environment(
         elif state == GameState.GAME_OVER:
             results.append(
                 LevelResult(
-                    level, actions_this_level, _reference(references, level), False, 0.0
+                    level,
+                    actions_this_level,
+                    _reference(references, level),
+                    False,
+                    0.0,
+                    "game-over",
                 )
             )
             terminated = "game-over"
@@ -215,6 +260,14 @@ def play_environment(
 
     return {
         "levels": [entry.__dict__ for entry in results],
+        # THE DIVERGENCE, COUNTED. Per-level reasons roll up here so the shape
+        # is readable without walking every row — and across a 25-environment
+        # sweep this is the number that says whether the BUDGET is wrong rather
+        # than the agent. Many `level-budget` rows means levels are defeating
+        # the policy; many `episode-budget` rows means the episode ceiling cut
+        # runs off before the levels ever got a fair attempt, and raising the
+        # per-level budget would do nothing at all.
+        "ended_breakdown": _tally(entry.ended for entry in results),
         "levels_cleared": sum(1 for entry in results if entry.solved),
         "levels_declared": declared,
         "actions_total": actions_total,
@@ -223,6 +276,19 @@ def play_environment(
         ),
         "terminated": terminated,
     }
+
+
+def _tally(reasons: Iterable[str]) -> dict[str, int]:
+    """Count reasons, in a deterministic key order.
+
+    Sorted rather than insertion-ordered because this lands in JSON that gets
+    diffed across runs, and a dict whose key order tracks which reason happened
+    first makes two identical outcomes look like a change.
+    """
+    counts: dict[str, int] = {}
+    for reason in reasons:
+        counts[reason] = counts.get(reason, 0) + 1
+    return {k: counts[k] for k in sorted(counts)}
 
 
 def _reference(references: list[int], level: int) -> int | None:
@@ -322,6 +388,14 @@ def play_roster(
         "environments_failed": len(played) - len(scored),
         "levels_cleared_total": sum(
             int(row.get("levels_cleared", 0)) for row in scored
+        ),
+        # The same divergence at roster scale. Across 25 environments this is
+        # the fastest read on whether the ceilings are shaped right.
+        "ended_breakdown": _tally(
+            reason
+            for row in scored
+            for reason, count in dict(row.get("ended_breakdown", {})).items()
+            for _ in range(int(count))
         ),
         "mean_environment_score": (
             round(
