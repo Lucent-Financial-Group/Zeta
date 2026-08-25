@@ -691,9 +691,14 @@ export function main(argv: readonly string[]): 0 | 1 | 2 {
   }
 
   const branch = resolveBranch(args.cwd, args.branch);
-  const window = args.commit !== undefined || args.max !== undefined || args.since !== undefined
-    ? { since: args.since, max: args.max, commit: args.commit }
-    : { since: "14 days ago" };
+  // Built key-by-key rather than with a spread: `exactOptionalPropertyTypes` is on, so an
+  // explicit `undefined` is NOT the same as an absent key and a `{ since: args.since }` with
+  // `args.since === undefined` does not satisfy `{ readonly since?: string }`.
+  const window: { since?: string; max?: number; commit?: string } = {};
+  if (args.commit !== undefined) window.commit = args.commit;
+  if (args.max !== undefined) window.max = args.max;
+  if (args.since !== undefined) window.since = args.since;
+  if (Object.keys(window).length === 0) window.since = "14 days ago";
   const shas = listCommits(args.cwd, branch, window);
   if (typeof shas === "string") {
     process.stderr.write(`audit-heartbeat-lane-attestations: ${shas}\n`);
@@ -731,7 +736,11 @@ export function main(argv: readonly string[]): 0 | 1 | 2 {
     }
   }
 
-  for (const [status, n] of [...counts.entries()].sort((a, b) => a[0].localeCompare(b[0], "en"))) {
+  // Ordinal, not `localeCompare` — culture-invariant-by-default. This is only a display
+  // ordering, but a linter that exempts "only display" is a linter with a hole in it.
+  const byOrdinal = (a: readonly [Status, number], b: readonly [Status, number]): number =>
+    a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0;
+  for (const [status, n] of [...counts.entries()].sort(byOrdinal)) {
     process.stdout.write(`  ${status.padEnd(24, " ")} ${String(n)}\n`);
   }
 
