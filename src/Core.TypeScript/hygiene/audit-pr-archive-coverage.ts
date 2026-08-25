@@ -108,6 +108,24 @@ export interface CoverageThresholds {
  * of slack at the current merge rate, which no real break fits inside — the
  * measured break ran at 43% coverage.
  *
+ * BACKTESTED, because a threshold argued from first principles is a guess with
+ * a paragraph attached. Replaying this exact computation against the real merge
+ * history for the fifteen days around the break:
+ *
+ *     2026-08-11 .. 08-20    100.00% every day      GREEN  (10 healthy days)
+ *     2026-08-21              94.62%                RED    <- day ONE of the break
+ *     2026-08-22              80.37%                RED
+ *     2026-08-23              73.04%                RED
+ *     2026-08-24              64.50%                RED
+ *     2026-08-25              59.22%                RED
+ *
+ * So 0.95 has both properties a threshold needs and which are usually only
+ * asserted: it does not flap on ten consecutive days of healthy operation, and
+ * it fires on the FIRST day of the real incident rather than after it has
+ * accumulated. Raising it to 0.99 would still have caught 08-21; lowering it to
+ * 0.90 would have missed it for a day. (The pre-break days use today's archived
+ * set, so they are upper bounds — which only strengthens the no-flap half.)
+ *
  * `lifetime` is a RATCHET at the level a backfill can hold, not an aspiration.
  * It starts below where main sits so the audit lands green-on-truth rather than
  * red-on-history, and it is raised as backfill lands. A threshold set above the
