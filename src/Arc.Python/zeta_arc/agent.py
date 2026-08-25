@@ -273,7 +273,32 @@ class PixelAgent:
             self._plan.clear()  # the map changed under the route; replan
         self._last_self_cell = self._cell_of(me) if self._step_px else None
 
-        targets = [c for c in now if self._key(c) != self._key(me)]
+        # EVERYTHING THAT IS NOT ME, BY OBJECT IDENTITY — never by `_key`.
+        #
+        # `_key` is colour*100003 + area, and two identical sprites therefore
+        # share one key by construction: a frame holding two 1-pixel blobs of
+        # the same colour keys BOTH as the elected body, `targets` comes back
+        # empty, and the greedy fallback below calls `min()` on nothing and
+        # raises. Measured, not reasoned about — three tests in
+        # `test_hosted_lane.py` crashed here on a grid with two identical
+        # objects, which is an ordinary ARC frame rather than a contrived one.
+        #
+        # `me` is returned by `_elect_self` out of `now`, so `is not` is exact
+        # and total: with `len(now) >= 2` guaranteed above, at least one
+        # component is not the body, so `targets` can no longer be empty.
+        #
+        # HONEST LIMIT, LEFT STANDING RATHER THAN PAPERED OVER. `_key` still
+        # collides for indistinguishable objects in `_update_evidence`, where
+        # `before` is a dict keyed by it and one twin therefore overwrites the
+        # other — so displacement gets scored against the wrong twin and the
+        # body evidence is noisy on frames with duplicate sprites. That is the
+        # slot-binding problem (`docs/research/2026-08-14-slot-binding-is-
+        # addressing-token-identity-is-the-roster-and-a-duplicate-is-not-a-
+        # position.md`), not a typo, and it wants position-aware identity
+        # rather than a wider hash. Noisy evidence degrades; an empty `min()`
+        # ends the episode — so the crash is fixed here and the identity
+        # question is named where it lives.
+        targets = [c for c in now if c is not me]
         # Route around what has been learned to be solid. Falls through to the
         # greedy heading while the occupancy map is still empty — which is most
         # of level 0, where there is nothing to route around.
