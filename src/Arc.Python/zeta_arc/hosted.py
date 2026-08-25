@@ -143,7 +143,24 @@ def play_environment(
     level = int(getattr(frame, "levels_completed", 0) or 0)
     actions_this_level = 0
     actions_total = 0
-    terminated = "budget"
+    # NOT A FALLBACK, and the distinction is the whole point of this line.
+    #
+    # Every `break` below assigns `terminated` before it leaves, so this value is
+    # UNOBSERVABLE — the code-quality bot flagged exactly that on 2026-08-25 and
+    # it was right about the fact. It was wrong about the fix. Deleting the
+    # assignment does not buy static safety: mypy cannot prove exhaustiveness
+    # through `while True` + `break`, and `--enable-error-code possibly-undefined`
+    # reports "may be undefined" WITH the initializer removed and WITH a `break`
+    # that genuinely forgets to assign — the same message either way, so it
+    # cannot discriminate the bug from the correct code. Removing the line would
+    # trade a silent wrong answer for an `UnboundLocalError` that discards the
+    # partial result, with nothing catching either.
+    #
+    # So the assignment stays and the VALUE changes, because the value was the
+    # actual defect. It used to read `"budget"` — a plausible reason that never
+    # happened, which is the worst possible thing for an unreachable default to
+    # say. If this string is ever observed in output, it is a bug report.
+    terminated = "unreachable-no-exit-assigned"
 
     while True:
         if actions_total >= max_actions_per_episode:
