@@ -1,0 +1,14 @@
+{
+  "id": "080d01d513275010a01300086121a0f3",
+  "at": "2026-08-25T20:35:16.330Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0XA4S79087G0R0021TYKPM",
+    "type": "bug",
+    "title": "Restore TypeScript gate after scaled model benchmark merge",
+    "slug": "restore-typescript-gate-after-scaled-model-benchmark-merge",
+    "priority": "P1",
+    "filename": "081M0XA4S79087G0R0021TYKPM-restore-typescript-gate-after-scaled-model-benchmark-merge.md"
+  }
+}
