@@ -50,7 +50,7 @@ export interface BypassActor {
 }
 
 export interface Ruleset {
-  readonly id?: number;
+  readonly id?: number | null;
   readonly name: string;
   readonly target: string;
   readonly enforcement: Enforcement;
