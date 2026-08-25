@@ -203,6 +203,14 @@ export function isVerdict(conclusion: string): boolean {
 //   2. An unrecognised conclusion is NEVER a verdict. `isVerdict` is an allow-list of
 //      exactly two strings, so an unknown value cannot become one by being replaced --
 //      which is the direction that would turn a drought green.
+//
+// "EVERY value" above was a claim, and it was FALSE when first written: `compare.ahead_by`
+// came from a second call and reached the fold, the table and the `--out` artifact behind
+// nothing but `typeof x === "number"` -- which admits `NaN`. CodeQL kept reporting the
+// alert through exactly that field while three commits hardened the fields around it, so
+// the alert was not stale and was not noise; it was pointing at the one door still open.
+// `constrainCount` closes it, and it is the only value here whose sentinel is `null`
+// rather than a string, because the report already has a NOT-MEASURED register for counts.
 
 /** A run id that was not a safe integer. Never a real id, and never matches a run. */
 export const UNRECOGNISED_ID = -1;
@@ -280,6 +288,30 @@ export function constrainConclusion(value: unknown): string {
 /** The id if it is a safe integer, else the sentinel. Keeps ordering total. */
 export function constrainId(value: unknown): number {
   return typeof value === "number" && Number.isSafeInteger(value) ? value : UNRECOGNISED_ID;
+}
+
+/**
+ * A COUNT from the API -- `compare.ahead_by` -- as a whole non-negative number, else `null`.
+ *
+ * `null` is not a fallback here, it is the report's existing NOT-MEASURED register: the
+ * fold already says that one out loud and refuses to render it as 0. So a count that is
+ * not a count degrades into the single state the report is honest about.
+ *
+ * THE DIRECTION IS THE POINT, and it is why `typeof x === "number"` was never enough.
+ * `typeof NaN === "number"`, and every comparison the fold makes against the count is `>=`
+ * or `>` -- both `false` for `NaN`. An unchecked `ahead_by` of `NaN`, `Infinity` or `-1`
+ * therefore reports itself as MEASURED, renders as `NaN` in the table, and then quietly
+ * declines to fire: a commit count that failed, looking exactly like one that found
+ * nothing wrong. That is this file's own subject, committed inside the detector for it.
+ *
+ * Re-emitted with `Math.trunc` for the same reason `constrainInstant` re-emits from parsed
+ * epoch ms: the returned number is computed here, so no part of the response body survives
+ * into the report. `Number.isSafeInteger` has already run, so the trunc is a COPY, never a
+ * repair -- the result equals the argument, and the falsifier asserts that equality.
+ */
+export function constrainCount(value: unknown): number | null {
+  if (typeof value !== "number" || !Number.isSafeInteger(value) || value < 0) return null;
+  return Math.trunc(value);
 }
 
 /**
@@ -759,8 +791,9 @@ export function toObservation(run: ApiRun): GateRunObservation {
 /**
  * Commits on `main` since `baseSha`, or `null` when it could not be measured.
  *
- * `null` on ANY failure (base gone after a force-push, network, rate limit). It is never
- * coerced to 0 -- see the header. One call: `compare` accepts a branch name as head.
+ * `null` on ANY failure (base gone after a force-push, network, rate limit, or a body
+ * whose `ahead_by` is not a count). It is never coerced to 0 -- see the header. One call:
+ * `compare` accepts a branch name as head.
  */
 async function commitsSince(repo: string, baseSha: string, token: string): Promise<number | null> {
   try {
@@ -768,7 +801,7 @@ async function commitsSince(repo: string, baseSha: string, token: string): Promi
       `https://api.github.com/repos/${repo}/compare/${baseSha}...main`,
       token,
     );
-    return typeof cmp.ahead_by === "number" ? cmp.ahead_by : null;
+    return constrainCount(cmp.ahead_by);
   } catch {
     return null;
   }

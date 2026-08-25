@@ -22,6 +22,7 @@ import { describe, expect, test } from "bun:test";
 
 import {
   assertDroughtDetectorLive,
+  constrainCount,
   DEFAULT_DROUGHT_THRESHOLDS,
   droughtAnnotations,
   foldDrought,
@@ -498,6 +499,58 @@ describe("the API -> model boundary constrains every network-derived value", () 
     expect(shortSha("3168e5411a2b3c4d5e6f708192a3b4c5d6e7f809")).toBe("3168e541");
     expect(shortSha(UNRECOGNISED_SHA)).toBe(UNRECOGNISED_SHA);
     expect(shortSha(UNRECOGNISED_SHA)).not.toBe("(unrecog");
+  });
+});
+
+// ---------------------------------------------------------------------------
+// The COUNT boundary -- `compare.ahead_by`, the field the alert was actually about
+// ---------------------------------------------------------------------------
+//
+// The block above hardened every field of `toObservation` and the CodeQL alert did not
+// move, because the reported flow never went through `toObservation`: it went through the
+// SECOND api call, `compare`, whose `ahead_by` reached the fold behind nothing but
+// `typeof x === "number"`. These tests pin the two halves of the fix -- that a non-count
+// becomes the NOT-MEASURED register, and that a real count is passed through untouched.
+
+describe("a count that is not a count is NOT MEASURED, never a number that compares false", () => {
+  const verdictFiveMinAgo = [obs(5001, "success", 5)];
+
+  test("`NaN`, `Infinity`, negative and fractional counts all become `null`", () => {
+    expect(constrainCount(Number.NaN)).toBeNull();
+    expect(constrainCount(Number.POSITIVE_INFINITY)).toBeNull();
+    expect(constrainCount(-1)).toBeNull();
+    expect(constrainCount(1.5)).toBeNull();
+    expect(constrainCount("12")).toBeNull();
+    expect(constrainCount(undefined)).toBeNull();
+  });
+
+  test("a real count is a COPY, not a repair -- the constraint is not a filter", () => {
+    expect(constrainCount(0)).toBe(0);
+    expect(constrainCount(37)).toBe(37);
+  });
+
+  // THE FALSIFIER. This is the defect the constraint removes, demonstrated on the fold
+  // itself rather than asserted: `NaN` claims to be measured and then silences every
+  // surface that would have reported it.
+  test("an unconstrained `NaN` reads as MEASURED and refuses to fire -- the constrained one does not", () => {
+    const raw = foldDrought(verdictFiveMinAgo, Number.NaN, NOW);
+    expect(raw.unverifiedCommits).not.toBeNull();
+    expect(raw.reasons.join(" ")).not.toContain("COMMIT COUNT NOT MEASURED");
+    expect(renderDroughtMarkdown(raw, assertDroughtDetectorLive(raw))).toContain("NaN");
+
+    const constrained = foldDrought(verdictFiveMinAgo, constrainCount(Number.NaN), NOW);
+    expect(constrained.unverifiedCommits).toBeNull();
+    expect(constrained.reasons.join(" ")).toContain("COMMIT COUNT NOT MEASURED");
+    expect(renderDroughtMarkdown(constrained, assertDroughtDetectorLive(constrained))).toContain("**not measured**");
+  });
+
+  test("a `NaN` count cannot trip -- or suppress -- the commit threshold", () => {
+    // Both directions matter. `NaN >= threshold` is `false`, so an over-threshold drought
+    // measured as `NaN` would have rendered `ok`; `null` renders `ok` too, but says so.
+    const overThreshold = DEFAULT_DROUGHT_THRESHOLDS.maxUnverifiedCommits + 1;
+    expect(foldDrought(verdictFiveMinAgo, Number.NaN, NOW).register).toBe("ok");
+    expect(foldDrought(verdictFiveMinAgo, overThreshold, NOW).register).toBe("drought");
+    expect(foldDrought(verdictFiveMinAgo, constrainCount(overThreshold), NOW).register).toBe("drought");
   });
 });
 
