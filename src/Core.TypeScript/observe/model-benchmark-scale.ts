@@ -228,7 +228,6 @@ async function main(): Promise<void> {
           else bothRight++;
         }
         // Phi coefficient (correlation for binary variables)
-        const n = trials;
         const phi = (bothRight * bothWrong - aWrongBRight * aRightBWrong) /
           Math.sqrt((bothRight + aWrongBRight) * (bothRight + aRightBWrong) * (bothWrong + aWrongBRight) * (bothWrong + aRightBWrong) || 1);
         console.log(`    ${models[i]} × ${models[j]}: φ=${phi.toFixed(3)} (bothWrong=${bothWrong}, aOnly=${aWrongBRight}, bOnly=${aRightBWrong}, bothRight=${bothRight})`);
@@ -253,7 +252,7 @@ async function main(): Promise<void> {
 
     const bestEnergy = 1; // relative
     const ensembleEnergy = models.length;
-    console.log(`    Best single (${bestSingle[0]}): ${bestCorrect}/${trials} (${(bestCorrect/trials*100).toFixed(1)}%) @ 1× energy`);
+    console.log(`    Best single (${bestSingle[0]}): ${bestCorrect}/${trials} (${(bestCorrect/trials*100).toFixed(1)}%) @ ${bestEnergy}× energy`);
     console.log(`    Ensemble (${models.length} models): ${ensembleCorrect}/${trials} (${(ensembleCorrect/trials*100).toFixed(1)}%) @ ${ensembleEnergy}× energy`);
     console.log(`    Verdict: ${ensembleCorrect > bestCorrect ? "ensemble wins" : ensembleCorrect === bestCorrect ? "tie (single wins on energy)" : "SINGLE MODEL WINS"} (${((ensembleCorrect - bestCorrect)/trials*100).toFixed(1)}% gain for ${ensembleEnergy}× cost)`);
   }
