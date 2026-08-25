@@ -21,7 +21,7 @@
 // which a real mise cannot be made to exercise on demand.
 
 import { spawnSync } from "node:child_process";
-import { chmodSync, mkdtempSync, mkdirSync, readFileSync, realpathSync, writeFileSync, rmSync, existsSync } from "node:fs";
+import { chmodSync, mkdtempSync, mkdirSync, readFileSync, realpathSync, writeFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterAll, expect, test } from "bun:test";
@@ -77,7 +77,9 @@ test("allocation invokes `mise trust` WITH CWD SET TO THE NEW WORKTREE", () => {
 
   const lane = join(parent, "repo-doc-lane");
   cleanup.push(lane);
-  expect(existsSync(log)).toBe(true);
+  // Read directly rather than existsSync-then-read: the audit that guards this repo treats
+  // check-then-use as a race, and it is right — a missing file here should surface as the read's
+  // own ENOENT, which names the path, not as a boolean that discards it.
   const calls = readFileSync(log, "utf8").trim().split("\n").map((l) => l.split("|"));
   // The cwd is the assertion that matters. mise keys trust BY PATH, so a grant made in the repo
   // root instead of the worktree would look identical in every log and grant nothing.
