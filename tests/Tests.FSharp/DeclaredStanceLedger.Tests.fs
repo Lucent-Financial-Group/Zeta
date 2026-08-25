@@ -60,6 +60,15 @@ open Zeta.Core
 //
 // DST
 //   DSL-36  the same resolution sequence replays to the same ledger
+//
+// CHECK-ARITY ADJUDICATION (registry/check-arity-census.json, this file = 2)
+//   `audit-check-arity.ts` R2 flags DSL-36 and DSL-37 as self-comparisons: after binding
+//   substitution both sides normalize to one expression. That is CORRECT here and not
+//   vacuous — both are DETERMINISM checks, and a determinism check has no other shape:
+//   it asserts that constructing the same thing twice yields equal values, which is
+//   exactly what fails when an ambient source is captured. Mutation M4 (an incrementing
+//   ambient counter folded into the value) kills DSL-37, so the check demonstrably
+//   discriminates. Census raised 0 -> 2 in the same commit, per R2.
 
 module D = Zeta.Core.DeclaredStanceLedger
 
