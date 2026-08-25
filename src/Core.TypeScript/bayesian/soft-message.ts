@@ -178,6 +178,12 @@ const keysOf = (a: SoftMessage, b: SoftMessage): CandidateKey[] =>
 /**
  * Message product — the BP combine. Pointwise addition of log-weights.
  *
+ * **ASSUMES THE TWO MESSAGES ARE INDEPENDENT EVIDENCE**, and that assumption is
+ * the whole reason {@link productAll} exists. Addition is only the right combine
+ * for independent likelihoods; adding correlated ones counts the same
+ * observation twice. Use this for a pair you know to be distinct sources, and
+ * `productAll` when you do not.
+ *
  * NOT re-clamped. The bound limits what ONE message may assert; the product of
  * many messages is the society's accumulated view and is allowed to be as
  * confident as the evidence makes it. Clamping here would cap what any
@@ -248,4 +254,90 @@ export const argmax = (m: SoftMessage): CandidateKey | null => {
   let best = keys[0]!;
   for (const k of keys) if (m[k]! > m[best]!) best = k;
   return best;
+};
+
+// ── THE SYBIL HOLE, AND THE FORMULA THAT CLOSES IT ────────────────────────────
+//
+// Bounded influence stops ONE message from vetoing a candidate. It does nothing
+// about an attacker who sends N messages, because `product` adds and N * BOUND
+// grows without limit. Per-message bounds without identity are worthless against
+// a Sybil (Douceur 2002), and "enough others will outvote it" quietly assumes
+// the others are DISTINCT.
+//
+// The fix is not an identity registry bolted on the side. It is that ADDING
+// LOG-WEIGHTS IS ONLY CORRECT FOR INDEPENDENT EVIDENCE, and clones are not
+// independent — which is the same sentence as `numerology-vs-number-theory.md`'s
+// "N correlated observations are not N observations", and the same sentence as
+// `SocietyUsefulWork.fs:95`, which states it and then warns that it has TWO
+// correct quantifications and picking the wrong one is itself the error.
+//
+// It composes with the anti-Sybil substrate rather than duplicating it.
+// `AntiSybil.fs` establishes that forging k identities from s < k entropy
+// sources forces, by pigeonhole, two CORRELATED bit-streams — so a Sybil is
+// detectable AS correlation. That measured correlation is exactly the ρ this
+// combine consumes. Detection and pricing meet at one number.
+//
+// And it stays dual-use neutral, which is the part worth noticing: high ρ might
+// be a Sybil, or two honest cameras pointed at the same thing. This discounts
+// both, CORRECTLY, because correlated evidence really is worth less either way.
+// The anti-Sybil property falls out of getting the statistics right rather than
+// out of accusing anybody.
+
+/**
+ * Kish effective sample size — how many INDEPENDENT messages n correlated ones
+ * are worth.
+ *
+ *     deff = 1 + (n - 1) * rho          (Kish 1965, Survey Sampling, ch. 5)
+ *     nEff = n / deff
+ *
+ * `rho = 0` gives `nEff = n` (independent); `rho = 1` gives `nEff = 1` — one
+ * observation counted n times, which is precisely a Sybil fleet.
+ *
+ * DELIBERATELY KISH AND NOT `unionEquivalentAgentCount`, because
+ * `SocietyUsefulWork.fs:95-98` requires the choice be deliberate: the two agree
+ * only at the endpoints. The question here is how much independent INFORMATION
+ * n correlated voices carry when their log-evidence is summed — an
+ * effective-sample-size question. It is not "what fraction of facts would this
+ * many independent agents have discovered", which is the union question and a
+ * different formula.
+ *
+ * `rho` is clamped to [0,1], matching the F# peer: negative intraclass
+ * correlation is real in survey work but is not a regime this substrate
+ * produces, so it is refused rather than silently extrapolated.
+ */
+export const effectiveCount = (n: number, rho: number): number => {
+  if (n < 1) return 0;
+  const r = rho < 0 ? 0 : rho > 1 ? 1 : rho;
+  return n / (1 + (n - 1) * r);
+};
+
+/**
+ * Combine many messages, DISCOUNTED BY THEIR CORRELATION.
+ *
+ * The sum is scaled by `nEff / n`, so n messages correlated at `rho` carry the
+ * evidence of `nEff` independent ones.
+ *
+ *   - `rho = 0` reproduces {@link product} folded over the list, exactly.
+ *   - `rho = 1` makes N identical clones worth ONE message. **Cloning buys
+ *     nothing**, which is the Sybil defence stated as arithmetic rather than as
+ *     a policy.
+ *
+ * Rounded back to integers so the exactness the whole module rests on survives
+ * the scaling — a fractional log-weight would reintroduce the float
+ * associativity drift that integer natural parameters exist to prevent.
+ *
+ * HONEST LIMIT: this takes `rho` as given. It does not measure it, and a caller
+ * that passes `rho = 0` for a colluding fleet gets no protection at all. The
+ * measurement is `AntiSybil`'s job (correlated drift streams); this is the
+ * pricing. Wiring the two together is not done here, and until it is, this is
+ * a mechanism awaiting its sensor.
+ */
+export const productAll = (messages: readonly SoftMessage[], rho: number): SoftMessage => {
+  if (messages.length === 0) return uniform;
+  const summed = messages.reduce<SoftMessage>((acc, m) => product(acc, m), uniform);
+  const n = messages.length;
+  const scale = effectiveCount(n, rho) / n;
+  const out: Record<CandidateKey, number> = {};
+  for (const k of Object.keys(summed).sort()) out[k] = Math.round(summed[k]! * scale);
+  return Object.freeze(out);
 };

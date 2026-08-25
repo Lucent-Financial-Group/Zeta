@@ -13,9 +13,11 @@ import {
   argmax,
   atInfluenceFloor,
   divide,
+  effectiveCount,
   fromLogWeights,
   MAX_INFLUENCE,
   product,
+  productAll,
   SCALE,
   type SoftMessage,
   toDistribution,
@@ -206,5 +208,79 @@ describe("the exit to decision space", () => {
   test("argmax ties break by ascending key, matching the SoftValue oracle", () => {
     expect(argmax(fromLogWeights({ b: 5, a: 5 }))).toBe("a");
     expect(argmax(uniform)).toBeNull();
+  });
+});
+
+describe("SYBIL RESISTANCE — bounded influence alone was not enough", () => {
+  test("THE HOLE: bounded influence does NOT stop an attacker who sends many messages", () => {
+    // Stated as a failing property of the naive combine, because it was a real
+    // gap in the first version of this module and pretending otherwise would
+    // make everything below look stronger than it is.
+    let joint: SoftMessage = fromLogWeights({ truth: MAX_INFLUENCE });
+    for (let i = 0; i < 50; i++) {
+      joint = product(joint, fromLogWeights({ truth: -MAX_INFLUENCE, lie: MAX_INFLUENCE }));
+    }
+    // Fifty clones beat one honest voice under plain addition. Per-message
+    // bounds without identity are worthless against a Sybil (Douceur 2002).
+    expect(argmax(joint)).toBe("lie");
+  });
+
+  test("rho = 1 makes N clones worth ONE message — cloning buys nothing", () => {
+    const clone = fromLogWeights({ lie: MAX_INFLUENCE });
+    const one = productAll([clone], 1);
+    const fifty = productAll(Array.from({ length: 50 }, () => clone), 1);
+    expect(fifty["lie"]).toBe(one["lie"]);
+  });
+
+  test("...so the same attack fails once the clones are priced as correlated", () => {
+    const honest = fromLogWeights({ truth: MAX_INFLUENCE });
+    const clone = fromLogWeights({ truth: -MAX_INFLUENCE, lie: MAX_INFLUENCE });
+    const fleet = productAll(Array.from({ length: 50 }, () => clone), 1);
+    // The fleet now carries EXACTLY one clone's worth, and the boundary is
+    // asserted rather than gestured at. Each clone votes truth:-B, lie:+B; each
+    // honest voice votes truth:+B. So k honest gives truth = (k-1)B against
+    // lie = B, and truth wins only for k > 2.
+    expect(fleet["lie"]).toBe(MAX_INFLUENCE);
+    expect(fleet["truth"]).toBe(-MAX_INFLUENCE);
+
+    const withTwo = product(product(honest, honest), fleet);
+    expect(withTwo["truth"]).toBe(withTwo["lie"]); // a tie, broken by key order
+    const withThree = product(product(product(honest, honest), honest), fleet);
+    expect(argmax(withThree)).toBe("truth");
+
+    // Fifty clones cost the honest side three voices instead of fifty-one.
+    // That is the whole claim, and it is a RATIO not an immunity.
+  });
+
+  test("rho = 0 reproduces plain product exactly — no silent discount", () => {
+    // The discount must be OPT-IN via a measured rho, not applied by default.
+    // A combine that quietly shrank independent evidence would be its own bug.
+    const a = fromLogWeights({ x: 300, y: -100 });
+    const b = fromLogWeights({ x: -50, z: 700 });
+    expect(productAll([a, b], 0)).toEqual(product(a, b));
+  });
+
+  test("effectiveCount matches the F# peer at both endpoints and clamps rho", () => {
+    // Pinned to SocietyUsefulWork.fs:112 `effectiveTrialCount` so the two
+    // cannot drift: rho=0 -> n, rho=1 -> 1.
+    expect(effectiveCount(50, 0)).toBe(50);
+    expect(effectiveCount(50, 1)).toBe(1);
+    expect(effectiveCount(50, -5)).toBe(50); // clamped low
+    expect(effectiveCount(50, 9)).toBe(1); // clamped high
+    expect(effectiveCount(0, 0.5)).toBe(0);
+    // Interior: deff = 1 + 49*0.5 = 25.5, nEff = 50/25.5
+    expect(effectiveCount(50, 0.5)).toBeCloseTo(50 / 25.5, 10);
+  });
+
+  test("partial correlation partially discounts — it is a dial, not a switch", () => {
+    const m = fromLogWeights({ c: 1000 });
+    const ten = Array.from({ length: 10 }, () => m);
+    const independent = productAll(ten, 0)["c"]!;
+    const half = productAll(ten, 0.5)["c"]!;
+    const identical = productAll(ten, 1)["c"]!;
+    expect(independent).toBe(10000);
+    expect(identical).toBe(1000);
+    expect(half).toBeGreaterThan(identical);
+    expect(half).toBeLessThan(independent);
   });
 });
