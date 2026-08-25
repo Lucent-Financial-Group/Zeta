@@ -115,3 +115,25 @@ The generator call (`archive-pr-reviews.ts`) inside the loop is still unguarded.
 It is not a contention failure and has never been observed failing; left
 deliberately, and named in a comment so it reads as a choice rather than an
 oversight.
+
+## Follow-up: the workflow fix now has a permanent falsifier, and the sweep is clean
+
+The first commit fixed root cause 3 but proved it only by hand, with a throwaway
+stub. Nothing in the repo stopped it regressing. Closed:
+
+`flush-via-staging.test.ts` §"the pr-archive retry loop retries (the workflow's own
+script, real bash)" extracts the step's `run` **from the yaml** — not a retyped
+copy, so it cannot drift from what CI executes — neutralises only the backoff, and
+runs it under stubs where `prepare` always exits 3. It asserts all five attempts
+appear *and* that the `::error` annotation fires. Restoring the unguarded call
+fails it with exactly one attempt observed.
+
+**Swept the other seven workflows carrying retry loops** (`arc-lane`, `gate`,
+`helm-validate`, `interp-lane`, `k8s-lane-partition`, `lint-autofix`,
+`wsl-install-sh-test`) for the same defect. **None share it.** Every one uses
+`if cmd; then ... fi`, where `set -e` does not apply because the command sits in an
+`if` condition. A first-pass grep for `set -e` + loop + no `set +e` flagged all of
+them; that heuristic is wrong and the flags were false positives.
+
+`pr-archive` was unique in invoking a command bare and capturing `rc` separately —
+and it did that correctly for `flush` and not for `prepare`.

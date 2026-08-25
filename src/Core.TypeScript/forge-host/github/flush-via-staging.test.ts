@@ -1,9 +1,10 @@
 import { spawnSync } from "node:child_process";
-import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { chmodSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
 import { afterAll, describe, expect, test } from "bun:test";
+import { parse as parseYaml } from "yaml";
 
 import {
   accumulatedHistoryError,
@@ -675,4 +676,66 @@ describe("telemetry-lane push credential (the held-gate cure)", () => {
       expect(yaml).not.toContain("- name: Preflight the push credential");
     });
   }
+});
+
+// THE RETRY LOOP MUST ACTUALLY RETRY -- the falsifier for the third defect in
+// 081M0X93WA4087G0R0034C1A5Q.
+//
+// `pr-archive-on-merge` announces five attempts. It got ONE. The step runs under
+// `set -euo pipefail`; `flush` was guarded with `set +e`/`rc=$?`/`set -e` but
+// `prepare` was not, so a non-zero `prepare` aborted the whole script on attempt 1
+// and the backoff, the ::error annotation and its operator guidance were all
+// unreachable. Observed on PR #15394 (twice) and PR #15428.
+//
+// This runs the WORKFLOW'S OWN SCRIPT -- extracted from the yaml, not retyped --
+// against stubs where `prepare` always fails, so it cannot drift from what CI does.
+// Remove the `set +e` around `prepare` and this test sees exactly one attempt.
+describe("the pr-archive retry loop retries (the workflow's own script, real bash)", () => {
+  const tmp = mkdtempSync(join(tmpdir(), "zeta-retry-"));
+  afterAll(() => {
+    rmSync(tmp, { recursive: true, force: true });
+  });
+
+  test("a failing prepare retries to exhaustion instead of aborting on attempt 1", () => {
+    const doc = parseYaml(workflow("pr-archive-on-merge.yml")) as {
+      jobs: { archive: { steps: { name?: string; run?: string }[] } };
+    };
+    const step = doc.jobs.archive.steps.find((x) => (x.run ?? "").includes("max_attempts"));
+    expect(step?.run).toBeDefined();
+
+    // Only the backoff is neutralised -- the control flow under test is untouched.
+    const script = (step?.run ?? "").replace(/^(\s*)sleep .*$/gm, "$1:");
+    const scriptPath = join(tmp, "step.sh");
+    writeFileSync(scriptPath, script);
+
+    // `bun` fails exactly the way the lane failed in CI: exit 3 from `prepare`.
+    const bin = join(tmp, "bin");
+    mkdirSync(bin, { recursive: true });
+    const mkbin = (name: string, body: string): void => {
+      const f = join(bin, name);
+      writeFileSync(f, body);
+      chmodSync(f, 0o755);
+    };
+    mkbin("bun", '#!/usr/bin/env bash\nfor a in "$@"; do [ "$a" = "prepare" ] && exit 3; done\nexit 0\n');
+    mkbin("git", "#!/usr/bin/env bash\nexit 0\n");
+
+    // eslint-disable-next-line sonarjs/no-os-command-from-path
+    const r = spawnSync("bash", [scriptPath], {
+      encoding: "utf8",
+      env: {
+        ...process.env,
+        PATH: `${bin}:${process.env["PATH"] ?? ""}`,
+        PR_NUMBER: "15394",
+        GITHUB_SHA_OVERRIDE: "deadbeef",
+      },
+    });
+    const out = `${r.stdout}${r.stderr}`;
+
+    // All five attempts happen. Without the guard only the first line appears.
+    for (const n of [1, 2, 3, 4, 5]) {
+      expect(out).toContain(`attempt ${String(n)}/5`);
+    }
+    // And the operator guidance -- previously unreachable -- actually fires.
+    expect(out).toContain("::error title=Archive record could not be delivered");
+  });
 });
