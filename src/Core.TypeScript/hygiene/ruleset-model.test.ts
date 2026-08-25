@@ -67,6 +67,24 @@ describe("refNameMatches — File::FNM_PATHNAME semantics", () => {
     expect(refNameMatches("refs/heads/qa/*", "refs/heads/qa/foo/bar", "main")).toBe(false);
   });
 
+  test("a trailing `**` consumes ALL remaining segments, including the last", () => {
+    // Mutation-found gap: the `**` loop bound must be `i <= len`, not `i < len`.
+    // With `<`, a trailing `**` can never swallow the final segment and this
+    // returns false — a whole class of pattern silently stops matching.
+    expect(refNameMatches("refs/heads/qa/**", "refs/heads/qa/a/b", "main")).toBe(true);
+    expect(refNameMatches("refs/heads/qa/**", "refs/heads/qa/a", "main")).toBe(true);
+    expect(refNameMatches("refs/heads/**", "refs/heads/heartbeat/otto", "main")).toBe(true);
+  });
+
+  test("a malformed character class matches NOTHING rather than crashing", () => {
+    // Mutation-found gap: the catch-arm in segmentGlob had no test. Fail-closed
+    // means an unparseable pattern covers nothing — which `coverageDelta` then
+    // reports as released refs, so it cannot hide.
+    expect(refNameMatches("refs/heads/[z-a]bad", "refs/heads/xbad", "main")).toBe(false);
+    // An unterminated `[` is treated as a literal bracket, not an error.
+    expect(refNameMatches("refs/heads/[abc", "refs/heads/[abc", "main")).toBe(true);
+  });
+
   test("documented example: `qa/*` matches one level and not two", () => {
     expect(refNameMatches("qa/*", "refs/heads/qa/foo", "main")).toBe(true);
     expect(refNameMatches("qa/*", "refs/heads/qa/foo/bar", "main")).toBe(false);

@@ -249,11 +249,11 @@ function ruleKey(rule: RulesetRule): string {
     rule.parameters === undefined || rule.parameters === null
       ? ""
       : canonicalJson(rule.parameters);
-  return `${rule.type} ${params}`;
+  return `${rule.type} ${params}`;
 }
 
 function actorKey(actor: BypassActor): string {
-  return `${actor.actor_type} ${String(actor.actor_id)} ${actor.bypass_mode}`;
+  return `${actor.actor_type} ${String(actor.actor_id)} ${actor.bypass_mode}`;
 }
 
 /**
