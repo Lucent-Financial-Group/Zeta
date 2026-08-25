@@ -160,7 +160,23 @@ let ``ColumnLinear vectorized map (+) equals the scalar map`` () =
             let s = run (fun () -> ColumnLinearKernel.MapAddScalar(ReadOnlySpan src, delta, Span<int64> sd))
             let v = run (fun () -> ColumnLinearKernel.MapAddVectorized(ReadOnlySpan src, delta, Span<int64> vd))
             Assert.True((s = v), $"n={n} delta={delta}: scalar {s}, vector {v}")
-            if s = Ok() then Assert.Equal<int64 array>(sd, vd)
+            if s = Ok() then
+                // COUNTED SELF-COMPARISON (check-arity census, R2). `sd` and `vd` have
+                // IDENTICAL initialisers, so the audit's binding-inliner normalises both
+                // sides to `Array.zeroCreate<int64> n`. What varies is not the expression
+                // but WHICH KERNEL WROTE THE BUFFER: `sd` by the scalar twin, `vd` by the
+                // vector kernel. That is the audit's "mutation-mediated" class -- the two
+                // executions differ in what happened between them.
+                // Earned, not asserted: mutating `MapAddVectorized` to write `x+delta+1`
+                // fails this assertion. It is a live check, not a tautology.
+                Assert.Equal<int64 array>(sd, vd)
+                // INDEPENDENT ORACLE. The twin comparison alone cannot see a fault that
+                // hits BOTH paths (a shared helper like `AddBounds`), and if neither path
+                // wrote anything both buffers would be zeros and match. `Array.map` is a
+                // third, unrelated implementation, so it constrains what the twins agree ON
+                // and not merely that they agree. The filter tests already had such an
+                // oracle; the map tests did not, which was an asymmetry rather than a choice.
+                Assert.Equal<int64 array>(Array.map (fun x -> x + delta) src, sd)
 
 
 [<Fact>]
@@ -175,7 +191,15 @@ let ``ColumnLinear vectorized map (*) equals the scalar map`` () =
             let s = run (fun () -> ColumnLinearKernel.MapScaleScalar(ReadOnlySpan src, m, Span<int64> sd))
             let v = run (fun () -> ColumnLinearKernel.MapScaleVectorized(ReadOnlySpan src, m, Span<int64> vd))
             Assert.True((s = v), $"n={n} m={m}: scalar {s}, vector {v}")
-            if s = Ok() then Assert.Equal<int64 array>(sd, vd)
+            if s = Ok() then
+                // COUNTED SELF-COMPARISON (check-arity census, R2) -- same shape as the
+                // `map (+)` test above. Both sides normalise to `Array.zeroCreate<int64> n`;
+                // the varied dimension is WHICH KERNEL WROTE THE BUFFER (scalar twin vs
+                // vector kernel), not the expression.
+                // Earned: mutating `MapScaleVectorized` to write `x*m+1` fails this.
+                Assert.Equal<int64 array>(sd, vd)
+                // Independent oracle, for the same reason as above.
+                Assert.Equal<int64 array>(Array.map (fun x -> x * m) src, sd)
 
 
 /// The overflow contract, at the exact boundary in both directions and for
@@ -326,6 +350,17 @@ let ``ColumnLinear map over any partition concatenates to the whole`` () =
             ColumnLinearKernel.MapAdd(
                 ReadOnlySpan(src, a, len), 42L, Span<int64>(parts, a, len))
             a <- a + len
+        // COUNTED SELF-COMPARISON (check-arity census, R2) -- and the one that is a
+        // genuine 2-safety property rather than a mutation-mediated pair. `whole` and
+        // `parts` share an initialiser, so the audit normalises both sides to
+        // `Array.zeroCreate<int64> 777`. What varies is THE PARTITION: `whole` is one
+        // MapAdd over the entire span, `parts` is `shards` MapAdd calls over disjoint
+        // sub-spans. Asserting they agree is exactly `Q(a ⊎ b) = Q(a) ⊎ Q(b)`, which is
+        // the licence for sharding this kernel across a DoP knob.
+        // Earned, and ISOLATED: adding a per-CALL position-0 bump to the `MapAdd`
+        // DISPATCHER fails this assertion while BOTH differential tests above still
+        // pass -- so the dimension this check constrains really is the partition, and
+        // nothing else in the file covers it.
         Assert.Equal<int64 array>(whole, parts)
 
 
