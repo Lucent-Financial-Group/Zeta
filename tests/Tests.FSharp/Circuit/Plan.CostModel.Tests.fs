@@ -106,13 +106,77 @@ let ``log2Levels computes ceil log2 exactly`` () =
     Plan.log2Levels 1025L |> should equal 11L
 
 
+// ─── The defect verbatim: same inputs, two operators, two costs ──────
+
+/// An input estimate with chosen physical properties, for driving `estimateOp` directly.
+let private inputCost (rows: int64) (ordered: bool) : OpCost =
+    { EstimatedRows = rows
+      EstimatedDistinctKeys = rows
+      EstimatedCpuNanos = 0L
+      DeliversKeyOrder = ordered
+      StatisticsSource = StatSource.Measured }
+
+
+[<Fact>]
+let ``join and indexedJoin cost differently on IDENTICAL inputs`` () =
+    // THE headline falsifier, and it has to be written at this level.
+    //
+    // The measured defect was `cost(join) == cost(indexedJoin)` for EVERY possible
+    // input — a statement about the two BRANCHES, quantified over inputs. Comparing
+    // two circuits cannot falsify it: a `join` reads raw Z-sets (unordered) and an
+    // `indexedJoin` reads `IndexedZSet`s (ordered), so a SHARED formula fed those
+    // different physical properties still returns two different numbers and the
+    // comparison passes. That is exactly what happened — the circuit-level test below
+    // let the "restore the shared formula" mutant survive. Feeding both branches the
+    // same `OpCost array` is the only thing that pins the claim the defect made.
+    for ordered in [ true; false ] do
+        for (a, b) in [ (1L, 1L); (1024L, 1024L); (10L, 100_000L); (100_000L, 10L) ] do
+            let inputs = [| inputCost a ordered ; inputCost b ordered |]
+            let hash = Plan.estimateOp "join" None inputs
+            let merge = Plan.estimateOp "indexedJoin" None inputs
+            // Same cardinality — they compute the same result, so the estimate must agree.
+            hash.EstimatedRows |> should equal merge.EstimatedRows
+            // Different cost — which is the entire point of the repair.
+            hash.EstimatedCpuNanos |> should not' (equal merge.EstimatedCpuNanos)
+
+
+[<Fact>]
+let ``on already-ordered inputs sort-merge is ALWAYS strictly cheaper than hash`` () =
+    // `60b + 30a + 40out` vs `10(a+b) + 40out` differs by `50b + 20a > 0` for all
+    // a, b >= 1 — so this holds for every input, not just the ones sampled.
+    // MUTANT KILLED: any change making the two branches share a formula, and any
+    // change that stops the merge branch from consulting `DeliversKeyOrder`.
+    for (a, b) in [ (1L, 1L); (7L, 3L); (1024L, 1024L); (10L, 100_000L); (100_000L, 10L) ] do
+        let inputs = [| inputCost a true ; inputCost b true |]
+        let hash = Plan.estimateOp "join" None inputs
+        let merge = Plan.estimateOp "indexedJoin" None inputs
+        merge.EstimatedCpuNanos |> should be (lessThan hash.EstimatedCpuNanos)
+
+
+[<Fact>]
+let ``on unordered inputs the preference INVERTS at scale`` () =
+    // If sort-merge won unconditionally the model would have swapped one unconditional
+    // preference for another, which is not a choice.
+    // MUTANT KILLED: `sortNanos` always returning 0.
+    let inputs = [| inputCost 100_000L false ; inputCost 100_000L false |]
+    let hash = Plan.estimateOp "join" None inputs
+    let merge = Plan.estimateOp "indexedJoin" None inputs
+    merge.EstimatedCpuNanos |> should be (greaterThan hash.EstimatedCpuNanos)
+
+
 // ─── The choice, observed through a real circuit ─────────────────────
 
 [<Fact>]
 let ``the planner can now PREFER indexedJoin over join on the same inputs`` () =
     // Two circuits computing the same join two different ways. Before the repair these
     // came out identical; the planner had no preference it could express.
-    // MUTANT KILLED: restoring the shared cost formula for `"join"` / `"indexedJoin"`.
+    //
+    // HONEST LIMIT, measured: this test does NOT kill the "restore the shared formula"
+    // mutant — the two circuits' inputs differ in physical properties (raw Z-sets vs
+    // `IndexedZSet`s), so a shared formula still returns two different numbers here.
+    // `join and indexedJoin cost differently on IDENTICAL inputs` above is that
+    // falsifier. What this test does kill is `indexWith` not being charged for its
+    // sort, and `sortNanos` ignoring the order flag.
     let hashCircuit = Circuit.create ()
     let ha = hashCircuit.ZSetInput<int>()
     let hb = hashCircuit.ZSetInput<int>()
