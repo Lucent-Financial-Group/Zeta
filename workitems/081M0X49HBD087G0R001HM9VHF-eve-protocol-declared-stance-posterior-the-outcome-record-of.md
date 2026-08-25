@@ -52,7 +52,7 @@ value, and everything emitted is a statistic over resolved claims.
 
 ## Not done here
 
-- The Eve backlog row is intentionally **not** edited, to avoid conflicting with the open
-  PR #15414 that adds the primitive section to it. Cross-link after that merges.
+- The Eve backlog row now carries a §*The posterior half* section pointing here (added
+  after PR #15414 merged, 2026-08-25).
 - No corpus of declared exchanges exists yet, so the §2 prediction (flat marginal yield
   should be more common under `Eager` declarations) is **unmeasured**.

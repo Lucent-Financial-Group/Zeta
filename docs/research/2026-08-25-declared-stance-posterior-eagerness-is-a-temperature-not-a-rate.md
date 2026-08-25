@@ -380,8 +380,8 @@ in both directions.
   Graepel 2006).
 - `src/Bayesian/CondorcetBoundary.fs` — `effectiveN`, the same Kish identity for jurors.
 - `docs/backlog/P2/081KRW63S0008QG0R0030F8ZXA-eve-protocol-*.md` — the per-exchange
-  primitive (PR #15414, open at the time of writing; this row is intentionally **not**
-  edited here to avoid conflicting with it).
+  primitive (PR #15414, merged 2026-08-25); it now carries a §*The posterior half* pointer
+  back to this document.
 - [`privacy-budget-is-hard-money-earned-by-others`](../../.claude/rules/privacy-budget-is-hard-money-earned-by-others.md)
   — the socially-conferred discipline this ledger inherits: the record is held by others
   and is never self-asserted.
