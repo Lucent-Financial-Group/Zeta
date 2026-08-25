@@ -56,6 +56,7 @@ import {
   writeShard,
   type ManifestEntry,
 } from "./pr-manifest-shards.ts";
+import { isArchiveEligible } from "./archive-eligibility.ts";
 
 // The manifest entry schema + its canonical serialization now live in
 // `pr-manifest-shards.ts` (one definition, shared by the writer, the deriver and the
@@ -1272,19 +1273,61 @@ function listMergedPRs(owner: string, repo: string, since?: string): number[] {
     "--limit",
     MERGED_LIST_LIMIT,
     "--json",
-    "number,mergedAt",
+    // headRefName + headRepositoryOwner are what `isArchiveEligible` needs. They
+    // cost nothing extra -- same paginated call -- and without them this sweep
+    // archives exactly what the event lane refuses to (see below).
+    "number,mergedAt,headRefName,headRepositoryOwner",
   ];
   const out = runGhOrExit(args, "listMergedPRs");
-  const parsed = parseJsonOrExit<Array<{ number: number; mergedAt: string }>>(
-    out,
-    "listMergedPRs",
-  );
+  const parsed = parseJsonOrExit<
+    Array<{
+      number: number;
+      mergedAt: string;
+      headRefName?: string;
+      headRepositoryOwner?: { login?: string } | null;
+    }>
+  >(out, "listMergedPRs");
   let filtered = parsed;
   if (since) {
     const cutoff = normalizeSince(since);
     filtered = parsed.filter((p) => p.mergedAt >= cutoff);
   }
-  return filtered.map((p) => p.number).sort((a, b) => a - b);
+
+  // APPLY THE EVENT LANE'S OWN EXCLUSION. This sweep used to apply no filter at
+  // all, so it archived the `automation/pr-archive-*` PRs that
+  // `pr-archive-on-merge.yml`'s `if:` deliberately skips -- the recursive
+  // archive-of-archive chain that workflow exists to avoid.
+  //
+  // That was not a cosmetic disagreement, it was a THROUGHPUT defect, and it is
+  // half of why the backlog would not drain. Measured on main 2026-08-25, inside
+  // this function's own reachable window (the 3,000 newest merged PRs): 1,289
+  // PRs unarchived, of which 524 -- 41% -- are archive-of-archive. `selectBatch`
+  // is oldest-first, so those 524 sat AT THE HEAD of the queue and consumed 41%
+  // of a 3-per-tick budget while the real gap behind them was starved. 774 such
+  // records had already been written this way.
+  //
+  // The existing 774 are NOT deleted (§5 memory preservation): captured
+  // substrate is not discarded because a policy tightened afterwards. This
+  // governs SELECTION going forward, never a removal.
+  //
+  // Fail-open on a missing field is deliberate: if `gh` ever stops returning
+  // `headRefName`, the sweep archives too MUCH rather than silently archiving
+  // nothing. Over-archiving costs API calls; under-archiving loses data.
+  const eligible = filtered.filter((p) =>
+    isArchiveEligible({
+      headRefName: p.headRefName ?? "",
+      headRepoIsSameRepo:
+        p.headRepositoryOwner?.login === undefined ? true : p.headRepositoryOwner.login === owner,
+    }),
+  );
+  const dropped = filtered.length - eligible.length;
+  if (dropped > 0) {
+    process.stderr.write(
+      `[backfill] ${String(dropped)} archive-bookkeeping PR(s) excluded from the sweep ` +
+        `(same rule as pr-archive-on-merge.yml's if:)\n`,
+    );
+  }
+  return eligible.map((p) => p.number).sort((a, b) => a - b);
 }
 
 /**
