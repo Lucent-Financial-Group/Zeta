@@ -33,8 +33,14 @@ function config(overrides: Partial<TickSourceConfig> = {}): TickSourceConfig {
   return {
     agent: "dejan-local",
     // Never reached: every test using this default injects a lane preparer that stops before any
-    // filesystem or git access. A path that does not exist is the honest declaration of that.
-    repoRoot: join(tmpdir(), "zeta-tick-unused-root"),
+    // filesystem or git access, and the tests that DO write pass a `scratchRoot()`.
+    //
+    // Deliberately NOT under `tmpdir()`. Joining the OS temp dir here re-created the exact
+    // `js/insecure-temporary-file` taint the scratch helper was introduced to remove: this value
+    // flows into `repoRoot`, which reaches `writeFileSync` in tick-source.ts, so a temp path in a
+    // never-executed default still reported as a high-severity defect in shipped code. The first
+    // fix cleared two alerts and re-armed one; a non-temp path clears it for the right reason.
+    repoRoot: "/nonexistent/zeta-tick-unused-root",
     runtime: "launchd/test",
     model: "qwen2.5:0.5b",
     task: "081M0WYCQHF087G0R000ZVPA7T",
