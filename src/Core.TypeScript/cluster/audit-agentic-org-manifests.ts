@@ -3,7 +3,7 @@
  *
  * WHY THIS EXISTS, AND WHAT IT IS *NOT* DUPLICATING.
  *
- * These twelve files are not a Helm chart and not an ArgoCD Application set --
+ * These files are not a Helm chart and not an ArgoCD Application set --
  * they are raw Kubernetes YAML that an operator applies with a single
  * `kubectl apply -f deploy/k8s/`. That is the tree a USB-booted node actually
  * runs, so a defect here is a machine that comes up broken in front of someone
@@ -181,8 +181,7 @@ export const IMAGE_EXCEPTIONS: readonly ImageException[] = [
       "USB-booted node -- the worker Deployment sits in ImagePullBackOff, because IfNotPresent still PULLS " +
       "when the image is absent and docker.io/library/agentic-org-worker:keepalive does not exist.",
     liftsWhen:
-      "The worker image is published to a registry and 30-worker.yaml names it by that fully-qualified " +
-      "reference.",
+      "The worker image is published to a registry and 30-worker.yaml names it by that fully-qualified " + "reference.",
   },
 ];
 
@@ -242,9 +241,10 @@ export function auditDirectory(dir: string): AuditResult {
         file,
         message:
           `filename marks this a template ('${marker}') but it still ends in a kubectl-visible ` +
-          `extension, so \`kubectl apply -f ${dir}/\` APPLIES IT. kubectl filters by extension ` +
-          `(.json/.yaml/.yml), never by filename. Rename to '${basename(file).replace(/\.(ya?ml|json)$/i, "")}' ` +
-          `+ '.example' as the FINAL extension (e.g. 'x.yaml.example') so kubectl skips it.`,
+          `extension, so \`kubectl apply -f ${dir}/\` APPLIES IT. kubectl selects by EXTENSION ` +
+          `(.json/.yaml/.yml) and never by filename. REMEDY: move it to a sibling directory that is ` +
+          `not the apply target (preferred -- it stays inside the yamllint/kubeconform globs), or ` +
+          `rename so '.example' is the FINAL extension (e.g. 'x.yaml.example').`,
       });
     }
   }
@@ -267,9 +267,7 @@ export function auditDirectory(dir: string): AuditResult {
 
   // ── CHECK B: every Service selector matches some workload's pod labels ─────
   for (const svc of services) {
-    const matched = workloads.filter(
-      (w) => w.namespace === svc.namespace && isSuperset(w.podLabels, svc.selector),
-    );
+    const matched = workloads.filter((w) => w.namespace === svc.namespace && isSuperset(w.podLabels, svc.selector));
     if (Object.keys(svc.selector).length === 0) {
       findings.push({
         check: "service-without-selector",
@@ -318,7 +316,8 @@ export function auditDirectory(dir: string): AuditResult {
         // Only a reference that LOOKS like this tree's own naming is a finding;
         // an unknown single-label host may legitimately be an external name.
         // Restrict to hosts some document in the set names as a Service or workload.
-        const knownHere = services.some((s) => s.name === ref.host) || workloads.some((w) => metaName(w.doc) === ref.host);
+        const knownHere =
+          services.some((s) => s.name === ref.host) || workloads.some((w) => metaName(w.doc) === ref.host);
         if (!knownHere) continue;
         findings.push({
           check: "reference-to-service-in-other-namespace",
@@ -647,8 +646,8 @@ export function parseMemoryMi(raw: unknown): number {
     ["Gi", 1024],
     ["Mi", 1],
     ["Ki", 1 / 1024],
-    ["G", 1000 * 1000 * 1000 / (1024 * 1024)],
-    ["M", 1000 * 1000 / (1024 * 1024)],
+    ["G", (1000 * 1000 * 1000) / (1024 * 1024)],
+    ["M", (1000 * 1000) / (1024 * 1024)],
   ];
   for (const [suffix, factor] of units) {
     if (raw.endsWith(suffix)) return Math.round(Number(raw.slice(0, -suffix.length)) * factor);
@@ -662,7 +661,8 @@ function sumResources(workloadDocs: readonly Doc[]): ResourceTotals {
   let limitCpuMilli = 0;
   let limitMemoryMi = 0;
   for (const d of workloadDocs) {
-    const replicas = typeof asRecord(d.value.spec).replicas === "number" ? (asRecord(d.value.spec).replicas as number) : 1;
+    const replicas =
+      typeof asRecord(d.value.spec).replicas === "number" ? (asRecord(d.value.spec).replicas as number) : 1;
     for (const cRaw of asArray(podSpec(d).containers)) {
       const r = asRecord(asRecord(cRaw).resources);
       const req = asRecord(r.requests);
@@ -697,9 +697,7 @@ function fmtLabels(labels: Readonly<Record<string, string>>): string {
 }
 
 function asRecord(value: unknown): Record<string, unknown> {
-  return value !== null && typeof value === "object" && !Array.isArray(value)
-    ? (value as Record<string, unknown>)
-    : {};
+  return value !== null && typeof value === "object" && !Array.isArray(value) ? (value as Record<string, unknown>) : {};
 }
 
 function asArray(value: unknown): readonly unknown[] {
@@ -726,7 +724,7 @@ export function render(result: AuditResult, dir: string): string {
     result.containersWithoutLimits.length === 0
       ? "containers with no resources.limits (REPORTED, not gated): none"
       : `containers with no resources.limits (REPORTED, not gated -- a guessed limit OOMKills where no limit ` +
-        `does not): ${result.containersWithoutLimits.join(", ")}`,
+          `does not): ${result.containersWithoutLimits.join(", ")}`,
   );
   if (IMAGE_EXCEPTIONS.length > 0) {
     lines.push(`reasoned image exceptions in force (${IMAGE_EXCEPTIONS.length}), each a real bring-up step:`);
@@ -763,7 +761,9 @@ function main(): void {
     process.exit(1);
   }
   if (result.documentCount === 0) {
-    console.error(`audit-agentic-org-manifests: parsed 0 Kubernetes documents under ${dir}/ -- refusing to report success.`);
+    console.error(
+      `audit-agentic-org-manifests: parsed 0 Kubernetes documents under ${dir}/ -- refusing to report success.`,
+    );
     process.exit(1);
   }
 
