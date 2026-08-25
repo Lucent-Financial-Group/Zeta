@@ -41,8 +41,14 @@ export {
   type BrowserCheckpointInvalidationOperation,
   type BrowserCausalCorrectionMessage,
   type BrowserCausalCorrectionNotice,
+  type BrowserCausalCorrectionReplayAcknowledgement,
+  type BrowserCausalCorrectionReplayAcknowledgementMessage,
+  type BrowserCausalCorrectionReplayAdmission,
+  type BrowserCausalCorrectionReplayDisposition,
+  type BrowserCausalCorrectionReplayFeedback,
   type BrowserCausalCorrectionReplayMessage,
   type BrowserCausalCorrectionReplayNotice,
+  type BrowserCausalCorrectionReplayOffer,
   type BrowserCausalCorrectionReplayPort,
   type BrowserDatabaseInvalidation,
   type BrowserDatabaseInvalidationMessage,
@@ -70,6 +76,16 @@ export {
   type BrowserCausalCorrectionLedgerFeedback,
   type BrowserCausalCorrectionLedgerResult,
 } from "./browser-causal-correction-ledger";
+
+export {
+  BROWSER_CAUSAL_CORRECTION_CHECKPOINT_SCHEMA,
+  MAX_BROWSER_CAUSAL_CORRECTION_CHECKPOINT_BYTES,
+  browserCausalCorrectionCheckpointNodeId,
+  decodeBrowserCausalCorrectionCheckpoint,
+  encodeBrowserCausalCorrectionCheckpoint,
+  type BrowserCausalCorrectionCheckpointFeedback,
+  type BrowserCausalCorrectionCheckpointResult,
+} from "./browser-causal-correction-checkpoint";
 
 export { createNativeBroadcastTabChannel } from "./browser-broadcast-channel";
 
@@ -109,6 +125,7 @@ export {
 
 export {
   BROWSER_CHECKPOINT_RECORD_SCHEMA,
+  browserCheckpointRecordNodeId,
   browserCheckpointFailed,
   browserCheckpointSucceeded,
   copyBrowserCheckpointRecord,
@@ -119,9 +136,21 @@ export {
   type BrowserCheckpointPort,
   type BrowserCheckpointRecord,
   type BrowserCheckpointRemovalDecision,
+  type BrowserCheckpointRecordKind,
   type BrowserCheckpointResult,
   type BrowserCheckpointSaveDecision,
 } from "./browser-checkpoint-port";
+
+export {
+  compareAndSwapRevisionPolicy,
+  monotoneLastWriterWinsRevisionPolicy,
+  type RevisionPolicyDecision,
+  type RevisionPolicyId,
+  type RevisionPolicyPort,
+  type RevisionPolicyRefusal,
+  type RevisionPolicyResult,
+  type RevisionedBytes,
+} from "../persistence/revision-policy";
 
 export {
   openNativeIndexedDbCheckpointPort,
@@ -131,6 +160,7 @@ export {
 } from "./browser-indexeddb-checkpoint";
 
 export {
+  DEFAULT_BROWSER_ZETA_DB_CONVERGENCE_POLICY,
   createBrowserZetaDbImagePort,
   loadBrowserZetaDbImage,
   openBrowserZetaDbImagePort,

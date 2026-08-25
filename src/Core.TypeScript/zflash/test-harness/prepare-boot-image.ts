@@ -18,7 +18,9 @@
  *     [--role first-control-plane|joiner] \
  *     [--flake-host <attr>] \
  *     [--join-server-url https://host[:port]] \
- *     [--join-token <path to k3s node-token>]
+ *     [--join-token <path to k3s node-token>] \
+ *     [--cluster-segment-mac <aa:bb:cc:dd:ee:ff>] \
+ *     [--cluster-host-index <2..254>]
  *
  * Exit 0 prints JSON with outputImagePath (+ credentialBlobPath when baked).
  */
@@ -28,10 +30,7 @@ import { existsSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import {
-  detectIsohybridEspOffsetBytes,
-  ISOHYBRID_ESP_OFFSET_FALLBACK_BYTES,
-} from "../lib.ts";
+import { detectIsohybridEspOffsetBytes, ISOHYBRID_ESP_OFFSET_FALLBACK_BYTES } from "../lib.ts";
 import { runFileBackedZflashCli } from "../file-backed.ts";
 import { firstbootRoleFromFlags, type ZetaFirstbootRole } from "../firstboot-role.ts";
 import { buildBlob, composeBundle } from "../../installer/zeta-creds-persist";
@@ -63,6 +62,10 @@ export interface PrepareBootImageInput {
   /** 081KSNY2Z0008QG0R0008PN7RQ scenario 5 — role written to the ESP. */
   readonly firstbootRole?: ZetaFirstbootRole;
   readonly joinTokenSourcePath?: string;
+  /** QEMU-only: bake `/zeta-bind-uefi-keyfile` so the guest writes the target ESP keyfile. */
+  readonly bindUefiKeyfileMarker?: boolean;
+  /** QEMU-only: bake `/zeta-qemu-creds-passphrase` so non-interactive 6.95-picker can run. */
+  readonly qemuCredsPassphrase?: string;
 }
 
 export interface PrepareBootImageResult {
@@ -154,6 +157,8 @@ export function prepareBootImage(input: PrepareBootImageInput): PrepareBootImage
         }),
     ...(input.firstbootRole === undefined ? {} : { firstbootRole: input.firstbootRole }),
     ...(input.joinTokenSourcePath === undefined ? {} : { joinTokenSourcePath: input.joinTokenSourcePath }),
+    ...(input.bindUefiKeyfileMarker === true ? { bindUefiKeyfileMarker: true } : {}),
+    ...(input.qemuCredsPassphrase === undefined ? {} : { qemuCredsPassphrase: input.qemuCredsPassphrase }),
   });
 
   if (!result.ok) {
@@ -180,6 +185,8 @@ function parseArgs(argv: readonly string[]): PrepareBootImageInput | { readonly 
   let flakeHostFlag: string | undefined;
   let joinServerUrlFlag: string | undefined;
   let joinTokenSourcePath: string | undefined;
+  let clusterSegmentMac: string | undefined;
+  let clusterHostIndex: string | undefined;
 
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i]!;
@@ -203,6 +210,10 @@ function parseArgs(argv: readonly string[]): PrepareBootImageInput | { readonly 
       joinServerUrlFlag = argv[++i] ?? "";
     } else if (arg === "--join-token") {
       joinTokenSourcePath = argv[++i] ?? "";
+    } else if (arg === "--cluster-segment-mac") {
+      clusterSegmentMac = argv[++i] ?? "";
+    } else if (arg === "--cluster-host-index") {
+      clusterHostIndex = argv[++i] ?? "";
     } else if (arg === "-h" || arg === "--help") {
       return { error: "see file header for usage" };
     } else {
@@ -218,6 +229,8 @@ function parseArgs(argv: readonly string[]): PrepareBootImageInput | { readonly 
     ...(flakeHostFlag === undefined ? {} : { flakeHost: flakeHostFlag }),
     ...(joinServerUrlFlag === undefined ? {} : { joinServerUrl: joinServerUrlFlag }),
     ...(joinTokenSourcePath === undefined ? {} : { joinTokenSourcePath }),
+    ...(clusterSegmentMac === undefined ? {} : { clusterSegmentMac }),
+    ...(clusterHostIndex === undefined ? {} : { clusterHostIndex }),
   });
   if (!firstbootRole.ok) return { error: firstbootRole.error };
 

@@ -22,7 +22,33 @@ the evidence base for **Conjecture Z-7** in the frozen core register.
 The 1,600× size difference between WAT and Go with identical D_f is the
 core claim. Compiler is irrelevant to the fractal dimension.
 
-> **Honest note on the `1.322` figure (2026-08-09).** The `1.322` in the table
+> **Register:** Z-7 was **DEMOTED §A → §B on 2026-08-01** and remains a conjecture.
+> Note it survives the 2026-08-25 correction below: the *independence* claim never
+> depended on the *value*. Every substrate reports the same D_f whatever that number
+> is, because the byte-lock guarantees byte-identical trajectories. What the
+> correction removes is the **1.322** in the table, not the ⊥.
+
+> **Honest note on the `1.322` figure (2026-08-09; corrected by Lumen 2026-08-25).**
+> The `1.322` in the table above **was typed in and never computed** — no code path
+> in this repo has ever produced it from a measurement. Two corrections to the
+> 2026-08-09 version of this note, both measured:
+>
+> 1. It is **not** "a hardcoded constant in `dla.wat` l.191". The `* 1.322` appears
+>    only in a **comment**. The function body was always `csize / (maxr * maxr)` —
+>    a number **density**, not a dimension — which measures **0.248–0.450** on the
+>    eight byte-locked seeds, a factor of 3–5 from its own comment. It is now
+>    renamed `toy_density_proxy` and pinned by a test.
+> 2. The ≈1.30 box-counting reading is **not** explained by "800 walkers is too small
+>    for the asymptote". That diagnosis is wrong: the Witten–Sander **mass-radius**
+>    estimator on the *same* clusters returns **1.668**, within 2.5% of 1.71. The
+>    ≈1.30 is an **estimator artifact** — the same box-counting code returns
+>    **1.0001** on a Sierpinski gasket (true dimension 1.58496, exactly self-similar,
+>    no finite-size physics) subsampled to the same ~330 points.
+>
+> Full analysis, calibration and anchors:
+> `docs/research/2026-08-25-does-the-dla-meter-measure-a-fractal-dimension-four-estimators-one-typed-in-constant-lumen.md`
+>
+> *(the original note, retained for the record:)* The `1.322` in the table
 > above is each substrate's `get_df()` **mass-radius proxy** — a hardcoded
 > constant (`dla.wat` l.191: `… * 1.322 as a proxy`), not a measured dimension.
 > A *real* box-counting (Minkowski–Bouligand) estimator now lives host-side in
@@ -40,55 +66,70 @@ core claim. Compiler is irrelevant to the fractal dimension.
 
 ```
 src/wasm-dla/
-  wat/
-    dla.wat                    — WAT (bare-metal, ~979 bytes)
-  assemblyscript/
-    assembly/index.ts          — AssemblyScript (TypeScript→WASM)
-  go/
-    main.go                    — Go (GOOS=js GOARCH=wasm, ~1.5 MB)
-  c/
-    dla.c                      — C (Emscripten emcc, ~8 KB)
+  bytelock/                    — THE substrates: one DLA per language, byte-locked
+    dla-canonical.{wat,c,rs,ts,zig,go,lua}          — sources
+    dla-canonical-{wat,emcc,llvm,rust,asc,zig}.wasm — the modules under test
+    testdata/golden-seed-*.json                     — the hex-in-JSON vectors that judge them
+    build-substrates.mjs · run-bytelock-ci.mjs      — the build + the comparison
+  CANONICAL_SPEC.md            — the algorithm every byte-locked substrate implements
+  wat/dla.wat                  — pre-byte-lock Oracle 10 source (see below)
+  assemblyscript/assembly/index.ts — pre-byte-lock Oracle 10 source
+  go/main.go                   — pre-byte-lock Oracle 10 source, LOADED BY NOTHING
   README.md                    — this file
 ```
 
+### The pre-byte-lock sources are NOT the substrates — never stage one
+
+`bytelock/` is a later and different thing from the Oracle 10 sources beside it, and the two were
+confused for months with real consequences. Four panels on the identity-DLA site loaded a *second*,
+divergent DLA — its own grid size, spawn rule, kill radius and walker budget — listed in no roster
+and pinned by no golden vector:
+
+| panel | module it loaded | cluster at seed 4 | corrected in |
+| --- | --- | --- | --- |
+| Go | build of `go/main.go` | — | #11489 |
+| Zig | `zig/dla.wasm` | **1** — degenerate | #11530 |
+| C | `c/dla-emcc.wasm` | **1** — degenerate | 2026-08-17 |
+| LLVM | `c/dla-llvm-opt.wasm` | 1642 | 2026-08-17 |
+| Rust | `rust/dla-opt.wasm` | 462 | 2026-08-17 |
+
+The canonical answer is **345**. The Zig, C, LLVM and Rust sources and binaries above have been
+deleted, so exactly one DLA per language now exists in the tree. `go/main.go` survives from #11489,
+is loaded by nothing, and is the last of the class — a loose end rather than a decision.
+
+Two things are worth keeping from the episode:
+
+1. **A second implementation that nothing executes is not harmless.** It is a module waiting to be
+   staged by name, and that is precisely how each of these reached an operator-facing panel.
+2. **A plausible wrong number is the same defect as an obvious one.** The Zig repair began as a
+   PRNG fix that produced 516 instead of 345 — alive, wrong, and unfalsifiable, because nothing in
+   the tree could contradict it. The check that can is
+   `src/Core.TypeScript/discovery/identity-dla-pages-wasm-behavior.test.ts`, which *runs* each
+   staged module and compares it against the committed golden vector. The structural check it
+   supplements compares export names, and every divergent module had the right ones.
+
 ## Build Instructions
 
-### WAT (bare-metal)
+The byte-locked substrates are built by `bytelock/build-substrates.mjs`, which is the only recipe
+that matters — it is the one `run-bytelock-ci.mjs` and the audit derive their rosters from. See
+`bytelock/.gitignore` for why five of the six modules are committed rather than built in CI.
 
 ```bash
-wat2wasm wat/dla.wat -o /tmp/dla-wat.wasm
-wasm-validate /tmp/dla-wat.wasm
-```
-
-### AssemblyScript
-
-```bash
-npx asc assemblyscript/assembly/index.ts --outFile /tmp/dla-asc.wasm --optimize
-wasm-validate /tmp/dla-asc.wasm
-```
-
-### Go
-
-```bash
-GOOS=js GOARCH=wasm go build -o /tmp/dla-go.wasm ./go/
-# Note: Go WASM is not wasm-validate compatible (uses non-standard imports)
-```
-
-### Emscripten (C)
-
-```bash
-emcc c/dla.c -o /tmp/dla-emcc.wasm \
-  -s WASM=1 -s SIDE_MODULE=1 -O2 --no-entry \
-  -s EXPORTED_FUNCTIONS='["_init","_step","_get_df","_get_cell","_get_cluster_size"]'
-wasm-validate /tmp/dla-emcc.wasm
+node bytelock/build-substrates.mjs        # rebuild what the local toolchain supports
+node bytelock/run-bytelock-ci.mjs         # compare every substrate against testdata/
 ```
 
 ## CI Verification
 
-The `full-verify` job in `.github/workflows/gate.yml` runs the
-`WASM Oracle 10 build-verify` step, which rebuilds all four compiler
-outputs from source and validates each binary. This ensures Conjecture Z-7
-is reproducible in CI, not just on the developer's machine.
+`.github/workflows/bytelock.yml` runs `run-bytelock-ci.mjs` on every change under
+`src/wasm-dla/**`, and the `cross-verify` floor job in `gate.yml` runs
+`src/Core.TypeScript/hygiene/audit-proof-lineage-binaries.ts`.
+
+> This section previously claimed the `full-verify` job ran a `WASM Oracle 10 build-verify` step
+> that rebuilt all four compiler outputs from source. **No such step exists in `gate.yml`** — the
+> only trace of it is an unapplied `docs/research/gate-wasm-build-verify.patch`. A README asserting
+> a check that never ran is the same defect class as the panels above: something that reads as
+> verified because nobody looked. Corrected 2026-08-17.
 
 ## Why `bytelock/` contains committed `.wasm` files
 

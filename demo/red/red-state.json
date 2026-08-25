@@ -1,12 +1,10 @@
 {
   "version": 1,
-  "generatedAtIso": "2026-08-17T12:37:05.722Z",
-  "commit": "9abea585e",
+  "generatedAtIso": "2026-08-23T18:35:32.125Z",
+  "commit": "47be126c9",
   "totals": {
-    "findings": 3,
-    "bySeverity": {
-      "failing": 3
-    }
+    "findings": 0,
+    "bySeverity": {}
   },
   "territories": [
     {
@@ -36,42 +34,8 @@
         {
           "id": "main-failures",
           "name": "main — recent runs",
-          "summary": "3 of the last 40 runs on main failed.",
-          "findings": [
-            {
-              "id": "ci:32030041970",
-              "title": "Agent proposal to gated review branch",
-              "severity": "failing",
-              "locus": "87d76547b — 2026-08-17 12:28",
-              "evidence": [
-                "Agent proposal to gated review branch",
-                "run id 32030041970"
-              ],
-              "why": "A failing workflow on main is drift the fleet is expected to heal after the fact, not a gate that stops it."
-            },
-            {
-              "id": "ci:32030034784",
-              "title": "Agent proposal to gated review branch",
-              "severity": "failing",
-              "locus": "87d76547b — 2026-08-17 12:28",
-              "evidence": [
-                "Agent proposal to gated review branch",
-                "run id 32030034784"
-              ],
-              "why": "A failing workflow on main is drift the fleet is expected to heal after the fact, not a gate that stops it."
-            },
-            {
-              "id": "ci:32029990178",
-              "title": "agent-heartbeat",
-              "severity": "failing",
-              "locus": "87d76547b — 2026-08-17 12:27",
-              "evidence": [
-                "agent-heartbeat",
-                "run id 32029990178"
-              ],
-              "why": "A failing workflow on main is drift the fleet is expected to heal after the fact, not a gate that stops it."
-            }
-          ]
+          "summary": "All of the last 40 runs on main concluded green.",
+          "findings": []
         }
       ]
     }

@@ -8,6 +8,7 @@ import {
   type NativeIndexedDbCheckpointOptions,
 } from "./browser-indexeddb-checkpoint";
 import type {
+  ZetaDbConvergencePolicy,
   ZetaDbFeedback,
   ZetaDbImagePort,
   ZetaDbImageRecord,
@@ -15,7 +16,11 @@ import type {
   ZetaDbTickReadout,
   ZetaDbTickRequest,
 } from "../zetadb/zeta-db-node";
-import { runZetaDbNodeTick } from "../zetadb/zeta-db-node";
+import { runConvergentZetaDbNodeTick } from "../zetadb/zeta-db-node";
+import { noForgetBackpressureAdmissionPolicy, type ZetaDbAdmissionPolicyPort } from "../zetadb/admission-policy";
+import type { ZetaDbRetentionPolicyPort } from "../zetadb/retention-policy";
+
+export const DEFAULT_BROWSER_ZETA_DB_CONVERGENCE_POLICY: ZetaDbConvergencePolicy = { maxAttempts: 3 };
 
 function mapCheckpointFeedback(
   feedback: BrowserCheckpointFeedback,
@@ -71,6 +76,8 @@ function mapRecordResult(
 /** Adapt browser persistence without making the database kernel depend on browser APIs. */
 export function createBrowserZetaDbImagePort(checkpoints: BrowserCheckpointPort): ZetaDbImagePort {
   return {
+    // Inherit the executable policy the checkpoint adapter applies inside its transaction.
+    revisionPolicy: checkpoints.revisionPolicy,
     load: async (nodeId) => mapRecordResult(await checkpoints.load(nodeId), "read"),
     save: async (record) => {
       const saved = mapRecordResult(
@@ -126,10 +133,19 @@ export async function runBrowserZetaDbWake(
   root: unknown,
   options: NativeIndexedDbCheckpointOptions,
   request: ZetaDbTickRequest,
+  convergencePolicy: ZetaDbConvergencePolicy = DEFAULT_BROWSER_ZETA_DB_CONVERGENCE_POLICY,
+  admissionPolicy: ZetaDbAdmissionPolicyPort = noForgetBackpressureAdmissionPolicy,
+  retentionPolicy?: ZetaDbRetentionPolicyPort,
 ): Promise<ZetaDbResult<ZetaDbTickReadout>> {
   const opened = await openBrowserZetaDbImagePort(root, options);
   if (!opened.ok) return opened;
-  const result = await runZetaDbNodeTick(opened.value, request);
+  const result = await runConvergentZetaDbNodeTick(
+    opened.value,
+    request,
+    convergencePolicy,
+    admissionPolicy,
+    retentionPolicy,
+  );
   const closed = opened.value.close();
   if (result.ok && !closed.ok) return closed;
   return result;

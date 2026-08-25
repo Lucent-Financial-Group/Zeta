@@ -20,6 +20,11 @@ or `workitems/`.
 resolve to a real row or archive artifact. What stays forbidden is using one as
 a **key**: a `B-*` filename (above) or a legacy id in a row's frontmatter.
 
+**Writing ABOUT a dangling id (an audit) is the third case** — annotate the mention,
+never exclude the file: `<!-- b-ref-adjudicated: B-NNNN landed-as-code <evidence-path> -->`
+on the same line. Checked, not trusted: the evidence path must exist, may not be the
+annotating file, and a ref that later resolves fails as STALE.
+
 ## Mint
 
 ```bash
@@ -32,5 +37,6 @@ Lifecycle: `set-workitem-state.ts` · `complete-workitem.ts` · events at
 ## Pointers
 
 - `src/Core.TypeScript/backlog/README.md` — schema + CI guards
+- `docs/DECISIONS/2026-08-23-zetaid-keyed-agenda-declarations.md` + `agendas/README.md` — the same shape applied to **agenda declarations** (`agendas/<zetaid>-<slug>.md`, `Category.Agenda = 12`); `docs/AGENDA.md` is legacy-and-kept exactly as `B-NNNN` rows are
 - `docs/backlog/P1/081KSXN940008QG0R002FWR9B2-migrate-backlog-sequential-b-nnnn-ids-to-zetaid-workitem-key.md` — umbrella
 - `.claude/rules.bak/otto-channels-reference-card.md` — legacy B-NNNN discipline (still applies to **legacy** `docs/backlog/` rows only)

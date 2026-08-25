@@ -212,8 +212,8 @@ These apply to any AI harness.
   (Claude-Code-native; other harnesses may consume
   the markdown directly even without skill machinery).
 - **Pull latest cutting-edge research.** When
-  reviewing upstream projects, treat them as
-  inspiration, not gospel. If a donor project's
+  reviewing reference-source projects, treat them
+  as inspiration, not gospel. If a donor project's
   event log is SQLite-shaped because it bootstrapped
   from SQLite, reimplement against FASTER's HybridLog
   / TigerBeetle grid blocks / SlateDB's writer-epoch
@@ -431,6 +431,16 @@ These apply to any AI harness.
   thread counts. Cross-harness rule: applies to all
   harnesses, not just Claude Code; the watched-list
   registry is harness-agnostic.
+- **Cloud Agent dispatch token — `docs/cloud-agent-workflow-dispatch-token.md`.**
+  Cursor Cloud Agents' default `gh` is the read-only `cursor` App
+  installation token and cannot `workflow_dispatch`. The
+  `ZETA_WORKFLOW_DISPATCH_TOKEN` Cursor Secret (fine-grained PAT,
+  Actions: read+write) is injected into every Cloud VM; use
+  `GH_TOKEN="$ZETA_WORKFLOW_DISPATCH_TOKEN" gh workflow run … --ref main`
+  (or the REST dispatches API) to kick off `build-ai-cluster-iso.yml`
+  and other manual workflows, and only when the concurrency group is
+  idle. Primarily relevant to Cursor Cloud Agents; host-loop harnesses
+  already have their own gh write path.
 
 ## Build and test gate
 
@@ -699,10 +709,10 @@ coordination, pull-before-push discipline.
   review, tick narration, memory curation, and
   maintainer chat.
 - `docs/category-theory/README.md` — category-theory
-  foundations the operator algebra rests on. Upstream
-  CTFP sources (Milewski + the .NET port) live under
+  foundations the operator algebra rests on. The CTFP
+  reference sources (Milewski + the .NET port) live under
   `references/prior-art/` after
-  `tools/setup/common/sync-prior-art.sh` runs.
+  `tools/setup/common/sync-prior-art.ts` runs.
 - `GOVERNANCE.md` — the numbered repo-wide rules
   themselves.
 

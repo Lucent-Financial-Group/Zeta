@@ -1,35 +1,26 @@
 import { describe, expect, test } from "bun:test";
 import {
-  BROWSER_CHECKPOINT_RECORD_SCHEMA,
-  browserCheckpointFailed,
   browserCheckpointSucceeded,
+  copyBrowserCheckpointRecord,
+  decideBrowserCheckpointSave,
   type BrowserCheckpointPort,
   type BrowserCheckpointRecord,
 } from "./browser-checkpoint-port";
 import { createBrowserZetaDbImagePort, openBrowserZetaDbImagePort } from "./browser-zetadb-image-port";
-import { runZetaDbNodeTick } from "../zetadb/zeta-db-node";
+import { runConvergentZetaDbNodeTick, runZetaDbNodeTick } from "../zetadb/zeta-db-node";
+import { monotoneLastWriterWinsRevisionPolicy } from "../persistence/revision-policy";
+import { canonicalEventIdRetentionPolicy } from "../zetadb/retention-policy";
 
 function fakeCheckpointPort(): BrowserCheckpointPort {
   let stored: BrowserCheckpointRecord | null = null;
   return {
+    revisionPolicy: monotoneLastWriterWinsRevisionPolicy,
     load: () => Promise.resolve(browserCheckpointSucceeded(stored)),
     save: (record) => {
-      if (stored !== null && stored.revision === record.revision) {
-        return Promise.resolve(
-          browserCheckpointFailed(
-            "checkpoint-revision-conflict",
-            `Checkpoint revision ${String(record.revision)} already names different bytes.`,
-            "backpressure",
-          ),
-        );
-      }
-      stored = {
-        schema: BROWSER_CHECKPOINT_RECORD_SCHEMA,
-        nodeId: record.nodeId,
-        revision: record.revision,
-        payload: new Uint8Array(record.payload),
-      };
-      return Promise.resolve(browserCheckpointSucceeded(stored));
+      const decision = decideBrowserCheckpointSave(stored, record, monotoneLastWriterWinsRevisionPolicy);
+      if (!decision.ok) return Promise.resolve(decision);
+      stored = copyBrowserCheckpointRecord(decision.value.record);
+      return Promise.resolve(browserCheckpointSucceeded(copyBrowserCheckpointRecord(stored)));
     },
     remove: () => Promise.resolve(browserCheckpointSucceeded(false)),
     close: () => browserCheckpointSucceeded(null),
@@ -38,7 +29,9 @@ function fakeCheckpointPort(): BrowserCheckpointPort {
 
 describe("browser ZetaDB image port", () => {
   test("runs the database through the browser-owned checkpoint boundary", async () => {
-    const port = createBrowserZetaDbImagePort(fakeCheckpointPort());
+    const checkpoints = fakeCheckpointPort();
+    const port = createBrowserZetaDbImagePort(checkpoints);
+    expect(port.revisionPolicy).toBe(checkpoints.revisionPolicy);
     const result = await runZetaDbNodeTick(port, {
       nodeId: "browser/global",
       executorId: "tab/1",
@@ -66,7 +59,49 @@ describe("browser ZetaDB image port", () => {
       feedback: {
         severity: "backpressure",
         code: "database-revision-conflict",
-        detail: "Checkpoint revision 1 already names different bytes.",
+        detail: "Revision 1 already names different bytes.",
+      },
+    });
+  });
+
+  test("executes retained-set selection through the browser-owned image port", async () => {
+    const port = createBrowserZetaDbImagePort(fakeCheckpointPort());
+    const request = (eventIds: readonly string[]) => ({
+      nodeId: "browser/global",
+      executorId: "tab/retention",
+      executorKind: "browser-tab" as const,
+      deltas: eventIds.map((eventId) => ({ eventId, rowKey: `row/${eventId}`, payload: eventId, weight: 1 })),
+      limits: { maxDeltas: 8, maxEntries: 2, maxCheckpointBytes: 16 * 1024 },
+    });
+
+    expect(
+      (
+        await runConvergentZetaDbNodeTick(
+          port,
+          request(["e3", "e4"]),
+          { maxAttempts: 2 },
+          undefined,
+          canonicalEventIdRetentionPolicy,
+        )
+      ).ok,
+    ).toBe(true);
+    const result = await runConvergentZetaDbNodeTick(
+      port,
+      request(["e1", "e2"]),
+      { maxAttempts: 2 },
+      undefined,
+      canonicalEventIdRetentionPolicy,
+    );
+
+    expect(result.ok && result.value).toMatchObject({
+      revision: 2,
+      rows: [
+        { rowKey: "row/e1", payload: "e1", weight: 1 },
+        { rowKey: "row/e2", payload: "e2", weight: 1 },
+      ],
+      retentionReceipt: {
+        policyId: "canonical-event-id",
+        displacedEventIds: ["e3", "e4"],
       },
     });
   });

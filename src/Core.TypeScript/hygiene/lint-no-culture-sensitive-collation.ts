@@ -180,6 +180,11 @@ export const ALLOWLIST: readonly { readonly file: string; readonly reason: strin
     reason: "the collation treaty's differential test — it compares candidate orders against each other on purpose",
   },
   {
+    file: "src/Core.TypeScript/hygiene/glossary-adoption-cell.test.ts",
+    reason:
+      "pins that the glossary cell's tie-break is ordinal by exhibiting the locale order it must not be; the disagreement IS the assertion, so removing the localeCompare call would leave the test pinning nothing",
+  },
+  {
     file: "src/Core.TypeScript/society/society.test.ts",
     reason: "asserts that the canonical address order DIVERGES from localeCompare; the divergence is the assertion",
   },
@@ -196,6 +201,16 @@ export const ALLOWLIST: readonly { readonly file: string; readonly reason: strin
     file: "src/Core.TypeScript/hygiene/treaty-rule-alternatives.ts",
     reason:
       "the treaty-rule register — locale collation IS the alternative under evaluation. All three uses sit inside `evaluate:` callbacks that measure how many pinned vectors change if an implementer had chosen Intl.Collator instead of ordinal; the file exists to prove the vectors discriminate the two. Same shape as collation.test.ts above.",
+  },
+  {
+    file: "src/Core.TypeScript/search/inverted/inverted-index.test.ts",
+    reason:
+      "asserts that the inverted index's term order DIVERGES from localeCompare — byte order puts every uppercase letter before every lowercase one, `en` order interleaves them. The single call computes the cultural order the shards must NOT be in, so without it the ordering assertion would pin nothing. Same shape as society.test.ts above.",
+  },
+  {
+    file: "src/Core.TypeScript/observe/decorrelation-meter.test.ts",
+    reason:
+      "the three calls are CONTROLS that compute the locale order the tick-window fold must NOT be in, and each is asserted, never assumed: `MINUS.localeCompare(PLUS)` and `UPPER.localeCompare(LOWER)` pin that ordinal and linguistic order genuinely DISAGREE on two timestamp pairs that parse to the same instant (measured, both directions), and `\"B\".localeCompare(\"a\")` does the same for the agent-pair enumeration. Without them the ordering assertions would pin nothing — a mutation run proved it: swapping `stringCompare` for `localeCompare` in the fold survived until these controls existed. Same shape as society.test.ts above.",
   },
   {
     file: "src/Core.TypeScript/hygiene/lint-treaty-rule-discrimination.test.ts",

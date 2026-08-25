@@ -16,14 +16,29 @@
 import { describe, expect, test } from "bun:test";
 
 import {
+  ACTION_MODE_BY_HUMAN_AUTHORITY,
   CANONICAL_SHAPE,
   ENUMS,
+  ACCOUNTABLE_PARTIES,
+  ACCOUNTABILITY_KEYS,
+  AUTHORITY_BASES,
+  GOVERNANCE_KEYS,
+  HUMAN_REVIEW_BY_HUMAN_AUTHORITY,
+  HUMAN_REVIEW_EVIDENCE_BY_EVIDENCE_STRENGTH,
+  accountabilityAnchor,
+  reconcileHumanReview,
+  reconcileReviewEvidence,
+  reconcileReviewPair,
+  validateAccountabilityPair,
   REQUIRED_KEYS,
   blockValue,
   detectBlockDisagreement,
+  detectReconciliations,
+  reconcileActionMode,
   findAllSignatureBlocks,
   findSignatureBlock,
   missingRequiredKeys,
+  normalizeLineEndings,
   validateBlock,
   validateText,
 } from "./agencysignature-block.ts";
@@ -44,7 +59,11 @@ function block(over: Readonly<Record<string, string>> = {}): string {
     Task: "none",
   };
   const merged = { ...base, ...over };
-  return REQUIRED_KEYS.filter((k) => merged[k] !== undefined)
+  // Required keys first, in canonical order; any EXTRA key an override supplies
+  // (`Accountable-Party`, `Authority-Basis`, `Cell`, a stray) follows in the same
+  // paragraph, because contiguity is what makes it one block.
+  const extra = Object.keys(over).filter((k) => !REQUIRED_KEYS.includes(k));
+  return [...REQUIRED_KEYS.filter((k) => merged[k] !== undefined), ...extra]
     .map((k) => `${k}: ${merged[k] ?? ""}`)
     .join("\n");
 }
@@ -184,6 +203,23 @@ describe("PARITY: the pre-merge gate and the post-merge auditor cannot disagree"
   });
 });
 
+describe("transport line endings are not AgencySignature values", () => {
+  test("browser-style CRLF metadata remains a valid canonical block", () => {
+    const crlf = block().replace(/\n/g, "\r\n");
+    expect(normalizeLineEndings(crlf)).toBe(block());
+    expect(validateText(`## Summary\r\n\r\nWork.\r\n\r\n${crlf}\r\n`).violations).toEqual([]);
+    expect(preMergeAccepts(`## Summary\r\n\r\nWork.\r\n\r\n${crlf}\r\n`)).toBe(true);
+    expect(postMergeAccepts(crlf)).toBe(true);
+  });
+
+  test("FALSIFIER: CRLF normalization does not admit an invalid enum", () => {
+    const crlfInvalid = block({ "Action-Mode": "autonomous" }).replace(/\n/g, "\r\n");
+    const violation = validateText(crlfInvalid).violations[0];
+    expect(violation?.code).toBe("invalid-enum");
+    expect(violation?.key).toBe("Action-Mode");
+  });
+});
+
 // ---------------------------------------------------------------------------
 // RECOVERY — the falsifiers the brief asked for by name.
 // ---------------------------------------------------------------------------
@@ -315,23 +351,40 @@ describe("LAST-WINS: the last complete block is authoritative", () => {
 });
 
 describe("BLOCK-DISAGREEMENT: contradictory governance claims are loud", () => {
-  test("FALSIFIER: two blocks disagreeing on Human-Review is an ERROR, not a pick", () => {
+  // CHANGED 2026-08-24 (second pass). This case used to assert that a
+  // `Human-Review` disagreement is an ERROR. It is now RECONCILED — downward, and
+  // only downward. The invariant the original test was protecting is untouched and
+  // is asserted here directly: last-wins would have recorded the review the other
+  // block denies, and this does the opposite. See §GENERALISATION in the module.
+  test("FALSIFIER: a Human-Review disagreement resolves DOWN — never to the review", () => {
     // Live shape on main: c417b28c6357 has `Human-Review: none` and `explicit`.
-    // Last-wins would RECORD A REVIEW THE OTHER BLOCK DENIES.
     const a = block({ "Human-Review": "none", "Human-Review-Evidence": "none" });
     const z = block({ "Human-Review": "explicit", "Human-Review-Evidence": "pr-review" });
     const text = `chore: squash\n\n${a}\n\n* second\n\n${z}\n`;
-    const d = detectBlockDisagreement(text);
-    expect(d).not.toBeNull();
-    expect(d?.keys).toContain("Human-Review");
-    const v = validateText(text).violations;
-    expect(v[0]?.code).toBe("block-disagreement");
-    expect(preMergeAccepts(text)).toBe(false);
+    expect(detectBlockDisagreement(text)).toBeNull();
+    expect(validateText(text).violations).toEqual([]);
+    expect(preMergeAccepts(text)).toBe(true);
+    // The LAST block claims `explicit`. If the resolution ever tracks position
+    // rather than weakness, this is where it shows.
+    const byKey = new Map(validateText(text).reconciliations.map((r) => [r.key, r.resolved]));
+    expect(byKey.get("Human-Review")).toBe("none");
+    expect(byKey.get("Human-Review")).not.toBe("explicit");
+    expect(byKey.get("Human-Review-Evidence")).toBe("none");
+    // ...and order must not matter: last-wins is exactly what this replaces.
+    const flipped = `chore: squash\n\n${z}\n\n* second\n\n${a}\n`;
+    expect(
+      validateText(flipped).reconciliations.find((r) => r.key === "Human-Review")?.resolved,
+    ).toBe("none");
   });
 
-  test("FALSIFIER: Action-Mode disagreement is an error", () => {
+  // CHANGED 2026-08-23. This case used to pair `supervised` with
+  // `autonomous-fail-open`, which now RECONCILES (both directions collapse to a
+  // claim of absence, so nothing is manufactured). The pair kept here is the one
+  // that must stay loud forever: two claims of human PRESENCE, neither implied by
+  // the other. See §ACTION-MODE RECONCILIATION below for the full boundary.
+  test("FALSIFIER: an Action-Mode disagreement between two human-presence claims is an error", () => {
     const a = block({ "Action-Mode": "supervised" });
-    const z = block({ "Action-Mode": "autonomous-fail-open" });
+    const z = block({ "Action-Mode": "human-directed" });
     expect(detectBlockDisagreement(`x\n\n${a}\n\ny\n\n${z}\n`)).not.toBeNull();
   });
 
@@ -359,12 +412,131 @@ describe("BLOCK-DISAGREEMENT: contradictory governance claims are loud", () => {
   });
 
   test("disagreement is checked BEFORE value validation", () => {
-    // A contradiction must not be masked by the last block being well-formed.
-    const a = block({ "Human-Review": "none", "Human-Review-Evidence": "none" });
+    // A contradiction must not be masked by the last block being well-formed. The
+    // pair used here is one that must stay loud forever: two blocks agreeing that a
+    // human reviewed, citing DIFFERENT live evidence pointers. Both blocks are
+    // internally valid, so only the ordering of the two checks makes this red.
+    const a = block({ "Human-Review": "explicit", "Human-Review-Evidence": "chat" });
     const z = block({ "Human-Review": "explicit", "Human-Review-Evidence": "pr-review" });
+    expect(validateBlock(a)).toEqual([]);
+    expect(validateBlock(z)).toEqual([]);
     const v = validateText(`x\n\n${a}\n\ny\n\n${z}\n`).violations;
     expect(v.length).toBe(1);
     expect(v[0]?.code).toBe("block-disagreement");
+  });
+});
+
+// ---------------------------------------------------------------------------
+// MAINTENANCE COMMITS — pinning the honest path that was only ACCIDENTAL.
+// ---------------------------------------------------------------------------
+// 2026-08-18. Several stale PRs looked blocked on a premise that turned out to
+// be false, and was MEASURED false: that a non-authoring agent cannot merge
+// `main` into someone else's branch without asserting trailer values it cannot
+// witness (`Credential-Mode: dedicated-agent`, `Human-Review: explicit`). It
+// can. `findAllSignatureBlocks` keeps paragraphs carrying all ten keys and
+// `detectBlockDisagreement` returns null below two blocks, so a blockless
+// maintenance commit contributes ZERO blocks and ZERO disagreement — git's
+// default `Merge branch 'main' into X` message asserts nothing and passes.
+//
+// SILENCE IS NOT A FALSE CLAIM. That is the property, and until this block
+// existed NOTHING asserted it. A future tightening — someone "fixing" the scan
+// to require every commit to be signed — would have silently deleted the only
+// honest maintenance path and re-created the blockage for real, leaving a
+// maintainer to choose between lying in a trailer and leaving PRs stuck. These
+// tests are what makes such a tightening fail loudly instead of quietly.
+//
+// The rule an agent reads before it ever gets here:
+// `.claude/rules/maintenance-commit-on-another-agents-branch-carries-no-block.md`.
+
+describe("MAINTENANCE COMMITS: silence asserts nothing, and that is the honest record", () => {
+  /** What git writes with no author input at all. Ten keys short, on purpose. */
+  const BLOCKLESS_MERGE = "Merge branch 'main' into vera/some-work";
+  const branchWork = `feat: the branch's own work\n\n${block({
+    Agent: "vera",
+    Task: "081M0085XQT087G0R003W4KFS4",
+  })}`;
+
+  /**
+   * The squash preimage as CI reconstructs it:
+   * `gh api .../pulls/N/commits --jq '.[].commit.message'` emits one message per
+   * jq record, so the text is a plain newline join, oldest commit first.
+   */
+  const preimage = (...messages: readonly string[]): string => messages.join("\n");
+
+  test("LOAD-BEARING: a blockless maintenance commit contributes no block and no disagreement", () => {
+    // If this goes red, the honest maintenance path has been removed and the
+    // only remaining way to merge `main` into another agent's branch is to
+    // assert something the maintaining agent cannot witness.
+    expect(findAllSignatureBlocks(BLOCKLESS_MERGE)).toEqual([]);
+    expect(detectBlockDisagreement(BLOCKLESS_MERGE)).toBeNull();
+    expect(validateText(BLOCKLESS_MERGE).blockCount).toBe(0);
+  });
+
+  test("LOAD-BEARING: branch block + blockless merge = ONE block, and it PASSES", () => {
+    const text = preimage(branchWork, BLOCKLESS_MERGE);
+    expect(findAllSignatureBlocks(text).length).toBe(1);
+    expect(detectBlockDisagreement(text)).toBeNull();
+    expect(validateText(text).violations).toEqual([]);
+    expect(preMergeAccepts(text)).toBe(true);
+
+    // Same verdict when GitHub composes the squash itself, `---------`-separated,
+    // and again when the merge commit is the OLDER of the two.
+    expect(preMergeAccepts([branchWork, BLOCKLESS_MERGE].join("\n\n---------\n\n"))).toBe(true);
+    expect(preMergeAccepts(preimage(BLOCKLESS_MERGE, branchWork))).toBe(true);
+  });
+
+  test("silence is legal ALONGSIDE authorship, never INSTEAD of it", () => {
+    // The guard on the guard. A blockless commit is quiet, not exempt: a
+    // proposal whose commits are ALL blockless carries no signature anywhere and
+    // is still refused. Without this, "silence is honest" would read as a licence
+    // to sign nothing at all.
+    expect(preMergeAccepts(BLOCKLESS_MERGE)).toBe(false);
+  });
+
+  test("a maintainer who DID decide content signs as itself — agreeing blocks pass", () => {
+    // Resolving a conflict or fixing a lint is authored work, so it carries a
+    // block with the maintaining agent's OWN honest values. Differing only on
+    // incidental fields (Agent, Task) is two true statements, not a conflict.
+    const maintainerWork = `fix: resolve the conflict in ThisFile.fs\n\n${block({
+      Agent: "shadow",
+      Task: "resolve-conflict-on-vera-branch",
+    })}`;
+    const text = preimage(branchWork, maintainerWork);
+    expect(findAllSignatureBlocks(text).length).toBe(2);
+    expect(detectBlockDisagreement(text)).toBeNull();
+    expect(preMergeAccepts(text)).toBe(true);
+  });
+
+  test("FALSIFIER: an HONEST maintenance block that disagrees on a governance key is LOUD", () => {
+    // And that is the mechanism WORKING. A maintaining agent that cannot read its
+    // credential records `Credential-Mode: unknown` — the honest floor, exactly
+    // as `heartbeatMergePrBody` degrades rather than asserting a convenient
+    // value. Against a branch claiming `dedicated-agent` that is a real
+    // contradiction about one change, so it must be loud. The remedy is to hand
+    // the PR back to its owner, never to overwrite the honest value.
+    const maintainerWork = `fix: resolve the conflict\n\n${block({
+      Agent: "shadow",
+      "Credential-Mode": "unknown",
+    })}`;
+    const text = preimage(branchWork, maintainerWork);
+    const d = detectBlockDisagreement(text);
+    expect(d?.keys).toContain("Credential-Mode");
+    expect(validateText(text).violations[0]?.code).toBe("block-disagreement");
+    expect(preMergeAccepts(text)).toBe(false);
+  });
+
+  test("ADMISSION, not a guard: two identical blocks PASS — a copy is byte-identical", () => {
+    // Stated out loud so nobody reads this pass as a licence. The parser CANNOT
+    // distinguish a copied attestation from an earned one: an agent that pastes
+    // the branch's block onto its own maintenance commit produces bytes
+    // indistinguishable from the branch author having written it, so no test here
+    // can ever catch it. Only the rule stops that —
+    // `.claude/rules/maintenance-commit-on-another-agents-branch-carries-no-block.md`
+    // — which is exactly why the rule has to live where an agent reads it at cold
+    // start, rather than in a check that reads the bytes.
+    const copied = preimage(branchWork, `chore: merge main\n\n${block({ Agent: "vera" })}`);
+    expect(detectBlockDisagreement(copied)).toBeNull();
+    expect(preMergeAccepts(copied)).toBe(true);
   });
 });
 
@@ -431,5 +603,741 @@ describe("validateBlock", () => {
     // Co-authored-by goes; that omission is the upstream cause of 551 commits.
     expect(CANONICAL_SHAPE).toContain("Co-authored-by");
     expect(CANONICAL_SHAPE).toContain("blank line");
+  });
+});
+
+
+// ---------------------------------------------------------------------------
+// ACTION-MODE RECONCILIATION — the falsifiers for the 2026-08-23 carve-out.
+// ---------------------------------------------------------------------------
+// Aaron: *"accept the mixed Action-Mode (shadow*)"*. The carve-out is only as
+// good as its scope, so the scope is machine-checked here rather than asserted in
+// a comment. Four properties, in the order the module's doc-comment names them:
+//
+//   1. resolves only to a value a constituent actually wrote,
+//   2. resolves only DOWNWARD (never above the minimum present),
+//   3. refuses to resolve to a claim of human presence,
+//   4. refuses to order a value outside the enum,
+//
+// plus the one that keeps it narrow: NO OTHER GOVERNANCE KEY changed.
+
+/**
+ * The reconcilable set, stated by the TEST rather than imported from the module.
+ * The module names its three keys literally and deliberately keeps no table (a table
+ * is an invitation for the next key to inherit the exemption without the argument),
+ * so the roster is written here — where drifting from the implementation is what
+ * turns the scope falsifier red instead of silently widening it.
+ */
+const RECONCILABLE_KEYS: readonly string[] = [
+  "Human-Review",
+  "Human-Review-Evidence",
+  "Action-Mode",
+];
+
+describe("ACTION-MODE RECONCILIATION: weakest claim, never the strongest", () => {
+  const AM = "Action-Mode";
+
+  /** Every subset of the enum with two or more members — 11 of them. */
+  function subsets(): readonly (readonly string[])[] {
+    const out: string[][] = [];
+    const n = ACTION_MODE_BY_HUMAN_AUTHORITY.length;
+    for (let mask = 0; mask < 1 << n; mask++) {
+      const pick = ACTION_MODE_BY_HUMAN_AUTHORITY.filter((_, i) => (mask & (1 << i)) !== 0);
+      if (pick.length >= 2) out.push([...pick]);
+    }
+    return out;
+  }
+
+  test("THE FALSIFIER: human-directed + autonomous-fail-open NEVER resolves to human-directed", () => {
+    // The live shape of PR #14251: six commits a human asked for, one later
+    // autonomous maintenance fix. If this ever comes out `human-directed`, the
+    // check has manufactured a human direction nobody gave.
+    const mixed = ["human-directed", "autonomous-fail-open"];
+    expect(reconcileActionMode(mixed)).toBe("autonomous-fail-open");
+    expect(reconcileActionMode([...mixed].reverse())).toBe("autonomous-fail-open");
+    expect(reconcileActionMode(mixed)).not.toBe("human-directed");
+
+    // ...and end to end, through the actual gate, in BOTH commit orders. Order
+    // must not matter: last-wins is exactly what this replaces.
+    const human = block({ [AM]: "human-directed" });
+    const auto = block({ [AM]: "autonomous-fail-open" });
+    for (const text of [
+      `deps: roll\n\n${human}\n\n* fix\n\n${auto}\n`,
+      `deps: roll\n\n${auto}\n\n* fix\n\n${human}\n`,
+    ]) {
+      expect(detectBlockDisagreement(text)).toBeNull();
+      expect(validateText(text).violations).toEqual([]);
+      expect(preMergeAccepts(text)).toBe(true);
+      expect(detectReconciliations(text)[0]?.resolved).toBe("autonomous-fail-open");
+    }
+  });
+
+  test("EXHAUSTIVE: every resolution is a member of its input and never above the minimum", () => {
+    for (const values of subsets()) {
+      const resolved = reconcileActionMode(values);
+      if (resolved === null) continue;
+      // (1) nothing is invented
+      expect(values).toContain(resolved);
+      // (2) nothing is strengthened
+      const ranks = values.map((v) => ACTION_MODE_BY_HUMAN_AUTHORITY.indexOf(v));
+      expect(ACTION_MODE_BY_HUMAN_AUTHORITY.indexOf(resolved)).toBe(Math.min(...ranks));
+      // (3) never a claim of human presence
+      expect(resolved.startsWith("autonomous-")).toBe(true);
+    }
+  });
+
+  test("REFUSED: two claims of human PRESENCE stay loud — neither implies the other", () => {
+    expect(reconcileActionMode(["supervised", "human-directed"])).toBeNull();
+    const text = `x\n\n${block({ [AM]: "supervised" })}\n\ny\n\n${block({ [AM]: "human-directed" })}\n`;
+    expect(detectBlockDisagreement(text)?.keys).toContain(AM);
+    expect(preMergeAccepts(text)).toBe(false);
+  });
+
+  test("REFUSED: a value outside the enum has no rank, so it is not ordered", () => {
+    // 58 commits on main carry the retired `autonomous` / `agent-chosen`
+    // spellings. Unknown vocabulary fails CLOSED rather than being guessed in.
+    expect(reconcileActionMode(["autonomous", "human-directed"])).toBeNull();
+    expect(reconcileActionMode(["agent-chosen", "autonomous-fail-open"])).toBeNull();
+    expect(reconcileActionMode(["human-directed", ""])).toBeNull();
+  });
+
+  test("fail-open beats fail-closed — a squash never reads SAFER than a commit in it", () => {
+    expect(reconcileActionMode(["autonomous-fail-closed", "autonomous-fail-open"])).toBe(
+      "autonomous-fail-open",
+    );
+  });
+
+  test("SCOPE: no key outside the three per-commit ones became reconcilable", () => {
+    // The narrowing falsifier. The reconcilable set is exactly the three keys that
+    // describe HOW ONE COMMIT WAS MADE. If a later edit generalises the carve-out
+    // into a table over all of `GOVERNANCE_KEYS`, this goes red for whichever key
+    // was added.
+    //
+    // MUTANT THIS CATCHES: widening (a table, or dropping a key from the loud set).
+    // It is deliberately NOT sensitive to reverting the 2026-08-24 generalisation —
+    // that direction is covered by §THE #13909 SHAPE below.
+    const others = GOVERNANCE_KEYS.filter((k) => !RECONCILABLE_KEYS.includes(k));
+    expect(others).toEqual([
+      "Agency-Signature-Version",
+      "Credential-Mode",
+      "Accountable-Party",
+      "Authority-Basis",
+    ]);
+    const alt: Readonly<Record<string, readonly [string, string]>> = {
+      // The schema discriminator: changes how everything else is read.
+      "Agency-Signature-Version": ["1", "2"],
+      // WHOSE credential acted. Not a per-commit causal fact about how the work was
+      // made — it is a claim about whether a human was reachable at all, and the two
+      // values are not ordered by anything. Stays loud.
+      "Credential-Mode": ["shared", "dedicated-agent"],
+      // The two accountability keys: governance-critical and NEVER reconcilable. A
+      // change with two accountable parties has no accountable party.
+      "Accountable-Party": ["acehack", "lucent-financial-group"],
+      "Authority-Basis": ["standing-grant", "per-act"],
+    };
+    for (const key of others) {
+      const pair = alt[key];
+      expect(pair).toBeDefined();
+      const a = block({ [key]: pair?.[0] ?? "" });
+      const z = block({ [key]: pair?.[1] ?? "" });
+      const text = `x\n\n${a}\n\ny\n\n${z}\n`;
+      expect(detectBlockDisagreement(text)?.keys ?? []).toContain(key);
+      expect(validateText(text).violations[0]?.code).toBe("block-disagreement");
+      expect(preMergeAccepts(text)).toBe(false);
+      // ...and none of them appears as a RECONCILIATION either — loud, not resolved.
+      expect(validateText(text).reconciliations.map((r) => r.key)).not.toContain(key);
+    }
+  });
+
+  test("DISCRIMINATION: the #14430 shape resolves on ALL THREE keys, unanchored", () => {
+    // CHANGED 2026-08-24 (second pass). This used to assert the shape stays BLOCKED
+    // on `Human-Review`. The block was real and so was the reasoning behind it — but
+    // it rested on `Human-Review` carrying the accountability claim, and the fix for
+    // that (`Accountable-Party` / `Authority-Basis`) gated the relief on a key NO
+    // BLOCK ON MAIN CARRIES. So the relief never arrived and the shape recurred.
+    // What actually makes the resolution safe is the DIRECTION, which needs no anchor.
+    const reviewed = block({
+      "Human-Review": "explicit",
+      "Human-Review-Evidence": "chat",
+      [AM]: "human-directed",
+    });
+    const not = block({
+      "Human-Review": "not-implied-by-credential",
+      "Human-Review-Evidence": "none",
+      [AM]: "autonomous-fail-closed",
+    });
+    const text = `feat: agendas\n\n${reviewed}\n\n* later\n\n${not}\n`;
+    expect(detectBlockDisagreement(text)).toBeNull();
+    expect(validateText(text).violations).toEqual([]);
+    expect(preMergeAccepts(text)).toBe(true);
+    const byKey = new Map(validateText(text).reconciliations.map((r) => [r.key, r.resolved]));
+    expect(byKey.get("Human-Review")).toBe("not-implied-by-credential");
+    expect(byKey.get("Human-Review-Evidence")).toBe("none");
+    expect(byKey.get(AM)).toBe("autonomous-fail-closed");
+  });
+
+  test("the verdict CARRIES the resolution, so a report cannot print the stronger value", () => {
+    // The last block is the human-directed one. A caller reading
+    // `verdict.block`'s Action-Mode would print `human-directed` for a squash
+    // resolved as autonomous.
+    const text = `x\n\n${block({ [AM]: "autonomous-fail-open" })}\n\ny\n\n${block({ [AM]: "human-directed" })}\n`;
+    const verdict = validateText(text);
+    expect(blockValue((verdict.block ?? []).join("\n"), AM)).toBe("human-directed");
+    expect(verdict.reconciliations[0]).toEqual({
+      key: AM,
+      resolved: "autonomous-fail-open",
+      from: ["autonomous-fail-open", "human-directed"],
+    });
+  });
+
+  test("the AUDITOR must not report a reconciled squash as an AGREEING one — BOTH paths", () => {
+    // The report defect this reconciliation introduced, and its falsifier. The
+    // multi-block CORRECT line said "they agree on every governance field",
+    // which stops being true the moment a field is RESOLVED instead of matched —
+    // a report claiming more than was checked, on the one field where
+    // overclaiming is the hazard.
+    //
+    // Both classification paths are driven, because which one a commit takes is
+    // decided by the FORGE (whether its blank line left the block git-parseable)
+    // and has nothing to do with whether a value was discarded. The landed
+    // squash of #14251 takes the canonical-scan path; a locally-authored one
+    // takes the strict path.
+    const first = block({ [AM]: "human-directed" });
+    const last = block({ [AM]: "autonomous-fail-open" });
+    const mixed = `deps: roll\n\n${first}\n\n* fix\n\n${last}\n`;
+    const paths: readonly (readonly [string, string])[] = [
+      ["git-parseable (strict)", `${last}\n`],
+      ["canonical scan (layout-tolerant)", ""],
+    ];
+    for (const [name, trailers] of paths) {
+      const record = classifyCommitRecord(
+        {
+          trailers,
+          message: mixed,
+          timestamp: Date.parse("2026-08-20T00:00:00Z") / 1000,
+          isoDate: "2026-08-20T00:00:00Z",
+          authorEmail: "aaron_bond@yahoo.com",
+          committerEmail: "noreply@github.com",
+        },
+        Date.parse("2026-05-28T20:22:11Z") / 1000,
+        "2026-05-28T20:22:11Z",
+        Date.parse("2026-08-15T00:00:00Z") / 1000,
+        loadIdentityRoster(),
+      );
+      expect(`${name}: ${record.status}`).toBe(`${name}: CORRECT`);
+      expect(record.reason).not.toContain("agree on every governance field");
+      expect(record.reason).toContain("RECONCILED to the weakest claim");
+      expect(record.reason).toContain("'autonomous-fail-open'");
+    }
+  });
+
+  test("an UNreconciled multi-block CORRECT still says they agree — the note is not always-on", () => {
+    // The other half of the falsifier: a note that appeared on every multi-block
+    // commit would carry no information. This one is emitted only when something
+    // was really discarded.
+    const b = block({ [AM]: "human-directed" });
+    const record = classifyCommitRecord(
+      {
+        trailers: "",
+        message: `deps: roll\n\n${b}\n\n* more\n\n${b}\n`,
+        timestamp: Date.parse("2026-08-20T00:00:00Z") / 1000,
+        isoDate: "2026-08-20T00:00:00Z",
+        authorEmail: "aaron_bond@yahoo.com",
+        committerEmail: "noreply@github.com",
+      },
+      Date.parse("2026-05-28T20:22:11Z") / 1000,
+      "2026-05-28T20:22:11Z",
+      Date.parse("2026-08-15T00:00:00Z") / 1000,
+      loadIdentityRoster(),
+    );
+    expect(record.status).toBe("CORRECT");
+    expect(record.reason).toContain("agree on every governance field");
+    expect(record.reason).not.toContain("RECONCILED");
+  });
+
+  test("an unmixed Action-Mode reports no reconciliation at all", () => {
+    const b = block({ [AM]: "human-directed" });
+    expect(detectReconciliations(`x\n\n${b}\n\ny\n\n${b}\n`)).toEqual([]);
+    expect(validateText(`x\n\n${b}\n`).reconciliations).toEqual([]);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// THE ACCOUNTABILITY SPLIT — falsifiers for the 2026-08-24 additive keys.
+// ---------------------------------------------------------------------------
+// `Human-Review` was doing two jobs: (a) a named party is accountable — constant
+// across a branch, because it follows from a standing grant — and (b) a human read
+// this diff, which legitimately varies per commit. The gate reported (b)'s honest
+// variation as a contradiction about (a).
+//
+// Four properties are checked here, and the LAST is the falsifier for the whole
+// design. Without it this is a permissive schema wearing a governance vocabulary.
+//
+//   1. v1 IS UNTOUCHED. Every block that lacks the keys behaves exactly as before.
+//   2. The keys VALIDATE — rostered values, all-or-nothing, v1 and v2 alike.
+//   3. The #14430 shape resolves ONCE ANCHORED, in the understating direction.
+//   4. TWO ACCOUNTABLE PARTIES FAILS LOUDLY, and no anchor can buy its way out.
+
+describe("ACCOUNTABILITY SPLIT: who carries blame is not whether a human looked", () => {
+  const AP = "Accountable-Party";
+  const AB = "Authority-Basis";
+  const HR = "Human-Review";
+  const HRE = "Human-Review-Evidence";
+
+  /** A block carrying the standing-grant anchor Aaron's grant actually describes. */
+  function anchored(over: Readonly<Record<string, string>> = {}): string {
+    return block({ [AP]: "acehack", [AB]: "standing-grant", ...over });
+  }
+  const join = (...blocks: readonly string[]): string =>
+    blocks.map((b, i) => `prose ${String(i)}\n\n${b}`).join("\n\n") + "\n";
+
+  // -- 1. v1 IS UNTOUCHED ---------------------------------------------------
+
+  test("THE REGRESSION FLOOR: a block with neither key validates exactly as before", () => {
+    // 17,087 v1 blocks on `main` carry neither key. If this goes red the change
+    // was not additive and the corpus was invalidated in one commit.
+    expect(validateBlock(block())).toEqual([]);
+    expect(validateBlock(block({ "Agency-Signature-Version": "1" }))).toEqual([]);
+    expect(accountabilityAnchor([block().split("\n")])).toBeNull();
+  });
+
+  test("SILENCE IS NOT A DEFAULT: an absent party is never inferred", () => {
+    // The v1 corpus is permanently silent on accountability —
+    // `not-implied-by-credential` does not determine an accountable party, because
+    // the information was never captured. Reading a default out of it would be the
+    // manufacture-an-authorisation failure this module exists to prevent.
+    const v1 = block({ [HR]: "not-implied-by-credential", [HRE]: "none" });
+    expect(blockValue(v1, AP)).toBe("");
+    expect(accountabilityAnchor([v1.split("\n")])).toBeNull();
+    // ...and silence still buys NOTHING FOR ACCOUNTABILITY: an unanchored squash is
+    // read as naming nobody, and no party is invented for it. What silence no longer
+    // costs is the REVIEW resolution — that runs on the direction argument, which the
+    // anchor never supplied. Two different questions, and only one of them is
+    // answered by a field these blocks do not carry.
+    const text = join(
+      block({ [HR]: "explicit", [HRE]: "chat", "Action-Mode": "human-directed" }),
+      block({ [HR]: "not-implied-by-credential", [HRE]: "none", "Action-Mode": "autonomous-fail-closed" }),
+    );
+    expect(accountabilityAnchor(findAllSignatureBlocks(text))).toBeNull();
+    const reconciled = validateText(text).reconciliations;
+    expect(reconciled.map((r) => r.key)).not.toContain(AP);
+    expect(reconciled.map((r) => r.key)).not.toContain(AB);
+    expect(reconciled.find((r) => r.key === HR)?.resolved).toBe("not-implied-by-credential");
+    expect(validateText(text).violations).toEqual([]);
+  });
+
+  test("SILENCE IS NOT A COMPETING CLAIM: named + unnamed is quiet, and the name survives", () => {
+    // Absence of a blame claim is not a rival blame claim. The direction of the
+    // error is what licenses this: accepting liability for work whose other
+    // constituent named nobody is the OPPOSITE of a privilege escalation.
+    const text = join(anchored(), block());
+    expect(detectBlockDisagreement(text)).toBeNull();
+  });
+
+  // -- 2. THE KEYS VALIDATE -------------------------------------------------
+
+  test("the roster refuses a party that names nobody", () => {
+    // `Accountable-Party: nobody` would pass a shape check while naming no one who
+    // could have withheld the act — a field that cannot fail.
+    for (const bad of ["nobody", "the-team", "unknown", "TBD", ""]) {
+      const v = validateBlock(anchored({ [AP]: bad }));
+      expect(v[0]?.key).toBe(AP);
+      // An EMPTY value is the half-record case, not an out-of-roster one: the
+      // block claims a basis and names no one. Both are refusals; they differ in
+      // which of the two sentences the record failed to write.
+      expect(v[0]?.code).toBe(bad === "" ? "accountability-half-recorded" : "invalid-enum");
+    }
+    // `unknown` is deliberately NOT on the roster, and this is the sharpest of the
+    // five: every other enum in this file admits an honest `unknown` floor, and
+    // that is right for them — `Credential-Mode: unknown` truthfully reports a
+    // credential we could not determine. An UNKNOWN ACCOUNTABLE PARTY is not a
+    // measurement, it is the absence of one wearing a value, and it would pass a
+    // gate while naming nobody who could have withheld the act. Silence already
+    // says that, honestly, by omitting the pair.
+    expect(ACCOUNTABLE_PARTIES).not.toContain("unknown");
+    // Trailing whitespace is TRANSPORT, not value — `blockValue` trims space/tab
+    // for the same reason `normalizeLineEndings` exists, so this is not a smuggled
+    // roster entry, it is the same name.
+    expect(validateBlock(anchored({ [AP]: "acehack " }))).toEqual([]);
+    for (const good of ACCOUNTABLE_PARTIES) expect(validateBlock(anchored({ [AP]: good }))).toEqual([]);
+    for (const good of AUTHORITY_BASES) expect(validateBlock(anchored({ [AB]: good }))).toEqual([]);
+  });
+
+  test("the pair is all-or-nothing — half a record reads as complete and is refused", () => {
+    expect(validateBlock(block({ [AP]: "acehack" }))[0]?.code).toBe("accountability-half-recorded");
+    expect(validateBlock(block({ [AB]: "standing-grant" }))[0]?.code).toBe(
+      "accountability-half-recorded",
+    );
+    expect(validateAccountabilityPair(block())).toBeNull();
+    expect(validateAccountabilityPair(anchored())).toBeNull();
+  });
+
+  test("standing-grant is the word the schema lacked — the 99% case gets an affirmative spelling", () => {
+    // 15,387 of 15,516 blocks over the last 3,000 commits on `main` say
+    // `not-implied-by-credential`: the central governance field spends 99.17% of
+    // its records negating the word in its own key. This is the statement that was
+    // not writeable — "LFG is accountable, under standing authority, and no human
+    // reviewed it" — and it must now validate with nothing phrased as an absence.
+    const affirmative = block({
+      [AP]: "lucent-financial-group",
+      [AB]: "standing-grant",
+      [HR]: "not-implied-by-credential",
+      [HRE]: "none",
+    });
+    expect(validateBlock(affirmative)).toEqual([]);
+    expect(blockValue(affirmative, AP)).toBe("lucent-financial-group");
+  });
+
+  test("the keys are optional in v1 AND v2 — the dual-accept window is unchanged", () => {
+    const v2 = anchored({ "Agency-Signature-Version": "2", Agent: "soraya", Cell: "core" });
+    expect(validateBlock(v2)).toEqual([]);
+    const v2Silent = block({ "Agency-Signature-Version": "2", Agent: "soraya", Cell: "core" });
+    expect(validateBlock(v2Silent)).toEqual([]);
+  });
+
+  // -- 3. THE #14430 SHAPE, ANCHORED ---------------------------------------
+
+  test("THE DISSOLUTION: #14430's real shape resolves, anchor or no anchor", () => {
+    // The three real commits of PR #14430, verbatim field values, PLUS the anchor
+    // its standing grant always implied. Held constant: `Accountable-Party`,
+    // `Authority-Basis`. Left mixed exactly as they are: the causal facts.
+    const text = join(
+      anchored({ [HR]: "explicit", [HRE]: "chat", "Action-Mode": "human-directed" }),
+      anchored({ [HR]: "explicit", [HRE]: "chat", "Action-Mode": "human-directed" }),
+      anchored({
+        [HR]: "not-implied-by-credential",
+        [HRE]: "none",
+        "Action-Mode": "autonomous-fail-closed",
+      }),
+    );
+    const verdict = validateText(text);
+    expect(detectBlockDisagreement(text)).toBeNull();
+    expect(verdict.violations).toEqual([]);
+    expect(verdict.blockCount).toBe(3);
+
+    // The resolution is in the UNDERSTATING direction on every reconciled key.
+    const byKey = new Map(verdict.reconciliations.map((r) => [r.key, r.resolved]));
+    expect(byKey.get(HR)).toBe("not-implied-by-credential");
+    expect(byKey.get(HRE)).toBe("none");
+    expect(byKey.get("Action-Mode")).toBe("autonomous-fail-closed");
+    // ...and the discarded claim is PRINTED, never silently dropped (#14594).
+    expect(verdict.reconciliations.find((r) => r.key === HR)?.from).toContain("explicit");
+  });
+
+  test("THE DIRECTION: Human-Review never resolves UP to a claim of review", () => {
+    // The whole safety argument, and the same invariant as `reconcileActionMode`:
+    // the record may understate human backing; it may never overstate it.
+    for (const set of [
+      ["explicit", "not-implied-by-credential"],
+      ["explicit", "none"],
+      ["none", "not-implied-by-credential"],
+      ["not-implied-by-credential", "explicit", "none"],
+    ]) {
+      const resolved = reconcileHumanReview(set);
+      expect(resolved).not.toBeNull();
+      const value = resolved ?? "";
+      expect(value).not.toBe("explicit");
+      expect(set).toContain(value); // never invents a value
+      const ranks = set.map((v) => HUMAN_REVIEW_BY_HUMAN_AUTHORITY.indexOf(v));
+      expect(HUMAN_REVIEW_BY_HUMAN_AUTHORITY.indexOf(value)).toBe(Math.min(...ranks));
+      // order must not matter — last-wins is exactly what this replaces
+      expect(reconcileHumanReview([...set].reverse()) ?? "").toBe(value);
+    }
+  });
+
+  test("an out-of-enum review spelling is never guessed into position", () => {
+    // `main` carries 25 out-of-enum `Human-Review` spellings over 273 blocks —
+    // `pending` x77, `EXPLICIT` x38, `implied-by-interactive-session` x60, and free
+    // text such as `aaron-lets-do-it`. None has a rank, so none is ordered.
+    for (const bad of ["pending", "EXPLICIT", "implied-by-interactive-session", "aaron-lets-do-it"]) {
+      expect(reconcileHumanReview([bad, "not-implied-by-credential"])).toBeNull();
+    }
+    const text = join(anchored({ [HR]: "explicit", [HRE]: "chat" }), anchored({ [HR]: "pending" }));
+    expect(detectBlockDisagreement(text)?.keys).toContain(HR);
+  });
+
+  test("evidence reconciles only as a CONSEQUENCE — never on its own", () => {
+    // Two live evidence pointers under an agreeing explicit review are two true
+    // statements, and collapsing them to `none` would assert there is no evidence
+    // when there is. That stays loud.
+    const both = join(
+      anchored({ [HR]: "explicit", [HRE]: "chat" }),
+      anchored({ [HR]: "explicit", [HRE]: "pr-review" }),
+    );
+    expect(detectBlockDisagreement(both)?.keys).toContain(HRE);
+    expect(reconcileReviewEvidence(["explicit"], ["chat", "pr-review"])).toBeNull();
+    // ...and `none` is never invented when no constituent wrote it.
+    expect(reconcileReviewEvidence(["explicit", "none"], ["chat", "pr-review"])).toBeNull();
+  });
+
+  test("a PARTIAL anchor is still not an anchor — and the review keys no longer care", () => {
+    // Partial coverage is one commit's claim about the others, so it is not an
+    // anchor and never becomes one. It ALSO no longer decides the review keys: those
+    // resolve on the direction argument. Both halves are asserted, because the first
+    // is what stops the anchor being laundered and the second is what stops the
+    // anchor being a toll.
+    const text = join(
+      anchored({ [HR]: "explicit", [HRE]: "chat" }),
+      block({ [HR]: "not-implied-by-credential", [HRE]: "none" }), // no anchor
+    );
+    expect(accountabilityAnchor(findAllSignatureBlocks(text))).toBeNull();
+    expect(detectBlockDisagreement(text)).toBeNull();
+    expect(
+      validateText(text).reconciliations.find((r) => r.key === HR)?.resolved,
+    ).toBe("not-implied-by-credential");
+  });
+
+  test("an UNROSTERED anchor is still not an anchor — and the review keys no longer care", () => {
+    const text = join(
+      block({ [AP]: "acme-corp", [AB]: "standing-grant", [HR]: "explicit", [HRE]: "chat" }),
+      block({ [AP]: "acme-corp", [AB]: "standing-grant", [HR]: "none" }),
+    );
+    expect(accountabilityAnchor(findAllSignatureBlocks(text))).toBeNull();
+    // `acme-corp` is off the roster, so the BLOCKS are invalid — but that is an
+    // enum failure on the authoritative block, not a disagreement, and the review
+    // keys still resolve downward.
+    expect(detectBlockDisagreement(text)).toBeNull();
+    expect(validateText(text).reconciliations.find((r) => r.key === HR)?.resolved).toBe("none");
+    expect(validateText(text).violations[0]?.code).toBe("invalid-enum");
+  });
+
+  // -- 4. THE FALSIFIER -----------------------------------------------------
+
+  test("THE FALSIFIER: two accountable parties FAIL LOUDLY, and nothing resolves them", () => {
+    // A change with two accountable parties has no accountable party. There is no
+    // reconciliation rule for this and there must never be one: if the accountable
+    // party genuinely differs across a squash's constituents, that is a signal the
+    // commits should not have been squashed together, and surfacing it IS the job.
+    const text = join(
+      block({ [AP]: "acehack", [AB]: "standing-grant" }),
+      block({ [AP]: "lucent-financial-group", [AB]: "standing-grant" }),
+    );
+    const disagreement = detectBlockDisagreement(text);
+    expect(disagreement?.keys).toContain(AP);
+    expect(validateText(text).violations[0]?.code).toBe("block-disagreement");
+    // NOT reconciled away, and NOT resolved by last-wins.
+    expect(validateText(text).reconciliations.map((r) => r.key)).not.toContain(AP);
+    expect(accountabilityAnchor(findAllSignatureBlocks(text))).toBeNull();
+  });
+
+  test("THE FALSIFIER, deeper: two parties cannot be laundered by agreeing on everything else", () => {
+    // The tempting failure: every other field identical, so the record LOOKS
+    // coherent. It is the least coherent record the schema can hold.
+    const text = join(
+      block({ [AP]: "acehack", [AB]: "standing-grant", "Action-Mode": "autonomous-fail-open" }),
+      block({
+        [AP]: "lucent-financial-group",
+        [AB]: "standing-grant",
+        "Action-Mode": "autonomous-fail-open",
+      }),
+    );
+    const d = detectBlockDisagreement(text);
+    expect(d?.keys).toEqual([AP]);
+    expect(d?.details[0]).toContain("acehack");
+    expect(d?.details[0]).toContain("lucent-financial-group");
+  });
+
+  test("THE FALSIFIER, third form: a differing Authority-Basis is loud too", () => {
+    // `standing-grant` and `gated-class-approval` are not orderable — neither
+    // implies the other — so there is no weakest and no resolution.
+    const text = join(
+      anchored({ [AB]: "standing-grant" }),
+      anchored({ [AB]: "gated-class-approval" }),
+    );
+    expect(detectBlockDisagreement(text)?.keys).toContain(AB);
+    expect(accountabilityAnchor(findAllSignatureBlocks(text))).toBeNull();
+  });
+
+  test("SCOPE: the two accountability keys are governance-critical and never reconcilable", () => {
+    for (const key of ACCOUNTABILITY_KEYS) expect(GOVERNANCE_KEYS).toContain(key);
+    const text = join(anchored(), anchored({ [AP]: "lucent-financial-group" }));
+    expect(detectReconciliations(text)).toEqual([]);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// THE #13909 SHAPE — the falsifiers for the 2026-08-24 GENERALISATION
+// ---------------------------------------------------------------------------
+// The anchored `Human-Review` reconciliation shipped gated on `accountabilityAnchor`,
+// a pair NO BLOCK ON MAIN CARRIES (0 of 17,162). So the relief it was written to
+// deliver never reached a single real PR, and the shape it was written for kept
+// recurring. Two live PRs, measured the night this section was written:
+//
+//   #13909  18 commits; exactly one (`75ac62459`, a security fix) carries
+//           explicit / chat / human-directed. `Credential-Mode` (`shared`) and the
+//           version (`1`) agree across every block. Red on `Human-Review` alone.
+//   #14430  the same shape, 3 commits, 2 explicit + 1 not-implied.
+//
+// BOTH CLAIMS ARE TRUE — the maintainer reviewed one commit in chat and not the
+// others. Five properties are checked here. The first three fail if the
+// generalisation is reverted; the last two fail if it is WIDENED. A test that could
+// not fail under either mutation would be the vacuity class this module refuses, so
+// each one names the mutant it catches.
+
+describe("THE #13909 SHAPE: mixed review provenance is not a contradiction", () => {
+  const HR = "Human-Review";
+  const HRE = "Human-Review-Evidence";
+  const AM = "Action-Mode";
+
+  /** #13909's real field values: one reviewed commit among many that were not. */
+  const reviewedCommit = block({
+    Agent: "mateo",
+    [HR]: "explicit",
+    [HRE]: "chat",
+    [AM]: "human-directed",
+    "Credential-Mode": "shared",
+  });
+  const autonomousCommit = (i: number): string =>
+    block({
+      Agent: "shadow",
+      [HR]: "not-implied-by-credential",
+      [HRE]: "none",
+      [AM]: "autonomous-fail-closed",
+      "Credential-Mode": "shared",
+      Task: `work-item-${String(i)}`,
+    });
+
+  /** The squash preimage: every commit message concatenated, prose between. */
+  const preimageOf = (...blocks: readonly string[]): string =>
+    blocks.map((b, i) => `commit ${String(i)}: work\n\n${b}`).join("\n\n") + "\n";
+
+  // -- reverting the generalisation turns these three red -------------------
+
+  test("THE FALSIFIER: 18 blocks, one reviewed, resolves to the WEAKEST and passes", () => {
+    // MUTANT: revert the generalisation (re-gate on `accountabilityAnchor`). These
+    // blocks carry no anchor, so the gate would refuse and the squash goes red —
+    // which is the state #13909 is in on `main` today.
+    const rest = Array.from({ length: 17 }, (_, i) => autonomousCommit(i));
+    for (const order of [
+      preimageOf(reviewedCommit, ...rest), // reviewed commit first
+      preimageOf(...rest, reviewedCommit), // reviewed commit LAST — last-wins bait
+      preimageOf(...rest.slice(0, 9), reviewedCommit, ...rest.slice(9)), // in the middle
+    ]) {
+      expect(findAllSignatureBlocks(order).length).toBe(18);
+      expect(detectBlockDisagreement(order)).toBeNull();
+      expect(validateText(order).violations).toEqual([]);
+      expect(preMergeAccepts(order)).toBe(true);
+
+      const byKey = new Map(validateText(order).reconciliations.map((r) => [r.key, r.resolved]));
+      expect(byKey.get(HR)).toBe("not-implied-by-credential");
+      expect(byKey.get(HRE)).toBe("none");
+      expect(byKey.get(AM)).toBe("autonomous-fail-closed");
+      // The discarded claim is PRINTED, never silently dropped (#14594).
+      const from = validateText(order).reconciliations.find((r) => r.key === HR)?.from ?? [];
+      expect(from).toContain("explicit");
+      expect(from).toContain("not-implied-by-credential");
+    }
+  });
+
+  test("THE DIRECTION, end to end: no arrangement of blocks ever resolves UP", () => {
+    // MUTANT: revert (nothing resolves at all, so `resolved` is undefined), OR flip
+    // `Math.min` to `Math.max` in `reconcileHumanReview` (resolves to `explicit`).
+    // Every non-empty subset of the vocabulary with 2+ members, driven through the
+    // real gate, in both orders.
+    const vocab = HUMAN_REVIEW_BY_HUMAN_AUTHORITY;
+    const evidenceFor = (hr: string): string => (hr === "explicit" ? "chat" : "none");
+    for (let mask = 0; mask < 1 << vocab.length; mask++) {
+      const pick = vocab.filter((_, i) => (mask & (1 << i)) !== 0);
+      if (pick.length < 2) continue;
+      const blocks = pick.map((hr) => block({ [HR]: hr, [HRE]: evidenceFor(hr) }));
+      for (const ordered of [blocks, [...blocks].reverse()]) {
+        const text = preimageOf(...ordered);
+        const resolved = validateText(text).reconciliations.find((r) => r.key === HR)?.resolved;
+        expect(resolved).toBeDefined();
+        // (1) never strengthened — always the minimum of what was present
+        const ranks = pick.map((v) => vocab.indexOf(v));
+        expect(vocab.indexOf(resolved ?? "")).toBe(Math.min(...ranks));
+        // (2) never a claim of review
+        expect(resolved).not.toBe("explicit");
+        // (3) never invented — always a value some constituent wrote
+        expect(pick).toContain(resolved ?? "");
+      }
+    }
+  });
+
+  test("THE CROSS-FIELD GUARD: a resolution the schema itself refuses stays LOUD", () => {
+    // MUTANT: delete the `validateReviewConsistency` line from `reconcileReviewPair`.
+    // Reviews disagree while EVERY block cites `chat`, so resolving key-by-key gives
+    // (`not-implied-by-credential`, `chat`) — a pair `validateBlock` refuses. Silently
+    // reporting it green is a resolution manufacturing an invalid record.
+    //
+    // This is red under the pre-generalisation code too, but only by accident (no
+    // anchor). The ANCHORED variant below is the one that was GREEN and wrong before
+    // this guard existed, which is what makes the guard non-vacuous.
+    const mixedReviewsOneEvidence = (wrap: (o: Record<string, string>) => string): string =>
+      `x\n\n${wrap({ [HR]: "explicit", [HRE]: "chat" })}\n\ny\n\n${wrap({
+        [HR]: "not-implied-by-credential",
+        [HRE]: "chat",
+      })}\n`;
+    for (const text of [
+      mixedReviewsOneEvidence((o) => block(o)),
+      mixedReviewsOneEvidence((o) =>
+        block({ "Accountable-Party": "acehack", "Authority-Basis": "standing-grant", ...o }),
+      ),
+    ]) {
+      expect(reconcileReviewPair(["explicit", "not-implied-by-credential"], ["chat"])).toBeNull();
+      expect(detectBlockDisagreement(text)?.keys ?? []).toContain(HR);
+      expect(validateText(text).violations[0]?.code).toBe("block-disagreement");
+      expect(validateText(text).reconciliations.map((r) => r.key)).not.toContain(HR);
+      expect(preMergeAccepts(text)).toBe(false);
+    }
+  });
+
+  // -- widening the generalisation turns these two red ----------------------
+
+  test("SCOPE: Credential-Mode and the version still disagree LOUDLY", () => {
+    // MUTANT: widen the carve-out to all of `GOVERNANCE_KEYS`. `Credential-Mode` is
+    // not a per-commit causal fact — it says whether a human was reachable at all —
+    // and its values are not ordered by anything, so there is no weakest to take.
+    for (const [key, a, z] of [
+      ["Credential-Mode", "shared", "dedicated-agent"],
+      ["Credential-Mode", "human-only", "dedicated-agent"],
+      ["Agency-Signature-Version", "1", "2"],
+    ] as const) {
+      const text = `x\n\n${block({ [key]: a })}\n\ny\n\n${block({
+        [key]: z,
+        ...(key === "Agency-Signature-Version" ? { Agent: "soraya", Cell: "core" } : {}),
+      })}\n`;
+      expect(detectBlockDisagreement(text)?.keys ?? []).toContain(key);
+      expect(validateText(text).violations[0]?.code).toBe("block-disagreement");
+      expect(preMergeAccepts(text)).toBe(false);
+    }
+  });
+
+  test("SCOPE: two live evidence pointers have no weakest, so they stay LOUD", () => {
+    // MUTANT: give the four tier-1 evidence values a total order and take the
+    // minimum. They name different PLACES a review is recorded, not different
+    // AMOUNTS, so picking one would discard a true pointer to keep another.
+    const tier1 = HUMAN_REVIEW_EVIDENCE_BY_EVIDENCE_STRENGTH[1] ?? [];
+    expect(tier1.length).toBe(4);
+    expect(tier1).not.toContain("none");
+    for (const a of tier1) {
+      for (const z of tier1) {
+        if (a === z) continue;
+        // Under an AGREEING explicit review: two true statements, neither weaker.
+        expect(reconcileReviewEvidence(["explicit"], [a, z])).toBeNull();
+        // ...and under a DISAGREEING review, where `none` was never written.
+        expect(reconcileReviewEvidence(["explicit", "not-implied-by-credential"], [a, z])).toBeNull();
+        const text = `x\n\n${block({ [HR]: "explicit", [HRE]: a })}\n\ny\n\n${block({
+          [HR]: "explicit",
+          [HRE]: z,
+        })}\n`;
+        expect(detectBlockDisagreement(text)?.keys ?? []).toContain(HRE);
+        expect(preMergeAccepts(text)).toBe(false);
+      }
+    }
+    // The one tier-0 member is what makes a weakest element exist at all.
+    expect(HUMAN_REVIEW_EVIDENCE_BY_EVIDENCE_STRENGTH[0]).toEqual(["none"]);
+  });
+
+  test("an out-of-enum evidence spelling has no tier, so it is not ordered", () => {
+    // MUTANT: drop the `known.includes` refusal from `reconcileReviewEvidence`.
+    // Reverting that line makes `['none', 'slack-thread']` resolve to `none`,
+    // guessing an unknown vocabulary into position.
+    for (const bad of ["slack-thread", "CHAT", "verbal", ""]) {
+      expect(
+        reconcileReviewEvidence(["explicit", "not-implied-by-credential"], [bad, "none"]),
+      ).toBeNull();
+    }
   });
 });

@@ -236,6 +236,37 @@ describe("iter-5.5.0 target runtime bootstrap uses canonical install.sh", () => 
     expect(ITER_595_BLOCK).toContain("BUN_INSTALL=\"$ZETA_HOME/.bun\"");
   });
 
+  test("6.95-picker sudo trusts the cloned .mise.toml (same as wifi / iSerial / keyfile)", () => {
+    // Measured QEMU picker bind (run 32647553460): wifi/iSerial/keyfile sudo -u
+    // lines already pass MISE_TRUSTED_CONFIG_PATHS="$ZETA_HOME/Zeta" (PR #10226);
+    // 6.95-picker is a separate sudo and did not inherit install.sh's export.
+    // `mise activate` then died: "Config files in ~/Zeta/.mise.toml are not trusted".
+    const pickerIdx = ITER_595_BLOCK.lastIndexOf("zeta-creds-picker.ts");
+    expect(pickerIdx).toBeGreaterThan(-1);
+    const window = ITER_595_BLOCK.slice(Math.max(0, pickerIdx - 800), pickerIdx);
+    expect(window).toContain('MISE_TRUSTED_CONFIG_PATHS="$ZETA_HOME/Zeta"');
+  });
+
+  test("6.95-picker passes --defer-all on non-TTY / QEMU passphrase file (no bake hang)", () => {
+    // QEMU restore (run 32724820159): picker started, then hung on
+    // readline.question for [b]/[d]/[s] until the 1800s phase-1 timeout.
+    expect(ITER_595_BLOCK).toContain('PICKER_DEFER="--defer-all"');
+    expect(ITER_595_BLOCK).toContain("$PICKER_DEFER");
+    expect(ITER_595_BLOCK).toContain("[ ! -t 0 ]");
+  });
+
+  test("6.95-picker persist sudo-installs onto ESP (zeta uid cannot write /mnt/boot)", () => {
+    // Run 32804383505: --defer-all worked; persist EACCES on
+    // /mnt/boot/zeta-creds.enc. Keyfile already writes /tmp then sudo cp.
+    expect(ITER_595_BLOCK).toContain("PICKER_TMP=/tmp/zeta-creds.enc");
+    expect(ITER_595_BLOCK).toContain("--output $PICKER_TMP");
+    expect(ITER_595_BLOCK).not.toContain("--output /mnt/boot/zeta-creds.enc");
+    expect(ITER_595_BLOCK).toContain('sudo install -m 0600 "$PICKER_TMP" /mnt/boot/zeta-creds.enc');
+    expect(ITER_595_BLOCK).toContain(
+      'sudo install -m 0600 "$PICKER_TMP_FACTOR" /mnt/boot/zeta-creds.factor',
+    );
+  });
+
   test("agent CLI package installs are not duplicated in zeta-install.sh", () => {
     expect(ITER_595_BLOCK).toContain("tools/setup/manifests/from-bun-global");
     expect(ITER_595_BLOCK).toContain("tools/setup/manifests/from-installer");
@@ -355,8 +386,44 @@ describe("iter-5.1 hardware-configuration copy (081KSNY2Z0008QG0R0008PN7RQ phase
     expect(genIdx).toBeGreaterThan(0);
     expect(copyIdx).toBeGreaterThan(genIdx);
     expect(installIdx).toBeGreaterThan(copyIdx);
+    // 081M0JK4R26087G0R002SVJ5VW: the destination is still host-scoped, but it
+    // is now built in two steps -- HOST_DIR is needed on its own to decide
+    // whether the selected host imports a hardware-configuration.nix at all.
     expect(SCRIPT).toContain(
-      'HW_DST="/mnt/etc/zeta/full-ai-cluster/nixos/hosts/${HOST}/hardware-configuration.nix"',
+      'HOST_DIR="/mnt/etc/zeta/full-ai-cluster/nixos/hosts/${HOST}"',
     );
+    expect(SCRIPT).toContain('HW_DST="${HOST_DIR}/hardware-configuration.nix"');
+  });
+
+  test("a failed capture REFUSES; it does not warn and install the placeholder", () => {
+    // 081M0JK4R26087G0R002SVJ5VW. This block used to read
+    //   else echo "[iter-5.1] WARN: hardware-configuration not copied ..." >&2
+    // so a failed capture printed one stderr line and the install continued with
+    // the committed /-and-/boot placeholder -- leaving the longhorn{1..N}
+    // partitions this script had just mounted with no `fileSystems` entry, and
+    // leaving the boot-time Longhorn preflight (which derives its required set
+    // from the host's own fileSystems) with an EMPTY set to check.
+    //
+    // Compare EXECUTABLE lines only: zeta-install.sh's own header quotes the old
+    // fallback verbatim, and the account of why a fix exists must survive.
+    const code = SCRIPT.split("\n")
+      .filter((l) => !/^\s*#/.test(l) && l.trim() !== "")
+      .join("\n");
+    expect(code).not.toContain("WARN: hardware-configuration not copied");
+    expect(SCRIPT).toContain("WARN: hardware-configuration not copied");
+
+    // The copy is gated on a verdict, and the RESULT is content-checked against
+    // the mountpoints this install actually mounted -- not on cp's exit code.
+    expect(code).toContain('HW_PLAN="$(zeta_hwcap_plan "$HW_SRC" "$HOST_DIR" "$HW_DST")"');
+    expect(code).toContain('HW_MISSING="$(zeta_hwcap_verify "$HW_DST" "${LONGHORN_MOUNTS[@]}")"');
+
+    // Every REFUSE verdict the decision function can emit reaches a bail.
+    const verdicts = [...code.matchAll(/echo "(REFUSE [a-z-]+)"/g)].map((m) => m[1]);
+    expect(verdicts.length).toBeGreaterThanOrEqual(3);
+    for (const verdict of verdicts) {
+      const arm = code.indexOf(`"${verdict}")`);
+      expect(arm).toBeGreaterThan(-1);
+      expect(code.slice(arm, code.indexOf(";;", arm))).toContain("bail ");
+    }
   });
 });

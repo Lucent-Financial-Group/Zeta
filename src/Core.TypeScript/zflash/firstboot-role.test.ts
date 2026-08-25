@@ -17,10 +17,13 @@ import {
   K3S_AGENT_TOKEN_INSTALLED_PATH,
   planFirstbootConfFileContent,
   resolveFirstbootConfig,
+  K3S_NODE_TOKEN_WITH_CA_HASH,
   validateJoinServerUrl,
+  validateJoinTokenMaterial,
   validateTokenEspPath,
   ZETA_FIRSTBOOT_CONF_ESP_DESTINATION,
   ZETA_JOIN_TOKEN_ESP_DESTINATION,
+  type ZetaFirstbootRole,
 } from "./firstboot-role.ts";
 import { planFileBackedZflashImage } from "./lib.ts";
 
@@ -219,6 +222,106 @@ describe("composeFirstbootConfFileContent", () => {
     expect(planned.value.endsWith("\n")).toBe(true);
   });
 
+  // ── joining-node-address-assignment ───────────────────────────────────────
+  //
+  // These exist because MUTATION TESTING found the gap, not because the shape
+  // looked thin. Two mutations survived the first pass: dropping
+  // `clusterSegmentMac` from the resolved fields, and deleting the
+  // `ZETA_CLUSTER_CONTROL_PLANE_IP` line from the emitted file. Both left 397
+  // tests green while producing a medium that cannot address the segment —
+  // the all-three-or-none invariant was documented in prose and constrained
+  // by nothing, which is the vacuity class.
+
+  test("a joiner's conf carries all three addressing lines, byte-exact", () => {
+    const planned = planFirstbootConfFileContent({
+      kind: "joiner",
+      serverUrl: "https://control-plane:6443",
+      tokenEspPath: "/zeta-join-token",
+      clusterSegment: { segmentNicMac: "52:54:00:7a:f1:02" },
+    });
+    if (!planned.ok) throw new Error(planned.error);
+    const assignments = planned.value.split("\n").filter((line) => !line.startsWith("#") && line.length > 0);
+    expect(assignments).toEqual([
+      "ZETA_ROLE='joiner'",
+      "HOST='worker-template'",
+      "ZETA_JOIN_SERVER_URL='https://control-plane:6443'",
+      "ZETA_JOIN_TOKEN_ESP_PATH='/zeta-join-token'",
+      "ZETA_CLUSTER_NODE_CIDR='10.88.0.2/24'",
+      "ZETA_CLUSTER_SEGMENT_MAC='52:54:00:7a:f1:02'",
+      "ZETA_CLUSTER_CONTROL_PLANE_IP='10.88.0.1'",
+    ]);
+  });
+
+  test("a founder's conf carries its own address and names itself the control plane", () => {
+    const planned = planFirstbootConfFileContent({
+      kind: "first-control-plane",
+      clusterSegment: { segmentNicMac: "52:54:00:7a:f1:01" },
+    });
+    if (!planned.ok) throw new Error(planned.error);
+    expect(planned.value).toContain("ZETA_CLUSTER_NODE_CIDR='10.88.0.1/24'\n");
+    expect(planned.value).toContain("ZETA_CLUSTER_SEGMENT_MAC='52:54:00:7a:f1:01'\n");
+    expect(planned.value).toContain("ZETA_CLUSTER_CONTROL_PLANE_IP='10.88.0.1'\n");
+  });
+
+  test("ALL THREE addressing fields or NONE — a partial set is never emitted", () => {
+    // A node with an address and no MAC configures an arbitrary NIC; a node
+    // with a MAC and no control-plane address can speak on the segment and
+    // cannot name what it is joining. Both fail as network faults, so neither
+    // is representable.
+    const cases: readonly ZetaFirstbootRole[] = [
+      { kind: "first-control-plane" },
+      { kind: "first-control-plane", clusterSegment: { segmentNicMac: "52:54:00:7a:f1:01" } },
+      { kind: "joiner", serverUrl: "https://control-plane:6443" },
+      {
+        kind: "joiner",
+        serverUrl: "https://control-plane:6443",
+        clusterSegment: { segmentNicMac: "52:54:00:7a:f1:02" },
+      },
+      {
+        kind: "joiner",
+        serverUrl: "https://control-plane:6443",
+        tokenEspPath: "/zeta-join-token",
+        clusterSegment: { segmentNicMac: "52:54:00:7a:f1:03", hostIndex: 3 },
+      },
+    ];
+    for (const role of cases) {
+      const resolved = resolveFirstbootConfig(role);
+      if (!resolved.ok) throw new Error(resolved.error);
+      const present = [
+        resolved.value.clusterNodeAddressCidr,
+        resolved.value.clusterSegmentMac,
+        resolved.value.clusterControlPlaneAddress,
+      ].filter((field) => field !== undefined).length;
+      expect([0, 3]).toContain(present);
+      // And the emitted file agrees with the resolved config — a field that
+      // resolves and is never written is the same failure one layer down.
+      const planned = planFirstbootConfFileContent(role);
+      if (!planned.ok) throw new Error(planned.error);
+      const emitted = ["ZETA_CLUSTER_NODE_CIDR=", "ZETA_CLUSTER_SEGMENT_MAC=", "ZETA_CLUSTER_CONTROL_PLANE_IP="].filter(
+        (key) => planned.value.includes(key),
+      ).length;
+      expect(emitted).toBe(present);
+    }
+  });
+
+  test("a node flashed with no clusterSegment keeps DHCP — no addressing lines at all", () => {
+    const planned = planFirstbootConfFileContent({ kind: "first-control-plane" });
+    if (!planned.ok) throw new Error(planned.error);
+    expect(planned.value).not.toContain("ZETA_CLUSTER_");
+  });
+
+  test("a bad segment MAC refuses the whole config rather than dropping addressing", () => {
+    const planned = planFirstbootConfFileContent({
+      kind: "joiner",
+      serverUrl: "https://control-plane:6443",
+      clusterSegment: { segmentNicMac: "01:00:5e:00:00:01" },
+    });
+    expect(planned.ok).toBe(false);
+    if (!planned.ok) {
+      expect(planned.error).toContain("MULTICAST");
+    }
+  });
+
   test("every value is single-quoted", () => {
     const planned = planFirstbootConfFileContent({
       kind: "joiner",
@@ -293,6 +396,103 @@ describe("firstbootRoleFromFlags", () => {
       tokenEspPath: ZETA_JOIN_TOKEN_ESP_DESTINATION,
     });
   });
+
+  // ── joining-node-address-assignment: the flag surface ─────────────────────
+
+  test("--cluster-segment-mac opts a joiner into static addressing", () => {
+    const built = firstbootRoleFromFlags({
+      role: "joiner",
+      joinServerUrl: "https://control-plane:6443",
+      clusterSegmentMac: "52:54:00:7a:f1:02",
+    });
+    if (!built.ok || built.value === undefined) throw new Error("expected a role");
+    expect(built.value).toEqual({
+      kind: "joiner",
+      serverUrl: "https://control-plane:6443",
+      clusterSegment: { segmentNicMac: "52:54:00:7a:f1:02" },
+    });
+  });
+
+  test("--cluster-segment-mac works for a founder too", () => {
+    const built = firstbootRoleFromFlags({
+      role: "first-control-plane",
+      clusterSegmentMac: "52:54:00:7a:f1:01",
+    });
+    if (!built.ok || built.value === undefined) throw new Error("expected a role");
+    expect(built.value).toEqual({
+      kind: "first-control-plane",
+      clusterSegment: { segmentNicMac: "52:54:00:7a:f1:01" },
+    });
+  });
+
+  test("--cluster-host-index is carried through as a number", () => {
+    const built = firstbootRoleFromFlags({
+      role: "joiner",
+      joinServerUrl: "https://control-plane:6443",
+      clusterSegmentMac: "52:54:00:7a:f1:03",
+      clusterHostIndex: "3",
+    });
+    if (!built.ok || built.value === undefined) throw new Error("expected a role");
+    expect(built.value).toEqual({
+      kind: "joiner",
+      serverUrl: "https://control-plane:6443",
+      clusterSegment: { segmentNicMac: "52:54:00:7a:f1:03", hostIndex: 3 },
+    });
+  });
+
+  test("REFUSES --cluster-host-index without --cluster-segment-mac", () => {
+    // Naming WHICH address without naming WHICH NIC is the partial-addressing
+    // shape arriving through the flag surface. A permissive parser would
+    // accept and ignore it, leaving an operator sure they allocated .3.
+    const built = firstbootRoleFromFlags({
+      role: "joiner",
+      joinServerUrl: "https://control-plane:6443",
+      clusterHostIndex: "3",
+    });
+    expect(built.ok).toBe(false);
+    if (!built.ok) {
+      expect(built.error).toContain("requires --cluster-segment-mac");
+    }
+  });
+
+  test("REFUSES addressing flags with no --role", () => {
+    expect(firstbootRoleFromFlags({ clusterSegmentMac: "52:54:00:7a:f1:02" }).ok).toBe(false);
+    expect(firstbootRoleFromFlags({ clusterHostIndex: "3" }).ok).toBe(false);
+  });
+
+  test("REFUSES a non-numeric --cluster-host-index", () => {
+    const built = firstbootRoleFromFlags({
+      role: "joiner",
+      joinServerUrl: "https://control-plane:6443",
+      clusterSegmentMac: "52:54:00:7a:f1:03",
+      clusterHostIndex: "3; reboot",
+    });
+    expect(built.ok).toBe(false);
+  });
+
+  test("the flag path and the harness path produce the same medium", () => {
+    // The harness prints a zflash invocation in `missingRuntimeRequirements`.
+    // If that command produced a different config than `scenario5FirstbootRole`
+    // plans for, an operator following the instructions would flash a medium
+    // the plan does not describe.
+    const fromFlags = firstbootRoleFromFlags({
+      role: "joiner",
+      joinServerUrl: "https://control-plane:6443",
+      joinTokenSourcePath: "/tmp/node-token",
+      clusterSegmentMac: "52:54:00:7a:f1:02",
+    });
+    if (!fromFlags.ok || fromFlags.value === undefined) throw new Error("expected a role");
+    const viaFlags = planFirstbootConfFileContent(fromFlags.value);
+    const viaHarness = planFirstbootConfFileContent({
+      kind: "joiner",
+      flakeHost: DEFAULT_JOINER_FLAKE_HOST,
+      serverUrl: "https://control-plane:6443",
+      tokenEspPath: ZETA_JOIN_TOKEN_ESP_DESTINATION,
+      clusterSegment: { segmentNicMac: "52:54:00:7a:f1:02" },
+    });
+    if (!viaFlags.ok || !viaHarness.ok) throw new Error("both must plan");
+    expect(viaFlags.value).toBe(viaHarness.value);
+  });
 });
 
 describe("planFileBackedZflashImage role provisioning", () => {
@@ -357,5 +557,78 @@ describe("planFileBackedZflashImage role provisioning", () => {
       firstbootRole: { kind: "joiner", serverUrl: "http://control-plane.local:6443" },
     });
     expect(planned.ok).toBe(false);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// JOIN-TOKEN MATERIAL — the CA hash is what authenticates the bootstrap
+// ---------------------------------------------------------------------------
+//
+// Traced through k3s `pkg/clientaccess/token.go` on 2026-08-21 rather than
+// assumed. The three upstream facts these tests exist for:
+//
+//   parseToken       a token with no `K10` prefix is REWRITTEN to `K10:::<pw>`,
+//                    not rejected, so `caHash` silently becomes empty.
+//   getCACerts       the CA bundle is fetched with `insecureClient`, whose
+//                    tls.Config sets `InsecureSkipVerify: true`.
+//   validateCAHash   empty caHash + non-empty CACerts -> logrus.Warn, return nil.
+//
+// Net: `https://` protects nothing at bootstrap on a self-signed cluster. The
+// CA hash does. So a hash-less token is refused at flash time.
+
+const VALID_NODE_TOKEN = `K10${"a".repeat(64)}::server:0123456789abcdef`;
+
+describe("validateJoinTokenMaterial", () => {
+  test("accepts the shape k3s itself writes to node-token", () => {
+    expect(validateJoinTokenMaterial(VALID_NODE_TOKEN)).toBeNull();
+  });
+
+  test("accepts a trailing newline — WriteToken appends one", () => {
+    // pkg/server/handlers/token.go: os.WriteFile(file, []byte(token+"\n"), 0600)
+    expect(validateJoinTokenMaterial(`${VALID_NODE_TOKEN}\n`)).toBeNull();
+  });
+
+  test("REFUSES a bare shared secret (the K3S_TOKEN=hunter2 pattern)", () => {
+    const error = validateJoinTokenMaterial("hunter2");
+    expect(error).not.toBeNull();
+    expect(error).toContain("CA hash");
+    expect(error).toContain("InsecureSkipVerify");
+  });
+
+  test("REFUSES a kubeadm-style bootstrap token, which parseToken also accepts", () => {
+    // parseToken turns `abcdef.0123456789abcdef` into `K10::<that>` — parses
+    // fine upstream, still carries no CA hash.
+    expect(validateJoinTokenMaterial("abcdef.0123456789abcdef")).not.toBeNull();
+  });
+
+  test("REFUSES K10 with an empty hash — the exact `K10::creds` degenerate form", () => {
+    expect(validateJoinTokenMaterial("K10::server:secret")).not.toBeNull();
+  });
+
+  test("REFUSES a hash of the wrong length (caHashLength = sha256.Size * 2 = 64)", () => {
+    expect(validateJoinTokenMaterial(`K10${"a".repeat(63)}::server:s`)).not.toBeNull();
+    expect(validateJoinTokenMaterial(`K10${"a".repeat(65)}::server:s`)).not.toBeNull();
+  });
+
+  test("REFUSES an uppercase hash — hex.EncodeToString emits lowercase and the compare is ==", () => {
+    expect(validateJoinTokenMaterial(`K10${"A".repeat(64)}::server:s`)).not.toBeNull();
+  });
+
+  test("REFUSES a hash with no credentials after the separator", () => {
+    expect(validateJoinTokenMaterial(`K10${"a".repeat(64)}::`)).not.toBeNull();
+  });
+
+  test("REFUSES empty and whitespace-only material", () => {
+    expect(validateJoinTokenMaterial("")).toContain("empty");
+    expect(validateJoinTokenMaterial("   \n  ")).toContain("empty");
+  });
+
+  test("REFUSES multi-line material — the wrong file was passed", () => {
+    const error = validateJoinTokenMaterial(`${VALID_NODE_TOKEN}\n${VALID_NODE_TOKEN}`);
+    expect(error).toContain("one token line");
+  });
+
+  test("K3S_NODE_TOKEN_WITH_CA_HASH is anchored at both ends", () => {
+    expect(K3S_NODE_TOKEN_WITH_CA_HASH.test(`prefix K10${"a".repeat(64)}::s`)).toBe(false);
   });
 });

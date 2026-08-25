@@ -3,6 +3,7 @@
 -- `lake build` walks them transitively.
 import Lean4.DbspChainRule
 import Lean4.DbspOperators
+import Lean4.MalamentHogarthBoundedTick
 import Lean4.EntropyFloorLift
 import Lean4.EntropyMeasureTheoretic
 import Lean4.FinShannonEntropy
@@ -31,3 +32,4 @@ import Lean4.MenoBraidedRMatrix
 import Lean4.MenoMonoidalHexagons
 import Lean4.MenoBalancedTwist
 import Lean4.MenoTwistCentrality
+import Lean4.VonNeumannTraceWitness

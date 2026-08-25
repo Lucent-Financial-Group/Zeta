@@ -44,6 +44,28 @@ on:
     types: [opened, reopened, synchronize, ready_for_review]
     paths:
       - "infra/k8s/**"
+      # ADDED 2026-08-20: the SECOND cluster tree. `full-ai-cluster/k8s` is 122
+      # files and ~60 Applications and CI had never rendered one of them --
+      # this lane filtered on `infra/k8s/**` only, so the larger tree changed
+      # without any chart ever being resolved. Its nixos/ directory carries the
+      # `services.k3s.manifests` roster for that tree, so it is included for the
+      # same reason infra/nixos/** is below.
+      - "full-ai-cluster/k8s/**"
+      - "full-ai-cluster/nixos/**"
+      # ADDED 2026-08-18: the `services.k3s.manifests` roster that decides which
+      # bootstrap manifests K3S applies on first boot lives in
+      # infra/nixos/modules/k3s-server.nix, so a rename or deletion THERE breaks
+      # the bootstrap without touching infra/k8s/**. validate-bootstrap.ts
+      # checks both directions of that roster and needs to see those edits.
+      - "infra/nixos/**"
+      # ADDED 2026-08-23: the charts this repo AUTHORS. Everything above is a
+      # manifest that PINS a third-party chart; the two charts we actually own
+      # live under examples/helm-dependency-graph/charts and no workflow in the
+      # tree had `examples/` in a paths filter, so they were never linted,
+      # rendered or parsed. `infra/k8s/tests/**` is here because the validators
+      # themselves changing is a reason to re-run them.
+      - "examples/helm-dependency-graph/**"
+      - "infra/k8s/tests/**"
       - ".github/workflows/helm-validate.yml"
       - ".mise.toml"
       - ".mise.full.toml"
@@ -53,6 +75,18 @@ on:
     branches: [main]
     paths:
       - "infra/k8s/**"
+      # See the note on the pull_request trigger above.
+      - "full-ai-cluster/k8s/**"
+      - "full-ai-cluster/nixos/**"
+      - "infra/nixos/**"
+      # ADDED 2026-08-23: the charts this repo AUTHORS. Everything above is a
+      # manifest that PINS a third-party chart; the two charts we actually own
+      # live under examples/helm-dependency-graph/charts and no workflow in the
+      # tree had `examples/` in a paths filter, so they were never linted,
+      # rendered or parsed. `infra/k8s/tests/**` is here because the validators
+      # themselves changing is a reason to re-run them.
+      - "examples/helm-dependency-graph/**"
+      - "infra/k8s/tests/**"
       - ".github/workflows/helm-validate.yml"
       - ".mise.toml"
       - ".mise.full.toml"
@@ -129,6 +163,53 @@ jobs:
         # 9 of the 12 cases went red immediately. 1.7 s.
         run: bun test infra/k8s/tests/validate-applications.test.ts
 
+      - name: Validate K3S first-boot bootstrap manifests
+        # ADDED 2026-08-18. This lane already TRIGGERED on `infra/k8s/**`, so a
+        # change to infra/k8s/bootstrap/ ran it — but the validator above only
+        # ever scanned infra/k8s/applications/, so the bootstrap set was never
+        # looked at. A lane that runs and cannot fail on the file that changed
+        # reports green, which is how `argocd-install.yaml` sat on main as a
+        # kustomize Kustomization that K3S's auto-deploy cannot apply.
+        # MEASURED on real K3S v1.31.4+k3s1: ArgoCD never installed, so nothing
+        # under infra/k8s/applications/ ever deployed either. Offline, ~0.2 s.
+        run: bun infra/k8s/tests/validate-bootstrap.ts
+
+      - name: Validate the full-ai-cluster K3S bootstrap roster
+        # ADDED 2026-08-20. Same validator, second tree. It is a HARD gate with
+        # no ratchet: measured 52 passed / 0 failed, so it carries no debt to
+        # amortise and simply has to stay green. It checks the roster in BOTH
+        # directions -- a `services.k3s.manifests` entry whose file is missing,
+        # and a file in bootstrap/ that no entry names. Both were confirmed to
+        # go red on this tree before this step was added, by half-removing the
+        # vault manifest each way. Offline, ~0.3 s.
+        run: bun infra/k8s/tests/validate-bootstrap.ts --infra-dir full-ai-cluster
+
+      - name: Validate the charts this repo owns (offline)
+        # ADDED 2026-08-23 (Aaron: "we want our k8s helm charts all tested").
+        # MEASURED at 3a0510ddcd before writing it: 2 in-repo charts, 0 covered
+        # by any check, 0 occurrences of `helm lint` anywhere in the tree.
+        # Offline half -- parses Chart.yaml, checks apiVersion/name/version, and
+        # checks that every zeta-deps.yaml version pin agrees with the
+        # Chart.yaml it names. That last coupling was two unbound literals.
+        # Base tier, no helm required, ~0.05 s.
+        run: bun src/Core.TypeScript/hygiene/audit-local-helm-charts.ts
+
+      - name: Prove the chart validator can go red (mutation suite)
+        # 13 cases, one mutation each, asserting exit 1 AND the specific reason,
+        # plus an unmutated control asserting exit 0 and an empty-tree case
+        # asserting that discovering no charts FAILS rather than reporting a
+        # serene "0 failed". Verified 2026-08-23 by stubbing the validator's
+        # non-zero exit: 9 of 13 went red immediately. ~1.3 s.
+        run: bun test src/Core.TypeScript/hygiene/audit-local-helm-charts.test.ts
+
+      - name: Prove the bootstrap validator can go red (mutation suite)
+        # Same discipline as the step above it: 10 cases, one mutation each,
+        # asserting exit 1 AND the specific reason, plus an unmutated control
+        # asserting exit 0. The load-bearing case restores the retired
+        # Kustomization verbatim — if it ever goes green, the cluster can
+        # silently stop bootstrapping again. 2.0 s measured locally.
+        run: bun test infra/k8s/tests/validate-bootstrap.test.ts
+
   charts:
     # Network half: does the pinned chart:version actually exist, does it
     # render with the values we hand it, and is the render schema-valid.
@@ -198,3 +279,65 @@ jobs:
             sleep $((attempt * 30))
           done
           bun infra/k8s/tests/validate-applications.ts --render
+
+      - name: helm lint + helm template + kubeconform on the charts this repo owns
+        # ADDED 2026-08-23. Same validator, --helm adds `helm lint`, a
+        # `helm template` render and kubeconform over that render.
+        #
+        # WHAT THIS STEP HONESTLY DOES NOT PROVE, stated here and printed by the
+        # tool itself on every run: both owned charts are METADATA-ONLY -- no
+        # templates/ directory, no values.yaml -- so `helm template` renders ZERO
+        # documents and kubeconform therefore schema-checks NOTHING for them.
+        # The validator prints "Schema-validated manifests: 0" and names each
+        # chart under a "NOT SCHEMA-VALIDATED (stated, not silent)" heading
+        # rather than letting a green tick imply a schema check that did not
+        # happen. When either chart grows a templates/ directory the render
+        # count rises and kubeconform starts doing real work with no change
+        # here.
+        #
+        # No pipe: a pipeline would report the exit status of its last stage and
+        # discard the validator's, which is the exact pattern that let a job in
+        # this repo report success for months while its tool exited 1.
+        run: bun src/Core.TypeScript/hygiene/audit-local-helm-charts.ts --helm
+
+      - name: Ratchet the full-ai-cluster tree (render + failure ceiling)
+        # ADDED 2026-08-20. The 122-file, ~60-Application tree at
+        # full-ai-cluster/k8s had NEVER been rendered by CI. Pointing this same
+        # validator at it (it already takes --apps-dir) measured 305 passed /
+        # 29 failed on first contact.
+        #
+        # A naive step would therefore be permanently red, and a permanently-red
+        # lane is one people learn to skim -- it stops carrying signal exactly
+        # when it starts to matter. continue-on-error would be worse: it permits
+        # anything and can never fail, which is a check that constrains nothing.
+        # So this is a RATCHET against a recorded ceiling in
+        # infra/k8s/tests/FULL-AI-CLUSTER-FAILURE-BASELINE.md. It fails if the
+        # count goes UP (regression) and ALSO if it goes DOWN without the
+        # baseline being lowered -- otherwise the ceiling only ever rises and
+        # stops meaning anything, and an earned improvement is silently
+        # re-spendable by the next change.
+        #
+        # WHAT THE CEILING IS MADE OF (23, measured, at the commit named in that
+        # file): 13 ArgoCD-contract gaps (missing prune/selfHeal or
+        # CreateNamespace=true) -- several of which may be DELIBERATE under the
+        # either/or gating convention documented in root-application.yaml, so
+        # they are not simply 'to fix'; 2 for `oz` pinning ziti-controller 1.4.5
+        # when the repo publishes 96 versions and the newest is 3.2.1, a
+        # fictional pin; 4 for sealed-secrets and forgejo whose chart repos now
+        # return HTTP 404; and 4 charts that refuse to render with the values we
+        # hand them (gitlab needs an ACME email, headscale a PVC accessMode,
+        # temporal a cassandra port, arc-runner-set an explicit
+        # controllerServiceAccount.name).
+        #
+        # The opening ceiling is 23 and not 29 because 7 of the original 29 were
+        # VALIDATOR-SCOPE gaps, fixed in validate-applications.ts in the same
+        # commit: 6 from three OCI-registry apps where fetching a Helm repo index
+        # is meaningless, and 1 from assuming root-application.yaml sits under
+        # applications/. Fixing those first matters -- a ceiling that banks false
+        # reds can be 'improved' by fixing nothing. The OCI fix also surfaced one
+        # genuine failure it had been masking.
+        #
+        # No pipe: the ratchet spawns the validator and reads stdout and the exit
+        # code as separate values, and refuses to report a count at all if no
+        # 'Results:' line is present -- an empty run is not zero failures.
+        run: bun infra/k8s/tests/ratchet-app-failures.ts

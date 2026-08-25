@@ -2,6 +2,9 @@
 
 import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
+import { compareAndSwapRevisionPolicy, type RevisionPolicyRefusal } from "../persistence/revision-policy";
+import { noForgetBackpressureAdmissionPolicy, type ZetaDbAdmissionPolicyPort } from "./admission-policy";
+import { resolveZetaDbRetentionMode, type ZetaDbRetentionPolicyPort } from "./retention-policy";
 import {
   runZetaDbNodeTick,
   type ZetaDbDelta,
@@ -34,13 +37,15 @@ interface FileCheckpointEnvelope {
   readonly payloadBase64: string;
 }
 
-interface ScheduledNodeOptions {
+export interface ZetaDbScheduledNodeOptions {
   readonly journalPath: string;
   readonly checkpointPath: string;
   readonly executorId: string;
   readonly maxDeltas: number;
   readonly maxEntries: number;
   readonly maxCheckpointBytes: number;
+  readonly admissionPolicy?: ZetaDbAdmissionPolicyPort;
+  readonly retentionPolicy?: ZetaDbRetentionPolicyPort;
 }
 
 function failed(
@@ -55,12 +60,12 @@ function isRecord(value: unknown): value is Readonly<Record<string, unknown>> {
   return value !== null && typeof value === "object" && !Array.isArray(value);
 }
 
-function sameBytes(left: Uint8Array, right: Uint8Array): boolean {
-  if (left.byteLength !== right.byteLength) return false;
-  for (let index = 0; index < left.byteLength; index += 1) {
-    if (left[index] !== right[index]) return false;
-  }
-  return true;
+function revisionRefused(refusal: RevisionPolicyRefusal): { readonly ok: false; readonly feedback: ZetaDbFeedback } {
+  return failed(
+    refusal.reason === "node-mismatch" ? "database-image-invalid" : "database-revision-conflict",
+    refusal.detail,
+    refusal.reason === "node-mismatch" ? "heat" : "backpressure",
+  );
 }
 
 function readJournal(path: string): ZetaDbResult<ZetaDbScheduledJournal> {
@@ -119,6 +124,7 @@ function createFileImagePort(initial: ZetaDbImageRecord | null): {
   let pending: ZetaDbImageRecord | null = null;
   let closed = false;
   const port: ZetaDbImagePort = {
+    revisionPolicy: compareAndSwapRevisionPolicy,
     load: (nodeId) => {
       if (closed) return Promise.resolve(failed("database-read-failed", "The scheduled database port is closed."));
       if (current !== null && current.nodeId !== nodeId) {
@@ -131,25 +137,9 @@ function createFileImagePort(initial: ZetaDbImageRecord | null): {
     },
     save: (candidate) => {
       if (closed) return Promise.resolve(failed("database-write-failed", "The scheduled database port is closed."));
-      if (current === null && candidate.revision !== 1) {
-        return Promise.resolve(
-          failed("database-revision-conflict", "The first scheduled checkpoint must have revision 1.", "backpressure"),
-        );
-      }
-      if (current !== null) {
-        if (candidate.revision === current.revision && sameBytes(candidate.payload, current.payload)) {
-          return Promise.resolve({ ok: true, value: candidate });
-        }
-        if (candidate.revision !== current.revision + 1) {
-          return Promise.resolve(
-            failed(
-              "database-revision-conflict",
-              `Scheduled checkpoint revision ${String(candidate.revision)} cannot follow revision ${String(current.revision)}.`,
-              "backpressure",
-            ),
-          );
-        }
-      }
+      const decision = compareAndSwapRevisionPolicy.decide(current, candidate);
+      if (!decision.ok) return Promise.resolve(revisionRefused(decision.refusal));
+      if (decision.value.action === "idempotent") return Promise.resolve({ ok: true, value: candidate });
       current = { ...candidate, payload: new Uint8Array(candidate.payload) };
       pending = current;
       return Promise.resolve({ ok: true, value: current });
@@ -181,24 +171,29 @@ function writeCheckpoint(path: string, record: ZetaDbImageRecord): ZetaDbResult<
 }
 
 export async function runScheduledZetaDbNode(
-  options: ScheduledNodeOptions,
+  options: ZetaDbScheduledNodeOptions,
 ): Promise<ZetaDbResult<ZetaDbScheduledRunReadout>> {
   const journal = readJournal(options.journalPath);
   if (!journal.ok) return journal;
   const checkpoint = readCheckpoint(options.checkpointPath);
   if (!checkpoint.ok) return checkpoint;
   const filePort = createFileImagePort(checkpoint.value);
-  const tick = await runZetaDbNodeTick(filePort.port, {
-    nodeId: journal.value.nodeId,
-    executorId: options.executorId,
-    executorKind: "github-actions",
-    deltas: journal.value.deltas,
-    limits: {
-      maxDeltas: options.maxDeltas,
-      maxEntries: options.maxEntries,
-      maxCheckpointBytes: options.maxCheckpointBytes,
+  const tick = await runZetaDbNodeTick(
+    filePort.port,
+    {
+      nodeId: journal.value.nodeId,
+      executorId: options.executorId,
+      executorKind: "github-actions",
+      deltas: journal.value.deltas,
+      limits: {
+        maxDeltas: options.maxDeltas,
+        maxEntries: options.maxEntries,
+        maxCheckpointBytes: options.maxCheckpointBytes,
+      },
     },
-  });
+    options.admissionPolicy ?? noForgetBackpressureAdmissionPolicy,
+    options.retentionPolicy,
+  );
   filePort.port.close();
   if (!tick.ok) return tick;
   const pending = filePort.pending();
@@ -222,6 +217,11 @@ function argument(args: readonly string[], name: string, fallback: string): stri
 }
 
 export async function main(args: readonly string[]): Promise<number> {
+  const retention = resolveZetaDbRetentionMode(argument(args, "--retention-policy", "no-forget-backpressure"));
+  if (!retention.ok) {
+    process.stderr.write(`${JSON.stringify({ severity: "heat", ...retention.feedback })}\n`);
+    return 1;
+  }
   const result = await runScheduledZetaDbNode({
     journalPath: resolve(argument(args, "--journal", "data/zetadb/journal.json")),
     checkpointPath: resolve(argument(args, "--checkpoint", "data/zetadb/checkpoint.json")),
@@ -229,6 +229,7 @@ export async function main(args: readonly string[]): Promise<number> {
     maxDeltas: 1024,
     maxEntries: 100_000,
     maxCheckpointBytes: 16 * 1024 * 1024,
+    ...(retention.value.retentionPolicy === undefined ? {} : { retentionPolicy: retention.value.retentionPolicy }),
   });
   if (!result.ok) {
     process.stderr.write(`${JSON.stringify(result.feedback)}\n`);

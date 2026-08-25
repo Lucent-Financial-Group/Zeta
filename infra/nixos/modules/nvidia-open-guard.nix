@@ -25,6 +25,16 @@
 #
 # The preflight itself is ../../../tools/nvidia-open-preflight.ts (`bun` it) — run
 # it on the candidate node, while the closed module is still loaded.
+#
+# NO FALSIFIER COVERS THIS COPY. Its twin at
+# full-ai-cluster/nixos/modules/nvidia-open-guard.nix (byte-identical below the
+# header) is exercised by full-ai-cluster/nixos/tests/nvidia-open-guard-gate.nix
+# under `nix flake check --no-build`. This tree's hosts hang off the ROOT flake,
+# whose `checks` is empty and whose `nix flake check` no workflow runs — both CI
+# invocations are `working-directory: full-ai-cluster`. So a mutation making the
+# assertions below vacuous would be caught over there and NOT here, and the two
+# files staying in sync is a convention, not a check.
+# 081M00QP33F087G0R001JKB5QM records this as an open gap.
 
 { config, lib, pkgs, ... }:
 
@@ -90,6 +100,20 @@ in
     # Boot-time symptom check. Oneshot and depended on by nothing, so a failure
     # is loud (`systemctl --failed`) without taking the node down harder than the
     # missing driver already has.
+    #
+    # IN THIS TREE IT HAS NEVER RUN, AND STILL DOES NOT. `lib.mkIf useOpen`
+    # against a fleet where ./gpu.nix ships `open = lib.mkDefault false` and no
+    # host overrides it means this unit is instantiated on ZERO hosts -- a check
+    # that did not run, wearing the appearance of one that passed. The header's
+    # "two independent gates" describes one gate here.
+    #
+    # The twin at full-ai-cluster/nixos/modules/nvidia-open-guard.nix dropped the
+    # `mkIf` on 2026-08-21 and now installs this unit on every host importing
+    # gpu.nix; full-ai-cluster/nixos/tests/nvidia-open-guard-gate.nix pins that
+    # reachability in all four gate states. It is NOT copied here for the reason
+    # recorded at ./gpu.nix's node-label block: this tree has no falsifier that
+    # could hold the change, so the copy would be a second unrun guard rather
+    # than a fix.
     systemd.services.nvidia-open-driver-bound-check = lib.mkIf useOpen {
       description = "Verify every NVIDIA display device has a driver bound (open kernel module guard)";
       wantedBy = [ "multi-user.target" ];

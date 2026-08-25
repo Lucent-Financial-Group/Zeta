@@ -1,10 +1,12 @@
 import {
-  runZetaDbNodeTick,
+  runConvergentZetaDbNodeTick,
+  type ZetaDbConvergencePolicy,
   type ZetaDbFeedback,
   type ZetaDbImagePort,
   type ZetaDbTickLimits,
   type ZetaDbTickReadout,
 } from "../zetadb/zeta-db-node";
+import { noForgetBackpressureAdmissionPolicy, type ZetaDbAdmissionPolicyPort } from "../zetadb/admission-policy";
 import {
   hashPayload,
   merkleToHex,
@@ -20,6 +22,8 @@ export interface ZetaDbStoragePortOptions {
   readonly databaseNodeId: string;
   readonly executorId: string;
   readonly limits: ZetaDbTickLimits;
+  readonly convergencePolicy: ZetaDbConvergencePolicy;
+  readonly admissionPolicy?: ZetaDbAdmissionPolicyPort;
 }
 
 function succeeded<T>(value: T): StorageResult<T> {
@@ -43,6 +47,12 @@ function validLimits(limits: ZetaDbTickLimits): boolean {
     Number.isSafeInteger(limits.maxCheckpointBytes) &&
     limits.maxCheckpointBytes > 0
   );
+}
+
+function validConvergencePolicy(policy: unknown): policy is ZetaDbConvergencePolicy {
+  if (policy === null || typeof policy !== "object") return false;
+  const maxAttempts = (policy as Readonly<Record<string, unknown>>).maxAttempts;
+  return typeof maxAttempts === "number" && Number.isSafeInteger(maxAttempts) && maxAttempts > 0;
 }
 
 function mapFeedback(feedback: ZetaDbFeedback): StorageResult<never> {
@@ -71,8 +81,13 @@ function recordFromRow(key: string, payload: string, weight: number): StorageRes
 
 /** Adapt the signed ZetaDB kernel into the content-addressed storage port. */
 export function createZetaDbStoragePort(options: ZetaDbStoragePortOptions): StorageResult<ZetaStoragePort> {
-  if (!isIdentifier(options.databaseNodeId) || !isIdentifier(options.executorId) || !validLimits(options.limits)) {
-    return failed("A ZetaDB storage port requires identifiers and positive safe-integer tick budgets.");
+  if (
+    !isIdentifier(options.databaseNodeId) ||
+    !isIdentifier(options.executorId) ||
+    !validLimits(options.limits) ||
+    !validConvergencePolicy(options.convergencePolicy)
+  ) {
+    return failed("A ZetaDB storage port requires identifiers and positive safe-integer tick and convergence budgets.");
   }
 
   let closed = false;
@@ -91,17 +106,53 @@ export function createZetaDbStoragePort(options: ZetaDbStoragePortOptions): Stor
     return scheduled;
   };
 
+  /**
+   * Run one database tick and refuse anything the kernel did not COMPLETELY admit.
+   *
+   * `requireComplete: true` is load-bearing, not decoration. Without it the kernel
+   * signals a bound admission budget the way it is designed to — `ok: true` with
+   * `admission: "backpressured"`, `accepted: 0`, and typed `database-capacity-exhausted`
+   * feedback — and this adapter used to collapse that readout with
+   * `result.ok ? succeeded(...) : ...`, reporting a write that never reached the durable
+   * image. A content-addressed `write` then returned the key of a record nothing stored,
+   * and the next `read` missed. The kernel did its job; the adapter dropped the signal.
+   *
+   * Note what this deliberately does NOT do: refuse on `accepted === 0`. A re-write of an
+   * already-stored record is a DUPLICATE — `duplicates: 1, accepted: 0`, admission
+   * "complete" — and it must keep succeeding, because a content-addressed write is
+   * idempotent by construction (§12). "Nothing was accepted" and "nothing could be
+   * accepted" are different facts; only the second is a failure.
+   */
   const tick = async (
-    deltas: Parameters<typeof runZetaDbNodeTick>[1]["deltas"],
+    deltas: Parameters<typeof runConvergentZetaDbNodeTick>[1]["deltas"],
   ): Promise<StorageResult<ZetaDbTickReadout>> => {
-    const result = await runZetaDbNodeTick(options.imagePort, {
-      nodeId: options.databaseNodeId,
-      executorId: options.executorId,
-      executorKind: "browser-tab",
-      deltas,
-      limits: options.limits,
-    });
-    return result.ok ? succeeded(result.value) : mapFeedback(result.feedback);
+    const result = await runConvergentZetaDbNodeTick(
+      options.imagePort,
+      {
+        nodeId: options.databaseNodeId,
+        executorId: options.executorId,
+        executorKind: "browser-tab",
+        requireComplete: true,
+        deltas,
+        limits: options.limits,
+      },
+      options.convergencePolicy,
+      options.admissionPolicy ?? noForgetBackpressureAdmissionPolicy,
+    );
+    if (!result.ok) return mapFeedback(result.feedback);
+    // Belt-and-braces: `requireComplete` makes a backpressured readout unreachable today,
+    // so a readout that still carries feedback means the kernel grew a signal this
+    // adapter has never seen. Refuse it rather than report success over it — dropping an
+    // unrecognized signal is the whole defect this method exists to close.
+    const carried = result.value.feedback[0];
+    if (carried !== undefined) return mapFeedback(carried);
+    if (result.value.admission !== "complete") {
+      return failed(
+        `The database tick reported admission "${result.value.admission}" without feedback; refusing to report success.`,
+        "backpressure",
+      );
+    }
+    return succeeded(result.value);
   };
 
   const port: ZetaStoragePort = {

@@ -14,15 +14,45 @@ name: pr-manifest-integrity
 # WHAT IT ASSERTS, and what it deliberately does not.
 #   exit 2, shard-store integrity (unreadable, misfiled, or duplicate-keyed shard)
 #     -> FAIL on every trigger. That class is never legitimate and never by design.
-#   exit 1, derived-index drift (manifest.jsonl behind the shard set)
+#   exit 1, derived-index drift that has OUTLIVED THE REPAIR BOUND
 #     -> FAIL on schedule and workflow_dispatch, REPORT on pull_request.
-#     Drift is legitimate and expected for up to about an hour: an archive PR writes only its
-#     own shard (that is what retired the pairwise-conflict class), and the index is repaired
-#     by the single serialised writer in agent-heartbeat.yml (soraya archive duty, whose flush
-#     gate is MIN_INTERVAL_SECONDS=3000). Six hours is well past that bound, so drift seen by a
-#     scheduled run means the repair cadence has STOPPED -- which is the condition that earns a
-#     red run. On a pull_request the drift belongs to main rather than to the branch, so it is
-#     reported and never charged to the contributor.
+#     Drift itself is legitimate and expected: an archive PR writes only its own shard (that is
+#     what retired the pairwise-conflict class), and the index is repaired by the single
+#     serialised writer in agent-heartbeat.yml (soraya archive duty, whose flush gate is
+#     MIN_INTERVAL_SECONDS=3000). On a pull_request the drift belongs to main rather than to the
+#     branch, so it is reported and never charged to the contributor.
+#
+#     THE BOUND IS NOW MEASURED, AND THIS IS THE CORRECTION OF A REAL BUG.
+#     This block used to reason: "six hours is well past the one-hour bound, so drift seen by a
+#     scheduled run means the repair cadence has STOPPED." That inference is invalid -- the
+#     check samples an INSTANT and the conclusion is about a DURATION -- and it made this
+#     workflow fail four consecutive scheduled runs (32573347920 and its three predecessors)
+#     while the repair writer was healthy the whole time. Against the writer's own commit
+#     history on docs/github/prs/manifest.jsonl:
+#
+#         scheduled run    last repair landed    verdict printed
+#         08-21T18:34       0.4 min earlier      "repair writer has stopped landing"
+#         08-22T00:34      38.2 min earlier      same
+#         08-22T06:34       5.0 min earlier      same
+#         08-22T12:34      11.6 min earlier      same
+#
+#     All four were false. derive-pr-manifest.ts now measures the age of the drift from the
+#     `fetched_at` of the oldest UNRECONCILED shard -- which is exactly "how long ago the repair
+#     writer must last have run", because the repair regenerates the whole index from all
+#     shards -- and only drift past the bound is a finding.
+#
+#     WHY 180 MINUTES, and why this is not a tolerance widened until it passed. Measured over
+#     218 repair landings in the week to 2026-08-22, the gap between repairs is p50 26.5 min,
+#     p90 47 min. 180 is ~3.8x p90 and sits above the whole healthy population (all four false
+#     positives above were <= 38.2 min) and below the pathological one: the same week contained
+#     7 gaps over 2 hours and 4 over 3 hours, and this bound still goes red on every one of
+#     them. It is drawn from the measured distribution, not from what made the run green.
+#
+#     Three classes stay red at ANY age, so the bound can never become a mute button: shard
+#     integrity (exit 2), an ORPHANED index entry with no shard behind it (substrate loss, which
+#     no late repair explains), and an unreconciled shard whose fetched_at cannot be read (a
+#     check that cannot measure must not report a pass). Falsifiers for all of it, including
+#     mutation-killed proof that the bound is not vacuous, are in derive-pr-manifest.test.ts.
 #
 # COST. 4 scheduled runs/day at roughly 2 minutes, about 8 minutes/day, plus a run on the rare
 # PR that edits the archival tooling. The path filter deliberately excludes docs/github/prs:
@@ -63,6 +93,13 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 10
 
+    permissions:
+      # Explicit at job level because the review-thread capture guard below reads
+      # pullRequest.reviewThreads, which contents:read alone does not cover. Still
+      # read-only in both scopes: this workflow reports and never repairs.
+      contents: read
+      pull-requests: read
+
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -95,7 +132,10 @@ jobs:
           # Command substitution rather than a temp file: the report is a handful of lines and
           # this keeps the step free of stray artefacts on the runner.
           set +e
-          report=$(bun src/Core.TypeScript/forge-host/github/derive-pr-manifest.ts 2>&1)
+          # --min-age-minutes 180: see the header. Drift younger than the repair bound exits 0
+          # (and still prints how far behind the index is); only drift that has outlived the
+          # bound exits 1. Integrity, orphaned entries and unreadable timestamps ignore it.
+          report=$(bun src/Core.TypeScript/forge-host/github/derive-pr-manifest.ts --min-age-minutes 180 2>&1)
           rc=$?
           set -e
 
@@ -117,10 +157,10 @@ jobs:
 
           if [ "$rc" -eq 1 ]; then
             if [ "$GH_EVENT" = "pull_request" ]; then
-              echo "::notice title=Derived index drift (informational)::main is currently ahead of docs/github/prs/manifest.jsonl. Expected for up to about an hour after an archive PR merges, and repaired by agent-heartbeat.yml soraya archive duty. Not attributable to this PR, so not failing it."
+              echo "::notice title=Derived index drift (informational)::main is currently ahead of docs/github/prs/manifest.jsonl, and the drift has outlived the 180-minute repair bound. Repaired by agent-heartbeat.yml soraya archive duty. Not attributable to this PR, so not failing it."
               exit 0
             fi
-            echo "::error title=Derived index drift outlived the repair cadence::docs/github/prs/manifest.jsonl has been behind the shards for longer than the roughly one-hour repair bound, so the serialised repair writer (agent-heartbeat.yml, soraya archive duty) has stopped landing. Repair by hand: bun src/Core.TypeScript/forge-host/github/derive-pr-manifest.ts --write"
+            echo "::error title=Derived index drift outlived the repair cadence::docs/github/prs/manifest.jsonl has been behind the shards for longer than the 180-minute repair bound (MEASURED from the oldest unreconciled shard's fetched_at, not assumed from the schedule), so the serialised repair writer (agent-heartbeat.yml, soraya archive duty) has stopped landing. Repair by hand: bun src/Core.TypeScript/forge-host/github/derive-pr-manifest.ts --write"
             exit 1
           fi
 
@@ -130,3 +170,147 @@ jobs:
           fi
 
           echo "Shard store and derived index agree."
+
+      - name: PR review-thread capture (merge-race guard)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_EVENT: ${{ github.event_name }}
+        run: |
+          set -uo pipefail
+
+          # THE FALSIFIER FOR 081M08MVPR9087G0R000NCF8PV.
+          #
+          # pr-archive-on-merge.yml fetches review threads the instant a PR closes, and the
+          # automated reviewer posts its threads AFTER that (measured: p50 +177 s, max +283 s
+          # over the 2,000 most recent merges; the work item saw a +78 min tail on an older
+          # reviewer population). The archiver wins the race and freezes a wrong snapshot, and
+          # `| Total threads | 0 |` then reads identically to "there were none" — a check that
+          # did not run looking like one that passed.
+          #
+          # Re-measured 2026-08-18 over 150 uniformly sampled archive docs: 20.0% of docs
+          # under-report, thread-level capture 74.3%. Against what was FETCHABLE at the moment
+          # the archiver looked, capture was 191/191 = 100% — which is what rules out
+          # pagination, an API cap, a permission gap and a parse bug, and leaves the race.
+          #
+          # The repair is the bounded sweep in agent-heartbeat.yml (soraya archive duty,
+          # reconcile-review-archive.ts --write). THIS step is the guard on that repair: it
+          # asks whether any PR merged longer ago than the reviewer tail still under-reports.
+          # If the sweep stops running, or the archiver regresses, this goes red.
+          #
+          # WHY IT CANNOT PASS VACUOUSLY. Most merges here are automation and never acquire a
+          # review thread, so "everything in the window agrees" is exactly what a completely
+          # broken archiver also produces. The tool therefore requires a POSITIVE CONTROL — a
+          # doc with a recorded, nonzero count that still matches GitHub — before it will
+          # render any verdict at all, and exits 2 (INCONCLUSIVE, not pass) when it has none.
+          #
+          # Exit codes: 0 pass, 1 under-reporting found, 2 inconclusive/scan failed.
+          set +e
+          report=$(bun src/Core.TypeScript/forge-host/github/reconcile-review-archive.ts \
+            --check --since-hours 24 --min-age-minutes 30 2>&1)
+          rc=$?
+          set -e
+
+          printf '%s\n' "### PR review-thread capture" "" \
+            "Trigger: $GH_EVENT. reconcile-review-archive.ts --check exit code: $rc." "" \
+            '```' "$report" '```' | tee -a "$GITHUB_STEP_SUMMARY"
+
+          if [ "$rc" -eq 0 ]; then
+            echo "Review-thread capture matches GitHub across the window."
+            exit 0
+          fi
+
+          if [ "$rc" -eq 2 ]; then
+            # Inconclusive is NEVER reported as a pass — that is the defect class this whole
+            # workflow exists to refuse. It is also not a red: nothing is known to be wrong.
+            echo "::warning title=Review-thread capture INCONCLUSIVE::No positive control was available (or the shard store could not be read), so no verdict could be rendered. This is not a pass. See the step summary."
+            exit 0
+          fi
+
+          if [ "$GH_EVENT" = "pull_request" ]; then
+            # Same precedent as the derived-index drift above: the gap belongs to main, not
+            # to the contributor whose branch happened to touch this directory.
+            echo "::notice title=Review-thread capture gap (informational)::Archive docs on main under-report review threads. Repaired by agent-heartbeat.yml soraya archive duty; not attributable to this PR, so not failing it."
+            exit 0
+          fi
+
+          echo "::error title=Review-thread capture gap outlived the reconcile sweep::One or more PRs merged over 30 minutes ago still record fewer review threads than GitHub holds, so the merge-race repair (agent-heartbeat.yml soraya archive duty) has stopped landing. Repair by hand: bun src/Core.TypeScript/forge-host/github/reconcile-review-archive.ts --write"
+          exit 1
+
+      - name: PR archive COVERAGE (does every merged PR have a record at all?)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_EVENT: ${{ github.event_name }}
+        run: |
+          set -uo pipefail
+
+          # THE THIRD QUESTION THIS WORKFLOW ASKS, and the one that was missing.
+          #
+          # The two steps above both presuppose that a record EXISTS: one checks the derived
+          # index against the shards, the other checks a doc's thread count against GitHub.
+          # Neither can see a PR that was never archived at all — for such a PR there is no
+          # shard to be unreconciled and no doc to under-report. It is absent from every
+          # surface that reports, which is why 77.4% lifetime coverage survived four days of
+          # green watchdog runs and was found by counting files by hand.
+          #
+          # The archive exists so the project OWNS this data rather than renting it from
+          # GitHub's API. An unarchived PR is not a degraded record, it is data we do not
+          # have — and a rate limit is not something you can train on.
+          #
+          # WHAT GOES RED. Window coverage (7d, minus a 90-minute in-flight grace) below 95%.
+          # That is the "is the lane working now" signal and it catches a new break within a
+          # day. The measured 2026-08-21 break ran at 43%; main was at 65.2% when this landed.
+          # Lifetime coverage is a separate ratchet that only a backfill moves.
+          #
+          # --window-only on pull_request keeps the routine cost to a handful of GraphQL pages.
+          # The scheduled run does the full-history scan (~134 pages of a 5,000-point budget),
+          # which is what keeps the lifetime ratchet honest.
+          #
+          # IT FITS THE BUDGET, MEASURED — because an audit that trips `timeout-minutes: 10` is
+          # a check that did not run, and this job's other two steps already spend ~2 min.
+          # Full-history scan timed end-to-end 2026-08-25: 108s. It is bounded by round trips,
+          # so it grows with PR COUNT rather than with history depth. If it ever approaches the
+          # budget, move the schedule to --window-only and put the lifetime ratchet on its own
+          # less-frequent cron; do NOT raise the job timeout, because the other two steps have
+          # their own reasons for the bound.
+          #
+          # Its output on main at the moment it landed, for the record:
+          #   lifetime 10336/12775 = 80.91%  (floor 75%)  -> PASS
+          #   window    1386/2135  = 64.92%  (floor 95%)  -> FAIL
+          #   excluded=580 pre-lane=1506 in-flight=23 missing=910
+          #
+          # Exit codes: 0 above both floors, 1 below a floor, 2 LIVENESS (nothing inspected).
+          set +e
+          if [ "$GH_EVENT" = "schedule" ] || [ "$GH_EVENT" = "workflow_dispatch" ]; then
+            report=$(bun src/Core.TypeScript/hygiene/audit-pr-archive-coverage.ts 2>&1)
+          else
+            report=$(bun src/Core.TypeScript/hygiene/audit-pr-archive-coverage.ts --window-only 2>&1)
+          fi
+          rc=$?
+          set -e
+
+          printf '%s\n' "### PR archive coverage" "" \
+            "Trigger: $GH_EVENT. audit-pr-archive-coverage.ts exit code: $rc." "" \
+            '```' "$report" '```' | tee -a "$GITHUB_STEP_SUMMARY"
+
+          if [ "$rc" -eq 0 ]; then
+            echo "Archive coverage is above both floors."
+            exit 0
+          fi
+
+          if [ "$rc" -eq 2 ]; then
+            # Liveness failure is never a pass and never a silent green. Nothing was
+            # inspected, so nothing was learned — the same refusal the step above makes for
+            # an inconclusive verdict.
+            echo "::error title=Coverage audit inspected nothing::Zero eligible merged PRs were examined, so the merged-PR listing or the shard index is broken. A check that did not run must not read as one that passed."
+            exit 1
+          fi
+
+          if [ "$GH_EVENT" = "pull_request" ]; then
+            # Same precedent as both steps above: the gap belongs to main, not to the
+            # contributor whose branch happened to touch this directory.
+            echo "::notice title=Archive coverage below floor (informational)::Merged PRs on main have no archive record. Drained by agent-heartbeat.yml soraya archive duty; not attributable to this PR, so not failing it."
+            exit 0
+          fi
+
+          echo "::error title=Archive coverage below floor::Merged PRs are not being archived. The usual cause is a merge path GitHub will not let trigger pr-archive-on-merge.yml — a merge performed with GITHUB_TOKEN creates NO pull_request event, so the backfill sweep in agent-heartbeat.yml is the only net. Check that it is running and that its --limit keeps up. Backfill by hand: bun src/Core.TypeScript/forge-host/github/backfill-pr-archive.ts --resume"
+          exit 1

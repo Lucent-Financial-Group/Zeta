@@ -3,9 +3,9 @@
 // Sits above Helm and below Flux/ArgoCD. Resolves dependency graphs,
 // calculates topo-sort & sync-waves, and generates manifests with variable-flow bindings.
 
-import { parse as yamlParse } from "../yaml/dom";
-import { encode as yamlEncode } from "../yaml/encoder";
-import type { YamlValue } from "../yaml/dom";
+import { parseWithFallback } from "../yaml/vendor.ts";
+import { encode as yamlEncode } from "../yaml/encoder.ts";
+import type { YamlValue } from "../yaml/dom.ts";
 import { readFileSync, existsSync, mkdirSync, writeFileSync } from "node:fs";
 import { join, resolve as toAbsolutePath } from "node:path";
 
@@ -134,12 +134,32 @@ export function toYamlValue(val: any): YamlValue {
   return { t: "Null" };
 }
 
+// Subset reader FIRST, wrapped vendor adapter only on a typed decline — the
+// architecture the YAML port specified on 2026-06-01 and never wired
+// (081M0N90CHX087G0R0034C7NPT). `full-ai-cluster/k8s/sync-wave-dependency-graph.yaml`
+// carries 44 folded block scalars and 28 non-empty flow sequences, all named
+// out-of-subset by that design's operator-locked Decision 2 and all covered by the
+// adapter the same decision promised. See `../yaml/vendor.ts` for why the subset is
+// not widened instead.
 export function parseYaml(text: string): any {
-  const res = yamlParse(text);
+  const res = parseWithFallback(text);
   if (!res.ok) {
-    throw new Error(`YAML parse failed: ${res.feedback}`);
+    throw new Error(`YAML parse failed: ${res.feedback} (vendor adapter: ${res.vendorError})`);
   }
   return toJs(res.value);
+}
+
+/**
+ * Same parse, with the reader that answered. Exposed so a caller can tell an
+ * in-subset read from a vendor read; `parseYaml` deliberately does not, because a
+ * consumer of the VALUE should not have to care.
+ */
+export function parseYamlVia(text: string): { value: any; via: "subset" | "vendor" } {
+  const res = parseWithFallback(text);
+  if (!res.ok) {
+    throw new Error(`YAML parse failed: ${res.feedback} (vendor adapter: ${res.vendorError})`);
+  }
+  return { value: toJs(res.value), via: res.via };
 }
 
 export function stringifyYaml(val: any): string {
@@ -163,15 +183,33 @@ export function getTargetPath(target: string): string {
   return parts.join(".");
 }
 
+/**
+ * Keys that do not name a value on an object -- they name the object's relationship to
+ * every other object. Writing through one of these is prototype pollution (CodeQL
+ * `js/prototype-pollution-utility`), and this function's `path` comes from a dependency
+ * graph's `consumes.target` in YAML, so it is not a hypothetical caller.
+ */
+const UNWRITABLE_SEGMENTS: ReadonlySet<string> = new Set(["__proto__", "constructor", "prototype"]);
+
 export function setNestedProperty(obj: any, path: string, value: any): void {
   const parts = path.split(".");
   if (parts.length === 0 || parts[0] === "") {
     throw new Error("nested path must be non-empty");
   }
+  // REFUSED, not silently skipped: a path that names the prototype chain is a spec that
+  // means something other than what it says, and quietly writing it somewhere else would
+  // hide that. Same register as the empty-path throw above.
+  const unwritable = parts.find((part) => UNWRITABLE_SEGMENTS.has(part));
+  if (unwritable !== undefined) {
+    throw new Error(`nested path segment '${unwritable}' is not a value key: ${path}`);
+  }
   let current = obj;
   for (let i = 0; i < parts.length - 1; i++) {
     const part = parts[i]!;
-    if (!(part in current)) {
+    // OWN property, not `in`: `in` walks the prototype chain, so `toString` and friends
+    // "exist" on every object and the walk would descend into an inherited function
+    // instead of creating the intermediate object the path asks for.
+    if (!Object.prototype.hasOwnProperty.call(current, part)) {
       current[part] = {};
     }
     current = current[part];

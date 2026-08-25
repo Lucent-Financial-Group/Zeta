@@ -18,7 +18,38 @@
     # pointed at instead of k3s-agent.nix's build-time default. No-op on hosts
     # with no /etc/zeta/cluster-join-server-url and on every k3s server.
     ./injected-join-server.nix
+    # 081KSNY2Z0008QG0R0008PN7RQ `joining-node-address-assignment`: the join
+    # endpoint above is a NAME, and the cluster segment has no DHCP and no DNS
+    # to turn it into an address. This module applies the static addressing
+    # zflash derived from the role and injects the `control-plane -> <ip>`
+    # /etc/hosts entry that `k3s-server.nix` calls "the robust path". No-op on
+    # hosts with no /etc/zeta/cluster-segment-* files — they keep DHCP.
+    ./injected-cluster-address.nix
+    # 081KSE6WT0008QG0R000CV98PV (R3 of the USB design document): the PUBLISHER
+    # half of bootstrap-or-join. A control plane advertises `_zeta-k3s._tcp`
+    # so a booting node can tell "there is already a cluster here" from "there
+    # is not" -- the distinction that today only a 10-second keystroke makes.
+    #
+    # No-op on agents: the module guards its config to `services.k3s.role ==
+    # "server"`, so a worker imports the options and contributes nothing.
+    ./cluster-discovery-advertise.nix
     ./login-banner.nix
+    # 081M00KTH58087G0R00120WT6F: the option surface for Secure Boot desired
+    # state. At its default phase ("off") it sets NO boot option and contributes
+    # one always-true assertion, so this import leaves the boot path byte-for-byte
+    # unchanged. What it buys is that every host EVALUATES the option on
+    # `nix flake check`, and that any future non-"off" phase fails closed on the
+    # missing key-custody decision rather than quietly enabling an unbuilt path.
+    ./secure-boot.nix
+    # 2026-08-21 hands-off-metal scoping: the option surface for TPM-2.0-backed
+    # seal provisioning. At its default mode ("off") it sets NO option and
+    # contributes one always-true assertion, so this import leaves every host
+    # byte-for-byte unchanged. What it buys is that every host EVALUATES the
+    # option on `nix flake check`, and that mode = "provision" fails closed on
+    # the undecided seal-key custody fork rather than quietly minting a key
+    # whose loss would be unrecoverable. Mode "prereqs" is the safe rung and is
+    # the whole of what the installer can pre-stage.
+    ./tpm2-seal-prereqs.nix
     # 081KZETP6AT: FHS loader (nix-ld) for foreign dynamically-linked ELFs — mise's
     # prebuilt toolchains and the vendor agent CLIs. Needed on INSTALLED nodes too,
     # not only on the ISO: the lazy first-login `mise install` recovery in this file
@@ -33,6 +64,32 @@
     # `longhorn` PVC stays Pending and the whole stateful layer is dead.
     # Imported here so control-plane AND workers get them uniformly.
     ./longhorn-prereqs.nix
+    # Longhorn per-node DISK SET. Imported here, not only by the multi-disk
+    # hosts, because the chart runs with createDefaultDiskLabeledNodes=true:
+    # Longhorn then creates a default disk ONLY on nodes carrying
+    # `node.longhorn.io/create-default-disk`. An unlabelled node gets NO disk
+    # at all -- which would silently reproduce the 62-day outage on
+    # control-plane, the host the USB actually installs. Caught before merge
+    # on PR #12175: the multi-disk VM test passed precisely because it imports
+    # this module, while control-plane did not.
+    #
+    # zeta.longhorn.dataDisks derives from the host's declared Longhorn
+    # mounts and falls back to [ "/var/lib/longhorn" ] when none exist
+    # (the committed control-plane placeholder). A host that only imports
+    # this file therefore still gets labelled and the annotator oneshot
+    # still fires. Multi-disk hosts extend the list via fileSystems or
+    # the disko shape.
+    ./longhorn-disks.nix
+    # Cilium WireGuard node prerequisites (the wireguard kernel module + wg for
+    # diagnosis) plus the boot-time preflight that says whether they took.
+    # k8s/bootstrap/cilium-install.yaml installs Cilium with
+    # encryption.type=wireguard at FIRST BOOT, and the ArgoCD Application
+    # re-asserts it at sync-wave -80; on a kernel that cannot create a WireGuard
+    # device cilium-agent refuses to initialise and this node has no CNI at all.
+    # Imported here so control-plane AND workers get it uniformly -- node-to-node
+    # encryption is a property of the PAIR, so one node missing the prerequisite
+    # is a cluster-wide fact.
+    ./cilium-wireguard-prereqs.nix
     # iter-5.4.0 (B-0794 homelab-mode): operator SSH pubkeys captured
     # via `gh ssh-key list` during zeta-install.sh Step 6.8. Composes
     # additively with iter-4.2 static maintainer keys.
@@ -313,18 +370,69 @@
 
   # iter-5.5.0 (B-0848 Phase 2, operator 2026-05-27 ALIGNMENT catch):
   # PATH setup for both mise-managed runtimes AND bun's --global prefix.
-  # mise puts shims at ~/.local/share/mise/shims/ (which mise activation
-  # auto-prepends), AND bun's `bun install --global` lands binaries at
-  # ~/.bun/bin/ (where claude-code ends up). Both need to be on PATH.
+  # mise puts shims at ~/.local/share/mise/shims/ (which activation does
+  # NOT auto-prepend without `--shims` — corrected 2026-08-23, see the
+  # profile.d note below), AND bun's `bun install --global` lands binaries
+  # at ~/.bun/bin/ (where claude-code ends up). Both need to be on PATH.
   environment.sessionVariables = {
     BUN_INSTALL = "$HOME/.bun";
   };
 
   # /etc/profile.d/ snippet: mise activation + bun global bin.
-  # mise activate writes shims to ~/.local/share/mise/shims/ and adds
-  # them to PATH automatically; bun --global writes binaries to
-  # ~/.bun/bin/ which we add explicitly. $HOME expansion happens at
-  # shell-init time when this file sources.
+  # bun --global writes binaries to ~/.bun/bin/ which we add explicitly.
+  # $HOME expansion happens at shell-init time when this file sources.
+  #
+  # CORRECTION 2026-08-23 (measured, Aaron's `op` report). The comment here
+  # and above used to claim "mise activate writes shims to
+  # ~/.local/share/mise/shims/ and adds them to PATH automatically". That is
+  # FALSE for `mise activate` WITHOUT `--shims`: it rewrites PATH per
+  # directory from the nearest .mise.toml and never puts the shims dir on
+  # PATH. Measured in a login shell: the shims dir appeared 0 times in PATH.
+  #
+  # The consequence was Aaron's live report — from `~` on a host, `op` was
+  # "command not found", while inside the checkout it resolved to the pinned
+  # 2.34.1. On a DEVELOPER WORKSTATION that is correct and deliberate (the
+  # pin travels with the project, exactly like a local `dotnet tool` manifest
+  # or node_modules/.bin — Aaron: "it's like local scoped dotnet or npm …
+  # that works great we don't need to global"). tools/setup/common/shellenv.sh
+  # is therefore UNCHANGED.
+  #
+  # A CLUSTER NODE IS THE OTHER HOST CLASS, and here it is a real gap. A node
+  # bootstrapping shared secrets is not sitting in the checkout — it is a
+  # login shell in $HOME or a systemd unit — so project-scoped resolution has
+  # nothing to scope to. Aaron 2026-08-22: "for the linux real hardware we
+  # might need it global for op". The rest of this module already works around
+  # it by hardcoding the shims dir into unit PATHs (zeta-ai-agent.nix,
+  # zeta-creds-restore.nix, zeta-first-session.nix, zeta-install.sh — 11 call
+  # sites); this snippet was the one place still relying on the false belief.
+  #
+  # BOTH lines below are required, and shims alone is NOT enough — measured:
+  #   shims on PATH only          -> `op` runs and FAILS:
+  #                                  "mise ERROR No version is set for shim: op"
+  #   shims + MISE_GLOBAL_CONFIG_FILE -> `op --version` => 2.34.1
+  # The shim dispatches back to mise, and outside a project mise has no config
+  # declaring the tool. Pointing mise's GLOBAL config at the node's own Zeta
+  # checkout supplies one WITHOUT duplicating the pin: the version still comes
+  # from .mise.toml:114 ("1password-cli" = "2.34.1"), the single source of
+  # truth. The rejected alternative is `mise use -g` (or a nixpkgs
+  # `_1password-cli`), either of which forks the version and drifts — the
+  # exact mistake Aaron already caught on this file for bun ("we already do
+  # this we've drifted for nixos for some reason for bun", see the `mise`
+  # entry in systemPackages above).
+  #
+  # Shims are APPENDED, not prepended, so inside the checkout `mise activate`'s
+  # direct install paths still win and keep the fast path (measured 100 x
+  # `op --version`: direct 1.47s vs shim 5.98s, ~4x).
+  #
+  # INTERIM, AND DELIBERATELY LABELLED AS SUCH. This exists because 1Password
+  # is currently how shared secrets reach a node — Aaron: "not sure if that's
+  # how we are going to share shared secrets until we have a decentralized way
+  # of doing it". A node that must route through one vendor to boot has no
+  # exit, which is an APPOINTED HUB under manifesto §1 and
+  # .claude/rules/itron-hub-patent-boundary-p2p-is-the-upgrade.md. The
+  # decentralized replacement is `proposed` only and is NOT designed here; it
+  # belongs to the decentralized-identity-server lane. Tracked:
+  # workitems/081M0QS0ET7087G0R000YBRKNT-*.md (081M0QS0ET7087G0R000YBRKNT)
   environment.etc."profile.d/zeta-user-paths.sh".text = ''
     # iter-5.5.0 (B-0848): mise + bun PATH setup for the zeta user.
     # mise activate sets up shims for all .mise.toml runtimes (bun,
@@ -337,12 +445,31 @@
       elif [ -f "$HOME/Zeta/.mise.toml" ]; then
         _zeta_repo="$HOME/Zeta"
       fi
+      # Trust before `mise activate`. `mise trust --all` in the recovery
+      # arm below writes a HOME-local store that does not survive
+      # install-time /mnt/home/zeta → post-reboot $HOME, and it only runs
+      # when the bun shim is absent. MISE_TRUSTED_CONFIG_PATHS is the
+      # durable default (same contract as tools/setup/install.sh).
+      if [ -n "$_zeta_repo" ]; then
+        export MISE_TRUSTED_CONFIG_PATHS="$_zeta_repo"
+      fi
       # Recovery: non-interactive install may have skipped mise install (tarball
       # mise is not FHS-compatible on NixOS). Lazy-install runtimes on first login.
       if [ -n "$_zeta_repo" ] && [ ! -x "$HOME/.local/share/mise/shims/bun" ]; then
         (cd "$_zeta_repo" && mise trust --all --yes >/dev/null 2>&1; MISE_ENV=full mise install --yes) >/dev/null 2>&1 || true
       fi
       eval "$(mise activate bash)"
+      # Node-only global resolution (see the CORRECTION note above). Both
+      # lines are load-bearing; neither works alone.
+      if [ -n "$_zeta_repo" ]; then
+        export MISE_GLOBAL_CONFIG_FILE="$_zeta_repo/.mise.toml"
+      fi
+      if [ -d "$HOME/.local/share/mise/shims" ]; then
+        case ":$PATH:" in
+          *":$HOME/.local/share/mise/shims:"*) ;;
+          *) export PATH="$PATH:$HOME/.local/share/mise/shims" ;;
+        esac
+      fi
     fi
     # bun's `bun install --global` writes manifest-driven agent CLI
     # binaries here (claude/codex/gemini today).
