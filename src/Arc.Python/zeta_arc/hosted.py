@@ -245,6 +245,29 @@ def play_environment(
                 terminated = "all-levels"
                 break
         elif state == GameState.GAME_OVER:
+            # WHAT THIS ROW CANNOT SAY, recorded because the obvious fix does
+            # not exist and the next reader will reach for it.
+            #
+            # After the first hosted sweep (2026-08-25) 22 of 25 environments
+            # ended here on level 0, and every one of those rows is
+            # byte-identical: `solved=False, score=0.0`. A policy that never
+            # engaged the level and one that died a step from winning produce
+            # the same record, and they call for opposite fixes. The natural
+            # instrument is the engine's own score, so: it is NOT reachable.
+            #
+            # `arcengine.base_game` does hold `_score`/`_win_score` and does
+            # pass `score=`/`win_score=` when it builds the frame — but neither
+            # `FrameData` nor `FrameDataRaw` (`arcengine/enums.py:131,149`)
+            # DECLARES those fields, and pydantic drops unknown kwargs silently.
+            # The frame an agent receives carries `levels_completed` and
+            # `win_levels` and nothing finer. So the engine measures intra-level
+            # progress and never transmits it, and a `game_score` field added
+            # here would read `None` in production and in every test forever —
+            # a progress record that constrains nothing.
+            #
+            # Intra-level progress therefore has to be INFERRED from the grid by
+            # our own perception, not read from the API. That is a real piece of
+            # work, not a field.
             results.append(
                 LevelResult(
                     level,
