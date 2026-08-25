@@ -259,3 +259,52 @@ describe("the sinks consume the reconstructed value, not the parameter", () => {
     expect(afterGuard).toContain("${safeSha.");
   });
 });
+
+describe("the API door reconstructs, it does not merely check", () => {
+  // WHY THIS EXISTS. The `safeSha` guard above is the LAST hop, and it was the only one.
+  // CodeQL's `js/http-to-file-access` reported two sinks the tests above declared clean
+  // (alerts #768 and #776, `writeFileSync` at the commit message and the author letter) and
+  // it was right: the boundary above spelled `runs.every((r) => isSha(r.headSha))` and then
+  // carried the RAW `head_sha` onward, so two derived values reached both writes as HTTP
+  // response bytes —
+  //
+  //     episodeId    = `ep-${iso.redHead.slice(0, 9)}`
+  //     relandRecipe = `git cherry-pick ${breakSha}  # episode ${episodeId}; …`
+  //
+  // Neither spells `${sha}`, which is exactly why the source-level falsifier above could
+  // not see them. That is the predicate-vs-value mistake this file's own
+  // `normalizeFullCommitSha` docstring warns about, made one level further up: a boolean is
+  // a verdict about the input, and the string that travels on is still the response body.
+  //
+  // These rows pin the repair at the DOOR, where it fixes the class rather than two
+  // instances. They are deliberately source-level: the property is "no raw byte reaches any
+  // derived value", which is non-local and has no single call to observe.
+  const source = readFileSync(new URL("./retraction-actuator.ts", import.meta.url), "utf8");
+
+  test("the head shas are parsed and re-emitted before anything else touches them", () => {
+    expect(source).toContain("runsRaw.workflow_runs.map((r) => normalizeFullCommitSha(r.head_sha))");
+  });
+
+  test("a single unparseable head refuses the WHOLE picture — no partial trust", () => {
+    // Filtering the bad row out would silently narrow the evidence set the isolation runs
+    // over, which is a worse failure than standing down: it would isolate a break against a
+    // picture that is missing runs.
+    expect(source).toContain("if (normalizedHeads.some((s) => s === null))");
+    expect(source).toContain("standing down");
+  });
+
+  test("`runs` is built from the normalized values, never from `r.head_sha`", () => {
+    const start = source.indexOf("const runs: GateRunFact[]");
+    expect(start).toBeGreaterThan(0);
+    const decl = source.slice(start, source.indexOf("});", start));
+    expect(decl).toContain("normalizedHeads[i]");
+    expect(decl).not.toContain("r.head_sha");
+  });
+
+  test("`r.head_sha` is read in exactly ONE place in the whole file — the normalize call", () => {
+    // The control that makes the three rows above non-vacuous. If a second reader appears,
+    // the door has been bypassed and this fails, whatever the new reader is named.
+    const readers = source.match(/r\.head_sha/g) ?? [];
+    expect(readers).toHaveLength(1);
+  });
+});

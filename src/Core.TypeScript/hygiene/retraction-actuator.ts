@@ -295,14 +295,33 @@ if (invokedDirectly) {
     workflow_runs: { head_sha: string; status: string; conclusion: string | null }[];
   };
   const anyRunning = runsRaw.workflow_runs.some((r) => r.status !== "completed");
-  const runs: GateRunFact[] = runsRaw.workflow_runs.map((r) => ({ headSha: r.head_sha, conclusion: r.conclusion }));
-  // The API's `head_sha` becomes a `git` ARGUMENT below. This is the one door it enters
-  // through, so it is checked here and the whole picture is refused if any head is not a
-  // sha -- loud and standing down, never a repaired value handed to `git`.
-  if (!runs.every((r) => isSha(r.headSha))) {
+  // THE DOOR. The API's `head_sha` becomes a `git` argument, two file PATHS, and — via
+  // `episodeId` and `relandRecipe` — the CONTENT of a commit message and an author letter.
+  // This is the one place it enters, so it is PARSED AND RECONSTRUCTED here rather than
+  // merely checked, and the whole picture is refused if any head fails.
+  //
+  // It used to be `runs.every((r) => isSha(r.headSha))` over the raw values, and that was
+  // the predicate-vs-value mistake this file's own `normalizeFullCommitSha` docstring warns
+  // about, made one level up. A boolean is a verdict about the input; the string that
+  // travelled on was still the HTTP response body. `safeSha` re-sanitised it at the last
+  // hop, which is why the two file PATHS were clean — but `episodeId` (`ep-${redHead.slice(0,9)}`)
+  // and `relandRecipe` (`git cherry-pick ${breakSha}`) are built upstream of that hop and
+  // carried raw bytes into both `writeFileSync` calls. CodeQL's `js/http-to-file-access` was
+  // RIGHT about exactly those two sinks (alerts #768, #776), and the source-level falsifier
+  // in `retraction-actuator-message.test.ts` could not see it: neither alias spells `${sha}`.
+  //
+  // Reconstructing at the door fixes the class rather than the two instances. Every value
+  // derived from a gate run below is now assembled from `HEX_DIGITS`, a literal in this
+  // file. `safeSha` downstream is kept as belt-and-braces, not as the only guard.
+  const normalizedHeads = runsRaw.workflow_runs.map((r) => normalizeFullCommitSha(r.head_sha));
+  if (normalizedHeads.some((s) => s === null)) {
     console.log("actuator: a gate run head_sha is not a sha - the picture is not trustworthy, standing down");
     process.exit(0);
   }
+  const runs: GateRunFact[] = runsRaw.workflow_runs.map((r, i) => ({
+    headSha: normalizedHeads[i] ?? "",
+    conclusion: r.conclusion,
+  }));
   const iso = isolateBreak(runs);
 
   const episodes = readEpisodes();
