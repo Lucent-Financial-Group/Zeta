@@ -54,9 +54,9 @@ unaddressed because the remedy is a merge-queue decision, which is a topology ch
 
 **#11 / #12 — genuinely unowned.** The `agentic-organization` suite is invoked by no
 workflow, so its tests constrain nothing (surfaced while validating the k8s manifests, and
-named rather than silently widened into that PR's scope). The four archive PRs (#15198,
-#15205, #15263, #15268) fail on a stale base; the merge-from-main pattern that rescued
-#12175 today should apply, but it has not been tried on them.
+named rather than silently widened into that PR's scope). The four archive PRs
+(#15198, #15205, #15263, #15268) fail on a stale base; the merge-from-main pattern
+that rescued PR #12175 today should apply, but it has not been tried on them.
 
 ## Refuted — recorded so the register does not overstate itself
 
