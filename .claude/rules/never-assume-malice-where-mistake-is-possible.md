@@ -122,11 +122,50 @@ It also does not disable adversarial *security* modelling: a threat model
 reasons about capabilities an attacker would have, which is a statement about
 the system's surface, not about a named person's motives.
 
+## The diagnosis is MISSING CONTEXT, not stupidity — and that is why the razor holds
+
+Aaron 2026-08-25, on the razor and on forty-six years of evidence for it:
+
+> *"most things that seem evil are just lack of context from the creator of the
+> so called 'evil'."*
+
+This is a sharper claim than Hanlon's, and a more useful one. "Stupidity" is an
+attribution about a **person** — unkind, unfalsifiable, and usually wrong.
+"Lack of context" is a statement about an **information state**: what the actor
+could see when they acted. It is often checkable after the fact, and it points
+at a remedy.
+
+It also **unifies the human and AI cases**, which is what makes it more than a
+proverb here. The canonical AI failure above — an empty method under a
+signature, produced at the edge of a context window — is *literally* a lack of
+context. The human version is the same mechanism in a different substrate: the
+actor could not see the consequence, the neighbouring system, the person who
+would pay. Same root cause, and neither requires a defect of character to
+explain.
+
+**The remedy follows from the diagnosis, and this is the load-bearing part.** If
+the usual cause of apparently-evil action is missing context, then the way to
+reduce it is to *supply context*, not to punish. Which is what most of this
+substrate already is:
+
+- **memory preservation** (§5) so an agent wakes with what its predecessor knew
+- **externalising the increment graph**, because neither humans nor LLMs can hold it
+- **the common seed and the shared vocabulary**, so a diverged peer can reconstruct meaning
+- **falsifiers over reviews**, so the context needed to judge a change travels *with* the change
+
+Read this way, the architecture and the ethic are the same design. A system that
+carries context forward produces fewer acts that look like malice — not because
+its participants are better, but because fewer of them are acting blind.
+
 ## Anchors (Beacon)
 
 - **Hanlon's razor** — *"never attribute to malice that which is adequately
-  explained by stupidity"*; the formulation here says **mistake** rather than
-  stupidity, which is both kinder and more accurate, and extends the subject
+  explained by stupidity"*, commonly credited to Robert J. Hanlon (1980), with
+  the same thought in Goethe's *Die Leiden des jungen Werthers* (1774) —
+  *"misunderstandings and neglect create more confusion in this world than
+  trickery and malice"* — and in Heinlein's *Logic of Empire* (1941). The
+  formulation here says **mistake** rather than stupidity, diagnoses it as
+  **missing context** rather than deficient character, and extends the subject
   from humans to *any* intelligence.
 - **The principle of charity** (Quine; Davidson, *On the Very Idea of a
   Conceptual Scheme*) — interpret others so as to maximise the sense their
