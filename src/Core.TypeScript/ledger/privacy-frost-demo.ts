@@ -22,7 +22,7 @@
 //
 // Exit codes: 0 every step behaved as required · 1 a step did NOT (the demo is self-checking).
 
-import { existsSync, rmSync } from "node:fs";
+import { rmSync } from "node:fs";
 import { append, attest, balanceOf, defrost, load, spend, DEFAULT_LEDGER_PATH } from "./privacy-budget";
 import { frostStrip, type SourceMind } from "../discovery/llmtv-broadcast";
 
@@ -36,8 +36,10 @@ function check(label: string, condition: boolean, detail: string): void {
   if (!condition) failures.push(label);
 }
 
-if (args.includes("--reset") && existsSync(ledgerPath)) {
-  rmSync(ledgerPath);
+if (args.includes("--reset")) {
+  // `force: true` makes this one syscall that tolerates absence, rather than an existsSync check
+  // followed by an unlink that races it. Wiping an already-wiped book is a no-op, not an error.
+  rmSync(ledgerPath, { force: true });
   console.log(`reset: wiped ${ledgerPath}\n`);
 }
 

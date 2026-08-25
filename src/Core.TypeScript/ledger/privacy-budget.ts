@@ -43,7 +43,7 @@
 // YubiHSM is in hand, the SmartCard-HSM has not arrived, and the YubiHSM's measured mechanism list
 // contains no FROST-capable primitive (PR #15407). Do not describe the first as the second.
 
-import { appendFileSync, existsSync, mkdirSync, readFileSync } from "node:fs";
+import { appendFileSync, mkdirSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 
 /** A principal: the identity that can own, earn and spend privacy budget. */
@@ -280,11 +280,24 @@ export function receiptIsRecorded(receipt: FrostReceipt, ledger: Ledger): boolea
 
 // ── Persistence: append-only JSONL, gitignored, wipeable ────────────────────────────────────
 
-/** Read the book from disk. A missing file is an EMPTY book, not an error: reset is normal. */
+/**
+ * Read the book from disk. A missing file is an EMPTY book, not an error: a reset is normal here,
+ * not exceptional.
+ *
+ * One syscall, not two: an `existsSync` guard before the read would be a check-then-use race —
+ * the book can be wiped between the check and the read, which on THIS module is a routine event
+ * rather than a hypothetical. So the read is attempted and its own failure interpreted.
+ */
 export function load(path: string): Ledger {
-  if (!existsSync(path)) return EMPTY;
+  let text: string;
+  try {
+    text = readFileSync(path, "utf8");
+  } catch (e) {
+    if ((e as NodeJS.ErrnoException).code === "ENOENT") return EMPTY;
+    throw e;
+  }
   const out: Entry[] = [];
-  for (const line of readFileSync(path, "utf8").split("\n")) {
+  for (const line of text.split("\n")) {
     const trimmed = line.trim();
     if (trimmed) out.push(JSON.parse(trimmed) as Entry);
   }

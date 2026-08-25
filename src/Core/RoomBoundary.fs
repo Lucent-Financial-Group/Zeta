@@ -103,6 +103,14 @@ module RoomBoundary =
         }
 
     /// Spend earned privacy budget to frost the boundary.
+    ///
+    /// **Honest limit — this does NOT write back to the book.** `create` derives the starting
+    /// budget from the ledger, so what is spent here was genuinely earned; but the debit lands on
+    /// this record's in-memory `PrivacyBudget` field and no `PrivacyLedger.Spend` entry is posted.
+    /// The TypeScript path (`ledger/privacy-budget.ts` `spend`) does close that loop. Closing it
+    /// here means threading the ledger back out of `frost`, which changes `applyBoundaryCommand`
+    /// and the tick signature — a separate slice, deliberately not smuggled into this one.
+    /// Recorded here so the gap is discovered by reading the function, not by trusting it.
     let frost
         (sink: IHeatSink)
         (cost: int)
