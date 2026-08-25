@@ -2,6 +2,9 @@
  * CHIP-8 Emulator - Full Standard Instruction Set
  */
 
+import { COMMON_SEED } from "../observe/phase-clock";
+import { splitmix32Step } from "./seeded-rng";
+
 export const W = 64;
 export const H = 32;
 const PROGRAM_START = 0x200;
@@ -18,9 +21,17 @@ export interface Frame {
   keys: boolean[];
   fault: string | null;
   causalMask: boolean[];
+  plane: number;
+  extra: Map<number, number>;
+  /**
+   * Seeded PRNG state for the RND opcode. Derived from COMMON_SEED so a run
+   * replays deterministically (DST) and two viewers fold identical evidence
+   * (noninterference §13). Never `Math.random()`.
+   */
+  rngState: number;
 }
 
-export function create(): Frame {
+export function create(seed: number = COMMON_SEED): Frame {
   return {
     mem: new Map(),
     v: new Uint8Array(16),
@@ -33,31 +44,41 @@ export function create(): Frame {
     keys: new Array(16).fill(false),
     fault: null,
     causalMask: new Array(4096).fill(false),
+    plane: 1,
+    extra: new Map(),
+    rngState: seed | 0,
   };
 }
 
+/**
+ * The standard CHIP-8 hex fontset: 16 glyphs (0-F), 4×5 pixels each, one byte
+ * per row with the glyph in the HIGH nibble. Loaded at 0x000-0x04F by
+ * `loadRom`, addressed by `LD F, Vx`. Exported so the OCR layer matches
+ * against exactly the bitmaps the emulator draws — one source of truth.
+ */
+export const FONTSET: readonly number[] = [
+  0xF0, 0x90, 0x90, 0x90, 0xF0, // 0
+  0x20, 0x60, 0x20, 0x20, 0x70, // 1
+  0xF0, 0x10, 0xF0, 0x80, 0xF0, // 2
+  0xF0, 0x10, 0xF0, 0x10, 0xF0, // 3
+  0x90, 0x90, 0xF0, 0x10, 0x10, // 4
+  0xF0, 0x80, 0xF0, 0x10, 0xF0, // 5
+  0xF0, 0x80, 0xF0, 0x90, 0xF0, // 6
+  0xF0, 0x10, 0x20, 0x40, 0x40, // 7
+  0xF0, 0x90, 0xF0, 0x90, 0xF0, // 8
+  0xF0, 0x90, 0xF0, 0x10, 0xF0, // 9
+  0xF0, 0x90, 0xF0, 0x90, 0x90, // A
+  0xE0, 0x90, 0xE0, 0x90, 0xE0, // B
+  0xF0, 0x80, 0x80, 0x80, 0xF0, // C
+  0xE0, 0x90, 0x90, 0x90, 0xE0, // D
+  0xF0, 0x80, 0xF0, 0x80, 0xF0, // E
+  0xF0, 0x80, 0xF0, 0x80, 0x80, // F
+];
+
 export function loadRom(rom: Uint8Array, f: Frame): Frame {
   rom.forEach((b, idx) => f.mem.set(PROGRAM_START + idx, b));
-  // Load standard fontset at 0x000-0x04F
-  const fontset = [
-    0xF0, 0x90, 0x90, 0x90, 0xF0, // 0
-    0x20, 0x60, 0x20, 0x20, 0x70, // 1
-    0xF0, 0x10, 0xF0, 0x80, 0xF0, // 2
-    0xF0, 0x10, 0xF0, 0x10, 0xF0, // 3
-    0x90, 0x90, 0xF0, 0x10, 0x10, // 4
-    0xF0, 0x80, 0xF0, 0x10, 0xF0, // 5
-    0xF0, 0x80, 0xF0, 0x90, 0xF0, // 6
-    0xF0, 0x10, 0x20, 0x40, 0x40, // 7
-    0xF0, 0x90, 0xF0, 0x90, 0xF0, // 8
-    0xF0, 0x90, 0xF0, 0x10, 0xF0, // 9
-    0xF0, 0x90, 0xF0, 0x90, 0x90, // A
-    0xE0, 0x90, 0xE0, 0x90, 0xE0, // B
-    0xF0, 0x80, 0x80, 0x80, 0xF0, // C
-    0xE0, 0x90, 0x90, 0x90, 0xE0, // D
-    0xF0, 0x80, 0xF0, 0x80, 0xF0, // E
-    0xF0, 0x80, 0xF0, 0x80, 0x80  // F
-  ];
-  fontset.forEach((b, idx) => f.mem.set(idx, b));
+  // Load standard fontset at 0x000-0x04F (single source of truth: FONTSET above)
+  FONTSET.forEach((b, idx) => f.mem.set(idx, b));
   return f;
 }
 
@@ -83,7 +104,26 @@ export function renderDisplay(f: Frame): string {
 
 export function colorAt(x: number, y: number, f: Frame): number {
   const idx = (y % H) * W + (x % W);
-  return f.display.get(idx) ? 1 : 0;
+  const mono = f.display.get(idx) ? 1 : 0;
+  return mono | (f.extra.get(idx) ?? 0);
+}
+
+/**
+ * OR the frame's currently-lit pixels into `target` (length W*H, color-mask
+ * values). Calling this after EVERY emulator step across a tick builds a
+ * persistence-of-vision composite: game loops XOR-erase and redraw sprites
+ * each iteration, so a single end-of-tick snapshot can phase-lock onto the
+ * erased window and a sprite "vanishes" for many consecutive ticks. The
+ * composite is what a CRT (and an eye) would show — every pixel lit at any
+ * point during the tick. Perception should consume THIS, not a raw snapshot.
+ */
+export function compositeInto(target: number[], f: Frame): void {
+  for (const [idx, on] of f.display) {
+    if (on && idx >= 0 && idx < W * H) target[idx] = (target[idx] ?? 0) | 1;
+  }
+  for (const [idx, mask] of f.extra) {
+    if (idx >= 0 && idx < W * H) target[idx] = (target[idx] ?? 0) | mask;
+  }
 }
 
 export function step(f: Frame): Frame {
@@ -101,7 +141,17 @@ export function step(f: Frame): Frame {
 
   switch (op & 0xf000) {
     case 0x0000:
-      if (op === 0x00e0) f.display.clear(); // CLS
+      if (op === 0x00e0) {
+        if (f.plane & 1) f.display.clear(); // CLS
+        const keep = ~f.plane & 0b110;
+        if (keep !== 0b110) {
+          for (const [k, m] of [...f.extra]) {
+            const m2 = m & keep;
+            if (m2 === 0) f.extra.delete(k);
+            else f.extra.set(k, m2);
+          }
+        }
+      }
       else if (op === 0x00ee) { // RET
         const top = f.stack.pop();
         if (top !== undefined) f.pc = top;
@@ -180,25 +230,45 @@ export function step(f: Frame): Frame {
     case 0xa000: // LD I, addr
       f.i = nnn;
       break;
-    case 0xc000: // RND Vx, byte
-      f.v[x] = Math.floor(Math.random() * 256) & nn;
+    case 0xc000: { // RND Vx, byte — frame-local seeded stream, never Math.random
+      const r = splitmix32Step(f.rngState);
+      f.rngState = r.next;
+      f.v[x] = (r.u32 & 0xff) & nn;
       break;
+    }
     case 0xd000: { // DRW Vx, Vy, nibble
       const ox = (f.v[x] ?? 0) % W;
       const oy = (f.v[y] ?? 0) % H;
+      const hiSel = f.plane & 0b110;
       let collision = 0;
       for (let row = 0; row < n; row++) {
         f.causalMask[f.i + row] = true; // Mark sprite data as causal
         const sprite = f.mem.get(f.i + row) ?? 0;
         for (let col = 0; col < 8; col++) {
           if (((sprite >> (7 - col)) & 1) === 1) {
-            const px = ox + col;
-            const py = oy + row;
-            if (px < W && py < H) {
+            // Toroidal wrap: pixel space agrees with register space at the
+            // edges. Clipping instead makes a sprite at x=63/y=31 draw ZERO
+            // pixels while its coordinate registers remain valid — an
+            // invisible object perception can never see but the game logic
+            // still simulates.
+            const px = (ox + col) % W;
+            const py = (oy + row) % H;
+            {
               const idx = py * W + px;
-              const cur = f.display.get(idx) ?? false;
-              if (cur) collision = 1;
-              f.display.set(idx, !cur);
+
+              // Global cross-plane collision: if ANY pixel was set here before we draw.
+              const curMono = f.display.get(idx) ?? false;
+              const curExtra = f.extra.get(idx) ?? 0;
+              if (curMono || curExtra > 0) collision = 1;
+
+              if (f.plane & 1) {
+                f.display.set(idx, !curMono);
+              }
+              if (hiSel !== 0) {
+                const nxt = curExtra ^ hiSel;
+                if (nxt === 0) f.extra.delete(idx);
+                else f.extra.set(idx, nxt);
+              }
             }
           }
         }
@@ -212,6 +282,7 @@ export function step(f: Frame): Frame {
       break;
     case 0xf000:
       switch (nn) {
+        case 0x01: f.plane = x & 0b111; break; // Fn01: CHIP-9 plane select
         case 0x07: f.v[x] = f.dt; break;
         case 0x0a: { // Wait for key
           let pressed = -1;
@@ -219,10 +290,7 @@ export function step(f: Frame): Frame {
             if (f.keys[k]) { pressed = k; break; }
           }
           if (pressed === -1) f.pc -= 2; // block
-          else {
-            f.v[x] = pressed;
-            f.keys[pressed] = false; // consume it!
-          }
+          else f.v[x] = pressed;
           break;
         }
         case 0x15: f.dt = f.v[x]!; break;

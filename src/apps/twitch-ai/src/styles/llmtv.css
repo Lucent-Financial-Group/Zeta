@@ -22,7 +22,7 @@
 body {
   background-color: var(--bg-dark);
   color: var(--text-main);
-  font-family: 'Inter', sans-serif;
+  font-family: system-ui, -apple-system, sans-serif;
   min-height: 100vh;
   overflow-x: hidden;
   background-image: 
@@ -32,7 +32,7 @@ body {
 
 /* Typography */
 h1, h2, h3 { font-weight: 800; letter-spacing: -0.02em; }
-.mono { font-family: 'Share Tech Mono', monospace; }
+.mono { font-family: ui-monospace, 'SF Mono', Menlo, monospace; }
 
 /* Layout */
 #app {
@@ -262,8 +262,24 @@ main {
   font-size: 0.85rem;
   font-weight: 800;
   color: #fff;
-  transition: all 0.1s ease-out;
+  /* The glow inputs update every ~32 ms frame; a transition shorter than a
+     few frames just relays the flicker. 250 ms integrates it into a pulse. */
+  transition:
+    opacity 250ms linear,
+    transform 250ms ease-out,
+    box-shadow 250ms linear,
+    background 250ms linear;
   box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+}
+
+/* Same smoothing for the pads and triggers, which had none at all. */
+.dpad-btn,
+.trigger-btn {
+  transition:
+    opacity 250ms linear,
+    transform 250ms ease-out,
+    box-shadow 250ms linear,
+    background 250ms linear;
 }
 
 .face-btn.action-btn {
@@ -298,7 +314,7 @@ main {
   z-index: 10;
   display: flex;
   gap: 8px;
-  font-family: 'Share Tech Mono', monospace;
+  font-family: ui-monospace, 'SF Mono', Menlo, monospace;
   font-size: 0.85rem;
   box-shadow: 0 0 15px rgba(244, 114, 182, 0.4);
   white-space: nowrap;
@@ -327,7 +343,7 @@ main {
   color: var(--accent-cyan);
   padding: 0.5rem 1rem;
   border-radius: 8px;
-  font-family: 'Inter', sans-serif;
+  font-family: system-ui, -apple-system, sans-serif;
   font-weight: 600;
   font-size: 0.875rem;
   cursor: pointer;
@@ -421,7 +437,7 @@ main {
 }
 
 .linguistic-float .eng {
-  font-family: 'Share Tech Mono', monospace;
+  font-family: ui-monospace, 'SF Mono', Menlo, monospace;
   font-weight: bold;
   color: var(--text-main);
 }
@@ -451,4 +467,155 @@ main {
     opacity: 0;
     transform: translate(-50%, -100px);
   }
+}
+
+/* ── Attention overlay (D3/D4 of the attention-density spec, #14503) ──────
+   Frost = the uncertainty channel: clear is known, frosted is not known
+   yet, bright motion is being attended right now. The fixation ring's
+   left/top TRANSITION is the saccade sweep; the settle pulse is the
+   fixation landing. */
+.attention-tile {
+  position: absolute;
+  width: 12.5%;
+  height: 25%;
+  background: rgba(226, 236, 255, 0.85);
+  box-shadow: inset 0 0 6px rgba(255, 255, 255, 0.5);
+  opacity: 0;
+  transition: opacity 180ms linear;
+  pointer-events: none;
+}
+.attention-tile.attended {
+  box-shadow: inset 0 0 0 1px rgba(103, 232, 249, 0.55);
+}
+.fixation-ring {
+  position: absolute;
+  width: 12.5%;
+  height: 25%;
+  border: 2px solid rgba(250, 204, 21, 0.95);
+  box-sizing: border-box;
+  /* The SWEEP: a fast dim glide between fixations (the saccade). */
+  transition:
+    left 120ms ease-out,
+    top 120ms ease-out;
+  pointer-events: none;
+}
+.fixation-ring.settling {
+  animation: fixation-settle 420ms ease-out;
+}
+@keyframes fixation-settle {
+  0% {
+    box-shadow: 0 0 2px rgba(250, 204, 21, 0.2);
+    border-color: rgba(250, 204, 21, 0.35);
+  }
+  60% {
+    box-shadow: 0 0 14px rgba(250, 204, 21, 0.9);
+    border-color: rgba(250, 204, 21, 1);
+  }
+  100% {
+    box-shadow: 0 0 6px rgba(250, 204, 21, 0.5);
+    border-color: rgba(250, 204, 21, 0.95);
+  }
+}
+.attention-header {
+  font-size: 0.75rem;
+  color: var(--text-muted, #94a3b8);
+}
+.attention-value {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── The WHY button (D5 of #14503) ────────────────────────────────────────
+   Click the agent, get one sentence; click again, the next reason down;
+   the chain bottoms out at "I don't know." — which renders dimmer, because
+   the honest bottom is a feature, not an error. */
+.why-btn {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: #67e8f9;
+  border: 1px solid rgba(103, 232, 249, 0.5);
+  border-radius: 3px;
+  padding: 0 0.35em;
+  cursor: pointer;
+  user-select: none;
+}
+.why-btn:hover {
+  background: rgba(103, 232, 249, 0.15);
+}
+.why-strip {
+  font-family: var(--mono, monospace);
+  font-size: 0.8rem;
+  line-height: 1.4;
+  color: #e2e8f0;
+  background: rgba(8, 14, 26, 0.92);
+  border-left: 3px solid rgba(103, 232, 249, 0.8);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 0.45em 0.7em;
+  cursor: pointer;
+  user-select: none;
+}
+.why-strip.terminal {
+  color: #94a3b8;
+  border-left-color: rgba(148, 163, 184, 0.6);
+  font-style: italic;
+}
+
+/* ── The study panel (D6 of #14503, ?study=1) ─────────────────────────────
+   The prediction falsifier's cockpit: current trial + condition, the
+   four-way probe (shown only while the sim is frozen), and the running
+   per-condition tallies against chance. */
+.study-panel {
+  position: fixed;
+  left: 50%;
+  bottom: 0.75rem;
+  transform: translateX(-50%);
+  z-index: 900;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.45rem 0.8rem;
+  background: rgba(8, 14, 26, 0.95);
+  border: 1px solid rgba(103, 232, 249, 0.4);
+  border-radius: 6px;
+  font-family: var(--mono, monospace);
+  font-size: 0.75rem;
+  color: #e2e8f0;
+}
+.study-status {
+  color: #67e8f9;
+  white-space: nowrap;
+}
+.study-prompt {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.study-arrow {
+  width: 2rem;
+  height: 2rem;
+  font-size: 1rem;
+  color: #e2e8f0;
+  background: rgba(103, 232, 249, 0.12);
+  border: 1px solid rgba(103, 232, 249, 0.5);
+  border-radius: 4px;
+  cursor: pointer;
+}
+.study-arrow:hover {
+  background: rgba(103, 232, 249, 0.3);
+}
+.study-skip {
+  font-size: 0.7rem;
+  color: #94a3b8;
+  background: transparent;
+  border: 1px solid rgba(148, 163, 184, 0.4);
+  border-radius: 4px;
+  padding: 0.2rem 0.45rem;
+  cursor: pointer;
+}
+.study-skip:hover {
+  color: #e2e8f0;
+}
+.study-results {
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
 }

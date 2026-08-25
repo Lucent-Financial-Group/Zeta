@@ -1,13 +1,17 @@
 import { describe, expect, it } from "bun:test";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { DEFAULT_QEMU_WIFI_PASSWORD } from "../zflash/test-harness/prepare-boot-image";
+import { DEFAULT_QEMU_PASSPHRASE, DEFAULT_QEMU_WIFI_PASSWORD } from "../zflash/test-harness/prepare-boot-image";
 import { validateSelfRegCiCoherent } from "./self-reg-serial.ts";
 import {
   assertFirstBootProvisioningContract,
   INSTALL_SH_FINAL_FAILURE_MARKER,
   INSTALL_SH_START_MARKER,
   assertGeneratedNodeHostnameContract,
+  assertUefiKeyfilePhase1Contract,
+  assertUefiKeyfilePickerContract,
+  assertUefiKeyfileRestoreContract,
+  assertUsbISerialPhase1Contract,
   assertWifiEspPhase1Contract,
   buildQemuDiskBootArgsPure,
   buildQemuInstallArgsPure,
@@ -19,7 +23,12 @@ import {
   NODE_HEX_HOSTNAME_RE,
   OVMF_FIRMWARE_CANDIDATES,
   PHASE2_SERIAL_SEPARATOR,
+  QEMU_CREDS_PASSPHRASE_FWCFG_NAME,
+  UEFI_KEYFILE_RESTORE_SERIAL,
 } from "./qemu-full-install-test.ts";
+import { QEMU_USB_TEST_SERIAL } from "../installer/qemu-usb-storage.ts";
+import { UEFI_KEYFILE_SERIAL } from "../installer/uefi-keyfile-esp.ts";
+import { USB_ISERIAL_SERIAL, usbISerialValueMarker } from "../installer/usb-iserial-probe.ts";
 
 describe("validateSelfRegCiCoherent", () => {
   it("accepts matching maintainer/node/tree-path lines", () => {
@@ -80,6 +89,23 @@ describe("qemu-full-install-test phase 2 disk boot QEMU args", () => {
     expect(args.join(" ")).not.toContain("netdev");
     expect(args).toContain("-vga");
     expect(args).toContain("none");
+    expect(args.join(" ")).not.toContain("-fw_cfg");
+  });
+
+  it("injects fw_cfg file= without putting the secret in argv", () => {
+    const args = buildQemuDiskBootArgsPure(
+      "/tmp/disk.qcow2",
+      "/tmp/serial.log",
+      "/usr/share/OVMF/OVMF_CODE_4M.fd",
+      "/tmp/OVMF_VARS.fd",
+      true,
+      "/tmp/qemu-creds-passphrase.fwcfg",
+    );
+    expect(args.join(" ")).toContain(
+      `-fw_cfg name=${QEMU_CREDS_PASSPHRASE_FWCFG_NAME},file=/tmp/qemu-creds-passphrase.fwcfg`,
+    );
+    expect(args.join(" ")).not.toContain("string=");
+    expect(args.join(" ")).not.toContain(DEFAULT_QEMU_PASSPHRASE);
   });
 });
 
@@ -104,8 +130,300 @@ describe("qemu-full-install-test phase 1 boot media QEMU args", () => {
       false,
     );
     expect(args.join(" ")).toContain("usb-storage,bus=xhci.0,drive=zflashboot,bootindex=1");
+    expect(args.join(" ")).toContain(`serial=${QEMU_USB_TEST_SERIAL}`);
     expect(args.join(" ")).toContain("file=/tmp/zflash-wifi.img,if=none,format=raw,readonly=on,id=zflashboot");
     expect(args.join(" ")).not.toContain("-cdrom");
+  });
+});
+
+describe("qemu-full-install-test usb iSerial phase-1 contract", () => {
+  it("accepts found + serial=ZETA-QEMU-001 + no-metal-claim + persist-default uuid", () => {
+    const serial = [
+      USB_ISERIAL_SERIAL.found,
+      usbISerialValueMarker(QEMU_USB_TEST_SERIAL),
+      USB_ISERIAL_SERIAL.noMetalClaim,
+      USB_ISERIAL_SERIAL.persistDefaultUuid,
+      UEFI_KEYFILE_SERIAL.espMissing,
+      "ZETA CLUSTER NODE INSTALL COMPLETE",
+    ].join("\n");
+    expect(assertUsbISerialPhase1Contract(serial).ok).toBe(true);
+  });
+
+  it("fails when persist silently switches to iSerial on the default QEMU path", () => {
+    const serial = [
+      USB_ISERIAL_SERIAL.found,
+      usbISerialValueMarker(QEMU_USB_TEST_SERIAL),
+      USB_ISERIAL_SERIAL.noMetalClaim,
+      USB_ISERIAL_SERIAL.persistOptInIserial,
+      "ZETA CLUSTER NODE INSTALL COMPLETE",
+    ].join("\n");
+    const result = assertUsbISerialPhase1Contract(serial);
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.reason).toContain("persist-opt-in");
+    }
+  });
+
+  it("fails when persist silently switches to UEFI keyfile on the default QEMU path", () => {
+    const serial = [
+      USB_ISERIAL_SERIAL.found,
+      usbISerialValueMarker(QEMU_USB_TEST_SERIAL),
+      USB_ISERIAL_SERIAL.noMetalClaim,
+      USB_ISERIAL_SERIAL.persistDefaultUuid,
+      UEFI_KEYFILE_SERIAL.persistOptInKeyfile,
+      "ZETA CLUSTER NODE INSTALL COMPLETE",
+    ].join("\n");
+    const result = assertUsbISerialPhase1Contract(serial);
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.reason).toContain("UEFI keyfile persist-opt-in");
+    }
+  });
+
+  it("fails when the UEFI keyfile ESP bind marker is baked on the default QEMU path", () => {
+    const serial = [
+      USB_ISERIAL_SERIAL.found,
+      usbISerialValueMarker(QEMU_USB_TEST_SERIAL),
+      USB_ISERIAL_SERIAL.noMetalClaim,
+      USB_ISERIAL_SERIAL.persistDefaultUuid,
+      UEFI_KEYFILE_SERIAL.espFound,
+      "ZETA CLUSTER NODE INSTALL COMPLETE",
+    ].join("\n");
+    const result = assertUsbISerialPhase1Contract(serial);
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.reason).toContain("ESP bind marker");
+    }
+  });
+
+  it("fails when the QEMU cred passphrase ESP file is baked on the default QEMU path", () => {
+    const serial = [
+      USB_ISERIAL_SERIAL.found,
+      usbISerialValueMarker(QEMU_USB_TEST_SERIAL),
+      USB_ISERIAL_SERIAL.noMetalClaim,
+      USB_ISERIAL_SERIAL.persistDefaultUuid,
+      UEFI_KEYFILE_SERIAL.espMissing,
+      UEFI_KEYFILE_SERIAL.espPassphraseFound,
+      "ZETA CLUSTER NODE INSTALL COMPLETE",
+    ].join("\n");
+    const result = assertUsbISerialPhase1Contract(serial);
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.reason).toContain("passphrase ESP file");
+    }
+  });
+
+  it("fails when probe succeeded but persist-default marker is missing", () => {
+    const serial = [
+      USB_ISERIAL_SERIAL.found,
+      usbISerialValueMarker(QEMU_USB_TEST_SERIAL),
+      USB_ISERIAL_SERIAL.noMetalClaim,
+      "ZETA CLUSTER NODE INSTALL COMPLETE",
+    ].join("\n");
+    const result = assertUsbISerialPhase1Contract(serial);
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.reason).toContain("persist-default");
+    }
+  });
+
+  it("fails on ISO-only serial that never ran the probe (do not call this on cdrom)", () => {
+    const result = assertUsbISerialPhase1Contract("ZETA CLUSTER NODE INSTALL COMPLETE\n");
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.reason).toContain("usb iSerial guest markers missing");
+      expect(result.reason).toContain(USB_ISERIAL_SERIAL.found);
+    }
+  });
+
+  it("fails helper-unavailable instead of treating skip as success", () => {
+    const serial = [
+      USB_ISERIAL_SERIAL.helperUnavailable,
+      USB_ISERIAL_SERIAL.noMetalClaim,
+      "ZETA CLUSTER NODE INSTALL COMPLETE",
+    ].join("\n");
+    const result = assertUsbISerialPhase1Contract(serial);
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.reason).toContain(usbISerialValueMarker(QEMU_USB_TEST_SERIAL));
+    }
+  });
+});
+
+describe("qemu-full-install-test UEFI keyfile phase-1 contract", () => {
+  it("accepts ESP marker + persist-opt-in write + no-metal-claim", () => {
+    const serial = [
+      UEFI_KEYFILE_SERIAL.espFound,
+      UEFI_KEYFILE_SERIAL.wrote,
+      UEFI_KEYFILE_SERIAL.noMetalClaim,
+      UEFI_KEYFILE_SERIAL.persistOptInKeyfile,
+      USB_ISERIAL_SERIAL.persistDefaultUuid,
+      "ZETA CLUSTER NODE INSTALL COMPLETE",
+    ].join("\n");
+    expect(assertUefiKeyfilePhase1Contract(serial).ok).toBe(true);
+  });
+
+  it("fails when the ESP bind marker was not baked", () => {
+    const serial = [
+      UEFI_KEYFILE_SERIAL.espMissing,
+      UEFI_KEYFILE_SERIAL.wrote,
+      UEFI_KEYFILE_SERIAL.noMetalClaim,
+      UEFI_KEYFILE_SERIAL.persistOptInKeyfile,
+      "ZETA CLUSTER NODE INSTALL COMPLETE",
+    ].join("\n");
+    const result = assertUefiKeyfilePhase1Contract(serial);
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.reason).toContain("ESP marker missing");
+    }
+  });
+
+  it("fails when iSerial persist-opt-in appears on the keyfile path", () => {
+    const serial = [
+      UEFI_KEYFILE_SERIAL.espFound,
+      UEFI_KEYFILE_SERIAL.wrote,
+      UEFI_KEYFILE_SERIAL.noMetalClaim,
+      UEFI_KEYFILE_SERIAL.persistOptInKeyfile,
+      USB_ISERIAL_SERIAL.persistOptInIserial,
+      "ZETA CLUSTER NODE INSTALL COMPLETE",
+    ].join("\n");
+    const result = assertUefiKeyfilePhase1Contract(serial);
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.reason).toContain("mutually exclusive");
+    }
+  });
+
+  it("fails helper-unavailable instead of treating skip as success", () => {
+    const serial = [
+      UEFI_KEYFILE_SERIAL.espFound,
+      UEFI_KEYFILE_SERIAL.helperUnavailable,
+      "ZETA CLUSTER NODE INSTALL COMPLETE",
+    ].join("\n");
+    const result = assertUefiKeyfilePhase1Contract(serial);
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.reason).toContain("fail, not a skip");
+    }
+  });
+
+  it("fails when the QEMU passphrase ESP file appears on the write-only path", () => {
+    const serial = [
+      UEFI_KEYFILE_SERIAL.espFound,
+      UEFI_KEYFILE_SERIAL.wrote,
+      UEFI_KEYFILE_SERIAL.noMetalClaim,
+      UEFI_KEYFILE_SERIAL.persistOptInKeyfile,
+      UEFI_KEYFILE_SERIAL.espPassphraseFound,
+      "ZETA CLUSTER NODE INSTALL COMPLETE",
+    ].join("\n");
+    const result = assertUefiKeyfilePhase1Contract(serial);
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.reason).toContain("write-only");
+    }
+  });
+});
+
+describe("qemu-full-install-test UEFI keyfile picker contract", () => {
+  const pickerSerial = [
+    UEFI_KEYFILE_SERIAL.espFound,
+    UEFI_KEYFILE_SERIAL.wrote,
+    UEFI_KEYFILE_SERIAL.noMetalClaim,
+    UEFI_KEYFILE_SERIAL.persistOptInKeyfile,
+    UEFI_KEYFILE_SERIAL.espPassphraseFound,
+    UEFI_KEYFILE_SERIAL.espPassphraseCaptured,
+    `${UEFI_KEYFILE_SERIAL.pickerBoundKeyfile} (default FAT UUID; iSerial/keyfile only if the matching ZETA_BIND_* opt-in succeeded)`,
+    "ZETA CLUSTER NODE INSTALL COMPLETE",
+  ].join("\n");
+
+  it("accepts write markers plus passphrase capture plus --uefi-keyfile bind", () => {
+    expect(assertUefiKeyfilePickerContract(pickerSerial).ok).toBe(true);
+  });
+
+  it("fails when 6.95-picker was skipped", () => {
+    const serial = [
+      UEFI_KEYFILE_SERIAL.espFound,
+      UEFI_KEYFILE_SERIAL.wrote,
+      UEFI_KEYFILE_SERIAL.noMetalClaim,
+      UEFI_KEYFILE_SERIAL.persistOptInKeyfile,
+      UEFI_KEYFILE_SERIAL.espPassphraseFound,
+      UEFI_KEYFILE_SERIAL.espPassphraseCaptured,
+      `${UEFI_KEYFILE_SERIAL.pickerSkipped} ZETA_CREDS_PASSPHRASE_VAL empty`,
+      "ZETA CLUSTER NODE INSTALL COMPLETE",
+    ].join("\n");
+    const result = assertUefiKeyfilePickerContract(serial);
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.reason).toContain("skipped");
+    }
+  });
+
+  it("fails when the serial leaks the QEMU test passphrase", () => {
+    const serial = `${pickerSerial}\n${DEFAULT_QEMU_PASSPHRASE}\n`;
+    const result = assertUefiKeyfilePickerContract(serial);
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.reason).toContain("leaked");
+    }
+  });
+});
+
+describe("qemu-full-install-test UEFI keyfile restore contract", () => {
+  const restoreSerial = [
+    UEFI_KEYFILE_RESTORE_SERIAL.stagedFromFwcfg,
+    UEFI_KEYFILE_RESTORE_SERIAL.bindingKeyfile,
+    `${UEFI_KEYFILE_RESTORE_SERIAL.wrotePrefix}3 creds (target-root: /)`,
+    "node-qemu-keyfile-restore login:",
+  ].join("\n");
+
+  it("accepts fw_cfg staging plus uefiKeyfile bind plus wrote", () => {
+    expect(assertUefiKeyfileRestoreContract(restoreSerial).ok).toBe(true);
+  });
+
+  it("accepts already-present in place of wrote", () => {
+    const serial = [
+      UEFI_KEYFILE_RESTORE_SERIAL.stagedFromFwcfg,
+      UEFI_KEYFILE_RESTORE_SERIAL.bindingKeyfile,
+      UEFI_KEYFILE_RESTORE_SERIAL.alreadyPresent,
+    ].join("\n");
+    expect(assertUefiKeyfileRestoreContract(serial).ok).toBe(true);
+  });
+
+  it("accepts wrote 0 creds (empty bake / picker --defer-all)", () => {
+    const serial = [
+      UEFI_KEYFILE_RESTORE_SERIAL.stagedFromFwcfg,
+      UEFI_KEYFILE_RESTORE_SERIAL.bindingKeyfile,
+      `${UEFI_KEYFILE_RESTORE_SERIAL.wrotePrefix}0 creds (target-root: /)`,
+    ].join("\n");
+    expect(assertUefiKeyfileRestoreContract(serial).ok).toBe(true);
+  });
+
+  it("fails when restore falls back to usbUuid", () => {
+    const serial = [
+      UEFI_KEYFILE_RESTORE_SERIAL.stagedFromFwcfg,
+      UEFI_KEYFILE_RESTORE_SERIAL.uuidBinding,
+      `${UEFI_KEYFILE_RESTORE_SERIAL.wrotePrefix}3 creds (target-root: /)`,
+    ].join("\n");
+    const result = assertUefiKeyfileRestoreContract(serial);
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.reason).toContain("usbUuid");
+    }
+  });
+
+  it("fails when the serial leaks the QEMU test passphrase", () => {
+    const result = assertUefiKeyfileRestoreContract(`${restoreSerial}\n${DEFAULT_QEMU_PASSPHRASE}\n`);
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.reason).toContain("leaked");
+    }
+  });
+
+  it("detectPhase2Success requires restore markers when the restore flag is set", () => {
+    const loginOnly = "node-qemu-keyfile-restore login:\n";
+    expect(detectPhase2Success(loginOnly, "node-qemu-keyfile-restore", false, false).ok).toBe(true);
+    expect(detectPhase2Success(loginOnly, "node-qemu-keyfile-restore", false, true).ok).toBe(false);
+    expect(detectPhase2Success(`${restoreSerial}\n`, "node-qemu-keyfile-restore", false, true).ok).toBe(true);
   });
 });
 
@@ -145,10 +463,7 @@ describe("qemu-full-install-test serial log artifact merge", () => {
 
 describe("qemu-full-install-test 081KSGS9H0008QG0R00120EEHM hostname regression guard", () => {
   it("fails when generated node identity was expected but control-plane login appears", () => {
-    const reason = detectUnexpectedControlPlaneLogin(
-      "booting...\ncontrol-plane login:",
-      "zeta-a1b2c3",
-    );
+    const reason = detectUnexpectedControlPlaneLogin("booting...\ncontrol-plane login:", "zeta-a1b2c3");
 
     expect(reason).toContain("081KSGS9H0008QG0R00120EEHM Bug 1 regression");
     expect(reason).toContain("zeta-a1b2c3");
@@ -331,5 +646,85 @@ describe("provisioning markers stay coupled to zeta-install.sh (081KZETP6AT)", (
     const result = assertFirstBootProvisioningContract("ZETA CLUSTER NODE INSTALL COMPLETE\n");
     expect(result.ok).toBe(false);
     if (!result.ok) expect(result.reason).toContain("never reached the install.sh step");
+  });
+});
+
+describe("restore markers stay coupled to zeta-creds-restore.nix", () => {
+  const restoreNix = readFileSync(
+    resolve(import.meta.dir, "../../../full-ai-cluster/nixos/modules/zeta-creds-restore.nix"),
+    "utf8",
+  );
+
+  it("the module still emits the fw_cfg staging marker the contract requires", () => {
+    expect(restoreNix).toContain(UEFI_KEYFILE_RESTORE_SERIAL.stagedFromFwcfg);
+  });
+
+  it("the module still uses the fw_cfg name the QEMU args inject", () => {
+    expect(restoreNix).toContain(QEMU_CREDS_PASSPHRASE_FWCFG_NAME);
+  });
+
+  it("the module still emits the uefiKeyfile bind marker", () => {
+    expect(restoreNix).toContain(UEFI_KEYFILE_RESTORE_SERIAL.bindingKeyfile);
+  });
+});
+
+describe("ISO workflow: restore decrypt runs with budget left", () => {
+  const workflow = readFileSync(
+    resolve(import.meta.dir, "../../../.github/workflows/build-ai-cluster-iso.yml"),
+    "utf8",
+  );
+
+  it("job timeout is an integer via fromJSON (expression results are strings)", () => {
+    // GitHub casts expression results to strings. `timeout-minutes` wants a
+    // number; without fromJSON the job can ignore 240/180 and die at the old
+    // 90-minute bound (measured: run 32647553460, restore still in_progress).
+    expect(workflow).toMatch(
+      /timeout-minutes:\s*\$\{\{\s*fromJSON\(github\.event_name == 'workflow_dispatch' && '240' \|\| '180'\)\s*\}\}/,
+    );
+  });
+
+  it("restore QEMU is scheduled before wifi / picker / phase-1 write", () => {
+    // Restore is an independent qemu-full-install-test.ts run
+    // (QEMU_UEFI_KEYFILE_RESTORE=1 does write+picker+decrypt itself). Putting
+    // it last meant ISO + scenario 1–2 + wifi + write + picker ate the budget
+    // (run 32647553460: restore started then the job died).
+    const restore = workflow.indexOf('QEMU_UEFI_KEYFILE_RESTORE: "1"');
+    const wifi = workflow.indexOf("QEMU_WIFI_ESP_PHASE1:");
+    const write = workflow.indexOf("QEMU_UEFI_KEYFILE_PHASE1:");
+    const picker = workflow.indexOf("QEMU_UEFI_KEYFILE_PICKER:");
+    expect(restore).toBeGreaterThan(-1);
+    expect(wifi).toBeGreaterThan(-1);
+    expect(write).toBeGreaterThan(-1);
+    expect(picker).toBeGreaterThan(-1);
+    expect(restore).toBeLessThan(wifi);
+    expect(restore).toBeLessThan(write);
+    expect(restore).toBeLessThan(picker);
+    expect(workflow.split('QEMU_UEFI_KEYFILE_RESTORE: "1"').length - 1).toBe(1);
+  });
+
+  it("dispatch QEMU siblings after restore keep running when restore is red", () => {
+    // GitHub skips later steps after a failure unless if: always().
+    // Run 32724820159: restore failed → wifi/write/picker/scenarios 3–4 skipped.
+    // Restore itself stays a hard fail (no always(), no continue-on-error).
+    const stepBlock = (name: string): string => {
+      const start = workflow.indexOf(`- name: ${name}`);
+      expect(start).toBeGreaterThan(-1);
+      const next = workflow.indexOf("\n      - name:", start + 1);
+      return workflow.slice(start, next === -1 ? undefined : next);
+    };
+
+    const restore = stepBlock("UEFI keyfile restore decrypt (workflow_dispatch only)");
+    expect(restore).toContain("if: github.event_name == 'workflow_dispatch'");
+    expect(restore).not.toContain("if: always()");
+
+    for (const name of [
+      "081KSGS9H0008QG0R003V23XNZ wifi ESP acceptance (workflow_dispatch only)",
+      "UEFI keyfile install-time write (workflow_dispatch only)",
+      "UEFI keyfile picker bind (workflow_dispatch only)",
+      "081KSNY2Z0008QG0R0008PN7RQ scenario 3 — reformat with retention (workflow_dispatch only)",
+      "081KSNY2Z0008QG0R0008PN7RQ scenario 4 — path-fork migrate vs fresh (workflow_dispatch only)",
+    ]) {
+      expect(stepBlock(name)).toMatch(/if:\s*always\(\)\s*&&\s*github\.event_name == 'workflow_dispatch'/);
+    }
   });
 });

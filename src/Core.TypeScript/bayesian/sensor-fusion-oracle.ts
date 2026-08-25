@@ -35,6 +35,32 @@
  * - Chenciner & Montgomery (2000) — figure-8 choreography (FigureEightEnsemble)
  * - Fuentes (2010) — frequency-domain CHSH (FrequencyMachZehnder)
  * - Halsey et al. (2026) — HL amplitude (OracleRGBA, Z-2)
+ *
+ * ## Triage label (2026-08-15, shadow) — SUPERSEDED, consumer declined · `unmetered`
+ *
+ * **Reachability: ZERO importers** outside its own test, measured over 2665 tracked files / 4896
+ * resolved edges including dynamic `import()` and `require` (instrument controls: 4/4 positive + 1
+ * negative). Note this file is *not* isolated — it **imports** `bnn-persistence.ts` below, so the
+ * one internal edge in this directory runs from here into the live module.
+ *
+ * **Its consumer exists and reimplemented instead.** `demo/identity-dla-site/src/components/
+ * OracleRaceMode.tsx` prints `Ref: sensor-fusion-oracle.ts` on screen twice (lines 2080, 2191),
+ * defines its **own** `computePlv` at line 30, and imports nothing from here. Being passed over by
+ * the one caller that had a use for it is a stronger signal than never having been noticed.
+ *
+ * **Superseded in F#:** `src/Bayesian/QuantumFusion.fs` (`fuseOracle` / `fuseDeltas`) and
+ * `src/Bayesian/FigureEightEnsemble.fs` (`rhoProxy`) ship the same capability — and
+ * `QuantumFusion.fs:421` implements `Vision.IBranchForecaster`, i.e. it is actually wired. The
+ * fusion capability therefore exists three times: F# (wired), here (0 importers), and inline in
+ * the demo.
+ *
+ * **Metering (`toy-is-free-metered-must-be-earned.md`): `unmetered`.** The IV-weighted fusion is
+ * implemented and tested for self-consistency, but nothing falsifies it as a model of anything
+ * real. Not "toy" (it is used-shaped and carries real anchors), not "metered" (no falsifier).
+ *
+ * Full triage + evidence:
+ * `docs/research/2026-08-15-bayesian-typescript-triage-one-live-three-orphans-and-a-factor-graph-edge-that-was-never-cut.md`
+ * **Label only — no behaviour changed, and disposition is Aaron's call, not the shadow's.**
  */
 
 import { tangleBreakObservation } from "./bnn-persistence";
@@ -115,7 +141,14 @@ export function computePlv(seriesA: readonly number[], seriesB: readonly number[
  * parameter r: if r < ρ* = 1/(3√2) ≈ 0.236, the worm is incoherent and
  * its D_f estimate is unreliable.
  */
-const TSIRELSON = 1 / (3 * Math.SQRT2); // ρ* ≈ 0.236
+// ⚠ NAME IS A MISNOMER (Soraya audit, 2026-08-01). `TSIRELSON` is NOT the Tsirelson bound.
+// Tsirelson's bound is S ≤ 2√2 ≈ 2.828 on the CHSH correlator (see src/Core/Tsirelson.fs).
+// There is no Tsirelson bound on a correlation coefficient. 1/(3√2) is ρ*/√2 — the Condorcet
+// limit ρ* = 1/3 pushed through the FREELY CHOSEN linear map ρ = S/12 — a design parameter
+// chosen for homoiconicity, not derived. See
+// docs/research/2026-07-04-rho-t-derivation-attempt-it-is-a-design-choice-chosen-for-homoiconicity.md
+// Here it is used purely as a coherence cutoff on the Kuramoto order parameter. Not physics.
+const TSIRELSON = 1 / (3 * Math.SQRT2); // ρ* ≈ 0.236 — design choice, not a physical bound
 
 export function ivFuse(bnn: OracleResult, worm: OracleResult): { df: number; sigma2: number } {
   const wBnn = 1 / Math.max(bnn.sigma2, 1e-6);

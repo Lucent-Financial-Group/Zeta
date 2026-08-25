@@ -9,11 +9,12 @@
 #   tools/setup/doctor.sh --json    # machine-readable output (future)
 #
 # Born round 32 after Aaron noted his jars ended up in random
-# locations before install.sh existed. The fix is to run
-# `tools/setup/install.sh` (which canonizes them at
-# tools/tla/tla2tools.jar + tools/alloy/alloy.jar); this doctor
-# script tells you whether that's actually happened, and where
-# drift exists.
+# locations before install.sh existed. Since #8053 the canonical
+# jars are COMMITTED to git at src/Core.TLA/tla2tools.jar and
+# src/Core.Alloy/alloy.jar -- the paths every runner loads -- so a
+# clone already has them and no install step fetches them. This
+# doctor checks the committed jars are intact and flags copies
+# elsewhere, which are the drift (081M001E114087G0R001AZF4KD).
 
 set -euo pipefail
 
@@ -44,30 +45,43 @@ done
 echo
 
 # ── 2. Verifier jars at canonical locations ─────────────────────────
-echo "[2/6] Verifier jars (canonical locations per manifest)"
-for jar in "tools/tla/tla2tools.jar" "tools/alloy/alloy.jar"; do
+echo "[2/6] Verifier jars (committed at the paths the runners load)"
+for jar in "src/Core.TLA/tla2tools.jar" "src/Core.Alloy/alloy.jar"; do
   if [ -f "$REPO_ROOT/$jar" ]; then
     size=$(stat -f%z "$REPO_ROOT/$jar" 2>/dev/null || stat -c%s "$REPO_ROOT/$jar" 2>/dev/null || echo 0)
     if [ "$size" -lt 100000 ]; then
-      warn "$jar exists but is suspiciously small (${size} B) — may be a partial download"
+      warn "$jar exists but is suspiciously small (${size} B) — likely a broken checkout or an LFS-style placeholder"
     else
       pass "$jar ($(( size / 1024 / 1024 )) MB)"
     fi
   else
-    fail "$jar missing — run tools/setup/install.sh (or ace-realize for just the jars)"
+    fail "$jar missing — it is committed to git; restore with: git checkout -- $jar"
   fi
 done
+
+# Same derived-provenance check CI runs, so a laptop sees the identical
+# verdict (three-way parity, GOVERNANCE §24). Reads the jars, no JVM.
+if command -v bun >/dev/null 2>&1; then
+  PROV="$REPO_ROOT/src/Core.TypeScript/hygiene/lint-verifier-jar-provenance.ts"
+  if bun "$PROV" >/dev/null 2>&1; then
+    pass "jar provenance: docs match the committed jars"
+  else
+    fail "jar provenance drift — run: bun $PROV"
+  fi
+else
+  warn "bun unavailable — skipping jar provenance check"
+fi
 echo
 
-# ── 3. Drift check: jars outside canonical locations? ───────────────
-echo "[3/6] Jar-location drift (jars outside canonical tools/)"
+# ── 3. Drift check: unused copies of the verifier jars ──────────────
+echo "[3/6] Jar-location drift (jars outside the committed src/Core.* paths)"
 DRIFT_FOUND=0
 for stray in $(find "$REPO_ROOT" \
                     -name "tla2tools*.jar" -o -name "alloy*.jar" \
                     2>/dev/null \
-                    | grep -vE "/tools/(tla|alloy)/" \
+                    | grep -vE "/src/Core\.(TLA|Alloy)/" \
                     | grep -vE "/\.git/"); do
-  warn "jar at non-canonical location: ${stray#"$REPO_ROOT"/} (move to tools/tla/ or tools/alloy/ or delete)"
+  warn "stray verifier jar: ${stray#"$REPO_ROOT"/} -- the runners load the committed src/Core.TLA and src/Core.Alloy jars; this copy is unused (safe to delete)"
   DRIFT_FOUND=1
 done
 if [ "$DRIFT_FOUND" -eq 0 ]; then
@@ -166,17 +180,17 @@ echo
 # SKILL.md, a research folder with no report). Full check is in
 # `tools/lint/no-empty-dirs.ts`; doctor just runs it and reports.
 echo "[6/6] Repo structure: no unexpected empty directories"
-if command -v bun >/dev/null 2>&1 && [ -f "$REPO_ROOT/tools/lint/no-empty-dirs.ts" ]; then
-  if bun "$REPO_ROOT/tools/lint/no-empty-dirs.ts" >/dev/null 2>&1; then
+if command -v bun >/dev/null 2>&1 && [ -f "$REPO_ROOT/src/Core.TypeScript/lint/no-empty-dirs.ts" ]; then
+  if bun "$REPO_ROOT/src/Core.TypeScript/lint/no-empty-dirs.ts" >/dev/null 2>&1; then
     pass "no-empty-dirs: OK"
   else
     # Re-run in list mode for actionable output.
-    bun "$REPO_ROOT/tools/lint/no-empty-dirs.ts" --list \
+    bun "$REPO_ROOT/src/Core.TypeScript/lint/no-empty-dirs.ts" --list \
       | sed 's/^/    /'
     fail "no-empty-dirs: unexpected empty directories — see list above"
   fi
 else
-  warn "bun or tools/lint/no-empty-dirs.ts unavailable — skipping"
+  warn "bun or src/Core.TypeScript/lint/no-empty-dirs.ts unavailable — skipping"
 fi
 echo
 
@@ -197,6 +211,45 @@ if [ -r "$(dirname "$0")/common/fd-limits.sh" ]; then
     echo "    Raising it is a CEILING change, not a reservation — it costs nothing until used."
     echo "    Apply by hand (needs sudo; this script deliberately does not change system settings):"
     zeta_fd_remedy | sed 's/^/  /'
+  fi
+  echo
+fi
+
+# ── Touch ID for sudo: configured DURABLY? (macOS only) ─────────────
+# Same shape as the fd-limits block above: read-only, reports, never applies.
+#
+# The failure this catches is a silent one. `pam_tid.so` added to
+# /etc/pam.d/sudo works until the next macOS update REPLACES that file, at which
+# point sudo drops to password-only with no announcement. Apple ships
+# /etc/pam.d/sudo_local.template so the customisation can survive; the verifier
+# checks that the durable file -- not the fragile edit -- is what is in force.
+#
+# It raises NO sudo or Touch ID prompt: it reads configuration and never
+# exercises the gate. That matters because an operator trained to approve
+# prompts reflexively is the weakness the biometric gate exists to avoid.
+if [ "$(uname -s)" = "Darwin" ]; then
+  echo "[extra] Touch ID for sudo (durable across OS updates)"
+  if command -v bun >/dev/null 2>&1; then
+    # `set -e` is on: a bare `var=$(cmd)` whose cmd exits non-zero would abort
+    # the whole doctor. Capture the status directly on the same statement.
+    touchid_rc=0
+    touchid_out="$(bun "$(dirname "$0")/touchid-sudo.ts" --verify 2>&1)" || touchid_rc=$?
+    if [ "$touchid_rc" -eq 0 ]; then
+      pass "Touch ID sudo is configured in /etc/pam.d/sudo_local (survives OS updates)"
+    else
+      warn "Touch ID sudo is NOT durably configured"
+      # Indent each line without `sed s/^/.../` (SC2001): read the captured
+      # output line by line so the whole report stays attributable to this check.
+      while IFS= read -r _touchid_line; do
+        echo "    $_touchid_line"
+      done <<EOF_TOUCHID
+$touchid_out
+EOF_TOUCHID
+      echo "    Fix (needs sudo once; this script deliberately does not change system settings):"
+      echo "      bun tools/setup/touchid-sudo.ts --apply"
+    fi
+  else
+    warn "bun not on PATH — cannot check Touch ID sudo configuration"
   fi
   echo
 fi

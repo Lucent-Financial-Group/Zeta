@@ -99,10 +99,10 @@ export const EXPECTED_RETAINED_SHELL: readonly string[] = [
   "tools/setup/common/tlaps.sh",
   "tools/setup/doctor.sh",
   "tools/setup/host-loop-bootstrap.sh",
+  "tools/setup/hsm/dkek-ceremony-preflight.sh",
   "tools/setup/install.sh",
   "tools/setup/linux.sh",
   "tools/setup/macos.sh",
-  "tools/setup/op-token-setup.sh",
   "tools/setup/persona-keys/keyring.sh",
   "tools/setup/secret-clip.sh",
 ];
@@ -140,6 +140,11 @@ export const RETAINED_SHELL_CATEGORY_BY_FILE: Readonly<Record<string, RetainedSh
   // installer surface as tlaps.sh (invoked via the from-agda-cubical realizer).
   "tools/setup/common/agda-cubical.sh": "setup/bootstrap",
   "tools/setup/common/curl-fetch.sh": "setup/bootstrap",
+  // NOTE (081M05X126V087G0R0014GR9KQ): `ensure-rust-components.sh` was allowlisted
+  // here by #10991 as INTERIM scaffolding to unbreak a red main, never as an end
+  // state. It is gone — rustfmt/clippy/wasm32 are declared on the rust entry in
+  // `.mise.toml`, so the retirement discipline REMOVED a shell file instead of
+  // permanently allowlisting one. Do not re-add the entry without re-adding a script.
   "tools/setup/common/fd-limits.sh": "setup/bootstrap",
   "tools/setup/common/host-tier.sh": "setup/bootstrap",
   "tools/setup/common/install-rust-wasm32.sh": "setup/bootstrap",
@@ -154,13 +159,25 @@ export const RETAINED_SHELL_CATEGORY_BY_FILE: Readonly<Record<string, RetainedSh
   "tools/setup/common/tlaps.sh": "setup/bootstrap",
   "tools/setup/doctor.sh": "setup/bootstrap",
   "tools/setup/host-loop-bootstrap.sh": "setup/bootstrap",
+  // 081M0KCWPGV dual-HSM custody ceremony: a PREFLIGHT that must run before any
+  // PKCS#11 tooling exists on the host -- it checks whether the ceremony can
+  // safely proceed, so it cannot depend on the toolchain it is gating.
+  "tools/setup/hsm/dkek-ceremony-preflight.sh": "setup/bootstrap",
   "tools/setup/install.sh": "setup/bootstrap",
   "tools/setup/linux.sh": "setup/bootstrap",
   "tools/setup/macos.sh": "setup/bootstrap",
   // Secret-edge scripts (Aaron 2026-06-21): capture a secret via masked TTY / secure dialog /
   // clipboard and write it to the OS keystore (Keychain). Retained shell at the security edge
   // (same rationale as keyring.sh) — secure input + `security`/`osascript` are OS-edge ops.
-  "tools/setup/op-token-setup.sh": "setup/bootstrap",
+  //
+  // NOTE (op-token-setup): that rationale did NOT survive being tested. `osascript` and
+  // `security` are SPAWNED processes, not shell builtins, so nothing about the edge required a
+  // shell — unlike `keyring.sh`, whose `read -s` and shred-on-exit trap are genuinely in-process
+  // shell. The retention was habit wearing a security argument, and it was costing the property
+  // it claimed to protect: the shell put the token on `security(1)`'s argv
+  // (`docs/SHELL-DEPRECATION-SEQUENCE.md`, `argv-secret@83`). `tools/setup/op-token-setup.ts`
+  // replaces it and the value now crosses on stdin. `secret-clip.sh` still carries the same argv
+  // leak at line 93 and is NOT yet converted — it stays allowlisted, honestly, until it is.
   "tools/setup/secret-clip.sh": "setup/bootstrap",
   // keyring.sh is the intentionally-retained thin security EDGE: in-process seed
   // handling (`read -s`, umask-077, shred-on-exit) that must stay in shell; the
@@ -207,8 +224,17 @@ function runGit(args: readonly string[], cwd?: string): string {
   return result.stdout;
 }
 
+/**
+ * The repository root, from `git` rather than from a relative path guess.
+ * Exported so sibling tools (e.g. `measure-shell-key-exposure.ts`) resolve the
+ * allowlist's repo-relative paths against the same root this file uses.
+ */
+export function repoRootFromGit(cwd?: string): string {
+  return runGit(["rev-parse", "--show-toplevel"], cwd).trim();
+}
+
 export function trackedNonLeanShellFilesFromGit(cwd?: string): readonly string[] {
-  const repoRoot = runGit(["rev-parse", "--show-toplevel"], cwd).trim();
+  const repoRoot = repoRootFromGit(cwd);
   return trackedGitFiles(repoRoot)
     .filter(({ path }) => existsSync(join(repoRoot, path)))
     .filter(({ path }) => !isInactiveShellInventoryPath(path))

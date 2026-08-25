@@ -1,0 +1,5 @@
+{
+  "name": "Zeta — full toolchain (tools/setup/install.sh)",
+  "user": "ubuntu",
+  "install": "ZETA_AUTO_EDIT_PROFILES=1 bash tools/setup/install.sh"
+}

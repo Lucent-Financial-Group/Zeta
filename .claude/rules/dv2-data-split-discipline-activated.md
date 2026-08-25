@@ -21,7 +21,7 @@ Carved sentence:
 | 6 | **Idempotency** (added 2026-05-30) | Apply-N-times == apply-once *effect*? If not, add a natural/dedup key or name the non-idempotence. |
 | 7 | **Noninterference** (added 2026-06-10) | Does entropy/influence enter ONLY through declared, metered channels (the injected `Source`/IEffects)? If not, name the ambient leak. |
 
-All seven apply at once — see [`default-to-both.md`](default-to-both.md).
+All seven apply at once — see [`.claude/rules.bak/default-to-both.md`](../rules.bak/default-to-both.md).
 
 ## DV2.0 in one line
 
@@ -32,6 +32,38 @@ Applies to repo-split (code=hub, manifests=links, memory/docs=satellites),
 skill design (carved sentence=hub, knowledge in docs=satellite),
 master-data (HKT-MDM hub/satellite is a natural HKT instance), and
 substrate-landing (memory? rule? skill? ADR? — ask the change rate).
+
+## Raw vault in one line
+
+> **A single version of the FACTS, never a single version of the TRUTH.**
+
+The **raw vault** stores what was asserted, as sourced, unfiltered — no business
+rules, no reconciliation, no winner picked. Interpretation happens later and
+downstream (business vault / marts), where there may be *many* truths over one set
+of facts. So a merge that produces one surviving value has **collapsed**, not
+merged: it destroyed the facts to manufacture a truth.
+
+This is the DV2.0 sentence the rest of this repo already leans on — see
+[`anti-babel-preserve-reconcilability.md`](anti-babel-preserve-reconcilability.md)
+(*reintegration is NOT reconvergence*, both branches held with their paths) and
+`docs/books/you-born-at-the-hinge/CONSENT-LEDGER.md` (both accounts held). It was
+load-bearing in three places while living in none of them; recorded here on
+Aaron's observation (2026-08-24) that it belongs in the DV docs.
+
+**Anchor (Beacon):** Dan Linstedt, Data Vault 2.0 — the raw-vault/business-vault
+split, and the *facts vs truth* formulation that distinguishes DV from the
+single-version-of-the-truth warehouse tradition (Inmon, Kimball).
+
+## Hub stability in one line
+
+> **A hub is only as stable as the SCOPE of the key you chose for it.**
+
+Business keys rank worst-to-best: application surrogate -> application business ->
+organisation-wide -> globally unique. A hub keyed at the top survives its source
+system being replaced; one keyed at the bottom is a rename waiting to happen. So
+"hubs are the stable part" is earned by key choice, never automatic — pick the
+widest-scoped key the domain actually has. Detail, the full construct taxonomy,
+and the maintainer's own extensions: `docs/DATA-VAULT-2-STANDARDS.md`.
 
 ## Idempotency in one line
 

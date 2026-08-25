@@ -13,14 +13,14 @@
 // discipline. The difference: tlapm PROVES (∀), tlc CHECKS (bounded ∃-search).
 //
 // Usage:
-//   bun tools/formal-verification/run-tlaps.ts <SpecName>
+//   bun src/Core.TypeScript/formal-verification/run-tlaps.ts <SpecName>
 //     Prove all obligations in tools/tla/specs/<SpecName>.tla.
 //
-//   bun tools/formal-verification/run-tlaps.ts --all
+//   bun src/Core.TypeScript/formal-verification/run-tlaps.ts --all
 //     Prove every spec in the curated PROOF catalogue (specs that carry
 //     THEOREM ... PROOF blocks). Missing-from-catalogue ⇒ failure (drift).
 //
-//   bun tools/formal-verification/run-tlaps.ts --check-toolchain
+//   bun src/Core.TypeScript/formal-verification/run-tlaps.ts --check-toolchain
 //     Verify tlapm is reachable (for CI gating + dev-local diagnostics).
 //
 // Exit codes (orthogonal — each code has one semantic):
@@ -94,27 +94,46 @@ interface Toolchain {
   readonly specsPath: string;
 }
 
+/** Does this candidate actually RUN? `existsSync` and `which` answer "a file
+ *  is there"; the `opam exec` fallback answered nothing at all — it was
+ *  returned whenever `opam` itself was on PATH, so the check reported
+ *  "OK: TLAPS toolchain ready" on a machine with no tlapm and the lane then
+ *  died at exit 127 one step later (run 28619870340, 2026-07-02). A check that
+ *  cannot fail is not a check: probe the binary. */
+function toolchainRuns(cmd: string, preArgs: readonly string[]): boolean {
+  const probe = spawnSync(cmd, [...preArgs, "--version"], {
+    encoding: "utf8",
+    maxBuffer: SPAWN_MAX_BUFFER,
+    timeout: 60_000,
+  });
+  return probe.status === 0;
+}
+
 /** Resolve tlapm: opam switch bin/ first (the cross-OS source build's
- *  install location), then PATH, then `opam exec` as a last resort. */
+ *  install location), then PATH, then `opam exec` as a last resort. Every
+ *  candidate is probed before it is returned. */
 function checkToolchain(root: string): Toolchain | null {
   const specsPath = join(root, "src", "Core.TLA", "specs");
   if (!existsSync(specsPath)) return null;
 
   const switchBin = join(homedir(), ".opam", TLAPS_SWITCH, "bin", "tlapm");
-  if (existsSync(switchBin)) {
-    return { cmd: switchBin, preArgs: [], specsPath };
-  }
-  const onPath = which("tlapm");
-  if (onPath !== null) {
-    return { cmd: onPath, preArgs: [], specsPath };
-  }
-  const opam = which("opam");
-  if (opam !== null) {
-    return {
-      cmd: opam,
-      preArgs: ["exec", `--switch=${TLAPS_SWITCH}`, "--", "tlapm"],
-      specsPath,
-    };
+  const candidates: readonly { readonly cmd: string; readonly preArgs: readonly string[] }[] = [
+    ...(existsSync(switchBin) ? [{ cmd: switchBin, preArgs: [] as readonly string[] }] : []),
+    ...(which("tlapm") !== null ? [{ cmd: which("tlapm") ?? "tlapm", preArgs: [] as readonly string[] }] : []),
+    ...(which("opam") !== null
+      ? [
+          {
+            cmd: which("opam") ?? "opam",
+            preArgs: ["exec", `--switch=${TLAPS_SWITCH}`, "--", "tlapm"] as readonly string[],
+          },
+        ]
+      : []),
+  ];
+
+  for (const candidate of candidates) {
+    if (toolchainRuns(candidate.cmd, candidate.preArgs)) {
+      return { cmd: candidate.cmd, preArgs: candidate.preArgs, specsPath };
+    }
   }
   return null;
 }
@@ -211,7 +230,7 @@ function runAll(toolchain: Toolchain): ExitCode {
     process.stderr.write("\n--- failure details ---\n");
     for (const fd of failureDetails) {
       process.stderr.write(
-        `\n[${fd.spec}] (rerun with: bun tools/formal-verification/run-tlaps.ts ${fd.spec})\n`,
+        `\n[${fd.spec}] (rerun with: bun src/Core.TypeScript/formal-verification/run-tlaps.ts ${fd.spec})\n`,
       );
       const tail = fd.result.stdout.split("\n").slice(-30).join("\n");
       process.stderr.write(tail);
@@ -232,9 +251,9 @@ function main(argv: readonly string[]): ExitCode {
 
   if (argv.length === 0 || argv[0] === "--help" || argv[0] === "-h") {
     process.stdout.write("Usage:\n");
-    process.stdout.write("  bun tools/formal-verification/run-tlaps.ts <SpecName>\n");
-    process.stdout.write("  bun tools/formal-verification/run-tlaps.ts --all\n");
-    process.stdout.write("  bun tools/formal-verification/run-tlaps.ts --check-toolchain\n");
+    process.stdout.write("  bun src/Core.TypeScript/formal-verification/run-tlaps.ts <SpecName>\n");
+    process.stdout.write("  bun src/Core.TypeScript/formal-verification/run-tlaps.ts --all\n");
+    process.stdout.write("  bun src/Core.TypeScript/formal-verification/run-tlaps.ts --check-toolchain\n");
     return 0;
   }
 

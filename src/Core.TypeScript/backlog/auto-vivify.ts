@@ -83,6 +83,8 @@ export function extractPointers(text: string): DanglingPointer[] {
     for (const m of wikilinks) {
       const raw = m[1]!.trim();
       const target = raw.split("|")[0]!.split("#")[0]!.trim();
+      // Quantum error-correcting codes use [[n,k,d]] as mathematical notation.
+      if (/^\d+\s*,\s*\d+\s*,\s*\d+$/.test(target)) continue;
       out.push({ raw: m[0]!, clean: target, kind: "wikilink", line: lineNum });
     }
 
@@ -98,9 +100,16 @@ export function extractPointers(text: string): DanglingPointer[] {
     }
 
     // 3. Backtick paths `path`
+    // An ABSOLUTE path (leading "/") names a location on a running node's
+    // filesystem (e.g. `/run/current-system/sw/lib/pkcs11/...` on a NixOS
+    // cluster node), never a pointer into this repo — so it is not a
+    // vivifiable reference and reporting it as dangling is a false positive.
     const backticks = line.matchAll(/`([a-zA-Z0-9_./-]+\.[a-z]{2,4})`/g);
     for (const m of backticks) {
       const target = m[1]!.trim();
+      if (target.startsWith("/")) {
+        continue;
+      }
       if (target.includes("/") || target.endsWith(".md")) {
         out.push({ raw: m[0]!, clean: target, kind: "backtick", line: lineNum });
       }
@@ -236,7 +245,7 @@ export function resolvePointer(cleanTarget: string, fromFile: string): ResolvedT
       let base = partsOfPath[sameIdx + 1]!;
       base = base.replace(/\.md$/, "");
       base = base.replace(/^_-|-_$/g, "");
-      
+
       const pair = base.split("-");
       if (pair.length >= 2) {
         const x = pair[0]!.trim();
@@ -362,7 +371,7 @@ function rewriteCitingFile(filePath: string, oldTarget: string, newTarget: strin
     // Replace old link target with new one. We match standard markdown format [label](target)
     // and wikilink format [[target]]
     let updated = text;
-    
+
     // Markdown link regex replacement
     const mdRegex = new RegExp(`(\\[[^\\]]*\\]\\()${escapeRegExp(oldTarget)}(\\))`, "g");
     updated = updated.replace(mdRegex, `$1${newTarget}$2`);
@@ -385,7 +394,10 @@ function escapeRegExp(string: string): string {
 }
 
 // Main logic: Scan all files and auto-vivify dangling pointers
-export function processAll(checkOnly = false, customFiles?: string[]): { scanned: number; processed: number; broken: number } {
+export function processAll(
+  checkOnly = false,
+  customFiles?: string[],
+): { scanned: number; processed: number; broken: number } {
   let scannedCount = 0;
   let processedCount = 0;
   let brokenCount = 0;
@@ -435,7 +447,11 @@ export function processAll(checkOnly = false, customFiles?: string[]): { scanned
       console.log(`\nFound ${brokenCount} dangling/broken references:`);
       for (const [path, info] of pendingWrites) {
         const relPath = relative(REPO_ROOT, path);
-        console.log(`  broken -> ${relPath} (referenced by: ${Array.from(info.citingFiles).map(f => relative(REPO_ROOT, f)).join(", ")})`);
+        console.log(
+          `  broken -> ${relPath} (referenced by: ${Array.from(info.citingFiles)
+            .map((f) => relative(REPO_ROOT, f))
+            .join(", ")})`,
+        );
       }
     }
     return { scanned: scannedCount, processed: 0, broken: brokenCount };
@@ -480,7 +496,7 @@ function main(): number {
 
   if (watchMode) {
     console.log(`Watcher active. Monitoring ${SCAN_SURFACES.join(", ")} for dangling references...`);
-    
+
     // Initial run
     processAll(false, positionalArgs);
 
@@ -502,7 +518,7 @@ function main(): number {
     }
 
     // Keep running
-    new Promise(() => {}); 
+    new Promise(() => {});
     return 0;
   }
 

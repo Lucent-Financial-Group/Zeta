@@ -41,12 +41,13 @@ import { codegenExecuteItem } from "./codegen-executor";
 import { realWorkspacePort, type WorkspacePort } from "./workspace-port";
 import type { DoItemOptions } from "./do-item";
 import {
-  observeWithParticipant,
   oracleParticipant,
   localLlmParticipant,
   cloudPersonaParticipant,
   type Participant,
 } from "./participant";
+import { buildMenu, actionLabel } from "./observe";
+import { recordReasoning, formatReasoning, type TickReasoning } from "./tick-reasoning";
 import { PersonaSummoner } from "../peer-call/summon";
 import { createPhaseClock, stampPhase, type PhaseClock } from "./phase-clock";
 import { createRSAccumulator } from "./rs-phase-accumulator";
@@ -160,7 +161,39 @@ async function main(): Promise<number> {
   // 2. Pick the next action (via Participant — configurable chooser)
   const participant = resolveParticipant(args.participant);
   console.log(`[participant] ${participant.kind}:${participant.name}`);
-  const action = await observeWithParticipant(observeWorld, participant);
+
+  // Capture the reasoning alongside the action — makes the small LLM's intelligence visible.
+  const menu = buildMenu(observeWorld);
+  let chooseResult: { index: number; raw: string; fallback: boolean };
+  try {
+    chooseResult = await participant.choose(observeWorld, menu);
+  } catch {
+    chooseResult = { index: 0, raw: "choose-threw", fallback: true };
+  }
+  const action = menu[chooseResult.index] ?? menu[0]!;
+
+  // Record + log the reasoning (non-fatal)
+  const reasoning: TickReasoning = {
+    agent: args.by,
+    model: participant.name,
+    // `observeWorld` is a union: the codegen branch above DELIBERATELY strips `mode`,
+    // so one arm has no such property and a direct read does not typecheck. The `in`
+    // guard is not a workaround for the type -- it reports what the participant
+    // ACTUALLY SAW. When the field was stripped, the participant saw no mode, and
+    // "unset" is the true record of the tick rather than a value recovered from a
+    // world the chooser was never shown.
+    context: `backlog=${observeWorld.backlog.length}, mode=${
+      "mode" in observeWorld ? (observeWorld.mode ?? "unset") : "unset"
+    }`,
+    options: menu.map(actionLabel),
+    chosenIndex: chooseResult.index,
+    chosen: actionLabel(action),
+    raw: chooseResult.raw,
+    fallback: chooseResult.fallback,
+    at: new Date().toISOString(),
+  };
+  recordReasoning(args.repoRoot, reasoning);
+  console.log(formatReasoning(reasoning));
 
   console.log(`[observe] ${renderAction(action)}`);
 
@@ -323,17 +356,67 @@ async function main(): Promise<number> {
   // The accumulator bridges per-tick stamps to per-block RS codewords.
   // On emission, the block is logged (and could be written to data/rs-blocks.json
   // or pushed over the realtime channel for peer verification).
-  // PERSISTENCE: the accumulator's partial buffer is saved between ticks so blocks
-  // span multiple run-loop invocations (each invocation is ONE tick).
-  const rsBufferPath = require("node:path").join(args.eventDir, `.rs-buffer-${args.by}.json`);
+  //
+  // PERSISTENCE FIX (2026-08-20): the old .rs-buffer-{agent}.json approach failed because
+  // the heartbeat workflow resets the branch from main every tick (git checkout -B), which
+  // destroys any file not on main. The buffer was on the branch → wiped every tick → blocks
+  // always started at phase 1 → `phases 1–1` in the output.
+  //
+  // New approach: reconstruct the buffer from data/rs-blocks.jsonl (which IS on main) +
+  // the event log. Read the last emitted block's seq and endPhase, then collect own stamps
+  // from the event log that are AFTER that phase. This is idempotent and branch-reset-safe.
   const rsResumeBuffer = (() => {
     try {
-      const raw = JSON.parse(require("node:fs").readFileSync(rsBufferPath, "utf-8"));
-      if (Array.isArray(raw.buffer) && Number.isSafeInteger(raw.seq)) {
-        return { resumeBuffer: raw.buffer, startSeq: raw.seq };
+      const { readFileSync, readdirSync } = require("node:fs") as typeof import("node:fs");
+      const { join } = require("node:path") as typeof import("node:path");
+
+      // 1. Find the last block this agent emitted (from data/rs-blocks.jsonl on main)
+      const blocksPath = join(args.repoRoot, "data", "rs-blocks.jsonl");
+      let lastSeq = -1;
+      let lastEndPhase = -1;
+      try {
+        const lines = readFileSync(blocksPath, "utf-8").trim().split("\n");
+        for (const line of lines) {
+          if (!line) continue;
+          try {
+            const block = JSON.parse(line);
+            if (block.agent === args.by && Number.isSafeInteger(block.seq) && block.seq > lastSeq) {
+              lastSeq = block.seq;
+              lastEndPhase = block.endPhase ?? -1;
+            }
+          } catch { /* skip */ }
+        }
+      } catch { /* no blocks file yet */ }
+
+      if (lastSeq < 0) {
+        // No blocks emitted yet — start fresh
+        return undefined;
       }
-    } catch { /* no saved buffer — fresh start */ }
-    return undefined;
+
+      // 2. Collect own stamps from the event log that are AFTER the last block's endPhase
+      const files = readdirSync(args.eventDir).filter((f: string) => f.endsWith(".json")).sort();
+      const recentFiles = files.slice(-50); // scan recent events
+      const buffer: { phase: number; derived: number }[] = [];
+      for (const f of recentFiles) {
+        try {
+          const raw = JSON.parse(readFileSync(join(args.eventDir, f), "utf-8"));
+          if (raw.by !== args.by) continue;
+          const p = raw.phase?.phase;
+          const d = raw.phase?.derived;
+          if (Number.isSafeInteger(p) && Number.isSafeInteger(d) && p > lastEndPhase) {
+            buffer.push({ phase: p, derived: d });
+          }
+        } catch { /* skip */ }
+      }
+      buffer.sort((a, b) => a.phase - b.phase);
+
+      // Cap at 11 (buffer emits at 12)
+      const trimmed = buffer.slice(0, 11);
+      if (trimmed.length > 0) {
+        console.log(`[rs-ecc] reconstructed buffer: ${trimmed.length} stamps after block #${lastSeq} (endPhase=${lastEndPhase})`);
+      }
+      return { resumeBuffer: trimmed, startSeq: lastSeq + 1 };
+    } catch { return undefined; }
   })();
   const rsAccumulator = createRSAccumulator(rsResumeBuffer);
   const rsResult = rsAccumulator.push(phase);
@@ -361,13 +444,8 @@ async function main(): Promise<number> {
   } else {
     console.log(`[rs-ecc] buffered ${rsResult.buffered}/12 toward next block`);
   }
-  // Save the buffer state for the next tick
-  try {
-    require("node:fs").writeFileSync(rsBufferPath, JSON.stringify({
-      buffer: rsAccumulator.buffer,
-      seq: rsAccumulator.emittedCount,
-    }));
-  } catch { /* non-fatal — the block will just restart next time */ }
+  // Buffer state is now reconstructed from rs-blocks.jsonl + event log each tick.
+  // No sidecar file needed — branch resets can't destroy what lives on main.
 
   if (!result.ok) {
     console.error(

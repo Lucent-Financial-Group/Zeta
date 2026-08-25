@@ -104,6 +104,87 @@ export default defineConfig(
     },
     rules: {
       "no-console": "off",
+
+      // ── sonarjs/no-alphabetical-sort: OFF, and this is a correctness decision ──
+      //
+      // The rule's message is: "Provide a compare function that depends on
+      // `String.localeCompare`, to reliably sort elements alphabetically."
+      //
+      // In this repo that advice is **wrong, and actively harmful**.
+      // `.claude/rules/culture-invariant-by-default.md` bans `localeCompare`
+      // outright: it is linguistic and ICU-version-dependent, so two machines can
+      // order the same keys differently — which breaks DST replay and the
+      // N-oracle byte-lock. It is enforced at compiler-error level for C#
+      // (CA1304/1305/1307/1310 in .editorconfig) and, since 2026-08-16, by
+      // `src/Core.TypeScript/hygiene/lint-no-culture-sensitive-collation.ts` for
+      // TypeScript. Leaving this rule on left the two lints in direct
+      // contradiction, with this one telling every agent to introduce the very
+      // call the other one bans.
+      //
+      // It has already bitten: see the comment at
+      // `src/Core.TypeScript/hygiene/unexecuted-test-files.ts:79` —
+      // "NOT localeCompare, which the lint rule suggests".
+      //
+      // Turning it off does not lose anything real. The behaviour it warns about
+      // — bare `Array.prototype.sort()` coercing to string — is **deterministic
+      // here**: ECMA-262 SortCompare with `comparefn` undefined uses ToString plus
+      // the abstract relational comparison, i.e. UTF-16 code-unit order, with no
+      // locale consulted (verified: byte-identical output under `LC_ALL=C` and
+      // `LC_ALL=sv_SE.UTF-8`). The genuine hazard it also covers — numbers sorting
+      // as strings — is caught by `@typescript-eslint`'s type-aware rules, which
+      // have the types to know the difference.
+      //
+      // The canonical comparator is `stringCompare` in
+      // `src/Core.TypeScript/collation/collation.ts` (code point ≡ UTF-8 byte
+      // order — the collation treaty).
+      "sonarjs/no-alphabetical-sort": "off",
+    },
+  },
+  // ── No credential may be written to Web Storage ────────────────────────
+  //
+  // `localStorage` / `sessionStorage` are plain text, readable synchronously by
+  // ANY script running on the origin, and `localStorage` additionally survives
+  // the tab, the browser restart, and the user's memory that they ever typed
+  // the secret. There is no expiry, no HttpOnly equivalent, and no per-script
+  // gate: one XSS, one bad dependency, or one browser extension with host
+  // permissions reads the whole store. So a credential does not belong there,
+  // and this rule refuses the write instead of trusting each new browser
+  // surface to rediscover why.
+  //
+  // WHY A LINT AND NOT A REVIEW NOTE: the defect this replaces
+  // (`zeta_llm_api_key` in src/apps/twitch-ai/src/main.ts) was written
+  // carefully — the key was never echoed back into the DOM, clearing was an
+  // explicit button, and the label said out loud that it went to localStorage.
+  // Care at the call site did not help, because the problem was the LOCATION,
+  // not the handling. A tripwire catches the location.
+  //
+  // HONEST LIMITS, stated so nobody reads this as a proof:
+  //  - It matches STRING LITERAL key names only. A key passed as a variable
+  //    (`setItem(CREDENTIAL_STORAGE_KEY, …)`) is invisible to it.
+  //  - Bare "key" is deliberately NOT in the pattern: `sortKey`, `cacheKey`
+  //    and friends would drown the signal. Compound forms (`api_key`,
+  //    `apiKey`, `privateKey`) are matched.
+  //  - It says nothing about the VALUE. Storing a secret under the name
+  //    "preferences" passes this rule and is still wrong.
+  // It is a tripwire on the cheapest, most common shape, not a guarantee.
+  //
+  // The direction credentials should go instead is
+  // `src/Core.TypeScript/secrets/credential.ts`: fetched at point of use,
+  // handed to one consumer, never parked in an ambient store. That is the
+  // browser-side statement of the same §13 noninterference discipline
+  // `lint-no-ambient-credential-hoist.ts` enforces for shell environments.
+  {
+    files: typeScriptFilePatterns,
+    rules: {
+      "no-restricted-syntax": [
+        "error",
+        {
+          selector:
+            'CallExpression[callee.object.name=/^(localStorage|sessionStorage)$/][callee.property.name="setItem"][arguments.0.value=/(token|secret|passwd|password|credential|api[-_]?key|apikey|auth|bearer|private[-_]?key|privatekey)/i]',
+          message:
+            "Do not write a credential to Web Storage: it is clear text, readable by any script on the origin, and localStorage outlives the tab. Fetch it at point of use instead (src/Core.TypeScript/secrets/credential.ts), or do not collect it at all. See src/apps/twitch-ai/src/main.ts for the worked removal.",
+        },
+      ],
     },
   },
   ...typeCheckedConfigOverrides,

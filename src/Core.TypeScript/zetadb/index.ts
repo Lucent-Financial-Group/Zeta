@@ -5,7 +5,9 @@ export {
   decodeZetaDbImage,
   emptyZetaDbImage,
   encodeZetaDbImage,
+  runConvergentZetaDbNodeTick,
   runZetaDbNodeTick,
+  type ZetaDbConvergencePolicy,
   type ZetaDbDelta,
   type ZetaDbExecutorKind,
   type ZetaDbFeedback,
@@ -18,6 +20,20 @@ export {
   type ZetaDbTickReadout,
   type ZetaDbTickRequest,
 } from "./zeta-db-node";
+
+export {
+  createReservedCapacityAdmissionPolicy,
+  noForgetBackpressureAdmissionPolicy,
+  type ZetaDbAdmissionAccounting,
+  type ZetaDbAdmissionDecision,
+  type ZetaDbAdmissionPolicyConfigurationFeedback,
+  type ZetaDbAdmissionPolicyConfigurationResult,
+  type ZetaDbAdmissionPolicyPort,
+  type ZetaDbAdmissionProposal,
+  type ZetaDbAdmissionReceipt,
+  type ZetaDbAdmissionResource,
+  type ZetaDbReservedCapacity,
+} from "./admission-policy";
 
 export {
   ZETA_DB_PROCEDURE_READOUT_SCHEMA,
@@ -37,5 +53,17 @@ export {
   ZETA_DB_SCHEDULED_JOURNAL_SCHEMA,
   runScheduledZetaDbNode,
   type ZetaDbScheduledJournal,
+  type ZetaDbScheduledNodeOptions,
   type ZetaDbScheduledRunReadout,
 } from "./scheduled-node";
+
+export {
+  compareAndSwapRevisionPolicy,
+  monotoneLastWriterWinsRevisionPolicy,
+  type RevisionPolicyDecision,
+  type RevisionPolicyId,
+  type RevisionPolicyPort,
+  type RevisionPolicyRefusal,
+  type RevisionPolicyResult,
+  type RevisionedBytes,
+} from "../persistence/revision-policy";

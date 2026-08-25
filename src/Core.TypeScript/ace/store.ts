@@ -2,6 +2,7 @@ import { chmodSync, existsSync, mkdirSync, readdirSync, readFileSync, statSync, 
 import type { Dirent } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import { stringCompare } from "../collation/collation.ts";
 
 export type AceDependency =
   | { readonly kind: "inline"; readonly name: string; readonly version: string; readonly url: string; readonly package_hash: string }
@@ -15,6 +16,14 @@ export interface AceManifest {
   readonly description?: string;
   readonly signature?: { readonly algo: string; readonly key_id: string; readonly sig: string };
   readonly dependencies?: ReadonlyArray<AceDependency>;
+  /**
+   * SELF-DECLARED capability list — what this package's own publisher says the code may touch.
+   * A DECLARATION, not an authorization and not an enforcement: see capability-manifest.ts for
+   * the full statement of what it does and does not mean. No signing change was needed to bind
+   * it, because signing.ts covers the whole manifest minus `signature`; an entry added, edited,
+   * or stripped after signing is `bad-signature`.
+   */
+  readonly capabilities?: ReadonlyArray<string>;
 }
 
 export interface InstalledPackage {
@@ -27,7 +36,7 @@ export function defaultStorePath(): string {
   return join(home, ".ace", "store");
 }
 
-import { ContentHash256 } from "../blake3/blake3";
+import { ContentHash256 } from "../blake3/blake3.ts";
 
 /** Content hash of raw bytes, in the `blake3:<hex>` form Ace manifests use. */
 export function contentHash(bytes: Uint8Array): string {
@@ -77,7 +86,7 @@ export function listInstalled(storePath: string): InstalledPackage[] {
     }
   }
 
-  return packages.sort((a, b) => a.manifest.name.localeCompare(b.manifest.name));
+  return packages.sort((a, b) => stringCompare(a.manifest.name, b.manifest.name));
 }
 
 export interface AcePackage {
