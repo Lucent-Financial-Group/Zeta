@@ -448,7 +448,11 @@ MAINTAINER="$(gh api /user --jq .login)"
 # also a common first name attributes this commit to a stranger. `<id>+<login>@...` is
 # checked by GitHub against the login and cannot be squatted. Enforced by
 # src/Core.TypeScript/hygiene/audit-coauthor-identity-collides.ts (AH005).
-MAINTAINER_ID="$(gh api /user --jq .id)"
+# `|| true` on purpose: `set -e` would abort here with only gh's own "Not Found" on
+# stderr, which does not say why the registration stopped. The refusal belongs at the
+# commit, where the reason can be stated -- and where the already-converged path, which
+# needs no identity at all, has already exited 0.
+MAINTAINER_ID="$(gh api /user --jq .id 2>/dev/null || true)"
 NODE_PATH="maintainers/${MAINTAINER}/cluster-nodes/${HOST}/node.yaml"
 log "maintainer=${MAINTAINER} host=${HOST}"
 
