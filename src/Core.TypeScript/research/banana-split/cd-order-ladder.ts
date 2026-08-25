@@ -193,9 +193,12 @@ export function profileCdRung(dim: number, sigma: -1 | 1 = -1): AlgebraProfile {
   let alternative = true;
   let normMultiplicative = true;
   for (const x of t) {
-    // Once every property has been refuted there is nothing left to learn; stop. (This is a
-    // performance shortcut only -- it can never turn a `false` into a `true`.)
-    if (!commutative && !associative && !alternative && !normMultiplicative) break;
+    // Once every property THIS loop can refute has been refuted there is nothing left to learn;
+    // stop. `associative` is deliberately NOT part of this test: it is decided by the basis loop
+    // below, so it is still `true` here -- including it made the condition unsatisfiable and the
+    // shortcut dead code. (Still a performance shortcut only -- it can never turn a `false` into
+    // a `true`.)
+    if (!commutative && !alternative && !normMultiplicative) break;
     for (const y of t) {
       const xy = cdMul(x, y, sigma);
       if (vkey(xy) !== vkey(cdMul(y, x, sigma))) commutative = false;
