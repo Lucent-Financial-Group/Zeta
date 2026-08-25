@@ -39,7 +39,8 @@
 //   1   at least one does not
 //   2   configuration error (no work-items found at all — a scan that did not run)
 
-import { readdirSync, statSync } from "node:fs";
+import { readdirSync } from "node:fs";
+import type { Dirent } from "node:fs";
 import { join, resolve } from "node:path";
 
 function repoRoot(): string {
@@ -61,6 +62,8 @@ export interface Finding {
 
 export interface AuditResult {
   workItemsIndexed: number;
+  /** Distinguishes "checked N and all resolved" from "was handed nothing to check". */
+  inputWasEmpty: boolean;
   idsChecked: number;
   findings: Finding[];
 }
@@ -78,25 +81,22 @@ export function indexWorkItems(root: string): Set<string> {
   const ids = new Set<string>();
   const walk = (dir: string, depth: number): void => {
     if (depth > 6) return;
-    let entries: string[];
+    // `withFileTypes` returns the entry KIND from the same syscall that listed it. The
+    // readdir-then-stat form this replaces is a check-then-use race (CWE-367) — the entry
+    // can change between the two calls — and the repo's own TOCTOU lint caught it here.
+    let entries: Dirent[];
     try {
-      entries = readdirSync(dir);
+      entries = readdirSync(dir, { withFileTypes: true });
     } catch {
       return;
     }
-    for (const e of entries) {
-      const p = join(dir, e);
-      let isDir = false;
-      try {
-        isDir = statSync(p).isDirectory();
-      } catch {
-        continue;
-      }
-      if (isDir) {
+    for (const ent of entries) {
+      const e = ent.name;
+      if (ent.isDirectory()) {
         // `events/` holds append-only event JSON keyed by a DIFFERENT id space; walking it
         // would admit ids that name no work-item and quietly make this check pass.
         if (e === "events") continue;
-        walk(p, depth + 1);
+        walk(join(dir, e), depth + 1);
         continue;
       }
       if (!e.endsWith(".md")) continue;
@@ -135,11 +135,23 @@ export function auditIds(ids: readonly string[], known: ReadonlySet<string>): Fi
 
 export function runAudit(ids: readonly string[]): AuditResult {
   const known = indexWorkItems(repoRoot());
-  return { workItemsIndexed: known.size, idsChecked: ids.length, findings: auditIds(ids, known) };
+  return {
+    workItemsIndexed: known.size,
+    inputWasEmpty: ids.length === 0,
+    idsChecked: ids.length,
+    findings: auditIds(ids, known),
+  };
 }
 
 function renderHuman(r: AuditResult): string {
   const head = `${r.idsChecked} Task id(s) against ${r.workItemsIndexed} work-item(s)`;
+  if (r.inputWasEmpty) {
+    return (
+      `task-zetaid-resolves: NO INPUT — found no Task ids to check (index: ${String(r.workItemsIndexed)} work-items). ` +
+      `This is NOT a pass. A caller that expected ids and got none is looking at the wrong text — ` +
+      `commonly a SHALLOW CI checkout, where 'git log' yields one merge commit carrying no trailer.`
+    );
+  }
   if (r.findings.length === 0) return `task-zetaid-resolves: OK — ${head}; all resolve.`;
   const lines = [
     `task-zetaid-resolves: UNRESOLVABLE — ${r.findings.length} of ${head}.`,
@@ -182,5 +194,10 @@ if (import.meta.main) {
   }
   if (json) console.log(JSON.stringify({ driftClass: DRIFT_CLASS, ...result }, null, 2));
   else console.log(renderHuman(result));
+
+  // Exit 2, not 0, when handed nothing. Reporting "all resolve" over zero subjects is the
+  // vacuity this audit exists to refuse, and it happened on this file's OWN first CI run:
+  // the wiring piped a shallow `git log` and the check passed having examined 0 ids.
+  if (result.inputWasEmpty) process.exit(2);
   process.exit(result.findings.length === 0 ? 0 : 1);
 }

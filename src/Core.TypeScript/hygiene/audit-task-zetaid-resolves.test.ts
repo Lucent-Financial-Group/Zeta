@@ -132,3 +132,18 @@ describe("runAudit against the real repository", () => {
     expect(runAudit([FAKE]).findings).toHaveLength(1);
   });
 });
+
+describe("empty input is NOT a pass", () => {
+  test("runAudit reports inputWasEmpty so the caller can refuse it", () => {
+    // This file's OWN first CI run passed having examined zero ids: the wiring piped a
+    // shallow `git log`, which on a depth-1 checkout is one merge commit with no trailer.
+    // "OK — 0 Task id(s); all resolve" is the vacuity class, produced by the audit written
+    // to refuse it. The runner now exits 2 on this.
+    expect(runAudit([]).inputWasEmpty).toBe(true);
+    expect(runAudit([REAL]).inputWasEmpty).toBe(false);
+  });
+
+  test("extractTaskIds on text with no trailer yields nothing — which the caller must treat as absence of INPUT, not absence of DEFECT", () => {
+    expect(extractTaskIds("Merge pull request #15377 from Lucent-Financial-Group/x")).toEqual([]);
+  });
+});
