@@ -150,6 +150,17 @@ an outage, which wants a human rather than a retry); a 120-minute staleness limi
 supersession check. **When the bounds are exhausted the run stays RED**, with the mirror named
 in its own log.
 
+**The sweep writes no files, and that is a decision.** A `$GITHUB_STEP_SUMMARY` table was
+drafted; a job summary is a file write onto a page rendered as Markdown, and a run's `name`
+(a workflow file's `name:` key, contributor-controlled on a `pull_request` run) and
+`head_branch` are attacker-influenceable strings that could close a cell, inject a link, or
+forge a row. CodeQL flagged it (`js/http-to-file-access`, medium) and flagged both attempted
+sanitisers. Reshaping a sanitiser until an analyser is quiet is appeasing a tool rather than
+removing a risk, and dismissing the alert needs a human in the code-scanning UI — the exact
+intervention this change exists to delete. The summary was additive; the structured stdout was
+always the visibility contract. So the sink is gone, and a falsifier pins it: the source may
+not name `appendFileSync`, `writeFileSync`, `Bun.write`, `node:fs`, or `GITHUB_STEP_SUMMARY`.
+
 **Mutation results.** Six mutations of the predicate, each killed:
 
 | mutant | tests turned red |

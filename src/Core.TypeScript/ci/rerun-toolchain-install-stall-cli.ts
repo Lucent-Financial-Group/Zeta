@@ -39,14 +39,11 @@
  * read from the environment and never logged.
  */
 
-import { appendFileSync } from "node:fs";
-
 import {
   decideRerun,
   INSTALL_STEP_NAME,
   NON_APT_STEP_NAME,
   type Job,
-  type RerunDecision,
   type WorkflowRun,
 } from "./toolchain-install-stall.ts";
 
@@ -153,34 +150,26 @@ function emit(obj: Record<string, unknown>): void {
 }
 
 /**
- * NOTHING ATTACKER-INFLUENCEABLE REACHES THE JOB SUMMARY. The summary is rendered as Markdown
- * on a GitHub page, and it is a FILE WRITE — so anything derived from an API response body is
- * a taint sink. A run's `name` comes from a workflow file's `name:` key (which a contributor
- * controls on a `pull_request` run) and `head_branch` is whatever they called their branch;
- * verbatim in a Markdown table either can close a cell, inject a link, or forge a row.
+ * THIS MODULE WRITES NO FILES — and that is a decision, not an omission.
  *
- * The first draft wrote both through a character allow-list. CodeQL still flagged it
- * (`js/http-to-file-access`), and rather than reshape the sanitiser until the analyser stops
- * objecting — which is appeasing a tool, not removing a risk — the free-form values are simply
- * NOT WRITTEN. The summary carries only:
+ * The first draft also wrote a Markdown table to `$GITHUB_STEP_SUMMARY`. A job summary is a
+ * FILE WRITE onto a page rendered as Markdown, so everything reaching it from an API response
+ * body is a taint sink — and a run's `name` (a workflow file's `name:` key, contributor-
+ * controlled on a `pull_request` run) and `head_branch` are attacker-influenceable strings
+ * that could close a table cell, inject a link, or forge a row.
  *
- *   - local counters (`sinceMinutes`, `candidates.length`, `rerun`, `maxReruns`)
- *   - the run id, revalidated here as a safe integer and re-rendered as a number
- *   - `action` / `reason`, which are closed unions produced by the policy, never by the API
- *   - a boolean
+ * Two fixes were tried and CodeQL flagged both (`js/http-to-file-access`, medium): writing the
+ * strings through a character allow-list, then writing only a revalidated integer run id.
+ * Reshaping a sanitiser until an analyser stops objecting is appeasing a tool, not removing a
+ * risk, and dismissing the alert would need a human clicking in the code-scanning UI — the
+ * exact intervention this whole change exists to delete.
  *
- * Workflow name and branch remain in the JSON emitted to the LOG, where `JSON.stringify` is
- * the containment and there is no file write at all — and the log is the authoritative record
- * this module's visibility contract names. One click on the run link recovers both anyway.
+ * So the sink is gone. The summary was ADDITIVE: the visibility contract this module owes was
+ * always the structured stdout below, where `JSON.stringify` is the containment and nothing is
+ * written to disk. Everything the table carried is in those lines, in the same job log, one
+ * scroll away — and the two counting queries in the workflow header read the API and the log,
+ * never a file. Fewer sinks, nothing to dismiss, no human in the loop.
  */
-export function safeRunId(id: unknown): string {
-  return typeof id === "number" && Number.isSafeInteger(id) && id > 0 ? id.toFixed(0) : "?";
-}
-
-function summaryRow(run: RunListItem, d: RerunDecision, applied: boolean): string {
-  const cells = [safeRunId(run.id), d.action, d.reason, applied ? "yes" : "no"];
-  return `| ${cells.join(" | ")} |`;
-}
 
 export async function main(argv: string[]): Promise<number> {
   const numArg = (flag: string, dflt: number): number => {
@@ -203,7 +192,6 @@ export async function main(argv: string[]): Promise<number> {
     : await listRecentFailedRuns(sinceMinutes);
 
   const byReason = new Map<string, number>();
-  const rows: string[] = [];
   let rerun = 0;
   let capHit = false;
 
@@ -237,7 +225,6 @@ export async function main(argv: string[]): Promise<number> {
           workflow: run.name,
           detail: `per-sweep rerun cap of ${maxReruns} reached — this looks like a mirror outage, not a flake; left RED for a human`,
         });
-        rows.push(summaryRow(run, decision, false));
         continue;
       }
       if (apply) {
@@ -258,7 +245,6 @@ export async function main(argv: string[]): Promise<number> {
       applied,
       dry_run: !apply,
     });
-    rows.push(summaryRow(run, decision, applied));
   }
 
   emit({
@@ -272,27 +258,6 @@ export async function main(argv: string[]): Promise<number> {
     by_reason: Object.fromEntries(byReason),
   });
 
-  const summaryPath = process.env.GITHUB_STEP_SUMMARY;
-  if (summaryPath) {
-    const body = [
-      `### toolchain-install-stall sweep`,
-      ``,
-      `Window ${sinceMinutes}min · evaluated ${candidates.length} failed run(s) · re-ran ${rerun}/${maxReruns}${apply ? "" : " (dry run)"}${capHit ? " · **CAP HIT**" : ""}`,
-      ``,
-      ...(rows.length > 0
-        ? [
-            "| run id | action | reason | applied |",
-            "| --- | --- | --- | --- |",
-            ...rows,
-            ``,
-            `_Workflow name and branch are in the step log (\`kind: toolchain-install-stall-decision\`), not here — see the sink note above \`safeRunId\`._`,
-          ]
-        : ["_No failed run in the window carried the apt wall-budget signature._"]),
-    ].join("\n");
-    // APPEND — the step summary is shared with any other step in the job; overwriting it
-    // would delete their output.
-    appendFileSync(summaryPath, `${body}\n`);
-  }
   return 0;
 }
 

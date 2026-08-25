@@ -58,9 +58,12 @@
 #   - 120-minute staleness limit and a supersession check: an old or replaced run is history.
 #
 # VISIBILITY — fixing a symptom must not delete the evidence that the cause exists. Every
-# evaluation that touches the signature emits one JSON line keyed `kind` /`reason`, and each
-# sweep closes with a `toolchain-install-stall-sweep` aggregate carrying per-reason counts;
-# both also land in the job summary. Two independent counters:
+# evaluation that touches the signature emits one JSON line keyed `kind` / `reason`, and each
+# sweep closes with a `toolchain-install-stall-sweep` aggregate carrying per-reason counts. The
+# sweep writes NO files: a `$GITHUB_STEP_SUMMARY` table was drafted and removed, because a job
+# summary is a file write onto a rendered Markdown page and CodeQL was right to flag API-derived
+# data reaching it (`js/http-to-file-access`) — dismissing that alert would need a human in the
+# code-scanning UI, which is the intervention this change exists to delete. Two counters:
 #   gh run list --workflow rerun-toolchain-install-stall.yml --json databaseId   (sweep logs)
 #   gh api '.../actions/workflows/gate.yml/runs?per_page=100' \
 #     --jq '[.workflow_runs[] | select(.run_attempt > 1)] | length'              (reruns landed)

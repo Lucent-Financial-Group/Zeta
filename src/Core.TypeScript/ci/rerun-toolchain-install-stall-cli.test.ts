@@ -1,7 +1,7 @@
 import { test, expect, describe } from "bun:test";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { worthFetchingLogs, toJob, safeRunId } from "./rerun-toolchain-install-stall-cli.ts";
+import { worthFetchingLogs, toJob } from "./rerun-toolchain-install-stall-cli.ts";
 import type { Job } from "./toolchain-install-stall.ts";
 
 const fixture = JSON.parse(
@@ -71,34 +71,24 @@ describe("toJob — a job the API returned with no steps array must not crash th
   });
 });
 
-describe("safeRunId — the only API-derived value the job summary is allowed to carry", () => {
-  // CodeQL flagged the first two drafts of the summary writer (js/http-to-file-access, medium).
-  // The resolution was to stop writing free-form API strings to the file at all; what remains
-  // is this, and it must not be a string passthrough.
-  test("an ordinary run id renders as itself", () => {
-    expect(safeRunId(32890184155)).toBe("32890184155");
+describe("the module writes no files — the taint sink is gone, not sanitised", () => {
+  // CodeQL flagged two drafts of a $GITHUB_STEP_SUMMARY writer (js/http-to-file-access). The
+  // resolution was to delete the sink rather than reshape a sanitiser until the analyser was
+  // quiet. This pins that: a reader who re-adds a file write has to delete this test first.
+  test("the source names no filesystem write API", () => {
+    const src = readFileSync(join(import.meta.dir, "rerun-toolchain-install-stall-cli.ts"), "utf8");
+    // Strip the block comments, which DISCUSS the removed sink by name.
+    const code = src.replace(/\/\*[\s\S]*?\*\//g, "");
+    for (const banned of ["appendFileSync", "writeFileSync", "Bun.write", "node:fs", "GITHUB_STEP_SUMMARY"]) {
+      expect(code).not.toContain(banned);
+    }
   });
 
-  test("a string that LOOKS like an id is refused, not coerced", () => {
-    // The forcing case: if this coerced, the whole sink argument collapses, because a string
-    // is exactly what an attacker-influenced field is.
-    expect(safeRunId("32890184155")).toBe("?");
-    expect(safeRunId("1 | evil | rerun | yes |")).toBe("?");
-    expect(safeRunId("[x](javascript:alert(1))")).toBe("?");
-  });
-
-  test("non-integers, negatives and absent values are refused", () => {
-    expect(safeRunId(1.5)).toBe("?");
-    expect(safeRunId(-1)).toBe("?");
-    expect(safeRunId(0)).toBe("?");
-    expect(safeRunId(Number.NaN)).toBe("?");
-    expect(safeRunId(Number.MAX_SAFE_INTEGER + 2)).toBe("?");
-    expect(safeRunId(undefined)).toBe("?");
-    expect(safeRunId(null)).toBe("?");
-  });
-
-  test("the rendering carries no exponent or separator a table could not hold", () => {
-    expect(safeRunId(1e15)).toBe("1000000000000000");
-    expect(safeRunId(1e15)).not.toContain("e");
+  test("the assertion above has a subject (the file is real and non-trivial)", () => {
+    // A scan floor: if the path ever moves, the test must fail rather than vacuously pass on
+    // an empty string.
+    const src = readFileSync(join(import.meta.dir, "rerun-toolchain-install-stall-cli.ts"), "utf8");
+    expect(src.length).toBeGreaterThan(4000);
+    expect(src).toContain("toolchain-install-stall-decision");
   });
 });
