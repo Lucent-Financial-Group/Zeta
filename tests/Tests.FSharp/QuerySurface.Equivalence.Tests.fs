@@ -78,6 +78,15 @@ let private streamTableJoinPlan : ToyPlan =
                  "Amount", ToyScalar.col "orders" "Amount" ]
     }
 
+/// SELECT c.Name, o.Amount FROM orders o JOIN customers c ON o.Cust = c.Id
+/// (no WHERE — the shape C# fuses into the join's own result selector)
+let private joinProjectPlan : ToyPlan =
+    zquery orders {
+        join customers (ToyScalar.col "orders" "Cust") (ToyScalar.col "customers" "Id")
+        select [ "Name", ToyScalar.col "customers" "Name"
+                 "Amount", ToyScalar.col "orders" "Amount" ]
+    }
+
 // ── row helpers ──────────────────────────────────────────────────────
 
 let private order (id: int64) (cust: int64) (amount: int64) : ToyRow =
@@ -130,6 +139,13 @@ let ``CE plan matches the shared golden vector (filter + project + join)`` () =
 [<Fact>]
 let ``CE plan matches the shared golden vector (stream-table join)`` () =
     Assert.Equal(goldenCanonical "stream-table-join", ToyPlan.canonical streamTableJoinPlan)
+
+[<Fact>]
+let ``CE plan matches the shared golden vector (join + project, no where)`` () =
+    // The C# side reaches this same text from a FUSED join result selector
+    // (no `where` between the join and the select, so the compiler optimizes
+    // the transparent identifier away). Both spellings, one plan.
+    Assert.Equal(goldenCanonical "join-project", ToyPlan.canonical joinProjectPlan)
 
 [<Fact>]
 let ``the golden vector is not vacuous - a different predicate does not match`` () =

@@ -182,19 +182,50 @@ public static class PlanTranslator
         var outerKey = TranslateScalar(outerKeyLambda.Body, Bind(outerKeyLambda.Parameters, outerScope));
         var innerKey = TranslateScalar(innerKeyLambda.Body, Bind(innerKeyLambda.Parameters, innerScope));
 
-        var merged = RequireTransparentIdentifier(resultLambda, outerScope, innerScope);
-        return (ToyPlan.NewJoin(outer, inner, outerKey, innerKey), merged);
+        var join = ToyPlan.NewJoin(outer, inner, outerKey, innerKey);
+
+        // TWO SHAPES, and which one C# emits depends on what FOLLOWS the join.
+        //
+        //  • `join ... where ... select ...` — the compiler introduces a
+        //    TRANSPARENT IDENTIFIER, `(o, c) => new { o, c }`, so the range
+        //    variables stay in scope for the `where`. That anonymous row IS
+        //    relational algebra's merged row, so the plan is a bare Join and
+        //    the following `where`/`select` become their own nodes.
+        //
+        //  • `join ... select ...` with nothing in between — the compiler
+        //    OPTIMIZES the transparent identifier away and fuses the
+        //    projection into the join's own result selector.
+        //
+        // Both must land on the same plan shape the F# CE produces, so the
+        // fused form is unfused here back into Codd's join-then-project.
+        // Neither is an error; treating the second as one (an earlier draft
+        // of this file did) would have made the surface reject the most
+        // natural way to write a projecting join.
+        if (TryTransparentIdentifier(resultLambda, out var leftMember, out var rightMember))
+        {
+            return (join, Scope.Merge(leftMember, outerScope, rightMember, innerScope));
+        }
+
+        var env = new Dictionary<ParameterExpression, Scope>
+        {
+            [resultLambda.Parameters[0]] = outerScope,
+            [resultLambda.Parameters[1]] = innerScope,
+        };
+        var projections = TranslateProjection(resultLambda.Body, env);
+        return (ToyPlan.NewSelect(join, projections), Scope.Merge("left", outerScope, "right", innerScope));
     }
 
     /// <summary>
-    /// A join's result selector must be a transparent identifier —
-    /// <c>(o, c) =&gt; new { o, c }</c> — i.e. an anonymous type whose members
-    /// are exactly the two range variables, unprojected. Anything else is a
-    /// projection wearing a join's clothes and would produce a plan with an
-    /// extra <c>Select</c> node, so it is refused with an explanation rather
-    /// than silently accepted.
+    /// Recognise a transparent identifier — <c>(o, c) =&gt; new { o, c }</c>, an
+    /// anonymous type whose two members are exactly the two range variables,
+    /// unprojected. This is what C# query syntax emits for
+    /// <c>join ... on ... equals ...</c> when another clause follows.
     /// </summary>
-    private static Scope RequireTransparentIdentifier(LambdaExpression resultSelector, Scope outerScope, Scope innerScope)
+    /// <returns><c>true</c> when the selector is a transparent identifier.</returns>
+    private static bool TryTransparentIdentifier(
+        LambdaExpression resultSelector,
+        out string leftMember,
+        out string rightMember)
     {
         if (resultSelector.Body is NewExpression { Members: { Count: 2 } members } newExpr
             && newExpr.Arguments.Count == 2
@@ -203,13 +234,14 @@ public static class PlanTranslator
             && ReferenceEquals(p0, resultSelector.Parameters[0])
             && ReferenceEquals(p1, resultSelector.Parameters[1]))
         {
-            return Scope.Merge(members[0].Name, outerScope, members[1].Name, innerScope);
+            leftMember = members[0].Name;
+            rightMember = members[1].Name;
+            return true;
         }
 
-        throw new NotSupportedException(
-            "A join's result selector must be a transparent identifier, i.e. `(o, c) => new { o, c }` — " +
-            "which is exactly what C# query syntax `join ... on ... equals ...` generates. " +
-            "Shape the output with a separate `select` so the plan keeps Codd's join-then-project factoring.");
+        leftMember = string.Empty;
+        rightMember = string.Empty;
+        return false;
     }
 
     /// <summary>Bind every lambda parameter to the same scope.</summary>
