@@ -98,7 +98,7 @@ delays; it is a capability constraint on every mechanism that needs to write."*
 
 ---
 
-## 2. Finding 1 — path-scoped exclusion is NOT expressible. Straight answer.
+## 2. Finding 1 — path-scoped exclusion is NOT expressible (the straight answer)
 
 **Rulesets scope by REF.** A ruleset's `conditions` object contains exactly `ref_name.include` and
 `ref_name.exclude` (plus `repository_name` / `repository_property` for org-level rulesets). There is
@@ -201,16 +201,22 @@ general one.
 All five run on a free `ubuntu-24.04` runner against a tree that is already checked out. None
 compiles anything, opens a socket, or starts a container.
 
-| # | Check | What it refuses | Cost |
+| # | Check | What it refuses | Mechanism |
 |---|---|---|---|
-| 1 | `path-allowlist` | any changed path outside `paths.allow`, or inside `paths.deny` | `git diff --name-status` + regex, **~10 ms** |
-| 2 | `append-only` | for an `append-only` path, a modification whose pre-image is not a byte **prefix** of the post-image; for `add-only`, any modification; **for any path, any delete/rename/copy/typechange** | two `git show` per modified path, **~50 ms** |
-| 3 | `schema-parse` | any added/modified JSON or JSONL file that does not parse, or whose rows lack the lane's declared keys | `JSON.parse` per file, **~100 ms** at 58 files |
-| 4 | `size-budget` | > 400 files, > 2 MiB added bytes per commit, > 512 KiB added per file | arithmetic over `cat-file -s`, **~30 ms** |
-| 5 | `author-roster` | any constituent heartbeat commit whose author is not on the machine-lane roster in `agency-signature-identity-roster.json` | roster lookup, **~5 ms** |
+| 1 | `path-allowlist` | any changed path outside `paths.allow`, or inside `paths.deny` | `git show --name-status` + anchored regex |
+| 2 | `append-only` | for an `append-only` path, a modification whose pre-image is not a byte **prefix** of the post-image; for `add-only`, any modification; **for any path, any delete / rename / copy / typechange** | two `git show` per modified path |
+| 3 | `schema-parse` | any added or modified JSON / JSONL file that does not parse, or whose rows lack the lane's declared keys | `JSON.parse` per file |
+| 4 | `size-budget` | > 400 files, > 2 MiB added bytes per commit, > 512 KiB added per file | arithmetic over `cat-file -s` |
+| 5 | `author-roster` | any constituent heartbeat commit whose author is not on the machine-lane roster in `agency-signature-identity-roster.json` | roster lookup |
 
-Total **well under one second**, against a `gate (required)` rendezvous whose 12 seconds of compute
-is preceded by minutes of queueing, scheduling, and — measurably — sometimes never happening at all.
+**Cost, measured rather than estimated** (the audit shares checks 1, 2 and 4 with the lane, so its
+timings are the honest proxy): classifying **290 lane commits including full diff collection took
+31.8 s**, i.e. **~110 ms per commit** on a 58-file flush. A lane verifying its own single flush
+therefore pays about a tenth of a second. Compare `gate (required)`: 12 s of compute preceded by
+minutes of queueing and scheduling and — measurably, per PR #12046 and the required-check-that-never-
+ran forensics — sometimes never running at all. **The saving is not the compute; it is the
+rendezvous.** I have not broken the cost down per individual check, and will not present a
+made-up breakdown as if I had.
 
 ### 4a. Why this is sufficient here and not in general — say it precisely
 
@@ -416,9 +422,19 @@ protection (`enforce_admins: true`, `required_linear_history: true`, no bypass c
 ## 8. The post-hoc audit — what it checks, and what it found
 
 `src/Core.TypeScript/hygiene/audit-heartbeat-lane-attestations.ts` (+ `.test.ts`, 38 tests) reading
-`registry/heartbeat-lane-allowlist.json`. Exit 0 clean / 1 violation / 2 tooling error. Belongs in the
-`cross-verify` floor job, beside `audit-proof-lineage-binaries.ts`, for the same reason: it is
-offline, sub-second, and reads only committed state.
+`registry/heartbeat-lane-allowlist.json`. Exit 0 clean / 1 violation / 2 tooling error. **Wired into
+the `cross-verify` floor job in this PR**, beside `audit-proof-lineage-binaries.ts`, for the same
+reason: it is offline, opens no socket, and reads only committed git objects.
+
+Collection is **two-phase**, and that is correctness rather than speed. CI checks out at
+`fetch-depth: 1`, where the tip has no parent — so `git show --name-status` reports the *entire
+tree* as added (45,823 files here) and `<sha>^` does not resolve. Metadata alone decides
+`NOT-LANE` / `PRE-CUTOVER-LEGACY`, so a commit the audit does not judge never enters the
+parentless path. And where the parent genuinely is unreachable, `collectChanges` **refuses**
+(exit 2) rather than reading a missing object as "the prefix was not preserved": a check that
+cannot see its input must say so, not convict. Measured: **6.9 s for a 300-commit metadata-only
+window; 31.8 s when 290 of those commits are lane commits carrying full diffs.** On a shallow CI
+checkout the window is one commit.
 
 ### 8a. The twelve verdicts
 
@@ -527,8 +543,8 @@ Named consequences, not softened:
 
 - **Detection latency is real.** Between a bad push and the next audit run, `main` carries unchecked
   content, and everything downstream — Pages, the drift fold, any agent that pulls — has consumed it.
-  Running the audit on every push to `main` (it is sub-second) reduces this to minutes; it does not
-  reduce it to zero, and it never can, because it is post-hoc by construction.
+  Running the audit on every push to `main` (one commit, ~110 ms) reduces this to minutes; it does
+  not reduce it to zero, and it never can, because it is post-hoc by construction.
 - **The audit's own liveness is unguarded here.** A drift check that silently stops running is the
   exact failure the forge-agnostic document measured (five days, 276 green runs, zero ticks). This
   design does **not** add the receipt mechanism that would catch it. That gap is inherited, named,

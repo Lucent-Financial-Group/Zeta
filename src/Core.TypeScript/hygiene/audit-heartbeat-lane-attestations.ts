@@ -508,17 +508,50 @@ function kindOf(raw: string): ChangeKind {
 }
 
 /**
- * Resolve one commit into a pure record. `append-only` prefix verification reads both
- * blobs, so it is done ONLY for modified paths the registry marks append-only — a lane
- * commit is a few hundred small files and this stays well under a second.
+ * Metadata only — no diff. Cheap by design and separate from `collectChanges` for a reason
+ * that is correctness, not speed: CI checks out at `fetch-depth: 1`, where the tip has no
+ * parent, so `git show --name-status` reports the ENTIRE TREE as added (45k files here) and
+ * `sha^` does not resolve at all. Deciding NOT-LANE / PRE-CUTOVER from metadata alone means
+ * the expensive-and-parentless path is never entered for a commit the audit does not judge.
  */
-export function collectCommit(sha: string, cwd: string, registry: Registry): CommitRecord | string {
+export function collectCommitMeta(sha: string, cwd: string): CommitRecord | string {
   const meta = git(["show", "-s", `--format=${META_FORMAT}`, sha], cwd);
   if ("err" in meta) return meta.err;
   const parts = meta.ok.split("\n");
   if (parts.length < 7) return `could not parse metadata for ${sha}`;
   const body = git(["show", "-s", "--format=%B", sha], cwd);
   if ("err" in body) return body.err;
+
+  return {
+    sha: (parts[0] ?? "").trim(),
+    treeSha: (parts[1] ?? "").trim(),
+    authorEmail: parts[2] ?? "",
+    committerEmail: parts[3] ?? "",
+    timestamp: Number.parseInt(parts[4] ?? "0", 10) * 1000,
+    isoDate: parts[5] ?? "",
+    subject: parts[6] ?? "",
+    message: body.ok,
+    changes: [],
+  };
+}
+
+/**
+ * The diff half. Only called for commits already known to be lane commits past the cutover.
+ * Refuses rather than guesses when the parent is unreachable: on a shallow clone
+ * `git show <sha>^:<path>` fails, and treating that failure as "the prefix was not preserved"
+ * would manufacture a MODE-VIOLATION out of a missing object. A check that cannot see its
+ * input must say so, not convict.
+ */
+export function collectChanges(
+  sha: string,
+  cwd: string,
+  registry: Registry,
+): readonly Change[] | string {
+  const parentProbe = git(["rev-parse", "--verify", "--quiet", `${sha}^{commit}`], cwd);
+  if ("err" in parentProbe) return `cannot resolve ${sha}`;
+  // `^1^{commit}` and not `^@`: `^@` expands to ALL parents and `--verify` demands exactly
+  // one ref, so the `^@` form fails on every commit and would make the whole audit exit 2.
+  const hasParent = "ok" in git(["rev-parse", "--verify", "--quiet", `${sha}^1^{commit}`], cwd);
 
   const nameStatus = git(["show", "--no-renames", "--name-status", "--format=", sha], cwd);
   if ("err" in nameStatus) return nameStatus.err;
@@ -536,11 +569,15 @@ export function collectCommit(sha: string, cwd: string, registry: Registry): Com
       return "ok" in r ? Number.parseInt(r.ok.trim(), 10) || 0 : 0;
     };
     const after = sizeOf(sha);
-    const addedBytes = kind === "M" ? Math.max(0, after - sizeOf(`${sha}^`)) : after;
+    const addedBytes =
+      kind === "M" && hasParent ? Math.max(0, after - sizeOf(`${sha}^`)) : after;
 
     let prefixPreserved: boolean | undefined;
     const entry = allowEntryFor(path, registry);
     if (kind === "M" && entry !== null && entry.mode === "append-only") {
+      if (!hasParent) {
+        return `${sha} modifies ${path} but its parent is unreachable (shallow clone?) — refusing to guess whether the append was honest`;
+      }
       const beforeBlob = git(["show", `${sha}^:${path}`], cwd);
       const afterBlob = git(["show", `${sha}:${path}`], cwd);
       prefixPreserved =
@@ -548,18 +585,16 @@ export function collectCommit(sha: string, cwd: string, registry: Registry): Com
     }
     changes.push({ kind, path, addedBytes, ...(prefixPreserved === undefined ? {} : { prefixPreserved }) });
   }
+  return changes;
+}
 
-  return {
-    sha: (parts[0] ?? "").trim(),
-    treeSha: (parts[1] ?? "").trim(),
-    authorEmail: parts[2] ?? "",
-    committerEmail: parts[3] ?? "",
-    timestamp: Number.parseInt(parts[4] ?? "0", 10) * 1000,
-    isoDate: parts[5] ?? "",
-    subject: parts[6] ?? "",
-    message: body.ok,
-    changes,
-  };
+/** Metadata + diff, for callers that want the whole record. */
+export function collectCommit(sha: string, cwd: string, registry: Registry): CommitRecord | string {
+  const meta = collectCommitMeta(sha, cwd);
+  if (typeof meta === "string") return meta;
+  const changes = collectChanges(sha, cwd, registry);
+  if (typeof changes === "string") return changes;
+  return { ...meta, changes };
 }
 
 export function listCommits(
@@ -674,10 +709,20 @@ export function main(argv: readonly string[]): 0 | 1 | 2 {
   const counts = new Map<Status, number>();
   const violations: string[] = [];
   for (const sha of shas) {
-    const record = collectCommit(sha, args.cwd, registry);
-    if (typeof record === "string") {
-      process.stderr.write(`audit-heartbeat-lane-attestations: ${record}\n`);
+    const meta = collectCommitMeta(sha, args.cwd);
+    if (typeof meta === "string") {
+      process.stderr.write(`audit-heartbeat-lane-attestations: ${meta}\n`);
       return 2;
+    }
+    // Only a lane commit past the cutover is judged, so only it pays for a diff.
+    let record = meta;
+    if (isLaneCommit(meta, registry) && meta.timestamp >= cutoverTs) {
+      const changes = collectChanges(sha, args.cwd, registry);
+      if (typeof changes === "string") {
+        process.stderr.write(`audit-heartbeat-lane-attestations: ${changes}\n`);
+        return 2;
+      }
+      record = { ...meta, changes };
     }
     const verdict = classifyCommit(record, registry, cutoverTs);
     counts.set(verdict.status, (counts.get(verdict.status) ?? 0) + 1);
