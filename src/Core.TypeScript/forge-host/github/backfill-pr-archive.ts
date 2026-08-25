@@ -164,9 +164,17 @@ const sleep = (ms: number): Promise<void> =>
   });
 
 function loadCheckpoint(path: string): Checkpoint | null {
-  if (!existsSync(path)) return null;
+  // No existsSync gate. Read it and interpret the failure — ENOENT (no
+  // checkpoint yet, the ordinary first run) and a corrupt file both mean the
+  // same thing here, "we have no resumable state", and both are safe.
+  let raw: string;
   try {
-    const c = JSON.parse(readFileSync(path, "utf8")) as Checkpoint;
+    raw = readFileSync(path, "utf8");
+  } catch {
+    return null; // first run, or the file vanished between two instants
+  }
+  try {
+    const c = JSON.parse(raw) as Checkpoint;
     if (c.version !== 1 || !Array.isArray(c.worklist)) return null;
     return c;
   } catch {

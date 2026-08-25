@@ -79,7 +79,7 @@
 // coverage is perfect — "checked 0 PRs" must never read as success. That is the
 // vacuity class, and it is the failure this whole subsystem keeps producing.
 
-import { existsSync, readdirSync, readFileSync } from "node:fs";
+import { readdirSync, readFileSync, type Dirent } from "node:fs";
 import { resolve } from "node:path";
 
 import { classifyGap, EVENT_LANE_LANDED, type GapClass } from "../forge-host/github/archive-eligibility.ts";
@@ -160,11 +160,28 @@ export interface Bucket {
  */
 export function readArchivedPrNumbers(shardRootAbs: string): Set<number> {
   const out = new Set<number>();
-  if (!existsSync(shardRootAbs)) return out;
-  for (const bucket of readdirSync(shardRootAbs, { withFileTypes: true })) {
+  // No existsSync gate: the directory can be created or removed between the
+  // check and the read, so the answer the check returned would be about a
+  // moment that has passed. Do the operation, interpret its failure.
+  let buckets: Dirent<string>[];
+  try {
+    buckets = readdirSync(shardRootAbs, { withFileTypes: true });
+  } catch {
+    // An absent or unreadable shard root yields ZERO archived PRs, which the
+    // liveness check in `judge` then turns into exit 2. It must never be
+    // mistaken for "the store is empty and coverage is therefore perfect".
+    return out;
+  }
+  for (const bucket of buckets) {
     if (!bucket.isDirectory()) continue;
     const dir = resolve(shardRootAbs, bucket.name);
-    for (const f of readdirSync(dir)) {
+    let names: string[];
+    try {
+      names = readdirSync(dir);
+    } catch {
+      continue; // a bucket removed mid-scan contributes nothing, and says so by omission
+    }
+    for (const f of names) {
       if (!f.endsWith(".json")) continue;
       // The PR number is inside the shard rather than in its filename (the
       // filename is a ZetaId), so it is read rather than parsed off the path.
