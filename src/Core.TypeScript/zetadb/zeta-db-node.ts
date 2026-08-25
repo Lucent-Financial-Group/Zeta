@@ -828,6 +828,84 @@ function retentionCapacityDetail(
   return details.length === 0 ? null : details.join(" ");
 }
 
+interface ZetaDbRetentionCandidates {
+  readonly observed: ReadonlyMap<string, ZetaDbDelta>;
+  readonly novelEventIds: ReadonlySet<string>;
+  readonly duplicates: number;
+}
+
+function collectRetentionCandidates(
+  image: ZetaDbImage,
+  processed: readonly ZetaDbDelta[],
+): ZetaDbResult<ZetaDbRetentionCandidates> {
+  const observed = new Map(image.entries.map((entry) => [entry.eventId, entry]));
+  const novelEventIds = new Set<string>();
+  let duplicates = 0;
+  for (const delta of processed) {
+    const existing = observed.get(delta.eventId);
+    if (existing === undefined) {
+      observed.set(delta.eventId, delta);
+      novelEventIds.add(delta.eventId);
+      continue;
+    }
+    if (!sameDelta(existing, delta)) {
+      return failed("database-event-conflict", `Event identifier ${delta.eventId} already names a different delta.`);
+    }
+    duplicates += 1;
+  }
+  return succeeded({ observed, novelEventIds, duplicates });
+}
+
+function materializeRetainedEntries(
+  receipt: ZetaDbRetentionReceipt,
+  observed: ReadonlyMap<string, ZetaDbDelta>,
+): ZetaDbResult<readonly ZetaDbDelta[]> {
+  const entries: ZetaDbDelta[] = [];
+  for (const eventId of receipt.retainedEventIds) {
+    const entry = observed.get(eventId);
+    if (entry === undefined) {
+      return failed(
+        "database-retention-policy-failed",
+        `Database retention policy ${receipt.policyId} selected unavailable event ${eventId}.`,
+      );
+    }
+    entries.push(entry);
+  }
+  return succeeded(entries);
+}
+
+function decideRetentionMutationAdmission(
+  image: ZetaDbImage,
+  entries: readonly ZetaDbDelta[],
+  rows: readonly ZetaDbRow[],
+  limits: ZetaDbTickLimits,
+  policy: ZetaDbAdmissionPolicyPort,
+): ZetaDbResult<ZetaDbAdmissionRefusal | null> {
+  const entryDecision = decideAdmission(policy, {
+    resource: "retained-events",
+    current: image.entries.length,
+    candidate: entries.length,
+    limit: limits.maxEntries,
+  });
+  if (!entryDecision.ok) return entryDecision;
+  const entryRefusal = admissionRefusal(entryDecision.value);
+  if (entryRefusal !== null) return succeeded(entryRefusal);
+
+  const nextRevision = image.revision + 1;
+  const currentPayload = encodeZetaDbImage({ ...image, revision: nextRevision });
+  if (!currentPayload.ok) return currentPayload;
+  const candidatePayload = encodeZetaDbImage({ ...image, revision: nextRevision, entries, rows });
+  if (!candidatePayload.ok) return candidatePayload;
+  const checkpointDecision = decideAdmission(policy, {
+    resource: "checkpoint-bytes",
+    current: currentPayload.value.byteLength,
+    candidate: candidatePayload.value.byteLength,
+    limit: limits.maxCheckpointBytes,
+  });
+  if (!checkpointDecision.ok) return checkpointDecision;
+  return succeeded(admissionRefusal(checkpointDecision.value));
+}
+
 /**
  * Apply an explicit retained-set policy as one finite batch. The policy owns event-count
  * selection; the admission policy still enforces its final entry reservation and exact encoded
@@ -842,22 +920,8 @@ function retainZetaDbDeltas(
 ): ZetaDbResult<ZetaDbAdmissionReadout> {
   const processThrough = Math.min(deltas.length, limits.maxDeltas);
   const processed = deltas.slice(0, processThrough);
-  const observed = new Map(image.entries.map((entry) => [entry.eventId, entry]));
-  const novel = new Map<string, ZetaDbDelta>();
-  let duplicates = 0;
-
-  for (const delta of processed) {
-    const existing = observed.get(delta.eventId);
-    if (existing !== undefined) {
-      if (!sameDelta(existing, delta)) {
-        return failed("database-event-conflict", `Event identifier ${delta.eventId} already names a different delta.`);
-      }
-      duplicates += 1;
-      continue;
-    }
-    observed.set(delta.eventId, delta);
-    novel.set(delta.eventId, delta);
-  }
+  const candidates = collectRetentionCandidates(image, processed);
+  if (!candidates.ok) return candidates;
 
   const planned = evaluateZetaDbRetentionPolicy(retentionPolicy, {
     currentEventIds: image.entries.map((entry) => entry.eventId),
@@ -866,54 +930,32 @@ function retainZetaDbDeltas(
   });
   if (!planned.ok) return retentionFailure(planned.feedback);
 
-  const entries: ZetaDbDelta[] = [];
-  for (const eventId of planned.value.retainedEventIds) {
-    const entry = observed.get(eventId);
-    if (entry === undefined) {
-      return failed(
-        "database-retention-policy-failed",
-        `Database retention policy ${planned.value.policyId} selected unavailable event ${eventId}.`,
-      );
-    }
-    entries.push(entry);
-  }
-  const rows = foldRows(entries);
+  const entries = materializeRetainedEntries(planned.value, candidates.value.observed);
+  if (!entries.ok) return entries;
+  const rows = foldRows(entries.value);
   if (!rows.ok) return rows;
-  const accepted = planned.value.retainedEventIds.filter((eventId) => novel.has(eventId)).length;
+  const accepted = planned.value.retainedEventIds.filter((eventId) =>
+    candidates.value.novelEventIds.has(eventId),
+  ).length;
   const changed = accepted > 0 || planned.value.displacedEventIds.length > 0;
 
   if (changed) {
-    const entryDecision = decideAdmission(admissionPolicy, {
-      resource: "retained-events",
-      current: image.entries.length,
-      candidate: entries.length,
-      limit: limits.maxEntries,
-    });
-    if (!entryDecision.ok) return entryDecision;
-    const entryRefusal = admissionRefusal(entryDecision.value);
-    if (entryRefusal !== null) return unappliedRetentionReadout(image, entryRefusal);
-
-    const nextRevision = image.revision + 1;
-    const currentPayload = encodeZetaDbImage({ ...image, revision: nextRevision });
-    if (!currentPayload.ok) return currentPayload;
-    const candidatePayload = encodeZetaDbImage({ ...image, revision: nextRevision, entries, rows: rows.value });
-    if (!candidatePayload.ok) return candidatePayload;
-    const checkpointDecision = decideAdmission(admissionPolicy, {
-      resource: "checkpoint-bytes",
-      current: currentPayload.value.byteLength,
-      candidate: candidatePayload.value.byteLength,
-      limit: limits.maxCheckpointBytes,
-    });
-    if (!checkpointDecision.ok) return checkpointDecision;
-    const checkpointRefusal = admissionRefusal(checkpointDecision.value);
-    if (checkpointRefusal !== null) return unappliedRetentionReadout(image, checkpointRefusal);
+    const mutationAdmission = decideRetentionMutationAdmission(
+      image,
+      entries.value,
+      rows.value,
+      limits,
+      admissionPolicy,
+    );
+    if (!mutationAdmission.ok) return mutationAdmission;
+    if (mutationAdmission.value !== null) return unappliedRetentionReadout(image, mutationAdmission.value);
   }
 
   return succeeded({
-    entries,
+    entries: entries.value,
     rows: rows.value,
     accepted,
-    duplicates,
+    duplicates: candidates.value.duplicates,
     nextDeltaIndex: processThrough,
     capacityDetail: retentionCapacityDetail(planned.value, processThrough, deltas.length, limits.maxDeltas),
     capacityReceipt: null,
