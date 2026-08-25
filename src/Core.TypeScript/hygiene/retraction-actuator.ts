@@ -342,7 +342,9 @@ if (invokedDirectly) {
   if (machine.kind === "idle" && iso !== null) {
     const mainHead = git("rev-parse", "origin/main");
     const fleetInFlight = anyRunning || mainHead !== iso.redHead;
-    const candidates = git("rev-list", `${iso.greenHead}..${iso.redHead}`).split("\n").filter((l) => isSha(l));
+    const candidates = git("rev-list", `${iso.greenHead}..${iso.redHead}`)
+      .split("\n")
+      .filter((l) => isSha(l));
     const single = candidates.length === 1 ? candidates[0]! : null;
     const paths =
       single === null

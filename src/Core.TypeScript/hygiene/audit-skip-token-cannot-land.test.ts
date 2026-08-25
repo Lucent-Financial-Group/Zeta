@@ -151,9 +151,7 @@ describe("AH002 — a skip token built by `echo` is still a skip token", () => {
       'printf "db(zetadb): fold scheduled journal [skip ci]"',
     );
     expect(printfSpelling).not.toBe(THE_ECHO_BUILT_DEFECT);
-    expect(auditWorkflow("t.yml", printfSpelling)).toEqual(
-      auditWorkflow("t.yml", THE_ECHO_BUILT_DEFECT),
-    );
+    expect(auditWorkflow("t.yml", printfSpelling)).toEqual(auditWorkflow("t.yml", THE_ECHO_BUILT_DEFECT));
   });
 
   it("recognises `-F -` as well as `--file=-`", () => {
@@ -162,10 +160,7 @@ describe("AH002 — a skip token built by `echo` is still a skip token", () => {
   });
 
   it("recognises the sink through `git -c` options", () => {
-    const withC = THE_ECHO_BUILT_DEFECT.replace(
-      "git commit --file=-",
-      "git -c core.editor=true commit --file=-",
-    );
+    const withC = THE_ECHO_BUILT_DEFECT.replace("git commit --file=-", "git -c core.editor=true commit --file=-");
     expect(auditWorkflow("t.yml", withC).length).toBeGreaterThan(0);
   });
 
