@@ -47,7 +47,7 @@ function repoRoot(): string {
   return resolve(process.env["REPO_ROOT"] ?? process.cwd());
 }
 
-export const DRIFT_CLASS = "AH005";
+export const DRIFT_CLASS = "AH006";
 
 /** A ZetaId as minted by `new-workitem.ts`: 26 chars, Crockford-ish base32, `081` era prefix. */
 export const ZETAID_RE = /\b(081[0-9A-Z]{23})\b/g;

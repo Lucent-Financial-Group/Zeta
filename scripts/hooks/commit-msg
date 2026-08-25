@@ -38,7 +38,7 @@ fi
 cat "$tmp" >"$msg_file"
 
 # ---------------------------------------------------------------------------
-# A `Task:` id that is well-formed and names nothing (AH005).
+# A `Task:` id that is well-formed and names nothing (AH006).
 #
 # The AgencySignature gate validates `Task:` for placeholder-ness and SHAPE,
 # never existence — so an invented-but-well-formed ZetaId passes CI silently,
