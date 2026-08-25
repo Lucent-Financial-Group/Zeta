@@ -197,6 +197,11 @@ describe("normalizeBypassActors", () => {
       { actor_id: 5, actor_type: "RepositoryRole", bypass_mode: "pull_request" },
     ]);
     expect(a).toEqual(b);
+    // Narrowing, not a cast: the return type is `... | null` precisely so an
+    // unreadable list cannot be mistaken for an empty one, and a test that
+    // asserted through it with `!` would be spending the guarantee it checks.
+    expect(a).not.toBeNull();
+    if (a === null) throw new Error("unreachable: a populated input is readable");
     expect(a.map((x) => x.actor_type)).toEqual(["OrganizationAdmin", "RepositoryRole", "Team"]);
   });
 
