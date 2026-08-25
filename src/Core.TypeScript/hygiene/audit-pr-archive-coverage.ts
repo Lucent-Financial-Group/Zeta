@@ -56,6 +56,29 @@
 // The lane did not break. Its trigger stopped being reachable for a population
 // that had, until then, been small.
 //
+// AND THE REASON THOSE MERGES ARE BOT-MERGED IS AN ALREADY-OPEN P1.
+// `agent-heartbeat.yml` prefers `ZETA_TELEMETRY_FLUSH_TOKEN` and falls back to
+// `GITHUB_TOKEN` when the API refuses that PAT. It refuses on EVERY run —
+// checked against the six most recent heartbeat runs (32823324598, 32821142228,
+// 32818569388, 32816194481, 32814829813, 32813161986): all six emit
+// `::warning title=Heartbeat API credential denied`. So every flush merges as
+// `github-actions[bot]`, and the whole chain is:
+//
+//     PAT lacks contents:write  (081M05G8D36087G0R0034D3QPA, P1, open,
+//                                explicitly "NEEDS THE OPERATOR")
+//        -> fallback to GITHUB_TOKEN
+//        -> flush PRs merge as github-actions[bot]
+//        -> `pull_request: closed` is suppressed
+//        -> pr-archive-on-merge.yml never runs
+//        -> the PR is never archived, silently.
+//
+// That is a CREDENTIAL SCOPE GRANT, not a code change, and it is a gated class:
+// an agent cannot make it. Which is precisely why this audit and the resized
+// sweep are the right deliverable — they hold the line while the credential is
+// waiting on a human, and they go red again if it regresses. Nobody had
+// connected the open credential bug to archive coverage; the cost of that P1 is
+// 910 unarchived PRs and counting.
+//
 // WHY AN AUDIT AND NOT JUST A FIX
 // -------------------------------
 // Because the fix is to a SUPPRESSED EVENT, and the next thing that suppresses
