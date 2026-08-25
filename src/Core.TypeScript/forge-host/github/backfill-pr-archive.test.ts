@@ -106,8 +106,6 @@ describe("backoffSeconds", () => {
   it("adds jitter — synchronised retries across agents re-hit the limit", () => {
     // Several agents share this token. Identical backoff means they all return
     // at the same instant, which is the burst that got them throttled.
-    expect(backoffSeconds("403 secondary rate", 3, 0)).not.toBe(
-      backoffSeconds("403 secondary rate", 3, 1),
-    );
+    expect(backoffSeconds("403 secondary rate", 3, 0)).not.toBe(backoffSeconds("403 secondary rate", 3, 1));
   });
 });

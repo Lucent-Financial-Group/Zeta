@@ -82,11 +82,7 @@
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 
-import {
-  classifyGap,
-  EVENT_LANE_LANDED,
-  type GapClass,
-} from "../forge-host/github/archive-eligibility.ts";
+import { classifyGap, EVENT_LANE_LANDED, type GapClass } from "../forge-host/github/archive-eligibility.ts";
 
 /** One merged PR as the audit needs to see it. */
 export interface MergedPr {
@@ -358,10 +354,7 @@ export async function fetchMergedPrs(
     // (PR #10367, created 08-13, merged 08-17). So the early stop is keyed on
     // the whole page being out of window, never on a single node.
     if (sinceIso !== undefined && page.nodes.length > 0) {
-      const newest = page.nodes.reduce(
-        (acc, n) => (n.mergedAt !== null && n.mergedAt > acc ? n.mergedAt : acc),
-        "",
-      );
+      const newest = page.nodes.reduce((acc, n) => (n.mergedAt !== null && n.mergedAt > acc ? n.mergedAt : acc), "");
       if (newest !== "" && newest < sinceIso) break;
     }
     if (!page.pageInfo.hasNextPage) break;
@@ -429,11 +422,16 @@ export async function main(argv: readonly string[] = process.argv.slice(2)): Pro
       ? report
       : // Do not judge a lifetime number derived from a partial scan. Suppressing
         // the floor is honest; printing the partial figure as if complete is not.
-        { ...report, lifetime: { eligible: report.lifetime.eligible, archived: report.lifetime.archived, coverage: null } },
+        {
+          ...report,
+          lifetime: { eligible: report.lifetime.eligible, archived: report.lifetime.archived, coverage: null },
+        },
     thresholds,
   );
 
-  process.stdout.write(`pr-archive coverage (scan: ${lifetimeScan ? "full history" : `last ${String(windowDays)}d`}, since ${EVENT_LANE_LANDED} the event lane has existed)\n`);
+  process.stdout.write(
+    `pr-archive coverage (scan: ${lifetimeScan ? "full history" : `last ${String(windowDays)}d`}, since ${EVENT_LANE_LANDED} the event lane has existed)\n`,
+  );
   for (const l of verdict.lines) process.stdout.write(`  ${l}\n`);
   if (listMissing && report.missing.length > 0) {
     process.stdout.write(`  missing: ${report.missing.join(",")}\n`);

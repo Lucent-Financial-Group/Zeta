@@ -14,11 +14,7 @@ import { mkdtempSync, mkdirSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
-import {
-  classifyGap,
-  EVENT_LANE_LANDED,
-  isArchiveEligible,
-} from "../forge-host/github/archive-eligibility.ts";
+import { classifyGap, EVENT_LANE_LANDED, isArchiveEligible } from "../forge-host/github/archive-eligibility.ts";
 import {
   computeCoverage,
   DEFAULT_GRACE_MINUTES,
@@ -67,13 +63,17 @@ describe("isArchiveEligible", () => {
 
 describe("classifyGap", () => {
   it("returns null for an archived PR — nothing to classify", () => {
-    expect(classifyGap({ headRefName: "x", mergedAt: "2026-08-01T00:00:00Z", isArchived: true }, NOW, GRACE_MS)).toBeNull();
+    expect(
+      classifyGap({ headRefName: "x", mergedAt: "2026-08-01T00:00:00Z", isArchived: true }, NOW, GRACE_MS),
+    ).toBeNull();
   });
 
   it("separates the three populations the measurement found", () => {
     const un = (mergedAt: string, headRefName: string) => ({ headRefName, mergedAt, isArchived: false });
     // A: excluded by design
-    expect(classifyGap(un("2026-08-21T01:00:00Z", "automation/pr-archive-13010-run-1-attempt-1"), NOW, GRACE_MS)).toBe("excluded");
+    expect(classifyGap(un("2026-08-21T01:00:00Z", "automation/pr-archive-13010-run-1-attempt-1"), NOW, GRACE_MS)).toBe(
+      "excluded",
+    );
     // B: predates the event lane (workflow landed 2026-05-06)
     expect(classifyGap(un("2026-04-24T10:00:00Z", "feat/whatever"), NOW, GRACE_MS)).toBe("pre-lane");
     // C: the real defect
@@ -101,7 +101,9 @@ describe("classifyGap", () => {
   it("treats an unparseable merge date as MISSING, never as fresh", () => {
     // Fail-closed. A date we cannot read must not park a record in the grace
     // window forever, which is how a lost record would hide permanently.
-    expect(classifyGap({ headRefName: "feat/x", mergedAt: "not-a-date", isArchived: false }, NOW, GRACE_MS)).toBe("missing");
+    expect(classifyGap({ headRefName: "feat/x", mergedAt: "not-a-date", isArchived: false }, NOW, GRACE_MS)).toBe(
+      "missing",
+    );
   });
 });
 
@@ -186,8 +188,12 @@ describe("§THE MEASURED BREAK — 2026-08-21, GITHUB_TOKEN merges fire no event
   });
 
   it("brackets the window floor from both sides", () => {
-    expect(judge(computeCoverage(...Object.values(window(0.96)) as [MergedPr[], Set<number>], NOW), DEFAULT_THRESHOLDS).ok).toBe(true);
-    expect(judge(computeCoverage(...Object.values(window(0.90)) as [MergedPr[], Set<number>], NOW), DEFAULT_THRESHOLDS).ok).toBe(false);
+    expect(
+      judge(computeCoverage(...(Object.values(window(0.96)) as [MergedPr[], Set<number>]), NOW), DEFAULT_THRESHOLDS).ok,
+    ).toBe(true);
+    expect(
+      judge(computeCoverage(...(Object.values(window(0.9)) as [MergedPr[], Set<number>]), NOW), DEFAULT_THRESHOLDS).ok,
+    ).toBe(false);
   });
 });
 
