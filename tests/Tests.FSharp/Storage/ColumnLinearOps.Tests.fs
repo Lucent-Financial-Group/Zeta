@@ -522,10 +522,12 @@ let ``ColumnLinear vectorized filter is measurably faster on unpredictable data`
         let weights = Array.init n (fun _ -> int64 (rng.Next(-99, 99)))
         let dk = Array.zeroCreate<int64> n
         let dw = Array.zeroCreate<int64> n
-        // 50% selectivity on SHUFFLED keys — the worst case for this kernel,
-        // by its own documented prediction. Gating on the regime the design
-        // is weakest in is the point; gating on 1% would be marking our own
-        // homework.
+        // 50% selectivity on SHUFFLED keys — the ONLY regime in which this
+        // kernel wins, measured 3.45x here and 0.69x-1.12x everywhere else
+        // (see ColumnLinearOps.fs for the full table). The gate therefore
+        // says exactly what it can: "the vector path is still taken", not
+        // "the vector path is always faster". Naming the regime in the
+        // failure message is what keeps it from reading as the latter.
         let lo, hi = 250_000L, 750_000L
         let scalarRun () =
             ColumnLinearKernel.FilterKeyInRangeScalar(
@@ -557,8 +559,8 @@ let ``ColumnLinear vectorized filter is measurably faster on unpredictable data`
 
         let speedup = bestScalar / bestVector
         Assert.True(
-            speedup >= 1.15,
-            $"vectorised filter should be >= 1.15x the scalar filter on {n} unpredictable keys "
+            speedup >= 1.5,
+            $"vectorised filter should be >= 1.5x the scalar filter on {n} unpredictable keys "
             + $"at 50%% selectivity, measured {speedup:F2}x (scalar {bestScalar:F3} ms, "
             + $"vector {bestVector:F3} ms, Vector<int64>.Count = {ColumnLinearKernel.VectorWidth}). "
             + "A ratio near 1.0 means the vector path is no longer vectorised.")

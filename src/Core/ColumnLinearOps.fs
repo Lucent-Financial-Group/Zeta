@@ -200,12 +200,55 @@ type ColumnLinearKernel =
     ///    word emits 64 elements with two `CopyTo`s and no per-element branch
     ///    at all.
     ///
-    /// So the honest prediction, stated before the measurement rather than
-    /// after: this wins at **low** selectivity (empty-word skipping) and at
-    /// **high** selectivity (full-word bulk copy), and is weakest in the
-    /// **middle**, where the compaction loop is about as branchy as the
-    /// scalar twin it replaces. `ColumnLinearOpsBench` reports 1%, 50% and
-    /// 99% for exactly this reason, and the middle number is not hidden.
+    /// ### The prediction was written first, and the measurement REFUTED it
+    ///
+    /// Predicted before measuring: wins at **low** selectivity (empty-word
+    /// skipping) and at **high** selectivity (full-word bulk copy), weakest
+    /// in the **middle**. That is recorded because it was wrong, and the way
+    /// it was wrong is the actual result.
+    ///
+    /// Measured (Apple M2 Ultra, arm64/NEON, `Vector<int64>.Count = 2`,
+    /// best-of-9, scalar ÷ vector):
+    ///
+    /// | n | key order | selectivity | ratio |
+    /// |---|---|---|---|
+    /// | 1 048 576 | shuffled | **50%** | **3.45x** |
+    /// | 1 048 576 | shuffled | 1% | 0.87x |
+    /// | 1 048 576 | shuffled | 99% | 0.69x |
+    /// | 1 048 576 | sorted | 50% | 0.95x |
+    /// | 1 048 576 | sorted | 1% | 0.82x |
+    /// | 1 048 576 | sorted | 99% | 1.12x |
+    /// | 65 536 | shuffled | 50% | 3.12x |
+    /// | 65 536 | sorted | 50% | 0.78x |
+    /// | 4 096 | shuffled | 50% | 1.16x |
+    ///
+    /// **The axis is branch PREDICTABILITY, not selectivity — and the two are
+    /// not the same thing.** A 1%-selective predicate is *almost always
+    /// false* and a 99%-selective one is *almost always true*; both are
+    /// therefore trivially predicted, and the scalar twin costs almost
+    /// nothing. Predictability is **maximal at both extremes and minimal in
+    /// the middle**, which is the exact inverse of what the empty-word /
+    /// full-word reasoning assumed. Sortedness kills the win for the same
+    /// reason from the other direction: a sorted column has two branch
+    /// transitions in the whole scan whatever the selectivity.
+    ///
+    /// So the claim is narrow, and stating it narrowly is the point:
+    ///
+    /// > The vectorised filter wins **only where the scalar branch is
+    /// > unpredictable** — measured **3.45x** at 50% selectivity on shuffled
+    /// > keys at n = 1 048 576 — and **loses 1.05x–1.45x everywhere else**.
+    ///
+    /// The empty-word and full-word special cases are still worth their two
+    /// tests: they are what keeps the loss at ~1.3x in the regimes where this
+    /// path is the wrong choice, rather than something worse. They are not
+    /// what wins anything.
+    ///
+    /// `FilterKeyInRange` dispatches to this path anyway. That is a
+    /// **worst-case-bounding** decision, not a claim that it is always
+    /// faster: it trades ≤1.45x on predictable columns for 3.45x on
+    /// unpredictable ones. A caller that *knows* its column is sorted should
+    /// call `FilterKeyInRangeScalar` — or, better, binary-search the two
+    /// boundaries and not scan at all.
     static member FilterKeyInRangeVectorized
         (keys: ReadOnlySpan<int64>,
          weights: ReadOnlySpan<int64>,
@@ -396,21 +439,33 @@ type ColumnLinearKernel =
             dest.[i] <- x * m
         if bad then raise (OverflowException "ColumnZSet map (*) overflowed int64")
 
-    /// `SELECT col * m`, "vectorised" — and this one is here to be
-    /// **measured, not sold**.
+    /// `SELECT col * m`, vectorised — **and the prediction here was wrong
+    /// too, in the opposite direction.**
     ///
-    /// The overflow guard genuinely vectorises (two compares against
-    /// precomputed bounds). The multiplication does not, on either ISA we
-    /// have: AArch64 NEON has **no** 64-bit integer vector multiply, and on
-    /// x86 `vpmullq` arrived only in **AVX-512DQ**, so an AVX2 host is in the
-    /// same position. On both, RyuJIT expands `Vector<int64> * Vector<int64>`
-    /// into scalar multiplies plus the vector pack/unpack around them —
-    /// which is strictly more work than just doing the scalar multiply.
+    /// The reasoning was: the overflow guard vectorises (two compares against
+    /// precomputed bounds) but the multiplication does not, because AArch64
+    /// NEON has **no** 64-bit integer vector multiply and on x86 `vpmullq`
+    /// arrived only in **AVX-512DQ**, so an AVX2 host is in the same
+    /// position. On both, RyuJIT expands `Vector<int64> * Vector<int64>` into
+    /// scalar multiplies plus the vector pack/unpack around them. Predicted
+    /// **≤ 1.0x**.
     ///
-    /// The prediction is therefore **≤ 1.0x on NEON and on AVX2**, and the
-    /// benchmark exists to check whether that prediction is right rather than
-    /// to demonstrate a win. A kernel kept because the measurement is the
-    /// deliverable, exactly as `SumWeightsVectorized` is.
+    /// Measured on NEON: **1.28x** at n = 1 048 576, **1.27x** at 65 536,
+    /// **1.12x** at 4 096 — a consistent win.
+    ///
+    /// The prediction failed because it priced the wrong part of the loop.
+    /// The multiply is one of *three* per-element operations here; the other
+    /// two are the range compares of the overflow guard, and those vectorise
+    /// fully. Scalarising one third of a loop still leaves two thirds
+    /// vectorised. Compare `MapAdd` at **1.60x**, where all three vectorise:
+    /// the gap between 1.28x and 1.60x is what the scalarised multiply
+    /// actually costs, and it is a reduction in the win rather than its
+    /// elimination.
+    ///
+    /// Recorded rather than quietly corrected because the failed prediction
+    /// is the more useful artefact: *"this instruction does not exist on this
+    /// ISA"* is a claim about one operation, not about a loop, and a loop is
+    /// what gets executed.
     static member MapScaleVectorized
         (src: ReadOnlySpan<int64>, m: int64, dest: Span<int64>) : unit =
         if dest.Length < src.Length then
@@ -438,24 +493,31 @@ type ColumnLinearKernel =
             i <- i + 1
         if bad then raise (OverflowException "ColumnZSet map (*) overflowed int64")
 
-    /// `SELECT col * m`. **Dispatches to SCALAR on purpose.**
-    ///
-    /// Not an oversight and not a placeholder: there is no 64-bit vector
-    /// integer multiply on NEON or AVX2, so the vector path is a measured
-    /// loss on the hardware this repository runs on. Dispatching to it to
-    /// make the file look uniformly vectorised would be the flattering
-    /// reading, not the measurement.
+    /// `SELECT col * m`. Vectorised when hardware-backed — on the
+    /// measurement, not on the prediction (see `MapScaleVectorized`).
     static member MapScale(src: ReadOnlySpan<int64>, m: int64, dest: Span<int64>) : unit =
-        ColumnLinearKernel.MapScaleScalar(src, m, dest)
+        if Vector.IsHardwareAccelerated && src.Length >= Vector<int64>.Count then
+            ColumnLinearKernel.MapScaleVectorized(src, m, dest)
+        else
+            ColumnLinearKernel.MapScaleScalar(src, m, dest)
 
-    /// `SELECT col` — the identity projection.
+    /// `SELECT col` — the identity projection. **`CopyTo`, deliberately not
+    /// hand-vectorised, and this is a measured result rather than a gap.**
     ///
-    /// **Deliberately not hand-vectorised, and this is a result, not a gap.**
     /// `Span<T>.CopyTo` bottoms out in `Buffer.Memmove`, which is already the
-    /// platform's best vectorised copy; an identity projection is pure
-    /// memory traffic, so nothing above the memory system can improve it.
-    /// A hand-rolled `Vector<int64>` copy loop here would be slower and would
-    /// look like work.
+    /// platform's best vectorised copy. Measured against a scalar
+    /// element-by-element loop (M2 Ultra, NEON, best-of-9):
+    ///
+    /// | n | hand-rolled `Vector<int64>` loop | `Span.CopyTo` |
+    /// |---|---|---|
+    /// | 4 096 | **0.84x** — slower than scalar | **41.7x** |
+    /// | 65 536 | **0.91x** — slower than scalar | **4.6x** |
+    /// | 1 048 576 | **1.00x** — no better | **2.8x** |
+    ///
+    /// Hand-vectorising an identity projection is not merely a no-op, it is a
+    /// **regression** at every size measured, while looking like optimisation
+    /// work. The control matters: comparing `CopyTo` against itself would
+    /// have "shown" 1.00x and proved nothing, which is the vacuity class.
     static member CopyColumn(src: ReadOnlySpan<int64>, dest: Span<int64>) : unit =
         if dest.Length < src.Length then
             invalidArg "dest" $"copy destination too small: need {src.Length}, got {dest.Length}"

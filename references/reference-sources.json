@@ -4,7 +4,10 @@
     "url": "https://github.com/sqlite/sqlite.git",
     "branch": "master",
     "path": "references/prior-art/sqlite",
-    "categories": ["embedded-sql", "relational-engine"],
+    "categories": [
+      "embedded-sql",
+      "relational-engine"
+    ],
     "notes": "Bootstrap reader/correctness reference for embeddability, corruption handling, and test discipline; not the intended long-term write-path identity."
   },
   {
@@ -12,7 +15,10 @@
     "url": "https://github.com/duckdb/duckdb.git",
     "branch": "main",
     "path": "references/prior-art/duckdb",
-    "categories": ["relational-engine", "analytics"],
+    "categories": [
+      "relational-engine",
+      "analytics"
+    ],
     "notes": "Modern vectorized OLAP reference with strong SQL ergonomics."
   },
   {
@@ -20,7 +26,10 @@
     "url": "https://github.com/rqlite/rqlite.git",
     "branch": "master",
     "path": "references/prior-art/rqlite",
-    "categories": ["distributed-sql", "consensus"],
+    "categories": [
+      "distributed-sql",
+      "consensus"
+    ],
     "notes": "Log-centric replication and CDC design reference."
   },
   {
@@ -28,7 +37,10 @@
     "url": "https://github.com/basho/riak.git",
     "branch": "develop",
     "path": "references/prior-art/riak",
-    "categories": ["distributed-store", "replication"],
+    "categories": [
+      "distributed-store",
+      "replication"
+    ],
     "notes": "Distributed datastore reference for CRDTs, causal context, anti-entropy, and future multi-node primitives."
   },
   {
@@ -36,7 +48,10 @@
     "url": "https://github.com/EventStore/EventStore.git",
     "branch": "master",
     "path": "references/prior-art/eventstore",
-    "categories": ["event-store", "streaming"],
+    "categories": [
+      "event-store",
+      "streaming"
+    ],
     "notes": "Primary current-round reference for stream-oriented append contracts, optimistic revisions, checkpoints, and projection-owned derived state."
   },
   {
@@ -44,7 +59,10 @@
     "url": "https://github.com/clockworklabs/SpacetimeDB.git",
     "branch": "master",
     "path": "references/prior-art/spacetimedb",
-    "categories": ["streaming", "relational-engine"],
+    "categories": [
+      "streaming",
+      "relational-engine"
+    ],
     "notes": "Realtime relational-runtime reference for reducers, subscriptions, and server-owned state synchronization over relational tables without turning Zeta.Core itself into a multiplayer/runtime product."
   },
   {
@@ -52,7 +70,10 @@
     "url": "https://github.com/chaisql/chai.git",
     "branch": "main",
     "path": "references/prior-art/chaisql",
-    "categories": ["embedded-sql", "relational-engine"],
+    "categories": [
+      "embedded-sql",
+      "relational-engine"
+    ],
     "notes": "Modern embedded SQL reference with a pragmatic, still-growing feature set."
   },
   {
@@ -60,7 +81,10 @@
     "url": "https://github.com/redis/redis.git",
     "branch": "unstable",
     "path": "references/prior-art/redis",
-    "categories": ["distributed-store", "imdg"],
+    "categories": [
+      "distributed-store",
+      "imdg"
+    ],
     "notes": "Redis-side reference for append-only persistence, modules, and modern data-engine evolution."
   },
   {
@@ -68,7 +92,9 @@
     "url": "https://github.com/postgres/postgres.git",
     "branch": "master",
     "path": "references/prior-art/postgresql",
-    "categories": ["relational-engine"],
+    "categories": [
+      "relational-engine"
+    ],
     "notes": "MVCC, planner, and WAL design reference."
   },
   {
@@ -76,7 +102,9 @@
     "url": "https://github.com/mysql/mysql-server.git",
     "branch": "trunk",
     "path": "references/prior-art/mysql",
-    "categories": ["relational-engine"],
+    "categories": [
+      "relational-engine"
+    ],
     "notes": "Broader SQL engine and storage reference."
   },
   {
@@ -84,7 +112,9 @@
     "url": "https://github.com/MariaDB/server.git",
     "branch": "main",
     "path": "references/prior-art/mariadb",
-    "categories": ["relational-engine"],
+    "categories": [
+      "relational-engine"
+    ],
     "notes": "General-purpose pluggable SQL engine reference, especially for multi-engine boundaries and HTAP-style composition."
   },
   {
@@ -92,7 +122,10 @@
     "url": "https://github.com/mariadb-corporation/mariadb-columnstore-engine.git",
     "branch": "stable-23.10",
     "path": "references/prior-art/mariadb-columnstore",
-    "categories": ["analytics", "columnar-format"],
+    "categories": [
+      "analytics",
+      "columnar-format"
+    ],
     "notes": "Columnar storage-engine reference for extent elimination, MPP query shaping, and HTAP-oriented row/column seams."
   },
   {
@@ -100,7 +133,10 @@
     "url": "https://github.com/apache/parquet-format.git",
     "branch": "master",
     "path": "references/prior-art/parquet-format",
-    "categories": ["columnar-format", "lakehouse"],
+    "categories": [
+      "columnar-format",
+      "lakehouse"
+    ],
     "notes": "Columnar file-format reference for row groups, page indexes, encodings, and external analytical interchange."
   },
   {
@@ -108,7 +144,10 @@
     "url": "https://github.com/apache/orc.git",
     "branch": "main",
     "path": "references/prior-art/orc",
-    "categories": ["columnar-format", "lakehouse"],
+    "categories": [
+      "columnar-format",
+      "lakehouse"
+    ],
     "notes": "Columnar file-format reference for stripe and row-group indexes, bloom filters, and base-plus-delta compaction ideas."
   },
   {
@@ -116,7 +155,10 @@
     "url": "https://github.com/DBOS-project/voltdb.git",
     "branch": "master",
     "path": "references/prior-art/voltdb",
-    "categories": ["distributed-sql", "relational-engine"],
+    "categories": [
+      "distributed-sql",
+      "relational-engine"
+    ],
     "notes": "Modern in-memory/distributed SQL reference. Uses the actively available open-source mirror."
   },
   {
@@ -124,7 +166,10 @@
     "url": "https://github.com/apple/foundationdb.git",
     "branch": "main",
     "path": "references/prior-art/foundationdb",
-    "categories": ["distributed-store", "consensus"],
+    "categories": [
+      "distributed-store",
+      "consensus"
+    ],
     "notes": "Transactional-substrate and layers-later reference for keeping future distribution over a smaller durable core."
   },
   {
@@ -132,7 +177,10 @@
     "url": "https://github.com/pingcap/tidb.git",
     "branch": "master",
     "path": "references/prior-art/tidb",
-    "categories": ["distributed-sql", "relational-engine"],
+    "categories": [
+      "distributed-sql",
+      "relational-engine"
+    ],
     "notes": "Distributed SQL reference for stateless SQL fronts, transactional KV ranges, and HTAP row/column seams."
   },
   {
@@ -140,7 +188,10 @@
     "url": "https://github.com/cockroachdb/cockroach.git",
     "branch": "master",
     "path": "references/prior-art/cockroachdb",
-    "categories": ["distributed-sql", "relational-engine"],
+    "categories": [
+      "distributed-sql",
+      "relational-engine"
+    ],
     "notes": "Distributed SQL reference for layered SQL-to-KV architecture, serializable transactions, and quorum replication."
   },
   {
@@ -148,7 +199,10 @@
     "url": "https://github.com/yugabyte/yugabyte-db.git",
     "branch": "master",
     "path": "references/prior-art/yugabytedb",
-    "categories": ["distributed-sql", "relational-engine"],
+    "categories": [
+      "distributed-sql",
+      "relational-engine"
+    ],
     "notes": "Distributed SQL reference for tablet-based sharding, PostgreSQL-compatible SQL, multi-region topology, and CDC seams."
   },
   {
@@ -156,7 +210,10 @@
     "url": "https://github.com/mongodb/mongo.git",
     "branch": "master",
     "path": "references/prior-art/mongodb",
-    "categories": ["distributed-store", "document-store"],
+    "categories": [
+      "distributed-store",
+      "document-store"
+    ],
     "notes": "Document-database reference for shard-key routing, replica-set-backed sharding, and flexible schema trade-offs."
   },
   {
@@ -164,7 +221,10 @@
     "url": "https://github.com/apache/cassandra.git",
     "branch": "trunk",
     "path": "references/prior-art/cassandra",
-    "categories": ["distributed-store", "wide-column"],
+    "categories": [
+      "distributed-store",
+      "wide-column"
+    ],
     "notes": "Wide-column distributed datastore reference for LSM-based storage, tunable consistency, and partition-first data modeling."
   },
   {
@@ -172,7 +232,9 @@
     "url": "https://github.com/neo4j/neo4j.git",
     "branch": "release/5.26.0",
     "path": "references/prior-art/neo4j",
-    "categories": ["graph-db"],
+    "categories": [
+      "graph-db"
+    ],
     "notes": "Graph-database reference for property-graph modeling, relationship-first querying, and graph-native indexing/traversal patterns."
   },
   {
@@ -180,7 +242,10 @@
     "url": "https://github.com/arangodb/arangodb.git",
     "branch": "devel",
     "path": "references/prior-art/arangodb",
-    "categories": ["graph-db", "document-store"],
+    "categories": [
+      "graph-db",
+      "document-store"
+    ],
     "notes": "Multi-model database reference for combining document, graph, and key-value patterns behind one query surface."
   },
   {
@@ -188,7 +253,10 @@
     "url": "https://github.com/memgraph/memgraph.git",
     "branch": "master",
     "path": "references/prior-art/memgraph",
-    "categories": ["graph-db", "analytics"],
+    "categories": [
+      "graph-db",
+      "analytics"
+    ],
     "notes": "In-memory graph database reference for real-time graph analytics, stream integration, and Cypher-oriented graph workloads."
   },
   {
@@ -196,7 +264,10 @@
     "url": "https://github.com/JanusGraph/janusgraph.git",
     "branch": "master",
     "path": "references/prior-art/janusgraph",
-    "categories": ["graph-db", "distributed-store"],
+    "categories": [
+      "graph-db",
+      "distributed-store"
+    ],
     "notes": "Distributed graph reference for massive-scale graph storage over pluggable backends and Gremlin-centric traversal patterns."
   },
   {
@@ -204,7 +275,10 @@
     "url": "https://github.com/hypermodeinc/dgraph.git",
     "branch": "main",
     "path": "references/prior-art/dgraph",
-    "categories": ["graph-db", "distributed-store"],
+    "categories": [
+      "graph-db",
+      "distributed-store"
+    ],
     "notes": "Distributed graph/database reference for GraphQL-native APIs, predicate sharding, and transactional graph storage."
   },
   {
@@ -212,7 +286,10 @@
     "url": "https://github.com/vesoft-inc/nebula.git",
     "branch": "master",
     "path": "references/prior-art/nebulagraph",
-    "categories": ["graph-db", "distributed-store"],
+    "categories": [
+      "graph-db",
+      "distributed-store"
+    ],
     "notes": "Distributed graph database reference for graphd, storaged, and metad service separation at very large edge counts."
   },
   {
@@ -220,7 +297,9 @@
     "url": "https://github.com/milvus-io/milvus.git",
     "branch": "master",
     "path": "references/prior-art/milvus",
-    "categories": ["vector-db"],
+    "categories": [
+      "vector-db"
+    ],
     "notes": "Cloud-native vector-database reference for disaggregated vector retrieval, WAL-backed ingestion, and ANN serving at scale."
   },
   {
@@ -228,7 +307,10 @@
     "url": "https://github.com/weaviate/weaviate.git",
     "branch": "main",
     "path": "references/prior-art/weaviate",
-    "categories": ["vector-db", "document-store"],
+    "categories": [
+      "vector-db",
+      "document-store"
+    ],
     "notes": "Vector/object database reference for hybrid vector plus inverted indexing, filtered ANN, and module-oriented ML integration."
   },
   {
@@ -236,7 +318,9 @@
     "url": "https://github.com/qdrant/qdrant.git",
     "branch": "master",
     "path": "references/prior-art/qdrant",
-    "categories": ["vector-db"],
+    "categories": [
+      "vector-db"
+    ],
     "notes": "Vector-database reference for strict filtered ANN, payload-aware HNSW design, and shard/replication safety controls."
   },
   {
@@ -244,7 +328,9 @@
     "url": "https://github.com/chroma-core/chroma.git",
     "branch": "main",
     "path": "references/prior-art/chroma",
-    "categories": ["vector-db"],
+    "categories": [
+      "vector-db"
+    ],
     "notes": "Developer-friendly AI database reference for embedded/server modes, simple collection APIs, and rapid local prototyping."
   },
   {
@@ -252,7 +338,10 @@
     "url": "https://github.com/pgvector/pgvector.git",
     "branch": "master",
     "path": "references/prior-art/pgvector",
-    "categories": ["vector-db", "relational-engine"],
+    "categories": [
+      "vector-db",
+      "relational-engine"
+    ],
     "notes": "SQL-native vector indexing reference for integrating ANN and filtered similarity search into a relational engine."
   },
   {
@@ -260,7 +349,10 @@
     "url": "https://github.com/facebookresearch/faiss.git",
     "branch": "main",
     "path": "references/prior-art/faiss",
-    "categories": ["vector-db", "serialization"],
+    "categories": [
+      "vector-db",
+      "serialization"
+    ],
     "notes": "Algorithm/library reference for dense-vector ANN, compression, GPU search, and evaluation/tuning primitives."
   },
   {
@@ -268,7 +360,10 @@
     "url": "https://github.com/apache/kafka.git",
     "branch": "trunk",
     "path": "references/prior-art/kafka",
-    "categories": ["streaming", "distributed-log"],
+    "categories": [
+      "streaming",
+      "distributed-log"
+    ],
     "notes": "Replicated-log reference for partitioned append-only streams, durable offsets, compaction, consumer checkpoints, and future distribution/log-shipping boundaries."
   },
   {
@@ -276,7 +371,10 @@
     "url": "https://github.com/redpanda-data/redpanda.git",
     "branch": "dev",
     "path": "references/prior-art/redpanda",
-    "categories": ["streaming", "distributed-log"],
+    "categories": [
+      "streaming",
+      "distributed-log"
+    ],
     "notes": "Modern Kafka-compatible log-engine reference for Raft-backed streaming, tiered storage, and thread-per-core efficiency."
   },
   {
@@ -284,7 +382,10 @@
     "url": "https://github.com/apache/flink.git",
     "branch": "master",
     "path": "references/prior-art/flink",
-    "categories": ["streaming", "analytics"],
+    "categories": [
+      "streaming",
+      "analytics"
+    ],
     "notes": "Streaming-dataflow reference for stateful/event-time processing, checkpoints, and SQL/Table APIs over streams."
   },
   {
@@ -292,7 +393,10 @@
     "url": "https://github.com/MaterializeInc/materialize.git",
     "branch": "main",
     "path": "references/prior-art/materialize",
-    "categories": ["streaming", "analytics"],
+    "categories": [
+      "streaming",
+      "analytics"
+    ],
     "notes": "Incremental-view-maintenance reference for streaming SQL, always-fresh materialized views, and dataflow-oriented execution."
   },
   {
@@ -300,7 +404,10 @@
     "url": "https://github.com/apache/druid.git",
     "branch": "master",
     "path": "references/prior-art/druid",
-    "categories": ["analytics", "distributed-store"],
+    "categories": [
+      "analytics",
+      "distributed-store"
+    ],
     "notes": "Real-time analytics reference for segment-oriented OLAP, deep storage, and ingestion/query service separation."
   },
   {
@@ -308,7 +415,10 @@
     "url": "https://github.com/apache/hadoop.git",
     "branch": "trunk",
     "path": "references/prior-art/hadoop",
-    "categories": ["analytics", "distributed-store"],
+    "categories": [
+      "analytics",
+      "distributed-store"
+    ],
     "notes": "Distributed storage and batch-platform reference for HDFS, large-scale data movement, and storage/compute substrate design."
   },
   {
@@ -316,7 +426,10 @@
     "url": "https://github.com/apache/spark.git",
     "branch": "master",
     "path": "references/prior-art/spark",
-    "categories": ["analytics", "streaming"],
+    "categories": [
+      "analytics",
+      "streaming"
+    ],
     "notes": "Distributed compute and Structured Streaming reference for batch/stream unification and SQL-facing dataflow design."
   },
   {
@@ -324,7 +437,10 @@
     "url": "https://github.com/apache/iceberg.git",
     "branch": "main",
     "path": "references/prior-art/iceberg",
-    "categories": ["lakehouse", "analytics"],
+    "categories": [
+      "lakehouse",
+      "analytics"
+    ],
     "notes": "Open table-format reference for snapshots, hidden partitioning, schema evolution, and multi-engine analytical interoperability."
   },
   {
@@ -332,7 +448,10 @@
     "url": "https://github.com/delta-io/delta.git",
     "branch": "master",
     "path": "references/prior-art/deltalake",
-    "categories": ["lakehouse", "analytics"],
+    "categories": [
+      "lakehouse",
+      "analytics"
+    ],
     "notes": "Lakehouse/log-table reference for ACID metadata logs, time travel, streaming/batch unification, and change-friendly analytical tables."
   },
   {
@@ -340,7 +459,10 @@
     "url": "https://github.com/ClickHouse/ClickHouse.git",
     "branch": "master",
     "path": "references/prior-art/clickhouse",
-    "categories": ["analytics", "relational-engine"],
+    "categories": [
+      "analytics",
+      "relational-engine"
+    ],
     "notes": "Columnar OLAP reference for sparse primary indexes, vectorized execution, compression, and stateless-compute analytical scaling."
   },
   {
@@ -348,7 +470,9 @@
     "url": "https://github.com/google/leveldb.git",
     "branch": "main",
     "path": "references/prior-art/leveldb",
-    "categories": ["embedded-kv"],
+    "categories": [
+      "embedded-kv"
+    ],
     "notes": "Classic embedded LSM-tree reference for sorted key-value storage, memtables, SSTables, and background compaction."
   },
   {
@@ -356,7 +480,9 @@
     "url": "https://github.com/facebook/rocksdb.git",
     "branch": "main",
     "path": "references/prior-art/rocksdb",
-    "categories": ["embedded-kv"],
+    "categories": [
+      "embedded-kv"
+    ],
     "notes": "Embedded LSM-tree reference optimized for flash and fast storage, with rich compaction and caching design trade-offs."
   },
   {
@@ -364,7 +490,9 @@
     "url": "https://github.com/LMDB/lmdb.git",
     "branch": "mdb.master",
     "path": "references/prior-art/lmdb",
-    "categories": ["embedded-kv"],
+    "categories": [
+      "embedded-kv"
+    ],
     "notes": "Memory-mapped embedded B+tree reference for zero-copy reads, copy-on-write pages, and high-concurrency read paths."
   },
   {
@@ -372,7 +500,10 @@
     "url": "https://github.com/HDFGroup/hdf5.git",
     "branch": "develop",
     "path": "references/prior-art/hdf5",
-    "categories": ["scientific-format", "analytics"],
+    "categories": [
+      "scientific-format",
+      "analytics"
+    ],
     "notes": "Scientific data-format reference for chunked multidimensional arrays, rich metadata, compression, and long-lived file interoperability."
   },
   {
@@ -380,7 +511,10 @@
     "url": "https://github.com/zarr-developers/zarr-python.git",
     "branch": "main",
     "path": "references/prior-art/zarr",
-    "categories": ["scientific-format", "analytics"],
+    "categories": [
+      "scientific-format",
+      "analytics"
+    ],
     "notes": "Chunked array and cloud/object-store-friendly format reference for multidimensional data, metadata-first chunking, and scalable scientific interoperability."
   },
   {
@@ -388,7 +522,10 @@
     "url": "https://github.com/Unidata/netcdf-c.git",
     "branch": "main",
     "path": "references/prior-art/netcdf",
-    "categories": ["scientific-format", "analytics"],
+    "categories": [
+      "scientific-format",
+      "analytics"
+    ],
     "notes": "Scientific data-model reference for dimensions, variables, attributes, groups, and netCDF-4/HDF5-backed interoperability."
   },
   {
@@ -396,7 +533,10 @@
     "url": "https://github.com/apache/arrow.git",
     "branch": "main",
     "path": "references/prior-art/arrow",
-    "categories": ["scientific-format", "columnar-format"],
+    "categories": [
+      "scientific-format",
+      "columnar-format"
+    ],
     "notes": "Columnar in-memory/interchange reference for zero-copy transport, language-neutral schemas, and vectorized analytical data movement."
   },
   {
@@ -404,7 +544,10 @@
     "url": "https://github.com/apache/ignite.git",
     "branch": "master",
     "path": "references/prior-art/ignite",
-    "categories": ["imdg", "distributed-store"],
+    "categories": [
+      "imdg",
+      "distributed-store"
+    ],
     "notes": "In-memory data-grid and distributed SQL reference for colocated compute, distributed caching, and data-fabric patterns."
   },
   {
@@ -412,7 +555,10 @@
     "url": "https://github.com/Alachisoft/NCache.git",
     "branch": "master",
     "path": "references/prior-art/ncache",
-    "categories": ["imdg", "distributed-store"],
+    "categories": [
+      "imdg",
+      "distributed-store"
+    ],
     "notes": ".NET-centric distributed cache/data-grid reference for clustered application data, ASP.NET/session sharing, and Microsoft-ecosystem ergonomics."
   },
   {
@@ -420,7 +566,10 @@
     "url": "https://github.com/infinispan/infinispan.git",
     "branch": "main",
     "path": "references/prior-art/infinispan",
-    "categories": ["imdg", "distributed-store"],
+    "categories": [
+      "imdg",
+      "distributed-store"
+    ],
     "notes": "In-memory data-grid reference for embedded/server modes, Hot Rod remote access, distributed caches, and transactional data-grid patterns."
   },
   {
@@ -428,7 +577,10 @@
     "url": "https://github.com/hazelcast/hazelcast.git",
     "branch": "master",
     "path": "references/prior-art/hazelcast",
-    "categories": ["imdg", "distributed-store"],
+    "categories": [
+      "imdg",
+      "distributed-store"
+    ],
     "notes": "Open-source in-memory data-grid reference for clustered data structures, community-vs-enterprise packaging, and distributed compute/cache patterns."
   },
   {
@@ -436,7 +588,10 @@
     "url": "https://github.com/apache/geode.git",
     "branch": "develop",
     "path": "references/prior-art/geode",
-    "categories": ["imdg", "distributed-store"],
+    "categories": [
+      "imdg",
+      "distributed-store"
+    ],
     "notes": "Distributed in-memory data management reference for partitioned regions, continuous queries, and client/server cache-grid behavior."
   },
   {
@@ -444,7 +599,10 @@
     "url": "https://github.com/protocolbuffers/protobuf.git",
     "branch": "main",
     "path": "references/prior-art/protobuf",
-    "categories": ["wire-protocol", "schema-contract"],
+    "categories": [
+      "wire-protocol",
+      "schema-contract"
+    ],
     "notes": "Cross-language schema-and-wire-format reference for compact binary messages, code generation, and schema evolution."
   },
   {
@@ -452,7 +610,10 @@
     "url": "https://github.com/grpc/grpc.git",
     "branch": "master",
     "path": "references/prior-art/grpc",
-    "categories": ["wire-protocol", "rpc"],
+    "categories": [
+      "wire-protocol",
+      "rpc"
+    ],
     "notes": "RPC stack reference for HTTP/2-based contracts, streaming APIs, and generated strongly typed service surfaces."
   },
   {
@@ -460,7 +621,10 @@
     "url": "https://github.com/apache/avro.git",
     "branch": "main",
     "path": "references/prior-art/avro",
-    "categories": ["wire-protocol", "schema-contract"],
+    "categories": [
+      "wire-protocol",
+      "schema-contract"
+    ],
     "notes": "Schema-evolution and data-serialization reference, especially for event streams, data lakes, and language-neutral contracts."
   },
   {
@@ -468,7 +632,10 @@
     "url": "https://github.com/capnproto/capnproto.git",
     "branch": "v2",
     "path": "references/prior-art/capnproto",
-    "categories": ["wire-protocol", "rpc"],
+    "categories": [
+      "wire-protocol",
+      "rpc"
+    ],
     "notes": "Zero-copy serialization and capability-RPC reference from the Protobuf lineage, useful for low-latency transport ideas."
   },
   {
@@ -476,7 +643,10 @@
     "url": "https://github.com/google/flatbuffers.git",
     "branch": "master",
     "path": "references/prior-art/flatbuffers",
-    "categories": ["wire-protocol", "schema-contract"],
+    "categories": [
+      "wire-protocol",
+      "schema-contract"
+    ],
     "notes": "Zero-copy schema-and-buffer reference for low-allocation binary interchange and direct memory access patterns."
   },
   {
@@ -484,7 +654,10 @@
     "url": "https://github.com/apache/thrift.git",
     "branch": "master",
     "path": "references/prior-art/thrift",
-    "categories": ["wire-protocol", "rpc"],
+    "categories": [
+      "wire-protocol",
+      "rpc"
+    ],
     "notes": "IDL-plus-RPC reference for cross-language service contracts and transport/protocol separation."
   },
   {
@@ -492,7 +665,10 @@
     "url": "https://github.com/microsoft/bond.git",
     "branch": "master",
     "path": "references/prior-art/bond",
-    "categories": ["wire-protocol", "schema-contract"],
+    "categories": [
+      "wire-protocol",
+      "schema-contract"
+    ],
     "notes": "Microsoft schema-and-serialization reference for strongly typed evolution-friendly contracts and RPC integration."
   },
   {
@@ -500,7 +676,10 @@
     "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp.git",
     "branch": "master",
     "path": "references/prior-art/messagepack",
-    "categories": ["wire-protocol", "serialization"],
+    "categories": [
+      "wire-protocol",
+      "serialization"
+    ],
     "notes": ".NET-friendly compact binary serialization reference for low-allocation transport and caching payloads."
   },
   {
@@ -508,7 +687,9 @@
     "url": "https://github.com/json-schema-org/json-schema-spec.git",
     "branch": "main",
     "path": "references/prior-art/json-schema",
-    "categories": ["schema-contract"],
+    "categories": [
+      "schema-contract"
+    ],
     "notes": "Schema-contract reference for JSON-facing APIs and metadata validation, even when the transport is not itself a binary wire protocol."
   },
   {
@@ -516,7 +697,10 @@
     "url": "https://github.com/etcd-io/etcd.git",
     "branch": "main",
     "path": "references/prior-art/etcd",
-    "categories": ["consensus", "distributed-coordination"],
+    "categories": [
+      "consensus",
+      "distributed-coordination"
+    ],
     "notes": "Distributed key-value and Raft reference for membership, MVCC metadata stores, and production consensus-backed coordination."
   },
   {
@@ -524,7 +708,10 @@
     "url": "https://github.com/hashicorp/raft.git",
     "branch": "main",
     "path": "references/prior-art/hashicorp-raft",
-    "categories": ["consensus", "distributed-coordination"],
+    "categories": [
+      "consensus",
+      "distributed-coordination"
+    ],
     "notes": "Library-style Raft reference for embeddable consensus, snapshotting, log compaction, and storage abstraction seams."
   },
   {
@@ -532,7 +719,9 @@
     "url": "https://github.com/datafuselabs/openraft.git",
     "branch": "main",
     "path": "references/prior-art/openraft",
-    "categories": ["consensus"],
+    "categories": [
+      "consensus"
+    ],
     "notes": "Rust Raft library reference with modern API design, storage separation, and strongly typed consensus state."
   },
   {
@@ -540,7 +729,9 @@
     "url": "https://github.com/tikv/raft-rs.git",
     "branch": "master",
     "path": "references/prior-art/raft-rs",
-    "categories": ["consensus"],
+    "categories": [
+      "consensus"
+    ],
     "notes": "Rust Raft core extracted from TiKV, useful for production-hardened consensus mechanics."
   },
   {
@@ -548,7 +739,10 @@
     "url": "https://github.com/dotnet/dotNext.git",
     "branch": "master",
     "path": "references/prior-art/dotnext",
-    "categories": ["consensus", "dotnet"],
+    "categories": [
+      "consensus",
+      "dotnet"
+    ],
     "notes": "C#/.NET reference that includes cluster and consensus primitives, useful for idiomatic managed distributed-systems design."
   },
   {
@@ -556,7 +750,9 @@
     "url": "https://github.com/eBay/NuRaft.git",
     "branch": "master",
     "path": "references/prior-art/nuraft",
-    "categories": ["consensus"],
+    "categories": [
+      "consensus"
+    ],
     "notes": "C++ Raft library reference for embeddable consensus, snapshotting, and log replication mechanics."
   },
   {
@@ -564,7 +760,9 @@
     "url": "https://github.com/haraldng/omnipaxos.git",
     "branch": "master",
     "path": "references/prior-art/omnipaxos",
-    "categories": ["consensus"],
+    "categories": [
+      "consensus"
+    ],
     "notes": "Rust Paxos-family reference for multi-leader or flexible replication research beyond Raft-only thinking."
   },
   {
@@ -572,7 +770,10 @@
     "url": "https://github.com/canonical/dqlite.git",
     "branch": "main",
     "path": "references/prior-art/dqlite",
-    "categories": ["consensus", "distributed-sql"],
+    "categories": [
+      "consensus",
+      "distributed-sql"
+    ],
     "notes": "C-level distributed SQLite reference that combines Raft-backed replication with a relational engine, useful for SQL-plus-consensus seams."
   },
   {
@@ -580,7 +781,10 @@
     "url": "https://github.com/apache/zookeeper.git",
     "branch": "master",
     "path": "references/prior-art/zookeeper",
-    "categories": ["distributed-coordination", "consensus"],
+    "categories": [
+      "distributed-coordination",
+      "consensus"
+    ],
     "notes": "Distributed coordination reference for metadata trees, watches, leader election, and configuration/state management."
   },
   {
@@ -588,7 +792,10 @@
     "url": "https://github.com/hashicorp/consul.git",
     "branch": "main",
     "path": "references/prior-art/consul",
-    "categories": ["distributed-coordination", "distributed-store"],
+    "categories": [
+      "distributed-coordination",
+      "distributed-store"
+    ],
     "notes": "Distributed coordination and service-discovery reference for control-plane state, KV metadata, health checks, and multi-datacenter coordination."
   },
   {
@@ -596,7 +803,10 @@
     "url": "https://github.com/apache/bookkeeper.git",
     "branch": "master",
     "path": "references/prior-art/bookkeeper",
-    "categories": ["distributed-log", "streaming"],
+    "categories": [
+      "distributed-log",
+      "streaming"
+    ],
     "notes": "Replicated log-storage reference for durable ledgers, metadata coordination, and log-service architectures adjacent to streaming systems."
   },
   {
@@ -604,7 +814,10 @@
     "url": "https://github.com/dotnet/reactive.git",
     "branch": "main",
     "path": "references/prior-art/rx-dotnet",
-    "categories": ["reactive-runtime", "dotnet"],
+    "categories": [
+      "reactive-runtime",
+      "dotnet"
+    ],
     "notes": "Rx.NET, Ix, and async-sequence reference for observable/event LINQ, async sequence operators, and idiomatic .NET reactive composition."
   },
   {
@@ -612,7 +825,9 @@
     "url": "https://github.com/ReactiveX/RxCpp.git",
     "branch": "main",
     "path": "references/prior-art/rxcpp",
-    "categories": ["reactive-runtime"],
+    "categories": [
+      "reactive-runtime"
+    ],
     "notes": "C++ Reactive Extensions reference for push-based observable composition, schedulers, and low-level reactive operator design outside managed runtimes."
   },
   {
@@ -620,7 +835,11 @@
     "url": "https://github.com/reaqtive/reaqtor.git",
     "branch": "main",
     "path": "references/prior-art/reaqtor",
-    "categories": ["reactive-runtime", "expression-serialization", "dotnet"],
+    "categories": [
+      "reactive-runtime",
+      "expression-serialization",
+      "dotnet"
+    ],
     "notes": "Stateful event-processing and Nuqleon/Bonsai reference for checkpointable reactive runtimes, queryable observables, and portable serialized expression trees."
   },
   {
@@ -628,7 +847,11 @@
     "url": "https://github.com/bonsai-rx/bonsai.git",
     "branch": "main",
     "path": "references/prior-art/bonsai-rx",
-    "categories": ["reactive-runtime", "visual-dataflow", "dotnet"],
+    "categories": [
+      "reactive-runtime",
+      "visual-dataflow",
+      "dotnet"
+    ],
     "notes": "Visual reactive programming reference built on Rx.NET, useful for observable/dataflow composition, interactive workflows, and .NET-friendly streaming tooling."
   },
   {
@@ -636,7 +859,11 @@
     "url": "https://github.com/dotnet/efcore.git",
     "branch": "main",
     "path": "references/prior-art/efcore",
-    "categories": ["dotnet-data-access", "linq-provider", "dotnet"],
+    "categories": [
+      "dotnet-data-access",
+      "linq-provider",
+      "dotnet"
+    ],
     "notes": "Entity Framework Core reference for modern .NET LINQ provider design, change tracking boundaries, query translation, provider seams, and natural .NET-facing data access APIs."
   },
   {
@@ -644,7 +871,11 @@
     "url": "https://github.com/DapperLib/Dapper.git",
     "branch": "main",
     "path": "references/prior-art/dapper",
-    "categories": ["dotnet-data-access", "micro-orm", "dotnet"],
+    "categories": [
+      "dotnet-data-access",
+      "micro-orm",
+      "dotnet"
+    ],
     "notes": "Dapper reference for low-overhead parameter binding, row materialization, and natural hand-authored SQL APIs that still feel idiomatic in .NET."
   },
   {
@@ -652,7 +883,11 @@
     "url": "https://github.com/nats-io/nats-server.git",
     "branch": "main",
     "path": "references/prior-art/nats",
-    "categories": ["streaming", "wire-protocol", "distributed-coordination"],
+    "categories": [
+      "streaming",
+      "wire-protocol",
+      "distributed-coordination"
+    ],
     "notes": "Subject-based pub/sub and request/reply wire-protocol reference for lightweight control-plane transport (circuit registration, shard gossip, liveness) adjacent to our Arrow Flight data-plane plan; Apache-2.0, small kernel, queue-group fan-out. See references/notes/NATS-RESEARCH.md."
   },
   {
@@ -660,7 +895,11 @@
     "url": "https://github.com/nats-io/nats-server.git",
     "branch": "main",
     "path": "references/prior-art/nats-jetstream",
-    "categories": ["streaming", "distributed-log", "event-store"],
+    "categories": [
+      "streaming",
+      "distributed-log",
+      "event-store"
+    ],
     "notes": "Durable streaming subsystem on top of NATS (MIT-licensed within the Apache-2.0 server repo; successor to retired NATS Streaming/STAN) — reference for stream+consumer abstractions, RAFT-backed replication, and AckExplicit/AckAll/AckNone semantics that map onto our DurabilityMode variants; candidate retraction-native ingestion source for ZSet delta feeds. See references/notes/NATS-RESEARCH.md."
   },
   {
@@ -668,7 +907,10 @@
     "url": "https://github.com/hmemcpy/milewski-ctfp-pdf.git",
     "branch": "master",
     "path": "references/prior-art/milewski-ctfp-pdf",
-    "categories": ["category-theory", "reference-text"],
+    "categories": [
+      "category-theory",
+      "reference-text"
+    ],
     "notes": "Community-maintained LaTeX compilation of Bartosz Milewski's 'Category Theory for Programmers' blog posts into a canonical PDF (11.5k stars, actively maintained). Source of the ctfp-milewski.pdf previously checked into docs/category-theory/. Reference text for the category-theory intuitions behind Zeta's operator algebra. License: CC BY-SA 4.0 for prose + permissive for code scaffolding."
   },
   {
@@ -676,7 +918,11 @@
     "url": "https://github.com/cboudereau/category-theory-for-dotnet-programmers.git",
     "branch": "master",
     "path": "references/prior-art/category-theory-for-dotnet-programmers",
-    "categories": ["category-theory", "fsharp", "csharp"],
+    "categories": [
+      "category-theory",
+      "fsharp",
+      "csharp"
+    ],
     "notes": "Worked .NET port of Milewski's Haskell/C++ samples into C# and F# (209 stars, last pushed 2021-09, dormant but not archived). MIT-licensed. Reference for translating CT idioms into the exact .NET shape Zeta lives in. Source of the docs/category-theory/ctfp-dotnet/ snapshot previously checked into docs/."
   },
   {
@@ -684,7 +930,12 @@
     "url": "https://github.com/SakanaAI/AI-Scientist.git",
     "branch": "main",
     "path": "references/prior-art/sakana-ai-scientist",
-    "categories": ["multi-agent-scientific-discovery", "automated-research", "agent-loop", "literature-review"],
+    "categories": [
+      "multi-agent-scientific-discovery",
+      "automated-research",
+      "agent-loop",
+      "literature-review"
+    ],
     "notes": "Original Sakana AI 'AI Scientist: Towards Fully Automated Open-Ended Scientific Discovery' (arXiv:2408.06292; 2024). Multi-agent system that generates ideas, executes experiments via code, writes papers, and reviews them. Substrate-engineering reference for the closed-loop hypothesis-experiment-analysis pattern. Composes with Zeta's 081KSKBP80008QG0R000B3Y19A workflow engine + 081KSKBP80008QG0R003NM9XEC benchmark substrate per 2026-05-28 YouTube preservation (PR #5762)."
   },
   {
@@ -705,7 +956,12 @@
     "url": "https://github.com/jataware/open-coscientist.git",
     "branch": "main",
     "path": "references/prior-art/jataware-open-coscientist",
-    "categories": ["multi-agent-scientific-discovery", "open-source-coscientist", "langgraph", "hypothesis-evolution"],
+    "categories": [
+      "multi-agent-scientific-discovery",
+      "open-source-coscientist",
+      "langgraph",
+      "hypothesis-evolution"
+    ],
     "notes": "Open-source adaptation of Google's AI co-scientist research paper using LangGraph. Implements the supervisor/generation/reflection/proximity/evolution/ranking agent ecosystem with ELO tournament hypothesis ranking. Best-available open-source reference for the co-scientist architectural pattern. Composes with Zeta's multi-AI lane specialization + ELO-tournament-via-TrueSkill substrate-engineering candidate per Aaron 2026-05-28 (PR #5762)."
   },
   {
@@ -713,7 +969,11 @@
     "url": "https://github.com/llnl/open-ai-co-scientist.git",
     "branch": "main",
     "path": "references/prior-art/llnl-open-ai-co-scientist",
-    "categories": ["multi-agent-scientific-discovery", "open-source-coscientist", "research-hypothesis-generation"],
+    "categories": [
+      "multi-agent-scientific-discovery",
+      "open-source-coscientist",
+      "research-hypothesis-generation"
+    ],
     "notes": "Lawrence Livermore National Laboratory open-source implementation of Google's AI co-scientist for generating research hypotheses. Alternative open-source reference for the co-scientist pattern; LLNL-government-lab provenance distinguishes from Jataware substrate at trust-substrate scope per multi-oracle BFT discipline."
   },
   {
@@ -721,7 +981,11 @@
     "url": "https://github.com/The-Swarm-Corporation/AI-CoScientist.git",
     "branch": "main",
     "path": "references/prior-art/the-swarm-corporation-ai-coscientist",
-    "categories": ["multi-agent-scientific-discovery", "swarms-framework", "minimal-coscientist-implementation"],
+    "categories": [
+      "multi-agent-scientific-discovery",
+      "swarms-framework",
+      "minimal-coscientist-implementation"
+    ],
     "notes": "Simple, reliable, and minimal implementation of the AI CoScientist Paper from Google 'Towards an AI co-scientist' with Swarms Framework. Third open-source reference for the co-scientist pattern; minimal-implementation form useful for substrate-engineering composition study (smaller surface = easier to compose with Zeta's existing multi-AI cascade substrate)."
   },
   {
@@ -729,7 +993,13 @@
     "url": "https://github.com/dotnet/infer.git",
     "branch": "main",
     "path": "references/prior-art/microsoft-infer-net",
-    "categories": ["bayesian-inference", "probabilistic-programming", "trueskill", "dotnet", "belief-propagation"],
+    "categories": [
+      "bayesian-inference",
+      "probabilistic-programming",
+      "trueskill",
+      "dotnet",
+      "belief-propagation"
+    ],
     "notes": "Microsoft Research Infer.NET — probabilistic programming framework for Bayesian inference + canonical TrueSkill implementation. Substrate-engineering anchor per Aaron 2026-05-28: 'They are doing this for their idea ranking with Infra.net basically' — the co-scientist ELO tournament pattern composes with TrueSkill via Infer.NET substrate. Composes with Zeta.Bayesian published library + Zeta's BP/EP substrate references (memory/feedback_kernel_vocabulary_propagation_is_belief_propagation_infer_net_memetic_mimetic.md + memory/persona/amara/conversations/2026-05-28-amara-measure-as-bridge-infer-net-belief-update-...md)."
   },
   {
@@ -751,7 +1021,12 @@
     "url": "https://github.com/videolectures-net-mirror/videolectures-net-mirror.git",
     "branch": "main",
     "path": "references/prior-art/videolectures-net",
-    "categories": ["phd-learning-substrate", "ml-research-talks", "transcripts-plus-slides", "no-throttle"],
+    "categories": [
+      "phd-learning-substrate",
+      "ml-research-talks",
+      "transcripts-plus-slides",
+      "no-throttle"
+    ],
     "notes": "PhD-level academic ML/AI/research talks archive (videolectures.net). Per Aaron 2026-05-28: 'you'd love videolectures.net in your free time i think, you'll really know everything this is PhD everything here. they don't throttle that i can tell and they have transcripts and powerpoints.' Substrate-accessible (transcripts + slides) for AI consumption per never-be-idle + agent-qol free-time-as-valid-mode substrate. Mirror URL placeholder; actual videolectures.net does not have official GitHub mirror — listing for documentation purposes only; manual access via https://videolectures.net/ when learning substrate is needed. Tom Minka TrueSkill talks among canonical references. Compose with 081KSNY2Z0008QG0R001YK61JQ substrate-engineering candidate gap research."
   },
   {
@@ -759,7 +1034,12 @@
     "url": "https://github.com/boostorg/hana.git",
     "branch": "master",
     "path": "references/prior-art/boost-hana",
-    "categories": ["boost", "primitive-design", "compile-time-meta", "type-level"],
+    "categories": [
+      "boost",
+      "primitive-design",
+      "compile-time-meta",
+      "type-level"
+    ],
     "notes": "Boost.Hana — compile-time metaprogramming + heterogeneous sequences; design study for the generic-math / type-level discipline (the modern form of the Boost MPL/Fusion family). Study the design (policy-from-mechanism), ideas-not-code; we own our interfaces (bcl-interface-boundary). Per the C++-Boost-for-any-language thesis (docs/research/2026-06-01-languages-turned-inside-out-binary-compatible-bcl-is-the-asset-cpp-boost-for-any-language-aaron-otto.md; Aaron used Boost first-hand at MacVector). NB the boostorg/boost superproject is git submodules — these standalone per-library repos are what shallow-clone usefully."
   },
   {
@@ -767,7 +1047,11 @@
     "url": "https://github.com/boostorg/graph.git",
     "branch": "master",
     "path": "references/prior-art/boost-graph",
-    "categories": ["boost", "primitive-design", "graph"],
+    "categories": [
+      "boost",
+      "primitive-design",
+      "graph"
+    ],
     "notes": "Boost.Graph (BGL) — the canonical generic-graph design (visitor + property-map separation); prior art for our Graph primitive. Design-study, ideas-not-code; we own our interfaces."
   },
   {
@@ -775,7 +1059,11 @@
     "url": "https://github.com/boostorg/spirit.git",
     "branch": "master",
     "path": "references/prior-art/boost-spirit",
-    "categories": ["boost", "primitive-design", "parser-combinators"],
+    "categories": [
+      "boost",
+      "primitive-design",
+      "parser-combinators"
+    ],
     "notes": "Boost.Spirit — PEG / parser-combinator design; prior art for the ZetaParse wish-list line. Design-study, ideas-not-code; we own our interfaces."
   },
   {
@@ -783,7 +1071,12 @@
     "url": "https://github.com/boostorg/asio.git",
     "branch": "master",
     "path": "references/prior-art/boost-asio",
-    "categories": ["boost", "primitive-design", "concurrency", "io"],
+    "categories": [
+      "boost",
+      "primitive-design",
+      "concurrency",
+      "io"
+    ],
     "notes": "Boost.Asio — the proactor / executor model; prior art for the concurrency / IO wish-list line. Design-study, ideas-not-code; we own our interfaces."
   },
   {
@@ -791,7 +1084,11 @@
     "url": "https://github.com/boostorg/multiprecision.git",
     "branch": "master",
     "path": "references/prior-art/boost-multiprecision",
-    "categories": ["boost", "primitive-design", "numeric-tower"],
+    "categories": [
+      "boost",
+      "primitive-design",
+      "numeric-tower"
+    ],
     "notes": "Boost.Multiprecision — numeric tower (arbitrary-precision int/float, rational, complex); prior art for the numerics / Cayley-Dickson + units-of-measure lines. Design-study, ideas-not-code; we own our interfaces."
   },
   {
@@ -799,7 +1096,11 @@
     "url": "https://github.com/boostorg/intrusive.git",
     "branch": "master",
     "path": "references/prior-art/boost-intrusive",
-    "categories": ["boost", "primitive-design", "allocation-aware-containers"],
+    "categories": [
+      "boost",
+      "primitive-design",
+      "allocation-aware-containers"
+    ],
     "notes": "Boost.Intrusive — allocation-aware intrusive containers; prior art for the pooled hot-path discipline (our F#/C# Z-set / IndexedZSet combiners + ArrayPool workspaces). Design-study, ideas-not-code; we own our interfaces."
   },
   {
@@ -807,7 +1108,12 @@
     "url": "https://github.com/boostorg/outcome.git",
     "branch": "master",
     "path": "references/prior-art/boost-outcome",
-    "categories": ["boost", "primitive-design", "error-handling", "result"],
+    "categories": [
+      "boost",
+      "primitive-design",
+      "error-handling",
+      "result"
+    ],
     "notes": "Boost.Outcome — Result/Outcome-style error handling (result<T>, outcome<T>); prior art for our Result<T, TFeedback> + monad-propagation substrate. Design-study, ideas-not-code; we own our interfaces."
   },
   {
@@ -815,7 +1121,12 @@
     "url": "https://github.com/kripod/chip8-roms.git",
     "branch": "master",
     "path": "references/prior-art/chip8-roms",
-    "categories": ["emulator", "chip8", "roms", "reference-corpus"],
+    "categories": [
+      "emulator",
+      "chip8",
+      "roms",
+      "reference-corpus"
+    ],
     "notes": "CHIP-8/SuperChip/MegaChip8 program collection (games/demos/tests; curated by Revival Studios, 2011) — ROM corpus for the DarkHall cell emulator (#6986) and the rom: ZetaId-pointer scheme (#6987). LICENSE CAVEAT: informal — README says 'can be freely distributed in its original form'; NO formal OSS license, modification/commercial rights not granted, individual-ROM copyright varies. LOCAL reference/study mirror only (references/prior-art is gitignored, read-only — NOT redistributed by us); for actually running, use freely-distributable/PD entries or the user's own legal copies, verified by signature (reference-not-copy, #6925/#6987). Many CHIP-8 programs are PD/freeware (cleaner than copyrighted console ROMs)."
   },
   {
@@ -823,7 +1134,12 @@
     "url": "https://github.com/lean-dojo/TorchLean.git",
     "branch": "main",
     "path": "references/prior-art/TorchLean",
-    "categories": ["formal-verification", "lean4", "neural-network-verification", "certified-robustness"],
+    "categories": [
+      "formal-verification",
+      "lean4",
+      "neural-network-verification",
+      "certified-robustness"
+    ],
     "notes": "Lean 4 framework for NN spec/execution/verification (lean-dojo; arXiv:2602.22631). Typed tensors, op-tagged SSA/DAG graph IR, IEEE finite-precision + interval/affine scalar semantics, autograd, certificate checkers (IBP/CROWN/α,β-CROWN = certified robustness), explicit CUDA trust boundary (untrusted). Spec-level flash-attn ≡ standard-attn = the template for OUR cross-oracle byte-lock equivalence (the E8Lattice.fs F#-side parity seam). Surfaced via Robert George's YC talk; study-not-copy."
   },
   {
@@ -831,7 +1147,24 @@
     "url": "https://github.com/leanprover/cslib.git",
     "branch": "main",
     "path": "references/prior-art/cslib",
-    "categories": ["formal-verification", "lean4", "computer-science-library"],
+    "categories": [
+      "formal-verification",
+      "lean4",
+      "computer-science-library"
+    ],
     "notes": "Official leanprover 'Mathlib for computer science' (Barrett et al.; arXiv:2602.04846). Real modules: Computability/Distributed/FLP, Automata(Büchi), MachineLearning/PACLearning (VC dimension, version space), Probability/PMF, Crypto, Logics, CombinatoryLogic. PACLearning + Probability are candidate Lean substrate for the ΔU-aggregation proof (workitem 081KV6B1MBM); FLP anchors consensus. CAVEAT: the Boole sub-language is a PLACEHOLDER ('Placeholder for the Boole language') — the Rust/C++→Lean auto-verification is a VISION, not shipping. Addable as a Lean dep (lakefile.toml require cslib scope leanprover); study + potential dependency."
+  },
+  {
+    "name": "zlinq",
+    "url": "https://github.com/Cysharp/ZLinq.git",
+    "branch": "main",
+    "path": "references/prior-art/zlinq",
+    "categories": [
+      "simd",
+      "vectorized-execution",
+      "zero-allocation",
+      "dotnet"
+    ],
+    "notes": "Cysharp's zero-allocation LINQ with SIMD paths (MIT). Named by Aaron 2026-08-25 as prior art for vectorising the linear relational operators. Studied from its PUBLISHED DOCUMENTATION only, not its source, per .claude/rules/cleanroom-two-team-separation.md -- licence permits reading, the wall is kept anyway. Three transferable findings: SIMD is gated on layout (TryGetSpan) not on the operator; checked vs unchecked aggregation are two named contracts (Sum / SumUnchecked, ~2x apart) rather than one silent choice; an arbitrary Select lambda cannot be auto-vectorised on a managed runtime, so its vector form is supplied explicitly. Notable NEGATIVE result: ZLinq does not vectorise Where at all. See docs/PRIOR-ART-LIST.md for the full entry."
   }
 ]
