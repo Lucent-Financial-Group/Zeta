@@ -327,6 +327,93 @@ describe("the flush lane buffers without invalidating an active PR (real git)", 
 // These lanes used to emit UNSIGNED commits, which the post-merge auditor could
 // only pass via the explicit MACHINE-LANE-EXEMPT roster entry (#10573). Signing
 // them makes them CORRECT instead of exempt, shrinking the exemption surface.
+// THE REGRESSION FALSIFIER for the ~27% `pr-archive-on-merge` failure rate measured
+// on 2026-08-25 (8 of 30 runs). A lane buffer is a DISPOSABLE AGGREGATE: every flush
+// resets from `origin/main` and republishes, so the ref is REWRITTEN, not advanced.
+// The calling workflows check out with `fetch-depth: 0`, so the remote-tracking ref
+// is already populated when `prepare` runs. Fetching without a leading `+` then
+// refuses the non-fast-forward update and `prepare` returns 3.
+//
+// Reproduced standalone before this test was written: `git fetch origin
+// buf:refs/remotes/origin/buf --quiet` against a rewritten upstream exits 1 with
+// EMPTY stdout and stderr -- byte-identical to the CI symptom, where `--quiet`
+// suppressed the one report line naming the rejection.
+//
+// Drop the `+` in `flush-via-staging.ts` and this test goes red.
+describe("prepare survives a REWRITTEN lane buffer (non-fast-forward)", () => {
+  const tmp = mkdtempSync(join(tmpdir(), "zeta-flush-nff-"));
+  afterAll(() => {
+    rmSync(tmp, { recursive: true, force: true });
+  });
+
+  const g = (cwd: string, ...args: readonly string[]): string => {
+    // eslint-disable-next-line sonarjs/no-os-command-from-path
+    const r = spawnSync("git", [...args], { cwd, encoding: "utf8" });
+    if (r.status !== 0) {
+      throw new Error(`git ${args.join(" ")} failed: ${r.stderr || r.stdout}`);
+    }
+    return r.stdout.trim();
+  };
+
+  test("a force-updated buffer is adopted rather than rejected", () => {
+    const originDir = join(tmp, "origin.git");
+    const workDir = join(tmp, "work");
+    const seedDir = join(tmp, "seed");
+    const lane = "nff";
+    const buffer = bufferRef(lane);
+
+    g(tmp, "init", "--quiet", "--bare", originDir);
+    g(tmp, "init", "--quiet", seedDir);
+    g(seedDir, "config", "user.email", "lane@zeta.local");
+    g(seedDir, "config", "user.name", "lane");
+    writeFileSync(join(seedDir, "base.txt"), "base\n");
+    g(seedDir, "add", "-A");
+    g(seedDir, "commit", "--quiet", "-m", "base");
+    g(seedDir, "branch", "-M", "main");
+    g(seedDir, "push", "--quiet", originDir, "main");
+
+    // Generation 1 of the buffer.
+    g(seedDir, "checkout", "--quiet", "-B", "buf", "main");
+    writeFileSync(join(seedDir, "buf.txt"), "gen1\n");
+    g(seedDir, "add", "-A");
+    g(seedDir, "commit", "--quiet", "-m", "buffer gen 1");
+    g(seedDir, "push", "--quiet", originDir, `buf:${buffer}`);
+
+    // A FULL clone -- this is what `fetch-depth: 0` produces, and it is what makes
+    // the local remote-tracking ref exist before the rewrite. Without this line the
+    // defect is unreachable and the test would pass either way.
+    g(tmp, "clone", "--quiet", originDir, workDir);
+    g(workDir, "config", "user.email", "lane@zeta.local");
+    g(workDir, "config", "user.name", "lane");
+    const before = g(workDir, "rev-parse", `refs/remotes/origin/${buffer}`);
+
+    // THE REWRITE: the next flush resets from main, so generation 2 is NOT a
+    // descendant of what this clone already holds.
+    g(seedDir, "checkout", "--quiet", "-B", "buf", "main");
+    writeFileSync(join(seedDir, "buf.txt"), "gen2\n");
+    g(seedDir, "add", "-A");
+    g(seedDir, "commit", "--quiet", "-m", "buffer gen 2");
+    g(seedDir, "push", "--quiet", "--force", originDir, `buf:${buffer}`);
+
+    const cwd = process.cwd();
+    let prepared: number;
+    try {
+      process.chdir(workDir);
+      prepared = prepare(lane);
+    } finally {
+      process.chdir(cwd);
+    }
+
+    expect(prepared).toBe(0);
+
+    // Not merely "did not fail": it adopted the NEW generation. Asserting only the
+    // exit code would still pass if the fetch were dropped entirely.
+    const after = g(workDir, "rev-parse", `refs/remotes/origin/${buffer}`);
+    expect(after).not.toBe(before);
+    expect(readFileSync(join(workDir, "buf.txt"), "utf8")).toBe("gen2\n");
+  });
+});
+
 describe("AgencySignature on telemetry flushes", () => {
   test.each([...LANES])("%s: the block carries every required key", (lane) => {
     const block = agencySignatureBlock(lane);
