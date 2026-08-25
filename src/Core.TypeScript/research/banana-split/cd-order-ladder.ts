@@ -886,10 +886,30 @@ const glueKey = (o: Overlattice): string =>
     .sort(ordinalCompare)
     .join("|");
 
+/**
+ * Every integral overlattice of D(Hurwitz), computed ONCE.
+ *
+ * The enumeration is exhaustive over the discriminant group with exact BigInt rationals and costs
+ * several seconds; it is a pure function of no arguments, so recomputing it per caller is pure
+ * waste. It was, and it is what reddened the hermetic tier: four tests each paid the full cost and
+ * landed at 5.7-7.1s against bunfig's documented 5000ms per-test cap. Per that file's own rule --
+ * "a test that is slow BY ACCIDENT gets made fast" -- the repeated work is cached here, and the
+ * genuinely-slow-by-nature cases carry explicit per-test timeouts in the suite.
+ *
+ * The cache is safe because the computation is deterministic and argument-free (no ambient input,
+ * no clock, no environment); a shallow copy is returned so a caller sorting or splicing the result
+ * cannot corrupt it for the next one.
+ */
+let doubledHurwitzOverlatticesCache: Overlattice[] | null = null;
+
+export function doubledHurwitzOverlattices(): Overlattice[] {
+  doubledHurwitzOverlatticesCache ??= integralOverlattices(cdDoubleOrder(hurwitzOrder()));
+  return [...doubledHurwitzOverlatticesCache];
+}
+
 /** The three ring-completions of D(Hurwitz), in a fixed, ordinal order of their glue tags. */
 export function octavianCompletions(): Overlattice[] {
-  const dh = cdDoubleOrder(hurwitzOrder());
-  return integralOverlattices(dh)
+  return doubledHurwitzOverlattices()
     .filter((o) => o.index === 4 && o.multiplicativelyClosed && o.allIntegral)
     .sort((a, b) => ordinalCompare(glueKey(a), glueKey(b)));
 }

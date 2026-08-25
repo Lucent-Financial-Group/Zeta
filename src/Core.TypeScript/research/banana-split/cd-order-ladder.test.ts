@@ -14,7 +14,24 @@
  *   - "480 does not discriminate" pins that the root COUNT cannot tell E8+E8 from D16+, so the
  *     rank-16 verdict rests on connectivity and not on a matching number.
  *
- * Runtime: a few seconds. Exact rational arithmetic throughout; no tolerances anywhere.
+ * TIMEOUTS ARE LOAD-BEARING HERE, and this file learned that the expensive way. bunfig's effective
+ * per-test cap is 5000ms (see `bunfig.toml` -- the `[test] timeout` key is NOT implemented by bun
+ * 1.3.14, so only per-test arguments and `--timeout` work). Four tests here shipped without one,
+ * passed on a developer laptop, and timed out at 5.7-7.1s on the CI runner -- reddening BOTH
+ * `full-verify` step 17 and `test (TS hermetic)` step 9 from a single cause. The log line that
+ * settles it is `^ this test timed out after 5000ms.`, not an assertion diff: nothing here is
+ * ordering-dependent, environment-dependent, or non-deterministic, and the durations clustering
+ * just above 5000ms is the tell.
+ *
+ * The repair follows `bunfig.toml`'s own rule -- "a test that is slow BY NATURE carries its own
+ * explicit timeout; a test that is slow BY ACCIDENT gets made fast" -- and this file was both:
+ * every test touching the exhaustive enumeration now carries `60_000`, AND
+ * `doubledHurwitzOverlattices()` memoises the argument-free enumeration that four tests were each
+ * paying for in full. Wall time went 36s -> 22s. If you add a test that calls
+ * `integralOverlattices`, `octavianCompletions`, `roots`, `profileCdRung` or `completionCount`,
+ * give it an explicit timeout.
+ *
+ * Runtime: ~22s. Exact rational arithmetic throughout; no tolerances anywhere.
  */
 
 import { describe, expect, it } from "bun:test";
@@ -35,6 +52,7 @@ import {
   glueSignature,
   gram,
   hurwitzOrder,
+  doubledHurwitzOverlattices,
   integralOverlattices,
   lipschitzOrder,
   octavianCompletions,
@@ -113,12 +131,12 @@ describe("rung C -> H: the completion is UNIQUE, so here the join really is a le
     const done = roots(hurwitzOrder(), 2);
     expect(done.length).toBe(24);
     expect(rootComponents(done)).toBe(1);
-  });
+  }, 60_000);
 });
 
 describe("rung H -> O: the completion is THREE-VALUED, so here the join is NOT a lub", () => {
   const dh = cdDoubleOrder(hurwitzOrder());
-  const unimodular = integralOverlattices(dh).filter((o) => o.index === 4);
+  const unimodular = doubledHurwitzOverlattices().filter((o) => o.index === 4);
 
   it("the generator undershoots by index 4 and holds exactly 48 of the 240 roots", () => {
     expect(rstr(detRat(gram(dh)))).toBe("16");
@@ -164,7 +182,7 @@ describe("rung H -> O: the completion is THREE-VALUED, so here the join is NOT a
     expect(sameLattice(c[0]!.basis, c[1]!.basis)).toBe(false);
     expect(sameLattice(c[0]!.basis, c[2]!.basis)).toBe(false);
     expect(sameLattice(c[1]!.basis, c[2]!.basis)).toBe(false);
-  });
+  }, 60_000);
 
   it("NO NATURAL CHOICE: conjugation by omega permutes the three cyclically", () => {
     // omega = (1+i+j+k)/2 is a Hurwitz unit; conjugation by it is a *-automorphism of H, so its
@@ -243,7 +261,7 @@ describe("THE SPLIT CONDITION FAILS: the lattice step reads the algebra", () => 
   it("same lattice, same form, two algebras", () => {
     expect(rstr(detRat(gram(z4)))).toBe("16");
     expect(roots(z4, 2).length).toBe(8);
-  });
+  }, 60_000);
 
   it("inside H it completes at index 2; inside C x C it is already maximal", () => {
     const inH = integralOverlattices(z4).filter((o) => o.multiplicativelyClosed && o.allIntegral);
@@ -252,7 +270,7 @@ describe("THE SPLIT CONDITION FAILS: the lattice step reads the algebra", () => 
     );
     expect(Math.max(...inH.map((o) => o.index))).toBe(2);
     expect(Math.max(...inCC.map((o) => o.index))).toBe(1);
-  });
+  }, 60_000);
 
   it("the witness: omega is integral in H and is NOT integral in C x C", () => {
     const h = rat(1, 2);
@@ -270,7 +288,7 @@ describe("rank 16: the control PR #15415 asked for, now run", () => {
     // det = 1 and an integral overlattice L' satisfies index^2 * det(L') = det(L) with det(L') >= 1,
     // so the index is forced to 1. The glue-index sequence over the tower is 1, 2, 4, 1.
     expect(rstr(detRat(gram(d)))).toBe("1");
-  });
+  }, 60_000);
 
   it("CONTROL: the root COUNT does not discriminate -- both rank-16 lattices have 480", () => {
     expect(e8PlusE8RootsDoubled().length).toBe(480);
@@ -289,7 +307,7 @@ describe("rank 16: the control PR #15415 asked for, now run", () => {
     const d = cdDoubleOrder(oct.basis);
     const g = gram(d);
     for (let i = 0; i < 8; i++) for (let j = 8; j < 16; j++) expect(g[i]![j]!.n).toBe(0n);
-  });
+  }, 60_000);
 });
 
 describe("sanity: the arithmetic is exact and the helpers agree with each other", () => {
@@ -307,5 +325,5 @@ describe("sanity: the arithmetic is exact and the helpers agree with each other"
 
   it("the Hurwitz order has 24 units and they are exactly its roots", () => {
     expect(roots(hurwitzOrder(), 2).length).toBe(24);
-  });
+  }, 60_000);
 });
