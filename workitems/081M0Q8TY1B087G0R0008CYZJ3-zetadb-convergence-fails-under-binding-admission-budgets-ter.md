@@ -83,3 +83,89 @@ The plugin boundary also contains thrown exceptions, unnamed implementations, an
 decisions as `database-admission-policy-failed` heat. No policy failure reaches persistence and no
 exception escapes the tick API. This closes the safety precondition for experimenting with richer
 policies; it still does not change the BIND convergence boundary above.
+
+## Progress 2026-08-24 - reserved headroom has an executable receipt
+
+`createReservedCapacityAdmissionPolicy` now turns fixed retained-event and checkpoint-byte
+reservations into a production policy. Reservations are non-negative safe integers, capped at the
+caller's hard limit for each proposal, and configuration failures are typed results rather than
+exceptions. A reservation can only lower the effective limit; the kernel-owned hard-limit guard
+still executes first.
+
+Backpressure from this policy carries structured accounting through `ZetaDbFeedback`: policy ID,
+resource, current and candidate amounts, hard and effective limits, and the amount actually
+reserved. The kernel validates that receipt against the proposal and rejects inconsistent plugin
+accounting as `database-admission-policy-failed` heat. Scheduled runs, browser wakes, and the
+browser content-addressed storage adapter can all receive the same owned policy port.
+
+This remains capacity planning, not a fix for terminal replica divergence. It reserves deterministic
+headroom without evicting history or making an order-dependent admitted prefix converge.
+
+## Progress 2026-08-25 - canonical retained subsets now have a pure contract
+
+`src/Core.TypeScript/zetadb/retention-policy.ts` separates retained-set selection from mutation.
+An injected `ZetaDbRetentionPolicyPort` chooses only observed event identifiers; the guarded
+evaluator derives refused candidates, displaced history, duplicate input, and displacement heat.
+A policy therefore cannot omit an admitted event without the loss appearing in a typed
+`database-retention-displaced` receipt. That receipt uses the existing `forgotten` signal and
+`database-retention.forgotten` kind, so downstream heat classification does not need a new case.
+
+The existing no-forget choice is represented explicitly and still reproduces BIND. The opt-in
+`canonicalEventIdRetentionPolicy` keeps the ordinally-smallest event identifiers from the observed
+union. Property tests make candidate permutation invisible, and the exact `maxEntries: 3` witness
+now reaches `e1,e2,e3` in both batch orders. The reverse order pays for that convergence by
+displacing `e4`, which is reported as heat rather than erased silently.
+
+This slice is a planner and law pack, not kernel wiring. It proves the event-count choice before
+allowing it to mutate durable images. It also makes no checkpoint-byte convergence claim: actual
+encoded size depends on the retained Z-set fold, so byte-bounded selection needs a separate
+falsifier and policy instead of borrowing the event-count proof.
+
+## Progress 2026-08-25 - explicit retention now reaches the durable node
+
+`runZetaDbNodeTick` and `runConvergentZetaDbNodeTick` now accept an optional
+`ZetaDbRetentionPolicyPort`. Omitting it preserves the existing append-only, no-forget prefix
+semantics. Supplying it evaluates one bounded batch, persists the selected event set, returns the
+full retention receipt, and emits `database-retention-displaced` heat only after displaced history
+has actually reached the durable image. A policy decision that changes only retained history still
+increments the image revision; it can no longer be mistaken for `accepted: 0` no-op success.
+
+The admission policy remains authoritative around the retention policy. It validates the final
+retained-event count and the exact encoded checkpoint bytes at the next revision. If either
+proposal is refused, no planned displacement is applied, no loss heat is emitted, and the
+continuation remains at zero. `requireComplete` also rejects a retained-set plan atomically when
+any novel event was refused.
+
+The original BIND witness remains green for the default no-forget behavior. A second test now runs
+the canonical policy through the real in-memory image port and reaches `e1,e2,e3` in both batch
+orders; the reverse order carries exact displacement heat for `e4`. This closes the opt-in
+event-count path. Checkpoint-byte convergence remains open: this slice refuses an oversized image
+honestly but does not claim that a byte-bounded retained-set policy is order-independent.
+
+## Progress 2026-08-25 - exact checkpoint-byte retention is executable
+
+The byte-bound counterexample is now pinned separately from the entry-count witness. A two-event
+batch and a one-event batch each fit alone, their three-event union does not, and the event-count
+canonical policy leaves `e1,e3` versus `e2` under opposite arrival order because the kernel
+correctly refuses the oversized second image. This proves that event-count convergence did not
+silently become a checkpoint-byte claim.
+
+`canonicalCheckpointByteRetentionPolicy` closes that witness. Its hexagonal port receives only
+event identifiers, the count and byte limits, and a guarded kernel-owned measurement capability.
+The policy therefore cannot redefine JSON encoding or row folding. It considers event identifiers
+in ordinal order and retains each candidate only when the exact canonical image remains valid and
+within the byte bound. The evaluator rejects unknown, duplicate, over-count, malformed, or
+nonempty oversized decisions, while an impossible empty-image envelope becomes ordinary typed
+capacity backpressure. The admission port independently rechecks every final encoded mutation
+before persistence.
+
+The same observed union now reaches `e1,e2` in both batch orders and produces byte-identical
+revision-2 images. The two-event-first order displaces `e3` and emits
+`database-retention-displaced` heat whose receipt identifies `checkpoint-bytes` as the governing
+resource and records the exact byte limit. Omitting retention still preserves the default
+no-forget behavior and its typed backpressure.
+
+This policy is deterministic, not globally optimal: it selects the ordinally-first exact-fitting
+subset and may skip an event whose inclusion would require a later compensating event. Each
+measurement performs the real fold and encoding, so the opt-in planner trades bounded extra work
+for an honest byte decision rather than estimating additive per-event costs that do not exist.

@@ -57,7 +57,7 @@
 // notification letter is written to docs/letters/ and rides the same
 // bookkeeping commit (Riven-2: recipe verbatim).
 
-import { execSync } from "node:child_process";
+import { execFileSync } from "node:child_process";
 import { existsSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 
 import { openMergePR } from "../agent-heartbeats/merge-heartbeats-to-main.ts";
@@ -132,8 +132,40 @@ function writeEpisodes(e: EpisodeFile): void {
 
 // ── IO shell ────────────────────────────────────────────────────────────────
 
-function sh(cmd: string): string {
-  return execSync(cmd, { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] }).trim();
+/**
+ * One `git` invocation. Arguments as an ARRAY, and NO SHELL.
+ *
+ * This was `execSync` over a concatenated string, which put `head_sha` from the Actions
+ * API onto a shell command line (`git rev-list ${greenHead}..${redHead}`) inside a job
+ * that holds a `GH_TOKEN` with push access to `main` -- CodeQL `js/command-line-injection`,
+ * critical, and correct. The usual dismissal ("GitHub only returns real shas") is a claim
+ * about the server that is checked nowhere.
+ *
+ * `execFileSync` removes the shell entirely, so there is no command line for a response
+ * body to be read as. It also removes the quoting: the `git config user.name` calls below
+ * used to carry literal `"` characters that only worked because a shell stripped them.
+ *
+ * Exported so the absence of the shell is a FALSIFIER rather than a claim: the test feeds
+ * it an argument containing `;` and asserts git rejects it as a revision, which is the
+ * assertion that goes red the moment anyone reintroduces a concatenated command line.
+ */
+export function git(...args: readonly string[]): string {
+  return execFileSync("git", args, { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] }).trim();
+}
+
+/** Lowercase hex, 7..64 -- sha1 (40) and a future sha256 (64). Ordinal, anchored. */
+const SHA_RE = /^[0-9a-f]{7,64}$/;
+
+/**
+ * Is this a sha? The gate for any API- or `git`-derived value that becomes an ARGUMENT.
+ *
+ * Removing the shell closes command injection; it does not close ARGUMENT injection --
+ * `git revert --no-edit <x>` with `x` of `--upload-pack=...` is still a git option, not a
+ * revision. Every value that reaches `git` as data is checked against this first, and a
+ * value that fails makes the picture UNCLEAN rather than being repaired into one.
+ */
+export function isSha(value: string): boolean {
+  return SHA_RE.test(value);
 }
 
 /**
@@ -264,6 +296,13 @@ if (invokedDirectly) {
   };
   const anyRunning = runsRaw.workflow_runs.some((r) => r.status !== "completed");
   const runs: GateRunFact[] = runsRaw.workflow_runs.map((r) => ({ headSha: r.head_sha, conclusion: r.conclusion }));
+  // The API's `head_sha` becomes a `git` ARGUMENT below. This is the one door it enters
+  // through, so it is checked here and the whole picture is refused if any head is not a
+  // sha -- loud and standing down, never a repaired value handed to `git`.
+  if (!runs.every((r) => isSha(r.headSha))) {
+    console.log("actuator: a gate run head_sha is not a sha - the picture is not trustworthy, standing down");
+    process.exit(0);
+  }
   const iso = isolateBreak(runs);
 
   const episodes = readEpisodes();
@@ -301,13 +340,15 @@ if (invokedDirectly) {
 
   // Trigger evaluation.
   if (machine.kind === "idle" && iso !== null) {
-    const mainHead = sh("git rev-parse origin/main");
+    const mainHead = git("rev-parse", "origin/main");
     const fleetInFlight = anyRunning || mainHead !== iso.redHead;
-    const candidates = sh(`git rev-list ${iso.greenHead}..${iso.redHead}`).split("\n").filter(Boolean);
+    const candidates = git("rev-list", `${iso.greenHead}..${iso.redHead}`).split("\n").filter((l) => isSha(l));
     const single = candidates.length === 1 ? candidates[0]! : null;
     const paths =
-      single === null ? [] : sh(`git diff-tree --no-commit-id --name-only -r ${single}`).split("\n").filter(Boolean);
-    const author = single === null ? "unknown" : sh(`git log -1 --format=%an ${single}`);
+      single === null
+        ? []
+        : git("diff-tree", "--no-commit-id", "--name-only", "-r", single).split("\n").filter(Boolean);
+    const author = single === null ? "unknown" : git("log", "-1", "--format=%an", single);
     const event: EpisodeEvent = {
       kind: "break_detected",
       tick: latestTick,
@@ -325,20 +366,23 @@ if (invokedDirectly) {
 
     if (r.command.kind === "push_retraction") {
       const sha = r.command.breakSha;
-      sh(`git config user.name "github-actions[bot]"`);
-      sh(`git config user.email "github-actions[bot]@users.noreply.github.com"`);
-      sh("git fetch origin main");
-      sh("git checkout -B retraction-work origin/main");
+      // MAIN'S NO-SHELL FORM, THE PR'S STAGING ROUTE. Two independent hardenings landed
+      // on the two sides of this merge and both are kept: `git(...)` (execFileSync, no
+      // shell — see its docstring) is how every command below is spelled, and the
+      // retraction lands via `heartbeat/*` + PR rather than a push at `main`.
+      git("config", "user.name", "github-actions[bot]");
+      git("config", "user.email", "github-actions[bot]@users.noreply.github.com");
+      git("fetch", "origin", "main");
+      git("checkout", "-B", "retraction-work", "origin/main");
       let msgFile = "";
       try {
-        // Parse-and-RECONSTRUCT before the value reaches a shell command or a path.
+        // Parse-and-RECONSTRUCT before the value reaches a `git` argument or a path.
         // `safeSha` is rebuilt character-by-character out of `HEX_DIGITS`, a literal in
-        // this file, so no byte of the GitHub API response survives into it — the sinks
-        // below consume OUR bytes, not the network's. A boolean predicate could not give
-        // that property: it returns a verdict while the tainted string travels on.
-        // Inside the try so a refusal is recorded as `push_result: pushed=false` and the
-        // machine stands down. The raw `sha` appears ONLY in the diagnostic below, which
-        // is what makes a refusal legible; it never reaches a path or a shell.
+        // this file, so no byte of the GitHub API response survives into it. Removing the
+        // shell closed command injection; this closes ARGUMENT injection, which it did
+        // not. Inside the try so a refusal is recorded as `push_result: pushed=false` and
+        // the machine stands down. The raw `sha` appears ONLY in the diagnostic below,
+        // which is what makes a refusal legible; it never reaches a path or a command.
         const safeSha = normalizeFullCommitSha(sha);
         if (safeSha === null) throw new Error(`breakSha is not a 40-hex git object name: ${sha}`);
         const lane = `retraction-${safeSha.slice(0, 9)}`;
@@ -347,14 +391,14 @@ if (invokedDirectly) {
         msgFile = `.git/RETRACTION_MSG_${safeSha.slice(0, 9)}`;
         // `--no-commit` so the message is ours: the revert must carry an
         // AgencySignature block to arrive on main signed (see retractionCommitMessage).
-        sh(`git revert --no-commit ${safeSha}`);
+        git("revert", "--no-commit", safeSha);
         writeFileSync(msgFile, `${retractionCommitMessage(safeSha, episodeId, openTicks)}\n`);
-        sh(`git commit --no-verify --file=${msgFile}`);
-        pushedSha = sh("git rev-parse HEAD");
+        git("commit", "--no-verify", `--file=${msgFile}`);
+        pushedSha = git("rev-parse", "HEAD");
         // `heartbeat/*` (ruleset 16934633) carries `deletion` only — no required checks,
         // no non-fast-forward rule — so parking here always succeeds and the retraction
         // is never lost even if the PR is slow to land.
-        sh(`git push --force-with-lease origin HEAD:refs/heads/${ref}`);
+        git("push", "--force-with-lease", "origin", `HEAD:refs/heads/${ref}`);
         const opened = openMergePR(
           repo,
           ref,
@@ -411,7 +455,13 @@ if (invokedDirectly) {
         console.log(`actuator: push failed → ${machine.kind}: ${(err as Error).message.slice(0, 200)}`);
       } finally {
         if (msgFile !== "") rmSync(msgFile, { force: true });
-        sh("git checkout --detach origin/main 2>/dev/null || true");
+        // Was `2>/dev/null || true` -- shell for "best effort". With no shell the
+        // best-effort is a `catch`, which is also the honest place for it.
+        try {
+          git("checkout", "--detach", "origin/main");
+        } catch {
+          /* best effort */
+        }
       }
     }
   } else if (machine.kind === "idle") {

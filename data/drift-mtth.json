@@ -1,10 +1,10 @@
 {
-  "latestTick": 387,
+  "latestTick": 604,
   "classes": [
     {
       "rule": "BD001",
-      "healedCount": 3,
-      "mtthTicks": 2.3333333333333335,
+      "healedCount": 4,
+      "mtthTicks": 2.75,
       "openCount": 0,
       "oldestOpenAgeTicks": null
     },
@@ -31,15 +31,22 @@
     },
     {
       "rule": "MD032",
-      "healedCount": 4,
-      "mtthTicks": 2.5,
-      "openCount": 1,
-      "oldestOpenAgeTicks": 9
+      "healedCount": 5,
+      "mtthTicks": 5.6,
+      "openCount": 0,
+      "oldestOpenAgeTicks": null
     },
     {
       "rule": "MD038",
       "healedCount": 1,
       "mtthTicks": 1,
+      "openCount": 0,
+      "oldestOpenAgeTicks": null
+    },
+    {
+      "rule": "MD049",
+      "healedCount": 1,
+      "mtthTicks": 11,
       "openCount": 0,
       "oldestOpenAgeTicks": null
     },

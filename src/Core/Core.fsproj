@@ -219,7 +219,8 @@
     <Compile Include="SpineAsync.fs" />
     <Compile Include="BalancedSpine.fs" />
     <Compile Include="SpineSelector.fs" />
-    <Compile Include="SimdMerge.fs" />
+    <Compile Include="ScalarMerge.fs" />
+    <Compile Include="ColumnZSet.fs" />
     <Compile Include="TimeSeries.fs" />
     <Compile Include="Upsert.fs" />
     <Compile Include="Transaction.fs" />
@@ -260,6 +261,7 @@
     <Compile Include="WorkStealingRuntime.fs" />
     <Compile Include="Recursive.fs" />
     <Compile Include="Hierarchy.fs" />
+    <Compile Include="CatalogStatistics.fs" />
     <Compile Include="Plan.fs" />
     <Compile Include="Incremental.fs" />
     <Compile Include="Dsl.fs" />
@@ -273,6 +275,7 @@
     <Compile Include="RoomAdmission.fs" />
     <Compile Include="RoomBoundary.fs" />
     <Compile Include="Query.fs" />
+    <Compile Include="QuerySurface.fs" />
     <Compile Include="Injection.fs" />
     <Compile Include="InjectionExt.fs" />
     <Compile Include="SpeculativeWatermark.fs" />
@@ -284,6 +287,7 @@
     <Compile Include="Serializer.fs" />
     <Compile Include="ZetaSqlBuilder.fs" />
     <Compile Include="ArrowSerializer.fs" />
+    <Compile Include="ColumnZSetArrow.fs" />
     <Compile Include="DynamicValueArrow.fs" />
     <Compile Include="DeltaCrdt.fs" />
     <Compile Include="SignalQuality.fs" />

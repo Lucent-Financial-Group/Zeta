@@ -4,10 +4,17 @@ Run:
     uv run --project src/Arc.Python python -m zeta_arc.play
     uv run --project src/Arc.Python python -m zeta_arc.play --agent random --seed 4
 
-NO KEY, NO NETWORK. `OperationMode.OFFLINE` is MEASURED to initialise with
-`arc_api_key=''` and never contact the API, so this lane runs on a laptop, in
-CI, and in a container with egress blocked. `ARC_API_KEY` only matters for the
-hosted leaderboard, and its absence must DEGRADE, never fail.
+NO KEY, NO NETWORK — and that is now a DECISION rather than a hardcode. With
+no `ARC_API_KEY` the lane runs `OperationMode.OFFLINE`, which is MEASURED to
+initialise with `arc_api_key=''` and never contact the API, so it still runs on
+a laptop, in CI without secrets, and in a container with egress blocked. With a
+key it runs `NORMAL` and can see the hosted environments.
+
+The mode is CHOSEN by `operation_mode_for` and REPORTED as whatever was
+actually obtained — see `open_arcade`. The reported mode used to be the string
+literal `"OFFLINE"` regardless of anything, which is a claim no test could
+falsify. A key that is present but unreachable degrades to a scored offline
+episode and says so; absence must DEGRADE, never fail.
 
 THE SCORE, and what it is not. ARC's level formula (design doc §6) is
 
@@ -25,13 +32,18 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 from collections import deque
 
-from arc_agi import Arcade, OperationMode
+# `arc_agi` ships no py.typed marker, so mypy cannot see into it. Ignoring the
+# import is honest here — the alternative is inventing stubs for a dependency
+# whose types we do not control.
+from arc_agi import Arcade, OperationMode  # type: ignore[import-untyped]
 from arcengine import GameAction
 
-from zeta_arc.driver import advance
-from zeta_arc.environments.chase import CELL, GRID, _MOVES, _STARTS, _WALLS, ZetaChase
+from zeta_arc.agent import PixelAgent
+from zeta_arc.driver import advance, reset
+from zeta_arc.environments.chase import _MOVES, _STARTS, _WALLS, CELL, GRID, ZetaChase
 
 #: Fixed action order, so a "random" agent is reproducible from its seed.
 _ACTION_ORDER: tuple[GameAction, ...] = tuple(_MOVES.keys())
@@ -68,7 +80,13 @@ def _cell_of(game: ZetaChase, tag: str) -> tuple[int, int]:
     return sprite.x // CELL, sprite.y // CELL
 
 
-def choose(agent: str, game: ZetaChase, rng_state: list[int]) -> GameAction:
+def choose(
+    agent: str,
+    game: ZetaChase,
+    rng_state: list[int],
+    pixel: PixelAgent | None = None,
+    grid: list[list[int]] | None = None,
+) -> GameAction:
     """Pick one action.
 
     `random` steps a seeded LCG over the fixed action order — no `random`
@@ -76,6 +94,12 @@ def choose(agent: str, game: ZetaChase, rng_state: list[int]) -> GameAction:
     axis gap first and has NO wall model on purpose: the score should report
     something real, not a maze that was solved in the scorer.
     """
+    if agent == "pixel":
+        # The ONLY agent here that does not read sprite coordinates out of the
+        # engine. It sees `grid` and nothing else.
+        assert pixel is not None and grid is not None
+        return pixel.act(grid)
+
     if agent == "random":
         rng_state[0] = (rng_state[0] * 1103515245 + 12345) & 0x7FFFFFFF
         return _ACTION_ORDER[rng_state[0] % len(_ACTION_ORDER)]
@@ -90,13 +114,60 @@ def choose(agent: str, game: ZetaChase, rng_state: list[int]) -> GameAction:
     return GameAction.ACTION4
 
 
-def play(agent: str = "greedy", seed: int = 0, max_actions_per_level: int = 300) -> dict:
+def operation_mode_for(api_key: str | None) -> OperationMode:
+    """Which mode a given key buys. Pure policy, so it is testable without a network.
+
+    THE LINE IS NETWORK ACCESS, not features. MEASURED in `arc_agi/base.py`:
+    every mode EXCEPT `OFFLINE` reaches the network during construction — it
+    calls `_fetch_from_api()`, and with an empty key it first calls
+    `_get_anonymous_api_key()`. `OFFLINE` is the only mode that provably makes
+    no request. So a blank key must map to `OFFLINE` rather than to "NORMAL and
+    hope": that is what keeps this lane runnable on a laptop, in a container
+    with egress blocked, and in CI without secrets.
+
+    Whitespace counts as blank. A secret that expanded to `""` is the shape an
+    unset GitHub secret takes, and treating it as a key would turn a missing
+    secret into a network call.
+    """
+    return OperationMode.NORMAL if (api_key or "").strip() else OperationMode.OFFLINE
+
+
+def open_arcade() -> tuple[Arcade, str]:
+    """The Arcade this episode runs against, and the mode it ACTUALLY got.
+
+    Returns the real mode rather than the requested one, because the result
+    dict reports it and a hardcoded label would be a claim nothing checks. It
+    used to say `"mode": "OFFLINE"` unconditionally.
+
+    DEGRADE, NEVER FAIL (design doc §3.2). A key that is present but cannot
+    reach the API must still produce a scored episode. MEASURED: with a key and
+    an unreachable base URL, `Arcade` constructs in 0.09s, logs the
+    `ConnectionError`, and returns zero API environments — `_fetch_from_api`
+    swallows `RequestException` and `Exception` alike. The `try` below is the
+    belt for the case the constructor itself raises before reaching that
+    handler; it is not the primary mechanism.
+    """
+    key = os.environ.get("ARC_API_KEY", "")
+    mode = operation_mode_for(key)
+    if mode is OperationMode.OFFLINE:
+        return Arcade(operation_mode=OperationMode.OFFLINE), "OFFLINE"
+    try:
+        return Arcade(operation_mode=mode), mode.name
+    except Exception:  # noqa: BLE001 — degrading is the requirement, not the exception's identity
+        return Arcade(
+            operation_mode=OperationMode.OFFLINE
+        ), "OFFLINE (degraded from NORMAL)"
+
+
+def play(
+    agent: str = "greedy", seed: int = 0, max_actions_per_level: int = 300
+) -> dict:
     """One full episode. Returns per-level and aggregate scores."""
-    # Constructed to prove the toolkit's own offline path initialises with no
-    # key and no network — the fact this whole lane rests on.
-    arcade = Arcade(operation_mode=OperationMode.OFFLINE)
+    arcade, mode = open_arcade()
     game = ZetaChase(seed=seed)
 
+    pixel = PixelAgent()
+    frame = reset(game)
     rng_state = [seed | 1]
     levels: list[dict] = []
     level_index = game.level_index
@@ -116,7 +187,8 @@ def play(agent: str = "greedy", seed: int = 0, max_actions_per_level: int = 300)
             )
             break
 
-        advance(game, choose(agent, game, rng_state))
+        grid = frame.frame[0] if frame.frame else []
+        frame = advance(game, choose(agent, game, rng_state, pixel, grid))
         actions += 1
 
         solved_this_level = game.level_index != level_index or (
@@ -145,7 +217,7 @@ def play(agent: str = "greedy", seed: int = 0, max_actions_per_level: int = 300)
     return {
         "agent": agent,
         "seed": seed,
-        "mode": "OFFLINE",
+        "mode": mode,
         "arcade_environments_discovered": len(arcade.get_environments()),
         "levels_cleared": sum(1 for entry in levels if entry["solved"]),
         "levels": levels,
@@ -154,11 +226,73 @@ def play(agent: str = "greedy", seed: int = 0, max_actions_per_level: int = 300)
     }
 
 
+def list_environments() -> dict:
+    """The hosted environments this key can see. Reconnaissance, not play.
+
+    WHY THIS EXISTS SEPARATELY FROM `play`. The lane now DISCOVERS real ARC
+    environments but still plays ZetaChase, our own stand-in. Before writing a
+    play loop against 25 environments it is worth knowing what they are — how
+    many actions they take, what their level structure looks like — rather than
+    guessing and discovering the mismatch inside a scoring loop.
+
+    `private_tags` IS DELIBERATELY NOT REPORTED. `EnvironmentInfo` carries both
+    `tags` and `private_tags`; the second is named by its author as not for
+    publication, and this output goes into CI logs that anyone with read access
+    can see. Publishing a field called private because it happened to be in the
+    struct is exactly the kind of thing that is obvious in hindsight. `tags`,
+    `game_id` and `title` are the public identity of a public benchmark.
+
+    Degrades like everything else here: no key means OFFLINE, which means an
+    empty roster and exit 0, not a failure.
+    """
+    arcade, mode = open_arcade()
+    found = arcade.get_environments()
+    return {
+        "mode": mode,
+        "count": len(found),
+        "environments": [
+            {
+                "game_id": env.game_id,
+                "title": env.title,
+                "tags": env.tags or [],
+                # CORRECTION, from reading the live roster rather than the
+                # field name. This is NOT the set of actions the environment
+                # accepts, which is what I first wrote here. It is a REFERENCE
+                # ACTION COUNT PER LEVEL: SB26 reports [18, 28, 18, 19, 31, 23,
+                # 58, 18] — eight levels, eighteen actions for the first.
+                #
+                # That matters more than the correction does. ARC's level score
+                # is `min(1, h/a)**2`, and `h` is the reference we do not have
+                # offline — `play.py` substitutes BFS-optimal and says so. For
+                # hosted environments `h` appears to be RIGHT HERE, so it does
+                # not need inventing.
+                "baseline_actions": env.baseline_actions or [],
+                # `level_tags` is empty on every hosted environment (all report
+                # 0), so it is useless as a level count. The length of
+                # `baseline_actions` is the real one: 6 to 10 levels each.
+                "level_tags_count": len(env.level_tags or []),
+                "levels_from_baselines": len(env.baseline_actions or []),
+            }
+            for env in sorted(found, key=lambda e: e.game_id)
+        ],
+    }
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Play ZetaChase offline and score it.")
-    parser.add_argument("--agent", choices=("greedy", "random"), default="greedy")
+    parser.add_argument(
+        "--agent", choices=("pixel", "greedy", "random"), default="greedy"
+    )
     parser.add_argument("--seed", type=int, default=0)
+    parser.add_argument(
+        "--list-environments",
+        action="store_true",
+        help="report the hosted environments this key can see, and play nothing",
+    )
     args = parser.parse_args()
+    if args.list_environments:
+        print(json.dumps(list_environments(), indent=2))
+        return
     print(json.dumps(play(agent=args.agent, seed=args.seed), indent=2))
 
 
