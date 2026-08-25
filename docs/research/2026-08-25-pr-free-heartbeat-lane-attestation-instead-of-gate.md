@@ -626,7 +626,7 @@ looks like. So:
 
 | Step | Action | Ruleset change? | Reversible? |
 |---|---|---|---|
-| **1** | Land the audit + registry (this PR). Wire into `cross-verify`. Armed, green, cutover in the future. | **no** | trivially |
+| **1** | Land the audit + registry, **wired into `cross-verify`** (this PR — both steps observed `success` on run 32822527654). Armed, green, cutover in the future. | **no** | trivially |
 | **2** | Teach the *existing* PR lane to write the attestation, and run the five checks before it flushes. **The attestation is proven on the current route, where the gate still catches anything it gets wrong.** | **no** | trivially |
 | **3** | Create the App, install it `contents: write`, environment-scope its key, and have it push to a **throwaway branch** to prove the identity and the check set end to end. | **no** | trivially |
 | **4** | Add the bypass actor (§7), move `cutoverIso` to now, point `laneIdentities` at the App. | **yes** | one `PUT`, snapshot in hand |
