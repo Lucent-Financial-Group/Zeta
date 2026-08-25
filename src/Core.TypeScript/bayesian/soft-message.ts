@@ -341,3 +341,111 @@ export const productAll = (messages: readonly SoftMessage[], rho: number): SoftM
   for (const k of Object.keys(summed).sort()) out[k] = Math.round(summed[k]! * scale);
   return Object.freeze(out);
 };
+
+// ── WIRING THE SENSOR TO THE PRICING ─────────────────────────────────────────
+//
+// `productAll` takes rho as GIVEN, so a caller who passes 0 for a colluding
+// fleet gets no protection. This is the other half: consume a distinctness
+// readout produced by the anti-Sybil probe and collapse messages that came from
+// one source, so the discount is MEASURED rather than asserted.
+//
+// WHY NOT ESTIMATE CORRELATION FROM THE MESSAGES THEMSELVES. It is the obvious
+// move and it is wrong. Message content cannot distinguish collusion from
+// genuine agreement, so an in-band estimator penalises honest consensus — the
+// rho->1 collapse that `anti-babel-preserve-reconcilability.md` warns about,
+// arrived at by trying to prevent it. `AntiSybil.fs` avoids this by measuring
+// an UNFORGEABLE EXTERNAL TRACE (clock-drift entropy, non-fungible across
+// identities) rather than what the messages say. Two honest sensors that agree
+// have uncorrelated drift; two puppets of one clock do not.
+//
+// The claim that substrate rests on (AntiSybil.fs:10-14): forging k identities
+// from s < k entropy sources must, by pigeonhole, re-use a source, so two
+// emitted streams are correlated and a discriminator catches them.
+
+/**
+ * A batch-local source assignment: claimed-identity index → source component id.
+ *
+ * This is `AntiSybil.DistinctnessReadout.SourceOf` — and the shape carries a
+ * trap that `dual-use-detection-is-neutral-oracle-decides.md` documents from a
+ * live incident: components are numbered `0 .. DistinctCount-1` **per
+ * invocation, over one batch**, so the same physical source can be numbered
+ * differently next time. It is NOT a durable identity. Recognising sameness and
+ * assigning identity are two different functions, and using this as the latter
+ * produces silently-merged evidence under a colliding key.
+ *
+ * Using it HERE is the legitimate case, because combining a batch of messages
+ * IS one batch. Do not persist it.
+ */
+export type SourceAssignment = ReadonlyMap<number, number>;
+
+/**
+ * Combine messages, collapsing those the probe traced to a single source.
+ *
+ * Messages sharing a source id are averaged into ONE message's worth before the
+ * cross-source product, so a fleet of n puppets from one clock carries exactly
+ * what one participant carries. Averaging rather than summing within a group is
+ * the point: summing would let a source amplify itself by splitting its opinion
+ * across puppets, which is the attack restated.
+ *
+ * Cross-source combination is the plain independent product, which is now
+ * CORRECT rather than assumed — the probe has established the sources are
+ * distinct, which is exactly `product`'s stated precondition.
+ *
+ * `sourceOf` missing an index is treated as its own distinct source. That is
+ * the fail-OPEN direction and it is deliberate: an unmeasured participant is
+ * given the benefit of the doubt, matching `manifesto §11` default regard and
+ * `TravelerRankLedger`'s honest 0.5 prior for a fresh identity rather than a
+ * pessimistic clamp. The cost is stated plainly — a participant the probe never
+ * saw is not discounted, so coverage of the probe is load-bearing.
+ */
+export const productByDistinctSource = (
+  messages: readonly SoftMessage[],
+  sourceOf: SourceAssignment,
+): SoftMessage => {
+  if (messages.length === 0) return uniform;
+
+  const groups = new Map<number, SoftMessage[]>();
+  let nextSyntheticSource = -1;
+  messages.forEach((m, i) => {
+    // Unmeasured => its own source (fail-open, see above). Negative ids cannot
+    // collide with the probe's `0 .. DistinctCount-1`.
+    const src = sourceOf.get(i) ?? nextSyntheticSource--;
+    const bucket = groups.get(src);
+    if (bucket) bucket.push(m);
+    else groups.set(src, [m]);
+  });
+
+  let joint: SoftMessage = uniform;
+  for (const src of [...groups.keys()].sort((a, b) => a - b)) {
+    const members = groups.get(src)!;
+    const summed = members.reduce<SoftMessage>((acc, m) => product(acc, m), uniform);
+    const collapsed: Record<CandidateKey, number> = {};
+    for (const k of Object.keys(summed).sort()) {
+      collapsed[k] = Math.round(summed[k]! / members.length);
+    }
+    joint = product(joint, Object.freeze(collapsed));
+  }
+  return joint;
+};
+
+/**
+ * How many distinct sources a batch actually had — the forgery-cost floor.
+ *
+ * A NEUTRAL COUNT, not a verdict. `AntiSybil.DistinctnessReadout` names this the
+ * floor on how many independent clocks an adversary needed; it is equally the
+ * count of honest participants who happen to share a machine. The mechanism
+ * reports the number; the oracle decides what it means.
+ */
+export const distinctSourceCount = (
+  messageCount: number,
+  sourceOf: SourceAssignment,
+): number => {
+  const seen = new Set<number>();
+  let unmeasured = 0;
+  for (let i = 0; i < messageCount; i++) {
+    const s = sourceOf.get(i);
+    if (s === undefined) unmeasured++;
+    else seen.add(s);
+  }
+  return seen.size + unmeasured;
+};

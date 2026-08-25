@@ -12,14 +12,17 @@ import { describe, expect, test } from "bun:test";
 import {
   argmax,
   atInfluenceFloor,
+  distinctSourceCount,
   divide,
   effectiveCount,
   fromLogWeights,
   MAX_INFLUENCE,
   product,
   productAll,
+  productByDistinctSource,
   SCALE,
   type SoftMessage,
+  type SourceAssignment,
   toDistribution,
   uniform,
 } from "./soft-message";
@@ -282,5 +285,84 @@ describe("SYBIL RESISTANCE — bounded influence alone was not enough", () => {
     expect(identical).toBe(1000);
     expect(half).toBeGreaterThan(identical);
     expect(half).toBeLessThan(independent);
+  });
+});
+
+describe("THE SENSOR WIRED TO THE PRICING — distinctness, not an asserted rho", () => {
+  test("a fleet traced to ONE source carries one participant's worth", () => {
+    const puppet = fromLogWeights({ lie: MAX_INFLUENCE, truth: -MAX_INFLUENCE });
+    const fleet = Array.from({ length: 50 }, () => puppet);
+    // The probe traced all 50 claimed identities to source component 0.
+    const oneSource: SourceAssignment = new Map(fleet.map((_, i) => [i, 0]));
+    const collapsed = productByDistinctSource(fleet, oneSource);
+    expect(collapsed).toEqual(puppet);
+    expect(distinctSourceCount(50, oneSource)).toBe(1);
+  });
+
+  test("SPLITTING an opinion across puppets does not amplify it", () => {
+    // Why the within-group collapse averages rather than sums. A source that
+    // splits its conviction over ten puppets, each asserting a tenth, would
+    // reassemble the full weight under summation — the attack restated as
+    // arithmetic. Averaging returns exactly what one participant said.
+    const tenth = fromLogWeights({ c: MAX_INFLUENCE / 10 });
+    const split = Array.from({ length: 10 }, () => tenth);
+    const oneSource: SourceAssignment = new Map(split.map((_, i) => [i, 0]));
+    expect(productByDistinctSource(split, oneSource)["c"]).toBe(MAX_INFLUENCE / 10);
+  });
+
+  test("genuinely distinct sources are NOT discounted — honest consensus survives", () => {
+    // The failure mode an in-band, content-based estimator would have: three
+    // independent sensors that AGREE would look correlated and be penalised.
+    // Distinctness is measured from drift, not from what they said, so
+    // agreement between distinct sources counts fully.
+    const agree = fromLogWeights({ c: 1000 });
+    const three = [agree, agree, agree];
+    const distinct: SourceAssignment = new Map([
+      [0, 0],
+      [1, 1],
+      [2, 2],
+    ]);
+    expect(productByDistinctSource(three, distinct)["c"]).toBe(3000);
+    expect(distinctSourceCount(3, distinct)).toBe(3);
+  });
+
+  test("the mixed case: a fleet plus honest voices prices each side once", () => {
+    const puppet = fromLogWeights({ lie: MAX_INFLUENCE, truth: -MAX_INFLUENCE });
+    const honest = fromLogWeights({ truth: MAX_INFLUENCE });
+    const batch = [puppet, puppet, puppet, puppet, honest, honest];
+    // Probe: indices 0-3 are one forged source; 4 and 5 are distinct.
+    const readout: SourceAssignment = new Map([
+      [0, 0],
+      [1, 0],
+      [2, 0],
+      [3, 0],
+      [4, 1],
+      [5, 2],
+    ]);
+    const joint = productByDistinctSource(batch, readout);
+    // Four puppets contribute one puppet's worth; two honest contribute two.
+    expect(joint["truth"]).toBe(2 * MAX_INFLUENCE - MAX_INFLUENCE);
+    expect(joint["lie"]).toBe(MAX_INFLUENCE);
+    expect(argmax(joint)).toBe("lie"); // still a tie broken by key order
+    expect(distinctSourceCount(6, readout)).toBe(3);
+  });
+
+  test("an UNMEASURED participant fails OPEN — counted as its own source", () => {
+    // Deliberate and stated: default regard for a participant the probe never
+    // saw, matching TravelerRankLedger's honest 0.5 prior over a pessimistic
+    // clamp. The cost is that probe coverage is load-bearing, and this test
+    // exists so that cost is visible rather than discovered.
+    const m = fromLogWeights({ c: 500 });
+    const empty: SourceAssignment = new Map();
+    expect(productByDistinctSource([m, m, m], empty)["c"]).toBe(1500);
+    expect(distinctSourceCount(3, empty)).toBe(3);
+  });
+
+  test("collapsing is idempotent — re-combining one source's output changes nothing", () => {
+    const m = fromLogWeights({ c: 700 });
+    const one: SourceAssignment = new Map([[0, 0]]);
+    const once = productByDistinctSource([m], one);
+    const twice = productByDistinctSource([once], one);
+    expect(twice).toEqual(once);
   });
 });
