@@ -1,6 +1,12 @@
 import { describe, expect, test } from "bun:test";
 
-import { auditArchiveRefs, gate, STRANDED_BASELINE } from "./audit-orphaned-archive-refs";
+import {
+  auditArchiveRefs,
+  gate,
+  gatedFindings,
+  partitionByAge,
+  STRANDED_BASELINE,
+} from "./audit-orphaned-archive-refs";
 
 const ref = (pr: number, run = 1, attempt = 1): string =>
   `automation/pr-archive-${String(pr)}-run-${String(run)}-attempt-${String(attempt)}`;
@@ -48,7 +54,7 @@ describe("gate — the ratchet", () => {
     const refs = Array.from({ length: 6 }, (_, i) => ref(i + 1));
     const verdict = gate(auditArchiveRefs(refs, new Set([999])), 5);
     expect(verdict).toHaveProperty("error");
-    expect((verdict as { error: string }).error).toContain("A NEW record has been stranded");
+    expect((verdict as { error: string }).error).toContain("has been stranded");
   });
 
   // The cheap wrong fix must not make the check pass. Re-runs push `-attempt-2`
@@ -72,10 +78,60 @@ describe("gate — the ratchet", () => {
     expect(gate(auditArchiveRefs([], new Set([1])), 0)).toEqual({ ok: true });
   });
 
+  test("gates on the SETTLED set, so a record still in flight does not fail the floor", () => {
+    const refs = [ref(1), ref(2)];
+    const result = auditArchiveRefs(refs, new Set([999]));
+    const now = new Date("2026-08-25T12:00:00Z");
+    const fresh = new Map([
+      [ref(1), "2026-08-25T11:55:00Z"],
+      [ref(2), "2026-08-25T11:58:00Z"],
+    ]);
+    const part = partitionByAge(result.stranded, fresh, now, 120);
+    expect(part.inFlight).toHaveLength(2);
+    expect(gate(result, 0, gatedFindings(part))).toEqual({ ok: true });
+  });
+
   test("the shipped baseline is a small number, not the ref population", () => {
     // Guards the correction this audit made: the pile is ref litter (1,279 refs
     // whose records landed), not 1,284 lost records. A baseline near the ref
     // count would mean the two verdicts had been collapsed again.
     expect(STRANDED_BASELINE).toBeLessThan(100);
+  });
+});
+
+describe("partitionByAge — the grace window", () => {
+  const NOW = new Date("2026-08-25T12:00:00Z");
+  const stranded = (n: number) => auditArchiveRefs([ref(n)], new Set([999])).stranded;
+
+  test("a record older than the grace window is SETTLED — the real defect", () => {
+    const part = partitionByAge(stranded(1), new Map([[ref(1), "2026-08-25T06:00:00Z"]]), NOW, 120);
+    expect(part.settled).toHaveLength(1);
+    expect(part.inFlight).toHaveLength(0);
+  });
+
+  test("a record inside the grace window is IN FLIGHT — normal operation, not a finding", () => {
+    const part = partitionByAge(stranded(1), new Map([[ref(1), "2026-08-25T11:30:00Z"]]), NOW, 120);
+    expect(part.inFlight).toHaveLength(1);
+    expect(part.settled).toHaveLength(0);
+  });
+
+  // Fail-closed. "I could not measure it" and "it is fine" are different answers,
+  // and collapsing them is the exact tolerance this whole change removes.
+  test("an unreadable age counts AGAINST the ratchet, never as clean", () => {
+    for (const bad of [null, "not-a-date"]) {
+      const part = partitionByAge(stranded(1), new Map([[ref(1), bad]]), NOW, 120);
+      expect(part.unknownAge).toHaveLength(1);
+      expect(gatedFindings(part)).toHaveLength(1);
+    }
+  });
+
+  test("a ref missing from the age map is unknown, not silently in-flight", () => {
+    const part = partitionByAge(stranded(1), new Map(), NOW, 120);
+    expect(gatedFindings(part)).toHaveLength(1);
+  });
+
+  test("the clock is injected, so the partition replays deterministically", () => {
+    const ages = new Map([[ref(1), "2026-08-25T06:00:00Z"]]);
+    expect(partitionByAge(stranded(1), ages, NOW, 120)).toEqual(partitionByAge(stranded(1), ages, NOW, 120));
   });
 });
