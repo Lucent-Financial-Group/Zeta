@@ -13,11 +13,10 @@
  *
  * Three agents (alexa, otto, soraya) run mutation probes and append findings to
  * `db/mutation-findings/<agent>.jsonl`. Each finding names a **source file** it sampled. The
- * sampling unit is the SOURCE, not the (source, test, mutation) triple: across the 560 observed
- * (tick, source) cells only 5 carry more than one mutation operator, so the operator is essentially
- * determined by (tick, source) and counting triples would measure the file-change rate rather than
- * the agents' choices. `sourceIsTheSamplingUnit()` re-derives that check from the data every run so
- * the claim cannot rot.
+ * sampling unit is the SOURCE, not the (source, test, mutation) triple, because the measurement is
+ * source coverage. Different operators applied to the same source and tick remain one sampled
+ * source; `sourceIsTheSamplingUnit()` reports those operator collisions so this projection's loss
+ * stays visible rather than silently multiplying a source into several draws.
  *
  * ## The universe MUST come from outside the agents' own behaviour
  *
@@ -32,9 +31,10 @@
  * agents did not produce.
  *
  * So the frame is enumerated from the committed tree at a named commit: every `.ts` tracked by git
- * that has a **sibling `.test.ts`** — the population a mutation prober can draw from, because a
- * mutation with no test to distinguish it is not a probe. That is `N = 703` at the commit this was
- * written against.
+ * that has a distinguishing test — a sibling `.test.ts`, or (for `.claude/hooks/` only) a relocated
+ * test under `src/Core.TypeScript/claude-hooks/` per #10559, because bun cannot discover tests under
+ * a dot-prefixed path. A mutation with no test to distinguish it is not a probe.
+ * That is `N = 703` at the commit this was written against.
  *
  * **Frame validity check, and a correction to the first measurement.** An earlier pass restricted
  * the frame to `src/Core.TypeScript` and got `N = 616`. That frame is wrong, and provably so from
@@ -75,6 +75,59 @@
  *   question nobody asked. Assumption stated: this treats each agent's per-file indicator as the
  *   observation, so `nEff` is the effective number of agents for **any statistic averaged over
  *   files across agents**.
+ *
+ * ## Why `rho*(N)` is NOT this meter's band — the connection, stated so it is not re-attempted
+ *
+ * `rho*(N) = (N-3)/(3(N-1))` (`docs/research/rhostar-analytic-proof.md`, frozen-core SS-A) is the
+ * obvious-looking source for a *derived* bound to replace the hardcoded level band that used to
+ * sit on this meter, and it is the wrong one. It has been reached for at least twice; the reasons
+ * it fails are machine-checked in `rho-star-not-a-gate.ts` + its test, not merely asserted here.
+ *
+ * 1. **Different aggregation rule.** `rho*` exists only under MAJORITY vote. `rhoFromUnionCoverage`
+ *    inverts `expectedSocietyIdentical`, the UNION/OR model, whose shipped gain
+ *    `(1-rho)(1-c)(1-(1-c)^(n-1))` is strictly positive for every `rho < 1` — correlation attenuates
+ *    it and never reverses it. There is no threshold in this regime to compare against.
+ *    (`src/Core/SocietyUsefulWork.fs`; the split is named in the 2026-08-16 wiring doc SS1a-1c.)
+ *
+ * 2. **Different random variable.** `rho*`'s rho is the correlation of ERROR (was this voter wrong).
+ *    This module's rho is the correlation of EXPOSURE (did this agent sample this file). They are not
+ *    the same quantity: agents drawing disjoint files can still err identically wherever they
+ *    overlap. And the draw here is not a judgement at all — `mutation-runner.ts` `selectTarget` picks
+ *    `items[FNV1a(agent) ^ tick % items.length]` from the source+test pairs among files changed in
+ *    the last 24 hours, so an agent's identity contributes one fixed 32-bit constant and nothing else.
+ *    There is no shared proposition, hence no majority, hence nothing for `rho*` to bound.
+ *
+ * 3. **`rho` is not a sufficient statistic even where `rho*` does apply.** Two-point exchangeable
+ *    mixing laws reverse the majority INSIDE the region `rho*` calls safe (`m = 51`, `rho = 0.2249`
+ *    vs `rho*(51) = 0.32`, lift `-0.2744`). By de Finetti the verdict turns on where the mixing law
+ *    sits relative to `theta = 1/2`, which a scalar correlation cannot express. `AggregationRule.fs`
+ *    already carries the standing instruction: *"No correlation threshold appears here and none
+ *    should be added."*
+ *
+ * 4. **And it could not be satisfied anyway.** `rho*` increases in N to a supremum of 1/3, while the
+ *    measured coverage rho is ~0.60. No roster size, finite or infinite, reaches it — so "add a
+ *    fourth persona" does not close this gap, though it may be worth doing for other reasons.
+ *
+ * **And the frame problem is UPSTREAM of the band question entirely.** Reason 2 above is not only an
+ * argument against `rho*` — it says the quantity this module bounds is not the quantity its own
+ * header declares. The declared universe is 757 frame files; the actual draw pool is the source+test
+ * pairs among files changed in the last 24 hours, measured at 4-176 and typically 30-70.
+ * `assertFrameContainsDraws` cannot catch that because the churn list is a SUBSET of the declared
+ * frame. Three agents hashing into a short shared list collide at a rate set by its length, so this
+ * meter substantially reads repo churn breadth — `[ran]` corr(poolFraction, rhoIcc) = -0.8555 over
+ * the 741-point series, r^2 ~ 0.73. Consequence to state plainly: **no bound, neither `rho*` nor a
+ * re-derived window, is the right answer while the frame is mis-specified** — a correct bound on the
+ * wrong quantity is still wrong. Fixing the frame (draw from the declared universe, or record the
+ * pool length per tick and condition on it) is the prerequisite; the assertions below are therefore
+ * deliberately about ESTIMATOR CONSISTENCY, which is frame-independent, and not about the level.
+ *
+ * What a level band would have to be derived from is the DOMAIN, not a constant: see
+ * `rho-series.ts` and `db/effective-agent-count/`, where a null model with agents whose behaviour
+ * never changes still drives cumulative rho from 0.156 to 0.949 as the corpus grows. That is why
+ * the level bound is REMOVED rather than re-centred. The 24h-frame finding leftover-on-main
+ * #13753 named is still open — cited, not closed. Series depth is leftover-on-main #13785's
+ * checked-in TSV (`db/effective-agent-count/rho-series-cumulative.tsv`); the 56756b29
+ * shallow-and-blind hatch was a fetch-depth bypass, not a series claim, and is not reintroduced.
  *
  * ## Register (`.claude/rules/toy-is-free-metered-must-be-earned.md`)
  *
@@ -298,11 +351,15 @@ export function repoRoot(): string {
 }
 
 /**
- * The external sampling frame: every git-TRACKED `.ts` with a sibling `.test.ts`.
+ * The external sampling frame: every git-TRACKED `.ts` with a distinguishing test.
  *
  * Enumerated from `git ls-files` rather than from a directory walk so the frame is a pure function
  * of a commit — untracked scratch files cannot silently enlarge the universe, and the result
  * replays deterministically from the recorded sha (DST, discipline #4).
+ *
+ * Distinguishing test means a sibling `.test.ts`, except `.claude/hooks/*.ts` whose tests live at
+ * `src/Core.TypeScript/claude-hooks/*.test.ts` (#10559: bun does not discover tests under a
+ * dot-prefixed path, and `unexecuted-test-files` refuses putting them back).
  */
 export function enumerateUniverse(root: string): readonly string[] {
   // sonarjs/no-os-command-from-path suppression rationale: `git` is spawned from PATH, the
@@ -315,6 +372,18 @@ export function enumerateUniverse(root: string): readonly string[] {
     maxBuffer: 256 * 1024 * 1024,
   });
   return universeFromFileList(out.split("\n").filter((l) => l.length > 0));
+}
+
+const CLAUDE_HOOKS_PREFIX = ".claude/hooks/";
+const RELOCATED_HOOK_TEST_DIR = "src/Core.TypeScript/claude-hooks/";
+
+function hasDistinguishingTest(sourcePath: string, tracked: ReadonlySet<string>): boolean {
+  if (tracked.has(`${sourcePath.slice(0, -3)}.test.ts`)) return true;
+  if (sourcePath.startsWith(CLAUDE_HOOKS_PREFIX) && sourcePath.endsWith(".ts")) {
+    const base = sourcePath.slice(CLAUDE_HOOKS_PREFIX.length, -3);
+    return tracked.has(`${RELOCATED_HOOK_TEST_DIR}${base}.test.ts`);
+  }
+  return false;
 }
 
 /**
@@ -330,7 +399,7 @@ export function universeFromFileList(files: readonly string[]): readonly string[
   const tracked = new Set(files);
   return files
     .filter((p) => p.endsWith(".ts") && !p.endsWith(".test.ts") && !p.endsWith(".d.ts"))
-    .filter((p) => tracked.has(`${p.slice(0, -3)}.test.ts`))
+    .filter((p) => hasDistinguishingTest(p, tracked))
     .sort();
 }
 
@@ -360,10 +429,9 @@ export function parseFindings(text: string): readonly Finding[] {
 /**
  * Re-derives the "the sampling unit is the SOURCE" claim from the data every run.
  *
- * If (tick, source) determined the operator for every cell we would have a clean argument; it does
- * not quite, so the honest form is a ratio that the caller can see. Returns the count of cells and
- * how many carry more than one operator. A drift here means the sampling unit changed and the
- * measurement below needs rethinking — which is the point of computing it rather than asserting it.
+ * Returns the number of (tick, source) cells and how many carry more than one operator. The latter
+ * is the information discarded by projecting findings onto source coverage, so it belongs in the
+ * report. It is an observation over an append-only corpus, not a fixed acceptance threshold.
  */
 export function sourceIsTheSamplingUnit(all: readonly Finding[]): { cells: number; multiOperator: number } {
   const cells = new Map<string, Set<string>>();
@@ -507,7 +575,7 @@ export function formatReport(r: Report): string {
   const lines: string[] = [];
   lines.push("effective agent count — inter-agent correlation over db/mutation-findings/");
   lines.push(`  commit                ${r.commit}`);
-  lines.push(`  sampling frame        ${String(r.frameSize)} git-tracked .ts files with a sibling .test.ts`);
+  lines.push(`  sampling frame        ${String(r.frameSize)} git-tracked .ts files with a distinguishing test`);
   lines.push(`                        (enumerated OUTSIDE the agents' behaviour — see module header)`);
   lines.push(
     `  sampling unit         source file; ${String(r.samplingUnit.multiOperator)}/${String(r.samplingUnit.cells)} ` +

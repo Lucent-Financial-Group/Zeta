@@ -2739,6 +2739,23 @@
       }
     },
     {
+      "id": "ts:apps/twitch-ai",
+      "kind": "typescript",
+      "sources": ["src/apps/twitch-ai/**"],
+      "dependsOn": [],
+      "legs": ["gate/lint-twitch-ai"],
+      "origin": "declared",
+      "requiredQuorum": {
+        "tier": "T1",
+        "faultModel": {
+          "faultClass": "omission",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:typescript"],
+        "evidence": []
+      }
+    },
+    {
       "id": "ts:cross-verification",
       "kind": "typescript",
       "sources": ["tests/cross-verification/**"],
@@ -2776,6 +2793,23 @@
             "holder": "ts:cross-verification"
           }
         ]
+      }
+    },
+    {
+      "id": "ts:demo/identity-dla-site",
+      "kind": "typescript",
+      "sources": ["demo/identity-dla-site/**"],
+      "dependsOn": [],
+      "legs": ["gate/lint-identity-dla"],
+      "origin": "declared",
+      "requiredQuorum": {
+        "tier": "T1",
+        "faultModel": {
+          "faultClass": "omission",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:typescript"],
+        "evidence": []
       }
     },
     {
@@ -2940,8 +2974,8 @@
           {
             "rule": "treaty-transcript",
             "kind": "treaty-transcript",
-            "witness": "src/Core.QSharp.ReferenceOracle/generate-treaty-transcript.ts",
-            "count": 3,
+            "witness": "src/Core.QSharp.ReferenceOracle/css-stabilizer-treaty.json",
+            "count": 4,
             "holder": "unit:qsharp"
           }
         ]

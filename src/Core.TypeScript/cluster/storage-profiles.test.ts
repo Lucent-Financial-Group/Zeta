@@ -1266,9 +1266,17 @@ describe("the checked-in resource ladder", () => {
   // numbers move together because a new Application that is not glob-excluded is
   // BOTH shipped and applied; if only one of them had needed to move, that would
   // itself have been the finding.
-  test("the dev lane applies 37 of the 46 Applications", () => {
-    expect(applicationDirs()).toHaveLength(46);
-    expect(devLaneAppliedDirs()).toHaveLength(37);
+  //
+  // 46 -> 47 and 37 -> 38 on 2026-08-22, and NOTHING WAS ADDED TO THE TREE.
+  // `applicationDirs` was depth-1 and the App-of-Apps root's include glob is
+  // not path-segment bounded, so `game-hosting/gmod` had always been applied
+  // and had never been counted. It requests a literal `cpu: "1", memory: "2Gi"`.
+  // Both counts move together for the same reason as spire-crds: an Application
+  // no exclude covers is BOTH shipped and applied.
+  test("the dev lane applies 38 of the 47 Applications", () => {
+    expect(applicationDirs()).toHaveLength(47);
+    expect(devLaneAppliedDirs()).toHaveLength(38);
+    expect(applicationDirs()).toContain("game-hosting/gmod");
   });
 
   // MEASURED 2026-08-21 by `helm pull` at each pinned targetRevision followed
@@ -1284,28 +1292,94 @@ describe("the checked-in resource ladder", () => {
   // replaced it total 1250m/2368Mi -- the first temporal numbers ever taken
   // from the values we actually ship. The dev-lane pair is unchanged because
   // `temporal/**` is in ports.ts's excludeGlob and was never in that cohort.
+  //
+  // ALL FOUR NUMBERS MOVED 2026-08-22 by exactly gmod's 1000m / 2048Mi, and
+  // again nothing was added and nothing was measured differently: the
+  // enumerator started seeing an Application the cluster had always applied.
+  // 4231 -> 5231, 11427 -> 13475, 8106 -> 9256, 19752 -> 21810. All four are
+  // now cross-checked against a full render of every chart at this rung by
+  // `rendered-resource-requests.ts`, which agrees to the millicore.
   test("metal is exactly what the manifests render today", () => {
     expect(verifyResourceProfileApplied(catalogue, "metal")).toEqual([]);
     const lane = resourceTotal(catalogue, "metal", devLaneAppliedDirs());
-    expect(lane.cpuMillis).toBe(4231);
-    expect(lane.memoryMib).toBe(11427);
+    expect(lane.cpuMillis).toBe(5231);
+    expect(lane.memoryMib).toBe(13475);
     const all = resourceTotal(catalogue, "metal", applicationDirs());
-    expect(all.cpuMillis).toBe(8106);
-    expect(all.memoryMib).toBe(19752);
+    expect(all.cpuMillis).toBe(9256);
+    expect(all.memoryMib).toBe(21810);
   });
 
   // Aaron 2026-08-20: "make things small enough to fit for disk and ram on the
   // runners." This is that, and it is a test so it cannot drift upward without
   // somebody deciding to let it.
-  test("dev fits the runner and metal does not — the ladder is not decorative", () => {
-    expect(auditRunnerBudget(catalogue, "dev")).toEqual([]);
-    expect(auditRunnerBudget(catalogue, "metal").length).toBeGreaterThan(0);
-    const lane = resourceTotal(catalogue, "dev", devLaneAppliedDirs());
+  //
+  // THIS TEST HAS INVERTED TWICE AND BOTH INVERSIONS ARE KEPT IN THE NAME,
+  // because the sequence is the finding and a quietly-rewritten assertion would
+  // erase it.
+  //
+  //   originally  `dev` FITS       1906m against 2500m, 594m of spare
+  //   2026-08-22  NEITHER FITS     2906m -- `game-hosting/gmod` was applied by
+  //                                the dev root all along and a depth-1
+  //                                enumerator could not see it. 406m OVER.
+  //   2026-08-23  `dev` FITS AGAIN 1081m -- and NOT by excluding gmod or by
+  //                                widening the envelope. Three git-path
+  //                                Applications whose requests no rung could
+  //                                reach are now governed rows, so the `dev`
+  //                                rung reaches them. THREE, not five: `cdi`
+  //                                and `kubevirt` are reachable by the same
+  //                                mechanism and are deliberately left alone,
+  //                                because their manifests are vendored
+  //                                byte-for-byte and `--apply` would rewrite
+  //                                them. 120m was available there and refused.
+  //
+  // The 2026-08-22 comment said "No rung reaches gmod: it is a git-path source
+  // with no valuesObject, so `applyResourceProfile` cannot express it". The
+  // first half was true and the second half was FALSE ABOUT ITS OWN MODULE:
+  // `applyResourceProfile` addresses `path` + `docIndex` + `requestsField` as a
+  // dotted path into an ARBITRARY manifest and always could write into
+  // statefulset.yaml. Only the render-side reader (`overlayRung`) demanded the
+  // `spec.source.helm.valuesObject.` prefix.
+  //
+  // `metal` IS UNCHANGED THROUGHOUT and that is asserted below, because the
+  // whole point of a rung is that shrinking one does not touch the other.
+  test("`dev` FITS AGAIN at 1081m — the rung reaches the raw manifests, and the governed rows are floored", () => {
     const budget = envelopeBudget(catalogue.envelope);
-    expect(lane.cpuMillis).toBe(1906);
-    expect(lane.memoryMib).toBe(6207);
-    expect(lane.cpuMillis).toBeLessThan(budget.cpuMillis);
-    expect(lane.memoryMib).toBeLessThan(budget.memoryMib);
+    const dev = resourceTotal(catalogue, "dev", devLaneAppliedDirs());
+    expect(dev.cpuMillis).toBe(1081);
+    expect(dev.memoryMib).toBe(8255);
+    expect(dev.cpuMillis).toBeLessThan(budget.cpuMillis);
+    expect(dev.memoryMib).toBeLessThan(budget.memoryMib);
+
+    // THE REGISTER IS EMPTY, and it is empty because the arithmetic moved --
+    // not because anyone deleted a row they found inconvenient.
+    expect(catalogue.acknowledgedLaneBudgetShortfall).toEqual([]);
+    expect(auditRunnerBudget(catalogue, "dev")).toEqual([]);
+
+    // An acknowledgement re-added now would be STALE: it describes a shortfall
+    // that no longer exists, and outliving its defect is how a baseline becomes
+    // a lie. This is the falsifier for the deletion above.
+    const revived = {
+      ...catalogue,
+      acknowledgedLaneBudgetShortfall: [
+        { key: "dev cpu 2906>2500", reason: "r".repeat(60), liftsWhen: "LIFTS WHEN: never" },
+      ],
+    };
+    expect(auditRunnerBudget(revived, "dev").some((finding) => finding.problem.includes("outlived"))).toBe(true);
+
+    // `metal` still does not fit, and MUST NOT have moved. The dev-rung cuts
+    // are rung-scoped; a change that shrank both rungs would have quietly
+    // re-sized the hardware this rung exists to describe.
+    expect(auditRunnerBudget(catalogue, "metal").length).toBeGreaterThan(0);
+    const metal = resourceTotal(catalogue, "metal", devLaneAppliedDirs());
+    expect(metal.cpuMillis).toBe(5231);
+    expect(metal.memoryMib).toBe(13475);
+
+    // gmod is still COUNTED -- reachability is not exclusion. It contributes
+    // 100m at `dev` where it used to contribute 1000m, and 1000m at `metal`
+    // where it always did.
+    const withoutGmod = devLaneAppliedDirs().filter((dir) => dir !== "game-hosting/gmod");
+    expect(dev.cpuMillis - resourceTotal(catalogue, "dev", withoutGmod).cpuMillis).toBe(100);
+    expect(metal.cpuMillis - resourceTotal(catalogue, "metal", withoutGmod).cpuMillis).toBe(1000);
   });
 
   // Stated because it is the honest answer to the question that was asked, and

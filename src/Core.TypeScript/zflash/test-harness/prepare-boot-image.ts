@@ -30,10 +30,7 @@ import { existsSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import {
-  detectIsohybridEspOffsetBytes,
-  ISOHYBRID_ESP_OFFSET_FALLBACK_BYTES,
-} from "../lib.ts";
+import { detectIsohybridEspOffsetBytes, ISOHYBRID_ESP_OFFSET_FALLBACK_BYTES } from "../lib.ts";
 import { runFileBackedZflashCli } from "../file-backed.ts";
 import { firstbootRoleFromFlags, type ZetaFirstbootRole } from "../firstboot-role.ts";
 import { buildBlob, composeBundle } from "../../installer/zeta-creds-persist";
@@ -65,6 +62,10 @@ export interface PrepareBootImageInput {
   /** 081KSNY2Z0008QG0R0008PN7RQ scenario 5 — role written to the ESP. */
   readonly firstbootRole?: ZetaFirstbootRole;
   readonly joinTokenSourcePath?: string;
+  /** QEMU-only: bake `/zeta-bind-uefi-keyfile` so the guest writes the target ESP keyfile. */
+  readonly bindUefiKeyfileMarker?: boolean;
+  /** QEMU-only: bake `/zeta-qemu-creds-passphrase` so non-interactive 6.95-picker can run. */
+  readonly qemuCredsPassphrase?: string;
 }
 
 export interface PrepareBootImageResult {
@@ -156,6 +157,8 @@ export function prepareBootImage(input: PrepareBootImageInput): PrepareBootImage
         }),
     ...(input.firstbootRole === undefined ? {} : { firstbootRole: input.firstbootRole }),
     ...(input.joinTokenSourcePath === undefined ? {} : { joinTokenSourcePath: input.joinTokenSourcePath }),
+    ...(input.bindUefiKeyfileMarker === true ? { bindUefiKeyfileMarker: true } : {}),
+    ...(input.qemuCredsPassphrase === undefined ? {} : { qemuCredsPassphrase: input.qemuCredsPassphrase }),
   });
 
   if (!result.ok) {

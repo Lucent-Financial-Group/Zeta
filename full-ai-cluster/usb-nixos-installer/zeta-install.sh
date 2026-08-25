@@ -421,7 +421,229 @@ zeta_pf_decide_scope() {
   for dev in $wipes; do echo "wipe=$dev"; done
   for dev in $refuseds; do echo "refused=$dev"; done
 }
+
+# ── Force-reformat override (R4-reformat, 2026-08-23) ─────────────
+#
+# Aaron 2026-08-22: "we could allow for an override to completely reformat and
+# ignore the installed version as an override."
+#
+# THIS IS THE MOST DESTRUCTIVE ACTION THE INSTALLER CAN TAKE, so it is the
+# MOST bounded, not the exception. It routes THROUGH `zeta_pf_breaker` with a
+# STRICTER bound (`ZETA_MAX_REFORMAT_ATTEMPTS`, default 1) rather than around
+# it. There is deliberately no branch anywhere that reaches the wipe with the
+# breaker unread: a `blind` breaker (attempts cannot be counted) and an `open`
+# one (the bound is already spent) both REFUSE the override outright, where the
+# ordinary repair path merely widens the cancel window. A destructive attempt
+# that cannot be COUNTED is exactly the R9 loop, and a reformat is the worst
+# instance of it.
+#
+# THREE INDEPENDENT FACTORS, none of them inferrable:
+#
+#   1. `ZETA_FORCE_REFORMAT` must equal the exact literal `REFORMAT`. Not `1`,
+#      not `yes`, not `true` — a truthy-looking value left in an environment
+#      does nothing.
+#   2. `ZETA_FORCE_REFORMAT_NODE_ID` must NAME the node actually found on the
+#      disk THIS RUN (or the literal `unreadable` when, and only when, nothing
+#      readable was recovered). This is what a stale env var cannot satisfy: it
+#      names a DIFFERENT machine, and it also makes the override SELF-DISARMING
+#      — once the reformat succeeds the node has a new id, so the same
+#      environment on the next boot no longer matches and refuses.
+#   3. Interactively, the operator types `REFORMAT` at a prompt of its own,
+#      before the existing `WIPE` one. On the declared zero-typing path
+#      (`ZETA_AUTO_CONFIRM=WIPE`) there is by construction nobody to type, so
+#      factor 2 carries the per-machine attestation there. Note the mode is
+#      taken from ZETA_AUTO_CONFIRM and NOT from `[ -t 0 ]`: the headless
+#      first-boot path DOES have a tty (the cancel window reads keypresses on
+#      it), so a tty test would have silently demanded typing from a path
+#      whose whole premise is that nobody is at the keyboard.
+#
+# WHAT IT DOES NOT CHANGE: consent. Recovery still happens read-only under
+# `-o ro,noload` BEFORE any of this is evaluated — indeed the override CANNOT
+# arm without it, because factor 2 needs the recovered id. The override decides
+# what happens AFTER consent (mint a fresh identity instead of reusing the
+# recovered one), never when consent may be assumed. It never shortens the
+# cancel window and never flips a `default=abort` back to `proceed`.
+#
+# $1=flagToken $2=declaredNodeId $3=recoveredNodeId $4=reformatBreakerState
+# $5=typedConfirmation, or the literal `non-interactive` on the zero-typing path.
+# Prints exactly one line: `armed`, or `refused <reason>`. Never blank.
+zeta_pf_decide_force_reformat() {
+  local flag="$1" declared="$2" recovered="$3" bstate="$4" typed="$5"
+  if [ "$flag" != "REFORMAT" ]; then echo "refused flag-absent-or-not-exact"; return 0; fi
+  case "$bstate" in
+    open) echo "refused breaker-open"; return 0 ;;
+    blind) echo "refused breaker-blind"; return 0 ;;
+    closed) ;;
+    *) echo "refused breaker-state-unknown"; return 0 ;;
+  esac
+  if [ -z "$declared" ]; then echo "refused node-id-not-declared"; return 0; fi
+  if [ -n "$recovered" ]; then
+    if [ "$declared" != "$recovered" ]; then echo "refused node-id-mismatch"; return 0; fi
+  else
+    if [ "$declared" != "unreadable" ]; then echo "refused node-id-declared-but-none-recovered"; return 0; fi
+  fi
+  if [ "$typed" != "non-interactive" ] && [ "$typed" != "REFORMAT" ]; then echo "refused confirmation-not-typed"; return 0; fi
+  echo "armed"
+}
 # ZETA-PREFLIGHT-PARITY-END --------------------------------------
+
+# ZETA-NODE-ZETAID-BEGIN -----------------------------------------
+# Mint a node ZetaId at install time — the stable 128-bit key this installer
+# did not have.
+#
+# Aaron 2026-08-22, on the MEASURED GAP recorded at Step 2.7 ("nothing in the
+# tree writes a ZetaId at install time"): *"yes we should move this to a
+# zetaid."*
+#
+# WHY Category.InventoryAsset (10) AND NOT A NEW CATEGORY. A cluster node is a
+# physical machine, and physical machines already have a category and a
+# minting convention: `inventory/items/*.md` is described by
+# inventory/reconcile-surfaces.ts as the *register* — "identity of record;
+# ZetaId-keyed, git-as-database" — and `inventory/new-item.ts` mints exactly
+# `packGeneric(1, Category.InventoryAsset, (ms << 78) | random78)`. This block
+# reproduces THAT id scheme byte-for-byte rather than inventing a parallel one.
+# There is no node/traveler category slot today; adding one is a four-oracle
+# byte-lock change (TS + C# + F# + Rust all pack Category), and the smallest
+# honest addition is to reuse the register a node is already IN. The sizing of
+# a dedicated slot is filed, not silently skipped:
+# workitems/081M0QB3HP2087G0R0029W97ZZ-*.md.
+#
+# BIT LAYOUT (src/Core.TypeScript/zeta-id/zeta-id.gen.ts BIT_MASKS + zeta-id.ts
+# packGeneric), MSB first, so the string below can be read against the source:
+#
+#   bits 127..123  version  = 1                    -> 00001
+#   bits 122..69   payload >> 65   (54 bits)
+#   bits  68..65   category = 10                   -> 1010
+#   bits  64..0    payload & (2^65-1)  (65 bits)
+#
+# and payload itself is 119 bits: ms(41) << 78 | random(78). So the emitted
+# 26-char Crockford string sorts chronologically, exactly as `ls workitems/`
+# does, for the same reason.
+#
+# WHY IT IS DONE IN SHELL AT ALL. The installer runs inside the NixOS ISO with
+# no bun, no node and no network; a mint that needed the TypeScript generator
+# would simply not run. So this is a fifth oracle for one narrow path, and it
+# is BYTE-LOCKED against the TypeScript one over fixed vectors by
+# installer/node-zetaid.test.ts. bash-3.2 subset (no bignum, no arrays here),
+# same reason as the preflight parity block: the test must run on the
+# maintainer's macOS bash too.
+#
+# DST SEAM: the pure function takes (ms, randomHex) as ARGUMENTS. The clock and
+# /dev/urandom enter only in the `zeta_mint_node_zetaid` wrapper below — the
+# same boundary discipline as new-workitem.ts's `WorkItemEnv`, and what lets
+# the parity test pin exact vectors instead of asserting a shape.
+
+# $1 = unsigned decimal, $2 = width in bits. Prints $2 binary digits, MSB first.
+zeta_zid_uint_to_bin() {
+  local v="$1" w="$2" out="" i=0
+  while [ "$i" -lt "$w" ]; do
+    out="$(( v & 1 ))$out"
+    v=$(( v >> 1 ))
+    i=$(( i + 1 ))
+  done
+  printf %s "$out"
+}
+
+# $1 = hex string. Prints 4 binary digits per hex char. Non-hex fails CLOSED
+# (empty output, non-zero status) rather than emitting a wrong id.
+zeta_zid_hex_to_bin() {
+  local hex="$1" out="" i=0 c
+  while [ "$i" -lt "${#hex}" ]; do
+    c="${hex:$i:1}"
+    case "$c" in
+      0) out="${out}0000" ;; 1) out="${out}0001" ;; 2) out="${out}0010" ;; 3) out="${out}0011" ;;
+      4) out="${out}0100" ;; 5) out="${out}0101" ;; 6) out="${out}0110" ;; 7) out="${out}0111" ;;
+      8) out="${out}1000" ;; 9) out="${out}1001" ;;
+      a|A) out="${out}1010" ;; b|B) out="${out}1011" ;; c|C) out="${out}1100" ;;
+      d|D) out="${out}1101" ;; e|E) out="${out}1110" ;; f|F) out="${out}1111" ;;
+      *) printf %s ""; return 1 ;;
+    esac
+    i=$(( i + 1 ))
+  done
+  printf %s "$out"
+}
+
+# $1 = exactly 128 binary digits. Prints the canonical 26-char Crockford
+# base32 form, big-endian, with the two leading pad bits zero.
+zeta_zid_bin_to_crockford() {
+  local bits="$1" alpha="0123456789ABCDEFGHJKMNPQRSTVWXYZ" padded out="" i=0 j chunk v
+  if [ "${#bits}" -ne 128 ]; then printf %s ""; return 1; fi
+  padded="00$bits"
+  while [ "$i" -lt 130 ]; do
+    chunk="${padded:$i:5}"
+    v=0
+    j=0
+    while [ "$j" -lt 5 ]; do
+      v=$(( v * 2 + ${chunk:$j:1} ))
+      j=$(( j + 1 ))
+    done
+    out="${out}${alpha:$v:1}"
+    i=$(( i + 5 ))
+  done
+  printf %s "$out"
+}
+
+# $1 = milliseconds since the Unix epoch (decimal)
+# $2 = at least 20 hex characters of randomness (80 bits; the low 78 are used)
+# Prints the 26-char node ZetaId. FAILS CLOSED — empty output, non-zero status
+# — on anything it cannot encode exactly.
+#
+# The 2^41 ms ceiling is not decoration: packGeneric caps the payload at 119
+# bits and THROWS above it, so an ms that needed 42 bits would be a TypeScript
+# exception and a silent wrap to 1970 here. Refusing keeps the two oracles
+# honest at the same boundary. (2199023255552 ms = 2039-09-07.)
+zeta_node_zetaid_from_parts() {
+  local ms="$1" randhex="$2" msbin randbin payload high54 low65 bits
+  case "$ms" in ""|*[!0-9]*) printf %s ""; return 1 ;; esac
+  if [ "$ms" -ge 2199023255552 ]; then printf %s ""; return 1; fi
+  if [ "${#randhex}" -lt 20 ]; then printf %s ""; return 1; fi
+  randhex="${randhex:0:20}"
+  msbin="$(zeta_zid_uint_to_bin "$ms" 41)"
+  randbin="$(zeta_zid_hex_to_bin "$randhex")" || { printf %s ""; return 1; }
+  randbin="${randbin:2:78}"
+  payload="${msbin}${randbin}"
+  high54="${payload:0:54}"
+  low65="${payload:54:65}"
+  bits="00001${high54}1010${low65}"
+  zeta_zid_bin_to_crockford "$bits"
+}
+
+# The impure wrapper: the ONLY place the clock and the entropy source enter.
+# $ZETA_ZETAID_MS / $ZETA_ZETAID_RANDHEX are the injection points a test uses;
+# unset, they read the real ones.
+zeta_mint_node_zetaid() {
+  local ms randhex
+  ms="${ZETA_ZETAID_MS:-}"
+  if [ -z "$ms" ]; then
+    ms="$(date +%s%3N 2>/dev/null || true)"
+    case "$ms" in ""|*[!0-9]*) ms="$(( $(date +%s) * 1000 ))" ;; esac
+  fi
+  randhex="${ZETA_ZETAID_RANDHEX:-}"
+  if [ -z "$randhex" ]; then
+    # `od -An -tx1`, NOT `xxd -p`. The hostname generator a few hundred lines
+    # below uses xxd, which is fine there because it runs inside the NixOS ISO
+    # where xxd exists. This function also runs under `bun test` on a CI runner,
+    # and Ubuntu 24.04 split xxd out of vim-common into its own package -- so a
+    # runner without it would have made the mint silently produce an EMPTY id.
+    # od is coreutils and is everywhere both of those are.
+    randhex="$(head -c 10 /dev/urandom | od -An -tx1 | tr -d " \n")"
+  fi
+  zeta_node_zetaid_from_parts "$ms" "$randhex"
+}
+# Shape check for a recovered node ZetaId. 26 canonical Crockford base32 chars,
+# and the first must be 0..7 because the top two bits of the 130 emitted bits
+# are pad and MUST be zero (encoding.ts `parse` rejects the same values).
+#
+# CANONICAL CASE ONLY, deliberately: Crockford's LENIENT decode (I/L->1, O->0,
+# lowercase) exists for humans re-typing an id off a label. Accepting it HERE
+# would mean two different byte strings both "validate" as the same node, and
+# the file is written by this installer, never typed. A lenient-shaped id in
+# /etc/zeta/node-zetaid is evidence something else wrote it, which is exactly
+# what we want to fail on rather than normalise away.
+zeta_pf_validate_node_zetaid() {
+  printf %s "$1" | grep -Eq '^[0-7][0-9ABCDEFGHJKMNPQRSTVWXYZ]{25}$'
+}
+# ZETA-NODE-ZETAID-END -------------------------------------------
 
 # ZETA-HWCONFIG-CAPTURE-BEGIN ------------------------------------
 # Pure decision functions for Step 6's hardware-configuration.nix capture.
@@ -528,6 +750,14 @@ zeta_hwcap_verify() {
 #
 # Everything here is READ ONLY: blkid, lsblk, dumpe2fs -h, and read-only
 # mounts. No wipefs, no sgdisk, no mkfs, no rw mount.
+# ZETA-PROBE-BEGIN -----------------------------------------------
+# EXTRACTED AND EXECUTED BY A TEST, same contract as the
+# ZETA-RECOGNISE-SELF block below: installer/repair-mode-existing-install.test.ts
+# runs zeta_pf_gather against a REAL partitioned disk and feeds its output to
+# the real zeta_pf_classify, so the chain probe -> classify -> mode=repair is
+# checked end to end rather than from either side alone. The lsblk defect fixed
+# in zeta_pf_gather on 2026-08-23 lived precisely in the gap between those two
+# halves, each of which was individually tested.
 ZETA_PROBE_MOUNT="/tmp/zeta-preflight-probe"
 ZETA_PROBE_ERRORS=""
 
@@ -574,7 +804,29 @@ zeta_pf_gather() {
   echo "pttype=$pttype"
   dlabel="$(sudo blkid -o value -s LABEL "$disk" 2>/dev/null || true)"
   if [ -n "$dlabel" ]; then echo "volumelabel=$dlabel"; fi
-  parts="$(lsblk -p -n -o NAME,TYPE "$disk" 2>/dev/null | awk "\$2==\"part\" {print \$1}" || true)"
+  # `-l` (LIST, not tree) IS LOAD-BEARING. Without it lsblk renders NAME as a
+  # tree and glues UTF-8 box-drawing glyphs onto the path with NO separating
+  # whitespace, so awk's $1 is the 15-byte string "\u251c\u2500/dev/vda1", not
+  # "/dev/vda1". Measured 2026-08-23 against a real GPT disk:
+  #
+  #   $ lsblk -p -n -o NAME,TYPE /dev/vda | cat -A
+  #   /dev/vda    disk$
+  #   M-bM-^TM-^\M-bM-^TM-^@/dev/vda1 part$
+  #
+  # Every blkid on that mangled name then returned EMPTY, so this probe emitted
+  # `part=<glyph+path>|||` for every partition and never a `volumelabel=` or an
+  # `esp=` record. zeta_pf_classify saw parts with no fstype and no label,
+  # counted them as neither Zeta-owned nor foreign, and returned INDETERMINATE
+  # for a disk carrying a full prior Zeta install. Consequence, in order: mode
+  # never became `repair`, so Step 2.7 never ran, so a re-paved node drew a new
+  # random hostname while keeping its NIC -- HWR-2, two roster registrations on
+  # one MAC, which is the exact failure the R4 block was written to prevent.
+  #
+  # Found by installer/repair-mode-existing-install.test.ts on its first real
+  # run against a loop device. Nothing that existed before it could have found
+  # this: the parity tests feed fact records to the classifier directly, so
+  # they proved the classifier right about facts the prober could never gather.
+  parts="$(lsblk -p -n -l -o NAME,TYPE "$disk" 2>/dev/null | awk "\$2==\"part\" {print \$1}" || true)"
   for p in $parts; do
     ptype="$(sudo blkid -o value -s TYPE "$p" 2>/dev/null || true)"
     plabel="$(sudo blkid -o value -s LABEL "$p" 2>/dev/null || true)"
@@ -595,6 +847,8 @@ zeta_pf_gather() {
   # with || but that guard would OVERWRITE good facts with an error record.
   return 0
 }
+
+# ZETA-PROBE-END -------------------------------------------------
 
 # $1=disk $2=factfile. Prints the operator facing findings for one disk.
 # The disposition is decided by zeta_pf_classify; this only renders evidence.
@@ -685,10 +939,17 @@ zeta_pf_open_ledger() {
       [ -b "$part" ] || continue
       sudo mount -t vfat -o rw "$part" "$ZETA_LEDGER_MOUNT" 2>/dev/null || continue
       if sudo test -f "$ZETA_LEDGER_MOUNT/zeta-authorized-keys.pub"; then
-        ZETA_LEDGER_PART="$part"
-        ZETA_LEDGER_FILE="$ZETA_LEDGER_MOUNT/zeta-install-attempts.txt"
-        ZETA_LEDGER_WRITABLE=1
-        return 0
+        # mount -o rw can succeed on a QEMU USB with readonly=on; the first
+        # write then dies EROFS. Claiming WRITABLE from the mount alone is
+        # how wifi-ESP / picker / restore USB-boot installs aborted after
+        # the R7 countdown (run 32638506247). Probe a real write.
+        if sudo sh -c ': > "$1" && rm -f "$1"' _ "$ZETA_LEDGER_MOUNT/.zeta-ledger-write-probe" 2>/dev/null; then
+          ZETA_LEDGER_PART="$part"
+          ZETA_LEDGER_FILE="$ZETA_LEDGER_MOUNT/zeta-install-attempts.txt"
+          ZETA_LEDGER_WRITABLE=1
+          return 0
+        fi
+        echo "[R9-breaker] ESP $part mounted but not writable; breaker stays BLIND"
       fi
       sudo umount "$ZETA_LEDGER_MOUNT" 2>/dev/null || true
     done
@@ -720,6 +981,25 @@ zeta_pf_open_ledger() {
 # USB and no block device. It is "sudo" everywhere in the installer itself; the
 # falsifier in installer/install-ledger-append.test.ts sets it empty.
 ZETA_SUDO="${ZETA_SUDO-sudo}"
+# $ZETA_LEDGER_SYNC is the SECOND injected seam, and it exists for the same
+# reason as the first: `sync` with no argument flushes EVERY filesystem on the
+# host, so its duration is set by the host's dirty page cache and by nothing
+# this installer -- or a test of it -- did. In the installer that cost is the
+# point: the whole reason the record is written is that the node may lose power
+# in the next second. In a test it is a wall-clock wait on unrelated global
+# state, which is the definition of a nondeterministic test.
+#
+# MEASURED 2026-08-22 on the fleet host: 40 `sync` calls took 3.78-4.19 s
+# (~95 ms each) against 0.146-0.245 s for 40 trivial process spawns (~4 ms) --
+# 24x, and the 95 ms is not a constant, it is whatever the machine owes the
+# disk at that instant. The R9 falsifier runs six appends per scenario and had
+# grown to 100.1% of bun's 5000 ms per-test cap on that term alone.
+#
+# The DEFAULT IS THE REAL BARRIER and must stay that way; pinned by
+# install-ledger-append.test.ts ("the durability barrier defaults to a real
+# sync"). A test may substitute a recorder, which is strictly more checking
+# than the nothing that used to observe this line.
+ZETA_LEDGER_SYNC="${ZETA_LEDGER_SYNC-sync}"
 zeta_ledger_append() {
   local outcome="$1" stage="$2" text n
   [ "${ZETA_LEDGER_WRITABLE:-0}" = "1" ] || return 0
@@ -733,9 +1013,14 @@ zeta_ledger_append() {
   # the ledger non-contiguous, which the validator then reads as UNTRUSTED.
   n="$(printf %s "$text" | grep -c '|' || true)"
   n=$((n + 1))
-  printf '%s|%s|%s|%s\n' "$n" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$outcome" "$stage" \
-    | $ZETA_SUDO tee -a "$ZETA_LEDGER_FILE" >/dev/null
-  $ZETA_SUDO sync 2>/dev/null || true
+  if ! printf '%s|%s|%s|%s\n' "$n" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$outcome" "$stage" \
+    | $ZETA_SUDO tee -a "$ZETA_LEDGER_FILE" >/dev/null; then
+    # Second belt: even if open_ledger claimed writable, a later EROFS/EACCES
+    # must not abort the install under set -e. Drop to BLIND and continue.
+    ZETA_LEDGER_WRITABLE=0
+    return 0
+  fi
+  $ZETA_SUDO $ZETA_LEDGER_SYNC 2>/dev/null || true
   ZETA_ATTEMPT_N="$n"
 }
 # ZETA-LEDGER-APPEND-END -----------------------------------------
@@ -770,20 +1055,52 @@ echo "[R9-breaker] verdict=$ZETA_LEDGER_VERDICT state=$ZETA_BREAKER_STATE bound=
 # -o ro mount still REPLAYS THE JOURNAL, which is a write to a disk we have
 # not yet been given consent to touch. noload suppresses that.
 #
-# MEASURED GAP: nothing in the tree writes a ZetaId at install time.
-# /etc/zeta/cluster-node-id is the closest existing stable key, so that is
-# what is recovered. The absent ZetaId is a finding, not an omission here.
+# THE GAP THIS USED TO RECORD IS CLOSED (2026-08-23, Aaron: "yes we should
+# move this to a zetaid"). It read: "nothing in the tree writes a ZetaId at
+# install time. /etc/zeta/cluster-node-id is the closest existing stable key,
+# so that is what is recovered." Step 6.6 now writes /etc/zeta/node-zetaid
+# (Category.InventoryAsset, minted by the ZETA-NODE-ZETAID block above), and
+# this step RECOVERS it.
+#
+# RECOVERS, never re-mints. A repaired node that came back with a new ZetaId
+# would have FORGOTTEN ITSELF across the repair -- manifesto §5, memory
+# preservation, is the whole reason recognise-self exists. Re-minting is
+# correct in exactly one place: a deliberate force-reformat, which is a
+# different node by declaration (see Step 2.75).
+#
+# cluster-node-id is UNCHANGED and still written. The ZetaId is a sibling key,
+# not a replacement: injected-hostname.nix reads cluster-node-id at evaluation
+# time and the roster is keyed by hostname, so retiring it here would break
+# both. Two keys with two jobs -- the hostname is what the network calls this
+# machine, the ZetaId is what the substrate calls it.
+# ZETA-RECOGNISE-SELF-BEGIN -------------------------------------
+# EXTRACTED AND EXECUTED BY A TEST. installer/repair-mode-existing-install.test.ts
+# pulls this block out of this file and runs zeta_pf_recover_identity against a
+# REAL ext4 filesystem on a loop device that carries a real /etc/zeta tree --
+# not a fixture, not a mock of `mount`. That is the whole reason for the
+# markers: repair mode is the path a real operator depends on and the one where
+# getting it wrong destroys data, and until 2026-08-23 nothing in CI had ever
+# mounted an existing install.
+#
+# So nothing in here may assume a device that only a real node has. It reads
+# $BOOT_DISK and $DATA_DISKS, uses lsblk/blkid/mount, and touches nothing else.
 ZETA_REPAIR_ROOT_MOUNT="/tmp/zeta-repair-root"
 ZETA_REPAIR_HOSTNAME=""
 ZETA_REPAIR_MAC=""
 ZETA_REPAIR_CIDR=""
 ZETA_REPAIR_CPIP=""
+ZETA_REPAIR_ZETAID=""
 ZETA_REPAIR_FOUND=0
 
 zeta_pf_recover_identity() {
   local disk part plabel f
   for disk in "$BOOT_DISK" "${DATA_DISKS[@]+"${DATA_DISKS[@]}"}"; do
-    for part in $(lsblk -p -n -o NAME,TYPE "$disk" 2>/dev/null | awk "\$2==\"part\" {print \$1}"); do
+    # `-l` for the same reason as zeta_pf_gather above: the default tree output
+    # glues box-drawing glyphs onto the device path, and the resulting name
+    # matched no blkid LABEL, so this loop `continue`d over every partition and
+    # zeta_pf_recover_identity returned "nothing found" on every real disk it
+    # was ever pointed at.
+    for part in $(lsblk -p -n -l -o NAME,TYPE "$disk" 2>/dev/null | awk "\$2==\"part\" {print \$1}"); do
       plabel="$(sudo blkid -o value -s LABEL "$part" 2>/dev/null || true)"
       [ "$plabel" = "nixos" ] || continue
       sudo mkdir -p "$ZETA_REPAIR_ROOT_MOUNT" 2>/dev/null || continue
@@ -794,6 +1111,7 @@ zeta_pf_recover_identity() {
       [ -f "$f/cluster-segment-mac" ] && ZETA_REPAIR_MAC="$(sudo cat "$f/cluster-segment-mac" 2>/dev/null | tr -d "[:space:]" || true)"
       [ -f "$f/cluster-segment-address" ] && ZETA_REPAIR_CIDR="$(sudo cat "$f/cluster-segment-address" 2>/dev/null | tr -d "[:space:]" || true)"
       [ -f "$f/cluster-control-plane-address" ] && ZETA_REPAIR_CPIP="$(sudo cat "$f/cluster-control-plane-address" 2>/dev/null | tr -d "[:space:]" || true)"
+      [ -f "$f/node-zetaid" ] && ZETA_REPAIR_ZETAID="$(sudo cat "$f/node-zetaid" 2>/dev/null | tr -d "[:space:]" || true)"
       sudo umount "$ZETA_REPAIR_ROOT_MOUNT" 2>/dev/null || true
       return 0
     done
@@ -817,9 +1135,23 @@ zeta_pf_validate_identity() {
   if [ -n "$ZETA_REPAIR_MAC" ]; then
     printf %s "$ZETA_REPAIR_MAC" | grep -Eq "^[0-9a-f]{2}(:[0-9a-f]{2}){5}$" || reasons="$reasons mac-bad-shape"
   fi
+  # An ABSENT node-zetaid is NOT a failure and must never become one: every
+  # node installed before 2026-08-23 has no such file, and refusing to repair
+  # them would turn adding a key into a fleet-wide outage. Absent means "mint
+  # one during this repair" (Step 6.6, logged as minted-on-repair-legacy).
+  #
+  # A PRESENT-BUT-MALFORMED one IS a failure, and for the same reason the
+  # hostname check is: we recognise the node but cannot READ its identity, so
+  # proceeding would silently overwrite an identity we failed to parse. That
+  # lands in the existing untrusted path, whose default is ABORT.
+  if [ -n "$ZETA_REPAIR_ZETAID" ]; then
+    zeta_pf_validate_node_zetaid "$ZETA_REPAIR_ZETAID" || reasons="$reasons node-zetaid-bad-shape"
+  fi
   if [ -n "$reasons" ]; then echo "untrusted$reasons"; return 0; fi
   echo "trusted"
 }
+
+# ZETA-RECOGNISE-SELF-END ---------------------------------------
 
 ZETA_CANCEL_WINDOW_SECS="${ZETA_CANCEL_WINDOW_SECS:-60}"
 ZETA_CANCEL_WINDOW_BLANK_SECS="${ZETA_CANCEL_WINDOW_BLANK_SECS:-10}"
@@ -853,7 +1185,7 @@ if [ "$ZETA_MODE" = "repair" ]; then
   echo "[R4-repair] a prior Zeta install was recognised on an in-scope disk."
   zeta_pf_recover_identity || true
   ZETA_IDENTITY_VERDICT="$(zeta_pf_validate_identity)"
-  echo "[R4-repair]   recovered hostname=${ZETA_REPAIR_HOSTNAME:-<none>} mac=${ZETA_REPAIR_MAC:-<none>} cidr=${ZETA_REPAIR_CIDR:-<none>} cp=${ZETA_REPAIR_CPIP:-<none>}"
+  echo "[R4-repair]   recovered hostname=${ZETA_REPAIR_HOSTNAME:-<none>} mac=${ZETA_REPAIR_MAC:-<none>} cidr=${ZETA_REPAIR_CIDR:-<none>} cp=${ZETA_REPAIR_CPIP:-<none>} zetaid=${ZETA_REPAIR_ZETAID:-<none>}"
   echo "[R4-repair]   identity verdict: $ZETA_IDENTITY_VERDICT"
   case "$ZETA_IDENTITY_VERDICT" in
     trusted)
@@ -876,6 +1208,73 @@ if [ "$ZETA_MODE" = "repair" ]; then
       echo "[R4-repair]   REFUSING to proceed by default: prior install recognised but its remembered identity did not validate ($ZETA_IDENTITY_VERDICT)."
       echo "[R4-repair]   Re-paving now would register a duplicate for a MAC already in the roster (HWR-2)."
       echo "[R4-repair]   The cancel window below now defaults to ABORT; a keypress is required to proceed."
+      ;;
+  esac
+
+  # ── Step 2.75: the force-reformat override (R4-reformat, 2026-08-23) ──
+  #
+  # Aaron: "we could allow for an override to completely reformat and ignore
+  # the installed version as an override."
+  #
+  # Everything above has just finished RECOGNISING this node read-only. This
+  # is where an operator gets to say: I know what is there, ignore it, treat
+  # this as a new machine. The decision itself is
+  # zeta_pf_decide_force_reformat in the parity block (pure, testable, byte-
+  # locked against installer/force-reformat.ts); this is only its wiring.
+  #
+  # ROUTED THROUGH THE BREAKER, WITH A TIGHTER BOUND. Note what is NOT here:
+  # there is no branch that skips zeta_pf_breaker. The same function is called
+  # a second time with ZETA_MAX_REFORMAT_ATTEMPTS (default 1) instead of
+  # ZETA_MAX_DESTRUCTIVE_ATTEMPTS (default 3), so the override is refused
+  # strictly EARLIER than an ordinary attempt is, never later. `blind` refuses
+  # too: the ordinary path treats an uncountable attempt as a reason to widen
+  # the window, but a reformat that cannot be counted IS the R9 loop, so it
+  # does not get to run at all.
+  #
+  # The documented escape is the same one R9 already documents, and it is
+  # still a bound rather than a bypass: ZETA_MAX_REFORMAT_ATTEMPTS=<n>.
+  ZETA_MAX_REFORMAT_ATTEMPTS="${ZETA_MAX_REFORMAT_ATTEMPTS:-1}"
+  ZETA_REFORMAT_BREAKER_STATE="$(zeta_pf_breaker "$ZETA_LEDGER_TRUSTED" "$ZETA_LEDGER_FAILS" "$ZETA_MAX_REFORMAT_ATTEMPTS" "$ZETA_LEDGER_WRITABLE")"
+  ZETA_FORCE_REFORMAT_TYPED="non-interactive"
+  if [ "${ZETA_FORCE_REFORMAT:-}" = "REFORMAT" ] && [ "${ZETA_AUTO_CONFIRM:-}" != "WIPE" ]; then
+    echo
+    echo "[R4-reformat] !! FORCE REFORMAT REQUESTED. This IGNORES the install recognised above."
+    echo "[R4-reformat] !! Everything on the disks listed at the probe is lost, and this node"
+    echo "[R4-reformat] !! comes back with a NEW identity (new hostname, new ZetaId). A repair"
+    echo "[R4-reformat] !! is what you want if you meant to keep the node."
+    read -rp "Type REFORMAT to confirm the wipe-and-forget: " ZETA_FORCE_REFORMAT_TYPED
+  fi
+  ZETA_FORCE_REFORMAT_VERDICT="$(zeta_pf_decide_force_reformat \
+    "${ZETA_FORCE_REFORMAT:-}" \
+    "${ZETA_FORCE_REFORMAT_NODE_ID:-}" \
+    "$ZETA_REPAIR_HOSTNAME" \
+    "$ZETA_REFORMAT_BREAKER_STATE" \
+    "$ZETA_FORCE_REFORMAT_TYPED")"
+  ZETA_FORCE_REFORMAT_ARMED=0
+  case "$ZETA_FORCE_REFORMAT_VERDICT" in
+    armed)
+      ZETA_FORCE_REFORMAT_ARMED=1
+      ZETA_REPAIR_REUSE=0
+      # THE POINT OF THE OVERRIDE, in two lines: drop the recovered identity so
+      # Step 6.6 mints a fresh hostname AND a fresh ZetaId. Carrying the old
+      # identity across a DELIBERATE wipe would be the opposite error to
+      # forgetting it across a repair -- a new node wearing a dead node's name.
+      unset ZETA_REPAIR_NODE_ID
+      ZETA_REPAIR_ZETAID=""
+      echo "[R4-reformat] ARMED. reformat-breaker=$ZETA_REFORMAT_BREAKER_STATE bound=$ZETA_MAX_REFORMAT_ATTEMPTS declared-node=${ZETA_FORCE_REFORMAT_NODE_ID:-<none>}"
+      echo "[R4-reformat] The recognised install is being IGNORED ON PURPOSE, not failed into:"
+      echo "[R4-reformat]   recovered hostname=${ZETA_REPAIR_HOSTNAME:-<none>} zetaid=<discarded> -> a fresh identity is minted at Step 6.6."
+      echo "[R4-reformat] This attempt is recorded in the ledger with stage=reformat, so a later"
+      echo "[R4-reformat] reader can tell a deliberate wipe from a repair that failed into one."
+      ;;
+    *)
+      # Silence would be wrong here in the one case that matters: an operator
+      # who BELIEVES they armed a reformat and did not. So a refusal is loud
+      # whenever the flag was present at all, and invisible when it was not.
+      if [ -n "${ZETA_FORCE_REFORMAT:-}" ]; then
+        echo "[R4-reformat] $ZETA_FORCE_REFORMAT_VERDICT (reformat-breaker=$ZETA_REFORMAT_BREAKER_STATE bound=$ZETA_MAX_REFORMAT_ATTEMPTS)"
+        echo "[R4-reformat] The override did NOT arm. This run continues as an ordinary repair."
+      fi
       ;;
   esac
 
@@ -1042,7 +1441,16 @@ if [ "$ZETA_LEDGER_WRITABLE" = "1" ]; then
     : | sudo tee "$ZETA_LEDGER_FILE" >/dev/null
     ZETA_LEDGER_TEXT=""
   fi
-  zeta_ledger_append started wipe
+  # STAGE, not outcome: `reformat` and `wipe` both validate as ordinary records
+  # (zeta_pf_validate_ledger reads field 3, the outcome), so this costs the
+  # breaker nothing and buys the audit everything -- a later reader of the
+  # stick's ledger can tell a DELIBERATE reformat from a repair that failed
+  # into one, which is otherwise indistinguishable after the disk is gone.
+  if [ "${ZETA_FORCE_REFORMAT_ARMED:-0}" = "1" ]; then
+    zeta_ledger_append started reformat
+  else
+    zeta_ledger_append started wipe
+  fi
   echo "[R9-breaker] recorded destructive attempt $ZETA_ATTEMPT_N in the ledger"
   echo "[R9-breaker] this record counts as a FAILURE until the matching 'ok' is written at the end of the run"
 else
@@ -1914,6 +2322,72 @@ else
 fi
 echo
 
+# ── Step 6.65: persist the node ZetaId (2026-08-23) ───────────────
+#
+# Aaron 2026-08-22: "yes we should move this to a zetaid."
+#
+# THE FILE THE GAP AT STEP 2.7 NAMED. /etc/zeta/node-zetaid is the node's
+# stable 128-bit key: a Category.InventoryAsset ZetaId, minted by the
+# ZETA-NODE-ZETAID block, byte-identical in scheme to inventory/new-item.ts.
+#
+# THREE PATHS, and which one ran is printed, because they mean different
+# things to whoever reads this log after a data loss:
+#
+#   recovered              -- a repair. The node keeps the identity it had.
+#                             This is manifesto §5 (memory preservation) doing
+#                             its job: a node that came back with a new key
+#                             would have forgotten itself across a repair.
+#   minted-on-repair-legacy -- a repair of a node installed BEFORE this file
+#                             existed. There is nothing to recover, so one is
+#                             minted now. Stated separately from `minted` so
+#                             the log never claims a recovery that did not
+#                             happen.
+#   minted                 -- a fresh install, or a deliberate force-reformat.
+#                             A new node by declaration, so a new key.
+#
+# WHY IT IS WRITTEN HERE and not with the hostname above: the hostname block
+# has three exits of its own (injected / recovered / generated) and threading
+# a fourth concern through all of them is how one of them ends up silently not
+# writing. One write site, one verdict, one log line.
+#
+# cluster-node-id is untouched by this step and keeps working exactly as it
+# did: injected-hostname.nix reads it at evaluation time, the roster is keyed
+# by it, and nothing here changes either.
+NODE_ZETAID_DST="/mnt/etc/zeta/node-zetaid"
+NODE_ZETAID_SOURCE=""
+NODE_ZETAID_VALUE=""
+if [ -n "${ZETA_REPAIR_ZETAID:-}" ]; then
+  NODE_ZETAID_VALUE="$ZETA_REPAIR_ZETAID"
+  NODE_ZETAID_SOURCE="recovered"
+else
+  NODE_ZETAID_VALUE="$(zeta_mint_node_zetaid || true)"
+  if [ "${ZETA_REPAIR_FOUND:-0}" = "1" ] && [ "${ZETA_FORCE_REFORMAT_ARMED:-0}" != "1" ]; then
+    NODE_ZETAID_SOURCE="minted-on-repair-legacy"
+  else
+    NODE_ZETAID_SOURCE="minted"
+  fi
+fi
+echo
+echo "[zetaid] ── node identity key ──"
+# FAILURE IS LOUD AND NON-FATAL, deliberately. A node with no ZetaId is a node
+# that is missing a key it did not have at all until today; a node that failed
+# to install because the key could not be minted is a regression against every
+# path that worked yesterday. So this warns and continues -- and it VALIDATES
+# what it is about to write rather than trusting the mint, because an unchecked
+# 26-character string in an identity file is how a malformed id becomes a
+# permanent one.
+if zeta_pf_validate_node_zetaid "$NODE_ZETAID_VALUE"; then
+  sudo mkdir -p "$(dirname "$NODE_ZETAID_DST")"
+  echo "$NODE_ZETAID_VALUE" | sudo tee "$NODE_ZETAID_DST" >/dev/null
+  sudo chmod 0644 "$NODE_ZETAID_DST"
+  echo "[zetaid]   $NODE_ZETAID_SOURCE: $NODE_ZETAID_VALUE"
+  echo "[zetaid]   wrote $NODE_ZETAID_DST (Category.InventoryAsset; the register is inventory/items/)"
+else
+  echo "[zetaid]   WARN: mint produced an invalid ZetaId ('$NODE_ZETAID_VALUE'); NOT writing $NODE_ZETAID_DST"
+  echo "[zetaid]          the install continues -- cluster-node-id is unaffected and remains this node's key"
+fi
+echo
+
 # ── Step 6.6: iter-5 wifi ESP → NetworkManager profile (no radio claim) ─────────
 #
 # zflash may bake /zeta-wifi-credentials.json ({ssid,password}) onto the boot
@@ -1946,6 +2420,45 @@ if [ -n "$WIFI_CREDS_FILE" ]; then
   echo "[iter-5-wifi] staged zeta-wifi-credentials.json on target ESP; NetworkManager profile write deferred to runtime bootstrap (iter-5.5.1)"
 else
   echo "[iter-5-wifi] no zeta-wifi-credentials.json on boot USB ESP; skipping wifi injection"
+fi
+BIND_MARKER_FILE=""
+if [ ${#SEARCH_DIRS[@]} -gt 0 ]; then
+  BIND_MARKER_FILE=$(sudo find "${SEARCH_DIRS[@]}" \
+    -maxdepth 5 -name "zeta-bind-uefi-keyfile" -type f 2>/dev/null | head -1 || true)
+fi
+if [ -z "$BIND_MARKER_FILE" ] && [ -f "$PROBE_MOUNT/zeta-bind-uefi-keyfile" ]; then
+  BIND_MARKER_FILE="$PROBE_MOUNT/zeta-bind-uefi-keyfile"
+fi
+if [ -n "$BIND_MARKER_FILE" ]; then
+  echo "[uefi-keyfile] found zeta-bind-uefi-keyfile on boot USB ESP"
+  ZETA_BIND_UEFI_FROM_ESP=1
+else
+  echo "[uefi-keyfile] no zeta-bind-uefi-keyfile on boot USB ESP"
+  ZETA_BIND_UEFI_FROM_ESP=0
+fi
+# QEMU-only: /zeta-qemu-creds-passphrase lets non-interactive installs run
+# 6.95-picker (Step 6.56 skips the typed prompt on non-TTY). Metal still types
+# at 6.56. Never echo the file contents. Typed passphrase wins if already set.
+QEMU_PP_FILE=""
+if [ ${#SEARCH_DIRS[@]} -gt 0 ]; then
+  QEMU_PP_FILE=$(sudo find "${SEARCH_DIRS[@]}" \
+    -maxdepth 5 -name "zeta-qemu-creds-passphrase" -type f 2>/dev/null | head -1 || true)
+fi
+if [ -z "$QEMU_PP_FILE" ] && [ -f "$PROBE_MOUNT/zeta-qemu-creds-passphrase" ]; then
+  QEMU_PP_FILE="$PROBE_MOUNT/zeta-qemu-creds-passphrase"
+fi
+if [ -n "$QEMU_PP_FILE" ]; then
+  echo "[uefi-keyfile] found zeta-qemu-creds-passphrase on boot USB ESP"
+  if [ -z "${ZETA_CREDS_PASSPHRASE_VAL:-}" ]; then
+    ZETA_CREDS_PASSPHRASE_VAL="$(sudo cat "$QEMU_PP_FILE" | tr -d '\r' | sed -n '1p' || true)"
+    if [ -n "$ZETA_CREDS_PASSPHRASE_VAL" ]; then
+      echo "[uefi-keyfile] passphrase captured from boot USB ESP (QEMU; not typed)"
+    else
+      echo "[uefi-keyfile] zeta-qemu-creds-passphrase empty; staying skip"
+    fi
+  fi
+else
+  echo "[uefi-keyfile] no zeta-qemu-creds-passphrase on boot USB ESP"
 fi
 # 081KZHJPJCF: unmount the boot USB ESP that was RE-mounted for the iter-5.2 hostname +
 # iter-5-wifi probes (see the re-mount before iter-5.2). Harmless no-op if it was never
@@ -2781,6 +3294,10 @@ if [ -d "$ZETA_HOME" ]; then
   # Persist-factor markers always print (picker may be skipped). Default stays
   # FAT UUID. Opt-in bind is env-gated and requires a non-empty serial file.
   # ZETA_BIND_UEFI_KEYFILE=1 is mutually exclusive with iSerial opt-in.
+  # ESP marker /zeta-bind-uefi-keyfile (QEMU_UEFI_KEYFILE_PHASE1) synthesizes the env.
+  if [ "${ZETA_BIND_UEFI_FROM_ESP:-0}" = "1" ]; then
+    ZETA_BIND_UEFI_KEYFILE=1
+  fi
   BIND_BOTH_OPT_INS=0
   if [ "${ZETA_BIND_USB_ISERIAL:-0}" = "1" ] && [ "${ZETA_BIND_UEFI_KEYFILE:-0}" = "1" ]; then
     BIND_BOTH_OPT_INS=1
@@ -2797,8 +3314,9 @@ if [ -d "$ZETA_HOME" ]; then
   fi
 
   # Opt-in UEFI keyfile on the target ESP. Binding is the ESP file itself
-  # (not copied to /etc). Failed write stays UUID. QEMU phase-1 must not
-  # set ZETA_BIND_UEFI_KEYFILE=1.
+  # (not copied to /etc). Failed write stays UUID. Default QEMU phase-1
+  # (wifi / iSerial probe) must not bake /zeta-bind-uefi-keyfile.
+  # QEMU_UEFI_KEYFILE_PHASE1=1 bakes that marker and asserts the write.
   KEYFILE_HELPER="$ZETA_HOME/Zeta/src/Core.TypeScript/installer/uefi-keyfile-esp.ts"
   KEYFILE_TMP=/tmp/zeta-uefi-keyfile
   KEYFILE_INSTALL=/mnt/boot/EFI/ZETA/keyfile
@@ -2894,28 +3412,53 @@ if [ -d "$ZETA_HOME" ]; then
     echo "[iter-5.5.0] ── 6.95-picker: 081KSKBP80008QG0R003AX2A69.3a cred-picker (DEFAULT-ON per 081KSKBP80008QG0R003AX2A69.3c) ──"
     echo "[iter-5.5.0]   passphrase from Step 6.56; binding $PICKER_BIND_FLAG (default FAT UUID; iSerial/keyfile only if the matching ZETA_BIND_* opt-in succeeded)"
     echo "[iter-5.5.0]   to opt out: set ZETA_CREDS_PICKER=0 OR touch /etc/zeta/no-picker"
+    # QEMU serial has no TTY. readline.question hangs until the 1800s phase-1
+    # timeout (run 32724820159). --defer-all is HC-8: empty bake, never bake.
+    PICKER_DEFER=""
+    if [ ! -t 0 ] || [ -n "${QEMU_PP_FILE:-}" ]; then
+      PICKER_DEFER="--defer-all"
+      echo "[iter-5.5.0]   non-TTY or QEMU passphrase file: picker --defer-all (no bake)"
+    fi
     # mise activate inside bash -c matches sibling 6.95a-claude/gemini/codex
     # patterns at lines 1119-1141; without it, bun is not on the PATH the
     # subshell sees (mise installs bun via shims; activate sets PATH).
     # BUN_INSTALL pin matches sibling pattern too.
     #
-    # Output path: write the cred-blob to the TARGET ESP mount during
-    # install. The target ESP is mounted at /mnt/boot by Step 5
-    # ('sudo mount "$ESP_PART" /mnt/boot'). After reboot into the
-    # installed system, disko re-mounts the SAME ESP partition at
-    # /boot — so the file persists across the install-vs-installed
-    # boundary as the same physical file at two mount paths
-    # (/mnt/boot during install → /boot post-reboot). The restore
-    # service (zeta-creds-restore.nix) reads from /boot/zeta-creds.enc
-    # at boot-time.
+    # MISE_TRUSTED_CONFIG_PATHS matches wifi / iSerial / keyfile sudo -u
+    # lines (PR #10226). This is a separate sudo and does not inherit
+    # install.sh's export. Without it, `mise activate` dies:
+    # "Config files in ~/Zeta/.mise.toml are not trusted" (QEMU picker
+    # bind, run 32647553460). HOME-local trust does not survive
+    # /mnt/home/zeta → post-reboot $HOME.
+    #
+    # Output path: bun persist runs as zeta uid (`sudo -u`). VFAT
+    # /mnt/boot is root-write. Measured run 32804383505: --defer-all
+    # worked, then EACCES on /mnt/boot/zeta-creds.enc, so phase-2
+    # had no blob and restore markers never fired. Same shape as
+    # UEFI keyfile: write /tmp, sudo install onto the target ESP.
+    # After reboot, disko remounts that ESP at /boot; restore reads
+    # /boot/zeta-creds.enc (zeta-creds-restore.nix).
     #
     # Env-var passing: inline-set ZETA_CREDS_PASSPHRASE only into the
     # sudo subprocess (not exported in the parent installer shell).
     # See SECURITY block above for full lifecycle.
+    PICKER_TMP=/tmp/zeta-creds.enc
+    PICKER_TMP_FACTOR=/tmp/zeta-creds.factor
+    rm -f "$PICKER_TMP" "$PICKER_TMP_FACTOR"
     ZETA_CREDS_PASSPHRASE="$ZETA_CREDS_PASSPHRASE_VAL" sudo --preserve-env=ZETA_CREDS_PASSPHRASE -u "#$ZETA_UID" \
       HOME="$ZETA_HOME" BUN_INSTALL="$ZETA_HOME/.bun" \
-      bash -c "set -o pipefail; export PATH='/run/current-system/sw/bin:/run/current-system/sw/sbin:${ZETA_HOME}/.local/share/mise/shims:${ZETA_HOME}/.bun/bin:/usr/bin:/bin'; eval \"\$(mise activate bash 2>/dev/null || true)\"; cd '$ZETA_HOME/Zeta' && bun src/Core.TypeScript/installer/zeta-creds-picker.ts $PICKER_BIND_FLAG '$PICKER_BIND_VALUE' --output /mnt/boot/zeta-creds.enc --passphrase-env ZETA_CREDS_PASSPHRASE" || \
+      MISE_TRUSTED_CONFIG_PATHS="$ZETA_HOME/Zeta" \
+      bash -c "set -o pipefail; export PATH='/run/current-system/sw/bin:/run/current-system/sw/sbin:${ZETA_HOME}/.local/share/mise/shims:${ZETA_HOME}/.bun/bin:/usr/bin:/bin'; eval \"\$(mise activate bash 2>/dev/null || true)\"; cd '$ZETA_HOME/Zeta' && bun src/Core.TypeScript/installer/zeta-creds-picker.ts $PICKER_BIND_FLAG '$PICKER_BIND_VALUE' --output $PICKER_TMP --passphrase-env ZETA_CREDS_PASSPHRASE $PICKER_DEFER" || \
         echo "[iter-5.5.0]   WARN: picker exited non-zero; cred-blob may be partial"
+    if [ -f "$PICKER_TMP" ]; then
+      sudo install -m 0600 "$PICKER_TMP" /mnt/boot/zeta-creds.enc
+      if [ -f "$PICKER_TMP_FACTOR" ]; then
+        sudo install -m 0600 "$PICKER_TMP_FACTOR" /mnt/boot/zeta-creds.factor
+      else
+        echo "[iter-5.5.0]   WARN: picker blob written but factor sidecar missing"
+      fi
+      rm -f "$PICKER_TMP" "$PICKER_TMP_FACTOR"
+    fi
   else
     echo "[iter-5.5.0]   SKIP 6.95-picker: $PICKER_SKIP_REASON"
   fi
