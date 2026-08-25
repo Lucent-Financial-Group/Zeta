@@ -265,3 +265,104 @@ let ``stream-stream join IS retroactive where stream-table is not`` () =
 
     Assert.False(ZSet.isEmpty asStream, "stream-stream join catches up when the right side lands")
     Assert.True(ZSet.isEmpty asTable, "stream-table join does not look back")
+
+// ═══ 4. EAGER MODE — the third execution of the SAME plan ════════════
+//
+//  `ToyExecutionMode.Eager` exists because `Zeta.Core.Sql`'s `zeta { }`
+//  CE wanted eager evaluation and used to carry a private evaluator to
+//  get it (`Seq.filter` / `Seq.map` / `Seq.groupBy` + `Map.ofSeq`, each
+//  ending in a raw `ZSet(Pool.Freeze arr)`). That was a second
+//  implementation of the relational operators, and it violated the `ZSet`
+//  sorted/consolidated/nonzero invariant — see `ZetaSqlBuilder.Tests.fs`
+//  §THE INVARIANT for the falsifiers.
+//
+//  Eager evaluation itself is worth keeping: it answers a one-shot
+//  question over relations already in memory without building and
+//  scheduling a circuit. So it is kept as a MODE over the shared plan.
+//
+//  These tests are what makes that claim non-vacuous. `Eager` must return
+//  the byte-identical Z-set that the `Batch` circuit lowering returns,
+//  for every plan the golden file carries — including the stream-table
+//  join, where `AsTable` is the identity in eager and a real
+//  `IntegrateZSet` in the circuit.
+
+let private runEager (plan: ToyPlan) (feeds: (string * ZSet<ToyRow>) list) : ZSet<ToyRow> =
+    ToyEager.run (Map.ofList feeds) plan
+
+let private bothSources = [ "orders", zset allOrders; "customers", zset allCustomers ]
+
+[<Fact>]
+let ``eager equals batch - filter + project + join`` () =
+    Assert.Equal<ZSet<ToyRow>>(
+        runBatch filterProjectJoinPlan bothSources,
+        runEager filterProjectJoinPlan bothSources)
+
+[<Fact>]
+let ``eager equals batch - join + project`` () =
+    Assert.Equal<ZSet<ToyRow>>(
+        runBatch joinProjectPlan bothSources,
+        runEager joinProjectPlan bothSources)
+
+[<Fact>]
+let ``eager equals batch - stream-table join (AsTable is I, and I over one tick is identity)`` () =
+    // The interesting row of the table in `ToyEager`'s docstring: the
+    // circuit emits a real `IntegrateZSet` here and eager emits nothing at
+    // all. They agree because a running sum over a single delta IS that
+    // delta — an argument, not a coincidence, and this is its falsifier.
+    Assert.Equal<ZSet<ToyRow>>(
+        runBatch streamTableJoinPlan bothSources,
+        runEager streamTableJoinPlan bothSources)
+
+[<Fact>]
+let ``eager equality is not vacuous - both sides are non-empty and a drifted plan disagrees`` () =
+    // Without this, all three tests above would pass if every path
+    // returned the empty Z-set.
+    let batch = runBatch filterProjectJoinPlan bothSources
+    Assert.False(ZSet.isEmpty batch, "the fixture must actually produce rows")
+
+    let drifted =
+        zquery orders {
+            join customers (ToyScalar.col "orders" "Cust") (ToyScalar.col "customers" "Id")
+            where (ToyScalar.col "orders" "Amount" .>. ToyScalar.int64Lit 999L)
+            select [ "Name", ToyScalar.col "customers" "Name"
+                     "Amount", ToyScalar.col "orders" "Amount" ]
+        }
+    Assert.NotEqual<ZSet<ToyRow>>(batch, runEager drifted bothSources)
+
+[<Fact>]
+let ``eager consolidates a non-injective projection exactly as the circuit does`` () =
+    // The defect class the old private evaluator had. Project away the
+    // discriminating column so two distinct orders collapse onto ONE row:
+    // the Z-set algebra says the weights SUM. Both paths must agree, and
+    // the answer must be a single entry at weight 2 — not two entries.
+    let plan =
+        zquery orders {
+            where (ToyScalar.col "orders" "Cust" .=. ToyScalar.int64Lit 10L)
+            select [ "Cust", ToyScalar.col "orders" "Cust" ]
+        }
+    let feeds = [ "orders", zset allOrders ]
+    let batch = runBatch plan feeds
+    let eager = runEager plan feeds
+
+    Assert.Equal<ZSet<ToyRow>>(batch, eager)
+    Assert.Equal(1, eager.Count)
+    Assert.Equal(2L, ZSet.weightedCount eager)
+
+[<Fact>]
+let ``lower REFUSES the Eager mode rather than silently treating it as Batch`` () =
+    // A mode argument that is quietly ignored is the vacuity class: the
+    // caller gets a correct answer and never learns the request was
+    // dropped.
+    let c = Circuit.create ()
+    let ex =
+        Assert.Throws<System.ArgumentException>(fun () ->
+            ToyLowering.lower c ToyExecutionMode.Eager filterProjectJoinPlan |> ignore)
+    Assert.Contains("ToyEager.run", ex.Message, System.StringComparison.Ordinal)
+
+[<Fact>]
+let ``eager REFUSES an unbound source rather than defaulting to empty`` () =
+    // Without this, the eager/batch equality tests could pass by both
+    // sides producing nothing.
+    Assert.Throws<System.ArgumentException>(fun () ->
+        runEager filterProjectJoinPlan [ "orders", zset allOrders ] |> ignore)
+    |> ignore
