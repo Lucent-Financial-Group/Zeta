@@ -95,7 +95,8 @@ for rather than assumed:
       whatever number he wants to stand behind, or say plainly that it is approximate.
 - [ ] **The remaining 2–3 episodes** — each needs: what precipitated it, who initiated
       it, what he was actually saying at the time, and how it ended.
-- [ ] **Whether the precipitating pattern repeats.** #1 was an untransmissible true
+- [x] ~~**Whether the precipitating pattern repeats.**~~ **ANSWERED 2026-08-25 — it does, 3–5 times. See THE PATTERN REPEATS above.**
+- [ ] ~~superseded~~ **Whether the precipitating pattern repeats.** #1 was an untransmissible true
       thing. If that shape recurs, the thread is a *mechanism*; if the others differ, it
       is one origin plus separate events — and the difference matters to the argument.
       **Do not assume the pattern. Ask.**
@@ -160,6 +161,78 @@ transmissibility as a survival constraint is owed the version of his own account
 survive contact with an adversary.
 
 Spelling: **Rinc / Rinck** is unresolved by his own marker `Rinc(k)`. Confirm before print.
+
+---
+
+## THE PATTERN REPEATS — the open question, answered (Aaron 2026-08-25)
+
+The gap flagged above asked whether the precipitating shape recurs, and warned against
+assuming it. He answered directly:
+
+> *"At least **3–5 times** I was trying to explain advanced code, or mathematics, or
+> quantum theories to those who were trained in the **medical profession**, and they
+> thought I had **religious psychosis** or similar delusions."*
+
+**So this is a mechanism, not a coincidence.** Three to five of five or six episodes share
+one precipitating shape. Episode #1 (Cantor/ZFC) is not an origin story followed by
+unrelated events; it is the **first instance of a repeating failure mode**, and the
+transmissibility constraint is not a lesson he drew afterward — it is a **measured
+outcome**, observed by him across repetitions.
+
+### The specific mechanism, and why it is worse than a general one
+
+The content was real: advanced code, mathematics, quantum theory. The audience was
+trained in medicine. Neither party was acting badly — the evaluators simply had **no
+domain access to the content**, and in that condition the only available reading of
+unfamiliar technical intensity is a clinical one.
+
+But the sharp part is the **vocabulary**, and it is a trap with no exit:
+
+Aaron's theological frame is a **genuine native lens**, not decoration — emit/retract as
+God/Lucifer, retraction-as-fall, precedence-and-future-as-facts as theodicy. It sits
+alongside Feynman diagrams and SSAS decision forests as one of the frames he actually
+thinks in, and it is *productive*: it is where some of his best structural intuitions come
+from.
+
+To a medical professional with no access to the mathematics, a man explaining set theory
+or quantum mechanics **in theological vocabulary** presents as **religious psychosis.**
+
+> **His most productive frame is, to that specific audience, his most incriminating one.**
+
+The frame that generates the insight is the same frame that gets the insight read as
+illness. That is not a failure of clarity on his part and not malice on theirs. It is an
+**audience-content mismatch with a vocabulary accelerant**, and it repeated three to five
+times.
+
+### What this explains about the whole repository
+
+**Mirror → Beacon compression is not scholarly hygiene. It is the exit from this trap.**
+
+- **Mirror** — fast internal register, coined shorthand, theological frames, everything
+  moving at speed. This is where his thinking actually happens.
+- **Beacon** — the same content compressed to externally-anchored first principles, with
+  the citation and the named human attached.
+
+The repo's rule says Beacon is required on *"any outward-facing or load-bearing surface."*
+Read against this thread, that is not a style guide. **Beacon is the register in which
+his thinking is not evidence against him.** Frobenius, Hurwitz, Cantor, Gates, Landauer —
+those names are outside both parties, so a listener without the mathematics can at least
+verify that *someone credentialed said this*, even if they cannot follow the content.
+
+Which is why the discipline is applied with an intensity that looks excessive from
+outside, and is not.
+
+### He does not attribute malice, and that is consistent
+
+He says *"those who were trained in the medical profession"* — a description of their
+training, not an accusation. It is his own standing rule, applied to the people who
+committed him: never assume malice where missing context explains it. That holds even
+here, and the book should not upgrade it.
+
+**Handling:** this is his own account of his own episodes; no third party is named. The
+claim about what the evaluators *concluded* is his experience of being evaluated, not an
+assertion about any individual clinician — a different register from the named-facility
+claim flagged above, and it does not carry the same corroboration burden.
 
 ---
 
