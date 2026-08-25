@@ -289,9 +289,17 @@ describe("the flash path surfaces an unclassified destination to the operator", 
       },
     );
     expect(result.ok).toBe(true);
-    expect(warnings).toHaveLength(1);
-    expect(warnings[0]).toContain("/zeta-qemu-creds-passphrase");
+    // EXACT-EQUALITY PIN, not a search. `not.toContain("qemu-test-secret")` alone would be
+    // an absence-by-search discharging a taint claim — it passes whenever the leak takes a
+    // form the predicate does not recognise (base64, a slice, a different framing). Pinning
+    // the WHOLE warning list against the module's own rendering leaves no room for any
+    // other byte, so "the passphrase does not appear" is entailed rather than searched for.
+    // (R5 of `audit-check-arity-nonequality.ts`; the census entry for this file cites it.)
+    expect(warnings).toEqual([
+      `zflash: constitutional-rail finding: ${describeEspWriteVerdict("/zeta-qemu-creds-passphrase")}`,
+    ]);
     expect(warnings[0]).toContain("CONTENT CLASS NOT YET REVIEWED");
+    // Kept beside the pin as a directly-readable statement of the property, not as its proof.
     expect(warnings.join("\n")).not.toContain("qemu-test-secret");
   });
 });
@@ -417,8 +425,11 @@ describe("the flash path READS the rail — a disclosure nobody sees is vacuous"
       },
     );
     expect(result.ok).toBe(true);
-    expect(warnings).toHaveLength(1);
-    expect(warnings[0]).toContain("/zeta-wifi-credentials.json");
+    // EXACT-EQUALITY PIN — see the note on the QEMU-passphrase case above for why the
+    // absence assertion below is not what carries this claim.
+    expect(warnings).toEqual([
+      `zflash: constitutional-rail finding: ${describeEspWriteVerdict("/zeta-wifi-credentials.json")}`,
+    ]);
     expect(warnings[0]).toContain("REFUSED BY THE RAIL");
     // The disclosure must not echo the secret it is warning about.
     expect(warnings.join("\n")).not.toContain("super-secret");
