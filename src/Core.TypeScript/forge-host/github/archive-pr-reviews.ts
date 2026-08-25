@@ -979,7 +979,7 @@ export const WRITE_TARGETS: readonly string[] = [
   DEFAULT_MANIFEST_RELATIVE,
 ];
 
-function readGitHeadSha(repoRoot: string): string {
+export function readGitHeadSha(repoRoot: string): string {
   // Cheap + deterministic. Falls back to env var or "(unknown)" if git is
   // unavailable, so the tool still works in CI minimal-environment cases.
   if (process.env.GITHUB_SHA) return process.env.GITHUB_SHA;
@@ -1006,7 +1006,7 @@ function collectSourceIds(archive: PRReviewArchive): string[] {
   return ids;
 }
 
-function buildManifestEntry(
+export function buildManifestEntry(
   archive: PRReviewArchive,
   archivePathAbs: string,
   repoRoot: string,
