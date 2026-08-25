@@ -163,6 +163,14 @@ change, and the coverage delta — is printed before anything is written, and th
 apply workflow runs the plan as its own step so the diff lands in the run log
 independently.
 
+**Exit 4 leaves live MUTATED — read this before you need it.** A failed
+verification does not auto-revert, deliberately: an automatic revert on a
+disagreement the tool does not understand is one more unreviewed write in the
+opposite direction, and it can loop. So on exit 4 the ruleset is in whatever
+state GitHub actually stored, the run log carries `want:` and `got:` in full,
+and the pre-apply snapshot is in `rollback/` and in the run's artifacts.
+Recovery is manual and one step: re-apply the rollback file.
+
 **Verify the write, not the request.** After `PATCH` the reconciler **re-reads**
 the ruleset, re-normalises, and compares to intent. A mismatch is exit 4, the
 loudest code in the set. The falsifier for this is a fake API that stores
