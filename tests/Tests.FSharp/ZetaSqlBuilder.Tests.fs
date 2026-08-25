@@ -129,6 +129,50 @@ let ``for CONSOLIDATES and scales weights through the bind`` () =
     Assert.Equal(1, q.Stream.Count)
     Assert.Equal(8L, q.Stream.[1])
 
+// ═══ THE INHERITED LIMIT ═════════════════════════════════════════════
+//
+//  Delegating to `ZSet.join` is right — the deleted implementation
+//  produced non-Z-sets — but it is not free. `ZSet.join` sizes its output
+//  buffer at |left| × |right| rather than by actual matches, and REFUSES
+//  outright when that product exceeds `Array.MaxLength`, however selective
+//  the key is. The deleted `ResizeArray` version completed on such inputs.
+//
+//  This is a pre-existing defect in `ZSet.join` that `Circuit.Join` has
+//  always had; `zeta { }` now inherits it. It is pinned here rather than
+//  left latent, because a boundary nobody has walked up to is a boundary
+//  that gets discovered in production.
+
+[<Fact>]
+let ``join REFUSES inputs whose CARTESIAN size exceeds Array.MaxLength - even when the result is tiny`` () =
+    // 46_341² = 2_147_485_881 > Array.MaxLength = 2_147_483_591.
+    let n = 46341L
+    let left = Relation.ofKeys [ 1L .. n ]
+    let right = Relation.ofKeys [ 1L .. n ]
+
+    // Each key matches exactly ONE key on the other side, so the true
+    // result is n rows — five orders of magnitude smaller than the buffer
+    // `ZSet.join` reserves for it. It refuses anyway. That gap between
+    // "what the answer is" and "what the implementation reserves" is the
+    // whole finding.
+    let ex =
+        Assert.Throws<System.InvalidOperationException>(fun () ->
+            zeta.Join(left, right, (fun (x: int64) -> x), (fun (x: int64) -> x), (fun a b -> a + b))
+            |> ignore)
+
+    Assert.Contains("Array.MaxLength", ex.Message, System.StringComparison.Ordinal)
+
+[<Fact>]
+let ``join SUCCEEDS just below the threshold - the refusal is about the product, not about size`` () =
+    // Non-vacuity for the test above: one row fewer on each side and the
+    // same shape completes. Without this, the refusal test would also pass
+    // if `zeta.Join` threw on every large input for some unrelated reason.
+    let n = 46340L
+    let left = Relation.ofKeys [ 1L .. n ]
+    let right = Relation.ofKeys [ 1L .. n ]
+
+    let q = zeta.Join(left, right, (fun (x: int64) -> x), (fun (x: int64) -> x), (fun a b -> a + b))
+    Assert.Equal(int n, q.Stream.Count)
+
 // ═══ CROSS-SURFACE ═══════════════════════════════════════════════════
 //
 //  The unification deliverable. `zeta { }` is a TYPED front end with F#

@@ -466,19 +466,54 @@ The fix was deletion. Every operator now delegates to `ZSet.filter` / `ZSet.map`
 `sortAndConsolidate`. So `zeta { }` stopped being a second implementation of the
 relational operators and became a typed surface syntax over the one implementation.
 
-Six tests in `ZetaSqlBuilder.Tests.fs` §THE INVARIANT pin this. All six fail against the
-previous bodies — verified by reverting only the operator bodies and re-running:
-6 failed / 3 passed.
+**Five** tests in `ZetaSqlBuilder.Tests.fs` §THE INVARIANT pin this, plus one in
+§CROSS-SURFACE. All six fail against the previous bodies — verified by reverting only the
+operator bodies and re-running: 6 failed / 3 passed. (An earlier draft of this paragraph
+said "six tests in §THE INVARIANT". That section has five. Miscounting the evidence in
+the sentence that presents it is the defect class this PR is about, so the correction is
+recorded rather than quietly applied.)
+
+**Two regressions the delegation causes, disclosed rather than left to be discovered.**
+`ZSet.join` sizes its output buffer at `|left| × |right|` rather than by actual matches,
+and REFUSES outright when that product exceeds `Array.MaxLength` — about 46 341 rows a
+side — *however selective the key is*. The deleted `ResizeArray` version completed on
+those inputs. Separately, `ZSet.flatMap` folds with `acc <- add acc …`, one sorted merge
+and one allocation per outer entry, so `for` went from O(N·M) to O(N²·M).
+
+Both are properties of the shared primitives that `Circuit.Join` and the whole circuit
+path have always had; delegating **inherits** them rather than creating them. The refusal
+is now pinned from both sides in §THE INHERITED LIMIT — it throws at 46 341² and
+completes at 46 340² — so the boundary is known rather than latent. Fixing it means
+giving `ZSet.join` a geometrically-grown output buffer, the shape `ZSet.ofSeq` already
+uses. That is a hot-path change that wants a benchmark, and so is named here rather than
+attempted at the end of this pass.
 
 ### 11.2 Eager evaluation — kept, as a MODE rather than an implementation
 
 The maintainer's framing was explicit: *"if eager evaluation is a feature worth keeping,
 make it an execution MODE over the shared plan, not a separate implementation."* It is
 worth keeping — it answers a one-shot question over relations already in memory without
-building and scheduling a circuit — so `ToyExecutionMode.Eager` and `ToyEager.run` now
-exist, and `ToyLowering.lower` **refuses** `Eager` rather than silently treating it as
-`Batch` (a quietly-ignored mode argument is the vacuity class: the caller gets a correct
-answer and never learns the request was dropped).
+building and scheduling a circuit — so `ToyExecutionMode.Eager`, `ToyEager.run` and
+`ToyExecution.run` now exist, and `ToyLowering.lower` **refuses** `Eager` rather than
+silently treating it as `Batch` (a quietly-ignored mode argument is the vacuity class:
+the caller gets a correct answer and never learns the request was dropped).
+
+**`ToyExecution.run` is what makes `Eager` a mode rather than a label.** Without it,
+`Eager` would be a DU case that nothing ACCEPTS — `lower` only rejects it and
+`ToyEager.run` takes no mode at all. The dispatcher is the one entry point that takes a
+mode and routes it, and every mode test in `QuerySurface.Equivalence.Tests.fs` now drives
+it rather than reimplementing a circuit harness beside it. It refuses `Streaming`, which
+needs a sequence of deltas: accepting a one-shot feed there would answer a different
+question than the caller asked, in Batch's clothing.
+
+**And the claim this section could easily overstate, stated narrowly.** `zeta { }` does
+**not** build a `ToyPlan`, does not use `ToyExecutionMode.Eager`, and never calls
+`ToyEager.run` — a `grep` of `ZetaSqlBuilder.fs` returns only comments. It remains its own
+eager evaluator over its own typed representation. What it stopped duplicating is the
+OPERATOR SEMANTICS. `ToyExecutionMode.Eager` is the plan-level home for the same
+capability on the same primitives: a sibling, not a destination. An earlier draft of this
+doc and of the file header said the eager evaluation in `zeta { }` "is the third execution
+mode of the shared plan"; that sentence was false and is struck.
 
 The genuine sharing is one level below the mode. The four operator closures — predicate,
 projector, join key, row merge — were inline in `lower`; they are now `ToyOps`, and both
@@ -543,7 +578,30 @@ borrowed a property from a different framing than the interface states — the v
   and `Zeta.Generators` does not match. `grep -rl Microsoft.CodeAnalysis --include='*.csproj'`
   is the probe that answers the question, and it returns two.
 
-### 11.5 Status labels
+### 11.5 What an adversarial review of this pass then found
+
+The diff above was handed to a zero-empathy reviewer before merge. It returned one P0,
+four P1s and five P2s, and the important ones were real. Recorded because the findings
+are more instructive than the fixes:
+
+| finding | disposition |
+|---|---|
+| `zeta { }` does not actually use `ToyExecutionMode.Eager` — the PR's headline claim | **Correct.** Claim narrowed to "shares the operator semantics" in §11.2, the file header, and the mode's own docstring. |
+| `ToyExecutionMode.Eager` is a case nothing accepts — `lower` only rejects it | **Correct.** `ToyExecution.run` added; every mode test now drives it. |
+| A docstring pointed at `ToyExecution.runEager`, which did not exist | **Correct, and damning** — this PR's §11.4 exists to delete a header advertising an absent surface, and introduced a new one four files away. The module now exists. |
+| `ZSet.join` rents `\|left\| × \|right\|` and refuses above `Array.MaxLength` | **Correct.** Inherited from the shared primitive, disclosed in §11.1, pinned from both sides by new tests. Not fixed here — see §11.1. |
+| `for` went from O(N·M) to O(N²·M) | **Correct.** Disclosed in the `For` docstring and §11.1. |
+| `Assert.NotEqual(flagA, flagB)` compares two source literals — measures nothing | **Correct.** Replaced with the same structural experiment run through both folds; the flag comparison now sits after the lines that earn it. |
+| A's `ToTable (ToStream t) = t` hits `ZSet.sum`'s one-element early return | **Correct.** The law holds structurally for A; the test now says so and names where A's fold is actually exercised. |
+| `FoldIsCommutative = true` claimed "for every permutation", but `Checked.(+)` can throw in one order only | **Correct.** Qualified to "commutative wherever it returns", with the `ColumnZSet` overflow precedent (#15260) cited for why the distinction matters. |
+| "the join's **probe** side is a `Dictionary`" — inverted | **Correct.** Dictionary is the build/index side. Fixed. |
+| "Six tests in §THE INVARIANT" — there are five | **Correct.** Fixed, and the miscount recorded in §11.1. |
+
+Nothing was disputed. Two findings (the `ZSet.join` buffer, the `flatMap` fold) are
+pre-existing defects in shared primitives rather than regressions this pass introduced,
+so they are disclosed and pinned instead of fixed under a deadline.
+
+### 11.6 Status labels
 
 Per `.claude/rules/toy-is-free-metered-must-be-earned.md`: `QuerySurface` stays **toy**
 (unchanged — no cost model, no real workload). `Zeta.Core.Sql`'s `zeta { }` moves from

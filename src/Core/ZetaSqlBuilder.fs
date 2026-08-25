@@ -40,12 +40,25 @@ open Zeta.Core
 //  the invariant the hand-rolled copies dropped.
 //
 //  So `zeta { }` is no longer a second implementation of the relational
-//  operators — it is a typed surface syntax over the one implementation,
-//  and the eager evaluation it provides is the third execution mode of the
-//  shared plan (`Zeta.Core.QuerySurface.ToyExecutionMode.Eager`) rather
-//  than a private evaluator.
+//  OPERATORS — it is a typed surface syntax over the one implementation.
 //
-//  ── The honest limit: why this surface is still SEPARATE from `ToyPlan`
+//  ── What this is NOT, stated because the loose claim is false ────────
+//
+//  `zeta { }` does **not** build a `QuerySurface.ToyPlan`, does not use
+//  `ToyExecutionMode.Eager`, and never calls `ToyEager.run`. There is no
+//  reference to any of them in this file outside these comments, and a
+//  `grep` should return exactly that.
+//
+//  An earlier draft of this header said the eager evaluation here "is the
+//  third execution mode of the shared plan". That was an overclaim of the
+//  kind this PR exists to remove, so it is struck. What is true and
+//  narrower: **`zeta { }` remains its own eager evaluator over its own
+//  typed representation; what it stopped duplicating is the operator
+//  semantics.** `ToyExecutionMode.Eager` is the plan-level home for the
+//  same capability, built on the same `ZSet.*` primitives — a sibling, not
+//  a destination.
+//
+//  ── Why it is still SEPARATE from `ToyPlan`, and why that is right ───
 //
 //  `zeta { }` is generic in the row type and takes F# LAMBDAS
 //  (`'T -> bool`, `'T -> 'U`). `QuerySurface.ToyPlan` is deliberately
@@ -56,12 +69,12 @@ open Zeta.Core
 //  "Deliberately left out" section of the design doc).
 //
 //  So the two IRs are NOT merged, and merging them would destroy the
-//  falsifier. What IS shared is everything below the IR: the operator
-//  semantics (`ZSet.*`) and the eager execution mode. The relationship is
-//  pinned by a test, not asserted here — `zeta { }` over a `ToyRow`
-//  relation must return the byte-identical Z-set that `ToyEager.run`
-//  returns for the corresponding `ToyPlan`, which in turn must equal the
-//  `Circuit` batch lowering.
+//  falsifier. What IS shared is one level below both: the operator
+//  semantics, i.e. `ZSet.filter` / `ZSet.map` / `ZSet.join` /
+//  `ZSet.flatMap`. The relationship is pinned by a test, not asserted
+//  here — `zeta { }` over a `ToyRow` relation must return the
+//  byte-identical Z-set that `ToyEager.run` returns for the corresponding
+//  `ToyPlan`, which in turn must equal the `Circuit` batch lowering.
 //
 //  ── Anchors (Beacon) ────────────────────────────────────────────────
 //  • Codd, "A Relational Model of Data for Large Shared Data Banks"
@@ -107,6 +120,15 @@ type ZetaQueryBuilder() =
     /// which scales each inner Z-set by the outer entry's weight and sums,
     /// consolidating collisions. The hand-rolled version multiplied weights
     /// into a flat `ResizeArray` and never consolidated.
+    ///
+    /// **Cost regression, disclosed:** `ZSet.flatMap` folds with
+    /// `acc <- add acc (scale w (f k))`, and each `add` is a full sorted
+    /// merge plus one array allocation. So this is O(N² · M) time and N
+    /// allocations over N outer entries, against the deleted flat append's
+    /// O(N · M) and one. Correct where the old one was not, and slower —
+    /// both halves are true. `ZSet.sum`'s k-way merge is the fix when a
+    /// workload needs it; nothing measured here does yet, and guessing at
+    /// which is a `toy`-grade optimisation without a benchmark.
     member _.For(r: Relation<'T>, f: 'T -> Relation<'U>) : Relation<'U>
         when 'T : comparison and 'U : comparison =
         { Stream = ZSet.flatMap (fun k -> (f k).Stream) r.Stream }
@@ -140,16 +162,43 @@ type ZetaQueryBuilder() =
         { Stream = ZSet.map projection r.Stream }
 
     /// ⋈ (equi-join). Delegates to `ZSet.join` — the same function
-    /// `JoinZSetOp.StepAsync` calls: a hash join that indexes the RIGHT
-    /// side, multiplies weights with `Checked` arithmetic, guards the
-    /// output-size overflow, and consolidates.
+    /// `JoinZSetOp.StepAsync` calls: a hash join that BUILDS a
+    /// `Dictionary<'Key, int>` index over the right side and PROBES it by
+    /// scanning the left, multiplies weights with `Checked` arithmetic,
+    /// and consolidates.
     ///
-    /// The `'Key : not null` constraint is new and is inherited from
-    /// `ZSet.join` (and therefore from `Circuit.Join`): the join's probe
-    /// side is a `Dictionary<'Key, int>`, which cannot key on null. The
-    /// hand-rolled version used `Map.ofSeq` and so accepted a nullable
-    /// key — an accidental capability, not a designed one, and one that
-    /// the circuit path never had.
+    /// ── Two regressions this delegation causes, stated plainly ───────
+    ///
+    /// Moving onto the shared primitive is right — the deleted version
+    /// produced non-Z-sets — but it is not free, and both costs land on
+    /// LARGE inputs where no test currently goes:
+    ///
+    /// 1. **Output buffer is sized `|left| × |right|`, not by matches.**
+    ///    `ZSet.join` rents the full cartesian product up front
+    ///    (`ZSet.fs`, `Pool.Rent (int cap64)`), regardless of how
+    ///    selective the key is. The deleted implementation grew a
+    ///    `ResizeArray` bounded by ACTUAL matches. So a selective join
+    ///    over two large relations now reserves vastly more memory than
+    ///    its result needs.
+    /// 2. **Inputs whose product exceeds `Array.MaxLength` are REFUSED.**
+    ///    The same code `invalidOp`s when `|left| × |right| >
+    ///    Array.MaxLength` — about 46 341 rows a side if both are equal —
+    ///    *even when the result would be tiny*. The old path completed.
+    ///
+    /// This is a pre-existing defect in `ZSet.join` that `Circuit.Join`
+    /// has always had; delegating here inherits it rather than creating
+    /// it. It is disclosed rather than papered over, and the refusal is
+    /// pinned by a test in `ZetaSqlBuilder.Tests.fs` §THE INHERITED LIMIT
+    /// so the boundary is known rather than discovered in production.
+    /// Fixing it means giving `ZSet.join` a geometrically-grown output
+    /// buffer (the shape `ZSet.ofSeq` already uses) — a change to a hot
+    /// path that wants a benchmark, and therefore not this PR's business.
+    ///
+    /// The `'Key : not null` constraint is also new, inherited from
+    /// `ZSet.join` (and so from `Circuit.Join`): the index side is a
+    /// `Dictionary<'Key, int>`, which cannot key on null. The hand-rolled
+    /// version used `Map.ofSeq` and so accepted a nullable key — an
+    /// accidental capability the circuit path never had.
     [<CustomOperation("join")>]
     member _.Join(relR: Relation<'R>,
                   relS: Relation<'S>,

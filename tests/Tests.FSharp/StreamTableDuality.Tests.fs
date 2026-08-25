@@ -48,6 +48,16 @@ let private tDeltas: TableStream.Stream =
 
 [<Fact>]
 let ``A - ToTable (ToStream t) = t`` () =
+    // HONEST LIMIT, stated so this is not read as stronger than it is:
+    // instance A's `ToStream` returns a ONE-element list, so `ToTable` of
+    // it hits `ZSet.sum`'s `| 1 -> arr.[0]` early return. The law holds
+    // STRUCTURALLY for A rather than because a fold was exercised — this
+    // test pins the law, it does not exercise the summation.
+    //
+    // The summation is exercised by `A declares FoldIsCommutative …`
+    // (3 deltas through `ZSet.sum`) and by the tick-by-tick comparison
+    // against `Circuit.IntegrateZSet` below. Those are where A's fold is
+    // actually measured.
     let table = zsetDuality.ToTable zDeltas
     Assert.False(ZSet.isEmpty table, "non-vacuity: the fixture must fold to something")
     Assert.Equal<ZSet<int>>(table, zsetDuality.ToTable(zsetDuality.ToStream table))
@@ -106,11 +116,29 @@ let ``B declares NOT TableDeterminesStream and the history really is gone`` () =
     Assert.Equal(2, List.length roundTripped)
 
 [<Fact>]
-let ``the two instances are DIFFERENT - exactly one of them has a commutative fold`` () =
-    // The whole point of the shared interface, stated as one assertion:
-    // they agree on the law, and they disagree on the property that
-    // decides whether a fold may serve as a shared conclusion
-    // (.claude/rules/local-time-never-enters-the-shared-fold.md).
+let ``the two instances are DIFFERENT - measured on behaviour, not on the declared flags`` () =
+    // An earlier version of this test asserted
+    //   Assert.NotEqual(zsetDuality.FoldIsCommutative, tableDuality.FoldIsCommutative)
+    // which compares two LITERALS declared in source against each other.
+    // It would have passed with both implementations swapped for stubs. A
+    // test that reads only declarations measures nothing, and it sat under
+    // a header claiming to prove the instances differ.
+    //
+    // Measured instead: run the SAME structural experiment — a
+    // "put then remove" pair, and its reverse — through both folds, and
+    // demand that one is order-insensitive and the other is not.
+    let zForward = [ ZSet.ofSeq [ 1, 1L ]; ZSet.ofSeq [ 1, -1L ] ]
+    let zBackward = List.rev zForward
+    let tForward = [ TableStream.Upsert("k", DynamicValue.Int 1L); TableStream.Retract "k" ]
+    let tBackward = List.rev tForward
+
+    // A: same answer either way.
+    Assert.Equal<ZSet<int>>(zsetDuality.ToTable zForward, zsetDuality.ToTable zBackward)
+    // B: different answer.
+    Assert.NotEqual<TableStream.Table>(tableDuality.ToTable tForward, tableDuality.ToTable tBackward)
+
+    // Only now is comparing the declarations meaningful — the lines above
+    // are what earn them.
     Assert.NotEqual(zsetDuality.FoldIsCommutative, tableDuality.FoldIsCommutative)
     Assert.NotEqual<string>(zsetDuality.DualityName, tableDuality.DualityName)
 

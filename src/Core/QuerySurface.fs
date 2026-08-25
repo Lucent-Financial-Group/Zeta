@@ -181,15 +181,22 @@ type ToyExecutionMode =
     /// `ZSet` relations, bottom-up, through the same `ZSet.filter` /
     /// `ZSet.map` / `ZSet.join` primitives the circuit operators call.
     ///
-    /// This mode exists because `Zeta.Core.Sql`'s `zeta { }` CE wanted
-    /// exactly it, and used to carry a PRIVATE evaluator to get it. Eager
-    /// evaluation is a legitimate feature — it skips scheduler setup for a
-    /// one-shot answer over relations already in memory — so it is kept.
-    /// It is kept as a *mode over the shared plan*, not as a second
-    /// implementation, which is the whole point.
+    /// Eager evaluation is a legitimate feature — it skips scheduler setup
+    /// for a one-shot answer over relations already in memory — and
+    /// `Zeta.Core.Sql`'s `zeta { }` CE was carrying a private evaluator to
+    /// get it. This mode is the plan-level home for that capability.
+    ///
+    /// **Stated precisely, because the loose version is false.** `zeta { }`
+    /// does NOT build a `ToyPlan` and does NOT call `ToyEager.run` — it
+    /// cannot, because its rows are generic and its predicates are F#
+    /// closures, while `ToyPlan` is closure-free over an erased `ToyRow`.
+    /// What the two share is the layer BELOW the IR: the same `ZSet.filter`
+    /// / `ZSet.map` / `ZSet.join` primitives. So this mode is not "where
+    /// `zeta { }` now executes"; it is the eager execution of *this* plan,
+    /// built on the same primitives `zeta { }` was moved onto.
     ///
     /// `Eager` is NOT a circuit lowering: `ToyLowering.lower` refuses it
-    /// loudly. Go through `ToyExecution.runEager` / `ToyEager.run`.
+    /// loudly. `ToyExecution.run` is the entry point that accepts it.
     ///
     /// Equivalence to `Batch` is a THEOREM, not a coincidence, and it is
     /// tested: over a single tick the running integral `I` equals its
@@ -681,3 +688,64 @@ module ToyLowering =
         let outStream = go plan
         let output = circuit.Output outStream
         ToyLowered(circuit, inputs, output, mode)
+
+
+/// **The single entry point over all three execution modes.**
+///
+/// Without this, `ToyExecutionMode.Eager` would be a case that nothing
+/// ACCEPTS — `ToyLowering.lower` only rejects it and `ToyEager.run` takes
+/// no mode at all. A mode no function accepts is not a mode; it is a label
+/// on a comment. This module is what makes "one plan, three modes" a
+/// property of the code rather than of the prose.
+///
+/// Note what is deliberately NOT unified here: `Streaming` cannot share
+/// this signature honestly. Batch and Eager both answer *one question over
+/// one set of relations*, so `(alias, relation) list -> ZSet<ToyRow>` is
+/// their true shape. Streaming consumes a SEQUENCE of deltas and emits a
+/// change per tick — a different signature, and flattening it into this
+/// one would mean feeding the whole relation as a single delta, which is
+/// just Batch wearing a different name. So `runStreaming` takes ticks, and
+/// the three modes meet at `ToyPlan`, not at one function signature.
+/// EXPERIMENTAL.
+[<RequireQualifiedAccess>]
+[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
+module ToyExecution =
+
+    /// Run a plan in `Batch` or `Eager` against materialized relations.
+    /// `Streaming` is refused here and routed to `runStreaming`, because a
+    /// one-shot feed of a streaming plan is Batch by another name and
+    /// would silently answer a different question than the caller asked.
+    let run
+        (mode: ToyExecutionMode)
+        (plan: ToyPlan)
+        (relations: (string * ZSet<ToyRow>) list)
+        : ZSet<ToyRow> =
+        match mode with
+        | ToyExecutionMode.Eager -> ToyEager.run (Map.ofList relations) plan
+        | ToyExecutionMode.Batch ->
+            let c = Circuit.create ()
+            let lowered = ToyLowering.lower c ToyExecutionMode.Batch plan
+            for alias, z in relations do
+                lowered.Send(alias, z)
+            c.Step()
+            lowered.Output.Current
+        | ToyExecutionMode.Streaming ->
+            raise (
+                ArgumentException(
+                    "ToyExecutionMode.Streaming consumes a sequence of deltas, not one relation set. "
+                    + "Use ToyExecution.runStreaming.",
+                    nameof mode))
+
+    /// Run a plan in `Streaming` mode over a sequence of tick-feeds,
+    /// returning the SUM of the per-tick changes — which is the quantity
+    /// `batch(R) == Σ_t streaming(ΔR_t)` compares against.
+    let runStreaming (plan: ToyPlan) (ticks: (string * ZSet<ToyRow>) list list) : ZSet<ToyRow> =
+        let c = Circuit.create ()
+        let lowered = ToyLowering.lower c ToyExecutionMode.Streaming plan
+        let mutable acc = ZSet.empty
+        for tick in ticks do
+            for alias, z in tick do
+                lowered.Send(alias, z)
+            c.Step()
+            acc <- ZSet.add acc lowered.Output.Current
+        acc

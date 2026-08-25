@@ -102,28 +102,22 @@ let private customer (id: int64) (name: string) : ToyRow =
 let private zset (rows: ToyRow list) : ZSet<ToyRow> = ZSet.ofKeys rows
 
 // ── runners ──────────────────────────────────────────────────────────
+//
+//  These used to be hand-rolled circuit harnesses here. They now forward
+//  to `ToyExecution`, which is the point: the dispatcher is the production
+//  entry point that ACCEPTS a mode, so the tests must drive it rather than
+//  reimplement it beside it. A dispatcher exercised only by its own
+//  dedicated test would be scaffolding; driving every mode test through it
+//  is what makes it load-bearing.
 
 /// Whole relation as ONE delta; the tick-1 output IS the answer.
 let private runBatch (plan: ToyPlan) (feeds: (string * ZSet<ToyRow>) list) : ZSet<ToyRow> =
-    let c = Circuit.create ()
-    let lowered = ToyLowering.lower c ToyExecutionMode.Batch plan
-    for alias, z in feeds do
-        lowered.Send(alias, z)
-    c.Step()
-    lowered.Output.Current
+    ToyExecution.run ToyExecutionMode.Batch plan feeds
 
 /// Deltas over many ticks; each tick emits the CHANGE to the answer, so the
 /// answer is the sum. That sum is what must equal the batch result.
 let private runStreaming (plan: ToyPlan) (ticks: (string * ZSet<ToyRow>) list list) : ZSet<ToyRow> =
-    let c = Circuit.create ()
-    let lowered = ToyLowering.lower c ToyExecutionMode.Streaming plan
-    let mutable acc = ZSet.empty
-    for tick in ticks do
-        for alias, z in tick do
-            lowered.Send(alias, z)
-        c.Step()
-        acc <- ZSet.add acc lowered.Output.Current
-    acc
+    ToyExecution.runStreaming plan ticks
 
 // ── fixture data ─────────────────────────────────────────────────────
 
@@ -287,7 +281,7 @@ let ``stream-stream join IS retroactive where stream-table is not`` () =
 //  `IntegrateZSet` in the circuit.
 
 let private runEager (plan: ToyPlan) (feeds: (string * ZSet<ToyRow>) list) : ZSet<ToyRow> =
-    ToyEager.run (Map.ofList feeds) plan
+    ToyExecution.run ToyExecutionMode.Eager plan feeds
 
 let private bothSources = [ "orders", zset allOrders; "customers", zset allCustomers ]
 
@@ -366,3 +360,38 @@ let ``eager REFUSES an unbound source rather than defaulting to empty`` () =
     Assert.Throws<System.ArgumentException>(fun () ->
         runEager filterProjectJoinPlan [ "orders", zset allOrders ] |> ignore)
     |> ignore
+
+[<Fact>]
+let ``ToyExecution.run REFUSES Streaming rather than answering a different question`` () =
+    // `Streaming` consumes a SEQUENCE of deltas. Accepting it here and
+    // feeding the whole relation as one delta would return a correct-
+    // looking answer to a question the caller did not ask — it would be
+    // Batch wearing the Streaming label. Refusing is the honest option,
+    // and this is the test that keeps it refused.
+    let ex =
+        Assert.Throws<System.ArgumentException>(fun () ->
+            ToyExecution.run ToyExecutionMode.Streaming filterProjectJoinPlan bothSources |> ignore)
+    Assert.Contains("runStreaming", ex.Message, System.StringComparison.Ordinal)
+
+[<Fact>]
+let ``ToyExecution.run dispatches Batch and Eager to genuinely different engines`` () =
+    // Non-vacuity for the dispatcher: if `run` ignored its mode argument
+    // and always took one branch, every Eager-equals-Batch test above
+    // would pass trivially. `Batch` must reach a real `Circuit` and
+    // `Eager` must not.
+    //
+    // The discriminator is the ONE observable difference between the
+    // engines: `ToyLowering.lower` refuses `Eager`, so a plan whose source
+    // is unbound fails in a DIFFERENT way per mode — the circuit path
+    // builds inputs lazily and returns empty, the eager path throws on the
+    // missing binding.
+    let onlyOrders = [ "orders", zset allOrders ]
+
+    Assert.Throws<System.ArgumentException>(fun () ->
+        ToyExecution.run ToyExecutionMode.Eager filterProjectJoinPlan onlyOrders |> ignore)
+    |> ignore
+
+    // Same plan, same partial feed, Batch: no throw — the circuit simply
+    // has an input handle nobody fed.
+    let batchPartial = ToyExecution.run ToyExecutionMode.Batch filterProjectJoinPlan onlyOrders
+    Assert.True(ZSet.isEmpty batchPartial)

@@ -110,12 +110,24 @@ type IStreamTableDuality<'Stream, 'Table> =
     /// Emit a changelog that reconstructs the state.
     abstract member ToStream: 'Table -> 'Stream
 
-    /// **`ToTable (permute s) = ToTable s` for every permutation.**
+    /// **`ToTable (permute s) = ToTable s` for every permutation — on
+    /// inputs where the fold is TOTAL.**
     ///
     /// `true` for an abelian-group combiner (Z-set `+`). `false` for a
     /// last-writer-wins map fold. This is the flag that decides whether
     /// the fold may serve as a shared conclusion across nodes whose
     /// receive orders differ.
+    ///
+    /// The totality qualifier is not a hedge, it is a real boundary:
+    /// `ZSet.sum` consolidates with `Checked.(+)`, so a delta sequence
+    /// whose PARTIAL sums overflow `int64` can raise in one order and not
+    /// another even though the mathematical total is order-independent.
+    /// `true` therefore means "commutative wherever it returns", never
+    /// "commutative including its exceptions". `ColumnZSet.weightedCount`
+    /// (PR #15260) is the worked precedent for why that distinction is
+    /// worth stating: a partition-dependent overflow is a DST replay
+    /// violation, and the honest fix there was to make the contract exact
+    /// rather than to document the wobble.
     abstract member FoldIsCommutative: bool
 
     /// **`ToStream (ToTable s) = s` — the other round trip.**
