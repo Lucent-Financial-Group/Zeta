@@ -127,7 +127,19 @@ type ColumnLinearKernel =
     /// Elements per selection bitmask word. 64 because the mask IS a
     /// `uint64` — that is what keeps the kernel allocation-free. Divisible by
     /// every `Vector<int64>.Count` (2, 4, 8), so no lane straddles a block.
-    static member val BlockSize = 64
+    static member BlockSize: int = 64
+
+    /// Lane `l` holds `1L <<< l`. Built **once** at type initialisation, not
+    /// per call: an `Array.init` inside the kernel would allocate on every
+    /// invocation, which is precisely the property this file exists to keep.
+    ///
+    /// `Vector.ExtractMostSignificantBits` would replace this whole trick with
+    /// one instruction, but it is not reachable from F# (`FS0503`), so the
+    /// mask fold uses only primitives already proven in `ColumnZSet.fs` and
+    /// `Simd.fs`.
+    static member val private LaneBitSeed: Vector<int64> =
+        let a = Array.init Vector<int64>.Count (fun l -> 1L <<< l)
+        Vector<int64>(ReadOnlySpan<int64> a)
 
     // ═══════════════════════════════════════════════════════════════════
     // WHERE — predicate → mask → compact
@@ -139,9 +151,10 @@ type ColumnLinearKernel =
         // Sizing it to the expected selectivity and truncating would be a
         // silent wrong answer, which is the failure mode this repo refuses.
         if destKeys.Length < n || destWeights.Length < n then
-            invalidArg "destKeys"
+            let msg =
                 $"filter destination must hold every input element: need {n}, "
                 + $"got {destKeys.Length} keys / {destWeights.Length} weights"
+            invalidArg "destKeys" msg
 
     /// `SELECT key, weight WHERE key >= lo AND key < hi`, scalar: one
     /// data-dependent branch per element. Writes survivors to the caller's
@@ -209,11 +222,12 @@ type ColumnLinearKernel =
         let block = 64
         let vlo = Vector<int64>(lo)
         let vhi = Vector<int64>(hi)
+        let seed = ColumnLinearKernel.LaneBitSeed
         let mutable outN = 0
         let mutable b = 0
 
         while b + block <= n do
-            // ── steps 1 + 2: compare and pack 64 lanes into one word ──
+            // ── steps 1 + 2: compare, and fold each chunk's lanes to bits ──
             let mutable bits = 0UL
             let mutable j = 0
             while j < block do
@@ -221,7 +235,12 @@ type ColumnLinearKernel =
                 let m =
                     Vector.BitwiseAnd(
                         Vector.GreaterThanOrEqual(v, vlo), Vector.LessThan(v, vhi))
-                bits <- bits ||| (uint64 (Vector.ExtractMostSignificantBits m) <<< j)
+                // `m` is all-ones or all-zeros per lane, so ANDing with the
+                // lane-bit seed leaves exactly bit `l` set where lane `l`
+                // matched. The lanes hold DISJOINT bits, so their sum is their
+                // OR — which is why `Vector.Sum` is the right fold and no
+                // per-lane read loop is needed.
+                bits <- bits ||| (uint64 (Vector.Sum(Vector.BitwiseAnd(m, seed))) <<< j)
                 j <- j + width
 
             // ── step 3: compact ──
