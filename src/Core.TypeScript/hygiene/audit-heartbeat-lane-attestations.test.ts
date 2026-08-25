@@ -63,7 +63,7 @@ function commit(over: Partial<CommitRecord> = {}): CommitRecord {
     committerEmail: LANE_EMAIL,
     timestamp: Date.parse("2026-08-20T00:00:00Z"),
     isoDate: "2026-08-20T00:00:00Z",
-    changes: [{ kind: "A", path: "docs/observe-events/080d01bb43a51810a0130008f43fa6f9.json", bytes: 300 }],
+    changes: [{ kind: "A", path: "docs/observe-events/080d01bb43a51810a0130008f43fa6f9.json", addedBytes: 300 }],
     ...over,
   };
 }
@@ -238,44 +238,44 @@ describe("classification", () => {
   });
 
   it("PATH-ESCAPE for a path outside every allow pattern", () => {
-    expect(verdict({ changes: [{ kind: "A", path: "docs/VISION.md", bytes: 10 }] })).toBe("PATH-ESCAPE");
+    expect(verdict({ changes: [{ kind: "A", path: "docs/VISION.md", addedBytes: 10 }] })).toBe("PATH-ESCAPE");
   });
 
   it("PATH-ESCAPE for the workflow directory — the supply-chain surface", () => {
-    expect(verdict({ changes: [{ kind: "A", path: ".github/workflows/evil.yml", bytes: 10 }] })).toBe("PATH-ESCAPE");
+    expect(verdict({ changes: [{ kind: "A", path: ".github/workflows/evil.yml", addedBytes: 10 }] })).toBe("PATH-ESCAPE");
   });
 
   it("PATH-ESCAPE for source, even alongside legitimate telemetry in the same commit", () => {
     const changes: readonly Change[] = [
-      { kind: "A", path: "docs/observe-events/aaaa.json", bytes: 10 },
-      { kind: "M", path: "src/Core/Runtime.fs", bytes: 10 },
+      { kind: "A", path: "docs/observe-events/aaaa.json", addedBytes: 10 },
+      { kind: "M", path: "src/Core/Runtime.fs", addedBytes: 10 },
     ];
     expect(verdict({ changes })).toBe("PATH-ESCAPE");
   });
 
   it("MODE-VIOLATION when an add-only path is modified", () => {
-    expect(verdict({ changes: [{ kind: "M", path: "docs/observe-events/aaaa.json", bytes: 10 }] })).toBe(
+    expect(verdict({ changes: [{ kind: "M", path: "docs/observe-events/aaaa.json", addedBytes: 10 }] })).toBe(
       "MODE-VIOLATION",
     );
   });
 
   it("MODE-VIOLATION when an append-only path is rewritten rather than extended", () => {
     const changes: readonly Change[] = [
-      { kind: "M", path: "data/ci-runs.jsonl", bytes: 10, prefixPreserved: false },
+      { kind: "M", path: "data/ci-runs.jsonl", addedBytes: 10, prefixPreserved: false },
     ];
     expect(verdict({ changes })).toBe("MODE-VIOLATION");
   });
 
   it("accepts a genuine append on an append-only path", () => {
     const changes: readonly Change[] = [
-      { kind: "M", path: "data/ci-runs.jsonl", bytes: 10, prefixPreserved: true },
+      { kind: "M", path: "data/ci-runs.jsonl", addedBytes: 10, prefixPreserved: true },
     ];
     expect(verdict({ changes })).toBe("OK");
   });
 
   it("MODE-VIOLATION for a DELETE anywhere — the lane is never allowed to erase", () => {
     for (const kind of ["D", "R", "C", "T"] as const) {
-      expect(verdict({ changes: [{ kind, path: "docs/observe-events/aaaa.json", bytes: 10 }] })).toBe(
+      expect(verdict({ changes: [{ kind, path: "docs/observe-events/aaaa.json", addedBytes: 10 }] })).toBe(
         "MODE-VIOLATION",
       );
     }
@@ -285,14 +285,14 @@ describe("classification", () => {
     const changes = Array.from({ length: REGISTRY.maxFilesPerCommit + 1 }, (_, i) => ({
       kind: "A" as const,
       path: `docs/observe-events/${String(i).padStart(32, "0")}.json`,
-      bytes: 10,
+      addedBytes: 10,
     }));
     expect(verdict({ changes })).toBe("BUDGET-EXCEEDED");
   });
 
   it("BUDGET-EXCEEDED on an oversized single file", () => {
     const changes: readonly Change[] = [
-      { kind: "A", path: "docs/observe-events/aaaa.json", bytes: REGISTRY.maxBytesPerFile + 1 },
+      { kind: "A", path: "docs/observe-events/aaaa.json", addedBytes: REGISTRY.maxAddedBytesPerFile + 1 },
     ];
     expect(verdict({ changes })).toBe("BUDGET-EXCEEDED");
   });

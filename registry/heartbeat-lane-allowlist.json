@@ -91,26 +91,34 @@
       "                entry here is a place the lane can destroy prior content, so the list is",
       "                explicit, short, and deliberately not a glob over a directory."
     ],
+    "$orderComment": "FIRST MATCH WINS, so specific patterns precede the directory globs that would otherwise swallow them. `.rs-buffer-*.json` must sit above `docs/observe-events/**` or it inherits add-only and the lane's own buffer rewrite reads as a violation.",
     "allow": [
+      { "pattern": "docs/observe-events/.rs-buffer-*.json", "mode": "mutable" },
       { "pattern": "docs/agent-heartbeats/**", "mode": "add-only" },
       { "pattern": "docs/observe-events/**", "mode": "add-only" },
       { "pattern": "docs/drift-events/**", "mode": "add-only" },
       { "pattern": "docs/hygiene-history/ticks/**", "mode": "add-only" },
       { "pattern": "docs/history/pr-reviews/**", "mode": "add-only" },
-      { "pattern": "docs/github/prs/shards/**", "mode": "add-only" },
-      { "pattern": "docs/github/prs/manifest.jsonl", "mode": "append-only" },
       { "pattern": "data/ci-runs.jsonl", "mode": "append-only" },
       { "pattern": "db/mutation-findings/*.jsonl", "mode": "append-only" },
+      { "pattern": "docs/github/prs/manifest.jsonl", "mode": "mutable" },
+      { "pattern": "docs/github/prs/shards/**", "mode": "mutable" },
       { "pattern": "data/drift-mtth.json", "mode": "mutable" },
-      { "pattern": "data/vault-state.json", "mode": "mutable" },
-      { "pattern": "docs/observe-events/.rs-buffer-*.json", "mode": "mutable" }
+      { "pattern": "data/vault-state.json", "mode": "mutable" }
     ],
     "$mutableComment": [
-      "The three `mutable` entries are exactly the paths `.gitattributes` gives `merge=theirs` or a",
-      "whole-file fold: `data/vault-state.json` (otto's lane), `docs/observe-events/.rs-buffer-*.json`",
-      "(the RS block buffer), and `data/drift-mtth.json` (the published MTTH roll-up). Every one is a",
-      "place the lane may overwrite prior bytes, which is why they are enumerated rather than globbed",
-      "and why widening this list is the change most worth reviewing."
+      "`mutable` is the WEAKEST mode and every entry is a place the lane may overwrite prior bytes.",
+      "Five, and each earned its place by measurement rather than by convenience:",
+      "  data/vault-state.json, docs/observe-events/.rs-buffer-*.json  — `.gitattributes` gives both",
+      "      `merge=theirs`, i.e. the repo already declares them last-writer-wins.",
+      "  data/drift-mtth.json                                          — the published MTTH roll-up, a fold.",
+      "  docs/github/prs/manifest.jsonl, docs/github/prs/shards/**     — MEASURED, not assumed. Over the",
+      "      last 40 flush commits the manifest failed prefix-preservation 13 times and two shards were",
+      "      modified in place. Its rows are inserted in sorted order, so the diff shows ZERO deletions",
+      "      while the pre-image is NOT a byte prefix — which is exactly why the check is prefix",
+      "      preservation and not `deletions == 0`. Reclassifying them to `mutable` is the honest",
+      "      record of what the producer does; tightening the PRODUCER to a true append log, and then",
+      "      tightening this row back, is the open follow-up (design doc section 9)."
     ],
     "$denyComment": [
       "Belt-and-braces over the allowlist above, which already excludes these. Listed separately so",
@@ -137,9 +145,16 @@
     ]
   },
   "budget": {
-    "$comment": "Refuse a runaway lane. Bytes are the honest unit; file count catches a fan-out bug the byte cap would not.",
+    "$comment": [
+      "Refuse a runaway lane. The unit is ADDED bytes, never blob size: docs/github/prs/manifest.jsonl",
+      "is 5.6 MB and grows ~9 lines a tick, so a blob-size cap is either useless or permanently red.",
+      "The file-count cap catches a fan-out bug the byte cap would not. Measured over the last 40",
+      "`[heartbeat-batch-merge]` commits on origin/main (2026-08-25): max 58 files/commit and max",
+      "98,257 ADDED bytes/commit. Both caps sit ~7-20x above observed — loose enough not to redden",
+      "on an ordinary busy tick, tight enough that a runaway loop trips before it fills the repo."
+    ],
     "maxFilesPerCommit": 400,
-    "maxBytesPerCommit": 8388608,
-    "maxBytesPerFile": 1048576
+    "maxAddedBytesPerCommit": 2097152,
+    "maxAddedBytesPerFile": 524288
   }
 }

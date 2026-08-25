@@ -153,8 +153,8 @@ export interface Registry {
   readonly allow: readonly AllowEntry[];
   readonly deny: readonly string[];
   readonly maxFilesPerCommit: number;
-  readonly maxBytesPerCommit: number;
-  readonly maxBytesPerFile: number;
+  readonly maxAddedBytesPerCommit: number;
+  readonly maxAddedBytesPerFile: number;
 }
 
 const VALID_MODES: ReadonlySet<string> = new Set(["add-only", "append-only", "mutable"]);
@@ -247,8 +247,8 @@ export function parseRegistry(raw: unknown): Registry {
     allow,
     deny,
     maxFilesPerCommit: requireNumber(budget["maxFilesPerCommit"], "budget.maxFilesPerCommit"),
-    maxBytesPerCommit: requireNumber(budget["maxBytesPerCommit"], "budget.maxBytesPerCommit"),
-    maxBytesPerFile: requireNumber(budget["maxBytesPerFile"], "budget.maxBytesPerFile"),
+    maxAddedBytesPerCommit: requireNumber(budget["maxAddedBytesPerCommit"], "budget.maxAddedBytesPerCommit"),
+    maxAddedBytesPerFile: requireNumber(budget["maxAddedBytesPerFile"], "budget.maxAddedBytesPerFile"),
   };
 }
 
@@ -373,7 +373,13 @@ export interface Change {
   readonly path: string;
   /** For `M` on an `append-only` path: did the pre-image survive as a byte PREFIX? */
   readonly prefixPreserved?: boolean;
-  readonly bytes?: number;
+  /**
+   * ADDED bytes, not blob size. `docs/github/prs/manifest.jsonl` is 5.6 MB and grows by ~9
+   * lines a tick; charging the lane 5.6 MB for that would make any honest cap either useless
+   * or permanently red. An addition of N bytes costs N whether the file it lands in is new or
+   * old.
+   */
+  readonly addedBytes?: number;
 }
 
 export interface CommitRecord {
@@ -463,14 +469,14 @@ export function classifyCommit(
     if (change.kind === "M" && entry.mode === "append-only" && change.prefixPreserved !== true) {
       return { status: "MODE-VIOLATION", reason: `${change.path} is append-only but the pre-image is not a byte prefix of the post-image` };
     }
-    const bytes = change.bytes ?? 0;
-    if (bytes > registry.maxBytesPerFile) {
-      return { status: "BUDGET-EXCEEDED", reason: `${change.path} is ${String(bytes)} bytes > budget.maxBytesPerFile ${String(registry.maxBytesPerFile)}` };
+    const added = change.addedBytes ?? 0;
+    if (added > registry.maxAddedBytesPerFile) {
+      return { status: "BUDGET-EXCEEDED", reason: `${change.path} adds ${String(added)} bytes > budget.maxAddedBytesPerFile ${String(registry.maxAddedBytesPerFile)}` };
     }
-    total += bytes;
+    total += added;
   }
-  if (total > registry.maxBytesPerCommit) {
-    return { status: "BUDGET-EXCEEDED", reason: `${String(total)} bytes > budget.maxBytesPerCommit ${String(registry.maxBytesPerCommit)}` };
+  if (total > registry.maxAddedBytesPerCommit) {
+    return { status: "BUDGET-EXCEEDED", reason: `${String(total)} added bytes > budget.maxAddedBytesPerCommit ${String(registry.maxAddedBytesPerCommit)}` };
   }
 
   return { status: "OK", reason: `attested by ${att.lane} via ${att.runner}; ${String(record.changes.length)} file(s) inside the allowlist` };
@@ -487,8 +493,14 @@ function git(args: readonly string[], cwd: string): { readonly ok: string } | { 
   return { ok: res.stdout ?? "" };
 }
 
-const RECORD_SEP = " ZETA-REC ";
-const FIELD_SEP = " ZETA-FLD ";
+/**
+ * Two calls rather than one delimited call. A single `--format` with an in-band separator is
+ * the usual trick and it is wrong here: the subject and body are attacker-influenced text, so
+ * ANY separator a commit message can also contain lets a crafted message forge field boundaries.
+ * `%n`-delimited fixed-arity metadata (none of which may contain a newline) plus a separate `%B`
+ * has no in-band delimiter to spoof.
+ */
+const META_FORMAT = "%H%n%T%n%ae%n%ce%n%ct%n%cI%n%s";
 
 function kindOf(raw: string): ChangeKind {
   const c = (raw[0] ?? "").toUpperCase();
@@ -501,10 +513,12 @@ function kindOf(raw: string): ChangeKind {
  * commit is a few hundred small files and this stays well under a second.
  */
 export function collectCommit(sha: string, cwd: string, registry: Registry): CommitRecord | string {
-  const meta = git(["show", "-s", `--format=%H${FIELD_SEP}%T${FIELD_SEP}%ae${FIELD_SEP}%ce${FIELD_SEP}%ct${FIELD_SEP}%cI${FIELD_SEP}%s${FIELD_SEP}%B`, sha], cwd);
+  const meta = git(["show", "-s", `--format=${META_FORMAT}`, sha], cwd);
   if ("err" in meta) return meta.err;
-  const parts = meta.ok.split(FIELD_SEP);
-  if (parts.length < 8) return `could not parse metadata for ${sha}`;
+  const parts = meta.ok.split("\n");
+  if (parts.length < 7) return `could not parse metadata for ${sha}`;
+  const body = git(["show", "-s", "--format=%B", sha], cwd);
+  if ("err" in body) return body.err;
 
   const nameStatus = git(["show", "--no-renames", "--name-status", "--format=", sha], cwd);
   if ("err" in nameStatus) return nameStatus.err;
@@ -517,18 +531,22 @@ export function collectCommit(sha: string, cwd: string, registry: Registry): Com
     const path = cols[cols.length - 1] ?? "";
     if (path.length === 0) continue;
 
-    let bytes = 0;
-    const size = git(["cat-file", "-s", `${sha}:${path}`], cwd);
-    if ("ok" in size) bytes = Number.parseInt(size.ok.trim(), 10) || 0;
+    const sizeOf = (rev: string): number => {
+      const r = git(["cat-file", "-s", `${rev}:${path}`], cwd);
+      return "ok" in r ? Number.parseInt(r.ok.trim(), 10) || 0 : 0;
+    };
+    const after = sizeOf(sha);
+    const addedBytes = kind === "M" ? Math.max(0, after - sizeOf(`${sha}^`)) : after;
 
     let prefixPreserved: boolean | undefined;
     const entry = allowEntryFor(path, registry);
     if (kind === "M" && entry !== null && entry.mode === "append-only") {
-      const before = git(["show", `${sha}^:${path}`], cwd);
-      const after = git(["show", `${sha}:${path}`], cwd);
-      prefixPreserved = "ok" in before && "ok" in after ? after.ok.startsWith(before.ok) : false;
+      const beforeBlob = git(["show", `${sha}^:${path}`], cwd);
+      const afterBlob = git(["show", `${sha}:${path}`], cwd);
+      prefixPreserved =
+        "ok" in beforeBlob && "ok" in afterBlob ? afterBlob.ok.startsWith(beforeBlob.ok) : false;
     }
-    changes.push({ kind, path, bytes, ...(prefixPreserved === undefined ? {} : { prefixPreserved }) });
+    changes.push({ kind, path, addedBytes, ...(prefixPreserved === undefined ? {} : { prefixPreserved }) });
   }
 
   return {
@@ -539,7 +557,7 @@ export function collectCommit(sha: string, cwd: string, registry: Registry): Com
     timestamp: Number.parseInt(parts[4] ?? "0", 10) * 1000,
     isoDate: parts[5] ?? "",
     subject: parts[6] ?? "",
-    message: parts.slice(7).join(FIELD_SEP),
+    message: body.ok,
     changes,
   };
 }
