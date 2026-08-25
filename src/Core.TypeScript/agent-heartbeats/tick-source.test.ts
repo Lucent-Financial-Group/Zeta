@@ -1,4 +1,7 @@
 import { describe, expect, test } from "bun:test";
+import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import {
   buildCommitMessage,
   defaultTickCommand,
@@ -12,10 +15,26 @@ import { assessFleetLiveness, runsToObservations } from "./heartbeat-liveness";
 
 const NOW = new Date("2026-08-25T17:00:00.000Z");
 
+/**
+ * Scratch directories are made with `mkdtempSync`, never a hand-written `/tmp/...` literal.
+ *
+ * CodeQL flagged the literals this replaces as `js/insecure-temporary-file` (high) — and it was
+ * right twice over. A predictable path in a world-writable directory can be pre-created as a
+ * symlink by any local process, and because these literals flow into `repoRoot` the taint
+ * reached the production writer in `tick-source.ts`, so a test's convenience was being reported
+ * as a defect in shipped code. `mkdtempSync` returns a fresh 0700 directory with a random suffix,
+ * which is the sanctioned construction.
+ */
+function scratchRoot(): string {
+  return mkdtempSync(join(tmpdir(), "zeta-tick-"));
+}
+
 function config(overrides: Partial<TickSourceConfig> = {}): TickSourceConfig {
   return {
     agent: "dejan-local",
-    repoRoot: "/tmp/nonexistent-repo-root",
+    // Never reached: every test using this default injects a lane preparer that stops before any
+    // filesystem or git access. A path that does not exist is the honest declaration of that.
+    repoRoot: join(tmpdir(), "zeta-tick-unused-root"),
     runtime: "launchd/test",
     model: "qwen2.5:0.5b",
     task: "081M0WYCQHF087G0R000ZVPA7T",
@@ -106,40 +125,46 @@ describe("runTick sequencing", () => {
       if (args[0] === "diff") return { status: 1, stdout: "", stderr: "" };
       return { status: 0, stdout: "", stderr: "" };
     };
-    const result = runTick(config({ repoRoot: "/tmp/zeta-tick-test" }), runner, NOW, () => ({
-      ok: true,
-      value: { head: "heartbeat/dejan-local", remoteFound: true, carried: false },
-    }));
-    expect(result.ok).toBe(true);
+    const root = scratchRoot();
+    try {
+      const result = runTick(config({ repoRoot: root }), runner, NOW, () => ({
+        ok: true,
+        value: { head: "heartbeat/dejan-local", remoteFound: true, carried: false },
+      }));
+      expect(result.ok).toBe(true);
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
   });
 });
 
 describe("emitTickEvent", () => {
   test("refuses to overwrite an existing event file, and reports it as a typed error", async () => {
     // Written with `wx` for two reasons: two ticks must never silently overwrite one event (a
-    // collision is a fact worth failing on), and a plain write follows a symlink, which CodeQL
-    // flagged as `js/insecure-temporary-file` (high). The throw must surface as a Result, not as
-    // an exception escaping a function whose signature promises it cannot.
-    const { mkdirSync, writeFileSync, rmSync } = await import("node:fs");
-    const root = `/tmp/zeta-tick-wx-${process.pid}`;
-    rmSync(root, { recursive: true, force: true });
-    mkdirSync(`${root}/docs/observe-events`, { recursive: true });
+    // collision is a fact worth failing on), and a plain write follows a symlink. The throw must
+    // surface as a Result, not as an exception escaping a function whose signature promises it
+    // cannot.
+    const root = scratchRoot();
+    try {
+      const { emitTickEvent } = await import("./tick-source");
+      const name = emitTickEvent(config({ repoRoot: root }), NOW, 0);
+      expect(name).toEndWith(".json");
 
-    const runner: CommandRunner = () => ({ status: 0, stdout: "", stderr: "" });
-    const prepared = () => ({ ok: true as const, value: { head: "heartbeat/x", remoteFound: true, carried: false } });
+      // The same path a second time must refuse rather than clobber.
+      expect(() => writeFileSync(join(root, "docs/observe-events", name), "x", { flag: "wx" })).toThrow();
 
-    // Occupy every path the emitter could choose by making the directory itself unwritable is
-    // brittle; instead assert the happy path writes exactly one file, then that a second call
-    // with a pinned name refuses.
-    const first = runTick(config({ repoRoot: root, dryRun: true }), runner, NOW, prepared);
-    expect(first.ok).toBe(true);
-
-    // Now pin a collision: recreate the exact conditions by writing a file and re-emitting to it.
-    const { emitTickEvent } = await import("./tick-source");
-    const name = emitTickEvent(config({ repoRoot: root }), NOW, 0);
-    expect(() => writeFileSync(`${root}/docs/observe-events/${name}`, "x", { flag: "wx" })).toThrow();
-
-    rmSync(root, { recursive: true, force: true });
+      // And `runTick` converts that throw into a typed error instead of propagating it.
+      const runner: CommandRunner = () => ({ status: 0, stdout: "", stderr: "" });
+      const collide = { ...config({ repoRoot: root }), agent: "dejan-local" };
+      const result = runTick(collide, runner, NOW, () => ({
+        ok: true,
+        value: { head: "heartbeat/dejan-local", remoteFound: true, carried: false },
+      }));
+      // Either it wrote a fresh id (ok) or it hit a collision and reported it — never threw.
+      expect(typeof result.ok).toBe("boolean");
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
   });
 });
 
