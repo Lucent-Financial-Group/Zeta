@@ -1813,6 +1813,31 @@ jobs:
       - name: Run lint-drift-publication-lands (stale-behind-green guard)
         run: bun src/Core.TypeScript/hygiene/lint-drift-publication-lands.ts
 
+      # A workflow file GitHub will never read is not a check -- and it is worse than a
+      # missing one, because a missing check is visibly missing. Live instance 2026-08-25:
+      # agentic-organization/.github/workflows/ci.yml ran a 1,595-test suite and had never
+      # executed once, because Actions reads only the ROOT .github/workflows/. The two
+      # scaffold templates under src/Core.TypeScript/scaffold are exempt and SAID SO on
+      # every run -- the exemption is derived from create-repo.ts sitting beside them, so
+      # deleting that tool expires it rather than leaving an allowlist behind.
+      - name: Run lint-no-nested-workflow-dirs (a workflow that never runs is not a check)
+        run: bun src/Core.TypeScript/hygiene/lint-no-nested-workflow-dirs.ts
+
+      # An ubuntu runner always has 16 GB, so an UNDECLARED host tier is not adaptation --
+      # it is the constant `full`, i.e. 388 apt packages / 713.0 MiB on every run. Measured
+      # 2026-08-25: ci-cache-paths-lint failed 5 of its last 20 runs, all five inside the
+      # install step (exit 124, stalled on pandoc 26.9 MB and r-base-core 27.1 MB), while
+      # the check NAMED "audit actions/cache paths vs git ls-files" never reached its audit.
+      # This refuses SILENCE, never a particular tier: declaring `full` is a fine answer.
+      - name: Run audit-install-tier-declared (undeclared apt payload guard)
+        run: bun src/Core.TypeScript/hygiene/audit-install-tier-declared.ts
+
+      - name: Workflow-shape guard falsifiers (a check that cannot fail is not a check)
+        run: |
+          bun test \
+            src/Core.TypeScript/hygiene/lint-no-nested-workflow-dirs.test.ts \
+            src/Core.TypeScript/hygiene/audit-install-tier-declared.test.ts
+
       # A privilege elevator resolved by NAME is substitutable by any writable directory
       # earlier on PATH, and planting one leaves NO GIT DIFF -- so review, AgencySignature
       # and byte-lock, all of which watch the repo, cannot see it. That was live on main as
@@ -2488,6 +2513,27 @@ jobs:
       - name: Step outputs have writers (a step that cannot succeed)
         run: bun src/Core.TypeScript/hygiene/audit-workflow-step-output-has-writer.ts
 
+      # A TASK ID THAT IS WELL-FORMED AND IDENTIFIES NOTHING.
+      #
+      # The AgencySignature gate validates `Task:` for placeholder-ness and SHAPE, never
+      # existence — so an invented-but-well-formed ZetaId passes silently, and it is harder
+      # to spot than a placeholder because it looks exactly right. The legacy `B-NNNN`
+      # scheme has had this guard since `b-ref-resolve.ts`; the ZetaId scheme that REPLACED
+      # it never got one, so the newer mandatory key was the less-checked one.
+      #
+      # Live instance the day this landed: `Task: 081M0X0JQGY087G0R000EBCPQ3`, written by
+      # hand instead of minted, caught only because its author re-read his own trailer.
+      - name: Task ZetaIds resolve to work-items (AH006)
+        env:
+          # The PR body carries the AgencySignature block, and unlike `git log` it is present
+          # on a SHALLOW checkout. The first wiring of this step piped `git log -50`, CI checks
+          # out depth 1, and the audit passed having examined ZERO ids — the exact vacuity it
+          # was written to catch, in its own wiring. It now exits 2 on empty input, so a
+          # regression here goes red instead of green.
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: |
+          printf '%s' "$PR_BODY" | bun src/Core.TypeScript/hygiene/audit-task-zetaid-resolves.ts --stdin
+
       # THE FALSIFIER FOR CREDENTIAL-ROLE COLLAPSE (AH003, 2026-08-25).
       #
       # `docs/security/2026-08-17-society-heartbeat-token-boundary-and-gate-start-failure.md`
@@ -2511,6 +2557,29 @@ jobs:
       # pre-merge floor rather than post-merge.
       - name: Workflow credential role separation (one role, one secret)
         run: bun src/Core.TypeScript/hygiene/audit-workflow-credential-role-separation.ts
+
+      # AH005 — a committed identity that GitHub resolves to somebody who is not us.
+      #
+      # `<username>@users.noreply.github.com` is the LEGACY plain noreply form and GitHub
+      # resolves it DIRECTLY to whoever owns that username today. Two of our personas
+      # shipped under it (15 commits and 2 commits), and both local-parts are live accounts
+      # belonging to uninvolved private individuals. They are rendered in this repository's
+      # Contributors sidebar, which aggregates trailer co-authors — note the REST
+      # `/contributors` endpoint does NOT, which is why an earlier check of that endpoint
+      # came back clean and under-reported the problem.
+      #
+      # The audit scans the SOURCES THAT GENERATE identities, never git history. The
+      # offending commits are on `main` and correcting them would mean force-pushing the
+      # default branch, so they stay. An audit pointed at history would be permanently red
+      # over commits nobody may fix, and a check that can never go green gets disabled.
+      #
+      # HERE on the cross-verify floor because it is offline (reads only committed text, no
+      # sockets, no DNS — the fabricated-namespace list is a closed enumeration rather than
+      # a resolver for exactly that reason). Measured: ~1.4 s warm over 2,028 generator
+      # files. Proven able to fail before it was wired: run against the pre-fix contents of
+      # the same seven files it reports 7 findings and exits 1.
+      - name: Co-author identity collision (AH005 — plain-username GitHub noreply form)
+        run: bun src/Core.TypeScript/hygiene/audit-coauthor-identity-collides.ts
 
       # THE FALSIFIER FOR THE PR-ARCHIVE COVERAGE COLLAPSE (2026-08-25).
       #
@@ -2960,6 +3029,12 @@ jobs:
         # ~/.local/bin. No-op when PATH already meets the floor.
         run: bun src/Core.TypeScript/ace/setup-realizers/install-pinned-smt.ts
 
+      - name: Verify light-time endpoint-speed envelope certificates
+        # The Lean module is reached by the F# build. This companion TypeScript test
+        # executes the Z3 outcome sequence and the independent ephemeris fault control;
+        # neither may be a documentation-only proof artifact.
+        run: bun test src/Core.TypeScript/planning/light-time-endpoint-speed-envelope.test.ts src/Core.TypeScript/planning/orbital-independent-check.test.ts
+
       - name: Tier manifest (what the hermetic tier deliberately does not run, and why)
         # Printed BEFORE the suite, pass or fail, so the log states the tier's own boundary
         # instead of leaving a reader to infer it from an absence. It also exits non-zero on
@@ -3032,6 +3107,12 @@ jobs:
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
         # Same retry rationale as every other install.sh step in this file
         # (Aaron 2026-04-28 PR #23 mise+bun-1.3.13 502).
+        env:
+          # TIER DECLARED, not detected. This job genuinely needs the wider payload:
+          # environment-dependent tests are gated on the wide toolchain by design; the payload has not been measured down.
+          # Recorded explicitly so the next reader sees a decision rather than a default;
+          # audit-install-tier-declared.ts refuses silence, never a particular tier.
+          ZETA_HOST_TIER: full
         run: |
           set -euo pipefail
           for attempt in 1 2 3 4 5; do
@@ -3111,6 +3192,12 @@ jobs:
           key: full-verify-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
 
       - name: Install toolchain (all 7 languages + E-prover)
+        env:
+          # TIER DECLARED, not detected. This job genuinely needs the wider payload:
+          # the 7-language oracle: emscripten and llvm are tier=standard, and .mise.full.toml carries the k8s/WASM set that only tier=full merges.
+          # Recorded explicitly so the next reader sees a decision rather than a default;
+          # audit-install-tier-declared.ts refuses silence, never a particular tier.
+          ZETA_HOST_TIER: full
         run: |
           set -euo pipefail
           for attempt in 1 2 3 4 5; do
