@@ -167,7 +167,8 @@ type ToyPlan =
 
 
 /// How a plan is executed. This is the ONLY thing that differs between
-/// "run the query" and "subscribe to the query" — the plan is identical.
+/// "run the query", "subscribe to the query", and "evaluate it right here
+/// over materialized relations" — the plan is identical in all three.
 /// EXPERIMENTAL.
 [<RequireQualifiedAccess>]
 type ToyExecutionMode =
@@ -176,6 +177,25 @@ type ToyExecutionMode =
     /// Deltas over many ticks; each tick emits the change to the answer.
     /// Selects the incremental lowering for bilinear operators.
     | Streaming
+    /// **No circuit at all.** Evaluate the plan directly over materialized
+    /// `ZSet` relations, bottom-up, through the same `ZSet.filter` /
+    /// `ZSet.map` / `ZSet.join` primitives the circuit operators call.
+    ///
+    /// This mode exists because `Zeta.Core.Sql`'s `zeta { }` CE wanted
+    /// exactly it, and used to carry a PRIVATE evaluator to get it. Eager
+    /// evaluation is a legitimate feature — it skips scheduler setup for a
+    /// one-shot answer over relations already in memory — so it is kept.
+    /// It is kept as a *mode over the shared plan*, not as a second
+    /// implementation, which is the whole point.
+    ///
+    /// `Eager` is NOT a circuit lowering: `ToyLowering.lower` refuses it
+    /// loudly. Go through `ToyExecution.runEager` / `ToyEager.run`.
+    ///
+    /// Equivalence to `Batch` is a THEOREM, not a coincidence, and it is
+    /// tested: over a single tick the running integral `I` equals its
+    /// input, so `AsTable` is the identity, and every other node makes the
+    /// same `ZSet.*` call the corresponding `Op` makes in `StepAsync`.
+    | Eager
 
 
 [<RequireQualifiedAccess>]
@@ -331,6 +351,124 @@ module ToyPlan =
         go plan [] |> List.sortBy fst
 
 
+/// **The operator semantics, in ONE place.**
+///
+/// Every execution mode needs the same four functions: turn a `ToyScalar`
+/// predicate into a row test, turn a projection list into a row rewrite,
+/// turn a key expression into a join key, and merge two joined rows.
+/// Before this module existed, `ToyLowering.lower` built them inline —
+/// which was fine while there was exactly one engine, and would have
+/// become a second copy the moment a second engine appeared.
+///
+/// It has, so they live here. `ToyLowering.lower` (circuit) and
+/// `ToyEager.run` (no circuit) both call these; neither has a private
+/// version. That is what makes `Eager ≡ Batch` a structural fact with a
+/// test on top of it, rather than two implementations that happen to
+/// agree today.
+///
+/// EXPERIMENTAL.
+[<RequireQualifiedAccess>]
+[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
+module ToyOps =
+
+    /// σ — the row test for a `Where` node.
+    let predicateOf (predicate: ToyScalar) : ToyRow -> bool =
+        fun r -> ToyScalar.evalPredicate r predicate
+
+    /// π — the row rewrite for a `Select` node. Builds a fresh cell map
+    /// from the projection list; cells not projected are DROPPED, which is
+    /// what makes a projection non-injective and therefore what makes
+    /// `ZSet.map`'s consolidation load-bearing.
+    let projectorOf (projections: (string * ToyScalar) list) : ToyRow -> ToyRow =
+        fun r ->
+            let cells =
+                projections
+                |> List.fold
+                    (fun (acc: Map<string, ToyValue>) (name, e) -> acc.Add(name, ToyScalar.eval r e))
+                    Map.empty
+            { Cells = cells }
+
+    /// The equi-join key. `Canonical` keeps the key a `string` (satisfying
+    /// `'K : not null` on `ZSet.join` / `Circuit.Join`) while still
+    /// distinguishing `VInt 1L` from `VStr "1"` by its type tag.
+    let keyOf (e: ToyScalar) : ToyRow -> string =
+        fun r -> (ToyScalar.eval r e).Canonical
+
+    /// Row merge for a join. Right-hand cells win on an alias-qualified
+    /// collision, which cannot happen for distinct aliases.
+    let mergeRows (a: ToyRow) (b: ToyRow) : ToyRow =
+        { Cells = b.Cells |> Map.fold (fun (acc: Map<string, ToyValue>) k v -> acc.Add(k, v)) a.Cells }
+
+
+/// **`ToyExecutionMode.Eager` — the plan evaluated with no circuit.**
+///
+/// This is the execution mode that `Zeta.Core.Sql`'s `zeta { }` CE used to
+/// obtain by carrying its own evaluator. It is a bottom-up fold over the
+/// plan against materialized relations, and every node delegates to the
+/// SAME `ZSet` primitive its circuit `Op` delegates to:
+///
+/// | plan node | this module | the circuit `Op` (`Operators.fs`)     |
+/// |-----------|-------------|----------------------------------------|
+/// | `Where`   | `ZSet.filter` | `FilterZSetOp.StepAsync` → `ZSet.filter` |
+/// | `Select`  | `ZSet.map`    | `MapZSetOp.StepAsync` → `ZSet.map`       |
+/// | `Join`    | `ZSet.join`   | `JoinZSetOp.StepAsync` → `ZSet.join`     |
+/// | `AsTable` | identity      | `IntegrateZSet` (running sum)            |
+///
+/// `AsTable` is the one row that needs an argument rather than a citation.
+/// `I` is a running sum over ticks; eager evaluation has exactly ONE tick,
+/// and the running sum of a single delta is that delta. This is the same
+/// reasoning `ToyLowering.lower` already records for `Batch`, and it is
+/// why `Eager ≡ Batch` rather than merely "close".
+///
+/// **What Eager cannot do**, stated so the mode is not oversold: there is
+/// no incremental mode here and there never will be. Incrementality is
+/// what the circuit is FOR — `Q^Δ = D ∘ Q ∘ I` needs the `z⁻¹` delay that
+/// only a scheduled circuit has. Eager answers a question; it cannot
+/// install a subscription.
+///
+/// EXPERIMENTAL.
+[<RequireQualifiedAccess>]
+[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
+module ToyEager =
+
+    /// Evaluate `plan` against materialized relations, one per source
+    /// alias. An alias with no binding throws — a silently-empty source
+    /// would make the Eager/Batch equivalence test pass vacuously by
+    /// producing the empty Z-set on both sides.
+    let run (bindings: Map<string, ZSet<ToyRow>>) (plan: ToyPlan) : ZSet<ToyRow> =
+        let rec go (p: ToyPlan) : ZSet<ToyRow> =
+            match p with
+            | ToyPlan.Source(alias, _) ->
+                match bindings.TryFind alias with
+                | Some z -> z
+                | None ->
+                    raise (
+                        ArgumentException(
+                            String.Format(
+                                Globalization.CultureInfo.InvariantCulture,
+                                "No relation bound for source '{0}'. Bound: [{1}].",
+                                alias,
+                                String.Join("; ", bindings |> Seq.map (fun kv -> kv.Key)))))
+
+            | ToyPlan.Where(input, predicate) ->
+                ZSet.filter (ToyOps.predicateOf predicate) (go input)
+
+            | ToyPlan.Select(input, projections) ->
+                ZSet.map (ToyOps.projectorOf projections) (go input)
+
+            | ToyPlan.AsTable input ->
+                // `I` over a single tick is the identity — see the module
+                // doc. NOT a shortcut: the batch lowering emits a real
+                // `IntegrateZSet` and gets the same answer for the same
+                // reason.
+                go input
+
+            | ToyPlan.Join(left, right, leftKey, rightKey) ->
+                ZSet.join (ToyOps.keyOf leftKey) (ToyOps.keyOf rightKey) ToyOps.mergeRows (go left) (go right)
+
+        go plan
+
+
 /// The F# computation-expression front end.
 ///
 /// ## Why the source is a builder ARGUMENT rather than a `for` binding
@@ -449,6 +587,19 @@ module ToyLowering =
     /// single `match` is the entire set-at-a-time / delta-at-a-time
     /// difference, and it is why the two are one surface rather than two.
     let lower (circuit: Circuit) (mode: ToyExecutionMode) (plan: ToyPlan) : ToyLowered =
+        // `Eager` is a real execution mode of the shared plan, but it is
+        // NOT a circuit lowering — it has no scheduler, no `z⁻¹`, and no
+        // ticks. Refusing it here is louder than silently treating it as
+        // `Batch`: a caller who asked for eager and got a circuit would
+        // still get the right ANSWER, and would never learn that the mode
+        // argument was ignored.
+        if mode = ToyExecutionMode.Eager then
+            raise (
+                ArgumentException(
+                    "ToyExecutionMode.Eager has no circuit lowering — it evaluates the plan "
+                    + "directly over materialized relations. Call ToyEager.run instead.",
+                    nameof mode))
+
         let mutable inputs = Map.empty<string, ZSetInputHandle<ToyRow>>
 
         let rec go (p: ToyPlan) : Stream<ZSet<ToyRow>> =
@@ -463,18 +614,15 @@ module ToyLowering =
 
             | ToyPlan.Where(input, predicate) ->
                 // LINEAR: `Q^Δ = Q`. Identical in both modes.
-                circuit.Filter(go input, Func<ToyRow, bool>(fun r -> ToyScalar.evalPredicate r predicate))
+                // `ToyOps.predicateOf` — the SAME function `ToyEager.run`
+                // hands to `ZSet.filter`. `FilterZSetOp` will call
+                // `ZSet.filter` with it, so the two modes are not merely
+                // consistent, they are the same call.
+                circuit.Filter(go input, Func<ToyRow, bool>(ToyOps.predicateOf predicate))
 
             | ToyPlan.Select(input, projections) ->
                 // LINEAR: `Q^Δ = Q`. Identical in both modes.
-                let project (r: ToyRow) : ToyRow =
-                    let cells =
-                        projections
-                        |> List.fold
-                            (fun (acc: Map<string, ToyValue>) (name, e) -> acc.Add(name, ToyScalar.eval r e))
-                            Map.empty
-                    { Cells = cells }
-                circuit.Map(go input, Func<ToyRow, ToyRow>(project))
+                circuit.Map(go input, Func<ToyRow, ToyRow>(ToyOps.projectorOf projections))
 
             | ToyPlan.AsTable input ->
                 // Stream → relation. DBSP's `I`. LINEAR, so it is the same
@@ -485,13 +633,11 @@ module ToyLowering =
             | ToyPlan.Join(left, right, leftKey, rightKey) ->
                 let ls = go left
                 let rs = go right
-                let keyL = Func<ToyRow, string>(fun r -> (ToyScalar.eval r leftKey).Canonical)
-                let keyR = Func<ToyRow, string>(fun r -> (ToyScalar.eval r rightKey).Canonical)
-                // Row merge. Right-hand cells win on an alias-qualified
-                // collision, which cannot happen for distinct aliases.
-                let combine =
-                    Func<ToyRow, ToyRow, ToyRow>(fun a b ->
-                        { Cells = b.Cells |> Map.fold (fun (acc: Map<string, ToyValue>) k v -> acc.Add(k, v)) a.Cells })
+                // All three from `ToyOps` — the same key functions and row
+                // merge `ToyEager.run` hands to `ZSet.join`.
+                let keyL = Func<ToyRow, string>(ToyOps.keyOf leftKey)
+                let keyR = Func<ToyRow, string>(ToyOps.keyOf rightKey)
+                let combine = Func<ToyRow, ToyRow, ToyRow>(ToyOps.mergeRows)
 
                 // ─── THE ONE PLACE THE MODE MATTERS ───────────────────
                 // `Join` is BILINEAR, so `Q^Δ ≠ Q`. Feeding deltas to the
@@ -524,6 +670,13 @@ module ToyLowering =
                     //   (a ⋈ b)^Δ = Δa ⋈ Δb + z⁻¹(I(a)) ⋈ Δb + Δa ⋈ z⁻¹(I(b))
                     // Retroactive, and therefore batch-equivalent.
                     circuit.IncrementalJoin(ls, rs, keyL, keyR, combine)
+
+                | ToyExecutionMode.Eager, _ ->
+                    // Unreachable — refused at entry. Spelled out rather
+                    // than wildcarded so that adding a FOURTH mode is a
+                    // compile error here instead of a silent fall-through
+                    // into the batch join.
+                    raise (InvalidOperationException "unreachable: Eager is refused by ToyLowering.lower")
 
         let outStream = go plan
         let output = circuit.Output outStream
