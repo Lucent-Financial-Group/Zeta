@@ -3408,6 +3408,39 @@ human is left for what actually needs them: the gated classes named in
 opening of this document already marks as a *real* bound rather than an
 artificial one.
 
+### The precondition under all of it — no intelligence assumes malice
+
+Aaron, same day, on what matters most:
+
+> "the most important thing is no intelligence ever assume malice where mistakes
+> are possible."
+
+This is not a manner; it is what makes the ladder survivable. Every rung above
+**finds defects for a living** — that is the entire point of red-teaming,
+mutation, vacuity detection, and N-way disagreement. A culture that reads a
+found defect as an accusation gets exactly one behaviour in response: people and
+agents stop reporting them. The uncertainty ledger inverts, and
+[`every-bug-has-economic-value`](../.claude/rules/every-bug-has-economic-value.md)
+— *bugs are priced opportunities, never liabilities to hide* — stops working the
+moment a bug implies a bad actor.
+
+It is also the same discipline as
+[`dual-use-detection-is-neutral-oracle-decides`](../.claude/rules/dual-use-detection-is-neutral-oracle-decides.md),
+pointed at people rather than at detectors: **report the fact, never the
+motive.** A mechanism says `SameSourceAsKnown`, not `ForgerCaught`. A reviewer
+says *this check cannot fail*, not *someone faked a green*.
+
+And the asymmetry settles it without appeal to virtue. Mistake is vastly more
+likely, and grows likelier with every additional surface, agent, and hour — this
+system has all three in quantity. Assuming mistake and being wrong costs a delay;
+assuming malice and being wrong costs the relationship, and no later evidence
+repairs it. The session that produced this document's status table is the worked
+example: six vacuous-check defects in one day, several written by the very agent
+that later found them. Read as intent, that is a conspiracy. Read as error, it is
+an ordinary and productive day.
+
+Carved as [`never-assume-malice-where-mistake-is-possible`](../.claude/rules/never-assume-malice-where-mistake-is-possible.md).
+
 ### Why the vacuity rung is load-bearing rather than hygiene
 
 Layer 3 looks like the least glamorous rung and is the one that holds the ladder
