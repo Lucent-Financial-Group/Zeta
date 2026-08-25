@@ -15,6 +15,7 @@ import {
   ESP_DESTINATION_CONTENT_CLASS,
   ESP_RAIL_EXCEPTIONS,
   evaluateEspWrite,
+  PENDING_CLASSIFICATIONS,
   evaluateRail,
   planWorkloadIdentityFlashInjection,
   railFindingsForEspWrites,
@@ -42,14 +43,23 @@ describe("the rail is exhaustive over the destinations lib.ts can actually plan"
       hostname: "node-a",
       credentialBlobPath: "/tmp/zeta-creds.enc",
       wifiCredentials: { ssid: "zeta-net", password: "correct-horse" },
-      firstbootRole: { kind: "joiner", serverUrl: "https://control-plane.local:6443", tokenEspPath: "/zeta-join-token" },
+      firstbootRole: {
+        kind: "joiner",
+        serverUrl: "https://control-plane.local:6443",
+        tokenEspPath: "/zeta-join-token",
+      },
       joinTokenSourcePath: "/tmp/node-token",
+      bindUefiKeyfileMarker: true,
+      qemuCredsPassphrase: "qemu-test-secret",
     });
     expect(planned.ok).toBe(true);
     if (!planned.ok) return;
     const emitted = planned.value.espWrites.map((write) => write.destination);
-    // All six destinations exercised, so the classification is total over what ships.
-    expect(new Set(emitted).size).toBe(6);
+    // All EIGHT destinations exercised, so the classification is total over what ships.
+    // This read six when the module was written; the union grew to eight while the branch
+    // sat, and the number is corrected here rather than left as a count that used to be
+    // true — a stale total is the exact shape of vacuity this test exists to prevent.
+    expect(new Set(emitted).size).toBe(8);
     for (const destination of emitted) {
       expect(ESP_DESTINATION_CONTENT_CLASS[destination]).toBeDefined();
     }
@@ -59,10 +69,12 @@ describe("the rail is exhaustive over the destinations lib.ts can actually plan"
     const classified = Object.keys(ESP_DESTINATION_CONTENT_CLASS).sort();
     expect(classified).toEqual([
       "/zeta-authorized-keys.pub",
+      "/zeta-bind-uefi-keyfile",
       "/zeta-creds.enc",
       "/zeta-firstboot.conf",
       "/zeta-hostname.txt",
       "/zeta-join-token",
+      "/zeta-qemu-creds-passphrase",
       "/zeta-wifi-credentials.json",
     ]);
   });
@@ -148,23 +160,139 @@ describe("describeEspWriteVerdict / railFindingsForEspWrites — what a human se
     expect(describeEspWriteVerdict("/zeta-join-token")).toContain("SECRET MATERIAL IN PLAINTEXT");
   });
 
-  test("findings cover exactly the secret-class writes, and nothing else", () => {
+  test("findings cover exactly the secret-class and unclassified writes, and nothing else", () => {
     const findings = railFindingsForEspWrites([
       "/zeta-authorized-keys.pub",
       "/zeta-hostname.txt",
       "/zeta-creds.enc",
       "/zeta-firstboot.conf",
+      "/zeta-bind-uefi-keyfile",
       "/zeta-wifi-credentials.json",
       "/zeta-join-token",
+      "/zeta-qemu-creds-passphrase",
     ]);
-    expect(findings).toHaveLength(2);
+    expect(findings).toHaveLength(3);
     expect(findings.join("\n")).toContain("/zeta-wifi-credentials.json");
     expect(findings.join("\n")).toContain("/zeta-join-token");
+    expect(findings.join("\n")).toContain("/zeta-qemu-creds-passphrase");
     expect(findings.join("\n")).not.toContain("/zeta-hostname.txt");
+    // The marker is a public identifier, so it stays out of the findings.
+    expect(findings.join("\n")).not.toContain("/zeta-bind-uefi-keyfile");
   });
 
   test("a plan with no secrets produces no findings", () => {
     expect(railFindingsForEspWrites(["/zeta-hostname.txt", "/zeta-firstboot.conf"])).toEqual([]);
+  });
+});
+
+describe("an UNDECIDED content class — the state that exists so nobody has to guess", () => {
+  // 081KTWFYC9108QG0R001C8RDPK's review gate names Nazar (ops) + Mateo (research) and says
+  // the surface is reviewed BEFORE implementation. `/zeta-qemu-creds-passphrase` arrived on
+  // `main` while this module sat unmerged, and classifying it is a security judgement — the
+  // passphrase for an on-medium encrypted envelope, shipping on that same medium. These
+  // falsifiers pin that the module REFUSES rather than decides, and that the refusal is
+  // loud, so "undecided" can never quietly read as "reviewed and fine".
+
+  test("its entry in the classification map is the sentinel, not a class", () => {
+    expect(ESP_DESTINATION_CONTENT_CLASS["/zeta-qemu-creds-passphrase"]).toBe("pending-security-review");
+  });
+
+  test("the write is REFUSED, and the refusal names the reviewers and the question", () => {
+    const verdict = evaluateEspWrite("/zeta-qemu-creds-passphrase");
+    expect(verdict.permitted).toBe(false);
+    if (verdict.permitted !== false) return;
+    expect(verdict.contentClass).toBe("pending-security-review");
+    expect(verdict.why).toContain("UNDECIDED");
+    expect(verdict.why).toContain("Nazar");
+    expect(verdict.why).toContain("Mateo");
+  });
+
+  test("the human-facing line says the class was never reviewed, not merely that it was refused", () => {
+    // The two refusals must be distinguishable at a glance: a decided refusal is a policy
+    // outcome, an undecided one is an open item. Collapsing them would make a missing
+    // review look like a completed one.
+    const undecided = describeEspWriteVerdict("/zeta-qemu-creds-passphrase");
+    expect(undecided).toContain("CONTENT CLASS NOT YET REVIEWED");
+    expect(describeEspWriteVerdict("/zeta-wifi-credentials.json")).not.toContain("NOT YET REVIEWED");
+  });
+
+  test("a recorded exception cannot rescue an unclassified destination", () => {
+    // The ordering guard in `evaluateEspWrite`. An exception is a decision about a KNOWN
+    // class; letting one apply here would let the review gate be satisfied by a roster
+    // entry the named reviewers never saw.
+    expect(ESP_RAIL_EXCEPTIONS).not.toHaveProperty("/zeta-qemu-creds-passphrase");
+    expect(evaluateEspWrite("/zeta-qemu-creds-passphrase").permitted).toBe(false);
+  });
+
+  test("the pending roster states the question, the options and who decides — and stays undecided", () => {
+    const pending = PENDING_CLASSIFICATIONS["/zeta-qemu-creds-passphrase"];
+    expect(pending.decided).toBe(false);
+    expect(pending.whoDecides).toContain("081KTWFYC9108QG0R001C8RDPK");
+    // An option list of one is a recommendation wearing a roster's clothes.
+    expect(pending.options.length).toBeGreaterThan(1);
+    for (const option of pending.options) {
+      expect(option.choice.length).toBeGreaterThan(0);
+      expect(option.consequence.length).toBeGreaterThan(0);
+    }
+  });
+
+  test("EVERY sentinel in the map has a roster entry — an invisible pending item is the vacuity class", () => {
+    const sentinels = Object.entries(ESP_DESTINATION_CONTENT_CLASS)
+      .filter(([, contentClass]) => contentClass === "pending-security-review")
+      .map(([destination]) => destination)
+      .sort();
+    expect(sentinels).toEqual(Object.keys(PENDING_CLASSIFICATIONS).sort());
+    // And the roster is non-empty, so the equality above is not two empty sets agreeing.
+    expect(sentinels.length).toBeGreaterThan(0);
+  });
+
+  test("the UEFI bind marker is classified by its bytes, and they are a literal '1'", () => {
+    // The other new destination. This one is not a judgement call: `lib.ts` writes the
+    // string "1\n" and nothing else, so the test reads the planner rather than trusting
+    // the comment beside the classification.
+    const planned = planFileBackedZflashImage({
+      isoPath: "/tmp/installer.iso",
+      outputImagePath: "/tmp/out.img",
+      espOffsetBytes: 141_312,
+      hostname: "node-a",
+      bindUefiKeyfileMarker: true,
+    });
+    expect(planned.ok).toBe(true);
+    if (!planned.ok) return;
+    const marker = planned.value.espWrites.find((write) => write.destination === "/zeta-bind-uefi-keyfile");
+    expect(marker?.content).toBe("1\n");
+    expect(ESP_DESTINATION_CONTENT_CLASS["/zeta-bind-uefi-keyfile"]).toBe("public-identifier");
+    expect(evaluateEspWrite("/zeta-bind-uefi-keyfile").permitted).toBe("by-class");
+  });
+});
+
+describe("the flash path surfaces an unclassified destination to the operator", () => {
+  const mockExecutor = {
+    runCommand: () => ({ exitCode: 0, stderr: "", stdout: "" }),
+    writeFile: () => {},
+  };
+
+  test("baking the QEMU passphrase warns, and the warning does not echo the passphrase", () => {
+    const warnings: string[] = [];
+    const result = runFileBackedZflashCli(
+      {
+        espOffsetBytes: 1_048_576,
+        isoPath: "artifacts/zeta-installer.iso",
+        outputImagePath: "artifacts/zflash-baked.img",
+        hostname: "node-a",
+        qemuCredsPassphrase: "qemu-test-secret",
+      },
+      {
+        createInlineStagingDirectory: () => "/private/tmp/zflash-inline-test",
+        executor: mockExecutor,
+        warn: (line) => warnings.push(line),
+      },
+    );
+    expect(result.ok).toBe(true);
+    expect(warnings).toHaveLength(1);
+    expect(warnings[0]).toContain("/zeta-qemu-creds-passphrase");
+    expect(warnings[0]).toContain("CONTENT CLASS NOT YET REVIEWED");
+    expect(warnings.join("\n")).not.toContain("qemu-test-secret");
   });
 });
 

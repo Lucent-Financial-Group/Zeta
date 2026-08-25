@@ -80,15 +80,36 @@ export type InjectionContentClass =
   | "encrypted-envelope";
 
 /**
+ * NOT a content class — the explicit absence of one.
+ *
+ * WHY A STATE AND NOT A GUESS. The totality constraint below forces every ESP
+ * destination to carry a value. When a new destination arrives whose class is a
+ * *security judgement* rather than a reading of the bytes, the only two moves the
+ * type system leaves are (a) pick a class anyway and (b) do not compile. Both are
+ * wrong: (a) manufactures a decision nobody made and it is indistinguishable in the
+ * diff from one that was reviewed; (b) makes the guard's own success — catching an
+ * unclassified destination — look like breakage.
+ *
+ * So undecided is a first-class value. It fails CLOSED (refused on the ESP, the same
+ * verdict as `secret-material`, and reported by {@link railFindingsForEspWrites}), it
+ * is enumerable in {@link PENDING_CLASSIFICATIONS} with the question and the named
+ * reviewers, and promoting it to a real class is a deliberate edit that shows up in a
+ * diff — the same no-silent-downgrade shape {@link WORKLOAD_IDENTITY_CUSTODY_DECISIONS}
+ * uses for custody. A destination sitting here is a decision that has NOT been taken;
+ * it must never read as one that was.
+ *
+ * It is deliberately outside {@link InjectionContentClass} so that `evaluateRail`,
+ * which answers a question about content classes, cannot be handed one of these.
+ */
+export type PendingClassification = "pending-security-review";
+
+/**
  * Where a value can travel on its way into a fresh install.
  *
  * `usb-esp` is a FAT partition on a stick somebody can pocket: unencrypted,
  * readable on any machine, and readable *before* the node ever boots.
  */
-export type TransitSurface =
-  | "usb-esp"
-  | "cluster-console-operator-typed"
-  | "post-install-secrets-manager";
+export type TransitSurface = "usb-esp" | "cluster-console-operator-typed" | "post-install-secrets-manager";
 
 /**
  * The rail, as a total map.
@@ -98,6 +119,14 @@ export type TransitSurface =
  * destination cannot be added without a class. That is condition 4 of
  * `.claude/rules/no-binary-in-proof-lineage.md` — a roster a check can
  * enumerate, rather than an allowlist that drifts from the thing it describes.
+ *
+ * IT HAS ALREADY FIRED ONCE, WHICH IS THE POINT. This module was written against a
+ * six-destination union. While it sat unmerged the union grew to eight
+ * (`/zeta-bind-uefi-keyfile`, `/zeta-qemu-creds-passphrase`), and the `satisfies`
+ * clause turned that into a compile error rather than a silent gap — a destination
+ * shipped for months with no class and nothing noticing is exactly the failure the
+ * rail-as-prose had. One of the two is classified below by reading its bytes; the
+ * other is a security judgement and sits in {@link PENDING_CLASSIFICATIONS}.
  */
 export const ESP_DESTINATION_CONTENT_CLASS = Object.freeze({
   /** OpenSSH *public* keys. Publishing a public key costs nothing. */
@@ -112,7 +141,23 @@ export const ESP_DESTINATION_CONTENT_CLASS = Object.freeze({
   "/zeta-firstboot.conf": "public-identifier",
   /** k3s node-token: cluster membership, in the clear. See ESP_RAIL_EXCEPTIONS. */
   "/zeta-join-token": "secret-material",
-} satisfies Record<EspDestination, InjectionContentClass>);
+  /**
+   * The literal bytes `"1\n"` — `lib.ts` `planFileBackedZflashImage` writes nothing
+   * else to it. A boolean marker asking the guest installer to opt-in-bind the target
+   * ESP keyfile. Reading it discloses nothing and grants nothing, so it is a public
+   * identifier on the axis this rail measures.
+   *
+   * Named limit, so the classification is not read as wider than it is: this rail is
+   * about the CONFIDENTIALITY of content in transit. A marker that changes installer
+   * behaviour also has an INTEGRITY axis — anyone who can write the stick can set it —
+   * and neither this module nor the catalog addresses ESP write-integrity at all. That
+   * gap is real, it is not this classification's to close, and calling this file
+   * `secret-material` would not close it either.
+   */
+  "/zeta-bind-uefi-keyfile": "public-identifier",
+  /** SEE {@link PENDING_CLASSIFICATIONS}. Not classified; refused until reviewed. */
+  "/zeta-qemu-creds-passphrase": "pending-security-review",
+} satisfies Record<EspDestination, InjectionContentClass | PendingClassification>);
 
 /**
  * A secret-material ESP write that is shipped anyway, with its gap on the record.
@@ -196,13 +241,94 @@ export const RAIL_DIVERGENCES = Object.freeze({
   >
 >);
 
+/**
+ * A destination whose content class is a security judgement nobody has made yet.
+ *
+ * Shaped like {@link CustodyDecision} on purpose — same `decided: false` invariant,
+ * same "surfaced, never answered" contract. The difference is only what it blocks:
+ * a custody decision blocks a design, this blocks a classification.
+ *
+ * `options` is the part that makes the entry actionable rather than a shrug. A
+ * reviewer should be able to decide from this roster alone without re-deriving the
+ * problem, and every option here is one the rail can actually express.
+ */
+export interface PendingClassificationEntry {
+  readonly destination: EspDestination;
+  /** What is on the medium, factually. No verdict in this field. */
+  readonly whatItCarries: string;
+  /** The question a reviewer has to answer. */
+  readonly question: string;
+  /** Each option, and what choosing it would mean mechanically. */
+  readonly options: readonly { readonly choice: string; readonly consequence: string }[];
+  readonly whoDecides: string;
+  readonly decided: false;
+}
+
+/**
+ * `/zeta-qemu-creds-passphrase` — undecided, and deliberately so.
+ *
+ * The work-item this module belongs to (081KTWFYC9108QG0R001C8RDPK) carries the gate
+ * *"Nazar (ops) + Mateo (research) review the surface BEFORE implementation; no key
+ * handling lands without it."* Classifying the other seven destinations is reading
+ * bytes. Classifying this one is a judgement about a real weakening of the credential
+ * envelope, so it is left for the named reviewers rather than taken in a rescue pass.
+ */
+export const PENDING_CLASSIFICATIONS = Object.freeze({
+  "/zeta-qemu-creds-passphrase": Object.freeze({
+    destination: "/zeta-qemu-creds-passphrase",
+    whatItCarries:
+      "the plaintext passphrase for /zeta-creds.enc, written by " +
+      "planFileBackedZflashImage when --qemu-creds-passphrase-file is passed, and read " +
+      "back off the boot USB ESP by installer/uefi-keyfile-esp.ts " +
+      "(QEMU_CREDS_PASSPHRASE_IMAGE_PATH) so a non-interactive QEMU run can bind the blob",
+    question:
+      "What content class does the passphrase for an on-medium encrypted envelope take " +
+      "when it ships on THAT SAME MEDIUM? The envelope's own 'encrypted-envelope' class " +
+      "is justified by the key not being on the stick (see /zeta-creds.enc); this file is " +
+      "that key. Whether a QEMU-only, non-production flag makes that acceptable, and " +
+      "whether the rail should model 'test-only' at all, is the security call.",
+    options: Object.freeze([
+      Object.freeze({
+        choice: "secret-material, with an entry in ESP_RAIL_EXCEPTIONS",
+        consequence:
+          "ships as today, refused-then-rescued by a NAMED exception; the flash path " +
+          "prints 'SECRET MATERIAL IN PLAINTEXT ON THE ESP' whenever the flag is used. " +
+          "Requires deciding neverImplicit (it IS operator-flag-gated today) and writing " +
+          "the recordedGap. Note this would also downgrade /zeta-creds.enc in practice " +
+          "whenever both are baked together, which no roster currently states.",
+      }),
+      Object.freeze({
+        choice: "secret-material, with an entry in RAIL_DIVERGENCES and no exception",
+        consequence:
+          "ships as today and is REFUSED loudly on every use, recorded as a divergence " +
+          "the catalog has not resolved — the disposition the wifi PSK already has.",
+      }),
+      Object.freeze({
+        choice: "a new class the rail does not yet have (e.g. test-fixture-only)",
+        consequence:
+          "the largest change: it widens InjectionContentClass, and a class whose " +
+          "membership is decided by INTENT rather than by content is one a future caller " +
+          "can talk its way into. Would need its own falsifier for that.",
+      }),
+      Object.freeze({
+        choice: "stop writing it — move the passphrase off the ESP entirely",
+        consequence:
+          "a behaviour change to a shipped CI lane (QEMU_UEFI_KEYFILE_PICKER), i.e. a " +
+          "maintainer call, not a classification. Out of scope for this module either way.",
+      }),
+    ]),
+    whoDecides: "Nazar (ops) + Mateo (research), per 081KTWFYC9108QG0R001C8RDPK's review gate",
+    decided: false,
+  }),
+} satisfies Partial<Record<EspDestination, PendingClassificationEntry>>);
+
 /** The verdict for one (content class, transit surface) pair. */
 export type RailVerdict =
   | { readonly permitted: "by-class"; readonly contentClass: InjectionContentClass }
   | { readonly permitted: "by-recorded-exception"; readonly exception: EspRailException }
   | {
       readonly permitted: false;
-      readonly contentClass: InjectionContentClass;
+      readonly contentClass: InjectionContentClass | PendingClassification;
       readonly why: string;
     };
 
@@ -212,10 +338,7 @@ export type RailVerdict =
  * Deliberately NOT keyed by destination, so the rule is a statement about
  * classes and a caller cannot special-case a filename past it.
  */
-export function evaluateRail(
-  contentClass: InjectionContentClass,
-  surface: TransitSurface,
-): RailVerdict {
+export function evaluateRail(contentClass: InjectionContentClass, surface: TransitSurface): RailVerdict {
   if (surface !== "usb-esp") {
     // The console is operator-typed and the secrets manager holds secrets by
     // design; both are where the catalog sends secret material.
@@ -243,6 +366,25 @@ export function evaluateRail(
  */
 export function evaluateEspWrite(destination: EspDestination): RailVerdict {
   const contentClass = ESP_DESTINATION_CONTENT_CLASS[destination];
+  // UNDECIDED FAILS CLOSED, AND BEFORE THE EXCEPTION LOOKUP. An entry in
+  // ESP_RAIL_EXCEPTIONS is a decision about a KNOWN class; it must not be able to
+  // rescue a destination whose class has never been decided, because that would let
+  // a review gate be satisfied by a roster entry the reviewers never saw.
+  if (contentClass === "pending-security-review") {
+    const pending = PENDING_CLASSIFICATIONS[destination as keyof typeof PENDING_CLASSIFICATIONS] as
+      | PendingClassificationEntry
+      | undefined;
+    return {
+      permitted: false,
+      contentClass,
+      why:
+        "content class UNDECIDED — no reviewer has classified this destination, so the " +
+        "rail cannot say whether it may ride the medium and refuses rather than guessing. " +
+        (pending === undefined
+          ? "It is also absent from PENDING_CLASSIFICATIONS, which is itself a defect."
+          : `Awaiting ${pending.whoDecides}. ${pending.question}`),
+    };
+  }
   const verdict = evaluateRail(contentClass, "usb-esp");
   if (verdict.permitted !== false) {
     return verdict;
@@ -268,20 +410,27 @@ export function describeEspWriteVerdict(destination: EspDestination): string {
       `exception (${verdict.exception.recordedIn}). ${verdict.exception.recordedGap}`
     );
   }
+  if (verdict.contentClass === "pending-security-review") {
+    return `${destination}: REFUSED BY THE RAIL — CONTENT CLASS NOT YET REVIEWED. ${verdict.why}`;
+  }
   return `${destination}: REFUSED BY THE RAIL — ${verdict.why}`;
 }
 
 /**
- * Every planned write that is secret-class on the ESP, exception or not.
+ * Every planned write the rail has something to say about: secret-class (exception or
+ * not) and unclassified.
  *
  * This is the function a flash path calls: it does not decide whether to
- * proceed, it makes sure nobody proceeds unknowingly.
+ * proceed, it makes sure nobody proceeds unknowingly. Unclassified belongs here for
+ * the same reason secret-class does — an operator flashing a destination nobody has
+ * reviewed should learn that at flash time, not from a roster they will never read.
  */
-export function railFindingsForEspWrites(
-  destinations: readonly EspDestination[],
-): readonly string[] {
+export function railFindingsForEspWrites(destinations: readonly EspDestination[]): readonly string[] {
   return destinations
-    .filter((destination) => ESP_DESTINATION_CONTENT_CLASS[destination] === "secret-material")
+    .filter((destination) => {
+      const contentClass = ESP_DESTINATION_CONTENT_CLASS[destination];
+      return contentClass === "secret-material" || contentClass === "pending-security-review";
+    })
     .map(describeEspWriteVerdict);
 }
 
@@ -455,9 +604,7 @@ export type WorkloadIdentityFlashPlanResult =
  * (secret material, unencrypted medium) and SPIFFE's own design (the private
  * key is generated at the workload and never transported).
  */
-export function planWorkloadIdentityFlashInjection(
-  input: NodeWorkloadIdentityInput,
-): WorkloadIdentityFlashPlanResult {
+export function planWorkloadIdentityFlashInjection(input: NodeWorkloadIdentityInput): WorkloadIdentityFlashPlanResult {
   const derived = deriveNodeWorkloadSpiffeId(input);
   if (!derived.ok) {
     return { ok: false, error: derived.error };
