@@ -79,6 +79,29 @@
 // connected the open credential bug to archive coverage; the cost of that P1 is
 // 910 unarchived PRs and counting.
 //
+// WHY THIS IS NOT AH003, AND WHY BOTH ARE NEEDED
+// ----------------------------------------------
+// `audit-orphaned-archive-refs.ts` (AH003, fatal on the gate.yml floor) asks:
+// for every `automation/pr-archive-*` REF that exists, did its record reach
+// main? That is the right question for a lane that pushed a branch and then
+// failed to land it, and it caught a real 1,290-ref accumulation.
+//
+// It takes REFS as its input, so it is STRUCTURALLY BLIND to the population
+// here: a PR whose merge never triggered the workflow produces no ref, no run,
+// and no branch, so there is nothing for a ref-driven audit to enumerate. It is
+// the same blindness its own header calls out in ITS sibling — one level up.
+//
+// Measured on one tree at one instant (2026-08-25, after #15309 landed):
+//
+//     AH003 (ref-driven)          1,287 refs examined ->     4 stranded
+//     this audit (merged-driven)  12,782 PRs examined -> 907 missing
+//
+// 903 of those 907 are invisible to AH003 by construction. Neither audit
+// subsumes the other: AH003 catches a record that was BUILT and lost, this one
+// catches a record that was NEVER BUILT. The lane needs both, because "the
+// workflow ran and failed to deliver" and "the workflow never ran" are different
+// failures and only the first one leaves evidence behind.
+//
 // WHY AN AUDIT AND NOT JUST A FIX
 // -------------------------------
 // Because the fix is to a SUPPRESSED EVENT, and the next thing that suppresses
