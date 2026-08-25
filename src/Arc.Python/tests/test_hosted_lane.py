@@ -25,6 +25,7 @@ import pytest
 from arc_agi.wrapper import EnvironmentWrapper  # type: ignore[import-untyped]
 from arcengine import GameAction, GameState
 
+from zeta_arc.agent import PixelAgent
 from zeta_arc.click import MAX_COORD, SWEEP_STRIDES, ClickPolicy
 from zeta_arc.driver import advance, reset
 from zeta_arc.environments.chase import ZetaChase
@@ -37,6 +38,7 @@ from zeta_arc.hosted import (
     score_level,
 )
 from zeta_arc.layered import CLICK, KEYBOARD, LayeredAgent
+from zeta_arc.perception import Component
 
 
 class FakeFrame:
@@ -282,6 +284,115 @@ def test_the_layer_that_moves_the_world_wins(responsive: str) -> None:
         agent.evidence[responsive]
         > agent.evidence[KEYBOARD if responsive == CLICK else CLICK]
     ), agent.evidence
+
+
+@pytest.mark.parametrize(
+    "offered", [[1], [2], [3], [4], [1, 2], [3, 4], [1, 4], [1, 2, 3, 4]]
+)
+def test_the_agent_never_emits_an_action_the_frame_did_not_offer(
+    offered: list[int],
+) -> None:
+    """The defect this package exists to avoid, found IN this package.
+
+    `available_actions` is per-frame and an environment may offer a SUBSET of
+    the four directions. `PixelAgent` had all four wired in as constants — its
+    router, its greedy fallback and its probe all assumed them — so pointed at a
+    frame offering only `ACTION1`/`ACTION2` it emitted `ACTION4` on EVERY TICK
+    of the episode. No crash, no warning: the entire budget spent on a move the
+    environment never offered, scoring zero with nothing in the output to say
+    why.
+
+    Measured, not hypothesised — reproduced on the code as first written, hours
+    after writing the module whose whole thesis is that an action space must be
+    read rather than assumed.
+
+    Parametrised over subsets rather than asserted on one, because a fix that
+    happens to work for `{1,2}` and not `{3}` is the kind that passes a single
+    example. The single-action rows are the sharp ones: there is no room for a
+    near-miss to hide in them.
+    """
+    agent = LayeredAgent()
+    grid = _two_object_grid()
+    emitted = [agent.act(FakeFrame(grid, available=offered))[0] for _ in range(8)]
+    illegal = [a.name for a in emitted if a.value not in offered]
+    assert not illegal, f"offered {offered}, emitted illegal {illegal}"
+
+
+def test_the_router_plans_only_through_moves_it_is_allowed_to_make() -> None:
+    """A route is worthless if its steps are not on offer.
+
+    Distinct from the emitted-action test, which watches what comes OUT: this
+    pins that the BFS itself is restricted, so the agent never commits to a plan
+    it will then be unable to follow.
+
+    Both halves matter, and the second was found by getting this test wrong
+    first. With only the vertical axis legal, a target off the agent's column is
+    genuinely UNREACHABLE — and the router must say so by returning nothing,
+    not by routing through a move it may not make. The first version of this
+    test asked for exactly that impossible route and read the correct empty
+    answer as a failure.
+    """
+    agent = PixelAgent()
+    agent._step_px = 1.0
+    me = Component(colour=9, area=1, cx=0.5, cy=0.5)
+    vertical = (GameAction.ACTION1, GameAction.ACTION2)
+
+    same_column = Component(colour=4, area=1, cx=0.5, cy=5.5)
+    route = agent._route_plan(me, [same_column], 10, 10, vertical)
+    assert route, (
+        "reachable target produced no route — the assertion below would be vacuous"
+    )
+    assert all(step in vertical for step in route), route
+
+    off_column = Component(colour=4, area=1, cx=5.5, cy=5.5)
+    assert agent._route_plan(me, [off_column], 10, 10, vertical) == [], (
+        "routed to a target unreachable within the legal action space"
+    )
+
+
+@pytest.mark.parametrize("offered", [[1], [2], [3], [1, 3]])
+def test_the_PROBE_is_legal_too_on_a_frame_with_nothing_to_steer_by(
+    offered: list[int],
+) -> None:
+    """The branch the other action-space tests do not reach, and it was unfalsified.
+
+    `PixelAgent.act` returns early when the frame holds fewer than two
+    components — the opening frame of a level, measured to contain the agent
+    before the goal and walls are drawn. That path had its own hardcoded
+    `ACTION4`, and the parametrised emitted-action test above never reaches it
+    because its fixture always has two objects.
+
+    Found by BREAK-RED rather than by reading: reverting the probe to
+    `GameAction.ACTION4` left all 79 tests green, which means that half of the
+    fix was decoration. A fix no test can refute is not a fix; this is the
+    refutation.
+    """
+    agent = LayeredAgent()
+    lonely = [[0] * 10 for _ in range(10)]
+    lonely[4][4] = 7  # exactly one component: nothing to steer by
+    emitted = [agent.act(FakeFrame(lonely, available=offered))[0] for _ in range(4)]
+    illegal = [a.name for a in emitted if a.value not in offered]
+    assert not illegal, f"probe emitted {illegal} when only {offered} was offered"
+
+
+def test_the_projection_tie_breaks_deterministically() -> None:
+    """A target exactly diagonal ties two legal moves; DST needs one answer.
+
+    An episode that cannot be replayed cannot be debugged, so the tie is broken
+    by action id rather than by dict order — and pinned here so a later
+    refactor that reorders `ACTION_VECTORS` cannot silently change replays.
+    """
+    grid = [[0] * 10 for _ in range(10)]
+    grid[0][0] = 9
+    grid[5][5] = 4
+    runs = [
+        [
+            LayeredAgent().act(FakeFrame(grid, available=[1, 2, 3, 4]))[0]
+            for _ in range(5)
+        ]
+        for _ in range(3)
+    ]
+    assert runs[0] == runs[1] == runs[2], runs
 
 
 def test_an_unmodelled_action_set_still_advances_the_episode() -> None:

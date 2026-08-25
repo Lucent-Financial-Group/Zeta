@@ -143,4 +143,4 @@ class LayeredAgent:
         if layer == CLICK:
             x, y = self.click.choose(grid)
             return next(a for a in offered if is_click(a)), {"x": x, "y": y}
-        return self.pixel.act(grid), {}
+        return self.pixel.act(grid, frozenset(offered)), {}
