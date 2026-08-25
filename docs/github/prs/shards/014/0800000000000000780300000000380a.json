@@ -1,0 +1,17 @@
+{
+  "pr_number": 14346,
+  "archive_path": "docs/history/pr-reviews/PR-14346-feat-ci-detect-main-s-gate-verdict-drought-cancelled-is-not-a-verdict.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7k1XM7",
+    "comment:PRRC_kwDOSF9kNM7k1XMy",
+    "thread:PRRT_kwDOSF9kNM6bhEV1",
+    "thread:PRRT_kwDOSF9kNM6bhEV6"
+  ],
+  "fetched_at": "2026-08-25T04:08:35.367Z",
+  "schema_version": "v1",
+  "commit_sha": "37c8ed8080a7d0815416d462d46e720d452062b1",
+  "title": "feat(ci): detect main's gate-verdict drought — `cancelled` is not a verdict",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T04:07:38Z",
+  "head_ref": "feat/main-gate-verdict-drought-alarm"
+}
