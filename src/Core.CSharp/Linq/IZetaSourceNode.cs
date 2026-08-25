@@ -69,10 +69,10 @@ public interface IZetaSourceNode
     /// <summary>
     /// The relation name — what columns are qualified by in the plan.
     /// </summary>
-    string RelationName { get; }
+    public string RelationName { get; }
 
     /// <summary>
     /// Declared column names. Echoed into the plan's canonical form.
     /// </summary>
-    IReadOnlyList<string> Columns { get; }
+    public IReadOnlyList<string> Columns { get; }
 }

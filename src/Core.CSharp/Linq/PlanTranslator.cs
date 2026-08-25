@@ -300,22 +300,22 @@ public static class PlanTranslator
                 return ToyScalar.NewLit(ToLiteral(constant.Value));
 
             case BinaryExpression binary:
-            {
-                var left = TranslateScalar(binary.Left, env);
-                var right = TranslateScalar(binary.Right, env);
-                return binary.NodeType switch
                 {
-                    ExpressionType.Equal => ToyScalar.NewEq(left, right),
-                    ExpressionType.GreaterThan => ToyScalar.NewGt(left, right),
-                    ExpressionType.LessThan => ToyScalar.NewLt(left, right),
-                    ExpressionType.AndAlso or ExpressionType.And => ToyScalar.NewAndAlso(left, right),
-                    _ => throw new NotSupportedException(
-                        string.Format(
-                            CultureInfo.InvariantCulture,
-                            "Operator {0} is outside this prototype's scalar language (=, >, <, &&).",
-                            binary.NodeType)),
-                };
-            }
+                    var left = TranslateScalar(binary.Left, env);
+                    var right = TranslateScalar(binary.Right, env);
+                    return binary.NodeType switch
+                    {
+                        ExpressionType.Equal => ToyScalar.NewEq(left, right),
+                        ExpressionType.GreaterThan => ToyScalar.NewGt(left, right),
+                        ExpressionType.LessThan => ToyScalar.NewLt(left, right),
+                        ExpressionType.AndAlso or ExpressionType.And => ToyScalar.NewAndAlso(left, right),
+                        _ => throw new NotSupportedException(
+                            string.Format(
+                                CultureInfo.InvariantCulture,
+                                "Operator {0} is outside this prototype's scalar language (=, >, <, &&).",
+                                binary.NodeType)),
+                    };
+                }
 
             default:
                 throw new NotSupportedException(
