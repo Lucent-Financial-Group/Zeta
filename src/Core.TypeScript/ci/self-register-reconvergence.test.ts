@@ -227,9 +227,9 @@ describe("zeta-self-register level-triggered convergence (081M0BTFK85087G0R000A7
     // name, that is a stranger. `<id>+<login>@…` is checked by GitHub against the login.
     const r = run({ registeredOnMain: false, openPrs: [], userId: "4242" });
     expect(r.status).toBe(0);
-    const commit = r.calls.find((c) => c.includes("commit"));
-    expect(commit).toContain(`user.email=4242+${LOGIN}@users.noreply.github.com`);
-    expect(commit).not.toContain(`user.email=${LOGIN}@users.noreply.github.com`);
+    const commit = r.calls.find((c) => c.split(/\s+/).includes("commit")) ?? "";
+    const configured = /(?:^|\s)-c\s+user\.email=(\S+)/.exec(commit)?.[1];
+    expect(configured).toBe(`4242+${LOGIN}@users.noreply.github.com`);
   });
 
   it("REFUSES when the numeric id cannot be resolved — it does not fall back to the plain form", () => {
@@ -238,7 +238,15 @@ describe("zeta-self-register level-triggered convergence (081M0BTFK85087G0R000A7
     const r = run({ registeredOnMain: false, openPrs: [], userId: "" });
     expect(r.status).toBe(1);
     expect(r.stdout + r.stderr).toContain("ambiguous identity");
-    expect(r.calls.some((c) => c.includes("users.noreply.github.com"))).toBe(false);
+    // Assert on the `user.email=` FLAG, not on a bare substring of the host. A plain
+    // `.includes("users.noreply.github.com")` is `js/incomplete-url-substring-sanitization`
+    // -- the host can sit anywhere in a longer string -- and CodeQL is right to flag the
+    // shape even here: this assertion is only meaningful if it is bound to the position
+    // that decides the identity.
+    const configuredEmail = /(?:^|\s)-c\s+user\.email=(\S+)/;
+    expect(r.calls.some((c) => configuredEmail.test(c))).toBe(false);
+    // And nothing was committed at all -- the refusal happens before the commit.
+    expect(r.calls.some((c) => c.split(/\s+/).includes("commit"))).toBe(false);
     expect(createdPr(r)).toBe(false);
   });
 
