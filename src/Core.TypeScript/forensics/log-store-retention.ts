@@ -44,9 +44,6 @@
  * above is checkable without a reboot.
  */
 
-/** Bytes in one megabyte, decimal (matching `du -h`'s rounding intent). */
-export const MB = 1024 * 1024;
-
 export interface RingObservation {
   /** Total bytes the Persist ring is holding. */
   readonly ringBytes: number;

@@ -42,9 +42,6 @@
  * which is what makes every claim above testable without a reboot.
  */
 
-/** Microseconds per second — the unit `panicmedic-timestamps` is measured in. */
-export const PANICMEDIC_MICROS_PER_SECOND = 1_000_000;
-
 /**
  * The lower bound a decoded panicmedic timestamp must clear to be believed.
  * 2020-01-01. A value below this is a unit mistake (ns read as us, say), not a
@@ -82,6 +79,8 @@ export function decodePanicmedicTimestamp(entry: string): PanicmedicTimestamp {
   const slot = Number.parseInt(slotText, 10);
   const micros = Number.parseInt(hexText, 16);
   if (!Number.isSafeInteger(micros)) return { kind: "implausible", slot, raw, value: micros };
+  // `panicmedic-timestamps` is measured in MICROSECONDS, so 1000 per ms is the
+  // conversion — not 1_000_000. Stated here, at the only site that depends on it.
   const atMs = micros / 1000;
   if (atMs < PANICMEDIC_PLAUSIBLE_FLOOR_MS || atMs > PANICMEDIC_PLAUSIBLE_CEILING_MS) {
     return { kind: "implausible", slot, raw, value: micros };
