@@ -55,7 +55,8 @@
 // Exit 0 = every family uses one expression · 1 = lists the divergent families
 //        · 2 = the scan itself failed (missing dir, or implausibly few keys).
 
-import { readdirSync, readFileSync, statSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
+import type { Dirent } from "node:fs";
 import { join } from "node:path";
 
 const WORKFLOW_DIRS = [".github/workflows", ".github/actions"] as const;
@@ -106,19 +107,26 @@ export function familyOf(key: string): string {
 
 function listYamlFiles(dir: string): string[] {
   const out: string[] = [];
-  let entries: string[];
+  let entries: Dirent[];
   try {
-    entries = readdirSync(dir).sort();
+    // `withFileTypes` so the entry KIND arrives with the listing. Calling
+    // `statSync` per name would ask the filesystem a second time about something
+    // the listing already knew, and an entry can vanish or change kind in
+    // between -- the check-then-use race `lint-check-then-use-file-races.ts`
+    // refuses. Sorted ORDINALLY (never `localeCompare`, which is culture-
+    // sensitive) so the report order is byte-stable across machines.
+    entries = readdirSync(dir, { withFileTypes: true });
   } catch {
     return out;
   }
-  for (const name of entries) {
-    const full = join(dir, name);
-    if (statSync(full).isDirectory()) {
+  const ordered = [...entries].sort((a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0));
+  for (const entry of ordered) {
+    const full = join(dir, entry.name);
+    if (entry.isDirectory()) {
       out.push(...listYamlFiles(full));
       continue;
     }
-    if (name.endsWith(".yml") || name.endsWith(".yaml")) out.push(full);
+    if (entry.name.endsWith(".yml") || entry.name.endsWith(".yaml")) out.push(full);
   }
   return out;
 }
