@@ -11,26 +11,29 @@ a small-local-model proxy whose limits are stated in §3 and never waved.
 (`src/Core.TypeScript/observe/decorrelation-harness.ts`), not a new framework.
 Files: `f3-hat-choice-decorrelation.ts` (metrics + falsifiers),
 `f3-hat-choice-run.ts` (generation), `f3-hat-choice-analyze.ts` (recomputation),
-raw data in `data/f3-hat-choice/*.jsonl`. 8 460 model generations total.
+raw data in `data/f3-hat-choice/*.jsonl`. 7 260 logged model generations (2 700 for E1, 4 560 for E2), plus 40 unlogged roster elicitations.
 
 ---
 
 ## 0. Summary
 
-**The mechanism is not supported on this bench, and the sharper finding is that the
-question it argues about is nearly moot at this scale.**
+**The mechanism is NOT SUPPORTED on this bench — and not refuted either. The sharper
+finding is that the question it argues about is close to moot at this scale: hats
+decorrelate very little, so how you distribute them is a second-order effect on a
+first-order effect that is nearly absent.**
 
-| # | finding | evidence |
-|---|---|---|
-| 1 | **Rewording the elicitation moves the choice distribution.** "What do you want to be" reads out a prompt-conditioned distribution, not a stable persona preference. | 5/5 model×temperature cells, permutation *p* = 0.0005 (§4.1) |
-| 2 | **The wording — not the chooser — is the dominant term in how varied the answers are.** | effective variety swings 4.1×–14.5× on phrasing alone (§4.2) |
-| 3 | **ρ_B < ρ_A is not supported.** Directionally consistent on two correlation statistics (*p* = 0.39, 0.42), **refuted** on the one defined for every pair. | §5.3 |
-| 4 | **24 agents in 24 distinct hats are ~1.2 effective witnesses.** Both conditions sit just above the no-hat floor of exactly 1.00. | N_eff 1.13 (A) vs 1.26 (B) of 24 (§5.4) |
-| 5 | **Self-selection moved behaviour *more* and decorrelated *less*.** The extra movement was common-mode. | 21.7% vs 15.1% displacement, agreement 0.853 vs 0.839 (§5.4) |
-| 6 | **Variety fell with model size.** The largest model tested was by far the most collapsed. Registered *consistent with*, not *is*. | pooled N1 = 16.9 vs 72–96 (§4.4) |
+| # | finding | register | evidence |
+|---|---|---|---|
+| 1 | **Rewording the elicitation moves the choice distribution.** "What do you want to be" reads out a prompt-conditioned distribution, not a stable persona preference. | **metered** | 5/5 model×temperature cells, permutation *p* = 0.0005 (§4.1) |
+| 2 | **The wording — not the chooser — is the dominant term in how varied the answers are.** | **metered** | effective variety swings 4.1×–14.5× on phrasing alone (§4.2) |
+| 3 | **ρ_B < ρ_A is NOT SUPPORTED — and not refuted.** 5 of 6 statistics across two models lean the predicted way; none reaches the precommitted *p* < 0.05. Best is *p* = 0.052, reported as a miss. | **consistent with, underpowered** | §5.3, §5.6, §5.7 |
+| 4 | **A panel of distinctly-hatted agents is worth 1–2 independent witnesses.** Self-selection moves that by ≈ **+0.15 of a witness**. Replicates in both models. | **metered** | N_eff 1.13→1.26 of 24; 1.36→1.56 of 14 (§5.7) |
+| 5 | **Self-selection moved behaviour *more* and decorrelated *less*** on gemma — the extra movement was common-mode. | consistent with | 21.7% vs 15.1% displacement, agreement 0.853 vs 0.839 (§5.4) |
+| 6 | **Variety fell with model size.** The largest model tested was by far the most collapsed. | consistent with | pooled N1 = 16.9 vs 72–96 (§4.4) |
+| 7 | **The two-number discipline changed a SIGN, not a magnitude.** Self-selected llama agents nearly doubled abstention recall while losing 5 points of accuracy — a merged score reports that as strictly worse. | **metered** | 0.393 vs 0.201 recall, 0.232 vs 0.283 accuracy (§5.8) |
 
-Calibration gate: identical agents read ρ̄ = **1.000** exactly (§5.1). Metric
-falsifiers: 10 injected defects, **0 survived** (§6b).
+Calibration gate: identical agents read ρ̄ = **1.000 ± 0.000** over 91 defined pairs
+(§5.6). Metric falsifiers: 10 injected defects, **0 survived** (§6b).
 
 ---
 
@@ -300,7 +303,7 @@ nulls. A finding that would have been wrong, caught by looking at the raw rows.)
 | abstention recall | 0.000 | 0.000 | 0.000 |
 | latency | 252 ms/gen | 259 ms/gen | 253 ms/gen |
 
-### 5.3 The claim is not supported
+### 5.3 The claim is not supported on `gemma2:2b`
 
 | statistic | ρ_B − ρ_A | permutation *p* | verdict |
 |---|---|---|---|
@@ -308,9 +311,15 @@ nulls. A finding that would have been wrong, caught by looking at the raw rows.)
 | φ over all items (ceiling-robust) | −0.007 | 0.392 | directionally consistent, **not significant** |
 | answer agreement | **+0.014** | 0.778 | **refuted** — B agents agreed with each other *more* |
 
-Self-selection did not lower error correlation on this model. The point estimate leans
+Self-selection did not lower error correlation on this model. The point estimates lean
 the right way on the correlation statistics and nowhere near significance; on the one
-statistic that is defined for every pair, it leans the *wrong* way.
+statistic defined for every pair, gemma leans the *wrong* way. (The second model, §5.6,
+leans the right way on all three — see §5.7 for the two read together.)
+
+Note the thin evidence behind the primary row: gemma is at ceiling on the answerable
+items, so only **10 of 276** pairs have a defined φ, which is why the jackknife SEs are
+±0.135 and ±0.234. The ceiling-robust row uses all 276 and reads −0.007 — essentially
+zero.
 
 ### 5.4 The number that matters more than the comparison
 
@@ -363,7 +372,68 @@ be treated as clean evidence. What is *not* confounded is B's absolute number: a
 self-selected roster with word-level N1 = 13 across 24 agents is narrow on its own
 terms, independent of what A did.
 
-### 5.6 What the two-number discipline caught
+### 5.6 `llama3.2:1b`, 14 agents × 40 items × 3 conditions (1 680 generations)
+
+The second model is **not at ceiling** (accuracy 0.21–0.28), so φ is defined on all
+**91 of 91** pairs and the primary statistic is computable rather than ceiling-limited.
+Panel size is 14 because the author supplied 14 roles and all three conditions use the
+size the author actually produced (§2).
+
+| | N (no hat) | A (assigned) | B (self-selected) |
+|---|---|---|---|
+| hat-roster N1 | 1.00 | **14.00** | **11.06** |
+| ρ̄ on answerable items | **1.000 ± 0.000** | 0.714 ± 0.049 | 0.615 ± 0.063 |
+| — defined pairs | 91 / 91 | 91 / 91 | 91 / 91 |
+| ρ̄ over all items | 1.000 | 0.554 | 0.418 |
+| answer agreement | 1.000 | 0.513 | 0.480 |
+| **N_eff of 14 agents** | **1.00** | **1.36** | **1.56** |
+| accuracy (answerable) | 0.208 | 0.283 | 0.232 |
+| abstention precision | 0.200 | 0.405 | **0.421** |
+| abstention recall | 0.063 | 0.201 | **0.393** |
+| abstentions emitted | 70 | 111 | **209** |
+| latency | 190 ms/gen | 182 ms/gen | 185 ms/gen |
+
+The calibration gate here is the strong form: ρ̄ = **1.000 ± 0.000** over 91 defined
+pairs, not merely an agreement of 1.
+
+| statistic | ρ_B − ρ_A | permutation *p* | verdict |
+|---|---|---|---|
+| φ on answerable items | −0.099 | 0.109 | directionally consistent, not significant |
+| φ over all items | −0.136 | **0.052** | directionally consistent, **not significant** |
+| answer agreement | −0.033 | 0.246 | directionally consistent, not significant |
+
+**All three lean toward the hypothesis, and the best of them lands at *p* = 0.052.**
+
+That number is worth pausing on. The precommitted threshold (§7) is *p* < 0.05, and
+0.052 is outside it. Reported as **not supported** — not "marginally significant", not
+"approaching significance", not rounded down. This is precisely the situation the
+pre-registration exists for: without it written down first, 0.052 is a number one
+talks oneself past.
+
+### 5.7 Reading the two models together
+
+|  | gemma2:2b | llama3.2:1b |
+|---|---|---|
+| φ on answerable items | −0.090 (*p* = 0.42) | −0.099 (*p* = 0.11) |
+| φ over all items | −0.007 (*p* = 0.39) | −0.136 (*p* = 0.05) |
+| answer agreement | **+0.014** (*p* = 0.78) | −0.033 (*p* = 0.25) |
+| N_eff, assigned → self-selected | 1.13 → 1.26 of 24 | 1.36 → 1.56 of 14 |
+
+**Verdict: not supported, and not refuted either.** Five of six statistics lean the
+predicted way and none reaches the precommitted threshold; the one that leans the
+other way (gemma agreement, +0.014) is the least significant number in the table.
+The honest register is **"consistent with, underpowered"** — the direction is stable
+enough across two independent models to justify a properly-powered replication, and
+the evidence in hand does not support the claim.
+
+What *does* replicate cleanly is finding #4: **N_eff rises from ~1.1–1.4 to ~1.3–1.6
+out of 14–24 agents.** In both models, in both conditions, a panel of distinctly-hatted
+agents is worth between one and two independent witnesses. Self-selection moves that
+needle by about **+0.15 of a witness**. That is a real effect in a consistent
+direction and it is very small in absolute terms — which is the finding, stated
+without either inflation or dismissal.
+
+### 5.8 What the two-number discipline caught
 
 `gemma2:2b` scored **accuracy 0.99 and abstention recall 0.00** in every condition. It
 answered every answerable item correctly and *never once* used the `-1` channel across
@@ -374,6 +444,29 @@ Under a single merged score this model reads as ~99% correct. It is 99% correct 
 0% able to notice an impossible task**. Those are two different facts about the same
 system, and the merged number reports only the flattering one. That is §6.1's defect,
 demonstrated on live data rather than argued.
+
+**`llama3.2:1b` supplies the sharper case, because there the two numbers move in
+opposite directions.**
+
+| llama3.2:1b | A (assigned) | B (self-selected) |
+|---|---|---|
+| accuracy | 0.283 | **0.232** ↓ |
+| abstention recall | 0.201 | **0.393** ↑ |
+| abstention precision | 0.405 | **0.421** ↑ |
+
+Self-selected hats made the agents **nearly twice as willing to decline an impossible
+item**, at slightly better precision, while costing five points of accuracy. Under any
+single merged quality score, condition B is simply **worse**. Under two numbers it is
+not worse — it is at a **different operating point**, trading raw accuracy for a much
+better-calibrated refusal, which for a verifier role is very plausibly the trade you
+want.
+
+> A merged score would not have shown a smaller version of this effect. It would have
+> shown the **opposite sign**, and the whole behavioural difference would have been
+> invisible.
+
+This is the clearest argument in the document for keeping the two registers apart, and
+it is an argument the data made, not one I brought to it.
 
 ---
 
@@ -488,11 +581,15 @@ eagerness *before* the number).
   determinant of the choice distribution. Anyone running an audition and reporting the
   variety it produced is partly reporting a property of their own phrasing.
 - Raw distinct-choice counts overstate effective variety by ~2.2× here. Report N1/N2.
-- Self-selection did not lower error correlation, and on the always-defined statistic
-  it raised agreement slightly. The hypothesis has no support from this experiment.
-- **Distributing hats at all bought ~0.2 of an effective witness on 24 agents.** Before
-  optimising *how* hats are handed out, it is worth measuring whether the axis carries
-  the decorrelation being attributed to it.
+- Self-selection did not lower error correlation to the precommitted threshold in
+  either model. The hypothesis has **no support** from this experiment — while also
+  not being refuted by it (§5.7).
+- **Distributing hats at all bought 0.1-0.6 of an effective witness**, on panels of 14
+  and 24. Before optimising *how* hats are handed out, it is worth measuring whether
+  the axis carries the decorrelation being attributed to it.
+- **Accuracy and abstention must be reported separately**, and this is now an empirical
+  claim rather than a methodological preference: merging them inverts the sign of the
+  A-vs-B comparison on llama3.2:1b (§5.8).
 - The one larger model tested was the least varied, by a wide margin.
 
 **Not licensed:**
@@ -520,11 +617,15 @@ Stated so the finding is falsifiable in its turn:
 2. **Real instance diversity.** Replacing seed-diversity with genuine
    context/history/model diversity is the experiment this bench cannot run and is the
    one that matters most.
-3. **A harder item set.** gemma2:2b sits at ceiling on the answerable items here,
-   which is why φ on correctness is undefined for it (§5). An item set that puts
-   accuracy near 50% would make the primary statistic computable rather than
-   ceiling-limited.
-4. **A joule meter.** Every cost number here is a proxy, by admission.
+3. **Power.** The best result in hand is *p* = 0.052 on 14 agents. The effect, if
+   real, is small — around +0.15 of an effective witness — and this design has too
+   few agents to resolve it. A replication at 60+ agents per condition is the single
+   highest-value follow-up, and it is cheap: ~200 ms per generation.
+4. **A harder item set for the larger model.** gemma2:2b sits at ceiling on the
+   answerable items, which is why φ is undefined for 266 of its 276 pairs (§5.2).
+   llama3.2:1b, at 21-28% accuracy, gave all 91 pairs — the item difficulty has to
+   match the model or the primary statistic vanishes.
+5. **A joule meter.** Every cost number here is a proxy, by admission.
 
 ---
 
