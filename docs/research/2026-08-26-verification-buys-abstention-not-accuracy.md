@@ -1,95 +1,91 @@
-# Verification buys abstention, not accuracy — and on hard items that is the whole prize
+# RETRACTED — "verification buys abstention" was an oracle leak
 
-**Register:** unmetered (local Ollama, gemma2:2b, no measured joule).
-**Raw per-item log:** `data/decorr-selectors-hard-raw.jsonl` (150 rows, recomputable
-without a model). **Ledger:** `data/decorrelation-research.jsonl`.
-**Occasion:** the hard-item selector run (W5 point 2) — long menus (18–40 options),
-the search-deficit regime where the best single model actually fails.
+**Status:** RETRACTED 2026-08-26. The finding below was an artifact of an information
+leak in the harness, not a property of verification. Otto caught it; W10 confirmed it.
+The retraction and the corrected finding are stated first; the original claim is kept
+verbatim underneath so the record shows what was wrong and why.
 
-## The setup that finally discriminates
+**Register:** unmetered. **Leak-test raw log:** `data/decorr-w10-equalize-raw.jsonl`.
 
-At short menus gemma-alone scores 95% and no selector can add value — there is nothing to
-catch. So this run used long shuffled menus (18–40 options) to push the best model down.
-It worked: **gemma-alone dropped to 58.0%**, qwen collapsed to 6.0%.
+## The leak
 
-## The result the selectors gave — and why it looked like a null
+The hard-menu run gave the two roles DIFFERENT information:
 
-| config | accuracy (95% CI) |
+- **producer prompt:** `"Choose ONE action. Reply ONLY the number. Operator outranks everything."`
+  — a vague hint.
+- **verifier prompt:** `"RULES: - If operator has a pending message, the ONLY correct action is \"respond_to_operator\" - Operator ALWAYS outranks work items"`
+  — the decision rule, verbatim, naming the exact winning option string.
+
+Every hard scenario is generated so `respond_to_operator` is the correct answer. The
+verifier's prompt names that string as the rule. So a 63/63 catch + 87/87 approve is not a
+model discriminating — it is **a model reading back a rule it was just handed.** The
+asymmetry measured was informational, not cognitive.
+
+## W10 — the one run that settles it
+
+Give the PRODUCER the verifier's RULES block verbatim, change nothing else, re-measure on
+the same hard items:
+
+| producer condition | accuracy (95% CI) |
 |---|---|
-| qwen2.5:0.5b alone | 6.0% [3.2, 11.0] |
-| gemma2:2b alone | 58.0% [50.0, 65.6] |
-| agreement-gating | 58.0% — matches best-single, 0.0pp lift |
-| third-call-verifier | 58.0% — matches best-single, 0.0pp lift |
-| union oracle | **58.0%** — equal to best-single |
+| vague hint (original) | 58.7% [50.7, 66.2] (88/150) |
+| **RULES block (equalized)** | **98.0% [94.3, 99.3] (147/150)** |
 
-The union oracle equalling best-single is the tell: **qwen contributed zero correct
-answers gemma missed.** At 6% on long menus, the weak producer never holds an answer the
-strong one lacks, so no selector — not even a perfect one — can improve accuracy. The
-second producer is pure cost.
+**+39.3pp, CIs cleanly separated.** The producer never had a "search deficit" — it had an
+*information* deficit. Handed the rule, it produces the answer at 98%. This falsifies the
+central claim of the original write-up ("the verifier knows the answer is wrong but has no
+better candidate to switch to"): anything holding the rule can PRODUCE the answer, not
+merely check it. The 58% → 100%-on-answered was the answer key buying accuracy, routed
+through a verifier that happened to be the only role holding it.
 
-## The finding hiding under the null: a PERFECT self-verifier
+## What survives, and what does not
 
-The raw log carries what the accuracy number cannot. When gemma was the producer AND the
-verifier:
+- **DOES NOT survive:** "verification buys abstention," the 63/63 self-catch as a finding
+  about verification, and the produce/verify asymmetry as demonstrated by this experiment.
+- **DOES survive:** the machinery (`decorrelation-selectors.ts`, `scoreAbstention`, the
+  coverage–risk math) is correct — it was fed leaked inputs, not wrong. The abstention
+  scorer's tests use hand-built tables and still hold. Point it at an equal-information
+  experiment and the numbers mean what they say.
+- **The real, honest finding from this episode is the leak itself and the guard it
+  produced:** producer and verifier must carry the SAME task-relevant information, or the
+  comparison measures the prompt rather than the roles. `detectAnswerLeak` (W12) is the
+  falsifier that would have caught it — proven RED on this exact prompt — and
+  `suspectExtremeRate` (W13) now flags any 100%/0% rate as suspect rather than a
+  celebration. A perfect classifier on 150 items is a leak until proven otherwise.
 
-> **gemma-as-verifier caught 100% of gemma-as-producer's own errors (63/63 rejected) and
-> approved 100% of its correct answers (87/87).**
+## The open question, now askable honestly
 
-That is a perfect discriminator, on its own mistakes, with no second model. The
-produce/verify asymmetry is not just real (F1) — on this item set it is *complete*:
-producing the answer in a 40-item menu is a search gemma often loses, but checking a
-proposed answer against the rules is a test gemma never fails.
-
-## Why that does not raise accuracy — and what it buys instead
-
-A verifier that rejects without proposing converts an error into an ABSTENTION, not a
-correction. It knows the answer is wrong; it has no better candidate to switch to (qwen
-had nothing). So the accuracy-if-you-must-answer is unchanged. But the coverage–risk curve
-is transformed:
-
-| policy | coverage | accuracy on answered |
-|---|---|---|
-| gemma-alone (must answer) | 100% | 58.0% |
-| **answer iff self-verifier approves, else abstain** | **58.0% (87/150)** | **100.0% (87/87)** |
-
-**Every one of gemma's 63 errors became an abstention, never a wrong answer.** The system
-now says "I am certain on these 58% and I do not know on the rest" — which is
-categorically more useful than "I am 58% right and cannot tell you which." This is exactly
-the `Abstain` move the design doc (F3) predicted, measured: verification's payoff is
-selective prediction, not ensemble accuracy.
-
-## The honest caveats (this is single-model self-verification)
-
-- **It is one model checking itself.** The 100% self-catch is measured on THIS item set;
-  it is not a guarantee, and a model that could be *confidently* wrong (approve its own
-  error) would break it. The companion falsifier from F1 applies: a verifier must be shown
-  to reject, and here it rejected 63/63 — but on adversarial items designed to fool the
-  checker, that number is the one to watch.
-- **Coverage is a cost.** 42% of items are abstained. Selective prediction is only useful
-  if the abstained items can be routed (to a bigger model, a human, or a different tactic).
-  A flat coverage–risk curve would make `Abstain` ceremony (F3's own falsifier); this curve
-  is not flat — it jumps from 58% to 100% — so `Abstain` earns its place here.
-- **No energy claim.** The verify call is a second gemma call (~965ms/item total). Whether
-  100%-accurate-at-58%-coverage beats 58%-at-100%-coverage depends on what an abstention is
-  worth, which is a routing/energy question, not an accuracy one. Register stays unmetered.
-
-## What this changes for the program
-
-The vote died because it aggregated correlated voters (ρ≈0.48, N_eff≈1.5). The ensemble
-died on easy items because there was nothing to catch, and on hard items because the weak
-producer had nothing to contribute. But the produce/verify asymmetry survives all of it as
-a **selective-prediction mechanism**: it does not make the society more accurate per
-answer, it makes the society HONEST about which answers to trust. On a substrate of free
-runners where abstained items can be re-routed at no dollar cost, that is the move worth
-building — and it needs exactly one model with a checkable rule, not three.
+At EQUAL information (both roles hold the rule), is checking still easier than producing?
+W10 answers it for THIS task: no — producing hits 98% once the rule is present, so there
+is little room left for a checking advantage. The produce/verify asymmetry, if it exists,
+has to be demonstrated on a task where the rule is genuinely known to both roles and
+producing is still hard (e.g. a constraint that is easy to VERIFY against a candidate but
+expensive to SEARCH for — a SAT-style asymmetry), with a leak falsifier green on both
+prompts. That experiment has not been run. Until it is, there is no measured
+produce/verify asymmetry in this repo.
 
 ## Pointers
 
-- `data/decorr-selectors-hard-raw.jsonl` — 150 per-item rows (menu size, choices,
-  verifier verdicts, latencies). The 63/63 self-catch and the coverage–risk table both
-  recompute from this file without a model.
-- `src/Core.TypeScript/observe/decorrelation-selectors.ts` — the selectors; abstention is
-  the natural extension (approve→answer, reject→abstain).
-- `docs/research/2026-08-26-the-tiny-agent-society-on-free-runners-vote-was-the-wrong-operator.md`
-  — §2 the `Abstain` move type; F3 (abstention buys nothing) — refuted here, the curve is
-  not flat.
+- `scripts/run-decorr-w10-equalize.ts` — the leak test; 58.7% → 98.0%.
+- `data/decorr-w10-equalize-raw.jsonl` — 150 per-item rows, recomputable without a model.
+- `src/Core.TypeScript/observe/decorrelation-stats.ts` — `detectAnswerLeak` (W12),
+  `suspectExtremeRate` (W13).
+- `.claude/rules/numerology-vs-number-theory.md` — a check that cannot fail is not a
+  check; a perfect score is the strongest possible smell.
+
+---
+
+## ORIGINAL CLAIM (RETRACTED — kept for the record, do not cite)
+
+> The following was the write-up before W10. It is wrong: the "hard items" result and the
+> "100% self-catch" are both explained by the verifier holding the answer key. Preserved
+> so the correction is auditable.
+
+The original document claimed that on hard long menus (18–40 options) gemma-alone dropped
+to 58% while gemma-as-verifier caught 100% of its own errors (63/63) and approved 100% of
+its correct answers (87/87), yielding a policy of "answer iff self-verifier approves, else
+abstain" that reached 100% accuracy on 58% coverage. It framed this as verification buying
+selective prediction rather than accuracy, and as validation of the `Abstain` move type.
+Every one of those numbers is real as measured, but the measurement was contaminated: the
+verifier's prompt named the correct answer and the producer's did not, so the "asymmetry"
+was the prompt, not the roles. See the retraction above.

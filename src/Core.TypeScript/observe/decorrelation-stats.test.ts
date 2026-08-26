@@ -10,7 +10,8 @@ import { describe, test, expect } from "bun:test";
 import {
   phi, phiMax, phiRatio, yulesQ, cohensKappa,
   wilsonInterval, proportionDiffInterval, requiredNForDifference,
-  measureHonest, tableFromTrials, type Table2x2,
+  measureHonest, tableFromTrials, detectAnswerLeak, suspectExtremeRate,
+  type Table2x2,
 } from "./decorrelation-stats";
 
 const close = (x: number, y: number, eps = 1e-3) => expect(Math.abs(x - y)).toBeLessThan(eps);
@@ -113,6 +114,49 @@ describe("requiredNForDifference — the power calculation (W3)", () => {
   });
   test("zero difference is unresolvable (Infinity)", () => {
     expect(requiredNForDifference(0.5, 0.5)).toBe(Infinity);
+  });
+});
+
+describe("detectAnswerLeak (W12) — the falsifier that would have caught the leak", () => {
+  const correct = "respond_to_operator";
+
+  test("RED on the ACTUAL leaky verifier prompt (proves it can fail)", () => {
+    const leaky =
+      `You are verifying whether a proposed action is correct.\n\nRULES:\n` +
+      `- If operator has a pending message, the ONLY correct action is "respond_to_operator"\n` +
+      `- Operator ALWAYS outranks work items\n\nSTATE: ...\n\nPROPOSED: "do_item: task-3"\n\nIs this correct?`;
+    const r = detectAnswerLeak(leaky, correct);
+    expect(r.leaked).toBe(true);
+  });
+
+  test("GREEN on an equalized verifier prompt that does not name the answer", () => {
+    // A rule stated abstractly, without naming the winning option string.
+    const clean =
+      `You are verifying whether a proposed action is correct.\n\n` +
+      `Decide using the state and the proposed action only.\n\nSTATE: ...\n\nPROPOSED: "do_item: task-3"\n\nIs this correct?`;
+    const r = detectAnswerLeak(clean, correct);
+    expect(r.leaked).toBe(false);
+  });
+
+  test("a verifier prompt that only carries the single candidate is clean", () => {
+    const candidateOnly = `PROPOSED: "do_item: task-7"\n\nIs this correct? yes/no`;
+    expect(detectAnswerLeak(candidateOnly, correct).leaked).toBe(false);
+  });
+});
+
+describe("suspectExtremeRate (W13) — a perfect classifier is a defect signal", () => {
+  test("100% on a nontrivial sample is flagged SUSPECT", () => {
+    expect(suspectExtremeRate("self-catch", 63, 63)).toContain("SUSPECT");
+    expect(suspectExtremeRate("approve-correct", 87, 87)).toContain("100%");
+  });
+  test("0% is flagged as degenerate", () => {
+    expect(suspectExtremeRate("true-negative", 0, 40)).toContain("SUSPECT");
+  });
+  test("a normal rate is not flagged", () => {
+    expect(suspectExtremeRate("acc", 87, 150)).toBeNull();
+  });
+  test("tiny samples are not flagged (100% on N=3 is handled by CIs, not this)", () => {
+    expect(suspectExtremeRate("acc", 3, 3)).toBeNull();
   });
 });
 

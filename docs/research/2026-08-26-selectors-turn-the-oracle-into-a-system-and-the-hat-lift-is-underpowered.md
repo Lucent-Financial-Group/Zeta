@@ -1,5 +1,14 @@
 # Selectors turn the oracle into a system — and the hat lift is underpowered at N=150
 
+**CAVEAT (added 2026-08-26):** the `third-call-verifier` selector here used the SAME
+verifier prompt later shown to leak the answer key (see
+`2026-08-26-verification-buys-abstention-not-accuracy.md`, RETRACTED, and W10:
+58.7% → 98.0% when the producer is handed the rule). On these EASY short menus the effect
+is muted (gemma-alone is already 95%, leaving no room), so the "matches-best-single,
+underpowered" conclusion still stands — but any verifier number in this doc must be read
+with the leak in mind. The selector *machinery* is correct; the verifier *inputs* were
+contaminated.
+
 **Register:** unmetered (local Ollama, qwen2.5:0.5b + gemma2:2b, no measured joule).
 **Raw per-item log:** `data/decorr-selectors-raw.jsonl` (150 rows, recomputable without a
 model). **Ledger:** `data/decorrelation-research.jsonl` (`schema decorr/v2-selector`).

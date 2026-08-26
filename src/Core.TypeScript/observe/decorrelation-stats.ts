@@ -199,6 +199,47 @@ export function requiredNForDifference(
   return Math.ceil(((zAlpha + zBeta) ** 2 * variance) / (delta * delta));
 }
 
+// ═══ Leak detection (W12/W13) — a perfect classifier is a defect signal ════════
+
+/**
+ * W12 — the leak falsifier. A verifier prompt must NOT contain the correct answer or a
+ * rule that names it. If it does, the "verification" is a model reading back information
+ * it was handed, not a cognitive check. Returns the offending substring, or null if
+ * clean.
+ *
+ * This is the same class of guard as `assertNoOptionContamination` (which stops a text
+ * arm from moving buttons) — pointed at a different axis: it stops the verifier prompt
+ * from carrying the answer key.
+ */
+export function detectAnswerLeak(
+  verifierPrompt: string,
+  correctOptionText: string,
+): { leaked: true; via: string } | { leaked: false } {
+  const needle = correctOptionText.trim().toLowerCase();
+  const hay = verifierPrompt.toLowerCase();
+  // Direct mention of the correct option string inside the prompt (outside the single
+  // candidate slot the verifier is allowed to see).
+  if (needle.length >= 4 && hay.includes(needle)) {
+    return { leaked: true, via: `verifier prompt names the correct option "${correctOptionText}"` };
+  }
+  return { leaked: false };
+}
+
+/**
+ * W13 — treat a perfect (or empty) classifier as SUSPECT, not a celebration. A 100% or 0%
+ * rate on a nontrivial sample is far more often a leak, a degenerate always-yes/always-no
+ * model, or a mislabelled set than a genuine perfect discriminator. Returns a warning
+ * string when a rate is suspiciously extreme, else null.
+ */
+export function suspectExtremeRate(
+  label: string, successes: number, n: number, minN = 20,
+): string | null {
+  if (n < minN) return null;
+  if (successes === n) return `SUSPECT: ${label} is 100% (${n}/${n}) — treat as a leak/degenerate until proven otherwise`;
+  if (successes === 0) return `SUSPECT: ${label} is 0% (0/${n}) — treat as degenerate (e.g. always-no) until proven otherwise`;
+  return null;
+}
+
 // ═══ The honest bundle ══════════════════════════════════════════════════════════
 
 export interface HonestMeasurement {
