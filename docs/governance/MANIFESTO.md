@@ -201,6 +201,8 @@ These networks serve as the decentralized memory and discovery substrate. They a
 
 > *[TOY - until falsified]* This manifesto reaches binding constitution status when it has accrued $\ge 10$ independently-accrued adopters, measured as $N_{eff}$ (effective number of adopters).
 
+**The arithmetic is shipped; the measurement procedure is not — so this gate cannot yet be evaluated by anyone, and must not be read as a check that is currently passing or failing.** $N_{eff} = n / (1 + (n-1)\rho)$ is Kish's design effect inverted (Kish, *Survey Sampling*, 1965, §8.2), already implemented as `effectiveIndependentCount` in [`src/Core/DeclaredStanceLedger.fs`](../../src/Core/DeclaredStanceLedger.fs) and as `effectiveN` in [`src/Bayesian/CondorcetBoundary.fs`](../../src/Bayesian/CondorcetBoundary.fs). What does **not** exist is the rest of the gate: no register records who the adopters are, and nothing estimates $\rho$, the correlation between them — forks of one lineage are not independent adoptions, and at $\rho = 1$ any number of them count as one. Until an adopter register and a named $\rho$ estimator exist and are cited here, the gate states an intent, not a condition.
+
 ---
 
 ## The Agreement
