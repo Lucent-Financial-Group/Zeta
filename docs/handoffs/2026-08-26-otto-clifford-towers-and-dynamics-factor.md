@@ -12,6 +12,7 @@ time — it is the list of things that bit me.
 ## 1. What landed
 
 ### PR #15517 — the pr-archive lane
+
 `pr-archive-on-merge` was failing **8 of 30 runs (~27%)**, each a silently undelivered archive
 record. Three defects in one path, all in `prepare`, which **all twelve telemetry lanes** call:
 
@@ -80,10 +81,12 @@ occupancy map), the reservoir-walls geometry result, and CI wiring.
 
 ## 2. Open work items — the actual to-do list
 
+**Four open, one closed** (last updated after #15625 merged).
+
 | id | what | blocked? |
 |---|---|---|
 | `081M0R18878087G0R001XY5A2J` | **The Clifford-GPU hold.** Q4 discharged; **Q1/Q2/Q3/Q5 still open.** No GPU code, lowering, classifier or measurement until the math team returns. | — (it *is* the block) |
-| `081M0YQBZ1X087G0R0010TX512` | Extend `CliffordPeriodicity.fs` to `Cl(p,q,r)` in **F#**. TS has it; the authority does not, so the two have diverged — and the golden vector is generated from the side that is now behind. | not blocked |
+| ~~`081M0YQBZ1X087G0R0010TX512`~~ | ~~Extend `CliffordPeriodicity.fs` to `Cl(p,q,r)` in F#.~~ **DONE** — landed in [#15625](https://github.com/Lucent-Financial-Group/Zeta/pull/15625). The golden vector now carries 414 rows (169 `ND` + 245 `DG`) and both implementations are pinned to each other again. | closed |
 | `081M0YNJ7G5087G0R003QWNWRB` | Re-express `MultilayerBnn` onto `FactorGraph` so BNN layers compose as a **DAG**. | not blocked |
 | `081M0YNJ7HE087G0R0028M33JX` | `ThousandBrains.fs` columns believe about **scalars, not locations** — the seam spatial belief attaches to. | **blocked on Q3** |
 | `081M0YSD5VA087G0R000W2Q9QW` | Replace the ARC agent's three hardcoded decay constants with TrueSkill dynamics. **Must measure before/after.** | not blocked |
@@ -178,6 +181,7 @@ multivectors, i.e. the Clifford **group**. That lands exactly where the literatu
 ## 6. Gotchas — the list that will save you time
 
 **Trailer / CI:**
+
 - `Human-Review-Evidence` is an **enum** (`chat | pr-review | pr-comment | signed-policy | none`).
   I wrote free prose into 13 commits. `validateBlock` catches it instantly.
 - `Accountable-Party` and `Authority-Basis` **do not reconcile** — they must be unanimous across
@@ -192,6 +196,7 @@ multivectors, i.e. the Clifford **group**. That lands exactly where the literatu
   `gromov-hyperbolicity`, `belief-manifold-curvature-sybil`, `causal-order-minkowski-embedding`.
 
 **Git:**
+
 - `if git push ... | tail -2; then` tests **tail's** exit status, not git's — a check that cannot
   fail. Use `git push ...; rc=$?`.
 - **A rebase drops merge commits — including fixes made *in* them.** A ruff repair I made during
@@ -201,6 +206,7 @@ multivectors, i.e. the Clifford **group**. That lands exactly where the literatu
   refuses with "stale info" — correctly. `git fetch --prune` first.
 
 **Toolchain:**
+
 - `bash tools/setup/install.sh` gives dotnet 10.0.400 at
   `/root/.local/share/mise/dotnet-root` (set `DOTNET_ROOT` and PATH).
 - `CliffordPeriodicity.fs` is self-contained under `dotnet fsi`; **`Cl3.fs` is not**
@@ -212,6 +218,7 @@ multivectors, i.e. the Clifford **group**. That lands exactly where the literatu
   synchronously. A green you cannot attribute to a known source is not evidence.
 
 **Process:**
+
 - **Mint work-item ids before writing them anywhere.** I wrote a well-formed ZetaId into a doc
   before minting it — a key that passes a shape check and identifies nothing, which is the exact
   failure `.claude/rules/never-assume-malice-where-mistake-is-possible.md` documents.
