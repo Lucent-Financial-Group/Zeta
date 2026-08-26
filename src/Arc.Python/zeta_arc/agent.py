@@ -79,7 +79,7 @@ class PixelAgent:
     #: Actions the world did not answer, keyed by the EXACT grid they were
     #: issued from. See `_note_inert_action` for why this exists alongside
     #: `blocked` rather than inside it.
-    _inert: dict[tuple[tuple[int, ...], ...], set[GameAction]] = field(
+    _inert: dict[tuple[tuple[int, ...], ...], dict[GameAction, float]] = field(
         default_factory=dict
     )
     _last_grid_key: tuple[tuple[int, ...], ...] | None = None
@@ -95,6 +95,21 @@ class PixelAgent:
         a separator, and a separator is a collision waiting for a cell value
         that contains it."""
         return tuple(tuple(row) for row in grid)
+
+    #: How fast an unanswered action becomes worth retrying. NOT a ban: many
+    #: games UPGRADE their actions, so a move that does nothing early is
+    #: routinely live later once something unlocks — and the grid can return to
+    #: a byte-identical state with the agent's capabilities changed underneath
+    #: it, which is precisely the case a permanent refusal makes unreachable.
+    #: Aaron 2026-08-26: *"should not set the actions to completely 0 cause in
+    #: many games actions get upgraded over time ... not some games, not all of
+    #: them."* So suppression LEAKS, on the same principle as `LAYER_DECAY` and
+    #: the body-evidence leak: nothing here is allowed to be permanent.
+    INERT_DECAY = 0.75
+    #: Below this a suppressed action is eligible again. One refusal costs about
+    #: three revisits; a persistently dead action accumulates and stays down
+    #: longer, so the cost self-tunes to how dead the action actually is.
+    INERT_FLOOR = 0.5
 
     def _note_inert_action(self, key: tuple[tuple[int, ...], ...]) -> None:
         """An action the world did not answer AT ALL, recorded against the exact
@@ -128,7 +143,8 @@ class PixelAgent:
         """
         if self._last_action is None:
             return
-        self._inert.setdefault(key, set()).add(self._last_action)
+        weights = self._inert.setdefault(key, {})
+        weights[self._last_action] = weights.get(self._last_action, 0.0) + 1.0
 
     def _note_blocked_cell(self, me: Component) -> None:
         """A commanded move that produced NO displacement means something is in
@@ -326,11 +342,13 @@ class PixelAgent:
             self._note_inert_action(key)
         self._last_grid_key = key
 
-        # Drop what this exact state has already refused. Never let the set go
-        # empty: with every move refused the honest state is "nothing works from
-        # here", and returning no action is not available — so the refusals are
-        # forgotten for this state and the agent tries again rather than
-        # deadlocking on its own bookkeeping.
+        # SUPPRESS, THEN LET IT LEAK BACK. Every revisit to this exact state
+        # decays what that state has refused, so suppression is temporary by
+        # construction: an action that does nothing now is retried later, which
+        # is required for any game that upgrades its actions mid-episode. A
+        # permanent exclusion would make the upgraded action unreachable
+        # precisely when it started working.
+        #
         # ONLY WHILE THE STRONGER INSTRUMENT CANNOT BOOT. Once `_step_px` is
         # known, `_note_blocked_cell` names the offending CELL, which routes;
         # this only names an action, which does not. Leaving both on is not
@@ -339,15 +357,22 @@ class PixelAgent:
         # `blocked` never fills, and the wall model never forms — four
         # `test_pixel_agent` wall tests went red exactly that way. The weak
         # instrument exists to get the strong one started, then stands down.
-        refused: frozenset[GameAction] | set[GameAction] = (
-            self._inert.get(key, frozenset()) if self._step_px is None else frozenset()
-        )
-        if refused:
-            surviving = tuple(a for a in moves if a not in refused)
-            if surviving:
-                moves = surviving
+        weights = self._inert.get(key)
+        if weights is not None and self._step_px is None:
+            for action in list(weights):
+                weights[action] *= self.INERT_DECAY
+                if weights[action] < self.INERT_FLOOR:
+                    del weights[action]
+            if not weights:
+                del self._inert[key]
             else:
-                self._inert.pop(key, None)
+                # Never let the candidate set go empty: with every move
+                # suppressed the honest state is "nothing works from here", and
+                # returning no action is not available. Fall through to the full
+                # set rather than deadlocking on our own bookkeeping.
+                surviving = tuple(a for a in moves if a not in weights)
+                if surviving:
+                    moves = surviving
 
         if not moves:
             # The caller routed here with no direction on offer. Nothing this
