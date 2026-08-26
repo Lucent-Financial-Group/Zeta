@@ -17,6 +17,8 @@ import type {
   ZetaDbTickRequest,
 } from "../zetadb/zeta-db-node";
 import { runConvergentZetaDbNodeTick } from "../zetadb/zeta-db-node";
+import { noForgetBackpressureAdmissionPolicy, type ZetaDbAdmissionPolicyPort } from "../zetadb/admission-policy";
+import type { ZetaDbRetentionPolicyPort } from "../zetadb/retention-policy";
 
 export const DEFAULT_BROWSER_ZETA_DB_CONVERGENCE_POLICY: ZetaDbConvergencePolicy = { maxAttempts: 3 };
 
@@ -132,10 +134,18 @@ export async function runBrowserZetaDbWake(
   options: NativeIndexedDbCheckpointOptions,
   request: ZetaDbTickRequest,
   convergencePolicy: ZetaDbConvergencePolicy = DEFAULT_BROWSER_ZETA_DB_CONVERGENCE_POLICY,
+  admissionPolicy: ZetaDbAdmissionPolicyPort = noForgetBackpressureAdmissionPolicy,
+  retentionPolicy?: ZetaDbRetentionPolicyPort,
 ): Promise<ZetaDbResult<ZetaDbTickReadout>> {
   const opened = await openBrowserZetaDbImagePort(root, options);
   if (!opened.ok) return opened;
-  const result = await runConvergentZetaDbNodeTick(opened.value, request, convergencePolicy);
+  const result = await runConvergentZetaDbNodeTick(
+    opened.value,
+    request,
+    convergencePolicy,
+    admissionPolicy,
+    retentionPolicy,
+  );
   const closed = opened.value.close();
   if (result.ok && !closed.ok) return closed;
   return result;

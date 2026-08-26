@@ -1,4 +1,4 @@
-# Upstream Reference List
+# Prior-Art Reference List
 
 Curated list of external repos / projects / papers we study to keep
 `Zeta.Core` honest.
@@ -833,7 +833,7 @@ ship with green CI.
 ## Ground rules
 
 - Never copy code without an explicit license review. Pattern ≠ code.
-- Always cite upstreams in the paper when we use their protocol.
+- Always cite reference sources in the paper when we use their protocol.
 - When we find a bug upstream, file it — `μένω` includes
   good citizenship.
 - When we invent something new, make the proof + benchmark tight
@@ -977,6 +977,10 @@ Each entry names the human + work a shipped module stands on (anchor-to-human-pr
 - **Peter Selinger — "Potrace: a polygon-based tracing algorithm" (2003)** — raster→vector tracing;
   the named prior art for the capture pipeline's layer-2 VECTOR upgrade (081KWJE90EZ) beyond the
   current box-downsample quantizer in `src/Core.TypeScript/chip9-cart/from-image.ts`.
+  **(Disambiguation: this is Peter Selinger the Dalhousie mathematician — NOT Patricia G.
+  Selinger of System R. For cost-based query optimisation see the query-optimisation section
+  at the end of this file. Two unrelated researchers, one surname; grepping this list for
+  "Selinger" used to find only this entry.)**
 - **Kevin Ellis et al. — DreamCoder (PLDI, 2021)** — program synthesis with a growing library of
   learned abstractions; the research anchor for the layer-3 GENERATIVE capture (photo → program
   that redraws itself) and for upgrading the cart compiler's sprite codebook (the degenerate
@@ -1701,3 +1705,373 @@ memorable and gets indexed first — so the theorem sits in the tree, cited, and
 the place that needed it.
 
 **Cross-reference:** `docs/research/2026-08-23-local-interactions-global-norms-acehack-godel-and-the-local-to-global-obstruction.md` — where these are used, with the register of each claim stated.
+
+## Data Vault 2.0 — the six books behind the always-active DV2.0 discipline (added 2026-08-24, Kenji, per Aaron: "it all points to public and published books on the data vault 2.0 subject")
+
+The reading list Aaron worked through in 2016 before writing the standards synthesis now
+at `docs/DATA-VAULT-2-STANDARDS.md`. His `ref-N.N` markers resolve into exactly this list,
+which is what makes that document a **secondary source pointing at primary ones** rather
+than an unanchored coinage.
+
+**Measured before adding** (`git grep -l -i <term> origin/main`, 2026-08-24, control term
+`Codd` = **29** files so the query is known to work): Linstedt **32** files, Kimball **19**,
+Graziano **12**, Inmon **8**, Olschimke **7**, **Hultgren 0**. In
+`docs/PRIOR-ART-LIST.md` itself: **all six authors, zero.**
+
+So the gap here is unusual and worth naming precisely. DV2.0 is not an under-cited
+discipline in this repository — it is a _carved rule_
+(`.claude/rules/dv2-data-split-discipline-activated.md` §5), a skill blueprint, and a live
+lens for repo-split and skill design, with Linstedt named across 32 files. **What was
+missing is that none of it had ever been written down as prior art.** The anchor was
+load-bearing everywhere and curated nowhere, which is the failure mode that looks like
+health: every consumer cites the name, no consumer can reach the work.
+
+**Genuinely new human anchor: Hans Hultgren only.** The other five were already present
+in the corpus and are promoted here rather than introduced.
+
+- **Daniel Linstedt & Michael Olschimke (2015) — _Building a Scalable Data Warehouse with
+  Data Vault 2.0_** (Morgan Kaufmann, ISBN 978-0-12-802510-9). The canonical 2.0 text and
+  the source's `ref-7.1` — the most-cited of the six by a wide margin. Carries the
+  definitions this repo's rule compresses: hub/link/satellite, hash keys, the raw/business
+  split, PIT and bridge tables, the satellite-splitting rules. Already named in
+  `.claude/skills/data-modeling-and-ontology/blueprints/data-vault-expert.md`; promoted
+  here because the carved rule leans on it directly.
+- **Hans Hultgren (2012) — _Modeling the Agile Data Warehouse with Data Vault_** (Brighton
+  Hamilton, ISBN 978-0-615-72308-2). `ref-7.2`. **The one genuinely new anchor** — zero
+  prior mentions anywhere in the repo. Source of the **colour category analysis** (keys /
+  relationships / context as three colours), which is the cleanest available argument that
+  3NF, dimensional and Data Vault differ by _separation of concerns_ rather than by taste,
+  and of **concept constellations** (the ensemble of tables around one business concept).
+  Also the origin of the "Unified Decomposition" framing. Worth reading for the colour
+  lens alone: it is a _visual_ discriminator between modelling methods, which makes it a
+  candidate carrier under
+  [`anti-babel-preserve-reconcilability`](../.claude/rules/anti-babel-preserve-reconcilability.md)
+  — shape agreement that does not route through words.
+- **Dan Linstedt (2011), Kent Graziano ed. — _Super Charge Your Data Warehouse: Invaluable
+  Data Modeling Rules to Implement Your Data Vault_** (CreateSpace, ISBN
+  978-1-4637-7868-2). `ref-7.3`. The rule-by-rule reference; the source cites it for the
+  _common attributes_ (load dates, record sources, last-seen dates) and for the full
+  entity taxonomy. This is where the specialisation zoo — same-as links, exploration
+  links, effectivity/record-tracking/status-tracking satellites — is enumerated.
+- **Kent Graziano (2015) — _Better Data Modeling: An Introduction to Agile Data
+  Engineering Using Data Vault 2.0_** (ISBN 978-1-7965-8493-6). `ref-7.4`. The short
+  on-ramp. Graziano is already cited in the DV skill blueprint as a practitioner source;
+  this is the book behind that citation.
+- **Bill Inmon (2016) — _Data Lake Architecture: Designing the Data Lake and Avoiding the
+  Garbage Dump_** (Technics Publications, ISBN 978-1-63462-117-5). `ref-7.5`. The pond
+  taxonomy — **raw / analog / application / textual / archival** ponds — and **textual
+  disambiguation**. Load-bearing for one distinction the source leans on hard: the **"great
+  divide"** between repetitive and non-repetitive data, the claim being that
+  non-repetitive data carries most of the information value and almost none of the
+  tooling. Register: that is Inmon's claim, restated by Aaron, and unchecked here.
+- **W. H. Inmon & Daniel Linstedt (2014) — _Data Architecture: A Primer for the Data
+  Scientist: Big Data, Data Warehouse and Data Vault_** (Morgan Kaufmann, ISBN
+  978-0-12-802044-9). `ref-7.6`. The two lineages in one volume — this is the book where
+  the Inmon EDW tradition and the Data Vault tradition are reconciled by their own
+  authors, which is why it is the right citation for "DV resolves Inmon vs Kimball"
+  rather than either author's solo work.
+
+**Citations checked, not merely cited** (author, title, year, publisher, ISBN verified
+2026-08-24). The source workbook lists these six by title and retailer URL only; the
+bibliographic detail above was reconstructed and verified independently, per
+[`anchor-to-human-prior-art`](../.claude/rules/anchor-to-human-prior-art.md) — an anchor
+must be _checked_, and a retailer link is the weakest possible form of one.
+
+**Honest limit on the count.** Aaron's framing was _"after reading like 10 books on the
+subject"_; the workbook's References sheet lists **six**, and six is what is verifiable.
+The remaining reading is not recoverable from these documents and is not guessed at here.
+
+**Not in this list, deliberately:** Kimball and Inmon's own foundational warehouse texts.
+Kimball is at 19 files and Inmon at 8, both already load-bearing in
+`.claude/skills/data-modeling-and-ontology/`, and adding them here would be a separate
+curation pass on the dimensional/CIF lineage rather than part of this one.
+
+**Cross-reference:** `docs/DATA-VAULT-2-STANDARDS.md` — the synthesis these six anchor,
+with every claim's register stated and the maintainer's own extensions flagged as his.
+
+- **G. Spencer-Brown, _Laws of Form_ (1969)** — distinction as the primitive operation ("Draw a distinction"); the **mark**; imaginary values from **re-entry**. The unnamed source under our 42 files of "re-entry" and under Varela/Kauffman, both of whom built directly on it. Added 2026-08-24.
+
+## Query optimisation — the Selinger → Graefe → Leis lineage, plus vectorisation, column stores and Arrow (added 2026-08-25, Otto, per Aaron: "if there are some latest reserch papers or even older research papers we can reference as human anchors even better, right now we have code anchors i would say")
+
+Aaron, 2026-08-25: _"i'm very interested in our query optimization work … we've not put
+much effort into query optimizations yet. this is exacting work."_ — with the specific
+asks that it _"can all be vectorized"_, that we have _"a row store and column store
+variant"_, and that _"our column store variant should play nice with apacha arrow
+serilization format."_
+
+**The premise correction that motivates this section.** Aaron's recollection was that the
+query-optimisation work has _code_ anchors but not _human_ ones — _"right now we have code
+anchors i would say."_ Measured, it has **neither**. The 103 upstream mirrors named in
+`references/reference-sources.json` — postgres, mysql, foundationdb, voltdb, duckdb,
+clickhouse, arrow among them — are **not materialized on this machine**:
+`references/prior-art/` is 8 KB and holds two files, a `.gitignore` and a `README.md`
+(`tools/setup/common/sync-prior-art.sh` is the sync script that would fill it). So the
+code anchors are _catalogued and absent_, and until this section the human anchors were
+absent too. That is the gap this list entry closes, and it is why the human half matters
+more than it otherwise would: a paper is readable without a 40 GB sync.
+
+**Measured before adding** (`git grep -l -w <term> origin/main` @ `6cec0e272`; control term
+`Codd` = **31** files, so the query is known to work). Word-boundary counts, because the
+naive case-insensitive form inflates badly — `Leis` scores 203 files unanchored and **5**
+anchored, the difference being `Kleisli`; `Cascades` scores 148 against 10, the difference
+being the substrate's own "cascade":
+
+| anchor | files | what the existing mentions actually are |
+|---|---|---|
+| Selinger | 19 | **none of them Patricia.** Dagger-compact categories (Peter Selinger the logician), Giles–Selinger exact synthesis, Potrace (line 977), and the stage-two doc naming this defect |
+| Graefe | 5 | skill-blueprint name-drops, no paper, no year |
+| Volcano | 9 | same |
+| Cascades | 10 | same |
+| Boncz | 6 | Leis-2015 co-author mentions only |
+| Kersten · Pedreira · Lohman · Tempura | **0** | absent |
+| Zukowski · Kemper · Kipf | 2 each | passing |
+
+So the shape of the gap is specific: **the names exist as shorthand inside
+`.claude/skills/storage-and-query-engines/blueprints/`** (`query-planner.md` line 55 reads
+`Graefe *Volcano / Cascades* — the canonical cost-based framework`, and
+`query-optimizer-expert.md` line 227 the same) **and nowhere as a checked citation.** A
+skill that name-drops a framework without author, year, venue or the claim it entails is
+the citation-shaped-hole the anchoring rule's operational half exists to catch.
+
+### The wrong-Selinger correction
+
+`docs/PRIOR-ART-LIST.md:977` carries **Peter Selinger — "Potrace: a polygon-based tracing
+algorithm" (2003)**. **That entry is correct and stays.** Peter Selinger, the Dalhousie
+mathematician, really did write Potrace, and it really is the named prior art for the
+capture pipeline's vector upgrade. The defect was never a false citation — it was that
+this was the list's **only** "Selinger", so an agent grepping the curated list for the
+foundational query-optimisation paper found a raster-tracing algorithm and no way to know
+it was the wrong person. Two unrelated researchers share the surname; the repair is
+**disambiguation plus the missing entry**, not deletion. Deleting a correct citation to
+fix a lookup failure would have been the worse error, and is worth stating because the
+brief that commissioned this work described the entry as a misattribution.
+
+- **Patricia G. Selinger, Morton M. Astrahan, Donald D. Chamberlin, Raymond A. Lorie &
+  Thomas G. Price — "Access Path Selection in a Relational Database Management System"
+  (ACM SIGMOD 1979, pp. 23–34)** ⭐ — System R. **The** origin of cost-based query
+  optimisation and the paper the field still calls "the Selinger paper". Four things
+  descend from it directly and all four are load-bearing here: (1) _cost as a formula over
+  catalog statistics_ rather than a fixed rule order; (2) _bottom-up dynamic programming_
+  over join orders; (3) **interesting orders** — a sort order that is not cheapest locally
+  may be cheapest globally because a later merge join consumes it free; (4) the join
+  selectivity formula `|A ⋈ B| ≈ |A|·|B| / max(V(A,k), V(B,k))` where `V` is the number of
+  _distinct_ key values. `src/Core/Plan.fs` implements (4) with **row counts substituted
+  for `V`**, which collapses it to `min(|A|,|B|)` and silently hardcodes a primary-key
+  assumption; it implements none of (1)–(3), because `src/Core/Catalog.fs` holds table and
+  column rows and **no statistics at all**. Cited correctly in the `RxJoin` docstring of
+  `src/Core/Rx.fs`; never until now in this list.
+
+### Extensible optimiser architecture — Graefe
+
+- **Goetz Graefe & William J. McKenna — "The Volcano Optimizer Generator: Extensibility and
+  Efficient Search" (ICDE 1993, pp. 209–218)** ⭐ — the optimiser _generator_: data model,
+  logical algebra, physical algebra and transformation rules are **inputs**, and the
+  optimiser is generated from them. Dynamic programming combined with goal-directed search
+  and branch-and-bound pruning, with explicit support for physical properties such as sort
+  order. This is the paper the blueprints mean by "Volcano the optimizer".
+- **Goetz Graefe — "Volcano — An Extensible and Parallel Query Evaluation System" (IEEE
+  TKDE 6(1), 1994, pp. 120–135)** ⭐ — a **different paper**, and the one the blueprints
+  mean when they say "Volcano-style iteration": the _execution_ engine, the
+  `open`/`next`/`close` **iterator model**, and the **exchange operator** that makes
+  parallelism a plan node rather than a rewrite of every operator. Conflating the two
+  Volcanoes is easy and this list should not help anyone do it.
+- **Goetz Graefe — "The Cascades Framework for Query Optimization" (IEEE Data Engineering
+  Bulletin 18(3), 1995, pp. 19–29)** ⭐ — the successor framework: rules as first-class
+  objects, memoized groups, on-demand derivation, guided top-down search. SQL Server's
+  optimizer, Greenplum/Orca, CockroachDB and Apache Calcite's Volcano planner all descend
+  from it. **Relevance to Zeta:** a rule-driven, memoized search is the architecture that
+  fits a substrate whose operator algebra is already reified as a DAG (`Circuit`/`Op`), and
+  it is what `Plan.fs` would have to become to be an optimiser rather than an annotator.
+
+### The honest modern assessment — cardinality estimation is where optimisers lose
+
+- **Viktor Leis, Andrey Gubichev, Atanas Mirchev, Peter Boncz, Alfons Kemper & Thomas
+  Neumann — "How Good Are Query Optimizers, Really?" (PVLDB 9(3), 2015, pp. 204–215)** ⭐ —
+  the **Join Order Benchmark** (JOB): 113 hand-written queries over a real, correlated,
+  skewed IMDB dataset, built because TPC-H/TPC-DS synthetic generators "bake in" the
+  uniformity and independence assumptions that estimators themselves rely on. Finding:
+  estimation errors are routinely **orders of magnitude** and grow with query complexity,
+  and they dominate. **Cite the journal version for numbers** — Leis, Radke, Gubichev,
+  Kemper, Boncz & Neumann, _"Query optimization through the looking glass, and what we
+  found running the Join Order Benchmark"_ (VLDB Journal 27(5), 2018, pp. 643–668) — the
+  authors state that the conference version's results "were incorrect due to a
+  data-handling issue; they were corrected in the journal version."
+- **Viktor Leis, Andrey Gubichev, Atanas Mirchev, Peter Boncz, Alfons Kemper & Thomas
+  Neumann — "Still Asking: How Good Are Query Optimizers, Really?" (PVLDB 18(12), 2025,
+  pp. 5531–5536)** ⭐ — the ten-year retrospective, and the **frontier half of the anchor
+  pair** the anchoring rule asks for. Three findings this repo should act on. _"The cost
+  model does not matter much"_: compared against a tuned model and a trivial one, "the
+  impact of the cost model is dwarfed by errors in cardinality estimation." _Join
+  enumeration matters somewhat_: full DP beats greedy, "however, we again observed that
+  these benefits are much smaller than the improvements gained from more accurate
+  cardinality estimates." And misestimation **hurts more when more indexes are available**
+  — more access paths means more ways to be wrong.
+- **Guy Lohman — "Is Query Optimization a 'Solved' Problem?" (ACM SIGMOD Blog, 2014)** —
+  the sentence the 2025 retrospective quotes at length, from someone who spent a career on
+  DB2's optimizer: _"The root of all evil, the Achilles Heel of query optimization, is the
+  estimation of the size of intermediate results, known as cardinalities. … the cost model
+  may introduce errors of at most 30% for a given cardinality, but the cardinality model
+  can quite easily introduce errors of many orders of magnitude!"_
+- **Yannis Ioannidis & Stavros Christodoulakis — "On the propagation of errors in the size
+  of join results" (SIGMOD 1991)** — the theory under the measurement: intermediate-size
+  errors propagate **exponentially** in the number of joins. Already added by the
+  stage-two statistics doc; repeated here because it is half of the pair.
+
+### Adaptive, runtime-feedback and learned optimisers — assessed, not sold
+
+- **Ron Avnur & Joseph M. Hellerstein — "Eddies: Continuously Adaptive Query Processing"
+  (SIGMOD 2000, pp. 261–272)** — abolish the plan: route each tuple individually through
+  operators, reordering continuously. Introduces _moments of symmetry_ (when a pipelined
+  join may be reordered) and _synchronization barriers_. The maximally-adaptive end of the
+  design space, and the shape Zeta's weight-free/scale-free rules pull toward.
+- **Thomas Neumann & Bernhard Radke — "Adaptive Optimization of Very Large Join Queries"
+  (SIGMOD 2018, pp. 677–692)** — how to keep exact DP where it is affordable and degrade
+  gracefully to near-optimal heuristics as join count grows into the thousands, choosing
+  the algorithm by query size rather than committing to one.
+- **Michael Stillger, Guy Lohman, Volker Markl & Mokhtar Kandil — "LEO — DB2's LEarning
+  Optimizer" (VLDB 2001, pp. 19–28)** — the honest ancestor of every learned optimizer:
+  observe actual intermediate cardinalities during execution and feed them back. Names the
+  failure mode too, later called **"fleeing from knowledge to ignorance"** (Markl et al.,
+  VLDB 2005): correcting only the plans you have executed makes the _unexecuted_
+  alternatives look artificially attractive.
+- **Ryan Marcus, Parimarjan Negi, Hongzi Mao, Chi Zhang, Mohammad Alizadeh, Tim Kraska,
+  Olga Papaemmanouil & Nesime Tatbul — "Neo: A Learned Query Optimizer" (PVLDB 12(11),
+  2019, pp. 1705–1718)**, and **Marcus, Negi, Mao, Tatbul, Alizadeh & Kraska — "Bao:
+  Making Learned Query Optimization Practical" (SIGMOD 2021, pp. 1275–1288)**. Bao is the
+  more deployable design: it _steers_ an existing optimizer with hints instead of
+  replacing it, which bounds the damage a bad model can do.
+- **Andreas Kipf, Thomas Kipf, Bernhard Radke, Viktor Leis, Peter Boncz & Alfons Kemper —
+  "Learned Cardinalities: Estimating Correlated Joins with Deep Learning" (CIDR 2019)** —
+  the multi-set convolutional network (MSCN); the query-driven half of learned estimation.
+- **The assessment, in the words of the people who built the benchmark.** The 2025
+  retrospective's §4.1 is titled _"Learned approaches have not yet been widely adopted"_:
+  independent studies confirm learned methods improve estimation quality, "however, these
+  methods also present notable drawbacks, including high training and inference costs,
+  difficulty adapting to dynamic environments, challenges in obtaining high-quality
+  training data, and unpredictability due to their black-box nature." Microsoft reported
+  **limited** production gains for a Bao-style approach. Their §5 adds the structural
+  warning: _"Regressions can prevent innovation … users rarely notice queries that become
+  faster, but are quick to report regressions."_ **For Zeta the binding objection is a
+  different one and it is a rule, not a preference:** a planner that learns from ambient
+  runtime feedback is a §13 noninterference violation unless the feedback arrives through a
+  declared, metered channel, and it breaks DST replay unless the learned state is part of
+  the replayed seed. That is an architectural constraint, not a performance opinion.
+
+### Vectorised vs compiled execution — Aaron's "can all be vectorized"
+
+- **Peter A. Boncz, Marcin Zukowski & Niels Nes — "MonetDB/X100: Hyper-Pipelining Query
+  Execution" (CIDR 2005, pp. 225–237)** ⭐ — the origin of **vectorised execution**: keep
+  the Volcano iterator shape, but make each `next()` return a _vector_ of ~100–1000 values
+  instead of one tuple, so per-tuple interpretation overhead amortises and the inner loops
+  become compiler- and SIMD-friendly. (Note for citation hygiene: the third author is
+  **Nes**, not Manegold — Manegold is a MonetDB author on other papers.)
+- **Thomas Neumann — "Efficiently Compiling Efficient Query Plans for Modern Hardware"
+  (PVLDB 4(9), 2011, pp. 539–550)** ⭐ — the opposing paradigm, from HyPer: **data-centric
+  code generation**. Invert the iterator into a push model, fuse operators into
+  pipelines that keep tuples in registers across operator boundaries, and emit machine code
+  via LLVM.
+- **Timo Kersten, Viktor Leis, Alfons Kemper, Thomas Neumann, Andrew Pavlo & Peter Boncz —
+  "Everything You Always Wanted to Know About Compiled and Vectorized Queries But Were
+  Afraid to Ask" (PVLDB 11(13), 2018, pp. 2209–2222)** ⭐ — the definitive apples-to-apples
+  comparison, both models implemented in **one** system with the same algorithms, data
+  structures and parallelisation framework. The verdict, verbatim from the abstract: _"We
+  find that both are efficient, but have different strengths and weaknesses. Vectorization
+  is better at hiding cache miss latency, whereas data-centric compilation requires fewer
+  CPU instructions, which benefits cache-resident workloads."_ **Neither dominates** — so
+  "can it all be vectorized" has a real answer, and the answer is that vectorisation is the
+  right default for a memory-bound scan/join substrate while compilation wins on
+  cache-resident compute. For an F#/.NET host this is decisive in vectorisation's favour as
+  a _first_ step: `System.Numerics.Vector<T>` / `TensorPrimitives` over `Span<T>` batches
+  needs no LLVM, no runtime codegen, and no JIT-warmup story, and it degrades to a scalar
+  loop on hardware without the intrinsic.
+
+### Row store, column store, and where materialisation happens
+
+- **Michael Stonebraker, Daniel Abadi, Adam Batkin, Xuedong Chen, Mitch Cherniack, Miguel
+  Ferreira, Edmond Lau, Amerson Lin, Sam Madden, Elizabeth O'Neil, Pat O'Neil, Alex Rasin,
+  Nga Tran & Stan Zdonik — "C-Store: A Column-oriented DBMS" (VLDB 2005, pp. 553–564)** ⭐
+  — the read-optimised column store; projections, sort orders, and compression as a
+  first-class storage decision rather than an afterthought.
+- **Daniel Abadi, Peter Boncz, Stavros Harizopoulos, Stratos Idreos & Samuel Madden — "The
+  Design and Implementation of Modern Column-Oriented Database Systems" (Foundations and
+  Trends in Databases 5(3), 2013, pp. 197–280; DOI 10.1561/1900000024)** ⭐ — **the single
+  best starting text for Aaron's row/column ask.** Surveys what actually makes column
+  stores fast and, importantly, shows that simply _storing_ columns separately in a row
+  engine captures little of the benefit: the wins come from vectorised processing, late
+  materialisation, compression operated on directly, and block iteration — i.e. the storage
+  layout and the execution model have to change together.
+- **Daniel Abadi, Daniel Myers, David DeWitt & Samuel Madden — "Materialization Strategies
+  in a Column-Oriented DBMS" (ICDE 2007, pp. 466–475)** ⭐ — **early vs late
+  materialisation**, which is precisely the row-variant/column-variant question stated
+  properly. The choice is not "row store or column store" but _how long the engine defers
+  stitching columns back into tuples_. Early materialisation reconstructs rows at scan time
+  and gives back the row engine; late materialisation keeps columns separate through
+  selections and joins, carrying position lists instead of values. A "column store variant"
+  that materialises early is a row store wearing a column store's file layout.
+
+### Parallelism
+
+- **Viktor Leis, Peter Boncz, Alfons Kemper & Thomas Neumann — "Morsel-Driven Parallelism:
+  A NUMA-Aware Query Evaluation Framework for the Many-Core Age" (SIGMOD 2014,
+  pp. 743–754)** ⭐ — replace Volcano's plan-baked exchange operators with small work units
+  ("morsels") dispatched at runtime to a fixed pool of workers, NUMA-locally, with
+  work-stealing. Degree of parallelism becomes a **runtime dial, not a plan property**.
+  This is the direct anchor for `.claude/rules/async-all-the-way-truthful-signatures.md`:
+  the ferry-boat throttle's `MaxDegreeOfParallelism` is morsel dispatch, and DoP=1 is what
+  makes the run DST-replayable. Morsel-driven parallelism is the published form of "run
+  beautifully on one thread and scale to N, same code path."
+
+### Arrow, and composable execution engines
+
+- **The Apache Arrow columnar format specification** ⭐ — already in this list at line 196
+  as a project; recorded here as a **specification with a stability guarantee**, which is
+  the property that makes it a Beacon anchor rather than a dependency. Since **1.0.0** the
+  columnar format and binary IPC protocol carry explicit forward/backward compatibility
+  guarantees, and the format is versioned **separately from the libraries**. The IPC
+  "encapsulated message" is a FlatBuffers metadata header plus a body, 8-byte aligned, with
+  a `0xFFFFFFFF` continuation marker since 0.15.0. **Interaction with
+  `.claude/rules/no-binary-in-proof-lineage.md`:** Arrow's wire form is binary, so its
+  byte-locks must be hex-in-JSON — which is exactly the shape that rule already names
+  (`golden-vectors-*.json (cbor/arrow/...)`). Arrow is therefore compatible with the proof
+  lineage _as long as_ the vectors stay text; the thing to refuse is a checked-in `.arrow`
+  file as an expected value.
+- **Pedro Pedreira, Orri Erling, Maria Basmanova, Kevin Wilfong, Laith Sakka, Krishna Pai,
+  Wei He & Biswapesh Chattopadhyay — "Velox: Meta's Unified Execution Engine" (PVLDB 15(12),
+  2022, pp. 3372–3384)** ⭐ — the composable-engine direction: one reusable, vectorised,
+  dialect-agnostic execution library shared across many front-ends. **Entailment check,
+  because this citation is easy to over-claim:** Velox is _not_ an optimizer. The paper is
+  explicit that it "takes a fully optimized query plan as input" and "does not contain a
+  language front end, nor a global query optimizer." So Velox anchors the claim _an
+  Arrow-compatible vectorised execution layer can be a reusable component separate from the
+  planner_ — and anchors nothing whatsoever about plan search.
+
+### Incremental view maintenance meets cost-based optimisation — the thin part
+
+- **Mihai Budiu, Tej Chajed, Frank McSherry, Leonid Ryzhyk & Val Tannen — "DBSP: Automatic
+  Incremental View Maintenance for Rich Query Languages" (PVLDB 16(7), 2023,
+  pp. 1601–1614; `arXiv:2203.16684`)** ⭐ — already Zeta's substrate; listed here for the
+  optimisation-relevant half: the bilinear join's three-term incremental rewrite is a
+  _plan_ decision with a _per-delta_ cost, which is not what any of the anchors above
+  measure.
+- **Zuozhi Wang, Kai Zeng, Botong Huang, Wei Chen, Xiaozong Cui, Bo Wang, Ji Liu, Liya Fan,
+  Dachuan Qu, Zhenyu Hou, Tao Guan, Chen Li & Jingren Zhou — "Tempura: A General Cost-Based
+  Optimizer Framework for Incremental Data Processing" (PVLDB 14(1), 2020, pp. 14–27;
+  journal version VLDB J 2023)** ⭐ — **the closest thing that exists to the paper Zeta
+  needs, and it was absent from this repo entirely.** A Cascades-style cost-based optimizer
+  for _incremental_ processing, built on Apache Calcite, over a "TIP" model of time-varying
+  relations. It is the existence proof that Cascades generalises to incremental execution —
+  so the honest statement is **not** "the literature has nothing here." What remains
+  genuinely open is narrower and stated in the research doc: nobody has published a cost
+  model over **DBSP circuits specifically**, where the unit is a delta, the operators are
+  `Z`-set-valued, and `integrate`/`differentiate` make state size a first-class cost term.
+- **Athanasios Viglas & Jeffrey Naughton — "Rate-based query optimization for streaming
+  information sources" (SIGMOD 2002)** — replaces _cardinality_ with output _rate_ as the
+  optimisation unit, on the grounds that an unbounded stream has no final cardinality.
+  Added by the stage-two statistics doc; the bridge between the classical anchors here and
+  the streaming substrate.
+
+**Cross-reference:** `docs/research/2026-08-25-query-optimization-anchor-lineage-vectorized-row-column-arrow.md`
+— the design map that checks each of these anchors against what Zeta has actually built,
+and `docs/research/2026-08-25-rx-query-planner-joins-stage-2-two-stream-statistics.md` —
+the statistics layer, whose §8.8 asked whether these anchor repairs were wanted. This
+section is the first of them.

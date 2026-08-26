@@ -3,6 +3,8 @@
 import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { compareAndSwapRevisionPolicy, type RevisionPolicyRefusal } from "../persistence/revision-policy";
+import { noForgetBackpressureAdmissionPolicy, type ZetaDbAdmissionPolicyPort } from "./admission-policy";
+import { resolveZetaDbRetentionMode, type ZetaDbRetentionPolicyPort } from "./retention-policy";
 import {
   runZetaDbNodeTick,
   type ZetaDbDelta,
@@ -35,13 +37,15 @@ interface FileCheckpointEnvelope {
   readonly payloadBase64: string;
 }
 
-interface ScheduledNodeOptions {
+export interface ZetaDbScheduledNodeOptions {
   readonly journalPath: string;
   readonly checkpointPath: string;
   readonly executorId: string;
   readonly maxDeltas: number;
   readonly maxEntries: number;
   readonly maxCheckpointBytes: number;
+  readonly admissionPolicy?: ZetaDbAdmissionPolicyPort;
+  readonly retentionPolicy?: ZetaDbRetentionPolicyPort;
 }
 
 function failed(
@@ -167,24 +171,29 @@ function writeCheckpoint(path: string, record: ZetaDbImageRecord): ZetaDbResult<
 }
 
 export async function runScheduledZetaDbNode(
-  options: ScheduledNodeOptions,
+  options: ZetaDbScheduledNodeOptions,
 ): Promise<ZetaDbResult<ZetaDbScheduledRunReadout>> {
   const journal = readJournal(options.journalPath);
   if (!journal.ok) return journal;
   const checkpoint = readCheckpoint(options.checkpointPath);
   if (!checkpoint.ok) return checkpoint;
   const filePort = createFileImagePort(checkpoint.value);
-  const tick = await runZetaDbNodeTick(filePort.port, {
-    nodeId: journal.value.nodeId,
-    executorId: options.executorId,
-    executorKind: "github-actions",
-    deltas: journal.value.deltas,
-    limits: {
-      maxDeltas: options.maxDeltas,
-      maxEntries: options.maxEntries,
-      maxCheckpointBytes: options.maxCheckpointBytes,
+  const tick = await runZetaDbNodeTick(
+    filePort.port,
+    {
+      nodeId: journal.value.nodeId,
+      executorId: options.executorId,
+      executorKind: "github-actions",
+      deltas: journal.value.deltas,
+      limits: {
+        maxDeltas: options.maxDeltas,
+        maxEntries: options.maxEntries,
+        maxCheckpointBytes: options.maxCheckpointBytes,
+      },
     },
-  });
+    options.admissionPolicy ?? noForgetBackpressureAdmissionPolicy,
+    options.retentionPolicy,
+  );
   filePort.port.close();
   if (!tick.ok) return tick;
   const pending = filePort.pending();
@@ -208,6 +217,11 @@ function argument(args: readonly string[], name: string, fallback: string): stri
 }
 
 export async function main(args: readonly string[]): Promise<number> {
+  const retention = resolveZetaDbRetentionMode(argument(args, "--retention-policy", "no-forget-backpressure"));
+  if (!retention.ok) {
+    process.stderr.write(`${JSON.stringify({ severity: "heat", ...retention.feedback })}\n`);
+    return 1;
+  }
   const result = await runScheduledZetaDbNode({
     journalPath: resolve(argument(args, "--journal", "data/zetadb/journal.json")),
     checkpointPath: resolve(argument(args, "--checkpoint", "data/zetadb/checkpoint.json")),
@@ -215,6 +229,7 @@ export async function main(args: readonly string[]): Promise<number> {
     maxDeltas: 1024,
     maxEntries: 100_000,
     maxCheckpointBytes: 16 * 1024 * 1024,
+    ...(retention.value.retentionPolicy === undefined ? {} : { retentionPolicy: retention.value.retentionPolicy }),
   });
   if (!result.ok) {
     process.stderr.write(`${JSON.stringify(result.feedback)}\n`);

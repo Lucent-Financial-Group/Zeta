@@ -2,6 +2,8 @@ import { afterEach, describe, expect, test } from "bun:test";
 import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { createReservedCapacityAdmissionPolicy } from "./admission-policy";
+import { canonicalEventIdRetentionPolicy } from "./retention-policy";
 import { runScheduledZetaDbNode } from "./scheduled-node";
 
 const directories: string[] = [];
@@ -45,6 +47,109 @@ describe("scheduled ZetaDB node", () => {
       schema: "zeta.db.file-checkpoint.v1",
       nodeId: "global/browser",
       revision: 1,
+    });
+  });
+
+  test("executes an injected reservation policy and preserves its accounting", async () => {
+    const directory = mkdtempSync(join(tmpdir(), "zeta-scheduled-reservation-"));
+    directories.push(directory);
+    const journalPath = join(directory, "journal.json");
+    const checkpointPath = join(directory, "checkpoint.json");
+    writeFileSync(
+      journalPath,
+      JSON.stringify({
+        schema: "zeta.db.scheduled-journal.v1",
+        nodeId: "global/browser",
+        deltas: [
+          { eventId: "event/1", rowKey: "system/a", payload: "a", weight: 1 },
+          { eventId: "event/2", rowKey: "system/b", payload: "b", weight: 1 },
+        ],
+      }),
+    );
+    const created = createReservedCapacityAdmissionPolicy({ retainedEvents: 1, checkpointBytes: 0 });
+    expect(created.ok).toBe(true);
+    if (!created.ok) return;
+
+    const result = await runScheduledZetaDbNode({
+      journalPath,
+      checkpointPath,
+      executorId: "actions/reserved-capacity",
+      maxDeltas: 8,
+      maxEntries: 2,
+      maxCheckpointBytes: 16 * 1024,
+      admissionPolicy: created.value,
+    });
+
+    expect(result.ok && result.value).toMatchObject({
+      changed: true,
+      tick: {
+        admission: "backpressured",
+        accepted: 1,
+        feedback: [
+          {
+            admissionReceipt: {
+              policyId: "reserved-capacity",
+              resource: "retained-events",
+              hardLimit: 2,
+              effectiveLimit: 1,
+              reserved: 1,
+            },
+          },
+        ],
+      },
+    });
+  });
+
+  test("executes an explicit retained-set policy at the scheduled runtime boundary", async () => {
+    const directory = mkdtempSync(join(tmpdir(), "zeta-scheduled-retention-"));
+    directories.push(directory);
+    const journalPath = join(directory, "journal.json");
+    const checkpointPath = join(directory, "checkpoint.json");
+    const writeJournal = (eventIds: readonly string[]): void => {
+      writeFileSync(
+        journalPath,
+        JSON.stringify({
+          schema: "zeta.db.scheduled-journal.v1",
+          nodeId: "global/browser",
+          deltas: eventIds.map((eventId) => ({ eventId, rowKey: `row/${eventId}`, payload: eventId, weight: 1 })),
+        }),
+      );
+    };
+    const options = {
+      journalPath,
+      checkpointPath,
+      executorId: "actions/retention",
+      maxDeltas: 8,
+      maxEntries: 2,
+      maxCheckpointBytes: 16 * 1024,
+      retentionPolicy: canonicalEventIdRetentionPolicy,
+    };
+
+    writeJournal(["e3", "e4"]);
+    expect((await runScheduledZetaDbNode(options)).ok).toBe(true);
+    writeJournal(["e1", "e2"]);
+    const result = await runScheduledZetaDbNode(options);
+
+    expect(result.ok && result.value).toMatchObject({
+      changed: true,
+      tick: {
+        revision: 2,
+        rows: [
+          { rowKey: "row/e1", payload: "e1", weight: 1 },
+          { rowKey: "row/e2", payload: "e2", weight: 1 },
+        ],
+        retentionReceipt: {
+          policyId: "canonical-event-id",
+          retainedEventIds: ["e1", "e2"],
+          displacedEventIds: ["e3", "e4"],
+        },
+        feedback: [
+          {
+            code: "database-retention-displaced",
+            retentionHeatReceipt: { displacedEventIds: ["e3", "e4"] },
+          },
+        ],
+      },
     });
   });
 

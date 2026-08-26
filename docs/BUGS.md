@@ -39,104 +39,238 @@ tempted to ship.
 `MAX_NACK_GAP`, work-item `081KZYP1S96087G0R002G8XQZP`. Its **unfixed residual** did not vanish with
 it and is filed below as its own P1/P2 rows, not folded into a completed item.)
 
-### A SECOND `rotate --ports ca-key` drops the FIRST CA from the trust set, breaking every cert it signed
+(The CA trust-set eviction entry — a second `rotate --ports ca-key` dropping the first CA while its
+certificates were still valid, found by Mateo 2026-08-23 — was fixed the same day by Nazar. Rotation
+is now additive and MEASURED; a CA leaves the set only through `--finalize` on certificate-census
+evidence. Proofs: `tools/setup/persona-keys/rotate-ca-closing-bound.test.ts` CB-1..CB-8, plus the
+inverted pins in `rotate-refusals.test.ts` RR-4/RR-5/RR-6.)
 
-- **Site:** `tools/setup/persona-keys/rotate.ts` `rotateCaKey` — the
-  `renderTrustSet(opts.repoRoot, opts.ca, [oldCaPub, newCaPub], peers)` call
-- **Found:** 2026-08-23 by Mateo (security-researcher), auditing the rotation refusal paths
-- **Severity:** P0 — the module's stated reason it is safe to run is false after the first use,
-  and the failure mode is fleet-wide cert rejection during exactly the incident that motivates
-  a second rotation
-- **Symptom:** `rotateCaKey` writes the trust set as literally `[currentActive, new]`. It never
-  unions with the self-CA lines already in `trusted-user-ca-keys.pub`. So rotation #1 yields
-  `[CA1, CA2]` (correct — the overlap) and rotation #2 yields `[CA2, CA3]`, silently evicting
-  **CA1 while device certs it signed are still well inside their `-V` validity window**. A cert
-  verifies iff its signing-CA fingerprint is in `TrustedUserCAKeys`, so every machine that has
-  not re-signed since rotation #1 stops verifying. `rotate.ts`'s own header states the invariant
-  this breaks — *"because >=2 keys are valid across the swap, NOTHING the rotated key protects
-  breaks"* — and its comment says the old line "is removed only AFTER the window (a later
-  teardown / a follow-up `rotate --finalize`)". This is that removal firing immediately, as a
-  side effect of an unrelated rotation, with no window and no expiry check. Reachable from the
-  shipped CLI with no typo and no unusual flags: run `rotate-cli.ts --ports ca-key --confirm`
-  twice. `rotate.test.ts`'s "CA-KEY + ∅-BLAST-RADIUS" test rotates ONCE, so the property is
-  pinned exactly where it holds.
-- **Fix:** union the incoming pair with every self-CA line already present, and give the overlap
-  a **closing** bound rather than an unbounded set — a CA line may be dropped only once no
-  unexpired cert names it as signer (or by an explicit `--finalize` that says so). Both halves
-  are needed: retaining forever turns every retired CA into a permanent trust root, which is the
-  opposite defect.
-- **Repro / pin:** `tools/setup/persona-keys/rotate-refusals.test.ts` RR-4 — asserts the
-  IDENTICAL property after rotation #1 (holds) and rotation #2 (fails), so it cannot pass
-  vacuously. The pin is self-cleaning: it goes RED the moment the fix lands.
-- **Who:** architect (Kenji)
+### Repository admins can merge past `gate (required)` — and nothing in-tree said so
+
+- **Site:** live ruleset `16134995` "CI Gate", `bypass_actors`; recorded at
+  `src/Core.TypeScript/hygiene/github-settings.expected.json` as of this entry
+- **Found:** 2026-08-25 by Nazar (security-operations), from PR #15349's audit note
+- **Severity:** P0 (security)
+- **Symptom:** on 2026-08-13T21:50:54Z the CI Gate ruleset gained
+  `{actor_type: RepositoryRole, actor_id: 5, bypass_mode: pull_request}`, so any
+  account with repository-admin permission can merge a pull request into `main`
+  with `gate (required)` failing or absent. The settings snapshot did not capture
+  `bypass_actors` at all, so for the 12 days after the change the committed record
+  showed a gate with no exceptions — the field that says *who may merge past the
+  rule* was the one field the detector could not see.
+- **Blast radius:** every account holding admin on `Lucent-Financial-Group/Zeta`
+  (verified: an admin account's `GET /rulesets/16134995` returns
+  `current_user_can_bypass: "pull_requests_only"`; the same call on ruleset 16189060,
+  which has no bypass actors, returns `"never"`). What a consumer of `main` observes:
+  nothing — a bypassed merge is indistinguishable in the log from a gated one. What
+  they should do: nothing; there is no evidence the bypass has been exercised, and
+  this entry is about the capability, not an incident.
+- **Fix:** operator decision, not an agent's. Either (a) remove the bypass actor so
+  the gate has no exceptions, matching ruleset 16189060; or (b) keep it and record
+  the reason in `docs/GITHUB-SETTINGS.md`, because a deliberate break-glass path is
+  defensible and an undocumented one is not. Detection is already fixed: the field
+  is captured, and `snapshot-github-settings.test.ts` fails if any ruleset in the
+  record lacks `bypass_actors`.
+- **Who:** human maintainer (settings change) with Kenji (architect) on the
+  disposition. Nazar cannot and did not change live settings.
 
 ---
 
 ## P1 — serious
 
-### `formatRotate` prints the ∅-blast-radius guarantee unconditionally — including on the run that falsifies it
+### Branch Safety ruleset lost `required_linear_history`; only the legacy guard still carries it
 
-- **Site:** `tools/setup/persona-keys/rotate.ts` `formatRotate` — the
-  `"∅-blast-radius: both old + new keys/CAs are valid through the overlap — nothing protected
-  breaks."` line, and the per-port `detail` string in `rotateCaKey`
-- **Found:** 2026-08-23 by Mateo (security-researcher)
-- **Severity:** P1 (the data defect is the P0 above; this is the half that costs trust)
-- **Symptom:** both strings are emitted on every approved run, with no reference to whether the
-  property actually held. On the second CA rotation the readout is byte-identical to the first
-  while the trusted set no longer contains the existing certs' signer. An assertion that cannot
-  be false is not an assertion — this is the vacuity class in an operator-facing surface, which
-  is the specific thing Aaron named as the obstacle to human-AI trust.
-- **Fix:** compute the claim instead of printing it — emit the ∅-blast-radius line only when the
-  post-rotation trusted set is a superset of the pre-rotation one, and say so with the count.
-  Where it is not, say which CA left.
-- **Repro / pin:** `rotate-refusals.test.ts` RR-5 — asserts the guarantee is printed on a run
-  after which the protected cert's signer is absent, and that the line is byte-identical to the
-  run where the claim is true.
-- **Who:** architect (Kenji)
+- **Site:** live ruleset `16189060` "Branch Safety"
+- **Found:** 2026-08-25 by Nazar (security-operations)
+- **Severity:** P1
+- **Symptom:** `required_linear_history` was removed from the ruleset at
+  2026-08-01T16:17:01Z. The committed record still listed it, so the drift check
+  would have caught this on 2026-08-02 had anyone read an advisory job's log.
+- **Blast radius:** none today, and saying so is the point of the entry rather than
+  a reason to close it. Classic branch protection on `main` still has
+  `required_linear_history: true` (verified live 2026-08-25), so merge commits are
+  still refused. The exposure is that two guards became one, and the surviving one
+  is the legacy surface GitHub is steering repos away from — a single API call from
+  removing the property with nothing left behind it.
+- **Fix:** operator decision — re-add the `required_linear_history` rule to ruleset
+  16189060, or record why the classic guard alone is sufficient.
+- **Who:** human maintainer (settings change); Kenji on the disposition.
 
-### `rotate` overwrites the previously retired private key — irreversible, unattended, no ceremony
+(The `rotate()` per-port dispatch entry — `planPort`/`rotatePort` falling through to `device-cert`,
+so an unrecognised port rotated the CERT while the biometric prompt named the port REQUESTED, found
+by Mateo 2026-08-23 — was fixed 2026-08-24 by Nazar. Both functions are now `default`-less switches
+over a per-port DISCRIMINATED `PortPlan`, so a new `RotatePort` member is a compile error and a case
+wired to the wrong handler is a compile error too; a roster check inside `rotate()` refuses a value
+cast into the union, whole-run and before the gate; and the one prompt is rendered from the same
+classified plans the dispatcher consumes, so it names what is PERFORMED rather than what was
+requested. Proofs: `rotate-refusals.test.ts` RR-7 (inverted in place — the pin went red on the fix)
+and RR-7b (the consent property, two arms). The compile-rejection proof is in PR #14694: the same
+scratch union member compiles clean on the old code and is TS2366 on the new.)
 
-- **Site:** `tools/setup/persona-keys/rotate.ts` `retiredCaKeyPath` / `retiredMachineKeyPath`
-  (fixed single slots) + `realEffects().movePrivate` (`renameSync` onto them)
-- **Found:** 2026-08-23 by Mateo (security-researcher)
-- **Severity:** P1 — irreversible, but the destroyed key is one that was already being retired,
-  so the cost is forensic and archival rather than loss of access
-- **Symptom:** the retired slot is one path (`.../ca/retired/ssh_ca_ed25519.previous`), and
-  `movePrivate` renames onto it. Rotation #2 therefore destroys rotation #1's retired private
-  key with no suffix, no archive and no refusal. `ceremony-gate.ts` classifies
-  `export-or-destroy-key` as `biometric-ceremony` precisely because irreversibility is a gated
-  class here, and manifesto §5 says an identity transition must never silently destroy memory —
-  this destruction rides in unannounced on an operation classified `rotate-leaf-signing-key` /
-  `rotate-node-root-key`.
-- **Fix:** never clobber an occupied retired slot — generation-suffix or content-address it —
-  and route an actual destruction through the ceremony gate rather than a rename.
-- **Repro / pin:** `rotate-refusals.test.ts` RR-6.
-- **Who:** architect (Kenji)
+### `revoke.ts` gates on whether a door was INJECTED, not on whether approval was GRANTED
 
-### `rotate()`'s per-port dispatch has an OPEN default — an unrecognised port silently rotates the device cert
+- **Site:** `tools/setup/persona-keys/revoke.ts:141` — `if (opts.biometricAuth) { … }`
+- **Found:** 2026-08-24 by Iris while shipping the consent/UX half (#14747); flagged rather than
+  touched because it is auth-adjacent. Independently confirmed the same day by Nazar.
+- **Severity:** P1 (a consumer-visible, hard-to-reverse ceremony runs with no operator approval)
+- **Symptom:** `requireBiometric(undefined, …)` is fail-closed BY DESIGN — it returns
+  `{ok:false, platform:"unsupported"}` precisely so that a caller which forgot to wire the gate
+  aborts instead of acting. `revoke.ts` never reaches that path: it wraps the whole gate in
+  `if (opts.biometricAuth)`, so a caller that injects **no** door does not fail closed, it
+  **skips the gate entirely** and proceeds to `fx.revokeCertInKrl(...)`. The guard tests the
+  presence of the door, which is a fact about the CALLER, instead of the outcome of the
+  approval, which is the fact that matters.
 
-- **Site:** `tools/setup/persona-keys/rotate.ts` `planPort` and `rotatePort` — both are if-chains
-  whose fallthrough is `device-cert`
-- **Found:** 2026-08-23 by Mateo (security-researcher)
-- **Severity:** P1 — **not** reachable from the shipped CLIs (`rotate-cli.ts` and
-  `rotate-cluster-cli.ts` each filter against `ROTATE_PORTS` and exit 2), so this is a latent
-  defect for programmatic callers and for the next member added to the union
-- **Symptom:** `rotate(fx, { ports: ["ca_key"] })` — a hyphen/underscore typo, or any future
-  `RotatePort` member — is not refused. It is dispatched to `device-cert`, reported as
-  `action: "rotated"`, and staged for a PR, while the CA the caller asked for stays Active.
-  The single biometric prompt names the port that was **requested** (`ca_key`), not the one
-  **performed**, so the human's approval and the machine's action describe different acts —
-  under the standing "the biometric IS the authorization" position that is an authorization for
-  something that did not happen. Adding a fourth member to `RotatePort` produces **no type
-  error**; it silently inherits device-cert behaviour in both functions. `ceremony-gate.ts`
-  earns the closed-command-set property by construction (a `switch` with no `default`, so a new
-  operation is a compile error until classified); `rotate.ts` is its sibling and does not.
-- **Fix:** exhaustive `switch` with no `default` in both `planPort` and `rotatePort` (matching
-  `ceremonyRequirementFor`), plus a roster check inside `rotate()` so the guard lives in the
-  mechanism rather than in two copies in two CLIs.
-- **Repro / pin:** `rotate-refusals.test.ts` RR-7 — two arms, a recognised port and an
-  unrecognised one, producing different ports rotated.
-- **Who:** architect (Kenji)
+  The sibling ceremonies show the correct shape, and the difference is one line. `ca.ts:357` and
+  `machine.ts:239` branch on *whether real work is happening* (`if (alreadyExists) … else`) and
+  then call `requireBiometric` **unconditionally**, so an absent door aborts:
+
+  ```text
+  ca.ts:356      // BIOMETRIC GATE — fail-closed. A real keygen creates private material.
+  ca.ts:357      biometric = await requireBiometric(opts.biometricAuth, "Approve: generate ...");
+  ca.ts:358      if (!biometric.ok) { return { action: "aborted-biometric", ... }; }
+
+  revoke.ts:141  if (opts.biometricAuth) {            // <-- the defect
+  revoke.ts:142    biometric = await requireBiometric(opts.biometricAuth, "revoke SSH device cert (KRL)");
+  revoke.ts:143    if (!biometric.ok) { return { action: "skipped-biometric", ... }; }
+  revoke.ts:157  }                                     // no door => straight past the gate
+  ```
+
+- **Blast radius:** (a) *affected* — any operator or downstream consumer of a KRL produced by this
+  path; (b) *observed* — a device certificate is revoked and staged with no Touch ID prompt and no
+  `biometric` field on the result, so the readout cannot distinguish "approved" from "never asked";
+  (c) *action* — treat any KRL entry whose result carries no `biometric` as unattested and
+  re-derive it under an approved run; (d) *SLA* — fix within the current round. It is one line, and
+  it is on the revocation path, which this repo requires Architect + human sign-off to fire.
+- **Deliberately NOT fixed in the P1 PR (#14727).** That change is about the elevator being the real
+  binary; this one is about the gate being reached at all. They are different defects on the same
+  guarantee and they deserve separate review — bundling a revocation-semantics change into a
+  green supply-chain fix is how a reviewer ends up approving two things by looking at one.
+- **Who:** Nazar (security-operations-engineer) to draft; revocation semantics are consumer-visible,
+  so Kenji (architect) approves before it lands.
+
+### FIXED (a) — the biometric approval gate was forgeable by a `PATH` entry; the attested-presence half (b) stays open
+
+**STATUS (2026-08-24, Nazar): fix (a) SHIPPED.** Every privilege elevator in live non-test
+TypeScript now resolves through `src/Core.TypeScript/privilege/elevator.ts` — an absolute
+path from a platform allowlist, required to be a regular file, root-owned, setuid, and not
+group/other-writable, with **no fallback to `PATH`, ever**. 17 elevator sites across 8 files.
+The class is held by `lint-no-path-resolved-privilege-elevator.ts` in the
+`lint (structural hygiene)` gate job. **Fix (b) — an ATTESTED presence signal rather than a
+child process's exit status — is unchanged and still belongs to Aminata + Kenji;** it is
+restated at the bottom of this row so closing (a) does not read as closing the row.
+
+The original report follows, kept intact because the reproduction is the falsifier.
+
+- **Site:** `tools/setup/persona-keys/biometric.ts:271,280` (`realSudoGateEffects`) — the gate itself.
+  Same root cause, same fix: `src/Core.TypeScript/zflash/setup.ts:106` (writes `/etc/pam.d/sudo`),
+  `src/Core.TypeScript/zflash/cli.ts:657,680,793,802,898,928`, `src/Core.TypeScript/zflash/flash-usb.ts:502,1052`
+- **Found:** 2026-08-24 by Mateo (security-researcher), triaging the 785 `sonarjs` security-shaped
+  sites deferred from work-item `081M0RBXF6J087G0R0023EX9X2`
+- **Severity:** P1 (precondition is code execution as the operator's user; impact is forged human
+  approval on every persona-key ceremony, plus root)
+- **Symptom:** `macTouchIdAuth` establishes operator approval as `spawnSync("sudo", ["-p","","true"]).status === 0`,
+  with `sudo` resolved through `PATH`. `realBiometric()` is — in `publish.ts:254`'s own words — *"the one
+  gate every op shares"*: CA creation, Shamir custody, machine onboarding, rotation, revocation, publish.
+  A `sudo` earlier on `PATH` makes the gate return `ok: true` with **no Touch ID prompt and no human**.
+  The repo's own setup creates the precondition: `export PATH="$HOME/.local/bin:$PATH"` prepends a
+  **user-writable** directory ahead of `/usr/bin`, so planting the shim needs no root and leaves **no
+  git diff** — it is invisible to review, AgencySignature, and byte-lock, all of which watch the repo.
+
+  **Reproduction** (run on the operator's own host, 2026-08-24; the shim executes nothing and obtains
+  no privilege — it records its argv and exits 0):
+
+  ```text
+  $ cat > "$R/shim/sudo" <<'SH'
+  #!/bin/sh
+  echo "SHIM-REACHED argv: $*" >> "$SHIM_LOG"; exit 0
+  SH
+  $ chmod +x "$R/shim/sudo"
+  $ PATH="$R/shim:$PATH" bun probe2.ts        # calls the REAL macTouchIdAuth
+  host pam chain: touchIdConfigured = true | touchIdIsOnlySatisfier = false
+  🔐 Touch ID: Mateo audit probe — NO key material touched
+  macTouchIdAuth => {"ok":true,"platform":"macos-touchid","factor":"unattributed",
+                     "reason":"...Approval established..."}
+  probe2_rc=0
+  --- shim log (proves no real sudo ran) ---
+  SHIM-REACHED argv: -k
+  SHIM-REACHED argv: -p  true
+  ```
+
+  **The existing suppression at `zflash/setup.ts:105` argues this is safe, and both halves of its
+  rationale are false.** It reads: *"`sudo` MUST be resolved via PATH because its location varies
+  (/usr/bin/sudo on most Macs, /opt/homebrew/bin/sudo on others)"* and *"the only remaining attack
+  surface is `sudo` being shadowed in PATH, which would already compromise the operator's machine
+  regardless."* Measured on the same host:
+
+  ```text
+  $ ls -lO /usr/bin/sudo
+  -r-s--x--x  1 root  wheel  restricted,compressed 1580368 Jun 24 22:29 /usr/bin/sudo
+  $ ls -l /opt/homebrew/bin/sudo
+  ls: /opt/homebrew/bin/sudo: No such file or directory
+  $ brew info sudo
+  Error: No available formula with the name "sudo".
+  $ csrutil status
+  System Integrity Protection status: enabled.
+  ```
+
+  Homebrew ships no `sudo` formula, and macOS `sudo` is at `/usr/bin/sudo` marked `restricted` — SIP
+  forbids replacing it even as root. So the portability premise does not hold. And "would already
+  compromise the machine" conflates *user* compromise with *root* compromise: shadowing `sudo` is the
+  **escalation across that boundary**, not a consequence of having already crossed it. That matters
+  most at `setup.ts:106` specifically, which `sudo tee`s **`/etc/pam.d/sudo`** — the very file
+  `analyzeSudoAuthChain` later reads to decide whether the gate is trustworthy.
+- **Fix (a) — SHIPPED 2026-08-24.** `src/Core.TypeScript/privilege/elevator.ts` is now the ONE place
+  an elevator's program path is decided. It refuses anything that is not a root-owned, setuid,
+  non-world-writable regular file at an allowlisted absolute path, and never consults `PATH`. On
+  darwin the `sudo` allowlist is the single entry `/usr/bin/sudo` — the only SIP-`restricted`
+  location, so a narrower list is a stronger one; on Linux it is a short list of root-owned system
+  paths with `/run/wrappers/bin` first (NixOS has no `/usr/bin/sudo`). Call sites converted:
+  `persona-keys/biometric.ts` (the gate, ×2), `zflash/setup.ts`, `zflash/cli.ts` (×6),
+  `zflash/flash-usb.ts` (×2), `zflash/flash-usb-linux.ts` (`escalationArgv` now REQUIRES an absolute
+  elevator path, and the availability probe moved off `fx.which` onto the same resolver so plan and
+  spawn cannot disagree), `ace/install-pinned-artifact.ts`, `ace/setup-realizers/from-deb.ts`,
+  `cluster/runner-disk.ts`.
+
+  **Proved, not asserted** (macOS 26.5.2, `f62d7fbd`): the shim reproduction above was re-run against
+  pre-fix code and returned `ok:true` with the shim log showing `-k` and `-p  true`; the same shim
+  against the fixed code leaves the shim log EMPTY and raises a real `SecurityAgent` dialog from
+  `/usr/bin/sudo`; and the same shim file presented AT `/usr/bin/sudo` is refused —
+  `{"ok":false,"factor":"none","reason":"operator-approval gate refused to run: … not root-owned
+  (uid 501)"}` with **0 spawns attempted**.
+
+- **The false suppression is gone.** `zflash/setup.ts` no longer carries
+  `eslint-disable-next-line sonarjs/no-os-command-from-path`; the measurements that refute both
+  halves of its rationale are written where the suppression stood, so the argument cannot be
+  re-derived from scratch.
+
+- **The class guard.** `src/Core.TypeScript/hygiene/lint-no-path-resolved-privilege-elevator.ts`,
+  wired into the existing `lint (structural hygiene)` gate job. It matches on the ARGUMENT rather
+  than the callee, which is the whole point: `sonarjs/no-os-command-from-path` matched 10 of the 17
+  live sites and **would not have caught this P1** — it cannot see `run("sudo", …)`,
+  `["sudo"] as const`, or `needsSudo ? "sudo" : "tar"`. Non-argv literals (a PAM service name, a
+  shell parser's vocabulary) carry an explicit `zeta-elevator-not-argv: <reason>` marker; a marker
+  with no reason does not waive.
+
+- **STILL UNGUARDED, stated rather than implied.** (i) `*.test.ts` is excluded — live privileged test
+  harnesses (`installer/repair-mode-existing-install.test.ts` alone is ~25 sites) still run `sudo` by
+  name on CI runners. (ii) **Shell scripts are not covered at all**, by this lint or by eslint: 199
+  `sudo` occurrences in 5 of 31 non-archive `.sh` files (of 37 tracked). The lint prints that count on
+  every run so the gap stays visible. (iii) A program name assembled at run time is invisible to a
+  source-text check; what catches that is the resolver's structural refusal, not the lint.
+
+- **Fix (b) — OPEN, unchanged.** `status === 0` from a child process is **not** proof of physical
+  presence, and absolute-pathing does not make it one — a caller with code execution can still stub
+  `SudoGateEffects`. The sound form is an attested result (`LAContext.evaluatePolicy`) or a hardware
+  touch, which the YubiHSM/`frost-hardware-probe` work is already heading toward. `LAContext` was
+  investigated as part of (a) and deliberately NOT adopted: it is reachable (an ad-hoc-signed Swift
+  CLI reports `canEvaluatePolicy(biometrics) = true`, `biometryType = 1` on this host), but it
+  returns through the same in-process seam, it would put a Swift toolchain on a ceremony path, and
+  what it buys is ATTRIBUTION — which is the separate row `081M06DSQ0Q087G0R000H91391`, already
+  honestly reported as `factor: "unattributed"`. The reasoning is written into
+  `realSudoGateEffects` so the next reader does not have to re-derive it. Honest register meanwhile:
+  the gate proves *an operator factor answered on this host*, never *a human was present*.
+- **Who:** Nazar (security-operations-engineer) shipped (a); (b) is a design row for Aminata + Kenji.
 
 ### FROST CA keys and Shamir splits created before 2026-08-14 were generated with `Math.random`
 
@@ -608,6 +742,53 @@ Eclipse), so **routing security reduces to announce authenticity**.
 ---
 
 ## P2 — nice to have
+
+### `from-deb` fetches a `.deb` to a predictable temp path and `sudo dpkg -i`s it, unverified
+
+- **Site:** `src/Core.TypeScript/ace/setup-realizers/from-deb.ts:70` (the path) and `:75` (the root
+  install); the fetch primitive is `curl-fetch.ts:134` `curlFetchToFile` → `curl -o`
+- **Found:** 2026-08-24 by Mateo (security-researcher), same triage pass
+- **Severity:** P2 — **latent, not live.** `tools/setup/manifests/from-deb` has zero non-comment
+  entries, so the realizer installs nothing today. Filed because the shape is a root-privilege
+  escalation the moment someone adds a line to that manifest, which is exactly what
+  `081M0B5V6Z5087G0R0026RANJ3` contemplates.
+- **Symptom:** the sequence is `tmpDeb = ${TMPDIR ?? "/tmp"}/zeta-deb-${name}-${Date.now()}.deb` →
+  `curl -o tmpDeb <url>` → `sudo env PATH=… dpkg -i tmpDeb`. Three properties compose badly:
+  the path is **predictable** (`name` is public, `Date.now()` is a millisecond a co-located
+  attacker can pre-create a range of); `curl -o` opens **without `O_EXCL` and without `O_NOFOLLOW`**;
+  and there is **no digest pin**, though `curl-fetch.ts` exports `verifySha256File` and the sibling
+  `from-autotools-tarball.ts` imports it. `dpkg -i` then runs the package's maintainer scripts **as
+  root**, so whoever controls those bytes controls the machine.
+
+  **Reproduction of the symlink half** (local, no network, no privilege obtained):
+
+  ```text
+  $ ln -s "$R/attacker/evil.deb" "$R/zeta-deb-demo-1756000000000.deb"
+  $ curl -sS -o "$R/zeta-deb-demo-1756000000000.deb" "file://$R/fakepub/real.deb"
+  curl_rc=0
+  target still a symlink? YES
+  contents of attacker/evil.deb now: LEGITIMATE-UPSTREAM-PACKAGE
+  ```
+
+  `curl -o` followed the pre-planted symlink and wrote **through** it — an arbitrary-write primitive
+  to any path the invoking user can reach. The substitution half is the sibling: an attacker who wins
+  the create race owns the file and may therefore unlink and replace it (the `/tmp` sticky bit stops
+  non-owners, not owners) in the window before `dpkg -i` opens it.
+
+  **Scope note, because the obvious dismissal is wrong here in one direction and right in the other.**
+  On this single-user machine there is no second OS *user* — but there are many concurrent *agents*,
+  and they all share one uid, so the OS gives them zero isolation from each other. That does **not**
+  make every `/tmp` site a finding: a co-uid agent already has total access to everything the user
+  owns, so path predictability grants it nothing new. It matters at exactly the sites where the file
+  is consumed **across a privilege boundary the co-uid attacker does not already hold** — and of the
+  16 non-test `publicly-writable-directories` sites, this is the only one that crosses into root.
+  `from-installer.ts:82` has the identical shape but `exec`s as the same uid, so no boundary is
+  crossed and it is a pinning question (no digest on six live installer URLs), not a temp-path one.
+- **Fix:** create the file with `mkdtempSync` (0700, unguessable) rather than composing a name, or
+  open with `O_EXCL|O_NOFOLLOW`; and pin the artefact — `verifySha256File` already exists and the
+  manifest already carries per-entry attrs, so a `sha256=` attr is the cheap version. Doing only the
+  path half leaves the unverified-root-install open, and only the digest half leaves the race.
+- **Who:** Malik (supply-chain) for the digest pin; Nazar for the temp-path handling.
 
 ### `LossyUdpChannel` has one global `expectedSeq` across all peers on a broadcast transport
 
