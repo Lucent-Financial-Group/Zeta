@@ -334,14 +334,28 @@ locally. The before/after in §1.1 (`nix eval … .drvPath` on three trees). The
 per-step runtime measurements in the cost table below, read from run
 `33005347047`.
 
+**A local green that was a check passing for the wrong reason.** Worth recording
+because it is this document's own subject matter turned on the author. Two
+successive spellings of the test's eval-time inputs went green under
+`nix flake check --no-build --all-systems` on this machine and then red on CI
+with `error: path '/nix/store/…' is not valid`. The mechanism, from CI's trace:
+`builtins.pathExists` on a string carrying **store context** must *realise* that
+context, and `--no-build` realises nothing. Both `"${./fixture}"` and
+`builtins.toFile` attach context; `toString` does not. The local runs passed only
+because this machine's store already held the objects from earlier evaluations —
+realising an already-valid path is a no-op. Deleting those paths first reproduces
+CI's failure exactly, **same store hash and all**, and the fixed version then
+passes the same faithful check. The lesson generalises past Nix: a green whose
+truth depends on residue from a previous run of the same command is not evidence.
+
 **NOT yet metered — and this is the honest state of §2.** The two new VM checks
 have **not yet been observed green**. This machine is `aarch64-darwin` with no
 `/dev/kvm` and no Linux builder, so their assertions cannot run locally at all;
-first green/red comes from the lane itself. The first CI attempt (run
-`33013286101`) went **red at evaluation** — `path '…-cluster-join-server-url' is
-not valid`, a purity defect in my own test scaffolding, since fixed with
-`builtins.toFile` — and every VM step behind it was **skipped**, so no VM
-assertion in §2 has executed even once. Treat §2's rows in the §3 table as
+first green/red comes from the lane itself. Three CI attempts (runs `33013286101`,
+`33014165993`, and the one following this document's last commit) went **red at
+evaluation** on the string-context defect described above — a defect in my own
+test scaffolding, not in the modules under test — and every VM step behind it was
+**skipped**, so no VM assertion in §2 has executed even once. Treat §2's rows in the §3 table as
 *wired*, not as *observed*, until a run shows otherwise. The designed mutation
 proof (rewire `requiredBy` → `wantedBy`, expect red on §2.2) is likewise
 **not yet executed**.
