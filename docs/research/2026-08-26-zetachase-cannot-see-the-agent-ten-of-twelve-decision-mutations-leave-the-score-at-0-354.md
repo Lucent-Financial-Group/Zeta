@@ -200,13 +200,24 @@ exists.
 
 ---
 
-# Appendix — the scratch two-mover source, preserved
+# Appendix — SUPERSEDED: the two-mover source, now shipped as `ZetaChaseDecoy`
 
-The experiments above ran from a scratchpad that does not survive the
-container. Reproduced verbatim so the measurement can be re-run and so the
-second-mover decision has a starting point rather than a description of one.
-It is NOT repo code: it monkeypatches `chase._build_level` for the duration
-of construction and points `zeta_arc.play.ZetaChase` at the subclass.
+**This appendix is superseded and kept only as provenance.** The variant now
+ships as `ZetaChaseDecoy` in `zeta_arc/environments/chase.py`, reachable as
+`play(environment="chase-decoy")`, and the in-repo version reproduces every
+number above exactly (5 of 12 mutations invisible, against 10 on `chase`).
+
+The framing that delayed it was mine and was wrong: this was recorded as a
+decision — *"it changes a shared benchmark and its pinned score, which is your
+call"* — when the variant only had to be ADDED. `ZetaChase` is byte-for-byte
+unchanged, `play()` defaults to `"chase"`, and 0.354 still pins. There was no
+trade to make.
+
+The scratch source below monkeypatched `chase._build_level` and pointed
+`zeta_arc.play.ZetaChase` at a subclass. The shipped version uses a
+`_level_builder` staticmethod hook instead, because monkeypatching the module
+global made the wrapper call itself and recursed 1000 deep. Prefer the shipped
+code; this is kept so the measurements above remain reproducible as run.
 
 ```python
 """SCRATCH — does a second mover make the scorer able to see the agent?
