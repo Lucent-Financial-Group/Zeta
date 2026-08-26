@@ -92,11 +92,26 @@ isolated by construction rather than by assertion.
 
 The claim is **ρ_B < ρ_A**, tested by permuting the A/B labels across agent panels.
 
-**A bias this design does not remove, stated in the direction it cuts:** condition A's
-roster is written in one pass, so it carries the author's own anti-repetition
-pressure and gets a *diversity advantage*. The test is therefore conservative against
-the self-selection hypothesis, and an A-favouring result would need to be read with
-that in mind. (A second, opposite bias was found and fixed mid-run — see §6.)
+### Two biases this design does not remove — one each way
+
+Named up front, with the direction each cuts, because a single unnamed bias is how a
+comparison quietly decides itself.
+
+| bias | favours | mechanism |
+|---|---|---|
+| **single-pass roster** | **A** | condition A's 24 hats are written in one generation, so the author's own anti-repetition pressure spreads them. A human or agent writing a roster does exactly this, so the shape is faithful — but it is not the same generative process as B. |
+| **rotated elicitations** | **B** | condition B's hats are elicited across all six phrasings in rotation. E1 (§4.2) shows phrasing swings effective variety by 4×–14×, so rotating *inflates* B's variety relative to any single-phrasing audition. |
+
+Neither is removable without changing what the conditions mean, so both are reported
+and neither number is presented as clean.
+
+**A third bias was found and removed mid-run.** The first draft cycled a short author
+roster (`i % hats.length`) to fill 24 agents whenever the author emitted fewer than
+24. That would have placed *duplicate hats* in condition A — perfectly correlated
+agents manufactured by the harness — inflating ρ_A and handing the hypothesis a free
+win. The panel is now sized to what the author actually supplied, and all three
+conditions use that same size. A dry run against `llama3.2:1b` (14 of 24 roster lines
+parsed) is what exposed it.
 
 ---
 
@@ -209,6 +224,25 @@ That is worth saying out loud, because it identifies where the decorrelation on 
 bench actually comes from: **temperature, not choice.** Which is also the honest limit
 of the bench — see §3.
 
+### 4.6 Which of the two E1 statistics is load-bearing
+
+The split-half floor and the permutation test are not redundant, and only one of them
+is rigorous.
+
+Sample-estimated JSD is **positively biased**, and the bias grows as the sample
+shrinks. The split-half floor is computed on 50-per-side; the cross-phrasing statistic
+on 100-per-side. So the floor carries *more* finite-sample bias than the number it is
+being compared against — which means the reported ratios (2.10×–3.35×) are
+**understated**. That is the conservative direction, and it is the reason the ratio is
+presented as an intuition pump rather than as the result.
+
+The **permutation test is the load-bearing statistic**, because it holds group sizes
+fixed while shuffling labels: the null distribution carries exactly the same
+finite-sample bias as the observed value, so the bias cancels. Its answer is
+*p* = 0.0005 in all five cells — the floor of 2 000 relabellings.
+
+---
+
 ## 5. Results — E2: assigned vs self-selected
 
 *(filled in from `bun src/Core.TypeScript/observe/f3-hat-choice-analyze.ts e2`)*
@@ -270,7 +304,94 @@ looks like energy and is not.
 
 ---
 
-## 7. Anchors (Beacon)
+## 6b. The metrics were mutation-tested before being trusted
+
+A passing test proves nothing until you know it can fail, and this document's whole
+argument rests on eight small statistical functions. Ten deliberate defects were
+injected one at a time and the suite re-run
+(`src/Core.TypeScript/observe/f3-hat-choice-decorrelation.test.ts`, 54 tests):
+
+| mutation | result |
+|---|---|
+| `effectiveN`: `(n−1)` → `n` in the design effect | killed |
+| `jensenShannonDivergence`: drop the `/2` in the entropy average | killed |
+| `meanPairwisePhi`: score degenerate pairs as 0 instead of excluding them | killed |
+| `scoreAnswers`: fold correct declines into the accuracy numerator | killed |
+| `hillN1`: return the raw distinct count instead of `exp(H)` | killed |
+| `hillN2`: return N1 instead of inverse Simpson | killed |
+| `permutationTest`: drop the `+1` correction, allowing *p* = 0 | killed |
+| `jackknifeSe`: drop the `(n−1)/n` inflation factor | killed |
+| `canonWords`: keep stopwords | killed |
+| `generateWorkItems`: put the correct option into the unanswerable class | killed |
+
+**0 of 10 survived.** Note the third and fourth: those are mutations that turn this
+harness *into* the two defects of §6, and the suite refuses both. That is the point
+of writing the falsifier for a defect you are claiming to have avoided.
+
+---
+
+## 7. Pre-registration
+
+Written before any E2 generation had run, and reproduced unedited so the reading
+below is not retrofitted to the result
+([`pre-declared bias is an Eve Protocol move`](../../.claude/rules/no-directives.md)
+is not the rule that says this, but the practice is the same one: declare the
+eagerness *before* the number).
+
+- **Prior on E1:** I expected refutation. Two of five cells had already returned when
+  this was written, so it is recorded as a *partly-informed* prior, not a blind one.
+- **Prior on E2:** genuinely uncertain, leaning toward *no effect* — a two-word role
+  prefix seemed unlikely to steer a 1–3B model's menu selection much in either
+  condition.
+- **Precommitted decision rules:**
+  - E1 is UNSTABLE if permutation *p* < 0.05 in a majority of cells.
+  - E2 SUPPORTS the claim only if ρ_B − ρ_A < 0 **and** permutation *p* < 0.05.
+    "Directionally consistent" is its own verdict and is **not** support.
+  - If condition N does not read ρ ≈ 1, the instrument is broken and **no** E2 number
+    is reportable.
+  - No GAIN figure with a latency denominator. No single number merging accuracy with
+    abstention. Panel sizes reported per model, never pooled.
+
+## 8. What this does and does not license
+
+**Licensed by the measurement:**
+
+- On this bench, an elicitation's *wording* is a large and statistically unambiguous
+  determinant of the choice distribution. Anyone running an audition and reporting the
+  variety it produced is partly reporting a property of their own phrasing.
+- Raw distinct-choice counts overstate effective variety by ~2.2× here. Report N1/N2.
+- The one larger model tested was the least varied, by a wide margin.
+
+**Not licensed:**
+
+- Nothing here says the audition is *worthless*. E1 measures whether the answer
+  distribution is a stable persona property; it does not measure whether asking
+  produces better, more willing, or more legitimate participants — and consent,
+  which is the other reason to ask, is untouched by any of this.
+- Nothing here transfers automatically to frontier-scale instances with real context
+  and history. The §3 limit is load-bearing and the §4.4 direction is a one-point
+  observation, not a scaling law.
+- No claim about intelligence-per-watt. There is no joule meter in this loop.
+
+## 9. What would change the verdict
+
+Stated so the finding is falsifiable in its turn:
+
+1. **A stable-under-rewording model.** If a model's choice distribution were shown to
+   sit at the split-half floor across six frames, E1's verdict is model-specific and
+   this document is measuring small-model mode-collapse rather than the mechanism.
+2. **Real instance diversity.** Replacing seed-diversity with genuine
+   context/history/model diversity is the experiment this bench cannot run and is the
+   one that matters most.
+3. **A harder item set.** gemma2:2b sits at ceiling on the answerable items here,
+   which is why φ on correctness is undefined for it (§5). An item set that puts
+   accuracy near 50% would make the primary statistic computable rather than
+   ceiling-limited.
+4. **A joule meter.** Every cost number here is a proxy, by admission.
+
+---
+
+## 10. Anchors (Beacon)
 
 - **Hill numbers** — M. O. Hill (1973), *Diversity and evenness: a unifying notation
   and its consequences*, Ecology 54(2). N_eff = exp(H) is order 1; 1/Σp² (inverse
@@ -291,7 +412,7 @@ looks like energy and is not.
   The standard dense-transformer forward count ≈ 2·params·tokens.
 - **φ coefficient** — Yule/Pearson; retained so this axis stays comparable with F1/F2.
 
-## 8. Pointers
+## 11. Pointers
 
 - `src/Core.TypeScript/observe/decorrelation-harness.ts` — the framework this axis
   plugs into; `f1-verify-asymmetry.ts` and `f2-role-correlation.ts` — the established
