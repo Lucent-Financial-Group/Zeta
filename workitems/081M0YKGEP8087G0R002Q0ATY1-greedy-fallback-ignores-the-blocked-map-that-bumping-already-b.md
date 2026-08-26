@@ -59,3 +59,55 @@ rather than widening the fallback again.
   agent oscillating between two useless moves also spreads its budget.
 
 Both go red when greedy stops consulting `blocked`.
+
+## Follow-up: the oscillation, and its actual cause
+
+The greedy-vs-blocked fix left a two-cycle on `ZetaPocket` level 1. The cause was
+not the router's search — it was its input:
+
+```
+me cell: (7,0)   target cells: [(6,1), (7,2), (1,6)]
+blocked: [(0,5), (1,6), (6,1), (7,2)]
+goals after removing blocked: []          ->  _route_plan returns EMPTY
+```
+
+**`(1,6)` is a WALL on level 0 and the GOAL on level 1.** The occupancy map is
+supposed to be cleared on a level change by `_world_changed_under_me`, which
+fires when the body moves more than one cell in a tick. Level 0's goal `(6,1)`
+and level 1's start `(7,1)` are **adjacent**, so the transition is
+indistinguishable from one legal move and the detector stays silent. The agent
+entered level 1 believing its own goal was a wall, the router returned nothing
+every tick, and greedy oscillated for the rest of the episode.
+
+**The repair is to the consequence, not the detector:** a map on which every
+candidate target is solid cannot be true of a world the agent is standing in and
+being scored on, so the belief gives way rather than the world. `blocked` is
+dropped and rebuilt by bumping — the price this agent already pays for not being
+handed the map.
+
+The detector remains genuinely unreliable, and that is named in the code rather
+than worked around: one cell of displacement cannot distinguish "I moved" from
+"I was placed". A frame-level signal (`levels_completed`) exists but is not
+passed to `PixelAgent`, which sees only a grid.
+
+## Result
+
+| | before | after |
+|---|---|---|
+| `ZetaPocket` levels completed | 1 of 2 | **2 of 2** |
+| `ZetaPocket` distinct_grids | 16 | 29 |
+| `ZetaChase` level 2 | 24 actions, 0.1736 | 22 actions, 0.2066 |
+| `ZetaChase` environment score | 0.3375 | **0.354** |
+
+Levels 0 and 1 of `ZetaChase` are byte-identical; all three still solve.
+
+The pinned score in `test_play_mode.py` moved because the agent got better, not
+because the guard got weaker — updated with the reason rather than loosened to
+an inequality that would stop noticing regressions.
+
+## A test that measured the wrong thing
+
+Both `ZetaPocket` assertions failed on the run that went from 1 solved level to
+2. The harness looped a fixed 400 ticks, so once the environment was won the
+agent idled ~376 of them on one action and the share statistic measured
+*boredom*, not the deadlock. The harness now stops at completion.

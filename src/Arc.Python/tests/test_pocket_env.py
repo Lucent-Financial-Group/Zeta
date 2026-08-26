@@ -6,12 +6,21 @@ from collections import Counter
 
 from zeta_arc.agent import ACTION_VECTORS, PixelAgent
 from zeta_arc.driver import advance, reset
-from zeta_arc.environments.pocket import ZetaPocket
+from zeta_arc.environments.pocket import _LEVELS, ZetaPocket
 from zeta_arc.frames import grid_of
 from zeta_arc.perception import components
 
 
 def _play(cap: int = 400) -> tuple[list, PixelAgent]:
+    """Play until the environment is won, or the cap is hit.
+
+    STOPPING AT COMPLETION IS LOAD-BEARING. A fixed 400-tick loop keeps issuing
+    actions long after the last level is cleared, and that idle tail dominates
+    any per-action statistic: once both levels were solved the agent spent ~376
+    of 400 ticks on one action with nothing left to do, and the share assertion
+    below failed on a run that had just gone from 1 solved level to 2. The tail
+    measures boredom, not the deadlock.
+    """
     env = ZetaPocket()
     frame = reset(env)
     agent = PixelAgent()
@@ -20,6 +29,8 @@ def _play(cap: int = 400) -> tuple[list, PixelAgent]:
         action = agent.act(grid_of(frame))
         issued.append(action)
         frame = advance(env, action)
+        if int(getattr(frame, "levels_completed", 0) or 0) >= len(_LEVELS):
+            break
     return issued, agent
 
 

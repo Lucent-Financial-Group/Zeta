@@ -221,6 +221,34 @@ class PixelAgent:
         cols, rows = int(width / self._step_px), int(height / self._step_px)
         start = self._cell_of(me)
         goals = {self._cell_of(t) for t in targets} - self.blocked
+        if not goals and self.blocked:
+            # A MAP THAT SAYS NOWHERE IS REACHABLE IS REFUTING ITSELF.
+            #
+            # Every candidate target believed solid cannot be true of a world
+            # the agent is standing in and being scored on, so the belief is
+            # what gives way — not the world. Dropping it costs a few bumps to
+            # rebuild, which is the price this agent already pays for not being
+            # handed the map.
+            #
+            # THE CASE THAT FORCED IT, measured on `ZetaPocket` level 1: the
+            # cell (1,6) is a WALL on level 0 and the GOAL on level 1. The
+            # occupancy map is meant to be cleared on a level change by
+            # `_world_changed_under_me`, which fires when the body moves more
+            # than one cell in a tick — but level 0's goal (6,1) and level 1's
+            # start (7,1) are ADJACENT, so the transition is indistinguishable
+            # from one legal move and the detector stays silent. The agent
+            # entered level 1 believing its own goal was a wall, the router
+            # returned nothing every tick, and greedy oscillated for the rest
+            # of the episode.
+            #
+            # Note this repairs the CONSEQUENCE rather than the detector. The
+            # detector is genuinely unreliable — one cell of displacement is
+            # not enough to distinguish "I moved" from "I was placed" — and a
+            # frame-level signal (`levels_completed`) exists but is not passed
+            # to this agent, which sees only a grid. Named here rather than
+            # silently worked around.
+            self.blocked.clear()
+            goals = {self._cell_of(t) for t in targets}
         if not goals:
             return []
 
