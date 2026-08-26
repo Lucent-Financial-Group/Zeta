@@ -143,6 +143,39 @@ describe("hook install — the worktree falsifier", () => {
       rmSync(join(clone, ".."), { recursive: true, force: true });
     }
   });
+
+  test("each worktree runs ITS OWN branch's hook, not the installing one's", () => {
+    // This is the claim the relative value is chosen for, so it is tested
+    // directly rather than inferred from "the install worked". A shared
+    // absolute path would make every worktree run one checkout's copy.
+    const clone = scaffold();
+    const wt = join(clone, "..", "feature");
+    try {
+      expect(runInstaller(clone).status).toBe(0);
+      git(clone, "worktree", "add", "-q", "-b", "feature", wt);
+
+      // Give ONLY the feature branch a hook that also refuses "BANANA".
+      writeFileSync(
+        join(wt, "scripts", "hooks", "commit-msg"),
+        '#!/usr/bin/env bash\ngrep -q BANANA "$1" && exit 1\nexit 0\n',
+      );
+      chmodSync(join(wt, "scripts", "hooks", "commit-msg"), 0o755);
+      git(wt, "add", "-A");
+      git(wt, "commit", "-qm", "feature-branch hook");
+
+      const bananaIn = (cwd: string) => {
+        writeFileSync(join(cwd, "f.txt"), `banana-${String((probeCounter += 1))}\n`);
+        git(cwd, "add", "-A");
+        return git(cwd, "commit", "-m", "BANANA subject").status !== 0;
+      };
+
+      expect(bananaIn(wt)).toBe(true); // feature branch's own hook refuses
+      expect(bananaIn(clone)).toBe(false); // the base branch's hook does not
+      expect(hookBlocksLeakSubject(clone)).toBe(true); // and still guards its own
+    } finally {
+      rmSync(join(clone, ".."), { recursive: true, force: true });
+    }
+  });
 });
 
 describe("hook install — first install and repair", () => {
