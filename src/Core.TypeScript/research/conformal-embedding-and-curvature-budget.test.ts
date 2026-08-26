@@ -408,3 +408,34 @@ it("a VERSOR is invertible: v * v/|v|^2 = 1 — the carrier that would satisfy D
   expect(prod[0]).toBeCloseTo(1, 9);
   for (let i = 1; i < 8; i += 1) expect(prod[i]).toBeCloseTo(0, 9);
 });
+
+it("CROSS-ORACLE: the geometric product agrees with Zeta.Core.Cl3 on 200 products", async () => {
+  // Same discipline as the periodicity grid: the golden vector is emitted BY `Cl3.fs` and
+  // consumed here, so agreement is evidence rather than self-consistency. F#'s `Mv` field
+  // order is MASK order; ours is basis order — the remap is the BLADE_MASK permutation, and
+  // getting it wrong is itself a way this test goes red.
+  const text = await Bun.file(
+    new URL("./testdata/cl3-geometric-products.golden.txt", import.meta.url),
+  ).text();
+  const rows = text
+    .split("\n")
+    .map((l) => l.trim())
+    .filter((l) => l !== "" && !l.startsWith("#"));
+  expect(rows.length).toBe(200); // vacuity guard: an emptied golden must not pass
+
+  const MASK = [0, 1, 2, 4, 3, 5, 6, 7];
+  const fromFSharp = (csv: string): Cl30 =>
+    MASK.map((m) => Number(csv.split(",")[m])) as unknown as Cl30;
+
+  let worst = 0;
+  for (const row of rows) {
+    const [aS, bS, pS] = row.split("|");
+    const got = geometricProduct(fromFSharp(aS ?? ""), fromFSharp(bS ?? ""));
+    const want = fromFSharp(pS ?? "");
+    for (let i = 0; i < 8; i += 1) {
+      const scale = Math.max(1, Math.abs(want[i] ?? 0));
+      worst = Math.max(worst, Math.abs((got[i] ?? 0) - (want[i] ?? 0)) / scale);
+    }
+  }
+  expect(worst).toBeLessThan(1e-12);
+});
