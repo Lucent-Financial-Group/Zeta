@@ -1,11 +1,12 @@
 ---
 id: 081M089ZPAY087G0R001MYXM7N
 type: task
-state: backlog
+state: done
 priority: P2
 slug: chip-8-cross-run-store-room-loop-auto-consult-io-adapter-and
 title: "CHIP-8 cross-run store: room-loop auto-consult, IO adapter, and Dark Hall browser injection"
 created: 2026-08-17T16:48:26.462Z
+completed: 2026-08-26T14:58:15.035Z
 depends_on: []
 composes_with: []
 ---
@@ -27,10 +28,11 @@ What that slice deliberately did **not** do, and why each is a separate decision
 `timerExecutionHandler` an injected `Reader` and having it prefer a memo hit over
 `SoftChip8.lookAhead cyclesPerTick`.
 
-**The care needed:** the room currently spends a metered budget (`SoftChip8Flux.lookAheadFunded`) to
-speculate. A memo hit costs (almost) nothing, so auto-consult silently changes what the tank pays for.
-That is a metering change, not a caching change, and it needs the ΔU story told out loud — otherwise
-the store becomes an invisible subsidy on the budget, which is the hidden-oracle shape in a new place.
+**Measured correction (2026-08-26):** timer execution uses `SoftChip8.lookAhead`; it does not call
+`SoftChip8Flux.lookAheadFunded`. The room's tank budgets branch prediction through
+`PredictionScheduler`, not CPU transition execution. A memo hit therefore must leave that tank
+byte-equal to the direct path and report its own lookup/reuse/compute economics separately. Treating a
+projected byte estimate as a tank refund would mix two different budgets and is forbidden.
 
 ## 2. The IO adapter
 
@@ -65,3 +67,31 @@ TypeScript can currently **read and verify** these artifacts but cannot **write*
 The store covers the *deterministic segment* only; at `FX0A`/`EX9E`/`EXA1` the memo stops by
 construction, because the successor depends on input that is not in the run key. Memoizing the branch
 tree needs the input sequence in the key — a different hub, not an extension of this one.
+
+## Slice landed by this workitem branch (2026-08-26)
+
+- `RoomConsultation` is the domain-neutral F# kernel: an injected one-transition lookup, boundary
+  predicate, direct transition, attributed cost policy, and typed result. Its receipt conserves every
+  completed unit as exactly one of reused or computed and uses `BigInteger` for projected byte totals.
+- `Chip8PredictionRoom` can opt into consultation through additive constructors. A hit reuses the
+  immutable orbit, a miss computes locally, and both paths leave the prediction tank unchanged.
+- Unknown input remains a hard room boundary. The handler never consults through `FX0A`, `EX9E`, or
+  `EXA1`; it stops before the unresolved transition.
+- `src/Core/golden-vectors-room-consultation.json` pins game-neutral hit, miss, mixed, boundary, and
+  cost-accounting observables. It is the independent-language treaty for an ARC3 port; ARC3 does not
+  depend on the F# assembly or CHIP-8 frame type.
+- `Chip8CrossRunStoreIO` loads immutable artifacts through injected `IFileSystem` async byte reads,
+  strict UTF-8, canonical filename and digest verification, ordinal ordering, and duplicate-run-key
+  refusal. It publishes no reader until the complete directory has been accepted and reports
+  cancellation and IO failures as typed feedback.
+- `chip8-cross-run-artifact-port.ts` owns the browser byte-fetch port. Construction performs no IO;
+  callers explicitly supply locations, and the all-or-nothing loader applies the same strict UTF-8,
+  canonical filename, digest, ordering, and duplicate identity rules before publishing a reader.
+- Dark Hall bootstrap, durable runtime, PWA, and active page forward an optional injected
+  `CrossRunReader`. The default is `emptyCrossRunReader`; there is no IndexedDB coupling, ambient
+  fetch, or implicit network access.
+
+A future ARC3 adapter should implement the room-consultation treaty around its own
+`(grid, action, environment version, seed)` run identity and must stop before any action or environment
+observation absent from that identity. A full TypeScript CHIP-8 writer and input-branch memoization
+remain separate decisions under sections 4 and 5, not unfinished parts of this workitem.

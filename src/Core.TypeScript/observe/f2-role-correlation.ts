@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 /**
- * f2-role-correlation.ts — does role separation actually decorrelate errors?
+ * f2-role-correlation.ts — does hat separation actually decorrelate errors?
  *
  * Otto's F2: If ρ(producer, verifier) > ~0.5, the pipeline inherits the same
  * N_eff collapse that killed majority vote. Dead.
@@ -20,13 +20,12 @@
  *   does the verifier ALSO fail (approves the wrong answer)?
  *
  * If ρ is high: verifier rubber-stamps producer errors → pipeline is vote in disguise
- * If ρ is low: verifier catches producer errors → role separation works
+ * If ρ is low: verifier catches producer errors → hat separation works
  *
  * Also measures: the rejection-rate law. A verifier MUST reject sometimes.
  * Verdict = Satisfies | Violates | Undecided — a model that never emits
  * Violates is an unfalsifiable check (Otto's companion falsifier).
  */
-
 
 // ═══ Scenario generation (same as F1, hard/adversarial only) ═══════════════════
 
@@ -155,7 +154,7 @@ async function main(): Promise<void> {
     const phi = ((a * d) - (b * c)) / Math.sqrt(((a+b) * (c+d) * (a+c) * (b+d)) || 1);
 
     console.log(`    N=${total} (producer correct=${producerCorrect}, wrong=${producerWrong})`);
-    console.log(`    When producer CORRECT: verifier approves ${verifierApprovesCorrect}/${producerCorrect} (${(verifierApprovesCorrect/Math.max(1,producerCorrect)*100).toFixed(0)}%), rejects ${verifierRejectsCorrect}`);
+    console.log(`    When producer CORRECT: verifier approves ${verifierApprovesCorrect}/${producerCorrect} (${(verifierApprovesCorrect/Math.max(1,producerCorrect)*100).toFixed(0)}%), rejects ${verifierRejectsCorrect} (false-negative ${(falseNegativeRate * 100).toFixed(1)}%)`);
     console.log(`    When producer WRONG:   verifier catches ${verifierRejectsWrong}/${producerWrong} (${(catchRate*100).toFixed(1)}%), rubber-stamps ${verifierApprovesWrong} (${(rubberStampRate*100).toFixed(1)}%)`);
     console.log(`    φ(producer_correct, verifier_approves) = ${phi.toFixed(3)}`);
     console.log(`    CATCH RATE: ${(catchRate*100).toFixed(1)}% — ${catchRate > 0.3 ? "VERIFICATION ADDS VALUE" : catchRate > 0.1 ? "marginal" : "DEGENERATE (vote in disguise)"}`);
@@ -164,7 +163,7 @@ async function main(): Promise<void> {
   }
 
   console.log("\n" + "─".repeat(60));
-  console.log("F2 VERDICT: if catch rate > 30%, role separation adds value beyond vote.");
+  console.log("F2 VERDICT: if catch rate > 30%, hat separation adds value beyond vote.");
   console.log("If φ < 0.5, the pipeline does NOT inherit the N_eff collapse.");
 }
 
