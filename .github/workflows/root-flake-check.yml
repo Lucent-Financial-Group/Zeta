@@ -18,6 +18,32 @@
 #
 # COST. Measured locally at 4-5s wall for the eval itself (`--no-build`, so no
 # derivation is realised). The nix install dominates the job.
+#
+# STATED LIMIT: THIS LANE EVALUATES, IT DOES NOT BUILD.
+#
+# `--no-build` establishes that every output is WELL-FORMED. It does not
+# establish that any of them PRODUCES anything. Those are different
+# guarantees, and the gap between them is real: a configuration can evaluate
+# cleanly and still fail to realise, because a major-version bump changes what
+# EXISTS, not merely what parses.
+#
+# That gap is exactly the shape of the change this lane was built for. #15585
+# moved nixpkgs + nix-darwin 24.11 -> 26.05, roughly 14 months of drift, and
+# merged with 79 green checks that read none of it. This lane would have
+# evaluated it. It would NOT have built it.
+#
+# So read a green here as "the root flake parses and its module system is
+# consistent", never as "the root flake works". Measured cold-cache cost of
+# closing the remainder, taken on aarch64-darwin 2026-08-26:
+# `darwinConfigurations.zeta-mac.system` needs 55 derivations built and 671
+# paths fetched (463.9 MiB download, 1.7 GiB unpacked). The follow-up that
+# would close it is a macOS lane that actually builds that attribute; it is
+# costed in PR #15704 and deliberately NOT bundled here.
+#
+# DEPTH IS MEASURED, NOT ASSUMED. The last step injects a deliberate break into
+# the darwin config and requires nix to catch it BY NAME. Confirmed on run
+# 33024066072: upstream nix on ubuntu-24.04 does descend into
+# darwinConfigurations, so no macOS runner is required for the EVAL half.
 
 name: root-flake-check
 
