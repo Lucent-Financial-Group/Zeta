@@ -105,6 +105,22 @@ the type GUID. This is a genuine finding and it costs us a claim:
 This is what the mutation knob is for. Without it the lane would have shipped claiming
 coverage it does not have.
 
+### The full mutate-red / restore-green cycle, as executed
+
+| run | `ZETA_GPT_ESP_SMOKE_MUTATE` | result | why |
+|---|---|---|---|
+| `32977525049` | `none` | **green**, 67 s | marker observed; `[hd0]` / `[hd0 hd1]`; negative control did not boot |
+| `32977813494` | `esp-type-guid` | **red** | *"the boot STILL reached the marker — the mutant is not falsifying"*. This is the finding above. |
+| `32977847861` | `zero-gpt` | **red** | boot never reached the marker within 120 s — the partition table is load-bearing |
+| `32978777533` | `remove-loader` | **red** | boot never reached the marker — the loader is load-bearing |
+| `32979381604` | `esp-type-guid` (after fix) | **red** | *"sfdisk read partition type `ebd0a0a2-…`, expected `c12a7328-…` — caught by the static check, which is where the type GUID is enforced"* |
+| `32979570729` | `none` (restore) | **green** | same message as the first run |
+
+The two `esp-type-guid` rows are the same mutation with different verdicts, and the
+difference is the fix between them. The first red was the check reporting *honestly that
+it could not falsify what it claimed to*; the second is the mutant being caught where it
+is actually catchable.
+
 ---
 
 ## 3. Step-by-step classification
