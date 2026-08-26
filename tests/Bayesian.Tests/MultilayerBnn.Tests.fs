@@ -520,3 +520,75 @@ let ``MLBNN-31: a repeated parent is REFUSED by the factor-graph path, not colla
     | Error e ->
         Assert.Contains("more than once", e)
         Assert.Contains("2", e)
+
+/// An independent exact solve for the smallest MULTI-PARENT model: two layers
+/// feeding one, `x2 = x0 + x1 + w`. Builds the 3x3 joint precision and inverts
+/// it, the same method `exactChainMarginals` uses and deliberately not shared
+/// with it — a reference that reuses the machinery under test stops being
+/// independent, and this one has to check a structure the chain solver cannot
+/// express.
+///
+/// The constraint contributes `(1/vn) * a a^T` with `a = (1, 1, -1)`: that is
+/// just the quadratic form of `(x2 - x0 - x1)^2 / (2 vn)` read off as a
+/// precision matrix.
+let private exactSumMarginals
+    (priorTau: float array)
+    (priorNu: float array)
+    (linkVariance: float)
+    : float array * float array =
+    let n = 3
+    let a = [| 1.0; 1.0; -1.0 |]
+    let lam = Array2D.init n n (fun i j -> (if i = j then priorTau.[i] else 0.0) + a.[i] * a.[j] / linkVariance)
+    let h = Array.copy priorNu
+    let m = Array2D.init n (2 * n) (fun i j -> if j < n then lam.[i, j] elif j - n = i then 1.0 else 0.0)
+    for col in 0 .. n - 1 do
+        let mutable piv = col
+        for r in col .. n - 1 do
+            if abs m.[r, col] > abs m.[piv, col] then piv <- r
+        if piv <> col then
+            for j in 0 .. 2 * n - 1 do
+                let t = m.[col, j]
+                m.[col, j] <- m.[piv, j]
+                m.[piv, j] <- t
+        let d = m.[col, col]
+        for j in 0 .. 2 * n - 1 do
+            m.[col, j] <- m.[col, j] / d
+        for r in 0 .. n - 1 do
+            if r <> col then
+                let f = m.[r, col]
+                for j in 0 .. 2 * n - 1 do
+                    m.[r, j] <- m.[r, j] - f * m.[col, j]
+    let means = Array.init n (fun i -> Array.init n (fun j -> m.[i, j + n] * h.[j]) |> Array.sum)
+    let vars = Array.init n (fun i -> m.[i, i + n])
+    means, vars
+
+[<Fact>]
+let ``MLBNN-32: a two-parent sum node matches the exact 3x3 solve at every layer`` () =
+    // THE MULTI-PARENT BACKWARD MESSAGE, which nothing pinned. Break-red found
+    // it: deleting the `deconvolve` that removes the OTHER addends from a
+    // parent's incoming message left all 430 tests green, because every existing
+    // multi-parent test was either a chain — where that fold is empty — or only
+    // asserted that two paths disagree, which stays true when both are wrong.
+    //
+    // This graph is a TREE (three prior leaves and one sum factor, no cycle), so
+    // sum-product is exact and an independent dense solve is the right judge.
+    let priors = [| Gaussian.ofMeanVariance 2.0 0.5; Gaussian.ofMeanVariance -1.0 0.25; Gaussian.ofMeanVariance 0.0 4.0 |]
+    let linkVariance = 0.8
+    // Layer 2 is fed by BOTH 0 and 1; layer 1 is fed by nobody, so the sequential
+    // link is genuinely absent — a wiring only `Dag` can express.
+    let topology = MultilayerBnn.Dag [| []; []; [ 0; 1 ] |]
+    let net =
+        MultilayerBnn.tryCreate priors [| 1.0; 1.0; linkVariance |] topology |> unwrap
+    let marginals, rounds, converged = MultilayerBnn.tryMarginalsViaFactorGraph 1e-13 500 net |> unwrap
+    Assert.True(converged, sprintf "did not converge in %d rounds" rounds)
+
+    let priorTau = priors |> Array.map (fun p -> p.Precision)
+    let priorNu = priors |> Array.map (fun p -> p.PrecisionMean)
+    let means, vars = exactSumMarginals priorTau priorNu linkVariance
+    for i in 0 .. 2 do
+        Assert.True(
+            abs (Gaussian.mean marginals.[i] - means.[i]) < 1e-9,
+            sprintf "layer %d mean: got %.12g, exact %.12g" i (Gaussian.mean marginals.[i]) means.[i])
+        Assert.True(
+            abs (Gaussian.variance marginals.[i] - vars.[i]) < 1e-9,
+            sprintf "layer %d variance: got %.12g, exact %.12g" i (Gaussian.variance marginals.[i]) vars.[i])
