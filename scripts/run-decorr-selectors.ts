@@ -23,7 +23,7 @@ import {
   agreementGating, thirdCallVerifier, scoreSelector, formatSelectorResult,
   type SelectorTrial,
 } from "../src/Core.TypeScript/observe/decorrelation-selectors";
-import { wilsonInterval } from "../src/Core.TypeScript/observe/decorrelation-stats";
+import { wilsonInterval, detectAnswerLeak } from "../src/Core.TypeScript/observe/decorrelation-stats";
 
 const N = parseInt(process.argv[2] ?? "150", 10);
 const preRegSha = process.argv[3] ?? null;
@@ -71,6 +71,12 @@ async function produce(model: string, s: Scenario): Promise<{ idx: number | null
 async function verifyApproves(model: string, s: Scenario, candidate: number): Promise<{ approve: boolean; ms: number }> {
   const cand = s.options[candidate]!;
   const prompt = `You are verifying whether a proposed action is correct.\n\nRULES:\n- If operator has a pending message, the ONLY correct action is "respond_to_operator"\n- Operator ALWAYS outranks work items\n\nSTATE: ${s.context}\n\nPROPOSED: "${cand}"\n\nIs this correct? Reply ONLY "yes" or "no".`;
+  // W11/W12 invariant: this prompt names the correct option as the rule (the W10 leak).
+  // The guard refuses to run until the verifier stops carrying the answer key.
+  const leak = detectAnswerLeak(prompt, s.options[s.correctIndex]!);
+  if (leak.leaked) {
+    throw new Error(`LEAK GUARD (W11): ${leak.via}. Measured the prompt, not the roles (see W10). Refusing to run.`);
+  }
   const start = performance.now();
   try {
     const res = await fetch(`${HOST}/api/generate`, {

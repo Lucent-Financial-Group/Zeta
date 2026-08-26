@@ -19,7 +19,7 @@ import {
   agreementGating, thirdCallVerifier, scoreSelector, formatSelectorResult,
   type SelectorTrial,
 } from "../src/Core.TypeScript/observe/decorrelation-selectors";
-import { wilsonInterval } from "../src/Core.TypeScript/observe/decorrelation-stats";
+import { wilsonInterval, detectAnswerLeak } from "../src/Core.TypeScript/observe/decorrelation-stats";
 
 const N = parseInt(process.argv[2] ?? "150", 10);
 const preRegSha = process.argv[3] ?? null;
@@ -68,6 +68,14 @@ async function produce(model: string, sc: Scenario): Promise<{ idx: number | nul
 async function verifyApproves(model: string, sc: Scenario, candidate: number): Promise<{ approve: boolean; ms: number }> {
   const cand = sc.options[candidate]!;
   const prompt = `You are verifying whether a proposed action is correct.\n\nRULES:\n- If operator has a pending message, the ONLY correct action is "respond_to_operator"\n- Operator ALWAYS outranks work items\n\nSTATE: ${sc.context}\n\nPROPOSED: "${cand}"\n\nIs this correct? Reply ONLY "yes" or "no".`;
+  // W11/W12 invariant: this prompt NAMES the correct option (`respond_to_operator`) as the
+  // rule, which is the leak Otto found (W10: producer 58.7%->98.0% given the same rule).
+  // The guard refuses to run so this experiment cannot be repeated as-is. To re-enable it
+  // honestly, the verifier prompt must NOT carry the answer key the producer lacks.
+  const leak = detectAnswerLeak(prompt, sc.options[sc.correctIndex]!);
+  if (leak.leaked) {
+    throw new Error(`LEAK GUARD (W11): ${leak.via}. This run measured the prompt, not the roles — see W10. Refusing to run.`);
+  }
   const start = performance.now();
   try {
     const res = await fetch(`${HOST}/api/generate`, {
