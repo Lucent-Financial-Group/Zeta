@@ -25,7 +25,7 @@
  */
 
 import { describe, expect, test } from "bun:test";
-import { cpSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { cpSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -70,6 +70,63 @@ function edit(path: string, fn: (text: string) => string): void {
 }
 
 const TIMEOUT_MS = 20_000;
+
+/**
+ * A fully VALID ArgoCD Application with a `directory` source and no Helm source.
+ * Used by the zero-charts case below, which needs a tree where the ONLY thing
+ * wrong is that there is nothing to render.
+ */
+const DIRECTORY_SOURCE_APP = `apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: onlydir
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/Lucent-Financial-Group/Zeta
+    targetRevision: main
+    path: manifests/onlydir
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: onlydir
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+`;
+
+/** The matching App-of-Apps root, so Test 6 has a valid file to read. */
+const ROOT_APP = `apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: zeta-root
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/Lucent-Financial-Group/Zeta
+    targetRevision: main
+    path: applications
+    directory:
+      recurse: true
+      include: '{**/Application.yaml}'
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+`;
 
 describe("validate-applications mutation suite", () => {
   test(
@@ -228,6 +285,80 @@ describe("validate-applications mutation suite", () => {
         cwd: repoRoot,
       });
       expect(proc.exitCode).not.toBe(0);
+    },
+    TIMEOUT_MS,
+  );
+
+  // ── COVERAGE VACUITY (Test 0 + Test 9), added 2026-08-26 ───────────────────
+  //
+  // Every case above mutates a manifest and asserts the validator notices. These
+  // two mutate the validator's INPUT SET instead — the failure mode where the
+  // tool works perfectly and is simply pointed at less than it claims. Both were
+  // MEASURED as silent-green on the tree at 89c8a23c40 before the fix.
+
+  test(
+    "RED when an Application sits in a file this validator cannot discover",
+    () => {
+      // MEASURED BEFORE THE FIX: renaming orleans/Application.yaml to
+      // orleans/orleans-app.yaml dropped the file out of ALL eight tests. The
+      // validator printed `Results: 32 passed, 0 failed` / `All checks passed.`
+      // and exited 0, with the string "orleans" appearing ZERO times in the
+      // output. Coverage silently fell by one whole Application and nothing said so.
+      const { exitCode, output } = runWithMutation((appsDir) => {
+        const from = appManifest(appsDir, "orleans");
+        writeFileSync(join(appsDir, "orleans", "orleans-app.yaml"), readFileSync(from, "utf-8"), "utf-8");
+        rmSync(from);
+      });
+      expect(output).toContain("contains an ArgoCD Application but NO check in this file reads it");
+      expect(exitCode).toBe(1);
+    },
+    TIMEOUT_MS,
+  );
+
+  test(
+    "RED under --render when the tree yields zero Helm sources to render",
+    () => {
+      // MEASURED BEFORE THE FIX: an apps-dir whose Applications are all
+      // `directory` sources leaves `charts` empty, so Test 7 and Test 8 iterate
+      // zero times. `helm template` was never invoked, kubeconform was never
+      // invoked, and the validator reported `All checks passed.` / exit 0 — a
+      // render lane that rendered nothing, indistinguishable from one that
+      // rendered everything cleanly.
+      //
+      // NOTE this case does NOT need helm or kubeconform on PATH: with zero
+      // charts there is nothing to render either way, and Test 9's refusal is
+      // what must fire. If the tools ARE absent the validator fails earlier and
+      // for a different stated reason, so the assertion below names the reason
+      // rather than trusting the exit code.
+      // A SYNTHETIC tree, not a mutation of the real one, and that choice is the
+      // point. The first version of this case edited the seven real manifests to
+      // strip their Helm sources; the edit broke YAML indentation in four of
+      // them, so the run exited 1 with FIVE failures and the case passed whether
+      // or not Test 9 existed — a falsifier satisfied by an earlier guard, which
+      // is the defect this whole suite is here to prevent. Verified by stubbing
+      // Test 9's refusal to a pass: the rewritten case below goes red, the
+      // mutation-based version did not.
+      const dir = mkdtempSync(join(tmpdir(), "zeta-k8s-nocharts-"));
+      try {
+        const appsDir = join(dir, "applications");
+        mkdirSync(join(appsDir, "onlydir"), { recursive: true });
+        writeFileSync(join(appsDir, "onlydir", "Application.yaml"), DIRECTORY_SOURCE_APP, "utf-8");
+        writeFileSync(join(appsDir, "root-application.yaml"), ROOT_APP, "utf-8");
+        const proc = Bun.spawnSync(["bun", validator, "--apps-dir", appsDir, "--render"], {
+          stdout: "pipe",
+          stderr: "pipe",
+          cwd: repoRoot,
+        });
+        const output = `${proc.stdout.toString()}${proc.stderr.toString()}`;
+        // EXACTLY ONE failure, and it is Test 9's. If anything else in this
+        // synthetic tree were also failing, this case would prove nothing about
+        // Test 9 — so the count is asserted, not just the presence of the string.
+        expect(output).toContain("Test 7 and Test 8 validated nothing");
+        expect(output).toContain("Results: 8 passed, 1 failed");
+        expect(proc.exitCode).toBe(1);
+      } finally {
+        rmSync(dir, { recursive: true, force: true });
+      }
     },
     TIMEOUT_MS,
   );
