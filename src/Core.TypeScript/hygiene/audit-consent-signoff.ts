@@ -514,7 +514,7 @@ export interface FoldEntry {
 }
 
 export function foldKey(person: string, scope: string, spanId: string): string {
-  return `${person} ${scope} ${spanId}`;
+  return `${person}\u0000${scope}\u0000${spanId}`;
 }
 
 /**
