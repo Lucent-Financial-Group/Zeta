@@ -14,7 +14,7 @@
 // so `dest` collapsed onto `hookSrc` and the unlink+symlink pair DELETED the
 // tracked hook and replaced it with a self-referential symlink (measured:
 // "Too many levels of symbolic links", git reports a typechange).
-import { chmodSync, existsSync } from "node:fs";
+import { chmodSync } from "node:fs";
 import { join } from "node:path";
 import { spawnSync } from "node:child_process";
 import { finishResult, type SetupRealizer } from "./shared.ts";
@@ -23,12 +23,6 @@ const HOOKS_REL = "scripts/hooks";
 const HOOK_NAMES = ["commit-msg", "pre-push"] as const;
 
 export const realizeFromGitHooks: SetupRealizer = async (ctx) => {
-  const missing = HOOK_NAMES.filter((hook) => !existsSync(join(ctx.repoRoot, HOOKS_REL, hook)));
-  if (missing.length > 0) {
-    ctx.warn(`from-git-hooks: missing ${HOOKS_REL}/{${missing.join(",")}}`);
-    return finishResult("from-git-hooks", ctx, true);
-  }
-
   const inside = spawnSync("git", ["-C", ctx.repoRoot, "rev-parse", "--is-inside-work-tree"], {
     encoding: "utf8",
   });
@@ -58,8 +52,18 @@ export const realizeFromGitHooks: SetupRealizer = async (ctx) => {
     return finishResult("from-git-hooks", ctx, false);
   }
 
+  // Make the tracked hooks executable. Deliberately NO existsSync pre-check:
+  // the answer would already be stale by the time chmod ran (check-then-use),
+  // so the check would read as defensive and prevent nothing. One syscall, one
+  // answer — a missing hook surfaces as ENOENT here.
   for (const hook of HOOK_NAMES) {
-    chmodSync(join(ctx.repoRoot, HOOKS_REL, hook), 0o755);
+    try {
+      chmodSync(join(ctx.repoRoot, HOOKS_REL, hook), 0o755);
+    } catch (error) {
+      if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
+      ctx.warn(`from-git-hooks: missing ${HOOKS_REL}/${hook} — skip`);
+      return finishResult("from-git-hooks", ctx, true);
+    }
   }
 
   // A RELATIVE value resolves against each worktree's own top level, and
