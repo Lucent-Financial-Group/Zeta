@@ -10,7 +10,7 @@
  *   bun f3-hat-choice-analyze.ts e2
  */
 
-import { readFileSync, existsSync, readdirSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import {
   canonAtom,
@@ -35,10 +35,21 @@ import {
 const OUT_DIR = join(import.meta.dir, "..", "..", "..", "data", "f3-hat-choice");
 const f3 = (x: number): string => (Number.isFinite(x) ? x.toFixed(3) : "undefined");
 
+/**
+ * Perform the read and interpret its failure — never `existsSync` then read. An absent
+ * file is an empty result here, which is exactly what ENOENT means, so the separate
+ * existence question buys nothing the read does not already answer and opens a window in
+ * which the two can disagree. (TOCTTOU — Bishop & Dilger 1996; CWE-367.)
+ */
 function readJsonl<T>(file: string): T[] {
-  const p = join(OUT_DIR, file);
-  if (!existsSync(p)) return [];
-  return readFileSync(p, "utf8")
+  let body: string;
+  try {
+    body = readFileSync(join(OUT_DIR, file), "utf8");
+  } catch (err) {
+    if ((err as NodeJS.ErrnoException).code === "ENOENT") return [];
+    throw err;
+  }
+  return body
     .split("\n")
     .filter((l) => l.length > 0)
     .map((l) => JSON.parse(l) as T);
@@ -205,10 +216,18 @@ interface CondSummary {
   totalTokens: number;
 }
 
+/** Same discipline for the directory listing: read it, interpret ENOENT, no pre-check. */
+function listE2Files(): string[] {
+  try {
+    return readdirSync(OUT_DIR).filter((f) => f.startsWith("e2-") && f.endsWith(".jsonl") && !f.includes("-hats"));
+  } catch (err) {
+    if ((err as NodeJS.ErrnoException).code === "ENOENT") return [];
+    throw err;
+  }
+}
+
 function analyzeE2(): void {
-  const files = existsSync(OUT_DIR)
-    ? readdirSync(OUT_DIR).filter((f) => f.startsWith("e2-") && f.endsWith(".jsonl") && !f.includes("-hats"))
-    : [];
+  const files = listE2Files();
   if (files.length === 0) {
     console.log("no E2 data — run `bun f3-hat-choice-run.ts e2` first");
     process.exit(1);

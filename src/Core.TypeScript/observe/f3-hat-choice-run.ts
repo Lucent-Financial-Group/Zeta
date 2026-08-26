@@ -13,7 +13,7 @@
  * re-run without re-querying, and so a reviewer can recompute every number.
  */
 
-import { appendFileSync, mkdirSync, existsSync, readFileSync } from "node:fs";
+import { appendFileSync, mkdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import {
   ELICITATIONS,
@@ -69,12 +69,25 @@ function writeRow(file: string, row: unknown): void {
   appendFileSync(join(OUT_DIR, file), JSON.stringify(row) + "\n");
 }
 
+/**
+ * Rows already on disk, so an interrupted run resumes instead of re-querying.
+ *
+ * Reads and interprets ENOENT rather than asking `existsSync` first. The check-then-use
+ * shape reads as defensive and prevents nothing: between the check and the read the path
+ * can be created, deleted, or replaced — by a concurrent agent in this fleet, by a `git
+ * checkout`, by a background clone — so the answer the check returned is already stale
+ * when the use runs. It also turns one atomic syscall into two that can disagree.
+ * (TOCTTOU — Bishop & Dilger 1996; CWE-367; `lint-check-then-use-file-races`.)
+ */
 function alreadyDone(file: string): number {
-  const p = join(OUT_DIR, file);
-  if (!existsSync(p)) return 0;
-  return readFileSync(p, "utf8")
-    .split("\n")
-    .filter((l) => l.length > 0).length;
+  try {
+    return readFileSync(join(OUT_DIR, file), "utf8")
+      .split("\n")
+      .filter((l) => l.length > 0).length;
+  } catch (err) {
+    if ((err as NodeJS.ErrnoException).code === "ENOENT") return 0;
+    throw err;
+  }
 }
 
 // ═══ E1 — elicitation stability ══════════════════════════════════════════════
