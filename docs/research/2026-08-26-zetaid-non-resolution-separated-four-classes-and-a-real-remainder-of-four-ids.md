@@ -404,27 +404,40 @@ Control after restore: **20 pass, 0 fail.**
   the *shared* stash index that `.claude/rules/shared-checkout-is-view-only.md` warns is racy across
   worktrees. Verified by content and popped immediately, nothing lost. It should not have been run.
 
-### 7.1 This document's own PR is an instance of the bug it reports
+### 7.1 This document's own PR was an instance of the bug — and the claim went STALE while I wrote it
 
-**Metered, and the strongest evidence in this file.** The PR carrying this document cites all six
-ids named above in prose and carries `Task: none` in its AgencySignature block — the exact shape
-§3.1 describes. Piping its body into the audit as `gate.yml:2793` does:
+**This section is a correction, and the correction is the finding.** The PR carrying this document
+cites all six ids named above in prose and carries `Task: none` — exactly the shape §3.1 describes.
+Measured at the tree this document was written against (`a573aa3243`, before #15607), piping its body
+into the audit as `gate.yml:2793` does:
 
 ```
-task-zetaid-resolves: UNRESOLVABLE — 6 of 6 Task id(s) against 672 work-item(s).
+task-zetaid-resolves: UNRESOLVABLE — 6 of 6 Task id(s) against 672 work-item(s).      exit 1
 ```
 
-Exit **1** (read directly, not through a pipe — reading it through `grep` reports 0, which is the
-same defect in a third costume). **All six are citations. Zero are declarations.** So `cross-verify`
-is red on this PR, and it is red *for the reason this PR documents*.
+All six are citations. **Zero are declarations.** So I predicted `cross-verify` would be red on this
+PR for the reason this PR documents.
 
-That is a named dependency rather than a broken PR: **it goes green when #15607 lands**, and it
-would be dishonest to make it green any other way — the alternative is to stop naming the ids, which
-would delete the audit to turn a linter green. `lint-b-refs-resolve.ts`'s own header records the
-identical situation for the legacy scheme (*"a document whose SUBJECT is a set of dangling ids could
-satisfy neither remedy this gate offered"*), and its answer — annotate, never exclude — is what §5
-extends. A document reporting a defect must be distinguishable from a document containing one, and
-right now, for ZetaIds, it is not.
+**It was green.** #15607 merged at **2026-08-26T11:54:28Z**, before this PR's checks ran, so CI built
+a base containing the fix. Re-running the *identical* body against the audit as merged to `main`:
+
+```
+task-zetaid-resolves: no Task ids in the input (index: 672 work-items).                exit 0
+```
+
+**A/B on one input across one commit: 6-of-6 UNRESOLVABLE → 0 ids seen.** That is a stronger result
+than the prediction was, and it is the measurement §3.1 deserved rather than the counterfactual I had
+to settle for. It also independently confirms #15607's fix on a body neither of us constructed for
+the purpose.
+
+**The methodological point, which is the reason this section was rewritten rather than deleted.** The
+claim was TRUE when written and FALSE four hours later, because the defect it described got fixed.
+That is precisely the **STALE** condition §5.1(5) imposes on adjudications — *an annotation whose id
+now resolves fails as stale* — applied to a research claim instead of a comment. A finding about a
+live defect carries an expiry date it does not print, and the honest handling is to re-run it before
+publishing and record both readings, not to quietly drop the one that stopped holding. Exit codes
+here were read **directly**; reading this one through `grep` reports 0 in both arms, which is the same
+defect in a third costume.
 
 **Limits:**
 
