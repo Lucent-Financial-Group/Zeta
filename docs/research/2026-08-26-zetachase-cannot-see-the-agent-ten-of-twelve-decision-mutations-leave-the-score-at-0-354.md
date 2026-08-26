@@ -16,6 +16,14 @@ Carved sentence:
 Each mutation applied alone to a clean tree, tests and score run, tree restored
 via `git checkout --` before the next. Baseline 0.354 / 3 levels / 12-11-22.
 
+**Measured at `CONSERVATIVE_K = 3.0`, i.e. before Addendum 3 changed it to 1.0.**
+Re-run at k=1 the headline is unchanged — still **10 of 12 invisible on `chase`**,
+which is the claim this doc is named for. One cell's value moved: the
+agreement-sign flip scores 0.0 at k=1 rather than the 0.1157 recorded below. The
+table is left as measured rather than quietly updated, because it is the evidence
+for a claim made at a particular commit and rewriting it would make the two
+addenda below unreadable.
+
 | mutation | tests | environment score |
 |---|---|---|
 | no ageing (body election) | red | **0.354 — same** |
