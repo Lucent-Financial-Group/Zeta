@@ -518,9 +518,10 @@ closing it is not proposed here.
 
 Five passes ran on 2026-08-26 with distinct lenses, in two rounds. Recorded because a review that
 ratifies its own proposal did not run, and because this doc's own thesis says an
-assigned hat is not an independent witness — all three reviewers were hats dealt by
-this doc's author, so their findings are *evidence about the artifact*, not an
-independence claim.
+assigned hat is not an independent witness — every one of these reviewers was a hat
+dealt by this doc's author, with this doc's author's framing of what to attack. Their
+findings are *evidence about the artifact*; they are not an independence claim, and the
+quality of what they found is exactly the signal that does **not** establish one.
 
 - **Anchor lens** — found three defects in the anchor set (role strain misattributed to
   Merton; role-set glossed as status-set; *Presentation of Self* cited for role
@@ -560,7 +561,7 @@ documenting that failure mode. It was caught by rendering the section and readin
 back rather than trusting the script's exit, which is the same discipline as printing
 the SHA beside the result. Landed separately as `fddafa4a0f`.
 
-**A fourth check, not a reviewer, caught something all three missed.**
+**A check that is not a reviewer caught what all five missed.**
 `.github/workflows/role-ref-current-state-surfaces-lint.yml` watches
 `docs/GLOSSARY.md` and enforces the Otto-279 carve-out: current-state surfaces use
 **role-refs** (*"the maintainer"*), and persona / human / external-AI names belong on
