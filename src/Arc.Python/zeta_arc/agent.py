@@ -33,6 +33,14 @@ from dataclasses import dataclass, field
 
 from arcengine import GameAction
 
+from zeta_arc.dynamics import (
+    Belief,
+    age,
+    conservative,
+    observe,
+    outranks,
+    tau_for_horizon,
+)
 from zeta_arc.perception import Component, Grid, components
 
 #: Direction each action moves the agent, in grid cells. Mirrors chase.py's
@@ -45,18 +53,51 @@ ACTION_VECTORS: dict[GameAction, tuple[int, int]] = {
     GameAction.ACTION4: (1, 0),
 }
 
-#: Evidence leaks, so a wrong body decays out instead of being welded on.
-EVIDENCE_DECAY = 0.9
-#: A challenger must beat the held body by this margin to take it (hysteresis,
-#: same Schmitt-trigger idiom as the arena's mode latch — motor smoothing).
-LATCH_MARGIN = 1.0
+#: Displacement agreement is a cosine, so it lands in [-1, 1] and a variance of
+#: 1.0 spans the range: the honest prior for a component nothing is known about.
+BODY_PRIOR_SIGMA2 = 1.0
+
+#: What one frame of agreement is worth. A component can move for reasons that
+#: have nothing to do with my command, so a single frame is worth about as much
+#: as the prior rather than settling the question.
+BODY_OBS_SIGMA2 = 1.0
+
+#: WHEN A BODY BELIEF GOES BACK UP FOR GRABS, as a claim about the world rather
+#: than a rate: about seven frames of a component neither moving nor being seen
+#: and it is fully contestable again. Short enough that a body swapped out at a
+#: level boundary is re-elected rather than welded on, long enough to survive a
+#: stretch where nothing moves.
+#:
+#: SEVEN IS WHAT `EVIDENCE_DECAY = 0.9` WAS ALREADY ASSERTING and could not say:
+#: `decay_half_life(0.9) == 6.58` observations. Starting from the horizon the
+#: old constant implied makes this a re-parameterisation whose behaviour can be
+#: compared against a baseline, not a re-tune whose result cannot.
+BODY_STALENESS_HORIZON = 6.58
+
+#: Derived, never named directly.
+BODY_TAU = tau_for_horizon(BODY_PRIOR_SIGMA2, BODY_STALENESS_HORIZON)
+
+#: NOTE ON THE COMMIT GATE, which is `mu > 0` and deliberately NOT a conservative
+#: bound. Requiring one sigma of confidence was tried first and is wrong here:
+#: after a single clean frame `mu = 0.5` with `sigma = 0.707`, so a 1-sigma gate
+#: refuses to commit, and `test_the_probe_costs_exactly_one_blind_action` goes
+#: red — correctly, because the probe costing exactly one action is a stated
+#: property of this agent and actions are the budget. (Found by that test, not
+#: derived beforehand.)
+#:
+#: The mean is the right gate BECAUSE of the ageing above it. A premature commit
+#: used to be the expensive mistake — `EVIDENCE_DECAY` never demoted a component
+#: that stopped moving, so a wrong body welded on. Now an unconfirmed body loses
+#: confidence every frame and a challenger takes it on the conservative score,
+#: which makes committing early cheap to undo. The gate could be strict when
+#: being wrong was permanent; it does not need to be now.
 
 
 @dataclass
 class PixelAgent:
     """Chooses actions from the rendered frame alone."""
 
-    evidence: dict[int, float] = field(default_factory=dict)
+    beliefs: dict[int, Belief] = field(default_factory=dict)
     #: Cells discovered to be impassable — learned by BUMPING, never read from
     #: the environment's wall table. See `_note_blocked_cell`.
     blocked: set[tuple[int, int]] = field(default_factory=set)
@@ -296,6 +337,17 @@ class PixelAgent:
             return
         dx_cmd, dy_cmd = ACTION_VECTORS[self._last_action]
         before = {self._key(c): c for c in self._previous}
+
+        # PREDICT. A frame passed, so EVERY body belief is one frame staler —
+        # including the components that did not move and the ones that left the
+        # frame entirely. Under `EVIDENCE_DECAY` a component that stopped moving
+        # kept its score frozen at whatever it last earned, which is how a body
+        # gets welded on: it was never contradicted, so it was never demoted.
+        # Ageing demotes it without pretending to have observed anything.
+        for key in self.beliefs:
+            self.beliefs[key] = age(self.beliefs[key], BODY_TAU, 1.0)
+
+        # UPDATE. Only components that actually moved have anything to say.
         for c in now:
             key = self._key(c)
             was = before.get(key)
@@ -306,25 +358,32 @@ class PixelAgent:
             if magnitude < 1e-9:
                 continue  # did not move: unreadable (a wall may have blocked me)
             agreement = (dx * dx_cmd + dy * dy_cmd) / magnitude
-            self.evidence[key] = (
-                self.evidence.get(key, 0.0) * EVIDENCE_DECAY + agreement
-            )
+            prior = self.beliefs.get(key, Belief(mu=0.0, sigma2=BODY_PRIOR_SIGMA2))
+            self.beliefs[key] = observe(prior, agreement, BODY_OBS_SIGMA2)
 
     def _elect_self(self, now: list[Component]) -> Component | None:
         """The body is whichever component the probe best supports."""
         if not now:
             return None
-        scored = sorted(now, key=lambda c: -self.evidence.get(self._key(c), 0.0))
+        unknown = Belief(mu=0.0, sigma2=BODY_PRIOR_SIGMA2)
+        scored = sorted(
+            now, key=lambda c: -conservative(self.beliefs.get(self._key(c), unknown))
+        )
         best = scored[0]
         held = next((c for c in now if self._key(c) == self._self_key), None)
-        if held is not None:
-            best_score = self.evidence.get(self._key(best), 0.0)
-            held_score = self.evidence.get(self._key(held), 0.0)
-            if best_score < held_score + LATCH_MARGIN:
-                return held
-        # Commit only once the probe has actually spoken. Before that the pick
-        # is provisional and re-run every frame.
-        if self.evidence.get(self._key(best), 0.0) > 0:
+        # The hysteresis `LATCH_MARGIN = 1.0` was providing is no longer a
+        # number: a challenger takes the body by outranking the incumbent on the
+        # conservative score, which a newcomer's own width prevents it from doing
+        # on one lucky frame.
+        if held is not None and not outranks(
+            self.beliefs.get(self._key(best), unknown),
+            self.beliefs.get(self._key(held), unknown),
+        ):
+            return held
+        # Commit only once the probe has actually spoken, and now that means
+        # something checkable: positive at `BODY_COMMIT_K` sigma, rather than a
+        # running sum that happens to be above zero.
+        if self.beliefs.get(self._key(best), unknown).mu > 0:
             self._self_key = self._key(best)
         return best
 

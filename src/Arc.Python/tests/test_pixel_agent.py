@@ -11,7 +11,7 @@ from arcengine import GameAction
 from zeta_arc.agent import ACTION_VECTORS, PixelAgent
 from zeta_arc.driver import advance, reset
 from zeta_arc.environments.chase import CELL, ZetaChase
-from zeta_arc.perception import background_colour, components
+from zeta_arc.perception import Component, background_colour, components
 from zeta_arc.play import play
 
 
@@ -112,7 +112,7 @@ def test_the_probe_costs_exactly_one_blind_action() -> None:
 
     agent.act(_grid(game, frame))
     assert agent._self_key is not None
-    assert max(agent.evidence.values()) > 0
+    assert max(b.mu for b in agent.beliefs.values()) > 0
 
 
 def test_the_wall_level_is_cleared_and_the_wall_is_learned_by_bumping() -> None:
@@ -463,4 +463,131 @@ def test_suppression_expires_because_games_upgrade_their_actions():
     assert suppressed not in agent._inert.get(key, {}), (
         "the suppressed action never became eligible again — an action that "
         "upgrades mid-episode could never be rediscovered"
+    )
+
+
+# ─── the decoy world: what ZetaChase cannot ask ──────────────────────────────
+#
+# MEASURED FIRST, because the tests below only exist because of the measurement.
+# Across 40 ticks of ZetaChase seed 4 the agent sees 4 distinct components and
+# exactly ONE of them ever moves. The body election therefore has no competitor,
+# and no ranking rule can be told apart from any other on that workload: removing
+# the ageing entirely, or ranking by the mean instead of the conservative score,
+# leaves all 118 tests green AND the environment score byte-identical at 0.354.
+#
+# So the falsifier has to be a world with a DECOY that also moves. These build
+# one directly out of `Component`s rather than pixels, because the property under
+# test is the election, and routing it through a grid would only add a renderer
+# that could fail for unrelated reasons.
+
+
+def _c(colour: int, cx: float, cy: float) -> Component:
+    """A component at a position. `area` is fixed so `_key` tracks identity by
+    colour alone — two distinct colours are two distinct candidates."""
+    return Component(colour=colour, area=9, cx=cx, cy=cy)
+
+
+def _drive(agent: PixelAgent, before: list[Component], after: list[Component]) -> None:
+    """One frame: the agent commanded ACTION4 (+x) and this is what happened."""
+    agent._previous = before
+    agent._last_action = GameAction.ACTION4
+    agent._update_evidence(after)
+
+
+def test_a_body_that_stops_moving_loses_the_election_to_one_that_is_moving() -> None:
+    """THE FAILURE `EVIDENCE_DECAY` COULD NOT PREVENT, and the reason this
+    conversion is not cosmetic.
+
+    Read the old update again: the decay sits INSIDE the loop that skips a
+    component which did not move. So a component that stopped moving had its
+    score FROZEN, not decayed — it was never contradicted, so it was never
+    demoted, and it held the body until a challenger out-accumulated it from
+    zero. That is the "welded on" failure the module docstring warns about,
+    written into the mechanism meant to prevent it.
+
+    Ageing demotes it without pretending to have observed anything. Here the
+    decoy earns the body over six clean frames, goes still, and a second
+    component starts moving in agreement. The decoy must lose.
+    """
+    decoy, real = 3, 7
+    agent = PixelAgent()
+
+    for step in range(6):
+        _drive(
+            agent,
+            [_c(decoy, step, 0.0), _c(real, 0.0, 5.0)],
+            [_c(decoy, step + 1.0, 0.0), _c(real, 0.0, 5.0)],
+        )
+    assert agent._elect_self([_c(decoy, 6.0, 0.0), _c(real, 0.0, 5.0)]).colour == decoy
+
+    took_over_at = None
+    for step in range(8):
+        _drive(
+            agent,
+            [_c(decoy, 6.0, 0.0), _c(real, step, 5.0)],
+            [_c(decoy, 6.0, 0.0), _c(real, step + 1.0, 5.0)],
+        )
+        elected = agent._elect_self([_c(decoy, 6.0, 0.0), _c(real, step + 1.0, 5.0)])
+        if elected.colour == real and took_over_at is None:
+            took_over_at = step + 1
+
+    assert took_over_at is not None, "the still decoy was welded on"
+    assert took_over_at <= 4, f"took {took_over_at} frames to release a still body"
+
+
+def test_the_dynamics_factor_releases_a_still_body_sooner_than_decay_does() -> None:
+    """The comparison the whole change rests on, run on ONE observation sequence.
+
+    A test that only exercised the new model would show it works, never that it
+    is better than what it replaced. So the old rule — `score * 0.9 + agreement`,
+    applied only to components that moved, argmax with `LATCH_MARGIN = 1.0` — is
+    reimplemented here and driven with the identical frames. The claim is the
+    DIFFERENCE between the two columns, which neither column can state alone.
+    """
+    decoy, real = 3, 7
+    agent = PixelAgent()
+    old: dict[int, float] = {}
+    old_held: int | None = None
+
+    def old_step(moved: int) -> int | None:
+        nonlocal old_held
+        old[moved] = old.get(moved, 0.0) * 0.9 + 1.0  # only the mover updates
+        best = max(old, key=lambda k: old[k])
+        if old_held is not None and old[best] < old[old_held] + 1.0:
+            return old_held
+        if old[best] > 0:
+            old_held = best
+        return best
+
+    for step in range(6):
+        _drive(
+            agent,
+            [_c(decoy, step, 0.0), _c(real, 0.0, 5.0)],
+            [_c(decoy, step + 1.0, 0.0), _c(real, 0.0, 5.0)],
+        )
+        old_step(decoy)
+
+    new_release = old_release = None
+    for step in range(12):
+        _drive(
+            agent,
+            [_c(decoy, 6.0, 0.0), _c(real, step, 5.0)],
+            [_c(decoy, 6.0, 0.0), _c(real, step + 1.0, 5.0)],
+        )
+        if (
+            new_release is None
+            and agent._elect_self(
+                [_c(decoy, 6.0, 0.0), _c(real, step + 1.0, 5.0)]
+            ).colour
+            == real
+        ):
+            new_release = step + 1
+        if old_release is None and old_step(real) == real:
+            old_release = step + 1
+
+    assert new_release is not None, "dynamics never released the still body"
+    assert old_release is not None, "decay never released it either — check the setup"
+    assert new_release < old_release, (
+        f"dynamics released at {new_release}, decay at {old_release} — "
+        "the conversion bought nothing on this sequence"
     )

@@ -160,6 +160,12 @@ class LayeredAgent:
         election in `agent.py`, not here. It stays because it is correct and
         costs nothing, not because this file demonstrates it.
 
+        THAT PREDICTION WAS SUBSEQUENTLY CHECKED and holds: the same mutation
+        against the body election fails
+        `test_a_body_that_stops_moving_loses_the_election_to_one_that_is_moving`,
+        where a still decoy competes with a moving component. Two layers cannot
+        pose that question; two candidates can.
+
         The tie-break is real either way: `outranks` is strict, so an exact tie
         keeps the incumbent.
         """
