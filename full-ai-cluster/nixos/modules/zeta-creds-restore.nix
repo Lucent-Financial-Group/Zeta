@@ -397,15 +397,28 @@ in
           # "No version is set for shim: bun" and restore never runs (run
           # 32952620895: blob delivered + read, then died on the bun shim).
           cd "${cfg.repoRoot}"
+          # 081M0WTB5MN: resolve the REAL bun binary from mise's install dir and
+          # invoke it directly, so the restore never depends on mise config/trust
+          # resolution. Run 32970963143 died on `mise ERROR No version is set for
+          # shim: bun` even with cd + MISE_TRUSTED_CONFIG_PATHS — the shim's
+          # config resolution behaved differently under systemd-as-root than it
+          # does interactively (verified locally: the direct binary resolves from
+          # any cwd, as root, with no trust). The shim is the fallback only when
+          # no install is present; the precondition gate already proved it exists.
+          BUN_BIN="$(ls -1 ${cfg.home}/.local/share/mise/installs/bun/*/bin/bun 2>/dev/null | sort -V | tail -1 || true)"
+          if [ -z "$BUN_BIN" ] || [ ! -x "$BUN_BIN" ]; then
+            BUN_BIN="${bunShimPath}"
+          fi
+          log_restore "zeta-creds-restore: bun binary $BUN_BIN (cwd $(pwd))"
           if [ -n "$_serial" ]; then
-            ${bunShimPath} ${cfg.scriptPath} \
+            "$BUN_BIN" ${cfg.scriptPath} \
               "$BIND_FLAG" "$BIND_VALUE" \
               --input ${cfg.blobPath} \
               --passphrase-file "$PASSPHRASE_PATH" \
               --target-root / \
               $PERSONA_ARGS 2>&1 | ${pkgs.coreutils}/bin/tee -a "$_serial"
           else
-            ${bunShimPath} ${cfg.scriptPath} \
+            "$BUN_BIN" ${cfg.scriptPath} \
               "$BIND_FLAG" "$BIND_VALUE" \
               --input ${cfg.blobPath} \
               --passphrase-file "$PASSPHRASE_PATH" \
