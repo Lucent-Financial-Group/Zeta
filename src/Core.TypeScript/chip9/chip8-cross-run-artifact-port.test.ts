@@ -137,6 +137,22 @@ describe("CHIP-8 cross-run artifact byte port", () => {
     );
     expect(cancelled).toMatchObject({ ok: false, feedback: { code: "cancelled" } });
     expect(reads).toBe(0);
+
+    const bytes = await fixtureBytes();
+    const cancelledAfterRead = new AbortController();
+    const stoppedBeforePublication = await loadCrossRunReader(
+      bytePort(() => {
+        cancelledAfterRead.abort();
+        return bytes;
+      }),
+      [location],
+      cancelledAfterRead.signal,
+    );
+    expect(stoppedBeforePublication).toMatchObject({
+      ok: false,
+      feedback: { code: "cancelled", location },
+    });
+    expect("value" in stoppedBeforePublication).toBe(false);
   });
 
   test("adapts injected fetch without performing I/O during construction", async () => {

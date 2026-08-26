@@ -49,22 +49,26 @@ module Chip8CrossRunStoreIO =
                     return Error(Cancelled(Some path))
                 else
                     let! bytes = fileSystem.ReadAllBytesAsync(path, ct).ConfigureAwait(false)
-                    let text = strictUtf8.GetString bytes
 
-                    return
-                        Chip8CrossRunStore.parse text
-                        |> Result.mapError (fun feedback -> ArtifactRejected(path, feedback))
-                        |> Result.bind (fun artifact ->
-                            let expected = Chip8CrossRunStore.artifactFileName artifact.Key
-                            let actual = Path.GetFileName path
+                    if ct.IsCancellationRequested then
+                        return Error(Cancelled(Some path))
+                    else
+                        let text = strictUtf8.GetString bytes
 
-                            if String.Equals(actual, expected, StringComparison.Ordinal) then
-                                Ok
-                                    { Path = path
-                                      Artifact = artifact
-                                      ByteCount = bytes.LongLength }
-                            else
-                                Error(ArtifactFileNameMismatch(path, expected)))
+                        return
+                            Chip8CrossRunStore.parse text
+                            |> Result.mapError (fun feedback -> ArtifactRejected(path, feedback))
+                            |> Result.bind (fun artifact ->
+                                let expected = Chip8CrossRunStore.artifactFileName artifact.Key
+                                let actual = Path.GetFileName path
+
+                                if String.Equals(actual, expected, StringComparison.Ordinal) then
+                                    Ok
+                                        { Path = path
+                                          Artifact = artifact
+                                          ByteCount = bytes.LongLength }
+                                else
+                                    Error(ArtifactFileNameMismatch(path, expected)))
             with
             | :? OperationCanceledException -> return Error(Cancelled(Some path))
             | :? DecoderFallbackException -> return Error(TextDecodeFailed path)

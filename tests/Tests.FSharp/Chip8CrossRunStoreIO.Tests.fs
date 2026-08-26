@@ -38,6 +38,26 @@ let private seedArtifact fileSystem path artifact =
     |> Encoding.UTF8.GetBytes
     |> seedFile fileSystem path
 
+let private cancelAfterReadFileSystem (inner: IFileSystem) (cancelled: CancellationTokenSource) =
+    { new IFileSystem with
+        member _.Exists path = inner.Exists path
+        member _.Delete path = inner.Delete path
+        member _.Move(src, dest, overwrite) = inner.Move(src, dest, overwrite)
+        member _.ReadAllBytes path = inner.ReadAllBytes path
+
+        member _.ReadAllBytesAsync(path, ct) =
+            task {
+                let! bytes = inner.ReadAllBytesAsync(path, ct)
+                cancelled.Cancel()
+                return bytes
+            }
+
+        member _.OpenFile(path, mode, access, share) = inner.OpenFile(path, mode, access, share)
+        member _.OpenWrite(path, fsync) = inner.OpenWrite(path, fsync)
+        member _.OpenRead path = inner.OpenRead path
+        member _.GetFiles(path, searchPattern) = inner.GetFiles(path, searchPattern)
+        member _.CreateDirectory path = inner.CreateDirectory path }
+
 [<Fact>]
 let ``IO1 a fully verified directory publishes one exact reader`` () =
     task {
@@ -162,5 +182,19 @@ let ``IO6 invalid UTF-8 and cancellation are typed refusals`` () =
         Assert.Equal<Result<Chip8CrossRunStoreIO.LoadedStore, Chip8CrossRunStoreIO.Feedback>>(
             Error(Chip8CrossRunStoreIO.Cancelled None),
             stopped
+        )
+
+        seedArtifact fileSystem (pathFor stored) stored
+        use cancelledAfterRead = new CancellationTokenSource()
+
+        let! stoppedBeforePublication =
+            Chip8CrossRunStoreIO.loadDirectoryAsync
+                (cancelAfterReadFileSystem (fileSystem :> IFileSystem) cancelledAfterRead)
+                root
+                cancelledAfterRead.Token
+
+        Assert.Equal<Result<Chip8CrossRunStoreIO.LoadedStore, Chip8CrossRunStoreIO.Feedback>>(
+            Error(Chip8CrossRunStoreIO.Cancelled(Some(pathFor stored))),
+            stoppedBeforePublication
         )
     }

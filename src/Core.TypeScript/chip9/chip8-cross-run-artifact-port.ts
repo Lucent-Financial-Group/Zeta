@@ -183,6 +183,7 @@ export async function loadCrossRunReader(
         : failed("read-failed", "The injected artifact byte port threw.", location);
     }
     if (!read.ok) return read;
+    if (isCancelled(signal)) return failed("cancelled", "The artifact load was cancelled.", location);
 
     let text: string;
     try {
@@ -192,6 +193,7 @@ export async function loadCrossRunReader(
     }
 
     const parsed = await parseArtifact(text);
+    if (isCancelled(signal)) return failed("cancelled", "The artifact load was cancelled.", location);
     if (!parsed.ok) {
       return failed("artifact-rejected", parsed.feedback.detail, location, parsed.feedback);
     }
@@ -219,6 +221,8 @@ export async function loadCrossRunReader(
     artifacts.push(parsed.value);
     byteCount += BigInt(read.value.byteLength);
   }
+
+  if (isCancelled(signal)) return failed("cancelled", "The artifact load was cancelled.");
 
   return succeeded({
     reader: readerOf(artifacts),
