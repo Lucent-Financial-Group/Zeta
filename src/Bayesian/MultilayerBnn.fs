@@ -368,6 +368,109 @@ module MultilayerBnn =
         | Some e -> Error e
         | None -> Ok { net with DownwardMessages = down }
 
+    // -- Factor-graph inference: the per-edge upgrade --------------------------------
+    //
+    // WHY THIS EXISTS ALONGSIDE THE SWEEPS RATHER THAN REPLACING THEM. The two
+    // sweeps store one upward and one downward message PER LAYER, which is exact
+    // for a chain — where a layer has at most one parent and one child — and
+    // cannot represent the per-EDGE messages a DAG needs. `FactorGraph` keys its
+    // messages `factor -> variable`, so every edge carries its own, and loopy
+    // topologies get sum-product to a fixed point instead of one forward and one
+    // backward pass.
+    //
+    // BIT-IDENTITY IS THE WRONG BAR HERE, and the row that asked for it was
+    // asking for the right thing about the wrong stage. Re-spelling `Sequential`
+    // as a `Dag` runs the SAME arithmetic in the same order, so bits must match
+    // and MLBNN-23/24 pin that. A fixpoint iteration is a DIFFERENT algorithm
+    // computing the same mathematical quantity; it agrees to machine precision,
+    // not to the last ulp, and demanding bits would only pin an accident of the
+    // schedule. The honest falsifier is the INDEPENDENT one the test file already
+    // carries: `exactChainMarginals` inverts the joint precision matrix by
+    // Gauss-Jordan, and sum-product on a tree must agree with it.
+
+    /// A factor asserting `child = sum(parents) + noise`, as a sum-product factor
+    /// over `parents @ [child]`.
+    ///
+    /// DUPLICATE PARENTS ARE NOT EXPRESSIBLE HERE and are rejected by
+    /// `tryToFactorGraph` rather than silently collapsed. `Factor` keys its
+    /// outgoing messages by VARIABLE id, so naming a parent twice would write one
+    /// map entry and quietly halve the contribution the sweeps do deliver
+    /// (MLBNN-27 pins that they deliver it twice). A refusal is honest; a silent
+    /// disagreement between two inference paths on the same network is not.
+    let private sumLinkFactor
+        (noiseVariance: float)
+        (parents: int list)
+        (child: int)
+        : Factor<Gaussian> =
+        { Neighbors = parents @ [ child ]
+          ComputeMessages =
+            fun incoming ->
+                let msg v = incoming |> Map.tryFind v |> Option.defaultValue Gaussian.One
+                let combine vs =
+                    match vs with
+                    | [] -> Gaussian.One
+                    | v0 :: rest -> rest |> List.fold (fun acc v -> convolve acc (msg v)) (msg v0)
+                let toChild = throughChannel noiseVariance (combine parents)
+                let toParent p =
+                    // The child's belief pushed back through the link, with the
+                    // OTHER addends removed. Means subtract, variances still add —
+                    // `deconvolve`, never `divide`: uncertainty does not cancel.
+                    removeFirst p parents
+                    |> List.fold (fun acc o -> deconvolve acc (msg o)) (throughChannel noiseVariance (msg child))
+                (parents |> List.map (fun p -> p, toParent p)) @ [ child, toChild ]
+                |> Map.ofList }
+
+    /// Build the factor graph for a network: one prior factor per layer, and one
+    /// sum-link factor per layer that has parents.
+    ///
+    /// Layer 0's prior factor carries the ABSORBED DATA, not the original prior —
+    /// `Layers.[0].Posterior` is the conjugate accumulation, so the evidence
+    /// enters once, as a leaf, exactly as it does in the sweeps.
+    let tryToFactorGraph (net: Network) : Result<FactorGraph<Gaussian>, string> =
+        let n = net.Layers.Length
+        let parentsFor i = parentsOf net.Topology i |> List.filter (fun p -> p >= 0 && p < n)
+        let offenders =
+            [ 0 .. n - 1 ]
+            |> List.filter (fun i ->
+                let ps = parentsFor i
+                List.length ps <> List.length (List.distinct ps))
+        if not (List.isEmpty offenders) then
+            let names = offenders |> List.map string |> String.concat ", "
+            Error(
+                $"layers {names} name a parent more than once; the factor-graph path "
+                + "keys messages by variable and cannot express a repeated addend")
+        else
+            let withPriors =
+                [ 0 .. n - 1 ]
+                |> List.fold
+                    (fun g i -> FactorGraph.addFactor i (Factor.prior i net.Layers.[i].Posterior) g)
+                    (FactorGraph.empty Gaussian.algebra)
+            [ 0 .. n - 1 ]
+            |> List.fold
+                (fun g i ->
+                    match parentsFor i with
+                    | [] -> g
+                    | ps -> FactorGraph.addFactor (n + i) (sumLinkFactor net.ObservationVariances.[i] ps i) g)
+                withPriors
+            |> Ok
+
+    /// Per-layer marginals by sum-product to a fixed point, plus the rounds run
+    /// and whether it converged before the cap.
+    ///
+    /// The caller is told `converged` rather than having a non-convergence
+    /// swallowed: on a loopy graph BP may oscillate forever (Weiss & Freeman
+    /// 2001), and a silent cap would report an arbitrary iterate as an answer.
+    let tryMarginalsViaFactorGraph
+        (tol: float)
+        (maxRounds: int)
+        (net: Network)
+        : Result<Gaussian array * int * bool, string> =
+        tryToFactorGraph net
+        |> Result.map (fun g ->
+            let settled, rounds, converged =
+                FactorGraph.runToFixpoint Gaussian.distance tol maxRounds g
+            Array.init net.Layers.Length (fun i -> FactorGraph.marginal i settled), rounds, converged)
+
     // -- Combined forward+backward ---------------------------------------------------
 
     /// Run one full forward+backward cycle. On a `Sequential` chain this is the

@@ -421,3 +421,102 @@ let ``MLBNN-27: a parent named twice is summed in twice`` () =
         sprintf
             "naming layer 1 twice changed nothing — the duplicate was silently collapsed (tau=%.17g, nu=%.17g)"
             pa.Precision pa.PrecisionMean)
+
+// ── Factor-graph inference: the per-edge path ───────────────────────────────
+//
+// THE BAR IS NOT BIT-IDENTITY, and saying so matters. MLBNN-23/24 demand bits
+// because re-spelling `Sequential` as a `Dag` runs the same arithmetic in the
+// same order. Sum-product to a fixed point is a DIFFERENT algorithm computing
+// the same mathematical quantity — it agrees to machine precision, and pinning
+// bits there would pin an accident of the message schedule. So these check
+// against `exactChainMarginals`, the independent Gauss-Jordan solve of the joint
+// precision matrix that MLBNN-17 already uses.
+
+[<Fact>]
+let ``MLBNN-28: factor-graph marginals equal the exact chain marginals at EVERY layer`` () =
+    // Stronger than MLBNN-17, which checks only the output layer. A chain is a
+    // tree, so sum-product is exact at every node, and an error in one link
+    // factor's backward message would hide behind an output-only assertion.
+    for depth in [ 1; 2; 3; 4; 6; 10 ] do
+        let net = MultilayerBnn.tryCreateUniform depth prior 1.0 |> unwrap
+        let after = MultilayerBnn.infer (Seq.replicate 10 10.0) net |> unwrap
+        let marginals, rounds, converged =
+            MultilayerBnn.tryMarginalsViaFactorGraph 1e-12 200 after |> unwrap
+        Assert.True(converged, sprintf "depth %d did not converge in %d rounds" depth rounds)
+        let means, vars =
+            exactChainMarginals (Array.create depth 1.0) (Array.create depth 0.0) (Array.create depth 1.0) 10 10.0
+        for i in 0 .. depth - 1 do
+            Assert.True(
+                abs (Gaussian.mean marginals.[i] - means.[i]) < 1e-9,
+                sprintf "depth %d layer %d mean: got %.12g, exact %.12g"
+                    depth i (Gaussian.mean marginals.[i]) means.[i])
+            Assert.True(
+                abs (Gaussian.variance marginals.[i] - vars.[i]) < 1e-9,
+                sprintf "depth %d layer %d variance: got %.12g, exact %.12g"
+                    depth i (Gaussian.variance marginals.[i]) vars.[i])
+
+[<Fact>]
+let ``MLBNN-29: on a chain the two inference paths agree to machine precision`` () =
+    // Both are exact on a tree, so they must meet. This is the test that says the
+    // factor-graph path is a GENERALISATION of the sweeps and not a second,
+    // differently-wrong model living beside them.
+    let depth = 5
+    let net = MultilayerBnn.tryCreateUniform depth prior 0.75 |> unwrap
+    let after = MultilayerBnn.infer [ 1.0; -2.0; 0.5; 3.0 ] net |> unwrap
+    let marginals, _, converged = MultilayerBnn.tryMarginalsViaFactorGraph 1e-12 200 after |> unwrap
+    Assert.True(converged)
+    for i in 0 .. depth - 1 do
+        let sweep = MultilayerBnn.beliefAt after i
+        Assert.True(
+            abs (Gaussian.mean marginals.[i] - Gaussian.mean sweep) < 1e-9
+            && abs (Gaussian.variance marginals.[i] - Gaussian.variance sweep) < 1e-9,
+            sprintf "layer %d: factor graph (%.12g, %.12g) vs sweeps (%.12g, %.12g)"
+                i (Gaussian.mean marginals.[i]) (Gaussian.variance marginals.[i])
+                (Gaussian.mean sweep) (Gaussian.variance sweep))
+
+[<Fact>]
+let ``MLBNN-30: on a loopy topology the two paths DISAGREE, and by how much`` () =
+    // The whole reason the factor-graph path exists. `MultilayerBnn`'s own
+    // docstring says the skip case is "a first-order approximation rather than
+    // the exact marginal" because the backward sweep only walks the sequential
+    // links. Sum-product to a fixed point carries messages on every edge.
+    //
+    // The test NAMES the difference rather than asserting convergence, because
+    // "it converged" is true of the wrong answer too.
+    let depth = 4
+    let priors = Array.init depth (fun _ -> Gaussian.ofMeanVariance 0.0 1.0)
+    let variances = Array.create depth 1.0
+    let loopy = MultilayerBnn.SkipConnections [ (0, 2); (0, 3); (1, 3) ]
+    let net = MultilayerBnn.tryCreate priors variances loopy |> unwrap
+    let after = MultilayerBnn.infer [ 5.0; 5.0; 5.0; 5.0 ] net |> unwrap
+    let marginals, rounds, converged = MultilayerBnn.tryMarginalsViaFactorGraph 1e-12 500 after |> unwrap
+
+    let gaps =
+        [ 0 .. depth - 1 ]
+        |> List.map (fun i ->
+            let sweep = MultilayerBnn.beliefAt after i
+            i, abs (Gaussian.mean marginals.[i] - Gaussian.mean sweep))
+    let biggest = gaps |> List.maxBy snd
+    Assert.True(
+        snd biggest > 1e-6,
+        sprintf
+            "the two paths agreed on a LOOPY graph (max mean gap %.3g at layer %d) — either the skips are being ignored or the sweeps were exact after all; converged=%b rounds=%d"
+            (snd biggest) (fst biggest) converged rounds)
+
+[<Fact>]
+let ``MLBNN-31: a repeated parent is REFUSED by the factor-graph path, not collapsed`` () =
+    // MLBNN-27 pins that the sweeps sum a repeated parent in twice. `Factor` keys
+    // its outgoing messages by variable id, so the factor-graph path cannot
+    // express that and would silently deliver it once. Two inference paths
+    // quietly disagreeing about the same network is worse than one refusing, so
+    // it refuses.
+    let depth = 3
+    let priors = Array.init depth (fun _ -> Gaussian.ofMeanVariance 0.0 1.0)
+    let net =
+        MultilayerBnn.tryCreate priors (Array.create depth 0.5) (MultilayerBnn.Dag [| []; [ 0 ]; [ 1; 1 ] |])
+        |> unwrap
+    match MultilayerBnn.tryMarginalsViaFactorGraph 1e-12 100 net with
+    | Ok _ -> failwith "a repeated parent was silently accepted by the factor-graph path"
+    | Error e ->
+        Assert.Contains("more than once", e)
+        Assert.Contains("2", e)
