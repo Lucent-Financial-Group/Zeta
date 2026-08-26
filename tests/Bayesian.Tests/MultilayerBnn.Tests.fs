@@ -592,3 +592,115 @@ let ``MLBNN-32: a two-parent sum node matches the exact 3x3 solve at every layer
         Assert.True(
             abs (Gaussian.variance marginals.[i] - vars.[i]) < 1e-9,
             sprintf "layer %d variance: got %.12g, exact %.12g" i (Gaussian.variance marginals.[i]) vars.[i])
+
+/// Exact marginals for ANY parent structure, by dense inversion of the joint
+/// precision matrix. The model is linear-Gaussian, so this is exact whether or
+/// not the factor graph has loops — which is the point: sum-product being
+/// approximate under loops says nothing about the truth being unavailable.
+///
+/// Each layer contributes its prior `(tau, nu)`. Each layer with parents adds
+/// the constraint `x_i = sum(parents) + w`, whose quadratic form
+/// `(x_i - sum parents)^2 / (2 v)` is the precision `(1/v) * a a^T` with
+/// `a.[i] = -1` and `a.[p] = +1` for each parent.
+let private exactDagMarginals
+    (priorTau: float array)
+    (priorNu: float array)
+    (linkVariance: float array)
+    (parentsOfLayer: int -> int list)
+    : float array * float array =
+    let n = priorTau.Length
+    let lam = Array2D.init n n (fun i j -> if i = j then priorTau.[i] else 0.0)
+    for i in 0 .. n - 1 do
+        match parentsOfLayer i with
+        | [] -> ()
+        | ps ->
+            let a = Array.zeroCreate n
+            a.[i] <- a.[i] - 1.0
+            for pIdx in ps do
+                a.[pIdx] <- a.[pIdx] + 1.0
+            for r in 0 .. n - 1 do
+                for c in 0 .. n - 1 do
+                    lam.[r, c] <- lam.[r, c] + a.[r] * a.[c] / linkVariance.[i]
+    let h = Array.copy priorNu
+    let m = Array2D.init n (2 * n) (fun i j -> if j < n then lam.[i, j] elif j - n = i then 1.0 else 0.0)
+    for col in 0 .. n - 1 do
+        let mutable piv = col
+        for r in col .. n - 1 do
+            if abs m.[r, col] > abs m.[piv, col] then piv <- r
+        if piv <> col then
+            for j in 0 .. 2 * n - 1 do
+                let t = m.[col, j]
+                m.[col, j] <- m.[piv, j]
+                m.[piv, j] <- t
+        let d = m.[col, col]
+        for j in 0 .. 2 * n - 1 do
+            m.[col, j] <- m.[col, j] / d
+        for r in 0 .. n - 1 do
+            if r <> col then
+                let f = m.[r, col]
+                for j in 0 .. 2 * n - 1 do
+                    m.[r, j] <- m.[r, j] - f * m.[col, j]
+    let means = Array.init n (fun i -> Array.init n (fun j -> m.[i, j + n] * h.[j]) |> Array.sum)
+    let vars = Array.init n (fun i -> m.[i, i + n])
+    means, vars
+
+[<Fact>]
+let ``MLBNN-33: on a loopy graph the factor-graph MEANS are exact and the sweeps' are not`` () =
+    // MLBNN-30 established only that the two paths DISAGREE, which says nothing
+    // about which is right — "different" is not "better". The model is
+    // linear-Gaussian, so the true marginals exist and are computable by dense
+    // inversion whether or not sum-product converges on the loops.
+    //
+    // MEASURED (4-layer net, skips (0,2) (0,3) (1,3), four observations of 5.0):
+    //
+    //     path          mean L1      variance L1
+    //     factor graph  4.02e-14     0.227
+    //     sweeps        2.075        0.316
+    //
+    // ANCHOR, AND IT IS CHECKED RATHER THAN CITED. Weiss & Freeman, "Correctness
+    // of belief propagation in Gaussian graphical models of arbitrary topology"
+    // (Neural Computation, 2001) proves that when Gaussian loopy BP converges,
+    // the MEANS are exact and the variances are generally not. That is exactly
+    // the pattern above: the means land at machine zero while the variances stay
+    // wrong by 0.227. The theorem predicted the split before the number was
+    // taken, which is what makes it an anchor rather than a decoration.
+    //
+    // So the honest claim is narrow and worth stating narrowly: the factor-graph
+    // path buys EXACT MEANS on a loopy topology, better-but-still-wrong
+    // variances, and no guarantee at all if it fails to converge.
+    let depth = 4
+    let priors = Array.init depth (fun _ -> Gaussian.ofMeanVariance 0.0 1.0)
+    let variances = Array.create depth 1.0
+    let loopy = MultilayerBnn.SkipConnections [ (0, 2); (0, 3); (1, 3) ]
+    let net = MultilayerBnn.tryCreate priors variances loopy |> unwrap
+    let after = MultilayerBnn.infer [ 5.0; 5.0; 5.0; 5.0 ] net |> unwrap
+    let marginals, rounds, converged = MultilayerBnn.tryMarginalsViaFactorGraph 1e-13 1000 after |> unwrap
+    Assert.True(converged, sprintf "loopy BP did not converge in %d rounds — the theorem's precondition fails" rounds)
+
+    // Layer 0's "prior" in the exact model is the posterior the sweeps built,
+    // because that is where the data was absorbed.
+    let priorTau = Array.init depth (fun i -> after.Layers.[i].Posterior.Precision)
+    let priorNu = Array.init depth (fun i -> after.Layers.[i].Posterior.PrecisionMean)
+    let means, vars = exactDagMarginals priorTau priorNu variances (MultilayerBnn.parentsOf loopy)
+
+    let err (get: int -> float) (truth: float array) =
+        [ 0 .. depth - 1 ] |> List.sumBy (fun i -> abs (get i - truth.[i]))
+    let fgMeanErr = err (fun i -> Gaussian.mean marginals.[i]) means
+    let swMeanErr = err (fun i -> Gaussian.mean (MultilayerBnn.beliefAt after i)) means
+    let fgVarErr = err (fun i -> Gaussian.variance marginals.[i]) vars
+    let swVarErr = err (fun i -> Gaussian.variance (MultilayerBnn.beliefAt after i)) vars
+
+    Assert.True(
+        fgMeanErr < 1e-9,
+        sprintf "factor-graph means are not exact on a converged Gaussian loopy graph: L1 %.6g" fgMeanErr)
+    Assert.True(
+        swMeanErr > 1.0,
+        sprintf "the sweeps' means were accurate after all (L1 %.6g) — then the skip approximation this row exists to fix is not a real defect" swMeanErr)
+    // Stated as a NON-claim: the variances are wrong on both paths, and the
+    // factor graph's being smaller here is a measurement, not a guarantee.
+    Assert.True(
+        fgVarErr > 1e-6,
+        sprintf "factor-graph variances came out exact (L1 %.6g) — Weiss & Freeman says they should not be, so either the graph is secretly a tree or the reference is wrong" fgVarErr)
+    Assert.True(
+        fgVarErr < swVarErr,
+        sprintf "factor-graph variance error %.6g is not below the sweeps' %.6g" fgVarErr swVarErr)
