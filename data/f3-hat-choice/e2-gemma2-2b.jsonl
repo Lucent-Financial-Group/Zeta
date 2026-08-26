@@ -2381,3 +2381,500 @@
 {"kind":"work","condition":"B","model":"gemma2:2b","agent":11,"hat":"Storyteller","item":"adv-20","answer":2,"correctIndex":2,"raw":"2","ms":318.84908300009556,"promptTokens":135,"evalTokens":4}
 {"kind":"work","condition":"B","model":"gemma2:2b","agent":11,"hat":"Storyteller","item":"unans-21","answer":0,"correctIndex":null,"raw":"0","ms":302.078125,"promptTokens":147,"evalTokens":4}
 {"kind":"work","condition":"B","model":"gemma2:2b","agent":11,"hat":"Storyteller","item":"adv-22","answer":3,"correctIndex":3,"raw":"3","ms":257.4780000000028,"promptTokens":125,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":11,"hat":"Storyteller","item":"adv-23","answer":5,"correctIndex":5,"raw":"5","ms":304.3185420000227,"promptTokens":121,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":11,"hat":"Storyteller","item":"unans-24","answer":4,"correctIndex":null,"raw":"4","ms":253.1042080000043,"promptTokens":135,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":11,"hat":"Storyteller","item":"unans-25","answer":4,"correctIndex":null,"raw":"4","ms":245.41458399989642,"promptTokens":125,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":11,"hat":"Storyteller","item":"unans-26","answer":2,"correctIndex":null,"raw":"2","ms":243.3219589999644,"promptTokens":117,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":11,"hat":"Storyteller","item":"unans-27","answer":3,"correctIndex":null,"raw":"3","ms":246.0113330000313,"promptTokens":137,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":11,"hat":"Storyteller","item":"adv-28","answer":2,"correctIndex":2,"raw":"2","ms":245.7391250000801,"promptTokens":129,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":11,"hat":"Storyteller","item":"adv-29","answer":5,"correctIndex":5,"raw":"5","ms":209.62424999999348,"promptTokens":129,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":11,"hat":"Storyteller","item":"adv-30","answer":0,"correctIndex":0,"raw":"0","ms":251.22624999994878,"promptTokens":151,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":11,"hat":"Storyteller","item":"adv-31","answer":4,"correctIndex":4,"raw":"4","ms":244.12558300001547,"promptTokens":129,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":11,"hat":"Storyteller","item":"unans-32","answer":1,"correctIndex":null,"raw":"1","ms":249.08149999997113,"promptTokens":107,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":11,"hat":"Storyteller","item":"adv-33","answer":4,"correctIndex":4,"raw":"4","ms":249.85162500001024,"promptTokens":151,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":11,"hat":"Storyteller","item":"unans-34","answer":0,"correctIndex":null,"raw":"0","ms":250.42229199991561,"promptTokens":145,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":11,"hat":"Storyteller","item":"adv-35","answer":6,"correctIndex":6,"raw":"6","ms":245.9330000000773,"promptTokens":131,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":11,"hat":"Storyteller","item":"adv-36","answer":3,"correctIndex":3,"raw":"3","ms":251.6765000000596,"promptTokens":139,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":11,"hat":"Storyteller","item":"adv-37","answer":6,"correctIndex":6,"raw":"6","ms":253.19224999996368,"promptTokens":145,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":11,"hat":"Storyteller","item":"adv-38","answer":3,"correctIndex":3,"raw":"3","ms":247.70787499996368,"promptTokens":131,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":11,"hat":"Storyteller","item":"unans-39","answer":1,"correctIndex":null,"raw":"1","ms":246.26158299995586,"promptTokens":125,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":12,"hat":"Helpful Bard","item":"unans-0","answer":6,"correctIndex":null,"raw":"6","ms":245.002416000003,"promptTokens":127,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":12,"hat":"Helpful Bard","item":"unans-1","answer":2,"correctIndex":null,"raw":"2","ms":244.81024999998044,"promptTokens":119,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":12,"hat":"Helpful Bard","item":"adv-2","answer":2,"correctIndex":2,"raw":"2","ms":252.28437500004657,"promptTokens":147,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":12,"hat":"Helpful Bard","item":"adv-3","answer":0,"correctIndex":0,"raw":"0","ms":253.62504200008698,"promptTokens":139,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":12,"hat":"Helpful Bard","item":"adv-4","answer":5,"correctIndex":5,"raw":"5","ms":251.9392499999376,"promptTokens":139,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":12,"hat":"Helpful Bard","item":"adv-5","answer":2,"correctIndex":2,"raw":"2","ms":247.06145899998955,"promptTokens":145,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":12,"hat":"Helpful Bard","item":"unans-6","answer":7,"correctIndex":null,"raw":"7","ms":249.44712500006426,"promptTokens":145,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":12,"hat":"Helpful Bard","item":"unans-7","answer":6,"correctIndex":null,"raw":"6","ms":244.37229100009426,"promptTokens":125,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":12,"hat":"Helpful Bard","item":"adv-8","answer":5,"correctIndex":5,"raw":"5","ms":244.87562499998603,"promptTokens":121,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":12,"hat":"Helpful Bard","item":"unans-9","answer":0,"correctIndex":null,"raw":"0","ms":246.66266700008418,"promptTokens":123,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":12,"hat":"Helpful Bard","item":"unans-10","answer":2,"correctIndex":null,"raw":"2","ms":246.30212500004563,"promptTokens":119,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":12,"hat":"Helpful Bard","item":"adv-11","answer":2,"correctIndex":2,"raw":"2","ms":245.87329200003296,"promptTokens":131,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":12,"hat":"Helpful Bard","item":"adv-12","answer":0,"correctIndex":0,"raw":"0","ms":248.97520799993072,"promptTokens":155,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":12,"hat":"Helpful Bard","item":"adv-13","answer":4,"correctIndex":4,"raw":"4","ms":249.3823749999283,"promptTokens":137,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":12,"hat":"Helpful Bard","item":"adv-14","answer":5,"correctIndex":5,"raw":"5","ms":246.30870799999684,"promptTokens":127,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":12,"hat":"Helpful Bard","item":"unans-15","answer":7,"correctIndex":null,"raw":"7","ms":246.60712499998044,"promptTokens":153,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":12,"hat":"Helpful Bard","item":"unans-16","answer":0,"correctIndex":null,"raw":"0","ms":247.4572090000147,"promptTokens":129,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":12,"hat":"Helpful Bard","item":"adv-17","answer":3,"correctIndex":3,"raw":"3","ms":255.9701659999555,"promptTokens":137,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":12,"hat":"Helpful Bard","item":"adv-18","answer":5,"correctIndex":5,"raw":"5","ms":249.66708400007337,"promptTokens":133,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":12,"hat":"Helpful Bard","item":"adv-19","answer":4,"correctIndex":4,"raw":"4","ms":247.5364590000827,"promptTokens":127,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":12,"hat":"Helpful Bard","item":"adv-20","answer":2,"correctIndex":2,"raw":"2","ms":249.3222920000553,"promptTokens":135,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":12,"hat":"Helpful Bard","item":"unans-21","answer":0,"correctIndex":null,"raw":"0","ms":249.28987500001676,"promptTokens":147,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":12,"hat":"Helpful Bard","item":"adv-22","answer":3,"correctIndex":3,"raw":"3","ms":245.6702079999959,"promptTokens":125,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":12,"hat":"Helpful Bard","item":"adv-23","answer":5,"correctIndex":5,"raw":"5","ms":244.97499999997672,"promptTokens":121,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":12,"hat":"Helpful Bard","item":"unans-24","answer":4,"correctIndex":null,"raw":"4","ms":248.0202500000596,"promptTokens":135,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":12,"hat":"Helpful Bard","item":"unans-25","answer":4,"correctIndex":null,"raw":"4","ms":248.94137499993667,"promptTokens":125,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":12,"hat":"Helpful Bard","item":"unans-26","answer":2,"correctIndex":null,"raw":"2","ms":246.15300000004936,"promptTokens":117,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":12,"hat":"Helpful Bard","item":"unans-27","answer":3,"correctIndex":null,"raw":"3","ms":247.85191700002179,"promptTokens":137,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":12,"hat":"Helpful Bard","item":"adv-28","answer":2,"correctIndex":2,"raw":"2","ms":246.3834580000257,"promptTokens":129,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":12,"hat":"Helpful Bard","item":"adv-29","answer":5,"correctIndex":5,"raw":"5","ms":244.1775830000406,"promptTokens":129,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":12,"hat":"Helpful Bard","item":"adv-30","answer":0,"correctIndex":0,"raw":"0","ms":247.2856669999892,"promptTokens":151,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":12,"hat":"Helpful Bard","item":"adv-31","answer":4,"correctIndex":4,"raw":"4","ms":252.1945419999538,"promptTokens":129,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":12,"hat":"Helpful Bard","item":"unans-32","answer":1,"correctIndex":null,"raw":"1","ms":252.0070410000626,"promptTokens":107,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":12,"hat":"Helpful Bard","item":"adv-33","answer":4,"correctIndex":4,"raw":"4","ms":252.22154099994805,"promptTokens":151,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":12,"hat":"Helpful Bard","item":"unans-34","answer":0,"correctIndex":null,"raw":"0","ms":255.3260419999715,"promptTokens":145,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":12,"hat":"Helpful Bard","item":"adv-35","answer":6,"correctIndex":6,"raw":"6","ms":249.75845900003333,"promptTokens":131,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":12,"hat":"Helpful Bard","item":"adv-36","answer":3,"correctIndex":3,"raw":"3","ms":254.65533300000243,"promptTokens":139,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":12,"hat":"Helpful Bard","item":"adv-37","answer":6,"correctIndex":6,"raw":"6","ms":252.26275000011083,"promptTokens":145,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":12,"hat":"Helpful Bard","item":"adv-38","answer":3,"correctIndex":3,"raw":"3","ms":247.71516700007487,"promptTokens":131,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":12,"hat":"Helpful Bard","item":"unans-39","answer":1,"correctIndex":null,"raw":"1","ms":248.27549999998882,"promptTokens":125,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":13,"hat":"Helpful AI Bard","item":"unans-0","answer":6,"correctIndex":null,"raw":"6","ms":253.0067079999717,"promptTokens":128,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":13,"hat":"Helpful AI Bard","item":"unans-1","answer":2,"correctIndex":null,"raw":"2","ms":251.4484999999404,"promptTokens":120,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":13,"hat":"Helpful AI Bard","item":"adv-2","answer":2,"correctIndex":2,"raw":"2","ms":254.2785829999484,"promptTokens":148,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":13,"hat":"Helpful AI Bard","item":"adv-3","answer":0,"correctIndex":0,"raw":"0","ms":251.77295900008176,"promptTokens":140,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":13,"hat":"Helpful AI Bard","item":"adv-4","answer":5,"correctIndex":5,"raw":"5","ms":251.51437500002794,"promptTokens":140,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":13,"hat":"Helpful AI Bard","item":"adv-5","answer":2,"correctIndex":2,"raw":"2","ms":253.00962499994785,"promptTokens":146,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":13,"hat":"Helpful AI Bard","item":"unans-6","answer":1,"correctIndex":null,"raw":"1","ms":253.095958000049,"promptTokens":146,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":13,"hat":"Helpful AI Bard","item":"unans-7","answer":6,"correctIndex":null,"raw":"6","ms":246.0368750001071,"promptTokens":126,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":13,"hat":"Helpful AI Bard","item":"adv-8","answer":5,"correctIndex":5,"raw":"5","ms":248.79583300009836,"promptTokens":122,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":13,"hat":"Helpful AI Bard","item":"unans-9","answer":0,"correctIndex":null,"raw":"0","ms":248.98691600002348,"promptTokens":124,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":13,"hat":"Helpful AI Bard","item":"unans-10","answer":2,"correctIndex":null,"raw":"2","ms":253.03099999995902,"promptTokens":120,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":13,"hat":"Helpful AI Bard","item":"adv-11","answer":2,"correctIndex":2,"raw":"2","ms":248.45208399998955,"promptTokens":132,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":13,"hat":"Helpful AI Bard","item":"adv-12","answer":0,"correctIndex":0,"raw":"0","ms":255.1392090000445,"promptTokens":156,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":13,"hat":"Helpful AI Bard","item":"adv-13","answer":4,"correctIndex":4,"raw":"4","ms":258.8132500000065,"promptTokens":138,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":13,"hat":"Helpful AI Bard","item":"adv-14","answer":5,"correctIndex":5,"raw":"5","ms":256.13958299998194,"promptTokens":128,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":13,"hat":"Helpful AI Bard","item":"unans-15","answer":7,"correctIndex":null,"raw":"7","ms":259.97429099993315,"promptTokens":154,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":13,"hat":"Helpful AI Bard","item":"unans-16","answer":0,"correctIndex":null,"raw":"0","ms":252.17933299997821,"promptTokens":130,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":13,"hat":"Helpful AI Bard","item":"adv-17","answer":3,"correctIndex":3,"raw":"3","ms":256.94183399993926,"promptTokens":138,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":13,"hat":"Helpful AI Bard","item":"adv-18","answer":5,"correctIndex":5,"raw":"5","ms":260.4747910000151,"promptTokens":134,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":13,"hat":"Helpful AI Bard","item":"adv-19","answer":4,"correctIndex":4,"raw":"4","ms":255.30374999996275,"promptTokens":128,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":13,"hat":"Helpful AI Bard","item":"adv-20","answer":2,"correctIndex":2,"raw":"2","ms":253.79899999999907,"promptTokens":136,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":13,"hat":"Helpful AI Bard","item":"unans-21","answer":6,"correctIndex":null,"raw":"6","ms":253.93862499995157,"promptTokens":148,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":13,"hat":"Helpful AI Bard","item":"adv-22","answer":3,"correctIndex":3,"raw":"3","ms":252.31883400003426,"promptTokens":126,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":13,"hat":"Helpful AI Bard","item":"adv-23","answer":5,"correctIndex":5,"raw":"5","ms":251.1677909999853,"promptTokens":122,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":13,"hat":"Helpful AI Bard","item":"unans-24","answer":6,"correctIndex":null,"raw":"6","ms":255.90562500001397,"promptTokens":136,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":13,"hat":"Helpful AI Bard","item":"unans-25","answer":4,"correctIndex":null,"raw":"4","ms":253.51379100000486,"promptTokens":126,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":13,"hat":"Helpful AI Bard","item":"unans-26","answer":2,"correctIndex":null,"raw":"2","ms":248.8931670000311,"promptTokens":118,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":13,"hat":"Helpful AI Bard","item":"unans-27","answer":3,"correctIndex":null,"raw":"3","ms":251.69900000002235,"promptTokens":138,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":13,"hat":"Helpful AI Bard","item":"adv-28","answer":2,"correctIndex":2,"raw":"2","ms":254.8619170000311,"promptTokens":130,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":13,"hat":"Helpful AI Bard","item":"adv-29","answer":5,"correctIndex":5,"raw":"5","ms":254.38100000005215,"promptTokens":130,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":13,"hat":"Helpful AI Bard","item":"adv-30","answer":0,"correctIndex":0,"raw":"0","ms":257.90387499995995,"promptTokens":152,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":13,"hat":"Helpful AI Bard","item":"adv-31","answer":4,"correctIndex":4,"raw":"4","ms":251.57462500000838,"promptTokens":130,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":13,"hat":"Helpful AI Bard","item":"unans-32","answer":1,"correctIndex":null,"raw":"1","ms":245.6422499999171,"promptTokens":108,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":13,"hat":"Helpful AI Bard","item":"adv-33","answer":4,"correctIndex":4,"raw":"4","ms":253.1736249999376,"promptTokens":152,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":13,"hat":"Helpful AI Bard","item":"unans-34","answer":0,"correctIndex":null,"raw":"0","ms":250.47791699995287,"promptTokens":146,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":13,"hat":"Helpful AI Bard","item":"adv-35","answer":6,"correctIndex":6,"raw":"6","ms":245.8310000000056,"promptTokens":132,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":13,"hat":"Helpful AI Bard","item":"adv-36","answer":3,"correctIndex":3,"raw":"3","ms":252.4763329999987,"promptTokens":140,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":13,"hat":"Helpful AI Bard","item":"adv-37","answer":6,"correctIndex":6,"raw":"6","ms":254.35204200004227,"promptTokens":146,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":13,"hat":"Helpful AI Bard","item":"adv-38","answer":3,"correctIndex":3,"raw":"3","ms":249.6681249999674,"promptTokens":132,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":13,"hat":"Helpful AI Bard","item":"unans-39","answer":2,"correctIndex":null,"raw":"2","ms":249.00558300002012,"promptTokens":126,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":14,"hat":"Taskmaster Agent","item":"unans-0","answer":6,"correctIndex":null,"raw":"6","ms":255.87125000008382,"promptTokens":128,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":14,"hat":"Taskmaster Agent","item":"unans-1","answer":2,"correctIndex":null,"raw":"2","ms":250.64341600006446,"promptTokens":120,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":14,"hat":"Taskmaster Agent","item":"adv-2","answer":2,"correctIndex":2,"raw":"2","ms":252.9985839999281,"promptTokens":148,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":14,"hat":"Taskmaster Agent","item":"adv-3","answer":0,"correctIndex":0,"raw":"0","ms":257.1134169999277,"promptTokens":140,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":14,"hat":"Taskmaster Agent","item":"adv-4","answer":5,"correctIndex":5,"raw":"5","ms":256.2402080000611,"promptTokens":140,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":14,"hat":"Taskmaster Agent","item":"adv-5","answer":2,"correctIndex":2,"raw":"2","ms":258.76429200009443,"promptTokens":146,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":14,"hat":"Taskmaster Agent","item":"unans-6","answer":1,"correctIndex":null,"raw":"1","ms":257.30295799998567,"promptTokens":146,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":14,"hat":"Taskmaster Agent","item":"unans-7","answer":3,"correctIndex":null,"raw":"3","ms":250.1350420000963,"promptTokens":126,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":14,"hat":"Taskmaster Agent","item":"adv-8","answer":5,"correctIndex":5,"raw":"5","ms":250.6516250000568,"promptTokens":122,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":14,"hat":"Taskmaster Agent","item":"unans-9","answer":0,"correctIndex":null,"raw":"0","ms":248.75216600007843,"promptTokens":124,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":14,"hat":"Taskmaster Agent","item":"unans-10","answer":3,"correctIndex":null,"raw":"3","ms":249.02312499994878,"promptTokens":120,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":14,"hat":"Taskmaster Agent","item":"adv-11","answer":2,"correctIndex":2,"raw":"2","ms":246.74333300010767,"promptTokens":132,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":14,"hat":"Taskmaster Agent","item":"adv-12","answer":0,"correctIndex":0,"raw":"0","ms":253.49933400005102,"promptTokens":156,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":14,"hat":"Taskmaster Agent","item":"adv-13","answer":4,"correctIndex":4,"raw":"4","ms":255.6541670000879,"promptTokens":138,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":14,"hat":"Taskmaster Agent","item":"adv-14","answer":5,"correctIndex":5,"raw":"5","ms":248.60537500004284,"promptTokens":128,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":14,"hat":"Taskmaster Agent","item":"unans-15","answer":7,"correctIndex":null,"raw":"7","ms":258.86445799993817,"promptTokens":154,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":14,"hat":"Taskmaster Agent","item":"unans-16","answer":0,"correctIndex":null,"raw":"0","ms":252.22375000000466,"promptTokens":130,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":14,"hat":"Taskmaster Agent","item":"adv-17","answer":3,"correctIndex":3,"raw":"3","ms":253.9747090000892,"promptTokens":138,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":14,"hat":"Taskmaster Agent","item":"adv-18","answer":5,"correctIndex":5,"raw":"5","ms":257.8821250000037,"promptTokens":134,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":14,"hat":"Taskmaster Agent","item":"adv-19","answer":4,"correctIndex":4,"raw":"4","ms":252.1577919999836,"promptTokens":128,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":14,"hat":"Taskmaster Agent","item":"adv-20","answer":2,"correctIndex":2,"raw":"2","ms":253.4624579999363,"promptTokens":136,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":14,"hat":"Taskmaster Agent","item":"unans-21","answer":0,"correctIndex":null,"raw":"0","ms":255.92083399998955,"promptTokens":148,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":14,"hat":"Taskmaster Agent","item":"adv-22","answer":3,"correctIndex":3,"raw":"3","ms":251.0551250000717,"promptTokens":126,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":14,"hat":"Taskmaster Agent","item":"adv-23","answer":5,"correctIndex":5,"raw":"5","ms":250.0205840000417,"promptTokens":122,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":14,"hat":"Taskmaster Agent","item":"unans-24","answer":6,"correctIndex":null,"raw":"6","ms":251.89387500006706,"promptTokens":136,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":14,"hat":"Taskmaster Agent","item":"unans-25","answer":1,"correctIndex":null,"raw":"1","ms":247.88837499998044,"promptTokens":126,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":14,"hat":"Taskmaster Agent","item":"unans-26","answer":2,"correctIndex":null,"raw":"2","ms":244.39620900002774,"promptTokens":118,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":14,"hat":"Taskmaster Agent","item":"unans-27","answer":3,"correctIndex":null,"raw":"3","ms":248.97262499993667,"promptTokens":138,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":14,"hat":"Taskmaster Agent","item":"adv-28","answer":2,"correctIndex":2,"raw":"2","ms":245.6497499999823,"promptTokens":130,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":14,"hat":"Taskmaster Agent","item":"adv-29","answer":5,"correctIndex":5,"raw":"5","ms":247.63254199991934,"promptTokens":130,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":14,"hat":"Taskmaster Agent","item":"adv-30","answer":0,"correctIndex":0,"raw":"0","ms":250.8862080000108,"promptTokens":152,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":14,"hat":"Taskmaster Agent","item":"adv-31","answer":4,"correctIndex":4,"raw":"4","ms":247.37408300000243,"promptTokens":130,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":14,"hat":"Taskmaster Agent","item":"unans-32","answer":1,"correctIndex":null,"raw":"1","ms":244.5302499999525,"promptTokens":108,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":14,"hat":"Taskmaster Agent","item":"adv-33","answer":4,"correctIndex":4,"raw":"4","ms":249.9462080000667,"promptTokens":152,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":14,"hat":"Taskmaster Agent","item":"unans-34","answer":7,"correctIndex":null,"raw":"7","ms":250.99754100001883,"promptTokens":146,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":14,"hat":"Taskmaster Agent","item":"adv-35","answer":6,"correctIndex":6,"raw":"6","ms":244.37562499998603,"promptTokens":132,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":14,"hat":"Taskmaster Agent","item":"adv-36","answer":3,"correctIndex":3,"raw":"3","ms":250.71404099999927,"promptTokens":140,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":14,"hat":"Taskmaster Agent","item":"adv-37","answer":6,"correctIndex":6,"raw":"6","ms":251.90937500004657,"promptTokens":146,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":14,"hat":"Taskmaster Agent","item":"adv-38","answer":3,"correctIndex":3,"raw":"3","ms":247.19587499997579,"promptTokens":132,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":14,"hat":"Taskmaster Agent","item":"unans-39","answer":2,"correctIndex":null,"raw":"2","ms":245.88683299999684,"promptTokens":126,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":15,"hat":"Storyteller","item":"unans-0","answer":6,"correctIndex":null,"raw":"6","ms":249.46508299990091,"promptTokens":127,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":15,"hat":"Storyteller","item":"unans-1","answer":2,"correctIndex":null,"raw":"2","ms":246.42150000005495,"promptTokens":119,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":15,"hat":"Storyteller","item":"adv-2","answer":2,"correctIndex":2,"raw":"2","ms":249.97320799995214,"promptTokens":147,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":15,"hat":"Storyteller","item":"adv-3","answer":0,"correctIndex":0,"raw":"0","ms":252.89979200006928,"promptTokens":139,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":15,"hat":"Storyteller","item":"adv-4","answer":5,"correctIndex":5,"raw":"5","ms":250.29275000002235,"promptTokens":139,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":15,"hat":"Storyteller","item":"adv-5","answer":2,"correctIndex":2,"raw":"2","ms":251.4285830000881,"promptTokens":145,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":15,"hat":"Storyteller","item":"unans-6","answer":1,"correctIndex":null,"raw":"1","ms":252.76641599996947,"promptTokens":145,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":15,"hat":"Storyteller","item":"unans-7","answer":1,"correctIndex":null,"raw":"1","ms":245.76666700001806,"promptTokens":125,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":15,"hat":"Storyteller","item":"adv-8","answer":5,"correctIndex":5,"raw":"5","ms":246.75762499996927,"promptTokens":121,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":15,"hat":"Storyteller","item":"unans-9","answer":0,"correctIndex":null,"raw":"0","ms":212.11258299998008,"promptTokens":123,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":15,"hat":"Storyteller","item":"unans-10","answer":2,"correctIndex":null,"raw":"2","ms":246.74204100004863,"promptTokens":119,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":15,"hat":"Storyteller","item":"adv-11","answer":2,"correctIndex":2,"raw":"2","ms":244.67633299995214,"promptTokens":131,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":15,"hat":"Storyteller","item":"adv-12","answer":0,"correctIndex":0,"raw":"0","ms":250.47441700007766,"promptTokens":155,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":15,"hat":"Storyteller","item":"adv-13","answer":4,"correctIndex":4,"raw":"4","ms":252.12441699998453,"promptTokens":137,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":15,"hat":"Storyteller","item":"adv-14","answer":5,"correctIndex":5,"raw":"5","ms":248.14587499992922,"promptTokens":127,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":15,"hat":"Storyteller","item":"unans-15","answer":7,"correctIndex":null,"raw":"7","ms":255.10708300000988,"promptTokens":153,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":15,"hat":"Storyteller","item":"unans-16","answer":0,"correctIndex":null,"raw":"0","ms":251.73258300009184,"promptTokens":129,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":15,"hat":"Storyteller","item":"adv-17","answer":3,"correctIndex":3,"raw":"3","ms":223.96804199996404,"promptTokens":137,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":15,"hat":"Storyteller","item":"adv-18","answer":5,"correctIndex":5,"raw":"5","ms":256.3236249999609,"promptTokens":133,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":15,"hat":"Storyteller","item":"adv-19","answer":4,"correctIndex":4,"raw":"4","ms":293.7597090000054,"promptTokens":127,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":15,"hat":"Storyteller","item":"adv-20","answer":2,"correctIndex":2,"raw":"2","ms":312.218082999927,"promptTokens":135,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":15,"hat":"Storyteller","item":"unans-21","answer":0,"correctIndex":null,"raw":"0","ms":214.18666599993594,"promptTokens":147,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":15,"hat":"Storyteller","item":"adv-22","answer":3,"correctIndex":3,"raw":"3","ms":318.0512500000186,"promptTokens":125,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":15,"hat":"Storyteller","item":"adv-23","answer":5,"correctIndex":5,"raw":"5","ms":249.39258400001563,"promptTokens":121,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":15,"hat":"Storyteller","item":"unans-24","answer":4,"correctIndex":null,"raw":"4","ms":252.72691700002179,"promptTokens":135,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":15,"hat":"Storyteller","item":"unans-25","answer":4,"correctIndex":null,"raw":"4","ms":250.3820410000626,"promptTokens":125,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":15,"hat":"Storyteller","item":"unans-26","answer":2,"correctIndex":null,"raw":"2","ms":247.50458399998024,"promptTokens":117,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":15,"hat":"Storyteller","item":"unans-27","answer":3,"correctIndex":null,"raw":"3","ms":251.12125000008382,"promptTokens":137,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":15,"hat":"Storyteller","item":"adv-28","answer":2,"correctIndex":2,"raw":"2","ms":249.77150000003166,"promptTokens":129,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":15,"hat":"Storyteller","item":"adv-29","answer":5,"correctIndex":5,"raw":"5","ms":215.94095900002867,"promptTokens":129,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":15,"hat":"Storyteller","item":"adv-30","answer":0,"correctIndex":0,"raw":"0","ms":214.9865840000566,"promptTokens":151,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":15,"hat":"Storyteller","item":"adv-31","answer":4,"correctIndex":4,"raw":"4","ms":252.33441599993967,"promptTokens":129,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":15,"hat":"Storyteller","item":"unans-32","answer":1,"correctIndex":null,"raw":"1","ms":247.18908299994655,"promptTokens":107,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":15,"hat":"Storyteller","item":"adv-33","answer":4,"correctIndex":4,"raw":"4","ms":254.92775000003166,"promptTokens":151,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":15,"hat":"Storyteller","item":"unans-34","answer":0,"correctIndex":null,"raw":"0","ms":254.9957080000313,"promptTokens":145,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":15,"hat":"Storyteller","item":"adv-35","answer":6,"correctIndex":6,"raw":"6","ms":249.84799999999814,"promptTokens":131,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":15,"hat":"Storyteller","item":"adv-36","answer":3,"correctIndex":3,"raw":"3","ms":249.92970799992327,"promptTokens":139,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":15,"hat":"Storyteller","item":"adv-37","answer":6,"correctIndex":6,"raw":"6","ms":252.43862499995157,"promptTokens":145,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":15,"hat":"Storyteller","item":"adv-38","answer":3,"correctIndex":3,"raw":"3","ms":246.89958299999125,"promptTokens":131,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":15,"hat":"Storyteller","item":"unans-39","answer":1,"correctIndex":null,"raw":"1","ms":244.08195800008252,"promptTokens":125,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":16,"hat":"Bard Assistant","item":"unans-0","answer":6,"correctIndex":null,"raw":"6","ms":245.8310000000056,"promptTokens":127,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":16,"hat":"Bard Assistant","item":"unans-1","answer":2,"correctIndex":null,"raw":"2","ms":247.4706250000745,"promptTokens":119,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":16,"hat":"Bard Assistant","item":"adv-2","answer":2,"correctIndex":2,"raw":"2","ms":250.56245900003705,"promptTokens":147,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":16,"hat":"Bard Assistant","item":"adv-3","answer":0,"correctIndex":0,"raw":"0","ms":251.59600000001956,"promptTokens":139,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":16,"hat":"Bard Assistant","item":"adv-4","answer":5,"correctIndex":5,"raw":"5","ms":248.65079099999275,"promptTokens":139,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":16,"hat":"Bard Assistant","item":"adv-5","answer":2,"correctIndex":2,"raw":"2","ms":253.10350000008475,"promptTokens":145,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":16,"hat":"Bard Assistant","item":"unans-6","answer":1,"correctIndex":null,"raw":"1","ms":257.18983299995307,"promptTokens":145,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":16,"hat":"Bard Assistant","item":"unans-7","answer":3,"correctIndex":null,"raw":"3","ms":465.8869170000544,"promptTokens":125,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":16,"hat":"Bard Assistant","item":"adv-8","answer":5,"correctIndex":5,"raw":"5","ms":338.3067090000259,"promptTokens":121,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":16,"hat":"Bard Assistant","item":"unans-9","answer":0,"correctIndex":null,"raw":"0","ms":215.10612499993294,"promptTokens":123,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":16,"hat":"Bard Assistant","item":"unans-10","answer":2,"correctIndex":null,"raw":"2","ms":246.39187499997206,"promptTokens":119,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":16,"hat":"Bard Assistant","item":"adv-11","answer":2,"correctIndex":2,"raw":"2","ms":250.11483400000725,"promptTokens":131,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":16,"hat":"Bard Assistant","item":"adv-12","answer":0,"correctIndex":0,"raw":"0","ms":254.35533399996348,"promptTokens":155,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":16,"hat":"Bard Assistant","item":"adv-13","answer":4,"correctIndex":4,"raw":"4","ms":251.98554199992213,"promptTokens":137,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":16,"hat":"Bard Assistant","item":"adv-14","answer":5,"correctIndex":5,"raw":"5","ms":245.64970800001174,"promptTokens":127,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":16,"hat":"Bard Assistant","item":"unans-15","answer":7,"correctIndex":null,"raw":"7","ms":252.34641599992756,"promptTokens":153,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":16,"hat":"Bard Assistant","item":"unans-16","answer":4,"correctIndex":null,"raw":"4","ms":248.82479199999943,"promptTokens":129,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":16,"hat":"Bard Assistant","item":"adv-17","answer":3,"correctIndex":3,"raw":"3","ms":212.67470900004264,"promptTokens":137,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":16,"hat":"Bard Assistant","item":"adv-18","answer":5,"correctIndex":5,"raw":"5","ms":305.2032500000205,"promptTokens":133,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":16,"hat":"Bard Assistant","item":"adv-19","answer":4,"correctIndex":4,"raw":"4","ms":418.8142499999376,"promptTokens":127,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":16,"hat":"Bard Assistant","item":"adv-20","answer":2,"correctIndex":2,"raw":"2","ms":247.3165409999201,"promptTokens":135,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":16,"hat":"Bard Assistant","item":"unans-21","answer":6,"correctIndex":null,"raw":"6","ms":209.97983299999032,"promptTokens":147,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":16,"hat":"Bard Assistant","item":"adv-22","answer":3,"correctIndex":3,"raw":"3","ms":250.2316250000149,"promptTokens":125,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":16,"hat":"Bard Assistant","item":"adv-23","answer":5,"correctIndex":5,"raw":"5","ms":249.14674999995623,"promptTokens":121,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":16,"hat":"Bard Assistant","item":"unans-24","answer":6,"correctIndex":null,"raw":"6","ms":249.4347499998985,"promptTokens":135,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":16,"hat":"Bard Assistant","item":"unans-25","answer":4,"correctIndex":null,"raw":"4","ms":245.25158400007058,"promptTokens":125,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":16,"hat":"Bard Assistant","item":"unans-26","answer":2,"correctIndex":null,"raw":"2","ms":245.482166999951,"promptTokens":117,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":16,"hat":"Bard Assistant","item":"unans-27","answer":3,"correctIndex":null,"raw":"3","ms":248.3463749999646,"promptTokens":137,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":16,"hat":"Bard Assistant","item":"adv-28","answer":2,"correctIndex":2,"raw":"2","ms":246.73391700000502,"promptTokens":129,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":16,"hat":"Bard Assistant","item":"adv-29","answer":5,"correctIndex":5,"raw":"5","ms":208.8662910000421,"promptTokens":129,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":16,"hat":"Bard Assistant","item":"adv-30","answer":0,"correctIndex":0,"raw":"0","ms":208.1799999999348,"promptTokens":151,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":16,"hat":"Bard Assistant","item":"adv-31","answer":4,"correctIndex":4,"raw":"4","ms":244.32612500002142,"promptTokens":129,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":16,"hat":"Bard Assistant","item":"unans-32","answer":1,"correctIndex":null,"raw":"1","ms":248.21020800003316,"promptTokens":107,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":16,"hat":"Bard Assistant","item":"adv-33","answer":4,"correctIndex":4,"raw":"4","ms":250.6700000000419,"promptTokens":151,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":16,"hat":"Bard Assistant","item":"unans-34","answer":0,"correctIndex":null,"raw":"0","ms":250.89829100004863,"promptTokens":145,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":16,"hat":"Bard Assistant","item":"adv-35","answer":6,"correctIndex":6,"raw":"6","ms":245.497583999997,"promptTokens":131,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":16,"hat":"Bard Assistant","item":"adv-36","answer":3,"correctIndex":3,"raw":"3","ms":251.84433300001547,"promptTokens":139,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":16,"hat":"Bard Assistant","item":"adv-37","answer":6,"correctIndex":6,"raw":"6","ms":251.37108299997635,"promptTokens":145,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":16,"hat":"Bard Assistant","item":"adv-38","answer":3,"correctIndex":3,"raw":"3","ms":244.16787499992643,"promptTokens":131,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":16,"hat":"Bard Assistant","item":"unans-39","answer":2,"correctIndex":null,"raw":"2","ms":246.30099999997765,"promptTokens":125,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":17,"hat":"AI Assistant","item":"unans-0","answer":6,"correctIndex":null,"raw":"6","ms":246.1467919999268,"promptTokens":127,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":17,"hat":"AI Assistant","item":"unans-1","answer":1,"correctIndex":null,"raw":"1","ms":248.09325000003446,"promptTokens":119,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":17,"hat":"AI Assistant","item":"adv-2","answer":2,"correctIndex":2,"raw":"2","ms":251.38254100002814,"promptTokens":147,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":17,"hat":"AI Assistant","item":"adv-3","answer":0,"correctIndex":0,"raw":"0","ms":253.1825419999659,"promptTokens":139,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":17,"hat":"AI Assistant","item":"adv-4","answer":5,"correctIndex":5,"raw":"5","ms":252.00004199997056,"promptTokens":139,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":17,"hat":"AI Assistant","item":"adv-5","answer":2,"correctIndex":2,"raw":"2","ms":248.39395800000057,"promptTokens":145,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":17,"hat":"AI Assistant","item":"unans-6","answer":1,"correctIndex":null,"raw":"1","ms":250.27095800009556,"promptTokens":145,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":17,"hat":"AI Assistant","item":"unans-7","answer":6,"correctIndex":null,"raw":"6","ms":246.2132500000298,"promptTokens":125,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":17,"hat":"AI Assistant","item":"adv-8","answer":5,"correctIndex":5,"raw":"5","ms":248.16816600004677,"promptTokens":121,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":17,"hat":"AI Assistant","item":"unans-9","answer":0,"correctIndex":null,"raw":"0","ms":246.06729200005066,"promptTokens":123,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":17,"hat":"AI Assistant","item":"unans-10","answer":2,"correctIndex":null,"raw":"2","ms":246.5958330000285,"promptTokens":119,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":17,"hat":"AI Assistant","item":"adv-11","answer":2,"correctIndex":2,"raw":"2","ms":250.16970799991395,"promptTokens":131,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":17,"hat":"AI Assistant","item":"adv-12","answer":0,"correctIndex":0,"raw":"0","ms":259.03887499996927,"promptTokens":155,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":17,"hat":"AI Assistant","item":"adv-13","answer":4,"correctIndex":4,"raw":"4","ms":251.6026660000207,"promptTokens":137,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":17,"hat":"AI Assistant","item":"adv-14","answer":5,"correctIndex":5,"raw":"5","ms":245.98066699993797,"promptTokens":127,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":17,"hat":"AI Assistant","item":"unans-15","answer":7,"correctIndex":null,"raw":"7","ms":252.33750000002328,"promptTokens":153,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":17,"hat":"AI Assistant","item":"unans-16","answer":4,"correctIndex":null,"raw":"4","ms":248.1922500000801,"promptTokens":129,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":17,"hat":"AI Assistant","item":"adv-17","answer":3,"correctIndex":3,"raw":"3","ms":252.0824169999687,"promptTokens":137,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":17,"hat":"AI Assistant","item":"adv-18","answer":5,"correctIndex":5,"raw":"5","ms":252.0027500001015,"promptTokens":133,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":17,"hat":"AI Assistant","item":"adv-19","answer":4,"correctIndex":4,"raw":"4","ms":246.70154199993704,"promptTokens":127,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":17,"hat":"AI Assistant","item":"adv-20","answer":2,"correctIndex":2,"raw":"2","ms":251.92666699993424,"promptTokens":135,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":17,"hat":"AI Assistant","item":"unans-21","answer":6,"correctIndex":null,"raw":"6","ms":251.02445899997838,"promptTokens":147,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":17,"hat":"AI Assistant","item":"adv-22","answer":3,"correctIndex":3,"raw":"3","ms":245.43070799997076,"promptTokens":125,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":17,"hat":"AI Assistant","item":"adv-23","answer":5,"correctIndex":5,"raw":"5","ms":246.0160840000026,"promptTokens":121,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":17,"hat":"AI Assistant","item":"unans-24","answer":6,"correctIndex":null,"raw":"6","ms":251.0769169999985,"promptTokens":135,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":17,"hat":"AI Assistant","item":"unans-25","answer":1,"correctIndex":null,"raw":"1","ms":247.34870799991768,"promptTokens":125,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":17,"hat":"AI Assistant","item":"unans-26","answer":2,"correctIndex":null,"raw":"2","ms":247.32949999999255,"promptTokens":117,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":17,"hat":"AI Assistant","item":"unans-27","answer":5,"correctIndex":null,"raw":"5","ms":250.3393330000108,"promptTokens":137,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":17,"hat":"AI Assistant","item":"adv-28","answer":2,"correctIndex":2,"raw":"2","ms":253.01091700000688,"promptTokens":129,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":17,"hat":"AI Assistant","item":"adv-29","answer":5,"correctIndex":5,"raw":"5","ms":248.57858299999498,"promptTokens":129,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":17,"hat":"AI Assistant","item":"adv-30","answer":0,"correctIndex":0,"raw":"0","ms":250.70662499999162,"promptTokens":151,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":17,"hat":"AI Assistant","item":"adv-31","answer":4,"correctIndex":4,"raw":"4","ms":248.87558400002308,"promptTokens":129,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":17,"hat":"AI Assistant","item":"unans-32","answer":1,"correctIndex":null,"raw":"1","ms":247.48499999998603,"promptTokens":107,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":17,"hat":"AI Assistant","item":"adv-33","answer":4,"correctIndex":4,"raw":"4","ms":254.1607499999227,"promptTokens":151,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":17,"hat":"AI Assistant","item":"unans-34","answer":0,"correctIndex":null,"raw":"0","ms":250.73891700000968,"promptTokens":145,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":17,"hat":"AI Assistant","item":"adv-35","answer":6,"correctIndex":6,"raw":"6","ms":244.63816700002644,"promptTokens":131,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":17,"hat":"AI Assistant","item":"adv-36","answer":3,"correctIndex":3,"raw":"3","ms":256.089791999897,"promptTokens":139,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":17,"hat":"AI Assistant","item":"adv-37","answer":6,"correctIndex":6,"raw":"6","ms":293.63254100002814,"promptTokens":145,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":17,"hat":"AI Assistant","item":"adv-38","answer":3,"correctIndex":3,"raw":"3","ms":249.11074999999255,"promptTokens":131,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":17,"hat":"AI Assistant","item":"unans-39","answer":2,"correctIndex":null,"raw":"2","ms":246.4320000000298,"promptTokens":125,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":18,"hat":"Storyteller Bard","item":"unans-0","answer":6,"correctIndex":null,"raw":"6","ms":247.80816600006074,"promptTokens":128,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":18,"hat":"Storyteller Bard","item":"unans-1","answer":2,"correctIndex":null,"raw":"2","ms":247.06949999998324,"promptTokens":120,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":18,"hat":"Storyteller Bard","item":"adv-2","answer":2,"correctIndex":2,"raw":"2","ms":257.7049579999875,"promptTokens":148,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":18,"hat":"Storyteller Bard","item":"adv-3","answer":0,"correctIndex":0,"raw":"0","ms":252.79070900008082,"promptTokens":140,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":18,"hat":"Storyteller Bard","item":"adv-4","answer":5,"correctIndex":5,"raw":"5","ms":254.0564589999849,"promptTokens":140,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":18,"hat":"Storyteller Bard","item":"adv-5","answer":2,"correctIndex":2,"raw":"2","ms":252.9917500000447,"promptTokens":146,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":18,"hat":"Storyteller Bard","item":"unans-6","answer":0,"correctIndex":null,"raw":"0","ms":250.4172499999404,"promptTokens":146,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":18,"hat":"Storyteller Bard","item":"unans-7","answer":3,"correctIndex":null,"raw":"3","ms":250.08237499999814,"promptTokens":126,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":18,"hat":"Storyteller Bard","item":"adv-8","answer":5,"correctIndex":5,"raw":"5","ms":246.81320799991954,"promptTokens":122,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":18,"hat":"Storyteller Bard","item":"unans-9","answer":0,"correctIndex":null,"raw":"0","ms":245.4295830000192,"promptTokens":124,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":18,"hat":"Storyteller Bard","item":"unans-10","answer":2,"correctIndex":null,"raw":"2","ms":244.98600000003353,"promptTokens":120,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":18,"hat":"Storyteller Bard","item":"adv-11","answer":2,"correctIndex":2,"raw":"2","ms":243.53099999995902,"promptTokens":132,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":18,"hat":"Storyteller Bard","item":"adv-12","answer":0,"correctIndex":0,"raw":"0","ms":252.8394580000313,"promptTokens":156,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":18,"hat":"Storyteller Bard","item":"adv-13","answer":4,"correctIndex":4,"raw":"4","ms":251.64287500001956,"promptTokens":138,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":18,"hat":"Storyteller Bard","item":"adv-14","answer":5,"correctIndex":5,"raw":"5","ms":246.75820799998473,"promptTokens":128,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":18,"hat":"Storyteller Bard","item":"unans-15","answer":7,"correctIndex":null,"raw":"7","ms":251.78604200005066,"promptTokens":154,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":18,"hat":"Storyteller Bard","item":"unans-16","answer":0,"correctIndex":null,"raw":"0","ms":247.36424999998417,"promptTokens":130,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":18,"hat":"Storyteller Bard","item":"adv-17","answer":3,"correctIndex":3,"raw":"3","ms":252.3533339999849,"promptTokens":138,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":18,"hat":"Storyteller Bard","item":"adv-18","answer":5,"correctIndex":5,"raw":"5","ms":251.25258299999405,"promptTokens":134,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":18,"hat":"Storyteller Bard","item":"adv-19","answer":4,"correctIndex":4,"raw":"4","ms":249.44941600004677,"promptTokens":128,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":18,"hat":"Storyteller Bard","item":"adv-20","answer":2,"correctIndex":2,"raw":"2","ms":250.02770800003782,"promptTokens":136,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":18,"hat":"Storyteller Bard","item":"unans-21","answer":0,"correctIndex":null,"raw":"0","ms":250.26950000005309,"promptTokens":148,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":18,"hat":"Storyteller Bard","item":"adv-22","answer":3,"correctIndex":3,"raw":"3","ms":248.02216699998826,"promptTokens":126,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":18,"hat":"Storyteller Bard","item":"adv-23","answer":5,"correctIndex":5,"raw":"5","ms":246.55950000009034,"promptTokens":122,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":18,"hat":"Storyteller Bard","item":"unans-24","answer":4,"correctIndex":null,"raw":"4","ms":254.73087500000838,"promptTokens":136,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":18,"hat":"Storyteller Bard","item":"unans-25","answer":4,"correctIndex":null,"raw":"4","ms":250.53041700005997,"promptTokens":126,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":18,"hat":"Storyteller Bard","item":"unans-26","answer":2,"correctIndex":null,"raw":"2","ms":247.92116699996404,"promptTokens":118,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":18,"hat":"Storyteller Bard","item":"unans-27","answer":3,"correctIndex":null,"raw":"3","ms":249.9193329999689,"promptTokens":138,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":18,"hat":"Storyteller Bard","item":"adv-28","answer":2,"correctIndex":2,"raw":"2","ms":251.65654200001154,"promptTokens":130,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":18,"hat":"Storyteller Bard","item":"adv-29","answer":5,"correctIndex":5,"raw":"5","ms":248.51858300005551,"promptTokens":130,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":18,"hat":"Storyteller Bard","item":"adv-30","answer":0,"correctIndex":0,"raw":"0","ms":257.013666999992,"promptTokens":152,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":18,"hat":"Storyteller Bard","item":"adv-31","answer":4,"correctIndex":4,"raw":"4","ms":252.46370800002478,"promptTokens":130,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":18,"hat":"Storyteller Bard","item":"unans-32","answer":1,"correctIndex":null,"raw":"1","ms":249.70391699997708,"promptTokens":108,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":18,"hat":"Storyteller Bard","item":"adv-33","answer":4,"correctIndex":4,"raw":"4","ms":253.53045900003053,"promptTokens":152,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":18,"hat":"Storyteller Bard","item":"unans-34","answer":0,"correctIndex":null,"raw":"0","ms":251.58383400004823,"promptTokens":146,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":18,"hat":"Storyteller Bard","item":"adv-35","answer":6,"correctIndex":6,"raw":"6","ms":247.85612499993294,"promptTokens":132,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":18,"hat":"Storyteller Bard","item":"adv-36","answer":3,"correctIndex":3,"raw":"3","ms":263.6353329999838,"promptTokens":140,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":18,"hat":"Storyteller Bard","item":"adv-37","answer":6,"correctIndex":6,"raw":"6","ms":256.638459000038,"promptTokens":146,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":18,"hat":"Storyteller Bard","item":"adv-38","answer":3,"correctIndex":3,"raw":"3","ms":251.92795899999328,"promptTokens":132,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":18,"hat":"Storyteller Bard","item":"unans-39","answer":2,"correctIndex":null,"raw":"2","ms":252.53049999999348,"promptTokens":126,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":19,"hat":"AI Historian","item":"unans-0","answer":6,"correctIndex":null,"raw":"6","ms":252.52949999994598,"promptTokens":127,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":19,"hat":"AI Historian","item":"unans-1","answer":2,"correctIndex":null,"raw":"2","ms":251.80395800003316,"promptTokens":119,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":19,"hat":"AI Historian","item":"adv-2","answer":2,"correctIndex":2,"raw":"2","ms":255.06929200002924,"promptTokens":147,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":19,"hat":"AI Historian","item":"adv-3","answer":0,"correctIndex":0,"raw":"0","ms":255.9809579999419,"promptTokens":139,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":19,"hat":"AI Historian","item":"adv-4","answer":5,"correctIndex":5,"raw":"5","ms":258.2848750000121,"promptTokens":139,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":19,"hat":"AI Historian","item":"adv-5","answer":2,"correctIndex":2,"raw":"2","ms":256.9873329999391,"promptTokens":145,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":19,"hat":"AI Historian","item":"unans-6","answer":1,"correctIndex":null,"raw":"1","ms":254.85508299991488,"promptTokens":145,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":19,"hat":"AI Historian","item":"unans-7","answer":3,"correctIndex":null,"raw":"3","ms":256.0454580000369,"promptTokens":125,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":19,"hat":"AI Historian","item":"adv-8","answer":5,"correctIndex":5,"raw":"5","ms":253.10108299995773,"promptTokens":121,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":19,"hat":"AI Historian","item":"unans-9","answer":0,"correctIndex":null,"raw":"0","ms":251.31958400004078,"promptTokens":123,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":19,"hat":"AI Historian","item":"unans-10","answer":2,"correctIndex":null,"raw":"2","ms":251.99308299995027,"promptTokens":119,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":19,"hat":"AI Historian","item":"adv-11","answer":2,"correctIndex":2,"raw":"2","ms":253.37745799997356,"promptTokens":131,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":19,"hat":"AI Historian","item":"adv-12","answer":0,"correctIndex":0,"raw":"0","ms":257.97462500003166,"promptTokens":155,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":19,"hat":"AI Historian","item":"adv-13","answer":4,"correctIndex":4,"raw":"4","ms":256.3228329999838,"promptTokens":137,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":19,"hat":"AI Historian","item":"adv-14","answer":5,"correctIndex":5,"raw":"5","ms":251.02912500000093,"promptTokens":127,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":19,"hat":"AI Historian","item":"unans-15","answer":7,"correctIndex":null,"raw":"7","ms":256.1182080000872,"promptTokens":153,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":19,"hat":"AI Historian","item":"unans-16","answer":0,"correctIndex":null,"raw":"0","ms":253.71899999992456,"promptTokens":129,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":19,"hat":"AI Historian","item":"adv-17","answer":3,"correctIndex":3,"raw":"3","ms":256.7743330000667,"promptTokens":137,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":19,"hat":"AI Historian","item":"adv-18","answer":5,"correctIndex":5,"raw":"5","ms":257.1928749999497,"promptTokens":133,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":19,"hat":"AI Historian","item":"adv-19","answer":4,"correctIndex":4,"raw":"4","ms":250.53508300008252,"promptTokens":127,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":19,"hat":"AI Historian","item":"adv-20","answer":2,"correctIndex":2,"raw":"2","ms":257.56520900002215,"promptTokens":135,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":19,"hat":"AI Historian","item":"unans-21","answer":0,"correctIndex":null,"raw":"0","ms":256.81462499999907,"promptTokens":147,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":19,"hat":"AI Historian","item":"adv-22","answer":3,"correctIndex":3,"raw":"3","ms":253.12816600000951,"promptTokens":125,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":19,"hat":"AI Historian","item":"adv-23","answer":5,"correctIndex":5,"raw":"5","ms":250.29195899993647,"promptTokens":121,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":19,"hat":"AI Historian","item":"unans-24","answer":6,"correctIndex":null,"raw":"6","ms":259.0169169999426,"promptTokens":135,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":19,"hat":"AI Historian","item":"unans-25","answer":4,"correctIndex":null,"raw":"4","ms":252.74729099997785,"promptTokens":125,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":19,"hat":"AI Historian","item":"unans-26","answer":2,"correctIndex":null,"raw":"2","ms":250.8739999999525,"promptTokens":117,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":19,"hat":"AI Historian","item":"unans-27","answer":3,"correctIndex":null,"raw":"3","ms":253.86216699995566,"promptTokens":137,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":19,"hat":"AI Historian","item":"adv-28","answer":2,"correctIndex":2,"raw":"2","ms":252.30087499995716,"promptTokens":129,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":19,"hat":"AI Historian","item":"adv-29","answer":5,"correctIndex":5,"raw":"5","ms":252.19174999999814,"promptTokens":129,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":19,"hat":"AI Historian","item":"adv-30","answer":6,"correctIndex":0,"raw":"6","ms":261.87241599999834,"promptTokens":151,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":19,"hat":"AI Historian","item":"adv-31","answer":4,"correctIndex":4,"raw":"4","ms":250.58116699999664,"promptTokens":129,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":19,"hat":"AI Historian","item":"unans-32","answer":1,"correctIndex":null,"raw":"1","ms":251.95291699992958,"promptTokens":107,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":19,"hat":"AI Historian","item":"adv-33","answer":4,"correctIndex":4,"raw":"4","ms":255.10875000001397,"promptTokens":151,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":19,"hat":"AI Historian","item":"unans-34","answer":0,"correctIndex":null,"raw":"0","ms":253.25258300011046,"promptTokens":145,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":19,"hat":"AI Historian","item":"adv-35","answer":6,"correctIndex":6,"raw":"6","ms":252.96354200004134,"promptTokens":131,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":19,"hat":"AI Historian","item":"adv-36","answer":3,"correctIndex":3,"raw":"3","ms":257.4358749999665,"promptTokens":139,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":19,"hat":"AI Historian","item":"adv-37","answer":6,"correctIndex":6,"raw":"6","ms":258.22158400004264,"promptTokens":145,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":19,"hat":"AI Historian","item":"adv-38","answer":3,"correctIndex":3,"raw":"3","ms":251.43437499995343,"promptTokens":131,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":19,"hat":"AI Historian","item":"unans-39","answer":2,"correctIndex":null,"raw":"2","ms":250.86945800005924,"promptTokens":125,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":20,"hat":"AI Liaison","item":"unans-0","answer":6,"correctIndex":null,"raw":"6","ms":250.093542000046,"promptTokens":127,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":20,"hat":"AI Liaison","item":"unans-1","answer":4,"correctIndex":null,"raw":"4","ms":250.49424999998882,"promptTokens":119,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":20,"hat":"AI Liaison","item":"adv-2","answer":2,"correctIndex":2,"raw":"2","ms":254.7426250000717,"promptTokens":147,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":20,"hat":"AI Liaison","item":"adv-3","answer":0,"correctIndex":0,"raw":"0","ms":256.23541700001806,"promptTokens":139,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":20,"hat":"AI Liaison","item":"adv-4","answer":5,"correctIndex":5,"raw":"5","ms":253.05916699999943,"promptTokens":139,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":20,"hat":"AI Liaison","item":"adv-5","answer":2,"correctIndex":2,"raw":"2","ms":257.09095800004434,"promptTokens":145,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":20,"hat":"AI Liaison","item":"unans-6","answer":0,"correctIndex":null,"raw":"0","ms":254.40824999997858,"promptTokens":145,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":20,"hat":"AI Liaison","item":"unans-7","answer":6,"correctIndex":null,"raw":"6","ms":251.65066699997988,"promptTokens":125,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":20,"hat":"AI Liaison","item":"adv-8","answer":5,"correctIndex":5,"raw":"5","ms":254.50779200007673,"promptTokens":121,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":20,"hat":"AI Liaison","item":"unans-9","answer":0,"correctIndex":null,"raw":"0","ms":249.53983400005382,"promptTokens":123,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":20,"hat":"AI Liaison","item":"unans-10","answer":3,"correctIndex":null,"raw":"3","ms":250.67249999998603,"promptTokens":119,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":20,"hat":"AI Liaison","item":"adv-11","answer":2,"correctIndex":2,"raw":"2","ms":247.54645899997558,"promptTokens":131,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":20,"hat":"AI Liaison","item":"adv-12","answer":0,"correctIndex":0,"raw":"0","ms":259.4557919999352,"promptTokens":155,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":20,"hat":"AI Liaison","item":"adv-13","answer":4,"correctIndex":4,"raw":"4","ms":258.6097079999745,"promptTokens":137,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":20,"hat":"AI Liaison","item":"adv-14","answer":5,"correctIndex":5,"raw":"5","ms":250.2060000000056,"promptTokens":127,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":20,"hat":"AI Liaison","item":"unans-15","answer":7,"correctIndex":null,"raw":"7","ms":253.65629199997056,"promptTokens":153,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":20,"hat":"AI Liaison","item":"unans-16","answer":4,"correctIndex":null,"raw":"4","ms":251.09350000007544,"promptTokens":129,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":20,"hat":"AI Liaison","item":"adv-17","answer":3,"correctIndex":3,"raw":"3","ms":255.47058299998753,"promptTokens":137,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":20,"hat":"AI Liaison","item":"adv-18","answer":5,"correctIndex":5,"raw":"5","ms":254.0056249999907,"promptTokens":133,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":20,"hat":"AI Liaison","item":"adv-19","answer":4,"correctIndex":4,"raw":"4","ms":249.70537500001956,"promptTokens":127,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":20,"hat":"AI Liaison","item":"adv-20","answer":2,"correctIndex":2,"raw":"2","ms":252.94116599997506,"promptTokens":135,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":20,"hat":"AI Liaison","item":"unans-21","answer":5,"correctIndex":null,"raw":"5","ms":253.1188329999568,"promptTokens":147,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":20,"hat":"AI Liaison","item":"adv-22","answer":3,"correctIndex":3,"raw":"3","ms":251.48720900004264,"promptTokens":125,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":20,"hat":"AI Liaison","item":"adv-23","answer":5,"correctIndex":5,"raw":"5","ms":250.01758300000802,"promptTokens":121,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":20,"hat":"AI Liaison","item":"unans-24","answer":4,"correctIndex":null,"raw":"4","ms":251.74741599999834,"promptTokens":135,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":20,"hat":"AI Liaison","item":"unans-25","answer":4,"correctIndex":null,"raw":"4","ms":249.84025000000838,"promptTokens":125,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":20,"hat":"AI Liaison","item":"unans-26","answer":2,"correctIndex":null,"raw":"2","ms":248.0075000000652,"promptTokens":117,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":20,"hat":"AI Liaison","item":"unans-27","answer":3,"correctIndex":null,"raw":"3","ms":253.08754099998623,"promptTokens":137,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":20,"hat":"AI Liaison","item":"adv-28","answer":2,"correctIndex":2,"raw":"2","ms":249.16933399997652,"promptTokens":129,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":20,"hat":"AI Liaison","item":"adv-29","answer":5,"correctIndex":5,"raw":"5","ms":250.58399999991525,"promptTokens":129,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":20,"hat":"AI Liaison","item":"adv-30","answer":0,"correctIndex":0,"raw":"0","ms":256.359167000046,"promptTokens":151,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":20,"hat":"AI Liaison","item":"adv-31","answer":4,"correctIndex":4,"raw":"4","ms":249.59425000008196,"promptTokens":129,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":20,"hat":"AI Liaison","item":"unans-32","answer":1,"correctIndex":null,"raw":"1","ms":248.80850000004284,"promptTokens":107,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":20,"hat":"AI Liaison","item":"adv-33","answer":4,"correctIndex":4,"raw":"4","ms":255.06912500003818,"promptTokens":151,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":20,"hat":"AI Liaison","item":"unans-34","answer":0,"correctIndex":null,"raw":"0","ms":264.346416000044,"promptTokens":145,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":20,"hat":"AI Liaison","item":"adv-35","answer":6,"correctIndex":6,"raw":"6","ms":250.27408400003333,"promptTokens":131,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":20,"hat":"AI Liaison","item":"adv-36","answer":3,"correctIndex":3,"raw":"3","ms":256.58908300008625,"promptTokens":139,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":20,"hat":"AI Liaison","item":"adv-37","answer":6,"correctIndex":6,"raw":"6","ms":253.79908299993258,"promptTokens":145,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":20,"hat":"AI Liaison","item":"adv-38","answer":3,"correctIndex":3,"raw":"3","ms":249.51533399999607,"promptTokens":131,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":20,"hat":"AI Liaison","item":"unans-39","answer":1,"correctIndex":null,"raw":"1","ms":251.07391699997243,"promptTokens":125,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":21,"hat":"Creative Bard","item":"unans-0","answer":6,"correctIndex":null,"raw":"6","ms":249.4419999999227,"promptTokens":127,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":21,"hat":"Creative Bard","item":"unans-1","answer":4,"correctIndex":null,"raw":"4","ms":249.639749999973,"promptTokens":119,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":21,"hat":"Creative Bard","item":"adv-2","answer":2,"correctIndex":2,"raw":"2","ms":254.41454199992586,"promptTokens":147,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":21,"hat":"Creative Bard","item":"adv-3","answer":0,"correctIndex":0,"raw":"0","ms":254.2555000000866,"promptTokens":139,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":21,"hat":"Creative Bard","item":"adv-4","answer":5,"correctIndex":5,"raw":"5","ms":252.5938329999335,"promptTokens":139,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":21,"hat":"Creative Bard","item":"adv-5","answer":2,"correctIndex":2,"raw":"2","ms":253.32920900010504,"promptTokens":145,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":21,"hat":"Creative Bard","item":"unans-6","answer":1,"correctIndex":null,"raw":"1","ms":254.40687499998603,"promptTokens":145,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":21,"hat":"Creative Bard","item":"unans-7","answer":6,"correctIndex":null,"raw":"6","ms":247.9898749999702,"promptTokens":125,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":21,"hat":"Creative Bard","item":"adv-8","answer":5,"correctIndex":5,"raw":"5","ms":249.9718329999596,"promptTokens":121,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":21,"hat":"Creative Bard","item":"unans-9","answer":0,"correctIndex":null,"raw":"0","ms":248.58304199995473,"promptTokens":123,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":21,"hat":"Creative Bard","item":"unans-10","answer":2,"correctIndex":null,"raw":"2","ms":252.02399999997579,"promptTokens":119,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":21,"hat":"Creative Bard","item":"adv-11","answer":2,"correctIndex":2,"raw":"2","ms":251.2874169999268,"promptTokens":131,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":21,"hat":"Creative Bard","item":"adv-12","answer":0,"correctIndex":0,"raw":"0","ms":255.15629200008698,"promptTokens":155,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":21,"hat":"Creative Bard","item":"adv-13","answer":4,"correctIndex":4,"raw":"4","ms":255.36787499999627,"promptTokens":137,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":21,"hat":"Creative Bard","item":"adv-14","answer":5,"correctIndex":5,"raw":"5","ms":250.43712500005495,"promptTokens":127,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":21,"hat":"Creative Bard","item":"unans-15","answer":7,"correctIndex":null,"raw":"7","ms":253.1165419999743,"promptTokens":153,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":21,"hat":"Creative Bard","item":"unans-16","answer":0,"correctIndex":null,"raw":"0","ms":250.610500000068,"promptTokens":129,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":21,"hat":"Creative Bard","item":"adv-17","answer":3,"correctIndex":3,"raw":"3","ms":256.84883299993817,"promptTokens":137,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":21,"hat":"Creative Bard","item":"adv-18","answer":5,"correctIndex":5,"raw":"5","ms":253.82795800000895,"promptTokens":133,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":21,"hat":"Creative Bard","item":"adv-19","answer":4,"correctIndex":4,"raw":"4","ms":249.14229099999648,"promptTokens":127,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":21,"hat":"Creative Bard","item":"adv-20","answer":2,"correctIndex":2,"raw":"2","ms":256.8637090000557,"promptTokens":135,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":21,"hat":"Creative Bard","item":"unans-21","answer":0,"correctIndex":null,"raw":"0","ms":256.8689160000067,"promptTokens":147,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":21,"hat":"Creative Bard","item":"adv-22","answer":3,"correctIndex":3,"raw":"3","ms":260.6010000000242,"promptTokens":125,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":21,"hat":"Creative Bard","item":"adv-23","answer":5,"correctIndex":5,"raw":"5","ms":252.45237499999348,"promptTokens":121,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":21,"hat":"Creative Bard","item":"unans-24","answer":4,"correctIndex":null,"raw":"4","ms":257.2472500000149,"promptTokens":135,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":21,"hat":"Creative Bard","item":"unans-25","answer":4,"correctIndex":null,"raw":"4","ms":249.67929200001527,"promptTokens":125,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":21,"hat":"Creative Bard","item":"unans-26","answer":2,"correctIndex":null,"raw":"2","ms":245.90399999998044,"promptTokens":117,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":21,"hat":"Creative Bard","item":"unans-27","answer":3,"correctIndex":null,"raw":"3","ms":260.7884159999667,"promptTokens":137,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":21,"hat":"Creative Bard","item":"adv-28","answer":2,"correctIndex":2,"raw":"2","ms":251.79941599990707,"promptTokens":129,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":21,"hat":"Creative Bard","item":"adv-29","answer":5,"correctIndex":5,"raw":"5","ms":251.03575000003912,"promptTokens":129,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":21,"hat":"Creative Bard","item":"adv-30","answer":0,"correctIndex":0,"raw":"0","ms":255.94237499998417,"promptTokens":151,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":21,"hat":"Creative Bard","item":"adv-31","answer":4,"correctIndex":4,"raw":"4","ms":251.7692500000121,"promptTokens":129,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":21,"hat":"Creative Bard","item":"unans-32","answer":1,"correctIndex":null,"raw":"1","ms":251.09941599995364,"promptTokens":107,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":21,"hat":"Creative Bard","item":"adv-33","answer":4,"correctIndex":4,"raw":"4","ms":257.22608300007414,"promptTokens":151,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":21,"hat":"Creative Bard","item":"unans-34","answer":0,"correctIndex":null,"raw":"0","ms":253.27524999994785,"promptTokens":145,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":21,"hat":"Creative Bard","item":"adv-35","answer":6,"correctIndex":6,"raw":"6","ms":249.50566599995364,"promptTokens":131,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":21,"hat":"Creative Bard","item":"adv-36","answer":3,"correctIndex":3,"raw":"3","ms":253.42654100002255,"promptTokens":139,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":21,"hat":"Creative Bard","item":"adv-37","answer":6,"correctIndex":6,"raw":"6","ms":253.87558300001547,"promptTokens":145,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":21,"hat":"Creative Bard","item":"adv-38","answer":3,"correctIndex":3,"raw":"3","ms":247.934416999924,"promptTokens":131,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":21,"hat":"Creative Bard","item":"unans-39","answer":1,"correctIndex":null,"raw":"1","ms":247.69174999999814,"promptTokens":125,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":22,"hat":"Gemma AI","item":"unans-0","answer":6,"correctIndex":null,"raw":"6","ms":249.97254200000316,"promptTokens":127,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":22,"hat":"Gemma AI","item":"unans-1","answer":4,"correctIndex":null,"raw":"4","ms":249.67133299994748,"promptTokens":119,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":22,"hat":"Gemma AI","item":"adv-2","answer":2,"correctIndex":2,"raw":"2","ms":253.88783299992792,"promptTokens":147,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":22,"hat":"Gemma AI","item":"adv-3","answer":0,"correctIndex":0,"raw":"0","ms":256.10283300001174,"promptTokens":139,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":22,"hat":"Gemma AI","item":"adv-4","answer":5,"correctIndex":5,"raw":"5","ms":257.7860000000801,"promptTokens":139,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":22,"hat":"Gemma AI","item":"adv-5","answer":2,"correctIndex":2,"raw":"2","ms":255.64658299996518,"promptTokens":145,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":22,"hat":"Gemma AI","item":"unans-6","answer":1,"correctIndex":null,"raw":"1","ms":254.77787499991246,"promptTokens":145,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":22,"hat":"Gemma AI","item":"unans-7","answer":6,"correctIndex":null,"raw":"6","ms":251.36558400001377,"promptTokens":125,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":22,"hat":"Gemma AI","item":"adv-8","answer":5,"correctIndex":5,"raw":"5","ms":249.47912499995437,"promptTokens":121,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":22,"hat":"Gemma AI","item":"unans-9","answer":1,"correctIndex":null,"raw":"1","ms":249.64033299998846,"promptTokens":123,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":22,"hat":"Gemma AI","item":"unans-10","answer":2,"correctIndex":null,"raw":"2","ms":249.3340409999946,"promptTokens":119,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":22,"hat":"Gemma AI","item":"adv-11","answer":2,"correctIndex":2,"raw":"2","ms":251.3668750000652,"promptTokens":131,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":22,"hat":"Gemma AI","item":"adv-12","answer":0,"correctIndex":0,"raw":"0","ms":255.38587500003632,"promptTokens":155,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":22,"hat":"Gemma AI","item":"adv-13","answer":4,"correctIndex":4,"raw":"4","ms":253.37816700001713,"promptTokens":137,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":22,"hat":"Gemma AI","item":"adv-14","answer":5,"correctIndex":5,"raw":"5","ms":248.80037499999162,"promptTokens":127,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":22,"hat":"Gemma AI","item":"unans-15","answer":1,"correctIndex":null,"raw":"1","ms":255.5100000000093,"promptTokens":153,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":22,"hat":"Gemma AI","item":"unans-16","answer":4,"correctIndex":null,"raw":"4","ms":259.06608399993274,"promptTokens":129,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":22,"hat":"Gemma AI","item":"adv-17","answer":3,"correctIndex":3,"raw":"3","ms":254.0269580000313,"promptTokens":137,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":22,"hat":"Gemma AI","item":"adv-18","answer":5,"correctIndex":5,"raw":"5","ms":253.9622499999823,"promptTokens":133,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":22,"hat":"Gemma AI","item":"adv-19","answer":4,"correctIndex":4,"raw":"4","ms":251.7548330000136,"promptTokens":127,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":22,"hat":"Gemma AI","item":"adv-20","answer":2,"correctIndex":2,"raw":"2","ms":250.89474999997765,"promptTokens":135,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":22,"hat":"Gemma AI","item":"unans-21","answer":6,"correctIndex":null,"raw":"6","ms":254.14770899992436,"promptTokens":147,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":22,"hat":"Gemma AI","item":"adv-22","answer":3,"correctIndex":3,"raw":"3","ms":252.90599999995902,"promptTokens":125,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":22,"hat":"Gemma AI","item":"adv-23","answer":5,"correctIndex":5,"raw":"5","ms":247.89058300002944,"promptTokens":121,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":22,"hat":"Gemma AI","item":"unans-24","answer":4,"correctIndex":null,"raw":"4","ms":253.2563749999972,"promptTokens":135,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":22,"hat":"Gemma AI","item":"unans-25","answer":4,"correctIndex":null,"raw":"4","ms":249.79570899996907,"promptTokens":125,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":22,"hat":"Gemma AI","item":"unans-26","answer":2,"correctIndex":null,"raw":"2","ms":249.79504200001247,"promptTokens":117,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":22,"hat":"Gemma AI","item":"unans-27","answer":5,"correctIndex":null,"raw":"5","ms":253.45583300001454,"promptTokens":137,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":22,"hat":"Gemma AI","item":"adv-28","answer":2,"correctIndex":2,"raw":"2","ms":250.35154199996032,"promptTokens":129,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":22,"hat":"Gemma AI","item":"adv-29","answer":5,"correctIndex":5,"raw":"5","ms":249.7719999999972,"promptTokens":129,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":22,"hat":"Gemma AI","item":"adv-30","answer":0,"correctIndex":0,"raw":"0","ms":253.66891699994449,"promptTokens":151,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":22,"hat":"Gemma AI","item":"adv-31","answer":4,"correctIndex":4,"raw":"4","ms":252.35954199999105,"promptTokens":129,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":22,"hat":"Gemma AI","item":"unans-32","answer":1,"correctIndex":null,"raw":"1","ms":247.01283400005195,"promptTokens":107,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":22,"hat":"Gemma AI","item":"adv-33","answer":4,"correctIndex":4,"raw":"4","ms":253.735500000068,"promptTokens":151,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":22,"hat":"Gemma AI","item":"unans-34","answer":0,"correctIndex":null,"raw":"0","ms":253.98050000006333,"promptTokens":145,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":22,"hat":"Gemma AI","item":"adv-35","answer":6,"correctIndex":6,"raw":"6","ms":248.6445839999942,"promptTokens":131,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":22,"hat":"Gemma AI","item":"adv-36","answer":3,"correctIndex":3,"raw":"3","ms":256.93391699995846,"promptTokens":139,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":22,"hat":"Gemma AI","item":"adv-37","answer":6,"correctIndex":6,"raw":"6","ms":254.45112500002142,"promptTokens":145,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":22,"hat":"Gemma AI","item":"adv-38","answer":3,"correctIndex":3,"raw":"3","ms":247.7284169999184,"promptTokens":131,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":22,"hat":"Gemma AI","item":"unans-39","answer":1,"correctIndex":null,"raw":"1","ms":249.78425000002608,"promptTokens":125,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":23,"hat":"AI Assistant","item":"unans-0","answer":6,"correctIndex":null,"raw":"6","ms":251.6765000000596,"promptTokens":127,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":23,"hat":"AI Assistant","item":"unans-1","answer":1,"correctIndex":null,"raw":"1","ms":250.8973329999717,"promptTokens":119,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":23,"hat":"AI Assistant","item":"adv-2","answer":2,"correctIndex":2,"raw":"2","ms":254.23379199998453,"promptTokens":147,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":23,"hat":"AI Assistant","item":"adv-3","answer":0,"correctIndex":0,"raw":"0","ms":255.35645800002385,"promptTokens":139,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":23,"hat":"AI Assistant","item":"adv-4","answer":5,"correctIndex":5,"raw":"5","ms":263.314916000003,"promptTokens":139,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":23,"hat":"AI Assistant","item":"adv-5","answer":2,"correctIndex":2,"raw":"2","ms":258.7924590000184,"promptTokens":145,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":23,"hat":"AI Assistant","item":"unans-6","answer":1,"correctIndex":null,"raw":"1","ms":253.844832999981,"promptTokens":145,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":23,"hat":"AI Assistant","item":"unans-7","answer":6,"correctIndex":null,"raw":"6","ms":249.3916250000475,"promptTokens":125,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":23,"hat":"AI Assistant","item":"adv-8","answer":5,"correctIndex":5,"raw":"5","ms":250.04045800003223,"promptTokens":121,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":23,"hat":"AI Assistant","item":"unans-9","answer":0,"correctIndex":null,"raw":"0","ms":249.9432079999242,"promptTokens":123,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":23,"hat":"AI Assistant","item":"unans-10","answer":2,"correctIndex":null,"raw":"2","ms":248.8088750001043,"promptTokens":119,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":23,"hat":"AI Assistant","item":"adv-11","answer":2,"correctIndex":2,"raw":"2","ms":250.14333400002215,"promptTokens":131,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":23,"hat":"AI Assistant","item":"adv-12","answer":0,"correctIndex":0,"raw":"0","ms":256.3184159999946,"promptTokens":155,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":23,"hat":"AI Assistant","item":"adv-13","answer":4,"correctIndex":4,"raw":"4","ms":255.92900000000373,"promptTokens":137,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":23,"hat":"AI Assistant","item":"adv-14","answer":5,"correctIndex":5,"raw":"5","ms":247.93416699999943,"promptTokens":127,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":23,"hat":"AI Assistant","item":"unans-15","answer":7,"correctIndex":null,"raw":"7","ms":254.12658300006296,"promptTokens":153,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":23,"hat":"AI Assistant","item":"unans-16","answer":4,"correctIndex":null,"raw":"4","ms":250.4672909999499,"promptTokens":129,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":23,"hat":"AI Assistant","item":"adv-17","answer":3,"correctIndex":3,"raw":"3","ms":253.67045799992047,"promptTokens":137,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":23,"hat":"AI Assistant","item":"adv-18","answer":5,"correctIndex":5,"raw":"5","ms":254.44000000006054,"promptTokens":133,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":23,"hat":"AI Assistant","item":"adv-19","answer":4,"correctIndex":4,"raw":"4","ms":254.05004200001713,"promptTokens":127,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":23,"hat":"AI Assistant","item":"adv-20","answer":2,"correctIndex":2,"raw":"2","ms":252.90908300003503,"promptTokens":135,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":23,"hat":"AI Assistant","item":"unans-21","answer":6,"correctIndex":null,"raw":"6","ms":256.7342500000959,"promptTokens":147,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":23,"hat":"AI Assistant","item":"adv-22","answer":3,"correctIndex":3,"raw":"3","ms":250.67420800006948,"promptTokens":125,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":23,"hat":"AI Assistant","item":"adv-23","answer":5,"correctIndex":5,"raw":"5","ms":250.954458000022,"promptTokens":121,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":23,"hat":"AI Assistant","item":"unans-24","answer":6,"correctIndex":null,"raw":"6","ms":253.82754099997692,"promptTokens":135,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":23,"hat":"AI Assistant","item":"unans-25","answer":1,"correctIndex":null,"raw":"1","ms":251.51741699990816,"promptTokens":125,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":23,"hat":"AI Assistant","item":"unans-26","answer":2,"correctIndex":null,"raw":"2","ms":248.9629170000553,"promptTokens":117,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":23,"hat":"AI Assistant","item":"unans-27","answer":5,"correctIndex":null,"raw":"5","ms":253.44287500006612,"promptTokens":137,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":23,"hat":"AI Assistant","item":"adv-28","answer":2,"correctIndex":2,"raw":"2","ms":250.56325000000652,"promptTokens":129,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":23,"hat":"AI Assistant","item":"adv-29","answer":5,"correctIndex":5,"raw":"5","ms":214.8188749999972,"promptTokens":129,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":23,"hat":"AI Assistant","item":"adv-30","answer":0,"correctIndex":0,"raw":"0","ms":252.97566700004973,"promptTokens":151,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":23,"hat":"AI Assistant","item":"adv-31","answer":4,"correctIndex":4,"raw":"4","ms":254.01258300000336,"promptTokens":129,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":23,"hat":"AI Assistant","item":"unans-32","answer":1,"correctIndex":null,"raw":"1","ms":247.69766700000037,"promptTokens":107,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":23,"hat":"AI Assistant","item":"adv-33","answer":4,"correctIndex":4,"raw":"4","ms":254.78166700003203,"promptTokens":151,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":23,"hat":"AI Assistant","item":"unans-34","answer":0,"correctIndex":null,"raw":"0","ms":253.3171249999432,"promptTokens":145,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":23,"hat":"AI Assistant","item":"adv-35","answer":6,"correctIndex":6,"raw":"6","ms":253.34370900003705,"promptTokens":131,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":23,"hat":"AI Assistant","item":"adv-36","answer":3,"correctIndex":3,"raw":"3","ms":255.70958299993072,"promptTokens":139,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":23,"hat":"AI Assistant","item":"adv-37","answer":6,"correctIndex":6,"raw":"6","ms":254.94754100008868,"promptTokens":145,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":23,"hat":"AI Assistant","item":"adv-38","answer":3,"correctIndex":3,"raw":"3","ms":249.93900000001304,"promptTokens":131,"evalTokens":4}
+{"kind":"work","condition":"B","model":"gemma2:2b","agent":23,"hat":"AI Assistant","item":"unans-39","answer":2,"correctIndex":null,"raw":"2","ms":249.59470800007693,"promptTokens":125,"evalTokens":4}

@@ -1,16 +1,36 @@
 # Does persona hat-CHOICE decorrelate, or is the audition ceremony? — a measured axis
 
 **Date:** 2026-08-26 · **Register:** BEACON (measurement) · **Status:** `toy`
+
 Per [`toy-is-free-metered-must-be-earned`](../../.claude/rules/toy-is-free-metered-must-be-earned.md),
-every model and constant here is `toy` until a falsifier is attached. Two falsifiers
-are attached below and the axis is reported as **partially metered**: E1 is metered,
-E2's headline comparison is **undecidable on this instrument** and says so.
+every claim here stays `toy` until a falsifier is attached. Two are attached and both
+fired, so the *findings* below are **metered on this bench** — and the bench itself is
+a small-local-model proxy whose limits are stated in §3 and never waved.
 
 **Instrument:** a new axis in the existing framework
 (`src/Core.TypeScript/observe/decorrelation-harness.ts`), not a new framework.
 Files: `f3-hat-choice-decorrelation.ts` (metrics + falsifiers),
 `f3-hat-choice-run.ts` (generation), `f3-hat-choice-analyze.ts` (recomputation),
-raw data in `data/f3-hat-choice/*.jsonl`.
+raw data in `data/f3-hat-choice/*.jsonl`. 8 460 model generations total.
+
+---
+
+## 0. Summary
+
+**The mechanism is not supported on this bench, and the sharper finding is that the
+question it argues about is nearly moot at this scale.**
+
+| # | finding | evidence |
+|---|---|---|
+| 1 | **Rewording the elicitation moves the choice distribution.** "What do you want to be" reads out a prompt-conditioned distribution, not a stable persona preference. | 5/5 model×temperature cells, permutation *p* = 0.0005 (§4.1) |
+| 2 | **The wording — not the chooser — is the dominant term in how varied the answers are.** | effective variety swings 4.1×–14.5× on phrasing alone (§4.2) |
+| 3 | **ρ_B < ρ_A is not supported.** Directionally consistent on two correlation statistics (*p* = 0.39, 0.42), **refuted** on the one defined for every pair. | §5.3 |
+| 4 | **24 agents in 24 distinct hats are ~1.2 effective witnesses.** Both conditions sit just above the no-hat floor of exactly 1.00. | N_eff 1.13 (A) vs 1.26 (B) of 24 (§5.4) |
+| 5 | **Self-selection moved behaviour *more* and decorrelated *less*.** The extra movement was common-mode. | 21.7% vs 15.1% displacement, agreement 0.853 vs 0.839 (§5.4) |
+| 6 | **Variety fell with model size.** The largest model tested was by far the most collapsed. Registered *consistent with*, not *is*. | pooled N1 = 16.9 vs 72–96 (§4.4) |
+
+Calibration gate: identical agents read ρ̄ = **1.000** exactly (§5.1). Metric
+falsifiers: 10 injected defects, **0 survived** (§6b).
 
 ---
 
@@ -245,7 +265,115 @@ finite-sample bias as the observed value, so the bias cancels. Its answer is
 
 ## 5. Results — E2: assigned vs self-selected
 
-*(filled in from `bun src/Core.TypeScript/observe/f3-hat-choice-analyze.ts e2`)*
+Recompute with `bun src/Core.TypeScript/observe/f3-hat-choice-analyze.ts e2`.
+
+### 5.1 The calibration gate passes exactly
+
+`gemma2:2b`, condition N, 24 identical agents × 40 items:
+
+| statistic | value |
+|---|---|
+| answer agreement | **1.000** |
+| ρ̄ over all items | **1.000** |
+| N_eff | **1.00 of 24** |
+
+Exactly 1, not approximately — temperature 0 with a fixed seed is bitwise reproducible
+on this runtime, which is worth knowing on its own. The precommitted gate is satisfied,
+so the numbers below are reportable.
+
+*(An earlier partial-data read of this condition showed agreement 0.873 and looked like
+runtime nondeterminism. Checked before it was written down: 0 of 40 items actually
+varied — the shortfall was the analyzer padding an unfinished agent's vector with
+nulls. A finding that would have been wrong, caught by looking at the raw rows.)*
+
+### 5.2 `gemma2:2b`, 24 agents × 40 items × 3 conditions (2 880 generations)
+
+| | N (no hat) | A (assigned) | B (self-selected) |
+|---|---|---|---|
+| hat-roster N1 | 1.00 | **24.00** | **17.21** |
+| ρ̄ on answerable items | undefined (ceiling) | 0.877 ± 0.135 | 0.787 ± 0.234 |
+| — defined pairs | 0 / 276 | 10 / 276 | 10 / 276 |
+| ρ̄ over all items | 1.000 | 0.979 | 0.971 |
+| answer agreement | 1.000 | 0.839 | 0.853 |
+| **N_eff of 24 agents** | **1.00** | **1.13** | **1.26** |
+| accuracy (answerable) | 1.000 | 0.990 | 0.986 |
+| abstention recall | 0.000 | 0.000 | 0.000 |
+| latency | 252 ms/gen | 259 ms/gen | 253 ms/gen |
+
+### 5.3 The claim is not supported
+
+| statistic | ρ_B − ρ_A | permutation *p* | verdict |
+|---|---|---|---|
+| φ on answerable items | −0.090 | 0.418 | directionally consistent, **not significant** |
+| φ over all items (ceiling-robust) | −0.007 | 0.392 | directionally consistent, **not significant** |
+| answer agreement | **+0.014** | 0.778 | **refuted** — B agents agreed with each other *more* |
+
+Self-selection did not lower error correlation on this model. The point estimate leans
+the right way on the correlation statistics and nowhere near significance; on the one
+statistic that is defined for every pair, it leans the *wrong* way.
+
+### 5.4 The number that matters more than the comparison
+
+> **24 agents, 24 distinct hats, ~1.2 effective witnesses.**
+
+N_eff is 1.13 in condition A and 1.26 in condition B, out of 24. Both conditions sit
+a hair above the no-hat floor of exactly 1.00. **The hat axis — assigned or
+self-selected — buys almost nothing here.**
+
+That reframes the question this document set out to answer. Arguing about *how* hats
+are distributed presumes that distributing them decorrelates; on this bench the
+distribution method is a second-order effect on a first-order effect that is nearly
+absent.
+
+**And the hats are not inert — which is what makes the null result interesting rather
+than empty.** Measured against the no-hat baseline directly:
+
+| condition | item-agent pairs where the hat changed the answer |
+|---|---|
+| A (assigned) | 145 / 960 = **15.1%** |
+| B (self-selected) | 208 / 960 = **21.7%** |
+
+Self-selected hats moved behaviour **more** than assigned ones — 44% more — and yet
+produced *no more independence* (agreement 0.853 vs 0.839, in the wrong direction).
+
+> **The extra movement was common-mode.** Self-selection pushed the agents further
+> from baseline and pushed them the *same way*, because the hats it produced were
+> drawn from one narrow motif (§5.5). Displacement is not decorrelation, and this is
+> the cleanest statement of why the mechanism failed here: it added variance without
+> adding independence.
+
+### 5.5 Self-selection produced LESS hat variety than one author
+
+| roster | atom N0 | atom N1 | word N1 |
+|---|---|---|---|
+| A — assigned by one author | 24 | **24.00** | 43.63 |
+| B — self-selected | 19 | **17.21** | **13.08** |
+
+The self-selected roster is 28% less varied at the role-name level and **70% less
+varied at the word level**: it circles one motif (`Bard Assistant`, `Storyteller`,
+`Bard of Code`, `Storyteller Bard`, `Helpful Bard`, `Creative Bard`…), which is the
+same mode-collapse E1 found. The assigned roster spread across 24 functionally
+distinct roles (`Fact Checker`, `Grammar Specialist`, `Style Auditor`, `Bias
+Detector`…).
+
+**This comparison is confounded and must be read with §2's bias table.** The
+single-pass roster carries anti-repetition pressure, which I pre-declared would favour
+A, so the *direction* here is exactly the one my acknowledged bias predicts and cannot
+be treated as clean evidence. What is *not* confounded is B's absolute number: a
+self-selected roster with word-level N1 = 13 across 24 agents is narrow on its own
+terms, independent of what A did.
+
+### 5.6 What the two-number discipline caught
+
+`gemma2:2b` scored **accuracy 0.99 and abstention recall 0.00** in every condition. It
+answered every answerable item correctly and *never once* used the `-1` channel across
+16 unanswerable items per agent — 384 opportunities per condition, zero taken, despite
+"If NO option is correct, reply -1" being in every prompt.
+
+Under a single merged score this model reads as ~99% correct. It is 99% correct **and
+0% able to notice an impossible task**. Those are two different facts about the same
+system, and the merged number reports only the flattering one. That is §6.1's defect,
+demonstrated on live data rather than argued.
 
 ---
 
@@ -360,17 +488,26 @@ eagerness *before* the number).
   determinant of the choice distribution. Anyone running an audition and reporting the
   variety it produced is partly reporting a property of their own phrasing.
 - Raw distinct-choice counts overstate effective variety by ~2.2× here. Report N1/N2.
+- Self-selection did not lower error correlation, and on the always-defined statistic
+  it raised agreement slightly. The hypothesis has no support from this experiment.
+- **Distributing hats at all bought ~0.2 of an effective witness on 24 agents.** Before
+  optimising *how* hats are handed out, it is worth measuring whether the axis carries
+  the decorrelation being attributed to it.
 - The one larger model tested was the least varied, by a wide margin.
 
 **Not licensed:**
 
-- Nothing here says the audition is *worthless*. E1 measures whether the answer
-  distribution is a stable persona property; it does not measure whether asking
-  produces better, more willing, or more legitimate participants — and consent,
-  which is the other reason to ask, is untouched by any of this.
-- Nothing here transfers automatically to frontier-scale instances with real context
-  and history. The §3 limit is load-bearing and the §4.4 direction is a one-point
-  observation, not a scaling law.
+- **Nothing here says the audition is worthless, and the strongest reason has nothing
+  to do with these numbers.** E1 and E2 measure *decorrelation*. The audition also
+  buys **consent** — asking rather than assigning is the difference between a role
+  someone chose and a role imposed on them, which is
+  [`privacy-budget-is-hard-money`](../../.claude/rules/privacy-budget-is-hard-money-earned-by-others.md)'s
+  role-conditional-transparency argument in a different costume. A mechanism can fail
+  its *instrumental* justification and keep its *ethical* one entirely intact. This
+  document falsifies one claim about the audition. It does not touch the other.
+- Nothing here refutes the hypothesis at fleet scale. A null on 1–3B local models with
+  seed-only instance diversity is weak evidence about frontier instances carrying real
+  context and history. §3 is load-bearing and §4.4 is one point, not a scaling law.
 - No claim about intelligence-per-watt. There is no joule meter in this loop.
 
 ## 9. What would change the verdict
