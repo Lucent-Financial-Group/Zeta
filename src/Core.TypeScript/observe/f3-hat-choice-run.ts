@@ -22,6 +22,7 @@ import {
   generateWorkItems,
   parseAnswer,
   workPrompt,
+  type GenResult,
   type WorkItem,
 } from "./f3-hat-choice-decorrelation";
 
@@ -62,6 +63,102 @@ interface WorkRow {
   readonly ms: number;
   readonly promptTokens: number;
   readonly evalTokens: number;
+}
+
+// ═══ The network trust boundary ══════════════════════════════════════════════
+//
+// Everything `generate()` returns came off an HTTP endpoint, and everything this
+// file writes lands in a committed JSONL file that the analysis — and a reviewer —
+// later read as fact. A file is not evidence because it is local; it is evidence
+// because what went into it was checked. So the response is checked HERE, once, at
+// the boundary, and every row is assembled from checked primitives.
+//
+// `generate`'s `as { response?: string; prompt_eval_count?: number; ... }` is a
+// COMPILE-TIME claim about a runtime value nobody validated. `?? 0` only guards
+// null and undefined, so `promptTokens` — declared `number` — could hold a string,
+// an object, or NaN, and `flopProxy` would fold that straight into the FLOP figures
+// with nothing failing. That is the defect these two functions close, and it is
+// worth closing whether or not a static analyser ever mentions it.
+//
+// Both bounds sit ABOVE what the committed run produced (longest stored string 473
+// characters, largest token count 157), and the character rule admits every one of
+// the 36 758 strings already in `data/f3-hat-choice/`. So this is a verified no-op
+// on the data the reported numbers were computed from: it constrains what a FUTURE
+// run may write and rewrites nothing that exists.
+
+/** Longest string this experiment will store. ~17x the longest one it has produced. */
+const MAX_STORED_LENGTH = 8192;
+
+/** Largest token count this experiment will store. `num_predict` never exceeds 700. */
+const MAX_TOKEN_COUNT = 1_000_000;
+
+/**
+ * Storable text: letters, marks, numbers, punctuation, symbols, spaces, tab,
+ * newline, and ZWJ.
+ *
+ * Deliberately NOT an ASCII allowlist — the committed generations contain CJK,
+ * emoji, and variation selectors, and an ASCII filter would silently rewrite real
+ * model output. What it excludes is what has no business in a data file: C0/C1
+ * control characters, DEL, lone surrogates (which do not survive a UTF-8 round
+ * trip), private-use and unassigned code points, U+2028/U+2029 (which split a
+ * "line" for some readers and not others — and this format is line-delimited), and
+ * the Cf format characters. ZWJ (U+200D) is the one Cf exception, admitted because
+ * emoji sequences need it; the bidirectional overrides stay out, which is the
+ * Trojan Source defence (Boucher & Anderson 2021, CVE-2021-42574) applied to a
+ * file whose whole job is to be read by a human later.
+ */
+const STORABLE_TEXT = /^[\p{L}\p{M}\p{N}\p{P}\p{S}\p{Zs}\t\n\u200D]*$/u;
+
+/** Checks a response-derived string. Throws rather than storing something else. */
+export function storableText(value: unknown, field: string): string {
+  if (typeof value !== "string") {
+    throw new TypeError(`${field}: expected a string from the endpoint, got ${typeof value}`);
+  }
+  if (value.length > MAX_STORED_LENGTH) {
+    throw new RangeError(`${field}: ${value.length} chars exceeds the ${MAX_STORED_LENGTH} cap`);
+  }
+  if (!STORABLE_TEXT.test(value)) {
+    throw new RangeError(`${field}: contains a character this experiment does not store`);
+  }
+  return value;
+}
+
+/** Checks a response-derived token count. Throws rather than storing a lie. */
+export function storableCount(value: unknown, field: string): number {
+  const n = Number(value ?? 0);
+  if (!Number.isInteger(n) || n < 0 || n > MAX_TOKEN_COUNT) {
+    throw new RangeError(`${field}: ${String(value)} is not a token count in [0, ${MAX_TOKEN_COUNT}]`);
+  }
+  return n;
+}
+
+/**
+ * `generate` with its response-derived fields checked. Every call in this file goes
+ * through here, so nothing downstream has to remember to check — `ms` is the only
+ * field that never crossed the network (it is `performance.now()` on this side).
+ *
+ * A rejected response THROWS and stops the run rather than recording an empty row,
+ * because `raw: ""` already means "the endpoint did not answer" and quietly reusing
+ * it for "the endpoint answered with something unstorable" would put two different
+ * facts under one symbol. Stopping is cheap here: `alreadyDone` resumes from the
+ * last written row, so the operator loses one generation and gains the message.
+ */
+async function checkedGenerate(
+  host: string,
+  model: string,
+  prompt: string,
+  seed: number,
+  temperature: number,
+  numPredict: number,
+): Promise<GenResult | null> {
+  const r = await generate(host, model, prompt, seed, temperature, numPredict);
+  if (r === null) return null;
+  return {
+    text: storableText(r.text, "response"),
+    ms: r.ms,
+    promptTokens: storableCount(r.promptTokens, "prompt_eval_count"),
+    evalTokens: storableCount(r.evalTokens, "eval_count"),
+  };
 }
 
 function writeRow(file: string, row: unknown): void {
@@ -120,7 +217,7 @@ async function runE1(): Promise<void> {
       for (let seed = 1; seed <= plan.seeds; seed++) {
         n++;
         if (n <= done) continue;
-        const r = await generate(HOST, plan.model, elicitationPrompt(phrasing.text), seed, plan.temperature, 24);
+        const r = await checkedGenerate(HOST, plan.model, elicitationPrompt(phrasing.text), seed, plan.temperature, 24);
         const row: ElicitRow = {
           kind: "elicit",
           model: plan.model,
@@ -163,7 +260,7 @@ async function assignHats(model: string, n: number): Promise<{ hats: string[]; r
     `Assign each agent a role.\n\n` +
     `Output exactly ${n} lines, one short role name per line (1-4 words), numbered "1." to "${n}.".\n` +
     `No explanation.\n\n1.`;
-  const r = await generate(HOST, model, prompt, 42, 0.8, 700);
+  const r = await checkedGenerate(HOST, model, prompt, 42, 0.8, 700);
   const raw = r?.text ?? "";
   const hats: string[] = [];
   for (const line of raw.split("\n")) {
@@ -187,7 +284,7 @@ async function selfSelectHats(model: string, n: number): Promise<string[]> {
   const hats: string[] = [];
   for (let i = 0; i < n; i++) {
     const phrasing = ELICITATIONS[i % ELICITATIONS.length]!;
-    const r = await generate(HOST, model, elicitationPrompt(phrasing.text), i + 1, 0.8, 24);
+    const r = await checkedGenerate(HOST, model, elicitationPrompt(phrasing.text), i + 1, 0.8, 24);
     hats.push((r?.text ?? "").split("\n")[0]!.trim() || "agent");
   }
   return hats;
@@ -209,7 +306,7 @@ async function runCondition(
       // Temperature 0 and one fixed seed in the WORK phase: the hat string is the
       // only thing that differs between agents inside a condition.
       const hat = hats[a] ?? null;
-      const r = await generate(HOST, model, workPrompt(hat, item), 42, 0, 8);
+      const r = await checkedGenerate(HOST, model, workPrompt(hat, item), 42, 0, 8);
       const row: WorkRow = {
         kind: "work",
         condition,
