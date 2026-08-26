@@ -104,7 +104,7 @@ env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.sha }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
@@ -527,7 +527,7 @@ jobs:
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ~/.dotnet
-          key: dotnet-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('global.json', 'tools/setup/common/dotnet.sh') }}
+          key: dotnet-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('global.json') }}
 
       - name: Cache mise runtimes (python only post round 32)
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
@@ -675,7 +675,7 @@ jobs:
             ~/.rustup/update-hashes
             ~/.cargo
             ~/.cache/zeta/from-autotools-tarball/*.tgz
-          key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
+          key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json', '!tools/setup/persona-keys/**', '!tools/setup/op-token-setup.*', '!tools/setup/secret-clip.sh', '!tools/setup/manus-smoke-test.ts', '!tools/setup/build-lumen-persona-package.ts') }}
 
       - name: Restore apt archives (root fix for the exit-124 install-step class)
         # 561 MB of .deb per ubuntu job against a mirror measured at ~1.1 MB/s is
@@ -760,7 +760,7 @@ jobs:
             ~/.rustup/update-hashes
             ~/.cargo
             ~/.cache/zeta/from-autotools-tarball/*.tgz
-          key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
+          key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json', '!tools/setup/persona-keys/**', '!tools/setup/op-token-setup.*', '!tools/setup/secret-clip.sh', '!tools/setup/manus-smoke-test.ts', '!tools/setup/build-lumen-persona-package.ts') }}
 
       - name: Restore apt archives (root fix for the exit-124 install-step class)
         # 561 MB of .deb per ubuntu job against a mirror measured at ~1.1 MB/s is
@@ -1019,7 +1019,7 @@ jobs:
             ~/.rustup/update-hashes
             ~/.cargo
             ~/.cache/zeta/from-autotools-tarball/*.tgz
-          key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
+          key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json', '!tools/setup/persona-keys/**', '!tools/setup/op-token-setup.*', '!tools/setup/secret-clip.sh', '!tools/setup/manus-smoke-test.ts', '!tools/setup/build-lumen-persona-package.ts') }}
 
       - name: Restore apt archives (root fix for the exit-124 install-step class)
         # 561 MB of .deb per ubuntu job against a mirror measured at ~1.1 MB/s is
@@ -1364,6 +1364,26 @@ jobs:
         # are CI-safe. This is what would have caught #8216's stale snapshot.
         run: bun test src/Core.TypeScript/hygiene/
 
+      - name: Audit unit-test suite (src/Core.TypeScript/audit/ ran in NO workflow)
+        # The sibling hole to the step above. `src/Core.TypeScript/hygiene/*.test.ts`
+        # has run per-PR since #8216; `src/Core.TypeScript/audit/` had no test file
+        # AND no invocation -- `grep -rn "Core.TypeScript/audit" .github/workflows/`
+        # returned nothing. So a falsifier written next to an audit tool would have
+        # been a test that never ran, which is the vacuity class exactly: it looks
+        # like coverage and constrains nothing.
+        #
+        # Added with `audit-dep-currency.test.ts`, which pins that the dep-pin
+        # inventory discovers EVERY tracked flake.nix rather than one hardcoded
+        # path -- the root flake and its four inputs were invisible to it.
+        #
+        # NOT measured on the runner (this step has never run there). LAPTOP
+        # figure, stated as such so it is not mistaken for a runner number:
+        # 0.49-0.55 s warm over three runs, 1.54 s cold, dominated by bun
+        # start-up plus two `git ls-files` calls. A laptop figure is not
+        # conservative in either direction -- replace it with the runner figure
+        # once a run exists.
+        run: bun test src/Core.TypeScript/audit/
+
       - name: Hardware-inventory cross-surface reconciliation (drift)
         # 081M00R59KS087G0R001W3837V. Hardware inventory lives on several surfaces
         # with different provenance (a ZetaId register, a human audit snapshot, an
@@ -1508,7 +1528,7 @@ jobs:
             ~/.rustup/update-hashes
             ~/.cargo
             ~/.cache/zeta/from-autotools-tarball/*.tgz
-          key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
+          key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json', '!tools/setup/persona-keys/**', '!tools/setup/op-token-setup.*', '!tools/setup/secret-clip.sh', '!tools/setup/manus-smoke-test.ts', '!tools/setup/build-lumen-persona-package.ts') }}
 
       - name: Restore apt archives (root fix for the exit-124 install-step class)
         # 561 MB of .deb per ubuntu job against a mirror measured at ~1.1 MB/s is
@@ -1577,7 +1597,7 @@ jobs:
             ~/.rustup/update-hashes
             ~/.cargo
             ~/.cache/zeta/from-autotools-tarball/*.tgz
-          key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
+          key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json', '!tools/setup/persona-keys/**', '!tools/setup/op-token-setup.*', '!tools/setup/secret-clip.sh', '!tools/setup/manus-smoke-test.ts', '!tools/setup/build-lumen-persona-package.ts') }}
 
       - name: Restore apt archives (root fix for the exit-124 install-step class)
         # 561 MB of .deb per ubuntu job against a mirror measured at ~1.1 MB/s is
@@ -1643,7 +1663,7 @@ jobs:
             ~/.rustup/update-hashes
             ~/.cargo
             ~/.cache/zeta/from-autotools-tarball/*.tgz
-          key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
+          key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json', '!tools/setup/persona-keys/**', '!tools/setup/op-token-setup.*', '!tools/setup/secret-clip.sh', '!tools/setup/manus-smoke-test.ts', '!tools/setup/build-lumen-persona-package.ts') }}
 
       - name: Restore apt archives (root fix for the exit-124 install-step class)
         # 561 MB of .deb per ubuntu job against a mirror measured at ~1.1 MB/s is
@@ -2270,6 +2290,67 @@ jobs:
       - name: Build the site exactly as pages-deploy does (install + check + pages build)
         run: bun ./src/Core.TypeScript/discovery/identity-dla-pages-build.ts
 
+  lint-website:
+    # src/Renderers/website is a second, forked copy of the identity-dla scaffold
+    # (same "name": "identity-dla") that NOTHING checked. It appeared in
+    # .github/dependabot.yml's npm `directories:` list and in NO workflow: before
+    # this job, `grep -rn "Renderers/website" .github/` returned exactly one line,
+    # the dependabot entry. Root tsconfig.json excludes "src/Renderers/website/**"
+    # and the lint:eslint roster omits it, so the blocking `lint (TS)` job never
+    # saw it either. Dependabot proposed version bumps against a tree with no
+    # build, no typecheck, and no test.
+    #
+    # Measured cost of that gap: react-resizable-panels 3 -> 4 landed here, and v4
+    # both renames the primitives (PanelGroup -> Group, PanelResizeHandle ->
+    # Separator, no aliases) and drops the data-panel-group-direction attribute,
+    # so every data-[panel-group-direction=vertical]:* utility silently became a
+    # selector that can never match. The rename half is a type error this job
+    # catches; the attribute half is not, and that asymmetry is why the file
+    # carries its own explanatory comment rather than relying on CI alone.
+    #
+    # Shape is deliberately the sibling's, not a new one: same runner pin, same
+    # pinned actions, install -> check -> vite build, no caching. It does NOT run
+    # `pnpm build`, because that script chains `esbuild server/index.ts` and this
+    # project has never had a server/ directory (only client/ was ever committed
+    # from the scaffold) -- `pnpm build` therefore cannot succeed here, and a step
+    # that always fails is as useless as one that cannot. `vite build` is the half
+    # that has a subject.
+    #
+    # --frozen-lockfile is the load-bearing flag: it is what makes a Dependabot
+    # bump that updates package.json without the lockfile fail here instead of
+    # silently drifting. It only means something because pnpm-lock.yaml is now
+    # committed; before this change the directory could not be installed at all
+    # (pnpm.patchedDependencies named patches/wouter@3.7.1.patch, which was never
+    # committed -> ENOENT, rc=254 on a clean clone).
+    #
+    # Drift check, not floor: this job is deliberately absent from
+    # `gate (required)`'s needs, exactly as lint-identity-dla is. Adding it there
+    # is a treaty amendment and stays with the consent path.
+    name: lint (Renderers/website)
+    timeout-minutes: 12
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Setup pinned Bun
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: "1.3.13"
+
+      - name: Install, typecheck and build under the site's own packageManager pin
+        working-directory: src/Renderers/website
+        run: |
+          set -euo pipefail
+          # Resolve pnpm from the site's own packageManager field rather than a
+          # version hardcoded here, so the two cannot drift. Same reason the
+          # sibling's builder script parses it instead of pinning in YAML.
+          PNPM_VERSION="$(bun -e "console.log(JSON.parse(require('fs').readFileSync(process.cwd() + '/package.json', 'utf8')).packageManager.split('@')[1].split('+')[0])")"
+          echo "pnpm pin from package.json: ${PNPM_VERSION}"
+          bun x "pnpm@${PNPM_VERSION}" install --frozen-lockfile
+          bun x "pnpm@${PNPM_VERSION}" run check
+          bun x "pnpm@${PNPM_VERSION}" exec vite build
+
   # Per-language lint jobs (split from the former single sequential
   # "lint (F#, C#, Go, Python, Rust)" job, 2026-06-13). The combined job ran the
   # five lint scripts in sequence and SHORT-CIRCUITED at the first failure, so a
@@ -2302,7 +2383,7 @@ jobs:
             ~/.rustup/update-hashes
             ~/.cargo
             ~/.cache/zeta/from-autotools-tarball/*.tgz
-          key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
+          key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json', '!tools/setup/persona-keys/**', '!tools/setup/op-token-setup.*', '!tools/setup/secret-clip.sh', '!tools/setup/manus-smoke-test.ts', '!tools/setup/build-lumen-persona-package.ts') }}
       - name: Restore apt archives (root fix for the exit-124 install-step class)
         # 561 MB of .deb per ubuntu job against a mirror measured at ~1.1 MB/s is
         # ~510s of download inside a 420s budget, which is why this step's install
@@ -2359,7 +2440,7 @@ jobs:
             ~/.rustup/update-hashes
             ~/.cargo
             ~/.cache/zeta/from-autotools-tarball/*.tgz
-          key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
+          key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json', '!tools/setup/persona-keys/**', '!tools/setup/op-token-setup.*', '!tools/setup/secret-clip.sh', '!tools/setup/manus-smoke-test.ts', '!tools/setup/build-lumen-persona-package.ts') }}
       - name: Restore apt archives (root fix for the exit-124 install-step class)
         # 561 MB of .deb per ubuntu job against a mirror measured at ~1.1 MB/s is
         # ~510s of download inside a 420s budget, which is why this step's install
@@ -2416,7 +2497,7 @@ jobs:
             ~/.rustup/update-hashes
             ~/.cargo
             ~/.cache/zeta/from-autotools-tarball/*.tgz
-          key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
+          key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json', '!tools/setup/persona-keys/**', '!tools/setup/op-token-setup.*', '!tools/setup/secret-clip.sh', '!tools/setup/manus-smoke-test.ts', '!tools/setup/build-lumen-persona-package.ts') }}
       - name: Restore apt archives (root fix for the exit-124 install-step class)
         # 561 MB of .deb per ubuntu job against a mirror measured at ~1.1 MB/s is
         # ~510s of download inside a 420s budget, which is why this step's install
@@ -2473,7 +2554,7 @@ jobs:
             ~/.rustup/update-hashes
             ~/.cargo
             ~/.cache/zeta/from-autotools-tarball/*.tgz
-          key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
+          key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json', '!tools/setup/persona-keys/**', '!tools/setup/op-token-setup.*', '!tools/setup/secret-clip.sh', '!tools/setup/manus-smoke-test.ts', '!tools/setup/build-lumen-persona-package.ts') }}
       - name: Restore apt archives (root fix for the exit-124 install-step class)
         # 561 MB of .deb per ubuntu job against a mirror measured at ~1.1 MB/s is
         # ~510s of download inside a 420s budget, which is why this step's install
@@ -2530,7 +2611,7 @@ jobs:
             ~/.rustup/update-hashes
             ~/.cargo
             ~/.cache/zeta/from-autotools-tarball/*.tgz
-          key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
+          key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json', '!tools/setup/persona-keys/**', '!tools/setup/op-token-setup.*', '!tools/setup/secret-clip.sh', '!tools/setup/manus-smoke-test.ts', '!tools/setup/build-lumen-persona-package.ts') }}
       - name: Restore apt archives (root fix for the exit-124 install-step class)
         # 561 MB of .deb per ubuntu job against a mirror measured at ~1.1 MB/s is
         # ~510s of download inside a 420s budget, which is why this step's install
@@ -3281,7 +3362,7 @@ jobs:
             ~/.rustup/update-hashes
             ~/.cargo
             ~/.cache/zeta/from-autotools-tarball/*.tgz
-          key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
+          key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json', '!tools/setup/persona-keys/**', '!tools/setup/op-token-setup.*', '!tools/setup/secret-clip.sh', '!tools/setup/manus-smoke-test.ts', '!tools/setup/build-lumen-persona-package.ts') }}
 
       - name: Restore apt archives (root fix for the exit-124 install-step class)
         # 561 MB of .deb per ubuntu job against a mirror measured at ~1.1 MB/s is
@@ -3378,7 +3459,7 @@ jobs:
             ~/.rustup/update-hashes
             ~/.cargo
             ~/.cache/zeta/from-autotools-tarball/*.tgz
-          key: full-verify-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
+          key: full-verify-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json', '!tools/setup/persona-keys/**', '!tools/setup/op-token-setup.*', '!tools/setup/secret-clip.sh', '!tools/setup/manus-smoke-test.ts', '!tools/setup/build-lumen-persona-package.ts') }}
 
       - name: Restore apt archives (root fix for the exit-124 install-step class)
         # 561 MB of .deb per ubuntu job against a mirror measured at ~1.1 MB/s is
@@ -3458,6 +3539,20 @@ jobs:
 
       - name: Clifford cross-verify (Cl(3,0) geometric algebra)
         run: bun test tests/cross-verification/_harness/codegen-clifford.test.ts
+
+      # Q4 of the Clifford-GPU hold (081M0R18878087G0R001XY5A2J): CGA(3D) = Cl(4,1) is
+      # M_2(Cl(3,0)), one suspension step above the in-tree algebra -- plus the conformal
+      # distance identity and the curvature budget the reservoir thread turns on. Wired here
+      # for the same reason the CD order ladder below is: an unrun test reads exactly like a
+      # passing one (#14914), and this file's whole point is that the research document's
+      # numbers are falsifiable rather than asserted.
+      #
+      # The load-bearing case is CROSS-ORACLE: testdata/clifford-periodicity-grid.golden.txt
+      # is emitted BY src/Core/CliffordPeriodicity.fs (regenerate with the .fsx beside it) and
+      # consumed by the TypeScript, so agreement is evidence rather than self-consistency.
+      # Needs no dotnet -- the golden vector is committed text, per no-binary-in-proof-lineage.
+      - name: Conformal embedding + curvature budget (Q4 falsifiers)
+        run: bun test src/Core.TypeScript/research/conformal-embedding-and-curvature-budget.test.ts
 
       # The Cayley-Dickson -> maximal-order ladder (A2 / D4 / E8). Wired HERE, and not left
       # sitting in src/ as an unrun file, because #14914 measured that a test nothing invokes
