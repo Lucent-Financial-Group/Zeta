@@ -9,6 +9,25 @@
 { config, pkgs, lib, ... }:
 
 {
+  imports = [
+    # The module that DEFINES `zeta.k3sDatastorePreflight`, whose `enable` this
+    # file sets near the bottom. Setting an option without importing its
+    # definer makes this module evaluable ONLY through `common.nix` (which
+    # imports both) and a hard evaluation error everywhere else — including
+    # every NixOS VM test, all of which import the role module directly and by
+    # design. Same discipline `k3s-agent.nix` already applies to
+    # `k3s-join-observer.nix`: the file that owns an option's value owns its
+    # import.
+    ./k3s-datastore-preflight.nix
+
+    # The module that DEFINES `zeta.cluster.{podCidr,serviceCidr,…}`, which the
+    # `--cluster-cidr` / `--service-cidr` flags below READ. Same rule as above,
+    # in its other direction: a module that consumes an option must import the
+    # module that defines it, or it can only be evaluated inside an aggregate
+    # that happens to supply it.
+    ./cluster-network.nix
+  ];
+
   services.k3s = {
     enable = true;
     role = "server";
