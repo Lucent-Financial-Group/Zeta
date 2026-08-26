@@ -142,6 +142,60 @@ describe("GitHubAdapter", () => {
     expect(calls.some((c) => c.method === "PATCH" && c.path === "repos/o/r/git/refs/heads/main")).toBe(true);
   });
 
+  test("getPrGateState is one graphql POST through injected rest", async () => {
+    const calls: { method: string; path: string }[] = [];
+    const rest: GithubRest = {
+      request: (method, path) => {
+        calls.push({ method, path });
+        return Promise.resolve(ok(JSON.stringify({
+          data: {
+            repository: {
+              pullRequest: {
+                number: 9,
+                state: "OPEN",
+                mergeStateStatus: "CLEAN",
+                autoMergeRequest: { enabledAt: "t" },
+                mergeCommit: null,
+                reviewThreads: { nodes: [] },
+                commits: { nodes: [{ commit: { statusCheckRollup: { contexts: [] } } }] },
+              },
+            },
+          },
+        })));
+      },
+    };
+    const adapter = new GitHubAdapter("o", "r", { rest });
+    const gate = await adapter.getPrGateState(9);
+    expect(gate.ok).toBe(true);
+    if (gate.ok) {
+      expect(gate.value.autoMerge).toBe("armed");
+      expect(gate.value.nextAction).toBe("none");
+    }
+    expect(calls).toEqual([{ method: "POST", path: "graphql" }]);
+  });
+
+  test("addPrComment / createIssue / enableAutoMerge are REST, not gh", async () => {
+    const calls: { method: string; path: string; body: unknown }[] = [];
+    const rest: GithubRest = {
+      request: (method, path, body) => {
+        calls.push({ method, path, body });
+        if (path.includes("/comments")) return Promise.resolve(ok(JSON.stringify({ id: 11, html_url: "https://github.com/o/r/pull/1#issuecomment-11" })));
+        if (path.endsWith("/issues")) return Promise.resolve(ok(JSON.stringify({ number: 3, html_url: "https://github.com/o/r/issues/3" })));
+        return Promise.resolve(ok("{}"));
+      },
+    };
+    const adapter = new GitHubAdapter("o", "r", { rest });
+    const comment = await adapter.addPrComment(1, "ack");
+    expect(comment.ok).toBe(true);
+    if (comment.ok) expect(comment.value.id).toBe("11");
+    const issue = await adapter.createIssue({ title: "t", body: "b" });
+    expect(issue.ok).toBe(true);
+    expect((await adapter.enableAutoMerge(1, "squash")).ok).toBe(true);
+    expect(calls.some((c) => c.method === "POST" && c.path === "repos/o/r/issues/1/comments")).toBe(true);
+    expect(calls.some((c) => c.method === "POST" && c.path === "repos/o/r/issues")).toBe(true);
+    expect(calls.some((c) => c.method === "PUT" && c.path === "repos/o/r/pulls/1/auto-merge")).toBe(true);
+  });
+
   test("resolveThreadsBatch maintains arithmetic invariant", async () => {
     const adapter = new GitHubAdapter("org", "repo", {
       porcelain: () => ({ ok: false, error: forgeError("internal", "injected miss") }),

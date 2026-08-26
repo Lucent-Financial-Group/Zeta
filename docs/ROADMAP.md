@@ -205,9 +205,16 @@ using DynamicValue's byte-locked per-format serializer:
     not submodules. Minimize toolchain per package to cut the monorepo
     cache tax. Manus is a remote-only adapter (account API key, no
     extra per-call billing) and may never fit the full local loop.
+    Closed tools are **DU-aware verbs** (Xbox `ActionGrid` grammar —
+    layout fixed, labels per-context), not ad-hoc polls the model
+    chooses. Forge merge state is one GraphQL observe
+    (`081M107N9P4087G0R0002G5SR0`); webhooks are an optional cost
+    cut, never an appointed hub. Item 1 (NO GIT CLI / ZetaFS) is the
+    source-control bootstrap Harny's sc/fs tools ride.
     Live pointer: `docs/trajectories/own-ai-harness/RESUME.md`.
     Umbrella `081M100RB97087G0R0008EAAY7`; extract
-    `081M102M6Y2087G0R000407SW3`.
+    `081M102M6Y2087G0R000407SW3`; DU verbs
+    `081M107N9PZ087G0R0006X16SJ`.
 9. **BFT Quorum Transition (Wallet Prerequisite)** — transition the BFT consensus from the fixed `Members`
    configuration to a rolling, window-based estimate of distinct sources derived dynamically from the stream
    correlation matrix. **This must precede and gate any Web3 wallet / transactional ledger integration.**
