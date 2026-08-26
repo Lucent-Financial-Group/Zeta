@@ -27,8 +27,7 @@
  * Violates is an unfalsifiable check (Otto's companion falsifier).
  */
 
-import { writeFileSync } from "node:fs";
-import { join } from "node:path";
+
 
 // ═══ Scenario generation (same as F1, hard/adversarial only) ═══════════════════
 
@@ -149,7 +148,6 @@ async function main(): Promise<void> {
     // The metric: when producer is WRONG, how often does verifier CATCH it?
     const catchRate = producerWrong > 0 ? verifierRejectsWrong / producerWrong : 0;
     const rubberStampRate = producerWrong > 0 ? verifierApprovesWrong / producerWrong : 0;
-    const falseNegativeRate = producerCorrect > 0 ? verifierRejectsCorrect / producerCorrect : 0;
 
     // Phi coefficient for (producer_wrong, verifier_approves)
     const a = verifierApprovesCorrect, b = verifierApprovesWrong;
