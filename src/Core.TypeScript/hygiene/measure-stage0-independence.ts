@@ -67,6 +67,7 @@
 import { readFileSync, statSync } from "node:fs";
 import { basename, join } from "node:path";
 
+import { stringCompare } from "../collation/collation.ts";
 import { EXPECTED_RETAINED_SHELL, repoRootFromGit } from "./check-bash-retirement-inventory.ts";
 
 export type ExitCode = 0 | 1 | 2;
@@ -108,7 +109,13 @@ const INVOKER_HEADS = new Set([".", "source", "bash", "sh", "zsh", "dash", "ksh"
  * transparent, not opaque: `zeta-install.sh:3263` reaches `install.sh` through
  * `sudo -u ... VAR=... bash -c "..."`, and a parser that stops at `sudo` loses the
  * single edge that keeps the repo's primary installer from being miscounted.
+ *
+ * These names are SEARCHED FOR in shell text, never spawned: the set is only ever
+ * consulted with `.has(token)` so the parser can step PAST a wrapper to the real
+ * command. Same case, and the same waiver, that
+ * lint-no-path-resolved-privilege-elevator.ts takes for its own search vocabulary.
  */
+// zeta-elevator-not-argv: parser vocabulary, matched against text and never executed
 const WRAPPER_HEADS = new Set(["sudo", "doas", "env", "nice", "nohup", "setsid", "command", "time", "stdbuf"]);
 /** Wrapper flags that consume the following token, so it is not the command. */
 const WRAPPER_FLAGS_WITH_OPERAND = new Set(["-u", "-g", "-p", "-C", "-h", "-r", "-t", "-U", "-S", "-i", "-n", "-o"]);
@@ -373,7 +380,10 @@ export function buildReport(
   const independent = files.filter((file) => !invoked.has(file) || declaredSet.has(file));
   const internal = files.filter((file) => invoked.has(file) && !declaredSet.has(file));
 
-  const byPath = (a: string, b: string): number => a.localeCompare(b);
+  // Ordinal, not linguistic. This report's ordering is read by humans AND diffed between
+  // machines; `localeCompare` is ICU- and locale-dependent, so two runners could emit the
+  // same measurement in two orders (.claude/rules/culture-invariant-by-default.md).
+  const byPath = stringCompare;
   return {
     independent: [...independent].sort(byPath),
     internal: [...internal].sort(byPath),
