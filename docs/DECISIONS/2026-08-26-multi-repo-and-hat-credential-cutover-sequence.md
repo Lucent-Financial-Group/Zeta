@@ -1,6 +1,6 @@
 # ADR: The multi-repo + hat-credential cutover — an ordered sequence, not another round
 
-**Status:** Proposed — steps 1, 3, 5, 6 and 9 are gated-class and need Aaron's sign-off
+**Status:** Proposed — steps S1, S3, S6, S7 and S9 are gated-class and need Aaron's sign-off
 **Date:** 2026-08-26
 **Author:** the shadow (Claude Opus 5)
 **Basis:** `origin/main` at `d3396ab838`
