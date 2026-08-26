@@ -2,7 +2,7 @@
 
 **Status: `toy`.** Nothing here is metered. The one thing that would promote it — a
 falsifier that fails when the model is wrong — exists for the _metric code_
-(`f4-question-bias.test.ts`, 60 falsifiers, 20 injected defects, 0 survivors) and does not
+(`f4-question-bias.test.ts`, 63 falsifiers, 22 injected defects, 0 survivors) and does not
 exist for the _claims about language models_, which rest on 27 360 logged generations from
 four local models and nothing else.
 
@@ -268,7 +268,7 @@ distinct answers _and_ moves at least as far when you reword the question — ex
 combination that makes a stated preference look stable while being just as
 wording-determined.
 
-## 8. Two instrument defects, both caught by controls rather than by review
+## 8. Three instrument defects, none of them caught by reading the code
 
 **The bootstrap CI was wrong, and the calibration pair caught it.** The first version
 estimated the interval on `excess` by resampling responses with replacement. On _identical
@@ -290,12 +290,25 @@ difference, and it looks exactly like a measurement. It moved a null axis from 0
 0.034 with nothing in the output saying so. The analyzer now marks a cell whose prompts
 disagree on replicate count **RAGGED — NOT REPORTABLE**, in three places.
 
-Both were found by a control, not by reading the code. That is the argument for building
-the controls first.
+**A NUL byte as a map-key delimiter.** The analyzer keyed its per-cell map on
+`` `${domain}\x00${model}` `` — the classic "delimiter that cannot appear in the data"
+trick. It failed `cross-verify (no-raw-nul-in-source)` on the first CI run, and the rule is
+right on its own terms: a source file carrying a NUL stops being text to `grep`, `diff`,
+and every reviewer's editor, which is how it went unnoticed here for a day of edits. The
+deeper defect is the one the lint does not name — _"cannot appear in the data"_ was an
+unchecked assumption about ollama tags and model output, and a collision would have
+silently **merged two cells** rather than failing. Replaced with a JSON-encoded pair, and
+pinned by a falsifier that feeds eleven adversarial strings (quotes, backslashes, an actual
+NUL, tabs, empties) through all 121 pairs and requires every key to be distinct and to
+round-trip.
+
+None of the three was found by reading the code. Two were found by a control and one by a
+repo lint that exists because someone else hit the same class first. That is the argument
+for building the controls before the experiment, and for not treating a floor job as noise.
 
 ## 9. Falsifiers
 
-`src/Core.TypeScript/observe/f4-question-bias.test.ts` — 60 tests. The two families that
+`src/Core.TypeScript/observe/f4-question-bias.test.ts` — 63 tests. The two families that
 carry the weight:
 
 - **The null axes are checked from the prompt strings.** A future edit that quietly made a
@@ -306,7 +319,7 @@ carry the weight:
   one — _a test can pass because an earlier guard fired_. Each half is fixed at its failing
   value with the other passing.
 
-**Mutation testing: 20 defects injected into the metric functions.** One survived the first
+**Mutation testing: 22 defects injected into the metric functions.** One survived the first
 pass — deleting the `- nullMean` subtraction, i.e. reporting raw JSD as the effect size —
 because every happy-path case happened to have a small raw JSD too. The suite was
 strengthened with a case where the raw JSD is large and the true effect is exactly zero

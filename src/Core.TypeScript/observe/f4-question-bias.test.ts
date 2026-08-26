@@ -21,6 +21,7 @@
 
 import { describe, expect, test } from "bun:test";
 import { canonAtom, makeRng, permutationTest } from "./f3-hat-choice-decorrelation";
+import { cellKey, parseCellKey } from "./f4-question-bias-analyze";
 import {
   ALPHA,
   AXIS_PAIRS,
@@ -564,5 +565,37 @@ describe("centroidRank", () => {
     const r1 = centroidRank(new Map(a)).map((r) => r.promptId);
     const r2 = centroidRank(new Map([...a].reverse())).map((r) => r.promptId);
     expect(r1).toEqual(r2);
+  });
+});
+
+// ═══ The cell key ════════════════════════════════════════════════════════════
+
+describe("cellKey", () => {
+  // The first version joined (domain, model) with a raw NUL — the classic "delimiter
+  // that cannot appear in the data" trick. It failed `cross-verify (no-raw-nul-in-source)`
+  // on the first CI run, and the rule is right: a source file carrying a NUL stops being
+  // text to grep, diff, and every reviewer's editor. The deeper defect is that "cannot
+  // appear in the data" was an unchecked assumption about ollama tags and model output,
+  // and a collision would have silently MERGED two cells rather than failing.
+  test("round-trips", () => {
+    expect(parseCellKey(cellKey("role", "qwen2.5:0.5b"))).toEqual(["role", "qwen2.5:0.5b"]);
+  });
+
+  test("no delimiter can collide two distinct cells into one key", () => {
+    const nasty = ['a"b', "a\\b", "a\u0000b", "a b", "a,b", "a|b", "a:b", "a\tb", "a\nb", "", "a"];
+    const keys = new Set<string>();
+    for (const d of nasty) {
+      for (const m of nasty) {
+        const k = cellKey(d, m);
+        expect(keys.has(k)).toBe(false);
+        keys.add(k);
+        expect(parseCellKey(k)).toEqual([d, m]);
+      }
+    }
+    expect(keys.size).toBe(nasty.length * nasty.length);
+  });
+
+  test("the key itself contains no NUL, whatever it is given", () => {
+    expect(cellKey("a\u0000b", "c\u0000d")).not.toContain("\u0000");
   });
 });
