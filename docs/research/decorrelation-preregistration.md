@@ -69,6 +69,18 @@ menu-reversed (reference ceiling, interface-breaking) flips 26% — the bound on
 decorrelation is physically available. Full write-up:
 `docs/research/2026-08-26-prompt-frame-is-mostly-noise-and-temp0-is-not-deterministic.md`.
 
+### Hat/verifier axis — RETRACTED (W10 leak)
+
+A first hat-axis result claimed verification bought abstention (100% self-catch on hard
+items). Otto found the leak: the verifier prompt named the correct answer as a rule while
+the producer got only a hint. W10 confirmed it — handing the producer the same rule raised
+its accuracy 58.7% → 98.0% (+39.3pp). The asymmetry was informational, not cognitive. See
+`docs/research/2026-08-26-verification-buys-abstention-not-accuracy.md` (RETRACTED). Two
+guards now stand against a repeat: `detectAnswerLeak` (W12, refuses a verifier prompt that
+carries the answer key) and `suspectExtremeRate` (W13, flags any 100%/0% as a defect
+signal). A real produce/verify asymmetry must be shown at EQUAL information with the leak
+falsifier green on both prompts.
+
 ## The ledger schema (`data/decorrelation-research.jsonl`, `schema: "decorr/v2"`)
 
 Every entry carries: `n`, full `table` (a,b,c,d), `phi`, `phiMax`, `phiRatio`, `yulesQ`,
