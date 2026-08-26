@@ -347,10 +347,30 @@ export function findPopulationQuery(stripped: string): { query: PopulationQuery;
   return null;
 }
 
+/**
+ * Read a file, or `null` when it is simply not there.
+ *
+ * One syscall, one answer. An `existsSync` gate ahead of the read would be check-then-use
+ * (CWE-367) — the answer is stale before the read runs — and `lint-check-then-use-file-races.ts`
+ * refuses it on the floor. A missing file is expected here (a `bun` argument may be a
+ * directory, a flag, or a path only present in another checkout); anything else is a real
+ * error and is rethrown rather than read as absence.
+ */
+function readOrNull(absPath: string): string | null {
+  try {
+    return readFileSync(absPath, "utf8");
+  } catch (e) {
+    if ((e as NodeJS.ErrnoException).code === "ENOENT" || (e as NodeJS.ErrnoException).code === "EISDIR") return null;
+    throw e;
+  }
+}
+
 /** One file a `run:` block can reach, with the chain that reached it (exclusive of itself). */
 interface ReachedFile {
   readonly path: string;
   readonly via: readonly string[];
+  /** Comment-stripped contents — read once here, so the caller does not re-read. */
+  readonly stripped: string;
 }
 
 /**
@@ -364,17 +384,20 @@ interface ReachedFile {
 function reachableFiles(root: string, shell: string): readonly ReachedFile[] {
   const seen = new Set<string>();
   const out: ReachedFile[] = [];
-  let frontier: readonly ReachedFile[] = bunScriptTargets(shell).map((path) => ({ path, via: [] }));
+  let frontier: readonly { readonly path: string; readonly via: readonly string[] }[] = bunScriptTargets(shell).map(
+    (path) => ({ path, via: [] as readonly string[] }),
+  );
 
   for (let hop = 1; hop <= MAX_RESOLUTION_HOPS && frontier.length > 0; hop++) {
-    const next: ReachedFile[] = [];
+    const next: { readonly path: string; readonly via: readonly string[] }[] = [];
     for (const node of frontier) {
       if (seen.has(node.path)) continue;
       seen.add(node.path);
-      if (!existsSync(join(root, node.path))) continue;
-      out.push(node);
+      const source = readOrNull(join(root, node.path));
+      if (source === null) continue;
+      const stripped = stripComments(source);
+      out.push({ path: node.path, via: node.via, stripped });
       if (hop === MAX_RESOLUTION_HOPS) continue; // the bound: read, but do not expand
-      const stripped = stripComments(readFileSync(join(root, node.path), "utf8"));
       const via = [...node.via, node.path];
       for (const target of bunScriptTargets(stripped)) next.push({ path: target, via });
       for (const target of localImportTargets(stripped, node.path, root)) next.push({ path: target, via });
@@ -396,9 +419,9 @@ export function scanFloor(
   workflowPath: string = GATE_WORKFLOW,
   rootJob: string = FLOOR_ROOT_JOB,
 ): { readonly findings: readonly Finding[]; readonly floor: readonly string[] } | { readonly error: string } {
-  const absWorkflow = join(root, workflowPath);
-  if (!existsSync(absWorkflow)) return { error: `${workflowPath} not found under ${root}` };
-  const jobs = parseWorkflowJobs(readFileSync(absWorkflow, "utf8"));
+  const workflowText = readOrNull(join(root, workflowPath));
+  if (workflowText === null) return { error: `${workflowPath} not found under ${root}` };
+  const jobs = parseWorkflowJobs(workflowText);
   const byId = new Map(jobs.map((j) => [j.id, j]));
   if (!byId.has(rootJob)) {
     return {
@@ -429,7 +452,7 @@ export function scanFloor(
 
       // BOUNDED TRANSITIVE WALK — the reach that the one-hop version did not have.
       for (const reached of reachableFiles(root, shell)) {
-        const hit = findPopulationQuery(stripComments(readFileSync(join(root, reached.path), "utf8")));
+        const hit = findPopulationQuery(reached.stripped);
         if (hit === null) continue;
         findings.push({
           job: jobId,
