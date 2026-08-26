@@ -254,6 +254,47 @@ GitHub's own name for this regime, quoted in their dependency-caching reference 
 cited by round 3: *"cache thrashing, where caches are created and deleted at a high
 frequency."*
 
+### 4.4 Two tempting explanations, tested and FALSIFIED
+
+Both were plausible enough to act on, and both are wrong. Recorded because a falsified
+hypothesis is the cheaper finding — acting on either would have changed code that is correct.
+
+**"The never-read caches are a save-side / restore-side key mismatch."** Structurally
+impossible almost everywhere here. A key mismatch requires `actions/cache/restore` and
+`actions/cache/save` to be used as *separate* steps with independently-written key
+expressions. Across every workflow and composite action in the repo there is exactly **one**
+split usage — the deliberate restore-only mise step in `low-memory.yml`. Every other cache
+uses the combined `actions/cache`, where the save reuses the restore's key **by
+construction**. So the never-read bytes are not a mismatch. Three measured mechanisms
+account for them instead:
+
+1. **Key churn outrunning reuse** — the dominant one. The `install-*` family's key changed on
+   **100 commits in 30 days** (§6.1); a cache whose key changes before the next run that
+   needs it can never be hit, no matter how long it lives.
+2. **Eviction before reuse** — median lifetime ≈300 s against sweeps every ≈5 minutes (§2).
+3. **Keys that embed a per-commit value** — `codeql-trap-1-2.26.3-javascript-<40-hex>`, where
+   the suffix is the **commit SHA**. Seven distinct such keys were observed, **162 MB** total,
+   and by construction not one of them can ever be hit by a different commit. This is
+   `github/codeql-action`'s own design (TRAP reuse *within* a commit), not repo code — named
+   because it is a permanent never-hit class holding ~1.7% of the ceiling, not because it is
+   ours to change.
+
+**"The `install-v2` thrash loop is a save firing when a hit should have prevented it."** Also
+wrong, and the sample data settles it directly. For every `(key, ref)` pair that showed two
+cache ids, **the two ids never coexist in any sample**:
+
+```
+refs/heads/main        08:20:46 - 08:22:47  id 7007742770
+                       08:23:48             (the sweep — absent)
+                       08:24:48 - 08:27:50  id 7007873285   <- new id
+refs/pull/15533/merge  id 7007773486  ->  (sweep)  ->  id 7007849463
+```
+
+The first entry was **deleted by the 08:23:48 sweep**, and a later run then found nothing to
+restore. **The save fired because there was genuinely no entry to hit** — correct behaviour,
+not a defect. The thrash loop is a *symptom* of total pressure, so it is addressed by removing
+pressure (§6.1's key churn, §4.2's duplicate writers) and not by changing save logic.
+
 ---
 
 ## 5. The partition arithmetic
@@ -413,6 +454,11 @@ cause is a save that ran before `~/.dotnet` was populated.
 Per the brief, where the measurement disagrees with the plan the disagreement is reported and
 no alternative cut is drawn.
 
+**The destination is settled.** Aaron, 2026-08-26: *"i'd rather split out to multi repo than
+try to purchase more cache, this is the long term plan."* So raising the ceiling is not an
+option under consideration and is not priced here. Everything below is about what the split
+needs in order to reach its cache goal.
+
 1. **`Zeta-core` does not land under 10 GB.** §5.3. The plan's arithmetic assumes N repos × 10
    GB dissolves the ceiling; measured, the largest partition exceeds it alone. The decision this
    bears on is whether `Zeta-core` needs a further cut *on some axis the plan already has* — the
@@ -420,14 +466,19 @@ no alternative cut is drawn.
    per-leg install subset (round 3 §13) is the actual fix and the split is orthogonal. Not
    adjudicated here.
 
-2. **The 2026-08-01 doc's premise about the ceiling is stale.** Its origin line records Aaron
-   learning *"the GitHub Actions cache ceiling is 10GB per repository and not purchasable"*, and
-   §0 builds the "wrong forcing function" argument partly on that. GitHub's current
-   documentation says the limit *"can be increased by enterprise owners, organization owners, or
-   repository administrators."* The §0 argument has other legs — self-hosted runners, and
-   Aaron's own recorded monorepo position — and this note does not touch those. But the specific
-   "not purchasable" premise no longer holds, and a raise is a one-setting experiment that would
-   test the whole cache rationale for a few minutes of work.
+2. **The per-leg install subset looks like a PREREQUISITE for the split's cache goal, not a
+   follow-up to it.** This is the sharpest consequence of §5.3(1) and it is checked, not
+   inferred: `tools/setup/common/mise.sh` runs `mise install --yes` from the repo root, which
+   provisions **everything `.mise.toml` declares**, and the only subsetting mechanism that
+   exists anywhere in the tree is the slim/full tier merge (`MISE_ENV=full` pulling in
+   `.mise.full.toml`). There is no per-toolchain or per-consumer subset. **So the union blob's
+   size is a function of `.mise.toml`, not of which repository you are in** — a `zeta-formal`
+   repo running today's install script would still provision dotnet, rust, go and the rest, and
+   would carry a ~1.2 GB install blob for a component whose own toolchain cost is 0.02 GiB.
+   A repo boundary relocates these blobs; it does not shrink them. Round 3 §13 already names
+   the per-leg subset as work; this measurement says the ordering matters, because the split
+   inherits the union unless the subset lands with it. **Named as a finding and handed back —
+   not specified, not implemented, and not a proposal to re-cut anything.**
 
 3. **The cache axis is silent on `zeta-formal`, round 3's strongest closure cut.** §5.3(3).
    Its cache cost is 0.02 GiB. If the cut is made, it should be made on the closure and
@@ -438,7 +489,18 @@ no alternative cut is drawn.
    cheaper to address than a repo split and is independent of it — but it is a cache-key
    question, and this document deliberately changes no cache key.
 
-5. **A poisoned 172 KB `dotnet-Linux-X64` entry is live on `main`.** §6.3.
+5. **A poisoned 172 KB `dotnet-Linux-X64` entry is live on `main`.** §6.3. Root cause found
+   after this document was first written: `gate.yml` (`ubuntu-24.04`) and `low-memory.yml`
+   (`ubuntu-slim`) write the **byte-identical** `dotnet-{os}-{arch}-{hash}` key on the same
+   `push: [main]` trigger from two different runner images. The repo had already diagnosed this
+   exact "two writers, one key" condition for the *mise* cache in that same lane and fixed it
+   with a restore-only step; the fix was never extended to the .NET SDK cache four lines above
+   it.
+
+**Status of the fixes.** Findings 4 and 5 are now implemented, since Aaron authorised cache
+fixes directly (2026-08-26): the `persona-keys` key narrowing and the restore-only `dotnet`
+step ship as their own PRs, each measured the way the defect was found. Findings 1, 2 and 3
+remain open questions for Aaron and are deliberately not acted on here.
 
 ---
 
