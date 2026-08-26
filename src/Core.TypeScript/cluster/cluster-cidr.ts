@@ -243,12 +243,23 @@ export function cidrBounds(cidr: string): { readonly first: number; readonly las
   if (match === null) {
     throw new Error(`not a dotted-quad CIDR: ${JSON.stringify(cidr)}`);
   }
-  const octets = [match[1], match[2], match[3], match[4]].map((o) => Number.parseInt(o, 10));
-  const prefix = Number.parseInt(match[5], 10);
+  // Destructured and folded rather than indexed. `noUncheckedIndexedAccess`
+  // (tsconfig.json) types every `match[i]` and `octets[i]` as `T | undefined`,
+  // and the `match === null` guard above does not narrow them. The regex
+  // guarantees all five groups whenever it matches, so the `undefined` branch
+  // below is unreachable at runtime; it exists to carry that guarantee into
+  // the TYPES rather than to assert it away with `!`, which would suppress the
+  // check instead of discharging it.
+  const [, a, b, c, d, len] = match;
+  if (a === undefined || b === undefined || c === undefined || d === undefined || len === undefined) {
+    throw new Error(`not a dotted-quad CIDR: ${JSON.stringify(cidr)}`);
+  }
+  const octets = [a, b, c, d].map((o) => Number.parseInt(o, 10));
+  const prefix = Number.parseInt(len, 10);
   if (octets.some((o) => o > 255) || prefix > 32) {
     throw new Error(`CIDR out of range: ${JSON.stringify(cidr)}`);
   }
-  const base = ((octets[0] * 256 + octets[1]) * 256 + octets[2]) * 256 + octets[3];
+  const base = octets.reduce((acc, o) => acc * 256 + o, 0);
   const size = 2 ** (32 - prefix);
   // Masked rather than trusted: `10.42.5.0/16` should compare as `10.42.0.0/16`.
   const first = base - (base % size);

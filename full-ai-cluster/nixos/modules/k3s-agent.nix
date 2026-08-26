@@ -12,6 +12,15 @@
     # server joins nothing, and a witness on it would announce a join that
     # never happened.
     ./k3s-join-observer.nix
+
+    # The module that DEFINES `zeta.k3sDatastorePreflight`, whose `enable` this
+    # file sets below. Setting an option without importing its definer makes
+    # this module evaluable ONLY through `common.nix` (which imports both) and
+    # a hard evaluation error everywhere else — including every NixOS VM test,
+    # all of which import the role module directly and by design. Imported here
+    # for the same reason `k3s-join-observer.nix` is: this file owns the
+    # option's value, so it owns the import.
+    ./k3s-datastore-preflight.nix
   ];
 
   # k3s's join is the join (Aaron 2026-08-13, closing PR #10493's open

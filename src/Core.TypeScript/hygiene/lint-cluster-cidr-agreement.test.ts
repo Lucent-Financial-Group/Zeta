@@ -179,6 +179,35 @@ describe("reserved-range walk (this is the test that caught the real bug)", () =
     expect(cidrsOverlap("10.0.0.0/8", "10.143.0.0/17")).toBe(true);
     expect(cidrsOverlap("10.143.0.0/17", "10.143.128.0/17")).toBe(false);
   });
+
+  // The membership predicate `cilium-kind-up.ts` asserts CoreDNS pod IPs with.
+  // It used to be `ip.startsWith("10.42.")`, which broke the moment the pod
+  // CIDR became a DERIVED /17 — and the naive repair (`startsWith("10.143.")`)
+  // is still wrong, because a /17 does not fall on a text boundary. The
+  // second block below is the whole reason this is address arithmetic: a
+  // prefix test accepts 10.143.128.1, and the pool never hands it out.
+  test("a /32 through cidrBounds gives a single address, so containment is arithmetic not textual", () => {
+    const pool = cidrBounds("10.143.0.0/17");
+    const contains = (ip: string): boolean => {
+      const addr = cidrBounds(`${ip}/32`);
+      expect(addr.first).toBe(addr.last); // a /32 is exactly one address
+      return addr.first >= pool.first && addr.first <= pool.last;
+    };
+
+    // Inside, including the last address of the block.
+    expect(contains("10.143.0.164")).toBe(true);
+    expect(contains("10.143.127.255")).toBe(true);
+
+    // Outside but TEXTUALLY prefixed by "10.143." — a startsWith test passes
+    // these, which is the bug this arithmetic exists to not have.
+    expect(contains("10.143.128.0")).toBe(false);
+    expect(contains("10.143.200.1")).toBe(false);
+
+    // Outside and textually unrelated: the pre-derivation pod CIDR, and
+    // kind's own default CNI range (the "Cilium is not the CNI" case).
+    expect(contains("10.42.0.5")).toBe(false);
+    expect(contains("10.244.0.7")).toBe(false);
+  });
 });
 
 describe("cluster-id range and name validation", () => {
