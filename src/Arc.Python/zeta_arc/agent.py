@@ -455,6 +455,38 @@ class PixelAgent:
             # element, so a tie (the target is orthogonal to every legal move)
             # resolves the same way on every replay. Determinism here is not
             # decoration: an episode that cannot be replayed cannot be debugged.
+            # GREEDY MUST CONSULT WHAT BUMPING ALREADY TAUGHT US. Without
+            # this, `blocked` is written by `_note_blocked_cell` and read only
+            # by `_route_plan` — so whenever the router returns no plan, the
+            # fallback happily re-issues a move into a cell it KNOWS is solid,
+            # and re-issues it forever because the heading never changes.
+            #
+            # Measured on `ZetaPocket` level 1, at cell (7,1) with the correct
+            # walls already learned:
+            #
+            #   blocked = [(6,1), (7,2)]   plan = 0   -> ACTION3 x382 of 400
+            #
+            # The agent knew both obstacles and walked into one of them for the
+            # rest of the episode. The way out (up) scores lower on the heading
+            # and so was never reachable by argmax alone.
+            #
+            # Falls through to the unfiltered set when every move is believed
+            # blocked: the belief may simply be wrong, and refusing to act on a
+            # bad map is worse than testing it.
+            here = self._cell_of(me) if self._step_px else None
+            if here is not None and self.blocked:
+                open_moves = tuple(
+                    a
+                    for a in moves
+                    if (
+                        here[0] + ACTION_VECTORS[a][0],
+                        here[1] + ACTION_VECTORS[a][1],
+                    )
+                    not in self.blocked
+                )
+                if open_moves:
+                    moves = open_moves
+
             target = min(targets, key=me.distance_to)
             dx, dy = target.cx - me.cx, target.cy - me.cy
             action = max(
