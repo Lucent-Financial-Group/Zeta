@@ -329,6 +329,39 @@ Any one of those and the proposal should shrink to the lanes where reliability a
 
 A 0/105 sample does not exclude a tail event that the tree records happening. **Both belong here.** The install is not usually broken; it is occasionally, expensively, and unpredictably broken — which is precisely a variance problem and precisely what a single mean would hide.
 
+#### THE PULL IS MEASURED. The thesis survives its own falsifiers.
+
+`metered` — the image published on the merge of #15575 (run **32961107426**), and the `pull-measure` legs ran. This replaces every `speculative` in this section.
+
+| quantity | measured |
+|---|---|
+| **wire size** (what a registry serves) | **2,148,269,386 B = 2.00 GiB**, 8 layers |
+| extracted size | 6,253,608,609 B — so the real ratio is **2.91×** |
+| **cold pull, 3 fresh runners** | **92 s · 92 s · 109 s** |
+
+And the comparison the whole document was built to make:
+
+| | mean | worst | **spread** |
+|---|---|---|---|
+| **toolchain install** (n=88) | 115 s | **465 s** | **4.04×** |
+| **cold image pull** (n=3) | **97.7 s** | **109 s** | **1.18×** |
+
+**The three falsifiers I wrote down before measuring, and what happened to each:**
+
+1. *"a cold pull whose p95 is comparable to the install's p95 (~465 s)"* — **not observed.** Worst of three is 109 s, under the install's *mean*.
+2. *"a registry failure class of similar frequency"* — **not observed.** 3 of 3 legs pulled cleanly, each after asserting its runner was cold.
+3. *"a pull whose mean is materially worse than the install's mean"* — **not observed.** 97.7 s against 115 s: the pull is faster on the mean *as well as* tighter.
+
+So the claim stands as stated, and it stands in its strong form: **the pull is both faster and dramatically less variable.** Aaron's *"much more reliable … and usually much faster"* is now the measured result, not the prior. Note which half is the larger win — a 15% mean improvement is pleasant; **4.04× → 1.18× spread is the thing that removes the tail**, and the tail is what costs a lane its budget.
+
+**Honest limits on these three numbers, because three is not a distribution:**
+
+- The three legs ran **concurrently on three runners at the same instant**, so they share whatever load the fleet had at 11:08Z. They are three samples of *one moment*, not three moments — a correlated sample, and it cannot see time-of-day or incident-driven variance. A real p95 needs sampling across days; `image-pull-measurement.yml` is the instrument.
+- 109 s is a *worst of three*, not a p95, and it is quoted as such.
+- The pull time excludes nothing the install included: both figures are wall-clock for "job has its toolchain".
+
+**One methodological note worth keeping.** I refused to derive the wire size by applying the repo's aggregate 2.67× compression ratio to the extracted figure. Measured, the ratio for this image is **2.91×** — so the guess would have been **~8% low** (1.97 GiB vs 2.00 GiB actual). The refusal was right on principle and would have been nearly harmless in fact, and both halves of that are worth saying: the discipline is not vindicated by the error being large, it is vindicated by not having had to know in advance whether it would be.
+
 #### The strongest evidence for the variance thesis arrived by accident
 
 While landing this work, a **YAML-only change** — seven `schedule:` keys added to install shields, not one line of code — went red on `build-and-test (ubuntu-24.04)`, which is in the `gate (required)` floor. The failing assertion:
@@ -515,7 +548,7 @@ Ordering, if it is ever pursued: (1) commit `flake.lock`; (2) measure what fract
 Stated so a green here is not read as coverage it does not have:
 
 - **The exit-124 reports.** Not reproduced in my 105-step sample (§6.2), and the tree records 17 such deaths in one window on 2026-08-25 (`apt-archive-cache.ts`). Both facts are kept in §6.4; neither cancels the other, and the 0/105 does **not** exclude the tail.
-- **Wall-clock pull of our own digest.** Not measurable before publish — the artifact is not in a registry yet. What is now measured: the **exact wire size** (local-registry manifest, not a ratio) and **GHCR-to-runner throughput** on a real cold pull (§6.4). What ships: `pull-measure`, three cold legs on three fresh runners against the published digest, each asserting the runner is cold before timing. `speculative` until it fires; the worst leg is what gets quoted.
+- **Wall-clock pull of our own digest.** Not measurable before publish — the artifact is not in a registry yet. What is now measured: the **exact wire size** (local-registry manifest, not a ratio) and **GHCR-to-runner throughput** on a real cold pull (§6.4). What ships: `pull-measure`, three cold legs on three fresh runners against the published digest, each asserting the runner is cold before timing. **It fired** — see the measured table above (92/92/109 s). The worst leg is what is quoted.
 - **Variance of the pull.** Three legs is not a distribution. It distinguishes "40 s every time" from "40 s, 41 s, 380 s", which is the question, but it will not give a real p95. If the pull turns out to matter, `image-pull-measurement.yml` is the instrument for a proper sample.
 - **Whether `ubuntu-slim` has a container runtime.**
 - **Whether CodeQL's action tolerates a job-level `container:`.**
