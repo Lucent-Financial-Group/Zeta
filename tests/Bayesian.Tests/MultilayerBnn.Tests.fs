@@ -704,3 +704,101 @@ let ``MLBNN-33: on a loopy graph the factor-graph MEANS are exact and the sweeps
     Assert.True(
         fgVarErr < swVarErr,
         sprintf "factor-graph variance error %.6g is not below the sweeps' %.6g" fgVarErr swVarErr)
+
+// ── Idempotency (discipline #6) ─────────────────────────────────────────────
+
+[<Fact>]
+let ``MLBNN-34: the backward sweep is bit-idempotent on chains ONLY — multi-parent re-counts`` () =
+    // MLBNN-16 already asserts backward-sweep idempotency, but compares through
+    // `toJsonString`, which formats with `%.12g` — so a drift below the twelfth
+    // significant figure passes it. Re-running a sweep must not move the state at
+    // all, and "at all" is a bit comparison. This also covers `Dag`, which
+    // MLBNN-16 predates.
+    let cases =
+        [ "Sequential", MultilayerBnn.Sequential
+          "Dag-chain", MultilayerBnn.Dag [| []; [ 0 ]; [ 1 ]; [ 2 ]; [ 3 ] |]
+          "Dag-skip", MultilayerBnn.Dag [| []; [ 0 ]; [ 1; 0 ]; [ 2 ]; [ 3; 1 ] |]
+          "SkipConnections", MultilayerBnn.SkipConnections [ (0, 2); (1, 4) ] ]
+    // Every case is measured before anything is asserted: a `for` loop that
+    // throws on the first mismatch reports one topology and hides the rest, and
+    // WHICH topologies drift is the whole diagnostic here.
+    let drift =
+        cases
+        |> List.map (fun (name, topology) ->
+            let priors = Array.init 5 (fun i -> Gaussian.ofMeanVariance (float i * 0.3) 1.0)
+            let net = MultilayerBnn.tryCreate priors (Array.create 5 1.0) topology |> unwrap
+            let afterForward, _ = MultilayerBnn.forward 10.0 net |> unwrap
+            let once = MultilayerBnn.backward afterForward |> unwrap
+            let twice = MultilayerBnn.backward once |> unwrap
+            let worst =
+                [ 0 .. 4 ]
+                |> List.map (fun i ->
+                    let a = MultilayerBnn.beliefAt once i
+                    let b = MultilayerBnn.beliefAt twice i
+                    max (abs (a.Precision - b.Precision)) (abs (a.PrecisionMean - b.PrecisionMean)))
+                |> List.max
+            name, worst)
+    let report =
+        drift |> List.map (fun (n, d) -> sprintf "%s=%.3g" n d) |> String.concat "  "
+    let byName = dict drift
+    // Chains are idempotent and must stay so.
+    Assert.True(byName.["Sequential"] = 0.0, sprintf "Sequential lost idempotency: %s" report)
+    Assert.True(byName.["Dag-chain"] = 0.0, sprintf "Dag-chain lost idempotency: %s" report)
+    // Multi-parent is NOT, and pinning the defect is the point. This is
+    // pre-existing — `SkipConnections` drifts identically and always did — and
+    // the qualifier is now on `backward`'s docstring, which claimed unconditional
+    // idempotency until this test was written. If either of these ever reaches
+    // zero the sweep was fixed, and this test should be inverted, not deleted.
+    Assert.True(
+        byName.["SkipConnections"] > 0.0 && byName.["Dag-skip"] > 0.0,
+        sprintf "a multi-parent sweep became idempotent — good news, update this test: %s" report)
+    Assert.Equal(byName.["SkipConnections"], byName.["Dag-skip"], 12)
+
+[<Fact>]
+let ``MLBNN-35: factor-graph inference is idempotent and does not consume the network`` () =
+    // The factor-graph path rebuilds its graph from `Layers.[i].Posterior` every
+    // call, so it should be a pure function of the network — but "should be" is
+    // the claim, not the evidence. Two things are checked: repeated calls agree
+    // to the bit, and the network is unchanged afterwards, so a caller can run
+    // inference and keep using the same value.
+    let depth = 4
+    let priors = Array.init depth (fun i -> Gaussian.ofMeanVariance (float i * 0.2) 1.0)
+    let topology = MultilayerBnn.Dag [| []; [ 0 ]; [ 1; 0 ]; [ 2 ] |]
+    let net = MultilayerBnn.tryCreate priors (Array.create depth 0.75) topology |> unwrap
+    let after = MultilayerBnn.infer [ 3.0; -1.0; 2.0 ] net |> unwrap
+
+    let before = MultilayerBnn.toJsonString after
+    let a, _, _ = MultilayerBnn.tryMarginalsViaFactorGraph 1e-13 500 after |> unwrap
+    let b, _, _ = MultilayerBnn.tryMarginalsViaFactorGraph 1e-13 500 after |> unwrap
+    Assert.Equal<string>(before, MultilayerBnn.toJsonString after)
+    for i in 0 .. depth - 1 do
+        Assert.True(
+            bits a.[i].Precision = bits b.[i].Precision
+            && bits a.[i].PrecisionMean = bits b.[i].PrecisionMean,
+            sprintf "layer %d moved between identical calls" i)
+
+[<Fact>]
+let ``MLBNN-36: evidence is absorbed once, not once per inference path`` () =
+    // The failure this discipline exists to catch: layer 0's posterior already
+    // carries the data, and the factor-graph path uses it as a prior FACTOR. If
+    // it also re-absorbed the observations, the precision would grow with the
+    // number of times inference was run rather than with the number of
+    // observations — the classic double-count.
+    //
+    // Checked against the shape of the answer rather than a magic number: one
+    // observation absorbed k times has precision `prior + k/obsVar`, so running
+    // inference repeatedly on the SAME network must leave that unchanged.
+    let net = MultilayerBnn.tryCreateUniform 3 prior 1.0 |> unwrap
+    let after = MultilayerBnn.infer (Seq.replicate 4 7.0) net |> unwrap
+    let expected = prior.Precision + 4.0 / 1.0
+    Assert.True(
+        abs (after.Layers.[0].Posterior.Precision - expected) < 1e-12,
+        sprintf "layer 0 precision %.12g, expected %.12g" after.Layers.[0].Posterior.Precision expected)
+
+    let m1, _, _ = MultilayerBnn.tryMarginalsViaFactorGraph 1e-13 500 after |> unwrap
+    let m2, _, _ = MultilayerBnn.tryMarginalsViaFactorGraph 1e-13 500 after |> unwrap
+    let m3, _, _ = MultilayerBnn.tryMarginalsViaFactorGraph 1e-13 500 after |> unwrap
+    Assert.True(
+        bits m1.[0].Precision = bits m3.[0].Precision && bits m2.[0].Precision = bits m3.[0].Precision,
+        sprintf "layer 0 marginal precision drifted across runs: %.17g / %.17g / %.17g"
+            m1.[0].Precision m2.[0].Precision m3.[0].Precision)

@@ -319,9 +319,35 @@ module MultilayerBnn =
     /// that came up from this layer — push it back through the link, and store
     /// it as the message arriving from above.
     ///
-    /// On a `Sequential` chain, forward-then-backward gives the EXACT marginals.
-    /// The sweep is idempotent: `down.[i]` is computed from quantities that do
-    /// not contain `down.[i]`.
+    /// On a `Sequential` chain, forward-then-backward gives the EXACT marginals,
+    /// and the sweep is idempotent: `down.[i]` is computed from quantities that
+    /// do not contain `down.[i]`.
+    ///
+    /// THAT IDEMPOTENCY CLAIM IS FALSE FOR ANY MULTI-PARENT TOPOLOGY, and it was
+    /// stated here without the qualifier until 2026-08-26. The sum-removal fold
+    /// below deconvolves `localBelief src` for each other addend, and
+    /// `localBelief` reads `down.[src]` — which THIS sweep has already
+    /// overwritten, because `i` descends. So the second run sees different inputs
+    /// and lands somewhere else.
+    ///
+    /// MEASURED, worst per-layer drift between two consecutive backward runs on a
+    /// 5-layer net (`MLBNN-34`):
+    ///
+    ///     Sequential  0        Dag-chain  0
+    ///     Dag-skip    0.66     SkipConnections  0.66
+    ///
+    /// It is PRE-EXISTING, not a consequence of the `Dag` generalisation: the
+    /// `SkipConnections` row drifts identically and always did. `MLBNN-16` could
+    /// not see it because it exercises only `Sequential` and compares through
+    /// `toJsonString`, whose `%.12g` hides anything below the twelfth digit.
+    ///
+    /// NOT FIXED HERE, deliberately. The sweeps' multi-parent answer is already
+    /// known to be the wrong one — `MLBNN-33` measures its mean error at 2.07
+    /// against an exact solve, where `tryMarginalsViaFactorGraph` scores 4e-14 —
+    /// so replacing one approximation with a differently-wrong idempotent
+    /// approximation is not obviously progress, and the correct path already
+    /// exists and IS idempotent (`MLBNN-35`). Use the factor graph for anything
+    /// that is not a chain.
     let backward (net: Network) : Result<Network, string> =
         let n = net.Layers.Length
         let up = net.UpwardMessages
