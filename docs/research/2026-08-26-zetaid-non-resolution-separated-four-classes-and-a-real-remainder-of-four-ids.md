@@ -31,7 +31,9 @@ were inflated by artifacts, and the honest remainder is four ids.**
 4. **Structure cannot detect fabrication.** The labeled positive is byte-perfect. That null result is
    what forces a protocol rather than a detector.
 
-**After #15607 lands, the entire live failure is one mislocated id.**
+**#15607 merged at 2026-08-26T11:54:28Z, while this was being written.** The misread class is
+closed; the entire remaining live failure is **one mislocated id**. §7.1 records the before/after
+on one input — and the fact that this document's own central claim went stale in four hours.
 
 ---
 
@@ -150,7 +152,8 @@ declarations:
 | `081M03CKBBX087G0R003M24FGG` | unminted | one commit, `f0ee2ef19e`. See §4. |
 
 Both cron lanes stopped declaring a ZetaId after **2026-08-13** and now emit `Task: none`, so their
-53+43 commits are historical. **The live failure is one id.**
+53+43 commits are historical, and #15607 has now merged. **The live failure is one id:**
+`081KSKBP80008QG0R001KK9WV6`.
 
 ### 3.3 The misattribution — the finding that bounds the fix
 
@@ -334,11 +337,11 @@ the fleet**, and it is worth more as a number that goes up than as a mess that g
 
 Nothing below was done. The deliverable is a classifier and this document.
 
-1. **Nothing blocks on the resolver.** After **#15607** (already open, base `main`, auto-merge armed)
-   lands, the live failure is **one mislocated id**, `081KSKBP80008QG0R001KK9WV6`, declared by the
-   heartbeat flush lane and resolving to exactly the right row in the wrong folder. **My read: let
-   #15607 land first and re-measure before deciding anything else.** Two of the four live failures
-   disappear on their own.
+1. **Nothing blocks on the resolver.** **#15607 has merged** (2026-08-26T11:54:28Z) and two of the
+   four live failures went with it — verified as an A/B on one input in §7.1. What remains is **one
+   mislocated id**, `081KSKBP80008QG0R001KK9WV6`, declared by the heartbeat flush lane and resolving
+   to exactly the right row in the wrong folder. **My read: re-measure now that it has landed;
+   only the mislocated id is left, and decision 4 is what settles it.**
 
 2. **Widen AH006 to `docs/backlog/`?** The measurement does **not** support it on the brief's terms:
    the mislocated class is 3 ids, and the widening would turn the *misattribution* green. **My read:
