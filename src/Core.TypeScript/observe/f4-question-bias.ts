@@ -581,10 +581,7 @@ export interface AdditivityCheck {
   readonly verdict: "additive" | "sub-additive" | "super-additive" | "undefined";
 }
 
-export function checkAdditivity(
-  combo: PairMeasurement,
-  parts: readonly PairMeasurement[],
-): AdditivityCheck {
+export function checkAdditivity(combo: PairMeasurement, parts: readonly PairMeasurement[]): AdditivityCheck {
   const predicted = parts.reduce((s, p) => s + p.excess, 0);
   const observed = combo.excess;
   if (!Number.isFinite(predicted) || predicted <= 0) {
@@ -601,6 +598,15 @@ export interface CentroidRank {
   readonly promptId: string;
   /** Mean raw JSD from this formulation to every other candidate. Lower = more central. */
   readonly meanJsd: number;
+  /**
+   * WORST-case divergence to any other candidate — the second number, reported because
+   * a formulation can be central on average and still sit far from one whole family of
+   * rewordings. Central-on-average is the property the procedure optimises; bounded
+   * worst case is the property a user of the procedure actually wants, and they are not
+   * the same thing. Ranking on the mean while showing the max is what lets a reader see
+   * when the two disagree instead of trusting one number that hid it.
+   */
+  readonly maxJsd: number;
 }
 
 /**
@@ -622,12 +628,15 @@ export function centroidRank(samples: ReadonlyMap<string, readonly string[]>): C
   for (const id of ids) {
     let sum = 0;
     let n = 0;
+    let max = 0;
     for (const other of ids) {
       if (other === id) continue;
-      sum += bagJsd(samples.get(id)!, samples.get(other)!);
+      const d = bagJsd(samples.get(id)!, samples.get(other)!);
+      sum += d;
+      if (d > max) max = d;
       n++;
     }
-    out.push({ promptId: id, meanJsd: n > 0 ? sum / n : Number.NaN });
+    out.push({ promptId: id, meanJsd: n > 0 ? sum / n : Number.NaN, maxJsd: n > 0 ? max : Number.NaN });
   }
   return out.sort((a, b) => a.meanJsd - b.meanJsd);
 }

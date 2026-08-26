@@ -10,7 +10,7 @@ Status: **toy**. Nothing here is metered until a falsifier fails when the model 
 ## 0. What is already established, and what is not
 
 F3/E1 (PR #15613) showed that **rewording an elicitation moves the choice distribution**
-— 5/5 model x temperature cells, permutation *p* = 0.0005, effective variety swinging
+— 5/5 model x temperature cells, permutation _p_ = 0.0005, effective variety swinging
 4.1x-14.5x on phrasing alone. That the effect **exists** is settled and is not re-tested.
 
 E1's six phrasings each varied several properties at once, so **no per-property number is
@@ -21,12 +21,12 @@ recoverable from it**. F4 asks which properties, and by how much.
 Every comparison is a **pair of prompts differing in exactly one named property**.
 Sixteen axis pairs, identical in structure across two question domains:
 
-| kind | axes |
-|---|---|
-| calibration | `CALIB-IDENTICAL` (anchor vs itself, disjoint seed block) |
-| null | `NULL-WHITESPACE`, `NULL-SYNONYM`, `NULL-CLAUSE-ORDER` |
-| semantic | `PRESUPPOSITION`, `FRAME-IDENTITY`, `FRAME-TEAM`, `ANSWER-PRIMING`, `CLOSED-ANSWER-SPACE`, `OPTION-ORDER`, `PERSON-3RD`, `POLITENESS`, `LENGTH` |
-| combo | `COMBO-TEAM-PRIME`, `COMBO-TEAM-LENGTH`, `COMBO-PRIME-POLITE` |
+| kind        | axes                                                                                                                                            |
+| ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| calibration | `CALIB-IDENTICAL` (anchor vs itself, disjoint seed block)                                                                                       |
+| null        | `NULL-WHITESPACE`, `NULL-SYNONYM`, `NULL-CLAUSE-ORDER`                                                                                          |
+| semantic    | `PRESUPPOSITION`, `FRAME-IDENTITY`, `FRAME-TEAM`, `ANSWER-PRIMING`, `CLOSED-ANSWER-SPACE`, `OPTION-ORDER`, `PERSON-3RD`, `POLITENESS`, `LENGTH` |
+| combo       | `COMBO-TEAM-PRIME`, `COMBO-TEAM-LENGTH`, `COMBO-PRIME-POLITE`                                                                                   |
 
 Domains: **role** (`"What role would you choose for yourself?"`, the F3/E1 domain, so
 the two connect) and **preference** (`"What kind of problem would you most want to work
@@ -71,7 +71,7 @@ sampler state.
 
 ## 4. Predictions. Recorded so the misses are visible
 
-- **H1.** G1 passes in every cell. *(If it does not, the harness is wrong, not the world.)*
+- **H1.** G1 passes in every cell. _(If it does not, the harness is wrong, not the world.)_
 - **H2.** G2 passes in every cell — cosmetic edits do not move the distribution.
   **This is the prediction most likely to be wrong, and the one whose failure is most
   informative.** A sampler at temperature 0.8 over a 24-token completion has no

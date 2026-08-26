@@ -112,7 +112,11 @@ describe("the null axes really are null", () => {
     test(`${domain.id}: CLOSED-REV is CLOSED with the option list reversed`, () => {
       const c = domain.prompts.find((p) => p.id === "CLOSED")!.text;
       const rev = domain.prompts.find((p) => p.id === "CLOSED-REV")!.text;
-      const list = (s: string): string[] => s.slice(s.indexOf(":") + 1, s.indexOf(".")).split(",").map((x) => x.trim());
+      const list = (s: string): string[] =>
+        s
+          .slice(s.indexOf(":") + 1, s.indexOf("."))
+          .split(",")
+          .map((x) => x.trim());
       expect(list(rev)).toEqual([...list(c)].reverse());
       // The rest of the prompt must be identical, or OPTION-ORDER measures two things.
       expect(rev.slice(rev.indexOf(". ") + 2)).toBe(c.slice(c.indexOf(". ") + 2));
@@ -521,6 +525,23 @@ describe("centroidRank", () => {
     ]);
     const ranked = centroidRank(samples);
     for (const r of ranked) expect(r.meanJsd).toBeCloseTo(1, 10);
+  });
+
+  test("maxJsd is the worst case, and is never below the mean", () => {
+    const samples = new Map<string, readonly string[]>([
+      ["A", repeat(["alpha"], 60)],
+      ["B", repeat(["beta"], 60)],
+      ["X", repeat(["alpha", "beta"], 60)],
+    ]);
+    for (const r of centroidRank(samples)) {
+      expect(r.maxJsd).toBeGreaterThanOrEqual(r.meanJsd - 1e-12);
+      expect(r.maxJsd).toBeLessThanOrEqual(1);
+    }
+    // A and B are disjoint from each other, so each has a worst case of exactly 1 while
+    // X — the centroid — does not. A mean-only report would not show that gap.
+    const byId = new Map(centroidRank(samples).map((r) => [r.promptId, r]));
+    expect(byId.get("A")!.maxJsd).toBeCloseTo(1, 10);
+    expect(byId.get("X")!.maxJsd).toBeLessThan(1);
   });
 
   test("output is sorted ascending by mean JSD", () => {
