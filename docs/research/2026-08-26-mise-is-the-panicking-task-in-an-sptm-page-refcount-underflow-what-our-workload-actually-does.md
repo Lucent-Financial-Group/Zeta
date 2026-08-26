@@ -234,12 +234,30 @@ construction**, which is why it is not repeated here as fact.
   invariant is to halt the machine. **That is why a userspace-triggered accounting bug appears as a hard
   panic rather than a `SIGBUS`**, and it explains the severity without excusing it.
 - **Independent reverse-engineering** — Proteas, 2023,
-  [notes on SPTM](https://proteas.github.io/ios/2023/06/09/some-quick-and-discrete-notes-on-sptm.html):
-  from binary analysis, SPTM maintains **per-page reference counts**, "tracking read-only,
-  write-execute, nested, and user reference counts," plus frame-type enforcement and mapping validation.
-  This is the closest thing to an authoritative answer to *what `mapcnt` counts*: **the number of live
-  mappings of a physical page** — precisely what changes on every `mmap`/`munmap`, i.e. on every process
-  exec and exit.
+  [notes on SPTM](https://proteas.github.io/ios/2023/06/09/some-quick-and-discrete-notes-on-sptm.html).
+  **Fetched and read directly for this document**, not taken on report. Strings extracted from the SPTM
+  binary include four distinct per-page reference counters, their violation cases, and the update entry
+  point:
+
+  ```text
+  VIOLATION_OVERFLOW_RO_REFCNT      VIOLATION_OVERFLOW_WX_REFCNT
+  VIOLATION_OVERFLOW_NESTED_REFCNT  VIOLATION_OVERFLOW_USER_REFCNT
+  refcounts_update_page_op
+  "%s: Attempted to update refcnts on a non-cpu-page: %d"
+  validate_managed_page             validate_pte
+  ```
+
+  This establishes three things that were otherwise assumption: **SPTM genuinely keeps per-page
+  reference counts**; it keeps **several kinds** (read-only, write-execute, nested, user); and **a
+  refcount violation is a named, panicking condition** in its design rather than an unlucky assert.
+  `refcounts_update_page_op` is the update entry point — which is what a mapping change calls.
+
+  **Three honest limits the same evidence imposes, recorded because it cuts both ways.** (i) **None of
+  those four is named `mapcnt`**, so ours is either a fifth counter, a rename, or newer than 2023 —
+  unresolved. (ii) Every violation string here is `OVERFLOW`; **no `UNDERFLOW` string appears**, and our
+  panic is an underflow. (iii) These are strings from a 2023 iOS-era binary, three years before Darwin
+  25.5. So this **corroborates the mechanism class, not our specific counter** — which is exactly the
+  register it is used at in §4.
 - **Not read, and so not relied on:** arXiv:2510.09272, "Modern iOS Security Features: A Deep Dive into
   SPTM, TXM, and Exclaves" (Steffin & Classen, Oct 2025). PDF text extraction failed; only title and
   authors are known. Named so the next reader can go get it, **not** cited as support.
@@ -358,7 +376,10 @@ Stated so no reader mistakes this for a closed case:
 - **No direct evidence** that `mise`'s exec traffic is what unbalanced the counter. `Panicked task` names
   the task on-CPU, not the culprit (§1).
 - **The counter's semantics are unknown** — closed source (§3.3). "Per-page mapping reference count" is
-  reverse-engineering plus the symbol name.
+  reverse-engineering plus the symbol name. Sharpened by §3.4: the four SPTM refcounts recoverable from
+  binary strings are `RO` / `WX` / `NESTED` / `USER` — **none of them `mapcnt`** — and every violation
+  string found is `OVERFLOW`, with **no `UNDERFLOW` string at all**. Our panic is an underflow of a
+  differently-named counter, so the corroboration is of the **mechanism class only**.
 - **The 2048-vs-65535 field-width discrepancy is unresolved** (§3.2) and may mean the Knit reports are a
   different bug entirely.
 - **The 2026-08-25 churn spike is a single correlation** with no control period (§2.4).
