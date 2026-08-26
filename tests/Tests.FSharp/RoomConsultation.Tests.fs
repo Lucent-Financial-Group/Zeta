@@ -113,12 +113,11 @@ let ``RC-6 negative horizons are typed refusals`` () =
     | other -> Assert.Fail(sprintf "expected negative-unit refusal, got %A" other)
 
 [<Fact>]
-let ``RC-7 identical inputs replay byte-for-byte equal receipts`` () =
-    let port = { RoomConsultation.Port.TryAdvanceOne = fun state -> if state < 2 then Some(state + 1) else None }
-    let first = advance port 5 0
-    let replay = advance port 5 0
+let ``RC-7 receipt preserves the request and cost attribution`` () =
+    let result = advance { RoomConsultation.Port.TryAdvanceOne = fun _ -> None } 4 0 |> value
 
-    Assert.Equal(first, replay)
+    Assert.Equal(4, result.Receipt.RequestedUnits)
+    Assert.Equal("RoomConsultation.Tests: exact fixture costs", result.Receipt.CostAttribution)
 
 let private repoRoot () =
     let mutable dir =
