@@ -24,6 +24,8 @@ import {
   type ConsumerFact,
 } from "./toy-surface.ts";
 
+import { packumentUrl } from "./capture-package-surface.ts";
+
 import rrp3 from "./testdata/surface-react-resizable-panels-3.0.6.json" with { type: "json" };
 import rrp4 from "./testdata/surface-react-resizable-panels-4.12.3.json" with { type: "json" };
 import npq6 from "./testdata/surface-noble-post-quantum-0.6.1.json" with { type: "json" };
@@ -406,4 +408,22 @@ test("FALSIFIER 8: every emitted fact tag names an observation, never a verdict"
 
   // CONTROL: the diff really did emit something, so the loop is not empty.
   expect(emitted.size).toBeGreaterThan(0);
+});
+
+// ── FALSIFIER 9: THE URL BUILDER ESCAPES EVERY SEPARATOR ─────────────────────
+//
+// CodeQL found this one in review, not a human: `pkg.replace("/", "%2f")`
+// replaces only the FIRST occurrence. Today an npm name carries at most one `/`,
+// so it was correct by accident. This test makes it correct by construction.
+//
+// Mutation that must break it: `replaceAll` back to `replace`.
+
+test("FALSIFIER 9: every separator in a package name is escaped, not just the first", () => {
+  expect(packumentUrl("https://r", "@noble/post-quantum", "0.7.0")).toBe("https://r/@noble%2fpost-quantum/0.7.0");
+  // The forcing case: two separators. `replace` leaves the second raw, which
+  // would silently address a DIFFERENT registry path.
+  expect(packumentUrl("https://r", "@a/b/c", "1.0.0")).toBe("https://r/@a%2fb%2fc/1.0.0");
+  // CONTROL: an unscoped name is untouched, so the assertions above are not
+  // passing because everything is escaped.
+  expect(packumentUrl("https://r", "semver", "7.8.5")).toBe("https://r/semver/7.8.5");
 });

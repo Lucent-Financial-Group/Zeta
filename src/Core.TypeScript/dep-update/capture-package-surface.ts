@@ -42,11 +42,28 @@ interface PackumentVersion {
   readonly exports?: unknown;
 }
 
+/// Build the packument URL for one exact (package, version).
+///
+/// Exported and pure so it has a falsifier. It got one because CodeQL found a
+/// real bug here: the first version was `pkg.replace("/", "%2f")`, and
+/// `String.replace` with a STRING pattern replaces only the FIRST occurrence.
+/// It happened to be correct — an npm name carries at most one `/`, separating
+/// scope from name — but the code said "escape the slashes" and escaped one, so
+/// it was right by accident rather than by construction. That is the class this
+/// repo refuses everywhere else, and a linter finding it before a human did is
+/// the apparatus working.
+///
+/// `%2f` rather than `encodeURIComponent` for the whole name: the registry wants
+/// the scope separator percent-encoded and the leading `@` left alone.
+export function packumentUrl(registry: string, pkg: string, version: string): string {
+  return `${registry}/${pkg.replaceAll("/", "%2f")}/${encodeURIComponent(version)}`;
+}
+
 /// Resolve one exact version's metadata. Exact versions only — resolving a RANGE
 /// would make the captured fixture depend on when it was captured, which is the
 /// ambient-input failure this whole directory is built to avoid.
 async function fetchVersionMetadata(pkg: string, version: string): Promise<PackumentVersion> {
-  const url = `${REGISTRY}/${pkg.replace("/", "%2f")}/${version}`;
+  const url = packumentUrl(REGISTRY, pkg, version);
   const res = await fetch(url);
   if (!res.ok) throw new Error(`registry ${String(res.status)} for ${pkg}@${version} (${url})`);
   return (await res.json()) as PackumentVersion;

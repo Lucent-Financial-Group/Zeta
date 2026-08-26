@@ -342,8 +342,22 @@ repo lints for elsewhere — a check that passes because an *earlier* guard fire
   labelled as synthetic in the file, because pretending otherwise would be the
   citation-without-entailment failure.
 
-After both fixes: **16 tests, 58 assertions, all eleven mutations killed,
-suite green when restored.**
+After both fixes: **17 tests, 61 assertions, all twelve mutations killed, suite
+green when restored.**
+
+**And CodeQL then found a twelfth defect the mutation run could not**, because it
+was in the I/O shell rather than the pure core: `pkg.replace("/", "%2f")` in the
+packument URL builder escapes only the FIRST separator, since `String.replace`
+with a string pattern is single-shot. It happened to be *correct* — an npm name
+carries at most one `/`, separating scope from name — so it was right by accident
+rather than by construction, which is the class this repo refuses everywhere
+else. Fixed to `replaceAll`, and the builder was extracted and exported so it now
+has a falsifier (`FALSIFIER 9`) rather than only a scanner.
+
+The order is the point: a mutation run over the pure core cannot find a bug in
+the part that was deliberately kept impure and untested. **Two different
+mechanisms, two different defect classes, and neither one substitutes for the
+other.**
 
 ## 5. What is deliberately NOT done
 
