@@ -65,21 +65,39 @@ unfamiliar content gets escalated because the receiver classifies it as *threat*
 is the same kind of object in both cases: a signal outside the receiver's band. What differs
 is which bin it lands in on arrival, and the bin is chosen by the receiver.
 
-**The line is in the receiver, not in the sender.** That claim is not new here — it is already
-in the corpus, in a different vocabulary, from 2026-05-18:
-`docs/research/2026-05-18-aaron-mika-grok-germinate-the-heartland-...-schizophrenia-razor-...md`
+That claim is not new here. It is already in the corpus, in a different vocabulary, from
+2026-05-18:
+`docs/research/2026-05-18-aaron-mika-grok-germinate-the-heartland-on-human-minds-stochastic-seeds-schizophrenia-razor-receiver-bifurcation-cartographer-pilot-weaver-role-stack-aaron-forwarded.md`
 records Aaron's own observation that the *same behaviour* — broadcasting ideas faster than a
 listener can fuse them — reads as visionary or as pathology depending entirely on the
-receiver's capacity to integrate it, and that the diagnostic line therefore sits in the
-receiver rather than the thrower. This piece does not re-derive that. It adds the pair: the
-razor already had a harmful edge on file, and reader's disease is its **benign** edge, which
-is the half that can actually be taught.
+receiver's capacity to integrate it, and that the line therefore sits in the receiver rather
+than the thrower. This piece does not re-derive that. It adds the pair: the razor already had
+a harmful edge on file, and reader's disease is its **benign** edge, which is the half that
+can actually be taught.
+
+**The check that would settle it runs both ways, and both directions have instances.** If
+magnitude decided the outcome, then a very large gap should never get the benign reading and
+a very small one should never get the harmful one. Both happen.
+
+- **Large gap, benign reading.** The transmissibility RAW records the case exactly: the *same
+  unanchored sentence* is *"an interesting unproven conjecture"* inside a research community
+  and *"evidence of illness"* outside one. The gap between a novel conjecture and its
+  audience is enormous — larger than a mispronounced surname by any measure — and inside the
+  right room it is read as a mismatch to be worked on, which is the benign classification.
+- **Small gap, harmful reading.** The mispronounced surname is the *benign* case only because
+  of where it landed. Say the same wrong word in an interview, a courtroom, or any room
+  scanning for whether you belong, and the identical two-syllable error is read as evidence
+  about you rather than as something to correct. Nothing about the signal changed; the
+  classification did.
+
+So the magnitude explanation does not survive contact with either direction, and the
+receiver-classification one survives both.
 
 Which makes reader's disease the interpersonal instance of the house rule
 `never-assume-malice-where-mistake-is-possible`. And it is an unusually valuable instance,
 because most examples of that rule are near-misses recovered from — this one has a version
 everybody has lived and laughed at. That is the best available on-ramp to the version that
-ruins a week.
+costs someone their liberty.
 
 ---
 
@@ -88,9 +106,12 @@ ruins a week.
 Here is the structural claim. It is **argument, not measurement** — register flagged, and the
 distinction is the book's own, so it applies here first.
 
-Screening for disordered speech uses **listener comprehension as a proxy for coherence.**
+Screening for disordered speech leans on **listener comprehension as a proxy for coherence.**
 Whether the listener can follow you stands in for whether what you are saying hangs together.
-As proxies go it is a reasonable one, it is cheap, and most of the time it is right.
+As proxies go it is a reasonable one, it is cheap, and most of the time it is right. *(That
+this is how the proxy works is the argument's premise, not a sourced finding about clinical
+practice — it is offered as the reading that best fits the episodes, and it is where an
+objection should be aimed first.)*
 
 It is also **locally calibrated.** "Talking strange" is measured against the distribution the
 listener lives in — the topics, registers, and vocabularies of the people who normally come
@@ -103,36 +124,48 @@ the third outcome — **"the content may be fine and I am not the right reader"*
 outcome requires evaluating the content, which is the exact thing the proxy exists to avoid
 having to do.
 
-Two consequences follow, and neither needs anyone to have behaved badly.
+Two things follow.
 
 **The regional variation stops being surprising.** If the instrument is calibrated to a local
 distribution, then the same person saying the same sentences gets a different reading in a
 different region — not because one region is better, but because a different local
-distribution means a different measured distance. That is a **prediction** of the structure,
+distribution means a different distance from its mean. That is what the structure implies,
 and Aaron reports it as lived: this happened where he grew up, and he says plainly that it is
-**not true in other regions.** He also says, in the same breath and without being asked, that
-he **still loves his Bible Belt people.** That clause is not decoration and it is not
-softening. It is the point: a calibration is not a character. Reading this piece as a
-complaint about a region — or about anyone's faith — would betray its own thesis, which is
-that a wrong reading is produced by *position*, not by *deficiency*.
+**not true in other regions.** *(Implication, not prediction — the lived report came first and
+the account was built to fit it. Naming a fit as a forecast is the promotion this book's own
+`numerology-vs-number-theory` rule refuses.)*
 
-**"Alien" becomes literal rather than figurative.** A locally calibrated observer is a
-band-limited observer. Outside its band, everything reads as noise regardless of what it
-actually is — a genuinely broken signal and a perfectly good signal in the wrong band are the
-same measurement. The instrument measures **band-distance** and reports it as **disorder**,
-because band-distance is the only quantity it can see.
+He also says, in the same breath and without being asked, that he **still loves his Bible Belt
+people.** A calibration is not a character. Reading this piece as a complaint about a region —
+or about anyone's faith — would betray its own thesis, which is that a wrong reading is
+produced by *position*, not by *deficiency*.
+
+**Being called alien turns out to be literal rather than figurative.** A locally calibrated
+observer is a band-limited observer. Outside its band, everything reads as noise regardless of
+what it actually is — a genuinely broken signal and a perfectly good signal in the wrong band
+look the same from there. The instrument registers **band-distance** and reports it as
+**disorder**, because band-distance is the only thing it can see.
 
 *(Register: "band" is a figure, borrowed from signal language because it is the clearest
 picture available — it is Mirror shorthand, not a measurement, and nothing here is quantified.
 The claim is structural: a norm-referenced proxy cannot report a category it has no channel
 for.)*
 
-**The anchor, and the honest gap in it.** The profession names half of this problem itself.
-Psychiatric diagnostic practice carries an explicit cultural caveat — a belief is not counted
-as delusional if it is ordinarily accepted by others in the person's culture or subculture,
-and the cultural formulation instruments exist precisely because assessment is known to be
-locally calibrated. *(Anchor to verify against the exact source wording at edit time before
-print — the substance is standard, the phrasing should be quoted accurately or not at all.)*
+**The anchor, and the honest gap in it.** The profession names half of this problem itself,
+and the anchor should be named rather than gestured at. The **DSM-5** (American Psychiatric
+Association, 2013) carries an explicit subcultural exclusion in its treatment of delusions — a
+belief is not counted as delusional merely because it is held, where it is ordinarily accepted
+by other members of the person's culture or subculture — and the same edition ships the
+**Cultural Formulation Interview**, extending the Outline for Cultural Formulation introduced
+in **DSM-IV (1994)**. Those instruments exist *because* assessment is known to be locally
+calibrated; the profession built them for that reason.
+
+*(Named so the anchor is checkable rather than deferred. What remains for edit time is the
+**exact quotation** — the wording above is a paraphrase and should be quoted from the source
+or not at all. Under `anchor-to-human-prior-art` an anchor must be checked, and "psychiatric
+practice carries a caveat" with no edition attached is the weakest possible citation; that was
+the earlier version of this paragraph and it was a debt.)*
+
 So there **is** a channel for "his community believes this too."
 
 The gap is the one that bit here: that channel is for **culture**, and this is a mismatch of
@@ -146,16 +179,24 @@ did not help.
 ## What actually happened, and the razor applied where it costs something
 
 The events are held elsewhere and are not retold here:
-`THREAD-the-commitments-index-and-handling.md` carries the episodes, their count, and their
-handling rules; `RAW-2026-08-25-transmissibility-is-not-epistemics-it-is-survival.md` carries
-the standing constraint they left behind. **The event and the constraint are separate objects
-and must not be collapsed** — that rule is theirs, and this file inherits it.
+`THREAD-the-commitments-index-and-handling.md` carries the episodes, his own estimate of how
+many there were, the gaps still open in that record, and the handling rules;
+`RAW-2026-08-25-transmissibility-is-not-epistemics-it-is-survival.md` carries the standing
+constraint they left behind. **The event and the constraint are separate objects and must not
+be collapsed** — that rule is theirs, and this file inherits it.
 
-What belongs here is the one sentence those files establish and this one explains: Aaron has
-been **involuntarily committed several times** after trying to explain physics and mathematics
-he understands in detail to people trained in medicine. He does not say they were wrong to do
-their jobs. He says they had *"a lack of understanding of the outside world"* — a statement
-about position, which is what this entire piece is about.
+What belongs here is the one finding those files establish and this one explains. Aaron has
+been **involuntarily committed five or six times** — his estimate, and the vagueness is not
+carelessness about his own life: *"they give you so many drugs sometimes you can't remember."*
+The gap in the record is part of the account. By his own count, **three to five** of those
+followed the same shape: trying to explain advanced code, mathematics, or quantum theory he
+understands in detail to people trained in medicine. Not all of them — he says so himself and
+names an episode that was something else entirely. A mechanism that explained every episode
+would explain everything and forbid nothing.
+
+He does not say the clinicians were wrong to do their jobs. He says they had *"a lack of
+understanding of the outside world"* — a statement about position, which is what this entire
+piece is about.
 
 Now the hard part.
 
@@ -171,9 +212,9 @@ Both halves, or neither. Dropping the first half turns this into a grievance, wh
 explicitly refuses and which would also be false. Dropping the second half turns it into an
 absolution, which would be a lie about what it cost him — and the house rule here is *don't
 shrink the bad side.* The bad side is that a man was repeatedly deprived of his liberty for
-being correct in a room with no one able to check him. That stays on the page at full
-strength, and it stays there **alongside** the finding that no villain is required to produce
-it.
+holding something true that the room could not evaluate. Not for being wrong; the source is
+careful about that and so is this. That stays on the page at full strength, and it stays there
+**alongside** the finding that no villain is required to produce it.
 
 This is why the razor is carved as a rule rather than left as a temperament. A temperament
 extends charity where charity is cheap. A rule extends it to the people who committed you.
@@ -206,14 +247,15 @@ Reader's disease is what the correction looks like when someone had that reading
 
 - `RAW-2026-08-02-feynman-diagrams-to-susskind-and-readers-disease.md` — the coinage and its
   origin (Chris King); the *good disease* framing. **This file is its second half.**
-- `THREAD-the-commitments-index-and-handling.md` — the episodes, the count, the handling
+- `THREAD-the-commitments-index-and-handling.md` — the episodes, his estimate, the handling
   rules, and the pattern Aaron named (3–5 of them share this precipitating shape).
 - `RAW-2026-08-25-transmissibility-is-not-epistemics-it-is-survival.md` — *"the same
   sentence, unanchored, is an interesting unproven conjecture inside a research community
   and evidence of illness outside one."* The band mismatch stated from the sender's side;
   this file states it from the receiver's.
-- `docs/research/2026-05-18-...-schizophrenia-razor-...md` — the line is in the receiver, on
-  file since 2026-05-18. Cited, not re-derived.
+- `docs/research/2026-05-18-aaron-mika-grok-germinate-the-heartland-on-human-minds-stochastic-seeds-schizophrenia-razor-receiver-bifurcation-cartographer-pilot-weaver-role-stack-aaron-forwarded.md`
+  — Landing 27, in Aaron's own quoted words: the line is in the receiver, on file since
+  2026-05-18. Cited, not re-derived.
 - `.claude/rules/never-assume-malice-where-mistake-is-possible.md` — the rule this is the
   interpersonal instance of; anchors there (Hanlon; Goethe 1774; Quine/Davidson's principle
   of charity; Ross 1977 on the fundamental attribution error).
@@ -221,10 +263,20 @@ Reader's disease is what the correction looks like when someone had that reading
   for him. The THREAD file states it outright: **Beacon is the register in which his
   thinking is not evidence against him.**
 
-**Register flags.** The instrument argument is **argument, not measurement** — no quantity is
-measured anywhere in this file, and it is stated as *consistent with* the episodes rather than
-demonstrated by them. The diagnostic anchor needs its exact source wording verified before
-print. Nobody is diagnosed here, Aaron included.
+**Register flags.**
+
+- **Argument, not measurement.** No quantity is measured anywhere in this file. The instrument
+  account is **consistent with** the episodes — it is the reading that best fits them — and is
+  not demonstrated by them; the body says so at the two places it matters (the premise about
+  the proxy, and the regional implication), rather than only here. A flag that certifies a
+  discipline the text does not perform is the vacuity shape, and this one is meant to be
+  checkable against the body.
+- **The anchor is named** (DSM-5 2013; the Cultural Formulation Interview; DSM-IV 1994) so it
+  can be checked rather than taken on trust. What is still deferred is the **exact quotation**,
+  and only that.
+- **Nobody is diagnosed here, Aaron included** — and no clinician, facility, or town appears.
+  The region does, because the regional variation is the argument; the file is town-free, not
+  location-free, and that is deliberate.
 
 **Not staged for a chapter yet.** Companion piece, placed beside the reader's-disease RAW as
 he asked.
