@@ -4,7 +4,6 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 
 import { afterAll, describe, expect, test } from "bun:test";
-import { parse as parseYaml } from "yaml";
 
 import {
   accumulatedHistoryError,
@@ -678,6 +677,29 @@ describe("telemetry-lane push credential (the held-gate cure)", () => {
   }
 });
 
+/**
+ * The archive step's `run:` block, sliced out of the raw workflow text with node
+ * builtins only. Anchored on `max_attempts`, which appears in exactly one step,
+ * then widened to the enclosing block by INDENTATION -- the same rule the YAML
+ * reader would apply, without the dependency. Only the backoff is neutralised;
+ * the control flow under test is untouched.
+ */
+function archiveRunBlock(text: string): string {
+  const lines = text.split("\n");
+  const anchor = lines.findIndex((l) => l.includes("max_attempts=5"));
+  if (anchor < 0) return "";
+  let start = anchor;
+  while (start > 0 && !/^\s*run:\s*\|/.test(lines[start] ?? "")) start -= 1;
+  const indent = (lines[start] ?? "").search(/\S/);
+  const body: string[] = [];
+  for (let i = start + 1; i < lines.length; i += 1) {
+    const line = lines[i] ?? "";
+    if (line.trim() !== "" && line.search(/\S/) <= indent) break;
+    body.push(line.replace(/^(\s*)sleep .*$/, "$1:"));
+  }
+  return body.join("\n");
+}
+
 // THE RETRY LOOP MUST ACTUALLY RETRY -- the falsifier for the third defect in
 // 081M0X93WA4087G0R0034C1A5Q.
 //
@@ -697,14 +719,23 @@ describe("the pr-archive retry loop retries (the workflow's own script, real bas
   });
 
   test("a failing prepare retries to exhaustion instead of aborting on attempt 1", () => {
-    const doc = parseYaml(workflow("pr-archive-on-merge.yml")) as {
-      jobs: { archive: { steps: { name?: string; run?: string }[] } };
-    };
-    const step = doc.jobs.archive.steps.find((x) => (x.run ?? "").includes("max_attempts"));
-    expect(step?.run).toBeDefined();
+    // NO YAML PARSER HERE, and that is not a style choice. `pr-manifest-integrity.yml`
+    // runs `bun test` over this directory with NO `bun install`, and says so:
+    // "these tests import node builtins and repo-local modules only." A
+    // devDependency import is therefore not a missing package, it is a broken
+    // invariant -- and it fails in the worst possible shape. An earlier version of
+    // this test imported `yaml` and produced
+    // `error: Cannot find package 'yaml' from '...flush-via-staging.test.ts'`,
+    // which drops EVERY test in this file from the run instead of failing one.
+    // The suite reported 289 tests where it should have reported 331, and a
+    // shrinking pass count reads like a green run.
+    const script = archiveRunBlock(workflow("pr-archive-on-merge.yml"));
 
-    // Only the backoff is neutralised -- the control flow under test is untouched.
-    const script = (step?.run ?? "").replace(/^(\s*)sleep .*$/gm, "$1:");
+    // The extraction must be checked, or a bad slice yields an empty script that
+    // runs, prints nothing, and passes nothing -- the vacuity this test exists to
+    // catch, reintroduced in the harness.
+    expect(script).toContain("max_attempts");
+    expect(script).toContain("[archive] attempt");
     const scriptPath = join(tmp, "step.sh");
     writeFileSync(scriptPath, script);
 

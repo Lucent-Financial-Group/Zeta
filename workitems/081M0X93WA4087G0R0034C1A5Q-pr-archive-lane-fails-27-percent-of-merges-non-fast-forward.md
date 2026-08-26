@@ -137,3 +137,33 @@ them; that heuristic is wrong and the flags were false positives.
 
 `pr-archive` was unique in invoking a command bare and capturing `rc` separately —
 and it did that correctly for `flush` and not for `prepare`.
+
+## Self-inflicted regression, caught and fixed
+
+The retry-loop falsifier above originally imported `yaml` to pull the step's
+`run:` block out of the workflow. That broke a stated invariant:
+
+> `.github/workflows/pr-manifest-integrity.yml`:
+> **"No bun install step: these tests import node builtins and repo-local modules only."**
+
+So the import was not a missing package — it was a package that is never
+installed for that job. And it failed in the worst available shape:
+
+```
+error: Cannot find package 'yaml' from '.../flush-via-staging.test.ts'
+```
+
+A bare import error **drops every test in the file** rather than failing one.
+The job reported **289 tests where it should have reported 339** — a *shrinking
+pass count*, which reads like a green run to anyone not counting. That is the
+vacuity class arriving through the harness instead of through an assertion.
+
+Fixed by slicing the block from the raw text with builtins only
+(`archiveRunBlock`), anchored on `max_attempts=5` and widened by indentation.
+The extraction is itself checked — `expect(script).toContain("max_attempts")`
+and `toContain("[archive] attempt")` — because a bad slice would otherwise yield
+an empty script that runs, prints nothing, and passes nothing.
+
+Verified: every import in `src/Core.TypeScript/forge-host/github/*.test.ts` is
+now `bun:test` or `node:*`, and the workflow's own two commands give 339 + 120
+pass, 0 fail. Break-red on the retry guard still fails as designed.
