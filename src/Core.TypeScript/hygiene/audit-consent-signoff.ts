@@ -54,7 +54,7 @@
 
 import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
-import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import { join, relative, resolve } from "node:path";
 
 // ---------------------------------------------------------------------------
@@ -234,22 +234,23 @@ function normalizeToPosix(p: string): string {
 }
 
 function walkMarkdown(dir: string, out: string[]): void {
-  let entries: string[];
+  // ONE syscall, not two. `readdirSync` + `statSync` asks the filesystem what
+  // each name is a second time, and between the two answers an entry can be
+  // created, deleted, or replaced -- by a concurrent agent in this fleet, by a
+  // `git checkout`, by a background clone. `withFileTypes` returns the kind
+  // WITH the name, so the two answers cannot disagree.
+  // (TOCTTOU -- Bishop & Dilger 1996; CWE-367; `lint-check-then-use-file-races`.)
+  let entries: import("node:fs").Dirent[];
   try {
-    entries = readdirSync(dir);
+    entries = readdirSync(dir, { withFileTypes: true });
   } catch {
     return;
   }
-  for (const name of entries) {
+  for (const ent of entries) {
+    const name = ent.name;
     if (name === "node_modules" || name === ".git" || name === "dist") continue;
     const full = join(dir, name);
-    let st;
-    try {
-      st = statSync(full);
-    } catch {
-      continue;
-    }
-    if (st.isDirectory()) walkMarkdown(full, out);
+    if (ent.isDirectory()) walkMarkdown(full, out);
     else if (name.endsWith(".md")) out.push(full);
   }
 }
@@ -675,8 +676,19 @@ export function verify(opts: VerifyOptions = {}): Report {
   const raw: Omit<Finding, "severity">[] = [];
 
   const ledgerAbs = resolve(root, ledgerPath);
-  if (!existsSync(ledgerAbs)) throw new LedgerError(`consent ledger not found at ${ledgerPath} (root ${root}).`);
-  const ledger = parseLedger(readFileSync(ledgerAbs, "utf8"), ledgerPath);
+  // Read and interpret ENOENT rather than asking `existsSync` first: between the
+  // check and the read the path can be created, deleted, or replaced, so the
+  // answer the check returned is already stale when the use runs.
+  let ledgerText: string;
+  try {
+    ledgerText = readFileSync(ledgerAbs, "utf8");
+  } catch (e) {
+    if ((e as NodeJS.ErrnoException).code === "ENOENT") {
+      throw new LedgerError(`consent ledger not found at ${ledgerPath} (root ${root}).`);
+    }
+    throw e;
+  }
+  const ledger = parseLedger(ledgerText, ledgerPath);
 
   const { spans, filesScanned } = collectSpans(corpus);
   const folded = foldConsent(ledger.events);
