@@ -56,8 +56,8 @@ merely cheaper than escalation — it sees things the gate structurally cannot.
 **Four out of four.** A numerator built from "did CI go red" reports 5; the true
 count of breaks needing a source fix is 10.
 
-#14583 is the one to sit with. `src/Renderers/website` has no `gate.yml` job, no
-committed lockfile, and an unappliable `patchedDependencies` patch. **Its 45 green
+PR #14583 is the one to sit with. `src/Renderers/website` has no `gate.yml` job,
+no committed lockfile, and an unappliable `patchedDependencies` patch. **Its 45 green
 checks are 45 checks that do not look at it.** That is the vacuity class operating
 at the level of CI topology rather than of a single assertion, and it is why
 "route only what breaks" cannot be the whole rule.
