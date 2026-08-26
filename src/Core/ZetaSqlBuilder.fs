@@ -184,12 +184,26 @@ type ZetaQueryBuilder() =
     ///    The same code `invalidOp`s when `|left| × |right| >
     ///    Array.MaxLength` — about 46 341 rows a side if both are equal —
     ///    *even when the result would be tiny*. The old path completed.
+    /// 3. **The refusal in (2) is NOT the operative boundary — (1) is.**
+    ///    Because the rent is the whole product, a join sized just UNDER
+    ///    `Array.MaxLength` asks for 2 147 395 600 ×
+    ///    `sizeof&lt;ZEntry&lt;int64&gt;&gt;` = **32 GiB** contiguously and dies of
+    ///    `OutOfMemoryException` before the guard is ever consulted.
+    ///    Measured on both `ubuntu-24.04` and `ubuntu-24.04-arm`,
+    ///    identically. So the `invalidOp` is the limit callers are TOLD
+    ///    about, and allocation is the limit they actually meet — roughly
+    ///    32 GiB earlier. Anything near the guard is unusable long before
+    ///    reaching it.
     ///
     /// This is a pre-existing defect in `ZSet.join` that `Circuit.Join`
     /// has always had; delegating here inherits it rather than creating
     /// it. It is disclosed rather than papered over, and the refusal is
     /// pinned by a test in `ZetaSqlBuilder.Tests.fs` §THE INHERITED LIMIT
     /// so the boundary is known rather than discovered in production.
+    /// (3) is why that section's non-vacuity witness holds the refused
+    /// input fixed and shrinks the other side rather than straddling the
+    /// threshold: while the rent is the product, success just under the
+    /// threshold is untestable by construction, not merely expensive.
     /// Fixing it means giving `ZSet.join` a geometrically-grown output
     /// buffer (the shape `ZSet.ofSeq` already uses) — a change to a hot
     /// path that wants a benchmark, and therefore not this PR's business.
