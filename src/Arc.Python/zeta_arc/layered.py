@@ -169,6 +169,16 @@ class LayeredAgent:
         in `dynamics.py`. A width weight is never free — it competes with the
         quantity it is supposed to be qualifying.
 
+        THAT CONSTANT IS GLOBAL AND ITS RATIONALE IS NOT, so the gap was checked
+        rather than waved at: `k` was derived entirely from the body election,
+        and this file uses the same constant. Replaying a click-responsive and a
+        keyboard-responsive world at k=1 and k=3 gives BYTE-IDENTICAL layer
+        routing in both — every ACTION6-or-not decision the same. The sequences
+        diverge only in the directional actions, which are `PixelAgent`'s body
+        election delegated through this one. So the layer site is insensitive to
+        `k`, exactly as the paragraph above predicts it should be, and the
+        constant needs no separate justification here.
+
         The tie-break is real either way: `outranks` is strict, so an exact tie
         keeps the incumbent.
         """
