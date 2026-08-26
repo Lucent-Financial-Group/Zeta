@@ -1,0 +1,112 @@
+# root-flake-check.yml — evaluate the ROOT flake.
+#
+# WHY THIS EXISTS. Until 2026-08-26 the only two `nix flake check` invocations
+# in the tree were both in `build-ai-cluster-iso.yml` (lines 193 and 847) and
+# both carried `working-directory: full-ai-cluster`. Nothing in CI ever
+# evaluated `/flake.nix`.
+#
+# The cost was measured, not theorised: PR #15585 moved the root flake off EOL
+# (nixpkgs + nix-darwin 24.11 -> 26.05, ~14 months past EOL) and merged with 79
+# green checks, NOT ONE of which had looked at the file it changed. A vacuous
+# green in the most literal sense — the reviewer sees a wall of green ticks and
+# infers a verification that never happened.
+#
+# TIER. Non-blocking drift. Deliberately NOT in `gate (required)`'s `needs:` —
+# promotion to the blocking floor is an operator decision, not a side effect of
+# adding a lane. What it buys unpromoted is real: the lane's own red is visible
+# on the PR and in the checks API even while it gates nothing.
+#
+# COST. Measured locally at 4-5s wall for the eval itself (`--no-build`, so no
+# derivation is realised). The nix install dominates the job.
+
+name: root-flake-check
+
+on:
+  pull_request:
+    paths:
+      - "flake.nix"
+      - "flake.lock"
+      - "infra/nix-darwin/**"
+      - "infra/nixos/**"
+      - ".github/workflows/root-flake-check.yml"
+  push:
+    branches: [main]
+    paths:
+      - "flake.nix"
+      - "flake.lock"
+      - "infra/nix-darwin/**"
+      - "infra/nixos/**"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: root-flake-check-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  evaluate:
+    name: root flake evaluates (drift)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Install Nix
+        # Same pinned action and the same `determinate: false` as
+        # build-ai-cluster-iso.yml. Upstream Nix only — no FlakeHub login, which
+        # flaked with "Transient authentication mechanism error" on PR #8095.
+        uses: DeterminateSystems/nix-installer-action@ef8a148080ab6020fd15196c2084a2eea5ff2d25 # v22
+        with:
+          determinate: false
+
+      - name: Show root flake metadata
+        # The pins this lane is judging, printed before the verdict so a reader
+        # can tell WHICH universe went green.
+        run: nix flake metadata --json | jq '{description, lastModified, revision}'
+
+      - name: Evaluate the root flake
+        # `--all-systems` IS LOAD-BEARING, not thoroughness theatre. Without it
+        # nix checks only outputs compatible with the runner and prints
+        #   warning: The check omitted these incompatible systems: ...
+        # On a Linux runner that omission silently drops every darwin output —
+        # including `darwinConfigurations.zeta-mac`, whose nix-darwin/nixpkgs
+        # branch-match assertion is exactly the class of defect #15585 changed.
+        # A lane that skipped it would be a narrower vacuous green replacing a
+        # wider one.
+        #
+        # `--no-build` keeps it an EVAL check: typos, missing imports, undefined
+        # attributes, and eval-time assertions, without realising derivations.
+        run: |
+          set -o pipefail
+          nix flake check --no-build --all-systems --show-trace 2>&1 | tee /tmp/flake-check.log
+
+      - name: Assert the check actually checked something
+        # ANTI-VACUITY, and the reason this lane is not itself the defect it
+        # fixes. `nix flake check` exits 0 on a flake whose outputs it skipped
+        # entirely, so exit 0 alone does not distinguish "evaluated everything
+        # cleanly" from "evaluated nothing". This step reads the check's own
+        # output and refuses a run that validated zero outputs.
+        #
+        # It also NAMES the outputs it expects to see. If a future edit drops
+        # `darwinConfigurations` off the checked set, this goes red and says so
+        # rather than passing a quieter check.
+        run: |
+          checked=$(grep -c '^✅' /tmp/flake-check.log || true)
+          echo "outputs checked: $checked"
+          if [ "$checked" -eq 0 ]; then
+            echo "::error title=Root flake check validated nothing::nix flake check exited 0 having checked ZERO outputs. An eval lane that evaluates nothing is indistinguishable from one that passed."
+            exit 1
+          fi
+          missing=""
+          for want in darwinConfigurations.zeta-mac nixosConfigurations.control-plane devShells; do
+            grep -q "$want" /tmp/flake-check.log || missing="$missing $want"
+          done
+          if [ -n "$missing" ]; then
+            echo "::error title=Root flake check coverage narrowed::expected outputs were not evaluated:$missing — the lane is greener than its coverage. If this omission is intentional, change the expected roster in this step so the narrowing is a reviewed diff."
+            exit 1
+          fi
+          echo "coverage roster present: darwinConfigurations, nixosConfigurations, devShells"
