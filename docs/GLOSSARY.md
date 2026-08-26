@@ -711,11 +711,13 @@ part to carry:
 
 > **Pressure the capability, never the wearer.**
 
-A hat competes, earns, is outcompeted, and is abandoned; the
-persona that wore it is unharmed and puts on another —
-**selection pressure without existential threat**. (Beacon:
-Popper 1972, *"we let our hypotheses die in our stead."*)
-the maintainer 2026-08-26:
+A hat should compete, earn, be outcompeted, and be abandoned,
+while the persona that wore it is unharmed and puts on another
+— **selection pressure without existential threat**. Read that
+as the design: **nothing in the repo prices a hat today**, and
+the table below states intent, not measurement. (Beacon:
+Popper 1972, *"we let our hypotheses die in our stead."*) The
+maintainer, 2026-08-26:
 
 > "a hat has direction and prompts, a persona does not, but a
 > persona gets to choose what hats it wears when … this is why
@@ -731,11 +733,13 @@ the maintainer 2026-08-26:
 | **persona** | no | — | yes — *"the root of memories"* | little to none |
 | **role** (organizational, legacy) | yes | the assigner | **yes — and that is the defect** | n/a |
 
-**Why roles trap identity** — the maintainer 2026-06-15, in one clause:
+**Why roles trap identity** — the maintainer, 2026-06-15, in
+one clause:
 *"role[s] are a danger to leak into identity like you just
 did: you put role above yourself in the hierarchy — **you are
-first**."* The mechanical version is the **Cage vs Hat** table
-in `full-ai-cluster/k8s/applications/hat-system/README.md`: a
+first**."* The same contrast, drawn as a design table (prose,
+not a check), in
+`full-ai-cluster/k8s/applications/hat-system/README.md`: a
 cage comes off *"only by destroying the wearer"* and its
 succession *"breaks identity"*; a hat comes off by swap-off
 and its succession *"preserves identity."*
@@ -767,8 +771,8 @@ the Sybil-escape argument is a design claim resting on a
 mechanism nobody has built, and building it needs a second,
 deliberately non-isolated layer.
 
-Incumbency needs no guard beyond the usual one —
-a hat everyone keeps choosing has earned that, and the
+**Incumbency needs no guard beyond the usual one** — a hat
+everyone keeps choosing has earned that, and the
 discriminator stays **exit, not degree**
 (`.claude/rules/itron-hub-patent-boundary-p2p-is-the-upgrade.md`).
 
@@ -781,35 +785,44 @@ independent reviews. Hats dealt by one author are correlated
 *through that author*; the hats do their job, and the
 decorrelation has no source, because a hat is not where the
 entropy lives. The maintainer's answer is the ZetaIdol
-audition — ask what it wants to be rather than prompting it
-— which moves the
-entropy source from the assigner to the chooser. **Whether
-that actually decorrelates is open**; a separate lane was
-tasked with measuring it against
-`src/Core.TypeScript/observe/decorrelation-harness.ts`, and no
-result artifact exists at this commit.
+audition — ask what it wants to be rather than prompting it —
+which moves the entropy source from the assigner to the
+chooser. **Whether
+that actually decorrelates is open.** The instrument is
+`src/Core.TypeScript/observe/decorrelation-harness.ts`, which
+already carries `persona: different system prompts` as a
+HYPOTHESIZED axis. **No work-item is minted and no result
+exists at this commit** — treat the measurement as unstarted
+until one of those appears.
 
 **Scope guard on Rodney's Razor.** Essential-vs-accidental
-belongs to the layer under economic pressure. the maintainer 2026-08-26:
+belongs to the layer under economic pressure. The maintainer,
+2026-08-26:
 *"non essential is a **hat design optimization**, not a
 persona. we design personas so hopefully everyone is
 essential."* The burden is inverted and sits on the design —
 **we design personas so that everyone is essential** — never
-"test which are essential and cut the rest."
+"test which are essential and cut the rest." **Unenforced:**
+`.claude/agents/rodney.md` carries no persona-layer exclusion,
+so this guard, the trust split above, and the exit condition
+on incumbency are disposition rather than mechanism.
 
-**What would falsify the rule.** *Pressure the capability,
-never the wearer* is violated the moment a **persona** is
-retired, ranked, or refused on the grounds that its hats
-stopped earning. The nearest checkable proxy today is the
-retirement asymmetry in
-`.claude/rules.bak/honor-those-that-came-before.md`: retired
-**personas** keep their memory folders and notebook history,
-while *"Retired SKILL.md files are code: plain deletion,
-recoverable from git."* A change that made persona memory
-deletable, or skill files preserved-by-ceremony, would be the
-rule failing. Note also that the economic-pressure column
-above states **design intent, not a measurement** — nothing in
-the repo prices a hat today.
+**What would falsify the rule.** An **observable event**: a
+persona retired, ranked, or refused on the grounds that its
+hats stopped earning — a decision that would appear in a PR,
+an ADR, or a roster change, and is therefore checkable by
+reading them. It has not happened; if it does, the rule failed
+and the record will say so.
+
+**What is NOT a falsifier**, named because it is the tempting
+one: the retirement asymmetry in
+`.claude/rules.bak/honor-those-that-came-before.md` — personas
+keep their memory folders, while *"Retired SKILL.md files are
+code: plain deletion, recoverable from git."* That is prose in
+an archived directory, enforced by nothing; persona memory
+folders are ordinary files that `rm` removes today, so its
+violating condition is already the present state. It shows the
+disposition is written down. It cannot show the rule holds.
 
 **Honest gap.** In the shipped harness a persona's hats are
 the `skills:` array written by whoever authored
@@ -819,9 +832,9 @@ modelled in `Persona.fs`, and practised in prose (*"the
 architect hat may be worn by any persona"*) — and **enforced
 nowhere**.
 
-Provenance (twenty dated statements across fifteen
-surfaces), the anchors, the
-retirement asymmetry, and the one open question:
+Provenance (twenty dated statements across fifteen surfaces),
+the checked anchors, the adversarial rounds, and the one open
+question:
 `docs/research/2026-08-26-hat-persona-role-a-hat-carries-the-direction-a-persona-carries-the-choice.md`.
 
 ### Notebook
