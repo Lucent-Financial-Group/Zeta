@@ -395,3 +395,29 @@ let ``MLBNN-26: a Dag layer with no sequential parent is fed only by its declare
     Assert.True(
         bits pa.Precision <> bits pb.Precision || bits pa.PrecisionMean <> bits pb.PrecisionMean,
         sprintf "bypass and chain gave identical layer-2 beliefs (tau=%.17g, nu=%.17g)" pa.Precision pa.PrecisionMean)
+
+[<Fact>]
+let ``MLBNN-27: a parent named twice is summed in twice`` () =
+    // `removeFirst` drops ONE occurrence of the cavity parent, not all of them,
+    // and its docstring claims a duplicate therefore contributes twice. Nothing
+    // pinned that: mutating `removeFirst` to drop every occurrence left all 425
+    // tests green. This is the missing falsifier for a comment that was, until
+    // now, an unchecked assertion about behaviour.
+    let depth = 3
+    let priors = Array.init depth (fun _ -> Gaussian.ofMeanVariance 0.0 1.0)
+    let variances = Array.create depth 0.5
+    let observations = [ 3.0; 3.0; 3.0 ]
+
+    let once = MultilayerBnn.Dag [| []; [ 0 ]; [ 1 ] |]
+    let twice = MultilayerBnn.Dag [| []; [ 0 ]; [ 1; 1 ] |]
+    Assert.Equal<int list>([ 1; 1 ], MultilayerBnn.parentsOf twice 2)
+
+    let a = MultilayerBnn.infer observations (MultilayerBnn.tryCreate priors variances once |> unwrap) |> unwrap
+    let b = MultilayerBnn.infer observations (MultilayerBnn.tryCreate priors variances twice |> unwrap) |> unwrap
+    let pa = MultilayerBnn.beliefAt a 2
+    let pb = MultilayerBnn.beliefAt b 2
+    Assert.True(
+        bits pa.Precision <> bits pb.Precision || bits pa.PrecisionMean <> bits pb.PrecisionMean,
+        sprintf
+            "naming layer 1 twice changed nothing — the duplicate was silently collapsed (tau=%.17g, nu=%.17g)"
+            pa.Precision pa.PrecisionMean)
