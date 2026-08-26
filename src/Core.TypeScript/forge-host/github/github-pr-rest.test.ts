@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import { ok, err, forgeError } from "../result";
-import { githubRestRequest } from "./gh-cli.ts";
+import { githubRestRequest, githubRestUrl } from "./gh-cli.ts";
 import {
   restCreatePull,
   restGetPull,
@@ -103,10 +103,10 @@ describe("restListPulls / restCreatePull", () => {
     const result = await githubRestRequest("GET", "repos/o/r", undefined, {
       token: null,
       signal: null,
-      fetch: (async () => {
+      fetch: async () => {
         fetched += 1;
         return new Response("nope");
-      }) as typeof fetch,
+      },
     });
     expect(result.ok).toBe(false);
     if (!result.ok) expect(result.error.kind).toBe("auth-failure");
@@ -115,17 +115,39 @@ describe("restListPulls / restCreatePull", () => {
 
   test("githubRestRequest sends Bearer and classifies HTTP 401", async () => {
     const result = await githubRestRequest("GET", "repos/o/r", undefined, {
-      token: "gho_x",
+      token: "gho_testtokenvalue12345678",
       signal: null,
-      fetch: (async (_url: RequestInfo | URL, init?: RequestInit) => {
+      fetch: async (_url, init) => {
         const headers = new Headers(init?.headers);
-        expect(headers.get("Authorization")).toBe("Bearer gho_x");
+        expect(headers.get("Authorization")).toBe("Bearer gho_testtokenvalue12345678");
         expect(init?.signal).toBeUndefined();
         return new Response("Bad credentials", { status: 401 });
-      }) as typeof fetch,
+      },
     });
     expect(result.ok).toBe(false);
     if (!result.ok) expect(result.error.kind).toBe("auth-failure");
+  });
+
+  test("githubRestUrl pins api.github.com and refuses absolute URLs", () => {
+    expect(githubRestUrl("repos/o/r/pulls")).toBe("https://api.github.com/repos/o/r/pulls");
+    expect(githubRestUrl("https://evil.example/steal")).toBeNull();
+    expect(githubRestUrl("../etc/passwd")).toBeNull();
+    expect(githubRestUrl("repos/o/r/pulls?state=open&per_page=10")).toBe("https://api.github.com/repos/o/r/pulls?state=open&per_page=10");
+  });
+
+  test("a JSON dump is not a token — no outbound request", async () => {
+    let fetched = 0;
+    const result = await githubRestRequest("GET", "repos/o/r", undefined, {
+      token: "{\"tokens\":{\"accessToken\":\"gho_testtokenvalue12345678\"}}",
+      signal: null,
+      fetch: async () => {
+        fetched += 1;
+        return new Response("nope");
+      },
+    });
+    expect(result.ok).toBe(false);
+    if (!result.ok) expect(result.error.kind).toBe("auth-failure");
+    expect(fetched).toBe(0);
   });
 
   test("garbage JSON is parse-failure", async () => {

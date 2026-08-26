@@ -274,7 +274,11 @@ export async function main(
         io.err("usage: zeta-login-cli.ts login <provider> [--from-file <path>]");
         return 2;
       }
-      return runLogin(rest[0], store, io, { ...extra, fromFile: fromFile.value, readFile: extra?.readFile });
+      return runLogin(rest[0], store, io, {
+        ...extra,
+        ...(fromFile.value !== undefined ? { fromFile: fromFile.value } : {}),
+        ...(extra?.readFile !== undefined ? { readFile: extra.readFile } : {}),
+      });
     case "import":
       if (rest[0] === undefined || rest[0].length === 0) {
         io.err("usage: zeta-login-cli.ts import <provider>");

@@ -12,7 +12,7 @@ import type { Result, ForgeError } from "../types";
 import { ok, err, forgeError } from "../result";
 import { classifyGhError } from "./classify-error";
 import { defaultStoreDir } from "../../model-backend/login-runner.ts";
-import { parseStoredAccessToken } from "../../model-backend/resolve-stored-token.ts";
+import { asGithubAccessToken, parseStoredAccessToken } from "../../model-backend/resolve-stored-token.ts";
 
 const SPAWN_MAX_BUFFER = 64 * 1024 * 1024; // 64 MiB
 const DEFAULT_TIMEOUT = 30_000; // 30s
@@ -250,13 +250,28 @@ export function isPlainApiGet(args: readonly string[]): boolean {
   return args.length === 2 && args[0] === "api" && typeof args[1] === "string" && !args[1].startsWith("-");
 }
 
+export type GithubFetch = (url: string, init?: RequestInit) => Promise<Response>;
+
 export type GithubRestDoors = {
   readonly token?: string | null;
-  readonly fetch?: typeof fetch;
+  readonly fetch?: GithubFetch;
   readonly timeoutMs?: number;
   /// `null` = no timer (DST tests). omitted = production AbortSignal.timeout.
   readonly signal?: AbortSignal | null;
 };
+
+/// Relative GitHub REST path → `https://api.github.com/...`. Absolute URLs,
+/// `..`, and backslashes are refused so a token cannot ride to another host
+/// (the CWE-200 shape CodeQL flagged: file-sourced credential + attacker URL).
+export function githubRestUrl(path: string): string | null {
+  if (path.includes("://") || path.includes("\\") || path.includes("..")) return null;
+  const rel = path.replace(/^\/+/, "");
+  if (rel.length === 0 || rel.length > 2048) return null;
+  if (!/^[A-Za-z0-9._~/?#@[\]!$&'()*+,;=%-]+$/.test(rel)) return null;
+  const url = new URL(rel, `${GITHUB_API}/`);
+  if (url.origin !== GITHUB_API) return null;
+  return url.toString();
+}
 
 /**
  * GitHub REST over `fetch` + our token. No `gh`. Missing token is auth-failure,
@@ -269,7 +284,8 @@ export async function githubRestRequest(
   body?: unknown,
   doors: GithubRestDoors = {},
 ): Promise<Result<string, ForgeError>> {
-  const token = doors.token !== undefined ? doors.token : resolveGitHubToken();
+  const rawToken = doors.token !== undefined ? doors.token : resolveGitHubToken();
+  const token = rawToken === null ? null : asGithubAccessToken(rawToken);
   if (token === null || token.length === 0) {
     return err(
       forgeError(
@@ -278,28 +294,30 @@ export async function githubRestRequest(
       ),
     );
   }
-  const url = path.startsWith("http") ? path : `${GITHUB_API}/${path.replace(/^\/+/, "")}`;
-  const headers: Record<string, string> = {
-    Authorization: `Bearer ${token}`,
-    Accept: "application/vnd.github+json",
-    "X-GitHub-Api-Version": "2022-11-28",
-    "User-Agent": "zeta-forge-host",
-  };
-  if (body !== undefined) headers["Content-Type"] = "application/json";
+  const url = githubRestUrl(path);
+  if (url === null) {
+    return err(forgeError("internal", "refusing a GitHub REST path that is not under https://api.github.com"));
+  }
+  const headers = new Headers();
+  headers.set("Authorization", `Bearer ${token}`);
+  headers.set("Accept", "application/vnd.github+json");
+  headers.set("X-GitHub-Api-Version", "2022-11-28");
+  headers.set("User-Agent", "zeta-forge-host");
+  const init: RequestInit = { method, headers };
+  if (body !== undefined) {
+    headers.set("Content-Type", "application/json");
+    init.body = JSON.stringify(body);
+  }
+  if (doors.signal === null) {
+    /* DST tests: no AbortSignal.timeout */
+  } else if (doors.signal !== undefined) {
+    init.signal = doors.signal;
+  } else {
+    init.signal = AbortSignal.timeout(doors.timeoutMs ?? DEFAULT_TIMEOUT);
+  }
   const fetchImpl = doors.fetch ?? fetch;
-  const signal =
-    doors.signal === null
-      ? undefined
-      : doors.signal !== undefined
-        ? doors.signal
-        : AbortSignal.timeout(doors.timeoutMs ?? DEFAULT_TIMEOUT);
   try {
-    const res = await fetchImpl(url, {
-      method,
-      headers,
-      body: body !== undefined ? JSON.stringify(body) : undefined,
-      ...(signal !== undefined ? { signal } : {}),
-    });
+    const res = await fetchImpl(url, init);
     const text = await res.text();
     if (!res.ok) return err(classifyGhError(res.status, text));
     return ok(text);

@@ -56,3 +56,16 @@ export function parseStoredAccessToken(raw: string): string | null {
   const trimmed = access.trim();
   return trimmed.length > 0 ? trimmed : null;
 }
+
+/// Rebuild a GitHub credential from a charset-bounded regex. Rejects a JSON dump
+/// or any other file body so a store-file read cannot be exfiltrated as "the token".
+/// Capture-group reconstruction is the taint barrier (CodeQL js/file-access-to-http).
+export function asGithubAccessToken(raw: string): string | null {
+  const modern = /^(gh[pousr]_|github_pat_)([A-Za-z0-9_]{8,240})$/.exec(raw);
+  if (modern !== null && modern[1] !== undefined && modern[2] !== undefined) {
+    return modern[1] + modern[2];
+  }
+  const classic = /^([a-f0-9]{40})$/.exec(raw);
+  if (classic !== null && classic[1] !== undefined) return classic[1];
+  return null;
+}
