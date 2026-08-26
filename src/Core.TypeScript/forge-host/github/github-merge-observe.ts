@@ -130,9 +130,13 @@ function normalizeContext(c: GraphQlContext): { status?: string; conclusion?: st
     if (st === "PENDING") return { name: c.context, status: "PENDING" };
     if (st === "SUCCESS") return { name: c.context, conclusion: "SUCCESS" };
     if (st === "FAILURE" || st === "ERROR") return { name: c.context, conclusion: "FAILURE" };
-    return { name: c.context, status: st };
+    return st.length > 0 ? { name: c.context, status: st } : { name: c.context };
   }
-  return { name: c.name, status: c.status, conclusion: c.conclusion };
+  const out: { status?: string; conclusion?: string; name?: string } = {};
+  if (typeof c.name === "string") out.name = c.name;
+  if (typeof c.status === "string") out.status = c.status;
+  if (typeof c.conclusion === "string") out.conclusion = c.conclusion;
+  return out;
 }
 
 function splitNwo(nwo: string): { owner: string; name: string } | null {
