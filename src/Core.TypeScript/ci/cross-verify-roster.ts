@@ -645,6 +645,9 @@ export const CROSS_VERIFY_AUDITS: readonly CrossVerifyAudit[] = [
   },
 ];
 
+/** This file's own path, as other audits name it. */
+export const CROSS_VERIFY_ROSTER_PATH = "src/Core.TypeScript/ci/cross-verify-roster.ts";
+
 /**
  * The `gate.yml` job whose `audit:` matrix must equal the roster's ids.
  *

@@ -20,6 +20,7 @@ import { parse } from "yaml";
 import { classifyFloorResult, parseDecls } from "./gate-skip-verdict.ts";
 import {
   CROSS_VERIFY_AUDITS,
+  CROSS_VERIFY_ROSTER_PATH,
   checkName,
   compareRosterToMatrix,
   MATRIX_JOB_ID,
@@ -224,6 +225,50 @@ describe("the floor is not weakened", () => {
     // The migration's own falsifier: the pre-split job ran 31 audit steps, and losing one
     // in the move would be invisible — the checks list would simply be one name shorter.
     expect(ROSTER_IDS).toHaveLength(31);
+  });
+});
+
+describe("the roster is a CI invocation surface, and other audits must see it as one", () => {
+  // `audit-linter-coverage-vs-invocation.ts` refuses a package.json check that no workflow
+  // invokes, on the ground that a check wired to nothing reads exactly like a check that
+  // passed. Moving 31 commands out of `run:` bodies made five of them LOOK unwired to it —
+  // `hygiene:dotnet-pin-parity`, `mise-toolchain-couplings`, `no-check-then-use-file-races`,
+  // `stage0-independence`, `tech-radar-claims` — and that report would have been exactly
+  // backwards: all five run on the required floor of every PR. It went red on this branch's
+  // first CI run and named all five.
+  const COMMANDS = CROSS_VERIFY_AUDITS.map((a) => a.command).join("\n");
+
+  test("the five package.json scripts the refactor moved are still invoked, from here", () => {
+    const pkg = JSON.parse(readFileSync("package.json", "utf8")) as { scripts: Record<string, string> };
+    for (const script of [
+      "hygiene:dotnet-pin-parity",
+      "hygiene:mise-toolchain-couplings",
+      "hygiene:no-check-then-use-file-races",
+      "hygiene:stage0-independence",
+      "hygiene:tech-radar-claims",
+    ]) {
+      const cmd = pkg.scripts[script] ?? "";
+      const path = /([\w./-]+\.ts)/.exec(cmd)?.[1]?.replace(/^\.\//, "");
+      const named = COMMANDS.includes(`run ${script}`) || (path !== undefined && COMMANDS.includes(path));
+      expect(named).toBe(true);
+    }
+  });
+
+  // NOT duplicated here: running `audit-linter-coverage-vs-invocation.ts` end to end. It
+  // costs ~20 s (it asks markdownlint to resolve its own corpus) and it already runs, on
+  // every PR, in `lint (bash retirement inventory + hygiene unit tests)`. What is tested
+  // above is the matching rule that audit applies, restated against the roster — a
+  // deliberate duplication, and the reason it is safe is that the real audit going red is
+  // what put this section here in the first place.
+
+  test("only COMMANDS count as invocation, never the roster's prose", () => {
+    // The roster carries every replaced step's rationale verbatim, and those paragraphs
+    // name scripts and tools they do not invoke. If the audit ever grepped the whole file
+    // instead of the command strings, a mention would launder into an invocation — the
+    // vacuity class, arriving through the fix for the vacuity class.
+    const wholeFile = readFileSync(CROSS_VERIFY_ROSTER_PATH, "utf8");
+    expect(wholeFile).toContain("audit-dep-currency.ts");
+    expect(COMMANDS).not.toContain("audit-dep-currency.ts");
   });
 });
 

@@ -72,6 +72,59 @@ test goes red, so the list below cannot silently go stale.
 All 31 are legs of the single job id `cross-verify`, which is what `gate (required)`
 consumes today.
 
+## Measured cost of the split
+
+Both numbers are from the Actions jobs API, on this repository, not from the estimate the
+research doc carried.
+
+|                                   | before (job `98146180438`, run `32958750366`) | after (run `32963212370`) |
+| --------------------------------- | --------------------------------------------- | ------------------------- |
+| jobs                              | 1                                             | 31                        |
+| runner-seconds                    | **58**                                        | **572**                   |
+| wall-clock                        | 58 s                                          | **53 s**                  |
+| `actions/cache` steps in the job  | **0**                                         | **0**                     |
+| cache uploads (`Post` step > 2 s) | 0                                             | 0                         |
+
+**Δ = +514 runner-seconds ≈ +8.6 runner-min**, or **+9.1%** on the research doc's measured
+94-runner-min push run. That is **higher than the doc's +6.6% estimate** and the gap is
+recorded rather than smoothed: the doc priced class-0 setup at 12 s, and under 31-way
+concurrency the legs measured 8–20 s each (mean 18.5 s including teardown), because
+`checkout` and job start-up both slow down when 31 jobs schedule at once.
+
+**Cache bytes written: zero, and that is checked rather than assumed.** No leg has an
+`actions/cache` step — verified from a leg's own step list, which is: set-up job, checkout,
+setup-bun, `bun install`, run the audit, post-setup-bun, post-checkout, complete. The
+`Post Setup pinned Bun` step measured **0 s**, i.e. a key hit and no upload. The split
+therefore adds 31 cache _restores_ of one pinned Bun key and **no writes**, so it does not
+feed the eviction loop the cache work is fighting.
+
+**Wall-clock went down**, which was not the goal but is the honest result: the legs run in
+parallel and the longest (`ace-suite`, 46 s) finishes before the old serial job's 58 s.
+
+### Before/after, per audit
+
+The pre-split job spent **13 s of setup for 44 s of audits**, and 29 of the 31 audits took
+**≤ 2 s**. That ratio is what makes this job affordable to split and a class-1 job
+(`install.sh`, 46–149 s of setup, plus a cache participant) not: the research doc's rule is
+**a job may be split for free along a setup boundary it does not cross.**
+
+## The falsifier, demonstrated live and unplanned
+
+The split's one genuinely dangerous failure mode is that it quietly makes 31 audits
+non-blocking. Run `32963212370` demonstrated it does not, without needing a sabotage
+commit:
+
+- `cross-verify (ace-suite)` concluded **failure** — one leg of 31 — because
+  `build-graph.json` had drifted;
+- the other 30 legs concluded **success**;
+- `gate (required)` concluded **failure**, annotating `cross-verify: the job failed`,
+  alongside `gate scope=full: 8/8 floor jobs ran`.
+
+So `needs.cross-verify.result` collapsed the matrix to `failure` exactly as the design
+requires, the required check went red, and — the actual product of this change — **the red
+named the audit.** Pre-split, that same failure would have shown as one anonymous
+`cross-verify` red standing for 31 audits.
+
 ## Before promoting any of these — the two hazards
 
 **1. A required context that never reports WEDGES a PR; it does not fail it.** This is why
