@@ -200,10 +200,32 @@ jobs:
   path-filter:
     name: path filter
     runs-on: ubuntu-24.04
-    # 5 min covers the full-history checkout (`fetch-depth: 0`) on
-    # slow runners. The non-PR fast path runs in ~5 sec without any
-    # checkout, well under the cap.
-    timeout-minutes: 5
+    # STOPGAP with a known expiry — not a fix. Raised 5 -> 15 min on
+    # 2026-08-26 because the 5-minute cap was KILLING this job rather
+    # than bounding it. Measured over 287 `Checkout` steps (REST jobs
+    # API across 390 recent gate runs): 12 were cancelled at exactly
+    # 298-300s — at the cap, not near it. path-filter gates both
+    # build-and-test and full-verify, so every kill red-lined the whole
+    # gate as `gate scope=reduced: 6/8 floor jobs ran`.
+    #
+    # Basis for 15 min, from that sample (successful checkouts only):
+    #   p50=22s  p75=23s  p90=36s  p95=70s  p99=201s  max=262s
+    # A tight core (236/273 land in 15-29s) with a genuinely heavy tail
+    # reaching 262s — so the 5-minute cap sat *inside* the tail and
+    # truncated it. 15 min is ~3.4x the slowest observed success and
+    # ~41x the median: far enough out that it fires only on a true
+    # hang, which is what a timeout is for. A high cap is paid for only
+    # by an already-stuck job; the low cap was paid for by every
+    # slow-but-healthy run.
+    #
+    # The over-fetch this cap was sized around is now GONE — the Checkout
+    # step below is shallow and `detect` fetches just the two commits it
+    # diffs (see those comments). So the headroom here is no longer
+    # covering a 297MB all-refs fetch; it is covering a genuine hang,
+    # which is what a timeout should do. Kept at 15 rather than lowered
+    # back: the tail above was measured against the OLD fetch, so there
+    # is no measured tail for the new one yet. Re-measure before tightening.
+    timeout-minutes: 15
     outputs:
       code: ${{ steps.detect.outputs.code || steps.nonpr.outputs.code }}
     steps:
@@ -225,10 +247,25 @@ jobs:
         if: github.event_name == 'pull_request'
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          # Need both PR base and head shas for git diff. fetch-depth: 0
-          # gets full history; the 5-minute job timeout above is sized
-          # for this on slow runners.
-          fetch-depth: 0
+          # Shallow. The `detect` step below fetches the two commits it
+          # needs explicitly — see the fetch there for why two is enough.
+          #
+          # This was `fetch-depth: 0`, which is over-fetching for the
+          # stated need. Full depth makes checkout run:
+          #   git fetch --no-tags --prune origin \
+          #     +refs/heads/*:refs/remotes/origin/* \
+          #     +refs/tags/*:refs/tags/* \
+          #     +<sha>:refs/remotes/pull/N/merge
+          # i.e. EVERY branch and EVERY tag at full depth — 81 heads and
+          # 359 tags today, 297MB — to compute a diff between two commits
+          # that needs 162MB. The over-fetch also grows with the ref
+          # count, so it gets worse over time; a shallow fetch does not.
+          #
+          # Every other job in this workflow already checks out shallow
+          # and completes in ~9s with no hangs across hundreds of samples.
+          # path-filter was the only `fetch-depth: 0` job in the file and
+          # the only one whose checkout was being killed at the timeout.
+          fetch-depth: 1
 
       - id: detect
         if: github.event_name == 'pull_request'
@@ -238,6 +275,31 @@ jobs:
           PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
           set -euo pipefail
+
+          # Fetch exactly the two commits the diff below needs, and
+          # nothing else. The checkout above is shallow, so neither sha
+          # is guaranteed present yet.
+          #
+          # Why TWO COMMITS is provably enough: the diff below is
+          # TWO-DOT (`git diff A B`), which is a direct tree-to-tree
+          # comparison. It does not walk ancestry and does not need a
+          # merge base — verified against two commits with NO common
+          # history at all, where `git merge-base` fails and the
+          # three-dot `git diff A...B` dies with "no merge base", while
+          # two-dot `git diff A B` still returns the correct file list.
+          # So PR shape is irrelevant here: a long-lived branch, a
+          # force-push, and merge commits in the range all diff the same,
+          # because none of them are traversed. This is what makes a
+          # bounded `fetch-depth: N` the wrong shape of fix — N would be
+          # a guess about branch length, and this is not a guess.
+          #
+          # Fail-closed, which is the property that matters most: if
+          # either object were missing, `git diff` exits 128 with
+          # "fatal: bad object" and `set -e` aborts the step. A missing
+          # object therefore CANNOT produce a wrong changed-file set and
+          # silently skip jobs that should have run — it fails the job
+          # loudly instead. Verified, not assumed.
+          git fetch --no-tags --depth=1 origin "${PR_BASE_SHA}" "${PR_HEAD_SHA}"
 
           # Diff base..head of the PR to enumerate changed files.
           CHANGED=$(git diff --name-only "${PR_BASE_SHA}" "${PR_HEAD_SHA}")
@@ -569,6 +631,7 @@ jobs:
           tier: full
 
       - name: Install toolchain via three-way-parity script (Unix; GOVERNANCE §24)
+        id: install_unix
         # Single source of truth for Unix toolchain state. Installs:
         # .NET SDK (per global.json, via Microsoft's dotnet-install.sh
         # — round-32 refactor out of mise), python (mise-pinned),
@@ -580,6 +643,7 @@ jobs:
         run: ./tools/setup/install.sh
 
       - name: Install toolchain via three-way-parity script (Windows; GOVERNANCE §24)
+        id: install_windows
         # PowerShell does not execute the Git Bash dispatcher reliably when a workflow `run:` step
         # names install.sh directly. Call the native entrypoint so it can publish mise runtime bins
         # to GITHUB_PATH for the later bun/dotnet steps. CI must not register a desktop loop task.
@@ -588,6 +652,7 @@ jobs:
         run: ./tools/setup/install.ps1 -SkipLoopRegister
 
       - name: Guard — CodeAnalysis pins ≤ SDK Roslyn (CS9057, #9774 regression)
+        id: roslyn_guard
         # Fast pre-build backstop: a Microsoft.CodeAnalysis.* pin newer than the SDK's own
         # Roslyn makes generators unloadable (CS9057) — which reached main via #9774. Reads the
         # SDK's ACTUAL csc version (no heuristic), so it self-updates when the SDK is bumped.
@@ -595,6 +660,7 @@ jobs:
         run: bun src/Core.TypeScript/hygiene/audit-codeanalysis-sdk-match.ts
 
       - name: Build (0 Warning(s) / 0 Error(s) required)
+        id: build
         # BASH_ENV (set by shellenv.sh during the install step) has
         # already pointed this shell at the managed shellenv file;
         # no explicit source needed.
@@ -602,6 +668,9 @@ jobs:
         run: dotnet build Zeta.sln -c Release
 
       - name: Test
+        # `id:` is load-bearing — the blame-printer below keys off THIS step's
+        # outcome, not off the job's. See the note there.
+        id: test
         if: needs.path-filter.outputs.code == 'true'
         # --blame-crash / --blame-hang-timeout: when the test host crashes or
         # hangs (the silent "MSB4181: VSTestTask returned false but did not log
@@ -609,11 +678,48 @@ jobs:
         # and a Sequence_*.xml naming the in-flight test, instead of a mystery.
         run: dotnet test Zeta.sln -c Release --no-build --verbosity normal --blame-crash --blame-hang-timeout 15m
 
+      - name: Name the failing step (toolchain-free; survives a broken toolchain)
+        # THE ONLY DIAGNOSTIC THAT MAY NOT DEPEND ON THE TOOLCHAIN.
+        #
+        # Every other reporter in this job runs `bun` or `dotnet` — which the install
+        # step above is responsible for providing. So in the one failure mode where a
+        # diagnostic matters most (the toolchain itself did not install) every reporter
+        # is guaranteed to be missing its interpreter. That is a bootstrap defect: the
+        # reporter goes silent in exactly the case it exists for. Measured on main
+        # 2026-08-26 (c3addd47, 4ca7cc9b, both windows legs): the check-run's ONLY two
+        # annotations were `Process completed with exit code 1` twice, one from the real
+        # failure and one from the reporter that could not run — neither naming a step.
+        #
+        # This step uses `echo` and nothing else. `echo` is a builtin in bash AND an
+        # alias for Write-Output in pwsh, so it needs no `shell:` key and no installed
+        # program: it works on all five legs whatever survived the install. It emits a
+        # workflow-command annotation, so the answer appears in the check-run summary
+        # where `Process completed with exit code 1` currently sits alone.
+        #
+        # `if: failure()` is correct HERE (unlike the blame printer below) precisely
+        # because this step has no prerequisite that could also have failed.
+        if: failure()
+        run: |
+          echo "::error title=build-and-test: which step failed::install-unix=${{ steps.install_unix.outcome }} install-windows=${{ steps.install_windows.outcome }} roslyn-guard=${{ steps.roslyn_guard.outcome }} build=${{ steps.build.outcome }} test=${{ steps.test.outcome }}"
+          echo "[step-outcomes] install-unix=${{ steps.install_unix.outcome }} install-windows=${{ steps.install_windows.outcome }} roslyn-guard=${{ steps.roslyn_guard.outcome }} build=${{ steps.build.outcome }} test=${{ steps.test.outcome }}"
+          echo "[step-outcomes] a failing install means the toolchain never provisioned; read that step's log, not the reporters below."
+
       - name: Name the crashed/hung test (on failure)
         # Surface the blame Sequence_*.xml into the CI log so a host crash/hang
         # is diagnosable without artifact plumbing — turns "VSTestTask returned
         # false" into "test X was running when the host died". Cross-platform (bun).
-        if: failure() && needs.path-filter.outputs.code == 'true'
+        #
+        # Gated on `steps.test.outcome`, NOT on bare `failure()`. Under `failure()`
+        # this ran after ANY earlier step failed — including the toolchain-install
+        # step, which is the one step whose job is to put `bun` on PATH. So when
+        # install failed, this fired without a `bun` to run and died with
+        # "The term 'bun' is not recognized", adding a second red step and a second
+        # `Process completed with exit code 1` annotation that said nothing about
+        # either failure. A failure reporter that fails is worse than no reporter:
+        # it buries the real annotation under its own. print-blame-sequences.ts is
+        # exit-0-always by contract, so gating on the Test step's own outcome makes
+        # a non-zero exit here mean what it should — a defect in the reporter.
+        if: failure() && steps.test.outcome == 'failure'
         run: bun src/Core.TypeScript/ci/print-blame-sequences.ts
 
       - name: Skipped (docs-only PR)
@@ -1161,6 +1267,30 @@ jobs:
         # regression cannot report success the way `lint:markdown` did (#10712).
         run: bun run hygiene:no-decide-by-grep
 
+      - name: GraphQL-transport guard (REST is the default; GraphQL is the contested budget)
+        # Refuses `gh pr view|list|checks` and `gh run view` in COMMITTED scripts,
+        # workflows and agent loops. Those four are GraphQL; `gh api repos/...` is REST;
+        # the two have separate 5000/hour budgets and only GraphQL is contended here
+        # (measured 2026-08-14: GraphQL 1147/5000 vs REST 33/5000; measured 2026-08-25/26:
+        # agent polling hit 0/5000 within a minute of an hourly reset, twice, and a
+        # runaway loop drained the quota for ~40 min because its stop condition was read
+        # over the same transport it was saturating).
+        #
+        # NOT a ban on `gh`. Interactive use by a human is not the target, and
+        # `gh pr merge --auto` is explicitly permitted -- enablePullRequestAutoMerge is
+        # GraphQL-ONLY, so it is the one call with no REST form.
+        #
+        # DRIFT TIER, deliberately: this job is not in `gate (required)`'s needs, so a
+        # finding paints a red X here and blocks nothing. Promotion to the floor is the
+        # maintainer's call (AUDIT-LIFECYCLE.md step 6 -- a new gate stays informational
+        # until it has been quiet for some calendar time).
+        #
+        # 39 pre-existing sites in 19 files are grandfathered in the baseline; the
+        # baseline counts per (rule, file, route), so a NEW call in an already-listed
+        # file still goes red. Exits 1 below --min-files, so a scope regression cannot
+        # report success the way `lint:markdown` did (#10712).
+        run: bun run hygiene:no-graphql-transport-in-scripts
+
       - name: Scan-floor route audit (the floors are themselves enumerable)
         # Inventories every scan floor in the repo through four INDEPENDENT
         # recognizers and requires each to contribute at least one site. An
@@ -1294,6 +1424,22 @@ jobs:
         # roster already costs. It scales with `.md` count, not with rule count.
         run: bun run hygiene:linter-coverage
 
+      - name: Consent sign-off ledger is truthful (docs/books/you-born-at-the-hinge/CONSENT-SIGNOFF-DESIGN.md)
+        # REPO TIER, not the publish gate. This run fails only on FALSE CLAIMS in the consent
+        # ledger -- a cited pull-request review that does not exist, is not APPROVED, or was
+        # authored by someone other than the person the row names; a passage marked
+        # de-identified that still carries the name; a subject with no roster entry. It does
+        # NOT fail on stale or missing consent: those are publication-tier findings and are
+        # gated in pages-deploy.yml with `--publish`, because the maintainer draws the hard
+        # line at the distributable book rather than at a disclosed public draft.
+        #
+        # `gh` is on the runner and GITHUB_TOKEN reads public repos, so the review fetch is
+        # real here. Exit 3 (UNCHECKED) is a failure by design: a review that was not fetched
+        # must never be reported as a review that passed.
+        run: bun run hygiene:consent-signoff
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: No culture-sensitive collation in TypeScript (.claude/rules/culture-invariant-by-default.md)
         # THE CHECK EXISTED AND DID NOT RUN. This is the mechanical enforcement of a carved
         # rule, it has had a baseline file since it landed, and until this step no workflow
@@ -1414,6 +1560,29 @@ jobs:
         # the inventory unit tests one step down, now this): a check that exists,
         # can fail, and is wired to nothing reads exactly like a check that passed.
         run: bun run inventory:items-check
+
+      - name: Book named index is derived and COMPLETE (docs/books/you-born-at-the-hinge/NAMED-INDEX-DESIGN.md)
+        # Fourth instance of the class the three steps above name, and the first one
+        # whose failure costs a NAMED THIRD PARTY rather than CI. `NAMED-INDEX.md` is
+        # a committed projection of the `consent:begin` markers in the prose, and it
+        # is what a subject is shown when asked "is this everywhere you appear?".
+        #
+        # Two ways it can lie, both checked here:
+        #   INDEX_STALE          the committed projection drifted from the prose
+        #   UNMARKED_APPEARANCE  a roster subject is in the prose with no marker, so
+        #                        the index omits them and still reads as complete
+        #
+        # REPO TIER. This run fails on FALSE CLAIMS -- the index asserting a
+        # completeness it does not have, or a `role-only` / `pending` subject named in
+        # the text. Insufficient-consent findings (`REVOKED_APPEARANCE`) are advisory
+        # here and fail under `--publish`, matching the split
+        # audit-consent-signoff.ts draws for the same reason.
+        #
+        # Offline and network-free: it reads the tree and nothing else. The falsifiers
+        # run in the hygiene unit-test suite step above (`bun test
+        # src/Core.TypeScript/hygiene/`), which is what proves this step can fail --
+        # today the roster is empty, so the audit reports a COUNT, not a clearance.
+        run: bun run hygiene:book-named-index
 
       - name: Inventory unit tests
         # These existed (generate-items-json.test.ts) and NO workflow ran them —
@@ -2648,7 +2817,7 @@ jobs:
         run: bun src/Core.TypeScript/lint/lint-rust.ts
 
   # ═══════════════════════════════════════════════════════════════════
-  # cross-verify — 31 audits, 31 NAMED check-runs
+  # cross-verify — 30 audits, 30 NAMED check-runs
   # ═══════════════════════════════════════════════════════════════════
   #
   # Enforce the trust-core cross-language byte-lock + golden-vector oracles + the Ace
@@ -2722,17 +2891,34 @@ jobs:
       # that failed.
       fail-fast: false
       matrix:
-        # ONE HALF OF A TWO-VIEW LIST. The other is `CROSS_VERIFY_AUDITS` in
-        # src/Core.TypeScript/ci/cross-verify-roster.ts, and they cannot drift: every leg
-        # runs `--run <id>`, which asserts the two lists are equal AS SEQUENCES before it
-        # runs its own audit. Add an id here with no roster entry and this leg goes red
-        # naming it; add a roster entry with no id here and all 31 legs go red naming the
-        # missing leg.
+        # A NOTE THAT IS NOT DERIVED, so it lives OUTSIDE the generated region below:
+        # ONE ID IS DELIBERATELY ABSENT: `orphaned-archive-refs` (AH003). It now runs on a
+        # schedule, and still fatal, in `.github/workflows/archive-strand-alarm.yml`,
+        # because its verdict is a repo-wide TIME-VARYING number read from `git ls-remote`.
+        # On 2026-08-25 it blocked PR #15308 — a change that added only new files — over
+        # four refs stranded repo-wide, and that PR re-ran green with zero code change. A
+        # pre-merge leg's verdict must be a function of the CANDIDATE. The full reasoning,
+        # and what replaces the blocking placement, is at the removed roster entry in
+        # `src/Core.TypeScript/ci/cross-verify-roster.ts`; the guard that stops this class
+        # returning is `src/Core.TypeScript/ci/floor-live-remote-queries.ts`.
         #
-        # Kept STATIC on purpose. A dynamic matrix (`fromJSON` of a roster job's output)
-        # would remove this list — and would mean these check names do not exist until a
-        # roster job succeeds. Once any of them is a required context, a name that never
-        # reports does not fail a PR, it WEDGES it. A static list cannot do that, and it
+        # ── BEGIN GENERATED · cross-verify matrix legs · do not hand-edit ──
+        # DERIVED from `CROSS_VERIFY_AUDITS` in src/Core.TypeScript/ci/cross-verify-roster.ts.
+        #
+        # One command is BOTH the check and the fix, so the two cannot disagree:
+        #
+        #   bun src/Core.TypeScript/ci/cross-verify-roster.ts --derive           # exits 1 on drift, naming it
+        #   bun src/Core.TypeScript/ci/cross-verify-roster.ts --derive --write   # rewrites this region
+        #
+        # Every matrix leg runs the check before its own audit, so a hand-edit here survives
+        # at most one CI run. Adding or removing an audit is a roster edit plus that one
+        # command — never an edit to this list.
+        #
+        # Still STATIC on purpose, and generation is what makes a static list affordable. A
+        # DYNAMIC matrix (`fromJSON` of a roster job's output) would delete this list — and
+        # would mean these check names do not exist until that job succeeds. Once any of them
+        # is a required context, a name that never reports does not FAIL a pull request, it
+        # WEDGES it, silently and forever. A generated static list cannot do that, and it
         # keeps the names greppable in this file for the ruleset promotion.
         audit:
           - ace-suite
@@ -2750,7 +2936,6 @@ jobs:
           - heartbeat-lane-audit-tests
           - push-without-rebase
           - skip-token-cannot-land
-          - orphaned-archive-refs
           - dotnet-pin-parity
           - mise-toolchain-couplings
           - flash-entrypoint-parity
@@ -2766,6 +2951,7 @@ jobs:
           - mumps-zeta-id
           - zeta-id-gen-layout-drift
           - algebra-tower-drift
+        # ── END GENERATED · cross-verify matrix legs ──
 
     steps:
       - name: Checkout
