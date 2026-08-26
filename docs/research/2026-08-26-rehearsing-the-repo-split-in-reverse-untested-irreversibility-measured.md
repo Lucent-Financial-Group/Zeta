@@ -449,18 +449,25 @@ cadence cycle, and revoke only after. That makes the *transition* reversible eve
 
 **Created this session: exactly one.**
 
-| repo | id | state |
-|---|---|---|
-| `zzz-rehearsal-5f25a8-DELETE-ME` | `1347375084` | **cannot be deleted by any credential this fleet holds** |
+| repo | id | final location | state |
+|---|---|---|---|
+| `zzz-rehearsal-5f25a8-DELETE-ME` | `1347375084` | `AceHack/` (personal) | **cannot be deleted by any credential this fleet holds** |
 
 Nothing else was created. Nothing not created by this session was deleted, renamed,
 transferred, or modified. **`Lucent-Financial-Group/Zeta` was read only** — no writes, no
 settings changes, no workflow runs.
 
-Final placement and the cleanup command are in §9 of the accompanying PR discussion; the repo
-is transferred out of the org so the org matches zero on the `zzz-rehearsal-` prefix, and it
-carries `DELETE-ME` in its name in the holding account. **Deleting it requires Aaron**, via
-either:
+Using §3.1's own finding, the repo was **transferred out of the org**, so the org now matches
+**zero** on the `zzz-rehearsal-` prefix — confirmed two independent ways:
+
+```
+gh repo list Lucent-Financial-Group --limit 200 --json name | grep -c zzz-rehearsal  -> 0
+gh api "/search/repositories?q=zzz-rehearsal+org:Lucent-Financial-Group"             -> total_count 0
+```
+
+That is the reversal procedure being used on its own rehearsal, which is the strongest
+available evidence that §3.1 works. The one orphan now sits in the personal account carrying
+`DELETE-ME` in its name. **Deleting it requires Aaron**, via either:
 
 ```bash
 gh auth refresh -h github.com -s delete_repo   # interactive; then gh repo delete <path> --yes
