@@ -189,6 +189,134 @@ module AdinkraCode =
             | [ y ] -> Some y
             | _ -> None
 
+    // ── Coordinate-erasure identifiability ────────────────────────────────────────────────────
+
+    /// Finite classification of a known coordinate-erasure pattern. This is a codeword-set
+    /// oracle, not an implementation of the TypeScript UDP decoder.
+    type ErasureStatus =
+        | Identifiable
+        | AmbiguousCodewordSupport
+        | Underdetermined
+
+    type ErasureClassification =
+        { Mask: int
+          ErasedCount: int
+          Status: ErasureStatus }
+
+    let private supportMask (word: int[]) : int =
+        word
+        |> Array.mapi (fun index bit -> if bit = 0 then 0 else 1 <<< index)
+        |> Array.fold (|||) 0
+
+    /// A coordinate-erasure pattern is uniquely decodable exactly when it contains no support of
+    /// a non-zero codeword: otherwise the zero codeword and that codeword agree on every survivor.
+    /// For this code, the minimum-distance guarantee covers all masks of size at most three; the
+    /// exhaustive classifier additionally distinguishes the 56 identifiable four-erasure masks
+    /// from the fourteen weight-four codeword supports.
+    let classifyErasureMask (mask: int) : ErasureClassification =
+        if mask < 0 || mask >= (1 <<< length) then
+            invalidArg (nameof mask) $"erasure mask must be in [0, {(1 <<< length) - 1}]"
+
+        let erasedCount = System.Numerics.BitOperations.PopCount(uint32 mask) |> int
+        let containsNonZeroSupport =
+            allCodewords
+            |> List.map supportMask
+            |> List.exists (fun support -> support <> 0 && (support &&& mask) = support)
+
+        let status =
+            if not containsNonZeroSupport then Identifiable
+            elif erasedCount = 4 then AmbiguousCodewordSupport
+            else Underdetermined
+
+        { Mask = mask
+          ErasedCount = erasedCount
+          Status = status }
+
+    /// Readable exhaustive census, indexed by the number of erased coordinates.
+    let erasureCensus : (int * int * int) list =
+        [ 0 .. (1 <<< length) - 1 ]
+        |> List.map classifyErasureMask
+        |> List.groupBy (fun row -> row.ErasedCount)
+        |> List.sortBy fst
+        |> List.map (fun (count, rows) ->
+            count,
+            rows |> List.filter (fun row -> row.Status = Identifiable) |> List.length,
+            rows.Length)
+
+    // ── Representation-defect spectrum: independent combinatorial oracle ───────────────────────
+
+    /// A numerical regular-module defect requires both an operator algebra and a carrier module.
+    /// The spinorial `120 + 128 = 248` decomposition supplies neither a carrier action nor a
+    /// rank-one map, so it remains explicitly unmeasured instead of receiving a fabricated ratio.
+    type RegularityStatus =
+        | Measured of carrierDimension: int * operatorDimension: int
+        | Unmeasured of missingWitnesses: string list
+
+    type ColourResidueClassification =
+        { Colours: int list
+          ColourMask: int
+          ContainsCodewordSupport: bool
+          FreeRankOne: bool }
+
+    /// `dim A / dim M = 2^N / 2^(N-k) = 2^k = |C|` for the full coded colour algebra.
+    /// The TypeScript matrix route measures `dim A`; this independent F# route derives the other
+    /// side from the code object itself and can therefore disagree with the matrix measurement.
+    let fullOperatorDimension = 1 <<< length
+    let homoiconicityDefect = fullOperatorDimension / adinkraNodes
+
+    let private choose (count: int) (values: int list) : int list list =
+        let rec walk remaining rest =
+            match remaining, rest with
+            | 0, _ -> [ [] ]
+            | _, [] -> []
+            | n, head :: tail ->
+                (walk (n - 1) tail |> List.map (fun picked -> head :: picked)) @ walk n tail
+        walk count values
+
+    let private colourMask (colours: int list) : int =
+        colours |> List.fold (fun mask colour -> mask ||| (1 <<< colour)) 0
+
+    let private nonZeroCodewordSupportMasks : int list =
+        allCodewords
+        |> List.map supportMask
+        |> List.filter (fun support -> support <> 0)
+
+    /// The four-colour residue is free of rank one exactly when the selected coordinates contain
+    /// no support of a non-zero codeword. The result is a family, not a canonical colour choice.
+    let colourResidueClassifications : ColourResidueClassification list =
+        choose (length - dimension) [ 0 .. length - 1 ]
+        |> List.map (fun colours ->
+            let mask = colourMask colours
+            let containsCodewordSupport =
+                nonZeroCodewordSupportMasks
+                |> List.exists (fun support -> (support &&& mask) = support)
+            { Colours = colours
+              ColourMask = mask
+              ContainsCodewordSupport = containsCodewordSupport
+              FreeRankOne = not containsCodewordSupport })
+
+    let colourResidueCensus : int * int * int =
+        let candidates = colourResidueClassifications.Length
+        let working =
+            colourResidueClassifications
+            |> List.filter (fun row -> row.FreeRankOne)
+            |> List.length
+        candidates, working, candidates - working
+
+    let colourResidueInclusionCounts : int list =
+        [ 0 .. length - 1 ]
+        |> List.map (fun colour ->
+            colourResidueClassifications
+            |> List.filter (fun row -> row.FreeRankOne && List.contains colour row.Colours)
+            |> List.length)
+
+    let bivectorSpinorRegularity =
+        Unmeasured
+            [ "implemented finite Lie bracket"
+              "declared carrier module"
+              "operator action on that carrier"
+              "injectivity and rank-one-freeness test" ]
+
     // ── Weight enumerator and MacWilliams fixed-point (gen(gen)=gen Face 1 discharge) ─────────────
     //
     // The **weight enumerator** of a binary code C is W_C(x,y) = Σ_{c∈C} x^{n-wt(c)} y^{wt(c)}.
