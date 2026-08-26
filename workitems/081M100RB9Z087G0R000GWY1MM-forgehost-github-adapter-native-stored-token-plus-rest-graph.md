@@ -16,6 +16,9 @@ composes_with: []
 ours (`github-auth.ts` → `~/.config/zeta/auth/github.json`). The factory
 work (PR create/merge, checks, GraphQL threads, rest-push) still shells `gh`.
 
+Seed (this PR): `resolve-stored-token.ts` — store first, then `GH_TOKEN` /
+`GITHUB_TOKEN`, never `gh auth token`. Adapters are not switched yet.
+
 ## Must
 
 - Resolve token from OUR store first, then env (`GH_TOKEN` /
