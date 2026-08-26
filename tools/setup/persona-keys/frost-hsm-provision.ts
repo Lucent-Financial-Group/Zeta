@@ -250,6 +250,16 @@ function checkMechanism(lib: Pkcs11Lib, slotId: number): MechanismCheck {
  * Three requirements, and all three have bitten a token somewhere: encrypt, decrypt, and a
  * maximum key size that reaches AES-256. A module advertising CBC_PAD with a 16-byte
  * ceiling supports the mechanism and cannot hold this key.
+ *
+ * SCANNER NOTE (2026-08-26, PR #15564). GitHub code-quality flags the two `m.flags & CKF_*`
+ * lines below as "implicit operand conversion ... from undefined to number". Adjudicated as a
+ * FALSE POSITIVE, not suppressed: `m.flags` is `bigint` on the `checked: true` arm, both
+ * `CKF_*` are `bigint` literals, and `bigint & bigint` is `bigint` with no conversion of any
+ * kind. The scanner appears not to follow the `if (!m.checked) return` narrowing, so it sees
+ * the union's other arm — where `flags` is absent, hence `undefined`. `tsc --strict` with
+ * `exactOptionalPropertyTypes` reports zero errors on this file, and that is the authority.
+ * Left as-is deliberately: restructuring correct code to quiet a tool that misreads it would
+ * make the code worse and the tool no better.
  */
 export function mechanismSatisfiesAdapter(m: MechanismCheck): { ok: boolean; why: string } {
   if (!m.checked) return { ok: false, why: m.reason };
@@ -336,6 +346,10 @@ export function classifyWrapKeyReadiness(
     }
 
     const phSession = new BigUint64Array(1);
+    // SCANNER NOTE: flagged as an implicit undefined→number conversion (PR #15564). False
+    // positive, same shape as the one on mechanismSatisfiesAdapter — `CKF_SERIAL_SESSION`
+    // and `CKF_RW_SESSION` are both `bigint` literals, so `|` is a bigint OR and nothing is
+    // converted. Adjudicated, not suppressed; `tsc --strict` is clean on this line.
     const orv = lib.C_OpenSession(BigInt(slotId), CKF_SERIAL_SESSION | CKF_RW_SESSION, 0n, 0n, phSession);
     if (!rvOk(orv)) {
       return nope("session-failed", `C_OpenSession on slot ${slotId} returned ${orv}`, tokenIdentity);
