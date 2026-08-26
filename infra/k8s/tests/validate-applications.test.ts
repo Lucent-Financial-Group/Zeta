@@ -350,11 +350,51 @@ describe("validate-applications mutation suite", () => {
           cwd: repoRoot,
         });
         const output = `${proc.stdout.toString()}${proc.stderr.toString()}`;
-        // EXACTLY ONE failure, and it is Test 9's. If anything else in this
-        // synthetic tree were also failing, this case would prove nothing about
-        // Test 9 — so the count is asserted, not just the presence of the string.
+        // Test 9's refusal must fire, and NOTHING ELSE may be failing for an
+        // unrelated reason — otherwise this case would pass on somebody else's
+        // red and prove nothing about Test 9. That intent is the original
+        // author's and is preserved here; what changed is how it is enforced.
+        //
+        // IT WAS `toContain("Results: 8 passed, 1 failed")`, WHICH COULD NOT
+        // PASS IN CI. `test (TS hermetic)` installs Bun and nothing else —
+        // helm and kubeconform are provisioned in the separate `helm-validate`
+        // job — so the validator's own tool-missing guard in
+        // validate-applications.ts (the `else if (toolMissing("helm") ||
+        // toolMissing("kubeconform"))` branch) emits a SECOND failure and the
+        // real output is `Results: 8 passed, 2 failed`.
+        //
+        // MEASURED both ways on 2026-08-26: with helm+kubeconform on PATH,
+        // `8 passed, 1 failed`; with them removed from PATH, `8 passed, 2
+        // failed`. The CI annotation on b4b7b21a37 shows the latter. Note the
+        // extra failure is printed under Test 7's heading — Test 8's guard
+        // errors before printing its own — so the log misattributes it; Test 7
+        // itself iterates over zero charts here and contributes nothing.
+        //
+        // The defect is that a COUNT couples this case to every sibling's
+        // outcome AND to the toolchain of whichever tier runs it. An assertion
+        // that can never hold does not read as a bug — it reads as a flake,
+        // forever, to anyone who just hits rerun.
+        //
+        // So the failure SET is asserted instead of its cardinality: Test 9's
+        // refusal must be present, and every other reported failure must be
+        // the one known, declared, environment-dependent one. An unrelated red
+        // still fails this case, which is what the count was protecting.
         expect(output).toContain("Test 7 and Test 8 validated nothing");
-        expect(output).toContain("Results: 8 passed, 1 failed");
+
+        const failures = (output.split("\nFailures:\n")[1] ?? "")
+          .split("\n")
+          .filter((l) => l.startsWith("  - "))
+          .map((l) => l.slice(4));
+        expect(failures.some((f) => f.includes("Test 7 and Test 8 validated nothing"))).toBe(true);
+        const unrelated = failures.filter(
+          (f) =>
+            !f.includes("Test 7 and Test 8 validated nothing") &&
+            // The one permitted extra, named rather than counted: this tier has
+            // no helm/kubeconform, and the validator says so out loud instead
+            // of going quietly green.
+            !f.includes("helm and/or kubeconform is not on PATH"),
+        );
+        expect(unrelated).toEqual([]);
         expect(proc.exitCode).toBe(1);
       } finally {
         rmSync(dir, { recursive: true, force: true });
