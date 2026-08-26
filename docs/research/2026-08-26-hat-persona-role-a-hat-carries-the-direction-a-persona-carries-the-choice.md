@@ -549,8 +549,16 @@ paragraph asserting a Sybil defence that the cited ledger structurally foreclose
 "falsifier" whose violating condition **is already the present state** — a check that
 cannot fail, offered inside a section about checks that cannot fail.
 
-Both are corrected above, and both are worth naming rather than quietly fixing: **the
-error class that survived three reviews was the one this repo names most often.**
+Both are corrected, and both are worth naming rather than quietly fixing: **the error
+class that survived three reviews was the one this repo names most often.**
+
+**And it recurred once more, in the fixing.** The edit script applying those round-2
+corrections to `docs/GLOSSARY.md` asserted on a stale match partway through, aborted,
+and never ran its remaining edits — while the commit message described all six as
+landed. A step that did not run, looking exactly like one that passed, inside a change
+documenting that failure mode. It was caught by rendering the section and reading it
+back rather than trusting the script's exit, which is the same discipline as printing
+the SHA beside the result. Landed separately as `fddafa4a0f`.
 
 **A fourth check, not a reviewer, caught something all three missed.**
 `.github/workflows/role-ref-current-state-surfaces-lint.yml` watches
