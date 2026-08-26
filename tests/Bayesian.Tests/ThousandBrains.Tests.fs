@@ -193,11 +193,19 @@ module ThousandBrainsTests =
             Assert.Equal(bits stacked.[axis].PrecisionMean, bits jointly.Axes.[axis].PrecisionMean)
 
     [<Fact>]
-    let ``TB-9: pooling across reference frames is REFUSED, and names who disagreed`` () =
+    let ``TB-9: pooling across reference frames is REFUSED, naming the frames`` () =
         // What the frame tag is FOR. A location in the frame of a cup and a
         // location in the frame of the table it stands on are different
         // quantities; averaging them is a category error, and a plausible-looking
         // average is the silent wrong answer this type exists to prevent.
+        //
+        // THIS TEST WAS BRIEFLY VACUOUS AND THE ACCIDENT IS WORTH RECORDING. Its
+        // first version asserted `Contains("b", e)` to mean "the error names the
+        // offending column". When TB-13 changed the contract to name FRAMES rather
+        // than blame columns, the assertion kept passing — because "ta*b*le"
+        // contains a 'b'. A single-character substring assertion is barely an
+        // assertion at all; it now checks the frames by name and the columns by
+        // their absence.
         let votes =
             [ spatialVote "a" "cup" [| g 1.0 0.5 |] 1.0
               spatialVote "b" "table" [| g 1.0 0.5 |] 1.0 ]
@@ -205,8 +213,9 @@ module ThousandBrainsTests =
         | Ok _ -> failwith "pooled a cup-frame belief with a table-frame belief"
         | Error e ->
             Assert.Contains("reference frames", e)
-            Assert.Contains("b", e)
-            Assert.Contains("table", e)
+            Assert.Contains("'cup'", e)
+            Assert.Contains("'table'", e)
+            Assert.DoesNotContain("disagree", e)
 
     [<Fact>]
     let ``TB-10: mismatched dimensions are REFUSED, not zero-padded`` () =
@@ -252,3 +261,38 @@ module ThousandBrainsTests =
             float spatial.AccumulatedIV > Array.max perAxis,
             sprintf "IV %.17g did not exceed the largest single axis %.17g — it is not a sum"
                 (float spatial.AccumulatedIV) (Array.max perAxis))
+
+    [<Fact>]
+    let ``TB-13: a mixed pool names every frame present, and blames nobody`` () =
+        // FOUND BY SWEEPING MY OWN CODE. The first version took `first.Belief.Frame`
+        // as "the pool's" frame and reported everyone else as disagreeing — so a
+        // pool of [table; cup; cup] blamed the MAJORITY for the outlier's frame,
+        // and list order decided who was wrong.
+        //
+        // That is the shape `.claude/rules/dual-use-detection-is-neutral-oracle-
+        // decides.md` forbids: a mechanism reports the FACT, never the verdict.
+        // "The pool contains two frames" is checkable; "columns b and c are wrong"
+        // is a judgement the function has no basis for. Both orderings must
+        // produce the same message, which is what pins that nobody is privileged.
+        let outlierFirst =
+            [ spatialVote "a" "table" [| g 1.0 0.5 |] 1.0
+              spatialVote "b" "cup" [| g 1.0 0.5 |] 1.0
+              spatialVote "c" "cup" [| g 1.0 0.5 |] 1.0 ]
+        let outlierLast =
+            [ spatialVote "b" "cup" [| g 1.0 0.5 |] 1.0
+              spatialVote "c" "cup" [| g 1.0 0.5 |] 1.0
+              spatialVote "a" "table" [| g 1.0 0.5 |] 1.0 ]
+
+        let messageOf votes =
+            match ThousandBrains.spatialConsensus votes with
+            | Ok _ -> failwith "pooled across frames"
+            | Error e -> e
+
+        let m1 = messageOf outlierFirst
+        let m2 = messageOf outlierLast
+        Assert.Equal<string>(m1, m2)
+        // Names both frames, so a reader can see what actually happened...
+        Assert.Contains("cup", m1)
+        Assert.Contains("table", m1)
+        // ...and does not single anyone out as the offender.
+        Assert.DoesNotContain("disagree", m1)

@@ -177,25 +177,34 @@ module ThousandBrains =
     /// error this type exists to make impossible, and returning a plausible
     /// average of two different reference frames would be exactly the silent
     /// wrong answer the frame tag was introduced to prevent.
+    ///
+    /// REPORTS THE FACT, NOT A VERDICT, and the first version of this function got
+    /// that wrong. It took `first.Belief.Frame` as "the pool's" frame and listed
+    /// everyone else as disagreeing — so a pool of [table; cup; cup] blamed the
+    /// MAJORITY for the outlier's frame, and LIST ORDER decided who was at fault.
+    ///
+    /// There is no basis for that judgement here. Which frame is correct is a
+    /// question about the world, not about this list; the honest report is that
+    /// the pool contains more than one frame, and which ones. That is the
+    /// discipline in `.claude/rules/dual-use-detection-is-neutral-oracle-decides.md`
+    /// — the mechanism names what it measured and leaves the reading to the
+    /// caller — and TB-13 pins it by requiring both orderings to produce the same
+    /// message.
     let spatialConsensus (votes: SpatialVote list) : Result<FrameBelief, string> =
         match votes with
         | [] -> Error "no votes"
         | first :: _ ->
-            let frame = first.Belief.Frame
-            let dims = first.Belief.Axes.Length
-            let wrongFrame = votes |> List.filter (fun v -> v.Belief.Frame <> frame)
-            let wrongDims = votes |> List.filter (fun v -> v.Belief.Axes.Length <> dims)
-            if not (List.isEmpty wrongFrame) then
-                let names =
-                    wrongFrame |> List.map (fun v -> $"{v.ColumnId}:'{v.Belief.Frame}'") |> String.concat ", "
-                Error $"cannot pool across reference frames — pool is '{frame}' but {names} disagree"
-            elif not (List.isEmpty wrongDims) then
-                let names =
-                    wrongDims
-                    |> List.map (fun v -> $"{v.ColumnId}:{v.Belief.Axes.Length}")
-                    |> String.concat ", "
-                Error $"cannot pool across dimensions — pool has {dims} axes but {names} disagree"
+            let frames = votes |> List.map (fun v -> v.Belief.Frame) |> List.distinct |> List.sort
+            let dimensions = votes |> List.map (fun v -> v.Belief.Axes.Length) |> List.distinct |> List.sort
+            if List.length frames > 1 then
+                let named = frames |> List.map (sprintf "'%s'") |> String.concat ", "
+                Error $"cannot pool across reference frames — the pool contains {List.length frames}: {named}"
+            elif List.length dimensions > 1 then
+                let named = dimensions |> List.map string |> String.concat ", "
+                Error $"cannot pool across dimensions — the pool contains {List.length dimensions} axis counts: {named}"
             else
+                let frame = first.Belief.Frame
+                let dims = first.Belief.Axes.Length
                 let axes =
                     Array.init dims (fun a ->
                         { Gaussian.PrecisionMean =
