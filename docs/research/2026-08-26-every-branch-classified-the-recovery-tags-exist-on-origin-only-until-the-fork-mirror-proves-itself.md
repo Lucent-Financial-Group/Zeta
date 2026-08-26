@@ -125,8 +125,8 @@ on the fork, *then* consider the branch. Not before.
 
 These are not stale. They are the live telemetry parking lanes: since the "CI Gate" ruleset requires
 `gate (required)` at push time with no bypass actors, telemetry lanes no longer push to `main` — they
-park on `heartbeat/*` and flush via PR. **17 of the 26 carry a commit from today**, several from the
-last twenty minutes.
+park on `heartbeat/*` and flush via PR. **15 of the 26 carry a commit from today** (of the 23 that carry
+any payload at all), several from the last twenty minutes.
 
 Two are worth naming specifically:
 
