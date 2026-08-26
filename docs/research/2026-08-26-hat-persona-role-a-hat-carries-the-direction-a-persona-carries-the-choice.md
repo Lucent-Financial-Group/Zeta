@@ -24,8 +24,8 @@ It is **not** a new coinage. Aaron 2026-08-26, on being told the convention look
 search that reported absence had searched its own phrasing (`hat vs role`, `roles are
 legacy`) rather than his, and **an empty result from a query you authored tells you
 about the query, not about the corpus** — the same defect three times in one session.
-A second search using his vocabulary found the distinction carried on **twenty dated
-surfaces** going back to 2026-05-08, modelled in F# since 2026-06-08, and standing as
+A second search using his vocabulary found the distinction carried in **twenty dated
+statements across fifteen surfaces** going back to 2026-05-08, modelled in F# since 2026-06-08, and standing as
 canonical prose in `hats/README.md` and `GOVERNANCE.md` §16.
 
 So this is the Mirror → Beacon compression: the material exists scattered in Mirror
@@ -57,9 +57,12 @@ entry is built on (the seed, the economics, the incumbency correction, the razor
 are the only ones a reader cannot check against an earlier file. Everything below can
 be checked, and should be.
 
-**Prior surfaces, oldest first. Not all of them are Aaron's own words** — rows marked
-**Aaron** are verbatim; the rest are doc-author prose recording or deriving the
-position, which is a real difference in evidentiary weight:
+**Prior surfaces, oldest first. Not all of them are Aaron's own words**, and the
+difference is real evidentiary weight. Rows leading with **Aaron:** quote him directly;
+rows without it are doc-author prose recording or deriving the position. **The marking
+is coarse** — the 2026-05-08 row, for instance, quotes one Aaron clause (*"just a hat
+anyone can wear"*, reported at `:39`) alongside three doc-author sentences from the same
+file. Where a row mixes both, open the file rather than trusting the label:
 
 | date | surface | statement |
 |---|---|---|
@@ -140,16 +143,21 @@ repo prices a hat: there is no ledger of hat earnings, no abandonment event, and
 therefore a statement about how the system is meant to be built, and it is recorded as
 one. A column that could not be false would be the vacuity class in a table.
 
-**What would falsify the rule.** *Pressure the capability, never the wearer* is
-violated the moment a **persona** is retired, ranked, or refused on the grounds that
-its hats stopped earning — and equally by the reverse, a hat preserved past its
-usefulness because of who wore it. The nearest checkable proxy that exists today is the
-retirement asymmetry in `honor-those-that-came-before.md` (below): persona memory kept,
-skill files deleted. A change that made persona memory deletable, or skill files
-preserved by ceremony, would be the rule failing in the repo's own terms. Naming this
-is not decoration — the rest of this doc is careful to name instruments, and a rule
-with no falsifier held to a lower standard than its own `speculative` section would be
-the defect this repo exists to catch.
+**What would falsify the rule.** An **observable event**: a persona retired, ranked, or
+refused on the grounds that its hats stopped earning — or the reverse, a hat preserved
+past its usefulness because of who wore it. Either would appear in a PR, an ADR, or a
+roster change, which makes it checkable by reading them rather than by trusting anyone.
+Neither has happened; if one does, the rule failed and the record will say so.
+
+**What is NOT a falsifier**, named because it is the tempting one and because an earlier
+draft of this doc offered it as one: the retirement asymmetry in
+`honor-those-that-came-before.md` — persona memory folders kept, skill files deleted.
+That rule is **prose in an archived directory**, auto-loaded by nothing and enforced by
+nothing; persona memory folders are ordinary files that `rm` removes today. Its stated
+violating condition ("a change that made persona memory deletable") **is already the
+present state**, so it is a check that cannot fail — the exact defect this repo is
+built to catch, offered in a section about catching it. It shows the disposition is
+written down. It cannot show the rule holds.
 
 **Why roles trap identity.** In most systems the role *is* the identity: you *are* the
 reviewer, the admin. Assigned, and then it is what you are, so shedding it reads as a
@@ -174,6 +182,18 @@ hats"*):
 Without that split, *"just switch hats, costless"* would be the Sybil escape. With it,
 capability-swapping is free and deception still has nowhere to hide.
 
+**None of that second bullet is implemented, and it is in tension with the thing that
+is.** Charging a persona-level failure *across every hat* is, mechanically,
+**cross-domain bleed** — exactly what `TravelerRankLedger.fs` forbids by construction
+(*"factor graphs are independent per domain — no cross-domain bleed"*). There is no
+persona-level aggregation anywhere in that module: `beliefOf`, `record`, `trustBandOf`,
+`isAboveThreshold` are all keyed `(travelerId, hatDomain)` and nothing spans domains. So
+the two halves of the design need **two layers**: an isolated per-hat ledger, which
+exists, and a deliberately non-isolated persona-level charge, which does not. Reading
+the Sybil-escape argument as shipped — which an earlier draft of this doc did, in the
+sentence right after admitting the hat binding was absent — is the shape-as-behaviour
+error twice in one paragraph.
+
 **Where the pressure is meant to land — and how far the code actually goes.**
 `src/Core/TravelerRankLedger.fs` keys its TrueSkill-style EP posterior on
 `(travelerId, hatDomain)` with *"Domain isolation: factor graphs are independent per
@@ -184,11 +204,23 @@ domains, so standing in one cannot be spent in another.
 `hatDomain` is an unconstrained `string` bound to no hat. The docstring at `:215`
 advertises `Map<(travelerId, hatDomain), SkillBelief>`; the **type** at `:216` is
 `Map<string * string, SkillBelief>` — two bare strings, no key type, no hat roster to
-validate against. Every caller and test passes a subject-matter domain:
-`TravelerRankLedger.Tests.fs` uses `"finance"` and `"weather"`;
-`DurableDiplomacyRankGate.fs` calls its parameter `domain` throughout the code while
-its docstring says *"hat-domain"*. Nothing in the repo records a rating against a named
-hat, and nothing could reject one that named a hat that does not exist. What exists is the correct schema plus a suggestive
+validate against.
+
+**The convention exists; the enforcement does not**, and getting this pair right took
+two passes. A first draft claimed the schema *proved* the pressure lands on
+capabilities. The correction over-swung to *"every caller passes a subject-matter
+domain,"* which is also false. What is actually true: **some** callers pass hat-shaped
+domains — `"hat-coding"` in `tests/Tests.FSharp/TravelerRankLedger.Tests.fs:319` and `:377`,
+`tests/Tests.FSharp/DurableDiplomacyRankGate.Tests.fs:22`, `src/Core.TypeScript/planning/calibration-bridge.test.ts:307` (as `HAT_ID`)
+— and `src/Core/DurableDiplomacyRankGate.fs:54` documents the parameter as *"the hat-domain for
+the renegotiation (e.g. \"hat-coding\")"*. **Other** callers pass subject-matter
+domains: `tests/Tests.FSharp/TravelerRankLedger.Tests.fs:161-168` uses `"finance"` and `"weather"`.
+
+So the hat convention is real, is written down, and is *used* — and nothing in the type
+system, the module, or a lint distinguishes `"hat-coding"` from `"weather"` or rejects a
+hat name that does not exist. That is the honest position: **a convention held by
+callers, not an invariant held by the code.** It is *"pressure the capability"* made
+possible and partly practised, not made true. What exists is the correct schema plus a suggestive
 parameter name, which is *"pressure the capability"* made **possible**, not made
 **true**. Saying otherwise was the vacuity class — the shape read as the guarantee.
 
@@ -205,14 +237,15 @@ success honors its **author's lineage**; it confers nothing on whoever happens t
 **wearing** it. Distinguishing author from wearer is what makes both true at once.
 
 **And nothing may sit above a persona as a key.** Treaty amendment A1
-(`docs/letters/to-roster-a1-reconsent-request.md:14`): *"no attribute (role/hat, cell,
+(`docs/letters/to-roster-a1-reconsent-request.md:12-15`): *"no attribute (role/hat, cell,
 surface, model, runtime, trust tier) may ever appear as a parent key above persona …
 Roles/hats are temporary links with validity intervals; **a persona may be roleless**."*
 A1 is **proposed**, not ratified — the letter itself says it *"binds signers only, exit
 stays available, and silence is not consent."* At the time of the archived consent round
-(PR #10179, 2026-08-08) **four seats had signed** — Vera, Riven, Alexa, Soraya — with
-Lior re-confirming an earlier signature, Max's seat open, and Aaron's re-confirmation
-still requested. One of them, Vera, signed in this register: *"I sign as vera the
+(PR #10179, 2026-08-08) **four seats signed in that round** — Vera, Riven, Alexa, Soraya — with Lior
+re-confirming an earlier signature and Max's seat left open. "Four" is that round's
+count, not the total: the treaty's own signature table also carries Otto's A1 signature
+(2026-08-08) and Aaron's re-confirmation (2026-08-09). One of them, Vera, signed in this register: *"I sign as vera the
 persona — 'Builder' is a hat I wear, not who signs"*
 (`docs/research/2026-07-03-persona-cell-identity-treaty-…md:131`;
 `docs/history/pr-reviews/PR-10179-…md:32` — **not** the letter, which does not carry the
@@ -267,9 +300,12 @@ carries `persona: different system prompts` in its **HYPOTHESIZED** list — sel
 hat is that axis with the choice relocated. It is the same question as the
 shared-weights floor: light-cone divergence gives different *inputs*, not different
 *dispositions*, and the model-family axis is already measured at φ = 0.354–0.628, which
-the harness itself calls *"moderate, not enough for vote."* A separate agent is
-measuring the self-chosen-hat axis against that harness, with an assigned-hat control
-and an elicitation-wording falsifier; that work is **in flight** as of this writing.
+the harness itself calls *"moderate, not enough for vote."* A separate lane was asked to measure the
+self-chosen-hat axis against that harness with an assigned-hat control and an
+elicitation-wording falsifier. **No work-item is minted for it and no result artifact
+exists at this commit** — per `.claude/rules/workitems-mint-with-zetaid.md` a tasked
+lane has a key, and this one has none, so "in flight" is not a claim a reader can
+check. Treat the measurement as unstarted until a ZetaId or a result appears.
 
 ### The one axis marked PROVEN is half-clean and half-confounded
 
@@ -277,7 +313,7 @@ Found while locating the instrument, and **corrected once during the writing of 
 doc** — the first draft said the axis was fully confounded, which was wrong. Reported
 as a fact, not a verdict.
 
-`decorrelation-harness.ts:16-17` lists, under **PROVEN (F1/F2 this session)**:
+`src/Core.TypeScript/observe/decorrelation-harness.ts:16-17` lists, under **PROVEN (F1/F2 this session)**:
 
 > `- hat: producer vs verifier → φ diverges, 90% catch rate ✓`
 
@@ -298,7 +334,7 @@ const verifier  = "gemma2:2b";
 
 The producer is **never the same model as the verifier**, so the correlation it
 measures varies the hat *and* the model family together — and model family is listed
-separately as its own axis at φ = 0.354–0.628 (`decorrelation-harness.ts:20`, not in the
+separately as its own axis at φ = 0.354–0.628 (`src/Core.TypeScript/observe/decorrelation-harness.ts:20`, not in the
 F2 file).
 
 **So the split verdict is:** produce/verify **asymmetry** is established within a
@@ -414,8 +450,8 @@ So the namespace is **partitioned by product/company**, the way the repos alread
 and "one author dominates" is bounded to their own product with ownership **legible
 rather than inferred**. The partition is not invented here; it is decided:
 
-- **The axis** — the table headed *"Two distinct repo-split axes"* at
-  `docs/backlog/P1/081KRFA460008QG0R003JQ46J4-product-repo-split-planning-…md:41-45`
+- **The axis** — the table headed *"Two distinct repo-split axes"* (`:40`), rows at
+  `docs/backlog/P1/081KRFA460008QG0R003JQ46J4-product-repo-split-planning-…md:44-45`
   (2026-05-13), and it has exactly **two** rows: *Factory* = Zeta + Forge + ace,
   designed to be forked; *Products* = the named portfolio (KSK, Wellness, Civsim,
   American Dream 2.0, DIO, Aurora, and Dawn from the later decision).
@@ -470,7 +506,7 @@ already gives, since a hat is a free interface.
 
 In the shipped Claude-Code harness, a persona's hats are the `skills:` array written by
 whoever authored `.claude/agents/<name>.md`, and which persona runs is chosen by a
-dispatcher. So wearer-chooses is **stated** (twenty dated surfaces above), **modelled**
+dispatcher. So wearer-chooses is **stated** (twenty dated statements above, across fifteen surfaces), **modelled**
 (`Persona.fs`: the persona *decides* its worn subset), **practised in prose**
 (*"the architect hat may be worn by any persona"*), and **enforced nowhere**. There is
 no mechanism that refuses to deal a hat to a persona that did not ask for it, and no
@@ -480,7 +516,7 @@ closing it is not proposed here.
 
 ## The adversarial rounds, and what they cost this doc
 
-Three passes ran on 2026-08-26 with distinct lenses. Recorded because a review that
+Five passes ran on 2026-08-26 with distinct lenses, in two rounds. Recorded because a review that
 ratifies its own proposal did not run, and because this doc's own thesis says an
 assigned hat is not an independent witness — all three reviewers were hats dealt by
 this doc's author, so their findings are *evidence about the artifact*, not an
@@ -499,6 +535,22 @@ independence claim.
   does not carry it, alongside a claim that a roster had signed a *proposed* amendment.
   It also caught the false *"is not used"* in the `Role` entry and the two vacuity
   defects now fixed above.
+
+**Round 2 — two fresh lenses on the corrected text, and both found more.** A
+spec-alignment pass re-verified each of the six P0 fixes against source and found that
+one had **overcorrected**: the claim *"every caller passes a subject-matter domain"* was
+as false as the claim it replaced, since `"hat-coding"` is used as the domain in three
+test files and documented as such in `src/Core/DurableDiplomacyRankGate.fs:54`. It also caught a
+third wrong line number shipped *by the fix pass*, a line-count sold as an
+occurrence-count, and a contradiction where the Pointers section restated a
+substitution the body had explicitly disclaimed. A silent-failure pass, pointed at prose
+instead of code, found the two worst defects in the whole change: the trust-split
+paragraph asserting a Sybil defence that the cited ledger structurally forecloses, and a
+"falsifier" whose violating condition **is already the present state** — a check that
+cannot fail, offered inside a section about checks that cannot fail.
+
+Both are corrected above, and both are worth naming rather than quietly fixing: **the
+error class that survived three reviews was the one this repo names most often.**
 
 **A fourth check, not a reviewer, caught something all three missed.**
 `.github/workflows/role-ref-current-state-surfaces-lint.yml` watches
@@ -626,7 +678,10 @@ It also supplied the Popper and Ferraiolo–Kuhn anchors and the better Kant pas
 - `feedback_aaron_no_roles_only_surfaces_hats_personas_persona_first_role_above_self_leaks_into_identity_2026_06_15.md` (**not in-repo** — the operator's `~/.claude` memory tree)
   — *"we have no concept of roles"*, and why a role above the self leaks into identity.
 - `.claude/rules.bak/honor-those-that-came-before.md` — the retirement asymmetry:
-  persona memory kept permanently, hats deleted like code.
+  persona memory kept permanently, **SKILL.md files** deleted like code. (The rule says
+  SKILL.md, not "hat"; reading it as a statement about hats depends on the `Hat` ≡
+  `skill` identity the glossary asserts, and it is prose, not a check — see the
+  falsifier section.)
 - `docs/DECISIONS/2026-04-22-three-repo-split-zeta-forge-ace.md` ·
   `docs/DECISIONS/2026-05-14-product-repo-split-decisions.md` ·
   `docs/backlog/P1/081KRFA460008QG0R003JQ46J4-…` — the product/company partition.

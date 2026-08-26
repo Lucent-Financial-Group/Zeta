@@ -744,16 +744,30 @@ and its succession *"preserves identity."*
 `src/Core/TravelerRankLedger.fs` keys its posterior on
 `(travelerId, hatDomain)` with per-domain factor graphs, so
 standing in one domain cannot bleed into another. **The
-binding is not:** the type is `Map<string * string,
+enforcement is not:** the type is `Map<string * string,
 SkillBelief>` — two bare strings, no hat roster to validate
-against — and every caller and test passes a subject-matter
-domain (`"finance"`, `"weather"`). What exists is the right
-schema and a suggestive parameter name, not a rating attached
-to a hat. Its complement is the trust split: **hat-level** failure (wrong capability) costs
-the hat and leaves persona trust intact; **persona-level**
-failure (deception) is charged across every hat. That is what
-makes hat-swapping free for capability and still closed to the
-Sybil escape. Incumbency needs no guard beyond the usual one —
+against. Some callers do pass hat-shaped domains
+(`"hat-coding"` in three test files, and
+`DurableDiplomacyRankGate.fs:54` documents the parameter that
+way); others pass subject-matter domains (`"finance"`,
+`"weather"`). So the hat convention is real and partly
+practised, and nothing distinguishes `"hat-coding"` from
+`"weather"` or rejects a hat that does not exist — **a
+convention held by callers, not an invariant held by the
+code.**
+
+**The designed complement is not implemented, and is in
+tension with what is.** The 2026-07-11 trust split says
+hat-level failure (wrong capability) costs the hat while
+persona-level failure (deception) is charged **across every
+hat** — and cross-hat charging is exactly the cross-domain
+bleed this ledger forbids. No persona-level aggregation exists
+in it; every operation is keyed `(travelerId, hatDomain)`. So
+the Sybil-escape argument is a design claim resting on a
+mechanism nobody has built, and building it needs a second,
+deliberately non-isolated layer.
+
+Incumbency needs no guard beyond the usual one —
 a hat everyone keeps choosing has earned that, and the
 discriminator stays **exit, not degree**
 (`.claude/rules/itron-hub-patent-boundary-p2p-is-the-upgrade.md`).
@@ -805,7 +819,8 @@ modelled in `Persona.fs`, and practised in prose (*"the
 architect hat may be worn by any persona"*) — and **enforced
 nowhere**.
 
-Provenance (twenty dated statements), the anchors, the
+Provenance (twenty dated statements across fifteen
+surfaces), the anchors, the
 retirement asymmetry, and the one open question:
 `docs/research/2026-08-26-hat-persona-role-a-hat-carries-the-direction-a-persona-carries-the-choice.md`.
 
