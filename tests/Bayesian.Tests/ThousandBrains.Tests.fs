@@ -101,3 +101,125 @@ module ThousandBrainsTests =
                   
         let consensus = ThousandBrains.computeConsensus votes
         consensus.Precision >= 0.0
+
+    // ── Spatial columns: belief about a location in a frame ─────────────────
+    //
+    // THE QUESTION THESE ANSWER, before any geometric machinery is committed to:
+    // does believing about a VECTOR buy anything over believing about scalars?
+    // The work-item asked for that to be established first, and TB-8 below is the
+    // answer — it does not, on its own. What buys something is the FRAME.
+
+    let private bits (x: float) = BitConverter.DoubleToInt64Bits x
+
+    let private unwrapR = function Ok v -> v | Error e -> failwith (string e)
+
+    let private g (mu: float) (v: float) = Gaussian.ofMeanVariance mu v
+
+    /// Typed constructors. `ColumnId` and `Weight` exist on both `Vote` and
+    /// `SpatialVote`, so an unannotated record literal resolves to whichever the
+    /// compiler saw first — these make the intent explicit rather than relying on
+    /// declaration order.
+    let private scalarVote (id: string) (belief: Gaussian) (w: float) : ThousandBrains.Vote =
+        { ColumnId = id; Belief = belief; Weight = w }
+
+    let private spatialVote
+        (id: string)
+        (frame: string)
+        (axes: Gaussian array)
+        (w: float)
+        : ThousandBrains.SpatialVote =
+        { ColumnId = id; Belief = { Frame = frame; Axes = axes }; Weight = w }
+
+    [<Fact>]
+    let ``TB-6: a one-axis spatial pool is bit-identical to the scalar pool`` () =
+        // The generalisation must contain the thing it generalises. Same weights,
+        // same beliefs, one axis — the numbers may not move by a single bit.
+        let scalarVotes =
+            [ scalarVote "a" (g 1.0 0.5) 0.7
+              scalarVote "b" (g -2.0 2.0) 1.3
+              scalarVote "c" (g 0.25 0.125) 0.2 ]
+        let spatialVotes =
+            scalarVotes |> List.map (fun v -> spatialVote v.ColumnId "cup" [| v.Belief |] v.Weight)
+        let scalar = ThousandBrains.computeConsensus scalarVotes
+        let spatial = ThousandBrains.spatialConsensus spatialVotes |> unwrapR
+        Assert.Equal(1, spatial.Axes.Length)
+        Assert.Equal(bits scalar.Precision, bits spatial.Axes.[0].Precision)
+        Assert.Equal(bits scalar.PrecisionMean, bits spatial.Axes.[0].PrecisionMean)
+
+    [<Fact>]
+    let ``TB-7: IV over a one-axis location equals the scalar column's IV`` () =
+        // KL divergence is additive over independent components, so a one-axis
+        // location must be worth exactly what the scalar is worth. If this drifts,
+        // the summing in `observeSpatial` is not the additivity it claims to be.
+        let scalar = ThousandBrains.observe (ThousandBrains.createColumn "s") (g 3.0 0.5)
+        let spatial =
+            ThousandBrains.observeSpatial
+                (ThousandBrains.createSpatialColumn "s" "cup" 1)
+                { Frame = "cup"; Axes = [| g 3.0 0.5 |] }
+            |> unwrapR
+        Assert.Equal(bits (float scalar.AccumulatedIV), bits (float spatial.AccumulatedIV))
+
+    [<Fact>]
+    let ``TB-8: with independent axes, vector voting IS per-axis scalar voting`` () =
+        // THE RESULT THE ROW ASKED FOR, and it is a negative one worth having
+        // before any Clifford machinery is built: a pool of independent per-axis
+        // Gaussians decomposes exactly. Running three scalar pools and stacking
+        // the answers gives the SAME BITS as running one three-axis pool.
+        //
+        // So "believe about a vector instead of a number" buys nothing by itself.
+        // The payoff, if there is one, has to come from something the scalar
+        // formulation cannot express — a frame that refuses to pool (TB-9), or
+        // correlation between axes, which this representation does not carry.
+        let dims = 3
+        let cols = [ "a", 0.7; "b", 1.3; "c", 0.2 ]
+        let axisBelief (name: string) (axis: int) =
+            g (float axis * 1.5 + float name.[0]) (0.25 + float axis * 0.1)
+
+        let stacked =
+            [ 0 .. dims - 1 ]
+            |> List.map (fun axis ->
+                cols
+                |> List.map (fun (n, w) -> scalarVote n (axisBelief n axis) w)
+                |> ThousandBrains.computeConsensus)
+
+        let jointly =
+            cols
+            |> List.map (fun (n, w) -> spatialVote n "cup" (Array.init dims (axisBelief n)) w)
+            |> ThousandBrains.spatialConsensus
+            |> unwrapR
+
+        for axis in 0 .. dims - 1 do
+            Assert.Equal(bits stacked.[axis].Precision, bits jointly.Axes.[axis].Precision)
+            Assert.Equal(bits stacked.[axis].PrecisionMean, bits jointly.Axes.[axis].PrecisionMean)
+
+    [<Fact>]
+    let ``TB-9: pooling across reference frames is REFUSED, and names who disagreed`` () =
+        // What the frame tag is FOR. A location in the frame of a cup and a
+        // location in the frame of the table it stands on are different
+        // quantities; averaging them is a category error, and a plausible-looking
+        // average is the silent wrong answer this type exists to prevent.
+        let votes =
+            [ spatialVote "a" "cup" [| g 1.0 0.5 |] 1.0
+              spatialVote "b" "table" [| g 1.0 0.5 |] 1.0 ]
+        match ThousandBrains.spatialConsensus votes with
+        | Ok _ -> failwith "pooled a cup-frame belief with a table-frame belief"
+        | Error e ->
+            Assert.Contains("reference frames", e)
+            Assert.Contains("b", e)
+            Assert.Contains("table", e)
+
+    [<Fact>]
+    let ``TB-10: mismatched dimensions are REFUSED, not zero-padded`` () =
+        let votes =
+            [ spatialVote "a" "cup" [| g 1.0 0.5; g 2.0 0.5 |] 1.0
+              spatialVote "b" "cup" [| g 1.0 0.5 |] 1.0 ]
+        match ThousandBrains.spatialConsensus votes with
+        | Ok _ -> failwith "pooled a 2-axis belief with a 1-axis belief"
+        | Error e -> Assert.Contains("dimensions", e)
+
+    [<Fact>]
+    let ``TB-11: observing in the wrong frame is REFUSED`` () =
+        let col = ThousandBrains.createSpatialColumn "c" "cup" 2
+        match ThousandBrains.observeSpatial col { Frame = "table"; Axes = [| g 1.0 0.5; g 2.0 0.5 |] } with
+        | Ok _ -> failwith "absorbed a table-frame observation into a cup-frame column"
+        | Error e -> Assert.Contains("frame mismatch", e)
