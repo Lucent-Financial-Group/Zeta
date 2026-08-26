@@ -25,6 +25,7 @@ import {
   OVMF_FIRMWARE_CANDIDATES,
   PHASE2_SERIAL_SEPARATOR,
   QEMU_CREDS_PASSPHRASE_FWCFG_NAME,
+  missingRestorePreconditions,
   reclaimLargeTempArtifacts,
   RESTORE_UNIT_CONDITION_PATHS,
   restoreServiceNeverRan,
@@ -376,6 +377,7 @@ describe("qemu-full-install-test UEFI keyfile restore contract", () => {
   const restoreSerial = [
     UEFI_KEYFILE_RESTORE_SERIAL.stagedFromFwcfg,
     UEFI_KEYFILE_RESTORE_SERIAL.bindingKeyfile,
+    UEFI_KEYFILE_RESTORE_SERIAL.transportFwcfgNotMetal,
     `${UEFI_KEYFILE_RESTORE_SERIAL.wrotePrefix}3 creds (target-root: /)`,
     "node-qemu-keyfile-restore login:",
   ].join("\n");
@@ -388,6 +390,7 @@ describe("qemu-full-install-test UEFI keyfile restore contract", () => {
     const serial = [
       UEFI_KEYFILE_RESTORE_SERIAL.stagedFromFwcfg,
       UEFI_KEYFILE_RESTORE_SERIAL.bindingKeyfile,
+      UEFI_KEYFILE_RESTORE_SERIAL.transportFwcfgNotMetal,
       UEFI_KEYFILE_RESTORE_SERIAL.alreadyPresent,
     ].join("\n");
     expect(assertUefiKeyfileRestoreContract(serial).ok).toBe(true);
@@ -397,9 +400,46 @@ describe("qemu-full-install-test UEFI keyfile restore contract", () => {
     const serial = [
       UEFI_KEYFILE_RESTORE_SERIAL.stagedFromFwcfg,
       UEFI_KEYFILE_RESTORE_SERIAL.bindingKeyfile,
+      UEFI_KEYFILE_RESTORE_SERIAL.transportFwcfgNotMetal,
       `${UEFI_KEYFILE_RESTORE_SERIAL.wrotePrefix}0 creds (target-root: /)`,
     ].join("\n");
     expect(assertUefiKeyfileRestoreContract(serial).ok).toBe(true);
+  });
+
+  // 081M0WS33AK087G0R000BG9R8X -- fw_cfg does not exist on metal, so a green run
+  // of this contract must SAY so on the same line as its success.
+  it("fails when the run does not declare its passphrase transport", () => {
+    const serial = [
+      UEFI_KEYFILE_RESTORE_SERIAL.stagedFromFwcfg,
+      UEFI_KEYFILE_RESTORE_SERIAL.bindingKeyfile,
+      `${UEFI_KEYFILE_RESTORE_SERIAL.wrotePrefix}3 creds (target-root: /)`,
+    ].join("\n");
+    const result = assertUefiKeyfileRestoreContract(serial);
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.reason).toContain("transport");
+      expect(result.reason).toContain("metal");
+    }
+  });
+
+  it("fails when a QEMU run claims the metal-capable interactive transport", () => {
+    const serial = [
+      UEFI_KEYFILE_RESTORE_SERIAL.stagedFromFwcfg,
+      UEFI_KEYFILE_RESTORE_SERIAL.bindingKeyfile,
+      UEFI_KEYFILE_RESTORE_SERIAL.transportFwcfgNotMetal,
+      UEFI_KEYFILE_RESTORE_SERIAL.transportInteractive,
+      `${UEFI_KEYFILE_RESTORE_SERIAL.wrotePrefix}3 creds (target-root: /)`,
+    ].join("\n");
+    const result = assertUefiKeyfileRestoreContract(serial);
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.reason).toContain("INTERACTIVE");
+    }
+  });
+
+  it("the declared transport marker says metal-capable=no in so many words", () => {
+    expect(UEFI_KEYFILE_RESTORE_SERIAL.transportFwcfgNotMetal).toContain("metal-capable=no");
+    expect(UEFI_KEYFILE_RESTORE_SERIAL.transportInteractive).toContain("metal-capable=yes");
   });
 
   it("fails when restore falls back to usbUuid", () => {
@@ -661,6 +701,11 @@ describe("restore markers stay coupled to zeta-creds-restore.nix", () => {
 
   it("the module still emits the fw_cfg staging marker the contract requires", () => {
     expect(restoreNix).toContain(UEFI_KEYFILE_RESTORE_SERIAL.stagedFromFwcfg);
+    // 081M0WS33AK087G0R000BG9R8X: a marker the harness demands but the unit never
+    // prints would make the whole restore contract unsatisfiable; a marker the
+    // unit prints under a different wording would make it vacuous. Both sides.
+    expect(restoreNix).toContain(UEFI_KEYFILE_RESTORE_SERIAL.transportFwcfgNotMetal);
+    expect(restoreNix).toContain(UEFI_KEYFILE_RESTORE_SERIAL.transportInteractive);
   });
 
   it("the module still uses the fw_cfg name the QEMU args inject", () => {
@@ -822,27 +867,55 @@ describe("restoreServiceNeverRan / restore contract diagnosis", () => {
     "node-qemu-keyfile-restore login: ",
   ].join("\n");
 
-  it("detects a unit systemd skipped entirely", () => {
+  it("detects a unit that produced no output at all (did not start)", () => {
     expect(restoreServiceNeverRan(skippedUnitSerial)).toBe(true);
   });
 
   it("does NOT fire once the unit's own unconditional marker is present", () => {
-    // readingBlob is emitted after the optional fw_cfg block, so this is a
-    // guest where the unit RAN and fw_cfg staging genuinely failed.
+    // readingBlob is emitted after the precondition gate + optional fw_cfg block,
+    // so this is a guest where the unit RAN and fw_cfg staging genuinely failed.
     expect(restoreServiceNeverRan(`${skippedUnitSerial}\n${UEFI_KEYFILE_RESTORE_SERIAL.readingBlob}`)).toBe(false);
   });
 
-  it("blames the ConditionPathExists gate, not fw_cfg, when nothing ran", () => {
+  it("names the exact missing precondition instead of guessing (081M0WTB5MN)", () => {
+    // The unit now checks its preconditions inside ExecStart and logs which
+    // path is absent, so the blob-not-on-ESP case (run 32816110015) is legible.
+    const serial = [
+      "zeta-creds-restore: MISSING precondition /boot/zeta-creds.enc; skipping restore",
+      "node-qemu-keyfile-restore login: ",
+    ].join("\n");
+    expect(missingRestorePreconditions(serial)).toEqual(["/boot/zeta-creds.enc"]);
+    // The named path is one of the canonical four the unit checks.
+    expect(RESTORE_UNIT_CONDITION_PATHS).toContain("/boot/zeta-creds.enc");
+    const result = assertUefiKeyfileRestoreContract(serial);
+    expect(result.ok).toBe(false);
+    if (result.ok) throw new Error("unreachable");
+    expect(result.reason).toContain("/boot/zeta-creds.enc");
+    expect(result.reason).toContain("missing precondition");
+    // A named precondition miss must not read as a fw_cfg bug or a total no-run.
+    expect(result.reason).not.toContain("fw_cfg staging marker missing");
+    expect(result.reason).not.toContain("never ran");
+  });
+
+  it("collects every missing precondition the unit named", () => {
+    const serial = [
+      "zeta-creds-restore: MISSING precondition /boot/zeta-creds.enc; skipping restore",
+      "zeta-creds-restore: MISSING precondition /home/zeta/.local/share/mise/shims/bun; skipping restore",
+    ].join("\n");
+    expect(missingRestorePreconditions(serial)).toEqual([
+      "/boot/zeta-creds.enc",
+      "/home/zeta/.local/share/mise/shims/bun",
+    ]);
+  });
+
+  it("blames unit start (not fw_cfg, not a precondition miss) when nothing ran", () => {
     const result = assertUefiKeyfileRestoreContract(skippedUnitSerial);
     expect(result.ok).toBe(false);
     if (result.ok) throw new Error("unreachable");
     expect(result.reason).toContain("never ran");
-    expect(result.reason).toContain("ConditionPathExists");
-    // The lead an operator needs: every path that can silently skip the unit.
-    for (const path of RESTORE_UNIT_CONDITION_PATHS) {
-      expect(result.reason).toContain(path);
-    }
-    // The old message pointed at the wrong subsystem.
+    expect(result.reason).toContain("did not start");
+    // The old message pointed at the wrong subsystem; the new one must not
+    // resurrect either mis-blame.
     expect(result.reason).not.toContain("fw_cfg staging marker missing");
   });
 
@@ -855,17 +928,36 @@ describe("restoreServiceNeverRan / restore contract diagnosis", () => {
     expect(result.reason).not.toContain("never ran");
   });
 
-  it("the four condition paths match zeta-creds-restore.nix's declared defaults", () => {
+  it("the four precondition paths are checked in-ExecStart in zeta-creds-restore.nix", () => {
     // Checked, not asserted: drift in the module must break this test rather
-    // than silently hand operators a stale list to go looking at.
+    // than silently hand operators a stale list to go looking at. The checks
+    // moved out of unitConfig.ConditionPathExists into ExecStart (081M0WTB5MN)
+    // so a missing path is named on serial.
     const nix = readFileSync(
       resolve(import.meta.dir, "../../../full-ai-cluster/nixos/modules/zeta-creds-restore.nix"),
       "utf8",
     );
-    expect(nix).toContain("ConditionPathExists");
+    // The gate assignment is gone (prose may still reference the old name).
+    expect(nix).not.toContain("ConditionPathExists = [");
+    expect(nix).toContain("MISSING precondition");
+    expect(nix).toContain("for _req in ${cfg.blobPath} ${cfg.usbUuidPath} ${cfg.scriptPath} ${bunShimPath}");
     expect(nix).toContain('default = "/boot/zeta-creds.enc"');
     expect(nix).toContain('default = "/etc/zeta/usb-uuid"');
     expect(nix).toContain('bunShimPath = "${cfg.home}/.local/share/mise/shims/bun"');
     expect(nix).toContain("installer/zeta-creds-restore.ts");
+  });
+
+  it("the restore unit cannot fail its chdir before ExecStart (081M0WTB5MN)", () => {
+    // WorkingDirectory must be a path that always exists, or systemd fails the
+    // unit before ExecStart and the whole diagnosability layer is mute. It was
+    // cfg.repoRoot (the cloned repo), which is absent on early boots.
+    const nix = readFileSync(
+      resolve(import.meta.dir, "../../../full-ai-cluster/nixos/modules/zeta-creds-restore.nix"),
+      "utf8",
+    );
+    expect(nix).toContain('WorkingDirectory = "/"');
+    expect(nix).not.toContain("WorkingDirectory = cfg.repoRoot");
+    // The unconditional first-line marker proves ExecStart ran (vs a pre-exec fail).
+    expect(nix).toContain(UEFI_KEYFILE_RESTORE_SERIAL.execStartEntered);
   });
 });
