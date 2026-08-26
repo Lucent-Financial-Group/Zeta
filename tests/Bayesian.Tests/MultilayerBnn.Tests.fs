@@ -510,16 +510,27 @@ let ``MLBNN-31: a repeated parent is REFUSED by the factor-graph path, not colla
     // express that and would silently deliver it once. Two inference paths
     // quietly disagreeing about the same network is worse than one refusing, so
     // it refuses.
+    // TWO OFFENDING LAYERS, RUN SEPARATELY, because a single case cannot tell a
+    // named layer from a hardcoded one. The original assertion here was
+    // `Contains("2", e)` — a lone digit, satisfied by any count or index the
+    // message happens to carry, and unable to notice the diagnostic dropping the
+    // layer id altogether. The same one-character weakness made TB-9 pass on
+    // "ta*b*le" for a while.
     let depth = 3
     let priors = Array.init depth (fun _ -> Gaussian.ofMeanVariance 0.0 1.0)
-    let net =
-        MultilayerBnn.tryCreate priors (Array.create depth 0.5) (MultilayerBnn.Dag [| []; [ 0 ]; [ 1; 1 ] |])
-        |> unwrap
-    match MultilayerBnn.tryMarginalsViaFactorGraph 1e-12 100 net with
-    | Ok _ -> failwith "a repeated parent was silently accepted by the factor-graph path"
-    | Error e ->
-        Assert.Contains("more than once", e)
-        Assert.Contains("2", e)
+    let refuse (topology: MultilayerBnn.Topology) =
+        let net = MultilayerBnn.tryCreate priors (Array.create depth 0.5) topology |> unwrap
+        match MultilayerBnn.tryMarginalsViaFactorGraph 1e-12 100 net with
+        | Ok _ -> failwith "a repeated parent was silently accepted by the factor-graph path"
+        | Error e -> e
+
+    let atLayer2 = refuse (MultilayerBnn.Dag [| []; [ 0 ]; [ 1; 1 ] |])
+    Assert.Contains("more than once", atLayer2)
+    Assert.Contains("layers 2", atLayer2)
+
+    let atLayer1 = refuse (MultilayerBnn.Dag [| []; [ 0; 0 ]; [ 1 ] |])
+    Assert.Contains("layers 1", atLayer1)
+    Assert.DoesNotContain("layers 2", atLayer1)
 
 /// An independent exact solve for the smallest MULTI-PARENT model: two layers
 /// feeding one, `x2 = x0 + x1 + w`. Builds the 3x3 joint precision and inverts
