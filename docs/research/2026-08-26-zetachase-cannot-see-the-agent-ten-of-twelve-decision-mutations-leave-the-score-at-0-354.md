@@ -301,3 +301,69 @@ print(P.play(agent='pixel', seed=4)['environment_score'])"
 ```
 
 Expected on this branch: `0.1936` (two-mover) against `0.354` (ZetaChase).
+
+---
+
+# Addendum 3 — the instrument answered on first use, and the answer was not the ageing
+
+`ZetaChaseDecoy` shipped and was pointed at the open question. The ageing is not
+the defect. **The width weight is.**
+
+Instrumented at the exact frame the wrong candidate took the body on
+`chase-decoy`:
+
+| | mu | sigma2 | `3*sigma` | `mu - 3*sigma` |
+|---|---|---|---|---|
+| BODY | **+0.941** | 0.628 | 2.377 | −1.437 |
+| DECOY | +0.295 | 0.322 | 1.702 | **−1.407** |
+
+The body had three times the agreement and lost, because a 0.68 gap in the width
+terms outvoted a 0.65 gap in the quantity being compared. The decoy moves every
+frame and is therefore observed more often; under `k=3` that alone decided the
+election. *"Who agrees with my commands"* had been silently replaced by *"who
+moved most recently"*.
+
+`CONSERVATIVE_K` is now 1.0. `chase-decoy` 0.1936 → **0.2659** — matching what
+deleting the ageing achieved, without deleting it, and
+`test_a_body_that_stops_moving_loses_the_election_to_one_that_is_moving` stays
+green. That falsifier killed all three earlier candidates:
+
+| candidate | chase-decoy | welded-on falsifier |
+|---|---|---|
+| ageing removed entirely | 0.2659 | **FAILS** |
+| incumbent exempt from ageing | 0.2659 | **FAILS** |
+| rank by plain mu + 1σ significance latch | **0.0** | fails, plus 4 more |
+| **`CONSERVATIVE_K = 1.0`** | **0.2659** | **passes** |
+
+## The prediction in Addendum 1 was wrong, and worth saying so
+
+Addendum 1 diagnosed *"this agent learns walls by bumping, a bump is a frame
+where the body does not move, ageing reads that as staleness."* Plausible, and
+false. Measured: the true body's longest run without moving is **2 frames** on
+both environments, while static components run 40–57. The body was never ageing
+out. It was being outranked by a competitor whose width happened to be narrower.
+
+## The cost, stated because it looks like a regression and is not
+
+Re-running the same twelve mutations against `chase-decoy` at `k=1`:
+
+| | baseline | invisible to the score |
+|---|---|---|
+| `k = 3.0` | 0.1936 | 5 of 12 |
+| `k = 1.0` | 0.2659 | **7 of 12** |
+
+Discrimination *dropped*. The two that went quiet are `no ageing (body)` and
+`ageing is a no-op` — and the reading matters:
+
+> At `k=3` those mutations moved the score **because the ageing was harmful**.
+> Deleting a harmful mechanism shows up as an improvement. Now that the width no
+> longer inverts the ranking, deleting the ageing changes nothing measurable.
+> **The drop is a symptom of the defect being fixed, not of the instrument
+> getting worse.**
+
+It does leave the ageing in an honest and narrower position: it is
+**score-neutral and falsifier-load-bearing**. It earns its place by preventing
+the welded-on election, which is a correctness property, not by moving a number.
+That is a legitimate way for a mechanism to justify itself, and it should be
+stated rather than assumed — the earlier claim that the width "costs nothing"
+was exactly that kind of unstated assumption, and it was false by 0.07.
