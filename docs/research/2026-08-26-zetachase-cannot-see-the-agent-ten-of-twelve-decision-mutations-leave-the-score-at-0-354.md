@@ -149,3 +149,51 @@ unchanged at 0.354" — that was the blind instrument. On the one benchmark that
 can see it, the conservative ranking and the Kalman gain earn their keep
 decisively (removing either takes the agent to 0.0, i.e. solving nothing), and
 the ageing costs score. Mixed, measured, and previously invisible.
+
+---
+
+# Addendum 2 — the suggested repair was tested and is WRONG
+
+Addendum 1 proposed: *"do not age on a frame whose command was REFUSED. A blocked
+body is not stale evidence — it is explained absence."* That was written as an
+unimplemented suggestion. It has now been implemented and measured, and it must
+not be shipped.
+
+**The candidate:** exempt the incumbent `_self_key` from ageing on any frame
+where it did not move.
+
+| | ZetaChase | two-mover | flips | decoy-held |
+|---|---|---|---|---|
+| shipped (age everything) | 0.354 | 0.1936 | 8 | 8 |
+| ageing removed entirely | 0.354 | 0.2659 | 4 | 2 |
+| **candidate repair** | 0.354 | **0.2659** | 4 | 4 |
+
+It recovers the full score gain. It also **fails
+`test_a_body_that_stops_moving_loses_the_election_to_one_that_is_moving`** — the
+decoy falsifier written during the conversion — on the first run.
+
+That failure is the whole point, and it names the tension exactly:
+
+> **"The incumbent did not move" is indistinguishable from "the incumbent is a
+> wall I wrongly elected."** Ageing a non-moving body demotes it when it was
+> merely blocked; not ageing it welds on a wrong election. Both defects are
+> real, and this repair simply swaps which one you get.
+
+The discriminator cannot be a single frame, because a single frame genuinely does
+not contain it. What separates a blocked body from a wrong election is that a
+real body moves *sometimes* — which is a statement about a distribution over
+frames, not about the frame in hand. Any correct repair has to be built from
+that, and the tempting shortcuts are:
+
+- **age the incumbent at a reduced rate** — works in principle, but the fraction
+  is a hand-picked constant, i.e. exactly what this whole conversion removed. It
+  would have to be derived from a stated horizon like every other knob here.
+- **exempt only on a detected bump** — `_note_blocked_cell` gives a real bump
+  signal, but it cannot fire until `_step_px` is known, and `_step_px` is learned
+  only from a successful move. That is the same bootstrap trap already documented
+  in `_note_inert_action`, so the repair is unavailable exactly when the agent is
+  most confused.
+
+Neither is attempted here. What is established is narrower and firmer: the
+obvious repair is measurably wrong, and the falsifier that catches it already
+exists.
