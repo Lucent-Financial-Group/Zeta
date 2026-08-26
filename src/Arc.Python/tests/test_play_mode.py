@@ -21,7 +21,7 @@ from arc_agi import OperationMode  # type: ignore[import-untyped]
 from zeta_arc.agent import PixelAgent
 from zeta_arc.driver import advance, reset
 from zeta_arc.environments.chase import COLOR_DECOY
-from zeta_arc.perception import components
+from zeta_arc.perception import Component, components
 from zeta_arc.play import (
     ENVIRONMENTS,
     choose,
@@ -264,14 +264,14 @@ def test_the_decoy_environment_has_a_competitor_where_chase_has_none() -> None:
         pixel = PixelAgent()
         frame = reset(game)
         rng_state = [5]
-        previous: dict[int, object] = {}
+        previous: dict[int, Component] = {}
         moved: set[int] = set()
         for _ in range(40):
             grid = frame.frame[0] if frame.frame else []
             current = {pixel._key(c): c for c in components(grid)}
             for key, comp in current.items():
                 was = previous.get(key)
-                if was is not None and comp.distance_to(was) > 1e-9:  # type: ignore[attr-defined]
+                if was is not None and comp.distance_to(was) > 1e-9:
                     moved.add(key)
             previous = current
             frame = advance(game, choose("pixel", game, rng_state, pixel, grid))

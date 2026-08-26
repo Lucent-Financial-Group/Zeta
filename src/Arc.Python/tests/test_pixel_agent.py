@@ -568,7 +568,12 @@ def test_a_body_that_stops_moving_loses_the_election_to_one_that_is_moving() -> 
             [_c(decoy, step, 0.0), _c(real, 0.0, 5.0)],
             [_c(decoy, step + 1.0, 0.0), _c(real, 0.0, 5.0)],
         )
-    assert agent._elect_self([_c(decoy, 6.0, 0.0), _c(real, 0.0, 5.0)]).colour == decoy
+    held = agent._elect_self([_c(decoy, 6.0, 0.0), _c(real, 0.0, 5.0)])
+    # `_elect_self` returns None on an empty frame. It cannot here — two
+    # components are always present — but asserting it says so out loud rather
+    # than leaning on a precondition a reader has to reconstruct.
+    assert held is not None
+    assert held.colour == decoy
 
     took_over_at = None
     for step in range(8):
@@ -578,6 +583,7 @@ def test_a_body_that_stops_moving_loses_the_election_to_one_that_is_moving() -> 
             [_c(decoy, 6.0, 0.0), _c(real, step + 1.0, 5.0)],
         )
         elected = agent._elect_self([_c(decoy, 6.0, 0.0), _c(real, step + 1.0, 5.0)])
+        assert elected is not None
         if elected.colour == real and took_over_at is None:
             took_over_at = step + 1
 
@@ -624,13 +630,9 @@ def test_the_dynamics_factor_releases_a_still_body_sooner_than_decay_does() -> N
             [_c(decoy, 6.0, 0.0), _c(real, step, 5.0)],
             [_c(decoy, 6.0, 0.0), _c(real, step + 1.0, 5.0)],
         )
-        if (
-            new_release is None
-            and agent._elect_self(
-                [_c(decoy, 6.0, 0.0), _c(real, step + 1.0, 5.0)]
-            ).colour
-            == real
-        ):
+        elected = agent._elect_self([_c(decoy, 6.0, 0.0), _c(real, step + 1.0, 5.0)])
+        assert elected is not None
+        if new_release is None and elected.colour == real:
             new_release = step + 1
         if old_release is None and old_step(real) == real:
             old_release = step + 1
