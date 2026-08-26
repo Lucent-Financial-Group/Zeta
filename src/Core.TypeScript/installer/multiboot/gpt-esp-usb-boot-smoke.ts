@@ -22,6 +22,14 @@
  * quirks, USB controller enumeration on real silicon, and secure-boot key
  * enrolment are untouched. This narrows MAN-USB-05, it does not close it.
  *
+ * AND ONE THING IT MEASURED THAT NOBODY EXPECTED. Run 32977813494, 2026-08-26:
+ * with the ESP entry retyped to Microsoft Basic Data, **OVMF booted it
+ * anyway** — its FAT driver binds to any FAT-carrying partition and never
+ * consults the type GUID. The boot therefore cannot falsify the type GUID; the
+ * unconditional `sfdisk --json` cross-check below is the only thing in this
+ * repository that enforces it. Whether a given *physical* firmware is stricter
+ * than OVMF here is now an explicit open hardware question, not an assumption.
+ *
  * NON-VACUITY IS STRUCTURAL. Every run boots TWICE: once with the loader
  * present (must reach the marker) and once with the loader removed (must NOT
  * reach it). A change that makes the marker appear unconditionally — or that
@@ -474,29 +482,49 @@ export async function runGptEspUsbBootSmoke(): Promise<{
   writeFileSync(positivePath, positiveBytes);
 
   // ---- external oracle: sfdisk reads the table back -----------------------
+  //
   // Not this repo's own parser reading its own output — util-linux is an
   // independently written GPT implementation, so agreement is evidence.
-  if (mutation === "none") {
-    const sfdisk = spawnSync("sfdisk", ["--json", positivePath], { encoding: "utf8" });
-    if (sfdisk.status !== 0) {
-      return {
-        exitCode: 1,
-        reason: `sfdisk --json refused the assembled disk (status ${String(sfdisk.status)}): ${sfdisk.stderr ?? ""}`,
-      };
-    }
-    let parsed: unknown;
-    try {
-      parsed = JSON.parse(sfdisk.stdout);
-    } catch (err) {
-      return { exitCode: 1, reason: `sfdisk --json output is not JSON: ${String(err)}` };
-    }
-    const agrees = sfdiskAgreesWithGpt(parsed, {
-      typeGuid: ESP_TYPE_GUID,
-      startLba: positiveDisk.layout.espStartLba,
-    });
-    if (!agrees.ok) {
-      return { exitCode: 1, reason: `GPT cross-check failed: ${agrees.error}` };
-    }
+  //
+  // THIS RUNS UNCONDITIONALLY, and that is a measured decision rather than a
+  // tidy one. MEASURED 2026-08-26 (run 32977813494): with the ESP entry
+  // retyped to Microsoft Basic Data, **OVMF booted it anyway**. Its FAT driver
+  // binds to any partition carrying a FAT filesystem and does not consult the
+  // type GUID. So the boot cannot falsify the type GUID, and if this check
+  // were skipped under mutation, the `esp-type-guid` mutant would be caught by
+  // nothing at all — a check that did not run, looking like one that passed.
+  //
+  // The static cross-check is therefore the ONLY thing in this repository that
+  // enforces `c12a7328-f81f-11d2-ba4b-00a0c93ec93b`, and whether a given
+  // physical firmware requires it stays an open hardware question (MAN-USB-05).
+  const sfdisk = spawnSync("sfdisk", ["--json", positivePath], { encoding: "utf8" });
+  if (sfdisk.status !== 0) {
+    return {
+      exitCode: 1,
+      reason:
+        `sfdisk --json refused the assembled disk (status ${String(sfdisk.status)}, ` +
+        `mutation=${mutation}): ${sfdisk.stderr ?? ""}`,
+    };
+  }
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(sfdisk.stdout);
+  } catch (err) {
+    return { exitCode: 1, reason: `sfdisk --json output is not JSON: ${String(err)}` };
+  }
+  const agrees = sfdiskAgreesWithGpt(parsed, {
+    typeGuid: ESP_TYPE_GUID,
+    startLba: positiveDisk.layout.espStartLba,
+  });
+  if (!agrees.ok) {
+    return {
+      exitCode: 1,
+      reason:
+        `GPT cross-check failed (mutation=${mutation}): ${agrees.error}` +
+        (mutation === "none"
+          ? ""
+          : " — this is the mutant being caught by the static check, which is where the type GUID is enforced"),
+    };
   }
 
   // ---- negative control: same build, no loader ----------------------------
