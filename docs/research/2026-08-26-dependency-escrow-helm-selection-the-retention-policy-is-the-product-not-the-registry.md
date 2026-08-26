@@ -54,6 +54,18 @@ Artifactory — Aaron's named hypothesis — is **eliminated on a licensing fact
 single most useful result here because it kills the default assumption before any effort is spent
 on it.
 
+**One honest qualification on the recommendation, stated here rather than buried in §8: Harbor is
+not the best escrow in this field. Pulp 3 is.** Pulp is the only candidate that deletes *nothing*
+without a human running a command, its repository versions are immutable, and its artifacts are
+sha256-addressed — all verified. Harbor wins step 1 anyway, on two grounds that are about
+deployment rather than about escrow semantics: **Pulp has no official NuGet plugin at all** (and
+this repo has 37 NuGet pins), and **Pulp's own project describes its Helm chart as "still under
+development" and its operator as "in beta stage"**, so there is no install path it presents as
+production-ready. Harbor's escrow properties have to be *configured on*; Pulp's are the default,
+and it cannot be installed the way this cluster installs things. That trade is worth knowing,
+because it is the reason §9 makes the configuration a lint rather than a runbook note — the
+recommended tool is the one whose safe state is not its default.
+
 ***
 
 ## 1. The discriminator, stated before any candidate is scored
@@ -146,7 +158,7 @@ mundane, everyday half of the value that pays for the apocalyptic half.
 
 ***
 
-## 3. What actually has to be escrowed — ten channels, and three of them no repository manager speaks
+## 3. What actually has to be escrowed — eleven channels, and two of them no repository manager speaks
 
 The requirement was *"deps for any language and os and container images all hosted."* Enumerated
 against what this repo actually pulls **[metered]** — counts from the working tree at
@@ -205,23 +217,27 @@ date inline; all licensing retrieval is **2026-08-26**.
 | --- | --- | --- | --- | --- | --- | --- |
 | **OCI / containers** | ❌ *(JCR only)* | ✅ | ✅ | ✅ `pulp_container` | ✅ | ✅ (push-only) |
 | **Helm** | ❌ *(JCR only)* | ✅ | ✅ (OCI) | via container | ✅ (OCI) | ✅ (push-only) |
-| **npm / PyPI / NuGet** | ❌ **none** | ✅ | ❌ | ✅ (py), partial | ❌ | ✅ (push-only) |
-| **Cargo / Go / gems** | ❌ | ✅ | ❌ | partial | ❌ | ✅ (push-only) |
+| **npm / PyPI / NuGet** | ❌ **none** | ✅ | ❌ | npm ✅, py ✅, **NuGet ❌** | ❌ | ✅ (push-only) |
+| **Cargo / Go / gems** | ❌ | ✅ | ❌ | gems ✅, cargo preview, **Go ❌** | ❌ | ✅ (push-only) |
 | **apt / rpm / apk** | ❌ | ✅ | ❌ | ✅ **strongest** | ❌ | ✅ (push-only) |
-| **Maven** | ✅ *(only this)* | ✅ | ❌ | proxy-only | ❌ | ✅ |
-| **proxy / pull-through** | ✅ *(Maven only)* | ✅ all formats | ✅ **but see §7** | ✅ | ✅ sync | ❌ **push-only** |
-| **licence** | AGPL-3.0 *(unconfirmed by vendor)* | **proprietary EULA** | **Apache-2.0** | **GPLv2** | **Apache-2.0** | MIT / GPLv3 |
+| **Maven** | ✅ *(only this)* | ✅ | ❌ | **proxy-only, beta** | ❌ | ✅ |
+| **proxy / pull-through** | ✅ *(Maven only)* | ✅ all formats | ✅ **but see §7** | ✅ | ✅ sync ext | ❌ **push-only, §8** |
+| **licence** | AGPL-3.0 *(unconfirmed by vendor)* | **proprietary EULA** | **Apache-2.0** | **GPLv2 ⚠️ §8** | **Apache-2.0** | MIT / GPLv3 |
 | **usage cap** | none found | **40k components / 100k req/day** | none | none | none | none |
-| **immutability** | n/a | **not found** | ✅ **explicit rule** | ✅ **content-addressed** | ✅ (OCI digest) | weak |
-| **default retention** | none | none | ⚠️ **7d on proxy projects** | orphan cleanup | none | none |
-| **backup story** | — | blob+DB, read-only mode | documented, DB+storage+redis | PG + artifacts | filesystem | filesystem |
-| **maintained chart** | ✅ official | ⚠️ community only | ✅ **official, 2026-08-03** | ⚠️ operator | ✅ 2026-07-13 | ✅ 2026-07-19 |
-| **footprint** | JVM, heavy | **8 GB / 2 CPU min** | ~6 pods, moderate | PG + workers | **minimal** | light |
+| **immutability** | n/a | **not found** | ✅ **explicit rule** | ✅ **immutable versions + sha256** | ⚠️ **ACL convention only** | no overwrite, **deletable** |
+| **default retention** | none | none | ⚠️ **7d on proxy projects** | ✅ **nothing auto-deletes** | ❌ **GC on, 1h, untagged** | cleanup rules opt-in |
+| **backup story** | — | blob+DB, read-only mode | Velero, **excludes external DB + S3** | operator CR, **excludes external DB + S3** | filesystem | filesystem |
+| **maintained chart** | ✅ official | ⚠️ community only | ✅ **official, 2026-08-03** | ⚠️ **operator, self-declared beta** | ✅ 2026-07-13 | ✅ 2026-07-19 |
+| **footprint** | JVM, heavy | **8 GB / 2 CPU min** | **2 CPU / 4 GB min** | **1–3 GB per worker** | **not published** | light |
 | **ArgoCD fit** | good | good | **good** | operator, awkward | good | good |
-| **verdict** | ❌ **eliminated §5** | ⚠️ **§6** | ✅ **recommended, §7** | ⚠️ **runner-up, §8** | ⚠️ narrow | ❌ not a proxy |
+| **verdict** | ❌ **eliminated §5** | ⚠️ **§6** | ✅ **recommended, §7** | ⚠️ **runner-up, §8** | ❌ **disqualified §8** | ❌ not a proxy |
 
 Two columns decide almost everything, and neither is a feature-count: **licence/cap** and
-**default retention**.
+**default retention**. Read the `default retention` row on its own and it sorts the field into the
+answer: **Pulp deletes nothing without a human running a command; Harbor deletes on proxy-cache
+projects at 7 days; zot deletes untagged manifests roughly an hour after they are pushed.** Only
+one of those three is an escrow by default, and it is not the one being recommended — §9 explains
+why the default is not the deciding factor once the configuration is enforced by a check.
 
 ***
 
@@ -428,15 +444,44 @@ one of the two that is an escrow**, and the enumeration is not burdensome here b
 `image-footprint.measured.json` **already contains the exact list of 129 images** — the filter set
 can be generated from a file that exists **[consistent with]**.
 
-### 7c. The two open questions on Harbor, stated rather than assumed
+### 7c. The open questions on Harbor, stated rather than assumed
 
-1. **Does an immutability rule protect an artifact from a retention policy?** Harbor's retention
-   docs say *"any tags in a repository that are not identified as being eligible for retention are
-   discarded"* **[metered]** and say nothing about immutable tags; the immutability docs say
-   nothing about retention. **Both pages are silent about the other** **[metered — the silence is
-   verified]**. The intended answer is presumably that immutability wins, but an escrow's entire
-   guarantee rests on this interaction and it is undocumented. **This is a required pre-adoption
-   test, not a footnote** — see §9 step 4.
+1. **Does an immutability rule protect an artifact from a retention policy? — probably yes, and
+   the evidence is not in the documentation.** Harbor's retention docs say *"any tags in a
+   repository that are not identified as being eligible for retention are discarded"* **[metered]**
+   and say nothing about immutable tags; the immutability docs say nothing about retention.
+   **Both pages are silent about the other** **[metered — the silence is verified]**. The answer
+   exists only in an **open, unmerged** pull request against the experimental `harbor-next` branch,
+   which states the current behaviour in order to change it: *"Currently, **immutability overrides
+   retention policy**, making it impossible to delete tags once they are marked immutable even if a
+   tag retention policy says they should be deleted"* (goharbor/harbor#22047, `needs/proposal`)
+   **[consistent with — a maintainer-adjacent statement of current behaviour, in a PR that is not
+   merged and could change it]**.
+
+   That is the answer an escrow wants, and note the shape of it: **the guarantee this
+   recommendation rests on is documented nowhere, and is currently classified as a defect
+   somebody has opened a PR to remove.** It also carries a consequence worth stating — if
+   immutability truly overrides retention, then **there is no supported way to delete an immutable
+   artifact except by turning immutability off first.** That is correct for an escrow and
+   surprising for an operator.
+   **The pre-adoption test in §9 step 4 stands unchanged** — a PR body is a statement about
+   intent, and this repo's standing discipline is that an anchor must be *checked*, not cited.
+
+   A second, related finding: **Harbor's 7-day proxy-cache retention policy may not be removable
+   at all.** goharbor/harbor#16776, *"Ability to disable default retention policy for proxy
+   projects"*, has been **open since 2022-04-28**, its reporter *"surprised when tons of cached
+   images were removed by GC"* **[metered — the issue and its age are verified; whether the policy
+   can be edited today is not]**. Four years open is itself the signal.
+
+1b. **Harbor's backup tooling excludes the topology this recommendation proposes.** The official
+   procedure is Velero, and its own caveats are explicit: **"Backups of external databases are not
+   supported"** / *"Only backups of the Harbor internal database is supported"*, Redis is not
+   backed up, and *"The data in memory is lost during the backup"* **[metered, verbatim,
+   2026-08-26]**. Since §9 proposes backing Harbor with the **existing external MinIO**, the
+   tooled path does not cover it. This is not fatal — object storage is backed up as object
+   storage, and PostgreSQL as PostgreSQL — but *"backed up as rigorously as our database"* is the
+   bar Aaron set, and **the vendor's turnkey answer does not reach it.** Pulp has the identical
+   gap (§8), which suggests it is a property of this software category rather than of Harbor.
 2. **Governance.** Every maintainer email in the Harbor chart's `index.yaml` is `@broadcom.com`
    **[metered, 2026-08-26]**. Harbor is CNCF-graduated and Apache-2.0, so the code cannot be
    withdrawn — exit is preserved by the licence. But single-vendor stewardship is a real signal
@@ -448,39 +493,107 @@ can be generated from a file that exists **[consistent with]**.
 
 ## 8. The rest of the field
 
-**Pulp 3 — the runner-up, and the strongest on the properties that matter.** Open source
-(GPLv2), Red Hat-associated, plugin-based. Its content model is the most escrow-shaped of anything
-evaluated: *"Each time the content of a repository is changed, a new Repository Version is
-created"* (`pulpproject.org/pulpcore/docs/user/learn/concepts/`, retrieved 2026-08-26) **[metered,
-verbatim]** — a new-version-per-change model rather than mutation in place, which is the shape an
-escrow wants. **Honest limit: that page does not state immutability as a guarantee and does not
-describe how artifacts are addressed**, so the stronger claim usually made for Pulp — that content
-units are content-addressed by digest, making silent replacement unavailable — is **[consistent
-with]** here and not verified. Its `pulp_rpm` and `pulp_deb` plugins are
-the best OS-package support in the field, which covers channel 8 (561 MB of `.deb` per CI job).
-Two things hold it back from the recommendation: **plugin maturity is uneven** — `pulp_maven` is
-proxy-only and several others are less complete than the headline list implies **[consistent
-with]** — and **the Kubernetes story is an operator rather than a plain chart**, which fits this
-ArgoCD tree worse than an ordinary `Application` + chart pin (§11). Its orphan-cleanup and
-`retain_repo_versions` are the eviction surfaces to pin at "never."
+**Pulp 3 — the runner-up, and on the escrow properties specifically it BEATS the recommendation.**
+This entry was revised upward after a second verification pass; the first draft under-scored it on
+a stale prior, and the correction is recorded rather than quietly applied.
 
-**Zot — narrow and excellent at its niche.** Apache-2.0, OCI-native, genuinely minimal; chart
-`0.1.122` / appVersion `v2.1.18`, created **2026-07-13**, verified from
-`zotregistry.dev/helm-charts/index.yaml` **[metered, 2026-08-26]**. It has sync/mirror. It does
-**only** OCI, so against Harbor it trades away replication filters, immutability rules, Trivy,
-projects and RBAC for a smaller footprint. **On a cluster that already runs 54 Applications, a
-smaller registry is not the constraint.** Reconsider it if Harbor's footprint proves to be the
-problem — that is a real and legible fallback.
+*Retention — Pulp is the only candidate that deletes nothing on its own.* `retain_repo_versions`
+defaults to null, and *"By default, `retain_repo_versions` is null which means that Pulp will store
+all versions of a Repository"* **[metered, verbatim]**. `ORPHAN_PROTECTION_TIME = 1440` reads like
+an eviction timer and **is the opposite** — a 24-hour guard that makes deletion *harder*, gating
+content from becoming a candidate for an orphan-cleanup task that **must be triggered by hand**
+(`POST /pulp/api/v3/orphans/cleanup/`). A maintainer confirms there is no scheduler: *"You are
+reading correctly. The `ORPHAN_PROTECTION_TIME` behaves different from the others… so yes, this
+sounds pretty much like a feature request"* (pulpcore#6099) **[metered]**. And the project treats
+this as a rule rather than an accident — pulpcore#5363: *"Deleting content or artifacts outside of
+orphan cleanup is breaking the rules. And no, we cannot get away with that."* **[metered]**
+**Deleting anything is two deliberate steps, both human-initiated.** That is the escrow disposition
+by default, which is exactly what Harbor and zot do not have.
+
+*Immutability — upgraded from `consistent with` to metered.* *"Each time the content set of a
+repository is changed, a new **immutable** `RepositoryVersion` is created"*; versions can be
+created and deleted, never edited **[metered, verbatim]**. And the content-addressing claim I
+declined to promote in the previous revision **is** confirmed, in code rather than prose: sha256
+determines the storage path (not the filename), equality is by digest, `before_save()` validates
+checksums, and **sha256 cannot be removed from `ALLOWED_CONTENT_CHECKSUMS`** **[metered — verified
+in source]**. *Named limit that survives: there is no scrub/fsck story and no published integrity
+guarantee, so **bit-rot is the operator's problem** — which matters for a store whose whole purpose
+is to hold bytes for years.*
+
+*Plugin maturity — my "uneven" was right in general and wrong in two specifics.* `pulp_maven` is
+**proxy-only, confirmed in code** (its viewset has `add_cached_content` and `repair_metadata`, and
+**no `sync` action**) — so there is no bulk pre-seed of Maven Central, only the closure you pulled.
+But **`pulp_npm` was my stale prior**: dormant 2022–2025, then real releases through **0.10.1 on
+2026-08-25** with a working sync task — young and active, not abandoned. `pulp_rpm`, `pulp_deb`,
+`pulp_container`, `pulp_python` and `pulp_gem` are all Production/Stable with full sync.
+
+*The two facts that keep it out of step 1.* **`pulp_nuget` does not exist officially** — there is
+only a personal repository — and this repo has **37 NuGet pins across 48 projects** (§3), so
+Pulp cannot cover channel 3 at all. And its Kubernetes story is worse than "an operator instead of
+a chart": the Helm chart lives in `pulp/pulp-k8s-resources`, carries **"This installation method is
+still under development!"**, installs the operator rather than Pulp, and the operator's own README
+says **"Pulp Operator is in beta stage and under active development"** **[metered]**. The
+documented k8s quickstart is `git clone` + `make deploy`. **There is no install path the project
+itself presents as production-hardened**, which is disqualifying for *step 1* and not for the
+programme.
+
+*Two further findings to carry into any adoption.* Its backup tooling has **the identical gap as
+Harbor's**: `PulpBackup` states that files in object storage *"will **not** be copied"* and that
+*"the current version of the Operator does not execute backups of external PostgreSQL instances
+yet"* **[metered]**. And the licence is genuinely ambiguous — `pyproject.toml` declares
+`GPL-2.0-or-later`, **the LICENSE file is bare GPLv2 (1991) with no "or later" grant**, and
+GitHub's detector reports `GPL-2.0` (v2-only) **[metered — all three verified; per-file headers
+not audited]**. Harmless for internal use; **name it to counsel before anything is distributed.**
+
+**Zot — disqualified, and on precisely the property this document exists to test.** Apache-2.0,
+CNCF **Sandbox** (not graduated), OCI-native; chart `0.1.122` / appVersion `v2.1.18`, created
+**2026-07-13** **[metered, 2026-08-26]**. The first draft called it "narrow but excellent." That
+was wrong, and the reason is the retention column:
+
+> **zot garbage-collects by default.** `GC: true`, `GCDelay: 1h`, `GCInterval: 1h` in its defaults
+> **[metered — verified in source]**, and its docs say *"if `retention` is not configured, garbage
+> collection deletes all untagged manifests which are not referenced by indexes or artifacts after
+> the `gcDelay` passes"* and *"By default, if no retention policies are defined, all untagged
+> manifests are deleted"* **[metered, verbatim]**.
+
+Tagged content is safe. **Content referenced only by digest — which is exactly how a
+content-addressed escrow refers to things — is deleted about an hour after it is pushed.** This is
+not theoretical: zot#4148 reports images *"actively being pulled get evicted and immediately
+re-synced… There is no configuration that prevents this, because retention rules apply to tags
+only"* **[metered]**. Two further traps: **the shipped Helm chart config does not set `gc`**, so a
+default install runs with deletion on; and defining any `keepTags` policy **flips tags from
+default-keep to default-delete**. Its immutability is *"not… an explicit configuration flag"* but
+an ACL convention — withhold the `update` action — which any admin principal or config edit lifts
+**[metered, verbatim]**. Add that `zot-minimal` **excludes the sync and scrub extensions
+entirely**, and that syncing Docker-format images **changes the manifest digest** unless
+`preserveDigest` and `http.compat` are both set — *"digest-pinned pulls… and verifiable signatures
+will not work as expected"* **[metered, verbatim]**.
+
+*It is recoverable* — set `gc: false` — but a candidate whose default configuration silently
+deletes digest-addressed content, whose immutability is a convention, and whose sync path can
+change a digest is the wrong substrate for a store built on digests. **The "minimal" framing also
+does not survive measurement**: the project publishes no RAM or CPU figures at all, its own
+reference systemd unit sets `MemoryMax=32G`, and `zot-minimal` has grown 2.5× in twenty months
+(32.1 MB → 81.9 MB) **[metered]**. "Minimal" in zot's vocabulary means fewer dependencies, not a
+small process.
 
 **Gitea / Forgejo package registry — eliminated on the property nobody notices.** The format list
-is genuinely long (Alpine, Cargo, Composer, Conan, Container, CRAN, Debian, Go, Helm, Maven, npm,
-NuGet, PyPI, RPM, RubyGems, Swift, Vagrant…) and the charts are healthy — Gitea chart appVersion
-**1.27.0**, created **2026-07-19** **[metered, 2026-08-26]**. But **these registries are
-push-only: you upload artifacts to them, they do not proxy an upstream.** The packages overview
-(`docs.gitea.com/usage/packages/overview`, retrieved 2026-08-26) documents no proxy, pull-through
-or mirroring capability for any of the 24 formats and describes only the upload model **[metered
-for the absence in the doc; [consistent with] for the conclusion, since a documented absence is
-not a proven one]**. Its immutability is the weak kind, and its own docs are clear about which:
+is genuinely long — **Gitea 23 formats** (Alpine, Arch, Cargo, Chef, Composer, Conan, Conda,
+Container, CRAN, Debian, Generic, Go, Helm, Maven, npm, NuGet, Pub, PyPI, RPM, RubyGems, Swift,
+**Terraform**, Vagrant), **Forgejo the same set plus ALT and minus Terraform** **[metered, both
+projects' own docs, 2026-08-26]** — and the charts are healthy: Gitea chart **v12.7.0**
+(appVersion 1.27.2), Forgejo chart **v17.1.5**, though the latter's appVersion **15.0.7 lags
+Forgejo's current 16.0.3** **[metered]**. Licences differ and the difference has a date: Gitea is
+MIT; **Forgejo relicensed to GPLv3 at v9.0 (Oct 2024)**, so ≤v8.0 is MIT and ≥v9.0 is GPLv3+
+**[metered]**.
+
+But **these registries are push-only: you upload artifacts to them, they do not proxy an
+upstream** — and this is now confirmed by the feature request rather than only by absence.
+**`go-gitea/gitea#21223`, "Support proxy registries for each package type", has been open since
+2022-09-20**, last updated 2026-05-18, and its body cites Artifactory's remote/virtual repositories
+as the model; a container-specific duplicate (#26756) was closed as such **[metered]**. **Roughly
+four years open and unimplemented** is a stronger signal than a silent doc. *(Gitea's "repository
+mirrors" are git-repo mirroring, a different feature — do not read it as package proxying.)* Its immutability is the weak kind, and its own docs are clear about which:
 *"You cannot edit a package after you have published it in the Package Registry. Instead, you must
 delete and recreate it"* **[metered, verbatim]** — no overwrite, but deletion is permitted, so it
 does not resist an operator error or a compromised token the way a Harbor immutability rule does. A
@@ -550,9 +663,11 @@ the honest placeholder.
 
 **Migration path if Harbor is later wrong:** the escrow's contents are OCI artifacts addressed by
 digest, and `skopeo sync` / `oras cp` move them between any two OCI registries without
-re-fetching upstream. **The exit cost from Harbor to Zot, Pulp, or a plain distribution registry
-is low and does not depend on Harbor's cooperation** **[consistent with]**. That property is why
-starting imperfectly is safe here, and it is worth preferring an OCI-native store partly *for* it.
+re-fetching upstream. **The exit cost from Harbor to `pulp_container`, a plain distribution
+registry, or anything else OCI-native is low and does not depend on Harbor's cooperation**
+**[consistent with]**. That property is why starting imperfectly is safe here, and it is worth
+preferring an OCI-native store partly *for* it. *(zot would have been the obvious sibling here and
+is not — §8.)*
 
 ***
 
@@ -684,15 +799,22 @@ polyglot pull-through. Pick the poison:
 
 | option | what you accept |
 | --- | --- |
-| **Nexus CE** | proprietary EULA, mandatory telemetry, a **40k-component cap the vendor halved once** and can halve again |
-| **Pulp 3** | open and content-addressed, but **uneven plugin maturity** and an operator rather than a chart |
+| **Nexus CE** | proprietary EULA, mandatory telemetry, a **40k-component cap the vendor halved once** and can halve again — but it is the **only** option covering NuGet |
+| **Pulp 3** | the **best escrow semantics in the field** (nothing auto-deletes, immutable versions, sha256-addressed) — but **no official NuGet plugin at all**, Maven proxy-only, and **no install path its own project calls production-ready** |
 | **per-ecosystem proxies** | fully open and maximally scale-free, but **N services** to deploy, back up and prove retention on |
 | **defer it** | ship the container half now; the language/OS half stays unescrowed for a while |
 
-*My read: **defer**, then **Pulp**. The container half is where the measured damage is (§2), and
-deferring keeps the Nexus cap decision from being made under time pressure. But this is Aaron's
-tradeoff, not mine — the Nexus format coverage is genuinely excellent and someone who weights
-"one product, everything works today" above "no vendor-adjustable cap" would rationally pick it.*
+**The NuGet gap is what makes this genuinely hard, and it was not visible in the first draft.**
+This repo has **37 NuGet pins across 48 C#/F# projects** (§3), and **Pulp has no official NuGet
+plugin** — only a personal repository. So the option with the best escrow properties cannot cover
+one of our largest ecosystems, and the option that covers everything is the one with the
+vendor-adjustable cap. That is a real trade with no dominant choice, which is why it is Aaron's.
+
+*My read: **defer**, then **Pulp for rpm/deb/PyPI/npm plus something else for NuGet** — probably
+Nexus scoped to NuGet alone, where 37 packages sit nowhere near a 40,000 cap, or a plain NuGet
+`v3` static feed, which is simple enough to be worth pricing before assuming a product is needed.
+But someone who weights "one product, everything works today" above "no vendor-adjustable cap"
+would rationally pick Nexus for the whole half, and that is not a wrong answer.*
 
 **3. Storage.** ~250–300 GiB on a single-node deployment whose active profile already provisions
 467 GiB (§11). This is the most likely no, and if it is a no, the escrow scope should shrink to a
@@ -702,10 +824,20 @@ mirrored *subset* — the 15 unresolvable images and their neighbours — rather
 be withdrawn, so this is a maintenance-velocity risk, not a capture risk. Flagged because it is
 the kind of thing that should be an explicit accepted risk rather than a surprise.
 
-**5. Does the escrow get its own backup, or does it ride `zeta-backups`?** *"Backed up as
-rigorously as our database"* is the bar Aaron set, and the cluster has a `zeta-backups` bucket on
-MinIO already. **An escrow backed up onto the same single node it runs on is not backed up** — it
-is a second copy of the same disk, and the failure that takes the escrow takes the backup.
+**5. Does the escrow get its own backup, or does it ride `zeta-backups`? — and note that neither
+vendor's tooling reaches the stated bar.** *"Backed up as rigorously as our database"* is what
+Aaron set, and the cluster has a `zeta-backups` bucket on MinIO already. Two things make this a
+real decision rather than a checkbox:
+
+- **An escrow backed up onto the same single node it runs on is not backed up.** It is a second
+  copy of the same disk, and the failure that takes the escrow takes the backup. Off-node or
+  off-site is what the bar actually requires, and nothing in this cluster does that today.
+- **Both candidates' turnkey backup paths explicitly exclude external databases and object
+  storage** — Harbor's Velero procedure says *"Backups of external databases are not supported"*,
+  and Pulp's `PulpBackup` says object-storage files *"will not be copied"* **[metered, both]**.
+  Since the recommended topology uses the external MinIO, **the vendor answer covers none of the
+  actual bytes.** The escrow's backup has to be built out of ordinary object-storage and
+  PostgreSQL backup, which is entirely doable and is *more* work than a runbook line implies.
 Off-node or off-site is what the stated bar actually requires, and nothing in this cluster does
 that today.
 
@@ -715,25 +847,45 @@ that today.
 
 Stated rather than guessed, per the brief.
 
-1. **Harbor immutability vs retention** (§7c) — both doc pages are silent about the other. The
-   escrow's core guarantee depends on it. §9 step 4 is the test.
-2. **Harbor's measured resource requests and true storage overhead** (§11) — not rendered, because
-   doing it properly needs a `valuesObject` that selection should not invent.
-3. **Nexus artifact/blob immutability** (§6c) — no feature found; also no doc saying it is
+1. **Harbor immutability vs retention** (§7c) — **partially resolved, and by a source that is not
+   documentation.** An open, unmerged PR states that immutability currently overrides retention;
+   both doc pages remain silent. §9 step 4 remains the test, and it is the single most important
+   unverified item in this document because the recommendation rests on it.
+2. **Whether Harbor's 7-day proxy-cache retention policy can be removed at all** (§7c) — the
+   feature request to disable it has been open since 2022. Not decisive for the recommendation,
+   since §9 does not use proxy cache, but decisive for anyone who tries to.
+3. **Harbor's measured resource requests and true storage overhead** (§11) — not rendered, because
+   doing it properly needs a `valuesObject` that selection should not invent. The published
+   minimums (2 CPU / 4 GB) are for the Compose installer; **no Helm-specific minimum is published**.
+4. **Nexus artifact/blob immutability** (§6c) — no feature found; also no doc saying it is
    unsupported. Absence of evidence.
-4. **Artifactory OSS's actual licence text** (§5) — no JFrog-primary page states it. AGPL-3.0 per
+5. **Artifactory OSS's actual licence text** (§5) — no JFrog-primary page states it. AGPL-3.0 per
    several secondary sources. Does not change the outcome.
-5. **Pulp plugin maturity per-plugin** (§8) — characterised as uneven on secondary evidence; not
-   verified plugin by plugin. **Pulp artifact content-addressing** is likewise unconfirmed: the
-   concepts page describes new-version-per-change but not how artifacts are addressed.
-6. **Gitea/Forgejo push-only** (§8) — inferred from the documented model and the absence of any
-   documented proxy feature for package registries. Not proven by a negative search.
-7. **This repo's dependency-churn rate** (§11) — the number that turns 250–300 GiB into a
+6. **Pulp's licence** (§8) — three primary sources disagree (`GPL-2.0-or-later` in metadata, bare
+   GPLv2 in LICENSE, `GPL-2.0` from GitHub's detector). **Per-file headers were not audited.**
+   Irrelevant internally; a counsel question before distribution.
+7. **Pulp's maintenance guarantees** (§8) — four older Z-streams still receive backports, but no
+   page states which branches are supported or until when. Red Hat's CRA declaration lists Pulp as
+   a **"Light Steward"**, explicitly the *lower* of two tiers — a governance signal, not a defect.
+8. **Gitea/Forgejo push-only** (§8) — now strongly corroborated by a four-year-open feature
+   request, but still a negative claim: **Forgejo-side issues were not exhaustively enumerated**,
+   and per-format overwrite semantics were not verified.
+9. **This repo's dependency-churn rate** (§11) — the number that turns 250–300 GiB into a
    defensible horizon rather than a guess. Cheap to measure; not measured here.
-8. **Nexus `#736`** (failed requests counting toward the cap) — the issue exists; the behaviour
-   was not reproduced.
-9. **The ~1,200–1,800 component estimate** (§6b) — each named count is measured; the total is an
-   estimate and the apt component count in particular is a guess.
+10. **Nexus `#736`** (failed requests counting toward the cap) — the issue exists; the behaviour
+    was not reproduced.
+11. **The ~1,200–1,800 component estimate** (§6b) — each named count is measured; the total is an
+    estimate and the apt component count in particular is a guess.
+
+**A note on method, because it changed two conclusions.** Three version claims in this document
+were wrong on first reading and were caught only by checking each project's **API** against its
+rendered release page: Harbor's chart is **v1.19.2** where the release page title reads "Harbor
+v2.15.2", and zot's published chart `appVersion` is **v2.1.18** where its install docs say
+v2.1.20. **Rendered release pages are unreliable for version extraction.** More substantively,
+this section's §8 entries for Pulp and zot were both **materially wrong in the first revision** —
+Pulp under-scored on a stale `pulp_npm` prior, zot scored as "narrow but excellent" when its
+defaults delete digest-addressed content within the hour. Both were corrected by a second
+verification pass, and the corrections are recorded in place rather than silently applied.
 
 ***
 
@@ -753,10 +905,20 @@ Stated rather than guessed, per the brief.
 | Scheduled replication does not propagate deletions (§7b) | **metered** — Harbor replication docs, 2026-08-26 |
 | Immutable tags resist re-push, re-tag and replication (§7b) | **metered** — Harbor immutability docs, 2026-08-26 |
 | Chart versions: harbor 1.19.2, zot 0.1.122, gitea 1.27.0, verdaccio 4.33.1 | **metered** — fetched from each chart repo's `index.yaml`, 2026-08-26 |
-| Pulp creates a new repository version per change (§8) | **metered** — pulpproject.org concepts, verbatim, 2026-08-26 |
-| Pulp content units are content-addressed by digest (§8) | **consistent with** — not stated on that page |
+| Pulp repository versions are immutable (§8) | **metered** — pulpcore docs, verbatim, 2026-08-26 |
+| Pulp artifacts are sha256-addressed; sha256 not removable (§8) | **metered** — verified in pulpcore source |
+| Pulp orphan cleanup is manual-only; nothing auto-deletes (§8) | **metered** — settings + maintainer statement, pulpcore#6099 |
+| Pulp has no official NuGet plugin (§8) | **metered** — absent from the canonical plugin list |
+| Pulp k8s chart/operator self-declared beta (§8) | **metered** — verbatim from the chart page and operator README |
+| Harbor immutability overrides retention (§7c) | **consistent with** — open unmerged PR #22047, not docs |
+| Harbor Velero backup excludes external DB and S3 (§7c) | **metered** — Harbor backup doc, verbatim |
+| Pulp backup excludes object storage and external PostgreSQL (§8) | **metered** — operator doc, verbatim |
+| zot GC is on by default and deletes untagged manifests (§8) | **metered** — zot defaults in source + docs, verbatim |
+| zot immutability is an ACL convention, not a feature (§8) | **metered** — zot docs, verbatim |
 | Gitea packages cannot be edited after publishing (§8) | **metered** — docs.gitea.com, verbatim, 2026-08-26 |
-| Gitea/Forgejo package registries are push-only (§8) | **consistent with** — no documented proxy feature |
+| Gitea/Forgejo package registries are push-only (§8) | **consistent with** — corroborated by gitea#21223, open since 2022 |
+| Gitea 23 formats incl. Terraform; Forgejo swaps in ALT (§8) | **metered** — both projects' docs, 2026-08-26 |
+| Forgejo relicensed MIT → GPLv3 at v9.0 (§8) | **metered** — LICENSE at HEAD + release post |
 | Harbor cannot serve npm/PyPI/apt wire protocols (§7) | **consistent with** |
 | mise and Nix are uncovered by every candidate (§3) | **metered** for the pins; **consistent with** for the coverage gap |
 | ~250–300 GiB opening allocation (§11) | **speculative** — churn rate unmeasured |
