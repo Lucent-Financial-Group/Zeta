@@ -17,6 +17,8 @@ import {
   ALPHA_STAR,
   LP_RATE,
   type CliffordType,
+  CL30_ONE,
+  type Cl30,
   TOWER_REDUCTION,
   classify,
   classifyDegenerate,
@@ -25,6 +27,8 @@ import {
   dimensionOfType,
   edgeCount,
   embedPoint,
+  geometricProduct,
+  isZero,
   evenSubalgebraClass,
   lcg,
   lpRateAgreesWithExponent,
@@ -364,4 +368,43 @@ it("the tower roster is non-empty and every entry classifies", () => {
     const [p, q, r] = t.signature;
     expect(classifyDegenerate(p, q, r).realDimension).toBe(2 ** (p + q + r));
   }
+});
+
+// ===== CAN A MULTIVECTOR SATISFY IMessage<'M>? ==========================================
+
+it("the geometric product is a MONOID — Product/Uniform come free for IMessage", () => {
+  const a: Cl30 = [1, 2, 0, -1, 0, 3, 0, 1];
+  const b: Cl30 = [0, 1, 1, 0, 2, 0, -1, 0];
+  const c: Cl30 = [2, 0, -1, 1, 0, 1, 0, -2];
+  // identity
+  expect(geometricProduct(a, CL30_ONE)).toEqual(a);
+  expect(geometricProduct(CL30_ONE, a)).toEqual(a);
+  // associativity — the property IMessage.Product needs and never states
+  const left = geometricProduct(geometricProduct(a, b), c);
+  const right = geometricProduct(a, geometricProduct(b, c));
+  for (let i = 0; i < 8; i += 1) expect(left[i]).toBeCloseTo(right[i] ?? 0, 9);
+});
+
+it("BUT the geometric product has ZERO DIVISORS — so IMessage.Divide cannot be total", () => {
+  // (1 + e1)(1 - e1) = 1 - e1^2 = 0 in Cl(3,0), where e1^2 = +1.
+  const onePlusE1: Cl30 = [1, 1, 0, 0, 0, 0, 0, 0];
+  const oneMinusE1: Cl30 = [1, -1, 0, 0, 0, 0, 0, 0];
+  expect(isZero(onePlusE1)).toBe(false);
+  expect(isZero(oneMinusE1)).toBe(false);
+  expect(isZero(geometricProduct(onePlusE1, oneMinusE1))).toBe(true);
+  // A non-zero element with a non-zero annihilator has no inverse. `Divide` is the EP
+  // cavity and is not optional, so a Clifford message algebra must restrict its carrier to
+  // the INVERTIBLE multivectors — the Clifford GROUP. Same restriction the literature
+  // makes, reached from our interface rather than from their paper.
+});
+
+it("a VERSOR is invertible: v * v/|v|^2 = 1 — the carrier that would satisfy Divide", () => {
+  // Any non-null vector inverts, which is why versors (products of such) form a group.
+  const v: Cl30 = [0, 3, 4, 0, 0, 0, 0, 0]; // |v|^2 = 25
+  const normSq = geometricProduct(v, v)[0];
+  expect(normSq).toBeCloseTo(25, 9);
+  const vInv: Cl30 = [0, 3 / 25, 4 / 25, 0, 0, 0, 0, 0];
+  const prod = geometricProduct(v, vInv);
+  expect(prod[0]).toBeCloseTo(1, 9);
+  for (let i = 1; i < 8; i += 1) expect(prod[i]).toBeCloseTo(0, 9);
 });

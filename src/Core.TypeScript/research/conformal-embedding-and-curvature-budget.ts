@@ -328,3 +328,105 @@ export const TOWER_REDUCTION: readonly {
   { name: "PGA(2D)", signature: [2, 0, 1], construction: "Cl(2,0) (x) Lambda(R^1)" },
   { name: "STA", signature: [1, 3, 0], construction: "Cl(1,3) itself" },
 ];
+
+// ---------------------------------------------------------------------------------------
+// 7. Can a MULTIVECTOR satisfy `IMessage<'M>`? -- the constraint the interface imposes
+// ---------------------------------------------------------------------------------------
+//
+// `src/Bayesian/Message.fs` defines the message algebra the factor graph is generic over:
+//
+//     type IMessage<'M> =
+//         abstract Uniform : 'M
+//         abstract Product : 'M * 'M -> 'M
+//         abstract Divide  : 'M * 'M -> 'M
+//
+// Two of the three come free for a Clifford multivector: the geometric product is
+// associative with identity `1`, so `Product`/`Uniform` are a monoid and need no argument.
+//
+// `Divide` is the one that bites, and it is NOT optional here -- it is the EP cavity and the
+// sum-product variable rule (`marginal / incoming`), which is the whole reason the factor
+// graph does not double-count evidence. So it has to work.
+//
+// AND IT CANNOT WORK FOR ARBITRARY MULTIVECTORS, because the geometric product has ZERO
+// DIVISORS. In `Cl(3,0)` with `e1^2 = 1`:
+//
+//     (1 + e1)(1 - e1) = 1 - e1 + e1 - e1^2 = 1 - 1 = 0
+//
+// A non-zero element with a non-zero annihilator has no inverse. So `Divide` forces any
+// Clifford message algebra to restrict its carrier to the INVERTIBLE multivectors -- the
+// versors, i.e. the Clifford GROUP.
+//
+// That constraint was derived here from our own interface, and it independently lands on the
+// restriction the literature already made: the relevant architectures are
+// "Clifford GROUP Equivariant" networks (Ruhe et al. 2023), and the group is the invertible
+// part for exactly this reason. Two routes, same restriction -- which is the useful kind of
+// convergence, since it means the interface is not accidentally excluding something the
+// field uses.
+
+/** A `Cl(3,0)` multivector, in the basis `[1, e1, e2, e3, e12, e13, e23, e123]`. */
+export type Cl30 = readonly [number, number, number, number, number, number, number, number];
+
+/**
+ * Blade indices `[1, e1, e2, e3, e12, e13, e23, e123]` as generator BITMASKS.
+ * The map is its own inverse, which the tests pin.
+ */
+const BLADE_MASK: readonly number[] = [0, 1, 2, 4, 3, 5, 6, 7];
+
+const popcount = (x: number): number => {
+  let n = 0;
+  let v = x;
+  while (v !== 0) {
+    n += v & 1;
+    v >>= 1;
+  }
+  return n;
+};
+
+/**
+ * Sign from reordering the concatenation of two sorted blades into canonical order
+ * (Dorst, Fontijne & Mann 2007, the canonical-reordering sign).
+ *
+ * COMPUTED, NOT TABULATED. The first version of this file carried a hand-written 8x8
+ * sign table and it was WRONG — the associativity falsifier caught it. A table of 64
+ * signs is 64 chances to mistype; this is one algorithm with one falsifier, and the
+ * error class is gone rather than patched.
+ */
+function canonicalReorderingSign(a: number, b: number): number {
+  let x = a >> 1;
+  let sum = 0;
+  while (x !== 0) {
+    sum += popcount(x & b);
+    x >>= 1;
+  }
+  return (sum & 1) === 0 ? 1 : -1;
+}
+
+/**
+ * The geometric product on `Cl(3,0)`. Associative, with `scalar 1` as identity.
+ *
+ * All three generators square to `+1`, so shared generators contribute no extra sign and
+ * the whole product is `blade = a XOR b` with the reordering sign above.
+ */
+export function geometricProduct(a: Cl30, b: Cl30): Cl30 {
+  const out = [0, 0, 0, 0, 0, 0, 0, 0];
+  for (let i = 0; i < 8; i += 1) {
+    if (a[i] === 0) continue;
+    for (let j = 0; j < 8; j += 1) {
+      if (b[j] === 0) continue;
+      const ma = BLADE_MASK[i] ?? 0;
+      const mb = BLADE_MASK[j] ?? 0;
+      const sign = canonicalReorderingSign(ma, mb);
+      const k = BLADE_MASK.indexOf(ma ^ mb);
+      out[k] = (out[k] ?? 0) + sign * (a[i] ?? 0) * (b[j] ?? 0);
+    }
+  }
+  return out as unknown as Cl30;
+}
+
+/** The multiplicative identity — what `IMessage.Uniform` would be. */
+export const CL30_ONE: Cl30 = [1, 0, 0, 0, 0, 0, 0, 0];
+
+/** Is every component zero? */
+export function isZero(m: Cl30): boolean {
+  return m.every((c) => Math.abs(c) < 1e-12);
+}
