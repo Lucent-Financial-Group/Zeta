@@ -21,6 +21,13 @@
   # something real to watch. `lib.mkDefault` so a host can switch it off.
   zeta.k3sJoinObserver.enable = lib.mkDefault true;
 
+  # A worker normally has no `/var/lib/rancher/k3s/server/db/etcd` at all, so
+  # this passes and changes nothing. It is enabled anyway because the case it
+  # catches is precisely the one nobody expects: a box that was a control plane
+  # once, re-flashed as a worker onto a disk whose server datastore survived.
+  # k3s would then ignore the join arguments and resume being a server.
+  zeta.k3sDatastorePreflight.enable = lib.mkDefault true;
+
   services.k3s = {
     enable = true;
     role = "agent";
