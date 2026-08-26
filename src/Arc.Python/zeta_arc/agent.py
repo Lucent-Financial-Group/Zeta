@@ -77,6 +77,25 @@ BODY_STALENESS_HORIZON = 6.58
 #: Derived, never named directly.
 BODY_TAU = tau_for_horizon(BODY_PRIOR_SIGMA2, BODY_STALENESS_HORIZON)
 
+#: "This action is inert from this exact state" lives on [0, 1], so 1.0 is the
+#: uninformative prior — and it doubles as the RELEASE TEST: a belief whose
+#: variance has grown back to the prior carries no information, and an action we
+#: know nothing about is one we are willing to try again.
+INERT_PRIOR_SIGMA2 = 1.0
+
+#: What one refusal is worth. "The grid was byte-identical after I acted" is a
+#: clean reading, but it says the action did nothing HERE AND NOW, not that it is
+#: dead — so one refusal is worth about as much as the prior.
+INERT_OBS_SIGMA2 = 1.0
+
+#: THE MAXIMUM a suppression can last, in revisits to the same grid — stated,
+#: bounded, and checked by `test_suppression_can_never_outlast_the_horizon`.
+#: 2.41 is what `INERT_DECAY = 0.75` was asserting for a single refusal:
+#: `decay_half_life(0.75) == 2.41`.
+INERT_STALENESS_HORIZON = 2.41
+
+INERT_TAU = tau_for_horizon(INERT_PRIOR_SIGMA2, INERT_STALENESS_HORIZON)
+
 #: NOTE ON THE COMMIT GATE, which is `mu > 0` and deliberately NOT a conservative
 #: bound. Requiring one sigma of confidence was tried first and is wrong here:
 #: after a single clean frame `mu = 0.5` with `sigma = 0.707`, so a 1-sigma gate
@@ -120,7 +139,7 @@ class PixelAgent:
     #: Actions the world did not answer, keyed by the EXACT grid they were
     #: issued from. See `_note_inert_action` for why this exists alongside
     #: `blocked` rather than inside it.
-    _inert: dict[tuple[tuple[int, ...], ...], dict[GameAction, float]] = field(
+    _inert: dict[tuple[tuple[int, ...], ...], dict[GameAction, Belief]] = field(
         default_factory=dict
     )
     _last_grid_key: tuple[tuple[int, ...], ...] | None = None
@@ -137,20 +156,30 @@ class PixelAgent:
         that contains it."""
         return tuple(tuple(row) for row in grid)
 
-    #: How fast an unanswered action becomes worth retrying. NOT a ban: many
-    #: games UPGRADE their actions, so a move that does nothing early is
+    #: An action is suppressed while there is INFORMATION that it is inert, and
+    #: becomes eligible the moment that information has gone stale. NOT a ban:
+    #: many games UPGRADE their actions, so a move that does nothing early is
     #: routinely live later once something unlocks — and the grid can return to
     #: a byte-identical state with the agent's capabilities changed underneath
     #: it, which is precisely the case a permanent refusal makes unreachable.
     #: Aaron 2026-08-26: *"should not set the actions to completely 0 cause in
     #: many games actions get upgraded over time ... not some games, not all of
-    #: them."* So suppression LEAKS, on the same principle as `LAYER_DECAY` and
-    #: the body-evidence leak: nothing here is allowed to be permanent.
-    INERT_DECAY = 0.75
-    #: Below this a suppressed action is eligible again. One refusal costs about
-    #: three revisits; a persistently dead action accumulates and stays down
-    #: longer, so the cost self-tunes to how dead the action actually is.
-    INERT_FLOOR = 0.5
+    #: them."*
+    #:
+    #: THE HORIZON IS NOW A CEILING, WHICH IS THE REAL GAIN HERE. Under
+    #: `INERT_DECAY = 0.75` with `INERT_FLOOR = 0.5`, weight ACCUMULATED without
+    #: bound: one refusal cost about three revisits, three refusals cost seven,
+    #: ten refusals cost eleven. An action refused often enough early could stay
+    #: suppressed for arbitrarily long — which is the permanent refusal the
+    #: design forbids, arriving by degrees instead of by decree. Variance
+    #: saturates where a sum does not, so suppression here can never outlast
+    #: `INERT_STALENESS_HORIZON` revisits no matter how dead the action looked.
+    #: The stated bound IS the guarantee the comment above always wanted.
+    #:
+    #: Some self-tuning survives and it is honestly weaker: a well-established
+    #: refusal starts from a smaller variance and so takes marginally longer to
+    #: go stale (2 revisits after one refusal, 3 after ten). Trading an unbounded
+    #: spread for a bounded one is the point, not a side effect.
 
     def _note_inert_action(self, key: tuple[tuple[int, ...], ...]) -> None:
         """An action the world did not answer AT ALL, recorded against the exact
@@ -184,8 +213,11 @@ class PixelAgent:
         """
         if self._last_action is None:
             return
-        weights = self._inert.setdefault(key, {})
-        weights[self._last_action] = weights.get(self._last_action, 0.0) + 1.0
+        beliefs = self._inert.setdefault(key, {})
+        prior = beliefs.get(
+            self._last_action, Belief(mu=0.0, sigma2=INERT_PRIOR_SIGMA2)
+        )
+        beliefs[self._last_action] = observe(prior, 1.0, INERT_OBS_SIGMA2)
 
     def _note_blocked_cell(self, me: Component) -> None:
         """A commanded move that produced NO displacement means something is in
@@ -447,9 +479,9 @@ class PixelAgent:
         weights = self._inert.get(key)
         if weights is not None and self._step_px is None:
             for action in list(weights):
-                weights[action] *= self.INERT_DECAY
-                if weights[action] < self.INERT_FLOOR:
-                    del weights[action]
+                weights[action] = age(weights[action], INERT_TAU, 1.0)
+                if weights[action].sigma2 >= INERT_PRIOR_SIGMA2:
+                    del weights[action]  # back to knowing nothing: try it again
             if not weights:
                 del self._inert[key]
             else:

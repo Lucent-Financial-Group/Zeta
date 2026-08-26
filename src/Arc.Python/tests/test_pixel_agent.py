@@ -6,10 +6,18 @@ touches it; that is the whole point of the file.
 
 from __future__ import annotations
 
+import math
+
 from arcengine import GameAction
 
-from zeta_arc.agent import ACTION_VECTORS, PixelAgent
+from zeta_arc.agent import (
+    ACTION_VECTORS,
+    INERT_PRIOR_SIGMA2,
+    INERT_STALENESS_HORIZON,
+    PixelAgent,
+)
 from zeta_arc.driver import advance, reset
+from zeta_arc.dynamics import Belief, observe
 from zeta_arc.environments.chase import CELL, ZetaChase
 from zeta_arc.perception import Component, background_colour, components
 from zeta_arc.play import play
@@ -437,7 +445,7 @@ def test_suppression_expires_because_games_upgrade_their_actions():
     action that is still dead SHOULD stay suppressed. Expiry is only visible for
     an action that is not being re-refused, which is what is set up below.
 
-    Set `INERT_DECAY = 1.0` and this goes red while the bootstrap test stays
+    Set `INERT_TAU = 0.0` and this goes red while the bootstrap test stays
     green: suppression still works, it just never expires.
     """
     agent = PixelAgent()
@@ -447,23 +455,65 @@ def test_suppression_expires_because_games_upgrade_their_actions():
     # One action stands suppressed; a DIFFERENT one is what the agent last
     # issued, so the suppressed one is not re-refused on these revisits.
     suppressed = GameAction.ACTION3
-    agent._inert[key] = {suppressed: 1.0}
+    agent._inert[key] = {suppressed: observe(Belief(0.0, INERT_PRIOR_SIGMA2), 1.0, 1.0)}
     agent._last_action = GameAction.ACTION1
 
-    weight_before = agent._inert[key][suppressed]
+    before = agent._inert[key][suppressed]
 
     # Bounded, because an unbounded loop would pass by exhausting the test
-    # rather than by decaying. At 0.75 per revisit, 1.0 crosses the 0.5 floor
-    # on the third — six is headroom, not a fudge.
+    # rather than by going stale. One refusal leaves variance at 0.5, which
+    # needs two revisits to reach the prior — six is headroom, not a fudge.
     for _ in range(6):
         agent.act([row[:] for row in grid])
 
-    weight_after = agent._inert.get(key, {}).get(suppressed, 0.0)
-    assert weight_after < weight_before, "suppression did not decay at all"
+    after = agent._inert.get(key, {}).get(suppressed)
+    assert after is None or after.sigma2 > before.sigma2, (
+        "suppression did not go stale at all"
+    )
     assert suppressed not in agent._inert.get(key, {}), (
         "the suppressed action never became eligible again — an action that "
         "upgrades mid-episode could never be rediscovered"
     )
+
+
+def test_suppression_can_never_outlast_the_horizon() -> None:
+    """THE PROPERTY THE OLD MODEL DID NOT HAVE, and the reason this site was
+    converted rather than left alone.
+
+    `INERT_DECAY = 0.75` decayed an ACCUMULATING weight, so suppression time grew
+    without bound in the number of refusals: about three revisits after one
+    refusal, seven after three, eleven after ten. An action refused often enough
+    early stayed suppressed for arbitrarily long — the permanent refusal the
+    design forbids, arriving by degrees rather than by decree.
+
+    A variance saturates where a sum does not. However many times an action has
+    been refused, its belief starts under the prior and needs at most
+    `INERT_STALENESS_HORIZON` revisits of ageing to reach it. The bound is the
+    guarantee, and it is checked here against a deliberately extreme history.
+    """
+    ceiling = math.ceil(INERT_STALENESS_HORIZON)
+    for refusals in (1, 3, 10, 50):
+        agent = PixelAgent()
+        grid = _unresponsive_world()
+        key = agent._grid_key(grid)
+
+        belief = Belief(0.0, INERT_PRIOR_SIGMA2)
+        for _ in range(refusals):
+            belief = observe(belief, 1.0, 1.0)
+        suppressed = GameAction.ACTION3
+        agent._inert[key] = {suppressed: belief}
+        agent._last_action = GameAction.ACTION1
+
+        released_at = None
+        for revisit in range(ceiling):
+            agent.act([row[:] for row in grid])
+            if suppressed not in agent._inert.get(key, {}):
+                released_at = revisit + 1
+                break
+
+        assert released_at is not None, (
+            f"{refusals} refusals outlasted the {ceiling}-revisit horizon"
+        )
 
 
 # ─── the decoy world: what ZetaChase cannot ask ──────────────────────────────
