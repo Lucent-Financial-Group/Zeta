@@ -342,19 +342,26 @@ describe("the floor is not weakened", () => {
     expect(runs.every((r) => !r.includes("${{"))).toBe(true); // no template-injection surface
   });
 
-  test("the floor is non-vacuous, and every audit on it has a leg", () => {
-    // This was `expect(ROSTER_IDS).toHaveLength(31)` — a THIRD place encoding the count,
-    // and it went red on #15666's legitimate removal of one audit. A hardcoded count is
-    // not a falsifier for "no audit was lost in the move"; it is a falsifier for "nobody
-    // changed the number", which is a different and much less useful claim.
+  test("the floor is non-vacuous, every audit on it has a leg, and a removal stays a DECISION", () => {
+    // This was `expect(ROSTER_IDS).toHaveLength(31)`, then `toHaveLength(30)` — a THIRD
+    // place encoding the count, which went red on #15666's legitimate removal of one audit.
+    // #15666's argument for keeping a number is real and is kept here: that red is what
+    // made the removal a DECISION rather than a disappearance. But the number is not what
+    // records the decision — the NAME is. `not.toContain` pins exactly the claim ("that
+    // audit is deliberately absent") and costs nothing on every unrelated add, whereas the
+    // count is a falsifier for "nobody changed the number", a different and much weaker
+    // claim that goes stale on every routine add.
     //
     // What actually has to hold is DERIVED here: every roster entry has a leg (the
-    // `parseMatrixAudits` equality below, read independently of the generator), and the
-    // floor is not empty. The bound is a NON-VACUITY FLOOR, not a count: it exists so a
-    // roster that read as `[]` cannot satisfy this section, and it needs revisiting only
-    // if the floor genuinely shrinks by a third — which is a decision, not a routine add.
+    // `parseMatrixAudits` equality, read independently of the generator), and the floor is
+    // not empty. The bound is a NON-VACUITY FLOOR, not a count: it exists so a roster that
+    // read as `[]` cannot satisfy this section, and it needs revisiting only if the floor
+    // genuinely shrinks by a third — which is a decision, not a routine add.
     expect(ROSTER_IDS.length).toBeGreaterThanOrEqual(20);
     expect(parseMatrixAudits(GATE_YML)).toEqual(ROSTER_IDS);
+    // Removed from the floor ON PURPOSE (AH003); it now runs, still fatal, on a schedule in
+    // `.github/workflows/archive-strand-alarm.yml`. Naming it is the decision record.
+    expect(ROSTER_IDS).not.toContain("orphaned-archive-refs");
   });
 });
 

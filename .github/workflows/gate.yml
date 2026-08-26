@@ -1294,6 +1294,22 @@ jobs:
         # roster already costs. It scales with `.md` count, not with rule count.
         run: bun run hygiene:linter-coverage
 
+      - name: Consent sign-off ledger is truthful (docs/books/you-born-at-the-hinge/CONSENT-SIGNOFF-DESIGN.md)
+        # REPO TIER, not the publish gate. This run fails only on FALSE CLAIMS in the consent
+        # ledger -- a cited pull-request review that does not exist, is not APPROVED, or was
+        # authored by someone other than the person the row names; a passage marked
+        # de-identified that still carries the name; a subject with no roster entry. It does
+        # NOT fail on stale or missing consent: those are publication-tier findings and are
+        # gated in pages-deploy.yml with `--publish`, because the maintainer draws the hard
+        # line at the distributable book rather than at a disclosed public draft.
+        #
+        # `gh` is on the runner and GITHUB_TOKEN reads public repos, so the review fetch is
+        # real here. Exit 3 (UNCHECKED) is a failure by design: a review that was not fetched
+        # must never be reported as a review that passed.
+        run: bun run hygiene:consent-signoff
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: No culture-sensitive collation in TypeScript (.claude/rules/culture-invariant-by-default.md)
         # THE CHECK EXISTED AND DID NOT RUN. This is the mechanical enforcement of a carved
         # rule, it has had a baseline file since it landed, and until this step no workflow
@@ -2671,7 +2687,7 @@ jobs:
         run: bun src/Core.TypeScript/lint/lint-rust.ts
 
   # ═══════════════════════════════════════════════════════════════════
-  # cross-verify — 31 audits, 31 NAMED check-runs
+  # cross-verify — 30 audits, 30 NAMED check-runs
   # ═══════════════════════════════════════════════════════════════════
   #
   # Enforce the trust-core cross-language byte-lock + golden-vector oracles + the Ace
@@ -2745,6 +2761,17 @@ jobs:
       # that failed.
       fail-fast: false
       matrix:
+        # A NOTE THAT IS NOT DERIVED, so it lives OUTSIDE the generated region below:
+        # ONE ID IS DELIBERATELY ABSENT: `orphaned-archive-refs` (AH003). It now runs on a
+        # schedule, and still fatal, in `.github/workflows/archive-strand-alarm.yml`,
+        # because its verdict is a repo-wide TIME-VARYING number read from `git ls-remote`.
+        # On 2026-08-25 it blocked PR #15308 — a change that added only new files — over
+        # four refs stranded repo-wide, and that PR re-ran green with zero code change. A
+        # pre-merge leg's verdict must be a function of the CANDIDATE. The full reasoning,
+        # and what replaces the blocking placement, is at the removed roster entry in
+        # `src/Core.TypeScript/ci/cross-verify-roster.ts`; the guard that stops this class
+        # returning is `src/Core.TypeScript/ci/floor-live-remote-queries.ts`.
+        #
         # ── BEGIN GENERATED · cross-verify matrix legs · do not hand-edit ──
         # DERIVED from `CROSS_VERIFY_AUDITS` in src/Core.TypeScript/ci/cross-verify-roster.ts.
         #
@@ -2779,7 +2806,6 @@ jobs:
           - heartbeat-lane-audit-tests
           - push-without-rebase
           - skip-token-cannot-land
-          - orphaned-archive-refs
           - dotnet-pin-parity
           - mise-toolchain-couplings
           - flash-entrypoint-parity
