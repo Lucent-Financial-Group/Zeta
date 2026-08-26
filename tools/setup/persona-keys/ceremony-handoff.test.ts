@@ -153,7 +153,11 @@ test("a Secret redacts through every ACCIDENTAL path, and only reveal() exits", 
   expect(s + "").toBe(REDACTED);
   expect(JSON.stringify({ password: s })).toBe(`{"password":"${REDACTED}"}`);
   expect(JSON.stringify([s])).toBe(`["${REDACTED}"]`);
-  expect(Bun.inspect(s)).toContain(REDACTED);
+  // ADJUDICATED (R5, audit-check-arity-nonequality). An absence assertion witnesses ONE
+  // RENDERING of a leak, never its absence — so the claim is carried by EXACT-EQUALITY PINS
+  // on the WHOLE output of every accidental path, above and here. The `not.toContain` below
+  // is kept as a readable statement of intent; the pins are what make it a check.
+  expect(Bun.inspect(s)).toBe(`Secret(1Password:zeta/hsm) ${REDACTED}`);
   expect(Bun.inspect(s)).not.toContain("hunter2");
   expect(s.reveal()).toBe("hunter2"); // the ONE deliberate exit
   expect(s.origin).toBe("1Password:zeta/hsm");
@@ -213,6 +217,10 @@ test("argv and displayArgv are two projections of ONE array — they cannot drif
   expect(plan.argv).toEqual(["-p", "0001password", "-a", "generate-symmetric-key"]);
   expect(plan.displayArgv).toEqual(["-p", REDACTED, "-a", "generate-symmetric-key"]);
   expect(plan.argv).toHaveLength(plan.displayArgv.length);
+  // ADJUDICATED (R5): backed by the exact-equality pin on `displayArgv` above AND by this
+  // whole-string pin. The absence assertion alone would pass for any other encoding of the
+  // credential, which is precisely the 2-safety gap the audit exists to name.
+  expect(plan.displayCommand).toBe(`yubihsm-shell -p ${REDACTED} -a generate-symmetric-key`);
   expect(plan.displayCommand).not.toContain("0001password");
   // The password is REPLACED, not omitted — the reader can see there is a credential and
   // exactly where it goes, which is what makes the shape legible.
@@ -552,6 +560,9 @@ test("FIRST CONSUMER: the HSM password refusal now NAMES ITS REMEDY", () => {
   // (its usage() prints lines 11-18 of itself, so the text cannot drift from the parser).
   // A remedy naming `put`/`store`/`add` would run, fail, and cost the reader more than
   // silence would have — which is why a wrong remedy is worse than none.
+  // ADJUDICATED (R5): this is not a taint claim — it is a SPELLING claim, and it is carried
+  // by the POSITIVE assertion above that the correct verb `set` IS present. The negative is
+  // the readable form of "and none of the verbs this script does not have".
   expect(rendered).not.toMatch(/secret-clip\.sh (put|store|add|write) /);
   for (const step of r.refusal.remedy) {
     expect((step.command ?? "").includes("\n")).toBe(false); // paste-able
