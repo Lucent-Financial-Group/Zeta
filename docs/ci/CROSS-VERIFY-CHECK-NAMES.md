@@ -74,21 +74,24 @@ consumes today.
 
 ## Measured cost of the split
 
-Both numbers are from the Actions jobs API, on this repository, not from the estimate the
-research doc carried.
+Every number is from the Actions jobs API, on this repository — measured after the split,
+not the estimate the research doc carried.
 
-|                                   | before (job `98146180438`, run `32958750366`) | after (run `32963212370`) |
-| --------------------------------- | --------------------------------------------- | ------------------------- |
-| jobs                              | 1                                             | 31                        |
-| runner-seconds                    | **58**                                        | **572**                   |
-| wall-clock                        | 58 s                                          | **53 s**                  |
-| `actions/cache` steps in the job  | **0**                                         | **0**                     |
-| cache uploads (`Post` step > 2 s) | 0                                             | 0                         |
+|                                   | before (job `98146180438`, run `32958750366`) | after, run `32963212370` | after, run `32964267573` |
+| --------------------------------- | --------------------------------------------- | ------------------------ | ------------------------ |
+| jobs                              | 1                                             | 31                       | 31                       |
+| runner-seconds                    | **58**                                        | **572**                  | **597**                  |
+| wall-clock                        | 58 s                                          | 53 s                     | 61 s                     |
+| `actions/cache` steps in the job  | **0**                                         | **0**                    | **0**                    |
+| cache uploads (`Post` step > 2 s) | 0                                             | 0                        | 0                        |
 
-**Δ = +514 runner-seconds ≈ +8.6 runner-min**, or **+9.1%** on the research doc's measured
-94-runner-min push run. That is **higher than the doc's +6.6% estimate** and the gap is
-recorded rather than smoothed: the doc priced class-0 setup at 12 s, and under 31-way
-concurrency the legs measured 8–20 s each (mean 18.5 s including teardown), because
+Two samples rather than one, so the cost is not a single observation. Mean **584
+runner-seconds against 58**: **Δ = +526 runner-seconds ≈ +8.8 runner-min ≈ +9.3%** on the
+research doc's measured 94-runner-min push run.
+
+That is **higher than the doc's +6.6% estimate**, and the gap is recorded rather than
+smoothed: the doc priced class-0 setup at 12 s from a single job, and under 31-way
+concurrency the legs measure **8–20 s each (mean 19 s)** including teardown, because
 `checkout` and job start-up both slow down when 31 jobs schedule at once.
 
 **Cache bytes written: zero, and that is checked rather than assumed.** No leg has an
@@ -98,8 +101,9 @@ setup-bun, `bun install`, run the audit, post-setup-bun, post-checkout, complete
 therefore adds 31 cache _restores_ of one pinned Bun key and **no writes**, so it does not
 feed the eviction loop the cache work is fighting.
 
-**Wall-clock went down**, which was not the goal but is the honest result: the legs run in
-parallel and the longest (`ace-suite`, 46 s) finishes before the old serial job's 58 s.
+**Wall-clock is flat to slightly better** (53 s and 61 s against 58 s), which was not the
+goal: the legs run in parallel and the longest (`ace-suite`, 46 s) finishes around when the
+old serial job did. The spread between the two samples is scheduling noise, not signal.
 
 ### Before/after, per audit
 

@@ -2627,7 +2627,7 @@ jobs:
         run: bun src/Core.TypeScript/lint/lint-rust.ts
 
   # ═══════════════════════════════════════════════════════════════════
-  # cross-verify — 31 audits, 31 NAMED check-runs, one aggregate verdict
+  # cross-verify — 31 audits, 31 NAMED check-runs
   # ═══════════════════════════════════════════════════════════════════
   #
   # Enforce the trust-core cross-language byte-lock + golden-vector oracles + the Ace
@@ -2652,10 +2652,18 @@ jobs:
   # three setup classes; `cross-verify` is class 0 — Bun only, no `install.sh`, no
   # `actions/cache` step, so no cache WRITES at all. Measured on job 98146180438
   # (run 32958750366): set-up 1 s + checkout 10 s + setup-bun 1 s + `bun install` 1 s =
-  # 13 s of setup for 44 s of audits, 58 s total. Splitting pays that 13 s per leg:
-  # ~471 runner-seconds against 58, i.e. +413 s ≈ +6.9 runner-min on a 94-runner-min push
-  # run (+7.3%), ZERO new cache writes, and WALL-CLOCK GOES DOWN — the legs run in
-  # parallel and the longest (`ace-suite`, 32 s) finishes before the old serial job did.
+  # 13 s of setup for 44 s of audits, 58 s total, and 29 of the 31 audits take <= 2 s.
+  #
+  # MEASURED AFTER, on two runs of the split rather than on the estimate this comment
+  # first carried: runs 32963212370 and 32964267573 cost 572 and 597 runner-seconds,
+  # mean 584, i.e. +526 s ≈ +8.8 runner-min ≈ +9.3% of a 94-runner-min push run. The
+  # pre-land estimate here said +413 s / +7.3%, priced off a single job's 13 s setup; the
+  # legs measure 8-20 s each (mean 19 s) because checkout and job start-up both slow down
+  # when 31 jobs schedule at once. The number is corrected rather than left as the guess.
+  # ZERO new cache writes on both runs — no leg has an `actions/cache` step and
+  # `Post Setup pinned Bun` measured 0 s (key hit, no upload). WALL-CLOCK IS FLAT to
+  # slightly better (53 s / 61 s against 58 s): the legs run in parallel and the longest
+  # (`ace-suite`, 46 s) finishes around when the old serial job did.
   #
   # The rule from that doc, and the reason this split is affordable and a different one
   # would not be: A JOB MAY BE SPLIT FOR FREE ALONG A SETUP BOUNDARY IT DOES NOT CROSS.
