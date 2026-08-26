@@ -261,6 +261,11 @@ elif [ -f "$APT_MANIFEST" ]; then
     # Unset (dev laptop, devcontainer, bare Linux): every line below behaves
     # exactly as it did — apt uses its own /var/cache/apt/archives, and the
     # only new work is a `du` per attempt to measure throughput.
+    # Expanded below as `${apt_archives_opts[@]+"${apt_archives_opts[@]}"}`, NOT as
+    # `"${apt_archives_opts[@]}"`. Under `set -u` an EMPTY array is an unbound
+    # variable in bash 3.2 (macOS `/bin/bash`), which is where
+    # `apt-phase-wall-budget.test.ts` executes this file — it caught exactly that,
+    # four lines after the first draft claimed bash 5 was guaranteed here.
     apt_archives_opts=()
     if [ -n "${ZETA_APT_ARCHIVES_DIR:-}" ]; then
       apt_archives_dir="$ZETA_APT_ARCHIVES_DIR"
@@ -390,7 +395,7 @@ elif [ -f "$APT_MANIFEST" ]; then
       # install dies with "end of file on stdin at conffile prompt" (rc=100).
       timeout --signal=TERM --kill-after="${apt_kill_after}s" "$apt_slice" \
         $SUDO env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-          "${apt_archives_opts[@]}" \
+          ${apt_archives_opts[@]+"${apt_archives_opts[@]}"} \
           -o Dpkg::Options::=--force-confdef \
           -o Dpkg::Options::=--force-confold \
           -o Acquire::Retries=3 \
