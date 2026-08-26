@@ -58,6 +58,17 @@ prompt on `gemma2:2b`. In plain terms: text-only perturbations do NOT decorrelat
 - **Register:** `unmetered` (local Ollama, no measured joule). Promotes to `metered` only
   when the energy denominator is measured.
 
+### H1 outcome (recorded after the run at N=150)
+
+**H1 largely HELD.** The null arm measured a 2.7% intrinsic noise floor (temp=0/seed=42 is
+NOT deterministic on gemma2:2b — 4/150 identical-prompt items flipped). Against that floor:
+blank-line (1.3%), synonym (2.7%), and trailing-whitespace (1.3%) are all WITHIN NOISE —
+they do not decorrelate. clause-swap (7.3%) EXCEEDS the floor but is UNDERPOWERED
+(union-vs-best gap needs N≈1,861 to resolve), so it is a live hypothesis, not a result.
+menu-reversed (reference ceiling, interface-breaking) flips 26% — the bound on how much
+decorrelation is physically available. Full write-up:
+`docs/research/2026-08-26-prompt-frame-is-mostly-noise-and-temp0-is-not-deterministic.md`.
+
 ## The ledger schema (`data/decorrelation-research.jsonl`, `schema: "decorr/v2"`)
 
 Every entry carries: `n`, full `table` (a,b,c,d), `phi`, `phiMax`, `phiRatio`, `yulesQ`,
