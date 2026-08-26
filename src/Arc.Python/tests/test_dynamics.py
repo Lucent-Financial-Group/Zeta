@@ -12,6 +12,7 @@ import math
 import pytest
 
 from zeta_arc.dynamics import (
+    CONSERVATIVE_K,
     Belief,
     age,
     conservative,
@@ -137,7 +138,7 @@ def test_staleness_costs_the_incumbent_its_grip() -> None:
     Ranking the incumbent optimistically instead reverses this test, which is
     the whole reason it exists.
     """
-    challenger = Belief(mu=1.0, sigma2=0.09)
+    challenger = Belief(mu=0.65, sigma2=0.25)
     incumbent = Belief(mu=0.6, sigma2=0.01)
 
     assert not outranks(challenger, incumbent), "fresh incumbent holds"
@@ -161,9 +162,32 @@ def test_a_newcomer_cannot_take_the_body_on_one_lucky_frame() -> None:
 
 def test_conservative_and_optimistic_bracket_the_mean() -> None:
     b = Belief(mu=0.4, sigma2=0.09)
-    assert conservative(b) == pytest.approx(0.4 - 3.0 * 0.3)
-    assert optimistic(b) == pytest.approx(0.4 + 3.0 * 0.3)
+    assert conservative(b) == pytest.approx(0.4 - CONSERVATIVE_K * 0.3)
+    assert optimistic(b) == pytest.approx(0.4 + CONSERVATIVE_K * 0.3)
     assert conservative(b) < b.mu < optimistic(b)
+
+
+def test_the_width_must_not_outvote_the_mean_between_unequally_seen_candidates() -> (
+    None
+):
+    """THE DEFECT `CONSERVATIVE_K = 3.0` CAUSED, pinned as a property so the
+    constant cannot drift back without this going red.
+
+    These are the real numbers from `chase-decoy` at the frame the wrong
+    candidate won the body election. The one with three times the agreement was
+    observed less often, and under a 3-sigma key its extra width outvoted the
+    mean: a 0.68 gap in `k*sigma` against a 0.65 gap in `mu`.
+
+    Deliberately NOT written in terms of `CONSERVATIVE_K` — a test that derives
+    from the constant cannot catch the constant being wrong, which is the whole
+    failure being guarded here.
+    """
+    body = Belief(mu=0.941, sigma2=0.628)
+    decoy = Belief(mu=0.295, sigma2=0.322)
+    assert outranks(body, decoy), (
+        f"the better-agreeing candidate lost on width alone: "
+        f"body={conservative(body):+.3f} decoy={conservative(decoy):+.3f}"
+    )
 
 
 def test_decay_half_life_audits_the_constants_being_replaced() -> None:

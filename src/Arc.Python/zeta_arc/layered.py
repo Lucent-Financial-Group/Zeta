@@ -147,7 +147,7 @@ class LayeredAgent:
         But the anti-thrash comes from the KALMAN GAIN, not from the interval
         width: an established belief has small `sigma2`, so a contradicting
         frame barely moves `mu`. Measured, because the guess was wrong: ranking
-        by plain `mu` instead of `mu - 3*sigma` leaves all 49 tests in
+        by plain `mu` instead of `mu - k*sigma` leaves all 49 tests in
         `test_hosted_lane.py` green, the new quiet-frame test included.
 
         SO CONSERVATIVE RANKING IS UNFALSIFIED AT THIS CALL SITE, and saying
@@ -155,16 +155,19 @@ class LayeredAgent:
         structural reason and it is worth writing down: with two layers and
         winner-acts routing, the layer that holds the wheel is the only one
         being observed, so the leader is always the fresh one and the two
-        orderings cannot come apart. The width earns its keep where the state
-        space is richer and many candidates go unobserved at once — the body
-        election in `agent.py`, not here. It stays because it is correct and
-        costs nothing, not because this file demonstrates it.
+        orderings cannot come apart.
 
-        THAT PREDICTION WAS SUBSEQUENTLY CHECKED and holds: the same mutation
-        against the body election fails
-        `test_a_body_that_stops_moving_loses_the_election_to_one_that_is_moving`,
-        where a still decoy competes with a moving component. Two layers cannot
-        pose that question; two candidates can.
+        TWO CLAIMS THIS PARAGRAPH USED TO MAKE WERE LATER MEASURED AND ONE WAS
+        FALSE. It predicted the width would earn its keep where many candidates
+        go unobserved at once — the body election in `agent.py` — and that
+        holds: the same mutation there fails
+        `test_a_body_that_stops_moving_loses_the_election_to_one_that_is_moving`.
+        It also said the width "costs nothing", and that was wrong. At
+        `CONSERVATIVE_K = 3.0` the width term outvoted the mean between
+        candidates observed at different rates and cost 0.07 of environment
+        score on `chase-decoy`; k is 1.0 for that reason, with the measurement
+        in `dynamics.py`. A width weight is never free — it competes with the
+        quantity it is supposed to be qualifying.
 
         The tie-break is real either way: `outranks` is strict, so an exact tie
         keeps the incumbent.

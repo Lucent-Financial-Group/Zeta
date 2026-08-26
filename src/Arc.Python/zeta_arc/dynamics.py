@@ -41,10 +41,38 @@ import math
 from dataclasses import dataclass
 
 #: How many standard deviations a conservative estimate sits below the mean.
-#: TrueSkill publishes `mu - 3*sigma` as its conservative skill estimate; the
-#: same choice here means an interval that misses the truth about 0.1% of the
-#: time under the Gaussian the model already assumes.
-CONSERVATIVE_K = 3.0
+#:
+#: WAS 3.0, ON A BORROWED RATIONALE THAT DOES NOT APPLY HERE. TrueSkill publishes
+#: `mu - 3*sigma` as a conservative DISPLAY rating — a deliberately pessimistic
+#: public number for one player. This module uses the same expression as an
+#: ARGMAX KEY across candidates observed at DIFFERENT RATES, and there the width
+#: stops being a tie-breaker and becomes the entire ranking.
+#:
+#: Measured on `chase-decoy`, at the frame the wrong candidate took the body:
+#:
+#:     BODY   mu=+0.941  sigma2=0.628   3*sigma=2.377   ->  -1.437
+#:     DECOY  mu=+0.295  sigma2=0.322   3*sigma=1.702   ->  -1.407
+#:
+#: The body had THREE TIMES the agreement and lost, because a 0.68 gap in the
+#: width terms outvoted a 0.65 gap in the quantity actually being compared. The
+#: decoy moves every frame and is therefore seen more often; under k=3 that alone
+#: decided the election, silently replacing "who agrees with my commands" with
+#: "who moved most recently".
+#:
+#: 1.0 is the ordinary one-sigma bound (~84% one-sided). It keeps the newcomer
+#: penalty — a candidate seen once still carries the prior's width — while
+#: leaving a real difference in the mean decisive. Agreement is a cosine on
+#: [-1, 1], so the largest honest gap in the mean is 2, and a width weight much
+#: above 1 can swamp it. That bounds k from above by the SCALE OF THE QUANTITY,
+#: not by fitting it to a score.
+#:
+#: HONEST LIMITS, both real. The argument justifies "small enough not to
+#: dominate" and does not distinguish 1.0 from 1.5; what it rules out is 3.0,
+#: which was measured to invert the ranking. And the trade is genuine — at k=1
+#: the newcomer penalty is weaker, so a challenger with a clearly better mean
+#: takes the body sooner than it used to. `test_staleness_costs_the_incumbent_
+#: its_grip` was re-derived for that and its numbers changed with the constant.
+CONSERVATIVE_K = 1.0
 
 
 @dataclass(frozen=True)

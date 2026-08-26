@@ -314,7 +314,7 @@ def test_the_decoy_score_is_pinned() -> None:
     it is not a claim that the number is good.
     """
     result = play(agent="pixel", seed=4, environment="chase-decoy")
-    assert result["environment_score"] == 0.1936
+    assert result["environment_score"] == 0.2659
     assert result["levels_cleared"] == 3
 
 
