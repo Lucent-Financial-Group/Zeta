@@ -376,6 +376,24 @@ class PixelAgent:
         # kept its score frozen at whatever it last earned, which is how a body
         # gets welded on: it was never contradicted, so it was never demoted.
         # Ageing demotes it without pretending to have observed anything.
+        #
+        # STATED LIMIT: THIS DICT IS NEVER PRUNED. Every key ever seen is aged
+        # every frame, so the per-frame cost tracks keys-EVER-SEEN where the old
+        # update tracked movers-THIS-FRAME. On ZetaChase it maxes at 1 entry over
+        # 200 frames, so it is not a problem here — but that is the same
+        # one-mover degeneracy that makes this whole file's election untestable
+        # on that environment, so it is not evidence about a hosted run with many
+        # components. Unmeasured, because no key reaches this container.
+        #
+        # AND PRUNING IS NOT THE FREE FIX IT LOOKS LIKE. The obvious rule — drop
+        # a belief once its variance reaches the prior, as `_note_inert_action`
+        # does — would destroy the property this conversion exists to provide. A
+        # stale belief with positive `mu` still outranks a never-seen component,
+        # because `mu` is preserved and only confidence was lost; dropping it
+        # replaces that memory with the ignorant default and throws away exactly
+        # what distinguishes this from a decay constant. A correct prune has to
+        # bound the dict without discarding a `mu` that can still win, and that
+        # is a design question with a measurement in front of it, not a cleanup.
         for key in self.beliefs:
             self.beliefs[key] = age(self.beliefs[key], BODY_TAU, 1.0)
 
