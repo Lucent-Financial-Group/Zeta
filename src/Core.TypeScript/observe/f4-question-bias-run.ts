@@ -5,9 +5,11 @@
  * STATUS: toy. Every metric and its falsifier live in `f4-question-bias.ts` /
  * `.test.ts`; this file makes no claim and computes no statistic.
  *
- *   bun f4-question-bias-run.ts role         # domain R across the small models
- *   bun f4-question-bias-run.ts preference   # domain P across the small models
- *   bun f4-question-bias-run.ts role-large   # domain R on the 7B, for the size question
+ *   bun f4-question-bias-run.ts role               # domain R, small models, replicates 0-119
+ *   bun f4-question-bias-run.ts preference         # domain P, small models, replicates 0-119
+ *   bun f4-question-bias-run.ts role-large         # domain R on the 7B, for the size question
+ *   bun f4-question-bias-run.ts role-block2        # domain R, replicates 120-239
+ *   bun f4-question-bias-run.ts preference-block2  # domain P, replicates 120-239
  *
  * Raw generations land in `data/f4-question-bias/` as JSONL so every number in the
  * research doc is recomputable offline, without a model and without a GPU. Runs are
@@ -30,6 +32,19 @@ export const SMALL_MODELS = ["qwen2.5:0.5b", "llama3.2:1b", "gemma2:2b"] as cons
 export const LARGE_MODEL = "qwen2.5:7b";
 export const REPLICATES_SMALL = 120;
 export const REPLICATES_LARGE = 80;
+/**
+ * Second block of replicates, appended to a separate file so the first run stays
+ * resumable by row count. Seeds keep coming from `seedFor(promptIndex, replicate)`, so
+ * block 2 shares no seed with block 1 and the two concatenate into one honest sample of
+ * 240 — there is no re-use and no overlap to double-count.
+ *
+ * Why it exists: at 120 replicates the CALIBRATION PAIR read excess = 0.0305 on
+ * qwen2.5:0.5b, above the pre-registered 0.02 equivalence delta. That is the instrument
+ * failing its own zero check, and the fix for an instrument that cannot resolve below
+ * its threshold is more samples, not a looser threshold.
+ */
+export const REPLICATES_BLOCK2_START = 120;
+export const REPLICATES_BLOCK2_END = 240;
 
 export interface AnswerRow {
   readonly domain: string;
@@ -62,9 +77,16 @@ function rowsOnDisk(file: string): number {
     .filter((l) => l.length > 0).length;
 }
 
-async function runDomain(domain: DomainSpec, models: readonly string[], replicates: number): Promise<void> {
+async function runDomain(
+  domain: DomainSpec,
+  models: readonly string[],
+  from: number,
+  to: number,
+  suffix = "",
+): Promise<void> {
+  const replicates = to - from;
   for (const model of models) {
-    const file = outFile(domain.id, model);
+    const file = outFile(domain.id, model).replace(".jsonl", `${suffix}.jsonl`);
     const done = rowsOnDisk(file);
     const total = domain.prompts.length * replicates;
     console.log(`${domain.id} / ${model}: ${total} generations (${done} already on disk)`);
@@ -73,7 +95,7 @@ async function runDomain(domain: DomainSpec, models: readonly string[], replicat
     for (let pi = 0; pi < domain.prompts.length; pi++) {
       const prompt = domain.prompts[pi]!;
       const text = promptText(domain, prompt);
-      for (let rep = 0; rep < replicates; rep++) {
+      for (let rep = from; rep < to; rep++) {
         n++;
         if (n <= done) continue;
         const seed = seedFor(pi, rep);
@@ -102,11 +124,15 @@ async function runDomain(domain: DomainSpec, models: readonly string[], replicat
 
 if (import.meta.main) {
   const cmd = process.argv[2];
-  if (cmd === "role") await runDomain(domainById("role"), SMALL_MODELS, REPLICATES_SMALL);
-  else if (cmd === "preference") await runDomain(domainById("preference"), SMALL_MODELS, REPLICATES_SMALL);
-  else if (cmd === "role-large") await runDomain(domainById("role"), [LARGE_MODEL], REPLICATES_LARGE);
+  if (cmd === "role") await runDomain(domainById("role"), SMALL_MODELS, 0, REPLICATES_SMALL);
+  else if (cmd === "preference") await runDomain(domainById("preference"), SMALL_MODELS, 0, REPLICATES_SMALL);
+  else if (cmd === "role-large") await runDomain(domainById("role"), [LARGE_MODEL], 0, REPLICATES_LARGE);
+  else if (cmd === "role-block2")
+    await runDomain(domainById("role"), SMALL_MODELS, REPLICATES_BLOCK2_START, REPLICATES_BLOCK2_END, "-b2");
+  else if (cmd === "preference-block2")
+    await runDomain(domainById("preference"), SMALL_MODELS, REPLICATES_BLOCK2_START, REPLICATES_BLOCK2_END, "-b2");
   else {
-    console.log("usage: bun f4-question-bias-run.ts <role|preference|role-large>");
+    console.log("usage: bun f4-question-bias-run.ts <role|preference|role-large|role-block2|preference-block2>");
     process.exit(2);
   }
 }

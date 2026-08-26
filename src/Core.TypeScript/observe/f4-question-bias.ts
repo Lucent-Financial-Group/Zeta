@@ -85,7 +85,6 @@ import {
   hillN1,
   jensenShannonDivergence,
   makeRng,
-  permutationTest,
   tally,
   type Distribution,
 } from "./f3-hat-choice-decorrelation";
@@ -333,9 +332,34 @@ export interface PairMeasurement {
   readonly jsd: number;
   /** Mean JSD under label permutation with group sizes held fixed: the bias estimate. */
   readonly nullMean: number;
+  /** SD of the permutation null. The estimator's spread, and the CI's half-width source. */
+  readonly nullSd: number;
+  /**
+   * Minimum detectable effect at alpha = 0.05: the null's 95th percentile minus its
+   * mean. A non-significant axis moved the distribution by AT MOST about this much —
+   * which is what turns "we did not detect it" into a bounded statement rather than an
+   * unearned "it is not there".
+   */
+  readonly mde: number;
   /** jsd - nullMean. THE effect size: the bias cancels because sizes are fixed. */
   readonly excess: number;
-  /** Upper bound of the 95% bootstrap CI on `excess`. Drives the equivalence test. */
+  /**
+   * `excess +/- 1.96 * nullSd` — a normal-approximation interval whose width comes from
+   * the permutation null's own spread.
+   *
+   * NOT a bootstrap. The first version of this file used a percentile bootstrap that
+   * resampled responses with replacement, and the CALIBRATION PAIR caught it: on
+   * identical text it returned [0.0123, 0.1498] around a point estimate of 0.0087 — an
+   * interval that does not contain what it estimates is wrong, not conservative.
+   * Resampling with replacement thins the distinct support of a sparse free-text bag,
+   * which inflates every JSD it computes, so the "conservative" direction was not a
+   * safety margin but a bias of roughly 0.1 bits applied to every axis alike. It is
+   * removed rather than tuned.
+   *
+   * The interval below is an approximation valid NEAR the null, which is exactly the
+   * regime the equivalence test operates in. It is not claimed to be exact for the
+   * large semantic effects, and no equivalence claim is made about those.
+   */
   readonly excessHi: number;
   readonly excessLo: number;
   /** Permutation p, upper tail. Never 0: the observed labelling is itself a permutation. */
@@ -351,44 +375,86 @@ export interface PairMeasurement {
 
 export interface MeasureOptions {
   readonly permutations: number;
-  readonly bootstraps: number;
   readonly seed: number;
 }
 
 /**
- * Bootstrap CI on `excess`, resampling RESPONSES within each side with replacement and
- * subtracting the permutation `nullMean` held fixed.
+ * One two-group permutation run, returning everything the null distribution can tell
+ * us — not just the p-value.
  *
- * Two honest limits, both conservative for the equivalence test the null axes must
- * pass: (a) `nullMean` is not recomputed per draw — it varies little because group
- * sizes are fixed by construction; (b) resampling with replacement thins the distinct
- * support, which inflates JSD. Both push the upper bound UP, so a null axis that
- * passes this test passes a harder version of it.
+ * This deliberately re-implements F3's `permutationTest` rather than calling it,
+ * because F3 returns only `{observed, pValue, nullMean}` and the equivalence test below
+ * needs the null's SPREAD. The shuffle, the tail convention and the `(atLeast + 1) /
+ * (n + 1)` p-value are identical, and `f4-question-bias.test.ts` asserts agreement with
+ * F3 on the same seed so the two cannot drift apart unnoticed.
  */
-function bootstrapExcessCi(
-  left: readonly string[],
-  right: readonly string[],
-  nullMean: number,
-  bootstraps: number,
+export interface PermutationSummary {
+  readonly observed: number;
+  readonly pValue: number;
+  readonly nullMean: number;
+  readonly nullSd: number;
+  /**
+   * Minimum detectable effect: the 95th percentile of the null minus its mean. An
+   * effect larger than this would have been called significant; one smaller would not.
+   * Reported so "not significant" carries its own power statement instead of being
+   * read as "not there".
+   */
+  readonly mde: number;
+  readonly permutations: number;
+}
+
+export function permutationSummary(
+  groupA: readonly string[],
+  groupB: readonly string[],
+  statistic: (a: readonly string[], b: readonly string[]) => number,
+  permutations: number,
   seed: number,
-): { lo: number; hi: number } {
-  if (bootstraps <= 0) return { lo: Number.NaN, hi: Number.NaN };
+): PermutationSummary {
   const rng = makeRng(seed);
+  const observed = statistic(groupA, groupB);
+  const pooled = [...groupA, ...groupB];
+  const nA = groupA.length;
   const draws: number[] = [];
-  for (let b = 0; b < bootstraps; b++) {
-    const l: string[] = [];
-    const r: string[] = [];
-    for (let i = 0; i < left.length; i++) l.push(left[Math.floor(rng() * left.length)]!);
-    for (let i = 0; i < right.length; i++) r.push(right[Math.floor(rng() * right.length)]!);
-    const v = bagJsd(l, r) - nullMean;
+  for (let p = 0; p < permutations; p++) {
+    const shuffled = [...pooled];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(rng() * (i + 1));
+      const t = shuffled[i]!;
+      shuffled[i] = shuffled[j]!;
+      shuffled[j] = t;
+    }
+    const v = statistic(shuffled.slice(0, nA), shuffled.slice(nA));
     if (Number.isFinite(v)) draws.push(v);
   }
-  if (draws.length === 0) return { lo: Number.NaN, hi: Number.NaN };
-  draws.sort((a, b) => a - b);
-  const lo = draws[Math.floor(0.025 * draws.length)]!;
-  const hi = draws[Math.min(draws.length - 1, Math.floor(0.975 * draws.length))]!;
-  return { lo, hi };
+  if (draws.length === 0 || !Number.isFinite(observed)) {
+    return {
+      observed,
+      pValue: Number.NaN,
+      nullMean: Number.NaN,
+      nullSd: Number.NaN,
+      mde: Number.NaN,
+      permutations: draws.length,
+    };
+  }
+  const atLeast = draws.filter((d) => d >= observed).length;
+  const mean = draws.reduce((a, b) => a + b, 0) / draws.length;
+  const varr = draws.reduce((a, b) => a + (b - mean) * (b - mean), 0) / Math.max(1, draws.length - 1);
+  const sorted = [...draws].sort((a, b) => a - b);
+  const q95 = sorted[Math.min(sorted.length - 1, Math.floor(0.95 * sorted.length))]!;
+  return {
+    observed,
+    // +1 in both places: the observed labelling is itself a valid permutation, so a
+    // p-value of exactly 0 is not attainable and must not be reported.
+    pValue: (atLeast + 1) / (draws.length + 1),
+    nullMean: mean,
+    nullSd: Math.sqrt(varr),
+    mde: q95 - mean,
+    permutations: draws.length,
+  };
 }
+
+/** Two-sided normal-approximation half-width on `excess`, from the null's spread. */
+const Z975 = 1.959963984540054;
 
 export function measurePair(
   pair: AxisPair,
@@ -396,9 +462,9 @@ export function measurePair(
   right: readonly string[],
   opts: MeasureOptions,
 ): PairMeasurement {
-  const perm = permutationTest(left, right, (a, b) => bagJsd(a, b), opts.permutations, opts.seed, "greater");
+  const perm = permutationSummary(left, right, (a, b) => bagJsd(a, b), opts.permutations, opts.seed);
   const excess = perm.observed - perm.nullMean;
-  const ci = bootstrapExcessCi(left, right, perm.nullMean, opts.bootstraps, opts.seed ^ 0x5eed);
+  const half = Z975 * perm.nullSd;
   const n1L = hillN1(atomDistribution(left));
   const n1R = hillN1(atomDistribution(right));
   return {
@@ -408,9 +474,11 @@ export function measurePair(
     nRight: right.length,
     jsd: perm.observed,
     nullMean: perm.nullMean,
+    nullSd: perm.nullSd,
+    mde: perm.mde,
     excess,
-    excessLo: ci.lo,
-    excessHi: ci.hi,
+    excessLo: excess - half,
+    excessHi: excess + half,
     p: perm.pValue,
     permutations: perm.permutations,
     n1Left: n1L,
