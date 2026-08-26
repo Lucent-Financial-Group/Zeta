@@ -778,6 +778,15 @@ let ``MLBNN-35: factor-graph inference is idempotent and does not consume the ne
     let net = MultilayerBnn.tryCreate priors (Array.create depth 0.75) topology |> unwrap
     let after = MultilayerBnn.infer [ 3.0; -1.0; 2.0 ] net |> unwrap
 
+    // ADJUDICATED SELF-COMPARISON, counted in `registry/check-arity-census.json`.
+    // `audit-check-arity.ts` inlines the `before` binding, so both sides of the
+    // assertion below normalize to `toJsonString after` and it is flagged as a
+    // check whose two sides are one expression. It is NOT vacuous, and that was
+    // demonstrated rather than argued: `Network` holds mutable ARRAYS
+    // (`Layers`, `UpwardMessages`, `DownwardMessages`), so an implementation can
+    // scribble on its input. Adding `net.UpwardMessages.[0] <- ...` to
+    // `tryToFactorGraph` fails this exact line. The string is snapshotted BEFORE
+    // the calls and compared after — temporal ordering the normalizer cannot see.
     let before = MultilayerBnn.toJsonString after
     let a, _, _ = MultilayerBnn.tryMarginalsViaFactorGraph 1e-13 500 after |> unwrap
     let b, _, _ = MultilayerBnn.tryMarginalsViaFactorGraph 1e-13 500 after |> unwrap
