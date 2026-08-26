@@ -343,6 +343,15 @@ That is a **wall-clock ratio assertion inside the one blocking check**. Two thin
 
 **1. It is outside its author's own flake model.** The test's comment anticipates flaking and says where: *"the DEBUG margin is thinner … If this flakes on a loaded runner it will flake in Debug first, and the fix is to skip it in Debug rather than to lower it further — a gate below ~1.05 could not tell a vector path from a scalar one and would be a check that cannot fail."* This failed in **Release**, at **0.93x**, against a stated normal of 3.45x and a bypassed-path signature of ~1.02x. So the observation is neither "healthy" nor "vector path bypassed" — it is off the map the test was designed around, and **the test cannot distinguish a contended runner from a real regression.** A re-run is the only discriminator, which is the definition of a non-deterministic gate.
 
+**And the re-run was run, so this is now a measurement rather than an argument.** Same run, same commit, no change to the tree:
+
+| attempt | conclusion |
+|---|---|
+| 1 | **failure** — `measured 0.93x` |
+| 2 | **success** |
+
+`metered`, run **32959787630**, job `build-and-test (ubuntu-24.04)`, attempts 1 and 2 of the identical SHA. **The same code produced both verdicts.** That settles the discriminating question in favour of runner contention — there is no evidence of a real vector-path regression — and it demonstrates the property directly: a check whose verdict on fixed inputs depends on what else the machine was doing is not a gate, it is a coin weighted by load. Note what that also means for the 12.7% below: an unknown share of those 17 failures may be the same class, and nobody has triaged them.
+
 **2. The blocking leg is the noisiest thing in CI, and it is measured.** `data/platform-drift.json`, as of 2026-08-26T10:05Z, over 500 push runs (134 executed, 366 cancelled — 26.8% coverage):
 
 | leg | classification | failures / executed | rate | last failure blocked a merge? |
