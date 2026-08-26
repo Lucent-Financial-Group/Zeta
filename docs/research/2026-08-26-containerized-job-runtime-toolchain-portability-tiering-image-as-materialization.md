@@ -396,6 +396,20 @@ That is a **wall-clock ratio assertion inside the one blocking check**. Two thin
 
 This is `consistent with` — not proof of — the thesis in this section: the expensive failures in this repo are variance, not means, and they land in the places that block. It is included because it is a measurement I did not go looking for, on a change that could not have caused it.
 
+**A second floor member is non-deterministic too, found the same way.** The doc-only PR carrying this section then went red on `test (TS hermetic)` — the floor's *newest* member, promoted on 2026-08-25 with the stated justification that the suite **"is dependency-closed and reproducible"**. One test in 18,337 failed:
+
+```
+killed 1 dangling process
+(fail) GitHubAdapter > resolveThreadsBatch maintains arithmetic invariant [7129.69ms]
+  ^ this test timed out after 5000ms.
+```
+
+`github-adapter.ts` calls `spawnSync("gh", …)`, and the test constructs a real `GitHubAdapter("org", "repo")`. Its own comment says *"no gh available in test"* — **which is false on a GitHub-hosted runner, where `gh` is preinstalled.** So the call does not fail fast on ENOENT; it launches `gh`, which makes a live HTTPS request to `api.github.com`. Two independent tells confirm it: **7.1 s** (an absent binary fails in milliseconds) and the **dangling process** the runner had to kill.
+
+So **the tier named hermetic is not hermetic**, and the floor amendment's justification is false for at least one of its members. Filed as `081M0YX5AJ2087G0R003MXF9NW`.
+
+Taken with the timing assertion above, **two of the floor's members can go red for reasons unrelated to the tree under test** — and both were found by changes that could not have caused them (seven YAML keys; one markdown file). That is the same shape as everything else in this document: the interesting failures are not wrong answers, they are answers that do not depend on the question.
+
 **Out of scope here, and named rather than fixed:** the timing assertion is not mine, `ColumnLinearOps.Tests.fs` is not touched by either PR, and re-running was the correct response to an unrelated red. Whether a wall-clock ratio belongs in the blocking floor at all is a floor question — §8.
 
 #### What is now measured, and what still is not
@@ -529,7 +543,8 @@ Ordering, if it is ever pursued: (1) commit `flake.lock`; (2) measure what fract
 6. **The `lint-clone-at-tag-is-sufficient.ts` collision.** Its `RESOLVER_INVOCATION` regex matches `ace\s+bootstrap`, and `-` is a word boundary — so the phrase **"pre-ace bootstrap"**, which is now the repo's own name for the seed layer, reads as a resolver invocation on any non-comment line of a bootstrap surface. I hit this and worked around it by rewording a step name rather than weakening the lint. The vocabulary and the guard now collide; that is worth a decision rather than a series of quiet rewordings.
 7. **The ARC runner scale set is declared and has never run** (§6.4a). `zeta-self-hosted` is org-wide, self-healing, `minRunners: 1` — and **0 runners are registered with GitHub**, blocked by an already-filed P2 (`081M0JM6SSG087G0R0029X3F6Z`: the runner pod mounts a PVC nothing applies). Separately, as declared it would **not** give a warm layer cache: `containerMode: dind` with no persistent docker data root means every job still pays a full pull. Whether to fix and adopt it is infrastructure and yours; nothing here touches it.
 8. **A wall-clock ratio assertion sits in the blocking floor** (§6.4). `build-and-test (ubuntu-24.04)` fails at **12.7%** (17/134 executed runs) — **17× the demoted macOS leg's 0.75%** — and at least one contributor is a SIMD speedup test that asserts `>= 1.5x` measured wall time. It went red on a YAML-only change during this work. Options: skip it under contention, move it to a benchmark lane, or accept the rate. Not fixed here; not my file.
-9. **Two apt audits classify by string, one by structure — for the cache lane's owner.** Adding this workflow turned three audits red, and the three behaved differently in a way worth recording:
+9. **`test (TS hermetic)` is not hermetic** (§6.4, `081M0YX5AJ2087G0R003MXF9NW`). It joined the floor on 2026-08-25 *because* it was "dependency-closed and reproducible"; `github-adapter.test.ts` spawns `gh` and hits `api.github.com`, and timed out on a markdown-only PR. Either inject the process runner or move the test out of the tier — the tier's name and the floor's justification should not disagree with its contents.
+10. **Two apt audits classify by string, one by structure — for the cache lane's owner.** Adding this workflow turned three audits red, and the three behaved differently in a way worth recording:
 
    | audit | how it decided this job was in scope | verdict |
    |---|---|---|
