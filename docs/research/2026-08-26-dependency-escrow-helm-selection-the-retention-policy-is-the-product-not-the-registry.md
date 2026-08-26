@@ -450,9 +450,13 @@ can be generated from a file that exists **[consistent with]**.
 
 **Pulp 3 — the runner-up, and the strongest on the properties that matter.** Open source
 (GPLv2), Red Hat-associated, plugin-based. Its content model is the most escrow-shaped of anything
-evaluated: **repository versions are immutable and content units are content-addressed by
-digest**, so "replace an artifact silently" is not an available operation **[consistent with —
-this is Pulp's documented design; I did not test it]**. Its `pulp_rpm` and `pulp_deb` plugins are
+evaluated: *"Each time the content of a repository is changed, a new Repository Version is
+created"* (`pulpproject.org/pulpcore/docs/user/learn/concepts/`, retrieved 2026-08-26) **[metered,
+verbatim]** — a new-version-per-change model rather than mutation in place, which is the shape an
+escrow wants. **Honest limit: that page does not state immutability as a guarantee and does not
+describe how artifacts are addressed**, so the stronger claim usually made for Pulp — that content
+units are content-addressed by digest, making silent replacement unavailable — is **[consistent
+with]** here and not verified. Its `pulp_rpm` and `pulp_deb` plugins are
 the best OS-package support in the field, which covers channel 8 (561 MB of `.deb` per CI job).
 Two things hold it back from the recommendation: **plugin maturity is uneven** — `pulp_maven` is
 proxy-only and several others are less complete than the headline list implies **[consistent
@@ -472,8 +476,14 @@ problem — that is a real and legible fallback.
 is genuinely long (Alpine, Cargo, Composer, Conan, Container, CRAN, Debian, Go, Helm, Maven, npm,
 NuGet, PyPI, RPM, RubyGems, Swift, Vagrant…) and the charts are healthy — Gitea chart appVersion
 **1.27.0**, created **2026-07-19** **[metered, 2026-08-26]**. But **these registries are
-push-only: you upload artifacts to them, they do not proxy an upstream** **[consistent with —
-this is the documented model and no proxy feature is documented for the package registries]**. A
+push-only: you upload artifacts to them, they do not proxy an upstream.** The packages overview
+(`docs.gitea.com/usage/packages/overview`, retrieved 2026-08-26) documents no proxy, pull-through
+or mirroring capability for any of the 24 formats and describes only the upload model **[metered
+for the absence in the doc; [consistent with] for the conclusion, since a documented absence is
+not a proven one]**. Its immutability is the weak kind, and its own docs are clear about which:
+*"You cannot edit a package after you have published it in the Package Registry. Instead, you must
+delete and recreate it"* **[metered, verbatim]** — no overwrite, but deletion is permitted, so it
+does not resist an operator error or a compromised token the way a Harbor immutability rule does. A
 push-only registry can be *made* into an escrow by mirroring into it, but every ecosystem needs
 its own bespoke mirroring job, which is strictly more work than Pulp or Nexus doing it natively.
 **Separately: `forgejo/Application.yaml` is already in this tree as the standby half of an
@@ -714,7 +724,8 @@ Stated rather than guessed, per the brief.
 4. **Artifactory OSS's actual licence text** (§5) — no JFrog-primary page states it. AGPL-3.0 per
    several secondary sources. Does not change the outcome.
 5. **Pulp plugin maturity per-plugin** (§8) — characterised as uneven on secondary evidence; not
-   verified plugin by plugin.
+   verified plugin by plugin. **Pulp artifact content-addressing** is likewise unconfirmed: the
+   concepts page describes new-version-per-change but not how artifacts are addressed.
 6. **Gitea/Forgejo push-only** (§8) — inferred from the documented model and the absence of any
    documented proxy feature for package registries. Not proven by a negative search.
 7. **This repo's dependency-churn rate** (§11) — the number that turns 250–300 GiB into a
@@ -742,7 +753,9 @@ Stated rather than guessed, per the brief.
 | Scheduled replication does not propagate deletions (§7b) | **metered** — Harbor replication docs, 2026-08-26 |
 | Immutable tags resist re-push, re-tag and replication (§7b) | **metered** — Harbor immutability docs, 2026-08-26 |
 | Chart versions: harbor 1.19.2, zot 0.1.122, gitea 1.27.0, verdaccio 4.33.1 | **metered** — fetched from each chart repo's `index.yaml`, 2026-08-26 |
-| Pulp repository versions immutable / content-addressed (§8) | **consistent with** — documented design, untested |
+| Pulp creates a new repository version per change (§8) | **metered** — pulpproject.org concepts, verbatim, 2026-08-26 |
+| Pulp content units are content-addressed by digest (§8) | **consistent with** — not stated on that page |
+| Gitea packages cannot be edited after publishing (§8) | **metered** — docs.gitea.com, verbatim, 2026-08-26 |
 | Gitea/Forgejo package registries are push-only (§8) | **consistent with** — no documented proxy feature |
 | Harbor cannot serve npm/PyPI/apt wire protocols (§7) | **consistent with** |
 | mise and Nix are uncovered by every candidate (§3) | **metered** for the pins; **consistent with** for the coverage gap |
