@@ -144,6 +144,91 @@
 // the class-C branch of `censusOfRun` and this goes red on the next run.
 //
 // ---------------------------------------------------------------------------
+// TWO WAYS THIS REPORTER USED TO REPORT GREEN WITHOUT LOOKING (closed 2026-08-25)
+// ---------------------------------------------------------------------------
+//
+// The canary above is sound and was VERIFIED LIVE while these were written -- gate run
+// 32864087075, job 97862170100, 15:31:42Z:
+//
+//     Detector liveness: OK -- detector live: the canary's swallowed step was observed
+//     in run 32864087075 via the annotation channel (Process completed with exit code 1.)
+//
+// The canary had not gone quiet. Two OTHER paths through this file, however, reached
+// green without ever consulting it, and both are this file's own carved sentence turned
+// against itself:
+//
+//   1. NO CREDENTIAL, NO REPO -> `return 0`. `main()` printed one line to stderr and
+//      exited GREEN when `GH_TOKEN`/`repo` were empty: no window, no census, no
+//      `assertDetectorLive`, no staleness check. Reproduced on the unfixed file:
+//
+//        $ bun src/Core.TypeScript/ci/drift-loud.ts --repo "" --ledger data/platform-drift.json
+//        [drift-loud] no token or repo and no --records: nothing to fold.
+//        EXIT=0
+//
+//      A secret that silently stops being delivered -- rotated, unset, scoped away -- is
+//      exactly how a reporter goes quiet in practice, and this path made that outcome
+//      indistinguishable from a clean run. It now returns 2 and says which input is
+//      missing. Two, not one: this is a configuration error, not a drift finding, and
+//      collapsing those is how `exit 2` gets misread as a failing check.
+//
+//   2. UNREADABLE LEDGER -> "publication landing". `publishedWatermark` answered 0 for
+//      a file that was absent, truncated, or simply not in the job's sparse-checkout,
+//      and `publicationIsStale` reads 0 as "nothing published yet" -- a real and
+//      different state that must not fire on day one. So a MISSING ledger printed the
+//      affirmative claim `EXIT 0 -- ... publication landing.` Reproduced on the unfixed
+//      file with the ledger path pointed at a file that does not exist:
+//
+//        $ bun ...drift-loud.ts --records fixture.json --run-id 900 --ledger /nope.json
+//        EXIT 0 -- no sustained drift, detector live, publication landing.
+//        EXIT=0
+//
+//      That is not a silent skip; it is a false statement about a file it never opened.
+//      The three states are now distinguished -- `absent` (never published, or not
+//      checked out) is LOUD and red; `empty` (published, watermark 0) stays quiet; a
+//      real watermark is compared as before. `gate.yml` sparse-checks exactly one data
+//      file for this job, so dropping that one line from the checkout list is a one-token
+//      edit that used to buy a permanent green.
+//
+// AND THE CANARY DOES GO QUIET -- ON EVERY RE-RUN ATTEMPT (measured 2026-08-25)
+// ---------------------------------------------------------------------------
+//
+// The annotation channel is the ONLY API-visible evidence of a step-level swallow, and
+// **GitHub does not reproduce it on a re-run attempt.** Measured over recent `gate` runs:
+//
+//     run_attempt == 1   7 of 7 canary check-runs carried exactly 1 failure annotation
+//     run_attempt >  1   8 of 8 carried ZERO
+//       (32870525290 a2, 32869359742 a2, 32868648119 a2, 32868481016 a2,
+//        32868231883 a2, 32867917835 a2, 32867661654 a3, 32865656489 a2)
+//
+// The canary still RUNS and its step still FAILS on those attempts -- the job carries the
+// step, concluded `success`, exactly as on attempt 1. Only the annotation is absent.
+//
+// This matters because `rerun-cancelled-gate.yml` re-runs every `cancelled` gate run
+// automatically, and gate cancellation currently sits above 60%. So the reporter was
+// emitting `DETECTOR WENT QUIET` on a large share of runs while step-level detection was
+// working perfectly -- and a detector that cries wolf on every re-run is a detector nobody
+// reads, which is exactly how a REAL quiet gets missed. The false alarm was eating the
+// true one.
+//
+// THE FIX IS A THIRD VERDICT, NOT A GREEN. `unverifiable` is returned only when the
+// evidence supports precisely that reading: the canary job is PRESENT, it carries its
+// deliberate step, annotations were FETCHED and came back EMPTY, and this is attempt > 1.
+// It is still not `live` -- nothing was verified, and this file does not report green on
+// unverified -- but it is a `::warning` naming a measured platform limit rather than an
+// `::error` naming a breakage that is not there, and it does not set the exit code.
+//
+// A MISSING canary is STILL `quiet` and STILL red, on any attempt. That is the case the
+// falsifier exists for, and re-run attempts do not excuse it.
+//
+// GAP 3, STATED HONESTLY. The publication staleness this reporter exists to catch is
+// LIVE and was ALREADY LOUD when this was written -- `data/platform-drift.json` is pinned
+// at run 32816944713 and the same job printed
+// `::error title=drift publication not landing::` and exited 1. The root cause is not in
+// this file: flush PR #15276 has been open since 06:37Z with `gate (required)` red on it,
+// so every later tick parks on `heartbeat/drift-sweep-buffer` and main's ledger stays
+// frozen. What was fixable HERE is the case above, where the alarm cannot fire at all.
+//
+// ---------------------------------------------------------------------------
 // DISCIPLINES
 // ---------------------------------------------------------------------------
 //
@@ -176,6 +261,16 @@ export const ROLLUP_JOB_NAME = "gate (required)";
 
 /** The deliberate specimen. See "THE FALSIFIER THAT CANNOT BE ARGUED WITH" above. */
 export const CANARY_JOB_NAME = "drift-canary";
+
+/**
+ * The canary's deliberate step, by name.
+ *
+ * Load-bearing: on a re-run attempt the annotation is gone, so the STEP'S PRESENCE is the
+ * only remaining evidence that the canary actually ran what it claims to run. Without this
+ * check, "annotations empty on attempt 2" could not be distinguished from "somebody
+ * deleted the failing step and the job is now a no-op".
+ */
+export const CANARY_STEP_NAME = "drift canary -- deliberate non-blocking failure";
 
 /** This reporter's own job name. See `isInstrument`. */
 export const REPORTER_JOB_NAME = "drift (loud)";
@@ -224,6 +319,12 @@ export interface RunRecord {
   readonly sha: string;
   /** Run-level conclusion: `success` | `failure` | `cancelled` | ... */
   readonly conclusion: string;
+  /**
+   * `run_attempt`. 1 for an original run; >1 for a re-run. NOT part of the fold -- it is
+   * read only by `assertDetectorLive`, because the annotation channel is not reproduced
+   * on a re-run and that is a fact about the platform, not about the drift.
+   */
+  readonly attempt?: number | undefined;
   readonly jobs: readonly JobRecord[];
 }
 
@@ -497,8 +598,18 @@ export function foldAbsorption(
 // The detector's own liveness -- falsifier #2
 // ---------------------------------------------------------------------------
 
+/**
+ * `live`         the canary was observed; step-level detection provably works here.
+ * `quiet`        it was NOT observed and it should have been. Red.
+ * `unverifiable` the channel that carries it does not exist on this attempt. Not green,
+ *                not an accusation -- a stated limit. See the header.
+ */
+export type LivenessStatus = "live" | "quiet" | "unverifiable";
+
 export interface LivenessVerdict {
+  /** `true` ONLY for `live`. Unverified is never reported as working. */
   readonly live: boolean;
+  readonly status: LivenessStatus;
   readonly reason: string;
 }
 
@@ -519,6 +630,7 @@ export function assertDetectorLive(currentRun: RunRecord | null): LivenessVerdic
   if (currentRun === null) {
     return {
       live: false,
+      status: "quiet",
       reason:
         "DETECTOR WENT QUIET: the current run was not available to fold, so step-level detection could not be " +
         "exercised at all. Unverified is not the same as working, and this reporter does not report green on it.",
@@ -527,6 +639,33 @@ export function assertDetectorLive(currentRun: RunRecord | null): LivenessVerdic
   const canary = censusOfRun(currentRun).find((a) => a.kind === "step-red-job-green" && a.job === CANARY_JOB_NAME);
   if (canary === undefined) {
     const job = currentRun.jobs.find((j) => j.name === CANARY_JOB_NAME);
+    // THE RE-RUN CASE. Measured 2026-08-25: GitHub does not reproduce a step-level
+    // failure annotation on `run_attempt > 1` (8 of 8 re-runs carried zero; 7 of 7
+    // first attempts carried one). The canary still ran and its step still failed --
+    // which is why every clause below must hold before this reading is allowed:
+    // the job is PRESENT, it carries its deliberate STEP, annotations were actually
+    // FETCHED (`[]`, not `undefined`), and this is not attempt 1. A canary that is
+    // missing, or gutted of its failing step, falls through to `quiet` and stays red.
+    const attempt = currentRun.attempt ?? 1;
+    if (
+      job !== undefined &&
+      attempt > 1 &&
+      job.failureAnnotations !== undefined &&
+      job.failureAnnotations.length === 0 &&
+      (job.steps ?? []).some((st) => st.name === CANARY_STEP_NAME)
+    ) {
+      return {
+        live: false,
+        status: "unverifiable",
+        reason:
+          `DETECTOR LIVENESS UNVERIFIABLE ON A RE-RUN: run ${currentRun.id} is attempt ${attempt}, and GitHub ` +
+          `does not reproduce a step-level failure annotation on a re-run attempt (measured 2026-08-25: 8 of 8 ` +
+          `re-runs carried zero annotations; 7 of 7 first attempts carried one). Job \`${CANARY_JOB_NAME}\` IS ` +
+          `present and still carries its deliberate step, so there is no evidence detection broke -- there is ` +
+          `simply no channel to read it on this attempt. NOT reported as live: nothing was verified. Re-runs are ` +
+          `produced automatically by rerun-cancelled-gate.yml, so this is expected on a cancelled-then-rerun gate.`,
+      };
+    }
     const why =
       job === undefined
         ? `job \`${CANARY_JOB_NAME}\` did not appear in run ${currentRun.id} at all`
@@ -535,6 +674,7 @@ export function assertDetectorLive(currentRun: RunRecord | null): LivenessVerdic
           : `job \`${CANARY_JOB_NAME}\` concluded \`${job.conclusion}\` carrying ${job.failureAnnotations.length} failure annotation(s)`;
     return {
       live: false,
+      status: "quiet",
       reason:
         `DETECTOR WENT QUIET: no step-level absorption was observed in run ${currentRun.id} (${why}). That job ` +
         "fails one step on purpose, under `continue-on-error`, on every run, so a working detector cannot miss " +
@@ -544,6 +684,7 @@ export function assertDetectorLive(currentRun: RunRecord | null): LivenessVerdic
   }
   return {
     live: true,
+    status: "live",
     reason:
       `detector live: the canary's swallowed step was observed in run ${currentRun.id} via the annotation ` +
       `channel (${(canary.detail ?? []).join("; ") || "no message"})`,
@@ -661,7 +802,9 @@ export function renderMarkdown(report: DriftLoudReport, liveness: LivenessVerdic
     "",
   ];
   if (stalePublication !== null) out.push(`> **${stalePublication}**`, "");
-  if (!liveness.live) out.push(`> **${liveness.reason}**`, "");
+  // A `quiet` verdict is quoted at the top as a finding. `unverifiable` is not a finding
+  // and must not be dressed as one -- it is reported in the liveness line below.
+  if (liveness.status === "quiet") out.push(`> **${liveness.reason}**`, "");
 
   const findings = report.subjects.filter((s) => !isInstrument(s));
   if (findings.length === 0) {
@@ -689,7 +832,9 @@ export function renderMarkdown(report: DriftLoudReport, liveness: LivenessVerdic
     "**This job is not in the `gate (required)` floor.** A red X here is a drift signal, never a merge block. " +
       "Making any of these blocking is a floor amendment and a separate, human decision.",
     "",
-    `Detector liveness: ${liveness.live ? "OK" : "**FAILED**"} -- ${liveness.reason}`,
+    `Detector liveness: ${
+      liveness.status === "live" ? "OK" : liveness.status === "unverifiable" ? "UNVERIFIABLE (not a failure)" : "**FAILED**"
+    } -- ${liveness.reason}`,
     "",
   );
   return out.join("\n");
@@ -704,6 +849,8 @@ interface ApiRun {
   readonly created_at: string;
   readonly head_sha: string;
   readonly conclusion: string | null;
+  /** Present on every run payload; 1 on an original run. See `assertDetectorLive`. */
+  readonly run_attempt?: number;
 }
 
 interface ApiJob {
@@ -743,7 +890,13 @@ async function fetchFailureAnnotations(repo: string, checkRunId: number, token: 
 }
 
 async function fetchRun(repo: string, run: ApiRun, token: string, withAnnotations = false): Promise<RunRecord> {
-  const base = { id: run.id, at: run.created_at, sha: run.head_sha, conclusion: run.conclusion ?? "unknown" };
+  const base = {
+    id: run.id,
+    at: run.created_at,
+    sha: run.head_sha,
+    conclusion: run.conclusion ?? "unknown",
+    attempt: typeof run.run_attempt === "number" ? run.run_attempt : 1,
+  };
   if (base.conclusion === "cancelled") return { ...base, jobs: [] };
   const payload = await ghJson<{ readonly jobs?: readonly ApiJob[] }>(
     `https://api.github.com/repos/${repo}/actions/runs/${run.id}/jobs?per_page=100`,
@@ -774,14 +927,39 @@ function flagValue(argv: readonly string[], flag: string, fallback: string): str
   return i >= 0 ? (argv[i + 1] ?? fallback) : fallback;
 }
 
-/** Watermark of the published platform-drift ledger, or 0 when absent/unreadable. */
-function publishedWatermark(path: string): number {
+/**
+ * What the published drift ledger says, as THREE states rather than two.
+ *
+ * `absent` is the one that matters and the one that used to be missing: a ledger that
+ * could not be read is NOT a ledger reporting zero. Collapsing them let a file this job
+ * never opened -- deleted, truncated, or simply left out of the sparse-checkout -- read
+ * as "publication landing". See the header, item 2.
+ */
+export type LedgerRead =
+  | { readonly kind: "absent"; readonly why: string }
+  | { readonly kind: "watermark"; readonly runId: number };
+
+export function readPublishedWatermark(
+  path: string,
+  read: (p: string) => string = (p) => readFileSync(p, "utf8"),
+): LedgerRead {
+  let raw: string;
   try {
-    const parsed = JSON.parse(readFileSync(path, "utf8")) as { readonly report?: { readonly latestRunId?: number } };
-    return parsed.report?.latestRunId ?? 0;
-  } catch {
-    return 0;
+    raw = read(path);
+  } catch (e) {
+    return { kind: "absent", why: `cannot be read (${e instanceof Error ? e.message : String(e)})` };
   }
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(raw);
+  } catch (e) {
+    return { kind: "absent", why: `is not valid JSON (${e instanceof Error ? e.message : String(e)})` };
+  }
+  const runId = (parsed as { report?: { latestRunId?: unknown } } | null)?.report?.latestRunId;
+  if (typeof runId !== "number" || !Number.isFinite(runId)) {
+    return { kind: "absent", why: "carries no numeric report.latestRunId" };
+  }
+  return { kind: "watermark", runId };
 }
 
 async function main(): Promise<number> {
@@ -801,8 +979,24 @@ async function main(): Promise<number> {
   } else if (!offline) {
     const token = process.env["GH_TOKEN"] ?? process.env["GITHUB_TOKEN"] ?? "";
     if (token.length === 0 || repo.length === 0) {
-      console.error("[drift-loud] no token or repo and no --records: nothing to fold.");
-      return 0;
+      // EXIT 2, NOT 0. This used to return 0 -- green, silently, having folded nothing.
+      // A reporter that cannot prove it is looking must not report green, and that
+      // sentence is enforced two lines below by assertDetectorLive on every OTHER path;
+      // this one skipped past it entirely. 2 rather than 1 because this is a
+      // CONFIGURATION error (a missing input) and not a drift finding: a reader must not
+      // read it as "the detector looked and found something".
+      const missing = [
+        token.length === 0 ? "GH_TOKEN/GITHUB_TOKEN" : null,
+        repo.length === 0 ? "--repo (or GITHUB_REPOSITORY)" : null,
+      ].filter((x): x is string => x !== null);
+      console.error(
+        `[drift-loud] CANNOT LOOK: missing ${missing.join(" and ")}, and no --records was given. ` +
+          "Nothing was folded, the canary was never consulted, and the publication watermark was " +
+          "never compared -- so there is no green to report. Supply the credential, or pass " +
+          "--records/--offline to fold a captured window.",
+      );
+      console.log("::error title=drift reporter cannot look::" + `missing ${missing.join(" and ")}; no window was folded`);
+      return 2;
     }
     // The window: recent completed `gate` runs on main, plus THIS run when given, so a
     // PR sees its own canary and its own absorbed failures rather than only main's.
@@ -825,12 +1019,18 @@ async function main(): Promise<number> {
   const report = foldAbsorption(records, thresholds);
   const currentRun = thisRunId > 0 ? (records.find((r) => r.id === thisRunId) ?? null) : null;
   const liveness = assertDetectorLive(currentRun);
-  const watermark = publishedWatermark(ledgerPath);
-  const stale = publicationIsStale(watermark, oldestRunId(records, thresholds.windowRuns))
-    ? `PUBLICATION NOT LANDING: \`${ledgerPath}\` is pinned at run ${watermark}, older than every one of the ` +
-      `${report.runs} runs in this window (newest ${report.latestRunId}). The tick computes and then throws ` +
-      "the result away -- the dashboard is showing stale numbers from behind a green check."
-    : null;
+  const ledger = readPublishedWatermark(ledgerPath);
+  const stale =
+    ledger.kind === "absent"
+      ? `LEDGER NOT READABLE: \`${ledgerPath}\` ${ledger.why}. This check compares the published ` +
+        "watermark against the folded window; with no watermark it has not run, and a check that did " +
+        "not run must not read as one that passed. If the file is genuinely new, publish it once; if " +
+        "this job stopped checking it out, restore it to the sparse-checkout list."
+      : publicationIsStale(ledger.runId, oldestRunId(records, thresholds.windowRuns))
+        ? `PUBLICATION NOT LANDING: \`${ledgerPath}\` is pinned at run ${ledger.runId}, older than every one of the ` +
+          `${report.runs} runs in this window (newest ${report.latestRunId}). The tick computes and then throws ` +
+          "the result away -- the dashboard is showing stale numbers from behind a green check."
+        : null;
 
   const markdown = renderMarkdown(report, liveness, stale);
   console.log(markdown);
@@ -838,7 +1038,11 @@ async function main(): Promise<number> {
   // LOUD: annotations first, so they are the first thing the run page shows.
   for (const line of annotationLines(report)) console.log(line);
   if (stale !== null) console.log(`::error title=drift publication not landing::${stale}`);
-  if (!liveness.live) console.log(`::error title=drift detector went quiet::${liveness.reason}`);
+  if (liveness.status === "quiet") console.log(`::error title=drift detector went quiet::${liveness.reason}`);
+  // A measured platform limit is a WARNING. Making it an error was eating the real alarm:
+  // rerun-cancelled-gate.yml re-runs every cancelled gate run, so the false positive fired
+  // far more often than the condition it was supposed to announce.
+  if (liveness.status === "unverifiable") console.log(`::warning title=drift detector liveness unverifiable::${liveness.reason}`);
 
   const summaryPath = process.env["GITHUB_STEP_SUMMARY"];
   if (summaryPath !== undefined && summaryPath.length > 0) appendFileSync(summaryPath, `${markdown}\n`);
@@ -855,7 +1059,9 @@ async function main(): Promise<number> {
   // would make it red on every run for no reason other than that it was red before --
   // a latch, not a measurement. The canary's only role is `assertDetectorLive` above.
   const sustained = report.subjects.filter((s) => !isInstrument(s) && s.band === "SUSTAINED");
-  const red = sustained.length > 0 || !liveness.live || stale !== null;
+  // `unverifiable` deliberately does NOT redden: it is a stated limit, announced on every
+  // affected run as a warning, not a finding. `quiet` still does.
+  const red = sustained.length > 0 || liveness.status === "quiet" || stale !== null;
   if (red) {
     console.log(
       "\nEXIT 1 -- a drift signal is at its loudest band. This job is NOT in the `gate (required)` floor: " +
@@ -863,7 +1069,15 @@ async function main(): Promise<number> {
     );
     return 1;
   }
-  console.log("\nEXIT 0 -- no sustained drift, detector live, publication landing.");
+  // The exit line must not claim more than the verdict supports. Printing "detector live"
+  // on an `unverifiable` verdict would be this file's own defect, reproduced in its last
+  // sentence -- a summary asserting a check that did not run.
+  console.log(
+    "\nEXIT 0 -- no sustained drift, publication landing, " +
+      (liveness.status === "live"
+        ? "detector live."
+        : "detector liveness UNVERIFIABLE on this attempt (see the warning above) -- not verified, not broken."),
+  );
   return 0;
 }
 

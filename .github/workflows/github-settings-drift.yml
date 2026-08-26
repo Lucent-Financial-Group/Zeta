@@ -10,6 +10,34 @@ name: github-settings-drift
 # alerts — not a merge gate. Resolve by refreshing the expected snapshot when
 # the GitHub-side change is intentional, or revert the setting in GitHub UI.
 #
+# WHY THIS IS STILL ADVISORY, stated rather than assumed (2026-08-25).
+#
+# The obvious next step after fixing a detector is to make it blocking. It was
+# considered and is refused for now, on evidence:
+#
+#   * The compare is GREEN against live as of 2026-08-25 — but only under an
+#     admin credential. The job below runs under `GITHUB_TOKEN`, which has no
+#     `administration` scope at all, so ~21 fields arrive unreadable and are
+#     dropped from the comparison. A required check whose coverage silently
+#     depends on which credential ran it is worse than an advisory one.
+#   * The snapshot contains fast-moving rows that no PR author controls: the
+#     workflow inventory (90 entries, changed by any merge that adds a
+#     workflow) and `counts.actions_secrets` (changed by the operator adding a
+#     secret). Required-and-red-for-reasons-outside-the-PR is the exact
+#     condition under which the next person disables the check — which would
+#     leave the repo with less protection than the advisory lane gives it.
+#
+# So the promotion is gated on two things that do not exist yet, and naming
+# them is the point of this comment: (1) DRIFT_DETECTOR_PAT wired, so coverage
+# stops depending on the credential, and (2) the compare split so the STABLE
+# security-relevant subset — rulesets incl. `bypass_actors`, branch protection,
+# `security_and_analysis` — can be required while the volatile inventory stays
+# advisory. Until both land, `continue-on-error: true` is the honest setting.
+#
+# What DID change here: the step no longer lets every non-zero outcome look
+# alike. Exit 3 (the credential read nothing, so the check DID NOT RUN) is now
+# reported as a distinct `::error::` rather than blending into drift.
+#
 # Security note (safe-pattern compliance): this workflow only consumes
 # first-party trusted context — `secrets.GITHUB_TOKEN` and
 # `github.repository` (the owner/repo string). No user-authored
@@ -35,6 +63,10 @@ on:
       - "src/Core.TypeScript/hygiene/snapshot-github-settings.ts"
       - "src/Core.TypeScript/hygiene/check-github-settings-drift.ts"
       - ".github/workflows/github-settings-drift.yml"
+      # The ruleset reconciler's PLAN (read-only) half rides this workflow.
+      - "src/Core.TypeScript/hygiene/reconcile-rulesets.ts"
+      - "src/Core.TypeScript/hygiene/ruleset-model.ts"
+      - "docs/operations/rulesets/**"
 
 permissions:
   # `actions: read` covers workflow reads + Actions variables +
@@ -80,8 +112,124 @@ jobs:
         env:
           # Both values below are first-party trusted context.
           # No user-authored input is used anywhere in this workflow.
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          #
+          # ROLE: READ (repo settings). Two credentials are passed as SEPARATE
+          # env vars and selected in the shell below, deliberately NOT as
+          # `${{ secrets.A || secrets.B }}`. That `||` form is AH003's subject
+          # (audit-workflow-credential-role-separation.ts) and it is the wrong
+          # shape here for a reason worth stating: it hides WHICH credential
+          # ran, and for this tool the credential IS the coverage. The shell
+          # branch below prints the answer.
+          #
+          # The fallback is legitimate where AH003's was not: GITHUB_TOKEN can
+          # genuinely read part of this surface (workflows, environments,
+          # topics, pages), and the tool now reports by name every field it
+          # could not read instead of quietly comparing a smaller set. A
+          # degradation that announces its own scope is not a substitution.
+          DRIFT_DETECTOR_PAT: ${{ secrets.DRIFT_DETECTOR_PAT }}
+          FALLBACK_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+        # `rc=0; cmd || rc=$?` and NOT `cmd` then `rc=$?`.
+        #
+        # GitHub's default shell here is `bash -e {0}` — visible in every job
+        # log's `shell:` line — and `set -uo pipefail` does not clear a `-e`
+        # that arrived on the command line; only `set +e` or an `||` list does.
+        # So `cmd` followed by `rc=$?` aborts the step the instant `cmd` is
+        # non-zero, and every line after it, including the `case` that
+        # distinguishes DID-NOT-RUN from FAILED, is unreachable. The reporting
+        # exists precisely for the non-zero case, which is the only case it
+        # could never see. Caught on this workflow's own first run (job
+        # 97868684543, exit 1 with no annotation emitted).
+        run: |
+          set -uo pipefail
+          if [ -n "${DRIFT_DETECTOR_PAT:-}" ]; then
+            export GH_TOKEN="$DRIFT_DETECTOR_PAT"
+            echo "::notice::github-settings-drift using DRIFT_DETECTOR_PAT (admin-read); full field coverage expected."
+          else
+            export GH_TOKEN="$FALLBACK_TOKEN"
+            echo "::warning::github-settings-drift using GITHUB_TOKEN — it holds no 'administration' scope, so the admin-only fields (branch protection, actions permissions, CodeQL default setup, security_and_analysis, merge settings) are RECORDED IN-TREE AND NOT CHECKED by this run. The field list is printed below. FIX (operator): set repository secret DRIFT_DETECTOR_PAT to a fine-grained PAT with Administration/Secrets/Variables/Webhooks read on this repo (081KQ8P5D0008QG0R000JHD7AB)."
+          fi
+          rc=0
+          bun src/Core.TypeScript/hygiene/check-github-settings-drift.ts --repo "$GH_REPO" || rc=$?
+          case "$rc" in
+            0) echo "::notice::github-settings settings match the committed record across every field this credential could read" ;;
+            1) echo "::warning::github-settings DRIFT — live differs from src/Core.TypeScript/hygiene/github-settings.expected.json" ;;
+            2) echo "::error::github-settings check ERRORED — tooling or input failure; no verdict" ;;
+            3) echo "::error::github-settings check INDETERMINATE — the credential could read NOTHING, so ZERO fields were compared. This check DID NOT RUN; it did not pass." ;;
+            *) echo "::error::github-settings check unexpected exit $rc" ;;
+          esac
+          # The exit code is PROPAGATED, not swallowed. `continue-on-error` at
+          # the job level already makes this advisory, so `exit 0` here would
+          # buy nothing and would cost the `drift (loud)` reporter its signal:
+          # that job escalates absorbed continue-on-error failures, and a step
+          # that always exits 0 has nothing to absorb. The annotations add the
+          # distinction between 1, 2 and 3 that the step status cannot carry;
+          # they do not replace it.
+          exit "$rc"
+
+  # ---------------------------------------------------------------------------
+  # Ruleset reconciliation — the DETECT (plan) half only.
+  #
+  # This job is READ-ONLY by construction: it never passes --apply, and the
+  # token it holds cannot write rulesets even if it did. The write half lives
+  # in ruleset-apply.yml, which is deliberately a SEPARATE workflow: this one
+  # is `pull_request`-triggered, and a workflow reachable from a pull request
+  # must never hold `administration: write`.
+  #
+  # ADVISORY, like its sibling above (ISociety observe lane) — but note the
+  # exit-code semantics differ from `continue-on-error` optics: exit 2 means
+  # the reconciler could NOT read live state, i.e. the check did not run. That
+  # is reported as a distinct line rather than being allowed to look green.
+  # ---------------------------------------------------------------------------
+  ruleset-plan:
+    name: ruleset reconciliation (plan only)
+    timeout-minutes: 5
+    runs-on: ubuntu-24.04
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+
+      - name: plan ruleset reconciliation
+        env:
+          # First-party trusted context only, as above.
+          #
+          # ROLE: READ (rulesets). One role, one secret. `GITHUB_TOKEN` CANNOT read
+          # rulesets — the line above this one says so — so the
+          # `|| secrets.GITHUB_TOKEN` rung that stood here was a substitution onto a
+          # credential known in advance to be incapable of the work. That is the
+          # role-collapse shape AH003 refuses
+          # (audit-workflow-credential-role-separation.ts): the fallback did not
+          # rescue the read, it only moved the failure downstream where the error
+          # names `gh` rather than the missing secret.
+          #
+          # The ADVISORY semantics are unchanged and are the good part: absence is
+          # INDETERMINATE ("this check DID NOT RUN"), never success, and it never
+          # blocks the merge. It is now reported by name, before the call, instead of
+          # being inferred from a doomed one.
+          GH_TOKEN: ${{ secrets.RULESET_READER_TOKEN }}
           GH_REPO: ${{ github.repository }}
         run: |
-          set -euo pipefail
-          bun src/Core.TypeScript/hygiene/check-github-settings-drift.ts --repo "$GH_REPO"
+          set -uo pipefail
+          if [ -z "${GH_TOKEN:-}" ]; then
+            echo "::warning::ruleset plan INDETERMINATE — RULESET_READER_TOKEN is not set, so live ruleset state could not be read and this check DID NOT RUN. GITHUB_TOKEN is not a substitute: it cannot read rulesets at all. FIX (optional, advisory lane): set repository secret RULESET_READER_TOKEN to a fine-grained PAT with 'Administration: read' on Lucent-Financial-Group/Zeta."
+            exit 0
+          fi
+          # `|| rc=$?`, not a bare call followed by `rc=$?` — see the note on
+          # the sibling job above. Under `bash -e {0}` the bare form made this
+          # entire `case` unreachable, and this reconciler has FIVE exit codes
+          # whose whole purpose is to be told apart: 1 DRIFT, 2 DID-NOT-RUN,
+          # 3 REFUSED, 4 APPLIED-BUT-VERIFICATION-FAILED. Every one of them
+          # was silently collapsed into a bare red step.
+          rc=0
+          bun src/Core.TypeScript/hygiene/reconcile-rulesets.ts --repo "$GH_REPO" || rc=$?
+          case "$rc" in
+            0) echo "::notice::rulesets in sync with committed desired state" ;;
+            1) echo "::warning::ruleset DRIFT — live differs from docs/operations/rulesets/" ;;
+            2) echo "::warning::ruleset plan INDETERMINATE — could not read live state; this check DID NOT RUN" ;;
+            3) echo "::error::ruleset plan REFUSED — ungated widening or structural violation" ;;
+            *) echo "::error::ruleset plan unexpected exit $rc" ;;
+          esac
+          # Advisory lane: surface the signal, never block the merge.
+          exit 0
