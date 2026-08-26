@@ -245,6 +245,12 @@ in
             fi
           done
           if [ -n "$_missing" ]; then
+            # 081M0WTB5MN Layer-3: when a precondition is missing (typically the
+            # ESP blob), NAME what /boot actually is and what it holds — so CI can
+            # tell "blob never delivered" from "phase-2 mounts a different /boot
+            # than the installer wrote to".
+            log_restore "zeta-creds-restore: /boot mount: $(grep ' /boot ' /proc/mounts 2>/dev/null | head -1 || echo none)"
+            log_restore "zeta-creds-restore: /boot listing: $(ls -1 /boot 2>/dev/null | tr '\n' ' ' || echo none)"
             exit 0
           fi
 

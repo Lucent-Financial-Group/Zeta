@@ -3546,6 +3546,15 @@ if [ -d "$ZETA_HOME" ]; then
         echo "[iter-5.5.0]   WARN: picker blob written but factor sidecar missing"
       fi
       rm -f "$PICKER_TMP" "$PICKER_TMP_FACTOR"
+      # 081M0WTB5MN Layer-3: flush the VFAT write so a reboot cannot drop it, then
+      # NAME what landed and on which device. `sudo install` does not fsync, and
+      # the ESP is FAT; if the guest reboots before the page cache flushes, the
+      # blob is silently lost. `sync` closes that. The two echoes split a phase-2
+      # "MISSING /boot/zeta-creds.enc" into "write never landed" vs "phase-2
+      # mounts a different /boot than this one".
+      sync
+      echo "[081M0WTB5MN] post-persist /mnt/boot/zeta-creds.enc: $(sudo ls -l /mnt/boot/zeta-creds.enc 2>&1 || echo ABSENT)"
+      echo "[081M0WTB5MN] /mnt/boot source device: $(findmnt -no SOURCE /mnt/boot 2>/dev/null || echo unknown)"
     fi
   else
     echo "[iter-5.5.0]   SKIP 6.95-picker: $PICKER_SKIP_REASON"
