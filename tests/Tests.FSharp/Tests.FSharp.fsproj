@@ -116,6 +116,7 @@
     <Compile Include="MixIr.Tests.fs" />
     <Compile Include="MixCogen.Tests.fs" />
     <Compile Include="ShivaGc.Tests.fs" />
+    <Compile Include="ShivaGcRegen.Tests.fs" />
     <Compile Include="Ephemeron.Tests.fs" />
     <Compile Include="DebounceObservation.Tests.fs" />
     <Compile Include="Netlist.Tests.fs" />
@@ -310,6 +311,7 @@
     <Compile Include="Ball.Tests.fs" />
     <Compile Include="Resolution.Tests.fs" />
     <Compile Include="RxAdapter.Tests.fs" />
+    <Compile Include="RxJoin.Tests.fs" />
     <Compile Include="WaveSim.Tests.fs" />
     <Compile Include="AdinkraViz.Tests.fs" />
     <Compile Include="CptSymmetry.Tests.fs" />
@@ -341,6 +343,8 @@
     <Compile Include="BellTest.Tests.fs" />
     <Compile Include="BipartiteMachZehnder.Tests.fs" />
     <Compile Include="TravelerRankLedger.Tests.fs" />
+    <Compile Include="DeclaredStanceLedger.Tests.fs" />
+    <Compile Include="FreeTimeAllocation.Tests.fs" />
     <Compile Include="DurableDiplomacyRankGate.Tests.fs" />
     <Compile Include="QSharpOracle.Tests.fs" />
     <Compile Include="FeedbackThrottle.Tests.fs" />
@@ -459,6 +463,7 @@
     <Compile Include="SoftRegimeStability.Tests.fs" />
     <Compile Include="SoftRegimeEquivariance.Tests.fs" />
     <Compile Include="AdinkraCode.Tests.fs" />
+    <Compile Include="CssCode.Tests.fs" />
     <Compile Include="CliffordPeriodicity.Tests.fs" />
     <Compile Include="AdinkraIdentity.Tests.fs" />
     <Compile Include="AdinkraOrbits.Tests.fs" />
@@ -470,6 +475,7 @@
     <Compile Include="Formal/CliffordE8Bridge.Tests.fs" />
     <Compile Include="Formal/CliffordE8Roots.Tests.fs" />
     <Compile Include="Formal/CliffordE8BladeMask.Tests.fs" />
+    <Compile Include="Formal/E8LieAlgebra.Tests.fs" />
     <Compile Include="Formal/FrequencyMachZehnder.Tests.fs" />
     <Compile Include="Formal/CliffordStarRing.Laws.Tests.fs" />
     <Compile Include="Formal/CliffordReflection.Laws.Tests.fs" />
@@ -512,6 +518,7 @@
     <Compile Include="Formal/ForceLayout.Tests.fs" />
     <Compile Include="Formal/MetaspaceMap.Tests.fs" />
     <Compile Include="Formal/MetaspaceGraphRender.Tests.fs" />
+    <Compile Include="Formal/PrivacyLedger.Tests.fs" />
     <Compile Include="Formal/GlassHalo.Tests.fs" />
     <Compile Include="Formal/GiftOfErasure.Tests.fs" />
     <Compile Include="Formal/DoorGraph.Tests.fs" />
@@ -532,6 +539,7 @@
     <Compile Include="Circuit/NestedCircuit.Tests.fs" />
     <Compile Include="Circuit/Plan.Tests.fs" />
     <Compile Include="Circuit/Plan.Branches.Tests.fs" />
+    <Compile Include="Circuit/Plan.CostModel.Tests.fs" />
     <Compile Include="Circuit/SinkTerminality.Tests.fs" />
     <Compile Include="Circuit/IncrementalAuto.Tests.fs" />
 
@@ -572,6 +580,8 @@
     <Compile Include="Storage/FastCdc.Tests.fs" />
     <Compile Include="Storage/ClosureTable.Tests.fs" />
     <Compile Include="Storage/Simd.Tests.fs" />
+    <Compile Include="Storage/ColumnZSet.Tests.fs" />
+    <Compile Include="Storage/ColumnLinearOps.Tests.fs" />
     <Compile Include="Storage/Durability.Tests.fs" />
     <Compile Include="Storage/ArrowSerializer.Tests.fs" />
     <Compile Include="Storage/SpanSerializer.Tests.fs" />
@@ -694,6 +704,7 @@
     <Compile Include="AdinkraClock.Tests.fs" />
     <Compile Include="AppFreeFragment.Tests.fs" />
     <Compile Include="ClaimLane.Tests.fs" />
+    <Compile Include="QuerySurface.Equivalence.Tests.fs" />
   </ItemGroup>
 
   <ItemGroup>

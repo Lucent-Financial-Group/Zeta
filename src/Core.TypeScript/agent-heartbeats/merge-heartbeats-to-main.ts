@@ -54,10 +54,44 @@ const HEAD_NAME_RE = /^[A-Za-z0-9](?:[A-Za-z0-9_-]|\.(?=[A-Za-z0-9_-])){0,62}$/;
 const COMMIT_SHA_RE = /^[0-9a-f]{40}$/;
 
 /**
- * Derive the immutable PR head for one exact mutable heartbeat tip.
+ * Derive the PR head for one exact mutable heartbeat tip: ONE FIXED REF PER LANE.
  *
- * The ref stays under `heartbeat/*`, where the lane's branch policy already applies. A rerun at
- * the same source SHA derives the same ref; a later tick necessarily derives a different one.
+ * WHY THIS IS NO LONGER `-flush-<sha>` (2026-08-25).
+ * ---------------------------------------------------
+ * The ref used to embed the source SHA, so "a later tick necessarily derives a different
+ * one" — which is exactly what the old docstring promised, and it is an unbounded ref
+ * generator. Measured on `origin`: 1,631 `heartbeat/*` refs, of which 1,610 are
+ * `-flush-<sha>` snapshots (alexa 564, otto 532, soraya 514). The mutable lanes and their
+ * buffers account for the other 21.
+ *
+ * NOTHING COULD EVER HAVE REAPED THEM, and that is the part worth stating precisely,
+ * because the obvious fix does not work here. Ruleset "Heartbeat Branch Protection"
+ * (16934633) targets `refs/heads/heartbeat/*` with a `deletion` rule, `bypass_actors: []`
+ * and `current_user_can_bypass: "never"`. So:
+ *
+ *   - no agent, admin or workflow can delete one of these refs;
+ *   - `delete_branch_on_merge` (which IS enabled on the repo) cannot fire on them either.
+ *
+ * Verified rather than assumed: the merged flush PRs #15267 and #15255 still have their
+ * `heartbeat/soraya-flush-<sha>` heads on the remote, while `automation/*` archive branches
+ * — same repo, same setting, no deletion ruleset — ARE removed on merge. So this leak is
+ * not the "closed unmerged PR" case it was reported as: EVERY flush leaked its ref, merged
+ * or not, and deleting them was never an available remedy.
+ *
+ * That rules out "delete the branch when the PR reaches a terminal state" and leaves the
+ * only fix that works under the ruleset as written: STOP MINTING NEW NAMES. The ref is now
+ * `heartbeat/<lane>-flush`, one per lane, force-updated in place — so the lane's ref
+ * population is constant (lane + buffer + flush) no matter how many times it flushes.
+ *
+ * This is not a new invention; it is the shape `flush-via-staging.ts` has been running in
+ * production on `tick-metrics`, `society` and `drift-sweep` for months, and those lanes
+ * leak nothing. The immutability the old snapshot bought is preserved by the CALLER, which
+ * must not move this ref while a PR is open on it — the same active/buffer discipline
+ * `chooseFlushRoute` implements. See `.github/workflows/agent-heartbeat.yml`.
+ *
+ * `sourceSha` stays in the returned value: it is what `verifySnapshotRef` checks the ref
+ * against, so the PR-only credential can still confirm it is looking at the exact commit
+ * the contents-write credential published, without being able to move it.
  */
 export function heartbeatSnapshot(
   sourceHead: string,
@@ -75,7 +109,7 @@ export function heartbeatSnapshot(
     ok: {
       sourceHead,
       sourceSha,
-      snapshotRef: `heartbeat/${lane}-flush-${sourceSha}`,
+      snapshotRef: `heartbeat/${lane}-flush`,
     },
   };
 }
@@ -305,18 +339,35 @@ export function verifySnapshotRef(
  * idempotent (GitHub returns 422 "A pull request already exists" on dup
  * create; we'd rather re-use the existing PR + re-arm auto-merge).
  */
+export interface ExistingPR {
+  readonly number: number;
+  readonly url: string;
+  /**
+   * The PR's current head SHA. Carried because a caller deciding whether to WAIT on this
+   * PR needs to ask whether its head is still under test, and the check-runs API is keyed
+   * by commit — see `classifyHeadVerdict` in `flush-via-staging.ts`.
+   */
+  readonly headSha: string;
+}
+
 export function findExistingPR(
   repo: string,
   head: string,
   base: string,
-): { readonly found: { readonly number: number; readonly url: string } | null } | { readonly error: string } {
+): { readonly found: ExistingPR | null } | { readonly error: string } {
   const owner = repo.split("/")[0]!;
   const result = gh(["api", `repos/${repo}/pulls?state=open&head=${owner}:${head}&base=${base}`]);
   if (result.status !== 0) return { error: `list pulls failed: ${result.stderr || result.stdout}` };
   try {
     const parsed = JSON.parse(result.stdout);
     if (Array.isArray(parsed) && parsed.length > 0 && parsed[0]) {
-      return { found: { number: parsed[0].number, url: parsed[0].html_url } };
+      return {
+        found: {
+          number: parsed[0].number,
+          url: parsed[0].html_url,
+          headSha: typeof parsed[0].head?.sha === "string" ? parsed[0].head.sha : "",
+        },
+      };
     }
     return { found: null };
   } catch (err) {
@@ -391,6 +442,36 @@ export function armOutcome(
   return { ...pr, armed: false, armError: armMessage.trim() };
 }
 
+/**
+ * The refusal that replaced the `||` chains in `.github/workflows/`.
+ *
+ * Every telemetry lane used to hand this function
+ * `${{ secrets.ZETA_TELEMETRY_FLUSH_TOKEN || secrets.ZETA_PR_ARCHIVE_TOKEN || secrets.GITHUB_TOKEN }}`.
+ * That expression selects on a secret being EMPTY, so an absent PR-create credential was
+ * silently replaced by one carrying DIFFERENT authority — and the lane then failed further
+ * downstream under an error naming the wrong subject. Worse, the GITHUB_TOKEN rung trips
+ * GitHub's recursion guard (actions taken with it do not trigger other workflows), so a
+ * degraded lane also stopped producing the events downstream jobs wait on, silently.
+ *
+ * PR creation is the one role with no substitute here: the enterprise forbids the Actions
+ * identity from creating pull requests at all. So an empty credential is refused BY NAME,
+ * once, at the one place all eleven flush lanes funnel through. The payload is already
+ * parked on the staging branch by the time this runs — nothing is lost by refusing.
+ */
+export const PR_CREATE_CREDENTIAL_ABSENT =
+  "PR-create credential absent: GH_TOKEN is empty. This is the PR-CREATE role and it has no " +
+  "substitute — the enterprise forbids the Actions identity from creating pull requests, and " +
+  "the branch-push credential (ZETA_TELEMETRY_FLUSH_TOKEN) carries different authority. " +
+  "FIX: set repository secret ZETA_PR_ARCHIVE_TOKEN on Lucent-Financial-Group/Zeta to a " +
+  "fine-grained PAT with 'Pull requests: read and write' + 'Contents: read and write' + " +
+  "'Metadata: read', and pass it as GH_TOKEN on the step. Role table: " +
+  "docs/security/2026-08-17-society-heartbeat-token-boundary-and-gate-start-failure.md";
+
+/** True when the process holds SOME forge credential for `gh`. Pure, so it has a falsifier. */
+export function hasPrCreateCredential(env: NodeJS.ProcessEnv = process.env): boolean {
+  return (env["GH_TOKEN"] ?? env["GITHUB_TOKEN"] ?? "").trim() !== "";
+}
+
 export function openMergePR(
   repo: string,
   head: string,
@@ -399,6 +480,9 @@ export function openMergePR(
   body: string,
   env: NodeJS.ProcessEnv = process.env,
 ): { readonly ok: OpenedPR } | { readonly error: string; readonly code: 3 } {
+  if (!hasPrCreateCredential(env)) {
+    return { error: PR_CREATE_CREDENTIAL_ABSENT, code: 3 };
+  }
   // Idempotency: re-use existing open PR if one is already open head→base
   const existing = findExistingPR(repo, head, base);
   if ("error" in existing) {
