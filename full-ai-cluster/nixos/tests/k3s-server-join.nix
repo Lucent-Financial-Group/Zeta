@@ -44,8 +44,8 @@
 # `nixos-install --impure`, against `/etc/zeta/*` symlinks the installer just
 # staged. In a nixosTest, evaluation happens on the BUILD MACHINE, where
 # `/etc/zeta` does not exist and never will. So this test drives the module
-# through its `joinServerUrlFile` / `tokenFile` OPTIONS pointed at committed
-# fixtures — which is exactly why #15668 made them options rather than
+# through its `joinServerUrlFile` / `tokenFile` OPTIONS pointed at store paths
+# built below — which is exactly why #15668 made them options rather than
 # hardcoded paths.
 #
 # The consequence is honest and worth naming: this test proves the JOIN
@@ -63,6 +63,52 @@
 # test asserts and fails; there is no skip path.
 
 { pkgs }:
+
+let
+  # WHY `builtins.toFile` AND NOT THE COMMITTED FIXTURES
+  # ---------------------------------------------------
+  # These two paths have to satisfy two requirements that pull in opposite
+  # directions, and only `builtins.toFile` satisfies both:
+  #
+  #   (1) EXIST AT EVALUATION TIME, because `injected-server-join.nix` decides
+  #       join-vs-found with `builtins.pathExists` while the module system is
+  #       still evaluating.
+  #   (2) EXIST INSIDE THE GUEST AT RUNTIME, because k3s opens the token file
+  #       when the unit starts.
+  #
+  # Neither obvious spelling works:
+  #   `"${./fixtures/…}"` — string-interpolating a source path COPIES it to a
+  #       fresh store path during evaluation. Under the pure evaluation that
+  #       `nix flake check` performs that copy is not materialised, and the
+  #       build dies with `path '/nix/store/…-cluster-join-server-url' is not
+  #       valid`. Measured on CI, run 33013286101.
+  #   `toString ./fixtures/…` — the spelling `k3s-server-join-eval-test.nix`
+  #       uses, and correct THERE because that check never boots anything. It
+  #       yields a path with NO string context, so nothing depends on it, so
+  #       the file is never copied into the VM closure. Evaluation would pass
+  #       and k3s would then fail to read its token inside the guest.
+  #
+  # `builtins.toFile` writes the content to the store DURING evaluation (so
+  # `pathExists` is true immediately, in pure eval) and returns a path WITH
+  # context (so it becomes a dependency and lands in the guest).
+  #
+  # It also means this test ships no committed pseudo-credential: the token is
+  # a literal in this file, visible at the point of use.
+
+  # `https://control-plane:6443` — a NAME, matching the committed fixture and
+  # the shipped `--tls-san=control-plane` that makes the API cert valid for it.
+  joinServerUrlFile = builtins.toFile "zeta-vm-cluster-join-server-url"
+    "https://control-plane:6443\n";
+
+  # A fixed, public, test-only k3s `--token`. Its whole blast radius is one
+  # hermetic QEMU pair inside the Nix build sandbox, which has no network and
+  # is destroyed when the derivation finishes. A real credential could not go
+  # here anyway: a NixOS module evaluates into the world-readable store, which
+  # is exactly why `injected-server-join.nix` reads only the PRESENCE of this
+  # file and leaves the content check to `zeta-install.sh` on the machine.
+  sharedClusterTokenFile = builtins.toFile "zeta-vm-shared-cluster-token"
+    "zeta-vm-test-shared-cluster-token-not-a-credential\n";
+in
 
 pkgs.testers.nixosTest {
   name = "k3s-server-join";
@@ -86,7 +132,7 @@ pkgs.testers.nixosTest {
       # forever to read a file it was itself responsible for creating. This
       # points at a store path that already exists and is non-empty, which k3s
       # reads once at startup.
-      services.k3s.tokenFile = "${./fixtures/server-join/vm-shared-cluster-token}";
+      services.k3s.tokenFile = "${sharedClusterTokenFile}";
 
       virtualisation.memorySize = 2560; # MB
       virtualisation.cores = 2;
@@ -117,10 +163,8 @@ pkgs.testers.nixosTest {
       # `lib.types.str` and a Nix path does not coerce. Interpolation also
       # copies each fixture into the store at evaluation time, which is what
       # makes `builtins.pathExists` inside the module return true for them.
-      zeta.k3sServerJoin.joinServerUrlFile =
-        "${./fixtures/server-join/cluster-join-server-url}";
-      zeta.k3sServerJoin.tokenFile =
-        "${./fixtures/server-join/vm-shared-cluster-token}";
+      zeta.k3sServerJoin.joinServerUrlFile = "${joinServerUrlFile}";
+      zeta.k3sServerJoin.tokenFile = "${sharedClusterTokenFile}";
 
       # The fixture endpoint is `https://control-plane:6443` — a NAME, because
       # that is what `--tls-san=control-plane` in k3s-server.nix makes the API
@@ -287,8 +331,42 @@ pkgs.testers.nixosTest {
     # token the joining unit was pointed at must be READABLE by the k3s unit at
     # the moment it starts. A store path is not automatically the same thing as
     # a readable one under a hardened unit.
-    joiner.succeed(
-        "test -r ${./fixtures/server-join/vm-shared-cluster-token}"
+    # `test -r <store path>` would be very close to vacuous — a store path is
+    # readable essentially by construction, so it could not fail for the reason
+    # we care about. Ask the RUNNING PROCESS instead: the eval-time overrides in
+    # injected-server-join.nix must have reached the actual k3s command line,
+    # and k3s must have got far enough to authenticate with the token behind
+    # `--token-file`. A successful join already implies the token was read; this
+    # pins WHICH flags produced it, so a join that happened for some other
+    # reason cannot be mistaken for this module working.
+    joiner_cmdline = joiner.succeed(
+        "tr '\\0' ' ' < /proc/$(systemctl show -p MainPID --value k3s.service)/cmdline"
+    )
+    assert "--server" in joiner_cmdline, (
+        f"k3s on the joiner has no --server flag: {joiner_cmdline!r}. "
+        "injected-server-join.nix did not take effect, so whatever made this "
+        "node appear in the cluster was not the module under test."
+    )
+    assert "--token-file" in joiner_cmdline, (
+        f"k3s on the joiner has no --token-file flag: {joiner_cmdline!r}"
+    )
+    assert "--cluster-init" not in joiner_cmdline, (
+        f"the joiner still carries --cluster-init: {joiner_cmdline!r}. "
+        "clusterInit was not overridden to false, which is the founding "
+        "behaviour this module exists to replace."
+    )
+
+    # The founder must still be the founder — the mkOverride only fires on a
+    # node with injected files, and asserting the negative keeps this test
+    # honest about which node got which branch.
+    founder_cmdline = founder.succeed(
+        "tr '\\0' ' ' < /proc/$(systemctl show -p MainPID --value k3s.service)/cmdline"
+    )
+    assert "--cluster-init" in founder_cmdline, (
+        f"the founder lost --cluster-init: {founder_cmdline!r}"
+    )
+    assert "--server" not in founder_cmdline, (
+        f"the founder acquired a --server flag: {founder_cmdline!r}"
     )
 
     # Post-mortem state into the build log.

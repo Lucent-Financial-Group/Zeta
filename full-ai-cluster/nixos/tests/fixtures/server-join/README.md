@@ -7,24 +7,20 @@ a module with hardcoded absolute paths could only ever be inspected.
 
 | file | read by | what it is |
 |---|---|---|
-| `cluster-join-server-url` | `k3s-server-join-eval-test.nix`, `k3s-server-join.nix` | the join endpoint, `https://control-plane:6443` — a **name**, because `--tls-san=control-plane` in `k3s-server.nix` is what the API certificate is valid for |
+| `cluster-join-server-url` | `k3s-server-join-eval-test.nix` | the join endpoint, `https://control-plane:6443` — a **name**, because `--tls-san=control-plane` in `k3s-server.nix` is what the API certificate is valid for |
 | `token-present-marker` | `k3s-server-join-eval-test.nix` | an empty placeholder. The module reads only `builtins.pathExists` on its token path, never the contents, so the eval test needs no credential at all |
-| `vm-shared-cluster-token` | `k3s-server-join.nix` (VM) | a **fixed, public, test-only** k3s `--token` value |
 
-## `vm-shared-cluster-token` is not a secret, and could not usefully be one
+## Why the VM test does not use a fixture here
 
-It is committed in the clear on purpose. The two-node VM test needs the founder
-and the joiner to agree on a cluster secret that is known at **evaluation**
-time, which is k3s's documented HA setup (`--token` shared across servers). Its
-entire blast radius is one hermetic QEMU pair inside the Nix build sandbox,
-which has no network and is destroyed when the derivation finishes.
+`k3s-server-join.nix` boots two guests, so its inputs must exist at
+**evaluation** time (the module decides join-vs-found with
+`builtins.pathExists`) *and* inside the **guest** at runtime (k3s opens the
+token file). A committed fixture satisfies neither cleanly:
+`"${./fixture}"` copies to a store path that pure `nix flake check` evaluation
+will not materialise, and `toString ./fixture` — correct for the eval test,
+which boots nothing — yields a path with no string context, so the file never
+enters the VM closure.
 
-Storing a real credential here would be strictly worse and is structurally
-impossible to need: a NixOS module evaluates into the **world-readable Nix
-store**, which is exactly why `injected-server-join.nix` reads only the
-*presence* of its token file and leaves the `K10<64 hex>::…` content check to
-`zeta-install.sh`, on the machine, where the bytes already are.
-
-The string is self-describing (`…-not-a-credential`) so that a secret scanner
-hit here is answerable by reading the value rather than by consulting a
-suppression list.
+That test therefore builds both inputs with `builtins.toFile`, which writes
+during evaluation *and* carries context. A consequence worth having: no
+pseudo-credential is committed anywhere in this directory.
