@@ -38,6 +38,28 @@ jobs:
         agent: [alexa, otto, soraya]
 
     steps:
+      # ABSENCE IS A NAMED REFUSAL, NOT A SUBSTITUTION.
+      #
+      # The checkout below carries the BRANCH-PUSH role credential, and that role has no
+      # substitute. The `|| secrets.GITHUB_TOKEN` rung this step replaces selected on the
+      # secret being EMPTY and handed the lane a credential with DIFFERENT authority: the
+      # push still succeeded, so the lane looked alive, and the failure surfaced later
+      # under an error naming the wrong subject. It also trips GitHub's recursion guard —
+      # actions taken with GITHUB_TOKEN do not trigger other workflows — so the degraded
+      # lane silently stopped producing the events downstream jobs wait on.
+      #
+      # COST: one `test -z` on a bare runner, no checkout, no network. It buys one legible
+      # line naming the exact secret and the exact scope instead of a downstream misread.
+      - name: Assert the branch-push credential is present
+        env:
+          BRANCH_PUSH_TOKEN: ${{ secrets.ZETA_TELEMETRY_FLUSH_TOKEN }}
+        run: |
+          if [ -z "${BRANCH_PUSH_TOKEN:-}" ]; then
+            echo "::error title=Missing ZETA_TELEMETRY_FLUSH_TOKEN::This lane holds the BRANCH-PUSH role and its credential is absent. There is no substitute: GITHUB_TOKEN carries different authority and its pushes do not trigger workflows. FIX: set repository secret ZETA_TELEMETRY_FLUSH_TOKEN on Lucent-Financial-Group/Zeta to a fine-grained PAT with Contents: read and write, Pull requests: read and write, Metadata: read. Role table: docs/security/2026-08-17-society-heartbeat-token-boundary-and-gate-start-failure.md"
+            exit 1
+          fi
+          echo "branch-push credential present (role=branch-push secret=ZETA_TELEMETRY_FLUSH_TOKEN)"
+
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -69,11 +91,23 @@ jobs:
           # wrong, so a mis-scoped or revoked PAT costs a degraded lane, never a dead
           # one. `.claude/rules/tick-must-never-stop.md`.
           #
-          # The `||` ladder covers ABSENCE (secret unset -> empty string -> default
-          # GITHUB_TOKEN). It cannot cover UNAUTHORIZED — a present-but-powerless token
-          # is exactly what #10850 shipped — which is the preflight's whole job.
+          # ROLE: BRANCH-PUSH. One role, one secret. docs/security/2026-08-17-society-heartbeat-token-boundary-and-gate-start-failure.md
+          # assigns ZETA_TELEMETRY_FLUSH_TOKEN this role and only this role; the
+          # PR-create role is ZETA_PR_ARCHIVE_TOKEN and the dispatch role is
+          # ZETA_SOCIETY_DISPATCH_TOKEN. A `||` chain collapsed all three into one
+          # variable, which is why the rung below is gone.
+          #
+          # WHAT THE REMOVED `|| secrets.GITHUB_TOKEN` RUNG COST. It selected on the
+          # secret being EMPTY and silently substituted a credential with DIFFERENT
+          # authority, so the lane kept running and failed somewhere downstream under an
+          # error naming the wrong subject. Compounding it, GitHub's recursion guard means
+          # actions taken with GITHUB_TOKEN do not trigger other workflows — so a degraded
+          # lane ALSO stopped producing the events downstream jobs wait on, silently.
+          # ABSENCE is now the assert step above: loud, and it names the secret and scope.
+          # DENIAL remains the preflight's job below. Two distinct conditions, two
+          # distinct reports — that separation is the fix.
           persist-credentials: true
-          token: ${{ secrets.ZETA_TELEMETRY_FLUSH_TOKEN || secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.ZETA_TELEMETRY_FLUSH_TOKEN }}
 
       # THE FALSIFIER FOR THE CREDENTIAL, RUN IN PRODUCTION ON EVERY TICK.
       #
@@ -644,7 +678,53 @@ jobs:
 
       - name: Auto-merge clean PRs (agent-to-agent value transfer)
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # ── WHO ARMS THE MERGE DECIDES WHETHER IT IS EVER ARCHIVED ─────────
+          #
+          # This step hardcoded `secrets.GITHUB_TOKEN` while every other
+          # credentialed step in this file used the PAT fallback chain. That one
+          # inconsistency is the root cause of the PR-archive coverage collapse,
+          # and it is invisible because NOTHING FAILS:
+          #
+          #   arm with GITHUB_TOKEN -> auto-merge fires as `github-actions[bot]`
+          #   -> GitHub suppresses workflow triggers for GITHUB_TOKEN-driven
+          #      events (the recursion guard) -> no `pull_request: closed`
+          #   -> pr-archive-on-merge.yml NEVER RUNS -> the PR is never archived.
+          #
+          # No run is created, so no run is red. Measured 2026-08-21..25: of 765
+          # eligible unarchived PRs, 747 (97.6%) were bot-merged; of 539 archived
+          # in the same window, 530 (98.3%) were user-merged. Per-SHA: bot-merged
+          # -> 0 workflow runs; user-merged -> 1 run, success. Daily coverage held
+          # at 100.00% from 08-11 to 08-20 and collapsed on 08-21, exactly as the
+          # bot-merge share crossed over (9/40 -> 11/40 -> 29/40).
+          #
+          # THIS IS WHY GRANTING THE PAT MORE PERMISSIONS NEVER HELPED: the step
+          # never read the PAT. It is a workflow defect, NOT the credential
+          # denial tracked by 081M05G8D36087G0R0034D3QPA.
+          #
+          # AND SWAPPING THE TOKEN ALONE IS NOT SUFFICIENT. `gh pr merge --auto`
+          # is the GraphQL mutation `enablePullRequestAutoMerge`, and the scoped
+          # flush PAT has been measured being refused it on every call:
+          #   `GraphQL: Resource not accessible by personal access token
+          #    (enablePullRequestAutoMerge)`
+          # -- src/Core.TypeScript/agent-heartbeats/merge-heartbeats-to-main.ts
+          #    and docs/research/2026-08-13-graphql-is-the-scarce-budget-and-
+          #    automerge-is-graphql-only.md. A blind swap would therefore have
+          #    armed NOTHING and stalled the merge queue outright, which is worse
+          #    than the bug it was meant to repair.
+          #
+          # So: PREFER the PAT, and degrade to GITHUB_TOKEN on a refusal, ONCE
+          # per run, loudly, naming the exact missing scope. The day the PAT carries
+          # `Pull requests: read and write`, archive coverage repairs itself with no
+          # further edit here.
+          #
+          # ROLE: PR-CREATE — ZETA_PR_ARCHIVE_TOKEN, per the role table in
+          # docs/security/2026-08-17-society-heartbeat-token-boundary-and-gate-start-failure.md.
+          # The `||` chain that stood here named three secrets in one variable, so "which
+          # authority is this step running under" had no answer visible anywhere in the log.
+          # FALLBACK_GH_TOKEN stays, because the degradation below is DELIBERATE, EXPLICIT
+          # and LOGGED — that is the distinction being drawn, not a ban on ever degrading.
+          GH_TOKEN: ${{ secrets.ZETA_PR_ARCHIVE_TOKEN }}
+          FALLBACK_GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           AGENT: ${{ matrix.agent }}
         run: |
           # Only the first agent in the matrix (alexa) does merge duty to avoid races
@@ -720,6 +800,39 @@ jobs:
           # otherwise occupy a slot on every tick and re-create the starvation from the head
           # instead of the tail. So the cap counts SUCCESSES, not attempts: a failure costs an
           # API call and moves on. ATTEMPT_LIMIT bounds the blast radius when many are stuck.
+          # THE ARMING CREDENTIAL IS CHOSEN ONCE PER RUN, NOT PER PR. A refusal
+          # costs a GraphQL point, and GraphQL is the budget that actually binds
+          # this repo (measured 2026-08-14: 1147/5000 GraphQL points against
+          # 33/5000 REST requests). Re-probing on every candidate would spend
+          # three times that for no information the first probe did not give.
+          #
+          # `set +e` AROUND THE LOOP IS REQUIRED, not stylistic. No `shell:` is
+          # declared anywhere in this workflow, so GitHub runs each `run:` block
+          # under its default `bash -e`. The previous form was errexit-safe by
+          # accident — `if gh pr merge ...; then` puts the command in a condition,
+          # which errexit exempts. Capturing output into a variable does not get
+          # that exemption: `OUT=$(cmd)` with a failing `cmd` aborts the step
+          # before the `$?` check can run, which would turn one unarmable PR into
+          # a dead merge duty for the whole tick.
+          set +e
+          # THE SELECTION IS EXPLICIT NOW, AND IT NAMES THE SECRET. This used to compare
+          # GH_TOKEN against FALLBACK_GH_TOKEN, which worked only because a `||` chain had
+          # already collapsed the absent case onto GITHUB_TOKEN somewhere out of sight in the
+          # `env:` block. With one role and one secret the absent case is an EMPTY string, so
+          # the test is emptiness and the report says which secret is missing and what it needs.
+          #
+          # The DEGRADATION here is deliberate and is kept: arming is an optimisation, an
+          # unarmed PR is merged by the next duty cycle, and a credential fault must never
+          # stall the merge queue (.claude/rules/tick-must-never-stop.md). What was wrong was
+          # never the fallback — it was that the fallback happened SILENTLY, in an expression,
+          # with no line in the log saying a different authority had been substituted.
+          ARM_MODE=pat
+          if [ -z "${GH_TOKEN:-}" ]; then
+            ARM_MODE=workflow-token-only
+            echo "::warning title=Auto-merge arming has no PR-CREATE credential::ZETA_PR_ARCHIVE_TOKEN is absent, so PRs are armed by GITHUB_TOKEN and their merges do NOT trigger pr-archive-on-merge.yml — archive coverage then rests on the backfill sweep alone. FIX: set repository secret ZETA_PR_ARCHIVE_TOKEN on Lucent-Financial-Group/Zeta to a fine-grained PAT with 'Pull requests: read and write' + 'Metadata: read'. Role table: docs/security/2026-08-17-society-heartbeat-token-boundary-and-gate-start-failure.md"
+            export GH_TOKEN="$FALLBACK_GH_TOKEN"
+          fi
+
           ARMED=0
           ATTEMPTS=0
           CAP=3
@@ -728,14 +841,30 @@ jobs:
             [ "$ARMED" -ge "$CAP" ] && break
             [ "$ATTEMPTS" -ge "$ATTEMPT_LIMIT" ] && break
             ATTEMPTS=$((ATTEMPTS + 1))
-            if gh pr merge "$PR" --squash --auto --delete-branch 2>&1; then
+            MERGE_OUT=$(gh pr merge "$PR" --squash --auto --delete-branch 2>&1)
+            MERGE_RC=$?
+            # A PAT refused the mutation: degrade ONCE, name the exact scope, and
+            # keep arming. A credential fault must not stall the queue, and it
+            # must not be silent either — the silence is what this whole change
+            # set is repairing.
+            if [ "$MERGE_RC" -ne 0 ] && [ "$ARM_MODE" = "pat" ] \
+               && printf '%s' "$MERGE_OUT" | grep -q "not accessible by personal access token"; then
+              echo "::warning title=Auto-merge arming PAT lacks enablePullRequestAutoMerge::ZETA_PR_ARCHIVE_TOKEN (the PR-create role credential) was refused the GraphQL mutation, so arming falls back to GITHUB_TOKEN and pr-archive-on-merge.yml will not fire for these merges. FIX: grant that fine-grained PAT 'Pull requests: read and write' on Lucent-Financial-Group/Zeta. This is a DIFFERENT scope from the 'Contents: read and write' denial tracked by 081M05G8D36087G0R0034D3QPA."
+              ARM_MODE=degraded-to-workflow-token
+              export GH_TOKEN="$FALLBACK_GH_TOKEN"
+              MERGE_OUT=$(gh pr merge "$PR" --squash --auto --delete-branch 2>&1)
+              MERGE_RC=$?
+            fi
+            printf '%s\n' "$MERGE_OUT"
+            if [ "$MERGE_RC" -eq 0 ]; then
               ARMED=$((ARMED + 1))
-              echo "[merge] armed auto-merge on PR #$PR"
+              echo "[merge] armed auto-merge on PR #$PR (credential: $ARM_MODE)"
             else
               echo "[merge] PR #$PR could not be armed (non-fatal) — not consuming a slot"
             fi
           done
-          echo "[merge] armed $ARMED of $CAP (attempted $ATTEMPTS, $(echo "$CANDIDATES" | wc -l) unarmed in queue)"
+          set -e
+          echo "[merge] armed $ARMED of $CAP (attempted $ATTEMPTS, $(echo "$CANDIDATES" | wc -l) unarmed in queue, credential: $ARM_MODE)"
 
       - name: Archive PR review history (git-native backup)
         env:
@@ -822,9 +951,38 @@ jobs:
           # RAISE IT once this lane has produced a few clean ticks — at which point it will have
           # a track record for the first time, and the measurement above is already done.
           #
+          # RAISED 3 -> 15 on 2026-08-25, and the condition above is what authorises it: the lane
+          # has run cleanly for days and the fifth defect did not appear. It is raised because at
+          # 3 THE SWEEP CANNOT KEEP UP, and it has to — it is no longer the safety net, it is the
+          # ONLY path for a large population of merges.
+          #
+          # WHY. GitHub does not deliver a `pull_request` event for an action taken with
+          # GITHUB_TOKEN, so a PR merged by `github-actions[bot]` never triggers
+          # pr-archive-on-merge.yml — no run is created, nothing fails, nothing is red. Measured
+          # over 2026-08-21..25: of 765 eligible unarchived PRs, 747 (97.6%) were bot-merged;
+          # of 539 archived in the same window, 530 (98.3%) were user-merged. The bot-merge share
+          # of all merges crossed over on 08-20; coverage collapsed on 08-21.
+          #
+          # THE ARITHMETIC. Bot-merged PRs accrue at ~150/day. At --limit 3 over 96 ticks/day the
+          # ceiling is 288/day, and 41% of that budget was going to `automation/pr-archive-*` PRs
+          # that pr-archive-on-merge.yml's `if:` deliberately skips (524 of the 1,289 unarchived
+          # PRs in the sweep's reachable window, sitting at the HEAD of an oldest-first queue).
+          # Effective drain was therefore ~170/day against ~150/day of accrual — break-even, which
+          # is exactly the flat ~1,289 backlog observed. Both halves are fixed: `listMergedPRs` now
+          # applies the same eligibility predicate the workflow does, and the bound is 15.
+          #
           # The OTHER ceiling this must respect is `timeout-minutes: 10` on this job: blowing it
           # kills the whole tick, not just archive duty. Measured on the three most recent soraya
           # ticks: 136s / 293s / 188s of a 600s budget, with this step at 18s under --limit 3.
+          # That is ~6s/PR, so 15 costs ~90s: worst measured tick 293s + 72s = ~365s of 600s.
+          # 15 x 96 ticks = 1,440/day against ~150/day of accrual, so the backlog drains rather
+          # than holding station. If the job starts timing out, LOWER THIS FIRST — a tick killed
+          # by archive duty loses the whole heartbeat, which costs more than a slow drain.
+          #
+          # THE COVERAGE NUMBER IS NOW MEASURED, which is what makes a raise safe to make at all:
+          # src/Core.TypeScript/hygiene/audit-pr-archive-coverage.ts runs 4x/day in
+          # pr-manifest-integrity.yml and FAILS below its floors. If this bound is wrong in either
+          # direction, that audit says so instead of a human counting files by hand.
           #
           # NO PIPE on the command itself — the output is captured, then printed separately —
           # because piping is what hid the failure for months. The exit code is checked
@@ -834,7 +992,7 @@ jobs:
           echo "[archive] Checking for un-archived merged PRs..."
           set +e
           ARCHIVE_OUT=$(bun src/Core.TypeScript/forge-host/github/archive-pr-reviews.ts \
-            --owner Lucent-Financial-Group --repo Zeta --all-merged --limit 3 2>&1)
+            --owner Lucent-Financial-Group --repo Zeta --all-merged --limit 15 2>&1)
           ARCHIVE_RC=$?
           printf '%s\n' "$ARCHIVE_OUT" | tail -20
           if [ "$ARCHIVE_RC" -ne 0 ]; then
@@ -1437,11 +1595,20 @@ jobs:
           AGENT: ${{ matrix.agent }}
           # The Actions identity is forbidden from creating pull requests, so the PR is
           # opened by a fine-grained PAT (pull_requests: write + metadata: read). If the
-          # secret is absent this degrades to GITHUB_TOKEN, `gh pr create` fails, and the
-          # events wait safely on the staging branch — same posture as before, just red.
+          # secret is absent the step now REFUSES BY NAME in the preamble below, and the
+          # events wait safely on the staging branch — nothing is lost, and the log says
+          # which secret is missing instead of degrading to a different authority.
           #
-          # "ABSENT" IS NOT THE CONDITION THAT OCCURS (2026-08-17). `||` in this expression
-          # selects on the secret being EMPTY, never on it being DENIED, and the production
+          # ROLE: PR-CREATE — ZETA_PR_ARCHIVE_TOKEN, per the role table in
+          # docs/security/2026-08-17-society-heartbeat-token-boundary-and-gate-start-failure.md.
+          # The `||` chain that stood here named three secrets in one variable, so "which
+          # authority is this step running under" had no answer visible anywhere in the log.
+          # FALLBACK_GH_TOKEN stays, because the degradation below is DELIBERATE, EXPLICIT
+          # and LOGGED — that is the distinction being drawn, not a ban on ever degrading.
+          #
+          # "ABSENT" IS NOT THE CONDITION THAT OCCURS (2026-08-17). The `||` chain removed
+          # from this expression selected on the secret being EMPTY, never on it being
+          # DENIED, and the production
           # failure is denial: the PAT is set and unauthorized. On 2026-08-17 that put every
           # lane — otto, alexa AND soraya — into `compare failed: gh: Not Found (HTTP 404)`
           # at 13:46 and again at 14:10. GitHub answers 404, not 403, for a resource the
@@ -1458,7 +1625,7 @@ jobs:
           # denied PAT, which is why the log shows the snapshot branch pushing successfully
           # and the very next compare 404ing. The preamble below extends that same
           # discipline to the API credential.
-          GH_TOKEN: ${{ secrets.ZETA_TELEMETRY_FLUSH_TOKEN || secrets.ZETA_PR_ARCHIVE_TOKEN || secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.ZETA_PR_ARCHIVE_TOKEN }}
           FALLBACK_GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           # Probe → swap → RE-PROBE, mirroring the git preflight. The re-probe is the part
@@ -1504,10 +1671,60 @@ jobs:
           # worse failure than the vacuous probe it replaced: a check that cannot pass is as
           # useless as one that cannot fail, and it does damage on the way. Both directions
           # were therefore checked against a real credential before this shipped.
+          # ABSENT IS NOT DENIED, AND THE PROBE CANNOT TELL THEM APART. With an empty
+          # GH_TOKEN, `gh` fails before it reaches the network with "gh: To use GitHub CLI in a
+          # GitHub Actions workflow, set the GH_TOKEN environment variable" — no HTTP status at
+          # all — so the probe below would classify a MISSING SECRET as "inconclusive" and
+          # leave it alone. That is a true sentence about the wrong subject, which is the exact
+          # failure mode this whole change set exists to remove. So absence is tested first,
+          # named, and reported as itself.
+          if [ -z "${GH_TOKEN:-}" ]; then
+            echo "::error title=Missing ZETA_PR_ARCHIVE_TOKEN::$AGENT: this step holds the PR-CREATE role and its credential is absent. FIX: set repository secret ZETA_PR_ARCHIVE_TOKEN on Lucent-Financial-Group/Zeta to a fine-grained PAT with 'Pull requests: read and write' + 'Contents: read and write' + 'Metadata: read'. Role table: docs/security/2026-08-17-society-heartbeat-token-boundary-and-gate-start-failure.md"
+            exit 1
+          fi
+          # PROBE THE SCOPE THE STEP ACTUALLY USES, NOT A SCOPE IT HAPPENS TO HAVE.
+          #
+          # This read `repos/$GITHUB_REPOSITORY/commits` — a CONTENTS read — while the
+          # step's real work is `gh pr create`, which needs `pull_requests: write`.
+          # Those are different permissions, so a credential could sail through the
+          # probe and die on the work. It did, twice on 2026-08-25: the probe passed
+          # and `gh pr create` returned HTTP 403, and because the guard could not fail
+          # for the reason the step fails, three agents read the red as a broken flush
+          # and one of them (me) spent two rounds telling the maintainer his token was
+          # wrong. It was not; the step was calling PR-create with the branch-push
+          # credential.
+          #
+          # A write scope has no side-effect-free endpoint, so this probes it with a
+          # create that CANNOT succeed — `head` names a ref that does not exist — and
+          # reads the status code, which discriminates exactly the two cases:
+          #
+          #     403  the credential may NOT create pull requests here
+          #     422  the credential MAY; the request was merely invalid
+          #
+          # Verified against a known-good credential before shipping: returns 422 with
+          # `{"resource":"PullRequest","field":"head","code":"invalid"}` and creates
+          # nothing. The contents probe is kept as a second, separate question — the
+          # step reads the repo too — so a failure now says WHICH capability is absent.
           probe_api() { { gh api "repos/$GITHUB_REPOSITORY/commits?per_page=1" --jq '.[0].sha' >/dev/null; } 2>&1; }
+          probe_pr_create_scope() {
+            gh api -X POST "repos/$GITHUB_REPOSITORY/pulls" \
+              -f "title=zeta-scope-probe" \
+              -f "head=zeta-scope-probe-nonexistent-ref-$GITHUB_RUN_ID" \
+              -f "base=main" 2>&1
+          }
+          if PR_PROBE_OUT=$(probe_pr_create_scope); then
+            echo "::warning title=Heartbeat PR-scope probe unexpectedly succeeded::$AGENT: the probe create was supposed to fail on a nonexistent head. Check for a stray PR."
+          elif printf '%s' "$PR_PROBE_OUT" | grep -q 'HTTP 403'; then
+            echo "::error title=Heartbeat PR-CREATE credential lacks the scope::$AGENT: the PR-create credential is refused POST /repos/.../pulls with HTTP 403, so this flush WILL fail at 'gh pr create' no matter what the contents probe says. FIX: grant that fine-grained PAT 'Pull requests: read and write' on Lucent-Financial-Group/Zeta. This is a DIFFERENT scope from the 'Contents: read and write' denial tracked by 081M05G8D36087G0R0034D3QPA."
+          elif printf '%s' "$PR_PROBE_OUT" | grep -q 'HTTP 422'; then
+            echo "[flush] $AGENT: PR-create scope confirmed (422 on an invalid head = permitted)."
+          else
+            echo "$PR_PROBE_OUT"
+            echo "::warning title=Heartbeat PR-scope probe inconclusive::$AGENT: neither 403 nor 422. Leaving the credential alone — this is not evidence of denial."
+          fi
           if ! OUT=$(probe_api); then
             if printf '%s' "$OUT" | grep -qE 'HTTP (401|403|404)'; then
-              echo "::warning title=Heartbeat API credential denied::$AGENT: ZETA_TELEMETRY_FLUSH_TOKEN cannot read this repository over the API; falling back to GITHUB_TOKEN. FIX: grant that fine-grained PAT 'Contents: read and write' on Lucent-Financial-Group/Zeta (081M010H4KE)."
+              echo "::warning title=Heartbeat API credential denied::$AGENT: ZETA_PR_ARCHIVE_TOKEN cannot read this repository over the API; falling back to GITHUB_TOKEN. FIX: grant that fine-grained PAT 'Contents: read and write' on Lucent-Financial-Group/Zeta (081M010H4KE)."
               export GH_TOKEN="$FALLBACK_GH_TOKEN"
               if OUT2=$(probe_api); then
                 echo "[flush] $AGENT: fallback API credential verified; lane is DEGRADED but alive."
@@ -1524,19 +1741,198 @@ jobs:
           AHEAD=$(git rev-list --count "origin/main..origin/heartbeat/$AGENT")
           echo "[flush] $AGENT: $AHEAD heartbeat commits to flush"
 
-          # Freeze the exact checked input before the mutable lane can advance on its next tick.
-          # Snapshot creation belongs to this checkout's contents-write credential. The tool below
-          # deliberately has only PR + metadata authority and verifies this ref without moving it.
+          # ════════════════════════════════════════════════════════════════════════
+          # ONE FIXED FLUSH REF PER LANE — this block used to mint one per tick
+          # ════════════════════════════════════════════════════════════════════════
+          #
+          # It pushed `heartbeat/$AGENT-flush-$SOURCE_SHA`, a NEW ref on every flush. Measured
+          # on origin 2026-08-25: 1,610 such refs (alexa 564, otto 532, soraya 514) out of
+          # 1,631 `heartbeat/*` refs total.
+          #
+          # AND NOTHING COULD EVER HAVE CLEANED THEM UP. Ruleset "Heartbeat Branch Protection"
+          # (16934633) covers `refs/heads/heartbeat/*` with a `deletion` rule, `bypass_actors:
+          # []`, `current_user_can_bypass: "never"`. No agent, no admin and no workflow may
+          # delete one, and `delete_branch_on_merge` cannot fire on them either. Checked, not
+          # assumed: merged flush PRs #15267/#15255 still have their heads on the remote,
+          # while `automation/*` branches in the same repo ARE deleted on merge.
+          #
+          # So the leak was never the "superseded PR closed unmerged" case it was reported as
+          # — a MERGED flush leaked its ref just the same — and "delete the branch when the PR
+          # reaches a terminal state" is not an available fix here. Under the ruleset as
+          # written the only remedy is to stop minting names. Note this needs NO ruleset change
+          # and adds NO bypass actor: the protection stays exactly as strict as it was.
+          #
+          # THE REF IS NOW IMMUTABLE-WHILE-OPEN RATHER THAN IMMUTABLE-FOREVER, which is what
+          # the snapshot was really buying. The head must not move while its PR is under test,
+          # so this checks for an open PR FIRST and simply does not flush when one exists. That
+          # costs nothing: the tick job rebuilds `heartbeat/$AGENT` every 15 minutes carrying
+          # any prior unflushed delta over current main, so a skipped flush's payload is
+          # re-accumulated into the next one. This is the same active/buffer backpressure
+          # `flush-via-staging.ts` implements for the other lanes, and it is why the
+          # "superseded flush carries observations the newer one does not" hazard cannot arise
+          # here: there is never more than one open flush PR per lane, so nothing is ever
+          # superseded, and the lane — not the ref — is what holds unlanded work.
           SOURCE_SHA=$(git rev-parse "origin/heartbeat/$AGENT")
-          SNAPSHOT_REF="heartbeat/$AGENT-flush-$SOURCE_SHA"
-          EXISTING_SHA=$(git ls-remote --heads origin "refs/heads/$SNAPSHOT_REF" | awk '{print $1}')
-          if [ -z "$EXISTING_SHA" ]; then
-            git push origin "$SOURCE_SHA:refs/heads/$SNAPSHOT_REF"
-          elif [ "$EXISTING_SHA" != "$SOURCE_SHA" ]; then
-            echo "::error title=Heartbeat snapshot collision::$SNAPSHOT_REF points to $EXISTING_SHA, expected $SOURCE_SHA"
+          SNAPSHOT_REF="heartbeat/$AGENT-flush"
+
+          # A DENIED CREDENTIAL MUST NOT READ AS A CLEAR RUNWAY.
+          #
+          # This was `... 2>/dev/null || true`, which made a FAILED query indistinguishable
+          # from a successful one that found nothing. Both produced an empty
+          # `OPEN_FLUSH_PR`, and empty means "no PR is open, proceed" — so a 403 here does
+          # not merely blind the check, it INVERTS it: the lane concludes the runway is
+          # clear and force-pushes `$SNAPSHOT_REF` over the head of a PR that is still
+          # under test. That is the precise hazard backpressure exists to prevent, reached
+          # by the guard against it failing quietly.
+          #
+          # Not hypothetical. On 2026-08-25 this exact job ran with a token that could not
+          # perform PR operations (`gh pr create` → HTTP 403), and the only reason no ref
+          # was clobbered is that the failure happened to land on the create rather than on
+          # this list. The credential was equally denied for both.
+          #
+          # So: capture stderr, read the status DIRECTLY (never through a pipe — `$?` after
+          # a pipeline is the last command's), and treat a failed query as fatal. Refusing
+          # to flush costs one tick; the lane re-accumulates and the next flush carries it.
+          # Guessing costs another agent's in-flight work.
+          PR_LIST_ERR="$(mktemp)"
+          OPEN_FLUSH_PR="$(gh pr list --repo "$GITHUB_REPOSITORY" --state open \
+            --head "$SNAPSHOT_REF" --base main --json number --jq '.[0].number // empty' 2>"$PR_LIST_ERR")"
+          PR_LIST_RC=$?
+          if [ "$PR_LIST_RC" -ne 0 ]; then
+            echo "::error title=Heartbeat backpressure state unknown::$AGENT: could not list open PRs for $SNAPSHOT_REF (rc=$PR_LIST_RC). REFUSING to flush rather than assume the runway is clear — proceeding could force-push over an in-flight PR's head. No events are lost; heartbeat/$AGENT keeps them and the next flush carries this tick too."
+            sed 's/^/[flush] gh: /' "$PR_LIST_ERR" || true
+            rm -f "$PR_LIST_ERR"
             exit 1
+          fi
+          rm -f "$PR_LIST_ERR"
+
+          # BACKPRESSURE NEEDS AN ESCAPE, OR IT IS A DEADLOCK.
+          #
+          # Waiting for the open flush PR is correct only while that PR can still merge. A
+          # CONFLICTED one never can: `mergeStateStatus: DIRTY` means there is no computable
+          # merge ref, and nothing upstream ever rebases a flush snapshot. So the lane waits
+          # on an event that cannot occur, and the retirement pass that would clear it lives
+          # BELOW this early return and is never reached. Measured 2026-08-25: soraya blocked
+          # behind DIRTY #15319 since 07:50 and alexa behind #15326, both lanes dead with the
+          # tick still reporting healthy.
+          #
+          # Closing it loses nothing, for the reason stated above: the LANE holds unlanded
+          # work, not the ref. `heartbeat/$AGENT` still carries every unflushed commit, so the
+          # next flush re-cuts the snapshot from the current lane head over current main —
+          # which is also what resolves the conflict.
+          #
+          # Scoped deliberately to DIRTY. A gate-FAILING PR is not retired here: re-cutting on
+          # every tick would relaunch the same failing checks forever and turn a real, visible
+          # failure into an invisible retry loop. That case gets a loud warning below instead,
+          # because a stuck lane a human can see beats a stuck lane that hides itself.
+          if [ -n "$OPEN_FLUSH_PR" ]; then
+            BLOCKER_STATE=$(gh pr view "$OPEN_FLUSH_PR" --repo "$GITHUB_REPOSITORY" \
+              --json mergeStateStatus --jq '.mergeStateStatus' 2>/dev/null || echo UNKNOWN)
+            if [ "$BLOCKER_STATE" = "DIRTY" ]; then
+              # ONE RETRY, THEN BE LOUD — retiring a blocker assumes the re-cut FIXES it.
+              #
+              # The original escape (mine, earlier today) assumed a re-cut from the
+              # current lane head over current main resolves the conflict. Measured
+              # hours later: it does not always. #15362 was retired as DIRTY, the lane
+              # re-cut as #15366, and #15366 came back DIRTY too — so the escape would
+              # retire and re-cut forever, replacing a permanent wedge with a permanent
+              # churn. Quieter than the wedge, and therefore worse: nothing goes red.
+              #
+              # Stranger still, and the reason this backs off rather than trying harder:
+              # `git merge-tree` says that head merges into that exact base CLEANLY
+              # (rc=0, same base 7e1e1487f, same head 5a67ec385), while GitHub reports
+              # CONFLICTING on three consecutive reads. I could not reconcile them. An
+              # automation that does not understand why a thing is failing must not keep
+              # acting on it — so it acts ONCE and then hands over.
+              RETIRE_MARKER="Retired by the flush lane"
+              # COUNT ONLY THE LANE'S OWN RETIREMENTS, identified by the marker it writes.
+              # Two false positives were caught by running this query live before shipping:
+              #   * `--state closed` INCLUDES MERGED, so a HEALTHY lane that merged two
+              #     flushes in 2h looked like two retirements and the guard would have
+              #     refused to retire a genuinely-stuck blocker — reinstating the wedge.
+              #   * a HUMAN closing a flush PR by hand (I closed #15319 this afternoon)
+              #     also counted, so a manual intervention would silently disable the
+              #     automatic one.
+              # Matching the lane's own comment marker excludes both: it counts exactly the
+              # thing whose repetition means 're-cutting is not working'.
+              # `--jq` with an interpolated marker needs escaping through two quoting layers
+              # and got it wrong silently: the expression errored, `2>/dev/null` ate it, the
+              # result was EMPTY, and `${PRIOR_RETIRED:-0}` turned that into 0 — i.e. the
+              # guard would have permitted every retirement and been perfectly vacuous.
+              # `jq --arg` passes the marker as data, so there is nothing to escape.
+              # READ gh's STATUS, NOT THE PIPELINE'S. This block runs under `set -e` WITHOUT
+              # `pipefail`, so `$?` after `gh ... | jq ...` is JQ's status — `gh` could fail
+              # outright and the guard would still read success. That is the same defect this
+              # repo has been repairing all day, and I wrote it into the repair. So the fetch
+              # and the parse are separate statements with separately-checked outcomes.
+              #
+              # `|| PRIOR_GH_RC=$?` rather than a bare assignment because `set -e` would
+              # otherwise abort the whole step on a transient API blip, taking down a flush
+              # that had nothing wrong with it.
+              PRIOR_GH_RC=0
+              PRIOR_JSON=$(gh pr list --repo "$GITHUB_REPOSITORY" --state closed --limit 10 \
+                --head "$SNAPSHOT_REF" --base main --json number,closedAt,mergedAt,comments) || PRIOR_GH_RC=$?
+              if [ "$PRIOR_GH_RC" -ne 0 ] || [ -z "$PRIOR_JSON" ]; then
+                echo "::error title=Heartbeat retire-guard could not read history::$AGENT: the prior-retirement query failed (rc=$PRIOR_GH_RC). REFUSING to retire PR #$OPEN_FLUSH_PR — a guard that cannot read its own history must not authorise the action it guards."
+                PRIOR_RETIRED=1
+              else
+                PRIOR_RETIRED=$(printf '%s' "$PRIOR_JSON" | jq --arg m "$RETIRE_MARKER" '[.[] | select(.mergedAt == null) | select((now - (.closedAt|fromdateiso8601)) < 7200) | select([.comments[]?.body] | join(" ") | contains($m))] | length') || PRIOR_RETIRED=""
+                if [ -z "$PRIOR_RETIRED" ]; then
+                  echo "::error title=Heartbeat retire-guard could not parse history::$AGENT: the prior-retirement filter produced no value. REFUSING to retire PR #$OPEN_FLUSH_PR."
+                  PRIOR_RETIRED=1
+                fi
+              fi
+              if [ "${PRIOR_RETIRED:-0}" -ge 1 ]; then
+                echo "::error title=Heartbeat lane wedged — retire did not help::$AGENT: PR #$OPEN_FLUSH_PR is DIRTY and a previous flush PR on $SNAPSHOT_REF was already closed within the last 2h. Re-cutting is NOT resolving this, so the lane is NOT retiring it again — that would churn silently instead of failing visibly. Needs a look. No events are lost; heartbeat/$AGENT holds them and the flush is idempotent (G-Set union)."
+              else
+                echo "::warning title=Heartbeat flush blocker retired::$AGENT: PR #$OPEN_FLUSH_PR is CONFLICTED (DIRTY) and can never merge; closing it so the lane can re-cut ONCE. If the re-cut is DIRTY too, the next tick escalates instead of retrying. No events are lost — heartbeat/$AGENT still carries them."
+                gh pr close "$OPEN_FLUSH_PR" --repo "$GITHUB_REPOSITORY" \
+                  --comment "$RETIRE_MARKER: mergeStateStatus was DIRTY, so this snapshot could never merge. The lane (heartbeat/$AGENT) still holds every unflushed event and the flush is idempotent, so nothing is lost by re-cutting. If the re-cut comes back DIRTY as well, the lane will STOP retiring and escalate rather than loop." >/dev/null 2>&1 || true
+                OPEN_FLUSH_PR=""
+              fi
+            fi
+          fi
+
+          if [ -n "$OPEN_FLUSH_PR" ]; then
+            echo "::notice title=Heartbeat flush backpressured::$AGENT: PR #$OPEN_FLUSH_PR is still testing $SNAPSHOT_REF; leaving the head alone. The lane keeps accumulating and the next flush carries this tick too."
+            echo "[flush] $AGENT: backpressured behind PR #$OPEN_FLUSH_PR — nothing lost"
+            # A blocker that is not DIRTY is presumed to still be making progress, which is
+            # true for a PR under test and false for one whose checks have settled red. Age is
+            # the discriminator available here without re-deciding the merge: past the
+            # threshold, say so at warning level so a wedged lane is visible in the run summary
+            # rather than reported only as a routine notice nobody reads.
+            BLOCKER_AGE_MIN=$(( ( $(date -u +%s) - $(date -u -d "$(gh pr view "$OPEN_FLUSH_PR" \
+              --repo "$GITHUB_REPOSITORY" --json createdAt --jq .createdAt 2>/dev/null)" +%s 2>/dev/null || date -u +%s) ) / 60 ))
+            if [ "$BLOCKER_AGE_MIN" -ge 90 ]; then
+              echo "::warning title=Heartbeat lane wedged::$AGENT: PR #$OPEN_FLUSH_PR has blocked this lane for ${BLOCKER_AGE_MIN}m in state $BLOCKER_STATE. It is not DIRTY, so the lane will not retire it automatically — its checks need a look. Events are accumulating on heartbeat/$AGENT and are not lost."
+            fi
+            # Declare the no-op to the steps that follow. Backpressure is a HEALTHY outcome
+            # — the lane keeps the delta and the next flush carries it — but this branch
+            # returns before `merge-heartbeats-to-main.ts` runs, so `pr_number` is never
+            # written. Without this line the arming step's `steps.flush.outputs.skip` reads
+            # as empty, its `!= 'true'` guard passes, and it hard-fails on a blank PR number
+            # with "snapshot produced no PR number". That names the FLUSH step, so a healthy
+            # backpressured tick reports as a broken flush. Measured before the fix: 12
+            # consecutive runs, `failure` for every lane holding work and `skipped` for every
+            # lane without — the arming step had never once concluded `success`, and three
+            # separate agents read the red as an auto-merge token-scope fault. The auto-merge
+            # call was never reached on any of those runs.
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          EXISTING_SHA=$(git ls-remote --heads origin "refs/heads/$SNAPSHOT_REF" | awk '{print $1}')
+          if [ "$EXISTING_SHA" = "$SOURCE_SHA" ]; then
+            echo "[flush] $AGENT: $SNAPSHOT_REF already at $SOURCE_SHA"
+          elif [ -z "$EXISTING_SHA" ]; then
+            git push origin "$SOURCE_SHA:refs/heads/$SNAPSHOT_REF"
           else
-            echo "[flush] $AGENT: reusing immutable $SNAPSHOT_REF"
+            # No PR is open on it (checked above), so the previous flush is terminal and its
+            # payload is either on main or still carried by the lane. `--force-with-lease`
+            # against the sha we just observed, so a flush racing us loses instead of being
+            # silently overwritten.
+            git push --force-with-lease="refs/heads/$SNAPSHOT_REF:$EXISTING_SHA" \
+              origin "$SOURCE_SHA:refs/heads/$SNAPSHOT_REF"
           fi
           CONFIRMED_SHA=$(git ls-remote --heads origin "refs/heads/$SNAPSHOT_REF" | awk '{print $1}')
           if [ "$CONFIRMED_SHA" != "$SOURCE_SHA" ]; then
@@ -1544,8 +1940,69 @@ jobs:
             exit 1
           fi
 
+          # PRE-MERGE `main` SO GITHUB IS NEVER ASKED TO APPLY A MERGE DRIVER.
+          #
+          # GitHub does NOT apply `.gitattributes` merge drivers when it creates a PR's
+          # merge commit. Several files this lane touches carry `merge=union` precisely
+          # because both `main` and the lane APPEND to them — `data/ci-runs.jsonl`,
+          # `db/mutation-findings/*.jsonl`, `docs/github/prs/manifest.jsonl`,
+          # `data/rs-blocks.jsonl`. Locally `git` unions them and merges clean; on
+          # GitHub the same pair is a conflict.
+          #
+          # So whether a flush lands has been down to timing: if `main` happens not to
+          # have touched a co-modified append since the lane branched, it merges; if it
+          # has, the PR is born CONFLICTING and the lane wedges. Measured 2026-08-25:
+          # soraya's #15361 merged while alexa's #15366 — same files, twenty minutes
+          # apart — reported `mergeable: CONFLICTING`, and `gh pr merge` answered "the
+          # merge commit cannot be cleanly created" while `git merge-tree` on the exact
+          # same base and head returned rc=0 with zero conflicts.
+          #
+          # `.gitattributes` records this being rediscovered at least SEVEN times, each
+          # entry added after a lane wedged (see its comments dated 2026-08-17 and
+          # 2026-08-22). Adding another union line after the next wedge treats the
+          # symptom; the driver was never the missing part. The missing part is that
+          # the merge has to happen HERE, where the driver is honoured.
+          #
+          # After this, GitHub only ever fast-forwards, and the squash-merge onto `main`
+          # is a single commit exactly as `required_linear_history` demands.
+          #
+          # The immutable park above is untouched: `$SOURCE_SHA` was already pushed and
+          # VERIFIED before this runs, so the "no events lost" guarantee does not depend
+          # on the merge succeeding.
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git fetch origin main --quiet
+          PREMERGE_RC=0
+          git merge --no-edit origin/main >/tmp/premerge.log 2>&1 || PREMERGE_RC=$?
+          if [ "$PREMERGE_RC" -ne 0 ]; then
+            echo "::warning title=Heartbeat pre-merge hit a REAL conflict::$AGENT: merging origin/main into $SNAPSHOT_REF failed even with this repo's merge drivers applied, so this is a genuine content conflict rather than the GitHub driver gap. Leaving the snapshot at the parked SHA and letting the PR report it. No events lost."
+            sed 's/^/[flush] premerge: /' /tmp/premerge.log | head -20 || true
+            git merge --abort 2>/dev/null || true
+          else
+            MERGED_SHA=$(git rev-parse HEAD)
+            if [ "$MERGED_SHA" != "$SOURCE_SHA" ]; then
+              git push --force-with-lease="refs/heads/$SNAPSHOT_REF:$SOURCE_SHA" \
+                origin "HEAD:refs/heads/$SNAPSHOT_REF"
+              echo "[flush] $AGENT: pre-merged origin/main into $SNAPSHOT_REF ($SOURCE_SHA -> $MERGED_SHA); GitHub now only fast-forwards."
+              # THE SNAPSHOT REF IS NOW THE MERGED COMMIT, SO THAT IS THE SOURCE.
+              #
+              # `merge-heartbeats-to-main.ts` is handed `--source-sha "$SOURCE_SHA"` below and
+              # refuses when the ref does not point at it — "snapshot ref collision". The
+              # pre-merge moves the ref, so leaving SOURCE_SHA at the pre-merge value makes
+              # the verification fail BY CONSTRUCTION, and only on the ticks where the
+              # pre-merge actually did something. Measured: alexa failed rc=3 at 16:23 while
+              # soraya passed, because soraya's lane already contained main and its pre-merge
+              # was a no-op. The fix bit exactly when it was working.
+              #
+              # Safe to reassign here: the immutable park is upstream of this point —
+              # $SOURCE_SHA was pushed AND verified against the ref before the merge ran — so
+              # the "no events lost" guarantee does not depend on this variable afterwards.
+              SOURCE_SHA="$MERGED_SHA"
+            else
+              echo "[flush] $AGENT: $SNAPSHOT_REF already contains origin/main; no pre-merge needed."
+            fi
+          fi
 
           # SQUASH, NOT MERGE — main forbids merge commits.
           #
@@ -1610,6 +2067,12 @@ jobs:
           # 4 = "main already contains this branch" — an ordinary no-op, not a failure.
           if [ "$RC" -eq 4 ]; then
             echo "[flush] $AGENT: already on main — nothing to land (no-op)"
+            # Same declaration the backpressure branch makes, and for the same reason: this
+            # path returns before any PR exists, so the arming step must not run. Found by
+            # `audit-workflow-step-output-has-writer.ts`, not by hand — the backpressure fix
+            # alone left this second success-without-write path live, and it would have kept
+            # producing the identical misleading red on every "already on main" tick.
+            echo "skip=true" >> "$GITHUB_OUTPUT"
             exit 0
           fi
           if [ "$RC" -ne 0 ]; then
@@ -1701,29 +2164,87 @@ jobs:
         env:
           AGENT: ${{ matrix.agent }}
           PR: ${{ steps.flush.outputs.pr_number }}
-          # The workflow token has contents:write and is already proven by the
-          # earlier merge-duty step to arm automation-only PRs. The scoped PAT
-          # intentionally cannot perform enablePullRequestAutoMerge.
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # SIBLING OF THE MERGE-DUTY STEP, AND THE SAME DEFECT. The comment here
+          # used to read "the scoped PAT intentionally cannot perform
+          # enablePullRequestAutoMerge", which is a true MEASUREMENT dressed up as
+          # a DESIGN INTENT. Nobody chose it: the PAT is refused the mutation
+          # because it was never granted the scope, and writing that down as
+          # deliberate is how a credential gap became invisible.
+          #
+          # It matters here for the same reason it matters there: a heartbeat
+          # flush PR armed by GITHUB_TOKEN merges as `github-actions[bot]`, the
+          # `pull_request: closed` event is suppressed, and pr-archive-on-merge.yml
+          # never runs on it. Every telemetry-lane PR the society opens has been
+          # landing outside the archive for that reason.
+          #
+          # Same repair as the merge-duty step: prefer the PAT, degrade ONCE on a
+          # refusal with the missing scope named, never stall the flush over a
+          # credential.
+          #
+          # ROLE: PR-CREATE — ZETA_PR_ARCHIVE_TOKEN, per the role table in
+          # docs/security/2026-08-17-society-heartbeat-token-boundary-and-gate-start-failure.md.
+          # The `||` chain that stood here named three secrets in one variable, so "which
+          # authority is this step running under" had no answer visible anywhere in the log.
+          # FALLBACK_GH_TOKEN stays, because the degradation below is DELIBERATE, EXPLICIT
+          # and LOGGED — that is the distinction being drawn, not a ban on ever degrading.
+          GH_TOKEN: ${{ secrets.ZETA_PR_ARCHIVE_TOKEN }}
+          FALLBACK_GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           if [ -z "$PR" ]; then
             echo "::error title=Heartbeat flush PR missing::$AGENT snapshot produced no PR number"
             exit 1
           fi
-          gh pr merge "$PR" --repo "$GITHUB_REPOSITORY" --squash --auto --delete-branch
+          # `set +e`: the default shell is `bash -e` (no `shell:` is declared in
+          # this workflow), and `OUT=$(cmd)` is NOT errexit-exempt the way the
+          # bare `gh pr merge` this replaced was. Without it the step dies on the
+          # PAT refusal before the fallback can run. The explicit `exit "$ARM_RC"`
+          # below restores the original fail-closed behaviour.
+          # Absence named explicitly, for the same reason as the merge-duty step: the `||`
+          # chain used to fold "secret unset" onto GITHUB_TOKEN inside the `env:` expression,
+          # where no log line could ever mention it. The degradation itself is deliberate and
+          # kept — an unarmed flush PR is a queue delay, not lost telemetry.
+          if [ -z "${GH_TOKEN:-}" ]; then
+            echo "::warning title=Heartbeat arming has no PR-CREATE credential::$AGENT: ZETA_PR_ARCHIVE_TOKEN is absent, so PR #$PR is armed by GITHUB_TOKEN and its merge will not trigger pr-archive-on-merge.yml. FIX: set repository secret ZETA_PR_ARCHIVE_TOKEN on Lucent-Financial-Group/Zeta to a fine-grained PAT with 'Pull requests: read and write'."
+            export GH_TOKEN="$FALLBACK_GH_TOKEN"
+          fi
+          set +e
+          ARM_OUT=$(gh pr merge "$PR" --repo "$GITHUB_REPOSITORY" --squash --auto --delete-branch 2>&1)
+          ARM_RC=$?
+          if [ "$ARM_RC" -ne 0 ] && [ "$GH_TOKEN" != "$FALLBACK_GH_TOKEN" ] \
+             && printf '%s' "$ARM_OUT" | grep -q "not accessible by personal access token"; then
+            echo "::warning title=Heartbeat arming PAT lacks enablePullRequestAutoMerge::$AGENT: ZETA_PR_ARCHIVE_TOKEN (the PR-create role credential) was refused the GraphQL mutation, so this PR is armed by GITHUB_TOKEN and its merge will not trigger pr-archive-on-merge.yml. FIX: grant that fine-grained PAT 'Pull requests: read and write' on Lucent-Financial-Group/Zeta. Different scope from the 'Contents: read and write' denial tracked by 081M05G8D36087G0R0034D3QPA."
+            export GH_TOKEN="$FALLBACK_GH_TOKEN"
+            ARM_OUT=$(gh pr merge "$PR" --repo "$GITHUB_REPOSITORY" --squash --auto --delete-branch 2>&1)
+            ARM_RC=$?
+          fi
+          set -e
+          printf '%s\n' "$ARM_OUT"
+          if [ "$ARM_RC" -ne 0 ]; then
+            echo "::error title=Heartbeat flush PR could not be armed::$AGENT: PR #$PR"
+            exit "$ARM_RC"
+          fi
           echo "[flush] $AGENT: armed auto-merge on PR #$PR"
 
       - name: Fail if a heartbeat PR is old and gate never started
         if: always() && matrix.agent == 'alexa'
         env:
-          # Same denied-vs-absent defect as the flush step above, and the same repair. This
-          # one matters differently: the check's whole job is to READ a PR's check rollup, so
-          # a denied credential does not merely degrade it — it makes the instrument report
-          # on nothing while still going red, which is how a credential fault gets misread as
-          # a gate fault. The rollup tool distinguishes "unavailable" (rc=2) from "absent",
-          # but it cannot distinguish either from "I was handed a token that sees no repo."
-          GH_TOKEN: ${{ secrets.ZETA_TELEMETRY_FLUSH_TOKEN || secrets.ZETA_PR_ARCHIVE_TOKEN || secrets.GITHUB_TOKEN }}
-          FALLBACK_GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # ROLE: READ-ONLY — so this step gets the ACTIONS IDENTITY and no PAT at all.
+          #
+          # This step's whole job is to READ a heartbeat PR's check rollup. It pushes
+          # nothing, creates nothing and dispatches nothing, so under least privilege it has
+          # no business holding a write-scoped PAT — and holding one is what made it
+          # dangerous: a DENIED PAT makes the instrument report on nothing while still going
+          # red, which is exactly how a credential fault gets misread as a gate fault. That
+          # misreading happened again on 2026-08-25 (three agents, one heartbeat failure,
+          # all three blaming auto-merge token scope), which is what prompted this change.
+          #
+          # FALLBACK_GH_TOKEN IS GONE FROM THIS STEP, deliberately. With GH_TOKEN already the
+          # Actions token, a "fall back to the Actions token" branch is a swap of a value for
+          # itself: a repair that cannot repair, sitting under a warning that reads as if it
+          # could. That is the vacuity class, so the probe below now REPORTS denial instead
+          # of pretending to fix it. The rollup tool still distinguishes "unavailable" (rc=2)
+          # from "absent"; the probe is what stops a credential answer being read as either.
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           # Authorization answers only — see the flush step for why a bare 404 is not
           # sufficient evidence of denial during a GitHub degradation.
@@ -1756,10 +2277,7 @@ jobs:
           probe_api() { { gh api "repos/$GITHUB_REPOSITORY/commits?per_page=1" --jq '.[0].sha' >/dev/null; } 2>&1; }
           if ! OUT=$(probe_api); then
             if printf '%s' "$OUT" | grep -qE 'HTTP (401|403|404)'; then
-              echo "::warning title=Heartbeat gate-check credential denied::ZETA_TELEMETRY_FLUSH_TOKEN cannot read this repository over the API; falling back to GITHUB_TOKEN before judging gate state."
-              export GH_TOKEN="$FALLBACK_GH_TOKEN"
-              probe_api >/dev/null \
-                || echo "::error title=Gate check has no working credential::BOTH credentials were refused; the verdict below is about the credential, not about the gate."
+              echo "::error title=Gate check has no working credential::the Actions token was refused a Contents-scope read of this repository, so the verdict below is about the CREDENTIAL, not about the gate. Do not read it as gate absence."
             else
               echo "$OUT"
               echo "::warning title=Gate-check API probe inconclusive::the probe failed without an authorization answer; leaving the credential alone."

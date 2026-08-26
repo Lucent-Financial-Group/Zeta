@@ -862,14 +862,65 @@ jobs:
         # rate-limited schema downloads count as ERRORS, not missing schemas.
         # -strict: reject unknown fields on the manifests we DO have schemas for.
         # find-pipe so it recurses explicitly (portable across kubeconform versions).
+        #
+        # -kubernetes-version 1.33.0 ADDED 2026-08-25. Without it kubeconform checks
+        # against the schema registry's `master` set -- i.e. against whatever
+        # Kubernetes released most recently, which is NOT the version any of our
+        # clusters run and which DRIFTS UNDER US with no commit here. The pin's
+        # provenance is this repo's own already-declared target: the `kube-version`
+        # default in infra/k8s/tests/validate-applications.ts, which the helm-validate
+        # lane has been rendering against for the other cluster tree. Two lanes
+        # validating the same kinds against two different Kubernetes versions is the
+        # drift this closes. MEASURED on the agentic-org tree before landing: 26
+        # resources in 12 files, Valid 26 / Invalid 0 both with and without the flag,
+        # so the pin changes no verdict today -- it fixes WHICH QUESTION is being asked.
         run: |
           crd_kinds="Application,Blueprint,CiliumL2AnnouncementPolicy,CiliumLoadBalancerIPPool,ClusterIssuer,ConstraintTemplate,Deployable,Gateway,HTTPRoute,Hat,HatConflict,HatCooldown,HatMaxBindings,HatMaxNew,HatNoCycle,HatPolicy,HatQuorum,HatWarmup,HelmChart,Policy"
           kc() {
             find full-ai-cluster/k8s infra/k8s agentic-organization/deploy -type f \( -name '*.yaml' -o -name '*.yml' \) -print0 \
-              | xargs -0 kubeconform -strict -ignore-missing-schemas -summary -schema-location default -skip "$crd_kinds"
+              | xargs -0 kubeconform -strict -ignore-missing-schemas -summary -schema-location default -kubernetes-version 1.33.0 -skip "$crd_kinds"
           }
           kc || { echo "[yaml/k8s] retry in 30s (schema-registry rate limit?)"; sleep 30; kc; } \
              || { echo "[yaml/k8s] retry in 90s"; sleep 90; kc; }
+
+      - name: Cross-manifest consistency (agentic-org apply set)
+        # ADDED 2026-08-25. The two steps above are the only checks this tree has,
+        # and NEITHER CAN SEE ACROSS DOCUMENTS: yamllint reads one file's syntax,
+        # kubeconform reads one resource against its schema. Every defect this step
+        # exists for is schema-VALID YAML that a cluster accepts at apply time and
+        # that fails later with a symptom that does not name its cause -- a Service
+        # whose named targetPort no container declares (endpoints with no port), an
+        # env var naming a Service port nothing exposes (telemetry into a black
+        # hole), a subPath key absent from its ConfigMap (a silently empty mount).
+        #
+        # THIS IS THE TREE A USB-BOOTED NODE ACTUALLY RUNS. It is raw YAML applied
+        # with one `kubectl apply -f`, not a chart and not an ArgoCD Application, so
+        # none of the helm-validate machinery reaches it.
+        #
+        # MEASURED on first contact at 60e2024e9: 6 findings, all real. The headline
+        # one is that `31-work-provider-secret.example.yaml` sat INSIDE the apply
+        # directory -- kubectl selects by extension, never by filename, so the
+        # documented bring-up applied the template, installing WORK_PROVIDER=github
+        # with the literal placeholder token and destroying the internal-only safe
+        # default the worker manifest promises. All 6 are fixed in the landing PR, so
+        # this step lands GREEN and is a ratchet against regression, not a debt.
+        #
+        # Offline, no network, ~0.15 s. No pipe: a pipeline would report the exit
+        # status of its last stage and discard the tool's.
+        run: bun src/Core.TypeScript/cluster/audit-agentic-org-manifests.ts
+
+      - name: Cross-manifest consistency — falsifiers (proves it goes red)
+        # The step above is only worth its slot if it can fail. 34 cases: each copies
+        # the real tree, breaks exactly one thing, and asserts exit 1 AND the specific
+        # check that fired -- plus an unmutated control asserting exit 0, and three
+        # vacuity guards asserting that an empty directory, a directory that parses to
+        # zero documents, and a nonexistent directory all FAIL rather than reporting a
+        # serene "0 findings".
+        #
+        # VERIFIED 2026-08-25 by stubbing the tool's non-zero exit: 22 of the 34 went
+        # red immediately, and the 12 that stayed green are exactly the controls and
+        # the pure-unit cases, which do not read the exit code. ~2.8 s.
+        run: bun test src/Core.TypeScript/cluster/audit-agentic-org-manifests.test.ts
 
   lint-shell:
     # Shellcheck on every bash script under tools/setup/ + tools/.
@@ -1762,6 +1813,31 @@ jobs:
       - name: Run lint-drift-publication-lands (stale-behind-green guard)
         run: bun src/Core.TypeScript/hygiene/lint-drift-publication-lands.ts
 
+      # A workflow file GitHub will never read is not a check -- and it is worse than a
+      # missing one, because a missing check is visibly missing. Live instance 2026-08-25:
+      # agentic-organization/.github/workflows/ci.yml ran a 1,595-test suite and had never
+      # executed once, because Actions reads only the ROOT .github/workflows/. The two
+      # scaffold templates under src/Core.TypeScript/scaffold are exempt and SAID SO on
+      # every run -- the exemption is derived from create-repo.ts sitting beside them, so
+      # deleting that tool expires it rather than leaving an allowlist behind.
+      - name: Run lint-no-nested-workflow-dirs (a workflow that never runs is not a check)
+        run: bun src/Core.TypeScript/hygiene/lint-no-nested-workflow-dirs.ts
+
+      # An ubuntu runner always has 16 GB, so an UNDECLARED host tier is not adaptation --
+      # it is the constant `full`, i.e. 388 apt packages / 713.0 MiB on every run. Measured
+      # 2026-08-25: ci-cache-paths-lint failed 5 of its last 20 runs, all five inside the
+      # install step (exit 124, stalled on pandoc 26.9 MB and r-base-core 27.1 MB), while
+      # the check NAMED "audit actions/cache paths vs git ls-files" never reached its audit.
+      # This refuses SILENCE, never a particular tier: declaring `full` is a fine answer.
+      - name: Run audit-install-tier-declared (undeclared apt payload guard)
+        run: bun src/Core.TypeScript/hygiene/audit-install-tier-declared.ts
+
+      - name: Workflow-shape guard falsifiers (a check that cannot fail is not a check)
+        run: |
+          bun test \
+            src/Core.TypeScript/hygiene/lint-no-nested-workflow-dirs.test.ts \
+            src/Core.TypeScript/hygiene/audit-install-tier-declared.test.ts
+
       # A privilege elevator resolved by NAME is substitutable by any writable directory
       # earlier on PATH, and planting one leaves NO GIT DIFF -- so review, AgencySignature
       # and byte-lock, all of which watch the repo, cannot see it. That was live on main as
@@ -1809,6 +1885,17 @@ jobs:
       # green-lit the very files they were written for. Pinned so they cannot come back.
       - name: Tsirelson-caveat guard unit tests (a check that cannot fail is not a check)
         run: bun test src/Core.TypeScript/hygiene/lint-tsirelson-constant-caveat.test.ts
+
+      # NOTE (2026-08-25): a `lint-no-direct-push-to-main` (PM001) check was wired in here
+      # and has been withdrawn. Not because the defect it found was unreal — three lanes on
+      # this branch are fixed BECAUSE of it — but because a check named "no direct push to
+      # main" states a doctrine this repo has since decided against: #15313 designs the
+      # heartbeat lane to push to `main` DIRECTLY, with a content-bound attestation and a
+      # post-hoc audit instead of a gate. The surviving rule is "no UNATTESTED direct push",
+      # which is `audit-heartbeat-lane-attestations.ts` in the `cross-verify` floor, not a
+      # blanket ban. Its one mechanical finding that neither AH001 nor AH002 could see —
+      # a skip token BUILT by `echo` into `git commit --file=-` — was folded into AH002
+      # itself rather than shipped as a third overlapping check.
 
   lint-no-empty-dirs:
     # Fail if a committed directory has no files — almost always a
@@ -2425,6 +2512,159 @@ jobs:
       - name: Proof-lineage binary exception (no-binary-in-proof-lineage.md)
         run: bun src/Core.TypeScript/hygiene/audit-proof-lineage-binaries.ts
 
+      # THE VACUITY CLASS, INVERTED — a step that can never SUCCEED.
+      #
+      # `${{ steps.X.outputs.Y }}` with no writer interpolates to the empty string silently.
+      # A step guarding on that value fails every run forever, and its error names the
+      # PRODUCER, so the fault reads as a defect in that step. Live instance the day this
+      # landed: `agent-heartbeat.yml`'s flush returned success on two paths without declaring
+      # `skip`, so every backpressured tick — a HEALTHY outcome — reported as a broken flush.
+      # Three agents diagnosed it as an auto-merge token-scope fault; that call was never
+      # reached. The second of the two paths was found by this check, not by hand.
+      - name: Step outputs have writers (a step that cannot succeed)
+        run: bun src/Core.TypeScript/hygiene/audit-workflow-step-output-has-writer.ts
+
+      # A REAL SHA THAT NOBODY CHOSE.
+      #
+      # Every third-party action is pinned to a SHA, which reads as supply-chain discipline
+      # until you ask who checked the SHA. A 40-hex string is indistinguishable from a
+      # fabricated one by shape, and two sites can pin one action at two SHAs indefinitely
+      # while every review of either looks clean. Both happened here on 2026-08-25: an agent
+      # nearly shipped an invented SHA for an action this repo does not use, and
+      # `ruleset-apply.yml` landed `actions/upload-artifact` at a SHA a YEAR older than the
+      # ten other sites. The roster makes the pin a value someone committed, not remembered.
+      - name: Third-party actions match the SHA roster (AH007)
+        run: bun src/Core.TypeScript/hygiene/audit-action-sha-roster.ts
+
+      # A TASK ID THAT IS WELL-FORMED AND IDENTIFIES NOTHING.
+      #
+      # The AgencySignature gate validates `Task:` for placeholder-ness and SHAPE, never
+      # existence — so an invented-but-well-formed ZetaId passes silently, and it is harder
+      # to spot than a placeholder because it looks exactly right. The legacy `B-NNNN`
+      # scheme has had this guard since `b-ref-resolve.ts`; the ZetaId scheme that REPLACED
+      # it never got one, so the newer mandatory key was the less-checked one.
+      #
+      # Live instance the day this landed: `Task: 081M0X0JQGY087G0R000EBCPQ3`, written by
+      # hand instead of minted, caught only because its author re-read his own trailer.
+      - name: Task ZetaIds resolve to work-items (AH006)
+        # PULL-REQUEST ONLY, and the `if:` is load-bearing rather than cosmetic.
+        # `github.event.pull_request.body` is EMPTY on a push to `main`, and this audit
+        # deliberately exits 2 on empty input ("NO INPUT — This is NOT a pass") so that a
+        # check with nothing to check can never read as a check that passed. That refusal is
+        # correct; wiring it into a job that also runs on push was not. The result was a
+        # cross-verify red on every push to main whose exit code (2, not 1) said plainly it
+        # was a check that never ran — and it was read as a pre-existing failure for hours.
+        # A push has no PR body to validate; the commit trailer is validated separately.
+        if: github.event_name == 'pull_request'
+        env:
+          # The PR body carries the AgencySignature block, and unlike `git log` it is present
+          # on a SHALLOW checkout. The first wiring of this step piped `git log -50`, CI checks
+          # out depth 1, and the audit passed having examined ZERO ids — the exact vacuity it
+          # was written to catch, in its own wiring. It now exits 2 on empty input, so a
+          # regression here goes red instead of green.
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: |
+          printf '%s' "$PR_BODY" | bun src/Core.TypeScript/hygiene/audit-task-zetaid-resolves.ts --stdin
+
+      # THE FALSIFIER FOR CREDENTIAL-ROLE COLLAPSE (AH003, 2026-08-25).
+      #
+      # `docs/security/2026-08-17-society-heartbeat-token-boundary-and-gate-start-failure.md`
+      # names THREE credential roles with three secrets: dispatch, branch-push, PR-create. A
+      # `${{ secrets.A || secrets.B || secrets.GITHUB_TOKEN }}` expression erases that table at
+      # the point of use -- `||` selects on the left secret being EMPTY, so an absent scoped
+      # credential is silently replaced by one with DIFFERENT authority and the step then fails
+      # somewhere downstream naming the wrong subject. 25 such chains across 12 workflows had
+      # accumulated behind per-step comments that described the ladder as the SAFE half.
+      #
+      # It is the SILENT selection this refuses, never the degradation itself: a probe + an
+      # explicit `::warning` naming the secret and scope inside a `run:` block is good design
+      # and is untouched (agent-heartbeat.yml keeps three of them).
+      #
+      # Distinct from `audit-workflow-write-token-consistency.ts` above, which asks whether a
+      # forge-write step reaches A PAT. This asks whether it reaches THE RIGHT ONE, and only
+      # that one. A step can satisfy that audit and still be a role collapse -- all 25 sites
+      # did, which is why one check does not subsume the other.
+      #
+      # Offline (reads only committed workflow text, no sockets), so it belongs on the
+      # pre-merge floor rather than post-merge.
+      - name: Workflow credential role separation (one role, one secret)
+        run: bun src/Core.TypeScript/hygiene/audit-workflow-credential-role-separation.ts
+
+      # AH005 — a committed identity that GitHub resolves to somebody who is not us.
+      #
+      # `<username>@users.noreply.github.com` is the LEGACY plain noreply form and GitHub
+      # resolves it DIRECTLY to whoever owns that username today. Two of our personas
+      # shipped under it (15 commits and 2 commits), and both local-parts are live accounts
+      # belonging to uninvolved private individuals. They are rendered in this repository's
+      # Contributors sidebar, which aggregates trailer co-authors — note the REST
+      # `/contributors` endpoint does NOT, which is why an earlier check of that endpoint
+      # came back clean and under-reported the problem.
+      #
+      # The audit scans the SOURCES THAT GENERATE identities, never git history. The
+      # offending commits are on `main` and correcting them would mean force-pushing the
+      # default branch, so they stay. An audit pointed at history would be permanently red
+      # over commits nobody may fix, and a check that can never go green gets disabled.
+      #
+      # HERE on the cross-verify floor because it is offline (reads only committed text, no
+      # sockets, no DNS — the fabricated-namespace list is a closed enumeration rather than
+      # a resolver for exactly that reason). Measured: ~1.4 s warm over 2,028 generator
+      # files. Proven able to fail before it was wired: run against the pre-fix contents of
+      # the same seven files it reports 7 findings and exits 1.
+      - name: Co-author identity collision (AH005 — plain-username GitHub noreply form)
+        run: bun src/Core.TypeScript/hygiene/audit-coauthor-identity-collides.ts
+
+      # THE FALSIFIER FOR THE PR-ARCHIVE COVERAGE COLLAPSE (2026-08-25).
+      #
+      # `agent-heartbeat.yml`'s auto-merge steps hardcoded `secrets.GITHUB_TOKEN` while every
+      # other credentialed step in that file used the PAT fallback chain. A merge armed with
+      # GITHUB_TOKEN lands as `github-actions[bot]`; GitHub suppresses workflow triggers for
+      # GITHUB_TOKEN-driven events, so `pull_request: closed` never fires and
+      # pr-archive-on-merge.yml never runs — with NO failure anywhere, which is why it was
+      # misdiagnosed as a credential problem several times. Measured 2026-08-21..25: 747 of
+      # 765 (97.6%) eligible unarchived PRs were bot-merged; 530 of 539 (98.3%) archived ones
+      # were user-merged.
+      #
+      # The defect is the INCONSISTENCY, not the instance — one step out of nine disagreeing
+      # with its neighbours, which prose cannot hold. Offline (reads only committed workflow
+      # text, no sockets), so it belongs on the pre-merge floor rather than post-merge.
+      - name: Workflow write-token consistency (forge writes must reach the PAT)
+        run: bun src/Core.TypeScript/hygiene/audit-workflow-write-token-consistency.ts
+
+      # The falsifier for the PR-free heartbeat lane. Design:
+      # docs/research/2026-08-25-pr-free-heartbeat-lane-attestation-instead-of-gate.md
+      #
+      # The lane's proposal is that a bypass actor on ruleset `CI Gate` (16134995) pushes
+      # telemetry straight to `main`, skipping `gate (required)`, and that the lane verifies
+      # ITSELF. A bypass actor is a permanent hole, so that self-verification has to be a
+      # checkable fact rather than a claim -- this is the check. For every commit the lane
+      # produced it requires a content-bound attestation (`Verification-Subject` is the
+      # commit's own tree sha, so a COPIED attestation fails), a path allowlist, and a
+      # change-mode check in which `append-only` means the pre-image is a byte PREFIX of the
+      # post-image -- NOT `deletions == 0`, which `docs/github/prs/manifest.jsonl` satisfies
+      # 13 times in 40 while inserting its rows in sorted order.
+      #
+      # HERE on the cross-verify floor because it is offline (no sockets, reads only committed
+      # git objects) and because a bypass-lane guard must run on exactly the lane a path filter
+      # would exclude. Collection is two-phase for CORRECTNESS, not speed: this job checks out
+      # at fetch-depth 1, where the tip has no parent, so `git show --name-status` would report
+      # the entire 45k-file tree as added and `<sha>^` would not resolve. Metadata alone decides
+      # NOT-LANE, so a commit the audit does not judge never enters that path -- and where the
+      # parent genuinely is unreachable it exits 2 rather than reading a missing object as a
+      # violation. Measured on a full clone: 6.9 s for a 300-commit metadata-only window.
+      #
+      # HONEST STATE, so nobody quotes a green run as evidence: `cutoverIso` in the registry
+      # is 2099-01-01 and the lane identity does not exist yet, so TODAY this returns clean
+      # over 300 commits with all 300 classified NOT-LANE -- armed, and vacuous until step 4
+      # of the design doc's section 12. It was proven able to fail against real history
+      # first: with the cutover moved back and the current flush identity registered it
+      # reports 290 violations of 300. The unit tests below are what keep it non-vacuous in
+      # the meantime.
+      - name: PR-free heartbeat lane attestations (armed; vacuous until the lane exists)
+        run: bun src/Core.TypeScript/hygiene/audit-heartbeat-lane-attestations.ts --max 300
+
+      - name: Heartbeat-lane audit unit tests (a check that cannot fail is not a check)
+        run: bun test src/Core.TypeScript/hygiene/audit-heartbeat-lane-attestations.test.ts
+
       # Two commit-back-lane audits, both of which existed as code and NEITHER of which any
       # workflow invoked. `audit-push-without-rebase.ts` (AH001) shipped 2026-08-10 with a
       # named live instance and zero callers — the guard against a lane erasing its own
@@ -2443,6 +2683,27 @@ jobs:
 
       - name: Commit-back lane can actually land (AH002)
         run: bun src/Core.TypeScript/hygiene/audit-skip-token-cannot-land.ts
+
+      # AH003 — the archive lane's record actually reached `main`.
+      #
+      # The third instance of the same class as the two above, and the most expensive to date.
+      # `pr-archive-on-merge.yml` was changed SEVENTEEN times; its recent runs read 12 success
+      # / 8 skipped / 0 failures — green, while 1,290 `automation/pr-archive-*` refs sat on the
+      # remote. Every check it had asked a PROXY question ("did the tool run", "did I create a
+      # PR"), and its sibling `audit-archive-pr-lane.ts` takes `gh pr list` as its input, so it
+      # is structurally blind to a ref that never had a PR at all — which is what these were.
+      #
+      # This one takes REFS as input and asks the only question that is the point: is the
+      # record ON MAIN? It runs HERE, on the pre-merge floor and fatal, rather than as the
+      # non-fatal warning its sibling gets inside the heartbeat tick. A lane that leaked
+      # because one failure was tolerated does not get its falsifier installed as another
+      # tolerated failure.
+      #
+      # It gates on a high-water mark that may only be lowered, so the pre-existing backlog
+      # cannot hold the floor red while any NEW strand fails immediately. Deleting a stranded
+      # ref does not make it pass — the record is still absent from main.
+      - name: Archive lane record reached main (AH003)
+        run: bun src/Core.TypeScript/hygiene/audit-orphaned-archive-refs.ts
 
       # The .NET SDK version is declared in TWO files and, until 2026-08-23, nothing checked
       # that they agreed: `global.json` carried `rollForward: latestPatch` (which reads like
@@ -2676,11 +2937,13 @@ jobs:
   test-typescript-hermetic:
     # ══ TIER 1 OF 2: HERMETIC ═══════════════════════════════════════════════════════════
     #
-    # A RED X HERE MEANS A REAL REGRESSION. That is the entire claim of this job, and it is
-    # the property the tier split was built to establish. Nothing below depends on a venv,
-    # a cluster, a container, a physical device, an attached ISO, or the invoking user's
-    # home directory. Toolchain comes from install.sh, which is the same script a laptop and
-    # a devcontainer run (GOVERNANCE §24), so a developer reproduces this verdict exactly.
+    # A RED X HERE MEANS THE CHECKED-OUT SOURCE OR ITS DECLARED TOOLCHAIN BASELINE IS BROKEN.
+    # That is the property the tier split was built to establish. Nothing below depends on a
+    # venv, a cluster, a container, a physical device, an attached ISO, or the invoking user's
+    # home directory. CI declares ubuntu-24.04, pinned Bun, the frozen lockfile, and pinned SMT
+    # binaries below; developers realize the broader supported baseline through install.sh.
+    # "Hermetic" here is a failure-attribution boundary, not a bit-identical runner image --
+    # hosted-image drift remains possible and must be named if it is ever the cause.
     #
     # WHY THE SPLIT. MEASURED 2026-08-16 across the 53 most recent completed `gate` runs:
     # the old undivided `test (TS suite)` was red in 17 of them (32%), and in 15 of those the
@@ -2707,10 +2970,10 @@ jobs:
     # tier while nothing else runs it would be a deletion wearing a split's face; that is the
     # condition the checker exists to make unlandable.
     #
-    # PROMOTION. This job is STILL absent from the `gate-required` needs list -- branch
-    # protection is a treaty amendment, not a workflow edit. It is now the tier that is
-    # eligible: adding `- test-typescript-hermetic` to `gate-required.needs` is the one-line
-    # change, once the maintainer consents.
+    # PROMOTED 2026-08-25. This job is in the `gate-required` needs list under explicit
+    # maintainer consent. The promotion is a floor amendment, not just a dependency edit;
+    # registry/uncompensatable-floor.yaml and the drift-and-heal ADR record its rationale
+    # and its narrow whole-tree exception to the usual diff-scoped rule.
     #
     # THE GAP THIS CLOSES. Before this job, CI executed roughly 130 of the repo's 900-plus
     # `*.test.ts` files. Whole directories -- discovery/, planning/, browser-node/,
@@ -2753,13 +3016,14 @@ jobs:
     # at roughly 250 gate runs per month that is on the order of 2,250 runner-minutes added.
     # It buys execution of ~770 files and ~9,000 assertions that today execute nowhere.
     #
-    # RUNS, DOES NOT BLOCK. Deliberately absent from the `gate-required` needs list. The
-    # 2026-08-01 drift-and-heal ADR narrowed the blocking floor to
-    # registry/uncompensatable-floor.yaml after a priority-inversion incident; making ~770
-    # long-unrun files blocking on day one would be that inversion again. Running them IS the
-    # drift signal. Promotion to the floor is a separate treaty amendment, once this job has
-    # a track record. The blocking subset is unchanged: build-and-test, cross-verify,
-    # full-verify and lint (semgrep) keep their existing named steps and their floor status.
+    # RUNS AND BLOCKS. The probation period produced the evidence the original split asked
+    # for. PR #15352 merged with this job FAILURE beside a successful required rollup: a cold
+    # Go compiler invocation exceeded a shared 15-second generated-code timeout, while the
+    # durable outputs were never written. PR #15358 repaired that real repository defect,
+    # but merged five minutes BEFORE this job reported success because the rollup did not
+    # depend on it. PR #15395 then supplied a second post-repair green run before merge.
+    # The environment-dependent tier remains non-blocking; only this dependency-closed,
+    # reproducible behavior suite enters the floor.
     name: test (TS hermetic)
     timeout-minutes: 20
     runs-on: ubuntu-24.04
@@ -2799,6 +3063,12 @@ jobs:
         # soft-skip under that pair. Checksummed GitHub-release binaries go in
         # ~/.local/bin. No-op when PATH already meets the floor.
         run: bun src/Core.TypeScript/ace/setup-realizers/install-pinned-smt.ts
+
+      - name: Verify light-time endpoint-speed envelope certificates
+        # The Lean module is reached by the F# build. This companion TypeScript test
+        # executes the Z3 outcome sequence and the independent ephemeris fault control;
+        # neither may be a documentation-only proof artifact.
+        run: bun test src/Core.TypeScript/planning/light-time-endpoint-speed-envelope.test.ts src/Core.TypeScript/planning/orbital-independent-check.test.ts
 
       - name: Tier manifest (what the hermetic tier deliberately does not run, and why)
         # Printed BEFORE the suite, pass or fail, so the log states the tier's own boundary
@@ -2872,6 +3142,12 @@ jobs:
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
         # Same retry rationale as every other install.sh step in this file
         # (Aaron 2026-04-28 PR #23 mise+bun-1.3.13 502).
+        env:
+          # TIER DECLARED, not detected. This job genuinely needs the wider payload:
+          # environment-dependent tests are gated on the wide toolchain by design; the payload has not been measured down.
+          # Recorded explicitly so the next reader sees a decision rather than a default;
+          # audit-install-tier-declared.ts refuses silence, never a particular tier.
+          ZETA_HOST_TIER: full
         run: |
           set -euo pipefail
           for attempt in 1 2 3 4 5; do
@@ -2951,6 +3227,12 @@ jobs:
           key: full-verify-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
 
       - name: Install toolchain (all 7 languages + E-prover)
+        env:
+          # TIER DECLARED, not detected. This job genuinely needs the wider payload:
+          # the 7-language oracle: emscripten and llvm are tier=standard, and .mise.full.toml carries the k8s/WASM set that only tier=full merges.
+          # Recorded explicitly so the next reader sees a decision rather than a default;
+          # audit-install-tier-declared.ts refuses silence, never a particular tier.
+          ZETA_HOST_TIER: full
         run: |
           set -euo pipefail
           for attempt in 1 2 3 4 5; do
@@ -3012,6 +3294,18 @@ jobs:
 
       - name: Clifford cross-verify (Cl(3,0) geometric algebra)
         run: bun test tests/cross-verification/_harness/codegen-clifford.test.ts
+
+      # The Cayley-Dickson -> maximal-order ladder (A2 / D4 / E8). Wired HERE, and not left
+      # sitting in src/ as an unrun file, because #14914 measured that a test nothing invokes
+      # reads exactly like a passing one. Two prior reviews of this material (#15415, #15417)
+      # both self-labelled `unmetered` for precisely that reason: their arithmetic lived in a
+      # scratch worktree and nothing in the tree went red if it was wrong. This step is what
+      # makes the successor document's numbers falsifiable -- the octavian completion count
+      # (3, not 1), the six S_3 gluings, the split-condition witness, and the rank-16 control.
+      # Runtime ~35s; the slow cases carry explicit per-test timeouts (bunfig's cap is 5000ms).
+      - name: CD order ladder (banana-split factorisation falsifiers)
+        run: bun test src/Core.TypeScript/research/banana-split/cd-order-ladder.test.ts
+        timeout-minutes: 5
 
       - name: Notify on failure
         if: failure()
@@ -3086,10 +3380,12 @@ jobs:
       nonblocking-failures: ${{ steps.scope.outputs.nonblocking-failures }}
     # ── THE FLIP (drift-and-heal ADR, Aaron 2026-08-01): blocking gates are
     # corporate mode; drift checks are sovereign mode. The gate now rolls up
-    # ONLY the uncompensatable floor (registry/uncompensatable-floor.yaml):
-    #   - build-and-test        (functional build/test breaks)
-    #   - cross-verify/full-verify (treaty byte-lock golden vectors)
-    #   - lint [semgrep]        (workflow supply-chain / script-injection)
+    # ONLY the recorded floor (registry/uncompensatable-floor.yaml):
+    #   - build-and-test             (functional build/test breaks)
+    #   - test-typescript-hermetic   (dependency-closed TypeScript behavior breaks)
+    #   - cross-verify/full-verify   (treaty byte-lock golden vectors)
+    #   - lint [semgrep]             (workflow supply-chain / script-injection)
+    #   - lint-typescript            (TypeScript type breaks)
     # Every hygiene/style lint below STILL RUNS on every PR and every main
     # push — that is the drift detection — it just no longer blocks unrelated
     # lanes (the 2026-07-08 priority inversion / 2026-08-01 six-rebuild race).
@@ -3111,6 +3407,14 @@ jobs:
     # matrix, which is exactly why the `Emit scope` step below exists: it names any
     # leg that failed non-blockingly, so a green here still says which green it is.
     # registry/uncompensatable-floor.yaml records the narrowed coverage in data.
+    #
+    # ── AMENDMENT 2026-08-25 (Aaron, explicit: "lets try to get your hermetic
+    # suite in and if we need to update drift policies do so").
+    # `test-typescript-hermetic` enters the required floor after its probationary
+    # non-blocking period. This is intentionally a narrow whole-tree exception to
+    # the diff-scoped default: the suite is dependency-closed and reproducible, and
+    # its bare `bun test` invocation is what prevents new test directories from
+    # falling outside CI. The environment-dependent tier remains drift-only.
     #
     # The evidence is this job's own header, twenty lines up from its `name:`:
     # it was created because "Slice 9 (PR #882) shipped a real TS2322 to main",
@@ -3158,6 +3462,7 @@ jobs:
       - lint-typescript
       - cross-verify
       - full-verify
+      - test-typescript-hermetic
     steps:
       # Sparse: two paths, no blobs, one commit. The full checkout other jobs take
       # measures ~11 s here; this one has no reason to pay for 36k files.

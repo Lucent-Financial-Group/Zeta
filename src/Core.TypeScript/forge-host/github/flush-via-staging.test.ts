@@ -11,6 +11,7 @@ import {
   assertNoSkipCi,
   bufferRef,
   chooseFlushRoute,
+  classifyHeadVerdict,
   prepare,
   signedFlushMessage,
   stagingRef,
@@ -111,6 +112,83 @@ describe("telemetry flush routing", () => {
 
   test("the buffer ref stays inside the protected heartbeat namespace", () => {
     expect(bufferRef("society")).toBe(`${stagingRef("society")}-buffer`);
+  });
+
+  // THE FALSIFIERS FOR 081M0X15SKR087G0R001RJP5V6.
+  //
+  // Measured 2026-08-25: all four telemetry-flush lanes were wedged at once behind heads
+  // that had gone terminally red hours earlier and that nothing was ever going to re-run.
+  // `drift-sweep` sat 11h; `data/platform-drift.json` on `main` was pinned at run
+  // 32816944713 while the dashboard read green. Waiting on a dead head is deadlock, not
+  // backpressure, and before this fix `chooseFlushRoute` could not tell the two apart --
+  // it only ever asked "is a PR open".
+  const DEAD_PR = { number: 15276, url: "https://example.test/pull/15276" };
+
+  test("a TERMINALLY RED head is superseded, not waited on forever", () => {
+    expect(chooseFlushRoute("drift-sweep", DEAD_PR, "dead")).toEqual({
+      kind: "supersede",
+      activeRef: "heartbeat/drift-sweep",
+      bufferRef: "heartbeat/drift-sweep-buffer",
+      supersedes: DEAD_PR,
+    });
+  });
+
+  test("a live head is still waited on -- superseding is the exception, not the default", () => {
+    expect(chooseFlushRoute("drift-sweep", DEAD_PR, "under-test").kind).toBe("buffer");
+    // The default argument must be the SAFE one: a caller that cannot answer the verdict
+    // must not accidentally acquire force-push behaviour.
+    expect(chooseFlushRoute("drift-sweep", DEAD_PR).kind).toBe("buffer");
+  });
+});
+
+describe("head verdict -- when is an open PR head still under test", () => {
+  const check = (name: string, status: string, conclusion: string | null) => ({ name, status, conclusion });
+
+  test("a queued or running check means the head is under test", () => {
+    expect(classifyHeadVerdict([check("gate (required)", "queued", null)])).toBe("under-test");
+    expect(classifyHeadVerdict([check("gate (required)", "in_progress", null)])).toBe("under-test");
+  });
+
+  test("all-green is under test -- a passing head is waited on, never replaced", () => {
+    expect(
+      classifyHeadVerdict([
+        check("gate (required)", "completed", "success"),
+        check("lint (TS)", "completed", "skipped"),
+      ]),
+    ).toBe("under-test");
+  });
+
+  test("no checks at all is under test, NOT dead", () => {
+    // A head one second old has no scheduled runs yet. Calling that dead would supersede
+    // every head immediately and reintroduce the starvation the buffer exists to prevent.
+    expect(classifyHeadVerdict([])).toBe("under-test");
+  });
+
+  test("a failing check makes the head dead", () => {
+    expect(classifyHeadVerdict([check("gate (required)", "completed", "failure")])).toBe("dead");
+  });
+
+  test("CANCELLED and TIMED_OUT are dead -- a check that never ran must not read as one still running", () => {
+    // The measured cause on #15276: three lint shards exited 124 when the apt mirror
+    // stalled inside the toolchain install. The lints themselves never executed.
+    expect(classifyHeadVerdict([check("lint (semgrep)", "completed", "cancelled")])).toBe("dead");
+    expect(classifyHeadVerdict([check("lint (semgrep)", "completed", "timed_out")])).toBe("dead");
+  });
+
+  test("a parked action_required run is dead -- it never contributes a verdict (081M010H4KE)", () => {
+    expect(classifyHeadVerdict([check("gate (required)", "completed", "action_required")])).toBe("dead");
+  });
+
+  test("only the LATEST run per check name counts -- a repaired head is not still dead", () => {
+    // A re-run appends a second check-run with the same name; the failing one stays in the
+    // list. Reading every entry would supersede a head that has just gone green, which is
+    // both wasteful and hides the repair.
+    expect(
+      classifyHeadVerdict([
+        check("gate (required)", "completed", "failure"),
+        check("gate (required)", "completed", "success"),
+      ]),
+    ).toBe("under-test");
   });
 });
 
@@ -411,13 +489,42 @@ describe("telemetry-lane push credential (the held-gate cure)", () => {
       const yaml = workflow(file);
       const preflight = preflightOf(yaml);
 
-      test("the checkout that pushes carries the PAT, with an absence ladder", () => {
-        // The `||` ladder is the ABSENCE half of degrade-don't-halt: an unset
-        // secret evaluates to "" and falls through to GITHUB_TOKEN. A bare
-        // `token: ${{ secrets.ZETA_TELEMETRY_FLUSH_TOKEN }}` would check out with
-        // an empty credential and kill the lane — the #10850 outage shape.
-        expect(yaml).toContain("token: ${{ secrets.ZETA_TELEMETRY_FLUSH_TOKEN || secrets.GITHUB_TOKEN }}");
+      // RE-AIMED 2026-08-25: this assertion PINNED THE DEFECT. It required the `||`
+      // ladder verbatim, on the reasoning that a bare secret "would check out with an
+      // empty credential and kill the lane". The ladder does not prevent that outage —
+      // it RENAMES it. Checkout under GITHUB_TOKEN succeeds, so the lane looks alive
+      // while pushing as `github-actions[bot]`, whose `pull_request` gate run is parked
+      // in `action_required` and never contributes `gate (required)` — which is the
+      // exact held-gate failure THIS DESCRIBE BLOCK IS NAMED AFTER, produced by the
+      // very expression the test required. A dead lane is loud; that one is silent.
+      //
+      // "Would kill the lane" was an argument for a LOUD REFUSAL, and there was no third
+      // option on the table then. There is now: an assert step ahead of the checkout
+      // names the missing secret and the exact scope, so absence is handled without
+      // handing the lane an authority nobody chose.
+      test("the checkout that pushes carries the PAT — one role, one secret", () => {
+        expect(yaml).toContain("token: ${{ secrets.ZETA_TELEMETRY_FLUSH_TOKEN }}");
         expect(yaml).toContain("persist-credentials: true");
+        // No chain. This is the property the ladder assertion used to invert.
+        expect(yaml).not.toMatch(/token: \$\{\{[^}]*secrets\.[A-Za-z_]\w*[^}]*\|\|[^}]*secrets\./);
+      });
+
+      test("ABSENCE is refused BY NAME, ahead of the checkout that would use it", () => {
+        // The half the ladder was defended for, done loudly instead of silently.
+        const assertAt = yaml.indexOf("      - name: Assert the branch-push credential is present");
+        const checkoutAt = yaml.indexOf("      - name: Checkout");
+        expect(assertAt).toBeGreaterThanOrEqual(0);
+        // Ordering is load-bearing: after the checkout it would report on a step that
+        // has already failed for another reason.
+        expect(assertAt).toBeLessThan(checkoutAt);
+
+        const guard = yaml.slice(assertAt, checkoutAt);
+        expect(guard).toContain('if [ -z "${BRANCH_PUSH_TOKEN:-}" ]; then');
+        expect(guard).toContain("::error title=Missing ZETA_TELEMETRY_FLUSH_TOKEN");
+        // Actionable from the log line alone — the operator should not have to open
+        // the workflow to learn which grant is missing.
+        expect(guard).toContain("Contents: read and write");
+        expect(guard).toContain("exit 1");
       });
 
       test("the preflight probes the REAL remote, not a stub", () => {
