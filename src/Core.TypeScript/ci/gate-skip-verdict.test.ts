@@ -1,5 +1,6 @@
 import { test, expect, describe } from "bun:test";
 import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import {
   GATE_YML_PATH,
   ROLLUP_JOB_ID,
@@ -122,6 +123,53 @@ describe("a docs-only PR stays GREEN", () => {
 // ═══════════════════════════════════════════════════════════════════════════════════
 // THE DEFECT ITSELF. Same run shape, upstream dead. Was green; must now be red.
 // ═══════════════════════════════════════════════════════════════════════════════════
+
+// ═══════════════════════════════════════════════════════════════════════════════════
+// THE DEFECT, MEASURED. Not a constructed hypothetical: run 32881149945 on
+// 2026-08-25 (PR branch `claude/tender-hawking-xmcs6m`) is the class firing live.
+// The fixture beside this file is that run's job list, straight from the Actions API.
+// ═══════════════════════════════════════════════════════════════════════════════════
+
+describe("REGRESSION — gate run 32881149945, where this actually happened", () => {
+  const RUN_JOBS = JSON.parse(
+    readFileSync(join(import.meta.dir, "fixtures", "gate-run-32881149945-absorbed-skip.json"), "utf8"),
+  ) as Array<{ name: string; conclusion: string }>;
+  const conclusionOf = (name: string): string | undefined => RUN_JOBS.find((j) => j.name === name)?.conclusion;
+
+  test("the fixture is the real thing: path filter CANCELLED, two floor jobs SKIPPED, gate GREEN", () => {
+    // If any of these four drift, the regression below is testing a run that never
+    // happened, and the whole describe becomes decoration.
+    expect(conclusionOf("path filter")).toBe("cancelled");
+    expect(conclusionOf("build-and-test (${{ matrix.os }})")).toBe("skipped");
+    expect(conclusionOf("full-verify (7-lang oracle + cost + proofs)")).toBe("skipped");
+    expect(conclusionOf("gate (required)")).toBe("success");
+  });
+
+  test("the new verdict turns that exact run RED", () => {
+    // The `needs` context the roll-up would have seen, reconstructed from the API
+    // conclusions above (they agree for every state that matters here).
+    const asItHappened = ctx({
+      "matrix-setup": "success",
+      "path-filter": "cancelled",
+      "build-and-test": "skipped",
+      lint: "success",
+      "lint-typescript": "success",
+      "cross-verify": "success",
+      "full-verify": "skipped",
+      "test-typescript-hermetic": "success",
+    });
+    const gate = decideGate(asItHappened, decls);
+    expect(gate.passed).toBe(false);
+    expect(gate.blocked.map((v) => v.need).sort()).toEqual(["build-and-test", "full-verify", "path-filter"]);
+  });
+
+  test("what the green covered: every .NET build and test leg, and the 7-language byte-lock, never ran", () => {
+    // Named rather than implied, because this is the cost the old rule was paying.
+    const skipped = RUN_JOBS.filter((j) => j.conclusion === "skipped").map((j) => j.name);
+    expect(skipped).toContain("build-and-test (${{ matrix.os }})");
+    expect(skipped).toContain("full-verify (7-lang oracle + cost + proofs)");
+  });
+});
 
 describe("a dead prerequisite turns the gate RED where it used to be green", () => {
   const pathFilterDead = ctx({
