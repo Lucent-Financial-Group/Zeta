@@ -223,3 +223,32 @@ module ThousandBrainsTests =
         match ThousandBrains.observeSpatial col { Frame = "table"; Axes = [| g 1.0 0.5; g 2.0 0.5 |] } with
         | Ok _ -> failwith "absorbed a table-frame observation into a cup-frame column"
         | Error e -> Assert.Contains("frame mismatch", e)
+
+    [<Fact>]
+    let ``TB-12: IV over N axes is the SUM of the per-axis IVs, not the max`` () =
+        // `observeSpatial` sums per-axis IV and justifies it by KL additivity over
+        // independent components. TB-7 checked that claim only at one axis, where
+        // sum and max coincide — so replacing `Array.sum` with `Array.max` left
+        // all 441 tests green. This is the falsifier for the additivity itself.
+        //
+        // Axes are deliberately given DIFFERENT information content, so sum, max
+        // and mean are three distinct numbers and the test can tell them apart.
+        let frame = "cup"
+        let obs = [| g 3.0 0.25; g -1.0 4.0 |]
+        let spatial =
+            ThousandBrains.observeSpatial (ThousandBrains.createSpatialColumn "s" frame 2) { Frame = frame; Axes = obs }
+            |> unwrapR
+
+        let perAxis =
+            obs
+            |> Array.map (fun o -> float (ThousandBrains.observe (ThousandBrains.createColumn "s") o).AccumulatedIV)
+        let expected = Array.sum perAxis
+
+        Assert.True(
+            perAxis.[0] <> perAxis.[1],
+            sprintf "the axes carry equal IV (%.17g), so this test cannot distinguish sum from max" perAxis.[0])
+        Assert.Equal(bits expected, bits (float spatial.AccumulatedIV))
+        Assert.True(
+            float spatial.AccumulatedIV > Array.max perAxis,
+            sprintf "IV %.17g did not exceed the largest single axis %.17g — it is not a sum"
+                (float spatial.AccumulatedIV) (Array.max perAxis))
