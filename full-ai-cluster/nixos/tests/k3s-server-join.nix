@@ -44,9 +44,9 @@
 # `nixos-install --impure`, against `/etc/zeta/*` symlinks the installer just
 # staged. In a nixosTest, evaluation happens on the BUILD MACHINE, where
 # `/etc/zeta` does not exist and never will. So this test drives the module
-# through its `joinServerUrlFile` / `tokenFile` OPTIONS pointed at store paths
-# built below — which is exactly why #15668 made them options rather than
-# hardcoded paths.
+# through its `joinServerUrlFile` / `tokenFile` OPTIONS pointed at the committed
+# fixtures — which is exactly why #15668 made them options rather than hardcoded
+# paths.
 #
 # The consequence is honest and worth naming: this test proves the JOIN
 # BEHAVIOUR (a role=server node given an endpoint and a token joins an existing
@@ -65,49 +65,71 @@
 { pkgs }:
 
 let
-  # WHY `builtins.toFile` AND NOT THE COMMITTED FIXTURES
-  # ---------------------------------------------------
-  # These two paths have to satisfy two requirements that pull in opposite
-  # directions, and only `builtins.toFile` satisfies both:
+  # THE EVAL-TIME PATHS MUST CARRY NO STRING CONTEXT. This is the whole trick,
+  # and both obvious spellings get it wrong in opposite directions.
   #
-  #   (1) EXIST AT EVALUATION TIME, because `injected-server-join.nix` decides
-  #       join-vs-found with `builtins.pathExists` while the module system is
-  #       still evaluating.
-  #   (2) EXIST INSIDE THE GUEST AT RUNTIME, because k3s opens the token file
-  #       when the unit starts.
+  # `injected-server-join.nix` calls `builtins.pathExists` on whatever these
+  # options hold. When the argument is a string WITH context, Nix must
+  # **realise that context** before it can answer — and `nix flake check
+  # --no-build`, the command the `build-iso` lane runs, realises nothing. So a
+  # context-carrying path fails there with:
   #
-  # Neither obvious spelling works:
-  #   `"${./fixtures/…}"` — string-interpolating a source path COPIES it to a
-  #       fresh store path during evaluation. Under the pure evaluation that
-  #       `nix flake check` performs that copy is not materialised, and the
-  #       build dies with `path '/nix/store/…-cluster-join-server-url' is not
-  #       valid`. Measured on CI, run 33013286101.
-  #   `toString ./fixtures/…` — the spelling `k3s-server-join-eval-test.nix`
-  #       uses, and correct THERE because that check never boots anything. It
-  #       yields a path with NO string context, so nothing depends on it, so
-  #       the file is never copied into the VM closure. Evaluation would pass
-  #       and k3s would then fail to read its token inside the guest.
+  #     … while realising the context of path '/nix/store/…'
+  #     error: path '/nix/store/…' is not valid
   #
-  # `builtins.toFile` writes the content to the store DURING evaluation (so
-  # `pathExists` is true immediately, in pure eval) and returns a path WITH
-  # context (so it becomes a dependency and lands in the guest).
+  # Measured twice on CI, and the second time is the instructive one:
+  #   run 33013286101  `"${./fixtures/…}"`      — interpolation copies the file
+  #                    to a fresh store path and attaches context. Red.
+  #   run 33014165993  `builtins.toFile "…" "…"` — ALSO attaches context, and is
+  #                    red for exactly the same reason. `toFile` genuinely does
+  #                    write during evaluation, which is why this looked right;
+  #                    the context is the problem, not the writing.
   #
-  # It also means this test ships no committed pseudo-credential: the token is
-  # a literal in this file, visible at the point of use.
+  # Both of those passed on my machine before they failed on CI, because my
+  # store already held the objects from earlier evaluations — realising an
+  # already-valid path is a no-op. That is a check passing for the wrong
+  # reason, and it is why the local reproduction below deletes the paths first.
+  #
+  # `toString` on a source path yields a plain string with NO context, pointing
+  # inside the flake's own source store path — which is valid by construction,
+  # since Nix copied the flake there to evaluate it. `pathExists` then just
+  # stats a file. This is the spelling `k3s-server-join-eval-test.nix` already
+  # uses, and it is correct here for the same reason.
+  #
+  # The cost of context-free is that nothing depends on these paths, so they do
+  # NOT enter the VM closure. That is fine, because neither needs to:
 
-  # `https://control-plane:6443` — a NAME, matching the committed fixture and
-  # the shipped `--tls-san=control-plane` that makes the API cert valid for it.
-  joinServerUrlFile = builtins.toFile "zeta-vm-cluster-join-server-url"
-    "https://control-plane:6443\n";
+  # Read at EVALUATION time for its CONTENT (the module parses the URL out of
+  # it). Never opened at runtime by anything.
+  joinServerUrlFile = toString ./fixtures/server-join/cluster-join-server-url;
 
-  # A fixed, public, test-only k3s `--token`. Its whole blast radius is one
-  # hermetic QEMU pair inside the Nix build sandbox, which has no network and
-  # is destroyed when the derivation finishes. A real credential could not go
-  # here anyway: a NixOS module evaluates into the world-readable store, which
-  # is exactly why `injected-server-join.nix` reads only the PRESENCE of this
-  # file and leaves the content check to `zeta-install.sh` on the machine.
-  sharedClusterTokenFile = builtins.toFile "zeta-vm-shared-cluster-token"
-    "zeta-vm-test-shared-cluster-token-not-a-credential\n";
+  # Read at EVALUATION time for its PRESENCE ONLY — `injected-server-join.nix`
+  # deliberately never reads a token's contents, because a NixOS module
+  # evaluates into the world-readable store. That design choice is exactly what
+  # lets this be the committed empty placeholder rather than a credential.
+  tokenPresenceMarker = toString ./fixtures/server-join/token-present-marker;
+
+  # The token k3s actually authenticates with is a RUNTIME concern, so it is
+  # materialised into each guest at the real production path
+  # (`/etc/zeta/k3s-join-token`) via `environment.etc` below, and
+  # `services.k3s.tokenFile` is pointed there.
+  #
+  # This is a TEST-LOCAL substitution and worth naming as one: on hardware the
+  # eval-time path and the runtime path are the SAME file, because
+  # `zeta-install.sh` runs `nixos-install --impure` on the target where
+  # `/etc/zeta` already exists. In a nixosTest, evaluation happens on the build
+  # machine where `/etc/zeta` never exists, so the two roles have to be split.
+  # What stays under test is the module's DECISION (clusterInit := false,
+  # serverAddr := the endpoint); the exact `tokenFile` VALUE it emits is pinned
+  # separately by `k3s-server-join-model`, and the assertions below read the
+  # running process's cmdline to confirm `--token-file` actually reached k3s.
+  #
+  # A fixed, public, test-only k3s `--token`, so nothing committed here is a
+  # credential. Its whole blast radius is one hermetic QEMU pair in the Nix
+  # build sandbox, which has no network and is destroyed with the derivation.
+  sharedClusterToken = "zeta-vm-test-shared-cluster-token-not-a-credential\n";
+
+  runtimeTokenPath = "/etc/zeta/k3s-join-token";
 in
 
 pkgs.testers.nixosTest {
@@ -132,7 +154,17 @@ pkgs.testers.nixosTest {
       # forever to read a file it was itself responsible for creating. This
       # points at a store path that already exists and is non-empty, which k3s
       # reads once at startup.
-      services.k3s.tokenFile = "${sharedClusterTokenFile}";
+      # The cluster secret, materialised in the guest at the real production
+      # path. `k3s-server.nix` sets no `tokenFile` at all (removing it was the
+      # fix for the founding-node token deadlock), so this is a plain addition
+      # rather than an override — and it is NOT that deadlock: that bug pointed
+      # `tokenFile` at `/var/lib/rancher/k3s/server/token`, the path k3s itself
+      # WRITES, so k3s waited forever for a file it was responsible for
+      # creating. This points at a file that already exists when the unit
+      # starts, which is k3s's documented HA setup (`--token` shared across
+      # servers).
+      environment.etc."zeta/k3s-join-token".text = sharedClusterToken;
+      services.k3s.tokenFile = runtimeTokenPath;
 
       virtualisation.memorySize = 2560; # MB
       virtualisation.cores = 2;
@@ -159,12 +191,17 @@ pkgs.testers.nixosTest {
       # Drive the shipped module over committed fixtures. `builtins.pathExists`
       # must be true for BOTH at evaluation time or the module's all-or-none
       # assertion fires — which is itself a property the eval test already pins.
-      # Interpolated to STRINGS, not passed as bare paths: both options are
-      # `lib.types.str` and a Nix path does not coerce. Interpolation also
-      # copies each fixture into the store at evaluation time, which is what
-      # makes `builtins.pathExists` inside the module return true for them.
-      zeta.k3sServerJoin.joinServerUrlFile = "${joinServerUrlFile}";
-      zeta.k3sServerJoin.tokenFile = "${sharedClusterTokenFile}";
+      # Context-free strings (see the `let` block for why that matters).
+      zeta.k3sServerJoin.joinServerUrlFile = joinServerUrlFile;
+      zeta.k3sServerJoin.tokenFile = tokenPresenceMarker;
+
+      # Same secret as the founder, at the same real path. `mkOverride 10`
+      # beats the module's own `mkOverride 50` on this ONE attribute; the two
+      # attributes that carry the module's actual decision — `clusterInit` and
+      # `serverAddr` — are left exactly as it set them, and the cmdline
+      # assertions below check that they reached the process.
+      environment.etc."zeta/k3s-join-token".text = sharedClusterToken;
+      services.k3s.tokenFile = lib.mkOverride 10 runtimeTokenPath;
 
       # The fixture endpoint is `https://control-plane:6443` — a NAME, because
       # that is what `--tls-san=control-plane` in k3s-server.nix makes the API
