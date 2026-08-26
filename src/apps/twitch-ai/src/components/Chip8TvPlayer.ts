@@ -2,7 +2,23 @@ import type {
   ArenaReadout,
   ArenaTrackReadout,
 } from "../../../../Core.TypeScript/observe/observe";
+import {
+  WHY_TERMINAL,
+  whyAnswer,
+  type WhyContext,
+} from "../../../../Core.TypeScript/bayesian/why-chain";
+import {
+  placeboAttention,
+  type StudyCondition,
+} from "../../../../Core.TypeScript/chip8/study-protocol";
 import type { AttentionFramePayload, FramePayload } from "../protocol";
+
+/** Dominant-axis arrow for an intent vector; null when there is no intent. */
+function intentArrow(dx: number, dy: number): string | null {
+  if (dx === 0 && dy === 0) return null;
+  if (Math.abs(dx) >= Math.abs(dy)) return dx >= 0 ? "→" : "←";
+  return dy >= 0 ? "↓" : "↑";
+}
 
 export class Chip8TvPlayer {
   private element: HTMLElement;
@@ -15,6 +31,19 @@ export class Chip8TvPlayer {
   private readonly tileDivs: HTMLDivElement[] = [];
   private fixationRing: HTMLDivElement;
   private lastFixation: number | null = null;
+  /** D5: the WHY strip below the screen; −1 = closed, else the chain depth. */
+  private whyStrip: HTMLDivElement;
+  private whyDepth = -1;
+  /** The deciding state of the LATEST frame — what open answers re-render from. */
+  private lastWhy: WhyContext | null = null;
+  /** Cycle of the latest frame; a backwards jump means the cart was switched. */
+  private lastCycle = -1;
+  /**
+   * D6: what the overlay may show this trial. "full" is the shipped page;
+   * the other three exist only under ?study=1 — the study gates what the
+   * viewer SEES, never what the payload carries (scoring reads the payload).
+   */
+  private overlayCondition: StudyCondition = "full";
   public agentId: string;
 
   constructor(containerId: string, agentId: string) {
@@ -45,14 +74,23 @@ export class Chip8TvPlayer {
         <span><span class="concept-label">🧠 Mode:</span> <span class="concept-value" id="concept-${agentId}">[INITIALIZING]</span></span>
         <span class="attention-header">👁 <span class="attention-value" id="attention-${agentId}">[--]</span></span>
         <span class="objective-header">🎯 <span class="objective-value" id="objective-${agentId}">[WAITING]</span></span>
+        <span class="why-btn" id="why-${agentId}" title="Ask the agent why (click again for the next reason down)">WHY?</span>
       </div>
     `;
+    headerContainer.querySelector(`#why-${agentId}`)?.addEventListener("click", () => {
+      this.descendWhy();
+    });
 
     this.screenContainer.appendChild(headerContainer);
     // The canvas and the perception overlay share one positioned wrapper so
     // bounding boxes (in % of the 64×32 grid) land exactly on the pixels.
+    // The wrapper MUST fill the 16:9 screen box: the canvas is sized
+    // 100%×100% of its parent, and an unsized wrapper collapses the whole
+    // screen to the canvas's intrinsic 64×32 (shipped briefly; caught live).
     const canvasWrap = document.createElement("div");
     canvasWrap.style.position = "relative";
+    canvasWrap.style.width = "100%";
+    canvasWrap.style.height = "100%";
     this.canvas.style.display = "block";
     canvasWrap.appendChild(this.canvas);
     // D3/D4 (#14503): the frost layer (uncertainty) and the fixation ring
@@ -79,7 +117,23 @@ export class Chip8TvPlayer {
     this.perceptionOverlay.style.inset = "0";
     this.perceptionOverlay.style.pointerEvents = "none";
     canvasWrap.appendChild(this.perceptionOverlay);
+    // D5: clicking the agent's screen is the literal "click the agent" of the
+    // spec — same handler as the WHY? chip (the overlays are pointer-inert).
+    canvasWrap.style.cursor = "pointer";
+    canvasWrap.title = "Click the agent to ask why";
+    canvasWrap.addEventListener("click", () => {
+      this.descendWhy();
+    });
     this.screenContainer.appendChild(canvasWrap);
+    // The WHY strip lives BELOW the screen, not inside it: the screen box is
+    // a fixed 16:9 flex container with overflow:hidden, and an in-flow child
+    // there fights the canvas for space instead of speaking under it.
+    this.whyStrip = document.createElement("div");
+    this.whyStrip.className = "why-strip";
+    this.whyStrip.style.display = "none";
+    this.whyStrip.addEventListener("click", () => {
+      this.descendWhy();
+    });
 
     // Xbox Controller Setup
     this.llmtvOverlay = document.createElement("div");
@@ -136,6 +190,7 @@ export class Chip8TvPlayer {
     `;
 
     this.element.appendChild(this.screenContainer);
+    this.element.appendChild(this.whyStrip);
     this.element.appendChild(this.llmtvOverlay);
     document.getElementById(containerId)?.appendChild(this.element);
   }
@@ -183,7 +238,7 @@ export class Chip8TvPlayer {
     this.ctx.putImageData(imgData, 0, 0);
   }
 
-  /** The mode header: "HUNT · self#1 · adv#4". */
+  /** The mode header: "HUNT · self#1 · adv#4" — or "HUNT →" in arrow-only. */
   private renderModeHeader(arena: ArenaReadout): void {
     const concept = document.getElementById(`concept-${this.agentId}`);
     if (!concept) return;
@@ -192,6 +247,12 @@ export class Chip8TvPlayer {
     const parts = [arena.mode.toUpperCase()];
     if (selfTrack) parts.push(`self#${String(selfTrack.id)}`);
     if (adv) parts.push(`adv#${String(adv.id)}`);
+    // D6 arrow-only: with the tracks stripped, the intent vector renders as
+    // a bare arrow — mode + intent is ALL this condition may show.
+    if (arena.tracks.length === 0 && arena.desired) {
+      const glyph = intentArrow(arena.desired.dx, arena.desired.dy);
+      if (glyph) parts.push(glyph);
+    }
     concept.textContent = parts.join(" · ");
   }
 
@@ -209,7 +270,14 @@ export class Chip8TvPlayer {
     }
     const mineText = mine ? String(mine.value) : "–";
     const theirsText = theirs ? String(theirs.value) : "–";
-    objective.textContent = `OCR ${mineText}:${theirsText} (first to 5)`;
+    // WIN_SCORE lives in the cart (mutual-sim.ts: "5 = player WINS"); saying
+    // "first to 5" without the running total left viewers asking what the
+    // target even was.
+    objective.textContent = `agent ${mineText} — ${theirsText} rival · first to 5 wins`;
+    objective.title =
+      "The two digits are drawn INSIDE the playfield and are solid: a sprite " +
+      "that touches them is blocked, exactly like a wall. The agent reads its " +
+      "own score off those pixels — that is its only reward channel.";
   }
 
   /** One bounding box, positioned in % of the 64×32 grid. */
@@ -239,6 +307,11 @@ export class Chip8TvPlayer {
     if (!arena) {
       const concept = document.getElementById(`concept-${this.agentId}`);
       if (concept) concept.textContent = "[OBSERVING]";
+      const objective = document.getElementById(`objective-${this.agentId}`);
+      if (objective) objective.textContent = "[--]";
+      // Clear, don't linger: stale boxes over a null arena were invisible
+      // before the study's "none" condition made the path reachable.
+      this.perceptionOverlay.innerHTML = "";
       return;
     }
     this.renderModeHeader(arena);
@@ -380,9 +453,109 @@ export class Chip8TvPlayer {
     return `K=${String(att.topK)} useful ${useful} ρ̄ ${att.rho.mean.toFixed(2)}`;
   }
 
+  /**
+   * D5 (#14503): one click, one sentence; the next click, the next reason
+   * down; the chain saturates at "I don't know." and the click after the
+   * terminal closes the strip. Answers are regenerated EVERY FRAME from
+   * that frame's own `why` payload — the state that drove the decision —
+   * so the sentence on screen tracks the live decision, never a cache.
+   */
+  /**
+   * D6: apply a study condition. Leaving "full" hides the WHY chip and
+   * closes an open chain — the overlay family is what the study meters,
+   * so a non-full trial must not leak any of it.
+   */
+  public setOverlayCondition(c: StudyCondition): void {
+    this.overlayCondition = c;
+    const chip = document.getElementById(`why-${this.agentId}`);
+    if (chip) chip.style.display = c === "full" ? "" : "none";
+    if (c !== "full" && this.whyDepth !== -1) {
+      this.whyDepth = -1;
+      this.renderWhy();
+    }
+  }
+
+  /**
+   * The placebo payload: the real frame's SCALAR readouts (meter, ρ — they
+   * carry no direction) under fake SPATIAL content (frost, attended set,
+   * fixation) that is a pure function of the cycle. Visually a live field;
+   * informationally decoupled from the screen.
+   */
+  private placeboPayload(real: AttentionFramePayload, cycle: number): AttentionFramePayload {
+    const fake = placeboAttention(cycle, this.tileDivs.length, real.topK);
+    return {
+      cols: real.cols,
+      rows: real.rows,
+      variance: Float32Array.from(fake.variance),
+      mean: real.mean,
+      attended: fake.attended,
+      fixation: fake.fixation,
+      usefulWork: real.usefulWork,
+      rho: real.rho,
+      topK: real.topK,
+    };
+  }
+
+  private descendWhy(): void {
+    if (this.overlayCondition !== "full") return;
+    if (this.whyDepth === -1) {
+      this.whyDepth = 0;
+    } else if (this.lastWhy === null || whyAnswer(this.lastWhy, this.whyDepth) === WHY_TERMINAL) {
+      this.whyDepth = -1;
+    } else {
+      this.whyDepth += 1;
+    }
+    this.renderWhy();
+  }
+
+  private renderWhy(): void {
+    if (this.whyDepth === -1) {
+      this.whyStrip.style.display = "none";
+      return;
+    }
+    this.whyStrip.style.display = "block";
+    if (this.lastWhy === null) {
+      this.whyStrip.classList.add("terminal");
+      this.whyStrip.textContent = "— no decision on this frame yet —";
+      return;
+    }
+    const answer = whyAnswer(this.lastWhy, this.whyDepth);
+    this.whyStrip.classList.toggle("terminal", answer === WHY_TERMINAL);
+    // Say WHO is speaking — an unlabelled sentence under a game screen reads
+    // as a glitch, not as the agent answering the question it was asked.
+    this.whyStrip.textContent = `🧠 ${this.agentId} · why${"?".repeat(this.whyDepth + 1)} ${answer}`;
+    this.whyStrip.title =
+      answer === WHY_TERMINAL ? "That is the bottom — click to close" : "Click for the next reason down";
+  }
+
   public updatePredictions(frame: FramePayload): void {
-    this.renderArena(frame.arena);
-    this.renderAttention(frame.attention);
+    // A backwards cycle jump = the cart was switched and the worker rebooted;
+    // the open WHY chain belonged to the old cart's decision, so it closes.
+    if (frame.cycle < this.lastCycle) {
+      this.whyDepth = -1;
+    }
+    this.lastCycle = frame.cycle;
+    this.lastWhy = this.overlayCondition === "full" ? frame.why : null;
+    this.renderWhy();
+
+    // D6: gate what each study condition may SHOW (the payload itself is
+    // untouched — the study's scoring reads it regardless of rendering).
+    let arena = frame.arena;
+    let attention = frame.attention;
+    if (this.overlayCondition === "none") {
+      arena = null;
+      attention = null;
+    } else if (this.overlayCondition === "arrow-only") {
+      arena = frame.arena
+        ? { mode: frame.arena.mode, tracks: [], ocr: [], desired: frame.arena.desired }
+        : null;
+      attention = null;
+    } else if (this.overlayCondition === "placebo") {
+      attention = frame.attention ? this.placeboPayload(frame.attention, frame.cycle) : null;
+    }
+
+    this.renderArena(arena);
+    this.renderAttention(attention);
 
     // Process BNN predictions (RGB probabilities) and committed keys (CMYK)
     const keyMap = this.buttonIds();

@@ -675,6 +675,30 @@ jobs:
         # shellenv.sh wires BASH_ENV so subsequent run: steps auto-
         # source the managed shellenv. Same pattern as build-and-test
         # job above.
+        # WHY THIS LANE DECLARES A TIER (081M0K36K69087G0R003BYSCF8 applied to gate).
+        # `tools/setup/manifests/apt` carries `agda tier=standard`, and Ubuntu's
+        # `agda` transitively pulls `ghc` (79.0 MB) plus 63 `libghc-*-dev` packages:
+        # 237 MB of the 556 MB this job fetched on 2026-08-25 (job 97707217922) was
+        # Haskell that nothing in this job runs. That download is what stalled the
+        # archive mirror three times and burned the whole 420s apt budget, killing
+        # nine checks across seven PRs in one 14-minute window. Nothing in this lane
+        # touches Agda, GHC, emscripten, llvm, pandoc, r-base, podman, qemu or opam
+        # — it runs mise-provided tools only — so the tier gate that already exists
+        # subtracts them: 388 packages / 713 MiB becomes 149 / 139.7 MiB.
+        #
+        # THE BUDGET IS UNCHANGED, deliberately. 420s is a hang guard with a reasoned
+        # derivation in tools/setup/linux.sh and an audit that keeps it inside every
+        # job's timeout; the measured distribution (107 successes at median 116s, 11
+        # failures at exactly 420-421s) is bimodal, so a bigger budget only makes each
+        # hang cost more. The guard was right; the payload was wrong.
+        #
+        # SAFE BY CONSTRUCTION on the agda side: the cubical realizer already
+        # degrades — src/Core.TypeScript/ace/setup-realizers/from-agda-cubical.ts:25
+        # logs "agda not on PATH (slim tier ...); skipping" and returns success.
+        # src/Core.TypeScript/ci/apt-manifest-host-tier.test.ts asserts this line is
+        # still here, so deleting it goes red instead of going silently expensive.
+        env:
+          ZETA_HOST_TIER: slim
         run: ./tools/setup/install.sh
 
       - name: Run Semgrep (floor rules only — seconds-fast floor check)
@@ -718,6 +742,12 @@ jobs:
           key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
 
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
+        # tier=slim — this lane runs semgrep (mise `pipx:semgrep` pin) and nothing else, so it must not
+        # fetch the 237 MB agda->ghc apt payload. Full measurement + reasoning at
+        # the `lint (semgrep)` job above; pinned by
+        # src/Core.TypeScript/ci/apt-manifest-host-tier.test.ts.
+        env:
+          ZETA_HOST_TIER: slim
         run: ./tools/setup/install.sh
 
       - name: Run Semgrep (full detector set — findings are drift, not locks)
@@ -832,14 +862,65 @@ jobs:
         # rate-limited schema downloads count as ERRORS, not missing schemas.
         # -strict: reject unknown fields on the manifests we DO have schemas for.
         # find-pipe so it recurses explicitly (portable across kubeconform versions).
+        #
+        # -kubernetes-version 1.33.0 ADDED 2026-08-25. Without it kubeconform checks
+        # against the schema registry's `master` set -- i.e. against whatever
+        # Kubernetes released most recently, which is NOT the version any of our
+        # clusters run and which DRIFTS UNDER US with no commit here. The pin's
+        # provenance is this repo's own already-declared target: the `kube-version`
+        # default in infra/k8s/tests/validate-applications.ts, which the helm-validate
+        # lane has been rendering against for the other cluster tree. Two lanes
+        # validating the same kinds against two different Kubernetes versions is the
+        # drift this closes. MEASURED on the agentic-org tree before landing: 26
+        # resources in 12 files, Valid 26 / Invalid 0 both with and without the flag,
+        # so the pin changes no verdict today -- it fixes WHICH QUESTION is being asked.
         run: |
           crd_kinds="Application,Blueprint,CiliumL2AnnouncementPolicy,CiliumLoadBalancerIPPool,ClusterIssuer,ConstraintTemplate,Deployable,Gateway,HTTPRoute,Hat,HatConflict,HatCooldown,HatMaxBindings,HatMaxNew,HatNoCycle,HatPolicy,HatQuorum,HatWarmup,HelmChart,Policy"
           kc() {
             find full-ai-cluster/k8s infra/k8s agentic-organization/deploy -type f \( -name '*.yaml' -o -name '*.yml' \) -print0 \
-              | xargs -0 kubeconform -strict -ignore-missing-schemas -summary -schema-location default -skip "$crd_kinds"
+              | xargs -0 kubeconform -strict -ignore-missing-schemas -summary -schema-location default -kubernetes-version 1.33.0 -skip "$crd_kinds"
           }
           kc || { echo "[yaml/k8s] retry in 30s (schema-registry rate limit?)"; sleep 30; kc; } \
              || { echo "[yaml/k8s] retry in 90s"; sleep 90; kc; }
+
+      - name: Cross-manifest consistency (agentic-org apply set)
+        # ADDED 2026-08-25. The two steps above are the only checks this tree has,
+        # and NEITHER CAN SEE ACROSS DOCUMENTS: yamllint reads one file's syntax,
+        # kubeconform reads one resource against its schema. Every defect this step
+        # exists for is schema-VALID YAML that a cluster accepts at apply time and
+        # that fails later with a symptom that does not name its cause -- a Service
+        # whose named targetPort no container declares (endpoints with no port), an
+        # env var naming a Service port nothing exposes (telemetry into a black
+        # hole), a subPath key absent from its ConfigMap (a silently empty mount).
+        #
+        # THIS IS THE TREE A USB-BOOTED NODE ACTUALLY RUNS. It is raw YAML applied
+        # with one `kubectl apply -f`, not a chart and not an ArgoCD Application, so
+        # none of the helm-validate machinery reaches it.
+        #
+        # MEASURED on first contact at 60e2024e9: 6 findings, all real. The headline
+        # one is that `31-work-provider-secret.example.yaml` sat INSIDE the apply
+        # directory -- kubectl selects by extension, never by filename, so the
+        # documented bring-up applied the template, installing WORK_PROVIDER=github
+        # with the literal placeholder token and destroying the internal-only safe
+        # default the worker manifest promises. All 6 are fixed in the landing PR, so
+        # this step lands GREEN and is a ratchet against regression, not a debt.
+        #
+        # Offline, no network, ~0.15 s. No pipe: a pipeline would report the exit
+        # status of its last stage and discard the tool's.
+        run: bun src/Core.TypeScript/cluster/audit-agentic-org-manifests.ts
+
+      - name: Cross-manifest consistency — falsifiers (proves it goes red)
+        # The step above is only worth its slot if it can fail. 34 cases: each copies
+        # the real tree, breaks exactly one thing, and asserts exit 1 AND the specific
+        # check that fired -- plus an unmutated control asserting exit 0, and three
+        # vacuity guards asserting that an empty directory, a directory that parses to
+        # zero documents, and a nonexistent directory all FAIL rather than reporting a
+        # serene "0 findings".
+        #
+        # VERIFIED 2026-08-25 by stubbing the tool's non-zero exit: 22 of the 34 went
+        # red immediately, and the 12 that stayed green are exactly the controls and
+        # the pure-unit cases, which do not read the exit code. ~2.8 s.
+        run: bun test src/Core.TypeScript/cluster/audit-agentic-org-manifests.test.ts
 
   lint-shell:
     # Shellcheck on every bash script under tools/setup/ + tools/.
@@ -929,6 +1010,12 @@ jobs:
         # currently inline-duplicated across multiple jobs;
         # extracting to a composite action is a follow-up
         # improvement candidate.
+        # tier=slim — this lane runs shellcheck (mise pin 0.11.0) and nothing else, so it must not
+        # fetch the 237 MB agda->ghc apt payload. Full measurement + reasoning at
+        # the `lint (semgrep)` job above; pinned by
+        # src/Core.TypeScript/ci/apt-manifest-host-tier.test.ts.
+        env:
+          ZETA_HOST_TIER: slim
         run: |
           set -euo pipefail
           for attempt in 1 2 3 4 5; do
@@ -1066,6 +1153,170 @@ jobs:
         # the detector a deliberately-introduced ambient-time test and requires it to go red,
         # in both ratchet directions.
         run: bun run hygiene:no-ambient-time-in-tests
+      - name: A check may not claim a property of higher arity than it tests
+        # 081M0RAX8AC087G0R003NQM7P9. Noninterference is a HYPERPROPERTY -- a predicate over PAIRS
+        # of executions, and 2-safety (Clarkson & Schneider, CSF 2008 / JCS 18(6):1157). No
+        # single-run check can decide one; that is a theorem, not a coverage gap. Manifesto s13 IS
+        # noninterference, so the repo has committed to a discipline no arity-1 test can witness.
+        #
+        # The class is A CHECK WHOSE ARITY IS LOWER THAN THE PROPERTY IT CLAIMS. Self-comparison is
+        # its most visible form and not its definition: a grep for `X = X` misses two calls with
+        # identical arguments bound to DIFFERENT names, which is how the live instance in
+        # Properties/Policy.Relocation.Tests.fs survived every prior sweep -- a 1000-case FsCheck
+        # property that compared `delta` to itself, in a file no .fsproj compiled.
+        #
+        # Three rules. R1 gates: a test whose NAME declares independence of a named variable may
+        # not resolve to a self-comparison (arity is DECLARED, never inferred -- Rice 1953 makes
+        # the semantic version undecidable, and sampled read-set tracing is unsound in both
+        # directions). R2 is a counted census ratchet, failing when a file's count goes UP and
+        # equally when it goes DOWN, same mechanism as the ambient-time audit above. R3 fails on an
+        # F# test source no project compiles: arity ZERO, the floor of the class -- the `*.test.ts`
+        # half of that check has existed since 2026-08-13 and the F# half did not.
+        #
+        # Deliberately NOT a ban on self-comparison: most in this tree are correct (`f x = f x`
+        # evaluated twice IS two executions; mutation-mediated pairs differ in what happened
+        # between them; separately-constructed equal values are the point of an equality law).
+        # Rounding those up to "vacuous" is the same error in the opposite direction.
+        #
+        # Its own falsifier runs in the step below: audit-check-arity.test.ts feeds each rule a
+        # deliberately-broken fixture and requires it to go red, R2 in both ratchet directions.
+        run: bun run hygiene:check-arity
+
+      - name: Check arity -- the NON-EQUALITY half (a taint claim is not a string search)
+        # The step above inspects EQUALITY only. Its own PR named the gap and declined to size
+        # it: "Non-equality checks are entirely outside the detector ... Largest unsearched
+        # region, unsized." It is now sized -- 24,805 non-equality assertion sites across 1,928
+        # test files -- and two live instances were fixed:
+        #
+        #   * tools/setup/persona-keys/machine.test.ts claimed "no private bytes anywhere in it"
+        #     and discharged it with `not.toContain("PRIVATE")` plus a PEM-armor regex.
+        #     Publishing the COMPLETE private key base64-encoded passed all of it: 27 tests,
+        #     128 expect() calls, green. That is a 2-safety property tested by a one-run string
+        #     search, and it sat on a key-publication path.
+        #   * DurableDiplomacyRankGate.Tests.fs asserted `Set.count caps >= 0`, which is
+        #     non-negative by construction -- and the match arm holding it was never reached,
+        #     so it was arity ZERO rather than merely vacuous.
+        #
+        # Two rules, and only one of them gates. R4 gates provably-unfalsifiable comparisons:
+        # every pattern is a THEOREM about the expression's type (a length is non-negative;
+        # `X >= X` is reflexivity), so Rice does not bite -- nothing semantic is decided.
+        # R5 is a census ratchet over absence-assertions discharging a taint / 2-safety claim,
+        # failing when a file's count goes UP and equally when it goes DOWN.
+        #
+        # R5 is deliberately NOT a gate: of the 10 sites where an absence assertion sits under a
+        # 2-safety name, SIX are correct -- backed by an exact-equality pin on the whole output
+        # or by a positive capability assertion. A gate at 60% false positives is not a gate, it
+        # is a nuisance that gets suppressed. `Assert.True(true)` is likewise NOT flagged: all 8
+        # live instances are the success leg of a discriminating match whose other leg is
+        # `Assert.True(false, ...)`, so the enclosing check can fail.
+        #
+        # Scanned REPO-WIDE, unlike the step above whose SCAN_ROOTS is ["tests"]: 1,194 of the
+        # tree's 1,230 *.test.ts files -- 97% -- live outside tests/, and BOTH bugs above were
+        # in that region.
+        #
+        # Its own falsifier runs in the step below: audit-check-arity-nonequality.test.ts feeds
+        # each rule a broken fixture and requires it to go red, R5 in both ratchet directions,
+        # plus controls asserting the shapes that must NOT be flagged.
+        run: bun run hygiene:check-arity-nonequality
+
+      - name: Linter coverage vs CI invocation (a configured linter must be an invoked one)
+        # THE CLASS: a linter is present, configured, believed to be checking a file, and does
+        # not examine it -- while the invocation exits 0. Every instance produces a check that
+        # did not run and looks like a check that passed. Three were found by hand on
+        # 2026-08-24 (the markdownlint research/workitem carve-outs, prettier+stylelint
+        # invoked nowhere, 81 unformatted files under tools/setup/persona-keys/), which is the
+        # argument for a machine rather than a fourth point fix. #10712 -- `lint:markdown`
+        # linting ZERO files and exiting 0 for months -- is the same class, already paid for.
+        #
+        # Four checks: every lint-family package.json script is invoked or declared uninvoked
+        # WITH ITS REASON (both directions -- a ledger you can only add to is a suppression
+        # list); every linter discovered in the tree through three independent routes is
+        # claimed by a ledger row whose declared disposition matches the workflows; every
+        # GATED tool asserts a floor on the corpus its invocation actually reaches, so exit 0
+        # over zero files stops being indistinguishable from exit 0 over 2,843; and
+        # tsconfig.json#exclude vs eslint.config.ts#ignorePatterns -- two lists of one fact,
+        # maintained separately, 11 divergences covering 619 .ts files -- must match the
+        # declared set exactly.
+        #
+        # It turns NOTHING on and removes NO carve-out. Every carve-out may be deliberate;
+        # this step makes the blindness legible and fails when it CHANGES.
+        #
+        # Cost: 21 s MEASURED ON THE RUNNER (job 97406378383, 10:53:56Z -> 10:54:17Z), not
+        # the 13 s the same command takes on a dev laptop -- the laptop number was the first
+        # one written here and it was replaced rather than kept, because a cost estimate that
+        # quotes the wrong machine is the same defect as a check that quotes the wrong file.
+        # Nearly all of it is the markdownlint-cli2 probe that asks the linter itself which
+        # files it opens; reimplementing its ignore semantics here would drift from the gate
+        # within a release. Runs in this job because bun and the locked dependency graph are
+        # already provisioned four steps up -- no new job, no new runner, no new install. At
+        # ~1,100 gate runs/month that is ~6.4 runner-hours/month, against the ~95 the eslint
+        # roster already costs. It scales with `.md` count, not with rule count.
+        run: bun run hygiene:linter-coverage
+
+      - name: No culture-sensitive collation in TypeScript (.claude/rules/culture-invariant-by-default.md)
+        # THE CHECK EXISTED AND DID NOT RUN. This is the mechanical enforcement of a carved
+        # rule, it has had a baseline file since it landed, and until this step no workflow
+        # invoked it -- neither by script name nor by path. My own linter-coverage audit
+        # (four steps up) classified it `A GENUINE HOLE` and declined to close it, because
+        # that audit does not widen checks. This step is the separate, measured change it
+        # named.
+        #
+        # WHY THIS ONE AND WHY NOW -- it would have caught a regression shipped TODAY.
+        # The rule's cited live failure is 081KT07NV0008QG0R001YDB73K: `ZSet.ofSeq` sorted
+        # culture-sensitively, which made `GCounter.Merge` NON-ASSOCIATIVE -- a CRDT law
+        # broken by a collation choice. On 2026-08-24 an agent shipped two `localeCompare`
+        # calls into a PR, reintroducing that exact class, and said so in its own words:
+        # "I introduced the class I was arming a check against, twelve files away." It was
+        # caught by hand, late. The machine that exists for precisely this was not wired in.
+        #
+        # WHY C# DOES NOT NEED THIS AND TYPESCRIPT DOES: `.editorconfig` sets CA1304/1305/
+        # 1307/1310/2007 to `error`, so the C# compiler refuses culture-sensitive comparison
+        # outright. TypeScript has no equivalent analyzer. The same carved rule was a wall in
+        # one language and a suggestion in the other -- that asymmetry, not carelessness, is
+        # why these keep reappearing.
+        #
+        # A COLD START CANNOT REDDEN main. The baseline records the 151 pre-existing
+        # instances across 77 files as a RATCHET, not an allowlist: a file's count may fall,
+        # never rise, and a file absent from the baseline may have none at all. So this fails
+        # only on NEW debt. Nothing was added to the baseline to land this step and no
+        # allowlist entry was created -- the check goes on exactly as it already was.
+        #
+        # Cost: 1.64 s MEASURED ON THE RUNNER (job 97432756112, 12:34:18.98Z -> 12:34:20.62Z),
+        # over the 3,178 tracked files `git ls-files` reports. The laptop number was 2.34 s
+        # warm / 6.39 s cold and is NOT the one quoted -- here the laptop would have OVERstated
+        # the cost, where in the linter-coverage step above it understated it. That is the
+        # argument for quoting the runner either way: a laptop figure is not conservative, it
+        # is just the wrong machine.
+        #
+        # It is a single pass scanning for a closed list of named APIs (localeCompare, the Intl
+        # family, toLocale*), so it scales with tracked-file count, not with rule count. At
+        # ~1,100 gate runs/month the two steps added here together cost ~0.52 runner-hours/
+        # month, against the ~6.4 the linter-coverage step above costs and the ~95 the eslint
+        # roster costs. Runs in THIS job because bun and the locked dependency graph are already
+        # provisioned nine steps up -- no new job, no new runner, no new install.
+        run: bun run hygiene:no-culture-sensitive-collation
+
+      - name: mise pin parity (GOVERNANCE §24 three-way parity)
+        # The second hole the linter-coverage audit named and declined to close. A pin audit
+        # that ran in no workflow: work-item 081KZKS9A6B08QG0R0008EG72M shipped an installer
+        # ISO carrying nixpkgs' mise 2025.11.7 where CI carried the pinned 2026.6.12, because
+        # a second flake built the SAME installer configuration without the mise-pin overlay.
+        # An unpinned mise is below `.mise.toml`'s min_version and falls into a tarball branch
+        # that is deliberately fatal on NixOS -- so the divergence surfaced only at FIRST BOOT,
+        # which is the worst possible place for a parity defect to be discovered.
+        #
+        # Two checks, one per way to re-diverge: STRUCTURAL (any flake building the installer
+        # config must apply the overlay -- discovered by `git ls-files`, so a newly added flake
+        # is covered the moment it exists) and VALUE (every site restating the pin agrees with
+        # `.mise.toml`, which is read as canonical rather than restated here).
+        #
+        # Green on main today, so it goes on with no backlog and no suppression. Cost: 0.044 s
+        # MEASURED ON THE RUNNER (job 97432756112, 12:34:20.623Z -> 12:34:20.668Z) -- it reads a
+        # handful of flake.nix files plus `.mise.toml`, and the figure is dominated by bun
+        # start-up. Its sibling `hygiene:dotnet-pin-parity` is already invoked; this closes the
+        # asymmetry between the two.
+        run: bun run hygiene:mise-pin-parity
+
       - name: Hygiene unit-test suite (closes the per-PR coverage gap)
         # Runs every src/Core.TypeScript/hygiene/*.test.ts. These are
         # fixture/in-memory tests (no MEMORY.md / user-scope deps), so they
@@ -1224,6 +1475,12 @@ jobs:
         # memory-reference-existence-lint.yml (#1378). shellenv.sh
         # wires BASH_ENV so subsequent run: steps auto-source the
         # managed shellenv with bun on PATH.
+        # tier=slim — this lane runs one bun hygiene script and nothing else, so it must not
+        # fetch the 237 MB agda->ghc apt payload. Full measurement + reasoning at
+        # the `lint (semgrep)` job above; pinned by
+        # src/Core.TypeScript/ci/apt-manifest-host-tier.test.ts.
+        env:
+          ZETA_HOST_TIER: slim
         run: ./tools/setup/install.sh
 
       - name: Run check-no-conflict-markers
@@ -1277,6 +1534,12 @@ jobs:
         # memory-reference-existence-lint.yml (#1378). shellenv.sh
         # wires BASH_ENV so subsequent run: steps auto-source the
         # managed shellenv with bun on PATH.
+        # tier=slim — this lane runs one bun hygiene script and nothing else, so it must not
+        # fetch the 237 MB agda->ghc apt payload. Full measurement + reasoning at
+        # the `lint (semgrep)` job above; pinned by
+        # src/Core.TypeScript/ci/apt-manifest-host-tier.test.ts.
+        env:
+          ZETA_HOST_TIER: slim
         run: ./tools/setup/install.sh
 
       - name: Run check-archive-header-section33
@@ -1322,6 +1585,12 @@ jobs:
           key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
 
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
+        # tier=slim — this lane runs one bun hygiene script and nothing else, so it must not
+        # fetch the 237 MB agda->ghc apt payload. Full measurement + reasoning at
+        # the `lint (semgrep)` job above; pinned by
+        # src/Core.TypeScript/ci/apt-manifest-host-tier.test.ts.
+        env:
+          ZETA_HOST_TIER: slim
         run: ./tools/setup/install.sh
 
       - name: Run audit-section-33-migration-xrefs (--enforce)
@@ -1367,6 +1636,12 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
+        # tier=slim — this lane runs one bun hygiene script and nothing else, so it must not
+        # fetch the 237 MB agda->ghc apt payload. Full measurement + reasoning at
+        # the `lint (semgrep)` job above; pinned by
+        # src/Core.TypeScript/ci/apt-manifest-host-tier.test.ts.
+        env:
+          ZETA_HOST_TIER: slim
         run: ./tools/setup/install.sh
 
       - name: Run audit-tick-shard-relative-paths (--enforce --baseline)
@@ -1538,6 +1813,49 @@ jobs:
       - name: Run lint-drift-publication-lands (stale-behind-green guard)
         run: bun src/Core.TypeScript/hygiene/lint-drift-publication-lands.ts
 
+      # A workflow file GitHub will never read is not a check -- and it is worse than a
+      # missing one, because a missing check is visibly missing. Live instance 2026-08-25:
+      # agentic-organization/.github/workflows/ci.yml ran a 1,595-test suite and had never
+      # executed once, because Actions reads only the ROOT .github/workflows/. The two
+      # scaffold templates under src/Core.TypeScript/scaffold are exempt and SAID SO on
+      # every run -- the exemption is derived from create-repo.ts sitting beside them, so
+      # deleting that tool expires it rather than leaving an allowlist behind.
+      - name: Run lint-no-nested-workflow-dirs (a workflow that never runs is not a check)
+        run: bun src/Core.TypeScript/hygiene/lint-no-nested-workflow-dirs.ts
+
+      # An ubuntu runner always has 16 GB, so an UNDECLARED host tier is not adaptation --
+      # it is the constant `full`, i.e. 388 apt packages / 713.0 MiB on every run. Measured
+      # 2026-08-25: ci-cache-paths-lint failed 5 of its last 20 runs, all five inside the
+      # install step (exit 124, stalled on pandoc 26.9 MB and r-base-core 27.1 MB), while
+      # the check NAMED "audit actions/cache paths vs git ls-files" never reached its audit.
+      # This refuses SILENCE, never a particular tier: declaring `full` is a fine answer.
+      - name: Run audit-install-tier-declared (undeclared apt payload guard)
+        run: bun src/Core.TypeScript/hygiene/audit-install-tier-declared.ts
+
+      - name: Workflow-shape guard falsifiers (a check that cannot fail is not a check)
+        run: |
+          bun test \
+            src/Core.TypeScript/hygiene/lint-no-nested-workflow-dirs.test.ts \
+            src/Core.TypeScript/hygiene/audit-install-tier-declared.test.ts
+
+      # A privilege elevator resolved by NAME is substitutable by any writable directory
+      # earlier on PATH, and planting one leaves NO GIT DIFF -- so review, AgencySignature
+      # and byte-lock, all of which watch the repo, cannot see it. That was live on main as
+      # a P1 (docs/BUGS.md, 2026-08-24): the shared biometric approval gate returned
+      # ok:true from a shim that executed nothing. Deliberately NOT
+      # `sonarjs/no-os-command-from-path` repo-wide: that rule was available and did not
+      # catch this one -- it matches on the CALLEE, so a `run()` wrapper, an argv-prefix
+      # array and a program held in a variable are all invisible to it.
+      - name: Run lint-no-path-resolved-privilege-elevator (PATH-forgeable sudo guard)
+        run: bun src/Core.TypeScript/hygiene/lint-no-path-resolved-privilege-elevator.ts
+
+      - name: Elevator resolver + lint falsifiers (a check that cannot fail is not a check)
+        run: |
+          bun test \
+            src/Core.TypeScript/privilege/elevator.test.ts \
+            src/Core.TypeScript/hygiene/lint-no-path-resolved-privilege-elevator.test.ts \
+            tools/setup/persona-keys/biometric.test.ts
+
       # Tsirelson's bound is S <= 2*sqrt(2) ~= 2.828 on the CHSH correlator, implemented at
       # src/Core/Tsirelson.fs. 1/(3*sqrt(2)) ~= 0.2357 is a DIFFERENT number: the image of
       # S = 2*sqrt(2) under the freely chosen linear map rho = S/12, adjudicated as a DESIGN
@@ -1567,6 +1885,17 @@ jobs:
       # green-lit the very files they were written for. Pinned so they cannot come back.
       - name: Tsirelson-caveat guard unit tests (a check that cannot fail is not a check)
         run: bun test src/Core.TypeScript/hygiene/lint-tsirelson-constant-caveat.test.ts
+
+      # NOTE (2026-08-25): a `lint-no-direct-push-to-main` (PM001) check was wired in here
+      # and has been withdrawn. Not because the defect it found was unreal — three lanes on
+      # this branch are fixed BECAUSE of it — but because a check named "no direct push to
+      # main" states a doctrine this repo has since decided against: #15313 designs the
+      # heartbeat lane to push to `main` DIRECTLY, with a content-bound attestation and a
+      # post-hoc audit instead of a gate. The surviving rule is "no UNATTESTED direct push",
+      # which is `audit-heartbeat-lane-attestations.ts` in the `cross-verify` floor, not a
+      # blanket ban. Its one mechanical finding that neither AH001 nor AH002 could see —
+      # a skip token BUILT by `echo` into `git commit --file=-` — was folded into AH002
+      # itself rather than shipped as a third overlapping check.
 
   lint-no-empty-dirs:
     # Fail if a committed directory has no files — almost always a
@@ -1617,6 +1946,26 @@ jobs:
         # class MECHANICALLY — no judgement about whether a discharge is *good*, only a
         # refusal of rows that contradict (or are missing) their cited evidence.
         run: bun src/Core.TypeScript/hygiene/lint-discharge-certificate-consistency.ts
+
+      - name: Guard — the child-floor jurisdiction registry (081M0TJXY32087G0R003TBTR7V)
+        # The PREDICATE (protect children) is invariant; the THRESHOLD (~16-21) is a
+        # jurisdictional parameter. `Safety/ChildFloorPolicy.lean` proves, for EVERY
+        # registry, that no reading can lower the floor and that an unknown jurisdiction
+        # denies — so a bad entry cannot break safety, it is simply refused and the
+        # resolver falls through to the protective bound. That silence is why this lint
+        # exists: a jurisdiction that believes it declared 15 would get 21 and never learn.
+        # It also byte-locks the band across its three copies (Lean / TypeScript / JSON),
+        # because three copies of a safety constant is a drift bug waiting to happen.
+        run: bun src/Core.TypeScript/hygiene/lint-child-floor-registry.ts
+
+      - name: Child-floor policy falsifiers (081M0TJXY32087G0R003TBTR7V)
+        # The resolver's own test suite. It lives outside src/Core.TypeScript/hygiene/, so
+        # the hygiene suite does not reach it and only the non-blocking bare `bun test` job
+        # would — which is too far from the change for a SAFETY floor. Named here so it runs
+        # on every PR beside the lint it belongs to. Its sabotage registries are the same
+        # ones ChildFloorPolicy.lean §6 refuses, so the two oracles refuse the same attacks
+        # rather than each passing their own.
+        run: bun test src/Core.TypeScript/child-floor/
 
       - name: Guard — a golden-vector treaty may not claim a rule its vectors do not pin
         # PR #10759 was filed on the premise "the tie-break behaviour is byte-locked into
@@ -1728,6 +2077,36 @@ jobs:
         # A step name is read as a claim about what ran; keep it to what runs.
         run: bun src/Core.TypeScript/lint/lint-typescript.ts
 
+      # ESLint over the paths MEASURED CLEAN, and only those
+      # (workitem 081M0RBXF6J087G0R0023EX9X2). eslint has been configured,
+      # pinned and named in this workflow since day one while running nowhere;
+      # `lint (twitch-ai app)` (b1967172d, 2026-08-23T23:24:02Z) was the first
+      # path it actually ran on. This is the second, chosen by measurement
+      # rather than taste.
+      #
+      # Repo-wide the config finds 19,685 errors over 2,500 files, so a blanket
+      # `eslint .` would redden main by five figures. The roster in
+      # `lint:eslint` is every directory that measured EXACTLY ZERO on
+      # 6fb8f3149, minus `infra/k8s` — 102 files. `infra/k8s` measured zero too,
+      # but it is the STALE cluster declaration awaiting deletion
+      # (081M00QCHWA087G0R000GKKRXD): `audit-cluster-tree-consumers` went red on
+      # this very PR because naming it in package.json was new coupling to a tree
+      # whose roster must only SHRINK. Dropped rather than rostered — a lint
+      # roster is not a reason to keep a doomed tree alive. It locks the standard in where it already holds
+      # and costs nothing to satisfy today; the other ~19.6k errors stay a
+      # measured list in the workitem, not a silenced one. No rule is disabled,
+      # no path is ignored, nothing is downgraded to a warning.
+      #
+      # Widening = add a path to `lint:eslint` once it measures zero. The same
+      # script is what a laptop and a devcontainer run (`bun run lint:eslint`),
+      # so the three surfaces cannot drift.
+      #
+      # Cost: ~13s on this machine over 107 files (the typed-linting program
+      # load dominates, not the file count), inside a job already provisioned
+      # with bun + the eslint stack. No new job, no new runner, no new install.
+      - name: ESLint over the measured-clean path roster
+        run: bun run lint:eslint
+
   lint-twitch-ai:
     # twitch-ai is a self-contained Vite workspace (own tsconfig: lib DOM +
     # vite/client types, own bun.lock) that NO CI job ran — the app's real
@@ -1774,6 +2153,42 @@ jobs:
         run: bun run build
         working-directory: src/apps/twitch-ai
 
+  lint-identity-dla:
+    # demo/identity-dla-site is a self-contained pnpm/Vite workspace (own
+    # tsconfig, own pnpm-lock.yaml, packageManager pin) that NO PR-time job
+    # checked — its tsc lived solely inside pages-deploy.yml, which is not a
+    # required check. Measured cost of that gap: PR #14523 merged `*/` inside
+    # a block comment in OracleWorm.tsx, every Pages deploy went red for ~2h
+    # (10 consecutive failures across unrelated shas) and the live page
+    # silently served a stale bundle. Workitem 081M0RN9FW3087G0R000EBT0HH;
+    # the break itself was fixed in #14604 — this job is the standing half.
+    # It runs the DEPLOY'S OWN build entry (install → check → pages vite
+    # build), so the job and the deploy cannot drift apart; pnpm resolves
+    # from the site's own packageManager pin inside that script. The Go WASM
+    # oracle step degrades to a logged skip here (no ZETA_PAGES_REQUIRE_GO):
+    # this job's subject is the site's TypeScript, and pages-deploy still
+    # enforces the Go half where its setup-go step guarantees the toolchain.
+    # Drift check, not floor: adding a job to `gate (required)`'s needs is a
+    # treaty amendment (see the floor comment there); that decision stays
+    # with the consent path.
+    name: lint (identity-dla site)
+    timeout-minutes: 12
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Setup pinned Bun
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: "1.3.13"
+
+      - name: Install root dependencies (the builder's imports)
+        run: bun install --frozen-lockfile
+
+      - name: Build the site exactly as pages-deploy does (install + check + pages build)
+        run: bun ./src/Core.TypeScript/discovery/identity-dla-pages-build.ts
+
   # Per-language lint jobs (split from the former single sequential
   # "lint (F#, C#, Go, Python, Rust)" job, 2026-06-13). The combined job ran the
   # five lint scripts in sequence and SHORT-CIRCUITED at the first failure, so a
@@ -1808,6 +2223,12 @@ jobs:
             ~/.cache/zeta/from-autotools-tarball/*.tgz
           key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
+        # tier=slim — this lane runs `bun src/Core.TypeScript/lint/lint-fsharp.ts` and nothing else, so it must not
+        # fetch the 237 MB agda->ghc apt payload. Full measurement + reasoning at
+        # the `lint (semgrep)` job above; pinned by
+        # src/Core.TypeScript/ci/apt-manifest-host-tier.test.ts.
+        env:
+          ZETA_HOST_TIER: slim
         run: |
           set -euo pipefail
           for attempt in 1 2 3 4 5; do
@@ -1849,6 +2270,12 @@ jobs:
             ~/.cache/zeta/from-autotools-tarball/*.tgz
           key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
+        # tier=slim — this lane runs `bun src/Core.TypeScript/lint/lint-csharp.ts` and nothing else, so it must not
+        # fetch the 237 MB agda->ghc apt payload. Full measurement + reasoning at
+        # the `lint (semgrep)` job above; pinned by
+        # src/Core.TypeScript/ci/apt-manifest-host-tier.test.ts.
+        env:
+          ZETA_HOST_TIER: slim
         run: |
           set -euo pipefail
           for attempt in 1 2 3 4 5; do
@@ -1890,6 +2317,12 @@ jobs:
             ~/.cache/zeta/from-autotools-tarball/*.tgz
           key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
+        # tier=slim — this lane runs `bun src/Core.TypeScript/lint/lint-go.ts` and nothing else, so it must not
+        # fetch the 237 MB agda->ghc apt payload. Full measurement + reasoning at
+        # the `lint (semgrep)` job above; pinned by
+        # src/Core.TypeScript/ci/apt-manifest-host-tier.test.ts.
+        env:
+          ZETA_HOST_TIER: slim
         run: |
           set -euo pipefail
           for attempt in 1 2 3 4 5; do
@@ -1931,6 +2364,12 @@ jobs:
             ~/.cache/zeta/from-autotools-tarball/*.tgz
           key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
+        # tier=slim — this lane runs `bun src/Core.TypeScript/lint/lint-python.ts` and nothing else, so it must not
+        # fetch the 237 MB agda->ghc apt payload. Full measurement + reasoning at
+        # the `lint (semgrep)` job above; pinned by
+        # src/Core.TypeScript/ci/apt-manifest-host-tier.test.ts.
+        env:
+          ZETA_HOST_TIER: slim
         run: |
           set -euo pipefail
           for attempt in 1 2 3 4 5; do
@@ -1972,6 +2411,12 @@ jobs:
             ~/.cache/zeta/from-autotools-tarball/*.tgz
           key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
+        # tier=slim — this lane runs `bun src/Core.TypeScript/lint/lint-rust.ts` and nothing else, so it must not
+        # fetch the 237 MB agda->ghc apt payload. Full measurement + reasoning at
+        # the `lint (semgrep)` job above; pinned by
+        # src/Core.TypeScript/ci/apt-manifest-host-tier.test.ts.
+        env:
+          ZETA_HOST_TIER: slim
         run: |
           set -euo pipefail
           for attempt in 1 2 3 4 5; do
@@ -2000,9 +2445,20 @@ jobs:
     # ORACLES assert COMMITTED outputs (no dotnet/rust/QDK toolchain needed); the ace suite installs
     # npm deps (z3-solver) + uses the runner node for its solver Z3 differential. This is the
     # ENFORCEMENT half of the canonical-primitive gate (proof + 4-language byte-lock); the proof half
-    # is the formal-coverage cadence / lean-proof lane. NOTE: promoting this to a REQUIRED check
-    # (branch protection) is a separate operator/devops step — until then it runs + shows on every PR
-    # but does not block auto-merge.
+    # is the formal-coverage cadence / lean-proof lane.
+    #
+    # THIS JOB IS IN THE REQUIRED FLOOR. It is named in `gate-required.needs` below, and
+    # `CI Gate` requires `gate (required)`, so a red here does block a merge. The note that
+    # stood here until 2026-08-24 said the opposite — "promoting this to a REQUIRED check is
+    # a separate operator/devops step ... it does not block auto-merge" — and it was false
+    # for long enough to be believed: it was read on 2026-08-24 as evidence that the ace
+    # drift gate was ungated, when a sabotage control proved the opposite. Adding a
+    # `ProjectReference` to `clis/Zeta.Clis.fsproj` without regenerating
+    # `src/Core.TypeScript/ace/build-graph.json` takes `bun test src/Core.TypeScript/ace/`
+    # from 703 pass / 0 fail to 701 / 2, rc=1, and the two failures are the DRIFT GATE pair
+    # — inside this job, inside the floor. A comment claiming a gate does not gate is the
+    # same defect class as a gate that does not run, pointed the other way, so it is
+    # corrected rather than left as folklore (081M0TK8DE8087G0R0001HSKHF).
     name: cross-verify (trust-core oracles + ace suite)
     timeout-minutes: 12
     runs-on: ubuntu-24.04
@@ -2055,6 +2511,199 @@ jobs:
       # check need no toolchain, so they belong on the pre-merge floor.
       - name: Proof-lineage binary exception (no-binary-in-proof-lineage.md)
         run: bun src/Core.TypeScript/hygiene/audit-proof-lineage-binaries.ts
+
+      # THE VACUITY CLASS, INVERTED — a step that can never SUCCEED.
+      #
+      # `${{ steps.X.outputs.Y }}` with no writer interpolates to the empty string silently.
+      # A step guarding on that value fails every run forever, and its error names the
+      # PRODUCER, so the fault reads as a defect in that step. Live instance the day this
+      # landed: `agent-heartbeat.yml`'s flush returned success on two paths without declaring
+      # `skip`, so every backpressured tick — a HEALTHY outcome — reported as a broken flush.
+      # Three agents diagnosed it as an auto-merge token-scope fault; that call was never
+      # reached. The second of the two paths was found by this check, not by hand.
+      - name: Step outputs have writers (a step that cannot succeed)
+        run: bun src/Core.TypeScript/hygiene/audit-workflow-step-output-has-writer.ts
+
+      # A REAL SHA THAT NOBODY CHOSE.
+      #
+      # Every third-party action is pinned to a SHA, which reads as supply-chain discipline
+      # until you ask who checked the SHA. A 40-hex string is indistinguishable from a
+      # fabricated one by shape, and two sites can pin one action at two SHAs indefinitely
+      # while every review of either looks clean. Both happened here on 2026-08-25: an agent
+      # nearly shipped an invented SHA for an action this repo does not use, and
+      # `ruleset-apply.yml` landed `actions/upload-artifact` at a SHA a YEAR older than the
+      # ten other sites. The roster makes the pin a value someone committed, not remembered.
+      - name: Third-party actions match the SHA roster (AH007)
+        run: bun src/Core.TypeScript/hygiene/audit-action-sha-roster.ts
+
+      # A TASK ID THAT IS WELL-FORMED AND IDENTIFIES NOTHING.
+      #
+      # The AgencySignature gate validates `Task:` for placeholder-ness and SHAPE, never
+      # existence — so an invented-but-well-formed ZetaId passes silently, and it is harder
+      # to spot than a placeholder because it looks exactly right. The legacy `B-NNNN`
+      # scheme has had this guard since `b-ref-resolve.ts`; the ZetaId scheme that REPLACED
+      # it never got one, so the newer mandatory key was the less-checked one.
+      #
+      # Live instance the day this landed: `Task: 081M0X0JQGY087G0R000EBCPQ3`, written by
+      # hand instead of minted, caught only because its author re-read his own trailer.
+      - name: Task ZetaIds resolve to work-items (AH006)
+        # PULL-REQUEST ONLY, and the `if:` is load-bearing rather than cosmetic.
+        # `github.event.pull_request.body` is EMPTY on a push to `main`, and this audit
+        # deliberately exits 2 on empty input ("NO INPUT — This is NOT a pass") so that a
+        # check with nothing to check can never read as a check that passed. That refusal is
+        # correct; wiring it into a job that also runs on push was not. The result was a
+        # cross-verify red on every push to main whose exit code (2, not 1) said plainly it
+        # was a check that never ran — and it was read as a pre-existing failure for hours.
+        # A push has no PR body to validate; the commit trailer is validated separately.
+        if: github.event_name == 'pull_request'
+        env:
+          # The PR body carries the AgencySignature block, and unlike `git log` it is present
+          # on a SHALLOW checkout. The first wiring of this step piped `git log -50`, CI checks
+          # out depth 1, and the audit passed having examined ZERO ids — the exact vacuity it
+          # was written to catch, in its own wiring. It now exits 2 on empty input, so a
+          # regression here goes red instead of green.
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: |
+          printf '%s' "$PR_BODY" | bun src/Core.TypeScript/hygiene/audit-task-zetaid-resolves.ts --stdin
+
+      # THE FALSIFIER FOR CREDENTIAL-ROLE COLLAPSE (AH003, 2026-08-25).
+      #
+      # `docs/security/2026-08-17-society-heartbeat-token-boundary-and-gate-start-failure.md`
+      # names THREE credential roles with three secrets: dispatch, branch-push, PR-create. A
+      # `${{ secrets.A || secrets.B || secrets.GITHUB_TOKEN }}` expression erases that table at
+      # the point of use -- `||` selects on the left secret being EMPTY, so an absent scoped
+      # credential is silently replaced by one with DIFFERENT authority and the step then fails
+      # somewhere downstream naming the wrong subject. 25 such chains across 12 workflows had
+      # accumulated behind per-step comments that described the ladder as the SAFE half.
+      #
+      # It is the SILENT selection this refuses, never the degradation itself: a probe + an
+      # explicit `::warning` naming the secret and scope inside a `run:` block is good design
+      # and is untouched (agent-heartbeat.yml keeps three of them).
+      #
+      # Distinct from `audit-workflow-write-token-consistency.ts` above, which asks whether a
+      # forge-write step reaches A PAT. This asks whether it reaches THE RIGHT ONE, and only
+      # that one. A step can satisfy that audit and still be a role collapse -- all 25 sites
+      # did, which is why one check does not subsume the other.
+      #
+      # Offline (reads only committed workflow text, no sockets), so it belongs on the
+      # pre-merge floor rather than post-merge.
+      - name: Workflow credential role separation (one role, one secret)
+        run: bun src/Core.TypeScript/hygiene/audit-workflow-credential-role-separation.ts
+
+      # AH005 — a committed identity that GitHub resolves to somebody who is not us.
+      #
+      # `<username>@users.noreply.github.com` is the LEGACY plain noreply form and GitHub
+      # resolves it DIRECTLY to whoever owns that username today. Two of our personas
+      # shipped under it (15 commits and 2 commits), and both local-parts are live accounts
+      # belonging to uninvolved private individuals. They are rendered in this repository's
+      # Contributors sidebar, which aggregates trailer co-authors — note the REST
+      # `/contributors` endpoint does NOT, which is why an earlier check of that endpoint
+      # came back clean and under-reported the problem.
+      #
+      # The audit scans the SOURCES THAT GENERATE identities, never git history. The
+      # offending commits are on `main` and correcting them would mean force-pushing the
+      # default branch, so they stay. An audit pointed at history would be permanently red
+      # over commits nobody may fix, and a check that can never go green gets disabled.
+      #
+      # HERE on the cross-verify floor because it is offline (reads only committed text, no
+      # sockets, no DNS — the fabricated-namespace list is a closed enumeration rather than
+      # a resolver for exactly that reason). Measured: ~1.4 s warm over 2,028 generator
+      # files. Proven able to fail before it was wired: run against the pre-fix contents of
+      # the same seven files it reports 7 findings and exits 1.
+      - name: Co-author identity collision (AH005 — plain-username GitHub noreply form)
+        run: bun src/Core.TypeScript/hygiene/audit-coauthor-identity-collides.ts
+
+      # THE FALSIFIER FOR THE PR-ARCHIVE COVERAGE COLLAPSE (2026-08-25).
+      #
+      # `agent-heartbeat.yml`'s auto-merge steps hardcoded `secrets.GITHUB_TOKEN` while every
+      # other credentialed step in that file used the PAT fallback chain. A merge armed with
+      # GITHUB_TOKEN lands as `github-actions[bot]`; GitHub suppresses workflow triggers for
+      # GITHUB_TOKEN-driven events, so `pull_request: closed` never fires and
+      # pr-archive-on-merge.yml never runs — with NO failure anywhere, which is why it was
+      # misdiagnosed as a credential problem several times. Measured 2026-08-21..25: 747 of
+      # 765 (97.6%) eligible unarchived PRs were bot-merged; 530 of 539 (98.3%) archived ones
+      # were user-merged.
+      #
+      # The defect is the INCONSISTENCY, not the instance — one step out of nine disagreeing
+      # with its neighbours, which prose cannot hold. Offline (reads only committed workflow
+      # text, no sockets), so it belongs on the pre-merge floor rather than post-merge.
+      - name: Workflow write-token consistency (forge writes must reach the PAT)
+        run: bun src/Core.TypeScript/hygiene/audit-workflow-write-token-consistency.ts
+
+      # The falsifier for the PR-free heartbeat lane. Design:
+      # docs/research/2026-08-25-pr-free-heartbeat-lane-attestation-instead-of-gate.md
+      #
+      # The lane's proposal is that a bypass actor on ruleset `CI Gate` (16134995) pushes
+      # telemetry straight to `main`, skipping `gate (required)`, and that the lane verifies
+      # ITSELF. A bypass actor is a permanent hole, so that self-verification has to be a
+      # checkable fact rather than a claim -- this is the check. For every commit the lane
+      # produced it requires a content-bound attestation (`Verification-Subject` is the
+      # commit's own tree sha, so a COPIED attestation fails), a path allowlist, and a
+      # change-mode check in which `append-only` means the pre-image is a byte PREFIX of the
+      # post-image -- NOT `deletions == 0`, which `docs/github/prs/manifest.jsonl` satisfies
+      # 13 times in 40 while inserting its rows in sorted order.
+      #
+      # HERE on the cross-verify floor because it is offline (no sockets, reads only committed
+      # git objects) and because a bypass-lane guard must run on exactly the lane a path filter
+      # would exclude. Collection is two-phase for CORRECTNESS, not speed: this job checks out
+      # at fetch-depth 1, where the tip has no parent, so `git show --name-status` would report
+      # the entire 45k-file tree as added and `<sha>^` would not resolve. Metadata alone decides
+      # NOT-LANE, so a commit the audit does not judge never enters that path -- and where the
+      # parent genuinely is unreachable it exits 2 rather than reading a missing object as a
+      # violation. Measured on a full clone: 6.9 s for a 300-commit metadata-only window.
+      #
+      # HONEST STATE, so nobody quotes a green run as evidence: `cutoverIso` in the registry
+      # is 2099-01-01 and the lane identity does not exist yet, so TODAY this returns clean
+      # over 300 commits with all 300 classified NOT-LANE -- armed, and vacuous until step 4
+      # of the design doc's section 12. It was proven able to fail against real history
+      # first: with the cutover moved back and the current flush identity registered it
+      # reports 290 violations of 300. The unit tests below are what keep it non-vacuous in
+      # the meantime.
+      - name: PR-free heartbeat lane attestations (armed; vacuous until the lane exists)
+        run: bun src/Core.TypeScript/hygiene/audit-heartbeat-lane-attestations.ts --max 300
+
+      - name: Heartbeat-lane audit unit tests (a check that cannot fail is not a check)
+        run: bun test src/Core.TypeScript/hygiene/audit-heartbeat-lane-attestations.test.ts
+
+      # Two commit-back-lane audits, both of which existed as code and NEITHER of which any
+      # workflow invoked. `audit-push-without-rebase.ts` (AH001) shipped 2026-08-10 with a
+      # named live instance and zero callers — the guard against a lane erasing its own
+      # commit had never once executed in CI. An audit nothing runs is the vacuity class in
+      # its purest form: it reads as protection and constrains nothing, which is exactly the
+      # property both of these audits exist to refuse in other people's code.
+      #
+      # AH002 is the newer half. The `[skip ci]` refusal already lived inside
+      # `flush-via-staging.ts`, where it protects every lane that ALREADY adopted the safe
+      # route and is invisible to every lane that did not — so `lockfile-healer` pushed a
+      # skip-token commit at `main` for eleven days while reporting 40/40 green, because its
+      # `Commit and push` step is gated on drift being detected and no drift occurred. The
+      # load-bearing path had never run under ruleset "CI Gate".
+      - name: Commit-back lane can re-express its work (AH001)
+        run: bun src/Core.TypeScript/hygiene/audit-push-without-rebase.ts
+
+      - name: Commit-back lane can actually land (AH002)
+        run: bun src/Core.TypeScript/hygiene/audit-skip-token-cannot-land.ts
+
+      # AH003 — the archive lane's record actually reached `main`.
+      #
+      # The third instance of the same class as the two above, and the most expensive to date.
+      # `pr-archive-on-merge.yml` was changed SEVENTEEN times; its recent runs read 12 success
+      # / 8 skipped / 0 failures — green, while 1,290 `automation/pr-archive-*` refs sat on the
+      # remote. Every check it had asked a PROXY question ("did the tool run", "did I create a
+      # PR"), and its sibling `audit-archive-pr-lane.ts` takes `gh pr list` as its input, so it
+      # is structurally blind to a ref that never had a PR at all — which is what these were.
+      #
+      # This one takes REFS as input and asks the only question that is the point: is the
+      # record ON MAIN? It runs HERE, on the pre-merge floor and fatal, rather than as the
+      # non-fatal warning its sibling gets inside the heartbeat tick. A lane that leaked
+      # because one failure was tolerated does not get its falsifier installed as another
+      # tolerated failure.
+      #
+      # It gates on a high-water mark that may only be lowered, so the pre-existing backlog
+      # cannot hold the floor red while any NEW strand fails immediately. Deleting a stranded
+      # ref does not make it pass — the record is still absent from main.
+      - name: Archive lane record reached main (AH003)
+        run: bun src/Core.TypeScript/hygiene/audit-orphaned-archive-refs.ts
 
       # The .NET SDK version is declared in TWO files and, until 2026-08-23, nothing checked
       # that they agreed: `global.json` carried `rollForward: latestPatch` (which reads like
@@ -2288,11 +2937,13 @@ jobs:
   test-typescript-hermetic:
     # ══ TIER 1 OF 2: HERMETIC ═══════════════════════════════════════════════════════════
     #
-    # A RED X HERE MEANS A REAL REGRESSION. That is the entire claim of this job, and it is
-    # the property the tier split was built to establish. Nothing below depends on a venv,
-    # a cluster, a container, a physical device, an attached ISO, or the invoking user's
-    # home directory. Toolchain comes from install.sh, which is the same script a laptop and
-    # a devcontainer run (GOVERNANCE §24), so a developer reproduces this verdict exactly.
+    # A RED X HERE MEANS THE CHECKED-OUT SOURCE OR ITS DECLARED TOOLCHAIN BASELINE IS BROKEN.
+    # That is the property the tier split was built to establish. Nothing below depends on a
+    # venv, a cluster, a container, a physical device, an attached ISO, or the invoking user's
+    # home directory. CI declares ubuntu-24.04, pinned Bun, the frozen lockfile, and pinned SMT
+    # binaries below; developers realize the broader supported baseline through install.sh.
+    # "Hermetic" here is a failure-attribution boundary, not a bit-identical runner image --
+    # hosted-image drift remains possible and must be named if it is ever the cause.
     #
     # WHY THE SPLIT. MEASURED 2026-08-16 across the 53 most recent completed `gate` runs:
     # the old undivided `test (TS suite)` was red in 17 of them (32%), and in 15 of those the
@@ -2319,10 +2970,10 @@ jobs:
     # tier while nothing else runs it would be a deletion wearing a split's face; that is the
     # condition the checker exists to make unlandable.
     #
-    # PROMOTION. This job is STILL absent from the `gate-required` needs list -- branch
-    # protection is a treaty amendment, not a workflow edit. It is now the tier that is
-    # eligible: adding `- test-typescript-hermetic` to `gate-required.needs` is the one-line
-    # change, once the maintainer consents.
+    # PROMOTED 2026-08-25. This job is in the `gate-required` needs list under explicit
+    # maintainer consent. The promotion is a floor amendment, not just a dependency edit;
+    # registry/uncompensatable-floor.yaml and the drift-and-heal ADR record its rationale
+    # and its narrow whole-tree exception to the usual diff-scoped rule.
     #
     # THE GAP THIS CLOSES. Before this job, CI executed roughly 130 of the repo's 900-plus
     # `*.test.ts` files. Whole directories -- discovery/, planning/, browser-node/,
@@ -2365,13 +3016,14 @@ jobs:
     # at roughly 250 gate runs per month that is on the order of 2,250 runner-minutes added.
     # It buys execution of ~770 files and ~9,000 assertions that today execute nowhere.
     #
-    # RUNS, DOES NOT BLOCK. Deliberately absent from the `gate-required` needs list. The
-    # 2026-08-01 drift-and-heal ADR narrowed the blocking floor to
-    # registry/uncompensatable-floor.yaml after a priority-inversion incident; making ~770
-    # long-unrun files blocking on day one would be that inversion again. Running them IS the
-    # drift signal. Promotion to the floor is a separate treaty amendment, once this job has
-    # a track record. The blocking subset is unchanged: build-and-test, cross-verify,
-    # full-verify and lint (semgrep) keep their existing named steps and their floor status.
+    # RUNS AND BLOCKS. The probation period produced the evidence the original split asked
+    # for. PR #15352 merged with this job FAILURE beside a successful required rollup: a cold
+    # Go compiler invocation exceeded a shared 15-second generated-code timeout, while the
+    # durable outputs were never written. PR #15358 repaired that real repository defect,
+    # but merged five minutes BEFORE this job reported success because the rollup did not
+    # depend on it. PR #15395 then supplied a second post-repair green run before merge.
+    # The environment-dependent tier remains non-blocking; only this dependency-closed,
+    # reproducible behavior suite enters the floor.
     name: test (TS hermetic)
     timeout-minutes: 20
     runs-on: ubuntu-24.04
@@ -2411,6 +3063,12 @@ jobs:
         # soft-skip under that pair. Checksummed GitHub-release binaries go in
         # ~/.local/bin. No-op when PATH already meets the floor.
         run: bun src/Core.TypeScript/ace/setup-realizers/install-pinned-smt.ts
+
+      - name: Verify light-time endpoint-speed envelope certificates
+        # The Lean module is reached by the F# build. This companion TypeScript test
+        # executes the Z3 outcome sequence and the independent ephemeris fault control;
+        # neither may be a documentation-only proof artifact.
+        run: bun test src/Core.TypeScript/planning/light-time-endpoint-speed-envelope.test.ts src/Core.TypeScript/planning/orbital-independent-check.test.ts
 
       - name: Tier manifest (what the hermetic tier deliberately does not run, and why)
         # Printed BEFORE the suite, pass or fail, so the log states the tier's own boundary
@@ -2484,6 +3142,12 @@ jobs:
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
         # Same retry rationale as every other install.sh step in this file
         # (Aaron 2026-04-28 PR #23 mise+bun-1.3.13 502).
+        env:
+          # TIER DECLARED, not detected. This job genuinely needs the wider payload:
+          # environment-dependent tests are gated on the wide toolchain by design; the payload has not been measured down.
+          # Recorded explicitly so the next reader sees a decision rather than a default;
+          # audit-install-tier-declared.ts refuses silence, never a particular tier.
+          ZETA_HOST_TIER: full
         run: |
           set -euo pipefail
           for attempt in 1 2 3 4 5; do
@@ -2563,6 +3227,12 @@ jobs:
           key: full-verify-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
 
       - name: Install toolchain (all 7 languages + E-prover)
+        env:
+          # TIER DECLARED, not detected. This job genuinely needs the wider payload:
+          # the 7-language oracle: emscripten and llvm are tier=standard, and .mise.full.toml carries the k8s/WASM set that only tier=full merges.
+          # Recorded explicitly so the next reader sees a decision rather than a default;
+          # audit-install-tier-declared.ts refuses silence, never a particular tier.
+          ZETA_HOST_TIER: full
         run: |
           set -euo pipefail
           for attempt in 1 2 3 4 5; do
@@ -2624,6 +3294,18 @@ jobs:
 
       - name: Clifford cross-verify (Cl(3,0) geometric algebra)
         run: bun test tests/cross-verification/_harness/codegen-clifford.test.ts
+
+      # The Cayley-Dickson -> maximal-order ladder (A2 / D4 / E8). Wired HERE, and not left
+      # sitting in src/ as an unrun file, because #14914 measured that a test nothing invokes
+      # reads exactly like a passing one. Two prior reviews of this material (#15415, #15417)
+      # both self-labelled `unmetered` for precisely that reason: their arithmetic lived in a
+      # scratch worktree and nothing in the tree went red if it was wrong. This step is what
+      # makes the successor document's numbers falsifiable -- the octavian completion count
+      # (3, not 1), the six S_3 gluings, the split-condition witness, and the rank-16 control.
+      # Runtime ~35s; the slow cases carry explicit per-test timeouts (bunfig's cap is 5000ms).
+      - name: CD order ladder (banana-split factorisation falsifiers)
+        run: bun test src/Core.TypeScript/research/banana-split/cd-order-ladder.test.ts
+        timeout-minutes: 5
 
       - name: Notify on failure
         if: failure()
@@ -2698,10 +3380,12 @@ jobs:
       nonblocking-failures: ${{ steps.scope.outputs.nonblocking-failures }}
     # ── THE FLIP (drift-and-heal ADR, Aaron 2026-08-01): blocking gates are
     # corporate mode; drift checks are sovereign mode. The gate now rolls up
-    # ONLY the uncompensatable floor (registry/uncompensatable-floor.yaml):
-    #   - build-and-test        (functional build/test breaks)
-    #   - cross-verify/full-verify (treaty byte-lock golden vectors)
-    #   - lint [semgrep]        (workflow supply-chain / script-injection)
+    # ONLY the recorded floor (registry/uncompensatable-floor.yaml):
+    #   - build-and-test             (functional build/test breaks)
+    #   - test-typescript-hermetic   (dependency-closed TypeScript behavior breaks)
+    #   - cross-verify/full-verify   (treaty byte-lock golden vectors)
+    #   - lint [semgrep]             (workflow supply-chain / script-injection)
+    #   - lint-typescript            (TypeScript type breaks)
     # Every hygiene/style lint below STILL RUNS on every PR and every main
     # push — that is the drift detection — it just no longer blocks unrelated
     # lanes (the 2026-07-08 priority inversion / 2026-08-01 six-rebuild race).
@@ -2723,6 +3407,14 @@ jobs:
     # matrix, which is exactly why the `Emit scope` step below exists: it names any
     # leg that failed non-blockingly, so a green here still says which green it is.
     # registry/uncompensatable-floor.yaml records the narrowed coverage in data.
+    #
+    # ── AMENDMENT 2026-08-25 (Aaron, explicit: "lets try to get your hermetic
+    # suite in and if we need to update drift policies do so").
+    # `test-typescript-hermetic` enters the required floor after its probationary
+    # non-blocking period. This is intentionally a narrow whole-tree exception to
+    # the diff-scoped default: the suite is dependency-closed and reproducible, and
+    # its bare `bun test` invocation is what prevents new test directories from
+    # falling outside CI. The environment-dependent tier remains drift-only.
     #
     # The evidence is this job's own header, twenty lines up from its `name:`:
     # it was created because "Slice 9 (PR #882) shipped a real TS2322 to main",
@@ -2770,6 +3462,7 @@ jobs:
       - lint-typescript
       - cross-verify
       - full-verify
+      - test-typescript-hermetic
     steps:
       # Sparse: two paths, no blobs, one commit. The full checkout other jobs take
       # measures ~11 s here; this one has no reason to pay for 36k files.
@@ -2940,6 +3633,7 @@ jobs:
           filter: blob:none
           sparse-checkout: |
             src/Core.TypeScript/ci/drift-loud.ts
+            src/Core.TypeScript/ci/verdict-drought.ts
             data/platform-drift.json
           sparse-checkout-cone-mode: false
 
@@ -2966,3 +3660,35 @@ jobs:
           bun src/Core.TypeScript/ci/drift-loud.ts \
             --repo "$REPO" --run-id "$RUN_ID" --window 60 \
             --ledger data/platform-drift.json
+
+      # THE SECOND HALF OF THE SAME QUESTION, and the half that had no detector at all.
+      #
+      # `drift-loud` above asks "which failures were absorbed?" -- a question about runs
+      # that EXECUTED. It is silent, by construction, about a `main` on which nothing
+      # executed: hand it a window of 60 cancelled runs and `subjects` is empty,
+      # `sustained` is empty, and it prints `EXIT 0 -- no sustained drift`. It is not
+      # wrong; it is reporting on a measurement that never happened.
+      #
+      # Measured 2026-08-23T17:35Z: the last SUCCESS on main was 10fbd9a4, 16:29:06Z ->
+      # 16:43:22Z, ~52 minutes and ~20 commits earlier; of the last 8 gate runs, 6 were
+      # cancelled and 2 were still running. `gate.yml`'s concurrency group cancels the
+      # in-flight run on every merge, three merges landed inside 24 seconds, and a full
+      # gate takes ~14 min -- so merges outran the gate by roughly an order of magnitude
+      # and the commits in between carry NO verdict at all. `cancelled` reads as neither
+      # pass nor fail, so nothing anywhere reported it.
+      #
+      # NOTHING ABOUT THE POLICY IS CHANGED HERE. The concurrency group, a merge queue,
+      # and the flush cadences are the three options on the table and choosing between
+      # them is a human call. This step makes the condition measurable so whichever is
+      # chosen can be verified afterwards -- the same number, before and after.
+      #
+      # `if: always()` because the step above exits non-zero whenever ITS signal is loud,
+      # and one loud detector must never mute the other.
+      - name: Report main's gate-verdict drought, loudly
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          bun src/Core.TypeScript/ci/verdict-drought.ts \
+            --repo "$REPO" --window 60

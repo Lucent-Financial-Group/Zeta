@@ -15,6 +15,7 @@
     "build-graph:quorum": "bun ./src/Core.TypeScript/ace/build-graph.ts quorum",
     "generate:transcript": "bun ./src/Core.QSharp.ReferenceOracle/generate-treaty-transcript.ts",
     "lint:typescript": "bun ./src/Core.TypeScript/lint/lint-typescript.ts",
+    "lint:eslint": "eslint eslint.config.ts src/Core.QSharp.ReferenceOracle src/Core.TypeScript/agent-bus src/Core.TypeScript/ansi src/Core.TypeScript/audit-packages src/Core.TypeScript/byte-cost src/Core.TypeScript/claude-hooks src/Core.TypeScript/enforcement src/Core.TypeScript/federated-identity src/Core.TypeScript/fuzz src/Core.TypeScript/g-set src/Core.TypeScript/git src/Core.TypeScript/io-boundary src/Core.TypeScript/lanes src/Core.TypeScript/mixin src/Core.TypeScript/pam src/Core.TypeScript/persistence src/Core.TypeScript/privilege src/Core.TypeScript/resource-planner src/Core.TypeScript/splitmix64 src/Core.TypeScript/tradition-density src/Core.TypeScript/watermark src/Core.TypeScript/z-set src/Core.TypeScript/zetadb",
     "lint:markdown": "markdownlint-cli2 \"**/*.md\"",
     "lint:css": "stylelint \"**/*.css\" --allow-empty-input",
     "format:check": "prettier --check \"**/*.{json,jsonc,md,markdown,ts,toml,yml,yaml,css}\"",
@@ -31,6 +32,8 @@
     "test:browser-revision-policy": "bun ./src/Core.TypeScript/browser-node/browser-revision-policy-smoke.ts",
     "test:browser-pwa": "bun ./src/Core.TypeScript/browser-node/browser-pwa-smoke.ts",
     "test:browser-admission": "bun ./src/Core.TypeScript/browser-node/browser-execution-admission-smoke.ts",
+    "setup:touchid-sudo": "bun ./tools/setup/touchid-sudo.ts --apply",
+    "setup:touchid-sudo-verify": "bun ./tools/setup/touchid-sudo.ts --verify",
     "run:zetadb-node": "bun ./src/Core.TypeScript/zetadb/scheduled-node.ts",
     "run:proposal-device-relay": "bun ./src/Core.TypeScript/browser-node/browser-delegated-device-proposal-relay-host.ts",
     "hygiene:sort-tick-history": "bun ./src/Core.TypeScript/hygiene/sort-tick-history-canonical.ts",
@@ -45,7 +48,10 @@
     "hygiene:no-decide-by-grep": "bun ./src/Core.TypeScript/hygiene/lint-no-decide-by-grep.ts",
     "hygiene:no-check-then-use-file-races": "bun ./src/Core.TypeScript/hygiene/lint-check-then-use-file-races.ts src/Core.TypeScript --min-files 1500 --baseline src/Core.TypeScript/hygiene/lint-check-then-use-file-races.baseline.json",
     "hygiene:no-ambient-time-in-tests": "bun ./src/Core.TypeScript/hygiene/audit-ambient-time-in-tests.ts",
+    "hygiene:check-arity": "bun ./src/Core.TypeScript/hygiene/audit-check-arity.ts",
+    "hygiene:check-arity-nonequality": "bun ./src/Core.TypeScript/hygiene/audit-check-arity-nonequality.ts",
     "hygiene:scan-floor-routes": "bun ./src/Core.TypeScript/hygiene/audit-scan-floor-routes.ts",
+    "hygiene:linter-coverage": "bun ./src/Core.TypeScript/hygiene/audit-linter-coverage-vs-invocation.ts",
     "hygiene:tech-radar-claims": "bun ./src/Core.TypeScript/hygiene/audit-tech-radar-claims.ts",
     "inventory:items": "bun ./src/Core.TypeScript/inventory/generate-items-json.ts",
     "inventory:items-check": "bun ./src/Core.TypeScript/inventory/generate-items-json.ts --check",
@@ -79,7 +85,7 @@
     "typescript": "6.0.3",
     "typescript-eslint": "8.59.0",
     "vite": "8.2.0",
-    "z3-solver": "4.16.0"
+    "z3-solver": "5.1.0"
   },
   "overrides": {
     "smol-toml": "1.6.1"
@@ -94,7 +100,7 @@
     "@scure/base": "2.2.0",
     "@scure/bip32": "2.2.0",
     "@scure/bip39": "2.2.0",
-    "cborg": "5.1.1",
+    "cborg": "6.1.1",
     "epub-gen-memory": "^1.1.2",
     "micro-key-producer": "0.8.6",
     "pg": "8.21.0",

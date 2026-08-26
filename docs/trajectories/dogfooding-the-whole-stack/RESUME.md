@@ -1,17 +1,19 @@
 # Dogfooding the whole stack — running Zeta on Zeta
 
 Status: ACTIVE — declared the next big trajectory by the human maintainer 2026-08-09
-Last refreshed: 2026-08-16
-Current blocker: **the society's own tick lanes are down, and the remaining half needs the
-operator.** Since PR #10850 merged (2026-08-15T23:01Z) every `agent-heartbeat` branch push has
-failed with `403 … Permission to Lucent-Financial-Group/Zeta.git denied to AceHack` —
-`ZETA_TELEMETRY_FLUSH_TOKEN` carries no `contents: write` — so `heartbeat/{alexa,otto,soraya}`
-have been frozen at 2026-08-15T22:55Z and flush PRs #10709/#10710/#10711 have never had
-`gate (required)` start. Workitem `081M05G8D36087G0R0034D3QPA`. The artifact half (a
-credential fallback so the lane keeps recording) has shipped; granting the PAT
-`contents: write` is operator-only.
-(Prior blocker line, retained: none for first-boot provisioning — 081KZETP6AT, 081KZHJPJCF fixed 2026-08-09.)
-Next concrete action: pick the highest-leverage NOT-YET row below (candidates: ACE meta-resolver, ZetaDB-as-types, or the cross-substrate fold guard 081KZM0FTJM which gates simultaneous runner+local dogfooding)
+Last refreshed: 2026-08-25
+Current blocker: **NONE for the society runtime — cleared 2026-08-25.** The lanes flush again.
+The blocker recorded here (PAT lacking `contents: write` since #10850) was only HALF the story,
+and the recorded half had already been fixed: `git push` on the flush token works. What kept the
+lanes down afterwards was a DIFFERENT scope on a DIFFERENT credential — `gh pr create` returned
+`HTTP 403 Resource not accessible by personal access token`, because the step held the
+BRANCH-PUSH credential while doing PR-CREATE work. #15351 separated the three token roles and
+routed PR-create to `ZETA_PR_ARCHIVE_TOKEN`; soraya's flush merged at 15:32Z and alexa's re-cut
+and armed, both on 2026-08-25. Three further faults were fixed in the same window: a healthy
+backpressured tick reporting as a broken flush (#15348), a backpressure deadlock with no escape
+from an unmergeable blocker (#15348), and the credential probe testing a repo READ while the step
+does a PR WRITE (#15364). Workitem `081M05G8D36087G0R0034D3QPA` carries the measured split.
+Next concrete action (2026-08-25): LOAD a launchd/systemd unit from `tools/tick-source/` so row 6 becomes a scheduled redundancy rather than a proven capability; then pick the highest-leverage NOT-YET row below (candidates: ACE meta-resolver, ZetaDB-as-types, or the cross-substrate fold guard 081KZM0FTJM which gates simultaneous runner+local dogfooding)
 Evidence links: 081KZM0FTJM (fold race — gates runner+local at once) · 081KZKV16YF (from-installer hash pin) · `docs/research/2026-08-09-zetadb-as-compiler-of-compilers-…` (the audit this ledger extends) · `docs/ZETA-ARCHITECTURE-UNIFIED.md` (Replacement Roadmap) · `docs/ZETA-CORE-TECHNOLOGY-FOR-MAX.md` (layer map)
 
 ## Why this trajectory exists
@@ -51,19 +53,19 @@ the real dependency. `○ not started` = no surface in-tree.
 
 | # | Layer | Running on our own thing? | Evidence |
 |---|---|---|---|
-| 1 | **Agents on free models** | ⚠️ **dogfooded but DOWN since 2026-08-15T23:06Z** | `agent-heartbeat.yml`, matrix `[alexa, otto, soraya]`, free-tier Ollama (`qwen2.5:0.5b` / `7b`). The "green every ~45 min" claim was true on 2026-08-09 and false from 2026-08-15T23:06Z: 48 consecutive red runs on `main`, refs frozen. Re-check before citing — `gh run list --workflow agent-heartbeat.yml --branch main`, and `git log -1 origin/heartbeat/otto`. See Current blocker + `081M05G8D36087G0R0034D3QPA` |
+| 1 | **Agents on free models** | ✅ **dogfooded — recovered 2026-08-25** | `agent-heartbeat.yml`, matrix `[alexa, otto, soraya]`, free-tier Ollama (`qwen2.5:0.5b` / `7b`). Down 2026-08-15T23:06Z -> 2026-08-25; recovered when the three-role token split (#15351) let `gh pr create` succeed. Still re-check before citing — the honest test is `gh run list --workflow agent-heartbeat.yml --branch main` plus `git log -1 origin/heartbeat/otto`, not this row. See `081M05G8D36087G0R0034D3QPA` |
 | 2 | **Agent cells (local)** | ✅ **dogfooded** | 4 launchd cells (otto/vera/lior/alexa) provisioned by `install.sh` on the maintainer's laptop |
 | 3 | **Society evolution loop** | ✅ **dogfooded** | `society-heartbeat.yml` (cron `*/30`); first tick 2026-08-09 committed `society-msmaqqb7` — 4 agents, mean fitness 0.1860, diversity 8.3508 |
-| 4 | **Tick sources — GitHub Actions** | ✅ **dogfooded** | the reference implementation; staleness impossible by construction (branch reset from main) |
-| 5 | **Tick sources — browser tabs / PWA** | ◐ **partial** | `src/Core.TypeScript/browser-node/` (36 files: service worker, tab coordinator, IndexedDB checkpoint, lifecycle host) |
-| 6 | **Tick sources — bare Linux services** | ○ **not started** | intended 3–4 services, no k8s; may grow into a k8s replacement |
+| 4 | **Tick sources — GitHub Actions** | ✅ **dogfooded** | the reference implementation; staleness impossible by construction (branch reset from main). **No longer the ONLY source (2026-08-25)** — the tick sequence is now a written port, `src/Core.TypeScript/agent-heartbeats/tick-source.ts`; it had existed only as inlined YAML in `agent-heartbeat.yml`, so there was nothing a second substrate could implement |
+| 5 | **Tick sources — browser tabs / PWA** | ◐ **partial — blocker NAMED 2026-08-25** | `src/Core.TypeScript/browser-node/` (36 files). The blocker is **delivery, not authentication**: producing and signing a tick unattended are both solvable, but the `issues/new` carrier works because the human click carries GitHub's own session — the click IS the credential. The repo's own answer, `browser-delegated-device-proposal-gh-cli.ts`, shells out to a local `gh` ("without moving the token into the browser"), so **the PWA's delivery leg is row 6**. Also: `ZETA_OPERATOR_HARNESS_ORIGIN` (manus.space) **500s on all three endpoints** and cannot be repointed at Pages (POST + GitHub App key). X named precisely in the design doc §5c |
+| 6 | **Tick sources — bare local services** | ◐ **partial — a tick LANDED 2026-08-25** | `local-tick.ts` + launchd/systemd templates in `tools/tick-source/`. Proven end-to-end: `heartbeat/dejan-local` commit `540a4409`, `Agent-Runtime: launchd/com.lucent.zeta.heartbeat.dejan-local`, on local Ollama, with **no workflow referencing that lane**. Exit test passed — with Actions simulated absent the fleet still reads alive (rc=0). **Still `partial`, not `dogfooded`: no unit is loaded on any machine yet**, so this is a capability, not yet a redundancy |
 | 7 | **Tick sources — k8s pods** | ◐ **partial** | `zeta-ai-agent.nix` per-persona systemd units exist; the society does not yet run in-cluster |
 
 ### Tier 2 — the substrate we are replacing
 
 | # | We depend on | Zeta replacement | State | Evidence |
 |---|---|---|---|---|
-| 8 | npm/bun deps, brew, apt, uv, dotnet… | **ACE realizers** | ✅ **dogfooded** | `install.sh` delegates to `ace/setup-realize.ts`; **17 classes**, incl. `from-bun-workspace` added 2026-08-09 |
+| 8 | npm/bun deps, brew, apt, uv, dotnet… | **ACE realizers** | ✅ **dogfooded** | `src/Core.TypeScript/ace/setup-realize.ts` + `setup-realizers/` (**23 files**, 17 of them `from-*` classes incl. `from-uv-venv`, `from-uv-tool`, `from-bun-workspace`). Invoked by **workflows** — `gate.yml`, `lean-proof.yml`, `low-memory.yml`, `macos-install-sh-test.yml`, `tlaps-proof.yml`, `accelerator-local-llm-validate.yml`. **Corrected 2026-08-25:** this row said `install.sh` delegates to it and gave the path as `ace/setup-realize.ts`; `install.sh` does not reference it at all, and the path is under `src/Core.TypeScript/`. Verify with `git grep -l setup-realize -- tools src .github` before citing. |
 | 9 | manual/ad-hoc distribution | **ACE meta-package-manager** | ○ **not started** | only `Core.FSharp.AceCanonical`; N-dimensional resolver + AI-rate negotiation are design-stage. **The single biggest gap.** |
 | 10 | CockroachDB (k8s: temporal, hindsight, longhorn) | **ZetaDB** | ◐ **partial** | `zetadb-scheduled-node.yml` folds a journal + commits checkpoints; but Cockroach is still the real store |
 | 11 | OS filesystem | **ZetaFS** (`DagFs`) | ◐ **partial** | `DagFs.fs` content-addressed multi-parent tree consumed by `Db.fs`/`File.fs`/`ZetaToolStore.fs`; not the OS FS |

@@ -1,6 +1,7 @@
 import { describe, expect, it } from "bun:test";
-import { readFileSync } from "node:fs";
-import { resolve } from "node:path";
+import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join, resolve } from "node:path";
 import { DEFAULT_QEMU_PASSPHRASE, DEFAULT_QEMU_WIFI_PASSWORD } from "../zflash/test-harness/prepare-boot-image";
 import { validateSelfRegCiCoherent } from "./self-reg-serial.ts";
 import {
@@ -24,6 +25,10 @@ import {
   OVMF_FIRMWARE_CANDIDATES,
   PHASE2_SERIAL_SEPARATOR,
   QEMU_CREDS_PASSPHRASE_FWCFG_NAME,
+  missingRestorePreconditions,
+  reclaimLargeTempArtifacts,
+  RESTORE_UNIT_CONDITION_PATHS,
+  restoreServiceNeverRan,
   UEFI_KEYFILE_RESTORE_SERIAL,
 } from "./qemu-full-install-test.ts";
 import { QEMU_USB_TEST_SERIAL } from "../installer/qemu-usb-storage.ts";
@@ -372,6 +377,7 @@ describe("qemu-full-install-test UEFI keyfile restore contract", () => {
   const restoreSerial = [
     UEFI_KEYFILE_RESTORE_SERIAL.stagedFromFwcfg,
     UEFI_KEYFILE_RESTORE_SERIAL.bindingKeyfile,
+    UEFI_KEYFILE_RESTORE_SERIAL.transportFwcfgNotMetal,
     `${UEFI_KEYFILE_RESTORE_SERIAL.wrotePrefix}3 creds (target-root: /)`,
     "node-qemu-keyfile-restore login:",
   ].join("\n");
@@ -384,9 +390,56 @@ describe("qemu-full-install-test UEFI keyfile restore contract", () => {
     const serial = [
       UEFI_KEYFILE_RESTORE_SERIAL.stagedFromFwcfg,
       UEFI_KEYFILE_RESTORE_SERIAL.bindingKeyfile,
+      UEFI_KEYFILE_RESTORE_SERIAL.transportFwcfgNotMetal,
       UEFI_KEYFILE_RESTORE_SERIAL.alreadyPresent,
     ].join("\n");
     expect(assertUefiKeyfileRestoreContract(serial).ok).toBe(true);
+  });
+
+  it("accepts wrote 0 creds (empty bake / picker --defer-all)", () => {
+    const serial = [
+      UEFI_KEYFILE_RESTORE_SERIAL.stagedFromFwcfg,
+      UEFI_KEYFILE_RESTORE_SERIAL.bindingKeyfile,
+      UEFI_KEYFILE_RESTORE_SERIAL.transportFwcfgNotMetal,
+      `${UEFI_KEYFILE_RESTORE_SERIAL.wrotePrefix}0 creds (target-root: /)`,
+    ].join("\n");
+    expect(assertUefiKeyfileRestoreContract(serial).ok).toBe(true);
+  });
+
+  // 081M0WS33AK087G0R000BG9R8X -- fw_cfg does not exist on metal, so a green run
+  // of this contract must SAY so on the same line as its success.
+  it("fails when the run does not declare its passphrase transport", () => {
+    const serial = [
+      UEFI_KEYFILE_RESTORE_SERIAL.stagedFromFwcfg,
+      UEFI_KEYFILE_RESTORE_SERIAL.bindingKeyfile,
+      `${UEFI_KEYFILE_RESTORE_SERIAL.wrotePrefix}3 creds (target-root: /)`,
+    ].join("\n");
+    const result = assertUefiKeyfileRestoreContract(serial);
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.reason).toContain("transport");
+      expect(result.reason).toContain("metal");
+    }
+  });
+
+  it("fails when a QEMU run claims the metal-capable interactive transport", () => {
+    const serial = [
+      UEFI_KEYFILE_RESTORE_SERIAL.stagedFromFwcfg,
+      UEFI_KEYFILE_RESTORE_SERIAL.bindingKeyfile,
+      UEFI_KEYFILE_RESTORE_SERIAL.transportFwcfgNotMetal,
+      UEFI_KEYFILE_RESTORE_SERIAL.transportInteractive,
+      `${UEFI_KEYFILE_RESTORE_SERIAL.wrotePrefix}3 creds (target-root: /)`,
+    ].join("\n");
+    const result = assertUefiKeyfileRestoreContract(serial);
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.reason).toContain("INTERACTIVE");
+    }
+  });
+
+  it("the declared transport marker says metal-capable=no in so many words", () => {
+    expect(UEFI_KEYFILE_RESTORE_SERIAL.transportFwcfgNotMetal).toContain("metal-capable=no");
+    expect(UEFI_KEYFILE_RESTORE_SERIAL.transportInteractive).toContain("metal-capable=yes");
   });
 
   it("fails when restore falls back to usbUuid", () => {
@@ -414,9 +467,7 @@ describe("qemu-full-install-test UEFI keyfile restore contract", () => {
     const loginOnly = "node-qemu-keyfile-restore login:\n";
     expect(detectPhase2Success(loginOnly, "node-qemu-keyfile-restore", false, false).ok).toBe(true);
     expect(detectPhase2Success(loginOnly, "node-qemu-keyfile-restore", false, true).ok).toBe(false);
-    expect(
-      detectPhase2Success(`${restoreSerial}\n`, "node-qemu-keyfile-restore", false, true).ok,
-    ).toBe(true);
+    expect(detectPhase2Success(`${restoreSerial}\n`, "node-qemu-keyfile-restore", false, true).ok).toBe(true);
   });
 });
 
@@ -650,6 +701,11 @@ describe("restore markers stay coupled to zeta-creds-restore.nix", () => {
 
   it("the module still emits the fw_cfg staging marker the contract requires", () => {
     expect(restoreNix).toContain(UEFI_KEYFILE_RESTORE_SERIAL.stagedFromFwcfg);
+    // 081M0WS33AK087G0R000BG9R8X: a marker the harness demands but the unit never
+    // prints would make the whole restore contract unsatisfiable; a marker the
+    // unit prints under a different wording would make it vacuous. Both sides.
+    expect(restoreNix).toContain(UEFI_KEYFILE_RESTORE_SERIAL.transportFwcfgNotMetal);
+    expect(restoreNix).toContain(UEFI_KEYFILE_RESTORE_SERIAL.transportInteractive);
   });
 
   it("the module still uses the fw_cfg name the QEMU args inject", () => {
@@ -693,5 +749,215 @@ describe("ISO workflow: restore decrypt runs with budget left", () => {
     expect(restore).toBeLessThan(write);
     expect(restore).toBeLessThan(picker);
     expect(workflow.split('QEMU_UEFI_KEYFILE_RESTORE: "1"').length - 1).toBe(1);
+  });
+
+  it("dispatch QEMU siblings after restore keep running when restore is red", () => {
+    // GitHub skips later steps after a failure unless if: always().
+    // Run 32724820159: restore failed → wifi/write/picker/scenarios 3–4 skipped.
+    // Restore itself stays a hard fail (no always(), no continue-on-error).
+    const stepBlock = (name: string): string => {
+      const start = workflow.indexOf(`- name: ${name}`);
+      expect(start).toBeGreaterThan(-1);
+      const next = workflow.indexOf("\n      - name:", start + 1);
+      return workflow.slice(start, next === -1 ? undefined : next);
+    };
+
+    const restore = stepBlock("UEFI keyfile restore decrypt (workflow_dispatch only)");
+    expect(restore).toContain("if: github.event_name == 'workflow_dispatch'");
+    expect(restore).not.toContain("if: always()");
+
+    for (const name of [
+      "081KSGS9H0008QG0R003V23XNZ wifi ESP acceptance (workflow_dispatch only)",
+      "UEFI keyfile install-time write (workflow_dispatch only)",
+      "UEFI keyfile picker bind (workflow_dispatch only)",
+      "081KSNY2Z0008QG0R0008PN7RQ scenario 3 — reformat with retention (workflow_dispatch only)",
+      "081KSNY2Z0008QG0R0008PN7RQ scenario 4 — path-fork migrate vs fresh (workflow_dispatch only)",
+    ]) {
+      expect(stepBlock(name)).toMatch(/if:\s*always\(\)\s*&&\s*github\.event_name == 'workflow_dispatch'/);
+    }
+  });
+});
+
+// ---------------------------------------------------------------------------
+// DISK RECLAIM (081KSNY2Z0008QG0R0008PN7RQ / run 32816110015 ENOSPC)
+//
+// Falsifiers for the temp-image reclaim added after workflow_dispatch run
+// 32816110015 killed its runner worker with "No space left on device" the
+// instant scenario 3 started. Four sequential qemu-full-install-test.ts
+// invocations had each leaked a 20G qcow2; nothing ever deleted them, so the
+// job never reached `Locate ISO` / `Sign ISO with cosign` / `Upload ISO` and
+// produced no x86_64 ISO artifact at all.
+// ---------------------------------------------------------------------------
+describe("reclaimLargeTempArtifacts", () => {
+  it("deletes the files it is given and reports the bytes reclaimed", () => {
+    const dir = mkdtempSync(join(tmpdir(), "zeta-reclaim-test-"));
+    const disk = join(dir, "install-target.qcow2");
+    const usb = join(dir, "zflash-uefi-keyfile-boot.img");
+    writeFileSync(disk, "x".repeat(4096));
+    writeFileSync(usb, "y".repeat(2048));
+
+    const { removed, bytesReclaimed } = reclaimLargeTempArtifacts([disk, usb]);
+
+    expect(removed).toEqual([disk, usb]);
+    expect(bytesReclaimed).toBe(6144);
+    expect(existsSync(disk)).toBe(false);
+    expect(existsSync(usb)).toBe(false);
+    rmSync(dir, { recursive: true, force: true });
+  });
+
+  it("never touches a file it was not given — the serial log must survive", () => {
+    const dir = mkdtempSync(join(tmpdir(), "zeta-reclaim-test-"));
+    const disk = join(dir, "install-target.qcow2");
+    const serial = join(dir, "serial.log");
+    writeFileSync(disk, "x");
+    writeFileSync(serial, "phase-1 boot output");
+
+    reclaimLargeTempArtifacts([disk]);
+
+    // reportResult prints "Full serial log preserved at: <path>" for exactly
+    // this file when SERIAL_LOG_OUT_PATH is unset. Reclaiming it would make
+    // that line a lie.
+    // Read it directly rather than existsSync-then-read: the pre-check is a
+    // check-then-use race and buys nothing here — a reclaimed log makes
+    // readFileSync throw, which fails this test just as loudly.
+    expect(readFileSync(serial, "utf8")).toBe("phase-1 boot output");
+    rmSync(dir, { recursive: true, force: true });
+  });
+
+  it("is total over absent paths — a run that exited before createVirtualDisk still exits 0", () => {
+    const dir = mkdtempSync(join(tmpdir(), "zeta-reclaim-test-"));
+    const never = join(dir, "install-target.qcow2");
+
+    const { removed, bytesReclaimed } = reclaimLargeTempArtifacts([never]);
+
+    expect(removed).toEqual([]);
+    expect(bytesReclaimed).toBe(0);
+    rmSync(dir, { recursive: true, force: true });
+  });
+
+  it("is wired to process.on('exit'), not to a finally block", () => {
+    // reportResult() calls process.exit(), which does NOT unwind `finally`.
+    // A try/finally reclaim would therefore never fire on the failing path —
+    // which is precisely the path that leaks (a failed scenario still wrote a
+    // full 20G qcow2). Pin the hook so a future refactor cannot regress it.
+    const source = readFileSync(resolve(import.meta.dir, "qemu-full-install-test.ts"), "utf8");
+    expect(source).toContain('process.on("exit"');
+    expect(source).toContain("reclaimLargeTempArtifacts(largeTempArtifacts)");
+    // The disk is registered before it is created, so an early exit reclaims.
+    expect(source.indexOf("const largeTempArtifacts")).toBeLessThan(source.indexOf("createVirtualDisk(diskPath)"));
+    // The boot image is the second multi-GB artifact; it must be registered too.
+    expect(source).toContain("largeTempArtifacts.push(usbImagePath)");
+  });
+});
+
+// ---------------------------------------------------------------------------
+// SKIPPED-vs-BROKEN (run 32816110015 step 20, "UEFI keyfile restore decrypt")
+//
+// The unit is guarded by four ConditionPathExists paths. systemd SKIPS on an
+// unmet condition, so a guest that never restored anything boots to a normal
+// login prompt. Before this discrimination the contract blamed fw_cfg for it.
+// ---------------------------------------------------------------------------
+describe("restoreServiceNeverRan / restore contract diagnosis", () => {
+  // Verbatim shape of run 32816110015's phase-2 serial: a clean boot, first
+  // session, login prompt, and not one zeta-creds-restore line.
+  const skippedUnitSerial = [
+    "[    0.000000] Linux version 6.12.90 (nixbld@localhost)",
+    "zeta-first-session: begin",
+    "zeta-first-session: complete canSelfRegister=true",
+    "node-qemu-keyfile-restore login: ",
+  ].join("\n");
+
+  it("detects a unit that produced no output at all (did not start)", () => {
+    expect(restoreServiceNeverRan(skippedUnitSerial)).toBe(true);
+  });
+
+  it("does NOT fire once the unit's own unconditional marker is present", () => {
+    // readingBlob is emitted after the precondition gate + optional fw_cfg block,
+    // so this is a guest where the unit RAN and fw_cfg staging genuinely failed.
+    expect(restoreServiceNeverRan(`${skippedUnitSerial}\n${UEFI_KEYFILE_RESTORE_SERIAL.readingBlob}`)).toBe(false);
+  });
+
+  it("names the exact missing precondition instead of guessing (081M0WTB5MN)", () => {
+    // The unit now checks its preconditions inside ExecStart and logs which
+    // path is absent, so the blob-not-on-ESP case (run 32816110015) is legible.
+    const serial = [
+      "zeta-creds-restore: MISSING precondition /boot/zeta-creds.enc; skipping restore",
+      "node-qemu-keyfile-restore login: ",
+    ].join("\n");
+    expect(missingRestorePreconditions(serial)).toEqual(["/boot/zeta-creds.enc"]);
+    // The named path is one of the canonical four the unit checks.
+    expect(RESTORE_UNIT_CONDITION_PATHS).toContain("/boot/zeta-creds.enc");
+    const result = assertUefiKeyfileRestoreContract(serial);
+    expect(result.ok).toBe(false);
+    if (result.ok) throw new Error("unreachable");
+    expect(result.reason).toContain("/boot/zeta-creds.enc");
+    expect(result.reason).toContain("missing precondition");
+    // A named precondition miss must not read as a fw_cfg bug or a total no-run.
+    expect(result.reason).not.toContain("fw_cfg staging marker missing");
+    expect(result.reason).not.toContain("never ran");
+  });
+
+  it("collects every missing precondition the unit named", () => {
+    const serial = [
+      "zeta-creds-restore: MISSING precondition /boot/zeta-creds.enc; skipping restore",
+      "zeta-creds-restore: MISSING precondition /home/zeta/.local/share/mise/shims/bun; skipping restore",
+    ].join("\n");
+    expect(missingRestorePreconditions(serial)).toEqual([
+      "/boot/zeta-creds.enc",
+      "/home/zeta/.local/share/mise/shims/bun",
+    ]);
+  });
+
+  it("blames unit start (not fw_cfg, not a precondition miss) when nothing ran", () => {
+    const result = assertUefiKeyfileRestoreContract(skippedUnitSerial);
+    expect(result.ok).toBe(false);
+    if (result.ok) throw new Error("unreachable");
+    expect(result.reason).toContain("never ran");
+    expect(result.reason).toContain("did not start");
+    // The old message pointed at the wrong subsystem; the new one must not
+    // resurrect either mis-blame.
+    expect(result.reason).not.toContain("fw_cfg staging marker missing");
+  });
+
+  it("still blames fw_cfg when the unit ran and staging really did fail", () => {
+    const ranButNoFwcfg = `${skippedUnitSerial}\n${UEFI_KEYFILE_RESTORE_SERIAL.readingBlob}`;
+    const result = assertUefiKeyfileRestoreContract(ranButNoFwcfg);
+    expect(result.ok).toBe(false);
+    if (result.ok) throw new Error("unreachable");
+    expect(result.reason).toContain("fw_cfg staging marker missing");
+    expect(result.reason).not.toContain("never ran");
+  });
+
+  it("the four precondition paths are checked in-ExecStart in zeta-creds-restore.nix", () => {
+    // Checked, not asserted: drift in the module must break this test rather
+    // than silently hand operators a stale list to go looking at. The checks
+    // moved out of unitConfig.ConditionPathExists into ExecStart (081M0WTB5MN)
+    // so a missing path is named on serial.
+    const nix = readFileSync(
+      resolve(import.meta.dir, "../../../full-ai-cluster/nixos/modules/zeta-creds-restore.nix"),
+      "utf8",
+    );
+    // The gate assignment is gone (prose may still reference the old name).
+    expect(nix).not.toContain("ConditionPathExists = [");
+    expect(nix).toContain("MISSING precondition");
+    expect(nix).toContain("for _req in ${cfg.blobPath} ${cfg.usbUuidPath} ${cfg.scriptPath} ${bunShimPath}");
+    expect(nix).toContain('default = "/boot/zeta-creds.enc"');
+    expect(nix).toContain('default = "/etc/zeta/usb-uuid"');
+    expect(nix).toContain('bunShimPath = "${cfg.home}/.local/share/mise/shims/bun"');
+    expect(nix).toContain("installer/zeta-creds-restore.ts");
+  });
+
+  it("the restore unit cannot fail its chdir before ExecStart (081M0WTB5MN)", () => {
+    // WorkingDirectory must be a path that always exists, or systemd fails the
+    // unit before ExecStart and the whole diagnosability layer is mute. It was
+    // cfg.repoRoot (the cloned repo), which is absent on early boots.
+    const nix = readFileSync(
+      resolve(import.meta.dir, "../../../full-ai-cluster/nixos/modules/zeta-creds-restore.nix"),
+      "utf8",
+    );
+    expect(nix).toContain('WorkingDirectory = "/"');
+    expect(nix).not.toContain("WorkingDirectory = cfg.repoRoot");
+    // The unconditional first-line marker proves ExecStart ran (vs a pre-exec fail).
+    expect(nix).toContain(UEFI_KEYFILE_RESTORE_SERIAL.execStartEntered);
   });
 });

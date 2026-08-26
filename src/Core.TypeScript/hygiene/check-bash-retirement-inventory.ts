@@ -74,7 +74,6 @@ const ENV_OPTIONS_WITH_INLINE_OPERAND: readonly string[] = ["--argv0=", "--chdir
 const INACTIVE_SHELL_INVENTORY_PREFIXES: readonly string[] = ["db/", "docs/recovered-orphan-branches-"];
 
 export const EXPECTED_RETAINED_SHELL: readonly string[] = [
-  ".cursor/install.sh",
   ".gemini/service/install-lior-service.sh",
   ".gemini/service/lior-loop.sh",
   "full-ai-cluster/usb-nixos-installer/zeta-first-boot.sh",
@@ -96,7 +95,6 @@ export const EXPECTED_RETAINED_SHELL: readonly string[] = [
   "tools/setup/common/smoke-10-toolchains.sh",
   "tools/setup/common/smoke-13-toolchains.sh",
   "tools/setup/common/smoke-7-toolchains.sh",
-  "tools/setup/common/sync-prior-art.sh",
   "tools/setup/common/tlaps.sh",
   "tools/setup/doctor.sh",
   "tools/setup/host-loop-bootstrap.sh",
@@ -119,10 +117,6 @@ const RETAINED_SHELL_CATEGORY_ORDER: readonly RetainedShellCategory[] = [
 ];
 
 export const RETAINED_SHELL_CATEGORY_BY_FILE: Readonly<Record<string, RetainedShellCategory>> = {
-  // Cursor Cloud Agent environment bootstrap (.cursor/environment.json install):
-  // runs on a bare VM before Bun exists (it installs mise + bun), so it is
-  // retained shell at the setup/bootstrap edge, same class as tools/setup/*.sh.
-  ".cursor/install.sh": "setup/bootstrap",
   ".gemini/service/install-lior-service.sh": "host-service wrappers",
   ".gemini/service/lior-loop.sh": "host-service wrappers",
   "full-ai-cluster/usb-nixos-installer/zeta-first-boot.sh": "nixos installer",
@@ -160,7 +154,6 @@ export const RETAINED_SHELL_CATEGORY_BY_FILE: Readonly<Record<string, RetainedSh
   "tools/setup/common/smoke-10-toolchains.sh": "setup/bootstrap",
   "tools/setup/common/smoke-13-toolchains.sh": "setup/bootstrap",
   "tools/setup/common/smoke-7-toolchains.sh": "setup/bootstrap",
-  "tools/setup/common/sync-prior-art.sh": "setup/bootstrap",
   "tools/setup/common/tlaps.sh": "setup/bootstrap",
   "tools/setup/doctor.sh": "setup/bootstrap",
   "tools/setup/host-loop-bootstrap.sh": "setup/bootstrap",
