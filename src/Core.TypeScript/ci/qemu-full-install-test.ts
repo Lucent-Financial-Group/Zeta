@@ -39,7 +39,7 @@
  */
 
 import { execFileSync, spawn } from "node:child_process";
-import { existsSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdtempSync, readFileSync, statSync, unlinkSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -208,12 +208,91 @@ export const QEMU_CREDS_PASSPHRASE_FWCFG_NAME = "opt/org.zeta/creds-passphrase";
 /** Serial markers from zeta-creds-restore.nix. Never include the passphrase. */
 export const UEFI_KEYFILE_RESTORE_SERIAL = {
   stagedFromFwcfg: "zeta-creds-restore: passphrase staged from qemu fw_cfg",
+  /**
+   * 081M0WS33AK087G0R000BG9R8X -- the transport the restore actually used, on
+   * the success line rather than inferred from a staging line.
+   *
+   * `fw_cfg` DOES NOT EXIST ON METAL. On hardware zeta-creds-restore.nix falls
+   * back to systemd-ask-password on tty1, which nothing in this harness can
+   * exercise. So a green run of this contract proves the DECRYPT and the
+   * BINDING, and proves nothing whatever about the metal passphrase path. The
+   * marker below is asserted precisely so that green cannot be quoted as metal
+   * evidence: it carries `metal-capable=no` in the same line as the success.
+   */
+  transportFwcfgNotMetal:
+    "zeta-creds-restore: passphrase transport=qemu-fw_cfg metal-capable=no",
+  /** The metal transport. Asserted ABSENT here -- QEMU must not claim it. */
+  transportInteractive:
+    "zeta-creds-restore: passphrase transport=interactive-ask-password metal-capable=yes",
   bindingKeyfile: "zeta-creds-restore: binding-factor uefiKeyfile (ESP file; not copied to /etc)",
   wrotePrefix: "zeta-creds-restore: wrote ",
   alreadyPresent: "zeta-creds-restore: already-present, skipping credential rewrite",
   missingKeyfile: "zeta-creds-restore: uefiKeyfile recorded but ESP keyfile missing",
   uuidBinding: "zeta-creds-restore: binding-factor usbUuid (default)",
+  /**
+   * Emitted once per absent precondition by the unit's ExecStart (081M0WTB5MN),
+   * naming the exact missing path — the ESP blob, /etc/zeta/usb-uuid, the cloned
+   * restore CLI, or the mise bun shim — instead of skipping the unit silently.
+   * See `missingRestorePreconditions`.
+   */
+  missingPrecondition: "zeta-creds-restore: MISSING precondition",
+  /**
+   * Emitted unconditionally by the unit's ExecStart, immediately after the
+   * precondition gate + optional fw_cfg block (`zeta-creds-restore.nix`). Its
+   * ABSENCE therefore means the ExecStart body never ran at all — see
+   * `restoreServiceNeverRan`.
+   */
+  readingBlob: "zeta-creds-restore: reading preserved ESP blob",
 } as const;
+
+/**
+ * `zeta.credsRestore`'s unit checks FOUR preconditions
+ * (`zeta-creds-restore.nix`): the ESP blob, the recorded USB UUID, the restore
+ * CLI inside the cloned repo, and the zeta user's mise `bun` shim.
+ *
+ * These used to be a `unitConfig.ConditionPathExists`, so when any was absent
+ * systemd SKIPPED the unit with ZERO serial output — run 32816110015 booted to
+ * a login prompt with not one `zeta-creds-restore:` line, and the contract could
+ * only report "fw_cfg staging marker missing", which reads as a fw_cfg bug and
+ * is not one. 081M0WTB5MN moved the checks into `ExecStart`, which now logs
+ * `MISSING precondition <path>` for each absent one — so the exact gap is named
+ * (see `missingRestorePreconditions`), not guessed.
+ *
+ * This predicate survives for the residual case: a serial with NO
+ * `zeta-creds-restore` line at all now means the unit did not start (e.g.
+ * `zeta.credsRestore.enable` off, or a start failure before ExecStart) — a
+ * stronger, rarer condition than a precondition miss.
+ */
+export function restoreServiceNeverRan(phase2Serial: string): boolean {
+  return !phase2Serial.includes("zeta-creds-restore");
+}
+
+/**
+ * Preconditions the unit named as MISSING on serial (081M0WTB5MN), in order.
+ * Each is one of `RESTORE_UNIT_CONDITION_PATHS`. Empty when the unit ran with
+ * all preconditions present (the happy path) or did not run at all.
+ */
+export function missingRestorePreconditions(phase2Serial: string): readonly string[] {
+  const out: string[] = [];
+  const re = /zeta-creds-restore: MISSING precondition (\S+); skipping restore/g;
+  let m: RegExpExecArray | null;
+  while ((m = re.exec(phase2Serial)) !== null) {
+    if (m[1] !== undefined) out.push(m[1]);
+  }
+  return out;
+}
+
+/**
+ * The four precondition paths, verbatim from zeta-creds-restore.nix defaults.
+ * Now checked inside the unit's `ExecStart` (081M0WTB5MN), not
+ * `unitConfig.ConditionPathExists`.
+ */
+export const RESTORE_UNIT_CONDITION_PATHS = [
+  "/boot/zeta-creds.enc",
+  "/etc/zeta/usb-uuid",
+  "/home/zeta/Zeta/src/Core.TypeScript/installer/zeta-creds-restore.ts",
+  "/home/zeta/.local/share/mise/shims/bun",
+] as const;
 
 /**
  * When USB boot is on, phase-1 serial must show found + serial=ZETA-QEMU-001
@@ -416,6 +495,28 @@ export function assertUefiKeyfileRestoreContract(phase2Serial: string):
       readonly ok: true;
     }
   | { readonly ok: false; readonly reason: string } {
+  const missingPreconditions = missingRestorePreconditions(phase2Serial);
+  if (missingPreconditions.length > 0) {
+    return {
+      ok: false,
+      reason:
+        "zeta-creds-restore skipped — missing precondition(s) on the installed guest: " +
+        `${missingPreconditions.join(", ")}. The unit named them on serial (081M0WTB5MN); ` +
+        "fix the producer for that path — ESP blob delivery (/mnt/boot→/boot), " +
+        "/etc/zeta/usb-uuid, the cloned restore CLI, or the mise bun shim.",
+    };
+  }
+  if (restoreServiceNeverRan(phase2Serial)) {
+    return {
+      ok: false,
+      reason:
+        "zeta-creds-restore.service never ran — phase-2 serial carries no " +
+        "'zeta-creds-restore' line at all. With preconditions now checked inside " +
+        "ExecStart (they log 'MISSING precondition <path>' when absent, 081M0WTB5MN), " +
+        "a blank serial means the unit did not start: zeta.credsRestore.enable is off, " +
+        "or it failed before ExecStart.",
+    };
+  }
   if (!phase2Serial.includes(UEFI_KEYFILE_RESTORE_SERIAL.stagedFromFwcfg)) {
     return {
       ok: false,
@@ -439,6 +540,27 @@ export function assertUefiKeyfileRestoreContract(phase2Serial: string):
     return {
       ok: false,
       reason: `UEFI keyfile restore bind marker missing ("${UEFI_KEYFILE_RESTORE_SERIAL.bindingKeyfile}").`,
+    };
+  }
+  // 081M0WS33AK087G0R000BG9R8X: the run must SAY which transport it proved.
+  // Without this, "wrote N credentials" on the serial reads identically whether
+  // the passphrase came from the hypervisor or from a human at tty1, and the
+  // hypervisor one is the only one this lane can ever produce.
+  if (!phase2Serial.includes(UEFI_KEYFILE_RESTORE_SERIAL.transportFwcfgNotMetal)) {
+    return {
+      ok: false,
+      reason:
+        "restore did not declare its passphrase transport " +
+        `("${UEFI_KEYFILE_RESTORE_SERIAL.transportFwcfgNotMetal}"). A restore that does not name ` +
+        "its transport reads as a metal proof it is not.",
+    };
+  }
+  if (phase2Serial.includes(UEFI_KEYFILE_RESTORE_SERIAL.transportInteractive)) {
+    return {
+      ok: false,
+      reason:
+        "restore claimed the INTERACTIVE (metal-capable) transport inside QEMU. " +
+        "fw_cfg staging must never be reported as the systemd-ask-password path.",
     };
   }
   const wrote =
@@ -1031,6 +1153,53 @@ async function runQemuUntil(
   return result;
 }
 
+/**
+ * Delete the multi-GB QEMU images this run created, keeping every log file.
+ *
+ * Measured on workflow_dispatch run 32816110015: the runner worker died with
+ * `System.IO.IOException: No space left on device` the instant step 28
+ * (scenario 3) started, after four sequential invocations of this script had
+ * each left a `${DISK_SIZE_GB}`G qcow2 behind in `mkdtempSync`'s directory.
+ * Nothing in this file ever removed them — `reportResult` calls
+ * `process.exit`, which does not run `finally` blocks, so the only hook that
+ * fires on every exit path is `process.on("exit")` (synchronous unlink only).
+ *
+ * The blast radius of ENOSPC is larger than the QEMU steps that caused it:
+ * steps 33-38 (`Locate ISO` -> `Sign ISO with cosign` -> `Upload ISO`) carry
+ * `if: ${{ !cancelled() }}` so a merely-failing scenario still ships an ISO,
+ * but a dead worker process ships nothing. Run 32816110015 produced no
+ * x86_64 ISO artifact at all for that reason.
+ *
+ * Logs are deliberately NOT reclaimed: when `SERIAL_LOG_OUT_PATH` is unset the
+ * serial log lives inside this same directory and `reportResult` prints it as
+ * "preserved at", a promise this function must not break. Only the images go.
+ */
+export function reclaimLargeTempArtifacts(paths: readonly string[]): {
+  readonly removed: readonly string[];
+  readonly bytesReclaimed: number;
+} {
+  const removed: string[] = [];
+  let bytesReclaimed = 0;
+  for (const path of paths) {
+    try {
+      // No existsSync pre-check: that is a check-then-use race
+      // (lint-check-then-use-file-races), and here it would also be a lie —
+      // the size must be read from the file we actually unlink, not from a
+      // file that existed a syscall ago. Stat, unlink, then count, so a
+      // failed unlink never reports bytes it did not reclaim.
+      const { size } = statSync(path);
+      unlinkSync(path);
+      bytesReclaimed += size;
+      removed.push(path);
+    } catch {
+      // Absent (the run exited before creating it) or undeletable. Best-effort:
+      // a file we cannot remove must never turn a green run red. The ENOSPC
+      // this guards against is reported by the runner itself.
+    }
+  }
+  return { removed, bytesReclaimed };
+}
+
 function reportResult(result: InstallResult, serialLogPath: string): never {
   console.log("");
   console.log("=== Result ===");
@@ -1075,6 +1244,20 @@ async function main(): Promise<never> {
   const phase1SerialLogPath = join(tmpDir, "phase1-serial.log");
   const phase2SerialLogPath = join(tmpDir, "phase2-serial.log");
 
+  // Register BEFORE createVirtualDisk so an exit between create and the first
+  // boot still reclaims. `process.on("exit")` is the only hook that survives
+  // reportResult's process.exit(); the handler must stay synchronous.
+  const largeTempArtifacts: string[] = [diskPath];
+  process.on("exit", () => {
+    const { removed, bytesReclaimed } = reclaimLargeTempArtifacts(largeTempArtifacts);
+    if (removed.length > 0) {
+      console.log(
+        `[qemu-full-install-test] reclaimed ${removed.length} QEMU image(s), ` +
+          `${(bytesReclaimed / 1024 ** 3).toFixed(2)} GiB (logs kept under ${tmpDir})`,
+      );
+    }
+  });
+
   const writeArtifactSerialLog = (phase1: string, phase2: string): void => {
     writeFileSync(artifactSerialLogPath, mergeFullInstallSerialLogs(phase1, phase2));
   };
@@ -1106,6 +1289,7 @@ async function main(): Promise<never> {
               ? "zflash-wifi-esp-boot.img"
               : "zflash-usb-iserial-boot.img",
     );
+    largeTempArtifacts.push(usbImagePath);
     console.log(
       requireUefiKeyfileRestore
         ? "[qemu-full-install-test] QEMU_UEFI_KEYFILE_RESTORE=1 — baking picker bind + phase-2 fw_cfg restore decrypt (no ESP persist / metal claim)"

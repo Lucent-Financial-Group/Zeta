@@ -44,10 +44,7 @@
  * a stranded one. A PR whose head is one of these IS an archive record, so
  * archiving it captures the review discussion of a robot commit that has none.
  */
-export const ARCHIVE_BOOKKEEPING_PREFIXES = [
-  "automation/pr-archive-",
-  "claim/archive-pr-",
-] as const;
+export const ARCHIVE_BOOKKEEPING_PREFIXES = ["automation/pr-archive-", "claim/archive-pr-"] as const;
 
 /** The minimum a caller must know about a merged PR to judge its eligibility. */
 export interface EligibilityInput {

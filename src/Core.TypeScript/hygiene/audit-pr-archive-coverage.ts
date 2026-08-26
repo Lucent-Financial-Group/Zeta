@@ -56,6 +56,52 @@
 // The lane did not break. Its trigger stopped being reachable for a population
 // that had, until then, been small.
 //
+// AND THE REASON THOSE MERGES ARE BOT-MERGED IS AN ALREADY-OPEN P1.
+// `agent-heartbeat.yml` prefers `ZETA_TELEMETRY_FLUSH_TOKEN` and falls back to
+// `GITHUB_TOKEN` when the API refuses that PAT. It refuses on EVERY run —
+// checked against the six most recent heartbeat runs (32823324598, 32821142228,
+// 32818569388, 32816194481, 32814829813, 32813161986): all six emit
+// `::warning title=Heartbeat API credential denied`. So every flush merges as
+// `github-actions[bot]`, and the whole chain is:
+//
+//     PAT lacks contents:write  (081M05G8D36087G0R0034D3QPA, P1, open,
+//                                explicitly "NEEDS THE OPERATOR")
+//        -> fallback to GITHUB_TOKEN
+//        -> flush PRs merge as github-actions[bot]
+//        -> `pull_request: closed` is suppressed
+//        -> pr-archive-on-merge.yml never runs
+//        -> the PR is never archived, silently.
+//
+// That is a CREDENTIAL SCOPE GRANT, not a code change, and it is a gated class:
+// an agent cannot make it. Which is precisely why this audit and the resized
+// sweep are the right deliverable — they hold the line while the credential is
+// waiting on a human, and they go red again if it regresses. Nobody had
+// connected the open credential bug to archive coverage; the cost of that P1 is
+// 910 unarchived PRs and counting.
+//
+// WHY THIS IS NOT AH003, AND WHY BOTH ARE NEEDED
+// ----------------------------------------------
+// `audit-orphaned-archive-refs.ts` (AH003, fatal on the gate.yml floor) asks:
+// for every `automation/pr-archive-*` REF that exists, did its record reach
+// main? That is the right question for a lane that pushed a branch and then
+// failed to land it, and it caught a real 1,290-ref accumulation.
+//
+// It takes REFS as its input, so it is STRUCTURALLY BLIND to the population
+// here: a PR whose merge never triggered the workflow produces no ref, no run,
+// and no branch, so there is nothing for a ref-driven audit to enumerate. It is
+// the same blindness its own header calls out in ITS sibling — one level up.
+//
+// Measured on one tree at one instant (2026-08-25, after #15309 landed):
+//
+//     AH003 (ref-driven)          1,287 refs examined ->     4 stranded
+//     this audit (merged-driven)  12,782 PRs examined -> 907 missing
+//
+// 903 of those 907 are invisible to AH003 by construction. Neither audit
+// subsumes the other: AH003 catches a record that was BUILT and lost, this one
+// catches a record that was NEVER BUILT. The lane needs both, because "the
+// workflow ran and failed to deliver" and "the workflow never ran" are different
+// failures and only the first one leaves evidence behind.
+//
 // WHY AN AUDIT AND NOT JUST A FIX
 // -------------------------------
 // Because the fix is to a SUPPRESSED EVENT, and the next thing that suppresses
@@ -79,14 +125,10 @@
 // coverage is perfect — "checked 0 PRs" must never read as success. That is the
 // vacuity class, and it is the failure this whole subsystem keeps producing.
 
-import { existsSync, readdirSync, readFileSync } from "node:fs";
+import { readdirSync, readFileSync, type Dirent } from "node:fs";
 import { resolve } from "node:path";
 
-import {
-  classifyGap,
-  EVENT_LANE_LANDED,
-  type GapClass,
-} from "../forge-host/github/archive-eligibility.ts";
+import { classifyGap, EVENT_LANE_LANDED, type GapClass } from "../forge-host/github/archive-eligibility.ts";
 
 /** One merged PR as the audit needs to see it. */
 export interface MergedPr {
@@ -111,6 +153,24 @@ export interface CoverageThresholds {
  * boundary on a busy day. 1.0 would flap. 0.95 over 7 days is roughly 130 PRs
  * of slack at the current merge rate, which no real break fits inside — the
  * measured break ran at 43% coverage.
+ *
+ * BACKTESTED, because a threshold argued from first principles is a guess with
+ * a paragraph attached. Replaying this exact computation against the real merge
+ * history for the fifteen days around the break:
+ *
+ *     2026-08-11 .. 08-20    100.00% every day      GREEN  (10 healthy days)
+ *     2026-08-21              94.62%                RED    <- day ONE of the break
+ *     2026-08-22              80.37%                RED
+ *     2026-08-23              73.04%                RED
+ *     2026-08-24              64.50%                RED
+ *     2026-08-25              59.22%                RED
+ *
+ * So 0.95 has both properties a threshold needs and which are usually only
+ * asserted: it does not flap on ten consecutive days of healthy operation, and
+ * it fires on the FIRST day of the real incident rather than after it has
+ * accumulated. Raising it to 0.99 would still have caught 08-21; lowering it to
+ * 0.90 would have missed it for a day. (The pre-break days use today's archived
+ * set, so they are upper bounds — which only strengthens the no-flap half.)
  *
  * `lifetime` is a RATCHET at the level a backfill can hold, not an aspiration.
  * It starts below where main sits so the audit lands green-on-truth rather than
@@ -164,11 +224,28 @@ export interface Bucket {
  */
 export function readArchivedPrNumbers(shardRootAbs: string): Set<number> {
   const out = new Set<number>();
-  if (!existsSync(shardRootAbs)) return out;
-  for (const bucket of readdirSync(shardRootAbs, { withFileTypes: true })) {
+  // No existsSync gate: the directory can be created or removed between the
+  // check and the read, so the answer the check returned would be about a
+  // moment that has passed. Do the operation, interpret its failure.
+  let buckets: Dirent<string>[];
+  try {
+    buckets = readdirSync(shardRootAbs, { withFileTypes: true });
+  } catch {
+    // An absent or unreadable shard root yields ZERO archived PRs, which the
+    // liveness check in `judge` then turns into exit 2. It must never be
+    // mistaken for "the store is empty and coverage is therefore perfect".
+    return out;
+  }
+  for (const bucket of buckets) {
     if (!bucket.isDirectory()) continue;
     const dir = resolve(shardRootAbs, bucket.name);
-    for (const f of readdirSync(dir)) {
+    let names: string[];
+    try {
+      names = readdirSync(dir);
+    } catch {
+      continue; // a bucket removed mid-scan contributes nothing, and says so by omission
+    }
+    for (const f of names) {
       if (!f.endsWith(".json")) continue;
       // The PR number is inside the shard rather than in its filename (the
       // filename is a ZetaId), so it is read rather than parsed off the path.
@@ -358,10 +435,7 @@ export async function fetchMergedPrs(
     // (PR #10367, created 08-13, merged 08-17). So the early stop is keyed on
     // the whole page being out of window, never on a single node.
     if (sinceIso !== undefined && page.nodes.length > 0) {
-      const newest = page.nodes.reduce(
-        (acc, n) => (n.mergedAt !== null && n.mergedAt > acc ? n.mergedAt : acc),
-        "",
-      );
+      const newest = page.nodes.reduce((acc, n) => (n.mergedAt !== null && n.mergedAt > acc ? n.mergedAt : acc), "");
       if (newest !== "" && newest < sinceIso) break;
     }
     if (!page.pageInfo.hasNextPage) break;
@@ -429,11 +503,16 @@ export async function main(argv: readonly string[] = process.argv.slice(2)): Pro
       ? report
       : // Do not judge a lifetime number derived from a partial scan. Suppressing
         // the floor is honest; printing the partial figure as if complete is not.
-        { ...report, lifetime: { eligible: report.lifetime.eligible, archived: report.lifetime.archived, coverage: null } },
+        {
+          ...report,
+          lifetime: { eligible: report.lifetime.eligible, archived: report.lifetime.archived, coverage: null },
+        },
     thresholds,
   );
 
-  process.stdout.write(`pr-archive coverage (scan: ${lifetimeScan ? "full history" : `last ${String(windowDays)}d`}, since ${EVENT_LANE_LANDED} the event lane has existed)\n`);
+  process.stdout.write(
+    `pr-archive coverage (scan: ${lifetimeScan ? "full history" : `last ${String(windowDays)}d`}, since ${EVENT_LANE_LANDED} the event lane has existed)\n`,
+  );
   for (const l of verdict.lines) process.stdout.write(`  ${l}\n`);
   if (listMissing && report.missing.length > 0) {
     process.stdout.write(`  missing: ${report.missing.join(",")}\n`);

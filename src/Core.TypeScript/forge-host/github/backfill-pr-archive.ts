@@ -66,12 +66,7 @@ import { spawnSync } from "node:child_process";
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 
-import {
-  buildArchive,
-  buildManifestEntry,
-  readGitHeadSha,
-  writeArchive,
-} from "./archive-pr-reviews.ts";
+import { buildArchive, buildManifestEntry, readGitHeadSha, writeArchive } from "./archive-pr-reviews.ts";
 import { shardPathFor, writeShard, SHARD_ROOT_RELATIVE } from "./pr-manifest-shards.ts";
 import { isArchiveEligible } from "./archive-eligibility.ts";
 
@@ -160,10 +155,7 @@ export function backoffSeconds(stderr: string, attempt: number, jitter: number):
 }
 
 export function isThrottled(stderr: string): boolean {
-  return (
-    /\b(403|429)\b/.test(stderr) &&
-    /rate limit|secondary rate|abuse detection|retry-after/i.test(stderr)
-  );
+  return /\b(403|429)\b/.test(stderr) && /rate limit|secondary rate|abuse detection|retry-after/i.test(stderr);
 }
 
 const sleep = (ms: number): Promise<void> =>
@@ -172,9 +164,17 @@ const sleep = (ms: number): Promise<void> =>
   });
 
 function loadCheckpoint(path: string): Checkpoint | null {
-  if (!existsSync(path)) return null;
+  // No existsSync gate. Read it and interpret the failure — ENOENT (no
+  // checkpoint yet, the ordinary first run) and a corrupt file both mean the
+  // same thing here, "we have no resumable state", and both are safe.
+  let raw: string;
   try {
-    const c = JSON.parse(readFileSync(path, "utf8")) as Checkpoint;
+    raw = readFileSync(path, "utf8");
+  } catch {
+    return null; // first run, or the file vanished between two instants
+  }
+  try {
+    const c = JSON.parse(raw) as Checkpoint;
     if (c.version !== 1 || !Array.isArray(c.worklist)) return null;
     return c;
   } catch {
@@ -244,11 +244,9 @@ function deriveWorklist(owner: string, repo: string, shardRootAbs: string): numb
 }
 
 function commitBatch(repoRoot: string, n: number): void {
-  const add = spawnSync(
-    "git",
-    ["-C", repoRoot, "add", "docs/history/pr-reviews/", "docs/github/prs/shards/"],
-    { encoding: "utf8" },
-  );
+  const add = spawnSync("git", ["-C", repoRoot, "add", "docs/history/pr-reviews/", "docs/github/prs/shards/"], {
+    encoding: "utf8",
+  });
   if (add.status !== 0) return;
   const dirty = spawnSync("git", ["-C", repoRoot, "diff", "--cached", "--quiet"], {
     encoding: "utf8",
@@ -326,7 +324,7 @@ export async function run(argv: readonly string[]): Promise<number> {
   const shardRootAbs = resolve(repoRoot, SHARD_ROOT_RELATIVE);
   const cpAbs = resolve(repoRoot, checkpointPath);
 
-  let cp = loadCheckpoint(cpAbs);
+  let cp: Checkpoint | null = loadCheckpoint(cpAbs);
   if (cp === null || cp.owner !== owner || cp.repo !== repo) {
     const worklist = deriveWorklist(owner, repo, shardRootAbs);
     cp = {
@@ -344,25 +342,32 @@ export async function run(argv: readonly string[]): Promise<number> {
     saveCheckpoint(cpAbs, cp);
   }
 
-  const total = cp.worklist.length;
+  // `cp` is non-null past this point — the branch above assigns a fresh
+  // checkpoint whenever it was null. The annotation is what lets tsc see the
+  // element type of `worklist` through the `{ ...cp }` reassignments below;
+  // without it the inference is circular (TS7022).
+  let state: Checkpoint = cp;
+  const total = state.worklist.length;
   process.stderr.write(
-    `[backfill] worklist ${String(total)} PR(s); resuming at index ${String(cp.cursor)} ` +
-      `(${String(total - cp.cursor)} remaining)\n`,
+    `[backfill] worklist ${String(total)} PR(s); resuming at index ${String(state.cursor)} ` +
+      `(${String(total - state.cursor)} remaining)\n`,
   );
   if (dryRun) {
-    process.stderr.write(`[backfill] dry run — first 20: ${cp.worklist.slice(cp.cursor, cp.cursor + 20).join(",")}\n`);
+    process.stderr.write(
+      `[backfill] dry run — first 20: ${state.worklist.slice(state.cursor, state.cursor + 20).join(",")}\n`,
+    );
     return 0;
   }
 
   const commitSha = readGitHeadSha(repoRoot);
   const outputDirAbs = resolve(repoRoot, "docs/history/pr-reviews");
-  const startedCursor = cp.cursor;
+  const startedCursor = state.cursor;
   let sinceCommit = 0;
   let attempt = 0;
   const t0 = Date.now();
 
-  while (cp.cursor < total && cp.cursor - startedCursor < limit) {
-    const pr = cp.worklist[cp.cursor];
+  while (state.cursor < total && state.cursor - startedCursor < limit) {
+    const pr: number | undefined = state.worklist[state.cursor];
     if (pr === undefined) break;
 
     // Re-check the shard store EVERY time rather than trusting the worklist. The
@@ -370,12 +375,12 @@ export async function run(argv: readonly string[]): Promise<number> {
     // while we were stopped; re-fetching it would spend four API calls to
     // produce identical bytes.
     if (existsSync(shardPathFor(pr, shardRootAbs))) {
-      cp = { ...cp, cursor: cp.cursor + 1, skipped: cp.skipped + 1, updatedAt: new Date().toISOString() };
-      saveCheckpoint(cpAbs, cp);
+      state = { ...state, cursor: state.cursor + 1, skipped: state.skipped + 1, updatedAt: new Date().toISOString() };
+      saveCheckpoint(cpAbs, state);
       continue;
     }
 
-    if ((cp.cursor - startedCursor) % checkEvery === 0) {
+    if ((state.cursor - startedCursor) % checkEvery === 0) {
       const r = gh(["api", "rate_limit"]);
       if (r.ok) {
         const rate = parseRateLimit(r.out);
@@ -395,7 +400,7 @@ export async function run(argv: readonly string[]): Promise<number> {
       const w = writeArchive(archive, outputDirAbs);
       const entry = buildManifestEntry(archive, w.path, repoRoot, commitSha);
       writeShard(entry, shardRootAbs);
-      cp = { ...cp, cursor: cp.cursor + 1, archived: cp.archived + 1, updatedAt: new Date().toISOString() };
+      state = { ...state, cursor: state.cursor + 1, archived: state.archived + 1, updatedAt: new Date().toISOString() };
       attempt = 0;
       sinceCommit += 1;
     } catch (e) {
@@ -403,7 +408,9 @@ export async function run(argv: readonly string[]): Promise<number> {
       if (isThrottled(msg)) {
         attempt += 1;
         const s = backoffSeconds(msg, attempt, Math.random());
-        process.stderr.write(`[backfill] throttled — backing off ${String(Math.round(s))}s (attempt ${String(attempt)})\n`);
+        process.stderr.write(
+          `[backfill] throttled — backing off ${String(Math.round(s))}s (attempt ${String(attempt)})\n`,
+        );
         await sleep(s * 1000);
         continue; // same PR, do NOT advance the cursor
       }
@@ -412,22 +419,27 @@ export async function run(argv: readonly string[]): Promise<number> {
       // failed list is the honest residue — it is not retried silently and it is
       // not hidden.
       process.stderr.write(`[backfill] PR #${String(pr)} failed: ${msg.slice(0, 200)}\n`);
-      cp = { ...cp, cursor: cp.cursor + 1, failed: [...cp.failed, pr], updatedAt: new Date().toISOString() };
+      state = {
+        ...state,
+        cursor: state.cursor + 1,
+        failed: [...state.failed, pr],
+        updatedAt: new Date().toISOString(),
+      };
     }
 
-    saveCheckpoint(cpAbs, cp);
+    saveCheckpoint(cpAbs, state);
 
     if (sinceCommit >= batchSize) {
       commitBatch(repoRoot, sinceCommit);
       sinceCommit = 0;
     }
-    const done = cp.cursor - startedCursor;
+    const done = state.cursor - startedCursor;
     if (done > 0 && done % 25 === 0) {
       const rate = done / ((Date.now() - t0) / 1000 / 60);
-      const left = total - cp.cursor;
+      const left = total - state.cursor;
       process.stderr.write(
-        `[backfill] ${String(cp.cursor)}/${String(total)} ` +
-          `(archived ${String(cp.archived)}, skipped ${String(cp.skipped)}, failed ${String(cp.failed.length)}) ` +
+        `[backfill] ${String(state.cursor)}/${String(total)} ` +
+          `(archived ${String(state.archived)}, skipped ${String(state.skipped)}, failed ${String(state.failed.length)}) ` +
           `— ${rate.toFixed(1)}/min, ~${(left / Math.max(rate, 0.01) / 60).toFixed(1)}h remaining\n`,
       );
     }
@@ -436,8 +448,8 @@ export async function run(argv: readonly string[]): Promise<number> {
 
   if (sinceCommit > 0) commitBatch(repoRoot, sinceCommit);
   process.stderr.write(
-    `[backfill] stopped at ${String(cp.cursor)}/${String(total)}; archived ${String(cp.archived)}, ` +
-      `skipped ${String(cp.skipped)}, failed ${String(cp.failed.length)}. ` +
+    `[backfill] stopped at ${String(state.cursor)}/${String(total)}; archived ${String(state.archived)}, ` +
+      `skipped ${String(state.skipped)}, failed ${String(state.failed.length)}. ` +
       `Resume: bun src/Core.TypeScript/forge-host/github/backfill-pr-archive.ts --resume\n`,
   );
   return 0;

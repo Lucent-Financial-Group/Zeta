@@ -265,6 +265,19 @@ jobs:
           # The scheduled run does the full-history scan (~134 pages of a 5,000-point budget),
           # which is what keeps the lifetime ratchet honest.
           #
+          # IT FITS THE BUDGET, MEASURED — because an audit that trips `timeout-minutes: 10` is
+          # a check that did not run, and this job's other two steps already spend ~2 min.
+          # Full-history scan timed end-to-end 2026-08-25: 108s. It is bounded by round trips,
+          # so it grows with PR COUNT rather than with history depth. If it ever approaches the
+          # budget, move the schedule to --window-only and put the lifetime ratchet on its own
+          # less-frequent cron; do NOT raise the job timeout, because the other two steps have
+          # their own reasons for the bound.
+          #
+          # Its output on main at the moment it landed, for the record:
+          #   lifetime 10336/12775 = 80.91%  (floor 75%)  -> PASS
+          #   window    1386/2135  = 64.92%  (floor 95%)  -> FAIL
+          #   excluded=580 pre-lane=1506 in-flight=23 missing=910
+          #
           # Exit codes: 0 above both floors, 1 below a floor, 2 LIVENESS (nothing inspected).
           set +e
           if [ "$GH_EVENT" = "schedule" ] || [ "$GH_EVENT" = "workflow_dispatch" ]; then
