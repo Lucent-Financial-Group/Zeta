@@ -192,6 +192,11 @@ in
         Environment = [
           "HOME=${cfg.home}"
           "PATH=${cfg.home}/.local/share/mise/shims:${cfg.home}/.bun/bin:/run/current-system/sw/bin:/usr/bin:/bin"
+          # 081M0WTB5MN: trust the repo's .mise.toml so the `bun` shim can resolve
+          # its pinned version. The shim reads the version from the nearest
+          # trusted .mise.toml; without a trusted config it errors
+          # "No version is set for shim: bun" and restore never runs.
+          "MISE_TRUSTED_CONFIG_PATHS=${cfg.repoRoot}"
         ];
         ExecStart = pkgs.writeShellScript "zeta-creds-restore-start" ''
           set -euo pipefail
@@ -383,6 +388,15 @@ in
           # ownership for ${cfg.home} paths so user-facing creds end
           # up zeta-owned not root-owned.
           # Tee CLI stdout/stderr so "already-present" / "wrote N" hit serial.
+          #
+          # 081M0WTB5MN: run from the repo so the mise `bun` shim resolves its
+          # version from the repo's .mise.toml. WorkingDirectory stays "/" (so the
+          # unit never fails its chdir before ExecStart); the repo is guaranteed
+          # present here because the precondition gate above already verified
+          # ${cfg.scriptPath} exists. Without this cd the shim errors
+          # "No version is set for shim: bun" and restore never runs (run
+          # 32952620895: blob delivered + read, then died on the bun shim).
+          cd "${cfg.repoRoot}"
           if [ -n "$_serial" ]; then
             ${bunShimPath} ${cfg.scriptPath} \
               "$BIND_FLAG" "$BIND_VALUE" \
