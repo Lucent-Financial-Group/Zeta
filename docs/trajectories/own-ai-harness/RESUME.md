@@ -29,7 +29,7 @@ The harness **library** is real. The fleet **runtime** is still vendor CLIs.
 |---|---|---|
 | Hexagonal `AuthProvider` | port complete | `auth-provider.ts` — device-code + PKCE + refresh |
 | OpenAI / Codex account | ✅ wired | `openai-auth.ts`, live summon 2026-07-04 |
-| GitHub account | ✅ wired | `github-auth.ts` + `github-login-cli.ts` (PRs #9549–#9551) |
+| GitHub account | ✅ wired | `github-auth.ts` + `github-login-cli.ts` (PRs #9549–#9551). Token for forge work: store then env, never `gh auth token`. `GitHubAdapter` list/get/create PR is REST. |
 | Claude / Grok / Gemini / Kiro | ○ declared | roster only; no AuthProvider |
 | Manus | ✅ account API key, remote-only | `harny login manus --from-file` → store; `manus-task.ts` still Keychain at the edge until it reads the store |
 | Full-duplex four-corner | ◐ library | `duplex-transport.ts` + WS mux; vendor APIs still SSE/HTTP |

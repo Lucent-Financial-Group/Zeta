@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import { memoryTokenStore } from "./token-store.ts";
-import { GITHUB_TOKEN_ENV_KEYS, resolveAccessToken } from "./resolve-stored-token.ts";
+import { GITHUB_TOKEN_ENV_KEYS, parseStoredAccessToken, resolveAccessToken } from "./resolve-stored-token.ts";
 
 describe("resolveAccessToken", () => {
   test("store wins over env — gh is never consulted", async () => {
@@ -33,5 +33,17 @@ describe("resolveAccessToken", () => {
       envKeys: GITHUB_TOKEN_ENV_KEYS,
     });
     expect(got).toBeNull();
+  });
+});
+
+describe("parseStoredAccessToken", () => {
+  test("reads our store shape and trims", () => {
+    expect(parseStoredAccessToken(JSON.stringify({ provider: "github", tokens: { accessToken: " gho_x ", refreshToken: "" } }))).toBe("gho_x");
+  });
+
+  test("garbage / empty / missing is null, not a throw", () => {
+    expect(parseStoredAccessToken("not-json")).toBeNull();
+    expect(parseStoredAccessToken("{}")).toBeNull();
+    expect(parseStoredAccessToken(JSON.stringify({ tokens: { accessToken: "  " } }))).toBeNull();
   });
 });

@@ -38,3 +38,21 @@ export async function resolveAccessToken(opts: {
 
 export const GITHUB_TOKEN_ENV_KEYS = ["GH_TOKEN", "GITHUB_TOKEN"] as const;
 export const MANUS_TOKEN_ENV_KEYS = ["MANUS_API_KEY"] as const;
+
+/// Parse a `~/.config/zeta/auth/<provider>.json` body. Sync callers (gh-cli token
+/// memo) use this so they do not have to await a TokenStore. Garbage / empty is null.
+export function parseStoredAccessToken(raw: string): string | null {
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(raw);
+  } catch {
+    return null;
+  }
+  if (typeof parsed !== "object" || parsed === null) return null;
+  const tokens = (parsed as { tokens?: unknown }).tokens;
+  if (typeof tokens !== "object" || tokens === null) return null;
+  const access = (tokens as { accessToken?: unknown }).accessToken;
+  if (typeof access !== "string") return null;
+  const trimmed = access.trim();
+  return trimmed.length > 0 ? trimmed : null;
+}

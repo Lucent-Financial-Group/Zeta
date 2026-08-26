@@ -35,25 +35,10 @@ import type {
   CheckObservationPass,
 } from "../types";
 import { ok, err, forgeError } from "../result";
-import { runGh, runGhJson } from "./gh-cli";
+import { githubRestRequest, runGh, runGhJson } from "./gh-cli";
 import { classifyGhError } from "./classify-error";
 import { listGitHubCheckDefinitions, listGitHubCheckObservations } from "./check-observations.ts";
-
-// ─── GitHub-specific raw response types ─────────────────────────────────────
-
-interface GhPrListItem {
-  number: number;
-  title: string;
-  headRefName: string;
-  baseRefName: string;
-  state: string;
-  isDraft: boolean;
-  mergeStateStatus: string;
-  reviewDecision: string | null;
-  url: string;
-  updatedAt: string;
-  author: { login: string };
-}
+import { restCreatePull, restGetPull, restListPulls, restPullToPr, type GithubRest } from "./github-pr-rest.ts";
 
 // ─── Adapter ────────────────────────────────────────────────────────────────
 
@@ -71,12 +56,18 @@ export class GitHubAdapter implements ForgeHost {
    */
   private readonly repoRoot: string;
   private readonly checkRef: string;
+  private readonly rest: GithubRest;
 
-  constructor(owner: string, repo: string, opts?: { readonly repoRoot?: string; readonly checkRef?: string }) {
+  constructor(
+    owner: string,
+    repo: string,
+    opts?: { readonly repoRoot?: string; readonly checkRef?: string; readonly rest?: GithubRest },
+  ) {
     this.owner = owner;
     this.repo = repo;
     this.repoRoot = opts?.repoRoot ?? process.cwd();
     this.checkRef = opts?.checkRef ?? "main";
+    this.rest = opts?.rest ?? { request: (method, path, body) => githubRestRequest(method, path, body) };
   }
 
   private get nwo(): string {
@@ -108,27 +99,24 @@ export class GitHubAdapter implements ForgeHost {
   // ─── PR state ───────────────────────────────────────────────────────────
 
   async listOpenPullRequests(opts?: ListPrOpts): Promise<Result<readonly PullRequest[], ForgeError>> {
-    const limit = opts?.limit ?? 100;
-    const result = runGhJson<GhPrListItem[]>([
-      "pr", "list", "--repo", this.nwo, "--state", "open",
-      "--json", "number,title,headRefName,baseRefName,state,isDraft,mergeStateStatus,reviewDecision,url,updatedAt,author",
-      "--limit", String(limit),
-    ]);
+    const result = await restListPulls(this.rest, this.nwo, {
+      state: "open",
+      limit: opts?.limit ?? 100,
+      sort: opts?.orderBy === "created" ? "created" : "updated",
+    });
     if (!result.ok) return result;
-    return ok(result.value.map(mapPr));
+    return ok(result.value.map(restPullToPr));
   }
 
   async getPullRequest(number: number): Promise<Result<PullRequest, ForgeError>> {
-    const result = runGhJson<GhPrListItem>([
-      "pr", "view", String(number), "--repo", this.nwo,
-      "--json", "number,title,headRefName,baseRefName,state,isDraft,mergeStateStatus,reviewDecision,url,updatedAt,author",
-    ]);
+    const result = await restGetPull(this.rest, this.nwo, number);
     if (!result.ok) return result;
-    return ok(mapPr(result.value));
+    return ok(restPullToPr(result.value));
   }
 
   async getPrGateState(number: number): Promise<Result<PrGateState, ForgeError>> {
-    // Fetch PR + statusCheckRollup + reviewThreads in one call
+    // LEFTOVER `gh` porcelain (081M100RB9Z087G0R000GWY1MM): gate/threads/checks still
+    // need GraphQL fields REST list/create do not carry. Named, not forgotten.
     const prResult = runGhJson<{
       number: number;
       state: string;
@@ -178,14 +166,15 @@ export class GitHubAdapter implements ForgeHost {
   }
 
   async listMergedPullRequests(opts?: ListMergedPrOpts): Promise<Result<readonly PullRequest[], ForgeError>> {
-    const limit = opts?.limit ?? 20;
-    const result = runGhJson<GhPrListItem[]>([
-      "pr", "list", "--repo", this.nwo, "--state", "merged",
-      "--json", "number,title,headRefName,baseRefName,state,isDraft,mergeStateStatus,reviewDecision,url,updatedAt,author",
-      "--limit", String(limit),
-    ]);
+    const result = await restListPulls(this.rest, this.nwo, { state: "closed", limit: 100, sort: "updated" });
     if (!result.ok) return result;
-    return ok(result.value.map(mapPr));
+    const sinceMs = opts?.since !== undefined ? new Date(opts.since).getTime() : null;
+    const merged = result.value
+      .filter((p) => typeof p.merged_at === "string" && p.merged_at.length > 0)
+      .filter((p) => sinceMs === null || new Date(p.merged_at ?? "").getTime() >= sinceMs)
+      .slice(0, opts?.limit ?? 20)
+      .map(restPullToPr);
+    return ok(merged);
   }
 
   // ─── PR actions ─────────────────────────────────────────────────────────
@@ -227,17 +216,9 @@ export class GitHubAdapter implements ForgeHost {
   }
 
   async createPullRequest(opts: CreatePrOpts): Promise<Result<PullRequest, ForgeError>> {
-    const args = [
-      "pr", "create", "--repo", this.nwo,
-      "--title", opts.title, "--body", opts.body,
-      "--head", opts.head, "--base", opts.base,
-    ];
-    if (opts.draft) args.push("--draft");
-    args.push("--json", "number,title,headRefName,baseRefName,state,isDraft,mergeStateStatus,reviewDecision,url,updatedAt,author");
-
-    const result = runGhJson<GhPrListItem>(args);
+    const result = await restCreatePull(this.rest, this.nwo, opts);
     if (!result.ok) return result;
-    return ok(mapPr(result.value));
+    return ok(restPullToPr(result.value));
   }
 
   async enableAutoMerge(prNumber: number, method?: MergeMethod): Promise<Result<void, ForgeError>> {
@@ -414,45 +395,11 @@ export class GitHubAdapter implements ForgeHost {
 
 // ─── Mapping helpers ────────────────────────────────────────────────────────
 
-function mapPr(raw: GhPrListItem): PullRequest {
-  return {
-    number: raw.number,
-    title: raw.title,
-    headRef: raw.headRefName,
-    baseRef: raw.baseRefName,
-    state: mapPrState(raw.state),
-    isDraft: raw.isDraft,
-    mergeStateStatus: mapMergeState(raw.mergeStateStatus),
-    reviewDecision: mapReviewDecision(raw.reviewDecision),
-    url: raw.url,
-    updatedAt: raw.updatedAt,
-    author: raw.author?.login ?? "(unknown)",
-  };
-}
-
 function mapPrState(state: string): "open" | "merged" | "closed" {
   const lower = state.toLowerCase();
   if (lower === "merged") return "merged";
   if (lower === "closed") return "closed";
   return "open";
-}
-
-function mapMergeState(status: string): "clean" | "blocked" | "dirty" | "unstable" | "unknown" {
-  const lower = status.toLowerCase();
-  if (lower === "clean") return "clean";
-  if (lower === "blocked") return "blocked";
-  if (lower === "dirty" || lower === "behind") return "dirty";
-  if (lower === "unstable") return "unstable";
-  return "unknown";
-}
-
-function mapReviewDecision(decision: string | null): "approved" | "changes-requested" | "review-required" | null {
-  if (!decision) return null;
-  const lower = decision.toLowerCase();
-  if (lower === "approved") return "approved";
-  if (lower === "changes_requested") return "changes-requested";
-  if (lower === "review_required") return "review-required";
-  return null;
 }
 
 // ─── Check classification (mirrors poll-pr-gate.ts logic) ───────────────────
