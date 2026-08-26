@@ -167,20 +167,28 @@ in
       # B-0855.1 zeta-self-register.service declares
       # `after = "zeta-creds-restore.service"`; ordering enforced there.
 
-      unitConfig = {
-        ConditionPathExists = [
-          cfg.blobPath
-          cfg.usbUuidPath
-          cfg.scriptPath
-          bunShimPath
-        ];
-      };
+      # 081M0WTB5MN: the four preconditions used to live in
+      # unitConfig.ConditionPathExists, which makes systemd SKIP the unit with
+      # ZERO serial output — a skip and a real failure were indistinguishable in
+      # CI (run 32816110015 booted to a login prompt with not one
+      # zeta-creds-restore line). They are now checked inside ExecStart (below),
+      # which NAMES any missing path on serial and then exits 0, preserving the
+      # original non-fatal skip. The mechanism is unchanged; the skip is legible.
 
       serviceConfig = {
         Type = "oneshot";
         RemainAfterExit = true;
         User = "root";  # needs root to read /run passphrase + drop to zeta user via sudo
-        WorkingDirectory = cfg.repoRoot;
+        # 081M0WTB5MN: WorkingDirectory was cfg.repoRoot (the cloned repo). If that
+        # directory is not present when the unit fires (After=local-fs.target is
+        # early), systemd fails the unit at chdir — BEFORE ExecStart — so none of
+        # the ExecStart logging below runs and the unit is SILENT. That is exactly
+        # what run 32873212247 showed: zero zeta-creds-restore lines in phase-2
+        # even with the in-ExecStart precondition gate. ExecStart uses absolute
+        # paths only, so cwd is irrelevant; "/" always exists and never fails the
+        # chdir. Repo/script presence is still checked (and NAMED) by the
+        # precondition gate inside ExecStart.
+        WorkingDirectory = "/";
         Environment = [
           "HOME=${cfg.home}"
           "PATH=${cfg.home}/.local/share/mise/shims:${cfg.home}/.bun/bin:/run/current-system/sw/bin:/usr/bin:/bin"
@@ -216,15 +224,61 @@ in
             fi
           }
 
+          # 081M0WTB5MN: unconditional FIRST line, before any gate. Its presence
+          # proves ExecStart ran at all; its ABSENCE means the unit failed before
+          # ExecStart (WorkingDirectory chdir, User, Environment) — a distinction
+          # the precondition gate below cannot make, because a pre-ExecStart
+          # failure never reaches it.
+          log_restore "zeta-creds-restore: ExecStart entered"
+
+          # 081M0WTB5MN: precondition gate, moved here from
+          # unitConfig.ConditionPathExists so a missing path is NAMED on serial
+          # rather than skipping the unit silently. The four paths: the ESP blob,
+          # the recorded USB UUID, the restore CLI in the cloned repo, and the
+          # zeta user's mise bun shim. Exit 0 on a miss keeps the original skip
+          # semantics (non-fatal boot, no Restart="on-failure" retry storm).
+          _missing=""
+          for _req in ${cfg.blobPath} ${cfg.usbUuidPath} ${cfg.scriptPath} ${bunShimPath}; do
+            if [ ! -e "$_req" ]; then
+              _missing="$_missing $_req"
+              log_restore "zeta-creds-restore: MISSING precondition $_req; skipping restore"
+            fi
+          done
+          if [ -n "$_missing" ]; then
+            exit 0
+          fi
+
           # QEMU-only staging: hypervisor `-fw_cfg name=opt/org.zeta/creds-passphrase,file=`
           # copies into ${cfg.passphraseFile}. Never log the contents. Metal has
           # no such sysfs node, so interactive ask-password is unchanged.
+          #
+          # 081M0WS33AK087G0R000BG9R8X -- THE SUCCESS LINE MUST NAME ITS TRANSPORT.
+          #
+          # This unit has three ways to obtain the passphrase and only one of
+          # them exists on hardware:
+          #
+          #   qemu-fw_cfg              the hypervisor hands it over through a
+          #                            sysfs node the guest reads. HYPERVISOR
+          #                            ONLY -- metal has no such node, ever.
+          #   pre-staged-file          something already wrote passphraseFile.
+          #   interactive-ask-password systemd-ask-password on tty1. THIS is
+          #                            the metal path.
+          #
+          # Until now the terminal markers -- "wrote N" and "already-present" --
+          # named none of them, so a green CI restore and a green metal restore
+          # printed the SAME success. A check that ran against the hypervisor
+          # transport must not be readable as one that ran against tty1, so the
+          # transport is now carried on the success line itself rather than left
+          # to be inferred from an earlier staging line that only sometimes
+          # appears. THE MECHANISM IS UNCHANGED; only the claim is now honest.
+          PASSPHRASE_TRANSPORT="none"
           ${pkgs.kmod}/bin/modprobe qemu_fw_cfg >/dev/null 2>&1 || true
           FWCFG_RAW="/sys/firmware/qemu_fw_cfg/by_name/opt/org.zeta/creds-passphrase/raw"
           if [ -r "$FWCFG_RAW" ]; then
             umask 0177
             head -c 4096 "$FWCFG_RAW" > ${cfg.passphraseFile}
             chmod 0400 ${cfg.passphraseFile}
+            PASSPHRASE_TRANSPORT="qemu-fw_cfg"
             log_restore "zeta-creds-restore: passphrase staged from qemu fw_cfg"
           fi
 
@@ -272,6 +326,9 @@ in
 
           if [ -s ${cfg.passphraseFile} ]; then
             PASSPHRASE_PATH="${cfg.passphraseFile}"
+            if [ "$PASSPHRASE_TRANSPORT" = "none" ]; then
+              PASSPHRASE_TRANSPORT="pre-staged-file"
+            fi
           else
             ${
               if cfg.passphraseMode == "file" then ''
@@ -291,9 +348,22 @@ in
                 umask 0177
                 echo -n "$PASSPHRASE" > "$PASSPHRASE_PATH"
                 chmod 0400 "$PASSPHRASE_PATH"
+                PASSPHRASE_TRANSPORT="interactive-ask-password"
                 unset PASSPHRASE
               ''
             }
+          fi
+
+          # Emitted BEFORE the restore CLI runs, so it is present on the serial
+          # log whether the restore then succeeds, fails, or is skipped as
+          # already-present. `metal-capable` is the property that matters to a
+          # reader deciding what a green run proved.
+          if [ "$PASSPHRASE_TRANSPORT" = "qemu-fw_cfg" ]; then
+            log_restore "zeta-creds-restore: passphrase transport=qemu-fw_cfg metal-capable=no (hypervisor-only; this run proves NOTHING about the tty1 path on hardware)"
+          elif [ "$PASSPHRASE_TRANSPORT" = "interactive-ask-password" ]; then
+            log_restore "zeta-creds-restore: passphrase transport=interactive-ask-password metal-capable=yes"
+          else
+            log_restore "zeta-creds-restore: passphrase transport=$PASSPHRASE_TRANSPORT metal-capable=unknown"
           fi
 
           PERSONA_ARGS=""
