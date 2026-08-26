@@ -16,7 +16,7 @@
  * resumable: an interrupted run skips the rows already on disk, in the same order.
  */
 
-import { appendFileSync, existsSync, mkdirSync, readFileSync } from "node:fs";
+import { appendFileSync, mkdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { generate } from "./f3-hat-choice-decorrelation";
 import { domainById, promptText, seedFor, type DomainSpec } from "./f4-question-bias";
@@ -69,12 +69,20 @@ function writeRow(file: string, row: AnswerRow): void {
   appendFileSync(join(OUT_DIR, file), JSON.stringify(row) + "\n");
 }
 
+/**
+ * Read and interpret ENOENT rather than asking `existsSync` first: the answer to a
+ * separate existence question is stale the instant it returns, and this fleet has
+ * concurrent writers. (TOCTTOU — Bishop & Dilger 1996; CWE-367.)
+ */
 function rowsOnDisk(file: string): number {
-  const p = join(OUT_DIR, file);
-  if (!existsSync(p)) return 0;
-  return readFileSync(p, "utf8")
-    .split("\n")
-    .filter((l) => l.length > 0).length;
+  try {
+    return readFileSync(join(OUT_DIR, file), "utf8")
+      .split("\n")
+      .filter((l) => l.length > 0).length;
+  } catch (err) {
+    if ((err as NodeJS.ErrnoException).code === "ENOENT") return 0;
+    throw err;
+  }
 }
 
 async function runDomain(
