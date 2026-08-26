@@ -86,9 +86,9 @@ export type PlanResult<T> =
  */
 export function planGptEspDisk(input: {
   readonly espSizeBytes: number;
-  readonly espStartLba?: number;
+  readonly espStartLba?: number | undefined;
   /** Sectors of slack after the ESP, before the backup array. Default 2048. */
-  readonly tailSlackSectors?: number;
+  readonly tailSlackSectors?: number | undefined;
 }): PlanResult<GptEspLayout> {
   const { espSizeBytes } = input;
   if (!Number.isSafeInteger(espSizeBytes) || espSizeBytes <= 0) {
@@ -223,11 +223,11 @@ export type GptEspImageParts = {
 
 export type BuildGptEspInput = {
   readonly layout: GptEspLayout;
-  readonly diskGuid?: string;
-  readonly espPartitionGuid?: string;
+  readonly diskGuid?: string | undefined;
+  readonly espPartitionGuid?: string | undefined;
   /** Defaults to ESP_TYPE_GUID. Overridable so the mutant is a real input. */
-  readonly espTypeGuid?: string;
-  readonly partitionName?: string;
+  readonly espTypeGuid?: string | undefined;
+  readonly partitionName?: string | undefined;
 };
 
 export type BuildResult =
@@ -386,11 +386,11 @@ export function gptWritePlan(
  */
 export function assembleGptEspDisk(input: {
   readonly espBytes: Uint8Array;
-  readonly espStartLba?: number;
-  readonly diskGuid?: string;
-  readonly espPartitionGuid?: string;
-  readonly espTypeGuid?: string;
-  readonly partitionName?: string;
+  readonly espStartLba?: number | undefined;
+  readonly diskGuid?: string | undefined;
+  readonly espPartitionGuid?: string | undefined;
+  readonly espTypeGuid?: string | undefined;
+  readonly partitionName?: string | undefined;
 }): { readonly ok: true; readonly disk: Uint8Array; readonly layout: GptEspLayout } | {
   readonly ok: false;
   readonly error: string;

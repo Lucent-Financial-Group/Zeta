@@ -66,7 +66,6 @@ import {
   assembleGptEspDisk,
 } from "./gpt-esp.ts";
 import {
-  UEFI_MENU_MARKER,
   detectSmokeTooling,
   kvmIsUsable,
   missingSmokeTools,
@@ -234,6 +233,31 @@ export function sfdiskAgreesWithGpt(
   return { ok: true };
 }
 
+function isEnoent(err: unknown): boolean {
+  return (err as NodeJS.ErrnoException | undefined)?.code === "ENOENT";
+}
+
+/**
+ * Read a file that may not exist yet, in ONE syscall.
+ *
+ * An `existsSync` gate in front of a read answers a question that is already
+ * stale by the time the read runs, and reads as defensive while preventing
+ * nothing (`lint-check-then-use-file-races`). The serial log genuinely may not
+ * exist yet -- QEMU creates it when it first writes -- so absence is an
+ * expected state here, not an error, and the ONLY absence that is expected is
+ * ENOENT. Anything else still throws.
+ */
+function readTextOrEmpty(path: string): string {
+  try {
+    return readFileSync(path, "utf8");
+  } catch (err) {
+    if (isEnoent(err)) {
+      return "";
+    }
+    throw err;
+  }
+}
+
 function spawnExecutor() {
   return {
     writeFile: (path: string, content: string) => {
@@ -293,9 +317,11 @@ function buildEspBytes(input: {
     imageSizeBytes: ESP_SIZE_BYTES,
     stagingDir,
     grubCfgContent: gptEspGrubCfg(),
-    // The negative control omits the loader by omitting it from the PLAN, so
-    // the two images differ only in that one file — not in how they were made.
-    grubEfiLocalPath: input.includeLoader ? input.efiPath : undefined,
+    // The negative control omits the loader by omitting the KEY, not by passing
+    // undefined: under exactOptionalPropertyTypes an absent option and an
+    // explicitly-undefined one are different types, and the planner's contract
+    // is "absent means no loader".
+    ...(input.includeLoader ? { grubEfiLocalPath: input.efiPath } : {}),
   });
   if (!assembled.ok) {
     return { ok: false, error: assembled.error };
@@ -311,10 +337,15 @@ function buildEspBytes(input: {
   if (!executed.ok) {
     return { ok: false, error: executed.error };
   }
-  if (!existsSync(outImg)) {
-    return { ok: false, error: `assemble produced no image at ${outImg}` };
+  let bytes: Uint8Array;
+  try {
+    bytes = new Uint8Array(readFileSync(outImg));
+  } catch (err) {
+    if (isEnoent(err)) {
+      return { ok: false, error: `assemble produced no image at ${outImg}` };
+    }
+    throw err;
   }
-  const bytes = new Uint8Array(readFileSync(outImg));
   if (bytes.length !== ESP_SIZE_BYTES) {
     return {
       ok: false,
@@ -340,9 +371,7 @@ async function waitForToken(input: {
   readonly hasExited: () => boolean;
 }): Promise<boolean> {
   while (Date.now() < input.deadline) {
-    const fileText = existsSync(input.serialLogPath)
-      ? readFileSync(input.serialLogPath, "utf8")
-      : "";
+    const fileText = readTextOrEmpty(input.serialLogPath);
     if (fileText.includes(input.token) || input.extraText().includes(input.token)) {
       return true;
     }
@@ -360,10 +389,12 @@ async function bootAndWatch(input: {
   readonly ovmfVarsPath: string;
   readonly serialLogPath: string;
   readonly timeoutMs: number;
-  readonly additionalUsbImages?: readonly {
-    readonly imagePath: string;
-    readonly serial: string;
-  }[];
+  readonly additionalUsbImages?:
+    | readonly {
+        readonly imagePath: string;
+        readonly serial: string;
+      }[]
+    | undefined;
   /**
    * Token that ends the wait. The positive phases wait for DEVLIST_END, which
    * GRUB prints AFTER the marker — stopping at the marker would truncate the
@@ -405,9 +436,7 @@ async function bootAndWatch(input: {
       extraText: () => extra.join(""),
       hasExited: () => exited !== null,
     });
-    const fileTail = existsSync(input.serialLogPath)
-      ? readFileSync(input.serialLogPath, "utf8")
-      : "";
+    const fileTail = readTextOrEmpty(input.serialLogPath);
     return { sawToken, log: `${fileTail}\n${extra.join("")}`.trim() };
   } finally {
     qemu.kill("SIGTERM");

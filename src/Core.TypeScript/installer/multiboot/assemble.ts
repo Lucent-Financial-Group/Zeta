@@ -122,10 +122,12 @@ export function planQemuUeFiBootArgs(input: {
    * something upstream collapse them into one? — without a second machine.
    * Empty by default, so every existing caller's argv is byte-identical.
    */
-  readonly additionalUsbImages?: readonly {
-    readonly imagePath: string;
-    readonly serial: string;
-  }[];
+  readonly additionalUsbImages?:
+    | readonly {
+        readonly imagePath: string;
+        readonly serial: string;
+      }[]
+    | undefined;
 }): { readonly ok: true; readonly args: readonly string[] } | { readonly ok: false; readonly error: string } {
   if (input.outputImagePath.trim().length === 0) {
     return { ok: false, error: "outputImagePath is required" };
