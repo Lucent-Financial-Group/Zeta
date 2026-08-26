@@ -160,6 +160,60 @@ export function scoreSelector(name: string, selector: Selector, trials: readonly
   };
 }
 
+// ═══ Abstention (selective prediction) ════════════════════════════════════════
+
+export interface CoverageRisk {
+  readonly n: number;
+  /** Fraction of items the policy answered (did not abstain). */
+  readonly coverage: number;
+  /** Accuracy on the answered items only (95% Wilson CI). */
+  readonly accuracyOnAnswered: Interval;
+  /** Accuracy if forced to answer every item (the must-answer baseline). */
+  readonly accuracyForced: Interval;
+  /** Count abstained. */
+  readonly abstained: number;
+}
+
+/**
+ * Abstention policy: answer with `chosen(t)` iff `approve(t)` is true, else abstain.
+ * Measures the coverage–risk curve — the payoff of verification is here, not in accuracy.
+ *
+ * The must-answer baseline uses `chosen(t)` on every item (no abstention), so the two
+ * numbers are directly comparable: does abstaining on the rejected items raise accuracy
+ * on the ones we keep?
+ */
+export function scoreAbstention(
+  chosen: Selector,
+  approve: (t: SelectorTrial) => boolean,
+  trials: readonly SelectorTrial[],
+): CoverageRisk {
+  const n = trials.length;
+  let answered = 0, answeredCorrect = 0, forcedCorrect = 0;
+  for (const t of trials) {
+    const pick = chosen(t);
+    if (pick !== null && pick === t.correctIndex) forcedCorrect++;
+    if (approve(t)) {
+      answered++;
+      if (pick !== null && pick === t.correctIndex) answeredCorrect++;
+    }
+  }
+  return {
+    n,
+    coverage: n > 0 ? answered / n : 0,
+    accuracyOnAnswered: wilsonInterval(answeredCorrect, answered),
+    accuracyForced: wilsonInterval(forcedCorrect, n),
+    abstained: n - answered,
+  };
+}
+
+/** A ready-made approve predicate: the verifier approves the chosen candidate. */
+export function verifierApprovesChoice(chosen: Selector): (t: SelectorTrial) => boolean {
+  return (t) => {
+    const pick = chosen(t);
+    return pick !== null && t.verifierApproves?.[pick] === true;
+  };
+}
+
 export function formatSelectorResult(r: SelectorResult): string {
   const pct = (x: number) => `${(x * 100).toFixed(1)}%`;
   const ci = (iv: Interval) => `${pct(iv.point)} [${pct(iv.lo)}, ${pct(iv.hi)}]`;

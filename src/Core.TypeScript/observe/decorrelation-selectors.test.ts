@@ -8,7 +8,8 @@
 import { describe, test, expect } from "bun:test";
 import {
   agreementGating, selfConfidence, thirdCallVerifier, scoreSelector,
-  type SelectorTrial,
+  scoreAbstention, verifierApprovesChoice,
+  type Selector, type SelectorTrial,
 } from "./decorrelation-selectors";
 
 function trial(over: Partial<SelectorTrial> & { aChoice: number | null; bChoice: number | null; correctIndex: number }): SelectorTrial {
@@ -89,6 +90,36 @@ describe("scoreSelector — honest bars", () => {
     // agree(30 correct) + disagree->B: B right on 10, wrong on 30 → 30+10 = 40 correct.
     expect(r.accuracy.point).toBeCloseTo(0.4, 5);
     expect(r.verdict).toBe("below-best-single");
+  });
+
+  test("abstention converts a perfect self-verifier into 100%-on-answered", () => {
+    // Reproduce the hard-run shape: 87 correct (verifier approves), 63 wrong (verifier
+    // rejects the wrong choice). A single producer B; the verifier judges B's choice.
+    const hard: SelectorTrial[] = [
+      ...Array.from({ length: 87 }, () => trial({ aChoice: 0, bChoice: 0, correctIndex: 0, verifierApproves: { 0: true } })),
+      ...Array.from({ length: 63 }, () => trial({ aChoice: 1, bChoice: 1, correctIndex: 2, verifierApproves: { 1: false } })),
+    ];
+    const takeB: Selector = (t) => t.bChoice;
+    const cr = scoreAbstention(takeB, verifierApprovesChoice(takeB), hard);
+    // Forced accuracy = 87/150 = 58%.
+    expect(cr.accuracyForced.point).toBeCloseTo(0.58, 5);
+    // Coverage = 87/150 = 58%; accuracy on answered = 87/87 = 100%.
+    expect(cr.coverage).toBeCloseTo(0.58, 5);
+    expect(cr.accuracyOnAnswered.point).toBeCloseTo(1.0, 5);
+    expect(cr.abstained).toBe(63);
+  });
+
+  test("a flat coverage-risk curve means abstention buys nothing (F3 falsifier)", () => {
+    // Verifier approves everything (degenerate) → coverage 100%, accuracy unchanged.
+    const flat: SelectorTrial[] = [
+      ...Array.from({ length: 6 }, () => trial({ aChoice: 0, bChoice: 0, correctIndex: 0, verifierApproves: { 0: true } })),
+      ...Array.from({ length: 4 }, () => trial({ aChoice: 1, bChoice: 1, correctIndex: 2, verifierApproves: { 1: true } })),
+    ];
+    const takeB: Selector = (t) => t.bChoice;
+    const cr = scoreAbstention(takeB, verifierApprovesChoice(takeB), flat);
+    expect(cr.coverage).toBeCloseTo(1.0, 5);
+    // accuracy on answered == forced accuracy → the curve is flat, Abstain is ceremony.
+    expect(cr.accuracyOnAnswered.point).toBeCloseTo(cr.accuracyForced.point, 5);
   });
 
   test("a genuinely additive selector beats best-single with CI clearance", () => {
