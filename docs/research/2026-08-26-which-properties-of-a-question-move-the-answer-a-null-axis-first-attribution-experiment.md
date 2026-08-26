@@ -49,6 +49,11 @@ above it, an extra newline is not.
 Excess JSD, permutation _p_ in parentheses, bold = significant uncorrected. Read it top to
 bottom: it is three questions in a row, each one further from "nothing changed".
 
+**What that costs is bigger than a failed gate, and §3 states it: the map from string to
+distribution is sensitive at a granularity BELOW meaning, so there may be no neutral
+question available in this medium at all — and "word it more carefully" is therefore not a
+workable instruction.**
+
 1. **Does the meter read zero when literally nothing differs but the sampler?** Yes — 6 of
    7 outright, 7 of 7 under multiplicity.
 2. **Does it read zero when the text is identical but the seeds are far apart?** 6 of 7,
@@ -119,6 +124,39 @@ was supposed to change everything.
 
 That is not a small correction to an attribution table. It is the attribution table's
 premise failing.
+
+### The reading, stated because "word it more carefully" is now demonstrably wrong advice
+
+The obvious lesson to take from a table full of moved distributions is _questions are
+biased, so word them carefully_. **That is the wrong lesson, and the null axes are what
+make it wrong.**
+
+A biased question is one whose _content_ tilts the answer — a presupposition, a leading
+frame, an example that primes. If that were the mechanism here, the remedy would be lexical:
+find the wording that tilts least. But a synonym preserves content. A clause reorder
+preserves content. An extra newline does not even reach content. All three move the
+distribution anyway, in nearly every cell.
+
+> **The map from string to distribution is sensitive at a granularity BELOW meaning.** Two
+> distinct strings steer differently more or less regardless of what they say.
+
+If that holds, then there is **no neutral question available in this medium at all** — not
+one that is hard to find, one that does not exist to be found. "Neutral" would have to mean
+_a string whose particular form contributes nothing_, and every string has a particular
+form. The careful-wording remedy presupposes the thing the null axes refute.
+
+**The consequence is that the remedy must be structural rather than lexical.** You cannot
+subtract the wording's contribution by choosing a better wording; you can only _sample_ it,
+by asking N deliberately-varied phrasings and treating the **spread** as the measurement
+rather than hunting for THE phrasing. §6 is that protocol, and §11 is what it costs the rule
+this experiment was routed at.
+
+Note what this is not. It is not "the answers are wrong" — see the closing paragraph of §10.
+It is not a claim about frontier models. And it is not a universal law: it is 7 of 7 cells
+across four local models of 0.5B–7B, one metric family, two question domains. What it is
+sufficient to establish is that **"be careful how you word it" is not a workable
+instruction** at this scale, because the thing you would have to be careful about is not the
+wording's meaning.
 
 **Counted mechanically, and this is the number to carry away:**
 
@@ -372,14 +410,56 @@ fixed question has a stable answer — does not hold at this scale. The method's
 (panels, multiple items, reported spread) survives intact and is arguably strengthened; the
 _practice_ of crafting one careful, neutral question and trusting its answer does not.
 
+**Said plainly, because the rule is actionable prose and someone will act on it: careful
+wording cannot satisfy `non-biased elicitation` at this scale.** The rule asks for a
+question that does not bias the answer. §3 is the measurement that no such question is
+available — the floor is set by edits that carry no meaning at all, so there is nothing to
+be careful _about_ that would lower it. An instruction that cannot be followed is worse than
+no instruction: it reads as satisfied by anyone who tried hard, which is the vacuity class
+in prose form.
+
+**The structural form the rule needs, and it is already built here.** Ask N deliberately
+varied phrasings, aggregate, and report the spread as part of the measurement rather than
+resolving it away. That is not a new mechanism — it is the decorrelation machinery this
+repo already runs (F1/F2/F3, and this file's own permutation-and-spread apparatus), pointed
+at elicitation instead of at agents. It is also, independently, what classical test theory
+prescribes for humans and for the same reason (§6, Cronbach 1951). Changing the rule to say
+so is a separate act and is not performed here; this section is the measurement that would
+justify it.
+
 The `PERSON-3RD` result in §4 is the one that speaks directly to the rule's own sentence.
 _Ask, don't infer_ draws a line between asking a subject about itself and reasoning about
 it from outside. In this data that line is one of the two largest and most consistent
 movers in the whole design — above the cosmetic floor in 7 of 7 cells. The rule's
 distinction is not a courtesy; the two framings retrieve measurably different things.
 
+### It reframes the hat-audition result too, and upward
+
+F3/E1 (#15613) asked whether letting a persona choose its own hat decorrelates, and its
+Finding 1 is that _rewording the elicitation moves the choice distribution_ — read there as
+the audition's question being a prompt like any other. The null-axis result changes what
+that finding means:
+
+> **Asking _"what do you want to be?"_ does not fail its falsifier because that question is
+> leading. It fails because every question is leading, in a way that is not about its
+> content.**
+
+That is the stronger claim of the two, and it is the more useful one. Under the original
+reading the repair is obvious and lexical — word the audition better — and §3 shows that
+repair does not exist. Under this reading the audition is not a badly-chosen question to be
+replaced by a well-chosen one; it is **one sample from a distribution over phrasings**, and
+the honest version of it asks several and keeps the disagreement. F3's own numbers already
+show the size of what is at stake: effective variety swung 4.1×–14.5× on phrasing alone,
+and this file's cells put a clause reorder above a team reframe on one model.
+
+Bounded the same way as everything else here: four local models, 0.5B–7B, two question
+domains, one metric family. Enough to say the lexical repair is not available; not enough
+to say it is unavailable everywhere.
+
 The rule's own text is untouched by this document. So is
-`docs/research/2026-08-02-rainbow-spectrum-soul-radar-*`, which carries the method detail.
+`docs/research/2026-08-02-rainbow-spectrum-soul-radar-*`, which carries the method detail,
+and so is #15613's report — the reframing above is offered on that PR as a comment, for its
+author to take or leave.
 
 ## 12. Reproducing every number
 
