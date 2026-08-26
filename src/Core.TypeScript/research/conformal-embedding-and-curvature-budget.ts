@@ -244,3 +244,87 @@ export function lcg(seed: number): () => number {
     return (s / 4294967296) * 20 - 10;
   };
 }
+
+// ---------------------------------------------------------------------------------------
+// 6. DEGENERATE signatures Cl(p,q,r) -- where the ABS clock does not reach
+// ---------------------------------------------------------------------------------------
+//
+// Added 2026-08-26 after Aaron surfaced the current Clifford-in-AI landscape. The single
+// most-cited geometric-algebra architecture, Qualcomm's GATr, represents its inputs in a
+// **16-dimensional projective** geometric algebra -- PGA(3D) = `Cl(3,0,1)`, which has a
+// generator squaring to ZERO. Nothing in this repo could classify it: `CliffordPeriodicity.fs`
+// takes `(p, q)` and there is no `r`, so the instrument had no coverage of the algebra the
+// field's headline model actually uses.
+//
+// THE REASON IS NOT AN OVERSIGHT, AND SAYING SO PRECISELY MATTERS. A degenerate Clifford
+// algebra is **not semisimple**: the null generators are nilpotent and generate a Jacobson
+// radical. Atiyah-Bott-Shapiro classifies semisimple algebras up to Morita type over a
+// division ring, so the clock is **inapplicable** here, not merely unimplemented. Extending
+// `classify` to accept an `r` would have produced a confident wrong answer -- the failure
+// mode this repo calls the vacuity class. The honest extension is a different function that
+// says what IS true:
+//
+//     Cl(p,q,r)  ~=  Cl(p,q) (x) Lambda(R^r)          [the exterior algebra on r generators]
+//     dim_R                  =  2^(p+q+r)
+//     Cl(p,q,r) / rad        ~= Cl(p,q)               [quotient by the radical is semisimple]
+//
+// So a degenerate algebra is classified in two parts: a nilpotent part the clock cannot see,
+// and a semisimple quotient it can. And the quotient is the payoff -- see
+// `towerReduction` below.
+
+/** A degenerate Clifford algebra `Cl(p,q,r)`: `r` generators square to zero. */
+export interface DegenerateCliffordType {
+  /** Total real dimension, `2^(p+q+r)`. */
+  readonly realDimension: number;
+  /** Dimension of the Jacobson radical (the nilpotent part the ABS clock cannot see). */
+  readonly radicalDimension: number;
+  /** The semisimple quotient `Cl(p,q,r)/rad ~= Cl(p,q)`, which the clock CAN classify. */
+  readonly semisimpleQuotient: CliffordType;
+  /** `true` when `r > 0` -- i.e. when the ABS clock is inapplicable to the algebra itself. */
+  readonly isDegenerate: boolean;
+}
+
+/**
+ * Classify `Cl(p,q,r)` as far as is honest: total dimension, radical dimension, and the
+ * semisimple quotient.
+ *
+ * `r = 0` reduces to the ordinary case (empty radical, quotient is the algebra itself), so
+ * this is a strict generalisation rather than a parallel code path.
+ */
+export function classifyDegenerate(p: number, q: number, r: number): DegenerateCliffordType {
+  if (p < 0 || q < 0 || r < 0) throw new RangeError(`negative signature Cl(${p},${q},${r})`);
+  const total = 2 ** (p + q + r);
+  // rad(Cl(p,q) (x) Lambda(R^r)) = Cl(p,q) (x) rad(Lambda(R^r)); dim rad(Lambda) = 2^r - 1.
+  const radical = 2 ** (p + q) * (2 ** r - 1);
+  return {
+    realDimension: total,
+    radicalDimension: radical,
+    semisimpleQuotient: classify(p, q),
+    isDegenerate: r > 0,
+  };
+}
+
+/**
+ * The named geometric algebras of the current AI literature, and what each reduces to.
+ *
+ * THE POINT OF THIS TABLE: both live candidate towers are built over the SAME in-tree
+ * algebra, by two different constructions.
+ *
+ *   PGA(3D) = Cl(3,0,1) ~= Cl(3,0) (x) Lambda(R^1)   dim 16   <- GATr's 16-dimensional space
+ *   CGA(3D) = Cl(4,1)   ~= M_2(Cl(3,0))              dim 32
+ *
+ * Tensoring with an exterior algebra, or taking 2x2 matrices over it. Either way `Cl(3,0)`
+ * -- the algebra already in `src/Core/Cl3.fs` -- is the entry type, so the in-tree work is
+ * upstream of BOTH and is not a bet on one of them.
+ */
+export const TOWER_REDUCTION: readonly {
+  readonly name: string;
+  readonly signature: readonly [number, number, number];
+  readonly construction: string;
+}[] = [
+  { name: "VGA(3D) / in-tree Cl3", signature: [3, 0, 0], construction: "Cl(3,0) itself" },
+  { name: "PGA(3D) / GATr", signature: [3, 0, 1], construction: "Cl(3,0) (x) Lambda(R^1)" },
+  { name: "CGA(3D)", signature: [4, 1, 0], construction: "M_2(Cl(3,0))" },
+  { name: "PGA(2D)", signature: [2, 0, 1], construction: "Cl(2,0) (x) Lambda(R^1)" },
+  { name: "STA", signature: [1, 3, 0], construction: "Cl(1,3) itself" },
+];

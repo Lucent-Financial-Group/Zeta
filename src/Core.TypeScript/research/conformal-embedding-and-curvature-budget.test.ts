@@ -17,7 +17,9 @@ import {
   ALPHA_STAR,
   LP_RATE,
   type CliffordType,
+  TOWER_REDUCTION,
   classify,
+  classifyDegenerate,
   conformalDot,
   curvatureBudget,
   dimensionOfType,
@@ -286,4 +288,80 @@ it("agrees with Zeta.Core.CliffordPeriodicity on all 169 signatures (F#-generate
     }
   }
   expect(divergences).toEqual([]);
+});
+
+// ===== DEGENERATE SIGNATURES: where the clock does not reach ============================
+
+it("dim Cl(p,q,r) = 2^(p+q+r), and r=0 reduces to the non-degenerate case exactly", () => {
+  for (let p = 0; p <= 6; p += 1) {
+    for (let q = 0; q <= 6; q += 1) {
+      for (let r = 0; r <= 4; r += 1) {
+        const d = classifyDegenerate(p, q, r);
+        expect(`Cl(${p},${q},${r}) dim`).toBe(`Cl(${p},${q},${r}) dim`);
+        expect(d.realDimension).toBe(2 ** (p + q + r));
+        // The radical is everything the semisimple quotient throws away.
+        expect(d.realDimension - d.radicalDimension).toBe(2 ** (p + q));
+        if (r === 0) {
+          expect(d.radicalDimension).toBe(0);
+          expect(d.isDegenerate).toBe(false);
+          expect(d.semisimpleQuotient).toEqual(classify(p, q));
+        } else {
+          expect(d.isDegenerate).toBe(true);
+          expect(d.radicalDimension).toBeGreaterThan(0);
+        }
+      }
+    }
+  }
+});
+
+it("PGA(3D) = Cl(3,0,1) is 16-dimensional — GATr's published multivector space", () => {
+  // An EXTERNAL check on the structure theorem: Qualcomm's GATr states a 16-dimensional
+  // projective geometric algebra. If Cl(p,q,r) ~= Cl(p,q) (x) Lambda(R^r) is right, then
+  // dim = 8 * 2 = 16 and this number is predicted, not fitted.
+  const pga = classifyDegenerate(3, 0, 1);
+  expect(pga.realDimension).toBe(16);
+  expect(pga.isDegenerate).toBe(true);
+  // Half of it is nilpotent — which is exactly why the ABS clock cannot classify it.
+  expect(pga.radicalDimension).toBe(8);
+  expect(pga.realDimension - pga.radicalDimension).toBe(8); // = dim Cl(3,0)
+});
+
+it("ALL THREE towers reduce to the in-tree Cl(3,0) — so it is upstream of the choice", () => {
+  const inTree = classify(3, 0); // M_2(C)
+  // VGA: the algebra itself.
+  expect(classifyDegenerate(3, 0, 0).semisimpleQuotient).toEqual(inTree);
+  // PGA: Cl(3,0) tensor an exterior algebra — same semisimple quotient.
+  expect(classifyDegenerate(3, 0, 1).semisimpleQuotient).toEqual(inTree);
+  // CGA: 2x2 matrices over it — one suspension step, checked in the Q4 test above.
+  expect(classify(4, 1).matrixDim).toBe(2 * inTree.matrixDim);
+  expect(classify(4, 1).ground).toBe(inTree.ground);
+});
+
+it("NEGATIVE CONTROL: a degenerate algebra is NOT classified by the ABS clock", () => {
+  // The load-bearing distinction. `classify(3,0)` and `classify(3,0+1)` are both defined and
+  // both WRONG answers for Cl(3,0,1) — the first ignores the null generator, the second
+  // pretends it squares to -1. Neither equals the true dimension.
+  expect(classifyDegenerate(3, 0, 1).realDimension).toBe(16);
+  expect(dimensionOfType(classify(3, 0))).toBe(8); // ignoring r: too small
+  expect(dimensionOfType(classify(3, 1))).toBe(16); // r as a negative generator: right DIM...
+  // ...but structurally different: Cl(3,1) is semisimple with an EMPTY radical, while
+  // Cl(3,0,1) is half nilpotent. Matching dimension is not matching algebra — the same
+  // numerology-vs-number-theory trap the curvature-budget tests guard.
+  expect(classifyDegenerate(3, 1, 0).radicalDimension).toBe(0);
+  expect(classifyDegenerate(3, 0, 1).radicalDimension).toBe(8);
+});
+
+it("REFUSES a negative degenerate signature", () => {
+  expect(() => classifyDegenerate(3, 0, -1)).toThrow(RangeError);
+  expect(() => classifyDegenerate(-1, 0, 1)).toThrow(RangeError);
+});
+
+it("the tower roster is non-empty and every entry classifies", () => {
+  // Guards the vacuity case: an empty roster would make the table-driven claims above
+  // pass over nothing.
+  expect(TOWER_REDUCTION.length).toBeGreaterThanOrEqual(5);
+  for (const t of TOWER_REDUCTION) {
+    const [p, q, r] = t.signature;
+    expect(classifyDegenerate(p, q, r).realDimension).toBe(2 ** (p + q + r));
+  }
 });
