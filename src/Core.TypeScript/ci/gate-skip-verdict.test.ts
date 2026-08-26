@@ -125,31 +125,45 @@ describe("a docs-only PR stays GREEN", () => {
 // ═══════════════════════════════════════════════════════════════════════════════════
 
 // ═══════════════════════════════════════════════════════════════════════════════════
-// THE DEFECT, MEASURED. Not a constructed hypothetical: run 32881149945 on
-// 2026-08-25 (PR branch `claude/tender-hawking-xmcs6m`) is the class firing live.
-// The fixture beside this file is that run's job list, straight from the Actions API.
+// THE DEFECT, MEASURED. Not a constructed hypothetical. A scan of the last 400
+// completed `gate` runs found 23 with a non-success `path filter`; 21 reddened the
+// gate anyway (the same cancellation caught another floor job, and `cancelled` was
+// already blocking) and TWO were absorbed in silence. Both are below, from their own
+// Actions-API job lists, and both are from 2026-08-25.
+//
+// The trigger in both is `cancelled`, not `failure` — which makes the class more
+// reachable than the reasoning behind this change first assumed: `cancel-in-progress`
+// fires on every PR push, so no job defect is needed at all.
 // ═══════════════════════════════════════════════════════════════════════════════════
 
-describe("REGRESSION — gate run 32881149945, where this actually happened", () => {
-  const RUN_JOBS = JSON.parse(
-    readFileSync(join(import.meta.dir, "fixtures", "gate-run-32881149945-absorbed-skip.json"), "utf8"),
-  ) as Array<{ name: string; conclusion: string }>;
+const ABSORBED_RUNS: ReadonlyArray<readonly [string, string, string]> = [
+  ["32881149945", "gate-run-32881149945-absorbed-skip.json", "claude/tender-hawking-xmcs6m"],
+  ["32861098038", "gate-run-32861098038-absorbed-skip-dependabot.json", "a dependabot dependency bump"],
+];
+
+describe.each(ABSORBED_RUNS)("REGRESSION — gate run %s (%s), where this actually happened", (runId, file, what) => {
+  const RUN_JOBS = JSON.parse(readFileSync(join(import.meta.dir, "fixtures", file), "utf8")) as Array<{
+    name: string;
+    conclusion: string;
+  }>;
   const conclusionOf = (name: string): string | undefined => RUN_JOBS.find((j) => j.name === name)?.conclusion;
 
-  test("the fixture is the real thing: path filter CANCELLED, two floor jobs SKIPPED, gate GREEN", () => {
+  test(`the fixture is the real thing (${what}): path filter CANCELLED, two floor jobs SKIPPED, gate GREEN`, () => {
     // If any of these four drift, the regression below is testing a run that never
-    // happened, and the whole describe becomes decoration.
+    // happened, and the whole block becomes decoration.
+    expect(RUN_JOBS.length).toBeGreaterThan(20);
     expect(conclusionOf("path filter")).toBe("cancelled");
     expect(conclusionOf("build-and-test (${{ matrix.os }})")).toBe("skipped");
     expect(conclusionOf("full-verify (7-lang oracle + cost + proofs)")).toBe("skipped");
     expect(conclusionOf("gate (required)")).toBe("success");
   });
 
-  test("the new verdict turns that exact run RED", () => {
+  test(`the new verdict turns run ${runId} RED`, () => {
     // The `needs` context the roll-up would have seen, reconstructed from the API
-    // conclusions above (they agree for every state that matters here).
+    // conclusions above (they agree for every state that matters here). The four floor
+    // jobs that are not derived from the fixture all concluded `success` in both runs.
     const asItHappened = ctx({
-      "matrix-setup": "success",
+      "matrix-setup": conclusionOf("matrix setup") ?? "success",
       "path-filter": "cancelled",
       "build-and-test": "skipped",
       lint: "success",
@@ -163,12 +177,22 @@ describe("REGRESSION — gate run 32881149945, where this actually happened", ()
     expect(gate.blocked.map((v) => v.need).sort()).toEqual(["build-and-test", "full-verify", "path-filter"]);
   });
 
-  test("what the green covered: every .NET build and test leg, and the 7-language byte-lock, never ran", () => {
+  test(`what run ${runId}'s green covered: no .NET build or test leg, and no 7-language byte-lock`, () => {
     // Named rather than implied, because this is the cost the old rule was paying.
     const skipped = RUN_JOBS.filter((j) => j.conclusion === "skipped").map((j) => j.name);
     expect(skipped).toContain("build-and-test (${{ matrix.os }})");
     expect(skipped).toContain("full-verify (7-lang oracle + cost + proofs)");
   });
+});
+
+test("the dependabot instance also carried a RED lint beside its green gate", () => {
+  // The sharper half of the second case: it is not only that the build never ran — a
+  // floor-adjacent lint was outright failing while the required check reported success.
+  const jobs = JSON.parse(
+    readFileSync(join(import.meta.dir, "fixtures", "gate-run-32861098038-absorbed-skip-dependabot.json"), "utf8"),
+  ) as Array<{ name: string; conclusion: string }>;
+  expect(jobs.find((j) => j.name === "lint (Python)")?.conclusion).toBe("failure");
+  expect(jobs.find((j) => j.name === "gate (required)")?.conclusion).toBe("success");
 });
 
 describe("a dead prerequisite turns the gate RED where it used to be green", () => {
