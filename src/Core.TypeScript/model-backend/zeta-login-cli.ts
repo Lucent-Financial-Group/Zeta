@@ -16,7 +16,8 @@ import { fetchTransport } from "./fetch-transport.ts";
 import { githubDeviceProvider } from "./github-auth.ts";
 import { deviceLogin, defaultStoreDir, type LoginDeps } from "./login-runner.ts";
 import { openAiCodexProvider } from "./openai-auth.ts";
-import { PROVIDER_ROSTER, resolveProvider, type ProviderEntry } from "./provider-roster.ts";
+import { importVendorSession } from "./import-vendor-session.ts";
+import { preferredLogin, PROVIDER_ROSTER, resolveProvider, type ProviderEntry } from "./provider-roster.ts";
 import { fileTokenStore, type StoreFs, type TokenStore } from "./token-store.ts";
 
 export type CliIo = {
@@ -70,7 +71,7 @@ export async function runList(io: CliIo, json: boolean): Promise<number> {
     return 0;
   }
   for (const p of PROVIDER_ROSTER) {
-    io.out(`${p.id}\t${p.status}\t${p.loginKind}\t${p.displayName}`);
+    io.out(`${p.id}\t${p.status}\t${preferredLogin(p) ?? "-"}\t${p.displayName}`);
   }
   return 0;
 }
@@ -107,6 +108,8 @@ export async function runLogin(
         ok: false,
         error: "no-auth-provider",
         provider: entry.id,
+        preferredFlow: preferredLogin(entry),
+        try: entry.vendorCredPaths.length > 0 ? `zeta-login import ${entry.id}` : null,
         next: "081M100RH29087G0R0031HHGJ0",
       }),
     );
@@ -137,6 +140,36 @@ export async function runLogin(
   return 0;
 }
 
+export type ImportDeps = {
+  readonly home: string;
+  readonly readFile: (path: string) => Promise<string>;
+  readonly now: () => string;
+};
+
+export async function runImport(rawId: string, store: TokenStore, io: CliIo, deps: ImportDeps): Promise<number> {
+  const entry = resolveProvider(rawId);
+  if (!entry) {
+    io.err(`unknown provider: ${rawId}`);
+    return 2;
+  }
+  const outcome = await importVendorSession(entry.vendorCredPaths, deps.home, deps.readFile);
+  if (!outcome.ok) {
+    io.err(
+      JSON.stringify({
+        ok: false,
+        error: "vendor-session-missing",
+        provider: entry.id,
+        hint: entry.vendorCli === null ? outcome.error : `log in with \`${entry.vendorCli}\` then re-run import`,
+        detail: outcome.error,
+      }),
+    );
+    return 1;
+  }
+  await store.save({ provider: entry.storeAs, tokens: outcome.tokens, lastRefresh: deps.now() });
+  io.out(`Imported ${entry.id} session from vendor CLI file into store '${entry.storeAs}'.`);
+  return 0;
+}
+
 export async function runToken(rawId: string, store: TokenStore, io: CliIo): Promise<number> {
   const entry = resolveProvider(rawId);
   if (!entry) {
@@ -160,7 +193,11 @@ export async function main(
   argv: readonly string[],
   store: TokenStore,
   io: CliIo,
-  extra?: { readonly transport?: HttpTransport; readonly providers?: (entry: ProviderEntry) => AuthProvider | null },
+  extra?: {
+    readonly transport?: HttpTransport;
+    readonly providers?: (entry: ProviderEntry) => AuthProvider | null;
+    readonly importDeps?: ImportDeps;
+  },
 ): Promise<number> {
   const jsoned = takeFlag(argv, "--json");
   const [cmd = "", ...rest] = jsoned.rest;
@@ -175,6 +212,19 @@ export async function main(
         return 2;
       }
       return runLogin(rest[0], store, io, extra);
+    case "import":
+      if (rest[0] === undefined || rest[0].length === 0) {
+        io.err("usage: zeta-login-cli.ts import <provider>");
+        return 2;
+      }
+      {
+        const importDeps = extra?.importDeps ?? {
+          home: homedir(),
+          readFile: (path) => readFile(path, "utf8"),
+          now: () => new Date().toISOString(),
+        };
+        return runImport(rest[0], store, io, importDeps);
+      }
     case "token":
       if (rest[0] === undefined || rest[0].length === 0) {
         io.err("usage: zeta-login-cli.ts token <provider>");
@@ -182,7 +232,7 @@ export async function main(
       }
       return runToken(rest[0], store, io);
     default:
-      io.err("usage: zeta-login-cli.ts <list|status|login <provider>|token <provider>> [--json]");
+      io.err("usage: zeta-login-cli.ts <list|status|login <provider>|import <provider>|token <provider>> [--json]");
       return 2;
   }
 }

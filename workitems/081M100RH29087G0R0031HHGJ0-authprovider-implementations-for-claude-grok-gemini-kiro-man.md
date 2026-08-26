@@ -15,6 +15,9 @@ composes_with: []
 Implement the hexagonal `AuthProvider` port (`auth-provider.ts`) for every
 paid account that is `declared` or `api-key-only` on the roster.
 
+**Until that lands:** `zeta-login import <id>` copies a session the vendor
+CLI already minted. That is a fallback, not this workitem's done-test.
+
 ## Must
 
 - Device-code (RFC 8628) and/or PKCE browser (RFC 7636). Same runner

@@ -59,7 +59,7 @@ Umbrella `081M100RB97087G0R0008EAAY7`.
 
 | # | Layer | Running on our own thing? | Evidence |
 |---|---|---|---|
-| 0a | **Account-login roster + `zeta-login` CLI** | ◐ **partial** | `provider-roster.ts` declares all eight (7 LLMs + GitHub). `zeta-login list/status/login/token` wired for `github` + `openai`/`codex`. The other five fail closed. |
+| 0a | **Account-login roster + `zeta-login` CLI** | ◐ **partial** | Roster + login ladder (device-code first). Native device login wired for `github` + `openai`/`codex`. `zeta-login import` copies vendor-CLI sessions (grok/claude/gemini/codex/gh/kiro) without reverse-engineering their OAuth. |
 | 0b | **Paid cells summon through our tool loop** | ○ **not started** | `loop-tick` still spawnSyncs `claude`/`codex`/`kiro-cli`/`agy`/`cursor-agent`. `summon()` is a library proven on ChatGPT (2026-07-04), not the fleet. `081M100RH30087G0R003YXHQ12` |
 | 0c | **GitHub work without `gh`** | ◐ **partial** | Login is ours (`github-auth.ts`). PRs/checks/rest-push still `spawnSync("gh")`. `081M100RB9Z087G0R000GWY1MM` |
 | 0d | **Tools = Ace + Zeta CLIs only** | ○ **not started** | Closed `fs_*`/`db_*` is in-memory DagFs. Fleet tools are vendor bash/git/gh. `081M100RH3Q087G0R0018X4RSJ` |

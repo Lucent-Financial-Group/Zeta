@@ -1,4 +1,4 @@
-# Own harness — account logins, Ace + Zeta CLIs, GitHub tokens not `gh`
+# Custom agent harness — account logins, Ace + Zeta CLIs, GitHub tokens not `gh`
 
 *2026-08-26. Operational status: research-grade absorb of a current-state
 audit; the live pointer is
@@ -139,6 +139,39 @@ Umbrella `081M100RB97087G0R0008EAAY7`.
 
 API keys stay a **secondary** path (Manus Keychain today). Account
 login is the primary for every row that can do OAuth.
+
+## Login ladder (remote / no-local-browser first)
+
+Aaron 2026-08-26: device login when the vendor has it; otherwise some other
+account login (OAuth-like); smoothest for remote machines and machines
+without browsers; a browser **on the agent machine** is last-resort.
+
+| Rank | Flow | Local browser? | What it is |
+|---|---|---|---|
+| 0 | `device-code` (RFC 8628) | no | Print URL + short code; approve on a phone. GitHub, OpenAI/Codex (ours, live). Grok (`auth.x.ai` OIDC `device_authorization_endpoint`; `grok login --device-auth`). Kiro (`kiro-cli login --use-device-flow`). |
+| 1 | `paste-code` | no | PKCE/auth-code; user opens URL on any device and pastes the code back. Claude Code `--no-browser`. Anthropic has **no** RFC 8628 yet (claude-code#22992). |
+| 2 | `vendor-cli-import` | no | Run **their** CLI login once, then `zeta-login import`. Used when we do not have (or should not mint) their client_id. |
+| 3 | `pkce-localhost` | **yes** | Loopback callback. Gemini CLI default; Grok default `grok login`. Harder on SSH/VMs. |
+| 4 | `api-key` | no | Secondary. Manus public API; Gemini headless docs; `XAI_API_KEY`. |
+
+## Vendor-CLI import (no reverse engineering)
+
+Shipped: `import-vendor-session.ts` + `zeta-login import <id>`. Parses:
+
+| Vendor | File |
+|---|---|
+| Codex / OpenAI | `~/.codex/auth.json` (`tokens.access_token`) |
+| Claude | `~/.claude/.credentials.json` (`claudeAiOauth`) |
+| Grok | `~/.grok/auth.json` |
+| Gemini | `~/.gemini/oauth_creds.json` |
+| GitHub | `~/.config/gh/hosts.yml` (`oauth_token`) |
+| Kiro | `~/.aws/sso/cache/kiro-auth-token.json` |
+
+This is the same move other open harnesses use when they cannot speak a
+vendor's OAuth: **Meridian / OCP** wrap `claude` rather than intercepting
+OAuth; **OpenCode** plugins do Codex/Gemini OAuth or device-code;
+**@vymalo/opencode-oauth2** lists five grants including RFC 8628;
+**Grok Build** itself documents `--device-auth` for SSH.
 
 ## Slice 0 (landed with this absorb)
 

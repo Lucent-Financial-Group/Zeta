@@ -96,3 +96,34 @@ describe("zeta-login-cli status / token", () => {
     expect(out).toEqual(["AT"]);
   });
 });
+
+describe("zeta-login-cli import", () => {
+  test("copies a grok CLI session into our store without an AuthProvider", async () => {
+    const store = memoryTokenStore();
+    const { io } = collectIo();
+    const files = new Map([["/home/me/.grok/auth.json", JSON.stringify({ access_token: "AT", refresh_token: "RT" })]]);
+    expect(
+      await main(["import", "grok"], store, io, {
+        importDeps: {
+          home: "/home/me",
+          readFile: (p) => {
+            const v = files.get(p);
+            if (v === undefined) return Promise.reject(new Error("missing"));
+            return Promise.resolve(v);
+          },
+          now: () => "t0",
+        },
+      }),
+    ).toBe(0);
+    expect((await store.load("grok"))?.tokens.accessToken).toBe("AT");
+  });
+
+  test("login claude still fails closed but names import as the next move", async () => {
+    const store = memoryTokenStore();
+    const { io, err } = collectIo();
+    expect(await runLogin("claude", store, io, { providers })).toBe(1);
+    const parsed = JSON.parse(err.join("\n")) as { try: string; preferredFlow: string };
+    expect(parsed.try).toBe("zeta-login import claude");
+    expect(parsed.preferredFlow).toBe("paste-code");
+  });
+});

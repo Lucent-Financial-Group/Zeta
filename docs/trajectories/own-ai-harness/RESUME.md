@@ -1,18 +1,22 @@
-# Trajectory — Own AI harness (account logins, Ace + Zeta CLIs, no platform CLIs)
+# Trajectory — Custom agent harness (account logins, Ace + Zeta CLIs, no platform CLIs)
 
 Status: active — workstream (current-focus)
 Last refreshed: 2026-08-26
 Type: workstream (current-focus)
-Current blocker: five of seven paid LLM accounts have no `AuthProvider`; production `loop-tick` still spawnSyncs vendor CLIs
-Next concrete action: `081M100RH29087G0R0031HHGJ0` (Claude/Grok/Gemini/Kiro/Manus account OAuth) in parallel with `081M100RB9Z087G0R000GWY1MM` (ForgeHost without `gh`)
+Current blocker: five of seven paid LLM accounts have no native `AuthProvider`; production `loop-tick` still spawnSyncs vendor CLIs. Token **import** from those CLIs is now a shipped fallback.
+Next concrete action: wire our own device-code where the vendor publishes it (Grok auth.x.ai, Kiro `--use-device-flow`) — `081M100RH29087G0R0031HHGJ0` — in parallel with ForgeHost without `gh`
 Evidence links: umbrella `081M100RB97087G0R0008EAAY7` · `src/Core.TypeScript/model-backend/` · `docs/ROADMAP.md` item 1 (NO GIT CLI)
 
 ## Why this exists
 
-Aaron 2026-08-26: run **all** paid agents on **our** harness, with **account
-logins** (API keys secondary), GitHub tokens instead of `gh`, tools only by
-calling **our** CLIs. Ace closes over dependencies. Zeta closes over source
-control and filesystem. Full-duplex streaming is the chat shape.
+Aaron 2026-08-26: this is our **custom agent harness**. Run **all** paid
+agents on it, with **account logins** (API keys secondary). Prefer **device
+login** (RFC 8628) for GitHub and any vendor that has it — that is the
+remote / no-local-browser path. If they have no device grant, use the next
+smoothest account OAuth (paste-code on any phone/laptop, not a browser on
+the agent machine). If we cannot reverse their login, **use their CLI once
+and import the token**. GitHub tokens instead of `gh`. Tools only via **our**
+CLIs: Ace = deps, Zeta = source control + filesystem.
 
 Daily identities we already pay for: grok, claude, openai, manus, gemini,
 codex, kiro.
@@ -34,16 +38,24 @@ The harness **library** is real. The fleet **runtime** is still vendor CLIs.
 | Zeta CLI (sc/fs) | ◐ library | LibGit2Sharp `zeta` exe + MCP; factory still `git`/`gh` |
 | loop-tick | ○ vendor default | `persona-registry.ts` harness.command = claude/codex/kiro-cli/agy/cursor-agent |
 
-Slice 0 landed: `provider-roster.ts` + `zeta-login` CLI
-(`list` / `status` / `login` / `token`, `--json`). Wired logins:
-`github`, `openai`/`codex`. Declared providers fail closed and name
-`081M100RH29087G0R0031HHGJ0`.
+Login ladder (remote-first): `device-code` > `paste-code` > `vendor-cli-import`
+> `pkce-localhost` > `api-key`. Encoded in `login-ladder.ts`.
+
+Slice 0: roster + `zeta-login list|status|login|token`. Wired native device
+login: `github`, `openai`/`codex`.
+
+Slice 0b: `zeta-login import <provider>` copies a session the **vendor CLI**
+already minted (`~/.grok/auth.json`, `~/.codex/auth.json`, Claude creds,
+Gemini `oauth_creds.json`, gh `hosts.yml`, Kiro SSO cache). No reverse
+engineering of their OAuth client_id.
 
 ```text
 bun src/Core.TypeScript/model-backend/zeta-login-cli.ts list --json
-bun src/Core.TypeScript/model-backend/zeta-login-cli.ts status --json
 bun src/Core.TypeScript/model-backend/zeta-login-cli.ts login github
 bun src/Core.TypeScript/model-backend/zeta-login-cli.ts login openai
+# remote box, vendor already logged in:
+grok login --device-auth          # their CLI, phone-approve
+bun .../zeta-login-cli.ts import grok
 ```
 
 ## Roadmap (children of the umbrella)

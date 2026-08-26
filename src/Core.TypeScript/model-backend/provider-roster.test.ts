@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { PROVIDER_ROSTER, resolveProvider, uniqueStoreKeys, wiredProviders } from "./provider-roster.ts";
+import { PROVIDER_ROSTER, preferredLogin, resolveProvider, uniqueStoreKeys, wiredProviders } from "./provider-roster.ts";
 
 describe("provider roster", () => {
   test("the seven paid accounts plus GitHub are declared, ids unique", () => {
@@ -43,5 +43,22 @@ describe("provider roster", () => {
         expect(p.status).toBe("declared");
       }
     }
+  });
+
+  test("preferred login is device-code when the vendor offers it, never localhost PKCE over device", () => {
+    expect(preferredLogin(resolveProvider("github")!)).toBe("device-code");
+    expect(preferredLogin(resolveProvider("openai")!)).toBe("device-code");
+    expect(preferredLogin(resolveProvider("grok")!)).toBe("device-code");
+    expect(preferredLogin(resolveProvider("kiro")!)).toBe("device-code");
+    expect(preferredLogin(resolveProvider("claude")!)).toBe("paste-code");
+    expect(preferredLogin(resolveProvider("gemini")!)).toBe("vendor-cli-import");
+    expect(preferredLogin(resolveProvider("manus")!)).toBe("api-key");
+  });
+
+  test("every paid LLM except manus has a vendor-cli-import path", () => {
+    for (const id of ["openai", "codex", "claude", "grok", "gemini", "kiro", "github"]) {
+      expect(resolveProvider(id)?.flows.includes("vendor-cli-import")).toBe(true);
+    }
+    expect(resolveProvider("manus")?.flows.includes("vendor-cli-import")).toBe(false);
   });
 });
