@@ -291,3 +291,107 @@ let ``MLBNN-22: with near-flat deeper priors the mean survives and the variance 
     let m4, v4 = run 4
     Assert.True(abs (m4 - m1) < 1e-3, sprintf "mean drifted from %.6f to %.6f" m1 m4)
     Assert.True(abs (v4 - (v1 + 3.0)) < 1e-3, sprintf "variance %.6f is not %.6f plus three link variances" v4 v1)
+
+// ── Dag: the general topology the other two are special cases of ────────────
+//
+// THE FALSIFIER FOR THE GENERALISATION, and the reason it is byte-identity
+// rather than "close enough". `Sequential` and `SkipConnections` are now read
+// through `parentsOf` like every other case, so a `Dag` spelling out the SAME
+// parents must produce the SAME numbers — not approximately, exactly. Anything
+// short of bit equality means the rewrite changed the model while the tests
+// went on passing, which is the failure this whole row exists to avoid.
+
+let private bits (x: float) : int64 = System.BitConverter.DoubleToInt64Bits x
+
+let private assertBitIdentical (label: string) (a: MultilayerBnn.Network) (b: MultilayerBnn.Network) =
+    Assert.Equal(a.Layers.Length, b.Layers.Length)
+    for i in 0 .. a.Layers.Length - 1 do
+        let pa = MultilayerBnn.beliefAt a i
+        let pb = MultilayerBnn.beliefAt b i
+        Assert.True(
+            bits pa.Precision = bits pb.Precision
+            && bits pa.PrecisionMean = bits pb.PrecisionMean,
+            sprintf
+                "%s: layer %d differs — (tau=%.17g, nu=%.17g) vs (tau=%.17g, nu=%.17g)"
+                label i pa.Precision pa.PrecisionMean pb.Precision pb.PrecisionMean)
+
+[<Fact>]
+let ``MLBNN-23: a Dag spelling out a chain is bit-identical to Sequential`` () =
+    let depth = 4
+    let priors = Array.init depth (fun i -> Gaussian.ofMeanVariance (float i * 0.25) 1.0)
+    let variances = Array.init depth (fun i -> 0.5 + float i * 0.1)
+    let observations = [ 1.0; -0.5; 2.25; 0.75; -1.5 ]
+
+    let chainParents = Array.init depth (fun i -> if i = 0 then [] else [ i - 1 ])
+    let sequential =
+        MultilayerBnn.tryCreate priors variances MultilayerBnn.Sequential |> unwrap
+    let asDag =
+        MultilayerBnn.tryCreate priors variances (MultilayerBnn.Dag chainParents) |> unwrap
+
+    let a = MultilayerBnn.infer observations sequential |> unwrap
+    let b = MultilayerBnn.infer observations asDag |> unwrap
+    assertBitIdentical "Sequential vs Dag-chain" a b
+
+[<Fact>]
+let ``MLBNN-24: a Dag spelling out skips is bit-identical to SkipConnections`` () =
+    let depth = 5
+    let priors = Array.init depth (fun i -> Gaussian.ofMeanVariance (float i * 0.1) 1.0)
+    let variances = Array.create depth 0.5
+    let observations = [ 2.0; 0.5; -1.0; 3.0 ]
+    let skips = [ (0, 2); (1, 4); (0, 4) ]
+
+    // `parentsOf` puts the sequential parent first, then skips in declaration
+    // order. The Dag must be written in that same order: Gaussian convolution is
+    // associative in exact arithmetic and NOT bit-associative in floating point,
+    // so a permuted parent list is a different computation in the last ulp — and
+    // this test would catch that, which is the point of pinning bits.
+    let dagParents =
+        Array.init depth (fun i ->
+            let seqParent = if i = 0 then [] else [ i - 1 ]
+            let mine = skips |> List.choose (fun (f, t) -> if t = i then Some f else None)
+            seqParent @ mine)
+
+    let viaSkips =
+        MultilayerBnn.tryCreate priors variances (MultilayerBnn.SkipConnections skips) |> unwrap
+    let viaDag =
+        MultilayerBnn.tryCreate priors variances (MultilayerBnn.Dag dagParents) |> unwrap
+
+    let a = MultilayerBnn.infer observations viaSkips |> unwrap
+    let b = MultilayerBnn.infer observations viaDag |> unwrap
+    assertBitIdentical "SkipConnections vs Dag" a b
+
+[<Fact>]
+let ``MLBNN-25: parentsOf is the single interpreter and agrees across spellings`` () =
+    let skips = [ (0, 2); (1, 3); (0, 3) ]
+    let depth = 4
+    for i in 0 .. depth - 1 do
+        let fromSkips = MultilayerBnn.parentsOf (MultilayerBnn.SkipConnections skips) i
+        let expected =
+            (if i = 0 then [] else [ i - 1 ])
+            @ (skips |> List.choose (fun (f, t) -> if t = i then Some f else None))
+        Assert.Equal<int list>(expected, fromSkips)
+        Assert.Equal<int list>(fromSkips, MultilayerBnn.parentsOf (MultilayerBnn.Dag (Array.init depth (fun j -> MultilayerBnn.parentsOf (MultilayerBnn.SkipConnections skips) j))) i)
+
+[<Fact>]
+let ``MLBNN-26: a Dag layer with no sequential parent is fed only by its declared parents`` () =
+    // The case neither existing topology can express: layer 2's parent is layer
+    // 0, and layer 1 does NOT feed it. Under `Sequential`/`SkipConnections` the
+    // i-1 link is unconditional, so this wiring was unreachable before.
+    let depth = 3
+    let priors = Array.init depth (fun _ -> Gaussian.ofMeanVariance 0.0 1.0)
+    let variances = Array.create depth 0.5
+    let observations = [ 4.0; 4.0; 4.0 ]
+
+    let bypass = MultilayerBnn.Dag [| []; [ 0 ]; [ 0 ] |]
+    let chain = MultilayerBnn.Dag [| []; [ 0 ]; [ 1 ] |]
+    let a = MultilayerBnn.infer observations (MultilayerBnn.tryCreate priors variances bypass |> unwrap) |> unwrap
+    let b = MultilayerBnn.infer observations (MultilayerBnn.tryCreate priors variances chain |> unwrap) |> unwrap
+
+    Assert.Equal<int list>([ 0 ], MultilayerBnn.parentsOf bypass 2)
+    // Different wiring must give a different answer, or the parent set is being
+    // ignored and `Dag` is decoration.
+    let pa = MultilayerBnn.beliefAt a 2
+    let pb = MultilayerBnn.beliefAt b 2
+    Assert.True(
+        bits pa.Precision <> bits pb.Precision || bits pa.PrecisionMean <> bits pb.PrecisionMean,
+        sprintf "bypass and chain gave identical layer-2 beliefs (tau=%.17g, nu=%.17g)" pa.Precision pa.PrecisionMean)

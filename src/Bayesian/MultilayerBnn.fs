@@ -83,9 +83,36 @@ module MultilayerBnn =
     /// `Sequential` = each layer feeds the next (default).
     /// `SkipConnection from to` = layer `from` also feeds layer `to` directly
     ///   (residual connection — the source beliefs are SUMMED at `to`).
+    /// `Dag parents` = `parents.[i]` is the full set of layers feeding layer `i`;
+    /// the general case, of which the other two are special forms.
+    ///
+    /// ALL THREE ARE READ THROUGH `parentsOf` AND NOWHERE ELSE. A topology case
+    /// that one sweep interprets and another ignores is how `SkipConnections`
+    /// became a first-order approximation: the forward sweep honoured the skips
+    /// and the backward sweep did not. One interpreter means a new case cannot
+    /// silently miss a code path — and the compiler proved that immediately, by
+    /// refusing to build until `toJsonString` handled `Dag` too.
     type Topology =
         | Sequential
         | SkipConnections of (int * int) list
+        | Dag of int list array
+
+    /// The layers feeding layer `i`, for any topology. The single place a
+    /// topology is interpreted.
+    ///
+    /// ORDER IS LOAD-BEARING: the sequential predecessor comes first, then the
+    /// skips in declaration order, because the sweeps fold over this list and
+    /// Gaussian convolution — associative in exact arithmetic — is NOT
+    /// bit-associative in floating point. Reordering moves the last ulp of the
+    /// numbers this module's bit-identity tests pin.
+    let parentsOf (topology: Topology) (i: int) : int list =
+        match topology with
+        | Sequential -> if i <= 0 then [] else [ i - 1 ]
+        | SkipConnections pairs ->
+            let skips =
+                pairs |> List.choose (fun (from, ``to``) -> if ``to`` = i then Some from else None)
+            (if i <= 0 then [] else [ i - 1 ]) @ skips
+        | Dag parents -> if i >= 0 && i < parents.Length then parents.[i] else []
 
     /// An N-layer Bayesian network.
     type Network =
@@ -151,13 +178,18 @@ module MultilayerBnn =
 
     // -- Skip-connection helpers ---------------------------------------------------
 
-    /// The extra sources that layer `i` receives from skip connections
-    /// (in addition to the sequential feed from layer i-1).
-    let private skipSourcesFor (topology: Topology) (i: int) : int list =
-        match topology with
-        | Sequential -> []
-        | SkipConnections pairs ->
-            pairs |> List.choose (fun (from, ``to``) -> if ``to`` = i then Some from else None)
+    /// Remove the FIRST occurrence of `x`, not all of them. A topology may
+    /// legitimately name the same parent twice (a skip from `i-1` to `i`
+    /// alongside the sequential feed), and that duplicate means the source is
+    /// summed in twice. Dropping both would silently change the model rather
+    /// than preserve it.
+    let private removeFirst (x: int) (xs: int list) : int list =
+        let rec go acc =
+            function
+            | [] -> List.rev acc
+            | y :: rest when y = x -> List.rev acc @ rest
+            | y :: rest -> go (y :: acc) rest
+        go [] xs
 
     // -- Gaussian message primitives -----------------------------------------------
 
@@ -234,10 +266,25 @@ module MultilayerBnn =
             // message that layer i sent DOWN divided out: the sum-product
             // variable rule, i.e. the EP cavity (Minka 2001). Without this
             // division the chain re-absorbs its own evidence every sweep.
-            let cavityBelow = Gaussian.divide (localBelief (i - 1)) down.[i - 1]
+            // ONE PARENT IS THE CAVITY PARENT; THE REST ARE CONVOLVED RAW, and the
+            // asymmetry is a limitation of the representation rather than a choice.
+            // `down` is indexed BY LAYER, so it holds one downward message per
+            // NODE — exactly right for a chain, where a layer has at most one
+            // child, and unable to express the per-EDGE message a DAG needs. The
+            // sequential predecessor's entry genuinely is the message this layer
+            // sent down, so dividing it out is the correct sum-product cavity
+            // (Minka 2001). A skip source's entry is the message IT received from
+            // ITS own sequential child — a different edge — so dividing that out
+            // would remove the wrong evidence, hence raw. `FactorGraph`'s
+            // `FactorToVar : Map<factor, Map<var, 'M>>` is per-edge, and is where
+            // this stops being approximate.
+            let parents = parentsOf net.Topology i |> List.filter (fun src -> src < i)
+            let hasSequentialParent = List.contains (i - 1) parents
+            let cavityBelow =
+                if hasSequentialParent then Gaussian.divide (localBelief (i - 1)) down.[i - 1]
+                else Gaussian.One
             let sumBelief =
-                skipSourcesFor net.Topology i
-                |> List.filter (fun src -> src < i)
+                (if hasSequentialParent then removeFirst (i - 1) parents else parents)
                 |> List.fold (fun acc src -> convolve acc (localBelief src)) cavityBelow
             up.[i] <- throughChannel net.ObservationVariances.[i] sumBelief
             let updated = localBelief i
@@ -296,8 +343,19 @@ module MultilayerBnn =
                 let toSum = throughChannel net.ObservationVariances.[i + 1] cavityAbove
                 // If layer i+1 was fed by a SUM, remove the other addends. The
                 // target itself is never removed from its own message.
+                //
+                // Swapping `skipSourcesFor` for `parentsOf` changes nothing here:
+                // the only element `parentsOf` adds is the sequential parent of
+                // `i+1`, which IS `i`, and the filter already excluded it.
+                //
+                // STILL A CHAIN WALK, which is this sweep's honest limit. `i`
+                // descends `n-2 .. 0` taking its downward message from `i+1`
+                // alone, so a layer whose real consumer is a higher non-adjacent
+                // node never receives that node's evidence. Under `Dag` that is an
+                // approximation of exactly the kind `SkipConnections` already was.
+                // Fixing it needs per-edge messages, not a better traversal order.
                 down.[i] <-
-                    skipSourcesFor net.Topology (i + 1)
+                    parentsOf net.Topology (i + 1)
                     |> List.filter (fun src -> src < i + 1 && src <> i)
                     |> List.fold (fun acc src -> deconvolve acc (localBelief src)) toSum
             let updated = localBelief i
@@ -367,4 +425,15 @@ module MultilayerBnn =
                 let pairJsons =
                     pairs |> List.map (fun (f, t) -> sprintf "[%d,%d]" f t) |> String.concat ","
                 sprintf "{\"skipConnections\":[%s]}" pairJsons
+            // Serialised from the CASE, not normalised through `parentsOf`: this
+            // JSON is the round-trip generator, so it has to record which topology
+            // was DECLARED. Normalising here would round-trip `Sequential` back as
+            // a `Dag` and lose that.
+            | Dag parents ->
+                let parentJsons =
+                    parents
+                    |> Array.map (fun ps ->
+                        ps |> List.map (sprintf "%d") |> String.concat "," |> sprintf "[%s]")
+                    |> String.concat ","
+                sprintf "{\"dag\":[%s]}" parentJsons
         sprintf "{\"layers\":[%s],\"topology\":%s}" layerJsons topologyJson
