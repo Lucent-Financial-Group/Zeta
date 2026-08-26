@@ -197,3 +197,96 @@ that, and the tempting shortcuts are:
 Neither is attempted here. What is established is narrower and firmer: the
 obvious repair is measurably wrong, and the falsifier that catches it already
 exists.
+
+---
+
+# Appendix — the scratch two-mover source, preserved
+
+The experiments above ran from a scratchpad that does not survive the
+container. Reproduced verbatim so the measurement can be re-run and so the
+second-mover decision has a starting point rather than a description of one.
+It is NOT repo code: it monkeypatches `chase._build_level` for the duration
+of construction and points `zeta_arc.play.ZetaChase` at the subclass.
+
+```python
+"""SCRATCH — does a second mover make the scorer able to see the agent?
+
+Nothing in the repo is modified. `chase._build_level` is wrapped to add one
+DECOY sprite that moves on its own fixed cycle, independent of the commanded
+action; `zeta_arc.play.ZetaChase` is pointed at the subclass for the duration.
+
+A decoy that moved WITH the command would be a second body and would make the
+task ambiguous. One on an independent cycle is a distractor: a real competitor
+in the body election that the agent must learn to reject.
+"""
+from __future__ import annotations
+
+from arcengine import Sprite
+
+import zeta_arc.environments.chase as chase
+from zeta_arc.environments.chase import CELL, GRID, ZetaChase, _block, _WALLS
+
+COLOR_DECOY = 7
+#: Fixed and seed-independent, so DST replay is unaffected: right, right, left,
+#: left. It never agrees with a command for more than one frame in a row.
+_DECOY_CYCLE = ((1, 0), (1, 0), (-1, 0), (-1, 0))
+
+_original_build_level = chase._build_level
+
+
+def _build_level_with_decoy(index: int):
+    level = _original_build_level(index)
+    occupied = {(s.x // CELL, s.y // CELL) for s in level.get_sprites()}
+    for cy in range(GRID - 1, -1, -1):
+        for cx in range(GRID):
+            if (cx, cy) not in occupied:
+                level.add_sprite(
+                    Sprite(
+                        pixels=_block(COLOR_DECOY),
+                        name="decoy",
+                        x=cx * CELL,
+                        y=cy * CELL,
+                        tags=["decoy"],
+                        collidable=False,
+                    )
+                )
+                return level
+    return level
+
+
+class ZetaChaseTwoMover(ZetaChase):
+    """ZetaChase plus one independently-moving distractor."""
+
+    def __init__(self, seed: int = 0) -> None:
+        chase._build_level = _build_level_with_decoy
+        try:
+            super().__init__(seed=seed)
+        finally:
+            chase._build_level = _original_build_level
+        self._decoy_tick = 0
+
+    def step(self) -> None:
+        super().step()
+        decoys = self.current_level.get_sprites_by_tag("decoy")
+        if not decoys:
+            return
+        decoy = decoys[0]
+        dx, dy = _DECOY_CYCLE[self._decoy_tick % len(_DECOY_CYCLE)]
+        self._decoy_tick += 1
+        nx, ny = decoy.x + dx * CELL, decoy.y + dy * CELL
+        if 0 <= nx <= (GRID - 1) * CELL and 0 <= ny <= (GRID - 1) * CELL:
+            self.try_move_sprite(decoy, dx * CELL, dy * CELL)
+```
+
+Run it against the current tree with:
+
+```bash
+ARC_BASE_URL=http://127.0.0.1:1 PYTHONPATH=<scratch-dir> \
+  uv run --project src/Arc.Python python -c "
+import zeta_arc.play as P
+from twomover import ZetaChaseTwoMover
+P.ZetaChase = ZetaChaseTwoMover
+print(P.play(agent='pixel', seed=4)['environment_score'])"
+```
+
+Expected on this branch: `0.1936` (two-mover) against `0.354` (ZetaChase).
