@@ -33,7 +33,7 @@ first-order effect that is nearly absent.**
 | 7 | **The two-number discipline changed a SIGN, not a magnitude.** Self-selected llama agents nearly doubled abstention recall while losing 5 points of accuracy — a merged score reports that as strictly worse. | **metered** | 0.393 vs 0.201 recall, 0.232 vs 0.283 accuracy (§5.8) |
 
 Calibration gate: identical agents read ρ̄ = **1.000 ± 0.000** over 91 defined pairs
-(§5.6). Metric falsifiers: 10 injected defects, **0 survived** (§6b).
+(§5.6). Metric falsifiers: 10 injected defects, **0 survived** (§6.3).
 
 ---
 
@@ -281,8 +281,10 @@ Recompute with `bun src/Core.TypeScript/observe/f3-hat-choice-analyze.ts e2`.
 | N_eff | **1.00 of 24** |
 
 Exactly 1, not approximately — temperature 0 with a fixed seed is bitwise reproducible
-on this runtime, which is worth knowing on its own. The precommitted gate is satisfied,
-so the numbers below are reportable.
+on this runtime, which is worth knowing on its own. `llama3.2:1b` gives the **strong**
+form of the same gate (§5.6): ρ̄ = 1.000 ± 0.000 over 91 *defined* pairs, because that
+model is not at ceiling. The precommitted gate is satisfied in both, so the numbers
+below are reportable.
 
 *(An earlier partial-data read of this condition showed agreement 0.873 and looked like
 runtime nondeterminism. Checked before it was written down: 0 of 40 items actually
@@ -523,9 +525,7 @@ as the cost denominator and is labelled a **proxy, not joules** — this process
 unprivileged joule meter on macOS, and saying so is worth more than a number that
 looks like energy and is not.
 
----
-
-## 6b. The metrics were mutation-tested before being trusted
+### 6.3 The metrics were mutation-tested before being trusted
 
 A passing test proves nothing until you know it can fail, and this document's whole
 argument rests on eight small statistical functions. Ten deliberate defects were
