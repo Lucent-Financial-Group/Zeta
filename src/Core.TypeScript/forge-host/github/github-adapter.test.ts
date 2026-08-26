@@ -108,24 +108,19 @@ describe("GitHubAdapter", () => {
   });
 
   test("resolveThreadsBatch maintains arithmetic invariant", async () => {
-    const adapter = new GitHubAdapter("org", "repo");
-    // This will fail (no gh available in test) but the batch logic is testable
-    // by mocking — for now verify the structure
+    const adapter = new GitHubAdapter("org", "repo", {
+      porcelain: () => ({ ok: false, error: forgeError("internal", "injected miss") }),
+    });
     const threads = [
       { threadId: "t1", body: "ack" },
       { threadId: "t2", body: "ack" },
     ];
     const result = await adapter.resolveThreadsBatch(threads);
-    // ASSERT IN BOTH BRANCHES. This used to assert only inside `if (result.ok)`, and with no
-    // `gh` present the call fails -- so the test ran ZERO assertions and passed by not
-    // checking anything. A test that passes by asserting nothing is the vacuity class.
+    expect(result.ok).toBe(true);
     if (result.ok) {
+      expect(result.value.resolved).toBe(0);
+      expect(result.value.failed.length).toBe(threads.length);
       expect(result.value.resolved + result.value.failed.length).toBe(threads.length);
-    } else {
-      // The failure path must still be a classified ForgeError, never a thrown exception
-      // and never the not-supported stub -- resolveThreadsBatch IS implemented.
-      expect(result.error.kind).not.toBe("not-supported");
-      expect(typeof result.error.message).toBe("string");
     }
   });
 });

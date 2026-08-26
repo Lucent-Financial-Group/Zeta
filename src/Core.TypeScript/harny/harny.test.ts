@@ -12,7 +12,25 @@ describe("harny", () => {
     expect(out.some((l) => l.includes("remote-only"))).toBe(true);
   });
 
-  test("search with no terms is a usage error, not a silent empty corpus", async () => {
-    expect(await dispatch(["search"], { out: () => undefined, err: () => undefined })).toBe(2);
+  test("search routes argv to the injected search door — no git, no stderr, no index", async () => {
+    const seen: string[][] = [];
+    const io = { out: () => undefined, err: () => undefined };
+    expect(await dispatch(["search"], io, { search: (args) => { seen.push([...args]); return 2; } })).toBe(2);
+    expect(await dispatch(["search", "landauer"], io, { search: (args) => { seen.push([...args]); return 0; } })).toBe(0);
+    expect(seen).toEqual([[], ["landauer"]]);
+  });
+
+  test("login routes through the injected login door — no homedir, no mkdir", async () => {
+    const seen: string[][] = [];
+    const io = { out: () => undefined, err: () => undefined };
+    expect(
+      await dispatch(["login", "manus", "--from-file", "/k"], io, {
+        login: (args) => {
+          seen.push([...args]);
+          return Promise.resolve(0);
+        },
+      }),
+    ).toBe(0);
+    expect(seen).toEqual([["login", "manus", "--from-file", "/k"]]);
   });
 });

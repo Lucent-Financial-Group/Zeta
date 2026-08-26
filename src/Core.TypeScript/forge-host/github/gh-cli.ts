@@ -202,11 +202,12 @@ export async function runGhJsonAsync<T>(
 
 const GITHUB_API = "https://api.github.com";
 
-let tokenResolved = false;
-let cachedToken: string | null = null;
-
 /**
  * Token for GitHub REST: OUR store first, then env. Never `gh auth token`.
+ *
+ * Pure in (env, readStore). No process-lifetime memo — that was ambient state a
+ * later test (or a later env snapshot) could not replay. GitHubAdapter caches
+ * per instance, which is actor state, not a hidden global.
  *
  * `env` and `readStore` are seams so tests never assign into `process.env` (refused
  * by `hygiene/lint-no-ambient-credential-hoist.ts`) and never hit the real
@@ -217,24 +218,15 @@ export function resolveGitHubToken(
   env: Readonly<Record<string, string | undefined>> = process.env,
   readStore: () => string | null = readGithubStoreToken,
 ): string | null {
-  if (tokenResolved) return cachedToken;
-  tokenResolved = true;
   const fromStore = readStore();
-  if (fromStore !== null && fromStore.length > 0) {
-    cachedToken = fromStore;
-    return cachedToken;
-  }
+  if (fromStore !== null && fromStore.length > 0) return fromStore;
   for (const key of ["GH_TOKEN", "GITHUB_TOKEN"] as const) {
     const raw = env[key];
     if (typeof raw !== "string") continue;
     const trimmed = raw.trim();
-    if (trimmed.length > 0) {
-      cachedToken = trimmed;
-      return cachedToken;
-    }
+    if (trimmed.length > 0) return trimmed;
   }
-  cachedToken = null;
-  return cachedToken;
+  return null;
 }
 
 /** Sync read of `~/.config/zeta/auth/github.json`. Absent / garbage is null. */
@@ -245,12 +237,6 @@ export function readGithubStoreToken(): string | null {
   } catch {
     return null;
   }
-}
-
-/** Reset the memoised token. Tests only — the resolution is process-lifetime otherwise. */
-export function resetGitHubTokenForTest(): void {
-  tokenResolved = false;
-  cachedToken = null;
 }
 
 /**
@@ -268,6 +254,8 @@ export type GithubRestDoors = {
   readonly token?: string | null;
   readonly fetch?: typeof fetch;
   readonly timeoutMs?: number;
+  /// `null` = no timer (DST tests). omitted = production AbortSignal.timeout.
+  readonly signal?: AbortSignal | null;
 };
 
 /**
@@ -299,12 +287,18 @@ export async function githubRestRequest(
   };
   if (body !== undefined) headers["Content-Type"] = "application/json";
   const fetchImpl = doors.fetch ?? fetch;
+  const signal =
+    doors.signal === null
+      ? undefined
+      : doors.signal !== undefined
+        ? doors.signal
+        : AbortSignal.timeout(doors.timeoutMs ?? DEFAULT_TIMEOUT);
   try {
     const res = await fetchImpl(url, {
       method,
       headers,
       body: body !== undefined ? JSON.stringify(body) : undefined,
-      signal: AbortSignal.timeout(doors.timeoutMs ?? DEFAULT_TIMEOUT),
+      ...(signal !== undefined ? { signal } : {}),
     });
     const text = await res.text();
     if (!res.ok) return err(classifyGhError(res.status, text));

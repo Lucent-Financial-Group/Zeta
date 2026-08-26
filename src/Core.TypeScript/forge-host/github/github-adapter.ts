@@ -35,7 +35,7 @@ import type {
   CheckObservationPass,
 } from "../types";
 import { ok, err, forgeError } from "../result";
-import { githubRestRequest, runGh, runGhJson } from "./gh-cli";
+import { githubRestRequest, resolveGitHubToken, runGh, runGhJson } from "./gh-cli";
 import { classifyGhError } from "./classify-error";
 import { listGitHubCheckDefinitions, listGitHubCheckObservations } from "./check-observations.ts";
 import { restCreatePull, restGetPull, restListPulls, restPullToPr, type GithubRest } from "./github-pr-rest.ts";
@@ -57,17 +57,36 @@ export class GitHubAdapter implements ForgeHost {
   private readonly repoRoot: string;
   private readonly checkRef: string;
   private readonly rest: GithubRest;
+  /// Leftover `gh` porcelain until those verbs are REST. Injected in DST tests so a missing binary is not a 500ms spawn.
+  private readonly porcelain: (args: readonly string[]) => Result<string, ForgeError>;
 
   constructor(
     owner: string,
     repo: string,
-    opts?: { readonly repoRoot?: string; readonly checkRef?: string; readonly rest?: GithubRest },
+    opts?: {
+      readonly repoRoot?: string;
+      readonly checkRef?: string;
+      readonly rest?: GithubRest;
+      readonly porcelain?: (args: readonly string[]) => Result<string, ForgeError>;
+    },
   ) {
     this.owner = owner;
     this.repo = repo;
     this.repoRoot = opts?.repoRoot ?? process.cwd();
     this.checkRef = opts?.checkRef ?? "main";
-    this.rest = opts?.rest ?? { request: (method, path, body) => githubRestRequest(method, path, body) };
+    this.porcelain = opts?.porcelain ?? ((args) => runGh(args));
+    if (opts?.rest !== undefined) {
+      this.rest = opts.rest;
+    } else {
+      // Per-instance memo (actor state), not a process global. DST tests inject `rest`.
+      let cached: string | null | undefined;
+      this.rest = {
+        request: (method, path, body) => {
+          if (cached === undefined) cached = resolveGitHubToken();
+          return githubRestRequest(method, path, body, { token: cached });
+        },
+      };
+    }
   }
 
   private get nwo(): string {
@@ -181,7 +200,7 @@ export class GitHubAdapter implements ForgeHost {
 
   async resolveThread(threadId: string, body: string): Promise<Result<void, ForgeError>> {
     // Reply then resolve
-    const replyResult = runGh([
+    const replyResult = this.porcelain([
       "api", "graphql",
       "-F", `thread_id=${threadId}`,
       "-F", `body=${body}`,
@@ -189,7 +208,7 @@ export class GitHubAdapter implements ForgeHost {
     ]);
     if (!replyResult.ok) return replyResult;
 
-    const resolveResult = runGh([
+    const resolveResult = this.porcelain([
       "api", "graphql",
       "-F", `thread_id=${threadId}`,
       "-f", `query=mutation($thread_id: ID!) { resolveReviewThread(input: { threadId: $thread_id }) { thread { isResolved } } }`,

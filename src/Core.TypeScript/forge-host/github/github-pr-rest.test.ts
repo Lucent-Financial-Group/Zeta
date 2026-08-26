@@ -102,6 +102,7 @@ describe("restListPulls / restCreatePull", () => {
     let fetched = 0;
     const result = await githubRestRequest("GET", "repos/o/r", undefined, {
       token: null,
+      signal: null,
       fetch: (async () => {
         fetched += 1;
         return new Response("nope");
@@ -115,9 +116,11 @@ describe("restListPulls / restCreatePull", () => {
   test("githubRestRequest sends Bearer and classifies HTTP 401", async () => {
     const result = await githubRestRequest("GET", "repos/o/r", undefined, {
       token: "gho_x",
+      signal: null,
       fetch: (async (_url: RequestInfo | URL, init?: RequestInit) => {
         const headers = new Headers(init?.headers);
         expect(headers.get("Authorization")).toBe("Bearer gho_x");
+        expect(init?.signal).toBeUndefined();
         return new Response("Bad credentials", { status: 401 });
       }) as typeof fetch,
     });

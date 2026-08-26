@@ -13,9 +13,16 @@ import { fileTokenStore } from "../model-backend/token-store.ts";
 import { main as loginMain, nodeStoreFs, type CliIo } from "../model-backend/zeta-login-cli.ts";
 import { main as searchMain } from "../search/inverted/query.ts";
 
-export function dispatch(argv: readonly string[], io: CliIo): Promise<number> | number {
+/// Injected doors so tests never touch homedir, mkdir, git, or process.stderr.
+/// Production omits them; the CLI path is the only one that opens those.
+export type HarnyDoors = {
+  readonly search?: (args: readonly string[]) => number | Promise<number>;
+  readonly login?: (args: readonly string[], io: CliIo) => Promise<number>;
+};
+
+export function dispatch(argv: readonly string[], io: CliIo, doors: HarnyDoors = {}): Promise<number> | number {
   const [cmd = "", ...rest] = argv;
-  if (cmd === "search") return searchMain(rest);
+  if (cmd === "search") return (doors.search ?? searchMain)(rest);
   if (cmd === "help" || cmd === "--help" || cmd === "-h" || cmd === "") {
     io.out("harny — custom agent harness");
     io.out("  harny login|import|list|status|token   account login (device-code first)");
@@ -23,6 +30,7 @@ export function dispatch(argv: readonly string[], io: CliIo): Promise<number> | 
     io.out("  harny search <term>...                 inverted index, not full-tree grep");
     return 0;
   }
+  if (doors.login !== undefined) return doors.login(argv, io);
   const dir = defaultStoreDir(homedir());
   mkdirSync(dir, { recursive: true, mode: 0o700 });
   const store = fileTokenStore(dir, nodeStoreFs());
