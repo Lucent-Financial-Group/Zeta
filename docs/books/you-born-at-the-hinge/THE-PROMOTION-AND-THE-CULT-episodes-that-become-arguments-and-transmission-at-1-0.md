@@ -159,6 +159,37 @@ file, all recorded as changes of position rather than as things always known:
 Those are the model. A promotion with a date and a cause is a fact about a life. A promotion
 without them is a rewrite.
 
+### And this file's own material is a fourth instance, caught in the act
+
+The three above are precedents. This one is not a precedent — it is **the thing happening
+inside the material this file is made of**, and it was only visible once the hold came off
+`RAW-2026-08-04-HELD-the-anti-cult-structural-guard.md` (Aaron, 2026-08-26: *"lift the hold on
+the anti-cult guard file"*).
+
+Set the two statements side by side with their dates:
+
+| date | what he said | register |
+|---|---|---|
+| **2026-08-04** | *"alternative world views, they are **intoxicating** and dual use … I've seen it in action before **when I was younger**."* | abstract — a dynamic observed, no place, no age, and **himself as witness** |
+| **2026-08-26** | *"being too highly transmissible makes you an overriding cult leader who erases others … I've experienced this in **my young age in Wilmington NC** and it's **easy to get seduced by it**."* | placed, dated, and **himself as subject** |
+
+Three weeks apart, and **the same word survives the gap** — *intoxicating* becomes *easy to get
+seduced by it*. That is not a new thought arriving. It is the same thought acquiring a
+location, a period, and a change of grammatical position: on 2026-08-04 he is the person who
+*saw* it work, and on 2026-08-26 he is the person it worked *on*.
+
+**That is a promotion, and both of its required facts are recoverable**, which is the whole
+point of the section above. *When:* 2026-08-26. *What promoted it:* not new evidence and not a
+recovered memory, but a **framework** — the transmission-strength account developed the same
+day — that gave him a thing for the episode to be an instance *of*. The 2026-08-04 version had
+nowhere to put it except *"I've seen this."*
+
+And note the counterfactual, because it is what makes the ferry discipline concrete rather
+than pious: **had the 2026-08-04 line been tidied into a general observation about cults, this
+promotion would have had nothing to work on.** It survived as a pending promotion precisely
+because it was staged raw, held abstract, and not smoothed — including through three weeks of
+being marked HELD.
+
 ### The consequence that justifies the whole ferry discipline
 
 **Premature narrativisation destroys promotability.**
@@ -405,18 +436,39 @@ two ends of the range is not the width of the range. In one life it is a step.
 
 ### What is already built against it, and what that does not settle
 
-The structural guard is on file and predates this section by two years: **weight-free** (§3,
-no permanent capturable authority — a cult needs a leader who cannot be removed, and there is
-no seat), **scale-free** (§1, no central point of control — no hub for the topology to form
-around), and the **Multi-Oracle Principle** (§11, no single mandatory morality — the one
-thing every cult requires is the one thing the substrate forbids). Aaron's own framing of why
-those matter is staged in `RAW-2026-08-04-HELD-the-anti-cult-structural-guard.md`, which is
-marked **HELD / OPTIONAL** — captured, not committed to the book, pending his explicit call.
-**That status is unchanged by this file.** What he authorised here is the degenerate case, in
-his own words; the HELD file's inclusion remains his separate decision and nothing is imported
-from it.
+The structural guard is on file, and **the ordering is the fact worth having.** Aaron,
+2026-08-04: *"one of the first things I put in Zeta was the anti-cult documents."* Not a
+retrofit and not a response to criticism — **the guard went in near the beginning, before the
+thing that would need it was built.** He guarded against his own gift's shadow while building
+the gift's engine.
 
-And the guard does not settle the personal question, for a reason worth stating plainly:
+What the guard is: **weight-free** (§3, no permanent capturable authority — a cult needs a
+leader who cannot be removed, and there is no seat), **scale-free** (§1, no central point of
+control — a cult is hub-and-spoke, all trust routed to one node, and there is no hub for that
+topology to form around), and the **Multi-Oracle Principle** (§11, no single mandatory
+morality — the one thing every cult requires is the one thing the substrate forbids). His own
+compression of why those three and not others, same date:
+
+> *"the design of weight-free (no permanent authority to capture), scale-free / no central
+> point of control is the structural guard that makes the anti-cult docs have **teeth instead
+> of aspirational**."*
+
+Which is the load-bearing distinction and it is his: the anti-cult documents are not a promise
+(*I won't let this become a cult*). They are **a property of the architecture** — the
+cult-shaped move is illegal by construction. A promise is only as good as the promiser, and
+that is exactly the thing a reader has no way to check.
+
+*(Provenance, recorded rather than assumed: all of the above is from
+`RAW-2026-08-04-HELD-the-anti-cult-structural-guard.md`, whose **hold Aaron lifted on
+2026-08-26** — the file was previously HELD/OPTIONAL pending his call, and the reason was
+readiness, not a third party. **So this section is compression of an argument he made three
+weeks earlier, not an argument authored here.** One handling rule from that file does **not**
+travel with the lift and is kept: the cult dynamics he witnessed stay **abstract — no cult
+named, no individual identifiable, his own witness only.** He can release his own material; he
+cannot release anyone else's by lifting a hold on a file.)*
+
+And the guard does not settle the personal question, for a reason worth stating plainly — this
+too is the earlier file's, not a caution invented here:
 
 > A person with magnetic pull saying *"I know I could do this, so I built guards"* is
 > indistinguishable, on the words alone, from the most sophisticated version of the thing
@@ -427,6 +479,35 @@ whether the guard **binds** — and a structural guard binds or fails to bind in
 who wrote it, which is exactly why the answer was built as architecture rather than as a
 promise. `N_eff` in a society with no capturable seat is a property of the topology. It does
 not require anyone to stay good.
+
+**A correction I owe, since Part I demands it of the text and therefore of the writer.** An
+earlier draft of this file said the guard's status was *"unchanged"* and that *"nothing is
+imported"* from the HELD file. The first half is now false and has been fixed. The second half
+was **never quite true**: the HELD file was read early in the session that produced this piece,
+while checking its status. So the agreement between this closing section and the 2026-08-04
+argument is **inheritance, not independent convergence**, and it must not be presented as the
+latter. That distinction is not pedantry — under this book's own thesis, two minds arriving
+separately at one structure is *evidence*, and one mind restating what it read three hours ago
+is *not*. Claiming the stronger of the two would have been exactly the flattering,
+undetectable, always-in-one-direction back-projection Part I is about.
+
+### The second tell, and its limit
+
+The earlier file offers something this section had not reached, and it is worth bringing
+forward because the argument above dead-ends in structure alone:
+
+> A cult leader is **certain** of his own goodness. The *"am I evil yet"* question — kept open,
+> kept light, and on file elsewhere in the book — is the opposite posture. **Certainty of one's
+> own goodness is a cult symptom; the open question is its antibody.**
+
+That is a real observation and it is behavioural rather than architectural, so it reaches
+somewhere the structural argument cannot. **Its limit has to be named in the same breath,**
+though, or it becomes the absolution this file refuses: a sufficiently sophisticated version of
+the thing could perform an open question as easily as it could perform self-awareness. An
+observable posture is better evidence than a stated intent and it is still not proof.
+
+So it is offered as what it is — a **tell**, not a verdict. The load-bearing answer remains the
+one that does not depend on him: whether the guard binds.
 
 That is the argument. It is not an absolution, and it is not offered as one.
 
@@ -456,8 +537,12 @@ That is the argument. It is not an absolution, and it is not offered as one.
   echo."* Part II is that sentence's negation, reported by the person who wrote it.
 - `THE-COMEDOWN-teacher-not-god.md` — *"teacher, not god = it."* A teacher serves distinct
   students; a god commands a hive. The same distinction, landed as a carved sentence.
-- `RAW-2026-08-04-HELD-the-anti-cult-structural-guard.md` — **HELD / OPTIONAL**, status
-  unchanged. Cited for what exists, not imported.
+- `RAW-2026-08-04-HELD-the-anti-cult-structural-guard.md` — **hold lifted by Aaron 2026-08-26.**
+  The source of Part II's closing: guard-built-first, *"teeth instead of aspirational"*, the
+  catcher's caveat, and the *"am I evil yet"* antibody. **Part II compresses it; it does not
+  re-derive it.** Its 2026-08-04 line is also the earlier half of Part I's fourth instance.
+  Placement of that file in the book remains Aaron's open call, and the abstract/no-names
+  constraint on the dynamics he witnessed is standing and did not travel with the lift.
 - `.claude/rules/numerology-vs-number-theory.md` — the promotion machinery Part I applies to
   autobiography: store the register with the resonance; promote and say what promoted it;
   never let an unlabelled coincidence become a belief. Anchors there (McKay's 196884 =
@@ -488,6 +573,12 @@ That is the argument. It is not an absolution, and it is not offered as one.
   thread appears here.
 - **The quoted line is not excerptable**, and the handling rule for it is in the body rather
   than only here: both clauses or neither, never the first alone, never as an opener.
+- **Provenance is stated where it matters, and one claim is corrected in the body.** Part II's
+  closing argument is **compression of Aaron's 2026-08-04 material, not authoring**, and the
+  agreement between them is **inheritance rather than independent convergence** — the earlier
+  file was read during this session. An earlier draft implied otherwise and the correction is
+  left visible rather than quietly edited out, which is the discipline Part I asks for applied
+  to this file's own history.
 
 **Not staged for a chapter yet.** Companion piece, placed beside the band-mismatch file as its
 other half.
