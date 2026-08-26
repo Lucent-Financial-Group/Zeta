@@ -1,6 +1,6 @@
 # Caching apt's archive directory is the root fix for the wall-budget class — the design, the key, and what apt actually verifies
 
-Status: **implemented.** Acts on recommendation §7.1 of
+Status: **implemented and measured on a live pull request (#15526).** Acts on recommendation §7.1 of
 `docs/research/2026-08-25-one-apt-wall-budget-failure-wearing-six-job-names-and-why-more-retry-cannot-fix-it.md`,
 which named this "the root fix, and the only one with *negative* CI cost", required a design
 doc, and did not implement it. Measured 2026-08-26 against `Lucent-Financial-Group/Zeta`.
@@ -156,25 +156,39 @@ will ask for, and the ones that did are simply fetched.
 
 GitHub evicts at **10 GB per repository**, LRU, plus anything unread for seven days.
 
-Steady state after normalisation is **two entries per week**:
+Steady state after normalisation is **two entries per week**, and both have now been
+**measured** rather than estimated (from this change's own runs, `GET /actions/caches`):
 
-| entry | fetched payload |
-| --- | --- |
-| `…-slim-…` | ~140 MB (149 packages) |
-| `…-standard-…` | ~561 MB (388 packages; `full` normalises onto this) |
+| entry | `.deb` count | on disk | cache entry |
+| --- | --- | --- | --- |
+| `…-slim-…` | 42 | 38 MB | **37 MB** |
+| `…-standard-…` (`full` normalises onto this) | 177 | 536 MB | **534 MB** |
 
-≈ **0.7 GB per epoch**. Two epochs are typically live — the previous week's entry is *read*
-at the start of each new week via the ladder, which refreshes its access time — so the
-expected footprint is **~1.4 GB**, about 14% of the budget. One `suite`/`arch` pair is in play
-today (`ubuntu-noble`/`amd64`); a second would add its own pair of entries.
+**571 MB per epoch**, not the ~700 MB estimated before the first run — the slim tier fetches
+far less than its 139.7 MiB resolved size because most of that set is already on the runner
+image. Two epochs are typically live (the previous week's entry is *read* at the start of
+each new week via the ladder, which refreshes its access time), so the expected footprint is
+**~1.1 GB**. One `suite`/`arch` pair dominates today (`ubuntu-noble`/`amd64`); `gate`'s
+`build-and-test (ubuntu-24.04-arm)` leg adds an `arm64` entry of its own when it runs.
 
-**The honest comparison.** This is not free headroom in an empty budget. The existing
-`install-v2-…-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}` entries are
-~1.5–1.7 GB *each* and that key moves on **every pull request that touches `tools/setup/**`**
-— including this one. The apt entries are the better-behaved neighbours of the two: they
-rotate weekly rather than per-PR, and there are two of them rather than one per branch.
-Auditing the repo's total cache occupancy against the 10 GB ceiling is a real follow-up and
-is **not** done here.
+**The honest comparison, also measured.** This is not free headroom in an empty budget. The
+repository's total cache occupancy at the time of writing is **14.47 GB across 30 entries** —
+already past the documented 10 GB, so eviction pressure is real and *pre-existing*. The
+neighbours:
+
+```
+1858 MB  dotnet-macOS-ARM64-…
+1318 MB  install-Linux-X64-full-…
+1318 MB  install-Linux-X64-base-…
+1292 MB  install-Linux-ARM64-full-…
+1191 MB  install-v2-Linux-X64-…          <- key moves on every PR touching tools/setup/**
+1191 MB  install-v2-Linux-X64-…
+ 534 MB  apt-archives-v1-ubuntu-noble-amd64-standard-…
+```
+
+The apt entries are the better-behaved neighbours: they rotate **weekly** rather than
+per-branch or per-PR, and there are two of them rather than one per key variant. Auditing
+that 14.47 GB against the ceiling is a real follow-up and is **not** done here.
 
 ## 6. What was NOT done, and the arithmetic for it
 
@@ -219,10 +233,60 @@ the shield would stay green and stop being a shield.
 
 ## 7. Before and after
 
-Measured on this change's own pull request, same workflow, same job, same runner label.
+### 7a. The clean measurement: the fetch is gone
 
-<!-- MEASUREMENT-PENDING: filled in from the PR's own runs; see §7a. -->
+Everything else in this section is a step *total* that also contains mise, dotnet, elan and
+the verifier jars, on runners whose own variance is large. This one is not — it is apt
+reporting, in its own words, how many bytes it needed:
 
+```
+Restore apt archives   Cache restored from key: apt-archives-v1-ubuntu-noble-amd64-standard-87cfa8a084fb7524-2026-w35
+Install toolchain      ↻ apt archive cache: /home/runner/.cache/zeta/apt-archives (177 .deb present before install)
+Install toolchain      Need to get 0 B/561 MB of archives.
+Install toolchain      ✓ apt archive cache: 177 .deb, 536M in /home/runner/.cache/zeta/apt-archives
+```
+
+**561 MB** is the same figure §1 opens with — the download that could not fit in 420s at the
+mirror's measured rate. On a cache hit it is **0 B**. The slim tier shows the same shape at
+its own size: `Need to get 0 B/39.0 MB`, from 42 restored `.deb`s.
+
+That is the failure class removed at its cause rather than re-sampled: there is no
+arithmetic under which zero bytes exceeds a 420-second budget.
+
+### 7b. Step totals, with their noise stated
+
+Install-step seconds. `main` is the median of the six most recent successful runs (all
+2026-08-23 or later, i.e. after the tier gate landed, so the tier is not a confound). `warm`
+is this change's own runs on a cache hit, with the restore step's own cost added rather than
+hidden.
+
+| job | tier | `main` median (recent 6) | this PR, warm | Δ |
+| --- | --- | --- | --- | --- |
+| `helm-validate` manifests (offline) + mutation proof | standard | 176s | 90s + 4s restore = **94s** | −47% |
+| `helm-validate` chart pins + helm template | standard | 128s | 96s + 9s restore = **105s** | −18% |
+| `memory-index-duplicate-lint` | slim | 135s | 65s + 2s = **67s** | −50% |
+| `git-hotspot-cadence` detect git hotspots | slim | 130s | 40s + 1s = **41s** | −68% |
+| `ci-cache-paths-lint` audit | slim | — (cold on this PR: 48s) | 40s + 1s = **41s** | −15% vs cold |
+| `gate` lint (shell) | slim | 25s | ~40s (see below) | — |
+
+**Two confounds, named rather than smoothed over.**
+
+1. **Runner variance is large**, and larger than some of the deltas above. `main`'s own six
+   samples for `manifests (offline)` span 110–244s, and for `duplicate link targets` 46–162s.
+   Read the table as direction and rough magnitude, not as a precise speedup; §7a is the
+   measurement that does not depend on it.
+2. **The first wave on this branch is doubly cold.** The existing `install-v2` cache key
+   hashes `tools/setup/**`, which this change edits, so the cold wave paid a cold *mise*
+   cache too — which is why `gate`'s slim lint jobs read ~40s here against a 25s `main`
+   median. That cost is a one-off consequence of touching `tools/setup/`, not of the apt
+   cache, and it disappears once this lands on `main` and the `install-v2` key stabilises.
+
+**The number that actually matters is not in this table.** On a healthy mirror the archive
+cache saves the fetch time, which is tens of seconds. On a degraded one it is the difference
+between a job that runs and a job that exits 124 with its work never started — and `main`'s
+own history for `helm-validate:manifests (offline)` contains exactly that: a **420s FAILURE**
+in the same six-run window sampled above (run 32850274047). That is the case this was built
+for.
 ## 8. The banner was wrong, and the correction is a measurement
 
 `linux.sh` printed, on budget exhaustion:

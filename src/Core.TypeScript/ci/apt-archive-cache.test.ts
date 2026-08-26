@@ -11,7 +11,7 @@
 // nothing reports "OK — 0 jobs" and looks identical to success).
 
 import { describe, expect, test } from "bun:test";
-import { existsSync, readFileSync } from "node:fs";
+import { readFileSync } from "node:fs";
 import { auditWorkflow, inScope, judgeJob, parseJobs, runAudit, renderHuman, ACTION_USES, ACTION_PATH } from "./apt-archive-cache.ts";
 
 const CACHE_STEP = (tier: string) =>
@@ -119,7 +119,10 @@ describe("comments cannot satisfy the audit", () => {
 
 describe("the real tree", () => {
   test("the composite action exists and pins actions/cache by commit SHA", () => {
-    expect(existsSync(`${ACTION_PATH}/action.yml`)).toBe(true);
+    // Read it and let the read be the existence assertion. An `existsSync` gate in
+    // front of a `readFileSync` is check-then-use (CWE-367): the answer is stale
+    // before the use runs, so it reads as defensive and prevents nothing — which
+    // `lint-check-then-use-file-races.ts` refuses, and refused this very line.
     const src = readFileSync(`${ACTION_PATH}/action.yml`, "utf8");
     // A floating tag here would let the cache implementation change under a key design
     // that assumes v6 semantics (and it is the supply-chain floor besides).
