@@ -150,12 +150,17 @@ produces a correct migration. That needs observed outcomes and there are none.
 produced the case on the night the rule was proposed.
 
 `react-resizable-panels` v4 also emits `data-group` / `data-panel` /
-`data-separator` and **no direction attribute at all** — verified against both
-published bundles: `grep -c 'panel-group-direction'` returns 12 distinct
-`data-*` attributes in 3.0.6 and 5 in 4.12.3, with the direction attribute at
-**zero** occurrences in v4's `.js`, `.cjs`, and `.d.ts`. So every
-`data-[panel-group-direction=vertical]:*` Tailwind utility in the two vendored
-`ui/resizable.tsx` files became **a selector that can never match**.
+`data-separator` and **no direction attribute at all**. Two separate
+measurements against the published bundles, stated separately because they are
+separate:
+
+| measurement | 3.0.6 | 4.12.3 |
+|---|---|---|
+| distinct `"data-*"` string literals | **12** | **5** (`data-disabled`, `data-group`, `data-panel`, `data-separator`, `data-testid`) |
+| occurrences of `panel-group-direction` | **1** | **0** |
+
+So every `data-[panel-group-direction=vertical]:*` Tailwind utility in the two
+vendored `ui/resizable.tsx` files became **a selector that can never match**.
 
 It passed `tsc`. It passed tests. It broke nothing observable — because
 `<Calendar>` and `<ResizablePanelGroup>` have zero consumers, so nothing *could*
