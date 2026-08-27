@@ -1,4 +1,8 @@
-# ZetaFS: names are tags, files are multi-parented, and every name is already a symlink
+# The Merkle DAG is fundamental; a filesystem is names bolted on top
+
+*Two different filesystems can stand over one content-addressed store, because file and folder
+names are all pointers. ZetaFS is one such namespace — multi-parented, symlink-native, and
+resolved by phase.*
 
 **Date:** 2026-08-27 · **Status:** design spec, **nothing here is implemented**
 **Extends:** [`2026-06-07-cow-database-testing-from-prod-content-addressed-time-travel-and-zetafs-naming-stack-amara.md`](../research/2026-06-07-cow-database-testing-from-prod-content-addressed-time-travel-and-zetafs-naming-stack-amara.md) §4
@@ -35,7 +39,62 @@ design, not capability.
 
 ---
 
-## 1. The invariant everything else follows from
+## 1. The DAG is fundamental. A filesystem is one presentation bolted on top
+
+Aaron 2026-08-27, and this is the framing the rest of the document hangs from:
+
+> *"the merkle content addressed dag is fundamental and file and folder names can be bolted on top
+> in many different ways — you can have two completely different file systems on top of the same
+> dagfs based on content addresses, the file and folder names are all pointers."*
+
+Two layers, and the separation is strict:
+
+```
+  NAMESPACE LAYER   many, mutable, disposable   names -> ContentId   ("a filesystem")
+  ------------------------------------------------------------------------
+  DAG LAYER         one, immutable, canonical   ContentId -> bytes   ("the store")
+```
+
+**The DAG does not know that names exist.** It stores content keyed by hash and nothing else. A
+filesystem is a *set of bindings* over it — which makes a filesystem a **value**, not a place.
+
+### What follows, and it is more than presentation polish
+
+1. **Two filesystems over one store cost one copy of the content.** Not deduplicated after the fact
+   — never duplicated. Two namespaces that bind the same `ContentId` are pointing at the same
+   object because the address *is* the content (§2).
+2. **A filesystem can be forked like a branch.** Copy the binding set, change names freely; zero
+   bytes move. An agent's private view, an experiment's view, and the shared view are three binding
+   sets over identical content.
+3. **Radically different organisations of the same data can coexist.** One namespace ordered by
+   path, another by work-item, another by phase — none is a copy, none is stale, none is derived
+   from another. They are peers.
+4. **A filesystem can be discarded without touching the store.** Deleting a namespace deletes
+   opinions about names; the content is untouched and any other namespace still reaches it.
+
+### Why this is the substrate's own discipline, not a filesystem trick
+
+This is **hub/satellite partitioning by change rate**
+([`dv2-data-split-discipline-activated`](../../.claude/rules/dv2-data-split-discipline-activated.md)):
+the DAG is the hub — stable, content-keyed, rarely rewritten — and each namespace is a satellite,
+fast-changing and cheap to replace. It is also
+[`only-the-irreducible-is-primitive`](../../.claude/rules/only-the-irreducible-is-primitive-generate-the-rest.md):
+the DAG is irreducible, and every namespace is derived and therefore checkable against it.
+
+And it is **§11, the Multi-Oracle Principle, reaching the filesystem.** A single mandatory namespace
+over the store would be an *appointed* hub — everyone forced to route through one organisation of
+the data. Many namespaces, freely chosen, are oracles: you defer to the view you picked, and exit is
+real because another view of the same bytes is always constructible. The discriminator there is
+exit, not degree — and here exit costs nothing, because the content never moved.
+
+**The consequence for this document:** everything below §2 specifies *one* namespace design. It is
+not the only possible one, and nothing in it is binding on the DAG layer. A second, entirely
+different filesystem over the same store is a legitimate thing to build and would contradict none
+of it.
+
+---
+
+## 2. The invariant the NAMESPACE layer follows from
 
 The store is content-addressed, so an object's identity *is* its content. That forces
 copy-on-write at the logical level — you cannot mutate in place and keep the address; every edit
@@ -51,7 +110,7 @@ where the whole filesystem presentation lives.
 
 ---
 
-## 2. Names are tags, not locations
+## 3. Names are tags, not locations
 
 A path in POSIX *locates* a file: the directory entry is where the file lives. In ZetaFS a name is
 a **tag bound to a content address**, and the binding is a first-class, versioned fact.
@@ -62,9 +121,9 @@ Three consequences, and the third is the useful one:
    touched, and the content address is unchanged. Renaming a 40 GB file is O(1) and produces no new
    bytes.
 2. **A name can be bound to different content over time**, which is exactly how a ZetaId constant
-   resolves to different content addresses across phases — the stable-identity problem from §1,
+   resolves to different content addresses across phases — the stable-identity problem from §2,
    solved by making the indirection the primary object rather than a special case.
-3. **Nothing distinguishes a "real" entry from a "link".** See §4.
+3. **Nothing distinguishes a "real" entry from a "link".** See §5.
 
 ### The tag binding
 
@@ -73,7 +132,7 @@ TagBinding =
   { name        : Name           // the tag, e.g. "notes.md" or "docs/"
     parent      : ContentId      // the directory-node this binding lives under
     target      : ContentId      // what it currently resolves to
-    phase       : Phase          // NOT wall-clock — see §3
+    phase       : Phase          // NOT wall-clock — see §4
     asserter    : Actor }        // who bound it
 ```
 
@@ -83,7 +142,7 @@ substrate runs on: *a single version of the facts, never a single version of the
 
 ---
 
-## 3. Latest-by-PHASE holds the title; older bindings are history
+## 4. Latest-by-PHASE holds the title; older bindings are history
 
 Aaron's rule: *the latest entry based on phase time in the content DAG gets the file/folder title,
 the older ones are history like APFS.*
@@ -114,7 +173,7 @@ construction, so `notes.md@phase=N` is answerable for any N without anyone havin
 
 ---
 
-## 4. Symlink-native: every name is already an indirection
+## 5. Symlink-native: every name is already an indirection
 
 A POSIX symlink is a special file whose content is a path, resolved by the kernel at lookup with
 its own rules (`O_NOFOLLOW`, loop limits, `ELOOP`).
@@ -138,7 +197,7 @@ rendering decision at the FUSE/projection boundary, not a fact about the store.
 
 ---
 
-## 5. Multi-parented files
+## 6. Multi-parented files
 
 If a binding does not own its target, nothing stops the same `ContentId` being bound under many
 parents. That is **multi-parenting**, and it is what makes the namespace a **DAG rather than a
@@ -147,7 +206,7 @@ tree**.
 It is also where POSIX compatibility gets genuinely hard, and the difficulties should be stated
 before anyone builds:
 
-### 5.1 `..` stops being a function
+### 6.1 `..` stops being a function
 
 With one parent, `..` is well-defined. With many, *the* parent does not exist — only the parent you
 arrived through. Options, none free:
@@ -155,12 +214,12 @@ arrived through. Options, none free:
 - **Path-contextual `..`** — track the traversal path in the handle. Correct, and it means two
   handles to the same file can disagree about `..`, which some tools will not expect.
 - **Designated primary parent** — one binding marked canonical for `..`. Simple, and it reintroduces
-  the ownership asymmetry §4 just removed.
+  the ownership asymmetry §5 just removed.
 - **Refuse `..` above a multi-parented node** — honest, and breaks `cd ..`.
 
 Unresolved. It needs a decision before the FUSE layer, not during it.
 
-### 5.2 Directory cycles
+### 6.2 Directory cycles
 
 POSIX forbids directory hardlinks precisely to keep the namespace acyclic, because `find` and `rm
 -r` do not terminate on a cyclic graph. A DAG is acyclic **by name**, but nothing in the binding
@@ -172,7 +231,7 @@ constructible without a fixpoint. The danger lives in the *mutable* binding laye
 the half that is not content-addressed. This is the single most important guard in the design and
 it does not exist yet.
 
-### 5.3 Deletion is unlink, and only sometimes delete
+### 6.3 Deletion is unlink, and only sometimes delete
 
 `rm` removes a binding. Content stays reachable while any binding names it. So deletion needs
 either refcounting over bindings or mark-and-sweep from roots — and under §3, *history retains
@@ -181,7 +240,7 @@ are the same problem and this spec does not solve them.
 
 ---
 
-## 6. Platform presentation — FUSE, Windows, macOS
+## 7. Platform presentation — FUSE, Windows, macOS
 
 The store is one thing; three projections are another. Known asymmetries, so nobody discovers them
 at implementation time:
@@ -194,7 +253,7 @@ at implementation time:
 | xattrs for phase metadata | `user.*` | native | alternate data streams |
 
 **The case-folding row is a correctness issue, not cosmetics.** If names are tags and the canonical
-collation is ordinal (§3), then `Notes.md` and `notes.md` are two tags. A macOS or Windows
+collation is ordinal (§4), then `Notes.md` and `notes.md` are two tags. A macOS or Windows
 projection that folds them presents one tag where the store has two, so a round-trip through those
 platforms is lossy. Either the projection refuses colliding-under-fold bindings in the same
 directory, or the collation is not ordinal — and the second contradicts a standing rule. **The
@@ -205,13 +264,13 @@ virtual namespace backed by a remote store, which is what this is.
 
 ---
 
-## 7. What this does not settle
+## 8. What this does not settle
 
 Stated plainly, because a design doc that reads as complete is worse than one with holes marked:
 
-1. **`..` under multi-parenting** (§5.1) — three options, no decision.
-2. **Cycle prevention in the mutable binding layer** (§5.2) — the most important missing guard.
-3. **Retention and GC** (§5.3) — history-by-construction and reachability-GC are in direct tension.
+1. **`..` under multi-parenting** (§6.1) — three options, no decision.
+2. **Cycle prevention in the mutable binding layer** (§6.2) — the most important missing guard.
+3. **Retention and GC** (§6.3) — history-by-construction and reachability-GC are in direct tension.
 4. **The name** — still gated per the 2026-06-07 doc.
 5. **Whether any of this is worth building** — `ZSetMerkle` is landed and the rest is not, and the
    honest register for the whole presentation layer is `toy` until something mounts.
@@ -219,12 +278,12 @@ Stated plainly, because a design doc that reads as complete is worse than one wi
 ## Anchors (Beacon)
 
 - **Merkle DAG** — Ralph Merkle, *A Digital Signature Based on a Conventional Encryption Function*
-  (CRYPTO '87). The hash-of-children construction §1 rests on.
+  (CRYPTO '87). The hash-of-children construction §2 rests on.
 - **Persistent data structures / path copying** — Driscoll, Sarnak, Sleator & Tarjan, *Making Data
   Structures Persistent* (JCSS 1989). The technique content addressing forces on you.
-- **Git's object model** — immutable objects + mutable refs; the worked precedent for §1.
+- **Git's object model** — immutable objects + mutable refs; the worked precedent for §2.
 - **Plan 9 union directories** (Pike et al.) — a namespace where one name resolves through several
-  sources, the closest existing system to §5's multi-parenting.
-- **APFS snapshots** — the point-in-time model §3 deliberately inverts (retain-by-construction
+  sources, the closest existing system to §6's multi-parenting.
+- **APFS snapshots** — the point-in-time model §4 deliberately inverts (retain-by-construction
   rather than snapshot-on-request).
-- **Goguen & Meseguer noninterference (1982)** — via the local-time rule §3 depends on.
+- **Goguen & Meseguer noninterference (1982)** — via the local-time rule §4 depends on.
