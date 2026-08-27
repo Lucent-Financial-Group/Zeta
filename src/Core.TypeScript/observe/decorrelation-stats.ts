@@ -252,25 +252,31 @@ export function requiredNForDifference(
 // ═══ Leak detection (W12/W13) — a perfect classifier is a defect signal ════════
 
 /**
- * W12 — the leak falsifier. A verifier prompt must NOT contain the correct answer or a
- * rule that names it. If it does, the "verification" is a model reading back information
- * it was handed, not a cognitive check. Returns the offending substring, or null if
- * clean.
+ * W12 — the leak falsifier. A prompt's INSTRUCTION region must NOT name the correct
+ * answer or state a rule that names it. If it does, a "verification" or a "search" is a
+ * model reading back information it was handed, not a cognitive act. Returns the offending
+ * substring, or null if clean.
  *
- * This is the same class of guard as `assertNoOptionContamination` (which stops a text
- * arm from moving buttons) — pointed at a different axis: it stops the verifier prompt
- * from carrying the answer key.
+ * CRITICAL scoping (learned the hard way): the correct option legitimately appears in a
+ * PRODUCER's options menu — that is the choice set, not a leak. The leak is the answer
+ * named in the INSTRUCTION/RULES text, outside the choice set. So this checks a caller-
+ * supplied `instructionRegion`, NOT the whole prompt. The caller passes the instruction/
+ * rules portion with the options block excluded. Passing the whole prompt (options
+ * included) would false-positive on every producer, which is why the earlier whole-prompt
+ * version fired on the canonical producer.
+ *
+ * This is the same class of guard as `assertNoOptionContamination` (which stops a text arm
+ * from moving buttons) — pointed at a different axis: it stops the instruction from
+ * carrying the answer key.
  */
 export function detectAnswerLeak(
-  verifierPrompt: string,
+  instructionRegion: string,
   correctOptionText: string,
 ): { leaked: true; via: string } | { leaked: false } {
   const needle = correctOptionText.trim().toLowerCase();
-  const hay = verifierPrompt.toLowerCase();
-  // Direct mention of the correct option string inside the prompt (outside the single
-  // candidate slot the verifier is allowed to see).
+  const hay = instructionRegion.toLowerCase();
   if (needle.length >= 4 && hay.includes(needle)) {
-    return { leaked: true, via: `verifier prompt names the correct option "${correctOptionText}"` };
+    return { leaked: true, via: `instruction/rules names the correct option "${correctOptionText}"` };
   }
   return { leaked: false };
 }

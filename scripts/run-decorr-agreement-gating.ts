@@ -80,14 +80,15 @@ async function main() {
   console.log(`Model=${MODEL}  N=${N}  preReg=${preRegSha ?? "MISSING — commit pre-reg first"}`);
   console.log("═".repeat(70));
 
-  // PER-ARM leak check (all producer prompts — must be green on all three).
+  // PER-ARM leak check on the INSTRUCTION region only (the options menu legitimately
+  // contains the correct option — that is the choice set, not a leak). All three are
+  // producer instructions with no answer key, so all must be green.
   const probe = scenarios[0]!;
   for (const [name, instr] of [["canonical", CANONICAL], ["clause-swap", CLAUSE_SWAP], ["null-identity", CANONICAL]] as const) {
-    const { prompt } = buildPrompt(instr, probe);
-    const leak = detectAnswerLeak(prompt, probe.options[probe.correctIndex]!);
+    const leak = detectAnswerLeak(instr, probe.options[probe.correctIndex]!);
     if (leak.leaked) { console.error(`LEAK on ${name}: ${leak.via}`); process.exit(1); }
   }
-  console.log("Leak falsifier: GREEN on canonical, clause-swap, null-identity (all producer prompts).\n");
+  console.log("Leak falsifier: GREEN on canonical, clause-swap, null-identity instructions (no answer key).\n");
 
   // Candidate: canonical vs clause-swap (odd seeds). Null: canonical vs canonical (even seeds).
   // Interleaved by seed parity so the floor is contemporaneous.

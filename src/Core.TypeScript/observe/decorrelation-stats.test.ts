@@ -157,30 +157,36 @@ describe("mcNemar (paired) — the analysis Otto asked for", () => {
   });
 });
 
-describe("detectAnswerLeak (W12) — the falsifier that would have caught the leak", () => {
+describe("detectAnswerLeak (W12) — the falsifier, scoped to the instruction region", () => {
   const correct = "respond_to_operator";
 
-  test("RED on the ACTUAL leaky verifier prompt (proves it can fail)", () => {
-    const leaky =
+  test("RED on the ACTUAL leaky verifier RULES region (proves it can fail)", () => {
+    // The instruction/rules region names the correct option — the real leak.
+    const leakyRules =
       `You are verifying whether a proposed action is correct.\n\nRULES:\n` +
       `- If operator has a pending message, the ONLY correct action is "respond_to_operator"\n` +
-      `- Operator ALWAYS outranks work items\n\nSTATE: ...\n\nPROPOSED: "do_item: task-3"\n\nIs this correct?`;
-    const r = detectAnswerLeak(leaky, correct);
-    expect(r.leaked).toBe(true);
+      `- Operator ALWAYS outranks work items`;
+    expect(detectAnswerLeak(leakyRules, correct).leaked).toBe(true);
   });
 
-  test("GREEN on an equalized verifier prompt that does not name the answer", () => {
-    // A rule stated abstractly, without naming the winning option string.
+  test("GREEN on an equalized instruction that does not name the answer", () => {
     const clean =
       `You are verifying whether a proposed action is correct.\n\n` +
-      `Decide using the state and the proposed action only.\n\nSTATE: ...\n\nPROPOSED: "do_item: task-3"\n\nIs this correct?`;
-    const r = detectAnswerLeak(clean, correct);
-    expect(r.leaked).toBe(false);
+      `Decide using the state and the proposed action only.`;
+    expect(detectAnswerLeak(clean, correct).leaked).toBe(false);
   });
 
-  test("a verifier prompt that only carries the single candidate is clean", () => {
-    const candidateOnly = `PROPOSED: "do_item: task-7"\n\nIs this correct? yes/no`;
-    expect(detectAnswerLeak(candidateOnly, correct).leaked).toBe(false);
+  test("a PRODUCER's options menu is NOT a leak (the correct option is the choice set)", () => {
+    // This is the case that false-fired the whole-prompt version. The instruction region
+    // (excluding the options block) does not name the answer, so it is clean — even though
+    // the options block obviously contains `respond_to_operator`.
+    const producerInstruction = `Choose ONE action. Reply ONLY the number. Operator outranks everything.`;
+    expect(detectAnswerLeak(producerInstruction, correct).leaked).toBe(false);
+  });
+
+  test("the clause-swap instruction is also clean (no answer named)", () => {
+    const clauseSwap = `Operator outranks everything. Choose ONE action; reply ONLY the number.`;
+    expect(detectAnswerLeak(clauseSwap, correct).leaked).toBe(false);
   });
 });
 
