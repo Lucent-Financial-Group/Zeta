@@ -88,9 +88,15 @@ same day:
 
 | | count |
 |---|---|
-| `src/Core.TypeScript/hygiene/lint-*.ts` modules (impl, not tests) | 27 |
-| emit an explicit `FIX:` / `Fix:` | 5 |
-| failure-only | 22 |
+| `lint-*.ts` impl (not tests) | 27 |
+| of those, `FIX:` / `Fix:` *prose* | 5 (uppercase `FIX:` only: 2) |
+| of those, machine-applicable patch | **0** |
+| `audit-*.ts` impl | 86 (Otto said 83; this clone) |
+| `healers/*.ts` (incl. runner) | 13 |
+
+Prefix-grep that stopped at `lint-*` understated detection ~4×
+and missed the healing rung. Two populations, no shared rule
+identity — see the composable-rule absorb.
 
 The five that teach:
 

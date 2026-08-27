@@ -52,13 +52,15 @@ harness window).
 
 ## First named seed (Otto 2026-08-27; independently recounted)
 
-27 `lint-*.ts` impl modules. 5 emit `FIX:` / `Fix:` (prose, not
-patches). 22 are failure-only — rung-0 detectors with no rung-1
-healer. AgencySignature Class / Cause / Fix / Maxim / Spec is the
-richest diagnostic in-tree and unused elsewhere.
-`healer-harness.ts` already certifies machine healers; its
-`Finding` has no `fix` field. Ambition is **push work down**
-(mechanize 0 and 1; intelligence last resort), not escalate up.
+27 `lint-*.ts` impl; 5 emit `FIX:`/`Fix:` prose (uppercase-only: 2);
+machine-applicable at lint tier **0/27**. 86 `audit-*.ts`. 13 healer
+modules — a separate population, no shared rule identity.
+`Finding` has no `fix` field. Ambition is **push work down**; if you
+route up, **take metrics** so the expensive use can mint a cheaper
+rule. Composable one-shot rules (expert-system shape); BNN is the
+wrong name for an addressable DAG. Lumen (factor/EP belief half) and
+Soraya (detection is a join-semilattice; DAG is residue of
+non-confluence) are both held.
 
 Do not add 22 `FIX:` strings, and do not write patches, as a
 rider on this naming slice. Same-day: `labelled-observation.ts`
@@ -68,6 +70,7 @@ census is a seed for that type, not a second schema.
 Pointers: `docs/ROADMAP.md` 8c + P1;
 `src/Core.TypeScript/corpus/labelled-observation.ts`;
 `docs/research/2026-08-27-twelve-factor-categorizes-extracts-building-codes-are-the-lower-layer-correction-corpus-is-the-trainset.md`;
+`docs/research/2026-08-27-composable-lint-heal-rules-are-an-antichain-metrics-on-escalate-make-the-cheap-layer.md`;
 `docs/research/2026-08-25-rho-is-a-layer-stack-not-a-scalar-and-the-trainset-is-the-floor.md`;
 `docs/handoffs/2026-08-01-shadow-to-alexa-self-healing-drift-classes-and-intelligence-tiers.md`;
 manifesto building-codes framing.

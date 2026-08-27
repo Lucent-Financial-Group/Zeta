@@ -19,8 +19,10 @@ for intelligence only when being **evolved/updated** or when they **explicitly a
 plane**. Intelligence is **tiered**: each tier knows what it cannot do and routes up at
 runtime; not every call, not every proc. The *ambition* is the other direction: **push work
 down** — mechanize detection and healing as far as they will go; intelligence is last
-resort, and each use of it should make the cheap layer more complete. That split is what
-lets the data plane stay cutting-edge on performance.
+resort. **If a cheap tier routes up, record metrics** (who refused, who accepted, fuel,
+whether a later healer closed it) so the expensive use can mint a cheaper rule. A
+route-up with no metrics is heat. That split is what lets the data plane stay
+cutting-edge on performance.
 Sharpening of this two-plane split, not a third plane (`081M125DNKK087G0R00292E3ET`).
 
 > **The compiler / substrate ladder is direction, not sequence (2026-08-15).** "Memories, types, files,
@@ -511,7 +513,7 @@ Gaps: **fsync floor** (unshipped), **multi-key ACID/isolation** (only single-str
 - **ZetaFS dual-fold remaining** — factory path off `git`/`LibGit2Sharp` (`081M108RYNT087G0R001JSRNZE`). Parent edge shipped. Own BLAKE3 (`Blake3Spec`) is the store hasher; NuGet is the test oracle. Core's `defaultHasher` stays XxHash128 (hexagonal).
 - **DU expand remaining** — route `NextAction` / `DbCommand` through `DuExpand`; BNN chooser reads SoftValue over DU cases (`081M10AAVAT087G0R0027M0GV5`)
 - **Next extract after Harny** — pick by measured git-history co-change **and** live dependency graph (not by a layer name); DV2 change-rate *or* toolchain closure (round 3: `zeta-formal` / `zeta-wasm` strongest on CRP); **12-factor** as the app-shaped categorization of an extract. Dogfood first, then `create-repo` cutover (gated). `081M120GFSV087G0R003XCPC64` · `081M12CZRHC087G0R0008X7SYG`
-- **Repeated-correction corpus** — the coding-defaults trainset (building-code layer, any code). Prompt-paste does not produce adherence (`ρ` trainset floor). Name it; collector is a retractable Z-set of `(rule, violation, repair)` pairs (a `FIX:` without a patch is still only the human-readable half). First named seed already in-tree: 27 `lint-*.ts` modules, 5 emit `FIX:` prose, 22 failure-only (Otto 2026-08-27, independently counted). Rung 1 is a `healer-harness`-certified patch, not a string. Push work *down*. `081M12CZRHC087G0R0008X7SYG`
+- **Repeated-correction corpus** — the coding-defaults trainset (building-code layer, any code). Prompt-paste does not produce adherence (`ρ` trainset floor). Collector: retractable `(rule, violation, repair)` on `labelled-observation` (`fromLintFinding` shipped). Lint-tier machine-applicable rate is 0/27; 13 healers exist as a *separate* population with no shared rule id. Composable one-shot rules (expert-system shape); BNN-the-name is wrong for an addressable DAG. If you route up, take metrics. Write-set disjointness of live Tier-0 is a roster property, not a harness law — test it, do not pretend `certify()` implies confluence. `081M12CZRHC087G0R0008X7SYG`
 - **Retraction readings** — keep full −1 (erasing view) distinct from `widen` (non-erasing support) and from negate-alone (Bennett-free); do not invoice Landauer on `neg` (`081M10BD9BM087G0R001SGDRXT`)
 - **ZSetRx remaining** — full IQbservable over Bonsai (this slice is the +1/−1 connect query); BNN as a NextAction chooser, not just a roster card (`081M109WG5S087G0R0021E5MPT`)
 - **FourCorner / Clifford remaining** — do not identify FourCorner with Cl(p,q) **or with a fermion or a qubit**. QubitIso is the qubit, FourCorner is the pipe. Compact E8 *manifold* still open. **Do not sweep latency alone** for √2 / 2√2 — jitter is dual-use (degrades S *and* frost uniqueness). Decorrelation channels are an **open, non-exhaustive inventory** Alexa is still growing (system prompt, selected model, hat, prompt frame, …). Meter them; do not freeze a roster. S=4 is the seed-shared measure. String keys: `Collation.binary` (BIN2_UTF8 / ordinal codepoint), never ambient culture. `081M10CBYF9087G0R003GWBNHG`
