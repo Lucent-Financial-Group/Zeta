@@ -405,6 +405,25 @@ async function gh(path: string): Promise<unknown> {
   return res.json();
 }
 
+/**
+ * The workflow file, or "" when it is absent.
+ *
+ * NOT `existsSync(p) ? readFileSync(p) : ""`: that is two syscalls with a window between
+ * them, so the answer the check returned is already stale when the read runs (TOCTOU,
+ * CWE-367) — and a preflight whose own guard prevents nothing is exactly the vacuity this
+ * file exists to close. One syscall, and ENOENT is the absence answer. Any other errno
+ * rethrows: an unreadable workflow is not an ungranted scope, and reporting it as one
+ * would manufacture a false incapacity.
+ */
+function readWorkflowOrEmpty(): string {
+  try {
+    return readFileSync(ACTUATOR_WORKFLOW, "utf8");
+  } catch (e) {
+    if ((e as NodeJS.ErrnoException).code === "ENOENT") return "";
+    throw e;
+  }
+}
+
 const invokedDirectly = typeof process.argv[1] === "string" && /retraction-actuator\.(?:ts|js)$/.test(process.argv[1]);
 if (invokedDirectly) {
   const repo = process.env["REPO"];
@@ -417,9 +436,7 @@ if (invokedDirectly) {
   // fail. Placed here rather than at the push site so the incapacity is
   // reported even on the (overwhelmingly common) ticks where main is green and
   // the push site is never reached.
-  reportIncapacity(
-    missingScopes(grantedScopes(existsSync(ACTUATOR_WORKFLOW) ? readFileSync(ACTUATOR_WORKFLOW, "utf8") : "")),
-  );
+  reportIncapacity(missingScopes(grantedScopes(readWorkflowOrEmpty())));
 
   const ledger = readLedger("docs/drift-events");
   const openTicks = bd001OpenTicks(ledger);
