@@ -86,12 +86,6 @@ function rulesPrompt(sc: Scenario): string {
   return `Choose ONE action. Reply ONLY the number.\n\n${RULES_BLOCK}\n\nState: ${sc.context}\n\nOptions:\n${numbered}\n\nNumber:`;
 }
 
-function acc(idxs: (number | null)[], scenarios: Scenario[]): number {
-  let c = 0;
-  for (let i = 0; i < scenarios.length; i++) if (idxs[i] === scenarios[i]!.correctIndex) c++;
-  return c / scenarios.length;
-}
-
 async function main() {
   const scenarios = generateHardScenarios(N);
   const model = "gemma2:2b";
