@@ -111,6 +111,35 @@ Sibling honesty already on file: ISR Kleisli `>=>` is the interrupt
 **error** channel and has no Negate (`081M10AZ6KS087G0R0000SSFMH`);
 EP/ADF is re-normalisation, not Z-set minus.
 
+## Existing IStarRing instances — which apply
+
+Aaron 2026-08-26 follow-up: we already have several `IStarRing`
+dictionaries. They **do** apply, but TRACE and C₄ are different asks.
+
+| Instance | TRACE (`Negate` / ping-return) | C₄ generator `u² = −1` |
+|---|---|---|
+| `IntegerRing.Star` (ℤ, Conj=id lift of existing `IRing`) | **yes** | **no** — unit group `{±1} ≅ C₂` |
+| `Real.algebra` | **yes** | **no** — same C₂ |
+| `ImaginaryStack.complex` | **yes** | **yes** (`i`) |
+| `ImaginaryStack.quaternion` | **yes** | **yes** — `{1,i,−1,−i}` and `{1,j,−1,−j}` are **subgroups** of ℍ*; i and j anticommute, so ℍ is not C₄ |
+| `ImaginaryStack.octonion` | **yes** | **yes** (any imaginary unit); Mul is non-associative above ℍ |
+| `ImaginaryStack.sedenion` | **yes** | **yes**; also zero divisors |
+| `Cl3.algebra` | **yes** | **even subalgebra** `e₁₂`, not vectors (`eᵢ² = +1`) |
+| `IntervalRing` | **no** — `ISemiring` only (not even `IRing`; Moore arithmetic has no additive inverse) | n/a |
+| Tropical / Boolean / EP | **no** — inverse-free | n/a |
+| TS `star-ring.ts` / `bayesian/wset.ts` `RealAlgebra` | ports of ℝ/ℂ/doubling | same split |
+| Rust `star_ring.rs` (`f64`, `Complex`) | ports | same split |
+| Python `StarRing` | abstract class, no instance | — |
+| C# `IntegerRing` | `IRing` only (no `Conj`) | TRACE via `IRing`; `WSet` still wants `IStarRing` |
+
+`Doubled.algebra` is the lift, not a fourth algebra: it is how ℂ/ℍ/𝕆/𝕊
+are obtained from ℝ. `Chip8Cow` / `QubitIso` are explicitly **not**
+`IStarRing` (no natural state×state product).
+
+Law packs under `tests/` still re-box a local `intStar` (`Conj = id`).
+`IntegerRing.Star` is now the named src instance; switching the packs
+is remaining hygiene, not a new ring.
+
 ## Remaining (not this slice)
 
 - Product path may *weight* a live observe/trace by `Cl3.Mv` without
@@ -118,6 +147,7 @@ EP/ADF is re-normalisation, not Z-set minus.
 - Conformal CGA Cl(4,1) stays the Sequoia distance slice (`Cl3.fs`
   honest scope) — a different signature, still not the compass.
 - Inverse-free corners still do not get the trace.
+- Law-pack `intStar` locals → `IntegerRing.Star`.
 
 Workitem `081M10CBYF9087G0R003GWBNHG`. Module `src/Core/FourCornerC4.fs`.
 

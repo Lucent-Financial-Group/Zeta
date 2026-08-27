@@ -20,8 +20,12 @@ open Zeta.Core.Abstractions
 ///   2. **IStarRing witness.** On ℂ, `i² = Negate(One)`. That identity is
 ///      why the VALUE-channel ping-return (`WSet.negate` /
 ///      `FourCornerTrace.delta`) needs a ring, hence `IStarRing : IRing`.
-///      Inverse-free corners (Boolean, tropical, EP) stay at `ISemiring`
-///      and refuse the trace at compile time.
+///      Inverse-free corners (Boolean, tropical, EP, IntervalRing) stay at
+///      `ISemiring` and refuse the trace at compile time.
+///      Existing `IStarRing` dictionaries that DO apply for TRACE:
+///      `IntegerRing.Star` (ℤ, Conj=id), `Real.algebra`, the Cayley–Dickson
+///      tower (`ImaginaryStack.*`), `Cl3.algebra`. C₄ `u² = −1` is a
+///      *stricter* ask: ℂ and above, plus Cl(3,0) bivectors — not ℝ, not ℤ.
 ///   3. **Clifford discriminator.** Generator squares ±1 are the
 ///      **signature** of Cl(p,q) (the quadratic form on the generating
 ///      vectors), not the compass. Cl(3,0) has `eᵢ² = +1 = One`, the
@@ -77,7 +81,23 @@ module FourCornerC4 =
 
     /// VALUE-channel ping-return: the additive inverse. This is why
     /// `FourCornerTrace` takes `IStarRing` and not `ISemiring`.
+    /// Applies on every existing `IStarRing` instance (ℤ, ℝ, ℂ, ℍ, 𝕆, 𝕊, Cl3).
     let pingReturn (ring: IStarRing<'W>) (w: 'W) : 'W = ring.Negate w
+
+    /// Imaginary unit of ℍ — Cayley–Dickson `(i_ℂ, 0)`. Already the `i` of
+    /// `CayleyWeightedSet.Tests`. `i² = −1`, so C₄ embeds as a *subgroup* of
+    /// ℍ*, not as ℍ (which is not C₄).
+    let quaternionI : Quaternion =
+        Doubled.make (Doubled.make 0.0 1.0) (Doubled.make 0.0 0.0)
+
+    /// The doubling unit of ℍ (`j`). Also `j² = −1`; `{1,j,−1,−j}` is another
+    /// C₄ subgroup, independent of the `i` copy. Not an identification.
+    let quaternionJ : Quaternion =
+        Doubled.make (Doubled.make 0.0 0.0) (Doubled.make 1.0 0.0)
+
+    /// Imaginary unit of 𝕆 lifted from ℍ's `i` (lower half). Same C₄ subgroup.
+    let octonionI : Octonion =
+        Doubled.make quaternionI (Doubled.make (Doubled.make 0.0 0.0) (Doubled.make 0.0 0.0))
 
     let toComplex =
         function

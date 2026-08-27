@@ -32,3 +32,4 @@ are related; they are **not** “it is Cl(p,q)”.
   FourCorner to Cl(p,q)
 - Do not identify the I/O record with a Clifford algebra in later slices
 - Conformal CGA Cl(4,1) stays the Sequoia distance slice
+- Law-pack local `intStar` re-boxes → `IntegerRing.Star`

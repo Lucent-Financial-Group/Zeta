@@ -137,3 +137,66 @@ let ``T: FourCornerTrace instantiates over Cl3.Mv weights without FourCorner bei
     closeMv (FC.pingReturn clRing w) (clRing.Negate w) |> should equal true
     closeMv (clRing.Mul(Cl3.vector 1.0 0.0 0.0, Cl3.vector 1.0 0.0 0.0)) clRing.One
     |> should equal true
+
+// ── (A) existing IStarRing instances — TRACE vs C₄ are different asks ─
+// TRACE (Negate) applies on every IStarRing already in src. C₄ `u² = −1`
+// is stricter: ℂ and above + Cl(3,0) bivectors. ℝ and ℤ have unit group
+// C₂, not C₄. IntervalRing / tropical / Boolean stay at ISemiring and
+// cannot even take pingReturn (compile-time). Ports (TS star-ring,
+// Rust f64/Complex) are the same dictionaries, not extra algebras.
+
+let private closeQ (a: Quaternion) (b: Quaternion) =
+    closeC a.Real b.Real && closeC a.Imag b.Imag
+
+let private closeO (a: Octonion) (b: Octonion) =
+    closeQ a.Real b.Real && closeQ a.Imag b.Imag
+
+let private pingAnnihilates (ring: IStarRing<'W>) (eq: 'W -> 'W -> bool) (w: 'W) =
+    eq (ring.Add(w, FC.pingReturn ring w)) ring.Zero
+    && eq (FC.pingReturn ring (FC.pingReturn ring w)) w
+
+[<Fact>]
+let ``A: IntegerRing.Star is the ℤ IStarRing — TRACE applies, C₄ does not`` () =
+    let r = IntegerRing.Star
+    pingAnnihilates r (=) 7L |> should equal true
+    r.Mul(r.One, r.One) |> should equal r.One
+    r.Mul(r.Negate r.One, r.Negate r.One) |> should equal r.One
+    r.Mul(r.One, r.One) = r.Negate r.One |> should equal false
+    // FourCornerTrace on the named ℤ instance (no test-local re-box)
+    let gen: FourCornerTrace.Generator<int list, Map<int, int>, int, int64> =
+        fun interp history ->
+            history
+            |> List.map (fun x ->
+                (match Map.tryFind x interp with
+                 | Some y -> y
+                 | None -> x),
+                1L)
+    let update (interp: Map<int, int>) ((raw, label): int * int) = Map.add raw label interp
+    let st0, _ = FourCornerTrace.start r ((=) 0L) gen [ 0 ] Map.empty
+    let st1, d = FourCornerTrace.step r ((=) 0L) gen update [ 0 ] (0, 7) st0
+    d |> should equal [ 0, -1L; 7, 1L ]
+    st1.Emitted |> should equal [ 7, 1L ]
+
+[<Fact>]
+let ``A: Real.algebra TRACE applies; unit group is C₂ not C₄`` () =
+    let r = Real.algebra
+    pingAnnihilates r (fun a b -> abs (a - b) < 1e-12) 2.5 |> should equal true
+    r.Mul(1.0, 1.0) |> should equal 1.0
+    r.Mul(-1.0, -1.0) |> should equal 1.0
+    r.Mul(1.0, 1.0) = r.Negate r.One |> should equal false
+
+[<Fact>]
+let ``A: quaternion i and j each square to −1 — C₄ is a subgroup of ℍ*, not ℍ`` () =
+    let r = ImaginaryStack.quaternion
+    pingAnnihilates r closeQ FC.quaternionI |> should equal true
+    closeQ (r.Mul(FC.quaternionI, FC.quaternionI)) (r.Negate r.One) |> should equal true
+    closeQ (r.Mul(FC.quaternionJ, FC.quaternionJ)) (r.Negate r.One) |> should equal true
+    // i and j anticommute — ℍ is bigger than C₄ (the identification refusal)
+    closeQ (r.Mul(FC.quaternionI, FC.quaternionJ)) (r.Mul(FC.quaternionJ, FC.quaternionI))
+    |> should equal false
+
+[<Fact>]
+let ``A: octonion lift of i still squares to −1 — tower TRACE + C₄ both apply`` () =
+    let r = ImaginaryStack.octonion
+    pingAnnihilates r closeO FC.octonionI |> should equal true
+    closeO (r.Mul(FC.octonionI, FC.octonionI)) (r.Negate r.One) |> should equal true
