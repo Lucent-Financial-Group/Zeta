@@ -1,169 +1,198 @@
-// defender-exclusions.test.ts — the falsifiers.
+// defender-exclusions.test.ts -- the falsifiers.
 //
-// One property carries this script, and it is the kind that is trivially asserted and rarely
-// tested:
+// One property carries this tool, and it is the kind that is trivially asserted and rarely tested:
 //
 //     WITHOUT `--apply`, NOTHING ON THE HOST CHANGES.
 //
-// Reading the source and seeing an `if [ "$APPLY" -eq 0 ]; then exit 0` is not evidence — the guard
-// could sit below a mutating line, an early `mdatp` call could slip in above it during a later edit,
-// or `--apply` could be defaulted to 1 by a typo. The only honest check is to give the script a FAKE
-// `mdatp` that records every invocation, run it both ways, and compare.
+// Reading the source and seeing an early `return 0` is not evidence -- the guard could sit below a
+// mutating line, an `mdatp` call could slip in above it during a later edit, or `--apply` could be
+// defaulted to true by a typo. The honest check is a `Host` that RECORDS every invocation, run both
+// ways, compared.
 //
-// That fake is also what lets the apply path be tested at all. Real `mdatp` needs elevation and
-// would make a genuine security change to the developer's machine, which a test must never do.
+// The injected `Host` is also what makes the apply path testable at all. Real `mdatp` would make a
+// genuine security change to the developer's machine, which a test must never do.
 
 import { describe, expect, test } from "bun:test";
-import { chmodSync, mkdtempSync, existsSync, readFileSync, rmSync, writeFileSync } from "node:fs";
-import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { apply, candidates, main, renderProposal, type Host } from "./defender-exclusions.ts";
 
-const SCRIPT = join(import.meta.dir, "defender-exclusions.sh");
+const HOME = "/home/tester";
 
-interface Run {
-  readonly code: number;
-  readonly stdout: string;
-  readonly stderr: string;
-  /** Every argv the fake `mdatp` was called with, one per line. Empty when never called. */
-  readonly calls: string;
+/** Directories that exist, plus a recorder for every mdatp call. */
+function hostOf(opts: {
+  dirs?: readonly string[];
+  withMdatp?: boolean;
+  addFails?: boolean;
+  listEcho?: boolean;
+}): { host: Host; calls: string[][] } {
+  const dirs = new Set(
+    opts.dirs ?? [
+      `${HOME}/Documents/src/repos`,
+      `${HOME}/.nuget/packages`,
+      `${HOME}/.dotnet`,
+      `${HOME}/zeta-wt-alpha`,
+      `${HOME}/zeta-wt-beta`,
+    ],
+  );
+  const calls: string[][] = [];
+  const added: string[] = [];
+  const host: Host = {
+    isDir: (p) => dirs.has(p),
+    list: (p) =>
+      p === HOME
+        ? [...dirs].filter((d) => d.startsWith(`${HOME}/zeta-wt-`)).map((d) => d.slice(HOME.length + 1))
+        : [],
+    mdatp:
+      opts.withMdatp === false
+        ? null
+        : (args) => {
+            calls.push([...args]);
+            if (args[0] === "exclusion" && args[1] === "folder" && args[2] === "add") {
+              if (opts.addFails === true) return { ok: false, stdout: "" };
+              added.push(args[4] ?? "");
+              return { ok: true, stdout: "" };
+            }
+            // `listEcho: false` models the managed-host case: the add reports success and the
+            // exclusion is silently not held.
+            return { ok: true, stdout: opts.listEcho === false ? "" : added.join("\n") };
+          },
+  };
+  return { host, calls };
 }
 
-/**
- * Run the script with a sandboxed PATH.
- *
- * `withMdatp: false` removes the fake entirely, which is how the "product not installed" branch is
- * exercised on a host where Defender genuinely IS installed — otherwise that branch would be
- * untestable here and would rot.
- */
-function run(args: string[], opts: { withMdatp: boolean }): Run {
-  // mkdtempSync: atomic and 0700, unlike mkdirSync whose mode is umask-masked.
-  const dir = mkdtempSync(join(tmpdir(), "zeta-defender-test-"));
-  const marker = join(dir, "mdatp-calls.txt");
-  const bin = join(dir, "bin");
-  try {
-    Bun.spawnSync(["mkdir", "-p", bin]);
-    // Create the trees the script looks for INSIDE the sandbox HOME. Without this the script
-    // correctly skips every absent path, `--apply` calls nothing, and the "never calls mdatp"
-    // assertions above pass vacuously — a guard proven by a system that cannot act at all. The
-    // control test is what surfaced this; it is the reason these mkdirs exist.
-    for (const rel of ["Documents/src/repos", ".nuget/packages", ".dotnet", ".bun/install/cache",
-                       ".local/share/mise", ".cargo/registry", "zeta-wt-alpha", "zeta-wt-beta"]) {
-      Bun.spawnSync(["mkdir", "-p", join(dir, rel)]);
-    }
-    if (opts.withMdatp) {
-      // Records the call and succeeds. `exclusion list` echoes back everything previously added, so
-      // the script's read-back verification has something truthful to read.
-      const fake = [
-        "#!/usr/bin/env bash",
-        `printf '%s\\n' "$*" >> ${JSON.stringify(marker)}`,
-        'if [ "$1" = "exclusion" ] && [ "$2" = "list" ]; then',
-        `  grep -o -- '--path .*' ${JSON.stringify(marker)} 2>/dev/null | sed 's/^--path //' || true`,
-        "fi",
-        "exit 0",
-      ].join("\n");
-      writeFileSync(join(bin, "mdatp"), fake, "utf8");
-      chmodSync(join(bin, "mdatp"), 0o755);
-    }
-    const p = Bun.spawnSync(["bash", SCRIPT, ...args], {
-      env: {
-        // A minimal PATH containing ONLY our fake plus the system basics. Inheriting the real PATH
-        // would let the machine's genuine /usr/local/bin/mdatp answer, and the test would make a
-        // real change to the developer's endpoint configuration.
-        PATH: `${bin}:/usr/bin:/bin`,
-        HOME: dir,
-      },
-    });
-    return {
-      code: p.exitCode,
-      stdout: p.stdout.toString(),
-      stderr: p.stderr.toString(),
-      calls: existsSync(marker) ? readFileSync(marker, "utf8") : "",
-    };
-  } finally {
-    rmSync(dir, { recursive: true, force: true });
-  }
-}
+const sink = (): { log: (s: string) => void; out: () => string } => {
+  const lines: string[] = [];
+  return { log: (s) => lines.push(s), out: () => lines.join("\n") };
+};
 
 describe("without --apply, nothing on the host changes", () => {
   test("the default invocation NEVER calls mdatp", () => {
-    // The load-bearing test. A mutating line above the dry-run guard, or `APPLY=1` by typo, fails
-    // here and nowhere else.
-    const r = run([], { withMdatp: true });
-    expect(r.calls).toBe("");
-    expect(r.code).toBe(0);
-    expect(r.stdout).toContain("DRY RUN");
+    // The load-bearing test. A mutating line above the dry-run guard, or `--apply` defaulted on by
+    // typo, fails here and nowhere else.
+    const { host, calls } = hostOf({});
+    const s = sink();
+    expect(main([], HOME, host, s.log)).toBe(0);
+    expect(calls).toEqual([]);
+    expect(s.out()).toContain("DRY RUN");
   });
 
   test("an explicit --dry-run also never calls mdatp", () => {
-    expect(run(["--dry-run"], { withMdatp: true }).calls).toBe("");
+    const { host, calls } = hostOf({});
+    main(["--dry-run"], HOME, host, sink().log);
+    expect(calls).toEqual([]);
   });
 
-  test("--apply DOES call it — otherwise the test above passes on a script that does nothing", () => {
-    // The control. Without this, a completely inert script would satisfy every assertion above,
-    // which is the vacuity class: a guard proven by a system that cannot act at all.
-    const r = run(["--apply"], { withMdatp: true });
-    expect(r.calls).toContain("exclusion folder add");
-    expect(r.calls).toContain("--path");
+  test("--apply DOES call it -- otherwise the tests above pass on a tool that does nothing", () => {
+    // The control, and it earned its place: an earlier version of this suite ran against a sandbox
+    // containing none of the target directories, so the apply path was skipped entirely and both
+    // assertions above were passing VACUOUSLY -- a guard proven by a system that could not act.
+    const { host, calls } = hostOf({});
+    expect(main(["--apply"], HOME, host, sink().log)).toBe(0);
+    expect(calls.some((c) => c[0] === "exclusion" && c[2] === "add")).toBe(true);
+  });
+});
+
+describe("the read-back is a measurement, not the add's own exit code", () => {
+  test("adds that SUCCEED but are not held afterwards are reported, and the run fails", () => {
+    // The managed-host case, and the reason `apply` re-reads at all: policy can silently override a
+    // local add, which still exits 0. Trusting the return value would report a completed change
+    // that did not happen.
+    const { host } = hostOf({ listEcho: false });
+    const s = sink();
+    expect(main(["--apply"], HOME, host, s.log)).toBe(1);
+    expect(s.out()).toContain("NOT PRESENT after apply");
+    expect(s.out()).toContain("silently overridden");
+  });
+
+  test("a failing add is collected, not thrown -- one rejection must not strand the rest", () => {
+    const { host } = hostOf({ addFails: true });
+    const r = apply(candidates(HOME, host), host);
+    expect(r.applied).toBe(0);
+    expect(r.failed.length).toBeGreaterThan(1);
+  });
+});
+
+describe("the worktree glob replaces enumeration", () => {
+  test("many worktrees collapse to ONE wildcard entry", () => {
+    const dirs = [`${HOME}/.dotnet`, ...Array.from({ length: 40 }, (_, i) => `${HOME}/zeta-wt-${i}`)];
+    const { host } = hostOf({ dirs });
+    const cs = candidates(HOME, host);
+    const globs = cs.filter((c) => c.isGlob);
+    expect(globs).toHaveLength(1);
+    expect(globs[0]?.path).toBe(`${HOME}/zeta-wt-*`);
+    expect(globs[0]?.reason).toContain("40 present");
+    // And no worktree appears literally -- the whole point of the collapse.
+    expect(cs.filter((c) => c.path.includes("zeta-wt-") && !c.isGlob)).toHaveLength(0);
+  });
+
+  test("with NO worktrees the glob is absent -- it is not proposed unconditionally", () => {
+    const { host } = hostOf({ dirs: [`${HOME}/.dotnet`] });
+    expect(candidates(HOME, host).filter((c) => c.isGlob)).toHaveLength(0);
   });
 });
 
 describe("the cost is stated before anything is proposed", () => {
-  test("the dry run says exclusions are NOT SCANNED, unprompted", () => {
-    // An exclusion list that advertises only its speed benefit is a security change wearing a
+  test("the proposal says exclusions are NOT scanned, unprompted", () => {
+    // An exclusion list advertising only its speed benefit is a security change wearing a
     // performance costume. The warning is part of the deliverable, so it is pinned.
-    const out = run([], { withMdatp: true }).stdout;
+    const { host } = hostOf({});
+    const out = renderProposal(candidates(HOME, host), host);
     expect(out).toMatch(/NOT scanned/i);
     expect(out).toMatch(/NOT on a server or shared host/i);
   });
 
   test("every proposed path carries a reason", () => {
-    // A bare path list rots into a set nobody can audit. `$HOME` is the sandbox here, so the caches
-    // are absent and marked as such; the reason text still has to accompany what IS present.
-    const out = run([], { withMdatp: true }).stdout;
-    expect(out).toMatch(/candidate path\(s\)/);
+    const { host } = hostOf({});
+    for (const c of candidates(HOME, host)) expect(c.reason.length).toBeGreaterThan(20);
+  });
+
+  test("an absent literal path is marked absent and never sent to mdatp", () => {
+    const { host, calls } = hostOf({ dirs: [`${HOME}/.dotnet`] });
+    expect(renderProposal(candidates(HOME, host), host)).toContain("[ABSENT");
+    main(["--apply"], HOME, host, sink().log);
+    const sent = calls.filter((c) => c[2] === "add").map((c) => c[4]);
+    expect(sent).toEqual([`${HOME}/.dotnet`]);
   });
 });
 
 describe("platform detection fails closed and stays loud", () => {
-  test("with no mdatp on PATH it exits 0, says so, and calls nothing", () => {
+  test("with no mdatp it exits 0, says so, and calls nothing", () => {
     // A no-op is correct when the product is absent. Announcing it is what stops a silent success
     // from reading as a completed change.
-    const r = run(["--apply"], { withMdatp: false });
-    expect(r.code).toBe(0);
-    expect(r.stdout).toContain("mdatp NOT FOUND");
-    expect(r.calls).toBe("");
+    const { host, calls } = hostOf({ withMdatp: false });
+    const s = sink();
+    expect(main(["--apply"], HOME, host, s.log)).toBe(0);
+    expect(s.out()).toContain("mdatp NOT FOUND");
+    expect(calls).toEqual([]);
   });
 
-  test("the proposal is still printed with no mdatp — review must not require the product", () => {
-    expect(run([], { withMdatp: false }).stdout).toMatch(/proposed antivirus scan exclusions/i);
+  test("the proposal still prints -- review must not require the product", () => {
+    const { host } = hostOf({ withMdatp: false });
+    const s = sink();
+    main([], HOME, host, s.log);
+    expect(s.out()).toMatch(/proposed antivirus scan exclusions/i);
   });
 });
 
 describe("argument handling refuses what it does not understand", () => {
   test("an unknown flag exits 2 rather than being ignored", () => {
     // Silently ignoring `--aply` would run the dry path while the operator believed they had
-    // applied — a typo becoming a false report of a completed change.
-    const r = run(["--aply"], { withMdatp: true });
-    expect(r.code).toBe(2);
-    expect(r.stderr).toContain("unknown argument");
-    expect(r.calls).toBe("");
+    // applied -- a typo becoming a false report of a completed change.
+    const { host, calls } = hostOf({});
+    const s = sink();
+    expect(main(["--aply"], HOME, host, s.log)).toBe(2);
+    expect(s.out()).toContain("unknown argument");
+    expect(calls).toEqual([]);
   });
 });
 
 describe("re-running is safe", () => {
-  test("two --apply runs issue the same adds — idempotent by construction", () => {
-    // mdatp treats a duplicate add as a no-op, so the script does not track state. What must hold is
-    // that the SECOND run proposes exactly what the first did, with no accumulation.
-    //
-    // Each `run` gets its own sandbox HOME, so the absolute paths necessarily differ between the
-    // two — comparing raw output compared the temp directory names, not the behaviour. Normalise
-    // the sandbox prefix away and compare the SHAPE, which is the actual claim.
-    const shape = (calls: string): string =>
-      calls.replace(/\/[^ \n]*zeta-defender-test-[A-Za-z0-9]+/g, "$HOME");
-    const a = shape(run(["--apply"], { withMdatp: true }).calls);
-    const b = shape(run(["--apply"], { withMdatp: true }).calls);
-    expect(a).toBe(b);
-    // And the shape is non-empty, or this compares two blanks.
-    expect(a).toContain("exclusion folder add");
+  test("two --apply runs issue identical adds -- no accumulation", () => {
+    const a = hostOf({});
+    const b = hostOf({});
+    main(["--apply"], HOME, a.host, sink().log);
+    main(["--apply"], HOME, b.host, sink().log);
+    expect(a.calls).toEqual(b.calls);
+    // Non-empty, or this compares two blanks.
+    expect(a.calls.length).toBeGreaterThan(1);
   });
 });
