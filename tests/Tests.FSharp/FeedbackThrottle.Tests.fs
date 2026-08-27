@@ -29,8 +29,13 @@ let ``2√2 is crossed at a finite latency — a real transport drops below the 
     Assert.True(FeedbackThrottle.maxChsh 10.0 < FeedbackThrottle.Tsirelson)
 
 [<Fact>]
-let ``deterministic / replayable (DST)`` () =
-    Assert.Equal(FeedbackThrottle.maxChsh 1.5, FeedbackThrottle.maxChsh 1.5, 12)
+let ``maxChsh is ClassicalBound plus twice attenuation (two expressions, not X = X)`` () =
+    // R2: `maxChsh 1.5 = maxChsh 1.5` is one expression twice, a check that
+    // cannot fail. The composition identity can fail if the formula drifts.
+    let l = 1.5
+    let viaMax = FeedbackThrottle.maxChsh l
+    let viaAttn = FeedbackThrottle.ClassicalBound + 2.0 * FeedbackThrottle.attenuation l
+    Assert.Equal(viaMax, viaAttn, 12)
 
 [<Fact>]
 let ``TsirelsonLatency = sqrt 2 and it sets maxChsh to exactly 2 root 2`` () =
