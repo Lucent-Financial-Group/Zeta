@@ -647,32 +647,59 @@ pkgs.testers.nixosTest {
     # two halves are asserted as a pair, positive and negative, on the two
     # machines: neither alone excludes the split-brain the step is named for.
     #
-    # Matched loosely (the two words that carry the meaning) rather than on the
-    # full sentence, because the member ids are random per boot and the exact
-    # phrasing is upstream's to change. If upstream does change it this goes
-    # red rather than quietly passing — the right direction to fail.
-    joiner_etcd_log = joiner.succeed("journalctl -u k3s.service --no-pager")
-    assert "to etcd cluster [" in joiner_etcd_log, (
-        "the joiner never logged adding itself to an EXISTING etcd cluster. "
-        "A control plane that joins emits `Adding member <self> to etcd "
-        "cluster [<existing members>]`; one that founds does not. Without "
-        "this line the node's membership was produced by something other "
-        "than an etcd join."
+    # Matched loosely (the words that carry the meaning) rather than on the full
+    # sentence, because the member ids are random per boot and the exact
+    # phrasing is upstream's to change. If upstream does change it this goes red
+    # rather than quietly passing — the right direction to fail.
+    #
+    # THE NEGATIVE HALF NEEDS THE JOURNAL PROVED READABLE FIRST. "founder never
+    # logged joining" and "nothing could read the founder's journal" produce the
+    # identical empty result, and only one of them is evidence. So the unit's
+    # journal is measured non-trivial on both machines before a single absence
+    # is read as meaning anything.
+    def k3s_journal(machine, who, pattern):
+        lines = int(machine.succeed(
+            "journalctl -u k3s.service --no-pager | wc -l"
+        ).strip())
+        assert lines > 100, (
+            f"{who}: journalctl -u k3s.service returned {lines} lines. k3s "
+            "logs thousands during bring-up, so this is an unreadable or "
+            "empty journal — every absence checked against it would be "
+            "vacuous, including the negative half of this discriminator."
+        )
+        # `|| true` keeps a non-matching grep an empty RESULT rather than a
+        # failed command; the line count above is what stops empty from
+        # meaning two different things. Greps in the guest so a multi-MB
+        # journal never crosses the test driver.
+        return machine.succeed(
+            f"journalctl -u k3s.service --no-pager | grep -F '{pattern}' || true"
+        ).strip()
+
+    joiner_joined = k3s_journal(joiner, "joiner", "to etcd cluster [")
+    assert joiner_joined != "", (
+        "the joiner never logged adding itself to an EXISTING etcd cluster. A "
+        "control plane that joins emits `Adding member <self> to etcd cluster "
+        "[<existing members>]`; one that founds does not. Without this line "
+        "the node's membership was produced by something other than an etcd "
+        "join."
     )
-    assert f"https://{FOUNDER_IP}:2380" in joiner_etcd_log, (
+    assert f"https://{FOUNDER_IP}:2380" in joiner_joined, (
         f"the joiner joined an etcd cluster that does not contain the founder "
-        f"({FOUNDER_IP}). Joining SOME cluster is not joining THIS one."
+        f"({FOUNDER_IP}). Joining SOME cluster is not joining THIS one. Got: "
+        f"{joiner_joined!r}"
     )
 
-    founder_etcd_log = founder.succeed("journalctl -u k3s.service --no-pager")
-    assert "Starting etcd for new cluster" in founder_etcd_log, (
+    founder_founded = k3s_journal(founder, "founder", "Starting etcd for new cluster")
+    assert founder_founded != "", (
         "the founder did not log founding a new etcd cluster, so the negative "
         "half of this discriminator is vacuous: if neither node founds, the "
         "assertion above cannot be telling founding from joining."
     )
-    assert "to etcd cluster [" not in founder_etcd_log, (
+    founder_joined = k3s_journal(founder, "founder", "to etcd cluster [")
+    assert founder_joined == "", (
         "the FOUNDER logged joining an existing etcd cluster. The two roles "
-        "are inverted or both nodes joined something else."
+        f"are inverted or both nodes joined something else. Got: "
+        f"{founder_joined!r}"
     )
 
     # Post-mortem state into the build log.
