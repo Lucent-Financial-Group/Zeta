@@ -9,6 +9,9 @@ the LAST hop of a ferry, never as the home.
 
 Current:
 
+- [`../trajectories/own-ai-harness/RESUME.md`](../trajectories/own-ai-harness/RESUME.md)
+  — **Harny** (custom agent harness). Device-code first, vendor-CLI import,
+  Manus remote API-key. After dogfood: Ace pre-bootstrap + Harny extract.
 - [`2026-08-24-riven-usb-zflash-qemu-restore-next.md`](./2026-08-24-riven-usb-zflash-qemu-restore-next.md)
   — Riven USB/zflash QEMU restore: mise-trust and picker `--defer-all` are
   on `main`; next slice is sibling dispatch `if: always()` so a restore
