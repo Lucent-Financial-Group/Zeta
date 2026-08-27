@@ -143,6 +143,7 @@
     <Compile Include="Merkle.FullVertical.Tests.fs" />
     <Compile Include="ZSetMerkle.Tests.fs" />
     <Compile Include="ZetaFsDeltaLog.Tests.fs" />
+    <Compile Include="ZetaFsDualFold.Tests.fs" />
     <Compile Include="ZSetMerkleProof.CrossVerify.Tests.fs" />
     <Compile Include="ZetaIrV1.Tests.fs" />
     <Compile Include="ZetaIrV2.Tests.fs" />
@@ -346,6 +347,7 @@
     <Compile Include="BipartiteMachZehnder.Tests.fs" />
     <Compile Include="TravelerRankLedger.Tests.fs" />
     <Compile Include="DeclaredStanceLedger.Tests.fs" />
+    <Compile Include="AdopterRegister.Tests.fs" />
     <Compile Include="FreeTimeAllocation.Tests.fs" />
     <Compile Include="DurableDiplomacyRankGate.Tests.fs" />
     <Compile Include="QSharpOracle.Tests.fs" />
@@ -432,8 +434,10 @@
     <Compile Include="Protobuf.Tests.fs" />
     <Compile Include="Protobuf.Swap.Tests.fs" />
     <Compile Include="SoftValue.Tests.fs" />
+    <Compile Include="DuExpand.Tests.fs" />
     <Compile Include="SoftValue.CrossVerify.Tests.fs" />
     <Compile Include="SoftValueWidening.Tests.fs" />
+    <Compile Include="RetractionReading.Tests.fs" />
     <Compile Include="SoftValueWeightedSet.Tests.fs" />
     <Compile Include="TravelerFrame.Tests.fs" />
     <Compile Include="DecorrelationMetrology.Tests.fs" />
