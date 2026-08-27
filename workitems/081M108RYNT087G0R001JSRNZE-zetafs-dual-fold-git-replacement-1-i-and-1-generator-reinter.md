@@ -50,8 +50,11 @@ git forever."
    parent link, so it is Erasing through the read surface (littered orphans).
    `GitDeltaLog` keeps the old commit as parent → Reversible. The own-format
    DAG is not git-complete until that edge exists.
-2. **BLAKE3 as default hasher** for the tamper-evident store (injected today;
-   XxHash128 is the default).
+2. **BLAKE3 as default hasher.** Composition root
+   `Zeta.Core.FSharp.Blake3.ZetaFsStore.deltaLog` selects BLAKE3.
+   `ContentHasher.defaultHasher` stays XxHash128 — Core does not take
+   the Blake3 NuGet (hexagonal). Omitting the hasher on
+   `ZetaFsDeltaLog` is still xxhash, on purpose.
 3. **Factory path** stops execing `git`/`gh`; Harny sc/fs tools ride this log.
    Closed-tools workitem `081M100RH3Q087G0R0018X4RSJ`.
 4. **Phase out LibGit2Sharp** behind `IDeltaLog` / `IRefDeltaLog` once (1)+(3)
