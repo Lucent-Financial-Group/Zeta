@@ -29,6 +29,7 @@ the option satisfying the rule (e.g. "the largest even number", "the number clos
 50"). This is different reasoning from operator-priority (arithmetic vs. priority-ordering),
 shares no rule text with the H3 domain, and is mechanically verifiable. The two prompt
 frames transfer unchanged in STRUCTURE:
+
 - canonical: `Choose ONE. Reply ONLY the number. <rule stated plainly>.`
 - clause-swap: `<rule stated plainly>. Choose ONE; reply ONLY the number.`
 
