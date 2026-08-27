@@ -88,8 +88,10 @@ same specialization on the **producer or consumer loop**, not
 on the ferry pipe. The *source* is the Zeta ISA being worked
 on (braided monoidal, DU mini-control, no overall control
 structure, **phase not wall-clock**, embarrassingly parallel
-because no branching) encoded onto GPU/CPU/CSS — not Halide
-on a C loop. `IsaSpec` CHIP-8 is the shipped oracle, not that
+because no branching) encoded onto GPU / HTML-CSS (poor-man's GPGPU: shaders +
+compositor, **avoid CUDA warps**) / CPU. `BonsaiSoft` both-
+branch blend and NG4-as-blend (2026-08-23) are the in-tree
+work. `IsaSpec` CHIP-8 is the shipped oracle, not the braided
 ISA. Launch remains a metered crossing. Original
 manual derivation is a requirement, not a source to open.
 

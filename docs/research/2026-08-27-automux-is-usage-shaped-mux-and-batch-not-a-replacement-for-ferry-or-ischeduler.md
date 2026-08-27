@@ -125,6 +125,17 @@ Aaron's correction of the Halide-shaped reading (same hour):
 > is not over all control structure and things compose based
 > on phase clock space not wallclock time
 
+CSS here is **HTML/CSS**, not another silicon acronym. Aaron
+2026-08-27: the poor-man's GPGPU — shader hacking and the
+compositor — *instead of CUDA warps*:
+
+> when i say CSS i mean like HTML CSS this is our poor mans
+> abstraction for gpgpu like things and shader hacking for
+> computation, CUDA makes this easier at the cost of warps,
+> we try to avoid warps all together by forcing into shaders
+> and css and math, we have a lot of work on this with our
+> BNNs and other math
+
 The source ISA is **ours**, not "a C loop lowered by Halide onto
 CUDA." `IsaSpec` already makes an ISA *data* so one `mix`
 specializes any spec (CHIP-8 shipped as the oracle; 6502/68000
@@ -134,10 +145,34 @@ braided-monoidal one: mini control = a discriminated union
 instruction level); composition is **phase**, not wall-clock
 (`local-time-never-enters-the-shared-fold`; `IScheduler` is
 injected). Avoiding branching is why it is embarrassingly
-parallel and why encoding onto GPU/CPU/CSS is *easy*: a warp
+parallel and why encoding onto GPU / HTML-CSS / CPU is *easy*: a warp
 does not diverge when there is no data-dependent `if` over
 wall-clock state. `Meno.braid` is the in-tree braiding
 (Joyal–Street; kind `*` in F#, metered).
+
+**Warps are the cost CUDA charges for ease.** The Zeta path
+is the other way: *force* the work into shaders, HTML/CSS
+(compositor / blend), and the math (BNNs that are already
+blends). In-tree:
+
+- `BonsaiSoft`: soft `Cond` evaluates **both** branches and
+  blends by truth-confidence — no hard `if` ⇒ shader-portable
+  (vision §4e "avoid `if`"). Interpreted on the F# host today;
+  GPU execution of the observer is still next-build
+  (2026-06-08 honest register).
+- `DynamicValueNumeric` shader-lowerable sibling: poison-to-NaN,
+  heap `DynamicValue` is never the GPU carrier.
+- Measured 2026-08-23: NG4 posterior fusion is **fixed-function
+  additive blend** (`src=one, dst=one`) — zero shader
+  instructions, bit-exact with CPU f32. Student-t `(μ,σ,ν)`
+  is **not** a blend (the blend *sums* ν). That is the
+  discriminator: if the math is a blend, CSS/compositor/shader
+  is the encoding; if it needs a dependent-read kernel, you
+  have bought a warp. Prefer the math that stays a blend.
+
+A fragment shader plus CSS compositing has implicit
+per-pixel parallelism and no programmer-visible warp. That
+is the poor-man's GPGPU. CUDA is easier and *is* warps.
 
 Halide / Futhark / Accelerate remain a *related* Beacon
 (algorithm vs schedule, when you do not have a phase-ISA).
@@ -170,6 +205,10 @@ already half-shipped as anti-Nagle; occupancy self-predict
 (`SchedulerZeta` space coordinate) is still the missing pair
 with time. SIMD/GPU of producer/consumer is named, not built. The
 braided/phase ISA is *working on*, not `IsaSpec` CHIP-8.
+CSS = HTML/CSS compositor + shaders, not an acronym. VISION's
+architectural stack still lists CUDA warps as silicon layer 3;
+this conversation is the avoid-warps path (shaders / CSS /
+blend-math). Do not silently rewrite that stack here.
 
 ## Beacon
 
@@ -194,6 +233,13 @@ braided/phase ISA is *working on*, not `IsaSpec` CHIP-8.
 - **`IsaSpec` / Futamura** — ISA as data; mix specializes
   any spec. CHIP-8 shipped as oracle; the braided/phase
   no-branch ISA is the one being worked on.
+- **Porter–Duff / GPU compositor / fragment shader** — per-pixel
+  parallelism without a programmer-visible warp. HTML/CSS is
+  the poor-man's GPGPU. NG4-as-blend (2026-08-23) is the
+  measured instance; Student-t-as-kernel is the contrast.
+- **CUDA warps** — easier GPGPU, SIMT lockstep is the price.
+  The Zeta path refuses that price when the math can be a
+  blend or a branchless shader.
 - **Halide / Futhark / Accelerate** — related (algorithm vs
   schedule) when you do *not* have a phase-ISA. Not the
   object. Not a purchase.
