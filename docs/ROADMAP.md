@@ -140,7 +140,9 @@ Workitem `081M10AZ6KS087G0R0000SSFMH`.
 **FourCornerTrace VALUE needs `IStarRing`.** The ping-return is `Negate`
 (`−gen(before)+gen(after)`). On ℂ, `−1 = i²` is a *ring* identity matching
 the C₄ compass `{1, i, −1, −i}` on FourCorner — a **labeling**, not a group
-object, and **not** "FourCorner is Cl(p,q)". Clifford generator squares ±1
+object, and **not** "FourCorner is Cl(p,q)". `e^{iπ} = −1` is the **same
+C₄ point** via Euler (`expI`), not a second fact and not what the TRACE
+consumes (`IStarRing` has no `Exp`). Clifford generator squares ±1
 are **signature** (Cl(3,0) `eᵢ² = +1`; C₄ lives in the even subalgebra as
 `e₁₂² = −1`, and as Cl(0,1) ≅ ℂ). The trace can instantiate over
 `Cl3.Mv` *weights* because `Cl3.algebra` is an `IStarRing`; that is

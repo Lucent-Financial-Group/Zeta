@@ -59,15 +59,22 @@ stay at `ISemiring` and **cannot instantiate** the trace — a
 compile-time refusal, not a runtime throw (`IRing.cs`).
 
 On ℂ (`ImaginaryStack.complex`) the compass generator and the
-retraction are the same ring identity:
+retraction are the same **point of C₄**, said two ways:
 
 ```text
-i² = Negate(One)
+i² = Negate(One)          ring identity (exact, IStarRing.Mul)
+e^{i π} = Negate(One)     Euler (analysis; cos π + i sin π)
 ```
 
-Two quarter-turns of a weight **are** `pingReturn`. L5 already pinned
-this on `WSet`; `FourCornerC4.twoQuarterTurns` pins it on the ring so
-the claim does not depend on consolidation.
+Aaron 2026-08-26: thinking `e^{iπ} = −1` instead of `i² = −1`. They
+are not two facts. `i = e^{i π/2}` (quarter-turn), so
+`(e^{i π/2})² = e^{i π} = i² = −1` — two quarter-turns are a
+half-turn. The TRACE ping-return consumes **Negate**, which the ring
+supplies; Euler is why the compass *looks* like a rotation. Euler
+needs `cos`/`sin` (ℝ-analysis). `IStarRing` has no `Exp`. Inverse-free
+corners still refuse the trace; they also have no `i` to exponentiate.
+
+Checked: `FourCornerC4.expI` / `eulerPi`. Not "FourCorner is U(1)".
 
 This is **algebra**, not physics. It is not a claim that the substrate
 is quantum, nor that the trace exploits quantum mechanics. It is GDL
@@ -156,6 +163,8 @@ Workitem `081M10CBYF9087G0R003GWBNHG`. Module `src/Core/FourCornerC4.fs`.
   reversion vs grade involution vs conjugation
 - Atiyah, Bott & Shapiro, *Clifford Modules* (Topology 1964) —
   `CliffordPeriodicity.fs`; Cl(0,1) ≅ ℂ, Cl(0,2) ≅ ℍ, Cl(3,0) ≅ M₂(ℂ)
+- Euler, *Introductio in analysin infinitorum* (1748) — `e^{iθ} = cos θ + i sin θ`;
+  `e^{iπ} = −1` is the same C₄ point as `i²`, via the exponential
 - Cayley–Dickson doubling — `CayleyDickson.fs` / `ImaginaryStack.complex`
 - Joyal, Street & Verity (1996) — traced monoidal category
   (`FourCornerTrace` consumes Negate)

@@ -17,9 +17,11 @@ open Zeta.Core.Abstractions
 ///      `{1, i, −1, −i}` = C₄ = `i`-rotation. That is a labeling of a
 ///      directed I/O record, not a proof that `FourCornerOwnership` is a
 ///      group object.
-///   2. **IStarRing witness.** On ℂ, `i² = Negate(One)`. That identity is
-///      why the VALUE-channel ping-return (`WSet.negate` /
-///      `FourCornerTrace.delta`) needs a ring, hence `IStarRing : IRing`.
+///   2. **IStarRing witness.** On ℂ, `i² = Negate(One)` (ring, exact) and
+///      `e^{iπ} = Negate(One)` (Euler, analysis, same C₄ point). The TRACE
+///      ping-return needs the ring identity, hence `IStarRing : IRing`.
+///      Euler is why the compass *looks* like a half-turn; it is extra
+///      structure (`cos`/`sin`), not what `FourCornerTrace` consumes.
 ///      Inverse-free corners (Boolean, tropical, EP, IntervalRing) stay at
 ///      `ISemiring` and refuse the trace at compile time.
 ///      Existing `IStarRing` dictionaries that DO apply for TRACE:
@@ -111,6 +113,19 @@ module FourCornerC4 =
     let twoQuarterTurns (ring: IStarRing<Complex>) (w: Complex) : Complex =
         let i = toComplex I
         ring.Mul(ring.Mul(w, i), i)
+
+    /// Euler's formula on ℂ: `exp(i θ) = cos θ + i sin θ`. Extra structure
+    /// beyond `IStarRing` (needs ℝ-analysis / `cos`/`sin`). Not a ring identity
+    /// and not "FourCorner is U(1)".
+    let expI (theta: float) : Complex =
+        Doubled.make (cos theta) (sin theta)
+
+    /// `e^{i π}` — the analytic landing on `Negate(One)`. Same C₄ point as
+    /// `i²`, different presentation: exponential of the Lie algebra `iℝ ⊂ ℂ`,
+    /// not `Mul`. Float residual on `sin π` is expected (IEEE); the ring
+    /// identity `i²` is exact. Aaron 2026-08-26: thinking `e^{iπ} = −1`
+    /// instead of `i² = −1`.
+    let eulerPi : Complex = expI System.Math.PI
 
     let private e1 = Cl3.vector 1.0 0.0 0.0
 

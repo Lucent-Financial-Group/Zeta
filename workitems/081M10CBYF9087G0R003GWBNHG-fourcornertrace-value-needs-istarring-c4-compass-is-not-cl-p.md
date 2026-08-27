@@ -23,7 +23,8 @@ are related; they are **not** “it is Cl(p,q)”.
   `e₁² = +1`; Cl(0,1) ≅ ℂ vs Cl(3,0) ≅ M₂(ℂ)
 - Laws tests: group, ring witness, even embedding, discriminator,
   FourCornerTrace over `Cl3.Mv` weights; TRACE vs C₄ on existing
-  `IStarRing` instances; law packs consume `IntegerRing.Star`
+  `IStarRing` instances; law packs consume `IntegerRing.Star`;
+  `e^{iπ} = i² = Negate(One)` (Euler = same C₄ point, analysis not ring)
 - ROADMAP item 1 / P1 / shipped / continuous / research #8
 - Research absorb: `docs/research/2026-08-26-fourcorner-c4-istarring-not-clpq.md`
 

@@ -12,6 +12,8 @@ open Zeta.Core
 //       and commutative (small, exhaustive).
 //   (R) IStarRing witness: on ℂ, two quarter-turns = pingReturn =
 //       Negate. This is why FourCornerTrace needs IStarRing.
+//       e^{iπ} = i² = Negate(One) — Euler is the same C₄ point
+//       (analysis, float); the TRACE consumes the ring identity.
 //   (E) even-subalgebra embedding: e₁₂² = −1, so C₄ sits in Cl(3,0)
 //       the way ℂ sits in ℍ.
 //   (D) discriminator: sending i to a Cl(3,0) *vector* gives e₁² = +1
@@ -73,6 +75,19 @@ let ``R: C₄ phases embed as the unit circle of ImaginaryStack.complex`` () =
     for p in phases do
         let z = FC.toComplex p
         closeC (cRing.Mul(z, cRing.Conj z)) cRing.One |> should equal true
+
+[<Fact>]
+let ``R: e^{i π} = i² = Negate(One) — Euler is the same C₄ point, not a second fact`` () =
+    // analysis (float): e^{iπ} lands on −1, e^{iπ/2} lands on i
+    closeC FC.eulerPi (cRing.Negate cRing.One) |> should equal true
+    closeC (FC.expI (System.Math.PI / 2.0)) (FC.toComplex FC.I) |> should equal true
+    closeC (FC.expI (2.0 * System.Math.PI)) cRing.One |> should equal true
+    // two quarter-turns of the exponential = the half-turn
+    closeC (cRing.Mul(FC.expI (System.Math.PI / 2.0), FC.expI (System.Math.PI / 2.0))) FC.eulerPi
+    |> should equal true
+    // ring (exact): i² is the identity FourCornerTrace actually consumes
+    closeC (cRing.Mul(FC.toComplex FC.I, FC.toComplex FC.I)) FC.eulerPi |> should equal true
+    closeC FC.eulerPi (FC.pingReturn cRing cRing.One) |> should equal true
 
 // ── (E) even-subalgebra embedding — the honest Clifford relation ──
 
