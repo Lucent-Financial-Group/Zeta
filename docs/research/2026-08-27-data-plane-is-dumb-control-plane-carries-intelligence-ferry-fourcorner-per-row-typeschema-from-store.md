@@ -382,6 +382,57 @@ ontology a **store-native DynamicValue** the generators and
 the harness both consume — TypeSchema-from-DV, same IR as the
 CloudEvents dataschema.
 
+Aaron 2026-08-27, on two-way attention and what survives
+compaction:
+
+> Oyes exactly this is the long term vision and repeated
+> activiation of words over tasks should help determine the
+> ontology that plus model involvement on what it prefers, it's
+> not just a one way compaction controlled from the outsite, the
+> model can direct it's attention at what parts of the otology
+> it find important, this is an attention optimization technique
+> similar to ones deep seek and google have investigated but
+> they are optimized on flat text and we are optimizing on per
+> agent hierarchy/ontology, where the descriptions are extera
+> the irrducable structure of relations is what survives
+> compaction
+
+## Attention over the ontology, not over the token stream
+
+Not one-way compaction from the outside. Two feeds, both
+legitimate:
+
+1. **Activation over tasks** — repeated use of a word / hub
+   across ticks is evidence it belongs in the ontology (the
+   naming-eigenvector / remembrance-graph shape: degree is
+   conferred, not self-minted).
+2. **Model-directed attention** — the agent points at the parts
+   of *its* hierarchy it finds important. Preference is an
+   observation, not a dump.
+
+DeepSeek and Google investigated the *same optimisation class*
+on a **flat token stream**:
+
+- DeepSeek **MLA** (V2, 2024) — compress KV into a latent;
+  **NSA** (Yuan et al., arXiv:2502.11089) — hierarchical sparse
+  over token blocks (compress / select / window); **DSA**
+  (V3.2) — token-wise indexer, still over a prefix of tokens.
+- Google **Infini-attention** (Munkhdalai, Faruqui, Gopal,
+  arXiv:2404.07143) — compressive memory + local attention,
+  still over **tokens**.
+
+We take the class and change the **carrier**. Attention and
+compaction run over a **per-agent ontology** (hubs + links),
+not over a transcript. Descriptions are **extra** (satellites).
+The **irreducible structure of relations** is what survives
+compaction — Rodney's "only the irreducible is primitive," DV2
+applied to the window. Prose can be retrieved; the graph of
+names cannot be reconstituted from squeezed tokens.
+
+Per-agent: each agent's hierarchy may diverge (same cut as
+Caché vs per-node). Reconciliation is later, over the relation
+graph, not over a merged transcript.
+
 ## Product vs framework
 
 As many product lanes as make sense; **bundle related**; keep
@@ -661,6 +712,10 @@ single-item TCS away without a measured replacement for
 - **Joseph Albahari**, *Threading in C#* — `SpeculativeUpdate`
   as the canonical hardware CAS (with Toub / Fowler / MS Learn
   as the standing threading stack). Not Itron.
+- DeepSeek **MLA** (V2) / **NSA** (Yuan et al. arXiv:2502.11089)
+  / **DSA** (V3.2); Google **Infini-attention** (Munkhdalai et
+  al. arXiv:2404.07143) — attention optimisation on *tokens*.
+  Our carrier is the per-agent relation graph.
 - **David Greenberg**, Hitchhiker trees (buffers). **Scott
   Vokes**, *Data Structures: The Code That Isn't There* (Strange
   Loop 2012) — **difference lists** are the named holes (also

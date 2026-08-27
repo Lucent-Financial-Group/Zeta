@@ -161,8 +161,11 @@ Also this row:
   well-defined; the wire does not exist. What it loads is the
   **ontology** (per-tick evolving TypeSchema/SoftValue), not a
   compressed raw context window. Filenames/file hubs = ontology
-  keys; satellites = on-demand retrieval. `WAKE-UP.md` is the
-  shipped slice.
+  keys; satellites = on-demand retrieval. Compaction is
+  two-way (activation over tasks + model attention).
+  Descriptions drop; **relations survive**. DeepSeek/Google
+  attend over flat tokens; we attend over per-agent ontology.
+  `WAKE-UP.md` is the shipped slice.
 - **ForgeHost extra-git is not Zeta and not Harny.** Surfaces
   already live in `src/Core.TypeScript/forge-host/`. Zeta
   (`clis/` `sim`/`mea`/`cut`) is git-native. Harny is the agent

@@ -678,9 +678,13 @@ These don't wait for a single round:
 - **Harness context is an ontology, not a compressed log.**
   Per-tick evolving TypeSchema/SoftValue is the resident bulk.
   Filenames and file hubs are the ontology keys. Satellites
-  retrieve on demand. Do not persist raw windows and squeeze
-  them. `WAKE-UP.md` / carved-sentence rules are the shipped
-  slice.
+  retrieve on demand. Compaction is **two-way**: activation over
+  tasks *and* model-directed attention on that agent's
+  hierarchy. Descriptions are extra; the **relation graph**
+  survives. DeepSeek MLA/NSA/DSA and Google Infini-attention
+  are the same optimisation class on **flat tokens**; we run it
+  on per-agent ontology. `WAKE-UP.md` / carved-sentence rules
+  are the shipped slice.
 - **ZetaId is a stable name.** Content-address the blob
   (Jumprope / BLAKE3); epoch chooses which blob the name
   currently means. Default pointer is **name → hash**; reverse
