@@ -33,8 +33,12 @@ producer instructions.
 
 - **It decorrelates:** 64 discordant items (b+c) out of 600 — far above the 2.0% null
   floor (which predicts ~12). canonical and clause-swap genuinely disagree on which option
-  to pick. The McNemar CI [0.1, 5.3] even shows the two are not interchangeable: canonical
-  is the reliably *stronger* prompt by 2.7pp.
+  to pick. canonical is stronger by 2.7pp, but only **marginally, at the significance
+  boundary**: the continuity-corrected McNemar χ²=3.516 does NOT reject at α=0.05 (critical
+  3.841); the uncorrected χ²=4.000 barely rejects; the Wald CI [0.1, 5.3] clears zero by
+  only 0.05pp. Honest reading: canonical is probably stronger, not established as such. This
+  does not touch the headline — the 0.0pp gating lift is independent of whether canonical is
+  significantly stronger.
 - **It does not pay:** agreement-gating with fallback to the stronger config reaches
   exactly best-single (90.3%), a 0.0pp lift. On the 64 discordant items, taking canonical
   wins the 40 it got right and loses the 24 clause-swap got right — netting canonical's own
@@ -64,8 +68,9 @@ nothing to read. That is the next thing to measure, not assume.
 - **The null arm was interleaved** (Otto's contemporaneity fix): the 2.0% floor was
   measured on the same run, same GPU/memory state, not at an earlier T.
 - **Paired McNemar** (Otto's method fix) gave the directional CI [0.1, 5.3] that an
-  unpaired interval would have blurred — and it is what revealed canonical is reliably
-  stronger, which is *why* gating can't help.
+  unpaired interval would have blurred — pointing to canonical being (marginally, at the
+  significance boundary) the stronger prompt, which is consistent with why gating can't
+  help. The gating null does not depend on this being significant.
 - **Headline discipline held:** clause-swap DECORRELATES (proven, permanent on the record);
   PAYS = not shown. A larger N would not change this — the discordant split is asymmetric,
   which kills the payoff at any N, not just this one.

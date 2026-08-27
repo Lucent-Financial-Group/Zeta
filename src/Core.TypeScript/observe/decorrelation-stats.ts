@@ -268,6 +268,27 @@ export function requiredNForDifference(
  * This is the same class of guard as `assertNoOptionContamination` (which stops a text arm
  * from moving buttons) — pointed at a different axis: it stops the instruction from
  * carrying the answer key.
+ *
+ * THE NARROWING SEQUENCE, stated so the fix is not mistaken for coverage (Otto's W12
+ * follow-up): the first version checked the WHOLE prompt, fired on the canonical producer
+ * (the options menu legitimately contains the correct option), was then narrowed to the
+ * instruction region, and the arm went green. That sequence — narrow, then green — is
+ * exactly how a guard gets quietly defeated, so the defense is the control test: this
+ * function is proven RED on the real leaky RULES region AND GREEN on a producer menu
+ * (see the tests). The narrowing is only trustworthy because the RED-on-real control still
+ * fails.
+ *
+ * WHAT THE NARROWED DETECTOR CAN NO LONGER SEE (the blind spot, named): it only catches a
+ * VERBATIM occurrence of the correct option STRING inside the instruction region. It does
+ * NOT catch:
+ *   - a paraphrase or synonym of the answer ("reply to the operator" vs "respond_to_operator"),
+ *   - a positional tell ("the correct action is usually near the top"),
+ *   - a rule that uniquely determines the answer without naming it ("pick the only
+ *     communication action"), or
+ *   - leakage in the STATE/context text rather than the instruction.
+ * It is a substring tripwire for the one leak that actually bit, not a proof of no leak. A
+ * clean result means "the obvious answer-key leak is absent," never "this comparison is
+ * information-fair." Fairness still requires reading both prompts.
  */
 export function detectAnswerLeak(
   instructionRegion: string,
