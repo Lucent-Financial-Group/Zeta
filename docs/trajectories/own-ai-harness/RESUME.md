@@ -87,7 +87,19 @@ bun src/Core.TypeScript/harny/harny.ts import grok
    (`+1` `I` forward, `−1` generator-reinterpret of retained history)
    over DagFs Merkle — not LibGit2Sharp-as-the-store.
    `081M108RYNT087G0R001JSRNZE`.
+   Full −1 of the view is **erasing**; `SoftValue.widen` is **non-erasing**
+   of support; negate alone is Bennett-free (`081M10BD9BM087G0R001SGDRXT`).
+   Commands **run locally** (`observe/local-command.ts`); background
+   checks sync remote World channels and re-observe the preexisting
+   NextAction / ForgeState DUs (`081M109WG5S087G0R0021E5MPT`).
 4. **loop-tick default `mux-duplex`** (Manus stays a remote task, not this loop) — `081M100RH30087G0R003YXHQ12`
+   Self-prediction of the tick uses the no-`app` Kleisli close:
+   `FourCornerTrace` on VALUE, ISR `>=>` on interrupts, DoP=1 ferry,
+   `SchedulerZeta.predict` / `Chip8Observer.predict`. Consistent-with,
+   not one type. `081M10AZ6KS087G0R0000SSFMH`.
+   The +1/−1 fold connection is a Bonsai Rx query (`ZSetRx`), generic
+   over any Z-set. Own model `zeta-bnn` (MinimalBnn / Student-t ADF)
+   is a local online learner beside vendor chat backends.
 
 Phase A done when a Riven/Otto/Vera cell completes a **local** tool-using
 turn on Harny with a stored account token, no vendor CLI, no `gh`.
@@ -113,21 +125,34 @@ Ace is the bootstrap. Harny is an Ace package, not Ace itself.
      2026-04-22 ADR cycle cannot be a DAG
    - minimize toolchain per package (Harny: bun/node only)
    - cuts the monorepo cache tax
+3. **More granular splits after Harny** — `081M10AAVAT087G0R0027M0GV5`
+   - Data Vault 2.0 by change rate *and* toolchain closure (round 3)
+   - dozens of peer repos expected; dogfood in-tree, then extract
+   - DUs expand to DynamicValue + SoftValue (`DuExpand`) so a local
+     verb is a global Bayesian/Z-set effect
+   - cutover is ADR 2026-08-26 (gated; no repo created from a chat)
 
 Phase B dogfoods the repo-split design by extracting the thing we are
-already running, not by inventing a fourth factory.
+already running, not by inventing a fourth factory. The concert is
+**local actions → global effects**.
 
 ## Pointers
 
 - Research absorb: `docs/research/2026-08-26-own-harness-account-logins-ace-zeta-clis-not-platform.md`
 - ZetaFS dual fold: `docs/research/2026-08-26-zetafs-dual-fold-git-replacement.md` · `src/Core/ZetaFsDualFold.fs`
+- Erasing vs widen: `docs/research/2026-08-26-full-minus-erasing-widen-nonerasing.md` · `src/Core/RetractionReading.fs`
+- No-`app` needle: `docs/research/2026-08-26-no-app-kleisli-isr-fourcornertrace-self-predict.md` · `IntrCtx.fs` · `IsrLift.fs` · `SchedulerZeta.fs`
 - Dogfood ledger Tier 0: `docs/trajectories/dogfooding-the-whole-stack/RESUME.md`
 - Repo split ADR: `docs/DECISIONS/2026-04-22-three-repo-split-zeta-forge-ace.md`
+- Cutover sequence: `docs/DECISIONS/2026-08-26-multi-repo-and-hat-credential-cutover-sequence.md`
+- DU expand / local→global: `docs/research/2026-08-26-du-expand-dynamicvalue-softvalue-granular-repo-splits.md` · `src/Core/DuExpand.fs`
 - Clone-at-tag: `.claude/rules/clone-at-tag-stays-sufficient.md`
 - Index: `src/Core.TypeScript/search/inverted/`
 - CLI: `src/Core.TypeScript/harny/harny.ts`
 - Cheap forge verbs: `docs/research/2026-08-26-cheap-forge-verbs-du-observe-not-adhoc-poll.md`
-- Observe controller: `src/Core.TypeScript/observe/observe.ts` · `grammar-16.ts`
+- Rx +1/−1 query / own BNN / local DU sync: `docs/research/2026-08-26-rx-query-connects-plus1-minus1-folds-bonsai-own-bnn-local-du-sync.md`
+- Observe controller: `src/Core.TypeScript/observe/observe.ts` · `grammar-16.ts` · `local-command.ts`
+- Own model: `src/Core.TypeScript/model-backend/own-model.ts` · `src/Bayesian/MinimalBnn.fs`
 - UAG / Xbox grid: `src/Core/ActionGrid.fs`
 - Reservoir walls: `docs/research/2026-05-28-aaron-workflow-as-reservoir-computing-*`
 - μF/νF: `docs/research/2026-08-11-rename-as-rolling-migration-*`

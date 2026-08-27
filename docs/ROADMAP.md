@@ -108,6 +108,12 @@ Z-set folds over our own Merkle DAG (`DagFs` / `ContentStore` / `ZetaFsDeltaLog`
   and emits `−gen(before, H) + gen(after, H)` as a **new** log entry (`FourCornerTrace` /
   `ZetaFsDualFold.reinterpret`). The past record is not rewritten. Pseudo-retrocausality
   (beliefs, not facts — `docs/VISION.md` §"Echolocation over time").
+  **Two readings** (Aaron 2026-08-26; Landauer/Bennett; `ErasureClass`):
+  **full −1 as one op** (`z + (−z)` then the view) is **erasing** of support
+  (annihilation pays; negate alone is Bennett-free). **Uncertainty widening**
+  (`SoftValue.widen`) is **non-erasing** of support — optionality restored,
+  no candidate dropped. Commutative twin: `foldRetained` (retract the evidence
+  SET). Workitem `081M10BD9BM087G0R001SGDRXT`.
 - **Snapshot** — `ZSetMerkle.root` of the net Z-set (`+w` then `−w` is a no-op on the root).
 - **Tree** — `DagFs`: `editLocal` is the default fork; `editEverywhere` is the shared-object
   edit. Blobs are content-addressed.
@@ -116,6 +122,20 @@ Z-set folds over our own Merkle DAG (`DagFs` / `ContentStore` / `ZetaFsDeltaLog`
 `ZetaFsDeltaLog` is the own-format backend (loose objects + refs). Remaining: parent
 edges so truncate is reversible like git, BLAKE3 as the tamper-evident default, factory
 path stops execing `git`/`gh`. Workitem `081M108RYNT087G0R001JSRNZE`.
+
+**Thin needle (consistent-with, not identified by count).** `FourCornerTrace` is
+the VALUE-channel close (WSet +1/−1, generator reread; `−1 = i²` on ℂ is a
+**ring** identity). We close over **interrupts** with the **Kleisli** ISR
+(`IntrCtx.fs` `>=>`), not by stuffing `InterruptFeedback` into the trace
+(Rodney: sum vs product). Avoid Hughes `ArrowApply.app` so structure is
+knowable independently of values — that is how `SchedulerZeta.predict` and
+`Chip8Observer.predict` run-ahead on the DoP=1 ferry
+(`FerryThrottlerConfig.deterministic`, soft `IScheduler`) and predict our
+own CHIP-8/9 / scheduler behaviour (GGPO/rollback). Clifford generators
+square to ±1: same C₄ *compass*, not an identification. `MinimalBnn` /
+factor graphs / Student-t ADF are the online +1 absorb; EP re-normalisation
+is **not** Z-set minus (inverse-free corners do not get the trace).
+Workitem `081M10AZ6KS087G0R0000SSFMH`.
 
 - **Done-test (the bright line):** a full work-cycle (land a change, branch, query history, update
   backlog) with **zero `git` CLI calls** and **zero LibGit2Sharp**.
@@ -169,6 +189,21 @@ using DynamicValue's byte-locked per-format serializer:
   the **plugin itself is persisted as a `DynamicValue`, not F#**, so the *same plugin runs in any of the active runtimes* (plugin-as-data, language-agnostic — no per-language reimplementation). Composes with: DBSP
   IVM (`Circuit`/`Operators`/`Incremental`), Bonsai-serialized Rx queries, `DynamicValue` (the plugin
   carrier), `ZSet` (the core). → backlog to design; clarifies the data-layer shape.
+- **Discriminated unions expand into DynamicValue and SoftValue** (Aaron 2026-08-26) —
+  the bridge to Bayesian stuff over **our own interpretation**. Collapsed case =
+  `DynamicValue.Object` with `"k"` (same wire as `ObserveBridge.nextActionToDv`).
+  Soft reading = `SoftValue` over those objects (`DuExpand.interpret`). `snap` is
+  the only legitimate collapse. A local DU pick is a local action; the global
+  effect is `DuExpand.globalEffect` (`SoftValue.observe` — independent evidence
+  commutes). Workitem `081M10AAVAT087G0R0027M0GV5`.
+- **The +1 fold and the −1 fold are one Rx query** (Aaron 2026-08-26). The connection
+  is `ZSetRx.connectQuery`: Bonsai `Lambda(["plus1","minus1"], Call("zset.add", …))`.
+  It generalises to **any** `ZSet<'K>` — the tree never mentions `'K`. `integrateQuery`
+  is `I`; `retractQuery` is unary minus appended later. Persist with Bonsai (DeSmet /
+  Reaqtor); unfold on each delta (Meijer μ ⇄ ν). Formal siblings already in-tree:
+  `FourCornerTrace` (ℤ retraction / ℂ `−1 = i²`), Clifford generators squaring to ±1,
+  `MinimalBnn` + factor graphs (online +1 absorb). EP/ADF re-normalisation is **not**
+  Z-set minus. Workitem `081M109WG5S087G0R0021E5MPT`.
 
 ### Sequence (data plane first)
 
@@ -236,11 +271,40 @@ using DynamicValue's byte-locked per-format serializer:
     (NO GIT CLI / ZetaFS) is the source-control bootstrap Harny's
     sc/fs tools ride — dual Z-set folds over DagFs Merkle
     (`ZetaFsDualFold` / `081M108RYNT087G0R001JSRNZE`), not
-    LibGit2Sharp-as-the-store.
+    LibGit2Sharp-as-the-store. Self-prediction of Harny/CHIP-8 ticks
+    uses the same no-`app` Kleisli close (`SoftScheduler` / `SchedulerZeta`
+    / `Chip8Observer`) — consistent with `FourCornerTrace`, not the same
+    type (`081M10AZ6KS087G0R0000SSFMH`). The +1/−1 connection is the Bonsai Rx
+    query (`ZSetRx`). **Commands run locally** (`observe/local-command.ts`
+    `runLocal` / `DbCommand` over `IDeltaLog`); **background checks**
+    sync remote World channels through an injected door
+    (`backgroundSync`) and re-observe the **preexisting** NextAction /
+    ForgeState DUs — no second controller. **Own model:** `zeta-bnn`
+    (`MinimalBnn` / Student-t ADF) is a from-scratch **online learner**,
+    local, not chat-completions, sitting beside vendor ModelBackends
+    (`src/Core.TypeScript/model-backend/own-model.ts`).
     Live pointer: `docs/trajectories/own-ai-harness/RESUME.md`.
     Umbrella `081M100RB97087G0R0008EAAY7`; extract
     `081M102M6Y2087G0R000407SW3`; DU verbs
-    `081M107N9PZ087G0R0006X16SJ`.
+    `081M107N9PZ087G0R0006X16SJ`; Rx-fold + local DU
+    `081M109WG5S087G0R0021E5MPT`.
+8c. **Granular peer-repo splits — dogfood, then extract; dozens expected.**
+    The theme is **dogfooding in this monorepo while splitting reusable
+    chunks into their own repos.** Not three forever. Data Vault 2.0
+    partitions by **change rate** (hub / link / satellite) *and* by
+    **toolchain closure** (dotnet vs bun vs Lean vs wasm vs k8s) —
+    Martin's CCP vs CRP, measured in
+    `docs/research/2026-08-19-repo-split-round-3-*` (87% of the union
+    footprint is single-owner). Peer repos, **never submodules** (the
+    Ace/Zeta/Forge cycle cannot be a DAG — ADR 2026-04-22). Cutover
+    sequence already written
+    (`docs/DECISIONS/2026-08-26-multi-repo-and-hat-credential-cutover-sequence.md`);
+    no repository is created from this roadmap row (gated). Harny is
+    the first extract; later cuts already ranked include `zeta-formal`,
+    `zeta-wasm`, archive/docs, cluster, web. Overarching concert:
+    **local actions lead to global effects** — a commit in one peer is
+    the local +1; Ace pin + `repository_dispatch` + SoftValue/Z-set
+    merge is the global fold. Workitem `081M10AAVAT087G0R0027M0GV5`.
 9. **BFT Quorum Transition (Wallet Prerequisite)** — transition the BFT consensus from the fixed `Members`
    configuration to a rolling, window-based estimate of distinct sources derived dynamically from the stream
    correlation matrix. **This must precede and gate any Web3 wallet / transactional ledger integration.**
@@ -346,7 +410,12 @@ Gaps: **fsync floor** (unshipped), **multi-key ACID/isolation** (only single-str
 - **Zeta.Core.CSharp shim** — declaration-site variance on interfaces (`IBackingStore<out K>` etc)
 - **Remaining TLA+ specs** — `TransactionInterleaving`, `ChaosEnvDeterminism`, `ConsistentHashRebalance`
 - **TLC-validation test** — run the `.tla` files in a `dotnet test` to prevent drift
+- **No-`app` needle remaining** — do not fuse `InterruptFeedback` into `FourCornerTrace`; keep Kleisli ISR for interrupts so CHIP-8/9 / scheduler self-prediction stays run-ahead (`081M10AZ6KS087G0R0000SSFMH`)
 - **ZetaFS dual-fold remaining** — parent edge on `ZetaFsDeltaLog` (truncate reversible), BLAKE3 default hasher, factory path off `git`/`LibGit2Sharp` (`081M108RYNT087G0R001JSRNZE`)
+- **DU expand remaining** — route `NextAction` / `DbCommand` through `DuExpand`; BNN chooser reads SoftValue over DU cases (`081M10AAVAT087G0R0027M0GV5`)
+- **Next extract after Harny** — pick by DV2 change-rate *or* toolchain closure (round 3: `zeta-formal` / `zeta-wasm` strongest on CRP); dogfood first, then `create-repo` cutover (gated)
+- **Retraction readings** — keep full −1 (erasing view) distinct from `widen` (non-erasing support) and from negate-alone (Bennett-free); do not invoice Landauer on `neg` (`081M10BD9BM087G0R001SGDRXT`)
+- **ZSetRx remaining** — full IQbservable over Bonsai (this slice is the +1/−1 connect query); BNN as a NextAction chooser, not just a roster card (`081M109WG5S087G0R0021E5MPT`)
 
 ## P2 (4 weeks)
 
@@ -357,6 +426,7 @@ Gaps: **fsync floor** (unshipped), **multi-key ACID/isolation** (only single-str
 - **Delta-CRDTs** anti-entropy for cross-node replication (Almeida et al. 2018)
 - **Dotted version vectors** for nested-circuit iteration numbering
 - **IQbservable** / Reaqtor-style **Bonsai slim IR** for persistable queries
+  (first query shipped: `ZSetRx.connectQuery` / `integrateQuery` / `retractQuery`)
 - **Templatization / CSE** — dedupe identical query shapes at Build
 - **Lean 4 kernel** proving `D∘I=id` + chain rule + rewrite-commute
 - **Ceph/CRUSH**-style hierarchical failure-domain placer (if distribution lands)
@@ -446,8 +516,25 @@ These don't wait for a single round:
   stays two-path (published binary **or** from-source seed). Harny
   does not replace `observe.ts` — it becomes an executor/scheme of
   that controller (Xbox `grammar-16`, Meijer μ/ν, reservoir walls).
-  See `docs/trajectories/own-ai-harness/RESUME.md`.
+  Commands are local-first; remote is a background DU sync.
+  Own BNN (`zeta-bnn`) is a first-class online-learning model beside
+  vendor chat backends. See
+  `docs/trajectories/own-ai-harness/RESUME.md`.
 - Replace git/LibGit2 as the store with **ZetaFS dual folds**
   (`ZetaFsDualFold` over `DagFs` / `ZSetMerkle` / `ZetaFsDeltaLog`):
   +1 `I` forward, −1 generator-reinterpret of retained history,
   parent-edge still open. `081M108RYNT087G0R001JSRNZE`.
+- **Dogfood, then extract.** Expect **dozens of peer repos**, split on
+  Data Vault 2.0 change-rate *and* toolchain closure — not a three-repo
+  ceiling. Local action in one repo; global effect via Ace pins,
+  Z-set/+1 merge, and SoftValue observe (`DuExpand`).
+- **DUs expand to DynamicValue (collapsed) and SoftValue (Bayesian
+  interpretation).** `snap` is the only collapse. This is the bridge
+  to our BNN / factor-graph reading of the same verbs.
+- Full −1 retraction of the **view** is **erasing**; `SoftValue.widen` is
+  **non-erasing** of support; `ZSet.neg` alone is Bennett-free. Same
+  reversible-computing vocabulary as `ErasureClass` (`081M10BD9BM087G0R001SGDRXT`).
+- Keep the **no-`app` needle**: FourCornerTrace closes the VALUE
+  channel; Kleisli ISR closes interrupts; DoP=1 ferry +
+  `SchedulerZeta.predict` / `Chip8Observer.predict` run-ahead. Same
+  shape, not one type. `081M10AZ6KS087G0R0000SSFMH`.
