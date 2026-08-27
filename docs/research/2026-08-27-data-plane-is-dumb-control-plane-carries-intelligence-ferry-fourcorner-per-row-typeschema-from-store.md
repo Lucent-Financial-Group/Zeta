@@ -247,14 +247,116 @@ networks** — an epi–mono factorisation.
 
 Honesty on "Hitchhiker tree holes": this repo already corrected
 that fusion (`docs/research/2026-08-15-chip8-time-dilation-*`
-§0). **Hitchhiker trees have buffers, not holes** (Greenberg,
-path-copying fractal / Bε; pending writes ride the path).
-**Holes** are the other Strange Loop talk — Scott Vokes, *Data
-Structures: The Code That Isn't There* (2012). The requirement
-is both, not a blend: buffers (hitch a context without rewriting
-the spine) **and** holes (a place in the grammar a second value
-can adjoin). Tree-adjoining grammar (Joshi) is the Beacon for
-the hole: a foot node where another tree attaches.
+§0). **Hitchhiker trees have buffers, not holes** (Greenberg).
+Aaron 2026-08-27: the quote was the wrong talk — Vokes is the
+one. The structure Vokes **names** as having holes is the
+**difference list** (slide: *"data structures with 'holes' in
+them"*): an unbound logic-variable tail; append is *binding the
+hole*, O(1), visible to every holder. He generalises: difference
+trees, difference dictionaries. Functional cousin: **Hughes
+lists** (1986). Prolog folklore formalised by Clark & Tärnlund;
+unification is Robinson 1965. In F#/TS the honest encoding is a
+write-once ref / promise, not free unification. Joshi TAG foot
+nodes are a related Beacon for adjoining, not the named slide.
+
+The same lecture is why zetadb/fs looks the way it does —
+**two content-addressings**, not one:
+
+| | without a distance metric | with locality / a metric |
+|---|---|---|
+| in the talk | SHA-1 confirm; Jumprope CAS-not-pointers (hash as skiplist *probability*, identity not nearness) | rolling hash (Karp–Rabin / Tridgell rsync p.64): cheap overlap/similarity filter, then crypto confirm |
+| in-tree | BLAKE3 / Merkle / `ContentStore` / `DagFs` | FastCDC (`FastCdc.fs`); HyperMinHash (Cohen–Lemire) |
+
+Conflating the rolling filter with the cryptographic confirm is
+the dual-use failure in another register (detection is not a
+verdict). Content-defined chunking is why a one-byte insert does
+not rewrite the store.
+
+Aaron 2026-08-27, on RFC 4918 / vacuous errors / heat / teaching
+feedback / TypeSchema / stored procs / product vs framework:
+
+> yes these are the RFC i rmember too, i based mine on a slimmed
+> down version for itron that could track the changes, and we
+> have a concept of no error that give no informiton this forces
+> information erasure and cost heat, we have a huge amount of
+> code on our heat tracking, we prefer when the "feedback" not
+> error comes with teaching and possible a new generator function
+> to improve from running into the scenario again, all our
+> protocols are based on this design. … Holes are Scott Vokes …
+> yes you re 100% correct i quoted the wrong one … it also
+> discuss content based addressing which zetadb/fs is heavly
+> based on, two actually one without a distance metric and one
+> with a distance metric. … we can have as many product lanes as
+> maks sense but it's better to bundle related things and also
+> keep product and framework seperate, they both can deserve
+> their own repo but products are sold or services against them
+> sold, and frameworks are used by products lol. both important
+> and sometimes the line is blury when your customers are
+> developers. also our typeschemas should lean more functional
+> style than object oriented so it fits nicer with the math and
+> interpertatin. oop can be derived from functional, f# did this,
+> functional is much harder to do in oop native languge like c#.
+> i would also say our stored procs should be very fast and dumb
+> and only need our data layer unless they are being
+> evolved/updated or expicitly ask for intelligence within the
+> stored proc, not ever stored proc needs to pay the prices of
+> intelligence, only evolution of them do and even then we are
+> working on in our tiny agent free github runner system on
+> making intelligence tiered where each tier is away of what's
+> its not capiapable of so it can route to higher tiers as needed
+> not everytime.
+
+## Vacuous feedback is heat; teaching ships a generator
+
+RFC 4918 §13 / RFC 9457 confirmed. The Itron slim was a
+change-tracking 207: per-item status that can **move**. A 207
+row whose body is empty, or an exception with no teaching, is
+the vacuity class — a check that cannot fail, an error that
+erases. Landauer 1961: two states onto one **is** heat.
+`ErasureClass` / `WSet.consolidate` / `LandauerFloor.lean` already
+meter that. `WSet.negate` is Bennett-free (the honesty note on
+`FourCornerTrace`).
+
+So the protocol is not "error." It is **feedback** (FourCorner
+out/in-feedback): it teaches, and when it can it **emits a new
+generator** so the next encounter is cheaper. Generator-
+reinterpret on the −1 fold is the same shape. A `faultBoat` that
+clones one exception onto every row is whole-batch heat with no
+per-row teaching.
+
+Clean-room: the Itron slim is a *requirement* (track changes,
+per-row, no vacuous error), not a source to open.
+
+## Stored procs default dumb; intelligence is opt-in and tiered
+
+Correction of the earlier north-star lump. Stored procs live on
+the **data plane** unless they are being evolved or they
+explicitly ask. Evolution pays; a running proc does not.
+Intelligence tiers already have a harness
+(`healer-harness.ts`, handoff 2026-08-01): cheapest tier first,
+escalate when the tier **knows it cannot**. The tiny-agent free
+GitHub-runner swarm is that ladder under scarcity — named
+agents with guaranteed ticks, each aware of its floor.
+
+## TypeSchema is a functional algebra; OOP is derived
+
+Today `SchemaField.CsType` is a C# type string. That is an OOP
+surface leaking into the IR. The IR should be **sum and
+product** (DU + record), language-neutral; C# `sealed record`
+is a derived projection (F# already does this: objects from
+functions, not the other way). Functional is the math; OOP is
+the wrapper. Harder to recover function from class than class
+from function.
+
+## Product vs framework
+
+As many product lanes as make sense; **bundle related**; keep
+the cut. Frameworks are *used by* products; products (or
+services on them) are *sold*. Both may own a repo. The line
+blurs when the customer is a developer — say so, don't flatten.
+`Port` is the hexagonal-port coinage, not Total Recall, not a
+product name unless we are selling one. Nucleus stays the
+plugin microcore those products host.
 
 ## What is missing
 
@@ -359,8 +461,13 @@ single-item TCS away without a measured replacement for
   failure.
 - **David Greenberg**, Hitchhiker trees (buffers). **Scott
   Vokes**, *Data Structures: The Code That Isn't There* (Strange
-  Loop 2012) — holes. **Aravind Joshi**, tree-adjoining grammar —
-  foot-node holes. Do not fuse the three.
+  Loop 2012) — **difference lists** are the named holes (also
+  difference trees/dictionaries); Jumprope + rolling hash are the
+  two CAS styles. **Clark & Tärnlund**; **John Hughes** 1986
+  (Hughes lists). **Karp & Rabin** 1987 / **Tridgell** 1999
+  (rsync p.64). **Landauer** 1961 — vacuous error is heat.
+  **Gordon Bell** — the cheapest component is the one that is
+  not there.
 - **Artin–Mazur** dynamical zeta — `SchedulerZeta.predict` (time).
   Space/occupancy (bit-0 usage) is the missing coordinate.
 
