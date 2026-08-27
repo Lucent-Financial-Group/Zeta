@@ -83,8 +83,11 @@ transport. Not a replacement for the ferry or `IScheduler`
 producer or consumer is an **earned** 4-way cell — do not
 implement `ProcessMany` prematurely. Perfect world: derive
 batch from single by **types**, else a **generator** (Futamura
-/ stream fusion), else JIT attention last. Original manual
-derivation is a requirement, not a source to open.
+/ stream fusion), else JIT attention last. SIMD/GPU is that
+same specialization on the **producer or consumer loop**, not
+on the ferry pipe (Naledi: `fillBoat` is not a kernel). GPU
+crossings must be injected or they leak entropy. Original
+manual derivation is a requirement, not a source to open.
 
 White-room spec from original Itron code: **not required** for this
 row. The 4-way matrix + split + capture + backpressure are

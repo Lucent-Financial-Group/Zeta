@@ -92,12 +92,55 @@ intelligence tiers:
 interface + a derivation. SIMD / `ProcessMany` is the hardware
 and software analog of that specialization — earned, measured.
 
+## SIMD / GPU is a specialization of the *single* loop, not of the ferry
+
+Aaron 2026-08-27, riffing:
+
+> in one of the more specialized cases it would be taking a
+> single producer or single consumer loop/function and updating
+> it to use simd and/or hardware like gpu specialized
+> automatically very similar to futamura, the pipe the ferry
+> itself is unchanged it's a specialization on top of single use
+> cases on the producer or consumer side i think, i'm guessing
+> here, this is what i call riffing.
+
+The guess is the in-tree measurement. Naledi already: `fillBoat`
+is a `TryRead` drain — no dense kernel. SIMD on boat assembly
+is a miss. If a processor has a columnar inner loop, SIMD lives
+**there**. Same for GPU. The ferry pipe does not change. DoP,
+anti-Nagle, ZetaId demux, FourCorner-per-row stay host.
+
+This is Futamura on the **single** function: specialize
+`item -> result` at a boat of N into a vector/kernel. Rung 1
+(types/generator) for CPU SIMD (LLVM vectorizer, stream fusion,
+Gill–Peyton Jones). GPU is a further projection onto a different
+ISA (Halide / Futhark / Accelerate as Beacon — not a purchase).
+Control plane: `MixCogen` / `gen/`. Data plane stays dumb.
+
+Honest limits, not objections:
+
+- **DST.** A GPU runtime is an ambient scheduler unless the
+  crossings are injected (`IScheduler` / `Source`). Unmetered
+  GPU is a §13 leak. DoP=1 replay does not automatically include
+  warps.
+- **Uniform VALUE vs per-row feedback.** SIMD/GPU wants a
+  homogeneous kernel. FourCorner-per-row 207 wants heterogeneous
+  feedback. Specialize the VALUE path when the boat is uniform;
+  leave error/feedback scalar per row. Do not GPU `faultBoat`.
+- **Earned.** Same as `ProcessMany`: only when a measured hot
+  path is already data-parallel. A single producer with
+  per-item Kleisli capture is not that path.
+- Competing-prediction SIMD (later BNN exception) is a
+  *different* specialization — similarity across futures, not
+  boat assembly.
+
 ## Honesty
 
-No AutoMUX package. No ProcessMany this slice. No look at Itron
-original. Usage-based efficiency is already half-shipped as
-anti-Nagle; occupancy self-predict (`SchedulerZeta` space
-coordinate) is still the missing pair with time.
+No AutoMUX package. No ProcessMany this slice. No SIMD/GPU on
+the ferry. No look at Itron original. Usage-based efficiency is
+already half-shipped as anti-Nagle; occupancy self-predict
+(`SchedulerZeta` space coordinate) is still the missing pair
+with time. SIMD/GPU of producer/consumer is named, not built.
 
 ## Beacon
 
@@ -114,3 +157,6 @@ coordinate) is still the missing pair with time.
   at the boat.
 - **Meijer** dual interfaces — single/batch is the same shape as
   pull/push, not two products.
+- **Halide / Futhark / Accelerate** — specialize a scalar
+  producer/consumer onto SIMD or GPU; the pipeline in between
+  does not change. Beacon for the riff, not a dependency.
