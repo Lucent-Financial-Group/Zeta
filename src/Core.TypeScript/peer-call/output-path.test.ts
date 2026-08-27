@@ -27,49 +27,46 @@ function sandbox(): { env: NodeJS.ProcessEnv; root: string } {
 
 const mode = (p: string): number => statSync(p).mode & 0o777;
 
-describe("the directory is owner-only, which is what makes a predictable name safe", () => {
-  test("a fresh directory is created 0700", () => {
+describe("the directory is owner-only AND unique, which is what makes a predictable name safe", () => {
+  test("created 0700 by mkdtemp, and the mode is READ BACK rather than assumed", () => {
     const { env, root } = sandbox();
     try {
       const { dir, secured } = ensurePeerCallOutputDir(env);
-      expect(dir).toBe(join(root, PEER_CALL_OUTPUT_DIRNAME));
+      expect(dir.startsWith(join(root, `${PEER_CALL_OUTPUT_DIRNAME}-`))).toBe(true);
       expect(mode(dir)).toBe(PEER_CALL_OUTPUT_MODE);
+      // `secured` is a statSync measurement, so a platform that created it differently would say
+      // so instead of reassuring the caller.
       expect(secured).toBe(true);
     } finally {
       rmSync(root, { recursive: true, force: true });
     }
   });
 
-  test("an EXISTING 0755 directory is REPAIRED — the case `mkdirSync(mode)` cannot handle", () => {
-    // This is the real-world state: every previous run, and every run of the version that hardcoded
-    // /tmp, left this directory world-readable. `mkdirSync`'s `mode` is ignored when the path
-    // exists, so without the explicit chmod the fix would be a no-op exactly where it is needed.
+  test("EVERY CALL GETS ITS OWN DIRECTORY — a property the fixed name could not have", () => {
+    // This is what the switch from `mkdir(fixed) + chmod` to `mkdtemp` buys beyond satisfying the
+    // scanner: two concurrent peer calls cannot collide, and an attacker cannot pre-create a path
+    // whose name does not exist until the moment it is created.
     const { env, root } = sandbox();
     try {
-      const dir = join(root, PEER_CALL_OUTPUT_DIRNAME);
-      mkdirSync(dir, { recursive: true });
-      chmodSync(dir, 0o755);
-      expect(mode(dir)).toBe(0o755);
-
-      const result = ensurePeerCallOutputDir(env);
-      expect(mode(result.dir)).toBe(PEER_CALL_OUTPUT_MODE);
-      expect(result.secured).toBe(true);
+      const a = ensurePeerCallOutputDir(env).dir;
+      const b = ensurePeerCallOutputDir(env).dir;
+      expect(a).not.toBe(b);
+      expect(mode(a)).toBe(PEER_CALL_OUTPUT_MODE);
+      expect(mode(b)).toBe(PEER_CALL_OUTPUT_MODE);
     } finally {
       rmSync(root, { recursive: true, force: true });
     }
   });
 
-  test("`secured` is MEASURED, not assumed — it reads the mode back", () => {
-    // If the chmod silently failed, `secured` must say so. Pinning that it is read from `statSync`
-    // rather than hardcoded `true` is what keeps the flag from being decorative.
+  test("the prefix survives, so the one live consumer's substring match still works", () => {
+    // `orchestrator/validate-otto-diff.ts` tests `/peer-call-output/` — a regex LITERAL, not a path
+    // segment — so the mkdtemp suffix does not break it. Pinned because that is the only thing
+    // holding the prefix in place, and a future rename would look harmless.
     const { env, root } = sandbox();
     try {
-      expect(ensurePeerCallOutputDir(env).secured).toBe(true);
-      const dir = join(root, PEER_CALL_OUTPUT_DIRNAME);
-      chmodSync(dir, 0o755);
-      // A second call must re-repair and still report honestly.
-      expect(ensurePeerCallOutputDir(env).secured).toBe(true);
-      expect(mode(dir)).toBe(PEER_CALL_OUTPUT_MODE);
+      const p = peerCallOutputPath("riven", new Date("2026-08-27T18:04:05.123Z"), env);
+      expect(/peer-call-output/.test(p)).toBe(true);
+      expect(p.endsWith("20260827T180405Z-riven.md")).toBe(true);
     } finally {
       rmSync(root, { recursive: true, force: true });
     }
@@ -80,9 +77,9 @@ describe("the hardcoded /tmp is gone", () => {
   test("the path follows TMPDIR rather than a literal /tmp", () => {
     const { env, root } = sandbox();
     try {
-      expect(peerCallOutputPath("amara", new Date("2026-08-27T18:04:05.123Z"), env)).toBe(
-        join(root, PEER_CALL_OUTPUT_DIRNAME, "20260827T180405Z-amara.md"),
-      );
+      const p = peerCallOutputPath("amara", new Date("2026-08-27T18:04:05.123Z"), env);
+      expect(p.startsWith(join(root, `${PEER_CALL_OUTPUT_DIRNAME}-`))).toBe(true);
+      expect(p.endsWith("20260827T180405Z-amara.md")).toBe(true);
     } finally {
       rmSync(root, { recursive: true, force: true });
     }
@@ -137,7 +134,7 @@ describe("PEER_CALL_OUTPUT_DIR is honoured, and left alone", () => {
     const { env, root } = sandbox();
     try {
       const result = ensurePeerCallOutputDir({ ...env, [PEER_CALL_OUTPUT_DIR_ENV]: "" } as NodeJS.ProcessEnv);
-      expect(result.dir).toBe(join(root, PEER_CALL_OUTPUT_DIRNAME));
+      expect(result.dir.startsWith(join(root, `${PEER_CALL_OUTPUT_DIRNAME}-`))).toBe(true);
       expect(result.operatorChosen).toBe(false);
     } finally {
       rmSync(root, { recursive: true, force: true });

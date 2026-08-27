@@ -25,11 +25,13 @@
  * exposure at its root: once only the owner can traverse it, a predictable name inside is not a
  * weakness, and a planted symlink cannot be planted.
  *
- * `mode` ON `mkdirSync` IS NOT ENOUGH ON ITS OWN, and that is the subtle part. `mode` is masked by
- * the umask and is ignored entirely when the directory already exists — which it will, from every
- * previous run and from any earlier version of this code that created it `0755`. So the mode is
- * asserted afterwards with an explicit `chmod`, and the result is verified. A permission that was
- * requested and not checked is the vacuity class wearing a security hat.
+ * WHY NOT A FIXED NAME PLUS `chmod`. That was the first version of this fix, and it was safer than
+ * what it replaced — but `mode` on `mkdirSync` is masked by the umask and IGNORED OUTRIGHT when the
+ * directory already exists, so it needed an explicit `chmod` afterwards, and CodeQL still flagged
+ * every write because the rule models `mkdtemp` and not a later chmod. `mkdtempSync` is both the
+ * primitive the rule recognises and the genuinely better one: atomic, so there is no window at all
+ * rather than a window closed a moment later. The mode is still READ BACK — `secured` is a
+ * measurement, never an assertion.
  *
  * `PEER_CALL_OUTPUT_DIR` is honoured because five of the ten callers already honoured it and four
  * did not — the same setting meaning two different things depending on which entity you called is
@@ -38,11 +40,12 @@
  * to do.
  */
 
-import { chmodSync, mkdirSync, statSync } from "node:fs";
+import { mkdirSync, mkdtempSync, statSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
-/** Subdirectory name, fixed on purpose — the `.sh` contract and five callers grep for it. */
+/** Directory PREFIX; `mkdtempSync` appends six random characters. The prefix is what keeps the
+ * one live consumer's substring match working (`validate-otto-diff.ts`). */
 export const PEER_CALL_OUTPUT_DIRNAME = "peer-call-output";
 
 /** Owner-only. The whole fix lives here: the name inside may be predictable once this holds. */
@@ -85,15 +88,27 @@ export function ensurePeerCallOutputDir(
   // noninterference: influence enters only through declared channels). `tmpdir()` remains the
   // fallback for the case where no temp variable is set at all.
   const root = env["TMPDIR"] ?? env["TMP"] ?? env["TEMP"] ?? tmpdir();
-  const dir = join(root, PEER_CALL_OUTPUT_DIRNAME);
-  mkdirSync(dir, { recursive: true, mode: PEER_CALL_OUTPUT_MODE });
-  // `mode` above is masked by the umask, and is IGNORED OUTRIGHT when the directory already exists
-  // — which it does after any previous run, including runs of the version that created it 0755. So
-  // set it explicitly and then read it back: a permission requested and never verified is exactly
-  // the check-that-cannot-fail this repository keeps finding.
+  // `mkdtempSync`, not a fixed name plus chmod.
+  //
+  // The first version of this fix kept the fixed directory and hardened it to 0700. That IS safer,
+  // and CodeQL still flagged every write — `js/insecure-temporary-file` does not model a subsequent
+  // chmod as a mitigation; it recognises `mkdtemp` and little else. Rather than suppress a rule
+  // pointing at a real class, the code moved to the primitive the rule recognises, which is also
+  // genuinely better: creation is ATOMIC, so there is no window at all rather than a window closed
+  // a moment later.
+  //
+  // The `peer-call-output` prefix is preserved because the one live consumer,
+  // `orchestrator/validate-otto-diff.ts`, tests `/peer-call-output/` — a regex LITERAL matching that
+  // substring, not a path segment — so `peer-call-output-Ab3xY9/` still matches. Verified, not
+  // assumed: the earlier docstring claimed "five callers and a shell contract" grep for it, and
+  // measurement found exactly one.
+  const dir = mkdtempSync(join(root, `${PEER_CALL_OUTPUT_DIRNAME}-`));
+  // `mkdtempSync` creates at 0700 regardless of umask, so no chmod is needed — and adding one
+  // would be a step that cannot fail, which is worse than absent. What IS kept is the read-back:
+  // `secured` is a MEASUREMENT of the mode on disk, so if a platform ever creates it differently
+  // the caller is told rather than reassured.
   let secured = false;
   try {
-    chmodSync(dir, PEER_CALL_OUTPUT_MODE);
     secured = (statSync(dir).mode & 0o777) === PEER_CALL_OUTPUT_MODE;
   } catch {
     secured = false;
