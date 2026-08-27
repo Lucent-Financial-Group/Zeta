@@ -174,6 +174,43 @@ A fragment shader plus CSS compositing has implicit
 per-pixel parallelism and no programmer-visible warp. That
 is the poor-man's GPGPU. CUDA is easier and *is* warps.
 
+## Dependent-read is the warp; copy is the FP/Roslyn move
+
+Aaron 2026-08-27, on the discriminator landing:
+
+> If it needs a dependent-read kernel, you have bought a warp.
+> wow please save this somewhere this is exactly this dependent
+> read, it's why i love roslyn and functional programming cause
+> you never have dependent reads you just copy a bit more than
+> algo that do need dependent reads unless you are super
+> aggressive in there stream fusion, this is exactly it. this
+> is like never needing memory coordination vs CAS vs heavy
+> locks
+
+Three rungs, same ladder, three surfaces. Prefer the cheapest
+that still *proves* the property (the fuel/Datalog selection
+heuristic, applied here):
+
+| rung | compute | memory |
+|---|---|---|
+| **copy a bit more** | blend / both-branches / immutable rewrite | no coordination (persistent structure, Z-set `+1`) |
+| **aggressive fusion** | stream fusion (Gill–Peyton Jones) recovers a loop that *looked* dependent | hardware CAS (Albahari `SpeculativeUpdate`) |
+| **you bought the serial machine** | dependent-read kernel = **a warp** | heavy locks |
+
+Roslyn's `SyntaxTree` is the industrial instance: every rewrite
+is a new tree, never a load that waits on a prior store in the
+same buffer. Functional programming is the same contract
+(Okasaki). Stream fusion is the *earned* middle — it is how you
+get the throughput of the third rung without the warp, when the
+algebra allows. It is not the default; copy is.
+
+Do not treat CAS as the floor. CAS is already the middle.
+Locks and warps are the same failure class: a later step that
+cannot proceed until an earlier write is visible. The braided
+ISA / DU mini-control / phase-not-wall-clock path is the
+attempt to stay on the first rung (embarrassingly parallel
+because there is nothing to wait for).
+
 Halide / Futhark / Accelerate remain a *related* Beacon
 (algorithm vs schedule, when you do not have a phase-ISA).
 They are not the object. LLVM vectorizing a scalar `for` is
@@ -209,6 +246,8 @@ CSS = HTML/CSS compositor + shaders, not an acronym. VISION's
 architectural stack still lists CUDA warps as silicon layer 3;
 this conversation is the avoid-warps path (shaders / CSS /
 blend-math). Do not silently rewrite that stack here.
+Dependent-read = warp = lock; copy-a-bit-more is the default;
+CAS/stream-fusion the earned middle. Saved here at Aaron's ask.
 
 ## Beacon
 
@@ -239,7 +278,14 @@ blend-math). Do not silently rewrite that stack here.
   measured instance; Student-t-as-kernel is the contrast.
 - **CUDA warps** — easier GPGPU, SIMT lockstep is the price.
   The Zeta path refuses that price when the math can be a
-  blend or a branchless shader.
+  blend or a branchless shader. Dependent-read kernel = warp.
+- **Roslyn immutable `SyntaxTree`** — rewrite by copy, never a
+  dependent read on a mutating AST. Why Aaron loves it.
+- **Okasaki** *Purely Functional Data Structures* — copy a bit
+  more; no coordination.
+- **Herlihy** wait-free / **Albahari** `SpeculativeUpdate` —
+  CAS is the *middle* rung, not the floor. Locks are the warp
+  of memory.
 - **Halide / Futhark / Accelerate** — related (algorithm vs
   schedule) when you do *not* have a phase-ISA. Not the
   object. Not a purchase.

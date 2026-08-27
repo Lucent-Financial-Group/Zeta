@@ -92,7 +92,10 @@ because no branching) encoded onto GPU / HTML-CSS (poor-man's GPGPU: shaders +
 compositor, **avoid CUDA warps**) / CPU. `BonsaiSoft` both-
 branch blend and NG4-as-blend (2026-08-23) are the in-tree
 work. `IsaSpec` CHIP-8 is the shipped oracle, not the braided
-ISA. Launch remains a metered crossing. Original
+ISA. Launch remains a metered crossing. Dependent-read kernel =
+bought a warp; FP/Roslyn copy-a-bit-more is the default;
+stream fusion and CAS are the aggressive middle; locks are
+the warp of memory. Original
 manual derivation is a requirement, not a source to open.
 
 White-room spec from original Itron code: **not required** for this
