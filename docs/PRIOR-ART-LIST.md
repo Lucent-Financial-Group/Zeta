@@ -148,7 +148,7 @@ with a ⭐ below and add a row there.
   and is missing the cheap half: write-set / critical-pair disjointness);
   **Newell & Simon** productions and **Buchanan & Shortliffe** MYCIN for
   one-shot expert rules applied to writing good code — keep the production, not
-  MYCIN's certainty factors. `MultilayerBnn.fs` is a Gaussian *chain* (RTS);
+  MYCIN's certainty factors. `MultilayerBnn.fs` is a Gaussian _chain_ (RTS);
   addressable lint/heal rules are not that object. `081M12CZRHC087G0R0008X7SYG`.
 - **CloudEvents** ⭐ — CNCF event-envelope standard (v1.0); to be the bus
   envelope over Zeta's busses. See `docs/research/2026-06-07-cloudevents-bus-envelope-and-debezium-cdc-as-zset-delta-anchor-aaron.md`.

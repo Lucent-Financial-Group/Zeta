@@ -97,13 +97,27 @@ Soraya says if rules are deterministic there is not one. That
 disagreement is information. A merge that picked one account
 would be the single-version-of-the-truth move.
 
-Soraya's reframe, kept as a measurement target:
+Soraya's reframe, kept as a measurement *target*, not a theorem:
 
 > The DAG is not the architecture. The DAG is the residue of
 > non-confluence.
 
-Perfect composability is the priority DAG collapsing to an
-**antichain, height 1**.
+"Antichain, height 1" is a design aim. Do not promote it off a
+count of five commuting maps (numerology guard: matching
+cardinality is not identification). The discriminating invariant
+is Bernstein conditions on *spans* (W∩W, W∩R, R∩W). File-level
+`writeSet` is a cheap sufficient special case.
+
+Three constructions share "add a named object, it persists" and
+that is the only commonality: factor mint (`FactorGraph.addFactor`,
+abelian, invertible), production assert (Newell–Simon / MYCIN
+without the certainty factors), EBL (Mitchell, Keller,
+Kedar-Cabelli 1986: one example *plus a domain theory that proves
+it*). A `FIX:` without `Label.because` is a production assert, not
+one-shot *learning*. EP revises a factor that already exists; it
+does not mint structure. Shipped `FactorGraph.fs` is KFL bipartite
+(variable *nodes*), not Forney (variables as *edges*). Calling the
+F# file Forney is a pun.
 
 ## Commute measurement (vacuity-controlled)
 
@@ -116,12 +130,21 @@ undefined`, not `{ ...o, a: undefined }`): **20 ordered pairs
 commute**. Write-sets pairwise disjoint. Otto's 245-file sample:
 three fire, 20 pairs commute, **0 of 10 write-set overlaps**.
 
-So they commute *because they do not write the same files*. That
-is a property of this roster, not of `certify()`. The three laws
-will not catch the first overlapping healer. The cheap guard is
-asserting write-set disjointness on a mixed trigger that actually
-fires ≥2 healers. Landed as a test, not as a fourth `certify()`
-law (the 3-law API is load-bearing for other agents).
+So they commute *because they do not write the same files on that
+fixture*. unused-import and exact-optional both filter `*.{ts,tsx}`;
+the mixed tree hid the pair by putting them in `src/a.ts` vs
+`src/opt.ts`. Co-located on one `.ts` they overlap at file
+granularity and still commute (span-disjoint line edits,
+independently measured this hour). File-disjointness is
+sufficient, not necessary. The three `certify()` laws will not
+catch a true overlapping critical pair. Guard stays a *roster
+TEST*, not a fourth law (`certify` takes one healer; disjointness
+is a pair-on-a-tree). Join key is `Finding.rule` (Roslyn id), not
+`Healer.name`. Math-team fold: both accounts kept; detectors on
+this roster are Datalog/union; healers are rewrites; beliefs when
+they exist stay `IMessage` / `Attested`. Next adapter:
+`DeclineRecord` → labels on the existing lint hub (`heal/decline-kind`,
+`heal/fuel-used`), no second corpus.
 
 ## Metrics on every escalate — the downward ladder's dataset
 
@@ -152,10 +175,10 @@ termination); fuel when the function is genuinely partial.
 ## Honesty
 
 Lumen's ~0.8 prior that the five contain a non-commuting pair
-is not borne out on this roster; the reason is disjoint
-write-sets, so it is not a proof of confluence. exact-optional
-did not fire on Otto's first mixed tree; the test fixture uses
-the ternary the healer actually matches. No 4th law in
+is not borne out on *file-disjoint* fixtures; co-located on one
+`.ts`, unused-import and exact-optional overlap writes and still
+commute. That is not a proof of confluence. No 4th law in
 `certify()`. No BNN rename in code. No factor-graph wrapping of
-deterministic lints. Math-team routing is in-flight in this
-session; their findings will be folded without picking a winner.
+deterministic lints. Math-team findings (Lumen + Soraya, same
+hour) are folded above; the crux is still held open. Next slice
+named, not built: `DeclineRecord` → labels on the existing hub.
