@@ -137,6 +137,16 @@ factor graphs / Student-t ADF are the online +1 absorb; EP re-normalisation
 is **not** Z-set minus (inverse-free corners do not get the trace).
 Workitem `081M10AZ6KS087G0R0000SSFMH`.
 
+**FourCornerTrace VALUE needs `IStarRing`.** The ping-return is `Negate`
+(`−gen(before)+gen(after)`). On ℂ, `−1 = i²` is a *ring* identity matching
+the C₄ compass `{1, i, −1, −i}` on FourCorner — a **labeling**, not a group
+object, and **not** "FourCorner is Cl(p,q)". Clifford generator squares ±1
+are **signature** (Cl(3,0) `eᵢ² = +1`; C₄ lives in the even subalgebra as
+`e₁₂² = −1`, and as Cl(0,1) ≅ ℂ). The trace can instantiate over
+`Cl3.Mv` *weights* because `Cl3.algebra` is an `IStarRing`; that is
+composition, not identification. Inverse-free corners still refuse the
+trace. Checked: `FourCornerC4`. Workitem `081M10CBYF9087G0R003GWBNHG`.
+
 - **Done-test (the bright line):** a full work-cycle (land a change, branch, query history, update
   backlog) with **zero `git` CLI calls** and **zero LibGit2Sharp**.
 - **git-reach = the gap detector:** every fallback to `git` *names a missing DB primitive (or
@@ -322,6 +332,7 @@ Gaps: **fsync floor** (unshipped), **multi-key ACID/isolation** (only single-str
 
 - Z-set algebra (D, I, z⁻¹, H, Distinct) ✅
 - ZetaFS dual fold (`ZetaFsDualFold`: forward `I`, generator-reinterpret `−1`, Merkle snapshot, DagFs presence) — algebra named; parent-edge / factory-path still open (`081M108RYNT087G0R001JSRNZE`) ◐
+- FourCornerC4 — C₄ compass labeling, ℂ `i² = Negate(One)` (`IStarRing` gate for FourCornerTrace VALUE), Cl(3,0) vector-square discriminator (`eᵢ² = +1 ≠ −1`). Related, **not** Cl(p,q). `081M10CBYF9087G0R003GWBNHG` ✅
 - Semi-naïve evaluation ✅
 - Higher-order differentials (D², Dⁿ, Aitken Δ²) ✅
 - Incremental distinct (O(|Δ|)) ✅
@@ -398,6 +409,7 @@ Gaps: **fsync floor** (unshipped), **multi-key ACID/isolation** (only single-str
 - **DU expand remaining** — route `NextAction` / `DbCommand` through `DuExpand`; BNN chooser reads SoftValue over DU cases (`081M10AAVAT087G0R0027M0GV5`)
 - **Next extract after Harny** — pick by DV2 change-rate *or* toolchain closure (round 3: `zeta-formal` / `zeta-wasm` strongest on CRP); dogfood first, then `create-repo` cutover (gated)
 - **Retraction readings** — keep full −1 (erasing view) distinct from `widen` (non-erasing support) and from negate-alone (Bennett-free); do not invoice Landauer on `neg` (`081M10BD9BM087G0R001SGDRXT`)
+- **FourCorner / Clifford remaining** — do not identify FourCorner with Cl(p,q) in later slices; C₄ compass is the ℂ unit group / even-subalgebra `e₁₂`, Clifford ±1 is signature. Product path may *weight* a trace by `Cl3.Mv` (`IStarRing`) without promoting the I/O record. `081M10CBYF9087G0R003GWBNHG`
 
 ## P2 (4 weeks)
 
@@ -436,6 +448,7 @@ Taken from scout agent:
 5. **CAS-Paxos with state-transition-function consensus for DBSP replay** → NSDI / OSDI, ~6 em
 6. **F# type-provider-driven compile-time circuit specialisation** → OOPSLA / PLDI, ~4 em
 7. **DBSP retraction ≡ Beam RETRACTING ≡ delta-CRDT merge** foundational clarifier → ICFP / LMCS, ~5 em
+8. **C₄ compass / IStarRing `i² = −1` / Clifford signature ±1 as three embeddings, not Cl(p,q)** — honesty paper for the traced-monoidal I/O object; in-tree discriminator already checked (`FourCornerC4`)
 
 ## CFPs to target
 
@@ -516,3 +529,7 @@ These don't wait for a single round:
   channel; Kleisli ISR closes interrupts; DoP=1 ferry +
   `SchedulerZeta.predict` / `Chip8Observer.predict` run-ahead. Same
   shape, not one type. `081M10AZ6KS087G0R0000SSFMH`.
+- **FourCorner C₄ vs Clifford ±1 — related, not identified.** Compass
+  is a labeling; `−1 = i²` is an `IStarRing` identity (why the VALUE
+  ping-return needs a ring); Clifford generator squares are signature.
+  `FourCornerC4`. `081M10CBYF9087G0R003GWBNHG`.

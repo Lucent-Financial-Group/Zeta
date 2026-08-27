@@ -1,0 +1,34 @@
+---
+id: 081M10CBYF9087G0R003GWBNHG
+type: task
+state: in-progress
+priority: P1
+slug: fourcornertrace-value-needs-istarring-c4-compass-is-not-cl-p
+title: "FourCornerTrace VALUE needs IStarRing; C4 compass is not Cl(p,q)"
+created: 2026-08-27T01:11:51.529Z
+depends_on: []
+composes_with: ["081KYXE4W8808QG0R0011X8S70", "081M10AZ6KS087G0R0000SSFMH"]
+---
+
+# FourCornerTrace VALUE needs IStarRing; C4 compass is not Cl(p,q)
+
+Aaron 2026-08-26: FourCornerTrace VALUE (WSet ping-return; −1 = i² is a
+ring identity) needs IStarRing. Clifford ±1 / C₄ compass on FourCorner
+are related; they are **not** “it is Cl(p,q)”.
+
+## This increment
+
+- `src/Core/FourCornerC4.fs` — C₄ phase group; ℂ `i² = Negate(One)`;
+  even-subalgebra embedding `e₁₂`; vector-square discriminator
+  `e₁² = +1`; Cl(0,1) ≅ ℂ vs Cl(3,0) ≅ M₂(ℂ)
+- Laws tests: group, ring witness, even embedding, discriminator,
+  FourCornerTrace over `Cl3.Mv` weights
+- ROADMAP item 1 / P1 / shipped / continuous / research #8
+- Research absorb: `docs/research/2026-08-26-fourcorner-c4-istarring-not-clpq.md`
+
+## Remaining
+
+- Product path may weight a live trace by `Cl3.Mv` without promoting
+  FourCorner to Cl(p,q)
+- Do not identify the I/O record with a Clifford algebra in later slices
+- Conformal CGA Cl(4,1) stays the Sequoia distance slice
