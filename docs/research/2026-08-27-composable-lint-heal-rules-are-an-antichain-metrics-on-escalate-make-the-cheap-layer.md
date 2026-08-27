@@ -170,6 +170,55 @@ pipeline that is actually composed. Flip-flopping *writers*
 stay forbidden by the healer laws. Flip-flopping *viewers*
 stay visible.
 
+## Flip-flop discovers a mutually exclusive category
+
+Aaron 2026-08-27:
+
+> we should keep in mind flip-flop also are part of higher
+> category discovery, any two healers that flip-flop become
+> part of a mutual exclusive category
+
+Dual-use of the same measurement the harness already makes.
+`certify()` convergence failure on a period-k compose is the
+**fact** (`PeriodKOscillation`). One reading is "bug, do not
+compose." The other is **discovery**: these two writers are
+not parallel morphisms of one object. They witness a split
+the roster had identified away — a coproduct of style-
+categories, not a product you can run as one pipeline.
+Mutual exclusion is `A + B`, never `A × B`. The exclusive
+category is *found* by the oscillator, not appointed
+(manifesto §1: no appointed hub of "which styles exist").
+
+Do not identify every `AB ≠ BA` with mutex (numerology
+guard). Three shapes, three objects:
+
+| measurement | what it is | category |
+|---|---|---|
+| `AB = BA`, both terminate | commute | antichain — compose freely |
+| `AB ≠ BA`, both reach a fixed point | order-dependent; both paths are information (monodromy) | DAG residue of non-confluence |
+| period-k, no fixed point (flip-flop) | each undoes the other | **coproduct / mutex writers** — exclusive category |
+
+unwrapper-then-resplitter (2026-07-08) is the middle row on
+a *named pipeline* (one order mints, the reverse is identity-
+safe). The built-in `toggler` is the third row. Only the
+third mints an exclusive category. Recording `AB ≠ BA` as
+mutex would collapse the DAG into a sum and throw away
+monodromy.
+
+Disposition, once a flip-flop is found: do not average them
+into a third writer. Do not keep both in one `composeHealers`.
+Pin the pair as `exclusive-with` (same shape as contested
+labels: both exist; nothing here picks a winner). The
+posterior from the section above then attaches **one**
+writer-category to the hub, or none (store as-is). Viewers
+of *both* summands may still attach — exclusive is a fact
+about **writers on one hub**, not about whether two looks
+may coexist. Higher-category in the load-bearing sense:
+the 1-cells were never composable; the oscillator is how
+you find the 0-cells you had glued by mistake. No 2-category
+implementation is claimed; Knuth–Bendix unjoinable pair and
+Mac Lane coproduct are the anchors.
+
 Soraya's reframe, kept as a measurement *target*, not a theorem:
 
 > The DAG is not the architecture. The DAG is the residue of
@@ -258,4 +307,6 @@ three pushes (posterior to choose / canonical store + viewers /
 flip-flopping viewers) split store from attachment rather than
 picking Lumen or Soraya. Next slice named, not built:
 `DeclineRecord` → labels on the existing hub. No viewer
-pipeline shipped this absorb.
+pipeline shipped this absorb. Flip-flop is dual-use: a
+convergence failure *and* a classifier of exclusive writer-
+categories; do not treat every `AB ≠ BA` as mutex.

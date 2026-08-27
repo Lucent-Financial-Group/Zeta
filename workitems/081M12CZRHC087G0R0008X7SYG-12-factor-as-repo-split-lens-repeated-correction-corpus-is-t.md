@@ -64,6 +64,11 @@ non-confluence) are both held. Store is canonical (Soraya);
 the posterior is which *viewer* is attached (Lumen), not which
 bytes. Flip-flopping view rules are Newman on the projection —
 report `ViewsDisagree`, do not average them into the hub.
+Flip-flop (period-k, no fixed point) is dual-use: it
+*discovers* a mutually exclusive writer-category (coproduct,
+not product). `AB ≠ BA` that still terminates is DAG/monodromy,
+not mutex. Do not appoint the categories; the oscillator finds
+them.
 
 Do not add 22 `FIX:` strings, and do not write patches, as a
 rider on this naming slice. Same-day: `labelled-observation.ts`
