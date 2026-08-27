@@ -65,7 +65,7 @@ module AdopterRegister =
         if n = 0 then false
         else
             let lineages = activeAdopterLineages reg |> List.map snd
-            let rho = CorrelationEstimator.calculateRho lineages
+            let rho = LineageDisjointnessEstimator.lineageDisjointness lineages
             // Uses the Kish design effect implemented in DeclaredStanceLedger
             let nEff = DeclaredStanceLedger.effectiveIndependentCount n rho
             nEff >= RequiredNEff

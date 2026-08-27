@@ -57,7 +57,7 @@
     <Compile Include="Semiring.fs" />
     <Compile Include="ProbabilitySemiring.fs" />
     <Compile Include="Provenance.fs" />
-    <Compile Include="CorrelationEstimator.fs" />
+    <Compile Include="LineageDisjointnessEstimator.fs" />
     <Compile Include="ReflectionEngine.fs" />
     <Compile Include="Reconcile.fs" />
     <Compile Include="Pool.fs" />
