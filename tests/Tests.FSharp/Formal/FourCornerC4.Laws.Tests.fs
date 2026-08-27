@@ -23,9 +23,17 @@ open Zeta.Core
 //       because Cl3.algebra is an IStarRing — the trace consumes Negate,
 //       not a Clifford signature.
 //
-// HONESTY: none of this claims FourCorner *is* a Clifford algebra.
-// Anchors: Clifford 1878; Lounesto 2001; Atiyah–Bott–Shapiro;
-// Cayley–Dickson; Joyal–Street–Verity 1996; numerology-vs-number-theory.
+//   (F) not a fermion: Adinkra Q-odd / coded 8B+8F / uncoded Cl(0,8)
+//       halves. Three different fours. Dashing −1 = C₄ south.
+//   (M) two NSEW compasses compose at Meijer's missing feedback.
+//       Error is a sum (erasing); feedback is a product (reversible).
+//   (E8) roots 240 + algebra 248 metered; compact group is a substitute.
+//
+// HONESTY: none of this claims FourCorner *is* a Clifford algebra
+// or a fermion. Anchors: Clifford 1878; Lounesto 2001;
+// Atiyah–Bott–Shapiro; Doran–Faux–Gates et al. 2008; Meijer 2010;
+// Landauer 1961 / Bennett 1973; Chevalley 1955; Cayley–Dickson;
+// Joyal–Street–Verity 1996; numerology-vs-number-theory.
 // ═══════════════════════════════════════════════════════════════════
 
 module FC = FourCornerC4
@@ -226,3 +234,128 @@ let ``A: octonion lift of i still squares to −1 — tower TRACE + C₄ both ap
     let r = ImaginaryStack.octonion
     pingAnnihilates r closeO FC.octonionI |> should equal true
     closeO (r.Mul(FC.octonionI, FC.octonionI)) (r.Negate r.One) |> should equal true
+
+// ── (F) FourCorner is not a fermion; the Adinkra connection is the
+//     missing feedback axis. Three different fours. Coded vs uncoded
+//     both split 8B+8F — same count, different objects.
+
+[<Fact>]
+let ``F: three different fours — I/O slots, code k, N supercharges`` () =
+    FC.fourCornerSlotCount |> should equal 4
+    FC.adinkraCodeDimensionK |> should equal 4
+    FC.adinkraSuperchargesN |> should equal 8
+    AdinkraCode.dimension |> should equal FC.adinkraCodeDimensionK
+    AdinkraCode.supercharges |> should equal AdinkraCode.length
+    // node count 16 is shared by the N=4 cube and the [8,4] quotient —
+    // valence discriminates (4 vs 8), matching a 16 does not
+    AdinkraCode.adinkraNodes |> should equal 16
+    AdinkraCode.adinkraValence |> should equal 8
+    AdinkraIharaZeta.nodes |> should equal 16
+
+[<Fact>]
+let ``F: coded [8,4] is K_8,8 — 8 bosons + 8 fermions; FourCorner is not a vertex`` () =
+    AdinkraIharaZeta.isCompleteBipartiteOnCosetParity |> should equal true
+    FC.codedBosonFermionCounts |> should equal (8, 8)
+    // the I/O record has 4 slots, not 8+8 nodes
+    FC.fourCornerSlotCount = fst FC.codedBosonFermionCounts
+    |> should equal false
+    // dashing −1 is C₄ south / e^{iπ}, on an EDGE, not a fermion node
+    FC.dashingSignIsSouth |> should equal true
+    FC.south |> should equal FC.MinusOne
+    closeC FC.eulerPi (cRing.Negate cRing.One) |> should equal true
+
+[<Fact>]
+let ``F: N=1 Q-odd carries boson to fermion — FourCorner.north is TIn rest, not a boson`` () =
+    AdinkraClock.initial.Field |> should equal AdinkraClock.Boson
+    let s1, tick = AdinkraClock.step AdinkraClock.initial
+    s1.Field |> should equal AdinkraClock.Fermion
+    tick |> should equal false
+    let s2, tick2 = AdinkraClock.step s1
+    s2.Field |> should equal AdinkraClock.Boson
+    tick2 |> should equal true
+    // FourCorner rest is the I/O product with only TIn set
+    let rest = FourCorner.ofIn 1
+    FourCorner.hasFeedback rest |> should equal false
+    FourCorner.hasOutput rest |> should equal false
+
+[<Fact>]
+let ``F: coded tower costs homoiconicity; uncoded Cl(0,8) defect is 1`` () =
+    FC.codedHomoiconicityDefect |> should equal 16
+    FC.uncodedHomoiconicityDefect |> should equal 1
+    FC.uncodedVertexCount 8 |> should equal 256
+    // coded: dim A / dim M = 2^N / 2^(N-k) = 2^k
+    AdinkraCode.homoiconicityDefect
+    |> should equal (1 <<< AdinkraCode.dimension)
+    // uncoded regular representation: vertices = dim Cl(0,N)
+    FC.uncodedVertexCount 8
+    |> should equal (1 <<< 8)
+    FC.uncodedN8HalvesSeparate |> should equal true
+    // both towers split 8+8; the coded split is the quotient bipartition,
+    // the uncoded split is the even-subalgebra blocks. Same count.
+    FC.codedBosonFermionCounts |> should equal (8, 8)
+
+// ── (M) two compasses compose at Meijer's missing feedback; error is
+//     a one-way sum (erasing); feedback is a product (reversible).
+
+[<Fact>]
+let ``M: Meijer duals are 2-corner; FourCorner and Rx are two 2×2 compasses`` () =
+    FC.meijerDualCornerCount |> should equal 2
+    FC.fourCornerSlotCount |> should equal 4
+    FC.allRxModes.Length |> should equal 4
+    // same count of four, different objects (I/O vs state-mode)
+    FC.allRxModes
+    |> List.distinct
+    |> List.length
+    |> should equal 4
+    FC.north |> should equal FC.One
+    FC.east |> should equal FC.I
+    FC.south |> should equal FC.MinusOne
+    FC.west |> should equal FC.MinusI
+
+[<Fact>]
+let ``M: feedback is a product (keeps TIn); error is a sum (discards Ok)`` () =
+    let filled =
+        FourCorner.ofIn 7
+        |> FourCorner.withOut 8
+        |> FourCorner.withOutFeedback "authored"
+        |> FourCorner.withInFeedback "ack"
+    FC.feedbackKeepsInput 7 filled |> should equal true
+    filled.TOut |> should equal (Some 8)
+    // ISR / OnError analogue: the value channel is gone
+    let err: Result<int, InterruptFeedback> = Error(Failed "onError analogue")
+    FC.errorDiscardsValue err |> should equal true
+    match err with
+    | Ok _ -> failwith "sum discarded the value — Ok is unreachable"
+    | Error(Failed msg) -> msg |> should equal "onError analogue"
+    | Error _ -> failwith "expected Failed"
+    // Landauer/Bennett: fibre 1 is reversible (ping-return); fibre 2 erases
+    FC.pingReturnClass
+    |> should equal ErasureClass.ThermodynamicClass.Reversible
+    FC.errorShortCircuitClass
+    |> should equal ErasureClass.ThermodynamicClass.Erasing
+    // ping-return itself is Negate, fibre-1 on the weight
+    closeC (FC.pingReturn cRing cRing.One) (cRing.Negate cRing.One)
+    |> should equal true
+
+// ── (E8) roots + algebra metered; compact group is a substitute.
+//     Weyl is a fourth object, not the missing group.
+
+[<Fact>]
+let ``E8: roots 240 and algebra 248 are metered; compact group is still a substitute`` () =
+    let inv = FC.e8ThreeObjects
+    inv.RootsMetered |> should equal 240
+    inv.AlgebraMetered |> should equal 248
+    inv.RootsMetered + 8 |> should equal inv.AlgebraMetered
+    inv.CompactGroupIsSubstitute |> should equal true
+    inv.CompactFormNegativeDefinite |> should equal true
+    inv.CentreOrder |> should equal 1
+    // the Killing diagonal is an algebra-basis form, not a group multiply
+    E8LieAlgebra.compactFormKillingDiagonal.Length
+    |> should equal inv.AlgebraMetered
+    // two E8 routes (Cartan+roots vs so(16)+spinor) already agree at 248
+    let cartan, roots = CliffordPeriodicity.e8RootDecomposition
+    let _, spinorTotal = CliffordPeriodicity.e8FromSpinors
+    cartan + roots |> should equal spinorTotal
+    spinorTotal |> should equal inv.AlgebraMetered
+    // coded Construction A lattice roots = algebra roots (set size)
+    E8Lattice.roots.Length |> should equal inv.RootsMetered

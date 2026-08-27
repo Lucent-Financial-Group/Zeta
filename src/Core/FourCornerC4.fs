@@ -36,6 +36,16 @@ open Zeta.Core.Abstractions
 ///      generator *is* `i` is Cl(0,1) ≅ ℂ (`CliffordPeriodicity`).
 ///      `Cl3.algebra` is an `IStarRing`, so the TRACE can instantiate
 ///      over Clifford *weights* without FourCorner *being* Cl(p,q).
+///   4. **Not a fermion.** Spin-½ `R(2π)=−1` is the SU(2) cover, not
+///      this record. The Adinkra *connection* (Aaron 2026-08-26) is
+///      the missing Meijer axis: feedback dashing ±1 = C₄ south =
+///      `e^{iπ}` lives on a Q-odd *edge* (boson ↔ fermion). FourCorner
+///      supplies that axis; it is not a node of the adinkra. Three
+///      different fours: I/O slots, code dimension k=4, N=4 valise
+///      colours. Coded [8,4] and uncoded Cl(0,8) both split 8B+8F
+///      — same count, different objects (quotient graph vs regular
+///      representation). E8: roots and algebra metered; compact group
+///      is a Killing-form substitute, not the manifold.
 ///
 /// Anchors (Beacon): W. K. Clifford 1878; Lounesto 2001 §3 (signature vs
 /// involutions); Cayley–Dickson doubling (`CayleyDickson.fs`);
@@ -176,3 +186,122 @@ module FourCornerC4 =
             && t.MatrixDim = 2
             && not t.IsSplit
         | Error _ -> false
+
+    // ── Adinkra connection (not identification) ───────────────────────
+    // FourCorner is a 2×2 I/O record. An adinkra fermion is an odd-parity
+    // node. Connecting them is the *feedback axis* Meijer does not have:
+    // dashing ±1 on a Q-odd edge is C₄ south. Matching a count of four
+    // is numerology (k=4, N=4 colours, 4 I/O slots).
+
+    /// FourCornerOwnership field count. Labeling, not a group order.
+    let fourCornerSlotCount = 4
+
+    /// [8,4] Hamming: k is the code dimension, not N, not FourCorner.
+    let adinkraCodeDimensionK = AdinkraCode.dimension
+
+    /// N = supercharges = code length = 8. The coded adinkra's colour count.
+    let adinkraSuperchargesN = AdinkraCode.supercharges
+
+    /// Coded [8,4] quotient is K_{8,8}: even-parity cosets vs odd-parity
+    /// cosets. Physics names those 8+8 bosons and fermions. FourCorner
+    /// is not a vertex of this graph.
+    let codedBosonFermionCounts : int * int =
+        let mutable even = 0
+        let mutable odd = 0
+
+        for x in 0 .. AdinkraIharaZeta.nodes - 1 do
+            if AdinkraIharaZeta.cosetParity x = 0 then
+                even <- even + 1
+            else
+                odd <- odd + 1
+
+        even, odd
+
+    /// Uncoded Cl(0,N) is the regular representation: dim = 2^N = vertex
+    /// count, homoiconicity defect 1. The coded tower's defect is 2^k.
+    let uncodedVertexCount (n: int) : int =
+        CliffordPeriodicity.realDimension 0 n
+
+    let uncodedHomoiconicityDefect = 1
+
+    let codedHomoiconicityDefect = AdinkraCode.homoiconicityDefect
+
+    /// Uncoded N=8: the mod-8 clock separates even/odd halves into two
+    /// 8×8 blocks (8 bosons + 8 fermions) without quotienting a code.
+    let uncodedN8HalvesSeparate : bool =
+        let p, q = CliffordPeriodicity.adinkraN8Signature
+
+        match CliffordPeriodicity.halvesSeparateCleanly p q with
+        | Ok b -> b
+        | Error _ -> false
+
+    /// Dashing sign −1 is C₄ south / `e^{iπ}` / `pingReturn(One)`. It
+    /// lives on an EDGE (Q-odd). `south` is the I/O retraction corner.
+    /// Same C₄ point, different objects. Not "FourCorner is a fermion".
+    let dashingSignIsSouth = south = MinusOne
+
+    // ── Two NSEW compasses at Meijer's missing axis ───────────────────
+    // 1. Zeta: FourCorner I/O = (data|feedback)×(in|out) = N S E W.
+    // 2. Rx: (incremental|bulk)×(refresh|stream).
+    // Meijer duals (IEnumerable ⇄ IObservable, μF ⇄ νF) are 2-corner
+    // in/out. The dual interfaces traded a feedback channel for a
+    // non-monadic error terminal (`IObserver.OnError`; in-tree,
+    // `InterruptFeedback` on `Result`). Error is a SUM (short-circuit,
+    // erasing). Feedback is a PRODUCT (ping-return, Bennett-free
+    // Negate). Composition is tensor of two 2×2s, not identification.
+
+    /// Meijer in ⇄ out (pull ⇄ push, data ⇄ process). No feedback axis.
+    let meijerDualCornerCount = 2
+
+    /// Rx NSEW — state-mode grid, not FourCorner I/O.
+    type RxCompass =
+        | IncrementalRefresh
+        | IncrementalStream
+        | BulkRefresh
+        | BulkStream
+
+    let allRxModes =
+        [ IncrementalRefresh
+          IncrementalStream
+          BulkRefresh
+          BulkStream ]
+
+    /// Filling a feedback corner does not discard `TIn` — product.
+    let feedbackKeepsInput
+        (expectedIn: int)
+        (o: FourCorner.FourCornerOwnership<int, int, string, string>)
+        : bool =
+        o.TIn = expectedIn && FourCorner.hasFeedback o
+
+    /// ISR / `IObserver.OnError` analogue: the Ok value is gone — sum.
+    let errorDiscardsValue (r: Result<int, InterruptFeedback>) : bool =
+        match r with
+        | Error _ -> true
+        | Ok _ -> false
+
+    /// Fibre 1 = Bennett-free (ping-return / Negate). Fibre > 1 = erasing
+    /// (error short-circuit throws away the other summand).
+    let pingReturnClass = ErasureClass.ofLargestFibre 1
+    let errorShortCircuitClass = ErasureClass.ofLargestFibre 2
+
+    // ── E8 three objects: roots, algebra, group ───────────────────────
+    // Aaron 2026-08-24/26: at least 2 of 3, try for all 3. Workitem
+    // `081M0T8XF3N087G0R002YNFVD9` already closed the algebra gap.
+    // Compact group remains a substitute (Killing negative-definite +
+    // centre order 1 ⇒ unique compact simply-connected E8 exists).
+    // That is existence, not the manifold. Weyl group is a *fourth*
+    // object (`CliffordE8Roots` versors), not a stand-in for the group.
+
+    type E8ObjectStatus =
+        { RootsMetered: int
+          AlgebraMetered: int
+          CompactGroupIsSubstitute: bool
+          CompactFormNegativeDefinite: bool
+          CentreOrder: int }
+
+    let e8ThreeObjects : E8ObjectStatus =
+        { RootsMetered = E8LieAlgebra.rootCount
+          AlgebraMetered = E8LieAlgebra.dimension
+          CompactGroupIsSubstitute = true
+          CompactFormNegativeDefinite = E8LieAlgebra.compactFormIsNegativeDefinite
+          CentreOrder = E8LieAlgebra.centreOrder }

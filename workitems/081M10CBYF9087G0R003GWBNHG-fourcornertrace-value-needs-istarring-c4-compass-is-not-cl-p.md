@@ -26,6 +26,11 @@ are related; they are **not** “it is Cl(p,q)”.
   `IStarRing` instances; law packs consume `IntegerRing.Star`;
   `e^{iπ} = i² = Negate(One)` (Euler = same C₄ point, analysis not ring);
   spin-½ `R(2π)=−1`; Pauli Z = multiply-by-e^{iπ}; two NSEW compasses compose
+  at Meijer's missing feedback (2-corner duals traded for `OnError`;
+  feedback product is reversible, error sum is erasing); FourCorner is
+  **not** a fermion — Adinkra connection is Q-odd dashing = C₄ south;
+  coded `[8,4]` 8B+8F vs uncoded `Cl(0,8)` halves; E8 roots+algebra
+  metered, compact group still a substitute
 - ROADMAP item 1 / P1 / shipped / continuous / research #8
 - Research absorb: `docs/research/2026-08-26-fourcorner-c4-istarring-not-clpq.md`
 
@@ -33,5 +38,7 @@ are related; they are **not** “it is Cl(p,q)”.
 
 - Product path may weight a live trace by `Cl3.Mv` without promoting
   FourCorner to Cl(p,q)
-- Do not identify the I/O record with a Clifford algebra in later slices
+- Do not identify the I/O record with a Clifford algebra **or a fermion**
 - Conformal CGA Cl(4,1) stays the Sequoia distance slice
+- Compact Lie group E8 as a group object (multiply / exp), not the
+  Killing-form substitute

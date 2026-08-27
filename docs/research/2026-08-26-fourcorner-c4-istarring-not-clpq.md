@@ -199,6 +199,172 @@ are obtained from ℝ. `Chip8Cow` / `QubitIso` are explicitly **not**
 Law packs now consume `IntegerRing.Star` rather than re-boxing
 `Conj = id` locally.
 
+## FourCorner is not a fermion — the Adinkra connection
+
+Aaron 2026-08-26: **not** FourCorner being a fermion. Research the
+connection in the adinkra stack (Rx, μF/νF, coded mod-8 vs homoiconic
+uncoded, 8 bosons + 8 fermions, the three E8 objects).
+
+Spin-½ `R(2π)=−1` remains the SU(2) cover of SO(3) (`FourCornerC4.spinHalfRotor`).
+That is still not this I/O record. The *connection* is a different
+object: the **Q-odd edge**.
+
+### Where bosons and fermions actually live
+
+An adinkra is bipartite. Even-parity nodes are bosons, odd-parity
+nodes are fermions. A supercharge `Q` is odd: it *swaps* the halves
+(`AdinkraClock.step`: boson → fermion with no `∂_τ`; fermion → boson
+emitting one `∂_τ`). Checked on the N=1 valise.
+
+| Adinkra | Nodes | Split | In-tree |
+|---|---|---|---|
+| N=1 valise | 2 | 1B+1F | `AdinkraClock` |
+| N=4 uncoded cube | 16 | 4B+4F checkerboard | `AdinkraViz` (4-regular) |
+| N=8 coded `[8,4]` | 16 | **8B+8F**, graph `K_{8,8}` | `AdinkraIharaZeta` |
+| N=8 uncoded `Cl(0,8)` | 256 | **8+8 blocks** of the even subalgebra | `CliffordPeriodicity.halvesSeparateCleanly` |
+
+The coded 8+8 is the **coset-parity** bipartition of the Hamming
+quotient (`AdinkraIharaZeta.cosetParity`). The uncoded 8+8 is the
+**even-subalgebra split** of `Cl⁰(0,8) ≅ M₈(ℝ) ⊕ M₈(ℝ)` at clock
+row `s = 0`. Same count, different objects. Node count 16 is shared
+by the N=4 cube and the `[8,4]` quotient — **valence** discriminates
+(4 vs 8). `.claude/rules/numerology-vs-number-theory.md`.
+
+### Three different fours (the coincidence that must not identify)
+
+| Four | What it counts | Discriminator |
+|---|---|---|
+| FourCorner I/O slots | `(data\|feedback)×(in\|out)` | occupancy of options; **no** group law |
+| `AdinkraCode.dimension` k=4 | generator rows of `[8,4]` | N is the *length* 8, not k |
+| N=4 valise colours | uncoded 4-cube edges | 4-regular, dashing torsor, not a code |
+
+Matching "4" never identifies them. FourCorner is **not** a vertex
+of any of these graphs.
+
+### Where FourCorner *does* connect
+
+The dashing is an odd 1-cochain: each edge is `+1` (solid) or `−1`
+(dashed). That `−1` **is** C₄ south = `e^{iπ}` = `pingReturn(One)` —
+the same C₄ *point* as the retraction corner, living on a **Q-odd
+edge** (the boson ↔ fermion transport), not on a node. Lumen
+2026-08-14: the −1 is already the dashing; its origin is the ℤ/2
+kernel of `Spin(N) → SO(N)`; it is a re-description, not an
+extension (`docs/research/2026-08-14-adinkra-minimal-homoiconicity-*`).
+
+So: FourCorner supplies the **feedback axis** that can carry the
+dashing. It is not a fermion. Workitem
+`081KX93R6EF08QG0R0020AQQWZ` already had Aaron's sentence: *"the
+adinkras need the 4-channel feedback for retrocausal-like
+behavior"* — Meijer's 2-corner cannot express it.
+
+## Coded mod-8 vs homoiconic uncoded
+
+Two towers, both in-tree (Aaron: "we are never locked into one").
+
+**Coded.** `AdinkraCode` `[8,4,4]` extended Hamming, doubly-even
+self-dual. Quotient `GF(2)^8 / C` is the 16-node 8-regular adinkra.
+Construction A over that code is the E8 **lattice** (`E8Lattice`).
+**Cost:** homoiconicity. `dim A / dim M = 2^N / 2^(N−k) = 2^k = 16`
+(`AdinkraCode.homoiconicityDefect`). Vertices are no longer the
+regular representation of `Cl(0,8)`. Gleason / Mallows–Sloane: a
+doubly-even self-dual binary code exists only at length ≡ 0 (mod 8)
+— that is why *this* tower's demarcation reads as a mod-8 clock.
+The clock's *origin* is Clifford periodicity, not the code
+(`docs/research/2026-08-24-all-three-e8-derivations-*`; the
+within-object experiment excluded the code).
+
+**Uncoded / homoiconic.** The N-cube *is* left multiplication on
+`Cl(0,N)`: vertices = operators, defect 1. At N=8, `s = 0`, so
+`halvesSeparateCleanly` — two 8×8 blocks, 8 bosons and 8 fermions
+— **without** quotienting. The bivector route `e₈ = so(16) ⊕ Δ⁺`
+(`CliffordPeriodicity.e8FromSpinors`, 120+128=248) is this tower's
+door to the E8 **Lie algebra**. Quotienting nothing is the point.
+
+Both towers split 8B+8F at N=8. The coded split is a graph
+bipartition; the uncoded split is an algebra grading. FourCorner
+sits on neither as a node. It sits on the **feedback** that both
+need for a dashing (`TOutFeedback` / `TInFeedback`).
+
+## E8 three objects — roots and algebra yes; group still a substitute
+
+Aaron: at least 2 of 3, try for all 3 (algebra, Lie group, roots).
+Workitem `081M0T8XF3N087G0R002YNFVD9` already measured: it was
+**one** of three before the algebra landed, and the thing that felt
+like a second derivation is a *fourth* object (Weyl group as
+Clifford versors).
+
+| # | Object | Status | Surface |
+|---|---|---|---|
+| 1 | Root system Φ(E8), 240 | **metered** | `E8Lattice.roots`, `CliffordE8Roots` |
+| 2 | Lie algebra `e₈`, dim 248 | **metered** | `E8LieAlgebra` (Jacobi, Serre, Killing) |
+| 3 | Compact Lie group E8 | **honest substitute** | `compactFormKillingDiagonal` negative-definite; `centreOrder = 1` |
+| (4) | Weyl group W(E8) | versors in-tree; not the group | `CliffordE8Roots` |
+
+The compact-group substitute is Weyl's unitary trick: the Killing
+form of the compact real form is negative definite ⇒ the
+simply-connected group is compact; `det A = 1` ⇒ trivial centre ⇒
+simply-connected and adjoint coincide. That is **existence and
+uniqueness**, not a manifold with multiply / exp / inverse. The
+Killing diagonal has length 248 because it is an **algebra-basis**
+form — the same 248 as `dim e₈`, which is also `dim` of the group
+as a manifold. Matching 248 does not identify them.
+
+Getting the actual compact group (Chevalley group over ℝ, or a
+faithful matrix representation with a checked product) remains
+open. Do not flip `e8ThreeObjects.CompactGroupIsSubstitute` until
+that product exists.
+
+Two algebra decompositions already agree at 248 and are
+**different splits**: Cartan ⊕ roots (`8+240`) vs `so(16) ⊕ Δ⁺`
+(`120+128`). Checked: `CliffordPeriodicity.e8RootDecomposition`
+and `e8FromSpinors`.
+
+## Two compasses compose at Meijer's missing feedback
+
+Aaron 2026-08-26, continuing the 2026-06-09 pair:
+
+1. **Zeta's own NSEW** — FourCorner I/O `(data | feedback) × (in | out)`
+   = N S E W = C₄ labeling.
+2. **Rx's NSEW** — `(incremental | bulk) × (refresh | stream)`.
+
+They compose where **Erik Meijer's dual interfaces are 2-corner**.
+Meijer (`Subject/Observer is Dual to Iterator`, PLDI FIT 2010;
+bananas/lenses μF/νF, Meijer–Fokkinga–Paterson 1991) has in ⇄ out:
+`IEnumerable` pull ⇄ `IObservable` push, data ⇄ process. Aaron
+(2026-07-11, workitem `081KX93R6EF08QG0R0020AQQWZ`): *"Meijer is
+missing, from all his stuff, the uncertainty and the four-corner
+feedback channels."* μF/νF is a **2-corner** duality. FourCorner
+is the extra axis.
+
+**The trade:** the dual of `IEnumerator` is incomplete as
+`IObserver`. Meijer filled the hole with a **non-monadic error
+terminal** (`OnError` / `OnCompleted`). After `OnError` the
+subscription is done — the rest of the stream is **erased**.
+In-tree analogue: ISR Kleisli `Result<_, InterruptFeedback>`
+(`IntrCtx.fs`). `Error` is a **sum**: short-circuit under `>=>`
+discards the Ok value. That is `ErasureClass.Erasing`
+(`ofLargestFibre 2`).
+
+**Feedback is the other filling of the hole.** FourCorner is a
+**product** of options: `withOutFeedback` does not discard `TIn`.
+The VALUE ping-return is `Negate` — fibre 1, Bennett-free
+(`ErasureClass.Reversible`). Annihilation at consolidate
+(`z + (−z)` then the view) is still erasing; Negate alone is not.
+Landauer 1961 / Bennett 1973; in-tree `ErasureClass`,
+`081M10BD9BM087G0R001SGDRXT`.
+
+Error channels are one-way and force erasure in reversible
+computing. Feedback channels allow the ping-return. That is why
+the two compasses **combine at Meijer's missing axis**, not at a
+shared count of four.
+
+Rx `Subject` is a partial bidirectional gesture (Meijer is not
+*totally* without feedback). There is no systematic
+`(data/feedback)×(in/out)` algebra in his duals, and no
+uncertainty. FourCorner + `SoftValue` is where Aaron extends the
+anchor. Composition remains a derivation, not "we run quantum
+hardware".
+
 ## Remaining (not this slice)
 
 - Product path may *weight* a live observe/trace by `Cl3.Mv` without
@@ -206,6 +372,10 @@ Law packs now consume `IntegerRing.Star` rather than re-boxing
 - Conformal CGA Cl(4,1) stays the Sequoia distance slice (`Cl3.fs`
   honest scope) — a different signature, still not the compass.
 - Inverse-free corners still do not get the trace.
+- Compact Lie group E8 as a group object (multiply / exp), not
+  the Killing-form substitute.
+- N-extended adinkra clock (Q3 of `081KX93R6EF08QG0R0020AQQWZ`) —
+  the N=1 valise still does not discriminate the A/B fork.
 
 Workitem `081M10CBYF9087G0R003GWBNHG`. Module `src/Core/FourCornerC4.fs`.
 
@@ -221,6 +391,14 @@ Workitem `081M10CBYF9087G0R003GWBNHG`. Module `src/Core/FourCornerC4.fs`.
 - Cartan 1913 / Pauli 1927 — spin-½: `R(2π) = −1`, `R(4π) = +1` (`Cl3.rotor` half-angle)
 - *You, Born at the Hinge* / `e^{iπ}` — `docs/books/you-born-at-the-hinge/`
 - Two NSEW compasses (2026-06-09) — FourCorner × Rx 2×2 compose; qubit-shaped, peeled
+- Meijer, "Subject/Observer is Dual to Iterator" (PLDI FIT 2010) — 2-corner in/out; `OnError` is the non-monadic terminal
+- Meijer, Fokkinga & Paterson (1991) — bananas/lenses, μF ⇄ νF
+- Doran–Faux–Gates–Hübsch–Iga–Landweber (2008, arXiv:0806.0051) — adinkra ↔ doubly-even code; N is length
+- Gates / Iga — adinkra bipartition (boson even, fermion odd); dashing = odd 1-cochain
+- Landauer (1961) / Bennett (1973) — error-sum is erasing; feedback ping-return is fibre 1
+- Chevalley (1955) / Killing–Cartan — `e₈` identified by Dynkin diagram, not by dim 248
+- Atiyah, Bott & Shapiro (1964) — mod-8 clock; uncoded `Cl(0,8)` halves separate
+- Conway & Sloane, *SPLAG* ch. 5 — Construction A (coded tower, costs homoiconicity)
 - Cayley–Dickson doubling — `CayleyDickson.fs` / `ImaginaryStack.complex`
 - Joyal, Street & Verity (1996) — traced monoidal category
   (`FourCornerTrace` consumes Negate)
