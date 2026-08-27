@@ -47,11 +47,7 @@
  */
 
 import { resolveClusterSegmentAssignment } from "./cluster-address";
-import {
-  classifyJoinEndpoint,
-  isStructurallyUncovered,
-  renderEndpointAdvice,
-} from "../cluster/join-endpoint-san-coverage.ts";
+import { classifyJoinEndpoint, renderEndpointAdvice } from "../cluster/join-endpoint-san-coverage.ts";
 
 /** ESP destination for the firstboot config. Read by `zeta-first-boot.sh`. */
 export const ZETA_FIRSTBOOT_CONF_ESP_DESTINATION = "/zeta-firstboot.conf";
