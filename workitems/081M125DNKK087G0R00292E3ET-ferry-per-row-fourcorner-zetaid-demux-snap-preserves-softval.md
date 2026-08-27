@@ -85,8 +85,12 @@ implement `ProcessMany` prematurely. Perfect world: derive
 batch from single by **types**, else a **generator** (Futamura
 / stream fusion), else JIT attention last. SIMD/GPU is that
 same specialization on the **producer or consumer loop**, not
-on the ferry pipe (Naledi: `fillBoat` is not a kernel). GPU
-crossings must be injected or they leak entropy. Original
+on the ferry pipe. The *source* is the Zeta ISA being worked
+on (braided monoidal, DU mini-control, no overall control
+structure, **phase not wall-clock**, embarrassingly parallel
+because no branching) encoded onto GPU/CPU/CSS — not Halide
+on a C loop. `IsaSpec` CHIP-8 is the shipped oracle, not that
+ISA. Launch remains a metered crossing. Original
 manual derivation is a requirement, not a source to open.
 
 White-room spec from original Itron code: **not required** for this

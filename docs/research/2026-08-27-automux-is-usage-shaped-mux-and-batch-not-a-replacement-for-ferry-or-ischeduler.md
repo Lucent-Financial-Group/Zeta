@@ -111,28 +111,56 @@ is a miss. If a processor has a columnar inner loop, SIMD lives
 anti-Nagle, ZetaId demux, FourCorner-per-row stay host.
 
 This is Futamura on the **single** function: specialize
-`item -> result` at a boat of N into a vector/kernel. Rung 1
-(types/generator) for CPU SIMD (LLVM vectorizer, stream fusion,
-Gill–Peyton Jones). GPU is a further projection onto a different
-ISA (Halide / Futhark / Accelerate as Beacon — not a purchase).
-Control plane: `MixCogen` / `gen/`. Data plane stays dumb.
+`item -> result` at a boat of N. The ferry pipe does not
+change. Control plane: `MixCogen` / `gen/` / `IsaSpec`. Data
+plane stays dumb.
+
+Aaron's correction of the Halide-shaped reading (same hour):
+
+> we have a zeta isa we are working on that [is] very different
+> based on braided monoidal categories and embarrassingly
+> parallel cause we avoid branching, this ISA can be encoded
+> easily onto GPUs, CSS, CPUs etc.. cause they are composable
+> mini control structures based on discriminated unions there
+> is not over all control structure and things compose based
+> on phase clock space not wallclock time
+
+The source ISA is **ours**, not "a C loop lowered by Halide onto
+CUDA." `IsaSpec` already makes an ISA *data* so one `mix`
+specializes any spec (CHIP-8 shipped as the oracle; 6502/68000
+as the named lineage). The ISA **being worked on** is the
+braided-monoidal one: mini control = a discriminated union
+(no appointed global control structure — manifesto §1 at the
+instruction level); composition is **phase**, not wall-clock
+(`local-time-never-enters-the-shared-fold`; `IScheduler` is
+injected). Avoiding branching is why it is embarrassingly
+parallel and why encoding onto GPU/CPU/CSS is *easy*: a warp
+does not diverge when there is no data-dependent `if` over
+wall-clock state. `Meno.braid` is the in-tree braiding
+(Joyal–Street; kind `*` in F#, metered).
+
+Halide / Futhark / Accelerate remain a *related* Beacon
+(algorithm vs schedule, when you do not have a phase-ISA).
+They are not the object. LLVM vectorizing a scalar `for` is
+the fallback when the ISA has not yet absorbed the loop.
 
 Honest limits, not objections:
 
-- **DST.** A GPU runtime is an ambient scheduler unless the
-  crossings are injected (`IScheduler` / `Source`). Unmetered
-  GPU is a §13 leak. DoP=1 replay does not automatically include
-  warps.
-- **Uniform VALUE vs per-row feedback.** SIMD/GPU wants a
-  homogeneous kernel. FourCorner-per-row 207 wants heterogeneous
-  feedback. Specialize the VALUE path when the boat is uniform;
-  leave error/feedback scalar per row. Do not GPU `faultBoat`.
-- **Earned.** Same as `ProcessMany`: only when a measured hot
-  path is already data-parallel. A single producer with
-  per-item Kleisli capture is not that path.
-- Competing-prediction SIMD (later BNN exception) is a
-  *different* specialization — similarity across futures, not
-  boat assembly.
+- **The no-branch ISA is working-on, not shipped.** Today's
+  `IsaSpec` still has `ifeqskip` / `branchIf` for CHIP-8/6502.
+  VISION: IL/machine-code emission is **ASPIRATION**;
+  `AdinkraClock` N=1 is tautological for derivation. Do not
+  round the CHIP-8 spec up to the braided ISA.
+- **Launch is still a crossing.** Encoding onto a GPU does
+  not license an unmetered CUDA scheduler as a *program*
+  control structure. The program's order is phase; the
+  *launch* is an `IEffects` door (§13). Meter the door.
+- **FourCorner-per-row feedback** is a DU (mini control),
+  not a global if-ladder. Heterogeneous 207 is another
+  boat-row tag, not warp divergence, *if* the VALUE path
+  stays uniform. Do not GPU `faultBoat`.
+- **Earned.** Same as `ProcessMany`. A Kleisli-captured
+  single producer is not the data-parallel path.
 
 ## Honesty
 
@@ -140,7 +168,8 @@ No AutoMUX package. No ProcessMany this slice. No SIMD/GPU on
 the ferry. No look at Itron original. Usage-based efficiency is
 already half-shipped as anti-Nagle; occupancy self-predict
 (`SchedulerZeta` space coordinate) is still the missing pair
-with time. SIMD/GPU of producer/consumer is named, not built.
+with time. SIMD/GPU of producer/consumer is named, not built. The
+braided/phase ISA is *working on*, not `IsaSpec` CHIP-8.
 
 ## Beacon
 
@@ -157,6 +186,14 @@ with time. SIMD/GPU of producer/consumer is named, not built.
   at the boat.
 - **Meijer** dual interfaces — single/batch is the same shape as
   pull/push, not two products.
-- **Halide / Futhark / Accelerate** — specialize a scalar
-  producer/consumer onto SIMD or GPU; the pipeline in between
-  does not change. Beacon for the riff, not a dependency.
+- **Joyal–Street** braided monoidal categories — parallel
+  (⊗) + crossing (braid), no appointed global control.
+  `Meno.braid` is the in-tree arrow.
+- **Hellerstein CALM** — coordination-free = embarrassingly
+  parallel; branching on a wall-clock is coordination.
+- **`IsaSpec` / Futamura** — ISA as data; mix specializes
+  any spec. CHIP-8 shipped as oracle; the braided/phase
+  no-branch ISA is the one being worked on.
+- **Halide / Futhark / Accelerate** — related (algorithm vs
+  schedule) when you do *not* have a phase-ISA. Not the
+  object. Not a purchase.
