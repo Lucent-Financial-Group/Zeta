@@ -44,6 +44,7 @@ import {
   classificationReport, adjustedRandIndex, normalizedMutualInfo, wilsonInterval,
   mcnemar, type McNemarResult,
 } from './metrics.ts';
+import { stringCompare } from '../collation/collation.ts';
 import { mulberry32, shuffle } from './rng.ts';
 
 export interface ModelScore {
@@ -161,7 +162,12 @@ export function runStudy(opts: StudyOptions): StudyResult {
   let test: FeatureRow[];
   let splitAtIso: string | null = null;
   if (splitKind === 'temporal') {
-    const sorted = [...rows].sort((a, b) => (a.mergedAt ?? '').localeCompare(b.mergedAt ?? ''));
+    // `stringCompare` (code point = UTF-8 byte order), NOT `localeCompare`.
+    // Linguistic ordering is ICU- and locale-dependent, so two machines can
+    // order the same timestamps differently — which would silently give them
+    // DIFFERENT train/test splits and therefore different accuracies from the
+    // same corpus. See .claude/rules/culture-invariant-by-default.md.
+    const sorted = [...rows].sort((a, b) => stringCompare(a.mergedAt ?? '', b.mergedAt ?? ''));
     const cut = Math.floor(sorted.length * (1 - testFraction));
     train = sorted.slice(0, cut);
     test = sorted.slice(cut);

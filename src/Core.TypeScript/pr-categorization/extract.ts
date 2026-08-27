@@ -107,6 +107,29 @@ export function readGitLog(repoRoot: string): Map<number, string[]> {
   return parseGitLog(res.stdout);
 }
 
+/**
+ * Read a file, or `null` when it does not exist.
+ *
+ * NOT `existsSync` then `readFileSync`. That pair is a check-then-use race
+ * (TOCTOU, CWE-367): the path can be created, deleted, or replaced between the
+ * two calls, so the answer the check returned is already stale by the time the
+ * read runs — the guard reads as defensive and prevents nothing. Doing the read
+ * and interpreting ENOENT is one syscall with one answer and no window.
+ *
+ * Only ENOENT is swallowed. A permission error, a directory where a file was
+ * expected, or an I/O fault is a real failure and rethrows: "absent" and
+ * "unreadable" are different facts, and collapsing them would let a broken
+ * checkout report as an empty corpus.
+ */
+function readFileIfPresent(p: string): string | null {
+  try {
+    return fs.readFileSync(p, 'utf8');
+  } catch (e) {
+    if ((e as NodeJS.ErrnoException).code === 'ENOENT') return null;
+    throw e;
+  }
+}
+
 const MD_ROW = (label: string) =>
   new RegExp(`^\\|\\s*${label}\\s*\\|\\s*(.*?)\\s*\\|\\s*$`, 'm');
 
@@ -239,9 +262,9 @@ export function buildFeatures(opts: BuildOptions): BuildResult {
     } else if (opts.skipArchives || !r.archive_path) {
       meta = EMPTY_META;
     } else {
-      const ap = path.join(repoRoot, r.archive_path);
-      if (fs.existsSync(ap)) {
-        meta = parseArchive(fs.readFileSync(ap, 'utf8'));
+      const body = readFileIfPresent(path.join(repoRoot, r.archive_path));
+      if (body !== null) {
+        meta = parseArchive(body);
         archivesRead++;
       } else {
         meta = EMPTY_META;
@@ -281,8 +304,9 @@ export function buildFeatures(opts: BuildOptions): BuildResult {
 
 export function readFeatureFile(p: string): Map<number, FeatureRow> {
   const out = new Map<number, FeatureRow>();
-  if (!fs.existsSync(p)) return out;
-  for (const line of fs.readFileSync(p, 'utf8').split('\n')) {
+  const body = readFileIfPresent(p);
+  if (body === null) return out;
+  for (const line of body.split('\n')) {
     if (!line.trim()) continue;
     const r = JSON.parse(line) as FeatureRow;
     out.set(r.pr, r); // upsert by key: a repeated pr overwrites, never duplicates

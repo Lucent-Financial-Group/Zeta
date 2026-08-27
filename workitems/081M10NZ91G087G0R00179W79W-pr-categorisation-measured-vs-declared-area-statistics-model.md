@@ -40,9 +40,9 @@ identity rather than a result.
 ## Findings
 
 - Closed-form baseline: **73.6% coverage**, **68.1% correct where it speaks**,
-  **50.2% overall**. It abstains on ~27% of PRs, and most abstentions are
+  **50.1% overall**. (Snapshot 2026-08-27, 12,985 PRs; the dashboard is live.) It abstains on ~27% of PRs, and most abstentions are
   `type-only` — a title declaring a *kind* of change and no area at all.
-- **~3,000 PRs (31.9% of those with a parseable area) disagree with their diff.**
+- **3,050 PRs (31.9% of those with a parseable area) disagree with their diff.**
   This set is the deliverable; the closed form cannot produce it. Dominant
   patterns are conventions vs directory layout, not error: `society:` ticks
   writing telemetry, `ferry:` notes landing in `docs/research`, `deps:` bumps
@@ -52,11 +52,12 @@ identity rather than a result.
   the biggest class, which is what a non-leaking pipeline does.
 - **The BNN's value is entirely a distribution-shift effect**, and this is the
   result worth keeping:
-  - random (i.i.d.) split — BNN and forest are **indistinguishable**
-    (McNemar p ≈ 0.07–0.40 across five seeds); both beat the baseline ~+9–10pp.
-  - temporal split — **BNN beats the forest by 5.8–8.5pp on every seed**
-    (p < 1e-20), 72.4% vs 65.1% vs a 59.0% baseline.
-- **k-means does not recover the taxonomy.** ARI 0.039 (random) to 0.144
+  - random (i.i.d.) split — BNN and forest are **indistinguishable**; McNemar
+    returns "no difference" on all five seeds (p 0.08–0.97). Both beat the
+    baseline by ~11pp.
+  - temporal split — **BNN beats the forest by 6.3–8.9pp on every seed**
+    (p < 4e-22), 73.8% vs 69.2% vs a 58.9% baseline.
+- **k-means does not recover the taxonomy.** ARI ~0.04 (random) to 0.131
   (temporal) against a null of ~0.000. Real but weak structure, and not the areas.
 - Incidental finding, and the reason the temporal split matters: in the eleven
   days to 2026-08-27 the merged-PR mix went to **46.5% telemetry and 23.4%
