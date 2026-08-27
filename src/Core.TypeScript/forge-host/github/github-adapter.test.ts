@@ -1,7 +1,8 @@
 import { describe, expect, test } from "bun:test";
 import { GitHubAdapter } from "./github-adapter";
 import { classifyGhError } from "./classify-error";
-import { forgeError } from "../result";
+import { forgeError, ok } from "../result";
+import type { GithubRest } from "./github-pr-rest.ts";
 
 describe("GitHubAdapter", () => {
   test("forgeName is github", () => {
@@ -62,25 +63,175 @@ describe("GitHubAdapter", () => {
     expect(classifyGhError(null, "").kind).toBe("internal");
   });
 
+  test("listOpenPullRequests and createPullRequest use injected REST — no gh", async () => {
+    const calls: { method: string; path: string; body: unknown }[] = [];
+    const pull = {
+      number: 7,
+      title: "rest",
+      html_url: "https://github.com/o/r/pull/7",
+      updated_at: "2026-08-26T00:00:00Z",
+      draft: false,
+      state: "open",
+      merged_at: null,
+      user: { login: "ace" },
+      head: { ref: "feat" },
+      base: { ref: "main" },
+    };
+    const rest: GithubRest = {
+      request: (method, path, body) => {
+        calls.push({ method, path, body });
+        if (path === "graphql") {
+          return Promise.resolve(ok(JSON.stringify({
+            data: {
+              repository: {
+                pullRequests: {
+                  nodes: [{
+                    number: 7,
+                    title: "rest",
+                    mergeStateStatus: "CLEAN",
+                    url: "https://github.com/o/r/pull/7",
+                    updatedAt: "2026-08-26T00:00:00Z",
+                    isDraft: false,
+                    headRefName: "feat",
+                    baseRefName: "main",
+                    author: { login: "ace" },
+                    reviewDecision: null,
+                  }],
+                },
+              },
+            },
+          })));
+        }
+        return Promise.resolve(ok(JSON.stringify({ ...pull, number: 8, html_url: "https://github.com/o/r/pull/8" })));
+      },
+    };
+    const adapter = new GitHubAdapter("o", "r", { rest });
+    const listed = await adapter.listOpenPullRequests({ limit: 10 });
+    expect(listed.ok).toBe(true);
+    if (listed.ok) {
+      expect(listed.value).toHaveLength(1);
+      expect(listed.value[0]?.number).toBe(7);
+      expect(listed.value[0]?.mergeStateStatus).toBe("clean");
+    }
+    const created = await adapter.createPullRequest({ title: "t", body: "b", head: "feat", base: "main" });
+    expect(created.ok).toBe(true);
+    if (created.ok) expect(created.value.number).toBe(8);
+    expect(calls.some((c) => c.method === "POST" && c.path === "graphql")).toBe(true);
+    expect(calls.some((c) => c.method === "POST" && c.path === "repos/o/r/pulls")).toBe(true);
+  });
+
+  test("createPullRequest without a token is auth-failure, not a gh spawn", async () => {
+    const adapter = new GitHubAdapter("o", "r", {
+      rest: { request: () => Promise.resolve({ ok: false, error: forgeError("auth-failure", "no token") }) },
+    });
+    const result = await adapter.createPullRequest({ title: "t", body: "b", head: "h", base: "main" });
+    expect(result.ok).toBe(false);
+    if (!result.ok) expect(result.error.kind).toBe("auth-failure");
+  });
+
+  test("git-data verbs POST/PATCH/GET through injected rest — no spawnSync gh", async () => {
+    const calls: { method: string; path: string; body: unknown }[] = [];
+    const rest: GithubRest = {
+      request: (method, path, body) => {
+        calls.push({ method, path, body });
+        if (method === "GET" && path.includes("/git/ref/")) {
+          return Promise.resolve(ok(JSON.stringify({ ref: "refs/heads/main", object: { sha: "abc" } })));
+        }
+        if (method === "GET" && path.includes("/git/commits/")) {
+          return Promise.resolve(ok(JSON.stringify({ sha: "c1", tree: { sha: "t1" }, message: "m", parents: [{ sha: "p1" }] })));
+        }
+        return Promise.resolve(ok(JSON.stringify({ sha: "deadbeef" })));
+      },
+    };
+    const adapter = new GitHubAdapter("o", "r", { rest });
+    const blob = await adapter.createBlob("hello");
+    expect(blob.ok).toBe(true);
+    if (blob.ok) expect(blob.value).toBe("deadbeef");
+    const tree = await adapter.createTree([{ path: "a", mode: "100644", type: "blob", sha: "x" }], "base");
+    expect(tree.ok).toBe(true);
+    const commit = await adapter.createCommit({ message: "m", tree: "t", parents: ["p"] });
+    expect(commit.ok).toBe(true);
+    expect((await adapter.updateRef("heads/main", "deadbeef")).ok).toBe(true);
+    const ref = await adapter.getRef("heads/main");
+    expect(ref.ok).toBe(true);
+    if (ref.ok) expect(ref.value.sha).toBe("abc");
+    const got = await adapter.getCommit("c1");
+    expect(got.ok).toBe(true);
+    if (got.ok) expect(got.value.parents).toEqual(["p1"]);
+    expect(calls.some((c) => c.method === "POST" && c.path === "repos/o/r/git/blobs")).toBe(true);
+    expect(calls.some((c) => c.method === "POST" && c.path === "repos/o/r/git/trees")).toBe(true);
+    expect(calls.some((c) => c.method === "POST" && c.path === "repos/o/r/git/commits")).toBe(true);
+    expect(calls.some((c) => c.method === "PATCH" && c.path === "repos/o/r/git/refs/heads/main")).toBe(true);
+  });
+
+  test("getPrGateState is one graphql POST through injected rest", async () => {
+    const calls: { method: string; path: string }[] = [];
+    const rest: GithubRest = {
+      request: (method, path) => {
+        calls.push({ method, path });
+        return Promise.resolve(ok(JSON.stringify({
+          data: {
+            repository: {
+              pullRequest: {
+                number: 9,
+                state: "OPEN",
+                mergeStateStatus: "CLEAN",
+                autoMergeRequest: { enabledAt: "t" },
+                mergeCommit: null,
+                reviewThreads: { nodes: [] },
+                commits: { nodes: [{ commit: { statusCheckRollup: { contexts: [] } } }] },
+              },
+            },
+          },
+        })));
+      },
+    };
+    const adapter = new GitHubAdapter("o", "r", { rest });
+    const gate = await adapter.getPrGateState(9);
+    expect(gate.ok).toBe(true);
+    if (gate.ok) {
+      expect(gate.value.autoMerge).toBe("armed");
+      expect(gate.value.nextAction).toBe("none");
+    }
+    expect(calls).toEqual([{ method: "POST", path: "graphql" }]);
+  });
+
+  test("addPrComment / createIssue / enableAutoMerge are REST, not gh", async () => {
+    const calls: { method: string; path: string; body: unknown }[] = [];
+    const rest: GithubRest = {
+      request: (method, path, body) => {
+        calls.push({ method, path, body });
+        if (path.includes("/comments")) return Promise.resolve(ok(JSON.stringify({ id: 11, html_url: "https://github.com/o/r/pull/1#issuecomment-11" })));
+        if (path.endsWith("/issues")) return Promise.resolve(ok(JSON.stringify({ number: 3, html_url: "https://github.com/o/r/issues/3" })));
+        return Promise.resolve(ok("{}"));
+      },
+    };
+    const adapter = new GitHubAdapter("o", "r", { rest });
+    const comment = await adapter.addPrComment(1, "ack");
+    expect(comment.ok).toBe(true);
+    if (comment.ok) expect(comment.value.id).toBe("11");
+    const issue = await adapter.createIssue({ title: "t", body: "b" });
+    expect(issue.ok).toBe(true);
+    expect((await adapter.enableAutoMerge(1, "squash")).ok).toBe(true);
+    expect(calls.some((c) => c.method === "POST" && c.path === "repos/o/r/issues/1/comments")).toBe(true);
+    expect(calls.some((c) => c.method === "POST" && c.path === "repos/o/r/issues")).toBe(true);
+    expect(calls.some((c) => c.method === "PUT" && c.path === "repos/o/r/pulls/1/auto-merge")).toBe(true);
+  });
+
   test("resolveThreadsBatch maintains arithmetic invariant", async () => {
-    const adapter = new GitHubAdapter("org", "repo");
-    // This will fail (no gh available in test) but the batch logic is testable
-    // by mocking — for now verify the structure
+    const adapter = new GitHubAdapter("org", "repo", {
+      porcelain: () => ({ ok: false, error: forgeError("internal", "injected miss") }),
+    });
     const threads = [
       { threadId: "t1", body: "ack" },
       { threadId: "t2", body: "ack" },
     ];
     const result = await adapter.resolveThreadsBatch(threads);
-    // ASSERT IN BOTH BRANCHES. This used to assert only inside `if (result.ok)`, and with no
-    // `gh` present the call fails -- so the test ran ZERO assertions and passed by not
-    // checking anything. A test that passes by asserting nothing is the vacuity class.
+    expect(result.ok).toBe(true);
     if (result.ok) {
+      expect(result.value.resolved).toBe(0);
+      expect(result.value.failed.length).toBe(threads.length);
       expect(result.value.resolved + result.value.failed.length).toBe(threads.length);
-    } else {
-      // The failure path must still be a classified ForgeError, never a thrown exception
-      // and never the not-supported stub -- resolveThreadsBatch IS implemented.
-      expect(result.error.kind).not.toBe("not-supported");
-      expect(typeof result.error.message).toBe("string");
     }
   });
 });
