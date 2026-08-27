@@ -67,16 +67,6 @@ export function cronPeriodSeconds(expr: string): number | null {
   return null;
 }
 
-/** Cron expressions from actual `schedule` list entries, never comments. */
-function scheduleCrons(onBlock: string): readonly string[] {
-  const schedule = triggerSubBlock(onBlock, "schedule");
-  if (schedule === null) return [];
-
-  return [...schedule.matchAll(/^\s*-\s+cron\s*:\s*(?:"([^"\n#]+)"|'([^'\n#]+)'|([^#\n]+?))\s*(?:#.*)?$/gm)]
-    .map((match) => (match[1] ?? match[2] ?? match[3] ?? "").trim())
-    .filter((cron) => cron !== "");
-}
-
 /**
  * Extract the top-level `on:` block's text from a workflow file.
  *
@@ -138,11 +128,7 @@ export function listValuesFor(subText: string, key: string): readonly string[] |
   const unquote = (v: string): string => v.trim().replace(/^["']|["']$/g, "");
 
   if (inline.startsWith("[")) {
-    return inline
-      .replace(/^\[|\].*$/g, "")
-      .split(",")
-      .map(unquote)
-      .filter((v) => v !== "");
+    return inline.replace(/^\[|\].*$/g, "").split(",").map(unquote).filter((v) => v !== "");
   }
   if (inline !== "" && !inline.startsWith("#")) return [unquote(inline)];
 
@@ -217,14 +203,157 @@ export function inlineTriggerNames(onBlock: string): readonly string[] | null {
   const t = onBlock.trim();
   if (t === "" || t.includes("\n")) return null;
   if (t.startsWith("[")) {
-    return t
-      .replace(/^\[|\]$/g, "")
-      .split(",")
-      .map((s) => s.trim().replace(/^["']|["']$/g, ""))
-      .filter((s) => s !== "");
+    return t.replace(/^\[|\]$/g, "").split(",").map((s) => s.trim().replace(/^["']|["']$/g, "")).filter((s) => s !== "");
   }
   if (/^[a-z_]+$/.test(t)) return [t];
   return null;
+}
+
+/**
+ * Backslash-escape the CommonMark punctuation that would otherwise be read as markup.
+ *
+ * Used only on values we are REFUSING. A value we cannot read must still be shown, and
+ * showing it must not break the document that shows it — and a code span cannot carry
+ * that job, because the value most in need of display is the one containing a backtick.
+ */
+export function markdownEscapeInline(s: string): string {
+  return s.replace(/[\\`*_{}[\]()#+\-.!|<>~]/g, "\\$&");
+}
+
+/**
+ * Is this a five-field cron expression? Fields admit digits, `*`, and the `,-/`
+ * operators; GitHub also accepts month/day names (`MON`, `JAN`), so letters are in the
+ * alphabet too. Deliberately a SHAPE check, not a semantic one — `cronPeriodSeconds`
+ * already refuses shapes it cannot price, and this only has to separate "a cron whose
+ * period we could not derive" from "not a cron at all".
+ */
+export function isCronShaped(value: string): boolean {
+  const fields = value.trim().split(/\s+/);
+  return fields.length === 5 && fields.every((f) => /^[0-9A-Za-z*,/-]+$/.test(f));
+}
+
+/** What `extractCrons` found: readable crons, unreadable ones, and whether a `schedule:` was declared at all. */
+export interface CronExtraction {
+  readonly crons: readonly string[];
+  readonly rejected: readonly string[];
+  readonly scheduleDeclared: boolean;
+}
+
+/**
+ * A YAML scalar may begin on the line AFTER its key, indented further — which
+ * `low-memory.yml` does, and which the old newline-greedy `\s*` read by accident.
+ * Losing that on the way to an anchored match would have swapped one silent defect
+ * for another, so it is a named function with its own test rather than a side effect.
+ */
+function continuationScalar(lines: readonly string[], keyLine: number, indent: number): string {
+  for (let j = keyLine + 1; j < lines.length; j += 1) {
+    const line = lines[j] ?? "";
+    const trimmed = line.trim();
+    if (trimmed === "" || trimmed.startsWith("#")) continue;
+    const lead = line.length - line.trimStart().length;
+    if (lead <= indent) return ""; // dedent ⇒ the next key; this `cron:` has no value
+    return trimmed;
+  }
+  return "";
+}
+
+/** The scalar a `cron:` line carries, with YAML quoting and any trailing comment removed. */
+function scalarValue(raw: string): string {
+  const quoted = /^(["'])([^"']*)\1/.exec(raw);
+  // An unquoted YAML scalar ends at an ` #` comment; a quoted one does not.
+  return (quoted === null ? raw.replace(/[ \t]+#[^\n]*$/, "") : (quoted[2] ?? "")).trim();
+}
+
+/**
+ * Crons DECLARED by an `on:` block — from declarations only, never from prose.
+ *
+ * The falsifier that produced this function deserves its irony on the record: **the
+ * workflows whose comments document this very parser are the workflows that broke it.**
+ * Six install shields carry the line
+ *
+ *     # (src/Core.TypeScript/forge-host/github/workflow-triggers.ts) turns a `cron:`
+ *
+ * inside their `on:` block, and the previous extractor was an unanchored
+ * `/cron\s*:\s*["']?([^"'\n#]+)["']?/g` — so it matched `cron:` in that sentence and
+ * carried off the following backtick as a cron expression. `docs/DRIFT-DASHBOARD.md`
+ * rendered ``schedule: '`', '11 3 * * *'`` and `lint (markdownlint)` went red on `main`
+ * with MD037. Wrapping crons in code spans (#15779) was right and cannot help here: the
+ * value ITSELF was a backtick, so the span put around it closed on it.
+ *
+ * Two properties, each separately load-bearing:
+ *
+ *   1. **A key match inside a comment is not a declaration.** The match is anchored to
+ *      the start of a line and admits only horizontal whitespace and the sequence dash
+ *      before `cron:`, which no `#` comment line can satisfy. (`listValuesFor` and
+ *      `triggerSubBlock` are already comment-blind for the same reason — their key
+ *      matches are `^[ \t]*key[ \t]*:` — but that was an accident of the anchor rather
+ *      than a stated property, so a test now pins it.)
+ *   2. **A value that is not a cron is REFUSED, not rendered.** Refusing loudly is this
+ *      file's whole disposition: a parser that guesses turns a display bug into a silent
+ *      one, and a parser that renders whatever it grabbed turns one into a *contagious*
+ *      one — it broke the document it was writing into.
+ */
+export function extractCrons(onBlock: string): CronExtraction {
+  const scheduleDeclared = /^[ \t]*schedule[ \t]*:/m.test(onBlock);
+  const lines = onBlock.split("\n");
+  const crons: string[] = [];
+  const rejected: string[] = [];
+  for (let i = 0; i < lines.length; i += 1) {
+    // `^[ \t]*-[ \t]*cron[ \t]*:` — a sequence item at the start of a line, which is the
+    // only shape GitHub accepts. A comment line begins with `#` and can never satisfy it.
+    const m = /^([ \t]*)-[ \t]*cron[ \t]*:(.*)$/.exec(lines[i] ?? "");
+    if (m === null) continue;
+    const inline = (m[2] ?? "").trim();
+    const raw = inline === "" ? continuationScalar(lines, i, (m[1] ?? "").length) : inline;
+    const value = scalarValue(raw);
+    if (isCronShaped(value)) crons.push(value);
+    else rejected.push(value);
+  }
+  return { crons, rejected, scheduleDeclared };
+}
+
+/**
+ * A rejected value is NAMED, never dropped and never rendered as if it were a cron.
+ * Escaped rather than code-spanned, because the value that forced this clause into
+ * existence was itself a backtick.
+ */
+function refusalNote(rejected: readonly string[]): string {
+  if (rejected.length === 0) return "";
+  const shown = rejected.map((r) => `"${markdownEscapeInline(r)}"`).join(", ");
+  return ` — refused ${String(rejected.length)} unreadable \`cron:\` value(s): ${shown}`;
+}
+
+/**
+ * The expectation a `schedule:` declaration justifies, or `null` when the block declares
+ * no schedule at all and the caller should go on to the event-driven triggers.
+ *
+ * A `schedule:` with nothing readable under it returns `unknown`, NOT `null`: falling
+ * through would silently downgrade a cadence claim to `on-change`, and the dashboard
+ * would stop asking why the clock went quiet — a check that cannot fail.
+ */
+function scheduleExpectation({ crons, rejected, scheduleDeclared }: CronExtraction): CheckExpectation | null {
+  const refusals = refusalNote(rejected);
+  if (crons.length > 0) {
+    const derived = crons.map(cronPeriodSeconds).filter((p): p is number => p !== null);
+    const spans = crons.map((c) => `\`${c}\``).join(", ");
+    if (derived.length === crons.length) {
+      return { kind: "periodic", periodSeconds: Math.min(...derived), detail: `schedule: ${spans}${refusals}` };
+    }
+    const floor = derived.length > 0 ? "the derivable minimum" : "a 30d floor";
+    return {
+      kind: "periodic",
+      periodSeconds: derived.length > 0 ? Math.min(...derived) : UNDERIVABLE_CRON_PERIOD_SECONDS,
+      detail: `schedule: ${spans} — period not fully derivable, using ${floor} for staleness${refusals}`,
+    };
+  }
+  if (!scheduleDeclared) return null;
+  return {
+    kind: "unknown",
+    reason: "underivable",
+    detail: rejected.length > 0
+      ? `\`schedule:\` declared, but no readable \`cron:\` under it${refusals}`
+      : "`schedule:` declared with no `cron:` entry this parser can read",
+  };
 }
 
 /**
@@ -240,24 +369,8 @@ export function expectationFromWorkflow(yaml: string, ref: string): CheckExpecta
     return { kind: "unknown", reason: "underivable", detail: "no top-level `on:` block found in the workflow file" };
   }
 
-  const crons = scheduleCrons(onBlock);
-  if (crons.length > 0) {
-    const periods = crons.map(cronPeriodSeconds);
-    const derived = periods.filter((p): p is number => p !== null);
-    if (derived.length === crons.length) {
-      const period = Math.min(...derived);
-      return {
-        kind: "periodic",
-        periodSeconds: period,
-        detail: `schedule: ${crons.map((c) => `\`${c}\``).join(", ")}`,
-      };
-    }
-    return {
-      kind: "periodic",
-      periodSeconds: derived.length > 0 ? Math.min(...derived) : UNDERIVABLE_CRON_PERIOD_SECONDS,
-      detail: `schedule: ${crons.map((c) => `\`${c}\``).join(", ")} — period not fully derivable, using ${derived.length > 0 ? "the derivable minimum" : "a 30d floor"} for staleness`,
-    };
-  }
+  const schedule = scheduleExpectation(extractCrons(onBlock));
+  if (schedule !== null) return schedule;
 
   const inlineNames = inlineTriggerNames(onBlock);
   const hasPush = inlineNames === null ? /^\s*push\s*:/m.test(onBlock) : inlineNames.includes("push");
@@ -271,37 +384,11 @@ export function expectationFromWorkflow(yaml: string, ref: string): CheckExpecta
   // `workflow_run` chains off another workflow completing: it fires when something
   // else fires, so silence on it is not itself alarming — the workflow it chains from
   // is the one that carries the cadence claim.
-  const requestish = [
-    "pull_request",
-    "pull_request_target",
-    "workflow_dispatch",
-    "workflow_call",
-    "workflow_run",
-    "issue_comment",
-    "issues",
-    "repository_dispatch",
-    "release",
-    "watch",
-    "fork",
-    "deployment",
-    "check_run",
-    "check_suite",
-    "discussion",
-    "label",
-    "milestone",
-    "page_build",
-    "project",
-    "public",
-    "status",
-  ];
+  const requestish = ["pull_request", "pull_request_target", "workflow_dispatch", "workflow_call", "workflow_run", "issue_comment", "issues", "repository_dispatch", "release", "watch", "fork", "deployment", "check_run", "check_suite", "discussion", "label", "milestone", "page_build", "project", "public", "status"];
   for (const t of requestish) {
     const present = inlineNames === null ? new RegExp(`^\\s*${t}\\s*:`, "m").test(onBlock) : inlineNames.includes(t);
     if (present) return { kind: "on-demand", detail: t };
   }
 
-  return {
-    kind: "unknown",
-    reason: "underivable",
-    detail: `unrecognised triggers in \`on:\` block: ${onBlock.trim().slice(0, 120).replace(/\s+/g, " ")}`,
-  };
+  return { kind: "unknown", reason: "underivable", detail: `unrecognised triggers in \`on:\` block: ${onBlock.trim().slice(0, 120).replace(/\s+/g, " ")}` };
 }
