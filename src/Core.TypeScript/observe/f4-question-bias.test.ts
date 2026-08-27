@@ -26,7 +26,9 @@ import {
   assertSingleRecord,
   MAX_RAW_CHARS,
   ProtocolViolation,
+  resolveOutPath,
   serializeRow,
+  writeRow,
   toAnswerRow,
   type AnswerRow,
 } from "./f4-question-bias-run";
@@ -684,6 +686,59 @@ describe("the JSONL record boundary", () => {
 
   test("assertSingleRecord accepts a well-formed line", () => {
     expect(() => assertSingleRecord('{"a":"b\\nc"}')).not.toThrow();
+  });
+});
+
+/**
+ * The DESTINATION half of the write — the property CodeQL alerts #801 / #803 named as
+ * unstated. `serializeRow`'s tests above cover the CONTENT; these cover the PATH.
+ *
+ * Each case is the shape a real defect would take, not a synthetic string: a model id
+ * carrying a slash, a domain id that is `..`, a suffix swap that turns a data sink into a
+ * config sink, and an absolute path handed in where a bare name was expected. The last is
+ * the one an eyeball check misses — `join(base, "/etc/passwd")` stays inside `base`, so
+ * containment alone passes it and only the separator rule catches it.
+ */
+describe("the output path is contained, not merely assumed", () => {
+  const DIR = "/tmp/zeta-f4-out";
+
+  test("a legitimate name resolves inside the dataset directory", () => {
+    expect(resolveOutPath(DIR, "R-qwen2-5-0-5b.jsonl")).toBe("/tmp/zeta-f4-out/R-qwen2-5-0-5b.jsonl");
+  });
+
+  test("a separator in the name is refused — a name is a name, never a path", () => {
+    expect(() => resolveOutPath(DIR, "a\\b.jsonl")).toThrow(/path separator/);
+  });
+
+  test("an absolute path escapes containment — the case an eyeball check misses", () => {
+    expect(() => resolveOutPath(DIR, "/etc/cron.d/R.jsonl")).toThrow(/escapes the dataset directory/);
+  });
+
+  test("traversal out of the dataset directory is refused", () => {
+    expect(() => resolveOutPath(DIR, "..")).toThrow(/escapes the dataset directory/);
+    expect(() => resolveOutPath(DIR, "../R.jsonl")).toThrow(/escapes the dataset directory/);
+  });
+
+  test("a SUBDIRECTORY is refused — containment alone would allow it", () => {
+    expect(() => resolveOutPath(DIR, "sub/R.jsonl")).toThrow(/path separator/);
+  });
+
+  test("a NUL byte is refused — the truncation trick that makes a suffix check lie", () => {
+    expect(() => resolveOutPath(DIR, "R.jsonl\0.sh")).toThrow(/path separator/);
+  });
+
+  test("writeRow is WIRED to the guard, and refuses before it creates anything", () => {
+    const row = {
+      domain: "R", model: "m", prompt: "p", replicate: 0, seed: 1,
+      temperature: 0.8, raw: "x", ms: 1, promptTokens: 1, evalTokens: 1,
+    };
+    expect(() => writeRow("../escape.jsonl", row)).toThrow(/escapes the dataset directory/);
+    expect(() => writeRow("payload.sh", row)).toThrow(/not \.jsonl/);
+  });
+
+  test("a non-.jsonl sink is refused — this write is data, never code or config", () => {
+    expect(() => resolveOutPath(DIR, "R.sh")).toThrow(/not \.jsonl/);
+    expect(() => resolveOutPath(DIR, "R.jsonl.bak")).toThrow(/not \.jsonl/);
   });
 });
 

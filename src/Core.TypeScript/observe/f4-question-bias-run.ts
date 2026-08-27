@@ -17,7 +17,7 @@
  */
 
 import { appendFileSync, mkdirSync, readFileSync } from "node:fs";
-import { join } from "node:path";
+import { join, resolve, sep } from "node:path";
 import { generate } from "./f3-hat-choice-decorrelation";
 import { domainById, promptText, seedFor, type DomainSpec } from "./f4-question-bias";
 
@@ -178,10 +178,62 @@ export function serializeRow(row: AnswerRow): string {
   return `${json}\n`;
 }
 
-function writeRow(file: string, row: AnswerRow): void {
+/**
+ * The DESTINATION half of the write, enforced rather than assumed.
+ *
+ * `serializeRow` makes the network-sourced *content* safe on disk; nothing made the
+ * *path* safe. Today `outFile` builds the name from `domain.id` and a model id — both
+ * local registry constants — so no wire value reaches it. That is a property of the
+ * current call graph, not of the code, and CodeQL is right that it is unstated: alerts
+ * #801 / #803 (`js/http-to-file-access`) flag exactly this write.
+ *
+ * The response to an unstated property is to state it as a check, not to argue that the
+ * call graph happens to be fine. So every read and every write in this file resolves its
+ * path through here, and the three properties the dismissal rationale rests on become
+ * falsifiable:
+ *
+ *   1. **contained** — the resolved path is inside `OUT_DIR`, checked after `resolve`
+ *      rather than by inspecting the string, because `..` is not the only way out
+ *   2. **no separators** — a name is a name, never a path; this is what stops a write
+ *      landing in a SUBDIRECTORY of the dataset dir, which containment alone permits
+ *   3. **`.jsonl` only** — the sink is a data extension; nothing in this repo executes one
+ *
+ * The order is load-bearing and was fixed by mutation testing, not by taste. Written with
+ * the name rules first, the containment clause was unreachable — every input that could
+ * have escaped was rejected one line earlier, so deleting containment broke no test. A
+ * guard nothing can trigger is a check that cannot fail, which is the defect this file's
+ * other comments keep naming. Containment runs first because it is the property that
+ * actually matters; each of the three now dies under its own mutant.
+ *
+ * A future edit that lets a model-supplied string choose the filename fails here instead
+ * of silently writing outside the dataset directory.
+ */
+export function resolveOutPath(dir: string, file: string): string {
+  const base = resolve(dir);
+  const full = resolve(base, file);
+  if (!full.startsWith(base + sep)) {
+    throw new Error(`output path '${full}' escapes the dataset directory '${base}'`);
+  }
+  if (file.includes("/") || file.includes("\\") || file.includes("\0")) {
+    throw new Error(`output name '${file}' contains a path separator — it must be a bare filename`);
+  }
+  if (!file.endsWith(".jsonl")) {
+    throw new Error(`output name '${file}' is not .jsonl — this sink writes data, never code or config`);
+  }
+  return full;
+}
+
+/**
+ * Exported for one reason: a guard that is tested but not WIRED is the same vacuity one
+ * level up. Unhooking `resolveOutPath` from this function kills no test while the
+ * function is private, so the seam has to be reachable for the wiring itself to be
+ * falsifiable. Resolution happens BEFORE `mkdirSync` so a refused name creates nothing.
+ */
+export function writeRow(file: string, row: AnswerRow): void {
   const line = serializeRow(row);
+  const path = resolveOutPath(OUT_DIR, file);
   mkdirSync(OUT_DIR, { recursive: true });
-  appendFileSync(join(OUT_DIR, file), line);
+  appendFileSync(path, line);
 }
 
 /**
@@ -191,7 +243,7 @@ function writeRow(file: string, row: AnswerRow): void {
  */
 function rowsOnDisk(file: string): number {
   try {
-    return readFileSync(join(OUT_DIR, file), "utf8")
+    return readFileSync(resolveOutPath(OUT_DIR, file), "utf8")
       .split("\n")
       .filter((l) => l.length > 0).length;
   } catch (err) {
@@ -230,7 +282,7 @@ async function runDomain(
         }
       }
     }
-    console.log(`\n  ${domain.id} / ${model} complete -> ${join(OUT_DIR, file)}`);
+    console.log(`\n  ${domain.id} / ${model} complete -> ${resolveOutPath(OUT_DIR, file)}`);
   }
 }
 
