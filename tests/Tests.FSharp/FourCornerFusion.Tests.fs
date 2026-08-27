@@ -99,9 +99,8 @@ let ``no ArrowApply app: SchedulerZeta predicts the VALUE-channel period; interr
     Assert.Equal(2, r.Period)
     Assert.Equal(0, r.Transient)
     Assert.Equal(2, r.Reachable)
-    let _interrupt = Interrupted SentinelMissing
-    let r2 = SchedulerZeta.predict key step start
-    Assert.Equal(r.Period, r2.Period)
+    // There is deliberately no InterruptFeedback argument: predict closes over the
+    // value-channel map only, which the function's type makes explicit.
     Assert.Equal(1, FerryThrottlerConfig.deterministic.MaxDegreeOfParallelism)
 
 [<Fact>]
