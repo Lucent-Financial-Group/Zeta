@@ -44,8 +44,9 @@ open Zeta.Core.Abstractions
 ///      different fours: I/O slots, code dimension k=4, N=4 valise
 ///      colours. Coded [8,4] and uncoded Cl(0,8) both split 8B+8F
 ///      — same count, different objects (quotient graph vs regular
-///      representation). E8: roots and algebra metered; compact group
-///      is a Killing-form substitute, not the manifold.
+///      representation). E8: roots and algebra metered; split
+///      Chevalley root groups have multiply (`E8ChevalleyGroup`);
+///      compact real Lie group is still a Killing-form substitute.
 ///
 /// Anchors (Beacon): W. K. Clifford 1878; Lounesto 2001 §3 (signature vs
 /// involutions); Cayley–Dickson doubling (`CayleyDickson.fs`);
@@ -284,6 +285,107 @@ module FourCornerC4 =
     let pingReturnClass = ErasureClass.ofLargestFibre 1
     let errorShortCircuitClass = ErasureClass.ofLargestFibre 2
 
+    // ── One clock tick = the 2×2 occupancy ────────────────────────────
+    // Meijer 2-corner is one Q (in/out, no ∂_τ). AdinkraClock: Q_up
+    // (boson→fermion, no tick) then Q_down (fermion→boson, one tick).
+    // `{Q,Q}` is the round-trip that *is* one clock tick. FourCorner
+    // is that round-trip's I/O: two Q-moves × (in/out) = 4 slots.
+    // Occupancy of options, not a group law on the record.
+
+    /// One tick's I/O record: all four corners occupied.
+    let oneTick
+        (tin: int)
+        (tout: int)
+        (outFb: string)
+        (inFb: string)
+        : FourCorner.FourCornerOwnership<int, int, string, string> =
+        FourCorner.ofIn tin
+        |> FourCorner.withOut tout
+        |> FourCorner.withOutFeedback outFb
+        |> FourCorner.withInFeedback inFb
+
+    let occupancyCount
+        (o: FourCorner.FourCornerOwnership<int, int, string, string>)
+        : int =
+        let mutable n = 1 // TIn is required
+
+        if o.TOut.IsSome then
+            n <- n + 1
+
+        if o.TOutFeedback.IsSome then
+            n <- n + 1
+
+        if o.TInFeedback.IsSome then
+            n <- n + 1
+
+        n
+
+    /// Two Q-moves per `{Q,Q}` tick (`AdinkraClock.step` twice).
+    let adinkraQMovesPerTick = 2
+
+    // ── Mutual options, noninterference, bound 2√2 not √2 ────────────
+    // TOut and feedback are *mutual options*: both may be occupied
+    // (product) without erasing TIn. Two declared unit axes, orthogonal
+    // by noninterference (§13). Their Pythagorean factor is √2.
+    // Aaron 2026-08-27: the CHSH / quantum number is **2√2**, not √2 —
+    // missing the front 2. The front 2 is the classical / Meijer
+    // 2-corner floor (BellTest.ClassicalBound; Tsirelson C²=4I when
+    // the pair commutes). Bound = 2 × √2 = 2√2. Integer lock:
+    // S² = 8 = (2√2)²; the irrational is readout only (`Tsirelson.fs`).
+    // Do not identify occupancy-√2 with FeedbackThrottle.TsirelsonLatency
+    // (that √2 is a model-contingent *latency*, not the bound).
+
+    let mutualOptionOccupancyNorm (dataOut: bool) (feedback: bool) : float =
+        let d = if dataOut then 1.0 else 0.0
+        let f = if feedback then 1.0 else 0.0
+        sqrt (d * d + f * f)
+
+    /// Classical CHSH / Meijer 2-corner floor. The front 2.
+    [<Literal>]
+    let classicalChshFloor = 2
+
+    /// Integer lock: S² ≤ 8. (2√2)². Irrational only at readout.
+    [<Literal>]
+    let tsirelsonSSquared = 8
+
+    /// Classical S² = 2² = 4 (commuting control in `Tsirelson.fs`).
+    [<Literal>]
+    let classicalSSquared = 4
+
+    /// The bound: front 2 × occupancy factor √2 = 2√2. Not √2 alone.
+    let tsirelsonBoundFromMutualOptions : float =
+        float classicalChshFloor * mutualOptionOccupancyNorm true true
+
+    // ── Quantum from {Q,Q}: two deniable moves, future snap ──────────
+    // Each Q is a 2-corner (in/out). Either move is *plausibly deniable*
+    // as a clock event: AdinkraClock's first Q emits no ∂_τ. Both are
+    // true-ish while the FourCorner product holds both options (SoftValue
+    // support, not snapped). The pair `{Q,Q}` is the tick; that close is
+    // the collapse. SoftValue.snap is the only sanctioned collapse
+    // (`DuExpand`: snap is the only collapse). Not "FourCorner is a
+    // qubit" — derivation of where the 2×2 occupancy can carry two
+    // live options until the future tick.
+
+    // ── +1 and −1 compass: related, divergent ────────────────────────
+    // +1 = north = genuineDelta = VALUE product = Reversible (involution).
+    // −1 = south = retractionDelta = C₄ south = e^{iπ}.
+    // Meijer filled the dual hole with OnError, which *looks* like −1
+    // (the other terminal) but is a SUM: after Error the stream is gone,
+    // and Error∘Error is not defined — not an involution. Related C₄
+    // points; divergent as maps (Negate∘Negate = id vs terminal erasure).
+
+    let plusOnePhase = north
+    let minusOnePhase = south
+
+    let negateIsInvolution (ring: IStarRing<'W>) (eq: 'W -> 'W -> bool) (w: 'W) : bool =
+        eq (ring.Negate(ring.Negate w)) w
+
+    /// Once `Error`, there is no second application that restores `Ok`.
+    let errorHasNoInverse (r: Result<int, InterruptFeedback>) : bool =
+        match r with
+        | Error _ -> true
+        | Ok _ -> false
+
     // ── E8 three objects: roots, algebra, group ───────────────────────
     // Aaron 2026-08-24/26: at least 2 of 3, try for all 3. Workitem
     // `081M0T8XF3N087G0R002YNFVD9` already closed the algebra gap.
@@ -296,12 +398,22 @@ module FourCornerC4 =
         { RootsMetered: int
           AlgebraMetered: int
           CompactGroupIsSubstitute: bool
+          ChevalleyRootGroupsMetered: bool
           CompactFormNegativeDefinite: bool
           CentreOrder: int }
 
+    /// Roots + algebra + split Chevalley root groups (multiply). Compact
+    /// real Lie group is still the Killing substitute — a different object
+    /// from the algebraic group (`E8ChevalleyGroup`).
     let e8ThreeObjects : E8ObjectStatus =
+        let a0 = E8LieAlgebra.chevalleyE.[0]
+
         { RootsMetered = E8LieAlgebra.rootCount
           AlgebraMetered = E8LieAlgebra.dimension
           CompactGroupIsSubstitute = true
+          ChevalleyRootGroupsMetered =
+            E8ChevalleyGroup.adCubeIsZero a0
+            && E8ChevalleyGroup.adSquareIsEven a0
+            && E8ChevalleyGroup.oneParameterHolds a0 1 1
           CompactFormNegativeDefinite = E8LieAlgebra.compactFormIsNegativeDefinite
           CentreOrder = E8LieAlgebra.centreOrder }

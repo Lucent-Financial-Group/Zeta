@@ -347,6 +347,7 @@ let ``E8: roots 240 and algebra 248 are metered; compact group is still a substi
     inv.AlgebraMetered |> should equal 248
     inv.RootsMetered + 8 |> should equal inv.AlgebraMetered
     inv.CompactGroupIsSubstitute |> should equal true
+    inv.ChevalleyRootGroupsMetered |> should equal true
     inv.CompactFormNegativeDefinite |> should equal true
     inv.CentreOrder |> should equal 1
     // the Killing diagonal is an algebra-basis form, not a group multiply
@@ -359,3 +360,112 @@ let ``E8: roots 240 and algebra 248 are metered; compact group is still a substi
     spinorTotal |> should equal inv.AlgebraMetered
     // coded Construction A lattice roots = algebra roots (set size)
     E8Lattice.roots.Length |> should equal inv.RootsMetered
+    // split Chevalley group has a multiply; compact manifold still does not
+    E8ChevalleyGroup.oneParameterHolds E8LieAlgebra.chevalleyE.[0] 1 1
+    |> should equal true
+
+// ── (K) one clock tick = FourCorner 2×2; Meijer 2-corner is one Q.
+//     Mutual-option factor √2; bound is 2√2 (front 2 = classical).
+//     {Q,Q}: two deniable moves, both true-ish, future snap.
+//     +1/−1 compass: related C₄ points, divergent as maps.
+
+[<Fact>]
+let ``K: one tick fills four corners; Meijer 2-corner is one Q of {Q,Q}`` () =
+    let tick = FC.oneTick 1 2 "authored" "ack"
+    FC.occupancyCount tick |> should equal 4
+    FC.occupancyCount (FourCorner.ofIn 1) |> should equal 1
+    FC.adinkraQMovesPerTick |> should equal 2
+    FC.meijerDualCornerCount |> should equal FC.adinkraQMovesPerTick
+    FC.fourCornerSlotCount
+    |> should equal (FC.adinkraQMovesPerTick * FC.meijerDualCornerCount)
+    // AdinkraClock: two Q-moves emit one ∂_τ
+    let s1, t1 = AdinkraClock.step AdinkraClock.initial
+    t1 |> should equal false
+    let s2, t2 = AdinkraClock.step s1
+    t2 |> should equal true
+    s2.DTauOrder |> should equal 1
+
+[<Fact>]
+let ``K: the bound is 2√2, not √2 — front 2 is the classical floor`` () =
+    FC.classicalChshFloor |> should equal 2
+    FC.classicalSSquared |> should equal 4
+    FC.tsirelsonSSquared |> should equal 8
+    // occupancy factor of two declared axes is √2 — the *extra* factor
+    abs (FC.mutualOptionOccupancyNorm true true - sqrt 2.0) < 1e-12
+    |> should equal true
+    // THE CORRECTION: bound = 2 × √2 = 2√2, not the factor alone
+    abs (FC.tsirelsonBoundFromMutualOptions - 2.0 * sqrt 2.0) < 1e-12
+    |> should equal true
+    abs (FC.tsirelsonBoundFromMutualOptions - BellTest.TsirelsonBound) < 1e-12
+    |> should equal true
+    BellTest.ClassicalBound |> should equal (float FC.classicalChshFloor)
+    // integer lock: S² = 8 is (2√2)²; commuting control is S² = 4
+    FC.tsirelsonSSquared
+    |> should equal (FC.classicalChshFloor * FC.classicalChshFloor * 2)
+    // Tsirelson.fs: C⁴ = 8·C²; commuting A′=A gives C² = 4I (classical)
+    let eqM (a: Tsirelson.M) (b: Tsirelson.M) =
+        Seq.forall2 (fun (r1: int[]) (r2: int[]) -> r1 = r2) a b
+    let c2 = Tsirelson.mul Tsirelson.C Tsirelson.C
+    let c4 = Tsirelson.mul c2 c2
+    eqM c4 (Tsirelson.scale FC.tsirelsonSSquared c2) |> should equal true
+    let classicalC =
+        Tsirelson.chshOf Tsirelson.A Tsirelson.A Tsirelson.B Tsirelson.B'
+    eqM
+        (Tsirelson.mul classicalC classicalC)
+        (Tsirelson.scale FC.classicalSSquared Tsirelson.identity)
+    |> should equal true
+    // occupancy factor √2 can equal TsirelsonLatency as a number (model
+    // artifact) — the *bound* is 2√2, not that latency
+    abs (FC.tsirelsonBoundFromMutualOptions - FeedbackThrottle.TsirelsonLatency)
+    > 1.0
+    |> should equal true
+    let both = FC.oneTick 7 8 "fb" "ack"
+    FC.feedbackKeepsInput 7 both |> should equal true
+
+[<Fact>]
+let ``K: {Q,Q} is two deniable moves; both true-ish until the future snap`` () =
+    // first Q emits no ∂_τ — deniable as a clock event
+    let s1, t1 = AdinkraClock.step AdinkraClock.initial
+    t1 |> should equal false
+    s1.DTauOrder |> should equal 0
+    s1.Field |> should equal AdinkraClock.Fermion
+    // second Q completes {Q,Q}: the tick / collapse of the pair
+    let s2, t2 = AdinkraClock.step s1
+    t2 |> should equal true
+    s2.DTauOrder |> should equal 1
+    // both options occupied (product) until that close — neither erased
+    let live = FC.oneTick 1 2 "up-ish" "down-ish"
+    FC.occupancyCount live |> should equal 4
+    FC.feedbackKeepsInput 1 live |> should equal true
+    // SoftValue: two candidates, both true-ish; snap is the only collapse
+    match SoftValue.ofWeighted
+        [ DynamicValue.String "up", 0.5
+          DynamicValue.String "down", 0.5 ] with
+    | None -> failwith "two-candidate support should build"
+    | Some sv ->
+        SoftValue.confidence sv < 1.0 |> should equal true
+        SoftValue.resolve 0.9 sv |> should equal None
+        match SoftValue.snap SoftValue.best sv with
+        | Some(DynamicValue.String _) -> ()
+        | other -> failwithf "snap is the sanctioned collapse, got %A" other
+
+[<Fact>]
+let ``K: +1/−1 compass related at C₄, divergent as maps — Negate involutes, Error does not`` () =
+    FC.plusOnePhase |> should equal FC.One
+    FC.minusOnePhase |> should equal FC.MinusOne
+    FC.mul FC.plusOnePhase FC.minusOnePhase |> should equal FC.MinusOne
+    // related: both are C₄ points; −1 = e^{iπ} = pingReturn(One)
+    closeC PhasorEndurance.genuineDelta cRing.One |> should equal true
+    closeC PhasorEndurance.retractionDelta (cRing.Negate cRing.One)
+    |> should equal true
+    FC.negateIsInvolution cRing closeC cRing.One |> should equal true
+    FC.negateIsInvolution cRing closeC (Doubled.make 0.3 0.4)
+    |> should equal true
+    // divergent: Meijer OnError / ISR Error is a terminal sum, not Negate
+    let err: Result<int, InterruptFeedback> = Error(Failed "onError analogue")
+    FC.errorHasNoInverse err |> should equal true
+    FC.errorDiscardsValue err |> should equal true
+    FC.pingReturnClass
+    |> should equal ErasureClass.ThermodynamicClass.Reversible
+    FC.errorShortCircuitClass
+    |> should equal ErasureClass.ThermodynamicClass.Erasing
