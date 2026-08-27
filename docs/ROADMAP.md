@@ -286,7 +286,12 @@ using DynamicValue's byte-locked per-format serializer:
     MUMPS-like statics are **DI-injected**, not ambient. InterSystems Caché is the closest
     commercial analog and assumes every node loads the same objects; we allow **per-node
     divergence and reconcile over time** (that is independence). Multi-node is simulable
-    DoP=1→N on one machine. `gen/` wiring follows this slice. Control-plane work;
+    DoP=1→N on one machine. A further specialisation of DynamicValue/SoftValue: the
+    **harness context window is not a saved-and-compressed transcript**. It is a
+    **per-tick evolving ontology schema** (the bulk). Ontology keys sit next to
+    **filenames / file hubs**; **satellites** are out-of-context retrieval on demand
+    for the task (DV2). Already a slice: `SEED-VOCABULARY` cold, `GLOSSARY` on-demand;
+    carved-sentence rules. `gen/` wiring follows this slice. Control-plane work;
     data plane stays dumb. `081M125DNKK087G0R00292E3ET`.
 5. **Extract the data-plane package** at the `IDeltaLog`/`ISnapshotStore` seam.
 6. **Durability floor** — `fsync`. **CLARIFIED (2026-06-07):** the **CP-within-a-cell mechanism — a
@@ -670,6 +675,12 @@ These don't wait for a single round:
 - **One schema, three names.** CloudEvents `dataschema`, the
   Debezium envelope, and the object TypeSchema are the same
   DynamicValue if the IR is honest. Do not run three registries.
+- **Harness context is an ontology, not a compressed log.**
+  Per-tick evolving TypeSchema/SoftValue is the resident bulk.
+  Filenames and file hubs are the ontology keys. Satellites
+  retrieve on demand. Do not persist raw windows and squeeze
+  them. `WAKE-UP.md` / carved-sentence rules are the shipped
+  slice.
 - **ZetaId is a stable name.** Content-address the blob
   (Jumprope / BLAKE3); epoch chooses which blob the name
   currently means. Default pointer is **name → hash**; reverse

@@ -348,6 +348,40 @@ functions, not the other way). Functional is the math; OOP is
 the wrapper. Harder to recover function from class than class
 from function.
 
+## Harness context is a per-tick ontology, not a compressed window
+
+Aaron 2026-08-27:
+
+> oh we also have another spcialzation of dynamic value and soft
+> value, it's the context window in our harness we don't save
+> just raw context windows and compress it over time, we have a
+> pertick evolving onotlogy schema that is promary bulk of the
+> context, the ontology are closely related to filenames and
+> then hubs of files, and the satalites are out of context
+> retrival on demand content for the task at hand.
+
+The naive LLM-memory move is: dump the transcript, compress,
+reload. That is a **raw window** treated as a blob. We refuse
+it.
+
+The specialisation: the resident context **is** a TypeSchema /
+SoftValue — a **per-tick evolving ontology**. Tick N loads tick
+(N−1)'s ontology (VISION DESIGNED, blocked on epoch), not tick
+(N−1)'s token dump. Filenames and **hubs of files** are the
+ontology keys (stable, DV2 hubs). **Satellites** are
+out-of-context retrieval: the task asks, the satellite loads,
+the hub did not have to hold it. SoftValue keeps uncertainty
+about what belongs in the ontology this tick; snap is still the
+only collapse.
+
+Shipped slice, not a new invention: `docs/WAKE-UP.md` (SEED
+kernel cold, GLOSSARY on-demand); `.claude/rules/` carved
+sentences as hubs pointing at satellite docs; `MEMORY.md` hub
+→ `CURRENT-*.md` / `INDEX.md`. The missing half is making that
+ontology a **store-native DynamicValue** the generators and
+the harness both consume — TypeSchema-from-DV, same IR as the
+CloudEvents dataschema.
+
 ## Product vs framework
 
 As many product lanes as make sense; **bundle related**; keep

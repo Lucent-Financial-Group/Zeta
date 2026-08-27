@@ -158,7 +158,11 @@ Also this row:
   schema path is the defect.
 - **Tick-N loads tick-(N−1).** Self-editing compiler. Still needs
   the epoch layer (VISION: DESIGNED). Bounded ticks make the load
-  well-defined; the wire does not exist.
+  well-defined; the wire does not exist. What it loads is the
+  **ontology** (per-tick evolving TypeSchema/SoftValue), not a
+  compressed raw context window. Filenames/file hubs = ontology
+  keys; satellites = on-demand retrieval. `WAKE-UP.md` is the
+  shipped slice.
 - **ForgeHost extra-git is not Zeta and not Harny.** Surfaces
   already live in `src/Core.TypeScript/forge-host/`. Zeta
   (`clis/` `sim`/`mea`/`cut`) is git-native. Harny is the agent
