@@ -67,6 +67,16 @@ export function cronPeriodSeconds(expr: string): number | null {
   return null;
 }
 
+/** Cron expressions from actual `schedule` list entries, never comments. */
+function scheduleCrons(onBlock: string): readonly string[] {
+  const schedule = triggerSubBlock(onBlock, "schedule");
+  if (schedule === null) return [];
+
+  return [...schedule.matchAll(/^\s*-\s+cron\s*:\s*(?:"([^"\n#]+)"|'([^'\n#]+)'|([^#\n]+?))\s*(?:#.*)?$/gm)]
+    .map((match) => (match[1] ?? match[2] ?? match[3] ?? "").trim())
+    .filter((cron) => cron !== "");
+}
+
 /**
  * Extract the top-level `on:` block's text from a workflow file.
  *
@@ -128,7 +138,11 @@ export function listValuesFor(subText: string, key: string): readonly string[] |
   const unquote = (v: string): string => v.trim().replace(/^["']|["']$/g, "");
 
   if (inline.startsWith("[")) {
-    return inline.replace(/^\[|\].*$/g, "").split(",").map(unquote).filter((v) => v !== "");
+    return inline
+      .replace(/^\[|\].*$/g, "")
+      .split(",")
+      .map(unquote)
+      .filter((v) => v !== "");
   }
   if (inline !== "" && !inline.startsWith("#")) return [unquote(inline)];
 
@@ -203,7 +217,11 @@ export function inlineTriggerNames(onBlock: string): readonly string[] | null {
   const t = onBlock.trim();
   if (t === "" || t.includes("\n")) return null;
   if (t.startsWith("[")) {
-    return t.replace(/^\[|\]$/g, "").split(",").map((s) => s.trim().replace(/^["']|["']$/g, "")).filter((s) => s !== "");
+    return t
+      .replace(/^\[|\]$/g, "")
+      .split(",")
+      .map((s) => s.trim().replace(/^["']|["']$/g, ""))
+      .filter((s) => s !== "");
   }
   if (/^[a-z_]+$/.test(t)) return [t];
   return null;
@@ -222,13 +240,17 @@ export function expectationFromWorkflow(yaml: string, ref: string): CheckExpecta
     return { kind: "unknown", reason: "underivable", detail: "no top-level `on:` block found in the workflow file" };
   }
 
-  const crons = [...onBlock.matchAll(/cron\s*:\s*["']?([^"'\n#]+)["']?/g)].map((m) => (m[1] ?? "").trim());
+  const crons = scheduleCrons(onBlock);
   if (crons.length > 0) {
     const periods = crons.map(cronPeriodSeconds);
     const derived = periods.filter((p): p is number => p !== null);
     if (derived.length === crons.length) {
       const period = Math.min(...derived);
-      return { kind: "periodic", periodSeconds: period, detail: `schedule: ${crons.map((c) => `\`${c}\``).join(", ")}` };
+      return {
+        kind: "periodic",
+        periodSeconds: period,
+        detail: `schedule: ${crons.map((c) => `\`${c}\``).join(", ")}`,
+      };
     }
     return {
       kind: "periodic",
@@ -249,11 +271,37 @@ export function expectationFromWorkflow(yaml: string, ref: string): CheckExpecta
   // `workflow_run` chains off another workflow completing: it fires when something
   // else fires, so silence on it is not itself alarming — the workflow it chains from
   // is the one that carries the cadence claim.
-  const requestish = ["pull_request", "pull_request_target", "workflow_dispatch", "workflow_call", "workflow_run", "issue_comment", "issues", "repository_dispatch", "release", "watch", "fork", "deployment", "check_run", "check_suite", "discussion", "label", "milestone", "page_build", "project", "public", "status"];
+  const requestish = [
+    "pull_request",
+    "pull_request_target",
+    "workflow_dispatch",
+    "workflow_call",
+    "workflow_run",
+    "issue_comment",
+    "issues",
+    "repository_dispatch",
+    "release",
+    "watch",
+    "fork",
+    "deployment",
+    "check_run",
+    "check_suite",
+    "discussion",
+    "label",
+    "milestone",
+    "page_build",
+    "project",
+    "public",
+    "status",
+  ];
   for (const t of requestish) {
     const present = inlineNames === null ? new RegExp(`^\\s*${t}\\s*:`, "m").test(onBlock) : inlineNames.includes(t);
     if (present) return { kind: "on-demand", detail: t };
   }
 
-  return { kind: "unknown", reason: "underivable", detail: `unrecognised triggers in \`on:\` block: ${onBlock.trim().slice(0, 120).replace(/\s+/g, " ")}` };
+  return {
+    kind: "unknown",
+    reason: "underivable",
+    detail: `unrecognised triggers in \`on:\` block: ${onBlock.trim().slice(0, 120).replace(/\s+/g, " ")}`,
+  };
 }

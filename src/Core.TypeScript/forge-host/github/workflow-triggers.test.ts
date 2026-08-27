@@ -46,7 +46,8 @@ describe("extractOnBlock", () => {
 });
 
 describe("inlineTriggerNames", () => {
-  it("reads the flow-sequence form", () => expect(inlineTriggerNames("[push, pull_request]")).toEqual(["push", "pull_request"]));
+  it("reads the flow-sequence form", () =>
+    expect(inlineTriggerNames("[push, pull_request]")).toEqual(["push", "pull_request"]));
   it("reads the bare-scalar form", () => expect(inlineTriggerNames("push")).toEqual(["push"]));
   it("returns null for the mapping form", () => expect(inlineTriggerNames("  push:\n    branches: [main]")).toBeNull());
 });
@@ -86,6 +87,18 @@ describe("expectationFromWorkflow — derived, never assumed", () => {
     expect(e.detail).toContain("not fully derivable");
   });
 
+  it("ignores explanatory `cron:` text in comments before a real schedule entry", () => {
+    const e = expectationFromWorkflow(
+      'on:\n  # expectationFromWorkflow turns a `cron:` into a periodic check.\n  schedule:\n    - cron: "11 3 * * *"\n',
+      "main",
+    );
+    expect(e).toEqual({
+      kind: "periodic",
+      periodSeconds: 86_400,
+      detail: "schedule: `11 3 * * *`",
+    });
+  });
+
   it("a workflow with no on: block is UNKNOWN — never defaulted to the convenient case", () => {
     expect(expectationFromWorkflow("name: x\njobs: {}\n", "main").kind).toBe("unknown");
   });
@@ -113,7 +126,8 @@ describe("branch filters — the bug this file's first version shipped", () => {
     // The first version only recognised the block form and the quoted flow form, so
     // `branches: [main]` read as "does not include main" and the repo's single most
     // important workflow was classified `on-demand`. Caught on the first live pass.
-    const gateish = "on:\n  pull_request:\n    types: [opened]\n  push:\n    branches: [main]\n  merge_group:\n  workflow_dispatch:\n";
+    const gateish =
+      "on:\n  pull_request:\n    types: [opened]\n  push:\n    branches: [main]\n  merge_group:\n  workflow_dispatch:\n";
     expect(expectationFromWorkflow(gateish, "main").kind).toBe("on-change");
   });
 
