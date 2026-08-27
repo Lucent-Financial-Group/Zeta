@@ -442,6 +442,80 @@ on the pointer slot is a different operator. Do not use one
 acronym for both. Benefit from Jumprope: keep the ZetaId, park
 the current blob under a content hash, let epoch choose.
 
+Aaron 2026-08-27, on name↔hash pointing and the **hardware** CAS
+(Albahari, not Itron IP):
+
+> yes exactly but each can point to addresses in the other if we
+> get it right, or maybe they just need to point in one
+> direction, not sure. … this is our connonical CAS operation.
+> based on josephy albamari who wrote a bunch of dotnet books,
+> not itron ip, attributed to him and his books.
+
+Also: a detector improvement (teach the linter the
+stat-then-use shape) is the durable fix over N patches, but it
+would surface a large new finding set. How much debt to
+formalise at once is a separate call — **not** something to
+slip into a fix commit.
+
+## Hardware CAS is Albahari SpeculativeUpdate — this session does not implement it
+
+Two operators, two names:
+
+| name | what it is | Beacon |
+|---|---|---|
+| Jumprope "CAS-not-pointers" | **content-addressed storage** | Vokes / Pugh |
+| Hardware CAS | `Interlocked.CompareExchange` retry | **Joseph Albahari**, *Threading in C#* / *C# in a Nutshell*; also Toub / Fowler (standing threading rule) |
+
+The canonical **hardware** CAS, as a requirement (not as Itron
+expression):
+
+1. Snapshot the field.
+2. `update(snapshot)` must be **pure** — it may run more than
+   once (speculative).
+3. `Interlocked.CompareExchange(ref field, computed, snapshot)`.
+4. Success iff the CE result is the snapshot (reference-equals
+   for class; value-equals for `int`).
+5. Else `SpinWait.SpinOnce()` and retry. **No arbitrary retry
+   cap** — the environment decides (same anti-Nagle discipline
+   as the ferry). `Transaction.updateCas` today caps at 1024 and
+   `invalidOp`s; that is the cousin, not the canonical form.
+6. `Try…` variant: `shouldAbort(snapshot)` returns false without
+   writing.
+
+**Clean-room.** Aaron pasted an Itron `ExtensibilityExtensions.cs`
+path and body into chat as illustration and said it is **not**
+Itron IP. This session **did not open that file**. The paste is
+still *expression* this agent saw, so this agent **does not
+implement** SpeculativeUpdate. A later named agent that has not
+seen the paste implements from Albahari's published books and
+the numbered requirements above. `DeterministicSyncContext.fs`
+already cites Itron `TrySpeculativeUpdate` in a comment — that
+attribution should move to Albahari/Toub when the helper lands.
+
+## Name → hash is required; hash → names is an index, not identity
+
+Open, not decided. Two honest layouts:
+
+- **One direction (sufficient for epoch):** ZetaId → current
+  content hash. The name is stable; the blob moves; epoch
+  rebinds the name.
+- **Both directions:** the hash also carries (or an index
+  holds) the ZetaIds that currently name it — reverse lookup
+  without a scan. That is an **address index**, not a second
+  identity. "Each can point to addresses in the other" is this
+  index, not two identities for one object.
+
+Until someone picks, default is **one direction** (name → hash).
+The reverse is additive and does not change the epoch rule.
+
+## Linter debt is a detector, not a fix-commit rider
+
+Teaching the linter the stat-then-use shape is the durable fix
+(one detector, not N patches). It would also mint a large new
+finding set and needs a baseline expansion. That is a separate
+call, not a rider on a behaviour fix. Same rule as "do not
+slip."
+
 ## What is missing
 
 1. **The other three cells of the 4-way matrix, plus split.**
@@ -550,6 +624,9 @@ single-item TCS away without a measured replacement for
 - **Diana Duncan** — recursive-CTE / NULL-as-hole meter-sim on
   SQL PDW; OSS co-credit granted (`DecorrelationMetrology.fs`).
   Book naming still proofread-gated (CONSENT-LEDGER).
+- **Joseph Albahari**, *Threading in C#* — `SpeculativeUpdate`
+  as the canonical hardware CAS (with Toub / Fowler / MS Learn
+  as the standing threading stack). Not Itron.
 - **David Greenberg**, Hitchhiker trees (buffers). **Scott
   Vokes**, *Data Structures: The Code That Isn't There* (Strange
   Loop 2012) — **difference lists** are the named holes (also

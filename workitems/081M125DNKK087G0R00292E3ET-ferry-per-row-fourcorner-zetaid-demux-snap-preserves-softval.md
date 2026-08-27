@@ -136,9 +136,14 @@ Also this row:
   SQL PDW meter-sim with Diana Duncan (OSS credit granted;
   book naming proofread-gated). Clean-room: requirement only.
 - **ZetaId is a stable name; Jumprope content-addresses the
-  blob.** Epoch chooses which blob. Not mutex compare-and-swap
-  (do not fuse the two "CAS"). Futamura specializes the
-  interpreter; Jumprope specializes location against content.
+  blob.** Epoch chooses which blob. Default: **name → hash**.
+  Reverse (hash → names) is an optional index, not identity —
+  open whether we need both. Hardware CAS is Albahari
+  `SpeculativeUpdate` (pure update, `Interlocked.CE`,
+  `SpinWait`, no retry cap). Not Itron IP. This session saw an
+  Itron paste and **does not implement**. `Transaction.updateCas`
+  is the cousin (1024-cap). Linter stat-then-use = separate
+  detector PR, not a fix rider.
 - **TypeSchema from DynamicValue.** Today
   `src/Core.CSharp/TypeSchema.cs` +
   `SchemaSourceGenerator` consume AdditionalFiles / JSON IR, not

@@ -672,8 +672,16 @@ These don't wait for a single round:
   DynamicValue if the IR is honest. Do not run three registries.
 - **ZetaId is a stable name.** Content-address the blob
   (Jumprope / BLAKE3); epoch chooses which blob the name
-  currently means. That is not mutex compare-and-swap. Caché
-  loads the same objects everywhere; we diverge and reconcile.
+  currently means. Default pointer is **name → hash**; reverse
+  (hash → names) is an optional index, not a second identity.
+  Hardware CAS is Albahari `SpeculativeUpdate` (`Interlocked.CE`
+  + `SpinWait`, pure update, no retry cap) — not Jumprope, not
+  Itron IP. This slice does not implement it (clean-room: paste
+  was seen; implement from Albahari via a clean agent).
+  `Transaction.updateCas` is the in-tree cousin with a 1024 cap.
+  Caché loads the same objects everywhere; we diverge and
+  reconcile. Linter stat-then-use is a detector PR of its own,
+  not a rider on a fix.
 - **CLIs share a plugin kernel.** Do not dump forge-host into
   Harny or Zeta. ForgeHost verbs are Nucleus plugins on the
   existing command core. No Quay. No fourth CLI product.
