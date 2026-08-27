@@ -12,12 +12,14 @@ composes_with: ["081M10AAVAT087G0R0027M0GV5", "081M10AZ6KS087G0R0000SSFMH"]
 
 # Ferry per-row FourCorner + ZetaId demux; snap preserves SoftValue uncertainty
 
-Aaron 2026-08-27: the ferry is the **universal adapter** between
-increment-one-at-a-time and batch. Caller may submit a single item
-and the boat batches underneath; caller may submit a batch and the
-processor may still be one-at-a-time. Dual interface. DoP=1 is the
+Aaron 2026-08-27: the ferry is the **universal adapter** across a
+**2×2** of caller × processor (`single|batch` × `single|batch`),
+plus **split** when a caller batch exceeds `MaxBatchSize` (the
+caller is clueless; the ferry cuts boats). Underneath is
+one-at-a-time **unless** the handler is batchable. DoP=1 is the
 FoundationDB loop; the same type scales to N. Anti-Nagle: a boat
-sails with what is queued *now*, never waits to fill.
+sails with what is queued *now*, never waits to fill; the
+environment decides, no artificial timer.
 
 **Four corners even in batch.** Each *row* of a boat carries
 `FourCornerOwnership` (in / out / outFeedback / inFeedback). Batch
@@ -42,10 +44,11 @@ look at the original (clean-room: requirements, never expression).
 
 ## What is missing (the work)
 
-1. **Batch → single adapter.** No `ProcessMany` / `EnqueueMany`. The
-   vice-versa half of the universal adapter is not there: a caller
-   with a batch still cannot present it as one boat to a single-item
-   processor (or receive a boat of results from one call).
+1. **The other three cells + split.** In-tree today: **single-batch
+   only.** Missing: `ProcessMany` (batch-batch), split of an oversize
+   caller batch (batch-batch(s) — caller does not know `MaxBatchSize`),
+   `processOne` (batch-single / single-single). Efficient path =
+   handler-is-batchable, not caller-wrote-a-batch.
 2. **FourCorner per row.** `processBatch` is `'TItem -> 'TResult`.
    Nothing requires `'TResult` to be `FourCornerOwnership`. Feedback
    corners are not a boat-row field.
@@ -74,9 +77,35 @@ P0 (today `faultBoat` clones one exception onto every row; tests
 lock that in).
 
 White-room spec from original Itron code: **not required** for this
-row. Dual interface (single-in / batch-underneath) is already here.
-The gap is FourCorner-per-row + ZetaId demux + the batch-in adapter.
-Requirements from this session; do not open the original.
+row. The 4-way matrix + split + capture + backpressure are
+specified from this session. Do not open the original.
+
+Also this row:
+
+- **Boat pooling + bounded queue.** `Array.zeroCreate` per ferry is
+  already one buffer; request/TCS alloc per item is not. Default
+  `MaxQueueSize = None` is the unbounded in-flight / container-OOM
+  degenerate. Production must set the bound (cooperative
+  backpressure, not drop).
+- **Capture.** Kleisli door exists (`EnqueueCapturedAsync`). Snapshot
+  at the door is shipped; **restore around `processBatch` is not**
+  (Naledi: ambient OTEL on the ferry sees the ferry, not the item).
+  Kleisli processors unpack the payload. `ProcessCapturedAsync`
+  untested.
+- **Self-predict space and time.** `SchedulerZeta.predict` is
+  time/orbit only. Occupancy (bit-0 usage: slot used vs empty) is
+  the space coordinate. Pair them so DoP / boat size / backpressure
+  are self-decisions.
+- **Per-row errors ≅ RFC 4918 §13 Multi-Status (HTTP 207).**
+  `completeBoat` is indexed items; `faultBoat` is whole-batch
+  failure. RFC 9457 cites 207 for heterogeneous subproblems.
+- **DynamicValue is a tiny CFG.** Context attaches via **holes**
+  (second DV/SoftValue outside the term, no rewrite) — Dual BNN
+  already on file as epi–mono, not two networks. Hitchhiker =
+  **buffers** (Greenberg); holes = Vokes *Code That Isn't There* /
+  Joshi TAG foot nodes. Do not fuse.
+- **SIMD** stays on producer/consumer. Later exception: competing
+  future-predictions, vectorised by similarity per BNN layer.
 
 ## Also recorded here (same session, not a second item)
 

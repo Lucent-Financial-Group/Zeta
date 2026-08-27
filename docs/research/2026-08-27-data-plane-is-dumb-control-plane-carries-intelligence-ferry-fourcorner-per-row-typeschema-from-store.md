@@ -95,6 +95,55 @@ white-room agent is only needed if we cannot specify FourCorner-
 per-row + ZetaId demux from this absorb. We can. Requirements
 cross the wall; expression does not.
 
+Aaron 2026-08-27, second pass — the adapter is a **4-way
+matrix**, not only single-in / batch-under:
+
+> the batch in adapter should be clueless on if it's batch size
+> is allowed by the ferry if it passes in a batch that is too
+> large the farry throttler should just split it up, zeta
+> scheduler plus ferry thotther should be very close to being
+> able to predict its own space and time bit 0 notiation and
+> usages so it can make the right decidsions. … in the original
+> itron even underneath is would be one at a time instead of a
+> boat/batch unless the code handling the request was batchable,
+> it could go batch-batch(s) single-batch, single-single,
+> batch-single, it allowed transforming between all these
+> options and did it the most efiicent way possible, also when
+> it would use async local and captures to make sure things like
+> otel would tacing and loggin contexts would not get lost in
+> the split, this was part of the per item payload, the capture,
+> we also can do this is our kasli arrow in category thery if
+> the code is all categorical, for ah hoc code, async local is
+> needed. … memory pooling for the boats so the memory pressure
+> could stay constand and when there is too much load provide
+> back pressure or else in flight tasks would push the memory
+> pressure over any limits in a container without the
+> backpressure memory footprint can grow unbounded in a
+> degenerate case with the producer outweighs the consuer
+> constantly. also the anti nagel is key, this algo i came up
+> with is very in line with foundation db and their
+> deterministic simulation and no arbitary limits imposed, let
+> the environment decide.
+
+And, on DynamicValue as a tiny CFG with context holes, Dual
+BNN, SIMD, CLI, REST batch errors:
+
+> yes the makes sense the simd likely makes sense either on the
+> producer or consumer side not in the throttler itself expcet
+> for maybe if it trying to come up with multiple competing
+> future predictions one day, this could be vectorized by
+> similarity per BNN layer once we connect it to that. also our
+> dynamic value on top of being a typespec or whatever you
+> called it is also a tiny context free grammer, adding context
+> on top is planned as well it just need the ability to leave
+> context holes like the hitchiker tree so context can be
+> attached outside of the structure without changing it, a 2nd
+> dynamic or soft value, this is similar to our Dual BNNs
+> concept for content free to context aware grammer updates.
+> … S yes design is alwasy welcome. the other thing is i think
+> we were very similer to some REST RFC for batch reporting of
+> errors with our batched indexed results for ferry throttler.
+
 ## What is already measured (do not rebuild)
 
 | Half | In-tree |
@@ -112,12 +161,107 @@ cross the wall; expression does not.
 | CLI verb family | `clis/README.md` `sim`/`mea`/`cut`/`ben`/`cla`/`res` — git-native |
 | gen/ plan | `gen/README.md` — not wired to ZetaFs/DagFs |
 | Nucleus as plugin microcore | ROADMAP layer table (preliminary split; composability-over-layers absorb is in-flight as #15854) |
+| Capture-at-the-door (Kleisli) | `ContextualFerryThrottler.EnqueueCapturedAsync` / `ProcessCapturedAsync` — ambient snapshotted on the caller flow, threaded as DATA, not as an AsyncLocal leak into the ferry |
+| Queue backpressure knob | `MaxQueueSize: int option` — **default `None` (unbounded)** |
+| Scheduler self-predict (time/orbit) | `SchedulerZeta.predict` — Artin–Mazur run-ahead; does **not** yet predict space |
+
+## The 4-way adapter (correction)
+
+The first pass named "single-in / batch-under" as half-shipped.
+That understates the original design. Caller × processor is a
+**2×2**, and oversized caller batches **split**:
+
+| caller | processor | name | in-tree |
+|---|---|---|---|
+| single | batch | single-batch | yes (`ProcessAsync` / `EnqueueAsync` → `processBatch`) |
+| single | single | single-single | no (`processOne` adapter) |
+| batch | batch | batch-batch | no (`ProcessMany`) |
+| batch | batch, oversize split | batch-batch(s) | no — caller is **clueless** of `MaxBatchSize`; ferry splits |
+| batch | single | batch-single | no — underneath is one-at-a-time **unless** the handler is batchable |
+
+The efficient path is chosen by whether the handler is batchable,
+not by what the caller wrote. A `ProcessMany` of 10_000 with
+`MaxBatchSize = 256` is ~40 boats, not a refusal.
+
+Anti-Nagle still holds: no timer to fill a boat; the environment
+(queue depth, byte budget, DoP) decides. FoundationDB / DST: no
+arbitrary wall-clock limits.
+
+**Beacon for per-row batch errors:** RFC 4918 §13 Multi-Status
+(HTTP 207) — overall status is the batch; the body carries
+**per-item** status. RFC 9457 (Problem Details) cites 207 when
+subproblems do not share one HTTP code. Zalando REST guidelines
+make the same split we already have a name for: index-aligned
+`completeBoat` is the 207/`items[]` path; `faultBoat` (one
+exception on every row) is the *non-item-specific* 4xx/5xx.
+Per-row FourCorner is how we stop using `faultBoat` for a single
+row's error.
+
+## Pooling, backpressure, capture
+
+- **Boats should be pooled** (`ArrayPool` / slot reuse) so memory
+  pressure is **constant in the number of ferries**, not in the
+  number of in-flight items. Today each ferry `Array.zeroCreate`s
+  one boat buffer (constant per ferry) but each `ProcessAsync`
+  still allocates a `FerryRequest` + TCS (unbounded in the
+  producer). Pooling the request slots is the remaining half.
+- **`MaxQueueSize = None` is the container-OOM degenerate.**
+  Producer > consumer with no bound grows in-flight without
+  ceiling. The knob exists; the deterministic default is
+  unbounded. Production configs must set it. That is the
+  backpressure Aaron named — cooperative wait, not drop.
+- **Capture is already the Kleisli door** for categorical code
+  (`ContextualFerryThrottler`). Ad-hoc OTEL / logging /
+  `Activity.Current` still needs the AsyncLocal **snapshot at the
+  door** (`capture: unit -> 'Ctx`); nothing ambient may leak into
+  the background ferry (manifesto §13). Naledi: snapshot exists
+  (`EnqueueCapturedAsync`); **restore around `processBatch` does
+  not** — a processor that reads ambient `Activity.Current` sees
+  the ferry, not the item. Kleisli processors unpack
+  `struct (item, ctx)`. Restore-at-process is the remaining
+  ad-hoc half. `ProcessCapturedAsync` has no test.
+
+## Scheduler + ferry predict space and time
+
+`SchedulerZeta.predict` is run-ahead on **time/orbit**
+(transient, period, reachable). It does not yet read **space**
+(queue depth, boat-byte occupancy, pooled-slot usage). Bit-0
+notation here means occupancy/usage — slot used vs empty — the
+same occupancy idea as FourCorner's 2×2. Connecting those
+occupancy bits to `predict` is how DoP / backpressure / boat
+size become decisions the pair makes about *itself*, not
+constants we pick. Not built. SIMD on that prediction (competing
+futures, similarity per BNN layer) is the later exception to
+"SIMD is not in the throttler."
+
+## DynamicValue is a tiny CFG; context is a hole, not a rewrite
+
+`DynamicValue` is already a small term algebra (a CFG).
+`TypeSchema` types those terms. Adding context **on top** is
+planned: leave **holes** so a second `DynamicValue` or
+`SoftValue` attaches **outside** the structure without changing
+it. That is the Dual-BNN move already on file
+(`docs/research/2026-08-25-is-semantics-a-quotient-of-syntax-*`
+§0.8): content-free (the CFG) to context-aware, **not two
+networks** — an epi–mono factorisation.
+
+Honesty on "Hitchhiker tree holes": this repo already corrected
+that fusion (`docs/research/2026-08-15-chip8-time-dilation-*`
+§0). **Hitchhiker trees have buffers, not holes** (Greenberg,
+path-copying fractal / Bε; pending writes ride the path).
+**Holes** are the other Strange Loop talk — Scott Vokes, *Data
+Structures: The Code That Isn't There* (2012). The requirement
+is both, not a blend: buffers (hitch a context without rewriting
+the spine) **and** holes (a place in the grammar a second value
+can adjoin). Tree-adjoining grammar (Joshi) is the Beacon for
+the hole: a foot node where another tree attaches.
 
 ## What is missing
 
-1. **`ProcessMany` / batch-in adapter.** Universal adapter needs
-   both directions. Today: single-in, batch-underneath. Missing:
-   batch-in, single-or-batch underneath, one result boat back.
+1. **The other three cells of the 4-way matrix, plus split.**
+   `ProcessMany` must be clueless of `MaxBatchSize` (ferry
+   splits = batch-batch(s)). `processOne` for batch-single /
+   single-single. Today only single-batch exists.
 2. **FourCorner per boat row + per-row failure.** `faultBoat`
    clones one exception onto every TCS. A row whose
    `TOutFeedback` is an error must not fail its sibling. Smallest
@@ -209,6 +353,16 @@ single-item TCS away without a measured replacement for
   (Red Hat collision) or a fourth CLI product.
 - **Alistair Cockburn**, hexagonal architecture — **Port** is the
   only new-name candidate if a binary is later demanded.
+- **RFC 4918** §13 Multi-Status (HTTP 207); **RFC 9457** Problem
+  Details citing 207 for heterogeneous subproblems. Indexed
+  `completeBoat` is that shape; `faultBoat` is the whole-batch
+  failure.
+- **David Greenberg**, Hitchhiker trees (buffers). **Scott
+  Vokes**, *Data Structures: The Code That Isn't There* (Strange
+  Loop 2012) — holes. **Aravind Joshi**, tree-adjoining grammar —
+  foot-node holes. Do not fuse the three.
+- **Artin–Mazur** dynamical zeta — `SchedulerZeta.predict` (time).
+  Space/occupancy (bit-0 usage) is the missing coordinate.
 
 ## Honesty
 

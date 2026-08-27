@@ -258,8 +258,10 @@ using DynamicValue's byte-locked per-format serializer:
 4b. **TypeSchema from DynamicValue** (store-native), then existing generators consume it.
     JSON AdditionalFiles / `*.zetaschema.json` is bootstrap IR, not the store (`SchemaSourceGenerator`).
     A guessed schema from a SoftValue is a **different constructor** that keeps the SoftValue
-    (do not change `snap`). `gen/` wiring follows this slice. Control-plane work; data plane
-    stays dumb. `081M125DNKK087G0R00292E3ET`.
+    (do not change `snap`). `DynamicValue` is also a tiny **CFG**; context attaches via **holes**
+    (a second DV/SoftValue outside the term — Dual BNN as epi–mono, not two networks). Hitchhiker
+    trees contribute **buffers**, not holes. `gen/` wiring follows this slice. Control-plane work;
+    data plane stays dumb. `081M125DNKK087G0R00292E3ET`.
 5. **Extract the data-plane package** at the `IDeltaLog`/`ISnapshotStore` seam.
 6. **Durability floor** — `fsync`. **CLARIFIED (2026-06-07):** the **CP-within-a-cell mechanism — a
    crash-durable `Log` — is ALREADY REAL**: the delta-log backends fsync on append (`DiskDeltaLog`
@@ -469,7 +471,7 @@ Gaps: **fsync floor** (unshipped), **multi-key ACID/isolation** (only single-str
 - **Retraction readings** — keep full −1 (erasing view) distinct from `widen` (non-erasing support) and from negate-alone (Bennett-free); do not invoice Landauer on `neg` (`081M10BD9BM087G0R001SGDRXT`)
 - **ZSetRx remaining** — full IQbservable over Bonsai (this slice is the +1/−1 connect query); BNN as a NextAction chooser, not just a roster card (`081M109WG5S087G0R0021E5MPT`)
 - **FourCorner / Clifford remaining** — do not identify FourCorner with Cl(p,q) **or with a fermion or a qubit**. QubitIso is the qubit, FourCorner is the pipe. Compact E8 *manifold* still open. **Do not sweep latency alone** for √2 / 2√2 — jitter is dual-use (degrades S *and* frost uniqueness). Decorrelation channels are an **open, non-exhaustive inventory** Alexa is still growing (system prompt, selected model, hat, prompt frame, …). Meter them; do not freeze a roster. S=4 is the seed-shared measure. String keys: `Collation.binary` (BIN2_UTF8 / ordinal codepoint), never ambient culture. `081M10CBYF9087G0R003GWBNHG`
-- **Ferry per-row FourCorner + ZetaId demux** — dual interface is half-shipped (`ProcessAsync` / `EnqueueAsync` single-in, boat underneath, DoP=1→N, anti-Nagle). Missing: batch-in adapter (`ProcessMany`), FourCorner **per boat row**, per-row failure (today `faultBoat` is whole-boat), ZetaId as the mux demux key (index alignment is boat-local). Smallest falsifier before wiring the heap record: boat of 2 ZetaIds, row-1 feedback=error without throw. No SIMD in `fillBoat`. TypeSchema-from-store and CLI kernel are git-native sequence (4b / item #1), not this Feldera list. `081M125DNKK087G0R00292E3ET`
+- **Ferry 4-way adapter + per-row FourCorner + ZetaId demux** — in-tree today is **single-batch** only (`ProcessAsync`/`EnqueueAsync` → `processBatch`, DoP=1→N, anti-Nagle). Missing the other cells: `ProcessMany` (batch-batch), split of an oversize caller batch (caller is clueless of `MaxBatchSize`), `processOne` (batch-single / single-single; underneath is one-at-a-time unless the handler is batchable). Per-row FourCorner + per-row failure (today `faultBoat` is whole-boat ≅ non-item-specific 5xx; indexed `completeBoat` ≅ RFC 4918 §13 Multi-Status / HTTP 207). ZetaId demux. Boat pooling + `MaxQueueSize` set in production (default unbounded is the container-OOM degenerate). Capture stays Kleisli-at-the-door (`EnqueueCapturedAsync`); ad-hoc OTEL snapshots AsyncLocal into the payload and must **restore** around `processBatch` (not yet). `SchedulerZeta.predict` is time/orbit; space/occupancy (bit-0 usage) is the missing coordinate. No SIMD in `fillBoat`. `081M125DNKK087G0R00292E3ET`
 
 ## P2 (4 weeks)
 
@@ -609,8 +611,15 @@ These don't wait for a single round:
   distribution so reporting stays calibrated and `combine` still
   commutes. Snap-then-forget as the schema path is a fold leak.
 - **Ferry boat rows are four-corner + ZetaId.** Whole-boat fault is
-  the current contract and is the defect. Demux over duplex wires
-  is by identity, not by boat index.
+  the current contract and is the defect (RFC 4918: that is the
+  non-item-specific failure, not the 207 path). Demux over duplex
+  wires is by identity, not by boat index. Caller batches that
+  exceed `MaxBatchSize` **split**; they are not refused.
+- **Ferry memory is pooled and bounded.** Default unbounded queue
+  is the producer>consumer OOM. Anti-Nagle stays: no timer.
+- **`DynamicValue` stays a CFG.** Context is a hole / a second
+  value, not a rewrite of the term. Do not fuse Hitchhiker buffers
+  with Vokes/Joshi holes.
 - **CLIs share a plugin kernel.** Do not dump forge-host into
   Harny or Zeta. ForgeHost verbs are Nucleus plugins on the
   existing command core. No Quay. No fourth CLI product.
