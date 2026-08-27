@@ -132,8 +132,8 @@ with a ⭐ below and add a row there.
 - **XTDB 2** ⭐ — Arrow bitemporal indexes; temporal-query
   inspiration.
 - **Twelve-Factor App** ⭐ — **Adam Wiggins**, Heroku, 2011, [12factor.net](https://12factor.net/).
-  Categorization for SaaS/deploy *extracts* (one codebase, declared deps, config in env,
-  backing services as attached resources). Repo-split *app* lens; not a substitute for
+  Categorization for SaaS/deploy _extracts_ (one codebase, declared deps, config in env,
+  backing services as attached resources). Repo-split _app_ lens; not a substitute for
   manifesto building codes (any code vs ad hoc) nor for DV2/CRP measurement.
   `081M12CZRHC087G0R0008X7SYG`.
 - **CloudEvents** ⭐ — CNCF event-envelope standard (v1.0); to be the bus
