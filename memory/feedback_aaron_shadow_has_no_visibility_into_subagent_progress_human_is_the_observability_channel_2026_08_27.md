@@ -1,8 +1,8 @@
 ---
 name: shadow-has-no-visibility-into-subagent-progress
 description: 2026-08-27 — Aaron observed that shadow lacks context into multi-agent workflow status; he can see on screen that dispatched agents are unfinished, shadow cannot. The orchestrator is blind to work it delegated.
-metadata:
-  type: feedback
+type: feedback
+created: 2026-08-27
 ---
 
 # Shadow has no visibility into subagent progress — the human is the observability channel
