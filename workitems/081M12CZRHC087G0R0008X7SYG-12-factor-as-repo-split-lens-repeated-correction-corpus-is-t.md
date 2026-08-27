@@ -60,7 +60,10 @@ route up, **take metrics** so the expensive use can mint a cheaper
 rule. Composable one-shot rules (expert-system shape); BNN is the
 wrong name for an addressable DAG. Lumen (factor/EP belief half) and
 Soraya (detection is a join-semilattice; DAG is residue of
-non-confluence) are both held.
+non-confluence) are both held. Store is canonical (Soraya);
+the posterior is which *viewer* is attached (Lumen), not which
+bytes. Flip-flopping view rules are Newman on the projection —
+report `ViewsDisagree`, do not average them into the hub.
 
 Do not add 22 `FIX:` strings, and do not write patches, as a
 rider on this naming slice. Same-day: `labelled-observation.ts`

@@ -97,6 +97,79 @@ Soraya says if rules are deterministic there is not one. That
 disagreement is information. A merge that picked one account
 would be the single-version-of-the-truth move.
 
+## Store is canonical; the posterior is which viewer is attached
+
+Aaron 2026-08-27, pushing on the crux and then on himself:
+
+> if i were to push on sorya i would say it takes a posterior to
+> choose between different conflicting style rules or any two
+> rules that flip flop against each other, but then i would push
+> back against myself and saying we should store this in one
+> canonical way and let different viewers of the code view it in
+> whatever style rule they want, and then i would push back again
+> and say what if they select flip flopping view rules
+
+All three pushes are true of *different objects*. The error is
+putting them in one register.
+
+**Push 1 (on Soraya) — a posterior is needed to *choose*.**
+Yes, when two *style* rules conflict, or when two rewrites
+flip-flop. That choice is policy: which oracle is attached
+(manifesto §11). It is not a cavity over `exists-then-read`.
+"Unused import?" is still a bit. "Trailing commas or not?"
+is a viewer. Mixing them is how a PGM ends up deciding a
+regex.
+
+**Push 2 (on himself) — store one canonical form; viewers
+differ.** Yes, and it is already the vault sentence. Hub =
+the bytes (one version of the facts). Style is a
+*projection* (Date: views vs base tables; DV2: marts vs raw
+vault; in-repo: culture-aware collation is opt-in at the
+EDGE, never a catalog name). gofmt (Pike) ended the format
+war by refusing knobs *in the tool that writes*. That is
+ρ→1 on the *store*, with exit (don't use the formatter).
+Zeta's multi-oracle says many viewers may attach; the hub
+does not pick. `labelled-observation` already does this for
+labels: contested values coexist, no `resolvedLabel()`.
+
+**Push 3 (on the viewers) — they can themselves flip-flop.**
+Yes. Composing viewers is still a rewrite system, just on
+the *presentation*. Non-joining view rules are Newman on
+the projection pipeline, not a reason to put a posterior
+in the vault. The 2026-07-08 MD032 oscillator was this
+failure on a writer. The same pair attached as
+view-only would make the *display* blink while the hub
+stayed still — heat for the reader, not substrate
+corruption. Honest report is the fact:
+`ComposeOrderDependent` / `ViewsDisagree`. Do not average
+two pretty-printers into a third format neither asked for.
+That collapse is the single-version-of-the-truth move
+wearing a slider.
+
+The discriminator:
+
+| the rule | writes the hub? | who is right | flip-flop is |
+|---|---|---|---|
+| unused-import, exists-then-read | detector: no; healer: yes | Soraya on detect (Datalog/union); Newman on heal | the 2026-07-08 class |
+| trailing-comma, quote style | only if the formatter *writes* | Lumen on *which viewer is attached* | display blinks if view-only; git ping-pong if it writes |
+| "this team slightly prefers X" | never | Lumen / EP / contested labels on the *attachment*, not on the bytes | a society arguing; the hub does not join the argument |
+
+So: **Soraya is right about the store. Lumen is right about
+the attachment.** The posterior does not choose the bytes.
+It chooses (and can contest) which projection is on. If
+someone elects two projections that do not join, say so and
+fuel-bound the compose — the same ladder as healers, one
+layer out. Dual-use: a pair of disagreeing viewers can be
+the point (two travellers, two styles, both accounts held).
+
+gofmt is the appointed-hub solution (one writer, no knobs).
+It works, and it is the ρ→1 cliff on format. The third-path
+is: one writer for the hub *or none* (store as-is), many
+read-only viewers, and a joinability check on any viewer
+pipeline that is actually composed. Flip-flopping *writers*
+stay forbidden by the healer laws. Flip-flopping *viewers*
+stay visible.
+
 Soraya's reframe, kept as a measurement *target*, not a theorem:
 
 > The DAG is not the architecture. The DAG is the residue of
@@ -180,5 +253,9 @@ is not borne out on *file-disjoint* fixtures; co-located on one
 commute. That is not a proof of confluence. No 4th law in
 `certify()`. No BNN rename in code. No factor-graph wrapping of
 deterministic lints. Math-team findings (Lumen + Soraya, same
-hour) are folded above; the crux is still held open. Next slice
-named, not built: `DeclineRecord` → labels on the existing hub.
+hour) are folded above; the crux is still held open. Aaron's
+three pushes (posterior to choose / canonical store + viewers /
+flip-flopping viewers) split store from attachment rather than
+picking Lumen or Soraya. Next slice named, not built:
+`DeclineRecord` → labels on the existing hub. No viewer
+pipeline shipped this absorb.
