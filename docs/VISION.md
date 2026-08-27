@@ -1540,6 +1540,8 @@ expression trees — this is much easier to reason about than IL."*
 | IL / machine code / assembly emitted directly | **ASPIRATION** | Zero `Reflection.Emit`, `ILGenerator`, or `DynamicMethod` anywhere under `src/` |
 | A compiler of compilers, class libraries shared across all compiler languages | **ASPIRATION** | No mechanism |
 | Parser-combinator / ANTLR-shaped frontends for many languages and our own | **ASPIRATION** | No mechanism |
+| TypeSchema from store `DynamicValue` (then generators consume it) | **DESIGNED** | `src/Core.CSharp/TypeSchema.cs` + `SchemaSourceGenerator` consume AdditionalFiles / `*.zetaschema.json` today — a bootstrap IR, not the store. `gen/README.md` is the plan; not wired to `ZetaFs`/`DagFs`. A guessed schema from a `SoftValue` is a **different constructor** that keeps the SoftValue (`snap` does not change). `081M125DNKK087G0R00292E3ET` |
+| Tick-N loads tick-(N−1)'s compiler edits | **DESIGNED** | Bounded ticks make the load well-defined (`AdinkraClock` duration-free). Blocked on the epoch layer above. No wall-clock hot-reload |
 
 **"Compiled" is currently true only in the Futamura sense** — specializing an interpreter to a program to
 get something faster than interpreting it. It is not true in the machine-code sense, and **"JIT-like" is
