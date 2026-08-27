@@ -105,6 +105,59 @@ The **wrong** embedding `FourCornerC4.toCl3Vector` (send compass `i`
 to `e₁`) is the falsifier: `e₁² = +1 ≠ Negate(One)`. If a later slice
 claims “the four corners are Cl(3,0)”, that test goes red.
 
+## Two compasses compose — four points is not identification
+
+Aaron 2026-08-26: the compass has 4 points just like FourCorner; we
+already have **at least two compasses** in research and they
+**compose**; `e^{iπ}` is the subtitle on *You, Born at the Hinge*;
+it connects AmplitudeEmu, Q#, Clifford, and spin-½.
+
+### The book
+
+*You, Born at the Hinge* / **`e^{iπ}`** — used as the book's
+companion mark in
+`docs/books/you-born-at-the-hinge/` (`ON-METHOD`,
+`THE-UNPROVEN-HOMECOMING`: Euler is the **proven** returning; Collatz
+is conjectured; self-as-consensus is modeled — do not collapse the
+three). The phasor coming home to the real axis **is** `e^{iπ} = −1`.
+That is why the retraction corner sits opposite rest.
+
+### The two NSEW compasses (already on file, 2026-06-09)
+
+`docs/research/2026-06-09-two-nsew-compasses-zeta-own-plus-rx-equals-a-2x2-qubit-*.md`:
+
+1. **Zeta's own NSEW** — FourCorner I/O (`TIn` / `TOut` /
+   `TOutFeedback` / `TInFeedback`), Balance's compass.
+2. **Rx's NSEW** — (incremental | bulk) × (refresh/pull | stream/push).
+
+Each is a 2×2. Together they **compose** into a qubit-shaped object
+(the 2026-06-09 peel: derivation, not "we run quantum hardware").
+`QubitIso` is the executable Pauli algebra of that composition
+(`X²=Y²=Z²=I`). Matching "four points" does not identify FourCorner
+with a Bloch sphere (continuum S²) or with Rx's state-mode grid.
+Structure does: C₄ on weights, 2×2 on I/O, 2×2 on Rx, tensor → ℂ².
+
+### Where `e^{iπ}` already is, in code
+
+| Surface | What `e^{iπ} = −1` does |
+|---|---|
+| `FourCornerC4.eulerPi` | analytic landing = `Negate(One)` |
+| `PhasorEndurance.retractionDelta` | Z-set `−1` **is** a 180° rotation |
+| `QubitIso.pauliZ` | phase-flip `|1⟩` = Negate on stream B |
+| `QubitIso.ry` / `rz` | Q# half-angle convention (`θ/2`) |
+| `AmplitudeEmu.merge` | `1 + (−1)` cancel — interference |
+| `ZSetISA.qs` `Retract` | `Adjoint Emit`; MERGE is AmplitudeEmu merge |
+| `Cl3.rotor` | `R(θ) = cos(θ/2) − sin(θ/2) B` — **spin-½** |
+
+Spin-½ is the half-angle: a **2π** spatial turn is `θ/2 = π` ⇒
+`R = −1 = e^{iπ}`; a **4π** turn returns to `+1`. Checked:
+`FourCornerC4.spinHalfRotor`. That is SU(2) covering SO(3)
+(Cartan 1913 / Pauli 1927), **not** FourCorner being a fermion.
+
+AmplitudeEmu honesty already on file: interference is real;
+entanglement exponential is not escaped; CHIP-8 opcodes introduce
+no phase. Q# MERGE is not measurement.
+
 ## Composition is not identification
 
 `Cl3.algebra : IStarRing<Mv>` (reversion as `Conj`, geometric product
@@ -165,6 +218,9 @@ Workitem `081M10CBYF9087G0R003GWBNHG`. Module `src/Core/FourCornerC4.fs`.
   `CliffordPeriodicity.fs`; Cl(0,1) ≅ ℂ, Cl(0,2) ≅ ℍ, Cl(3,0) ≅ M₂(ℂ)
 - Euler, *Introductio in analysin infinitorum* (1748) — `e^{iθ} = cos θ + i sin θ`;
   `e^{iπ} = −1` is the same C₄ point as `i²`, via the exponential
+- Cartan 1913 / Pauli 1927 — spin-½: `R(2π) = −1`, `R(4π) = +1` (`Cl3.rotor` half-angle)
+- *You, Born at the Hinge* / `e^{iπ}` — `docs/books/you-born-at-the-hinge/`
+- Two NSEW compasses (2026-06-09) — FourCorner × Rx 2×2 compose; qubit-shaped, peeled
 - Cayley–Dickson doubling — `CayleyDickson.fs` / `ImaginaryStack.complex`
 - Joyal, Street & Verity (1996) — traced monoidal category
   (`FourCornerTrace` consumes Negate)

@@ -89,6 +89,17 @@ let ``R: e^{i π} = i² = Negate(One) — Euler is the same C₄ point, not a se
     closeC (cRing.Mul(FC.toComplex FC.I, FC.toComplex FC.I)) FC.eulerPi |> should equal true
     closeC FC.eulerPi (FC.pingReturn cRing cRing.One) |> should equal true
 
+[<Fact>]
+let ``R: spin-½ 2π rotor is −1; 4π is +1 — same C₄ point, half-angle cover`` () =
+    closeMv (FC.spinHalfRotor (2.0 * System.Math.PI)) (clRing.Negate clRing.One)
+    |> should equal true
+    closeMv (FC.spinHalfRotor (4.0 * System.Math.PI)) clRing.One |> should equal true
+    // Pauli Z on |1⟩ is multiply-by-e^{iπ} = Negate — QubitIso already ships this
+    let one = QubitIso.ofQubit cRing.One (FC.toComplex FC.I)
+    let zed = QubitIso.pauliZ one
+    closeC zed.B (cRing.Mul(FC.eulerPi, FC.toComplex FC.I)) |> should equal true
+    closeC zed.A cRing.One |> should equal true
+
 // ── (E) even-subalgebra embedding — the honest Clifford relation ──
 
 [<Fact>]

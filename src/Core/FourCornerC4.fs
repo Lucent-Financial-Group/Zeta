@@ -124,8 +124,16 @@ module FourCornerC4 =
     /// `i²`, different presentation: exponential of the Lie algebra `iℝ ⊂ ℂ`,
     /// not `Mul`. Float residual on `sin π` is expected (IEEE); the ring
     /// identity `i²` is exact. Aaron 2026-08-26: thinking `e^{iπ} = −1`
-    /// instead of `i² = −1`.
+    /// instead of `i² = −1`. Book register: *You, Born at the Hinge* / `e^{iπ}`.
     let eulerPi : Complex = expI System.Math.PI
+
+    /// Spin-½ double cover on Cl(3,0): rotor `R(θ) = cos(θ/2) − sin(θ/2)·e₁₂`.
+    /// A **2π** spatial turn is `θ/2 = π` ⇒ `R = −1 = e^{iπ}`. A **4π** turn
+    /// returns to `+1`. Same C₄ point as the amplitude compass, different
+    /// object (SU(2) covering SO(3), not FourCorner). `Cl3.rotor` already
+    /// uses the half-angle; `QubitIso.ry`/`rz` match Q#'s convention.
+    let spinHalfRotor (spatialTheta: float) : Cl3.Mv =
+        Cl3.rotor spatialTheta Cl3.e12
 
     let private e1 = Cl3.vector 1.0 0.0 0.0
 

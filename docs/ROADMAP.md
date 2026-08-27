@@ -142,7 +142,10 @@ Workitem `081M10AZ6KS087G0R0000SSFMH`.
 the C₄ compass `{1, i, −1, −i}` on FourCorner — a **labeling**, not a group
 object, and **not** "FourCorner is Cl(p,q)". `e^{iπ} = −1` is the **same
 C₄ point** via Euler (`expI`), not a second fact and not what the TRACE
-consumes (`IStarRing` has no `Exp`). Clifford generator squares ±1
+consumes (`IStarRing` has no `Exp`). Book mark of *You, Born at the
+Hinge*. Two NSEW compasses (FourCorner × Rx) compose; spin-½
+`R(2π)=−1` is the half-angle cover (`Cl3.rotor` / `QubitIso`), not
+FourCorner being a fermion. Clifford generator squares ±1
 are **signature** (Cl(3,0) `eᵢ² = +1`; C₄ lives in the even subalgebra as
 `e₁₂² = −1`, and as Cl(0,1) ≅ ℂ). The trace can instantiate over
 `Cl3.Mv` *weights* because `Cl3.algebra` is an `IStarRing`; that is
