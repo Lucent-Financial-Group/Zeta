@@ -358,6 +358,90 @@ blurs when the customer is a developer — say so, don't flatten.
 product name unless we are selling one. Nucleus stays the
 plugin microcore those products host.
 
+Aaron 2026-08-27, on TypeSchema + Debezium/CloudEvents, Caché,
+CTE/NULL holes, Jumprope and ZetaId:
+
+> oh for our typeschemas from dynamicvalue we are going to need
+> to tie in our Debezium, cloud events envelope over any
+> transport, this was a schema envelope and our object schem and
+> our dataschema are one in the same if done correctly, we have
+> MUMPS like statics but DI inject for this and a lot of
+> researcdh aroudn the InterSystems Caché database they are
+> very close to getting this correct but not as decentralise as
+> us and assume every node loads the same objects, we all for
+> divergence per node and reconcelation over time, this is what
+> build independence. we can also simulate multi node on a
+> single machine with latest cuttin edge DoP=1 to DoP=N scale
+> free research. … this is very similar to our sql server
+> monadic emulation over recursive CTEs and using null as a
+> monadic extension operator, I worked on this with Diana duncan
+> at Itron … we build a meter simulator at Itron based on these
+> concepts in SQL PDW so it was also extreemly parallizable and
+> we could simulate monadic behavior in SQL with NULL kind of
+> like holes for the CTE to expaqnd into with generated data for
+> that dimension. Jumprope CAS-not-pointers is very similar to
+> our futamara except instead of needing CAS we do content based
+> addressing, our zetaids are stable pointers and can require
+> CAS if the object they point to changes over time, this could
+> likely benefit from jumprope.
+
+## One schema, three names — envelope = object = dataschema
+
+`EventEnvelope.fs` already ships CloudEvents 1.0 (`specversion` /
+`id` / `source` / `type` / `data`) and Debezium `op` as a Z-set
+weight (+1 create/read, −1 delete, update = −1 then +1).
+CloudEvents `dataschema` is the URI for the payload type.
+Debezium's envelope schema names the before/after/op/source
+frame. TypeSchema names the object.
+
+Aaron: those three are **one TypeSchema** if the IR is honest.
+Do not run a schema registry, an object schema, and an envelope
+schema as three evolving artifacts. One DynamicValue, many
+transports (the CloudEvents *over any transport* clause).
+Debezium CDC is the delta; the envelope is the bus; TypeSchema
+is the type of both.
+
+MUMPS/Caché statics (`^` globals, process-private) become
+**injected** (DI / Nucleus), not ambient — manifesto §13. The
+Caché analog is already the commercial Beacon
+(`docs/agendas/zeta/AGENDA.md`). The cut this session names:
+Caché assumes **every node loads the same objects**. We allow
+**per-node divergence and reconcile over time**. That
+divergence *is* independence (anti-Babel: reconcilable, not
+identical). Multi-node is the same ferry: DoP=1 on one machine
+is the DST loop; DoP=N is N nodes. No special case.
+
+## Difference-list holes and CTE NULL (same shape, not the same code)
+
+Vokes's unbound tail is the hole. The SQL PDW meter-simulator
+Aaron built with **Diana Duncan** (OSS co-credit GRANTED
+2026-08-04, `DecorrelationMetrology.fs`; book naming still
+proofread-gated) used **recursive CTEs** with **NULL as the
+expansion hole**: the CTE binds the hole by generating the
+dimension's data, PDW-parallel. That is monadic *emulation* —
+NULL as a Maybe-shaped bind — not a claim that SQL NULL *is* a
+monad (it isn't; three-valued logic leaks). Clean-room: the
+requirement is "recursive expansion into named holes, generated
+per dimension, embarrassingly parallel." Do not open the Itron
+simulator.
+
+## Jumprope, Futamura, ZetaId — do not fuse the two "CAS"
+
+Jumprope **"CAS-not-pointers"** means **content-addressed
+storage**, not mutex compare-and-swap. Hash *is* the pointer;
+the skiplist height is a hash-as-probability (Pugh 1990 + Vokes).
+Futamura specializes an interpreter against a program; Jumprope
+specializes *location* against *content*. Similar move, different
+axis.
+
+**ZetaId is a stable name** (a pointer that survives content
+change). When the object changes, the *blob hash* changes;
+VISION's epoch is when a referrer decides new vs old. That is
+the Jumprope/content-addressed path. Mutex **compare-and-swap**
+on the pointer slot is a different operator. Do not use one
+acronym for both. Benefit from Jumprope: keep the ZetaId, park
+the current blob under a content hash, let epoch choose.
+
 ## What is missing
 
 1. **The other three cells of the 4-way matrix, plus split.**
@@ -376,7 +460,7 @@ plugin microcore those products host.
    by boat slot. `duplex-transport.ts` demuxes `normal|feedback|close`.
    Identity demux is the next increment on that wire, and the
    ferry row must carry the same key.
-4. **TypeSchema from DynamicValue.** JSON AdditionalFiles is a
+4. **TypeSchema from DynamicValue, as the one envelope/object/dataschema.** JSON AdditionalFiles is a
    bootstrap IR. Store-native constructor does not exist. Existing
    generators (`SchemaCodegen`, `SchemaSourceGenerator`, future
    `gen/` type providers) consume TypeSchema once it exists;
@@ -459,6 +543,13 @@ single-item TCS away without a measured replacement for
   Details citing 207 for heterogeneous subproblems. Indexed
   `completeBoat` is that shape; `faultBoat` is the whole-batch
   failure.
+- **CloudEvents** CNCF 1.0; **Debezium** (Randall Hauch) —
+  envelope `op` as Z-set weight. `EventEnvelope.fs` shipped.
+- **InterSystems Caché** / MUMPS — closest commercial analog;
+  same-objects-everywhere is the cut we refuse.
+- **Diana Duncan** — recursive-CTE / NULL-as-hole meter-sim on
+  SQL PDW; OSS co-credit granted (`DecorrelationMetrology.fs`).
+  Book naming still proofread-gated (CONSENT-LEDGER).
 - **David Greenberg**, Hitchhiker trees (buffers). **Scott
   Vokes**, *Data Structures: The Code That Isn't There* (Strange
   Loop 2012) — **difference lists** are the named holes (also

@@ -280,7 +280,13 @@ using DynamicValue's byte-locked per-format serializer:
     — Vokes's named structure is the **difference list** (unbound tail; also difference trees /
     dictionaries; Hughes lists as the functional cousin), not Hitchhiker buffers. Dual BNN as
     epi–mono, not two networks. TypeSchema IR leans **functional** (sum/product algebra); C#/OOP
-    surfaces are derived (F# did this). `gen/` wiring follows this slice. Control-plane work;
+    surfaces are derived (F# did this). Envelope schema, object schema, and CloudEvents
+    `dataschema` are **one TypeSchema** if done correctly (`EventEnvelope` already carries
+    CloudEvents + Debezium `op` ≈ Z-set ±1). Debezium/CloudEvents over any transport.
+    MUMPS-like statics are **DI-injected**, not ambient. InterSystems Caché is the closest
+    commercial analog and assumes every node loads the same objects; we allow **per-node
+    divergence and reconcile over time** (that is independence). Multi-node is simulable
+    DoP=1→N on one machine. `gen/` wiring follows this slice. Control-plane work;
     data plane stays dumb. `081M125DNKK087G0R00292E3ET`.
 5. **Extract the data-plane package** at the `IDeltaLog`/`ISnapshotStore` seam.
 6. **Durability floor** — `fsync`. **CLARIFIED (2026-06-07):** the **CP-within-a-cell mechanism — a
@@ -657,8 +663,17 @@ These don't wait for a single round:
   is the producer>consumer OOM. Anti-Nagle stays: no timer.
 - **`DynamicValue` stays a CFG.** Context is a **difference-list
   hole** (Vokes; Clark/Tärnlund; Hughes lists) / a second value,
-  not a rewrite of the term. Hitchhiker buffers are the other
-  mechanism. TypeSchema is a functional algebra; OOP is derived.
+  not a rewrite of the term. Same shape as recursive-CTE NULL as
+  a monadic hole (SQL PDW meter-sim; Diana Duncan OSS credit).
+  Hitchhiker buffers are the other mechanism. TypeSchema is a
+  functional algebra; OOP is derived.
+- **One schema, three names.** CloudEvents `dataschema`, the
+  Debezium envelope, and the object TypeSchema are the same
+  DynamicValue if the IR is honest. Do not run three registries.
+- **ZetaId is a stable name.** Content-address the blob
+  (Jumprope / BLAKE3); epoch chooses which blob the name
+  currently means. That is not mutex compare-and-swap. Caché
+  loads the same objects everywhere; we diverge and reconcile.
 - **CLIs share a plugin kernel.** Do not dump forge-host into
   Harny or Zeta. ForgeHost verbs are Nucleus plugins on the
   existing command core. No Quay. No fourth CLI product.

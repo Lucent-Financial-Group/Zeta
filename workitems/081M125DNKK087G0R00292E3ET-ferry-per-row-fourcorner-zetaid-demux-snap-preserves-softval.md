@@ -126,6 +126,19 @@ Also this row:
   Frameworks used by products; products (or services) sold. Both
   may own a repo. Blurry when customers are developers — name it.
   `Port` is hexagonal, not a product.
+- **TypeSchema from DynamicValue** is also the CloudEvents
+  `dataschema` and the Debezium envelope schema — **one IR**
+  (`EventEnvelope.fs` already ships both categories). MUMPS
+  statics via DI, not ambient. Caché analog: they load the same
+  objects on every node; we diverge per node and reconcile
+  (independence). Multi-node = DoP=1→N on one machine.
+- **CTE NULL as hole.** Same shape as Vokes difference lists.
+  SQL PDW meter-sim with Diana Duncan (OSS credit granted;
+  book naming proofread-gated). Clean-room: requirement only.
+- **ZetaId is a stable name; Jumprope content-addresses the
+  blob.** Epoch chooses which blob. Not mutex compare-and-swap
+  (do not fuse the two "CAS"). Futamura specializes the
+  interpreter; Jumprope specializes location against content.
 - **TypeSchema from DynamicValue.** Today
   `src/Core.CSharp/TypeSchema.cs` +
   `SchemaSourceGenerator` consume AdditionalFiles / JSON IR, not
