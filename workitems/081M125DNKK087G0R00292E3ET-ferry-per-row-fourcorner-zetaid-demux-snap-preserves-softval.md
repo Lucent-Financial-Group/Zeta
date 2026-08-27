@@ -76,6 +76,16 @@ already exists. Measure before adding SIMD. Per-row failure is the
 P0 (today `faultBoat` clones one exception onto every row; tests
 lock that in).
 
+**AutoMUX** (Aaron coinage 2026-08-27, not a library): the
+usage-shaped *name* for mux + transparent batch over any
+transport. Not a replacement for the ferry or `IScheduler`
+(time vs occupancy vs identity are three axes). Batch on
+producer or consumer is an **earned** 4-way cell — do not
+implement `ProcessMany` prematurely. Perfect world: derive
+batch from single by **types**, else a **generator** (Futamura
+/ stream fusion), else JIT attention last. Original manual
+derivation is a requirement, not a source to open.
+
 White-room spec from original Itron code: **not required** for this
 row. The 4-way matrix + split + capture + backpressure are
 specified from this session. Do not open the original.
