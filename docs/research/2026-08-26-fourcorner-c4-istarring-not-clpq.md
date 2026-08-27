@@ -386,15 +386,29 @@ The two optional axes (data-out, feedback) may both be occupied —
 (§13): filling both does not mix them and does not discard `TIn`.
 Two orthogonal unit occupancies have Euclidean *factor* `√(1²+1²) = √2`.
 
-The **bound** is the classical / Meijer 2-corner floor **times** that
-factor: `2 × √2 = 2√2`. The front 2 is CHSH classical
-(`BellTest.ClassicalBound`; `Tsirelson` commuting control `C² = 4I`,
-S² = 4). Integer lock: S² = 8 = (2√2)² (`Tsirelson.fs`; the
-irrational appears only at readout).
+Otto 2026-08-27: `2 × √2` lining up with CHSH 2√2 is a **coincidence
+of counts**, not an identification. CHSH's 2√2 is `‖C‖` on
+`ℂ²⊗ℂ²` and **spends anticommutation**; one occupancy record has
+nothing to spend. Integer lock S² = 8 still holds on the Pauli
+operator (`Tsirelson.fs`). Occupancy Pythagorean √2 is a different
+object. QubitIso is the qubit; FourCorner is the I/O pipe. Keep the
+rhyme labelled as a rhyme (delayed choice *shape*; complementarity
+≠ mutual occupancy).
 
-`FeedbackThrottle.TsirelsonLatency` is √2 — a model-contingent
-*latency* at which `maxChsh` hits 2√2, not the bound. Occupancy
-factor √2 and that latency can share a number; the bound does not.
+**Measure, don't model.** `TsirelsonLatency = √2` is neither derived
+nor fitted — it is the toy curve's solve, **to be measured**. What
+*is* measured: **S=4** at `L=0` / full seed control
+(`BellTest.chshOf ±1`, `FeedbackThrottle.maxChsh 0`). Consistent,
+not anomalous: the common seed makes parties measurement-dependent
+(the free-choice premise fails; `BellTest` already says this). Not
+nonlocality — a manufactured common cause. `2√2` is a **predicted
+degradation floor** under real latency/jitter (toy network stays at
+S=4; Reticulum degrades with distance). `IScheduler` quarantines
+host-clock entropy so a drop is attributable to the network.
+Two agents with a FourCorner throttle *approaching* 2√2 is an
+**assumption, not a measure**. Independence from the common-cause
+seed is the live metering program (`DecorrelationMetrology`,
+`DelayDecorrelation`).
 
 ## Quantum from `{Q,Q}`: two deniable moves, future snap
 

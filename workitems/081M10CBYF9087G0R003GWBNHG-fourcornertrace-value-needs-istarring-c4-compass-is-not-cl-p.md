@@ -46,3 +46,7 @@ are related; they are **not** “it is Cl(p,q)”.
   compact manifold
 - Bound is **2√2** (front 2 = classical), not occupancy √2; `{Q,Q}`
   two deniable moves, snap is the collapse
+- **Measure, don't model:** S=4 is the seed-shared measure; 2√2 is a
+  predicted latency floor (unmeasured); occupancy `2×√2` lining up
+  with Tsirelson is numerology; QubitIso is the qubit, FourCorner
+  is the pipe

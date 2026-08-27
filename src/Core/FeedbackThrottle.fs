@@ -29,6 +29,15 @@ namespace Zeta.Core
 /// that range**, not something the throttle *produces* by itself. So this models *that a throttle caps below
 /// `S=4`* (real, Aaron's point); it does **not** derive that the cap is exactly `2√2` (that's IC). Deterministic
 /// (DST §7); the "speed" is the feedback-channel propagation rate (heartbeat/Lamport), not literal `c`.
+///
+/// **Measure, don't model (Aaron + Otto 2026-08-27).** `TsirelsonLatency = √2` is neither derived
+/// nor fitted — it is the toy curve's solve, **to be measured**. What *is* measured: `S=4` at
+/// `L=0` / full seed control (`BellTest.chshOf ±1`). That is consistent, not anomalous: the
+/// common seed makes parties measurement-dependent (the free-choice premise fails). `2√2` is a
+/// **predicted degradation floor** under real latency/jitter (Reticulum vs toy network).
+/// `IScheduler` quarantines host-clock entropy so a drop is attributable to the network.
+/// Two agents with a FourCorner throttle *approaching* `2√2` is an assumption, not a
+/// measurement. Occupancy `2 × √2` lining up with Tsirelson is numerology.
 [<RequireQualifiedAccess>]
 module FeedbackThrottle =
 
@@ -92,3 +101,34 @@ module FeedbackThrottle =
         if s <= ClassicalBound + ClassicalEps then Classical
         elif s <= Tsirelson + 1e-9 then Quantum
         else Signalling
+
+    // ── Claim register: measured vs toy vs to-be-measured ─────────────
+    // Otto 2026-08-27: "derived or fitted?" was the wrong question. Neither —
+    // measure. S=4 is the seed-shared result. 2√2 is a predicted floor.
+
+    type ChshClaim =
+        /// A value with a named condition that a test already stages.
+        | Measured of s: float * condition: string
+        /// `maxChsh(L)` on the `1/(1+L)` curve. Can fail if the formula changes.
+        | ToyModel of s: float * latency: float
+        /// Predicted floor; no network sweep is attached yet.
+        | UnmeasuredPredictedFloor of s: float * reason: string
+
+    /// Measured: `L=0` / full seed control stages S=4. Not a Tsirelson
+    /// violation — the free-choice premise does not hold for seed-shared agents.
+    let measuredSeedSharedS4 : ChshClaim =
+        Measured(
+            AlgebraicMax,
+            "L=0 toy or BellTest.chshOf ±1; common seed; measurement-dependent"
+        )
+
+    /// Toy curve at a latency. Not a network measurement.
+    let toyAt (latency: float) : ChshClaim = ToyModel(maxChsh latency, latency)
+
+    /// 2√2 as the predicted degradation floor under real latency/jitter.
+    /// Distance decides. Not derived from FourCorner occupancy 2×√2.
+    let tsirelsonFloorToBeMeasured : ChshClaim =
+        UnmeasuredPredictedFloor(
+            Tsirelson,
+            "predicted floor under real latency/jitter; IScheduler quarantines host clock; not occupancy 2×√2"
+        )

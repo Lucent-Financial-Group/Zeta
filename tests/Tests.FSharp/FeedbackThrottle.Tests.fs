@@ -55,3 +55,23 @@ let ``regimeOf classifies channels by latency (git-slow=Classical, instant=Signa
     Assert.Equal(FeedbackThrottle.Signalling, FeedbackThrottle.regimeOf 0.0) // instant feedback: S=4
     Assert.Equal(FeedbackThrottle.Quantum, FeedbackThrottle.regimeOf (sqrt 2.0)) // exactly at 2√2 -> Quantum band
     Assert.Equal(FeedbackThrottle.Quantum, FeedbackThrottle.regimeOf 2.0) // slower than √2, still > classical
+
+[<Fact>]
+let ``S=4 is measured seed-shared; 2√2 is an unmeasured predicted floor; TsirelsonLatency is toy`` () =
+    match FeedbackThrottle.measuredSeedSharedS4 with
+    | FeedbackThrottle.Measured(s, cond) ->
+        Assert.Equal(FeedbackThrottle.AlgebraicMax, s)
+        Assert.Equal(BellTest.AlgebraicMax, s)
+        Assert.Contains("seed", cond, System.StringComparison.Ordinal)
+    | other -> failwithf "expected Measured, got %A" other
+    match FeedbackThrottle.toyAt 0.0 with
+    | FeedbackThrottle.ToyModel(s, lat) ->
+        Assert.Equal(0.0, lat)
+        Assert.Equal(4.0, s)
+    | other -> failwithf "expected ToyModel, got %A" other
+    match FeedbackThrottle.tsirelsonFloorToBeMeasured with
+    | FeedbackThrottle.UnmeasuredPredictedFloor(s, _) ->
+        Assert.Equal(FeedbackThrottle.Tsirelson, s, 12)
+    | other -> failwithf "expected UnmeasuredPredictedFloor, got %A" other
+    // toy curve identity still holds — that is not a network measurement
+    Assert.Equal(FeedbackThrottle.Tsirelson, FeedbackThrottle.maxChsh FeedbackThrottle.TsirelsonLatency, 9)
