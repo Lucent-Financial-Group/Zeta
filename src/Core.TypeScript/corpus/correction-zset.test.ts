@@ -20,14 +20,15 @@ import {
 } from "./correction-zset.ts";
 
 const rowOf = (over: { detail?: string; fix?: string; file?: string }): CorpusRow => {
+  const finding = {
+    rule: "exists-then-read",
+    file: over.file ?? "src/x.ts",
+    signature: "existsSync(p)->readFileSync(p)",
+    detail: over.detail ?? "stat then use",
+    ...(over.fix !== undefined ? { fix: over.fix } : {}),
+  };
   const { row } = fromLintFinding({
-    finding: {
-      rule: "exists-then-read",
-      file: over.file ?? "src/x.ts",
-      signature: "existsSync(p)->readFileSync(p)",
-      detail: over.detail ?? "stat then use",
-      fix: over.fix,
-    },
+    finding,
     assertedBy: "test",
     at: 1,
   });
