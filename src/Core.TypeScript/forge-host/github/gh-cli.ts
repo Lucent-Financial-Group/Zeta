@@ -6,9 +6,13 @@
  */
 
 import { spawnSync } from "node:child_process";
+import { readFileSync } from "node:fs";
+import { homedir } from "node:os";
 import type { Result, ForgeError } from "../types";
 import { ok, err, forgeError } from "../result";
 import { classifyGhError } from "./classify-error";
+import { defaultStoreDir } from "../../model-backend/login-runner.ts";
+import { asGithubAccessToken, parseStoredAccessToken } from "../../model-backend/resolve-stored-token.ts";
 
 const SPAWN_MAX_BUFFER = 64 * 1024 * 1024; // 64 MiB
 const DEFAULT_TIMEOUT = 30_000; // 30s
@@ -141,9 +145,17 @@ export async function runGhAsync(
   }
 
   ghCallStats.spawns += 1;
-  const proc = Bun.spawn(["gh", ...args], { stdout: "pipe", stderr: "pipe" });
-  const timer = setTimeout(() => proc.kill(), timeout);
+  // THE `catch` BELOW ADVERTISED AN ENOENT BRANCH IT COULD NOT REACH. `Bun.spawn`
+  // throws SYNCHRONOUSLY when the binary is not on PATH, and the launch stood outside
+  // the `try` — so on a host without `gh` this function did not return
+  // `internal: gh CLI not found on PATH`, it threw, and the caller's Result contract
+  // was simply not honoured. Demonstrated 2026-08-27 by running the drift-dashboard
+  // pass with `gh` removed from PATH: an unhandled throw out of `Bun.spawn`, and the
+  // named error was unreachable code. A refusal you cannot produce is not a refusal.
+  let timer: ReturnType<typeof setTimeout> | undefined;
   try {
+    const proc = Bun.spawn(["gh", ...args], { stdout: "pipe", stderr: "pipe" });
+    timer = setTimeout(() => proc.kill(), timeout);
     const [stdout, stderr, status] = await Promise.all([
       new Response(proc.stdout).text(),
       new Response(proc.stderr).text(),
@@ -153,10 +165,17 @@ export async function runGhAsync(
     return ok(stdout);
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
-    if (msg.includes("ENOENT")) return err(forgeError("internal", "gh CLI not found on PATH"));
+    if (msg.includes("ENOENT") || msg.includes("not found in $PATH")) {
+      return err(
+        forgeError(
+          "internal",
+          `gh CLI not found on PATH (${msg}). The REST fast path was also unavailable for this call, so no route was left: install \`gh\`, or supply a credential of a shape \`asGithubAccessToken\` accepts.`,
+        ),
+      );
+    }
     return err(forgeError("network", `gh spawn error: ${msg}`));
   } finally {
-    clearTimeout(timer);
+    if (timer !== undefined) clearTimeout(timer);
     ghCallStats.totalMs += (Bun.nanoseconds() - startedAt) / 1e6;
   }
 }
@@ -190,58 +209,49 @@ export async function runGhJsonAsync<T>(
 // That host is not an outlier to design around later. It is the one the first user of
 // this tool has, and a guard slower than the unsafe path selects for the unsafe path.
 //
-// So: resolve the token ONCE (one spawn, or zero when `GH_TOKEN`/`GITHUB_TOKEN` is
-// already set, as in CI) and issue the requests with `fetch`. 88 spawns become at most
-// 2. Same credential, same endpoint, same auth semantics — `gh auth token` is exactly
-// what `gh api` would have used.
-//
-// Falls back to the subprocess path whenever a token cannot be resolved, so nothing
-// that works today stops working; the fast path is an optimisation, never a new
-// requirement.
+// Token order (081M100RB9Z087G0R000GWY1MM): OUR store first
+// (`~/.config/zeta/auth/github.json`), then `GH_TOKEN`/`GITHUB_TOKEN`. `gh auth token`
+// is no longer a resolver — that spawn was the thing that made "no gh on PATH" a
+// factory outage. Import a vendor session with `harny import github` if they already
+// ran `gh auth login`.
 
 const GITHUB_API = "https://api.github.com";
 
-let tokenResolved = false;
-let cachedToken: string | null = null;
-
 /**
- * The token `gh api` would use: env first (CI supplies it), then ONE `gh auth token`.
+ * Token for GitHub REST: OUR store first, then env. Never `gh auth token`.
  *
- * `env` IS A SEAM, AND IT EXISTS FOR A REAL REASON, not for tidiness. Before it, the
- * only way to exercise this function was to ASSIGN into `process.env` and restore it
- * in a `finally`. That is a genuine hazard rather than a lint technicality: `process.env`
- * is inherited by every child this process spawns, including the `Bun.spawnSync(["gh",
- * "auth", "token"])` twelve lines below and any other test in the same run that shells
- * out to `gh` — so a test setting `GH_TOKEN = "t1"` hands a fake credential to real
- * subprocesses for as long as the assignment stands, and a crash between the assignment
- * and the `finally` leaves it standing for the rest of the run.
+ * Pure in (env, readStore). No process-lifetime memo — that was ambient state a
+ * later test (or a later env snapshot) could not replay. GitHubAdapter caches
+ * per instance, which is actor state, not a hidden global.
  *
- * Reading the ambient environment is fine and is what CI relies on; WRITING a credential
- * into it is what `hygiene/lint-no-ambient-credential-hoist.ts` refuses. Passing the
- * environment in lets a caller test the resolution order without ever writing one.
+ * `env` and `readStore` are seams so tests never assign into `process.env` (refused
+ * by `hygiene/lint-no-ambient-credential-hoist.ts`) and never hit the real
+ * `~/.config/zeta/auth/github.json`. Empty `GH_TOKEN` is absent — it falls through
+ * to `GITHUB_TOKEN` rather than claiming a token that is not there.
  */
-export function resolveGitHubToken(env: Readonly<Record<string, string | undefined>> = process.env): string | null {
-  if (tokenResolved) return cachedToken;
-  tokenResolved = true;
-  const fromEnv = env["GH_TOKEN"] ?? env["GITHUB_TOKEN"];
-  if (fromEnv !== undefined && fromEnv !== "") {
-    cachedToken = fromEnv;
-    return cachedToken;
+export function resolveGitHubToken(
+  env: Readonly<Record<string, string | undefined>> = process.env,
+  readStore: () => string | null = readGithubStoreToken,
+): string | null {
+  const fromStore = readStore();
+  if (fromStore !== null && fromStore.length > 0) return fromStore;
+  for (const key of ["GH_TOKEN", "GITHUB_TOKEN"] as const) {
+    const raw = env[key];
+    if (typeof raw !== "string") continue;
+    const trimmed = raw.trim();
+    if (trimmed.length > 0) return trimmed;
   }
-  try {
-    const proc = Bun.spawnSync(["gh", "auth", "token"], { stdout: "pipe", stderr: "pipe" });
-    const out = new TextDecoder().decode(proc.stdout).trim();
-    cachedToken = proc.exitCode === 0 && out !== "" ? out : null;
-  } catch {
-    cachedToken = null;
-  }
-  return cachedToken;
+  return null;
 }
 
-/** Reset the memoised token. Tests only — the resolution is process-lifetime otherwise. */
-export function resetGitHubTokenForTest(): void {
-  tokenResolved = false;
-  cachedToken = null;
+/** Sync read of `~/.config/zeta/auth/github.json`. Absent / garbage is null. */
+export function readGithubStoreToken(): string | null {
+  try {
+    const raw = readFileSync(`${defaultStoreDir(homedir())}/github.json`, "utf8");
+    return parseStoredAccessToken(raw);
+  } catch {
+    return null;
+  }
 }
 
 /**
@@ -255,26 +265,149 @@ export function isPlainApiGet(args: readonly string[]): boolean {
   return args.length === 2 && args[0] === "api" && typeof args[1] === "string" && !args[1].startsWith("-");
 }
 
-/** `gh api <path>` over `fetch`. `null` ⇒ caller should use the subprocess path. */
-async function fetchGhApi(path: string, timeout: number): Promise<Result<string, ForgeError> | null> {
-  const token = resolveGitHubToken();
-  if (token === null) return null;
-  const url = path.startsWith("http") ? path : `${GITHUB_API}/${path.replace(/^\/+/, "")}`;
+export type GithubFetch = (url: string, init?: RequestInit) => Promise<Response>;
+
+export type GithubRestDoors = {
+  readonly token?: string | null;
+  readonly fetch?: GithubFetch;
+  readonly timeoutMs?: number;
+  /// `null` = no timer (DST tests). omitted = production AbortSignal.timeout.
+  readonly signal?: AbortSignal | null;
+};
+
+/// Relative GitHub REST path → `https://api.github.com/...`. Absolute URLs,
+/// `..`, and backslashes are refused so a token cannot ride to another host
+/// (the CWE-200 shape CodeQL flagged: file-sourced credential + attacker URL).
+export function githubRestUrl(path: string): string | null {
+  if (path.includes("://") || path.includes("\\") || path.includes("..")) return null;
+  const rel = path.replace(/^\/+/, "");
+  if (rel.length === 0 || rel.length > 2048) return null;
+  if (!/^[A-Za-z0-9._~/?#@[\]!$&'()*+,;=%-]+$/.test(rel)) return null;
+  const url = new URL(rel, `${GITHUB_API}/`);
+  if (url.origin !== GITHUB_API) return null;
+  return url.toString();
+}
+
+/**
+ * ABSENT and REJECTED are two different answers, and collapsing them cost a day.
+ *
+ * `asGithubAccessToken` is a charset filter: it rebuilds a credential from bounded
+ * regex groups so a JSON dump or an attacker-supplied string cannot ride out as
+ * "the token" (the CodeQL taint barrier). It is a good guard and it stays. But a
+ * credential it REJECTS is not a credential that is ABSENT, and on 2026-08-27 the
+ * drift-dashboard lane reported the second while suffering the first: the message
+ * read "no GitHub token in ... GH_TOKEN/GITHUB_TOKEN" on a runner where `GH_TOKEN`
+ * was set. Every one of the pass's 78 enumeration calls failed in 50ms, the
+ * dashboard rendered its own blindness as 12 STALE lanes, and four of those four
+ * sampled lanes had in fact run successfully within the hour.
+ *
+ * A dashboard that turns blindness into red rows gets believed, then distrusted,
+ * then ignored. So the two conditions get two reports, and neither names the token.
+ */
+export type TokenRejection = "absent" | "rejected-by-charset-filter";
+
+/** Which of the two credential answers this raw value is, or `null` when it is usable. */
+export function classifyTokenRejection(rawToken: string | null): TokenRejection | null {
+  if (rawToken === null || rawToken.trim().length === 0) return "absent";
+  const usable = asGithubAccessToken(rawToken);
+  return usable === null || usable.length === 0 ? "rejected-by-charset-filter" : null;
+}
+
+/**
+ * The refusal text for each. NEVER interpolates the token — not its bytes, not its
+ * length, not its prefix. What a reader needs is which condition happened and what
+ * to do, and both are knowable without looking at the secret.
+ */
+export function tokenRefusalMessage(rejection: TokenRejection): string {
+  return rejection === "absent"
+    ? "no GitHub token in ~/.config/zeta/auth/github.json or GH_TOKEN/GITHUB_TOKEN — run `harny login github` (gh CLI is not a fallback)"
+    : "a GitHub token WAS resolved but `asGithubAccessToken` refused its shape, so it was never sent. This is a credential-shape refusal, NOT a missing credential: do not read it as 'the token is unset'. FIX: either store a credential matching the accepted shapes (gh[pousr]_… / github_pat_… / 40 hex) with `harny login github`, or widen the filter in src/Core.TypeScript/model-backend/resolve-stored-token.ts to admit the shape this host actually issues.";
+}
+
+/**
+ * GitHub REST over `fetch` + our token. No `gh`. Missing token is auth-failure,
+ * not a spawn. Inject `token` / `fetch` in tests so CI's `GITHUB_TOKEN` cannot
+ * leak a real socket into the hermetic tier.
+ */
+export async function githubRestRequest(
+  method: string,
+  path: string,
+  body?: unknown,
+  doors: GithubRestDoors = {},
+): Promise<Result<string, ForgeError>> {
+  const rawToken = doors.token !== undefined ? doors.token : resolveGitHubToken();
+  const token = rawToken === null ? null : asGithubAccessToken(rawToken);
+  if (token === null || token.length === 0) {
+    return err(forgeError("auth-failure", tokenRefusalMessage(classifyTokenRejection(rawToken) ?? "absent")));
+  }
+  const url = githubRestUrl(path);
+  if (url === null) {
+    return err(forgeError("internal", "refusing a GitHub REST path that is not under https://api.github.com"));
+  }
+  const headers = new Headers();
+  headers.set("Authorization", `Bearer ${token}`);
+  headers.set("Accept", "application/vnd.github+json");
+  headers.set("X-GitHub-Api-Version", "2022-11-28");
+  headers.set("User-Agent", "zeta-forge-host");
+  const init: RequestInit = { method, headers };
+  if (body !== undefined) {
+    headers.set("Content-Type", "application/json");
+    init.body = JSON.stringify(body);
+  }
+  if (doors.signal === null) {
+    /* DST tests: no AbortSignal.timeout */
+  } else if (doors.signal !== undefined) {
+    init.signal = doors.signal;
+  } else {
+    init.signal = AbortSignal.timeout(doors.timeoutMs ?? DEFAULT_TIMEOUT);
+  }
+  const fetchImpl = doors.fetch ?? fetch;
   try {
-    const res = await fetch(url, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        Accept: "application/vnd.github+json",
-        "X-GitHub-Api-Version": "2022-11-28",
-        "User-Agent": "zeta-drift-dashboard",
-      },
-      signal: AbortSignal.timeout(timeout),
-    });
-    const body = await res.text();
-    if (!res.ok) return err(classifyGhError(res.status, body));
-    return ok(body);
+    const res = await fetchImpl(url, init);
+    const text = await res.text();
+    if (!res.ok) return err(classifyGhError(res.status, text));
+    return ok(text);
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
     return err(forgeError("network", `fetch ${url}: ${msg}`));
   }
+}
+
+/**
+ * `gh api <path>` over `fetch`. `null` ⇒ caller should use the subprocess path.
+ *
+ * THE FAST PATH IS AN OPTIMISATION AND MUST NEVER BE THE ONLY PATH. Two conditions
+ * mean "this transport cannot carry this call", and both must yield `null` so the
+ * caller falls through to `gh`, which authenticates itself from the ambient
+ * environment and never sees our store file:
+ *
+ *   - the credential is ABSENT (as before), and
+ *   - the credential RESOLVED but the charset filter refused its shape.
+ *
+ * The second was missing. `githubRestRequest` returned an `auth-failure` Result —
+ * not `null` — so `runGhAsync` handed that failure straight back to the caller and
+ * the subprocess fallback was never reached. That is how a shape refusal became a
+ * total outage of an observation pass rather than a slower one: the guard did not
+ * degrade, it terminated. Falling back is strictly SAFER than the fetch it replaces
+ * (no file-sourced bytes on an outbound request at all), so the taint barrier above
+ * loses nothing.
+ *
+ * The refusal is announced once per process, so a lane that quietly went slow still
+ * says why. It names the condition, never the credential.
+ */
+let charsetRefusalAnnounced = false;
+
+async function fetchGhApi(path: string, timeout: number): Promise<Result<string, ForgeError> | null> {
+  const token = resolveGitHubToken();
+  const rejection = classifyTokenRejection(token);
+  if (rejection !== null) {
+    if (rejection === "rejected-by-charset-filter" && !charsetRefusalAnnounced) {
+      charsetRefusalAnnounced = true;
+      console.error(
+        `[gh-cli] ${tokenRefusalMessage(rejection)} Falling back to the \`gh\` subprocess for this process.`,
+      );
+    }
+    return null;
+  }
+  return githubRestRequest("GET", path, undefined, { token, timeoutMs: timeout });
 }

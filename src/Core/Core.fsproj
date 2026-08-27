@@ -51,12 +51,14 @@
     <Compile Include="CliffordE8Roots.fs" />
     <Compile Include="CliffordE8BladeMask.fs" />
     <Compile Include="E8LieAlgebra.fs" />
+    <Compile Include="E8ChevalleyGroup.fs" />
     <Compile Include="IcosahedralH3.fs" />
     <Compile Include="Tsirelson.fs" />
     <Compile Include="HexCore.fs" />
     <Compile Include="Semiring.fs" />
     <Compile Include="ProbabilitySemiring.fs" />
     <Compile Include="Provenance.fs" />
+    <Compile Include="LineageDisjointnessEstimator.fs" />
     <Compile Include="ReflectionEngine.fs" />
     <Compile Include="Reconcile.fs" />
     <Compile Include="Pool.fs" />
@@ -104,6 +106,7 @@
     <Compile Include="Indentation.fs" />
     <Compile Include="Codec.fs" />
     <Compile Include="Bonsai.fs" />
+    <Compile Include="ZSetRx.fs" />
     <Compile Include="Resume.fs" />
     <Compile Include="RangeSet.fs" />
     <Compile Include="ByteCost.fs" />
@@ -146,6 +149,8 @@
     <Compile Include="EvolutionWindow.fs" />
     <Compile Include="Protobuf.fs" />
     <Compile Include="SoftValue.fs" />
+    <Compile Include="DuExpand.fs" />
+    <Compile Include="RetractionReading.fs" />
     <Compile Include="ParseSoft.fs" />
     <Compile Include="BonsaiSoft.fs" />
     <Compile Include="DurableYinYang.fs" />
@@ -230,6 +235,7 @@
     <Compile Include="Tracing.fs" />
     <Compile Include="IntrCtx.fs" />
     <Compile Include="FourCorner.fs" />
+    <Compile Include="FourCornerC4.fs" />
     <Compile Include="IsrLift.fs" />
     <Compile Include="SoftIsr.fs" />
     <Compile Include="SoftScheduler.fs" />
@@ -250,6 +256,7 @@
     <Compile Include="DeltaCodec.fs" />
     <Compile Include="DiskDeltaLog.fs" />
     <Compile Include="ZetaFsDeltaLog.fs" />
+    <Compile Include="ZetaFsDualFold.fs" />
     <Compile Include="SnapshotStore.fs" />
     <Compile Include="RecoverableSpine.fs" />
     <Compile Include="DurableSaga.fs" />
@@ -415,6 +422,7 @@
     <Compile Include="FrequencyMachZehnder.fs" />
     <Compile Include="TravelerRankLedger.fs" />
     <Compile Include="DeclaredStanceLedger.fs" />
+    <Compile Include="AdopterRegister.fs" />
     <Compile Include="FreeTimeAllocation.fs" />
     <Compile Include="DurableDiplomacyRankGate.fs" />
     <Compile Include="QuantumObservableDbsp.fs" />

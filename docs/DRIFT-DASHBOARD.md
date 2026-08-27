@@ -1,6 +1,6 @@
 # Zeta drift dashboard
 
-> **NOT OK — RED 7 · FLAPPING 6 · UNKNOWN 4, incl. NEVER observed · coverage 61/65 (SHORTFALL 4) · green 50 · not-yet-due 2 · on-demand 15**
+> **NOT OK — RED 13 · FLAPPING 4 · UNKNOWN 6, incl. NEVER observed · coverage 74/80 (SHORTFALL 6) · green 59 · not-yet-due 1 · on-demand 15**
 
 A check that was never observed must never render identically to a check that passed.
 `Unknown` is a first-class verdict here and can never aggregate into green: an unobserved
@@ -9,26 +9,32 @@ check is an unbounded number of unknown failures, so it is ranked ABOVE green an
 | | |
 |---|---|
 | ref | `main` |
-| pass at | 2026-08-22T22:45:17.747Z |
+| pass at | 2026-08-27T05:04:46.455Z |
 | producers | github-actions |
-| roster | 80 known checks — 65 expected to report on this ref, 15 on-demand, 0 retired |
-| coverage | **61 / 65** — **SHORTFALL 4** |
+| roster | 95 known checks — 80 expected to report on this ref, 15 on-demand, 0 retired |
+| coverage | **74 / 80** — **SHORTFALL 6** |
 
-## RED — 7
+## RED — 13
 
 Oldest first: a check red since the 16th outranks one red five minutes ago.
 
 | check | red for | expectation | detail |
 | --- | --- | --- | --- |
-| `budget-snapshot-cadence` | 6d | periodic | run 31959534906 concluded 'failure' · **awaiting scheduled confirmation** — a later workflow_dispatch run concluded 'green' at 2026-08-22T18:14:12Z, NEWER than the verdict above. The verdict reports the DECLARED (scheduled) path, which is the stronger claim: a hand-run proves the code, not the cadence. This row clears when the next scheduled run passes. |
-| `tlaps-proof` | 21h | on-change | run 32542476787 concluded 'failure' |
-| `manifesto-citation-snapshot-cadence` | 16h | periodic | run 32558211949 concluded 'failure' · **awaiting scheduled confirmation** — a later workflow_dispatch run concluded 'green' at 2026-08-22T18:14:11Z, NEWER than the verdict above. The verdict reports the DECLARED (scheduled) path, which is the stronger claim: a hand-run proves the code, not the cadence. This row clears when the next scheduled run passes. |
-| `context-cost-trend-cadence` | 15h | periodic | run 32559948214 concluded 'failure' · **awaiting scheduled confirmation** — a later workflow_dispatch run concluded 'green' at 2026-08-22T18:12:10Z, NEWER than the verdict above. The verdict reports the DECLARED (scheduled) path, which is the stronger claim: a hand-run proves the code, not the cadence. This row clears when the next scheduled run passes. |
-| `pr-manifest-integrity` | 4h | periodic | MOSTLY FAILING over 7d (15 of 20 concluded runs failed, 2026-08-18T00:36:18Z .. 2026-08-22T18:33:49Z, 1 consecutive pass(es) since the last failure). The newest run passed and is the outlier — a majority-failing lane is broken, not flaky. |
-| `gate` | 9m | on-change | run 32602031050 concluded 'failure' |
-| `agent-heartbeat` | 3m | periodic | run 32603064749 concluded 'failure' |
+| `chart-version-refresh` | 3d | periodic | run 32654132313 concluded 'failure' |
+| `ruleset-apply` | 39h | on-change | run 32857443217 concluded 'failure' |
+| `mirror-to-fork` | 23h | periodic | run 32937913382 concluded 'failure' · **awaiting scheduled confirmation** — a later workflow_dispatch run concluded 'green' at 2026-08-26T08:47:51Z, NEWER than the verdict above. The verdict reports the DECLARED (scheduled) path, which is the stronger claim: a hand-run proves the code, not the cadence. This row clears when the next scheduled run passes. |
+| `manifesto-citation-snapshot-cadence` | 22h | periodic | run 32940492136 concluded 'failure' |
+| `proof-closure-drift` | 3h | periodic | run 33032035933 concluded 'failure' · **awaiting scheduled confirmation** — a later push run concluded 'green' at 2026-08-27T02:42:27Z, NEWER than the verdict above. The verdict reports the DECLARED (scheduled) path, which is the stronger claim: a hand-run proves the code, not the cadence. This row clears when the next scheduled run passes. |
+| `drift-dashboard-cadence` | 3h | periodic | run 33032413847 concluded 'failure' · **awaiting scheduled confirmation** — a later workflow_dispatch run concluded 'red' at 2026-08-27T03:30:46Z, NEWER than the verdict above. The verdict reports the DECLARED (scheduled) path, which is the stronger claim: a hand-run proves the code, not the cadence. This row clears when the next scheduled run passes. |
+| `search-index-cadence` | 2h | periodic | run 33034997092 concluded 'failure' |
+| `rerun-toolchain-install-stall` | 59m | periodic | STALE: newest verdict (green) is 59m old, declared to run every 15m (schedule: `*/15 * * * *`) |
+| `pr-gate-presence` | 58m | periodic | run 33038374306 concluded 'failure' |
+| `tick-metrics` | 48m | periodic | STALE: newest verdict (green) is 48m old, declared to run every 15m (schedule: `*/15 * * * *`) · **awaiting scheduled confirmation** — a later push run concluded 'green' at 2026-08-27T04:51:01Z, NEWER than the verdict above. The verdict reports the DECLARED (scheduled) path, which is the stronger claim: a hand-run proves the code, not the cadence. This row clears when the next scheduled run passes. |
+| `agent-heartbeat` | 27m | periodic | run 33039783444 concluded 'failure' |
+| `build-ai-cluster-iso` | 10m | on-change | run 33039102948 concluded 'failure' · **recheck in flight — this is the last CONCLUDED verdict, not a current one** |
+| `gate` | 4m | on-change | run 33040374519 concluded 'failure' · **recheck in flight — this is the last CONCLUDED verdict, not a current one** |
 
-## FLAPPING — 6
+## FLAPPING — 4
 
 Recent CONCLUDED runs contain both passes and failures, and the newest passed. Its own
 state because neither neighbour is honest: green would launder a 90% claim as a 100%
@@ -37,14 +43,12 @@ A lane whose next verdict is a coin flip has no colour, so it gets its own.
 
 | check | expectation | detail |
 | --- | --- | --- |
-| `backlog-index-integrity` | on-change | FLAPPING over 7d (2 of 8 concluded runs failed, 2026-08-16T14:01:34Z .. 2026-08-20T16:50:56Z, 2 consecutive pass(es) since the last failure), and the newest passed. The latest verdict is green; the lane's next verdict is not predictable from it. |
-| `memory-index-drift` | on-change | FLAPPING over 7d (3 of 10 concluded runs failed, 2026-08-16T20:01:07Z .. 2026-08-22T18:07:03Z, 3 consecutive pass(es) since the last failure), and the newest passed. The latest verdict is green; the lane's next verdict is not predictable from it. |
-| `installer-unit-tests` | on-change | FLAPPING over 7d (2 of 20 concluded runs failed, 2026-08-17T03:32:50Z .. 2026-08-22T21:37:51Z, 4 consecutive pass(es) since the last failure), and the newest passed. The latest verdict is green; the lane's next verdict is not predictable from it. |
-| `agencysignature-enforcement` | on-change | FLAPPING over 7d (2 of 20 concluded runs failed, 2026-08-22T19:49:12Z .. 2026-08-22T22:18:18Z, 4 consecutive pass(es) since the last failure), and the newest passed. The latest verdict is green; the lane's next verdict is not predictable from it. |
-| `k8s-lane-partition` | on-change | FLAPPING over 7d (5 of 10 concluded runs failed, 2026-08-22T17:06:37Z .. 2026-08-22T22:18:24Z, 2 consecutive pass(es) since the last failure), and the newest passed. The latest verdict is green; the lane's next verdict is not predictable from it. |
-| `build-ai-cluster-iso` | on-change | FLAPPING over 7d (3 of 17 concluded runs failed, 2026-08-21T17:22:15Z .. 2026-08-22T22:29:21Z, 2 consecutive pass(es) since the last failure), and the newest passed. The latest verdict is green; the lane's next verdict is not predictable from it. · **recheck in flight — this is the last CONCLUDED verdict, not a current one** |
+| `context-cost-trend-cadence` | periodic | FLAPPING over 7d (3 of 7 concluded runs failed, 2026-08-20T07:36:50Z .. 2026-08-26T07:37:49Z, 4 consecutive pass(es) since the last failure), and the newest passed. The latest verdict is green; the lane's next verdict is not predictable from it. |
+| `tlaps-proof` | on-change | FLAPPING over 7d (3 of 8 concluded runs failed, 2026-08-20T12:09:11Z .. 2026-08-26T08:34:27Z, 2 consecutive pass(es) since the last failure), and the newest passed. The latest verdict is green; the lane's next verdict is not predictable from it. |
+| `pr-manifest-integrity` | periodic | FLAPPING over 7d (10 of 20 concluded runs failed, 2026-08-22T06:34:47Z .. 2026-08-27T02:04:23Z, 1 consecutive pass(es) since the last failure), and the newest passed. The latest verdict is green; the lane's next verdict is not predictable from it. |
+| `heartbeat-liveness` | periodic | FLAPPING over 7d (6 of 17 concluded runs failed, 2026-08-26T14:04:53Z .. 2026-08-27T04:34:46Z, 1 consecutive pass(es) since the last failure), and the newest passed. The latest verdict is green; the lane's next verdict is not predictable from it. |
 
-## UNKNOWN — 4
+## UNKNOWN — 6
 
 **Longest silence first.** Silence that persists is the strongest signal and the easiest
 to habituate to, so it is aged rather than listed. `never-observed` sorts above every
@@ -61,10 +65,12 @@ to ask, which is not the same as a correct silence).
 | --- | --- | --- | --- | --- |
 | `copilot` | **NEVER observed** | expectation-unknown | unknown | cannot tell whether this check should run on this ref (host-managed check 'dynamic/copilot-swe-agent/copilot' — never declared in this repository, so its trigger cannot be read from the tree), and it has never produced a verdict |
 | `inventory-phase5-proof` | **NEVER observed** | registered-but-absent | unknown | REGISTERED with the producer but its definition is ABSENT from the repository (workflow file '.github/workflows/inventory-phase5-proof.yml' is registered ACTIVE on the forge host but is ABSENT from the repository) — roster-versus-repository drift, invisible to a run-list check and to a file-tree check alike |
+| `root-flake-check` | **NEVER observed** | registered-but-absent | unknown | REGISTERED with the producer but its definition is ABSENT from the repository (workflow file '.github/workflows/root-flake-check.yml' is registered ACTIVE on the forge host but is ABSENT from the repository) — roster-versus-repository drift, invisible to a run-list check and to a file-tree check alike |
+| `spanserializer-windows-repro` | **NEVER observed** | registered-but-absent | unknown | REGISTERED with the producer but its definition is ABSENT from the repository (workflow file '.github/workflows/spanserializer-windows-repro.yml' is registered ACTIVE on the forge host but is ABSENT from the repository) — roster-versus-repository drift, invisible to a run-list check and to a file-tree check alike |
 | `substrate-claim-checker` | **NEVER observed** | registered-but-absent | unknown | REGISTERED with the producer but its definition is ABSENT from the repository (workflow file '.github/workflows/substrate-claim-checker.yml' is registered ACTIVE on the forge host but is ABSENT from the repository) — roster-versus-repository drift, invisible to a run-list check and to a file-tree check alike |
 | `zz-rustup-cache-probe` | **NEVER observed** | registered-but-absent | unknown | REGISTERED with the producer but its definition is ABSENT from the repository (workflow file '.github/workflows/zz-rustup-cache-probe.yml' is registered ACTIVE on the forge host but is ABSENT from the repository) — roster-versus-repository drift, invisible to a run-list check and to a file-tree check alike |
 
-## Not yet due — 2
+## Not yet due — 1
 
 Declared, correct, and **not yet owed a verdict** — its definition has not existed for a
 full period. Its own state on purpose: calling it green claims a verdict nobody gave, and
@@ -72,15 +78,14 @@ calling it red cries wolf on every scheduled check anyone adds, which gets the a
 
 | check | expectation | detail |
 | --- | --- | --- |
-| `chart-version-refresh` | periodic | declared to run every 7d (schedule: '7 17 \* \* 0') and its definition landed only 26h ago, less than one full period — no verdict is owed yet |
-| `drift-dashboard-cadence` | periodic | declared to run every 6h (schedule: '41 \*/6 \* \* \*') and its definition landed only 3h ago, less than one full period — no verdict is owed yet |
+| `artifact-freshness` | periodic | declares schedule: `7 */2 * * *`, has only ever run from another trigger, and its definition landed only 87m ago, less than one full period — no scheduled run is owed yet |
 
-## Running (0) / skipped (2)
+## Running (1) / skipped (1)
 
 | check | state | detail |
 | --- | --- | --- |
-| `mirror-to-fork` | skipped | run 32590487948 was skipped · **awaiting scheduled confirmation** — a later delete run concluded 'skipped' at 2026-08-22T22:17:43Z, NEWER than the verdict above. The verdict reports the DECLARED (scheduled) path, which is the stronger claim: a hand-run proves the code, not the cadence. This row clears when the next scheduled run passes. |
-| `rerun-cancelled-gate` | skipped | run 32602895045 was skipped |
+| `docker-ubuntu-install-sh-test` | running | **recheck in flight — this is the last CONCLUDED verdict, not a current one** |
+| `rerun-cancelled-gate` | skipped | run 33041221070 was skipped |
 
 ## Not applicable — 11
 
@@ -93,8 +98,8 @@ hidden, and deliberately not called green — a distinction laundered is a disti
 | --- | --- |
 | `accelerator-local-llm-validate` | push, but not to main |
 | `agent-reviewer` | pull_request |
+| `agentic-organization-integration` | workflow_dispatch |
 | `arc-swarm-fanout` | workflow_dispatch |
-| `docker-ubuntu-install-sh-test` | push, but not to main |
 | `image-pull-measurement` | pull_request |
 | `lint-autofix` | pull_request |
 | `passkey-proposal-gated-commit` | issues |
@@ -105,62 +110,71 @@ hidden, and deliberately not called green — a distinction laundered is a disti
 
 </details>
 
-## Green — 50
+## Green — 59
 
 <details><summary>show</summary>
 
 | check | verdict age | expectation |
 | --- | --- | --- |
-| `accelerator-move-next` | 85d | on-demand |
-| `agent-proposal-gated-commit` | 5d | on-demand |
-| `auto-submission` | 27m | unknown |
-| `build-platform-images` | 40h | on-change |
-| `bytelock` | 5d | on-change |
-| `ci-cache-paths-lint` | 33m | on-change |
-| `codeql` | 24m | unknown |
-| `copilot-pull-request-reviewer` | 22d | unknown |
-| `dependabot-updates` | 7h | unknown |
-| `docker-nixos-install-sh-test` | 2h | on-change |
-| `docker-ubuntu-jammy-install-sh-test` | 11h | on-change |
-| `docker-windows-install-ps1-test` | 2h | on-change |
-| `drift-sweep` | 30m | periodic |
-| `factory-hygiene-audit-cadence` | 8h | periodic |
-| `git-hotspot-cadence` | 6d | periodic |
-| `gitbash-install-routing-test` | 11h | on-change |
-| `github-settings-drift` | 5d | periodic |
-| `heartbeat-liveness` | 6m | periodic |
-| `helm-validate` | 7h | periodic |
+| `accelerator-move-next` | 89d | on-demand |
+| `agencysignature-enforcement` | 5s | on-change |
+| `agent-proposal-gated-commit` | 10d | on-demand |
+| `agentic-organization-tests` | 20h | on-change |
+| `arc-lane` | 8h | on-change |
+| `archive-strand-alarm` | 5m | periodic |
+| `auto-submission` | 8s | unknown |
+| `backlog-index-integrity` | 33h | on-change |
+| `budget-snapshot-cadence` | 4d | periodic |
+| `build-platform-images` | 20h | on-change |
+| `bytelock` | 38h | on-change |
+| `ci-cache-paths-lint` | 18m | on-change |
+| `ci-runtime-image` | 2h | on-change |
+| `codeql` | 16s | unknown |
+| `copilot-pull-request-reviewer` | 26d | unknown |
+| `dependabot-updates` | 38h | unknown |
+| `docker-nixos-install-sh-test` | 14m | periodic |
+| `docker-ubuntu-jammy-install-sh-test` | 2h | periodic |
+| `docker-windows-install-ps1-test` | 2h | periodic |
+| `drift-sweep` | 6m | periodic |
+| `factory-hygiene-audit-cadence` | 14h | periodic |
+| `git-hotspot-cadence` | 4d | periodic |
+| `gitbash-install-routing-test` | 2h | periodic |
+| `github-settings-drift` | 3d | periodic |
+| `helm-validate` | 13h | periodic |
+| `installer-repair-mode-existing-install` | 6h | on-change |
+| `installer-unit-tests` | 17m | on-change |
+| `interp-lane` | 19h | on-change |
 | `inventory-hardening-check` | 4d | on-change |
-| `inventory-heartbeat` | 16h | periodic |
-| `k8s-argocd-health-test` | 5h | periodic |
-| `keyring-dst1000` | 22h | on-change |
-| `lean-proof` | 2h | on-change |
-| `lint-autofix-apply` | 2m | on-demand |
-| `lockfile-healer` | 3m | periodic |
-| `low-memory` | 16h | periodic |
-| `macos-install-sh-test` | 11h | on-change |
+| `inventory-heartbeat` | 23h | periodic |
+| `k8s-argocd-health-test` | 11h | periodic |
+| `k8s-lane-partition` | 5h | on-change |
+| `keyring-dst1000` | 2h | on-change |
+| `lean-proof` | 20h | on-change |
+| `lint-autofix-apply` | 21s | on-demand |
+| `lockfile-healer` | 8m | periodic |
+| `low-memory` | 23h | periodic |
+| `macos-install-sh-test` | 2h | periodic |
+| `memory-index-drift` | 5h | on-change |
 | `memory-index-duplicate-lint` | 5h | on-change |
 | `memory-index-integrity` | 5h | on-change |
 | `memory-reference-existence-lint` | 5h | on-change |
-| `multiboot-qemu-uefi-smoke` | 6d | on-change |
-| `mux-swarm-tick` | 39m | periodic |
-| `pages-build-deployment` | 16d | unknown |
-| `pages-deploy` | 3m | periodic |
-| `proof-closure-drift` | 4h | periodic |
-| `razor-cadence` | 13h | periodic |
-| `role-ref-current-state-surfaces-lint` | 2d | on-change |
-| `scorecard` | 6d | periodic |
+| `multiboot-qemu-uefi-smoke` | 18h | on-change |
+| `mux-swarm-tick` | 82m | periodic |
+| `pages-build-deployment` | 20d | unknown |
+| `pages-deploy` | 29m | periodic |
+| `razor-cadence` | 20h | periodic |
+| `role-ref-current-state-surfaces-lint` | 25m | on-change |
+| `scorecard` | 3d | periodic |
 | `skill-description-lint` | 2d | on-change |
-| `society-heartbeat` | 4m | periodic |
-| `soraya-formal-coverage-cadence` | 13h | periodic |
-| `stryker-mutation` | 7d | on-change |
-| `tick-metrics` | 6m | periodic |
-| `udp-lossy-tests` | 27m | on-change |
-| `update-graph` | 21d | unknown |
-| `vocab-hygiene` | 12d | on-change |
-| `wsl-install-sh-test` | 11h | on-change |
-| `zetadb-scheduled-node` | 25m | periodic |
-| `zflash-harness-lint` | 6d | periodic |
+| `society-heartbeat` | 70m | periodic |
+| `soraya-formal-coverage-cadence` | 19h | periodic |
+| `stryker-mutation` | 21h | on-change |
+| `udp-lossy-tests` | 11s | on-change |
+| `update-graph` | 21h | unknown |
+| `vocab-hygiene` | 16d | on-change |
+| `wsl-install-sh-test` | 2h | periodic |
+| `zetadb-scheduled-node` | 5m | periodic |
+| `zflash-harness-lint` | 4d | periodic |
 
 </details>
 

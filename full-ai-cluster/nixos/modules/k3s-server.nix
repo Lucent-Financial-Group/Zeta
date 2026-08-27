@@ -9,6 +9,25 @@
 { config, pkgs, lib, ... }:
 
 {
+  imports = [
+    # The module that DEFINES `zeta.k3sDatastorePreflight`, whose `enable` this
+    # file sets near the bottom. Setting an option without importing its
+    # definer makes this module evaluable ONLY through `common.nix` (which
+    # imports both) and a hard evaluation error everywhere else — including
+    # every NixOS VM test, all of which import the role module directly and by
+    # design. Same discipline `k3s-agent.nix` already applies to
+    # `k3s-join-observer.nix`: the file that owns an option's value owns its
+    # import.
+    ./k3s-datastore-preflight.nix
+
+    # The module that DEFINES `zeta.cluster.{podCidr,serviceCidr,…}`, which the
+    # `--cluster-cidr` / `--service-cidr` flags below READ. Same rule as above,
+    # in its other direction: a module that consumes an option must import the
+    # module that defines it, or it can only be evaluated inside an aggregate
+    # that happens to supply it.
+    ./cluster-network.nix
+  ];
+
   services.k3s = {
     enable = true;
     role = "server";
@@ -35,6 +54,16 @@
     # k3s-server crash-looped on the token-read timeout; removing the
     # explicit tokenFile is the fix.
     clusterInit = lib.mkDefault true;
+    #
+    # SOVEREIGN BY DEFAULT, JOINING BY DECLARATION. `mkDefault true` stays: a
+    # machine flashed with no join endpoint founds its own cluster, which is
+    # right for the first node and for any standalone one. What used to be
+    # missing is that a control plane could not be told to JOIN at all --
+    # `injected-join-server.nix` guards itself to agents, so every machine built
+    # from the `control-plane` config founded a second cluster whatever the
+    # medium said. `modules/injected-server-join.nix` supplies the other branch
+    # and overrides this to `false` when, and only when, the medium carried both
+    # a join endpoint and a token.
 
     extraFlags = [
       "--write-kubeconfig-mode=0640"
@@ -71,9 +100,24 @@
       # node-09485d (2026-06-07). Keep exactly one default.
       "--disable=local-storage"
 
-      # Cluster CIDR — give Cilium a /16 to work with.
-      "--cluster-cidr=10.42.0.0/16"
-      "--service-cidr=10.43.0.0/16"
+      # Cluster CIDRs — DERIVED from the cluster's identity, not hardcoded.
+      #
+      # These used to read `10.42.0.0/16` / `10.43.0.0/16` as literals, which
+      # meant every machine ever flashed from this tree claimed the same pod and
+      # service space. That is harmless WITHIN one cluster (members share the
+      # CIDRs by design) and fatal ACROSS clusters: Cilium ClusterMesh requires
+      # disjoint pod/service CIDRs and distinct cluster ids, so two Zeta
+      # clusters could never federate.
+      #
+      # `zeta.cluster.{podCidr,serviceCidr}` are a pure function of
+      # `clusterName` in `full-ai-cluster/cluster-identity.json` — no allocator,
+      # no registry, nothing to appoint (manifesto §1). The same derivation
+      # exists in TypeScript and the two are byte-locked through
+      # `nixos/tests/cluster-cidr-golden-vectors.json`. See
+      # `modules/cluster-network.nix`, which also carries the assertions that
+      # refuse to build a node whose Cilium manifests disagree with these values.
+      "--cluster-cidr=${config.zeta.cluster.podCidr}"
+      "--service-cidr=${config.zeta.cluster.serviceCidr}"
     ];
 
     # ORDERING: what the mechanism actually does.
@@ -235,7 +279,39 @@
   # time (zeta-install.sh) once worker provisioning lands. Tracked
   # separately; single-node bring-up does not depend on it, and the VM test
   # supplies the mapping explicitly rather than pretending it is solved.
-  networking.hosts."127.0.0.1" = [ "control-plane" ];
+  #
+  # CONDITIONAL ON NOT JOINING, and the condition is load-bearing rather than
+  # defensive. `control-plane -> 127.0.0.1` is true exactly when the API server
+  # that name REFERS TO is this node — that is, when this node founds. On a node
+  # `injected-server-join.nix` has pointed at somebody else's cluster, the same
+  # entry makes the JOIN ENDPOINT resolve to the joiner itself, and a k3s server
+  # that dials its own supervisor joins nothing and founds a second cluster.
+  # That is precisely the defect `injected-server-join.nix` was written to
+  # prevent, reintroduced one layer down in /etc/hosts.
+  #
+  # Not a theoretical ordering hazard — `nixos/tests/k3s-server-join.nix`
+  # measured it on CI (run 33020639794): both entries land, `networking.hosts`
+  # is emitted in attribute order of the ADDRESS, `"127.0.0.1"` sorts before
+  # `"192.168.1.1"`, and glibc answers with the first match. The joiner resolved
+  # `control-plane` to `127.0.0.1`. Repairing that by relying on entry order
+  # would be a guess about glibc and about attrset iteration; deleting the entry
+  # that is FALSE on this node is a statement about what the name means.
+  #
+  # `serverAddr == ""` is the whole predicate. It is nixpkgs' default, pinned as
+  # such by the stub in `nixos/tests/k3s-server-join-eval-test.nix` (whose
+  # founding scenario asserts exactly `""`), and on a role=server node it is
+  # written by `injected-server-join.nix` and by nothing else.
+  #
+  # A JOINING control plane therefore gets no alias from this file, and that is
+  # deliberate: whoever supplied the endpoint owns resolving it. The VM test
+  # maps it to the founder explicitly; on hardware it is the same
+  # `control-plane <cp-ip>` /etc/hosts injection the paragraph above already
+  # names for workers. A joiner that cannot resolve its endpoint now fails
+  # loudly against an unreachable name instead of silently founding a rival
+  # cluster — the failure this tree would rather have.
+  networking.hosts = lib.mkIf (config.services.k3s.serverAddr == "") {
+    "127.0.0.1" = [ "control-plane" ];
+  };
 
   networking.firewall = {
     allowedTCPPorts = [
@@ -283,4 +359,12 @@
   systemd.tmpfiles.rules = [
     "d /var/lib/rancher/k3s 0755 root root - -"
   ];
+
+  # k3s IGNORES --cluster-init / --server / --token-file when a datastore
+  # already exists on disk (k3s docs, verbatim), so a declarative join is a
+  # SILENT no-op on any re-flash that did not wipe. On a from-scratch flash
+  # this unit finds nothing and passes; on a dirty disk it refuses, says why on
+  # console and serial, and deletes nothing. `lib.mkDefault` so a host can
+  # switch it off.
+  zeta.k3sDatastorePreflight.enable = lib.mkDefault true;
 }

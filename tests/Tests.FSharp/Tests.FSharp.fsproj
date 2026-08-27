@@ -85,6 +85,7 @@
     <Compile Include="Bonsai/BonsaiSoft.Tests.fs" />
     <Compile Include="Bonsai/DurableYinYang.Tests.fs" />
     <Compile Include="Bonsai.Property.Tests.fs" />
+    <Compile Include="ZSetRx.Tests.fs" />
     <Compile Include="Core/Codec.Tests.fs" />
     <Compile Include="RangeSet.Tests.fs" />
     <Compile Include="DynamicValue.Tests.fs" />
@@ -143,6 +144,7 @@
     <Compile Include="Merkle.FullVertical.Tests.fs" />
     <Compile Include="ZSetMerkle.Tests.fs" />
     <Compile Include="ZetaFsDeltaLog.Tests.fs" />
+    <Compile Include="ZetaFsDualFold.Tests.fs" />
     <Compile Include="ZSetMerkleProof.CrossVerify.Tests.fs" />
     <Compile Include="ZetaIrV1.Tests.fs" />
     <Compile Include="ZetaIrV2.Tests.fs" />
@@ -346,6 +348,7 @@
     <Compile Include="BipartiteMachZehnder.Tests.fs" />
     <Compile Include="TravelerRankLedger.Tests.fs" />
     <Compile Include="DeclaredStanceLedger.Tests.fs" />
+    <Compile Include="AdopterRegister.Tests.fs" />
     <Compile Include="FreeTimeAllocation.Tests.fs" />
     <Compile Include="DurableDiplomacyRankGate.Tests.fs" />
     <Compile Include="QSharpOracle.Tests.fs" />
@@ -432,8 +435,10 @@
     <Compile Include="Protobuf.Tests.fs" />
     <Compile Include="Protobuf.Swap.Tests.fs" />
     <Compile Include="SoftValue.Tests.fs" />
+    <Compile Include="DuExpand.Tests.fs" />
     <Compile Include="SoftValue.CrossVerify.Tests.fs" />
     <Compile Include="SoftValueWidening.Tests.fs" />
+    <Compile Include="RetractionReading.Tests.fs" />
     <Compile Include="SoftValueWeightedSet.Tests.fs" />
     <Compile Include="TravelerFrame.Tests.fs" />
     <Compile Include="DecorrelationMetrology.Tests.fs" />
@@ -478,6 +483,7 @@
     <Compile Include="Formal/CliffordE8Roots.Tests.fs" />
     <Compile Include="Formal/CliffordE8BladeMask.Tests.fs" />
     <Compile Include="Formal/E8LieAlgebra.Tests.fs" />
+    <Compile Include="Formal/E8ChevalleyGroup.Tests.fs" />
     <Compile Include="Formal/FrequencyMachZehnder.Tests.fs" />
     <Compile Include="Formal/CliffordStarRing.Laws.Tests.fs" />
     <Compile Include="Formal/CliffordReflection.Laws.Tests.fs" />
@@ -649,6 +655,7 @@
     <Compile Include="Formal/SoftValue.BayesianInversion.Laws.Tests.fs" />
     <Compile Include="Formal/WSet.Comonoid.Laws.Tests.fs" />
     <Compile Include="Formal/WSet.FourCornerTrace.Laws.Tests.fs" />
+    <Compile Include="Formal/FourCornerC4.Laws.Tests.fs" />
     <Compile Include="Formal/WSet.ErasureClassification.Laws.Tests.fs" />
     <Compile Include="Formal/Erasure.Representation.Laws.Tests.fs" />
     <Compile Include="Formal/Erasure.Charge.Laws.Tests.fs" />
@@ -708,6 +715,7 @@
     <Compile Include="ClaimLane.Tests.fs" />
     <Compile Include="QuerySurface.Equivalence.Tests.fs" />
     <Compile Include="StreamTableDuality.Tests.fs" />
+    <Compile Include="ToyBosonFermionParity.Tests.fs" />
   </ItemGroup>
 
   <ItemGroup>

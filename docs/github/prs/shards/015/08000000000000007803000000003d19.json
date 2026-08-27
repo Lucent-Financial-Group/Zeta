@@ -1,0 +1,12 @@
+{
+  "pr_number": 15641,
+  "archive_path": "docs/history/pr-reviews/PR-15641-cluster-the-k8s-layer-is-already-up-and-it-is-two-clusters-so-vault-init-is-bloc.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-26T20:29:00.816Z",
+  "schema_version": "v1",
+  "commit_sha": "e72a4f7c50c74b3f814f80abe8175199d0661d5a",
+  "title": "cluster: the k8s layer is already up — and it is TWO clusters, so Vault init is blocked on a choice",
+  "state": "MERGED",
+  "merged_at": "2026-08-26T19:50:21Z",
+  "head_ref": "shadow/k8s-vault-bringup-design"
+}

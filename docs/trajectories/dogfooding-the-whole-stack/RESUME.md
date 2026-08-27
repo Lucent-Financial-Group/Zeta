@@ -1,7 +1,7 @@
 # Dogfooding the whole stack — running Zeta on Zeta
 
 Status: ACTIVE — declared the next big trajectory by the human maintainer 2026-08-09
-Last refreshed: 2026-08-26
+Last refreshed: 2026-08-27
 Current blocker: **NONE for the society runtime — cleared 2026-08-25.** The lanes flush again. Paid-agent harness (Tier 0 below) is a **separate** blocker: vendor CLIs, not our login.
 The blocker recorded here (PAT lacking `contents: write` since #10850) was only HALF the story,
 and the recorded half had already been fixed: `git push` on the flush token works. What kept the
@@ -53,15 +53,15 @@ the real dependency. `○ not started` = no surface in-tree.
 
 The society runtime (Tier 1) dogfoods **free Ollama + vendor CLIs**. This
 tier is the paid-account path Aaron named 2026-08-26: grok, claude, openai,
-manus, gemini, codex, kiro on our harness, account logins, Ace + Zeta CLIs
+manus, gemini, codex, kiro on **Harny**, account logins, Ace + Zeta CLIs
 only. Live pointer: [`own-ai-harness/RESUME.md`](../own-ai-harness/RESUME.md).
 Umbrella `081M100RB97087G0R0008EAAY7`.
 
 | # | Layer | Running on our own thing? | Evidence |
 |---|---|---|---|
-| 0a | **Account-login roster + `zeta-login` CLI** | ◐ **partial** | Roster + login ladder (device-code first). Native device login wired for `github` + `openai`/`codex`. `zeta-login import` copies vendor-CLI sessions (grok/claude/gemini/codex/gh/kiro) without reverse-engineering their OAuth. |
+| 0a | **Account-login roster + `harny` / `zeta-login` CLI** | ◐ **partial** | Roster + login ladder (device-code first). Native device login wired for `github` + `openai`/`codex`. Manus is a **wired account API key** (`harny login manus --from-file`) — no extra per-call billing, **remote-only** (never a local tool loop). `harny import` copies vendor-CLI sessions (grok/claude/gemini/codex/gh/kiro) without reverse-engineering their OAuth. `harny search` is inverted-index, not full-tree grep. |
 | 0b | **Paid cells summon through our tool loop** | ○ **not started** | `loop-tick` still spawnSyncs `claude`/`codex`/`kiro-cli`/`agy`/`cursor-agent`. `summon()` is a library proven on ChatGPT (2026-07-04), not the fleet. `081M100RH30087G0R003YXHQ12` |
-| 0c | **GitHub work without `gh`** | ◐ **partial** | Login is ours (`github-auth.ts`). PRs/checks/rest-push still `spawnSync("gh")`. `081M100RB9Z087G0R000GWY1MM` |
+| 0c | **GitHub work without `gh`** | ◐ **partial** | Login is ours. Token resolver is store then env, never `gh auth token`. List/get/create PR, git-data, comments, issues, auto-merge, and **one-shot merge-observe** are REST/GraphQL. Threads / rest-push / archive still `gh`. `081M100RB9Z087G0R000GWY1MM` · `081M107N9P4087G0R0002G5SR0` |
 | 0d | **Tools = Ace + Zeta CLIs only** | ○ **not started** | Closed `fs_*`/`db_*` is in-memory DagFs. Fleet tools are vendor bash/git/gh. `081M100RH3Q087G0R0018X4RSJ` |
 
 ### Tier 1 — the society runtime (this is where we actually are)
@@ -82,8 +82,8 @@ Umbrella `081M100RB97087G0R0008EAAY7`.
 |---|---|---|---|---|
 | 8 | npm/bun deps, brew, apt, uv, dotnet… | **ACE realizers** | ✅ **dogfooded** | `src/Core.TypeScript/ace/setup-realize.ts` + `setup-realizers/` (**23 files**, 17 of them `from-*` classes incl. `from-uv-venv`, `from-uv-tool`, `from-bun-workspace`). Invoked by **workflows** — `gate.yml`, `lean-proof.yml`, `low-memory.yml`, `macos-install-sh-test.yml`, `tlaps-proof.yml`, `accelerator-local-llm-validate.yml`. **Corrected 2026-08-25:** this row said `install.sh` delegates to it and gave the path as `ace/setup-realize.ts`; `install.sh` does not reference it at all, and the path is under `src/Core.TypeScript/`. Verify with `git grep -l setup-realize -- tools src .github` before citing. |
 | 9 | manual/ad-hoc distribution | **ACE meta-package-manager** | ○ **not started** | only `Core.FSharp.AceCanonical`; N-dimensional resolver + AI-rate negotiation are design-stage. **The single biggest gap.** |
-| 10 | CockroachDB (k8s: temporal, hindsight, longhorn) | **ZetaDB** | ◐ **partial** | `zetadb-scheduled-node.yml` folds a journal + commits checkpoints; but Cockroach is still the real store |
-| 11 | OS filesystem | **ZetaFS** (`DagFs`) | ◐ **partial** | `DagFs.fs` content-addressed multi-parent tree consumed by `Db.fs`/`File.fs`/`ZetaToolStore.fs`; not the OS FS |
+| 10 | CockroachDB (k8s: temporal, hindsight, longhorn) | **ZetaDB** | ◐ **partial** | Journal fold is the dual Z-set `I` (`ZetaFsDualFold`); Cockroach is still the real store. Git replacement is the same algebra (`081M108RYNT087G0R001JSRNZE`) |
+| 11 | OS filesystem | **ZetaFS** (`DagFs` + dual fold) | ◐ **partial** | `DagFs.fs` content-addressed multi-parent tree; `ZetaFsDualFold.applyPresence` is the +1/−1 path patch; `ZetaFsDeltaLog` is the own-format log. Not the OS FS; factory still `git` |
 | 12 | Linux (NixOS) | **Zeta unikernel** | ○ **not started** | no surface in-tree at all |
 | 13 | TCP/IP + GitHub as transport | **Reticulum mesh** | ◐ **partial** | `ReticulumLink.fs`, `ReticulumChaos.fs` exist; not the live transport |
 
