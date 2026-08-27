@@ -278,20 +278,71 @@ jobs:
       # GitHub code scanning records "analysis ran, no new alerts"
       # (SUCCESS aggregate check) rather than NEUTRAL.
       #
-      # Why this runs UNCONDITIONALLY (not gated on docs-only):
+      # Why this runs on PR / merge_group but NOT on push / schedule:
       # The aggregate `CodeQL` status check is set when path-gate's
       # SARIF uploads complete, BEFORE the matrix `analyze` jobs
       # finish. If we only emit on docs-only PRs, code-changed PRs
-      # leave the aggregate without input → NEUTRAL → trips the
+      # leave the aggregate without input -> NEUTRAL -> trips the
       # `code_quality` ruleset rule even though all per-language
-      # `Analyze (X)` checks pass. By emitting empty SARIF
-      # unconditionally, the aggregate gets a clean baseline early.
-      # The matrix analyses' REAL SARIF is uploaded later under the
+      # `Analyze (X)` checks pass. So on the EPHEMERAL refs
+      # (`refs/pull/N/merge`, `refs/heads/gh-readonly-queue/*`) the
+      # aggregate still gets its clean baseline early, and the
+      # matrix analyses' REAL SARIF is uploaded later under the
       # same `(commit, ref, category, tool)` key and replaces the
-      # empty baseline (per GitHub's SARIF-replace-by-key rule),
-      # so any real findings still surface as code-scanning alerts.
-      # The `code_quality severity:all` rule gates on alerts, not on
-      # the aggregate status, so real findings still block merges.
+      # empty baseline (per GitHub's SARIF-replace-by-key rule).
+      #
+      # ---- MEASURED DEFECT 2026-08-27: this must NOT run on push
+      # ---- or schedule. Those are the events whose analyses write
+      # `refs/heads/main`, and `refs/heads/main` is the DURABLE
+      # security record rather than a per-PR scratch surface.
+      #
+      # A zero-result SARIF is recorded by GitHub as a SUCCESSFUL
+      # analysis that found nothing, and GitHub then marks every
+      # open alert in that category `fixed`. From the API record,
+      # not inferred:
+      #
+      #   analysis 1679102987 - 2026-08-27T02:56:34Z
+      #     analysis_key .github/workflows/codeql.yml:path-gate
+      #     category /language:javascript-typescript
+      #     results_count 0   error ""   tool.version 0.0.0
+      #
+      #   -> 102 alerts across 14 rules, every one `state: fixed`,
+      #      `dismissed_by: null`, `fixed_at 2026-08-27T02:56:34Z`
+      #      - the SAME INSTANT as that upload.
+      #
+      # The commit that "fixed" them (acaecd12 -> c99878b4) changed
+      # exactly one file, `demo/red/red-state.json`, two lines. The
+      # defects were untouched: `js/http-to-file-access` #267 at
+      # `src/Core.TypeScript/peer-call/summon.ts:369` and #772 at
+      # `src/Core.TypeScript/observe/tick-reasoning.ts:59` are both
+      # still present in the source at the commit that closed them.
+      #
+      # The trigger is that run 33034799245 was CANCELLED: `Path
+      # gate` finished at 02:56:48 having uploaded this baseline,
+      # and every `Analyze (X)` leg was then cancelled by the next
+      # push under `cancel-in-progress`. 80.7% of codeql push-runs
+      # on `main` are cancelled (n=300, 2026-08-25..26), so the real
+      # SARIF that is supposed to "replace the empty baseline"
+      # usually never arrives and the empty baseline is the last
+      # word for that category.
+      #
+      # NOTE WHAT GITHUB ALREADY GETS RIGHT, because it names the
+      # property this gate preserves. The cancelled analyze leg
+      # ALSO uploaded a zero-result SARIF (analysis 1679104588) and
+      # it changed nothing - because codeql-action marks a run that
+      # did not complete `executionSuccessful: false`, and GitHub
+      # recorded it as `error: "unsuccessful execution, exit code:
+      # 0"`. GitHub already distinguishes "analysis did not run"
+      # from "analysis found nothing". Our synthetic SARIF did not,
+      # and that is the whole bug: it asserted the second while
+      # meaning neither.
+      #
+      # There is no merge gate on a push to `main` to protect - the
+      # only required status check is `gate (required)` and no
+      # active ruleset carries a `code_scanning` rule at all - so
+      # gating this off push/schedule costs nothing and stops the
+      # alert record being erased. Guarded by
+      # `hygiene:no-clean-sarif-for-skipped-analysis`.
       #
       # Categories must match the `analyze` matrix categories or
       # the code-scanning service treats them as unrelated
@@ -307,7 +358,10 @@ jobs:
         # full `analyze` matrix is forced on fork PRs (see decide
         # step) and uploads via its own pull_request_target /
         # CodeQL-fallback path, so the baseline is unnecessary.
-        if: steps.decide.outputs.is_fork_pr != 'true'
+        if: >-
+          steps.decide.outputs.is_fork_pr != 'true'
+          && github.event_name != 'push'
+          && github.event_name != 'schedule'
         env:
           HEAD_SHA_ENV: ${{ github.event.pull_request.head.sha || github.event.merge_group.head_sha || github.sha }}
         run: |
@@ -361,28 +415,40 @@ jobs:
       # action-param -- which overrides SARIF automationDetails --
       # can differ per file.
       - name: Upload no-findings SARIF (actions)
-        if: steps.decide.outputs.is_fork_pr != 'true'
+        if: >-
+          steps.decide.outputs.is_fork_pr != 'true'
+          && github.event_name != 'push'
+          && github.event_name != 'schedule'
         uses: github/codeql-action/upload-sarif@db488ddef3bf6cb639b32c2e9a7c0a7ea8271d28  # v4.37.8
         with:
           sarif_file: sarif/empty-actions.sarif
           category: "/language:actions"
 
       - name: Upload no-findings SARIF (csharp)
-        if: steps.decide.outputs.is_fork_pr != 'true'
+        if: >-
+          steps.decide.outputs.is_fork_pr != 'true'
+          && github.event_name != 'push'
+          && github.event_name != 'schedule'
         uses: github/codeql-action/upload-sarif@db488ddef3bf6cb639b32c2e9a7c0a7ea8271d28  # v4.37.8
         with:
           sarif_file: sarif/empty-csharp.sarif
           category: "/language:csharp"
 
       - name: Upload no-findings SARIF (python)
-        if: steps.decide.outputs.is_fork_pr != 'true'
+        if: >-
+          steps.decide.outputs.is_fork_pr != 'true'
+          && github.event_name != 'push'
+          && github.event_name != 'schedule'
         uses: github/codeql-action/upload-sarif@db488ddef3bf6cb639b32c2e9a7c0a7ea8271d28  # v4.37.8
         with:
           sarif_file: sarif/empty-python.sarif
           category: "/language:python"
 
       - name: Upload no-findings SARIF (javascript-typescript)
-        if: steps.decide.outputs.is_fork_pr != 'true'
+        if: >-
+          steps.decide.outputs.is_fork_pr != 'true'
+          && github.event_name != 'push'
+          && github.event_name != 'schedule'
         uses: github/codeql-action/upload-sarif@db488ddef3bf6cb639b32c2e9a7c0a7ea8271d28  # v4.37.8
         with:
           sarif_file: sarif/empty-javascript-typescript.sarif
@@ -391,7 +457,10 @@ jobs:
       - name: Upload no-findings SARIF (java-kotlin)
         # No Java/Kotlin source in this repo, but main's history
         # carries the configuration; satisfy the sticky expectation.
-        if: steps.decide.outputs.is_fork_pr != 'true'
+        if: >-
+          steps.decide.outputs.is_fork_pr != 'true'
+          && github.event_name != 'push'
+          && github.event_name != 'schedule'
         uses: github/codeql-action/upload-sarif@db488ddef3bf6cb639b32c2e9a7c0a7ea8271d28  # v4.37.8
         with:
           sarif_file: sarif/empty-java-kotlin.sarif
