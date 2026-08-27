@@ -221,6 +221,84 @@ running our own models on our own hardware would widen.
 
 ---
 
+## 2b. The dataset Aaron actually wants: the corrections he keeps repeating
+
+Asked which corpus matters most, Aaron 2026-08-27 named a narrower and more interesting one than
+the PR archive:
+
+> *"the data set i'm most interested in are the corrections i keep giving over and over -- the
+> proper way to write code and all the rules to follow to reduce errors ... no AI today can adhere
+> to it fully even if it's copy pasted on every prompt ... kind of like 12 factor app but at a lower
+> layer, at the layer of any code of any kind. 12 factor app is more about categorization and it's
+> good ... our manifesto is all about computer science/engineering vs ad hoc code."*
+
+Three claims, and each is checkable.
+
+### It already exists, and it is larger than it feels
+
+Counted 2026-08-27, so this stops being an impression:
+
+| surface | count |
+|---|---:|
+| `GOVERNANCE.md` numbered rules | 36 |
+| `docs/AGENT-BEST-PRACTICES.md` BP ids | 29 |
+| `.claude/rules/` (active, loaded every session) | 28 |
+| `.claude/rules.bak/` (archived) | **113** |
+| `memory/feedback_*.md` (recorded corrections) | **650** |
+| **total** | **856** |
+
+650 recorded corrections is the answer to "corrections I keep giving over and over" -- they were
+captured, they are dated and attributed, and nobody has ever treated them as a dataset.
+
+### "Copy-pasting it into every prompt does not work" is not a complaint -- it is measured here
+
+The strongest evidence for Aaron's claim is sitting in the ratio above: **113 rules are archived and
+28 are active.** That archive was not a cleanup of bad rules. It was a cold-start token reduction --
+the ruleset outgrew the context budget, and the rules that still apply were moved out of the loaded
+set to make room. `rules-are-small-carved-sentences-pointing-to-docs` exists precisely to keep the
+resident surface from re-bloating.
+
+So the situation is not "we have rules and the model ignores them." It is:
+
+> **The ruleset has already outgrown what can be resident, and the archive is the measured proof.**
+
+That is what makes a training set the right instrument rather than a longer prompt. A prompt-resident
+rule competes for the same budget as the work; a rule internalised in weights does not. It also
+predicts the failure mode we see: adherence degrades on the rules that were archived, not uniformly.
+
+### The restatement rate is the metric this corpus makes available
+
+A rule that has to be restated is a rule the system failed to internalise, and the corpus records
+*when* each restatement happened. So corrections-per-rule-per-month is a falsifiable measure of
+whether a rule is landing -- and it is the honest denominator for any later claim that fine-tuning
+helped. Under `labelled-observation.ts`, a restatement is a label under `correction/restates` naming
+the rule it repeats; the rule id is the join key, and the count falls out of a fold.
+
+This is the one place a *resolver* would be legitimate and is still refused: two agents may disagree
+about whether a given exchange restates a rule, and both readings stay on the row.
+
+### The layering claim, and where 12-factor actually sits
+
+Aaron's framing is that 12-factor is *categorisation* at the deployment layer, and that our building
+codes sit **below** it, at the layer of any code of any kind. That is right, and the distinction is
+sharper than "lower":
+
+- **12-factor** (Adam Wiggins, Heroku, 2011) constrains how an application *relates to its environment* --
+  config, backing services, processes, logs. It is silent on what happens inside a function.
+- **The thirteen specifications** constrain *the construction itself* -- scale-free, lock/wait-free,
+  weight-free, DST-replayable, idempotent, noninterfering. These bind a single function as much as a
+  deployment.
+
+The repo-split intuition Aaron mentions is the overlap: 12-factor's categorisation is a good lens for
+*where code goes*, which is DV2.0's change-rate partition arriving from a different direction. But
+the manifesto's subject is whether the code is engineered or ad hoc, and no deployment-layer factor
+answers that.
+
+**Honest limit on this section.** The census counts artifacts, not adherence. Nothing here measures
+how often a rule is actually followed -- only how often it was written down. Turning 856 documents
+into a training set is the blueprint's step 2, and it remains unbuilt; saying otherwise would be the
+vacuity class in dataset form.
+
 ## 3. What this converges with, and what is now worth building
 
 The video's conclusion and Aaron's long-term goal are the same conclusion reached from opposite
