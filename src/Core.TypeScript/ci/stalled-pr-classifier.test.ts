@@ -67,8 +67,8 @@ describe("attribution — the predicate the retraction actuator lacks", () => {
   });
 
   test("a failure whose subject intersects the diff IS attributable", () => {
-    const c: CheckFact = { name: "test (TS hermetic)", conclusion: "failure", subjectPaths: ["infra/k8s/tests/x.test.ts"] };
-    expect(isAttributable(c, ["infra/k8s/tests/x.test.ts"])).toBe(true);
+    const c: CheckFact = { name: "test (TS hermetic)", conclusion: "failure", subjectPaths: ["full-ai-cluster/tests/x.test.ts"] };
+    expect(isAttributable(c, ["full-ai-cluster/tests/x.test.ts"])).toBe(true);
   });
 
   test("unattributable failures never yield an author report", () => {
