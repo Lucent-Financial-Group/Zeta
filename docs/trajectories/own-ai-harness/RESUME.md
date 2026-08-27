@@ -1,7 +1,7 @@
 # Trajectory — Harny (custom agent harness)
 
 Status: active — workstream (current-focus)
-Last refreshed: 2026-08-26
+Last refreshed: 2026-08-27
 Type: workstream (current-focus)
 Current blocker: five of seven paid LLM accounts have no native `AuthProvider`; production `loop-tick` still spawnSyncs vendor CLIs. Token **import** from those CLIs is now a shipped fallback.
 Next concrete action: wire our own device-code where the vendor publishes it (Grok auth.x.ai, Kiro `--use-device-flow`) — `081M100RH29087G0R0031HHGJ0` — in parallel with ForgeHost without `gh`
@@ -46,7 +46,7 @@ The harness **library** is real. The fleet **runtime** is still vendor CLIs.
 | Full-duplex four-corner | ◐ library | `duplex-transport.ts` + WS mux; vendor APIs still SSE/HTTP |
 | Closed tools | ◐ library | `ZETA_TOOLS` = `fs_*`/`db_*` in-memory; fleet uses bash/gh/git |
 | Ace (deps) | ◐ dogfooded for setup | `ace.ts` + `setup-realize.ts`; agents still call bun/mise/brew |
-| Zeta CLI (sc/fs) | ◐ library | LibGit2Sharp `zeta` exe + MCP; factory still `git`/`gh` |
+| Zeta CLI (sc/fs) | ◐ library | LibGit2Sharp `zeta` is v1; `ZetaFsDualFold` + `ZetaFsDeltaLog` + `DagFs` is the destination (own Merkle, not git packfiles). Factory still `git`/`gh`. `081M108RYNT087G0R001JSRNZE` |
 | Indexing | ◐ in-tree | `harny search` → `search/inverted` (refuses on stale empty) |
 | loop-tick | ○ vendor default | `persona-registry.ts` harness.command = claude/codex/kiro-cli/agy/cursor-agent |
 
@@ -83,8 +83,23 @@ bun src/Core.TypeScript/harny/harny.ts import grok
    `081M107N9P4087G0R0002G5SR0`)
 3. **Closed tools = Ace + Zeta + Forge DU verbs on the Xbox ActionGrid** —
    `081M100RH3Q087G0R0018X4RSJ` · `081M107N9PZ087G0R0006X16SJ`
+   Git/fs through ZetaFS is ROADMAP item 1: dual Z-set folds
+   (`+1` `I` forward, `−1` generator-reinterpret of retained history)
+   over DagFs Merkle — not LibGit2Sharp-as-the-store.
+   `081M108RYNT087G0R001JSRNZE`.
+   Full −1 of the view is **erasing**; `SoftValue.widen` is **non-erasing**
+   of support; negate alone is Bennett-free (`081M10BD9BM087G0R001SGDRXT`).
+   Commands **run locally** (`observe/local-command.ts`); background
+   checks sync remote World channels and re-observe the preexisting
+   NextAction / ForgeState DUs (`081M109WG5S087G0R0021E5MPT`).
 4. **loop-tick default `mux-duplex`** (Manus stays a remote task, not this loop) — `081M100RH30087G0R003YXHQ12`
-   Git/fs through ZetaFS is ROADMAP item 1 — another bootstrap.
+   Self-prediction of the tick uses the no-`app` Kleisli close:
+   `FourCornerTrace` on VALUE, ISR `>=>` on interrupts, DoP=1 ferry,
+   `SchedulerZeta.predict` / `Chip8Observer.predict`. Consistent-with,
+   not one type. `081M10AZ6KS087G0R0000SSFMH`.
+   The +1/−1 fold connection is a Bonsai Rx query (`ZSetRx`), generic
+   over any Z-set. Own model `zeta-bnn` (MinimalBnn / Student-t ADF)
+   is a local online learner beside vendor chat backends.
 
 Phase A done when a Riven/Otto/Vera cell completes a **local** tool-using
 turn on Harny with a stored account token, no vendor CLI, no `gh`.
@@ -110,20 +125,35 @@ Ace is the bootstrap. Harny is an Ace package, not Ace itself.
      2026-04-22 ADR cycle cannot be a DAG
    - minimize toolchain per package (Harny: bun/node only)
    - cuts the monorepo cache tax
+3. **More granular splits after Harny** — `081M10AAVAT087G0R0027M0GV5`
+   - Data Vault 2.0 by change rate *and* toolchain closure (round 3)
+   - dozens of peer repos expected; dogfood in-tree, then extract
+   - DUs expand to DynamicValue + SoftValue (`DuExpand`) so a local
+     verb is a global Bayesian/Z-set effect
+   - cutover is ADR 2026-08-26 (gated; no repo created from a chat)
 
 Phase B dogfoods the repo-split design by extracting the thing we are
-already running, not by inventing a fourth factory.
+already running, not by inventing a fourth factory. The concert is
+**local actions → global effects**.
 
 ## Pointers
 
 - Research absorb: `docs/research/2026-08-26-own-harness-account-logins-ace-zeta-clis-not-platform.md`
+- ZetaFS dual fold: `docs/research/2026-08-26-zetafs-dual-fold-git-replacement.md` · `src/Core/ZetaFsDualFold.fs`
+- Erasing vs widen: `docs/research/2026-08-26-full-minus-erasing-widen-nonerasing.md` · `src/Core/RetractionReading.fs`
+- No-`app` needle: `docs/research/2026-08-26-no-app-kleisli-isr-fourcornertrace-self-predict.md` · `IntrCtx.fs` · `IsrLift.fs` · `SchedulerZeta.fs`
 - Dogfood ledger Tier 0: `docs/trajectories/dogfooding-the-whole-stack/RESUME.md`
 - Repo split ADR: `docs/DECISIONS/2026-04-22-three-repo-split-zeta-forge-ace.md`
+- Cutover sequence: `docs/DECISIONS/2026-08-26-multi-repo-and-hat-credential-cutover-sequence.md`
+- DU expand / local→global: `docs/research/2026-08-26-du-expand-dynamicvalue-softvalue-granular-repo-splits.md` · `src/Core/DuExpand.fs`
+- FourCorner C₄ / IStarRing / not Cl(p,q) / not a fermion (Adinkra Q-odd dashing; Meijer 2-corner vs feedback product): `docs/research/2026-08-26-fourcorner-c4-istarring-not-clpq.md` · `src/Core/FourCornerC4.fs` · `081M10CBYF9087G0R003GWBNHG`
 - Clone-at-tag: `.claude/rules/clone-at-tag-stays-sufficient.md`
 - Index: `src/Core.TypeScript/search/inverted/`
 - CLI: `src/Core.TypeScript/harny/harny.ts`
 - Cheap forge verbs: `docs/research/2026-08-26-cheap-forge-verbs-du-observe-not-adhoc-poll.md`
-- Observe controller: `src/Core.TypeScript/observe/observe.ts` · `grammar-16.ts`
+- Rx +1/−1 query / own BNN / local DU sync: `docs/research/2026-08-26-rx-query-connects-plus1-minus1-folds-bonsai-own-bnn-local-du-sync.md`
+- Observe controller: `src/Core.TypeScript/observe/observe.ts` · `grammar-16.ts` · `local-command.ts`
+- Own model: `src/Core.TypeScript/model-backend/own-model.ts` · `src/Bayesian/MinimalBnn.fs`
 - UAG / Xbox grid: `src/Core/ActionGrid.fs`
 - Reservoir walls: `docs/research/2026-05-28-aaron-workflow-as-reservoir-computing-*`
 - μF/νF: `docs/research/2026-08-11-rename-as-rolling-migration-*`
