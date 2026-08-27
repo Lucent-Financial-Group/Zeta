@@ -33,6 +33,5 @@ module ContentHasher =
     /// consume — so callers depend on the port, not a concrete algorithm.
     let hashOf (hasher: IContentHasher) : byte[] -> MerkleHash = hasher.Hash
 
-    // BLAKE3 adapter (shipped): `Zeta.Core.FSharp.Blake3.Blake3Hasher`. The NuGet stays
-    // isolated in that project. Select it at the composition root (`ZetaFsStore.deltaLog`);
-    // do not pull it into Core.
+    // BLAKE3: own spec impl is the store hasher (`OwnBlake3Hasher` / `ZetaFsStore.deltaLog`).
+    // The NuGet adapter is a test oracle. Do not pull Blake3 into Core.

@@ -11,5 +11,7 @@ open Zeta.Core
 [<RequireQualifiedAccess>]
 module ZetaFsStore =
 
+    /// Tamper-evident log. Selects the **own** spec hasher (`OwnBlake3Hasher`).
+    /// The NuGet adapter is a test oracle, not this root.
     let deltaLog<'K when 'K: comparison> (dir: string) (codec: IEntryCodec<'K>) : ZetaFsDeltaLog<'K> =
-        ZetaFsDeltaLog(dir, codec, Blake3Hasher.hasher)
+        ZetaFsDeltaLog(dir, codec, OwnBlake3Hasher.hasher)
