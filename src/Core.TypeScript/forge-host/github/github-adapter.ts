@@ -1,4 +1,3 @@
-import { spawnSync } from "node:child_process";
 /**
  * forge-host/github/github-adapter.ts — GitHub implementation of ForgeHost.
  *
@@ -14,7 +13,6 @@ import type {
   PrGateState,
   Issue,
   CheckRollup,
-  CheckSummary,
   CiRun,
   RepoInfo,
   BranchProtection,
@@ -29,31 +27,15 @@ import type {
   ListIssueOpts,
   CreateIssueOpts,
   MergeMethod,
-  NextAction,
   CheckDefinition,
   CheckObservationOpts,
   CheckObservationPass,
 } from "../types";
 import { ok, err, forgeError } from "../result";
-import { runGh, runGhJson } from "./gh-cli";
-import { classifyGhError } from "./classify-error";
+import { githubRestRequest, resolveGitHubToken, runGh, runGhJson } from "./gh-cli";
 import { listGitHubCheckDefinitions, listGitHubCheckObservations } from "./check-observations.ts";
-
-// ─── GitHub-specific raw response types ─────────────────────────────────────
-
-interface GhPrListItem {
-  number: number;
-  title: string;
-  headRefName: string;
-  baseRefName: string;
-  state: string;
-  isDraft: boolean;
-  mergeStateStatus: string;
-  reviewDecision: string | null;
-  url: string;
-  updatedAt: string;
-  author: { login: string };
-}
+import { restCreatePull, restGetPull, restListPulls, restPullToPr, type GithubRest } from "./github-pr-rest.ts";
+import { observeMerge, observeOpenPullRequests } from "./github-merge-observe.ts";
 
 // ─── Adapter ────────────────────────────────────────────────────────────────
 
@@ -71,12 +53,37 @@ export class GitHubAdapter implements ForgeHost {
    */
   private readonly repoRoot: string;
   private readonly checkRef: string;
+  private readonly rest: GithubRest;
+  /// Leftover `gh` porcelain until those verbs are REST. Injected in DST tests so a missing binary is not a 500ms spawn.
+  private readonly porcelain: (args: readonly string[]) => Result<string, ForgeError>;
 
-  constructor(owner: string, repo: string, opts?: { readonly repoRoot?: string; readonly checkRef?: string }) {
+  constructor(
+    owner: string,
+    repo: string,
+    opts?: {
+      readonly repoRoot?: string;
+      readonly checkRef?: string;
+      readonly rest?: GithubRest;
+      readonly porcelain?: (args: readonly string[]) => Result<string, ForgeError>;
+    },
+  ) {
     this.owner = owner;
     this.repo = repo;
     this.repoRoot = opts?.repoRoot ?? process.cwd();
     this.checkRef = opts?.checkRef ?? "main";
+    this.porcelain = opts?.porcelain ?? ((args) => runGh(args));
+    if (opts?.rest !== undefined) {
+      this.rest = opts.rest;
+    } else {
+      // Per-instance memo (actor state), not a process global. DST tests inject `rest`.
+      let cached: string | null | undefined;
+      this.rest = {
+        request: (method, path, body) => {
+          if (cached === undefined) cached = resolveGitHubToken();
+          return githubRestRequest(method, path, body, { token: cached });
+        },
+      };
+    }
   }
 
   private get nwo(): string {
@@ -108,91 +115,38 @@ export class GitHubAdapter implements ForgeHost {
   // ─── PR state ───────────────────────────────────────────────────────────
 
   async listOpenPullRequests(opts?: ListPrOpts): Promise<Result<readonly PullRequest[], ForgeError>> {
-    const limit = opts?.limit ?? 100;
-    const result = runGhJson<GhPrListItem[]>([
-      "pr", "list", "--repo", this.nwo, "--state", "open",
-      "--json", "number,title,headRefName,baseRefName,state,isDraft,mergeStateStatus,reviewDecision,url,updatedAt,author",
-      "--limit", String(limit),
-    ]);
-    if (!result.ok) return result;
-    return ok(result.value.map(mapPr));
+    // GraphQL one-shot: REST list does not carry mergeStateStatus, so observe()'s
+    // World.forgeState.cleanPrCount would stay 0 (a quiet-loop bug).
+    return observeOpenPullRequests(this.rest, this.nwo, opts?.limit ?? 20);
   }
 
   async getPullRequest(number: number): Promise<Result<PullRequest, ForgeError>> {
-    const result = runGhJson<GhPrListItem>([
-      "pr", "view", String(number), "--repo", this.nwo,
-      "--json", "number,title,headRefName,baseRefName,state,isDraft,mergeStateStatus,reviewDecision,url,updatedAt,author",
-    ]);
+    const result = await restGetPull(this.rest, this.nwo, number);
     if (!result.ok) return result;
-    return ok(mapPr(result.value));
+    return ok(restPullToPr(result.value));
   }
 
   async getPrGateState(number: number): Promise<Result<PrGateState, ForgeError>> {
-    // Fetch PR + statusCheckRollup + reviewThreads in one call
-    const prResult = runGhJson<{
-      number: number;
-      state: string;
-      mergeStateStatus: string;
-      autoMergeRequest: { enabledAt?: string } | null;
-      mergeCommit: { oid: string } | null;
-      statusCheckRollup: { status?: string; conclusion?: string; name?: string }[];
-      reviewThreads: { nodes: { isResolved: boolean }[] };
-    }>([
-      "pr", "view", String(number), "--repo", this.nwo,
-      "--json", "number,state,mergeStateStatus,autoMergeRequest,mergeCommit,statusCheckRollup,reviewThreads",
-    ]);
-    if (!prResult.ok) return prResult;
-
-    const pr = prResult.value;
-    const rollup = pr.statusCheckRollup ?? [];
-    const checks = classifyChecks(rollup);
-    const unresolvedThreads = (pr.reviewThreads?.nodes ?? []).filter(t => !t.isResolved).length;
-
-    // Fetch required checks
-    let requiredChecks = checks; // fallback: treat all as required
-    const reqResult = runGhJson<{ name?: string }[]>([
-      "pr", "checks", String(number), "--repo", this.nwo, "--required", "--json", "name",
-    ]);
-    if (reqResult.ok) {
-      const requiredNames = new Set(reqResult.value.map(r => r.name).filter((n): n is string => !!n));
-      requiredChecks = classifyChecks(rollup.filter(c => c.name && requiredNames.has(c.name)));
-    }
-
-    const state = mapPrState(pr.state);
-    const gate = classifyGate(pr.mergeStateStatus, pr.state, requiredChecks, unresolvedThreads);
-    const warnings: string[] = [];
-    const nextAction = computeNextAction(state, gate, requiredChecks, unresolvedThreads);
-
-    return ok({
-      number: pr.number,
-      state,
-      gate,
-      checks,
-      requiredChecks,
-      unresolvedThreads,
-      autoMerge: pr.autoMergeRequest ? "armed" : "none",
-      mergeCommit: pr.mergeCommit?.oid ?? null,
-      warnings,
-      nextAction,
-    });
+    return observeMerge(this.rest, this.nwo, number);
   }
 
   async listMergedPullRequests(opts?: ListMergedPrOpts): Promise<Result<readonly PullRequest[], ForgeError>> {
-    const limit = opts?.limit ?? 20;
-    const result = runGhJson<GhPrListItem[]>([
-      "pr", "list", "--repo", this.nwo, "--state", "merged",
-      "--json", "number,title,headRefName,baseRefName,state,isDraft,mergeStateStatus,reviewDecision,url,updatedAt,author",
-      "--limit", String(limit),
-    ]);
+    const result = await restListPulls(this.rest, this.nwo, { state: "closed", limit: 100, sort: "updated" });
     if (!result.ok) return result;
-    return ok(result.value.map(mapPr));
+    const sinceMs = opts?.since !== undefined ? new Date(opts.since).getTime() : null;
+    const merged = result.value
+      .filter((p) => typeof p.merged_at === "string" && p.merged_at.length > 0)
+      .filter((p) => sinceMs === null || new Date(p.merged_at ?? "").getTime() >= sinceMs)
+      .slice(0, opts?.limit ?? 20)
+      .map(restPullToPr);
+    return ok(merged);
   }
 
   // ─── PR actions ─────────────────────────────────────────────────────────
 
   async resolveThread(threadId: string, body: string): Promise<Result<void, ForgeError>> {
     // Reply then resolve
-    const replyResult = runGh([
+    const replyResult = this.porcelain([
       "api", "graphql",
       "-F", `thread_id=${threadId}`,
       "-F", `body=${body}`,
@@ -200,7 +154,7 @@ export class GitHubAdapter implements ForgeHost {
     ]);
     if (!replyResult.ok) return replyResult;
 
-    const resolveResult = runGh([
+    const resolveResult = this.porcelain([
       "api", "graphql",
       "-F", `thread_id=${threadId}`,
       "-f", `query=mutation($thread_id: ID!) { resolveReviewThread(input: { threadId: $thread_id }) { thread { isResolved } } }`,
@@ -227,83 +181,93 @@ export class GitHubAdapter implements ForgeHost {
   }
 
   async createPullRequest(opts: CreatePrOpts): Promise<Result<PullRequest, ForgeError>> {
-    const args = [
-      "pr", "create", "--repo", this.nwo,
-      "--title", opts.title, "--body", opts.body,
-      "--head", opts.head, "--base", opts.base,
-    ];
-    if (opts.draft) args.push("--draft");
-    args.push("--json", "number,title,headRefName,baseRefName,state,isDraft,mergeStateStatus,reviewDecision,url,updatedAt,author");
-
-    const result = runGhJson<GhPrListItem>(args);
+    const result = await restCreatePull(this.rest, this.nwo, opts);
     if (!result.ok) return result;
-    return ok(mapPr(result.value));
+    return ok(restPullToPr(result.value));
   }
 
   async enableAutoMerge(prNumber: number, method?: MergeMethod): Promise<Result<void, ForgeError>> {
-    const args = ["pr", "merge", String(prNumber), "--repo", this.nwo, "--auto"];
-    if (method === "squash") args.push("--squash");
-    else if (method === "rebase") args.push("--rebase");
-    else args.push("--merge");
-
-    const result = runGh(args);
+    const merge_method = method === "rebase" ? "rebase" : method === "merge" ? "merge" : "squash";
+    const result = await this.rest.request("PUT", `repos/${this.nwo}/pulls/${String(prNumber)}/auto-merge`, { merge_method });
     if (!result.ok) return result;
     return ok(undefined);
   }
 
   async addPrComment(prNumber: number, body: string): Promise<Result<CommentRef, ForgeError>> {
-    const result = runGh([
-      "pr", "comment", String(prNumber), "--repo", this.nwo, "--body", body,
-    ]);
+    const result = await this.rest.request("POST", `repos/${this.nwo}/issues/${String(prNumber)}/comments`, { body });
     if (!result.ok) return result;
-    return ok({ id: "", url: `https://github.com/${this.nwo}/pull/${prNumber}` });
+    let parsed: unknown;
+    try {
+      parsed = JSON.parse(result.value);
+    } catch (e) {
+      return err(forgeError("parse-failure", `addPrComment: ${e instanceof Error ? e.message : String(e)}`));
+    }
+    const id = typeof parsed === "object" && parsed !== null ? (parsed as { id?: unknown }).id : undefined;
+    const url = typeof parsed === "object" && parsed !== null ? (parsed as { html_url?: unknown }).html_url : undefined;
+    return ok({
+      id: typeof id === "number" ? String(id) : typeof id === "string" ? id : "",
+      url: typeof url === "string" ? url : `https://github.com/${this.nwo}/pull/${String(prNumber)}`,
+    });
   }
 
   // ─── Issues ─────────────────────────────────────────────────────────────
 
   async listOpenIssues(opts?: ListIssueOpts): Promise<Result<readonly Issue[], ForgeError>> {
-    const limit = opts?.limit ?? 50;
-    const args = [
-      "issue", "list", "--repo", this.nwo, "--state", "open",
-      "--json", "number,title,body,state,url,labels",
-      "--limit", String(limit),
-    ];
-    if (opts?.labels?.length) {
-      for (const l of opts.labels) args.push("--label", l);
-    }
-
-    const result = runGhJson<{ number: number; title: string; body: string; state: string; url: string; labels: { name: string }[] }[]>(args);
+    const perPage = Math.min(Math.max(opts?.limit ?? 50, 1), 100);
+    const result = await this.rest.request("GET", `repos/${this.nwo}/issues?state=open&per_page=${String(perPage)}`);
     if (!result.ok) return result;
-    return ok(result.value.map(i => ({
-      number: i.number,
-      title: i.title,
-      body: i.body ?? "",
-      state: i.state.toLowerCase() as "open" | "closed",
-      url: i.url,
-      labels: i.labels.map(l => l.name),
-    })));
+    let parsed: unknown;
+    try {
+      parsed = JSON.parse(result.value);
+    } catch (e) {
+      return err(forgeError("parse-failure", `listOpenIssues: ${e instanceof Error ? e.message : String(e)}`));
+    }
+    if (!Array.isArray(parsed)) return err(forgeError("parse-failure", "listOpenIssues: expected array"));
+    const issues: Issue[] = [];
+    for (const item of parsed) {
+      if (typeof item !== "object" || item === null) continue;
+      const row = item as { pull_request?: unknown; number?: unknown; title?: unknown; body?: unknown; state?: unknown; html_url?: unknown; labels?: unknown };
+      if (row.pull_request !== undefined) continue;
+      if (typeof row.number !== "number" || typeof row.title !== "string") continue;
+      const labels: string[] = [];
+      if (Array.isArray(row.labels)) {
+        for (const l of row.labels) {
+          if (typeof l === "object" && l !== null && typeof (l as { name?: unknown }).name === "string") {
+            labels.push((l as { name: string }).name);
+          }
+        }
+      }
+      issues.push({
+        number: row.number,
+        title: row.title,
+        body: typeof row.body === "string" ? row.body : "",
+        state: row.state === "closed" ? "closed" : "open",
+        url: typeof row.html_url === "string" ? row.html_url : "",
+        labels,
+      });
+    }
+    return ok(issues);
   }
 
   async createIssue(opts: CreateIssueOpts): Promise<Result<Issue, ForgeError>> {
-    const args = [
-      "issue", "create", "--repo", this.nwo,
-      "--title", opts.title, "--body", opts.body,
-    ];
-    if (opts.labels?.length) {
-      for (const l of opts.labels) args.push("--label", l);
-    }
-    // gh issue create doesn't return full JSON easily; use --json after create
-    const result = runGh(args);
+    const payload: { title: string; body: string; labels?: readonly string[] } = { title: opts.title, body: opts.body };
+    if (opts.labels !== undefined && opts.labels.length > 0) payload.labels = opts.labels;
+    const result = await this.rest.request("POST", `repos/${this.nwo}/issues`, payload);
     if (!result.ok) return result;
-    // Parse the URL from stdout (gh outputs the issue URL)
-    const url = result.value.trim();
-    const numMatch = url.match(/\/issues\/(\d+)/);
+    let parsed: unknown;
+    try {
+      parsed = JSON.parse(result.value);
+    } catch (e) {
+      return err(forgeError("parse-failure", `createIssue: ${e instanceof Error ? e.message : String(e)}`));
+    }
+    if (typeof parsed !== "object" || parsed === null) return err(forgeError("parse-failure", "createIssue: expected object"));
+    const row = parsed as { number?: unknown; html_url?: unknown };
     return ok({
-      number: numMatch ? parseInt(numMatch[1]!, 10) : 0,
+      number: typeof row.number === "number" ? row.number : 0,
       title: opts.title,
       body: opts.body,
       state: "open",
-      url,
+      url: typeof row.html_url === "string" ? row.html_url : "",
       labels: opts.labels ?? [],
     });
   }
@@ -349,51 +313,63 @@ export class GitHubAdapter implements ForgeHost {
     return err(forgeError("not-supported", "getBranchProtection: not yet implemented for GitHub adapter"));
   }
 
-  // ─── Git data API ──────────────────────────────────────────────────────
+  // ─── Git data API (REST via injected `rest`, no `gh`) ───────────────────
 
   async createBlob(content: string, encoding?: "utf-8" | "base64"): Promise<Result<string, ForgeError>> {
-    const body = JSON.stringify({ content, encoding: encoding ?? "utf-8" });
-    const result = spawnSync("gh", ["api", "-X", "POST", `repos/${this.nwo}/git/blobs`, "--input", "-"], { input: body, encoding: "utf8", maxBuffer: 64*1024*1024, timeout: 30000 });
-    if (result.status !== 0) return err(classifyGhError(result.status, result.stderr ?? ""));
-    try { return ok((JSON.parse(result.stdout) as { sha: string }).sha); }
-    catch (e) { return err(forgeError("parse-failure", `createBlob: ${e instanceof Error ? e.message : String(e)}`)); }
+    return this.restSha("POST", `repos/${this.nwo}/git/blobs`, { content, encoding: encoding ?? "utf-8" }, "createBlob");
   }
 
   async createTree(tree: readonly TreeEntry[], baseTree?: string): Promise<Result<string, ForgeError>> {
-    const body = JSON.stringify({ base_tree: baseTree, tree });
-    const result = spawnSync("gh", ["api", "-X", "POST", `repos/${this.nwo}/git/trees`, "--input", "-"], { input: body, encoding: "utf8", maxBuffer: 64*1024*1024, timeout: 30000 });
-    if (result.status !== 0) return err(classifyGhError(result.status, result.stderr ?? ""));
-    try { return ok((JSON.parse(result.stdout) as { sha: string }).sha); }
-    catch (e) { return err(forgeError("parse-failure", `createTree: ${e instanceof Error ? e.message : String(e)}`)); }
+    return this.restSha("POST", `repos/${this.nwo}/git/trees`, { base_tree: baseTree, tree }, "createTree");
   }
 
   async createCommit(opts: CreateCommitOpts): Promise<Result<string, ForgeError>> {
-    const body = JSON.stringify({ message: opts.message, tree: opts.tree, parents: opts.parents });
-    const result = spawnSync("gh", ["api", "-X", "POST", `repos/${this.nwo}/git/commits`, "--input", "-"], { input: body, encoding: "utf8", maxBuffer: 64*1024*1024, timeout: 30000 });
-    if (result.status !== 0) return err(classifyGhError(result.status, result.stderr ?? ""));
-    try { return ok((JSON.parse(result.stdout) as { sha: string }).sha); }
-    catch (e) { return err(forgeError("parse-failure", `createCommit: ${e instanceof Error ? e.message : String(e)}`)); }
+    return this.restSha("POST", `repos/${this.nwo}/git/commits`, { message: opts.message, tree: opts.tree, parents: opts.parents }, "createCommit");
   }
 
   async updateRef(ref: string, sha: string, force?: boolean): Promise<Result<void, ForgeError>> {
-    const body = JSON.stringify({ sha, force: force ?? false });
-    const result = spawnSync("gh", ["api", "-X", "PATCH", `repos/${this.nwo}/git/refs/${ref}`, "--input", "-"], {
-      input: body, encoding: "utf8", maxBuffer: 64 * 1024 * 1024, timeout: 30000,
-    });
-    if (result.status !== 0) return err(classifyGhError(result.status, result.stderr ?? ""));
+    const result = await this.rest.request("PATCH", `repos/${this.nwo}/git/refs/${ref}`, { sha, force: force ?? false });
+    if (!result.ok) return result;
     return ok(undefined);
   }
 
   async getRef(ref: string): Promise<Result<import("../types").GitRef, ForgeError>> {
-    const r = runGhJson<{ ref: string; object: { sha: string } }>(["api", `repos/${this.nwo}/git/ref/${ref}`]);
+    const r = await this.rest.request("GET", `repos/${this.nwo}/git/ref/${ref}`);
     if (!r.ok) return r;
-    return ok({ ref: r.value.ref, sha: r.value.object.sha });
+    const parsed = parseJsonObject(r.value, "getRef");
+    if (!parsed.ok) return parsed;
+    const obj = parsed.value as { ref?: unknown; object?: { sha?: unknown } };
+    if (typeof obj.ref !== "string" || typeof obj.object?.sha !== "string") {
+      return err(forgeError("parse-failure", "getRef: unexpected shape"));
+    }
+    return ok({ ref: obj.ref, sha: obj.object.sha });
   }
 
   async getCommit(sha: string): Promise<Result<import("../types").GitCommitInfo, ForgeError>> {
-    const r = runGhJson<{ sha: string; tree: { sha: string }; message: string; parents: { sha: string }[] }>(["api", `repos/${this.nwo}/git/commits/${sha}`]);
+    const r = await this.rest.request("GET", `repos/${this.nwo}/git/commits/${sha}`);
     if (!r.ok) return r;
-    return ok({ sha: r.value.sha, treeSha: r.value.tree.sha, message: r.value.message, parents: r.value.parents.map(p => p.sha) });
+    const parsed = parseJsonObject(r.value, "getCommit");
+    if (!parsed.ok) return parsed;
+    const obj = parsed.value as { sha?: unknown; tree?: { sha?: unknown }; message?: unknown; parents?: unknown };
+    if (typeof obj.sha !== "string" || typeof obj.tree?.sha !== "string" || typeof obj.message !== "string" || !Array.isArray(obj.parents)) {
+      return err(forgeError("parse-failure", "getCommit: unexpected shape"));
+    }
+    return ok({
+      sha: obj.sha,
+      treeSha: obj.tree.sha,
+      message: obj.message,
+      parents: obj.parents.map((p) => (typeof p === "object" && p !== null && typeof (p as { sha?: unknown }).sha === "string" ? (p as { sha: string }).sha : "")).filter((s) => s.length > 0),
+    });
+  }
+
+  private async restSha(method: string, path: string, body: unknown, label: string): Promise<Result<string, ForgeError>> {
+    const r = await this.rest.request(method, path, body);
+    if (!r.ok) return r;
+    const parsed = parseJsonObject(r.value, label);
+    if (!parsed.ok) return parsed;
+    const sha = (parsed.value as { sha?: unknown }).sha;
+    if (typeof sha !== "string" || sha.length === 0) return err(forgeError("parse-failure", `${label}: missing sha`));
+    return ok(sha);
   }
 
   async searchPullRequests(opts: import("../types").SearchPrOpts): Promise<Result<readonly import("../types").SearchPrResult[], ForgeError>> {
@@ -414,20 +390,16 @@ export class GitHubAdapter implements ForgeHost {
 
 // ─── Mapping helpers ────────────────────────────────────────────────────────
 
-function mapPr(raw: GhPrListItem): PullRequest {
-  return {
-    number: raw.number,
-    title: raw.title,
-    headRef: raw.headRefName,
-    baseRef: raw.baseRefName,
-    state: mapPrState(raw.state),
-    isDraft: raw.isDraft,
-    mergeStateStatus: mapMergeState(raw.mergeStateStatus),
-    reviewDecision: mapReviewDecision(raw.reviewDecision),
-    url: raw.url,
-    updatedAt: raw.updatedAt,
-    author: raw.author?.login ?? "(unknown)",
-  };
+function parseJsonObject(text: string, label: string): Result<Record<string, unknown>, ForgeError> {
+  try {
+    const parsed: unknown = JSON.parse(text);
+    if (typeof parsed !== "object" || parsed === null || Array.isArray(parsed)) {
+      return err(forgeError("parse-failure", `${label}: expected object`));
+    }
+    return ok(parsed as Record<string, unknown>);
+  } catch (e) {
+    return err(forgeError("parse-failure", `${label}: ${e instanceof Error ? e.message : String(e)}`));
+  }
 }
 
 function mapPrState(state: string): "open" | "merged" | "closed" {
@@ -435,66 +407,4 @@ function mapPrState(state: string): "open" | "merged" | "closed" {
   if (lower === "merged") return "merged";
   if (lower === "closed") return "closed";
   return "open";
-}
-
-function mapMergeState(status: string): "clean" | "blocked" | "dirty" | "unstable" | "unknown" {
-  const lower = status.toLowerCase();
-  if (lower === "clean") return "clean";
-  if (lower === "blocked") return "blocked";
-  if (lower === "dirty" || lower === "behind") return "dirty";
-  if (lower === "unstable") return "unstable";
-  return "unknown";
-}
-
-function mapReviewDecision(decision: string | null): "approved" | "changes-requested" | "review-required" | null {
-  if (!decision) return null;
-  const lower = decision.toLowerCase();
-  if (lower === "approved") return "approved";
-  if (lower === "changes_requested") return "changes-requested";
-  if (lower === "review_required") return "review-required";
-  return null;
-}
-
-// ─── Check classification (mirrors poll-pr-gate.ts logic) ───────────────────
-
-const OK_CONCLUSIONS = new Set(["SUCCESS", "NEUTRAL", "SKIPPED"]);
-const BLOCKING_CONCLUSIONS = new Set(["FAILURE", "CANCELLED", "TIMED_OUT", "STARTUP_FAILURE", "ACTION_REQUIRED", "STALE", "ERROR"]);
-const PENDING_STATUSES = new Set(["QUEUED", "PENDING", "EXPECTED", "REQUESTED", "WAITING"]);
-
-function classifyChecks(rollup: { status?: string; conclusion?: string; name?: string }[]): CheckSummary {
-  let okCount = 0, inProgress = 0, pending = 0, failed = 0;
-  for (const c of rollup) {
-    if (c.status === "IN_PROGRESS") { inProgress++; continue; }
-    if (c.status && PENDING_STATUSES.has(c.status)) { pending++; continue; }
-    if (c.conclusion && OK_CONCLUSIONS.has(c.conclusion)) { okCount++; continue; }
-    if (c.conclusion && BLOCKING_CONCLUSIONS.has(c.conclusion)) { failed++; }
-  }
-  return { ok: okCount, inProgress, pending, failed };
-}
-
-function classifyGate(
-  mergeStateStatus: string, state: string, requiredChecks: CheckSummary, unresolvedThreads: number,
-): "clean" | "blocked" | "dirty" | "unstable" | "unknown" {
-  if (state === "MERGED" || state === "CLOSED") return "clean";
-  if (mergeStateStatus === "DIRTY" || mergeStateStatus === "BEHIND") return "dirty";
-  if (mergeStateStatus === "UNSTABLE") return "unstable";
-  if (requiredChecks.failed > 0) return "blocked";
-  if (mergeStateStatus === "BLOCKED") return "blocked";
-  if (mergeStateStatus === "CLEAN" && unresolvedThreads === 0) return "clean";
-  return "unknown";
-}
-
-function computeNextAction(
-  state: "open" | "merged" | "closed",
-  gate: string,
-  requiredChecks: CheckSummary,
-  unresolvedThreads: number,
-): NextAction {
-  if (state === "merged") return "verify-merge";
-  if (state === "closed") return "none";
-  if (gate === "dirty") return "rebase";
-  if (requiredChecks.failed > 0) return "fix-failed-checks";
-  if (unresolvedThreads > 0) return "resolve-threads";
-  if (requiredChecks.inProgress > 0 || requiredChecks.pending > 0) return "wait-ci";
-  return "none";
 }
