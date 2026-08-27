@@ -77,7 +77,24 @@ function withAcquireLock<T>(itemId: string, fn: () => T): T {
         const holderPid = parseInt(content, 10);
         // Reclaim only if the lock is old enough AND its holder process is dead.
         if (Date.now() - st.mtimeMs > LOCK_STALE_MS && !isProcessRunning(holderPid)) {
-          unlinkSync(lp); // reclaim stale lock left by a crashed process
+          // IDENTITY CHECK BEFORE UNLINK, because `unlinkSync(lp)` resolves the path AGAIN. The
+          // inode we judged stale is the one held by `rfd`; if the holder released and someone else
+          // acquired in between, the path now names a DIFFERENT, LIVE lock and deleting it breaks
+          // mutual exclusion for a process that did nothing wrong. Comparing dev+ino makes that
+          // replacement detectable instead of silent.
+          //
+          // HONEST LIMIT, stated because narrowing a window is not closing it: a path-based unlink
+          // cannot be made race-free with the filesystem APIs Node exposes — there is no
+          // `funlinkat`. The residual window is between this stat and the unlink below. Closing it
+          // properly needs a different protocol (advisory `flock`/`fcntl`, or reclaim performed
+          // atomically by the next acquirer), which is a change to how mutual exclusion works here
+          // and not something a scanner finding should decide.
+          let sameInode = false;
+          try {
+            const onPath = statSync(lp);
+            sameInode = onPath.dev === st.dev && onPath.ino === st.ino;
+          } catch { /* vanished between the read and here — nothing of ours to reclaim */ }
+          if (sameInode) unlinkSync(lp); // reclaim stale lock left by a crashed process
         }
       } catch { /* lock disappeared between reads — harmless */ }
     }
