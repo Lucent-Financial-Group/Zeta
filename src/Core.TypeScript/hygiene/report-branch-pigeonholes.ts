@@ -67,6 +67,7 @@
 // than hardcoding the pattern, so a change to the protection shows up here instead of rotting.
 
 import { execFileSync } from "node:child_process";
+import { stringCompare } from "../collation/collation.ts";
 
 const OWNER_REPO = process.env["ZETA_REPO"] ?? "Lucent-Financial-Group/Zeta";
 const OWNER = OWNER_REPO.split("/")[0]!;
@@ -426,7 +427,7 @@ async function main(): Promise<number> {
   process.stdout.write(`branch pigeonholes against ${BASE} — ${verdicts.length} refs (excluding main)\n\n`);
   for (const [d, list] of [...byDisposition.entries()].sort((a, b) => b[1].length - a[1].length)) {
     process.stdout.write(`${d}  (${list.length})\n`);
-    for (const v of list.sort((a, b) => a.name.localeCompare(b.name))) {
+    for (const v of list.sort((a, b) => stringCompare(a.name, b.name))) {
       process.stdout.write(`  ${v.tip.slice(0, 10)}  ${v.name}  [${v.lane}]\n`);
       process.stdout.write(`      because: ${v.because}\n`);
       if (v.action) process.stdout.write(`      action:  ${v.action}\n`);
