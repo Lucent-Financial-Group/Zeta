@@ -72,9 +72,21 @@ clause-swap DECORRELATES (proven). H3 tests whether it can PAY via a signal. Eit
 outcome — "a signal reaches the headroom" or "the headroom is unaddressable" — is
 publishable; neither promotes the axis past what is measured.
 
+## H3 outcome (recorded after the run at N=600)
+
+**H3 CONFIRMED — the headroom is ADDRESSABLE by token confidence.** The confidence gap
+perfectly separated the discordant groups (Mann–Whitney z=6.04, rank-biserial=1.000,
+rejects — checked against W13 and found real, not degenerate: not a constant bias, gaps
+bounded away from zero, though N=51 discordant is small). The confidence-gated selector hit
+93.8% [91.6, 95.5] vs best-single 90.7% — **+3.2pp, McNemar CI [1.8, 4.6], resolved**,
+capturing ~3.1 of the 3.6pp oracle headroom. The honest prior ("the 24 wins may be random")
+was refuted: the model knows when its weaker framing is right. Full write-up:
+`docs/research/2026-08-27-the-headroom-is-addressable-token-confidence-gating-pays.md`.
+Next question is metered (accuracy-per-runner-second), not accuracy.
+
 ## Pointers
 
 - `data/decorr-agreement-gating-raw.jsonl` — the 64 discordant items are already labeled;
   the structural "are the 24 random?" question can be examined here directly.
-- `src/Core.TypeScript/observe/decorrelation-stats.ts` — `mcNemar`; Mann–Whitney to be added.
+- `src/Core.TypeScript/observe/decorrelation-stats.ts` — `mcNemar`, `mannWhitneyU`.
 - `docs/research/2026-08-26-clause-swap-decorrelates-but-does-not-pay.md` — H2, the 0.0pp lift.
