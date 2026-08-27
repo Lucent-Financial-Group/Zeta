@@ -136,9 +136,8 @@ dictionaries. They **do** apply, but TRACE and C₄ are different asks.
 are obtained from ℝ. `Chip8Cow` / `QubitIso` are explicitly **not**
 `IStarRing` (no natural state×state product).
 
-Law packs under `tests/` still re-box a local `intStar` (`Conj = id`).
-`IntegerRing.Star` is now the named src instance; switching the packs
-is remaining hygiene, not a new ring.
+Law packs now consume `IntegerRing.Star` rather than re-boxing
+`Conj = id` locally.
 
 ## Remaining (not this slice)
 
@@ -147,7 +146,6 @@ is remaining hygiene, not a new ring.
 - Conformal CGA Cl(4,1) stays the Sequoia distance slice (`Cl3.fs`
   honest scope) — a different signature, still not the compass.
 - Inverse-free corners still do not get the trace.
-- Law-pack `intStar` locals → `IntegerRing.Star`.
 
 Workitem `081M10CBYF9087G0R003GWBNHG`. Module `src/Core/FourCornerC4.fs`.
 

@@ -22,7 +22,8 @@ are related; they are **not** “it is Cl(p,q)”.
   even-subalgebra embedding `e₁₂`; vector-square discriminator
   `e₁² = +1`; Cl(0,1) ≅ ℂ vs Cl(3,0) ≅ M₂(ℂ)
 - Laws tests: group, ring witness, even embedding, discriminator,
-  FourCornerTrace over `Cl3.Mv` weights
+  FourCornerTrace over `Cl3.Mv` weights; TRACE vs C₄ on existing
+  `IStarRing` instances; law packs consume `IntegerRing.Star`
 - ROADMAP item 1 / P1 / shipped / continuous / research #8
 - Research absorb: `docs/research/2026-08-26-fourcorner-c4-istarring-not-clpq.md`
 
@@ -32,4 +33,3 @@ are related; they are **not** “it is Cl(p,q)”.
   FourCorner to Cl(p,q)
 - Do not identify the I/O record with a Clifford algebra in later slices
 - Conformal CGA Cl(4,1) stays the Sequoia distance slice
-- Law-pack local `intStar` re-boxes → `IntegerRing.Star`
