@@ -263,6 +263,9 @@ module Blake3Spec =
 /// Production hasher: own spec impl. Name is the algorithm (`blake3`).
 [<Sealed>]
 type OwnBlake3Hasher() =
+    static do
+        ContentHash256.setOfBytesHook (fun bytes -> { Raw = Blake3Spec.hash bytes })
+
     interface IContentHasher with
         member _.Name = "blake3"
         member _.Hash(bytes: byte[]) : MerkleHash = Blake3Spec.merkleHash bytes
