@@ -10,7 +10,7 @@ import { describe, test, expect } from "bun:test";
 import {
   phi, phiMax, phiRatio, yulesQ, cohensKappa,
   wilsonInterval, proportionDiffInterval, requiredNForDifference,
-  measureHonest, tableFromTrials, detectAnswerLeak, suspectExtremeRate,
+  measureHonest, tableFromTrials, detectAnswerLeak, suspectExtremeRate, mcNemar,
   type Table2x2,
 } from "./decorrelation-stats";
 
@@ -114,6 +114,46 @@ describe("requiredNForDifference — the power calculation (W3)", () => {
   });
   test("zero difference is unresolvable (Infinity)", () => {
     expect(requiredNForDifference(0.5, 0.5)).toBe(Infinity);
+  });
+});
+
+describe("mcNemar (paired) — the analysis Otto asked for", () => {
+  function build(a: number, b: number, c: number, d: number) {
+    const out: { aCorrect: boolean; bCorrect: boolean }[] = [];
+    for (let i = 0; i < a; i++) out.push({ aCorrect: true, bCorrect: true });
+    for (let i = 0; i < b; i++) out.push({ aCorrect: true, bCorrect: false });
+    for (let i = 0; i < c; i++) out.push({ aCorrect: false, bCorrect: true });
+    for (let i = 0; i < d; i++) out.push({ aCorrect: false, bCorrect: false });
+    return out;
+  }
+
+  test("symmetric discordant split (b≈c) is NOT resolved — the trades-equal falsifier", () => {
+    const r = mcNemar(build(300, 20, 20, 60));
+    expect(r.b).toBe(20);
+    expect(r.c).toBe(20);
+    close(r.accuracyDiff, 0);
+    expect(r.resolved).toBe(false);
+    expect(r.symmetric).toBe(true);
+  });
+
+  test("a strong directional split resolves with CI excluding zero", () => {
+    // b=40 (A right, B wrong), c=5 (B right, A wrong), over n=400.
+    const r = mcNemar(build(300, 40, 5, 55));
+    close(r.accuracyDiff, (40 - 5) / 400, 1e-9);
+    expect(r.diffLo).toBeGreaterThan(0);
+    expect(r.resolved).toBe(true);
+    expect(r.symmetric).toBe(false);
+  });
+
+  test("paired CI is narrower than the unpaired two-proportion CI on the same counts", () => {
+    const b = 30, c = 10, n = 400;
+    const r = mcNemar(build(300, b, c, n - 300 - b - c));
+    const pairedWidth = r.diffHi - r.diffLo;
+    // Unpaired difference CI on the same marginals:
+    const sA = 300 + b, sB = 300 + c;
+    const unpaired = proportionDiffInterval(sA, n, sB, n);
+    const unpairedWidth = unpaired.hi - unpaired.lo;
+    expect(pairedWidth).toBeLessThan(unpairedWidth);
   });
 });
 

@@ -176,6 +176,56 @@ export function proportionDiffInterval(
   return { point: diff, lo: diff - z * se, hi: diff + z * se };
 }
 
+// ═══ McNemar (paired) ══════════════════════════════════════════════════════════
+
+export interface McNemarResult {
+  /** Discordant pairs: A correct & B wrong (b) and A wrong & B correct (c). */
+  readonly b: number;
+  readonly c: number;
+  /** The paired accuracy difference p(A) − p(B) = (b − c) / n. */
+  readonly accuracyDiff: number;
+  /** 95% CI on the paired difference of proportions (b−c)/n, discordant-pair based. */
+  readonly diffLo: number;
+  readonly diffHi: number;
+  /** Continuity-corrected McNemar chi-square on the discordant pairs. */
+  readonly chiSquare: number;
+  /** Whether the CI on the difference excludes zero (a resolved directional effect). */
+  readonly resolved: boolean;
+  /** Whether the discordant split is symmetric (b≈c) — the "trades equal" falsifier. */
+  readonly symmetric: boolean;
+}
+
+/**
+ * McNemar's test for two paired binary classifiers over the SAME items. This is the
+ * correct analysis when both configs answer every item (canonical vs clause-swap on the
+ * same scenarios): it uses ONLY the discordant pairs (b, c) and removes the between-item
+ * variance an unpaired two-proportion interval carries.
+ *
+ * The 95% CI on the paired difference uses the standard error for (b−c)/n derived from the
+ * discordant counts: SE = sqrt(b + c − (b−c)²/n) / n (the exact paired-proportion SE).
+ *
+ * Ref: McNemar (1947); Fleiss for the paired-proportion CI. Anchored.
+ */
+export function mcNemar(
+  trials: readonly { aCorrect: boolean; bCorrect: boolean }[], z = 1.96,
+): McNemarResult {
+  const t = tableFromTrials(trials);
+  const n = tableTotal(t);
+  const b = t.b, c = t.c;
+  const accuracyDiff = n > 0 ? (b - c) / n : 0;
+  // Paired SE for the difference of correlated proportions.
+  const se = n > 0 ? Math.sqrt(Math.max(0, b + c - ((b - c) * (b - c)) / n)) / n : 0;
+  const diffLo = accuracyDiff - z * se;
+  const diffHi = accuracyDiff + z * se;
+  // Continuity-corrected McNemar statistic.
+  const chiSquare = (b + c) > 0 ? ((Math.abs(b - c) - 1) ** 2) / (b + c) : 0;
+  const resolved = diffLo > 0 || diffHi < 0;
+  // Symmetric when neither discordant cell dominates (the b≈c "trades equal" falsifier):
+  // the CI on the difference straddles zero AND the counts are close.
+  const symmetric = !resolved;
+  return { b, c, accuracyDiff, diffLo, diffHi, chiSquare, resolved, symmetric };
+}
+
 // ═══ Power ══════════════════════════════════════════════════════════════════════
 
 /**
