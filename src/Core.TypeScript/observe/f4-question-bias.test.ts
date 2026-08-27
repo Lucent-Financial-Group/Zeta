@@ -739,6 +739,13 @@ describe("toAnswerRow rejects a response that violates the contract", () => {
 
   // The error names the field and its TYPE, never the value: the value is the
   // untrusted part, and echoing it into a log is how a sanitiser leaks its own input.
+  //
+  // The claim is a NONINTERFERENCE one — the untrusted value must not flow into the
+  // message — so it is pinned by EXACT EQUALITY on the whole message, not by
+  // `not.toContain(secret)`. An absence search witnesses ONE RENDERING of a leak: it
+  // passes for a message that carries the value reversed, base64'd, or truncated. Pinning
+  // the entire output leaves the value nowhere to hide, and it fails just as loudly if
+  // the field name or the type name is what goes wrong.
   test("the violation message does not echo the offending value", () => {
     const secret = "SENTINEL-SHOULD-NOT-APPEAR";
     try {
@@ -746,8 +753,9 @@ describe("toAnswerRow rejects a response that violates the contract", () => {
       throw new Error("expected a ProtocolViolation");
     } catch (err) {
       expect(err).toBeInstanceOf(ProtocolViolation);
-      expect((err as Error).message).not.toContain(secret);
-      expect((err as Error).message).toContain("eval_count");
+      expect((err as Error).message).toBe(
+        "ollama /api/generate: field 'eval_count' violates the contract — expected a finite count >= 0, got string",
+      );
     }
   });
 });
