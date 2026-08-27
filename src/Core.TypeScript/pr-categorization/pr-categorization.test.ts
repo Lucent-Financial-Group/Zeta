@@ -70,12 +70,23 @@ describe('the lane is watched', () => {
     // read as absent — which reports the same as frozen and is a different bug.
     const subject = FRESHNESS_ROSTER.find((s) => s.id === 'pr-categorization')!;
     expect(subject.field).toBe('generatedAtIso');
+    // Read and interpret ENOENT rather than `existsSync` then read: the pair is
+    // a check-then-use race (CWE-367), and here it would also be a vacuous
+    // guard — on a checkout without the artifact the whole assertion silently
+    // does nothing, which is the shape of a check that cannot fail.
     const statsPath = path.join(REPO, subject.path);
-    if (fs.existsSync(statsPath)) {
-      const doc = JSON.parse(fs.readFileSync(statsPath, 'utf8'));
+    let raw: string | null;
+    try {
+      raw = fs.readFileSync(statsPath, 'utf8');
+    } catch (e) {
+      if ((e as NodeJS.ErrnoException).code !== 'ENOENT') throw e;
+      raw = null;
+    }
+    if (raw !== null) {
+      const doc = JSON.parse(raw) as Record<string, unknown>;
       expect(Object.prototype.hasOwnProperty.call(doc, subject.field)).toBe(true);
       expect(typeof doc[subject.field]).toBe('string');
-      expect(Number.isFinite(Date.parse(doc[subject.field]))).toBe(true);
+      expect(Number.isFinite(Date.parse(String(doc[subject.field])))).toBe(true);
     }
   });
 

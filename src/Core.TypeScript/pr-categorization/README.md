@@ -35,7 +35,8 @@ identity and means nothing.
 
 ## What the corpus says
 
-Measured over 12,935 merged PRs (16 areas):
+Snapshot 2026-08-27 over 12,985 merged PRs, 16 areas. These figures move as the
+corpus grows — the dashboard is the live version, this is orientation:
 
 - the closed-form parse **abstains on ~27%** of PRs, and is **wrong ~32% of the
   time** on the ones it does label;
@@ -61,11 +62,11 @@ failure and not a warning.
 The result worth knowing, and it depends entirely on which split you ask about:
 
 - under a **random (i.i.d.) split**, the BNN and the random forest are
-  **statistically indistinguishable** (McNemar p ≈ 0.1–0.4 across seeds). Both
-  beat the baseline by ~9–10pp.
+  **statistically indistinguishable** — McNemar returns "no difference" on all
+  five seeds tried (p 0.08–0.97). Both beat the baseline by ~11pp.
 - under a **temporal split** — train on older PRs, predict newer, which is what a
-  scheduled dashboard actually does — the **BNN beats the forest by 5.8–8.5pp on
-  every seed tried** (p < 1e-20).
+  scheduled dashboard actually does — the **BNN beats the forest by 6.3–8.9pp on
+  every seed tried** (p < 4e-22).
 
 So the BNN earns its place *only under distribution shift*, and this corpus has a
 lot of it: in the eleven days before this was written, telemetry went from 12% to
@@ -80,7 +81,7 @@ saying which split produced it would hide the only interesting thing here.
 nothing else. A partition is not a labelling, and `k` clusters matching `k` areas
 by count is a coincidence, not an identification — see
 `.claude/rules/numerology-vs-number-theory.md`. Measured ARI is ~0.04 (random
-split) to ~0.14 (temporal) against a null of ~0.000: real but weak structure, and
+split) to ~0.13 (temporal) against a null of ~0.000: real but weak structure, and
 it is **not** the area taxonomy. The `majorityMap` accuracy is a *supervised
 ceiling* and is labelled as such wherever it appears.
 

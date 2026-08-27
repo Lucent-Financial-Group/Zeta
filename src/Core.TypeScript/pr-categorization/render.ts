@@ -21,6 +21,24 @@ import type { StudyResult } from './study.ts';
 const esc = (s: string): string =>
   s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
+/**
+ * Thousands separators without a locale.
+ *
+ * `toLocaleString('en-US')` pins the locale but still routes through ICU, whose
+ * tables differ by runtime and build — so the same number can render differently
+ * on two machines and the page stops being a deterministic function of the
+ * statistics file. Grouping ASCII digits by hand has one answer everywhere.
+ */
+function group(n: number): string {
+  const s = String(Math.trunc(Math.abs(n)));
+  let out = '';
+  for (let i = 0; i < s.length; i++) {
+    if (i > 0 && (s.length - i) % 3 === 0) out += ',';
+    out += s[i];
+  }
+  return (n < 0 ? '-' : '') + out;
+}
+
 const pct = (x: number, d = 1): string => `${(x * 100).toFixed(d)}%`;
 const pp = (x: number): string => `${x >= 0 ? '+' : ''}${x.toFixed(1)}pp`;
 
@@ -43,7 +61,7 @@ function barChart(
       return `<div class="bar-row">
       <span class="bar-label">${esc(area)}</span>
       <span class="bar-track"><span class="bar-fill" style="width:${w.toFixed(2)}%;background:${areaColor(area)}"></span></span>
-      <span class="bar-value">${n.toLocaleString('en-US')} <em>${pct(n / total)}</em></span>
+      <span class="bar-value">${group(n)} <em>${pct(n / total)}</em></span>
     </div>`;
     })
     .join('')}</div>`;
@@ -317,7 +335,7 @@ footer{margin-top:3rem;padding-top:1rem;border-top:1px solid var(--line);color:v
 <div class="wrap">
 <h1>PR area statistics</h1>
 <p class="sub">
-  ${s.corpus.prsTotal.toLocaleString('en-US')} merged pull requests &middot;
+  ${group(s.corpus.prsTotal)} merged pull requests &middot;
   ${s.corpus.areas.length} areas &middot;
   split: <strong>${esc(s.corpus.splitKind)}</strong>${s.corpus.splitAtIso ? ` at ${esc(s.corpus.splitAtIso.slice(0, 10))}` : ''} &middot;
   generated <time datetime="${esc(s.generatedAtIso)}">${esc(s.generatedAtIso.replace('T', ' ').slice(0, 16))}Z</time>
@@ -380,7 +398,7 @@ footer{margin-top:3rem;padding-top:1rem;border-top:1px solid var(--line);color:v
 
 <h2>Where the declared area disagrees with the diff</h2>
 <p>
-  <strong>${s.disagreement.n.toLocaleString('en-US')}</strong> PRs
+  <strong>${group(s.disagreement.n)}</strong> PRs
   (${pct(s.disagreement.rate)} of those carrying a parseable area) changed files that sit
   somewhere other than where the title says. This set is the product: the closed form cannot
   produce it at all, because it never looks at a diff.
@@ -406,7 +424,7 @@ Naming the pattern is the useful output; assigning blame would be reading intent
   <div class="stat"><b>${pct(s.baseline.coverage)}</b><span>parseable area</span></div>
   <div class="stat"><b>${pct(s.baseline.unlabellable)}</b><span>no area at all</span></div>
   <div class="stat"><b>${pct(s.baseline.accuracyOnCovered)}</b><span>correct when parsed</span></div>
-  <div class="stat"><b>${(s.baseline.sourceCounts['type-only'] ?? 0).toLocaleString('en-US')}</b><span>type but no area</span></div>
+  <div class="stat"><b>${group((s.baseline.sourceCounts['type-only'] ?? 0))}</b><span>type but no area</span></div>
 </div>
 <p class="muted">
   <code>type-only</code> means a title declared a <em>kind</em> of change (<code>feat:</code>,
@@ -448,7 +466,7 @@ ${stackChart(s.areaTrend, s.corpus.areas)}
   <p>
     Feature space: ${s.config.featureDim} dimensions over ${s.config.featureGroups.join(', ')} &middot;
     forest ${s.config.forest.nTrees} trees &middot; BNN ${s.config.bnn.passes}-pass ADF probit, one-vs-rest &middot;
-    train ${s.corpus.trainN.toLocaleString('en-US')} / test ${s.corpus.testN.toLocaleString('en-US')}
+    train ${group(s.corpus.trainN)} / test ${group(s.corpus.testN)}
   </p>
 </footer>
 </div>
@@ -461,7 +479,7 @@ export function renderMarkdown(s: StudyResult): string {
   const L: string[] = [];
   L.push('# PR area statistics');
   L.push('');
-  L.push(`_${s.corpus.prsTotal.toLocaleString('en-US')} merged PRs · ${s.corpus.areas.length} areas · ${s.corpus.splitKind} split · generated ${s.generatedAtIso}_`);
+  L.push(`_${group(s.corpus.prsTotal)} merged PRs · ${s.corpus.areas.length} areas · ${s.corpus.splitKind} split · generated ${s.generatedAtIso}_`);
   L.push('');
   L.push(`**${v.headline}**`);
   L.push('');
@@ -483,7 +501,7 @@ export function renderMarkdown(s: StudyResult): string {
   }
   L.push('');
   L.push(`- Coverage: ${pct(s.baseline.coverage)} parseable, ${pct(s.baseline.unlabellable)} unlabellable.`);
-  L.push(`- Disagreement set: ${s.disagreement.n.toLocaleString('en-US')} PRs (${pct(s.disagreement.rate)} of parseable).`);
+  L.push(`- Disagreement set: ${group(s.disagreement.n)} PRs (${pct(s.disagreement.rate)} of parseable).`);
   L.push(`- k-means ARI ${s.clustering.adjustedRandIndex.toFixed(3)} (null ${s.clustering.nullAdjustedRandIndex.toFixed(3)}) — clusters are not the taxonomy.`);
   {
     // The accuracy win and the macro-F1 loss are one finding, not two, and the
