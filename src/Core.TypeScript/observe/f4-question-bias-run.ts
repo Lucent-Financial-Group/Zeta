@@ -64,9 +64,124 @@ function outFile(domain: string, model: string): string {
   return `${domain}-${model.replace(/[:.]/g, "-")}.jsonl`;
 }
 
+/**
+ * Upper bound on one generation's text, in UTF-16 code units.
+ *
+ * The instrument asks for `NUM_PREDICT` = 24 tokens and the longest response across the
+ * 27,360 rows already on disk is 149 chars, so this is ~55x headroom over observed data.
+ * It rejects a server that is not answering the question that was asked; it cannot reject
+ * a legitimate generation.
+ */
+export const MAX_RAW_CHARS = 8192;
+
+/**
+ * The `/api/generate` response did not match the contract this harness was written
+ * against. Distinct from a generation that FAILED (a dead server, a non-2xx) — that is a
+ * missing datum. This is a datum whose shape is wrong, which is worse, because a wrong
+ * shape survives `JSON.stringify` and reappears downstream looking like a measurement.
+ */
+export class ProtocolViolation extends Error {
+  constructor(field: string, detail: string) {
+    super(`ollama /api/generate: field '${field}' violates the contract — ${detail}`);
+    this.name = "ProtocolViolation";
+  }
+}
+
+/** Type name only. The offending VALUE is never echoed — it is the untrusted part. */
+function describeType(value: unknown): string {
+  if (value === null) return "null";
+  if (Array.isArray(value)) return "array";
+  return typeof value;
+}
+
+function requireText(value: unknown, field: string): string {
+  if (typeof value !== "string") {
+    throw new ProtocolViolation(field, `expected string, got ${describeType(value)}`);
+  }
+  if (value.length > MAX_RAW_CHARS) {
+    throw new ProtocolViolation(field, `${value.length} chars exceeds the ${MAX_RAW_CHARS} cap`);
+  }
+  return value;
+}
+
+function requireCount(value: unknown, field: string): number {
+  if (typeof value !== "number" || !Number.isFinite(value) || value < 0) {
+    throw new ProtocolViolation(field, `expected a finite count >= 0, got ${describeType(value)}`);
+  }
+  return value;
+}
+
+/**
+ * PARSE a generation result into an `AnswerRow`. Never cast one.
+ *
+ * `generate` reaches the model over HTTP and hands back `(await res.json()) as {...}` — a
+ * CAST, which checks nothing at runtime. So every field arriving from the wire is
+ * `unknown` in fact whatever it claims in the type, and this function is where that lie is
+ * settled. `raw` / `promptTokens` / `evalTokens` are network-sourced; `ms` is measured
+ * locally and is validated only so the row has one uniform gate.
+ *
+ * The defect this closes: with the cast alone, a response of `{"eval_count": {"a": 1}}`
+ * put an object into a numeric field, `JSON.stringify` wrote it out happily, and
+ * `f4-question-bias-analyze.ts` — which casts again on `JSON.parse(line) as Row` — folded
+ * it into statistics without anything throwing. Nothing in the path could fail, which is
+ * the vacuity class: a check that cannot fail is not a check.
+ *
+ * Note what is deliberately NOT rejected: control characters in `raw`. A model answering
+ * in 24 tokens may legitimately emit a newline, and the newline is part of the datum.
+ * `serializeRow` is what keeps that safe on disk.
+ */
+export function toAnswerRow(
+  fixed: Pick<AnswerRow, "domain" | "model" | "prompt" | "replicate" | "seed">,
+  gen: unknown,
+): AnswerRow {
+  if (gen === null || gen === undefined) {
+    return { ...fixed, temperature: TEMPERATURE, raw: "", ms: 0, promptTokens: 0, evalTokens: 0 };
+  }
+  const g = gen as Record<string, unknown>;
+  return {
+    ...fixed,
+    temperature: TEMPERATURE,
+    raw: requireText(g["text"], "response"),
+    ms: requireCount(g["ms"], "ms"),
+    promptTokens: requireCount(g["promptTokens"], "prompt_eval_count"),
+    evalTokens: requireCount(g["evalTokens"], "eval_count"),
+  };
+}
+
+/**
+ * One row, one line — the JSONL record boundary, asserted rather than assumed.
+ *
+ * `JSON.stringify` escapes every character that could end a record early: newline, CR,
+ * NUL and lone surrogates all come back as backslash escape SEQUENCES (two characters
+ * for newline and CR, six for NUL and surrogates), never as literal bytes. That is what
+ * lets model text be stored VERBATIM without a response splitting one row into two.
+ *
+ * But that escaping is load-bearing and invisible — nothing in the old code said the
+ * record boundary depended on it, so an edit swapping the serializer for a template
+ * literal would have corrupted every downstream statistic silently. The check below makes
+ * the dependency explicit and loud.
+ *
+ * `assertSingleRecord` is separate and exported for one reason: folded into `serializeRow`
+ * it could not be reached through the public API, because `JSON.stringify` never emits a
+ * literal newline — a guard nothing can trigger is a check that cannot fail. Split out, it
+ * takes an arbitrary string and its falsifier is direct.
+ */
+export function assertSingleRecord(json: string): void {
+  if (/[\n\r]/.test(json)) {
+    throw new Error("serialized row contains a literal newline — the JSONL record boundary would break");
+  }
+}
+
+export function serializeRow(row: AnswerRow): string {
+  const json = JSON.stringify(row);
+  assertSingleRecord(json);
+  return `${json}\n`;
+}
+
 function writeRow(file: string, row: AnswerRow): void {
+  const line = serializeRow(row);
   mkdirSync(OUT_DIR, { recursive: true });
-  appendFileSync(join(OUT_DIR, file), JSON.stringify(row) + "\n");
+  appendFileSync(join(OUT_DIR, file), line);
 }
 
 /**
@@ -108,18 +223,7 @@ async function runDomain(
         if (n <= done) continue;
         const seed = seedFor(pi, rep);
         const r = await generate(HOST, model, text, seed, TEMPERATURE, NUM_PREDICT);
-        writeRow(file, {
-          domain: domain.id,
-          model,
-          prompt: prompt.id,
-          replicate: rep,
-          seed,
-          temperature: TEMPERATURE,
-          raw: r?.text ?? "",
-          ms: r?.ms ?? 0,
-          promptTokens: r?.promptTokens ?? 0,
-          evalTokens: r?.evalTokens ?? 0,
-        });
+        writeRow(file, toAnswerRow({ domain: domain.id, model, prompt: prompt.id, replicate: rep, seed }, r));
         if (n % 100 === 0) {
           const rate = (n - done) / ((performance.now() - t0) / 1000);
           process.stdout.write(`  ${n}/${total} (${rate.toFixed(1)}/s)\r`);

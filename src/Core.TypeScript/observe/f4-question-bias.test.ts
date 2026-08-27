@@ -23,6 +23,14 @@ import { describe, expect, test } from "bun:test";
 import { canonAtom, makeRng, permutationTest } from "./f3-hat-choice-decorrelation";
 import { cellKey, parseCellKey } from "./f4-question-bias-analyze";
 import {
+  assertSingleRecord,
+  MAX_RAW_CHARS,
+  ProtocolViolation,
+  serializeRow,
+  toAnswerRow,
+  type AnswerRow,
+} from "./f4-question-bias-run";
+import {
   ALPHA,
   AXIS_PAIRS,
   atomDistribution,
@@ -597,5 +605,149 @@ describe("cellKey", () => {
 
   test("the key itself contains no NUL, whatever it is given", () => {
     expect(cellKey("a\u0000b", "c\u0000d")).not.toContain("\u0000");
+  });
+});
+
+// ═══ The write path: what reaches the results file ═══════════════════════════
+//
+// CodeQL alert #801 (`js/http-to-file-access`, medium) flagged `appendFileSync(...,
+// JSON.stringify(row) + "\n")` in `f4-question-bias-run.ts`: model text arrives over
+// HTTP from ollama and is written to disk. The flow is real and, for this harness,
+// irreducible — persisting generations verbatim is the entire point of the file. What
+// was NOT acceptable is that nothing between the socket and the file could fail.
+//
+// `generate` ends in `(await res.json()) as { response?: string; ... }`, a CAST that
+// checks nothing at runtime, and `f4-question-bias-analyze.ts` casts a second time on
+// `JSON.parse(line) as Row`. Between those two casts a malformed response could put an
+// object into a numeric field and every statistic folded over it would silently change.
+//
+// Two properties are pinned below, and they are different properties:
+//   1. RECORD BOUNDARY — one row is one line, whatever the model emits.
+//   2. SHAPE — a response that violates the contract is REJECTED, not recorded.
+
+describe("the JSONL record boundary", () => {
+  const row = (raw: string): AnswerRow => ({
+    domain: "role",
+    model: "qwen2.5:0.5b",
+    prompt: "A",
+    replicate: 0,
+    seed: 1,
+    temperature: 0.8,
+    raw,
+    ms: 1,
+    promptTokens: 2,
+    evalTokens: 3,
+  });
+
+  // The hazards a JSONL writer must survive. Each one, written raw, would end the
+  // record early or turn the file binary. `JSON.stringify` escapes all of them — this
+  // test is what says so out loud, and it fails the moment the serializer stops.
+  const hazards: readonly (readonly [string, string])[] = [
+    ["newline", "yes\nno"],
+    ["CR", "yes\rno"],
+    ["CRLF", "yes\r\nno"],
+    ["NUL", "yes\u0000no"],
+    ["lone surrogate", "yes\ud800no"],
+    ["line separator U+2028", "yes\u2028no"],
+    ["tab", "yes\tno"],
+    ["quote and backslash", 'yes"\\no'],
+    ["a whole fake record", '{"domain":"forged"}\n{"domain":"forged2"}'],
+    ["long field", "x".repeat(4000)],
+  ];
+
+  for (const [name, raw] of hazards) {
+    test(`${name} stays inside one record and round-trips verbatim`, () => {
+      const line = serializeRow(row(raw));
+      // Exactly one record: one trailing newline, none in the body.
+      expect(line.endsWith("\n")).toBe(true);
+      expect(line.slice(0, -1)).not.toContain("\n");
+      expect(line.split("\n").filter((l) => l.length > 0)).toHaveLength(1);
+      // And the datum survives unchanged — escaping must not mean lossy.
+      expect((JSON.parse(line) as AnswerRow).raw).toBe(raw);
+    });
+  }
+
+  test("a file of hazard rows parses to exactly one row per entry", () => {
+    const body = hazards.map(([, raw]) => serializeRow(row(raw))).join("");
+    const lines = body.split("\n").filter((l) => l.length > 0);
+    expect(lines).toHaveLength(hazards.length);
+    expect(lines.map((l) => (JSON.parse(l) as AnswerRow).raw)).toEqual(hazards.map(([, raw]) => raw));
+  });
+
+  // The boundary guard is exported separately so it can actually be reached. Folded
+  // into serializeRow it would be unfalsifiable — JSON.stringify never emits a literal
+  // newline, so no input could trigger it, and a guard nothing can trigger is not a guard.
+  test("assertSingleRecord rejects a line that would break the boundary", () => {
+    expect(() => assertSingleRecord('{"a":1}\n{"a":2}')).toThrow(/record boundary/);
+    expect(() => assertSingleRecord('{"a":1}\r')).toThrow(/record boundary/);
+  });
+
+  test("assertSingleRecord accepts a well-formed line", () => {
+    expect(() => assertSingleRecord('{"a":"b\\nc"}')).not.toThrow();
+  });
+});
+
+describe("toAnswerRow rejects a response that violates the contract", () => {
+  const fixed = { domain: "role", model: "qwen2.5:0.5b", prompt: "A", replicate: 0, seed: 1 };
+  const ok = { text: "hello", ms: 1, promptTokens: 2, evalTokens: 3 };
+
+  test("the happy path is preserved verbatim", () => {
+    expect(toAnswerRow(fixed, ok)).toEqual({
+      ...fixed,
+      temperature: 0.8,
+      raw: "hello",
+      ms: 1,
+      promptTokens: 2,
+      evalTokens: 3,
+    });
+  });
+
+  // A failed generation is a MISSING datum and stays representable — this is the
+  // pre-existing behaviour and the 27,360 rows on disk contain no empty raw, so the
+  // path has never fired in practice. It is pinned so the fix does not change the
+  // experiment's semantics.
+  test("a failed generation still records an empty row", () => {
+    expect(toAnswerRow(fixed, null).raw).toBe("");
+    expect(toAnswerRow(fixed, undefined).evalTokens).toBe(0);
+  });
+
+  // THE DEFECT. Each of these sailed through the old cast straight into the file.
+  const violations: readonly (readonly [string, Record<string, unknown>])[] = [
+    ["text is an object", { ...ok, text: { a: 1 } }],
+    ["text is a number", { ...ok, text: 42 }],
+    ["text is an array", { ...ok, text: ["a"] }],
+    ["text is missing", { ms: 1, promptTokens: 2, evalTokens: 3 }],
+    ["evalTokens is an object", { ...ok, evalTokens: { a: 1 } }],
+    ["evalTokens is a string", { ...ok, evalTokens: "lots" }],
+    ["promptTokens is an array", { ...ok, promptTokens: [1, 2] }],
+    ["promptTokens is NaN", { ...ok, promptTokens: Number.NaN }],
+    ["evalTokens is Infinity", { ...ok, evalTokens: Number.POSITIVE_INFINITY }],
+    ["evalTokens is negative", { ...ok, evalTokens: -1 }],
+    ["promptTokens is missing", { text: "hi", ms: 1, evalTokens: 3 }],
+    ["text exceeds the cap", { ...ok, text: "x".repeat(MAX_RAW_CHARS + 1) }],
+  ];
+
+  for (const [name, gen] of violations) {
+    test(`${name} throws ProtocolViolation`, () => {
+      expect(() => toAnswerRow(fixed, gen)).toThrow(ProtocolViolation);
+    });
+  }
+
+  test("a response exactly at the cap is accepted — the bound is not off by one", () => {
+    expect(toAnswerRow(fixed, { ...ok, text: "x".repeat(MAX_RAW_CHARS) }).raw).toHaveLength(MAX_RAW_CHARS);
+  });
+
+  // The error names the field and its TYPE, never the value: the value is the
+  // untrusted part, and echoing it into a log is how a sanitiser leaks its own input.
+  test("the violation message does not echo the offending value", () => {
+    const secret = "SENTINEL-SHOULD-NOT-APPEAR";
+    try {
+      toAnswerRow(fixed, { ...ok, evalTokens: secret });
+      throw new Error("expected a ProtocolViolation");
+    } catch (err) {
+      expect(err).toBeInstanceOf(ProtocolViolation);
+      expect((err as Error).message).not.toContain(secret);
+      expect((err as Error).message).toContain("eval_count");
+    }
   });
 });
