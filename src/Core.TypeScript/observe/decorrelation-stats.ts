@@ -317,6 +317,61 @@ export function suspectExtremeRate(
   return null;
 }
 
+// ═══ Mann–Whitney U (does a signal separate two groups?) ═══════════════════════
+
+export interface MannWhitneyResult {
+  readonly u: number;
+  readonly n1: number;
+  readonly n2: number;
+  /** Normal-approximation z (tie-corrected), for the two-sided test. */
+  readonly z: number;
+  /** Rank-biserial correlation = effect size in [−1, 1]. */
+  readonly rankBiserial: number;
+  /** Whether the two-sided test rejects at α=0.05 (|z| > 1.96). */
+  readonly rejects: boolean;
+}
+
+/**
+ * Mann–Whitney U (Wilcoxon rank-sum), normal approximation with tie correction.
+ * Tests whether two independent samples come from distributions with different location —
+ * here, whether a signal (confidence, length, …) DIFFERS between the items config B wins
+ * and the items config A wins. If it does not, no selector on that signal can separate
+ * them, and the headroom is unaddressable by that signal.
+ *
+ * Ref: Mann & Whitney (1947). Anchored. Normal approx is adequate for n ≥ ~20 per group.
+ */
+export function mannWhitneyU(
+  group1: readonly number[], group2: readonly number[],
+): MannWhitneyResult {
+  const n1 = group1.length, n2 = group2.length;
+  if (n1 === 0 || n2 === 0) return { u: 0, n1, n2, z: 0, rankBiserial: 0, rejects: false };
+  // Pool and rank (average ranks for ties).
+  const pooled = [...group1.map((v) => ({ v, g: 1 })), ...group2.map((v) => ({ v, g: 2 }))]
+    .sort((a, b) => a.v - b.v);
+  const ranks = new Array<number>(pooled.length);
+  let i = 0;
+  const tieGroups: number[] = [];
+  while (i < pooled.length) {
+    let j = i;
+    while (j < pooled.length && pooled[j]!.v === pooled[i]!.v) j++;
+    const avgRank = (i + 1 + j) / 2; // average of ranks i+1..j (1-based)
+    for (let k = i; k < j; k++) ranks[k] = avgRank;
+    if (j - i > 1) tieGroups.push(j - i);
+    i = j;
+  }
+  let r1 = 0;
+  for (let k = 0; k < pooled.length; k++) if (pooled[k]!.g === 1) r1 += ranks[k]!;
+  const u1 = r1 - (n1 * (n1 + 1)) / 2;
+  const u = Math.min(u1, n1 * n2 - u1);
+  const mu = (n1 * n2) / 2;
+  const N = n1 + n2;
+  const tieTerm = tieGroups.reduce((s, t) => s + (t ** 3 - t), 0);
+  const sigma = Math.sqrt((n1 * n2 / 12) * ((N + 1) - tieTerm / (N * (N - 1))));
+  const z = sigma > 0 ? (u1 - mu) / sigma : 0;
+  const rankBiserial = 1 - (2 * u) / (n1 * n2);
+  return { u, n1, n2, z, rankBiserial, rejects: Math.abs(z) > 1.96 };
+}
+
 // ═══ The honest bundle ══════════════════════════════════════════════════════════
 
 export interface HonestMeasurement {

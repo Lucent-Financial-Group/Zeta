@@ -10,7 +10,7 @@ import { describe, test, expect } from "bun:test";
 import {
   phi, phiMax, phiRatio, yulesQ, cohensKappa,
   wilsonInterval, proportionDiffInterval, requiredNForDifference,
-  measureHonest, detectAnswerLeak, suspectExtremeRate, mcNemar,
+  measureHonest, detectAnswerLeak, suspectExtremeRate, mcNemar, mannWhitneyU,
   type Table2x2,
 } from "./decorrelation-stats";
 
@@ -114,6 +114,30 @@ describe("requiredNForDifference — the power calculation (W3)", () => {
   });
   test("zero difference is unresolvable (Infinity)", () => {
     expect(requiredNForDifference(0.5, 0.5)).toBe(Infinity);
+  });
+});
+
+describe("mannWhitneyU (H3 — does a signal separate two groups?)", () => {
+  test("cleanly separated groups reject with a large effect", () => {
+    const lo = Array.from({ length: 25 }, (_, i) => i);        // 0..24
+    const hi = Array.from({ length: 25 }, (_, i) => i + 100);  // 100..124
+    const r = mannWhitneyU(hi, lo);
+    expect(r.rejects).toBe(true);
+    expect(Math.abs(r.rankBiserial)).toBeGreaterThan(0.9);
+  });
+
+  test("identical distributions do NOT reject (the not-addressable case)", () => {
+    const a = Array.from({ length: 30 }, (_, i) => i % 5);
+    const b = Array.from({ length: 30 }, (_, i) => i % 5);
+    const r = mannWhitneyU(a, b);
+    expect(r.rejects).toBe(false);
+    expect(Math.abs(r.rankBiserial)).toBeLessThan(0.15);
+  });
+
+  test("empty group is handled without NaN", () => {
+    const r = mannWhitneyU([], [1, 2, 3]);
+    expect(r.rejects).toBe(false);
+    expect(Number.isFinite(r.z)).toBe(true);
   });
 });
 
