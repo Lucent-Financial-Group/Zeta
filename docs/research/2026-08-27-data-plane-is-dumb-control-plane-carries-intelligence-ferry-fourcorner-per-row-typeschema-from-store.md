@@ -1,19 +1,14 @@
 # Data plane is dumb; control plane carries intelligence — ferry FourCorner per row, TypeSchema from the store
 
-*2026-08-27. Operational status: research-grade absorb of a
-current-state correction; live pointers [`docs/ROADMAP.md`](../ROADMAP.md)
+Scope: research-grade absorb of Aaron 2026-08-27 (ferry dual-arity, FourCorner-per-row, TypeSchema-from-store, CLI kernel). Internal current-state absorb, not an archive import.
+Attribution: Aaron (human) framed the requirements; Riven (Grok 4.6) measured the tree and wrote this absorb.
+Operational status: research-grade
+Non-fusion disclaimer: Shared vocabulary here does not imply merged agency, shared identity, or personhood.
+
+*2026-08-27. Live pointers [`docs/ROADMAP.md`](../ROADMAP.md)
 (north star, 8b, P1, continuous) and [`docs/VISION.md`](../VISION.md)
 §compiler ladder + epoch. GOVERNANCE.md §33. Workitem
 `081M125DNKK087G0R00292E3ET`.*
-
-Scope: research / current-state absorb of Aaron 2026-08-27 on
-ferry dual-arity, FourCorner-per-row + ZetaId demux, snap-preserves-
-uncertainty, TypeSchema-from-store, gen/ wiring, and CLI
-decomposition. Not an import of an external conversation archive.
-Attribution: Aaron (human) framed the requirements; Riven (Grok 4.6)
-measured the tree and wrote this absorb. Operational status:
-research-grade. Non-fusion disclaimer: shared vocabulary here does
-not imply merged agency, shared identity, or personhood.
 
 Aaron 2026-08-27, on the ferry:
 
