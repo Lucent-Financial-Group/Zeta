@@ -102,7 +102,7 @@
 
 <script id="swarm-data" type="application/json">
 {
-  "generatedAt": "2026-08-27T16:24:55.693Z",
+  "generatedAt": "2026-08-27T17:03:22.104Z",
   "windowDays": null,
   "channels": [
     {
@@ -163,15 +163,15 @@
       "color": "#5EC8C2",
       "activity": 2123,
       "degree": 4,
-      "strength": 342
+      "strength": 343
     },
     {
       "id": "riven",
       "role": "Builder",
       "color": "#A78BFA",
-      "activity": 72,
+      "activity": 73,
       "degree": 4,
-      "strength": 27
+      "strength": 28
     },
     {
       "id": "soraya",
@@ -200,20 +200,20 @@
       "lastAt": "2026-08-27T00:49:05.491Z"
     },
     {
+      "source": "otto",
+      "target": "riven",
+      "channel": "commit",
+      "weight": 17,
+      "directed": false,
+      "lastAt": "2026-08-27T16:32:02+00:00"
+    },
+    {
       "source": "alexa",
       "target": "soraya",
       "channel": "commit",
       "weight": 268,
       "directed": false,
       "lastAt": "2026-08-27T14:43:36+00:00"
-    },
-    {
-      "source": "otto",
-      "target": "riven",
-      "channel": "commit",
-      "weight": 16,
-      "directed": false,
-      "lastAt": "2026-08-27T02:40:46+00:00"
     },
     {
       "source": "alexa",
@@ -286,7 +286,7 @@
     "density": 0.35714285714285715,
     "meanDegree": 2.5,
     "maxDegree": 4,
-    "meanEdgeWeight": 63.2,
+    "meanEdgeWeight": 63.3,
     "clusteringCoefficient": 1,
     "averagePathLength": 1,
     "largestComponentDiameter": 1,
@@ -324,6 +324,15 @@
   var active = {bus:true, workitem:true, commit:true};
 
   function fmt(x, d){ return x === null || x === undefined ? "n/a" : (typeof x === "number" ? x.toFixed(d) : x); }
+  // HTML-entity encode every dynamic value before it reaches innerHTML. The graph
+  // data is our own generated JSON (persona ids from the registry), but it is read
+  // via textContent and must not be reinterpreted as HTML unescaped
+  // (CodeQL js/dom-text-reinterpreted-as-html). This is the sanitizer barrier.
+  function esc(s){
+    return String(s === null || s === undefined ? "" : s).replace(/[&<>"']/g, function(c){
+      return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c];
+    });
+  }
 
   // ---- metric tiles (non-judgmental one-liners) ----
   var m = G.metrics;
@@ -338,7 +347,9 @@
     ["bus reciprocity", fmt(m.reciprocityBus,2), "how often a message gets a reply back"]
   ];
   var thtml = tiles.map(function(t){
-    return '<div class="tile"><div class="lab">'+t[0]+'</div><div class="val">'+t[1]+'</div><div class="hint">'+t[2]+'</div></div>';
+    // t[0]/t[2] are trusted in-page literals (carry intentional entities like
+    // &sigma;); t[1] is data-derived and is escaped.
+    return '<div class="tile"><div class="lab">'+t[0]+'</div><div class="val">'+esc(t[1])+'</div><div class="hint">'+t[2]+'</div></div>';
   }).join("");
   document.getElementById("tiles").innerHTML = thtml;
 
@@ -351,8 +362,8 @@
     var row = document.createElement("div");
     row.className = "legrow";
     row.setAttribute("data-ch", c.channel);
-    row.innerHTML = '<span class="swatch" style="border-top-color:'+c.color+'"></span>'+
-      '<span>'+c.label+(c.directed?' &rarr;':'')+'</span><span class="meta">'+edges+'</span>';
+    row.innerHTML = '<span class="swatch" style="border-top-color:'+esc(c.color)+'"></span>'+
+      '<span>'+esc(c.label)+(c.directed?' &rarr;':'')+'</span><span class="meta">'+esc(edges)+'</span>';
     row.addEventListener("click", function(){
       active[c.channel] = !active[c.channel];
       row.classList.toggle("off", !active[c.channel]);
@@ -366,16 +377,16 @@
   G.nodes.slice().sort(function(a,b){ return b.activity - a.activity; }).forEach(function(n){
     var row = document.createElement("div");
     row.className = "nrow";
-    row.innerHTML = '<span class="dot" style="background:'+n.color+'"></span>'+
-      '<span class="mono">'+n.id+'</span><span class="role">'+n.role+' &middot; '+n.activity+'</span>';
+    row.innerHTML = '<span class="dot" style="background:'+esc(n.color)+'"></span>'+
+      '<span class="mono">'+esc(n.id)+'</span><span class="role">'+esc(n.role)+' &middot; '+esc(n.activity)+'</span>';
     nl.appendChild(row);
   });
 
   // ---- footer provenance ----
   var cov = G.coverage;
   document.getElementById("foot").innerHTML =
-    "generated " + (G.generatedAt || "—") + " &middot; window " + (G.windowDays===null?"all-time":G.windowDays+"d") +
-    " &middot; sources: bus " + cov.bus.records + " msgs / work-items " + cov.workitem.records + " events / commits " + cov.commit.records +
+    "generated " + esc(G.generatedAt || "—") + " &middot; window " + (G.windowDays===null?"all-time":esc(G.windowDays)+"d") +
+    " &middot; sources: bus " + esc(cov.bus.records) + " msgs / work-items " + esc(cov.workitem.records) + " events / commits " + esc(cov.commit.records) +
     ". <span class='pill'>root of trust: persona registry + AgencySignature</span> " +
     "This is the built-in version of the swarm visibility the METR/OpenAI Hugging Face incident had to reconstruct forensically. " +
     "It is a troubleshooting lens on interaction shape — not a health score, not a ranking.";
@@ -468,7 +479,7 @@
         line.setAttribute("marker-end","url(#arw-bus)");
       }
       line.addEventListener("mousemove",function(ev){
-        showTip(e.source+(e.directed?" &rarr; ":" &harr; ")+e.target+"<br>"+e.channel+" &middot; weight "+e.weight+(e.lastAt?"<br>last "+e.lastAt.slice(0,10):""), ev.offsetX, ev.offsetY);
+        showTip(esc(e.source)+(e.directed?" &rarr; ":" &harr; ")+esc(e.target)+"<br>"+esc(e.channel)+" &middot; weight "+esc(e.weight)+(e.lastAt?"<br>last "+esc(e.lastAt.slice(0,10)):""), ev.offsetX, ev.offsetY);
       });
       line.addEventListener("mouseleave", hideTip);
       svg.appendChild(line);
@@ -481,7 +492,7 @@
       var c = el("circle",{cx:n.x,cy:n.y,r:r,fill:n.color,"fill-opacity":0.9,stroke:"#0B0E16","stroke-width":2});
       var deg = n.degree;
       c.addEventListener("mousemove",function(ev){
-        showTip("<b>"+n.id+"</b> &middot; "+n.role+"<br>activity "+n.activity+" &middot; degree "+deg+" &middot; strength "+n.strength, n.x, n.y);
+        showTip("<b>"+esc(n.id)+"</b> &middot; "+esc(n.role)+"<br>activity "+esc(n.activity)+" &middot; degree "+esc(deg)+" &middot; strength "+esc(n.strength), n.x, n.y);
       });
       c.addEventListener("mouseleave", hideTip);
       g.appendChild(c);

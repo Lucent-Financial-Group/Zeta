@@ -25,7 +25,7 @@
 // The CLI writes data/swarm-graph.json and injects it into the self-contained
 // viewer at docs/design/root-site-iris/site/swarm.html.
 
-import { readFileSync, readdirSync, statSync, writeFileSync, existsSync } from "node:fs";
+import { readFileSync, readdirSync, writeFileSync, type Dirent } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { execFileSync } from "node:child_process";
@@ -365,22 +365,19 @@ function walkJsonFiles(root: string): string[] {
   const stack = [root];
   while (stack.length > 0) {
     const dir = stack.pop()!;
-    let entries: string[];
+    // withFileTypes returns the kind of each entry from the SAME syscall that
+    // lists it — no second statSync to race against for an answer the listing
+    // already had (check-then-use, per AceHack's finding on this file).
+    let entries: Dirent[];
     try {
-      entries = readdirSync(dir);
+      entries = readdirSync(dir, { withFileTypes: true });
     } catch {
       continue;
     }
-    for (const name of entries) {
-      const full = join(dir, name);
-      let st;
-      try {
-        st = statSync(full);
-      } catch {
-        continue;
-      }
-      if (st.isDirectory()) stack.push(full);
-      else if (name.endsWith(".json")) out.push(full);
+    for (const entry of entries) {
+      const full = join(dir, entry.name);
+      if (entry.isDirectory()) stack.push(full);
+      else if (entry.isFile() && entry.name.endsWith(".json")) out.push(full);
     }
   }
   return out;
@@ -433,7 +430,9 @@ function loadPersonas(root: string): PersonaMeta[] {
 
 function loadBus(root: string, cutoffMs: number | null): BusMessageLike[] {
   const dir = join(root, "docs/agent-bus");
-  if (!existsSync(dir)) return [];
+  // No existsSync guard: walkJsonFiles already returns [] for a missing dir via
+  // its own catch, so a guard here just answers a question the next call answers
+  // again a moment later (check-then-use — do not restore it).
   const out: BusMessageLike[] = [];
   for (const f of walkJsonFiles(dir)) {
     const m = readJson<BusMessageLike>(f);
@@ -444,7 +443,7 @@ function loadBus(root: string, cutoffMs: number | null): BusMessageLike[] {
 
 function loadWorkItems(root: string, cutoffMs: number | null): WorkItemEventLike[] {
   const dir = join(root, "workitems/events");
-  if (!existsSync(dir)) return [];
+  // No existsSync guard — walkJsonFiles returns [] for a missing dir (see loadBus).
   const out: WorkItemEventLike[] = [];
   for (const f of walkJsonFiles(dir)) {
     const e = readJson<WorkItemEventLike>(f);
@@ -488,8 +487,14 @@ function loadCommits(root: string, windowDays: number | null, maxCommits: number
 
 function injectIntoViewer(root: string, graph: SwarmGraph): boolean {
   const viewer = join(root, "docs/design/root-site-iris/site/swarm.html");
-  if (!existsSync(viewer)) return false;
-  const html = readFileSync(viewer, "utf8");
+  // Read directly and interpret a missing file, rather than gating on a separate
+  // existsSync whose answer is stale the instant it returns (check-then-use).
+  let html: string;
+  try {
+    html = readFileSync(viewer, "utf8");
+  } catch {
+    return false;
+  }
   const open = '<script id="swarm-data" type="application/json">';
   const close = "</script>";
   const start = html.indexOf(open);
