@@ -25,9 +25,15 @@
 //                        service routing rather than sitting behind kube-proxy.
 //   nodes READY          the CNI is functioning: a node with no working CNI
 //                        never leaves NotReady.
-//   pod IPs from 10.42/16  Cilium's cluster-pool IPAM allocated them. kind's
-//                        own default is 10.244/16, so this distinguishes
-//                        "Cilium is installed" from "Cilium is the CNI".
+//   pod IPs from the    Cilium's cluster-pool IPAM allocated them. kind's
+//   DECLARED pod CIDR    own default is 10.244/16, so this distinguishes
+//                        "Cilium is installed" from "Cilium is the CNI". The
+//                        pool is READ from the values actually installed
+//                        (ipam.operator.clusterPoolIPv4PodCIDRList), never
+//                        hardcoded -- the pod CIDR is derived from the cluster
+//                        name (cluster-cidr.ts), so a hardcoded prefix here is
+//                        a fourth surface that silently disagrees the moment
+//                        the cluster identity changes.
 //   cilium_wg0 EXISTS    the WireGuard kernel path worked. This is the one that
 //                        was never exercised anywhere before this lane.
 //   Gateway API verdict  compared against the gap recorded in
@@ -51,13 +57,13 @@ import {
   readCiliumValueSurfaces,
   renderValuesYaml,
 } from "../cilium-kind-lane.ts";
+import { cidrBounds } from "../cluster-cidr.ts";
 import type { ProcessRunner } from "../ports.ts";
 import { assertKindCiStackReady, liveDevClusterPorts } from "./deps.ts";
 import { assertDnsLabel, REPO_ROOT } from "./lib.ts";
 
 const CILIUM_CHART_VERSION = "1.16.5";
 const CILIUM_CHART_REPO = "https://helm.cilium.io";
-const CLUSTER_POOL_CIDR_PREFIX = "10.42.";
 
 interface Check {
   readonly name: string;
@@ -99,7 +105,82 @@ function checkNodesReady(runner: ProcessRunner): Check {
   };
 }
 
-function checkPodIpamFromClusterPool(runner: ProcessRunner): Check {
+/**
+ * The pod CIDR Cilium was actually installed with.
+ *
+ * Read from the rendered values rather than hardcoded: `cluster-cidr.ts`
+ * DERIVES the pod CIDR from the cluster name, so any constant here is a
+ * surface that disagrees the moment the name changes -- which is exactly the
+ * disagreement `lint-cluster-cidr-agreement.ts` exists to prevent, on a
+ * surface it does not yet cover. Throws rather than defaulting: a guessed pod
+ * CIDR would make the assertion below pass against the wrong network.
+ */
+function podCidrFromValues(values: Readonly<Record<string, unknown>>): string {
+  const isRecord = (v: unknown): v is Readonly<Record<string, unknown>> =>
+    typeof v === "object" && v !== null && !Array.isArray(v);
+  const ipam = values["ipam"];
+  const operator = isRecord(ipam) ? ipam["operator"] : undefined;
+  const list = isRecord(operator) ? operator["clusterPoolIPv4PodCIDRList"] : undefined;
+  const first = Array.isArray(list) ? (list as readonly unknown[])[0] : undefined;
+  if (typeof first !== "string") {
+    throw new Error(
+      "Cilium values carry no ipam.operator.clusterPoolIPv4PodCIDRList[0]; refusing to guess the pod CIDR",
+    );
+  }
+  return first;
+}
+
+/**
+ * The pod IP out of one `<name>=<podIP> <hostNetwork>` jsonpath row.
+ *
+ * Everything after the `=` is TWO fields, and the second is EMPTY whenever
+ * `spec.hostNetwork` is unset — the ordinary case for CoreDNS. So the whole
+ * tail is `"10.143.0.62 "` (or `"10.143.0.62 false"`), never an address, and
+ * handing it to `cidrBounds` produces
+ *
+ *     error: not a dotted-quad CIDR: "10.143.0.62 /32"
+ *
+ * Measured on `main` at 5e196ea244, run 33025994843: the check CRASHED instead
+ * of reporting, so the lane went red with a stack trace and no verdict about
+ * the network at all. It was invisible until that commit because the predicate
+ * used to be `startsWith("10.42.")` — total on any string, and therefore unable
+ * to notice that the string was not an address. Making the containment exact is
+ * what exposed the sloppy split; both are fixed together.
+ *
+ * Exported for the test beside this file: the live lane is a five-minute kind
+ * bring-up, which is much too slow to be this parser's falsifier.
+ */
+export function podIpField(row: string): string {
+  return (row.split("=")[1] ?? "").trim().split(/\s+/)[0] ?? "";
+}
+
+/**
+ * Is `ip` inside `podCidr`, by ADDRESS ARITHMETIC rather than text?
+ *
+ * `10.143.0.0/17` is not a prefix-comparable boundary — `10.143.128.0` shares
+ * the `"10.143."` text and is outside the block — so a `startsWith` test
+ * accepts addresses the pool never hands out.
+ *
+ * A field that is not an address returns FALSE rather than throwing, and the
+ * direction matters: an empty `podIP` is a normal transient (a Pending pod has
+ * none), a lane that dies on one reports nothing, and counting it as "not from
+ * the pool" still FAILS the check. Fail-closed, with the raw rows in `detail`.
+ *
+ * "Not an address" is checked as SHAPE **and** RANGE, because a shape-only
+ * guard leaves the sentence above false: `/^\d{1,3}(\.\d{1,3}){3}$/` admits
+ * `999.1.1.1`, and `cidrBounds` then throws `CIDR out of range` — a different
+ * throw through the same hole this guard exists to close.
+ */
+export function podIpInPool(ip: string, podCidr: string): boolean {
+  const octets = ip.split(".");
+  const isAddress = octets.length === 4 && octets.every((o) => /^\d{1,3}$/.test(o) && Number.parseInt(o, 10) <= 255);
+  if (!isAddress) return false;
+  const pool = cidrBounds(podCidr);
+  const addr = cidrBounds(`${ip}/32`).first;
+  return addr >= pool.first && addr <= pool.last;
+}
+
+function checkPodIpamFromClusterPool(runner: ProcessRunner, podCidr: string): Check {
   const pods = capture(runner, "kubectl", [
     "-n",
     "kube-system",
@@ -115,9 +196,9 @@ function checkPodIpamFromClusterPool(runner: ProcessRunner): Check {
     .split("\n")
     .filter((line) => line.length > 0)
     .filter((line) => !line.endsWith(" true"));
-  const fromPool = rows.filter((row) => row.split("=")[1]?.startsWith(CLUSTER_POOL_CIDR_PREFIX) === true);
+  const fromPool = rows.filter((row) => podIpInPool(podIpField(row), podCidr));
   return {
-    name: `CoreDNS pod IPs come from cluster-pool ${CLUSTER_POOL_CIDR_PREFIX}0.0/16`,
+    name: `CoreDNS pod IPs come from cluster-pool ${podCidr}`,
     ok: pods.ok && rows.length > 0 && fromPool.length === rows.length,
     detail:
       rows.length === 0
@@ -359,7 +440,7 @@ function main(argv: readonly string[]): void {
       "the profile sets networking.kubeProxyMode: none, so Cilium's kubeProxyReplacement carries service routing",
     ),
     checkNodesReady(runner),
-    checkPodIpamFromClusterPool(runner),
+    checkPodIpamFromClusterPool(runner, podCidrFromValues(values)),
     checkWireguardDevice(runner),
     checkGatewayApiVerdict(runner),
   ];

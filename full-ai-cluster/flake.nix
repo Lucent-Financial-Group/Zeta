@@ -237,6 +237,57 @@
               echo "$status" | tee "$out"
             '';
 
+          # The cluster-CIDR derivation: pod/service CIDRs and the Cilium
+          # ClusterMesh cluster-id, derived from `cluster-identity.json` rather
+          # than hardcoded 10.42/10.43 on every node ever flashed.
+          #
+          # NOT a VM test and NOT a boot test. It replays the golden vectors in
+          # `nixos/tests/cluster-cidr-golden-vectors.json` through the SHIPPED
+          # Nix derivation (`nixos/lib/cluster-cidr.nix`) -- the same file
+          # `modules/cluster-network.nix` calls -- and throws on the first
+          # disagreement, naming the field. The TypeScript twin replays the same
+          # vectors from the other side, so the file is a cross-language
+          # byte-lock rather than a snapshot of one implementation.
+          #
+          # READ THIS BEFORE COUNTING IT AS COVERAGE: no workflow in this
+          # repository runs `nix flake check` on this flake. The CI-executed
+          # falsifier for the same derivation is
+          # `src/Core.TypeScript/hygiene/lint-cluster-cidr-agreement.test.ts`,
+          # which the gate does run.
+          cluster-cidr-derivation =
+            let
+              report = import ./nixos/tests/cluster-cidr-eval-test.nix {
+                inherit (nixpkgs) lib;
+              };
+            in
+            pkgs.runCommand "cluster-cidr-derivation" { inherit (report) status; } ''
+              echo "$status" | tee "$out"
+            '';
+
+          # ONE NODE FOUNDS; EVERY OTHER ONE JOINS -- the option values
+          # `modules/injected-server-join.nix` produces, in all five states.
+          #
+          # NOT a VM test and NOT a boot test; it says nothing about whether k3s
+          # joins (that is `k3s-agent-join` below, and `k3s-join-observer.nix`
+          # on hardware). What it pins is the thing nothing evaluated before:
+          # that a control plane carrying a join endpoint and a token stops
+          # calling `--cluster-init`. Without that, every machine built from the
+          # `control-plane` config founded its OWN cluster whatever the medium
+          # said -- the defect whose signature is two k3s CAs on one LAN with
+          # founding epochs twelve days apart.
+          #
+          # Costs no VM (it stubs the four `services.k3s` options rather than
+          # importing nixpkgs' k3s module) and runs on every system.
+          k3s-server-join-model =
+            let
+              report = import ./nixos/tests/k3s-server-join-eval-test.nix {
+                inherit (nixpkgs) lib;
+              };
+            in
+            pkgs.runCommand "k3s-server-join-model" { inherit (report) status; } ''
+              echo "$status" | tee "$out"
+            '';
+
           # Properties of the TPM-SEAL desired-state model — the module that
           # answers "what can the nix installer pre-stage for a hardware-backed
           # auto-unseal", and the gate that stops it from deciding seal-key
@@ -419,6 +470,35 @@
           # the sandbox). See nixos/tests/k3s-agent-join.nix.
           k3s-agent-join =
             import ./nixos/tests/k3s-agent-join.nix { inherit pkgs; };
+
+          # TWO CONTROL PLANES, ONE CLUSTER. The sibling above boots a server
+          # and an AGENT; an agent has no datastore, no etcd and no CA, so it
+          # cannot exercise the path `injected-server-join.nix` exists for — a
+          # role=server node given `--server` joins an ETCD cluster, which is a
+          # different code path. Asserts the discriminator that node-count
+          # cannot: both nodes hold the SAME cluster CA. Two nodes that each
+          # founded are also both "up", which is how one intended cluster
+          # became the two sitting on the maintainer's LAN.
+          # Hermetic (membership + CA identity, not readiness).
+          # See nixos/tests/k3s-server-join.nix.
+          k3s-server-join =
+            import ./nixos/tests/k3s-server-join.nix { inherit pkgs; };
+
+          # THE DIRTY-DISK REFUSAL, on a real boot. k3s IGNORES
+          # --cluster-init/--server/--token-file when a datastore already
+          # exists, so a declarative join onto a dirty disk is a SILENT no-op
+          # with `systemctl status k3s` green throughout.
+          # lint-k3s-datastore-preflight.test.ts already executes the refusal
+          # SCRIPT over fixtures; what no test could reach is whether systemd
+          # HONOURS `before` + `requiredBy` on a boot. Wire that `wantedBy`
+          # instead and k3s starts anyway while every existing assertion still
+          # passes — the vacuity class in unit-file form. This check is what
+          # refutes that mutation.
+          # See nixos/tests/k3s-datastore-preflight-fail-closed.nix.
+          k3s-datastore-preflight-fail-closed =
+            import ./nixos/tests/k3s-datastore-preflight-fail-closed.nix {
+              inherit pkgs;
+            };
 
           # ONLINE end-to-end: boots the control-plane WITH internet, installs
           # Cilium for real, asserts the node reaches Ready + CoreDNS Running.
