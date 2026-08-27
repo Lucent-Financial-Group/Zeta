@@ -1,23 +1,26 @@
 import { describe, expect, test } from "bun:test";
-import { execFileSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 
 import {
   auditWorkflow,
-  excludesEvent,
+  main,
   normalizePath,
   pathMatches,
   runAudit,
-  main,
 } from "./lint-no-clean-sarif-for-skipped-analysis.ts";
 
 const REPO = resolve(import.meta.dir, "..", "..", "..");
 
 /**
- * The pre-fix shape, reduced to the parts that matter: a job with no analyser
+ * The defect shape, reduced to the parts that matter: a job with no analyser
  * step synthesises an empty SARIF and uploads it under a real analysis
- * category, on a workflow that runs on `push`.
+ * category. Held as a fixture rather than read from `origin/main` so the test
+ * keeps measuring the SHAPE after the real workflow is fixed -- reading the
+ * live branch would make this test evaporate the moment it succeeds.
+ *
+ * Measured against the real pre-fix `codeql.yml`: 5 findings, one per
+ * category (actions, csharp, python, javascript-typescript, java-kotlin).
  */
 const PRE_FIX = `
 name: CodeQL
@@ -45,10 +48,12 @@ jobs:
           category: "/language:javascript-typescript"
 `;
 
-const gated = PRE_FIX.replaceAll(
+const eventGated = PRE_FIX.replaceAll(
   "if: steps.decide.outputs.is_fork_pr != 'true'",
   "if: >-\n          steps.decide.outputs.is_fork_pr != 'true'\n          && github.event_name != 'push'\n          && github.event_name != 'schedule'",
 );
+
+const prOnly = PRE_FIX.replace("on:\n  push:\n    branches: [main]\n  pull_request:", "on:\n  pull_request:");
 
 const unsuccessful = PRE_FIX.replace(
   '"runs": [ { "results": [] } ]',
@@ -60,48 +65,38 @@ const analyserOwned = PRE_FIX.replace(
   "      - name: Initialize CodeQL\n        uses: github/codeql-action/init@db488dd\n      - name: Emit no-findings SARIF",
 );
 
-const noDurableTrigger = PRE_FIX.replace("on:\n  push:\n    branches: [main]\n  pull_request:", "on:\n  pull_request:");
-
 describe("the defect this lint was written for", () => {
-  // THE FALSIFIER. If this test can pass with the guard removed, the lint is a
-  // check that cannot fail -- the exact class it exists to catch. It is pinned
-  // to a COUNT, not to `> 0`, so a recognizer that silently stops linking emit
-  // sites to upload sites fails here instead of reporting a clean workflow.
-  test("a clean synthesised SARIF uploadable on push is a finding", () => {
+  // THE FALSIFIER. If this can pass with the guard removed, the lint is a check
+  // that cannot fail -- the exact class it exists to catch. Pinned to a COUNT,
+  // not to `> 0`, so a recognizer that silently stops linking emit sites to
+  // upload sites fails here instead of reporting a clean workflow.
+  test("a clean synthesised SARIF from a non-analyser job is a finding", () => {
     const out = auditWorkflow(PRE_FIX, "codeql.yml");
     expect(out.emitSites).toHaveLength(1);
     expect(out.uploadSites).toHaveLength(1);
     expect(out.findings).toHaveLength(1);
     expect(out.findings.at(0)?.sarifFile).toBe("sarif/empty-javascript-typescript.sarif");
   });
+});
 
-  // The same shape as it stood on `main` on 2026-08-27, read from git rather
-  // than transcribed -- so this test measures the real historical artifact and
-  // cannot drift away from it.
-  test("the workflow as it stood on origin/main yields five findings", () => {
-    const text = execFileSync("git", ["-C", REPO, "show", "origin/main:.github/workflows/codeql.yml"], {
-      encoding: "utf8",
-      maxBuffer: 64 * 1024 * 1024,
-    });
-    const out = auditWorkflow(text, "codeql.yml@origin/main");
-    // Five categories were uploaded clean from a job that never analyses:
-    // actions, csharp, python, javascript-typescript, java-kotlin.
-    expect(out.findings).toHaveLength(5);
-    expect(out.findings.map((f) => f.sarifFile).sort()).toEqual([
-      "sarif/empty-actions.sarif",
-      "sarif/empty-csharp.sarif",
-      "sarif/empty-java-kotlin.sarif",
-      "sarif/empty-javascript-typescript.sarif",
-      "sarif/empty-python.sarif",
-    ]);
+describe("AN EVENT GATE IS NOT A REMEDY -- the regression that PR #15636 caught", () => {
+  // This file's FIRST version cleared both of these, on the reasoning that a
+  // `pull_request` analysis lands on `refs/pull/N/merge` and is discarded with
+  // the ref. Measured false the same day: closing a PR-ref alert auto-resolves
+  // the `github-advanced-security[bot]` review thread (its `resolvedBy` IS that
+  // bot), and `required_conversation_resolution` is true on this repo -- so the
+  // erased finding removes a merge blocker while auto-merge is armed. These two
+  // tests are the ratchet that stops the weaker rule coming back.
+  test("gating off push AND schedule is still a finding", () => {
+    expect(auditWorkflow(eventGated, "w.yml").findings).toHaveLength(1);
+  });
+
+  test("a pull_request-only workflow is still a finding", () => {
+    expect(auditWorkflow(prOnly, "w.yml").findings).toHaveLength(1);
   });
 });
 
-describe("each remedy clears the finding, and only its own case", () => {
-  test("gating off push and schedule clears it", () => {
-    expect(auditWorkflow(gated, "w.yml").findings).toHaveLength(0);
-  });
-
+describe("the two real remedies, each clearing only its own case", () => {
   test("declaring executionSuccessful:false clears it", () => {
     const out = auditWorkflow(unsuccessful, "w.yml");
     expect(out.emitSites.at(0)?.declaresUnsuccessful).toBe(true);
@@ -114,16 +109,15 @@ describe("each remedy clears the finding, and only its own case", () => {
     expect(out.findings).toHaveLength(0);
   });
 
-  test("a workflow with no push/schedule trigger clears it", () => {
-    expect(auditWorkflow(noDurableTrigger, "w.yml").findings).toHaveLength(0);
-  });
-
-  // Gating off only ONE of the two durable-ref events is not a remedy. Without
-  // this, `&&` could be swapped for `||` in the gate check and every test above
-  // would still pass.
-  test("gating off push alone is NOT a remedy", () => {
-    const half = PRE_FIX.replaceAll("if: steps.decide.outputs.is_fork_pr != 'true'", "if: github.event_name != 'push'");
-    expect(auditWorkflow(half, "w.yml").findings).toHaveLength(1);
+  // `executionSuccessful: true` is not the marker and must not be mistaken for
+  // it -- without this, a substring-y matcher would clear an honest-looking
+  // SARIF that asserts the opposite of what the remedy requires.
+  test("executionSuccessful:true does NOT clear it", () => {
+    const wrongWay = PRE_FIX.replace(
+      '"runs": [ { "results": [] } ]',
+      '"runs": [ { "results": [], "invocations": [ { "executionSuccessful": true } ] } ]',
+    );
+    expect(auditWorkflow(wrongWay, "w.yml").findings).toHaveLength(1);
   });
 });
 
@@ -165,17 +159,6 @@ jobs:
     expect(pathMatches("sarif/empty-*.sarif", "sarif/sub/empty-a.sarif")).toBe(false);
   });
 
-  // `excludesEvent` must require the explicit inequality. Merely not mentioning
-  // an event is not excluding it -- that reading would clear every unguarded
-  // upload in the repo and make the lint vacuous.
-  test("excludesEvent requires the explicit inequality", () => {
-    expect(excludesEvent("github.event_name != 'push'", "push")).toBe(true);
-    expect(excludesEvent('github.event_name != "push"', "push")).toBe(true);
-    expect(excludesEvent("github.event_name == 'pull_request'", "push")).toBe(false);
-    expect(excludesEvent("always()", "push")).toBe(false);
-    expect(excludesEvent("", "push")).toBe(false);
-  });
-
   test("an unparseable workflow is not silently cleared as a pass", () => {
     const out = auditWorkflow("\t: [unbalanced\n  - {", "broken.yml");
     expect(out.emitSites).toHaveLength(0);
@@ -185,9 +168,14 @@ jobs:
 });
 
 describe("the live tree", () => {
-  test("codeql.yml on this branch has no clean-SARIF-on-push path", () => {
+  test("codeql.yml on this branch synthesises no clean SARIF at all", () => {
     const text = readFileSync(join(REPO, ".github", "workflows", "codeql.yml"), "utf8");
-    expect(auditWorkflow(text, "codeql.yml").findings).toEqual([]);
+    const out = auditWorkflow(text, "codeql.yml");
+    expect(out.findings).toEqual([]);
+    // The path-gate baseline is GONE, not merely gated: the only empty-SARIF
+    // emitter left is `analyze`'s no-source baseline, which owns its category.
+    expect(out.emitSites.map((e) => e.job)).toEqual(["analyze"]);
+    expect(out.emitSites.at(0)?.jobRunsAnalyser).toBe(true);
   });
 
   // NON-VACUITY. A pass over an empty corpus is the failure this lint exists to
@@ -207,4 +195,18 @@ describe("the live tree", () => {
   test("an unknown argument is a usage error, not a pass", () => {
     expect(main(["--nope"])).toBe(1);
   });
+});
+
+// NO NUL BYTES. Not decoration: the first draft of the audit source carried
+// four NUL bytes in a template literal, which made `file` report it as `data`
+// and `grep` refuse it as binary -- a source file invisible to every text tool
+// in the repo, including the greps other audits use to find it. Cheap to check,
+// silent to miss.
+describe("the audit's own source is text", () => {
+  for (const f of ["lint-no-clean-sarif-for-skipped-analysis.ts", "lint-no-clean-sarif-for-skipped-analysis.test.ts"]) {
+    test(`${f} contains no NUL byte`, () => {
+      const buf = readFileSync(join(import.meta.dir, f));
+      expect(buf.indexOf(0)).toBe(-1);
+    });
+  }
 });

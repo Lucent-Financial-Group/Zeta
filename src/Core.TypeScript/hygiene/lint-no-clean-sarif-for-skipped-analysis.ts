@@ -29,12 +29,19 @@
 // (`src/Core.TypeScript/observe/tick-reasoning.ts:59`) were closed with their
 // dataflows still present in the source.
 //
-// WHY THE UPLOAD WAS NOT ITSELF THE MISTAKE, WHICH IS WHY THIS LINT ALLOWS
-// SEVERAL REMEDIES RATHER THAN ONE. The synthetic SARIF solved a real problem: a
-// docs-only change should not have to run a full analysis, and a required
-// check must report SOMETHING. Deleting it trades a silent-closure defect for
-// a blocked queue. What was wrong was not that a placeholder was uploaded --
-// it was that the placeholder claimed to be clean.
+// WHY THE UPLOAD WAS NOT ITSELF THE MISTAKE, WHICH IS WHY THIS LINT ALLOWS TWO
+// REMEDIES RATHER THAN BANNING THE PLACEHOLDER. The synthetic SARIF solved a
+// real problem: a docs-only change should not have to run a full analysis, and
+// a required check must report SOMETHING. What was wrong was not that a
+// placeholder was uploaded -- it was that the placeholder claimed to be clean.
+//
+// In `codeql.yml` the placeholder was removed outright rather than repaired,
+// because there it turned out to be load-bearing for nothing: the only
+// required status check in this repository is `gate (required)`, and no active
+// ruleset carries a `code_scanning` rule (both pinned in
+// `hygiene/github-settings.expected.json`). That is a fact about THIS repo's
+// settings on 2026-08-27, not a general truth, so the remedies stay available
+// for the next workflow that genuinely needs a placeholder.
 //
 // GITHUB ALREADY DRAWS THE DISTINCTION, and the same run proves it. The
 // cancelled `Analyze (javascript-typescript)` leg ALSO uploaded a zero-result
@@ -54,19 +61,36 @@
 //
 //   1. the synthesised SARIF marks `"executionSuccessful": false`, so GitHub
 //      records a run that did not complete rather than a clean scan; or
-//   2. the upload is gated off `push` AND `schedule` -- the events whose
-//      analyses write the default branch, where alerts are the durable
-//      security record rather than per-PR scratch; or
-//   3. the job actually runs the analyser (`codeql-action/init` or
+//   2. the job actually runs the analyser (`codeql-action/init` or
 //      `codeql-action/analyze` appears among its steps), so the empty result
-//      is that job's own considered verdict about its own category; or
-//   4. the workflow is not triggered by `push` or `schedule` at all, so no
-//      durable ref is reachable from it.
+//      is that job's own considered verdict about its own category.
 //
-// Anything else is a clean-looking analysis that can reach a durable ref
-// without having analysed anything.
+// Anything else is a clean-looking analysis, and there is no event on which
+// that is harmless.
 //
-// WHY (3) IS A REMEDY AND NOT A HOLE, and what it deliberately does not cover.
+// AN EVENT GATE IS NOT A REMEDY, and this file's first version wrongly said it
+// was. That version allowed "gated off push and schedule", reasoning that a
+// `pull_request` analysis lands on `refs/pull/N/merge` and is discarded with
+// the ref. The first half is true; the conclusion is false, and it was
+// falsified live on PR #15636 the same day:
+//
+//     04:05:02  path-gate  js-ts  results_count 0
+//               -> alert #803 fixed, and its advanced-security review thread
+//                  AUTO-RESOLVED
+//     04:09:57  analyze    js-ts  results_count 1
+//               -> alert #803 reopened, thread unresolved
+//
+// A PR-ref alert is not scratch: closing it auto-resolves the
+// `github-advanced-security[bot]` review thread -- confirmed directly, the
+// thread's `resolvedBy` is that bot, so no human is in the loop -- and
+// `required_conversation_resolution` is TRUE on this repository. Inside that
+// window the PR's last blocker is gone, and auto-merge is standard here. The
+// `main` case leaves a wrong record until the next analysis; this one can let
+// a change through irreversibly, which is strictly worse. So the ephemeral ref
+// is the MORE dangerous surface, not the safe one, and the remedy set no
+// longer contains anything event-shaped.
+//
+// WHY (2) IS A REMEDY AND NOT A HOLE, and what it deliberately does not cover.
 // `codeql.yml`'s `analyze` job also emits an empty SARIF -- its "no-source
 // baseline", for a matrix language with no first-party files at this commit.
 // That claim is substantively different from the path-gate one: it is made by
@@ -95,9 +119,9 @@
 //   bun src/Core.TypeScript/hygiene/lint-no-clean-sarif-for-skipped-analysis.ts --json
 //
 // Exit codes:
-//   0  no synthesised-clean SARIF can reach a durable ref
+//   0  no synthesised-clean SARIF can reach a ref anything depends on
 //   1  usage error
-//   3  violation -- a synthesised empty SARIF is uploadable on push/schedule
+//   3  violation -- a synthesised clean SARIF is uploaded by a non-analyser job
 //   4  recognizer dark -- the corpus is empty, so a pass would be vacuous
 
 import { readdirSync, readFileSync } from "node:fs";
@@ -113,7 +137,7 @@ export interface EmitSite {
   readonly writes: readonly string[];
   /** Whether the synthesised SARIF says the run did not complete. */
   readonly declaresUnsuccessful: boolean;
-  /** Whether the emitting job runs an analyser at all (remedy 3). */
+  /** Whether the emitting job runs an analyser at all (remedy 2). */
   readonly jobRunsAnalyser: boolean;
   /** Effective `if:` for the step (job condition && step condition). */
   readonly condition: string;
@@ -128,7 +152,7 @@ export interface UploadSite {
   readonly condition: string;
 }
 
-/** A synthesised-clean SARIF that a durable-ref event can still upload. */
+/** A synthesised-clean SARIF a non-analyser job can still upload. */
 export interface Finding {
   readonly workflow: string;
   readonly job: string;
@@ -177,12 +201,24 @@ const UPLOAD_SARIF_ACTION = "codeql-action/upload-sarif";
 const ANALYSER_ACTION = /codeql-action\/(init|analyze)/;
 
 /**
- * The two events whose code-scanning analyses are written against the
- * repository's own branches, where alerts are the durable security record.
- * A `pull_request` analysis lands on `refs/pull/N/merge` and a `merge_group`
- * one on `refs/heads/gh-readonly-queue/*`; both are discarded with the ref.
+ * Every ref a code-scanning analysis can be written against has a consumer
+ * that a false "clean" damages, so this list is exhaustive by construction
+ * rather than by enumeration:
+ *
+ *   `refs/heads/main`         - the durable security record
+ *   `refs/pull/N/merge`       - the advanced-security review threads that
+ *                               `required_conversation_resolution` gates on
+ *   `gh-readonly-queue/*`     - the same, inside the merge queue
+ *
+ * Kept as a named export because the failure it records is worth keeping
+ * legible: the first version of this lint treated only the first row as
+ * durable and accepted an event gate as a remedy. See the header.
  */
-export const DURABLE_REF_EVENTS = ["push", "schedule"] as const;
+export const REFS_A_FALSE_CLEAN_DAMAGES = [
+  "refs/heads/<default>",
+  "refs/pull/N/merge",
+  "refs/heads/gh-readonly-queue/*",
+] as const;
 
 /** Collapse `${VAR}` and `${{ expr }}` to `*` so a written path is matchable. */
 export function normalizePath(p: string): string {
@@ -196,19 +232,6 @@ export function pathMatches(pattern: string, concrete: string): boolean {
     .map((part) => part.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))
     .join("[^/]*");
   return new RegExp(`^${escaped}$`).test(normalizePath(concrete));
-}
-
-/**
- * Does a GitHub Actions condition exclude an event outright?
- *
- * Only the explicit inequality counts. A condition that merely fails to
- * mention the event does not exclude it, and neither does a positive
- * `== 'pull_request'` test buried in an `||` -- so this recognizer is
- * deliberately narrow and says so by failing closed.
- */
-export function excludesEvent(condition: string, event: string): boolean {
-  const pattern = new RegExp(String.raw`github\.event_name\s*!=\s*['"]${event}['"]`);
-  return pattern.test(condition);
 }
 
 /** Join a job-level and step-level `if:` into one effective condition. */
@@ -243,14 +266,6 @@ function heredocTargets(script: string): string[] {
     if (target !== undefined) writes.push(target);
   }
   return writes.toSorted();
-}
-
-/** Which events can this workflow's uploads reach a durable ref through? */
-function reachesDurableRef(doc: Record<string, unknown>): boolean {
-  // YAML 1.2 keeps `on` a string key; YAML 1.1 folds it to boolean true.
-  const raw = doc.on ?? doc[String(true)];
-  const names = Array.isArray(raw) ? asArray(raw).map((t) => asString(t) ?? "") : Object.keys(asRecord(raw) ?? {});
-  return DURABLE_REF_EVENTS.some((e) => names.includes(e));
 }
 
 /** Collect the emit and upload sites of one job. */
@@ -320,15 +335,10 @@ function pairSites(workflow: string, emitSites: readonly EmitSite[], uploadSites
       if (emit.declaresUnsuccessful) continue;
       if (emit.jobRunsAnalyser) continue;
 
-      // BOTH events, and BOTH steps. A gate on the upload that the emit does
-      // not share still leaves a file on disk nothing uploads -- harmless --
-      // but a gate on the emit alone would leave the upload reading a stale
-      // or absent file, so the pair is judged together.
-      const gated = DURABLE_REF_EVENTS.every(
-        (e) => excludesEvent(upload.condition, e) && excludesEvent(emit.condition, e),
-      );
-      if (gated) continue;
-
+      // No third escape. There is deliberately no `if (gated) continue;` here:
+      // an event gate was the first version's second remedy and PR #15636
+      // falsified it -- see the header. Every event this workflow can run on
+      // writes a ref whose alerts something depends on.
       findings.push({
         workflow,
         job: upload.job,
@@ -337,10 +347,10 @@ function pairSites(workflow: string, emitSites: readonly EmitSite[], uploadSites
         emittedBy: `${emit.job} / ${emit.step}`,
         why:
           "synthesised SARIF has an empty `results` array, does not declare " +
-          "`executionSuccessful: false`, comes from a job that runs no " +
-          "analyser, and is not gated off push/schedule -- so GitHub records " +
-          "it as a clean analysis and marks every open alert in its category " +
-          "fixed",
+          "`executionSuccessful: false`, and comes from a job that runs no " +
+          "analyser -- so GitHub records it as a clean analysis, marks every " +
+          "open alert in its category fixed, and auto-resolves their " +
+          "advanced-security review threads",
       });
     }
   }
@@ -381,11 +391,9 @@ export function auditWorkflow(
     uploadSites.push(...sites.uploadSites);
   }
 
-  if (!reachesDurableRef(doc)) {
-    // Nothing this workflow uploads can reach a branch whose alerts persist.
-    return { emitSites, uploadSites, findings };
-  }
-
+  // No trigger-scope escape either. The first version returned early when the
+  // workflow had no `push`/`schedule` trigger; a pull_request-only workflow is
+  // exactly the surface PR #15636 was damaged on.
   findings.push(...pairSites(workflow, emitSites, uploadSites));
   return { emitSites, uploadSites, findings };
 }
@@ -419,8 +427,8 @@ export function runAudit(root: string): Report {
     // Ordinal ordering, not locale collation: the report is compared across
     // machines and must not depend on the runner's locale.
     findings: findings.toSorted((a, b) => {
-      const ka = `${a.workflow} ${a.job} ${a.step}`;
-      const kb = `${b.workflow} ${b.job} ${b.step}`;
+      const ka = `${a.workflow} ${a.job} ${a.step}`;
+      const kb = `${b.workflow} ${b.job} ${b.step}`;
       if (ka < kb) return -1;
       if (ka > kb) return 1;
       return 0;
