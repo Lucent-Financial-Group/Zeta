@@ -10,7 +10,7 @@ import { describe, test, expect } from "bun:test";
 import {
   phi, phiMax, phiRatio, yulesQ, cohensKappa,
   wilsonInterval, proportionDiffInterval, requiredNForDifference,
-  measureHonest, tableFromTrials, detectAnswerLeak, suspectExtremeRate, mcNemar,
+  measureHonest, detectAnswerLeak, suspectExtremeRate, mcNemar,
   type Table2x2,
 } from "./decorrelation-stats";
 

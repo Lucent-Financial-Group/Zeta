@@ -18,7 +18,7 @@ import { PROMPT_ARMS, testPromptArm, formatMeasurement, recordMeasurement } from
 import { proportionDiffInterval } from "../src/Core.TypeScript/observe/decorrelation-stats";
 
 const N = parseInt(process.argv[2] ?? "400", 10);
-const preRegSha = process.argv[3] ?? null;
+const preRegSha = process.argv[3] ?? undefined;
 const MODEL = "gemma2:2b";
 const HOST = "http://127.0.0.1:11434";
 const repoRoot = process.cwd();

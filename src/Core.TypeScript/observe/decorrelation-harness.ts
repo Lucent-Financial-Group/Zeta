@@ -192,7 +192,7 @@ export function formatMeasurement(m: AxisMeasurement): string {
 export function recordMeasurement(
   repoRoot: string,
   m: AxisMeasurement,
-  meta: { preRegistrationSha?: string; nullArmVerdict?: string } = {},
+  meta: { preRegistrationSha?: string | undefined; nullArmVerdict?: string | undefined } = {},
 ): void {
   const path = join(repoRoot, "data", "decorrelation-research.jsonl");
   mkdirSync(dirname(path), { recursive: true });

@@ -21,7 +21,7 @@
 import { appendFileSync, mkdirSync, writeFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { agreementGating, scoreSelector, type SelectorTrial } from "../src/Core.TypeScript/observe/decorrelation-selectors";
-import { mcNemar, detectAnswerLeak, wilsonInterval } from "../src/Core.TypeScript/observe/decorrelation-stats";
+import { mcNemar, detectAnswerLeak } from "../src/Core.TypeScript/observe/decorrelation-stats";
 
 const N = parseInt(process.argv[2] ?? "1200", 10);
 const preRegSha = process.argv[3] ?? null;

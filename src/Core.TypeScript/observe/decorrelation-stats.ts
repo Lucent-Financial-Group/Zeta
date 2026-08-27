@@ -239,11 +239,11 @@ export function mcNemar(
  * items" was noise, not signal.
  */
 export function requiredNForDifference(
-  p1: number, p2: number, power = 0.8, alpha = 0.05,
+  p1: number, p2: number, power = 0.8,
 ): number {
   const delta = Math.abs(p1 - p2);
   if (delta === 0) return Infinity;
-  const zAlpha = 1.959963985; // two-sided 95%
+  const zAlpha = 1.959963985; // two-sided 95% (alpha=0.05, the only supported level)
   const zBeta = power >= 0.8 ? 0.841621234 : 0.674489750; // 80% or 75% fallback
   const variance = p1 * (1 - p1) + p2 * (1 - p2);
   return Math.ceil(((zAlpha + zBeta) ** 2 * variance) / (delta * delta));
