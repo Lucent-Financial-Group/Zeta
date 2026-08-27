@@ -69,8 +69,20 @@ let ``generator update reinterprets retained history without rewriting it`` () =
     let delta = ZetaFsDualFold.reinterpret reread history before after
     let view = ZetaFsDualFold.foldForward [ opening; delta ]
     Assert.Equal<ZSet<int>>(reread after history, view)
-    // history itself is a value — the generator never held a mutable log
-    Assert.Equal<int list>([ 1; 2; 1 ], history)
+    // The reinterpretation must actually MOVE the view. Without this, the assertion above
+    // holds vacuously for a generator that ignored `interp` altogether: `reread _ history`
+    // would return the same ZSet for every interpretation, and both sides would agree for
+    // the wrong reason. Under `before` the labels are [1; 2; 1]; under `after` they are
+    // [9; 2; 9], so a generator that reads its interpretation separates them and one that
+    // does not cannot.
+    //
+    // This replaced `Assert.Equal<int list>([ 1; 2; 1 ], history)`, which was written to say
+    // "history itself is a value — the generator never held a mutable log". That claim is
+    // true and is enforced by the TYPE, not at runtime: `history` is an immutable binding, so
+    // it still equals its own literal in every possible execution. A check that cannot fail is
+    // not a check (audit-check-arity R2), and the intent it was reaching for is exactly what
+    // the line below tests in a form that CAN fail.
+    Assert.NotEqual<ZSet<int>>(opening, view)
 
 [<Fact>]
 let ``idempotent generator update emits the empty delta`` () =
