@@ -69,6 +69,18 @@ is the headline, not a footnote. H4 tests whether that parameter-free rule and t
 cross-frame-comparability it rests on transfer to a second domain. Either outcome is
 publishable; neither promotes the axis past what two domains measure.
 
+## H4 outcome (recorded after the run at N=600)
+
+**H4 falsifier FIRED — the parameter-free rule does NOT transfer.** On the arithmetic
+domain: best-single 31.7%, parameter-free selector +0.3pp (CI [−1.6, 2.3], not resolved).
+The confidence gap separated the discordant groups only WEAKLY (Mann–Whitney z=2.20,
+rank-biserial 0.307, vs H3's perfect 1.000). There IS headroom (oracle 36.5%, +4.8pp), so
+the failure is the SIGNAL, not the absence of complementary frames. Conclusion:
+cross-frame confidence comparability is real but GRADED and DOMAIN-DEPENDENT — near-perfect
+on operator-priority, weak on arithmetic. H3 stands as measured; its generalization is now
+bounded. Full write-up:
+`docs/research/2026-08-27-cross-frame-confidence-comparability-is-domain-dependent.md`.
+
 ## Pointers
 
 - `src/Core.TypeScript/observe/decorrelation-stats.ts` — `mannWhitneyU`, `mcNemar`,
