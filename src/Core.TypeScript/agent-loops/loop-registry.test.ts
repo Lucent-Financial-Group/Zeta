@@ -66,10 +66,13 @@ describe("exit belongs to the agent alone", () => {
   });
 
   test("an anonymous exit is refused — a reasonless departure looks exactly like a fault", () => {
-    for (const reason of [undefined, "", "   "]) {
-      expect(
-        refusalReason({ kind: "deregister", loop: "l", subject: "otto", actor: "otto", tick: 1, reason }),
-      ).toMatch(/requires a reason/);
+    // Under `exactOptionalPropertyTypes`, an ABSENT key and an explicit `undefined` are different
+    // things and only the former is legal here. That is the honest encoding anyway: a deregister
+    // event with no reason field is what an agent that omitted it actually produces.
+    const base = { kind: "deregister", loop: "l", subject: "otto", actor: "otto", tick: 1 } as const;
+    expect(refusalReason(base)).toMatch(/requires a reason/);
+    for (const reason of ["", "   "]) {
+      expect(refusalReason({ ...base, reason })).toMatch(/requires a reason/);
     }
   });
 });
