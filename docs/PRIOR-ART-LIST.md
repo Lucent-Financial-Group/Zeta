@@ -1076,6 +1076,46 @@ notes: [pause-not-death + Orleans criterion] and
   → location transparency, 1993.
 - **Joe Armstrong — Erlang/OTP** — location-transparent `Pid ! Msg` (same send local or remote);
   "let it crash" + supervisor restart = the pause/resume lifecycle at process granularity.
+
+  **The BEAM reduction budget** (added 2026-08-27, Aaron) — the half of Erlang that matters for
+  bounded computation, and the shipped precedent for our tick model. Each BEAM process is given a
+  budget of _reductions_ (~2000, a reduction being roughly one function call); when the budget is
+  spent the process is **preempted regardless of what it is doing**, its state is retained, and it
+  is rescheduled. Green threads plus _forced_ preemption. No process can hog a scheduler, and
+  crucially **no halting analysis exists anywhere in the system** — the runtime never asks whether a
+  process will terminate, only whether it has spent its budget, which is trivially decidable.
+
+  This is why undecidability is not a live concern for tick-bounded computation here: fuel-bounded
+  (step-indexed) evaluation makes a partial function total by construction, `eval : Fuel → Term →
+  Option Value`. The same trick appears adversarially in Ethereum's gas metering, where computation
+  is priced per step precisely so a public VM never needs to solve halting. What is given up is
+  stated rather than hidden: termination stops being a **theorem** (true for all inputs, forever)
+  and becomes a **measurement** (finished within budget, on the inputs actually run) — and _slow_
+  becomes indistinguishable from _never_ at the budget boundary, so the diagnosis is lost even
+  though the containment is not.
+
+  **Where our design departs, and it is the interesting half** (Aaron 2026-08-27): BEAM's
+  **scheduler** decides who is preempted. We want the **society** to decide — no appointed arbiter
+  of who is a hog, which is the non-coercion thesis applied to compute. The obstacle is cost: peers
+  adjudicating every thread every tick is O(n²) messages or worse, and a governance mechanism that
+  cannot afford to run is not a mechanism.
+
+  The resolution is the escape-hatch shape used everywhere else here — a **closed DU of tick
+  outcomes with exactly one case that escalates**:
+
+  ```
+  TickOutcome =
+    | Completed of result
+    | Yielded of state                            // budget spent, resumes next tick — MECHANICAL
+    | Faulted of error
+    | RequestsExtension of state * justification  // <- the ONLY case society adjudicates
+  ```
+
+  Society never votes on threads that behave; it adjudicates only the exceptional request to exceed
+  a budget. That keeps arbitration proportional to _extensions asked for_ rather than _threads
+  running_, which is what makes it affordable. Same construction as `NeedsNewCode` in the routing
+  DU and as hygiene-by-capability's "write the missing CLI": the escape is a **case, not a hole**,
+  and exercising it leaves a reviewed record rather than a bypass.
 - **Don Syme, Keith Battocchi et al. — F# type providers (MSR, 2012, "Strongly-Typed Language Support
   for Internet-Scale Information Sources")** — reify types ON DEMAND from an unbounded external space;
   the compiler never holds the whole world (Aaron: "so the entire world does not have to be reified
