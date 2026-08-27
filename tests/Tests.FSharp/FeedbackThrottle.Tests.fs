@@ -70,8 +70,41 @@ let ``S=4 is measured seed-shared; 2√2 is an unmeasured predicted floor; Tsire
         Assert.Equal(4.0, s)
     | other -> failwithf "expected ToyModel, got %A" other
     match FeedbackThrottle.tsirelsonFloorToBeMeasured with
-    | FeedbackThrottle.UnmeasuredPredictedFloor(s, _) ->
+    | FeedbackThrottle.UnmeasuredPredictedFloor(s, reason) ->
         Assert.Equal(FeedbackThrottle.Tsirelson, s, 12)
+        Assert.True(
+            reason.IndexOf("underpowered", System.StringComparison.Ordinal)
+            >= 0
+        )
     | other -> failwithf "expected UnmeasuredPredictedFloor, got %A" other
     // toy curve identity still holds — that is not a network measurement
     Assert.Equal(FeedbackThrottle.Tsirelson, FeedbackThrottle.maxChsh FeedbackThrottle.TsirelsonLatency, 9)
+
+[<Fact>]
+let ``jitter is dual-use — degrades S and is captured into frost; neither reading is the verdict`` () =
+    Assert.Equal(2, List.length FeedbackThrottle.jitterDualReadings)
+    Assert.Contains(
+        FeedbackThrottle.CorrelationDegradation,
+        FeedbackThrottle.jitterDualReadings
+    )
+    Assert.Contains(
+        FeedbackThrottle.FrostUniquenessCapture,
+        FeedbackThrottle.jitterDualReadings
+    )
+    // the fact does not name a verdict
+    let fact = FeedbackThrottle.JitterPresent
+    Assert.Equal(FeedbackThrottle.JitterPresent, fact)
+
+[<Fact>]
+let ``a latency-only sweep is underpowered — decorrelation is plural`` () =
+    Assert.True(
+        FeedbackThrottle.sweepIsUnderpowered
+            [ FeedbackThrottle.NetworkLatencyJitter ]
+    )
+    Assert.False(FeedbackThrottle.sweepIsUnderpowered FeedbackThrottle.namedDecorrelationAxes)
+    Assert.True(List.length FeedbackThrottle.namedDecorrelationAxes > 1)
+    // default string collation is binary / codepoint, not ambient culture
+    Assert.Equal("binary", Collation.defaultName)
+    Assert.Same(Collation.binary, Collation.byNameOrDefault Collation.defaultName)
+    Assert.NotSame(System.StringComparer.InvariantCulture, Collation.binary)
+    Assert.NotSame(System.StringComparer.CurrentCulture, Collation.binary)

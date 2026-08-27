@@ -38,6 +38,18 @@ namespace Zeta.Core
 /// `IScheduler` quarantines host-clock entropy so a drop is attributable to the network.
 /// Two agents with a FourCorner throttle *approaching* `2√2` is an assumption, not a
 /// measurement. Occupancy `2 × √2` lining up with Tsirelson is numerology.
+///
+/// **Jitter is dual-use (Aaron + Otto 2026-08-27).** The same variable sits on both
+/// sides of the ledger: it *degrades* seed-shared S=4 **and** is the entropy an
+/// agent **captures into frost** for uniqueness among peers. Not a nuisance to
+/// minimise — the medium the dance trades in (`dual-use-detection-is-neutral`).
+/// So √2 / 2√2 may not be a *latency* threshold at all: capture rate or frost
+/// storage size can be the controlling axis. A sweep that varies only network
+/// conditions is **underpowered by construction** — a null would mean nothing.
+/// Decorrelation is plural (Alexa owns the thread): bus delay is the *journey*
+/// (transient); lasting belief-decorrelation needs different sensory inputs
+/// (`docs/research/2026-07-04-ferry-alexa-egg-bus-delay-*` FIG8). Host-clock
+/// entropy is quarantined by `IScheduler`; what remains is attributable.
 [<RequireQualifiedAccess>]
 module FeedbackThrottle =
 
@@ -125,10 +137,55 @@ module FeedbackThrottle =
     /// Toy curve at a latency. Not a network measurement.
     let toyAt (latency: float) : ChshClaim = ToyModel(maxChsh latency, latency)
 
-    /// 2√2 as the predicted degradation floor under real latency/jitter.
-    /// Distance decides. Not derived from FourCorner occupancy 2×√2.
+    /// 2√2 as a predicted floor. Not a latency threshold by default:
+    /// capture rate / frost storage may control. Latency-only sweep is
+    /// underpowered. Not occupancy 2×√2.
     let tsirelsonFloorToBeMeasured : ChshClaim =
         UnmeasuredPredictedFloor(
             Tsirelson,
-            "predicted floor under real latency/jitter; IScheduler quarantines host clock; not occupancy 2×√2"
+            "predicted floor; not occupancy 2x sqrt2; latency-only sweep underpowered; jitter is dual-use frost capture"
         )
+
+    /// Neutral fact about jitter. Readings are caller policy (dual-use).
+    type JitterFact =
+        | JitterPresent
+
+    /// Two honest readings of the same jitter. Neither is the verdict.
+    type JitterReading =
+        | CorrelationDegradation
+        | FrostUniquenessCapture
+
+    let jitterDualReadings : JitterReading list =
+        [ CorrelationDegradation; FrostUniquenessCapture ]
+
+    /// Named decorrelation axes. Alexa owns the thread. Bus delay is
+    /// the journey (transient); lasting decorrelation needs input
+    /// diversity (FIG8). Frost capture is a third axis.
+    type DecorrelationAxis =
+        | NetworkLatencyJitter
+        | SensoryInputDiversity
+        | FrostCaptureRate
+        | FrostStorageSize
+        | HostClockEntropy
+        | SeedIndependence
+
+    let namedDecorrelationAxes : DecorrelationAxis list =
+        [ NetworkLatencyJitter
+          SensoryInputDiversity
+          FrostCaptureRate
+          FrostStorageSize
+          HostClockEntropy
+          SeedIndependence ]
+
+    /// A sweep that varies only `varied` is underpowered unless it
+    /// covers every named axis. Latency-only is the worked instance.
+    let sweepIsUnderpowered (varied: DecorrelationAxis list) : bool =
+        let named =
+            namedDecorrelationAxes
+            |> List.map string
+            |> Set.ofList
+        let v =
+            varied
+            |> List.map string
+            |> Set.ofList
+        not (Set.isEmpty (Set.difference named v))

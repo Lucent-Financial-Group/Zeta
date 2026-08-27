@@ -421,7 +421,9 @@ let ``K: 2 × occupancy-√2 lines up with 2√2 — coincidence, not a measurem
     match FeedbackThrottle.tsirelsonFloorToBeMeasured with
     | FeedbackThrottle.UnmeasuredPredictedFloor(s, reason) ->
         abs (s - BellTest.TsirelsonBound) < 1e-12 |> should equal true
-        reason.Contains("not occupancy") |> should equal true
+        reason.IndexOf("not occupancy", System.StringComparison.Ordinal)
+        >= 0
+        |> should equal true
     | other -> failwithf "expected UnmeasuredPredictedFloor, got %A" other
     let both = FC.oneTick 7 8 "fb" "ack"
     FC.feedbackKeepsInput 7 both |> should equal true

@@ -401,14 +401,28 @@ nor fitted — it is the toy curve's solve, **to be measured**. What
 (`BellTest.chshOf ±1`, `FeedbackThrottle.maxChsh 0`). Consistent,
 not anomalous: the common seed makes parties measurement-dependent
 (the free-choice premise fails; `BellTest` already says this). Not
-nonlocality — a manufactured common cause. `2√2` is a **predicted
-degradation floor** under real latency/jitter (toy network stays at
-S=4; Reticulum degrades with distance). `IScheduler` quarantines
-host-clock entropy so a drop is attributable to the network.
+nonlocality — a manufactured common cause.
+
+**Jitter is dual-use (Aaron + Otto 2026-08-27).** The same variable
+sits on both sides of the ledger: it degrades seed-shared S=4 **and**
+is entropy captured into **frost** for uniqueness among AIs. Not a
+nuisance to minimise — the medium the decorrelation dance trades in
+(`.claude/rules/dual-use-detection-is-neutral-oracle-decides.md`).
+So √2 / 2√2 may **not be a latency threshold**. Capture rate or
+frost storage size can be the controlling axis. A sweep that varies
+**only** network conditions is underpowered by construction — a null
+would mean nothing. Decorrelation is **plural**; Alexa owns the
+thread. Already on file: bus delay decorrelates the *journey* not
+the *destination*; lasting belief-decorrelation needs different
+sensory inputs (`docs/research/2026-07-04-ferry-alexa-egg-bus-delay-*`
+FIG8). Host-clock entropy is quarantined by `IScheduler`. String
+keys stay **binary / codepoint collation** (`Collation.binary` =
+SQL `Latin1_General_100_BIN2_UTF8`); ambient culture is refused.
+InvariantCulture is opt-in for linguistic catalog rows and for
+numeric format, never the string default.
+
 Two agents with a FourCorner throttle *approaching* 2√2 is an
-**assumption, not a measure**. Independence from the common-cause
-seed is the live metering program (`DecorrelationMetrology`,
-`DelayDecorrelation`).
+**assumption, not a measure**.
 
 ## Quantum from `{Q,Q}`: two deniable moves, future snap
 
