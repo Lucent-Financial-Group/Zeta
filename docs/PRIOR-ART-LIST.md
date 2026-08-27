@@ -1082,6 +1082,34 @@ notes: [pause-not-death + Orleans criterion] and
   into compiler memory at once"). The virtual-actor pattern at compile time; pairs with the weak-ref
   bound (`Ephemeron`) — reify-on-demand + let-go-weakly = a finite resident window over an unbounded
   world. **Roslyn source generators** are the C# simulation of the same.
+- **Michał Moskal, Kamil Skalski, Paweł Olszta (University of Wrocław, Poland; with Leszek
+  Pacholski) — Nemerle** — an ML-influenced .NET language whose defining feature is a **Lisp-style
+  macro system**: macros are functions from syntax to syntax that run _at compile time_, compose,
+  and can introduce new syntax and control structures. This is the **ancestor** the entry above
+  cites only through its successor — Roslyn source generators are the constrained descendant of
+  what Nemerle macros did roughly a decade earlier, and F# type providers solve the neighbouring
+  problem (reify types on demand) with a deliberately weaker mechanism.
+
+  **Why it belongs here.** It is the .NET-native instance of _only the irreducible is primitive —
+  generate the rest_, and it reaches a rung the successors do not: because a macro takes and
+  returns syntax, a macro can take a _macro_. That is abstraction over rule-CONSTRUCTORS —
+  `(* → *) → (* → *)` — rather than over sites, which is the distinction between collapsing N
+  near-duplicate rules into one template (first-order, Datalog-shaped, decidable) and building a
+  combinator that transforms one checker into another (higher-kinded, expressive, **not**
+  decidable). The cost is stated because it is the whole tradeoff: a macro system buys the
+  rule-constructor layer by giving up the termination guarantee that made site-templating safe.
+
+  **Lineage, corrected.** Nemerle is **Polish in origin** (Wrocław), not Russian — a widely
+  repeated error, and one an AI search summary reproduced here on 2026-08-27. The Russian
+  association is real but downstream: **Vlad Chistyakov (VladD2)** became a principal contributor,
+  and the team **JetBrains hired in June 2012** was Russia-based. That team then built **Nitra**
+  (initially "N2"), a language workbench, _using Nemerle_.
+
+  **Two things NOT claimed**, because they are commonly asserted and I could not check them:
+  (1) that Nitra ever shipped as the parsing foundation of ReSharper or Rider — Rider runs on the
+  ReSharper backend, which predates Nitra, and Nitra appears to have been archived; (2) the exact
+  publication venue of the Nemerle macro papers (Skalski/Moskal/Olszta, ~2004). Both need a checked
+  citation before either is used load-bearingly.
 
 ## Relational / entropic time — the problem-of-time anchors (Aaron 2026-07-15, "go to the original paper")
 
