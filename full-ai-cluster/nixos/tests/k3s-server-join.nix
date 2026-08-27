@@ -209,12 +209,19 @@ pkgs.testers.nixosTest {
       # `nodes.founder` rather than hardcoded, so the test stays correct if the
       # driver renumbers the vlan.
       #
-      # NOTE the collision this deliberately does not paper over:
-      # `k3s-server.nix` unconditionally sets
-      # `networking.hosts."127.0.0.1" = [ "control-plane" ]`, which on a
-      # JOINING control plane points the join endpoint at the node itself. Both
-      # entries land in /etc/hosts. If that resolution order sends the joiner to
-      # loopback, this test is the thing that says so.
+      # THIS TEST FOUND A DEFECT HERE ON ITS FIRST CI RUN, and the collision it
+      # refused to paper over is what found it. `k3s-server.nix` USED TO set
+      # `networking.hosts."127.0.0.1" = [ "control-plane" ]` unconditionally, so
+      # on a JOINING control plane both entries landed in /etc/hosts, the
+      # loopback one sorted first, glibc answered with it, and the joiner's
+      # endpoint pointed at the joiner. Measured: run 33020639794 resolved
+      # `control-plane` to `127.0.0.1`, not to the founder.
+      #
+      # That entry is now conditioned on `services.k3s.serverAddr == ""` — true
+      # on a founder, false on anything `injected-server-join.nix` has pointed
+      # elsewhere. The mapping below is therefore the ONLY definition of the
+      # name on this node, and the assertion downstream stays as the regression
+      # guard: restore the unconditional alias and it goes red again.
       networking.hosts = {
         "${nodes.founder.networking.primaryIPAddress}" = [ "control-plane" ];
       };
@@ -291,18 +298,22 @@ pkgs.testers.nixosTest {
     # as a mysterious join timeout.
     joiner.succeed("getent hosts control-plane")
 
-    # The endpoint must resolve to the FOUNDER, not to this node. k3s-server.nix
-    # maps control-plane -> 127.0.0.1 unconditionally; if that entry wins, the
-    # joiner dials itself and "joins" nothing.
+    # The endpoint must resolve to the FOUNDER, not to this node. This is the
+    # assertion that caught the loopback alias, and it stays as the regression
+    # guard for the fix: `k3s-server.nix` now maps control-plane -> 127.0.0.1
+    # only when `services.k3s.serverAddr == ""`. Make that unconditional again
+    # and this goes red, because the loopback entry sorts ahead of any LAN
+    # address and glibc answers with the first match.
     resolved = joiner.succeed(
         "getent hosts control-plane | head -n1 | awk '{print $1}'"
     ).strip()
     assert resolved == FOUNDER_IP, (
         f"the join endpoint resolves to {resolved!r}, not to the founder "
-        f"({FOUNDER_IP!r}). k3s-server.nix sets "
-        "networking.hosts.\"127.0.0.1\" = [ \"control-plane\" ] unconditionally, "
-        "so on a JOINING control plane the endpoint can point at the node "
-        "itself — which joins nothing and founds a second cluster."
+        f"({FOUNDER_IP!r}). On a JOINING control plane the endpoint must point "
+        "at the cluster it is joining; pointing it at this node joins nothing "
+        "and founds a second cluster. Check that k3s-server.nix still guards "
+        "networking.hosts.\"127.0.0.1\" = [ \"control-plane\" ] on "
+        "services.k3s.serverAddr == \"\"."
     )
 
     joiner.systemctl("start k3s.service")
