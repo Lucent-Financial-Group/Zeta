@@ -94,11 +94,22 @@ export const DEFAULT_PERF_THRESHOLDS: PerfThresholds = {
   sustainedStreak: 2,
 };
 
+/**
+ * Ordinal (code-unit) order. Deliberately NOT the locale-aware comparison, which sorts
+ * differently per machine and would make this fold's tie-breaking non-reproducible across the
+ * runner pool — see `.claude/rules/culture-invariant-by-default.md`.
+ */
+function compareOrdinal(left: string, right: string): number {
+  if (left < right) return -1;
+  if (left > right) return 1;
+  return 0;
+}
+
 /** Newest first, by `at`. Ties broken by `sha` so the order is total and replay-stable. */
 export function orderNewestFirst(observations: readonly PerfObservation[]): PerfObservation[] {
   return [...observations].sort((a, b) => {
     const t = Date.parse(b.at) - Date.parse(a.at);
-    return t !== 0 ? t : a.sha.localeCompare(b.sha);
+    return t !== 0 ? t : compareOrdinal(a.sha, b.sha);
   });
 }
 
@@ -208,7 +219,7 @@ export function foldPerfLedger(
   }
   const rank: Record<PerfRegister, number> = { regression: 0, flaky: 1, unknown: 2, clean: 3 };
   return rolls.sort(
-    (a, b) => rank[a.register] - rank[b.register] || b.misses - a.misses || a.test.localeCompare(b.test),
+    (a, b) => rank[a.register] - rank[b.register] || b.misses - a.misses || compareOrdinal(a.test, b.test),
   );
 }
 
