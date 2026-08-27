@@ -193,16 +193,23 @@ heuristic, applied here):
 
 | rung | compute | memory |
 |---|---|---|
-| **copy a bit more** | blend / both-branches / immutable rewrite | no coordination (persistent structure, Z-set `+1`) |
+| **copy a bit more** | blend / both-branches / immutable rewrite | no coordination (persistent structure, Z-set `+1`; **CoW** so the copy is cheap) |
 | **aggressive fusion** | stream fusion (Gill–Peyton Jones) recovers a loop that *looked* dependent | hardware CAS (Albahari `SpeculativeUpdate`) |
 | **you bought the serial machine** | dependent-read kernel = **a warp** | heavy locks |
 
 Roslyn's `SyntaxTree` is the industrial instance: every rewrite
 is a new tree, never a load that waits on a prior store in the
 same buffer. Functional programming is the same contract
-(Okasaki). Stream fusion is the *earned* middle — it is how you
-get the throughput of the third rung without the warp, when the
-algebra allows. It is not the default; copy is.
+(Okasaki). **Copy-on-write / structural sharing** is what makes
+"copy a bit more" cheap — you do not deep-clone the world; you
+share the unchanged spine (Driscoll et al. persistent trees;
+git objects; ZFS; Roslyn red-green trees; page-table CoW).
+Without CoW, "copy" would be the expensive joke that drives
+people to the warp. Stream fusion is the *earned* middle — it
+is how you get the throughput of the third rung without the
+warp, when the algebra allows. It is not the default; copy is.
+CoW is not CAS: CoW never mutates shared; CAS coordinates one
+word. Different rungs.
 
 Do not treat CAS as the floor. CAS is already the middle.
 Locks and warps are the same failure class: a later step that
@@ -282,7 +289,10 @@ CAS/stream-fusion the earned middle. Saved here at Aaron's ask.
 - **Roslyn immutable `SyntaxTree`** — rewrite by copy, never a
   dependent read on a mutating AST. Why Aaron loves it.
 - **Okasaki** *Purely Functional Data Structures* — copy a bit
-  more; no coordination.
+  more; no coordination. **Driscoll, Sarnak, Sleator, Tarjan**
+  (1989) making data structures persistent — CoW / structural
+  sharing is why the copy is cheap. Git, ZFS, Roslyn red-green
+  trees, page tables. CoW ≠ CAS.
 - **Herlihy** wait-free / **Albahari** `SpeculativeUpdate` —
   CAS is the *middle* rung, not the floor. Locks are the warp
   of memory.
