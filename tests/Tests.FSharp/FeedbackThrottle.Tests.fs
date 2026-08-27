@@ -96,13 +96,23 @@ let ``jitter is dual-use — degrades S and is captured into frost; neither read
     Assert.Equal(FeedbackThrottle.JitterPresent, fact)
 
 [<Fact>]
-let ``a latency-only sweep is underpowered — decorrelation is plural`` () =
+let ``a latency-only sweep is underpowered — the channel inventory is open and non-exhaustive`` () =
+    Assert.False FeedbackThrottle.inventoryClaimsExhaustiveness
+    Assert.True(FeedbackThrottle.hasKnownChannel "system-prompt")
+    Assert.True(FeedbackThrottle.hasKnownChannel "selected-model")
+    Assert.True(FeedbackThrottle.hasKnownChannel "model-family")
+    Assert.True(FeedbackThrottle.hasKnownChannel "prompt-frame")
+    Assert.True(FeedbackThrottle.hasKnownChannel "network-latency-jitter")
+    Assert.True(FeedbackThrottle.hasKnownChannel "hat-producer-vs-verifier")
     Assert.True(
-        FeedbackThrottle.sweepIsUnderpowered
-            [ FeedbackThrottle.NetworkLatencyJitter ]
+        FeedbackThrottle.sweepIsUnderpowered [ "network-latency-jitter" ]
     )
-    Assert.False(FeedbackThrottle.sweepIsUnderpowered FeedbackThrottle.namedDecorrelationAxes)
-    Assert.True(List.length FeedbackThrottle.namedDecorrelationAxes > 1)
+    // covering today's snapshot still does not claim completeness
+    Assert.False(
+        FeedbackThrottle.sweepIsUnderpowered FeedbackThrottle.knownChannelNames
+    )
+    Assert.False FeedbackThrottle.inventoryClaimsExhaustiveness
+    Assert.True(List.length FeedbackThrottle.knownDecorrelationChannels > 6)
     // default string collation is binary / codepoint, not ambient culture
     Assert.Equal("binary", Collation.defaultName)
     Assert.Same(Collation.binary, Collation.byNameOrDefault Collation.defaultName)

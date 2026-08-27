@@ -1,5 +1,7 @@
 namespace Zeta.Core
 
+open System
+
 /// **`FeedbackThrottle` — finite feedback-propagation speed caps the achievable CHSH (Aaron 2026-06-08, shadow*).**
 ///
 /// Aaron: *"our qubit toy reaches `2√2` (and `S=4`) because it has no light-speed throttle — like a processor
@@ -158,34 +160,57 @@ module FeedbackThrottle =
     let jitterDualReadings : JitterReading list =
         [ CorrelationDegradation; FrostUniquenessCapture ]
 
-    /// Named decorrelation axes. Alexa owns the thread. Bus delay is
-    /// the journey (transient); lasting decorrelation needs input
-    /// diversity (FIG8). Frost capture is a third axis.
-    type DecorrelationAxis =
-        | NetworkLatencyJitter
-        | SensoryInputDiversity
-        | FrostCaptureRate
-        | FrostStorageSize
-        | HostClockEntropy
-        | SeedIndependence
+    /// Living inventory of decorrelation *channels*. Alexa owns the
+    /// thread (`decorrelation-harness.ts`). Completeness is unproven —
+    /// we keep finding more (system prompt, selected model, …). This
+    /// list is a snapshot for metering, never a closed roster.
+    type ChannelRegister =
+        | Proven
+        | Measured
+        | Candidate
+        | Hypothesized
+        | ReferenceCeiling
 
-    let namedDecorrelationAxes : DecorrelationAxis list =
-        [ NetworkLatencyJitter
-          SensoryInputDiversity
-          FrostCaptureRate
-          FrostStorageSize
-          HostClockEntropy
-          SeedIndependence ]
+    type DecorrelationChannel =
+        { Name: string
+          Register: ChannelRegister }
 
-    /// A sweep that varies only `varied` is underpowered unless it
-    /// covers every named axis. Latency-only is the worked instance.
-    let sweepIsUnderpowered (varied: DecorrelationAxis list) : bool =
-        let named =
-            namedDecorrelationAxes
-            |> List.map string
-            |> Set.ofList
-        let v =
-            varied
-            |> List.map string
-            |> Set.ofList
+    /// Snapshot of channels we already name. NOT exhaustive.
+    let knownDecorrelationChannels : DecorrelationChannel list =
+        [ { Name = "hat-producer-vs-verifier"; Register = Proven }
+          { Name = "model-family"; Register = Measured }
+          { Name = "selected-model"; Register = Measured }
+          { Name = "prompt-frame"; Register = Candidate }
+          { Name = "system-prompt"; Register = Candidate }
+          { Name = "network-latency-jitter"; Register = Candidate }
+          { Name = "sensory-input-diversity"; Register = Candidate }
+          { Name = "memory-on-load"; Register = Hypothesized }
+          { Name = "quantization"; Register = Hypothesized }
+          { Name = "seed"; Register = Hypothesized }
+          { Name = "temperature"; Register = Hypothesized }
+          { Name = "persona"; Register = Hypothesized }
+          { Name = "frost-capture-rate"; Register = Hypothesized }
+          { Name = "frost-storage-size"; Register = Hypothesized }
+          { Name = "host-clock-entropy"; Register = Hypothesized }
+          { Name = "vendor"; Register = Hypothesized }
+          { Name = "trainset"; Register = Hypothesized }
+          { Name = "menu-order"; Register = ReferenceCeiling } ]
+
+    /// Completeness is unproven. Alexa is still finding channels.
+    let inventoryClaimsExhaustiveness = false
+
+    let knownChannelNames : string list =
+        knownDecorrelationChannels
+        |> List.map (fun c -> c.Name)
+
+    let hasKnownChannel (name: string) : bool =
+        knownChannelNames
+        |> List.exists (fun n -> String.Equals(n, name, StringComparison.Ordinal))
+
+    /// A sweep that varies only `varied` is underpowered vs the *known*
+    /// snapshot. Even covering every known name does not make the
+    /// inventory exhaustive.
+    let sweepIsUnderpowered (varied: string list) : bool =
+        let named = Set.ofList knownChannelNames
+        let v = Set.ofList varied
         not (Set.isEmpty (Set.difference named v))

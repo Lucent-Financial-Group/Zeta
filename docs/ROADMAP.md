@@ -451,7 +451,7 @@ Gaps: **fsync floor** (unshipped), **multi-key ACID/isolation** (only single-str
 - **Next extract after Harny** — pick by DV2 change-rate *or* toolchain closure (round 3: `zeta-formal` / `zeta-wasm` strongest on CRP); dogfood first, then `create-repo` cutover (gated)
 - **Retraction readings** — keep full −1 (erasing view) distinct from `widen` (non-erasing support) and from negate-alone (Bennett-free); do not invoice Landauer on `neg` (`081M10BD9BM087G0R001SGDRXT`)
 - **ZSetRx remaining** — full IQbservable over Bonsai (this slice is the +1/−1 connect query); BNN as a NextAction chooser, not just a roster card (`081M109WG5S087G0R0021E5MPT`)
-- **FourCorner / Clifford remaining** — do not identify FourCorner with Cl(p,q) **or with a fermion or a qubit**. QubitIso is the qubit, FourCorner is the pipe. Compact E8 *manifold* still open. **Do not sweep latency alone** for √2 / 2√2 — jitter is dual-use (degrades S *and* frost uniqueness); capture rate / storage may control; a latency-only null means nothing. Decorrelation is plural (Alexa). S=4 is the seed-shared measure. String keys: `Collation.binary` (BIN2_UTF8 / ordinal codepoint), never ambient culture. `081M10CBYF9087G0R003GWBNHG`
+- **FourCorner / Clifford remaining** — do not identify FourCorner with Cl(p,q) **or with a fermion or a qubit**. QubitIso is the qubit, FourCorner is the pipe. Compact E8 *manifold* still open. **Do not sweep latency alone** for √2 / 2√2 — jitter is dual-use (degrades S *and* frost uniqueness). Decorrelation channels are an **open, non-exhaustive inventory** Alexa is still growing (system prompt, selected model, hat, prompt frame, …). Meter them; do not freeze a roster. S=4 is the seed-shared measure. String keys: `Collation.binary` (BIN2_UTF8 / ordinal codepoint), never ambient culture. `081M10CBYF9087G0R003GWBNHG`
 
 ## P2 (4 weeks)
 
@@ -491,7 +491,7 @@ Taken from scout agent:
 5. **CAS-Paxos with state-transition-function consensus for DBSP replay** → NSDI / OSDI, ~6 em
 6. **F# type-provider-driven compile-time circuit specialisation** → OOPSLA / PLDI, ~4 em
 7. **DBSP retraction ≡ Beam RETRACTING ≡ delta-CRDT merge** foundational clarifier → ICFP / LMCS, ~5 em
-8. **C₄ compass / IStarRing `i² = −1` / Clifford signature ±1 as three embeddings, not Cl(p,q)** — honesty paper for the traced-monoidal I/O object. QubitIso is the qubit, FourCorner is the pipe. **S=4 measured** (seed-shared). **2√2 predicted, to be measured** — not a latency-only threshold (jitter dual-use / frost uniqueness; Alexa decorrelation is plural).
+8. **C₄ compass / IStarRing `i² = −1` / Clifford signature ±1 as three embeddings, not Cl(p,q)** — honesty paper for the traced-monoidal I/O object. QubitIso is the qubit, FourCorner is the pipe. **S=4 measured** (seed-shared). **2√2 predicted, to be measured** — not a latency-only threshold. Decorrelation channels are an open inventory (Alexa; system prompt, selected model, …); completeness unproven.
 
 ## CFPs to target
 

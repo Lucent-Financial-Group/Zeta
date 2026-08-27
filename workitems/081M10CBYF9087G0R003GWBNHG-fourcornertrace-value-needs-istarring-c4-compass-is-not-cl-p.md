@@ -51,6 +51,9 @@ are related; they are **not** “it is Cl(p,q)”.
   Tsirelson is numerology; QubitIso is the qubit, FourCorner is
   the pipe
 - Jitter is dual-use (degrades S *and* frost uniqueness); a
-  latency-only sweep is underpowered; decorrelation is plural (Alexa)
+  latency-only sweep is underpowered
+- Decorrelation channels are an **open inventory** (Alexa:
+  system prompt, selected model, hat, prompt frame, …);
+  `inventoryClaimsExhaustiveness = false`
 - String keys: `Collation.binary` (BIN2_UTF8 / ordinal codepoint),
   never ambient culture

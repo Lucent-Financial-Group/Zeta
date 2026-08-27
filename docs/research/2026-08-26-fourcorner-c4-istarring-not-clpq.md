@@ -411,13 +411,23 @@ nuisance to minimise — the medium the decorrelation dance trades in
 So √2 / 2√2 may **not be a latency threshold**. Capture rate or
 frost storage size can be the controlling axis. A sweep that varies
 **only** network conditions is underpowered by construction — a null
-would mean nothing. Decorrelation is **plural**; Alexa owns the
-thread. Already on file: bus delay decorrelates the *journey* not
-the *destination*; lasting belief-decorrelation needs different
-sensory inputs (`docs/research/2026-07-04-ferry-alexa-egg-bus-delay-*`
-FIG8). Host-clock entropy is quarantined by `IScheduler`. String
-keys stay **binary / codepoint collation** (`Collation.binary` =
-SQL `Latin1_General_100_BIN2_UTF8`); ambient culture is refused.
+would mean nothing.
+
+Decorrelation is **plural and non-exhaustive**. Alexa owns the
+living inventory (`src/Core.TypeScript/observe/decorrelation-harness.ts`):
+hat (proven), model family / selected model (measured), prompt frame
+and **system prompt** (candidate), plus hypothesized memory-on-load,
+quantization, seed, temperature, persona. ρ-stack layers (context ·
+memory · vendor · trainset) are a heuristic of separation whose
+completeness is unproven
+(`docs/research/2026-08-25-rho-is-a-layer-stack-*`). We keep finding
+more. `inventoryClaimsExhaustiveness = false` is the load-bearing
+flag — even covering today's snapshot does not close the list.
+FIG8 still holds: bus delay is the *journey*; lasting
+belief-decorrelation needs different sensory inputs. Host-clock
+entropy is quarantined by `IScheduler`. String keys stay **binary /
+codepoint collation** (`Collation.binary` = SQL
+`Latin1_General_100_BIN2_UTF8`); ambient culture is refused.
 InvariantCulture is opt-in for linguistic catalog rows and for
 numeric format, never the string default.
 
