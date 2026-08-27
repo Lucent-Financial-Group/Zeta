@@ -61,9 +61,12 @@ richest diagnostic in-tree and unused elsewhere.
 (mechanize 0 and 1; intelligence last resort), not escalate up.
 
 Do not add 22 `FIX:` strings, and do not write patches, as a
-rider on this naming slice.
+rider on this naming slice. Same-day: `labelled-observation.ts`
+is the collector type (disagreement-shaped; no winner). This
+census is a seed for that type, not a second schema.
 
 Pointers: `docs/ROADMAP.md` 8c + P1;
+`src/Core.TypeScript/corpus/labelled-observation.ts`;
 `docs/research/2026-08-27-twelve-factor-categorizes-extracts-building-codes-are-the-lower-layer-correction-corpus-is-the-trainset.md`;
 `docs/research/2026-08-25-rho-is-a-layer-stack-not-a-scalar-and-the-trainset-is-the-floor.md`;
 `docs/handoffs/2026-08-01-shadow-to-alexa-self-healing-drift-classes-and-intelligence-tiers.md`;

@@ -151,6 +151,17 @@ keys `(rule, violation, repair)` so a generator has both
 halves. A `Fix:` string is the human-readable half; a
 `healer-harness`-certified patch is rung 1.
 
+Same-day compose: `src/Core.TypeScript/corpus/labelled-observation.ts`
+landed on `main` as the domain-agnostic observation type
+(hub = observation, satellite = open label set; conflicting
+labels coexist, no winner-picker). This census is a *seed
+that type can hold*, not a second collector. A lint `FIX:`
+is one asserter's repair label; a human correction of that
+fix is another label on the same observation, not an
+overwrite. Collapsing them into one supervised target would
+be the single-version-of-the-truth move the type exists to
+refuse.
+
 ## Beacon
 
 - **Adam Wiggins**, *The Twelve-Factor App* (2011), 12factor.net
