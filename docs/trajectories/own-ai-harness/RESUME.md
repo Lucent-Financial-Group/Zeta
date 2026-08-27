@@ -21,6 +21,17 @@ CLIs: Ace = deps, Zeta = source control + filesystem.
 Daily identities we already pay for: grok, claude, openai, manus, gemini,
 codex, kiro.
 
+**Observe is the controller; Harny is not a second one.**
+`src/Core.TypeScript/observe/observe.ts` is already the external harness
+around vendor executors (`kiro-executor.ts`, `subscription-executor.ts`):
+pure `World → NextAction`, Xbox `grammar-16.ts` (ADR 2026-05-31).
+Meijer μF/νF: World snapshot is μ (fold); standing query/webhook is ν
+(unfold); Bonsai stores the μ generator of a ν process. Reservoir
+computing (Jaeger 2001 / Maass 2002): DU grammar + workflows are
+**walls**; `observe()` is the **readout** — do not train the reservoir
+by giving the model a bag of polls. Cheap forge observe is a World
+channel (`forgeState`), not a tool the LLM picks.
+
 ## Where we are (honest)
 
 The harness **library** is real. The fleet **runtime** is still vendor CLIs.
@@ -112,4 +123,7 @@ already running, not by inventing a fourth factory.
 - Index: `src/Core.TypeScript/search/inverted/`
 - CLI: `src/Core.TypeScript/harny/harny.ts`
 - Cheap forge verbs: `docs/research/2026-08-26-cheap-forge-verbs-du-observe-not-adhoc-poll.md`
+- Observe controller: `src/Core.TypeScript/observe/observe.ts` · `grammar-16.ts`
 - UAG / Xbox grid: `src/Core/ActionGrid.fs`
+- Reservoir walls: `docs/research/2026-05-28-aaron-workflow-as-reservoir-computing-*`
+- μF/νF: `docs/research/2026-08-11-rename-as-rolling-migration-*`

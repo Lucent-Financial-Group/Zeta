@@ -18,11 +18,17 @@ is a choice**. Closed tools should be **context/DU-aware commands**:
 the verb *is* the observation of the current discriminated state, so
 the agent cannot skip the refresh.
 
-The grammar is the Xbox-controller 4×4 (`ActionGrid.fs`): layout
-fixed, labels per-context. Same controller for human and agent
-(`.claude/rules` xbox-controller-universal-action-grammar). Harny
-binds those cells to Ace/Zeta/ForgeHost verbs (`observeMerge` is the
-forge cell).
+The grammar is the Xbox-controller 4×4 (`ActionGrid.fs` + observe
+`grammar-16.ts`): layout fixed, labels per-context. Same controller
+for human and agent. **`observe.ts` is already that controller**;
+Harny must not grow a parallel one. Vendor harnesses are executors
+plugged into observe (kiro-executor, subscription-executor). Harny
+becomes the executor that speaks Ace/Zeta/ForgeHost, and wires World
+channels (cheap `observeMerge` / `observeOpenPullRequests`) so
+refresh is the snapshot.
+
+Meijer μF/νF + Rx: World is μ; webhook/subscription is ν. Reservoir
+(Jaeger/Maass): walls = DU grammar, readout = `observe()`.
 
 ## Must
 

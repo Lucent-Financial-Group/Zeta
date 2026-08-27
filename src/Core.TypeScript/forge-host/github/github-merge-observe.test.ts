@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import { ok } from "../result";
 import type { GithubRest } from "./github-pr-rest.ts";
-import { MERGE_OBSERVE_QUERY, mapMergeObserve, mergeObserveRequest, observeMerge } from "./github-merge-observe.ts";
+import { MERGE_OBSERVE_QUERY, mapMergeObserve, mapOpenPullRequests, mergeObserveRequest, observeMerge, observeOpenPullRequests } from "./github-merge-observe.ts";
 
 function envelope(over: Record<string, unknown>): string {
   return JSON.stringify({
@@ -92,6 +92,44 @@ describe("mapMergeObserve", () => {
     if (!got.ok) return;
     expect(got.value.gate).toBe("dirty");
     expect(got.value.nextAction).toBe("rebase");
+  });
+});
+
+describe("mapOpenPullRequests", () => {
+  test("one GraphQL list carries mergeStateStatus so World.forgeState.cleanPrCount can be non-zero", () => {
+    const got = mapOpenPullRequests(JSON.stringify({
+      data: {
+        repository: {
+          pullRequests: {
+            nodes: [
+              { number: 1, title: "clean", mergeStateStatus: "CLEAN", url: "u", updatedAt: "t", isDraft: false, headRefName: "a", baseRefName: "main", author: { login: "ace" }, reviewDecision: "APPROVED" },
+              { number: 2, title: "blocked", mergeStateStatus: "BLOCKED", url: "u2", updatedAt: "t", isDraft: false, headRefName: "b", baseRefName: "main", author: { login: "ace" }, reviewDecision: null },
+            ],
+          },
+        },
+      },
+    }));
+    expect(got.ok).toBe(true);
+    if (!got.ok) return;
+    expect(got.value).toHaveLength(2);
+    expect(got.value[0]?.mergeStateStatus).toBe("clean");
+    expect(got.value[0]?.reviewDecision).toBe("approved");
+    expect(got.value[1]?.mergeStateStatus).toBe("blocked");
+  });
+});
+
+describe("observeOpenPullRequests", () => {
+  test("issues exactly one graphql POST", async () => {
+    const calls: { method: string; path: string }[] = [];
+    const rest: GithubRest = {
+      request: (method, path) => {
+        calls.push({ method, path });
+        return Promise.resolve(ok(JSON.stringify({ data: { repository: { pullRequests: { nodes: [] } } } })));
+      },
+    };
+    const got = await observeOpenPullRequests(rest, "o/r", 20);
+    expect(got.ok).toBe(true);
+    expect(calls).toEqual([{ method: "POST", path: "graphql" }]);
   });
 });
 

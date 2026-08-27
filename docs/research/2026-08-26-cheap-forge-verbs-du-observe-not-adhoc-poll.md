@@ -25,7 +25,52 @@ a quota). A merge process is a **discriminated union** (`wait-ci` |
 **that**. One round-trip.
 
 Shipped this change: `observeMerge` (`github-merge-observe.ts`) —
-one `POST /graphql`. Tests pin `calls.length === 1`.
+one `POST /graphql`. Tests pin `calls.length === 1`. Open-PR list
+for the observe World snapshot is also one GraphQL (`observeOpenPullRequests`)
+so `World.forgeState.cleanPrCount` is not stuck at 0 (REST list does
+not carry `mergeStateStatus`).
+
+## Observe.ts is the controller; Harny is a scheme / executor
+
+We already have the DU harness. Do not invent a second one.
+
+`src/Core.TypeScript/observe/observe.ts` is a **pure** `World → NextAction`
+controller (Xbox 16-slot grammar in `grammar-16.ts`). Vendor CLIs
+(claude, kiro, …) plug in as **executors** (`kiro-executor.ts`,
+`subscription-executor.ts`) — Observe is the external harness around
+any vendor harness, not the other way around. Harny's job is to become
+that executor (summon + closed tools) and to **wire World channels**
+so refresh is the snapshot, not a tool the model picks.
+
+Same architectural shape as the corporate `agentic-organization/.../observe.ts`
+(ADR 2026-05-31): one keystone, 16-slot rendering on top, no parallel
+action language.
+
+### Meijer μF / νF (checked)
+
+Erik Meijer, Fokkinga & Paterson (1991) *Bananas, Lenses, Envelopes and
+Barbed Wire*: for a functor F, **μF** is the initial algebra (finite
+data, fold / catamorphism) and **νF** is the terminal coalgebra
+(process, unfold / anamorphism). Rx is that duality as
+`IEnumerable ⇄ IObservable`. In-tree: `DynamicValue` is μF (data at
+rest); Bonsai is a **finite μ description of a ν standing query**
+(`docs/research/2026-08-11-rename-as-rolling-migration-*`).
+
+The forge World snapshot is μ (a fold of one GraphQL observe). The
+subscription/webhook is ν (the standing query). You cannot store ν;
+you store its μ generator and unfold on arrival. Cheap verbs are μ
+snapshots; callbacks are ν. Ad-hoc `gh pr checks` is neither — it is
+an unmetered peek that pretends to be an observation.
+
+### Reservoir computing (checked)
+
+Jaeger 2001 echo-state networks; Maass 2002 liquid state machines:
+**do not train the reservoir, train the readout.** Workflows / DU
+grammar / ActionGrid are the **walls** (spectral constraints). Observe
+is the **readout**. Harny closed tools should not teach the model a
+bag of polls; they constrain the reservoir so the readout
+(`observe(world)`) sees a current World. Detail:
+`docs/research/2026-05-28-aaron-workflow-as-reservoir-computing-*`.
 
 ## Callbacks (optional, not a hub)
 

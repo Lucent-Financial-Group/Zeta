@@ -35,7 +35,7 @@ import { ok, err, forgeError } from "../result";
 import { githubRestRequest, resolveGitHubToken, runGh, runGhJson } from "./gh-cli";
 import { listGitHubCheckDefinitions, listGitHubCheckObservations } from "./check-observations.ts";
 import { restCreatePull, restGetPull, restListPulls, restPullToPr, type GithubRest } from "./github-pr-rest.ts";
-import { observeMerge } from "./github-merge-observe.ts";
+import { observeMerge, observeOpenPullRequests } from "./github-merge-observe.ts";
 
 // ─── Adapter ────────────────────────────────────────────────────────────────
 
@@ -115,13 +115,9 @@ export class GitHubAdapter implements ForgeHost {
   // ─── PR state ───────────────────────────────────────────────────────────
 
   async listOpenPullRequests(opts?: ListPrOpts): Promise<Result<readonly PullRequest[], ForgeError>> {
-    const result = await restListPulls(this.rest, this.nwo, {
-      state: "open",
-      limit: opts?.limit ?? 100,
-      sort: opts?.orderBy === "created" ? "created" : "updated",
-    });
-    if (!result.ok) return result;
-    return ok(result.value.map(restPullToPr));
+    // GraphQL one-shot: REST list does not carry mergeStateStatus, so observe()'s
+    // World.forgeState.cleanPrCount would stay 0 (a quiet-loop bug).
+    return observeOpenPullRequests(this.rest, this.nwo, opts?.limit ?? 20);
   }
 
   async getPullRequest(number: number): Promise<Result<PullRequest, ForgeError>> {

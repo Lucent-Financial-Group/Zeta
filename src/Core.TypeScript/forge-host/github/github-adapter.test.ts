@@ -80,7 +80,28 @@ describe("GitHubAdapter", () => {
     const rest: GithubRest = {
       request: (method, path, body) => {
         calls.push({ method, path, body });
-        if (method === "GET") return Promise.resolve(ok(JSON.stringify([pull])));
+        if (path === "graphql") {
+          return Promise.resolve(ok(JSON.stringify({
+            data: {
+              repository: {
+                pullRequests: {
+                  nodes: [{
+                    number: 7,
+                    title: "rest",
+                    mergeStateStatus: "CLEAN",
+                    url: "https://github.com/o/r/pull/7",
+                    updatedAt: "2026-08-26T00:00:00Z",
+                    isDraft: false,
+                    headRefName: "feat",
+                    baseRefName: "main",
+                    author: { login: "ace" },
+                    reviewDecision: null,
+                  }],
+                },
+              },
+            },
+          })));
+        }
         return Promise.resolve(ok(JSON.stringify({ ...pull, number: 8, html_url: "https://github.com/o/r/pull/8" })));
       },
     };
@@ -90,11 +111,12 @@ describe("GitHubAdapter", () => {
     if (listed.ok) {
       expect(listed.value).toHaveLength(1);
       expect(listed.value[0]?.number).toBe(7);
+      expect(listed.value[0]?.mergeStateStatus).toBe("clean");
     }
     const created = await adapter.createPullRequest({ title: "t", body: "b", head: "feat", base: "main" });
     expect(created.ok).toBe(true);
     if (created.ok) expect(created.value.number).toBe(8);
-    expect(calls.some((c) => c.method === "GET" && c.path.startsWith("repos/o/r/pulls"))).toBe(true);
+    expect(calls.some((c) => c.method === "POST" && c.path === "graphql")).toBe(true);
     expect(calls.some((c) => c.method === "POST" && c.path === "repos/o/r/pulls")).toBe(true);
   });
 

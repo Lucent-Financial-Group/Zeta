@@ -9,7 +9,7 @@
 // GitHub's mergeStateStatus already IS that discriminator. Webhooks
 // (check_suite / pull_request_review) are the next cost cut, not this file.
 
-import type { CheckSummary, ForgeError, NextAction, PrGateState, Result } from "../types";
+import type { CheckSummary, ForgeError, NextAction, PrGateState, PullRequest, Result } from "../types";
 import { err, forgeError, ok } from "../result";
 import type { GithubRest } from "./github-pr-rest.ts";
 
@@ -52,6 +52,100 @@ export function mergeObserveRequest(nwo: string, number: number): Result<MergeOb
     query: MERGE_OBSERVE_QUERY,
     variables: { owner: split.owner, name: split.name, number },
   });
+}
+
+/// One GraphQL list of OPEN PRs including mergeStateStatus — REST list does not
+/// carry it, so observe()'s World.forgeState.cleanPrCount would stay 0 forever.
+export const OPEN_MERGE_STATES_QUERY = `query OpenMergeStates($owner: String!, $name: String!, $first: Int!) {
+  repository(owner: $owner, name: $name) {
+    pullRequests(states: OPEN, first: $first, orderBy: {field: UPDATED_AT, direction: DESC}) {
+      nodes { number title mergeStateStatus url updatedAt isDraft headRefName baseRefName author { login } reviewDecision }
+    }
+  }
+}`;
+
+export async function observeOpenPullRequests(
+  rest: GithubRest,
+  nwo: string,
+  limit: number,
+): Promise<Result<readonly PullRequest[], ForgeError>> {
+  const split = splitNwo(nwo);
+  if (split === null) return err(forgeError("internal", `bad nwo: ${nwo}`));
+  const first = Math.min(Math.max(limit, 1), 20);
+  const raw = await rest.request("POST", "graphql", {
+    query: OPEN_MERGE_STATES_QUERY,
+    variables: { owner: split.owner, name: split.name, first },
+  });
+  if (!raw.ok) return raw;
+  return mapOpenPullRequests(raw.value);
+}
+
+export function mapOpenPullRequests(text: string): Result<readonly PullRequest[], ForgeError> {
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(text);
+  } catch (e) {
+    return err(forgeError("parse-failure", e instanceof Error ? e.message : String(e)));
+  }
+  if (typeof parsed !== "object" || parsed === null) return err(forgeError("parse-failure", "open merges: not an object"));
+  const errors = (parsed as { errors?: unknown }).errors;
+  if (Array.isArray(errors) && errors.length > 0) {
+    const first = errors[0] as { message?: unknown };
+    return err(forgeError("internal", typeof first.message === "string" ? first.message : "graphql error"));
+  }
+  const nodes = (parsed as { data?: { repository?: { pullRequests?: { nodes?: unknown } } } }).data?.repository?.pullRequests?.nodes;
+  if (!Array.isArray(nodes)) return err(forgeError("parse-failure", "open merges: missing nodes"));
+  const out: PullRequest[] = [];
+  for (const n of nodes) {
+    if (typeof n !== "object" || n === null) continue;
+    const row = n as {
+      number?: unknown;
+      title?: unknown;
+      mergeStateStatus?: unknown;
+      url?: unknown;
+      updatedAt?: unknown;
+      isDraft?: unknown;
+      headRefName?: unknown;
+      baseRefName?: unknown;
+      author?: { login?: unknown } | null;
+      reviewDecision?: unknown;
+    };
+    if (typeof row.number !== "number" || typeof row.title !== "string") continue;
+    const pr: PullRequest = {
+      number: row.number,
+      title: row.title,
+      headRef: typeof row.headRefName === "string" ? row.headRefName : "",
+      baseRef: typeof row.baseRefName === "string" ? row.baseRefName : "",
+      state: "open",
+      isDraft: row.isDraft === true,
+      mergeStateStatus: mapListedMergeStatus(typeof row.mergeStateStatus === "string" ? row.mergeStateStatus : undefined),
+      reviewDecision: mapListedReview(typeof row.reviewDecision === "string" ? row.reviewDecision : null),
+      url: typeof row.url === "string" ? row.url : "",
+      updatedAt: typeof row.updatedAt === "string" ? row.updatedAt : "",
+      author: typeof row.author?.login === "string" ? row.author.login : "(unknown)",
+    };
+    out.push(pr);
+  }
+  return ok(out);
+}
+
+function mapListedMergeStatus(status: string | undefined): PullRequest["mergeStateStatus"] {
+  if (status === undefined) return "unknown";
+  const lower = status.toLowerCase();
+  if (lower === "clean") return "clean";
+  if (lower === "blocked") return "blocked";
+  if (lower === "dirty" || lower === "behind") return "dirty";
+  if (lower === "unstable") return "unstable";
+  return "unknown";
+}
+
+function mapListedReview(decision: string | null): PullRequest["reviewDecision"] {
+  if (decision === null) return null;
+  const lower = decision.toLowerCase();
+  if (lower === "approved") return "approved";
+  if (lower === "changes_requested") return "changes-requested";
+  if (lower === "review_required") return "review-required";
+  return null;
 }
 
 export async function observeMerge(rest: GithubRest, nwo: string, number: number): Promise<Result<PrGateState, ForgeError>> {
