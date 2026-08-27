@@ -143,6 +143,7 @@
     <Compile Include="Merkle.FullVertical.Tests.fs" />
     <Compile Include="ZSetMerkle.Tests.fs" />
     <Compile Include="ZetaFsDeltaLog.Tests.fs" />
+    <Compile Include="ZetaFsDualFold.Tests.fs" />
     <Compile Include="ZSetMerkleProof.CrossVerify.Tests.fs" />
     <Compile Include="ZetaIrV1.Tests.fs" />
     <Compile Include="ZetaIrV2.Tests.fs" />
@@ -335,6 +336,7 @@
     <Compile Include="Chip8SelfSim.Tests.fs" />
     <Compile Include="RoomConsultation.Tests.fs" />
     <Compile Include="Chip8CrossRunStore.Tests.fs" />
+    <Compile Include="Chip8CrossRunStoreIO.Tests.fs" />
     <Compile Include="Chip8ConsultCensus.Tests.fs" />
     <Compile Include="SoftChip8Scheduler.Tests.fs" />
     <Compile Include="BitAdinkra.Tests.fs" />
@@ -431,6 +433,7 @@
     <Compile Include="Protobuf.Tests.fs" />
     <Compile Include="Protobuf.Swap.Tests.fs" />
     <Compile Include="SoftValue.Tests.fs" />
+    <Compile Include="DuExpand.Tests.fs" />
     <Compile Include="SoftValue.CrossVerify.Tests.fs" />
     <Compile Include="SoftValueWidening.Tests.fs" />
     <Compile Include="SoftValueWeightedSet.Tests.fs" />

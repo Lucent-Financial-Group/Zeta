@@ -146,6 +146,7 @@
     <Compile Include="EvolutionWindow.fs" />
     <Compile Include="Protobuf.fs" />
     <Compile Include="SoftValue.fs" />
+    <Compile Include="DuExpand.fs" />
     <Compile Include="ParseSoft.fs" />
     <Compile Include="BonsaiSoft.fs" />
     <Compile Include="DurableYinYang.fs" />
@@ -250,6 +251,7 @@
     <Compile Include="DeltaCodec.fs" />
     <Compile Include="DiskDeltaLog.fs" />
     <Compile Include="ZetaFsDeltaLog.fs" />
+    <Compile Include="ZetaFsDualFold.fs" />
     <Compile Include="SnapshotStore.fs" />
     <Compile Include="RecoverableSpine.fs" />
     <Compile Include="DurableSaga.fs" />
@@ -393,6 +395,7 @@
     <Compile Include="Chip8Observer.fs" />
     <Compile Include="RoomConsultation.fs" />
     <Compile Include="Chip8CrossRunStore.fs" />
+    <Compile Include="Chip8CrossRunStoreIO.fs" />
     <Compile Include="Chip8PredictionRoom.fs" />
     <Compile Include="Chip8ConsultCensus.fs" />
     <Compile Include="CelegansController.fs" />

@@ -47,13 +47,16 @@
     "hygiene:no-ambient-credential-hoist": "bun ./src/Core.TypeScript/hygiene/lint-no-ambient-credential-hoist.ts",
     "hygiene:no-culture-sensitive-collation": "bun ./src/Core.TypeScript/hygiene/lint-no-culture-sensitive-collation.ts",
     "hygiene:no-decide-by-grep": "bun ./src/Core.TypeScript/hygiene/lint-no-decide-by-grep.ts",
+    "hygiene:no-graphql-transport-in-scripts": "bun ./src/Core.TypeScript/hygiene/lint-graphql-transport-in-scripts.ts src/Core.TypeScript .github/workflows tools .claude --min-files 2000 --baseline src/Core.TypeScript/hygiene/lint-graphql-transport-in-scripts.baseline.json",
     "hygiene:no-check-then-use-file-races": "bun ./src/Core.TypeScript/hygiene/lint-check-then-use-file-races.ts src/Core.TypeScript --min-files 1500 --baseline src/Core.TypeScript/hygiene/lint-check-then-use-file-races.baseline.json",
     "hygiene:no-ambient-time-in-tests": "bun ./src/Core.TypeScript/hygiene/audit-ambient-time-in-tests.ts",
     "hygiene:check-arity": "bun ./src/Core.TypeScript/hygiene/audit-check-arity.ts",
     "hygiene:check-arity-nonequality": "bun ./src/Core.TypeScript/hygiene/audit-check-arity-nonequality.ts",
     "hygiene:scan-floor-routes": "bun ./src/Core.TypeScript/hygiene/audit-scan-floor-routes.ts",
     "hygiene:linter-coverage": "bun ./src/Core.TypeScript/hygiene/audit-linter-coverage-vs-invocation.ts",
+    "hygiene:consent-signoff": "bun ./src/Core.TypeScript/hygiene/audit-consent-signoff.ts",
     "hygiene:tech-radar-claims": "bun ./src/Core.TypeScript/hygiene/audit-tech-radar-claims.ts",
+    "hygiene:book-named-index": "bun ./src/Core.TypeScript/hygiene/audit-book-named-index.ts",
     "inventory:items": "bun ./src/Core.TypeScript/inventory/generate-items-json.ts",
     "inventory:items-check": "bun ./src/Core.TypeScript/inventory/generate-items-json.ts --check",
     "inventory:reconcile": "bun ./src/Core.TypeScript/inventory/reconcile-surfaces.ts",
@@ -64,6 +67,8 @@
   },
   "bin": {
     "ace": "src/Core.TypeScript/ace/ace.ts",
+    "harny": "src/Core.TypeScript/harny/harny.ts",
+    "zeta-login": "src/Core.TypeScript/model-backend/zeta-login-cli.ts",
     "zeta-shadow": "src/Core.TypeScript/shadow/zeta-shadow.ts"
   },
   "devDependencies": {

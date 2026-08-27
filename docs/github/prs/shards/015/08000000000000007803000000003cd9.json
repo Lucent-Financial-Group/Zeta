@@ -1,0 +1,12 @@
+{
+  "pr_number": 15577,
+  "archive_path": "docs/history/pr-reviews/PR-15577-docs-ci-three-verdict-loss-mechanisms-on-main-only-one-is-concurrency-and-the-la.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-26T10:59:40.153Z",
+  "schema_version": "v1",
+  "commit_sha": "68666ec6637cb16a271d1763aaf9302f97efc7e9",
+  "title": "docs(ci): three verdict-loss mechanisms on main — only one is concurrency, and the largest is invisible to both designs",
+  "state": "MERGED",
+  "merged_at": "2026-08-26T10:40:54Z",
+  "head_ref": "shadow/gate-verdict-topology-decision"
+}
