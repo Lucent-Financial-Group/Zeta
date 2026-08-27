@@ -5,6 +5,9 @@
 // whole line of work exists to catch, so each exit code is exercised against a constructed roster.
 
 import { describe, expect, test } from "bun:test";
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import type { FileTree, Healer } from "./healer-harness.ts";
 import { buildRegistry, isClean } from "./oscillation-registry.ts";
 import { DECLARED_EDGES, TIER0, triggerTree, sampleRepo } from "./check-healer-oscillation.ts";
@@ -77,9 +80,42 @@ describe("the check can go RED — each failure path is reachable", () => {
 });
 
 describe("the corpus sampler", () => {
-  test("it reads real files under the repo root", () => {
-    // Control: if this returned an empty tree the CI corpus would silently be fixtures only.
-    const t = sampleRepo(new URL("../../..", import.meta.url).pathname.replace(/\/$/, ""), { ts: 5, yml: 2, md: 2 });
-    expect(t.size).toBeGreaterThan(0);
+  test("it walks a real tree and returns repo-relative paths", () => {
+    // HERMETIC ON PURPOSE. The first version derived the repo root from `import.meta.url` with
+    // string surgery and asserted the sampler found files. That passed locally and is
+    // environment-dependent — exactly the shape that makes a test green on a laptop and red on a
+    // runner. This builds the directories the sampler looks for, so it tests the WALKER rather
+    // than the checkout layout.
+    const root = mkdtempSync(join(tmpdir(), "zeta-sampler-"));
+    try {
+      mkdirSync(join(root, "src/Core.TypeScript/hygiene"), { recursive: true });
+      mkdirSync(join(root, ".github/workflows"), { recursive: true });
+      mkdirSync(join(root, "docs/DECISIONS"), { recursive: true });
+      writeFileSync(join(root, "src/Core.TypeScript/hygiene/a.ts"), "export const a = 1;\n");
+      writeFileSync(join(root, ".github/workflows/w.yml"), "on: push\n");
+      writeFileSync(join(root, "docs/DECISIONS/d.md"), "# d\n");
+      // A file the sampler must NOT pick up: wrong extension in a watched directory.
+      writeFileSync(join(root, "src/Core.TypeScript/hygiene/ignore.txt"), "no\n");
+
+      const t = sampleRepo(root, {});
+      expect(t.size).toBe(3);
+      // Repo-relative, not absolute — the healers match on paths like `src/...` and `docs/...`.
+      expect([...t.keys()].sort()).toEqual([
+        ".github/workflows/w.yml",
+        "docs/DECISIONS/d.md",
+        "src/Core.TypeScript/hygiene/a.ts",
+      ]);
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+
+  test("an absent directory is skipped, not thrown — the sampler must survive a partial tree", () => {
+    const root = mkdtempSync(join(tmpdir(), "zeta-sampler-empty-"));
+    try {
+      expect(sampleRepo(root, {}).size).toBe(0);
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
   });
 });

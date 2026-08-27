@@ -31,7 +31,7 @@
  * ("composition order decides legality").
  */
 
-import { readdirSync, readFileSync, statSync, existsSync } from "node:fs";
+import { readdirSync, readFileSync, type Dirent } from "node:fs";
 import { join } from "node:path";
 import { BUILTIN_FIXTURES, type FileTree, type Healer } from "./healer-harness.ts";
 import { buildRegistry, isClean, renderReport, type DeclaredEdge } from "./oscillation-registry.ts";
@@ -60,28 +60,30 @@ export const DECLARED_EDGES: readonly DeclaredEdge[] = [];
 /** Real repo files across every surface the roster touches. Bounded so CI stays cheap. */
 export function sampleRepo(root: string, caps: Readonly<Record<string, number>>): FileTree {
   const out = new Map<string, string>();
+  // NO existsSync GATE and NO SECOND statSync -- both were here in the first draft and the repo's
+  // own `lint-check-then-use-file-races` caught them, which is the linter working on its author.
+  //
+  // `existsSync(dir)` before `readdirSync(dir)` is a check-then-use race: the answer is already
+  // stale when the use runs, and `readdirSync` reports absence perfectly well by throwing. And
+  // `readdir` then `statSync` on each entry asks the filesystem a question the LISTING ALREADY
+  // ANSWERED -- `withFileTypes` hands back the kind with the name, so there is no second syscall
+  // to race against.
   const walk = (dir: string, exts: readonly string[], cap: number, taken: { n: number }): void => {
-    if (taken.n >= cap || !existsSync(dir)) return;
-    let entries: string[];
+    if (taken.n >= cap) return;
+    let entries: Dirent[];
     try {
-      entries = readdirSync(dir);
+      entries = readdirSync(dir, { withFileTypes: true });
     } catch {
-      return;
+      return; // absent or unreadable: one syscall, one answer.
     }
     for (const e of entries) {
       if (taken.n >= cap) return;
-      if (e === "node_modules" || e === ".git" || e === "prior-art") continue;
-      const p = join(dir, e);
-      let st;
-      try {
-        st = statSync(p);
-      } catch {
-        continue;
-      }
-      if (st.isDirectory()) walk(p, exts, cap, taken);
-      else if (exts.some((x) => e.endsWith(x))) {
+      if (e.name === "node_modules" || e.name === ".git" || e.name === "prior-art") continue;
+      const full = join(dir, e.name);
+      if (e.isDirectory()) walk(full, exts, cap, taken);
+      else if (e.isFile() && exts.some((x) => e.name.endsWith(x))) {
         try {
-          out.set(p.slice(root.length + 1), readFileSync(p, "utf8"));
+          out.set(full.slice(root.length + 1), readFileSync(full, "utf8"));
           taken.n += 1;
         } catch {
           /* unreadable file is not a finding here */
