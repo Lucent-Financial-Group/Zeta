@@ -1,0 +1,12 @@
+{
+  "pr_number": 15671,
+  "archive_path": "docs/history/pr-reviews/PR-15671-fix-heartbeat-mint-the-batch-merge-lane-s-work-item-the-task-trailer-named-no-ke.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-26T21:31:54.164Z",
+  "schema_version": "v1",
+  "commit_sha": "697a06e46b9c4051218970c99cddbfea67feac5d",
+  "title": "fix(heartbeat): mint the batch-merge lane's work-item; the Task trailer named no key",
+  "state": "MERGED",
+  "merged_at": "2026-08-26T21:10:37Z",
+  "head_ref": "shadow/mint-heartbeat-batchmerge-workitem"
+}

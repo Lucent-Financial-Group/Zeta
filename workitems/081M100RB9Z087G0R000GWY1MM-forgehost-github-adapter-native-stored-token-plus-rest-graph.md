@@ -16,6 +16,18 @@ composes_with: []
 ours (`github-auth.ts` → `~/.config/zeta/auth/github.json`). The factory
 work (PR create/merge, checks, GraphQL threads, rest-push) still shells `gh`.
 
+Shipped: `resolveGitHubToken` is store (`~/.config/zeta/auth/github.json`)
+then `GH_TOKEN`/`GITHUB_TOKEN`, never `gh auth token`. `GitHubAdapter`
+list/get/create PR and list-merged go through REST (`github-pr-rest.ts`)
+with an injected `GithubRest` seam. `githubRestRequest` is fetch + Bearer.
+
+Shipped further: `observeMerge` is one GraphQL DU (`github-merge-observe.ts`).
+Comments, issues, auto-merge are REST. Git-data blobs/trees/commits/refs are REST.
+
+Still `gh`: threads (porcelain door injected), search, check-observations
+GET fallback, poll-pr-gate, rest-push, archive. Each leftover is named
+at the call site.
+
 ## Must
 
 - Resolve token from OUR store first, then env (`GH_TOKEN` /
