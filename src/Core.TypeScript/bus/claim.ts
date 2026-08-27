@@ -14,7 +14,7 @@
 //   acquire: 0 = claim published, 1 = already claimed (no publish)
 //   release: 0 = release published, 1 = error
 
-import { openSync, closeSync, unlinkSync, statSync, writeSync, readFileSync } from "node:fs";
+import { closeSync, fstatSync, openSync, readFileSync, statSync, unlinkSync, writeSync } from "node:fs";
 import { join } from "node:path";
 import { publish, list, BUS_DIR, ensureDir } from "./bus.ts";
 import { SENDER_IDS } from "./types.ts";
@@ -59,9 +59,22 @@ function withAcquireLock<T>(itemId: string, fn: () => T): T {
       // Only do stale-lock recovery on EEXIST; other errors (permissions, I/O) bubble up.
       if ((e as NodeJS.ErrnoException).code !== "EEXIST") throw e;
       try {
-        const content = readFileSync(lp, "utf8").trim();
+        // BOTH FACTS FROM ONE HANDLE. `readFileSync(lp)` then `statSync(lp)` resolves the path
+        // twice, so the holder PID and the mtime can describe two different locks: if the holder
+        // releases and someone else acquires between the calls, this reads the OLD pid against the
+        // NEW mtime — or the reverse — and can reclaim a lock that is very much alive. That is a
+        // correctness bug in lock recovery, not only a scanner finding (CodeQL
+        // `js/file-system-race`). One `open`, one inode, both answers.
+        const rfd = openSync(lp, "r");
+        let content: string;
+        let st: ReturnType<typeof fstatSync>;
+        try {
+          st = fstatSync(rfd);
+          content = readFileSync(rfd, "utf8").trim();
+        } finally {
+          closeSync(rfd);
+        }
         const holderPid = parseInt(content, 10);
-        const st = statSync(lp);
         // Reclaim only if the lock is old enough AND its holder process is dead.
         if (Date.now() - st.mtimeMs > LOCK_STALE_MS && !isProcessRunning(holderPid)) {
           unlinkSync(lp); // reclaim stale lock left by a crashed process
