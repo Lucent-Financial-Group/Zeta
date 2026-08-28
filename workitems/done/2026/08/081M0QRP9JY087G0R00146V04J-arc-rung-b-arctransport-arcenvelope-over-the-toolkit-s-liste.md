@@ -55,8 +55,10 @@ constraint exists because that was not checked.
   from the returned 64x64 frame that the agent moved from x=8 to x=16. No credential or external
   network is used.
 - Measured locally: 9 focused REST tests and all 137 ARC tests pass; the repository Python lint gate
-  passes Ruff, formatting, and mypy for both Python projects; full preflight passes all 17 checks,
-  including the Release build and complete solution test graph.
+  passes Ruff, formatting, and mypy for both Python projects; quick preflight passes all 15 checks;
+  the Release build passes. The complete solution passed in both an isolated/serial diagnostic run
+  and one parallel run; separate native host faults are preserved under workitem
+  `081KYYQ831108QG0R001FJJ9XK` rather than attributed to this Python lane.
 
 ## Honest boundary
 
