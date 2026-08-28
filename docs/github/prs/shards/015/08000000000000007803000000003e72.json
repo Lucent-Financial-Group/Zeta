@@ -1,0 +1,12 @@
+{
+  "pr_number": 15986,
+  "archive_path": "docs/history/pr-reviews/PR-15986-chore-setup-committed-remover-for-the-paragon-launchagents-the-uninstaller-left.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-28T14:02:08.577Z",
+  "schema_version": "v1",
+  "commit_sha": "89116ede1c5910777cb61bc3da633810e5988a0d",
+  "title": "chore(setup): committed remover for the Paragon LaunchAgents the uninstaller left",
+  "state": "MERGED",
+  "merged_at": "2026-08-28T14:01:32Z",
+  "head_ref": "chore/paragon-leftover-removal"
+}
