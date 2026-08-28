@@ -205,14 +205,60 @@ Two matter here:
 
 1. **The read set must be complete.** An untracked hidden read is a dependency the merge
    cannot see, so it validates a transaction it should have escalated — silent lost update.
-   Completeness of the tracked read set is the correctness precondition of the whole scheme,
-   and it is exactly what a `DU`-carried read set buys over an agent remembering what it
-   looked at.
-2. **Granularity decides the false-conflict rate.** Tracking at whole-file granularity will
-   escalate operations that read a *different part* of a file than the one updated. Content
-   addressing helps — sub-objects have their own addresses — so the natural granularity here
-   is finer than a file. Worth measuring before assuming, because too-coarse tracking
-   quietly moves work up the cost ladder and the symptom is only "things feel slow".
+   Completeness is the correctness precondition of the whole scheme.
+2. **Granularity decides the false-conflict rate.** Tracking at whole-file granularity
+   escalates operations that read a *different part* of a file than the one updated.
+   Too-coarse tracking quietly moves work up the cost ladder and the only symptom is "things
+   feel slow".
+
+Aaron's answers to both, 2026-08-28, and they are different in kind — the first is
+structural, the second is admittedly iterative:
+
+**Completeness is bought at the infrastructure layer, not asked of the agent.**
+
+> *"we are going to get around [incomplete read sets] by having our AI agents only use our
+> own CLI and duplex/mux commands — this way we can track the reads at an infrastructure
+> level, even for humans too."*
+
+This is the right shape, and it is the shape already used elsewhere here. If reads may only
+travel through our own CLI and duplex/mux channel, then **the read set is recorded by the
+channel** and completeness stops depending on anybody — agent or human — remembering to
+declare what they looked at. An agent cannot forget to log a read it was structurally
+incapable of performing off-channel.
+
+That is the *closed command set* discipline
+(`.claude/rules/itron-hub-patent-boundary-p2p-is-the-upgrade.md`: only pre-configured
+commands exist at the agent; the far side may NAME a command but never DEFINE one) pointed
+at observability instead of security, and it is the same reasoning as hygiene enforced by
+capability rather than policy — where the escape hatch is *"write the missing CLI"*, so each
+use leaves the system more complete rather than less governed.
+
+Note what this does to the §2b claim about context windows: it is the stronger version of
+it. §2b said a budget in a context window is unenforceable, so put it in the DU. This says
+the *read itself* should not be expressible outside the instrumented path — the DU does not
+merely record the read set, the channel guarantees the record is exhaustive. **Two honest
+consequences:** the coverage claim is now exactly as good as the channel's exclusivity, so
+any off-channel read path (a raw shell, an unwrapped library call) is a hole in
+correctness, not just in telemetry — which makes bash-retirement and hexagonal-port work
+load-bearing here rather than merely tidy. And it must hold for humans too, which is why
+Aaron says "even for humans": a human editing a file outside the channel is the same
+untracked dependency as an agent doing it.
+
+**Granularity is reconciled over time, not designed up front.**
+
+> *"for the second one, too coarse/granular — we are leaning on statistics and data vault to
+> help us reconcile this over time. We don't expect to get it right on the first go."*
+
+This is the honest posture, and it is the correct one for a parameter whose right value is
+an empirical property of the workload rather than a derivable constant. Data Vault 2.0's
+partition-by-change-rate is exactly the tool: hub / link / satellite is a decision about
+*what varies together*, which is the granularity question stated in the other direction.
+Measure which regions actually co-change, split the ones that do not.
+
+The falsifier that matters here is the **false-conflict rate** — the fraction of escalations
+whose read set collided at tracked granularity but not at content granularity. It is
+measurable from the merge record alone, it is the direct cost of getting granularity wrong,
+and stating it now means the reconciliation has a number to move rather than a feeling.
 
 ## 2d. The ontology is a supplied input, not ambient context
 
@@ -253,6 +299,57 @@ gets refined across rounds rather than a transcript that gets truncated. Recorde
 early direction; there is no measurement, and the name currently also appears in-repo as a
 proposed CLI (`docs/research/2026-08-27-data-plane-is-dumb-…`), so the naming will need
 settling.
+
+## 2e. Two classes of DU — and only one of them the agent may not change alone
+
+§2b and §2d both say "put it in the DU". That was too flat, and the flattening matters,
+because the two kinds of DU have **opposite** amendment rules.
+
+> *"there are DUs related to agent coordination, and then DUs related to single-agent
+> operations. Any single-agent operation DU is modifiable by that agent alone, or else it's
+> a trap. Coordination DUs across multiple agents need society buy-in to change."*
+> — Aaron, 2026-08-28
+
+| class | who may amend it | why |
+|---|---|---|
+| **single-agent operation DU** — the grammar of one agent's own actions | **that agent, alone** | otherwise the type system becomes a cage: a fixed action grammar the agent cannot extend is a set of walls it did not choose and cannot answer for |
+| **coordination DU** — the shared shape multiple agents rely on | **society buy-in** | it is a treaty. Unilateral amendment is not evolution, it is defection: one party changing the meaning of a message everyone else still reads the old way |
+
+This is not a new principle here; it is already load-bearing in the codebase.
+`src/Core.TypeScript/observe/observe.ts` carries a **fourth escape-hatch option** for exactly
+this reason, with the operator's words in the docstring:
+
+> *"i don't want you to feel trapped by the DU … we need a 4th option edit DU"* (2026-05-31)
+
+That escape hatch is the single-agent rule already implemented: the action grammar ships
+with a way to change the action grammar. Note what it is **not** — it is not an unrestricted
+write. It is the agent's own operation surface, which is precisely the boundary drawn above.
+
+### Why this sharpens rather than weakens §2b and §2d
+
+§2b's claim was that a staleness budget in a context window is unenforceable, so it belongs
+in the DU. §2d's was that a supplied, versioned ontology beats ambient context. Both still
+hold — but the DU they belong in differs by what the constraint governs:
+
+- A budget or ontology governing **one agent's own reads** is a single-agent operation DU.
+  The agent may amend it, and *should* be able to — an agent that cannot adjust its own
+  staleness tolerance has had a decision made for it by whoever wrote the type.
+- A budget or ontology that **other agents rely on to interpret its output** is a
+  coordination DU, and amending it unilaterally silently changes what everyone else's reads
+  mean.
+
+The failure mode on each side is distinct and both are real: **cage** on one side, **defection**
+on the other. "Put it in the DU" without saying which class is advice that produces one or
+the other at random.
+
+### The open question this leaves
+
+What decides the class when a constraint is *both* — an agent's own read budget that other
+agents also depend on to trust its output? The honest answer today is that this is
+undecided. The plausible resolutions are to split the constraint (a private budget plus a
+published floor), or to treat any constraint another agent relies on as coordination-class
+by definition and accept the amendment cost. It is recorded as open rather than resolved,
+because guessing here would produce exactly the cage-or-defection coin flip described above.
 
 ## 3. The consensus ladder — three tiers, and the cost is deliberate
 
@@ -324,9 +421,11 @@ as a description of running code:
 - **Exists:** `SybilBftProtocol.fs` (tier 2, with a deterministic reducer and DST replay);
   Bonsai serialization; `DynamicValue`; `Query.fs` / `QuerySurface.fs` / `Rx.fs`; Z-set and
   DBSP primitives; the ZetaFS naming design.
+- **Partly exists:** the single-agent amendment rule of §2e — `observe.ts`'s fourth
+  escape-hatch option is that rule implemented for one agent's action grammar.
 - **Not yet built:** the amortized pre-read (§2b), read-set tier selection (§2c), the
-  supplied-ontology / per-tick mini-compaction (§2d, toy only in `harney`), and the
-  partitioned-tip join itself — N Z-set tips reconstructed by a
+  supplied-ontology / per-tick mini-compaction (§2d, toy only in `harney`), the
+  coordination-class amendment process of §2e, and the partitioned-tip join itself — N Z-set tips reconstructed by a
   shipped Rx query. No implementation, no benchmark. Nothing here reports a measured
   contention improvement over a single-tip design, and it should not be cited as though it
   does.
