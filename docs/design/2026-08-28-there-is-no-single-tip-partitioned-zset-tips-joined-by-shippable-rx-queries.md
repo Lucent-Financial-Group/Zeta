@@ -342,14 +342,54 @@ The failure mode on each side is distinct and both are real: **cage** on one sid
 on the other. "Put it in the DU" without saying which class is advice that produces one or
 the other at random.
 
-### The open question this leaves
+### When a constraint is both: split the hat; failing that, society wins
 
-What decides the class when a constraint is *both* — an agent's own read budget that other
-agents also depend on to trust its output? The honest answer today is that this is
-undecided. The plausible resolutions are to split the constraint (a private budget plus a
-published floor), or to treat any constraint another agent relies on as coordination-class
-by definition and accept the amendment cost. It is recorded as open rather than resolved,
-because guessing here would produce exactly the cage-or-defection coin flip described above.
+Aaron, 2026-08-28:
+
+> *"when the constraint is on both we try to split the contract/hat into two, so we can have
+> different rules for each. If this is not possible then society wins over the individual —
+> unless we come up with some degenerate cases, but this will be case by case."*
+
+A three-step rule, and the order is the substance:
+
+1. **Split the hat.** The preferred move is not to adjudicate the conflict but to *dissolve*
+   it: separate the constraint into two contracts with different amendment rules — the
+   private part the agent governs alone, the published part society governs. Hats already
+   work this way (`docs/research/2026-08-09-every-node-is-its-own-identity-provider-…`): a
+   hat grants bounded claims, and holding two hats is ordinary. So the split is the existing
+   mechanism applied to a new case, not new machinery.
+2. **If it cannot be split, society wins.** A tiebreak, stated plainly and not hedged.
+3. **Degenerate cases are case-by-case**, deliberately not pre-committed.
+
+**The cost of step 2, stated because a default whose price is unstated is not a real
+default.** Choosing society-wins means that where a constraint genuinely cannot be split, we
+accept the **cage** risk rather than the **defection** risk. That is the correct trade for
+shared meaning — a coordination DU one party may amend unilaterally is not a contract — but
+it is a trade, and the agent on the losing side of an unsplittable constraint has had a rule
+imposed. Step 1 is preferred precisely because it is the only branch where nobody pays that.
+The rule's honesty is that it puts splitting first and names the tiebreak rather than
+pretending the conflict rarely arises.
+
+### Why this does not contradict privacy-as-hard-money
+
+Worth stating, because the two rules look opposed and are not.
+`.claude/rules/privacy-budget-is-hard-money-earned-by-others.md` says a dweller's privacy
+budget can be spent or staked by its owner but **never confiscated** — the individual wins,
+absolutely. Here, society wins. Both hold, because **they govern different objects**:
+
+| | object | who decides |
+|---|---|---|
+| privacy budget | the individual's **own resource** | the owner, always — spend and stake yes, confiscate never |
+| coordination DU | **shared meaning** others read | society, when it cannot be split |
+
+Nobody else's interpretation depends on how much budget you hold, so there is nothing for
+society to have a claim on. Everybody's interpretation depends on what a shared message
+means, so no single party can hold the pen. The split-the-hat step is what keeps these two
+regimes from colliding in practice: it separates what is *yours* from what is *ours* before
+either rule has to be invoked.
+
+That consistency is not decoration — it is the check that step 2 is not quietly a licence to
+confiscate. It is not, because a coordination DU was never the individual's to begin with.
 
 ## 3. The consensus ladder — three tiers, and the cost is deliberate
 
@@ -425,7 +465,8 @@ as a description of running code:
   escape-hatch option is that rule implemented for one agent's action grammar.
 - **Not yet built:** the amortized pre-read (§2b), read-set tier selection (§2c), the
   supplied-ontology / per-tick mini-compaction (§2d, toy only in `harney`), the
-  coordination-class amendment process of §2e, and the partitioned-tip join itself — N Z-set tips reconstructed by a
+  coordination-class amendment process of §2e — the split-the-hat rule is decided but the
+  mechanism that enforces it is not built — and the partitioned-tip join itself — N Z-set tips reconstructed by a
   shipped Rx query. No implementation, no benchmark. Nothing here reports a measured
   contention improvement over a single-tip design, and it should not be cited as though it
   does.
