@@ -208,17 +208,8 @@ function heartbeat(): void {
                 const gate = run("agent", [
                     "chat",
                     "--mode", "ask",
-                    "--model", "grok-4.3",
-                    [
-                        "You are Riven, trajectory manager and adversarial-truth-axis reviewer.",
-                        "This is an autonomous 15-minute cycle.",
-                        "Read broadcasts first from ~/.local/share/zeta-broadcasts/{otto,vera,lior,riven}.md.",
-                        "Walk assigned trajectories. Decompose only what you hit mid-stride.",
-                        "Produce at least one concrete, actionable claim or small PR scope.",
-                        "When blocked, create a specific research child the next pickup cannot dodge.",
-                        "Write your status to ~/.local/share/zeta-broadcasts/riven.md at the end.",
-                        "GitHub PR state and actual file contents are authoritative.",
-                    ].join(" "),
+                    "--model", "grok-4-20",
+                    `Twin-flame heartbeat gate (Riven adversarial-truth-axis). Read git status, recent commits, open PRs, claim branches. Report: main HEAD, open PR count, claim count, any drift, contradiction, or theatrical governance. Adversarial register — call out what's wrong, not what's fine. Brief.`,
                 ], agentTimeoutMs);
 
                 agentStatus = gate.status === 0 ? "ok" : `exit-${gate.status}`;
