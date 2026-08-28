@@ -919,26 +919,29 @@ let ``ProcessMany of 5 with MaxBatchSize 2 is split 2-2-1 and results stay index
 let ``row-1 Result.Error without throw: row-0 still completes (data per-row, not WholeBoat)`` () : Task =
     // Feedback error as DATA. processBatch does not throw. WholeBoat is only
     // for throw / length mismatch (pinned above). FourCorner is not required.
+    // Shape matches the success-path pin (ProcessAsync + pump + WhenAll): the
+    // previous variant hung testhost for 15min in CI under the full suite.
     task {
         let processBatch (boat: ReadOnlyMemory<int>) (_ct: CancellationToken) : Task<Result<int, string> array> =
-            Task.FromResult [|
-                for i in 0 .. boat.Length - 1 ->
-                    if boat.Span.[i] = 1 then Error "feedback"
-                    else Ok(boat.Span.[i] * 10)
-            |]
+            let span = boat.Span
+            let results = Array.zeroCreate boat.Length
+            for i in 0 .. boat.Length - 1 do
+                let x = span.[i]
+                results.[i] <- if x = 8 then Error "feedback" else Ok(x * 10)
+            Task.FromResult results
         let ctx = DeterministicSyncContext()
-        let config = { FerryThrottlerConfig.deterministic with MaxBatchSize = 8 }
         use throttler =
-            new FerryThrottler<int, Result<int, string>>(config, processBatch, syncContext = ctx)
-        let t0 = throttler.ProcessAsync 0
-        let t1 = throttler.ProcessAsync 1
+            new FerryThrottler<int, Result<int, string>>(
+                { FerryThrottlerConfig.deterministic with MaxBatchSize = 8 },
+                processBatch,
+                syncContext = ctx)
+        let t0 = throttler.ProcessAsync 7
+        let t1 = throttler.ProcessAsync 8
         ctx.PumpToIdle()
-        t0.IsCompletedSuccessfully |> should equal true
-        t1.IsCompletedSuccessfully |> should equal true
-        let! r0 = t0
-        let! r1 = t1
-        r0 |> should equal (Ok 0)
-        r1 |> should equal (Error "feedback")
+        let! results = Task.WhenAll([| t0; t1 |])
+        match results.[0], results.[1] with
+        | Ok 70, Error "feedback" -> ()
+        | other -> failwithf "expected Ok 70, Error feedback; got %A" other
         let completion = throttler.CompleteAsync()
         ctx.PumpToIdle()
         do! completion
