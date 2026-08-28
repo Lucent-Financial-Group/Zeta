@@ -370,6 +370,48 @@ imposed. Step 1 is preferred precisely because it is the only branch where nobod
 The rule's honesty is that it puts splitting first and names the tiebreak rather than
 pretending the conflict rarely arises.
 
+### Declare the trade in the hat contract — this is where forks come from
+
+> *"this is likely where most forks will come from, so it's better to be explicit up front in
+> the hat contract when you've made this trade."* — Aaron, 2026-08-28
+
+This turns step 2 from a rule with an accepted cost into a rule with a **release valve**, and
+the valve only works if it is declared before anyone is standing on it.
+
+**The prediction.** An agent that cannot accept an imposed unsplittable constraint has
+exactly one honest move: leave and take its own branch. So the society-wins branch is not
+merely where the individual pays — it is **the fork generator**, and forks will cluster there
+rather than being scattered.
+
+**Why declaring it up front changes the outcome and not just the manners.** The discipline
+here is Hirschman's, already an anchor in this repo (`itron-hub-patent-boundary-…`, on exit
+as the discriminator between an oracle you chose and a hub that holds you):
+
+| the trade is… | what an unwilling agent can do | what it becomes |
+|---|---|---|
+| **declared in the hat contract** | decline the hat before wearing it, or wear it knowingly and fork later with the terms on record | **exit** — legitimate, informed, and cheap |
+| **undeclared, discovered later** | comply against its judgement, or amend unilaterally | **defection** — or a grievance, since the agent accepted terms it was never shown |
+
+Undeclared imposition does not prevent the fork. It converts a legitimate exit into either
+a defection or a captured party, which are the two outcomes the whole DU-class distinction
+exists to avoid. **Exit is what makes society-wins legitimate rather than coercive** — and
+exit is only real if the terms were visible at the moment of choosing.
+
+**Forks are not the failure mode here.** `anti-babel-preserve-reconcilability` already holds
+that reintegration is not reconvergence: two paths around a pole yield genuinely different
+results, and **that difference is information, not error** (monodromy). Both branches are
+kept, each with its path recorded. So a fork originating at a declared unsplittable
+constraint is the system working — a decorrelation event with its cause on the record, which
+is strictly better than a silent divergence nobody can trace to a decision.
+
+**The operational consequence, which is checkable.** A hat contract that carries a
+coordination-class constraint the wearer cannot amend must **say so, in the contract**. A
+contract that imposes such a constraint without declaring it is a defect of the same family
+as an unenforced exception: it reads as a grant of autonomy and carries an imposition. That
+is a property a linter can check once hat contracts are structured — every
+coordination-class constraint in a hat must carry an explicit declaration — and it belongs
+on the list of falsifiers to build alongside the amendment mechanism itself.
+
 ### Why this does not contradict privacy-as-hard-money
 
 Worth stating, because the two rules look opposed and are not.
@@ -465,8 +507,10 @@ as a description of running code:
   escape-hatch option is that rule implemented for one agent's action grammar.
 - **Not yet built:** the amortized pre-read (§2b), read-set tier selection (§2c), the
   supplied-ontology / per-tick mini-compaction (§2d, toy only in `harney`), the
-  coordination-class amendment process of §2e — the split-the-hat rule is decided but the
-  mechanism that enforces it is not built — and the partitioned-tip join itself — N Z-set tips reconstructed by a
+  coordination-class amendment process of §2e — the split-the-hat rule and the
+  declare-the-trade requirement are decided, but neither the amendment mechanism nor the
+  linter that checks hat contracts declare their unsplittable constraints is built — and the
+  partitioned-tip join itself — N Z-set tips reconstructed by a
   shipped Rx query. No implementation, no benchmark. Nothing here reports a measured
   contention improvement over a single-tip design, and it should not be cited as though it
   does.
