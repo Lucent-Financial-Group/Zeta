@@ -29,8 +29,97 @@ let ``the grammar owns the wire: actions encode to the crossing payloads the roo
     Assert.Equal("go:hottest", ControlScheme.payload (ControlScheme.Go "hottest"))
     Assert.Equal("ui:conference", ControlScheme.payload ControlScheme.Conference)
     Assert.Equal("key:10:1", ControlScheme.payload (ControlScheme.Pad 0xA)) // the chip9 pad pass-through
+    Assert.Equal("point:17:42", ControlScheme.payload (ControlScheme.Point(17, 42)))
 
 [<Fact>]
 let ``unmapped inputs are honest Nones — a scheme never invents meaning`` () =
     Assert.True(ControlScheme.translate ControlScheme.keyboardWasd "f13" |> Option.isNone)
     Assert.True(ControlScheme.crossing ControlScheme.gamepadStandard "select-plus-start" |> Option.isNone)
+
+[<Fact>]
+let ``ARC-AGI-3 maps all simple actions and canonical in-bounds ACTION6 points`` () =
+    Assert.Equal(Some ControlScheme.Conference, ControlScheme.translate ControlScheme.arcAgi3 "RESET")
+    Assert.Equal(Some(ControlScheme.Go "n"), ControlScheme.translate ControlScheme.arcAgi3 "ACTION1")
+    Assert.Equal(Some ControlScheme.Select, ControlScheme.translate ControlScheme.arcAgi3 "ACTION5")
+    Assert.Equal(Some(ControlScheme.Point(0, 0)), ControlScheme.translate ControlScheme.arcAgi3 "ACTION6:0:0")
+    Assert.Equal(Some(ControlScheme.Point(63, 63)), ControlScheme.translate ControlScheme.arcAgi3 "ACTION6:63:63")
+    Assert.Equal(Some "point:17:42", ControlScheme.crossing ControlScheme.arcAgi3 "ACTION6:17:42")
+    Assert.Equal(Some ControlScheme.Back, ControlScheme.translate ControlScheme.arcAgi3 "ACTION7")
+
+[<Fact>]
+let ``ARC-AGI-3 refuses missing malformed non-canonical and out-of-bounds inputs`` () =
+    let refused =
+        [ "ACTION6"
+          "ACTION6:1"
+          "ACTION6:01:2"
+          "ACTION6:-1:0"
+          "ACTION6:64:0"
+          "ACTION6:0:64"
+          "ACTION8"
+          "action1" ]
+
+    for input in refused do
+        Assert.True(ControlScheme.translate ControlScheme.arcAgi3 input |> Option.isNone, input)
+
+    Assert.True(
+        ControlScheme.translate ControlScheme.arcAgi3 (Unchecked.defaultof<string>) |> Option.isNone,
+        "null"
+    )
+
+[<Fact>]
+let ``ARC-AGI-3's 4103 actions remain distinct in the shared meaning space`` () =
+    let simpleInputs = [ "RESET"; "ACTION1"; "ACTION2"; "ACTION3"; "ACTION4"; "ACTION5"; "ACTION7" ]
+
+    let actions =
+        [ yield! simpleInputs |> List.choose (ControlScheme.translate ControlScheme.arcAgi3)
+
+          for y in 0..63 do
+              for x in 0..63 do
+                  yield ControlScheme.Point(x, y) ]
+
+    Assert.Equal(4103, List.length actions)
+    Assert.Equal(4103, actions |> Set.ofList |> Set.count)
+
+[<Fact>]
+let ``Atari's complete 18-action set embeds without collisions`` () =
+    let inputs =
+        [ "NOOP"
+          "FIRE"
+          "UP"
+          "RIGHT"
+          "LEFT"
+          "DOWN"
+          "UPRIGHT"
+          "UPLEFT"
+          "DOWNRIGHT"
+          "DOWNLEFT"
+          "UPFIRE"
+          "RIGHTFIRE"
+          "LEFTFIRE"
+          "DOWNFIRE"
+          "UPRIGHTFIRE"
+          "UPLEFTFIRE"
+          "DOWNRIGHTFIRE"
+          "DOWNLEFTFIRE" ]
+
+    let actions = inputs |> List.choose (ControlScheme.translate ControlScheme.atari2600)
+    Assert.Equal(18, List.length actions)
+    Assert.Equal(18, actions |> Set.ofList |> Set.count)
+
+[<Fact>]
+let ``a 64x64 Point cannot round-trip through the 4x4 GridBinding without loss`` () =
+    let near = ControlScheme.Point(3, 3)
+    let far = ControlScheme.Point(63, 63)
+    let nearCell = ActionGrammar.ofGrid 3 3
+    let farCell = ActionGrammar.ofGrid 63 63
+
+    Assert.NotEqual(near, far)
+    Assert.Equal(nearCell, farCell)
+
+    let projected =
+        GridBinding.empty
+        |> GridBinding.bind nearCell near
+        |> GridBinding.bind farCell far
+
+    Assert.Equal(Some far, GridBinding.labelAt farCell projected)
+    Assert.DoesNotContain(near, projected |> GridBinding.bound |> List.map snd)

@@ -52,7 +52,8 @@ module MetaControl =
         { Name = "control.gamepad-meta"
           Version = 1
           ZetaId = GeneratorRegistry.idOf "control.gamepad-meta" 1
-          Map = Map.empty } // meta inputs translate via metaOf below (Action is the RAW grammar; meta has its own)
+          Map = Map.empty
+          PointInput = None } // meta inputs translate via metaOf below (Action is the RAW grammar; meta has its own)
 
     /// Translate a meta-pad input to a MetaAction (the meta tier's own table — deliberately small).
     let metaOf (input: string) : MetaAction option =
