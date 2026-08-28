@@ -24,11 +24,21 @@
 # (`dla_canonical_rust.…-cgu.0.rcgu.o`) was committed by accident and sat here unreferenced
 # until the audit above named it; the pattern below keeps the next one out.
 *.wasm
+# The SIX substrate modules under test are committed on purpose — the SUBJECT of the
+# byte-lock comparison, not its expectation (`.claude/rules/no-binary-in-proof-lineage.md`).
+# Without these they are TRACKED BUT IGNORED and a re-add silently no-ops.
+!dla-canonical-wat.wasm
+!dla-canonical-llvm.wasm
+!dla-canonical-emcc.wasm
+!dla-canonical-rust.wasm
+!dla-canonical-asc.wasm
+!dla-canonical-zig.wasm
 *.wasm.o
 *.o
 *.a
 *.rcgu.o
 wasm_exec.js
+!wasm_exec.js
 # The Pages build copies the JS bridge out of the $GOROOT that compiled the module, so it
 # is a build output under a distinct name — the committed `wasm_exec.js` beside it is a
 # Go 1.22-era file and MEASURED 2026-08-17 to differ from Go 1.26.4's. Two names keeps

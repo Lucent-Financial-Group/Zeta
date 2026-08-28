@@ -1,6 +1,17 @@
+# `bin/` matches a directory of that name AT ANY DEPTH, catching paths that are
+# deliberately tracked. Both forms are required per exemption: `!x/bin/` re-includes the
+# directory, `!x/bin/**` its contents. Measured 2026-08-28: four tracked files were
+# tracked-but-ignored with only `.codex/bin/` exempted.
 bin/
+!.claude/bin/
+!.claude/bin/**
 !.codex/bin/
 !.codex/bin/**
+!.gemini/bin/
+!.gemini/bin/**
+# Rust's `src/bin/` is a language convention, not a build output.
+!src/**/src/bin/
+!src/**/src/bin/**
 obj/
 # book build outputs (EPUB/assembled md) — reproducible via tools/book-build/build-book.sh;
 # never commit the binary EPUB (no-binary discipline) or the assembled draft.
@@ -175,6 +186,10 @@ node_modules
 # the ferry-loop lightweight. Pattern documented in
 # `memory/feedback_drop_folder_ferry_pattern_*.md` (per-user).
 drop/
+!db/drop/
+db/drop/*
+!db/drop/.gitignore
+!db/drop/README.md
 
 # Browser/MCP console log files — wherever they land.
 # Belt-and-suspenders pattern per Aaron's Otto-90 hygiene
@@ -216,7 +231,12 @@ tools/alloy/classes/
 
 # Cursor / IDE per-user config and plugin caches (superpowers, etc.)
 .config/
-.kiro/
+.kiro/*
+# NOT `.kiro/` — git cannot re-include a file whose PARENT DIRECTORY is excluded, which
+# makes negations under a bare `.kiro/` inert. Exclude the contents instead.
+!.kiro/alexa-service.ts
+!.kiro/specs/
+!.kiro/specs/**
 
 # Shadow observer runtime log — machine-local, regenerated per boot.
 tools/shadow/shadow-observer.log
