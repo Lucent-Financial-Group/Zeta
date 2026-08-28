@@ -1,0 +1,14 @@
+{
+  "id": "080d0243710ec810a01300089a367415",
+  "at": "2026-08-28T12:52:52.313Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M146W8EK087G0R0009QGYGJ",
+    "type": "task",
+    "title": "Lock-free speculative compare-and-swap update primitive (Atomic.speculativeUpdate)",
+    "slug": "lock-free-speculative-compare-and-swap-update-primitive-atom",
+    "priority": "P2",
+    "filename": "081M146W8EK087G0R0009QGYGJ-lock-free-speculative-compare-and-swap-update-primitive-atom.md"
+  }
+}

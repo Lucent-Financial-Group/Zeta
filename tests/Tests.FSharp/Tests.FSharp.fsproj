@@ -562,6 +562,7 @@
     <Compile Include="Operators/Upsert.Tests.fs" />
     <Compile Include="Operators/SpeculativeWatermark.Tests.fs" />
     <Compile Include="Operators/ReticulumChaos.Tests.fs" />
+    <Compile Include="SpeculativeUpdate.Tests.fs" />
     <Compile Include="Operators/Transaction.Tests.fs" />
     <Compile Include="Operators/Fusion.Tests.fs" />
     <Compile Include="Operators/ResidualMax.Tests.fs" />
