@@ -62,3 +62,25 @@ distinct scripts.
 
 The general lesson: when a rescue is filtered by the very rules that caused the content to
 be untracked in the first place, the filter removes precisely what most needed rescuing.
+
+## Second pass (same day)
+
+Three more files from the last four directories. The sweep there reported 82 unique
+files, but **79 were `.helm-render-cache/*.tgz`** — downloaded Helm chart tarballs.
+Unique-in-git, worthless to keep: a build cache is re-downloadable by definition.
+
+"Not in the object database" and "worth preserving" are different questions, and
+conflating them would have committed 79 chart tarballs as though they were work.
+
+The three kept:
+
+- `shadow-reason-truth-13492/.mutation/run.sh` — an 86-line hand-written mutation
+  harness that proves each mutation APPLIED by byte-level `cmp` before reading its
+  result, and RESTORED after. Its own comment states the reason: *"A harness that
+  patches nothing produces fake surviving mutants, which is worse than no harness at
+  all."* Not gitignored, and this was the only copy. Its paths are hardcoded to the
+  orphan directory, so it needs adapting before reuse — the method is what is worth
+  keeping.
+- `shadow-reason-truth-13492/.mutation/pristine-rsc.ts` — its pristine baseline.
+- `zeta-shadow-darkforest/db/search-index/inverted/terms-v.jsonl` — a generated index
+  shard, kept only because it is cheap and its provenance is unclear.
