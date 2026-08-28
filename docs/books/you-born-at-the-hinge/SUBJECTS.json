@@ -1,0 +1,145 @@
+{
+  "book": "you-born-at-the-hinge",
+  "root": "docs/books/you-born-at-the-hinge",
+  "_readme": "The hand-maintained half of the named index. Derived from CONSENT-LEDGER.md — that file is the source of truth for what anyone agreed to; this one only makes it machine-checkable. NO NAME APPEARS HERE THAT THE LEDGER DOES NOT ALREADY NAME IN COMMITTED TEXT: this repository is PUBLIC, so adding a withheld name here would publish it. Every other subject carries nameWithheldFromRegistry:true and its name strings come from a local overlay that is never committed (see src/Core.TypeScript/book-index/README.md). Missing overlay is reported as UNCHECKED, never as a pass.",
+  "notProse": ["CONSENT-LEDGER.md", "SUBJECT-INDEX.md"],
+  "subjects": [
+    {
+      "id": "aaron",
+      "role": "author",
+      "state": "named",
+      "ledgerAnchor": "Aaron",
+      "nameWithheldFromRegistry": false,
+      "detectors": { "names": ["Aaron"], "rolePhrases": [] },
+      "scopeNote": "glass-halo (self) — his own mind, transparent by his choice. He is in the index because his footprint is what every other subject's passage sits beside, not because his consent is in question."
+    },
+    {
+      "id": "addison",
+      "role": "daughter",
+      "state": "named",
+      "ledgerAnchor": "Addison",
+      "nameWithheldFromRegistry": false,
+      "detectors": { "names": ["Addison"], "rolePhrases": [] },
+      "publishGate": "Addison pre-reads any passage naming her (ledger 2026-08-06)."
+    },
+    {
+      "id": "lillian",
+      "role": "daughter (oldest)",
+      "state": "named",
+      "ledgerAnchor": "Lillian / Lilly",
+      "nameWithheldFromRegistry": false,
+      "detectors": { "names": ["Lillian", "Lilly", "Lilith"], "rolePhrases": [] },
+      "publishGate": "She pre-reads any passage naming her; hard gate on the hospital-escape widening (ledger 2026-08-23)."
+    },
+    {
+      "id": "max",
+      "role": "business partner",
+      "state": "named",
+      "ledgerAnchor": "Max",
+      "nameWithheldFromRegistry": false,
+      "detectors": { "names": ["Max"], "rolePhrases": ["my business partner"] },
+      "publishGate": "Relayed consent, both parties pre-read; 'neither side weak' register bound (ledger 2026-08-25)."
+    },
+    {
+      "id": "granny",
+      "role": "grandmother",
+      "state": "named",
+      "ledgerAnchor": "Granny (Nellie Faulkner)",
+      "nameWithheldFromRegistry": false,
+      "detectors": { "names": ["Granny", "Nellie Faulkner", "Nellie"], "rolePhrases": ["my grandmother"] },
+      "scopeNote": "Deceased; honored. Scheme mechanics stay scale+omission and nothing may imply she knew."
+    },
+    {
+      "id": "chris-king",
+      "role": "friend",
+      "state": "named",
+      "ledgerAnchor": "Chris King",
+      "nameWithheldFromRegistry": false,
+      "detectors": { "names": ["Chris King"], "rolePhrases": [] },
+      "scopeNote": "Granted for the 'reader's disease' coinage credit and (2026-08-21) for naming as a capability witness. NOT covered: words attributed to him. THE INDEX DOES NOT ENFORCE THAT SCOPE — it is a human's job."
+    },
+    {
+      "id": "diana-duncan",
+      "role": "former boss (Itron)",
+      "state": "named",
+      "ledgerAnchor": "Diana",
+      "nameWithheldFromRegistry": false,
+      "detectors": { "names": ["Diana Duncan", "Diana"], "rolePhrases": [] },
+      "publishGate": "PROVISIONAL — her name is not published in the book until she has proofread and approved. Her gate, not Aaron's to discharge."
+    },
+    {
+      "id": "houman-alasti",
+      "role": "collaborator; co-founder c. 2007-2008",
+      "state": "named",
+      "ledgerAnchor": "Houman Alasti",
+      "nameWithheldFromRegistry": false,
+      "detectors": { "names": ["Houman Alasti", "Houman"], "rolePhrases": [] },
+      "scopeNote": "Mutual material is jointly owned and tellable. SOLO material — any story in which Aaron does not appear — is his alone and must not be DRAFTED, not merely not published. The index cannot tell a mutual story from a solo one; that check is a human's."
+    },
+    {
+      "id": "mother",
+      "role": "mother",
+      "state": "role-only",
+      "ledgerAnchor": "*(mother)*",
+      "nameWithheldFromRegistry": true,
+      "detectors": { "names": [], "rolePhrases": ["my mother", "his mother", "my mom", "his mom"] },
+      "publishGate": "GRANTED with pre-read before publish. Name held out of the text by default; it enters only if Aaron places it.",
+      "scopeNote": "Welfare line: the fair, balanced telling — no paranoid/accusatory-spiral content. Not machine-checkable."
+    },
+    {
+      "id": "father",
+      "role": "father",
+      "state": "role-only",
+      "ledgerAnchor": "*(father)*",
+      "nameWithheldFromRegistry": true,
+      "detectors": { "names": [], "rolePhrases": ["my father", "his father", "my dad", "his dad"] },
+      "publishGate": "GRANTED with pre-read; naming-an-identifiable-living-person remains an editor/counsel publish-time check."
+    },
+    {
+      "id": "step-father",
+      "role": "step-father",
+      "state": "role-only",
+      "ledgerAnchor": "*(step-dad)*",
+      "nameWithheldFromRegistry": true,
+      "detectors": { "names": [], "rolePhrases": ["step-dad", "step dad", "stepdad", "step-father", "my stepfather"] },
+      "publishGate": "Positive inclusion authorized by Aaron; his OWN yes is still a light confirm before publish.",
+      "scopeNote": "Identifying specifics (the specific fiber build, the long-distance company) generalize to 'telecom infrastructure' by default."
+    },
+    {
+      "id": "late-sister",
+      "role": "sister — the dedicatee",
+      "state": "role-only",
+      "ledgerAnchor": "*(late sister)*",
+      "nameWithheldFromRegistry": true,
+      "detectors": { "names": [], "rolePhrases": ["my sister", "his sister", "my late sister", "his late sister"] },
+      "scopeNote": "Deceased; cannot consent. Bound: strong/good portrait, and the ONE permitted vulnerable detail is the heroin overdose. Her name currently appears inside a quoted line behind Aaron's own 'Ryan gate' — supply the overlay and the leak check will surface it for his decision."
+    },
+    {
+      "id": "former-spouse-ux",
+      "role": "former spouse",
+      "state": "role-only",
+      "ledgerAnchor": "*(a private individual)* — former spouse",
+      "nameWithheldFromRegistry": true,
+      "detectors": { "names": [], "rolePhrases": ["my ex-wife", "his ex-wife", "my former wife", "UX-research mentor", "user-experience research"] },
+      "scopeNote": "ASKED AND ANSWERED 2026-08-15 — SCOPED, and the four states cannot express it. Personal-relation naming PERMITTED where Aaron places it; professional / technical-source attribution DENIED (employer confidentiality). This registry enforces the STRICTER half (no name) because a machine cannot tell which register a sentence is in. It does NOT enforce the ledger's open question about the ROLE framing ('a UX-research mentor') surviving without her name — that is Aaron's call and is unresolved."
+    },
+    {
+      "id": "holly-hill-subject",
+      "role": "then-girlfriend, later wife",
+      "state": "pending",
+      "ledgerAnchor": "(no row yet — held in local memory pending her reply)",
+      "nameWithheldFromRegistry": true,
+      "detectors": { "names": [], "rolePhrases": [] },
+      "scopeNote": "ASKED 2026-08-25, awaiting reply. Role-only until she answers. The teaching value of the episode is entirely in Aaron's half and every word survives with her unnamed. Naming her would also further identify the son the ledger omits. No role phrase is registered deliberately: the ledger and the local memory both refer to her only by role in context, and inventing a detector phrase here would be the shadow introducing a reference she has not agreed to."
+    },
+    {
+      "id": "son",
+      "role": "son — identifiable minor",
+      "state": "omitted",
+      "ledgerAnchor": "*(son)*",
+      "nameWithheldFromRegistry": true,
+      "detectors": { "names": [], "rolePhrases": ["my son", "his son"] },
+      "scopeNote": "Standing rule, not a consent question: kept out of the text regardless of what anyone says. Minors cannot consent, and consent cannot be purchased or induced. This is the one row the shadow will not cross regardless of instruction."
+    }
+  ]
+}

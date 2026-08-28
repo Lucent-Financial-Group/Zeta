@@ -1,0 +1,874 @@
+{
+  "generatedFrom": "76 prose files under docs/books/you-born-at-the-hinge",
+  "_readme": "Ratchet baseline for the unregistered-person sweep. NOT an allowlist of approved names: it is a snapshot of capitalised tokens present when the sweep was introduced. A candidate not listed here FAILS the audit — that is how a new person entering the prose without a registry row is caught. An entry no longer present in the prose is STALE and must be pruned. `triaged: false` is DEBT and can only go down.",
+  "entries": [
+    {
+      "token": "Beacon",
+      "triaged": false
+    },
+    {
+      "token": "Uber",
+      "triaged": false
+    },
+    {
+      "token": "Christian",
+      "triaged": false
+    },
+    {
+      "token": "Stainback",
+      "triaged": false
+    },
+    {
+      "token": "American",
+      "triaged": false
+    },
+    {
+      "token": "Becker",
+      "triaged": false
+    },
+    {
+      "token": "Itron",
+      "triaged": false
+    },
+    {
+      "token": "Nextdoor",
+      "triaged": false
+    },
+    {
+      "token": "Stump",
+      "triaged": false
+    },
+    {
+      "token": "Bayesian",
+      "triaged": false
+    },
+    {
+      "token": "Genshin",
+      "triaged": false
+    },
+    {
+      "token": "RAWs",
+      "triaged": false
+    },
+    {
+      "token": "Rodney",
+      "triaged": false
+    },
+    {
+      "token": "Rolesville",
+      "triaged": false
+    },
+    {
+      "token": "Susskind",
+      "triaged": false
+    },
+    {
+      "token": "Collatz",
+      "triaged": false
+    },
+    {
+      "token": "Confederate",
+      "triaged": false
+    },
+    {
+      "token": "Hill",
+      "triaged": false
+    },
+    {
+      "token": "Jungian",
+      "triaged": false
+    },
+    {
+      "token": "Raleigh",
+      "triaged": false
+    },
+    {
+      "token": "BBSes",
+      "triaged": false
+    },
+    {
+      "token": "Bell",
+      "triaged": false
+    },
+    {
+      "token": "Condorcet",
+      "triaged": false
+    },
+    {
+      "token": "Coptic",
+      "triaged": false
+    },
+    {
+      "token": "Dixie",
+      "triaged": false
+    },
+    {
+      "token": "Egyptian",
+      "triaged": false
+    },
+    {
+      "token": "Gemini",
+      "triaged": false
+    },
+    {
+      "token": "Girard",
+      "triaged": false
+    },
+    {
+      "token": "Jesus",
+      "triaged": false
+    },
+    {
+      "token": "Lucifer",
+      "triaged": false
+    },
+    {
+      "token": "Minka",
+      "triaged": false
+    },
+    {
+      "token": "Ostrom",
+      "triaged": false
+    },
+    {
+      "token": "Surowiecki",
+      "triaged": false
+    },
+    {
+      "token": "Tullis",
+      "triaged": false
+    },
+    {
+      "token": "Ace",
+      "triaged": false
+    },
+    {
+      "token": "America",
+      "triaged": false
+    },
+    {
+      "token": "Carl",
+      "triaged": false
+    },
+    {
+      "token": "Figment",
+      "triaged": false
+    },
+    {
+      "token": "Fromm",
+      "triaged": false
+    },
+    {
+      "token": "GSet",
+      "triaged": false
+    },
+    {
+      "token": "Hardy",
+      "triaged": false
+    },
+    {
+      "token": "Joe",
+      "triaged": false
+    },
+    {
+      "token": "Jung",
+      "triaged": false
+    },
+    {
+      "token": "Knots",
+      "triaged": false
+    },
+    {
+      "token": "Mayans",
+      "triaged": false
+    },
+    {
+      "token": "Rovelli",
+      "triaged": false
+    },
+    {
+      "token": "AIs",
+      "triaged": false
+    },
+    {
+      "token": "Adorno",
+      "triaged": false
+    },
+    {
+      "token": "Alabama",
+      "triaged": false
+    },
+    {
+      "token": "Albert",
+      "triaged": false
+    },
+    {
+      "token": "Barenholtz",
+      "triaged": false
+    },
+    {
+      "token": "Beta",
+      "triaged": false
+    },
+    {
+      "token": "Brewology",
+      "triaged": false
+    },
+    {
+      "token": "Clark",
+      "triaged": false
+    },
+    {
+      "token": "Cole",
+      "triaged": false
+    },
+    {
+      "token": "Crowds",
+      "triaged": false
+    },
+    {
+      "token": "Deci",
+      "triaged": false
+    },
+    {
+      "token": "Disney",
+      "triaged": false
+    },
+    {
+      "token": "Dominion",
+      "triaged": false
+    },
+    {
+      "token": "Dukes",
+      "triaged": false
+    },
+    {
+      "token": "Egypt",
+      "triaged": false
+    },
+    {
+      "token": "Euler",
+      "triaged": false
+    },
+    {
+      "token": "Freud",
+      "triaged": false
+    },
+    {
+      "token": "Gnosticism",
+      "triaged": false
+    },
+    {
+      "token": "Goffman",
+      "triaged": false
+    },
+    {
+      "token": "Graham",
+      "triaged": false
+    },
+    {
+      "token": "Halloween",
+      "triaged": false
+    },
+    {
+      "token": "Hames",
+      "triaged": false
+    },
+    {
+      "token": "Hazzard",
+      "triaged": false
+    },
+    {
+      "token": "Hurwitz",
+      "triaged": false
+    },
+    {
+      "token": "Interpol",
+      "triaged": false
+    },
+    {
+      "token": "Kish",
+      "triaged": false
+    },
+    {
+      "token": "LLMs",
+      "triaged": false
+    },
+    {
+      "token": "Landauer",
+      "triaged": false
+    },
+    {
+      "token": "Langan",
+      "triaged": false
+    },
+    {
+      "token": "Majid",
+      "triaged": false
+    },
+    {
+      "token": "Mayan",
+      "triaged": false
+    },
+    {
+      "token": "Musical",
+      "triaged": false
+    },
+    {
+      "token": "NFTs",
+      "triaged": false
+    },
+    {
+      "token": "Nash",
+      "triaged": false
+    },
+    {
+      "token": "Ornstein",
+      "triaged": false
+    },
+    {
+      "token": "PRs",
+      "triaged": false
+    },
+    {
+      "token": "Pascal",
+      "triaged": false
+    },
+    {
+      "token": "Rogers",
+      "triaged": false
+    },
+    {
+      "token": "Satoshi",
+      "triaged": false
+    },
+    {
+      "token": "Silva",
+      "triaged": false
+    },
+    {
+      "token": "Studio",
+      "triaged": false
+    },
+    {
+      "token": "Syme",
+      "triaged": false
+    },
+    {
+      "token": "Tao",
+      "triaged": false
+    },
+    {
+      "token": "Usenet",
+      "triaged": false
+    },
+    {
+      "token": "Abramsky",
+      "triaged": false
+    },
+    {
+      "token": "African",
+      "triaged": false
+    },
+    {
+      "token": "Allport",
+      "triaged": false
+    },
+    {
+      "token": "Amari",
+      "triaged": false
+    },
+    {
+      "token": "Aurora",
+      "triaged": false
+    },
+    {
+      "token": "Axelrod",
+      "triaged": false
+    },
+    {
+      "token": "Belmont",
+      "triaged": false
+    },
+    {
+      "token": "Bible",
+      "triaged": false
+    },
+    {
+      "token": "Bohr",
+      "triaged": false
+    },
+    {
+      "token": "Bowen",
+      "triaged": false
+    },
+    {
+      "token": "Buddhist",
+      "triaged": false
+    },
+    {
+      "token": "Byzantine",
+      "triaged": false
+    },
+    {
+      "token": "Chalmers",
+      "triaged": false
+    },
+    {
+      "token": "Charles",
+      "triaged": false
+    },
+    {
+      "token": "Christianities",
+      "triaged": false
+    },
+    {
+      "token": "Claude",
+      "triaged": false
+    },
+    {
+      "token": "Communit",
+      "triaged": false
+    },
+    {
+      "token": "Cooperation",
+      "triaged": false
+    },
+    {
+      "token": "Courses",
+      "triaged": false
+    },
+    {
+      "token": "Demiurge",
+      "triaged": false
+    },
+    {
+      "token": "Dewey",
+      "triaged": false
+    },
+    {
+      "token": "Disneyland",
+      "triaged": false
+    },
+    {
+      "token": "Duat",
+      "triaged": false
+    },
+    {
+      "token": "Eclipse",
+      "triaged": false
+    },
+    {
+      "token": "Einstein",
+      "triaged": false
+    },
+    {
+      "token": "Election",
+      "triaged": false
+    },
+    {
+      "token": "Electric",
+      "triaged": false
+    },
+    {
+      "token": "Ernest",
+      "triaged": false
+    },
+    {
+      "token": "Erving",
+      "triaged": false
+    },
+    {
+      "token": "Euclidean",
+      "triaged": false
+    },
+    {
+      "token": "FIQhack",
+      "triaged": false
+    },
+    {
+      "token": "Farley",
+      "triaged": false
+    },
+    {
+      "token": "Fiat",
+      "triaged": false
+    },
+    {
+      "token": "Fisher",
+      "triaged": false
+    },
+    {
+      "token": "Flatliners",
+      "triaged": false
+    },
+    {
+      "token": "Floridi",
+      "triaged": false
+    },
+    {
+      "token": "Foot",
+      "triaged": false
+    },
+    {
+      "token": "Fourk",
+      "triaged": false
+    },
+    {
+      "token": "Frankenstein",
+      "triaged": false
+    },
+    {
+      "token": "Freeborn",
+      "triaged": false
+    },
+    {
+      "token": "Fujifilm",
+      "triaged": false
+    },
+    {
+      "token": "Gnostic",
+      "triaged": false
+    },
+    {
+      "token": "Gnostics",
+      "triaged": false
+    },
+    {
+      "token": "Google",
+      "triaged": false
+    },
+    {
+      "token": "Granville",
+      "triaged": false
+    },
+    {
+      "token": "Gray",
+      "triaged": false
+    },
+    {
+      "token": "Gyr",
+      "triaged": false
+    },
+    {
+      "token": "Gärdenfors",
+      "triaged": false
+    },
+    {
+      "token": "HSPs",
+      "triaged": false
+    },
+    {
+      "token": "Hahn",
+      "triaged": false
+    },
+    {
+      "token": "Hammadi",
+      "triaged": false
+    },
+    {
+      "token": "Harrowing",
+      "triaged": false
+    },
+    {
+      "token": "Hartnell",
+      "triaged": false
+    },
+    {
+      "token": "Hawkins",
+      "triaged": false
+    },
+    {
+      "token": "Herbrich",
+      "triaged": false
+    },
+    {
+      "token": "Hong",
+      "triaged": false
+    },
+    {
+      "token": "ISociety",
+      "triaged": false
+    },
+    {
+      "token": "Iriez",
+      "triaged": false
+    },
+    {
+      "token": "Iris",
+      "triaged": false
+    },
+    {
+      "token": "James",
+      "triaged": false
+    },
+    {
+      "token": "John",
+      "triaged": false
+    },
+    {
+      "token": "Kang",
+      "triaged": false
+    },
+    {
+      "token": "Kings",
+      "triaged": false
+    },
+    {
+      "token": "Kschischang",
+      "triaged": false
+    },
+    {
+      "token": "Landis",
+      "triaged": false
+    },
+    {
+      "token": "Leonard",
+      "triaged": false
+    },
+    {
+      "token": "Levin",
+      "triaged": false
+    },
+    {
+      "token": "Levy",
+      "triaged": false
+    },
+    {
+      "token": "Lincoln",
+      "triaged": false
+    },
+    {
+      "token": "Lior",
+      "triaged": false
+    },
+    {
+      "token": "Loki",
+      "triaged": false
+    },
+    {
+      "token": "Lucent",
+      "triaged": false
+    },
+    {
+      "token": "Magazine",
+      "triaged": false
+    },
+    {
+      "token": "Mandela",
+      "triaged": false
+    },
+    {
+      "token": "Maxwell",
+      "triaged": false
+    },
+    {
+      "token": "Maynard",
+      "triaged": false
+    },
+    {
+      "token": "Micro",
+      "triaged": false
+    },
+    {
+      "token": "Microsoft",
+      "triaged": false
+    },
+    {
+      "token": "Milnor",
+      "triaged": false
+    },
+    {
+      "token": "Moon",
+      "triaged": false
+    },
+    {
+      "token": "NPCs",
+      "triaged": false
+    },
+    {
+      "token": "Nag",
+      "triaged": false
+    },
+    {
+      "token": "Niederland",
+      "triaged": false
+    },
+    {
+      "token": "Nāgārjuna",
+      "triaged": false
+    },
+    {
+      "token": "Oaks",
+      "triaged": false
+    },
+    {
+      "token": "Occam",
+      "triaged": false
+    },
+    {
+      "token": "Opus",
+      "triaged": false
+    },
+    {
+      "token": "Orwell",
+      "triaged": false
+    },
+    {
+      "token": "PRXs",
+      "triaged": false
+    },
+    {
+      "token": "Pearl",
+      "triaged": false
+    },
+    {
+      "token": "Pinocchio",
+      "triaged": false
+    },
+    {
+      "token": "Platonic",
+      "triaged": false
+    },
+    {
+      "token": "Poincaré",
+      "triaged": false
+    },
+    {
+      "token": "Popescu",
+      "triaged": false
+    },
+    {
+      "token": "Prejudice",
+      "triaged": false
+    },
+    {
+      "token": "Processing",
+      "triaged": false
+    },
+    {
+      "token": "Pulitzer",
+      "triaged": false
+    },
+    {
+      "token": "Radomsky",
+      "triaged": false
+    },
+    {
+      "token": "Riemannian",
+      "triaged": false
+    },
+    {
+      "token": "Rinck",
+      "triaged": false
+    },
+    {
+      "token": "Sensus",
+      "triaged": false
+    },
+    {
+      "token": "Shahn",
+      "triaged": false
+    },
+    {
+      "token": "Shannon",
+      "triaged": false
+    },
+    {
+      "token": "Singer",
+      "triaged": false
+    },
+    {
+      "token": "Skenazy",
+      "triaged": false
+    },
+    {
+      "token": "Smith",
+      "triaged": false
+    },
+    {
+      "token": "Soraya",
+      "triaged": false
+    },
+    {
+      "token": "Southern",
+      "triaged": false
+    },
+    {
+      "token": "Sumner",
+      "triaged": false
+    },
+    {
+      "token": "Tainter",
+      "triaged": false
+    },
+    {
+      "token": "Tarski",
+      "triaged": false
+    },
+    {
+      "token": "Thanksgiving",
+      "triaged": false
+    },
+    {
+      "token": "Theoretical",
+      "triaged": false
+    },
+    {
+      "token": "Thomas",
+      "triaged": false
+    },
+    {
+      "token": "Transcription",
+      "triaged": false
+    },
+    {
+      "token": "Tri",
+      "triaged": false
+    },
+    {
+      "token": "Trivers",
+      "triaged": false
+    },
+    {
+      "token": "Tsirelson",
+      "triaged": false
+    },
+    {
+      "token": "URLs",
+      "triaged": false
+    },
+    {
+      "token": "Vance",
+      "triaged": false
+    },
+    {
+      "token": "Vineyard",
+      "triaged": false
+    },
+    {
+      "token": "Voevodsky",
+      "triaged": false
+    },
+    {
+      "token": "Walt",
+      "triaged": false
+    },
+    {
+      "token": "Wheeler",
+      "triaged": false
+    },
+    {
+      "token": "Wilson",
+      "triaged": false
+    },
+    {
+      "token": "ZSet",
+      "triaged": false
+    },
+    {
+      "token": "Zuckerman",
+      "triaged": false
+    }
+  ]
+}

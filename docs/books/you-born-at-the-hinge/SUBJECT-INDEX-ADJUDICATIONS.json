@@ -1,0 +1,45 @@
+{
+  "_readme": "Human calls on STATE findings the string match cannot make for itself. KEYED BY BLOCK HASH, deliberately: edit the text and the adjudication expires, because the hash it was granted against no longer exists. It is an AUDIT annotation — 'this string match is not an appearance' — and never a consent decision. Nothing here grants, widens, or discharges anything in CONSENT-LEDGER.md; that file is the only place consent lives. An adjudication whose block is gone is reported as STALE and fails the audit, so this file cannot quietly accumulate cover.",
+  "adjudications": [
+    {
+      "blockHash": "sha256:c131c4c6b783bb3290dfe67cb521065925295c867e52c6364c8a4c2b9f2d72f3",
+      "subjectId": "son",
+      "reason": "Editorial consent header DECLARING the omission, not a mention of him. The phrase 'his son' occurs inside the sentence that states he is kept out of the text.",
+      "by": "shadow",
+      "at": "2026-08-26",
+      "evidence": "Consent: Aaron glass-halo; **his son omitted entirely** (standing minor rule)"
+    },
+    {
+      "blockHash": "sha256:30c04f53767766dfbbffc1cf6c90b09767144b30d027ae968bb569a1eefb6a2f",
+      "subjectId": "son",
+      "reason": "Editorial consent header DECLARING the omission, not a mention of him.",
+      "by": "shadow",
+      "at": "2026-08-26",
+      "evidence": "**His son is omitted entirely** > (one identifiable minor)."
+    },
+    {
+      "blockHash": "sha256:6c78f1ab0a3268a22a97ac02c149b34f59aa41ce6afa5c8fda20c6d1a01a7ef4",
+      "subjectId": "son",
+      "reason": "Editorial consent header citing the omission as the precedent for a different de-identification. Not a mention of him.",
+      "by": "shadow",
+      "at": "2026-08-26",
+      "evidence": "no names, no identifying detail (privacy-budget: glass-halo is his to spend on *his own* mind, never on someone else's; same rule as his son omitted)"
+    },
+    {
+      "blockHash": "sha256:2755f98732ea8a6fda0d8c9203c2434752cc2a41b964996c45fffb61577221a7",
+      "subjectId": "son",
+      "reason": "Editorial consent header DECLARING the omission, and stating that the next-generation thread is held out of the text.",
+      "by": "shadow",
+      "at": "2026-08-26",
+      "evidence": "**His son is omitted > entirely** per the standing rule (one identifiable minor)"
+    },
+    {
+      "blockHash": "sha256:c70e9d47622701b9518390ba57c0eba4dd7118c8ff7ace14e569d03df5528b27",
+      "subjectId": "son",
+      "reason": "Editorial consent header DECLARING the omission, not a mention of him.",
+      "by": "shadow",
+      "at": "2026-08-26",
+      "evidence": "**His son omitted entirely** (standing minor rule)."
+    }
+  ]
+}
