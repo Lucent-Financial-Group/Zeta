@@ -1,11 +1,12 @@
 ---
 id: 081KYYQ831108QG0R001FJJ9XK
 type: bug
-state: backlog
+state: done
 priority: P2
 slug: investigate-intermittent-net-10-arm64-accessviolation-in-cor
 title: "Investigate intermittent ARM64 GC crashes across .NET and Node"
 created: 2026-08-01T13:12:06.945Z
+completed: 2026-08-28T17:14:54.729Z
 depends_on: []
 composes_with: []
 ---
@@ -154,3 +155,46 @@ proof or a diagnosis.
   both machines.
 - The final disposition names the demonstrated cause. If the cause remains
   unknown, the workitem stays open and says so.
+
+---
+
+## DISPOSITION 2026-08-28 — cause demonstrated: failing memory hardware
+
+This item's own exit criterion was *"the final disposition names the demonstrated cause."*
+It can now be named. **Apple Diagnostics returned RED ON MEMORY** for this Mac on
+2026-08-28. AppleCare appointment booked; repair or replacement pending.
+
+**The cross-runtime framing in this item was the clue that turned out to matter.** It was
+opened on .NET frames and then broadened to "across .NET and Node" — and that breadth is
+precisely what a runtime bug cannot explain. Widened further on 2026-08-28:
+
+- **97 memory faults in 8 days**, 68 inside a heap-walker or allocator, spanning `node`/V8,
+  `dotnet`, `lean`, `git`, `rustc`, `python3`, WebKit — **and Apple's own daemons**, which run
+  none of our code and could not be affected by our toolchain at all.
+- **10 kernel panics**, eight of them page-mapping accounting failures
+  (`pmap_recycle_page: page is referenced`, `wired count underflow`).
+- A reproduction where **two independent `fsc` processes died in the same second, in two
+  different GC phases** — no single-runtime defect produces that.
+- A confirmed **single-bit flip that reached `origin/main`** (`shards` → `shazds`, one bit),
+  merged as PR #15007 and cleaned up by #15194 / #15206.
+
+**The sentence in this item that aged best**, written before any of the above was known:
+
+> *"A successful rerun is evidence against a deterministic source failure, but it does not
+> explain or resolve memory corruption."*
+
+An intermittent fault that passes on rerun is exactly what failing memory looks like. Reading
+the green rerun as an all-clear would have closed this in August and left the machine
+silently corrupting output for a month.
+
+**One exit criterion is NOT met, and is now moot.** The item asked for *"a documented bounded
+run on two ARM64 Macs"* to establish a non-reproduction limit. Only one machine was ever
+available, so that comparison was never run — and a hardware diagnosis on the single machine
+supersedes the need for it. Recorded rather than quietly dropped.
+
+**Closing this does not close `081M02SQFZV087G0R000A4ZEXN`** ("CI gates that decide by grep
+read a crash as a pass"). The hardware explains the *trigger*; a gate that reads exit 139 as
+zero errors is an independent software defect that survives the repair.
+
+**Evidence:** `docs/research/2026-08-28-apple-diagnostics-confirms-the-memory-fault-…md`,
+`…2026-08-15-139-and-134-are-signal-deaths…md`, `…2026-08-24-three-unclean-reboots-are-kernel-pmap-refcount-panics…md`.
