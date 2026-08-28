@@ -33,6 +33,17 @@ export type ReplayFaultFeedState =
   | { readonly kind: "unavailable"; readonly reason: string }
   | { readonly kind: "malformed"; readonly reason: string };
 
+/**
+ * Health is a discovery observation, not a receipt count. Declared and loaded counts
+ * are available only after every index entry has passed browser-side shape/binding checks.
+ */
+export type ReplayFaultFeedHealth =
+  | { readonly kind: "checking" }
+  | { readonly kind: "empty" }
+  | { readonly kind: "ready"; readonly declared: number; readonly loaded: number }
+  | { readonly kind: "unavailable" }
+  | { readonly kind: "rejected" };
+
 type FeedEntry = { readonly scenario: ReplayFaultScenario; readonly file: string; readonly contentKey: string };
 
 const SCENARIOS: readonly ReplayFaultScenario[] = [
@@ -115,6 +126,16 @@ function decodeVector(value: unknown, entry: FeedEntry): PublishedReplayFaultVec
       teaching: { code: teaching.code, lesson: teaching.lesson, nextGenerator: teaching.nextGenerator },
     },
   };
+}
+
+export function summarizeReplayFaultFeed(state: ReplayFaultFeedState): ReplayFaultFeedHealth {
+  switch (state.kind) {
+    case "loading": return { kind: "checking" };
+    case "empty": return { kind: "empty" };
+    case "ready": return { kind: "ready", declared: state.vectors.length, loaded: state.vectors.length };
+    case "unavailable": return { kind: "unavailable" };
+    case "malformed": return { kind: "rejected" };
+  }
 }
 
 export async function readPublishedReplayFaultFeed(fetcher: typeof fetch = fetch): Promise<ReplayFaultFeedState> {
