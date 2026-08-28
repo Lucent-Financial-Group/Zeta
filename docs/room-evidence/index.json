@@ -8,6 +8,12 @@
       "file": "room-evidence/0a9c6dcc12e1c74715841fd4da6c54f5.json"
     },
     {
+      "eventId": "0cafef192ec423aad1f4be8df4f06b0c",
+      "auditContentKey": "5fa27332bc5497683d8a302f4c9c9dc4",
+      "receiptContentKey": "783a249eec83abd0426b726e4afb727c",
+      "file": "room-evidence/0cafef192ec423aad1f4be8df4f06b0c.json"
+    },
+    {
       "eventId": "11d5cf2c2f32f6ccff77d6a6174466d5",
       "auditContentKey": "1909ba2dbc25ea25ad4d8b81640a07e4",
       "receiptContentKey": "bc53bf1ebfbc8d7c7ea79927b232dfa3",
