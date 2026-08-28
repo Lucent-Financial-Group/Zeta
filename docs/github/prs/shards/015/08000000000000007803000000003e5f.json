@@ -1,0 +1,12 @@
+{
+  "pr_number": 15967,
+  "archive_path": "docs/history/pr-reviews/PR-15967-docs-clean-room-handoff-for-albahari-speculativeupdate.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-28T12:45:14.041Z",
+  "schema_version": "v1",
+  "commit_sha": "6b87e211a0daa85ca68c439308791e43bb6e06eb",
+  "title": "docs: clean-room handoff for Albahari SpeculativeUpdate",
+  "state": "MERGED",
+  "merged_at": "2026-08-28T12:44:38Z",
+  "head_ref": "feat/albahari-speculativeupdate-cleanroom-handoff"
+}
