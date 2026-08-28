@@ -1,0 +1,12 @@
+{
+  "pr_number": 15996,
+  "archive_path": "docs/history/pr-reviews/PR-15996-research-cursor-s-continuity-wal-vs-zetadb-dbsp-the-log-you-do-not-have-to-repla.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-28T15:08:07.183Z",
+  "schema_version": "v1",
+  "commit_sha": "4faa44b1742b6ca771e9f7cf45d88496030e0cc9",
+  "title": "research: Cursor's Continuity WAL vs ZetaDB/DBSP — the log you do not have to replay",
+  "state": "MERGED",
+  "merged_at": "2026-08-28T15:07:28Z",
+  "head_ref": "research/continuity-wal-vs-zetadb-dbsp"
+}
