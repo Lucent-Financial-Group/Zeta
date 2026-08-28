@@ -1,0 +1,12 @@
+{
+  "pr_number": 16022,
+  "archive_path": "docs/history/pr-reviews/PR-16022-close-081kyyq831-arm64-gc-crashes-cause-demonstrated-failing-memory-hardware.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-28T20:50:35.952Z",
+  "schema_version": "v1",
+  "commit_sha": "e7b4cba597e56c051175f908ac9bb451417d7189",
+  "title": "close(081KYYQ831): ARM64 GC crashes — cause demonstrated, failing memory hardware",
+  "state": "MERGED",
+  "merged_at": "2026-08-28T17:28:45Z",
+  "head_ref": "land/dotnet-arm64-accessviolation-resolved"
+}
