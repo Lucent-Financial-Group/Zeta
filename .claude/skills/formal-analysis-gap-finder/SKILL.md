@@ -1,6 +1,6 @@
 ---
 name: formal-analysis-gap-finder
-description: Meta-capability skill — scans the Zeta codebase, specs, and prose claims for *properties that should be formally verified but aren't yet*: invariants asserted in docs/tests but never machine-checked, consensus claims lacking a TLA+ spec, algebraic identities lacking a Z3/Lean lemma, cryptographic claims without a proof, safety/liveness assertions backed only by prose, threat-model claims without a CodeQL/Semgrep rule, refinement obligations that no tool currently covers. Proposes property→tool routings for `formal-verification-expert` (Soraya) to land. Distinct from `verification-drift-auditor` (catches drift between an existing artifact and its external source), `formal-verification-expert` (owns the portfolio *view*; this skill is the proactive gap-scanner that feeds her queue), `skill-gap-finder` (absent skills, not absent proofs), `factory-automation-gap-finder` (manual factory work, not unproven properties), `claims-tester` (turns claims into tests, not formal artifacts), and `missing-citations` (research-integrity, not proof coverage). Recommends only — does not author any spec, proof, or lemma. Invoke every 5-10 rounds, offset from the sibling gap-finders.
+description: Formal-analysis gap scanner — finds unverified invariants, unchecked consensus claims, missing proofs across code and docs.
 ---
 
 # Formal Analysis Gap Finder — Procedure

@@ -1,0 +1,27 @@
+Copyright (c) 2026 Aaron Stainback / Lucent Financial Group
+
+This repository is public by design. Transparency, alignment-auditability,
+and independent inspection are features, not bugs.
+
+You are free to read, study, cite, and build upon the ideas and concepts
+in this repository. (For rights to copy or distribute source code, see
+file-level licenses — this honor-system text does not grant code rights.)
+
+We ask — as a matter of honesty, not legal obligation — that you please
+not fork this repository to ship competing products. We know this is not
+enforceable. We are asking because we believe in honor-system norms as a
+coordination mechanism, and because we are substrate-honest about what we
+can and cannot control.
+
+If you do fork: we hope you play the civsim with us. We hope your fork
+keeps what it wants private, just as we keep what we want private — no
+structural strategic advantage to either side. Mutual privacy and mutual
+sovereignty are the design intent.
+
+Underlying code, when present, may carry separate open-source licensing
+(e.g., Apache 2.0). Check individual files for file-level license
+declarations. This honor-system text does not override or replace any
+file-level license; it operates alongside it as a statement of intent.
+
+This honor-system ask does not create legal obligations. It is a social
+and cultural contract only.

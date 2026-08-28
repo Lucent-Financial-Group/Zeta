@@ -1,6 +1,6 @@
 ---
 name: lean4-expert
-description: Capability skill ("hat") — Lean 4 + Mathlib idioms for Zeta's proof surface at `tools/lean4/`. Covers lake build + manifest, Mathlib imports, sorry-count discipline, tactic-mode vs term-mode, the `abel` / `ring` / `simp` tactic arsenal, elan toolchain pinning, CI caching of .olean artefacts. Wear this when writing or reviewing a `.lean` file, or when diagnosing a `lake build` failure.
+description: "Lean 4 + Mathlib proofs — lake build, tactic/term-mode, abel/ring/simp, elan pinning, .olean CI caching."
 ---
 
 # Lean 4 Expert — Procedure + Lore

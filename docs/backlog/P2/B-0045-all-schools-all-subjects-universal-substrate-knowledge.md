@@ -1,20 +1,35 @@
 ---
 id: B-0045
 priority: P2
-status: open
+status: decomposed
 title: All schools, all subjects — universal substrate-knowledge sweep; biology inaugural; trade/vocational equal-or-higher weight
 tier: substrate-knowledge-sweep
 effort: L
 ask: Aaron 2026-04-21 two-message compound — *"biology backlog all schools all subjects backlog"* + *"trade school vocational all that blue collar are just as importation if not more backlog"*
 created: 2026-04-26
-last_updated: 2026-05-02
+last_updated: 2026-05-09
 depends_on: []
+children: [B-0045.1]
 composes_with: [B-0046, B-0049, B-0054, B-0056, B-0059, user_aaron_money_is_inefficient_storage_of_time_energy_factory_value_framing.md, feedback_yin_yang_unification_plus_harmonious_division_paired_invariant.md, project_operational_resonance_instances_collection_index_2026_04_22.md]
 tags: [universal-sweep, biology, trade-vocational, blue-collar, autopoiesis, time-energy-substrate, mr-khan-pedagogy, three-filter, yin-yang]
 type: friction-reducer
 ---
 
 # B-0045 — All schools, all subjects (universal substrate-knowledge sweep)
+
+## Decomposition (2026-05-09)
+
+Biology inaugurates the sweep. Each subject gets its own Stage-1 → Stage-4 child sequence.
+Only the biology Stage-1 child has been filed so far; remaining children are filed as work proceeds.
+
+| Child | Title | Depends on | Status |
+|-------|-------|-----------|--------|
+| [B-0045.1](B-0045.1-biology-stage1-reading-list-scaffold.md) | Biology Stage 1 — reading-list scaffold | — | open |
+| B-0045.2 | Biology Stage 2 — structural-resonance scan (F1/F2/F3 + yin-yang) | B-0045.1 | not filed |
+| B-0045.3 | Trade/vocational Stage 1 — reading-list / practitioner-source scaffold | B-0045.2 | not filed |
+| B-0045.4 | Biology Stage 4 — time/energy measurables integration | B-0045.2 | not filed |
+
+Work in dependency order. B-0045.1 is the root; all others are blocked until it closes.
 
 ## Origin
 

@@ -12,7 +12,10 @@ depends_on: []
 composes_with:
   - PR-934
   - feedback_otto_341_lint_suppression_is_self_deception_noise_signal_or_underlying_fix_greenfield_large_refactors_welcome_training_data_human_shortcut_bias_2026_04_26.md
-tags: [deepseek-2026-04-30, current-files, mechanism-not-vigilance, freshness-check, factory-hygiene, peer-review-finding]
+  - B-0113.1
+  - B-0113.2
+  - B-0113.3
+tags: [deepseek-2026-04-30, current-files, mechanism-not-vigilance, freshness-check, factory-hygiene, peer-review-finding, decomposed-2026-05-11]
 type: friction-reducer
 ---
 
@@ -121,3 +124,32 @@ existing `tools/hygiene/check-no-conflict-markers.sh` and
 *"Same-tick-CURRENT-update is a rule. Vigilance is the
 implementation. Mechanism is the implementation that doesn't
 forget."*
+
+## Pre-start checklist (backlog-item start gate)
+
+**Prior-art-search completed 2026-05-11 (Riven worktree):**
+
+- Searched wake-time-substrate, skill-router, orthogonal-axes, Otto-364, PR #1701, decision-archaeology, LOST-FILES-LOCATIONS.md (tools/hygiene/), memory/CURRENT-*.md, tools/hygiene/*.ts (post-bash-port), .github/workflows/gate.yml, docs/trajectories/* (no overlap with freshness).
+- No prior mechanical CURRENT check; closest are hygiene lints (tick-history-order, no-conflict-markers) now in TS.
+- Result: B-0113 was the first; no superseding work.
+
+**Dependency-restructure:**
+
+- Original depends_on: [] (correct, no blockers).
+- Added reciprocal composes_with to children B-0113.1–3.
+- No broken pointers found.
+
+**Decomposition performed (re-decomp assumption):**
+
+- B-0113 was broad (bash proposal + hook/CI tradeoff + rule prose). Split into 3 atomic dependency-ordered children (TS-first per Rule 0).
+- .1 root (core TS logic)
+- .2 depends on .1 (CI wiring)
+- .3 depends on .1+.2 (rule update)
+- This satisfies "always re-decompose during build — assume mistakes".
+
+**Build gate (worktree, 2026-05-11):**
+dotnet build -c Release → 0 Warning(s) 0 Error(s). (Gate clean before any code change.)
+
+## Decomposition summary
+
+B-0113 → B-0113.1 (TS core), B-0113.2 (CI integrate), B-0113.3 (rule substrate). One bounded step: decomp only.

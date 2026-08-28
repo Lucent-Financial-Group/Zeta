@@ -1,6 +1,6 @@
 ---
 name: catalog-expert
-description: Capability skill ("hat") — SQL-engine control-plane narrow. Owns the database **catalog**: system tables, metadata persistence, DDL semantics (CREATE / ALTER / DROP / TRUNCATE), schema evolution, type-system registration, object identity (OIDs), catalog consistency under concurrent DDL, and the interaction between Zeta's Postgres-wire compatibility and the Postgres catalog (`pg_class`, `pg_attribute`, `pg_type`, `pg_index`, `pg_proc`, `pg_statistic`). Wear this when adding DDL support, designing schema-evolution semantics, deciding which `pg_*` tables to synthesise, or resolving a schema-concurrency issue. Defers to `sql-engine-expert` for cross-layer calls, to `postgresql-expert` for wire-level catalog visibility, to `storage-specialist` for catalog persistence, to `transaction-manager-expert` for DDL-under-transaction semantics, and to `algebra-owner` for schema-evolution-under-retraction invariants.
+description: "SQL catalog — system tables, DDL semantics, schema evolution, OIDs, pg_* synthesis, concurrent DDL consistency."
 ---
 
 # Catalog Expert — The System-Catalog Narrow

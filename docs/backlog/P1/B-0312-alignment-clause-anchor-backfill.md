@@ -1,13 +1,13 @@
 ---
 id: B-0312
 priority: P1
-status: open
+status: in-progress
 title: "HC/SD/DIR alignment-clause external-anchor backfill"
 tier: substrate-quality
 effort: M
 parent: B-0060
 created: 2026-05-08
-last_updated: 2026-05-08
+last_updated: 2026-05-09
 depends_on: [B-0311]
 composes_with: [B-0060, B-0003]
 tags: [substrate-quality, external-anchors, alignment, beacon-safety, research]
@@ -58,6 +58,41 @@ lands first, anchors carry forward into the rewrite.
 - [ ] Beacon-safety pass completed on all cited sources.
 - [ ] Coverage scanner (B-0311) shows 21/21 anchored or
       explicitly noted.
+
+## Pre-start checklist (2026-05-09)
+
+**Prior-art-search:**
+
+- Skill router: no existing skill covers external-anchor backfill for
+  alignment clauses.
+- `tools/alignment/audit_external_anchors.ts` (B-0311, done 2026-05-09)
+  — scanner confirms 60 of 63 concepts are anchor-pending; HC clauses
+  all pending before this work.
+- Concept registry (B-0310): has `anchor:` field (B-0361 PR #2316).
+- Decision-archaeology: B-0060 umbrella motivates; B-0311 gates; no
+  supersession.
+
+**Dependency-restructure:**
+
+- B-0311 status updated to `done` in same branch.
+- B-0003 (ALIGNMENT.md rewrite) is not yet started; HC anchors will
+  carry forward per composes_with note.
+
+**Scope decision:**  
+Smallest safe slice = HC-1..HC-7 in this PR.
+SD-1..SD-9 and DIR-1..DIR-5 in a follow-on PR (B-0312 part 2).
+
+## Progress
+
+- [x] HC-1: Nissenbaum (2004) contextual integrity + GDPR Art. 7
+- [x] HC-2: Richardson saga pattern + Microsoft compensating-transaction
+- [x] HC-3: Greshake et al. (2023) indirect prompt injection (ArXiv 2302.12173)
+- [x] HC-4: Wei et al. (2023) + Zou et al. (2023) adversarial attacks
+- [x] HC-5: Bickmore & Picard (2005) + FTC health claims guidance
+- [x] HC-6: Tulving (1972) episodic memory + "original to Zeta" note
+- [x] HC-7: Öhman & Watson (2019) digital posthumous + "original to Zeta" note
+- [ ] SD-1..SD-9 (follow-on)
+- [ ] DIR-1..DIR-5 (follow-on)
 
 ## Reviewers
 

@@ -7,9 +7,10 @@ tier: research-grade
 effort: L
 ask: maintainer Aaron 2026-04-25
 created: 2026-04-25
-last_updated: 2026-05-02
+last_updated: 2026-05-10
 depends_on: []
 composes_with: [B-0003]
+children: [B-0004.1, B-0004.2, B-0004.3, B-0004.4, B-0004.5, B-0004.6, B-0004.7, B-0004.8, B-0004.9, B-0004.10, B-0004.11, B-0004.12]
 tags: [inclusivity, bidirectional-alignment, internationalization, i18n, localization, l10n, globalization, g11n, accessibility, a11y, translation, education, precision-dictionary]
 type: feature
 ---
@@ -220,3 +221,57 @@ artifact; specific translations age + get refreshed.
 - `docs/GLOSSARY.md` — current English glossary; the
   multi-language version of this is the precision-
   dictionary's first artifact.
+
+## Pre-start checklist (backlog-item-start-gate, 2026-05-10)
+
+**Prior-art search:**
+
+- Skill router: no existing i18n/l10n/translation skill found.
+- `docs/WONT-DO.md`: no translation-related declined features.
+- `docs/backlog/P*`: no other i18n rows found (B-0004 is the root).
+- B-0003 (precision-dictionary product vision) is complementary, not overlapping — B-0003 is about defining terms rigorously; B-0004 is about translating them.
+- `tools/hygiene/LOST-FILES-LOCATIONS.md`: no orphaned translation artifacts found.
+- PR history: no closed/merged PRs for translation tooling found.
+
+**Dependency restructure:**
+
+- `depends_on: []` — no upstream dependencies; infrastructure work starts from scratch.
+- `composes_with: [B-0003]` reciprocal pointer confirmed (B-0003 body references precision-dictionary; B-0004 anchor work depends on it).
+- Children decomposed in dependency order below.
+
+## Decomposition (12 atomic children, 2026-05-10)
+
+Dependency graph (→ means "depends on"):
+
+```
+B-0004.1 (inventory scanner, no deps)
+  → B-0004.2 (anchor set)
+  → B-0004.3 (drift-detection lint)  [parallel to B-0004.2]
+  → B-0004.4 (xref validator)        [parallel to B-0004.2]
+    B-0004.2 → B-0004.5 (pipeline ADR, needs B-0004.3+B-0004.4 too)
+    B-0004.2 → B-0004.6 (language selection ADR)
+      B-0004.5 + B-0004.6 → B-0004.7 (P0 substrate pilot)
+        B-0004.7 → B-0004.8 (anchor translations — first language)
+        B-0004.7 → B-0004.9 (memory + skills — first language, needs B-0004.8)
+        B-0004.7 → B-0004.10 (folder structure + index)
+          B-0004.10 → B-0004.11 (external surfaces — first language)
+            B-0004.9 + B-0004.10 + B-0004.11 → B-0004.12 (second language pilot)
+```
+
+| Child | Title | Classification | Effort | Depends on |
+|-------|-------|----------------|--------|------------|
+| B-0004.1 | Substrate inventory scanner (TS) | buildable-now | S | — |
+| B-0004.2 | Precision anchor set extraction | research-now | S | B-0004.1 |
+| B-0004.3 | Drift-detection lint tool | buildable-now | S | B-0004.1 |
+| B-0004.4 | Cross-reference preservation validator | buildable-now | S | B-0004.1 |
+| B-0004.5 | Translation pipeline ADR + tooling selection | research-now | S | B-0004.2, B-0004.3, B-0004.4 |
+| B-0004.6 | First language selection ADR | research-now | XS | B-0004.2 |
+| B-0004.7 | P0 substrate translation pilot — first language | blocked | M | B-0004.5, B-0004.6 |
+| B-0004.8 | Precision anchor translations — first language | blocked | S | B-0004.7 |
+| B-0004.9 | Memory + skills translation — first language | blocked | M | B-0004.7, B-0004.8 |
+| B-0004.10 | Language folder structure + per-language index | blocked | XS | B-0004.7 |
+| B-0004.11 | External-facing surfaces translation — first language | blocked | XS | B-0004.10 |
+| B-0004.12 | Second language pilot | blocked | M | B-0004.9, B-0004.10, B-0004.11 |
+
+**Buildable now (no blockers):** B-0004.1, B-0004.2, B-0004.3, B-0004.4  
+**Buildable after B-0004.2:** B-0004.5, B-0004.6 (in parallel)  

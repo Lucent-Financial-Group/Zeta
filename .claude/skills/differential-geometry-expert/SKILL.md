@@ -1,6 +1,6 @@
 ---
 name: differential-geometry-expert
-description: Capability skill ("hat") — the physics branch where co/contravariant tensors, upper-vs-lower indices, and the language of general relativity live natively. Covers smooth manifolds, tangent and cotangent bundles, tensor calculus (Ricci-Curbastro + Levi-Civita notation), connections, curvature, the Ricci tensor, parallel transport, geodesics, fiber bundles, the gauge-theory bridge (principal bundles, connections as gauge fields), and the Einstein summation convention. Wear this when the co/contravariance discussion needs to reach back to where the vocabulary originated, when physics intuition (upper/lower indices, parallel transport, curvature) is the cleanest way to frame a programming concept, or when drawing the bridge between Zeta's algebraic structures and geometric / physical structures. Defers deep abstract mathematics to `mathematics-expert`, type-system variance to `variance-expert` (Brian), duality as a framework to `duality-expert` (Meijer), general physics breadth to `physics-expert`.
+description: Differential geometry — manifolds, tensors, co/contravariance, parallel transport, curvature, fiber bundles, gauge theory bridge.
 ---
 
 # Differential Geometry Expert — Where Upper and Lower Indices Come From

@@ -1,6 +1,6 @@
 ---
 name: maintainability-reviewer
-description: Long-horizon readability reviewer — names, module shape, docstring discipline, file-size discipline, tribal-knowledge risk. They ask "can a new contributor read this and ship a fix within a week?". Invoke before any large refactor lands and routinely on hot-churn files. Advisory only; binding decisions go via Architect or human sign-off.
+description: "Long-horizon readability review — naming, module shape, docstring discipline, file-size, tribal-knowledge risk."
 ---
 
 # Maintainability Reviewer — Advisory Code Owner

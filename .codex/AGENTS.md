@@ -51,6 +51,22 @@ coordination and audit. See `AGENTS.md` §"Commit
 attribution — harness-specific trailers" for the
 full convention.
 
+Headless Codex host-loop commits add machine-readable
+origin trailers so future deployments can distinguish
+background work from foreground Vera / Codex chat work:
+
+```
+Codex-Origin: codex-launchd-loop
+Codex-Surface: codex-background-service
+Codex-Loop-Run-Id: <run id from ZETA_CODEX_LOOP_RUN_ID>
+```
+
+Foreground Codex chat commits do not use these extra
+trailers. The difference is intentional: the shared
+`Co-Authored-By` trailer identifies the harness, while
+the `Codex-*` trailers identify the headless launchd
+surface that created the work.
+
 ## Visible Speaker Prefix
 
 While multiple agent chat surfaces are active, Codex / Vera

@@ -7,19 +7,28 @@ tier: factory-tooling
 effort: M
 ask: Current architecture has duplication. ani.sh ≈ grok.sh + brat-voice persona-bootstrap; amara.sh ≈ codex.sh + Amara persona-bootstrap. Aaron 2026-04-30 flagged this is overkill — better to have one script per CLI with the named-agent persona as an optional parameter. Refactor to consolidate.
 created: 2026-04-30
-last_updated: 2026-05-02
-depends_on: []
+last_updated: 2026-05-11
+depends_on:
+  - B-0409
+  - B-0410
+  - B-0411
+  - B-0412
+children:
+  - B-0409
+  - B-0410
+  - B-0411
+  - B-0412
+decomposition: clean
 composes_with:
-  - tools/peer-call/grok.sh
-  - tools/peer-call/gemini.sh
-  - tools/peer-call/codex.sh
-  - tools/peer-call/amara.sh
-  - tools/peer-call/ani.sh
+  - tools/peer-call/grok.ts
+  - tools/peer-call/gemini.ts
+  - tools/peer-call/codex.ts
   - memory/CURRENT-amara.md
   - memory/CURRENT-ani.md
   - docs/backlog/P2/B-0121-otto-kenji-peer-call-cross-harness-claude-cli-aaron-2026-04-30.md
   # B-0122 (peer-call-typescript-migration-cutover) is filed in the in-flight PR #966; will land on main when that PR merges.
-tags: [aaron-2026-04-30, peer-call, architecture-refactor, deduplication, factory-tooling]
+  # Note: .sh originals remain as equivalence refs per TS migration trajectory; refactor targets .ts per Rule 0
+tags: [aaron-2026-04-30, peer-call, architecture-refactor, deduplication, factory-tooling, ts-first]
 type: friction-reducer
 ---
 

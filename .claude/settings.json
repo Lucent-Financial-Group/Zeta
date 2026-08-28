@@ -1,4 +1,94 @@
 {
+  "skillListingBudgetFraction": 0.02,
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bun \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/verify-branch-pretooluse.ts"
+          },
+          {
+            "type": "command",
+            "command": "bun \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/check-md032-pretooluse.ts"
+          }
+        ]
+      },
+      {
+        "matcher": "Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bun \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/pre-edit-recent-read.ts"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Read",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bun \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/post-read-track.ts"
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bun \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/session-start-cron-verify.ts"
+          }
+        ]
+      }
+    ]
+  },
+  "permissions": {
+    "allow": [
+      "Bash(bun *)",
+      "Bash(dotnet build *)",
+      "Bash(dotnet test *)",
+      "Bash(dotnet restore *)",
+      "Bash(dotnet clean *)",
+      "Bash(dotnet format *)",
+      "Bash(gh pr *)",
+      "Bash(gh issue *)",
+      "Bash(gh api *)",
+      "Bash(gh run *)",
+      "Bash(gh label *)",
+      "Bash(gh repo view *)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git push *)",
+      "Bash(git branch *)",
+      "Bash(git switch *)",
+      "Bash(git merge *)",
+      "Bash(git rebase *)",
+      "Bash(git stash *)",
+      "Bash(git worktree *)",
+      "Bash(git remote *)",
+      "Bash(git fetch *)",
+      "Bash(git pull *)",
+      "Bash(git tag *)",
+      "Bash(git cherry-pick *)",
+      "Bash(which *)",
+      "Bash(z3 *)",
+      "Bash(node *)",
+      "Bash(mkdir *)",
+      "Bash(osascript *)",
+      "Bash(kill *)",
+      "Bash(pkill *)",
+      "Bash(open -a *)",
+      "Edit",
+      "Write",
+      "WebFetch",
+      "WebSearch"
+    ]
+  },
   "enabledPlugins": {
     "claude-md-management@claude-plugins-official": true,
     "skill-creator@claude-plugins-official": true,

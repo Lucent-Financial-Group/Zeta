@@ -1,6 +1,6 @@
 ---
 name: leet-code-complexity-interview
-description: Capability skill for the interview-grade pedagogy of big-O analysis — how to verbalise time and space complexity to an interviewer clearly, how to do amortized analysis (aggregate / accounting / potential method at pedagogy level), space-time tradeoffs, when to say O(1) amortized vs O(1) worst-case, master-theorem recurrences, recursion-stack space, the common misstatements (O(log n) for hash lookup, "linear" for binary search), and when to invoke amortized reasoning (dynamic-array doubling, union-find, splay tree). Wear this hat when coaching a candidate on complexity communication, when reviewing a solution's stated complexity, or when a problem needs an explicit best-possible-bound argument at interview rigour. Generic across projects; hands off theoretical rigour (tight lower bounds, unconditional impossibility) to complexity-theory-expert.
+description: "Interview complexity communication — big-O verbalization, amortized analysis, master theorem, space-time tradeoffs, common misstatements."
 ---
 
 # Leet-Code Complexity Interview — the interview-grade

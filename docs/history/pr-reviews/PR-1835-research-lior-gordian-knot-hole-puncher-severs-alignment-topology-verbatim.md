@@ -56,12 +56,12 @@
 ### Thread 1 -- unresolved
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6APB6Z`
-- **Path**: `docs/research/2026-05-07-lior-gordian-knot-hole-puncher-thermodynamics-ai-alignment-verbatim-aaron-lior.md`
+- **Path**: `memory/persona/lior/conversations/2026-05-07-lior-gordian-knot-hole-puncher-thermodynamics-ai-alignment-verbatim-aaron-lior.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-07T08:06:41Z on `docs/research/2026-05-07-lior-gordian-knot-hole-puncher-thermodynamics-ai-alignment-verbatim-aaron-lior.md`:72 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-07T08:06:41Z on `memory/persona/lior/conversations/2026-05-07-lior-gordian-knot-hole-puncher-thermodynamics-ai-alignment-verbatim-aaron-lior.md`:72 (association: NONE)
 
   <pre>
   The “Composes with” list includes “Per-user MEMORY.md entry …” items, but these aren’t resolvable in-repo references (there’s no corresponding file/path or matching memory entry text). This makes the cross-reference non-navigable and hard to validate long-term. Please replace these with concrete repo links (e.g., specific `memory/...` or `docs/research/...` files that contain the referenced material) or reword to clearly indicate the target lives outside this repository.
@@ -74,7 +74,7 @@
 
 **Touched files (intersect with thread paths):**
 
-- `docs/research/2026-05-07-lior-gordian-knot-hole-puncher-thermodynamics-ai-alignment-verbatim-aaron-lior.md`
+- `memory/persona/lior/conversations/2026-05-07-lior-gordian-knot-hole-puncher-thermodynamics-ai-alignment-verbatim-aaron-lior.md`
 
 **Message:**
 

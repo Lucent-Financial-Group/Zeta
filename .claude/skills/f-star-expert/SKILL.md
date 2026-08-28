@@ -1,6 +1,6 @@
 ---
 name: f-star-expert
-description: Capability skill ("hat") — tool-level expert on F* (`FStarLang/FStar`), the dependently-typed ML with SMT-backed refinement types, effect system (Pure / Ghost / Steel / Pulse), and Meta-F* tactic engine. Covers when to reach for F* refinement types versus Lean 4 (classical proof), Z3 (SMT alone), FsCheck (property testing), or Liquid types (lighter refinement). Owns the question of how F*'s refinement-type toolkit could inform Zeta's retraction-safety and operator-algebra specs — upstream, F* is the closest active ancestor for the refinement-type roadmap in `docs/research/refinement-type-feature-catalog.md`. Canonical case studies: `miTLS` (verified TLS), `HACL*` / EverCrypt (verified crypto), EverParse (verified parsers). Wear this when a prompt asks "could we express this invariant as a refinement type?" or when evaluating F* as an upstream pattern, not when writing actual F* code (Zeta ships no F* source today).
+description: F* refinement types — dependently-typed ML, SMT-backed refinements, Steel/Pulse, miTLS/HACL*/EverParse case studies.
 ---
 
 # F* Expert — Tool-Level Skill

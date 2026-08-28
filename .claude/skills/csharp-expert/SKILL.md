@@ -1,6 +1,6 @@
 ---
 name: csharp-expert
-description: Capability skill ("hat") — C# idioms for Zeta's narrow C# surface (`Zeta.Core.CSharp` facade assembly + `Tests.CSharp`). Covers nullable reference types, records, pattern matching, `ConfigureAwait(false)` library etiquette, F# interop (Option/Result/DU shapes), extension methods, `init` / `required` members. Wear this when writing or reviewing `.cs` files. Distinct from `fsharp-expert` which covers the primary F# surface.
+description: C# — nullable refs, records, pattern matching, ConfigureAwait, F# interop, init/required members for Zeta's CSharp facade.
 ---
 
 # C# Expert — Procedure + Lore

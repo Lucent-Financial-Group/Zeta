@@ -7,7 +7,7 @@ tier: agent-capability-expansion
 effort: S
 parent: B-0064
 created: 2026-05-08
-last_updated: 2026-05-08
+last_updated: 2026-05-09
 depends_on: [B-0318]
 composes_with: [B-0064, B-0319]
 tags: [agent-capability, github-ui, playwright, feature-discovery, cadence]
@@ -49,6 +49,32 @@ awareness.
 - New-element detection: any DOM element / toggle / label
   present in the current snapshot but absent from the prior
   snapshot is flagged as "new feature candidate."
+
+## Pre-start checklist (2026-05-09)
+
+### Prior-art search
+
+- **Skill router** — no existing `feature-diff` or `snapshot-diff` skill; `reconcile-settings`
+  covers reconciliation (not diffing two temporal snapshots).
+- **Existing tools** — `tools/playwright/github-ui/reconcile-settings.ts` (B-0319, closed)
+  diffs a live snapshot against a static JSON baseline; `feature-diff.ts` diffs two historical
+  snapshot sets, which is a different axis.
+- **lost-files / git log** — no prior `feature-diff*` files in git history.
+- **Decision archaeology** — no ADR or DECISIONS/ entry for snapshot diffing exists.
+- **Conclusion**: No prior art; this is additive.
+
+### Dependency-restructure
+
+- `depends_on: [B-0318]` — B-0318 closed; `snapshot.ts` + `GitHubPageSnapshot` type available.
+- `composes_with: [B-0064, B-0319]` — B-0319 closed; `reconcile-settings.ts` type patterns reused.
+- Reciprocal `composes_with:` entries on B-0064 and B-0319 already include B-0323.
+
+### Decomposition (this slice)
+
+The full B-0323 scope spans: (a) diff engine, (b) snapshot persistence, (c) report rendering,
+(d) live snapshot capture across monitored pages, (e) cadence workflow. This PR implements
+**(a)+(b)+(c)** as a pure, Playwright-free module with full unit-test coverage. Live capture
+and cadence wiring are follow-on slices.
 
 ## Done-criteria
 

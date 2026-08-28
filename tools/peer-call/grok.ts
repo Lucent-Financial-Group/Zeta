@@ -299,8 +299,20 @@ function buildFullPrompt(args: Args): PromptResult {
   return { ok: true, value: full };
 }
 
-function pickModel(mode: Mode): string {
-  return mode === "thinking" ? "grok-4-20-thinking" : "grok-4-20";
+function pickModel(_mode: Mode): string {
+  // cursor-agent's Grok model lineup shifted 2026-05-13: the old
+  // `grok-4-20-thinking` / `grok-4-20` names are no longer in the
+  // available-models list. The current Grok model is `grok-4.3`
+  // (no separate thinking/non-thinking variants). Both modes route
+  // to the same model identifier; the `thinking` vs `fast` Mode
+  // distinction is preserved here for future cursor-agent updates
+  // that may re-introduce separate variants.
+  //
+  // Root cause discovery: B-0421 acceptance #1 + #2 closed via the
+  // self-documenting failure marker (PR #2949) — cursor-agent's
+  // stderr surfaced "Cannot use this model: grok-4-20-thinking.
+  // Available models: ... grok-4.3 ..." on a 2026-05-13 invocation.
+  return "grok-4.3";
 }
 
 export function main(argv: readonly string[]): number {
@@ -347,9 +359,11 @@ export function main(argv: readonly string[]): number {
   const outputFile = parsed.outputFile.length > 0 ? parsed.outputFile : autogenOutputPath("grok");
   ensureParentDir(outputFile);
 
-  // cursor-agent invocation: capture stdout so we can tee to file +
-  // emit OUTPUT-FILE marker. stderr passes through inherit. The
-  // user's prompt is one fixed argument after `--`; cursor-agent
+  // cursor-agent invocation: capture stdout + stderr so we can tee
+  // stdout to file, emit OUTPUT-FILE marker, AND write a self-
+  // documenting failure marker (including stderr) to the output
+  // file when cursor-agent exits non-zero with empty stdout (B-0421).
+  // The user's prompt is one fixed argument after `--`; cursor-agent
   // does its own argument parsing.
   const result = spawnSync(
     // eslint-disable-next-line sonarjs/no-os-command-from-path
@@ -367,31 +381,126 @@ export function main(argv: readonly string[]): number {
       fullPromptResult.value,
     ],
     {
-      stdio: ["inherit", "pipe", "inherit"],
+      stdio: ["inherit", "pipe", "pipe"],
       maxBuffer: SPAWN_MAX_BUFFER,
       encoding: "buffer",
     },
   );
 
   const stdoutBuf: Buffer = (result.stdout as Buffer | null) ?? Buffer.alloc(0);
-  // Tee: write full reply to file AND mirror to our stdout.
+  const stderrBuf: Buffer = (result.stderr as Buffer | null) ?? Buffer.alloc(0);
+  // Distinguish spawn-success vs spawn-failure (per Copilot #2949
+  // round-1): spawnSync returns status: null on ENOENT / signal /
+  // maxBuffer-exceeded etc. and sets result.error / result.signal.
+  // Reporting exitCode=1 in those cases loses real diagnostic info.
+  const spawnError: Error | undefined = result.error;
+  const spawnSignal: NodeJS.Signals | null = result.signal ?? null;
+  const rawStatus: number | null = result.status ?? null;
+  const exitCode = rawStatus ?? 1;
+  // exitCodeDisplay carries the most-informative value for the
+  // failure marker: signal name if killed by signal, "null (spawn
+  // error)" if spawn failed, numeric otherwise.
+  const exitCodeDisplay =
+    spawnSignal !== null
+      ? `null (terminated by signal ${spawnSignal})`
+      : rawStatus === null
+        ? `null (spawn error — see error field)`
+        : String(rawStatus);
+
+  // Mirror captured stderr to our stderr (post-exit; live streaming
+  // was lost when stderr changed from "inherit" to "pipe" per
+  // Copilot #2949 round-1; this is a trade-off for capturing stderr
+  // into the failure marker for output-file-only consumers).
+  if (stderrBuf.length > 0) {
+    process.stderr.write(stderrBuf);
+  }
+
+  // Determine failure case for self-documenting marker:
+  //   - Empty stdout AND (non-zero exit OR spawn error OR signal)
+  //     → write self-documenting failure marker
+  //   - Otherwise → write stdout buffer (success path; preserves
+  //     existing JSON / stream-json contracts)
+  const isFailureCase =
+    stdoutBuf.length === 0 &&
+    (exitCode !== 0 || spawnError !== undefined || spawnSignal !== null);
+  let fileContent: Buffer;
+  if (isFailureCase) {
+    const stderrText =
+      stderrBuf.length > 0
+        ? stderrBuf.toString("utf8")
+        : "(empty — cursor-agent produced no stderr)";
+    const errorMessage = spawnError !== undefined ? spawnError.message : "";
+    const promptBytes = Buffer.byteLength(fullPromptResult.value, "utf8");
+    // Emit the marker in a format that matches parsed.outputFormat
+    // so JSON/stream consumers don't break on Markdown input
+    // (per Copilot #2949 round-1).
+    if (parsed.outputFormat === "json") {
+      const obj = {
+        error: "cursor-agent failure (B-0421 self-documenting marker)",
+        exitCode: exitCodeDisplay,
+        model,
+        promptBytes,
+        signal: spawnSignal,
+        spawnError: errorMessage,
+        stderr: stderrText,
+      };
+      fileContent = Buffer.from(`${JSON.stringify(obj, null, 2)}\n`, "utf8");
+    } else if (parsed.outputFormat === "stream-json") {
+      const obj = {
+        type: "error",
+        message: "cursor-agent failure (B-0421 self-documenting marker)",
+        exitCode: exitCodeDisplay,
+        model,
+        promptBytes,
+        signal: spawnSignal,
+        spawnError: errorMessage,
+        stderr: stderrText,
+      };
+      fileContent = Buffer.from(`${JSON.stringify(obj)}\n`, "utf8");
+    } else {
+      // text → Markdown marker for human consumption
+      const failureMarker =
+        `# cursor-agent failure (B-0421 self-documenting marker)\n` +
+        `\n` +
+        `Exit code: ${exitCodeDisplay}\n` +
+        `Model: ${model}\n` +
+        `Prompt size (bytes): ${String(promptBytes)}\n` +
+        (errorMessage.length > 0 ? `Spawn error: ${errorMessage}\n` : "") +
+        `\n` +
+        `## Captured stderr\n` +
+        `\n` +
+        `\`\`\`\n${stderrText}${stderrText.endsWith("\n") ? "" : "\n"}\`\`\`\n`;
+      fileContent = Buffer.from(failureMarker, "utf8");
+    }
+  } else {
+    fileContent = stdoutBuf;
+  }
+
   try {
-    writeFileSync(outputFile, stdoutBuf);
+    writeFileSync(outputFile, fileContent);
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
     process.stderr.write(`error: failed to write output-file ${outputFile}: ${msg}\n`);
   }
-  process.stdout.write(stdoutBuf);
+
+  // Mirror file content to our stdout so shell pipelines see what
+  // we wrote (preserves prior tee behavior; failure marker is
+  // visible to callers reading stdout).
+  process.stdout.write(fileContent);
   // Final marker on its own line for `tail -1` recovery.
-  if (stdoutBuf.length > 0 && !stdoutBuf.subarray(-1).equals(Buffer.from("\n"))) {
+  if (fileContent.length > 0 && !fileContent.subarray(-1).equals(Buffer.from("\n"))) {
     process.stdout.write("\n");
   }
   process.stdout.write(`OUTPUT-FILE: ${outputFile}\n`);
 
-  const exitCode = result.status ?? 1;
-  if (exitCode !== 0) {
+  if (exitCode !== 0 || spawnError !== undefined || spawnSignal !== null) {
     process.stderr.write("\n");
-    process.stderr.write(`cursor-agent exited with code ${String(exitCode)}\n`);
+    process.stderr.write(`cursor-agent exited with code ${exitCodeDisplay}\n`);
+    if (isFailureCase) {
+      process.stderr.write(
+        `cursor-agent produced empty stdout; B-0421 failure marker written to ${outputFile}\n`,
+      );
+    }
     return 2;
   }
   return 0;

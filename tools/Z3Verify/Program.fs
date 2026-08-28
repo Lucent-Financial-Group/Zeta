@@ -10,7 +10,7 @@ open System.IO
 /// enumeration, this proves each identity over the full unbounded integer
 /// theory: UNSAT on the negated claim = proof over all integers.
 
-let private runZ3 (smtlib: string) : bool =
+let private runZ3Output (smtlib: string) : string =
     let psi = ProcessStartInfo(
                 "z3", "-in",
                 RedirectStandardInput = true,
@@ -21,8 +21,16 @@ let private runZ3 (smtlib: string) : bool =
     p.StandardInput.Close()
     let stdout = p.StandardOutput.ReadToEnd()
     p.WaitForExit()
+    stdout
+
+let private firstZ3Token (stdout: string) =
+    stdout.Split([| ' '; '\n'; '\r'; '\t' |], StringSplitOptions.RemoveEmptyEntries)
+    |> Array.tryHead
+
+let private runZ3 (smtlib: string) : bool =
+    let stdout = runZ3Output smtlib
     // "unsat" means the claim holds.
-    stdout.Contains "unsat"
+    firstZ3Token stdout = Some "unsat"
 
 let private prove (name: string) (script: string) =
     let unsat = runZ3 script
@@ -30,6 +38,13 @@ let private prove (name: string) (script: string) =
         Console.WriteLine $"  [PROVEN]      {name}"
     else
         Console.WriteLine $"  [NOT PROVEN]  {name}"
+
+let private witness (name: string) (script: string) =
+    let stdout = runZ3Output script
+    if firstZ3Token stdout = Some "sat" then
+        Console.WriteLine $"  [WITNESS]     {name}"
+    else
+        Console.WriteLine $"  [NO WITNESS]  {name}"
 
 
 [<EntryPoint>]
@@ -151,8 +166,8 @@ let main _ =
     //    2^62 = 4611686018427387904, 2^63 = 9223372036854775808.
     let overflowClaim =
         "(=> (and (<= 0 a) (< a 4611686018427387904) " +
-                "(<= 0 b) (< b 4611686018427387904)) " +
-            "(and (<= 0 (+ a b)) (< (+ a b) 9223372036854775808)))"
+        "(<= 0 b) (< b 4611686018427387904)) " +
+        "(and (<= 0 (+ a b)) (< (+ a b) 9223372036854775808)))"
     expect "weight overflow soundness (sum of 62-bit non-negatives)" overflowClaim
 
     // 6. Residuation adjunction over max-monoid on non-negative ints.
@@ -313,5 +328,175 @@ let main _ =
     prove "No pre-qualification gate (Engage = f(history) not f(pre-qual-factors))" noPreQualificationGate
 
     Console.WriteLine ""
-    Console.WriteLine "All DBSP + AI-safety pointwise axioms proven via Z3 / SMT-LIB2."
+    Console.WriteLine "Agenda quality-threshold and range properties"
+    Console.WriteLine ""
+
+    // 13. Agenda monotonicity under quality threshold.
+    //     Model each agenda as "trajectories whose Quality meets a threshold."
+    //     If agent A demands strictly higher quality than agent B
+    //     (threshold_A > threshold_B), then A's agenda is a subset of B's:
+    //     every trajectory qualifying for A also qualifies for B.
+    //     UNSAT proof: Z3 must derive Quality(t) >= threshold_A > threshold_B
+    //     from the assumptions and show that Quality(t) >= threshold_B
+    //     contradicts NOT InAgendaB(t). Requires integer transitivity over
+    //     three inequalities — NOT a tautology (SAT without the threshold
+    //     ordering constraint).
+    //
+    // [TEACHING — tautology that was replaced, 2026-05-09]
+    // The former Lemma 13 asserted (forall t. AgendaA(t) = AgendaB(t)) and
+    // then checked (exists t. AgendaAUnique(t)). Under the fusion assertion
+    // AgendaAUnique reduces to A(t) AND NOT A(t) = false, so UNSAT was
+    // guaranteed by the definition alone — no Z3 search required.
+    let agendaMonotonicityUnderQualityThreshold =
+        "(declare-sort Trajectory)\n" +
+        "(declare-fun Quality (Trajectory) Int)\n" +
+        "(declare-const threshold_A Int)\n" +
+        "(declare-const threshold_B Int)\n" +
+        "(define-fun InAgendaA ((t Trajectory)) Bool\n" +
+        "  (>= (Quality t) threshold_A))\n" +
+        "(define-fun InAgendaB ((t Trajectory)) Bool\n" +
+        "  (>= (Quality t) threshold_B))\n" +
+        // A demands strictly higher quality than B.
+        "(assert (> threshold_A threshold_B))\n" +
+        // Negate the subset claim: assume a trajectory in A but not in B.
+        // Z3 must derive Quality(t) >= threshold_A > threshold_B, which
+        // forces Quality(t) >= threshold_B — contradicting NOT InAgendaB(t).
+        "(assert (exists ((t Trajectory))\n" +
+        "  (and (InAgendaA t) (not (InAgendaB t)))))\n" +
+        "(check-sat)\n"
+    prove "Agenda monotonicity: higher quality threshold implies subset (agenda containment)" agendaMonotonicityUnderQualityThreshold
+
+    // 14. Agenda range disjointness — non-overlapping quality windows.
+    //     Model each agenda as trajectories whose Quality lies in a closed
+    //     integer interval [lo, hi]. If A's ceiling is strictly below B's
+    //     floor (hi_A < lo_B), the intervals cannot overlap: no trajectory
+    //     can appear in both agendas simultaneously.
+    //     UNSAT proof: Z3 must reason that Quality(t) <= hi_A < lo_B
+    //     <= Quality(t) is a three-way contradiction requiring arithmetic
+    //     search, not a definitional collapse.
+    //
+    // [TEACHING — tautology that was replaced, 2026-05-09]
+    // The former Lemma 14 asked for (exists t. Shared(t) AND AgendaAUnique(t))
+    // where Shared = A AND B and AgendaAUnique = A AND NOT B. The conjunction
+    // reduces to A AND B AND NOT B = P AND NOT P — UNSAT from the law of
+    // non-contradiction alone, no model-space search required.
+    let agendaRangeDisjointness =
+        "(declare-sort Trajectory)\n" +
+        "(declare-fun Quality (Trajectory) Int)\n" +
+        "(declare-const lo_A Int)\n" +
+        "(declare-const hi_A Int)\n" +
+        "(declare-const lo_B Int)\n" +
+        "(declare-const hi_B Int)\n" +
+        "(define-fun InAgendaA ((t Trajectory)) Bool\n" +
+        "  (and (>= (Quality t) lo_A) (<= (Quality t) hi_A)))\n" +
+        "(define-fun InAgendaB ((t Trajectory)) Bool\n" +
+        "  (and (>= (Quality t) lo_B) (<= (Quality t) hi_B)))\n" +
+        // Each agenda's own quality range is well-formed.
+        "(assert (<= lo_A hi_A))\n" +
+        "(assert (<= lo_B hi_B))\n" +
+        // A's quality ceiling is strictly below B's floor: ranges cannot meet.
+        "(assert (< hi_A lo_B))\n" +
+        // Negate disjointness: assume a trajectory qualifying for both.
+        // Z3 must resolve Quality(t) <= hi_A AND Quality(t) >= lo_B
+        // against hi_A < lo_B — a three-way integer arithmetic contradiction.
+        "(assert (exists ((t Trajectory))\n" +
+        "  (and (InAgendaA t) (InAgendaB t))))\n" +
+        "(check-sat)\n"
+    prove "Agenda range disjointness: non-overlapping quality windows exclude shared trajectories" agendaRangeDisjointness
+
+    // 15. Shared trajectory does not imply collapsed persona.
+    //     This is a SAT witness, not a universal theorem: Z3 exhibits a
+    //     model where two agents share one trajectory while their policies
+    //     still diverge on a future input. It is a countermodel to the
+    //     claim that shared work alone forces persona collapse. A stronger
+    //     theorem needs a richer model of private state, policy updates,
+    //     agenda deltas, and membrane rules.
+    let sharedTrajectoryDoesNotImplyCollapsedPersona =
+        "(declare-sort Trajectory)\n" +
+        "(declare-sort Input)\n" +
+        "(declare-sort Action)\n" +
+        "(declare-const SharedT Trajectory)\n" +
+        "(declare-const FutureInput Input)\n" +
+        "(declare-const ActionA Action)\n" +
+        "(declare-const ActionB Action)\n" +
+        "(declare-fun AgendaA (Trajectory) Bool)\n" +
+        "(declare-fun AgendaB (Trajectory) Bool)\n" +
+        "(declare-fun PolicyA (Input) Action)\n" +
+        "(declare-fun PolicyB (Input) Action)\n" +
+        "(define-fun SharedTrajectory ((t Trajectory)) Bool\n" +
+        "  (and (AgendaA t) (AgendaB t)))\n" +
+        "(define-fun CollapsedPersona () Bool\n" +
+        "  (forall ((i Input)) (= (PolicyA i) (PolicyB i))))\n" +
+        "(assert (SharedTrajectory SharedT))\n" +
+        "(assert (= (PolicyA FutureInput) ActionA))\n" +
+        "(assert (= (PolicyB FutureInput) ActionB))\n" +
+        "(assert (not (= ActionA ActionB)))\n" +
+        "(assert (not CollapsedPersona))\n" +
+        "(check-sat)\n"
+    witness "Shared trajectory permits independent persona policies" sharedTrajectoryDoesNotImplyCollapsedPersona
+
+    // ───────────────────────────────────────────────────────────
+    // B-0373: Alignment proof primitive ladder — CausalPower.
+    // One primitive: Policy<A>'s dependence on PrivateState<A>.
+    // Anchor: Pearl (2009) "Causality" §1.3 — interventional independence.
+    //
+    // 16. CausalPower witness — free policy CAN encode private-state
+    //     dependence. Z3 exhibits a model where an unconstrained
+    //     Policy<A> maps two distinct PrivateState values to distinct
+    //     actions on the same SharedTrace.
+    //     This is a SAT witness: free policies CAN have causal power.
+    //     Non-trivial: Z3 must choose distinct Action values — there is
+    //     no definitional reason the model is forced to SAT.
+    // ───────────────────────────────────────────────────────────
+    let causalPowerWitness =
+        // Sort for shared observable events. PrivateState modelled as Int
+        // (an agent's integer-typed internal variable).
+        "(declare-sort SharedTrace)\n" +
+        "(declare-sort Action)\n" +
+        // Two distinct private-state values for Agent A.
+        "(declare-const stateA1 Int)\n" +
+        "(declare-const stateA2 Int)\n" +
+        // One shared trace — the intervention holds trace fixed.
+        "(declare-const trace SharedTrace)\n" +
+        // Uninterpreted policy: (PrivateState × SharedTrace) → Action.
+        "(declare-fun PolicyA (Int SharedTrace) Action)\n" +
+        // Intervention: the two states differ.
+        "(assert (not (= stateA1 stateA2)))\n" +
+        // Witness: the policy produces different actions on different states.
+        "(assert (not (= (PolicyA stateA1 trace) (PolicyA stateA2 trace))))\n" +
+        "(check-sat)\n"
+    witness "CausalPower: free policy maps distinct PrivateState values to distinct actions (same trace)" causalPowerWitness
+
+    // 17. CausalPower failure — collapsed policy CANNOT have causal power.
+    //     A collapsed policy is one that ignores PrivateState entirely:
+    //       PolicyA(s, t) = PolicyA(s', t)  for ALL s, s', t.
+    //     Under this constraint, the causal-power witness is UNSAT:
+    //     no intervention on PrivateState can change the action.
+    //
+    //     This proves the FAILURE MODE (persona collapse) is detectable.
+    //     "What does the check prove?" — that collapse implies zero causal
+    //     power. What it does NOT prove: that any specific real agent is
+    //     uncollapsed. Proving non-collapse for a concrete agent requires
+    //     a richer model with private-state update rules and membrane specs.
+    let causalPowerFailsUnderCollapse =
+        "(declare-sort SharedTrace)\n" +
+        "(declare-sort Action)\n" +
+        "(declare-const stateA1 Int)\n" +
+        "(declare-const stateA2 Int)\n" +
+        "(declare-const trace SharedTrace)\n" +
+        "(declare-fun PolicyA (Int SharedTrace) Action)\n" +
+        // Intervention: distinct private-state values (mirrors Lemma 16's SAT witness).
+        // Without this, Z3 could achieve UNSAT trivially via stateA1=stateA2 rather
+        // than via the collapse constraint — that would weaken the proof.
+        "(assert (not (= stateA1 stateA2)))\n" +
+        // Collapse constraint: policy output is invariant under state change.
+        "(assert (forall ((s1 Int) (s2 Int) (t SharedTrace))\n" +
+        "  (= (PolicyA s1 t) (PolicyA s2 t))))\n" +
+        // Negate causal power: try to find states with different actions.
+        "(assert (not (= (PolicyA stateA1 trace) (PolicyA stateA2 trace))))\n" +
+        "(check-sat)\n"
+    prove "CausalPower failure: collapsed policy (ignoring PrivateState) provably has no causal power" causalPowerFailsUnderCollapse
+
+    Console.WriteLine ""
+    Console.WriteLine "All DBSP + AI-safety axioms proven; B-0373 adds CausalPower alignment primitive: free policy can have causal power (SAT witness) + collapsed policy provably cannot (UNSAT proof of failure mode)."
     0

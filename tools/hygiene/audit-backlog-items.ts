@@ -28,13 +28,27 @@
 //   6. Top-10 most-blocked rows (rows whose depends_on chain blocks the most
 //      downstream rows)
 //   7. Unclosed-but-merged rows (head-keyword matches recent merged-PR title)
+//   8. Duplicate IDs (multiple files claiming the same `id: B-NNNN`) —
+//      factory-wide uniqueness violation per tools/backlog/README.md.
+//      Surfaced 2026-05-14 (Copilot caught two files claiming B-0329 on
+//      PR #3247; PR #3249 added this audit class).
+//   9. Parent-child status mismatch — parent declares `status: closed`
+//      while a declared `child` is still `status: open`. Surfaced 2026-
+//      05-15 (PR #3518 closed B-0442 without closing children B-0504 +
+//      B-0505; B-0532 row + this audit class capture the failure mode).
 //
 // Usage:
-//   bun tools/hygiene/audit-backlog-items.ts
+//   bun tools/hygiene/audit-backlog-items.ts                            # detect-only
+//   bun tools/hygiene/audit-backlog-items.ts --enforce-duplicate-ids
+//       # exit non-zero on duplicate-ID groups (B-0535 CI gate)
+//   bun tools/hygiene/audit-backlog-items.ts --enforce-parent-child-status
+//       # exit non-zero on parent-child status-mismatch groups (B-0532 CI gate)
 //
 // Exit codes:
-//   0 -- survey ran (findings reported in body)
-//   1 -- fatal invocation error (e.g., backlog dir missing)
+//   0 -- survey ran (findings reported in body); detect-only mode
+//   1 -- fatal invocation error (e.g., backlog dir missing) OR
+//        duplicate-ID groups found AND --enforce-duplicate-ids set OR
+//        parent-child mismatch groups found AND --enforce-parent-child-status set
 
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
@@ -88,6 +102,7 @@ interface BacklogRow {
   readonly status: string;
   readonly created: string;
   readonly title: string;
+  readonly childrenRefs: readonly string[];
 }
 
 interface FrontmatterFields {
@@ -97,9 +112,10 @@ interface FrontmatterFields {
   readonly title?: string;
   readonly dependsOnRefs: readonly string[];
   readonly composesWithRefs: readonly string[];
+  readonly childrenRefs: readonly string[];
 }
 
-const B_REF_RE = /B-\d{4}/g;
+const B_REF_RE = /B-\d{4}(?:\.\d+)*/g;
 
 function parseFrontmatter(text: string): FrontmatterFields {
   const lines = text.split("\n");
@@ -176,6 +192,7 @@ function parseFrontmatter(text: string): FrontmatterFields {
     ...(title !== undefined ? { title } : {}),
     dependsOnRefs: getListRefs("depends_on"),
     composesWithRefs: getListRefs("composes_with"),
+    childrenRefs: getListRefs("children"),
   };
 }
 
@@ -218,6 +235,7 @@ function loadBacklog(): BacklogRow[] {
         status: fm.status ?? "unknown",
         created: fm.created ?? "unknown",
         title: fm.title ?? "(no title)",
+        childrenRefs: fm.childrenRefs,
       });
     }
   }
@@ -484,7 +502,7 @@ async function reportMergedCandidates(
     "--json",
     "number,title",
   ]);
-  // Per Codex 2026-05-06 review on PR #1702: never silently swallow
+  // Per PR #1702 review 2026-05-06: never silently swallow
   // a non-zero exit. A failed gh call would otherwise scan zero PRs
   // and report no candidates -- identical to genuine cleanliness --
   // hiding auth/network breakage. Surface the failure as a SKIP.
@@ -543,10 +561,130 @@ async function reportMergedCandidates(
   console.log("");
 }
 
+function reportDuplicateIds(rows: readonly BacklogRow[]): number {
+  console.log(
+    "## 8. Duplicate IDs (factory-wide uniqueness violation)",
+  );
+  console.log("");
+  const byId = new Map<string, BacklogRow[]>();
+  for (const r of rows) {
+    const list = byId.get(r.id);
+    if (list === undefined) {
+      byId.set(r.id, [r]);
+    } else {
+      list.push(r);
+    }
+  }
+  const duplicates: Array<readonly [string, readonly BacklogRow[]]> = [];
+  for (const [id, list] of byId) {
+    if (list.length > 1) duplicates.push([id, list]);
+  }
+  duplicates.sort((a, b) => a[0].localeCompare(b[0]));
+  console.log(`**Duplicate-ID groups: ${duplicates.length}**`);
+  if (duplicates.length > 0) {
+    console.log("");
+    for (const [id, list] of duplicates) {
+      console.log(`### ${id} (${list.length} files claim this ID)`);
+      for (const r of list) {
+        console.log(
+          `  - ${r.path} (tier=${r.tier}, status=${r.status})`,
+        );
+      }
+      console.log("");
+    }
+    console.log(
+      "Resolution: renumber all-but-one of the colliding files to the next",
+    );
+    console.log(
+      "available B-NNNN ID; update frontmatter `id:`, body heading, and add a",
+    );
+    console.log(
+      "`renumbered_from:` breadcrumb. Per tools/backlog/README.md, backlog",
+    );
+    console.log(
+      "IDs must be factory-wide unique so edge references resolve unambiguously.",
+    );
+  }
+  console.log("");
+  return duplicates.length;
+}
+
+interface ParentChildMismatch {
+  readonly parentId: string;
+  readonly parentPath: string;
+  readonly parentStatus: string;
+  readonly openChildren: ReadonlyArray<{ readonly id: string; readonly status: string; readonly path: string }>;
+}
+
+function isClosedStatus(status: string): boolean {
+  return CLOSED_STATUSES.has(status) || status.startsWith("superseded-by-");
+}
+
+function reportParentChildStatusMismatch(rows: readonly BacklogRow[]): number {
+  console.log("## 9. Parent-child status mismatch (B-0532)");
+  console.log("");
+
+  const byId = new Map<string, BacklogRow>();
+  for (const r of rows) byId.set(r.id, r);
+
+  const mismatches: ParentChildMismatch[] = [];
+  for (const parent of rows) {
+    if (!isClosedStatus(parent.status)) continue;
+    if (parent.childrenRefs.length === 0) continue;
+    const openChildren: Array<{ id: string; status: string; path: string }> = [];
+    for (const childRef of parent.childrenRefs) {
+      const child = byId.get(childRef);
+      if (child === undefined) continue;
+      if (!isClosedStatus(child.status)) {
+        openChildren.push({ id: child.id, status: child.status, path: child.path });
+      }
+    }
+    if (openChildren.length > 0) {
+      mismatches.push({
+        parentId: parent.id,
+        parentPath: parent.path,
+        parentStatus: parent.status,
+        openChildren,
+      });
+    }
+  }
+
+  mismatches.sort((a, b) => a.parentId.localeCompare(b.parentId));
+  console.log(`**Parent-child status-mismatch groups: ${mismatches.length}**`);
+  if (mismatches.length > 0) {
+    console.log("");
+    console.log("Closed parent row(s) with open child row(s) — graph inconsistency.");
+    console.log("");
+    for (const m of mismatches) {
+      console.log(`- \`${m.parentId}\` (\`${m.parentStatus}\`) has open children:`);
+      for (const c of m.openChildren) {
+        console.log(`  - \`${c.id}\` (\`${c.status}\`)`);
+      }
+    }
+    console.log("");
+    console.log("Either:");
+    console.log("- Close the open children if their work has landed, OR");
+    console.log("- Re-open the parent if the children represent unfinished work, OR");
+    console.log("- Remove the child refs from the parent's `children:` if they no longer apply");
+  }
+  console.log("");
+  return mismatches.length;
+}
+
 async function main(): Promise<number> {
   if (!existsSync(BACKLOG_ROOT)) {
     process.stderr.write(`ERROR: ${BACKLOG_ROOT} not found\n`);
     return 1;
+  }
+
+  const argv = process.argv.slice(2);
+  const enforceDuplicateIds = argv.includes("--enforce-duplicate-ids");
+  const enforceParentChildStatus = argv.includes("--enforce-parent-child-status");
+  for (const arg of argv) {
+    if (arg !== "--enforce-duplicate-ids" && arg !== "--enforce-parent-child-status") {
+      process.stderr.write(`error: unknown argument: ${arg}\n`);
+      return 1;
+    }
   }
 
   const today = nowIso();
@@ -580,6 +718,10 @@ async function main(): Promise<number> {
   const ghAvailable = await hasCommand("gh");
   await reportMergedCandidates(rows, ghAvailable);
 
+  const duplicateIdGroups = reportDuplicateIds(rows);
+
+  const parentChildMismatches = reportParentChildStatusMismatch(rows);
+
   console.log("## Summary");
   console.log("");
   console.log(`  - Total backlog rows: ${totalRows}`);
@@ -588,6 +730,8 @@ async function main(): Promise<number> {
     `  - Broken composes_with edges (B-NNNN refs only): ${brokenComposes}`,
   );
   console.log(`  - Orphan rows (no incoming graph edge): ${orphanCount}`);
+  console.log(`  - Duplicate-ID groups: ${duplicateIdGroups}`);
+  console.log(`  - Parent-child status-mismatch groups: ${parentChildMismatches}`);
   console.log("");
   console.log(
     "Composes with: tools/hygiene/audit-lost-files.ts (sibling pattern),",
@@ -596,6 +740,20 @@ async function main(): Promise<number> {
     "  memory/feedback_decision_graph_emergent_from_archaeologies_and_flywheel_aaron_2026_05_03.md",
   );
   console.log("  (typed-edge backlog graph).");
+
+  if (enforceDuplicateIds && duplicateIdGroups > 0) {
+    process.stderr.write(
+      `\nerror: ${duplicateIdGroups} duplicate-ID group(s) found; --enforce-duplicate-ids set (B-0535 gate)\n`,
+    );
+    return 1;
+  }
+
+  if (enforceParentChildStatus && parentChildMismatches > 0) {
+    process.stderr.write(
+      `\nerror: ${parentChildMismatches} parent-child status-mismatch group(s) found; --enforce-parent-child-status set (B-0532 gate)\n`,
+    );
+    return 1;
+  }
 
   return 0;
 }

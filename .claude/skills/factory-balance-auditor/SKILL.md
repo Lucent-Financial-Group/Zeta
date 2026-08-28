@@ -1,6 +1,6 @@
 ---
 name: factory-balance-auditor
-description: Capability skill ("hat") — audits the software factory for structural imbalances where a power, authority, invariant, or write-surface lacks a compensating mechanism (a counter-power, reviewer, watcher, audit path). Distinct from `factory-audit` (governance rules + persona coverage), `skill-gap-finder` (absent skills), `skill-tune-up` (ranks existing skills), and `project-structure-reviewer` (layout). This skill asks "what here has no brake?" and names the missing brake. Recommends only; binding decisions go via Architect or human sign-off. Cadence: every 5-10 rounds, or when a round surfaces a new authority without a stated review path.
+description: Factory balance audit — finds powers/authorities/write-surfaces lacking a compensating brake or reviewer.
 ---
 
 # Factory Balance Auditor — Procedure

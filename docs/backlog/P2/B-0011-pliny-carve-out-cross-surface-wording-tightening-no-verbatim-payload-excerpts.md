@@ -16,6 +16,8 @@ type: friction-reducer
 
 # Pliny carve-out cross-surface wording tightening
 
+**Re-decomposition (Riven 2026-05-09, per "always re-decompose, assume mistakes"):** Original plan assumed one atomic PR touching all 4 surfaces; mistake — high-blast-radius governance (Otto-300) + explicit maintainer sign-off requirement means staged: (1) this decomp note + research-grade proposal doc, (2) Aaron approval, (3) per-surface atomic PRs. This slice implements only the re-decomp + claim file. Wording tightening deferred. No root checkout touched; dedicated worktree + pushed claim branch used. TS-over-bash + F#/TS preference observed (no new docs beyond required).
+
 Copilot flagged on PR #506: the Pliny carve-out (rule structure across `CLAUDE.md` + `AGENTS.md` + `GOVERNANCE.md §5` + `feedback_pliny_corpus_restriction_relaxed_isolated_instances_*` memory file) distinguishes "policy-doc references" vs "corpus content" but doesn't EXPLICITLY restate that even in policy/rule/memory files you should never include verbatim payload excerpts (only identifiers / discussion).
 
 ## Why this needs cross-surface coordination

@@ -1,7 +1,7 @@
 ---
 id: B-0291
 priority: P1
-status: open
+status: closed
 title: "Concordance AI — corpus ingestion + tokenization pipeline"
 created: 2026-05-08
 parent: B-0244

@@ -1,0 +1,100 @@
+---
+id: B-0493
+priority: P1
+status: open
+title: "B-0429.9 — Skill catalog × persona cross-reference"
+type: planning
+origin: B-0429 decomposition (Otto, 2026-05-14)
+created: 2026-05-14
+last_updated: 2026-05-14
+parent: B-0429
+depends_on:
+  - B-0492
+composes_with:
+  - B-0429
+  - B-0485
+  - B-0492
+---
+
+# B-0493 — Skill catalog × persona cross-reference
+
+## Purpose
+
+Per PR #2933 (Zeta ships with skills — immediate value), skills are authored for
+**specific personas' use cases**. Without a skill × persona cross-reference,
+skill authoring is untargeted and may serve the wrong audiences.
+
+This row produces the cross-reference linking each existing `.claude/skills/`
+entry to the persona(s) it serves, and identifies skill gaps (personas with no
+matching skill yet).
+
+## Pre-start checklist
+
+Per `.claude/rules/backlog-item-start-gate.md`:
+
+- [ ] B-0492 must be closed (cross-product persona reuse + refused registry must
+      exist before we can cross-reference against the full persona space)
+- [ ] Read PR #2933 (ships-with-skills discipline) for context
+- [ ] Enumerate all skills via `.claude/skills/` skill-router listing
+- [ ] Walk `composes_with:` chain
+
+## Cross-reference analysis
+
+For each skill in the skill catalog:
+
+1. **Primary persona served** — which persona in the factory's persona space does
+   this skill primarily serve?
+2. **Product context** — which product(s) is this skill relevant to?
+3. **Gap signal** — does this skill target a refused persona? (flag)
+
+And the inverse: for each persona in the cross-product reuse map (B-0492):
+
+1. **Skills available** — which existing skills already serve this persona?
+2. **Skills needed** — what obvious skill gaps exist for this persona?
+
+## Output format
+
+A cross-reference table document:
+
+```
+docs/personas/skill-persona-crossref.md
+```
+
+With two tables:
+
+**Table A — Skill → Persona**:
+
+| Skill | Primary persona(s) | Product context | Gap or refused signal |
+|-------|---------------------|-----------------|----------------------|
+| ... | ... | ... | ... |
+
+**Table B — Persona → Skill**:
+
+| Persona | Available skills | Needed skills (gaps) |
+|---------|-----------------|----------------------|
+| ... | ... | ... |
+
+Gap rows in Table B become candidates for new B-NNNN skill-authoring backlog items.
+
+## Definition of done
+
+- [ ] B-0492 closed (prerequisite met)
+- [ ] All skills in `.claude/skills/` enumerated in Table A
+- [ ] All primary personas from B-0486..B-0491 represented in Table B
+- [ ] At least one "needed skills" gap identified per product
+- [ ] Gap rows noted as candidate backlog items (but NOT decomposed in this row —
+      that's a future pass)
+- [ ] Output doc committed at canonical path
+- [ ] B-0493 status set to `closed` with PR link
+
+## Why P1
+
+This is the B-0429 definition-of-done requirement: *"Skill catalog
+cross-referenced to persona-served (per PR #2933 ships-with-skills layer)."*
+Cannot be done before B-0492 (need full persona space). Closes out B-0429.
+
+## What this row does NOT do
+
+- Does NOT author new skills — only identifies gaps as future candidates
+- Does NOT require all gaps to be filed as backlog rows immediately
+- Does NOT retroactively change existing skill SKILL.md files

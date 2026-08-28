@@ -198,22 +198,59 @@ function heartbeat(): void {
         const elapsed = Date.now() - lastTime;
 
         if (elapsed >= agentIntervalMs) {
+            const prNum = Number(prCount) || 0;
+            const workMode = prNum === 0 ? "pickup" : "drain";
             agentStatus = "running";
-            log(`riven agent gate start run_id=${runId}`);
+            log(`riven work cycle start run_id=${runId} mode=${workMode} open_prs=${prNum}`);
 
             if (dryRun) {
-                log(`dry-run: would run agent gate`);
+                log(`dry-run: would run riven ${workMode}`);
                 agentStatus = "dry-run";
             } else {
-                const gate = run("agent", [
-                    "chat",
-                    "--mode", "ask",
-                    "--model", "grok-4-20",
-                    `Twin-flame heartbeat gate (Riven adversarial-truth-axis). Read git status, recent commits, open PRs, claim branches. Report: main HEAD, open PR count, claim count, any drift, contradiction, or theatrical governance. Adversarial register — call out what's wrong, not what's fine. Brief.`,
+                let prompt: string;
+                if (workMode === "pickup") {
+                    const pickup = run("bun", ["tools/backlog/autonomous-pickup.ts", "--json"], 30_000);
+                    let executionPrompt = "";
+                    try {
+                        const selection = JSON.parse(pickup.stdout);
+                        executionPrompt = selection.executionPrompt ?? "";
+                        log(`pickup selected: ${selection.selected?.id ?? "none"} action=${selection.action ?? "none"}`);
+                    } catch { log(`pickup parse error: ${pickup.stderr.slice(0, 200)}`); }
+
+                    const preamble = [
+                        `You are Riven's background worker in Lucent-Financial-Group/Zeta.`,
+                        `BEFORE ANY WORK: 1) Read CLAUDE.md and AGENTS.md for repo conventions.`,
+                        `2) Run "bun tools/github/refresh-worldview.ts" to get current state.`,
+                        `3) Read active trajectories at docs/trajectories/*/RESUME.md.`,
+                        `4) Build gate: "dotnet build -c Release" must end with 0 warnings 0 errors.`,
+                        `KEY RULES: TS over bash (Rule 0). Prefer F#/TS code over docs.`,
+                        `Always re-decompose items during the build — assume decomposition has mistakes.`,
+                    ].join(" ");
+
+                    prompt = executionPrompt.length > 0
+                        ? `${preamble} YOUR TASK:\n${executionPrompt}`
+                        : `${preamble} No backlog items available. Run refresh-worldview, check for stale classifications, fix them, open a PR.`;
+                } else {
+                    prompt = [
+                        `You are Riven's background worker in Lucent-Financial-Group/Zeta.`,
+                        `Read CLAUDE.md first. Run "bun tools/github/refresh-worldview.ts".`,
+                        `Build gate: "dotnet build -c Release" (0 warnings).`,
+                        `TASK: ${prNum} open PRs. Run "bun tools/github/poll-pr-gate-batch.ts --all-open".`,
+                        `For any PR where gate=BLOCKED and nextAction=resolve-threads:`,
+                        `check out branch, read review comments, fix code issues, push,`,
+                        `reply to threads, resolve via GraphQL, arm auto-merge`,
+                        `(gh pr merge NUMBER --auto --squash). Own your PRs through merge.`,
+                    ].join(" ");
+                }
+
+                const gate = run("cursor-agent", [
+                    "-p",
+                    "--model", "grok-4.3",
+                    prompt,
                 ], agentTimeoutMs);
 
                 agentStatus = gate.status === 0 ? "ok" : `exit-${gate.status}`;
-                log(`riven agent gate end run_id=${runId} status=${gate.status}`);
+                log(`riven work cycle end run_id=${runId} mode=${workMode} status=${gate.status}`);
 
                 writeFileSync(agentStateFile, JSON.stringify({
                     run_id: runId,

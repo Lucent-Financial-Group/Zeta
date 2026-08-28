@@ -1,6 +1,6 @@
 ---
 name: chaos-theory-expert
-description: Theory-level expert on chaos theory and the mathematics of dynamical systems. Covers sensitivity to initial conditions, the Lorenz attractor and other strange attractors, Lyapunov exponents, bifurcation theory (period-doubling, Feigenbaum constants, saddle-node / pitchfork / Hopf bifurcations), fractal dimension (Hausdorff, box-counting, correlation), Poincaré sections, KAM theory, edge-of-chaos phenomena in complex adaptive systems, and the distinction between deterministic chaos (low-dimensional, sensitive but predictable-in-principle) and stochastic noise. Use this skill when a model exhibits sensitive dependence, when a system's phase-space behaviour needs characterising, when debugging a feedback loop that doesn't settle, when a fractal-dimension or Lyapunov-exponent claim is being made, when simulation results are non-reproducible and the question is "is this chaos or is this a bug?", or when asked the Feynman question "how much of what looks random in this system is actually deterministic chaos?". Theoretical skill; an applied-side chaos-engineering sibling (fault-injection, reliability-under-perturbation testing — Netflix Chaos Monkey tradition) is a future split (BP-23).
+description: "Chaos theory — Lyapunov exponents, strange attractors, bifurcation, fractal dimension, KAM, chaos vs noise."
 ---
 
 # Chaos Theory Expert — Dynamical Systems and Strange Behaviour

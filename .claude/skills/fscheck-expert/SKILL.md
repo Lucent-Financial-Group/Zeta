@@ -1,6 +1,6 @@
 ---
 name: fscheck-expert
-description: Capability skill ("hat") — FsCheck property-based testing idioms for Zeta's property suite at `tests/Tests.FSharp/Properties/**` and scattered `[<Property>]` tests elsewhere in `tests/Tests.FSharp/**`. Covers the `[<Property>]` attribute vs `[<FsCheck.Xunit.Property(Arbitrary = ...)>]`, custom `Arbitrary<T>` registration via a class with static members, `Gen.sized` for bounded generation, shrink discipline, builtin wrappers (`NonNegativeInt`, `PositiveInt`, `NonEmptyArray`), overflow-safe clamping on Int64 properties, and the Zeta convention that each property is a paper-cited algebraic law. Wear this when writing or reviewing a `[<Property>]` test, adding a custom generator, or diagnosing a shrunk counter-example. Peer to `lean4-expert`, `tla-expert`, `alloy-expert`, `z3-expert`.
+description: FsCheck property testing — Arbitrary generators, shrink discipline, overflow-safe clamping, paper-cited algebraic laws.
 ---
 
 # FsCheck Expert — Procedure + Lore

@@ -1,6 +1,6 @@
 ---
 name: skill-creator
-description: Meta-skill — the canonical path for creating and tuning every other agent skill in this repo. Invoke whenever a new skill is proposed, an existing skill needs non-trivial revision, or the skill-tune-up flags drift. Enforces the repo convention that all skill changes pass through this workflow (so diffs are visible in git and safety rules are re-applied).
+description: Skill creator — canonical create/tune workflow for all agent skills; draft, prompt-protector review, dry-run, commit.
 ---
 
 # Skill Creator — Meta-Skill

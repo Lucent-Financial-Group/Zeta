@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://lucent-financial-group.github.io/Zeta/sitemap.xml

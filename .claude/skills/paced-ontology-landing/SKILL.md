@@ -1,6 +1,6 @@
 ---
 name: paced-ontology-landing
-description: Applied workflow for landing a new ontology (unifying taxonomy, classification scheme, cross-domain schema) across a project's documents, skills, and decisions without triggering destructive recompilation. The workflow amortises recompile cost across rounds, preserves a retraction path, and gates on maintainer opt-in rather than agent big-reveal. Use when an agent has drafted an ontology candidate in a scratchpad and the maintainer has explicitly signalled "land this"; when an ADR proposes a new vocabulary frame that touches ≥ 3 surfaces; when a cross-domain-translation bridge has revealed a unifying pattern worth adopting. Pairs with ontology-landing-expert (theory). Never land an ontology via rename cascade in a single PR.
+description: Ontology landing workflow — incremental migration across docs/skills/decisions, retraction path, maintainer opt-in gate.
 facet: expert × applied × transformer
 ---
 

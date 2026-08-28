@@ -1,6 +1,6 @@
 ---
 name: distributed-coordination-expert
-description: Capability skill ("hat") — distributed-systems narrow under `distributed-consensus-expert`. Owns the *primitives layer* that sits on top of a replicated-log consensus (Raft / Paxos): distributed locks + leases, leader election, membership (join / leave / failure detection), barriers + latches, group membership + watches, configuration registry, counters + sequencers, linearizable key-value store API, compare-and-swap + transactional writes, session + ephemeral znodes, notification / watch semantics. The design reference set is ZooKeeper (ZAB + recipes), etcd (Raft + gRPC + Lease / Watch), Consul (Raft + gossip), Chubby (Paxos + session leases). Wear this when designing any coordination primitive Zeta exposes to user code or internal subsystems, when evaluating an external coordinator (ZK / etcd / Consul) as a substrate vs building native, or when a primitive needs a TLA+ spec before it lands. Defers to `distributed-consensus-expert` for cross-protocol positioning, to `paxos-expert` / `raft-expert` for the consensus substrate, to `tla-expert` for spec authoring, to `transaction-manager-expert` for transactional commit, and to `deterministic-simulation-theory-expert` for DST binding.
+description: Distributed coordination primitives — locks, leases, leader election, ZooKeeper/etcd/Consul, CAS, watches, membership.
 ---
 
 # Distributed Coordination Expert — ZK / etcd-Style Primitives

@@ -70,41 +70,7 @@
       "enforcement": "active",
       "id": 15256879,
       "name": "Default",
-      "rules": [
-        {
-          "parameters": null,
-          "type": "deletion"
-        },
-        {
-          "parameters": null,
-          "type": "non_fast_forward"
-        },
-        {
-          "parameters": {
-            "review_draft_pull_requests": true,
-            "review_on_push": true
-          },
-          "type": "copilot_code_review"
-        },
-        {
-          "parameters": {
-            "allowed_merge_methods": [
-              "squash"
-            ],
-            "dismiss_stale_reviews_on_push": false,
-            "require_code_owner_review": false,
-            "require_last_push_approval": false,
-            "required_approving_review_count": 0,
-            "required_review_thread_resolution": true,
-            "required_reviewers": []
-          },
-          "type": "pull_request"
-        },
-        {
-          "parameters": null,
-          "type": "required_linear_history"
-        }
-      ],
+      "rules": [],
       "target": "branch"
     },
     {
@@ -156,6 +122,71 @@
             "strict_required_status_checks_policy": false
           },
           "type": "required_status_checks"
+        }
+      ],
+      "target": "branch"
+    },
+    {
+      "conditions": {
+        "ref_name": {
+          "exclude": [],
+          "include": [
+            "~DEFAULT_BRANCH"
+          ]
+        }
+      },
+      "enforcement": "active",
+      "id": 16168181,
+      "name": "Review Policy",
+      "rules": [
+        {
+          "parameters": {
+            "review_draft_pull_requests": true,
+            "review_on_push": true
+          },
+          "type": "copilot_code_review"
+        },
+        {
+          "parameters": {
+            "allowed_merge_methods": [
+              "squash"
+            ],
+            "dismiss_stale_reviews_on_push": false,
+            "require_code_owner_review": false,
+            "require_last_push_approval": false,
+            "required_approving_review_count": 0,
+            "required_review_thread_resolution": true,
+            "required_reviewers": []
+          },
+          "type": "pull_request"
+        }
+      ],
+      "target": "branch"
+    },
+    {
+      "conditions": {
+        "ref_name": {
+          "exclude": [],
+          "include": [
+            "~DEFAULT_BRANCH"
+          ]
+        }
+      },
+      "enforcement": "active",
+      "id": 16189060,
+      "name": "Branch Safety",
+      "rules": [
+        {
+          "parameters": null,
+          "type": "deletion"
+        },
+        {
+          "parameters": null,
+          "type": "non_fast_forward"
+        },
+        {
+          "parameters": null,
+          "type": "required_linear_history"
         }
       ],
       "target": "branch"

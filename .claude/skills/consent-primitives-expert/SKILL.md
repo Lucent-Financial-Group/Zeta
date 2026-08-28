@@ -1,6 +1,6 @@
 ---
 name: consent-primitives-expert
-description: Capability skill for the *algebraic primitives* of consent — consent-as-abelian-group (identity = no-consent, inverse = retraction, closure = event composition, commutativity = order-independent final state), the isomorphism to Zeta's Z-set algebra (consent algebra ≅ retraction-native Z-set algebra; same substrate, different semantic lens), the lift from abelian group to ring / module / algebra via a second operation (scope intersection, temporal composition, delegation composition), consent lifecycle data structures (grant / scope / duration / revocation), and auditable revocation without delete-based erasure. Wear this hat when designing consent data structures, when a GDPR right-to-be-forgotten requirement collides with audit requirements, when composing consent scopes under intersection, when implementing consent delegation, or when a UX-layer consent primitive needs a technical substrate. Generic across projects; hands off the UX surface to consent-ux-researcher and the architectural stance to glass-halo-architect.
+description: Consent algebra — grant/revocation data structures, abelian-group model, GDPR erasure vs audit, scope intersection, delegation.
 ---
 
 # Consent Primitives Expert — the consent-algebra hat

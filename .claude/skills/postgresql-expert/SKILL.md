@@ -1,6 +1,6 @@
 ---
 name: postgresql-expert
-description: Capability skill ("hat") — PostgreSQL-specific expert. Covers the Postgres wire protocol (Frontend/Backend messages, simple vs extended query, `Parse` / `Bind` / `Execute` / `Describe` / `Sync`, row description, COPY streaming), the Postgres type system (OID-based, `typcategory`, `typsend` / `typreceive`, binary vs text format), system catalogs (`pg_class`, `pg_attribute`, `pg_index`, `pg_statistic`, `pg_proc`), Postgres dialect extensions (LATERAL, DISTINCT ON, FILTER, array types, JSONB, range types, full-text search), EXPLAIN / EXPLAIN ANALYZE output, `pg_hba.conf` auth, SSL / SCRAM / GSSAPI. Wear this when Zeta's planned Postgres-wire frontend needs a protocol-level, catalog-level, or dialect-level decision. Defers to `sql-expert` for SQL-the-language semantics, to `query-planner` (Imani) for plan shape on our side, to `entity-framework-expert` for EF Core compatibility, and to `security-operations-engineer` for auth / TLS policy.
+description: PostgreSQL — wire protocol, type system, system catalogs, dialect extensions, EXPLAIN, pg_hba auth.
 ---
 
 # PostgreSQL Expert — Dialect + Wire-Protocol Hat

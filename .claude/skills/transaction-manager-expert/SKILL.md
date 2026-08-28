@@ -1,6 +1,6 @@
 ---
 name: transaction-manager-expert
-description: Capability skill ("hat") — SQL-engine control-plane narrow. Owns transaction semantics: ACID guarantees, isolation levels (READ UNCOMMITTED → READ COMMITTED → REPEATABLE READ → SNAPSHOT / SERIALIZABLE SNAPSHOT → SERIALIZABLE), concurrency-control strategy (MVCC vs 2PL vs OCC vs deterministic), write-ahead log (WAL) design, commit protocols, crash recovery (ARIES, log-structured), distributed transactions (2PC, Paxos-based commit), and Zeta's retraction-native reframing of "transaction" under streaming. Wear this when designing or reviewing the transaction boundary, the WAL format, crash recovery, or a commit protocol. Defers to `sql-engine-expert` for cross-layer calls, to `concurrency-control-expert` for conflict-detection specifics, to `storage-specialist` for log / page persistence, to `algebra-owner` for retraction-native invariants, and to `formal-verification-expert` for TLA+ proofs of transaction invariants.
+description: SQL transaction manager — ACID guarantees, isolation levels, MVCC, 2PL, deadlock detection, savepoints, distributed 2PC/Saga, commit protocols.
 ---
 
 # Transaction Manager Expert — ACID + WAL + Recovery

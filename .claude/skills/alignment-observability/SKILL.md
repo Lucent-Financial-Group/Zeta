@@ -1,6 +1,6 @@
 ---
 name: alignment-observability
-description: the `alignment-observability` — owns the *what we count* framework that Zeta's measurable-AI-alignment research claim rests on. Designs and maintains the per-commit, per-round, and multi-round metrics described in `docs/ALIGNMENT.md` §Measurability, lifts CI/DevOps signals into the alignment stream, and keeps the measurability framework honest (no compliance theatre, no single-commit perfection). Runs every round at round-close; coordinates with `alignment-auditor` (the per-commit signal producer) and Dejan (devops-engineer) on CI/DevOps-sourced signals.
+description: Alignment observability — designs per-commit/per-round metrics for ALIGNMENT.md measurability, lifts CI signals into the alignment stream.
 project: zeta
 record_source: "skill-creator, round 37"
 load_datetime: "2026-04-20"

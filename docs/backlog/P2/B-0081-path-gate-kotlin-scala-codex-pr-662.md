@@ -1,7 +1,7 @@
 ---
 id: B-0081
 priority: P2
-status: open
+status: closed
 title: codeql.yml path-gate should match `*.kt` + `*.scala` not just `*.java` — Codex P2 on PR #662
 effort: S
 ask: extend the path-gate `case` statement to include Kotlin and Scala source extensions so the analyze matrix triggers correctly when JVM code changes

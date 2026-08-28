@@ -257,11 +257,11 @@ preserving for future maintainers).
 
 ## Architectural target — three-ruleset split (B-0155 Phase 1 audit)
 
-Per Aaron 2026-05-01 — *"the settings that are there are accidental
-complexity not intentional, we want best practices and to prefer the
-git native settings over the legacy github ui/cli only settings, these
-are nasty thats why they are legacy"* + *"splitting rulesets so you
-could have all always on but multiple smaller rulesets."*
+Per the human maintainer 2026-05-01 — *"the settings that are there
+are accidental complexity not intentional, we want best practices and
+to prefer the git native settings over the legacy github ui/cli only
+settings, these are nasty thats why they are legacy"* + *"splitting
+rulesets so you could have all always on but multiple smaller rulesets."*
 
 ### Migration matrix — branch protection field → ruleset rule
 

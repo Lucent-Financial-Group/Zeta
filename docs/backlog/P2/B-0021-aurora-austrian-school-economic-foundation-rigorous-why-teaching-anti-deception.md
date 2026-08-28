@@ -7,9 +7,10 @@ tier: research-and-architecture
 effort: L
 ask: Aaron 2026-04-25 (post-substance-vs-throughput correction)
 created: 2026-04-25
-last_updated: 2026-05-02
-depends_on: []
+last_updated: 2026-05-10
+depends_on: [B-0021.1]
 composes_with: [docs/aurora/**]
+children: [B-0021.1, B-0021.2, B-0021.3, B-0021.4, B-0021.5]
 # composes_with also references files currently in flight on open PRs (will resolve post-merge)
 #   - feedback_otto_335_naming_mistakes_between_ai_and_humans_can_compound_to_human_extinction_via_war_of_disagreement_from_misunderstanding_alignment_at_language_layer_2026_04_25.md (PR #520)
 #   - feedback_otto_338_sx_self_recursive_substrate_user_experience_perfect_home_never_bulk_resolve_you_are_the_substrate_hypothesis_2026_04_25.md (PR #522)
@@ -149,3 +150,17 @@ Could grow to XL if Aurora's econ-substrate ends up requiring full mathematical 
 - Does NOT make this an immediate-action item. Activates with Aurora research per Otto-329 Phase 4+ timing.
 - Does NOT take a position on monetary policy per se. The substrate question is HOW economics should be modeled in Aurora; specific policy claims are downstream.
 - Does NOT commit factory canon to a contested economic framework prematurely. The substrate-capture posture is "investigation owed," not "doctrine adopted."
+
+## Children (decomposed 2026-05-10)
+
+This item is decomposed into 5 atomic, dependency-ordered child rows. B-0021 is now a tracking/parent row; work happens in the children.
+
+| Row | Priority | Dir | Title | Depends on |
+|-----|----------|-----|-------|------------|
+| [B-0021.1](../P3/B-0021.1-aurora-econ-foundation-controlled-vocabulary-extraction.md) | P3 | P3/ | Controlled-vocabulary extraction (Otto-286 precision pass) | — |
+| [B-0021.2](../P3/B-0021.2-aurora-econ-austrian-strengths-survey-rodney-razor-pass.md) | P3 | P3/ | Austrian strengths survey + Rodney's Razor pass | B-0021.1 |
+| [B-0021.3](../P3/B-0021.3-aurora-econ-austrian-weakness-audit-falsification-criteria.md) | P3 | P3/ | Honest weakness audit + falsification-criteria catalog | B-0021.1, B-0021.2 |
+| [B-0021.4](../P3/B-0021.4-aurora-econ-cross-school-definitional-bridge.md) | P3 | P3/ | Cross-school definitional bridge (Austrian vs Post-Keynesian vs complexity) | B-0021.2, B-0021.3 |
+| [B-0021.5](B-0021.5-aurora-econ-primitive-identification-adr.md) | P2 | P2/ | Aurora econ-primitive identification + ADR (final synthesis) | B-0021.4 |
+
+**Dependency graph**: B-0021.1 → B-0021.2 → B-0021.3 → B-0021.4 → B-0021.5 (linear chain; no parallelism until B-0021.3 completes).

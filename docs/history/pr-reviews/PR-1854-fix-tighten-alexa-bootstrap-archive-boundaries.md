@@ -33,7 +33,7 @@
 - remove fragile shadow-catch totals so the doc does not conflict with the PR #1853 description
 
 ## Checks
-- bunx markdownlint-cli2 docs/research/2026-05-07-alexa-bootstrap-otto-perspective-sleeping-bear-review.md
+- bunx markdownlint-cli2 memory/persona/alexa/conversations/2026-05-07-alexa-bootstrap-otto-perspective-sleeping-bear-review.md
 - git diff --check
 - bun tools/hygiene/check-archive-header-section33.ts
 

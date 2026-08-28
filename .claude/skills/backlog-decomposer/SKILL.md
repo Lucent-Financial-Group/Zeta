@@ -1,6 +1,6 @@
 ---
 name: backlog-decomposer
-description: Use when a backlog row or architectural session output is too large to execute safely and needs to be split into dependency-ordered child backlog rows. Applies the git-native claim protocol, preserves the original row as an umbrella, creates buildable child rows with depends_on edges, classifies what is buildable now vs blocked vs research, regenerates docs/BACKLOG.md, and verifies the backlog graph.
+description: Backlog decomposition — splits large B-rows into dependency-ordered child rows, depends_on edges, classifies buildable vs blocked vs research.
 ---
 
 # Backlog Decomposer

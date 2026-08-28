@@ -817,7 +817,7 @@ than renumbering the rest.
       `docs/aurora/*.md` is author-time advisory: absorbing
       agents include the four header labels at write time, and
       reviewers spot gaps during PR review. A dedicated lint
-      script (e.g. `tools/alignment/audit_archive_headers.sh`)
+      script (e.g. `tools/alignment/audit_archive_headers.ts`)
       and a corresponding `docs/FACTORY-HYGIENE.md` row are
       not yet landed; both are tracked as follow-up work and
       must ship together with their cross-references in the

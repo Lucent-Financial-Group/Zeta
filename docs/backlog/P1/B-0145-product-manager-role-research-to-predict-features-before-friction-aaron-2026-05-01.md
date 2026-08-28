@@ -1,10 +1,12 @@
 ---
 id: B-0145
 priority: P1
-status: open
+status: closed
 title: Product Manager (PM-2) role — research-to-predict-features-before-friction
 created: 2026-05-01
-last_updated: 2026-05-02
+last_updated: 2026-05-14
+closed: 2026-05-14
+closed_by: "B-0270 + B-0271 + PR #3074"
 decomposition: decomposed
 children: [B-0270, B-0271]
 depends_on: []
@@ -12,6 +14,51 @@ type: friction-reducer
 ---
 
 # B-0145 — Product Manager (PM-2) role — research-to-predict-features-before-friction
+
+## Completion notes (2026-05-14)
+
+All acceptance criteria met across three child deliverables:
+
+| AC | Deliverable | Merged via |
+|---|---|---|
+| AC 1 — EXPERT-REGISTRY.md Mira row | `docs/EXPERT-REGISTRY.md` PM-2 row | PR #3074 |
+| AC 2 — Cadence weekly/Sundays UTC | Documented in `docs/forward-radar/TEMPLATE.md` header (cadence established; the "reviewed after first 4 cycles" clause is a standing governance commitment, not a close-gate) | PR #3074 |
+| AC 3 — Output template | `docs/forward-radar/TEMPLATE.md` | PR #3074 |
+| AC 4 — First forward-radar memo | `docs/research/2026-05-13-pm2-zeta-feature-gap-prediction-first-pass.md` | B-0271 |
+| AC 5 — Calibration metric tracker | `docs/forward-radar/calibration.md` | PR #3074 |
+
+Skill: `.claude/skills/product-manager/SKILL.md` (B-0270).
+Agent: `.claude/agents/pm2.md`, persona Mira (B-0270).
+
+---
+
+## Pre-start checklist (2026-05-13)
+
+**Prior-art search:**
+
+- `.claude/skills/product-manager/SKILL.md` — exists (B-0270 closed) ✅
+- `.claude/agents/pm2.md` — exists, persona Mira (B-0270 closed) ✅
+- `docs/research/2026-05-13-pm2-zeta-feature-gap-prediction-first-pass.md` — first research pass (B-0271 closed) ✅
+- `docs/EXPERT-REGISTRY.md` — PM-2/Mira entry missing ❌ → this slice adds it
+- `docs/forward-radar/` — directory missing ❌ → this slice creates TEMPLATE.md + calibration.md
+
+**Dependency check:**
+
+- B-0270 (closed): skill + agent ✅
+- B-0271 (closed): first research pass ✅
+- `depends_on: []` — no blockers
+
+**Remaining open acceptance criteria addressed by this slice:**
+
+- AC 1: EXPERT-REGISTRY.md row for Mira (PM-2)
+- AC 3: `docs/forward-radar/TEMPLATE.md`
+- AC 5: `docs/forward-radar/calibration.md`
+- AC 2 (cadence: weekly, Sundays UTC) is documented in TEMPLATE.md header
+- AC 4 (first memo) was addressed by B-0271 (research doc in docs/research/)
+
+**Branch:** `feat/pm2-forward-radar-b0145-2026-05-13`
+
+---
 
 ## What
 

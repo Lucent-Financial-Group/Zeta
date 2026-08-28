@@ -1,6 +1,6 @@
 ---
 name: corporate-information-factory-expert
-description: Capability skill ("hat") — Bill Inmon's Corporate Information Factory (CIF). The original enterprise data warehouse (EDW) school: a single integrated, subject-oriented, non-volatile, time-variant atomic-data store, from which dependent data marts are derived. The rival framing to Kimball's dimensional-marts-first approach; the historical *parent* of Data Vault 2.0 (Dan Linstedt worked inside the Inmon school before formulating DV 1.0). Wear this when framing the Inmon / Kimball / DV debate, designing the atomic-integrated layer that predates Kimball marts, understanding the historical lineage of "single source of truth" thinking, or working with DW/BI 2.0 (Inmon's later refinement). Defers to `data-vault-expert` for the modern Inmon-descendant modelling method, `dimensional-modeling-expert` for the Kimball rival, `anchor-modeling-expert` for the Swedish 6NF school, and `relational-algebra-expert` for foundational normalisation.
+description: Inmon CIF — EDW, subject-oriented atomic store, dependent data marts, Inmon vs Kimball debate, DW/BI 2.0.
 ---
 
 # Corporate Information Factory Expert — Inmon Narrow

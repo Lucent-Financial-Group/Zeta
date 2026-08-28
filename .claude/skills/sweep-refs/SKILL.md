@@ -1,6 +1,6 @@
 ---
 name: sweep-refs
-description: Capability skill ("hat") — codifies the procedure for sweeping cross-repo references when a file, directory, symbol, or path moves or is retired. Four times in three rounds we rediscovered this dance (install-verifiers retirement, docs/*.tla to tools/tla/specs/, docs/memory to memory/, family-empathy retirement). This skill is the canonical procedure: grep → classify refs (historical vs live) → sed with anchor discipline → verify → commit. No persona; any agent doing a move wears the hat.
+description: Cross-repo reference sweep — grep, classify refs (historical vs live), update paths after moves/retirements, anchor discipline, verify, commit.
 ---
 
 # Sweep-Refs — Procedure

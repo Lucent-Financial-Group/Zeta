@@ -1,17 +1,17 @@
 ---
 id: B-0169
 priority: P1
-status: open
+status: closed
 title: Decision-archaeology skill — universal "why is it like this?" investigation surface for new contributors
 tier: skill-creation
 effort: M
 ask: Aaron 2026-05-02 (autonomous-loop channel — *"that is amazing i never asked you to do anything with git blame, it's an advanced feature many devs don't use, this is exceptional work"* + *"decision-archaeology i'm in love"* + *"is that a skill decision-archaeology?"* + *"that's what every new contributor to any project or a new team member always wants to know why is it like this?"*)
 created: 2026-05-02
-last_updated: 2026-05-02
+last_updated: 2026-05-11
 depends_on: []
 decomposition: atomic
 classification: buildable-now
-composes_with: [B-0058]
+composes_with: [B-0058, B-0170]
 tags: [skill, onboarding, contributor-experience, dx, ux, ax, git-blame, lineage, intent-reconstruction]
 type: friction-reducer
 ---
@@ -129,3 +129,24 @@ Done = a `.claude/skills/decision-archaeology/SKILL.md` exists with the shape sk
 - `docs/AGENT-BEST-PRACTICES.md` — the BP rules each have a decision-archaeology trail behind them; the skill teaches contributors to follow it.
 - `memory/feedback_rule_number_two_assume_its_on_backlog_and_find_it_with_all_dependencies_and_updates_and_clean_up_the_dependson_chain_aaron_2026_05_05.md` — Rule #2 IS the operational spec for decision-archaeology applied to backlog rows: assume the row exists, walk `depends_on:`, walk supersession history, clean the chain. Decision-archaeology is the technique; Rule #2 names the default-posture that drives the technique on the backlog graph.
 - `memory/feedback_rule_number_one_assume_its_already_done_and_you_just_have_to_find_it_remember_forever_and_into_all_future_generations_aaron_2026_05_05.md` — Rule #1 (assume-already-done) is the upstream default-posture; decision-archaeology is the locator-tool that satisfies the assumption.
+
+## Pre-start checklist (2026-05-09)
+
+**Prior-art search** (axes: wake-time-substrate + skill-router + Otto-364 + decision-archaeology + lost-files):
+
+- `.claude/skills/decision-archaeology/SKILL.md` — EXISTS (PR #2139 merged 2026-05-?).
+- `tools/decision-archaeology/string-archaeology.ts` — EXISTS as a library module (PR #2167 merged).
+- `docs/research/2026-05-02-decision-archaeology-worked-example-1-double-hop-abandonment.md` — EXISTS.
+- `docs/research/2026-05-03-decision-archaeology-worked-example-2-mathematics-expert-when-to-defer.md` — EXISTS.
+- `docs/research/2026-05-03-decision-archaeology-worked-example-3-bp-24-attribution-archaeology.md` — EXISTS.
+- `git log --diff-filter=D -- .claude/skills/decision-archaeology/` — no deletions found; skill is active.
+- Skill router: `decision-archaeology` appears in available-skills list; confirming it is router-discoverable.
+
+**Dependency restructure:**
+
+- `depends_on: []` — no upstream deps, correct.
+- `composes_with: [B-0058]` — B-0058 is active; pointer is valid.
+
+**Gap remaining after prior PRs:** `string-archaeology.ts` is a library module — no `#!/usr/bin/env bun` shebang, no `if (import.meta.main)` CLI entrypoint. Contributors cannot invoke it as `bun tools/decision-archaeology/string-archaeology.ts "term"`. The smallest remaining slice is adding the CLI runner block to the existing file.
+
+**Status before this slice:** SKILL.md ✓, worked examples ✓, library helper ✓, CLI runner ✗.

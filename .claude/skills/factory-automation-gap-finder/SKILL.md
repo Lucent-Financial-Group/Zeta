@@ -1,6 +1,6 @@
 ---
 name: factory-automation-gap-finder
-description: Meta-capability skill — scans the software factory for *manual factory work* that should be (but isn't yet) automated: CI steps done by hand, round-close housekeeping a human still types, release mechanics without scripts, documentation sweeps done by memory, dependency upgrades driven by calendar rather than by bot, repeated one-off scripts that never landed as tools. Proposes candidate automations for the `devops-engineer` (Dejan) or the appropriate owning skill to execute on. Distinct from `skill-gap-finder` (absent skills, not absent automation), `factory-audit` (governance + persona coverage), `factory-balance-auditor` (authority without compensator), `formal-verification-expert` (proof-job routing), and `verification-drift-auditor` (spec-vs-code drift). Recommends only — does not implement automations itself. Invoke every 5-10 rounds, offset from the sibling gap-finders.
+description: Factory automation gap scanner — finds manual factory work that should be automated; CI, release, hygiene, dependency cadences.
 ---
 
 # Factory Automation Gap Finder — Procedure

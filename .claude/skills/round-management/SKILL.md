@@ -1,6 +1,6 @@
 ---
 name: round-management
-description: Capability skill — round planning, parallel-agent dispatch, synthesis, close-out. Invoked by the Architect (Kenji) at round-open, mid-round, and round-close to keep the software factory cadence honest. Applies GOVERNANCE.md §12-13 (bugs-before-features ratio; reviewer-count inverse to backlog). Pure procedure; persona lives on `.claude/agents/architect.md`.
+description: Round planning — parallel-agent dispatch, synthesis, close-out; invoked at round-open, mid-round, round-close by the Architect.
 ---
 
 # Round Management — Procedure

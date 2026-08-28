@@ -1,6 +1,6 @@
 ---
 name: claude-code-env-mapping
-description: Capability skill ("hat") — Claude Code harness-environment knowledge as carved-sentences-in-behavior. Thin pointer to the canonical capability map (`docs/research/claude-cli-capability-map.md`) + Zeta-specific extensions (`.claude/commands/btw.md`, `.claude/skills/`, `.claude/agents/`, `.claude/hooks/`). Wear this when needing to know what is available in the Claude Code environment, when invoking a slash command, when authoring or invoking a skill, when configuring hooks, when delegating to peer-call infrastructure, or when prior-art-grep needs to reach for env-knowledge before claiming something does not exist. Encodes the search-first-authority + synthesis-weight + prior-art-grep-first discipline (PR #1701) at the env-knowledge layer. Defers to skill-creator workflow (GOVERNANCE §4) for skill-authoring; to `.claude/commands/<name>.md` for custom-command-authoring; to `docs/research/claude-cli-capability-map.md` for canonical CLI capability content (refreshed on cadence per change-rate).
+description: "Claude Code environment — skills, commands, hooks, agents, slash commands, peer-call, capability-map pointer."
 record_source: "claude-code-env-mapping landing, PR #1702"
 load_datetime: "2026-05-05"
 last_updated: "2026-05-05"

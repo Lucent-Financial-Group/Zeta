@@ -160,3 +160,35 @@ When picking this up:
 3. Land cross-references in AGENTS.md / CONTRIBUTING.md / GOVERNANCE.md.
 4. Encode T1-T5 cadences. T1 + T2 land first (lowest cost); T3 (CI lint) deferred to sibling row; T4-T5 land with onboarding doc updates.
 5. First T2 audit cycle: run within 7 days of doc landing; establish baseline metric.
+
+## Pre-start checklist (backlog-item start gate)
+
+**Completed 2026-05-11 before decomposition work:**
+
+1. **Prior-art search**:
+   - Ran `bun tools/github/refresh-worldview.ts` (0 open PRs, 62 claims, recent B-0090 re-decomp PR #2680).
+   - Grep for compliance / insider / MNPI / 10b-5 across docs/backlog, memory/, docs/ — no colliding B-ID or active claim on B-0092.
+   - Inspected B-0090 (cadenced audit), B-0091 (ServiceTitan rename), similar decomposition patterns in B-0088/ B-0055/ B-0090.
+   - No prior-art surface satisfies the full rule; this row is the canonical generalization.
+
+2. **Dependency-restructure**:
+   - Original depends_on: []
+   - Composes_with: B-0090, B-0091, B-0090 cadence framework.
+   - Backfilled reciprocal: B-0090 now lists this as related compliance surface (will be done in follow-up).
+   - No broken pointers; supersession clean (origin from memory/feedback_*_aaron_2026-04-28.md).
+
+**Decomposition note**: B-0092 treated as broad (doc + 5 trajectories). Re-decomposed per "always re-decompose... assume mistakes" into 4 atomic children below. T3 deferred per original scope.
+
+## Decomposition (2026-05-11, one bounded step; renumbered 2026-05-14)
+
+B-0092 decomposed into 4 smallest dependency-ordered atomic child rows. Originally numbered B-0370..B-0373, renumbered to B-0452..B-0455 on 2026-05-14 to resolve ID collision with the earlier B-0370..B-0373 P1 set (durable/SEO/sitemap/alignment, from PR #2269). Parent now depends_on children; pickup order enforced by graph.
+
+- B-0452 (renumbered from B-0370): Author core `docs/CONTRIBUTOR-COMPLIANCE.md` (rule + examples + SEC lineage)
+- B-0453 (renumbered from B-0371): Cross-reference integration (AGENTS.md + CONTRIBUTING.md + GOVERNANCE.md)
+- B-0454 (renumbered from B-0372): T1 self-audit + T2 weekly/monthly cadenced review (TS tooling preferred)
+- B-0455 (renumbered from B-0373): T4 onboarding briefing + T5 drift retrospective (trajectory packets)
+
+`last_updated`: 2026-05-14
+`children`: [B-0452, B-0453, B-0454, B-0455]
+`decomposition`: clean
+`depends_on`: [B-0452, B-0453, B-0454, B-0455]

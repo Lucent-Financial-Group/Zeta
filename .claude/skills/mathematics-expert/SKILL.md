@@ -1,6 +1,6 @@
 ---
 name: mathematics-expert
-description: Capability skill ("hat") — holistic mathematics-research umbrella for Zeta. Covers research discipline (theorem/lemma/proposition naming, proof-style conventions, citation hygiene in `docs/research/`, LaTeX idioms for the publication surface, when to reach for which proof tool — Lean 4 / Z3 / TLA+ / FsCheck / hand-proof). Wear this when reviewing or authoring mathematical content that spans subfields or when the narrower skills (`applied-mathematics-expert`, `theoretical-mathematics-expert`, `category-theory-expert`, `measure-theory-and-signed-measures-expert`, `numerical-analysis-and-floating-point-expert`, `probability-and-bayesian-inference-expert`) do not cleanly fit. Defers to those narrows whenever a prompt lands squarely in one of their lanes.
+description: Mathematics umbrella — proof conventions, citation hygiene, LaTeX, proof-tool routing (Lean/Z3/TLA+/FsCheck) for cross-subfield content.
 ---
 
 # Mathematics Expert — Umbrella

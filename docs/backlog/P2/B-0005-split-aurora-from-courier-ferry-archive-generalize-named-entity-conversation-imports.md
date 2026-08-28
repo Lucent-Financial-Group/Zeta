@@ -1,15 +1,15 @@
 ---
 id: B-0005
 priority: P2
-status: open
+status: decomposed
 title: Split `docs/aurora/**` from courier-ferry archive — generalize "historical conversations imported from other AI systems / courier transport of messages between named entities" into its own directory
 tier: research-grade
 effort: M
 ask: maintainer Aaron 2026-04-25
 created: 2026-04-25
-last_updated: 2026-05-02
+last_updated: 2026-05-09
 depends_on: []
-composes_with: []
+composes_with: [B-0375, B-0376, B-0377, B-0378, B-0379]
 tags: [governance, directory-ontology, aurora, courier-ferry, cross-ai-imports, history-surface, BP-17, BP-18]
 type: friction-reducer
 ---
@@ -229,3 +229,33 @@ This work is "good enough to ship" when:
   (peer-Claude exchanges land in the same home).
 - **Otto-181 BACKLOG schema** (this row's frontmatter
   schema source).
+
+## Re-decomposition (Riven, 2026-05-09) — assume original mistake
+
+Original B-0005 decomposition (Path A/B choice + 5-15 moves) is too broad for atomic PRs and lacks explicit dependency ordering. Re-decomposed into smallest dependency-ordered atomic child rows (each S-effort except the execution atom which is M, one-PR-safe, verifiable in isolation). Root has no depends_on.
+
+**Atomic children (dependency order) — child rows created 2026-05-09:**
+
+1. **[B-0375](B-0375-aurora-file-inventory-and-type-classification-2026-05-09.md)** (P2, S, root): Inventory + classify every file under `docs/aurora/**` (current-state Aurora docs vs courier-ferry history imports). Produce machine-readable classification table (no edits yet). Focused check: `rg --files docs/aurora` + manual type tally. Unblocks all downstream.
+
+2. **[B-0376](B-0376-aurora-split-naming-decision-record-2026-05-09.md)** (P2, S, depends_on: B-0375): Architect decision record for canonical name of named-entity-conversation-imports home (`docs/courier/**` vs `docs/cross-ai-imports/**` vs `docs/imported-conversations/**`) + Path A vs Path B choice. ADR under `docs/DECISIONS/` only. No mass moves.
+
+3. **[B-0377](B-0377-aurora-split-schema-docs-update-agent-best-practices-otto279-2026-05-09.md)** (P2, S, depends_on: B-0375 + B-0376): Update `docs/AGENT-BEST-PRACTICES.md` BP-17/18 + Otto-279 memory file to replace `docs/aurora/**` history-surface ref with chosen name. Focused check: `rg "docs/aurora" docs/AGENT-BEST-PRACTICES.md`.
+
+4. **[B-0378](B-0378-aurora-split-governance-copilot-instructions-update-2026-05-09.md)** (P2, S, depends_on: B-0375 + B-0376): GOVERNANCE.md §33 archive-header rule update + `.github/copilot-instructions.md` mirror. Add explicit "named-entity-conversation-imports" category definition. Can run in parallel with B-0377.
+
+5. **[B-0379](B-0379-aurora-split-execute-git-mv-cross-refs-2026-05-09.md)** (P2, M, depends_on: B-0377 + B-0378): Execute the split: mkdir new dir, git mv history-import files, update all cross-refs in `memory/**` + `docs/ROUND-HISTORY.md`. Run full focused checks (build, canonical-home-auditor, rg).
+
+**Dependency graph:**
+```
+B-0375 (inventory)
+  └─→ B-0376 (naming ADR)
+        ├─→ B-0377 (schema: AGENT-BEST-PRACTICES + Otto-279)
+        └─→ B-0378 (schema: GOVERNANCE §33 + copilot-instructions)
+              └─→ B-0379 (execution: git mv + cross-ref sweep)
+```
+(B-0377 and B-0378 are parallel; both feed B-0379.)
+
+**Why this re-decomp fixes the mistake:** Original bundled decision + execution + schema updates into one M row. Now each atom is independently buildable/reviewable, with clear dep edges, matching "smallest dependency-ordered atomic" rule and "re-decompose during build" discipline. B-0005 now acts only as parent pointer (no direct implementation).
+
+**Next bounded step:** Pick B-0375 (root, S, no deps).

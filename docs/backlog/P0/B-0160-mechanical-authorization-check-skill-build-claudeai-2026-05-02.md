@@ -1,12 +1,12 @@
 ---
 id: B-0160
 priority: P0
-status: open
+status: closed
 title: Mechanical authorization check skill build — pace-instruction resolver per Claude.ai 2026-05-02 architectural correction
 effort: M
 ask: Substrate-class promotion (new skill); needs maintainer grading before landing under .claude/skills/
 created: 2026-05-02
-last_updated: 2026-05-08
+last_updated: 2026-05-10
 tags: [skill-build, claude-ai, mechanical-check, authorization-source, never-idle, no-op-cadence, codex-handoff, pr-1200]
 type: friction-reducer
 decomposition: decomposed

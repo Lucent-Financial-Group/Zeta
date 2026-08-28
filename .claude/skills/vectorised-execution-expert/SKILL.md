@@ -1,6 +1,6 @@
 ---
 name: vectorised-execution-expert
-description: Capability skill ("hat") — engine-type specialization under `execution-model-expert`. Covers vectorised / batch-at-a-time execution (Vectorwise / MonetDB-X100, DuckDB, ClickHouse): batch-size tuning, pipeline-breaker placement, columnar vector types, SIMD-friendly loops, intermediate materialisation, vector-at-a-time predicate evaluation, null-bitmap handling, selection-vector versus position-list variants. Wear this when designing or reviewing Zeta's hot-path analytical executor, tuning batch size, evaluating intermediate-vector memory pressure, or deciding between selection-vector and position-list representations. Zeta's call: **vectorised is the default hot-path execution model**, built over the streaming-incremental substrate and the ZSet batch representation. Defers to `execution-model-expert` for cross-model framing, to `hardware-intrinsics-expert` for kernel-level intrinsics, to `columnar-storage-expert` for segment layout, and to `algebra-owner` for retraction-native invariants.
+description: "Vectorised execution — SIMD dispatch, columnar morsel processing, operator fusion, AVX-512, Apache Arrow, branchless kernels."
 ---
 
 # Vectorised Execution Expert — Batch-at-a-Time Hot Path

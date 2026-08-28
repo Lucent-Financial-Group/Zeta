@@ -1,13 +1,14 @@
 ---
 id: B-0191
 priority: P1
-status: open
+status: closed
 title: Orchestrator branch-verify mechanization design — pre-commit hook + branch-name display + worktree-aware checks (Aaron 2026-05-04)
 tier: foundation
 effort: M
 ask: Aaron 2026-05-04 verbatim *"for humans this is why oh my zsh reminds us of many things like this it has branch name in the ui"* + same-tick *"maybe a deliberate design/redesign on the backlog?"*
 created: 2026-05-04
-last_updated: 2026-05-05
+last_updated: 2026-05-09
+closed: 2026-05-09
 depends_on: []
 decomposition: atomic
 classification: buildable-now
@@ -146,6 +147,33 @@ Establish a session-level env var that ALL orchestrator git operations check. Ea
 - `B-0006` — memory work pattern that hits this most.
 - `B-0017` (folds B-0188) -- bulk-review / bulk-alignment UI for backlog rows; the systematic answer for catching cross-row inconsistencies like the original git-hooks-vs-harness-hooks contradiction (Aaron 2026-05-05: *"it's something we would have caught in the bulk alignment UI on the backlog"*).
 - `B-0162` — pre-commit hook for direct-name-attribution; similar mechanization approach (also worth revising to harness hook per same logic).
+
+## Pre-start checklist (2026-05-09)
+
+**Prior-art search:**
+
+- `tools/orchestrator-checks/verify-branch.ts` — already exists (PR #1585), merged.
+- `.claude/hooks/verify-branch-pretooluse.ts` — already exists (PR #1586), merged.
+- `.claude/settings.json` hook wiring — already wired (PR #2151), merged.
+- CLAUDE.md / AGENTS.md — no pointer bullet; AC3 is the remaining gap.
+- `.claude/rules/` — no `zeta-expected-branch.md` rule file yet.
+
+**Dependency restructure:**
+
+- No `depends_on:` entries. `composes_with: [B-0006, B-0140, B-0156, B-0162]` verified current.
+
+**Smallest safe slice (this PR):**
+
+- Create `.claude/rules/zeta-expected-branch.md` with carved sentence + hook wiring table.
+- Add CLAUDE.md pointer bullet for cold-start discoverability.
+- Keep backlog row status `open`; record this PR as AC3 progress without using an unsupported in-progress enum.
+
+**Remaining after AC3 PR (#2239):**
+
+- AC2 per-harness wiring doc for Codex/Cursor (currently documented in B-0191 body only) — deferred; core Claude Code wiring is sufficient for the mechanization goal.
+- AC5 worktree status check script — landed: `tools/orchestrator-checks/check-orchestrator-state.ts` (this PR).
+
+**All primary ACs met; B-0191 closed 2026-05-09.**
 
 ## The carved sentence
 

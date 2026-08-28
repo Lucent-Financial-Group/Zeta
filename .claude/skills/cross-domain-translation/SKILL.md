@@ -1,6 +1,6 @@
 ---
 name: cross-domain-translation
-description: Applied workflow for producing a translation bridge between two named expert domains for a named audience. Generates a minimal-IR glossary table, a narrative bridge, and a back-translation check. Use when an agent is asked to write documentation spanning disjoint-jargon audiences, prepare a teaching artefact, reconcile two expert notebooks that disagree on terms for the same concept, or author a GLOSSARY.md entry that has to serve multiple callers. Pairs with translator-expert (theory) and reducer (Rodney's Razor preservation-constraint check). Invoke whenever the target document will be read by two or more audiences with incompatible vocabularies.
+description: Cross-domain translation — glossary bridge, IR table, back-translation check for documents spanning incompatible vocabularies.
 facet: expert × applied × transformer
 ---
 

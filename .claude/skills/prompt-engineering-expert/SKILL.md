@@ -1,6 +1,6 @@
 ---
 name: prompt-engineering-expert
-description: Capability skill for the offensive / craft side of LLM prompting — system prompts, few-shot design, tool descriptions, reasoning scaffolds, output-schema enforcement, context budget management. Wear this hat when writing or revising any skill prompt, tool schema, agent persona, reviewer role, or user-facing prompt template. Complementary to the defensive `prompt-protector` skill (which hardens against adversarial input) — this skill makes the prompt *work* in the first place.
+description: Prompt engineering — system prompts, few-shot design, tool descriptions, reasoning scaffolds, output-schema enforcement, context budgets.
 ---
 
 # Prompt Engineering Expert — the prompt-craft hat

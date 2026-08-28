@@ -1,6 +1,6 @@
 ---
 name: row-store-expert
-description: Capability skill ("hat") — storage-layout narrow under `storage-specialist`, sibling to `columnar-storage-expert`. Covers row-oriented (N-ary storage model) layouts: heap files, slotted pages, tuple headers, row-versioning chains (HOT-style), clustered vs non-clustered indexes, B+ tree leaf-page layout, free-space management (FSM), page-level locking / latching, WAL-page-image discipline, OLTP write-path optimisations. Wear this when the workload is point-read / point-write dominated, when designing the OLTP-path layout, when reconciling row-store access with Zeta's retraction-native deltas, or when evaluating row-vs-column trade-offs for a specific subsystem (catalog, control plane, high-write tenants). Defers to `storage-specialist` for end-to-end persistence, to `columnar-storage-expert` for the column sibling, to `transaction-manager-expert` for MVCC chain semantics, and to `algebra-owner` for retraction-native layout invariants.
+description: Row-store / OLTP layout — heap files, slotted pages, HOT chains, B+ tree leaf layout, FSM, page latching, WAL-page-image, point-read/write paths.
 ---
 
 # Row Store Expert — Row-Oriented Layout Narrow

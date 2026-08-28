@@ -1,6 +1,6 @@
 ---
 name: sql-engine-expert
-description: Capability skill ("hat") — umbrella for Zeta's own SQL engine. We are writing a SQL engine, not just a SQL frontend; this hat is the holistic view across parser, binder, optimiser, planner, execution model, storage format, and wire protocol. Routes to narrows — `sql-parser-expert` (lex / parse / AST / error recovery), `sql-expert` (SQL-the-language semantics), `postgresql-expert` (Postgres dialect + wire protocol), `query-optimizer-expert` (logical rewrites + cost model), `query-planner` / Imani (physical plan + SIMD dispatch), `execution-model-expert` (Volcano vs vectorised vs morsel-driven vs codegen vs push-vs-pull vs streaming/incremental), `relational-algebra-expert` (equivalence proofs), `algebra-owner` (retraction-native laws), `storage-specialist` (persistence layout), `entity-framework-expert` (EF-client surface). Wear this when the question crosses layer boundaries (e.g. "does this optimiser rewrite fight the execution model?"), when a new engine-type or architectural decision needs framing, or when a research claim is about the engine as a whole rather than one layer.
+description: Zeta SQL engine umbrella — cross-layer view of parser, binder, optimizer, planner, execution model, storage, wire protocol.
 ---
 
 # SQL Engine Expert — Holistic Umbrella

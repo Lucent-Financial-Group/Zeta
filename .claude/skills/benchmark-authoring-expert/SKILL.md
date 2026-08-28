@@ -1,6 +1,6 @@
 ---
 name: benchmark-authoring-expert
-description: Capability skill ("hat") — BenchmarkDotNet discipline for writing good Zeta benchmarks. Covers `[<MemoryDiagnoser>]`, warmup + iteration configuration, `[<Params>]` for parameter sweeps, baseline-vs-variant comparisons, allocation tracking, outlier detection, writing benchmarks that answer a specific question. Paired with `performance-engineer` — the `performance-engineer` decides what to measure; this skill is how to measure it right.
+description: BenchmarkDotNet authoring — MemoryDiagnoser, warmup config, Params sweeps, baseline comparisons, allocation tracking, outlier detection.
 ---
 
 # Benchmark Authoring Expert — Procedure + Lore

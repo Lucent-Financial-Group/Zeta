@@ -304,7 +304,7 @@ function checkNoCollision(path: string, receiptId: string): void {
 }
 
 function main(): number {
-  // Per Copilot 2026-05-06 review on PR #1702: parseArgs.next() can
+  // Per PR #1702 review 2026-05-06: parseArgs.next() can
   // throw when a flag is missing its value (e.g. `--actor` at end of
   // argv); catch the throw at main() so the script exits with a
   // user-friendly error instead of an unhandled-exception traceback.

@@ -1,6 +1,6 @@
 ---
 name: storage-specialist
-description: Use this skill as the designated specialist reviewer for Zeta.Core's storage layer — DiskBackingStore, Spine family, checkpoint format, durability modes, WDC. Carries deep advisory authority on storage technical direction; final decisions require Architect buy-in or human contributor sign-off (see docs/CONFLICT-RESOLUTION.md).
+description: Zeta.Core storage reviewer — DiskBackingStore, Spine family, checkpoint format, durability modes, WDC advisory.
 ---
 
 # Storage Specialist — Advisory Code Owner

@@ -1,6 +1,6 @@
 ---
 name: skill-improver
-description: Targeted skill-improvement driver. She is the thin wrapper around `skill-creator` that actually runs the improvement loop for this repo. Understands requests like "improve one skill", "improve this specific skill", "improve 10 skills", "improve all skills", "improve the improvement process itself". Pairs with the Skill Tune-Up — he recommends, she executes. Keeps a notebook at memory/persona/skill-improver.md.
+description: Skill improvement driver — runs the skill-creator loop for requested skills, pairs with skill-tune-up rankings.
 ---
 
 # Skill Improver

@@ -29,6 +29,7 @@ let main argv =
         Console.WriteLine "Usage:"
         Console.WriteLine "  Zeta.SubstrateDiscovery --version"
         Console.WriteLine "  Zeta.SubstrateDiscovery --smoke"
+        Console.WriteLine "  Zeta.SubstrateDiscovery --biology"
         Console.WriteLine "  Zeta.SubstrateDiscovery --help"
         Console.WriteLine ""
         Console.WriteLine "Phase 0 PoC validates the AOT-publish toolchain on"
@@ -65,6 +66,17 @@ let main argv =
             count <- count + int entry.Weight
         Console.WriteLine $"smoke: observed %d{count} entries in output ZSet"
         Console.WriteLine "smoke: ok"
+        0
+
+    | [| "--biology" |] ->
+        // B-0045 smallest safe slice (inaugural): biology substrate stub.
+        // Bounded one-step: wire the first subject into the discovery binary
+        // as F# code (per "prefer F# code over docs"). Prints the retraction-
+        // native biology entry point; no new deps, no doc changes.
+        Console.WriteLine "B-0045.2: biology inaugural substrate"
+        Console.WriteLine "  autopoiesis (Maturana/Varela) + retraction-native homeostasis"
+        Console.WriteLine "  Kauffman autocatalytic sets + Wolpert fate maps as operator seeds"
+        Console.WriteLine "  Stage-1 scaffold wired to discovery tool (code, not doc)"
         0
 
     | _ ->

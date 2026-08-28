@@ -1,13 +1,13 @@
 ---
 id: B-0310
 priority: P1
-status: open
+status: closed
 title: "Concept-registry extraction tool — canonical inventory of load-bearing concepts"
 tier: substrate-quality
 effort: S
 parent: B-0060
 created: 2026-05-08
-last_updated: 2026-05-08
+last_updated: 2026-05-09
 depends_on: []
 composes_with: [B-0060, B-0311]
 tags: [substrate-quality, tooling, concept-registry, human-lineage]
@@ -47,13 +47,19 @@ anchoring work under B-0060.
   "concepts": [
     {
       "id": "HC-1",
-      "class": "alignment-clause",
+      "conceptClass": "alignment-clause",
       "source": "docs/ALIGNMENT.md",
-      "label": "..."
+      "label": "...",
+      "anchor": "Pearl-2009"
     }
-  ]
+  ],
+  "summary": {
+    "alignment-clause": 7
+  }
 }
 ```
+
+> `anchor` is optional (B-0361). When present it records the human-lineage anchor for the concept (e.g. a Pearl citation). Omit for concepts with no declared anchor.
 
 ## Done-criteria
 

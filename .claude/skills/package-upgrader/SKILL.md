@@ -1,6 +1,6 @@
 ---
 name: package-upgrader
-description: Capability skill ("hat") — turns the `package-auditor` audit output into concrete upgrade PRs. For each pinned package in Directory.Packages.props, classify bumps (patch / minor / major) by whether Zeta's code actually touches the changed surface, run the build + test gate post-bump, and propose landings in blast-radius order. Distinct from `package-auditor` (Malik, who identifies what's stale); this skill makes the upgrade motion itself.
+description: Package upgrade driver — turns audit output into concrete upgrade PRs, blast-radius-ordered, build+test gated.
 ---
 
 # Package Upgrader — Procedure
@@ -15,7 +15,7 @@ build-and-test gating.
 **Lane distinction.**
 
 - **`package-auditor`** (Malik's primary hat) — runs
-  `tools/audit-packages.sh`; outputs the stale-pins list
+  `tools/audit-packages.ts`; outputs the stale-pins list
   with major/minor/patch classification.
 - **`package-upgrader`** (this skill; Malik's second hat
   or anyone's when worn) — consumes that list, makes the
@@ -64,7 +64,7 @@ Every pin gets a tier that drives the upgrade policy:
 
 ### Step 1 — consume the audit
 
-Malik produces `tools/audit-packages.sh` output with rows
+Malik produces `tools/audit-packages.ts` output with rows
 shaped `<PackageId> <currentVersion> <latestVersion>
 <changeClass>`. Parse into a work queue; sort by tier
 ascending (patch first, major last).
@@ -178,7 +178,7 @@ For each row in work-queue order:
 ## Reference patterns
 
 - `Directory.Packages.props` — central pin file
-- `tools/audit-packages.sh` — Malik's audit output
+- `tools/audit-packages.ts` — Malik's audit output
 - `tools/setup/manifests/dotnet-tools` — dotnet global
   tool pins
 - `tools/setup/manifests/uv-tools` — uv CLI pins

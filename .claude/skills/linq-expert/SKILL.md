@@ -1,6 +1,6 @@
 ---
 name: linq-expert
-description: Capability skill ("hat") for LINQ — the C#/F#/.NET query-integration facility that unifies collections, databases, XML, and reactive streams under a single set of Standard Query Operators. Covers expression-tree queries (Queryable), enumerable queries (Enumerable), the SelectMany monadic spine, composition with custom providers, Nuqleon-style query serialisation, and the design-philosophy pedigree (comprehensions / monad comprehensions / category-theoretic origins). Wear this hat for any query-composition question in Zeta, any `IQueryable`/`IEnumerable` design review, any question about standard query operators, and when the task touches Zeta's retraction-native operator algebra through a LINQ facade. Defers to `rx-expert` (Bart) for time-axis/observables, `variance-expert` (Meijer) for generic-variance questions, `relational-algebra-expert` for the SQL-semantics side, and `query-planner` for physical-plan concerns.
+description: LINQ — IQueryable/IEnumerable, expression trees, SelectMany monad, Nuqleon serialisation, Zeta algebra.
 ---
 
 # LINQ Expert — Language-Integrated Query Hat

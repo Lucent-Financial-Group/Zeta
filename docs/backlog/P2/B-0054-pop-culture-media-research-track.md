@@ -7,14 +7,59 @@ tier: operational-resonance-research
 effort: L
 ask: Aaron 2026-04-21 multi-message seed — *"why files conspicary theory backlog cronovisor"* + *"a tv show called Dev"* + *"a comedy call future man"* + *"hollywood bollywood inde, music information backlog"* + *"a game called broken age"* + *"dr who"* + *"montey python"* + *"Brütal Legend all FF starting with 6 and 7"* + *"space balls / naked gun"* + *"zelda and mario of course"* + *"genshin impact"*
 created: 2026-04-26
-last_updated: 2026-05-02
+last_updated: 2026-05-10
 depends_on: []
+children: [B-0054.1-media-resonance-catalog-schema, B-0054.2-video-game-priority-seeds-extension, B-0054.3-video-game-mario-genshin, B-0054.4-double-fine-broken-age-brutal-legend-narrative, B-0054.5-british-serial-tv-monty-python-red-dwarf-black-mirror, B-0054.6-hollywood-film-arrival-interstellar-primer-tenet, B-0054.7-conspiracy-corpus-chronovisor-why-files, B-0054.8-music-corpus-progressive-rock-tool-nin, B-0054.9-catalog-tier-games-portal-braid-outer-wilds-disco-elysium, B-0054.10-bollywood-hindi-cinema-hindu-karmic-cycle]
 composes_with: [B-0042, B-0049, B-0056, B-0057, B-0059, project_operational_resonance_instances_collection_index_2026_04_22.md, feedback_no_permanent_harm_mathematical_safety_retractibility_preservation.md, feedback_operational_resonance_engineering_shape_matches_tradition_name_alignment_signal.md, feedback_see_the_multiverse_in_our_code_paraconsistent_superposition.md]
 tags: [pop-culture, media, film, tv, youtube, music, video-games, why-files, devs, doctor-who, monty-python, brutal-legend, final-fantasy, zelda, mario, genshin-impact, broken-age, future-man, chronovisor, three-filter, operational-resonance, F1-F2-F3]
 type: friction-reducer
 ---
 
 # B-0054 — Pop-culture / media research track
+
+## Pre-start checklist (completed 2026-05-10, B-0054.1 slice)
+
+**Prior-art search:**
+
+- Skill router: `operational-resonance` — no existing skill; the phenomenon is documented
+  in memory files only (`feedback_operational_resonance_*`, `project_operational_resonance_*`).
+- On-disk directories: no prior `tools/resonance/` dir; no prior `docs/research/media-resonance*`
+  file. The text-tradition index at `memory/project_operational_resonance_instances_collection_index_2026_04_22.md`
+  is the closest existing surface (11 confirmed text-tradition instances + 1 candidate).
+- PR history: no prior PR touching "media-resonance" or "pop-culture-catalog". The
+  `tools/alignment/filter_gate_log.ts` (B-0058) is a related filter-gate tool but is
+  ethics-axis only, not resonance-catalog.
+- Lost-files check: `tools/hygiene/LOST-FILES-LOCATIONS.md` — no resonance-catalog items.
+- Otto-364 search-first: confirmed no upstream art for typed media-resonance catalog schemas
+  in the Zeta ecosystem.
+
+**Dependency-restructure:**
+
+- `depends_on: []` — no blocking dependencies.
+- `composes_with: [B-0042, B-0049, B-0056, B-0057, B-0059]` confirmed non-blocking;
+  these tracks are independently open research tracks.
+- Reciprocal `composes_with` backfill: B-0042 (Bungie) and B-0056 (mythology) will receive
+  pointer to B-0054 in their own pre-start passes.
+
+**Decomposition (L → S slices):**
+
+B-0054 is Effort:L (long-running research track). Decomposed into dependency-ordered slices:
+
+| Sub-row | Title | Effort | Status |
+|---------|-------|--------|--------|
+| **B-0054.1** | Media resonance catalog v0 — typed schema + 4 seed entries (Dr Who, Devs, Zelda, Spaceballs) | S | closed (PR #2421) |
+| **B-0054.2** | Video-game priority tier — Brütal Legend + Final Fantasy VI/VII | S | closed (PR #2422) |
+| **[B-0054.3](B-0054.3-video-game-mario-genshin.md)** | Video-game priority tier — Super Mario + Genshin Impact | S | open |
+| **[B-0054.4](B-0054.4-double-fine-broken-age-brutal-legend-narrative.md)** | Tim Schafer / Double Fine sub-thread — Broken Age + Brütal Legend narrative mapping | S | open |
+| **[B-0054.5](B-0054.5-british-serial-tv-monty-python-red-dwarf-black-mirror.md)** | British long-serial TV — Monty Python + Red Dwarf + Black Mirror | S | open |
+| **[B-0054.6](B-0054.6-hollywood-film-arrival-interstellar-primer-tenet.md)** | Hollywood film sweep — Arrival, Interstellar, Primer, Tenet | S | open |
+| **[B-0054.7](B-0054.7-conspiracy-corpus-chronovisor-why-files.md)** | Conspiracy-corpus — Chronovisor / Cronovisor (Ernetti 1972) + The Why Files | S | open |
+| **[B-0054.8](B-0054.8-music-corpus-progressive-rock-tool-nin.md)** | Music corpus — progressive rock + Tool/Meshuggah/NIN first pass | S | open |
+| **[B-0054.9](B-0054.9-catalog-tier-games-portal-braid-outer-wilds-disco-elysium.md)** | Catalog-tier game sweep — Portal, Braid, Outer Wilds, Disco Elysium | S | open |
+| **[B-0054.10](B-0054.10-bollywood-hindi-cinema-hindu-karmic-cycle.md)** | Bollywood + Hindi cinema sweep + Hindu karmic-cycle substrate | S | open |
+
+The parent row B-0054 stays `open` until the catalog reaches a stable sweep
+across all medium-categories. Individual sub-rows close as PRs land.
 
 ## Origin
 

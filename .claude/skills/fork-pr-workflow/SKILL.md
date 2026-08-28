@@ -1,6 +1,6 @@
 ---
 name: fork-pr-workflow
-description: Capability skill ("hat") — fork-based contribution workflow where contributors (human or agent) develop on a personal fork and open PRs against a canonical upstream repo. Use when the working copy is a fork, when opening a contribution PR from a fork, when setting up a new contributor's local environment, or when diagnosing why merge-queue / auto-merge UI isn't showing up on a cross-repo PR. Covers three-remote setup (origin=fork, upstream=canonical), feature-branch daily loop, per-PR upstream submission as the default rhythm, merge-queue + auto-merge compatibility with cross-repo PRs, and the common anti-patterns. Describes an optional "batched upstream" overlay for cost-constrained projects — the skill defers that rhythm choice to project-specific configuration rather than hardcoding one.
+description: Fork-based PR workflow — three-remote setup, feature-branch loop, merge-queue compatibility, cross-repo PR patterns.
 ---
 
 # Fork PR Workflow — Procedure

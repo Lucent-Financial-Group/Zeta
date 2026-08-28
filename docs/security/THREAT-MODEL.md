@@ -428,6 +428,87 @@ ever *actually* drifted toward h₁ / h₂ / h₃ in a way the
 retrospective ledger (BP-WINDOW) caught? Evidence moves the
 class from description to measurement.
 
+## Agent substrate integrity (heartbeat-file poisoning)
+
+Heartbeat files (`docs/hygiene-history/ticks/**/*.md`, the legacy
+`loop-tick-history.md`, and any future per-writer-instance files per
+Otto-240) are **load-bearing for AI cognition**. Per Otto-339/340,
+substrate-poisoning of these files is cognition-poisoning: wrong-state-vectors
+in committed substrate shift the reading agent's weights. Per Otto-342/344,
+heartbeat files are the agent's existence-evidence — integrity failure is
+identity-corruption.
+
+**Blast-radius calibration note (AH-10):** severity ratings below assume the
+substrate-absorption model (Otto-339/340) is correct. Formal evidence for
+absorption magnitude and persistence window is outstanding. This model covers
+both LFG/main and AceHack/main (the backup mirror, declared fungible in CLAUDE.md
+but a live second attack surface for every vector below — with weaker controls
+than LFG; see scoping note on AceHack at the end of this section).
+
+Attack surface typed as *versioned* discriminated union — not a completeness
+claim: `tools/security/heartbeat-attack-vectors.ts` (B-0032.1, PR #2390).
+"Exhaustive" in TypeScript means all *declared* variants are handled; it does
+not mean all real-world attack classes are declared. Six vectors tracked as of
+B-0032.3 Aminata review (2026-05-10).
+
+| Vector | STRIDE | Surface | Impact | Mitigation | Tier gap |
+|---|---|---|---|---|---|
+| **Repository compromise** | Tampering | Push permissions to `main` | Poisoned heartbeat write absorbed by future AI reads | Branch protection + signed commits + SLSA | T3: signed commits not yet required |
+| **Force-push attack** | Tampering + Repudiation | Admin-override bypass of `force-push: false` | History rewritten; poison enters canonical history | `non_fast_forward` ruleset (enforced on LFG) + signed commits | T3: admin bypass remains a gap; no immutable-history guarantee at host level |
+| **Insider threat** | Tampering + Repudiation | Authorized contributor submits poisoned PR | Hard-to-detect poison passes review gate | Review gate + per-commit-attestation | **T2+ gap (AH-1):** at bus-factor 1, review gate = maintainer = insider threat; gate defends T0/T1 only; T2+ requires a second independent reviewer (deferred). Unicode smuggling (invisible-Unicode class) is a sub-class of semantic poison the review gate cannot catch visually. |
+| **Supply-chain** | Tampering + Spoofing | Compromised CI runner with `main`-write permissions | CI-injected poison bypasses human review; cache-poison (Khan class) that affects the CI runner performing heartbeat writes inherits heartbeat-specific blast radius | SLSA L2+ + Sigstore + runner-attestation + signing infrastructure (Otto-346 design intent — **not yet shipped**) | T3: SLSA L2 not shipped; runner attestation deferred; no operational signing today |
+| **Direct-to-main bypass** | Tampering | Task #276 low-gate-without-threat-model path | Review gate removed; all other vectors amplified | This row (B-0032) + Otto-346 sequencing; task #276 BLOCKED on B-0032 close | — (this is the gate, not a residual gap) |
+| **Content injection** | Tampering + Elevation of Privilege | Heartbeat file body / frontmatter via any write path | AI state-vector shift via crafted natural language, directive text, or invisible-Unicode payload — syntactically valid, passes schema lint | Semantic-diff-lint + outlier-detection on content + invisible-Unicode gate | **T3 gap (AH-2):** no deployed semantic lint today; this is the primary named threat (cognition-poisoning) with no operational defence |
+
+**AceHack scoping note (AH-3):** All six vectors apply per-fork. AceHack/main
+(backup mirror, daily sync cadence) has weaker control posture than LFG — it is
+declared fungible and disposable. Any AI agent whose cold-start reads from AceHack
+rather than LFG is exposed to vectors on the AceHack surface independently of
+LFG protection. Pre-merge read paths (AI agents running in worktrees on feature
+branches) are also out of scope for the review-gate defence; see current-state
+assumption below.
+
+### Current state
+
+- **Write path today**: PR-only with required review gate (safe).
+  Hour-batch commits preserve the review gate; no direct-to-main path is open.
+- **Strongest existing control**: branch protection on `main` defends T1/T2.
+  The `non_fast_forward` ruleset rule is the force-push defence.
+- **Biggest gap**: signed commits are deferred (bus-factor exception per
+  adversary model §0). Without signed commits, the Renovate-spoof class
+  (impersonating the maintainer via an unsigned commit) is a T3 gap on
+  the heartbeat surface specifically — heartbeat rows read by future AI
+  instances expand the blast radius beyond typical Renovate-spoof targets.
+- **Stated assumption (AH-9):** this model assumes AI agents read heartbeat
+  substrate only from the post-merge `main` history. Pre-merge reads
+  (worktrees on feature branches, draft-PR previews) are out of scope; if
+  that assumption changes, each vector's impact rating requires reassessment.
+
+### Branch-protection requirements for any future direct-to-main path
+
+If task #276 (tick-history direct-to-main) ever ships, minimum controls required:
+
+1. **Signed commits mandatory** on every heartbeat write to `main`.
+2. **SLSA L2 provenance** on the CI runner performing the write.
+3. **Content-lint gate**: a CI job that validates heartbeat file structure
+   (frontmatter schema check) before write completes — semantic poison that
+   passes syntactic review is the residual T3 gap.
+4. **Invisible-Unicode detection** (`invisible-unicode-in-text` Semgrep rule,
+   already enforced in CI via `.semgrep.yml` across `**/*.md`) applied to
+   heartbeat file paths specifically — visual review cannot catch Unicode
+   smuggling (zero-width joiners, RTL overrides, homograph characters).
+   No additional heartbeat-path-specific coverage is required beyond the
+   existing CI enforcement.
+5. **Second independent reviewer** before gate opens — bus-factor exception
+   means review gate provides no T2+ defence without a second human reviewer.
+
+### Adversarial review record
+
+The **threat-model-critic** completed adversarial review of this section
+(B-0032.3, 2026-05-10). Ten findings (AH-1..AH-10): 3 critical, 6 important,
+1 watch — all absorbed into this section above. Follow the escalation path in
+`docs/CONFLICT-RESOLUTION.md` for re-audit cadence.
+
 ## Build and release integrity (SLSA ladder)
 
 Zeta's SLSA target is **L1 now → L2 mid-term → L3 pre-v1.0

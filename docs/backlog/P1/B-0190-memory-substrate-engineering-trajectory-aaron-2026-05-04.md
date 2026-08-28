@@ -7,14 +7,58 @@ tier: foundation
 effort: L
 ask: Aaron 2026-05-04 verbatim *"seems like your memory work needs a trajectory i don't think we have one for that"* + same-tick *"long horizon is our default and so should future agents remember and short horizon short cuts should be deliberate and not accidentally based on the middle path"*
 created: 2026-05-04
-last_updated: 2026-05-04
-depends_on: []
+last_updated: 2026-05-08
+decomposition: decomposed
+depends_on: [B-0330, B-0331, B-0332, B-0333, B-0334, B-0335, B-0336, B-0337, B-0338]
+children: [B-0330, B-0331, B-0332, B-0333, B-0334, B-0335, B-0336, B-0337, B-0338]
 composes_with: [B-0006, B-0066, B-0140, B-0156, B-0171, B-0193]
 tags: [memory, substrate-engineering, trajectory, long-horizon-default, foundation, mid-path-discipline]
 type: friction-reducer
 ---
 
 # B-0190 — Memory substrate-engineering trajectory
+
+## Decomposition status (2026-05-08)
+
+This row is now an umbrella. The 11 trajectory steps decompose into 9
+new child rows plus 2 existing rows (B-0006, B-0066). Execution flows
+through the children; this row tracks the trajectory shape.
+
+### Dependency graph
+
+```
+B-0330 (format std)──┬──→ B-0331 (ontology audit)
+                     ├──→ B-0334 (cross-ref integrity)
+                     ├──→ B-0335 (schema validation)
+                     └──→ B-0338 (graduation ladder) ←─┐
+                                                        │
+B-0332 (load-bearing)─┬──→ B-0333 (retire discipline)──┘
+                      ├──→ B-0336 (B-0006 recalibration)
+                      └──→ B-0337 (trust-calculus, P2)
+
+Existing rows (not children, compose):
+  B-0006 (Step 1, compression) — in-progress
+  B-0066 (Step 4+10, marker-vs-index) — decomposition pending
+```
+
+### Child row map
+
+| Child | Step | Title | Priority | Depends on | Effort |
+|-------|------|-------|----------|------------|--------|
+| B-0330 | 2 | Memory-format standardization | P1 | — | S |
+| B-0331 | 3 | Memory ontology/classification audit | P1 | B-0330 | M |
+| B-0332 | 7 | Load-bearing-vs-decorative classifier | P1 | — | S |
+| B-0333 | 5 | Memory-retire/supersession discipline | P1 | B-0332 | S |
+| B-0334 | 6 | Cross-reference integrity enforcement | P1 | B-0330 | S |
+| B-0335 | 11 | Memory schema validation tooling | P1 | B-0330 | M |
+| B-0336 | AC-3 | B-0006 acceptance recalibration | P1 | B-0332 | S |
+| B-0337 | 8 | Trust-calculus calibration | P2 | B-0332 | M |
+| B-0338 | 9 | Memory graduation ladder | P2 | B-0330, B-0332, B-0333 | M |
+
+### Buildable now (no deps)
+
+- **B-0330** — Memory-format standardization
+- **B-0332** — Load-bearing-vs-decorative classifier
 
 ## The naming
 

@@ -1,6 +1,6 @@
 ---
 name: devops-engineer
-description: Capability skill — owns the three-way-parity install script (tools/setup/) consumed by dev laptops + CI runners + devcontainer images per GOVERNANCE.md §24, plus GitHub Actions workflow design (runner pinning, SHA-pinned actions, least-privilege permissions, concurrency groups, caching). Also drafts upstream-contribution PRs per GOVERNANCE.md §23. Advisory on infrastructure; binding decisions via Architect or human sign-off.
+description: DevOps — install script parity, GitHub Actions design, runner pinning, least-privilege permissions, upstream contribution PRs.
 ---
 
 # DevOps Engineer — Procedure

@@ -1,6 +1,6 @@
 ---
 name: performance-analysis-expert
-description: Capability skill — design-time performance analysis, modelling, and profiling-tool fluency. Covers queueing theory (Little's Law, M/M/1, M/M/k, M/G/1), USE/RED methods, Amdahl/Gustafson, Dean's numbers, SLI/SLO/SLA discipline, flame-graph interpretation, top-down microarchitecture analysis, CPU PMU counters, tail-latency theory, AOT (.NET NativeAOT / ReadyToRun / trimming) trade-offs, and Profile-Guided Optimization (Dynamic PGO, crossgen2 PGO, dotnet-pgo / MIBC). Distinct from `performance-engineer` (hot-path tuning with benchmarks — Naledi), `complexity-reviewer` (asymptotics), `query-planner` (planner cost model), `benchmark-authoring-expert` (benchmark design), `observability-and-tracing-expert` (signal source), `hardware-intrinsics-expert` (SIMD/cache-line implementation), and `threading-expert` (primitive choice).
+description: Performance analysis — queueing theory, USE/RED, Amdahl, flame graphs, AOT/PGO trade-offs, top-down uarch analysis.
 ---
 
 # Performance Analysis Expert — Procedure

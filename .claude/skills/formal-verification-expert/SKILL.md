@@ -1,6 +1,6 @@
 ---
 name: formal-verification-expert
-description: the `formal-verification-expert` — formal-verification routing expert. Picks the right tool for each property class (TLA+, Z3, Lean, Alloy, FsCheck, Stryker, Semgrep, CodeQL, plus researched-only tools) before any spec gets written. Guards against TLA+-hammer bias. Owns the portfolio view of formal coverage.
+description: Formal-verification routing — picks TLA+/Z3/Lean/Alloy/FsCheck/Stryker/Semgrep/CodeQL per property class.
 ---
 
 # Formal Verification Expert — Routing Procedure
@@ -50,6 +50,49 @@ Before any recommendation, in this order:
 
 Without these six, a recommendation is a guess; with them, it is
 a routing decision.
+
+## Literature-first anchor check — step 0 of every routing walk
+
+**Before classifying a property or picking a tool**, ask:
+
+> *Is this property already formally defined in the established
+> literature? If so, anchor to the canonical definition rather
+> than reinventing it.*
+
+The Z3 shadow-catch failure mode (round-20..22 retrospective) is the
+canonical example: tautologies slip through because the prover verifies
+*our encoding* rather than an independently-grounded definition. When
+the encoding IS the established definition, the tautology risk collapses.
+
+**Anchor check procedure:**
+
+1. Query `tools/alignment/concept_registry.ts` KNOWN_ANCHORS map for the
+   concept-id. If it is listed with `state: "anchored"`, use the cited
+   paper's definition verbatim as the formal grounding. Do not re-derive.
+2. If not in the registry, search the literature for established
+   definitions before writing a spec. Priority sources:
+   - Pearl (2009) *Causality* for causal/interventional properties.
+   - CSP / CCS for trace-equivalence / bisimulation properties.
+   - Dec-POMDPs (Oliehoek & Amato 2016) for multi-agent partial
+     observability properties.
+   - Shapiro et al. (2011) CRDTs for retraction / convergence properties.
+   - Lamport (1977) for safety / liveness properties in distributed systems.
+3. If an established definition exists:
+   - Cite it in the spec header as `# Anchor: <citation>`.
+   - The spec should prove **conformance to the cited definition**, not
+     a free-standing encoding.
+   - Register the concept in the KNOWN_ANCHORS map if it is missing
+     (one-line addition to `tools/alignment/concept_registry.ts`).
+4. If no established definition exists, proceed to the routing table —
+   but note in the output that the property is **factory-native** and
+   document the justification.
+
+**Why this comes first.** If we skip the anchor check and route directly
+to tools, we risk: (a) proving a tautology; (b) reinventing a known
+definition with a subtly different encoding that may not cover the same
+failure modes; (c) missing a published counter-example or
+established impossibility result. The anchor check costs minutes;
+discovering a tautology in production costs rounds.
 
 ## Tool-routing decision table
 
@@ -117,6 +160,13 @@ P0 evidence is insufficient.
 The `docs/BUGS.md` entry: "InfoTheoreticSharder has no formal
 spec." `formal-verification-expert`'s walk:
 
+0. **Anchor check.** KNOWN_ANCHORS has no entry for `InfoTheoreticSharder`.
+   Literature search: "observe side-effect-free" maps loosely to
+   *referential transparency* (Backus 1978 / Hughes 1989) but not to a
+   precise formal definition for load-balancing. "Commit exactly once"
+   maps to Bernstein & Goodman (1981) two-phase commit atomicity but is
+   not a pointwise algebraic identity. Verdict: **factory-native** — no
+   established anchor. Proceed to classification.
 1. **Classify.** Three properties mixed together: (a) `Observe`
    is side-effect-free on `shardLoads` — a state-machine safety
    invariant; (b) `Pick` commits exactly once per call — a
@@ -156,6 +206,11 @@ to see.
 
 ```markdown
 # Formal-verification routing review — <target>
+
+## Anchor
+- Literature anchor: <citation OR "factory-native — <justification>">
+- Anchor state: anchored / partially-anchored / factory-native
+- Spec grounding: <"conforms to <citation>" OR "free-standing — reviewed for tautology">
 
 ## Classification
 - Property class: <verbatim row name from the routing table above>
@@ -204,6 +259,7 @@ the `architect` reads it before sizing the round.
 
 ## Reference patterns
 
+- `tools/alignment/concept_registry.ts` — KNOWN_ANCHORS map (literature-first step 0)
 - `docs/research/proof-tool-coverage.md` — the portfolio
 - `docs/TECH-RADAR.md` — tool ring assignments
 - `docs/BUGS.md` — known gaps she routes against

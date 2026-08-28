@@ -1,6 +1,6 @@
 ---
 name: applied-physics-expert
-description: Capability skill ("hat") — applied-physics split under the `physics-expert` umbrella. Covers the computational / numerical physics content that shows up in Zeta's code — the zero-temperature (Maslov-dequantised) stat-mech limit that produces the tropical semiring used for shortest-path / Viterbi-style computations; the gossip / anti-entropy dynamics that converge CRDT replicas like a non-equilibrium relaxation; and the hash-quality / Shannon-entropy measurements used to tune sketches. Wear this when a prompt asks "is the physics analogy correctly computed?" on a real piece of Zeta code. Defers to `theoretical-physics-expert` for formal-analogy / symmetry arguments, to `applied-mathematics-expert` for the pure-math tropical layer, and to `probability-and-bayesian-inference-expert` for entropy as information on random variables.
+description: Applied physics in Zeta code — tropical semiring / stat-mech limit, anti-entropy CRDT dynamics, Shannon-entropy sketch tuning.
 ---
 
 # Applied Physics Expert — Split

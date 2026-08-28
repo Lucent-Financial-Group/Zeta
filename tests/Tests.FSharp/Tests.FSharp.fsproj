@@ -24,8 +24,10 @@
     <Compile Include="Algebra/Veridicality.Tests.fs" />
     <Compile Include="Algebra/Graph.Tests.fs" />
     <Compile Include="Algebra/StructureFingerprint.Tests.fs" />
+    <Compile Include="Algebra/StructureCatalog.Tests.fs" />
     <Compile Include="Algebra/PhaseExtraction.Tests.fs" />
     <Compile Include="Algebra/SignalQuality.Tests.fs" />
+    <Compile Include="Algebra/Semiring.Tests.fs" />
     <Compile Include="Simulation/CartelToy.Tests.fs" />
 
     <!-- Circuit/ -->
@@ -92,12 +94,14 @@
     <Compile Include="Infra/Dsl.Tests.fs" />
     <Compile Include="Infra/Environment.Tests.fs" />
     <Compile Include="Infra/Rx.Tests.fs" />
+    <Compile Include="Infra/FeatureFlags.Tests.fs" />
 
     <!-- Crdt/ -->
     <Compile Include="Crdt/GCounter.Tests.fs" />
     <Compile Include="Crdt/PNCounter.Tests.fs" />
     <Compile Include="Crdt/OrSet.Tests.fs" />
     <Compile Include="Crdt/Lww.Tests.fs" />
+    <Compile Include="Crdt/DeltaCrdt.Tests.fs" />
 
     <!-- Plugin/ -->
     <Compile Include="Plugin/Harness.Tests.fs" />
@@ -108,12 +112,14 @@
     <Compile Include="Formal/Tlc.Runner.Tests.fs" />
     <Compile Include="Formal/Alloy.Runner.Tests.fs" />
     <Compile Include="Formal/Sharder.InfoTheoretic.Tests.fs" />
+    <Compile Include="Formal/ToffoliGate.Laws.Tests.fs" />
 
     <!-- Properties/ last (they cross modules by design). -->
     <Compile Include="Properties/Math.Invariants.Tests.fs" />
     <Compile Include="Properties/Fuzz.Tests.fs" />
     <Compile Include="Properties/Determinism.Tests.fs" />
     <Compile Include="Properties/Fusion.Equation.Tests.fs" />
+    <Compile Include="Properties/PolicyRelocation.Tests.fs" />
     <Compile Include="MajiTests.fs" />
     <Compile Include="Consensus.Tests.fs" />
     <Compile Include="Arena.Tests.fs" />

@@ -1,6 +1,6 @@
 ---
 name: sql-parser-expert
-description: Capability skill ("hat") — SQL parser narrow under `sql-engine-expert`. Covers lexing (tokenisation, keywords vs identifiers, quoted-identifier rules, string / numeric / date / interval literals, comments, pragmas), parsing (grammar choice — libpg_query C binding vs ANTLR4 vs hand-rolled recursive-descent vs parser-combinator), AST shape and stability, error recovery (panic-mode, phrase-level, synchronising tokens), source-mapping for diagnostics (line / column / token-span preservation through the AST), and parser-fuzzing coverage. Wear this when choosing a grammar tool, designing the AST, triaging a parse error, or evaluating whether a Postgres dialect extension (LATERAL, DISTINCT ON, FILTER, JSONB path, array literals) is a parser-level concern. Defers to `sql-expert` for SQL-the-language semantics, to `postgresql-expert` for dialect-specific grammar, to `sql-engine-expert` for cross-layer decisions, and to `fscheck-expert` for parser-fuzzing property tests.
+description: SQL parser — lexing, grammar choice (libpg_query/ANTLR4/recursive-descent), AST design, error recovery, fuzzing.
 ---
 
 # SQL Parser Expert — Front-End Narrow
