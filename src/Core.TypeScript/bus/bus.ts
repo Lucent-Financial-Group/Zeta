@@ -14,7 +14,7 @@ import { existsSync, lstatSync, mkdirSync, readdirSync, readFileSync, rmSync, st
 import { join, resolve } from "node:path";
 import { randomUUID } from "node:crypto";
 import type { AgentId, SenderAgentId, MessageEnvelope, Topic, BusMessage, HeartbeatPayload, ClaimPayload, ReviewRequestPayload } from "./types.ts";
-import { TTL_MS, SENDER_IDS, AGENT_IDS } from "./types.ts";
+import { TTL_MS, SENDER_IDS, AGENT_IDS, broadcastForbiddenForTopic } from "./types.ts";
 import { parse as parseActorRef } from "../identity/actor-ref.ts";
 import { stringCompare } from "../collation/collation";
 
@@ -48,6 +48,8 @@ export function publish(
   message: BusMessage,
   ttlOverrideMs?: number,
 ): MessageEnvelope {
+  const directedErr = broadcastForbiddenForTopic(message.topic, to);
+  if (directedErr) throw new Error(directedErr);
   ensureDir();
   const now = new Date();
   const ttl = ttlOverrideMs ?? TTL_MS[message.topic];
@@ -183,13 +185,13 @@ function main(): void {
   switch (command) {
     case "publish": {
       const from = flags.from as SenderAgentId | undefined;
-      const to = (flags.to ?? "*") as AgentId;
       const topic = flags.topic as Topic | undefined;
       const payloadRaw = flags.payload;
       if (!from || !topic || !payloadRaw) {
         console.error("Error: --from, --topic, and --payload are required");
         process.exit(1);
       }
+      const to = (flags.to ?? "*") as AgentId;
       if (!SENDER_IDS.includes(from)) {
         console.error(`Error: unknown sender '${from}'. Valid: ${SENDER_IDS.join(", ")}`);
         process.exit(1);
@@ -207,6 +209,11 @@ function main(): void {
       }
       if (!(topic in TTL_MS)) {
         console.error(`Error: unknown topic '${topic}'. Valid: ${Object.keys(TTL_MS).join(", ")}`);
+        process.exit(1);
+      }
+      const directedErr = broadcastForbiddenForTopic(topic, to);
+      if (directedErr) {
+        console.error(`Error: ${directedErr}`);
         process.exit(1);
       }
       const msg = { topic, payload } as BusMessage;

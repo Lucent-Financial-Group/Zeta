@@ -6,6 +6,7 @@ import { afterEach, beforeEach, describe, expect, it } from "bun:test";
 import { mkdtempSync, rmSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
+import { spawnSync } from "node:child_process";
 import { DETERMINISTIC_ENV, DEFAULT_ENV, unpack } from "../zeta-id/zeta-id";
 import { Category } from "../zeta-id/types";
 import { envelopePath, mintBusZetaIdHex, serializeEnvelope, isSafeSegment, type AgentBusEnvelope } from "./types";
@@ -217,5 +218,29 @@ describe("parseSubscribeArgs (CLI arg parsing)", () => {
   });
   it("honors --no-fetch", () => {
     expect(parseSubscribeArgs(["mycursor", "--no-fetch"])).toEqual({ cursor: "mycursor", recipient: undefined, fetch: false });
+  });
+});
+
+describe("publish CLI refuses directed-topic broadcast", () => {
+  it("review-request / work-assignment / formal-verification-result reject to=*", () => {
+    const dir = mkdtempSync(join(tmpdir(), "agent-bus-cli-"));
+    const script = join(import.meta.dir, "publish.ts");
+    const cases: readonly { topic: string; payload: string }[] = [
+      { topic: "review-request", payload: '{"artifact":"docs/swarm-observability.md"}' },
+      { topic: "work-assignment", payload: '{"rowId":"081M12178AR087G0R0014Z5JGE","priority":"P2","rationale":"test"}' },
+      { topic: "formal-verification-result", payload: '{"job":"tlc","verifier":"soraya","result":"pass","duration_ms":1}' },
+    ];
+    try {
+      for (const c of cases) {
+        const r = spawnSync("bun", [script, "riven", "*", c.topic, c.payload, "--no-push"], {
+          encoding: "utf-8",
+          env: { ...process.env, ZETA_AGENT_BUS_DIR: dir },
+        });
+        expect(r.status).toBe(2);
+        expect(`${r.stderr}${r.stdout}`).toContain("specific recipient");
+      }
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
   });
 });

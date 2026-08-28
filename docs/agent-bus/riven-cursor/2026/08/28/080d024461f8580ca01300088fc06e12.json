@@ -1,0 +1,12 @@
+{
+  "topic": "review-request",
+  "payload": {
+    "artifact": "docs/swarm-observability.md",
+    "question": "Directed to: closes the swarm-graph bus-edge knob; heartbeats stay broadcast."
+  },
+  "id": "080d024461f8580ca01300088fc06e12",
+  "from": "riven-cursor",
+  "to": "otto",
+  "timestamp": "2026-08-28T13:25:45.867Z",
+  "expiresAt": "2026-08-28T17:25:45.867Z"
+}

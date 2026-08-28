@@ -72,6 +72,34 @@ describe("bus — publish + list", () => {
     const forAlexa = JSON.parse(run("list", "--to", "alexa", "--json").stdout);
     expect(forAlexa).toHaveLength(2);
   });
+
+  test("review-request / work-assignment refuse broadcast to=*", () => {
+    const rr = run(
+      "publish",
+      "--from",
+      "otto",
+      "--topic",
+      "review-request",
+      "--payload",
+      '{"artifact":"src/Core.TypeScript/bus/bus.ts"}',
+    );
+    expect(rr.exitCode).toBe(1);
+    expect(rr.stderr).toContain("requires a specific recipient");
+
+    const wa = run(
+      "publish",
+      "--from",
+      "otto",
+      "--to",
+      "*",
+      "--topic",
+      "work-assignment",
+      "--payload",
+      '{"rowId":"081KFIXT0000009001","priority":"P1","rationale":"test"}',
+    );
+    expect(wa.exitCode).toBe(1);
+    expect(wa.stderr).toContain("work-assignment");
+  });
 });
 
 describe("bus — read", () => {
