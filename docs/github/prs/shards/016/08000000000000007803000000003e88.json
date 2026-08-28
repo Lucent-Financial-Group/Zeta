@@ -1,0 +1,12 @@
+{
+  "pr_number": 16008,
+  "archive_path": "docs/history/pr-reviews/PR-16008-feat-hygiene-shard-name-integrity-audit-apple-diagnostics-confirms-the-memory-fa.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-28T16:25:47.297Z",
+  "schema_version": "v1",
+  "commit_sha": "1a9f98f308e058102c29f027e0f377dc3adb85ae",
+  "title": "feat(hygiene): shard-name integrity audit — Apple Diagnostics confirms the memory fault",
+  "state": "MERGED",
+  "merged_at": "2026-08-28T16:25:06Z",
+  "head_ref": "feat/shard-name-integrity-audit"
+}
