@@ -51,6 +51,9 @@ No Python, no network, no dependency on any other rung. Cheapest real start.
 - `MetaControl.gamepadMeta`, the only direct `Scheme` record constructor outside this module, now
   declares `PointInput = None`; the compiler checks that every future constructor chooses a coordinate
   policy explicitly.
+- `registry/complexity-registry.yaml` prices ARC translation as `O(input)` time and space and Atari
+  translation as `O(input)` time with `O(1)` extra space. The generated F# and TypeScript registries
+  carry the same rows, and the focused ARC plus shelf-cost regression set passes 14/14.
 
 ## Honest boundary
 

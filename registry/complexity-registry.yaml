@@ -169,6 +169,18 @@
     "space": "O(1)"
     "by": "Derived"
   -
+    "artifact": "control.arc-agi-3"
+    "op": "translate"
+    "time": "O(input)"
+    "space": "O(input)"
+    "by": "Derived"
+  -
+    "artifact": "control.atari-2600"
+    "op": "translate"
+    "time": "O(input)"
+    "space": "O(1)"
+    "by": "Derived"
+  -
     "artifact": "control.gamepad-meta"
     "op": "metaOf"
     "time": "O(1)"
