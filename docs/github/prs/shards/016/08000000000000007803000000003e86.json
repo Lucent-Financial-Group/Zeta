@@ -1,0 +1,12 @@
+{
+  "pr_number": 16006,
+  "archive_path": "docs/history/pr-reviews/PR-16006-fix-setup-correct-both-vendor-removers-from-what-a-reboot-actually-measured.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-28T16:12:40.073Z",
+  "schema_version": "v1",
+  "commit_sha": "2f18df64485fb132510d8bf3646816f7babbee14",
+  "title": "fix(setup): correct both vendor removers from what a reboot actually measured",
+  "state": "MERGED",
+  "merged_at": "2026-08-28T16:12:03Z",
+  "head_ref": "fix/vendor-removal-measured-corrections"
+}
