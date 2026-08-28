@@ -34,6 +34,7 @@ import argparse
 import json
 import os
 from collections import deque
+from pathlib import Path
 
 # `arc_agi` ships no py.typed marker, so mypy cannot see into it. Ignoring the
 # import is honest here — the alternative is inventing stubs for a dependency
@@ -144,6 +145,11 @@ def operation_mode_for(api_key: str | None) -> OperationMode:
     return OperationMode.NORMAL if (api_key or "").strip() else OperationMode.OFFLINE
 
 
+def environment_files() -> Path:
+    """Absolute toolkit discovery root; independent of the caller's cwd."""
+    return Path(__file__).resolve().parents[1] / "environment_files"
+
+
 def open_arcade() -> tuple[Arcade, str]:
     """The Arcade this episode runs against, and the mode it ACTUALLY got.
 
@@ -162,13 +168,21 @@ def open_arcade() -> tuple[Arcade, str]:
     """
     key = os.environ.get("ARC_API_KEY", "")
     mode = operation_mode_for(key)
+    environments_dir = str(environment_files())
     if mode is OperationMode.OFFLINE:
-        return Arcade(operation_mode=OperationMode.OFFLINE), "OFFLINE"
+        return (
+            Arcade(
+                operation_mode=OperationMode.OFFLINE,
+                environments_dir=environments_dir,
+            ),
+            "OFFLINE",
+        )
     try:
-        return Arcade(operation_mode=mode), mode.name
+        return Arcade(operation_mode=mode, environments_dir=environments_dir), mode.name
     except Exception:  # noqa: BLE001 — degrading is the requirement, not the exception's identity
         return Arcade(
-            operation_mode=OperationMode.OFFLINE
+            operation_mode=OperationMode.OFFLINE,
+            environments_dir=environments_dir,
         ), "OFFLINE (degraded from NORMAL)"
 
 

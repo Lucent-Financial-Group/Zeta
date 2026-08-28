@@ -13,6 +13,8 @@ appear here.
 
 from __future__ import annotations
 
+from pathlib import Path
+
 import pytest
 
 # Same reason as play.py: arc_agi ships no py.typed marker.
@@ -134,6 +136,19 @@ def test_listing_environments_without_a_key_reports_the_source_owned_game(
             "levels_from_baselines": 3,
         }
     ]
+
+
+def test_source_owned_discovery_does_not_depend_on_process_cwd(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    monkeypatch.delenv("ARC_API_KEY", raising=False)
+    monkeypatch.chdir(tmp_path)
+
+    listed = list_environments()
+
+    assert listed["mode"] == "OFFLINE"
+    assert [item["game_id"] for item in listed["environments"]] == ["ztch-v1"]
 
 
 def test_the_roster_never_reports_private_tags() -> None:
