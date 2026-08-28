@@ -1,0 +1,12 @@
+{
+  "pr_number": 15962,
+  "archive_path": "docs/history/pr-reviews/PR-15962-test-zetadb-split-perm-coverage-from-the-property-seeded-probe-unseeded-property.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-28T12:31:14.296Z",
+  "schema_version": "v1",
+  "commit_sha": "f34e5e1076d4e363908804c52fee16f63308473a",
+  "title": "test(zetadb): split PERM coverage from the property — seeded probe, unseeded property",
+  "state": "MERGED",
+  "merged_at": "2026-08-28T12:08:38Z",
+  "head_ref": "fix/perm-b-anti-vacuity-bar-from-measurement"
+}
