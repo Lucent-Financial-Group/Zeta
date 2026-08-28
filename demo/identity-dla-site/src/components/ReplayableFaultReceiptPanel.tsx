@@ -8,6 +8,7 @@
 import { useEffect, useMemo, useState } from "react";
 import {
   readPublishedReplayFaultFeed,
+  summarizeReplayFaultFeed,
   type PublishedReplayFaultVector,
   type ReplayFaultFeedState,
   type ReplayFaultScenario,
@@ -42,6 +43,17 @@ function discoveryNotice(state: ReplayFaultFeedState): { readonly color: string;
   }
 }
 
+function healthReadout(state: ReplayFaultFeedState): { readonly color: string; readonly text: string } {
+  const health = summarizeReplayFaultFeed(state);
+  switch (health.kind) {
+    case "checking": return { color: "var(--muted-foreground)", text: "FEED HEALTH · CHECKING" };
+    case "empty": return { color: "var(--muted-foreground)", text: "FEED HEALTH · EMPTY · NO VECTOR INVENTED" };
+    case "ready": return { color: "var(--amber-dim)", text: `FEED HEALTH · READY · ${String(health.declared)} DECLARED / ${String(health.loaded)} LOADED` };
+    case "unavailable": return { color: "var(--teal)", text: "FEED HEALTH · UNAVAILABLE · NO COUNT INFERRED" };
+    case "rejected": return { color: "var(--fail-red)", text: "FEED HEALTH · REJECTED · NO COUNT INFERRED" };
+  }
+}
+
 export default function ReplayableFaultReceiptPanel() {
   const [state, setState] = useState<ReplayFaultFeedState>({ kind: "loading" });
   const [selected, setSelected] = useState<ReplayFaultScenario | undefined>();
@@ -58,6 +70,7 @@ export default function ReplayableFaultReceiptPanel() {
 
   const vector = useMemo(() => state.kind === "ready" ? state.vectors.find((candidate) => candidate.receipt.scenario === selected) ?? state.vectors[0] : undefined, [selected, state]);
   const notice = discoveryNotice(state);
+  const health = healthReadout(state);
 
   return (
     <section aria-labelledby="fault-replay-title" className="observatory-chamber replay-fault-chamber" style={{ border: "1px solid var(--border)", borderRadius: 0, background: "oklch(0.052 0.009 265)", marginTop: "0.9rem", overflow: "hidden" }}>
@@ -68,12 +81,17 @@ export default function ReplayableFaultReceiptPanel() {
         </div>
         <div className="evidence-instrument-note" style={{ color: "var(--muted-foreground)", fontSize: "0.53rem", lineHeight: 1.55, textAlign: "right" }}>declared address locked<br />fixture · not production evidence</div>
       </header>
+      <div style={{ borderBottom: "1px solid var(--border)", color: health.color, fontSize: "0.5rem", fontWeight: 800, letterSpacing: "0.09em", padding: "0.42rem 1rem", textTransform: "uppercase" }}>{health.text}</div>
 
-      <div className="retained-branch-band" style={{ height: 48, borderBottom: "1px solid var(--border)", overflow: "hidden" }} aria-hidden="true">
-        <svg viewBox="0 0 920 48" preserveAspectRatio="none" style={{ width: "100%", height: "100%", display: "block" }}>
-          <path d="M0 36 L68 36 L90 17 L124 17 L144 34 L200 34 L224 7 L260 7 L281 27 L338 27 L358 12 L394 12 L418 39 L470 39 L496 21 L530 21 L552 2 L587 2 L614 29 L678 29 L702 15 L738 15 L762 35 L818 35 L846 20 L920 20" fill="none" stroke="var(--amber)" strokeWidth="2" vectorEffect="non-scaling-stroke" />
-          <path d="M90 17 L108 2 L129 2 M224 7 L244 31 L264 31 M552 2 L571 22 L591 22 M702 15 L720 2 L741 2" fill="none" stroke="var(--amber)" strokeOpacity="0.55" strokeWidth="1" vectorEffect="non-scaling-stroke" />
-          <path d="M144 34 L144 46 M418 39 L418 46 M762 35 L762 46" fill="none" stroke="var(--teal)" strokeOpacity="0.55" strokeWidth="1" strokeDasharray="3 4" vectorEffect="non-scaling-stroke" />
+      <div className="retained-branch-band" style={{ borderBottom: "1px solid var(--border)", height: 76, overflow: "hidden", position: "relative" }} aria-hidden="true">
+        <div style={{ color: "var(--amber-dim)", fontSize: "0.43rem", left: "0.9rem", letterSpacing: "0.12em", position: "absolute", top: "0.25rem" }}>DECLARED VECTOR BRANCHES · FINITE TEACHING SET</div>
+        <svg viewBox="0 0 920 76" preserveAspectRatio="none" style={{ display: "block", height: "100%", width: "100%" }}>
+          <path d="M454 75 L454 55 L420 55 L395 39 L347 39 L321 59 L264 59 L235 43 L180 43 L149 22 L89 22" fill="none" stroke="var(--amber)" strokeWidth="2" vectorEffect="non-scaling-stroke" />
+          <path d="M454 55 L495 55 L519 30 L571 30 L600 48 L660 48 L691 19 L739 19 L777 39 L840 39" fill="none" stroke="var(--amber)" strokeWidth="2" vectorEffect="non-scaling-stroke" />
+          <path d="M420 55 L405 70 L365 70 M347 39 L366 13 L406 13 M235 43 L221 18 L177 18 M571 30 L549 9 L510 9 M660 48 L680 69 L728 69 M777 39 L801 12 L850 12" fill="none" stroke="var(--amber-dim)" strokeWidth="1" vectorEffect="non-scaling-stroke" />
+          <path d="M454 75 L454 66" fill="none" stroke="var(--amber)" strokeWidth="4" vectorEffect="non-scaling-stroke" />
+          <circle cx="89" cy="22" r="3" fill="var(--amber)" /><circle cx="840" cy="39" r="3" fill="var(--amber)" />
+          <circle cx="365" cy="70" r="2.5" fill="var(--teal)" /><circle cx="728" cy="69" r="2.5" fill="var(--teal)" />
         </svg>
       </div>
 
@@ -85,7 +103,7 @@ export default function ReplayableFaultReceiptPanel() {
       ) : vector !== undefined && state.kind === "ready" ? (
         <div className="fault-receipt-layout" style={{ display: "grid", gridTemplateColumns: "minmax(210px, 0.72fr) minmax(0, 1.28fr)" }}>
           <div style={{ padding: "0.9rem", borderRight: "1px solid var(--border)" }}>
-            <div style={{ color: "var(--muted-foreground)", fontSize: "0.5rem", letterSpacing: "0.13em", textTransform: "uppercase", marginBottom: "0.6rem" }}>published fault vector selector</div>
+            <div style={{ color: "var(--amber-dim)", fontSize: "0.5rem", letterSpacing: "0.13em", textTransform: "uppercase", marginBottom: "0.6rem" }}>declared fault-vector matrix</div>
             <div style={{ display: "grid", gap: "0.35rem" }}>
               {state.vectors.map((item) => {
                 const active = vector.receipt.scenario === item.receipt.scenario;

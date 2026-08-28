@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { readPublishedReplayFaultFeed } from "./replayable-fault-feed";
+import { readPublishedReplayFaultFeed, summarizeReplayFaultFeed } from "./replayable-fault-feed";
 
 const response = (body: unknown, status = 200): Response => new Response(JSON.stringify(body), { status });
 const baseReceipt = {
@@ -37,5 +37,17 @@ describe("published static replay feed reader", () => {
     const incomplete = { ...baseReceipt, receipt: { ...baseReceipt.receipt, teaching: { code: "ADE-R1", lesson: "retained" } } };
     const malformed = await readPublishedReplayFaultFeed(async (url) => response(url.endsWith("index.json") ? index : incomplete));
     expect(malformed.kind).toBe("malformed");
+  });
+
+  test("health exposes counts only for a fully ready discovery state", () => {
+    const ready = summarizeReplayFaultFeed({ kind: "ready", vectors: [{ contentKey: baseReceipt.contentKey, receipt: baseReceipt.receipt }] });
+    expect(ready).toEqual({ kind: "ready", declared: 1, loaded: 1 });
+    expect(summarizeReplayFaultFeed({ kind: "loading" })).toEqual({ kind: "checking" });
+    expect(summarizeReplayFaultFeed({ kind: "empty" })).toEqual({ kind: "empty" });
+  });
+
+  test("fault injection: rejected and unavailable discovery states expose no invented counts", () => {
+    expect(summarizeReplayFaultFeed({ kind: "unavailable", reason: "HTTP 503" })).toEqual({ kind: "unavailable" });
+    expect(summarizeReplayFaultFeed({ kind: "malformed", reason: "duplicate scenario" })).toEqual({ kind: "rejected" });
   });
 });

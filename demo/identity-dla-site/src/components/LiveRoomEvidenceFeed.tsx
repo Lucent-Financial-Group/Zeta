@@ -149,6 +149,22 @@ async function readFeed(signal: AbortSignal): Promise<FeedState> {
 
 const labelStyle = { color: "var(--muted-foreground)", fontSize: "0.54rem", letterSpacing: "0.13em", textTransform: "uppercase" as const };
 
+function ReceiptBranchTopology() {
+  return (
+    <div aria-hidden="true" style={{ borderBottom: "1px solid var(--border)", height: 88, margin: "0.65rem 0 0.9rem", overflow: "hidden", position: "relative" }}>
+      <div style={{ color: "var(--amber-dim)", fontSize: "0.43rem", left: "0.15rem", letterSpacing: "0.12em", position: "absolute", top: "0.15rem" }}>RETAINED RECEIPT BRANCHES · LOCAL DISCOVERY</div>
+      <svg viewBox="0 0 1000 88" preserveAspectRatio="none" style={{ display: "block", height: "100%", width: "100%" }}>
+        <path d="M486 84 L486 60 L452 60 L428 44 L390 44 L365 65 L314 65 L285 49 L242 49 L220 27 L177 27" fill="none" stroke="var(--amber)" strokeWidth="2" vectorEffect="non-scaling-stroke" />
+        <path d="M486 60 L531 60 L554 36 L599 36 L625 54 L680 54 L707 22 L751 22 L786 43 L844 43" fill="none" stroke="var(--amber)" strokeWidth="2" vectorEffect="non-scaling-stroke" />
+        <path d="M452 60 L438 78 L399 78 M390 44 L404 16 L442 16 M285 49 L271 19 L231 19 M599 36 L583 12 L544 12 M680 54 L698 76 L738 76 M786 43 L810 16 L851 16" fill="none" stroke="var(--amber-dim)" strokeWidth="1" vectorEffect="non-scaling-stroke" />
+        <path d="M486 84 L486 72" fill="none" stroke="var(--amber)" strokeWidth="4" vectorEffect="non-scaling-stroke" />
+        <circle cx="177" cy="27" r="3" fill="var(--amber)" /><circle cx="844" cy="43" r="3" fill="var(--amber)" />
+        <circle cx="399" cy="78" r="2.5" fill="var(--teal)" /><circle cx="738" cy="76" r="2.5" fill="var(--teal)" />
+      </svg>
+    </div>
+  );
+}
+
 function LocalAdjudicationDetail({ adjudication }: { readonly adjudication: AdjudicationView }) {
   if (adjudication.kind === "not-published") {
     return <div style={{ color: "var(--teal)", marginTop: "0.5rem" }}>LOCAL ADJUDICATION · NOT PUBLISHED · AUTHORITY NOT INFERRED</div>;
@@ -204,6 +220,8 @@ export default function LiveRoomEvidenceFeed() {
       <p className="evidence-instrument-note" style={{ margin: "0.75rem 0", color: "var(--muted-foreground)", fontSize: "0.7rem", lineHeight: 1.6, maxWidth: 960 }}>
         Discovery surface. Event IDs bind envelopes. Named local sidecars only. No durable-address recomputation. No authority inferred from absence.
       </p>
+
+      <ReceiptBranchTopology />
 
       {state.kind === "loading" && <div style={{ color: "var(--teal)", fontSize: "0.72rem" }}>→ requesting immutable manifest…</div>}
       {state.kind === "empty" && <div style={{ color: "var(--teal)", fontSize: "0.78rem", borderLeft: "3px solid var(--teal)", paddingLeft: "0.7rem" }}>The schema is published, but this feed currently contains zero persisted room receipts. This is not a retraction or a negative observation.</div>}
