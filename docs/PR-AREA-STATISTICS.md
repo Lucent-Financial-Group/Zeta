@@ -1,6 +1,6 @@
 # PR area statistics
 
-_13,154 merged PRs · 16 areas · temporal split · generated 2026-08-28T16:42:08.220Z_
+_13,154 merged PRs · 16 areas · temporal split · generated 2026-08-28T21:48:54.161Z_
 
 **The BNN earns its place — but only under distribution shift.**
 
