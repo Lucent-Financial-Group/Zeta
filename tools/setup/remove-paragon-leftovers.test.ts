@@ -7,7 +7,7 @@
 // that selects everything.
 
 import { describe, expect, test } from "bun:test";
-import { paragonPlistsIn } from "./remove-paragon-leftovers.ts";
+import { paragonPlistsIn, paragonPrefPanesIn } from "./remove-paragon-leftovers.ts";
 
 const DIR = "/Library/LaunchAgents";
 
@@ -50,5 +50,35 @@ describe("selection is exactly the Paragon plists", () => {
 
   test("an empty directory yields nothing rather than throwing", () => {
     expect(paragonPlistsIn(DIR, [])).toEqual([]);
+  });
+});
+
+describe("preference panes — the surface the reboot revealed", () => {
+  const PP = "/Library/PreferencePanes";
+
+  test("picks the two Paragon panes", () => {
+    expect(paragonPrefPanesIn(PP, ["ParagonNTFS.prefPane", "ParagonExtFS.prefPane"])).toEqual([
+      `${PP}/ParagonNTFS.prefPane`,
+      `${PP}/ParagonExtFS.prefPane`,
+    ]);
+  });
+
+  test("THE CONTROL — other vendors' panes are untouched", () => {
+    // This directory is shared by every vendor on the machine, and the script runs as root
+    // with rmSync(recursive). Over-selection here deletes someone else's preference pane.
+    expect(
+      paragonPrefPanesIn(PP, ["Flash Player.prefPane", "MySQL.prefPane", "Tuxera NTFS.prefPane"]),
+    ).toEqual([]);
+  });
+
+  test("non-prefPane files starting with Paragon are left alone", () => {
+    expect(paragonPrefPanesIn(PP, ["ParagonNTFS.txt", "Paragon.log", "ParagonNTFS"])).toEqual([]);
+  });
+
+  test("the plist matcher does NOT pick up prefPanes, and vice versa", () => {
+    // The two selectors use different rules (bundle-id prefix vs product-name prefix).
+    // Crossing them would either miss the panes or double-count them.
+    expect(paragonPlistsIn(PP, ["ParagonNTFS.prefPane"])).toEqual([]);
+    expect(paragonPrefPanesIn("/Library/LaunchAgents", ["com.paragon-software.ntfs.notification-agent.plist"])).toEqual([]);
   });
 });

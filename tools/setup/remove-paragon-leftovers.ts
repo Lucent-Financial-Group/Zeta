@@ -18,8 +18,17 @@
  * whose executable is gone. They are inert leftovers, but they are also noise in exactly
  * the surface being examined for the machine's crash investigation, so they should go.
  *
- * SCOPE. LaunchAgent/LaunchDaemon plists matching the Paragon bundle-id prefix, and
- * nothing else. It does NOT touch kexts, `/Library/Filesystems`, or applications — at the
+ * SCOPE. LaunchAgent/LaunchDaemon plists matching the Paragon bundle-id prefix, PLUS
+ * `/Library/PreferencePanes/Paragon*.prefPane` (widened 2026-08-28 — see below).
+ *
+ * WHAT IT STILL DOES NOT COVER, and cannot. After a reboot on 2026-08-28 the
+ * `FSMenuAppLoginItemHelper` jobs came back, and `launchctl print` showed them as
+ * "submitted by smd" — they are SMAppService / Background Task Management registrations,
+ * not plists, and `sfltool dumpbtm` confirms they point at `/Applications/NTFS for Mac.app`
+ * which no longer exists. Stale BTM entries for a deleted app are removed through
+ * System Settings > General > Login Items & Extensions, or they age out; the only CLI lever
+ * is `sfltool resetbtm`, which wipes EVERY application's background items and is far too
+ * broad to run for one vendor. Deliberately not attempted here. It does NOT touch kexts, `/Library/Filesystems`, or applications — at the
  * time of writing there are none (`kmutil showloaded --no-kernel-components` reports zero
  * non-Apple kexts). If that changes, widening this is a reviewed diff, not a surprise.
  *
@@ -37,14 +46,28 @@
  *     ran.
  */
 
-import { existsSync, readdirSync, unlinkSync } from "node:fs";
+import { existsSync, readdirSync, rmSync, unlinkSync } from "node:fs";
 import { join } from "node:path";
 
 const AGENT_DIRS = ["/Library/LaunchAgents", "/Library/LaunchDaemons"] as const;
 const PREFIX = "com.paragon-software.";
 
+/**
+ * WIDENED 2026-08-28 after a reboot showed the plists were not the whole story.
+ * `/Library/PreferencePanes/Paragon*.prefPane` survived the vendor uninstaller too. The
+ * original scope note said widening this "is a reviewed diff, not a surprise" — this is
+ * that diff.
+ */
+const PREFPANE_DIR = "/Library/PreferencePanes";
+const PREFPANE_PREFIX = "Paragon";
+
 export function paragonPlistsIn(dir: string, entries: readonly string[]): readonly string[] {
   return entries.filter((e) => e.startsWith(PREFIX) && e.endsWith(".plist")).map((e) => join(dir, e));
+}
+
+/** Preference panes are named by product (`ParagonNTFS.prefPane`), not by bundle id. */
+export function paragonPrefPanesIn(dir: string, entries: readonly string[]): readonly string[] {
+  return entries.filter((e) => e.startsWith(PREFPANE_PREFIX) && e.endsWith(".prefPane")).map((e) => join(dir, e));
 }
 
 function findTargets(): { readonly searched: string[]; readonly found: string[] } {
@@ -56,9 +79,17 @@ function findTargets(): { readonly searched: string[]; readonly found: string[] 
     try {
       found.push(...paragonPlistsIn(dir, readdirSync(dir)));
     } catch {
+      console.log(`  ! could not read ${dir}`);
+    }
+  }
+  if (existsSync(PREFPANE_DIR)) {
+    searched.push(PREFPANE_DIR);
+    try {
+      found.push(...paragonPrefPanesIn(PREFPANE_DIR, readdirSync(PREFPANE_DIR)));
+    } catch {
       // Unreadable directory is reported, never silently treated as empty — an absent
       // result and an unreadable one are different answers.
-      console.log(`  ! could not read ${dir}`);
+      console.log(`  ! could not read ${PREFPANE_DIR}`);
     }
   }
   return { searched, found };
@@ -70,10 +101,10 @@ if (import.meta.main) {
 
   console.log(`searched: ${searched.join(", ") || "(none present)"}`);
   if (found.length === 0) {
-    console.log("nothing to do — no Paragon LaunchAgent/LaunchDaemon plists found.");
+    console.log("nothing to do — no Paragon plists or preference panes found.");
     process.exit(0);
   }
-  console.log(`found ${String(found.length)} Paragon plist(s):`);
+  console.log(`found ${String(found.length)} Paragon leftover(s):`);
   for (const f of found) console.log(`  ${f}`);
 
   if (!apply) {
@@ -90,6 +121,15 @@ if (import.meta.main) {
   }
 
   for (const f of found) {
+    if (f.endsWith(".prefPane")) {
+      try {
+        rmSync(f, { recursive: true, force: true });
+        console.log(`  removed ${f}`);
+      } catch (err) {
+        console.log(`  FAILED to remove ${f}: ${err instanceof Error ? err.message : String(err)}`);
+      }
+      continue;
+    }
     const label = f.split("/").pop()?.replace(/\.plist$/, "") ?? f;
     // Boot out first: a plist unlinked under a running job leaves the job loaded.
     Bun.spawnSync(["launchctl", "bootout", `system/${label}`], { stdout: "ignore", stderr: "ignore" });
