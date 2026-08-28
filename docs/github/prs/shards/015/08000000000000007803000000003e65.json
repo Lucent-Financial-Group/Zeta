@@ -1,0 +1,12 @@
+{
+  "pr_number": 15973,
+  "archive_path": "docs/history/pr-reviews/PR-15973-feat-arc-add-coordinate-valued-control-schemes.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-28T12:48:32.271Z",
+  "schema_version": "v1",
+  "commit_sha": "d5a5f7d4d1c0bed01758fdc2f955d13cf07a89a3",
+  "title": "feat(arc): add coordinate-valued control schemes",
+  "state": "MERGED",
+  "merged_at": "2026-08-28T12:47:51Z",
+  "head_ref": "claim/task-arc-rung-a-coordinate-action"
+}

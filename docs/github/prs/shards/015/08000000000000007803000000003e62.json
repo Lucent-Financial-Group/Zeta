@@ -1,0 +1,12 @@
+{
+  "pr_number": 15970,
+  "archive_path": "docs/history/pr-reviews/PR-15970-feat-evidence-room-meter-replay-feed-without-invented-counts.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-28T12:47:53.135Z",
+  "schema_version": "v1",
+  "commit_sha": "ee0a9fff96a5555527ca5f4a5e48a12e2c7f81ea",
+  "title": "feat(evidence-room): meter replay feed without invented counts",
+  "state": "MERGED",
+  "merged_at": "2026-08-28T12:47:18Z",
+  "head_ref": "feat/replay-feed-health-geometry"
+}

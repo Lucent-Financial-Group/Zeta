@@ -1,0 +1,12 @@
+{
+  "pr_number": 15969,
+  "archive_path": "docs/history/pr-reviews/PR-15969-feat-ferry-processmany-enqueuemany-and-per-row-data-errors.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-28T13:09:20.383Z",
+  "schema_version": "v1",
+  "commit_sha": "b67ffef688a051c738d58cddd6648507827af0e6",
+  "title": "feat(ferry): ProcessMany/EnqueueMany and per-row data errors",
+  "state": "MERGED",
+  "merged_at": "2026-08-28T13:08:46Z",
+  "head_ref": "feat/ferry-processmany-per-row-outcomes"
+}
