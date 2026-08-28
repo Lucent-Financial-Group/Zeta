@@ -44,18 +44,22 @@ look at the original (clean-room: requirements, never expression).
 
 ## What is missing (the work)
 
-1. **The other three cells + split.** In-tree today: **single-batch
-   only.** Missing: `ProcessMany` (batch-batch), split of an oversize
-   caller batch (batch-batch(s) — caller does not know `MaxBatchSize`),
-   `processOne` (batch-single / single-single). Efficient path =
-   handler-is-batchable, not caller-wrote-a-batch.
+1. **The other three cells + split.** `ProcessManyAsync` /
+   `EnqueueManyAsync` shipped 2026-08-28: caller batch, `fillBoat`
+   still splits (caller is clueless of `MaxBatchSize`). SIMD/GPU
+   still specialize `processBatch`, not fillBoat. `processOne` is
+   `ProcessAsync`. Efficient path remains handler-is-batchable.
 2. **FourCorner per row.** `processBatch` is `'TItem -> 'TResult`.
    Nothing requires `'TResult` to be `FourCornerOwnership`. Feedback
    corners are not a boat-row field.
-3. **Per-row failure.** `faultBoat` sets the **same exception on every
-   row** when `processBatch` throws or the result length mismatches.
-   A row whose feedback corner is an error cannot stay a success
-   sibling. Whole-boat fault is the current contract.
+3. **Per-row failure.** `faultWholeBoat` still sets the **same
+   exception on every row of that boat** when `processBatch` throws
+   or the result length mismatches (pinned). A **data** error encoded
+   in `'TResult` (`Result<_,_>`, FourCorner feedback as a value)
+   already fans per-row on the success path — test
+   `row-1 Result.Error without throw` (2026-08-28). Do not put a
+   heap `FourCornerOwnership` on the hot path just to close this
+   (Naledi).
 4. **ZetaId demux.** Result fan-in is **index alignment inside one
    boat**. Reorder / mux over a duplex wire (`duplex-transport.ts`
    demuxes by *channel* `normal|feedback|close`, not by identity)

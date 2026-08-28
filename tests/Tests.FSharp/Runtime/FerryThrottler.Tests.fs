@@ -867,3 +867,98 @@ let ``ferry_boat_row_is_not_four_corner: a boat of plain ints still works (FourC
         ctx.PumpToIdle()
         do! completion
     }
+
+
+// ═══════════════════════════════════════════════════════════════════
+// ProcessMany / EnqueueMany — batch-caller cell (081M125DNKK).
+// fillBoat still splits. SIMD/GPU belong in processBatch, not here.
+// Data-plane per-row error: encode in 'TResult; do not throw.
+// ═══════════════════════════════════════════════════════════════════
+
+
+[<Fact>]
+let ``ProcessMany empty returns empty without starting a boat`` () : Task =
+    task {
+        let boats = ConcurrentQueue<int>()
+        let processBatch (boat: ReadOnlyMemory<int>) (_ct: CancellationToken) : Task<int array> =
+            boats.Enqueue boat.Length
+            Task.FromResult Array.empty
+        let ctx = DeterministicSyncContext()
+        use throttler = intResultFerry processBatch ctx
+        let! none = throttler.ProcessManyAsync(ReadOnlyMemory<int>())
+        none |> should equal Array.empty<int>
+        List.ofSeq boats |> should equal List.empty<int>
+        let completion = throttler.CompleteAsync()
+        ctx.PumpToIdle()
+        do! completion
+    }
+
+
+[<Fact>]
+let ``ProcessMany of 5 with MaxBatchSize 2 is split 2-2-1 and results stay index-aligned`` () : Task =
+    task {
+        let boats = ConcurrentQueue<int>()
+        let processBatch (boat: ReadOnlyMemory<int>) (_ct: CancellationToken) : Task<int array> =
+            boats.Enqueue boat.Length
+            Task.FromResult [| for i in 0 .. boat.Length - 1 -> boat.Span.[i] * 10 |]
+        let ctx = DeterministicSyncContext()
+        let config = { FerryThrottlerConfig.deterministic with MaxBatchSize = 2 }
+        use throttler = new FerryThrottler<int, int>(config, processBatch, syncContext = ctx)
+        let many = throttler.ProcessManyAsync(ReadOnlyMemory([| 1; 2; 3; 4; 5 |]))
+        ctx.PumpToIdle()
+        let! results = many
+        results |> should equal [| 10; 20; 30; 40; 50 |]
+        List.ofSeq boats |> should equal [ 2; 2; 1 ]
+        let completion = throttler.CompleteAsync()
+        ctx.PumpToIdle()
+        do! completion
+    }
+
+
+[<Fact>]
+let ``row-1 Result.Error without throw: row-0 still completes (data per-row, not WholeBoat)`` () : Task =
+    // Feedback error as DATA. processBatch does not throw. WholeBoat is only
+    // for throw / length mismatch (pinned above). FourCorner is not required.
+    task {
+        let processBatch (boat: ReadOnlyMemory<int>) (_ct: CancellationToken) : Task<Result<int, string> array> =
+            Task.FromResult [|
+                for i in 0 .. boat.Length - 1 ->
+                    if boat.Span.[i] = 1 then Error "feedback"
+                    else Ok(boat.Span.[i] * 10)
+            |]
+        let ctx = DeterministicSyncContext()
+        let config = { FerryThrottlerConfig.deterministic with MaxBatchSize = 8 }
+        use throttler =
+            new FerryThrottler<int, Result<int, string>>(config, processBatch, syncContext = ctx)
+        let t0 = throttler.ProcessAsync 0
+        let t1 = throttler.ProcessAsync 1
+        ctx.PumpToIdle()
+        t0.IsCompletedSuccessfully |> should equal true
+        t1.IsCompletedSuccessfully |> should equal true
+        let! r0 = t0
+        let! r1 = t1
+        r0 |> should equal (Ok 0)
+        r1 |> should equal (Error "feedback")
+        let completion = throttler.CompleteAsync()
+        ctx.PumpToIdle()
+        do! completion
+    }
+
+
+[<Fact>]
+let ``EnqueueMany then pump coalesces the caller batch`` () : Task =
+    task {
+        let processed = ConcurrentQueue<int>()
+        let boatSizes = ConcurrentQueue<int>()
+        let processBatch (boat: ReadOnlyMemory<int>) (_ct: CancellationToken) : Task =
+            boatSizes.Enqueue boat.Length
+            for i in 0 .. boat.Length - 1 do processed.Enqueue(boat.Span.[i])
+            Task.CompletedTask
+        let config = { FerryThrottlerConfig.deterministic with MaxBatchSize = 3 }
+        use throttler = new FerryThrottler<int>(config, processBatch, manual = true)
+        do! throttler.EnqueueManyAsync(ReadOnlyMemory([| 1; 2; 3; 4; 5 |]))
+        do! throttler.PumpToIdleAsync()
+        do! throttler.CompleteAsync()
+        List.ofSeq processed |> should equal [ 1; 2; 3; 4; 5 ]
+        List.ofSeq boatSizes |> should equal [ 3; 2 ]
+    }

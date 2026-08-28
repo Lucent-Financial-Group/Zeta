@@ -73,6 +73,50 @@ export const TEACHING_LINT_SEEDS: readonly LintFindingSeed[] = [
   },
 ];
 
+/**
+ * Repeated human corrections from the 2026-08-27/28 Grok Build thread.
+ * Named seeds, not a scrape. Each already has an in-tree lint or rule; this
+ * is the (violation → repair) pair a generator can learn. Do not invent FIX
+ * for the 22 failure-only linters here.
+ */
+export const CONVERSATION_TEACHING_SEEDS: readonly LintFindingSeed[] = [
+  {
+    rule: "culture-ordinal-strings",
+    file: ".editorconfig",
+    signature: "Comparer<string>.Default",
+    detail: "platform-default string comparison on a primitive",
+    fix: "StringComparer.Ordinal / StringComparison.Ordinal for strings. CultureInfo.InvariantCulture for numbers only.",
+  },
+  {
+    rule: "graphql-is-the-contested-budget",
+    file: "scripts/watch.sh",
+    signature: "gh pr view in a loop",
+    detail: "GraphQL default used as a repeated probe",
+    fix: "REST gh api repos/{owner}/{repo}/pulls/N. GraphQL only for gh pr merge --auto.",
+  },
+  {
+    rule: "exact-optional-property-types",
+    file: "src/Core.TypeScript/corpus/correction-zset.test.ts",
+    signature: "fix: over.fix",
+    detail: "assigning string | undefined into fix?: string",
+    fix: "Spread the property only when set: ...(x !== undefined ? { fix: x } : {}).",
+  },
+  {
+    rule: "no-raw-task-run",
+    file: "src/Core/FerryThrottler.fs",
+    signature: "Task.Run wrapping sync work",
+    detail: "un-knobbed thread spawn; no DoP=1 path",
+    fix: "Queue + MaxDegreeOfParallelism ferry. DoP=1 is the FoundationDB loop.",
+  },
+  {
+    rule: "configureawait-false",
+    file: "src/Core.CSharp/TypeSchema.cs",
+    signature: "await without ConfigureAwait",
+    detail: "library path captures the ambient SynchronizationContext",
+    fix: "ConfigureAwait(false) on library awaits (CA2007).",
+  },
+];
+
 export function collectLintRoster(input: CollectLintRosterInput): CollectLintRosterResult {
   let log = emptyLog();
   const refused: { readonly finding: LintFindingSeed; readonly why: string }[] = [];
