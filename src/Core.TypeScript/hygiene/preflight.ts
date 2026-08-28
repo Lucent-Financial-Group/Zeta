@@ -111,52 +111,10 @@ interface Result {
   readonly note?: string;
 }
 
-/**
- * Apply the repository's established .NET 10 workaround inside the process
- * that owns preflight. App-launched agents do not necessarily source the
- * managed shell environment before invoking this script.
- */
-export function preflightEnvironment(
-  environment: NodeJS.ProcessEnv,
-  platform: NodeJS.Platform,
-  appleSiliconHardware: boolean,
-): NodeJS.ProcessEnv {
-  if (platform !== "darwin" || !appleSiliconHardware) return environment;
-  return { ...environment, DOTNET_gcServer: "0" };
-}
-
-/** Keep the heavyweight solution graph serial on the affected local host. */
-export function preflightArguments(
-  command: string,
-  args: readonly string[],
-  appleSiliconHardware: boolean,
-): readonly string[] {
-  if (command !== "dotnet" || !appleSiliconHardware || args.includes("-m:1")) return args;
-  return [...args, "-m:1"];
-}
-
-function isAppleSiliconHardware(): boolean {
-  if (process.platform !== "darwin") return false;
-  if (process.arch === "arm64") return true;
-  const probe = spawnSync("/usr/sbin/sysctl", ["-n", "hw.optional.arm64"], {
-    encoding: "utf8",
-  });
-  return probe.status === 0 && probe.stdout.trim() === "1";
-}
-
-const APPLE_SILICON_HARDWARE = isAppleSiliconHardware();
-const PREFLIGHT_ENV = preflightEnvironment(process.env, process.platform, APPLE_SILICON_HARDWARE);
-
 function runCheck(check: Check): Result {
   process.stdout.write(`▶ ${check.label} … `);
   const [bin, ...args] = check.cmd;
-  const effectiveArgs = preflightArguments(bin, args, APPLE_SILICON_HARDWARE);
-  const r = spawnSync(bin, effectiveArgs, {
-    cwd: REPO_ROOT,
-    encoding: "utf8",
-    env: PREFLIGHT_ENV,
-    maxBuffer: 64 * 1024 * 1024,
-  });
+  const r = spawnSync(bin, args, { cwd: REPO_ROOT, encoding: "utf8", maxBuffer: 64 * 1024 * 1024 });
 
   // Tool genuinely absent (e.g. golangci-lint / dotnet not installed locally) →
   // SKIP, not FAIL: the dimension was not verified, but that is not breakage.
@@ -196,7 +154,6 @@ function main(): number {
   const codegenResult = spawnSync("bun", ["tools/codegen/generate-identity-registry.ts"], {
     cwd: REPO_ROOT,
     encoding: "utf8",
-    env: PREFLIGHT_ENV,
   });
   if (codegenResult.status !== 0) {
     console.error("FAIL: Identity registry codegen failed!");
@@ -238,4 +195,4 @@ function main(): number {
   return 0;
 }
 
-if (import.meta.main) process.exit(main());
+process.exit(main());

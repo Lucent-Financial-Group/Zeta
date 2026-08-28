@@ -93,34 +93,6 @@ After the first crash:
   no file changes.
 - Another complete `bun run preflight` passed all 14 checks after the V8 crash.
 
-### 2026-08-28 parallel/GC matrix
-
-ARC rung B validation reproduced the F# test-host signal death under a bounded matrix on the same
-Apple Silicon host, now running macOS 26.5, SDK 10.0.400, and runtime 10.0.11. The generated
-`Tests.FSharp.runtimeconfig.json` sets `System.GC.Server=true`; the foreground Codex app had not
-inherited `DOTNET_gcServer=0`. The host had 206 GB RAM, no compressed pages, and no swap activity.
-
-| command shape                                      | result                                                                                 |
-| -------------------------------------------------- | -------------------------------------------------------------------------------------- |
-| full solution, parallel, Server GC                 | exit 139 after 4,014 passed / 4 skipped                                                |
-| identical full solution retry, parallel, Server GC | exit 139 after 2,955 passed / 5 skipped                                                |
-| Tests.FSharp alone, Server GC                      | 5,950 passed / 6 skipped, exit 0                                                       |
-| full solution, `-m:1`, Server GC                   | 5,950 F# passed / 6 skipped and every other project passed, exit 0                     |
-| full solution, parallel, `DOTNET_gcServer=0`       | 5,950 F# passed / 6 skipped and every other project passed, exit 0                     |
-| full preflight, parallel, `DOTNET_gcServer=0`      | .NET stayed alive; TLC's Java 26 process died with SIGBUS inside `YoungGenScanClosure` |
-
-The changing crash point is evidence against one deterministic test. The controlled Workstation GC
-pass supports the established mitigation, while the serial Server GC pass shows project concurrency
-is a necessary condition in this bounded sample. It does not establish the upstream root cause, so
-this workitem remains open.
-
-`src/Core.TypeScript/hygiene/preflight.ts` now applies the existing Apple-Silicon Workstation GC
-setting to every child check itself. Previously that protection depended on an interactive shell
-sourcing `~/.config/zeta/shellenv.sh`; app-launched foreground agents could silently bypass it. The
-direct solution build/test checks also use `-m:1` on that hardware. This is the smallest mode already
-shown to keep the .NET test host and its nested JVM checks from overlapping other solution projects;
-Linux, Windows, and Intel macOS retain the parallel gate.
-
 Repository history also records transient exit-139 failures and already retries
 one such formatter failure. A retry limits disruption; it is not a correctness
 proof or a diagnosis.
