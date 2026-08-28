@@ -1,0 +1,12 @@
+{
+  "pr_number": 15977,
+  "archive_path": "docs/history/pr-reviews/PR-15977-feat-core-atomic-speculativeupdate-a-lock-free-cas-retry-primitive-with-an-owned.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-28T13:07:57.767Z",
+  "schema_version": "v1",
+  "commit_sha": "2e520358a7058629f3064931e33db9eacc785e97",
+  "title": "feat(core): Atomic.speculativeUpdate — a lock-free CAS retry primitive with an owned port",
+  "state": "MERGED",
+  "merged_at": "2026-08-28T13:07:18Z",
+  "head_ref": "cleanroom/speculative-update"
+}
