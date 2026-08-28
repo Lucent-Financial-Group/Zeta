@@ -1,0 +1,16 @@
+{
+  "pr_number": 16018,
+  "archive_path": "docs/history/pr-reviews/PR-16018-rule-preservation-has-one-namespace-per-kind-with-a-falsifier-because-a-norm-fai.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7nax2G",
+    "comment:PRRC_kwDOSF9kNM7ndYmY",
+    "thread:PRRT_kwDOSF9kNM6dPs6P"
+  ],
+  "fetched_at": "2026-08-28T20:50:31.878Z",
+  "schema_version": "v1",
+  "commit_sha": "e7b4cba597e56c051175f908ac9bb451417d7189",
+  "title": "rule: preservation has ONE namespace per kind — with a falsifier, because a norm failed",
+  "state": "MERGED",
+  "merged_at": "2026-08-28T18:57:09Z",
+  "head_ref": "rule/one-preservation-namespace-per-kind"
+}
