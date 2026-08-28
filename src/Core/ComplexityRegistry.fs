@@ -62,6 +62,8 @@ module ComplexityRegistry =
               ("control.chip9-pad", "translate"), c "O(1)" "O(1)" Derived
               ("control.keyboard-wasd", "translate"), c "O(1)" "O(1)" Derived
               ("control.gamepad-standard", "translate"), c "O(1)" "O(1)" Derived
+              ("control.arc-agi-3", "translate"), c "O(input)" "O(input)" Derived
+              ("control.atari-2600", "translate"), c "O(input)" "O(1)" Derived
               ("control.gamepad-meta", "metaOf"), c "O(1)" "O(1)" Derived
               ("view.flux-curve", "admissionCurve"), c "O(rows·cols)" "O(rows·cols)" Derived
               ("view.flux-gauge", "tankGauge"), c "O(width)" "O(width)" Derived

@@ -37,6 +37,8 @@ export const DECLARED: Record<string, Cost> = {
   "control.chip9-pad:translate": { time: "O(1)", space: "O(1)", by: "Derived" },
   "control.keyboard-wasd:translate": { time: "O(1)", space: "O(1)", by: "Derived" },
   "control.gamepad-standard:translate": { time: "O(1)", space: "O(1)", by: "Derived" },
+  "control.arc-agi-3:translate": { time: "O(input)", space: "O(input)", by: "Derived" },
+  "control.atari-2600:translate": { time: "O(input)", space: "O(1)", by: "Derived" },
   "control.gamepad-meta:metaOf": { time: "O(1)", space: "O(1)", by: "Derived" },
   "view.flux-curve:admissionCurve": { time: "O(rows·cols)", space: "O(rows·cols)", by: "Derived" },
   "view.flux-gauge:tankGauge": { time: "O(width)", space: "O(width)", by: "Derived" },
