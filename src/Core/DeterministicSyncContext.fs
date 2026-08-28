@@ -40,11 +40,13 @@ open System.Threading
 /// for determinism rather than UI affinity). Lock-free FIFO: Michael & Scott,
 /// "Simple, Fast, and Practical Non-Blocking and Blocking Concurrent Queue
 /// Algorithms" (PODC 1996) — the lineage `ConcurrentQueue<T>` implements. Human
-/// anchor for the lock-free `ConcurrentQueue` + CAS approach: the maintainer's Itron
-/// `Itron.Extensibility/AsyncCollection.cs` — a lock-free async producer/consumer
-/// rendezvous (two `ConcurrentQueue`s coordinated by a speculative-CAS on a paired
-/// count, `TrySpeculativeUpdate`; Stephen Toub's `AsyncProducerConsumerQueue`
-/// lineage) — and `AtomicBoolean.cs` for the bare `Interlocked.CompareExchange`.
+/// anchor for the lock-free `ConcurrentQueue` + CAS approach: Joseph Albahari,
+/// *Threading in C#* §"Nonblocking Synchronization" — the published
+/// `Interlocked.CompareExchange` optimistic-update loop with `SpinWait` backoff —
+/// with Stephen Toub (`Interlocked` / `SpinWait` guidance, `AsyncProducerConsumerQueue`)
+/// and David Fowler (`System.Threading.Channels`) as the standing .NET concurrency
+/// lineage. That optimistic loop lives in this repo as `Atomic.speculativeUpdate`
+/// (`SpeculativeUpdate.fs`).
 [<Sealed>]
 type DeterministicSyncContext() =
     inherit SynchronizationContext()

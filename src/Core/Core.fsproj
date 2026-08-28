@@ -13,6 +13,7 @@
   <ItemGroup>
     <Compile Include="AssemblyInfo.fs" />
     <Compile Include="Result.fs" />
+    <Compile Include="SpeculativeUpdate.fs" />
     <Compile Include="ErasureClass.fs" />
     <Compile Include="ErasureCharge.fs" />
     <Compile Include="Mixin.fs" />
