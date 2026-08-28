@@ -169,10 +169,96 @@ never in what an agent is expected to still be holding.
 - The amortized pre-read wired through `observe.ts`'s snapshot, so the mechanism is visible
   at the seam where actions are already chosen.
 
+## 2c. The read set selects the tier — filenames vs contents
+
+**NOT BUILT.** §3 names three coordination tiers but not *how an operation is assigned one*.
+This is the selector, and it is derived rather than declared.
+
+> *"the contents can be hidden read, but it's tracked — which files' contents those hidden
+> reads occurred on since last merge, and a merge decides the winner if that same content is
+> updated. Reads from a file that's not updated are safe; reads from a file that's updated
+> needs higher consensus."*
+
+Split the two things a "file" is:
+
+- **The name** is a tag-binding over the content-addressed DAG (§4). Rebinding it is an
+  ordinary commutative fact.
+- **The contents** may be read *without* that read appearing in the write — a **hidden
+  read**, which is exactly the hidden input §2b is about, one level up.
+
+The rule is then mechanical at merge time:
+
+| what the operation read | at merge | tier |
+|---|---|---|
+| contents of files **nobody updated** since the last merge | the read is still valid — nothing it depended on moved | **0** — commutative, no coordination |
+| contents of a file that **was** updated | the read may have been based on a superseded value | escalate — **1**, or **2** if the stakes warrant |
+
+So coordination cost is **paid per read-set collision, not per operation**. The overwhelming
+majority of work reads things nobody touched and settles at tier 0; the expensive tiers are
+reached only where a genuine dependency actually moved. That is a considerably better
+allocation than Git's, which pays a ref lock for every push regardless of whether anything
+it read had changed.
+
+**This is optimistic concurrency control with read-set validation** (Kung & Robinson 1981),
+which is the right anchor and worth naming because it tells us the known failure modes.
+Two matter here:
+
+1. **The read set must be complete.** An untracked hidden read is a dependency the merge
+   cannot see, so it validates a transaction it should have escalated — silent lost update.
+   Completeness of the tracked read set is the correctness precondition of the whole scheme,
+   and it is exactly what a `DU`-carried read set buys over an agent remembering what it
+   looked at.
+2. **Granularity decides the false-conflict rate.** Tracking at whole-file granularity will
+   escalate operations that read a *different part* of a file than the one updated. Content
+   addressing helps — sub-objects have their own addresses — so the natural granularity here
+   is finer than a file. Worth measuring before assuming, because too-coarse tracking
+   quietly moves work up the cost ladder and the symptom is only "things feel slow".
+
+## 2d. The ontology is a supplied input, not ambient context
+
+**NOT BUILT** beyond a toy (`harney`, below).
+
+§2b concluded that an invariant living in a context window is not an invariant. Aaron's
+answer is not to stop using the window — it is to **stop treating it as ambient**:
+
+> *"we are trying to make the agent's evolving ontology of ZetaDB/FS fit within the context
+> window and be evolved and supplied as an input on every round, dissolving the full context
+> window's compaction … on every tick of the workflow/DU can we do a mini compaction that
+> keeps ontologies within context-window size."*
+
+The distinction is the whole point. Ambient context is whatever happens to still be in the
+window — unversioned, unattributable, silently truncated. A **supplied** ontology is an
+input the DU hands to the round, so it is versioned, inspectable, and reproducible. Same
+bytes, opposite epistemic status. The invariant-in-a-context-window objection dissolves not
+because the window got bigger but because the window stopped being the *source*.
+
+**Mini-compaction per tick instead of one cliff.** Whole-context compaction is a periodic
+catastrophe: it happens at an arbitrary boundary, discards on a heuristic nobody chose, and
+its losses are discovered later by their absence. A small compaction on every tick, bounded
+by the window size, makes the same work continuous, ordinary, and observable — the identical
+argument as §3's incremental view maintenance versus periodic repack, applied to attention
+instead of storage.
+
+**Incremental loading is what makes it survivable at size.** Because the store is many
+Z-sets joined by Rx queries (§2), the ontology **never needs to be loaded whole**. Once it
+outgrows any window, the join loads the region in play. The boundaries are **DDD-shaped
+bounded contexts** (Evans 2003) — a bounded context is precisely "the region within which a
+model is coherent", which is the right unit both for a domain model and for what an agent
+must hold at once. That the same partitioning serves both is the useful part, not a
+coincidence worth over-reading.
+
+**`harney`** is the toy harness where this is being tried. Its stated differentiator is an
+**evolving ontology over flat text, with fullness compression** — that is, structure that
+gets refined across rounds rather than a transcript that gets truncated. Recorded as an
+early direction; there is no measurement, and the name currently also appears in-repo as a
+proposed CLI (`docs/research/2026-08-27-data-plane-is-dumb-…`), so the naming will need
+settling.
+
 ## 3. The consensus ladder — three tiers, and the cost is deliberate
 
 The interesting claim is not "no consensus". It is that coordination is a **cost tier you
-select per operation**, and most operations sit on the free one.
+select per operation**, and most operations sit on the free one. **§2c is the selector** —
+the tier is *derived from the read set at merge time*, not declared by the caller.
 
 | tier | mechanism | cost | when |
 |---|---|---|---|
@@ -238,8 +324,9 @@ as a description of running code:
 - **Exists:** `SybilBftProtocol.fs` (tier 2, with a deterministic reducer and DST replay);
   Bonsai serialization; `DynamicValue`; `Query.fs` / `QuerySurface.fs` / `Rx.fs`; Z-set and
   DBSP primitives; the ZetaFS naming design.
-- **Not yet built:** the amortized pre-read of §2b, with everything that section names;
-  and the partitioned-tip join itself — N Z-set tips reconstructed by a
+- **Not yet built:** the amortized pre-read (§2b), read-set tier selection (§2c), the
+  supplied-ontology / per-tick mini-compaction (§2d, toy only in `harney`), and the
+  partitioned-tip join itself — N Z-set tips reconstructed by a
   shipped Rx query. No implementation, no benchmark. Nothing here reports a measured
   contention improvement over a single-tip design, and it should not be cited as though it
   does.
@@ -258,3 +345,7 @@ against a single-tip baseline under concurrent writers.
 - **CASPaxos** — Rystsov (2018), the single-register CAS-consensus shape tier 1 deliberately
   avoids by partitioning instead.
 - **Content addressing** — Merkle (CRYPTO '87).
+- **Optimistic concurrency control / read-set validation** — Kung & Robinson, *On Optimistic
+  Methods for Concurrency Control* (ACM TODS, 1981). The anchor for §2c, and the source of
+  its two named failure modes: incomplete read sets and granularity-driven false conflicts.
+- **Bounded contexts** — Eric Evans, *Domain-Driven Design* (2003). The boundary shape in §2d.
