@@ -1,0 +1,12 @@
+{
+  "pr_number": 15997,
+  "archive_path": "docs/history/pr-reviews/PR-15997-fix-test-the-weakmap-gc-test-asserted-that-the-gc-had-not-run-yet.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-28T15:16:59.741Z",
+  "schema_version": "v1",
+  "commit_sha": "05c1931f382fe39cc2bff41c283e29082d716a37",
+  "title": "fix(test): the WeakMap GC test asserted that the GC had not run yet",
+  "state": "MERGED",
+  "merged_at": "2026-08-28T15:16:24Z",
+  "head_ref": "fix/weakmap-gc-test-asserts-gc-has-not-run"
+}
