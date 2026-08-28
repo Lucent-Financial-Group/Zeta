@@ -17,7 +17,7 @@ open Zeta.Core
 //   DSL-4   a declaration at the same logical phase as the result is refused (boundary)
 //   DSL-5   a declaration after the result is refused (an excuse, not a disclosure)
 //   DSL-6   empty subject / empty domain refused
-//   DSL-37  no hidden clock: two identical declare calls produce equal values
+//   DSL-37  no hidden clock: every Declaration field equals the argument it was given
 //
 // THE RECIPROCAL OBLIGATION
 //   DSL-7   openExchange refuses a domain mismatch
@@ -61,14 +61,23 @@ open Zeta.Core
 // DST
 //   DSL-36  the same resolution sequence replays to the same ledger
 //
-// CHECK-ARITY ADJUDICATION (registry/check-arity-census.json, this file = 2)
-//   `audit-check-arity.ts` R2 flags DSL-36 and DSL-37 as self-comparisons: after binding
-//   substitution both sides normalize to one expression. That is CORRECT here and not
-//   vacuous — both are DETERMINISM checks, and a determinism check has no other shape:
-//   it asserts that constructing the same thing twice yields equal values, which is
-//   exactly what fails when an ambient source is captured. Mutation M4 (an incrementing
-//   ambient counter folded into the value) kills DSL-37, so the check demonstrably
-//   discriminates. Census raised 0 -> 2 in the same commit, per R2.
+// CHECK-ARITY ADJUDICATION (registry/check-arity-census.json, this file = 1)
+//   `audit-check-arity.ts` R2 flagged DSL-36 and DSL-37 as self-comparisons. The 2026-08-25
+//   adjudication kept both on the argument that "a determinism check has no other shape".
+//   HALF OF THAT WAS WRONG AND THE OTHER HALF NEEDS A STATED LIMIT.
+//
+//   DSL-37 -- VACUOUS, and now DELETED rather than licensed. Under a real ambient-clock
+//     mutant it survived 14 of 25 runs. Detail and the mutant at the test itself. Census
+//     lowered 2 -> 1 in the same commit, per R2's downward ratchet.
+//
+//   DSL-36 -- KEPT, with its limit written down. It is a genuine check against PER-CALL
+//     ambient entropy: a clock-derived perturbation inside `record` differs between the two
+//     folds and kills it. It is BLIND, deterministically and by construction, to a
+//     ONCE-PER-PROCESS capture. Measured: a module-level `let private ambientEpoch =
+//     int (DateTime.UtcNow.Ticks % 7L) + 1` folded into the cell left DSL-36 GREEN while
+//     DSL-17 and DSL-31 -- which pin VALUES rather than compare two runs -- both failed.
+//     That is the honest shape of the guarantee: same process, same answer. Cross-process
+//     replay, which is what DST actually claims, is carried by the value pins, not by DSL-36.
 
 module D = Zeta.Core.DeclaredStanceLedger
 
@@ -161,13 +170,41 @@ module DeclaredStanceLedgerTests =
         | other -> failwithf "expected an empty-domain refusal, got %A" other
 
     // ── DSL-37: no hidden wall clock ──────────────────────────────────────────────────────────────
+    //
+    // THIS WAS `Assert.Equal(a, b)` OVER TWO IDENTICAL `declare` CALLS, and that shape could not
+    // do the job its own name gave it. Measured, not argued (2026-08-26): mutating
+    // `DeclaredAtPhase = declaredAtPhase` to `DateTime.UtcNow.Ticks` in `src/Core/DeclaredStanceLedger.fs`
+    // — precisely the defect the name forbids — left the class GREEN in **14 of 25 runs**. Every
+    // kill differed by exactly **10 ticks = one 1 µs quantum**, so the check had zero margin: it
+    // was decided by whether the two calls straddled a clock boundary, not by the property. The
+    // earlier "M4 (an incrementing ambient counter) kills it" evidence was true and did not
+    // generalise — a counter always differs, a clock usually does not.
+    //
+    // (Isolated with `--filter DSL-37` the mutant died 10/10, because the FIRST call also pays
+    // tiered-JIT warm-up. That is the trap: the reassuring measurement is the one taken in the
+    // configuration the test never runs in.)
+    //
+    // Same finding as `FTA-5` (#15446), on the file #15446 flagged and correctly declined to touch.
+    // The repair is #15446's: lower the CLAIM to the arity the check has. Pin every field against
+    // the ARGUMENT it must have come from, plus a control that a different argument really moves
+    // the field. An ambient source in any field now dies deterministically, because the expected
+    // value is an argument rather than a second call that shares the same impurity.
     [<Fact>]
-    let ``DSL-37 two identical declare calls produce equal values (no ambient clock captured)`` () =
-        // If the implementation captured DateTime.UtcNow, these two would differ. Logical
-        // phase ordinals are the only time in the type — local time never enters the fold.
-        let a = D.declare "aaron" "aaron" "bridge" D.Eager 1L 2L "s" |> ok
-        let b = D.declare "aaron" "aaron" "bridge" D.Eager 1L 2L "s" |> ok
-        Assert.Equal(a, b)
+    let ``DSL-37 every Declaration field is the argument it was given, so nothing ambient can enter`` () =
+        let d = D.declare "aaron" "aaron" "bridge" D.Eager 1L 2L "s" |> ok
+        Assert.Equal("aaron", d.Subject)
+        Assert.Equal("bridge", d.Domain)
+        Assert.Equal(D.Eager, d.Stance)
+        Assert.Equal(1L, d.DeclaredAtPhase)
+        Assert.Equal(2L, d.ResultPhase)
+        Assert.Equal("s", d.StakeDescription)
+        // CONTROL — the pins above are not constants that happen to match: a different phase
+        // pair really does move the two fields an ambient clock would have taken over.
+        let e = D.declare "otto" "otto" "weather" D.Averse 3L 4L "t" |> ok
+        Assert.Equal(3L, e.DeclaredAtPhase)
+        Assert.Equal(4L, e.ResultPhase)
+        Assert.Equal("otto", e.Subject)
+        Assert.Equal("t", e.StakeDescription)
 
     // ── DSL-7 / DSL-8 / DSL-9: the reciprocal obligation ──────────────────────────────────────────
     [<Fact>]
