@@ -2,6 +2,12 @@
   "schema": "zeta.room-evidence-live-feed-index.v1",
   "entries": [
     {
+      "eventId": "0a9c6dcc12e1c74715841fd4da6c54f5",
+      "auditContentKey": "8d0baf2e26c0d2a12d5ee162aad0eaa0",
+      "receiptContentKey": "df77c3c216bf4d69b55c3ad6fdd869ab",
+      "file": "room-evidence/0a9c6dcc12e1c74715841fd4da6c54f5.json"
+    },
+    {
       "eventId": "11d5cf2c2f32f6ccff77d6a6174466d5",
       "auditContentKey": "1909ba2dbc25ea25ad4d8b81640a07e4",
       "receiptContentKey": "bc53bf1ebfbc8d7c7ea79927b232dfa3",
