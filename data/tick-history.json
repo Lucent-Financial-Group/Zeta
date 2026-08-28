@@ -3,46 +3,10 @@
     "generator": "tick-metrics-writer.ts",
     "mock": false,
     "derived_from": "data/tick-shards/**/*.json",
-    "shard_count": 1611,
+    "shard_count": 1614,
     "rollup_max_frames": 1000
   },
   "frames": [
-    {
-      "agents_active": 3,
-      "claims_pending": 3,
-      "entropy_heat": 0,
-      "entropy_state": 0,
-      "last_action": "explore",
-      "last_agent": "otto",
-      "last_mode": "explore",
-      "t": "2026-08-14T22:24:09.386Z",
-      "ticks_24h": 10,
-      "total_events": 1313
-    },
-    {
-      "agents_active": 3,
-      "claims_pending": 3,
-      "entropy_heat": 0,
-      "entropy_state": 0,
-      "last_action": "explore",
-      "last_agent": "otto",
-      "last_mode": "explore",
-      "t": "2026-08-14T22:40:03.581Z",
-      "ticks_24h": 10,
-      "total_events": 1313
-    },
-    {
-      "agents_active": 3,
-      "claims_pending": 3,
-      "entropy_heat": 0,
-      "entropy_state": 0,
-      "last_action": "explore",
-      "last_agent": "otto",
-      "last_mode": "explore",
-      "t": "2026-08-14T22:52:37.897Z",
-      "ticks_24h": 10,
-      "total_events": 1313
-    },
     {
       "agents_active": 3,
       "claims_pending": 3,
@@ -12006,6 +11970,42 @@
       "t": "2026-08-28T22:34:21.691Z",
       "ticks_24h": 16,
       "total_events": 5178
+    },
+    {
+      "agents_active": 2,
+      "claims_pending": 3,
+      "entropy_heat": 0,
+      "entropy_state": 0,
+      "last_action": "explore",
+      "last_agent": "alexa",
+      "last_mode": "explore",
+      "t": "2026-08-28T22:37:42.592Z",
+      "ticks_24h": 16,
+      "total_events": 5178
+    },
+    {
+      "agents_active": 2,
+      "claims_pending": 3,
+      "entropy_heat": 0,
+      "entropy_state": 0,
+      "last_action": "attest_peer",
+      "last_agent": "alexa",
+      "last_mode": "work",
+      "t": "2026-08-28T22:41:05.760Z",
+      "ticks_24h": 18,
+      "total_events": 5180
+    },
+    {
+      "agents_active": 2,
+      "claims_pending": 3,
+      "entropy_heat": 0,
+      "entropy_state": 0,
+      "last_action": "attest_peer",
+      "last_agent": "alexa",
+      "last_mode": "work",
+      "t": "2026-08-28T22:47:59.629Z",
+      "ticks_24h": 18,
+      "total_events": 5180
     }
   ]
 }
