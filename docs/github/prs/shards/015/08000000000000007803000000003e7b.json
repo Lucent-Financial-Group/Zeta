@@ -1,0 +1,16 @@
+{
+  "pr_number": 15995,
+  "archive_path": "docs/history/pr-reviews/PR-15995-feat-arc-add-source-owned-rest-adapter-and-loopback-proof.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7nWTnW",
+    "comment:PRRC_kwDOSF9kNM7nWs0j",
+    "thread:PRRT_kwDOSF9kNM6dMtll"
+  ],
+  "fetched_at": "2026-08-28T15:11:16.371Z",
+  "schema_version": "v1",
+  "commit_sha": "3d1613007755cd67a6c98c0832401a79e3f2eeb3",
+  "title": "feat(arc): add source-owned REST adapter and loopback proof",
+  "state": "MERGED",
+  "merged_at": "2026-08-28T15:07:58Z",
+  "head_ref": "claim/task-arc-rung-b-live-adapter"
+}
