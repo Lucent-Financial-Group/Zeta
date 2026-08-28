@@ -13,6 +13,7 @@ import {
   assertUefiKeyfilePickerContract,
   assertUefiKeyfileRestoreContract,
   assertUefiKeyfileRestoreWritePath,
+  assertUefiKeyfileRestoreWrongPassphraseContract,
   assertUsbISerialPhase1Contract,
   assertWifiEspPhase1Contract,
   buildQemuDiskBootArgsPure,
@@ -25,6 +26,7 @@ import {
   NODE_HEX_HOSTNAME_RE,
   OVMF_FIRMWARE_CANDIDATES,
   PHASE2_SERIAL_SEPARATOR,
+  PHASE2B_SERIAL_SEPARATOR,
   QEMU_CREDS_PASSPHRASE_FWCFG_NAME,
   missingRestorePreconditions,
   reclaimLargeTempArtifacts,
@@ -33,6 +35,7 @@ import {
   restoreWroteCount,
   restoreExercisedWritePath,
   UEFI_KEYFILE_RESTORE_SERIAL,
+  WRONG_QEMU_PASSPHRASE,
 } from "./qemu-full-install-test.ts";
 import { QEMU_USB_TEST_SERIAL } from "../installer/qemu-usb-storage.ts";
 import { UEFI_KEYFILE_SERIAL } from "../installer/uefi-keyfile-esp.ts";
@@ -557,6 +560,67 @@ describe("qemu-full-install-test UEFI keyfile restore contract", () => {
   });
 });
 
+describe("qemu-full-install-test UEFI keyfile restore wrong-passphrase contract", () => {
+  const refusalSerial = [
+    UEFI_KEYFILE_RESTORE_SERIAL.stagedFromFwcfg,
+    UEFI_KEYFILE_RESTORE_SERIAL.transportFwcfgNotMetal,
+    `${UEFI_KEYFILE_RESTORE_SERIAL.decryptFailed} decryption failed (wrong passphrase / wrong binding / tampered blob): tag`,
+  ].join("\n");
+
+  it("the wrong passphrase is not the happy-path secret", () => {
+    expect(WRONG_QEMU_PASSPHRASE).toBe("not-the-qemu-test-passphrase");
+    expect(DEFAULT_QEMU_PASSPHRASE).toBe("b0891-qemu-test-passphrase");
+  });
+
+  it("accepts fw_cfg staging plus decrypt refusal and no write", () => {
+    expect(assertUefiKeyfileRestoreWrongPassphraseContract(refusalSerial).ok).toBe(true);
+  });
+
+  it("fails when decrypt refusal is missing", () => {
+    const serial = [
+      UEFI_KEYFILE_RESTORE_SERIAL.stagedFromFwcfg,
+      UEFI_KEYFILE_RESTORE_SERIAL.transportFwcfgNotMetal,
+    ].join("\n");
+    const result = assertUefiKeyfileRestoreWrongPassphraseContract(serial);
+    expect(result.ok).toBe(false);
+    if (!result.ok) expect(result.reason).toContain("decrypt refusal");
+  });
+
+  it("fails when the wrong passphrase still wrote creds", () => {
+    const serial = `${refusalSerial}\n${UEFI_KEYFILE_RESTORE_SERIAL.wrotePrefix}1 creds (target-root: /)`;
+    const result = assertUefiKeyfileRestoreWrongPassphraseContract(serial);
+    expect(result.ok).toBe(false);
+    if (!result.ok) expect(result.reason).toContain("wrote N>=1");
+  });
+
+  it("fails when already-present appears (decrypt succeeded)", () => {
+    const serial = `${refusalSerial}\n${UEFI_KEYFILE_RESTORE_SERIAL.alreadyPresent}`;
+    const result = assertUefiKeyfileRestoreWrongPassphraseContract(serial);
+    expect(result.ok).toBe(false);
+    if (!result.ok) expect(result.reason).toContain("already-present");
+  });
+
+  it("fails when QEMU claims the metal interactive transport", () => {
+    const serial = `${refusalSerial}\n${UEFI_KEYFILE_RESTORE_SERIAL.transportInteractive}`;
+    const result = assertUefiKeyfileRestoreWrongPassphraseContract(serial);
+    expect(result.ok).toBe(false);
+    if (!result.ok) expect(result.reason).toContain("INTERACTIVE");
+  });
+
+  it("fails when either passphrase leaks onto serial", () => {
+    const happy = assertUefiKeyfileRestoreWrongPassphraseContract(
+      `${refusalSerial}\n${DEFAULT_QEMU_PASSPHRASE}\n`,
+    );
+    expect(happy.ok).toBe(false);
+    if (!happy.ok) expect(happy.reason).toContain("happy-path");
+    const wrong = assertUefiKeyfileRestoreWrongPassphraseContract(
+      `${refusalSerial}\n${WRONG_QEMU_PASSPHRASE}\n`,
+    );
+    expect(wrong.ok).toBe(false);
+    if (!wrong.ok) expect(wrong.reason).toContain("injected wrong");
+  });
+});
+
 describe("qemu-full-install-test wifi ESP phase-1 contract", () => {
   it("accepts found + wrote + association-deferred markers", () => {
     const serial = [
@@ -588,6 +652,14 @@ describe("qemu-full-install-test serial log artifact merge", () => {
     expect(merged).toContain("ZETA CLUSTER NODE INSTALL COMPLETE");
     expect(merged).toContain(PHASE2_SERIAL_SEPARATOR.trim());
     expect(merged).toContain("node-abc123 login:");
+  });
+
+  it("appends phase 2b when present and keeps two-arg merge unchanged", () => {
+    const with2b = mergeFullInstallSerialLogs("p1", "p2", "p2b decrypt:");
+    expect(with2b).toContain(PHASE2B_SERIAL_SEPARATOR.trim());
+    expect(with2b).toContain("p2b decrypt:");
+    const twoArg = mergeFullInstallSerialLogs("p1", "p2");
+    expect(twoArg).not.toContain("PHASE 2b");
   });
 });
 
@@ -779,27 +851,44 @@ describe("provisioning markers stay coupled to zeta-install.sh (081KZETP6AT)", (
   });
 });
 
-describe("restore markers stay coupled to zeta-creds-restore.nix", () => {
+describe("restore markers stay coupled to passphrase-source.ts + zeta-creds-restore.nix", () => {
   const restoreNix = readFileSync(
     resolve(import.meta.dir, "../../../full-ai-cluster/nixos/modules/zeta-creds-restore.nix"),
     "utf8",
   );
+  const passphraseSource = readFileSync(
+    resolve(import.meta.dir, "../installer/passphrase-source.ts"),
+    "utf8",
+  );
+  const restoreCli = readFileSync(
+    resolve(import.meta.dir, "../installer/zeta-creds-restore.ts"),
+    "utf8",
+  );
 
-  it("the module still emits the fw_cfg staging marker the contract requires", () => {
-    expect(restoreNix).toContain(UEFI_KEYFILE_RESTORE_SERIAL.stagedFromFwcfg);
-    // 081M0WS33AK087G0R000BG9R8X: a marker the harness demands but the unit never
-    // prints would make the whole restore contract unsatisfiable; a marker the
-    // unit prints under a different wording would make it vacuous. Both sides.
-    expect(restoreNix).toContain(UEFI_KEYFILE_RESTORE_SERIAL.transportFwcfgNotMetal);
-    expect(restoreNix).toContain(UEFI_KEYFILE_RESTORE_SERIAL.transportInteractive);
+  it("the passphrase port emits the fw_cfg / transport markers the contract requires", () => {
+    expect(passphraseSource).toContain(UEFI_KEYFILE_RESTORE_SERIAL.stagedFromFwcfg);
+    expect(passphraseSource).toContain(UEFI_KEYFILE_RESTORE_SERIAL.transportFwcfgNotMetal);
+    expect(passphraseSource).toContain(UEFI_KEYFILE_RESTORE_SERIAL.transportInteractive);
+  });
+
+  it("the Nix unit calls passphrase-source.ts --stage (no second shell implementation)", () => {
+    expect(restoreNix).toContain("installer/passphrase-source.ts");
+    expect(restoreNix).toContain("--stage");
+    expect(restoreNix).toContain("--ask-password-bin");
   });
 
   it("the module still uses the fw_cfg name the QEMU args inject", () => {
     expect(restoreNix).toContain(QEMU_CREDS_PASSPHRASE_FWCFG_NAME);
+    expect(passphraseSource).toContain(QEMU_CREDS_PASSPHRASE_FWCFG_NAME);
   });
 
   it("the module still emits the uefiKeyfile bind marker", () => {
     expect(restoreNix).toContain(UEFI_KEYFILE_RESTORE_SERIAL.bindingKeyfile);
+  });
+
+  it("the restore CLI still prints the decrypt refusal phase 2b matches", () => {
+    expect(restoreCli).toContain("decrypt: ${plaintext.error}");
+    expect(UEFI_KEYFILE_RESTORE_SERIAL.decryptFailed).toBe("zeta-creds-restore: decrypt:");
   });
 });
 
