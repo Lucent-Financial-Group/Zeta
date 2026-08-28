@@ -41,7 +41,7 @@ Do not fuse them.
 - `TrySpeculativeUpdate`
 
 Own-your-interfaces: a small module/port. `Interlocked.CompareExchange`
-+ `SpinWait` are the impl, not a vendor type.
+and `SpinWait` are the impl, not a vendor type.
 
 ---
 
@@ -82,7 +82,7 @@ shared fold. `SpinWait` is local progress, not a shared-time filter.
 is a smell (`.claude/rules/async-all-the-way-truthful-signatures.md`).
 
 **R9. Attribution.** Doc-comment and commit name Albahari (published)
-+ Toub/Fowler as the standing threading lineage. Do **not** attribute
+and Toub/Fowler as the standing threading lineage. Do **not** attribute
 the helper to a former employer. When this lands, retarget the
 comment on `src/Core/DeterministicSyncContext.fs` that currently
 names a former-employer method — same commit or an immediately
