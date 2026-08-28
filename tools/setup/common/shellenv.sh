@@ -55,10 +55,23 @@ mkdir -p "$ZETA_ENV_DIR"
     echo "export MISE_ENV=full  # host tier: full ($ZETA_HOST_TIER_SOURCE) — merges .mise.full.toml"
   fi
 
-  echo "if [ \"\$(uname -s)\" = \"Darwin\" ] && [ \"\$(sysctl -n hw.optional.arm64 2>/dev/null || echo 0)\" = \"1\" ]; then"
-  echo "  # .NET 10 Server GC workaround — Apple Silicon crash (Otto-248)"
-  echo "  export DOTNET_gcServer=0"
-  echo "fi"
+  # REMOVED 2026-08-28: `export DOTNET_gcServer=0` on Apple Silicon, added as a ".NET 10
+  # Server GC workaround (Otto-248)". It was a misdiagnosis, and it was measured:
+  #
+  #   - With it ACTIVE, the SIGSEGVs continue in the IDENTICAL three GC frames
+  #     (`plan_phase`, `find_first_object`, `revisit_written_page`). It moved every crash
+  #     from `SVR::gc_heap::*` to `WKS::gc_heap::*` and stopped nothing.
+  #   - The faults are not .NET-specific: 8 days of crash reports show 97 memory faults
+  #     across node/V8, lean, git, rustc, python3, WebKit AND Apple's own daemons, which
+  #     run none of our code. Ten kernel panics in the same window, eight of them page-
+  #     mapping accounting failures (`pmap_recycle_page: page is referenced`).
+  #
+  # So the GC flag was treating a machine-level fault as a runtime bug, and the cost was
+  # real: Server GC disabled on a 24-core M2 Ultra for no measured benefit. A workaround
+  # that does not work is worse than none — it makes the fault look handled.
+  #
+  # The open question is hardware vs kernel page lifecycle; Apple Diagnostics is the
+  # blocking step and needs a human at the machine. Do not re-add a GC flag for this.
 
   # Round-34 flip: dotnet SDK comes from mise (see .mise.toml
   # `[tools] dotnet`). Mise shims put `dotnet` on PATH via
