@@ -13,6 +13,7 @@ them escape as exceptions.
 from __future__ import annotations
 
 import json
+from abc import abstractmethod
 from dataclasses import dataclass
 from enum import Enum
 from typing import Protocol
@@ -83,7 +84,11 @@ class ArcResponse:
 class ArcTransport(Protocol):
     """Hexagonal port for the one impure operation in the ARC client."""
 
-    def send(self, outbound: ArcRequest) -> ArcOutcome[ArcResponse]: ...
+    @abstractmethod
+    def send(self, outbound: ArcRequest) -> ArcOutcome[ArcResponse]:
+        return ArcOutcome.refused(
+            ArcFeedback(ArcFeedbackKind.TRANSPORT, "transport has no send adapter")
+        )
 
 
 class ArcAction(str, Enum):

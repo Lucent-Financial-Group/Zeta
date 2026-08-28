@@ -154,10 +154,11 @@ def open_arcade() -> tuple[Arcade, str]:
     DEGRADE, NEVER FAIL (design doc §3.2). A key that is present but cannot
     reach the API must still produce a scored episode. MEASURED: with a key and
     an unreachable base URL, `Arcade` constructs in 0.09s, logs the
-    `ConnectionError`, and returns zero API environments — `_fetch_from_api`
-    swallows `RequestException` and `Exception` alike. The `try` below is the
-    belt for the case the constructor itself raises before reaching that
-    handler; it is not the primary mechanism.
+    `ConnectionError`, and adds zero API environments — `_fetch_from_api`
+    swallows `RequestException` and `Exception` alike. Source-owned environments
+    remain discoverable in either mode. The `try` below is the belt for the case
+    the constructor itself raises before reaching that handler; it is not the
+    primary mechanism.
     """
     key = os.environ.get("ARC_API_KEY", "")
     mode = operation_mode_for(key)
@@ -295,7 +296,7 @@ def play(
 
 
 def list_environments() -> dict:
-    """The hosted environments this key can see. Reconnaissance, not play.
+    """The local and hosted environments this process can see. Reconnaissance, not play.
 
     WHY THIS EXISTS SEPARATELY FROM `play`. The lane now DISCOVERS real ARC
     environments but still plays ZetaChase, our own stand-in. Before writing a
@@ -310,8 +311,8 @@ def list_environments() -> dict:
     struct is exactly the kind of thing that is obvious in hindsight. `tags`,
     `game_id` and `title` are the public identity of a public benchmark.
 
-    Degrades like everything else here: no key means OFFLINE, which means an
-    empty roster and exit 0, not a failure.
+    Degrades like everything else here: no key means OFFLINE, which retains the
+    source-owned roster and exits 0 without claiming hosted availability.
     """
     arcade, mode = open_arcade()
     found = arcade.get_environments()
@@ -384,8 +385,8 @@ def main() -> None:
         return
     if args.play_hosted:
         # `open_arcade` is the same degrade-never-fail door the rest of the lane
-        # uses: no key means OFFLINE, which means an empty roster and a sweep
-        # that reports zero environments and exits 0.
+        # uses: no key means OFFLINE, which retains source-owned environments
+        # and exits 0 without claiming hosted availability.
         arcade, mode = open_arcade()
         sweep = play_roster(
             arcade,
