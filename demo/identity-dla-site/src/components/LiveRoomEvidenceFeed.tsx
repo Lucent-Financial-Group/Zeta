@@ -10,6 +10,7 @@ import {
   summarizeLocalWitnessAdjudicationAvailability,
   type LocalWitnessAdjudicationView,
 } from "@/lib/room-witness-adjudication";
+import { ROOM_EVIDENCE_WINDOW_SIZE, selectRoomEvidenceWindow } from "@/lib/room-evidence-window";
 
 const RAW_ROOT = "https://raw.githubusercontent.com/Lucent-Financial-Group/Zeta/main/docs/room-evidence";
 const INDEX_URL = `${RAW_ROOT}/index.json`;
@@ -34,7 +35,7 @@ type EnvelopeView = {
 type FeedState =
   | { kind: "loading" }
   | { kind: "empty"; source: string }
-  | { kind: "ready"; source: string; total: number; entries: EnvelopeView[] }
+  | { kind: "ready"; source: string; total: number; start: number; end: number; hasPrevious: boolean; hasNext: boolean; entries: EnvelopeView[] }
   | { kind: "unavailable"; reason: string }
   | { kind: "malformed"; reason: string };
 
@@ -88,7 +89,7 @@ async function readAdjudication(
   }
 }
 
-async function readFeed(signal: AbortSignal): Promise<FeedState> {
+async function readFeed(signal: AbortSignal, requestedOffset: number): Promise<FeedState> {
   let response: Response;
   try {
     response = await fetch(INDEX_URL, { cache: "no-store", signal });
@@ -109,9 +110,11 @@ async function readFeed(signal: AbortSignal): Promise<FeedState> {
   if (manifest.entries.length === 0) return { kind: "empty", source: INDEX_URL };
 
   try {
+    const window = selectRoomEvidenceWindow(manifest.entries, requestedOffset);
     const ids = new Set<string>();
     const entries = await Promise.all(
-      manifest.entries.slice(0, 8).map(async (entry, index): Promise<EnvelopeView> => {
+      window.entries.map(async (entry, localIndex): Promise<EnvelopeView> => {
+        const index = window.start + localIndex;
         if (!isRecord(entry)) throw new Error(`index entry ${index} is not an object`);
         const eventId = requireString(entry.eventId, `index entry ${index} eventId`);
         const file = requireString(entry.file, `index entry ${index} file`);
@@ -141,7 +144,7 @@ async function readFeed(signal: AbortSignal): Promise<FeedState> {
         };
       }),
     );
-    return { kind: "ready", source: INDEX_URL, total: manifest.entries.length, entries };
+    return { kind: "ready", source: INDEX_URL, total: window.total, start: window.start, end: window.end, hasPrevious: window.hasPrevious, hasNext: window.hasNext, entries };
   } catch (error) {
     return { kind: "malformed", reason: error instanceof Error ? error.message : "feed envelope parse failed" };
   }
@@ -188,16 +191,17 @@ function LocalAdjudicationDetail({ adjudication }: { readonly adjudication: Adju
 
 export default function LiveRoomEvidenceFeed() {
   const [state, setState] = useState<FeedState>({ kind: "loading" });
-  const refresh = useCallback(() => {
+  const [windowOffset, setWindowOffset] = useState(0);
+  const refresh = useCallback((requestedOffset: number) => {
     const controller = new AbortController();
     setState({ kind: "loading" });
-    void readFeed(controller.signal).then((next) => {
+    void readFeed(controller.signal, requestedOffset).then((next) => {
       if (!controller.signal.aborted) setState(next);
     });
     return () => controller.abort();
   }, []);
 
-  useEffect(() => refresh(), [refresh]);
+  useEffect(() => refresh(windowOffset), [refresh, windowOffset]);
 
   const tone = state.kind === "ready" ? "var(--amber)" : state.kind === "malformed" ? "var(--fail-red)" : "var(--teal)";
   const title = state.kind === "ready" ? "PERSISTED RECEIPT DISCOVERY" : state.kind === "empty" ? "NO RECEIPT EMITTED" : state.kind === "loading" ? "READING RECEIPT MANIFEST" : state.kind === "unavailable" ? "FEED UNAVAILABLE" : "FEED TEACHING ERROR";
@@ -212,7 +216,7 @@ export default function LiveRoomEvidenceFeed() {
           <div style={labelStyle}>Durable room evidence · repository mirror</div>
           <h2 style={{ margin: "0.25rem 0 0", color: tone, fontSize: "clamp(1.35rem, 3.2vw, 2.35rem)", lineHeight: 0.96, letterSpacing: "-0.075em" }}>{title}</h2>
         </div>
-        <button onClick={() => refresh()} style={{ background: "transparent", border: `1px solid ${tone}`, color: tone, padding: "0.44rem 0.65rem", fontFamily: "inherit", fontSize: "0.6rem", letterSpacing: "0.1em", cursor: "pointer" }}>
+        <button onClick={() => refresh(windowOffset)} style={{ background: "transparent", border: `1px solid ${tone}`, color: tone, padding: "0.44rem 0.65rem", fontFamily: "inherit", fontSize: "0.6rem", letterSpacing: "0.1em", cursor: "pointer" }}>
           REFRESH MANIFEST
         </button>
       </div>
@@ -229,7 +233,13 @@ export default function LiveRoomEvidenceFeed() {
       {state.kind === "malformed" && <div style={{ color: "var(--fail-red)", fontSize: "0.78rem", borderLeft: "3px solid var(--fail-red)", paddingLeft: "0.7rem" }}>Rejected discovery record: {state.reason}</div>}
       {state.kind === "ready" && (
         <>
-          <div style={{ color: "var(--amber-dim)", fontSize: "0.64rem", marginBottom: "0.55rem", letterSpacing: "0.08em" }}>DISCOVERY LOCK · {state.entries.length} / {state.total} ENVELOPE{state.total === 1 ? "" : "S"}</div>
+          <div style={{ alignItems: "center", color: "var(--amber-dim)", display: "flex", flexWrap: "wrap", fontSize: "0.64rem", gap: "0.55rem", justifyContent: "space-between", letterSpacing: "0.08em", marginBottom: "0.55rem" }}>
+            <span>DISCOVERY WINDOW · INDEX {state.start + 1}–{state.end} / {state.total} · MANIFEST ORDER</span>
+            <span style={{ display: "flex", gap: "0.35rem" }}>
+              <button type="button" disabled={!state.hasPrevious} onClick={() => setWindowOffset(state.start - ROOM_EVIDENCE_WINDOW_SIZE)} style={{ background: "transparent", border: "1px solid var(--border)", color: state.hasPrevious ? "var(--amber-dim)" : "var(--muted-foreground)", cursor: state.hasPrevious ? "pointer" : "not-allowed", font: "inherit", fontSize: "0.49rem", opacity: state.hasPrevious ? 1 : 0.45, padding: "0.3rem 0.45rem" }}>← PRIOR WINDOW</button>
+              <button type="button" disabled={!state.hasNext} onClick={() => setWindowOffset(state.end)} style={{ background: "transparent", border: "1px solid var(--border)", color: state.hasNext ? "var(--amber-dim)" : "var(--muted-foreground)", cursor: state.hasNext ? "pointer" : "not-allowed", font: "inherit", fontSize: "0.49rem", opacity: state.hasNext ? 1 : 0.45, padding: "0.3rem 0.45rem" }}>NEXT WINDOW →</button>
+            </span>
+          </div>
           {adjudicationAvailability && (
             <div aria-label="Local adjudication sidecar availability" style={{ borderLeft: "2px solid var(--cold)", color: "var(--muted-foreground)", display: "flex", flexWrap: "wrap", gap: "0.42rem 0.7rem", marginBottom: "0.8rem", padding: "0.38rem 0.55rem", fontSize: "0.53rem", letterSpacing: "0.08em" }}>
               <span>LOCAL SIDECAR CHECK</span>
