@@ -7,7 +7,7 @@
 // that selects everything.
 
 import { describe, expect, test } from "bun:test";
-import { paragonPlistsIn, paragonPrefPanesIn } from "./remove-paragon-leftovers.ts";
+import { paragonAppsIn, paragonPlistsIn, paragonPrefPanesIn } from "./remove-paragon-leftovers.ts";
 
 const DIR = "/Library/LaunchAgents";
 
@@ -80,5 +80,46 @@ describe("preference panes — the surface the reboot revealed", () => {
     // Crossing them would either miss the panes or double-count them.
     expect(paragonPlistsIn(PP, ["ParagonNTFS.prefPane"])).toEqual([]);
     expect(paragonPrefPanesIn("/Library/LaunchAgents", ["com.paragon-software.ntfs.notification-agent.plist"])).toEqual([]);
+  });
+});
+
+describe("application bundles — matched by bundle id, never by name", () => {
+  const APPS = "/Applications";
+  // The real machine: neither product carries the vendor's name. A filename-based selector
+  // reports them absent, which is exactly what happened for hours on 2026-08-28.
+  const realIds: Record<string, string> = {
+    "/Applications/NTFS for Mac.app": "com.paragon-software.ntfs.fsapp",
+    "/Applications/extFS for Mac.app": "com.paragon-software.extfs.fsapp",
+    "/Applications/Safari.app": "com.apple.Safari",
+    "/Applications/Docker.app": "com.docker.docker",
+  };
+  const reader = (p: string): string | null => realIds[p] ?? null;
+
+  test("finds Paragon apps whose NAME contains no vendor string", () => {
+    const got = paragonAppsIn(APPS, ["NTFS for Mac.app", "extFS for Mac.app", "Safari.app"], reader);
+    expect(got).toEqual(["/Applications/NTFS for Mac.app", "/Applications/extFS for Mac.app"]);
+  });
+
+  test("THE CONTROL — other vendors' apps are never selected", () => {
+    // Runs as root with rmSync(recursive) against /Applications. Over-selection here deletes
+    // someone's software. Without this, a match-everything filter passes the test above.
+    expect(paragonAppsIn(APPS, ["Safari.app", "Docker.app"], reader)).toEqual([]);
+  });
+
+  test("a NON-Paragon app merely NAMED like one is not selected", () => {
+    // The inverse of the bug that hid the real apps: trusting the name in either direction.
+    const impostor = (p: string): string | null =>
+      p.endsWith("NTFS for Mac.app") ? "com.tuxera.ntfs" : null;
+    expect(paragonAppsIn(APPS, ["NTFS for Mac.app"], impostor)).toEqual([]);
+  });
+
+  test("an unreadable Info.plist yields no match rather than a guess", () => {
+    // `null` means "could not determine". Treating unknown as a match would delete on a
+    // failed read, which is the worst possible direction for a root-level rmSync.
+    expect(paragonAppsIn(APPS, ["Mystery.app"], () => null)).toEqual([]);
+  });
+
+  test("non-.app entries in /Applications are ignored", () => {
+    expect(paragonAppsIn(APPS, ["Utilities", "readme.txt"], reader)).toEqual([]);
   });
 });
