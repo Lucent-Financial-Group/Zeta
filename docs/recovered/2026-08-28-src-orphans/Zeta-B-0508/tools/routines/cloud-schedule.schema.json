@@ -1,0 +1,79 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Cloud Routine Schedule",
+  "description": "Configuration for an Anthropic Cloud Routine",
+  "type": "object",
+  "required": ["taskId", "trigger"],
+  "properties": {
+    "taskId": {
+      "type": "string",
+      "description": "The unique identifier of the routine, matching the directory name and SKILL.md name"
+    },
+    "trigger": {
+      "type": "object",
+      "oneOf": [
+        {
+          "properties": {
+            "type": {
+              "const": "scheduled"
+            },
+            "cronExpression": {
+              "type": "string",
+              "description": "Cron expression for the schedule"
+            }
+          },
+          "required": ["type", "cronExpression"]
+        },
+        {
+          "properties": {
+            "type": {
+              "const": "github_event"
+            },
+            "event": {
+              "type": "string",
+              "description": "The GitHub webhook event to listen for (e.g. pull_request.opened)"
+            },
+            "repos": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "List of GitHub repositories to attach the trigger to (e.g. Lucent-Financial-Group/Zeta)"
+            }
+          },
+          "required": ["type", "event", "repos"]
+        },
+        {
+          "properties": {
+            "type": {
+              "const": "api"
+            }
+          },
+          "required": ["type"]
+        }
+      ]
+    },
+    "repos": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of repositories accessible to the routine environment"
+    },
+    "connectors": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Additional connectors or tool integrations to provision in the cloud environment"
+    },
+    "description": {
+      "type": "string",
+      "description": "A short description of the routine"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Free-form notes, ignored by the installer"
+    }
+  }
+}
