@@ -44,6 +44,8 @@
 #   change through this file's review gate instead.
 
 *
+# `*` matches this file too; without this, roms/.gitignore is tracked-but-ignored.
+!.gitignore
 !*/
 !/README.md
 !/*/README.md
