@@ -80,20 +80,43 @@ type MixinTests() =
         let value = DummyValue(999)
         map.Set(key, value)
         let weakRef = WeakReference(key)
+        // THE PRECONDITIONS BELONG HERE, NOT IN THE CALLER.
+        //
+        // `key` is reachable from this frame, so its liveness is GUARANTEED at this point.
+        // The caller used to assert `weakRef.IsAlive` after this method returned, where the
+        // key is unreachable and liveness is guaranteed by nothing — that assertion was
+        // really asserting THE GC HAS NOT RUN YET, which no runtime promises. It duly failed
+        // on `ubuntu-24.04-arm` (2026-08-28, e42dcac8f6, MixinTests.fs:91) when a background
+        // GC collected the key before the test's own explicit `GC.Collect()`, and it had been
+        // seen failing locally the same day. A test that passes only while the GC is idle is
+        // measuring the runner's load, not the WeakMap.
+        //
+        // They are preconditions, not decoration: without them `Assert.False(weakRef.IsAlive)`
+        // below passes trivially if the key was never stored or the weak reference never
+        // observed a live object. That anti-vacuity role is why they are kept and moved
+        // rather than deleted.
+        Assert.True(weakRef.IsAlive, "precondition: the weak reference must observe a live key")
+        Assert.True((map.TryGet key).IsSome, "precondition: the map must actually hold the key while it is alive")
+        // Keeps `key` provably reachable across both assertions above.
+        GC.KeepAlive key
         (weakRef, value)
 
     [<Fact>]
     member _.``F# WeakMap elements are garbage collected when key has no strong references`` () =
         let map = Zeta.Core.WeakMap<DummyKey, DummyValue>()
+        // Preconditions are asserted inside the scenario, where liveness is guaranteed.
         let (weakRef, value) = MixinTests.RunGCScenario(map)
-
-        // Key should be alive initially
-        Assert.True(weakRef.IsAlive)
 
         // Trigger garbage collection
         GC.Collect()
         GC.WaitForPendingFinalizers()
         GC.Collect()
 
-        // Verify key is collected
+        // THE PROPERTY UNDER TEST: the map's key reference is weak, so a key with no strong
+        // references outside the map does not survive collection. This direction is the sound
+        // one — after an explicit blocking `GC.Collect()` an unreachable object IS collected.
         Assert.False(weakRef.IsAlive)
+        // `value` is held to the end so the VALUE never becomes unreachable during the test:
+        // the claim is about the KEY being weakly held, and a collected value would make the
+        // result ambiguous about which reference was weak.
+        GC.KeepAlive value
