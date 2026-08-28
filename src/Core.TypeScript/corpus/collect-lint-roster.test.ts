@@ -9,6 +9,7 @@ import { labelsFor } from "./labelled-observation.ts";
 import { present, teaching } from "./correction-zset.ts";
 import {
   collectLintRoster,
+  CONVERSATION_TEACHING_SEEDS,
   TEACHING_LINT_SEEDS,
 } from "./collect-lint-roster.ts";
 import type { LintFindingSeed } from "./from-lint-finding.ts";
@@ -31,6 +32,26 @@ describe("the five teaching seeds are (violation, repair) pairs", () => {
     expect(labelRefused).toEqual([]);
     expect(present(log)).toHaveLength(5);
     expect(teaching(log)).toHaveLength(5);
+  });
+});
+
+describe("conversation teaching seeds are extra pairs, not a scrape of the 22", () => {
+  test("every conversation seed teaches a repair", () => {
+    expect(CONVERSATION_TEACHING_SEEDS.length).toBeGreaterThan(0);
+    for (const s of CONVERSATION_TEACHING_SEEDS) {
+      expect((s.fix ?? "").trim().length).toBeGreaterThan(0);
+    }
+  });
+
+  test("union with Otto's five is ten distinct hubs", () => {
+    const { log, refused } = collectLintRoster({
+      findings: [...TEACHING_LINT_SEEDS, ...CONVERSATION_TEACHING_SEEDS],
+      assertedBy: "ani-2026-08-28",
+      at: 5,
+    });
+    expect(refused).toEqual([]);
+    expect(present(log)).toHaveLength(10);
+    expect(teaching(log)).toHaveLength(10);
   });
 });
 

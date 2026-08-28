@@ -74,7 +74,12 @@ item, hot traffic fills the cap. No Nagle wait.
 
 Implementing batch on producer **or** consumer (either side of
 the ferry) is the earned cell of the matrix. Do not require
-both. Do not implement `ProcessMany` in this absorb.
+both. The 2026-08-28 slice ships `ProcessManyAsync` /
+`EnqueueManyAsync` as that cell: the caller already has many
+items; `fillBoat` still splits; SIMD/GPU still specialize
+`processBatch`, not the mux. Data-plane per-row error is a
+`Result` (or other `'TResult`) on the success path — WholeBoat
+remains the throw/length-mismatch contract.
 
 ## Reverse-engineer batch from single — push the derivation down
 

@@ -282,9 +282,21 @@ type FerryThrottler<'TItem>
     /// accepted into the queue — on a bounded throttler this cooperatively waits
     /// for room (backpressure); on an unbounded one it completes synchronously.
     /// Does NOT wait for the item to be *processed* (it rides a later boat).
-    member _.EnqueueAsync(item: 'TItem, ?cancellationToken: CancellationToken) : ValueTask =
+    member this.EnqueueAsync(item: 'TItem, ?cancellationToken: CancellationToken) : ValueTask =
         let ct = defaultArg cancellationToken CancellationToken.None
         inbox.Writer.WriteAsync(item, ct)
+
+    /// Batch-caller cell. The caller already has many items and does not know
+    /// `MaxBatchSize` — `fillBoat` cuts boats. SIMD/GPU, if any, belong in
+    /// `processBatch`, not here.
+    member this.EnqueueManyAsync
+        (items: ReadOnlyMemory<'TItem>, ?cancellationToken: CancellationToken)
+        : Task =
+        task {
+            let ct = defaultArg cancellationToken CancellationToken.None
+            for i in 0 .. items.Length - 1 do
+                do! this.EnqueueAsync(items.Span.[i], ct)
+        }
 
     /// Try to enqueue without waiting. Returns false if a bounded queue is full.
     member _.TryEnqueue(item: 'TItem) : bool =
@@ -363,11 +375,13 @@ type FerryThrottler<'TItem>
 /// multiple ferries, every item still receives exactly one result/fault/cancel,
 /// but cross-ferry completion order is intentionally not specified.
 ///
-/// **Fault scope today is `WholeBoat`:** `processBatch` throw or result-length
-/// mismatch sets the SAME exception on every row (`faultWholeBoat`). `PerRow`
-/// FourCorner independence (workitem 081M125DNKK087G0R00292E3ET) is the named
-/// gap — `'TItem` is NOT required to be `FourCornerOwnership`. Do not "fix"
-/// by wrapping each row in a fresh exception; that still couples siblings.
+/// **Fault scope today is `WholeBoat` for throws:** `processBatch` throw or
+/// result-length mismatch sets the SAME exception on every row
+/// (`faultWholeBoat`). A *data* error encoded in `'TResult` (e.g.
+/// `Result<_,_>`) already fans per-row on the success path — that is not a
+/// throw. `'TItem` is NOT required to be `FourCornerOwnership` (Naledi: do
+/// not put a heap FourCorner on the hot path just to close the gap).
+/// SIMD/GPU specialize `processBatch`, never `fillBoat`.
 [<Sealed>]
 type FerryThrottler<'TItem, 'TResult>
     (config: FerryThrottlerConfig,
@@ -548,7 +562,7 @@ type FerryThrottler<'TItem, 'TResult>
     let ferryTasks : Task array =
         Array.init ferries (fun _ -> runFerry ())
 
-    member _.ProcessAsync(item: 'TItem, ?cancellationToken: CancellationToken) : Task<'TResult> =
+    member this.ProcessAsync(item: 'TItem, ?cancellationToken: CancellationToken) : Task<'TResult> =
         let ct = defaultArg cancellationToken CancellationToken.None
         let completion =
             TaskCompletionSource<'TResult>(TaskCreationOptions.RunContinuationsAsynchronously)
@@ -575,6 +589,23 @@ type FerryThrottler<'TItem, 'TResult>
                     request.TrySetException ex
                     return! completion.Task
             }
+
+    /// Batch-caller cell. Enqueues each item through `ProcessAsync`; `fillBoat`
+    /// splits at `MaxBatchSize` / byte budget. The caller is clueless of those
+    /// caps. A throw in `processBatch` still WholeBoat-faults **that** boat;
+    /// other boats already queued keep their own outcomes.
+    member this.ProcessManyAsync
+        (items: ReadOnlyMemory<'TItem>, ?cancellationToken: CancellationToken)
+        : Task<'TResult array> =
+        if items.IsEmpty then
+            Task.FromResult Array.empty
+        else
+            let ct = defaultArg cancellationToken CancellationToken.None
+            let span = items.Span
+            let tasks = Array.zeroCreate<Task<'TResult>> span.Length
+            for i in 0 .. span.Length - 1 do
+                tasks.[i] <- this.ProcessAsync(span.[i], ct)
+            Task.WhenAll(tasks)
 
     member _.CompleteAsync() : Task =
         inbox.Writer.TryComplete() |> ignore
