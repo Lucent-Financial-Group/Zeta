@@ -965,3 +965,94 @@ let ``EnqueueMany then pump coalesces the caller batch`` () : Task =
         List.ofSeq processed |> should equal [ 1; 2; 3; 4; 5 ]
         List.ofSeq boatSizes |> should equal [ 3; 2 ]
     }
+
+
+// ═══════════════════════════════════════════════════════════════════
+// ZetaId demux — UInt128 struct keys, not a heap FourCorner.
+// Index alignment is boat-local; ZetaId is cross-channel (same key as
+// multiplexed-duplex-transport.ts). 081M125DNKK.
+// ═══════════════════════════════════════════════════════════════════
+
+
+let private id1 = UInt128(0UL, 1UL)
+let private id2 = UInt128(0UL, 2UL)
+let private rowId ((id, _) : UInt128 * int) = id
+
+
+[<Fact>]
+let ``ZetaId demux: reversed results still assign to the matching item`` () =
+    let items = [| id1, 1; id2, 2 |]
+    let reversed = [| id2, 20; id1, 10 |]
+    match FerryRowDemux.tryAssignById rowId rowId items 2 reversed with
+    | Error dup -> failwithf "unexpected duplicate %A" dup
+    | Ok assigned ->
+        match assigned.[0], assigned.[1] with
+        | Some(_, 10), Some(_, 20) -> ()
+        | other -> failwithf "expected (10, 20) after reverse; got %A" other
+
+
+[<Fact>]
+let ``ZetaId demux: duplicate item id is a boat-level refusal`` () =
+    let items = [| id1, 1; id1, 2 |]
+    let results = [| id1, 10; id1, 20 |]
+    match FerryRowDemux.tryAssignById rowId rowId items 2 results with
+    | Error dup when dup = id1 -> ()
+    | other -> failwithf "expected Error id1; got %A" other
+
+
+[<Fact>]
+let ``ZetaId demux: unknown result id leaves the slot unmatched`` () =
+    let items = [| id1, 1; id2, 2 |]
+    let results = [| UInt128(0UL, 99UL), 10; id2, 20 |]
+    match FerryRowDemux.tryAssignById rowId rowId items 2 results with
+    | Ok assigned ->
+        match assigned.[0], assigned.[1] with
+        | None, Some(_, 20) -> ()
+        | other -> failwithf "expected (None, Some 20); got %A" other
+    | Error dup -> failwithf "unexpected duplicate %A" dup
+
+
+[<Fact>]
+let ``itemId without resultId is refused at construction`` () =
+    let processBatch (boat: ReadOnlyMemory<int>) (_ct: CancellationToken) : Task<int array> =
+        Task.FromResult Array.empty
+    (fun () ->
+        new FerryThrottler<int, int>(
+            FerryThrottlerConfig.deterministic,
+            processBatch,
+            itemId = (fun n -> UInt128(0UL, uint64 n)))
+        |> ignore)
+    |> should throw typeof<ArgumentException>
+
+
+[<Fact>]
+let ``ferry ZetaId demux: processBatch reverse still returns each caller their own row`` () : Task =
+    task {
+        let processBatch (boat: ReadOnlyMemory<UInt128 * int>) (_ct: CancellationToken) : Task<(UInt128 * int) array> =
+            let n = boat.Length
+            let span = boat.Span
+            let out = Array.zeroCreate n
+            for i in 0 .. n - 1 do
+                let id, v = span.[n - 1 - i]
+                out.[i] <- (id, v * 10)
+            Task.FromResult out
+        let ctx = DeterministicSyncContext()
+        let config = { FerryThrottlerConfig.deterministic with MaxBatchSize = 8 }
+        use throttler =
+            new FerryThrottler<UInt128 * int, UInt128 * int>(
+                config,
+                processBatch,
+                syncContext = ctx,
+                itemId = rowId,
+                resultId = rowId)
+        let t0 = throttler.ProcessAsync((id1, 1))
+        let t1 = throttler.ProcessAsync((id2, 2))
+        ctx.PumpToIdle()
+        let! pair = Task.WhenAll([| t0; t1 |])
+        match pair.[0], pair.[1] with
+        | (got1, 10), (got2, 20) when got1 = id1 && got2 = id2 -> ()
+        | other -> failwithf "demux lost the row; got %A" other
+        let completion = throttler.CompleteAsync()
+        ctx.PumpToIdle()
+        do! completion
+    }
