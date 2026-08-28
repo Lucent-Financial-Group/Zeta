@@ -93,6 +93,30 @@ After the first crash:
   no file changes.
 - Another complete `bun run preflight` passed all 14 checks after the V8 crash.
 
+### 2026-08-28 bounded concurrency matrix
+
+ARC rung B validation produced another bounded sample on the same Apple Silicon host, now running
+macOS 26.5, SDK 10.0.400, and runtime 10.0.11. The generated
+`Tests.FSharp.runtimeconfig.json` sets `System.GC.Server=true`; the foreground Codex app had no
+`DOTNET_gcServer` override. The host reported 206 GB RAM, no compressed pages, and no swap activity.
+
+| command shape                                      | result                                                                                 |
+| -------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| full solution, parallel, Server GC                 | exit 139 after 4,014 passed / 4 skipped                                                |
+| identical full solution retry, parallel, Server GC | exit 139 after 2,955 passed / 5 skipped                                                |
+| Tests.FSharp alone, Server GC                      | 5,950 passed / 6 skipped, exit 0                                                       |
+| full solution, `-m:1`, Server GC                   | 5,950 F# passed / 6 skipped and every other project passed, exit 0                     |
+| full solution, parallel, `DOTNET_gcServer=0`       | 5,950 F# passed / 6 skipped and every other project passed, exit 0                     |
+| full preflight, parallel, `DOTNET_gcServer=0`      | .NET stayed alive; TLC's Java 26 process died with SIGBUS inside `YoungGenScanClosure` |
+
+The changing .NET crash point is evidence against one deterministic test, and the passing isolated
+and serial runs make cross-project concurrency a useful reproducer dimension. They do **not**
+establish a mitigation: the Workstation-GC pass is one sample, and the next full run under the same
+GC setting lost an independent JVM process. This agrees with the broader cross-runtime and kernel
+evidence preserved in `docs/history/pr-reviews/PR-15984-fix-setup-drop-the-misdiagnosed-dotnet-gcserver-0-apple-silicon-workaround.md`.
+No GC override or serial-mode preflight change landed from this sample; Apple Diagnostics remains the
+blocking measurement.
+
 Repository history also records transient exit-139 failures and already retries
 one such formatter failure. A retry limits disruption; it is not a correctness
 proof or a diagnosis.

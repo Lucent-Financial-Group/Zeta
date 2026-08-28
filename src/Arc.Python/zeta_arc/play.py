@@ -34,6 +34,7 @@ import argparse
 import json
 import os
 from collections import deque
+from pathlib import Path
 
 # `arc_agi` ships no py.typed marker, so mypy cannot see into it. Ignoring the
 # import is honest here — the alternative is inventing stubs for a dependency
@@ -144,6 +145,11 @@ def operation_mode_for(api_key: str | None) -> OperationMode:
     return OperationMode.NORMAL if (api_key or "").strip() else OperationMode.OFFLINE
 
 
+def environment_files() -> Path:
+    """Absolute toolkit discovery root; independent of the caller's cwd."""
+    return Path(__file__).resolve().parents[1] / "environment_files"
+
+
 def open_arcade() -> tuple[Arcade, str]:
     """The Arcade this episode runs against, and the mode it ACTUALLY got.
 
@@ -154,20 +160,29 @@ def open_arcade() -> tuple[Arcade, str]:
     DEGRADE, NEVER FAIL (design doc §3.2). A key that is present but cannot
     reach the API must still produce a scored episode. MEASURED: with a key and
     an unreachable base URL, `Arcade` constructs in 0.09s, logs the
-    `ConnectionError`, and returns zero API environments — `_fetch_from_api`
-    swallows `RequestException` and `Exception` alike. The `try` below is the
-    belt for the case the constructor itself raises before reaching that
-    handler; it is not the primary mechanism.
+    `ConnectionError`, and adds zero API environments — `_fetch_from_api`
+    swallows `RequestException` and `Exception` alike. Source-owned environments
+    remain discoverable in either mode. The `try` below is the belt for the case
+    the constructor itself raises before reaching that handler; it is not the
+    primary mechanism.
     """
     key = os.environ.get("ARC_API_KEY", "")
     mode = operation_mode_for(key)
+    environments_dir = str(environment_files())
     if mode is OperationMode.OFFLINE:
-        return Arcade(operation_mode=OperationMode.OFFLINE), "OFFLINE"
+        return (
+            Arcade(
+                operation_mode=OperationMode.OFFLINE,
+                environments_dir=environments_dir,
+            ),
+            "OFFLINE",
+        )
     try:
-        return Arcade(operation_mode=mode), mode.name
+        return Arcade(operation_mode=mode, environments_dir=environments_dir), mode.name
     except Exception:  # noqa: BLE001 — degrading is the requirement, not the exception's identity
         return Arcade(
-            operation_mode=OperationMode.OFFLINE
+            operation_mode=OperationMode.OFFLINE,
+            environments_dir=environments_dir,
         ), "OFFLINE (degraded from NORMAL)"
 
 
@@ -295,7 +310,7 @@ def play(
 
 
 def list_environments() -> dict:
-    """The hosted environments this key can see. Reconnaissance, not play.
+    """The local and hosted environments this process can see. Reconnaissance, not play.
 
     WHY THIS EXISTS SEPARATELY FROM `play`. The lane now DISCOVERS real ARC
     environments but still plays ZetaChase, our own stand-in. Before writing a
@@ -310,8 +325,8 @@ def list_environments() -> dict:
     struct is exactly the kind of thing that is obvious in hindsight. `tags`,
     `game_id` and `title` are the public identity of a public benchmark.
 
-    Degrades like everything else here: no key means OFFLINE, which means an
-    empty roster and exit 0, not a failure.
+    Degrades like everything else here: no key means OFFLINE, which retains the
+    source-owned roster and exits 0 without claiming hosted availability.
     """
     arcade, mode = open_arcade()
     found = arcade.get_environments()
@@ -384,8 +399,8 @@ def main() -> None:
         return
     if args.play_hosted:
         # `open_arcade` is the same degrade-never-fail door the rest of the lane
-        # uses: no key means OFFLINE, which means an empty roster and a sweep
-        # that reports zero environments and exits 0.
+        # uses: no key means OFFLINE, which retains source-owned environments
+        # and exits 0 without claiming hosted availability.
         arcade, mode = open_arcade()
         sweep = play_roster(
             arcade,

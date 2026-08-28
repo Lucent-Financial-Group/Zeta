@@ -1,0 +1,8 @@
+{
+  "baseline_actions": [10, 7, 10],
+  "class_name": "ZetaChase",
+  "default_fps": 60,
+  "game_id": "ztch-v1",
+  "tags": ["zeta", "offline", "deterministic"],
+  "title": "ZetaChase"
+}
