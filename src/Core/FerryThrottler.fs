@@ -1,6 +1,7 @@
 namespace Zeta.Core
 
 open System
+open System.Collections.Generic
 open System.Threading
 open System.Threading.Channels
 open System.Threading.Tasks
@@ -366,6 +367,44 @@ type FerryThrottler<'TItem>
                 })
 
 
+/// Demux boat results by ZetaId (`UInt128` — a struct, not a heap FourCorner).
+/// Index alignment is boat-local. A duplex mux already keys channels by ZetaId
+/// (`multiplexed-duplex-transport.ts`); the ferry was still index-local. Same
+/// key, this side of the boat. Duplicate item ids are a boat-level refusal
+/// (cannot assign uniquely). Unmatched requests fault per-row, not WholeBoat.
+[<RequireQualifiedAccess>]
+module FerryRowDemux =
+
+    /// `Ok assigned` is parallel to the item slots: `None` means that request
+    /// got no result (unknown or duplicate result id). `Error id` means two
+    /// items in the boat shared that ZetaId — Unique assignment is impossible.
+    let tryAssignById
+        (itemId: 'TItem -> UInt128)
+        (resultId: 'TResult -> UInt128)
+        (items: 'TItem array)
+        (itemCount: int)
+        (results: 'TResult array)
+        : Result<'TResult option array, UInt128> =
+        let byId = Dictionary<UInt128, int>(itemCount)
+        let mutable duplicate = ValueNone
+        for i in 0 .. itemCount - 1 do
+            let id = itemId items.[i]
+            if byId.ContainsKey id then
+                duplicate <- ValueSome id
+            else
+                byId.Add(id, i)
+
+        match duplicate with
+        | ValueSome id -> Error id
+        | ValueNone ->
+            let assigned = Array.zeroCreate<'TResult option> itemCount
+            for r in results do
+                match byId.TryGetValue(resultId r) with
+                | true, idx when assigned.[idx].IsNone -> assigned.[idx] <- Some r
+                | _ -> ()
+            Ok assigned
+
+
 /// Request/response FerryThrottler arity. Producers submit one item and receive
 /// that item's `Task<'TResult>`; the ferry still processes boats in batches and
 /// fans aligned results back to the individual callers.
@@ -382,6 +421,8 @@ type FerryThrottler<'TItem>
 /// throw. `'TItem` is NOT required to be `FourCornerOwnership` (Naledi: do
 /// not put a heap FourCorner on the hot path just to close the gap).
 /// SIMD/GPU specialize `processBatch`, never `fillBoat`.
+/// ZetaId demux: pass **both** `itemId` and `resultId` (`UInt128`); omit both
+/// for index alignment. One without the other is refused at construction.
 [<Sealed>]
 type FerryThrottler<'TItem, 'TResult>
     (config: FerryThrottlerConfig,
@@ -392,7 +433,9 @@ type FerryThrottler<'TItem, 'TResult>
      // a deterministic pumpable context (`DeterministicSyncContext`) and the
      // request/response ferries become replayable. Default `None` = today's
      // threadpool path, byte-identical for production. See the single-arity seam.
-     ?syncContext: SynchronizationContext) =
+     ?syncContext: SynchronizationContext,
+     ?itemId: 'TItem -> UInt128,
+     ?resultId: 'TResult -> UInt128) =
 
     do
         if config.MaxDegreeOfParallelism < 1 then
@@ -407,8 +450,19 @@ type FerryThrottler<'TItem, 'TResult>
         | Some _ when itemSizeBytes.IsNone ->
             invalidArg (nameof itemSizeBytes) "itemSizeBytes is required when MaxBatchBytes is set"
         | _ -> ()
+        match itemId, resultId with
+        | Some _, Some _ -> ()
+        | None, None -> ()
+        | _ ->
+            invalidArg
+                (nameof itemId)
+                "itemId and resultId must both be set (ZetaId demux) or both omitted (index alignment)"
 
     let sizeOf = defaultArg itemSizeBytes (fun _ -> 0)
+    let demuxById : (('TItem -> UInt128) * ('TResult -> UInt128)) option =
+        match itemId, resultId with
+        | Some iid, Some rid -> Some(iid, rid)
+        | _ -> None
     let ferries = config.MaxDegreeOfParallelism
 
     let inbox : Channel<FerryRequest<'TItem, 'TResult>> =
@@ -467,6 +521,7 @@ type FerryThrottler<'TItem, 'TResult>
 
     let completeBoat
         (requests: FerryRequest<'TItem, 'TResult> array)
+        (items: 'TItem array)
         (count: int)
         (results: 'TResult array)
         =
@@ -476,8 +531,24 @@ type FerryThrottler<'TItem, 'TResult>
                     $"FerryThrottler result count mismatch: processor returned {results.Length} results for {count} items.")
             faultWholeBoat requests count ex
         else
-            for i in 0 .. count - 1 do
-                requests.[i].TrySetResult results.[i]
+            match demuxById with
+            | None ->
+                for i in 0 .. count - 1 do
+                    requests.[i].TrySetResult results.[i]
+            | Some(itemKey, resultKey) ->
+                match FerryRowDemux.tryAssignById itemKey resultKey items count results with
+                | Error dup ->
+                    faultWholeBoat
+                        requests
+                        count
+                        (InvalidOperationException($"FerryThrottler duplicate row ZetaId in boat: {dup}"))
+                | Ok assigned ->
+                    for i in 0 .. count - 1 do
+                        match assigned.[i] with
+                        | Some r -> requests.[i].TrySetResult r
+                        | None ->
+                            requests.[i].TrySetException(
+                                InvalidOperationException("FerryThrottler: no result for row ZetaId"))
 
     let trySize (req: FerryRequest<'TItem, 'TResult>) =
         try
@@ -545,7 +616,7 @@ type FerryThrottler<'TItem, 'TResult>
                         if n > 0 then
                             try
                                 let! results = processBatch (ReadOnlyMemory(items, 0, n)) ct
-                                completeBoat requests n results
+                                completeBoat requests items n results
                             with
                             | :? OperationCanceledException when ct.IsCancellationRequested ->
                                 cancelBoat requests n ct

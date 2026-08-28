@@ -60,17 +60,16 @@ look at the original (clean-room: requirements, never expression).
    `row-1 Result.Error without throw` (2026-08-28). Do not put a
    heap `FourCornerOwnership` on the hot path just to close this
    (Naledi).
-4. **ZetaId demux.** Result fan-in is **index alignment inside one
-   boat**. Reorder / mux over a duplex wire (`duplex-transport.ts`
-   demuxes by *channel* `normal|feedback|close`, not by identity)
-   has no ZetaId key on the row. Index is boat-local; ZetaId is
-   cross-channel.
+4. **ZetaId demux.** Shipped: optional `itemId` + `resultId`
+   (`UInt128` structs). Default remains index alignment. Reordered
+   `processBatch` results land on the matching caller. Duplicate
+   item ids refuse the boat; unknown result ids fault that row
+   only. Same key as `multiplexed-duplex-transport.ts`.
 
-Do **not** wire `FourCornerOwnership` into the ferry this slice if
-the record is a heap object on the hot path (Naledi). Smallest
-falsifier first: boat of 2 ZetaIds, corners permuted, row-1
-feedback=error **without throw**; row-0 still completes. That test
-does not exist.
+Do **not** wire a heap `FourCornerOwnership` into the ferry hot
+path (Naledi). Data-plane per-row error (`Result` without throw)
+and ZetaId demux (reversed boat, struct `UInt128` keys) have
+tests.
 
 Alloc / SIMD: Naledi, static, unmetered — **5 heap objects per
 `ProcessAsync` item** on the unbounded no-cancel path (TCS + Task +
