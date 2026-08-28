@@ -1,0 +1,5 @@
+# argv: /usr/sbin/sysctl -n vm.swapusage
+# exit: 0
+# at:   2026-08-24T12:51:19.949Z
+#
+total = 0.00M  used = 0.00M  free = 0.00M  (encrypted)

@@ -1,0 +1,42 @@
+# argv: /usr/bin/pmset -g assertions
+# exit: 0
+# at:   2026-08-24T12:51:19.945Z
+#
+2026-08-24 08:51:19 -0400 
+Assertion status system-wide:
+   BackgroundTask                 0
+   ApplePushServiceTask           0
+   UserIsActive                   1
+   PreventUserIdleDisplaySleep    0
+   SoftwareUpdateTask             0
+   PreventSystemSleep             0
+   ExternalMedia                  0
+   PreventUserIdleSystemSleep     1
+   NetworkClientActive            0
+Listed by owning process:
+   pid 793(Electron): [0x00000048000182ee] 00:33:06 NoIdleSleepAssertion named: "Electron"  
+   pid 365(powerd): [0x000000370001800f] 00:33:23 PreventUserIdleSystemSleep named: "Powerd - Prevent sleep while display is on"  
+   pid 426(WindowServer): [0x0000003e00098142] 00:00:06 UserIsActive named: "com.apple.iohideventsystem.queue.tickle serviceID:100001a1f service:AppleMultitouchDevice product:Rodney�s Magic Mouse eventType:17"  
+	Timeout will fire in 593 secs Action=TimeoutActionRelease
+   pid 565(mds_stores): [0x00000806000b886c] 00:00:04 BackgroundTask named: "com.apple.metadata.mds_stores.power"  
+   pid 813(Claude): [0x0000004900018303] 00:33:05 NoIdleSleepAssertion named: "Electron"  
+   pid 380(mds): [0x00000043000b8228] 00:33:11 BackgroundTask named: "com.apple.metadata.mds.power"  
+   pid 24153(caffeinate): [0x0000080800018876] 00:00:03 PreventUserIdleSystemSleep named: "caffeinate command-line tool"  
+	Details: caffeinate asserting for 300 secs
+	Localized=THE CAFFEINATE TOOL IS PREVENTING SLEEP.
+	Timeout will fire in 297 secs Action=TimeoutActionRelease
+Kernel Assertions: 0x124=USB,THNDR,MAGICWAKE
+   id=625  level=255 0x20=THNDR mod= description=acio0 owner=AppleThunderboltHALType5
+   id=629  level=255 0x4=USB creat= description=com.apple.usb.externaldevice.00200000 owner=USB3 HUB
+   id=631  level=255 0x4=USB creat= description=com.apple.usb.externaldevice.00100000 owner=USB2.0 Hub
+   id=632  level=255 0x4=USB creat= description=com.apple.usb.externaldevice.00240000 owner=USB3.1 Hub
+   id=635  level=255 0x4=USB creat= description=com.apple.usb.externaldevice.00110000 owner=YubiKey FIDO+CCID
+   id=636  level=255 0x4=USB creat= description=com.apple.usb.externaldevice.00150000 owner=Anker Thunderbolt 5 Docking Station
+   id=637  level=255 0x4=USB creat= description=com.apple.usb.externaldevice.00140000 owner=USB2.0 Hub
+   id=638  level=255 0x4=USB creat= description=com.apple.usb.externaldevice.00243000 owner=USB 3.2.1 FD
+   id=642  level=255 0x4=USB creat= description=com.apple.usb.externaldevice.00242300 owner=USB Storage
+   id=643  level=255 0x4=USB creat= description=com.apple.usb.externaldevice.00242400 owner=USB 10/100/1G/2.5G LAN
+   id=644  level=255 0x4=USB creat= description=com.apple.usb.externaldevice.00142200 owner=YubiHSM
+   id=645  level=255 0x4=USB creat= description=com.apple.usb.externaldevice.08300000 owner=G560 Gaming Speaker
+   id=647  level=255 0x100=MAGICWAKE creat= description=en0 owner=en0
+   id=650  level=255 0x100=MAGICWAKE creat= description=en1 owner=IOSkywalkNetworkBSDClient

@@ -1,0 +1,205 @@
+{
+  "stamp": "2026-08-24T12-51-18Z",
+  "at": "2026-08-24T12:51:18.229Z",
+  "nvram": {
+    "code": 0,
+    "signal": null,
+    "bytes": 5873
+  },
+  "boottime": {
+    "code": 0,
+    "signal": null,
+    "bytes": 61
+  },
+  "last-reboot": {
+    "code": 0,
+    "signal": null,
+    "bytes": 6462
+  },
+  "kmutil-showloaded": {
+    "code": 0,
+    "signal": null,
+    "bytes": 39774
+  },
+  "systemextensions": {
+    "code": 0,
+    "signal": null,
+    "bytes": 734
+  },
+  "pmset-log": {
+    "code": 0,
+    "signal": null,
+    "bytes": 856858
+  },
+  "pmset-assertions": {
+    "code": 0,
+    "signal": null,
+    "bytes": 2966
+  },
+  "vm-stat": {
+    "code": 0,
+    "signal": null,
+    "bytes": 1247
+  },
+  "swapusage": {
+    "code": 0,
+    "signal": null,
+    "bytes": 55
+  },
+  "loadavg": {
+    "code": 0,
+    "signal": null,
+    "bytes": 22
+  },
+  "fd-table": {
+    "code": 0,
+    "signal": null,
+    "bytes": 12
+  },
+  "iostat": {
+    "code": 0,
+    "signal": null,
+    "bytes": 405
+  },
+  "mount": {
+    "code": 0,
+    "signal": null,
+    "bytes": 1525
+  },
+  "df": {
+    "code": 0,
+    "signal": null,
+    "bytes": 1603
+  },
+  "ps": {
+    "code": 0,
+    "signal": null,
+    "bytes": 114642
+  },
+  "thermal": {
+    "code": 0,
+    "signal": null,
+    "bytes": 146
+  },
+  "panicmedic": {
+    "present": true,
+    "auxkcPresent": true,
+    "telemetryAgrees": true,
+    "telemetryUnknownFields": [
+      273,
+      321
+    ],
+    "mostRecentPanicIso": "2026-08-24T12:16:59.664Z",
+    "timestamps": [
+      {
+        "kind": "decoded",
+        "slot": 0,
+        "raw": "0:659c9f687e920",
+        "atMs": 1787573819664.672,
+        "iso": "2026-08-24T12:16:59.664Z"
+      }
+    ]
+  },
+  "crashReports": {
+    ".systemextensionsctl": 4,
+    "bash": 429,
+    "node": 36,
+    "mdworker_shared": 3,
+    "forge": 1,
+    "bun": 12,
+    "dotnet": 36,
+    "com.apple.WebKit.WebContent": 2,
+    "mise": 1,
+    "golangci": 4,
+    "gtimeout": 6,
+    "2.1.227": 2,
+    "lean": 2,
+    "java": 1,
+    "Manus Helper (Renderer)": 1,
+    "Google Chrome": 1,
+    "git": 9,
+    "app_inkwell": 1,
+    "Tests.FSharp": 1,
+    ".od_user_homes": 1,
+    "mds_stores": 2,
+    "PANIC:.contents.panic": 1,
+    "contactsd": 1,
+    "PANIC:panic": 3,
+    "JetsamEvent": 10,
+    "wdavdaemon": 1,
+    "sudo": 1,
+    "_Updater": 1,
+    "Python": 1
+  },
+  "panics": {
+    "searched": [
+      "/Library/Logs/DiagnosticReports",
+      "/Library/Logs/DiagnosticReports/Retired",
+      "/Users/acehack/Library/Logs/DiagnosticReports",
+      "/Users/acehack/Library/Logs/DiagnosticReports/Retired"
+    ],
+    "unsearchable": [],
+    "fileCount": 3,
+    "parsedCount": 3,
+    "unreadable": 0,
+    "reports": [
+      {
+        "timestamp": "2026-08-24 05:46:58.00 -0400",
+        "panicLine": "panic(cpu 17 caller 0xfffffe004d6c40c4): pmap_remove_range_options: pmap 0xfffffe32edbca3e0 VA [0x1146e000000, 0x11470000000) (wiredcnt 0xfffffddc7109fda6) wired count underflow @pmap.c:5072",
+        "sourceSite": "pmap.c:5072",
+        "cpu": 17,
+        "panickedTask": "Cursor",
+        "frames": 22,
+        "lastStartedKext": "com.apple.macos.driver.AppleUSBEthernetHost\t8.1.1"
+      },
+      {
+        "timestamp": "2026-08-24 07:41:09.00 -0400",
+        "panicLine": "panic(cpu 8 caller 0xfffffe0039425358): pmap_recycle_page: page 0x109bba68000 is referenced @pmap_data.c:2334",
+        "sourceSite": "pmap_data.c:2334",
+        "cpu": 8,
+        "panickedTask": "Cursor Helper (Renderer)",
+        "frames": 26,
+        "lastStartedKext": "com.apple.filesystems.smbfs\t6.0.1"
+      },
+      {
+        "timestamp": "2026-08-24 08:17:54.00 -0400",
+        "panicLine": "panic(cpu 4 caller 0xfffffe003f9d1358): pmap_recycle_page: page 0x10758888000 is referenced @pmap_data.c:2334",
+        "sourceSite": "pmap_data.c:2334",
+        "cpu": 4,
+        "panickedTask": "Cursor Helper (Renderer)",
+        "frames": 26,
+        "lastStartedKext": "com.apple.filesystems.smbfs\t6.0.1"
+      }
+    ],
+    "groups": [
+      {
+        "count": 2,
+        "tasks": [
+          "Cursor Helper (Renderer)"
+        ],
+        "timestamps": [
+          "2026-08-24 07:41:09.00 -0400",
+          "2026-08-24 08:17:54.00 -0400"
+        ],
+        "signaturePrefix": "0x55808,0x1d4014,0x1d2054,0x597c,0x55b18,0x94486c,0x1c9358,0x16ae0c"
+      },
+      {
+        "count": 1,
+        "tasks": [
+          "Cursor"
+        ],
+        "timestamps": [
+          "2026-08-24 05:46:58.00 -0400"
+        ],
+        "signaturePrefix": "0x55808,0x1d4014,0x1d2054,0x597c,0x55b18,0x94486c,0x1b40c4,0x1b9a58"
+      }
+    ]
+  },
+  "logRing": {
+    "ringBytes": 528689000,
+    "fileCount": 55,
+    "spanSeconds": 50822.39494995117,
+    "ringHuman": "504.2MB",
+    "retentionHours": 14.11733193054199
+  }
+}

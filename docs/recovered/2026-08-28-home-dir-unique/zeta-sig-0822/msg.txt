@@ -1,0 +1,42 @@
+fix(cluster): the Application roster's order was locale-dependent — pay the last collation debt row
+
+`discoverExpectedApplications` sorted the Application directory names with
+`localeCompare`, which is culture-SENSITIVE: the same names order differently
+per machine locale and ICU version. This is not display ordering — it is the
+canonical order of the roster every caller iterates, so a locale-dependent
+comparator is a locale-dependent roster, and that is the failure class recorded
+as 081KT07NV0008QG0R001YDB73K.
+
+It was the last `load-bearing-pending-sweep` row in the collation baseline,
+carried as named debt because "whose key domain was not measured in this PR".
+The key domain is measured now.
+
+MEASURED — the roster is byte-identical before and after, in every locale tried
+(C, en_US.UTF-8, sv_SE.UTF-8, tr_TR.UTF-8): md5 b064e018eb5df6c0cbdff90064810405
+both ways. So this removes a latent hazard rather than repairing a live
+divergence, and saying which one it is matters. The hazard is real and narrow:
+today's names are all lowercase ASCII, where ICU's ordering and code-point
+ordering happen to agree. A name carrying case or punctuation splits them —
+["Vllm","vllm","vllm-router","vllmrouter","vllm2","VLLM-a"] sorts as
+`vllm Vllm VLLM-a vllm-router vllm2 vllmrouter` under `localeCompare` and
+`VLLM-a Vllm vllm vllm-router vllm2 vllmrouter` ordinally.
+
+THE FALSIFIER IS THE REMOVED BASELINE ROW, not the comparator swap. A ratchet
+permits a file to fall to zero without editing it, so paying the debt down and
+leaving the row would have kept the file licensed for one instance forever —
+compliance that constrains nothing. With the row gone, re-introducing
+`localeCompare` here is a `new-file` violation. Verified by reverting the file
+and re-running the linter: exit 1, "1 found, baseline allows 0". With the row
+present it exits 0. That is the check that can fail.
+
+Agency-Signature-Version: 1
+Agent: shadow
+Agent-Runtime: claude-code/agent-sdk-subagent
+Agent-Model: claude-opus-5
+Credential-Identity: AceHack
+Credential-Mode: shared
+Human-Review: not-implied-by-credential
+Human-Review-Evidence: none
+Action-Mode: autonomous-fail-closed
+Task: none
+Co-authored-by: shadow <noreply@anthropic.com>

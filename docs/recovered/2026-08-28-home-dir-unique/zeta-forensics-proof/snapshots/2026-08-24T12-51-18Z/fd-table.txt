@@ -1,0 +1,6 @@
+# argv: /usr/sbin/sysctl -n kern.num_files kern.maxfiles
+# exit: 0
+# at:   2026-08-24T12:51:19.953Z
+#
+13637
+65536

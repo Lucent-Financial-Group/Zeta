@@ -1,0 +1,5 @@
+# argv: /usr/sbin/sysctl -n vm.loadavg
+# exit: 0
+# at:   2026-08-24T12:51:19.951Z
+#
+{ 27.61 29.03 27.72 }

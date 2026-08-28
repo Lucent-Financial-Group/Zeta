@@ -1,0 +1,50 @@
+fix: resolve the manifest conflict this revert left, and repair the derived index
+
+MY ERROR, in the commit two before this one. `git revert 2caebefa6` reported one
+conflict (`swarm.worker.ts`) and I resolved that, but `docs/github/prs/manifest.jsonl`
+was ALSO conflicted and I staged it with `git add -A` without looking. Three
+marker lines went into the revert commit, and `lint (no conflict markers)` caught
+them — which is the check doing exactly the job the maintainer asked for it in
+2026-04-26: *"in case we ever accidently botch a merge, happens to the best of us"*.
+
+Two things wrong, fixed separately:
+
+1. THE MARKERS. The conflict was between one side holding only the `pr_number:
+   13976` row and the other holding the ~1,900 rows #13973 had truncated away.
+   This file is `merge=union` for a reason — it is append-only under a globally
+   unique `pr_number` — so the resolution is BOTH sides, not either. Removed the
+   three marker lines and kept every row: 9,511 rows, 9,511 distinct `pr_number`,
+   zero unparseable lines, all checked before writing.
+
+2. THE ORPHAN THAT REVEALED. `derive-pr-manifest.ts` then exited 1 with
+   `manifest.jsonl carries 1 entr(y/ies) with no shard behind them — the ledger
+   lost a record`, naming 13976. Not a new fault: #13973 deleted the ENTIRE shard
+   store (0 shards on `main` at 59b4853f2), so when the archive automation wrote
+   the 13976 row there was no store for its shard to land in. The revert restores
+   9,512 shards, leaving that one row pointing at nothing.
+
+   Repaired with the tool's own prescribed command rather than by hand —
+   `derive-pr-manifest.ts --write`, which regenerates the index FROM the shard
+   store, the direction that treats shards as the source of truth and the manifest
+   as derived. Result: "rewritten from 9512 shards", then the verifier says
+   "in sync with docs/github/prs/shards (9512 entries) ✓", exit 0.
+
+   The 13976 record is not lost with its index row:
+   `docs/history/pr-reviews/PR-13976-chore-make-objective-text-less-scary.md` is
+   present. And #13976 is being reverted here anyway, so its archive re-derives
+   when the feature re-lands.
+
+Verified: `check-no-conflict-markers.ts` exit 0, "no git merge-conflict markers
+found in committed files"; `derive-pr-manifest.ts --min-age-minutes 180` exit 0.
+
+Agency-Signature-Version: 1
+Agent: shadow
+Agent-Runtime: claude-code/agent-sdk-subagent
+Agent-Model: claude-opus-5
+Credential-Identity: AceHack
+Credential-Mode: shared
+Human-Review: not-implied-by-credential
+Human-Review-Evidence: none
+Action-Mode: autonomous-fail-closed
+Task: none
+Co-authored-by: shadow <noreply@anthropic.com>

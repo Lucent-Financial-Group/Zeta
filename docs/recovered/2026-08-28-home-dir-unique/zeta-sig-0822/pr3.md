@@ -1,0 +1,45 @@
+
+`lint-check-then-use-file-races` is red on `main`, with exactly one finding:
+
+    src/Core.TypeScript/swarm/swarm-controller.ts:162
+    existsSync(sigFile) at line 162 gates readFileSync(sigFile) at line 163.
+
+Landed in 83bd2f844 (#13845), whose `gate` run was cancelled rather than
+completed — so this reached `main` without the check that refuses it ever
+finishing. (The same commit is why `agencysignature-enforcement` went red at that
+tip; that one self-heals at the next signed commit, this one does not.)
+
+The defect is the ordinary one: between the check and the use the path can be
+created, deleted, or replaced, so the answer `existsSync` returned is already
+stale when `readFileSync` runs. The read has to be able to fail either way, which
+is what makes the gate pure decoration — it reads as defensive and prevents
+nothing.
+
+Fixed as the linter itself prescribes: one syscall, one answer. Read, and
+interpret the failure.
+
+WHAT IS DELIBERATELY NOT SWALLOWED. `ENOENT` is the ordinary first-run case and
+means "no signatures known yet". Everything else — unreadable file, malformed
+JSON — is rethrown. Catching broadly here would be worse than the race it
+replaces: starting from `[]` on a parse error then hits the `writeFileSync`
+below, which would silently discard every signature already on disk and rewrite
+the file with a single entry. The narrow catch is the load-bearing part.
+
+Verified:
+  * `bun src/Core.TypeScript/hygiene/lint-check-then-use-file-races.ts --root
+    src/Core.TypeScript --min-files 1500 --baseline ...` — exit 1 -> exit 0,
+    "no check-then-use filesystem races found", 1929 files scanned. Confirmed
+    exit 1 on clean `main` first, so this is not a check that could not fail.
+  * `bunx tsc --noEmit -p tsconfig.json` — exit 0.
+
+Agency-Signature-Version: 1
+Agent: shadow
+Agent-Runtime: claude-code/agent-sdk-subagent
+Agent-Model: claude-opus-5
+Credential-Identity: AceHack
+Credential-Mode: shared
+Human-Review: not-implied-by-credential
+Human-Review-Evidence: none
+Action-Mode: autonomous-fail-closed
+Task: none
+Co-authored-by: shadow <noreply@anthropic.com>

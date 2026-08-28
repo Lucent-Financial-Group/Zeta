@@ -1,0 +1,33 @@
+=== macOS unclean-reboot triage ===
+boot            2026-08-24T13:23:07.000Z  (uptime 11 min)
+this boot       UNCLEAN (no shutdown record)
+unclean / last10 9
+panicmedic      present  auxkc=true
+  telemetry agrees with timestamps: true
+  unknown telemetry fields (NOT decoded): [273, 321]
+panic at        2026-08-24T13:22:49.692Z
+last flush      2026-08-24T13:22:29.929Z
+BLACKOUT        19.8s unlogged, 17.3s down
+log ring        502.7MB / 56 files -> 12.8 h of history at the current fill rate
+
+KERNEL PANICS   4 report(s) parsed from 4 director(ies)
+  2026-08-24 05:46:58.00 -0400  cpu17  task=Cursor
+    panic(cpu 17 caller 0xfffffe004d6c40c4): pmap_remove_range_options: pmap 0xfffffe32edbca3e0 VA [0x1146e000000, 0x11470000000) (wiredcnt 0xfffffddc7109fda6) wire
+  2026-08-24 07:41:09.00 -0400  cpu8  task=Cursor Helper (Renderer)
+    panic(cpu 8 caller 0xfffffe0039425358): pmap_recycle_page: page 0x109bba68000 is referenced @pmap_data.c:2334
+  2026-08-24 08:17:54.00 -0400  cpu4  task=Cursor Helper (Renderer)
+    panic(cpu 4 caller 0xfffffe003f9d1358): pmap_recycle_page: page 0x10758888000 is referenced @pmap_data.c:2334
+  2026-08-24 09:29:44.00 -0400  cpu9  task=Cursor Helper (Renderer)
+    panic(cpu 9 caller 0xfffffe003b811358): pmap_recycle_page: page 0x11226018000 is referenced @pmap_data.c:2334
+  *** 3 panics share an IDENTICAL kernel backtrace (tasks: Cursor Helper (Renderer)).
+      That is a REPRODUCIBLE kernel bug, not 3 independent memory faults. ***
+
+crash reports   601 total (incl. Retired/)
+  top: bash=452 node=38 dotnet=36 bun=12 JetsamEvent=10 git=9 gtimeout=6 .systemextensionsctl=4
+
+NEXT (in this order, the first two are time-critical):
+  1. bun src/Core.TypeScript/forensics/macos-panic-capture.ts archive --last 3h --label post-crash
+  2. bun src/Core.TypeScript/forensics/macos-panic-capture.ts snapshot
+  3. Read the vitals tail around the panic instant printed above:
+     bun src/Core.TypeScript/forensics/macos-panic-capture.ts vitals-tail --around <panic-iso>
+  4. docs/runbooks/macos-unclean-reboot.md — the full procedure.

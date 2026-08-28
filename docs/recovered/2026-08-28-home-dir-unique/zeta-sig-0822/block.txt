@@ -1,0 +1,11 @@
+Agency-Signature-Version: 1
+Agent: shadow
+Agent-Runtime: claude-code/agent-sdk-subagent
+Agent-Model: claude-opus-5
+Credential-Identity: AceHack
+Credential-Mode: shared
+Human-Review: not-implied-by-credential
+Human-Review-Evidence: none
+Action-Mode: autonomous-fail-closed
+Task: none
+Co-authored-by: shadow <noreply@anthropic.com>

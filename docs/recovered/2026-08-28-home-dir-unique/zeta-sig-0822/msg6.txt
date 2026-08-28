@@ -1,0 +1,51 @@
+test(cluster): re-apply the 14-world assertions — my own revert raced the peer revert that restored 14
+
+`gate` is red on `main` because the tests and the data disagree again, and this
+time the disagreement is mine. Restoring #13878's test half makes them agree.
+
+THE RACE, precisely:
+
+  19:38Z  #13878  (mine) tests -> 14-world, matching `freeDiskGib: 14`.
+  19:48Z  #13871  data -> 70, deleting the "for a human to take or refuse" note.
+  20:16Z  #13903  a peer reverts #13871: data -> 14, on the grounds that "#13871
+                  took the envelope decision that was reserved for a human". It
+                  correctly did NOT touch the tests, because at 20:16 the tests
+                  were still my 14-world version and the tree was consistent.
+  20:25Z  #13910  (mine) tests -> 70-world. I had verified against a tree where
+                  data was 70 and merged nine minutes after #13903 landed, so I
+                  broke the consistency #13903 had just restored.
+
+So `main` now carries `freeDiskGib: 14` with 70-world assertions. This reverts
+#13910 and puts #13878's tests back.
+
+MY ERROR, named. #13910 was not wrong about the tree it measured; it was wrong to
+treat a measurement taken ten minutes earlier as still true at merge time. I
+verified, then waited through a CI cycle, then merged — and the thing I had
+verified was the one value four PRs were actively fighting over. The discipline
+that would have caught it is the one already written down for stale trees: re-read
+the value immediately before merging, not once at the start. I did that this time
+(`freeDiskGib = 14`, read after the suite passed, on 220f6453d).
+
+I also note that #13910 argued for deferring to the tree as it stood, and #13903
+reached the opposite conclusion on governance grounds — that the reserved decision
+had been taken without a recorded human decision. #13903 is right, and it is the
+same reading #13878 was built on. This commit does not re-argue the value; it
+restores agreement with the peer who has already resolved it.
+
+Verified on 220f6453d with the changes applied: `bun test
+src/Core.TypeScript/cluster/` 846 pass / 0 fail (4 fail without them). One
+unrelated flake seen once under local load — `inert-valuesobject-keys.test.ts`
+"exits 0 on the tree as checked in" — passes standalone on BOTH the clean tree and
+this one, so it is contention on my machine and not a finding.
+
+Agency-Signature-Version: 1
+Agent: shadow
+Agent-Runtime: claude-code/agent-sdk-subagent
+Agent-Model: claude-opus-5
+Credential-Identity: AceHack
+Credential-Mode: shared
+Human-Review: not-implied-by-credential
+Human-Review-Evidence: none
+Action-Mode: autonomous-fail-closed
+Task: none
+Co-authored-by: shadow <noreply@anthropic.com>

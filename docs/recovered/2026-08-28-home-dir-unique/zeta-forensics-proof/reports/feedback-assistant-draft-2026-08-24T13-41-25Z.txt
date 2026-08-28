@@ -1,0 +1,71 @@
+TITLE
+  Kernel panic: pmap_recycle_page 'page is referenced' @pmap_data.c under
+  heavy concurrent VM activity (Mac Studio M2 Ultra, macOS 26.5.2)
+
+AREA / TYPE
+  macOS > Kernel  ·  Incorrect/Unexpected Behavior  ·  Reproducible sometimes
+
+SUMMARY
+  4 kernel panic(s) in a single day on one machine, all in the
+  physical-map layer. The kernel attempts to recycle a physical page that
+  still holds live references and fails its own invariant.
+
+  3 of them share an IDENTICAL de-slid kernel backtrace, so this is a
+  reproducible code path rather than independent memory faults.
+
+PANIC STRINGS (verbatim)
+  2026-08-24 05:46:58.00 -0400  cpu 17
+    panic(cpu 17 caller 0xfffffe004d6c40c4): pmap_remove_range_options: pmap 0xfffffe32edbca3e0 VA [0x1146e000000, 0x11470000000) (wiredcnt 0xfffffddc7109fda6) wired count underflow @pmap.c:5072
+    panicked task: Cursor
+  2026-08-24 07:41:09.00 -0400  cpu 8
+    panic(cpu 8 caller 0xfffffe0039425358): pmap_recycle_page: page 0x109bba68000 is referenced @pmap_data.c:2334
+    panicked task: Cursor Helper (Renderer)
+  2026-08-24 08:17:54.00 -0400  cpu 4
+    panic(cpu 4 caller 0xfffffe003f9d1358): pmap_recycle_page: page 0x10758888000 is referenced @pmap_data.c:2334
+    panicked task: Cursor Helper (Renderer)
+  2026-08-24 09:29:44.00 -0400  cpu 9
+    panic(cpu 9 caller 0xfffffe003b811358): pmap_recycle_page: page 0x11226018000 is referenced @pmap_data.c:2334
+    panicked task: Cursor Helper (Renderer)
+
+ENVIRONMENT
+  Hardware:  Mac Studio (Mac14,14), Apple M2 Ultra, 192 GB
+  Kernel:    Darwin 25.5.0, xnu-12377.121.10~1 RELEASE_ARM64_T6020 (macOS 26.5.2, build 25F84)
+  Secure boot: YES        roots installed: 0
+  No third-party kernel extensions in the boot chain.
+
+WHAT IS RULED OUT (and why, from the reports themselves)
+  - Third-party kernel code: 'roots installed: 0' with secure boot enabled.
+  - Memory pressure: 'Compressor Info: 0% of compressed pages limit (OK) and
+    0% of segments limit (OK) with 0 swapfiles and OK swap space'. 192 GB
+    installed, ~97% free at the time of the panics.
+  - Failing DRAM: the repeated panics land on the SAME instruction offsets
+    across different KASLR bases, which random bit errors do not do.
+
+CONDITIONS AT THE TIME
+  Load average peaked at 29.37 on a 24-core machine.
+  Peak translation-fault rate: 648,837/s.
+  Processes: 932   Threads: 5740
+  Per-application footprint: other:764p/2522t/23959M chrome:48p/1400t/17052M cursor:16p/420t/7569M apple-index:49p/219t/4299M chatgpt:13p/289t/2550M claude:12p/324t/2420M electron:9p/204t/1879M adobe:15p/259t/1642M plex:5p/94t/308M agent:1p/9t/51M
+
+STEPS TO REPRODUCE
+  Not deterministically reproducible on demand. Observed conditions:
+  1. Many Electron applications running concurrently, each with multiple
+     renderer and GPU helper processes.
+  2. Simultaneously, dozens of short-lived build/tool processes repeatedly
+     mapping and unmapping large regions.
+  3. Sustained load average well above core count (observed 64.91 at nine
+     minutes of uptime) with no memory pressure.
+  Panic occurs within hours under these conditions; four times in one day.
+
+ATTACHMENTS TO INCLUDE
+  /Library/Logs/DiagnosticReports/Retired/panic-base+socd-2026-08-24-054658.000.panic  (46 KB)
+  /Library/Logs/DiagnosticReports/Retired/panic-full-2026-08-24-074109.0002.panic  (4498 KB)
+  /Library/Logs/DiagnosticReports/Retired/panic-full-2026-08-24-081754.0002.panic  (4545 KB)
+  /Library/Logs/DiagnosticReports/Retired/panic-full-2026-08-24-092944.0002.panic  (4379 KB)
+  A sysdiagnose taken after the next occurrence.
+
+NOTE ON THE PANICKING TASK
+  The panicked task was Cursor, Cursor Helper (Renderer).
+  Stated as an observation, not a diagnosis: on a page-recycle path this may
+  be the trigger, or it may be whichever process happened to hold the page
+  when the race was lost.

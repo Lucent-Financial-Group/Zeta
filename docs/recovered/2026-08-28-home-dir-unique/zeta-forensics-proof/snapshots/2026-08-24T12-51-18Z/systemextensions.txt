@@ -1,0 +1,11 @@
+# argv: /usr/bin/systemextensionsctl list
+# exit: 0
+# at:   2026-08-24T12:51:18.612Z
+#
+2 extension(s)
+--- com.apple.system_extension.cmio (Go to 'System Settings > General > Login Items & Extensions > Camera Extensions' to modify these system extension(s))
+enabled	active	teamID	bundleID (version)	name	[state]
+*	*	847R5ZLN8S	com.insta360.linkcontroller.camera-extension (1.0.45/45)	com.insta360.linkcontroller.camera-extension	[activated enabled]
+--- com.apple.system_extension.endpoint_security (Go to 'System Settings > General > Login Items & Extensions > Endpoint Security Extensions' to modify these system extension(s))
+enabled	active	teamID	bundleID (version)	name	[state]
+*	*	UBF8T346G9	com.microsoft.wdav.epsext (101.26072.0015/101.26072.0015)	Microsoft Defender Endpoint Security Extension	[activated enabled]

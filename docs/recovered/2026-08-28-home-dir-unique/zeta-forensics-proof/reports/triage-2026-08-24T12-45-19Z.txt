@@ -1,0 +1,20 @@
+=== macOS unclean-reboot triage ===
+boot            2026-08-24T12:17:16.000Z  (uptime 28 min)
+this boot       UNCLEAN (no shutdown record)
+unclean / last10 9
+panicmedic      present  auxkc=true
+  telemetry agrees with timestamps: true
+  unknown telemetry fields (NOT decoded): [273, 321]
+panic at        2026-08-24T12:16:59.664Z
+last flush      2026-08-24T12:16:38.460Z
+BLACKOUT        21.2s unlogged, 16.3s down
+log ring        509.2MB / 55 files -> 14.3 h of history at the current fill rate
+crash reports   42 total; .panic files: 1
+  top: bash=28 .systemextensionsctl=4 mdworker_shared=2 mds_stores=2 node=1 forge=1 bun=1 dotnet=1
+
+NEXT (in this order, the first two are time-critical):
+  1. bun src/Core.TypeScript/forensics/macos-panic-capture.ts archive --last 3h --label post-crash
+  2. bun src/Core.TypeScript/forensics/macos-panic-capture.ts snapshot
+  3. Read the vitals tail around the panic instant printed above:
+     bun src/Core.TypeScript/forensics/macos-panic-capture.ts vitals-tail --around <panic-iso>
+  4. docs/runbooks/macos-unclean-reboot.md — the full procedure.

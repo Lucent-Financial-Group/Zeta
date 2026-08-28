@@ -1,0 +1,5 @@
+# argv: /usr/sbin/sysctl -n kern.boottime
+# exit: 0
+# at:   2026-08-24T12:51:18.238Z
+#
+{ sec = 1787573836, usec = 285980 } Mon Aug 24 08:17:16 2026
