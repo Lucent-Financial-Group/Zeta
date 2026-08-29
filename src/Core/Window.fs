@@ -21,7 +21,8 @@ open System.Threading.Tasks
 /// assigned to window `w`. Once the global tick advances past a window's end,
 /// that window is closed (no more deltas expected) and its aggregate is stable.
 /// This is a simplified incremental tumbling window without watermarks;
-/// see `SlidingWindow` for the hopping/sliding variant.
+/// see `SlidingWindow` for the hopping/sliding variant and `SessionWindow`
+/// for gap-coalesced sessions.
 [<Sealed>]
 type internal TumblingWindowOp<'K when 'K : comparison>
     (input: Op<ZSet<'K>>,
