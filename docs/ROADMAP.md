@@ -459,6 +459,7 @@ Gaps: **fsync floor** (unshipped), **multi-key ACID/isolation** (only single-str
 - Vectorised columnar scan over a struct-of-arrays `ColumnZSet` ✅ (measured; `ColumnZSet.fs`)
 - ZSet.sum O(n log k) with PriorityQueue ✅
 - BalancedSpine MaxSAT-inspired scheduler + ZSet.sum + BitOps.Log2 ✅
+- BalancedSpine.Expire — retract-on-TTL via `-Δ` (injected `now`) ✅
 - HLL + Count-Min sketches, zero-alloc inner loops ✅
 - `weightedCount` 4-way unrolled ✅
 - Checked arithmetic on every weight op ✅
@@ -506,8 +507,8 @@ Gaps: **fsync floor** (unshipped), **multi-key ACID/isolation** (only single-str
 - **WatermarkStrategy.Statistical via KLL** — `DI seam: IWatermarkStrategy` ✅ (`StatisticalWatermarkStrategy`)
 - **Frontier<int64>** — shipped (`src/Core/Frontier.fs`). Per-shard watermarks; `Merge` is conservative min; `Advance` is monotone max; `ClosedThrough` = min (Akidau). Empty = no sources → `Int64.MinValue`, matching `Watermark.combine []`, **not** Timely's empty antichain (`+∞`). Remaining: multi-dimensional timestamps (P3 Timely logical time).
 - **Expression-tree operator fusion** — IL-emit a fused `StepAsync` per chain of map/filter/map at Build time (2–5× on those workloads)
-- **State TTL on BalancedSpine** — retract-on-expiry via `-Δ`, preserves correctness for free. Session-window membership is unbounded this slice; eviction belongs here.
-- **Session windows** — shipped (`SessionWindow` / `SessionWindows.assignIndexed`). `IndexedZSet` + coalesce when consecutive event-time gap > T; a late event that bridges two sessions retracts the split labels. Speculative emit (optimistic + retract). Remaining: watermark-driven eviction (uses `SessionWindows.isClosed` + BalancedSpine TTL).
+- **State TTL on BalancedSpine** — shipped (`BalancedSpine.Expire`). Injected `now` (watermark `ClosedThrough` / phase tick, never wall-clock). Returns `-Δ`; spine keeps live keys. Session-window eviction: `Expire(frontier.ClosedThrough, gap, timeOf)`.
+- **Session windows** — shipped (`SessionWindow` / `SessionWindows.assignIndexed`). `IndexedZSet` + coalesce when consecutive event-time gap > T; a late event that bridges two sessions retracts the split labels. Speculative emit (optimistic + retract). Eviction: `BalancedSpine.Expire(frontier.ClosedThrough, gap, timeOf)`.
 - **Package audit** — Stryker.NET, CodeQL, Semgrep wired into CI
 - **Zeta.Bayesian project** — Infer.NET F# wrapper, `BayesianAggregate` operator
 - **Zeta.Core.CSharp shim** — declaration-site variance on interfaces (`IBackingStore<out K>` etc)
