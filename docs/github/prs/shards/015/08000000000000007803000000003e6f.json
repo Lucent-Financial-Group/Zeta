@@ -1,0 +1,12 @@
+{
+  "pr_number": 15983,
+  "archive_path": "docs/history/pr-reviews/PR-15983-feat-installer-bus-hex-passphrase-port-directed-swarm-to-restore-resume-truth-up.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-29T05:43:28.874Z",
+  "schema_version": "v1",
+  "commit_sha": "133a95b5de88ab9d13fc12031636d0b2e7eaf80c",
+  "title": "feat(installer+bus): hex passphrase port, directed swarm to:, restore RESUME truth-up",
+  "state": "MERGED",
+  "merged_at": "2026-08-29T05:40:38Z",
+  "head_ref": "cursor/restore-swarm-hex-metal-27c5"
+}
