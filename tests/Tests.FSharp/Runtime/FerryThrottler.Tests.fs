@@ -215,7 +215,7 @@ let ``result arity returns one aligned result per item`` () : Task =
         use throttler = new FerryThrottler<int, int>(FerryThrottlerConfig.deterministic, processBatch)
         let tasks =
             [ 1 .. 20 ]
-            |> List.map (fun x -> throttler.ProcessAsync x)
+            |> List.map (fun x -> throttler.ProcessAsync(x).AsTask())
             |> Array.ofList
         let! results = Task.WhenAll(tasks)
         do! throttler.CompleteAsync()
@@ -232,7 +232,7 @@ let ``result arity faults entire boat on result-length mismatch`` () : Task =
         use throttler = new FerryThrottler<int, int>(config, processBatch)
         let tasks =
             [ 1 .. 4 ]
-            |> List.map (fun x -> throttler.ProcessAsync x)
+            |> List.map (fun x -> throttler.ProcessAsync(x).AsTask())
             |> Array.ofList
         // Await to completion; the boat faults, so swallow the await-throw — the
         // real assertion is the per-task fault state below.
@@ -256,7 +256,7 @@ let ``result arity faults every item when processor throws`` () : Task =
         use throttler = new FerryThrottler<int, int>(FerryThrottlerConfig.deterministic, processBatch)
         let tasks =
             [ 1 .. 3 ]
-            |> List.map (fun x -> throttler.ProcessAsync x)
+            |> List.map (fun x -> throttler.ProcessAsync(x).AsTask())
             |> Array.ofList
         try
             let! _ = Task.WhenAll(tasks)
@@ -285,10 +285,10 @@ let ``result arity cancels queued item before shipping`` () : Task =
             }
         let config = { FerryThrottlerConfig.deterministic with MaxBatchSize = 1 }
         use throttler = new FerryThrottler<int, int>(config, processBatch)
-        let first = throttler.ProcessAsync 1
+        let first = throttler.ProcessAsync(1).AsTask()
         do! entered.Task // first boat is now in-flight
         use cts = new CancellationTokenSource()
-        let second = throttler.ProcessAsync(2, cts.Token)
+        let second = throttler.ProcessAsync(2, cts.Token).AsTask()
         cts.Cancel()
         gate.SetResult()
         let! _ = first
@@ -315,9 +315,9 @@ let ``result arity dispose cancels queued caller tasks`` () : Task =
             }
         let config = { FerryThrottlerConfig.deterministic with MaxBatchSize = 1 }
         let throttler = new FerryThrottler<int, int>(config, processBatch)
-        let first = throttler.ProcessAsync 1
+        let first = throttler.ProcessAsync(1).AsTask()
         do! entered.Task
-        let second = throttler.ProcessAsync 2
+        let second = throttler.ProcessAsync(2).AsTask()
         (throttler :> IDisposable).Dispose()
         // Dispose cancels both the queued and the in-flight caller — bare awaits
         // (no Task.Delay race); they complete via cancel/fault, then assert state.
@@ -347,7 +347,7 @@ let ``result arity honors byte budget while preserving aligned results`` () : Ta
         use throttler = new FerryThrottler<int, int>(config, processBatch, itemSizeBytes = (fun _ -> 10))
         let tasks =
             [ 1 .. 10 ]
-            |> List.map (fun x -> throttler.ProcessAsync x)
+            |> List.map (fun x -> throttler.ProcessAsync(x).AsTask())
             |> Array.ofList
         let! results = Task.WhenAll(tasks)
         do! throttler.CompleteAsync()
@@ -371,9 +371,9 @@ let ``result arity faults request when byte sizer throws`` () : Task =
             if item = 2 then invalidOp "size failed"
             10
         use throttler = new FerryThrottler<int, int>(config, processBatch, itemSizeBytes = sizer)
-        let ok1 = throttler.ProcessAsync 1
-        let bad = throttler.ProcessAsync 2
-        let ok3 = throttler.ProcessAsync 3
+        let ok1 = throttler.ProcessAsync(1).AsTask()
+        let bad = throttler.ProcessAsync(2).AsTask()
+        let ok3 = throttler.ProcessAsync(3).AsTask()
         let! oks = Task.WhenAll([| ok1; ok3 |])
         // `bad` faults when the sizer throws — swallow the await-throw, assert state.
         try
@@ -489,8 +489,8 @@ let ``contextual result throttler threads context and fans aligned results back`
             }
         use throttler =
             new ContextualResultFerryThrottler<int, string, string>(FerryThrottlerConfig.deterministic, processBatch)
-        let t1 = throttler.ProcessAsync(1, "a")
-        let t2 = throttler.ProcessAsync(2, "b")
+        let t1 = throttler.ProcessAsync(1, "a").AsTask()
+        let t2 = throttler.ProcessAsync(2, "b").AsTask()
         let! results = Task.WhenAll([| t1; t2 |])
         do! throttler.CompleteAsync()
         results |> should equal [| "1@a"; "2@b" |]
@@ -614,9 +614,9 @@ let ``result-arity background ferry replays under the injected context`` () : Ta
         let ctx = DeterministicSyncContext()
         use throttler =
             new FerryThrottler<int, string>(FerryThrottlerConfig.deterministic, processBatch, syncContext = ctx)
-        let t1 = throttler.ProcessAsync(1)
-        let t2 = throttler.ProcessAsync(2)
-        let t3 = throttler.ProcessAsync(3)
+        let t1 = throttler.ProcessAsync(1).AsTask()
+        let t2 = throttler.ProcessAsync(2).AsTask()
+        let t3 = throttler.ProcessAsync(3).AsTask()
         // Before pumping, no result has resolved — the ferry is gated on the context.
         t1.IsCompleted |> should equal false
         ctx.PumpToIdle()
@@ -811,8 +811,8 @@ let ``processBatch throw: every boat row observes the SAME exception (WholeBoat,
             Task.FromException<int array> boom
         let ctx = DeterministicSyncContext()
         use throttler = intResultFerry processBatch ctx
-        let t0 = throttler.ProcessAsync 10
-        let t1 = throttler.ProcessAsync 20
+        let t0 = throttler.ProcessAsync(10).AsTask()
+        let t1 = throttler.ProcessAsync(20).AsTask()
         t0.IsCompleted |> should equal false
         ctx.PumpToIdle()
         try
@@ -839,8 +839,8 @@ let ``processBatch length mismatch: whole boat faults with the SAME InvalidOpera
             Task.FromResult [||]
         let ctx = DeterministicSyncContext()
         use throttler = intResultFerry processBatch ctx
-        let t0 = throttler.ProcessAsync 1
-        let t1 = throttler.ProcessAsync 2
+        let t0 = throttler.ProcessAsync(1).AsTask()
+        let t1 = throttler.ProcessAsync(2).AsTask()
         ctx.PumpToIdle()
         try
             let! _ = Task.WhenAll([| t0; t1 |])
@@ -868,8 +868,8 @@ let ``processBatch success: each boat row gets its own index-aligned result`` ()
             Task.FromResult [| for i in 0 .. boat.Length - 1 -> boat.Span.[i] * 10 |]
         let ctx = DeterministicSyncContext()
         use throttler = intResultFerry processBatch ctx
-        let t0 = throttler.ProcessAsync 1
-        let t1 = throttler.ProcessAsync 2
+        let t0 = throttler.ProcessAsync(1).AsTask()
+        let t1 = throttler.ProcessAsync(2).AsTask()
         ctx.PumpToIdle()
         let! r0 = t0
         let! r1 = t1
@@ -897,8 +897,8 @@ let ``ferry_boat_row_is_not_four_corner: a boat of plain ints still works (FourC
             Task.FromResult [| for i in 0 .. boat.Length - 1 -> boat.Span.[i] |]
         let ctx = DeterministicSyncContext()
         use throttler = intResultFerry processBatch ctx
-        let t0 = throttler.ProcessAsync 7
-        let t1 = throttler.ProcessAsync 8
+        let t0 = throttler.ProcessAsync(7).AsTask()
+        let t1 = throttler.ProcessAsync(8).AsTask()
         ctx.PumpToIdle()
         let! results = Task.WhenAll([| t0; t1 |])
         results |> should equal [| 7; 8 |]
@@ -974,8 +974,8 @@ let ``row-1 Result.Error without throw: row-0 still completes (data per-row, not
                 { FerryThrottlerConfig.deterministic with MaxBatchSize = 8 },
                 processBatch,
                 syncContext = ctx)
-        let t0 = throttler.ProcessAsync 7
-        let t1 = throttler.ProcessAsync 8
+        let t0 = throttler.ProcessAsync(7).AsTask()
+        let t1 = throttler.ProcessAsync(8).AsTask()
         ctx.PumpToIdle()
         let! results = Task.WhenAll([| t0; t1 |])
         match results.[0], results.[1] with
@@ -1084,8 +1084,8 @@ let ``ferry ZetaId demux: processBatch reverse still returns each caller their o
                 syncContext = ctx,
                 itemId = rowId,
                 resultId = rowId)
-        let t0 = throttler.ProcessAsync((id1, 1))
-        let t1 = throttler.ProcessAsync((id2, 2))
+        let t0 = throttler.ProcessAsync((id1, 1)).AsTask()
+        let t1 = throttler.ProcessAsync((id2, 2)).AsTask()
         ctx.PumpToIdle()
         let! pair = Task.WhenAll([| t0; t1 |])
         match pair.[0], pair.[1] with
@@ -1094,4 +1094,21 @@ let ``ferry ZetaId demux: processBatch reverse still returns each caller their o
         let completion = throttler.CompleteAsync()
         ctx.PumpToIdle()
         do! completion
+    }
+
+
+[<Fact>]
+let ``result arity returns request cells to the pool after await`` () : Task =
+    // Await the ValueTask directly (`let!` → GetAwaiter). That is the
+    // production path; `.AsTask()` would allocate a Task and skip GetResult
+    // pooling until that Task completes.
+    task {
+        let processBatch (boat: ReadOnlyMemory<int>) (_ct: CancellationToken) : Task<int array> =
+            Task.FromResult [| for i in 0 .. boat.Length - 1 -> boat.Span.[i] |]
+        use throttler = new FerryThrottler<int, int>(FerryThrottlerConfig.deterministic, processBatch)
+        for i in 1 .. 8 do
+            let! r = throttler.ProcessAsync i
+            r |> should equal i
+        do! throttler.CompleteAsync()
+        throttler.IdlePooledRequests |> should be (greaterThan 0)
     }

@@ -28,6 +28,7 @@
     <Compile Include="GitMergeFlushBench.fs" />
     <Compile Include="GitSnapshotBench.fs" />
     <Compile Include="EncryptedDiskBackingStoreBench.fs" />
+    <Compile Include="FerryThrottlerBench.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 

@@ -289,7 +289,7 @@ type GroupCommitDiskDeltaLog<'K when 'K : comparison>
                 let seq = lock gate (fun () -> nextSeq <- nextSeq + 1L; nextSeq)
                 let payload = framePayload (DeltaLogEntry<'K>(seq, delta, captured))
                 let req = { Seq = seq; Record = frameRecord payload }
-                throttler.ProcessAsync(req, CancellationToken.None) |> ValueTask<int64>
+                throttler.ProcessAsync(req, CancellationToken.None)
 
         member _.ReplayAsync(fromSeqExclusive, _ct) =
             scanEntries false

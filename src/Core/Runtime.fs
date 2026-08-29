@@ -98,10 +98,13 @@ type DbspRuntime<'K when 'K : comparison>
     /// Advance all shard circuits by one tick in parallel. Each worker
     /// drains its input channel, applies to its circuit, then publishes.
     member _.StepAsync() : Task =
-        let tasks =
-            Array.init shardCount (fun i ->
-                throttler.ProcessAsync(i) :> Task)
-        Task.WhenAll tasks
+        // Await pooled ValueTasks directly (`let!` → GetAwaiter). `AsTask()`
+        // would manufacture a Task per shard and erase the TCS-pool win.
+        task {
+            let vts = Array.init shardCount (fun i -> throttler.ProcessAsync(i))
+            for i in 0 .. shardCount - 1 do
+                do! vts.[i]
+        }
 
     /// Gather per-shard outputs into a single Z-set.
     member _.Gather() : ZSet<'K> =
