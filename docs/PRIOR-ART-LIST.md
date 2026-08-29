@@ -402,6 +402,27 @@ F# extraction backend audit. See`docs/research/liquidfsharp-findings.md`Path A a
   NIST-based algorithms for DNA + molecular-simulation work at
   MacVector.
 
+### Concurrency control + domain boundaries (added 2026-08-28, per the no-single-tip design)
+
+Anchors for `docs/design/2026-08-28-there-is-no-single-tip-partitioned-zset-tips-joined-by-shippable-rx-queries.md`.
+
+- **H. T. Kung, John T. Robinson — _On Optimistic Methods for Concurrency Control_** (ACM
+  TODS 6(2), 1981). The origin of read-set validation: let transactions run without locks,
+  record what they read, and validate at commit that nothing they depended on changed.
+  This is the anchor for the tier-selection rule in §2c — reads of unmodified content are
+  safe and settle at tier 0, reads of updated content escalate. It is also where the two
+  failure modes come from, and both are ours to avoid: an **incomplete read set** validates
+  a transaction that should have escalated (silent lost update), and **too-coarse
+  granularity** manufactures false conflicts that quietly move work up the cost ladder.
+- **Eric Evans — _Domain-Driven Design_** (2003). Bounded contexts: the region within which
+  a model is coherent. Used in §2d as the boundary shape for incrementally-loaded ontology
+  — the same partition that bounds a domain model bounds what an agent must hold at once.
+- **Alan Fekete, Dimitrios Liarokapis, Elizabeth O'Neil, Patrick O'Neil, Dennis Shasha —
+  _Making Snapshot Isolation Serializable_** (ACM TODS 30(2), 2005), and Michael Cahill,
+  Uwe Röhm, Alan Fekete — _Serializable Isolation for Snapshot Databases_ (SIGMOD 2008).
+  The modern read-write-conflict-detection line descending from Kung & Robinson; relevant
+  when §2c's granularity question gets measured rather than assumed.
+
 ## AI / ML / adversarial-AI reading list
 
 The factory itself runs on LLMs, so the research substrate that
