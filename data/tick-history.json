@@ -3,46 +3,10 @@
     "generator": "tick-metrics-writer.ts",
     "mock": false,
     "derived_from": "data/tick-shards/**/*.json",
-    "shard_count": 1626,
+    "shard_count": 1629,
     "rollup_max_frames": 1000
   },
   "frames": [
-    {
-      "agents_active": 3,
-      "claims_pending": 3,
-      "entropy_heat": 0,
-      "entropy_state": 0,
-      "last_action": "explore",
-      "last_agent": "otto",
-      "last_mode": "explore",
-      "t": "2026-08-15T04:10:52.370Z",
-      "ticks_24h": 10,
-      "total_events": 1313
-    },
-    {
-      "agents_active": 3,
-      "claims_pending": 3,
-      "entropy_heat": 0,
-      "entropy_state": 0,
-      "last_action": "explore",
-      "last_agent": "otto",
-      "last_mode": "explore",
-      "t": "2026-08-15T04:25:44.485Z",
-      "ticks_24h": 10,
-      "total_events": 1313
-    },
-    {
-      "agents_active": 3,
-      "claims_pending": 3,
-      "entropy_heat": 0,
-      "entropy_state": 0,
-      "last_action": "explore",
-      "last_agent": "otto",
-      "last_mode": "explore",
-      "t": "2026-08-15T04:42:54.340Z",
-      "ticks_24h": 10,
-      "total_events": 1313
-    },
     {
       "agents_active": 3,
       "claims_pending": 3,
@@ -12006,6 +11970,42 @@
       "t": "2026-08-29T00:57:13.207Z",
       "ticks_24h": 36,
       "total_events": 5201
+    },
+    {
+      "agents_active": 2,
+      "claims_pending": 3,
+      "entropy_heat": 0,
+      "entropy_state": 0,
+      "last_action": "explore",
+      "last_agent": "soraya",
+      "last_mode": "explore",
+      "t": "2026-08-29T00:58:39.550Z",
+      "ticks_24h": 36,
+      "total_events": 5201
+    },
+    {
+      "agents_active": 2,
+      "claims_pending": 3,
+      "entropy_heat": 0,
+      "entropy_state": 0,
+      "last_action": "explore",
+      "last_agent": "soraya",
+      "last_mode": "explore",
+      "t": "2026-08-29T01:06:33.810Z",
+      "ticks_24h": 40,
+      "total_events": 5205
+    },
+    {
+      "agents_active": 2,
+      "claims_pending": 3,
+      "entropy_heat": 0,
+      "entropy_state": 0,
+      "last_action": "explore",
+      "last_agent": "soraya",
+      "last_mode": "explore",
+      "t": "2026-08-29T01:18:59.878Z",
+      "ticks_24h": 40,
+      "total_events": 5205
     }
   ]
 }
