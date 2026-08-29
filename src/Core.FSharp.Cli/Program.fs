@@ -6,9 +6,9 @@ open LibGit2Sharp
 open Zeta.Core
 open Zeta.Core.FSharp.Git
 
-/// The thin `zeta` CLI shell over the command core (roadmap #1, no-git-CLI; core-library-first). All the
-/// logic lives in CliParse (argv -> GitCommand) + GitCommand.run (over the repo) — both CI-tested in
-/// Zeta.Core.FSharp.Git. This shell just opens the repo in the cwd, runs, prints, and returns an exit code.
+/// The thin `zeta` CLI shell over the command core (roadmap #1, no-git-CLI).
+/// Prefers `.zetafs` (`ZetaFsStore` / BLAKE3) so data-plane verbs do not need
+/// LibGit2Sharp. Git remains the v1 fallback when no ZetaFS store is in the walk.
 ///
 /// Network verbs (push / fetch) get a host-agnostic credential source: env token (GH_TOKEN / GITHUB_TOKEN)
 /// over HTTPS. GitHub is a plugin, not git-native — the source only yields a handler or a clean error.
@@ -87,39 +87,83 @@ let private runFlash (args: string list) : int =
             proc.WaitForExit()
             proc.ExitCode
 
+let private noStore () =
+    eprintfn "zeta: no .zetafs store and not inside a git repository (run 'zeta init')"
+    1
+
+let private withLog (cwd: string) (body: IRefDeltaLog<DvKey> -> int) : int =
+    match StoreSelect.tryZetaFs cwd with
+    | Some log -> body log
+    | None ->
+        match StoreSelect.tryGit cwd with
+        | Some(log, repo) ->
+            use _r = repo
+            body log
+        | None -> noStore ()
+
+let private printDb (resResult: Result<DbCommandResult<DvKey>, DbFeedback>) : int =
+    match resResult with
+    | Ok res ->
+        match res with
+        | DbCommandResult.Emitted seq ->
+            printfn "emitted seq: %d" seq
+        | DbCommandResult.Retracted seq ->
+            printfn "retracted seq: %d" seq
+        | DbCommandResult.Branched name ->
+            printfn "branched %s" name
+        | DbCommandResult.Joined refName ->
+            printfn "joined %s" refName
+        | DbCommandResult.Merged(sourceRef, newSeq) ->
+            printfn "merged %s -> seq: %d" sourceRef newSeq
+        | DbCommandResult.Folded entries ->
+            for entry in entries do
+                let dv = DeltaLogEntryDynamic.toDynamicValue DvKey.value entry
+                match DynamicValue.toCanonicalJson dv with
+                | Ok json -> printfn "%s" json
+                | Error e -> eprintfn "failed to format entry: %A" e
+        | DbCommandResult.Statused(clean, pending) ->
+            if clean then
+                printfn "clean"
+            else
+                printfn "dirty (%d pending):" pending.Length
+                for p in pending do
+                    printfn "  %s" p
+        | DbCommandResult.Listed entries ->
+            for entry in entries do
+                printfn "%s" entry
+        0
+    | Error fb ->
+        match fb with
+        | ReferenceNotFound refName -> eprintfn "zeta: reference '%s' not found" refName
+        | RemoteNotFound remoteName -> eprintfn "zeta: remote '%s' not found" remoteName
+        | ConnectionFailed msg -> eprintfn "zeta: connection failed: %s" msg
+        | MergeConflict msg -> eprintfn "zeta: merge conflict: %s" msg
+        | InvalidOperation msg -> eprintfn "zeta: invalid operation: %s" msg
+        1
+
 [<EntryPoint>]
 let main argv =
     match Array.toList argv with
     | "flash" :: rest -> runFlash rest
     | _ ->
     match argv with
+    | [| "init" |] ->
+        let dir = StoreSelect.init Environment.CurrentDirectory
+        printfn "initialized %s" dir
+        0
     | [| "shape"; "render"; path; kind |] -> shapeRender path kind
     | [| "shape"; "accept"; path |] -> shapeAccept path
     | [| "shape"; "render"; _ |] -> eprintfn "zeta: usage: zeta shape render <cartridge.lines> (svg|html)"; 2
     | [| "zs" |]
     | [| "run"; "shell" |] ->
-        match Repository.Discover(Environment.CurrentDirectory) with
-        | null ->
-            eprintfn "zeta: not inside a git repository"
-            1
-        | repoPath ->
-            use repo = new Repository(repoPath)
-            let codec = CborEntryCodec<DvKey>(DvKey.value, DvKey.ofValue)
-            let log = GitDeltaLog<DvKey>(repo, codec)
+        withLog Environment.CurrentDirectory (fun log ->
             ZetaShell.runShell log
-            0
+            0)
     | [| "zc" |]
     | [| "run"; "cell" |] ->
-        match Repository.Discover(Environment.CurrentDirectory) with
-        | null ->
-            eprintfn "zeta: not inside a git repository"
-            1
-        | repoPath ->
-            use repo = new Repository(repoPath)
-            let codec = CborEntryCodec<DvKey>(DvKey.value, DvKey.ofValue)
-            let log = GitDeltaLog<DvKey>(repo, codec)
+        withLog Environment.CurrentDirectory (fun log ->
             ZetaShell.runDaemon log Threading.CancellationToken.None
-            0
+            0)
     | _ ->
 
     match CliParse.parse argv with
@@ -127,55 +171,13 @@ let main argv =
         eprintfn "%s" msg
         2
     | Ok cmd ->
-        match Repository.Discover(Environment.CurrentDirectory) with
-        | null ->
-            eprintfn "zeta: not inside a git repository"
-            1
-        | repoPath ->
-            use repo = new Repository(repoPath)
-            let credSource = EnvTokenCredentialSource() :> CredentialSource
-
+        withLog Environment.CurrentDirectory (fun log ->
             try
-                let codec = CborEntryCodec<DvKey>(DvKey.value, DvKey.ofValue)
-                let log = GitDeltaLog<DvKey>(repo, codec, credSource = credSource)
-                let resResult = Zeta.Core.DbCommand.run log Threading.CancellationToken.None cmd |> Async.AwaitTask |> Async.RunSynchronously
-                match resResult with
-                | Ok res ->
-                    match res with
-                    | DbCommandResult.Emitted seq ->
-                        printfn "emitted seq: %d" seq
-                    | DbCommandResult.Retracted seq ->
-                        printfn "retracted seq: %d" seq
-                    | DbCommandResult.Branched name ->
-                        printfn "branched %s" name
-                    | DbCommandResult.Joined refName ->
-                        printfn "joined %s" refName
-                    | DbCommandResult.Merged (sourceRef, newSeq) ->
-                        printfn "merged %s -> seq: %d" sourceRef newSeq
-                    | DbCommandResult.Folded entries ->
-                        for entry in entries do
-                            let dv = DeltaLogEntryDynamic.toDynamicValue DvKey.value entry
-                            match DynamicValue.toCanonicalJson dv with
-                            | Ok json -> printfn "%s" json
-                            | Error e -> eprintfn "failed to format entry: %A" e
-                    | DbCommandResult.Statused(clean, pending) ->
-                        if clean then
-                            printfn "clean"
-                        else
-                            printfn "dirty (%d pending):" pending.Length
-                            for p in pending do printfn "  %s" p
-                    | DbCommandResult.Listed entries ->
-                        for entry in entries do
-                            printfn "%s" entry
-                    0
-                | Error fb ->
-                    match fb with
-                    | ReferenceNotFound refName -> eprintfn "zeta: reference '%s' not found" refName
-                    | RemoteNotFound remoteName -> eprintfn "zeta: remote '%s' not found" remoteName
-                    | ConnectionFailed msg -> eprintfn "zeta: connection failed: %s" msg
-                    | MergeConflict msg -> eprintfn "zeta: merge conflict: %s" msg
-                    | InvalidOperation msg -> eprintfn "zeta: invalid operation: %s" msg
-                    1
+                let resResult =
+                    Zeta.Core.DbCommand.run log Threading.CancellationToken.None cmd
+                    |> Async.AwaitTask
+                    |> Async.RunSynchronously
+                printDb resResult
             with ex ->
                 eprintfn "zeta: %s" ex.Message
-                1
+                1)
