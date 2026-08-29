@@ -475,3 +475,53 @@ let ``K: +1/−1 compass related at C₄, divergent as maps — Negate involutes
     |> should equal ErasureClass.ThermodynamicClass.Reversible
     FC.errorShortCircuitClass
     |> should equal ErasureClass.ThermodynamicClass.Erasing
+
+
+// ── Occupancy coordinate vs SchedulerZeta.predict ─────────────────
+// Occupancy is a count (how many corners filled). Predict's key must
+// be injective on the reachable set or runToHorizon is stale. Two
+// fillings that share occupancy 2 are distinct I/O records.
+
+[<Fact>]
+let ``occupancy-keyed predict collapses distinct fillings that share a count`` () =
+    let dataFilled: FourCorner.FourCornerOwnership<int, int, string, string> =
+        FourCorner.ofIn 1 |> FourCorner.withOut 2
+    let fbFilled: FourCorner.FourCornerOwnership<int, int, string, string> =
+        FourCorner.ofIn 1 |> FourCorner.withOutFeedback "authored"
+    FC.occupancyCount dataFilled |> should equal 2
+    FC.occupancyCount fbFilled |> should equal 2
+    dataFilled = fbFilled |> should equal false
+
+    let step (o: FourCorner.FourCornerOwnership<int, int, string, string>) =
+        if FourCorner.hasOutput o then fbFilled else dataFilled
+
+    let rOcc = SchedulerZeta.predict FC.occupancyKey step dataFilled
+    rOcc.Period |> should equal 1
+    rOcc.Reachable |> should equal 1
+
+    let rCorners = SchedulerZeta.predict FC.cornersKey step dataFilled
+    rCorners.Period |> should equal 2
+    rCorners.Reachable |> should equal 2
+
+
+[<Fact>]
+let ``occupancy-keyed runToHorizon is stale; cornersKey matches step n`` () =
+    let dataFilled: FourCorner.FourCornerOwnership<int, int, string, string> =
+        FourCorner.ofIn 1 |> FourCorner.withOut 2
+    let fbFilled: FourCorner.FourCornerOwnership<int, int, string, string> =
+        FourCorner.ofIn 1 |> FourCorner.withOutFeedback "authored"
+    let step (o: FourCorner.FourCornerOwnership<int, int, string, string>) =
+        if FourCorner.hasOutput o then fbFilled else dataFilled
+    let naive n =
+        let mutable s = dataFilled
+        for _ in 1 .. n do
+            s <- step s
+        s
+
+    let stale = SchedulerZeta.runToHorizon FC.occupancyKey step dataFilled 1
+    stale = naive 1 |> should equal false
+    stale = dataFilled |> should equal true
+
+    let honest = SchedulerZeta.runToHorizon FC.cornersKey step dataFilled 1
+    honest = naive 1 |> should equal true
+    honest = fbFilled |> should equal true

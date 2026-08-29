@@ -1,0 +1,14 @@
+{
+  "id": "080d027196f31810a013000872dd89d0",
+  "at": "2026-08-29T15:45:51.715Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1735QK3087G0R000X7C1FP",
+    "type": "task",
+    "title": "Occupancy coordinate vs SchedulerZeta.predict is not identity",
+    "slug": "occupancy-coordinate-vs-schedulerzeta-predict-is-not-identit",
+    "priority": "P1",
+    "filename": "081M1735QK3087G0R000X7C1FP-occupancy-coordinate-vs-schedulerzeta-predict-is-not-identit.md"
+  }
+}
