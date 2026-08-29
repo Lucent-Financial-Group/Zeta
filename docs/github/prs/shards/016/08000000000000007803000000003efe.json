@@ -1,0 +1,12 @@
+{
+  "pr_number": 16126,
+  "archive_path": "docs/history/pr-reviews/PR-16126-feat-reuse-atomic-speculativeupdate-restore-ambient-around-ferry-boats.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-29T05:43:35.732Z",
+  "schema_version": "v1",
+  "commit_sha": "133a95b5de88ab9d13fc12031636d0b2e7eaf80c",
+  "title": "feat: reuse Atomic.speculativeUpdate; restore ambient around ferry boats",
+  "state": "MERGED",
+  "merged_at": "2026-08-29T05:42:37Z",
+  "head_ref": "feat/reuse-speculative-update-and-ferry-restore"
+}
