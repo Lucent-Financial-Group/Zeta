@@ -28,8 +28,8 @@ open System.Threading.Tasks
 /// tz.Commit()   // or tz.Rollback()
 /// ```
 /// Immutable snapshot of the transaction state. Reference-typed so it
-/// can be CAS'd via `Interlocked.CompareExchange`. Reads are fully
-/// lock-free; writes are a tight CAS-retry loop.
+/// can be CAS'd (`CasRefCell` + `Atomic.speculativeUpdate`). Reads are
+/// fully lock-free; writes are a tight CAS-retry loop with no attempt cap.
 ///
 /// Why this shape: the previous `lock stateLock` on every `StepAsync`
 /// serialises every tick on a mutex, which (a) stalls reader threads
@@ -58,41 +58,18 @@ type TxStateSnapshot<'T>(state: 'T, pending: 'T, autoCommit: bool) =
 type TransactionZ1Op<'T>(input: Op<'T>, initial: 'T) =
     inherit Op<'T>()
     let inputs = [| input :> Op |]
-    // Reference-typed CAS cell holding the atomic `TxStateSnapshot`.
-    // `[<VolatileField>]` forces a release-fence publication on every
-    // `Interlocked.CompareExchange` and an acquire-fence read on every
-    // plain `cell` access. Without it, the JIT is allowed to hoist the
-    // `cell` read out of `StepAsync`'s loop, so a reader can observe a
-    // torn snapshot reference that a writer replaced several CASes
-    // ago. Same pattern as `Circuit.tick`.
-    [<VolatileField>]
-    let mutable cell = TxStateSnapshot(initial, initial, true)
-
-    /// CAS-retry helper: `f` is applied to the current snapshot until
-    /// the `Interlocked.CompareExchange` succeeds. Since every write
-    /// contender is racing for the same cell, the loop is bounded in
-    /// practice (~1.2 iterations average under light contention).
-    let updateCas (f: TxStateSnapshot<'T> -> TxStateSnapshot<'T>) : TxStateSnapshot<'T> =
-        let mutable attempts = 0
-        let mutable success = false
-        let mutable result = Unchecked.defaultof<TxStateSnapshot<'T>>
-        while not success do
-            let cur = cell
-            let next = f cur
-            if obj.ReferenceEquals(Interlocked.CompareExchange(&cell, next, cur), cur) then
-                success <- true
-                result <- next
-            attempts <- attempts + 1
-            if attempts > 1024 then
-                invalidOp "TransactionZ1Op CAS loop exceeded 1024 retries — pathological contention"
-        result
+    // Reuses the Albahari CAS port (`CasRefCell` + `Atomic.speculativeUpdate`).
+    // No attempt ceiling: a lost race means some other writer succeeded, so
+    // capping and throwing would convert their success into our exception.
+    let cas = CasRefCell(TxStateSnapshot(initial, initial, true))
+    let updateCas (f: TxStateSnapshot<'T> -> TxStateSnapshot<'T>) = Atomic.speculativeUpdate cas f
 
     override _.Name = "transactionZ1"
     override _.Inputs = inputs
     override _.IsStrict = true
     override this.StepAsync(_: CancellationToken) =
         // Single volatile load — no lock, no CAS retry.
-        this.Value <- cell.State
+        this.Value <- cas.Value.State
         ValueTask.CompletedTask
     override _.AfterStepAsync(_: CancellationToken) =
         let nextInput = input.Value
@@ -109,9 +86,9 @@ type TransactionZ1Op<'T>(input: Op<'T>, initial: 'T) =
     /// Discard `pending`, restore to last-committed `state`, resume auto-commit.
     member _.Rollback() = updateCas (fun s -> s.Rollback()) |> ignore
 
-    member _.IsInTransaction = not cell.AutoCommit
-    member _.Pending = cell.Pending
-    member _.State = cell.State
+    member _.IsInTransaction = not cas.Value.AutoCommit
+    member _.Pending = cas.Value.Pending
+    member _.State = cas.Value.State
 
 
 /// Simple binary serialisation for Z-set state. Uses `System.Text.Json`
