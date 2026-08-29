@@ -81,15 +81,17 @@ with no server). Raw data: `data/swarm-graph.json`.
 The generator prints per-channel **coverage** — this is the "do we have the right
 knobs to see agent communication" check. On the first all-time run:
 
-- **bus: 49 records → 0 edges.** Every persistent bus message is a **broadcast**
+- **bus: 49 records → 0 edges.** Every persistent bus message was a **broadcast**
   (`to: "*"`, topic `heartbeat`). The bus — our richest *potential* directed
-  agent→agent channel — currently carries **only liveness broadcasts**, so
-  directed dialogue is invisible there. **Knob gap.** Options to close it, in
-  increasing effort: (a) have `review-request` / `formal-verification-result` /
-  `work-assignment` bus topics address a specific `to:` persona (they support it
-  already — `src/Core.TypeScript/bus/types.ts` — it just isn't used); (b) fold PR
-  review threads (`docs/history/pr-reviews/PR-*.md`) into directed reviewer→author
-  edges.
+  agent→agent channel — carried **only liveness broadcasts**, so directed
+  dialogue was invisible there. **Knob (protocol) now closed:**
+  `review-request` / `work-assignment` / `formal-verification-result` **must**
+  name a specific persona (`src/Core.TypeScript/bus/types.ts`
+  `DIRECTED_TOPICS`; both the ephemeral `bus.ts` CLI and
+  `agent-bus/publish.ts` refuse `to: "*"`). Heartbeats may still broadcast.
+  Swarm-graph grows a bus edge when those topics are published with a persona
+  `to:`. Folding PR review threads (`docs/history/pr-reviews/PR-*.md`) into
+  directed reviewer→author edges remains the optional extra channel.
 - **workitem: 726 records → mostly single-owner.** Only a small number of work
   items are co-touched by 2+ personas, so cross-agent collaboration on shared
   work is currently rare — worth watching if we expect more hand-offs.
@@ -98,7 +100,10 @@ knobs to see agent communication" check. On the first all-time run:
   small-world signature on that backbone.
 
 These findings are **observations, not verdicts** — exactly the register this lens
-is built for.
+is built for. Re-run `bun src/Core.TypeScript/swarm-society/swarm-graph.ts` after
+a directed envelope lands under `docs/agent-bus/` to see `coverage.bus.edges > 0`.
+First directed persistent envelope: `docs/agent-bus/riven-cursor/2026/08/28/`
+(`review-request` riven-cursor → otto).
 
 ## Where it fits
 

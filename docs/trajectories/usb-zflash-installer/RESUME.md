@@ -1,14 +1,18 @@
 # Trajectory - USB / zflash Installer
 
 Status: active — shipped + iterating; first surfaced as a trajectory 2026-05-29 from substrate inventory (the flashing mechanism works on `origin/main`; this surface was missing, so the workstream lived head-only)
-Last refreshed: 2026-08-24
+Last refreshed: 2026-08-28
 Type: workstream (current-focus) — a trajectory the operator is _actively powering_. Many trajectories can be tracked; only a few are workstreams at once (finite-focus / WIP-bounded — a workstream is a trajectory under sustained thrust, and thrust budget is finite, so most trajectories coast). (Genus = "trajectory"; "workstream" is the species: a trajectory under sustained thrust toward a deliverable, vs. emergent-posture trajectories like `anti-infection`. See [`factory-trajectory-surface`](../factory-trajectory-surface/RESUME.md) for the genus/species taxonomy.) One of the operator's three current cluster workstreams (encryption / usb-zflash / ts-workflow-engine).
 Eventual encoding (design-stage — the human maintainer 2026-05-23 genetic-ID substrate + Clifford/HKT): this trajectory's state is trackable as a 128-bit genetic-ID seed (discrete, reversible via parser-combinator ↔ generator-function) → Clifford-space path (continuous, eventual). Mirrors the three-lane I8-lattice / I9-manifold split.
-Current blocker: software — live restore QEMU not yet re-dispatched after
-picker `--defer-all` ([#14852](https://github.com/Lucent-Financial-Group/Zeta/pull/14852);
-measured hang [run 32724820159](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/32724820159)).
-Sibling dispatch QEMU steps still skip when restore is red (P1). Physical
-S6 UX feel + real WiFi association remain metal-gated.
+Current blocker: hardware — metal S6 first-login + WiFi radio / Touch ID / TPM
+(human-gated). Software restore is **proven**: `main` workflow_dispatch
+[33126215487](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/33126215487)
+on SHA `034544150` serial `zeta-creds-restore: wrote 1 creds` after picker
+`--bake-cred x1` ([#15912](https://github.com/Lucent-Financial-Group/Zeta/pull/15912)).
+Sibling dispatch QEMU steps already use
+`if: always() && github.event_name == 'workflow_dispatch'` — they do **not**
+skip when restore is red. Do not re-litigate that P1 or re-dispatch restore
+as if `--defer-all` were still the live hang.
 2026-08-18: `zflash` ISO acquisition is now architecture-aware (`--iso-arch`,
 default x86_64). Before this a run carrying both the x86_64 and aarch64 ISOs
 was resolved by `readdirSync` order — a coin flip whose only symptom was "no
@@ -16,15 +20,18 @@ bootable device" after a full flash-and-walk-to-the-box cycle, and whose
 untagged cache name made a wrong pick win every later auto-discovery. Closes
 known-unknown #2 of the first-metal preflight; that runbook no longer asks the
 operator to hand-download and hand-rename an ISO.
-**Session handoff (2026-08-24):**
-[`docs/handoffs/2026-08-24-riven-usb-zflash-qemu-restore-next.md`](../../handoffs/2026-08-24-riven-usb-zflash-qemu-restore-next.md)
-— mise-trust landed ([#14353](https://github.com/Lucent-Financial-Group/Zeta/pull/14353));
-`--defer-all` landed ([#14852](https://github.com/Lucent-Financial-Group/Zeta/pull/14852)).
-Live restore QEMU
-([run 32724820159](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/32724820159))
-proved picker `mise activate` then hung on `[b]/[d]/[s]` (pre-`--defer-all`).
-Next software slice is P1 (sibling dispatch steps `if: always()` after a
-restore red), then re-dispatch on idle `main`. Not metal.
+**Session handoff (2026-08-28):** restore is closed on software. Do not
+re-open [#14852](https://github.com/Lucent-Financial-Group/Zeta/pull/14852)
+`--defer-all` as the live hang — that hang was pre-`--defer-all` on
+[run 32724820159](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/32724820159).
+After `--defer-all` + bake-cred (#15912), restore wrote 1 cred on
+[run 33126215487](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/33126215487).
+The 2026-08-24 handoff
+([`docs/handoffs/2026-08-24-riven-usb-zflash-qemu-restore-next.md`](../../handoffs/2026-08-24-riven-usb-zflash-qemu-restore-next.md))
+is historical. Next software slice is in-guest wrong-passphrase (phase 2b
+on the same installed disk) + hexagonal passphrase port so metal tty1 is
+unit-testable; then a human hardware run of the metal-path runbook.
+Not a Cloud VM metal proof.
 
 Next concrete action: **minimize metal** — S6 physical first-login +
 WiFi radio / Touch ID / TPM (human-gated). Software deepen landed:
@@ -129,10 +136,13 @@ bringup.
 
 ## Current Next Action
 
-**Software P0:** non-interactive 6.95-picker for QEMU restore — see
-[`docs/handoffs/2026-08-24-riven-usb-zflash-qemu-restore-next.md`](../../handoffs/2026-08-24-riven-usb-zflash-qemu-restore-next.md).
-Scenario 2 still asserts first-session serial markers on **push**. Optional
-multiboot UEFI menu smoke on installer/multiboot path PRs. **Post-login:**
+**Software (closed, do not re-litigate):** non-interactive 6.95-picker
+(`--defer-all` #14852) and restore non-zero write (#15912, dispatch
+33126215487). Sibling dispatch steps already `if: always()`.
+**Next software:** in-guest wrong-passphrase phase 2b + passphrase
+hexagonal port (`passphrase-source.ts`) so a human can run the metal
+tty1 runbook without the software door being untested. Dispatch restore
+on idle `main` after that lands. **Post-login:**
 [FIRST-SESSION.md](./FIRST-SESSION.md) slices 1–4 landed; S6 paper/mock
 accepted (physical boot still human-gated). Slice 5 CODEOWNERS when teams
 are confirmed.

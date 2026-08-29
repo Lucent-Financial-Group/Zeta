@@ -19,7 +19,7 @@ import {
   isCanonicalBusId,
   type AgentBusEnvelope,
 } from "./types";
-import { SENDER_IDS, AGENT_IDS, TTL_MS, type AgentId, type SenderAgentId, type BusMessage } from "../bus/types";
+import { TTL_MS, SENDER_IDS, AGENT_IDS, broadcastForbiddenForTopic, type AgentId, type SenderAgentId, type BusMessage } from "../bus/types";
 
 export { makeEnvelope };
 
@@ -180,6 +180,11 @@ if (import.meta.main) {
   // (new Date(atMs + undefined)) throws a confusing RangeError (Copilot #6283 P0).
   if (!(topic in TTL_MS)) {
     console.error(`unknown topic '${topic}'. Valid: ${Object.keys(TTL_MS).join(", ")}`);
+    process.exit(2);
+  }
+  const directedErr = broadcastForbiddenForTopic(topic as BusMessage["topic"], to as AgentId);
+  if (directedErr) {
+    console.error(directedErr);
     process.exit(2);
   }
   let payload: unknown;

@@ -23,8 +23,10 @@
  * QEMU_UEFI_KEYFILE_RESTORE=1 (dedicated; not implied by PICKER) injects the
  * QEMU test passphrase via `-fw_cfg file=` on disk boot, bakes
  * `/zeta-qemu-bake-test-cred` so 6.95-picker writes ≥1 probe cred, and asserts
- * restore decrypt + write (`wrote >= 1`) against the UEFI keyfile. The secret
- * is not copied onto the installed ESP. ISO/cdrom cascade-5
+ * restore decrypt + write (`wrote >= 1`) against the UEFI keyfile. Phase 2b
+ * then reboots the same disk with a WRONG fw_cfg passphrase and asserts
+ * decrypt refusal (still hypervisor transport — not a metal claim). The
+ * secret is not copied onto the installed ESP. ISO/cdrom cascade-5
  * has no usb-storage serial=.
  * Not on gate.
  *
@@ -101,9 +103,21 @@ const KVM_PATH = "/dev/kvm";
 /** Separator between phase-1 installer serial and phase-2 disk-boot serial in artifacts. */
 export const PHASE2_SERIAL_SEPARATOR = "\n\n=== PHASE 2: boot installed disk (no ISO) ===\n\n";
 
+/** Separator for the optional wrong-passphrase second disk boot (restore lane). */
+export const PHASE2B_SERIAL_SEPARATOR =
+  "\n\n=== PHASE 2b: disk boot wrong passphrase (fw_cfg; not metal) ===\n\n";
+
+/**
+ * Wrong passphrase injected on the restore-lane phase-2b reboot.
+ * Must never equal {@link DEFAULT_QEMU_PASSPHRASE}. Hypervisor transport only.
+ */
+export const WRONG_QEMU_PASSPHRASE = "not-the-qemu-test-passphrase";
+
 /** Exported for unit tests. QEMU `-serial file:` truncates on each launch. */
-export function mergeFullInstallSerialLogs(phase1: string, phase2: string): string {
-  return phase1 + PHASE2_SERIAL_SEPARATOR + phase2;
+export function mergeFullInstallSerialLogs(phase1: string, phase2: string, phase2b?: string): string {
+  const merged = phase1 + PHASE2_SERIAL_SEPARATOR + phase2;
+  if (phase2b === undefined || phase2b.length === 0) return merged;
+  return merged + PHASE2B_SERIAL_SEPARATOR + phase2b;
 }
 
 /** Exported for unit tests. */
@@ -230,6 +244,12 @@ export const UEFI_KEYFILE_RESTORE_SERIAL = {
   alreadyPresent: "zeta-creds-restore: already-present, skipping credential rewrite",
   missingKeyfile: "zeta-creds-restore: uefiKeyfile recorded but ESP keyfile missing",
   uuidBinding: "zeta-creds-restore: binding-factor usbUuid (default)",
+  /**
+   * Restore CLI stderr on AEAD refusal (wrong passphrase / wrong binding /
+   * tampered blob). Phase 2b asserts this is present and that no write
+   * followed. Producer: `zeta-creds-restore.ts` `decrypt: ${plaintext.error}`.
+   */
+  decryptFailed: "zeta-creds-restore: decrypt:",
   /**
    * Unconditional FIRST line of the unit's ExecStart (081M0WTB5MN). Its presence
    * proves ExecStart ran at all; its ABSENCE on the phase-2 slice means the unit
@@ -663,7 +683,9 @@ export function restoreWroteCount(phase2Serial: string): number | null {
  * is a legitimate idempotent outcome). The live QEMU_UEFI_KEYFILE_RESTORE
  * scenario additionally requires this predicate (or `already-present`) via
  * {@link assertUefiKeyfileRestoreWritePath} so a green cannot hide a vacuous
- * write. Wrong-passphrase / wrong-device refusal stay unit-tested.
+ * write. Wrong-passphrase refusal is asserted in-guest on restore-lane
+ * phase 2b ({@link assertUefiKeyfileRestoreWrongPassphraseContract}); that
+ * boot is still fw_cfg (not metal tty1).
  */
 export function restoreExercisedWritePath(phase2Serial: string): boolean {
   const n = restoreWroteCount(phase2Serial);
@@ -699,6 +721,69 @@ export function assertUefiKeyfileRestoreWritePath(phase2Serial: string):
       `restore did not report wrote N>=1 or already-present ("${UEFI_KEYFILE_RESTORE_SERIAL.wrotePrefix}" / ` +
       `"${UEFI_KEYFILE_RESTORE_SERIAL.alreadyPresent}").`,
   };
+}
+
+/**
+ * Restore-lane phase 2b: same installed disk, WRONG fw_cfg passphrase.
+ * Still hypervisor transport — proves in-guest AEAD refusal, not metal tty1.
+ */
+export function assertUefiKeyfileRestoreWrongPassphraseContract(serial: string):
+  | { readonly ok: true }
+  | { readonly ok: false; readonly reason: string } {
+  if (!serial.includes(UEFI_KEYFILE_RESTORE_SERIAL.stagedFromFwcfg)) {
+    return {
+      ok: false,
+      reason:
+        `wrong-passphrase boot missing fw_cfg staging ("${UEFI_KEYFILE_RESTORE_SERIAL.stagedFromFwcfg}").`,
+    };
+  }
+  if (!serial.includes(UEFI_KEYFILE_RESTORE_SERIAL.transportFwcfgNotMetal)) {
+    return {
+      ok: false,
+      reason:
+        "wrong-passphrase boot did not declare qemu-fw_cfg transport " +
+        `(${UEFI_KEYFILE_RESTORE_SERIAL.transportFwcfgNotMetal}).`,
+    };
+  }
+  if (serial.includes(UEFI_KEYFILE_RESTORE_SERIAL.transportInteractive)) {
+    return {
+      ok: false,
+      reason:
+        "wrong-passphrase boot claimed the INTERACTIVE (metal-capable) transport inside QEMU.",
+    };
+  }
+  if (!serial.includes(UEFI_KEYFILE_RESTORE_SERIAL.decryptFailed)) {
+    return {
+      ok: false,
+      reason:
+        `wrong-passphrase boot missing decrypt refusal ("${UEFI_KEYFILE_RESTORE_SERIAL.decryptFailed}").`,
+    };
+  }
+  if (serial.includes(UEFI_KEYFILE_RESTORE_SERIAL.alreadyPresent)) {
+    return {
+      ok: false,
+      reason: "wrong-passphrase boot reported already-present — decrypt should have refused.",
+    };
+  }
+  if (restoreExercisedWritePath(serial)) {
+    return {
+      ok: false,
+      reason: "wrong-passphrase boot wrote N>=1 creds — decrypt should have refused.",
+    };
+  }
+  if (serial.includes(DEFAULT_QEMU_PASSPHRASE)) {
+    return {
+      ok: false,
+      reason: "wrong-passphrase serial leaked the happy-path QEMU passphrase.",
+    };
+  }
+  if (serial.includes(WRONG_QEMU_PASSPHRASE)) {
+    return {
+      ok: false,
+      reason: "wrong-passphrase serial leaked the injected wrong passphrase.",
+    };
+  }
+  return { ok: true };
 }
 
 /**
@@ -1231,6 +1316,65 @@ async function waitForInstalledLogin(
   };
 }
 
+/**
+ * Phase 2b: wait until the wrong-passphrase restore contract is satisfied.
+ * Do not require login. Decrypt refusal is success, not a FAILURE_MARKER.
+ */
+async function waitForRestoreRefusal(serialLogPath: string): Promise<InstallResult> {
+  const start = Date.now();
+  const deadline = start + DISK_BOOT_TIMEOUT_SECONDS * 1000;
+  let lastReportedMinute = -1;
+
+  while (Date.now() < deadline) {
+    const elapsedSec = Math.floor((Date.now() - start) / 1000);
+    const elapsedMin = Math.floor(elapsedSec / 60);
+    if (elapsedMin > lastReportedMinute) {
+      console.log(
+        `[qemu-full-install-test] phase 2b: ${elapsedMin} min elapsed; waiting for decrypt refusal`,
+      );
+      lastReportedMinute = elapsedMin;
+    }
+    const content = readSerial(serialLogPath);
+    const contract = assertUefiKeyfileRestoreWrongPassphraseContract(content);
+    if (contract.ok) {
+      return {
+        exitCode: 0,
+        reason: "phase 2b UEFI keyfile restore wrong-passphrase refusal",
+        serialLogTail: content.slice(-1500),
+        elapsedSeconds: elapsedSec,
+      };
+    }
+    const failMarker = checkFailureMarkers(content);
+    if (failMarker) {
+      return {
+        exitCode: 1,
+        reason: `phase 2b FAILURE — hard-fail marker "${failMarker}"`,
+        serialLogTail: content.slice(-2000),
+        elapsedSeconds: elapsedSec,
+      };
+    }
+    await Bun.sleep(POLL_INTERVAL_MS);
+  }
+
+  const content = readSerial(serialLogPath);
+  const late = assertUefiKeyfileRestoreWrongPassphraseContract(content);
+  const why = late.ok ? "contract ok after timeout race" : late.reason;
+  if (late.ok) {
+    return {
+      exitCode: 0,
+      reason: "phase 2b UEFI keyfile restore wrong-passphrase refusal",
+      serialLogTail: content.slice(-1500),
+      elapsedSeconds: Math.floor((Date.now() - start) / 1000),
+    };
+  }
+  return {
+    exitCode: 1,
+    reason: `phase 2b timeout (${DISK_BOOT_TIMEOUT_SECONDS}s) waiting for decrypt refusal — ${why}`,
+    serialLogTail: content.slice(-3000),
+    elapsedSeconds: Math.floor((Date.now() - start) / 1000),
+  };
+}
+
 async function runQemuUntil(
   args: string[],
   serialLogPath: string,
@@ -1376,8 +1520,8 @@ async function main(): Promise<never> {
     }
   });
 
-  const writeArtifactSerialLog = (phase1: string, phase2: string): void => {
-    writeFileSync(artifactSerialLogPath, mergeFullInstallSerialLogs(phase1, phase2));
+  const writeArtifactSerialLog = (phase1: string, phase2: string, phase2b = ""): void => {
+    writeFileSync(artifactSerialLogPath, mergeFullInstallSerialLogs(phase1, phase2, phase2b));
   };
 
   console.log(`[qemu-full-install-test] ISO: ${isoPath}`);
@@ -1664,6 +1808,38 @@ async function main(): Promise<never> {
     }
     console.log(
       "[qemu-full-install-test] UEFI keyfile restore contract ok (fw_cfg staged; wrote>=1 or already-present; no ESP persist / metal claim)",
+    );
+
+    const wrongFwCfg = join(tmpDir, "qemu-creds-passphrase-wrong.fwcfg");
+    writeFileSync(wrongFwCfg, WRONG_QEMU_PASSPHRASE, { mode: 0o600 });
+    const phase2bSerialLogPath = join(tmpDir, "phase2b-serial.log");
+    console.log(
+      "[qemu-full-install-test] phase 2b — rebooting installed disk with WRONG fw_cfg passphrase (still hypervisor transport; not metal)",
+    );
+    const phase2b = await runQemuUntil(
+      buildQemuDiskBootArgs(diskPath, phase2bSerialLogPath, tmpDir, wrongFwCfg),
+      phase2bSerialLogPath,
+      () => waitForRestoreRefusal(phase2bSerialLogPath),
+      "phase 2b (disk boot + wrong-passphrase restore refusal)",
+    );
+    const phase2bSerial = readSerial(phase2bSerialLogPath);
+    writeArtifactSerialLog(phase1Serial, phase2Serial, phase2bSerial);
+    const refusal = assertUefiKeyfileRestoreWrongPassphraseContract(phase2bSerial);
+    if (!refusal.ok || phase2b.exitCode !== 0) {
+      reportResult(
+        {
+          exitCode: 1,
+          reason: `UEFI keyfile restore wrong-passphrase contract failed — ${
+            refusal.ok ? phase2b.reason : refusal.reason
+          }`,
+          serialLogTail: phase2bSerial.slice(-2000),
+          ...(phase2b.elapsedSeconds !== undefined ? { elapsedSeconds: phase2b.elapsedSeconds } : {}),
+        },
+        artifactSerialLogPath,
+      );
+    }
+    console.log(
+      "[qemu-full-install-test] UEFI keyfile restore wrong-passphrase contract ok (decrypt refused; no write; still fw_cfg / not metal)",
     );
   }
 

@@ -18,11 +18,11 @@
 #       Reads /run/zeta-creds-passphrase (operator pre-stages this).
 #       File is deleted on service stop.
 #   - interactive (operator-driven first boot; nicer UX):
-#       Uses systemd-ask-password on tty1 at boot. Operator types
-#       passphrase. (Implementation note: this mode currently writes
-#       a temporary file with the entered passphrase; B-0852.4b
-#       follow-on row may switch to stdin pipe to restore CLI for
-#       tighter handling.)
+#       passphrase-source.ts calls systemd-ask-password on tty1.
+#       Hexagonal port (planPassphraseSource + PassphraseSourceEffects);
+#       metal path is unit-tested via a mock ask-password adapter.
+#       Still writes a temporary file; B-0852.4b may switch to a stdin
+#       pipe to the restore CLI.
 #
 # Per .claude/rules/non-coercion-invariant.md HC-8: operator authority
 # over own creds; passphrase NEVER logged; required-cred restore
@@ -259,38 +259,51 @@ in
             exit 0
           fi
 
-          # QEMU-only staging: hypervisor `-fw_cfg name=opt/org.zeta/creds-passphrase,file=`
-          # copies into ${cfg.passphraseFile}. Never log the contents. Metal has
-          # no such sysfs node, so interactive ask-password is unchanged.
-          #
-          # 081M0WS33AK087G0R000BG9R8X -- THE SUCCESS LINE MUST NAME ITS TRANSPORT.
-          #
-          # This unit has three ways to obtain the passphrase and only one of
-          # them exists on hardware:
-          #
-          #   qemu-fw_cfg              the hypervisor hands it over through a
-          #                            sysfs node the guest reads. HYPERVISOR
-          #                            ONLY -- metal has no such node, ever.
-          #   pre-staged-file          something already wrote passphraseFile.
-          #   interactive-ask-password systemd-ask-password on tty1. THIS is
-          #                            the metal path.
-          #
-          # Until now the terminal markers -- "wrote N" and "already-present" --
-          # named none of them, so a green CI restore and a green metal restore
-          # printed the SAME success. A check that ran against the hypervisor
-          # transport must not be readable as one that ran against tty1, so the
-          # transport is now carried on the success line itself rather than left
-          # to be inferred from an earlier staging line that only sometimes
-          # appears. THE MECHANISM IS UNCHANGED; only the claim is now honest.
+          # Passphrase door is passphrase-source.ts (hexagonal port). The three
+          # transports and their serial strings live there so the metal tty1
+          # path is unit-testable via mock effects. This unit MUST call that
+          # script — a second shell implementation would desync the serial
+          # contract. bun is resolved here (before restore CLI) because the
+          # stager is also TypeScript.
+          cd "${cfg.repoRoot}"
+          BUN_BIN="$(ls -1 ${cfg.home}/.local/share/mise/installs/bun/*/bin/bun 2>/dev/null | sort -V | tail -1 || true)"
+          if [ -z "$BUN_BIN" ] || [ ! -x "$BUN_BIN" ]; then
+            BUN_BIN="${bunShimPath}"
+          fi
+          log_restore "zeta-creds-restore: bun binary $BUN_BIN (cwd $(pwd))"
+
+          PASSPHRASE_SOURCE="${cfg.repoRoot}/src/Core.TypeScript/installer/passphrase-source.ts"
+          if [ ! -e "$PASSPHRASE_SOURCE" ]; then
+            log_restore "zeta-creds-restore: MISSING passphrase-source $PASSPHRASE_SOURCE"
+            exit 1
+          fi
+
           PASSPHRASE_TRANSPORT="none"
-          ${pkgs.kmod}/bin/modprobe qemu_fw_cfg >/dev/null 2>&1 || true
-          FWCFG_RAW="/sys/firmware/qemu_fw_cfg/by_name/opt/org.zeta/creds-passphrase/raw"
-          if [ -r "$FWCFG_RAW" ]; then
-            umask 0177
-            head -c 4096 "$FWCFG_RAW" > ${cfg.passphraseFile}
-            chmod 0400 ${cfg.passphraseFile}
-            PASSPHRASE_TRANSPORT="qemu-fw_cfg"
-            log_restore "zeta-creds-restore: passphrase staged from qemu fw_cfg"
+          PASSPHRASE_PATH=""
+          STAGE_RC=0
+          STAGE_OUT="$("$BUN_BIN" "$PASSPHRASE_SOURCE" \
+            --stage \
+            --passphrase-file ${cfg.passphraseFile} \
+            --mode ${cfg.passphraseMode} \
+            --fwcfg-raw /sys/firmware/qemu_fw_cfg/by_name/opt/org.zeta/creds-passphrase/raw \
+            --ask-password-bin ${pkgs.systemd}/bin/systemd-ask-password \
+            --temp-file /run/zeta-creds-passphrase-temp 2>&1)" || STAGE_RC=$?
+          while IFS= read -r _line || [ -n "$_line" ]; do
+            case "$_line" in
+              PASSPHRASE_TRANSPORT=*) PASSPHRASE_TRANSPORT="''${_line#PASSPHRASE_TRANSPORT=}" ;;
+              PASSPHRASE_PATH=*) PASSPHRASE_PATH="''${_line#PASSPHRASE_PATH=}" ;;
+              "") ;;
+              *) log_restore "$_line" ;;
+            esac
+          done <<EOF
+$STAGE_OUT
+EOF
+          if [ "$STAGE_RC" -ne 0 ]; then
+            exit 1
+          fi
+          if [ -z "$PASSPHRASE_PATH" ]; then
+            log_restore "zeta-creds-restore: passphrase-source produced no PASSPHRASE_PATH"
+            exit 1
           fi
 
           log_restore "zeta-creds-restore: reading preserved ESP blob"
@@ -335,48 +348,6 @@ in
             log_restore "zeta-creds-restore: binding-factor usbUuid (default)"
           fi
 
-          if [ -s ${cfg.passphraseFile} ]; then
-            PASSPHRASE_PATH="${cfg.passphraseFile}"
-            if [ "$PASSPHRASE_TRANSPORT" = "none" ]; then
-              PASSPHRASE_TRANSPORT="pre-staged-file"
-            fi
-          else
-            ${
-              if cfg.passphraseMode == "file" then ''
-                log_restore "zeta-creds-restore: passphrase file ${cfg.passphraseFile} missing (passphraseMode=file)"
-                exit 1
-              '' else ''
-                # interactive mode: prompt operator via systemd-ask-password
-                # unless QEMU (or an operator) already staged passphraseFile.
-                PASSPHRASE_PATH="/run/zeta-creds-passphrase-temp"
-                PASSPHRASE="$(${pkgs.systemd}/bin/systemd-ask-password \
-                  --timeout=300 \
-                  "Zeta cred-blob passphrase: ")"
-                if [ -z "$PASSPHRASE" ]; then
-                  log_restore "zeta-creds-restore: empty passphrase from systemd-ask-password"
-                  exit 1
-                fi
-                umask 0177
-                echo -n "$PASSPHRASE" > "$PASSPHRASE_PATH"
-                chmod 0400 "$PASSPHRASE_PATH"
-                PASSPHRASE_TRANSPORT="interactive-ask-password"
-                unset PASSPHRASE
-              ''
-            }
-          fi
-
-          # Emitted BEFORE the restore CLI runs, so it is present on the serial
-          # log whether the restore then succeeds, fails, or is skipped as
-          # already-present. `metal-capable` is the property that matters to a
-          # reader deciding what a green run proved.
-          if [ "$PASSPHRASE_TRANSPORT" = "qemu-fw_cfg" ]; then
-            log_restore "zeta-creds-restore: passphrase transport=qemu-fw_cfg metal-capable=no (hypervisor-only; this run proves NOTHING about the tty1 path on hardware)"
-          elif [ "$PASSPHRASE_TRANSPORT" = "interactive-ask-password" ]; then
-            log_restore "zeta-creds-restore: passphrase transport=interactive-ask-password metal-capable=yes"
-          else
-            log_restore "zeta-creds-restore: passphrase transport=$PASSPHRASE_TRANSPORT metal-capable=unknown"
-          fi
-
           PERSONA_ARGS=""
           ${lib.optionalString (cfg.persona != null) ''
             PERSONA_ARGS="--persona ${cfg.persona}"
@@ -396,20 +367,9 @@ in
           # ${cfg.scriptPath} exists. Without this cd the shim errors
           # "No version is set for shim: bun" and restore never runs (run
           # 32952620895: blob delivered + read, then died on the bun shim).
+          # bun was resolved above (passphrase-source.ts). Stay in the repo so
+          # the restore CLI matches the same binary. WorkingDirectory stays "/".
           cd "${cfg.repoRoot}"
-          # 081M0WTB5MN: resolve the REAL bun binary from mise's install dir and
-          # invoke it directly, so the restore never depends on mise config/trust
-          # resolution. Run 32970963143 died on `mise ERROR No version is set for
-          # shim: bun` even with cd + MISE_TRUSTED_CONFIG_PATHS — the shim's
-          # config resolution behaved differently under systemd-as-root than it
-          # does interactively (verified locally: the direct binary resolves from
-          # any cwd, as root, with no trust). The shim is the fallback only when
-          # no install is present; the precondition gate already proved it exists.
-          BUN_BIN="$(ls -1 ${cfg.home}/.local/share/mise/installs/bun/*/bin/bun 2>/dev/null | sort -V | tail -1 || true)"
-          if [ -z "$BUN_BIN" ] || [ ! -x "$BUN_BIN" ]; then
-            BUN_BIN="${bunShimPath}"
-          fi
-          log_restore "zeta-creds-restore: bun binary $BUN_BIN (cwd $(pwd))"
           if [ -n "$_serial" ]; then
             "$BUN_BIN" ${cfg.scriptPath} \
               "$BIND_FLAG" "$BIND_VALUE" \

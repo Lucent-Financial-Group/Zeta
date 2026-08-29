@@ -15,7 +15,7 @@
 import { readdirSync, readFileSync, renameSync, writeFileSync, mkdirSync, mkdtempSync, rmSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { publish } from "../bus/bus";
-import { AGENT_IDS, SENDER_IDS, type AgentId, type MessageEnvelope, type SenderAgentId } from "../bus/types";
+import { AGENT_IDS, SENDER_IDS, broadcastForbiddenForTopic, type AgentId, type MessageEnvelope, type SenderAgentId } from "../bus/types";
 
 export type NotifierConfig = {
   /** How often to poll, in minutes */
@@ -28,7 +28,7 @@ export type NotifierConfig = {
   noPublish: boolean;
   /** Bus sender identity */
   fromAgent: SenderAgentId;
-  /** Bus recipient (default "*" = broadcast) */
+  /** Bus recipient — a specific persona. work-assignment is directed dialogue. */
   toAgent: AgentId;
   /** Max number of work-assignment envelopes to publish per poll */
   maxAssignments: number;
@@ -55,7 +55,7 @@ export const DEFAULT_CONFIG: NotifierConfig = {
   backlogDir: "docs/backlog",
   noPublish: false,
   fromAgent: "otto",
-  toAgent: "*",
+  toAgent: "otto",
   maxAssignments: 3,
   targetAgent: "otto",
   historyFile: defaultHistoryFile(),
@@ -588,6 +588,8 @@ export function parseArgs(argv: string[]): NotifierConfig {
     }
   }
 
+  const directedErr = broadcastForbiddenForTopic("work-assignment", config.toAgent);
+  if (directedErr) throw new Error(directedErr);
   return config;
 }
 

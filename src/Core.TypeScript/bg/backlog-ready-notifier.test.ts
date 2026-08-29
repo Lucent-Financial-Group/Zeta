@@ -108,6 +108,8 @@ describe("backlog-ready-notifier slice 2", () => {
     expect(DEFAULT_CONFIG.pollIntervalMin).toBe(10);
     expect(DEFAULT_CONFIG.once).toBe(false);
     expect(DEFAULT_CONFIG.backlogDir).toBe("docs/backlog");
+    expect(DEFAULT_CONFIG.toAgent).toBe("otto");
+    expect(DEFAULT_CONFIG.toAgent).not.toBe("*");
   });
 
   describe("parseRow", () => {
@@ -391,7 +393,7 @@ title: only a title
       expect(result.publishedEnvelopeIds).toHaveLength(2);
       expect(captured).toHaveLength(2);
       expect(captured[0]!.from).toBe("otto");
-      expect(captured[0]!.to).toBe("*");
+      expect(captured[0]!.to).toBe("otto");
       expect(captured[0]!.rowId).toBe("081KFIXT0000009001");
       expect(captured[0]!.priority).toBe("P1");
       expect(captured[0]!.rationale).toContain("Ready-to-grind");
@@ -762,6 +764,10 @@ title: only a title
       expect(config.toAgent).toBe("lior");
       expect(config.maxAssignments).toBe(5);
       expect(config.targetAgent).toBe("riven");
+    });
+
+    test("rejects --to * — work-assignment is directed", () => {
+      expect(() => parseArgs(["--to", "*"])).toThrow(/specific recipient/);
     });
 
     test("rejects unknown flags", () => {

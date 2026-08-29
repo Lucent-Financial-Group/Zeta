@@ -1,4 +1,8 @@
 import { describe, expect, it } from "bun:test";
+import { readFileSync, readdirSync } from "node:fs";
+import { join, dirname } from "node:path";
+import { fileURLToPath } from "node:url";
+import { DIRECTED_TOPICS } from "../bus/types.ts";
 import {
   buildSwarmGraph,
   coauthorPersona,
@@ -60,6 +64,25 @@ describe("foldBusEdges", () => {
     expect(e.directed).toBe(true);
     expect(e.channel).toBe("bus");
     expect(e.lastAt).toBe("2026-08-01T00:00:00Z");
+  });
+
+  it("directed review/work/fv topics produce bus edges; broadcast does not", () => {
+    const broadcastOnly = foldBusEdges([
+      { from: "otto", to: "*", topic: "work-assignment", timestamp: "2026-08-01T00:00:00Z" },
+      { from: "otto", to: "*", topic: "review-request", timestamp: "2026-08-01T00:00:00Z" },
+      { from: "soraya", to: "*", topic: "formal-verification-result", timestamp: "2026-08-01T00:00:00Z" },
+    ]);
+    expect(broadcastOnly.edges.length).toBe(0);
+
+    const directed = foldBusEdges([
+      { from: "otto", to: "vera", topic: "work-assignment", timestamp: "2026-08-01T00:00:00Z" },
+      { from: "otto", to: "soraya", topic: "review-request", timestamp: "2026-08-01T00:00:00Z" },
+      { from: "soraya", to: "otto", topic: "formal-verification-result", timestamp: "2026-08-02T00:00:00Z" },
+    ]);
+    expect(directed.edges.length).toBe(3);
+    expect(directed.directedPairs).toContainEqual({ from: "otto", to: "vera" });
+    expect(directed.directedPairs).toContainEqual({ from: "otto", to: "soraya" });
+    expect(directed.directedPairs).toContainEqual({ from: "soraya", to: "otto" });
   });
 });
 
@@ -126,5 +149,30 @@ describe("buildSwarmGraph", () => {
     expect(graph.coverage.commit.edges).toBe(1);
     // node colour + role wired from roster
     expect(graph.nodes.find((n) => n.id === "soraya")!.role).toBe("Verifier");
+  });
+});
+
+describe("persistent agent-bus directed dialogue (swarm knob)", () => {
+  it("docs/agent-bus has at least one non-broadcast envelope on a directed topic", () => {
+    const root = join(dirname(fileURLToPath(import.meta.url)), "../../../docs/agent-bus");
+    const files: string[] = [];
+    const walk = (dir: string): void => {
+      for (const ent of readdirSync(dir, { withFileTypes: true })) {
+        const p = join(dir, ent.name);
+        if (ent.isDirectory()) walk(p);
+        else if (ent.name.endsWith(".json")) files.push(p);
+      }
+    };
+    walk(root);
+    const directed = files.filter((f) => {
+      const env = JSON.parse(readFileSync(f, "utf8")) as { topic?: string; to?: string };
+      return (
+        typeof env.to === "string" &&
+        env.to !== "*" &&
+        typeof env.topic === "string" &&
+        (DIRECTED_TOPICS as readonly string[]).includes(env.topic)
+      );
+    });
+    expect(directed.length).toBeGreaterThan(0);
   });
 });

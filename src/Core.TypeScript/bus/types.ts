@@ -126,6 +126,33 @@ export type WorkAssignmentPayload = {
   decompositionHint?: string;
 };
 
+/** 081KS3X9Y0008QG0R001MD26NZ — Soraya publishes a directed result, never a broadcast. */
+export type FormalVerificationResultPayload = {
+  job: string;
+  verifier: string;
+  result: "pass" | "fail" | "skip" | "timeout";
+  duration_ms: number;
+  sha?: string;
+  run_id?: string;
+};
+
+/**
+ * Topics that MUST name a specific recipient. Broadcast (`to: "*"`) is a
+ * liveness signal; swarm-graph cannot form a directed bus edge from it.
+ * review-request / work-assignment / formal-verification-result are dialogue.
+ */
+export const DIRECTED_TOPICS: readonly Topic[] = [
+  "review-request",
+  "work-assignment",
+  "formal-verification-result",
+] as const;
+
+export function broadcastForbiddenForTopic(topic: Topic, to: AgentId): string | null {
+  if (to !== "*") return null;
+  if (!(DIRECTED_TOPICS as readonly string[]).includes(topic)) return null;
+  return `${topic} requires a specific recipient (not "*"); broadcasts form no swarm bus edge`;
+}
+
 /** 081KRFA460008QG0R00061SXRW: missed-substrate detector reports branch-vs-merged-PR drift. */
 export type MissedSubstrateCascadePayload = {
   prNumber: number;
@@ -147,7 +174,8 @@ export type BusMessage =
   | { topic: "review-request"; payload: ReviewRequestPayload }
   | { topic: "infinite-backlog-nudge"; payload: InfiniteBacklogNudgePayload }
   | { topic: "work-assignment"; payload: WorkAssignmentPayload }
-  | { topic: "missed-substrate-cascade"; payload: MissedSubstrateCascadePayload };
+  | { topic: "missed-substrate-cascade"; payload: MissedSubstrateCascadePayload }
+  | { topic: "formal-verification-result"; payload: FormalVerificationResultPayload };
 
 // ── envelope (what lands on disk) ────────────────────────────────────────────
 
