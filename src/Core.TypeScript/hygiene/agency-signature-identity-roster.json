@@ -145,7 +145,13 @@
         "Action-Mode": "autonomous-fail-open",
         "Task": "none"
       },
-      "profileEvidence": "Measured 2026-08-15 on PR #10753: pull_request.user.login = 'dependabot[bot]', user.type = 'Bot'. Opens PRs on a schedule with no human in the loop; the diff is a manifest version bump generated from the advisory/registry feed, not a model sample. A human still has to MERGE it -- that is the review, and it happens after this gate, which is why Human-Review is 'none' here and not 'explicit'."
+      "profileEvidence": "Measured 2026-08-15 on PR #10753: pull_request.user.login = 'dependabot[bot]', user.type = 'Bot'. Opens PRs on a schedule with no human in the loop; the diff is a manifest version bump generated from the advisory/registry feed, not a model sample. A human still has to MERGE it -- that is the review, and it happens after this gate, which is why Human-Review is 'none' here and not 'explicit'.",
+      "email": "49699333+dependabot[bot]@users.noreply.github.com",
+      "alsoEmails": [
+        "dependabot[bot]@users.noreply.github.com",
+        "support@dependabot.com"
+      ],
+      "emailEvidence": "Measured 2026-08-29 on commit 58e49147d94c (squash of #16160): Co-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>. Both the numeric and bare noreply forms are listed for the same reason machineLanes lists both github-actions forms -- GitHub emits either depending on the surface."
     }
   ],
   "credentialIdentities": [
@@ -153,7 +159,11 @@
       "credential": "acehack",
       "mode": "shared",
       "why": "The maintainer's GitHub credential. THE SHARED ONE: the fleet signs with it, which is why `Credential-Mode: dedicated-agent` on it is refutable. Aaron is accountable for AceHack repos (memory: standing authority + the named liability split).",
-      "gitEmails": ["aaron_bond@yahoo.com", "acehack00@gmail.com", "578953+acehack@users.noreply.github.com"],
+      "gitEmails": [
+        "aaron_bond@yahoo.com",
+        "acehack00@gmail.com",
+        "578953+acehack@users.noreply.github.com"
+      ],
       "claimSpellings": [
         "AceHack",
         "AceHack via gh",
@@ -173,7 +183,12 @@
         "41898282+github-actions[bot]@users.noreply.github.com",
         "society[bot]@users.noreply.github.com"
       ],
-      "claimSpellings": ["github-actions[bot]", "github-actions", "society[bot]", "society"],
+      "claimSpellings": [
+        "github-actions[bot]",
+        "github-actions",
+        "society[bot]",
+        "society"
+      ],
       "evidence": "319 blocks over the last 600 main commits claim `github-actions[bot]`. The society[bot] display identity is set at .github/workflows/society-heartbeat.yml 'Configure committer'; the push credential in that same file is secrets.ZETA_TELEMETRY_FLUSH_TOKEN with a secrets.GITHUB_TOKEN fallback. Falsified against commits cbc6f1a1c11d and 93310a63126d, 2026-08-26."
     }
   ]
