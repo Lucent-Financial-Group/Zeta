@@ -475,6 +475,7 @@ Gaps: **fsync floor** (unshipped), **multi-key ACID/isolation** (only single-str
 - `IAsyncEnumerable` adapter ✅
 - `IObservable` adapter (System.Reactive) ✅
 - Tumbling / sliding / session window operators ✅
+- Arrow IPC + zstd (`ArrowIpc`; legacy uncompressed still reads) ✅
 - Pluggable sinks (`ISink` 2PC, `IAppendSink` EventStore-style) ✅
 - DI seams: `IClock`, `IMetricsSink`, `IHashStrategy`, `IConsistentHash`, `IBackingStore`, `ISink`, `IAppendSink` ✅
 - Work-stealing runtimes: TPL Dataflow + MailboxProcessor ✅
@@ -502,7 +503,7 @@ Gaps: **fsync floor** (unshipped), **multi-key ACID/isolation** (only single-str
 
 ## P1 (next round — 2 weeks)
 
-- **Apache Arrow IPC + zstd** checkpoint format (10× faster than JSON on big states)
+- **Apache Arrow IPC + zstd** checkpoint format — shipped (`ArrowIpc.zstdOptions`; writers emit zstd IPC buffers; readers still accept uncompressed legacy frames). Flight remains unshipped.
 - **Arrow Flight** as the multi-node wire protocol — bi-directional streaming of Z-set deltas
 - **WatermarkStrategy.Statistical via KLL** — `DI seam: IWatermarkStrategy` ✅ (`StatisticalWatermarkStrategy`)
 - **Frontier<int64>** — shipped (`src/Core/Frontier.fs`). Per-shard watermarks; `Merge` is conservative min; `Advance` is monotone max; `ClosedThrough` = min (Akidau). Empty = no sources → `Int64.MinValue`, matching `Watermark.combine []`, **not** Timely's empty antichain (`+∞`). Remaining: multi-dimensional timestamps (P3 Timely logical time).

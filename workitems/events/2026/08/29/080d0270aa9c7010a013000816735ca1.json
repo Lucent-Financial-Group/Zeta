@@ -1,0 +1,14 @@
+{
+  "id": "080d0270aa9c7010a013000816735ca1",
+  "at": "2026-08-29T15:13:35.630Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M171AMWE087G0R000PPH1GP",
+    "type": "task",
+    "title": "Arrow IPC zstd checkpoint compression",
+    "slug": "arrow-ipc-zstd-checkpoint-compression",
+    "priority": "P1",
+    "filename": "081M171AMWE087G0R000PPH1GP-arrow-ipc-zstd-checkpoint-compression.md"
+  }
+}

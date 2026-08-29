@@ -298,6 +298,7 @@
     <Compile Include="StreamPolicy.fs" />
     <Compile Include="Serializer.fs" />
     <Compile Include="ZetaSqlBuilder.fs" />
+    <Compile Include="ArrowIpc.fs" />
     <Compile Include="ArrowSerializer.fs" />
     <Compile Include="ColumnZSetArrow.fs" />
     <Compile Include="DynamicValueArrow.fs" />
@@ -544,6 +545,7 @@
     <PackageReference Include="FsPickler" />
     <PackageReference Include="MessagePack" />
     <PackageReference Include="Apache.Arrow" />
+    <PackageReference Include="Apache.Arrow.Compression" />
   </ItemGroup>
 
   <ItemGroup>

@@ -131,3 +131,24 @@ let ``string Z-set: multiple entries incl negative weights round-trip (retractio
 [<Fact>]
 let ``string Z-set: serializer name is arrow-ipc-string`` () =
     (ArrowStringSerializer() :> ISerializer<string>).Name |> should equal "arrow-ipc-string"
+
+
+[<Fact>]
+let ``zstd IPC payload is smaller than uncompressed for a dense int64 batch`` () =
+    let z = ZSet.ofKeys [ for i in 0L .. 511L -> i ]
+    let c = ColumnZSet.ofZSet z
+    use batch = ColumnZSetArrow.ToRecordBatch c
+    let zstd = ArrowIpc.writeFramedBytes ColumnZSetArrow.Schema batch
+    let raw = ArrowIpc.writeFramedUncompressed ColumnZSetArrow.Schema batch
+    zstd.Length |> should be (lessThan raw.Length)
+
+
+[<Fact>]
+let ``reader with codec factory still decodes uncompressed legacy frames`` () =
+    let z = ZSet.ofSeq [ 1L, 2L; 3L, -4L ]
+    let c = ColumnZSet.ofZSet z
+    use batch = ColumnZSetArrow.ToRecordBatch c
+    let raw = ArrowIpc.writeFramedUncompressed ColumnZSetArrow.Schema batch
+    let back = ColumnZSetArrow.ReadIpc(System.ReadOnlySpan raw) |> ColumnZSet.toZSet
+    back.[1L] |> should equal 2L
+    back.[3L] |> should equal -4L
