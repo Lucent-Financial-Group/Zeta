@@ -1,10 +1,12 @@
 {
   "version": 1,
-  "generatedAtIso": "2026-08-29T12:35:07.725Z",
-  "commit": "c93168537",
+  "generatedAtIso": "2026-08-29T18:30:45.059Z",
+  "commit": "a10508de0",
   "totals": {
-    "findings": 0,
-    "bySeverity": {}
+    "findings": 2,
+    "bySeverity": {
+      "failing": 2
+    }
   },
   "territories": [
     {
@@ -34,8 +36,31 @@
         {
           "id": "main-failures",
           "name": "main — recent runs",
-          "summary": "All of the last 40 runs on main concluded green.",
-          "findings": []
+          "summary": "2 of the last 40 runs on main failed.",
+          "findings": [
+            {
+              "id": "ci:33265340224",
+              "title": "macos-install-sh-test",
+              "severity": "failing",
+              "locus": "a10508de0 — 2026-08-29 17:19",
+              "evidence": [
+                "fix(setup): align markdownlint-cli2 with package.json — a stale mise …",
+                "run id 33265340224"
+              ],
+              "why": "A failing workflow on main is drift the fleet is expected to heal after the fact, not a gate that stops it."
+            },
+            {
+              "id": "ci:33265340182",
+              "title": "docker-windows-install-ps1-test",
+              "severity": "failing",
+              "locus": "a10508de0 — 2026-08-29 17:19",
+              "evidence": [
+                "fix(setup): align markdownlint-cli2 with package.json — a stale mise …",
+                "run id 33265340182"
+              ],
+              "why": "A failing workflow on main is drift the fleet is expected to heal after the fact, not a gate that stops it."
+            }
+          ]
         }
       ]
     }
