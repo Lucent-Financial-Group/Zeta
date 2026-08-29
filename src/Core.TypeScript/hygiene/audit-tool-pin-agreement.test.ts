@@ -76,3 +76,57 @@ describe("tool pins agree across installers", () => {
     expect(misePins().get("ruff")).toBeTruthy();
   });
 });
+
+/** `"npm:<tool>" = "<version>"` in .mise.toml. */
+function miseNpmPins(): Map<string, string> {
+  const text = readFileSync(join(ROOT, ".mise.toml"), "utf8");
+  const out = new Map<string, string>();
+  for (const line of text.split("\n")) {
+    const m = /^\s*"npm:([A-Za-z0-9_./@-]+)"\s*=\s*"([^"]+)"/.exec(line);
+    if (m?.[1] && m[2]) out.set(m[1], m[2]);
+  }
+  return out;
+}
+
+/** devDependencies + dependencies from the root package.json. */
+function packageJsonPins(): Map<string, string> {
+  const pkg = JSON.parse(readFileSync(join(ROOT, "package.json"), "utf8")) as {
+    dependencies?: Record<string, string>;
+    devDependencies?: Record<string, string>;
+  };
+  return new Map(Object.entries({ ...pkg.dependencies, ...pkg.devDependencies }));
+}
+
+describe("npm tool pins agree between .mise.toml and package.json", () => {
+  // THE THIRD INSTANCE of one defect: a tool declared in two places that drift.
+  // ruff was .mise.toml vs from-uv-tool; mise itself was linux.sh vs brew/scoop;
+  // this is .mise.toml vs package.json. markdownlint-cli2 sat at 0.22.1 in mise and
+  // 0.23.2 in package.json, package.json won in practice (`lint:markdown` runs the
+  // node_modules binary), and the stale mise entry broke `build-and-test (macos-26)`
+  // by resolving a transitive dep whose provenance had regressed.
+  it("parses both sides (a check over an empty set cannot fail)", () => {
+    expect(miseNpmPins().size).toBeGreaterThan(0);
+    expect(packageJsonPins().size).toBeGreaterThan(0);
+  });
+
+  it("a tool pinned in BOTH pins the same version", () => {
+    const pkg = packageJsonPins();
+    const disagreements: string[] = [];
+    for (const [tool, miseVersion] of miseNpmPins()) {
+      const pkgVersion = pkg.get(tool);
+      if (pkgVersion === undefined) continue;
+      // package.json may carry a range; only exact pins are comparable, and this
+      // repo pins exactly. A range is skipped rather than guessed at.
+      if (/^[0-9]/.test(pkgVersion) && pkgVersion !== miseVersion) {
+        disagreements.push(`${tool}: .mise.toml=${miseVersion} package.json=${pkgVersion}`);
+      }
+    }
+    expect(disagreements).toEqual([]);
+  });
+
+  it("markdownlint-cli2 specifically agrees (the case that broke macOS)", () => {
+    expect(miseNpmPins().get("markdownlint-cli2")).toBe(
+      packageJsonPins().get("markdownlint-cli2"),
+    );
+  });
+});
