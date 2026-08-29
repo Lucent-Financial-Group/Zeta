@@ -1,6 +1,6 @@
 # Zeta drift dashboard
 
-> **NOT OK — RED 14 · FLAPPING 1 · UNKNOWN 6, incl. NEVER observed · coverage 76/82 (SHORTFALL 6) · green 64 · on-demand 15**
+> **NOT OK — RED 9 · FLAPPING 1 · UNKNOWN 6, incl. NEVER observed · coverage 76/82 (SHORTFALL 6) · green 69 · on-demand 15**
 
 A check that was never observed must never render identically to a check that passed.
 `Unknown` is a first-class verdict here and can never aggregate into green: an unobserved
@@ -9,12 +9,12 @@ check is an unbounded number of unknown failures, so it is ranked ABOVE green an
 | | |
 |---|---|
 | ref | `main` |
-| pass at | 2026-08-28T21:48:49.029Z |
+| pass at | 2026-08-29T01:00:29.801Z |
 | producers | github-actions |
 | roster | 97 known checks — 82 expected to report on this ref, 15 on-demand, 0 retired |
 | coverage | **76 / 82** — **SHORTFALL 6** |
 
-## RED — 14
+## RED — 9
 
 Oldest first: a check red since the 16th outranks one red five minutes ago.
 
@@ -22,18 +22,13 @@ Oldest first: a check red since the 16th outranks one red five minutes ago.
 | --- | --- | --- | --- |
 | `chart-version-refresh` | 5d | periodic | run 32654132313 concluded 'failure' |
 | `ruleset-apply` | 3d | on-change | run 32857443217 concluded 'failure' |
-| `manifesto-citation-snapshot-cadence` | 12h | periodic | run 33161549786 concluded 'failure' |
-| `mirror-to-fork` | 10h | periodic | MOSTLY FAILING over 7d (3 of 5 concluded runs failed, 2026-08-25T18:23:12Z .. 2026-08-28T12:04:47Z, 2 consecutive pass(es) since the last failure). The newest run passed and is the outlier — a majority-failing lane is broken, not flaky. |
-| `drift-dashboard-cadence` | 5h | periodic | run 33191596114 concluded 'failure' · **recheck in flight — this is the last CONCLUDED verdict, not a current one** |
-| `search-index-cadence` | 4h | periodic | run 33194550052 concluded 'failure' |
-| `heartbeat-liveness` | 3h | periodic | run 33200386979 concluded 'failure' · **recheck in flight — this is the last CONCLUDED verdict, not a current one** |
-| `pages-deploy` | 3h | periodic | STALE: newest verdict (green) is 3h old, declared to run every 15m (schedule: `*/15 * * * *`) · **recheck in flight — this is the last CONCLUDED verdict, not a current one** · **awaiting scheduled confirmation** — a later push run concluded 'green' at 2026-08-28T21:22:32Z, NEWER than the verdict above. The verdict reports the DECLARED (scheduled) path, which is the stronger claim: a hand-run proves the code, not the cadence. This row clears when the next scheduled run passes. |
-| `lockfile-healer` | 3h | periodic | STALE: newest verdict (green) is 3h old, declared to run every 17m (schedule: `*/17 * * * *`) |
-| `society-heartbeat` | 2h | periodic | STALE: newest verdict (green) is 2h old, declared to run every 30m (schedule: `*/30 * * * *`) |
-| `rerun-toolchain-install-stall` | 85m | periodic | STALE: newest verdict (green) is 85m old, declared to run every 15m (schedule: `*/15 * * * *`) |
-| `agent-heartbeat` | 54m | periodic | STALE: newest verdict (green) is 54m old, declared to run every 15m (schedule: `7,22,37,52 * * * *`) |
-| `pr-gate-presence` | 44m | periodic | run 33210982845 concluded 'failure' |
-| `pr-manifest-integrity` | 11m | periodic | run 33213329702 concluded 'failure' |
+| `manifesto-citation-snapshot-cadence` | 15h | periodic | run 33161549786 concluded 'failure' |
+| `mirror-to-fork` | 13h | periodic | MOSTLY FAILING over 7d (3 of 5 concluded runs failed, 2026-08-25T18:23:12Z .. 2026-08-28T12:04:47Z, 2 consecutive pass(es) since the last failure). The newest run passed and is the outlier — a majority-failing lane is broken, not flaky. |
+| `drift-dashboard-cadence` | 3h | periodic | run 33214128640 concluded 'failure' · **recheck in flight — this is the last CONCLUDED verdict, not a current one** |
+| `search-index-cadence` | 3h | periodic | run 33214398515 concluded 'failure' |
+| `pr-gate-presence` | 6m | periodic | run 33224909079 concluded 'failure' |
+| `pr-manifest-integrity` | 5m | periodic | MOSTLY FAILING over 7d (11 of 20 concluded runs failed, 2026-08-24T06:37:44Z .. 2026-08-29T00:55:50Z, 1 consecutive pass(es) since the last failure). The newest run passed and is the outlier — a majority-failing lane is broken, not flaky. |
+| `pr-categorization-cadence` | 50s | periodic | run 33225104997 concluded 'failure' |
 
 ## FLAPPING — 1
 
@@ -80,7 +75,7 @@ _none_
 
 | check | state | detail |
 | --- | --- | --- |
-| `rerun-cancelled-gate` | skipped | run 33213595325 was skipped |
+| `rerun-cancelled-gate` | skipped | run 33225133691 was skipped |
 
 ## Not applicable — 11
 
@@ -105,75 +100,80 @@ hidden, and deliberately not called green — a distinction laundered is a disti
 
 </details>
 
-## Green — 64
+## Green — 69
 
 <details><summary>show</summary>
 
 | check | verdict age | expectation |
 | --- | --- | --- |
 | `accelerator-move-next` | 91d | on-demand |
-| `agencysignature-enforcement` | 28m | on-change |
+| `agencysignature-enforcement` | 3m | on-change |
+| `agent-heartbeat` | 8m | periodic |
 | `agent-proposal-gated-commit` | 11d | on-demand |
 | `agentic-organization-tests` | 3d | on-change |
-| `arc-lane` | 7h | on-change |
-| `archive-strand-alarm` | 74m | periodic |
-| `artifact-freshness` | 19m | periodic |
-| `auto-submission` | 27m | unknown |
-| `backlog-index-integrity` | 40h | on-change |
+| `arc-lane` | 10h | on-change |
+| `archive-strand-alarm` | 10m | periodic |
+| `artifact-freshness` | 12m | periodic |
+| `auto-submission` | 3m | unknown |
+| `backlog-index-integrity` | 44h | on-change |
 | `budget-snapshot-cadence` | 5d | periodic |
-| `build-ai-cluster-iso` | 5h | on-change |
+| `build-ai-cluster-iso` | 8h | on-change |
 | `build-platform-images` | 3d | on-change |
-| `bytelock` | 7h | on-change |
-| `ci-cache-paths-lint` | 22h | on-change |
-| `ci-runtime-image` | 5h | on-change |
-| `codeql` | 23m | unknown |
-| `context-cost-trend-cadence` | 11h | periodic |
+| `bytelock` | 11h | on-change |
+| `ci-cache-paths-lint` | 25h | on-change |
+| `ci-runtime-image` | 9h | on-change |
+| `codeql` | 13s | unknown |
+| `context-cost-trend-cadence` | 14h | periodic |
 | `copilot-pull-request-reviewer` | 28d | unknown |
 | `dependabot-updates` | 3d | unknown |
-| `docker-nixos-install-sh-test` | 15h | periodic |
-| `docker-ubuntu-install-sh-test` | 16h | periodic |
-| `docker-ubuntu-jammy-install-sh-test` | 16h | periodic |
-| `docker-windows-install-ps1-test` | 15h | periodic |
-| `drift-sweep` | 80m | periodic |
-| `factory-hygiene-audit-cadence` | 3h | periodic |
-| `gate` | 8m | on-change |
+| `docker-nixos-install-sh-test` | 19h | periodic |
+| `docker-ubuntu-install-sh-test` | 19h | periodic |
+| `docker-ubuntu-jammy-install-sh-test` | 19h | periodic |
+| `docker-windows-install-ps1-test` | 18h | periodic |
+| `drift-sweep` | 12m | periodic |
+| `factory-hygiene-audit-cadence` | 6h | periodic |
+| `gate` | 4m | on-change |
 | `git-hotspot-cadence` | 5d | periodic |
-| `gitbash-install-routing-test` | 14h | periodic |
+| `gitbash-install-routing-test` | 18h | periodic |
 | `github-settings-drift` | 4d | periodic |
-| `helm-validate` | 2h | periodic |
-| `installer-repair-mode-existing-install` | 24h | on-change |
-| `installer-unit-tests` | 22h | on-change |
+| `heartbeat-liveness` | 19m | periodic |
+| `helm-validate` | 5h | periodic |
+| `installer-repair-mode-existing-install` | 27h | on-change |
+| `installer-unit-tests` | 25h | on-change |
 | `interp-lane` | 3d | on-change |
 | `inventory-hardening-check` | 6d | on-change |
-| `inventory-heartbeat` | 12h | periodic |
-| `k8s-argocd-health-test` | 37m | periodic |
-| `k8s-lane-partition` | 45h | on-change |
-| `keyring-dst1000` | 43h | on-change |
+| `inventory-heartbeat` | 16h | periodic |
+| `k8s-argocd-health-test` | 4h | periodic |
+| `k8s-lane-partition` | 2d | on-change |
+| `keyring-dst1000` | 46h | on-change |
 | `lean-proof` | 3d | on-change |
-| `lint-autofix-apply` | 37m | on-demand |
-| `low-memory` | 12h | periodic |
-| `macos-install-sh-test` | 15h | periodic |
-| `memory-index-drift` | 10h | on-change |
-| `memory-index-duplicate-lint` | 10h | on-change |
-| `memory-index-integrity` | 10h | on-change |
-| `memory-reference-existence-lint` | 10h | on-change |
-| `multiboot-qemu-uefi-smoke` | 2d | on-change |
-| `mux-swarm-tick` | 51m | periodic |
+| `lint-autofix-apply` | 6m | on-demand |
+| `lockfile-healer` | 27s | periodic |
+| `low-memory` | 16h | periodic |
+| `macos-install-sh-test` | 18h | periodic |
+| `memory-index-drift` | 44m | on-change |
+| `memory-index-duplicate-lint` | 44m | on-change |
+| `memory-index-integrity` | 45m | on-change |
+| `memory-reference-existence-lint` | 44m | on-change |
+| `multiboot-qemu-uefi-smoke` | 3d | on-change |
+| `mux-swarm-tick` | 42m | periodic |
 | `pages-build-deployment` | 22d | unknown |
-| `pr-categorization-cadence` | 5h | periodic |
-| `proof-closure-drift` | 11m | periodic |
-| `razor-cadence` | 9h | periodic |
-| `role-ref-current-state-surfaces-lint` | 2h | on-change |
+| `pages-deploy` | 15m | periodic |
+| `proof-closure-drift` | 5m | periodic |
+| `razor-cadence` | 12h | periodic |
+| `rerun-toolchain-install-stall` | 3m | periodic |
+| `role-ref-current-state-surfaces-lint` | 5h | on-change |
 | `scorecard` | 5d | periodic |
 | `skill-description-lint` | 4d | on-change |
-| `soraya-formal-coverage-cadence` | 8h | periodic |
-| `stryker-mutation` | 22h | on-change |
+| `society-heartbeat` | 17m | periodic |
+| `soraya-formal-coverage-cadence` | 11h | periodic |
+| `stryker-mutation` | 26h | on-change |
 | `tick-metrics` | 2m | periodic |
-| `udp-lossy-tests` | 28m | on-change |
+| `udp-lossy-tests` | 3m | on-change |
 | `update-graph` | 3d | unknown |
 | `vocab-hygiene` | 18d | on-change |
-| `wsl-install-sh-test` | 14h | periodic |
-| `zetadb-scheduled-node` | 74m | periodic |
+| `wsl-install-sh-test` | 18h | periodic |
+| `zetadb-scheduled-node` | 10m | periodic |
 | `zflash-harness-lint` | 5d | periodic |
 
 </details>
