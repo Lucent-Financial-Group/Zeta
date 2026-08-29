@@ -69,6 +69,7 @@ type Status =
   | "HUMAN-AUTHORED-EXEMPT"
   | "HUMAN-ROSTER-EXEMPT"
   | "MACHINE-LANE-EXEMPT"
+  | "EXTERNAL-ACTOR-EXEMPT"
   | "REGRESSION";
 
 // ---------------------------------------------------------------------------
@@ -210,6 +211,8 @@ interface RosterEntry {
 export interface IdentityRoster {
   readonly humans: ReadonlySet<string>;
   readonly machineLanes: ReadonlySet<string>;
+  /** Third-party bots we do NOT run and cannot make emit a trailer (dependabot). */
+  readonly externalActors: ReadonlySet<string>;
 }
 
 const ROSTER_FILENAME = "agency-signature-identity-roster.json";
@@ -225,6 +228,24 @@ function emailSet(rows: readonly RosterEntry[] | undefined, label: string): Read
       throw new TypeError(`${ROSTER_FILENAME}: every '${label}' row needs a non-empty email`);
     }
     set.add(email.trim().toLowerCase());
+
+    // `alsoEmails` — additional addresses for the SAME identity. GitHub emits either
+    // the numeric (`49699333+dependabot[bot]@…`) or the bare noreply form depending on
+    // the surface, exactly as it does for github-actions, which this roster already
+    // lists twice under `machineLanes`. Reading it here means a listed alternate is a
+    // real exemption rather than a JSON field nothing consults.
+    const also: unknown = (row as { alsoEmails?: unknown }).alsoEmails;
+    if (also !== undefined) {
+      if (!Array.isArray(also)) {
+        throw new TypeError(`${ROSTER_FILENAME}: '${label}' alsoEmails must be an array`);
+      }
+      for (const alt of also as readonly unknown[]) {
+        if (typeof alt !== "string" || alt.trim() === "") {
+          throw new TypeError(`${ROSTER_FILENAME}: '${label}' alsoEmails entries must be non-empty strings`);
+        }
+        set.add(alt.trim().toLowerCase());
+      }
+    }
   }
   return set;
 }
@@ -238,10 +259,19 @@ export function parseIdentityRoster(json: string): IdentityRoster {
   const raw = JSON.parse(json) as {
     humans?: readonly RosterEntry[];
     machineLanes?: readonly RosterEntry[];
+    externalActors?: readonly RosterEntry[];
   };
   return {
     humans: emailSet(raw.humans, "humans"),
     machineLanes: emailSet(raw.machineLanes, "machineLanes"),
+    // OPTIONAL, unlike humans/machineLanes. A roster with no third-party actors is
+    // valid, and making the key mandatory would reject every roster written before
+    // this category existed. Absent -> empty set (exempts nobody); present -> fully
+    // validated, so a malformed entry is still a hard error rather than a silent skip.
+    externalActors:
+      raw.externalActors === undefined
+        ? new Set<string>()
+        : emailSet(raw.externalActors, "externalActors"),
   };
 }
 
@@ -713,12 +743,19 @@ function classifyFailClosed(record: CommitRecord, roster: IdentityRoster): Class
   const coauthors = coauthorEmails(record.message);
   if (coauthors.length > 0) {
     const unlisted = coauthors.filter(
-      (e) => !roster.humans.has(e) && !roster.machineLanes.has(e),
+      (e) =>
+        !roster.humans.has(e) && !roster.machineLanes.has(e) && !roster.externalActors.has(e),
     );
     if (unlisted.length > 0) {
       return {
         status: "REGRESSION",
         reason: `unsigned, and Co-authored-by is not on the identity roster: ${unlisted.join(", ")} — agent-or-unknown must carry ${CANONICAL_VERSION_KEY}`,
+      };
+    }
+    if (coauthors.some((e) => roster.externalActors.has(e))) {
+      return {
+        status: "EXTERNAL-ACTOR-EXEMPT",
+        reason: `third-party actor on the roster (${coauthors.join(", ")}); we do not run it and cannot make it emit a trailer — provenance is the roster entry's repoAssertedProfile`,
       };
     }
     if (coauthors.some((e) => roster.machineLanes.has(e))) {
@@ -735,6 +772,12 @@ function classifyFailClosed(record: CommitRecord, roster: IdentityRoster): Class
 
   const author = record.authorEmail.trim().toLowerCase();
   const committer = record.committerEmail.trim().toLowerCase();
+  if (roster.externalActors.has(author) || roster.externalActors.has(committer)) {
+    return {
+      status: "EXTERNAL-ACTOR-EXEMPT",
+      reason: `third-party actor on the roster (author ${author}); we do not run it and cannot make it emit a trailer`,
+    };
+  }
   if (roster.machineLanes.has(author) || roster.machineLanes.has(committer)) {
     return {
       status: "MACHINE-LANE-EXEMPT",
@@ -855,6 +898,7 @@ interface AuditCounts {
   human: number;
   humanRoster: number;
   machineLane: number;
+  externalActor: number;
   regression: number;
   regressions: string[];
   /** Shas in the non-blocking-by-default classes, so they are countable, not just printed. */
@@ -914,6 +958,7 @@ function tallyCommit(status: Status, short: string, counts: AuditCounts, isV2 = 
   else if (status === "HUMAN-AUTHORED-EXEMPT") counts.human++;
   else if (status === "HUMAN-ROSTER-EXEMPT") counts.humanRoster++;
   else if (status === "MACHINE-LANE-EXEMPT") counts.machineLane++;
+  else if (status === "EXTERNAL-ACTOR-EXEMPT") counts.externalActor++;
   else {
     counts.regression++;
     counts.regressions.push(short);
@@ -941,6 +986,7 @@ function auditCommits(
     human: 0,
     humanRoster: 0,
     machineLane: 0,
+    externalActor: 0,
     regression: 0,
     regressions: [],
     recoveredShas: [],
@@ -989,6 +1035,7 @@ function emitSummary(counts: AuditCounts, failOnRecovered: boolean): ExitCode {
   process.stdout.write(`  HUMAN-AUTHORED-EXEMPT:  ${String(counts.human)}   (pre-cutover legacy rule)\n`);
   process.stdout.write(`  HUMAN-ROSTER-EXEMPT:    ${String(counts.humanRoster)}\n`);
   process.stdout.write(`  MACHINE-LANE-EXEMPT:    ${String(counts.machineLane)}\n`);
+  process.stdout.write(`  EXTERNAL-ACTOR-EXEMPT:  ${String(counts.externalActor)}   (third-party bot we do not run)\n`);
   process.stdout.write(`  REGRESSION:             ${String(counts.regression)}\n`);
   if (counts.correct > 0) {
     const v1 = counts.correct - counts.correctV2;

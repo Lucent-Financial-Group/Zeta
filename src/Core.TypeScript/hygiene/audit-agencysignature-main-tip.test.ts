@@ -280,10 +280,34 @@ describe("fail-closed classification (the falsifiers)", () => {
           "chore: x\n\nCo-authored-by: renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>\n",
       }).status,
     ).toBe("REGRESSION");
+    // Was `dependabot[bot]@…`, which is now ON the roster under `externalActors`
+    // (it is a third party we cannot make emit a trailer). This test is about an
+    // UNLISTED bot, so it needs an identity that is actually unlisted -- left as
+    // dependabot it would assert the opposite of the roster and fail for a reason
+    // that has nothing to do with silent exemption.
+    expect(
+      classify({ message: "chore: x\n", authorEmail: "renovate[bot]@users.noreply.github.com" })
+        .status,
+    ).toBe("REGRESSION");
+  });
+
+  test("a LISTED third-party actor is exempt, and says which category", () => {
+    // The other side of the falsifier above. `externalActors` existed in the roster
+    // as documentation that no code read -- an entry that looked like an exemption
+    // and granted none -- so a dependabot squash landed as a REGRESSION on main.
+    const byCoauthor = classify({
+      message:
+        "chore: x\n\nCo-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>\n",
+    });
+    expect(byCoauthor.status).toBe("EXTERNAL-ACTOR-EXEMPT");
+    expect(byCoauthor.reason).toContain("cannot make it emit a trailer");
+
+    // `alsoEmails` must be honoured too: GitHub emits the bare noreply form on some
+    // surfaces and the numeric form on others, exactly as it does for github-actions.
     expect(
       classify({ message: "chore: x\n", authorEmail: "dependabot[bot]@users.noreply.github.com" })
         .status,
-    ).toBe("REGRESSION");
+    ).toBe("EXTERNAL-ACTOR-EXEMPT");
   });
 
   test("the POSITIVE human signal: every co-author on the human roster exempts", () => {
