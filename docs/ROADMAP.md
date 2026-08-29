@@ -504,7 +504,7 @@ Gaps: **fsync floor** (unshipped), **multi-key ACID/isolation** (only single-str
 ## P1 (next round — 2 weeks)
 
 - **Apache Arrow IPC + zstd** checkpoint format — shipped (`ArrowIpc.zstdOptions`; writers emit zstd IPC buffers; readers still accept uncompressed legacy frames).
-- **Arrow Flight** — in-process `DoPut` / `DoGet` / `DoExchange` over Arrow IPC shipped (`ArrowFlight.InProcessFlight`). gRPC / network adapter remaining.
+- **Arrow Flight** — in-process `DoPut` / `DoGet` / `DoExchange` shipped (`ArrowFlight.InProcessFlight`). Stream duplex shipped (`StreamClient` / `StreamServer` over `System.IO.Stream` — pipes / `NetworkStream`). gRPC encoding still not taken (stays out of Core).
 - **WatermarkStrategy.Statistical via KLL** — `DI seam: IWatermarkStrategy` ✅ (`StatisticalWatermarkStrategy`)
 - **Frontier<int64>** — shipped (`src/Core/Frontier.fs`). Per-shard watermarks; `Merge` is conservative min; `Advance` is monotone max; `ClosedThrough` = min (Akidau). Empty = no sources → `Int64.MinValue`, matching `Watermark.combine []`, **not** Timely's empty antichain (`+∞`). Remaining: multi-dimensional timestamps (P3 Timely logical time).
 - **Expression-tree operator fusion** — Build-time rewrite shipped: fanout-1 `Map`/`Filter` chains are absorbed into the consumer's `Step`. Homogeneous (same-key) chains **IL-emit** via `FuseEmit.compile` (`Expression.Compile` → one `DynamicMethod`; `Op.IsIlEmitted`). Heterogeneous Map (key type changes) stays on the closure `fusedVisit` path. Explicit `FilterMap`/`MapMap`/`MapFilter` remain.
