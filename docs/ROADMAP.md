@@ -506,7 +506,7 @@ Gaps: **fsync floor** (unshipped), **multi-key ACID/isolation** (only single-str
 - **Arrow Flight** as the multi-node wire protocol — bi-directional streaming of Z-set deltas
 - **WatermarkStrategy.Statistical via KLL** — `DI seam: IWatermarkStrategy` ✅ (`StatisticalWatermarkStrategy`)
 - **Frontier<int64>** — shipped (`src/Core/Frontier.fs`). Per-shard watermarks; `Merge` is conservative min; `Advance` is monotone max; `ClosedThrough` = min (Akidau). Empty = no sources → `Int64.MinValue`, matching `Watermark.combine []`, **not** Timely's empty antichain (`+∞`). Remaining: multi-dimensional timestamps (P3 Timely logical time).
-- **Expression-tree operator fusion** — IL-emit a fused `StepAsync` per chain of map/filter/map at Build time (2–5× on those workloads)
+- **Expression-tree operator fusion** — Build-time rewrite shipped: fanout-1 `Map`/`Filter` chains are absorbed into the consumer's `Step` (one pass, no intermediate Z-set; `Op.IsFuseSkipped` on the producer). Explicit `FilterMap`/`MapMap`/`MapFilter` remain. IL-emit of a fused `StepAsync` is the remaining increment.
 - **State TTL on BalancedSpine** — shipped (`BalancedSpine.Expire`). Injected `now` (watermark `ClosedThrough` / phase tick, never wall-clock). Returns `-Δ`; spine keeps live keys. Session-window eviction: `Expire(frontier.ClosedThrough, gap, timeOf)`.
 - **Session windows** — shipped (`SessionWindow` / `SessionWindows.assignIndexed`). `IndexedZSet` + coalesce when consecutive event-time gap > T; a late event that bridges two sessions retracts the split labels. Speculative emit (optimistic + retract). Eviction: `BalancedSpine.Expire(frontier.ClosedThrough, gap, timeOf)`.
 - **Package audit** — Stryker.NET, CodeQL, Semgrep wired into CI

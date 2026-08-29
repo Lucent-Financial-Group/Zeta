@@ -7,32 +7,168 @@ open System.Threading
 open System.Threading.Tasks
 
 
+/// Build-time fusion producer: a map that can feed a downstream fuse
+/// without materializing its Z-set. `ForEachMapped` always reflects
+/// the current fused chain (mutable), so a later Map∘Map rewrite is
+/// visible to an already-installed Filter fuse thunk.
+type internal IMapProducer<'B when 'B : comparison> =
+    abstract SetFuseSkip: unit -> unit
+    abstract SourceCount: int
+    abstract ForEachMapped: visit: ('B -> int64 -> unit) -> unit
+
+type internal IFilterProducer<'K when 'K : comparison> =
+    abstract SetFuseSkip: unit -> unit
+    abstract SourceCount: int
+    abstract ForEachKept: visit: ('K -> int64 -> unit) -> unit
+
+
 [<Sealed>]
 type internal MapZSetOp<'A, 'B when 'A : comparison and 'B : comparison>(input: Op<ZSet<'A>>, f: Func<'A, 'B>) =
     inherit Op<ZSet<'B>>()
     let inputs = [| input :> Op |]
+    let mutable skip = false
+    let mutable fusedVisit: (('B -> int64 -> unit) -> unit) option = None
     override _.Name = "map"
     override _.Inputs = inputs
-    /// Linear: ZSet.map f distributes over Z-set addition because
-    /// `f` rewrites keys without touching weights, and equal keys sum
-    /// their weights linearly.
     override _.IsLinear = true
+    override _.IsFuseSkipped = skip
+    member _.SetFuseSkip() = skip <- true
+
+    member this.ForEachMapped(visit: 'B -> int64 -> unit) =
+        match fusedVisit with
+        | Some chain -> chain visit
+        | None ->
+            let span = input.Value.AsSpan()
+            for i in 0 .. span.Length - 1 do
+                visit (f.Invoke span.[i].Key) span.[i].Weight
+
+    member _.SourceCount =
+        match box input with
+        | :? IMapProducer<'A> as p -> p.SourceCount
+        | :? IFilterProducer<'A> as p -> p.SourceCount
+        | _ -> input.Value.Count
+
+    interface IMapProducer<'B> with
+        member this.SetFuseSkip() = this.SetFuseSkip()
+        member this.SourceCount = this.SourceCount
+        member this.ForEachMapped visit = this.ForEachMapped visit
+
+    override this.TryFuse fanoutOf =
+        if skip || fusedVisit.IsSome then false
+        elif fanoutOf input <> 1 then false
+        else
+            match box input with
+            | :? IMapProducer<'A> as up ->
+                up.SetFuseSkip()
+                fusedVisit <- Some (fun visit ->
+                    up.ForEachMapped (fun a w -> visit (f.Invoke a) w))
+                true
+            | :? IFilterProducer<'A> as up ->
+                up.SetFuseSkip()
+                fusedVisit <- Some (fun visit ->
+                    up.ForEachKept (fun a w -> visit (f.Invoke a) w))
+                true
+            | _ -> false
+
     override this.StepAsync(_: CancellationToken) =
-        this.Value <- ZSet.map f.Invoke input.Value
-        ValueTask.CompletedTask
+        if skip then ValueTask.CompletedTask
+        else
+            match fusedVisit with
+            | None ->
+                this.Value <- ZSet.map f.Invoke input.Value
+            | Some chain ->
+                let cap = max 1 this.SourceCount
+                let rented = Pool.Rent<ZEntry<'B>> cap
+                try
+                    let mutable n = 0
+                    chain (fun k w ->
+                        if n < rented.Length then
+                            rented.[n] <- ZEntry(k, w)
+                            n <- n + 1)
+                    if n = 0 then this.Value <- ZSet<'B>.Empty
+                    else
+                        let live = ZSetBuilder.sortAndConsolidate (Span<_>(rented, 0, n))
+                        this.Value <-
+                            if live = 0 then ZSet<'B>.Empty
+                            else ZSet(Pool.FreezeSlice(rented, live))
+                finally
+                    Pool.Return rented
+            ValueTask.CompletedTask
 
 
 [<Sealed>]
 type internal FilterZSetOp<'K when 'K : comparison>(input: Op<ZSet<'K>>, predicate: Func<'K, bool>) =
     inherit Op<ZSet<'K>>()
     let inputs = [| input :> Op |]
+    let mutable skip = false
+    let mutable fusedVisit: (('K -> int64 -> unit) -> unit) option = None
     override _.Name = "filter"
     override _.Inputs = inputs
-    /// Linear: predicate is weight-independent, so filter(a+b) = filter(a)+filter(b).
     override _.IsLinear = true
+    override _.IsFuseSkipped = skip
+    member _.SetFuseSkip() = skip <- true
+
+    member this.ForEachKept(visit: 'K -> int64 -> unit) =
+        match fusedVisit with
+        | Some chain -> chain visit
+        | None ->
+            let span = input.Value.AsSpan()
+            for i in 0 .. span.Length - 1 do
+                if predicate.Invoke span.[i].Key then
+                    visit span.[i].Key span.[i].Weight
+
+    member _.SourceCount =
+        match box input with
+        | :? IMapProducer<'K> as p -> p.SourceCount
+        | :? IFilterProducer<'K> as p -> p.SourceCount
+        | _ -> input.Value.Count
+
+    interface IFilterProducer<'K> with
+        member this.SetFuseSkip() = this.SetFuseSkip()
+        member this.SourceCount = this.SourceCount
+        member this.ForEachKept visit = this.ForEachKept visit
+
+    override this.TryFuse fanoutOf =
+        if skip || fusedVisit.IsSome then false
+        elif fanoutOf input <> 1 then false
+        else
+            match box input with
+            | :? IMapProducer<'K> as up ->
+                up.SetFuseSkip()
+                fusedVisit <- Some (fun visit ->
+                    up.ForEachMapped (fun k w -> if predicate.Invoke k then visit k w))
+                true
+            | :? IFilterProducer<'K> as up ->
+                up.SetFuseSkip()
+                fusedVisit <- Some (fun visit ->
+                    up.ForEachKept (fun k w -> if predicate.Invoke k then visit k w))
+                true
+            | _ -> false
+
     override this.StepAsync(_: CancellationToken) =
-        this.Value <- ZSet.filter predicate.Invoke input.Value
-        ValueTask.CompletedTask
+        if skip then ValueTask.CompletedTask
+        else
+            match fusedVisit with
+            | None ->
+                this.Value <- ZSet.filter predicate.Invoke input.Value
+            | Some chain ->
+                let cap = max 1 this.SourceCount
+                let rented = Pool.Rent<ZEntry<'K>> cap
+                try
+                    let mutable n = 0
+                    chain (fun k w ->
+                        if n < rented.Length then
+                            rented.[n] <- ZEntry(k, w)
+                            n <- n + 1)
+                    if n = 0 then this.Value <- ZSet<'K>.Empty
+                    else
+                        let live = ZSetBuilder.sortAndConsolidate (Span<_>(rented, 0, n))
+                        this.Value <-
+                            if live = 0 then ZSet<'K>.Empty
+                            else ZSet(Pool.FreezeSlice(rented, live))
+                finally
+                    Pool.Return rented
+            ValueTask.CompletedTask
 
 
 [<Sealed>]

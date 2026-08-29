@@ -383,3 +383,70 @@ let ``MapFilter declares IsLinear`` () =
     c.Build()
     let op = c.Ops |> Seq.find (fun o -> o.Name = "mapFilter")
     op.IsLinear |> should equal true
+
+
+[<Fact>]
+let ``Build fuses Map then Filter into the filter and skips the map`` () =
+    task {
+        let c = Circuit.create ()
+        let input = c.ZSetInput<int>()
+        let mapped = c.Map(input.Stream, Func<int, int>(fun x -> x * 10))
+        let filtered = c.Filter(mapped, Func<int, bool>(fun x -> x > 0))
+        let out = c.Output filtered
+        c.Build()
+        mapped.Op.IsFuseSkipped |> should be True
+        filtered.Op.IsFuseSkipped |> should be False
+        input.Send(ZSet.ofKeys [ -1; 0; 1; 2 ])
+        do! c.StepAsync()
+        out.Current.[10] |> should equal 1L
+        out.Current.[20] |> should equal 1L
+        out.Current.[-10] |> should equal 0L
+        out.Current.[0] |> should equal 0L
+    }
+
+
+[<Fact>]
+let ``Build fuses Filter then Map into the map and skips the filter`` () =
+    task {
+        let c = Circuit.create ()
+        let input = c.ZSetInput<int>()
+        let filtered = c.Filter(input.Stream, Func<int, bool>(fun x -> x > 0))
+        let mapped = c.Map(filtered, Func<int, int>(fun x -> x * 10))
+        let out = c.Output mapped
+        c.Build()
+        filtered.Op.IsFuseSkipped |> should be True
+        input.Send(ZSet.ofKeys [ -1; 1; 2 ])
+        do! c.StepAsync()
+        out.Current.[10] |> should equal 1L
+        out.Current.[20] |> should equal 1L
+        out.Current.[-10] |> should equal 0L
+    }
+
+
+[<Fact>]
+let ``Build fuses Map then Map; colliding keys still consolidate`` () =
+    task {
+        let c = Circuit.create ()
+        let input = c.ZSetInput<int>()
+        let m1 = c.Map(input.Stream, Func<int, int>(fun x -> x / 2))
+        let m2 = c.Map(m1, Func<int, int>(fun x -> x))
+        let out = c.Output m2
+        c.Build()
+        m1.Op.IsFuseSkipped |> should be True
+        input.Send(ZSet.ofKeys [ 2; 3; 4 ])
+        do! c.StepAsync()
+        // 2/2=1, 3/2=1, 4/2=2 → key 1 weight 2, key 2 weight 1
+        out.Current.[1] |> should equal 2L
+        out.Current.[2] |> should equal 1L
+    }
+
+
+[<Fact>]
+let ``Build does not skip a map with two filter consumers`` () =
+    let c = Circuit.create ()
+    let input = c.ZSetInput<int>()
+    let mapped = c.Map(input.Stream, Func<int, int>(fun x -> x + 1))
+    let _a = c.Filter(mapped, Func<int, bool>(fun x -> x > 0))
+    let _b = c.Filter(mapped, Func<int, bool>(fun x -> x < 10))
+    c.Build()
+    mapped.Op.IsFuseSkipped |> should be False
