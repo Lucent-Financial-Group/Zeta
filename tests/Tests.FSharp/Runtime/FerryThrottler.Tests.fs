@@ -437,6 +437,45 @@ let ``contextual throttler captures ambient context AT the enqueue boundary, not
 
 
 [<Fact>]
+let ``restore installs captured ambient around processBatch so OTEL sees the item`` () : Task =
+    // Without restore, processBatch on the pump thread reads the CALLER's later
+    // ambient. With restore, each row's snapshot is installed for the processor.
+    task {
+        let ambient = AsyncLocal<string>()
+        let seenAmbient = ConcurrentQueue<string>()
+        let processBatch (boat: ReadOnlyMemory<struct (int * string)>) (_ct: CancellationToken) : Task =
+            seenAmbient.Enqueue(ambient.Value)
+            Task.CompletedTask
+        let restore (ctx: string) =
+            let prev = ambient.Value
+            ambient.Value <- ctx
+            { new System.IDisposable with
+                member _.Dispose() = ambient.Value <- prev }
+        use throttler =
+            new ContextualFerryThrottler<int, string>(
+                FerryThrottlerConfig.deterministic,
+                processBatch,
+                manual = true,
+                capture = (fun () -> ambient.Value),
+                restore = restore)
+        ambient.Value <- "trace-a"
+        do! throttler.EnqueueCapturedAsync(1)
+        ambient.Value <- "trace-b"
+        do! throttler.EnqueueCapturedAsync(2)
+        do! throttler.PumpToIdleAsync()
+        do! throttler.CompleteAsync()
+        List.ofSeq seenAmbient |> should equal [ "trace-a"; "trace-b" ]
+    }
+
+
+[<Fact>]
+let ``bounded config sets MaxQueueSize without reading ProcessorCount`` () =
+    FerryThrottlerConfig.bounded.MaxQueueSize |> should equal (Some 4096)
+    FerryThrottlerConfig.bounded.MaxDegreeOfParallelism |> should equal 1
+    FerryThrottlerConfig.deterministic.MaxQueueSize |> should equal None
+
+
+[<Fact>]
 let ``contextual result throttler threads context and fans aligned results back`` () : Task =
     // Result arity with explicit context: each item's context rides to the boat,
     // and the per-item Task<'TResult> still returns the aligned result.

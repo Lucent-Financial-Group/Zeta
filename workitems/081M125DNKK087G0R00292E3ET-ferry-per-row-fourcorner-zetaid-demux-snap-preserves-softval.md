@@ -110,13 +110,15 @@ Also this row:
 
 - **Boat pooling + bounded queue.** `Array.zeroCreate` per ferry is
   already one buffer; request/TCS alloc per item is not. Default
-  `MaxQueueSize = None` is the unbounded in-flight / container-OOM
-  degenerate. Production must set the bound (cooperative
-  backpressure, not drop).
+  `MaxQueueSize = None` is the DST unbounded path. Production uses
+  `FerryThrottlerConfig.bounded` (4096, cooperative backpressure,
+  DoP still 1 until `withFerries`). Does not read ProcessorCount.
 - **Capture.** Kleisli door exists (`EnqueueCapturedAsync`). Snapshot
-  at the door is shipped; **restore around `processBatch` is not**
-  (Naledi: ambient OTEL on the ferry sees the ferry, not the item).
-  Kleisli processors unpack the payload. `ProcessCapturedAsync`
+  at the door is shipped; **restore around `processBatch`** is opt-in
+  (`?restore: 'Ctx -> IDisposable`) so ambient OTEL sees the item.
+  When restore is set, the processor is invoked per row (mixed traces
+  cannot share one ambient). Kleisli processors that unpack the
+  payload do not need restore. `ProcessCapturedAsync`
   untested.
 - **Self-predict space and time.** `SchedulerZeta.predict` is
   time/orbit only. Occupancy (bit-0 usage: slot used vs empty) is

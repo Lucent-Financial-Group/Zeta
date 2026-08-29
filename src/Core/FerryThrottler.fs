@@ -78,6 +78,14 @@ module FerryThrottlerConfig =
     let withFerries (ferries: int) =
         { deterministic with MaxDegreeOfParallelism = max 1 ferries }
 
+    /// Production occupancy guard: cooperative backpressure at 4096 in-flight,
+    /// still DoP=1 until `withFerries`. Default `None` remains the DST /
+    /// unbounded path (container-OOM if a producer outruns the ferries).
+    /// Does not read `Environment.ProcessorCount` — that would leak ambient
+    /// entropy into a config value (manifesto §13).
+    let bounded =
+        { deterministic with MaxQueueSize = Some 4096 }
+
 
 /// How a ferry loop is launched — the single source of launch truth for every
 /// arity. `None` = production: run on the threadpool with no captured context
@@ -716,6 +724,77 @@ type FerryThrottler<'TItem, 'TResult>
                 })
 
 
+/// Restore a captured ambient (`Activity.Current`, `AsyncLocal`, …) around
+/// `processBatch` so libraries that still read the side channel see the *item*,
+/// not the ferry. When `restore` is set, each boat row is processed as a
+/// 1-item batch under that row's context (batching still happens at `fillBoat`;
+/// the processor sees one row so mixed traces cannot share one ambient).
+module private FerryAmbient =
+
+    let wrap
+        (restore: ('Ctx -> System.IDisposable) option)
+        (processBatch: ReadOnlyMemory<struct ('TItem * 'Ctx)> -> CancellationToken -> Task)
+        : ReadOnlyMemory<struct ('TItem * 'Ctx)> -> CancellationToken -> Task =
+        match restore with
+        | None -> processBatch
+        | Some install ->
+            fun boat ct ->
+                let n = boat.Length
+                if n = 0 then
+                    processBatch boat ct
+                else
+                    let copy = Array.zeroCreate n
+                    let src = boat.Span
+                    for i in 0 .. n - 1 do
+                        copy.[i] <- src.[i]
+                    task {
+                        let one = Array.zeroCreate 1
+                        for i in 0 .. n - 1 do
+                            one.[0] <- copy.[i]
+                            let struct (_, ctx) = copy.[i]
+                            do!
+                                task {
+                                    use _scope = install ctx
+                                    do! processBatch (ReadOnlyMemory(one, 0, 1)) ct
+                                }
+                    }
+
+    let wrapResults
+        (restore: ('Ctx -> System.IDisposable) option)
+        (processBatch: ReadOnlyMemory<struct ('TItem * 'Ctx)> -> CancellationToken -> Task<'TResult array>)
+        : ReadOnlyMemory<struct ('TItem * 'Ctx)> -> CancellationToken -> Task<'TResult array> =
+        match restore with
+        | None -> processBatch
+        | Some install ->
+            fun boat ct ->
+                let n = boat.Length
+                if n = 0 then
+                    processBatch boat ct
+                else
+                    let copy = Array.zeroCreate n
+                    let src = boat.Span
+                    for i in 0 .. n - 1 do
+                        copy.[i] <- src.[i]
+                    task {
+                        let one = Array.zeroCreate 1
+                        let acc = Array.zeroCreate n
+                        let mutable k = 0
+                        for i in 0 .. n - 1 do
+                            one.[0] <- copy.[i]
+                            let struct (_, ctx) = copy.[i]
+                            let! part =
+                                task {
+                                    use _scope = install ctx
+                                    return! processBatch (ReadOnlyMemory(one, 0, 1)) ct
+                                }
+                            for j in 0 .. part.Length - 1 do
+                                if k < n then
+                                    acc.[k] <- part.[j]
+                                    k <- k + 1
+                        return acc
+                    }
+
+
 /// **ContextualFerryThrottler** — explicit context threading, the Kleisli-Arrow
 /// shape. Each item carries the caller's context value, captured AT ENQUEUE and
 /// threaded — as DATA, never via an AsyncLocal hidden side channel — to the boat
@@ -742,7 +821,11 @@ type ContextualFerryThrottler<'TItem, 'Ctx>
      ?capture: unit -> 'Ctx,
      // DST seam (Option A, increment 4): forwarded to the composed core throttler
      // so the BACKGROUND ferries replay under an injected `SynchronizationContext`.
-     ?syncContext: SynchronizationContext) =
+     ?syncContext: SynchronizationContext,
+     // Install the captured context as ambient around `processBatch` so OTEL /
+     // AsyncLocal libraries see the item, not the ferry. Opt-in: processors that
+     // already unpack `struct(item, ctx)` do not need this.
+     ?restore: 'Ctx -> System.IDisposable) =
 
     // Size the PAYLOAD, not the (payload, ctx) pair — the threaded context is
     // metadata that rides along; it does not count against the byte budget.
@@ -751,7 +834,11 @@ type ContextualFerryThrottler<'TItem, 'Ctx>
 
     let inner =
         new FerryThrottler<struct ('TItem * 'Ctx)>(
-            config, processBatch, ?itemSizeBytes = innerSizer, ?manual = manual, ?syncContext = syncContext)
+            config,
+            FerryAmbient.wrap restore processBatch,
+            ?itemSizeBytes = innerSizer,
+            ?manual = manual,
+            ?syncContext = syncContext)
 
     /// Enqueue one item together with an explicit context value to thread to its boat.
     member _.EnqueueAsync(item: 'TItem, context: 'Ctx, ?cancellationToken: CancellationToken) : ValueTask =
@@ -796,14 +883,18 @@ type ContextualResultFerryThrottler<'TItem, 'Ctx, 'TResult>
      ?capture: unit -> 'Ctx,
      // DST seam (Option A, increment 4): forwarded to the composed core throttler
      // so the request/response BACKGROUND ferries replay under an injected context.
-     ?syncContext: SynchronizationContext) =
+     ?syncContext: SynchronizationContext,
+     ?restore: 'Ctx -> System.IDisposable) =
 
     let innerSizer =
         itemSizeBytes |> Option.map (fun f -> fun (struct (item, _ctx): struct ('TItem * 'Ctx)) -> f item)
 
     let inner =
         new FerryThrottler<struct ('TItem * 'Ctx), 'TResult>(
-            config, processBatch, ?itemSizeBytes = innerSizer, ?syncContext = syncContext)
+            config,
+            FerryAmbient.wrapResults restore processBatch,
+            ?itemSizeBytes = innerSizer,
+            ?syncContext = syncContext)
 
     /// Submit one item with an explicit context; returns that item's result task.
     member _.ProcessAsync(item: 'TItem, context: 'Ctx, ?cancellationToken: CancellationToken) : Task<'TResult> =
