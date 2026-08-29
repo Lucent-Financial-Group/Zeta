@@ -13,7 +13,8 @@ open Apache.Arrow.Types
 /// compressed (Arrow IPC buffer compression), cross-language,
 /// SIMD-friendly. Use for:
 ///   - Large analytical batches (> 10 MB)
-///   - Cross-language subscribers (C++, Rust, Go, TS via Arrow Flight)
+///   - Cross-language subscribers (C++, Rust, Go, TS via Arrow Flight;
+///     in-process verbs in `ArrowFlight`)
 ///   - Long-lived checkpoints that must survive binary rebuilds
 ///
 /// We ship an `int64`-keyed specialisation first — it's the majority
@@ -39,7 +40,8 @@ open Apache.Arrow.Types
 ///
 /// References:
 ///   - Apache Arrow 22.0 columnar format spec
-///   - Arrow Flight RPC for bi-directional streaming
+///   - Arrow Flight RPC for bi-directional streaming (`ArrowFlight`
+///     in-process verbs; gRPC adapter unshipped)
 [<Sealed>]
 type ArrowInt64Serializer() =
 

@@ -1,0 +1,14 @@
+{
+  "id": "080d027153e50810a0130008006b8e5b",
+  "at": "2026-08-29T15:36:42.401Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M172MZ50087G0R00184CKA3",
+    "type": "task",
+    "title": "Arrow Flight in-process DoPut/DoGet/DoExchange over Arrow IPC",
+    "slug": "arrow-flight-in-process-doput-doget-doexchange-over-arrow-ip",
+    "priority": "P1",
+    "filename": "081M172MZ50087G0R00184CKA3-arrow-flight-in-process-doput-doget-doexchange-over-arrow-ip.md"
+  }
+}

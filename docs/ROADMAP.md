@@ -503,8 +503,8 @@ Gaps: **fsync floor** (unshipped), **multi-key ACID/isolation** (only single-str
 
 ## P1 (next round — 2 weeks)
 
-- **Apache Arrow IPC + zstd** checkpoint format — shipped (`ArrowIpc.zstdOptions`; writers emit zstd IPC buffers; readers still accept uncompressed legacy frames). Flight remains unshipped.
-- **Arrow Flight** as the multi-node wire protocol — bi-directional streaming of Z-set deltas
+- **Apache Arrow IPC + zstd** checkpoint format — shipped (`ArrowIpc.zstdOptions`; writers emit zstd IPC buffers; readers still accept uncompressed legacy frames).
+- **Arrow Flight** — in-process `DoPut` / `DoGet` / `DoExchange` over Arrow IPC shipped (`ArrowFlight.InProcessFlight`). gRPC / network adapter remaining.
 - **WatermarkStrategy.Statistical via KLL** — `DI seam: IWatermarkStrategy` ✅ (`StatisticalWatermarkStrategy`)
 - **Frontier<int64>** — shipped (`src/Core/Frontier.fs`). Per-shard watermarks; `Merge` is conservative min; `Advance` is monotone max; `ClosedThrough` = min (Akidau). Empty = no sources → `Int64.MinValue`, matching `Watermark.combine []`, **not** Timely's empty antichain (`+∞`). Remaining: multi-dimensional timestamps (P3 Timely logical time).
 - **Expression-tree operator fusion** — IL-emit a fused `StepAsync` per chain of map/filter/map at Build time (2–5× on those workloads)
