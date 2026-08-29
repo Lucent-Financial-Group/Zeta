@@ -8,7 +8,7 @@ type ZetaCliCommand = Zeta.Core.DbCommand<Zeta.Core.DvKey>
 module CliParse =
 
     let usage =
-        "usage: zeta <commit <zset-json> [captured-json] | write <zset-json> [captured-json] | delete <zset-json> [captured-json] | "
+        "usage: zeta <init | commit <zset-json> [captured-json] | write <zset-json> [captured-json] | delete <zset-json> [captured-json] | "
         + "branch <name> | checkout <ref> | status | ls [refName] | push [remote] | fetch [remote] | merge <sourceRef> | "
         + "log | history [fromSeq] | get <seq>>"
 

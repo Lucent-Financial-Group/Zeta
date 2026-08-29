@@ -1,0 +1,14 @@
+{
+  "id": "080d0273ca5d5010a01300084b28bfc6",
+  "at": "2026-08-29T17:02:47.210Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M177JJX9087G0R000BDYG88",
+    "type": "task",
+    "title": "zeta CLI opens ZetaFS store without git or LibGit2Sharp",
+    "slug": "zeta-cli-opens-zetafs-store-without-git-or-libgit2sharp",
+    "priority": "P1",
+    "filename": "081M177JJX9087G0R000BDYG88-zeta-cli-opens-zetafs-store-without-git-or-libgit2sharp.md"
+  }
+}

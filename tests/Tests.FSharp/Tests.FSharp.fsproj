@@ -145,6 +145,7 @@
     <Compile Include="Merkle.FullVertical.Tests.fs" />
     <Compile Include="ZSetMerkle.Tests.fs" />
     <Compile Include="ZetaFsDeltaLog.Tests.fs" />
+    <Compile Include="ZetaFsStore.Tests.fs" />
     <Compile Include="ZetaFsDualFold.Tests.fs" />
     <Compile Include="ZSetMerkleProof.CrossVerify.Tests.fs" />
     <Compile Include="ZetaIrV1.Tests.fs" />
