@@ -297,11 +297,17 @@ module CellScheduler =
                             ready
                             |> List.map (fun id -> id, Map.find id s.Cells, List.head (inboxOf id s))
                         // Fan the pure steps through the ferry (DoP=N), holding the
-                        // result tasks IN ORDER so completion order is irrelevant.
-                        let! results =
+                        // result ValueTasks IN ORDER so completion order is irrelevant.
+                        // Await via `let!` (GetAwaiter) — `AsTask()` would allocate
+                        // a Task per cell and undo the pooled IValueTaskSource.
+                        let vts =
                             work
                             |> List.map (fun (_, st, m) -> throttler.ProcessAsync((st, m)))
-                            |> System.Threading.Tasks.Task.WhenAll
+                            |> List.toArray
+                        let results = Array.zeroCreate vts.Length
+                        for i in 0 .. vts.Length - 1 do
+                            let! r = vts.[i]
+                            results.[i] <- r
                         let zipped = List.zip work (List.ofArray results)
                         // Phase 1: apply new states + consume the processed head
                         // messages — all keyed by distinct cell-ids, so order-free.

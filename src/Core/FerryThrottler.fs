@@ -1,35 +1,126 @@
 namespace Zeta.Core
 
 open System
+open System.Collections.Concurrent
 open System.Collections.Generic
+open System.Runtime.CompilerServices
 open System.Threading
 open System.Threading.Channels
 open System.Threading.Tasks
+open System.Threading.Tasks.Sources
 
 
-type private FerryRequest<'TItem, 'TResult>
-    (item: 'TItem,
-     completion: TaskCompletionSource<'TResult>,
-     cancellationRegistration: CancellationTokenRegistration) =
+/// Pooled request/response cell. Replaces the per-item
+/// `TaskCompletionSource` + outer `task{}` on `ProcessAsync`.
+/// `ManualResetValueTaskSourceCore` is the BCL TCS-pool (SocketsHttpHandler,
+/// Channel, Pipelines). Continuations run asynchronously so a DoP=1 ferry
+/// cannot inline a caller that re-enters the throttler.
+///
+/// Refcount: caller `ValueTask` + ferry channel/boat. Returned to the bag
+/// only at 0, so a completed cell cannot be rented while the ferry still
+/// holds it. Naledi's unbounded no-cancel path: Rent + write-sync +
+/// `ValueTask` — no TCS, no TCS.Task, no F# CE.
+[<Sealed>]
+type private FerryRequest<'TItem, 'TResult>() as this =
+    let mutable core = ManualResetValueTaskSourceCore<'TResult>()
+    let mutable item = Unchecked.defaultof<'TItem>
+    let mutable ctReg = Unchecked.defaultof<CancellationTokenRegistration>
+    let mutable pool: ConcurrentBag<FerryRequest<'TItem, 'TResult>> = null
+    let mutable canceled = 0
+    let mutable completed = 0
+    let mutable refs = 0
+    let mutable writeAwaiter = Unchecked.defaultof<ValueTaskAwaiter>
+    let mutable writeCt = CancellationToken.None
+    let onWriteCompleted = Action(fun () -> this.OnWriteCompleted())
 
     member _.Item = item
-    member _.Completion = completion
-    member _.IsCanceled = completion.Task.IsCanceled
+    member _.IsCanceled = Volatile.Read(&canceled) <> 0
 
-    member _.TrySetResult(result: 'TResult) =
-        completion.TrySetResult result |> ignore
-        cancellationRegistration.Dispose()
+    member _.AsValueTask() =
+        ValueTask<'TResult>(this :> IValueTaskSource<'TResult>, core.Version)
 
-    member _.TrySetException(ex: exn) =
-        completion.TrySetException ex |> ignore
-        cancellationRegistration.Dispose()
+    member this.Prepare
+        (newItem: 'TItem, ct: CancellationToken, owner: ConcurrentBag<FerryRequest<'TItem, 'TResult>>)
+        =
+        item <- newItem
+        pool <- owner
+        canceled <- 0
+        completed <- 0
+        refs <- 1
+        writeCt <- CancellationToken.None
+        core.Reset()
+        core.RunContinuationsAsynchronously <- true
+        if ct.CanBeCanceled then
+            ctReg <- ct.Register(fun () -> this.TrySetCanceled ct |> ignore)
+        else
+            ctReg <- Unchecked.defaultof<_>
 
-    member _.TrySetCanceled(cancellationToken: CancellationToken) =
-        completion.TrySetCanceled cancellationToken |> ignore
-        cancellationRegistration.Dispose()
+    member _.AddFerryRef() = Interlocked.Increment(&refs) |> ignore
 
-    member _.Dispose() =
-        cancellationRegistration.Dispose()
+    member this.ReleaseFerry() = this.Release()
+
+    member private this.Release() =
+        if Interlocked.Decrement(&refs) = 0 then
+            item <- Unchecked.defaultof<_>
+            ctReg.Dispose()
+            ctReg <- Unchecked.defaultof<_>
+            let p = pool
+            if not (isNull p) then p.Add this
+
+    member this.TrySetResult(result: 'TResult) =
+        if Interlocked.Exchange(&completed, 1) = 0 then
+            ctReg.Dispose()
+            core.SetResult result
+            true
+        else
+            false
+
+    member this.TrySetException(ex: exn) =
+        if Interlocked.Exchange(&completed, 1) = 0 then
+            ctReg.Dispose()
+            core.SetException ex
+            true
+        else
+            false
+
+    member this.TrySetCanceled(cancellationToken: CancellationToken) =
+        Volatile.Write(&canceled, 1)
+        if Interlocked.Exchange(&completed, 1) = 0 then
+            ctReg.Dispose()
+            core.SetException(OperationCanceledException(cancellationToken))
+            true
+        else
+            false
+
+    member _.Dispose() = ctReg.Dispose()
+
+    member this.ContinueWrite(vt: ValueTask, ct: CancellationToken) =
+        writeCt <- ct
+        writeAwaiter <- vt.GetAwaiter()
+        writeAwaiter.UnsafeOnCompleted onWriteCompleted
+
+    member private this.OnWriteCompleted() =
+        try
+            writeAwaiter.GetResult()
+        with
+        | :? OperationCanceledException ->
+            this.TrySetCanceled writeCt |> ignore
+            this.ReleaseFerry()
+        | ex ->
+            this.TrySetException ex |> ignore
+            this.ReleaseFerry()
+
+    interface IValueTaskSource<'TResult> with
+        member this.GetResult(token) =
+            try
+                core.GetResult token
+            finally
+                this.Release()
+
+        member _.GetStatus(token) = core.GetStatus token
+
+        member _.OnCompleted(continuation, state, token, flags) =
+            core.OnCompleted(continuation, state, token, flags)
 
 
 /// Configuration for a `FerryThrottler`.
@@ -414,8 +505,9 @@ module FerryRowDemux =
 
 
 /// Request/response FerryThrottler arity. Producers submit one item and receive
-/// that item's `Task<'TResult>`; the ferry still processes boats in batches and
-/// fans aligned results back to the individual callers.
+/// that item's `ValueTask<'TResult>` (pooled; await once); the ferry still
+/// processes boats in batches and fans aligned results back to the individual
+/// callers.
 ///
 /// At `MaxDegreeOfParallelism = 1`, completion order is deterministic for
 /// non-cancelled items because one ferry drains boats in FIFO order. With
@@ -487,11 +579,16 @@ type FerryThrottler<'TItem, 'TResult>
 
     let cts = new CancellationTokenSource()
     let byteBudget = config.MaxBatchBytes
+    let requestPool = ConcurrentBag<FerryRequest<'TItem, 'TResult>>()
+
+    let rentRequest () =
+        let mutable req = Unchecked.defaultof<FerryRequest<'TItem, 'TResult>>
+        if requestPool.TryTake(&req) then req else FerryRequest()
 
     let rec tryTakeActive (reader: ChannelReader<FerryRequest<'TItem, 'TResult>>) =
         match reader.TryRead() with
         | true, req when req.IsCanceled ->
-            req.Dispose()
+            req.ReleaseFerry()
             tryTakeActive reader
         | true, req -> ValueSome req
         | false, _ -> ValueNone
@@ -502,7 +599,7 @@ type FerryThrottler<'TItem, 'TResult>
     /// independence is not a PerRow landing.
     let faultWholeBoat (requests: FerryRequest<'TItem, 'TResult> array) (count: int) (ex: exn) =
         for i in 0 .. count - 1 do
-            requests.[i].TrySetException ex
+            requests.[i].TrySetException ex |> ignore
 
     let cancelBoat
         (requests: FerryRequest<'TItem, 'TResult> array)
@@ -510,7 +607,7 @@ type FerryThrottler<'TItem, 'TResult>
         (cancellationToken: CancellationToken)
         =
         for i in 0 .. count - 1 do
-            requests.[i].TrySetCanceled cancellationToken
+            requests.[i].TrySetCanceled cancellationToken |> ignore
 
     let cancelRemaining
         (reader: ChannelReader<FerryRequest<'TItem, 'TResult>>)
@@ -518,13 +615,17 @@ type FerryThrottler<'TItem, 'TResult>
         (cancellationToken: CancellationToken)
         =
         match pending with
-        | ValueSome req -> req.TrySetCanceled cancellationToken
+        | ValueSome req ->
+            req.TrySetCanceled cancellationToken |> ignore
+            req.ReleaseFerry()
         | ValueNone -> ()
 
         let mutable draining = true
         while draining do
             match reader.TryRead() with
-            | true, req -> req.TrySetCanceled cancellationToken
+            | true, req ->
+                req.TrySetCanceled cancellationToken |> ignore
+                req.ReleaseFerry()
             | false, _ -> draining <- false
 
     let completeBoat
@@ -542,7 +643,7 @@ type FerryThrottler<'TItem, 'TResult>
             match demuxById with
             | None ->
                 for i in 0 .. count - 1 do
-                    requests.[i].TrySetResult results.[i]
+                    requests.[i].TrySetResult results.[i] |> ignore
             | Some(itemKey, resultKey) ->
                 match FerryRowDemux.tryAssignById itemKey resultKey items count results with
                 | Error dup ->
@@ -553,16 +654,18 @@ type FerryThrottler<'TItem, 'TResult>
                 | Ok assigned ->
                     for i in 0 .. count - 1 do
                         match assigned.[i] with
-                        | Some r -> requests.[i].TrySetResult r
+                        | Some r -> requests.[i].TrySetResult r |> ignore
                         | None ->
                             requests.[i].TrySetException(
                                 InvalidOperationException("FerryThrottler: no result for row ZetaId"))
+                            |> ignore
 
     let trySize (req: FerryRequest<'TItem, 'TResult>) =
         try
             Ok(sizeOf req.Item)
         with ex ->
-            req.TrySetException ex
+            req.TrySetException ex |> ignore
+            req.ReleaseFerry()
             Error()
 
     let injectedSyncContext = syncContext
@@ -592,7 +695,7 @@ type FerryThrottler<'TItem, 'TResult>
                         let mutable bytes = 0
                         match pending with
                         | ValueSome req when req.IsCanceled ->
-                            req.Dispose()
+                            req.ReleaseFerry()
                             pending <- ValueNone
                         | ValueSome req ->
                             match trySize req with
@@ -601,7 +704,7 @@ type FerryThrottler<'TItem, 'TResult>
                                 requests.[0] <- req
                                 n <- 1
                                 bytes <- sz
-                            | Error() -> req.Dispose()
+                            | Error() -> ()
                             pending <- ValueNone
                         | ValueNone -> ()
                         let mutable draining = true
@@ -619,7 +722,7 @@ type FerryThrottler<'TItem, 'TResult>
                                         requests.[n] <- req
                                         n <- n + 1
                                         bytes <- bytes + sz
-                                | Error() -> req.Dispose()
+                                | Error() -> ()
                             | ValueNone -> draining <- false
                         if n > 0 then
                             try
@@ -630,6 +733,8 @@ type FerryThrottler<'TItem, 'TResult>
                                 cancelBoat requests n ct
                             | ex ->
                                 faultWholeBoat requests n ex
+                            for i in 0 .. n - 1 do
+                                requests.[i].ReleaseFerry()
                             Array.Clear(items, 0, n)
                             Array.Clear(requests, 0, n)
             with :? OperationCanceledException ->
@@ -641,33 +746,46 @@ type FerryThrottler<'TItem, 'TResult>
     let ferryTasks : Task array =
         Array.init ferries (fun _ -> runFerry ())
 
-    member this.ProcessAsync(item: 'TItem, ?cancellationToken: CancellationToken) : Task<'TResult> =
+    /// One item in, that item's result out. Returns a pooled `ValueTask`
+    /// (BCL TCS-pool via `IValueTaskSource`). Await **once**, via `let!` /
+    /// `await` — F# `task` binds `ValueTask` through `GetAwaiter`, not
+    /// `AsTask()`. `AsTask()` **manufactures a new `Task`** (BCL remarks)
+    /// and is the TCS.Task allocation this cell exists to remove. Tests that
+    /// inspect `IsFaulted`/`IsCanceled` may `AsTask()`; the hot path must not.
+    /// Unbounded no-cancel write completes synchronously — no TCS, no CE.
+    member this.ProcessAsync(item: 'TItem, ?cancellationToken: CancellationToken) : ValueTask<'TResult> =
         let ct = defaultArg cancellationToken CancellationToken.None
-        let completion =
-            TaskCompletionSource<'TResult>(TaskCreationOptions.RunContinuationsAsynchronously)
-
+        let request = rentRequest ()
+        request.Prepare(item, ct, requestPool)
         if ct.IsCancellationRequested then
-            completion.TrySetCanceled ct |> ignore
-            completion.Task
+            request.TrySetCanceled ct |> ignore
+            request.AsValueTask()
         else
-            let registration =
-                if ct.CanBeCanceled then
-                    ct.Register(fun () -> completion.TrySetCanceled ct |> ignore)
-                else
-                    Unchecked.defaultof<CancellationTokenRegistration>
-            let request = FerryRequest(item, completion, registration)
-            task {
+            // Ferry ref BEFORE publish: a DoP=N ferry can drain the item
+            // (SetResult + ReleaseFerry) before WriteAsync's continuation
+            // runs. Taking the ref first keeps Version stable until the
+            // caller GetResult. Failed write drops the extra ref.
+            request.AddFerryRef()
+            let write = inbox.Writer.WriteAsync(request, ct)
+            if write.IsCompletedSuccessfully then
+                request.AsValueTask()
+            elif write.IsCompleted then
                 try
-                    do! inbox.Writer.WriteAsync(request, ct).AsTask()
-                    return! completion.Task
+                    write.GetAwaiter().GetResult()
                 with
-                | :? OperationCanceledException when ct.IsCancellationRequested ->
-                    request.TrySetCanceled ct
-                    return! completion.Task
+                | :? OperationCanceledException ->
+                    request.TrySetCanceled ct |> ignore
+                    request.ReleaseFerry()
                 | ex ->
-                    request.TrySetException ex
-                    return! completion.Task
-            }
+                    request.TrySetException ex |> ignore
+                    request.ReleaseFerry()
+                request.AsValueTask()
+            else
+                request.ContinueWrite(write, ct)
+                request.AsValueTask()
+
+    /// Test hook: cells sitting in the bag after callers have taken results.
+    member internal _.IdlePooledRequests = requestPool.Count
 
     /// Batch-caller cell. Enqueues each item through `ProcessAsync`; `fillBoat`
     /// splits at `MaxBatchSize` / byte budget. The caller is clueless of those
@@ -679,12 +797,22 @@ type FerryThrottler<'TItem, 'TResult>
         if items.IsEmpty then
             Task.FromResult Array.empty
         else
+            // Enqueue every item first (ferries already running), then await
+            // the pooled ValueTasks in order. Sequential await here does NOT
+            // serialize processing — work is already in the inbox. One outer
+            // `task{}` for the join, not N `AsTask()` Tasks.
             let ct = defaultArg cancellationToken CancellationToken.None
-            let span = items.Span
-            let tasks = Array.zeroCreate<Task<'TResult>> span.Length
-            for i in 0 .. span.Length - 1 do
-                tasks.[i] <- this.ProcessAsync(span.[i], ct)
-            Task.WhenAll(tasks)
+            let n = items.Length
+            let vts = Array.zeroCreate<ValueTask<'TResult>> n
+            for i in 0 .. n - 1 do
+                vts.[i] <- this.ProcessAsync(items.Span.[i], ct)
+            task {
+                let results = Array.zeroCreate<'TResult> n
+                for i in 0 .. n - 1 do
+                    let! r = vts.[i]
+                    results.[i] <- r
+                return results
+            }
 
     member _.CompleteAsync() : Task =
         inbox.Writer.TryComplete() |> ignore
@@ -868,8 +996,8 @@ type ContextualFerryThrottler<'TItem, 'Ctx>
 /// **ContextualResultFerryThrottler** — the request/response (result) arity with
 /// explicit context threading (Option-A increment 3). Each submitted item carries
 /// the caller's context — supplied explicitly or captured at the door — threaded as
-/// DATA to the boat processor; the per-item `Task<'TResult>` still fans back to the
-/// caller. Composes `FerryThrottler<struct('TItem*'Ctx), 'TResult>`, mirroring
+/// DATA to the boat processor; the per-item `ValueTask<'TResult>` still fans back
+/// to the caller. Composes `FerryThrottler<struct('TItem*'Ctx), 'TResult>`, mirroring
 /// `ContextualFerryThrottler` for the result arity. Background ferries replay via
 /// the forwarded `?syncContext` (Option-A increment 4b); the synchronous
 /// manual-pump (`PumpToIdleAsync`) remains single-arity-only.
@@ -897,11 +1025,11 @@ type ContextualResultFerryThrottler<'TItem, 'Ctx, 'TResult>
             ?syncContext = syncContext)
 
     /// Submit one item with an explicit context; returns that item's result task.
-    member _.ProcessAsync(item: 'TItem, context: 'Ctx, ?cancellationToken: CancellationToken) : Task<'TResult> =
+    member _.ProcessAsync(item: 'TItem, context: 'Ctx, ?cancellationToken: CancellationToken) : ValueTask<'TResult> =
         inner.ProcessAsync(struct (item, context), ?cancellationToken = cancellationToken)
 
     /// Capture-at-the-boundary submit: snapshots the ambient context now and threads it.
-    member _.ProcessCapturedAsync(item: 'TItem, ?cancellationToken: CancellationToken) : Task<'TResult> =
+    member _.ProcessCapturedAsync(item: 'TItem, ?cancellationToken: CancellationToken) : ValueTask<'TResult> =
         match capture with
         | Some readAmbient ->
             inner.ProcessAsync(struct (item, readAmbient ()), ?cancellationToken = cancellationToken)
