@@ -1,0 +1,12 @@
+{
+  "pr_number": 16137,
+  "archive_path": "docs/history/pr-reviews/PR-16137-feat-frontier-per-shard-watermarks-and-session-windows.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-29T06:49:17.369Z",
+  "schema_version": "v1",
+  "commit_sha": "d11eb877ebfb714998cea60ef7b24b300394cb10",
+  "title": "feat: Frontier per-shard watermarks and session windows",
+  "state": "MERGED",
+  "merged_at": "2026-08-29T06:35:46Z",
+  "head_ref": "feat/frontier-and-session-windows"
+}
