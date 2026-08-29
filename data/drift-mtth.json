@@ -1,12 +1,12 @@
 {
-  "latestTick": 1174,
+  "latestTick": 1175,
   "classes": [
     {
       "rule": "BD001",
       "healedCount": 23,
       "mtthTicks": 2.0434782608695654,
       "openCount": 1,
-      "oldestOpenAgeTicks": 6
+      "oldestOpenAgeTicks": 7
     },
     {
       "rule": "MD012",
