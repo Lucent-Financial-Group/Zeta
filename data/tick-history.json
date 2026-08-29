@@ -3,22 +3,10 @@
     "generator": "tick-metrics-writer.ts",
     "mock": false,
     "derived_from": "data/tick-shards/**/*.json",
-    "shard_count": 1637,
+    "shard_count": 1638,
     "rollup_max_frames": 1000
   },
   "frames": [
-    {
-      "agents_active": 3,
-      "claims_pending": 3,
-      "entropy_heat": 0,
-      "entropy_state": 0,
-      "last_action": "explore",
-      "last_agent": "otto",
-      "last_mode": "explore",
-      "t": "2026-08-15T07:12:22.388Z",
-      "ticks_24h": 10,
-      "total_events": 1313
-    },
     {
       "agents_active": 3,
       "claims_pending": 3,
@@ -12005,6 +11993,18 @@
       "last_mode": "work",
       "t": "2026-08-29T02:13:25.645Z",
       "ticks_24h": 59,
+      "total_events": 5224
+    },
+    {
+      "agents_active": 2,
+      "claims_pending": 3,
+      "entropy_heat": 0,
+      "entropy_state": 0,
+      "last_action": "attest_peer",
+      "last_agent": "alexa",
+      "last_mode": "work",
+      "t": "2026-08-29T02:30:14.929Z",
+      "ticks_24h": 57,
       "total_events": 5224
     }
   ]
