@@ -10,7 +10,8 @@ open Apache.Arrow.Types
 
 
 /// **Tier 4 — Apache Arrow IPC serializer.** Columnar, zstd-
-/// compressible, cross-language, SIMD-friendly. Use for:
+/// compressed (Arrow IPC buffer compression), cross-language,
+/// SIMD-friendly. Use for:
 ///   - Large analytical batches (> 10 MB)
 ///   - Cross-language subscribers (C++, Rust, Go, TS via Arrow Flight)
 ///   - Long-lived checkpoints that must survive binary rebuilds
@@ -62,17 +63,7 @@ type ArrowInt64Serializer() =
             let keyArray = keyBuilder.Build() :> IArrowArray
             let weightArray = weightBuilder.Build() :> IArrowArray
             use batch = new RecordBatch(schema, [| keyArray ; weightArray |], n)
-            use ms = new MemoryStream()
-            use arrowWriter = new ArrowStreamWriter(ms, schema)
-            arrowWriter.WriteRecordBatch batch
-            arrowWriter.WriteEnd()
-            let payload = ms.ToArray()
-            let lenHdr = writer.GetSpan 4
-            BinaryPrimitives.WriteInt32LittleEndian(lenHdr, payload.Length)
-            writer.Advance 4
-            let dst = writer.GetSpan payload.Length
-            payload.AsSpan().CopyTo dst
-            writer.Advance payload.Length
+            ArrowIpc.writeFramed schema batch writer
 
         member _.Read(bytes: ReadOnlySpan<byte>) : ZSet<int64> =
             if bytes.Length < 4 then ZSet<int64>.Empty
@@ -81,8 +72,7 @@ type ArrowInt64Serializer() =
                 if len = 0 then ZSet<int64>.Empty
                 else
                     let payload = bytes.Slice(4, len).ToArray()
-                    use ms = new MemoryStream(payload)
-                    use reader = new ArrowStreamReader(ms)
+                    use reader = ArrowIpc.openReader payload
                     let batch = reader.ReadNextRecordBatch()
                     if isNull batch then ZSet<int64>.Empty
                     else
@@ -129,17 +119,7 @@ type ArrowStringSerializer() =
             let keyArray = keyBuilder.Build() :> IArrowArray
             let weightArray = weightBuilder.Build() :> IArrowArray
             use batch = new RecordBatch(schema, [| keyArray; weightArray |], n)
-            use ms = new MemoryStream()
-            use arrowWriter = new ArrowStreamWriter(ms, schema)
-            arrowWriter.WriteRecordBatch batch
-            arrowWriter.WriteEnd()
-            let payload = ms.ToArray()
-            let lenHdr = writer.GetSpan 4
-            BinaryPrimitives.WriteInt32LittleEndian(lenHdr, payload.Length)
-            writer.Advance 4
-            let dst = writer.GetSpan payload.Length
-            payload.AsSpan().CopyTo dst
-            writer.Advance payload.Length
+            ArrowIpc.writeFramed schema batch writer
 
         member _.Read(bytes: ReadOnlySpan<byte>) : ZSet<string> =
             if bytes.Length < 4 then ZSet<string>.Empty
@@ -148,8 +128,7 @@ type ArrowStringSerializer() =
                 if len = 0 then ZSet<string>.Empty
                 else
                     let payload = bytes.Slice(4, len).ToArray()
-                    use ms = new MemoryStream(payload)
-                    use reader = new ArrowStreamReader(ms)
+                    use reader = ArrowIpc.openReader payload
                     let batch = reader.ReadNextRecordBatch()
                     if isNull batch then ZSet<string>.Empty
                     else

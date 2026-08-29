@@ -144,15 +144,7 @@ type ColumnZSetArrow =
     /// uses, so the two are wire-compatible.
     static member WriteIpc(c: ColumnZSet) : byte array =
         use batch = ColumnZSetArrow.ToRecordBatch c
-        use ms = new MemoryStream()
-        use writer = new ArrowStreamWriter(ms, ColumnZSetArrow.Schema)
-        writer.WriteRecordBatch batch
-        writer.WriteEnd()
-        let payload = ms.ToArray()
-        let framed = Array.zeroCreate<byte> (4 + payload.Length)
-        BinaryPrimitives.WriteInt32LittleEndian(Span<byte>(framed, 0, 4), payload.Length)
-        Array.blit payload 0 framed 4 payload.Length
-        framed
+        ArrowIpc.writeFramedBytes ColumnZSetArrow.Schema batch
 
     /// Inverse of `WriteIpc`.
     ///
@@ -181,8 +173,7 @@ type ColumnZSetArrow =
                     $"ColumnZSet Arrow frame truncated: declares {len} payload bytes, {bytes.Length - 4} present")
             else
                 let payload = bytes.Slice(4, len).ToArray()
-                use ms = new MemoryStream(payload)
-                use reader = new ArrowStreamReader(ms)
+                use reader = ArrowIpc.openReader payload
                 let batch = reader.ReadNextRecordBatch()
                 if isNull (box batch) then
                     raise (InvalidDataException "ColumnZSet Arrow payload contained no record batch")
