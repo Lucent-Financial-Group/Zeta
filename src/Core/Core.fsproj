@@ -177,6 +177,7 @@
     <Compile Include="CountMin.fs" />
     <Compile Include="BloomFilter.fs" />
     <Compile Include="Watermark.fs" />
+    <Compile Include="Frontier.fs" />
     <Compile Include="ConsistentHash.fs" />
     <Compile Include="Crdt.fs" />
     <Compile Include="Psi.fs" />
@@ -213,6 +214,7 @@
     <Compile Include="StructureCatalog.fs" />
     <Compile Include="PhaseExtraction.fs" />
     <Compile Include="Window.fs" />
+    <Compile Include="SessionWindow.fs" />
     <Compile Include="Units.fs" />
     <Compile Include="Advanced.fs" />
     <Compile Include="Fusion.fs" />

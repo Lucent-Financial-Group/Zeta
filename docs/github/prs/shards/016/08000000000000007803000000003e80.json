@@ -1,0 +1,12 @@
+{
+  "pr_number": 16000,
+  "archive_path": "docs/history/pr-reviews/PR-16000-design-there-is-no-single-tip-partitioned-z-set-tips-joined-by-shippable-rx-quer.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-29T06:33:27.158Z",
+  "schema_version": "v1",
+  "commit_sha": "23babcaa1ab4310d3c5ae75a4641c9c303dac5d5",
+  "title": "design: there is no single tip — partitioned Z-set tips joined by shippable Rx queries",
+  "state": "MERGED",
+  "merged_at": "2026-08-29T06:04:08Z",
+  "head_ref": "design/no-single-tip-partitioned-zset-tips"
+}

@@ -1,0 +1,14 @@
+{
+  "id": "080d0261268b9810a01300089ea33360",
+  "at": "2026-08-29T06:11:16.467Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1629MBG087G0R003G70E30",
+    "type": "task",
+    "title": "Frontier per-shard watermarks and session windows",
+    "slug": "frontier-per-shard-watermarks-and-session-windows",
+    "priority": "P1",
+    "filename": "081M1629MBG087G0R003G70E30-frontier-per-shard-watermarks-and-session-windows.md"
+  }
+}

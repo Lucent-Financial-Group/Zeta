@@ -145,10 +145,15 @@ refuses.
 
 ## Zeta's windowing surface today
 
-- **Not yet in `src/`.** Operator-algebra has aggregator
-  combinators; explicit window operators are planned.
-- `docs/BACKLOG.md` — windowed operators are part of the
-  SQL frontend Phase-2.
+- `src/Core/Window.fs` — tumbling (`TumblingWindow`).
+- `src/Core/Advanced.fs` — hopping/sliding (`SlidingWindow`).
+- `src/Core/SessionWindow.fs` — session (`SessionWindow` +
+  `SessionWindows` coalesce). Speculative emit; merge is a
+  retraction. Membership is unbounded until BalancedSpine TTL.
+- `src/Core/Watermark.fs` + `src/Core/Frontier.fs` — event-time
+  progress. Frontier empty is Akidau `−∞`, not Timely `+∞`.
+- Default firing: optimistic emit + retract (DBSP-native).
+- SQL frontend Phase-2 still maps `OVER` clauses onto these.
 
 ## What this skill does NOT do
 
