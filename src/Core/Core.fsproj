@@ -300,6 +300,7 @@
     <Compile Include="ZetaSqlBuilder.fs" />
     <Compile Include="ArrowIpc.fs" />
     <Compile Include="ArrowSerializer.fs" />
+    <Compile Include="ArrowFlight.fs" />
     <Compile Include="ColumnZSetArrow.fs" />
     <Compile Include="DynamicValueArrow.fs" />
     <Compile Include="DeltaCrdt.fs" />
