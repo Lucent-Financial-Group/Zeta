@@ -1,0 +1,14 @@
+{
+  "id": "080d0270e48dd810a0130008e128f3c1",
+  "at": "2026-08-29T15:21:30.299Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M171S4DT087G0R003CBCEWE",
+    "type": "task",
+    "title": "Build-time map/filter chain fusion",
+    "slug": "build-time-map-filter-chain-fusion",
+    "priority": "P1",
+    "filename": "081M171S4DT087G0R003CBCEWE-build-time-map-filter-chain-fusion.md"
+  }
+}

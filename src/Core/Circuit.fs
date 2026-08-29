@@ -42,6 +42,16 @@ type Op() =
     abstract IsAsync: bool
     default _.IsAsync = false
 
+    /// Build-time fusion: this op was absorbed into a downstream fused
+    /// Step and should no-op. Public so tests can see the rewrite.
+    abstract IsFuseSkipped: bool
+    default _.IsFuseSkipped = false
+
+    /// Try to absorb a fanout-1 producer into this consumer (map/filter
+    /// chains). Returns true if a new fusion landed. Default: no-op.
+    abstract TryFuse: fanoutOf: (Op -> int) -> bool
+    default _.TryFuse _ = false
+
     // ─────────────────────────────────────────────────────────────────
     //  Algebra capability tags. Promoted from plugin-only marker
     //  interfaces (PluginApi.fs) to first-class fields on the Op base
@@ -217,6 +227,27 @@ type Circuit() =
     member _.Build() =
         lock registerLock (fun () ->
             if built then () else
+            // Absorb fanout-1 map/filter chains into the consumer's Step
+            // (one pass, no intermediate Z-set). Repeat until a round
+            // makes no change so Map∘Map∘Filter chains collapse. IL-emit
+            // of a fused StepAsync remains a later increment.
+            let rec fuseRounds remaining =
+                if remaining <= 0 then ()
+                else
+                    let n = ops.Count
+                    let fo = Array.zeroCreate n
+                    for op in ops do
+                        for dep in op.Inputs do
+                            let id = dep.Id
+                            if id >= 0 && id < n then fo.[id] <- fo.[id] + 1
+                    let fanoutOf (o: Op) =
+                        let id = o.Id
+                        if id >= 0 && id < n then fo.[id] else 0
+                    let mutable changed = false
+                    for op in ops do
+                        if op.TryFuse fanoutOf then changed <- true
+                    if changed then fuseRounds (remaining - 1)
+            fuseRounds (min 16 ops.Count)
             let n = ops.Count
             let children = Array.init n (fun _ -> ResizeArray<int>())
             let inDeg = Array.zeroCreate<int> n
