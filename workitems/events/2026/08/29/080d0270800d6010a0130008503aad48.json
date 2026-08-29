@@ -1,0 +1,14 @@
+{
+  "id": "080d0270800d6010a0130008503aad48",
+  "at": "2026-08-29T15:07:46.988Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M17100DC087G0R003D07BJQ",
+    "type": "task",
+    "title": "BalancedSpine state TTL retract-on-expiry",
+    "slug": "balancedspine-state-ttl-retract-on-expiry",
+    "priority": "P1",
+    "filename": "081M17100DC087G0R003D07BJQ-balancedspine-state-ttl-retract-on-expiry.md"
+  }
+}

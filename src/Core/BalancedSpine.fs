@@ -121,3 +121,67 @@ type BalancedSpine<'K when 'K : comparison>(budgetMergesPerTick: int) =
     member _.Clear() =
         slots.Clear()
         pending.Clear()
+
+    /// Retract keys whose event-time is at least `ttl` ticks behind `now`.
+    /// Returns the `-Δ` to emit downstream (DBSP retraction); the spine keeps
+    /// only live keys. `now` is **injected** (watermark `ClosedThrough`, phase
+    /// tick) — never `DateTime` / `UtcNow` (manifesto §13; local time must not
+    /// enter the shared fold).
+    ///
+    /// Expired iff `timeOf(k) + ttl <= now` (saturating). `ttl` must be
+    /// positive. Idempotent at a fixed `now`. Session-window eviction is
+    /// `Expire(frontier.ClosedThrough, gap, timeOf)`.
+    member this.Expire(now: int64, ttl: int64, timeOf: Func<'K, int64>) : ZSet<'K> =
+        if ttl <= 0L then invalidArg (nameof ttl) "must be positive"
+        if isNull (box timeOf) then nullArg (nameof timeOf)
+        let partition (z: ZSet<'K>) : ZSet<'K> * ZSet<'K> =
+            let span = z.AsSpan()
+            if span.IsEmpty then z, ZSet<'K>.Empty
+            else
+                let liveBuf = Pool.Rent<ZEntry<'K>> span.Length
+                let expBuf = Pool.Rent<ZEntry<'K>> span.Length
+                try
+                    let mutable li = 0
+                    let mutable ei = 0
+                    for i in 0 .. span.Length - 1 do
+                        let e = span.[i]
+                        let t = timeOf.Invoke e.Key
+                        let expiresAt =
+                            if t > Int64.MaxValue - ttl then Int64.MaxValue else t + ttl
+                        if expiresAt <= now then
+                            expBuf.[ei] <- e
+                            ei <- ei + 1
+                        else
+                            liveBuf.[li] <- e
+                            li <- li + 1
+                    let live =
+                        if li = 0 then ZSet<'K>.Empty
+                        elif li = span.Length then z
+                        else
+                            let n = ZSetBuilder.sortAndConsolidate (Span<_>(liveBuf, 0, li))
+                            if n = 0 then ZSet<'K>.Empty else ZSet(Pool.FreezeSlice(liveBuf, n))
+                    let expired =
+                        if ei = 0 then ZSet<'K>.Empty
+                        elif ei = span.Length then z
+                        else
+                            let n = ZSetBuilder.sortAndConsolidate (Span<_>(expBuf, 0, ei))
+                            if n = 0 then ZSet<'K>.Empty else ZSet(Pool.FreezeSlice(expBuf, n))
+                    live, expired
+                finally
+                    Pool.Return liveBuf
+                    Pool.Return expBuf
+        let liveAcc = ResizeArray<ZSet<'K>>()
+        let expAcc = ResizeArray<ZSet<'K>>()
+        for slot in slots do
+            for z in slot do
+                if not z.IsEmpty then
+                    let live, expired = partition z
+                    if not live.IsEmpty then liveAcc.Add live
+                    if not expired.IsEmpty then expAcc.Add expired
+        if expAcc.Count = 0 then ZSet<'K>.Empty
+        else
+            this.Clear()
+            for z in liveAcc do this.Insert z
+            let expired =
+                if expAcc.Count = 1 then expAcc.[0] else ZSet.sum expAcc
+            -expired
