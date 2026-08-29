@@ -20,6 +20,14 @@ Git is a content-addressed DAG. Serving it at scale forces three things:
    fetch resolves. Latency multiplies along the walk, it does not amortise.
 2. **A durable, agreed-upon tip.** Refs must advance atomically, and a client that pushes
    then immediately fetches must see its own write.
+
+   > **CORRECTION (Aaron, 2026-08-28).** Listing this as a requirement of *the problem* was
+   > wrong. It is a requirement of **Git having one ref**. A store whose tip is
+   > reconstructed by a commutative join over partitioned Z-sets is not obliged to pay for
+   > it — and that, not the WAL-vs-DBSP difference, is the largest divergence here. See
+   > [`design/2026-08-28-there-is-no-single-tip-…`](../design/2026-08-28-there-is-no-single-tip-partitioned-zset-tips-joined-by-shippable-rx-queries.md).
+   > What follows still stands: it is about how to satisfy an obligation Zeta can partly
+   > decline.
 3. **Bounded restore cost.** However you store history, reconstructing current state must
    not be proportional to all of history.
 
@@ -86,6 +94,15 @@ Z-set fold, that ordering requirement does not exist: concurrent updates merge, 
 is idempotent, so redelivery and reordering are both safe. This is precisely Aaron's
 *"avoid consensus everywhere"*, and it is why we can be more aggressive than Continuity
 rather than merely cheaper.
+
+**Where the coordination actually goes.** Aaron's three-tier answer (recorded in the design
+doc above): tier 0 commutative merge, no coordination; tier 1 compare-and-swap scoped to a
+row or partition and **wrapped in a decentralized discriminated union so the CAS is part of
+the workflow operation** rather than a hidden retry loop; tier 2 BFT (`SybilBftProtocol`)
+for high-stakes governance only — deliberately *slower than 3PC*, because it assumes
+adversarial rather than crash faults. Notably there is no middle tier paying consensus cost
+for ordinary data: an operation either partitions, or it is important enough to be
+adversarially agreed.
 
 **The part that must not be overstated.** Not everything is commutative, and the paper's
 own example is the sharp one: a Git *ref update* is a compare-and-swap by nature — "move

@@ -318,8 +318,36 @@ if (Test-IsAdmin) {
 }
 
 # 3. mise (runtime manager) via scoop -- mirrors macos.sh step 4 (brew install mise).
-if (-not (Have mise)) { Invoke-Tool { scoop install mise } 'scoop install mise' }
+#
+# PINNED, and pinned to the SAME version tools/setup/linux.sh pins. `scoop install mise`
+# without a version installs whatever is current, which means the tool that enforces every
+# other pin is itself unpinned. Measured 2026-08-29: linux.sh pins 2026.6.12 with six
+# SHA256 hashes, .mise.toml declares `min_version = "2026.6.12"`, and Windows had drifted
+# to 2026.8.14 -- a version that enforces aube's supply-chain trust policy, which the
+# pinned Linux version does not. `build-and-test (windows-2025)` and `(windows-11-arm)`
+# had been red on every commit for that reason, failing at install.ps1:52 on a policy no
+# other platform applies.
+#
+# This does not weaken anything: it makes Windows match what the repo already DECLARES
+# everywhere else. Whether the fleet should move UP to a mise that enforces the trust
+# policy is a separate and still-open question -- see the PR body. Today that policy is
+# enforced on exactly one platform, and it is the one that does not gate merges.
+$MisePinVersion = '2026.6.12' # keep in sync with tools/setup/linux.sh MISE_PIN_VERSION
+if (-not (Have mise)) {
+  Invoke-Tool { scoop install "mise@$MisePinVersion" } "scoop install mise@$MisePinVersion"
+}
 Write-Host "mise: $(Get-ToolVersion { mise --version })"
+
+# Fail LOUDLY on drift rather than silently running a different mise than Linux does.
+# A version mismatch here is what produced the red Windows lane, and it was invisible
+# because nothing compared the two.
+$miseActual = (Get-ToolVersion { mise --version }) -replace '^\s*v?', '' -replace '\s.*$', ''
+if ($miseActual -and $miseActual -ne $MisePinVersion) {
+  Write-Host "WARNING: mise is $miseActual but tools/setup/linux.sh pins $MisePinVersion."
+  Write-Host "         Three-way parity (GOVERNANCE.md SS24) requires the same version on"
+  Write-Host "         every platform; a drifted mise applies different policies to the"
+  Write-Host "         same .mise.toml. If this is intentional, bump BOTH together."
+}
 
 # 4. runtimes from .mise.toml (dotnet/python/java/bun/uv) -- IDENTICAL file to Unix (symmetric).
 Push-Location $RepoRoot
