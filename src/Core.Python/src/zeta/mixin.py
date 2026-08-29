@@ -1,11 +1,11 @@
 import weakref
-from typing import TypeVar, Generic, Optional
+from typing import TypeVar
 
 TKey = TypeVar("TKey")
 TValue = TypeVar("TValue")
 
 
-class WeakMap(Generic[TKey, TValue]):
+class WeakMap[TKey, TValue]:
     """
     GC-safe weak-keyed identity table for attaching state to objects.
     """
@@ -21,7 +21,7 @@ class WeakMap(Generic[TKey, TValue]):
         """
         self._dict[key] = value
 
-    def get(self, key: TKey) -> Optional[TValue]:
+    def get(self, key: TKey) -> TValue | None:
         """
         Try to get the state value associated with the key. Returns None if absent.
         """

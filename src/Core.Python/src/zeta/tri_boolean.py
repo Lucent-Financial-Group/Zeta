@@ -1,4 +1,5 @@
-from typing import Callable, Union, Literal, Tuple
+from collections.abc import Callable
+from typing import Literal
 
 State = Literal["T", "F", "N"]
 
@@ -54,7 +55,7 @@ class MeasureResult:
         self,
         ok: bool,
         value: bool = False,
-        feedback: Union[MeasureFeedback, None] = None,
+        feedback: MeasureFeedback | None = None,
     ):
         self.ok = ok
         self.value = value
@@ -126,9 +127,9 @@ class TriFloat:
     def __init__(
         self,
         shape: FloatShape,
-        high: Tuple[Tri, ...],
-        decoder: Tuple[Tri, ...],
-        low: Tuple[Tri, ...],
+        high: tuple[Tri, ...],
+        decoder: tuple[Tri, ...],
+        low: tuple[Tri, ...],
     ):
         self.shape = shape
         self.high = high
@@ -136,7 +137,7 @@ class TriFloat:
         self.low = low
 
 
-def int_of(trits: Tuple[Tri, ...]) -> Union[int, None]:
+def int_of(trits: tuple[Tri, ...]) -> int | None:
     v = 0
     for t in trits:
         if t.s == "N":
@@ -145,7 +146,7 @@ def int_of(trits: Tuple[Tri, ...]) -> Union[int, None]:
     return v
 
 
-def int_to_trits(v: int, width: int) -> Tuple[Tri, ...]:
+def int_to_trits(v: int, width: int) -> tuple[Tri, ...]:
     out = []
     for i in range(width - 1, -1, -1):
         out.append(T if ((v >> i) & 1) == 1 else F)
@@ -159,7 +160,7 @@ class FloatFeedback:
 
 class DecodeResult:
     def __init__(
-        self, ok: bool, value: float = 0.0, feedback: Union[FloatFeedback, None] = None
+        self, ok: bool, value: float = 0.0, feedback: FloatFeedback | None = None
     ):
         self.ok = ok
         self.value = value
@@ -198,8 +199,8 @@ class EncodeResult:
     def __init__(
         self,
         ok: bool,
-        float_val: Union[TriFloat, None] = None,
-        feedback: Union[EncodeFeedback, None] = None,
+        float_val: TriFloat | None = None,
+        feedback: EncodeFeedback | None = None,
     ):
         self.ok = ok
         self.float = float_val
@@ -244,7 +245,7 @@ def from_value(value: float, shape: FloatShape = DEFAULT_SHAPE) -> EncodeResult:
 
 
 def from_trits(
-    high: Tuple[Tri, ...], decoder: Tuple[Tri, ...], low: Tuple[Tri, ...]
+    high: tuple[Tri, ...], decoder: tuple[Tri, ...], low: tuple[Tri, ...]
 ) -> TriFloat:
     shape = FloatShape(
         high_width=len(high), decoder_width=len(decoder), low_width=len(low)

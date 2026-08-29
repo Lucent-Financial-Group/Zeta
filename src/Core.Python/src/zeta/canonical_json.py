@@ -44,7 +44,12 @@ def to_canonical_json(val: object) -> str:
         return "true" if val else "false"
 
     if isinstance(val, float):
-        raise ValueError("toTagged: float not allowed")
+        # TypeError, not ValueError: this rejects the argument's TYPE, and the
+        # adjacent safe-integer check below rejects its VALUE. Callers that care
+        # only about "was this rejected" catch both (see tests/test_cross_verify.py);
+        # the four-oracle byte-lock compares rejected/accepted, never the exception
+        # class, and the Go oracle draws no distinction at all.
+        raise TypeError("toTagged: float not allowed")
 
     if isinstance(val, int):
         if abs(val) > 9007199254740991:

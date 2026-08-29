@@ -16,34 +16,56 @@ packages = ["src/zeta"]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
-# There is no `[tool.ruff]` section here, so this project's lint contract is
-# whatever ruff's DEFAULT rule set happens to be — which means the contract is
-# set by the lockfile, not by anything anyone wrote down. ruff 0.16 widened that
-# default from 59 rules to 413, and `src/Core.Python` measures 65 findings under
-# the new set while measuring 0 under the old one. Both numbers are from this
-# tree with no source change: `uvx ruff@0.15.17 check` -> "All checks passed!",
-# `uv run ruff check` on 0.16.4 -> "Found 65 errors."
+# RUFF 0.16 ADOPTED (2026-08-29). This block used to carry a `ruff<0.16` bound (since
+# widened to `<0.17` by a Dependabot bump, which permitted 0.16 without anyone landing
+# the findings it produces) and a long explanation of why: ruff 0.16 widened the default rule set from 59 rules to
+# 413, and `src/Core.Python` measured 65 findings under the new set while measuring 0
+# under the old one. The bound said it should be removed "in the change that lands
+# the 65 -- not before, and not as a side effect of something else." This is that
+# change; the 65 are landed, not suppressed:
 #
-# The 65 are not junk — 54 are auto-fixable modernisations (UP006/UP007/UP035/
-# UP045/I001), and of the 15 that remain, 8 are UP046 (rewrite `Generic[A, B]`
-# to PEP 695 type parameters) in `algebra/interfaces.py`, 2 are PLC0105 TypeVar
-# variance renames in the same file, and 2 are TRY004, which changes an exception
-# TYPE and so is a behaviour change. Adopting them is real work with a real
-# review surface: a variance-semantics change to the algebra interfaces and two
-# raised-type changes do not belong inside a lockfile bump, where nobody would be
-# looking for them.
+#   54  auto-fixed  UP006/UP007/UP035/UP037/UP045/I001/RUF022/FURB188 modernisations
+#    8  UP046       Generic[T] subclassing -> PEP 695 `class Semiring[T](ABC)`
+#    2  PLC0105     the unused contravariant `A` / covariant `B` TypeVars, DELETED
+#                   rather than renamed -- renaming an unused declaration only makes
+#                   dead code better spelled
+#    2  TRY004      `toTagged: float not allowed` now raises TypeError, because it
+#                   rejects the argument's TYPE while the adjacent safe-integer
+#                   check rejects its VALUE. The cross-verify rejection loop was
+#                   widened to `except (ValueError, TypeError)` IN THE SAME CHANGE:
+#                   verified that a bare `except ValueError` no longer catches it,
+#                   so without the widening a float fixture would have read as
+#                   ACCEPTED and silently broken the four-oracle byte-lock.
+#    1  PIE810, 1 EXE001, 1 RUF059  -- mechanical
 #
-# So the bound is here, loud, instead of the flip being silent. `src/Arc.Python`
-# already runs 0.16.4 clean and its manifest says defaults are the repo's
-# standard; this bound is the admission that Core.Python is not there yet, and it
-# is what a future Dependabot PR has to argue with rather than quietly step over.
-# Remove it in the change that lands the 65 — not before, and not as a side
-# effect of something else.
+# The four-oracle contract is unaffected: it compares rejected/accepted, never the
+# exception class, and the Go oracle draws no type distinction at all
+# (`errors.New("float not allowed")`).
+#
+# ON PINNING THE POLICY, and what is deliberately still open. The original defect
+# named here was that the rule set is "whatever ruff defaults to this month" -- an
+# unpinned POLICY behind a pinned tool. The tool half is now genuinely fixed: 0.16.5
+# is pinned in .mise.toml, in tools/setup/manifests/from-uv-tool, and as the floor
+# below, and audit-tool-pin-agreement.test.ts refuses a disagreement between them.
+# (A second, UNPINNED `uv tool install ruff` in that manifest had been overwriting
+# the mise pin at install time, which is why `lint (Python)` failed 6 of 60 runs.)
+#
+# An explicit `[tool.ruff.lint] select` was drafted and then WITHDRAWN, because
+# prefix-level selection cannot express ruff's default set: selecting `TRY` also
+# enables TRY003, `RUF` also enables RUF002/RUF003, and this tree has 27 and 25 of
+# those respectively. A select list is therefore a NEW policy, not a pinned one, and
+# adopting it means landing ~66 further findings -- the same mistake as folding the
+# original 65 into a lockfile bump. Measured, with the tool pinned, the default set
+# reports zero findings on this tree.
+#
+# LIFTS WHEN: someone lands a select list rule-by-rule with its findings fixed.
+# Until then the policy is pinned by the tool version, which is now pinned in all
+# three places and mechanically checked.
 [dependency-groups]
 dev = [
     "mypy>=2.1.0",
     "pytest>=9.1.0",
-    "ruff>=0.9.0,<0.17",
+    "ruff>=0.16.5,<0.17",
     "types-pyyaml>=6.0.12.20260518",
     "sympy>=1.13",
     "mpmath>=1.3",

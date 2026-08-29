@@ -15,9 +15,11 @@ Usage:
 """
 
 from __future__ import annotations
+
 import weakref
-from typing import TypeVar, Generic, Callable, Optional
+from collections.abc import Callable
 from dataclasses import dataclass
+from typing import TypeVar
 
 T = TypeVar("T")
 U = TypeVar("U")
@@ -33,7 +35,7 @@ class CacheStats:
     total_calls: int = 0
 
 
-class SpecializationCache(Generic[T, U]):
+class SpecializationCache[T, U]:
     """
     WeakRef-wrapped specialization cache.
 
@@ -44,9 +46,9 @@ class SpecializationCache(Generic[T, U]):
 
     def __init__(self, specializer: Callable[[], Callable[[T], U]]):
         self._specializer = specializer
-        self._cached: Optional[weakref.ref] = None
+        self._cached: weakref.ref | None = None
         # We need a strong ref too, or GC collects immediately
-        self._strong: Optional[Callable[[T], U]] = None
+        self._strong: Callable[[T], U] | None = None
         self.stats = CacheStats()
 
     def run(self, input: T) -> U:

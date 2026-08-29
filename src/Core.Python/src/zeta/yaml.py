@@ -121,8 +121,7 @@ def parse_value(token: str):
 def to_content_lines(text: str):
     out = []
     for raw in text.split("\n"):
-        if raw.endswith("\r"):
-            raw = raw[:-1]
+        raw = raw.removesuffix("\r")
 
         indent = 0
         saw_tab = False
@@ -150,7 +149,7 @@ def to_content_lines(text: str):
 
 def is_document_marker(text: str) -> bool:
     t = text.rstrip(" \t\r\n")
-    return t == "---" or t == "..." or t.startswith("--- ") or t.startswith("... ")
+    return t in ("---", "...") or t.startswith(("--- ", "... "))
 
 
 def split_mapping_entry(text: str):

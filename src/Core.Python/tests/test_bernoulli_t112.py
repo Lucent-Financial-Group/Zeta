@@ -105,7 +105,7 @@ def test_wiener_kl_is_n_times_per_tick_rate() -> None:
     assert sp.simplify(g.subs(r, 1)) == 0
     assert sp.simplify(sp.diff(g, r, 2)) == 1 / (2 * r**2)
     # matrix route equals N × per-tick at N=3 for r = s1²/s2²
-    s1, s2, d = sp.symbols("s1 s2 Delta", positive=True)
+    s1, s2, _d = sp.symbols("s1 s2 Delta", positive=True)
     n_ticks = 3
     per_tick = sp.log(s2 / s1) + s1**2 / (2 * s2**2) - sp.Rational(1, 2)
     # increments are iid N(0, s²Δ): KL_N = N·[log(s2/s1) + s1²/(2s2²) − 1/2]

@@ -10,4 +10,18 @@
 # Single flat manifest today; `@include` hierarchy (@min in @all)
 # is a BACKLOG P1 item.
 
-ruff
+# PINNED, and to the SAME version .mise.toml pins. A bare `ruff` here meant
+# `uv tool install ruff` fetched latest and OVERWROTE the mise-installed pin
+# seconds after it landed -- measured in `lint (Python)` on main 2026-08-29:
+#
+#     pipx:ruff 0.15.17        <- mise installs the pin
+#     uv tool install ruff...
+#      + ruff==0.16.5          <- overwritten, unpinned
+#
+# That is why `lint (Python)` failed 6 of 60 runs: the realizer's already-installed
+# check matches on NAME alone, so a warm cache skipped the overwrite and a cold one
+# did not. The failure tracked cache state, not code.
+#
+# Keep in sync with `"pipx:ruff"` in .mise.toml. audit-tool-pin-agreement.test.ts
+# refuses a disagreement or a bare entry.
+ruff==0.16.5
