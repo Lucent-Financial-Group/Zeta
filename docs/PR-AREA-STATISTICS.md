@@ -1,28 +1,29 @@
 # PR area statistics
 
-_13,259 merged PRs · 16 areas · temporal split · generated 2026-08-29T00:59:30.741Z_
+_13,329 merged PRs · 16 areas · temporal split · generated 2026-08-29T06:45:35.104Z_
 
 **The BNN earns its place — but only under distribution shift.**
 
 | model | accuracy | Δ vs baseline | macro F1 | where baseline abstains |
 |---|---:|---:|---:|---:|
-| closed-form baseline | 58.2% | — | 28.7% | 0.0% |
-| majority class | 3.7% | -54.6pp | 0.4% | 2.2% |
-| random forest | 71.6% | +13.4pp | 22.6% | 29.1% |
-| BNN (ADF probit, one-vs-rest) | 74.4% | +16.2pp | 25.4% | 29.6% |
-| hybrid: baseline where it speaks, forest elsewhere | 62.2% | +4.0pp | 28.8% | 29.1% |
-| _NULL random forest (labels shuffled)_ | 4.4% | — | 1.3% | — |
-| _NULL BNN (labels shuffled)_ | 20.2% | — | 4.6% | — |
+| closed-form baseline | 58.3% | — | 28.6% | 0.0% |
+| majority class | 3.6% | -54.6pp | 0.4% | 2.2% |
+| random forest | 75.3% | +17.0pp | 22.2% | 27.5% |
+| BNN (ADF probit, one-vs-rest) | 76.8% | +18.6pp | 26.5% | 33.3% |
+| hybrid: baseline where it speaks, forest elsewhere | 62.0% | +3.7pp | 28.6% | 27.5% |
+| _NULL random forest (labels shuffled)_ | 5.0% | — | 1.5% | — |
+| _NULL BNN (labels shuffled)_ | 15.1% | — | 4.5% | — |
 
-Label-shuffle null: 20.2% against a majority-class floor of 3.7%.
+Label-shuffle null: 15.1% against a majority-class floor of 3.6%.
 
 | comparison | b | c | p | favours |
 |---|---:|---:|---:|---|
-| random forest vs closed-form baseline | 609 | 164 | 6.1e-61 | random forest |
-| BNN (ADF probit, one-vs-rest) vs closed-form baseline | 689 | 153 | 6.5e-82 | BNN (ADF probit, one-vs-rest) |
-| BNN (ADF probit, one-vs-rest) vs random forest | 238 | 147 | 4.1e-6 | BNN (ADF probit, one-vs-rest) |
-| hybrid: baseline where it speaks, forest elsewhere vs random forest | 164 | 478 | 1.6e-36 | random forest |
+| random forest vs closed-form baseline | 751 | 183 | 2.8e-82 | random forest |
+| BNN (ADF probit, one-vs-rest) vs closed-form baseline | 787 | 168 | 2.3e-96 | BNN (ADF probit, one-vs-rest) |
+| BNN (ADF probit, one-vs-rest) vs random forest | 189 | 138 | 0.0056 | BNN (ADF probit, one-vs-rest) |
+| hybrid: baseline where it speaks, forest elsewhere vs random forest | 183 | 627 | 1.3e-57 | random forest |
 
-- Coverage: 73.8% parseable, 26.2% unlabellable.
-- Disagreement set: 3,111 PRs (31.8% of parseable).
-- k-means ARI 0.089 (null -0.001) — clusters are not the taxonomy.
+- Coverage: 73.9% parseable, 26.1% unlabellable.
+- Disagreement set: 3,134 PRs (31.8% of parseable).
+- k-means ARI 0.106 (null -0.001) — clusters are not the taxonomy.
+- **Macro-F1 goes the other way**: baseline 28.6% vs 28.6% for the best model (hybrid: baseline where it speaks, forest elsewhere). The models win on accuracy by serving the large areas; they are no better on the tail.
