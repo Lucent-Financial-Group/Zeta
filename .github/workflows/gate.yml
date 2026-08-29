@@ -344,13 +344,19 @@ jobs:
                 ;;
               data/*|demo/red/red-state.json)
                 ;;
-              # Generated ledgers under db/. NOT a blanket `db/*`: db/ also holds
-              # real source (db/src/Core.Git/*.fs, db/backlog/dora-metrics.ts,
-              # db/tools/backlog/new-workitem.ts), and skipping the build on those
-              # would be the failure this filter exists to prevent. Only subtrees
-              # verified to contain zero buildable source are listed, and each is
-              # written as an explicit prefix so a new sibling directory does NOT
-              # inherit the exemption.
+              # Generated ledgers under db/. Deliberately NOT a blanket `db/*`,
+              # though measurement says one would in fact be safe TODAY: db/ holds
+              # 264 files and zero compiled source. The six paths that carry a
+              # source extension (db/src/Core.Git/*.fs, db/backlog/dora-metrics.ts,
+              # db/common/host-tier.sh, db/tools/**) are 3-line MARKDOWN stubs
+              # wearing a .fs/.ts/.sh name — unfilled "carved sentence" templates,
+              # in no .fsproj/.csproj/.sln/tsconfig and scanned by no linter.
+              # The narrow list is kept anyway because that safety is an accident
+              # of what happens to be in db/ right now, not a property anyone
+              # enforces. Explicit prefixes mean a new sibling under db/ does NOT
+              # inherit the exemption — it fails closed into a full build.
+              # The durable fix is a code/data split in db/ so this arm can be one
+              # prefix; the misnamed stubs should be renamed to .md as part of it.
               db/mutation-findings/*|db/drift-dashboard/*|db/uncertainty/*|db/search-index/*)
                 ;;
               .gitignore|.gitattributes|LICENSE|*.txt)
