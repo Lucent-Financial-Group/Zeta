@@ -344,6 +344,15 @@ jobs:
                 ;;
               data/*|demo/red/red-state.json)
                 ;;
+              # Generated ledgers under db/. NOT a blanket `db/*`: db/ also holds
+              # real source (db/src/Core.Git/*.fs, db/backlog/dora-metrics.ts,
+              # db/tools/backlog/new-workitem.ts), and skipping the build on those
+              # would be the failure this filter exists to prevent. Only subtrees
+              # verified to contain zero buildable source are listed, and each is
+              # written as an explicit prefix so a new sibling directory does NOT
+              # inherit the exemption.
+              db/mutation-findings/*|db/drift-dashboard/*|db/uncertainty/*|db/search-index/*)
+                ;;
               .gitignore|.gitattributes|LICENSE|*.txt)
                 ;;
               *.md)
