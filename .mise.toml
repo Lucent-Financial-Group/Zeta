@@ -223,7 +223,31 @@ node = "24"
 # with `package.json` devDependency (used by the `lint:markdown`
 # script in package.json) so dev laptops can also `bun run
 # lint:markdown`. Both pins point at the same version.
-"npm:markdownlint-cli2" = "0.22.1"
+# Keep in sync with `devDependencies.markdownlint-cli2` in package.json. They
+# DISAGREED (mise 0.22.1 vs package.json 0.23.2), and package.json won in practice:
+# `lint:markdown` runs node_modules/.bin/markdownlint-cli2, so `lint (markdownlint)`
+# has been green against 0.23.2 while mise installed an 0.22.1 nothing used.
+#
+# The stale entry was not merely redundant, it was BREAKING macOS. `build-and-test
+# (macos-26)` failed on every commit with:
+#
+#   Failed to install npm:markdownlint-cli2@0.22.1: aube install failed
+#     caused by: trust downgrade for fastq@1.20.2 (trustPolicy=no-downgrade):
+#     earlier published version 1.20.0 had trusted publisher but this version has
+#     no trust evidence
+#
+# fastq is a transitive dep (markdownlint-cli2 -> globby -> fast-glob ->
+# @nodelib/fs.walk -> fastq). Checked on npm 2026-08-29: 1.20.0 and 1.20.1 carry
+# attestations, 1.20.2 was published 2026-08-28 WITHOUT them, and 1.20.3 restored
+# them the next day with SLSA provenance. The policy caught a real regression, and
+# it is already fixed upstream -- so no `trust_policy_excludes` is warranted.
+# Verified locally that npm resolves BOTH 0.22.1 and 0.23.2 to fastq@1.20.3 today.
+#
+# Only macOS saw it because only macOS runs a mise new enough to enforce the aube
+# trust policy (2026.7.15 via Homebrew's floor, vs 2026.6.12 pinned on Linux and
+# Windows). That divergence is real and is NOT resolved here -- see the note in
+# tools/setup/macos.sh.
+"npm:markdownlint-cli2" = "0.23.2"
 # semgrep: SAST linter (the 14 rules in `.semgrep.yml`). Pinned
 # here per the three-way-parity invariant (GOVERNANCE §24) — dev
 # laptops + CI runners + devcontainers all get the same semgrep
