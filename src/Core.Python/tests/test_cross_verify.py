@@ -1,11 +1,10 @@
 import json
-import yaml
 from pathlib import Path
-from zeta import sha256
-from zeta import tri_boolean
-from zeta import zeta_id
+
+import yaml
+
+from zeta import sha256, tri_boolean, zeta_id, zset_merkle
 from zeta import yaml as zeta_yaml
-from zeta import zset_merkle
 
 
 def find_repo_root() -> Path:
@@ -393,13 +392,13 @@ def test_cross_verify_canonical_json():
         if isinstance(val, JsonNumber):
             s = val.s
             if "." in s or "e" in s or "E" in s:
-                raise ValueError("toTagged: float not allowed")
+                raise TypeError("toTagged: float not allowed")
             n = int(s)
             if abs(n) > 9007199254740991:
                 raise ValueError(f"toTagged: {n} is not a safe integer")
             return s
         if isinstance(val, float):
-            raise ValueError("toTagged: float not allowed")
+            raise TypeError("toTagged: float not allowed")
         if isinstance(val, int):
             if abs(val) > 9007199254740991:
                 raise ValueError(f"toTagged: {val} is not a safe integer")
@@ -437,7 +436,12 @@ def test_cross_verify_canonical_json():
         try:
             to_canonical_json_with_number(v["value"])
             rejected = False
-        except ValueError:
+        # Both: the float case now raises TypeError (it rejects a TYPE) and the
+        # safe-integer case still raises ValueError (it rejects a VALUE). This
+        # loop only records WHETHER the vector was rejected, which is what the
+        # four-oracle byte-lock compares, so it must catch both or a float
+        # fixture would silently read as ACCEPTED.
+        except ValueError, TypeError:
             rejected = True
 
         out_map[f"invalid:{v['id']}"] = "<rejected>" if rejected else "ACCEPTED"

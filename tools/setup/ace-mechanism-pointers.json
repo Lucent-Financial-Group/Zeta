@@ -49,7 +49,7 @@
     "dependencies": [
       {
         "ecosystem": "uv-tool",
-        "spec": "ruff",
+        "spec": "ruff==0.16.5",
         "update": "pinned"
       }
     ]

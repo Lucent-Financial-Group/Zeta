@@ -1,9 +1,9 @@
 import secrets
-from typing import Dict, NamedTuple, Protocol, List
+from typing import NamedTuple, Protocol
 
 import zeta.zeta_id_gen as gen
 
-AUTHORITY_VALUES: Dict[str, int] = {
+AUTHORITY_VALUES: dict[str, int] = {
     "Simulated": 3,
     "BestEffort": 8,
     "Standard": 15,
@@ -11,7 +11,7 @@ AUTHORITY_VALUES: Dict[str, int] = {
     "HumanVerified": 31,
 }
 
-MOMENTUM_VALUES: Dict[str, int] = {
+MOMENTUM_VALUES: dict[str, int] = {
     "Background": 32,
     "Normal": 96,
     "Elevated": 160,
@@ -243,7 +243,7 @@ ZETAID_BASE32_LEN = 26
 ZETAID_HEX_LEN = 32
 MASK_128 = (1 << 128) - 1
 
-DECODE: Dict[str, int] = {}
+DECODE: dict[str, int] = {}
 for i, char in enumerate(CROCKFORD_ALPHABET):
     DECODE[char] = i
     DECODE[char.lower()] = i
@@ -258,7 +258,7 @@ DECODE["o"] = 0
 
 def format_b32(id_val: int) -> str:
     v = id_val & MASK_128
-    out: List[str] = [""] * ZETAID_BASE32_LEN
+    out: list[str] = [""] * ZETAID_BASE32_LEN
     for i in range(ZETAID_BASE32_LEN - 1, -1, -1):
         out[i] = CROCKFORD_ALPHABET[v & 31]
         v >>= 5

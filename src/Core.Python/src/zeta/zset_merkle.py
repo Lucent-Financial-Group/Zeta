@@ -1,6 +1,6 @@
 import struct
+
 import xxhash
-from typing import List, Tuple, Dict
 
 
 class MerkleHash:
@@ -9,18 +9,18 @@ class MerkleHash:
         self.lo = lo
 
     @staticmethod
-    def zero() -> "MerkleHash":
+    def zero() -> MerkleHash:
         return MerkleHash(0, 0)
 
     @staticmethod
-    def of_bytes(b: bytes) -> "MerkleHash":
+    def of_bytes(b: bytes) -> MerkleHash:
         digest = xxhash.xxh128(b).digest()
         lo = struct.unpack("<Q", digest[0:8])[0]
         hi = struct.unpack("<Q", digest[8:16])[0]
         return MerkleHash(hi, lo)
 
     @staticmethod
-    def combine(a: "MerkleHash", b: "MerkleHash") -> "MerkleHash":
+    def combine(a: MerkleHash, b: MerkleHash) -> MerkleHash:
         buf = bytearray(32)
         struct.pack_into("<Q", buf, 0, a.hi)
         struct.pack_into("<Q", buf, 8, a.lo)
@@ -40,7 +40,7 @@ def leaf_bytes(key_bytes: bytes, weight: int) -> bytes:
     return bytes(buf)
 
 
-def fold(level: List[MerkleHash]) -> MerkleHash:
+def fold(level: list[MerkleHash]) -> MerkleHash:
     n = len(level)
     if n == 0:
         return MerkleHash.of_bytes(b"")
@@ -54,9 +54,9 @@ def fold(level: List[MerkleHash]) -> MerkleHash:
     return fold(parents)
 
 
-def root(entries: List[Tuple[str, int]]) -> MerkleHash:
+def root(entries: list[tuple[str, int]]) -> MerkleHash:
     # 1. Group by key and sum weights
-    counts: Dict[str, int] = {}
+    counts: dict[str, int] = {}
     for k, w in entries:
         counts[k] = counts.get(k, 0) + w
 

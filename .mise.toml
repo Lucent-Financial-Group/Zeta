@@ -249,24 +249,16 @@ node = "24"
 # pip (the uv-canonical ADR; identical to `pipx:semgrep` above). No pip anywhere.
 # Pin per dep-pin-search-first (PyPI 2026-06-10: 1.38.0).
 "pipx:yamllint" = "1.38.0"
-# HELD at 0.15.17, deliberately, measured 2026-08-23. Latest is 0.16.4 and the
-# bump is NOT a version change, it is a lint-policy change: against this tree
-#   ruff 0.15.17 -> "All checks passed!"
-#   ruff 0.16.4  -> "Found 65 errors."
-# I001, RUF022 and PLC0105 among them, and PLC0105 asks for TypeVar RENAMES
-# (`A` -> `A_contra`) across the Python byte-lock oracle. Sixty-five findings and
-# an oracle-shaped rename do not belong inside a dependency sweep.
+# Was HELD at 0.15.17 while `src/Core.Python` measured 65 findings under ruff 0.16's
+# widened default rule set (413 rules, up from 59) and 0 under the old one. Those 65
+# are now landed -- fixed, not suppressed -- and `src/Core.Python/pyproject.toml`
+# declares an explicit `[tool.ruff] lint.select`, so the rule set is written down
+# instead of being whatever the installed ruff defaults to. That was the stated
+# condition for lifting the hold.
 #
-# THE REAL DEFECT IS UNDERNEATH IT and outlives the bump:
-# `src/Core.Python/pyproject.toml` carries NO `[tool.ruff]` section, so the
-# effective rule set is "whatever ruff defaults to this month". That is an
-# unpinned POLICY behind a pinned tool — the lint equivalent of an unpinned
-# dependency, and the reason a patch-looking bump moved 0 -> 65. Pin the rule set
-# first, then the tool version means something.
-#
-# LIFTS WHEN: `[tool.ruff]` declares the rule set explicitly and the resulting
-# findings are fixed (not suppressed) in their own change.
-"pipx:ruff" = "0.15.17"
+# Keep in sync with `ruff==` in tools/setup/manifests/from-uv-tool; a second,
+# unpinned installer there was overwriting this pin at install time.
+"pipx:ruff" = "0.16.5"
 "pipx:mypy" = "2.3.1"
 
 [settings]
