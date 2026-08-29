@@ -1,0 +1,14 @@
+{
+  "id": "080d0272116c5010a0130008c337e4e8",
+  "at": "2026-08-29T16:02:35.018Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1744BCA087G0R000PN3VT3",
+    "type": "task",
+    "title": "IL-emit fused map/filter chains via Expression.Compile",
+    "slug": "il-emit-fused-map-filter-chains-via-expression-compile",
+    "priority": "P1",
+    "filename": "081M1744BCA087G0R000PN3VT3-il-emit-fused-map-filter-chains-via-expression-compile.md"
+  }
+}

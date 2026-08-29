@@ -47,6 +47,11 @@ type Op() =
     abstract IsFuseSkipped: bool
     default _.IsFuseSkipped = false
 
+    /// True when `StepAsync` runs a compiled homogeneous map/filter
+    /// chain (`FuseEmit.compile`) instead of nested closures.
+    abstract IsIlEmitted: bool
+    default _.IsIlEmitted = false
+
     /// Try to absorb a fanout-1 producer into this consumer (map/filter
     /// chains). Returns true if a new fusion landed. Default: no-op.
     abstract TryFuse: fanoutOf: (Op -> int) -> bool
@@ -228,9 +233,10 @@ type Circuit() =
         lock registerLock (fun () ->
             if built then () else
             // Absorb fanout-1 map/filter chains into the consumer's Step
-            // (one pass, no intermediate Z-set). Repeat until a round
-            // makes no change so Map∘Map∘Filter chains collapse. IL-emit
-            // of a fused StepAsync remains a later increment.
+            // (one pass, no intermediate Z-set). Homogeneous same-key
+            // chains IL-emit via FuseEmit.compile; heterogeneous Map
+            // stays on the fusedVisit closure path. Repeat until a round
+            // makes no change so Map∘Map∘Filter chains collapse.
             let rec fuseRounds remaining =
                 if remaining <= 0 then ()
                 else
