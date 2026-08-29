@@ -186,6 +186,11 @@ fi
 
 if ! command -v mise >/dev/null 2>&1; then
   echo "↓ installing mise via Homebrew..."
+  # PINNED to the same version tools/setup/linux.sh pins. An unpinned `brew install mise`
+  # leaves the tool that enforces every other pin floating -- the defect that put the
+  # Windows lane red (see install.ps1 step 3). Homebrew cannot install an arbitrary old
+  # formula version, so this installs current and then WARNS on mismatch rather than
+  # pretending parity it cannot deliver: a silent mismatch is what hid this for months.
   brew install mise
 fi
 
@@ -195,6 +200,18 @@ if ! zeta_version_at_least "$installed_mise_version" "$MISE_MIN_VERSION"; then
   brew update
   brew upgrade mise || brew install mise
   installed_mise_version="$(mise --version 2>/dev/null | awk '{print $1}')"
+
+# Parity check (GOVERNANCE.md §24): warn when macOS is not running the version Linux pins.
+# Measured 2026-08-29: linux.sh pins 2026.6.12 and macOS/Windows pinned nothing, so the
+# three-way-parity script suite ran up to three different mise versions against one
+# .mise.toml -- and a newer mise applies supply-chain policies an older one does not.
+mise_pin_expected="2026.6.12" # keep in sync with tools/setup/linux.sh MISE_PIN_VERSION
+mise_actual="${installed_mise_version%% *}"
+mise_actual="${mise_actual#v}"
+if [ -n "$mise_actual" ] && [ "$mise_actual" != "$mise_pin_expected" ]; then
+  echo "WARNING: mise is $mise_actual but tools/setup/linux.sh pins $mise_pin_expected."
+  echo "         Same .mise.toml, different mise, different policy. Bump BOTH together."
+fi
   if ! zeta_version_at_least "$installed_mise_version" "$MISE_MIN_VERSION"; then
     echo "error: mise is ${installed_mise_version}, but .mise.toml requires at least ${MISE_MIN_VERSION}" >&2
     echo "  run: brew update && brew upgrade mise" >&2
