@@ -450,3 +450,57 @@ let ``Build does not skip a map with two filter consumers`` () =
     let _b = c.Filter(mapped, Func<int, bool>(fun x -> x < 10))
     c.Build()
     mapped.Op.IsFuseSkipped |> should be False
+
+
+[<Fact>]
+let ``Build IL-emits a homogeneous Map then Filter chain`` () =
+    task {
+        let c = Circuit.create ()
+        let input = c.ZSetInput<int>()
+        let mapped = c.Map(input.Stream, Func<int, int>(fun x -> x * 10))
+        let filtered = c.Filter(mapped, Func<int, bool>(fun x -> x > 0))
+        let out = c.Output filtered
+        c.Build()
+        mapped.Op.IsFuseSkipped |> should be True
+        filtered.Op.IsIlEmitted |> should be True
+        mapped.Op.IsIlEmitted |> should be False
+        input.Send(ZSet.ofKeys [ -1; 0; 1; 2 ])
+        do! c.StepAsync()
+        out.Current.[10] |> should equal 1L
+        out.Current.[20] |> should equal 1L
+        out.Current.[-10] |> should equal 0L
+    }
+
+
+[<Fact>]
+let ``Build IL-emits Map then Map then Filter as one compiled kernel`` () =
+    task {
+        let c = Circuit.create ()
+        let input = c.ZSetInput<int>()
+        let m1 = c.Map(input.Stream, Func<int, int>(fun x -> x + 1))
+        let m2 = c.Map(m1, Func<int, int>(fun x -> x * 10))
+        let filtered = c.Filter(m2, Func<int, bool>(fun x -> x >= 20))
+        let out = c.Output filtered
+        c.Build()
+        m1.Op.IsFuseSkipped |> should be True
+        m2.Op.IsFuseSkipped |> should be True
+        filtered.Op.IsIlEmitted |> should be True
+        input.Send(ZSet.ofKeys [ 0; 1; 2 ])
+        do! c.StepAsync()
+        // (0+1)*10=10 filtered out; (1+1)*10=20; (2+1)*10=30
+        out.Current.[10] |> should equal 0L
+        out.Current.[20] |> should equal 1L
+        out.Current.[30] |> should equal 1L
+    }
+
+
+[<Fact>]
+let ``heterogeneous Map int-to-string is not IL-emitted`` () =
+    let c = Circuit.create ()
+    let input = c.ZSetInput<int>()
+    let mapped = c.Map(input.Stream, Func<int, string>(fun x -> string x))
+    let filtered = c.Filter(mapped, Func<string, bool>(fun s -> s.Length > 0))
+    c.Build()
+    mapped.Op.IsFuseSkipped |> should be True
+    filtered.Op.IsIlEmitted |> should be False
+    mapped.Op.IsIlEmitted |> should be False

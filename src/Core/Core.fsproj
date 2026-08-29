@@ -158,6 +158,7 @@
     <Compile Include="ActionGrid.fs" />
     <Compile Include="DynamicValueXmlPolicy.fs" />
     <Compile Include="Circuit.fs" />
+    <Compile Include="FuseEmit.fs" />
     <Compile Include="PluginApi.fs" />
     <Compile Include="PluginHarness.fs" />
     <Compile Include="LawRunner.fs" />

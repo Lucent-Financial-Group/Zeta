@@ -21,41 +21,83 @@ type internal IFilterProducer<'K when 'K : comparison> =
     abstract SourceCount: int
     abstract ForEachKept: visit: ('K -> int64 -> unit) -> unit
 
-
 [<Sealed>]
 type internal MapZSetOp<'A, 'B when 'A : comparison and 'B : comparison>(input: Op<ZSet<'A>>, f: Func<'A, 'B>) =
     inherit Op<ZSet<'B>>()
     let inputs = [| input :> Op |]
     let mutable skip = false
     let mutable fusedVisit: (('B -> int64 -> unit) -> unit) option = None
+    let mutable ilCompiled: Func<'A, FuseEmit.Result<'A>> option = None
+    let mutable ilRoot: Op<ZSet<'A>> option = None
+    let mutable ilStages: FuseEmit.Stage<'A> list = []
     override _.Name = "map"
     override _.Inputs = inputs
     override _.IsLinear = true
     override _.IsFuseSkipped = skip
+    override _.IsIlEmitted = ilCompiled.IsSome
     member _.SetFuseSkip() = skip <- true
 
     member this.ForEachMapped(visit: 'B -> int64 -> unit) =
-        match fusedVisit with
-        | Some chain -> chain visit
-        | None ->
-            let span = input.Value.AsSpan()
+        match ilCompiled, ilRoot with
+        | Some compiled, Some root ->
+            let span = root.Value.AsSpan()
             for i in 0 .. span.Length - 1 do
-                visit (f.Invoke span.[i].Key) span.[i].Weight
+                let t = compiled.Invoke span.[i].Key
+                if t.Keep then visit (unbox (box t.Key)) span.[i].Weight
+        | _ ->
+            match fusedVisit with
+            | Some chain -> chain visit
+            | None ->
+                let span = input.Value.AsSpan()
+                for i in 0 .. span.Length - 1 do
+                    visit (f.Invoke span.[i].Key) span.[i].Weight
 
     member _.SourceCount =
-        match box input with
-        | :? IMapProducer<'A> as p -> p.SourceCount
-        | :? IFilterProducer<'A> as p -> p.SourceCount
-        | _ -> input.Value.Count
+        match ilRoot with
+        | Some root -> root.Value.Count
+        | None ->
+            match box input with
+            | :? IMapProducer<'A> as p -> p.SourceCount
+            | :? IFilterProducer<'A> as p -> p.SourceCount
+            | _ -> input.Value.Count
 
     interface IMapProducer<'B> with
         member this.SetFuseSkip() = this.SetFuseSkip()
         member this.SourceCount = this.SourceCount
         member this.ForEachMapped visit = this.ForEachMapped visit
 
+    interface IHomogeneous<'A> with
+        member _.InputOp = input
+        member _.Stages =
+            if typeof<'A> <> typeof<'B> then []
+            elif not (List.isEmpty ilStages) then ilStages
+            else [ FuseEmit.Map(unbox (box f)) ]
+        member _.SetFuseSkip() = skip <- true
+
     override this.TryFuse fanoutOf =
-        if skip || fusedVisit.IsSome then false
+        if skip || fusedVisit.IsSome || ilCompiled.IsSome then false
         elif fanoutOf input <> 1 then false
+        elif typeof<'A> = typeof<'B> then
+            match box input with
+            | :? IHomogeneous<'A> as up when not (List.isEmpty up.Stages) ->
+                let own = [ FuseEmit.Map(unbox (box f)) ]
+                let stages = up.Stages @ own
+                up.SetFuseSkip()
+                ilStages <- stages
+                ilCompiled <- Some(FuseEmit.compile stages)
+                ilRoot <- Some(FuseWalk.bottom up.InputOp)
+                true
+            | :? IMapProducer<'A> as up ->
+                up.SetFuseSkip()
+                fusedVisit <- Some (fun visit ->
+                    up.ForEachMapped (fun a w -> visit (f.Invoke a) w))
+                true
+            | :? IFilterProducer<'A> as up ->
+                up.SetFuseSkip()
+                fusedVisit <- Some (fun visit ->
+                    up.ForEachKept (fun a w -> visit (f.Invoke a) w))
+                true
+            | _ -> false
         else
             match box input with
             | :? IMapProducer<'A> as up ->
@@ -73,18 +115,18 @@ type internal MapZSetOp<'A, 'B when 'A : comparison and 'B : comparison>(input: 
     override this.StepAsync(_: CancellationToken) =
         if skip then ValueTask.CompletedTask
         else
-            match fusedVisit with
-            | None ->
-                this.Value <- ZSet.map f.Invoke input.Value
-            | Some chain ->
-                let cap = max 1 this.SourceCount
+            match ilCompiled, ilRoot with
+            | Some compiled, Some root ->
+                let span = root.Value.AsSpan()
+                let cap = max 1 span.Length
                 let rented = Pool.Rent<ZEntry<'B>> cap
                 try
                     let mutable n = 0
-                    chain (fun k w ->
-                        if n < rented.Length then
-                            rented.[n] <- ZEntry(k, w)
-                            n <- n + 1)
+                    for i in 0 .. span.Length - 1 do
+                        let t = compiled.Invoke span.[i].Key
+                        if t.Keep && n < rented.Length then
+                            rented.[n] <- ZEntry(unbox (box t.Key), span.[i].Weight)
+                            n <- n + 1
                     if n = 0 then this.Value <- ZSet<'B>.Empty
                     else
                         let live = ZSetBuilder.sortAndConsolidate (Span<_>(rented, 0, n))
@@ -93,6 +135,27 @@ type internal MapZSetOp<'A, 'B when 'A : comparison and 'B : comparison>(input: 
                             else ZSet(Pool.FreezeSlice(rented, live))
                 finally
                     Pool.Return rented
+            | _ ->
+                match fusedVisit with
+                | None ->
+                    this.Value <- ZSet.map f.Invoke input.Value
+                | Some chain ->
+                    let cap = max 1 this.SourceCount
+                    let rented = Pool.Rent<ZEntry<'B>> cap
+                    try
+                        let mutable n = 0
+                        chain (fun k w ->
+                            if n < rented.Length then
+                                rented.[n] <- ZEntry(k, w)
+                                n <- n + 1)
+                        if n = 0 then this.Value <- ZSet<'B>.Empty
+                        else
+                            let live = ZSetBuilder.sortAndConsolidate (Span<_>(rented, 0, n))
+                            this.Value <-
+                                if live = 0 then ZSet<'B>.Empty
+                                else ZSet(Pool.FreezeSlice(rented, live))
+                    finally
+                        Pool.Return rented
             ValueTask.CompletedTask
 
 
@@ -102,37 +165,65 @@ type internal FilterZSetOp<'K when 'K : comparison>(input: Op<ZSet<'K>>, predica
     let inputs = [| input :> Op |]
     let mutable skip = false
     let mutable fusedVisit: (('K -> int64 -> unit) -> unit) option = None
+    let mutable ilCompiled: Func<'K, FuseEmit.Result<'K>> option = None
+    let mutable ilRoot: Op<ZSet<'K>> option = None
+    let mutable ilStages: FuseEmit.Stage<'K> list = []
     override _.Name = "filter"
     override _.Inputs = inputs
     override _.IsLinear = true
     override _.IsFuseSkipped = skip
+    override _.IsIlEmitted = ilCompiled.IsSome
     member _.SetFuseSkip() = skip <- true
 
     member this.ForEachKept(visit: 'K -> int64 -> unit) =
-        match fusedVisit with
-        | Some chain -> chain visit
-        | None ->
-            let span = input.Value.AsSpan()
+        match ilCompiled, ilRoot with
+        | Some compiled, Some root ->
+            let span = root.Value.AsSpan()
             for i in 0 .. span.Length - 1 do
-                if predicate.Invoke span.[i].Key then
-                    visit span.[i].Key span.[i].Weight
+                let t = compiled.Invoke span.[i].Key
+                if t.Keep then visit t.Key span.[i].Weight
+        | _ ->
+            match fusedVisit with
+            | Some chain -> chain visit
+            | None ->
+                let span = input.Value.AsSpan()
+                for i in 0 .. span.Length - 1 do
+                    if predicate.Invoke span.[i].Key then
+                        visit span.[i].Key span.[i].Weight
 
     member _.SourceCount =
-        match box input with
-        | :? IMapProducer<'K> as p -> p.SourceCount
-        | :? IFilterProducer<'K> as p -> p.SourceCount
-        | _ -> input.Value.Count
+        match ilRoot with
+        | Some root -> root.Value.Count
+        | None ->
+            match box input with
+            | :? IMapProducer<'K> as p -> p.SourceCount
+            | :? IFilterProducer<'K> as p -> p.SourceCount
+            | _ -> input.Value.Count
 
     interface IFilterProducer<'K> with
         member this.SetFuseSkip() = this.SetFuseSkip()
         member this.SourceCount = this.SourceCount
         member this.ForEachKept visit = this.ForEachKept visit
 
+    interface IHomogeneous<'K> with
+        member _.InputOp = input
+        member _.Stages =
+            if not (List.isEmpty ilStages) then ilStages
+            else [ FuseEmit.Keep predicate ]
+        member _.SetFuseSkip() = skip <- true
+
     override this.TryFuse fanoutOf =
-        if skip || fusedVisit.IsSome then false
+        if skip || fusedVisit.IsSome || ilCompiled.IsSome then false
         elif fanoutOf input <> 1 then false
         else
             match box input with
+            | :? IHomogeneous<'K> as up when not (List.isEmpty up.Stages) ->
+                let stages = up.Stages @ [ FuseEmit.Keep predicate ]
+                up.SetFuseSkip()
+                ilStages <- stages
+                ilCompiled <- Some(FuseEmit.compile stages)
+                ilRoot <- Some(FuseWalk.bottom up.InputOp)
+                true
             | :? IMapProducer<'K> as up ->
                 up.SetFuseSkip()
                 fusedVisit <- Some (fun visit ->
@@ -148,18 +239,18 @@ type internal FilterZSetOp<'K when 'K : comparison>(input: Op<ZSet<'K>>, predica
     override this.StepAsync(_: CancellationToken) =
         if skip then ValueTask.CompletedTask
         else
-            match fusedVisit with
-            | None ->
-                this.Value <- ZSet.filter predicate.Invoke input.Value
-            | Some chain ->
-                let cap = max 1 this.SourceCount
+            match ilCompiled, ilRoot with
+            | Some compiled, Some root ->
+                let span = root.Value.AsSpan()
+                let cap = max 1 span.Length
                 let rented = Pool.Rent<ZEntry<'K>> cap
                 try
                     let mutable n = 0
-                    chain (fun k w ->
-                        if n < rented.Length then
-                            rented.[n] <- ZEntry(k, w)
-                            n <- n + 1)
+                    for i in 0 .. span.Length - 1 do
+                        let t = compiled.Invoke span.[i].Key
+                        if t.Keep && n < rented.Length then
+                            rented.[n] <- ZEntry(t.Key, span.[i].Weight)
+                            n <- n + 1
                     if n = 0 then this.Value <- ZSet<'K>.Empty
                     else
                         let live = ZSetBuilder.sortAndConsolidate (Span<_>(rented, 0, n))
@@ -168,6 +259,27 @@ type internal FilterZSetOp<'K when 'K : comparison>(input: Op<ZSet<'K>>, predica
                             else ZSet(Pool.FreezeSlice(rented, live))
                 finally
                     Pool.Return rented
+            | _ ->
+                match fusedVisit with
+                | None ->
+                    this.Value <- ZSet.filter predicate.Invoke input.Value
+                | Some chain ->
+                    let cap = max 1 this.SourceCount
+                    let rented = Pool.Rent<ZEntry<'K>> cap
+                    try
+                        let mutable n = 0
+                        chain (fun k w ->
+                            if n < rented.Length then
+                                rented.[n] <- ZEntry(k, w)
+                                n <- n + 1)
+                        if n = 0 then this.Value <- ZSet<'K>.Empty
+                        else
+                            let live = ZSetBuilder.sortAndConsolidate (Span<_>(rented, 0, n))
+                            this.Value <-
+                                if live = 0 then ZSet<'K>.Empty
+                                else ZSet(Pool.FreezeSlice(rented, live))
+                    finally
+                        Pool.Return rented
             ValueTask.CompletedTask
 
 
