@@ -1,5 +1,7 @@
 module Zeta.Tests.Storage.ArrowFlightTests
 
+open System
+open System.IO.Pipelines
 open System.Threading
 open System.Threading.Tasks
 open FsUnit.Xunit
@@ -144,3 +146,65 @@ let ``concurrent DoExchange of +1 is a lossless fold`` () =
         let! got = f.DoGet(desc, CancellationToken.None)
         got.[1L] |> should equal (int64 n)
     }
+
+
+let private withStreamPair
+    (body: ArrowFlight.IArrowFlight<int64> -> Task<unit>)
+    : Task<unit> =
+    task {
+        let inner = int64Flight ()
+        let ser = ArrowInt64Serializer() :> ISerializer<int64>
+        let req = Pipe()
+        let resp = Pipe()
+        use client =
+            new ArrowFlight.StreamClient<int64>(
+                ser,
+                req.Writer.AsStream(),
+                resp.Reader.AsStream())
+        let server =
+            ArrowFlight.StreamServer(inner, ser, req.Reader.AsStream(), resp.Writer.AsStream())
+        use cts = new CancellationTokenSource()
+        let running = server.RunAsync(cts.Token)
+        try
+            do! body (client :> ArrowFlight.IArrowFlight<int64>)
+        finally
+            cts.Cancel()
+            req.Writer.Complete()
+            try
+                running.Wait(TimeSpan.FromSeconds 2.0) |> ignore
+            with _ ->
+                ()
+    }
+
+
+[<Fact>]
+let ``StreamClient DoPut then DoGet round-trips over pipes`` () =
+    withStreamPair (fun f ->
+        task {
+            let desc = path [ "pipe"; "0" ]
+            do! f.DoPut(desc, ZSet.ofSeq [ 1L, 3L; 2L, -1L ], CancellationToken.None)
+            let! got = f.DoGet(desc, CancellationToken.None)
+            got.[1L] |> should equal 3L
+            got.[2L] |> should equal -1L
+        })
+
+
+[<Fact>]
+let ``StreamClient DoExchange integrates on the server snapshot`` () =
+    withStreamPair (fun f ->
+        task {
+            let desc = path [ "ex" ]
+            let! a = f.DoExchange(desc, ZSet.ofSeq [ 1L, 1L ], CancellationToken.None)
+            a.[1L] |> should equal 1L
+            let! b = f.DoExchange(desc, ZSet.ofSeq [ 1L, 2L ], CancellationToken.None)
+            b.[1L] |> should equal 3L
+        })
+
+
+[<Fact>]
+let ``StreamClient DoGet of missing path is empty`` () =
+    withStreamPair (fun f ->
+        task {
+            let! got = f.DoGet(path [ "nope" ], CancellationToken.None)
+            ZSet.isEmpty got |> should be True
+        })

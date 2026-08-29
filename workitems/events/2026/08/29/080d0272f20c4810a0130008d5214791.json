@@ -1,0 +1,14 @@
+{
+  "id": "080d0272f20c4810a0130008d5214791",
+  "at": "2026-08-29T16:33:15.145Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M175WGC8087G0R001SVTDK8",
+    "type": "task",
+    "title": "Arrow Flight Stream duplex over IArrowFlight without gRPC",
+    "slug": "arrow-flight-stream-duplex-over-iarrowflight-without-grpc",
+    "priority": "P1",
+    "filename": "081M175WGC8087G0R001SVTDK8-arrow-flight-stream-duplex-over-iarrowflight-without-grpc.md"
+  }
+}
