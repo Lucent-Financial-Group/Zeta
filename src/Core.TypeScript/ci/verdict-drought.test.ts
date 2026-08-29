@@ -287,9 +287,13 @@ describe("purity -- the fold is deterministic and takes its clock as an argument
 
   test("advancing the injected clock is what moves the register -- no ambient time", () => {
     const window = [obs(9201, "success", 0)];
-    expect(foldDrought(window, 0, NOW).register).toBe("ok");
+    // unverified = 1, not 0. This test is about CLOCK INJECTION, and age alone no
+    // longer moves the register when nothing has landed (see "a quiet main" below) --
+    // so a zero here would hold the register at `ok` for a reason that has nothing to
+    // do with the clock, and the test would pass while measuring the wrong thing.
+    expect(foldDrought(window, 1, NOW).register).toBe("ok");
     const later = new Date(Date.parse(NOW) + 60 * 60_000).toISOString();
-    expect(foldDrought(window, 0, later).register).toBe("drought");
+    expect(foldDrought(window, 1, later).register).toBe("drought");
   });
 
   test("reasons are never empty -- the report always states why it says what it says", () => {
@@ -756,5 +760,35 @@ describe("main() is WIRED to the guard", () => {
     });
     expect(out).not.toMatch(/STALE LISTING/);
     expect(out).toMatch(/drought/);
+  });
+
+  // ── a quiet main is not a blind one ──────────────────────────────────────
+  //
+  // Age alone used to make this red whenever the repository was idle. Measured
+  // 2026-08-29: with the scheduled lanes disabled no merges arrived, no gate ran,
+  // and `drift (loud)` reported a 289-minute drought over a tip that was fully
+  // verified. The suppression is narrow on purpose and these pin both sides of it.
+
+  test("a stale verdict over an UNCHANGED tip is `ok` -- quiet, not blind", () => {
+    const window = [obs(9301, "success", 0)];
+    const wayLater = new Date(Date.parse(NOW) + 300 * 60_000).toISOString();
+    const got = foldDrought(window, 0, wayLater);
+    expect(got.register).toBe("ok");
+    expect(got.reasons.join(" ")).toContain("Quiet, not blind");
+  });
+
+  test("the same staleness IS a drought once even one commit has landed", () => {
+    const window = [obs(9302, "success", 0)];
+    const wayLater = new Date(Date.parse(NOW) + 300 * 60_000).toISOString();
+    expect(foldDrought(window, 1, wayLater).register).toBe("drought");
+  });
+
+  test("an UNMEASURABLE commit count stays loud -- null is not zero", () => {
+    // This file's doctrine: an unmeasurable drought is not a short one. `null` means
+    // the compare call failed, and suppressing on it would turn a check that could
+    // not run into one that passed -- the exact inversion this file exists to stop.
+    const window = [obs(9303, "success", 0)];
+    const wayLater = new Date(Date.parse(NOW) + 300 * 60_000).toISOString();
+    expect(foldDrought(window, null, wayLater).register).not.toBe("ok");
   });
 });

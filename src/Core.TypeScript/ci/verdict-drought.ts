@@ -551,8 +551,34 @@ export function foldDrought(
         "instant. An unmeasurable drought is not a short one, so this is `unknown`, never `ok`.",
     );
   } else {
-    const overTime = minutesSinceVerdict >= thresholds.droughtMinutes;
+    // AGE ALONE IS NOT A DROUGHT WHEN NOTHING LANDED.
+    //
+    // This file's question is "was `main` CHECKED when it CHANGED", not "has a gate
+    // run happened recently in wall-clock". A verdict that is hours old but sits on
+    // main's current tip -- `unverifiedCommits === 0` -- has covered every commit
+    // there is. Nothing is unverified, so nothing reads as green that was not
+    // measured, and the vacuity class this file exists to catch is absent.
+    //
+    // Firing on age alone made the check report a defect whenever the repository was
+    // simply QUIET. Measured 2026-08-29: with the scheduled telemetry lanes disabled,
+    // no merges arrived, no gate ran, and `drift (loud)` went red reporting a 289-min
+    // drought over a tip that was fully verified. A check that cries on an idle repo
+    // trains people to ignore it, which costs exactly the alertness it was built for.
+    //
+    // The suppression is deliberately narrow: ONLY an exact measured zero. `null`
+    // means the commit count could not be measured, and an unmeasurable count must
+    // stay loud -- that is this file's own doctrine (an unmeasurable drought is not a
+    // short one). `> 0` still fires on age as before.
+    const nothingLanded = unverifiedCommits === 0;
+    const overTime = minutesSinceVerdict >= thresholds.droughtMinutes && !nothingLanded;
     const overCommits = unverifiedCommits !== null && unverifiedCommits >= thresholds.maxUnverifiedCommits;
+    if (nothingLanded && minutesSinceVerdict >= thresholds.droughtMinutes) {
+      reasons.push(
+        `Last verdict is ${String(minutesSinceVerdict)} min old, past the ` +
+          `${String(thresholds.droughtMinutes)} min threshold, but 0 commits have landed on main ` +
+          "since it -- the verdict covers the current tip, so nothing is unverified. Quiet, not blind.",
+      );
+    }
     if (overTime) {
       reasons.push(
         `LAST COMPLETED VERDICT on main was ${String(minutesSinceVerdict)} min ago ` +
