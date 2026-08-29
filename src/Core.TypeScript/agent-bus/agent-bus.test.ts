@@ -232,7 +232,7 @@ describe("publish CLI refuses directed-topic broadcast", () => {
     ];
     try {
       for (const c of cases) {
-        const r = spawnSync("bun", [script, "riven", "*", c.topic, c.payload, "--no-push"], {
+        const r = spawnSync(process.execPath, [script, "riven", "*", c.topic, c.payload, "--no-push"], {
           encoding: "utf-8",
           env: { ...process.env, ZETA_AGENT_BUS_DIR: dir },
         });
