@@ -339,7 +339,15 @@ src/Arc.Python/.venv/
 # ~2 GB installed once torch is unpacked -- the uv.lock is the committed artifact.
 src/Interp.Python/.venv/
 src/Arc.Python/recordings/
-src/Arc.Python/environment_files/
+# Downloaded ARC environments are runtime state. Keep only Zeta's authored,
+# deterministic discovery bridge for the offline REST integration test.
+src/Arc.Python/environment_files/*
+!src/Arc.Python/environment_files/ztch/
+src/Arc.Python/environment_files/ztch/*
+!src/Arc.Python/environment_files/ztch/v1/
+src/Arc.Python/environment_files/ztch/v1/*
+!src/Arc.Python/environment_files/ztch/v1/metadata.json
+!src/Arc.Python/environment_files/ztch/v1/zetachase.py
 .reaper-cache/
 
 # Per-host capability vector recorded by tools/setup/common/host-tier.sh

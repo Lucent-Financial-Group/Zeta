@@ -1,0 +1,12 @@
+{
+  "pr_number": 15993,
+  "archive_path": "docs/history/pr-reviews/PR-15993-fix-gitignore-15-tracked-files-were-silently-ignored-including-the-byte-lock-exc.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-28T16:47:53.923Z",
+  "schema_version": "v1",
+  "commit_sha": "efaf7cd6aba768fdd5cc5a90fa8cd98d20422eb0",
+  "title": "fix(gitignore): 15 tracked files were silently ignored, including the byte-lock exception",
+  "state": "MERGED",
+  "merged_at": "2026-08-28T14:27:35Z",
+  "head_ref": "fix/gitignore-drops-tracked-bin-paths"
+}

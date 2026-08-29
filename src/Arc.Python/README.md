@@ -15,6 +15,7 @@ scores an episode.
 ```bash
 uv run --project src/Arc.Python python -m zeta_arc.play              # greedy
 uv run --project src/Arc.Python python -m zeta_arc.play --agent random --seed 7
+uv run --project src/Arc.Python python -m zeta_arc.serve             # REST
 uv run --project src/Arc.Python python -m pytest src/Arc.Python/tests -q
 ```
 
@@ -49,7 +50,13 @@ doc's own warning, kept.
   names. Calls the engine's public loop rather than reimplementing it (see
   below).
 - `zeta_arc/play.py` — an episode and its score.
-- `tests/test_chase.py` — nine falsifiers.
+- `zeta_arc/rest.py` — source-owned `ArcTransport`, requests, outcomes, and the
+  versioned text `ArcEnvelope`; the required scorecard lifecycle is explicit,
+  and only `UrllibArcTransport` knows HTTP.
+- `zeta_arc/serve.py` — the thin, opt-in `Arcade.listen_and_serve` edge over the
+  discovered source-owned environment in `environment_files/ztch/v1`.
+- `tests/test_chase.py` and `tests/test_rest.py` — direct-engine falsifiers plus
+  a real HTTP reset-and-step through the toolkit server.
 
 ## The score, and what it is not
 
@@ -118,3 +125,5 @@ So: never a dependency of `zeta-core`, never referenced by
   sampling from the CHIP-8 arena are not wired here yet — that is the rung
   where the score starts saying something about Zeta rather than about a
   greedy baseline.
+- **A generic environment interface.** `ArcTransport` owns the REST boundary,
+  but the common CHIP-8/ARC `IEnvironment` shape belongs to rung C.

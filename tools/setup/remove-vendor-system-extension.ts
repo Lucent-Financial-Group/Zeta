@@ -14,15 +14,40 @@
  * registered but broken, which is strictly worse than leaving it installed — a removal
  * that makes the system less consistent, not more.
  *
- * The SUPPORTED retirement is: remove the owning application, then reboot. macOS notices
- * the owner is gone and deactivates the extension. This was observed working on this very
- * machine the same day: after Microsoft Defender was removed, `systemextensionsctl list`
- * showed its endpoint-security extension as `[terminated waiting to uninstall on reboot]`.
+ * THE APP-REMOVAL PATH WORKS FOR SOME VENDORS AND NOT OTHERS. MEASURED, 2026-08-28, both
+ * on this machine within hours of each other:
  *
- * `systemextensionsctl uninstall <teamID> <bundleID>` is attempted first because it is the
- * documented direct route, but for a third-party extension it requires SIP to be disabled.
- * When it fails, that is REPORTED, not worked around — the app-removal path is what
- * actually does the job.
+ *   Microsoft Defender  app removed -> `[terminated waiting to uninstall on reboot]`
+ *                       -> gone after the reboot. Zero extensions, zero processes.
+ *   Insta360 Link Ctrl  app removed (not even in the Trash), machine rebooted
+ *                       -> STILL `[activated enabled]`, payload still in
+ *                          /Library/SystemExtensions/. The reboot retired nothing.
+ *
+ * So the earlier version of this comment was wrong to state app-removal-then-reboot as
+ * "the supported path" full stop. It is *a* path, it worked once, and it did not work the
+ * next time. The likely reason is that deactivation is REQUESTED BY THE APP through
+ * `OSSystemExtensionManager` — an app that is already deleted cannot issue that request, so
+ * whether removal succeeds depends on what the vendor's app did before it went away.
+ *
+ * `systemextensionsctl uninstall <teamID> <bundleID>` is attempted first as the documented
+ * direct route, and MEASURED it refuses outright under System Integrity Protection:
+ *
+ *     "At this time, this tool cannot be used if System Integrity Protection is enabled."
+ *
+ * Note it exits 0 while refusing, so an exit-code check would read that as success — the
+ * output is the only signal. SIP is enabled on this machine (`csrutil status`), so this
+ * route is closed without a recovery-mode reboot.
+ *
+ * WHAT REMAINS, HONESTLY, when the app is gone and the reboot did not retire it:
+ *   1. Reinstall the vendor app, let it deactivate its own extension, then remove the app.
+ *      The only route that needs neither SIP changes nor a recovery boot.
+ *   2. Disable SIP in recovery, run `systemextensionsctl uninstall`, re-enable SIP. Two
+ *      reboots and a temporary security downgrade, for a dormant extension.
+ *   3. Leave it. With the app gone the extension is registered but inert — no process, no
+ *      code path reaching it. It shows in `systemextensionsctl list` and nowhere else.
+ *
+ * This script does 1's cleanup half and attempts the direct route; it deliberately does not
+ * pretend to a fourth option that does not exist.
  *
  * SAFETY — same shape as `remove-paragon-leftovers.ts`:
  *   - dry run by default; `--apply` is the operator's explicit decision
@@ -84,9 +109,10 @@ if (import.meta.main) {
   if (!apply) {
     console.log("\nDRY RUN. To apply:");
     console.log("  sudo bun tools/setup/remove-vendor-system-extension.ts --apply");
-    console.log("\nThen REBOOT. The camera extension retires on reboot once its app is gone;");
-    console.log("that is the supported path, and it is the only one that leaves the");
-    console.log("extension database consistent.");
+    console.log("\nThen REBOOT and CHECK `systemextensionsctl list`. Measured 2026-08-28:");
+    console.log("a reboot retired Microsoft Defender's extension and did NOT retire");
+    console.log("Insta360's. If it survives, see the header for the three remaining");
+    console.log("options — none of them is a command this script can run for you.");
     process.exit(0);
   }
 

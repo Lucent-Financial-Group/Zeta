@@ -13,6 +13,8 @@ appear here.
 
 from __future__ import annotations
 
+from pathlib import Path
+
 import pytest
 
 # Same reason as play.py: arc_agi ships no py.typed marker.
@@ -62,7 +64,7 @@ def test_without_a_key_the_episode_runs_and_reports_offline(
     result = play(agent="pixel", seed=4)
     assert result["mode"] == "OFFLINE"
     assert result["levels_cleared"] == 3
-    assert result["arcade_environments_discovered"] == 0
+    assert result["arcade_environments_discovered"] == 1
 
 
 def test_a_key_that_cannot_reach_the_api_still_produces_a_scored_episode(
@@ -83,7 +85,8 @@ def test_a_key_that_cannot_reach_the_api_still_produces_a_scored_episode(
     monkeypatch.setenv("ARC_BASE_URL", "http://127.0.0.1:1")  # refused instantly
     result = play(agent="pixel", seed=4)
     assert result["mode"] == "NORMAL"  # it really did leave OFFLINE
-    assert result["arcade_environments_discovered"] == 0  # ...and got nothing back
+    # The hosted roster is unavailable, but the source-owned environment remains.
+    assert result["arcade_environments_discovered"] == 1
     assert result["levels_cleared"] == 3  # ...and the episode is unharmed
     # 0.3375 -> 0.354 on 2026-08-26, and the pin moved because the agent got
     # BETTER, not because the guard got weaker. `_route_plan` now drops an
@@ -115,15 +118,37 @@ def test_the_reported_mode_is_the_one_actually_obtained(
     )
 
 
-def test_listing_environments_without_a_key_is_empty_and_does_not_fail(
+def test_listing_environments_without_a_key_reports_the_source_owned_game(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    """Reconnaissance degrades exactly like play does: no key, no roster, no error."""
+    """Offline discovery keeps local games and makes no hosted claim."""
     monkeypatch.delenv("ARC_API_KEY", raising=False)
     listed = list_environments()
     assert listed["mode"] == "OFFLINE"
-    assert listed["count"] == 0
-    assert listed["environments"] == []
+    assert listed["count"] == 1
+    assert listed["environments"] == [
+        {
+            "game_id": "ztch-v1",
+            "title": "ZetaChase",
+            "tags": ["zeta", "offline", "deterministic"],
+            "baseline_actions": [10, 7, 10],
+            "level_tags_count": 0,
+            "levels_from_baselines": 3,
+        }
+    ]
+
+
+def test_source_owned_discovery_does_not_depend_on_process_cwd(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    monkeypatch.delenv("ARC_API_KEY", raising=False)
+    monkeypatch.chdir(tmp_path)
+
+    listed = list_environments()
+
+    assert listed["mode"] == "OFFLINE"
+    assert [item["game_id"] for item in listed["environments"]] == ["ztch-v1"]
 
 
 def test_the_roster_never_reports_private_tags() -> None:

@@ -22,7 +22,7 @@ attribution; not redistribution, not a product surface.
 
 ## A. Blog post — *Git at Any Scale* (Vicent Martí, Cursor) — excerpts
 
-### What's hard about Git?
+### What's hard about Git
 
 > The challenge in hosting Git repositories at scale is inherent in the design of Git
 > itself: a distributed version control system means that all instances of a repository are
