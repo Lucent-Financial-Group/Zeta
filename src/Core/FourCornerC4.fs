@@ -305,7 +305,7 @@ module FourCornerC4 =
         |> FourCorner.withInFeedback inFb
 
     let occupancyCount
-        (o: FourCorner.FourCornerOwnership<int, int, string, string>)
+        (o: FourCorner.FourCornerOwnership<'TIn, 'TOut, 'TOutFeedback, 'TInFeedback>)
         : int =
         let mutable n = 1 // TIn is required
 
@@ -319,6 +319,22 @@ module FourCornerC4 =
             n <- n + 1
 
         n
+
+    /// Occupancy as a `SchedulerZeta.predict` key. **Not injective:**
+    /// two different fillings can share a count, so `runToHorizon`'s
+    /// `stepⁿ` guarantee does not apply. Use `cornersKey` when the
+    /// orbit is the I/O record.
+    let occupancyKey
+        (o: FourCorner.FourCornerOwnership<'TIn, 'TOut, 'TOutFeedback, 'TInFeedback>)
+        : int =
+        occupancyCount o
+
+    /// The I/O record itself as a predict key. Injective on the
+    /// reachable set when `step` only rewrites these four fields.
+    let cornersKey
+        (o: FourCorner.FourCornerOwnership<'TIn, 'TOut, 'TOutFeedback, 'TInFeedback>)
+        =
+        o
 
     /// Two Q-moves per `{Q,Q}` tick (`AdinkraClock.step` twice).
     let adinkraQMovesPerTick = 2
