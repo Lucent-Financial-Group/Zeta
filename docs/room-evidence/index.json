@@ -78,6 +78,12 @@
       }
     },
     {
+      "eventId": "5a2c697f208412250f660d55c48bcc0e",
+      "auditContentKey": "d896aa67d46ef377bb6e15227b863b33",
+      "receiptContentKey": "d588b56ddf551415c8bdb2f503709565",
+      "file": "room-evidence/5a2c697f208412250f660d55c48bcc0e.json"
+    },
+    {
       "eventId": "6357c315f1af0152e89055ee007b2d2c",
       "auditContentKey": "cb3a116af7959bb53196565329ff511b",
       "receiptContentKey": "e1624f3095a4b62295b4c35f900fd954",
