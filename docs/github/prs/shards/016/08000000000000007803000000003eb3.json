@@ -2,7 +2,7 @@
   "pr_number": 16051,
   "archive_path": "docs/history/pr-reviews/PR-16051-heartbeat-batch-merge-merge-agent-heartbeats-periodic-sync-to-main-2026-08-28t22.md",
   "source_ids": [],
-  "fetched_at": "2026-08-28T23:18:47.172Z",
+  "fetched_at": "2026-08-28T23:13:02.103Z",
   "schema_version": "v1",
   "commit_sha": "25e084cd0a7cebcab5a08eab132207675e01eaca",
   "title": "[heartbeat-batch-merge] merge(agent-heartbeats): periodic sync to main (2026-08-28T22:59:14.678Z)",

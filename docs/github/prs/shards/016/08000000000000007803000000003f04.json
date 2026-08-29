@@ -1,0 +1,12 @@
+{
+  "pr_number": 16132,
+  "archive_path": "docs/history/pr-reviews/PR-16132-fix-gate-telemetry-ledgers-under-db-are-not-code-stop-building-4-oses-for-them.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-29T06:04:56.242Z",
+  "schema_version": "v1",
+  "commit_sha": "a071a3602d71391ffaef54785b623bf3f35532bd",
+  "title": "fix(gate): telemetry ledgers under db/ are not code — stop building 4 OSes for them",
+  "state": "MERGED",
+  "merged_at": "2026-08-29T06:04:18Z",
+  "head_ref": "fix/path-filter-telemetry-db-subtrees"
+}
