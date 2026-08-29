@@ -10,4 +10,24 @@
 # Single flat manifest today; `@include` hierarchy (@min in @all)
 # is a BACKLOG P1 item.
 
-ruff
+# PINNED, and pinned to the SAME version .mise.toml pins. A bare `ruff` here means
+# `uv tool install ruff` fetches latest and OVERWRITES the mise-installed pin
+# seconds after it lands. Measured in `lint (Python)` on main 2026-08-29:
+#
+#     pipx:ruff 0.15.17        <- mise installs the pin
+#     ...
+#     uv tool install ruff...
+#      + ruff==0.16.5          <- overwritten, unpinned
+#
+# That matters because the bump is a lint-POLICY change, not a version change:
+# .mise.toml records that against this tree ruff 0.15.17 says "All checks passed!"
+# and 0.16.4 says "Found 65 errors." So the job ran a ruff the tree was never green
+# against. The failure is intermittent (6/60 runs) only because the realizer's
+# already-installed check matches on NAME alone, so a warm cache skips the
+# overwrite and a cold one does not.
+#
+# Keep in sync with `"pipx:ruff"` in .mise.toml. The deeper defect that .mise.toml
+# names -- src/Core.Python/pyproject.toml has no [tool.ruff], so the rule set is
+# "whatever ruff defaults to this month" -- is NOT fixed here; pinning the tool in
+# both places is the prerequisite, not the cure.
+ruff==0.15.17
