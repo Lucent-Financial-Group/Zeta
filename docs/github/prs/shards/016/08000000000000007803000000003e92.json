@@ -6,9 +6,9 @@
     "comment:PRRC_kwDOSF9kNM7ndYmY",
     "thread:PRRT_kwDOSF9kNM6dPs6P"
   ],
-  "fetched_at": "2026-08-28T20:50:31.878Z",
+  "fetched_at": "2026-08-28T18:57:44.713Z",
   "schema_version": "v1",
-  "commit_sha": "e7b4cba597e56c051175f908ac9bb451417d7189",
+  "commit_sha": "37c8f9193a995766bf946ed7ba6a4bf1ebc03cd8",
   "title": "rule: preservation has ONE namespace per kind — with a falsifier, because a norm failed",
   "state": "MERGED",
   "merged_at": "2026-08-28T18:57:09Z",
