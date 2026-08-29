@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "generatedAtIso": "2026-08-28T21:37:53.212Z",
-  "commit": "de8cac718",
+  "generatedAtIso": "2026-08-29T00:55:20.756Z",
+  "commit": "14b883903",
   "totals": {
     "findings": 1,
     "bySeverity": {
@@ -39,13 +39,13 @@
           "summary": "1 of the last 40 runs on main failed.",
           "findings": [
             {
-              "id": "ci:33213329702",
-              "title": "pr-manifest-integrity",
+              "id": "ci:33224909079",
+              "title": "pr-gate-presence",
               "severity": "failing",
-              "locus": "de8cac718 — 2026-08-28 21:36",
+              "locus": "14b883903 — 2026-08-29 00:54",
               "evidence": [
-                "pr-manifest-integrity",
-                "run id 33213329702"
+                "pr-gate-presence",
+                "run id 33224909079"
               ],
               "why": "A failing workflow on main is drift the fleet is expected to heal after the fact, not a gate that stops it."
             }
