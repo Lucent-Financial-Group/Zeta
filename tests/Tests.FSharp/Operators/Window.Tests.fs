@@ -181,3 +181,162 @@ let ``SlidingWindow accepts reasonable ratios and emits per-window tags`` () =
         // [-20..10) and [-10..20) — three tags.
         out.Current.Count |> should be (greaterThan 0)
     }
+
+
+// ─── Session windows (IndexedZSet + coalesce gap > T) ────────────────────
+
+[<Fact>]
+let ``SessionWindows.assign coalesces consecutive events within the gap`` () =
+    // One partition; times 0, 3, 10 with gap=5 → sessions [0,3] start=0 and [10] start=10
+    let z = ZSet.ofKeys [ (0L, "a"); (3L, "b"); (10L, "c") ]
+    let labeled =
+        SessionWindows.assign
+            5L
+            (Func<_, _>(fun _ -> 0))
+            (Func<_, _>(fun (t, _) -> t))
+            z
+    labeled.[(0L, (0L, "a"))] |> should equal 1L
+    labeled.[(0L, (3L, "b"))] |> should equal 1L
+    labeled.[(10L, (10L, "c"))] |> should equal 1L
+    labeled.[(0L, (10L, "c"))] |> should equal 0L
+
+
+[<Fact>]
+let ``SessionWindows.assign merges two sessions when a bridging event lands`` () =
+    let split = ZSet.ofKeys [ (0L, "a"); (10L, "c") ]
+    let gap = 8L
+    let before =
+        SessionWindows.assign 8L (Func<_, _>(fun _ -> 0)) (Func<_, _>(fst)) split
+    before.[(0L, (0L, "a"))] |> should equal 1L
+    before.[(10L, (10L, "c"))] |> should equal 1L
+    let bridged = ZSet.add split (ZSet.ofKeys [ (5L, "b") ])
+    let after =
+        SessionWindows.assign gap (Func<_, _>(fun _ -> 0)) (Func<_, _>(fst)) bridged
+    after.[(0L, (0L, "a"))] |> should equal 1L
+    after.[(0L, (5L, "b"))] |> should equal 1L
+    after.[(0L, (10L, "c"))] |> should equal 1L
+    after.[(10L, (10L, "c"))] |> should equal 0L
+
+
+[<Fact>]
+let ``SessionWindows.isClosed uses Frontier.ClosedThrough vs last+gap`` () =
+    let f = Frontier.singleton 0 20L
+    SessionWindows.isClosed 10L 5L f |> should be True    // 15 <= 20
+    SessionWindows.isClosed 15L 5L f |> should be True    // 20 <= 20
+    SessionWindows.isClosed 16L 5L f |> should be False   // 21 > 20
+    SessionWindows.isClosed 10L 5L Frontier.empty |> should be False
+
+
+[<Fact>]
+let ``SessionWindows.exceedsGap is strict greater-than and saturates`` () =
+    SessionWindows.exceedsGap 0L 5L 5L |> should be False
+    SessionWindows.exceedsGap 0L 6L 5L |> should be True
+    SessionWindows.exceedsGap 10L 8L 5L |> should be False
+    SessionWindows.exceedsGap Int64.MaxValue  Int64.MaxValue 1L |> should be False
+    SessionWindows.exceedsGap (Int64.MaxValue - 1L) Int64.MaxValue 1L |> should be False
+
+
+[<Fact>]
+let ``SessionWindow rejects non-positive gap`` () =
+    let c = Circuit.create ()
+    let input = c.ZSetInput<int64>()
+    (fun () ->
+        c.SessionWindow(input.Stream, Func<_, _>(fun x -> x), 0L) |> ignore)
+    |> should throw typeof<ArgumentException>
+
+
+[<Fact>]
+let ``SessionWindow empty input is empty output`` () =
+    task {
+        let c = Circuit.create ()
+        let input = c.ZSetInput<int64>()
+        let w = c.SessionWindow(input.Stream, Func<_, _>(fun x -> x), 5L)
+        let out = c.Output w
+        do! c.StepAsync()
+        out.Current.IsEmpty |> should be True
+    }
+
+
+[<Fact>]
+let ``SessionWindow labels a run and emits only the assignment delta on the next tick`` () =
+    task {
+        let c = Circuit.create ()
+        let input = c.ZSetInput<int64 * string>()
+        let w =
+            c.SessionWindow(
+                input.Stream,
+                Func<_, _>(fun (_, id) -> id),
+                Func<_, _>(fun (t, _) -> t),
+                5L)
+        let out = c.Output w
+        input.Send(ZSet.ofKeys [ 0L, "u"; 3L, "u" ])
+        do! c.StepAsync()
+        out.Current.[(0L, (0L, "u"))] |> should equal 1L
+        out.Current.[(0L, (3L, "u"))] |> should equal 1L
+        input.Send(ZSet.ofKeys [ 10L, "u" ])
+        do! c.StepAsync()
+        // Second tick is the delta of the labeling: only the new session row.
+        out.Current.[(10L, (10L, "u"))] |> should equal 1L
+        out.Current.[(0L, (0L, "u"))] |> should equal 0L
+        out.Current.[(0L, (3L, "u"))] |> should equal 0L
+    }
+
+
+[<Fact>]
+let ``SessionWindow retracts split labels when a late event merges two sessions`` () =
+    task {
+        let c = Circuit.create ()
+        let input = c.ZSetInput<int64 * int>()
+        let w =
+            c.SessionWindow(
+                input.Stream,
+                Func<_, _>(fun _ -> 0),
+                Func<_, _>(fst),
+                8L)
+        let out = c.Output w
+        input.Send(ZSet.ofKeys [ 0L, 1; 10L, 2 ])
+        do! c.StepAsync()
+        out.Current.[(0L, (0L, 1))] |> should equal 1L
+        out.Current.[(10L, (10L, 2))] |> should equal 1L
+        input.Send(ZSet.ofKeys [ 5L, 3 ])
+        do! c.StepAsync()
+        out.Current.[(0L, (5L, 3))] |> should equal 1L
+        out.Current.[(10L, (10L, 2))] |> should equal -1L
+        out.Current.[(0L, (10L, 2))] |> should equal 1L
+    }
+
+
+[<Fact>]
+let ``SessionWindow retraction of a member emits a negative label`` () =
+    task {
+        let c = Circuit.create ()
+        let input = c.ZSetInput<int64>()
+        let w = c.SessionWindow(input.Stream, Func<_, _>(fun x -> x), 5L)
+        let out = c.Output w
+        input.Send(ZSet.ofKeys [ 0L; 1L ])
+        do! c.StepAsync()
+        input.Send(ZSet.singleton 1L -1L)
+        do! c.StepAsync()
+        out.Current.[(0L, 1L)] |> should equal -1L
+        out.Current.[(0L, 0L)] |> should equal 0L
+    }
+
+
+[<Fact>]
+let ``SessionWindow partitions do not coalesce across keys`` () =
+    task {
+        let c = Circuit.create ()
+        let input = c.ZSetInput<int64 * string>()
+        let w =
+            c.SessionWindow(
+                input.Stream,
+                Func<_, _>(fun (_, id) -> id),
+                Func<_, _>(fun (t, _) -> t),
+                100L)
+        let out = c.Output w
+        input.Send(ZSet.ofKeys [ 0L, "a"; 1L, "b" ])
+        do! c.StepAsync()
+        out.Current.[(0L, (0L, "a"))] |> should equal 1L
+        out.Current.[(1L, (1L, "b"))] |> should equal 1L
+        out.Current.[(0L, (1L, "b"))] |> should equal 0L
+    }

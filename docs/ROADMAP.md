@@ -473,6 +473,7 @@ Gaps: **fsync floor** (unshipped), **multi-key ACID/isolation** (only single-str
 - C# interop via `[<Extension>]` ✅
 - `IAsyncEnumerable` adapter ✅
 - `IObservable` adapter (System.Reactive) ✅
+- Tumbling / sliding / session window operators ✅
 - Pluggable sinks (`ISink` 2PC, `IAppendSink` EventStore-style) ✅
 - DI seams: `IClock`, `IMetricsSink`, `IHashStrategy`, `IConsistentHash`, `IBackingStore`, `ISink`, `IAppendSink` ✅
 - Work-stealing runtimes: TPL Dataflow + MailboxProcessor ✅
@@ -489,6 +490,8 @@ Gaps: **fsync floor** (unshipped), **multi-key ACID/isolation** (only single-str
 - CRDTs: G-Counter, PN-Counter, OR-Set, LWW-Register ✅
 - Consistent hashing: Jump, Rendezvous/HRW, MementoHash ✅
 - Watermarks: Monotonic, BoundedLateness, Periodic ✅
+- `Frontier` per-shard event-time antichain (Akidau min; empty = `−∞`) ✅
+- Session windows (`SessionWindow`; gap-coalesce + retract-on-merge) ✅
 
 ### Observability
 
@@ -500,11 +503,11 @@ Gaps: **fsync floor** (unshipped), **multi-key ACID/isolation** (only single-str
 
 - **Apache Arrow IPC + zstd** checkpoint format (10× faster than JSON on big states)
 - **Arrow Flight** as the multi-node wire protocol — bi-directional streaming of Z-set deltas
-- **WatermarkStrategy.Statistical via KLL** — `DI seam: IWatermarkStrategy`
-- **Frontier<int64>** type (set of per-shard watermarks, à la Timely Dataflow)
+- **WatermarkStrategy.Statistical via KLL** — `DI seam: IWatermarkStrategy` ✅ (`StatisticalWatermarkStrategy`)
+- **Frontier<int64>** — shipped (`src/Core/Frontier.fs`). Per-shard watermarks; `Merge` is conservative min; `Advance` is monotone max; `ClosedThrough` = min (Akidau). Empty = no sources → `Int64.MinValue`, matching `Watermark.combine []`, **not** Timely's empty antichain (`+∞`). Remaining: multi-dimensional timestamps (P3 Timely logical time).
 - **Expression-tree operator fusion** — IL-emit a fused `StepAsync` per chain of map/filter/map at Build time (2–5× on those workloads)
-- **State TTL on BalancedSpine** — retract-on-expiry via `-Δ`, preserves correctness for free
-- **Session windows** — `IndexedZSet` + watermark + coalesce gap > T
+- **State TTL on BalancedSpine** — retract-on-expiry via `-Δ`, preserves correctness for free. Session-window membership is unbounded this slice; eviction belongs here.
+- **Session windows** — shipped (`SessionWindow` / `SessionWindows.assignIndexed`). `IndexedZSet` + coalesce when consecutive event-time gap > T; a late event that bridges two sessions retracts the split labels. Speculative emit (optimistic + retract). Remaining: watermark-driven eviction (uses `SessionWindows.isClosed` + BalancedSpine TTL).
 - **Package audit** — Stryker.NET, CodeQL, Semgrep wired into CI
 - **Zeta.Bayesian project** — Infer.NET F# wrapper, `BayesianAggregate` operator
 - **Zeta.Core.CSharp shim** — declaration-site variance on interfaces (`IBackingStore<out K>` etc)
