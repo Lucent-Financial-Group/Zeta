@@ -1,0 +1,14 @@
+{
+  "id": "080d02a08615d010a013000818b06f4e",
+  "at": "2026-08-30T19:06:19.706Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1A11GNP087G0R00069NHG7",
+    "type": "task",
+    "title": "ARC lane: score the (model, harness, attempt-policy) triple — never a bare model name",
+    "slug": "arc-lane-score-the-model-harness-attempt-policy-triple-never",
+    "priority": "P2",
+    "filename": "081M1A11GNP087G0R00069NHG7-arc-lane-score-the-model-harness-attempt-policy-triple-never.md"
+  }
+}
