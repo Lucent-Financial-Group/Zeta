@@ -247,7 +247,41 @@ node = "24"
 # trust policy (2026.7.15 via Homebrew's floor, vs 2026.6.12 pinned on Linux and
 # Windows). That divergence is real and is NOT resolved here -- see the note in
 # tools/setup/macos.sh.
-"npm:markdownlint-cli2" = "0.23.2"
+# TRUST-POLICY EXCLUSION, narrowest possible: one package at one version.
+#
+# `build-and-test (macos-26)` fails on every commit because aube refuses the tree:
+#
+#   Failed to install npm:markdownlint-cli2@0.23.2: aube install failed
+#     caused by: trust downgrade for fastq@1.20.2 (trustPolicy=no-downgrade):
+#     earlier published version 1.20.0 had trusted publisher but this version has
+#     no trust evidence
+#
+# THE REVIEW mise's error message requires before bypassing, done 2026-08-30 against
+# the npm registry. fastq is Matteo Collina's (github.com/mcollina/fastq), reached
+# transitively: markdownlint-cli2 -> globby -> fast-glob -> @nodelib/fs.walk -> fastq.
+#
+#   1.20.0  2025-12-23  attestations: yes
+#   1.20.1              attestations: yes
+#   1.20.2  2026-08-28  attestations: NO   <- what the policy caught
+#   1.20.3  2026-08-29  attestations: yes, SLSA provenance
+#
+# So this is the benign shape the error text names -- "a maintainer manually
+# publishes ... skips provenance for convenience" -- and upstream restored provenance
+# the next day. Not a compromised release.
+#
+# WHY AN EXCLUSION AND NOT A VERSION BUMP. That was tried and it did not work: #16181
+# moved this pin 0.22.1 -> 0.23.2 on the theory that a fresh resolve would take
+# 1.20.3. It did not. `npm i --package-lock-only` resolves fastq@1.20.3 for BOTH
+# 0.22.1 and 0.23.2, but aube's resolver still selects 1.20.2, so the bump changed
+# nothing about the failure. Recording that here so the next person does not repeat it.
+#
+# SCOPE. `fastq@1.20.2` only -- not a bare `fastq`, which would exempt every future
+# version and discard exactly the signal that worked. REMOVE THIS once aube resolves
+# 1.20.3 or later; it is dead weight the moment the resolver moves.
+#
+# Keep the version in sync with `devDependencies.markdownlint-cli2` in package.json
+# (audit-tool-pin-agreement.test.ts enforces it, table form included).
+"npm:markdownlint-cli2" = { version = "0.23.2", trust_policy_excludes = ["fastq@1.20.2"] }
 # semgrep: SAST linter (the 14 rules in `.semgrep.yml`). Pinned
 # here per the three-way-parity invariant (GOVERNANCE §24) — dev
 # laptops + CI runners + devcontainers all get the same semgrep
