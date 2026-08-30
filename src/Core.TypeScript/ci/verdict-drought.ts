@@ -489,6 +489,12 @@ export function foldDrought(
   unverifiedCommits: number | null,
   nowIso: string,
   thresholds: DroughtThresholds = DEFAULT_DROUGHT_THRESHOLDS,
+  /**
+   * When `main` became unverified — the committer date of the OLDEST commit the last
+   * verdict does not cover. `null` when unmeasurable, which falls back to measuring
+   * from the verdict instead (loud, never silently permissive).
+   */
+  oldestUnverifiedIso: string | null = null,
 ): DroughtReport {
   const window = orderNewestFirst(observations).slice(0, thresholds.windowRuns);
 
@@ -570,7 +576,31 @@ export function foldDrought(
     // stay loud -- that is this file's own doctrine (an unmeasurable drought is not a
     // short one). `> 0` still fires on age as before.
     const nothingLanded = unverifiedCommits === 0;
-    const overTime = minutesSinceVerdict >= thresholds.droughtMinutes && !nothingLanded;
+
+    // MEASURE THE AGE OF THE UNVERIFIED WORK, NOT THE AGE OF THE LAST VERDICT.
+    //
+    // The question this file asks is "was `main` CHECKED when it CHANGED". Those two
+    // intervals diverge whenever merges are sparse: the gap between verdicts is
+    // (time until the next merge arrives) + (gate duration), and only the second half
+    // is anybody's fault. Measured 2026-08-30 -- last verdict 02:09:09, commit
+    // f4c1f5dc landed 02:48:13, drought fired at the 45 min mark. The commit was SIX
+    // MINUTES OLD with its gate running normally, and gate runs take 15-30 min.
+    //
+    // So the threshold was reporting a defect for a repository that was merely quiet
+    // between merges -- the same class of false alarm as firing on an idle repo, one
+    // step further in. Measuring from when the unverified work LANDED reports the
+    // thing the file claims to report, and it cannot be gamed by a slow gate.
+    //
+    // FALLS BACK LOUDLY: if the window start is unmeasurable (`null` -- the compare
+    // call failed, or the base was force-pushed away) this measures from the verdict
+    // exactly as before. An unmeasurable age is not a short one.
+    const unverifiedSinceMs =
+      oldestUnverifiedIso === null ? null : Date.parse(oldestUnverifiedIso);
+    const haveWindowStart = unverifiedSinceMs !== null && !Number.isNaN(unverifiedSinceMs);
+    const minutesUnverified = haveWindowStart
+      ? (Date.parse(nowIso) - (unverifiedSinceMs as number)) / 60_000
+      : minutesSinceVerdict;
+    const overTime = minutesUnverified >= thresholds.droughtMinutes && !nothingLanded;
     const overCommits = unverifiedCommits !== null && unverifiedCommits >= thresholds.maxUnverifiedCommits;
     if (nothingLanded && minutesSinceVerdict >= thresholds.droughtMinutes) {
       reasons.push(
@@ -581,6 +611,11 @@ export function foldDrought(
     }
     if (overTime) {
       reasons.push(
+        (haveWindowStart
+          ? `main has been UNVERIFIED for ${String(Math.round(minutesUnverified))} min ` +
+            `(${String(unverifiedCommits)} commit(s) since the last verdict, oldest landed ` +
+            `${String(oldestUnverifiedIso)}). `
+          : "") +
         `LAST COMPLETED VERDICT on main was ${String(minutesSinceVerdict)} min ago ` +
           `(run ${String(lastVerdict.id)}, ${shortSha(lastVerdict.sha)}, \`${lastVerdict.conclusion}\`, ` +
           `ended ${lastVerdict.endedAt}) -- at or past the ${String(thresholds.droughtMinutes)} min threshold.`,
@@ -943,15 +978,26 @@ export function toObservation(run: ApiRun): GateRunObservation {
  * whose `ahead_by` is not a count). It is never coerced to 0 -- see the header. One call:
  * `compare` accepts a branch name as head.
  */
-async function commitsSince(repo: string, baseSha: string, token: string): Promise<number | null> {
+async function commitsSince(
+  repo: string,
+  baseSha: string,
+  token: string,
+): Promise<{ count: number | null; oldestUnverifiedIso: string | null }> {
   try {
-    const cmp = await ghJson<{ readonly ahead_by?: number }>(
-      `https://api.github.com/repos/${repo}/compare/${baseSha}...main`,
-      token,
-    );
-    return constrainCount(cmp.ahead_by);
+    const cmp = await ghJson<{
+      readonly ahead_by?: number;
+      readonly commits?: readonly { readonly commit?: { readonly committer?: { readonly date?: string } } }[];
+    }>(`https://api.github.com/repos/${repo}/compare/${baseSha}...main`, token);
+    // `compare` returns commits OLDEST-FIRST, so [0] is the first commit that the
+    // last verdict did not cover -- i.e. the moment `main` became unverified. Taken
+    // from the SAME call that already produced ahead_by, so this costs no extra request.
+    const first = cmp.commits?.[0]?.commit?.committer?.date;
+    return {
+      count: constrainCount(cmp.ahead_by),
+      oldestUnverifiedIso: typeof first === "string" && first.trim() !== "" ? first : null,
+    };
   } catch {
-    return null;
+    return { count: null, oldestUnverifiedIso: null };
   }
 }
 
@@ -986,6 +1032,7 @@ async function main(): Promise<number> {
 
   let observations: GateRunObservation[] = [];
   let unverified: number | null = null;
+  let oldestUnverifiedIso: string | null = null;
 
   if (observationsPath.length > 0) {
     observations = JSON.parse(readFileSync(observationsPath, "utf8")) as GateRunObservation[];
@@ -1012,7 +1059,13 @@ async function main(): Promise<number> {
     );
     observations = (listed.workflow_runs ?? []).map(toObservation);
     const newestVerdict = orderNewestFirst(observations).find((r) => isVerdict(r.conclusion));
-    unverified = newestVerdict === undefined ? null : await commitsSince(repo, newestVerdict.sha, token);
+    if (newestVerdict === undefined) {
+      unverified = null;
+    } else {
+      const since = await commitsSince(repo, newestVerdict.sha, token);
+      unverified = since.count;
+      oldestUnverifiedIso = since.oldestUnverifiedIso;
+    }
   }
 
   // Before folding: did the listing contain the caller? A window that cannot see the run
@@ -1031,7 +1084,7 @@ async function main(): Promise<number> {
     return 1;
   }
 
-  const report = foldDrought(observations, unverified, nowIso, thresholds);
+  const report = foldDrought(observations, unverified, nowIso, thresholds, oldestUnverifiedIso);
   const liveness = assertDroughtDetectorLive(report);
   const markdown = renderDroughtMarkdown(report, liveness);
   console.log(markdown);

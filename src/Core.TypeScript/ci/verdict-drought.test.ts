@@ -791,4 +791,53 @@ describe("main() is WIRED to the guard", () => {
     const wayLater = new Date(Date.parse(NOW) + 300 * 60_000).toISOString();
     expect(foldDrought(window, null, wayLater).register).not.toBe("ok");
   });
+
+  // ── drought measures the age of the UNVERIFIED WORK, not of the last verdict ──
+  //
+  // Reproduces 2026-08-30 exactly: last verdict ended 02:09:09, commit f4c1f5dc
+  // landed 02:48:13, and at 02:54 the check fired "45 min since last verdict" for a
+  // commit that was SIX MINUTES OLD with its gate running normally (gate runs take
+  // 15-30 min). The gap between verdicts is (wait for the next merge) + (gate
+  // duration); only the second half is a defect.
+
+  test("a commit that landed MINUTES ago is not a drought, however old the last verdict", () => {
+    const window = [obs(9401, "success", 0)];
+    const now = new Date(Date.parse(NOW) + 300 * 60_000).toISOString();
+    const landedRecently = new Date(Date.parse(now) - 6 * 60_000).toISOString();
+    const got = foldDrought(window, 1, now, DEFAULT_DROUGHT_THRESHOLDS, landedRecently);
+    expect(got.register).toBe("ok");
+  });
+
+  test("the SAME stale verdict IS a drought once the unverified work is itself old", () => {
+    const window = [obs(9402, "success", 0)];
+    const now = new Date(Date.parse(NOW) + 300 * 60_000).toISOString();
+    const landedLongAgo = new Date(Date.parse(now) - 90 * 60_000).toISOString();
+    const got = foldDrought(window, 1, now, DEFAULT_DROUGHT_THRESHOLDS, landedLongAgo);
+    expect(got.register).toBe("drought");
+    expect(got.reasons.join(" ")).toContain("UNVERIFIED for");
+  });
+
+  test("an UNMEASURABLE window start falls back to the verdict age, still loud", () => {
+    // null = the compare call failed or the base was force-pushed away. Measuring
+    // from the verdict is the old behaviour, and it must stay LOUD -- an age we
+    // cannot measure is not a short one.
+    const window = [obs(9403, "success", 0)];
+    const now = new Date(Date.parse(NOW) + 300 * 60_000).toISOString();
+    expect(foldDrought(window, 1, now, DEFAULT_DROUGHT_THRESHOLDS, null).register).toBe("drought");
+  });
+
+  test("an UNPARSEABLE window start also falls back, never silently to ok", () => {
+    const window = [obs(9404, "success", 0)];
+    const now = new Date(Date.parse(NOW) + 300 * 60_000).toISOString();
+    expect(
+      foldDrought(window, 1, now, DEFAULT_DROUGHT_THRESHOLDS, "not-an-instant").register,
+    ).toBe("drought");
+  });
+
+  test("zero unverified commits still wins over any window start", () => {
+    const window = [obs(9405, "success", 0)];
+    const now = new Date(Date.parse(NOW) + 300 * 60_000).toISOString();
+    const landedLongAgo = new Date(Date.parse(now) - 90 * 60_000).toISOString();
+    expect(foldDrought(window, 0, now, DEFAULT_DROUGHT_THRESHOLDS, landedLongAgo).register).toBe("ok");
+  });
 });
