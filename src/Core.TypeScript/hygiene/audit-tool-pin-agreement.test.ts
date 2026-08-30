@@ -82,8 +82,21 @@ function miseNpmPins(): Map<string, string> {
   const text = readFileSync(join(ROOT, ".mise.toml"), "utf8");
   const out = new Map<string, string>();
   for (const line of text.split("\n")) {
-    const m = /^\s*"npm:([A-Za-z0-9_./@-]+)"\s*=\s*"([^"]+)"/.exec(line);
-    if (m?.[1] && m[2]) out.set(m[1], m[2]);
+    // TWO TOML SHAPES, and both must be read:
+    //   "npm:tool" = "1.2.3"
+    //   "npm:tool" = { version = "1.2.3", trust_policy_excludes = [...] }
+    // The table form appears whenever an entry needs options (a trust-policy
+    // exclusion, for one). A parser that saw only the string form would go SILENT
+    // on exactly the entries that carry extra risk -- it would stop checking them
+    // while still reporting green, which is the failure this whole file exists to
+    // prevent. It is matched explicitly rather than skipped.
+    const simple = /^\s*"npm:([A-Za-z0-9_./@-]+)"\s*=\s*"([^"]+)"/.exec(line);
+    if (simple?.[1] && simple[2]) {
+      out.set(simple[1], simple[2]);
+      continue;
+    }
+    const table = /^\s*"npm:([A-Za-z0-9_./@-]+)"\s*=\s*\{[^}]*\bversion\s*=\s*"([^"]+)"/.exec(line);
+    if (table?.[1] && table[2]) out.set(table[1], table[2]);
   }
   return out;
 }
