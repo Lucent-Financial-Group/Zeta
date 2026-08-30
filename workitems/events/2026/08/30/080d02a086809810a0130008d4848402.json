@@ -1,0 +1,14 @@
+{
+  "id": "080d02a086809810a0130008d4848402",
+  "at": "2026-08-30T19:06:23.123Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1A11M0J087G0R001MAE62P",
+    "type": "task",
+    "title": "ARC lane: disclose the attempt denominator — actions, attempts, scaffold-mutated-between-attempts, tokens",
+    "slug": "arc-lane-disclose-the-attempt-denominator-actions-attempts-s",
+    "priority": "P2",
+    "filename": "081M1A11M0J087G0R001MAE62P-arc-lane-disclose-the-attempt-denominator-actions-attempts-s.md"
+  }
+}
