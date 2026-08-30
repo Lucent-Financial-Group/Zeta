@@ -160,7 +160,7 @@ echo "✓ brew casks up to date"
 # Keep in sync with .mise.toml min_version. macOS installs mise via Homebrew,
 # whose formula advances in place; accept newer versions and enforce only the
 # repo's minimum supported release.
-MISE_MIN_VERSION="2026.6.12"
+MISE_MIN_VERSION="2026.8.14"
 
 zeta_version_at_least() {
   awk -v have="$1" -v want="$2" '
@@ -202,10 +202,10 @@ if ! zeta_version_at_least "$installed_mise_version" "$MISE_MIN_VERSION"; then
   installed_mise_version="$(mise --version 2>/dev/null | awk '{print $1}')"
 
 # Parity check (GOVERNANCE.md §24): warn when macOS is not running the version Linux pins.
-# Measured 2026-08-29: linux.sh pins 2026.6.12 and macOS/Windows pinned nothing, so the
+# Measured 2026-08-29: linux.sh pinned 2026.6.12 and macOS/Windows pinned nothing, so the
 # three-way-parity script suite ran up to three different mise versions against one
 # .mise.toml -- and a newer mise applies supply-chain policies an older one does not.
-mise_pin_expected="2026.6.12" # keep in sync with tools/setup/linux.sh MISE_PIN_VERSION
+mise_pin_expected="$MISE_MIN_VERSION" # one source: the floor declared above
 mise_actual="${installed_mise_version%% *}"
 mise_actual="${mise_actual#v}"
 if [ -n "$mise_actual" ] && [ "$mise_actual" != "$mise_pin_expected" ]; then
