@@ -673,18 +673,18 @@ linux_sh_nixos_tarball_mise_allowed() {
   linux_sh_fhs_loader_present
 }
 
-MISE_PIN_VERSION="2026.6.12"
+MISE_PIN_VERSION="2026.8.14"
 MISE_VERSION="v${MISE_PIN_VERSION}"
-MISE_SHA256_X64="cc9b5bc96ba616d88d0ee515196bec6871a33d64cec774924fbfaa2717a921fd"
-MISE_SHA256_ARM64="6cef74020f98b06a62d6f925c116235b629b4badb197b20a33217bff96d60f0f"
-MISE_SHA256_ARMV7="24ac747716373ffa5efbdee889632d21569eae275ece929b1c04cfee6e4b7c45"
+MISE_SHA256_X64="64d5f34aeb7a4e0e327dc1c9be66cd8162e14899a47b11901154a100285a3d61"
+MISE_SHA256_ARM64="940639580227bd838e3b3ea5b2084ea397399b0db162c2e4dd90b5730850e48e"
+MISE_SHA256_ARMV7="14fe10af97875a68e45037cc44212522075519f2bf8d13b480a265de1fa9815c"
 # musl twins of the same pinned release (part of the content-pin set —
 # bump all six SHA256 values together with MISE_VERSION). Chosen
 # automatically on hosts whose glibc is too old for the gnu build
 # (mise gnu builds need glibc >= 2.38 since ~2025) and on musl libcs.
-MISE_SHA256_X64_MUSL="3ce5ad40a9ce0280e0f80e447cfbcfa0b40281b9d4d0fd5a0a66c47c28c2a5e3"
-MISE_SHA256_ARM64_MUSL="39905c8a85c3ef0bae3ba665b0ac602bc338da599f8c4a0c7912e7ebc4930201"
-MISE_SHA256_ARMV7_MUSL="9b0e0959ff1bb8cca81bcaf3dedd963083a112408c06bde756f5ff3094ef613e"
+MISE_SHA256_X64_MUSL="3832f39c325e343f81fe3d92b2447c5d1a5eea1bc85092bb7b6c25806222647e"
+MISE_SHA256_ARM64_MUSL="06186cfbfe947049b21d58575fb0ea800cc26ed1375f20f4b678cb3a9d679437"
+MISE_SHA256_ARMV7_MUSL="1ef28e37bc11d9f6f7658e5cfd6db42469210dc20d597a771c43cfe38b5121d8"
 
 installed_mise_version=""
 if command -v mise >/dev/null 2>&1; then

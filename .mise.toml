@@ -19,7 +19,7 @@
 #
 # Keep in sync with tools/setup/linux.sh MISE_VERSION and
 # full-ai-cluster/nixos/overlays/mise-pin.nix (three-way parity).
-min_version = "2026.6.12"
+min_version = "2026.8.14"
 
 [tools]
 # .NET 10 SDK. THIS LINE IS THE SINGLE DECLARED SOURCE of the SDK
