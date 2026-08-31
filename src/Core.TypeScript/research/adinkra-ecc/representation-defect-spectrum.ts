@@ -1,8 +1,8 @@
 // Finite representation-defect spectrum for the four Adinkra/Clifford lanes.
 //
 // Design rule: only lanes exposing both an operator algebra and a carrier receive a numerical
-// rank-one defect. The spinorial lane now measures a bounded so(16) -> S+ action, but remains
-// `unmeasured` for regularity until it has the spinor bracket and rank-one witnesses.
+// rank-one defect. The spinorial lane now measures bounded action, bracket, and mixed-Jacobi
+// witnesses, but remains `unmeasured` for regularity until it has rank-one module witnesses.
 
 import {
   PRIMES,
@@ -14,6 +14,7 @@ import {
   type Mask,
 } from "./regular-representation-defect";
 import { measureNonQuotientHalfSpinAction, type HalfSpinActionCensus } from "./nonquotient-half-spin-action";
+import { measureFiniteHalfSpinBracket, type HalfSpinBracketCensus } from "./nonquotient-half-spin-bracket";
 
 export const EXT_HAMMING_8_4_4_ROWS = [
   [1, 0, 0, 0, 0, 1, 1, 1],
@@ -78,6 +79,8 @@ export interface BivectorSpinorLane {
   readonly totalDimension: 248;
   readonly quotientApplied: false;
   readonly actionCensus: HalfSpinActionCensus;
+  /** Exact finite witness; it is not a regular-module measurement. */
+  readonly bracketCensus: HalfSpinBracketCensus;
   readonly regularity: UnmeasuredRegularity;
 }
 
@@ -86,6 +89,13 @@ export interface RepresentationDefectSpectrum {
   readonly coded: FullColourLane;
   readonly colouredResidue: ColouredResidueLane;
   readonly bivectorSpinor: BivectorSpinorLane;
+}
+
+let cachedBracketCensus: HalfSpinBracketCensus | undefined;
+
+function measuredBracketCensus(): HalfSpinBracketCensus {
+  cachedBracketCensus ??= measureFiniteHalfSpinBracket({ applyTopWedgeReversion: true });
+  return cachedBracketCensus;
 }
 
 function choose(values: readonly number[], count: number): number[][] {
@@ -156,6 +166,7 @@ export function measureRepresentationDefectSpectrum(
   const totalDimension = bivectorDimension + halfSpinorDimension;
   if (totalDimension !== 248) throw new Error(`unexpected spinorial E8 dimension: ${totalDimension}`);
   const actionCensus = measureNonQuotientHalfSpinAction();
+  const bracketCensus = measuredBracketCensus();
 
   return {
     uncoded: {
@@ -192,14 +203,15 @@ export function measureRepresentationDefectSpectrum(
       totalDimension,
       quotientApplied: false,
       actionCensus,
+      bracketCensus,
       regularity: {
         status: "unmeasured",
         reason:
-          "the so(16) -> S+ action is measured, but the spinor bracket and regular-module rank-one witnesses are absent",
+          "the finite so(16) action, normalized spinor bracket, and mixed Jacobi witness are measured, but regular-module rank-one witnesses are absent",
         missingWitnesses: [
-          "a normalized spinor-spinor bracket Lambda^2(S+) -> so(16)",
-          "the mixed Jacobi witness for so(16) plus S+",
-          "an injectivity and rank-one-freeness test",
+          "an injectivity test for the declared spinor bracket",
+          "a separately declared regular-module carrier",
+          "a rank-one-freeness test",
         ],
       },
     },

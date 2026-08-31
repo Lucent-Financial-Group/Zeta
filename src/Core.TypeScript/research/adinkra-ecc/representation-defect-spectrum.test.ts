@@ -26,7 +26,7 @@ describe("finite Adinkra representation-defect spectrum", () => {
       defect: 16,
       freeRankOne: false,
     });
-  });
+  }, 60_000);
 
   test("the measured full-lane defects are stable across both finite-field rank primes", () => {
     const [first, second] = PRIMES.map((prime) => measureRepresentationDefectSpectrum(-1, prime));
@@ -88,7 +88,22 @@ describe("finite Adinkra representation-defect spectrum", () => {
     expect(lane.actionCensus.gammaAnticommutatorViolations).toBe(0);
     expect(lane.actionCensus.chiralityViolations).toBe(0);
     expect(lane.actionCensus.bivectorCommutatorViolations).toBe(0);
+    expect(lane.bracketCensus).toMatchObject({
+      carrierDimension: 128,
+      bivectorGeneratorCount: 120,
+      bracketAntisymmetryViolations: 0,
+      actionNormalizationViolations: 0,
+      bracketEquivarianceViolations: 0,
+      mixedJacobiViolations: 0,
+    });
     expect(lane.regularity.status).toBe("unmeasured");
+    if (lane.regularity.status === "unmeasured") {
+      expect(lane.regularity.missingWitnesses).toEqual([
+        "an injectivity test for the declared spinor bracket",
+        "a separately declared regular-module carrier",
+        "a rank-one-freeness test",
+      ]);
+    }
     expect(() => requireMeasuredRegularity(lane.regularity)).toThrow("regularity is unmeasured");
   });
 });
