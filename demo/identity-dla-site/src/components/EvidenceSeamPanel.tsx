@@ -65,7 +65,7 @@ const SPECTRUM = [
     carrier: "128 S+",
     operators: "120 bivectors",
     defect: "—",
-    verdict: "so(16) action measured · δ unmeasured",
+    verdict: "bracket + Jacobi checked · δ unmeasured",
     tone: "var(--amber)",
   },
 ] as const;
