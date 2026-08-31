@@ -205,3 +205,40 @@ jobs:
             echo "FAIL: 2nd run RE-PULLED the model — caching/idempotency regression"; exit 1
           fi
           echo "OK: 2nd run idempotent — ${MODEL} already present, zero re-pull"
+
+      - name: Did install.sh satisfy its own manifest?
+        # NOT the same question doctor.sh asks on a laptop, and the difference is the whole
+        # justification for spending a step here.
+        #
+        # On a laptop, `manifest-realized.ts` measures HOST DRIFT: rows that landed in the
+        # manifest on days nobody re-ran the sweep. A hosted runner cannot drift -- it was
+        # provisioned four minutes ago from this very manifest -- so asking it "is this host
+        # in sync" would be a check that cannot fail, and its green would be read as a claim
+        # about the fleet's hosts that it never measured.
+        #
+        # What it measures HERE is the INSTALLER, by cross-checking two independent
+        # implementations of "this row is satisfied":
+        #   macos.sh   awk parse  + `brew install <pkg>`   (the realizer)
+        #   this step  TS parse   + `brew list`            (the verifier)
+        # A row the loop silently skips, a `tier=` token the two parsers disagree about, a
+        # formula whose install name differs from its list name, or an install whose failure
+        # the loop swallowed all fail here and are invisible to every other check.
+        #
+        # HONEST LIMIT, stated because the omission would flatter this step: it would NOT
+        # have caught the case that prompted the file. Ten formulae were declared-and-absent
+        # on the maintainer's Mac; every one of them installs cleanly on a fresh runner. Only
+        # a real, long-lived host can catch that, which is why `doctor.sh` carries the same
+        # verifier and why this step is not a substitute for running it.
+        #
+        # COST: one `bun` process and one `brew list` (~1s), inside a job already budgeted at
+        # 45 minutes. No new job, so no ZETA_HOST_TIER declaration and no
+        # apt-job-timings.measured.json row is owed -- both audits scope to Linux jobs
+        # (`audit-install-tier-declared` to literal `ubuntu-*`; the apt-budget audit skips
+        # non-Linux `runs-on` via `runsOnlyOnNonLinux`).
+        #
+        # Runs AFTER the idempotency assert on purpose: the 2nd install.sh run is the last
+        # thing that can change what is installed, so this reads the final state.
+        run: |
+          set -euo pipefail
+          echo "=== every manifests/{brew,brew-cask} row installed by the run above? ==="
+          bun tools/setup/manifest-realized.ts

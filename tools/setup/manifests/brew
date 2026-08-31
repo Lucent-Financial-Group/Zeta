@@ -212,7 +212,7 @@ yubico-piv-tool   # PIV slot + attestation tooling
 # Verified against the Homebrew API 2026-08-20: formula `opensc` 0.27.1, LGPL-2.1-or-later.
 opensc            # pkcs11-tool + PKCS#11 module — vendor-neutral smartcard/HSM CLI
 
-# ── libccid >= 1.5.3: NO BREW ROUTE EXISTS (2026-08-31) ───────────────────────
+# ── libccid >= 1.5.3: NO BREW ROUTE, AND NONE IS NEEDED (2026-08-31) ──────────
 # NOT a row. A measured absence, recorded so the next agent does not re-propose
 # the install line that does not resolve. Prompted by Ani's finding that a
 # CardContact SmartCard-HSM in Identiv's uTrust Token Flex housing is attached to
@@ -269,18 +269,97 @@ opensc            # pkcs11-tool + PKCS#11 module — vendor-neutral smartcard/HS
 # So: noble covers this token, jammy does not, macOS does not. No apt row is
 # needed or wanted (a hard-pinned libccid row would fight pcscd's own dependency).
 #
+# AND NO VERSION FLOOR EITHER -- asked 2026-08-31 and answered no, with reasons,
+# because "a transitive dependency at an unpinned version" is otherwise exactly the
+# shape that deserves one:
+#   1. A `libccid (>= 1.5.3)` row is UNSATISFIABLE on jammy, which we support and
+#      test (docker-ubuntu-jammy-install-sh-test.yml). It would convert a
+#      hypothetical device-support gap into a CERTAIN install failure on a live
+#      lane. That is a strictly worse trade than the gap.
+#   2. It is the wrong KIND of check. Whether a reader works is a runtime property
+#      of a host that has the device; a package version is a proxy for it, and the
+#      macOS result above is precisely a case where the proxy said NO and the
+#      property was YES. Assert the property, not the proxy.
+#   3. The instrument that settles it already exists and is now installed:
+#      `opensc-tool --list-readers` on a Linux host with the token attached, with a
+#      known-good CCID device as the positive control. UNMEASURED -- no such host
+#      exists in this fleet today. Named so it is a runnable experiment rather than
+#      an assumption, in either direction.
+# Note the macOS result does NOT transfer by analogy. macOS and Windows match on
+# the USB CCID interface class; Linux's pcsc-lite loads an ifdhandler and libccid
+# keeps a VID/PID list it extends every release -- which is itself evidence the
+# Linux table is load-bearing where the macOS one was not. Evidence, not proof:
+# see (3).
+#
 # WINDOWS: nothing to add. Windows drives CCID through its in-box usbccid class
 # driver, which matches on the USB smartcard class rather than a shipped VID/PID
 # table, so there is no table to be stale. A row here would no-op -- the vacuity
 # class the pam-reattach block below names.
 #
-# WHAT THIS BLOCKS, and why it is worth a block rather than a shrug:
-# docs/research/2026-08-22-smartcard-hsm-secp256k1-is-unconfirmed-*.md names its
-# own falsifier as enumerating the token's PKCS#11 mechanism list. The hardware is
-# now attached, so that falsifier became runnable -- except that `pkcs11-tool`
-# reaches the token through PC/SC, which is the layer this gap sits in. Until a
-# libccid >= 1.5.3 exists on macOS, an open custody question stays open for a
-# packaging reason.
+# ══ REFUTED, SAME DAY, BY MEASUREMENT. THE READER WORKS. ═════════════════════
+# Everything above this line is CONFIRMED and stays. The paragraph that used to
+# stand here did not: it claimed the stale table BLOCKED the secp256k1 falsifier,
+# and it was wrong. `opensc` was installed (it was declared in this manifest and
+# ABSENT on the host -- see the block below) and the reader enumerated at once:
+#
+#   $ opensc-tool --list-readers
+#   Nr.  Card  Features  Name
+#   0    Yes             Yubico YubiKey FIDO+CCID
+#   1    Yes             Identiv uTrust Token Flex        <- card present, rc=0
+#
+# No `ccid` installed. No `useIFDCCID` set. `/usr/local/libexec/SmartCardServices/
+# drivers/` still does not exist. So NOTHING IS BLOCKED and NOTHING IS TO BE
+# INSTALLED. Recorded as measured-unnecessary rather than deleted, so the install
+# line does not get re-proposed in six weeks.
+#
+# HYPOTHESIS, labelled as one: macOS most likely matches a standards-compliant
+# reader on the USB CCID INTERFACE CLASS (0x0B) and consults the VID/PID table for
+# quirks and non-compliant devices -- so a compliant reader is picked up
+# generically and a missing table row costs nothing. NOT MEASURED. What is
+# measured is only that it works.
+#
+# DO NOT RUN the `defaults write ... useIFDCCID -bool yes` line. It was already
+# unsafe (it aims the daemon at a directory that does not exist); it is now also
+# pointless, and the devices it could break include a live YubiHSM. There is no
+# ordering that makes it safe because there is no first half to order it after.
+#
+# ── THE REUSABLE PART: A NEGATIVE FROM THE WRONG INSTRUMENT IS `unknown` ──────
+# The chain broke at the conclusion, not at any observation. Every fact above was
+# right. The inference that turned them into "the reader does not work" came from
+# ONE probe:
+#
+#   security list-smartcards   ->   (empty)
+#
+# which lists CRYPTOTOKENKIT tokens -- applets with a CTK driver -- and not PC/SC
+# readers. An empty CTK list never meant "no reader". It meant "no CTK driver for
+# this applet", which is true, expected, and irrelevant. The instrument answered a
+# different question and its silence was read as an answer to ours.
+#
+# THE CONTROL WAS AVAILABLE THE ENTIRE TIME and nobody ran it. Two other CCID
+# devices were attached to the same host (YubiKey 0x1050:0x0406, YubiHSM
+# 0x1050:0x0030). `security list-smartcards` is empty with those attached too --
+# so a single run with a known-good device would have shown the instrument was
+# measuring something else, immediately, before a week of driver archaeology.
+#
+# This block already knew the discipline and applied it to the OTHER half: the
+# 404s above are trusted precisely BECAUSE `brew info --formula opensc` returns a
+# 200 on the same transport. A control was demanded of the packaging question and
+# not of the hardware question. That asymmetry, not the libccid table, is what
+# cost the week.
+#
+#   Rule: a negative result is `unknown` until a POSITIVE CONTROL on the same
+#   instrument has produced a positive. Sibling instances already on file --
+#   `system_profiler SPUSBDataType` returns zero lines on this host (a check that
+#   does not run, not an empty bus); a required check that never ran contributes
+#   zero to a failure count and reads as green; exit code 2 is a check that never
+#   ran, not one that failed.
+#
+# WHAT ACTUALLY BLOCKED THE FALSIFIER: `opensc` was declared here and never
+# installed on any host. The falsifier in
+# docs/research/2026-08-22-smartcard-hsm-secp256k1-is-unconfirmed-*.md was
+# runnable the moment the hardware was attached; the tool that runs it was a line
+# of text in this file and nothing else. That is a PACKAGING failure of exactly
+# the class `tools/setup/manifest-realized.ts` now refuses.
 
 # ── pam_reattach — Touch ID for sudo inside tmux/screen (2026-08-24) ──────────
 # Aaron 2026-08-24: "we need to add this to our ace package manager dependency

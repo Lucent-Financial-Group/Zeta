@@ -34,7 +34,7 @@ echo "Repo root: $REPO_ROOT"
 echo
 
 # ── 1. Required executables on PATH ────────────────────────────────
-echo "[1/6] Required executables on PATH"
+echo "[1/7] Required executables on PATH"
 for cmd in dotnet java git curl mise; do
   if command -v "$cmd" >/dev/null 2>&1; then
     pass "$cmd: $(command -v "$cmd")"
@@ -45,7 +45,7 @@ done
 echo
 
 # ── 2. Verifier jars at canonical locations ─────────────────────────
-echo "[2/6] Verifier jars (committed at the paths the runners load)"
+echo "[2/7] Verifier jars (committed at the paths the runners load)"
 for jar in "src/Core.TLA/tla2tools.jar" "src/Core.Alloy/alloy.jar"; do
   if [ -f "$REPO_ROOT/$jar" ]; then
     size=$(stat -f%z "$REPO_ROOT/$jar" 2>/dev/null || stat -c%s "$REPO_ROOT/$jar" 2>/dev/null || echo 0)
@@ -74,7 +74,7 @@ fi
 echo
 
 # ── 3. Drift check: unused copies of the verifier jars ──────────────
-echo "[3/6] Jar-location drift (jars outside the committed src/Core.* paths)"
+echo "[3/7] Jar-location drift (jars outside the committed src/Core.* paths)"
 DRIFT_FOUND=0
 for stray in $(find "$REPO_ROOT" \
                     -name "tla2tools*.jar" -o -name "alloy*.jar" \
@@ -112,7 +112,7 @@ echo
 # is heavy and not part of the minimal toolchain. So its ABSENCE is a
 # WARN, never a FAIL: a minimal install legitimately lacks it. We probe
 # both PATH and the dedicated opam build switch.
-echo "[3b/6] TLAPS (tlapm) — optional formal-verification rung 3"
+echo "[3b/7] TLAPS (tlapm) — optional formal-verification rung 3"
 TLAPM_VER=""
 if command -v tlapm >/dev/null 2>&1; then
   TLAPM_VER="$(tlapm --version 2>&1 | head -n1)"
@@ -133,7 +133,7 @@ echo
 # tier=standard), and common/agda-cubical.sh registers the pinned
 # agda/cubical release in the Agda user libraries file. Both are optional:
 # a slim host legitimately lacks them, so absence is a WARN, never a FAIL.
-echo "[3c/6] Cubical Agda proof lane — optional formal-verification"
+echo "[3c/7] Cubical Agda proof lane — optional formal-verification"
 if command -v agda >/dev/null 2>&1; then
   pass "agda: $(agda --version 2>&1 | head -n1)"
   AGDA_APP_DIR="$(agda --print-agda-app-dir 2>/dev/null | head -n1 || true)"
@@ -150,7 +150,7 @@ fi
 echo
 
 # ── 4. Mise runtimes match .mise.toml ───────────────────────────────
-echo "[4/6] mise runtimes match .mise.toml"
+echo "[4/7] mise runtimes match .mise.toml"
 if command -v mise >/dev/null 2>&1 && [ -f .mise.toml ]; then
   if mise current >/dev/null 2>&1; then
     while IFS= read -r line; do
@@ -165,7 +165,7 @@ fi
 echo
 
 # ── 5. Managed shellenv present ─────────────────────────────────────
-echo "[5/6] Managed shellenv"
+echo "[5/7] Managed shellenv"
 ZETA_ENV_FILE="$HOME/.config/zeta/shellenv.sh"
 if [ -f "$ZETA_ENV_FILE" ]; then
   pass "shellenv at $ZETA_ENV_FILE"
@@ -179,7 +179,7 @@ echo
 # always a forgotten artefact (an agent-created skill folder without a
 # SKILL.md, a research folder with no report). Full check is in
 # `tools/lint/no-empty-dirs.ts`; doctor just runs it and reports.
-echo "[6/6] Repo structure: no unexpected empty directories"
+echo "[6/7] Repo structure: no unexpected empty directories"
 if command -v bun >/dev/null 2>&1 && [ -f "$REPO_ROOT/src/Core.TypeScript/lint/no-empty-dirs.ts" ]; then
   if bun "$REPO_ROOT/src/Core.TypeScript/lint/no-empty-dirs.ts" >/dev/null 2>&1; then
     pass "no-empty-dirs: OK"
@@ -253,6 +253,42 @@ EOF_TOUCHID
   fi
   echo
 fi
+
+# ── Declared-vs-installed: every manifest row, on THIS host ─────────
+# The gap this closes is named at length in tools/setup/manifest-realized.ts.
+# Short version: doctor.sh's own docstring promises to report "drift between
+# what install.sh installed and what's actually on the machine", and until
+# now it checked jars, tlapm, agda and Touch ID -- not the package manifests
+# that are the bulk of what install.sh installs. Measured 2026-08-31 on the
+# maintainer's host: TEN of the twenty-eight declared brew/brew-cask rows were
+# absent, `opensc` among them, which had cost a week of false diagnosis on the
+# smartcard lane.
+#
+# FAIL, not warn. A tier-gated row is reported `skipped-by-tier` by the
+# verifier itself and never counts, so a red here means a package this host is
+# supposed to have is genuinely missing -- which is the definition of drift
+# this script exists to report. Exit 2 (the check could not run) is kept
+# distinct from exit 1 (the check ran and found drift) and warns instead.
+echo "[7/7] Declared packages actually installed (manifests/{brew,brew-cask,apt,windows})"
+if command -v bun >/dev/null 2>&1; then
+  realized_rc=0
+  realized_out="$(bun "$(dirname "$0")/manifest-realized.ts" 2>&1)" || realized_rc=$?
+  case "$realized_rc" in
+    0) pass "every applicable declared package is installed" ;;
+    1) fail "declared packages are MISSING on this host" ;;
+    *) warn "the declared-vs-installed check could not run (exit $realized_rc)" ;;
+  esac
+  if [ "$realized_rc" -ne 0 ]; then
+    while IFS= read -r _realized_line; do
+      echo "    $_realized_line"
+    done <<EOF_REALIZED
+$realized_out
+EOF_REALIZED
+  fi
+else
+  warn "bun not on PATH — cannot check declared-vs-installed packages"
+fi
+echo
 
 # ── Summary ─────────────────────────────────────────────────────────
 echo "=== Summary ==="
