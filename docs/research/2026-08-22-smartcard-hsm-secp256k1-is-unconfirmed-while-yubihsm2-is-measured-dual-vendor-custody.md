@@ -1,7 +1,17 @@
-# SmartCard-HSM: secp256k1 is UNCONFIRMED — while YubiHSM 2 is measured. And the pair is complementary anyway.
+# SmartCard-HSM: secp256k1 is MEASURED (2026-08-31) — it was UNCONFIRMED when this was written, and the pair is complementary either way.
 
-**Status:** research from vendor + middleware documentation. **No CardContact hardware was exercised** —
-that is the falsifier this note names and does not run.
+> **The filename still says `unconfirmed` and stays that way.** Measured referrers, read with
+> `git grep` rather than recalled — my first draft of this line named two files that do not
+> actually reference it: `tools/setup/manifests/brew`,
+> `docs/trajectories/ai-sovereignty-path/RESUME.md`, and `db/search-index/inverted/files.txt`.
+> A rename would break those for no gain. **The heading is a claim and has been corrected; the
+> path is an address and has not.**
+
+**Status:** originally research from vendor + middleware documentation, whose own stated falsifier was
+*"No CardContact hardware was exercised"*. **That falsifier RAN on 2026-08-31 and the headline claim
+flipped** — see the two dated updates below, kept in sequence rather than overwritten. The body text
+beneath them is preserved AS WRITTEN, including the reasoning that turned out wrong; it is the record
+of how a documentation absence got read as a device limitation.
 
 > **UPDATE 2026-08-31 — the falsifier became runnable, then hit a packaging wall one layer down.**
 > A CardContact SmartCard-HSM in Identiv's uTrust Token Flex housing is now attached to the
@@ -18,6 +28,70 @@ that is the falsifier this note names and does not run.
 > `tools/setup/manifests/brew`, the "libccid >= 1.5.3: NO BREW ROUTE EXISTS" block.
 > **Register: this is a blocked falsifier, not a discharged one.** secp256k1 on the SmartCard-HSM
 > remains UNCONFIRMED, and the reason it remains unconfirmed is now packaging rather than access.
+> **UPDATE 2026-08-31 (later the same day) — THE FALSIFIER RAN. secp256k1 is MEASURED on the
+> SmartCard-HSM, and the packaging blocker recorded in the update above was ITSELF refuted.**
+> Both corrections are kept rather than overwritten, because the sequence is the record.
+>
+> **1. The `ccid` blocker was not a blocker.** The update above concluded that a stale VID/PID
+> table left the token unreachable and that the absence of a `ccid` formula therefore blocked the
+> measurement. The observations were right and the conclusion was wrong. Measured, with `opensc`
+> installed and nothing else changed — no `ccid`, no `useIFDCCID`, and
+> `/usr/local/libexec/SmartCardServices/drivers/` still absent:
+>
+> ```
+> $ opensc-tool --list-readers
+> Nr.  Card  Features  Name
+> 0    Yes             Yubico YubiKey FIDO+CCID
+> 1    Yes             Identiv uTrust Token Flex
+> ```
+>
+> Apple's `ifd-ccid.bundle` really is libccid 1.5.1 and really does lack `0x5826` (0 occurrences,
+> verified in its Info.plist). It does not matter: macOS matches a standards-compliant reader on the
+> **USB CCID interface class** (`bInterfaceClass 11`, which the update above had already measured),
+> and uses the VID/PID table for quirks. *That mechanism is inference; the enumeration is the
+> measurement.*
+>
+> **THE REASONING ERROR IS THE REUSABLE PART.** `security list-smartcards` was empty, and that was
+> read as "the reader does not work". It lists **CryptoTokenKit** tokens, not **PC/SC** readers — and
+> a SmartCard-HSM has no in-box CTK driver, so it is empty *even with a perfectly working reader*.
+> An empty result from the wrong instrument was treated as a negative result from the right one.
+>
+> **The actual blocker was package close-over, not drivers.** `opensc` had been declared in
+> `manifests/brew` since 2026-08-20 and was **not installed on the host** — one of ten declared
+> formulae absent. Nothing in the tree checks that a declared package is present. The tool that
+> would have shown the reader working on day one had never been installed.
+>
+> **2. secp256k1: MEASURED.** `SmartCard-HSM 4.1`, CardContact, serial `USCLX100335`, initialized
+> with CardContact's *published* playground SO-PIN (chosen because a published PIN cannot be lost,
+> and 15 wrong SO-PIN attempts is the one non-recoverable failure this device has):
+>
+> ```
+> EC Params:  06:05:2b:81:04:00:0a  ("secp256k1" OID:"1.3.132.0.10")
+> Access:     sensitive, always sensitive, never extractable, local
+> ECDSA sign  ->  64-byte signature
+> ```
+>
+> `local` = generated on-device; `never extractable` = the private key cannot leave. It **signs**,
+> which key generation alone would not have proven. Full curve sweep, all accepted: secp256k1,
+> prime256v1, secp384r1, secp521r1, brainpoolP256r1, secp192r1.
+>
+> **This refutes this note's own stated lean.** The table below says *"the evidence leans NO … OpenSC's
+> documentation lists NIST and Brainpool curves and never names secp256k1."* The documentation not
+> naming a curve was read as evidence the device lacks it. Absence in a doc is not absence in a
+> device — and the mechanism list had already flagged `EC parameters`/`EC OID`, meaning the token
+> accepts explicit domain parameters, which is exactly how a curve outside a vendor's named list
+> gets used.
+>
+> **Disposition of the token (Aaron 2026-08-31):** it stays a **permanent test device** — label
+> `zeta-test-token`, published SO-PIN, one throwaway secp256k1 key. It must never hold production
+> key material. The second unit is the production candidate and remains factory-blank and untouched.
+> Re-initialisation is available and verified: `--initialize` is a factory reset, and `--so-pin`
+> verifies the existing PIN before setting a new one.
+>
+> **Still open:** the `manifests/brew` "NO BREW ROUTE EXISTS" block is accurate about Homebrew and
+> stale about the consequence — it should say the route is unnecessary on this device, not that a gap
+> is unfixable. Routed to dejan.
+
 **Prompted by** Aaron 2026-08-21, considering a dual-vendor HSM pair per node: *"maybe we have yubikey
 and SmartCard-HSM 180K USB Token … can you research and make sure it supports crypto wallet keys."*
 
@@ -26,7 +100,7 @@ and SmartCard-HSM 180K USB Token … can you research and make sure it supports 
 | device | secp256k1 (wallet curve) | basis |
 |---|---|---|
 | **YubiHSM 2** | **YES — measured** | `eck256` in the fw 2.4.1 mechanism list, enumerated on Aaron's own device (serial 39160506). See `2026-08-20-yubihsm2-mechanism-enumeration-...md` |
-| **SmartCard-HSM 180K** | **UNCONFIRMED, and the evidence leans NO** | vendor page states only "RSA and ECC keys"; OpenSC's own documentation lists NIST and Brainpool curves and **never names secp256k1** |
+| **SmartCard-HSM 180K** | **YES — MEASURED 2026-08-31** | key generated and used on `SmartCard-HSM 4.1` (serial `USCLX100335`): `EC Params 06:05:2b:81:04:00:0a` = secp256k1 OID `1.3.132.0.10`, `never extractable, local`, 64-byte ECDSA signature. **The original row read "UNCONFIRMED, evidence leans NO" — kept here as the correction it is:** the vendor page says only "RSA and ECC keys" and OpenSC's docs name NIST/Brainpool and not secp256k1, and *absence in a document was read as absence in the device*. See the 2026-08-31 update above. |
 
 ## Why the product listing does not settle it
 
