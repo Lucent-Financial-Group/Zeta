@@ -70,6 +70,11 @@ on:
       - "src/Core.TypeScript/cluster/cilium-kind-lane.ts"
       - "src/Core.TypeScript/cluster/cilium-kind-lane.test.ts"
       - "src/Core.TypeScript/cluster/dev-cluster/cilium-kind-up.ts"
+      # The k3d provider lane (live-k3d). Listed for the same reason
+      # cilium-kind-up.ts is: the bring-up and teardown this job dispatches
+      # can change without touching any manifest.
+      - "src/Core.TypeScript/cluster/dev-cluster/k3d-up.ts"
+      - "src/Core.TypeScript/cluster/dev-cluster/k3d-down.ts"
       # THE BRING-UP ITSELF, added 2026-08-21 (081M0JXXFV0087G0R...). These four
       # files decide WHAT IS IN the cluster this lane asserts against -- the
       # alias StorageClasses, and now the Grafana admin Secret that
@@ -172,6 +177,11 @@ on:
       - "src/Core.TypeScript/cluster/cilium-kind-lane.ts"
       - "src/Core.TypeScript/cluster/cilium-kind-lane.test.ts"
       - "src/Core.TypeScript/cluster/dev-cluster/cilium-kind-up.ts"
+      # The k3d provider lane (live-k3d). Listed for the same reason
+      # cilium-kind-up.ts is: the bring-up and teardown this job dispatches
+      # can change without touching any manifest.
+      - "src/Core.TypeScript/cluster/dev-cluster/k3d-up.ts"
+      - "src/Core.TypeScript/cluster/dev-cluster/k3d-down.ts"
       # THE BRING-UP ITSELF, added 2026-08-21 (081M0JXXFV0087G0R...). These four
       # files decide WHAT IS IN the cluster this lane asserts against -- the
       # alias StorageClasses, and now the Grafana admin Secret that
@@ -866,6 +876,226 @@ jobs:
       - name: Tear down kind cluster
         if: always()
         run: bun src/Core.TypeScript/cluster/dev-cluster/kind-down.ts --cluster-name zeta-ci
+
+  # THE SECOND PROVIDER. k3d/k3s, not kind.
+  #
+  # AARON 2026-08-31: "can we test with things other than kind so we can test more".
+  #
+  # WHAT WAS ALREADY HERE AND HAD NEVER RUN. `argocd-health-test.ts` has accepted
+  # `--provider k3d` since it was written (`isProvider` returns true for it, and
+  # `bootstrapK3dClusterInProcess` is a real code path with its own named failure
+  # kind). `full-ai-cluster/dev-cluster/profiles/ci.k3d-config.yaml` has existed
+  # since 2026-06-21. `dev-cluster/k3d-up.ts` brings up k3d -> Cilium -> ArgoCD ->
+  # root app end to end and `k3d-down.ts` tears it down. Measured 2026-08-31:
+  # ZERO occurrences of `--provider k3d`, `k3d-config` or `k3d cluster` across
+  # every file in .github/workflows. A complete second substrate, built, pinned in
+  # .mise.full.toml (k3d 5.8.3), and dispatched by nothing.
+  #
+  # WHY A SECOND PROVIDER BUYS COVERAGE AND NOT JUST A SECOND GREEN TICK. kind and
+  # k3d disagree about the substrate in ways this repo's own exclusion reasons
+  # already name:
+  #   * CNI. kind CI takes kind's default CNI; this profile passes
+  #     `--flannel-backend=none --disable-kube-proxy --disable-network-policy`, so
+  #     the CNI slot is EMPTY and Cilium owns it. `cilium` and `cilium-lb-ipam` are
+  #     excluded from the app-of-apps proof with the LIFTS WHEN "the app-of-apps
+  #     included proof runs on that profile, so ArgoCD is reconciling a cluster
+  #     whose CNI slot Cilium already owns." This job is that profile.
+  #   * distribution. k3s is not upstream kubelet+kubeadm. Metal runs k3s
+  #     (`services.k3s.manifests` is the bootstrap roster for both cluster trees),
+  #     so the provider CI has never used is the one closest to the target.
+  #   * `live-kind-cilium` is NOT this. It proves Cilium INSTALLS AND SERVES as a
+  #     CNI on kind. It does not reconcile the `cilium` Application through ArgoCD,
+  #     which is a different claim and the one the exclusion is about.
+  #
+  # SCOPE IS `smoke`, DELIBERATELY, AND THIS IS THE HONEST PART. This job has never
+  # run anywhere. Wiring it straight to `--scope included` would assert 33
+  # Applications on a substrate nothing has measured, and a 45-minute red job whose
+  # first run is also its first measurement teaches nothing about which of the two
+  # variables moved. Smoke is the same scope `live-kind` uses and it answers the
+  # one question that has to be answered first: does the k3d path bootstrap and
+  # reconcile at all on a hosted runner. LIFTS WHEN: one green smoke run exists on
+  # this job, at which point the scope moves to `included` and the two cilium
+  # entries can be re-measured against it.
+  #
+  # NOT continue-on-error, and it must not become one. It was considered and
+  # refused for the reason the ratchet header already gives -- a check that cannot
+  # fail permits anything and constrains nothing. If this goes red on the PR that
+  # introduces it, that is the measurement, and the response is to fix it or to
+  # withdraw the job, never to make it unable to speak.
+  #
+  # LOCAL VERIFICATION, AND ITS LIMIT (2026-08-31, stated rather than implied).
+  # `k3d cluster create --config ci.k3d-config.yaml` was run on macOS/arm64 against
+  # podman and reached "Starting node 'k3d-zeta-ci-server-0'" with exit 0 -- the
+  # config parses and the profile is accepted by k3d 5.8.3. Kubeconfig extraction
+  # then FAILED, because k3d copies the file out of the container and podman on
+  # macOS does not serve that copy. That is a runtime+platform limitation and it is
+  # NOT evidence about ubuntu-24.04 + docker, which is what this job runs. So the
+  # local run proves the profile is well-formed and proves nothing about the lane.
+  # This job's first CI run is the first real measurement.
+  live-k3d:
+    name: live k3d ArgoCD health (${{ matrix.runner }})
+    needs: dry-run
+    strategy:
+      fail-fast: false
+      matrix:
+        # x64 only to start. arm is a second axis on an unmeasured lane; add it
+        # once this one has a green run, so a failure names one variable.
+        runner: [ubuntu-24.04]
+    env:
+      ZETA_HOST_TIER: full
+      MISE_ENV: full
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 45
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Cache install.sh outputs (mise runtimes + dotnet tools + verifier jars)
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: |
+            ~/.local/bin/mise
+            ~/.local/share/mise
+            ~/.cache/mise
+            ~/.dotnet/tools
+            ~/.elan
+            ~/.config/zeta
+          key: install-${{ runner.os }}-${{ runner.arch }}-full-${{ hashFiles('.mise.toml', '.mise.full.toml', 'tools/setup/**', 'global.json', '!tools/setup/persona-keys/**', '!tools/setup/op-token-setup.*', '!tools/setup/secret-clip.sh', '!tools/setup/manus-smoke-test.ts', '!tools/setup/build-lumen-persona-package.ts') }}
+
+      - name: Restore apt archives (root fix for the exit-124 install-step class)
+        uses: ./.github/actions/apt-archive-cache
+        with:
+          tier: full
+
+      - name: Install toolchain via three-way-parity script
+        env:
+          MISE_GITHUB_TOKEN: ${{ github.token }}
+        run: ./tools/setup/install.sh
+
+      - name: Install bun dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Confirm k3d is on PATH before anything depends on it
+        # Fail HERE with the tool's name rather than inside a bootstrap that
+        # reports "k3d bootstrap failed" for a missing binary. k3d ships in
+        # .mise.full.toml only, so a tier regression surfaces as this line.
+        run: |
+          set -euo pipefail
+          command -v k3d
+          k3d version
+
+      - name: Measure the runner's disk and check it against the envelope
+        run: bun src/Core.TypeScript/cluster/runner-disk.ts --check-envelope
+
+      - name: Run live k3d ArgoCD health check
+        env:
+          ZETA_ARGOCD_GIT_REF: ${{ github.event.pull_request.head.sha || github.sha }}
+          ZETA_ARGOCD_GIT_REPO_URL: ${{ github.event.pull_request.head.repo.clone_url || 'https://github.com/Lucent-Financial-Group/Zeta' }}
+        run: |
+          bun src/Core.TypeScript/cluster/argocd-health-test.ts \
+            --run \
+            --provider k3d \
+            --scope smoke \
+            --runtime docker \
+            --config full-ai-cluster/dev-cluster/profiles/ci.k3d-config.yaml \
+            --cluster-name zeta-ci \
+            --git-ref "$ZETA_ARGOCD_GIT_REF" \
+            --timeout-sec 1200 \
+            --poll-sec 10
+
+      - name: Which CNI actually owns the cluster (the reason this job exists)
+        # The profile CLAIMS flannel and kube-proxy are off and Cilium owns the
+        # slot. This prints what is actually there, so the claim is readable in
+        # the log rather than inferred from the config. Diagnostic only: `|| true`
+        # throughout, because a diagnostics step must never be the thing that
+        # fails a job.
+        if: always()
+        run: |
+          echo "--- pods in kube-system (expect cilium, expect NO flannel/kube-proxy) ---"
+          kubectl -n kube-system get pods -o wide || true
+          echo "--- nodes and their substrate labels ---"
+          kubectl get nodes -o json 2>/dev/null \
+            | jq -r '.items[] | "\(.metadata.name)\t\(.metadata.labels["zeta.io/substrate"] // "<unlabelled>")\t\(.status.nodeInfo.kubeletVersion)"' || true
+
+      - name: Why ArgoCD could not COMPARE — the running-and-failing case
+        # STDERR IS NOT SILENCED IN THIS STEP, deliberately. The first version
+        # wrote `2>/dev/null` on every probe. On a run where ArgoCD never
+        # installed at all, it printed four headers and nothing else --
+        # indistinguishable from "ArgoCD is fine and had nothing to report". The
+        # ONE probe whose stderr was not suppressed is what explained it:
+        # `deployments.apps "argocd-repo-server" not found`.
+        #
+        # An empty diagnostic must never read as a clean one. `|| true` still
+        # guards every line, so this step cannot fail the job; what it no longer
+        # does is hide WHY it is empty.
+        # ADDED after run 3, which this job could not diagnose from its own logs.
+        #
+        # THE GAP THIS CLOSES. The step below dumps pods that are crash-looping or
+        # restarting. `argocd-repo-server` was neither: it was Running, and failing
+        # only to FETCH AND RENDER, so it produced no restart, no waiting reason,
+        # and nothing in this job's output. The verdict was `sync=Unknown` on
+        # `zeta-root-dev` -- an ArgoCD ComparisonError -- with zero child
+        # Applications, and the reason lived in a log nothing collected.
+        #
+        # `Unknown` is NOT inherently a failure here (this repo's lanes assert
+        # several Applications at `sync=Unknown health=Healthy`, where Unknown is a
+        # diff-time ComparisonError). What distinguishes THIS case is that the root
+        # App-of-Apps produced no children at all, and `.status.conditions` is where
+        # ArgoCD writes why.
+        #
+        # Diagnostic only: `|| true` throughout. A diagnostics step must never be
+        # the thing that fails a job.
+        if: always()
+        run: |
+          echo "--- zeta-root-dev .status (conditions carry the ComparisonError text) ---"
+          kubectl -n argocd get application zeta-root-dev -o jsonpath='{.status.sync.status}{"\t"}{.status.health.status}{"\n"}' || true
+          kubectl -n argocd get application zeta-root-dev -o jsonpath='{range .status.conditions[*]}{.type}: {.message}{"\n"}{end}' || true
+          echo "--- repo-server (fetches + renders; Running while failing is its normal shape) ---"
+          kubectl -n argocd logs deploy/argocd-repo-server --tail=120 --prefix=true || true
+          echo "--- application-controller (drives comparison) ---"
+          kubectl -n argocd logs statefulset/argocd-application-controller --tail=80 --prefix=true || true
+          # DNS PROBE, WRITTEN FOR THE SHELL AND TOOLSET THAT ACTUALLY EXIST.
+          #
+          # The first version ran `nslookup` and bash's `/dev/tcp`. Neither is
+          # present: the repo-server image has no nslookup, and its `sh` is dash,
+          # so `/dev/tcp` is a nonexistent directory rather than a socket. Both
+          # probes failed for TOOLING reasons and said nothing about the network
+          # -- a probe that cannot run is not a negative result. `getent hosts`
+          # is glibc and present; `wget`/`curl` are tried only if they exist.
+          echo "--- can a pod resolve the git host? (getent = glibc, always present) ---"
+          kubectl -n argocd exec deploy/argocd-repo-server -- sh -c '
+            echo "resolv.conf:"; cat /etc/resolv.conf 2>&1 | sed "s/^/  /"
+            echo "getent hosts github.com:"; getent hosts github.com 2>&1 | sed "s/^/  /" || echo "  FAILED rc=$?"
+            echo "getent hosts kubernetes.default (in-cluster):"; getent hosts kubernetes.default 2>&1 | sed "s/^/  /" || echo "  FAILED rc=$?"
+          ' || true
+          echo "--- what does CoreDNS forward upstream to? (the k3d/docker 127.0.0.11 question) ---"
+          kubectl -n kube-system get configmap coredns -o jsonpath='{.data.Corefile}' || true
+
+      - name: Logs from crash-looping pods, including the PREVIOUS container
+        if: always()
+        run: |
+          kubectl get pods -A -o json 2>/dev/null \
+            | jq -r '.items[]
+                | select((.status.phase != "Running" and .status.phase != "Succeeded")
+                         or ((.status.containerStatuses // []) | map(.restartCount // 0) | add // 0) > 0)
+                | "\(.metadata.namespace) \(.metadata.name)"' \
+            | while read -r ns pod; do
+                echo "=== $ns/$pod (waiting reasons + restart counts)"
+                kubectl -n "$ns" logs "$pod" --all-containers=true --prefix=true --previous=true --tail=100 || true
+              done || true
+
+      - name: Print cluster diagnostics
+        if: always()
+        run: |
+          kubectl get nodes -o wide || true
+          kubectl -n argocd get applications.argoproj.io -o wide || true
+          kubectl get pods -A -o wide || true
+          kubectl get events -A --sort-by=.lastTimestamp | tail -200 || true
+
+      - name: Tear down k3d cluster
+        if: always()
+        run: bun src/Core.TypeScript/cluster/dev-cluster/k3d-down.ts --config full-ai-cluster/dev-cluster/profiles/ci.k3d-config.yaml
+
 
   # THE CNI THE METAL CLUSTER WILL RUN, EXERCISED.
   #
