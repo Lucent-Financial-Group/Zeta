@@ -701,19 +701,30 @@ if command -v mise >/dev/null 2>&1; then
   # rc >= 128 is a signal death (139 = 128 + SIGSEGV). A version probe that
   # cannot say "the binary crashed" reports a crash as an empty version string,
   # which is the same defect as a check that cannot fail.
+  # STREAMS SEPARATED: stdout is DATA, stderr is DIAGNOSIS. Merging them was a
+  # self-inflicted regression -- see the note below.
+  _mise_probe_err_file="$(mktemp)"
   _mise_probe_out=""
+  _mise_probe_err=""
   _mise_probe_rc=0
-  _mise_probe_out="$(mise --version 2>&1)" || _mise_probe_rc=$?
+  _mise_probe_out="$(mise --version 2>"$_mise_probe_err_file")" || _mise_probe_rc=$?
+  _mise_probe_err="$(cat "$_mise_probe_err_file" 2>/dev/null || true)"
+  rm -f "$_mise_probe_err_file"
   if [ "$_mise_probe_rc" -ge 128 ]; then
     echo "error: \`mise --version\` died on signal $(( _mise_probe_rc - 128 )) (rc=${_mise_probe_rc})" >&2
     echo "  binary: $(command -v mise)" >&2
-    echo "  output: ${_mise_probe_out:-<none, which is what a SIGSEGV looks like>}" >&2
+    echo "  stdout: ${_mise_probe_out:-<none, which is what a SIGSEGV looks like>}" >&2
+    echo "  stderr: ${_mise_probe_err:-<none>}" >&2
     echo "  This is a CRASHING mise, not a missing or mis-versioned one. Do not" >&2
     echo "  read the empty version string as 'mise absent' -- that misdiagnosis is" >&2
     echo "  exactly what this branch exists to prevent." >&2
     exit 1
   fi
-  installed_mise_version="$(printf '%s\n' "$_mise_probe_out" | awk '{print $1}')"
+  # VERSION-SHAPED TOKEN FROM STDOUT ONLY. `awk '{print $1}'` over a merged
+  # stream printed the first field of EVERY line, so a chatty mise turned
+  # "2026.6.12" into "2026.6.12\nDEBUG\nWARN\nWARN\nDEBUG" and the pin
+  # comparison failed against its own value. Anchored match, first hit only.
+  installed_mise_version="$(printf '%s\n' "$_mise_probe_out" | grep -oE '^[0-9]{4}\.[0-9]+\.[0-9]+' | head -n1)"
 fi
 
 if [ "$installed_mise_version" != "$MISE_PIN_VERSION" ]; then
