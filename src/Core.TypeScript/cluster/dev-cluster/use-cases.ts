@@ -1,4 +1,7 @@
 import { randomBytes } from "node:crypto";
+import { writeFileSync } from "node:fs";
+import { join } from "node:path";
+import { ciliumK3dValues, readCiliumValueSurfaces, renderValuesYaml } from "../cilium-kind-lane.ts";
 import type { DevClusterPorts } from "../ports.ts";
 import {
   buildDevAdminSecretManifest,
@@ -269,27 +272,47 @@ export function bringUpK3dDevCluster(ports: DevClusterPorts, options: K3dDevBrin
   controlPlane.waitForApiReady(60, 3000);
 
   if (!packages.releaseInstalled("kube-system", "cilium")) {
-    console.log("Installing Cilium ...");
+    // INSTALL THE SHIPPED VALUE SURFACE, never a hand-written --set list.
+    //
+    // This block used to hardcode five --set values, one of which was
+    // `ipam.mode=kubernetes` against a shipped surface that says
+    // `cluster-pool`. See `ciliumK3dValues` for the measurement that found it:
+    // the CNI closest to metal was configured furthest from metal, so a green
+    // run here would have proven nothing about what hardware boots.
+    //
+    // REFUSE rather than fall back. A missing surface must not silently become
+    // "install the chart defaults" — that is the same class of defect as the
+    // --set list, reached by a different door. `cilium-kind-up.ts` takes the
+    // identical stance and prints the identical refusal.
+    const surfaces = readCiliumValueSurfaces();
+    const shipped = surfaces.find((surface) => surface.path.includes("applications/cilium/"))?.values;
+    if (shipped === undefined) {
+      throw new Error(
+        "the ArgoCD Cilium value surface was not found in the roster; refusing to invent values for the k3d cluster",
+      );
+    }
+    const { values, deltas } = ciliumK3dValues(shipped, options.kubeApiHost);
+
+    console.log(`Installing Cilium from ${surfaces.map((s) => s.path).join(", ")}`);
+    console.log(`Value deltas for the k3d substrate (${deltas.length}):`);
+    for (const delta of deltas) console.log(`  ${delta.path}: ${delta.shipped} -> ${delta.kind} (${delta.reason})`);
+
+    // writeFileSync, not Bun.write: helm reads this file in the very next
+    // statement and Bun.write is async, so an unawaited call is a race that
+    // would hand helm an EMPTY values file — i.e. the chart defaults, silently.
+    const valuesPath = join(process.env["RUNNER_TEMP"] ?? "/tmp", `cilium-k3d-values-${options.clusterName}.json`);
+    writeFileSync(valuesPath, renderValuesYaml(values));
+    console.log(`Rendered Cilium values to ${valuesPath}`);
+
     packages.addRepo("cilium", "https://helm.cilium.io");
     packages.updateRepo("cilium");
-    const setValues = [
-      "kubeProxyReplacement=true",
-      `k8sServiceHost=${options.kubeApiHost}`,
-      "k8sServicePort=6443",
-      "hubble.enabled=true",
-      "ipam.mode=kubernetes",
-    ];
-    if (options.agentCount === 0) {
-      setValues.push("operator.replicas=1", "hubble.relay.enabled=false", "hubble.ui.enabled=false");
-    } else {
-      setValues.push("hubble.relay.enabled=true", "hubble.ui.enabled=true");
-    }
     packages.install({
       release: "cilium",
       chart: "cilium/cilium",
       version: "1.16.5",
       namespace: "kube-system",
-      setValues,
+      setValues: [],
+      valuesFiles: [valuesPath],
       wait: true,
     });
   }
