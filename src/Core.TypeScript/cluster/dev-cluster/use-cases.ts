@@ -253,6 +253,77 @@ export function tearDownKindCluster(ports: DevClusterPorts, clusterName: string)
   }
 }
 
+/**
+ * Point k3d's CoreDNS at a REACHABLE upstream resolver.
+ *
+ * MEASURED 2026-08-31, and this is the whole reason the k3d lane could not
+ * reconcile an App-of-Apps. `argocd-repo-server` failed every fetch with:
+ *
+ *     fatal: unable to access 'https://github.com/.../Zeta.git/':
+ *     Could not resolve host: github.com
+ *
+ * so ArgoCD could never render, produced ZERO child Applications, and the
+ * harness timed out waiting for one. The root Application sat `sync=Unknown`
+ * (a ComparisonError) while reporting `health=Healthy`, which is why this took
+ * three runs to see.
+ *
+ * THE MECHANISM, read off the cluster rather than guessed. k3s's shipped
+ * Corefile ends with:
+ *
+ *     import /etc/coredns/custom/*.override
+ *     forward . /etc/resolv.conf
+ *
+ * A k3d "node" is a Docker container, so that /etc/resolv.conf names Docker's
+ * embedded resolver, `127.0.0.11`. CoreDNS runs as a POD on the cluster overlay,
+ * where 127.0.0.11 is its OWN loopback and nothing is listening. Cluster names
+ * still resolve (the `kubernetes` plugin answers them locally, which is exactly
+ * why the cluster looks healthy); every external name fails.
+ *
+ * WHY KIND DOES NOT HAVE THIS, and why that matters: kind's node image
+ * substitutes the host's real resolvers into the node resolv.conf for this
+ * precise reason. k3s leaves 127.0.0.11 in place. So the kind/k3d asymmetry is
+ * explained WITHOUT invoking Cilium -- the CNI was never the cause, and this is
+ * a k3d substrate gap, NOT a defect in anything metal runs. On metal
+ * /etc/resolv.conf names a routable nameserver and this override is unnecessary.
+ *
+ * The fix uses k3s's own documented extension point (`coredns-custom`, imported
+ * by the shipped Corefile above) rather than rewriting the Corefile, so it
+ * survives a k3s upgrade that regenerates it.
+ *
+ * SCOPE: k3d bring-up only. `bringUpKindCiCluster` does not call this, and
+ * neither does anything on the metal path.
+ */
+export function applyK3dCoreDnsUpstreamOverride(ports: DevClusterPorts): void {
+  console.log("Pointing k3d CoreDNS at a reachable upstream (127.0.0.11 is unreachable from a pod netns) ...");
+  ports.controlPlane.applyInlineManifest(
+    [
+      "apiVersion: v1",
+      "kind: ConfigMap",
+      "metadata:",
+      "  name: coredns-custom",
+      "  namespace: kube-system",
+      "data:",
+      "  upstream.override: |",
+      "    forward . 1.1.1.1 8.8.8.8 {",
+      "      policy sequential",
+      "    }",
+      "",
+    ].join("\n"),
+  );
+  // CoreDNS reloads on its own (`reload` is in the shipped Corefile), but the
+  // interval is not instant and the very next thing this bring-up does is install
+  // ArgoCD, whose repo-server resolves github.com immediately. Restart rather than
+  // race it -- a flake here would look exactly like the bug this override fixes,
+  // which is the worst possible thing to be ambiguous about.
+  //
+  // `process.run`, NOT an optional method on the control-plane port. The first
+  // draft called `controlPlane.restartDeployment?.(...)` -- a method that DOES
+  // NOT EXIST on that interface, so the optional-call would have compiled, run,
+  // and done NOTHING. A silent no-op inside the fix for a silent no-op.
+  ports.process.run("kubectl", ["-n", "kube-system", "rollout", "restart", "deployment/coredns"], { timeoutMs: 60_000 });
+  ports.process.run("kubectl", ["-n", "kube-system", "rollout", "status", "deployment/coredns", "--timeout=90s"], { timeoutMs: 120_000 });
+}
+
 export function bringUpK3dDevCluster(ports: DevClusterPorts, options: K3dDevBringUpOptions): void {
   const { localCluster, controlPlane, packages, appCatalog } = ports;
   const context = localCluster.contextName(options.clusterName);
@@ -270,6 +341,8 @@ export function bringUpK3dDevCluster(ports: DevClusterPorts, options: K3dDevBrin
   controlPlane.selectContext(context);
   console.log("Waiting for Kubernetes API readiness ...");
   controlPlane.waitForApiReady(60, 3000);
+
+  applyK3dCoreDnsUpstreamOverride(ports);
 
   if (!packages.releaseInstalled("kube-system", "cilium")) {
     // INSTALL THE SHIPPED VALUE SURFACE, never a hand-written --set list.

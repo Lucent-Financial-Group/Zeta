@@ -122,6 +122,37 @@ describe("the k3d lane installs metal's Cilium configuration", () => {
     expect(code.match(/server\.service\.type=ClusterIP/g)?.length ?? 0).toBe(2);
   });
 
+  test("the k3d bring-up points CoreDNS at a reachable upstream — 127.0.0.11 is not one", () => {
+    // MEASURED: k3s's Corefile ends `forward . /etc/resolv.conf`, and inside a
+    // k3d node that file names Docker's embedded resolver 127.0.0.11 -- which,
+    // from a POD netns, is the pod's own loopback. Cluster names still resolve
+    // (the `kubernetes` plugin answers locally), so the cluster looks healthy
+    // while every external name fails. That is what stopped ArgoCD's repo-server
+    // fetching github.com for three runs.
+    const code = codeWithoutComments(readFileSync(USE_CASES, "utf8"));
+    // SCOPED TO THE K3D BRING-UP BODY, not the whole file. The first version of
+    // this assertion searched the file for the function NAME and therefore
+    // matched its own DEFINITION -- so deleting the CALL SITE left it green.
+    // Existence is not invocation.
+    const k3dBody = code.slice(
+      code.indexOf("export function bringUpK3dDevCluster"),
+      code.indexOf("export function tearDownK3dDevCluster"),
+    );
+    expect(k3dBody).toContain("applyK3dCoreDnsUpstreamOverride(ports)");
+    expect(code).toContain("coredns-custom");
+    // The restart must be a REAL call. The first draft used
+    // `controlPlane.restartDeployment?.()` -- a method absent from that
+    // interface, so the optional-call compiled and did nothing.
+    expect(code).not.toContain("restartDeployment");
+    expect(code).toContain("rollout");
+  });
+
+  test("the override is k3d-ONLY — the kind bring-up and metal must not get it", () => {
+    const src = readFileSync(USE_CASES, "utf8");
+    const kindFn = src.slice(src.indexOf("export function bringUpKindCiCluster"), src.indexOf("export function tearDownKindCluster"));
+    expect(kindFn).not.toContain("applyK3dCoreDnsUpstreamOverride");
+  });
+
   test("a missing surface REFUSES rather than falling back to chart defaults", () => {
     const code = codeWithoutComments(readFileSync(USE_CASES, "utf8"));
     expect(code).toContain("refusing to invent values");
