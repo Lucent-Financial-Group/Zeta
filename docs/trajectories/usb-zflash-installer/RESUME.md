@@ -20,6 +20,36 @@ bootable device" after a full flash-and-walk-to-the-box cycle, and whose
 untagged cache name made a wrong pick win every later auto-discovery. Closes
 known-unknown #2 of the first-metal preflight; that runbook no longer asks the
 operator to hand-download and hand-rename an ISO.
+**2026-08-31 — THE LANE ITSELF WAS RED FOR 38 HOURS, and "restore is proven"
+did not notice.** `build-ai-cluster-iso` failed on every `main` push from
+`f4c1f5dca` (2026-08-30T02:48) to `7c1857530` (2026-08-31T17:12) — scenario 2,
+first-boot provisioning. Cause: **`mise --version` SEGFAULTED on NixOS first
+boot** (mise 2026.8.14, from "run mise 2026.8.14 everywhere" #16186). Under
+`set -e` the failed command substitution killed `install.sh` with **rc=139**,
+three attempts, and the node came up partially provisioned — `bun: command not
+found` downstream, so nothing needing a runtime could run.
+
+Reverted to the last-known-good **2026.6.12** across all five declarations in
+[#16200](https://github.com/Lucent-Financial-Group/Zeta/pull/16200). Two
+hypotheses were refuted by measurement first, not argument: both release tarballs
+have **identical** `PT_INTERP`, `DT_NEEDED` and max `GLIBC_2.18`, so it is
+neither a missing library nor a glibc floor. The runtime cause is unidentified
+and 2026.8.14 works fine on macOS — **re-attempting the bump is welcome**, and
+now it will produce a diagnosis in one run.
+
+WHY IT TOOK 38 HOURS, which is the reusable part: the probe read
+`mise --version 2>/dev/null`. A SIGSEGV prints nothing to stdout, the redirect
+ate stderr, and the serial log recorded **not one character** of explanation —
+"apt packages up to date", then the retry. The harness's own `081KZETP6AT` diag
+block prints *"install.sh error lines"*, and a signal death produces none, so it
+emitted an empty block between its two markers. #16200 makes `rc >= 128` report
+the signal by name; a version probe that cannot say *"the binary crashed"*
+reports a crash as an empty version string.
+
+**Read the old claims with that in mind.** "Software restore is proven" was true
+of the restore step and simultaneously the lane could not boot a node. A green
+claim about one step is not a claim about the lane.
+
 **Session handoff (2026-08-28):** restore is closed on software. Do not
 re-open [#14852](https://github.com/Lucent-Financial-Group/Zeta/pull/14852)
 `--defer-all` as the live hang — that hang was pre-`--defer-all` on
