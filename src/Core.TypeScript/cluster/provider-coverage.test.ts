@@ -37,9 +37,11 @@ const HARNESS = join(REPO_ROOT, "src", "Core.TypeScript", "cluster", "argocd-hea
 /** The providers the harness accepts, read from its own guard rather than restated. */
 function supportedProviders(): string[] {
   const src = readFileSync(HARNESS, "utf8");
-  const guard = src.match(/function isProvider\([^)]*\)[^{]*\{([\s\S]*?)\n\}/);
-  if (!guard) throw new Error("isProvider not found in argocd-health-test.ts — this test is stale, not passing");
-  return [...guard[1].matchAll(/value === "([a-z0-9]+)"/g)].map((m) => m[1]!).sort();
+  const body = src.match(/function isProvider\([^)]*\)[^{]*\{([\s\S]*?)\n\}/)?.[1];
+  if (body === undefined) {
+    throw new Error("isProvider not found in argocd-health-test.ts — this test is stale, not passing");
+  }
+  return [...body.matchAll(/value === "([a-z0-9]+)"/g)].map((m) => m[1]!).sort();
 }
 
 interface Job {
