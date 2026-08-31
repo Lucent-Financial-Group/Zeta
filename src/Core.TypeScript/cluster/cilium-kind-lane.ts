@@ -86,7 +86,7 @@ export const CILIUM_1_16_REQUIRED_GATEWAY_API_CRDS: readonly string[] = [
   "tlsroutes.gateway.networking.k8s.io",
 ];
 
-type Json = null | boolean | number | string | Json[] | { [k: string]: Json };
+export type Json = null | boolean | number | string | Json[] | { [k: string]: Json };
 
 export interface CiliumValueSurface {
   /** Repo-relative path, as the nix roster names it (prefixed back to repo root). */
@@ -573,6 +573,73 @@ export function ciliumKindValues(shipped: Readonly<Record<string, Json>>, cluste
           "`control-plane` resolves on metal via /etc/hosts written by k3s-server.nix (and the API cert is " +
           "SAN'd for it). A kind node has no such entry; the control-plane container is reachable by its " +
           "Docker-DNS name on the cluster network. Same API endpoint, different resolver.",
+      },
+    ],
+  };
+}
+
+/**
+ * The values the k3d lane installs Cilium with.
+ *
+ * SAME RULE AS `ciliumKindValues`, and for the same reason: this is the shipped
+ * ArgoCD `valuesObject`, byte-for-byte, with ONE substrate delta. Everything
+ * that decides how packets actually move — `ipam.mode: cluster-pool` and its
+ * `clusterPoolIPv4PodCIDRList`, `routingMode: native`, `ipv4NativeRoutingCIDR`,
+ * `autoDirectNodeRoutes`, `bpf.masquerade`, `l2announcements`, `cluster.id` —
+ * is installed exactly as metal will run it.
+ *
+ * WHY THIS FUNCTION EXISTS (2026-08-31, measured on the first live k3d run).
+ * `bringUpK3dDevCluster` used to hardcode a five-value `--set` list instead of
+ * reading this surface, and the divergence was not cosmetic:
+ *
+ *     ipam.mode              cluster-pool @ 10.143.0.0/17   ->  kubernetes
+ *     routingMode            native                         ->  (chart default)
+ *     ipv4NativeRoutingCIDR  10.143.0.0/17                  ->  (unset)
+ *     autoDirectNodeRoutes   true                           ->  (unset)
+ *     bpf.masquerade         true                           ->  (unset)
+ *     l2announcements        enabled                        ->  (unset)
+ *     cluster.name/.id       zeta / 31                      ->  (unset)
+ *
+ * The run failed with every pod on the overlay unhealthy — CoreDNS 503,
+ * metrics-server CrashLoopBackOff, local-path-provisioner restarting — while
+ * Cilium's own pods were 1/1 Running. Pod IPs came from `10.42.0.x`, k3s's
+ * default cluster-CIDR, which is exactly what `ipam.mode: kubernetes` yields.
+ * The passing kind lane on the same commit put pods on `10.143.x` and printed
+ * `CoreDNS pod IPs come from cluster-pool 10.143.0.0/17`.
+ *
+ * The deeper defect was not that the lane was red. It was that the provider
+ * CLOSEST to metal — k3s is what the hardware runs — was installing the CNI
+ * configuration FURTHEST from metal, so a green run would have proven nothing
+ * about what hardware boots.
+ *
+ * VERSION SKEW IS NOT THE CAUSE, and the control is why that is knowable.
+ * Cilium 1.16 documents support for Kubernetes 1.27-1.30 and this profile pins
+ * k3s v1.36.1, which looks conclusive. But the kind lane runs the identical
+ * Cilium 1.16.5 on Kubernetes v1.35.0 and reports every node Ready. Same chart,
+ * same skew, healthy. The values were the only remaining difference.
+ *
+ * ZERO EXTRA DELTAS, deliberately. The single-node k3d profile has `agents: 0`,
+ * and the previous code lowered `operator.replicas` to 1 and disabled Hubble
+ * relay/UI "so the smoke run has fewer moving parts". Measured on the passing
+ * kind lane, which is also one node: one `cilium-operator` pod, and BOTH
+ * `hubble-relay` and `hubble-ui` running. The shipped values already fit a
+ * single node, so trimming them would only widen the gap to metal for no
+ * measured benefit.
+ */
+export function ciliumK3dValues(shipped: Readonly<Record<string, Json>>, kubeApiHost: string): CiliumKindValues {
+  const shippedHost = String(shipped["k8sServiceHost"] ?? "");
+  return {
+    values: { ...shipped, k8sServiceHost: kubeApiHost },
+    deltas: [
+      {
+        path: "k8sServiceHost",
+        shipped: shippedHost,
+        kind: kubeApiHost,
+        reason:
+          "`control-plane` resolves on metal via /etc/hosts written by k3s-server.nix (and the API cert is " +
+          "SAN'd for it). A k3d server container has no such entry; it is reachable by its Docker-DNS name " +
+          "`k3d-<cluster>-server-0` on the cluster network. Same API endpoint, different resolver — the " +
+          "identical delta the kind lane takes, for the identical reason.",
       },
     ],
   };

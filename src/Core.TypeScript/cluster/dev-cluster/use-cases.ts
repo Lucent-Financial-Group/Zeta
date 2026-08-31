@@ -1,4 +1,7 @@
 import { randomBytes } from "node:crypto";
+import { writeFileSync } from "node:fs";
+import { join } from "node:path";
+import { ciliumK3dValues, readCiliumValueSurfaces, renderValuesYaml } from "../cilium-kind-lane.ts";
 import type { DevClusterPorts } from "../ports.ts";
 import {
   buildDevAdminSecretManifest,
@@ -250,6 +253,77 @@ export function tearDownKindCluster(ports: DevClusterPorts, clusterName: string)
   }
 }
 
+/**
+ * Point k3d's CoreDNS at a REACHABLE upstream resolver.
+ *
+ * MEASURED 2026-08-31, and this is the whole reason the k3d lane could not
+ * reconcile an App-of-Apps. `argocd-repo-server` failed every fetch with:
+ *
+ *     fatal: unable to access 'https://github.com/.../Zeta.git/':
+ *     Could not resolve host: github.com
+ *
+ * so ArgoCD could never render, produced ZERO child Applications, and the
+ * harness timed out waiting for one. The root Application sat `sync=Unknown`
+ * (a ComparisonError) while reporting `health=Healthy`, which is why this took
+ * three runs to see.
+ *
+ * THE MECHANISM, read off the cluster rather than guessed. k3s's shipped
+ * Corefile ends with:
+ *
+ *     import /etc/coredns/custom/*.override
+ *     forward . /etc/resolv.conf
+ *
+ * A k3d "node" is a Docker container, so that /etc/resolv.conf names Docker's
+ * embedded resolver, `127.0.0.11`. CoreDNS runs as a POD on the cluster overlay,
+ * where 127.0.0.11 is its OWN loopback and nothing is listening. Cluster names
+ * still resolve (the `kubernetes` plugin answers them locally, which is exactly
+ * why the cluster looks healthy); every external name fails.
+ *
+ * WHY KIND DOES NOT HAVE THIS, and why that matters: kind's node image
+ * substitutes the host's real resolvers into the node resolv.conf for this
+ * precise reason. k3s leaves 127.0.0.11 in place. So the kind/k3d asymmetry is
+ * explained WITHOUT invoking Cilium -- the CNI was never the cause, and this is
+ * a k3d substrate gap, NOT a defect in anything metal runs. On metal
+ * /etc/resolv.conf names a routable nameserver and this override is unnecessary.
+ *
+ * The fix uses k3s's own documented extension point (`coredns-custom`, imported
+ * by the shipped Corefile above) rather than rewriting the Corefile, so it
+ * survives a k3s upgrade that regenerates it.
+ *
+ * SCOPE: k3d bring-up only. `bringUpKindCiCluster` does not call this, and
+ * neither does anything on the metal path.
+ */
+export function applyK3dCoreDnsUpstreamOverride(ports: DevClusterPorts): void {
+  console.log("Pointing k3d CoreDNS at a reachable upstream (127.0.0.11 is unreachable from a pod netns) ...");
+  ports.controlPlane.applyInlineManifest(
+    [
+      "apiVersion: v1",
+      "kind: ConfigMap",
+      "metadata:",
+      "  name: coredns-custom",
+      "  namespace: kube-system",
+      "data:",
+      "  upstream.override: |",
+      "    forward . 1.1.1.1 8.8.8.8 {",
+      "      policy sequential",
+      "    }",
+      "",
+    ].join("\n"),
+  );
+  // CoreDNS reloads on its own (`reload` is in the shipped Corefile), but the
+  // interval is not instant and the very next thing this bring-up does is install
+  // ArgoCD, whose repo-server resolves github.com immediately. Restart rather than
+  // race it -- a flake here would look exactly like the bug this override fixes,
+  // which is the worst possible thing to be ambiguous about.
+  //
+  // `process.run`, NOT an optional method on the control-plane port. The first
+  // draft called `controlPlane.restartDeployment?.(...)` -- a method that DOES
+  // NOT EXIST on that interface, so the optional-call would have compiled, run,
+  // and done NOTHING. A silent no-op inside the fix for a silent no-op.
+  ports.process.run("kubectl", ["-n", "kube-system", "rollout", "restart", "deployment/coredns"], { timeoutMs: 60_000 });
+  ports.process.run("kubectl", ["-n", "kube-system", "rollout", "status", "deployment/coredns", "--timeout=90s"], { timeoutMs: 120_000 });
+}
+
 export function bringUpK3dDevCluster(ports: DevClusterPorts, options: K3dDevBringUpOptions): void {
   const { localCluster, controlPlane, packages, appCatalog } = ports;
   const context = localCluster.contextName(options.clusterName);
@@ -268,28 +342,50 @@ export function bringUpK3dDevCluster(ports: DevClusterPorts, options: K3dDevBrin
   console.log("Waiting for Kubernetes API readiness ...");
   controlPlane.waitForApiReady(60, 3000);
 
+  applyK3dCoreDnsUpstreamOverride(ports);
+
   if (!packages.releaseInstalled("kube-system", "cilium")) {
-    console.log("Installing Cilium ...");
+    // INSTALL THE SHIPPED VALUE SURFACE, never a hand-written --set list.
+    //
+    // This block used to hardcode five --set values, one of which was
+    // `ipam.mode=kubernetes` against a shipped surface that says
+    // `cluster-pool`. See `ciliumK3dValues` for the measurement that found it:
+    // the CNI closest to metal was configured furthest from metal, so a green
+    // run here would have proven nothing about what hardware boots.
+    //
+    // REFUSE rather than fall back. A missing surface must not silently become
+    // "install the chart defaults" — that is the same class of defect as the
+    // --set list, reached by a different door. `cilium-kind-up.ts` takes the
+    // identical stance and prints the identical refusal.
+    const surfaces = readCiliumValueSurfaces();
+    const shipped = surfaces.find((surface) => surface.path.includes("applications/cilium/"))?.values;
+    if (shipped === undefined) {
+      throw new Error(
+        "the ArgoCD Cilium value surface was not found in the roster; refusing to invent values for the k3d cluster",
+      );
+    }
+    const { values, deltas } = ciliumK3dValues(shipped, options.kubeApiHost);
+
+    console.log(`Installing Cilium from ${surfaces.map((s) => s.path).join(", ")}`);
+    console.log(`Value deltas for the k3d substrate (${deltas.length}):`);
+    for (const delta of deltas) console.log(`  ${delta.path}: ${delta.shipped} -> ${delta.kind} (${delta.reason})`);
+
+    // writeFileSync, not Bun.write: helm reads this file in the very next
+    // statement and Bun.write is async, so an unawaited call is a race that
+    // would hand helm an EMPTY values file — i.e. the chart defaults, silently.
+    const valuesPath = join(process.env["RUNNER_TEMP"] ?? "/tmp", `cilium-k3d-values-${options.clusterName}.json`);
+    writeFileSync(valuesPath, renderValuesYaml(values));
+    console.log(`Rendered Cilium values to ${valuesPath}`);
+
     packages.addRepo("cilium", "https://helm.cilium.io");
     packages.updateRepo("cilium");
-    const setValues = [
-      "kubeProxyReplacement=true",
-      `k8sServiceHost=${options.kubeApiHost}`,
-      "k8sServicePort=6443",
-      "hubble.enabled=true",
-      "ipam.mode=kubernetes",
-    ];
-    if (options.agentCount === 0) {
-      setValues.push("operator.replicas=1", "hubble.relay.enabled=false", "hubble.ui.enabled=false");
-    } else {
-      setValues.push("hubble.relay.enabled=true", "hubble.ui.enabled=true");
-    }
     packages.install({
       release: "cilium",
       chart: "cilium/cilium",
       version: "1.16.5",
       namespace: "kube-system",
-      setValues,
+      setValues: [],
+      valuesFiles: [valuesPath],
       wait: true,
     });
   }
@@ -304,7 +400,29 @@ export function bringUpK3dDevCluster(ports: DevClusterPorts, options: K3dDevBrin
       chart: "argo/argo-cd",
       version: "7.7.10",
       namespace: "argocd",
-      setValues: ["server.service.type=LoadBalancer"],
+      // ClusterIP, NOT LoadBalancer -- and this line is downstream of installing
+      // the shipped Cilium surface above.
+      //
+      // MEASURED 2026-08-31, the run after the CNI was fixed. k3s ships klipper
+      // (`svclb`), so a `type: LoadBalancer` Service materialises a DaemonSet
+      // that binds the service's ports on the HOST. The shipped Cilium values
+      // enable `ingressController`, which creates its own LoadBalancer Service;
+      // its `svclb-cilium-ingress` pod took 80/443 first and came up 2/2, and
+      // `svclb-argocd-server` then sat Pending for the rest of the run:
+      //
+      //   0/1 nodes are available: 1 node(s) didn't have free ports
+      //   for the requested pod ports.
+      //
+      // On one node there is exactly one host port 80 and one 443. The previous
+      // `--set` list did not enable Cilium's ingress controller, so nothing
+      // competed and LoadBalancer appeared to work -- it was only ever viable
+      // while the CNI config diverged from metal.
+      //
+      // The kind bring-up above already installs ArgoCD as ClusterIP for its own
+      // reasons, and the harness reaches ArgoCD through kubectl in both cases, so
+      // no lane needs an externally-routable ArgoCD. Matching kind removes a
+      // difference rather than adding one.
+      setValues: ["server.service.type=ClusterIP"],
       wait: true,
     });
   }
