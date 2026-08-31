@@ -205,6 +205,33 @@ export const DEFAULT_ROOT_DEV_CATALOG: RootDevCatalogSpec = {
     "{cilium/**,cilium-lb-ipam/**,longhorn/**,ollama/**,vllm/**,gitlab/**,temporal/**,agent-memory/**,platform/**}",
 };
 
+/**
+ * The directories an ArgoCD `directory.exclude` brace-glob defers.
+ *
+ * ONE parser, exported, because there were two. `storage-profiles.ts` carried
+ * an inline copy of this splitting logic and `lane-partition.ts` needed the
+ * same answer to union a lane's exclude with the standing deferrals. Two
+ * parsers of one constant is the drift shape this repo has already been bitten
+ * by — a glob deferring nine directories while a registry reasoned about five,
+ * both reporting green.
+ *
+ * Returns bare directory names (`cilium/**` -> `cilium`). Callers decide
+ * whether to match by equality or by prefix; the nested-Application case needs
+ * prefix, which is why this does not do the matching itself.
+ */
+export function excludeGlobDirs(glob: string): readonly string[] {
+  return [
+    ...new Set(
+      glob
+        .replace(/^\{/, "")
+        .replace(/\}$/, "")
+        .split(",")
+        .map((entry) => entry.trim().replace(/\/\*\*$/, ""))
+        .filter((entry) => entry.length > 0),
+    ),
+  ];
+}
+
 export function buildRootDevCatalogManifest(spec: RootDevCatalogSpec): string {
   return `apiVersion: argoproj.io/v1alpha1
 kind: Application

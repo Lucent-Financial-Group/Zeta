@@ -62,7 +62,7 @@ import { resolve } from "node:path";
 import { parseAllDocuments, isCollection } from "yaml";
 import { stringCompare } from "../collation/collation.ts";
 import { quantityToGib } from "./single-node-readiness.ts";
-import { DEFAULT_ROOT_DEV_CATALOG } from "./ports.ts";
+import { DEFAULT_ROOT_DEV_CATALOG, excludeGlobDirs } from "./ports.ts";
 
 const REPO_ROOT = resolve(import.meta.dir, "../../..");
 
@@ -1090,16 +1090,7 @@ export function devLaneAppliedDirs(
   repoRoot = REPO_ROOT,
   excludeGlob = DEFAULT_ROOT_DEV_CATALOG.excludeGlob,
 ): readonly string[] {
-  const excluded = [
-    ...new Set(
-      excludeGlob
-        .replace(/^\{/, "")
-        .replace(/\}$/, "")
-        .split(",")
-        .map((entry) => entry.trim().replace(/\/\*\*$/, ""))
-        .filter((entry) => entry.length > 0),
-    ),
-  ];
+  const excluded = excludeGlobDirs(excludeGlob);
   // PREFIX, not equality. `cilium/**` excludes `cilium` and everything under
   // it; with depth-2 directories now in `applicationDirs`, an equality test
   // would leave `<excluded>/<nested>` in the applied set while ArgoCD's own
