@@ -1,7 +1,7 @@
 # Dogfooding the whole stack — running Zeta on Zeta
 
 Status: ACTIVE — declared the next big trajectory by the human maintainer 2026-08-09
-Last refreshed: 2026-08-27
+Last refreshed: 2026-08-31
 Current blocker: **NONE for the society runtime — cleared 2026-08-25.** The lanes flush again. Paid-agent harness (Tier 0 below) is a **separate** blocker: vendor CLIs, not our login.
 The blocker recorded here (PAT lacking `contents: write` since #10850) was only HALF the story,
 and the recorded half had already been fixed: `git push` on the flush token works. What kept the
@@ -83,7 +83,7 @@ Umbrella `081M100RB97087G0R0008EAAY7`.
 | 8 | npm/bun deps, brew, apt, uv, dotnet… | **ACE realizers** | ✅ **dogfooded** | `src/Core.TypeScript/ace/setup-realize.ts` + `setup-realizers/` (**23 files**, 17 of them `from-*` classes incl. `from-uv-venv`, `from-uv-tool`, `from-bun-workspace`). Invoked by **workflows** — `gate.yml`, `lean-proof.yml`, `low-memory.yml`, `macos-install-sh-test.yml`, `tlaps-proof.yml`, `accelerator-local-llm-validate.yml`. **Corrected 2026-08-25:** this row said `install.sh` delegates to it and gave the path as `ace/setup-realize.ts`; `install.sh` does not reference it at all, and the path is under `src/Core.TypeScript/`. Verify with `git grep -l setup-realize -- tools src .github` before citing. |
 | 9 | manual/ad-hoc distribution | **ACE meta-package-manager** | ○ **not started** | only `Core.FSharp.AceCanonical`; N-dimensional resolver + AI-rate negotiation are design-stage. **The single biggest gap.** |
 | 10 | CockroachDB (k8s: temporal, hindsight, longhorn) | **ZetaDB** | ◐ **partial** | Journal fold is the dual Z-set `I` (`ZetaFsDualFold`); Cockroach is still the real store. Git replacement is the same algebra (`081M108RYNT087G0R001JSRNZE`) |
-| 11 | OS filesystem | **ZetaFS** (`DagFs` + dual fold) | ◐ **partial** | `DagFs.fs` content-addressed multi-parent tree; `ZetaFsDualFold.applyPresence` is the +1/−1 path patch; `ZetaFsDeltaLog` is the own-format log. Not the OS FS; factory still `git` |
+| 11 | OS filesystem | **ZetaFS** (`DagFs` + dual fold) | ◐ **partial** | `DagFs.fs` content-addressed multi-parent tree; `ZetaFsDualFold.applyPresence` is the +1/−1 path patch; `ZetaFsDeltaLog` is the own-format log. Not the OS FS; factory still `git`. First-product spec: `docs/design/2026-08-30-zetafs-first-product-cas-store-per-entity-policy.md` (`081M1C59ZG4087G0R000VM8DZN`). Rolling N / stripe / LRC k / GCM throughput stay **unmetered**: we have the start of a harness (`EncryptedDiskBackingStoreBench`, ChaosEnv, Harny library) — not enough to measure the volume. **This row is the metering path** (with 0d + ROADMAP 8b). |
 | 12 | Linux (NixOS) | **Zeta unikernel** | ○ **not started** | no surface in-tree at all |
 | 13 | TCP/IP + GitHub as transport | **Reticulum mesh** | ◐ **partial** | `ReticulumLink.fs`, `ReticulumChaos.fs` exist; not the live transport |
 

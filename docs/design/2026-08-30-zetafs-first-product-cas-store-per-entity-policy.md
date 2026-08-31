@@ -2,7 +2,7 @@
 
 **Author:** Ani (Grok Build) / design-doc-writer; human maintainer Aaron
 **Date:** 2026-08-30
-**Revised:** 2026-08-31 (composable closures; ZetaDB-first; Prime Agent / RLM placement)
+**Revised:** 2026-08-31 (composable closures; ZetaDB-first; Prime Agent / RLM placement; metering via existing harness start + dogfood, not a missing invention)
 **Work item:** `081M1C59ZG4087G0R000VM8DZN`
 **Status:** Draft, design spec. **Nothing here is fully implemented.**
 **Register:** product design. Existing code cited below is a polyfill / algebra substrate, not this product.
@@ -106,7 +106,7 @@ Pain: today's namespace (`ZetaFs.updatePath`, `ZetaFsDeltaLog` JSON trees) is gi
 - **AI-friendly CLI** that disambiguates path / EntityId / ContentId and surfaces homoglyph *facts* without making the store linguistic.
 - **POSIX mount** as a view (Linux FUSE, macOS FUSE-T). Native FSKit and native volume are later.
 - **DST fake-VFS + simulated disks** before any crash-recovery claim leaves the `toy` register.
-- **Always-on integrity**; optional hardware AEAD; always-shipped **unencrypted** profile; honest perf comparison (toy until the harness exists).
+- **Always-on integrity**; optional hardware AEAD; always-shipped **unencrypted** profile; honest perf comparison (unmetered until dogfood + the volume bench earn numbers -- we already have the *start* of that harness, see Metering path).
 
 ### Non-goals (first product)
 
@@ -136,7 +136,7 @@ False-advertising guard. If a PR description, README, or CLI `--help` says any o
 6. **"Crash-safe"** until a DST fake-VFS scenario with a named seed has falsified the recovery path. Until then the honest word is **toy**.
 7. **"macOS fsync is durable"** without `F_FULLFSYNC`. `FileSync.fsyncDir` already documents ordinary `fsync` as weaker.
 8. **"Code is content-addressed by essence."** That is a phased layer. Filenames-as-tags and AST-as-essence are designed; they are not the first-product identity of a `.c` file on disk.
-9. **Performance numbers for encryption** that are not produced by the comparison harness against the unencrypted control and a named baseline (ZFS dataset encryption and/or LUKS). Until the harness exists, every number is `toy`.
+9. **Performance numbers for encryption** that are not produced by a comparison against the unencrypted control and a named baseline (ZFS dataset encryption and/or LUKS). `EncryptedDiskBackingStoreBench` is the start (spine, not this volume). Until dogfood + PR9 meter the *volume* path, every number is `toy`.
 10. **Windows/Mac boot**, **FSKit without the paid entitlement**, or **WebDAV as the product mount**.
 11. **"1-disk ECC / RAID on `.zetafs`."** The polyfill is one host directory. Sector isolation is simulated-disk or native-volume only.
 12. **"FSKit compile-without-pay is an in-tree capability."** That proof is out of tree. In-tree FSKit is PR16 after entitlement.
@@ -225,7 +225,7 @@ ZFS already has per-dataset inheritance. The accurate cut: **per-entity/prefix p
 
 Need a fast chip path (AES-NI / VAES / AES-GCM or platform AEAD; ARM Crypto Extensions). Integrity (hash / AEAD tag / CRC32C on frames) **always on**, including when confidentiality is off. Three-tier: OS volume encryption (stolen laptop -- not our job, must compose); vault/dataset key; per-entity security context `clear | vault | vault-dedup | convergent-opt-in | ephemeral`. **`vault-dedup` is not MLE:** key = H(vault, content) (intra-vault encrypted dedup). **`convergent-opt-in` is Bellare MLE** (key from plaintext alone, confirmation across distrusting clients). Default both off. Checksum **ciphertext** (keyed MAC in the clear; ContentId stays inside AEAD) so scrub/EC repair runs without keys (OpenZFS encryption 2019, Caputi). Event log is the more important encrypt-at-rest target than the POSIX view. TPM/USB seal for vault keys follows the R8 brief's *question* (machine-bound vs stick-bound), with the honesty that today's iSerial restore is not a live probe.
 
-Mandatory: honest throughput / p99 / CPU / write-amp comparison, encrypted vs **unencrypted control** vs a named baseline (ZFS dataset encryption and/or LUKS). Until that harness exists, numbers stay `toy`.
+Mandatory: honest throughput / p99 / CPU / write-amp comparison, encrypted vs **unencrypted control** vs a named baseline (ZFS dataset encryption and/or LUKS). The comparison *shape* already exists as `EncryptedDiskBackingStoreBench` (spine GCM vs plain -- not this product). Volume numbers stay `toy` until PR9 extends that bench **and** Harny/factory dogfood (ROADMAP 8b, dogfood ledger row 11) actually runs on `.zetafs`. We have the start of a harness; it is not yet enough to measure C1/C2/C5/K14.
 
 ### K14. 1-disk ECC is sector/die only
 
@@ -273,7 +273,7 @@ Former Open Questions. **Prefer AND of layers/views over XOR of products.** Excl
 | Id | Former XOR | Composable shape (ship this) | Exclusive pick if any |
 |---|---|---|---|
 | **C1** | rolling = N **or** phase **or** bytes | `RollingPolicy = { maxVersions; maxPhaseSpan; maxBytes }` -- each field optional; a superseded body is reclaim-eligible when **any set cap is exceeded** (keep = still inside **all** set caps). `rolling` requires ≥1 cap. Volume default: `maxVersions = 32` (unmetered starting knob), others unset. Entity/prefix may add phase and/or byte caps. | None. Do not pick N *instead of* bytes. |
-| **C2** | AES-GCM **or** AES-XTS **or** off | **Layers:** integrity always; object/log confidentiality = AES-GCM explicit nonce (E8) per vault/entity (`enc=off \| aes-gcm`); native **block** volume may add XTS later **under** objects, not instead of them; OS LUKS/FileVault compose underneath. Unencrypted profile always ships. PR9 harness measures GCM vs off vs named ZFS/LUKS; XTS is a later container bench. | Object AEAD is GCM, not XTS. ZetaDB is a log of objects, not a block device. FORMAT default `enc=off` until the harness exists (numbers stay `toy`). |
+| **C2** | AES-GCM **or** AES-XTS **or** off | **Layers:** integrity always; object/log confidentiality = AES-GCM explicit nonce (E8) per vault/entity (`enc=off \| aes-gcm`); native **block** volume may add XTS later **under** objects, not instead of them; OS LUKS/FileVault compose underneath. Unencrypted profile always ships. PR9 extends the existing spine bench to the volume path; dogfood is how the numbers leave `toy`. XTS is a later container bench. | Object AEAD is GCM, not XTS. ZetaDB is a log of objects, not a block device. FORMAT default `enc=off` until those numbers are metered. |
 | **C3** | Linux FUSE **or** FUSE-T **or** wait for volume | All three are **views/containers** over the same objects. ZetaDB talks to the log **without** POSIX. Rollout: CLI+log (PR1-PR12) → Linux FUSE **and** FUSE-T in PR13 → native volume PR15. WebDAV remains experiment. | None. Order is rollout, not architecture. |
 | **C4** | git import-only **or** write git objects | **Import adapter and export view.** Source of truth is `.zetafs` / the volume log. `git` never becomes the namespace (K5). Dual-write of git trees as a second truth is refused (that is `updatePath`). | Truth is our log. Git is a polyfill view. |
 | **C5** | one stripe unit / one LRC triple | Placement **profiles** already compose (`single`, `stripe`, `mirror`, `single+parity`, later `lrc`). Stripe unit and `(k,l,r)` stay **unmetered** until measured. Polyfill stays `single` (E9). | None. Do not freeze 64 KiB by numerology. |
@@ -283,7 +283,28 @@ Former Open Questions. **Prefer AND of layers/views over XOR of products.** Excl
 | **C9** | TPM NV **or** ESP **or** volume header | **Unwrap oracles compose:** any configured source may unwrap the vault key (passphrase, TPM NV, USB, volume header). Multi-oracle: exit is real (Hirschman). | *Which* source is the **machine-bound** one remains R8 OPEN. The FS must not assume a single location. |
 | **C10** | NFS or not | NFS is a **later view** (filehandle already specified). Not PR13. Composes with FUSE the same way FUSE composes with the log. | Not first product. |
 
-**Unmetered vs metered.** C1's N=32, C5's layout numbers, C2's throughput -- `toy` / unmetered until a falsifier exists. The *shape* (AND of caps, layers of crypto, views of namespace) is decided.
+**Unmetered vs metered.** C1's N=32, C5's layout numbers, C2's throughput, K14's expansion ratio -- `toy` / unmetered until a falsifier exists. The *shape* (AND of caps, layers of crypto, views of namespace) is decided.
+
+### Metering path -- we have the start of a harness; dogfood is how it becomes enough
+
+"Until a harness exists" was the wrong sentence. The factory already has the **start**:
+
+| Fragment | What it measures today | What it does **not** yet measure |
+|---|---|---|
+| `bench/Benchmarks/EncryptedDiskBackingStoreBench.fs` | Spine `DiskBackingStore` plain vs `AesGcmCryptoProvider` | ZetaFS volume / log / freeze path |
+| `docs/BENCHMARKS.md` + BenchmarkDotNet | Hot-path Core operators | Placement, rolling-window bloat, FUSE |
+| `ChaosEnv` / `ISimulatedFs` / `IFileSystem` | Flush Buggify (5%) | Crash-mid-write, reorder, volume recovery (PR1 door + PR12 corpus) |
+| Harny + `observe.ts` | Library: login ladder, closed `fs_*`/`db_*` **in-memory** | Fleet still vendor CLI + `git`/`gh`. No paid-agent loop on `.zetafs` yet |
+| Dogfood ledger row 11 | `DagFs` + dual fold + `ZetaFsDeltaLog` as algebra | Not the OS FS; factory still `git` |
+
+**Roadmap, not a new invention.** Metering these knobs is **dogfood**:
+
+- ROADMAP **8b** -- dogfood Harny in this monorepo (Ace + Zeta tools, no vendor CLIs). Item 1 (NO GIT CLI / ZetaFS) is the sc/fs those tools ride.
+- Continuous workstream -- dogfood Harny on paid accounts, then extract.
+- `docs/trajectories/dogfooding-the-whole-stack/RESUME.md` row 11 (OS filesystem → ZetaFS, ◐ partial) and row 0d (tools = Ace + Zeta CLIs, ○ not started).
+- `docs/trajectories/own-ai-harness/RESUME.md` Phase A.
+
+PR9 grows the *bench* fragment to the volume. Dogfood grows the *agent* fragment onto `.zetafs`. Neither is sufficient alone: a synthetic GCM number without a factory trace does not set `maxVersions`; a factory that still shells out to `git` does not set stripe unit. Numbers leave `toy` when **both** have produced a named measurement (workitem + bench output or dogfood trace). Until then N=32 is a starting knob, not a result.
 
 ---
 
@@ -875,7 +896,7 @@ OS FDE (optional, external)
             -> MLE key = H(content) only if convergent-opt-in
 ```
 
-**Nonce (E8).** GCM with RNG nonce is what `AesGcmCryptoProvider` does today (`RandomNumberGenerator.Fill`, 12 bytes). **Volume objects must not call that.** Explicit nonce = 96-bit packing of `(epoch, LSN, object-id)`. XTS sector tweak applies only if a later block container exists. Record the scheme in FORMAT `enc=` / object header. **PR9** ships unencrypted control + explicit-nonce GCM. FORMAT default remains `enc=off` until the harness meters numbers (C2). Unencrypted-control + named ZFS/LUKS baseline remain the harness requirement.
+**Nonce (E8).** GCM with RNG nonce is what `AesGcmCryptoProvider` does today (`RandomNumberGenerator.Fill`, 12 bytes). **Volume objects must not call that.** Explicit nonce = 96-bit packing of `(epoch, LSN, object-id)`. XTS sector tweak applies only if a later block container exists. Record the scheme in FORMAT `enc=` / object header. **PR9** extends `EncryptedDiskBackingStoreBench` to the volume path (unencrypted control + explicit-nonce GCM). FORMAT default remains `enc=off` until that bench **and** dogfood meter numbers (C2, Metering path). Unencrypted-control + named ZFS/LUKS baseline remain the requirement.
 
 **What to encrypt first:** the **event log** (`log/segment-*`), then CAS objects. The POSIX view is reconstructed from the log; encrypting only the view is theatre.
 
@@ -1260,7 +1281,7 @@ Aaron settled K1-K18. E1-E12 closed the implementability holes. C1-C10 (this rev
 1. **R8 machine-bound key location** -- which unwrap oracle is *the* machine binding (TPM NV vs live USB probe vs volume header). C9 says the FS accepts **multiple** unwrap sources; it does not pick the credential-binding story. Inherits `docs/design/2026-08-21-credential-binding-tpm-seal-or-usb-iserial-the-r8-decision-brief.md`.
 2. **Public name** -- still gated (naming-expert + Ilyana + Aaron). Working label ZetaFS.
 
-Numbers that stay **unmetered until measured** (not product forks): C1's N=32, C5 stripe unit and LRC `(k,l,r)`, C2 throughput, K14 expansion ratio, C6 delta T. PR9/PR8/PR19 are where they earn `metered`.
+Numbers that stay **unmetered until measured** (not product forks): C1's N=32, C5 stripe unit and LRC `(k,l,r)`, C2 throughput, K14 expansion ratio, C6 delta T. They earn `metered` from the existing harness **grown by dogfood** (Metering path): PR9/PR8/PR19 are the bench slices; ROADMAP 8b + dogfood ledger row 11 are the factory slices. We do not wait for a harness that is not started.
 
 ---
 
