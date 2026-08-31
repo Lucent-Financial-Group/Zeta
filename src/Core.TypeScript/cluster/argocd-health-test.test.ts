@@ -281,7 +281,11 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test manifest parsing", () =>
     // so it is asserted rather than deferred. Pinned as NOT excluded, which is
     // the assertion that goes red if someone re-defers it.
     expect(applications.some((app) => app.dir === "vault" && !app.excludedFromDev)).toBe(true);
-    expect(applications.some((app) => app.dir === "agent-memory" && app.excludedFromDev)).toBe(true);
+    // `agent-memory` LIFTED 2026-08-31 on its own stated condition ("dropped from
+    // excludeGlob and one included run reports its actual verdict"). Pinned as NOT
+    // excluded, which is the assertion that goes red if someone re-defers it without
+    // a measurement -- the exact thing its old entry admitted had never happened.
+    expect(applications.some((app) => app.dir === "agent-memory" && !app.excludedFromDev)).toBe(true);
     expect(applications.some((app) => app.dir === "gitlab" && app.excludedFromDev)).toBe(true);
     expect(applications.some((app) => app.dir === "temporal" && app.excludedFromDev)).toBe(true);
     const included = applications.filter((app) => !app.excludedFromDev);
@@ -498,7 +502,7 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test manifest parsing", () =>
     expect(rootDevCatalogExcludedDirs("{alpha/**,beta/**}")).toEqual(new Set(["alpha", "beta"]));
     expect(rootDevCatalogExcludedDirs()).toEqual(
       new Set([
-        "agent-memory",
+        // "agent-memory" left this set 2026-08-31 -- see the LIFTED note above.
         "cilium",
         "cilium-lb-ipam",
         "gitlab",
@@ -825,7 +829,9 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test planning", () => {
     const included = plan.expectedApplications.filter((app) => !app.excludedFromDev).map((app) => app.name);
     expect(included).not.toContain("gitlab");
     expect(included).not.toContain("forgejo");
-    expect(included).not.toContain("agent-memory");
+    // LIFTED 2026-08-31: pinned as INCLUDED now, the same both-directions
+    // discipline `spire` gets below.
+    expect(included).toContain("agent-memory");
     // `spire` FLIPPED SIDES 2026-08-22 -- it was pinned as NOT included here
     // while it was deferred, and it is pinned as INCLUDED now that the CRD
     // source exists. Both directions matter: this is the assertion that goes

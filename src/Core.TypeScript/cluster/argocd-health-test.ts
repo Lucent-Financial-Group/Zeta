@@ -289,24 +289,30 @@ const SMOKE_MIN_APPLICATIONS = 20;
 export const PLATFORM_APP_DIR = "platform";
 
 export const DEV_EXCLUDED_REASONS: ReadonlyMap<string, string> = new Map([
-  [
-    "agent-memory",
-    "HELD BY THE GLOB, NOT BY A MEASUREMENT -- and that distinction is the honest part of this entry. It " +
-      "went into `excludeGlob` because statefulset.yaml:71-83 asks RWO/8Gi on `storageClassName: longhorn`, " +
-      "and at the time nothing in the dev lane answered to that name. `dev-cluster/manifests/longhorn.yaml` " +
-      "now does, and RWO/8Gi is exactly what `rancher.io/local-path` behind that alias serves -- the same " +
-      "condition that un-deferred ten other Applications on 2026-08-21. So the recorded blocker is very " +
-      "likely spent, and NOBODY HAS MEASURED IT, because the glob keeps this Application off every CI " +
-      "cluster and an app that never syncs never produces a verdict to read. " +
-      "LIFTS WHEN: `agent-memory/**` is dropped from `DEFAULT_ROOT_DEV_CATALOG.excludeGlob` and one included " +
-      "run reports its actual verdict -- pass or fail, either is information; the current state is neither. " +
-      "ANCHORS, CHECKED BY `reason-truth.ts`: each names an artifact this tree holds, so a claim that outlives its artifact goes red instead of reading on. " +
-      "[cite: path statefulset.yaml:83] " +
-      "[cite: path full-ai-cluster/dev-cluster/manifests/longhorn.yaml] " +
-      "[cite: pvc-class full-ai-cluster/agent-memory longhorn] " +
-      "[cite: pvc-total full-ai-cluster/agent-memory 8] " +
-      "[cite: glob-defers agent-memory] ",
-  ],
+  // `agent-memory` is NOT here. It LEFT this map on 2026-08-31, and the entry is
+  // recorded as closed rather than the lines silently deleted.
+  //
+  //   WAS: "HELD BY THE GLOB, NOT BY A MEASUREMENT" -- deferred because
+  //   statefulset.yaml:71-83 asks RWO/8Gi on `storageClassName: longhorn` and at
+  //   the time nothing in the dev lane answered to that name. Its own text said
+  //   the blocker was "very likely spent" once `dev-cluster/manifests/longhorn.yaml`
+  //   shipped, and that NOBODY HAD MEASURED IT, because the glob kept the
+  //   Application off every CI cluster and an app that never syncs never produces
+  //   a verdict to read.
+  //
+  //   LIFTED ON ITS OWN STATED CONDITION, verbatim: "`agent-memory/**` is dropped
+  //   from `DEFAULT_ROOT_DEV_CATALOG.excludeGlob` and one included run reports its
+  //   actual verdict -- pass or fail, either is information; the current state is
+  //   neither." That is what this change does. It is a MEASUREMENT, not a repair:
+  //   nothing about the Application was fixed, because nothing was known to be
+  //   broken. If the run goes red the deferral comes back with a real reason
+  //   attached, which is strictly more than it had.
+  //
+  //   The substrate condition it needed is the same one that un-deferred ten
+  //   other Applications on 2026-08-21: RWO/8Gi is exactly what
+  //   `rancher.io/local-path` behind the `longhorn` alias serves. Its image is
+  //   `busybox:1.36` and it asks for one replica, so nothing here needs a
+  //   registry credential or a GPU.
   [
     "cilium",
     "The CNI itself. The default kind profile brings up kind's own CNI (kindnetd) BEFORE ArgoCD exists -- " +
@@ -622,11 +628,15 @@ export function auditDevExclusionReasons(
  * instead of one -- see APPLIED_BUT_UNASSERTED_REASONS.
  */
 const DEV_INCLUDED_PROOF_DEFERRED_DIRS = new Set([
-  // volumeClaimTemplates pin `storageClassName: longhorn`, which is excluded
-  // above, so the PVC never binds. Independently caught by the longhorn rule
-  // in isExcludedFromIncludedProof -- this entry is redundant, and kept only so
-  // the deferral stays legible next to its siblings.
-  "agent-memory",
+  // `agent-memory` LEFT this set 2026-08-31 with its DEV_EXCLUDED_REASONS entry.
+  //
+  // Its comment here claimed the entry was "redundant ... independently caught by
+  // the longhorn rule in isExcludedFromIncludedProof", and THAT WAS NO LONGER
+  // TRUE when this was read. The longhorn rule is guarded by `aliasDeclared`, and
+  // the dev alias has been declared since 2026-08-21 -- so the rule returns false
+  // and caught nothing. Two entries claiming to back each other up while only one
+  // was live is the shape a redundant-looking check hides in, which is why the
+  // stale claim is written down rather than the line just deleted.
   // Needs a GitHub App credential + a live runner registration that CI has no
   // secret to bind. Listed EXPLICITLY even though `requestsReadWriteMany` below
   // also excludes it: that rule is about storage and this reason is not, so if
