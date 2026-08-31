@@ -358,3 +358,55 @@ rules:
       Report the fact; let the oracle attach the meaning.
     languages: [generic]
     severity: ERROR
+
+  # ────────────────────────────────────────────────────────────────
+  # Rule 16: an IV / nonce that a HUMAN could have chosen.
+  #
+  # WHY THIS IS NOT A STYLE RULE. The requirement differs by mode and
+  # BOTH failures are total, not gradual:
+  #   * GCM / CTR — the nonce must be UNIQUE PER KEY. Reuse is
+  #     catastrophic: two messages under one key+nonce leak P1 xor P2,
+  #     and in GCM it additionally leaks the authentication subkey,
+  #     which yields FORGERY, not just disclosure.
+  #   * CBC — the IV must be UNPREDICTABLE, not merely unique. A
+  #     predictable IV is BEAST; a fixed one makes encryption
+  #     deterministic and leaks which plaintexts share a prefix.
+  # A memorable constant fails both at once: it is predictable, and
+  # being memorable is exactly what guarantees it gets reused.
+  #
+  # WHAT IT CATCHES: an IV/nonce argument that is a literal, a
+  # `Buffer.from(<literal>)`, or an all-zero `alloc`. Not a taint
+  # analysis -- it cannot see a CSPRNG buffer that is later
+  # overwritten by hand, and that limit is stated rather than implied.
+  #
+  # THE CORRECT SHAPES, both already in this tree and both passing:
+  #   credential-bootstrap.ts:98   const iv = randomBytes(IV_LEN)
+  #   AesGcmCryptoProvider.fs:22   RandomNumberGenerator.Fill nonce
+  #
+  # Sibling of rule `system-random-in-security-context`: that one
+  # refuses a non-CSPRNG source, this one refuses no source at all.
+  # ────────────────────────────────────────────────────────────────
+  - id: human-chosen-iv-or-nonce
+    patterns:
+      - pattern-either:
+          - pattern: createCipheriv($ALG, $KEY, "...")
+          # `Buffer.from(<literal>, "hex")` -- the TWO-ARG form. The one-arg
+          # pattern alone MISSED this, and it is the most realistic way anyone
+          # actually writes a constant IV. Caught by the falsifier, not review.
+          - pattern: createCipheriv($ALG, $KEY, Buffer.from("...", ...))
+          - pattern: createCipheriv($ALG, $KEY, Buffer.from("..."))
+          - pattern: createCipheriv($ALG, $KEY, Buffer.alloc(...))
+          - pattern: createDecipheriv($ALG, $KEY, "...")
+          - pattern: createDecipheriv($ALG, $KEY, Buffer.from("...", ...))
+          - pattern: createDecipheriv($ALG, $KEY, Buffer.from("..."))
+          - pattern: createDecipheriv($ALG, $KEY, Buffer.alloc(...))
+    message: >-
+      This IV/nonce is a constant a human could have chosen. In GCM/CTR a
+      repeated nonce leaks P1 xor P2 AND the authentication subkey (forgery);
+      in CBC a predictable IV is BEAST and a fixed one makes encryption
+      deterministic. Draw it from the CSPRNG -- `randomBytes(IV_LEN)` in
+      TypeScript, `RandomNumberGenerator.Fill` in .NET -- or from a counter
+      that provably never repeats under a given key. Never by hand.
+    languages: [typescript, javascript]
+    severity: WARNING
+
