@@ -1054,8 +1054,22 @@ jobs:
           kubectl -n argocd logs deploy/argocd-repo-server --tail=120 --prefix=true || true
           echo "--- application-controller (drives comparison) ---"
           kubectl -n argocd logs statefulset/argocd-application-controller --tail=80 --prefix=true || true
-          echo "--- can a pod resolve and reach the git host at all? ---"
-          kubectl -n argocd exec deploy/argocd-repo-server -- sh -c 'nslookup github.com 2>&1 | head -8; echo "--- connect ---"; (timeout 10 sh -c "echo > /dev/tcp/140.82.121.4/443" && echo "tcp 443 OK") 2>&1' || true
+          # DNS PROBE, WRITTEN FOR THE SHELL AND TOOLSET THAT ACTUALLY EXIST.
+          #
+          # The first version ran `nslookup` and bash's `/dev/tcp`. Neither is
+          # present: the repo-server image has no nslookup, and its `sh` is dash,
+          # so `/dev/tcp` is a nonexistent directory rather than a socket. Both
+          # probes failed for TOOLING reasons and said nothing about the network
+          # -- a probe that cannot run is not a negative result. `getent hosts`
+          # is glibc and present; `wget`/`curl` are tried only if they exist.
+          echo "--- can a pod resolve the git host? (getent = glibc, always present) ---"
+          kubectl -n argocd exec deploy/argocd-repo-server -- sh -c '
+            echo "resolv.conf:"; cat /etc/resolv.conf 2>&1 | sed "s/^/  /"
+            echo "getent hosts github.com:"; getent hosts github.com 2>&1 | sed "s/^/  /" || echo "  FAILED rc=$?"
+            echo "getent hosts kubernetes.default (in-cluster):"; getent hosts kubernetes.default 2>&1 | sed "s/^/  /" || echo "  FAILED rc=$?"
+          ' || true
+          echo "--- what does CoreDNS forward upstream to? (the k3d/docker 127.0.0.11 question) ---"
+          kubectl -n kube-system get configmap coredns -o jsonpath='{.data.Corefile}' || true
 
       - name: Logs from crash-looping pods, including the PREVIOUS container
         if: always()
