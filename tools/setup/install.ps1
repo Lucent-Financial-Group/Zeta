@@ -332,7 +332,7 @@ if (Test-IsAdmin) {
 # everywhere else. Whether the fleet should move UP to a mise that enforces the trust
 # policy is a separate and still-open question -- see the PR body. Today that policy is
 # enforced on exactly one platform, and it is the one that does not gate merges.
-$MisePinVersion = '2026.8.14' # keep in sync with tools/setup/linux.sh MISE_PIN_VERSION
+$MisePinVersion = '2026.6.12' # keep in sync with tools/setup/linux.sh MISE_PIN_VERSION
 if (-not (Have mise)) {
   Invoke-Tool { scoop install "mise@$MisePinVersion" } "scoop install mise@$MisePinVersion"
 }

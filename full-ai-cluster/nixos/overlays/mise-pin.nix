@@ -2,10 +2,10 @@
 # nixos-25.11 ships mise 2025.11.7, which cannot parse newer .mise.toml keys.
 final: prev:
 let
-  version = "2026.8.14";
+  version = "2026.6.12";
   sha256 = {
-    x86_64-linux = "sha256-ZNXzSut6Tg4yfcHJvmbNgWLhSJmkexGQEVShAChaPWE=";
-    aarch64-linux = "sha256-lAY5WAInvYOOOz6lsghOo5c5mw2xYsLk3ZC1cwhQ5I4=";
+    x86_64-linux = "sha256-zJtbyWumFtiNDuUVGWvsaHGjPWTOx3SST7+qJxepIf0=";
+    aarch64-linux = "sha256-bO90Ag+YsGpi1vklwRYjW2KbS62xl7IKMyF7/5bWDw8=";
   };
   arch = {
     x86_64-linux = "x64";
