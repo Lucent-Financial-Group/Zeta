@@ -1,0 +1,6 @@
+import { createCipheriv, randomBytes } from "node:crypto";
+const key = Buffer.alloc(32);
+const IV_LEN = 12;
+// the correct shape, already used in this tree
+const iv = randomBytes(IV_LEN);
+const ok = createCipheriv("aes-256-gcm", key, iv);
