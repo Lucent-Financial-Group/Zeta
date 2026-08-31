@@ -517,5 +517,5 @@ type ZetaFsDeltaLog<'K when 'K : comparison>
     /// FORMAT accepted at open (v1 implicit if the file is absent).
     member _.Format = formatManifest
 
-    /// Clock door for later posix-meta stamps. Never `DateTime.UtcNow`.
+    /// Clock door for later posix-meta stamps. Never the ambient wall clock.
     member _.SimulationEnvironment = simEnv
