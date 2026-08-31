@@ -154,7 +154,12 @@ ext4-but-hashed. Design:
 Umbrella workitem `081M1C59ZG4087G0R000VM8DZN`. Knobs that looked like XOR
 (rolling window, GCM vs XTS, FUSE vs volume, git write vs import, collators)
 are **composable layers/views**; exclusive only where the algebra cannot fork
-(`StoreEntity` category 13; object AEAD is GCM).
+(`StoreEntity` category 13; object AEAD is GCM). Starting numbers (rolling N=32,
+stripe unit, LRC k, GCM throughput, 1-disk expansion) stay **unmetered**: we have
+the *start* of a harness (`EncryptedDiskBackingStoreBench`, ChaosEnv, Harny
+library) but it is not enough to measure the volume yet. **Dogfood is the
+metering path** — 8b + dogfood ledger row 11 (OS filesystem → ZetaFS, ◐) +
+row 0d (Ace+Zeta CLIs, ○). Not a missing invention.
 
 **Thin needle (consistent-with, not identified by count).** `FourCornerTrace` is
 the VALUE-channel close (WSet +1/−1, generator reread; `−1 = i²` on ℂ is a
