@@ -41,9 +41,9 @@ WHY IT TOOK 38 HOURS, which is the reusable part: the probe read
 `mise --version 2>/dev/null`. A SIGSEGV prints nothing to stdout, the redirect
 ate stderr, and the serial log recorded **not one character** of explanation —
 "apt packages up to date", then the retry. The harness's own `081KZETP6AT` diag
-block prints *"install.sh error lines"*, and a signal death produces none, so it
+block prints _"install.sh error lines"_, and a signal death produces none, so it
 emitted an empty block between its two markers. #16200 makes `rc >= 128` report
-the signal by name; a version probe that cannot say *"the binary crashed"*
+the signal by name; a version probe that cannot say _"the binary crashed"_
 reports a crash as an empty version string.
 
 **Read the old claims with that in mind.** "Software restore is proven" was true
