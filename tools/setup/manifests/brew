@@ -175,6 +175,16 @@ pandoc tier=standard
 #   - no pcscd/libpcsclite1: macOS ships its own CCID stack (verified on the
 #     maintainer's host -- the YubiKey appears under SPSmartCardsDataType with an
 #     Apple ifd-ccid driver and no daemon installed by us).
+#
+#     NARROWED 2026-08-31. That sentence is true and was being read wider than
+#     its evidence. What was measured is that Apple's stack drives THE YUBIKEY
+#     with no daemon from us; what it does not establish is that Apple's stack
+#     drives EVERY CCID device. It does not -- Apple's driver carries a fixed
+#     VID/PID table, and a device absent from that table is not covered by this
+#     row however present the stack is. Measured instance in the block below.
+#     The row's conclusion (do not install pcscd on macOS) is UNCHANGED: the
+#     defect there is a stale table, and a second PC/SC daemon does not fix a
+#     table -- it fights the one that already owns the interface.
 #   - no yubihsm-shell FORMULA: there is none. `brew info yubihsm-shell` resolves
 #     to nothing (re-checked 2026-08-20 against formulae.brew.sh -- still 404, as
 #     is yubihsm-connector). Yubico ships the YubiHSM SDK as a macOS .pkg, which
@@ -201,6 +211,76 @@ yubico-piv-tool   # PIV slot + attestation tooling
 # a contributor is not locked to one vendor's CLI to exercise either device.
 # Verified against the Homebrew API 2026-08-20: formula `opensc` 0.27.1, LGPL-2.1-or-later.
 opensc            # pkcs11-tool + PKCS#11 module — vendor-neutral smartcard/HSM CLI
+
+# ── libccid >= 1.5.3: NO BREW ROUTE EXISTS (2026-08-31) ───────────────────────
+# NOT a row. A measured absence, recorded so the next agent does not re-propose
+# the install line that does not resolve. Prompted by Ani's finding that a
+# CardContact SmartCard-HSM in Identiv's uTrust Token Flex housing is attached to
+# the maintainer's host and invisible to the smartcard stack.
+#
+# THE DIAGNOSIS IS CONFIRMED, independently, from the host itself:
+#   ioreg -r -c IOUSBHostDevice -l -n "uTrust Token Flex"
+#     idVendor 1254 (0x04E6 Identiv) · idProduct 22566 (0x5826) · serial 5599...
+#     "CCID Interface@0" bInterfaceClass 11 · UsbExclusiveOwner = usbsmartcardreaderd
+#   /usr/libexec/SmartCardServices/drivers/ifd-ccid.bundle -- CFBundleShortVersionString 1.5.1
+#     556 ifdProductID entries · 0x5816 and 0x5817 PRESENT · 0x5826 ABSENT
+#     (absent for every vendor, not just 0x04E6)
+# libccid added the Token Flex in 1.5.3; Apple ships 1.5.1. The gap is a stale
+# VID/PID table, and nothing else. The device is enumerated and its CCID
+# interface is claimed by Apple's daemon -- so this is NOT a missing-daemon
+# problem, which is exactly why installing one would be the wrong move.
+#
+# THE PROPOSED REMEDY DOES NOT RESOLVE. `brew install ccid` was checked against
+# the Homebrew API rather than recalled, with a control that passes:
+#   https://formulae.brew.sh/api/formula/ccid.json    404  (GitHub Pages HTML)
+#   https://formulae.brew.sh/api/cask/ccid.json       404
+#   https://formulae.brew.sh/api/formula/libccid.json 404
+#   https://formulae.brew.sh/api/formula.json         200 -- 8,580 formulae parsed;
+#     the ONLY ccid/pcsc/smartcard name match is `pcsc-lite`
+#   brew info --formula ccid  -> Error: No available formula ... Did you mean cidr?
+#   brew info --formula opensc -> resolves (0.27.1)   <- the control
+# This is the `yubihsm-shell` lesson from the block above, in its other polarity:
+# there the 404s were read as "no package" when a CASK existed; here there is no
+# formula, no cask, and no alternate spelling. `pcsc-lite` is not a substitute --
+# it is the daemon, not the driver, and macOS already runs PC/SC.
+#
+# NOTE the 404 returns rc=0 with an HTML body. Read the status code, not $?.
+#
+# NOR IS THE HOST-CONFIG HALF SAFE ON ITS OWN. `sudo defaults write
+# /Library/Preferences/com.apple.security.smartcard useIFDCCID -bool yes` is a
+# real, live mechanism -- `strings` on
+# /System/Library/CryptoTokenKit/usbsmartcardreaderd.slotd/.../usbsmartcardreaderd
+# carries `useIFDCCID`, `com.apple.security.smartcard`, the built-in bundle path,
+# AND `file:///usr/local/libexec/SmartCardServices/drivers/`. That pref points the
+# daemon at the third-party drop-in directory. With no brew formula there is
+# nothing to put in that directory, so setting it today aims a working stack at an
+# empty dir -- and the plausible failure is not "no change", it is the YubiKey and
+# YubiHSM paths that currently work breaking. Precondition first, pref second.
+# (The domain does not exist on the maintainer's host as of 2026-08-31 -- checked.)
+#
+# THE LINUX ASYMMETRY IS NOT SYMMETRIC EITHER, and manifests/apt should not be
+# read as covering this. It declares `pcscd`, whose control fields are
+# `Depends: libccid | pcsc-ifd-handler`, so libccid arrives transitively -- but at
+# the release's version, and that is where the coverage splits. Measured against
+# the Ubuntu indices 2026-08-31:
+#   dists/noble/universe/binary-amd64  libccid 1.5.5-1  (64,755 pkgs)  -> COVERS 0x5826
+#   dists/jammy/universe/binary-amd64  libccid 1.5.0-2  (58,923 pkgs)  -> DOES NOT
+#   dists/{noble,jammy}/main           libccid ABSENT
+# So: noble covers this token, jammy does not, macOS does not. No apt row is
+# needed or wanted (a hard-pinned libccid row would fight pcscd's own dependency).
+#
+# WINDOWS: nothing to add. Windows drives CCID through its in-box usbccid class
+# driver, which matches on the USB smartcard class rather than a shipped VID/PID
+# table, so there is no table to be stale. A row here would no-op -- the vacuity
+# class the pam-reattach block below names.
+#
+# WHAT THIS BLOCKS, and why it is worth a block rather than a shrug:
+# docs/research/2026-08-22-smartcard-hsm-secp256k1-is-unconfirmed-*.md names its
+# own falsifier as enumerating the token's PKCS#11 mechanism list. The hardware is
+# now attached, so that falsifier became runnable -- except that `pkcs11-tool`
+# reaches the token through PC/SC, which is the layer this gap sits in. Until a
+# libccid >= 1.5.3 exists on macOS, an open custody question stays open for a
+# packaging reason.
 
 # ── pam_reattach — Touch ID for sudo inside tmux/screen (2026-08-24) ──────────
 # Aaron 2026-08-24: "we need to add this to our ace package manager dependency

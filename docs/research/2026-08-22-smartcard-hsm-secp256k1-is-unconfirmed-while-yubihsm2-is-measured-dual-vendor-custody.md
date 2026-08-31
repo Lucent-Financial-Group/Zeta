@@ -2,6 +2,22 @@
 
 **Status:** research from vendor + middleware documentation. **No CardContact hardware was exercised** —
 that is the falsifier this note names and does not run.
+
+> **UPDATE 2026-08-31 — the falsifier became runnable, then hit a packaging wall one layer down.**
+> A CardContact SmartCard-HSM in Identiv's uTrust Token Flex housing is now attached to the
+> maintainer's host: `idVendor 0x04E6`, `idProduct 0x5826`, CCID interface (`bInterfaceClass 11`)
+> claimed by Apple's `usbsmartcardreaderd` — read from `ioreg`, no command sent to the token.
+> **The mechanism list has still NOT been enumerated, and this note's headline claim is unchanged.**
+> What is new is that the blocker is now *named and measured* rather than "we have no hardware":
+> `pkcs11-tool` reaches the token over PC/SC, and Apple's `ifd-ccid.bundle` is **libccid 1.5.1**,
+> whose 556-entry VID/PID table carries `0x5816`/`0x5817` but **not `0x5826`** (added upstream in
+> libccid 1.5.3). There is **no `ccid` formula in Homebrew** — checked against the API, 8,580
+> formulae, `pcsc-lite` the only near match — so there is no declarative route to a newer driver on
+> macOS today. Full evidence, the Linux version split (noble 1.5.5 covers it, jammy 1.5.0 does not),
+> and the reason the `useIFDCCID` pref must not be set before a driver exists:
+> `tools/setup/manifests/brew`, the "libccid >= 1.5.3: NO BREW ROUTE EXISTS" block.
+> **Register: this is a blocked falsifier, not a discharged one.** secp256k1 on the SmartCard-HSM
+> remains UNCONFIRMED, and the reason it remains unconfirmed is now packaging rather than access.
 **Prompted by** Aaron 2026-08-21, considering a dual-vendor HSM pair per node: *"maybe we have yubikey
 and SmartCard-HSM 180K USB Token … can you research and make sure it supports crypto wallet keys."*
 
