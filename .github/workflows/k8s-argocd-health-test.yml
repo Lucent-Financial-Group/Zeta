@@ -1018,6 +1018,16 @@ jobs:
             | jq -r '.items[] | "\(.metadata.name)\t\(.metadata.labels["zeta.io/substrate"] // "<unlabelled>")\t\(.status.nodeInfo.kubeletVersion)"' || true
 
       - name: Why ArgoCD could not COMPARE — the running-and-failing case
+        # STDERR IS NOT SILENCED IN THIS STEP, deliberately. The first version
+        # wrote `2>/dev/null` on every probe. On a run where ArgoCD never
+        # installed at all, it printed four headers and nothing else --
+        # indistinguishable from "ArgoCD is fine and had nothing to report". The
+        # ONE probe whose stderr was not suppressed is what explained it:
+        # `deployments.apps "argocd-repo-server" not found`.
+        #
+        # An empty diagnostic must never read as a clean one. `|| true` still
+        # guards every line, so this step cannot fail the job; what it no longer
+        # does is hide WHY it is empty.
         # ADDED after run 3, which this job could not diagnose from its own logs.
         #
         # THE GAP THIS CLOSES. The step below dumps pods that are crash-looping or
@@ -1038,12 +1048,12 @@ jobs:
         if: always()
         run: |
           echo "--- zeta-root-dev .status (conditions carry the ComparisonError text) ---"
-          kubectl -n argocd get application zeta-root-dev -o jsonpath='{.status.sync.status}{"\t"}{.status.health.status}{"\n"}' 2>/dev/null || true
-          kubectl -n argocd get application zeta-root-dev -o jsonpath='{range .status.conditions[*]}{.type}: {.message}{"\n"}{end}' 2>/dev/null || true
+          kubectl -n argocd get application zeta-root-dev -o jsonpath='{.status.sync.status}{"\t"}{.status.health.status}{"\n"}' || true
+          kubectl -n argocd get application zeta-root-dev -o jsonpath='{range .status.conditions[*]}{.type}: {.message}{"\n"}{end}' || true
           echo "--- repo-server (fetches + renders; Running while failing is its normal shape) ---"
-          kubectl -n argocd logs deploy/argocd-repo-server --tail=120 --prefix=true 2>/dev/null || true
+          kubectl -n argocd logs deploy/argocd-repo-server --tail=120 --prefix=true || true
           echo "--- application-controller (drives comparison) ---"
-          kubectl -n argocd logs statefulset/argocd-application-controller --tail=80 --prefix=true 2>/dev/null || true
+          kubectl -n argocd logs statefulset/argocd-application-controller --tail=80 --prefix=true || true
           echo "--- can a pod resolve and reach the git host at all? ---"
           kubectl -n argocd exec deploy/argocd-repo-server -- sh -c 'nslookup github.com 2>&1 | head -8; echo "--- connect ---"; (timeout 10 sh -c "echo > /dev/tcp/140.82.121.4/443" && echo "tcp 443 OK") 2>&1' || true
 
