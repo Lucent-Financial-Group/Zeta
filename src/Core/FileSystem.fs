@@ -2,6 +2,7 @@ namespace Zeta.Core
 
 open System
 open System.IO
+open System.Text
 open System.Threading
 open System.Threading.Tasks
 
@@ -17,6 +18,15 @@ type IFileSystem =
     abstract OpenRead: path: string -> Stream
     abstract GetFiles: path: string * searchPattern: string -> string[]
     abstract CreateDirectory: path: string -> unit
+
+/// Native-volume block door (PR1 sketch). Every op is an event.
+/// The polyfill adapter maps a host file through `IFileSystem`.
+/// A later device impl must not go through POSIX files.
+type IBlockIo =
+    abstract BlockSize: int
+    abstract Read: lba: uint64 * dst: Memory<byte> -> int
+    abstract Write: lba: uint64 * src: ReadOnlyMemory<byte> -> int
+    abstract Flush: unit -> unit
 
 module private PhysicalFileSystemLimits =
     let maxReadAllBytes = 256L * 1024L * 1024L
@@ -75,6 +85,50 @@ type PhysicalFileSystem() =
         member _.GetFiles(path, searchPattern) = Directory.GetFiles(path, searchPattern)
         member _.CreateDirectory(path) = Directory.CreateDirectory(path) |> ignore
 
+/// Byte helpers over `IFileSystem`. Temp+rename so a crash cannot leave a
+/// half-written FORMAT / object / ref. Dispose the write stream *before*
+/// Move: `InMemoryFileSystem` commits on Dispose.
+[<RequireQualifiedAccess>]
+module FileSystemIo =
+    let writeAllBytes (fs: IFileSystem) (path: string) (bytes: byte[]) =
+        let tmp = path + ".tmp"
+
+        do
+            use stream = fs.OpenWrite(tmp, false)
+            stream.Write(bytes, 0, bytes.Length)
+            stream.Flush()
+
+        fs.Move(tmp, path, true)
+
+    let writeAllText (fs: IFileSystem) (path: string) (text: string) =
+        writeAllBytes fs path (Encoding.UTF8.GetBytes text)
+
+    let tryReadBytesCapped (fs: IFileSystem) (maxBytes: int64) (path: string) : byte[] option =
+        if not (fs.Exists path) then
+            None
+        else
+            use stream = fs.OpenRead path
+
+            if stream.Length > maxBytes then
+                None
+            else
+                let bytes = Array.zeroCreate<byte> (int stream.Length)
+                let mutable offset = 0
+                let mutable eof = false
+
+                while offset < bytes.Length && not eof do
+                    let read = stream.Read(bytes, offset, bytes.Length - offset)
+
+                    if read = 0 then
+                        eof <- true
+                    else
+                        offset <- offset + read
+
+                if offset = bytes.Length then
+                    Some bytes
+                else
+                    Some(Array.take offset bytes)
+
 /// A mock FileStream that commits its MemoryStream buffer to the InMemoryFileSystem registry upon disposal.
 type SimulatedFileStream(path: string, mode: FileMode, access: FileAccess, files: System.Collections.Concurrent.ConcurrentDictionary<string, byte[]>, checkFault: unit -> unit, applyLatency: unit -> unit) =
     inherit MemoryStream()
@@ -107,6 +161,7 @@ type SimulatedFileStream(path: string, mode: FileMode, access: FileAccess, files
 type InMemoryFileSystem() =
     let files = System.Collections.Concurrent.ConcurrentDictionary<string, byte[]>()
     let mutable latencyMs = 0L
+    let mutable virtualElapsedMs = 0L
     let mutable errorRate = 0.0
     let mutable rngState = 12345L
     let lockObj = obj ()
@@ -126,9 +181,12 @@ type InMemoryFileSystem() =
 
     let applyLatency () =
         if latencyMs > 0L then
-            Thread.Sleep(int latencyMs)
+            lock lockObj (fun () -> virtualElapsedMs <- virtualElapsedMs + latencyMs)
 
     member _.Files = files
+
+    /// Injected latency in virtual milliseconds. Never wall-clock sleep.
+    member _.VirtualElapsedMs = lock lockObj (fun () -> virtualElapsedMs)
 
     /// Set simulated latency (in milliseconds) and probabilistic error rate [0.0, 1.0].
     member _.SetFaults(rate: float, latency: int64, seed: int64) =
@@ -160,9 +218,9 @@ type InMemoryFileSystem() =
             | false, _ -> raise (FileNotFoundException(path))
 
         member _.ReadAllBytesAsync(path, ct) = task {
+            ct.ThrowIfCancellationRequested()
             checkFault()
-            if latencyMs > 0L then
-                do! Task.Delay(int latencyMs, ct)
+            applyLatency()
             match files.TryGetValue(path) with
             | true, bytes -> return bytes
             | false, _ -> return raise (FileNotFoundException(path))
@@ -187,6 +245,45 @@ type InMemoryFileSystem() =
         member _.CreateDirectory(_path) =
             checkFault()
             ()
+
+/// Polyfill `IBlockIo`: one host file, LBA * BlockSize offset, through `IFileSystem`.
+[<Sealed>]
+type FileSystemBlockIo(fs: IFileSystem, path: string, blockSize: int) =
+    do
+        if blockSize <= 0 || (blockSize &&& (blockSize - 1)) <> 0 then
+            invalidArg "blockSize" "block size must be a positive power of two"
+
+        if not (fs.Exists path) then
+            use stream = fs.OpenWrite(path, false)
+            ()
+
+    interface IBlockIo with
+        member _.BlockSize = blockSize
+
+        member _.Read(lba, dst) =
+            use stream = fs.OpenFile(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)
+            let offset = int64 lba * int64 blockSize
+
+            if offset >= stream.Length then
+                0
+            else
+                stream.Seek(offset, SeekOrigin.Begin) |> ignore
+                let remaining = int (stream.Length - offset)
+                let toRead = min dst.Length remaining
+                stream.Read(dst.Span.Slice(0, toRead))
+
+        member _.Write(lba, src) =
+            use stream =
+                fs.OpenFile(path, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.Read)
+
+            let offset = int64 lba * int64 blockSize
+            stream.Seek(offset, SeekOrigin.Begin) |> ignore
+            stream.Write(src.Span)
+            src.Length
+
+        member _.Flush() =
+            use stream = fs.OpenFile(path, FileMode.Open, FileAccess.ReadWrite, FileShare.Read)
+            stream.Flush()
 
 
 /// The global file system registry containing the active IFileSystem implementation.

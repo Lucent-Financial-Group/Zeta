@@ -22,8 +22,10 @@ ROADMAP item 1 (no git CLI; dual Z-set folds) is this product. ZetaFS is a
 custom filesystem **for ZetaDB**, not a Finder disk. POSIX is a mount.
 
 First implementation slice is spec PR1: route `.zetafs` through `IFileSystem`,
-FORMAT grammar, ContentHash256 names. Do not claim crash-safe until PR12 DST
-corpus.
+FORMAT grammar (`zetafs/2 ns=git-trees body=blob hash=blake3-256`). Object
+filenames stay 32-hex MerkleHash handles until the hasher port grows 256-bit.
+Do not claim crash-safe until PR12 DST corpus. Separate repo only after
+ZetaDB dogfood proves it is worth extracting.
 
 Composable knobs (C1-C10 in the spec): rolling caps AND together; crypto as
 layers (GCM on objects, XTS later under a block volume); adapters as views;

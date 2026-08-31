@@ -1,0 +1,117 @@
+{
+  "description": "ZetaFS FORMAT grammar (E3). UTF-8 LF. First line is the major `zetafs/2`. Required keys ns/body/hash. Known optional keys chunker/enc/polyfill. Unknown major or unknown required/known-optional value => refuse. Extra unknown keys are ignored. v1 is the absence of the file, not a `zetafs/1` first line. PR1 writes ns=git-trees body=blob hash=blake3-256 chunker=fastcdc-v1 enc=none polyfill=single.",
+  "requiredKeys": ["ns", "body", "hash"],
+  "optionalKeys": ["chunker", "enc", "polyfill"],
+  "canonicalPr1": "zetafs/2\nns=git-trees\nbody=blob\nhash=blake3-256\nchunker=fastcdc-v1\nenc=none\npolyfill=single\n",
+  "cases": [
+    {
+      "name": "canonical-pr1",
+      "input": "zetafs/2\nns=git-trees\nbody=blob\nhash=blake3-256\nchunker=fastcdc-v1\nenc=none\npolyfill=single\n",
+      "ok": true,
+      "major": 2,
+      "ns": "git-trees",
+      "body": "blob",
+      "hash": "blake3-256",
+      "chunker": "fastcdc-v1",
+      "enc": "none",
+      "polyfill": "single"
+    },
+    {
+      "name": "crlf-normalized",
+      "input": "zetafs/2\r\nns=git-trees\r\nbody=blob\r\nhash=blake3-256\r\n",
+      "ok": true,
+      "major": 2,
+      "ns": "git-trees",
+      "body": "blob",
+      "hash": "blake3-256"
+    },
+    {
+      "name": "enc-off-alias",
+      "input": "zetafs/2\nns=git-trees\nbody=blob\nhash=blake3-256\nenc=off\n",
+      "ok": true,
+      "major": 2,
+      "enc": "none"
+    },
+    {
+      "name": "enc-aes-gcm-alias",
+      "input": "zetafs/2\nns=git-trees\nbody=blob\nhash=blake3-256\nenc=aes-gcm\n",
+      "ok": true,
+      "major": 2,
+      "enc": "aes-gcm-explicit-nonce"
+    },
+    {
+      "name": "ns-bindings-parses",
+      "input": "zetafs/2\nns=bindings\nbody=blob\nhash=blake3-256\n",
+      "ok": true,
+      "major": 2,
+      "ns": "bindings"
+    },
+    {
+      "name": "body-jumprope-parses",
+      "input": "zetafs/2\nns=git-trees\nbody=jumprope\nhash=blake3-256\n",
+      "ok": true,
+      "major": 2,
+      "body": "jumprope"
+    },
+    {
+      "name": "unknown-key-ignored",
+      "input": "zetafs/2\nns=git-trees\nbody=blob\nhash=blake3-256\ncomment=ignored\n",
+      "ok": true,
+      "major": 2
+    },
+    {
+      "name": "unknown-major-3",
+      "input": "zetafs/3\nns=git-trees\nbody=blob\nhash=blake3-256\n",
+      "ok": false,
+      "error": "UnknownMajor"
+    },
+    {
+      "name": "zetafs-1-file-is-not-v1",
+      "input": "zetafs/1\nns=git-trees\nbody=blob\nhash=blake3-256\n",
+      "ok": false,
+      "error": "UnknownMajor"
+    },
+    {
+      "name": "unknown-ns",
+      "input": "zetafs/2\nns=posix-trees\nbody=blob\nhash=blake3-256\n",
+      "ok": false,
+      "error": "UnknownRequiredValue"
+    },
+    {
+      "name": "unknown-hash",
+      "input": "zetafs/2\nns=git-trees\nbody=blob\nhash=sha256\n",
+      "ok": false,
+      "error": "UnknownRequiredValue"
+    },
+    {
+      "name": "missing-hash",
+      "input": "zetafs/2\nns=git-trees\nbody=blob\n",
+      "ok": false,
+      "error": "MissingRequiredKey"
+    },
+    {
+      "name": "unknown-enc",
+      "input": "zetafs/2\nns=git-trees\nbody=blob\nhash=blake3-256\nenc=xor\n",
+      "ok": false,
+      "error": "UnknownKnownOptionalValue"
+    },
+    {
+      "name": "duplicate-ns",
+      "input": "zetafs/2\nns=git-trees\nns=bindings\nbody=blob\nhash=blake3-256\n",
+      "ok": false,
+      "error": "DuplicateKey"
+    },
+    {
+      "name": "malformed-line",
+      "input": "zetafs/2\nthis is not a key\nns=git-trees\nbody=blob\nhash=blake3-256\n",
+      "ok": false,
+      "error": "MalformedLine"
+    },
+    {
+      "name": "empty",
+      "input": "",
+      "ok": false,
+      "error": "Empty"
+    }
+  ]
+}

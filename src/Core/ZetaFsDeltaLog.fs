@@ -31,7 +31,7 @@ type ZetaFsCommit =
 /// whose refs still point at trees are read as a tree with no parents.
 [<Sealed>]
 type ZetaFsDeltaLog<'K when 'K : comparison>
-    (dir: string, entryCodec: IEntryCodec<'K>, ?hasher: IContentHasher) =
+    (dir: string, entryCodec: IEntryCodec<'K>, ?hasher: IContentHasher, ?env: ISimulationEnvironment) =
 
     let root = Path.GetFullPath dir
     let objectsDir = Path.Combine(root, "objects")
@@ -40,11 +40,20 @@ type ZetaFsDeltaLog<'K when 'K : comparison>
     let gate = obj ()
     let maxObjectBytes = 64L * 1024L * 1024L
     let maxRefBytes = 4096L
+    let simEnv = defaultArg env SystemEnvironment.Default
 
-    do 
-        Directory.CreateDirectory root |> ignore
-        Directory.CreateDirectory objectsDir |> ignore
-        Directory.CreateDirectory refsDir |> ignore
+    let formatManifest =
+        let fs = FileSystem.Current
+        fs.CreateDirectory root
+        fs.CreateDirectory objectsDir
+        fs.CreateDirectory refsDir
+
+        match ZetaFsFormat.tryRead fs root with
+        | Error e -> invalidOp (ZetaFsFormat.describe e)
+        | Ok m ->
+            match ZetaFsFormat.requireGitTreesBlob m with
+            | Error e -> invalidOp (ZetaFsFormat.describe e)
+            | Ok accepted -> accepted
 
     // Default to XxHash128 if BLAKE3 is not injected
     let hashFunc =
@@ -75,35 +84,7 @@ type ZetaFsDeltaLog<'K when 'K : comparison>
         Path.Combine(objectsDir, sub, name)
 
     let tryReadBytesCapped (maxBytes: int64) (path: string) : byte[] option =
-        let info = FileInfo path
-        if not info.Exists || info.Length > maxBytes then
-            None
-        else
-            use stream =
-                new FileStream(
-                    path,
-                    FileMode.Open,
-                    FileAccess.Read,
-                    FileShare.Read,
-                    8192,
-                    FileOptions.SequentialScan)
-
-            if stream.Length > maxBytes then
-                None
-            else
-                let bytes = Array.zeroCreate<byte> (int stream.Length)
-                let mutable offset = 0
-                let mutable eof = false
-                while offset < bytes.Length && not eof do
-                    let read = stream.Read(bytes, offset, bytes.Length - offset)
-                    if read = 0 then
-                        eof <- true
-                    else
-                        offset <- offset + read
-                if offset = bytes.Length then
-                    Some bytes
-                else
-                    Some(Array.take offset bytes)
+        FileSystemIo.tryReadBytesCapped FileSystem.Current maxBytes path
 
     let tryReadTextCapped (maxBytes: int64) (path: string) : string option =
         tryReadBytesCapped maxBytes path
@@ -113,12 +94,9 @@ type ZetaFsDeltaLog<'K when 'K : comparison>
         let h = hashFunc bytes
         let path = objectPath h
         let parent = Path.GetDirectoryName path
-        if not (Directory.Exists parent) then
-            Directory.CreateDirectory parent |> ignore
-        if not (File.Exists path) then
-            let tmp = path + ".tmp"
-            File.WriteAllBytes(tmp, bytes)
-            File.Move(tmp, path, overwrite = true)
+        FileSystem.Current.CreateDirectory parent
+        if not (FileSystem.Current.Exists path) then
+            FileSystemIo.writeAllBytes FileSystem.Current path bytes
         h
 
     let readObject (h: MerkleHash) : byte[] option =
@@ -216,9 +194,8 @@ type ZetaFsDeltaLog<'K when 'K : comparison>
     let writeRef (refName: string) (h: MerkleHash) =
         let path = getRefPath refName
         let parent = Path.GetDirectoryName path
-        if not (Directory.Exists parent) then
-            Directory.CreateDirectory parent |> ignore
-        File.WriteAllText(path, h.ToHex())
+        FileSystem.Current.CreateDirectory parent
+        FileSystemIo.writeAllText FileSystem.Current path (h.ToHex())
 
     let getActiveRefName () =
         match tryReadTextCapped maxRefBytes headFile with
@@ -231,7 +208,7 @@ type ZetaFsDeltaLog<'K when 'K : comparison>
         | None -> "refs/heads/main"
 
     let writeActiveRefName (refName: string) =
-        File.WriteAllText(headFile, sprintf "ref: %s" refName)
+        FileSystemIo.writeAllText FileSystem.Current headFile (sprintf "ref: %s" refName)
 
     let treeFromObject (h: MerkleHash) (bytes: byte[]) : ImmutableDictionary<string, MerkleHash> =
         match tryParseCommit h bytes with
@@ -536,3 +513,9 @@ type ZetaFsDeltaLog<'K when 'K : comparison>
     /// edges from the live ref. The recovery channel `ErasureProfiles` names.
     member _.ReachableDagDigest() : string =
         lock gate (fun () -> reachableFromTip ())
+
+    /// FORMAT accepted at open (v1 implicit if the file is absent).
+    member _.Format = formatManifest
+
+    /// Clock door for later posix-meta stamps. Never `DateTime.UtcNow`.
+    member _.SimulationEnvironment = simEnv

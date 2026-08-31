@@ -4,7 +4,7 @@
 **Date:** 2026-08-30
 **Revised:** 2026-08-31 (composable closures; ZetaDB-first; Prime Agent / RLM placement; metering via existing harness start + dogfood, not a missing invention)
 **Work item:** `081M1C59ZG4087G0R000VM8DZN`
-**Status:** Draft, design spec. **Nothing here is fully implemented.**
+**Status:** Draft, design spec. PR1 (FORMAT + `IFileSystem` door) is landing in-tree. Crash recovery remains `toy` until PR12.
 **Register:** product design. Existing code cited below is a polyfill / algebra substrate, not this product.
 **Extends (do not contradict):** [`docs/design/2026-08-27-zetafs-names-are-tags-multi-parented-files-and-symlink-native-presentation.md`](../../docs/design/2026-08-27-zetafs-names-are-tags-multi-parented-files-and-symlink-native-presentation.md)
 **Settles:** retention and GC, which that document left unset in **section 6.3 / section 8.3** (cycle guard: section 6.2, specified here). Names-are-tags **section 7** is platform presentation (FUSE / FSKit / ProjFS, case-fold refuse) -- not the retention hole. **Also settles** the former Open Questions as **composable knobs** (C1-C10), except the two exclusive slots that a ZetaId and a key-binding cannot fork (C8 category, C9 unwrap *machine-binding* still inherits R8 OPEN).
@@ -69,8 +69,8 @@ The factory already speaks content-addressed objects, Z-set deltas, and git as a
 | Patricia named tree | `src/Core/ZetaFs.fs` | Git-tree shape: `updatePath` **rewrites parent directory objects**. Contradicts product decision 5. Keep as a test oracle / old view, not the namespace. |
 | Multi-parent path map | `src/Core/DagFs.fs` | In-memory `path -> MerkleHash`. `editLocal` / `editEverywhere`. No EntityId, no log, no persistence. |
 | File events | `src/Core/File.fs` (`Files`) | Path-keyed DBSP events carrying `ContentHash256`. Still **path as key**, not three identities. Precursor, not the product model. |
-| Object log polyfill | `src/Core/ZetaFsDeltaLog.fs` | Loose objects + refs on a host directory. JSON trees + commit objects. 64 MiB object cap. Git-shaped: refs point at commits. **Uses raw `System.IO` (`FileStream` / `File.WriteAllBytes`), not `FileSystem.Current`.** Product writes must not repeat that door. |
-| Composition root | `src/Core.FSharp.Blake3/ZetaFsStore.fs` | `.zetafs/` with `objects/`, `refs/heads/`, `HEAD`. **No FORMAT file.** Hasher = `OwnBlake3Hasher`. |
+| Object log polyfill | `src/Core/ZetaFsDeltaLog.fs` | Loose objects + refs on a host directory. JSON trees + commit objects. 64 MiB object cap. Git-shaped: refs point at commits. **I/O is `FileSystem.Current` (PR1 door).** Unknown FORMAT major / required-key value / `ns=bindings` refuse at open. Object filenames are still 32-hex `MerkleHash` handles (see PR1 deferral). |
+| Composition root | `src/Core.FSharp.Blake3/ZetaFsStore.fs` | `.zetafs/` with `FORMAT`, `objects/`, `refs/heads/`, `HEAD`. New init writes `zetafs/2 ns=git-trees; body=blob; hash=blake3-256`. v1 (HEAD, no FORMAT) is left as v1. Hasher = `OwnBlake3Hasher`. |
 | CLI store select | `src/Core.FSharp.Cli/StoreSelect.fs`, `Program.fs` | Prefers `.zetafs`; LibGit2Sharp git is v1 fallback. |
 | In-memory CAS | `src/Core/ContentStore.fs`, `src/Core/CasStore.fs` | Single-instance COW map. Not a volume. |
 | BLAKE3-256 identity | `src/Core.FSharp.Blake3` `ContentHash256` | Full 256-bit digest is the proof-tier identity. `OwnBlake3Hasher.Hash` still truncates to 128-bit `MerkleHash` for today's log. |
@@ -86,7 +86,7 @@ The factory already speaks content-addressed objects, Z-set deltas, and git as a
 | Key windows | `src/Core/KeyCustody.fs` | Phase-bounded grants. Clean-room. Applies to vault-key lifetime, not file bytes. |
 | TPM / USB seal | `docs/design/2026-08-21-credential-binding-tpm-seal-or-usb-iserial-the-r8-decision-brief.md` | Installer credential blob. iSerial restore is **recorded serial, not live probe**. Reuse the *decision*, do not pretend the probe exists. |
 | WebDAV experiment | `experiments/zetafs-webdav/` | Read-only in-memory `DagFs` via `mount_webdav`. **Experiment only.** |
-| DST gap | `docs/FOUNDATIONDB-DST.md`, `src/Core/ChaosEnv.fs` `ISimulatedFs`, `src/Core/FileSystem.fs` | `IFileSystem` + in-memory mock exist. `ISimulatedFs` intercepts **flush** (Buggify 5% fail). `InMemoryFileSystem.SetFaults` uses `Thread.Sleep` (wall-clock) and commits the whole `MemoryStream` on Dispose -- not reorder / crash-mid-write / corrupt-last-write. **Disk I/O intercept is still a gap.** `IBlockIo` does not exist. Crash recovery claims stay toy until a real intercept exists; the **door must land in PR1**, not as a retrofit. |
+| DST gap | `docs/FOUNDATIONDB-DST.md`, `src/Core/ChaosEnv.fs` `ISimulatedFs`, `src/Core/FileSystem.fs` | **PR1 door landed:** `ZetaFsDeltaLog` / `ZetaFsStore.init` use `FileSystem.Current`; `IBlockIo` is a sketched polyfill adapter (`FileSystemBlockIo`). `InMemoryFileSystem` latency is virtual milliseconds, not `Thread.Sleep`. Still missing: reorder / crash-mid-write / corrupt-last-write intercept, native `IBlockIo`. Crash recovery claims stay `toy` until the PR12 corpus. |
 
 Pain: today's namespace (`ZetaFs.updatePath`, `ZetaFsDeltaLog` JSON trees) is git trees. Changing a file rewrites the directory object. That is exactly the cost Venti and this product refuse. `DagFs` already multi-parents by ContentId, which collapses POSIX inode identity with content identity -- the bug three-identities exists to prevent.
 
@@ -280,7 +280,7 @@ Former Open Questions. **Prefer AND of layers/views over XOR of products.** Excl
 | **C6** | delta codec / threshold T | Optional later **encoding** of the same ContentId (`{stored-as: trunk\|delta}`, E11). Composes with Jumprope. Deferred. | None until PR19. |
 | **C7** | one collator for all mounts | Store is ordinal UTF-8 (K10). Collators are **named mount views**: `ordinal` (Linux / ZetaDB / code default), `CaseFold.Ascii` + refuse collisions (FUSE-T / Finder-shaped), `CaseFold.UnicodeSimple-<ver>` available as a named view, **not** a default (linguistic). Two mounts over one store are the names-are-tags point. | DAG never folds. ZetaDB/code path is ordinal. |
 | **C8** | category slot 13 **or** 14 | A ZetaId has **one** category. | **`StoreEntity` = 13.** Do not reuse `ContentAddress = 9`. Slot 14 stays free. Registry + four oracles land with the first EntityId mint (PR3). |
-| **C9** | TPM NV **or** ESP **or** volume header | **Unwrap oracles compose:** any configured source may unwrap the vault key (passphrase, TPM NV, USB, volume header). Multi-oracle: exit is real (Hirschman). | *Which* source is the **machine-bound** one remains R8 OPEN. The FS must not assume a single location. |
+| **C9** | TPM NV **or** ESP **or** volume header | **Unwrap oracles compose:** any configured source may unwrap the vault key (passphrase, TPM NV, USB, volume header, PKCS#11 HSM). Multi-oracle: exit is real (Hirschman). **16 HSM domains / Docker secrets** compose with this: container → SPIFFE → YubiHSM domain 1–16; Docker secrets inject *that container's authkey*, not FS objects. Device-enforced: A cannot USE B's keys. Not isolated: shared unauthenticated connector (A can deny B a session). See encryption section. | *Which* source is the **machine-bound** one remains R8 OPEN. The FS must not assume a single location. Do not flatten PKCS#11 modules into one list. |
 | **C10** | NFS or not | NFS is a **later view** (filehandle already specified). Not PR13. Composes with FUSE the same way FUSE composes with the log. | Not first product. |
 
 **Unmetered vs metered.** C1's N=32, C5's layout numbers, C2's throughput, K14's expansion ratio -- `toy` / unmetered until a falsifier exists. The *shape* (AND of caps, layers of crypto, views of namespace) is decided.
@@ -293,7 +293,7 @@ Former Open Questions. **Prefer AND of layers/views over XOR of products.** Excl
 |---|---|---|
 | `bench/Benchmarks/EncryptedDiskBackingStoreBench.fs` | Spine `DiskBackingStore` plain vs `AesGcmCryptoProvider` | ZetaFS volume / log / freeze path |
 | `docs/BENCHMARKS.md` + BenchmarkDotNet | Hot-path Core operators | Placement, rolling-window bloat, FUSE |
-| `ChaosEnv` / `ISimulatedFs` / `IFileSystem` | Flush Buggify (5%) | Crash-mid-write, reorder, volume recovery (PR1 door + PR12 corpus) |
+| `ChaosEnv` / `ISimulatedFs` / `IFileSystem` | Flush Buggify (5%); PR1 door on `.zetafs`; virtual latency | Crash-mid-write, reorder, volume recovery (PR12 corpus) |
 | Harny + `observe.ts` | Library: login ladder, closed `fs_*`/`db_*` **in-memory** | Fleet still vendor CLI + `git`/`gh`. No paid-agent loop on `.zetafs` yet |
 | Dogfood ledger row 11 | `DagFs` + dual fold + `ZetaFsDeltaLog` as algebra | Not the OS FS; factory still `git` |
 
@@ -575,7 +575,7 @@ DST: two replicas with the same policy Z-set compute the same `EffectivePolicy` 
 
 ### On-disk format versioning
 
-Today `ZetaFsStore.init` creates `objects/`, `refs/heads/`, `HEAD` and **no version file**. The polyfill objects are JSON trees (`k: commit`) plus codec payloads, 64 MiB cap, hex-split paths.
+New `ZetaFsStore.init` writes `FORMAT` (`zetafs/2`) plus `objects/`, `refs/heads/`, `HEAD`. A v1 store (HEAD, no FORMAT) stays v1 — no silent convert. The polyfill objects are JSON trees (`k: commit`) plus codec payloads, 64 MiB cap, 32-hex-split paths (handle; FORMAT `hash=blake3-256` is identity of record).
 
 **FORMAT grammar (E3, golden-vector in PR1).** UTF-8, LF, ordinal keys, first line is the major:
 
@@ -586,11 +586,12 @@ body=blob|jumprope
 hash=blake3-256
 chunker=fastcdc-v1|fastcdc-v1-large
 enc=none|aes-gcm-explicit-nonce
+polyfill=single
 ```
 
 - **Major** `zetafs/2`: ContentHash256 object names + this grammar. `zetafs/1` = today's implicit polyfill (no FORMAT file). Unknown major => refuse.
 - **Required keys** `ns`, `body`, `hash`. Unknown value of a required key => refuse (a `ns=git-trees` reader must **not** parse `ns=bindings` objects as JSON trees). Extra keys may be ignored if listed as optional in the golden vector.
-- PR1 writes `ns=git-trees`, `body=blob`, `hash=blake3-256`, `enc=none`. PR3 (bindings) flips `ns=bindings`. PR6 (Jumprope) flips `body=jumprope`. Encrypted profile sets `enc=` when that PR lands; default remains `none`.
+- PR1 writes `ns=git-trees`, `body=blob`, `hash=blake3-256`, `enc=none`, `polyfill=single`. `enc=off` is an accepted alias of `none`. PR3 (bindings) flips `ns=bindings`. PR6 (Jumprope) flips `body=jumprope`. Encrypted profile sets `enc=` when that PR lands; default remains `none`.
 - Rollback: a volume that wrote major 2 cannot be opened by a v1 reader. A `ns=bindings` volume cannot be opened by a git-trees-only reader. Snaps still pin prior object sets.
 
 Polyfill layout (host directory, still named `.zetafs`):
@@ -902,6 +903,10 @@ OS FDE (optional, external)
 
 **R8 for vault keys.** Machine-bound (`tpmSeal`) vs stick-bound (`usbISerial`) is the same decision as the installer brief. For a volume that should unlock on this laptop after re-pave, TPM (with sealed blob stored off the wiped root -- NV or ESP -- still open there). For a volume that should travel on a stick, live-probe iSerial **must be built**; today's recorded file is not that property. Do not claim stick-binding until the probe exists.
 
+**16 domains and Docker secrets (Aaron 2026-08-31).** YubiHSM 2 partitions objects into 16 domains (`YH_MAX_DOMAINS=16`) with 16 sessions device-wide (`YH_MAX_SESSIONS=16`). Mapping: container → SPIFFE → HSM domain 1–16. Docker secrets inject **that container's authkey**, not the filesystem. Confidentiality of *use* is device-enforced (A cannot USE B's keys). Availability and client integrity are **not** isolated — the connector is an unauthenticated shared multiplexer. ZetaFS `SecurityContext` may later *name* a domain; Docker secrets are not a substitute for FORMAT `enc=` or C9 unwrap oracles. Decision function: `src/Core.TypeScript/federated-identity/hsm-domain-map.ts`. Honesty peel: [`docs/research/2026-08-18-hsm-container-isolation-a-shared-connector-is-not-a-boundary-and-what-prove-ish-can-honestly-mean.md`](../research/2026-08-18-hsm-container-isolation-a-shared-connector-is-not-a-boundary-and-what-prove-ish-can-honestly-mean.md). Otto owns secret-injection; this FS records the mapping so C9 can compose with it.
+
+**Extract-repo later, not now.** If dogfood on ZetaDB shows this FS is worth a separate clone, that is a later starting point. `git clone` at a tag stays sufficient here. Do not mint a GitHub repo as a prerequisite of PR1–PR12.
+
 **Benchmark plan (promotion from `toy` to `metered`):**
 
 Harness must report, for the same workload (small-file storm, large sequential, mixed), on named hardware:
@@ -1042,9 +1047,9 @@ Source and dest kinds (`File`/`Symlink` vs `Directory`) are taken from the live 
 
 ### DST / crash recovery
 
-`docs/FOUNDATIONDB-DST.md` lists disk I/O interception as a gap. `ISimulatedFs` only hooks flush. `InMemoryFileSystem` injects `failwith` + `Thread.Sleep` and commits the whole buffer on Dispose. `ZetaFsDeltaLog` uses raw `System.IO`. `IBlockIo` does not exist.
+`docs/FOUNDATIONDB-DST.md` lists disk I/O interception as a gap. `ISimulatedFs` only hooks flush. PR1 routed `.zetafs` through `IFileSystem` and sketched `IBlockIo` (`FileSystemBlockIo`). `InMemoryFileSystem` latency is virtual, not `Thread.Sleep`; it still commits the whole `MemoryStream` on Dispose -- not reorder / crash-mid-write / corrupt-last-write. Native device `IBlockIo` does not exist. Crash recovery stays `toy` until PR12.
 
-**PR1 door (not a later retrofit):** route `.zetafs` through `IFileSystem` (and introduce `IBlockIo` for the native-volume sketch). Ban `Thread.Sleep` / `Task.Delay` in the mock; inject ChaosEnv virtual time. Build freeze/CAS/log only behind that door. The volume constructor takes `ISimulationEnvironment`; Create/Freeze/Setattr-without-times stamp `MtimeNs`/`CtimeNs` from `env.UtcNow()` (or the interface's unix-ns equivalent), **never** `DateTime.UtcNow`. Seeded DST runs then agree on satellite bytes and snap roots.
+**PR1 door (landed, not a later retrofit):** `.zetafs` goes through `IFileSystem`. `IBlockIo` is sketched (`FileSystemBlockIo`). The mock records virtual latency; it does not `Thread.Sleep` / `Task.Delay`. Build freeze/CAS/log only behind that door. The log constructor takes `ISimulationEnvironment`; Create/Freeze/Setattr-without-times stamp `MtimeNs`/`CtimeNs` from `env.UtcNow()` (or the interface's unix-ns equivalent), **never** `DateTime.UtcNow`. Seeded DST runs then agree on satellite bytes and snap roots. Crash-mid-write intercept is still PR12.
 
 **Later DST PR (scenario corpus):** promotion out of `toy`, not the first intercept.
 
@@ -1158,7 +1163,7 @@ CLI: new verbs (`id`, `policy`, `snap`, `mount`, `gc`) in `src/Core.FSharp.Cli` 
 
 ## Data Model Changes
 
-- **v1 polyfill (today):** git-shaped JSON trees in `.zetafs/objects`. Keys = paths in a tree object. File change rewrites the tree. No FORMAT. Raw `System.IO`.
+- **v1 polyfill:** git-shaped JSON trees in `.zetafs/objects`. Keys = paths in a tree object. File change rewrites the tree. No FORMAT. Still readable.
 - **v2 FORMAT + 256-bit names:** still `ns=git-trees; body=blob` until bindings/Jumprope land. Readers refuse unknown `ns`/`body`.
 - **v2 `ns=bindings`:** Z-set of TagBindings (Live|Tombstone) + entity hubs + body + posix-meta + policy satellites + freeze-intent/commit log records.
 - **v2 `body=jumprope`:** chunk + rope-* objects. No `delta/1`.
@@ -1370,9 +1375,9 @@ Each PR is independently reviewable and mergeable. Tests green or it does not la
 ### PR1 -- IFileSystem door + FORMAT grammar + ContentHash256 names
 
 - **Title:** `zetafs: route .zetafs through IFileSystem; FORMAT zetafs/2 ns=git-trees body=blob; ContentHash256 names`
-- **Files:** `src/Core/ZetaFsDeltaLog.fs` (stop raw `System.IO`; use `FileSystem.Current`), `src/Core.FSharp.Blake3/ZetaFsStore.fs`, `src/Core/FileSystem.fs` (ban `Thread.Sleep` in the mock; virtual time), FORMAT golden vector, `StoreSelect.fs`
+- **Files:** `src/Core/ZetaFsFormat.fs`, `src/Core/ZetaFsDeltaLog.fs` (`FileSystem.Current`), `src/Core.FSharp.Blake3/ZetaFsStore.fs`, `src/Core/FileSystem.fs` (`IBlockIo` + virtual latency), FORMAT golden vector `tests/Tests.FSharp/testdata/zetafs-format-golden-vectors.json`
 - **Depends on:** none
-- **Changes:** First intercept door so freeze/CAS/log are not born on `System.IO`. FORMAT grammar with `ns`/`body`/`hash`/`chunker`/`enc`. PR1 writes `ns=git-trees`, `body=blob`, `hash=blake3-256`. 256-bit object names. v1 readable. Refuse unknown major **or** unknown required-key value. Does **not** replace JSON trees with bindings. Introduce `IBlockIo` as a sketched interface (impl can be `IFileSystem` adapter). Thread `ISimulationEnvironment` through the store constructor (clock door for later posix-meta stamps). Independently useful: stops 128-bit-as-identity drift and the DST retrofit trap.
+- **Changes:** First intercept door so freeze/CAS/log are not born on `System.IO`. FORMAT grammar with `ns`/`body`/`hash`/`chunker`/`enc`/`polyfill`. PR1 writes `ns=git-trees`, `body=blob`, `hash=blake3-256`, `enc=none`, `polyfill=single`. v1 readable (no FORMAT file). Refuse unknown major **or** unknown required-key value. Does **not** replace JSON trees with bindings. `IBlockIo` sketched (`FileSystemBlockIo` adapter). `ISimulationEnvironment` threaded through the log constructor (clock door for later posix-meta stamps). **Named deferral:** object *filenames* stay 32-hex `MerkleHash` handles until `IContentHasher` grows a 256-bit port (Abstractions public API). FORMAT `hash=blake3-256` is the identity of record (`ContentHash256`); the 128-bit name is the handle (`ContentHash256.toContentAddress128`). Independently useful: DST door + version file so later PRs are not a retrofit.
 
 ### PR2 -- FileSync returns Result; Darwin F_FULLFSYNC
 
