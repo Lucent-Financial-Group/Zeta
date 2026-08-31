@@ -2,12 +2,12 @@
 
 **Author:** Ani (Grok Build) / design-doc-writer; human maintainer Aaron
 **Date:** 2026-08-30
-**Revised:** 2026-08-31 (composable closures; ZetaDB-first; Prime Agent / RLM placement; metering via existing harness start + dogfood, not a missing invention)
+**Revised:** 2026-08-31 (composable closures; ZetaDB-first; Prime Agent / RLM placement; metering via dogfood; unwrap oracles not TPM-on-Mac)
 **Work item:** `081M1C59ZG4087G0R000VM8DZN`
 **Status:** Draft, design spec. **Nothing here is fully implemented.**
 **Register:** product design. Existing code cited below is a polyfill / algebra substrate, not this product.
 **Extends (do not contradict):** [`docs/design/2026-08-27-zetafs-names-are-tags-multi-parented-files-and-symlink-native-presentation.md`](../../docs/design/2026-08-27-zetafs-names-are-tags-multi-parented-files-and-symlink-native-presentation.md)
-**Settles:** retention and GC, which that document left unset in **section 6.3 / section 8.3** (cycle guard: section 6.2, specified here). Names-are-tags **section 7** is platform presentation (FUSE / FSKit / ProjFS, case-fold refuse) -- not the retention hole. **Also settles** the former Open Questions as **composable knobs** (C1-C10), except the two exclusive slots that a ZetaId and a key-binding cannot fork (C8 category, C9 unwrap *machine-binding* still inherits R8 OPEN).
+**Settles:** retention and GC, which that document left unset in **section 6.3 / section 8.3** (cycle guard: section 6.2, specified here). Names-are-tags **section 7** is platform presentation (FUSE / FSKit / ProjFS, case-fold refuse) -- not the retention hole. **Also settles** the former Open Questions as **composable knobs** (C1-C10). C8 is the one exclusive ZetaId slot (`StoreEntity = 13`). C9 is **not** "pick TPM": unwrap oracles compose (passphrase, Keychain, Secure Enclave when a seal tier exists, TPM 2.0 on Linux if present, PKCS#11 HSMs of several manufacturers, live USB probe). R8's tpmSeal-vs-usbISerial XOR is the installer defect; this FS must not repeat it.
 **Does not settle:** the public name (still gated: naming-expert + Ilyana + Aaron). Working label remains **ZetaFS**. Never abbreviate to `ZFS` (OpenZFS occupies it).
 **Why this product exists:** ZetaFS is a **custom filesystem for ZetaDB**, not a general-purpose Finder disk. ROADMAP item 1 (no git CLI; dual Z-set folds over our own store) is the same product. POSIX is a mount so tools can see the DB; the DB does not live *on* POSIX.
 
@@ -84,7 +84,8 @@ The factory already speaks content-addressed objects, Z-set deltas, and git as a
 | Consistent hash | `src/Core/ConsistentHash.fs` | Jump / Rendezvous / Memento. `RendezvousHash.Pick` takes `uint64` and returns a **slot index**; `Create(n)` seeds integer slots, **not** ZetaId-named buckets. Placement needs an HRW-over-names wrapper; do not call `Pick(key, bucketCount)` as the volume mapper. |
 | Reclaim algebra | `src/Core/ShivaGc.fs`, `src/Core/Ephemeron.fs` | Mark-sweep over `DynamicValue`. Not volume GC. |
 | Key windows | `src/Core/KeyCustody.fs` | Phase-bounded grants. Clean-room. Applies to vault-key lifetime, not file bytes. |
-| TPM / USB seal | `docs/design/2026-08-21-credential-binding-tpm-seal-or-usb-iserial-the-r8-decision-brief.md` | Installer credential blob. iSerial restore is **recorded serial, not live probe**. Reuse the *decision*, do not pretend the probe exists. |
+| TPM / USB seal | `docs/design/2026-08-21-credential-binding-tpm-seal-or-usb-iserial-the-r8-decision-brief.md` | Installer credential blob. iSerial restore is **recorded serial, not live probe**. R8 XOR is refused for ZetaFS (C9). |
+| HSM / SE inventory | `docs/trajectories/ai-sovereignty-path/RESUME.md`; `frost-hardware-probe.ts` | Darwin: no TPM; SE present unused; YubiHSM 2 ×1; YubiKey ×1; CardContact 0 in hand. PKCS#11, not a brand. |
 | WebDAV experiment | `experiments/zetafs-webdav/` | Read-only in-memory `DagFs` via `mount_webdav`. **Experiment only.** |
 | DST gap | `docs/FOUNDATIONDB-DST.md`, `src/Core/ChaosEnv.fs` `ISimulatedFs`, `src/Core/FileSystem.fs` | `IFileSystem` + in-memory mock exist. `ISimulatedFs` intercepts **flush** (Buggify 5% fail). `InMemoryFileSystem.SetFaults` uses `Thread.Sleep` (wall-clock) and commits the whole `MemoryStream` on Dispose -- not reorder / crash-mid-write / corrupt-last-write. **Disk I/O intercept is still a gap.** `IBlockIo` does not exist. Crash recovery claims stay toy until a real intercept exists; the **door must land in PR1**, not as a retrofit. |
 
@@ -223,7 +224,7 @@ ZFS already has per-dataset inheritance. The accurate cut: **per-entity/prefix p
 
 ### K13. Encryption: unencrypted always ships; hardware AEAD optional; convergent opt-in only
 
-Need a fast chip path (AES-NI / VAES / AES-GCM or platform AEAD; ARM Crypto Extensions). Integrity (hash / AEAD tag / CRC32C on frames) **always on**, including when confidentiality is off. Three-tier: OS volume encryption (stolen laptop -- not our job, must compose); vault/dataset key; per-entity security context `clear | vault | vault-dedup | convergent-opt-in | ephemeral`. **`vault-dedup` is not MLE:** key = H(vault, content) (intra-vault encrypted dedup). **`convergent-opt-in` is Bellare MLE** (key from plaintext alone, confirmation across distrusting clients). Default both off. Checksum **ciphertext** (keyed MAC in the clear; ContentId stays inside AEAD) so scrub/EC repair runs without keys (OpenZFS encryption 2019, Caputi). Event log is the more important encrypt-at-rest target than the POSIX view. TPM/USB seal for vault keys follows the R8 brief's *question* (machine-bound vs stick-bound), with the honesty that today's iSerial restore is not a live probe.
+Need a fast chip path (AES-NI / VAES / AES-GCM or platform AEAD; ARM Crypto Extensions). Integrity (hash / AEAD tag / CRC32C on frames) **always on**, including when confidentiality is off. Three-tier: OS volume encryption (stolen laptop -- not our job, must compose); vault/dataset key; per-entity security context `clear | vault | vault-dedup | convergent-opt-in | ephemeral`. **`vault-dedup` is not MLE:** key = H(vault, content) (intra-vault encrypted dedup). **`convergent-opt-in` is Bellare MLE** (key from plaintext alone, confirmation across distrusting clients). Default both off. Checksum **ciphertext** (keyed MAC in the clear; ContentId stays inside AEAD) so scrub/EC repair runs without keys (OpenZFS encryption 2019, Caputi). Event log is the more important encrypt-at-rest target than the POSIX view. Vault-key wrap is **unwrap oracles** (C9), not a TPM appointment. Darwin has no TPM 2.0 interface; this factory laptop must open without one.
 
 Mandatory: honest throughput / p99 / CPU / write-amp comparison, encrypted vs **unencrypted control** vs a named baseline (ZFS dataset encryption and/or LUKS). The comparison *shape* already exists as `EncryptedDiskBackingStoreBench` (spine GCM vs plain -- not this product). Volume numbers stay `toy` until PR9 extends that bench **and** Harny/factory dogfood (ROADMAP 8b, dogfood ledger row 11) actually runs on `.zetafs`. We have the start of a harness; it is not yet enough to measure C1/C2/C5/K14.
 
@@ -280,7 +281,7 @@ Former Open Questions. **Prefer AND of layers/views over XOR of products.** Excl
 | **C6** | delta codec / threshold T | Optional later **encoding** of the same ContentId (`{stored-as: trunk\|delta}`, E11). Composes with Jumprope. Deferred. | None until PR19. |
 | **C7** | one collator for all mounts | Store is ordinal UTF-8 (K10). Collators are **named mount views**: `ordinal` (Linux / ZetaDB / code default), `CaseFold.Ascii` + refuse collisions (FUSE-T / Finder-shaped), `CaseFold.UnicodeSimple-<ver>` available as a named view, **not** a default (linguistic). Two mounts over one store are the names-are-tags point. | DAG never folds. ZetaDB/code path is ordinal. |
 | **C8** | category slot 13 **or** 14 | A ZetaId has **one** category. | **`StoreEntity` = 13.** Do not reuse `ContentAddress = 9`. Slot 14 stays free. Registry + four oracles land with the first EntityId mint (PR3). |
-| **C9** | TPM NV **or** ESP **or** volume header | **Unwrap oracles compose:** any configured source may unwrap the vault key (passphrase, TPM NV, USB, volume header). Multi-oracle: exit is real (Hirschman). | *Which* source is the **machine-bound** one remains R8 OPEN. The FS must not assume a single location. |
+| **C9** | TPM NV **or** ESP **or** volume header; tpmSeal **or** usbISerial | **Unwrap oracles compose** (k-of-n / any-of configured). Adapters: passphrase KDF; OS Keychain; **Secure Enclave** on Darwin (present, no seal tier yet); **TPM 2.0** on Linux if present (not on Mac); **PKCS#11 HSM** modules from several manufacturers (YubiHSM 2 in hand, YubiKey touch-gate, SmartCard-HSM/CardContact ordered); live USB iSerial **probe** (today's recorded file is not stick-bound). Wrapped blob may live in volume header and/or ESP and/or an HSM object. Dual-vendor HSM is §11 (exit): one manufacturer is an appointed hub. | None for the FS. R8's XOR is refused. Mac must not require TPM. HSM must not require a named brand. |
 | **C10** | NFS or not | NFS is a **later view** (filehandle already specified). Not PR13. Composes with FUSE the same way FUSE composes with the log. | Not first product. |
 
 **Unmetered vs metered.** C1's N=32, C5's layout numbers, C2's throughput, K14's expansion ratio -- `toy` / unmetered until a falsifier exists. The *shape* (AND of caps, layers of crypto, views of namespace) is decided.
@@ -873,7 +874,7 @@ This is a **PR13 merge gate**: the FUSE/FUSE-T adapter does not land without tes
 | Tier | Job | Who |
 |---|---|---|
 | OS volume (FileVault, LUKS, BitLocker) | Stolen laptop | Not our job; must compose (we do not double-assume we are the FDE) |
-| Vault / dataset key | Confidentiality of a ZetaFS volume / log | Our job; wrap with passphrase + optional TPM or USB factor (R8) |
+| Vault / dataset key | Confidentiality of a ZetaFS volume / log | Our job; wrap with **unwrap oracles** (C9), not a TPM appointment |
 | Per-entity `SecurityContext` | `clear \| vault \| vault-dedup \| convergent-opt-in \| ephemeral` | Satellite policy |
 
 **Algorithms (C2 -- layers, not XOR; nonce is E8):**
@@ -889,7 +890,15 @@ This is a **PR13 merge gate**: the FUSE/FUSE-T adapter does not land without tes
 
 ```
 OS FDE (optional, external)
-  -> vault master (passphrase KDF + TPM seal and/or USB factor)
+  -> vault master
+       unwrap oracles (any-of / k-of-n configured; not XOR):
+         passphrase KDF
+         OS Keychain
+         Secure Enclave (Darwin; present, no seal tier yet)
+         TPM 2.0 (Linux if present; unavailable on this Mac)
+         PKCS#11 HSM (YubiHSM 2, later CardContact SmartCard-HSM, …)
+         live USB iSerial probe (not the recorded /etc file)
+       wrapped blob: volume header and/or ESP and/or HSM object
        -> dataset wrapping key (phase-window via KeyCustody)
             -> per-object IVs / AEAD nonces (never reuse)
             -> vault-dedup key = H(vault | content) only if vault-dedup
@@ -900,7 +909,21 @@ OS FDE (optional, external)
 
 **What to encrypt first:** the **event log** (`log/segment-*`), then CAS objects. The POSIX view is reconstructed from the log; encrypting only the view is theatre.
 
-**R8 for vault keys.** Machine-bound (`tpmSeal`) vs stick-bound (`usbISerial`) is the same decision as the installer brief. For a volume that should unlock on this laptop after re-pave, TPM (with sealed blob stored off the wiped root -- NV or ESP -- still open there). For a volume that should travel on a stick, live-probe iSerial **must be built**; today's recorded file is not that property. Do not claim stick-binding until the probe exists.
+**Unwrap oracles (C9) -- R8's XOR is refused.** The installer brief asked TPM-seal **or** USB iSerial, and every shipped layer implements XOR (asking for both silently yields the weakest factor). Aaron's 2026-06-09 phrasing was **AND** (USB key *and* a hardware key *and* UEFI). This filesystem takes the AND: configured oracles unwrap; missing one oracle does not brick a Mac.
+
+**Darwin / this factory laptop (measured 2026-08-25, `frost-hardware-probe.ts`):**
+
+- **TPM 2.0: unavailable.** Darwin has no Linux TPM interface. Do not require it. Windows-11-certified Linux nodes may have TPM; that is an optional Linux adapter, not the Mac path.
+- **Secure Enclave: present.** No seal tier uses it today (`ai-sovereignty-path` RESUME). That is the Mac *machine-bound* candidate when a seal tier lands -- CryptoKit / Keychain, not TPM NV.
+- **YubiHSM 2: one attached** (PKCS#11 `yubihsm_pkcs11.dylib`; connector often not running -- USB presence ≠ session). At-rest wrapper for a share, not an on-chip FROST signer.
+- **YubiKey FIDO+CCID: one.** Touch gate the HSM lacks; candidate second share holder, not a second HSM vendor.
+- **SmartCard-HSM / CardContact: ordered, zero in hand.** Dual-*vendor* custody is unexercisable until it arrives. One Yubico is one manufacturer.
+
+**HSM trajectory is PKCS#11, not a brand.** Several manufacturers (Yubico, CardContact, later others) plug in as modules. Baking `YubiHSM` types into the volume is an appointed hub (manifesto §11; `itron-hub-patent-boundary`: exit, not degree). Dual-vendor per node is the sovereignty-path design (`docs/research/2026-08-21-two-hsms-per-node-and-n-of-m-across-nodes-what-the-seal-layer-will-actually-accept.md`); OpenBao cannot express two *active* seals -- that is why the FS owns k-of-n unwrap instead of copying their migration XOR.
+
+**Honesty we inherit from R8 §0.1:** today's `usbISerial` restore reads a **recorded** serial from the installed root. That is not stick-bound. Do not claim stick-binding until a **live probe** exists. Passphrase-only is the honest residual until then.
+
+**Where the wrapped blob lives** is also AND: volume header (survives some re-paves of the dataset), ESP (Linux), HSM object (if that oracle is configured). TPM NV is Linux-only and is not a Mac answer. The sovereignty-path still owns *when* Secure Enclave and dual-vendor HSM become metered; ZetaFS must accept those oracles without waiting for the second HSM to arrive (passphrase + Keychain must open this laptop).
 
 **Benchmark plan (promotion from `toy` to `metered`):**
 
@@ -1190,6 +1213,10 @@ No silent in-place rewrite of v1. No silent `ns=` flip without a migrate that wr
 
 **Pros:** simpler codes. **Cons:** RS repair traffic on many disks is the problem Huang LRC addresses; 1-disk sector death is the laptop case. Adinkra [8,4,4] is the wrong size for bulk. Rejected.
 
+### J. TPM 2.0 as the only machine-bound unwrap (R8 option A)
+
+**Pros:** Linux cluster nodes often have TPM (Windows-11-certified metal). **Cons:** Darwin has no TPM interface; this factory laptop cannot open. Appoints one chip class. Rejected as the *only* oracle. Linux TPM remains an optional adapter.
+
 ### F. Wait for native volume / FSKit before any POSIX
 
 **Pros:** one implementation. **Cons:** first consumers (ZetaDB, agents, git-polyfill) do not need POSIX; FUSE-T is ungated; DST fake-VFS does not need a kernel. Rejected as a gate. Sequencing is C3: log/CLI first, Linux FUSE **and** FUSE-T in PR13, native volume later.
@@ -1218,7 +1245,7 @@ No silent in-place rewrite of v1. No silent `ns=` flip without a migrate that wr
 | Nonce reuse on stored GCM | Explicit `(epoch, LSN, object-id)`; no RNG Fill | Implementer copying `AesGcmCryptoProvider` |
 | Homoglyph / IDN in a hardened prefix | Skeleton fact + policy refuse | Default prefixes allow; CLI warns |
 | Stolen laptop | OS FDE (not our job); vault key not in RAM after lock | We do not replace FileVault/LUKS |
-| Vault key exfil | TPM/USB wrap; KeyCustody phase windows; no plaintext in `keys/` | Today's iSerial is not live-probe |
+| Vault key exfil | Unwrap oracles (C9); KeyCustody phase windows; no plaintext in `keys/` | Mac has no TPM; iSerial restore is not live-probe; one YubiHSM is one vendor |
 | Scrub without keys | Checksum ciphertext (OpenZFS 2019 shape) | Repair of encrypted objects without keys restores ciphertext only |
 | fsync lie | Typed durability; EIO fails the call; F_FULLFSYNC on macOS Durable | Buffered is honest loss |
 | Placement map attack | Map is a Z-set with Merkle root; epoch in every write | First product is single-host; multi-host trust is later |
@@ -1266,7 +1293,7 @@ Pre-v1 greenfield. Tests are the contract. No production users. Numbered steps *
 11. **PR11 -- CLI prefixes** (`blake3:` / `entity:` / path). No FUSE required.
 12. **PR12 -- DST scenario corpus** (promotion out of `toy`; intercept already in PR1).
 13. **PR13 -- Linux FUSE + FUSE-T** (`..` path-contextual merge gate; MAP_SHARED optional/refused).
-14. Later: LRC, native volume, FSKit (entitled, not out-of-tree compile), essence, TPM/USB wrap.
+14. Later: LRC, native volume, FSKit (entitled, not out-of-tree compile), essence, unwrap oracles (PKCS#11 / SE / TPM-if-Linux / live USB).
 
 **Feature flags:** FORMAT algebra keys; `ZETAFS_ENCRYPTION=off|aes-gcm-explicit-nonce`; `ZETAFS_CHUNKER=fastcdc-v1|fastcdc-v1-large`; `coherence=shared|close-to-open`. Flags are config, not ambient CPU detection in the fold. Hardware AES dispatch may detect AES-NI at **process start** and record the choice in the telemetry lane; the on-disk format does not change.
 
@@ -1276,10 +1303,10 @@ Pre-v1 greenfield. Tests are the contract. No production users. Numbered steps *
 
 ## Open Questions
 
-Aaron settled K1-K18. E1-E12 closed the implementability holes. C1-C10 (this revision) closed the former XOR list as **composable knobs**, with two honest leftovers:
+Aaron settled K1-K18. E1-E12 closed the implementability holes. C1-C10 closed the former XOR list as **composable knobs**. C9 no longer inherits R8 as an open FS decision (TPM is not a Mac path; HSMs are PKCS#11 adapters). Honest leftovers:
 
-1. **R8 machine-bound key location** -- which unwrap oracle is *the* machine binding (TPM NV vs live USB probe vs volume header). C9 says the FS accepts **multiple** unwrap sources; it does not pick the credential-binding story. Inherits `docs/design/2026-08-21-credential-binding-tpm-seal-or-usb-iserial-the-r8-decision-brief.md`.
-2. **Public name** -- still gated (naming-expert + Ilyana + Aaron). Working label ZetaFS.
+1. **Public name** -- still gated (naming-expert + Ilyana + Aaron). Working label ZetaFS. Never `ZFS`.
+2. **When Secure Enclave and dual-vendor HSM become metered** -- sovereignty-path (`docs/trajectories/ai-sovereignty-path/RESUME.md`): SE seal tier unbuilt; CardContact SmartCard-HSM not in hand. ZetaFS must open this Mac without them. Not a volume-format fork.
 
 Numbers that stay **unmetered until measured** (not product forks): C1's N=32, C5 stripe unit and LRC `(k,l,r)`, C2 throughput, K14 expansion ratio, C6 delta T. They earn `metered` from the existing harness **grown by dogfood** (Metering path): PR9/PR8/PR19 are the bench slices; ROADMAP 8b + dogfood ledger row 11 are the factory slices. We do not wait for a harness that is not started.
 
@@ -1358,6 +1385,7 @@ Numbers that stay **unmetered until measured** (not product forks): C1's N=32, C
 | Intel **AES-NI** whitepaper; ARMv8 Crypto Extensions | Hardware dispatch | Marketing speed numbers without a harness |
 | Unicode **UTS #39** skeleton | Confusable fact | Linguistic default |
 | Launchbury & Peyton Jones **ST** | Rank-2 brand for reclaim eligibility | Borrow checker on write |
+| PKCS#11; Apple **Secure Enclave**; TCG **TPM 2.0**; Yubico **YubiHSM 2**; CardContact **SmartCard-HSM** | Unwrap adapters; dual-vendor so one manufacturer is not a hub | Requiring TPM on Darwin; baking a YubiHSM type into the volume |
 | Zhang, Kraska, Khattab, **Recursive Language Models** (arXiv:2512.24601) | Long input as an external environment the model programs over | Attending over a retractable ontology (our criterion). Their prompt-as-variable is the sidecar |
 | Karten et al., **Prime Agent** (arXiv:2608.23552; vendor blog 2026-08-05) | Persistent session, recursive subagents, harness CRUD, autonomous eval | IPython-as-only-tool, un-knobbed `rlm()` spawn, open command set, JSONL-forever. Placement: Otto 2026-08-30 research doc |
 
@@ -1482,11 +1510,11 @@ Each PR is independently reviewable and mergeable. Tests green or it does not la
 - **Depends on:** PR3, PR5 (`regen`)
 - **Changes:** Filenames stay tags. Do not pretend this shipped in PR1-PR13.
 
-### PR18 (optional) -- Vault key TPM/USB seal
+### PR18 (optional) -- Vault unwrap oracles (not TPM-on-Mac)
 
-- **Title:** `zetafs: vault key wrap with honest TPM vs live-probe iSerial`
-- **Depends on:** PR9; R8 brief
-- **Changes:** Do not ship recorded-serial-as-stick-bound. Either live probe or do not claim stick binding.
+- **Title:** `zetafs: vault wrap via passphrase + Keychain + PKCS#11; live USB probe; no TPM required on Darwin`
+- **Depends on:** PR9; C9; `docs/trajectories/ai-sovereignty-path/RESUME.md`
+- **Changes:** k-of-n unwrap. PKCS#11 module path is config, not a YubiHSM type. Do not ship recorded-serial-as-stick-bound. Secure Enclave and CardContact are adapters that may be absent. Linux TPM is optional. Passphrase must open a Mac volume.
 
 ### PR19 (later) -- delta/1 container encoding
 
