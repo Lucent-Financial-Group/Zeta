@@ -84,18 +84,25 @@ let ``InMemoryFileSystem error injection is deterministic per seed`` () =
     Assert.True(f1 > 0, "Expected some failures to be injected")
 
 [<Fact>]
-let ``InMemoryFileSystem delay injection simulates latency`` () =
+let ``InMemoryFileSystem delay injection is virtual time not wall clock`` () =
     let fs = InMemoryFileSystem()
-    fs.SetFaults(0.0, 20L, 42L) // 20ms write latency
-    
+    fs.SetFaults(0.0, 250L, 42L)
+
     let path = "/test/delay.bin"
     let sw = System.Diagnostics.Stopwatch.StartNew()
     use stream = (fs :> IFileSystem).OpenWrite(path, false)
     stream.Write([| 42uy |], 0, 1)
     stream.Close()
     sw.Stop()
-    
-    Assert.True(sw.ElapsedMilliseconds >= 20L, sprintf "Expected >= 20ms write latency, got %dms" sw.ElapsedMilliseconds)
+
+    Assert.True(
+        fs.VirtualElapsedMs >= 250L,
+        sprintf "Expected >= 250 virtual ms, got %d" fs.VirtualElapsedMs
+    )
+    Assert.True(
+        sw.ElapsedMilliseconds < 80L,
+        sprintf "wall clock must not sleep the injected latency, got %dms" sw.ElapsedMilliseconds
+    )
 
 [<Fact>]
 let ``DiskSpine store runs successfully under InMemoryFileSystem`` () =
@@ -149,3 +156,15 @@ let ``InMemoryFileSystem swarm stress test scenario`` () =
         store.Release h
     finally
         FileSystem.Reset()
+
+[<Fact>]
+let ``FileSystemBlockIo reads back a block written through IFileSystem`` () =
+    let mock = InMemoryFileSystem() :> IFileSystem
+    let io = FileSystemBlockIo(mock, "/vol/blocks", 4096) :> IBlockIo
+    Assert.Equal(4096, io.BlockSize)
+    let payload = [| 1uy; 2uy; 3uy; 4uy |]
+    Assert.Equal(4, io.Write(0UL, System.ReadOnlyMemory<byte>.op_Implicit payload))
+    io.Flush()
+    let dst = Array.zeroCreate<byte> 4
+    Assert.Equal(4, io.Read(0UL, System.Memory<byte>.op_Implicit dst))
+    Assert.Equal<byte>(payload, dst)
