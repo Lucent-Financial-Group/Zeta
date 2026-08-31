@@ -99,7 +99,29 @@ if [ -f "$BREW_MANIFEST" ]; then
   if [ -n "$PKGS" ]; then
     echo "↓ installing brew packages from $(basename "$BREW_MANIFEST")..."
     # `brew install` is idempotent on already-installed formulae.
-    printf '%s\n' "$PKGS" | while IFS= read -r pkg_line; do
+    #
+    # THE LOOP READS FROM FD 3, NOT STDIN, AND THAT IS LOAD-BEARING.
+    # This used to be `printf '%s\n' "$PKGS" | while IFS= read -r pkg_line`. A child
+    # process inside the body inherits the loop's stdin -- which IS the package list --
+    # and anything that reads it CONSUMES THE REST OF THE MANIFEST. The loop then hits
+    # EOF, exits 0, and prints "✓ brew packages up to date" over rows it never attempted.
+    # A silent truncation that reports success: the vacuity class, in the installer.
+    #
+    # CAUGHT 2026-08-31 by tools/setup/manifest-realized.ts on the FIRST run of the new
+    # macos-install-sh-test step. `brew install zig` (which pulls llvm@21 and lld@21)
+    # swallowed the tail of the list; the runner's log shows the remaining manifest lines
+    # echoed raw --
+    #     llvm tier=standard / pandoc tier=standard / ykman / yubico-piv-tool /
+    #     opensc / pam-reattach
+    # -- immediately followed by "✓ brew packages up to date", and install.sh exited 0.
+    # Four tier=slim rows were never attempted on a machine that had just claimed to
+    # provision itself, and `opensc` was one of them.
+    #
+    # FD 3 rather than `</dev/null` on each brew call: the redirect fix has to be repeated
+    # on every command anyone ever adds to this body, and the failure it prevents is
+    # SILENT, so the next omission would not be noticed either. Moving the input off the
+    # channel children inherit makes the body safe by construction.
+    while IFS= read -r pkg_line <&3; do
       required_tier="$(zeta_tier_of_line "$pkg_line")"
       pkg="$(zeta_strip_tier "$pkg_line" | awk '{print $1}')"
       [ -z "$pkg" ] && continue
@@ -112,7 +134,9 @@ if [ -f "$BREW_MANIFEST" ]; then
       else
         brew install "$pkg"
       fi
-    done
+    done 3<<EOF_BREW_PKGS
+$PKGS
+EOF_BREW_PKGS
   else
     echo "✓ brew manifest empty; skipping"
   fi
@@ -130,7 +154,11 @@ if [ -f "$CASK_MANIFEST" ]; then
   ' "$CASK_MANIFEST")"
   if [ -n "$CASKS" ]; then
     echo "↓ installing brew casks from $(basename "$CASK_MANIFEST")..."
-    printf '%s\n' "$CASKS" | while IFS= read -r cask_line; do
+    # FD 3, not stdin -- same defect, same fix. See the long note on the formula loop
+    # above. This loop is MORE exposed, not less: a `pkg` cask artifact runs
+    # `sudo installer -pkg`, and sudo reading a password prompt from stdin is exactly a
+    # child that consumes the list.
+    while IFS= read -r cask_line <&3; do
       required_tier="$(zeta_tier_of_line "$cask_line")"
       stripped="$(zeta_strip_tier "$cask_line")"
       cask="$(printf '%s' "$stripped" | awk '{print $1}')"
@@ -151,7 +179,9 @@ if [ -f "$CASK_MANIFEST" ]; then
       else
         brew install --cask "$cask"
       fi
-    done
+    done 3<<EOF_BREW_CASKS
+$CASKS
+EOF_BREW_CASKS
   fi
 fi
 echo "✓ brew casks up to date"
