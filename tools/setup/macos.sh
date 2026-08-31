@@ -160,7 +160,7 @@ echo "✓ brew casks up to date"
 # Keep in sync with .mise.toml min_version. macOS installs mise via Homebrew,
 # whose formula advances in place; accept newer versions and enforce only the
 # repo's minimum supported release.
-MISE_MIN_VERSION="2026.8.14"
+MISE_MIN_VERSION="2026.6.12"
 
 zeta_version_at_least() {
   awk -v have="$1" -v want="$2" '
