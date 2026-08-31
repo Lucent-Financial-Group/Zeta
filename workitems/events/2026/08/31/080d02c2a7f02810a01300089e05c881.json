@@ -1,0 +1,14 @@
+{
+  "id": "080d02c2a7f02810a01300089e05c881",
+  "at": "2026-08-31T14:59:20.197Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1C59ZG4087G0R000VM8DZN",
+    "type": "task",
+    "title": "ZetaFS first product: Venti-class store for ZetaDB (policy, identities, log-as-truth)",
+    "slug": "zetafs-first-product-venti-class-store-for-zetadb-policy-ide",
+    "priority": "P2",
+    "filename": "081M1C59ZG4087G0R000VM8DZN-zetafs-first-product-venti-class-store-for-zetadb-policy-ide.md"
+  }
+}
