@@ -907,15 +907,30 @@ jobs:
   #     CNI on kind. It does not reconcile the `cilium` Application through ArgoCD,
   #     which is a different claim and the one the exclusion is about.
   #
-  # SCOPE IS `smoke`, DELIBERATELY, AND THIS IS THE HONEST PART. This job has never
-  # run anywhere. Wiring it straight to `--scope included` would assert 33
-  # Applications on a substrate nothing has measured, and a 45-minute red job whose
-  # first run is also its first measurement teaches nothing about which of the two
-  # variables moved. Smoke is the same scope `live-kind` uses and it answers the
-  # one question that has to be answered first: does the k3d path bootstrap and
-  # reconcile at all on a hosted runner. LIFTS WHEN: one green smoke run exists on
-  # this job, at which point the scope moves to `included` and the two cilium
-  # entries can be re-measured against it.
+  # SCOPE WAS `smoke` UNTIL 2026-08-31, AND THIS IS THAT LIFT.
+  #
+  # The original note said: "LIFTS WHEN: one green smoke run exists on this job,
+  # at which point the scope moves to `included`." Smoke went green on 17a6ff4b4
+  # -- 7m12s and 8m02s across two runs -- once the CoreDNS upstream override
+  # landed. The condition is met. The caution is kept rather than deleted because
+  # it was CORRECT: the first three runs found three separate real defects, and
+  # each would have been harder to attribute under `included`'s wider surface.
+  #
+  # WHAT CHANGES: this job now asserts the same 33 Applications
+  # `live-kind-included` does, on the substrate closer to metal (k3s, with Cilium
+  # owning the CNI slot). Budget MATCHED to that job rather than invented --
+  # 2400s assertion timeout, poll 15s, 60-minute cap, all copied from
+  # `live-kind-included`, which runs the same scope over the same roster. The old
+  # 1200s/45min was sized for smoke and would now be a timeout, not a verdict.
+  #
+  # WHAT DOES NOT CHANGE, said because it is tempting to assume otherwise:
+  # `cilium` and `cilium-lb-ipam` are STILL EXCLUDED. Their recorded LIFTS WHEN is
+  # provider-conditional ("the app-of-apps included proof runs on that profile"),
+  # but `isExcludedFromIncludedProof` takes no provider argument and
+  # `discoverExpectedApplications` threads none -- so that condition cannot fire
+  # however many green k3d runs accumulate. A lift condition the mechanism cannot
+  # evaluate is a latent vacuity. Making the exclusion provider-aware is its own
+  # change and is deliberately NOT smuggled into this one.
   #
   # NOT continue-on-error, and it must not become one. It was considered and
   # refused for the reason the ratchet header already gives -- a check that cannot
@@ -945,7 +960,7 @@ jobs:
       ZETA_HOST_TIER: full
       MISE_ENV: full
     runs-on: ${{ matrix.runner }}
-    timeout-minutes: 45
+    timeout-minutes: 60
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -995,13 +1010,13 @@ jobs:
           bun src/Core.TypeScript/cluster/argocd-health-test.ts \
             --run \
             --provider k3d \
-            --scope smoke \
+            --scope included \
             --runtime docker \
             --config full-ai-cluster/dev-cluster/profiles/ci.k3d-config.yaml \
             --cluster-name zeta-ci \
             --git-ref "$ZETA_ARGOCD_GIT_REF" \
-            --timeout-sec 1200 \
-            --poll-sec 10
+            --timeout-sec 2400 \
+            --poll-sec 15
 
       - name: Which CNI actually owns the cluster (the reason this job exists)
         # The profile CLAIMS flannel and kube-proxy are off and Cilium owns the
