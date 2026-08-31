@@ -121,6 +121,7 @@ import { parseAllDocuments } from "yaml";
 import { listApplicationManifests } from "./app-of-apps-discovery.ts";
 import { FOOTPRINTS_PATH, type LaneFootprints } from "./measure-lane-footprints.ts";
 import { stringCompare } from "../collation/collation.ts";
+import { DEFAULT_ROOT_DEV_CATALOG, excludeGlobDirs } from "./ports.ts";
 
 const REPO_ROOT = resolve(import.meta.dir, "../../..");
 
@@ -679,12 +680,32 @@ export function laneImages(model: PartitionModel, lane: Lane): readonly string[]
  * roster, so an Application added tomorrow is excluded from every lane that
  * does not claim it instead of silently joining all of them.
  */
+/**
+ * The ArgoCD `directory.exclude` glob that scopes a root Application to ONE lane.
+ *
+ * THE UNION IS THE WHOLE POINT, and getting it wrong is silent. A lane's
+ * non-members are the obvious half. The other half is
+ * `DEFAULT_ROOT_DEV_CATALOG.excludeGlob` — the nine standing deferrals
+ * (`platform`, `temporal`, `ollama`, `vllm`, `agent-memory`, `gitlab`,
+ * `cilium`, `cilium-lb-ipam`, `longhorn`), each excluded from every CI cluster
+ * for a reason recorded in `APPLIED_BUT_UNASSERTED_REASONS` or in
+ * `argocd-health-test.ts`'s deferral set.
+ *
+ * Emitting non-members ALONE would silently re-admit whichever deferrals happen
+ * to fall inside the lane. Measured on the current partition: `platform` is a
+ * member of lane-1, so a lane-1 bring-up on the non-member glob would sync the
+ * one Application whose images live in ghcr.io behind a token CI may not have —
+ * and it would fail for a reason that has nothing to do with the lane. The
+ * deferrals are not lane-scoped, so they survive every partition.
+ *
+ * DERIVED from that constant, never restated: a second list of deferrals is the
+ * drift shape this repo has already been bitten by.
+ */
 export function laneRootExclude(model: PartitionModel, lane: Lane): string {
   const members = new Set(lane.members);
-  const excluded = model.roster
-    .filter((r) => !members.has(r.name))
-    .map((r) => `${r.dir}/Application.yaml`)
-    .sort(stringCompare);
+  const nonMembers = model.roster.filter((r) => !members.has(r.name)).map((r) => `${r.dir}/Application.yaml`);
+  const deferred = excludeGlobDirs(DEFAULT_ROOT_DEV_CATALOG.excludeGlob).map((dir) => `${dir}/Application.yaml`);
+  const excluded = [...new Set([...nonMembers, ...deferred])].sort(stringCompare);
   return `{${excluded.join(",")}}`;
 }
 
