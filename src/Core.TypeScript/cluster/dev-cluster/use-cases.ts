@@ -327,7 +327,29 @@ export function bringUpK3dDevCluster(ports: DevClusterPorts, options: K3dDevBrin
       chart: "argo/argo-cd",
       version: "7.7.10",
       namespace: "argocd",
-      setValues: ["server.service.type=LoadBalancer"],
+      // ClusterIP, NOT LoadBalancer -- and this line is downstream of installing
+      // the shipped Cilium surface above.
+      //
+      // MEASURED 2026-08-31, the run after the CNI was fixed. k3s ships klipper
+      // (`svclb`), so a `type: LoadBalancer` Service materialises a DaemonSet
+      // that binds the service's ports on the HOST. The shipped Cilium values
+      // enable `ingressController`, which creates its own LoadBalancer Service;
+      // its `svclb-cilium-ingress` pod took 80/443 first and came up 2/2, and
+      // `svclb-argocd-server` then sat Pending for the rest of the run:
+      //
+      //   0/1 nodes are available: 1 node(s) didn't have free ports
+      //   for the requested pod ports.
+      //
+      // On one node there is exactly one host port 80 and one 443. The previous
+      // `--set` list did not enable Cilium's ingress controller, so nothing
+      // competed and LoadBalancer appeared to work -- it was only ever viable
+      // while the CNI config diverged from metal.
+      //
+      // The kind bring-up above already installs ArgoCD as ClusterIP for its own
+      // reasons, and the harness reaches ArgoCD through kubectl in both cases, so
+      // no lane needs an externally-routable ArgoCD. Matching kind removes a
+      // difference rather than adding one.
+      setValues: ["server.service.type=ClusterIP"],
       wait: true,
     });
   }
