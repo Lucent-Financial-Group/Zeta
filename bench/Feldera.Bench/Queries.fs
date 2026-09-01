@@ -31,7 +31,9 @@ type NexmarkQ1 () =
         batch <- ZSet.ofArray prices
         c <- Circuit.create ()
         input <- c.ZSetInput<int64>()
-        let mapped = c.Map(input.Stream, Func<int64, int64>(fun p -> p * 100L))
+        // p * 100 is non-decreasing on generated Nexmark prices (non-negative,
+        // no int64 wrap). Map would sort; MapMonotone is O(n) coalesce.
+        let mapped = c.MapMonotone(input.Stream, Func<int64, int64>(fun p -> p * 100L))
         c.Output mapped |> ignore
         c.Build()
 
