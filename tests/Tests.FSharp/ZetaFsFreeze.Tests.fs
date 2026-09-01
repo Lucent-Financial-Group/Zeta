@@ -129,3 +129,30 @@ let ``observer OnJournaled fires for Journaled and not for Buffered`` () =
         Assert.Equal(0, recb.Durable)
     finally
         FileSystem.Reset()
+
+[<Fact>]
+let ``sealed log does not leave freeze-intent ASCII in the clear`` () =
+    ensureHasher ()
+    FileSystem.Register(InMemoryFileSystem())
+
+    try
+        let id = mintId ()
+        let mutbuf = ZetaFsMutbuf.create "/freeze-enc" ZetaFsMutbuf.Coherence.Shared
+        let h = ZetaFsMutbuf.openHandle mutbuf id
+        ZetaFsMutbuf.pwrite mutbuf h 0L [| 1uy; 2uy |] |> ignore
+        let vault = Array.init 32 (fun i -> byte i)
+
+        match ZetaFsCrypto.sessionFromVaultKey 1u vault with
+        | Error e -> Assert.Fail(ZetaFsCrypto.errorName e)
+        | Ok session ->
+            let volume = ZetaFsFreeze.createWith "/freeze-enc" mutbuf None (Some session)
+
+            match ZetaFsFreeze.freeze volume id ZetaFsFreeze.Journaled with
+            | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
+            | Ok r ->
+                Assert.True(ZetaFsFreeze.isReadable volume r.Content)
+                let logBytes = FileSystem.Current.ReadAllBytes "/freeze-enc/log/freeze"
+                let needle = Text.Encoding.UTF8.GetBytes "freeze-intent/1"
+                Assert.Equal(-1, MemoryExtensions.IndexOf(ReadOnlySpan<byte> logBytes, ReadOnlySpan<byte> needle))
+    finally
+        FileSystem.Reset()

@@ -78,7 +78,7 @@ The factory already speaks content-addressed objects, Z-set deltas, and git as a
 | Durability knob | `src/Core/Durability.fs` | `StableStorage \| OsBuffered \| InMemoryOnly \| WitnessDurable` (last is a throwing skeleton). Close but not the POSIX `Buffered \| Journaled \| Durable` trio. |
 | Dir fsync | `src/Core/FileSync.fs` | POSIX `fsync` on the directory. **Not `F_FULLFSYNC`.** Windows no-op, documented. Failures are `eprintfn`, **not** `Result` / thrown -- Durable must not reuse this swallow. |
 | Collation | `src/Core/Collation.fs` | Default `binary` == `Latin1_General_100_BIN2_UTF8` (codepoint / UTF-8 byte order). |
-| AES-GCM | `src/Core/AesGcmCryptoProvider.fs` | 12-byte RNG nonce + 16-byte tag. Used by `DiskBackingStore`, not ZetaFS. Bench: `bench/Benchmarks/EncryptedDiskBackingStoreBench.fs` (plain vs encrypted spine, **not** this product). |
+| AES-GCM | `src/Core/AesGcmCryptoProvider.fs`, `src/Core/ZetaFsCrypto.fs` | Spine `DiskBackingStore` still uses RNG nonce (`AesGcmCryptoProvider`). **Volume path (PR9):** explicit `(epoch, LSN, disc)` nonce, keyed HMAC of ciphertext, ContentId inside AEAD. FORMAT default remains `enc=off`. Bench: `bench/Benchmarks/ZetaFsVolumeCryptoBench.fs` (unencrypted control vs GCM; OpenZFS/LUKS named, not hooked; numbers unmetered). |
 | Adinkra ECC | `src/Core/AdinkraCode.fs` | [8,4,4] extended Hamming. **Metadata-sized codes, not bulk RS/LRC.** |
 | CRC32C | `src/Core/HardwareCrc.fs` | SSE4.2 / ARMv8 CRC32C. Frame integrity for logs. |
 | Consistent hash | `src/Core/ConsistentHash.fs` | Jump / Rendezvous / Memento. `RendezvousHash.Pick` takes `uint64` and returns a **slot index**; `Create(n)` seeds integer slots, **not** ZetaId-named buckets. Placement needs an HRW-over-names wrapper; do not call `Pick(key, bucketCount)` as the volume mapper. |
@@ -1433,7 +1433,7 @@ Each PR is independently reviewable and mergeable. Tests green or it does not la
 - **Title:** `zetafs: keyed-MAC ciphertext integrity; unencrypted control bench; explicit-nonce GCM flag`
 - **Files:** volume crypto; AES-NI/VAES/ARM dispatch; `bench/` unencrypted vs GCM vs documented ZFS/LUKS hook; **no** `RandomNumberGenerator.Fill` on durable objects
 - **Depends on:** PR7 (log is the first encrypt target)
-- **Changes:** Default profile unencrypted. Object AEAD is explicit-nonce GCM when `enc=aes-gcm` (C2). XTS is not an object format. `vault-dedup` vs `convergent-opt-in` are separate, both off. ContentId inside AEAD; keyed MAC in the clear (E12). **No marketing numbers in README.** Key wrap can stub passphrase.
+- **Changes:** Default profile unencrypted. Object AEAD is explicit-nonce GCM when `enc=aes-gcm` (C2). XTS is not an object format. `vault-dedup` vs `convergent-opt-in` are separate, both off. ContentId inside AEAD; keyed MAC in the clear (E12). **No marketing numbers in README.** Key wrap can stub passphrase. **Landing:** `src/Core/ZetaFsCrypto.fs` — nonce = pack(epoch, LSN, disc), never `RandomNumberGenerator.Fill`. Freeze log seals when a Session is supplied; default `create` stays enc=off. HMAC-SHA256 of ciphertext in the clear. `vault-dedup` / `convergent-opt-in` refuse. Passphrase KDF is toy HMAC. Hardware AES is `AesGcm.IsSupported` at process start, not a FORMAT key.
 
 ### PR10 -- Reclaim ferry + lifetime brands
 
