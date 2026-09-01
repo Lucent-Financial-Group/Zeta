@@ -1,0 +1,14 @@
+{
+  "id": "080d02edd67e7810a0130008c118daba",
+  "at": "2026-09-01T16:08:39.119Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1EVNKYE087G0R0004SJA97",
+    "type": "task",
+    "title": "ZSet.join rents O(output), not |A|*|B|",
+    "slug": "zset-join-rents-o-output-not-a-b",
+    "priority": "P1",
+    "filename": "081M1EVNKYE087G0R0004SJA97-zset-join-rents-o-output-not-a-b.md"
+  }
+}

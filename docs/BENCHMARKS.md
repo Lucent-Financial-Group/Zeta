@@ -142,7 +142,7 @@ Verified via `GC.GetAllocatedBytesForCurrentThread()` in unit tests:
 | `neg`, `scale` | O(n) | O(n) | linear scan |
 | `filter`, `distinct` | O(n) | O(output) | |
 | `map` | O(n log n) | O(n) | sort+consolidate |
-| `join` (hash-index) | O(n + m) avg | O(output + min(n,m)) | bucket-chained index |
+| `join` (hash-index) | O(n + m + \|out\| log \|out\|) | O(output + min(n,m)) | count matches, rent O(output); still sorts combine |
 | `join` (indexed) | O(matching keys · avg group) | O(output) | sort-merge on keys |
 | `cartesian` | O(n · m) | O(n · m) | unavoidable |
 | `distinctIncremental` (H function) | **O(\|Δ\|)** | O(\|Δ\|) | key DBSP win |
