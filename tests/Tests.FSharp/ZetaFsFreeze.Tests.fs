@@ -16,7 +16,10 @@ let private mintId () =
     let id, _ = ZetaFsNamespace.mint ns ZetaFsNamespace.EntityKind.File entropy
     id
 
-let private ensureHasher () = ignore OwnBlake3Hasher.hasher
+let private ensureHasher () =
+    // OwnBlake3Hasher.cctor installs ContentHash256.ofBytes. `ignore hasher`
+    // is incidental and Release may elide it (jumprope tests, #16229).
+    System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof<OwnBlake3Hasher>.TypeHandle)
 
 let private tempStore () =
     let path = Path.Combine(Path.GetTempPath(), sprintf "zetafs-freeze-%s" (Guid.NewGuid().ToString("N")))
