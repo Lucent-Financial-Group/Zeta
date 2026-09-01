@@ -139,41 +139,91 @@ Feldera 0.342.0 `48312b69`. Separate `CARGO_TARGET_DIR` per version.
 | 1.95.0 | 2026-04-14 | not probed (between two PASSes) |
 | **1.96.0** `ac68faa20` | 2026-05-25 | **PASS** |
 | **1.96.1** `31fca3adb` | 2026-06-26 | **PASS** (last 1.96 patch; factory pin) |
-| **1.97.0** `2d8144b78` | 2026-07-07 | **FAIL rc=101** (first-bad) |
+| **1.97.0** `2d8144b78` | 2026-07-07 | **FAIL rc=101** (first-bad ICE) |
 | 1.98.0 `88d9e12ae` | 2026-08-18 | FAIL rc=101 (same ICE; also earlier LLVM SIGSEGV) |
+| **1.99.0-beta.3** `cbae9b4ca` | 2026-08-28 | **PASS** (4m 47s, debuginfo=0) |
+| 1.100.0-nightly `0dfb098f3` | 2026-08-31 | 4-line ICE repro PASS; `dbsp` not re-run |
 
-1.94/1.95 were skipped: 1.93.1 and 1.96.0 both PASS, so the break is
+1.94/1.95 were skipped: 1.93.1 and 1.96.0 both PASS, so the ICE break is
 in (1.96.1, 1.97.0]. Factory pin is **1.96.1**. No 1.96.2 exists.
+1.99.0-beta.3 compiles `dbsp`; do not move the factory pin to 1.99 until
+stable 1.99 exists and `feldera-native.yml` has run it.
 
-1.98.0 first SIGSEGV'd LLVM, then ICE'd in `rustc_next_trait_solver`
-compiling `dbsp`. Cache-corruption was a live hypothesis on this Mac;
-it is now **checked**. 2026-09-01: `rm -rf target` (5.8G) +
-`CARGO_INCREMENTAL=0` under rustc 1.98.0. aws-lc-sys / cmake / zstd-sys
-compiled; `dbsp` ICE'd after ~5 min of a clean graph (exit 101).
-debuginfo=0 did not change the ICE. 1.97.0 ICE'd the same way.
+### Two failures, do not mix
 
-The ICE is a **structured** `panic!`, not a SIGSEGV:
+**ICE (compiler bug, version-bisected).** Structured `panic!` in
+`rustc_next_trait_solver` `try_eagerly_replace_alias`. Query stack
+on this box (1.97.0, 2026-09-01):
 
 ```
-could not replace Alias { kind: ProjectionTy {
-  def_id: ... core::ops::function::FnOnce::Output }, ...
-  StarJoinFuncTrait<...> ...
-} with term from from dyn [ ... StarJoinFuncTrait ... ]
+#0 instantiate_and_check_impossible_predicates  StarJoinFuncTrait
+#1 first_method_vtable_slot  dyn StarJoinFuncTrait<..., Output = ()>
+   for the implementation of dyn_clone::DynClone
 ```
 
-Stack: `ReplaceProjectionWith::try_eagerly_replace_alias` <-
-`predicates_for_object_candidate`. The `panic!` is still in rustc
-1.97.0 / 1.98.0 at `structural_traits.rs` `try_eagerly_replace_alias`
-("This shouldn't happen."). Same site and panic string as
-rust-lang/rust#152789 (2026-02-18, `-Znext-solver` dyn object
-candidates). rust-analyzer#21605 is the same panic on `dyn Fn`
-`Output` projections. This instance is Feldera `StarJoinFuncTrait` +
-`FnOnce::Output` on a dyn object bound, not the issue #152789
-minimized `Wrap<U: Foo>` repro -- same mechanism, heavier type.
+Same site as rust-lang issue 159457 (closed 2026-09-01, fix merged
+as rust-lang PR 161080, milestone 1.99.0). The minimized 4-liner
+from that issue still ICEs on 1.97.0 and 1.98.0 here and PASSes on
+1.96.1 / 1.99.0-beta.3 / 1.100.0-nightly:
 
-A coherent panic_fmt naming `StarJoinFuncTrait` is a compiler-bug
-class, not a bit-flip. The earlier LLVM SIGSEGVs on this Mac remain a
-separate hardware-shaped symptom. `feldera-native.yml` compiles
-factory rust (now 1.96.1) `dbsp` on GHA ubuntu-24.04 / macos-26 /
-windows-2025. Same-box Nexmark numbers stay the 1.93.1 binary until a
-1.96.1 harness run is timed.
+```rust
+const N: usize = 6;
+pub trait CustomPassFn: FnOnce(&[u32; N]) {}
+impl<F: FnOnce(&[u32; N])> CustomPassFn for F {}
+pub fn run(f: Box<dyn CustomPassFn>, b: &[u32; N]) { f(b) }
+```
+
+Feldera's trigger is heavier (`StarJoinFuncTrait` + `DynClone`
+vtable slot, associated-type projections, nested `dyn FnMut`) but
+the same `first_method_vtable_slot` path. StarJoin-shaped 10-liners
+without a named-`const` array length compile on 1.97; the 4-liner
+is the tiny form. rust-lang issue 152789 is the older
+`-Znext-solver` relative (closed); this is the stable 1.97
+regression of that family.
+
+Not filed from this clone: rust-lang bans LLM-created issue bodies
+and public comments on rust-lang/rust. A human can confirm Feldera
+0.342.0 as another instance of issue 159457 still broken on 1.98
+and passing on 1.99-beta.
+
+**SIGSEGV (this Darwin box, 1.98.0 only, not filed).** Two
+`EXC_BAD_ACCESS` reports the same afternoon, codesign
+`rustc_main-0b10645c097e9d55` =
+`~/.rustup/toolchains/1.98.0-aarch64-apple-darwin/bin/rustc`:
+
+| time (local) | site | address |
+|---|---|---|
+| 14:05:59 | `rustc_codegen_ssa::mir::FunctionCx::monomorphize` | PAC failure at `0x44004101240a15e3` (not in any region) |
+| 14:08:06 | LLVM ThinLTO `lto cgu.11` `MCRegisterInfo::getCachedAliasesOf`; sibling thread `VarLocBasedLDV` | `0x10f3b0120` in a CoreMedia Capture Data gap |
+
+1.97.0 never reached LLVM for `dbsp` (typeck ICE first). After
+`rm -rf target` + `CARGO_INCREMENTAL=0`, 1.98.0 ICE'd instead of
+SIGSEGV. Two different crash sites plus a wild PAC pointer is
+hardware-shaped on this Mac; it is not a tiny rustc repro. GHA
+on 1.98 with ThinLTO + debuginfo would be the discriminator; we
+did not run that.
+
+`feldera-native.yml` `native` compiles factory rust 1.96.1 `dbsp`
+on GHA ubuntu-24.04 / macos-26 / windows-2025. `probe` (PR +
+dispatch only) repeats the compile on 1.97.0 / 1.98.0 / beta.
+
+GHA run 33561885627 (PR #16304, 2026-09-01),
+`cargo build --release -p dbsp` debuginfo=0, Feldera `48312b69`:
+
+| runner | rustc | verdict |
+|---|---|---|
+| ubuntu-24.04 | 1.96.1 | PASS |
+| macos-26 | 1.96.1 | PASS |
+| windows-2025 | 1.96.1 | FAIL `feldera-storage` `std::os::fd` / `libc::pread` (unix-only; not the ICE) |
+| ubuntu-24.04 | 1.97.0 | ICE+match `StarJoinFuncTrait` / `first_method_vtable_slot` / `DynClone` rc=101 |
+| macos-26 | 1.97.0 | ICE+match (same) |
+| ubuntu-24.04 | 1.98.0 | ICE+match (same) |
+| macos-26 | 1.98.0 | ICE+match rc=101; **no SIGSEGV** |
+| ubuntu-24.04 | 1.99.0-beta.3 | PASS |
+| macos-26 | 1.99.0-beta.3 | PASS rc=0 |
+
+The ICE is a compiler bug, not this Mac. The 1.98 LLVM SIGSEGV did
+**not** reproduce on GHA macos-26 (debuginfo=0). Factory pin stays
+**1.96.1** (diagnosis confirmed; 1.99 beta is the next compiling
+line, not taken). Same-box Nexmark numbers stay the 1.93.1 binary
+until a factory-pin harness run is timed.
