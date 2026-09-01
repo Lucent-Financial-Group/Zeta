@@ -1154,9 +1154,77 @@ export function writeSchemaSnapshot(
 }
 
 /** Derive every Application's chart schema live. Needs `helm` and the network. */
+/**
+ * The chart pins used ONLY by the historical fixtures in
+ * `testdata/inert-valuesobject-history/`.
+ *
+ * WHY THIS EXISTS. Those fixtures are the falsifiers for this whole module -- four
+ * real Applications, copied verbatim from before their fixes, that a working guard
+ * must catch. Each is judged against the schema of the chart version it was pinned
+ * at. But the snapshot was derived from the LIVE tree only, so the moment anyone
+ * bumped one of those charts, the historical pin fell out of the snapshot and the
+ * proof could no longer run.
+ *
+ * The test refuses to skip in that case -- correctly, since a proof that cannot run
+ * must not read as one that passed -- so a routine chart bump turned the module's own
+ * falsifiers red, and the cheap way out would have been to delete them. Measuring the
+ * fixture pins alongside the live ones keeps the proofs runnable across every future
+ * bump.
+ *
+ * These are measured into `charts` and DELIBERATELY NOT added to `entries`:
+ * `entries` is what coverage is judged against, and a fixture is not an Application
+ * the cluster deploys.
+ */
+export function historicalFixtureSources(repoRoot = REPO_ROOT): readonly ApplicationSource[] {
+  const dir = resolve(repoRoot, "src/Core.TypeScript/cluster/testdata/inert-valuesobject-history");
+  // No existsSync gate here. An earlier draft had one and lint-check-then-use-file-races
+  // refused it, correctly: between the check and the readdir the path can be created,
+  // deleted or replaced, so the answer the check returned is already stale when the use
+  // runs -- defensive-looking and preventing nothing. One syscall, one answer.
+  let files: string[];
+  try {
+    files = readdirSync(dir).filter((f) => f.endsWith(".Application.yaml")).sort();
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === "ENOENT") return [];
+    throw error;
+  }
+  const out: ApplicationSource[] = [];
+  for (const file of files) {
+    const text = readFileSync(join(dir, file), "utf8");
+    {
+      const obj = parseYaml(text) as Record<string, unknown> | null;
+      if (obj === null || obj["kind"] !== "Application") continue;
+      const spec = (obj["spec"] ?? {}) as Record<string, unknown>;
+      const source = (spec["source"] ?? {}) as Record<string, unknown>;
+      const chart = typeof source["chart"] === "string" ? source["chart"] : "";
+      const repoURL = typeof source["repoURL"] === "string" ? source["repoURL"] : "";
+      const targetRevision = typeof source["targetRevision"] === "string" ? source["targetRevision"] : "";
+      if (chart === "" || repoURL === "" || targetRevision === "") continue;
+      const helm = (source["helm"] ?? {}) as Record<string, unknown>;
+      out.push({
+        appId: `history/${file.replace(".Application.yaml", "")}`,
+        manifestPath: `src/Core.TypeScript/cluster/testdata/inert-valuesobject-history/${file}`,
+        kind: "helm-chart" as ApplicationSource["kind"],
+        repoURL,
+        chart,
+        targetRevision,
+        releaseName: typeof helm["releaseName"] === "string" ? helm["releaseName"] : chart,
+        namespace: "",
+        valuesObject: helm["valuesObject"] ?? {},
+        gitPath: "",
+        includeGlob: "",
+      } as ApplicationSource);
+    }
+  }
+  return out;
+}
+
 export function measureSchemaSnapshot(options: FetchOptions & { repoRoot?: string | undefined } = {}): SchemaSnapshot {
   const repoRoot = options.repoRoot ?? REPO_ROOT;
   const sources = discoverApplications(repoRoot);
+  // Fixture pins are measured too, so the historical proofs survive a chart bump.
+  // They contribute CHART SCHEMAS only, never `entries` -- see historicalFixtureSources.
+  const fixturePins = historicalFixtureSources(repoRoot);
   const entries: SchemaSnapshotEntry[] = [];
   const charts: Record<string, StoredChartSchema> = {};
   for (const source of sources) {
@@ -1178,6 +1246,13 @@ export function measureSchemaSnapshot(options: FetchOptions & { repoRoot?: strin
     }
     charts[key] = storeSchema(schema);
     entries.push({ ...row, chartKey: key });
+  }
+  for (const pin of fixturePins) {
+    const key = chartKey(pin.repoURL, pin.chart, pin.targetRevision);
+    if (charts[key] !== undefined) continue;
+    const schema = chartSchemaFor(pin, { ...options, repoRoot });
+    if ("ok" in schema) continue; // unreachable fixture chart is not fatal to the live gate
+    charts[key] = storeSchema(schema);
   }
   return {
     measuredOn: new Date().toISOString().slice(0, 10),

@@ -13,7 +13,11 @@ spec:
   source:
     repoURL: https://open-policy-agent.github.io/gatekeeper/charts
     chart: gatekeeper
-    targetRevision: 3.18.1
+    # 3.18.1 -> 3.23.1 on 2026-09-01. Rendered at BOTH versions with this
+    # Application's own valuesObject: no value stopped taking effect and no
+    # resource was removed. Safe as an INSTALL version -- see the batch PR for
+    # why a fresh cluster does not walk this chart's upgrade path.
+    targetRevision: 3.23.1
     helm:
       releaseName: gatekeeper
       valuesObject:

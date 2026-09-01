@@ -13,7 +13,11 @@ spec:
   source:
     repoURL: https://nats-io.github.io/k8s/helm/charts/
     chart: nats
-    targetRevision: 1.2.7
+    # 1.2.7 -> 2.14.6 on 2026-09-01. Rendered at BOTH versions with this
+    # Application's own valuesObject: no value stopped taking effect and no
+    # resource was removed. Safe as an INSTALL version -- see the batch PR for
+    # why a fresh cluster does not walk this chart's upgrade path.
+    targetRevision: 2.14.6
     helm:
       releaseName: nats
       valuesObject:

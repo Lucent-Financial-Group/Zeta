@@ -19,7 +19,11 @@ spec:
   source:
     repoURL: https://grafana.github.io/helm-charts
     chart: alloy
-    targetRevision: 0.10.1
+    # 0.10.1 -> 1.12.1 on 2026-09-01. Rendered at BOTH versions with this
+    # Application's own valuesObject: no value stopped taking effect and no
+    # resource was removed. Safe as an INSTALL version -- see the batch PR for
+    # why a fresh cluster does not walk this chart's upgrade path.
+    targetRevision: 1.12.1
     helm:
       releaseName: alloy
       valuesObject:

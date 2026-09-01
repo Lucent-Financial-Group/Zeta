@@ -45,7 +45,11 @@ spec:
   source:
     repoURL: https://kubernetes-sigs.github.io/node-feature-discovery/charts
     chart: node-feature-discovery
-    targetRevision: 0.17.1
+    # 0.17.1 -> 0.19.0 on 2026-09-01. Rendered at BOTH versions with this
+    # Application's own valuesObject: no value stopped taking effect and no
+    # resource was removed. Safe as an INSTALL version -- see the batch PR for
+    # why a fresh cluster does not walk this chart's upgrade path.
+    targetRevision: 0.19.0
     helm:
       releaseName: nfd
       valuesObject:

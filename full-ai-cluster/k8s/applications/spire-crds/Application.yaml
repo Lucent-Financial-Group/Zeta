@@ -67,7 +67,11 @@ spec:
     # Pinned to the SAME version the k3s bootstrap installs
     # (k8s/bootstrap/spire-install.yaml), and to the floor the spire 0.24.X
     # upgrade notes require. Bump both together or the lanes diverge.
-    targetRevision: 0.5.0
+    # 0.5.0 -> 0.6.1 on 2026-09-01. Rendered at BOTH versions with this
+    # Application's own valuesObject: no value stopped taking effect and no
+    # resource was removed. Safe as an INSTALL version -- see the batch PR for
+    # why a fresh cluster does not walk this chart's upgrade path.
+    targetRevision: 0.6.1
     helm:
       releaseName: spire-crds
   destination:
