@@ -25,6 +25,7 @@ module ZetaFsFreeze =
         | MissingLeaves of int
         | Observer of string
         | Malformed of string
+        | Crypto of ZetaFsCrypto.CryptoError
 
     type FreezeResult =
         { Entity: ZetaFsNamespace.EntityId
@@ -46,7 +47,9 @@ module ZetaFsFreeze =
           Commits: Dictionary<ContentHash256, FreezeResult>
           Leaves: Dictionary<ContentHash256, ContentHash256[]>
           mutable NextLsn: int64
-          Observer: IDurabilityObserver option }
+          Observer: IDurabilityObserver option
+          /// None = FORMAT enc=off (default). Some = explicit-nonce GCM on the log.
+          Session: ZetaFsCrypto.Session option }
 
     let private logDir (v: Volume) = Path.Combine(v.StoreDir, "log")
     let private logPath (v: Volume) = Path.Combine(logDir v, "freeze")
@@ -63,8 +66,14 @@ module ZetaFsFreeze =
         | FreezeError.MissingLeaves _ -> "MissingLeaves"
         | FreezeError.Observer _ -> "Observer"
         | FreezeError.Malformed _ -> "Malformed"
+        | FreezeError.Crypto e -> ZetaFsCrypto.errorName e
 
-    let create (storeDir: string) (mutbuf: ZetaFsMutbuf.Catalog) (observer: IDurabilityObserver option) : Volume =
+    let createWith
+        (storeDir: string)
+        (mutbuf: ZetaFsMutbuf.Catalog)
+        (observer: IDurabilityObserver option)
+        (session: ZetaFsCrypto.Session option)
+        : Volume =
         let fs = FileSystem.Current
         fs.CreateDirectory (Path.Combine(storeDir, "log"))
         fs.CreateDirectory (Path.Combine(storeDir, "objects"))
@@ -74,7 +83,12 @@ module ZetaFsFreeze =
           Commits = Dictionary<ContentHash256, FreezeResult>()
           Leaves = Dictionary<ContentHash256, ContentHash256[]>()
           NextLsn = 1L
-          Observer = observer }
+          Observer = observer
+          Session = session }
+
+    /// Unencrypted control (FORMAT enc=off). The default first-product profile.
+    let create (storeDir: string) (mutbuf: ZetaFsMutbuf.Catalog) (observer: IDurabilityObserver option) : Volume =
+        createWith storeDir mutbuf observer None
 
     let private putObject (storeDir: string) (id: ContentHash256) (bytes: byte[]) =
         let path = objectPath storeDir id
@@ -90,21 +104,37 @@ module ZetaFsFreeze =
         | Ok() -> Ok()
         | Error e -> Error(FreezeError.Fsync e)
 
-    let private appendLog (volume: Volume) (payload: byte[]) : int64 =
+    let private appendLog (volume: Volume) (payload: byte[]) : Result<int64, FreezeError> =
         let fs = FileSystem.Current
         fs.CreateDirectory (logDir volume)
-        let crc = HardwareCrc.Crc32C(ReadOnlySpan payload)
-        let frame = Array.zeroCreate (8 + payload.Length)
-        BinaryPrimitives.WriteInt32LittleEndian(Span(frame, 0, 4), payload.Length)
-        BinaryPrimitives.WriteUInt32LittleEndian(Span(frame, 4, 4), crc)
-        Buffer.BlockCopy(payload, 0, frame, 8, payload.Length)
-        let path = logPath volume
-        use stream = fs.OpenFile(path, FileMode.Append, FileAccess.Write, FileShare.Read)
-        stream.Write(frame, 0, frame.Length)
-        stream.Flush()
         let lsn = volume.NextLsn
-        volume.NextLsn <- lsn + 1L
-        lsn
+
+        match volume.Session with
+        | None ->
+            let crc = HardwareCrc.Crc32C(ReadOnlySpan payload)
+            let frame = Array.zeroCreate (8 + payload.Length)
+            BinaryPrimitives.WriteInt32LittleEndian(Span(frame, 0, 4), payload.Length)
+            BinaryPrimitives.WriteUInt32LittleEndian(Span(frame, 4, 4), crc)
+            Buffer.BlockCopy(payload, 0, frame, 8, payload.Length)
+            let path = logPath volume
+            use stream = fs.OpenFile(path, FileMode.Append, FileAccess.Write, FileShare.Read)
+            stream.Write(frame, 0, frame.Length)
+            stream.Flush()
+            volume.NextLsn <- lsn + 1L
+            Ok lsn
+        | Some session ->
+            match ZetaFsCrypto.sealLog session lsn payload with
+            | Error e -> Error(FreezeError.Crypto e)
+            | Ok inner ->
+                let frame = Array.zeroCreate (4 + inner.Length)
+                BinaryPrimitives.WriteInt32LittleEndian(Span(frame, 0, 4), inner.Length)
+                Buffer.BlockCopy(inner, 0, frame, 4, inner.Length)
+                let path = logPath volume
+                use stream = fs.OpenFile(path, FileMode.Append, FileAccess.Write, FileShare.Read)
+                stream.Write(frame, 0, frame.Length)
+                stream.Flush()
+                volume.NextLsn <- lsn + 1L
+                Ok lsn
 
     let private className (c: DurabilityClass) =
         match c with
@@ -184,10 +214,6 @@ module ZetaFsFreeze =
                     Ok result
                 | Journaled
                 | Durable ->
-                    let intentLsn = volume.NextLsn
-                    appendLog volume (encodeIntent entity rope.Content leafIds cls intentLsn)
-                    |> ignore
-
                     let durableFlush () : Result<unit, FreezeError> =
                         if cls <> Durable then
                             Ok()
@@ -213,55 +239,40 @@ module ZetaFsFreeze =
                                         | Error e -> Error(FreezeError.Fsync e)
                                         | Ok() -> Ok()
 
-                    match durableFlush () with
+                    let finish (intentLsn: int64) (commitLsn: int64) : Result<FreezeResult, FreezeError> =
+                        let result =
+                            { Entity = entity
+                              Content = rope.Content
+                              Span = rope.Span
+                              Class = cls
+                              Generation = snap.Generation
+                              IntentLsn = intentLsn
+                              CommitLsn = commitLsn }
+
+                        volume.Commits.[rope.Content] <- result
+                        volume.Leaves.[rope.Content] <- leafIds
+
+                        match cls, volume.Observer with
+                        | Durable, Some o -> o.OnDurable result |> Result.map (fun () -> result)
+                        | Durable, None -> Ok result
+                        | _, Some o -> o.OnJournaled result |> Result.map (fun () -> result)
+                        | _, None -> Ok result
+
+                    match appendLog volume (encodeIntent entity rope.Content leafIds cls volume.NextLsn) with
                     | Error e -> Error e
-                    | Ok() ->
-                        let commitLsn = volume.NextLsn
-                        appendLog volume (encodeCommit intentLsn rope.Content commitLsn)
-                        |> ignore
-
-                        match cls with
-                        | Durable ->
-                            match FileSync.fsyncFile (logPath volume) with
-                            | Error e -> Error(FreezeError.Fsync e)
-                            | Ok() ->
-                                match FileSync.fsyncDir (logDir volume) with
-                                | Error e -> Error(FreezeError.Fsync e)
-                                | Ok() ->
-                                    let result =
-                                        { Entity = entity
-                                          Content = rope.Content
-                                          Span = rope.Span
-                                          Class = cls
-                                          Generation = snap.Generation
-                                          IntentLsn = intentLsn
-                                          CommitLsn = commitLsn }
-
-                                    volume.Commits.[rope.Content] <- result
-                                    volume.Leaves.[rope.Content] <- leafIds
-
-                                    match volume.Observer with
-                                    | Some o ->
-                                        match o.OnDurable result with
-                                        | Error e -> Error e
-                                        | Ok() -> Ok result
-                                    | None -> Ok result
-                        | _ ->
-                            let result =
-                                { Entity = entity
-                                  Content = rope.Content
-                                  Span = rope.Span
-                                  Class = cls
-                                  Generation = snap.Generation
-                                  IntentLsn = intentLsn
-                                  CommitLsn = commitLsn }
-
-                            volume.Commits.[rope.Content] <- result
-                            volume.Leaves.[rope.Content] <- leafIds
-
-                            match volume.Observer with
-                            | Some o ->
-                                match o.OnJournaled result with
-                                | Error e -> Error e
-                                | Ok() -> Ok result
-                            | None -> Ok result)
+                    | Ok intentLsn ->
+                        match durableFlush () with
+                        | Error e -> Error e
+                        | Ok() ->
+                            match appendLog volume (encodeCommit intentLsn rope.Content volume.NextLsn) with
+                            | Error e -> Error e
+                            | Ok commitLsn ->
+                                match cls with
+                                | Durable ->
+                                    match FileSync.fsyncFile (logPath volume) with
+                                    | Error e -> Error(FreezeError.Fsync e)
+                                    | Ok() ->
+                                        match FileSync.fsyncDir (logDir volume) with
+                                        | Error e -> Error(FreezeError.Fsync e)
+                                        | Ok() -> finish intentLsn commitLsn
+                                | _ -> finish intentLsn commitLsn)
