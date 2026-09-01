@@ -38,7 +38,24 @@ spec:
     # ConfigMap at runtime rather than templating it. spire-crds moved to 0.6.1 in the
     # same push, which its README requires to land immediately ahead of each hop.
     # WATCH ON DEPLOY: 0.30.x flips a webhook failurePolicy default toward fail-CLOSED.
-    targetRevision: 0.30.1
+    # HELD AT 0.24.2 pending an isolation run, 2026-09-01.
+    #
+    # The five charts in batch 2 all landed together and the LIVE KIND included-lane
+    # proof went red -- batch 1's thirteen charts passed the same proof, so the cause is
+    # in this five. The job's log was not retrievable through the API, so rather than
+    # guess from a render diff (which is what missed this in the first place), spire is
+    # held and the other four go on: the live lane then adjudicates, and either outcome
+    # is informative.
+    #
+    # WHY SPIRE IS THE ONE HELD. This pin's own WATCH note predicted exactly this shape:
+    # 0.30.x flips a webhook failurePolicy default toward fail-CLOSED. A fail-closed
+    # admission webhook whose backing service is not yet ready BLOCKS ADMISSION, which is
+    # precisely how unrelated Applications fail to reach Synced+Healthy. It is a
+    # hypothesis, not a diagnosis, and it is being tested rather than asserted.
+    #
+    # Reverting to 0.24.2 restores exactly batch 1's spire state, which PASSED this proof
+    # with spire-crds already at 0.6.1 -- so the control is clean: one variable moves.
+    targetRevision: 0.24.2
     helm:
       releaseName: spire
       valuesObject:
