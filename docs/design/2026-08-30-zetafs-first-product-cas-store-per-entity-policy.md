@@ -1398,7 +1398,7 @@ Each PR is independently reviewable and mergeable. Tests green or it does not la
 - **Title:** `zetafs: shared mutbuf per EntityId; write() does not change EntityId`
 - **Files:** mutbuf under `.zetafs/mutbuf/<crockford-26>/`; COW generation snapshot on freeze; write-at-offset tests; two-writer last-range-wins; O_APPEND DoP=1 ferry; DST pwrite-during-freeze never mixes
 - **Depends on:** PR3
-- **Changes:** E5. `st_ino` stable across write. Close-to-open is a flag, not the default.
+- **Changes:** E5. `st_ino` stable across write. Close-to-open is a flag, not the default. Snapshot copies generation G; live becomes G+1. Persist under `.zetafs/mutbuf/<crockford-26>/`. Freeze CDC of that snapshot is PR7.
 
 ### PR5 -- Policy satellites + history fold + policy-on-EntityId
 
