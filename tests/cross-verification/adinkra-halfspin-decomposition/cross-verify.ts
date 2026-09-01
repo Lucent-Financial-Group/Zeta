@@ -10,6 +10,8 @@ import { tmpdir } from "node:os";
 import { measureFiniteIntertwinerDecomposition } from "../../../src/Core.TypeScript/research/adinkra-ecc/nonquotient-adinkra-halfspin-decomposition";
 import { measureFiniteIntertwinerSelectors } from "../../../src/Core.TypeScript/research/adinkra-ecc/nonquotient-adinkra-halfspin-selector";
 import { measureFiniteAdinkraHalfSpinIntertwiner } from "../../../src/Core.TypeScript/research/adinkra-ecc/nonquotient-adinkra-halfspin-intertwiner";
+import { measureFiniteHalfSpinCommutantGroup } from "../../../src/Core.TypeScript/research/adinkra-ecc/nonquotient-adinkra-halfspin-commutant-group";
+import { measureFiniteIntertwinerIntegralLattice } from "../../../src/Core.TypeScript/research/adinkra-ecc/nonquotient-adinkra-halfspin-integral-lattice";
 
 const REPOSITORY_ROOT = resolve(import.meta.dir, "../../..");
 const RUST_ORACLE = join(import.meta.dir, "adinkra-halfspin-decomposition-oracle.rs");
@@ -35,6 +37,22 @@ interface OracleReport {
   readonly basisOrientationInvariantImage: boolean;
   readonly unitMovedByAutomorphism: boolean;
   readonly minimumSupportMovedByAutomorphism: boolean;
+}
+
+interface RustExtensionReport {
+  readonly commutantPerSectorOrder: string;
+  readonly commutantTotalOrder: string;
+  readonly commutantNonzeroOrbitSize: string;
+  readonly commutantNonzeroStabilizerOrder: string;
+  readonly commutantFullEmbeddingOrbitCount: number;
+  readonly latticeSupports: readonly number[];
+  readonly latticeNorms: readonly number[];
+  readonly latticeDeterminants: readonly number[];
+  readonly latticeModTwoRanks: readonly number[];
+  readonly latticePrimitiveCount: number;
+  readonly latticeIntegralAutomorphismCount: number;
+  readonly latticeReferenceOrbitSize: number;
+  readonly latticeOrbitCount: number;
 }
 
 interface OracleCase {
@@ -98,6 +116,24 @@ function isOracleReport(value: unknown): value is OracleReport {
     && typeof record.basisOrientationInvariantImage === "boolean"
     && typeof record.unitMovedByAutomorphism === "boolean"
     && typeof record.minimumSupportMovedByAutomorphism === "boolean";
+}
+
+function isRustExtensionReport(value: unknown): value is OracleReport & RustExtensionReport {
+  if (!isOracleReport(value)) return false;
+  const record = value as unknown as Record<string, unknown>;
+  return typeof record.commutantPerSectorOrder === "string"
+    && typeof record.commutantTotalOrder === "string"
+    && typeof record.commutantNonzeroOrbitSize === "string"
+    && typeof record.commutantNonzeroStabilizerOrder === "string"
+    && typeof record.commutantFullEmbeddingOrbitCount === "number"
+    && Array.isArray(record.latticeSupports) && record.latticeSupports.every((item) => typeof item === "number")
+    && Array.isArray(record.latticeNorms) && record.latticeNorms.every((item) => typeof item === "number")
+    && Array.isArray(record.latticeDeterminants) && record.latticeDeterminants.every((item) => typeof item === "number")
+    && Array.isArray(record.latticeModTwoRanks) && record.latticeModTwoRanks.every((item) => typeof item === "number")
+    && typeof record.latticePrimitiveCount === "number"
+    && typeof record.latticeIntegralAutomorphismCount === "number"
+    && typeof record.latticeReferenceOrbitSize === "number"
+    && typeof record.latticeOrbitCount === "number";
 }
 
 function isFaultReport(value: unknown): value is FaultReport {
@@ -165,6 +201,72 @@ function summarize(oracleCase: OracleCase): OracleReport {
     basisOrientationInvariantImage: selectors.unitComponentSelector.basisOrientationInvariantImage,
     unitMovedByAutomorphism: selectors.unitComponentSelector.targetAutomorphism.movedImage,
     minimumSupportMovedByAutomorphism: selectors.minimumSupportSelector.targetAutomorphism.movedImage,
+  };
+}
+
+function normalizeOracle(report: OracleReport): OracleReport {
+  return {
+    field: report.field,
+    repSeed: report.repSeed,
+    sourceSectorRanks: report.sourceSectorRanks,
+    targetSectorRanks: report.targetSectorRanks,
+    homBlocks: report.homBlocks,
+    sourceCommutantBlocks: report.sourceCommutantBlocks,
+    targetCommutantBlocks: report.targetCommutantBlocks,
+    sourceGeneratedAlgebraRanks: report.sourceGeneratedAlgebraRanks,
+    targetGeneratedAlgebraRanks: report.targetGeneratedAlgebraRanks,
+    fullHomRankSpectrum: report.fullHomRankSpectrum,
+    projectiveEmbeddingClassCount: report.projectiveEmbeddingClassCount,
+    coefficientBoundaryRanks: report.coefficientBoundaryRanks,
+    minimumSupportCandidateCount: report.minimumSupportCandidateCount,
+    allMinimumSupportRanks: report.allMinimumSupportRanks,
+    balancedMinimizerCount: report.balancedMinimizerCount,
+    balancedScore: report.balancedScore,
+    basisOrientationInvariantImage: report.basisOrientationInvariantImage,
+    unitMovedByAutomorphism: report.unitMovedByAutomorphism,
+    minimumSupportMovedByAutomorphism: report.minimumSupportMovedByAutomorphism,
+  };
+}
+
+function spectrumKeys(spectrum: Readonly<Record<string, number>>): readonly number[] {
+  return Object.keys(spectrum).map(Number).sort((left, right) => left - right);
+}
+
+function summarizeRustExtension(oracleCase: OracleCase): RustExtensionReport {
+  const commutant = measureFiniteHalfSpinCommutantGroup(oracleCase.field, oracleCase.repSeed);
+  const lattice = measureFiniteIntertwinerIntegralLattice(oracleCase.field, oracleCase.repSeed);
+  return {
+    commutantPerSectorOrder: commutant.unitGroup.perSectorOrder,
+    commutantTotalOrder: commutant.unitGroup.totalOrder,
+    commutantNonzeroOrbitSize: commutant.unitGroup.nonzeroCoefficientOrbitSize,
+    commutantNonzeroStabilizerOrder: commutant.unitGroup.perSectorNonzeroVectorStabilizerOrder,
+    commutantFullEmbeddingOrbitCount: commutant.unitGroup.fullEmbeddingPairOrbitCount,
+    latticeSupports: spectrumKeys(lattice.supportSpectrum),
+    latticeNorms: spectrumKeys(lattice.frobeniusNormSquaredSpectrum),
+    latticeDeterminants: spectrumKeys(lattice.selectedMinorDeterminantSpectrum),
+    latticeModTwoRanks: spectrumKeys(lattice.modTwoRankSpectrum),
+    latticePrimitiveCount: lattice.primitiveCandidateCount,
+    latticeIntegralAutomorphismCount: lattice.signedPermutationCommutantOrbit.availableIntegralAutomorphisms,
+    latticeReferenceOrbitSize: lattice.signedPermutationCommutantOrbit.referenceOrbitSize,
+    latticeOrbitCount: lattice.signedPermutationCommutantOrbit.orbitCount,
+  };
+}
+
+function extractRustExtension(report: OracleReport & RustExtensionReport): RustExtensionReport {
+  return {
+    commutantPerSectorOrder: report.commutantPerSectorOrder,
+    commutantTotalOrder: report.commutantTotalOrder,
+    commutantNonzeroOrbitSize: report.commutantNonzeroOrbitSize,
+    commutantNonzeroStabilizerOrder: report.commutantNonzeroStabilizerOrder,
+    commutantFullEmbeddingOrbitCount: report.commutantFullEmbeddingOrbitCount,
+    latticeSupports: [...report.latticeSupports].sort((left, right) => left - right),
+    latticeNorms: [...report.latticeNorms].sort((left, right) => left - right),
+    latticeDeterminants: [...report.latticeDeterminants].sort((left, right) => left - right),
+    latticeModTwoRanks: [...report.latticeModTwoRanks].sort((left, right) => left - right),
+    latticePrimitiveCount: report.latticePrimitiveCount,
+    latticeIntegralAutomorphismCount: report.latticeIntegralAutomorphismCount,
+    latticeReferenceOrbitSize: report.latticeReferenceOrbitSize,
+    latticeOrbitCount: report.latticeOrbitCount,
   };
 }
 
@@ -248,11 +350,15 @@ try {
       throw new Error(`Rust decomposition oracle failed: ${child.error?.message ?? child.stderr}`);
     }
     const decoded: unknown = JSON.parse(child.stdout.trim());
-    if (!isOracleReport(decoded)) throw new Error("Rust decomposition oracle emitted malformed JSON");
+    if (!isRustExtensionReport(decoded)) throw new Error("Rust decomposition oracle emitted malformed or incomplete JSON");
     const fsharp = runFSharp(oracleCase);
     const typescript = summarize(oracleCase);
-    if (JSON.stringify(decoded) !== JSON.stringify(typescript)) {
+    if (JSON.stringify(normalizeOracle(decoded)) !== JSON.stringify(typescript)) {
       console.error(`adinkra-halfspin-decomposition Rust mismatch: F_${String(oracleCase.field)} seed ${String(oracleCase.repSeed)}`);
+      failures += 1;
+    }
+    if (JSON.stringify(extractRustExtension(decoded)) !== JSON.stringify(summarizeRustExtension(oracleCase))) {
+      console.error(`adinkra-halfspin commutant/lattice Rust mismatch: F_${String(oracleCase.field)} seed ${String(oracleCase.repSeed)}`);
       failures += 1;
     }
     if (JSON.stringify(fsharp) !== JSON.stringify(typescript)) {

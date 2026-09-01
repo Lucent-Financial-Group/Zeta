@@ -147,6 +147,23 @@ describe("finite Adinkra representation-defect spectrum", () => {
       testedSelectorsModuleCanonical: false,
       universalCanonicalSelectorClaim: "not established",
     });
+    expect(lane.commutantGroupCensus.finiteConclusion).toEqual({
+      commutantAlgebra: "Mat(8,F_p) ⊕ Mat(8,F_p)",
+      automorphismGroup: "GL(8,F_p) × GL(8,F_p)",
+      canonicalEmbeddingOrbit: "single orbit under target-module automorphisms",
+      physicalGaugeGroupClaim: "not made",
+    });
+    expect(lane.commutantGroupCensus.controls.singular.acceptedAsGroupElement).toBe(false);
+    expect(lane.commutantGroupCensus.controls.noncommuting.acceptedAsCommutantElement).toBe(false);
+    expect(lane.integralLatticeCensus.candidateCount).toBe(64);
+    expect(lane.integralLatticeCensus.primitiveCandidateCount).toBe(0);
+    expect(lane.integralLatticeCensus.selectedMinorDeterminantSpectrum).toEqual({ "256": 64 });
+    expect(lane.integralLatticeCensus.modTwoRankSpectrum).toEqual({ "8": 64 });
+    expect(lane.integralLatticeCensus.signedPermutationCommutantOrbit).toMatchObject({
+      referenceOrbitSize: 8,
+      orbitCount: 8,
+      transitive: false,
+    });
     expect(lane.regularity.status).toBe("unmeasured");
     expect(() => requireMeasuredRegularity(lane.regularity)).toThrow("regularity is unmeasured");
   });

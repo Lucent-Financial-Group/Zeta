@@ -27,6 +27,14 @@ import {
   measureFiniteIntertwinerSelectors,
   type FiniteIntertwinerSelectorCensus,
 } from "./nonquotient-adinkra-halfspin-selector";
+import {
+  measureFiniteHalfSpinCommutantGroup,
+  type FiniteCommutantGroupCensus,
+} from "./nonquotient-adinkra-halfspin-commutant-group";
+import {
+  measureFiniteIntertwinerIntegralLattice,
+  type FiniteIntegralLatticeCensus,
+} from "./nonquotient-adinkra-halfspin-integral-lattice";
 
 export const EXT_HAMMING_8_4_4_ROWS = [
   [1, 0, 0, 0, 0, 1, 1, 1],
@@ -107,6 +115,10 @@ export interface CodedHalfSpinIntertwinerLane {
   readonly decompositionCensus: FiniteIntertwinerDecompositionCensus;
   /** Deterministic selector measurements and explicit canonicity obstructions. */
   readonly selectorCensus: FiniteIntertwinerSelectorCensus;
+  /** Exact finite target-module commutant algebra, unit-group, orbit, and fault witnesses. */
+  readonly commutantGroupCensus: FiniteCommutantGroupCensus;
+  /** Exact integer support, norm, minor, mod-two, and signed-orbit selector obstructions. */
+  readonly integralLatticeCensus: FiniteIntegralLatticeCensus;
   readonly regularity: UnmeasuredRegularity;
 }
 
@@ -119,6 +131,7 @@ export interface RepresentationDefectSpectrum {
 }
 
 let cachedBracketCensus: HalfSpinBracketCensus | undefined;
+const spectrumCache = new Map<string, RepresentationDefectSpectrum>();
 
 function measuredBracketCensus(): HalfSpinBracketCensus {
   cachedBracketCensus ??= measureFiniteHalfSpinBracket({ applyTopWedgeReversion: true });
@@ -166,6 +179,9 @@ export function measureRepresentationDefectSpectrum(
   square: 1 | -1 = -1,
   prime: number = PRIMES[0],
 ): RepresentationDefectSpectrum {
+  const cacheKey = `${String(square)}:${String(prime)}`;
+  const cached = spectrumCache.get(cacheKey);
+  if (cached !== undefined) return cached;
   const uncoded = buildCodedAdinkra(8, [], square);
   const coded = buildCodedAdinkra(8, EXT_HAMMING_8_4_4_MASKS, square);
 
@@ -197,8 +213,10 @@ export function measureRepresentationDefectSpectrum(
   const intertwinerCensus = measureFiniteAdinkraHalfSpinIntertwiner({ field: prime });
   const decompositionCensus = measureFiniteIntertwinerDecomposition(prime as (typeof PRIMES)[number]);
   const selectorCensus = measureFiniteIntertwinerSelectors(prime as (typeof PRIMES)[number]);
+  const commutantGroupCensus = measureFiniteHalfSpinCommutantGroup(prime as (typeof PRIMES)[number]);
+  const integralLatticeCensus = measureFiniteIntertwinerIntegralLattice(prime as (typeof PRIMES)[number]);
 
-  return {
+  const spectrum: RepresentationDefectSpectrum = {
     uncoded: {
       id: "uncoded-cube",
       colourCount: uncoded.n,
@@ -253,10 +271,12 @@ export function measureRepresentationDefectSpectrum(
       census: intertwinerCensus,
       decompositionCensus,
       selectorCensus,
+      commutantGroupCensus,
+      integralLatticeCensus,
       regularity: {
         status: "unmeasured",
         reason:
-          "a full-rank intertwiner, its two-sector multiplicities, and tested selector obstructions are measured for one declared seven-generator restriction, but this is not a regular-module rank-one census",
+          "a full-rank intertwiner, its two-sector multiplicities, finite target commutant group, and tested finite-field/integral selector obstructions are measured for one declared seven-generator restriction, but this is not a regular-module rank-one census",
         missingWitnesses: [
           "a separately declared regular-module carrier",
           "a rank-one-freeness test for that carrier",
@@ -265,6 +285,8 @@ export function measureRepresentationDefectSpectrum(
       },
     },
   };
+  spectrumCache.set(cacheKey, spectrum);
+  return spectrum;
 }
 
 export function codewordSupportMasks(): readonly number[] {

@@ -64,10 +64,15 @@ export interface ModularEntry {
   readonly value: number;
 }
 
-interface CentralSectorActions {
+export interface CentralSectorActions {
   readonly census: CentralWordCensus;
   readonly plus: readonly SignedPermutation[];
   readonly minus: readonly SignedPermutation[];
+}
+
+export interface DeclaredIntertwinerCentralSectorActions {
+  readonly source: CentralSectorActions;
+  readonly target: CentralSectorActions;
 }
 
 function identitySignedPermutation(dimension: number): SignedPermutation {
@@ -457,5 +462,16 @@ export function measureFiniteIntertwinerDecomposition(
         targetCommutant.nullity === plusMultiplicity * plusMultiplicity + minusMultiplicity * minusMultiplicity,
     },
     regularity: { status: "unmeasured" },
+  };
+}
+
+/** Exact restricted actions used by follow-on module and lattice witnesses. */
+export function buildDeclaredIntertwinerCentralSectorActions(
+  field: (typeof PRIMES)[number] = PRIMES[0],
+  repSeed = 0,
+): DeclaredIntertwinerCentralSectorActions {
+  return {
+    source: measureCentralAction(buildDeclaredAdinkraEvenAction(repSeed).generators, field),
+    target: measureCentralAction(buildDeclaredHalfSpinEvenAction(), field),
   };
 }

@@ -82,6 +82,20 @@ describe("finite coded-Adinkra / half-spin intertwiner decomposition", () => {
     }
   });
 
+  test("the canonical source central word has the exact sector fingerprint consumed by the F# factor layer", () => {
+    const census = measureFiniteIntertwinerDecomposition(PRIMES[0], 0);
+    const plus: number[] = [];
+    const minus: number[] = [];
+    for (let index = 0; index < census.source.dimension; index += 1) {
+      expect(census.source.word.to[index]).toBe(index);
+      if (census.source.word.sign[index] === 1) plus.push(index);
+      else if (census.source.word.sign[index] === -1) minus.push(index);
+      else throw new Error("source central word left the signed-permutation carrier");
+    }
+    expect(plus).toEqual([1, 2, 4, 7, 8, 11, 13, 14]);
+    expect(minus).toEqual([0, 3, 5, 6, 9, 10, 12, 15]);
+  });
+
   test("characteristic two is rejected rather than silently pretending the projectors exist", () => {
     expect(() => measureFiniteIntertwinerDecomposition(2 as (typeof PRIMES)[number])).toThrow(
       "central projectors require odd characteristic",

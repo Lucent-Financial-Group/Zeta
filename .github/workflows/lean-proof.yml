@@ -224,6 +224,11 @@ jobs:
             | cat Lean4/CostRecurrence.lean - > /tmp/costrec_axiom_audit.lean
           printf '#print axioms Zeta.LandauerFloor.measure_preserves_total\n#print axioms Zeta.LandauerFloor.measure_heat_grows\n#print axioms Zeta.LandauerFloor.measure_heat_monotone\n#print axioms Zeta.LandauerFloor.branches_zero_heat\n#print axioms Zeta.LandauerFloor.adj_only_zero_heat\n#print axioms Zeta.LandauerFloor.larger_window_less_excess\n#print axioms Zeta.LandauerFloor.quasistatic_limit\n#print axioms Zeta.LandauerFloor.n_appends_from_n_branches\n' \
             | cat Lean4/LandauerFloor.lean - > /tmp/landauer_axiom_audit.lean
+          # The seven-generator central word and projector laws are derived from
+          # explicit anticommutation/square relations. Audit the headline package,
+          # not only the helper algebra, so an unresolved name cannot grade green.
+          printf '#print axioms Zeta.AdinkraCentralProjectors.omega7_commutes\n#print axioms Zeta.AdinkraCentralProjectors.omega7_square\n#print axioms Zeta.AdinkraCentralProjectors.projector_plus_idempotent\n#print axioms Zeta.AdinkraCentralProjectors.projector_minus_idempotent\n#print axioms Zeta.AdinkraCentralProjectors.projector_complementary\n#print axioms Zeta.AdinkraCentralProjectors.projector_sum\n#print axioms Zeta.AdinkraCentralProjectors.projector_preserved\n#print axioms Zeta.AdinkraCentralProjectors.omega7_projector_laws\n' \
+            | cat Lean4/AdinkraCentralProjectors.lean - > /tmp/adinkra_projector_axiom_audit.lean
 
           # ── Added 2026-08-14 (081KZZVC3DD087G0R0035SZN58): the Meno braided/balanced
           # pair. `MenoBraidedRMatrix` was wired into the build 2026-08-13 but never into
@@ -330,6 +335,10 @@ jobs:
             --label "landauer axiom audit" --deny 'sorryAx' \
             --message "LandauerFloor depends on sorryAx — the Landauer two-ledger / predictive-advantage proof regressed to sorry/admit" \
             -- lake env lean /tmp/landauer_axiom_audit.lean
+          bun ../Core.TypeScript/hygiene/run-checked.ts \
+            --label "adinkra projector axiom audit" --deny 'sorryAx' --deny 'Unknown constant' \
+            --message "AdinkraCentralProjectors depends on sorryAx, or a named theorem did not resolve — the central involution/projector proof regressed or the audit became vacuous" \
+            -- lake env lean /tmp/adinkra_projector_axiom_audit.lean
           bun ../Core.TypeScript/hygiene/run-checked.ts \
             --label "meno_rmatrix axiom audit" --deny 'sorryAx' \
             --message "MenoBraidedRMatrix depends on sorryAx — the braided-not-symmetric / Yang-Baxter certificate regressed to sorry/admit" \

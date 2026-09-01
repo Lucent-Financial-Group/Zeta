@@ -85,6 +85,27 @@ impl BigNat {
         value
     }
 
+    fn sub(&self, other: &Self) -> Self {
+        let mut out = Vec::with_capacity(self.0.len());
+        let mut borrow = 0i64;
+        for index in 0..self.0.len() {
+            let mut value = self.0[index] as i64
+                - other.0.get(index).copied().unwrap_or(0) as i64
+                - borrow;
+            if value < 0 {
+                value += Self::BASE as i64;
+                borrow = 1;
+            } else {
+                borrow = 0;
+            }
+            out.push(value as u64);
+        }
+        assert_eq!(borrow, 0, "negative BigNat subtraction");
+        let mut value = Self(out);
+        value.normalize();
+        value
+    }
+
     fn decimal(&self) -> String {
         let mut iter = self.0.iter().rev();
         let first = iter.next().copied().unwrap_or(0).to_string();
@@ -541,6 +562,151 @@ fn projective_square(prime: u64) -> String {
     sum.mul(&sum).decimal()
 }
 
+fn power_small(base: u64, exponent: usize) -> BigNat {
+    let mut value = BigNat::one();
+    for _ in 0..exponent { value = value.mul_small(base); }
+    value
+}
+
+fn general_linear_orders(prime: u64) -> (String, String, String, String) {
+    let q8 = power_small(prime, 8);
+    let mut per_sector = BigNat::one();
+    for exponent in 0..8 {
+        per_sector = per_sector.mul(&q8.sub(&power_small(prime, exponent)));
+    }
+    let orbit = q8.sub(&BigNat::one());
+    let mut stabilizer = BigNat::one();
+    for exponent in 1..8 {
+        stabilizer = stabilizer.mul(&q8.sub(&power_small(prime, exponent)));
+    }
+    let total = per_sector.mul(&per_sector);
+    (per_sector.decimal(), total.decimal(), orbit.decimal(), stabilizer.decimal())
+}
+
+fn selected_rows(entries: &[Entry], prime: i64) -> Vec<usize> {
+    let mut dense_rows = vec![vec![0i64; 16]; 128];
+    for entry in entries { dense_rows[entry.row][entry.col] = entry.value.rem_euclid(prime); }
+    let mut basis: Vec<(usize, Vec<i64>, usize)> = Vec::new();
+    for (original_row, dense) in dense_rows.iter().enumerate() {
+        let mut values = dense.clone();
+        for (pivot, prior, _) in &basis {
+            let factor = values[*pivot];
+            if factor == 0 { continue; }
+            for column in *pivot..16 {
+                values[column] = (values[column] - factor * prior[column]).rem_euclid(prime);
+            }
+        }
+        let Some(pivot) = values.iter().position(|value| *value != 0) else { continue };
+        let inverse = mod_inverse(values[pivot], prime);
+        for value in values.iter_mut().skip(pivot) { *value = *value * inverse % prime; }
+        basis.push((pivot, values, original_row));
+        basis.sort_by_key(|item| item.0);
+        if basis.len() == 16 { break; }
+    }
+    assert_eq!(basis.len(), 16, "candidate lacks sixteen independent rows");
+    basis.iter().map(|item| item.2).collect()
+}
+
+fn bareiss_determinant(mut matrix: Vec<Vec<i128>>) -> i128 {
+    let dimension = matrix.len();
+    let mut sign = 1i128;
+    let mut previous_pivot = 1i128;
+    for pivot_index in 0..dimension - 1 {
+        let pivot_row = (pivot_index..dimension).find(|row| matrix[*row][pivot_index] != 0);
+        let Some(pivot_row) = pivot_row else { return 0 };
+        if pivot_row != pivot_index {
+            matrix.swap(pivot_row, pivot_index);
+            sign = -sign;
+        }
+        let pivot = matrix[pivot_index][pivot_index];
+        for row in pivot_index + 1..dimension {
+            for column in pivot_index + 1..dimension {
+                let numerator = matrix[row][column] * pivot
+                    - matrix[row][pivot_index] * matrix[pivot_index][column];
+                assert_eq!(numerator % previous_pivot, 0, "Bareiss division is not exact");
+                matrix[row][column] = numerator / previous_pivot;
+            }
+        }
+        previous_pivot = pivot;
+    }
+    sign * matrix[dimension - 1][dimension - 1]
+}
+
+fn selected_minor_determinant(entries: &[Entry], prime: i64) -> i128 {
+    let rows = selected_rows(entries, prime);
+    let mut dense = vec![vec![0i128; 16]; rows.len()];
+    let row_index: HashMap<usize, usize> = rows.iter().enumerate().map(|(index, row)| (*row, index)).collect();
+    for entry in entries {
+        if let Some(row) = row_index.get(&entry.row) { dense[*row][entry.col] = entry.value as i128; }
+    }
+    bareiss_determinant(dense).abs()
+}
+
+fn compose_sparse(left: &[Entry], right: &[Entry]) -> Vec<Entry> {
+    let mut left_by_column: HashMap<usize, Vec<&Entry>> = HashMap::new();
+    for entry in left { left_by_column.entry(entry.col).or_default().push(entry); }
+    let mut product = Vec::new();
+    for right_entry in right {
+        if let Some(matches) = left_by_column.get(&right_entry.row) {
+            for left_entry in matches {
+                product.push(Entry {
+                    row: left_entry.row,
+                    col: right_entry.col,
+                    value: left_entry.value * right_entry.value,
+                });
+            }
+        }
+    }
+    product.sort_by_key(|entry| (entry.row, entry.col));
+    product
+}
+
+fn locate_signed_basis(entries: &[Entry], basis: &[Vec<Entry>]) -> usize {
+    let first = entries.first().expect("empty signed basis image");
+    for (index, candidate) in basis.iter().enumerate() {
+        if candidate.len() != entries.len() { continue; }
+        let Some(matching) = candidate.iter().find(|entry| entry.row == first.row && entry.col == first.col) else { continue };
+        let scalar = first.value * matching.value;
+        let expected: HashSet<(usize, usize, i64)> = candidate.iter()
+            .map(|entry| (entry.row, entry.col, entry.value * scalar)).collect();
+        if entries.iter().all(|entry| expected.contains(&(entry.row, entry.col, entry.value))) { return index; }
+    }
+    panic!("signed commutant action left the Hom graph basis")
+}
+
+fn lattice_orbits(
+    hom_basis: &[Vec<Entry>],
+    commutant_basis: &[Vec<Entry>],
+    plus_indices: &[usize],
+    minus_indices: &[usize],
+) -> (usize, usize) {
+    let actions: Vec<Vec<usize>> = commutant_basis.iter().map(|automorphism| {
+        hom_basis.iter().map(|basis| locate_signed_basis(&compose_sparse(automorphism, basis), hom_basis)).collect()
+    }).collect();
+    let candidates: HashSet<(usize, usize)> = plus_indices.iter()
+        .flat_map(|plus| minus_indices.iter().map(move |minus| (*plus, *minus))).collect();
+    let orbit_from = |root: (usize, usize)| {
+        let mut reached = HashSet::from([root]);
+        let mut pending = vec![root];
+        while let Some((plus, minus)) = pending.pop() {
+            for action in &actions {
+                let next = (action[plus], action[minus]);
+                assert!(candidates.contains(&next), "signed automorphism mixed central sectors");
+                if reached.insert(next) { pending.push(next); }
+            }
+        }
+        reached
+    };
+    let reference = orbit_from((plus_indices[0], minus_indices[0]));
+    let mut unclassified = candidates.clone();
+    let mut count = 0usize;
+    while let Some(root) = unclassified.iter().next().copied() {
+        count += 1;
+        for item in orbit_from(root) { unclassified.remove(&item); }
+    }
+    (reference.len(), count)
+}
+
 fn spectrum(solution: &Solution, target_dimension: usize, source_dimension: usize, prime: i64) -> BTreeMap<usize, usize> {
     let mut result = BTreeMap::new();
     for map in &solution.basis {
@@ -634,6 +800,16 @@ fn main() {
     let target_algebra = [generated_rank(&target_plus, field), generated_rank(&target_minus, field)];
     let pair_rank_spectrum: HashSet<usize> = pair_maps.iter().map(|map| rank(128, 16, map, field)).collect();
     let full_spectrum = spectrum(&full_hom, 128, 16, field);
+    let supports: HashSet<usize> = pair_maps.iter().map(Vec::len).collect();
+    let norms: HashSet<i64> = pair_maps.iter().map(|map| map.iter().map(|entry| entry.value * entry.value).sum()).collect();
+    let determinants: HashSet<i128> = pair_maps.iter().map(|map| selected_minor_determinant(map, field)).collect();
+    let mod_two_ranks: HashSet<usize> = pair_maps.iter().map(|map| rank(128, 16, map, 2)).collect();
+    let primitive_count = pair_maps.iter().filter(|map| {
+        selected_minor_determinant(map, field) > 0 && rank(128, 16, map, 2) == 16
+    }).count();
+    let (integral_reference_orbit_size, integral_orbit_count) =
+        lattice_orbits(&full_hom.basis, &target_end.basis, &plus_indices, &minus_indices);
+    let (gl_order, gl_total_order, nonzero_orbit, nonzero_stabilizer) = general_linear_orders(field as u64);
 
     println!(concat!(
         "{{\"field\":{},\"repSeed\":{},",
@@ -646,7 +822,13 @@ fn main() {
         "\"minimumSupportCandidateCount\":{},\"allMinimumSupportRanks\":[{}],",
         "\"balancedMinimizerCount\":{},\"balancedScore\":[{},{}],",
         "\"basisOrientationInvariantImage\":{},",
-        "\"unitMovedByAutomorphism\":{},\"minimumSupportMovedByAutomorphism\":{}",
+        "\"unitMovedByAutomorphism\":{},\"minimumSupportMovedByAutomorphism\":{},",
+        "\"commutantPerSectorOrder\":\"{}\",\"commutantTotalOrder\":\"{}\",",
+        "\"commutantNonzeroOrbitSize\":\"{}\",\"commutantNonzeroStabilizerOrder\":\"{}\",",
+        "\"commutantFullEmbeddingOrbitCount\":1,",
+        "\"latticeSupports\":[{}],\"latticeNorms\":[{}],\"latticeDeterminants\":[{}],",
+        "\"latticeModTwoRanks\":[{}],\"latticePrimitiveCount\":{},",
+        "\"latticeIntegralAutomorphismCount\":{},\"latticeReferenceOrbitSize\":{},\"latticeOrbitCount\":{}",
         "}}"
     ),
         field, rep_seed,
@@ -660,5 +842,11 @@ fn main() {
         minimizers, best.0, best.1,
         same_image(&unit, &negated, field),
         moving_automorphism(&unit, &target_end.basis, field), moving_automorphism(first_pair, &target_end.basis, field),
+        gl_order, gl_total_order, nonzero_orbit, nonzero_stabilizer,
+        supports.iter().map(|value| value.to_string()).collect::<Vec<_>>().join(","),
+        norms.iter().map(|value| value.to_string()).collect::<Vec<_>>().join(","),
+        determinants.iter().map(|value| value.to_string()).collect::<Vec<_>>().join(","),
+        mod_two_ranks.iter().map(|value| value.to_string()).collect::<Vec<_>>().join(","),
+        primitive_count, target_end.basis.len(), integral_reference_orbit_size, integral_orbit_count,
     );
 }

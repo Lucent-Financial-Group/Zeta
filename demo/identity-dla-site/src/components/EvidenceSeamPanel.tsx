@@ -58,7 +58,7 @@ const SPECTRUM = [
     operators: "16",
     defect: "1",
     verdict: "56 / 70 subsets",
-    tone: "oklch(0.72 0.14 190)",
+    tone: "var(--amber)",
   },
   {
     lane: "bivector + half-spinor",
@@ -71,10 +71,11 @@ const SPECTRUM = [
   {
     lane: "coded → half-spin module",
     carrier: "16 (8+8) → 128 (64+64)",
-    operators: "7 even pairs · TS/F#/Rust",
+    operators: "7 even pairs · TS/F#/Rust · Lean laws",
     defect: "—",
-    verdict: "rank 16 · Hom 8⊕8 · δ unmeasured",
-    detail: "3 tested selectors obstructed · 64 exact ties",
+    readout: "rank 16",
+    verdict: "rank 16 · Aut GL₈×GL₈ · δ unmeasured",
+    detail: "Bayesian factor layer: 8+8 routed · 64 lattice ties",
     tone: "var(--amber)",
     emphasis: true,
   },
@@ -173,6 +174,16 @@ function StructuralProofField() {
       <path d="M900 22 L847 28 L815 47 L761 43 L724 69 L659 64 L621 94 L558 87 L516 125 L456 118 L416 154 L352 145 L312 184 L246 176" fill="none" stroke="var(--amber)" strokeWidth="2.7" vectorEffect="non-scaling-stroke" />
       <path d="M815 47 L798 14 L756 7 M761 43 L741 87 L699 104 M659 64 L637 24 L590 13 M621 94 L650 132 L706 142 M516 125 L489 79 L444 61 M456 118 L476 172 L529 199 M352 145 L328 103 L282 88 M312 184 L280 218 L224 226" fill="none" stroke="var(--amber)" strokeOpacity="0.56" strokeWidth="1.35" vectorEffect="non-scaling-stroke" />
       <path d="M699 104 L675 76 M590 13 L565 38 M444 61 L414 31 M529 199 L558 218 M282 88 L252 54" fill="none" stroke="oklch(0.72 0.14 190)" strokeOpacity="0.46" strokeWidth="1" strokeDasharray="3 8" vectorEffect="non-scaling-stroke" />
+    </svg>
+  );
+}
+
+function SpectrumBranchField() {
+  return (
+    <svg aria-hidden="true" viewBox="0 0 1120 250" preserveAspectRatio="none" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", opacity: 0.34, pointerEvents: "none" }}>
+      <path d="M18 226 L85 206 L123 173 L201 181 L249 143 L328 151 L370 112 L448 121 L496 77 L581 88 L631 47 L720 58 L769 24 L866 35 L922 13 L1099 21" fill="none" stroke="var(--amber)" strokeWidth="2.5" vectorEffect="non-scaling-stroke" />
+      <path d="M123 173 L92 128 L35 116 M201 181 L221 220 L286 239 M328 151 L305 94 L244 69 M448 121 L474 174 L538 199 M581 88 L554 32 L488 12 M720 58 L747 109 L815 137 M866 35 L892 83 L956 105 M922 13 L967 48 L1042 61" fill="none" stroke="var(--amber)" strokeOpacity="0.62" strokeWidth="1.35" vectorEffect="non-scaling-stroke" />
+      <path d="M92 128 L57 151 M286 239 L320 214 M244 69 L207 31 M538 199 L573 225 M488 12 L452 39 M815 137 L855 168 M956 105 L1001 137" fill="none" stroke="oklch(0.72 0.14 190)" strokeOpacity="0.32" strokeWidth="1" strokeDasharray="3 9" vectorEffect="non-scaling-stroke" />
     </svg>
   );
 }
@@ -344,8 +355,9 @@ export default function EvidenceSeamPanel() {
         </div>
       </div>
 
-      <div style={{ position: "relative", zIndex: 1, borderTop: "1px solid var(--border)", padding: "1rem" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", gap: "1rem", flexWrap: "wrap", marginBottom: "0.75rem" }}>
+      <div style={{ position: "relative", zIndex: 1, borderTop: "1px solid color-mix(in srgb, var(--amber) 38%, transparent)", padding: "1.45rem 1rem 2rem", overflow: "hidden", background: "oklch(0.052 0.008 265)" }}>
+        <SpectrumBranchField />
+        <div style={{ position: "relative", zIndex: 1, display: "flex", justifyContent: "space-between", gap: "1rem", flexWrap: "wrap", marginBottom: "1.15rem" }}>
           <div>
             <div style={{ color: "var(--amber-dim)", fontSize: "0.56rem", letterSpacing: "0.14em", textTransform: "uppercase" }}>
               representation-defect spectrum
@@ -358,11 +370,11 @@ export default function EvidenceSeamPanel() {
             mutation gate: ambiguity · CRC · duplicate · length<br />4 / 4 deliberate weakenings killed
           </div>
         </div>
-        <div className="evidence-spectrum-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: "0.55rem" }}>
+        <div className="evidence-spectrum-grid" style={{ position: "relative", zIndex: 1, display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: "0.8rem" }}>
           {SPECTRUM.map((row) => (
-            <div key={row.lane} style={{ border: 0, borderTop: `${"emphasis" in row ? 3 : 1}px solid ${row.tone}`, borderLeft: "1px solid var(--border)", padding: "0.75rem", background: "emphasis" in row ? "linear-gradient(145deg, oklch(0.14 0.04 55 / 0.38), oklch(0.068 0.011 265) 62%)" : "oklch(0.062 0.009 265)" }}>
+            <div key={row.lane} style={{ gridColumn: "emphasis" in row ? "span 2" : undefined, border: 0, borderTop: `${"emphasis" in row ? 4 : 1}px solid ${row.tone}`, borderLeft: "1px solid color-mix(in srgb, var(--amber) 24%, transparent)", padding: "emphasis" in row ? "1rem 1.1rem 1.15rem" : "0.7rem", background: "emphasis" in row ? "linear-gradient(128deg, oklch(0.16 0.052 55 / 0.66), oklch(0.058 0.008 265) 66%)" : "oklch(0.052 0.008 265 / 0.78)", boxShadow: "emphasis" in row ? "inset 4px 0 0 color-mix(in srgb, var(--amber) 58%, transparent)" : "none" }}>
               <div style={{ color: "var(--muted-foreground)", fontSize: "0.6rem", fontWeight: 800, minHeight: "2.2em" }}>{row.lane}</div>
-              <div style={{ color: row.defect === "—" ? "var(--muted-foreground)" : row.tone, fontSize: "clamp(1.45rem, 3vw, 2.2rem)", fontWeight: 900, letterSpacing: "-0.075em", margin: "0.25rem 0 0.6rem" }}>δ {row.defect}</div>
+              <div style={{ color: "readout" in row ? "var(--amber)" : row.defect === "—" ? "var(--muted-foreground)" : row.tone, fontSize: "emphasis" in row ? "clamp(2rem, 5vw, 3.8rem)" : "clamp(1.45rem, 3vw, 2.2rem)", fontWeight: 900, letterSpacing: "-0.075em", margin: "0.25rem 0 0.6rem", lineHeight: 0.9 }}>{"readout" in row ? row.readout : `δ ${row.defect}`}</div>
               <div style={{ display: "grid", gridTemplateColumns: "1fr auto", gap: "0.3rem", fontSize: "0.52rem", color: "var(--muted-foreground)", marginTop: "0.55rem" }}>
                 <span>carrier M</span><strong style={{ color: "var(--foreground)" }}>{row.carrier}</strong>
                 <span>operators A</span><strong style={{ color: "var(--foreground)" }}>{row.operators}</strong>
