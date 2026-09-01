@@ -111,4 +111,30 @@ RUN & 'C:\workspace\tools\setup\install.ps1' -SkipLoopRegister; `
     bun 'C:\workspace\src\Core.TypeScript\ci\windows-install-ps1-smoke.ts' --mode container; `
     if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
+# ── DID install.ps1 SATISFY ITS OWN windows MANIFEST? ─────────────────────────
+#
+# `manifest-realized.ts` supports four manifests and was wired into ONE lane
+# (macOS), so `manifests/windows` -- 14 rows -- had nothing checking that
+# install.ps1 actually lands them. This is the Windows half of the same
+# cross-check the macOS lane runs, and the sibling of the apt assert added to
+# the ubuntu Dockerfile in this change:
+#
+#   install.ps1   scoop -> winget -> chocolatey resolution   (the realizer)
+#   this step     TypeScript parse + the same three indexes  (the verifier)
+#
+# `optional` rows (the manifest's own token, which install.ps1 warns-and-
+# continues on) are reported but do NOT fail: `absent-optional` is a distinct
+# verdict and only non-optional absences set exit 1. So this asserts exactly
+# what install.ps1 itself promises to guarantee -- no more, which is why it can
+# be a hard assert rather than advisory.
+#
+# Exit-code propagation, never `throw "..."`: the SHELL wraps each RUN in
+# powershell -Command "...", and a double-quoted throw message collides with
+# that outer quoting -- the caveat already recorded above this line.
+RUN bun 'C:\workspace\tools\setup\manifest-realized.ts'; `
+    if ($LASTEXITCODE -ne 0) { `
+      Write-Host 'FAIL: install.ps1 did not satisfy manifests/windows -- the rows above are DECLARED and ABSENT'; `
+      exit $LASTEXITCODE `
+    }
+
 RUN Write-Host "Slice 2c — install.ps1 Server-Core Docker validation COMPLETE"
