@@ -36,13 +36,14 @@ import {
   readPublishedWatermark,
   readPublisherState,
   renderMarkdown,
+  runIsRed,
   severityOf,
   stalenessVerdict,
   type JobRecord,
   type RunRecord,
   type Thresholds,
 } from "./drift-loud.ts";
-import type { LedgerRead, PublisherState } from "./drift-loud.ts";
+import type { LedgerRead, PublisherState, StalenessVerdict } from "./drift-loud.ts";
 
 const WIN = "build-and-test (windows-2025)";
 const MD = "lint (markdownlint)";
@@ -730,5 +731,48 @@ describe("readPublisherState — every failure path is `unknown`, never a guess"
   test("a workflow with no string state is `unknown`, not active", async () => {
     const r = await readPublisherState("o/r", "t", async () => ({}));
     expect(r.kind).toBe("unknown");
+  });
+});
+
+// ---------------------------------------------------------------------------
+// runIsRed — the CONSUMER of the verdict, which is where the severity fix leaked.
+//
+// The publisher-state change taught `stalenessVerdict` to return a WARNING when the
+// publisher is off by decision, and the annotation changed accordingly. The exit code did
+// not: it read `stale !== null`, where `stale` is the verdict's MESSAGE, and a warning has
+// a message. So the job kept exiting 1 and `drift (loud)` stayed red on main.
+//
+// Five mutation-tested falsifiers on `stalenessVerdict` all passed through that bug,
+// because every one of them tested the function and none tested what read its output.
+// These tests are that missing half.
+// ---------------------------------------------------------------------------
+describe("runIsRed — a warning must not exit 1", () => {
+  const warn: StalenessVerdict = { level: "warning", title: "t", message: "m" };
+  const err: StalenessVerdict = { level: "error", title: "t", message: "m" };
+
+  test("off-by-decision WARNING does NOT redden the run (the shipped bug)", () => {
+    expect(runIsRed(0, "live", warn)).toBe(false);
+  });
+
+  test("an ERROR verdict still reddens", () => {
+    expect(runIsRed(0, "live", err)).toBe(true);
+  });
+
+  test("no verdict is green", () => {
+    expect(runIsRed(0, "live", null)).toBe(false);
+  });
+
+  test("the other two redden conditions are untouched by this change", () => {
+    expect(runIsRed(1, "live", null)).toBe(true); // sustained drift
+    expect(runIsRed(0, "quiet", null)).toBe(true); // detector went quiet
+  });
+
+  test("`unverifiable` liveness still does not redden — a stated limit, not a finding", () => {
+    expect(runIsRed(0, "unverifiable", null)).toBe(false);
+  });
+
+  test("a warning does not mask a genuine redden reason", () => {
+    expect(runIsRed(1, "live", warn)).toBe(true);
+    expect(runIsRed(0, "quiet", warn)).toBe(true);
   });
 });
