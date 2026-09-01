@@ -91,7 +91,8 @@ in `docs/BENCHMARKS.md` when variance is honest.
 CI: `.github/workflows/feldera-compare.yml` runs this harness on
 ubuntu-24.04, macos-26, and windows-2025 when the bench/Z-set paths
 change. Drift check, not `gate (required)`. Feldera itself is not
-cloned in that workflow (`references/prior-art/` is gitignored).
+cloned there. Native `dbsp` compile is
+`.github/workflows/feldera-native.yml` — `workflow_dispatch` only.
 
 ## Native compile deps (install.sh, all OSes)
 
@@ -128,8 +129,38 @@ a live hypothesis on this Mac; it is now **checked**. 2026-09-01:
 under rustc 1.98.0 (`88d9e12ae`). aws-lc-sys / cmake / zstd-sys
 compiled; `dbsp` ICE'd at the **same** trait-solver line after ~5
 min of a clean graph (exit 101). So this is not a stale
-`target/` blob. Remaining forks: rustc 1.98.0 vs Feldera 0.342.0
-`edition = 2024`, or this machine's memory on that hot path. The
-measured same-box numbers stay the 1.93.1 MSRV binary. `cargo bench`
-uses `profile.bench` (`-C debuginfo=2`);
-`CARGO_PROFILE_RELEASE_DEBUG=0` does not apply to it.
+`target/` blob.
+
+The ICE is a **structured** `panic!`, not a SIGSEGV:
+
+```
+could not replace Alias { kind: ProjectionTy {
+  def_id: ... core::ops::function::FnOnce::Output }, ...
+  StarJoinFuncTrait<...> ...
+} with term from from dyn [ ... StarJoinFuncTrait ... ]
+```
+
+Stack: `ReplaceProjectionWith::try_eagerly_replace_alias` <-
+`predicates_for_object_candidate`. The `panic!` is still in rustc
+1.98.0 (`88d9e12ae`) at `structural_traits.rs:1012` ("This shouldn't
+happen."). Same site and panic string as rust-lang/rust#152789
+(2026-02-18, `-Znext-solver` dyn object candidates, labels
+A-dyn-trait / WG-trait-system-refactor). rust-analyzer#21605 is the
+same panic on `dyn Fn` `Output` projections. This instance is Feldera
+`StarJoinFuncTrait` + `FnOnce::Output` on a dyn object bound, not
+#152789's minimized `Wrap<U: Foo>` repro — same mechanism, heavier
+type.
+
+A coherent panic_fmt naming `StarJoinFuncTrait` is a compiler-bug
+class, not a bit-flip. The earlier LLVM SIGSEGVs on this Mac remain a
+separate hardware-shaped symptom. Discriminator: compile `dbsp` on
+GHA ubuntu-24.04 / macos-26 / windows-2025 via
+`feldera-native.yml` (`workflow_dispatch` only; factory rust 1.98.0;
+`cargo build --release -p dbsp`; `debuginfo=0` because `cargo bench`
+uses `profile.bench` debuginfo=2). ICE on the runners => rustc 1.98.0
+x Feldera 0.342.0. Green on the runners, red here => this machine.
+
+A local retry with `CARGO_PROFILE_RELEASE_DEBUG=0` +
+`RUSTFLAGS=-C debuginfo=0` + `cargo build --release -p dbsp` is in
+flight (the missed knob). Same-box numbers stay the 1.93.1 MSRV
+binary until a 1.98.0 `dbsp` actually links.
