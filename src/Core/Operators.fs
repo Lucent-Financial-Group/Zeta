@@ -22,7 +22,8 @@ type internal IFilterProducer<'K when 'K : comparison> =
     abstract ForEachKept: visit: ('K -> int64 -> unit) -> unit
 
 [<Sealed>]
-type internal MapZSetOp<'A, 'B when 'A : comparison and 'B : comparison>(input: Op<ZSet<'A>>, f: Func<'A, 'B>) =
+type internal MapZSetOp<'A, 'B when 'A : comparison and 'B : comparison>
+    (input: Op<ZSet<'A>>, f: Func<'A, 'B>, monotone: bool) =
     inherit Op<ZSet<'B>>()
     let inputs = [| input :> Op |]
     let mutable skip = false
@@ -138,7 +139,9 @@ type internal MapZSetOp<'A, 'B when 'A : comparison and 'B : comparison>(input: 
             | _ ->
                 match fusedVisit with
                 | None ->
-                    this.Value <- ZSet.map f.Invoke input.Value
+                    this.Value <-
+                        if monotone then ZSet.mapMonotone f.Invoke input.Value
+                        else ZSet.map f.Invoke input.Value
                 | Some chain ->
                     let cap = max 1 this.SourceCount
                     let rented = Pool.Rent<ZEntry<'B>> cap
@@ -482,7 +485,14 @@ type OperatorExtensions =
     [<Extension>]
     static member Map<'A, 'B when 'A : comparison and 'B : comparison>
         (this: Circuit, s: Stream<ZSet<'A>>, f: Func<'A, 'B>) : Stream<ZSet<'B>> =
-        this.RegisterStream (MapZSetOp(s.Op, f))
+        this.RegisterStream (MapZSetOp(s.Op, f, false))
+
+    /// Projection that preserves collation order. `f` must be non-decreasing
+    /// (`i < j` ⇒ `f(k_i) ≤ f(k_j)`). Tick is O(n) coalesce, not O(n log n) sort.
+    [<Extension>]
+    static member MapMonotone<'A, 'B when 'A : comparison and 'B : comparison>
+        (this: Circuit, s: Stream<ZSet<'A>>, f: Func<'A, 'B>) : Stream<ZSet<'B>> =
+        this.RegisterStream (MapZSetOp(s.Op, f, true))
 
     [<Extension>]
     static member Filter<'K when 'K : comparison>
