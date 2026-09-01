@@ -1,0 +1,14 @@
+{
+  "id": "080d02f8070ce810a0130008399204f7",
+  "at": "2026-09-01T22:04:48.413Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1FG1RCW087G0R000TAZWJX",
+    "type": "bug",
+    "title": "The blob store's S3 auth is INERT at the pinned chart — enableAuth true, zero identities rendered",
+    "slug": "the-blob-store-s-s3-auth-is-inert-at-the-pinned-chart-enable",
+    "priority": "P2",
+    "filename": "081M1FG1RCW087G0R000TAZWJX-the-blob-store-s-s3-auth-is-inert-at-the-pinned-chart-enable.md"
+  }
+}
