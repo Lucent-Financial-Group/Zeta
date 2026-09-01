@@ -1,6 +1,7 @@
 module Zeta.Tests.ZetaFsCryptoTests
 
 open System
+open System.Buffers.Binary
 open System.Security.Cryptography
 open global.Xunit
 open Zeta.Core
@@ -13,29 +14,35 @@ let private session () =
     | Ok s -> s
     | Error e -> failwith (ZetaFsCrypto.errorName e)
 
-[<Fact>]
-let ``packNonce is a pure function of epoch, LSN, disc -- no RNG`` () =
-    let a = ZetaFsCrypto.packNonce 1u 99L ZetaFsCrypto.Disc.Log
-    let b = ZetaFsCrypto.packNonce 1u 99L ZetaFsCrypto.Disc.Log
-    let c = ZetaFsCrypto.packNonce 1u 100L ZetaFsCrypto.Disc.Log
-    let d = ZetaFsCrypto.packNonce 1u 99L ZetaFsCrypto.Disc.Object
-    Assert.Equal<byte[]>(a, b)
-    Assert.Equal(12, a.Length)
-    Assert.NotEqual<byte[]>(a, c)
-    Assert.NotEqual<byte[]>(a, d)
+let private packed (epoch: uint32) (lsn: uint32) (disc: uint32) : byte[] =
+    let n = Array.zeroCreate 12
+    BinaryPrimitives.WriteUInt32LittleEndian(Span(n, 0, 4), epoch)
+    BinaryPrimitives.WriteUInt32LittleEndian(Span(n, 4, 4), lsn)
+    BinaryPrimitives.WriteUInt32LittleEndian(Span(n, 8, 4), disc)
+    n
 
 [<Fact>]
-let ``same plaintext seals identically; AesGcmCryptoProvider does not`` () =
-    let s = session ()
+let ``packNonce writes epoch, LSN, disc little-endian and they all move the bytes`` () =
+    let got = ZetaFsCrypto.packNonce 1u 99L ZetaFsCrypto.Disc.Log
+    Assert.Equal<byte[]>(packed 1u 99u ZetaFsCrypto.Disc.Log, got)
+    Assert.Equal(12, got.Length)
+    Assert.NotEqual<byte[]>(got, ZetaFsCrypto.packNonce 2u 99L ZetaFsCrypto.Disc.Log)
+    Assert.NotEqual<byte[]>(got, ZetaFsCrypto.packNonce 1u 100L ZetaFsCrypto.Disc.Log)
+    Assert.NotEqual<byte[]>(got, ZetaFsCrypto.packNonce 1u 99L ZetaFsCrypto.Disc.Object)
+
+[<Fact>]
+let ``AesGcmCryptoProvider Encrypt of the same plaintext is not a volume nonce`` () =
     let pt = [| 1uy; 2uy; 3uy |]
-    match ZetaFsCrypto.sealLog s 3L pt, ZetaFsCrypto.sealLog s 3L pt with
-    | Ok a, Ok b -> Assert.Equal<byte[]>(a, b)
-    | other -> Assert.Fail(sprintf "%A" other)
-
     let rng = AesGcmCryptoProvider(vaultKey) :> Zeta.Core.Abstractions.ICryptoProvider
     let x = rng.Encrypt pt
     let y = rng.Encrypt pt
     Assert.NotEqual<byte[]>(x, y)
+    let s = session ()
+    match ZetaFsCrypto.sealLog s 3L pt with
+    | Error e -> Assert.Fail(ZetaFsCrypto.errorName e)
+    | Ok sealedBytes ->
+        Assert.NotEqual<byte[]>(x, sealedBytes)
+        Assert.Equal(ZetaFsCrypto.MacSize + ZetaFsCrypto.TagSize + pt.Length, sealedBytes.Length)
 
 [<Fact>]
 let ``log seal round-trips and open fails on a flipped MAC byte`` () =
@@ -101,10 +108,14 @@ let ``vault-dedup and convergent-opt-in stay off`` () =
     | Error e -> Assert.Fail(ZetaFsCrypto.errorName e)
 
 [<Fact>]
-let ``toy passphrase KDF is deterministic and is not a wrap of RandomNumberGenerator`` () =
+let ``toy passphrase KDF is HMAC of the pinned label`` () =
     let p = Text.Encoding.UTF8.GetBytes "pass"
-    Assert.Equal<byte[]>(ZetaFsCrypto.toyPassphraseKdf p, ZetaFsCrypto.toyPassphraseKdf p)
-    Assert.Equal(32, (ZetaFsCrypto.toyPassphraseKdf p).Length)
+    let q = Text.Encoding.UTF8.GetBytes "other"
+    let label = Text.Encoding.ASCII.GetBytes "zetafs-toy-passphrase-kdf"
+    let expected = HMACSHA256.HashData(p, label)
+    Assert.Equal<byte[]>(expected, ZetaFsCrypto.toyPassphraseKdf p)
+    Assert.NotEqual<byte[]>(expected, ZetaFsCrypto.toyPassphraseKdf q)
+    Assert.Equal(32, expected.Length)
 
 [<Fact>]
 let ``FORMAT default remains enc off; aes-gcm is the explicit-nonce value`` () =
