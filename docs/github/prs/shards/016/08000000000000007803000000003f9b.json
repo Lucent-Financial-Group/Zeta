@@ -1,0 +1,12 @@
+{
+  "pr_number": 16283,
+  "archive_path": "docs/history/pr-reviews/PR-16283-fix-adinkra-layer-make-aefl-8-a-falsifier-and-cite-the-theorem-that-forces-8-8.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-01T18:53:56.436Z",
+  "schema_version": "v1",
+  "commit_sha": "013ab8fcc828faec19c2396615c7413bbcd65335",
+  "title": "fix(adinkra layer): make AEFL-8 a falsifier, and cite the theorem that forces 8+8",
+  "state": "MERGED",
+  "merged_at": "2026-09-01T18:53:19Z",
+  "head_ref": "shadow/aefl8-structural-falsifier-and-abs-anchor"
+}

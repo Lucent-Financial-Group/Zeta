@@ -1,0 +1,12 @@
+{
+  "pr_number": 16277,
+  "archive_path": "docs/history/pr-reviews/PR-16277-docs-081m1f2f4wq087g0r000zwzxtb-chart-currency-audit-four-charts-whose-upstream-.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-01T18:27:10.239Z",
+  "schema_version": "v1",
+  "commit_sha": "4387e4911ae2c6d2560dce9050ade1944da585f1",
+  "title": "docs(081M1F2F4WQ087G0R000ZWZXTB): chart currency audit — four charts whose upstream is dead or EOL, not merely behind",
+  "state": "MERGED",
+  "merged_at": "2026-09-01T18:26:34Z",
+  "head_ref": "shadow/chart-currency-audit-2026-09-01"
+}

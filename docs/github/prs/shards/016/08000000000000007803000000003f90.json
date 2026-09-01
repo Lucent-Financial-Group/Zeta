@@ -1,0 +1,12 @@
+{
+  "pr_number": 16272,
+  "archive_path": "docs/history/pr-reviews/PR-16272-feat-orleans-build-the-silo-three-manifests-have-pinned-and-nothing-ever-built.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-01T18:12:22.726Z",
+  "schema_version": "v1",
+  "commit_sha": "91b9d1c42949ca4e33056e29039487fc99c5cd66",
+  "title": "feat(orleans): build the silo three manifests have pinned and nothing ever built",
+  "state": "MERGED",
+  "merged_at": "2026-09-01T18:11:45Z",
+  "head_ref": "shadow/orleans-silo-real-image-redis-clustering-and-the-contract-test"
+}
