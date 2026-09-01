@@ -205,9 +205,25 @@ did not run that.
 
 `feldera-native.yml` `native` compiles factory rust 1.96.1 `dbsp`
 on GHA ubuntu-24.04 / macos-26 / windows-2025. `probe` (PR +
-dispatch only) repeats the compile on 1.97.0 / 1.98.0 / beta and
-classifies pass / ice / sigsegv. expect=ice must print
-StarJoinFuncTrait or try_eagerly_replace_alias. If GHA 1.97/1.98
-do not ICE that way, the this-Mac diagnosis did not reproduce and
-the factory pin moves to 1.99 beta. Same-box Nexmark numbers stay
-the 1.93.1 binary until a factory-pin harness run is timed.
+dispatch only) repeats the compile on 1.97.0 / 1.98.0 / beta.
+
+GHA run 33561885627 (PR #16304, 2026-09-01),
+`cargo build --release -p dbsp` debuginfo=0, Feldera `48312b69`:
+
+| runner | rustc | verdict |
+|---|---|---|
+| ubuntu-24.04 | 1.96.1 | PASS |
+| macos-26 | 1.96.1 | PASS |
+| windows-2025 | 1.96.1 | FAIL `feldera-storage` `std::os::fd` / `libc::pread` (unix-only; not the ICE) |
+| ubuntu-24.04 | 1.97.0 | ICE+match `StarJoinFuncTrait` / `first_method_vtable_slot` / `DynClone` rc=101 |
+| macos-26 | 1.97.0 | ICE+match (same) |
+| ubuntu-24.04 | 1.98.0 | ICE+match (same) |
+| macos-26 | 1.98.0 | ICE+match rc=101; **no SIGSEGV** |
+| ubuntu-24.04 | 1.99.0-beta.3 | PASS |
+| macos-26 | 1.99.0-beta.3 | PASS rc=0 |
+
+The ICE is a compiler bug, not this Mac. The 1.98 LLVM SIGSEGV did
+**not** reproduce on GHA macos-26 (debuginfo=0). Factory pin stays
+**1.96.1** (diagnosis confirmed; 1.99 beta is the next compiling
+line, not taken). Same-box Nexmark numbers stay the 1.93.1 binary
+until a factory-pin harness run is timed.
