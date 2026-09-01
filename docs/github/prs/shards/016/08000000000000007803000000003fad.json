@@ -1,0 +1,12 @@
+{
+  "pr_number": 16301,
+  "archive_path": "docs/history/pr-reviews/PR-16301-feat-mimir-5-5-1-6-2-0-the-blocker-was-the-constant-not-the-chart.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-01T21:29:19.147Z",
+  "schema_version": "v1",
+  "commit_sha": "8ef9f9c7b682be3616c3748cbe9bfe75cb221c3e",
+  "title": "feat(mimir): 5.5.1 -> 6.2.0 — the blocker was the constant, not the chart",
+  "state": "MERGED",
+  "merged_at": "2026-09-01T21:28:39Z",
+  "head_ref": "shadow/mimir-unblocked-by-declared-kube-version"
+}
