@@ -38,6 +38,7 @@ module ZetaFsStore =
         fs.CreateDirectory dir
         fs.CreateDirectory(Path.Combine(dir, "objects"))
         fs.CreateDirectory(Path.Combine(dir, "refs", "heads"))
+        fs.CreateDirectory(Path.Combine(dir, ZetaFsMutbuf.DirName))
         let head = Path.Combine(dir, "HEAD")
         let formatPath = Path.Combine(dir, ZetaFsFormat.FileName)
         let headExisted = fs.Exists head
