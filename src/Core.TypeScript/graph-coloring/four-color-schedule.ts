@@ -4,6 +4,12 @@
  * A verified planar embedding plus the external Four Color Theorem permits a four-class
  * certificate. This module verifies finite embedding/color certificates and finds an exact
  * minimum coloring for bounded graphs. It does not infer planarity, neuroscience, or semantics.
+ *
+ * THE THEOREM IS ONLY APPEALED TO WHEN A WITNESS IS SUPPLIED. `tryFourClassCertificate`
+ * reports `viaFourColorTheorem` and `planarity` separately from the colour count, because
+ * four classes found by the exact solver is a fact about THIS graph and cites nothing. The
+ * earlier signature took no witness, so the citation above was attached to a code path that
+ * never used it.
  */
 
 import { stringCompare } from "../collation/collation";
@@ -177,8 +183,83 @@ export function findMinimumColorSchedule(graph: ConflictGraph): ColorSchedule {
   throw new Error("finite coloring search failed unexpectedly");
 }
 
-export function tryFourClassSchedule(graph: ConflictGraph): ColorSchedule | null {
+/**
+ * A four-class schedule together with WHY four classes were permissible.
+ *
+ * `viaFourColorTheorem` is true ONLY when a planar embedding witness was supplied and
+ * verified. Without one, four classes may still be found -- by the exact solver below,
+ * which needs no theorem -- and the result is then an ordinary chromatic fact about
+ * this graph, carrying no appeal to the Four Color Theorem.
+ */
+export interface FourClassCertificate {
+  /** null when four classes do not suffice for this graph at all. */
+  readonly schedule: ColorSchedule | null;
+  /** True only when a verified planar embedding licensed the appeal to the theorem. */
+  readonly viaFourColorTheorem: boolean;
+  /** Planarity as MEASURED: verified, refuted, or never asked. */
+  readonly planarity: "verified" | "refuted" | "not-established";
+  readonly reason: string;
+}
+
+/**
+ * Four-class schedule, with planarity reported SEPARATELY from colour count.
+ *
+ * WHY THE WITNESS IS A PARAMETER. The module header cites the Four Color Theorem, and
+ * the claim matrix beside it says an implementation "must separately report planarity
+ * status, proper-color validity, and colors used." The earlier signature took a graph
+ * and nothing else, so nothing in the call path ever required planarity -- the citation
+ * was attached to code that did not use it, and a caller could read a four-class result
+ * as a theorem appeal when it was an exact-solver result.
+ *
+ * The distinction is not pedantic, and K3,3 is the case that shows it: chi(K3,3) = 2, and
+ * it is NONPLANAR. Two classes suffice with no theorem in sight. A reader who takes "few
+ * classes" as evidence of planarity has the implication backwards, and K5 alone cannot
+ * expose that -- K5 is nonplanar AND needs five, so it moves both dials at once.
+ */
+export function tryFourClassSchedule(
+  graph: ConflictGraph,
+  embedding?: PlanarEmbeddingWitness,
+): ColorSchedule | null {
+  return tryFourClassCertificate(graph, embedding).schedule;
+}
+
+/** The full certificate: the schedule, and what licensed it. */
+export function tryFourClassCertificate(
+  graph: ConflictGraph,
+  embedding?: PlanarEmbeddingWitness,
+): FourClassCertificate {
   const canonical = canonicalGraph(graph);
   const schedule = tryColor(canonical, Math.min(4, canonical.vertices.length));
-  return schedule !== null && countScheduleConflicts(graph, schedule) === 0 ? schedule : null;
+  const valid = schedule !== null && countScheduleConflicts(graph, schedule) === 0;
+
+  let planarity: FourClassCertificate["planarity"] = "not-established";
+  if (embedding !== undefined) {
+    planarity = verifyPlanarEmbedding(graph, embedding).valid ? "verified" : "refuted";
+  }
+
+  if (!valid || schedule === null) {
+    return {
+      // null, not an empty schedule: "no four-class colouring exists" and "a colouring
+      // with zero colours" are different facts, and a sentinel would conflate them.
+      schedule: null,
+      viaFourColorTheorem: false,
+      planarity,
+      reason:
+        "no proper colouring with four classes exists for this graph; four classes are not " +
+        "sufficient here regardless of planarity",
+    };
+  }
+  const viaFourColorTheorem = planarity === "verified";
+  return {
+    schedule,
+    viaFourColorTheorem,
+    planarity,
+    reason: viaFourColorTheorem
+      ? "a verified planar embedding was supplied, so the Four Color Theorem licenses four classes"
+      : planarity === "refuted"
+        ? "four classes were FOUND by exact search, but the supplied embedding is not planar -- " +
+          "this result appeals to no theorem"
+        : "four classes were FOUND by exact search; no embedding was supplied, so planarity is " +
+          "NOT established and the Four Color Theorem is not being appealed to",
+  };
 }
