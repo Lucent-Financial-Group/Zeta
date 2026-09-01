@@ -1440,7 +1440,7 @@ Each PR is independently reviewable and mergeable. Tests green or it does not la
 - **Title:** `zetafs: budgeted reclaim ferry; Singleton/Scoped/Transient; rank-2 eligibility`
 - **Files:** reclaim module; `ShivaGc` as mark algebra; DST tests that do not need full disk chaos can use `IFileSystem`
 - **Depends on:** PR5, PR6, PR7
-- **Changes:** Not `git gc`. Open-file nested scope. Crash-mid-sweep labelled `toy` until PR12. Pacer budget = freeze bytes, not wall-clock.
+- **Changes:** Not `git gc`. Open-file nested scope. Crash-mid-sweep labelled `toy` until PR12. Pacer budget = freeze bytes, not wall-clock. **Landing:** `src/Core/ZetaFsReclaim.fs` — Singleton/Scoped/Transient from history policy; `ReclaimToken` is private; mark is `ShivaGc.mark`; pacer budget is freeze bytes; DoP=1 propose/apply. Crash-mid-sweep remains `toy`.
 
 ### PR11 -- AI-friendly CLI with required prefixes
 
