@@ -263,11 +263,22 @@ esac
 
 echo
 
-# --- Provision agent loop cells (081KRQ1AB0008QG0R0014PKF49) ---
-# After deps are installed, provision the 4 system cells from the
-# cluster-cells manifest. macOS + launchd only (host-loop-bootstrap.sh).
-# Skip on CI, non-macOS Linux/Windows dev VMs, and ZETA_SKIP_CELLS=1.
-if [ "${CI:-}" != "true" ] && [ "${ZETA_SKIP_CELLS:-0}" != "1" ]; then
+# --- Provision agent loop cells (081KRQ1AB0008QG0R0014PKF49) --- OPT-IN ---
+# Installing background agents is a SEPARATE decision from installing the
+# toolchain, so it is opt-in. This used to run by default with ZETA_SKIP_CELLS=1
+# as the escape -- meaning anyone who ran install.sh on a Mac got four launchd
+# jobs, a per-cell git clone, and three state directories they never asked for,
+# none of which are inside the repo they cloned. Nothing in the tree ever set
+# that escape, so the default was the only path anyone took.
+#
+# Opt in with ZETA_PROVISION_CELLS=1. What that writes, all OUTSIDE this repo:
+#   ~/.zeta/clones/<cell>/                     an isolated clone per cell
+#   ~/Library/LaunchAgents/com.lucent.zeta.*   the launchd jobs (macOS only)
+#   ~/Library/Logs/zeta-<cell>-loop/           runner logs
+#   ~/Library/Application Support/Zeta*Loop/   per-cell state
+# They are listed here rather than in a doc because the surprise this guard
+# exists to remove is not knowing where the files went.
+if [ "${ZETA_PROVISION_CELLS:-0}" = "1" ] && [ "${CI:-}" != "true" ]; then
   if [ "$os" = "Darwin" ] && [ -f "$SETUP_DIR/host-loop-bootstrap.sh" ]; then
     echo ""
     echo "=== Provisioning agent loop cells (081KRQ1AB0008QG0R0014PKF49) ==="
@@ -279,6 +290,11 @@ if [ "${CI:-}" != "true" ] && [ "${ZETA_SKIP_CELLS:-0}" != "1" ]; then
     echo ""
     echo "→ agent loop cells skipped (launchd provisioning is macOS-only on this install path)"
   fi
+else
+  echo ""
+  echo "→ agent loop cells NOT provisioned (opt-in: ZETA_PROVISION_CELLS=1)"
+  echo "  They install launchd jobs and per-cell clones OUTSIDE this repo,"
+  echo "  under ~/.zeta and ~/Library. The toolchain install does not need them."
 fi
 
 # --- Tracked git hooks (081KWN0JKJV / 081KWMY831H) ---
