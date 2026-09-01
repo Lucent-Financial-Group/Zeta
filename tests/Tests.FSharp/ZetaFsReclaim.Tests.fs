@@ -50,6 +50,12 @@ let ``keep-all Singleton is never eligible; Transient is after last-close`` () =
     Assert.Equal(0, (ZetaFsReclaim.propose keep [| x |] { Bytes = 100UL; Count = 4 }).Length)
 
 [<Fact>]
+let ``rolling Scoped survivors stay pinned`` () =
+    let x = obj 8uy 8UL [||]
+    let r = roots [||] [||] [||] [| ZetaFsReclaim.hex x.Id |] [||]
+    Assert.Equal(0, (ZetaFsReclaim.propose r [| x |] { Bytes = 100UL; Count = 4 }).Length)
+
+[<Fact>]
 let ``pacer budget is freeze bytes, not a clock, and skips objects larger than remaining`` () =
     Assert.Equal(0UL, (ZetaFsReclaim.pacer 0UL).Bytes)
     Assert.Equal(40UL, (ZetaFsReclaim.pacer 40UL).Bytes)
