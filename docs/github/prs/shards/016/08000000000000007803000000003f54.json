@@ -1,0 +1,12 @@
+{
+  "pr_number": 16212,
+  "archive_path": "docs/history/pr-reviews/PR-16212-task-081m1ddq4g0087g0r002scrfha-backfill-the-pr-review-archive-for-16141-16210.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-01T03:19:13.706Z",
+  "schema_version": "v1",
+  "commit_sha": "9325ff0a509571680bba169393646c7530677f6f",
+  "title": "task(081M1DDQ4G0087G0R002SCRFHA): backfill the PR review archive for #16141–#16210",
+  "state": "MERGED",
+  "merged_at": "2026-09-01T03:18:30Z",
+  "head_ref": "shadow/workitem-pr-archive-backfill"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 16216,
+  "archive_path": "docs/history/pr-reviews/PR-16216-hygiene-filesync-fsyncfile-fsyncdir-return-result-f-fullfsync-on-darwin.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-01T03:18:52.888Z",
+  "schema_version": "v1",
+  "commit_sha": "3a6d77c552865ff2ea6f1076955d40f90f1327ec",
+  "title": "hygiene: FileSync.fsyncFile/fsyncDir return Result; F_FULLFSYNC on Darwin",
+  "state": "MERGED",
+  "merged_at": "2026-09-01T03:18:18Z",
+  "head_ref": "feat/zetafs-pr2-filesync"
+}
