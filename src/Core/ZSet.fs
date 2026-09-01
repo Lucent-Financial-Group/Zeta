@@ -530,36 +530,45 @@ module ZSet =
                         nextIdx.[j] <- -1
                         heads.[k] <- j
 
-                // Int64-promoted capacity guard — sa.Length * sb.Length can
-                // overflow int32 for large inputs, wrap negative, and hand
-                // `Pool.Rent` a negative size which then returns an empty
-                // array — followed by out-of-bounds writes corrupting the
-                // pool. Mirror the check `cartesian` already performs.
-                let cap64 = int64 sa.Length * int64 sb.Length
-                if cap64 > int64 System.Array.MaxLength then
-                    invalidOp $"join output would exceed Array.MaxLength (%d{sa.Length} × %d{sb.Length})"
-                let rented = Pool.Rent<ZEntry<'C>> (int cap64)
-                try
-                    let mutable k = 0
-                    for i in 0 .. sa.Length - 1 do
-                        let kA = keyA sa.[i].Key
-                        let mutable head = -1
-                        if heads.TryGetValue(kA, &head) then
-                            let mutable j = head
-                            while j >= 0 do
-                                // Checked multiply — same rationale as cartesian.
-                                let w = Checked.(*) sa.[i].Weight sb.[j].Weight
-                                if w <> 0L then
-                                    rented.[k] <- ZEntry(combine sa.[i].Key sb.[j].Key, w)
-                                    k <- k + 1
-                                j <- nextIdx.[j]
-                    if k = 0 then ZSet<'C>.Empty
-                    else
-                        let live = ZSetBuilder.sortAndConsolidate (Span<_>(rented, 0, k))
-                        if live = 0 then ZSet<'C>.Empty
-                        else ZSet(Pool.FreezeSlice(rented, live))
-                finally
-                    Pool.Return rented
+                // Count matches first, then rent O(output) — not |A|·|B|.
+                // The cartesian cap was a pool-safety guard that also
+                // allocated the full product (Nexmark Q3 after filters
+                // still tens of millions of slots for thousands of hits).
+                let mutable matchCount = 0L
+                for i in 0 .. sa.Length - 1 do
+                    let kA = keyA sa.[i].Key
+                    let mutable head = -1
+                    if heads.TryGetValue(kA, &head) then
+                        let mutable j = head
+                        while j >= 0 do
+                            let w = Checked.(*) sa.[i].Weight sb.[j].Weight
+                            if w <> 0L then matchCount <- matchCount + 1L
+                            j <- nextIdx.[j]
+                if matchCount = 0L then ZSet<'C>.Empty
+                elif matchCount > int64 System.Array.MaxLength then
+                    invalidOp $"join output would exceed Array.MaxLength (%d{sa.Length} × %d{sb.Length} probe, %d{matchCount} matches)"
+                else
+                    let rented = Pool.Rent<ZEntry<'C>> (int matchCount)
+                    try
+                        let mutable k = 0
+                        for i in 0 .. sa.Length - 1 do
+                            let kA = keyA sa.[i].Key
+                            let mutable head = -1
+                            if heads.TryGetValue(kA, &head) then
+                                let mutable j = head
+                                while j >= 0 do
+                                    let w = Checked.(*) sa.[i].Weight sb.[j].Weight
+                                    if w <> 0L then
+                                        rented.[k] <- ZEntry(combine sa.[i].Key sb.[j].Key, w)
+                                        k <- k + 1
+                                    j <- nextIdx.[j]
+                        if k = 0 then ZSet<'C>.Empty
+                        else
+                            let live = ZSetBuilder.sortAndConsolidate (Span<_>(rented, 0, k))
+                            if live = 0 then ZSet<'C>.Empty
+                            else ZSet(Pool.FreezeSlice(rented, live))
+                    finally
+                        Pool.Return rented
             finally
                 Pool.Return nextIdx
 
