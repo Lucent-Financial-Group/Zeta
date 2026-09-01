@@ -261,6 +261,7 @@
     <Compile Include="FileSync.fs" />
     <Compile Include="ZetaFsCrypto.fs" />
     <Compile Include="ZetaFsFreeze.fs" />
+    <Compile Include="ZetaFsReclaim.fs" />
     <Compile Include="DiskSpine.fs" />
     <Compile Include="DiskSpineAsync.fs" />
     <Compile Include="DeltaLog.fs" />
