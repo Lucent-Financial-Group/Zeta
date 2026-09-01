@@ -163,8 +163,8 @@ describe("K3,3 separates planarity from colour count", () => {
 // Each fixture below is chosen to ISOLATE one criterion, so a passing test names the
 // guard that caught it rather than merely noting a refusal.
 
-import { verifyPlanarEmbedding } from "./four-color-schedule";
-
+// `verifyPlanarEmbedding` is already imported at the top of this file; re-importing it
+// here was a duplicate identifier that bun tolerated and tsc did not.
 const edges = (...pairs: [string, string][]) => pairs as readonly (readonly [string, string])[];
 
 describe("the planarity criteria are each falsified by something", () => {
