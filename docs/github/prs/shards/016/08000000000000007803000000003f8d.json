@@ -1,0 +1,12 @@
+{
+  "pr_number": 16269,
+  "archive_path": "docs/history/pr-reviews/PR-16269-install-sh-background-agents-are-opt-in-and-the-block-names-its-roots.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-01T17:59:05.152Z",
+  "schema_version": "v1",
+  "commit_sha": "eae001ff2f81e46ad0e8b559074de818c27188ec",
+  "title": "install.sh: background agents are opt-in, and the block names its roots",
+  "state": "MERGED",
+  "merged_at": "2026-09-01T17:58:21Z",
+  "head_ref": "shadow/install-sh-cells-are-opt-in-and-name-their-roots"
+}
