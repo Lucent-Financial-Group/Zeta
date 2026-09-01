@@ -44,6 +44,47 @@ verified) so future-me and peers do not over-trust past-me.
 
 ## Open threads
 
+### Unique-confirm leftover OPEN #16308 @ b51c0aa0 (2026-09-01)
+
+UNIQUE HOLDS leftover NEW CELL leftover unique
+@ b51c0aa0d407a22c59299af3bdf4a3efc11d1b46.
+Live REST HEAD leftover unique @ b51c0aa0
+CONFIRMED (PR head.sha, 1 commit,
++352/-33, 10 files; never a merge-ref).
+AceHack OPEN. mergeable_state dirty.
+Base/parent leftover unique @ fe7015d4
+(do not grade). Unique does not move.
+Sit leftover OPEN. Do not merge. Do not
+revert.
+
+Follow-on complementary remainder of leftover
+UNIQUE leftover-on-main #16299 leftover unique
+@ 14d340ca. Unique of leftover unique #16299
+stays leftover unique @ 14d340ca. Adjacent to
+leftover unique #16306 leftover unique @
+c4b70c0f; do not collapse.
+
+Object: (1) RFFH-6/RFFH-8 literal
+Q(x,y,z)=(-y,x,z), fusion
+mu=(-3/5,3/4,11/7) Sigma=diag(4/5,3/4,10/7),
+rotated Q Sigma Q^T from sin/cos 0.63; no
+production transforms on expected side. (2)
+Named facial witnesses including
+isolated Euler chi=1 and disconnected Euler
+chi=2; directional vs 2E split. (3) Crown
+exact chi=2 and in-test first-fit 3. (4)
+stringCompare collation; U+E000 precedes
+U+10000. (5) Dispatcher 18 witness groups.
+
+HONEST: not a general planarity oracle;
+does not prove 4CT; dirty vs main.
+
+Falsifier: production transform on expected
+side; delete Euler chi=1; drop greedy=3;
+restore JS <.
+
+---
+
 ### Unique-confirm leftover-on-main #16306 @ c4b70c0f (2026-09-01)
 
 UNIQUE HOLDS leftover NEW CELL leftover unique @
