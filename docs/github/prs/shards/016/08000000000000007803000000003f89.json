@@ -1,0 +1,12 @@
+{
+  "pr_number": 16265,
+  "archive_path": "docs/history/pr-reviews/PR-16265-feat-k8s-orleans-clusters-on-redis-not-the-community-kubernetes-provider.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-01T17:14:47.586Z",
+  "schema_version": "v1",
+  "commit_sha": "1cd1a7784e05b4725ab76ee305d8b03b11030eb9",
+  "title": "feat(k8s): Orleans clusters on REDIS, not the community Kubernetes provider",
+  "state": "MERGED",
+  "merged_at": "2026-09-01T17:13:30Z",
+  "head_ref": "shadow/orleans-clusters-on-redis"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 16259,
+  "archive_path": "docs/history/pr-reviews/PR-16259-feat-081m1evg4xx087g0r003ze2rht-mapmonotone-is-o-n-not-a-sort.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-01T16:36:42.690Z",
+  "schema_version": "v1",
+  "commit_sha": "73295281c21503e60828fa6049c817bee768538d",
+  "title": "feat(081M1EVG4XX087G0R003ZE2RHT): mapMonotone is O(n), not a sort",
+  "state": "MERGED",
+  "merged_at": "2026-09-01T16:36:05Z",
+  "head_ref": "feat/zset-map-monotone-2"
+}

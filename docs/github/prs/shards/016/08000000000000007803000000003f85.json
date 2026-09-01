@@ -1,0 +1,12 @@
+{
+  "pr_number": 16261,
+  "archive_path": "docs/history/pr-reviews/PR-16261-fix-setup-brew-must-run-unattended-and-binaryen-132-collides-with-wabt.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-01T16:50:13.972Z",
+  "schema_version": "v1",
+  "commit_sha": "addace6e05895730153f9dcdba9694228cc3d34f",
+  "title": "fix(setup): brew must run unattended, and binaryen 132 collides with wabt",
+  "state": "MERGED",
+  "merged_at": "2026-09-01T16:49:34Z",
+  "head_ref": "shadow/brew-must-run-unattended-and-binaryen-132-collides-with-wabt"
+}
