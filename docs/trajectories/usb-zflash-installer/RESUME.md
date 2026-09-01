@@ -276,8 +276,8 @@ Sources: [PostgreSQL-Clustering.sql](https://github.com/dotnet/orleans/blob/main
 
 ### CHART CURRENCY NOW GATES THE USB TEST (Aaron, 2026-09-01)
 
-> *"lets put them in our current path for tasks to complete before we test the usb i
-> really want all our charts to be on latest version before i test the usb again."*
+> _"lets put them in our current path for tasks to complete before we test the usb i
+> really want all our charts to be on latest version before i test the usb again."_
 
 So the ordering is fixed: **charts first, USB second.** The audit that produced the work
 list is `081M1F2F4WQ087G0R000ZWZXTB`; `bitnamilegacy` is `081M1F1K5N5087G0R0019JKRV0`.
@@ -292,7 +292,7 @@ warning**.
 
 **Every one of those is an UPGRADE requirement, and a USB install is not an upgrade.**
 A machine flashed from this ISO comes up with no cluster and no data, so there is no path
-to walk between versions — the question is only *which version gets installed*. That is
+to walk between versions — the question is only _which version gets installed_. That is
 exactly why the ArgoCD bump (#16276) was safe despite being 200 versions behind, and the
 argument generalises to the whole set.
 
@@ -300,7 +300,7 @@ argument generalises to the whole set.
 
 | still required | why a fresh install does not help |
 |---|---|
-| repoURL relocations — `tempo`, `cert-manager`, and possibly `loki`, `headscale` | the current repo is frozen or a legacy mirror; installing *from* it installs the frozen thing |
+| repoURL relocations — `tempo`, `cert-manager`, and possibly `loki`, `headscale` | the current repo is frozen or a legacy mirror; installing _from_ it installs the frozen thing |
 | `redis` off `bitnamilegacy` | the image is archived at every chart version; 28.0.12 defaults to an UNPINNED `bitnami/redis:latest`, which is worse |
 | `hindsight`'s bundled `ankane/pgvector:latest` | archived since 2023-10-11, and a subchart image is invisible to the chart version |
 | **our `valuesObject` keys still being READ** | this is the one that actually bites: a key that silently stops being read renders fine and configures nothing |
@@ -318,7 +318,7 @@ that has one.** Nobody chose that — the CVE published after the replacement wa
 but it is the exact failure this audit exists to catch, landing on the audit's own
 recommendation.
 
-Exposure today is **low and checkable**: the bug needs a *scoped* identity to escape, and
+Exposure today is **low and checkable**: the bug needs a _scoped_ identity to escape, and
 our config defines exactly one principal, `admin`, with full access — there is no
 restricted identity for it to victimise. That is a reason it is not an emergency, not a
 reason to leave it. The fix rides along with a bump already recommended as `UPGRADE-SAFE`.
@@ -341,7 +341,7 @@ ArgoCD is the worked example (#16276). For each chart:
 #### Honest statement of the goal
 
 "All charts on latest" is achievable for a fresh install in a way it is not for a live
-cluster — but it will not be *uniformly* true on the day it lands: `loki` needs a
+cluster — but it will not be _uniformly_ true on the day it lands: `loki` needs a
 maintainer call on the OSS/GEL fork, and `headscale`'s best chart source is an open
 question. Those two get named, not silently skipped.
 
