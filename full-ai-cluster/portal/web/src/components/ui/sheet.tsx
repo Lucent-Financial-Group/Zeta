@@ -26,7 +26,7 @@ export function Sheet({ open, onClose, children, className }: SheetProps) {
   if (!open) return null;
   return createPortal(
     <div className="fixed inset-0 z-50 flex justify-end">
-      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm animate-fade-in" onClick={onClose} />
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-xs animate-fade-in" onClick={onClose} />
       <div
         className={cn(
           "relative h-full w-full max-w-xl overflow-y-auto border-l border-border bg-card shadow-2xl animate-slide-in-right",

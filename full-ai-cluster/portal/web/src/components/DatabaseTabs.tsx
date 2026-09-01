@@ -46,7 +46,7 @@ export function QueryTab({ fqn }: { fqn: string }) {
           onKeyDown={(e) => { if ((e.metaKey || e.ctrlKey) && e.key === "Enter") run(); }}
           spellCheck={false}
           rows={4}
-          className="w-full resize-y bg-[#0b0f17] px-4 py-3 font-mono text-[13px] text-foreground/90 outline-none"
+          className="w-full resize-y bg-[#0b0f17] px-4 py-3 font-mono text-[13px] text-foreground/90 outline-hidden"
           placeholder="SELECT … (⌘/Ctrl+Enter to run)"
         />
         <div className="flex items-center gap-2 border-t border-border bg-surface px-3 py-2">
