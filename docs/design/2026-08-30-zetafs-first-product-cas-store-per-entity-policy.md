@@ -1412,7 +1412,7 @@ Each PR is independently reviewable and mergeable. Tests green or it does not la
 - **Title:** `zetafs: Jumprope leaf/limb/trunk over FastCdc.v1 (081KTH1Z6G708QG0R002KCPHWF)`
 - **Files:** new Jumprope module; uses `src/Core/FastCdc.fs` **unchanged** (comments are stale; golden-vectors.json is the pin); hex-in-JSON vectors; seek tests; two-files-share-chunk
 - **Depends on:** PR1 (ContentId-256); **can parallel PR3-PR5** if freeze is stubbed
-- **Changes:** FORMAT `body=jumprope` when wired. Homogeneous rope per file. No `delta/1`. Optional comment-only FastCdc.fs peel in this PR or a tiny follow-up.
+- **Changes:** FORMAT `body=jumprope` when wired. Homogeneous rope per file. No `delta/1`. Optional comment-only FastCdc.fs peel in this PR or a tiny follow-up. **Landing:** `src/Core/ZetaFsJumprope.fs` — leaf/limb/trunk over FastCdc.v1, hash-as-probability level, seek by cumulative span, two-files-share-chunk. New init writes `body=jumprope`; git-trees reader accepts jumprope and still refuses `ns=bindings`. FastCdc.fs algorithm unchanged.
 
 ### PR7 -- WAL freeze + Buffered|Journaled|Durable + observer
 

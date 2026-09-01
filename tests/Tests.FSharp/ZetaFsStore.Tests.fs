@@ -25,7 +25,7 @@ let ``init creates .zetafs without a git repository`` () =
         Assert.Equal(Path.Combine(parent, ZetaFsStore.DirName), dir)
         Assert.True(File.Exists(Path.Combine(dir, "HEAD")))
         Assert.Equal(
-            ZetaFsFormat.render ZetaFsFormat.pr1Default,
+            ZetaFsFormat.render ZetaFsFormat.pr6Default,
             File.ReadAllText(Path.Combine(dir, ZetaFsFormat.FileName))
         )
     finally
