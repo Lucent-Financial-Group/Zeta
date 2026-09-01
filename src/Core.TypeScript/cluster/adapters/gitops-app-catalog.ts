@@ -1,5 +1,5 @@
 import {
-  buildRootDevCatalogManifest,
+  buildRootDevCatalogManifest, rootDevCatalogExcludeGlobFor,
   DEFAULT_ROOT_DEV_CATALOG,
   type AppCatalogApplicator,
   type ClusterControlPlane,
@@ -11,8 +11,15 @@ export function gitOpsAppCatalog(
   catalogDefaults: RootDevCatalogSpec = DEFAULT_ROOT_DEV_CATALOG,
 ): AppCatalogApplicator {
   return {
-    applyRootDevCatalog: (gitRef, gitRepoUrl) => {
-      const spec: RootDevCatalogSpec = { ...catalogDefaults, gitRef, gitRepoUrl };
+    applyRootDevCatalog: (gitRef, gitRepoUrl, provider = null) => {
+      // The exclude glob is derived PER PROVIDER so it agrees with what the
+      // harness asserts. Default `null` keeps the shipped glob verbatim.
+      const spec: RootDevCatalogSpec = {
+        ...catalogDefaults,
+        gitRef,
+        gitRepoUrl,
+        excludeGlob: rootDevCatalogExcludeGlobFor(provider),
+      };
       console.log(`Applying root App-of-Apps (git repo: ${spec.gitRepoUrl}, git ref: ${spec.gitRef}) ...`);
       controlPlane.applyInlineManifest(buildRootDevCatalogManifest(spec));
     },

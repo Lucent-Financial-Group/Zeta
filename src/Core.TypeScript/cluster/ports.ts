@@ -157,7 +157,7 @@ export interface PackageDriver {
 
 /** Git-backed app-of-apps bootstrap for dev/CI. */
 export interface AppCatalogApplicator {
-  applyRootDevCatalog(gitRef: string, gitRepoUrl: string): void;
+  applyRootDevCatalog(gitRef: string, gitRepoUrl: string, provider?: "kind" | "k3d" | null): void;
 }
 
 export interface DevClusterPorts {
@@ -219,6 +219,30 @@ export const DEFAULT_ROOT_DEV_CATALOG: RootDevCatalogSpec = {
  * whether to match by equality or by prefix; the nested-Application case needs
  * prefix, which is why this does not do the matching itself.
  */
+/**
+ * The root catalogue's exclude glob FOR A GIVEN PROVIDER.
+ *
+ * THE SECOND HALF OF A PAIR THAT MUST AGREE. `isExcludedFromIncludedProof`
+ * decides what the harness ASSERTS; this decides what ArgoCD APPLIES. Making
+ * only the first provider-aware is what produced the 48-minute timeout on
+ * 2026-09-01: the harness waited for `cilium` while the catalogue still told
+ * ArgoCD to skip it. `applied-vs-asserted-agreement.test.ts` is the check that
+ * refuses that disagreement now; this function is what makes agreement possible.
+ *
+ * `null` (provider unknown) returns the glob unchanged — the conservative
+ * default, identical to the behaviour before providers existed here.
+ */
+export function rootDevCatalogExcludeGlobFor(provider: "kind" | "k3d" | null): string {
+  if (provider !== "k3d") return DEFAULT_ROOT_DEV_CATALOG.excludeGlob;
+  // k3d hands the CNI slot to Cilium (flannel + kube-proxy disabled in the
+  // profile), which is the condition `cilium`'s own LIFTS WHEN names. Drop it
+  // from the exclude so ArgoCD actually syncs what the harness will assert.
+  // `cilium-lb-ipam` deliberately stays: its lift is conjunctive and the second
+  // conjunct (a substrate-parameterised pool) is measurably false.
+  const kept = excludeGlobDirs(DEFAULT_ROOT_DEV_CATALOG.excludeGlob).filter((d) => d !== "cilium");
+  return `{${kept.map((d) => `${d}/**`).join(",")}}`;
+}
+
 export function excludeGlobDirs(glob: string): readonly string[] {
   return [
     ...new Set(
