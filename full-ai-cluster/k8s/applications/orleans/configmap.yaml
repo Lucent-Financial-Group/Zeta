@@ -36,6 +36,16 @@
 # "a lightweight in-memory adapter ... in a real deployment, this would be backed by
 # Orleans IGrain timers". The first real step is a silo image carrying grain code;
 # this file is the clustering decision that image will read.
+# ENDPOINT MOVED 2026-09-01, with the redis Application. That Application left
+# the Bitnami chart for the Valkey project's own, whose primary Service is
+# `redis-valkey`, not `redis-master`. The new name was read off an actual
+# render rather than guessed from the release name.
+#
+# Valkey is wire-compatible, so Microsoft.Orleans.Clustering.Redis over
+# StackExchange.Redis is unchanged -- only the address moved. `passwordSecret`
+# still names redis-auth: the Valkey chart consumes it as an ACL user's
+# password rather than as a bare one, which the silo never sees either way.
+#
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -49,7 +59,7 @@ data:
       "silo": { "siloPort": 11111, "gatewayPort": 30000 },
       "clustering": {
         "provider": "redis",
-        "endpoint": "redis-master.redis.svc.cluster.local:6379",
+        "endpoint": "redis-valkey.redis.svc.cluster.local:6379",
         "passwordSecret": { "name": "redis-auth", "key": "password" }
       },
       "telemetry": { "dashboard": { "enabled": true, "port": 8080 } }
