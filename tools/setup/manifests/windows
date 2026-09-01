@@ -28,9 +28,37 @@ nodejs    winget=OpenJS.NodeJS    choco=nodejs
 # Chocolatey keeps the existing package-id fallback explicit.
 lua    choco=lua
 
-# USB/ISO QEMU acceptance substrate (B-0891). The Unix package split is
-# qemu-system-x86 + qemu-utils; Windows carries those binaries through qemu.
-qemu   winget=SoftwareFreedomConservancy.QEMU   choco=qemu
+# USB/ISO QEMU acceptance substrate. The Unix package split is qemu-system-x86 +
+# qemu-utils; Windows carries those binaries through qemu.
+#
+# `optional` (BEST-EFFORT), added 2026-09-01, and the reason is measured rather than
+# preferred: NOTHING ON WINDOWS RUNS QEMU. Every lane that invokes it --
+# build-ai-cluster-iso, multiboot-qemu-uefi-smoke, installer-unit-tests, and the rest --
+# is `runs-on: ubuntu-24.04`; no `runs-on: windows-*` workflow references qemu and no
+# `.ps1` in the tree invokes it. The acceptance substrate this row exists for is a Linux
+# substrate.
+#
+# Mandatory, it made an UNUSED dependency's upstream outage a red main. Measured
+# 2026-09-01 on `build-and-test (windows-2025)`, gate run 33474539115:
+#
+#   - Qemu (exited 404) - Error while running '...\Qemu\tools\chocolateyInstall.ps1'
+#   warn: choco install qemu failed (exit 404); falling through to the next package source
+#   qemu failed on every available package source
+#
+# `install-windows=failure`, and roslyn-guard/build/test all SKIPPED behind it -- so a
+# chocolatey package whose vendor URL moved blinded the entire Windows build and test
+# leg. The 404 is upstream and not ours to fix; requiring a tool we never invoke is.
+#
+# Optional keeps the row (a Windows dev box that wants qemu still gets it, and
+# manifest-symmetry still sees a Windows disposition) while letting install.ps1 warn and
+# continue -- exactly as `ollama` above does, for the same best-effort reason. It is also
+# what `manifest-realized.ts` already understands: `absent-optional` is a distinct verdict
+# and does not fail the lane.
+#
+# IF A WINDOWS LANE EVER RUNS QEMU, DELETE THE `optional` TOKEN. The justification here is
+# "nothing on Windows uses it", so the moment that stops being true the row must go back to
+# mandatory.
+qemu   winget=SoftwareFreedomConservancy.QEMU   choco=qemu   optional
 
 # Local-LLM core primitive (operator 2026-05-31 — graduated from deferred to Windows-native parity;
 # symmetric with manifests/brew's `ollama`). Provides the local move-next selector + observe.ts
