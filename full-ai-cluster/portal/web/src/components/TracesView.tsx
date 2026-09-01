@@ -56,7 +56,7 @@ export function TracesView({ fqn }: { fqn: string }) {
             const widthPct = Math.max(1.5, (s.durationMs / active.totalMs) * 100);
             return (
               <div key={s.id} className="grid grid-cols-[180px_1fr_56px] items-center gap-3 text-xs">
-                <div className="flex items-center gap-1.5 truncate"><span className={cn("size-2 shrink-0 rounded-sm", serviceColor[s.service] ?? "bg-muted-foreground")} /><span className="truncate" title={s.name}>{s.name}</span></div>
+                <div className="flex items-center gap-1.5 truncate"><span className={cn("size-2 shrink-0 rounded-xs", serviceColor[s.service] ?? "bg-muted-foreground")} /><span className="truncate" title={s.name}>{s.name}</span></div>
                 <div className="relative h-4 rounded bg-muted/40">
                   <div className={cn("absolute top-0 h-4 rounded", s.status === "error" ? "bg-destructive/70" : serviceColor[s.service] ?? "bg-primary/70")} style={{ left: `${leftPct}%`, width: `${widthPct}%` }} />
                 </div>

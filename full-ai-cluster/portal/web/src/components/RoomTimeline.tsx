@@ -136,7 +136,7 @@ export function RoomTimeline({ resource, admin = "otto" }: { resource: string; a
             onChange={(e) => setMsg(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && !e.shiftKey && (e.preventDefault(), send())}
             placeholder={`Ask ${admin} to do something…`}
-            className="flex-1 rounded-lg border border-input bg-background/60 px-3.5 py-2.5 text-sm shadow-sm outline-none placeholder:text-muted-foreground/60 focus-visible:ring-2 focus-visible:ring-ring"
+            className="flex-1 rounded-lg border border-input bg-background/60 px-3.5 py-2.5 text-sm shadow-xs outline-hidden placeholder:text-muted-foreground/60 focus-visible:ring-2 focus-visible:ring-ring"
           />
           <Button onClick={send} disabled={sending || !msg.trim()} size="icon" className="size-10 shrink-0">
             <SendHorizonal className="size-4" />

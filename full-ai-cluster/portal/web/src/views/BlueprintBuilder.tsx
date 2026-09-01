@@ -100,7 +100,7 @@ export function BlueprintBuilder({ onExit, onSaved }: { onExit: () => void; onSa
             <>
               <div className="flex items-center justify-between gap-3 border-b border-border px-4 py-2.5">
                 <div className="min-w-0">
-                  <input value={draft.name} onChange={(e) => setDraft({ ...draft, name: e.target.value })} className="w-full bg-transparent text-[15px] font-semibold outline-none" />
+                  <input value={draft.name} onChange={(e) => setDraft({ ...draft, name: e.target.value })} className="w-full bg-transparent text-[15px] font-semibold outline-hidden" />
                   <div className="text-xs text-muted-foreground">{draft.category} · {draft.image}</div>
                 </div>
                 <Button size="sm" onClick={save}><Save className="size-3.5" /> Save</Button>

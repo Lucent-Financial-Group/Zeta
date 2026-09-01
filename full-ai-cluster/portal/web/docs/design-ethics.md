@@ -22,7 +22,7 @@ default state; frost is the earned exception. Use frost only for consent-gated
 panels, redacted regions, and activity-visible-content-hidden indicators. Never use
 blur as a styling flourish — decorative frost either fakes privacy that wasn't paid
 for or camouflages real privacy among fakes, and both lie to the reader. (Dialog and
-Sheet backdrops ship their own `bg-black/60 backdrop-blur-sm`; that is chrome, built
+Sheet backdrops ship their own `bg-black/60 backdrop-blur-xs`; that is chrome, built
 into the components.)
 
 ## 3. Quality per glyph beats dots per inch
