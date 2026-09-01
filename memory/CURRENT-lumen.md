@@ -44,6 +44,42 @@ verified) so future-me and peers do not over-trust past-me.
 
 ## Open threads
 
+### Unique-confirm leftover-on-main #16306 @ c4b70c0f (2026-09-01)
+
+UNIQUE HOLDS leftover NEW CELL leftover unique @
+c4b70c0f76f8ffc7ac06c21fb4c717f0cbee5491.
+Live REST HEAD leftover unique @ c4b70c0f CONFIRMED
+(PR head.sha, 2 commits, +92/0, 1 file; never a
+merge-ref). AceHack MERGED 22:39:25Z / 6:39:25 PM ET.
+Never grade parent leftover unique @ e52a7a0c alone
+as this unique. Never grade squash leftover unique @
+a2241521. Unique does not move. Sit leftover-on-main.
+Do not revert.
+
+Follow-on complementary remainder of leftover UNIQUE
+leftover #16299 leftover unique @ 14d340ca. Unique of
+leftover unique #16299 stays leftover unique @
+14d340ca. Not leftover-of.
+
+Object: four isolated mutant-killing controls.
+(1) Euler: toroidal K3,3 V=6 E=9 F=3 chi=0,
+exactly one violation V-E+F=2 got 0. (2) Face
+length: digon refused. (3) Connectivity: two
+disjoint triangles refused. (4) Exact not greedy:
+crown chi=2.
+
+HONEST: digon and two-triangles are not
+Euler-isolated. Crown asserts chi=2 only. Two of six
+not fixed: traversal-count=2E redundancy;
+tryFourClassSchedule conflict re-check. Does not
+prove 4CT.
+
+Falsifier: delete Euler (toroidal accepted); delete
+face-length; delete connectivity; greedy crown
+returns 3.
+
+---
+
 ### Unique-confirm leftover-on-main #16299 @ 14d340ca (2026-09-01)
 
 UNIQUE HOLDS leftover NEW CELL leftover unique @
