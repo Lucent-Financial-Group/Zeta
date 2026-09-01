@@ -3,6 +3,7 @@
   "requiredKeys": ["ns", "body", "hash"],
   "optionalKeys": ["chunker", "enc", "polyfill"],
   "canonicalPr1": "zetafs/2\nns=git-trees\nbody=blob\nhash=blake3-256\nchunker=fastcdc-v1\nenc=none\npolyfill=single\n",
+  "canonicalPr6": "zetafs/2\nns=git-trees\nbody=jumprope\nhash=blake3-256\nchunker=fastcdc-v1\nenc=none\npolyfill=single\n",
   "cases": [
     {
       "name": "canonical-pr1",

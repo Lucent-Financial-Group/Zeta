@@ -107,8 +107,27 @@ ARG MISE_GITHUB_TOKEN
 # quote-free and the smoke already prints its own FAIL diagnostics. (Server-Core local build
 # 2026-05-31: install.ps1 succeeded end-to-end; the quoting bug + missing VC++ runtime were the
 # last blockers.)
+# The manifest-realized check is IN THIS RUN, not a layer of its own, for the reason
+# stated above: install.ps1's PATH additions are IN-PROCESS, so `bun` exists only inside
+# this layer. A separate `RUN bun ...` fails with CommandNotFoundException -- measured,
+# not predicted (PR #16225, first attempt).
+#
+# WHAT IT ADDS. `manifest-realized.ts` supports four manifests and was wired into one
+# lane (macOS), so `manifests/windows` had nothing checking that install.ps1 actually
+# lands its 14 rows. This is the Windows half of the macOS lane's cross-check:
+# install.ps1 resolves scoop -> winget -> chocolatey (the realizer); this reads the same
+# three indexes through an independent TypeScript parse (the verifier).
+#
+# `optional` rows do NOT fail it: `absent-optional` is a distinct verdict and only
+# non-optional absences set exit 1 -- so it asserts exactly what install.ps1 promises,
+# which is what lets it be a hard assert rather than advisory.
 RUN & 'C:\workspace\tools\setup\install.ps1' -SkipLoopRegister; `
     bun 'C:\workspace\src\Core.TypeScript\ci\windows-install-ps1-smoke.ts' --mode container; `
-    if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+    if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }; `
+    bun 'C:\workspace\tools\setup\manifest-realized.ts'; `
+    if ($LASTEXITCODE -ne 0) { `
+      Write-Host 'FAIL: install.ps1 did not satisfy manifests/windows -- rows above are DECLARED and ABSENT'; `
+      exit $LASTEXITCODE `
+    }
 
 RUN Write-Host "Slice 2c — install.ps1 Server-Core Docker validation COMPLETE"

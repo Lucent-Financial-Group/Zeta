@@ -962,6 +962,118 @@ export function readPublishedWatermark(
   return { kind: "watermark", runId };
 }
 
+/**
+ * Whether the thing that is SUPPOSED to publish the ledger is still switched on.
+ *
+ * This is a different question from `LedgerRead`, which only reports what the file says.
+ * Without it a ledger that stopped moving has exactly one reading -- "the tick computes
+ * and throws the result away" -- and that reading is WRONG whenever the publisher was
+ * turned off on purpose. `drift-sweep` was disabled deliberately on 2026-08-29 (it
+ * rewrote a 238KB JSON on every push to main plus a twice-hourly cron -- ~4.7MB of blobs
+ * in two days, the unbounded growth being held off until the repo split). The check then
+ * went red on every `gate` run on main and stayed there, and a loud signal that is always
+ * on is a loud signal nobody reads. That is what this distinction repairs.
+ *
+ * `unknown` is NOT `disabled`. A probe that failed tells you nothing about the publisher,
+ * and treating "could not look" as "off by decision" would convert this repair into a
+ * silencer for real breakage -- the same refusal as `Wall.Whitebox`, where an unknown
+ * licence blocks rather than permits.
+ */
+export type PublisherState =
+  | { readonly kind: "active" }
+  | { readonly kind: "disabled"; readonly state: string }
+  | { readonly kind: "unknown"; readonly why: string };
+
+export interface StalenessVerdict {
+  readonly level: "error" | "warning";
+  readonly title: string;
+  readonly message: string;
+}
+
+/**
+ * The publication verdict, as a pure function of (what the file says, how old the window
+ * is, whether the publisher is on). Pure so the branch that DOWNGRADES to a warning can be
+ * falsified directly -- the test that matters is not "disabled produces a warning" but
+ * "active and unknown still produce an error", because that is the branch a silencer would
+ * have to break.
+ */
+/** The workflow whose job is to land the ledger. Named once so the probe cannot drift from it. */
+export const DRIFT_PUBLISHER_WORKFLOW = "drift-sweep.yml";
+
+/**
+ * Ask GitHub whether the publisher is switched on. Every failure path returns `unknown`
+ * rather than a guess -- a probe that could not look must not be reported as a look that
+ * found nothing.
+ */
+export async function readPublisherState(
+  repo: string,
+  token: string,
+  fetchJson: (url: string, token: string) => Promise<{ readonly state?: unknown }>,
+): Promise<PublisherState> {
+  if (repo === "" || token === "") return { kind: "unknown", why: "no repo/token to probe with" };
+  try {
+    const wf = await fetchJson(
+      `https://api.github.com/repos/${repo}/actions/workflows/${DRIFT_PUBLISHER_WORKFLOW}`,
+      token,
+    );
+    const state = typeof wf.state === "string" ? wf.state : "";
+    if (state === "") return { kind: "unknown", why: "workflow carries no string state" };
+    return state === "active" ? { kind: "active" } : { kind: "disabled", state };
+  } catch (e) {
+    return { kind: "unknown", why: e instanceof Error ? e.message : String(e) };
+  }
+}
+
+export function stalenessVerdict(
+  ledger: LedgerRead,
+  oldest: number,
+  publisher: PublisherState,
+  ledgerPath: string,
+  runs: number,
+  latestRunId: number,
+): StalenessVerdict | null {
+  // An unreadable ledger is an error regardless of the publisher: a check that did not run
+  // must not read as one that passed, and "off by decision" never explains an absent file.
+  if (ledger.kind === "absent") {
+    return {
+      level: "error",
+      title: "drift ledger not readable",
+      message:
+        `LEDGER NOT READABLE: \`${ledgerPath}\` ${ledger.why}. This check compares the published ` +
+        "watermark against the folded window; with no watermark it has not run, and a check that did " +
+        "not run must not read as one that passed. If the file is genuinely new, publish it once; if " +
+        "this job stopped checking it out, restore it to the sparse-checkout list.",
+    };
+  }
+  if (!publicationIsStale(ledger.runId, oldest)) return null;
+
+  if (publisher.kind === "disabled") {
+    return {
+      level: "warning",
+      title: "drift publication is off by decision",
+      message:
+        `PUBLICATION OFF BY DECISION: \`${ledgerPath}\` is pinned at run ${ledger.runId} and the publisher ` +
+        `is \`${publisher.state}\`, so nothing is expected to land. The numbers below are FROZEN at that run, ` +
+        "not current -- read them as a snapshot, never as today's platform. This is reported rather than " +
+        "silenced because a frozen dashboard that looks live is the failure this job exists to catch; it is " +
+        "a warning rather than an error because a deliberate off-switch is not a defect.",
+    };
+  }
+  // active, or unknown -- unknown is not permissive.
+  const why =
+    publisher.kind === "unknown"
+      ? `the publisher's state could not be read (${publisher.why}), which is NOT evidence that it is off`
+      : "the publisher is active";
+  return {
+    level: "error",
+    title: "drift publication not landing",
+    message:
+      `PUBLICATION NOT LANDING: \`${ledgerPath}\` is pinned at run ${ledger.runId}, older than every one of the ` +
+      `${runs} runs in this window (newest ${latestRunId}), and ${why}. The tick computes and then throws ` +
+      "the result away -- the dashboard is showing stale numbers from behind a green check.",
+  };
+}
+
 async function main(): Promise<number> {
   const argv = process.argv.slice(2);
   const repo = flagValue(argv, "--repo", process.env["GITHUB_REPOSITORY"] ?? "");
@@ -1019,25 +1131,28 @@ async function main(): Promise<number> {
   const report = foldAbsorption(records, thresholds);
   const currentRun = thisRunId > 0 ? (records.find((r) => r.id === thisRunId) ?? null) : null;
   const liveness = assertDetectorLive(currentRun);
+  // Offline folds cannot probe, and an unprobed publisher is `unknown` -- which still errors
+  // on a stale ledger. The downgrade to a warning is only ever reached by a POSITIVE reading.
+  const publisher: PublisherState = offline
+    ? { kind: "unknown", why: "--offline: the publisher was not probed" }
+    : await readPublisherState(repo, process.env["GH_TOKEN"] ?? process.env["GITHUB_TOKEN"] ?? "", ghJson);
   const ledger = readPublishedWatermark(ledgerPath);
-  const stale =
-    ledger.kind === "absent"
-      ? `LEDGER NOT READABLE: \`${ledgerPath}\` ${ledger.why}. This check compares the published ` +
-        "watermark against the folded window; with no watermark it has not run, and a check that did " +
-        "not run must not read as one that passed. If the file is genuinely new, publish it once; if " +
-        "this job stopped checking it out, restore it to the sparse-checkout list."
-      : publicationIsStale(ledger.runId, oldestRunId(records, thresholds.windowRuns))
-        ? `PUBLICATION NOT LANDING: \`${ledgerPath}\` is pinned at run ${ledger.runId}, older than every one of the ` +
-          `${report.runs} runs in this window (newest ${report.latestRunId}). The tick computes and then throws ` +
-          "the result away -- the dashboard is showing stale numbers from behind a green check."
-        : null;
+  const verdict = stalenessVerdict(
+    ledger,
+    oldestRunId(records, thresholds.windowRuns),
+    publisher,
+    ledgerPath,
+    report.runs,
+    report.latestRunId,
+  );
+  const stale = verdict?.message ?? null;
 
   const markdown = renderMarkdown(report, liveness, stale);
   console.log(markdown);
 
   // LOUD: annotations first, so they are the first thing the run page shows.
   for (const line of annotationLines(report)) console.log(line);
-  if (stale !== null) console.log(`::error title=drift publication not landing::${stale}`);
+  if (verdict !== null) console.log(`::${verdict.level} title=${verdict.title}::${verdict.message}`);
   if (liveness.status === "quiet") console.log(`::error title=drift detector went quiet::${liveness.reason}`);
   // A measured platform limit is a WARNING. Making it an error was eating the real alarm:
   // rerun-cancelled-gate.yml re-runs every cancelled gate run, so the false positive fired

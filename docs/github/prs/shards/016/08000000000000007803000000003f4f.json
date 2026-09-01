@@ -1,0 +1,12 @@
+{
+  "pr_number": 16207,
+  "archive_path": "docs/history/pr-reviews/PR-16207-feat-cluster-make-cilium-s-lifts-when-evaluable-a-provider-conditional-exclusion.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-01T03:54:08.145Z",
+  "schema_version": "v1",
+  "commit_sha": "82cd829dbcbcdaf82bc98a4bf40972974e6e35c5",
+  "title": "feat(cluster): make cilium's LIFTS WHEN evaluable — a provider-conditional exclusion",
+  "state": "MERGED",
+  "merged_at": "2026-09-01T03:53:27Z",
+  "head_ref": "shadow/provider-aware-cilium-exclusion"
+}

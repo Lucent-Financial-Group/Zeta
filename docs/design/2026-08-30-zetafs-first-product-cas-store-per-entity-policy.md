@@ -1405,14 +1405,14 @@ Each PR is independently reviewable and mergeable. Tests green or it does not la
 - **Title:** `zetafs: per-entity history policy as Z-set satellite; ByPrefix copies at first bind`
 - **Files:** policy module using `Policy.fs` kernel; two-parent fixture; source vs `target/` fixtures not OS dogma
 - **Depends on:** PR3
-- **Changes:** Settles names-are-tags section 6.3 / 8.3 in code. `rolling` knobs stay unmetered/named. Snap refs pin. E6.
+- **Changes:** Settles names-are-tags section 6.3 / 8.3 in code. `rolling` knobs stay unmetered/named. Snap refs pin. E6. **Landing:** `src/Core/ZetaFsPolicy.fs` — History/Placement/DurabilityDefault as a Z-set satellite; `copyAtFirstBind` copies nearest ByPrefix or VolumeDefault onto ByEntity; later prefix edits do not rewrite hubs; two-parent fixture is one policy. Source vs `target/` are named fixtures, not OS dogma.
 
 ### PR6 -- Jumprope body over FastCDC v1
 
 - **Title:** `zetafs: Jumprope leaf/limb/trunk over FastCdc.v1 (081KTH1Z6G708QG0R002KCPHWF)`
 - **Files:** new Jumprope module; uses `src/Core/FastCdc.fs` **unchanged** (comments are stale; golden-vectors.json is the pin); hex-in-JSON vectors; seek tests; two-files-share-chunk
 - **Depends on:** PR1 (ContentId-256); **can parallel PR3-PR5** if freeze is stubbed
-- **Changes:** FORMAT `body=jumprope` when wired. Homogeneous rope per file. No `delta/1`. Optional comment-only FastCdc.fs peel in this PR or a tiny follow-up.
+- **Changes:** FORMAT `body=jumprope` when wired. Homogeneous rope per file. No `delta/1`. Optional comment-only FastCdc.fs peel in this PR or a tiny follow-up. **Landing:** `src/Core/ZetaFsJumprope.fs` — leaf/limb/trunk over FastCdc.v1, hash-as-probability level, seek by cumulative span, two-files-share-chunk. New init writes `body=jumprope`; git-trees reader accepts jumprope and still refuses `ns=bindings`. FastCdc.fs algorithm unchanged.
 
 ### PR7 -- WAL freeze + Buffered|Journaled|Durable + observer
 
@@ -1426,7 +1426,7 @@ Each PR is independently reviewable and mergeable. Tests green or it does not la
 - **Title:** `zetafs: IPlacement HRW over device ids; simulated-disk stripe/mirror/single+parity`
 - **Files:** new placement module; HRW wrapper over `ConsistentHash` mixer (**not** `Pick(key, n)`); simulated two-disk harness; **no** Ceph source
 - **Depends on:** PR1; independently mergeable with PR7 if CAS put is stubbed
-- **Changes:** Pure function + epoch map. Polyfill remains `single` (E9). Tests: sector hole reconstructs; whole-device loss does not; stripe is zero redundancy. Do not advertise ECC on `.zetafs`. Expansion ratio stays `toy`.
+- **Changes:** Pure function + epoch map. Polyfill remains `single` (E9). Tests: sector hole reconstructs; whole-device loss does not; stripe is zero redundancy. Do not advertise ECC on `.zetafs`. Expansion ratio stays `toy`. **Landing:** `src/Core/ZetaFsPlacement.fs` — HRW `score = mix(ContentId, deviceId)` via SplitMix64; does not call `RendezvousHash.Pick(key, n)`. Simulated XOR repair for `single+parity`. Polyfill profile is `single`.
 
 ### PR9 -- Unencrypted control + nonce-explicit GCM harness
 

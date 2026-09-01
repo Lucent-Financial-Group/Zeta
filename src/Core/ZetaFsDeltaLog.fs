@@ -51,7 +51,7 @@ type ZetaFsDeltaLog<'K when 'K : comparison>
         match ZetaFsFormat.tryRead fs root with
         | Error e -> invalidOp (ZetaFsFormat.describe e)
         | Ok m ->
-            match ZetaFsFormat.requireGitTreesBlob m with
+            match ZetaFsFormat.requireGitTrees m with
             | Error e -> invalidOp (ZetaFsFormat.describe e)
             | Ok accepted -> accepted
 

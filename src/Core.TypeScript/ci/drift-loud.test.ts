@@ -19,27 +19,30 @@
 import { describe, expect, test } from "bun:test";
 
 import {
+  CANARY_JOB_NAME,
+  CANARY_STEP_NAME,
+  DEFAULT_THRESHOLDS,
+  ROLLUP_JOB_NAME,
+  SWALLOWED_STEP,
   annotationLines,
   assertDetectorLive,
   bandOf,
-  CANARY_JOB_NAME,
   censusOfRun,
-  DEFAULT_THRESHOLDS,
   foldAbsorption,
+  isInstrument,
   oldestRunId,
   orderNewestFirst,
-  CANARY_STEP_NAME,
   publicationIsStale,
   readPublishedWatermark,
+  readPublisherState,
   renderMarkdown,
-  ROLLUP_JOB_NAME,
-  isInstrument,
   severityOf,
-  SWALLOWED_STEP,
+  stalenessVerdict,
   type JobRecord,
   type RunRecord,
   type Thresholds,
 } from "./drift-loud.ts";
+import type { LedgerRead, PublisherState } from "./drift-loud.ts";
 
 const WIN = "build-and-test (windows-2025)";
 const MD = "lint (markdownlint)";
@@ -618,5 +621,114 @@ describe("the exit line cannot claim more than the verdict supports", () => {
     expect(md).toContain("UNVERIFIABLE (not a failure)");
     expect(md).not.toContain("Detector liveness: OK");
     expect(md).not.toContain("Detector liveness: **FAILED**");
+  });
+});
+
+// ---------------------------------------------------------------------------
+// PUBLISHER STATE: "off by decision" is not "silently broken"
+//
+// `drift-sweep` was disabled deliberately (it rewrote a 238KB JSON on every push to main
+// plus a twice-hourly cron). The check then reported PUBLICATION NOT LANDING on every
+// `gate` run on main and stayed red -- a loud signal that is always on is one nobody reads.
+//
+// The interesting tests here are NOT that `disabled` downgrades to a warning. They are that
+// `active` and `unknown` still ERROR: that is the branch a silencer would have to break, so
+// that is the branch the falsifier has to hold. Mutating the downgrade condition from
+// `kind === "disabled"` to `kind !== "active"` must turn these red.
+// ---------------------------------------------------------------------------
+describe("stalenessVerdict — publisher state", () => {
+  const STALE: LedgerRead = { kind: "watermark", runId: 1 };
+  const FRESH: LedgerRead = { kind: "watermark", runId: 9_999_999 };
+  const OLDEST = 100;
+  const v = (l: LedgerRead, p: PublisherState) => stalenessVerdict(l, OLDEST, p, "data/platform-drift.json", 60, 200);
+
+  test("disabled publisher + stale ledger => WARNING that names the off-switch, not breakage", () => {
+    const r = v(STALE, { kind: "disabled", state: "disabled_manually" });
+    expect(r).not.toBeNull();
+    expect(r?.level).toBe("warning");
+    expect(r?.message).toContain("OFF BY DECISION");
+    expect(r?.message).toContain("disabled_manually");
+    // It must still say the numbers are not current -- downgrading the level must never
+    // downgrade the honesty of the surface.
+    expect(r?.message).toContain("FROZEN");
+    // and it must NOT accuse the tick of throwing results away
+    expect(r?.message).not.toContain("throws");
+  });
+
+  test("ACTIVE publisher + stale ledger => still an ERROR (the anti-silencer case)", () => {
+    const r = v(STALE, { kind: "active" });
+    expect(r?.level).toBe("error");
+    expect(r?.message).toContain("PUBLICATION NOT LANDING");
+    expect(r?.message).toContain("the publisher is active");
+  });
+
+  test("UNKNOWN publisher + stale ledger => still an ERROR; unknown is not permissive", () => {
+    const r = v(STALE, { kind: "unknown", why: "GitHub API 503" });
+    expect(r?.level).toBe("error");
+    expect(r?.message).toContain("PUBLICATION NOT LANDING");
+    // the message must say the probe failed AND that this is not evidence of an off-switch
+    expect(r?.message).toContain("GitHub API 503");
+    expect(r?.message).toContain("NOT evidence");
+  });
+
+  test("absent ledger errors regardless of publisher state — off-by-decision never explains a missing file", () => {
+    for (const p of [
+      { kind: "disabled", state: "disabled_manually" },
+      { kind: "active" },
+      { kind: "unknown", why: "x" },
+    ] as readonly PublisherState[]) {
+      const r = v({ kind: "absent", why: "cannot be read (ENOENT)" }, p);
+      expect(r?.level).toBe("error");
+      expect(r?.message).toContain("LEDGER NOT READABLE");
+    }
+  });
+
+  test("fresh ledger => no verdict, whatever the publisher is doing", () => {
+    for (const p of [
+      { kind: "disabled", state: "disabled_manually" },
+      { kind: "active" },
+      { kind: "unknown", why: "x" },
+    ] as readonly PublisherState[]) {
+      expect(v(FRESH, p)).toBeNull();
+    }
+  });
+});
+
+describe("readPublisherState — every failure path is `unknown`, never a guess", () => {
+  const ok = (state: string) => async () => ({ state });
+
+  test("active workflow reads active", async () => {
+    expect(await readPublisherState("o/r", "t", ok("active"))).toEqual({ kind: "active" });
+  });
+
+  test("disabled_manually reads disabled and carries the raw state through", async () => {
+    expect(await readPublisherState("o/r", "t", ok("disabled_manually"))).toEqual({
+      kind: "disabled",
+      state: "disabled_manually",
+    });
+  });
+
+  test("a throwing probe is `unknown`, not `disabled` — a failed look is not a finding", async () => {
+    const r = await readPublisherState("o/r", "t", async () => {
+      throw new Error("GitHub API 403");
+    });
+    expect(r.kind).toBe("unknown");
+    expect(r.kind === "unknown" ? r.why : "").toContain("403");
+  });
+
+  test("missing credential or repo is `unknown` — it never silently reads as active", async () => {
+    let looked = false;
+    const spy = async () => {
+      looked = true;
+      return { state: "active" };
+    };
+    expect((await readPublisherState("", "t", spy)).kind).toBe("unknown");
+    expect((await readPublisherState("o/r", "", spy)).kind).toBe("unknown");
+    expect(looked).toBe(false);
+  });
+
+  test("a workflow with no string state is `unknown`, not active", async () => {
+    const r = await readPublisherState("o/r", "t", async () => ({}));
+    expect(r.kind).toBe("unknown");
   });
 });
