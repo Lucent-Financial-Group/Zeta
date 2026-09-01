@@ -20,9 +20,10 @@ not copy expression into Zeta.
 
 ## What is true today
 
-- Factory rust is mise-pinned **1.98.0** via `tools/setup/install.sh`
-  (ace). Feldera 0.342.0 MSRV is 1.93.1, so the factory pin is enough.
-  Do not `rustup install` a second compiler to build prior-art.
+- Factory rust is mise-pinned **1.96.0** via `tools/setup/install.sh`
+  (ace). Feldera 0.342.0 MSRV is 1.93.1. rustc **1.97.0 is first-bad**
+  (`dbsp` ICE); 1.96.0 is last-good. Do not `rustup install` a second
+  compiler to build prior-art.
 - Clone: `references/prior-art/feldera/` (gitignored), SHA `48312b6`.
 - Native Rust Nexmark (not SQL / pipeline-manager):
 
@@ -56,12 +57,14 @@ not copy expression into Zeta.
 
 Feldera 0.342.0 `48312b6`, `--query q1 --query q2 --max-events 100000 --cpu-cores 1`.
 Binary was `cargo bench --no-run` under rustc **1.93.1** (Feldera MSRV).
-Factory pin is rustc **1.98.0** via `install.sh`. Compiling Feldera's
-`dbsp` crate on 1.98.0 SIGSEGV'd this Darwin LLVM twice (full
-`profile.bench` debuginfo, then Release `line-tables-only`). SplitMix64
-oracle + golden vector pass on 1.98.0. Do not quote 1.98.0 Feldera
-events/s until that crate compiles here. The table below is the 1.93.1
-binary (Feldera MSRV), labeled as such.
+Factory pin is rustc **1.96.0** (last-good). Compiling Feldera's
+`dbsp` crate on 1.97.0 and 1.98.0 ICE's in `rustc_next_trait_solver`.
+1.98.0 also SIGSEGV'd this Darwin LLVM twice before the ICE became
+reproducible. SplitMix64 oracle + golden vector pass on 1.98.0. Do not
+quote 1.97+ Feldera events/s. The table below is the 1.93.1 binary
+(Feldera MSRV), labeled as such. A 1.96.0 `dbsp` lib linked on this
+box 2026-09-01; Nexmark numbers from that compiler are not in this
+table yet.
 
 | Query | Events | Cores | Elapsed | Throughput | Peak RSS |
 |---|---:|---:|---:|---:|---:|
@@ -121,16 +124,32 @@ and warns (does not scoop) when it is not. Unix cmake is apt/brew.
 ## Not yet a result
 
 A longer unique-key BDN pasted into `docs/BENCHMARKS.md`, and a
-factory-rust 1.98.0 rebuild of Feldera `dbsp` on this box.
+factory-rust **1.96.0** Nexmark run of Feldera (lib linked; harness
+not yet timed).
+
+## rustc bisect (Feldera `dbsp` `--release`, debuginfo=0)
+
+Same box, 2026-09-01, `cargo +<ver> build --release -p dbsp`.
+Feldera 0.342.0 `48312b69`. Separate `CARGO_TARGET_DIR` per version.
+
+| rustc | date | `dbsp` |
+|---|---|---|
+| 1.93.1 | MSRV | PASS (earlier Nexmark binary) |
+| 1.94.0 | 2026-03-02 | not probed (between two PASSes) |
+| 1.95.0 | 2026-04-14 | not probed (between two PASSes) |
+| **1.96.0** `ac68faa20` | 2026-05-25 | **PASS** (last-good) |
+| **1.97.0** `2d8144b78` | 2026-07-07 | **FAIL rc=101** (first-bad) |
+| 1.98.0 `88d9e12ae` | 2026-08-18 | FAIL rc=101 (same ICE; also earlier LLVM SIGSEGV) |
+
+1.94/1.95 were skipped: 1.93.1 and 1.96.0 both PASS, so the break is
+in (1.96.0, 1.97.0]. Factory pin is **1.96.0**.
 
 1.98.0 first SIGSEGV'd LLVM, then ICE'd in `rustc_next_trait_solver`
-(`structural_traits.rs:1012`) compiling `dbsp`. Cache-corruption was
-a live hypothesis on this Mac; it is now **checked**. 2026-09-01:
-`rm -rf target` (5.8G) + `CARGO_INCREMENTAL=0` + `CARGO_BUILD_JOBS=2`
-under rustc 1.98.0 (`88d9e12ae`). aws-lc-sys / cmake / zstd-sys
-compiled; `dbsp` ICE'd at the **same** trait-solver line after ~5
-min of a clean graph (exit 101). So this is not a stale
-`target/` blob.
+compiling `dbsp`. Cache-corruption was a live hypothesis on this Mac;
+it is now **checked**. 2026-09-01: `rm -rf target` (5.8G) +
+`CARGO_INCREMENTAL=0` under rustc 1.98.0. aws-lc-sys / cmake / zstd-sys
+compiled; `dbsp` ICE'd after ~5 min of a clean graph (exit 101).
+debuginfo=0 did not change the ICE. 1.97.0 ICE'd the same way.
 
 The ICE is a **structured** `panic!`, not a SIGSEGV:
 
@@ -143,25 +162,16 @@ could not replace Alias { kind: ProjectionTy {
 
 Stack: `ReplaceProjectionWith::try_eagerly_replace_alias` <-
 `predicates_for_object_candidate`. The `panic!` is still in rustc
-1.98.0 (`88d9e12ae`) at `structural_traits.rs:1012` ("This shouldn't
-happen."). Same site and panic string as rust-lang/rust#152789
-(2026-02-18, `-Znext-solver` dyn object candidates, labels
-A-dyn-trait / WG-trait-system-refactor). rust-analyzer#21605 is the
-same panic on `dyn Fn` `Output` projections. This instance is Feldera
-`StarJoinFuncTrait` + `FnOnce::Output` on a dyn object bound, not
-#152789's minimized `Wrap<U: Foo>` repro — same mechanism, heavier
-type.
+1.97.0 / 1.98.0 at `structural_traits.rs` `try_eagerly_replace_alias`
+("This shouldn't happen."). Same site and panic string as
+rust-lang/rust#152789 (2026-02-18, `-Znext-solver` dyn object
+candidates). rust-analyzer#21605 is the same panic on `dyn Fn`
+`Output` projections. This instance is Feldera `StarJoinFuncTrait` +
+`FnOnce::Output` on a dyn object bound.
 
 A coherent panic_fmt naming `StarJoinFuncTrait` is a compiler-bug
 class, not a bit-flip. The earlier LLVM SIGSEGVs on this Mac remain a
-separate hardware-shaped symptom. Discriminator: compile `dbsp` on
-GHA ubuntu-24.04 / macos-26 / windows-2025 via
-`feldera-native.yml` (`workflow_dispatch` + self-path filter; factory rust 1.98.0;
-`cargo build --release -p dbsp`; `debuginfo=0` because `cargo bench`
-uses `profile.bench` debuginfo=2). ICE on the runners => rustc 1.98.0
-x Feldera 0.342.0. Green on the runners, red here => this machine.
-
-A local retry with `CARGO_PROFILE_RELEASE_DEBUG=0` +
-`RUSTFLAGS=-C debuginfo=0` + `cargo build --release -p dbsp` is in
-flight (the missed knob). Same-box numbers stay the 1.93.1 MSRV
-binary until a 1.98.0 `dbsp` actually links.
+separate hardware-shaped symptom. `feldera-native.yml` compiles
+factory rust (now 1.96.0) `dbsp` on GHA ubuntu-24.04 / macos-26 /
+windows-2025. Same-box Nexmark numbers stay the 1.93.1 binary until a
+1.96.0 harness run is timed.

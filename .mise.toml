@@ -137,12 +137,15 @@ golangci-lint = "2.13.1"
 # `cross-verify` floor. Bump this line and run it; it names every
 # file and line that still has to move.
 #
-# 1.87.0 -> 1.98.0 (2026-09-01): latest stable as of rustup
-# `stable-aarch64-apple-darwin` (88d9e12ae, 2026-08-18). Feldera
-# 0.342.0 MSRV is 1.93.1; the factory pin is the one compiler
-# `tools/setup/install.sh` / ace install. Do not rustup-install a
-# second toolchain to build prior-art.
-rust = { version = "1.98.0", components = ["rustfmt", "clippy"], targets = ["wasm32-unknown-unknown"] }
+# 1.87.0 -> 1.98.0 (2026-09-01) was latest stable. Feldera 0.342.0
+# dbsp ICE's on rustc 1.97.0+ (first-bad 1.97.0 / 2d8144b78; 1.98.0
+# same StarJoinFuncTrait / FnOnce::Output next-solver panic at
+# structural_traits.rs try_eagerly_replace_alias). Last-good on this
+# box: 1.96.0 (ac68faa20, 2026-05-25). MSRV is 1.93.1. Pin the last
+# compiler that actually builds prior-art, not the one that ICE's.
+# Measured 2026-09-01: cargo +1.96.0 build --release -p dbsp PASS;
+# cargo +1.97.0 same command FAIL rc=101.
+rust = { version = "1.96.0", components = ["rustfmt", "clippy"], targets = ["wasm32-unknown-unknown"] }
 # Zig 0.13.0 -- wasm32-freestanding compiler substrate (Oracle 11).
 # Builds the 1,314-byte `src/wasm-dla/bytelock/dla-canonical-zig.wasm` byte-lock
 # substrate; the exact command lives in `bytelock/build-substrates.mjs`. Verified

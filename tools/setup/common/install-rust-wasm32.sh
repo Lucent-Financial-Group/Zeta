@@ -5,7 +5,7 @@
 # Idempotent: skips if rustup and the wasm32 target are already installed.
 #
 # Desired-state rationale:
-#   - Rust is declared in .mise.toml (rust = "1.98.0") for dev workstations.
+#   - Rust is declared in .mise.toml (rust = "1.96.0") for dev workstations.
 #   - On CI runners and cluster nodes where mise is not available, this script
 #     provides the same pinned version via rustup.rs.
 #   - The wasm32-unknown-unknown target is required for Oracle 12 (Rust WASM
@@ -13,12 +13,12 @@
 #
 # Usage:
 #   bash tools/setup/common/install-rust-wasm32.sh
-#   RUST_VERSION=1.98.0 bash tools/setup/common/install-rust-wasm32.sh
+#   RUST_VERSION=1.96.0 bash tools/setup/common/install-rust-wasm32.sh
 #
 # Called by: tools/setup/linux.sh (after apt packages)
 set -euo pipefail
 
-RUST_VERSION="${RUST_VERSION:-1.98.0}"
+RUST_VERSION="${RUST_VERSION:-1.96.0}"
 
 # Select the exact pinned toolchain before any rustc/rustup probe. A bare
 # rustup proxy may otherwise refresh channel metadata even when this version

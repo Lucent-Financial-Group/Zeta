@@ -7,15 +7,14 @@
 #   * pull_request / push-to-main path-filtered to THIS file, so adding
 #     or editing the workflow is the only PR that pays the compile --
 #     which is this PR, and then almost never.
-# Discriminator: "this Mac's memory" vs "rustc 1.98.0 cannot compile
-# Feldera 0.342.0 edition 2024".
+# Discriminator was rustc 1.97.0+ vs this Mac. Bisect 2026-09-01:
+# 1.96.0 PASS, 1.97.0 FAIL (same ICE), 1.98.0 FAIL. Factory pin is
+# last-good 1.96.0.
 #
-# The local ICE is rustc_next_trait_solver try_eagerly_replace_alias
-# (structural_traits.rs:1012 on rustc 1.98.0 / 88d9e12ae):
+# ICE: rustc_next_trait_solver try_eagerly_replace_alias
+# (first-bad rustc 1.97.0 / 2d8144b78; 1.98.0 same):
 # "could not replace Alias { FnOnce::Output, ... StarJoinFuncTrait ... }".
 # Same panic site as rust-lang/rust#152789 (next-solver dyn object candidates).
-# A structured panic_fmt is a compiler bug class, not a bit-flip signature.
-# Runners decide whether 1.98.0 does it off this machine too.
 #
 # Pin: feldera/feldera 0.342.0 at 48312b69bde1af8ab8c6bc3551c9545897664b26
 # (local clone references/prior-art/feldera, gitignored).
@@ -46,7 +45,7 @@ env:
   CARGO_PROFILE_RELEASE_DEBUG: "0"
   CARGO_TERM_COLOR: always
   RUSTFLAGS: "-C debuginfo=0"
-  RUSTUP_TOOLCHAIN: "1.98.0"
+  RUSTUP_TOOLCHAIN: "1.96.0"
   FELDERA_SHA: 48312b69bde1af8ab8c6bc3551c9545897664b26
 
 jobs:
@@ -70,7 +69,7 @@ jobs:
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: |
-            ~/.rustup/toolchains/1.98.0-*
+            ~/.rustup/toolchains/1.96.0-*
             ~/.rustup/settings.toml
             ~/.rustup/update-hashes
             ~/.cargo
@@ -99,7 +98,7 @@ jobs:
           path: .feldera-native
           persist-credentials: false
 
-      - name: rustc is factory 1.98.0
+      - name: rustc is factory 1.96.0
         run: rustc -V
 
       - name: Compile dbsp Release (debuginfo=0)

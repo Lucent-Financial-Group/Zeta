@@ -78,7 +78,7 @@ describe("Rust toolchain provisioning is DECLARED, not topped up by shell", () =
   });
 
   test("the pinned version survives the move from string to table form", () => {
-    expect(rustDeclaration().version).toBe("1.98.0");
+    expect(rustDeclaration().version).toBe("1.96.0");
   });
 
   // Measured on mise 2026.6.14 while landing this change: `.mise.full.toml` is
@@ -112,11 +112,11 @@ describe("Rust setup stays offline when the cache is complete", () => {
   // no-mise cluster-bootstrap path, where the .mise.toml declaration cannot run.
   test("installed Rust and wasm target do not mutate the rustup default", () => {
     withFakeCommands((bin, home, log) => {
-      writeCommand(bin, "rustc", 'echo "rustc 1.98.0"');
+      writeCommand(bin, "rustc", 'echo "rustc 1.96.0"');
       writeCommand(
         bin,
         "rustup",
-        'case "$*" in "--version") echo "rustup 1.28.2" ;; "toolchain list") echo "1.98.0-x86_64-unknown-linux-gnu" ;; "target list --installed") echo "wasm32-unknown-unknown" ;; *) echo "$*" >> "$RUSTUP_CALL_LOG"; exit 99 ;; esac',
+        'case "$*" in "--version") echo "rustup 1.28.2" ;; "toolchain list") echo "1.96.0-x86_64-unknown-linux-gnu" ;; "target list --installed") echo "wasm32-unknown-unknown" ;; *) echo "$*" >> "$RUSTUP_CALL_LOG"; exit 99 ;; esac',
       );
 
       const result = runScript(WASM_SCRIPT, bin, home, log);
@@ -127,7 +127,7 @@ describe("Rust setup stays offline when the cache is complete", () => {
         );
       }
       expect(result.status).toBe(0);
-      expect(result.stdout).toContain("Rust 1.98.0 + wasm32-unknown-unknown ready");
+      expect(result.stdout).toContain("Rust 1.96.0 + wasm32-unknown-unknown ready");
       expect(existsSync(log)).toBe(false);
     });
   });
