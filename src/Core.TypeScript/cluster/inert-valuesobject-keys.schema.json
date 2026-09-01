@@ -658,7 +658,7 @@
       "dynamic": [],
       "charts": ["<root>=hindsight@0.3.0"]
     },
-    "https://argoproj.github.io/argo-helm|argo-cd|7.7.10": {
+    "https://argoproj.github.io/argo-helm|argo-cd|10.6.0": {
       "literal": {
         "apiVersionOverrides": {},
         "applicationSet": {
@@ -701,6 +701,7 @@
             }
           },
           "deploymentAnnotations": {},
+          "deploymentLabels": {},
           "deploymentStrategy": {},
           "dnsConfig": {},
           "dnsPolicy": {},
@@ -713,6 +714,14 @@
           "extraEnvFrom": {},
           "extraVolumeMounts": {},
           "extraVolumes": {},
+          "httproute": {
+            "annotations": {},
+            "enabled": {},
+            "hostnames": {},
+            "labels": {},
+            "parentRefs": {},
+            "rules": {}
+          },
           "image": {
             "imagePullPolicy": {},
             "repository": {},
@@ -734,6 +743,23 @@
             "tls": {}
           },
           "initContainers": {},
+          "listenerset": {
+            "allowedRoutes": {},
+            "annotations": {},
+            "enabled": {},
+            "hostname": {},
+            "labels": {},
+            "listenerName": {},
+            "listeners": {},
+            "parentRef": {},
+            "port": {},
+            "protocol": {},
+            "tls": {
+              "enabled": {},
+              "mode": {},
+              "secretName": {}
+            }
+          },
           "livenessProbe": {
             "enabled": {},
             "failureThreshold": {},
@@ -768,6 +794,9 @@
             }
           },
           "name": {},
+          "networkPolicy": {
+            "create": {}
+          },
           "nodeSelector": {},
           "pdb": {
             "annotations": {},
@@ -805,9 +834,129 @@
             "labels": {},
             "name": {}
           },
+          "startupProbe": {
+            "enabled": {},
+            "failureThreshold": {},
+            "initialDelaySeconds": {},
+            "periodSeconds": {},
+            "successThreshold": {},
+            "timeoutSeconds": {}
+          },
           "terminationGracePeriodSeconds": {},
           "tolerations": {},
-          "topologySpreadConstraints": {}
+          "topologySpreadConstraints": {},
+          "vpa": {
+            "annotations": {},
+            "containerPolicy": {},
+            "enabled": {},
+            "labels": {},
+            "recommenders": {},
+            "updateMode": {}
+          }
+        },
+        "commitServer": {
+          "affinity": {},
+          "automountServiceAccountToken": {},
+          "containerSecurityContext": {
+            "allowPrivilegeEscalation": {},
+            "capabilities": {
+              "drop": {}
+            },
+            "readOnlyRootFilesystem": {},
+            "runAsNonRoot": {},
+            "seccompProfile": {
+              "type": {}
+            }
+          },
+          "deploymentAnnotations": {},
+          "deploymentLabels": {},
+          "deploymentStrategy": {},
+          "dnsConfig": {},
+          "dnsPolicy": {},
+          "enabled": {},
+          "envFrom": {},
+          "extraArgs": {},
+          "extraEnv": {},
+          "extraEnvFrom": {},
+          "extraVolumeMounts": {},
+          "extraVolumes": {},
+          "hostNetwork": {},
+          "image": {
+            "imagePullPolicy": {},
+            "repository": {},
+            "tag": {}
+          },
+          "imagePullSecrets": {},
+          "lifecycle": {},
+          "livenessProbe": {
+            "enabled": {},
+            "failureThreshold": {},
+            "httpPath": {},
+            "initialDelaySeconds": {},
+            "periodSeconds": {},
+            "timeoutSeconds": {}
+          },
+          "metrics": {
+            "enabled": {},
+            "service": {
+              "annotations": {},
+              "clusterIP": {},
+              "labels": {},
+              "portName": {},
+              "servicePort": {},
+              "type": {}
+            }
+          },
+          "name": {},
+          "networkPolicy": {
+            "create": {}
+          },
+          "nodeSelector": {},
+          "podAnnotations": {},
+          "podLabels": {},
+          "priorityClassName": {},
+          "readinessProbe": {
+            "enabled": {},
+            "failureThreshold": {},
+            "httpPath": {},
+            "initialDelaySeconds": {},
+            "periodSeconds": {},
+            "timeoutSeconds": {}
+          },
+          "resources": {},
+          "runtimeClassName": {},
+          "service": {
+            "annotations": {},
+            "labels": {},
+            "port": {},
+            "portName": {}
+          },
+          "serviceAccount": {
+            "annotations": {},
+            "automountServiceAccountToken": {},
+            "create": {},
+            "labels": {},
+            "name": {}
+          },
+          "startupProbe": {
+            "enabled": {},
+            "failureThreshold": {},
+            "httpPath": {},
+            "initialDelaySeconds": {},
+            "periodSeconds": {},
+            "timeoutSeconds": {}
+          },
+          "terminationGracePeriodSeconds": {},
+          "tolerations": {},
+          "topologySpreadConstraints": {},
+          "vpa": {
+            "annotations": {},
+            "containerPolicy": {},
+            "enabled": {},
+            "labels": {},
+            "recommenders": {},
+            "updateMode": {}
+          }
         },
         "configs": {
           "clusterCredentials": {},
@@ -817,7 +966,12 @@
             },
             "annotations": {},
             "application": {
-              "instanceLabelKey": {}
+              "instanceLabelKey": {},
+              "sync": {
+                "impersonation": {
+                  "enabled": {}
+                }
+              }
             },
             "create": {},
             "dex": {
@@ -829,15 +983,28 @@
             "oidc": {
               "config": {}
             },
-            "server": {
-              "rbac": {
-                "log": {
-                  "enforce": {
-                    "enable": {}
+            "resource": {
+              "customizations": {
+                "ignoreResourceUpdates": {
+                  "ConfigMap": {},
+                  "Endpoints": {},
+                  "all": {},
+                  "apps_ReplicaSet": {},
+                  "argoproj": {
+                    "io_Application": {},
+                    "io_Rollout": {}
+                  },
+                  "autoscaling_HorizontalPodAutoscaler": {},
+                  "discovery": {
+                    "k8s": {
+                      "io_EndpointSlice": {}
+                    }
                   }
                 }
-              }
+              },
+              "exclusions": {}
             },
+            "resourceExclusionsAdditional": {},
             "statusbadge": {
               "enabled": {}
             },
@@ -845,7 +1012,9 @@
               "hard": {
                 "reconciliation": {}
               },
-              "reconciliation": {}
+              "reconciliation": {
+                "jitter": {}
+              }
             }
           },
           "cmp": {
@@ -864,77 +1033,15 @@
             "application": {
               "namespaces": {}
             },
-            "applicationsetcontroller": {
-              "enable": {
-                "progressive": {
-                  "syncs": {}
-                }
-              },
-              "namespaces": {},
-              "policy": {}
-            },
-            "controller": {
-              "ignore": {
-                "normalizer": {
-                  "jq": {
-                    "timeout": {}
-                  }
-                }
-              },
-              "operation": {
-                "processors": {}
-              },
-              "repo": {
-                "server": {
-                  "timeout": {
-                    "seconds": {}
-                  }
-                }
-              },
-              "self": {
-                "heal": {
-                  "timeout": {
-                    "seconds": {}
-                  }
-                }
-              },
-              "status": {
-                "processors": {}
-              }
-            },
             "create": {},
             "dexserver": {
               "disable": {
                 "tls": {}
               }
             },
-            "otlp": {
-              "address": {}
-            },
-            "reposerver": {
-              "parallelism": {
-                "limit": {}
-              }
-            },
             "server": {
-              "basehref": {},
-              "disable": {
-                "auth": {}
-              },
-              "enable": {
-                "gzip": {},
-                "proxy": {
-                  "extension": {}
-                }
-              },
               "insecure": {},
-              "rootpath": {},
-              "staticassets": {},
-              "x": {
-                "frame": {
-                  "options": {}
-                }
-              }
+              "rootpath": {}
             }
           },
           "rbac": {
@@ -968,13 +1075,15 @@
           },
           "ssh": {
             "annotations": {},
+            "create": {},
             "extraHosts": {},
             "knownHosts": {}
           },
           "styles": {},
           "tls": {
             "annotations": {},
-            "certificates": {}
+            "certificates": {},
+            "create": {}
           }
         },
         "controller": {
@@ -999,6 +1108,7 @@
             }
           },
           "deploymentAnnotations": {},
+          "deploymentLabels": {},
           "dnsConfig": {},
           "dnsPolicy": {},
           "dynamicClusterDistribution": {},
@@ -1032,7 +1142,6 @@
               "selector": {},
               "spec": {}
             },
-            "scrapeTimeout": {},
             "service": {
               "annotations": {},
               "clusterIP": {},
@@ -1057,6 +1166,9 @@
             }
           },
           "name": {},
+          "networkPolicy": {
+            "create": {}
+          },
           "nodeSelector": {},
           "pdb": {
             "annotations": {},
@@ -1070,6 +1182,7 @@
           "priorityClassName": {},
           "readinessProbe": {
             "failureThreshold": {},
+            "httpPath": {},
             "initialDelaySeconds": {},
             "periodSeconds": {},
             "successThreshold": {},
@@ -1078,6 +1191,7 @@
           "replicas": {},
           "resources": {},
           "revisionHistoryLimit": {},
+          "roleRules": {},
           "runtimeClassName": {},
           "serviceAccount": {
             "annotations": {},
@@ -1086,16 +1200,40 @@
             "labels": {},
             "name": {}
           },
+          "startupProbe": {
+            "enabled": {},
+            "failureThreshold": {},
+            "httpPath": {},
+            "initialDelaySeconds": {},
+            "periodSeconds": {},
+            "successThreshold": {},
+            "timeoutSeconds": {}
+          },
           "statefulsetAnnotations": {},
+          "statefulsetLabels": {},
           "terminationGracePeriodSeconds": {},
           "tolerations": {},
           "topologySpreadConstraints": {},
           "volumeMounts": {},
-          "volumes": {}
+          "volumes": {},
+          "vpa": {
+            "annotations": {},
+            "containerPolicy": {},
+            "enabled": {},
+            "labels": {},
+            "recommenders": {},
+            "updateMode": {}
+          }
         },
         "crds": {
           "additionalLabels": {},
-          "annotations": {},
+          "annotations": {
+            "argocd": {
+              "argoproj": {
+                "io/sync-options": {}
+              }
+            }
+          },
           "install": {},
           "keep": {}
         },
@@ -1124,11 +1262,13 @@
             },
             "readOnlyRootFilesystem": {},
             "runAsNonRoot": {},
+            "runAsUser": {},
             "seccompProfile": {
               "type": {}
             }
           },
           "deploymentAnnotations": {},
+          "deploymentLabels": {},
           "deploymentStrategy": {},
           "dnsConfig": {},
           "dnsPolicy": {},
@@ -1188,6 +1328,9 @@
             }
           },
           "name": {},
+          "networkPolicy": {
+            "create": {}
+          },
           "nodeSelector": {},
           "pdb": {
             "annotations": {},
@@ -1223,11 +1366,30 @@
           "servicePortHttp": {},
           "servicePortHttpName": {},
           "servicePortMetrics": {},
+          "startupProbe": {
+            "enabled": {},
+            "failureThreshold": {},
+            "httpPath": {},
+            "httpPort": {},
+            "httpScheme": {},
+            "initialDelaySeconds": {},
+            "periodSeconds": {},
+            "successThreshold": {},
+            "timeoutSeconds": {}
+          },
           "terminationGracePeriodSeconds": {},
           "tolerations": {},
           "topologySpreadConstraints": {},
           "volumeMounts": {},
-          "volumes": {}
+          "volumes": {},
+          "vpa": {
+            "annotations": {},
+            "containerPolicy": {},
+            "enabled": {},
+            "labels": {},
+            "recommenders": {},
+            "updateMode": {}
+          }
         },
         "externalRedis": {
           "existingSecret": {},
@@ -1269,6 +1431,7 @@
           },
           "context": {},
           "deploymentAnnotations": {},
+          "deploymentLabels": {},
           "deploymentStrategy": {
             "type": {}
           },
@@ -1324,6 +1487,9 @@
             }
           },
           "name": {},
+          "networkPolicy": {
+            "create": {}
+          },
           "nodeSelector": {},
           "notifiers": {},
           "pdb": {
@@ -1360,12 +1526,28 @@
             "labels": {},
             "name": {}
           },
+          "startupProbe": {
+            "enabled": {},
+            "failureThreshold": {},
+            "initialDelaySeconds": {},
+            "periodSeconds": {},
+            "successThreshold": {},
+            "timeoutSeconds": {}
+          },
           "subscriptions": {},
           "templates": {},
           "terminationGracePeriodSeconds": {},
           "tolerations": {},
           "topologySpreadConstraints": {},
-          "triggers": {}
+          "triggers": {},
+          "vpa": {
+            "annotations": {},
+            "containerPolicy": {},
+            "enabled": {},
+            "labels": {},
+            "recommenders": {},
+            "updateMode": {}
+          }
         },
         "openshift": {
           "enabled": {}
@@ -1385,6 +1567,7 @@
             "readOnlyRootFilesystem": {}
           },
           "deploymentAnnotations": {},
+          "deploymentLabels": {},
           "dnsConfig": {},
           "dnsPolicy": {},
           "enabled": {},
@@ -1429,6 +1612,7 @@
           },
           "extraArgs": {},
           "extraContainers": {},
+          "hostNetwork": {},
           "image": {
             "imagePullPolicy": {},
             "repository": {},
@@ -1469,6 +1653,9 @@
             }
           },
           "name": {},
+          "networkPolicy": {
+            "create": {}
+          },
           "nodeSelector": {},
           "pdb": {
             "annotations": {},
@@ -1512,13 +1699,22 @@
           "tolerations": {},
           "topologySpreadConstraints": {},
           "volumeMounts": {},
-          "volumes": {}
+          "volumes": {},
+          "vpa": {
+            "annotations": {},
+            "containerPolicy": {},
+            "enabled": {},
+            "labels": {},
+            "recommenders": {},
+            "updateMode": {}
+          }
         },
         "redis-ha": {
           "additionalAffinities": {},
           "affinity": {},
           "auth": {},
           "authKey": {},
+          "authSecretAnnotations": {},
           "configmap": {
             "labels": {}
           },
@@ -1563,7 +1759,9 @@
               "endpointAdditionalProperties": {},
               "interval": {},
               "labels": {},
+              "metricRelabelings": {},
               "namespace": {},
+              "relabelings": {},
               "telemetryPath": {},
               "timeout": {}
             },
@@ -1574,7 +1772,6 @@
           "extraInitContainers": {},
           "extraLabels": {},
           "extraVolumes": {},
-          "fullNameOverride": {},
           "fullnameOverride": {},
           "global": {
             "compatibility": {
@@ -1589,6 +1786,7 @@
               "enabled": {}
             },
             "additionalAffinities": {},
+            "additionalPorts": {},
             "affinity": {},
             "annotations": {},
             "checkFall": {},
@@ -1606,6 +1804,7 @@
               }
             },
             "customConfig": {},
+            "deploymentAnnotations": {},
             "deploymentStrategy": {
               "type": {}
             },
@@ -1647,6 +1846,7 @@
               "ingressRules": {},
               "labels": {}
             },
+            "podAnnotations": {},
             "podDisruptionBudget": {},
             "priorityClassName": {},
             "readOnly": {
@@ -1662,8 +1862,11 @@
             },
             "service": {
               "annotations": {},
+              "clusterIP": {},
               "externalIPs": {},
               "externalTrafficPolicy": {},
+              "ipFamilies": {},
+              "ipFamilyPolicy": {},
               "labels": {},
               "loadBalancerIP": {},
               "loadBalancerSourceRanges": {},
@@ -1684,7 +1887,8 @@
               "check": {},
               "client": {},
               "connect": {},
-              "server": {}
+              "server": {},
+              "tunnel": {}
             },
             "tls": {
               "certMountPath": {},
@@ -1761,6 +1965,7 @@
             },
             "masterGroupName": {},
             "minReadySeconds": {},
+            "podAnnotations": {},
             "port": {},
             "readinessProbe": {
               "enabled": {},
@@ -1790,6 +1995,9 @@
           "replicas": {},
           "restore": {
             "existingSecret": {},
+            "redis": {
+              "source": {}
+            },
             "s3": {
               "access_key": {},
               "region": {},
@@ -1810,6 +2018,7 @@
             "runAsUser": {}
           },
           "sentinel": {
+            "announceHostnames": {},
             "auth": {},
             "authClients": {},
             "authKey": {},
@@ -1840,6 +2049,7 @@
               "successThreshold": {},
               "timeoutSeconds": {}
             },
+            "resolveHostnames": {},
             "resources": {},
             "startupProbe": {
               "enabled": {},
@@ -1862,7 +2072,10 @@
           "serviceLabels": {},
           "splitBrainDetection": {
             "interval": {},
-            "resources": {}
+            "livenessProbe": {},
+            "readinessProbe": {},
+            "resources": {},
+            "retryInterval": {}
           },
           "sysctlImage": {
             "command": {},
@@ -1902,7 +2115,11 @@
               "type": {}
             }
           },
+          "dnsConfig": {},
+          "dnsPolicy": {},
           "enabled": {},
+          "extraArgs": {},
+          "hostNetwork": {},
           "image": {
             "imagePullPolicy": {},
             "repository": {},
@@ -1916,6 +2133,7 @@
           "podLabels": {},
           "priorityClassName": {},
           "resources": {},
+          "runtimeClassName": {},
           "securityContext": {},
           "serviceAccount": {
             "annotations": {},
@@ -1964,7 +2182,12 @@
               "type": {}
             }
           },
+          "copyutil": {
+            "extraArgs": {},
+            "resources": {}
+          },
           "deploymentAnnotations": {},
+          "deploymentLabels": {},
           "deploymentStrategy": {},
           "dnsConfig": {},
           "dnsPolicy": {},
@@ -1986,7 +2209,9 @@
           "initContainers": {},
           "lifecycle": {},
           "livenessProbe": {
+            "enabled": {},
             "failureThreshold": {},
+            "httpPath": {},
             "initialDelaySeconds": {},
             "periodSeconds": {},
             "successThreshold": {},
@@ -2018,6 +2243,9 @@
             }
           },
           "name": {},
+          "networkPolicy": {
+            "create": {}
+          },
           "nodeSelector": {},
           "pdb": {
             "annotations": {},
@@ -2031,7 +2259,9 @@
           "priorityClassName": {},
           "rbac": {},
           "readinessProbe": {
+            "enabled": {},
             "failureThreshold": {},
+            "httpPath": {},
             "initialDelaySeconds": {},
             "periodSeconds": {},
             "successThreshold": {},
@@ -2044,7 +2274,8 @@
             "annotations": {},
             "labels": {},
             "port": {},
-            "portName": {}
+            "portName": {},
+            "trafficDistribution": {}
           },
           "serviceAccount": {
             "annotations": {},
@@ -2053,12 +2284,29 @@
             "labels": {},
             "name": {}
           },
+          "startupProbe": {
+            "enabled": {},
+            "failureThreshold": {},
+            "httpPath": {},
+            "initialDelaySeconds": {},
+            "periodSeconds": {},
+            "successThreshold": {},
+            "timeoutSeconds": {}
+          },
           "terminationGracePeriodSeconds": {},
           "tolerations": {},
           "topologySpreadConstraints": {},
           "useEphemeralHelmWorkingDir": {},
           "volumeMounts": {},
-          "volumes": {}
+          "volumes": {},
+          "vpa": {
+            "annotations": {},
+            "containerPolicy": {},
+            "enabled": {},
+            "labels": {},
+            "recommenders": {},
+            "updateMode": {}
+          }
         },
         "server": {
           "affinity": {},
@@ -2071,6 +2319,13 @@
             "minReplicas": {},
             "targetCPUUtilizationPercentage": {},
             "targetMemoryUtilizationPercentage": {}
+          },
+          "backendTLSPolicy": {
+            "annotations": {},
+            "enabled": {},
+            "labels": {},
+            "targetRefs": {},
+            "validation": {}
           },
           "certificate": {
             "additionalHosts": {},
@@ -2120,6 +2375,7 @@
             }
           },
           "deploymentAnnotations": {},
+          "deploymentLabels": {},
           "deploymentStrategy": {},
           "dnsConfig": {},
           "dnsPolicy": {},
@@ -2152,7 +2408,23 @@
           },
           "extraArgs": {},
           "extraContainers": {},
+          "grpcroute": {
+            "annotations": {},
+            "enabled": {},
+            "hostnames": {},
+            "labels": {},
+            "parentRefs": {},
+            "rules": {}
+          },
           "hostNetwork": {},
+          "httproute": {
+            "annotations": {},
+            "enabled": {},
+            "hostnames": {},
+            "labels": {},
+            "parentRefs": {},
+            "rules": {}
+          },
           "image": {
             "imagePullPolicy": {},
             "repository": {},
@@ -2163,6 +2435,7 @@
             "annotations": {},
             "aws": {
               "backendProtocolVersion": {},
+              "serviceAnnotations": {},
               "serviceType": {}
             },
             "controller": {},
@@ -2202,8 +2475,27 @@
           },
           "initContainers": {},
           "lifecycle": {},
+          "listenerset": {
+            "allowedRoutes": {},
+            "annotations": {},
+            "enabled": {},
+            "hostname": {},
+            "labels": {},
+            "listenerName": {},
+            "listeners": {},
+            "parentRef": {},
+            "port": {},
+            "protocol": {},
+            "tls": {
+              "enabled": {},
+              "mode": {},
+              "secretName": {}
+            }
+          },
           "livenessProbe": {
+            "enabled": {},
             "failureThreshold": {},
+            "httpPath": {},
             "initialDelaySeconds": {},
             "periodSeconds": {},
             "successThreshold": {},
@@ -2235,6 +2527,9 @@
             }
           },
           "name": {},
+          "networkPolicy": {
+            "create": {}
+          },
           "nodeSelector": {},
           "pdb": {
             "annotations": {},
@@ -2247,7 +2542,9 @@
           "podLabels": {},
           "priorityClassName": {},
           "readinessProbe": {
+            "enabled": {},
             "failureThreshold": {},
+            "httpPath": {},
             "initialDelaySeconds": {},
             "periodSeconds": {},
             "successThreshold": {},
@@ -2272,8 +2569,12 @@
             "loadBalancerIP": {},
             "loadBalancerSourceRanges": {},
             "nodePortHttp": {},
+            "nodePortHttp2": {},
             "nodePortHttps": {},
             "servicePortHttp": {},
+            "servicePortHttp2": {},
+            "servicePortHttp2AppProtocol": {},
+            "servicePortHttp2Name": {},
             "servicePortHttpName": {},
             "servicePortHttps": {},
             "servicePortHttpsAppProtocol": {},
@@ -2288,11 +2589,28 @@
             "labels": {},
             "name": {}
           },
+          "startupProbe": {
+            "enabled": {},
+            "failureThreshold": {},
+            "httpPath": {},
+            "initialDelaySeconds": {},
+            "periodSeconds": {},
+            "successThreshold": {},
+            "timeoutSeconds": {}
+          },
           "terminationGracePeriodSeconds": {},
           "tolerations": {},
           "topologySpreadConstraints": {},
           "volumeMounts": {},
-          "volumes": {}
+          "volumes": {},
+          "vpa": {
+            "annotations": {},
+            "containerPolicy": {},
+            "enabled": {},
+            "labels": {},
+            "recommenders": {},
+            "updateMode": {}
+          }
         }
       },
       "open": [
@@ -2302,6 +2620,7 @@
         "applicationSet.certificate.annotations",
         "applicationSet.containerSecurityContext.capabilities.drop",
         "applicationSet.deploymentAnnotations",
+        "applicationSet.deploymentLabels",
         "applicationSet.deploymentStrategy",
         "applicationSet.dnsConfig",
         "applicationSet.extraArgs",
@@ -2310,6 +2629,11 @@
         "applicationSet.extraEnvFrom",
         "applicationSet.extraVolumeMounts",
         "applicationSet.extraVolumes",
+        "applicationSet.httproute.annotations",
+        "applicationSet.httproute.hostnames",
+        "applicationSet.httproute.labels",
+        "applicationSet.httproute.parentRefs",
+        "applicationSet.httproute.rules",
         "applicationSet.imagePullSecrets",
         "applicationSet.ingress.annotations",
         "applicationSet.ingress.extraHosts",
@@ -2318,6 +2642,11 @@
         "applicationSet.ingress.extraTls",
         "applicationSet.ingress.labels",
         "applicationSet.initContainers",
+        "applicationSet.listenerset.allowedRoutes",
+        "applicationSet.listenerset.annotations",
+        "applicationSet.listenerset.labels",
+        "applicationSet.listenerset.listeners",
+        "applicationSet.listenerset.parentRef",
         "applicationSet.metrics.service.annotations",
         "applicationSet.metrics.service.labels",
         "applicationSet.metrics.serviceMonitor.additionalLabels",
@@ -2338,8 +2667,40 @@
         "applicationSet.serviceAccount.labels",
         "applicationSet.tolerations",
         "applicationSet.topologySpreadConstraints",
+        "applicationSet.vpa.annotations",
+        "applicationSet.vpa.containerPolicy",
+        "applicationSet.vpa.labels",
+        "applicationSet.vpa.recommenders",
+        "commitServer.affinity",
+        "commitServer.containerSecurityContext.capabilities.drop",
+        "commitServer.deploymentAnnotations",
+        "commitServer.deploymentLabels",
+        "commitServer.deploymentStrategy",
+        "commitServer.dnsConfig",
+        "commitServer.extraArgs",
+        "commitServer.extraEnv",
+        "commitServer.extraEnvFrom",
+        "commitServer.extraVolumeMounts",
+        "commitServer.extraVolumes",
+        "commitServer.metrics.service.annotations",
+        "commitServer.metrics.service.labels",
+        "commitServer.nodeSelector",
+        "commitServer.podAnnotations",
+        "commitServer.podLabels",
+        "commitServer.resources",
+        "commitServer.service.annotations",
+        "commitServer.service.labels",
+        "commitServer.serviceAccount.annotations",
+        "commitServer.serviceAccount.labels",
+        "commitServer.tolerations",
+        "commitServer.topologySpreadConstraints",
+        "commitServer.vpa.annotations",
+        "commitServer.vpa.containerPolicy",
+        "commitServer.vpa.labels",
+        "commitServer.vpa.recommenders",
         "configs.clusterCredentials",
         "configs.cm.annotations",
+        "configs.cm.resourceExclusionsAdditional",
         "configs.cmp.annotations",
         "configs.cmp.plugins",
         "configs.credentialTemplates",
@@ -2362,6 +2723,7 @@
         "controller.clusterRoleRules.rules",
         "controller.containerSecurityContext.capabilities.drop",
         "controller.deploymentAnnotations",
+        "controller.deploymentLabels",
         "controller.dnsConfig",
         "controller.env",
         "controller.envFrom",
@@ -2388,20 +2750,26 @@
         "controller.podAnnotations",
         "controller.podLabels",
         "controller.resources",
+        "controller.roleRules",
         "controller.serviceAccount.annotations",
         "controller.serviceAccount.labels",
         "controller.statefulsetAnnotations",
+        "controller.statefulsetLabels",
         "controller.tolerations",
         "controller.topologySpreadConstraints",
         "controller.volumeMounts",
         "controller.volumes",
+        "controller.vpa.annotations",
+        "controller.vpa.containerPolicy",
+        "controller.vpa.labels",
+        "controller.vpa.recommenders",
         "crds.additionalLabels",
-        "crds.annotations",
         "dex.affinity",
         "dex.certificateSecret.annotations",
         "dex.certificateSecret.labels",
         "dex.containerSecurityContext.capabilities.drop",
         "dex.deploymentAnnotations",
+        "dex.deploymentLabels",
         "dex.deploymentStrategy",
         "dex.dnsConfig",
         "dex.env",
@@ -2430,6 +2798,10 @@
         "dex.topologySpreadConstraints",
         "dex.volumeMounts",
         "dex.volumes",
+        "dex.vpa.annotations",
+        "dex.vpa.containerPolicy",
+        "dex.vpa.labels",
+        "dex.vpa.recommenders",
         "externalRedis.secretAnnotations",
         "extraObjects",
         "global",
@@ -2438,6 +2810,7 @@
         "notifications.containerSecurityContext.capabilities.drop",
         "notifications.context",
         "notifications.deploymentAnnotations",
+        "notifications.deploymentLabels",
         "notifications.dnsConfig",
         "notifications.extraArgs",
         "notifications.extraContainers",
@@ -2472,7 +2845,12 @@
         "notifications.tolerations",
         "notifications.topologySpreadConstraints",
         "notifications.triggers",
+        "notifications.vpa.annotations",
+        "notifications.vpa.containerPolicy",
+        "notifications.vpa.labels",
+        "notifications.vpa.recommenders",
         "redis-ha.additionalAffinities",
+        "redis-ha.authSecretAnnotations",
         "redis-ha.configmap.labels",
         "redis-ha.configmapTest.resources",
         "redis-ha.containerSecurityContext.capabilities.drop",
@@ -2484,14 +2862,18 @@
         "redis-ha.exporter.script",
         "redis-ha.exporter.serviceMonitor.endpointAdditionalProperties",
         "redis-ha.exporter.serviceMonitor.labels",
+        "redis-ha.exporter.serviceMonitor.metricRelabelings",
+        "redis-ha.exporter.serviceMonitor.relabelings",
         "redis-ha.extraContainers",
         "redis-ha.extraInitContainers",
         "redis-ha.extraLabels",
         "redis-ha.extraVolumes",
         "redis-ha.haproxy.additionalAffinities",
+        "redis-ha.haproxy.additionalPorts",
         "redis-ha.haproxy.annotations",
         "redis-ha.haproxy.containerSecurityContext.capabilities.drop",
         "redis-ha.haproxy.customConfig",
+        "redis-ha.haproxy.deploymentAnnotations",
         "redis-ha.haproxy.emptyDir",
         "redis-ha.haproxy.extraConfig",
         "redis-ha.haproxy.imagePullSecrets",
@@ -2504,13 +2886,16 @@
         "redis-ha.haproxy.networkPolicy.egressRules",
         "redis-ha.haproxy.networkPolicy.ingressRules",
         "redis-ha.haproxy.networkPolicy.labels",
+        "redis-ha.haproxy.podAnnotations",
         "redis-ha.haproxy.podDisruptionBudget",
         "redis-ha.haproxy.resources",
         "redis-ha.haproxy.service.annotations",
         "redis-ha.haproxy.service.externalIPs",
+        "redis-ha.haproxy.service.ipFamilies",
         "redis-ha.haproxy.service.labels",
         "redis-ha.haproxy.service.loadBalancerSourceRanges",
         "redis-ha.haproxy.tests.resources",
+        "redis-ha.haproxy.tls.secretName",
         "redis-ha.haproxy.tolerations",
         "redis-ha.hostPath.path",
         "redis-ha.imagePullSecrets",
@@ -2537,6 +2922,7 @@
         "redis-ha.redis.envFrom",
         "redis-ha.redis.extraVolumeMounts",
         "redis-ha.redis.lifecycle",
+        "redis-ha.redis.podAnnotations",
         "redis-ha.redis.resources",
         "redis-ha.sentinel.config",
         "redis-ha.sentinel.customArgs",
@@ -2544,10 +2930,13 @@
         "redis-ha.sentinel.customConfig",
         "redis-ha.sentinel.extraVolumeMounts",
         "redis-ha.sentinel.lifecycle",
+        "redis-ha.sentinel.resolveHostnames",
         "redis-ha.sentinel.resources",
         "redis-ha.serviceAccount.annotations",
         "redis-ha.serviceAnnotations",
         "redis-ha.serviceLabels",
+        "redis-ha.splitBrainDetection.livenessProbe",
+        "redis-ha.splitBrainDetection.readinessProbe",
         "redis-ha.splitBrainDetection.resources",
         "redis-ha.sysctlImage.command",
         "redis-ha.sysctlImage.resources",
@@ -2555,6 +2944,7 @@
         "redis.affinity",
         "redis.containerSecurityContext.capabilities.drop",
         "redis.deploymentAnnotations",
+        "redis.deploymentLabels",
         "redis.dnsConfig",
         "redis.env",
         "redis.envFrom",
@@ -2586,8 +2976,14 @@
         "redis.topologySpreadConstraints",
         "redis.volumeMounts",
         "redis.volumes",
+        "redis.vpa.annotations",
+        "redis.vpa.containerPolicy",
+        "redis.vpa.labels",
+        "redis.vpa.recommenders",
         "redisSecretInit.affinity",
         "redisSecretInit.containerSecurityContext.capabilities.drop",
+        "redisSecretInit.dnsConfig",
+        "redisSecretInit.extraArgs",
         "redisSecretInit.imagePullSecrets",
         "redisSecretInit.jobAnnotations",
         "redisSecretInit.nodeSelector",
@@ -2604,7 +3000,9 @@
         "repoServer.certificateSecret.labels",
         "repoServer.clusterRoleRules.rules",
         "repoServer.containerSecurityContext.capabilities.drop",
+        "repoServer.copyutil.resources",
         "repoServer.deploymentAnnotations",
+        "repoServer.deploymentLabels",
         "repoServer.deploymentStrategy",
         "repoServer.dnsConfig",
         "repoServer.env",
@@ -2638,9 +3036,17 @@
         "repoServer.topologySpreadConstraints",
         "repoServer.volumeMounts",
         "repoServer.volumes",
+        "repoServer.vpa.annotations",
+        "repoServer.vpa.containerPolicy",
+        "repoServer.vpa.labels",
+        "repoServer.vpa.recommenders",
         "server.affinity",
         "server.autoscaling.behavior",
         "server.autoscaling.metrics",
+        "server.backendTLSPolicy.annotations",
+        "server.backendTLSPolicy.labels",
+        "server.backendTLSPolicy.targetRefs",
+        "server.backendTLSPolicy.validation",
         "server.certificate.additionalHosts",
         "server.certificate.annotations",
         "server.certificate.secretTemplateAnnotations",
@@ -2650,6 +3056,7 @@
         "server.clusterRoleRules.rules",
         "server.containerSecurityContext.capabilities.drop",
         "server.deploymentAnnotations",
+        "server.deploymentLabels",
         "server.deploymentStrategy",
         "server.dnsConfig",
         "server.env",
@@ -2659,8 +3066,19 @@
         "server.extensions.resources",
         "server.extraArgs",
         "server.extraContainers",
+        "server.grpcroute.annotations",
+        "server.grpcroute.hostnames",
+        "server.grpcroute.labels",
+        "server.grpcroute.parentRefs",
+        "server.grpcroute.rules",
+        "server.httproute.annotations",
+        "server.httproute.hostnames",
+        "server.httproute.labels",
+        "server.httproute.parentRefs",
+        "server.httproute.rules",
         "server.imagePullSecrets",
         "server.ingress.annotations",
+        "server.ingress.aws.serviceAnnotations",
         "server.ingress.extraHosts",
         "server.ingress.extraPaths",
         "server.ingress.extraRules",
@@ -2677,6 +3095,11 @@
         "server.ingressGrpc.labels",
         "server.initContainers",
         "server.lifecycle",
+        "server.listenerset.allowedRoutes",
+        "server.listenerset.annotations",
+        "server.listenerset.labels",
+        "server.listenerset.listeners",
+        "server.listenerset.parentRef",
         "server.metrics.service.annotations",
         "server.metrics.service.labels",
         "server.metrics.serviceMonitor.additionalLabels",
@@ -2701,10 +3124,14 @@
         "server.tolerations",
         "server.topologySpreadConstraints",
         "server.volumeMounts",
-        "server.volumes"
+        "server.volumes",
+        "server.vpa.annotations",
+        "server.vpa.containerPolicy",
+        "server.vpa.labels",
+        "server.vpa.recommenders"
       ],
       "dynamic": [],
-      "charts": ["<root>=argo-cd@7.7.10", "redis-ha=redis-ha@4.29.4"]
+      "charts": ["<root>=argo-cd@10.6.0", "redis-ha=redis-ha@4.38.0"]
     },
     "https://argoproj.github.io/argo-helm|argo-rollouts|2.39.5": {
       "literal": {
@@ -36000,9 +36427,9 @@
     {
       "appId": "full-ai-cluster/argocd",
       "chart": "argo-cd",
-      "targetRevision": "7.7.10",
+      "targetRevision": "10.6.0",
       "repoURL": "https://argoproj.github.io/argo-helm",
-      "chartKey": "https://argoproj.github.io/argo-helm|argo-cd|7.7.10"
+      "chartKey": "https://argoproj.github.io/argo-helm|argo-cd|10.6.0"
     },
     {
       "appId": "full-ai-cluster/cdi",

@@ -361,3 +361,9 @@ src/Arc.Python/environment_files/ztch/v1/*
 # privacy-budget ledger — per-machine EPHEMERAL runtime state (work-item 081M0X23R19087G0R003XHGB2B).
 # Wiped freely; `bun src/Core.TypeScript/ledger/privacy-frost-demo.ts --reset` rebuilds it.
 db/ledgers/privacy/
+
+# Written by inert-valuesobject-keys.ts --write-snapshot: 3533 files / 39 MB of
+# vendored upstream chart values, re-derivable by re-running the tool. It was
+# never tracked, was not ignored, and `git add -A` swept the whole of it into a
+# commit on 2026-09-01. Ignoring it is the fix; the cache itself is fine.
+.helm-schema-cache/

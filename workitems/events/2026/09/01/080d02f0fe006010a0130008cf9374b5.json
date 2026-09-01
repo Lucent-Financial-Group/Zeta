@@ -1,0 +1,14 @@
+{
+  "id": "080d02f0fe006010a0130008cf9374b5",
+  "at": "2026-09-01T17:58:54.220Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1F1ZG0A087G0R002HKMS1E",
+    "type": "task",
+    "title": "Registry resilience: mirror base images into GHCR for CI, and a peer-to-peer pull-through on our own hardware",
+    "slug": "registry-resilience-mirror-base-images-into-ghcr-for-ci-and",
+    "priority": "P2",
+    "filename": "081M1F1ZG0A087G0R002HKMS1E-registry-resilience-mirror-base-images-into-ghcr-for-ci-and.md"
+  }
+}

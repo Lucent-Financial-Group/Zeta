@@ -30,7 +30,12 @@ spec:
     # self-management version would cause ArgoCD to immediately try to
     # downgrade/upgrade itself on first reconcile — wedge risk in the
     # earliest sync wave.
-    targetRevision: 7.7.10
+    #
+    # 7.7.10 -> 10.6.0 on 2026-09-01 (ArgoCD v2.13.2 -> v3.5.2), moved in the SAME
+    # commit as the bootstrap pin for exactly the reason above. The render
+    # evidence lives beside that pin rather than being restated here, so there is
+    # one copy of it to go stale.
+    targetRevision: 10.6.0
     helm:
       releaseName: argocd
       valuesObject:
