@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk.Worker">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>Zeta.Orleans.Silo</RootNamespace>
+    <AssemblyName>Zeta.Orleans.Silo</AssemblyName>
+    <UserSecretsId>zeta-orleans-silo</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Orleans.Server" Version="10.3.1" />
+    <PackageReference Include="Microsoft.Orleans.Clustering.Redis" Version="10.3.1" />
+    <!-- Microsoft.Extensions.Hosting is NOT pinned here. The Worker SDK brings it,
+         and Orleans 10.3.1 requires >= 10.0.5; an explicit 10.0.0 pin here was a
+         DOWNGRADE (NU1605) rather than a constraint. Let the SDK and Orleans agree. -->
+  </ItemGroup>
+
+</Project>

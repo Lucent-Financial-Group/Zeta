@@ -1,0 +1,29 @@
+<Project>
+
+  <!-- INHERITANCE STOPS HERE, DELIBERATELY.
+
+       The repo root's Directory.Build.props configures the Zeta.sln world:
+       FSharp analyzers, the CA1304/1305/1307/1310/2007 error levels, and the
+       solution's shared metadata. This project is NOT in Zeta.sln — it is a
+       container context, built by `docker build` from THIS directory, where the
+       repo root is not in scope at all.
+
+       Without this file the project would compile one way locally (inheriting
+       the root props) and another way in the image (where the root props are
+       not in the build context) — the same source, two builds, and only one of
+       them is what ships. That divergence is the defect this file prevents, so
+       the settings the root would have given us are restated here explicitly
+       rather than inherited. -->
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <AnalysisLevel>latest-recommended</AnalysisLevel>
+    <InvariantGlobalization>true</InvariantGlobalization>
+    <ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+
+</Project>
