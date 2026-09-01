@@ -1,0 +1,14 @@
+{
+  "id": "080d02ee620a4810a0130008581007f0",
+  "at": "2026-09-01T16:27:42.281Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1EWRGA8087G0R0026K5XNB",
+    "type": "task",
+    "title": "Zeta-owned IGrainStorage for large blob grains over SeaweedFS S3 — after Redis is running, persistent and scaling",
+    "slug": "zeta-owned-igrainstorage-for-large-blob-grains-over-seaweedf",
+    "priority": "P2",
+    "filename": "081M1EWRGA8087G0R0026K5XNB-zeta-owned-igrainstorage-for-large-blob-grains-over-seaweedf.md"
+  }
+}

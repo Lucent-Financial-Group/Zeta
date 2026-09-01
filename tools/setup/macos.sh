@@ -97,6 +97,41 @@ if [ -f "$BREW_MANIFEST" ]; then
   # shellcheck disable=SC1091
   . "$SETUP_DIR/common/host-tier.sh"
   if [ -n "$PKGS" ]; then
+    # UNATTENDED OR IT IS NOT AN INSTALLER.
+    #
+    # `brew install X` PROMPTS -- "Would upgrade 1 dependency for tectonic: pcre2 /
+    # Do you want to proceed with the installation? [y/n]" -- whenever it would
+    # upgrade a dependency. Measured 2026-09-01 on the maintainer's machine, where it
+    # stopped install.sh dead waiting for a keystroke.
+    #
+    # WHY CI NEVER SAW IT: Homebrew only prompts on an interactive terminal, and a
+    # runner has no TTY. The macos-install-sh-test lane therefore CANNOT reproduce
+    # this class -- a check structurally incapable of failing for the defect. The env
+    # below makes the behaviour identical in both places instead of depending on the
+    # absence of a terminal.
+    export NONINTERACTIVE=1        # Homebrew's own documented unattended switch
+    export HOMEBREW_NO_ENV_HINTS=1 # hint noise is not a diagnosis
+
+    # DECLARED LINK-CONFLICT WINNERS.
+    #
+    # Two formulae in this manifest can ship the same binary; `brew install` of the
+    # second then FAILS at the link step. Measured 2026-09-01: binaryen 132 added
+    # `wasm2c`, which wabt 1.0.41 already provides, and install.sh errored with
+    # "Could not symlink bin/wasm2c ... is a symlink belonging to wabt".
+    #
+    # AN UPSTREAM BUMP, NOT A LOCAL MESS. The CI run at 06:10 that day poured binaryen
+    # 131 and passed; 132 published after it. The next CI run would have hit this.
+    #
+    # An allowlist rather than a blanket `--overwrite`: forcing every link would let a
+    # future collision resolve silently in whichever order brew happened to run. Each
+    # entry names the formula that WINS and why the loser does not need the binary.
+    #   binaryen -- installed for wasm-opt/wasm-as/wasm-dis (AssemblyScript's
+    #   optimizer, checked by common/smoke-10-toolchains.sh). wabt is installed for
+    #   wat2wasm/wasm2wat/wasm-validate/wasm-strip. `wasm2c` is in NEITHER reason and
+    #   is referenced NOWHERE in this repository, so the collision is over a binary
+    #   nothing here uses.
+    ZETA_BREW_LINK_OVERWRITE="binaryen"
+
     echo "↓ installing brew packages from $(basename "$BREW_MANIFEST")..."
     # `brew install` is idempotent on already-installed formulae.
     #
@@ -132,7 +167,22 @@ if [ -f "$BREW_MANIFEST" ]; then
       if brew list --formula "$pkg" >/dev/null 2>&1; then
         brew upgrade "$pkg" >/dev/null 2>&1 || true
       else
-        brew install "$pkg"
+        # A declared collision winner can fail to LINK against a formula installed
+        # earlier in this same loop. Retry the link explicitly rather than letting the
+        # install die -- and only for a formula named above, so an UNDECLARED collision
+        # still fails loudly instead of being forced through.
+        if ! brew install "$pkg"; then
+          case " $ZETA_BREW_LINK_OVERWRITE " in
+            *" $pkg "*)
+              echo "→ $pkg: install hit a link conflict; DECLARED overwrite winner, relinking"
+              brew link --overwrite "$pkg"
+              ;;
+            *)
+              echo "error: brew install $pkg failed and $pkg is not a declared link-conflict winner" >&2
+              exit 1
+              ;;
+          esac
+        fi
       fi
     done 3<<EOF_BREW_PKGS
 $PKGS
