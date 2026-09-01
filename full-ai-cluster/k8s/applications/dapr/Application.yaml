@@ -13,7 +13,11 @@ spec:
   source:
     repoURL: https://dapr.github.io/helm-charts/
     chart: dapr
-    targetRevision: 1.14.4
+    # 1.14.4 -> 1.18.3 on 2026-09-01. Rendered at BOTH versions with this
+    # Application's own valuesObject: no value stopped taking effect and no
+    # resource was removed. Safe as an INSTALL version -- see the batch PR for
+    # why a fresh cluster does not walk this chart's upgrade path.
+    targetRevision: 1.18.3
     helm:
       releaseName: dapr
       valuesObject:

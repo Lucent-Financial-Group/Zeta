@@ -453,10 +453,17 @@ describe("false positives — the four legitimate sources of a key absent from t
     // `.Values.worker.config | toYaml` — the SAME wholesale consumption as
     // `toYaml .Values.x`, written the other way round. Leaving the pipeline
     // form out was a measured false positive on this exact key.
+    //
+    // 0.17.1 -> 0.19.0 on 2026-09-01, following the chart bump. This is a
+    // DEMONSTRATION pin, not a historical fixture: it shows the pipeline form is
+    // handled, and is worth more against the version the tree actually installs
+    // than against one nobody deploys. Re-checked at 0.19.0 rather than merely
+    // renumbered -- the chart still consumes `worker.config` wholesale, so the
+    // case it demonstrates is still the real one.
     const schema = snapshotSchema(
       "https://kubernetes-sigs.github.io/node-feature-discovery/charts",
       "node-feature-discovery",
-      "0.17.1",
+      "0.19.0",
     );
     expect(classifyPath("worker.config.sources", schema)).toBe("accepted");
     expect(classifyPath("worker.config.core.sleepInterval", schema)).toBe("accepted");
