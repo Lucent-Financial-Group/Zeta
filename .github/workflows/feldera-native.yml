@@ -1,9 +1,14 @@
 # Compile Feldera's dbsp crate with factory rust on Linux, macOS, and Windows.
 #
-# DISPATCH-ONLY. Not on pull_request, not on push to main. Building dbsp on
-# three OS is a cargo-minute bomb (Aaron 2026-09-01: do not clone Feldera on
-# every PR). This job exists to tell "this Mac's memory" from "rustc 1.98.0
-# cannot compile Feldera 0.342.0 edition 2024".
+# Not on every PR. Building dbsp on three OS is a cargo-minute bomb
+# (Aaron 2026-09-01: do not clone Feldera on every PR). Triggers:
+#   * workflow_dispatch (once the file is on main; GitHub 404s dispatch
+#     for a workflow that exists only on a feature branch)
+#   * pull_request / push-to-main path-filtered to THIS file, so adding
+#     or editing the workflow is the only PR that pays the compile --
+#     which is this PR, and then almost never.
+# Discriminator: "this Mac's memory" vs "rustc 1.98.0 cannot compile
+# Feldera 0.342.0 edition 2024".
 #
 # The local ICE is rustc_next_trait_solver try_eagerly_replace_alias
 # (structural_traits.rs:1012 on rustc 1.98.0 / 88d9e12ae):
@@ -20,6 +25,13 @@
 name: feldera-native
 
 on:
+  pull_request:
+    paths:
+      - ".github/workflows/feldera-native.yml"
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/feldera-native.yml"
   workflow_dispatch: {}
 
 permissions:

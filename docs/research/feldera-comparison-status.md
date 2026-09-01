@@ -92,7 +92,8 @@ CI: `.github/workflows/feldera-compare.yml` runs this harness on
 ubuntu-24.04, macos-26, and windows-2025 when the bench/Z-set paths
 change. Drift check, not `gate (required)`. Feldera itself is not
 cloned there. Native `dbsp` compile is
-`.github/workflows/feldera-native.yml` — `workflow_dispatch` only.
+`.github/workflows/feldera-native.yml` (`workflow_dispatch`, plus a
+self-path filter so this PR can run it before the file is on main).
 
 ## Native compile deps (install.sh, all OSes)
 
@@ -155,7 +156,7 @@ A coherent panic_fmt naming `StarJoinFuncTrait` is a compiler-bug
 class, not a bit-flip. The earlier LLVM SIGSEGVs on this Mac remain a
 separate hardware-shaped symptom. Discriminator: compile `dbsp` on
 GHA ubuntu-24.04 / macos-26 / windows-2025 via
-`feldera-native.yml` (`workflow_dispatch` only; factory rust 1.98.0;
+`feldera-native.yml` (`workflow_dispatch` + self-path filter; factory rust 1.98.0;
 `cargo build --release -p dbsp`; `debuginfo=0` because `cargo bench`
 uses `profile.bench` debuginfo=2). ICE on the runners => rustc 1.98.0
 x Feldera 0.342.0. Green on the runners, red here => this machine.
