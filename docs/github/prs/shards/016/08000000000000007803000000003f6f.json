@@ -1,0 +1,12 @@
+{
+  "pr_number": 16239,
+  "archive_path": "docs/history/pr-reviews/PR-16239-fix-k8s-apply-the-dev-storageclass-existing-skips-the-refusal-that-saved-the-pro.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-01T07:59:59.266Z",
+  "schema_version": "v1",
+  "commit_sha": "b52600935fa1b8582b56832746c8899c837807f9",
+  "title": "fix(k8s): apply the dev StorageClass `--existing` skips — the refusal that saved the probe",
+  "state": "MERGED",
+  "merged_at": "2026-09-01T07:59:21Z",
+  "head_ref": "shadow/probe-must-apply-the-dev-storageclass-that-existing-skips"
+}

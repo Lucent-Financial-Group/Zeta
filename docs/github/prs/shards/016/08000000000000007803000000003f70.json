@@ -1,0 +1,12 @@
+{
+  "pr_number": 16240,
+  "archive_path": "docs/history/pr-reviews/PR-16240-bug-081m1dfq2mz087g0r000cmnhqx-step-2-is-not-viable-existing-skips-the-proof-s-s.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-01T08:50:40.473Z",
+  "schema_version": "v1",
+  "commit_sha": "68949820b412c1b94cf994681b067ad1cbf702fd",
+  "title": "bug(081M1DFQ2MZ087G0R000CMNHQX): step 2 is not viable — `--existing` skips the proof's setup",
+  "state": "MERGED",
+  "merged_at": "2026-09-01T08:50:02Z",
+  "head_ref": "shadow/existing-is-not-a-supported-path-for-the-included-proof"
+}

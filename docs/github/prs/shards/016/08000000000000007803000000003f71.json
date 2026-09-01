@@ -1,0 +1,12 @@
+{
+  "pr_number": 16241,
+  "archive_path": "docs/history/pr-reviews/PR-16241-bug-081m1ektvh7087g0r002xc3gcw-the-pr-archive-flush-lane-deadlocks-on-action-req.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-01T14:06:51.446Z",
+  "schema_version": "v1",
+  "commit_sha": "cac1517ac04196bfabc0a7bcec57d02f426e55ac",
+  "title": "bug(081M1EKTVH7087G0R002XC3GCW): the PR-archive flush lane deadlocks on action_required",
+  "state": "MERGED",
+  "merged_at": "2026-09-01T14:05:20Z",
+  "head_ref": "shadow/pr-archive-flush-lane-deadlocks-on-action-required"
+}

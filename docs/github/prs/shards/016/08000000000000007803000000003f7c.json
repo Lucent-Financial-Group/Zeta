@@ -1,0 +1,12 @@
+{
+  "pr_number": 16252,
+  "archive_path": "docs/history/pr-reviews/PR-16252-feat-081m1ety8ty087g0r0022ct4r5-ofarray-ingest-k-way-input-coalesce.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-01T16:17:18.647Z",
+  "schema_version": "v1",
+  "commit_sha": "60aae46e8ff16f51f949d181c9bd1a881c4c3396",
+  "title": "feat(081M1ETY8TY087G0R0022CT4R5): ofArray ingest + k-way input coalesce",
+  "state": "MERGED",
+  "merged_at": "2026-09-01T16:16:41Z",
+  "head_ref": "feat/dbsp-batch-ingest"
+}

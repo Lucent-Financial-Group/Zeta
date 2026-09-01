@@ -1,0 +1,12 @@
+{
+  "pr_number": 16229,
+  "archive_path": "docs/history/pr-reviews/PR-16229-test-zetafs-identical-files-share-every-chunk-contentid-compared-one-file-to-its.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-01T05:06:41.677Z",
+  "schema_version": "v1",
+  "commit_sha": "c3c7e0d564e005eea45ecc5eb100329f887447c8",
+  "title": "test(zetafs): \"identical files share every chunk ContentId\" compared one file to itself",
+  "state": "MERGED",
+  "merged_at": "2026-09-01T05:06:07Z",
+  "head_ref": "shadow/jumprope-identical-files-test-compared-a-file-to-itself"
+}

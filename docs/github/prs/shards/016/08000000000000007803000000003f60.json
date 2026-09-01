@@ -1,0 +1,12 @@
+{
+  "pr_number": 16224,
+  "archive_path": "docs/history/pr-reviews/PR-16224-zetafs-jumprope-leaf-limb-trunk-over-fastcdc-v1-081kth1z6g708qg0r002kcphwf.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-01T04:21:39.522Z",
+  "schema_version": "v1",
+  "commit_sha": "f83701a62e9d823ba234d3be16440549b7861f34",
+  "title": "zetafs: Jumprope leaf/limb/trunk over FastCdc.v1 (081KTH1Z6G708QG0R002KCPHWF)",
+  "state": "MERGED",
+  "merged_at": "2026-09-01T04:21:01Z",
+  "head_ref": "feat/zetafs-pr6-jumprope-2"
+}

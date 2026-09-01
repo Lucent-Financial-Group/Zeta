@@ -1,0 +1,12 @@
+{
+  "pr_number": 16254,
+  "archive_path": "docs/history/pr-reviews/PR-16254-docs-zetafs-vault-unwrap-oracles-no-tpm-required-on-mac.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-01T16:20:55.682Z",
+  "schema_version": "v1",
+  "commit_sha": "e2a8cc3e2e9a6169d4bbcca0ab9d71ef67693ecd",
+  "title": "docs: ZetaFS vault unwrap oracles — no TPM required on Mac",
+  "state": "MERGED",
+  "merged_at": "2026-09-01T16:19:37Z",
+  "head_ref": "feat/zetafs-unwrap-oracles-2"
+}

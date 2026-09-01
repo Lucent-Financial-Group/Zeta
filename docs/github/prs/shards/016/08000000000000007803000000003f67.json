@@ -1,0 +1,12 @@
+{
+  "pr_number": 16231,
+  "archive_path": "docs/history/pr-reviews/PR-16231-zetafs-iplacement-hrw-over-device-ids-simulated-disk-stripe-mirror-single-parity.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-01T05:11:54.330Z",
+  "schema_version": "v1",
+  "commit_sha": "d1b67ea62c7ee668a23eac94a49916e6c17a45b6",
+  "title": "zetafs: IPlacement HRW over device ids; simulated-disk stripe/mirror/single+parity",
+  "state": "MERGED",
+  "merged_at": "2026-09-01T05:11:16Z",
+  "head_ref": "feat/zetafs-pr8-placement"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 16251,
+  "archive_path": "docs/history/pr-reviews/PR-16251-task-081m1et79y9087g0r000n29hwf-gitlab-needs-ladder-rows-cpu-was-never-its-block.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-01T16:02:18.412Z",
+  "schema_version": "v1",
+  "commit_sha": "215e16e5529cf15d2c91f4da9d8a00df167f7d79",
+  "title": "task(081M1ET79Y9087G0R000N29HWF): gitlab needs ladder rows — CPU was never its blocker",
+  "state": "MERGED",
+  "merged_at": "2026-09-01T16:01:38Z",
+  "head_ref": "shadow/gitlab-fits-but-cpu-was-never-its-blocker"
+}

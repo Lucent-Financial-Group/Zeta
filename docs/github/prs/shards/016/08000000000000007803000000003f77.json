@@ -1,0 +1,12 @@
+{
+  "pr_number": 16247,
+  "archive_path": "docs/history/pr-reviews/PR-16247-test-zetafs-the-freeze-test-hardcoded-and-broke-windows-11-arm.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-01T15:33:21.710Z",
+  "schema_version": "v1",
+  "commit_sha": "ffb0bbe6f070527c08babb2b8aaffccaed0f092c",
+  "title": "test(zetafs): the freeze test hardcoded \"/\" and broke windows-11-arm",
+  "state": "MERGED",
+  "merged_at": "2026-09-01T15:32:20Z",
+  "head_ref": "shadow/freeze-test-hardcoded-forward-slashes-and-broke-windows"
+}

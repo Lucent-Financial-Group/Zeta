@@ -1,0 +1,12 @@
+{
+  "pr_number": 16232,
+  "archive_path": "docs/history/pr-reviews/PR-16232-zetafs-freeze-intent-commit-wal-durable-fsyncs-cas-before-log-commit.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-01T05:41:36.840Z",
+  "schema_version": "v1",
+  "commit_sha": "1becc2b071db11919e6c33fc8177a0a0f4cf41a2",
+  "title": "zetafs: freeze-intent/commit WAL; Durable fsyncs CAS before log commit",
+  "state": "MERGED",
+  "merged_at": "2026-09-01T05:40:59Z",
+  "head_ref": "feat/zetafs-pr7-freeze-3"
+}

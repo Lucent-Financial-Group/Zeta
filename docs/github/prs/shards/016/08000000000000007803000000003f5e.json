@@ -1,0 +1,12 @@
+{
+  "pr_number": 16222,
+  "archive_path": "docs/history/pr-reviews/PR-16222-fix-ci-drift-loud-could-not-tell-off-by-decision-from-silently-broken.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-01T05:08:37.065Z",
+  "schema_version": "v1",
+  "commit_sha": "21660e2429bcb155133234b3c6592e3a5fbb1d38",
+  "title": "fix(ci): drift-loud could not tell \"off by decision\" from \"silently broken\"",
+  "state": "MERGED",
+  "merged_at": "2026-09-01T05:08:01Z",
+  "head_ref": "shadow/drift-loud-distinguishes-off-by-decision-from-broken"
+}

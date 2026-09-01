@@ -1,0 +1,12 @@
+{
+  "pr_number": 16223,
+  "archive_path": "docs/history/pr-reviews/PR-16223-test-k8s-fill-the-missing-2x2-cell-kind-cilium-never-asserted-the-app-roster.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-01T05:39:19.759Z",
+  "schema_version": "v1",
+  "commit_sha": "0b278c913a528774ccef5408d366af3a0c53d909",
+  "title": "test(k8s): fill the missing 2x2 cell — kind+Cilium never asserted the app roster",
+  "state": "MERGED",
+  "merged_at": "2026-09-01T05:38:41Z",
+  "head_ref": "shadow/kind-cilium-included-probe-isolates-cni-from-orchestrator"
+}
