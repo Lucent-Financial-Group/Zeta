@@ -1384,7 +1384,7 @@ Each PR is independently reviewable and mergeable. Tests green or it does not la
 - **Title:** `hygiene: FileSync.fsyncFile/fsyncDir return Result; F_FULLFSYNC on Darwin`
 - **Files:** `src/Core/FileSync.fs` and its tests
 - **Depends on:** none (parallel with PR1)
-- **Changes:** Stop swallowing directory-fsync failure (`eprintfn`). Durable callers in later PRs must use this Result API. Windows remains a documented no-op; no Durable claim. Not blocked on Jumprope.
+- **Changes:** Stop swallowing directory-fsync failure (`eprintfn`). Durable callers in later PRs must use this Result API. Windows remains a documented no-op; no Durable claim. Not blocked on Jumprope. **Landing:** `fsyncFile` / `fsyncDir` return `Result`. Darwin uses `fcntl(F_FULLFSYNC)`. Existing DiskDeltaLog/DiskSpine callers keep `fsyncDirBestEffort` (print and continue). Durable Freeze must not call that helper.
 
 ### PR3 -- Binding Z-set, tombstone unlink, cycle guard, root mint
 

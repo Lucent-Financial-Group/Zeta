@@ -35,7 +35,7 @@ type DurabilityMode =
     ///   1. write the data frame, then `Flush(flushToDisk = true)`;
     ///   2. write the header frame, then `Flush(flushToDisk = true)`;
     ///   3. atomically `Move` the header onto the candidate path;
-    ///   4. `FileSync.fsyncDir` the parent directory, so the *directory
+    ///   4. `FileSync.fsyncDirBestEffort` the parent directory, so the *directory
     ///      entry* for a newly-created file is durable too — without this
     ///      a hard reset can lose a file whose contents were flushed.
     ///
@@ -43,8 +43,8 @@ type DurabilityMode =
     /// leave a data frame with no header (ignored on recovery), never a
     /// header pointing at absent data.
     ///
-    /// **The one real gap: Windows.** `FileSync.fsyncDir` is a no-op on
-    /// Windows (`FileSync.fs:41` — "documented gap, not an equivalence"),
+    /// **The one real gap: Windows.** `FileSync.fsyncDir` is a documented no-op on
+    /// Windows (`FileSync.fs` — not an equivalence),
     /// because there is no directory-fsync equivalent. Steps 1–3 still
     /// hold, so acknowledged *content* is durable; what is not guaranteed
     /// on Windows is the durability of the directory entry for a

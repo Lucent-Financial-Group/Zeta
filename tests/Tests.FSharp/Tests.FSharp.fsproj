@@ -184,6 +184,7 @@
     <Compile Include="KeyStore.Tests.fs" />
     <Compile Include="Crypto.Tests.fs" />
     <Compile Include="File.Tests.fs" />
+    <Compile Include="FileSync.Tests.fs" />
     <Compile Include="TableStream.Tests.fs" />
     <Compile Include="Catalog.Tests.fs" />
     <Compile Include="ZetaExec.Tests.fs" />
