@@ -1,0 +1,14 @@
+{
+  "id": "080d02e9eb715810a01300089499474b",
+  "at": "2026-09-01T13:51:42.123Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1EKTVH7087G0R002XC3GCW",
+    "type": "bug",
+    "title": "PR-archive flush lane deadlocks: its gate runs are action_required, so gate (required) never publishes",
+    "slug": "pr-archive-flush-lane-deadlocks-its-gate-runs-are-action-req",
+    "priority": "P2",
+    "filename": "081M1EKTVH7087G0R002XC3GCW-pr-archive-flush-lane-deadlocks-its-gate-runs-are-action-req.md"
+  }
+}
