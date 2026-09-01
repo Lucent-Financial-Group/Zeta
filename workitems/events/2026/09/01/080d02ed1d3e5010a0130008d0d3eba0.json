@@ -1,0 +1,14 @@
+{
+  "id": "080d02ed1d3e5010a0130008d0d3eba0",
+  "at": "2026-09-01T15:43:21.546Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1ET79Y9087G0R000N29HWF",
+    "type": "task",
+    "title": "gitlab needs ladder rows, not flat values: CPU was never its blocker, 76 GiB of PVCs was",
+    "slug": "gitlab-needs-ladder-rows-not-flat-values-cpu-was-never-its-b",
+    "priority": "P2",
+    "filename": "081M1ET79Y9087G0R000N29HWF-gitlab-needs-ladder-rows-not-flat-values-cpu-was-never-its-b.md"
+  }
+}
