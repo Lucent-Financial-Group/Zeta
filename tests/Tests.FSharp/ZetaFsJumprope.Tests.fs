@@ -70,11 +70,30 @@ let ``multi-chunk file round-trips and seek hits the right byte`` () =
         Assert.Equal(hit.OffsetInChunk, viaTrunk.OffsetInChunk)
 
 [<Fact>]
+// TWO FILES, NOT ONE FILE TWICE. This test's name is the claim -- IDENTICAL FILES
+// share chunk ids -- and content-addressing is the property that makes it true: equal
+// bytes must produce equal ids no matter which array object carries them.
+//
+// It previously passed the SAME array to both calls, so both sides normalised to one
+// expression and it asserted `f(x) = f(x)`. That is strictly weaker than its name: it
+// could only ever have caught NONDETERMINISM (an ambient seed or clock inside
+// `buildV1`), and would have passed unchanged against an implementation that keyed on
+// array identity or memoised per object -- which is precisely the bug that would break
+// dedup across two genuinely distinct files.
+//
+// `Array.copy` is what closes that gap: a separate allocation with equal contents, so
+// the assertion now tests the claim its name makes. Caught by `audit-check-arity` R2
+// on 2026-09-01 (main went red on f83701a62); strengthened rather than adjudicated,
+// because `--accept-raises` would have recorded "the two executions really do differ"
+// and that was not true of the original -- both sides read one array.
 let ``identical files share every chunk ContentId`` () =
     ensureHasher ()
     let bytes = Array.init 90_000 (fun i -> byte (i % 199))
+    let sameBytesDistinctArray = Array.copy bytes
+    Assert.False(obj.ReferenceEquals(bytes, sameBytesDistinctArray), "the two inputs must be distinct objects, or this is one file twice")
+    Assert.Equal<byte>(bytes, sameBytesDistinctArray)
     let a = ZetaFsJumprope.buildV1 bytes
-    let b = ZetaFsJumprope.buildV1 bytes
+    let b = ZetaFsJumprope.buildV1 sameBytesDistinctArray
     Assert.Equal(a.Content.ToHex(), b.Content.ToHex())
     let idsA = a.Leaves |> Array.map (fun (id, _) -> id.ToHex())
     let idsB = b.Leaves |> Array.map (fun (id, _) -> id.ToHex())
