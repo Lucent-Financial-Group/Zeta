@@ -151,3 +151,95 @@ describe("K3,3 separates planarity from colour count", () => {
     // Both nonplanar; the colour counts disagree. That is the whole point.
   });
 });
+
+// ---------------------------------------------------------------------------
+// THE SURVIVING MUTANTS.
+//
+// An adversarial review (2026-09-01) ran nine single-guard mutants against this
+// module and SIX SURVIVED -- every one of them a planarity criterion nothing tested.
+// A verifier whose criteria can be deleted without a test noticing is a check that
+// cannot fail, however carefully each criterion is written.
+//
+// Each fixture below is chosen to ISOLATE one criterion, so a passing test names the
+// guard that caught it rather than merely noting a refusal.
+
+// `verifyPlanarEmbedding` is already imported at the top of this file; re-importing it
+// here was a duplicate identifier that bun tolerated and tsc did not.
+const edges = (...pairs: [string, string][]) => pairs as readonly (readonly [string, string])[];
+
+describe("the planarity criteria are each falsified by something", () => {
+  test("EULER — a TOROIDAL embedding passes every other criterion and fails only V-E+F=2", () => {
+    // K3,3 genuinely embeds on the torus: V=6, E=9, F=3, so chi = 0, not 2. This face
+    // set is a real rotation-system face trace, so every directed edge is traversed
+    // exactly once, the graph is connected, every face has length 6, and the traversal
+    // count is exactly 2E. Euler is the ONLY thing wrong with it -- which is what makes
+    // it a control for that criterion rather than a general "bad witness".
+    const k33 = {
+      vertices: ["a1", "a2", "a3", "b1", "b2", "b3"],
+      edges: edges(
+        ["a1", "b1"], ["a1", "b2"], ["a1", "b3"],
+        ["a2", "b1"], ["a2", "b2"], ["a2", "b3"],
+        ["a3", "b1"], ["a3", "b2"], ["a3", "b3"],
+      ),
+    };
+    const toroidal = {
+      faces: [
+        ["a3", "b2", "a1", "b3", "a2", "b1"],
+        ["b1", "a2", "b2", "a3", "b3", "a1"],
+        ["a2", "b3", "a3", "b1", "a1", "b2"],
+      ],
+    };
+    const result = verifyPlanarEmbedding(k33, toroidal);
+    expect(result.valid).toBe(false);
+    // EXACTLY ONE violation, and it is Euler. If the criterion is deleted this witness
+    // is accepted as planar -- which would license a Four Color appeal for a graph that
+    // is not planar at all.
+    expect(result.violations).toEqual([
+      "connected spherical embedding requires V-E+F=2; got 0",
+    ]);
+  });
+
+  test("FACE LENGTH — a digon boundary is refused by name", () => {
+    // Two vertices, one edge, and a pair of 2-cycles offered as faces. No simple
+    // embedding has a face of length two.
+    const single = { vertices: ["x", "y"], edges: edges(["x", "y"]) };
+    const result = verifyPlanarEmbedding(single, { faces: [["x", "y"], ["y", "x"]] });
+    expect(result.valid).toBe(false);
+    expect(result.violations).toContain("face 0 has fewer than three boundary vertices");
+  });
+
+  test("CONNECTIVITY — a disconnected graph is refused by name", () => {
+    // Two disjoint triangles, each correctly embedded on its own. Every edge is
+    // traversed once in each direction and every face is a triangle; what fails is
+    // that the witness format assumes one connected component.
+    const twoTriangles = {
+      vertices: ["a", "b", "c", "d", "e", "f"],
+      edges: edges(["a", "b"], ["b", "c"], ["c", "a"], ["d", "e"], ["e", "f"], ["f", "d"]),
+    };
+    const result = verifyPlanarEmbedding(twoTriangles, {
+      faces: [["a", "b", "c"], ["c", "b", "a"], ["d", "e", "f"], ["f", "e", "d"]],
+    });
+    expect(result.valid).toBe(false);
+    expect(result.violations).toContain("embedding witness currently requires a connected graph");
+  });
+
+  test("EXACT, NOT GREEDY — a crown graph where first-fit needs three and chi is two", () => {
+    // The vertex names are chosen so the canonical sort INTERLEAVES the two sides
+    // (v1a, v1b, v2a, v2b, v3a, v3b). Degree-ordered first-fit in that order uses
+    // THREE colours; the graph is bipartite, so chi is TWO. Verified both ways before
+    // this test was written.
+    //
+    // Replacing the exhaustive search with a greedy pass therefore returns 3 here, and
+    // this assertion is what notices. Without it, "minimum" was a claim the code made
+    // and nothing checked.
+    const crown = {
+      vertices: ["v1a", "v1b", "v2a", "v2b", "v3a", "v3b"],
+      edges: edges(
+        ["v1a", "v2b"], ["v1a", "v3b"],
+        ["v2a", "v1b"], ["v2a", "v3b"],
+        ["v3a", "v1b"], ["v3a", "v2b"],
+      ),
+    };
+    expect(findMinimumColorSchedule(crown).colorCount).toBe(2);
+  });
+});
