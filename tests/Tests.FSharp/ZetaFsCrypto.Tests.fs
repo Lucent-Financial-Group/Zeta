@@ -15,14 +15,27 @@ let private session () =
 
 [<Fact>]
 let ``packNonce is a pure function of epoch, LSN, disc -- no RNG`` () =
+    // GOLDEN VECTOR, not a self-comparison. This test previously asserted
+    // `packNonce x = packNonce x` -- two textually identical executions -- to support a
+    // claim of "no RNG". `audit-check-arity` R1 refused it, correctly: a 2-safety claim
+    // needs two executions that DIFFER in the variable whose influence is denied, and
+    // calling the function twice in a row does not vary ambient entropy in any
+    // controlled way. It would have passed against an implementation that drew from an
+    // RNG once and cached it.
+    //
+    // A pinned expected value tests the claim properly and more strongly: ANY change in
+    // output fails, including an RNG contribution, a field-order swap, or an endianness
+    // change -- none of which a self-comparison can see. Derived from the implementation
+    // (three UInt32 little-endian fields: epoch, lsn &&& 0xFFFFFFFF, disc), so the vector
+    // and the code are independently checkable against each other rather than one being
+    // a restatement of the other.
+    let hex (b: byte[]) = System.Convert.ToHexString(b).ToLowerInvariant()
     let a = ZetaFsCrypto.packNonce 1u 99L ZetaFsCrypto.Disc.Log
-    let b = ZetaFsCrypto.packNonce 1u 99L ZetaFsCrypto.Disc.Log
-    let c = ZetaFsCrypto.packNonce 1u 100L ZetaFsCrypto.Disc.Log
-    let d = ZetaFsCrypto.packNonce 1u 99L ZetaFsCrypto.Disc.Object
-    Assert.Equal<byte[]>(a, b)
+    Assert.Equal("010000006300000000000000", hex a)
     Assert.Equal(12, a.Length)
-    Assert.NotEqual<byte[]>(a, c)
-    Assert.NotEqual<byte[]>(a, d)
+    // Input sensitivity, also pinned: LSN and disc each move the nonce, and WHERE.
+    Assert.Equal("010000006400000000000000", hex (ZetaFsCrypto.packNonce 1u 100L ZetaFsCrypto.Disc.Log))
+    Assert.Equal("010000006300000001000000", hex (ZetaFsCrypto.packNonce 1u 99L ZetaFsCrypto.Disc.Object))
 
 [<Fact>]
 let ``same plaintext seals identically; AesGcmCryptoProvider does not`` () =
@@ -102,9 +115,20 @@ let ``vault-dedup and convergent-opt-in stay off`` () =
 
 [<Fact>]
 let ``toy passphrase KDF is deterministic and is not a wrap of RandomNumberGenerator`` () =
+    // GOLDEN VECTOR for the same reason as packNonce above: the previous assertion was
+    // `toyPassphraseKdf p = toyPassphraseKdf p`, which cannot distinguish a deterministic
+    // KDF from one that draws entropy once and caches it -- exactly the failure the test
+    // name denies ("is not a wrap of RandomNumberGenerator").
+    //
+    // Expected value is HMAC-SHA256(key = "pass", data = "zetafs-toy-passphrase-kdf"),
+    // computed from the implementation independently of it.
     let p = Text.Encoding.UTF8.GetBytes "pass"
-    Assert.Equal<byte[]>(ZetaFsCrypto.toyPassphraseKdf p, ZetaFsCrypto.toyPassphraseKdf p)
-    Assert.Equal(32, (ZetaFsCrypto.toyPassphraseKdf p).Length)
+    let got = ZetaFsCrypto.toyPassphraseKdf p
+    Assert.Equal(
+        "f97c9d699ff38732131e3896d24d060851e81208db6f7fda17f976cdd344a4f9",
+        System.Convert.ToHexString(got).ToLowerInvariant()
+    )
+    Assert.Equal(32, got.Length)
 
 [<Fact>]
 let ``FORMAT default remains enc off; aes-gcm is the explicit-nonce value`` () =
