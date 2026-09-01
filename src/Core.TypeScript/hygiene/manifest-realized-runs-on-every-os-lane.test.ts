@@ -45,7 +45,9 @@ describe("every OS install lane verifies its own manifest was realized", () => {
     const tool = readFileSync(resolve(ROOT, "tools/setup/manifest-realized.ts"), "utf8");
     const m = /export const MANIFESTS = \[([^\]]*)\]/.exec(tool);
     expect(m).not.toBeNull();
-    const declared = [...(m?.[1] ?? "").matchAll(/"([a-z-]+)"/g)].map((x) => x[1]);
+    const declared = [...(m?.[1] ?? "").matchAll(/"([a-z-]+)"/g)]
+      .map((x) => x[1])
+      .filter((s): s is string => s !== undefined);
     expect(declared.length).toBeGreaterThan(0);
     const covered = OS_INSTALL_LANES.map((l) => l.manifest).join(" ");
     for (const name of declared) expect(covered).toContain(name);
