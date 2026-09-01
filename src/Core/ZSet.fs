@@ -316,10 +316,10 @@ module ZSet =
                 arr.[i] <- ZEntry(span.[i].Key, Checked.(*) n span.[i].Weight)
             ZSet(Pool.Freeze arr)
 
-    /// Sum of all weights. `MemoryMarshal.Cast` lets us treat the AoS entry
-    /// array as a flat `long` span where the weight lane is every other
-    /// element — we then slice-stride and hand off to `TensorPrimitives.Sum`
-    /// which auto-dispatches to AVX-512 / AVX2 / ARM NEON.
+    /// Sum of all weights. Zero-alloc 4-way scalar unroll with
+    /// `Checked.(+)`. `Simd.Sum` is not used: `ZEntry<'K>` is AoS and
+    /// layout depends on `'K`, so `MemoryMarshal.Cast` to a weight span
+    /// is not safe for a generic `'K`.
     let weightedCount (a: ZSet<'K>) : Weight =
         let span = a.AsSpan()
         if span.IsEmpty then 0L
