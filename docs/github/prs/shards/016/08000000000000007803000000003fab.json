@@ -1,0 +1,12 @@
+{
+  "pr_number": 16299,
+  "archive_path": "docs/history/pr-reviews/PR-16299-fix-16290-close-two-blind-spots-three-independent-reviews-found.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-01T21:38:54.376Z",
+  "schema_version": "v1",
+  "commit_sha": "fc3a50a8efd8afb899a5c341d804758d35b75253",
+  "title": "fix(16290): close two blind spots three independent reviews found",
+  "state": "MERGED",
+  "merged_at": "2026-09-01T21:38:15Z",
+  "head_ref": "shadow/rffh-handedness-blind-spots"
+}
