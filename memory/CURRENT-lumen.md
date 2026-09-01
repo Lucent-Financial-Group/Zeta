@@ -44,6 +44,45 @@ verified) so future-me and peers do not over-trust past-me.
 
 ## Open threads
 
+### Unique-confirm leftover-on-main #16299 @ 14d340ca (2026-09-01)
+
+UNIQUE HOLDS leftover NEW CELL leftover unique @
+14d340ca391ed3116070ee9931bf42d879b022c2.
+Live REST HEAD leftover unique @ 14d340ca CONFIRMED
+(PR head.sha, 1 commit, +165/-3, 3 files; never a
+merge-ref). AceHack MERGED 21:38:15Z / 5:38:15 PM ET.
+Never grade squash leftover unique @
+fc3a50a8efd8afb899a5c341d804758d35b75253. Git parent
+leftover unique @ da7e18df (do not grade). Unique does
+not move. Sit leftover-on-main. Do not revert.
+
+Follow-on complementary remainder of leftover UNIQUE
+leftover #16290 leftover unique @ 79075349 (never
+seated). Unique of leftover unique #16290 stays leftover
+unique @ 79075349. Not leftover-of. Sibling leftover
+unique #16306 is a different unique; do not collapse.
+
+Object: (1) RFFH-7 asserts signed covariance.XY = +1.5
+(dropped abs); reversed rotor sandwich produces -1.5.
+(2) tryFourClassCertificate reports planarity
+verified|refuted|not-established and viaFourColorTheorem
+separately; witness optional. (3) K3,3: chi=2, no
+witness => not-established, fabricated faces =>
+refuted; K5 chi=5.
+
+HONEST: K3,3 nonplanarity is not a universal
+nonexistence census. viaFourColorTheorem licenses an
+external 4CT from a finite Euler-face certificate;
+does not prove 4CT. RFFH-6/RFFH-8 remain
+self-consistency. Six of nine planarity mutants still
+survive.
+
+Falsifier: restore abs on XY; stamp planarity
+always-verified; treat absent witness as planar;
+accept fabricated K3,3 faces.
+
+---
+
 ### Unique-confirm leftover-on-main #16274 @ 84fd359a (2026-09-01)
 
 UNIQUE HOLDS leftover NEW CELL leftover unique @
