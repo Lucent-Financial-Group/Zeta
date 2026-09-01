@@ -1391,7 +1391,7 @@ Each PR is independently reviewable and mergeable. Tests green or it does not la
 - **Title:** `zetafs: TagBinding Z-set with Tombstone; cycle refuse; ROOT EntityId`
 - **Files:** new `src/Core/ZetaFsNamespace.fs` (or similar); tests that `updatePath`-style parent rewrite is unused; cycle-refuse test that fails if the guard is deleted; tombstone DST (rm then liveResolve not-found; resolveAt prior phase; snap pins)
 - **Depends on:** PR1
-- **Changes:** names-are-tags namespace + EntityId hub + E1 tombstone. Register `StoreEntity = 13` in `registry/categories.yaml` and all four ZetaId oracles (C8). No mutbuf yet (reads of unfrozen entities can be empty-body). `FsPhase` points at KeyCustody Versionstamp + volume line.
+- **Changes:** names-are-tags namespace + EntityId hub + E1 tombstone. Register `StoreEntity = 13` in `registry/categories.yaml` and all four ZetaId oracles (C8). No mutbuf yet. `FsPhase` uses Clock.Versionstamp on line `"zetafs"`. FORMAT stays `ns=git-trees` until bindings persist as objects (the git-trees reader refuses `ns=bindings`). New init writes `ROOT` (Crockford-26).
 
 ### PR4 -- Shared mutbuf, stable EntityId, pwrite/truncate
 

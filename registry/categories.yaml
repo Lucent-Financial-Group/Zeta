@@ -42,6 +42,11 @@ entries:
   # hidden consensus source that a single docs/AGENDA.md is. Allocated 2026-08-23 by
   # 081M0R3WHTH087G0R0015CH5PV under Aaron's authorization; design in
   # docs/DECISIONS/2026-08-23-zetaid-keyed-agenda-declarations.md.
-  # Slots 13 and 14 remain free; Extended = 15 is the escape beyond 14, not a renumbering.
+  # Slot 14 remains free; Extended = 15 is the escape beyond 14, not a renumbering.
   - id: 12
     name: Agenda
+  # StoreEntity — ZetaFS/ZetaDB hub identity (POSIX st_ino projection, never reused).
+  # Exclusive pick C8 in docs/design/2026-08-30-zetafs-first-product-cas-store-per-entity-policy.md.
+  # Do not reuse ContentAddress = 9. Allocated 2026-08-31 with PR3 namespace.
+  - id: 13
+    name: StoreEntity

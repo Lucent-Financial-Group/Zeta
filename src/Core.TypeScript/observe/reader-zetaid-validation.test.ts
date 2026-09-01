@@ -44,8 +44,8 @@ function forgeId(version: bigint, category: bigint): string {
 
 /** Version 7 — no such version has ever existed (the vocabulary defines V1 only). */
 const FORGED_IMPOSSIBLE_VERSION = forgeId(7n, 8n);
-/** Version 1 (VALID) but category 13 — the 4-bit field leaves 12/13/14 undefined. */
-const FORGED_UNREGISTERED_CATEGORY = forgeId(1n, 13n);
+/** Version 1 (VALID) but category 14 — the 4-bit field still leaves 14 unallocated. */
+const FORGED_UNREGISTERED_CATEGORY = forgeId(1n, 14n);
 /** A real artefact of the fixed producer: `{"attestor":"ale`, hex-encoded. */
 const HEX_JSON_ID = "7b226174746573746f72223a22616c65";
 
