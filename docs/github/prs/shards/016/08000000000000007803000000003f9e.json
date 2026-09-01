@@ -1,0 +1,12 @@
+{
+  "pr_number": 16286,
+  "archive_path": "docs/history/pr-reviews/PR-16286-feat-cluster-bump-13-charts-to-latest-vault-and-mimir-held-by-their-own-guards.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-01T19:43:07.095Z",
+  "schema_version": "v1",
+  "commit_sha": "dc241d3a865b721a3a1ee368836360cf244bf09d",
+  "title": "feat(cluster): bump 13 charts to latest — vault and mimir held by their own guards",
+  "state": "MERGED",
+  "merged_at": "2026-09-01T19:42:27Z",
+  "head_ref": "shadow/chart-bumps-batch-1"
+}
