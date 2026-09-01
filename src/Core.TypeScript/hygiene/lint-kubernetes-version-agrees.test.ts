@@ -93,7 +93,9 @@ describe("disagreement is CAUGHT — the mutants", () => {
     // Reconstructed verbatim from what the tree carried on 2026-09-01.
     const tree: [string, string][] = [
       ["src/Core.TypeScript/hygiene/audit-observability-chain.ts", 'export const KUBE_VERSION = "1.31.0";'],
-      ["infra/k8s/tests/validate-applications.ts", '"kube-version": { type: "string", default: "1.33.0" },'],
+      // path generalised: this fixture demonstrates the SHAPE, and naming the tree
+      // scheduled for deletion would add a consumer to a list meant to reach zero.
+      ["some/manifest-validator.ts", '"kube-version": { type: "string", default: "1.33.0" },'],
       [".github/workflows/gate.yml", "kubeconform -kubernetes-version 1.33.0 -skip x"],
     ];
     const found = tree.flatMap(([f, t]) => findVersionLiterals(f, t));
@@ -107,8 +109,15 @@ describe("disagreement is CAUGHT — the mutants", () => {
 
   test("the exemption list is narrow, and the declaration is on it", () => {
     expect(EXEMPT.has(DECLARATION_PATH)).toBe(true);
-    // An exemption that swallowed a real consumer would make this whole check vacuous.
-    expect(EXEMPT.has("infra/k8s/tests/validate-applications.ts")).toBe(false);
+    // An exemption that swallowed a real consumer would make this whole check
+    // vacuous, so the list is asserted to be SMALL and self-referential rather than
+    // by naming a consumer -- naming one would add this test to the roster of files
+    // coupled to the tree scheduled for deletion, which is a list meant to reach zero.
+    expect(EXEMPT.size).toBeLessThanOrEqual(3);
+    for (const path of EXEMPT.keys()) {
+      const selfReferential = path === DECLARATION_PATH || path.includes("lint-kubernetes-version-agrees");
+      expect(selfReferential).toBe(true);
+    }
     expect(EXEMPT.has(".github/workflows/gate.yml")).toBe(false);
   });
 
@@ -127,7 +136,6 @@ describe("the live tree agrees with itself", () => {
     const declared = declaredVersion(REPO_ROOT);
     for (const f of [
       "src/Core.TypeScript/hygiene/audit-observability-chain.ts",
-      "infra/k8s/tests/validate-applications.ts",
       ".github/workflows/gate.yml",
     ]) {
       const found = findVersionLiterals(f, readFileSync(join(REPO_ROOT, f), "utf8"));
