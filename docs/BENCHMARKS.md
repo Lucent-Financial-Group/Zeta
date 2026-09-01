@@ -131,7 +131,8 @@ Verified via `GC.GetAllocatedBytesForCurrentThread()` in unit tests:
 
 - `z.[k]` — binary search, zero alloc
 - `ZSet.count`, `ZSet.isEmpty` — zero alloc
-- `ZSet.weightedCount` — zero alloc (SIMD sum under the hood via `Simd.Sum`)
+- `ZSet.weightedCount` — zero alloc (4-way scalar unroll + `Checked.(+)`;
+  not `Simd.Sum` — AoS `ZEntry<'K>` is not a contiguous weight span)
 - Empty-input operations — zero alloc via `ZSet.Empty` short-circuits
 
 ## Big-O summary
