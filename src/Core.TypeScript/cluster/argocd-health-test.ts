@@ -380,7 +380,7 @@ export const DEV_EXCLUDED_REASONS: ReadonlyMap<string, string> = new Map([
       "request it are parameterised to the substrate's default class. " +
       "ANCHORS, CHECKED BY `reason-truth.ts`: each names an artifact this tree holds, so a claim that outlives its artifact goes red instead of reading on. " +
       "[cite: path full-ai-cluster/dev-cluster/manifests/longhorn.yaml] " +
-      "[cite: chart-pin full-ai-cluster/longhorn longhorn 1.7.2] " +
+      "[cite: chart-pin full-ai-cluster/longhorn longhorn 1.12.1] " +
       "[cite: glob-defers longhorn] ",
   ],
   [

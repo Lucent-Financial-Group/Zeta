@@ -32,7 +32,13 @@ spec:
   source:
     repoURL: https://spiffe.github.io/helm-charts-hardened/
     chart: spire
-    targetRevision: 0.24.2
+    # 0.24.2 -> 0.30.1 on 2026-09-01. Rendered at BOTH versions with this
+    # Application's own valuesObject; it loses ConfigMap/spire-bundle, which is not a loss: 0.30.1 still creates the
+    # spire-bundle Role and still mounts it by that name -- the server writes the
+    # ConfigMap at runtime rather than templating it. spire-crds moved to 0.6.1 in the
+    # same push, which its README requires to land immediately ahead of each hop.
+    # WATCH ON DEPLOY: 0.30.x flips a webhook failurePolicy default toward fail-CLOSED.
+    targetRevision: 0.30.1
     helm:
       releaseName: spire
       valuesObject:
