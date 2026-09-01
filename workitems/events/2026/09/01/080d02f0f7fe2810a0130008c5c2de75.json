@@ -1,0 +1,14 @@
+{
+  "id": "080d02f0f7fe2810a0130008c5c2de75",
+  "at": "2026-09-01T17:58:04.997Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1F1XZY4087G0R002Z01FGA",
+    "type": "task",
+    "title": "ZetaFS stays in-repo until v0.9; unique-key Nexmark + alloc benches; later IR/per-lang/Ace split",
+    "slug": "zetafs-stays-in-repo-until-v0-9-unique-key-nexmark-alloc-ben",
+    "priority": "P1",
+    "filename": "081M1F1XZY4087G0R002Z01FGA-zetafs-stays-in-repo-until-v0-9-unique-key-nexmark-alloc-ben.md"
+  }
+}
