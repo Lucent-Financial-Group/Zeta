@@ -362,6 +362,25 @@ module ZSet =
             finally
                 Pool.Return rented
 
+    /// Like `map`, but **does not sort**. Caller asserts `f` is non-decreasing
+    /// on the binary collation: `i < j` ⇒ `f(k_i) ≤ f(k_j)`. Adjacent equal
+    /// images are coalesced in O(n). Feldera Nexmark Q1 (`p * 100` on
+    /// non-negative prices) is this shape; general `map` stays O(n log n)
+    /// because an arbitrary `f` can reorder keys.
+    let inline mapMonotone ([<InlineIfLambda>] f: 'K -> 'K2) (a: ZSet<'K>) : ZSet<'K2> =
+        let span = a.AsSpan()
+        if span.IsEmpty then ZSet<'K2>.Empty
+        else
+            let rented = Pool.Rent<ZEntry<'K2>> span.Length
+            try
+                for i in 0 .. span.Length - 1 do
+                    rented.[i] <- ZEntry(f span.[i].Key, span.[i].Weight)
+                let live = ZSetBuilder.consolidateSorted (Span<_>(rented, 0, span.Length))
+                if live = 0 then ZSet<'K2>.Empty
+                else ZSet(Pool.FreezeSlice(rented, live))
+            finally
+                Pool.Return rented
+
     let inline flatMap ([<InlineIfLambda>] f: 'K -> ZSet<'K2>) (a: ZSet<'K>) : ZSet<'K2> =
         let span = a.AsSpan()
         if span.IsEmpty then ZSet<'K2>.Empty
