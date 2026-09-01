@@ -50,6 +50,39 @@ The honest alternative is stated too: they could be k3d-substrate artifacts (as
 the CoreDNS `127.0.0.11` finding turned out to be — see the k3d lane's history).
 Distinguishing the two is the work.
 
+## MEASURED 2026-09-01 — the four are TWO classes, and  is the lead
+
+The distinguishing test below was run against an existing GREEN
+ job (kindnetd, same 33-app roster, same commit range). No
+new CI was needed.
+
+** diverges by substrate:**
+
+    kind (kindnetd)     vault   sync=OutOfSync   health=Healthy
+    k3d  (k3s+Cilium)   vault   sync=Unknown     health=Progressing
+
+Same Application, same roster — Healthy on one substrate, never converging on
+the other. That is a substrate difference, not an Application defect, and since
+k3s+Cilium is what METAL runs it is the one of the four most likely to matter for
+hardware. **Investigate this one first.**
+
+**The other three are UNMEASURED, not exonerated.** ,
+ and  produce NO verdict line at all in the kind run — they
+are not in its asserted set, so there is no kind baseline to compare against.
+"Unhealthy on k3d" cannot yet be called a regression or an artifact for them, and
+saying so would be inventing a comparison that was never made.
+
+Incidental confirmation worth recording:  is likewise absent from the kind
+run, which is exactly what the provider-conditional lift specifies — it is
+included on k3d only. The mechanism does what it claims.
+
+**Method caution, because it nearly went the other way.** The first two queries
+for these apps returned empty and would have read as "not asserted on kind". The
+CONTROL was also empty -- ,  and  came back blank
+too, and those are certainly asserted -- which is the only reason the empty
+result was recognised as a broken regex (the format is )
+rather than a finding. An empty grep is not a measurement.
+
 ## The distinguishing test
 
 For each of the four, the question is the same and it is answerable:
