@@ -1,0 +1,12 @@
+{
+  "pr_number": 16290,
+  "archive_path": "docs/history/pr-reviews/PR-16290-research-thousand-brains-add-reference-frame-factor-heterarchy.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-01T20:37:37.074Z",
+  "schema_version": "v1",
+  "commit_sha": "70e6c61f864896d3602c85091d99baa654c7ca44",
+  "title": "research(thousand-brains): add reference-frame factor heterarchy",
+  "state": "MERGED",
+  "merged_at": "2026-09-01T20:37:01Z",
+  "head_ref": "research/thousand-brains-factor-geometry"
+}
