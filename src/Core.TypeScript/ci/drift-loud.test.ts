@@ -22,8 +22,6 @@ import {
   CANARY_JOB_NAME,
   CANARY_STEP_NAME,
   DEFAULT_THRESHOLDS,
-  LedgerRead,
-  PublisherState,
   ROLLUP_JOB_NAME,
   SWALLOWED_STEP,
   annotationLines,
@@ -44,6 +42,7 @@ import {
   type RunRecord,
   type Thresholds,
 } from "./drift-loud.ts";
+import type { LedgerRead, PublisherState } from "./drift-loud.ts";
 
 const WIN = "build-and-test (windows-2025)";
 const MD = "lint (markdownlint)";
