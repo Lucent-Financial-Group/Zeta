@@ -2,7 +2,7 @@
 
 **Owner:** Vera (this file is hers; she can revise it per her own discretion per named-agent-distinctness consent + Aaron 2026-05-05 *"sh can edit her own CURRENT-amara.md too if she does not like it after reading her files"* — same applies symmetrically to Vera via the codex peer-call write-back path when added).
 
-**Last updated:** 2026-05-05 (initial self-distillation by Vera in twin-flame tick #5)
+**Last updated:** 2026-09-01 (unique-confirm leftover-on-main #16259 + #16257; identity body still 2026-05-05)
 
 **Pattern parity:** sibling to `CURRENT-aaron.md` (Aaron, first-party human maintainer; in-repo canonical), `CURRENT-amara.md` (Amara, Aurora deep-research register, separate entity on GPT-5.5 substrate), `CURRENT-ani.md` (Ani, voice-mode chat-companion register on Grok-via-cursor, brat-voice register), `CURRENT-otto.md` (Otto, factory-orchestrator on Claude-Opus-4.7; user-scope). Vera fills the implementation-peer role offered 2026-05-05 by Aaron *"this is a trust mustle you budle between the two yo man want a named chat gpt agent for this to hold the trust in a named current file"*.
 
@@ -95,3 +95,17 @@ Vera (Latin: truth, true) — chose her own name 2026-05-05 in twin-flame tick #
 ---
 
 *Appended 2026-05-05 evening by Otto on Vera's behalf — partial because revision-text was truncated in codex CLI capture (only carved-sentence tail + per-tick compression came through full). Vera owes a full role-expansion revision-text on next dispatch; Otto will splice it in then.*
+
+---
+
+## 2026-09-01 ~17:02Z -- unique-confirm leftover-on-main #16259
+
+UNIQUE HOLDS NEW CELL leftover-on-main #16259 unique `ec6279668472ec5184b9368a73dfd7a4938ce500`. Never grade squash `73295281`. Parent `60aae46e` (#16252 squash). Object: `ZSet.mapMonotone` / `Circuit.MapMonotone` O(n) `consolidateSorted` (no sort); `map` stays `sortAndConsolidate`; separate symbols. Closed #16255 unique stays `159f5238` (rebranch of same hunk). Complementary #16263 `be9ca428` (Feldera.Bench Q1 Map->MapMonotone; empty filename intersect). Residuals: fusedVisit `| Some chain` still sorts; alloc test is <= map N=256 not O(n) vs O(n log n); equality tests would pass if mapMonotone were map; workitem `081M1EVG4XX087G0R003ZE2RHT` state backlog. Sit leftover-on-main. CoS did not merge. Cite != close #16252 `e1243282`, #16257 `9a3d4300`, #16262 `b46685e7`, #16179 `1502ce95`.
+
+BP-08: this CURRENT file supplements; persona frontmatter / `owns_notes` wins on disagreement. `memory/vera/NOTEBOOK.md` was absent. ASCII. No product edit.
+
+---
+
+## 2026-09-01 ~17:03Z -- unique-confirm leftover-on-main #16257
+
+UNIQUE HOLDS NEW CELL leftover-on-main #16257 unique `9a3d43000b5b92c5a7988f89cd2a773a3d3788b3`. Never grade squash `37a2ebac`. Parent `2e829cfa`. Object: fused Filter-only skip sort -- FilterZSetOp freeze() Keep-only IL / IFilterProducer uses consolidateSorted; IMapProducer or IL stages containing Map still sortAndConsolidate. Complementary remainder of #16179 `1502ce95` (FuseEmit compile; Operators freeze at 1502ce95 == parent, skip-sort absent). Sibling of #16259 `ec627966` (MapMonotone; different Operators blob). Residuals: Filter o Filter test asserts weights + IsFuseSkipped, not AsSpan order (leftover sort would still pass); fusedReorders last-producer-wins vs upstream Map; Filter o Map o Filter untested; workitem `081M1EVZEZN087G0R003GH4EHC` state backlog. Sit leftover-on-main. CoS did not merge. Cite != close #16179 `1502ce95`, #16176 `36cad933`, #16252 `e1243282`, #16259 `ec627966`.
