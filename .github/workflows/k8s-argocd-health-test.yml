@@ -1390,6 +1390,21 @@ jobs:
           # the step env that defines the variable it quotes. Every other lane in this
           # file (735, 823, 1007, 1415) sets it exactly like this.
           ZETA_ARGOCD_GIT_REF: ${{ github.event.pull_request.head.sha || github.sha }}
+        # NO `--ephemeral-vault-init` HERE, AND IT IS NOT AN OVERSIGHT. The harness
+        # refuses the combination on purpose (run 33478106365):
+        #   "--ephemeral-vault-init cannot be combined with --existing: the ceremony is
+        #    authorised only for a cluster this process creates and destroys."
+        # This job MUST pass `--existing`: the Cilium bring-up has to happen before the
+        # proof, because the no-CNI profile cannot schedule ArgoCD until a CNI is
+        # installed. So the ceremony is unavailable here by construction, not by choice.
+        #
+        # CONSEQUENCE, AND IT BOUNDS WHAT THIS JOB CAN CONCLUDE: the green baseline
+        # (`live-kind-included`) DOES run the ceremony, so `vault` in this lane is not
+        # comparable to it -- an uninitialised vault may fail to reach Healthy for
+        # reasons that have nothing to do with the CNI. `vault` is therefore CONFOUNDED
+        # here and the verdict table says so rather than reporting its state as evidence.
+        # The other three (openziti-controller, trust-manager, spire) do not depend on
+        # the ceremony and are what this probe can actually speak to.
         run: |
           set -o pipefail
           bun src/Core.TypeScript/cluster/argocd-health-test.ts \
@@ -1402,7 +1417,6 @@ jobs:
             --git-ref "$ZETA_ARGOCD_GIT_REF" \
             --timeout-sec 2400 \
             --poll-sec 15 \
-            --ephemeral-vault-init \
             | tee "$RUNNER_TEMP/cilium-included-proof.log"
 
       # The verdict table is the POINT of this job, so it is printed whether the
@@ -1435,13 +1449,22 @@ jobs:
             echo "would manufacture a finding out of a run that measured nothing."
             exit 0
           fi
-          echo "=== the four under investigation ==="
-          for app in vault openziti-controller trust-manager spire; do
+          echo "=== the three this probe can speak to ==="
+          for app in openziti-controller trust-manager spire; do
             line="$(grep -oE "=== $app: sync=[A-Za-z]+ health=[A-Za-z]+" "$LOG" 2>/dev/null | head -1)"
-            # Safe now: reached only when the proof emitted >=1 verdict, so an absent app
+            # Safe: reached only when the proof emitted >=1 verdict, so an absent app
             # genuinely means absent from an asserted roster.
             echo "  ${line:-=== $app: NOT ASSERTED IN THIS SCOPE (roster had ${total} apps)}"
           done
+          echo "=== vault: CONFOUNDED IN THIS LANE, NOT EVIDENCE ==="
+          vline="$(grep -oE '=== vault: sync=[A-Za-z]+ health=[A-Za-z]+' "$LOG" 2>/dev/null | head -1)"
+          echo "  observed: ${vline:-<no vault verdict>}"
+          echo "  This lane cannot run --ephemeral-vault-init (the harness refuses it with"
+          echo "  --existing), while the green baseline live-kind-included DOES run it. An"
+          echo "  uninitialised vault can fail to reach Healthy for reasons unrelated to the"
+          echo "  CNI, so the line above is NOT comparable to the baseline and must not be"
+          echo "  read as evidence about Cilium. vault's standing evidence remains the"
+          echo "  kind-vs-k3d divergence recorded in 081M1DFQ2MZ087G0R000CMNHQX." 
 
       - name: Tear down kind cluster
         if: always()
