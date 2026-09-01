@@ -4,12 +4,12 @@ using Zeta.Orleans.Silo;
 
 // Zeta Orleans silo.
 //
-// WHY THIS EXISTS: full-ai-cluster/k8s/applications/orleans/statefulset.yaml and
-// infra/k8s/applications/orleans/deployment.yaml have pinned
-// ghcr.io/lucent-financial-group/zeta-orleans-silo since they were written, and
-// NOTHING BUILT IT (081M0QB1Q6Z087G0R00091JH3Q). The manifests were honest about
-// it -- `replicas: 0`, with a comment saying to bump it once a real image exists
-// -- so nothing was broken in a running cluster; what was missing was the artifact.
+// WHY THIS EXISTS: full-ai-cluster/k8s/applications/orleans/statefulset.yaml has
+// pinned ghcr.io/lucent-financial-group/zeta-orleans-silo since it was written --
+// as have two manifests in the legacy tree -- and NOTHING BUILT IT
+// (081M0QB1Q6Z087G0R00091JH3Q). The manifests were honest about it (`replicas: 0`,
+// with a comment saying to bump it once a real image exists), so nothing was
+// broken in a running cluster; what was missing was the artifact.
 
 var configPath = Environment.GetEnvironmentVariable("ORLEANS_CONFIG_PATH") ?? "/etc/orleans/cluster.json";
 

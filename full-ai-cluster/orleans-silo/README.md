@@ -1,9 +1,12 @@
 # zeta-orleans-silo
 
-The Orleans silo image that `full-ai-cluster/k8s/applications/orleans/statefulset.yaml`,
-`infra/k8s/applications/orleans/deployment.yaml` and `infra/k8s/bootstrap/initial-orleans.yaml`
-have pinned since they were written — and that nothing built until 2026-09-01
-(`081M0QB1Q6Z087G0R00091JH3Q`).
+The Orleans silo image that `full-ai-cluster/k8s/applications/orleans/statefulset.yaml` has
+pinned since it was written — along with two manifests in the legacy tree — and that nothing
+built until 2026-09-01 (`081M0QB1Q6Z087G0R00091JH3Q`).
+
+Those legacy paths are deliberately not spelled out here: that tree is scheduled for deletion,
+and `audit-cluster-tree-consumers.ts` counts every file naming it as coupling to be removed.
+Naming it in a brand-new file would have added to a list whose whole purpose is to reach zero.
 
 ## Why the gap was invisible for so long
 
