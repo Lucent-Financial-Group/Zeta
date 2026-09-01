@@ -1382,6 +1382,14 @@ jobs:
         id: proof
         env:
           ZETA_GHCR_PULL_TOKEN: ${{ github.token }}
+          # MEASURED 2026-09-01, run 33474432508: this line was missing and the step
+          # expanded `--git-ref ""`, so the harness refused with
+          #   {"kind":"UsageError","message":"git ref must match [A-Za-z0-9._/-]+ ..."}
+          # and exited 2 -- a USAGE error, which is a check that never ran, not a check
+          # that failed. The command line was copied from `live-kind-included` without
+          # the step env that defines the variable it quotes. Every other lane in this
+          # file (735, 823, 1007, 1415) sets it exactly like this.
+          ZETA_ARGOCD_GIT_REF: ${{ github.event.pull_request.head.sha || github.sha }}
         run: |
           set -o pipefail
           bun src/Core.TypeScript/cluster/argocd-health-test.ts \
@@ -1399,17 +1407,40 @@ jobs:
 
       # The verdict table is the POINT of this job, so it is printed whether the
       # proof passed or failed -- a red run is the informative one here.
+      # THE TABLE MUST NOT TURN "THE PROOF NEVER RAN" INTO "THESE APPS WERE NOT
+      # ASSERTED". Its first version did: on run 33474432508 the proof exited 2 on a
+      # usage error before emitting a single verdict, and the table printed four tidy
+      # `NOT ASSERTED IN THIS SCOPE` lines -- which reads exactly like a measurement of
+      # scope and is nothing of the kind. The only reason it was caught is that the
+      # all-apps section above was ALSO empty; that accident is now the explicit check.
       - name: Per-application verdicts (the answer this job was dispatched for)
         if: always()
         run: |
-          echo "=== every app verdict on kind+Cilium ==="
-          grep -oE '=== [a-z0-9-]+: sync=[A-Za-z]+ health=[A-Za-z]+' \
-            "$RUNNER_TEMP/cilium-included-proof.log" 2>/dev/null | sort || true
+          LOG="$RUNNER_TEMP/cilium-included-proof.log"
+          if [ ! -s "$LOG" ]; then
+            echo "NO PROOF OUTPUT: '$LOG' is missing or empty."
+            echo "The proof did not run. This job measured NOTHING about Cilium; it is"
+            echo "not evidence that any Application is or is not healthy."
+            exit 0
+          fi
+          total="$(grep -cE '=== [a-z0-9-]+: sync=[A-Za-z]+ health=[A-Za-z]+' "$LOG" 2>/dev/null || true)"
+          echo "=== every app verdict on kind+Cilium (count=${total:-0}) ==="
+          grep -oE '=== [a-z0-9-]+: sync=[A-Za-z]+ health=[A-Za-z]+' "$LOG" 2>/dev/null | sort || true
+          if [ "${total:-0}" -eq 0 ]; then
+            echo
+            echo "ZERO VERDICTS PARSED -- the proof produced no per-app lines at all."
+            echo "That is a proof that did not complete, NOT a roster in which these"
+            echo "applications are absent. Read the proof step's failure, not this table;"
+            echo "the four below are deliberately NOT listed, because listing them here"
+            echo "would manufacture a finding out of a run that measured nothing."
+            exit 0
+          fi
           echo "=== the four under investigation ==="
           for app in vault openziti-controller trust-manager spire; do
-            line="$(grep -oE "=== $app: sync=[A-Za-z]+ health=[A-Za-z]+" \
-              "$RUNNER_TEMP/cilium-included-proof.log" 2>/dev/null | head -1)"
-            echo "  ${line:-=== $app: NOT ASSERTED IN THIS SCOPE}"
+            line="$(grep -oE "=== $app: sync=[A-Za-z]+ health=[A-Za-z]+" "$LOG" 2>/dev/null | head -1)"
+            # Safe now: reached only when the proof emitted >=1 verdict, so an absent app
+            # genuinely means absent from an asserted roster.
+            echo "  ${line:-=== $app: NOT ASSERTED IN THIS SCOPE (roster had ${total} apps)}"
           done
 
       - name: Tear down kind cluster
