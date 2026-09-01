@@ -41,7 +41,7 @@ function canonicalGraph(graph: ConflictGraph): {
   readonly edges: readonly (readonly [string, string])[];
   readonly adjacency: ReadonlyMap<string, ReadonlySet<string>>;
 } {
-  const vertices = [...new Set(graph.vertices)].sort();
+  const vertices = [...new Set(graph.vertices)].sort(stringCompare);
   if (vertices.length !== graph.vertices.length) throw new Error("duplicate vertex identifier");
   const known = new Set(vertices);
   const edgeKeys = new Set<string>();
@@ -50,7 +50,7 @@ function canonicalGraph(graph: ConflictGraph): {
   for (const [rawLeft, rawRight] of graph.edges) {
     if (!known.has(rawLeft) || !known.has(rawRight)) throw new Error("edge endpoint is not a declared vertex");
     if (rawLeft === rawRight) throw new Error("self-conflict cannot be scheduled by vertex coloring");
-    const [left, right] = rawLeft < rawRight ? [rawLeft, rawRight] : [rawRight, rawLeft];
+    const [left, right] = stringCompare(rawLeft, rawRight) < 0 ? [rawLeft, rawRight] : [rawRight, rawLeft];
     const key = `${left}\u0000${right}`;
     if (edgeKeys.has(key)) continue;
     edgeKeys.add(key);
@@ -60,6 +60,21 @@ function canonicalGraph(graph: ConflictGraph): {
   }
   edges.sort(([a0, a1], [b0, b1]) => stringCompare(a0, b0) || stringCompare(a1, b1));
   return { vertices, edges, adjacency };
+}
+
+/**
+ * Public canonical proof-lineage form. This exposes the exact vertex and endpoint order used by
+ * coloring without leaking the mutable adjacency implementation.
+ */
+export function canonicalConflictGraph(graph: ConflictGraph): {
+  readonly vertices: readonly string[];
+  readonly edges: readonly (readonly [string, string])[];
+} {
+  const canonical = canonicalGraph(graph);
+  return {
+    vertices: Object.freeze([...canonical.vertices]),
+    edges: Object.freeze(canonical.edges.map(([left, right]) => Object.freeze([left, right] as const))),
+  };
 }
 
 function directedEdge(left: string, right: string): string {

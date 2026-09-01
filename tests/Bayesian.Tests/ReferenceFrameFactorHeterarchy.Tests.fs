@@ -132,10 +132,12 @@ module ReferenceFrameFactorHeterarchyTests =
 
     [<Fact>]
     let ``RFFH-6: two sender frames align to one room-frame point`` () =
-        let target = vector 1.0 2.0 3.0
+        // Independent closed form: the declared +π/2 e12 action is
+        // Q(x,y,z)=(-y,x,z). Q(2,3,4)+(4,-2,1)=(1,0,5).
+        // The expected side deliberately does not call inverse/point/Gaussian production transforms.
+        let target = vector 1.0 0.0 5.0
         let rotated = pose (Cl3.rotor (Math.PI / 2.0) Cl3.e12) (vector 4.0 -2.0 1.0)
-        let inverse = Rffh.tryInversePose rotated |> unwrap
-        let senderPoint = Rffh.tryTransformPoint inverse target |> unwrap
+        let senderPoint = vector 2.0 3.0 4.0
         let first = message "e1" "a" Map.empty (gaussian target (diagonal 2.0 2.0 2.0)) Rffh.identityPose
         let second = message "e2" "b" Map.empty (gaussian senderPoint (diagonal 2.0 2.0 2.0)) rotated
         let _, state1 = add first (empty ())
@@ -176,13 +178,34 @@ module ReferenceFrameFactorHeterarchyTests =
         let _, changed1 = add firstChanged (empty ())
         let _, changed2 = add secondChanged changed1
         let actual = Rffh.positionPosterior changed2 |> Option.get
-        let expected = Rffh.tryTransformGaussian coordinateChange originalPosterior |> unwrap
-        closeVector 1e-10 (Rffh.Gaussian3.mean expected) (Rffh.Gaussian3.mean actual)
-        let expectedCovariance = Rffh.Gaussian3.covariance expected
+
+        // Independent information-form fusion, computed from the literal diagonal inputs:
+        // μ=(-3/5,3/4,11/7), Σ=diag(4/5,3/4,10/7).
+        let fusedX, fusedY, fusedZ = -3.0 / 5.0, 3.0 / 4.0, 11.0 / 7.0
+        let varianceX, varianceY, varianceZ = 4.0 / 5.0, 3.0 / 4.0, 10.0 / 7.0
+        closeVector 1e-10 (vector fusedX fusedY fusedZ) (Rffh.Gaussian3.mean originalPosterior)
+        let originalCovariance = Rffh.Gaussian3.covariance originalPosterior
+        close 1e-10 varianceX originalCovariance.XX
+        close 1e-10 varianceY originalCovariance.YY
+        close 1e-10 varianceZ originalCovariance.ZZ
+        let cosine, sine = cos 0.63, sin 0.63
+        let expectedMean =
+            vector
+                (cosine * fusedX - sine * fusedY + 4.0)
+                (sine * fusedX + cosine * fusedY - 2.0)
+                (fusedZ + 1.0)
+        let expectedXX = cosine * cosine * varianceX + sine * sine * varianceY
+        let expectedYY = sine * sine * varianceX + cosine * cosine * varianceY
+        let expectedXY = cosine * sine * (varianceX - varianceY)
+
+        closeVector 1e-10 expectedMean (Rffh.Gaussian3.mean actual)
         let actualCovariance = Rffh.Gaussian3.covariance actual
-        close 1e-10 expectedCovariance.XX actualCovariance.XX
-        close 1e-10 expectedCovariance.XY actualCovariance.XY
-        close 1e-10 expectedCovariance.YY actualCovariance.YY
+        close 1e-10 expectedXX actualCovariance.XX
+        close 1e-10 expectedXY actualCovariance.XY
+        close 1e-10 0.0 actualCovariance.XZ
+        close 1e-10 expectedYY actualCovariance.YY
+        close 1e-10 0.0 actualCovariance.YZ
+        close 1e-10 varianceZ actualCovariance.ZZ
 
     [<Fact>]
     let ``RFFH-11: parent-child path composition agrees with sequential Clifford actions`` () =

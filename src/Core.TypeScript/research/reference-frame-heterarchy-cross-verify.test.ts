@@ -6,7 +6,7 @@ const ROOT = resolve(import.meta.dir, "../../..");
 const DISPATCHER = join(ROOT, "tests/cross-verification/reference-frame-heterarchy/cross-verify.ts");
 
 describe("reference-frame factor heterarchy cross-verification", () => {
-  test("F# and TypeScript agree on Bayesian fusion, Clifford covariance, topology, and K4/K5 controls", () => {
+  test("F# and TypeScript agree on independent geometry, topology, and K4/K5/K3,3/crown controls", () => {
     const child = spawnSync(process.execPath, [DISPATCHER], {
       cwd: ROOT,
       encoding: "utf8",
@@ -16,7 +16,7 @@ describe("reference-frame factor heterarchy cross-verification", () => {
     expect(child.error).toBeUndefined();
     expect(child.status, child.stderr || child.stdout).toBe(0);
     expect(child.stdout).toContain(
-      "reference-frame-heterarchy cross-verify: 14 finite witnesses across F#/TypeScript, 0 failure(s).",
+      "reference-frame-heterarchy cross-verify: 18 finite witness groups across F#/TypeScript, 0 failure(s).",
     );
   }, 240_000);
 });
