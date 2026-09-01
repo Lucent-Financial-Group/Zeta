@@ -2782,7 +2782,7 @@
             "rule": "cross-oracle-bytelock",
             "kind": "cross-oracle",
             "witness": "tests/cross-verification/_golden/zeta-ir-v4.golden.json",
-            "count": 309,
+            "count": 312,
             "holder": "ts:cross-verification"
           },
           {
@@ -2856,7 +2856,7 @@
             "rule": "cross-oracle-bytelock",
             "kind": "cross-oracle",
             "witness": "src/Core.TypeScript/blake3/cross-verify.ts",
-            "count": 14,
+            "count": 15,
             "holder": "ts:repo"
           },
           {

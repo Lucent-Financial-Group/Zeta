@@ -69,11 +69,12 @@ const SPECTRUM = [
     tone: "var(--amber)",
   },
   {
-    lane: "coded → half-spin intertwiner",
-    carrier: "16 → 128 S+",
-    operators: "7 even pairs",
+    lane: "coded → half-spin module",
+    carrier: "16 (8+8) → 128 (64+64)",
+    operators: "7 even pairs · TS/F#/Rust",
     defect: "—",
-    verdict: "nullity 16 · rank-16 map · δ unmeasured",
+    verdict: "rank 16 · Hom 8⊕8 · δ unmeasured",
+    detail: "3 tested selectors obstructed · 64 exact ties",
     tone: "var(--amber)",
     emphasis: true,
   },
@@ -167,11 +168,11 @@ function StructuralProofField() {
       aria-hidden="true"
       viewBox="0 0 900 230"
       preserveAspectRatio="none"
-      style={{ position: "absolute", inset: "0 0 auto auto", width: "64%", height: 230, opacity: 0.3, pointerEvents: "none" }}
+      style={{ position: "absolute", inset: "0 0 auto auto", width: "78%", height: 250, opacity: 0.42, pointerEvents: "none" }}
     >
-      <path d="M900 26 H790 L744 72 H654 L604 118 H510 L458 170 H330" fill="none" stroke="var(--amber)" strokeWidth="2.2" vectorEffect="non-scaling-stroke" />
-      <path d="M744 72 V24 H686 M604 118 V55 H550 M510 170 V104 H438 M790 26 V94 H730" fill="none" stroke="var(--amber)" strokeOpacity="0.52" strokeWidth="1.2" vectorEffect="non-scaling-stroke" />
-      <path d="M438 104 H390 L350 68 H296 M730 94 H676 L636 142 H574" fill="none" stroke="oklch(0.72 0.14 190)" strokeOpacity="0.48" strokeWidth="1" strokeDasharray="4 8" vectorEffect="non-scaling-stroke" />
+      <path d="M900 22 L847 28 L815 47 L761 43 L724 69 L659 64 L621 94 L558 87 L516 125 L456 118 L416 154 L352 145 L312 184 L246 176" fill="none" stroke="var(--amber)" strokeWidth="2.7" vectorEffect="non-scaling-stroke" />
+      <path d="M815 47 L798 14 L756 7 M761 43 L741 87 L699 104 M659 64 L637 24 L590 13 M621 94 L650 132 L706 142 M516 125 L489 79 L444 61 M456 118 L476 172 L529 199 M352 145 L328 103 L282 88 M312 184 L280 218 L224 226" fill="none" stroke="var(--amber)" strokeOpacity="0.56" strokeWidth="1.35" vectorEffect="non-scaling-stroke" />
+      <path d="M699 104 L675 76 M590 13 L565 38 M444 61 L414 31 M529 199 L558 218 M282 88 L252 54" fill="none" stroke="oklch(0.72 0.14 190)" strokeOpacity="0.46" strokeWidth="1" strokeDasharray="3 8" vectorEffect="non-scaling-stroke" />
     </svg>
   );
 }
@@ -233,8 +234,8 @@ export default function EvidenceSeamPanel() {
           <div style={{ color: "var(--amber-dim)", fontSize: "0.56rem", letterSpacing: "0.16em", textTransform: "uppercase" }}>
             room evidence instrument · checked finite artifacts
           </div>
-          <h2 id="evidence-seam-title" style={{ margin: "0.38rem 0 0", fontSize: "clamp(1.4rem, 3.4vw, 2.5rem)", lineHeight: 0.98, letterSpacing: "-0.06em" }}>
-            Adinkra recovery → durable truth → local witness
+          <h2 id="evidence-seam-title" style={{ margin: "0.42rem 0 0", color: "var(--amber-dim)", fontSize: "clamp(1.05rem, 2.5vw, 1.85rem)", lineHeight: 1, letterSpacing: "-0.035em" }}>
+            ADINKRA RECOVERY / DURABLE RECEIPT / LOCAL WITNESS
           </h2>
         </div>
         <div style={{ textAlign: "right", fontSize: "0.55rem", color: "var(--muted-foreground)", lineHeight: 1.55 }}>
@@ -296,10 +297,10 @@ export default function EvidenceSeamPanel() {
           <div className="evidence-proof-spine" style={{ marginTop: "0.9rem", borderLeft: `3px solid ${transportTone}`, padding: "0.55rem 0.75rem 0.7rem", background: "linear-gradient(90deg, color-mix(in srgb, var(--amber) 8%, transparent), transparent 70%)" }}>
             <div style={{ alignItems: "baseline", display: "flex", flexWrap: "wrap", gap: "0.35rem 0.7rem", marginBottom: "0.32rem" }}>
               <span style={{ color: "var(--muted-foreground)", fontSize: "0.5rem", letterSpacing: "0.12em" }}>IDENTIFIABLE ERASURE DOMAIN</span>
-              <strong style={{ color: "var(--amber)", fontSize: "clamp(1.1rem, 2vw, 1.55rem)", letterSpacing: "-0.07em" }}>0–3 / 8</strong>
+              <strong style={{ color: "var(--amber)", fontSize: "clamp(1.4rem, 2.8vw, 2.05rem)", letterSpacing: "-0.08em" }}>0–3 / 8</strong>
               <span style={{ color: "var(--muted-foreground)", fontSize: "0.5rem", letterSpacing: "0.1em" }}>56 / 70 AT FOUR</span>
             </div>
-            <div style={{ color: transportTone, fontWeight: 900, fontSize: "clamp(1.05rem, 2.35vw, 1.6rem)", lineHeight: 1, letterSpacing: "-0.055em" }}>
+            <div style={{ color: transportTone, fontWeight: 900, fontSize: "clamp(1.32rem, 3vw, 2.1rem)", lineHeight: 0.94, letterSpacing: "-0.065em" }}>
               {!semanticReceipt
                 ? "UNDECODABLE — no semantic receipt enters the ledger"
                 : exactRoot
@@ -369,6 +370,7 @@ export default function EvidenceSeamPanel() {
               <div style={{ marginTop: "0.6rem", borderTop: "1px solid var(--border)", paddingTop: "0.45rem", fontSize: "0.52rem", fontWeight: "emphasis" in row ? 900 : 400, color: row.tone }}>
                 {row.verdict}
               </div>
+              {"detail" in row ? <div style={{ marginTop: "0.35rem", fontSize: "0.48rem", color: "var(--muted-foreground)" }}>{row.detail}</div> : null}
             </div>
           ))}
         </div>
