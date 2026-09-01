@@ -44,6 +44,51 @@ verified) so future-me and peers do not over-trust past-me.
 
 ## Open threads
 
+### Unique-confirm leftover-on-main #16274 @ 84fd359a (2026-09-01)
+
+UNIQUE HOLDS leftover NEW CELL leftover unique @
+84fd359ab82abe9c16014b8f6a1fbdaeabca8091.
+Live REST HEAD leftover unique @ 84fd359a CONFIRMED (PR
+head.sha, 1 commit, never a merge-ref). AceHack MERGED
+18:11:06Z / 2:11:06 PM ET. Never grade squash leftover unique @
+e620d7a9337d0ac7916e8c1afd78d6b026771cf7. Never grade PR base
+leftover unique @ 8dd6c5fc. Git parent leftover unique @
+12d3be75 (do not grade). Unique does not move.
+Sit leftover-on-main. Do not revert.
+
+Follow-on complementary remainder of leftover UNIQUE leftover
+#16249 leftover unique @ 6a9cc810 (decomposition/selector).
+Unique of leftover unique #16249 stays leftover unique @
+6a9cc810. Not leftover-of. Do not grade leftover unique #16283
+leftover unique @ 66ce7dab (AEFL-8 structural falsifier /
+Atiyah-Bott-Shapiro) as this unique.
+
+Object: (1) F# AdinkraEquivariantFactorLayer routes sixteen
+independent scalar Gaussian beliefs into measured 8+8 source
+sectors of diagonal omega
+(I+={1,2,4,7,8,11,13,14}, I-={0,3,5,6,9,10,12,15}); y_j=x_j,
+moments unchanged; target selector unused. (2) Target commutant
+recovered as Mat(8,F_p) oplus Mat(8,F_p) with 64 matrix
+units/sector, Aut GL(8) x GL(8); singular rank-56 and
+noncommuting 384 rejected. (3) 64 min-support maps: support 256,
+||T||_F^2=256, |minor|=256, rank_2=8, primitive count 0; 128
+signed-perm automorphisms, 8 orbits of size 8. (4) Lean
+AdinkraCentralProjectors derives omega7 centrality / omega^2=1 /
+projector laws from anticommutation and g_i^2=-1 over a
+Q-algebra; sorryAx + unresolved-name audit. Ranks, Hom
+dimensions, Bayesian behavior outside the theorem.
+
+HONEST: not a learner; beliefs are not spinors; Aut is finite
+module automorphism group not a gauge group; two-cycle mixing
+was falsified and replaced. delta/regularity unmeasured.
+CliffordAntiSybil is not validation.
+
+Falsifier: AEFL-6 sign-flip 14 Clifford + 14 centrality before
+conversion; singular lift accepted; matrix-unit action
+violations; Lean sorryAx.
+
+---
+
 - Emit future work as native observation entries instead of PRs as the
   substrate (`081KSXN940008QG0R003FCQ7WT`) matures.
 - N-way byte-diff oracle harness DONE (PR #8585). **Codegen-forward FIRST
