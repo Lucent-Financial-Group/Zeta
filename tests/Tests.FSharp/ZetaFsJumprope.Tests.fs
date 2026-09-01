@@ -65,6 +65,9 @@ let ``multi-chunk file round-trips and seek hits the right byte`` () =
     for off in [| 0; 1; 2047; 2048; 8192; 50_000; 199_999 |] do
         let hit = mustOk (ZetaFsJumprope.seek rope (uint64 off))
         Assert.Equal(bytes.[off], hit.Payload.Span.[int hit.OffsetInChunk])
+        let viaTrunk = mustOk (ZetaFsJumprope.seekEncoded rope (uint64 off))
+        Assert.Equal(hit.Chunk.ToHex(), viaTrunk.Chunk.ToHex())
+        Assert.Equal(hit.OffsetInChunk, viaTrunk.OffsetInChunk)
 
 [<Fact>]
 let ``identical files share every chunk ContentId`` () =

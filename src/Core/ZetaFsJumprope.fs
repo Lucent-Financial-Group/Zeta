@@ -18,8 +18,10 @@ open Zeta.Core.FSharp.Blake3
 /// FastCDC algorithm is `FastCdc.fs` as executed. This module does not change it.
 ///
 /// Alloc: freeze/build may allocate (CAS objects, leaf index, FastCDC already
-/// copied each chunk). Seek/pread is the hot path — it returns a view over the
-/// stored payload, it does not ToArray the chunk.
+/// copied each chunk). Seek/pread is the hot path: binary search on a prefix
+/// array built at freeze, then a view over the stored payload. It does not
+/// ToArray the chunk, ToHex a ContentId, or re-parse CBOR. The skiplist CBOR
+/// is the durable encoding / ContentId; it is not the in-memory seek structure.
 module ZetaFsJumprope =
 
     [<Literal>]
@@ -51,9 +53,10 @@ module ZetaFsJumprope =
 
     /// Objects = canonical CBOR (identity). Payloads = FastCDC chunk bytes as
     /// the chunker emitted them — seek/pread return a view, they do not ToArray.
+    /// Keyed by ContentHash256, not hex strings (ToHex is a 64-char alloc).
     type Cas =
-        { Objects: ImmutableDictionary<string, byte[]>
-          Payloads: ImmutableDictionary<string, byte[]> }
+        { Objects: ImmutableDictionary<ContentHash256, byte[]>
+          Payloads: ImmutableDictionary<ContentHash256, byte[]> }
 
     type Rope =
         { Content: ContentHash256
@@ -61,28 +64,36 @@ module ZetaFsJumprope =
           Chunker: ChunkerId
           Cas: Cas
           /// Chunk ContentId + length, in file order. Derivables; trunk is source.
-          Leaves: (ContentHash256 * uint64)[] }
+          Leaves: (ContentHash256 * uint64)[]
+          /// Start offset of Leaves[i]. Built once at freeze. Seek binary-searches this.
+          Starts: uint64[] }
+
+    let private idCmp =
+        { new IEqualityComparer<ContentHash256> with
+            member _.Equals(a, b) =
+                MemoryExtensions.SequenceEqual(ReadOnlySpan<byte> a.Raw, ReadOnlySpan<byte> b.Raw)
+
+            member _.GetHashCode(a) = a.GetHashCode() }
 
     let emptyCas () : Cas =
-        let ord = StringComparer.Ordinal
-        { Objects = ImmutableDictionary.Create<string, byte[]>(ord)
-          Payloads = ImmutableDictionary.Create<string, byte[]>(ord) }
+        { Objects = ImmutableDictionary.Create<ContentHash256, byte[]>(idCmp)
+          Payloads = ImmutableDictionary.Create<ContentHash256, byte[]>(idCmp) }
 
     let tryGet (cas: Cas) (id: ContentHash256) : byte[] option =
-        match cas.Objects.TryGetValue(id.ToHex()) with
+        match cas.Objects.TryGetValue(id) with
         | true, bytes -> Some bytes
         | _ -> None
 
     let tryGetPayload (cas: Cas) (id: ContentHash256) : byte[] option =
-        match cas.Payloads.TryGetValue(id.ToHex()) with
+        match cas.Payloads.TryGetValue(id) with
         | true, bytes -> Some bytes
         | _ -> None
 
     let put (cas: Cas) (id: ContentHash256) (bytes: byte[]) : Cas =
-        { cas with Objects = cas.Objects.SetItem(id.ToHex(), bytes) }
+        { cas with Objects = cas.Objects.SetItem(id, bytes) }
 
     let private putPayload (cas: Cas) (id: ContentHash256) (payload: byte[]) : Cas =
-        { cas with Payloads = cas.Payloads.SetItem(id.ToHex(), payload) }
+        { cas with Payloads = cas.Payloads.SetItem(id, payload) }
 
     let chunkerName (c: ChunkerId) : string =
         match c with
@@ -429,12 +440,19 @@ module ZetaFsJumprope =
         let entries, cas2 = group cas nodes 0 prefixCount
         let trunkId, cas3 = encodeTrunk cas2 chunker entries endEntry
         let span = sumSpan entries + endEntry.Span
+        let starts = Array.zeroCreate nodes.Length
+        let mutable off = 0UL
+
+        for i in 0 .. nodes.Length - 1 do
+            starts.[i] <- off
+            off <- off + nodes.[i].Span
 
         { Content = trunkId
           Span = span
           Chunker = chunker
           Cas = cas3
-          Leaves = [| for n in nodes -> n.ChunkId, n.Span |] }
+          Leaves = [| for n in nodes -> n.ChunkId, n.Span |]
+          Starts = starts }
 
     let buildV1 (bytes: byte[]) : Rope = build ChunkerId.FastCdcV1 bytes
 
@@ -518,8 +536,35 @@ module ZetaFsJumprope =
             | None -> seekNode cas endEntry.Hash off
         | Ok DecChunk -> Error(JumpropeError.Malformed "seek hit a raw chunk")
 
-    /// Walk express lanes using cumulative span. O(log n) expected. No payload copy.
-    let seek (rope: Rope) (offset: uint64) : Result<SeekHit, JumpropeError> =
+    let private hitAt (rope: Rope) (leaf: int) (offset: uint64) : Result<SeekHit, JumpropeError> =
+        let chunk, _ = rope.Leaves.[leaf]
+        let local = offset - rope.Starts.[leaf]
+
+        match payloadMemory rope.Cas chunk with
+        | Error e -> Error e
+        | Ok mem ->
+            Ok
+                { Chunk = chunk
+                  OffsetInChunk = local
+                  Payload = mem }
+
+    /// Last leaf whose start offset is ≤ `offset`. Freeze-built prefix, no CBOR.
+    let private leafAt (starts: uint64[]) (offset: uint64) : int =
+        let mutable lo = 0
+        let mutable hi = starts.Length - 1
+
+        while lo < hi do
+            let mid = lo + ((hi - lo + 1) / 2)
+
+            if starts.[mid] <= offset then
+                lo <- mid
+            else
+                hi <- mid - 1
+
+        lo
+
+    /// Walk the durable trunk encoding. Not the hot path — used to cross-check `seek`.
+    let seekEncoded (rope: Rope) (offset: uint64) : Result<SeekHit, JumpropeError> =
         if rope.Span = 0UL then
             if offset = 0UL then
                 match rope.Leaves with
@@ -538,6 +583,19 @@ module ZetaFsJumprope =
             Error(JumpropeError.OffsetOutOfRange(offset, rope.Span))
         else
             seekNode rope.Cas rope.Content offset
+
+    /// In-memory seek: binary search the freeze-time prefix array, then a payload view.
+    /// Does not parse CBOR and does not ToHex.
+    let seek (rope: Rope) (offset: uint64) : Result<SeekHit, JumpropeError> =
+        if rope.Span = 0UL then
+            if offset = 0UL && rope.Leaves.Length = 1 then
+                hitAt rope 0 0UL
+            else
+                Error(JumpropeError.OffsetOutOfRange(offset, 0UL))
+        elif offset >= rope.Span then
+            Error(JumpropeError.OffsetOutOfRange(offset, rope.Span))
+        else
+            hitAt rope (leafAt rope.Starts offset) offset
 
     /// Copy into a caller buffer. Returns bytes written. No intermediate payload array.
     let pread (rope: Rope) (offset: uint64) (dst: Memory<byte>) : Result<int, JumpropeError> =
