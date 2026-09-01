@@ -1,0 +1,12 @@
+{
+  "pr_number": 16211,
+  "archive_path": "docs/history/pr-reviews/PR-16211-zetafs-shared-mutbuf-per-entityid-write-does-not-change-entityid.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-01T02:52:23.688Z",
+  "schema_version": "v1",
+  "commit_sha": "f30c9d15a22abf526ac1d98ce6c493f5a9f4ae82",
+  "title": "zetafs: shared mutbuf per EntityId; write() does not change EntityId",
+  "state": "MERGED",
+  "merged_at": "2026-09-01T02:51:48Z",
+  "head_ref": "feat/zetafs-pr4-mutbuf"
+}
