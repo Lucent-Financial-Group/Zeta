@@ -998,6 +998,32 @@ export interface StalenessVerdict {
  * have to break.
  */
 /** The workflow whose job is to land the ledger. Named once so the probe cannot drift from it. */
+/**
+ * Does this run exit 1? Pure, because the previous version of this decision was an inline
+ * expression and that is exactly why it was wrong.
+ *
+ * THE BUG THIS EXISTS TO PREVENT, which shipped: `stalenessVerdict` was taught to return a
+ * WARNING when the publisher is off by decision, and the annotation duly changed from
+ * `::error` to `::warning` -- while the exit code kept reading `stale !== null`, where
+ * `stale` is the verdict's MESSAGE. A warning has a message, so the job still exited 1 and
+ * `drift (loud)` stayed red on main. Half the fix landed and looked whole.
+ *
+ * The lesson is narrow and worth stating: the pure function had five mutation-tested
+ * falsifiers and every one of them passed, because they tested the FUNCTION and nothing
+ * tested its CONSUMER. A verdict's severity has to be read as severity by whatever acts on
+ * it, or the severity is decorative.
+ */
+export function runIsRed(
+  sustainedCount: number,
+  livenessStatus: string,
+  verdict: StalenessVerdict | null,
+): boolean {
+  // `unverifiable` deliberately does NOT redden: a stated limit, announced as a warning.
+  // `quiet` still does. And a publication verdict reddens only at ERROR level -- a
+  // deliberate off-switch is reported, never failed.
+  return sustainedCount > 0 || livenessStatus === "quiet" || verdict?.level === "error";
+}
+
 export const DRIFT_PUBLISHER_WORKFLOW = "drift-sweep.yml";
 
 /**
@@ -1176,7 +1202,7 @@ async function main(): Promise<number> {
   const sustained = report.subjects.filter((s) => !isInstrument(s) && s.band === "SUSTAINED");
   // `unverifiable` deliberately does NOT redden: it is a stated limit, announced on every
   // affected run as a warning, not a finding. `quiet` still does.
-  const red = sustained.length > 0 || liveness.status === "quiet" || stale !== null;
+  const red = runIsRed(sustained.length, liveness.status, verdict);
   if (red) {
     console.log(
       "\nEXIT 1 -- a drift signal is at its loudest band. This job is NOT in the `gate (required)` floor: " +
