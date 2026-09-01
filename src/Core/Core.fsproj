@@ -257,6 +257,7 @@
     <Compile Include="ChaosEnv.fs" />
     <Compile Include="HigherOrder.fs" />
     <Compile Include="FileSync.fs" />
+    <Compile Include="ZetaFsFreeze.fs" />
     <Compile Include="DiskSpine.fs" />
     <Compile Include="DiskSpineAsync.fs" />
     <Compile Include="DeltaLog.fs" />
