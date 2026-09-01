@@ -21,7 +21,16 @@ import { describe, expect, test } from "bun:test";
 import type { Finding, Severity } from "./collect-red-state.ts";
 import { SEVERITY_ORDER, severityWeight, weightOf } from "./collect-red-state.ts";
 
-const finding = (severity: Severity, id = "x"): Finding => ({ id, title: id, severity });
+// `evidence` is REQUIRED on Finding ("what is literally true, no interpretation"),
+// so the fixture supplies it rather than casting the requirement away. A test helper
+// that satisfies a type by assertion would be testing a shape the production code
+// never accepts.
+const finding = (severity: Severity, id = "x"): Finding => ({
+  id,
+  title: id,
+  severity,
+  evidence: [`fixture evidence for ${id}`],
+});
 
 describe("severity weights and the ordering the map paints by", () => {
   test("SEVERITY_ORDER is strictly descending BY WEIGHT — the map cannot paint against its own arithmetic", () => {
