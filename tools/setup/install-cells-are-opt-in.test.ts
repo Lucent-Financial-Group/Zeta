@@ -42,8 +42,9 @@ export function cellGuardDisposition(script: string): CellGuard {
   ];
   if (guards.length === 0) return "unconditional";
 
-  const [, , operator] = guards[guards.length - 1];
-  return operator === "=" ? "opt-in" : "opt-out";
+  const last = guards[guards.length - 1];
+  if (!last) return "unconditional";
+  return last[2] === "=" ? "opt-in" : "opt-out";
 }
 
 describe("install.sh does not provision background agents by default", () => {
