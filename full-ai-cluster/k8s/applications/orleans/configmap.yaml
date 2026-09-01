@@ -1,3 +1,41 @@
+# Orleans cluster configuration.
+#
+# CLUSTERING IS REDIS -- deliberately moved off `provider: kubernetes` on
+# 2026-09-01 (maintainer: "we can start with redis").
+#
+# WHY NOT THE KUBERNETES PROVIDER. `provider: kubernetes` means
+# `OrleansContrib/Orleans.Clustering.Kubernetes`, a COMMUNITY package storing
+# membership in CRDs. Microsoft's own `Microsoft.Orleans.Hosting.Kubernetes` is NOT
+# a clustering provider -- it complements one by watching pod lifecycle so a deleted
+# pod marks its silo dead promptly, which is exactly what the POD_NAME /
+# POD_NAMESPACE / POD_IP downward-API env in statefulset.yaml is for. Both belong in
+# the silo; only one of them is membership.
+#
+# WHY REDIS. `Microsoft.Orleans.Clustering.Redis` is FIRST-PARTY and stable as of
+# Orleans 10.0, and `redis/` already runs in this cluster and reports Healthy in the
+# included proof. It also keeps us off the AdoNet path: Orleans' PostgreSQL
+# clustering functions read affected rows with `GET DIAGNOSTICS ROW_COUNT`, which
+# CockroachDB documents as NOT SUPPORTED, so cockroachdb is not a drop-in.
+#
+# AND THE LOCKING QUESTION IS SETTLED THE OTHER WAY, which is worth recording so it
+# is not re-litigated: that SQL takes NO locks at all -- no LOCK TABLE, no advisory
+# locks, no SELECT FOR UPDATE -- only a single-row compare-and-swap on a version row,
+# which CockroachDB handles well. The blocker is PL/pgSQL coverage, not concurrency
+# semantics.
+#
+# ONE CAVEAT FROM ORLEANS' OWN DOCS: Redis persistence must be explicitly enabled. A
+# volatile Redis loses membership, and losing membership takes the cluster with it.
+#
+# `redis-auth` is the same Secret `redis/Application.yaml` declares via
+# `auth.existingSecret`; the silo reads the password from it rather than carrying a
+# literal.
+#
+# THIS CONFIGURES NOTHING YET, and that is not a defect: statefulset.yaml is at
+# `replicas: 0` behind a placeholder image because no Microsoft.Orleans package is
+# referenced anywhere in this repo. `OrleansCronAdapter.fs` says of itself that it is
+# "a lightweight in-memory adapter ... in a real deployment, this would be backed by
+# Orleans IGrain timers". The first real step is a silo image carrying grain code;
+# this file is the clustering decision that image will read.
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -9,6 +47,10 @@ data:
       "serviceId": "zeta",
       "clusterId": "zeta-prod",
       "silo": { "siloPort": 11111, "gatewayPort": 30000 },
-      "clustering": { "provider": "kubernetes", "namespace": "orleans" },
+      "clustering": {
+        "provider": "redis",
+        "endpoint": "redis-master.redis.svc.cluster.local:6379",
+        "passwordSecret": { "name": "redis-auth", "key": "password" }
+      },
       "telemetry": { "dashboard": { "enabled": true, "port": 8080 } }
     }
