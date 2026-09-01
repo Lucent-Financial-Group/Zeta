@@ -50,7 +50,8 @@ Feldera Q1. Do not quote those as the same ballpark.
 
 Head-to-head is `bench/Feldera.Bench` (Q1 projection, Q2 filter) plus
 `bench/Benchmarks/Nexmark.fs` + `NexmarkFull.fs` (Q1–Q8). The tick is
-`Send(one batch) + Circuit.Step` — not N singleton `Send`s then one
+`Send(prebuilt batch) + Circuit.Step` — `ofArray` lives in
+`GlobalSetup`, not the timed region. Not N singleton `Send`s then one
 Step (that used to pairwise-add the queue, O(n²) allocs) and not
 rebuild-the-circuit inside the BenchmarkDotNet iteration.
 

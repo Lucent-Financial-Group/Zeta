@@ -43,6 +43,7 @@ type Q1_CurrencyProjection() =
     [<DefaultValue(false)>] val mutable private c: Circuit
     [<DefaultValue(false)>] val mutable private input: ZSetInputHandle<Bid>
     [<DefaultValue(false)>] val mutable private bids: Bid[]
+    [<DefaultValue(false)>] val mutable private batch: ZSet<Bid>
 
     [<Params(10_000, 100_000)>]
     member val Size = 0 with get, set
@@ -63,10 +64,11 @@ type Q1_CurrencyProjection() =
                    BidderId = int64 (i % 1000)
                    PriceCents = int64 (i * 13)
                    EventTime = int64 i } |]
+        this.batch <- ZSet.ofArray this.bids
 
     [<Benchmark>]
     member this.Run() : Task =
-        this.input.Send(ZSet.ofArray this.bids)
+        this.input.Send this.batch
         this.c.Step()
         Task.CompletedTask
 
@@ -76,6 +78,7 @@ type Q2_AuctionFilter() =
     [<DefaultValue(false)>] val mutable private c: Circuit
     [<DefaultValue(false)>] val mutable private input: ZSetInputHandle<Bid>
     [<DefaultValue(false)>] val mutable private bids: Bid[]
+    [<DefaultValue(false)>] val mutable private batch: ZSet<Bid>
 
     [<Params(10_000, 100_000)>]
     member val Size = 0 with get, set
@@ -95,10 +98,11 @@ type Q2_AuctionFilter() =
                    BidderId = int64 (i % 1000)
                    PriceCents = int64 (i * 13)
                    EventTime = int64 i } |]
+        this.batch <- ZSet.ofArray this.bids
 
     [<Benchmark>]
     member this.Run() : Task =
-        this.input.Send(ZSet.ofArray this.bids)
+        this.input.Send this.batch
         this.c.Step()
         Task.CompletedTask
 
@@ -110,6 +114,8 @@ type Q3_LocalItems() =
     [<DefaultValue(false)>] val mutable private auctionIn: ZSetInputHandle<Auction>
     [<DefaultValue(false)>] val mutable private persons: Person[]
     [<DefaultValue(false)>] val mutable private auctions: Auction[]
+    [<DefaultValue(false)>] val mutable private personBatch: ZSet<Person>
+    [<DefaultValue(false)>] val mutable private auctionBatch: ZSet<Auction>
 
     [<Params(10_000, 50_000)>]
     member val Size = 0 with get, set
@@ -150,10 +156,12 @@ type Q3_LocalItems() =
                    SellerId = int64 (i % this.Size + 1)
                    Category = int32 (i % 20)
                    EventTime = int64 i } |]
+        this.personBatch <- ZSet.ofArray this.persons
+        this.auctionBatch <- ZSet.ofArray this.auctions
 
     [<Benchmark>]
     member this.Run() : Task =
-        this.personIn.Send(ZSet.ofArray this.persons)
-        this.auctionIn.Send(ZSet.ofArray this.auctions)
+        this.personIn.Send this.personBatch
+        this.auctionIn.Send this.auctionBatch
         this.c.Step()
         Task.CompletedTask

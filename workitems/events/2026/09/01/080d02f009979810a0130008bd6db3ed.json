@@ -1,0 +1,14 @@
+{
+  "id": "080d02f009979810a0130008bd6db3ed",
+  "at": "2026-09-01T17:25:32.019Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1F02CQJ087G0R001X3ZHKR",
+    "type": "task",
+    "title": "Nexmark hoist ofArray out of the timed tick",
+    "slug": "nexmark-hoist-ofarray-out-of-the-timed-tick",
+    "priority": "P2",
+    "filename": "081M1F02CQJ087G0R001X3ZHKR-nexmark-hoist-ofarray-out-of-the-timed-tick.md"
+  }
+}
