@@ -23,8 +23,27 @@ let private repoRoot () =
 let private goldenPath () =
     Path.Join(repoRoot (), "tests", "Tests.FSharp", "testdata", "zetafs-jumprope-golden-vectors.json")
 
+/// FORCE the static constructor, do not merely touch the property.
+///
+/// `ContentHash256.ofBytesHook` is a MUTABLE GLOBAL installed as a SIDE EFFECT of
+/// `OwnBlake3Hasher`'s static constructor, so every test that hashes depends on that
+/// constructor having already run. This function was `ignore OwnBlake3Hasher.hasher`,
+/// which only forces it INCIDENTALLY: a property read whose result is discarded is
+/// exactly the shape an optimising Release build may elide, and nothing in the language
+/// promises the cctor for a read that got optimised away.
+///
+/// The two other test files that need the same hook already knew this and both call
+/// `RunClassConstructor` -- `ContentHash256.Tests.fs` and `Blake3/CrossVerifyTests.fs`.
+/// This file was the odd one out and passed on ordering luck: some earlier test in the
+/// assembly happened to initialise the hook first.
+///
+/// MEASURED 2026-09-01: 9 of the 11 tests in this class fail locally with
+/// "ContentHash256.ofBytes hook is not initialized", on stock main, with no edit of
+/// mine -- and `build-and-test (ubuntu-24.04)` went red on a PR that only made ONE test
+/// in this file slower. Nothing about that change touched hashing; it changed timing.
+/// A test that depends on which test ran first is not testing what it claims.
 let private ensureHasher () =
-    ignore OwnBlake3Hasher.hasher
+    System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof<OwnBlake3Hasher>.TypeHandle)
 
 let private mustOk (r: Result<'a, ZetaFsJumprope.JumpropeError>) : 'a =
     match r with
@@ -70,11 +89,30 @@ let ``multi-chunk file round-trips and seek hits the right byte`` () =
         Assert.Equal(hit.OffsetInChunk, viaTrunk.OffsetInChunk)
 
 [<Fact>]
+// TWO FILES, NOT ONE FILE TWICE. This test's name is the claim -- IDENTICAL FILES
+// share chunk ids -- and content-addressing is the property that makes it true: equal
+// bytes must produce equal ids no matter which array object carries them.
+//
+// It previously passed the SAME array to both calls, so both sides normalised to one
+// expression and it asserted `f(x) = f(x)`. That is strictly weaker than its name: it
+// could only ever have caught NONDETERMINISM (an ambient seed or clock inside
+// `buildV1`), and would have passed unchanged against an implementation that keyed on
+// array identity or memoised per object -- which is precisely the bug that would break
+// dedup across two genuinely distinct files.
+//
+// `Array.copy` is what closes that gap: a separate allocation with equal contents, so
+// the assertion now tests the claim its name makes. Caught by `audit-check-arity` R2
+// on 2026-09-01 (main went red on f83701a62); strengthened rather than adjudicated,
+// because `--accept-raises` would have recorded "the two executions really do differ"
+// and that was not true of the original -- both sides read one array.
 let ``identical files share every chunk ContentId`` () =
     ensureHasher ()
     let bytes = Array.init 90_000 (fun i -> byte (i % 199))
+    let sameBytesDistinctArray = Array.copy bytes
+    Assert.False(obj.ReferenceEquals(bytes, sameBytesDistinctArray), "the two inputs must be distinct objects, or this is one file twice")
+    Assert.Equal<byte>(bytes, sameBytesDistinctArray)
     let a = ZetaFsJumprope.buildV1 bytes
-    let b = ZetaFsJumprope.buildV1 bytes
+    let b = ZetaFsJumprope.buildV1 sameBytesDistinctArray
     Assert.Equal(a.Content.ToHex(), b.Content.ToHex())
     let idsA = a.Leaves |> Array.map (fun (id, _) -> id.ToHex())
     let idsB = b.Leaves |> Array.map (fun (id, _) -> id.ToHex())
