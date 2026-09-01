@@ -1,0 +1,12 @@
+{
+  "pr_number": 16268,
+  "archive_path": "docs/history/pr-reviews/PR-16268-docs-memory-unique-confirm-leftover-on-main-16259-on-current-vera.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-01T17:35:32.146Z",
+  "schema_version": "v1",
+  "commit_sha": "4198f08f9d7e67705432a71ee8239b3e701505d6",
+  "title": "docs(memory): unique-confirm leftover-on-main #16259 on CURRENT-vera",
+  "state": "MERGED",
+  "merged_at": "2026-09-01T17:34:47Z",
+  "head_ref": "cursor/vera-notebook-unique-confirm-30c6"
+}
