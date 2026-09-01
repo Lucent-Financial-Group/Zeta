@@ -1405,7 +1405,7 @@ Each PR is independently reviewable and mergeable. Tests green or it does not la
 - **Title:** `zetafs: per-entity history policy as Z-set satellite; ByPrefix copies at first bind`
 - **Files:** policy module using `Policy.fs` kernel; two-parent fixture; source vs `target/` fixtures not OS dogma
 - **Depends on:** PR3
-- **Changes:** Settles names-are-tags section 6.3 / 8.3 in code. `rolling` knobs stay unmetered/named. Snap refs pin. E6.
+- **Changes:** Settles names-are-tags section 6.3 / 8.3 in code. `rolling` knobs stay unmetered/named. Snap refs pin. E6. **Landing:** `src/Core/ZetaFsPolicy.fs` — History/Placement/DurabilityDefault as a Z-set satellite; `copyAtFirstBind` copies nearest ByPrefix or VolumeDefault onto ByEntity; later prefix edits do not rewrite hubs; two-parent fixture is one policy. Source vs `target/` are named fixtures, not OS dogma.
 
 ### PR6 -- Jumprope body over FastCDC v1
 

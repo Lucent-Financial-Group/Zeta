@@ -196,6 +196,7 @@
     <Compile Include="DagFs.fs" />
     <Compile Include="ZetaFs.fs" />
     <Compile Include="ZetaFsNamespace.fs" />
+    <Compile Include="ZetaFsPolicy.fs" />
     <Compile Include="ZetaFsMutbuf.fs" />
     <Compile Include="ZetaFsJumprope.fs" />
     <Compile Include="Globals.fs" />

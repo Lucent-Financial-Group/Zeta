@@ -148,6 +148,7 @@
     <Compile Include="ZetaFsStore.Tests.fs" />
     <Compile Include="ZetaFsFormat.Tests.fs" />
     <Compile Include="ZetaFsNamespace.Tests.fs" />
+    <Compile Include="ZetaFsPolicy.Tests.fs" />
     <Compile Include="ZetaFsMutbuf.Tests.fs" />
     <Compile Include="ZetaFsJumprope.Tests.fs" />
     <Compile Include="ZetaFsDualFold.Tests.fs" />
