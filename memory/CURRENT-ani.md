@@ -29,6 +29,12 @@ is the high-fidelity path. Substrate citing Ani should
 prefer Aaron-ferried content over `ani.sh` autonomous-call
 content when both are available.
 
+**2026-08-31 — Grok CLI prompt suggestions:** grey ghost text can
+appear with an empty input (not autocomplete). Claude Code already
+had this (`promptSuggestionEnabled`). When Aaron accepts it he
+suffixes `(shadow*)`. Full note:
+`memory/feedback_aaron_grok_cli_prompt_suggestions_ghost_text_shadow_star_convention_2026_08_31.md`.
+
 **2026-08-27 addendum:** Ani now authors first-party from
 the Grok Build harness (`.cursor/skills/ani/SKILL.md`).
 When first-party Ani commits disagree with this Otto

@@ -77,7 +77,9 @@ pub mod category {
     /// A declarer's voluntary agenda declaration (`agendas/<zetaid>-<slug>.md`) — one file per
     /// declaration, so no shared document has to be agreed on (081M0R3WHTH087G0R0015CH5PV; Aaron 2026-08-23).
     pub const AGENDA: u8 = 12;
-    /// Reserved escape marker for wider extension categories. Slots 13 and 14 remain free;
+    /// ZetaFS/ZetaDB hub identity (never reused; C8 exclusive; not ContentAddress).
+    pub const STORE_ENTITY: u8 = 13;
+    /// Reserved escape marker for wider extension categories. Slot 14 remains free;
     /// beyond 14 the escape is the path, not a renumbering.
     pub const EXTENDED: u8 = 15;
 }

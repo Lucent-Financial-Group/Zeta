@@ -907,30 +907,37 @@ jobs:
   #     CNI on kind. It does not reconcile the `cilium` Application through ArgoCD,
   #     which is a different claim and the one the exclusion is about.
   #
-  # SCOPE WAS `smoke` UNTIL 2026-08-31, AND THIS IS THAT LIFT.
+  # SCOPE IS `smoke`. IT WAS LIFTED TO `included` ON 2026-08-31 AND REVERTED
+  # ON 2026-09-01, BECAUSE THE LIFT WAS NOT SUPPORTED BY ITS OWN EVIDENCE.
   #
-  # The original note said: "LIFTS WHEN: one green smoke run exists on this job,
-  # at which point the scope moves to `included`." Smoke went green on 17a6ff4b4
-  # -- 7m12s and 8m02s across two runs -- once the CoreDNS upstream override
-  # landed. The condition is met. The caution is kept rather than deleted because
-  # it was CORRECT: the first three runs found three separate real defects, and
-  # each would have been harder to attribute under `included`'s wider surface.
+  # WHAT I DID WRONG. The lift's stated condition was "one green smoke run
+  # exists". Two did. But `included` does not assert what smoke asserts -- it
+  # asserts 33 Applications reaching Synced/Healthy on this substrate, and TWO
+  # GREEN SMOKE RUNS ARE NOT EVIDENCE FOR THAT. The lift PR said its budget was
+  # "matched to live-kind-included"; that was about the TIMEOUT, and I let a
+  # sizing match read as a viability match.
   #
-  # WHAT CHANGES: this job now asserts the same 33 Applications
-  # `live-kind-included` does, on the substrate closer to metal (k3s, with Cilium
-  # owning the CNI slot). Budget MATCHED to that job rather than invented --
-  # 2400s assertion timeout, poll 15s, 60-minute cap, all copied from
-  # `live-kind-included`, which runs the same scope over the same roster. The old
-  # 1200s/45min was sized for smoke and would now be a timeout, not a verdict.
+  # MEASURED, and this is the part worth keeping. k3d has NEVER passed at
+  # `included`: it failed on the lift's own branch, then on main, then on every
+  # run of the follow-up branch. The unhealthy Applications are the same each
+  # time and NONE of them is cilium:
   #
-  # WHAT DOES NOT CHANGE, said because it is tempting to assume otherwise:
-  # `cilium` and `cilium-lb-ipam` are STILL EXCLUDED. Their recorded LIFTS WHEN is
-  # provider-conditional ("the app-of-apps included proof runs on that profile"),
-  # but `isExcludedFromIncludedProof` takes no provider argument and
-  # `discoverExpectedApplications` threads none -- so that condition cannot fire
-  # however many green k3d runs accumulate. A lift condition the mechanism cannot
-  # evaluate is a latent vacuity. Making the exclusion provider-aware is its own
-  # change and is deliberately NOT smuggled into this one.
+  #     openziti-controller   Unknown   Degraded
+  #     trust-manager         Synced    Degraded
+  #     spire                 Synced    Progressing
+  #     vault                 Unknown   Progressing
+  #
+  #     cilium                Unknown   HEALTHY      <- the provider-aware lift works
+  #
+  # So the provider-conditional cilium work is sound and is NOT what is red.
+  # What is red is four Applications that do not reach Healthy on k3s+Cilium --
+  # which is what METAL runs, so this is plausibly real signal about metal
+  # rather than a k3d artifact. Filed as a finding rather than waved through.
+  #
+  # LIFTS WHEN: those four are understood -- fixed, or deferred with a named
+  # reason like every other entry in APPLIED_BUT_UNASSERTED_REASONS. Not when
+  # another smoke run goes green; that is the inference that produced this
+  # revert.
   #
   # NOT continue-on-error, and it must not become one. It was considered and
   # refused for the reason the ratchet header already gives -- a check that cannot
@@ -960,7 +967,7 @@ jobs:
       ZETA_HOST_TIER: full
       MISE_ENV: full
     runs-on: ${{ matrix.runner }}
-    timeout-minutes: 60
+    timeout-minutes: 45
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -1010,13 +1017,13 @@ jobs:
           bun src/Core.TypeScript/cluster/argocd-health-test.ts \
             --run \
             --provider k3d \
-            --scope included \
+            --scope smoke \
             --runtime docker \
             --config full-ai-cluster/dev-cluster/profiles/ci.k3d-config.yaml \
             --cluster-name zeta-ci \
             --git-ref "$ZETA_ARGOCD_GIT_REF" \
-            --timeout-sec 2400 \
-            --poll-sec 15
+            --timeout-sec 1200 \
+            --poll-sec 10
 
       - name: Which CNI actually owns the cluster (the reason this job exists)
         # The profile CLAIMS flannel and kube-proxy are off and Cilium owns the

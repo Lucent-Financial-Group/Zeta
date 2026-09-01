@@ -147,6 +147,8 @@
     <Compile Include="ZetaFsDeltaLog.Tests.fs" />
     <Compile Include="ZetaFsStore.Tests.fs" />
     <Compile Include="ZetaFsFormat.Tests.fs" />
+    <Compile Include="ZetaFsNamespace.Tests.fs" />
+    <Compile Include="ZetaFsMutbuf.Tests.fs" />
     <Compile Include="ZetaFsDualFold.Tests.fs" />
     <Compile Include="ZSetMerkleProof.CrossVerify.Tests.fs" />
     <Compile Include="ZetaIrV1.Tests.fs" />
@@ -183,6 +185,7 @@
     <Compile Include="KeyStore.Tests.fs" />
     <Compile Include="Crypto.Tests.fs" />
     <Compile Include="File.Tests.fs" />
+    <Compile Include="FileSync.Tests.fs" />
     <Compile Include="TableStream.Tests.fs" />
     <Compile Include="Catalog.Tests.fs" />
     <Compile Include="ZetaExec.Tests.fs" />

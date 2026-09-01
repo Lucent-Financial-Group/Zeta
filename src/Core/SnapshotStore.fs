@@ -65,7 +65,7 @@ type DiskSnapshotStore<'K when 'K : comparison>
                         | _ -> ()
                  } : Task)
             FileSystem.Current.Move(tmp, path, true)   // atomic replace on the same volume
-            if fsync then FileSync.fsyncDir root     // durably commit the rename in the dir
+            if fsync then FileSync.fsyncDirBestEffort root     // durably commit the rename in the dir
         }
         :> Task
 

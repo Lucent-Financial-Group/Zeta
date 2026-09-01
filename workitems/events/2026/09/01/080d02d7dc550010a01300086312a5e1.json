@@ -1,0 +1,14 @@
+{
+  "id": "080d02d7dc550010a01300086312a5e1",
+  "at": "2026-09-01T03:20:29.600Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1DFQ2MZ087G0R000CMNHQX",
+    "type": "bug",
+    "title": "Four Applications never reach Healthy on k3s+Cilium — the substrate metal runs",
+    "slug": "four-applications-never-reach-healthy-on-k3s-cilium-the-subs",
+    "priority": "P2",
+    "filename": "081M1DFQ2MZ087G0R000CMNHQX-four-applications-never-reach-healthy-on-k3s-cilium-the-subs.md"
+  }
+}

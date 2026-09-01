@@ -38,6 +38,7 @@ module ZetaFsStore =
         fs.CreateDirectory dir
         fs.CreateDirectory(Path.Combine(dir, "objects"))
         fs.CreateDirectory(Path.Combine(dir, "refs", "heads"))
+        fs.CreateDirectory(Path.Combine(dir, ZetaFsMutbuf.DirName))
         let head = Path.Combine(dir, "HEAD")
         let formatPath = Path.Combine(dir, ZetaFsFormat.FileName)
         let headExisted = fs.Exists head
@@ -47,6 +48,13 @@ module ZetaFsStore =
 
         if not (fs.Exists formatPath) && not headExisted then
             ZetaFsFormat.write fs dir ZetaFsFormat.pr1Default
+
+        let rootPath = Path.Combine(dir, ZetaFsNamespace.RootFileName)
+
+        if not (fs.Exists rootPath) && not headExisted then
+            let ns =
+                ZetaFsNamespace.create (ZetaFsNamespace.Entropy(fun () -> SystemEnvironment.Default.NextInt64()))
+            FileSystemIo.writeAllText fs rootPath (ZetaFsNamespace.EntityId.format ns.Root)
 
         dir
 

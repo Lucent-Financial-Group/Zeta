@@ -1384,21 +1384,21 @@ Each PR is independently reviewable and mergeable. Tests green or it does not la
 - **Title:** `hygiene: FileSync.fsyncFile/fsyncDir return Result; F_FULLFSYNC on Darwin`
 - **Files:** `src/Core/FileSync.fs` and its tests
 - **Depends on:** none (parallel with PR1)
-- **Changes:** Stop swallowing directory-fsync failure (`eprintfn`). Durable callers in later PRs must use this Result API. Windows remains a documented no-op; no Durable claim. Not blocked on Jumprope.
+- **Changes:** Stop swallowing directory-fsync failure (`eprintfn`). Durable callers in later PRs must use this Result API. Windows remains a documented no-op; no Durable claim. Not blocked on Jumprope. **Landing:** `fsyncFile` / `fsyncDir` return `Result`. Darwin uses `fcntl(F_FULLFSYNC)`. Existing DiskDeltaLog/DiskSpine callers keep `fsyncDirBestEffort` (print and continue). Durable Freeze must not call that helper.
 
 ### PR3 -- Binding Z-set, tombstone unlink, cycle guard, root mint
 
 - **Title:** `zetafs: TagBinding Z-set with Tombstone; cycle refuse; ROOT EntityId`
 - **Files:** new `src/Core/ZetaFsNamespace.fs` (or similar); tests that `updatePath`-style parent rewrite is unused; cycle-refuse test that fails if the guard is deleted; tombstone DST (rm then liveResolve not-found; resolveAt prior phase; snap pins)
 - **Depends on:** PR1
-- **Changes:** names-are-tags namespace + EntityId hub + E1 tombstone. Register `StoreEntity = 13` in `registry/categories.yaml` and all four ZetaId oracles (C8). No mutbuf yet (reads of unfrozen entities can be empty-body). `FsPhase` points at KeyCustody Versionstamp + volume line.
+- **Changes:** names-are-tags namespace + EntityId hub + E1 tombstone. Register `StoreEntity = 13` in `registry/categories.yaml` and all four ZetaId oracles (C8). No mutbuf yet. `FsPhase` uses Clock.Versionstamp on line `"zetafs"`. FORMAT stays `ns=git-trees` until bindings persist as objects (the git-trees reader refuses `ns=bindings`). New init writes `ROOT` (Crockford-26).
 
 ### PR4 -- Shared mutbuf, stable EntityId, pwrite/truncate
 
 - **Title:** `zetafs: shared mutbuf per EntityId; write() does not change EntityId`
 - **Files:** mutbuf under `.zetafs/mutbuf/<crockford-26>/`; COW generation snapshot on freeze; write-at-offset tests; two-writer last-range-wins; O_APPEND DoP=1 ferry; DST pwrite-during-freeze never mixes
 - **Depends on:** PR3
-- **Changes:** E5. `st_ino` stable across write. Close-to-open is a flag, not the default.
+- **Changes:** E5. `st_ino` stable across write. Close-to-open is a flag, not the default. Snapshot copies generation G; live becomes G+1. Persist under `.zetafs/mutbuf/<crockford-26>/`. Freeze CDC of that snapshot is PR7.
 
 ### PR5 -- Policy satellites + history fold + policy-on-EntityId
 
