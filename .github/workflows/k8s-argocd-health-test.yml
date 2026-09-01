@@ -1378,6 +1378,38 @@ jobs:
       # `--existing`: the cluster is already up WITH Cilium, so the harness must not
       # create one (its own kind path would bring up kindnetd and destroy the single
       # variable this job exists to isolate).
+      # THE DEV PREPARATION `--existing` SKIPS, APPLIED BY HAND.
+      #
+      # Measured on run 33481362793: the Cilium bring-up succeeded and the proof then
+      # refused, correctly and before measuring anything:
+      #
+      #   {"kind":"DevStorageClassMissing","message":"... declares a dev StorageClass named
+      #    \"longhorn\" over rancher.io/local-path, and the included proof asserts
+      #    Applications that request it, but in cluster zeta-ci-cilium-included it is not
+      #    present. Those PVCs would stay Pending, which ArgoCD reports as PROGRESSING
+      #    rather than Degraded ..."}
+      #
+      # THAT REFUSAL SAVED THIS EXPERIMENT FROM A FALSE POSITIVE, and it is worth being
+      # explicit about why: `Progressing` is the EXACT symptom the four Applications show
+      # on k3d. Without the guard this job would have reported apps Progressing on
+      # kind+Cilium and the obvious reading -- "Cilium causes it" -- would have been wrong,
+      # caused instead by a StorageClass that `--existing` skipped.
+      #
+      # `bringUpKindCiCluster` applies this during ITS cluster creation; `cilium-kind-up.ts`
+      # builds the cluster a different way and does not. Applied here rather than inside
+      # `cilium-kind-up.ts` deliberately: that module also serves the `live kind Cilium CNI`
+      # lane, which tests the CNI alone and has no business growing a StorageClass it does
+      # not need.
+      - name: Apply the dev StorageClass the harness would have applied
+        run: |
+          set -euo pipefail
+          kubectl apply -f full-ai-cluster/dev-cluster/manifests/longhorn.yaml
+          # Assert rather than assume: a silent apply that produced no StorageClass would
+          # send us straight back into the refusal above, one 30-minute run later.
+          got="$(kubectl get storageclass longhorn -o jsonpath='{.provisioner}')"
+          echo "longhorn StorageClass provisioner: ${got}"
+          test -n "$got"
+
       - name: Run the included Synced+Healthy proof on kind+Cilium
         id: proof
         env:
