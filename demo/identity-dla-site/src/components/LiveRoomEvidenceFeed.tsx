@@ -168,6 +168,16 @@ function ReceiptBranchTopology() {
   );
 }
 
+function ReceiptRepositoryField() {
+  return (
+    <svg aria-hidden="true" viewBox="0 0 1000 920" preserveAspectRatio="none" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", opacity: 0.22, pointerEvents: "none" }}>
+      <path d="M32 18 L58 92 L42 171 L91 244 L70 330 L126 401 L104 486 L165 552 L143 642 L207 711 L187 803 L246 902" fill="none" stroke="var(--amber)" strokeWidth="2.4" vectorEffect="non-scaling-stroke" />
+      <path d="M58 92 L137 115 L172 166 M91 244 L169 220 L226 262 M126 401 L212 428 L261 489 M165 552 L249 530 L314 581 M207 711 L300 742 L356 807" fill="none" stroke="var(--amber-dim)" strokeWidth="1.2" vectorEffect="non-scaling-stroke" />
+      <path d="M172 166 L218 137 M226 262 L287 293 M261 489 L327 458 M314 581 L383 624 M356 807 L426 776" fill="none" stroke="var(--amber)" strokeOpacity="0.56" strokeWidth="1" vectorEffect="non-scaling-stroke" />
+    </svg>
+  );
+}
+
 function LocalAdjudicationDetail({ adjudication }: { readonly adjudication: AdjudicationView }) {
   if (adjudication.kind === "not-published") {
     return <div style={{ color: "var(--teal)", marginTop: "0.5rem" }}>LOCAL ADJUDICATION · NOT PUBLISHED · AUTHORITY NOT INFERRED</div>;
@@ -250,14 +260,17 @@ export default function LiveRoomEvidenceFeed() {
               <span>{adjudicationAvailability.outOfScope} NO REFERENCE · OUT OF SCOPE</span>
             </div>
           )}
-          <div className="evidence-feed-grid">
+          <div style={{ position: "relative", minHeight: 420 }}>
+            <ReceiptRepositoryField />
+            <div className="evidence-feed-grid" style={{ position: "relative", zIndex: 1 }}>
             {state.entries.map((entry) => (
-              <article className="evidence-feed-record" key={entry.eventId} style={{ border: 0, borderTop: "1px solid oklch(0.22 0.025 65 / 0.38)", borderLeft: "2px solid color-mix(in srgb, var(--amber) 58%, transparent)", padding: "0.8rem", background: "oklch(0.052 0.008 265)" }}>
+              <article className="evidence-feed-record" key={entry.eventId} style={{ border: 0, borderTop: "1px solid oklch(0.22 0.025 65 / 0.3)", borderLeft: "2px solid color-mix(in srgb, var(--amber) 48%, transparent)", padding: "0.8rem", background: "oklch(0.045 0.006 265 / 0.9)" }}>
                 <div style={{ ...labelStyle, color: "var(--amber)" }}>{entry.weight > 0 ? "+1 assertion" : "−1 retraction"} · sequence {entry.emitterSeq}</div>
-                <div style={{ margin: "0.4rem 0", color: "var(--foreground)", fontSize: "0.73rem", overflowWrap: "anywhere" }}>{entry.eventId}</div>
+                <div style={{ margin: "0.4rem 0", color: "var(--muted-foreground)", fontSize: "0.68rem", overflowWrap: "anywhere" }}>{entry.eventId}</div>
                 <div style={{ color: "var(--muted-foreground)", fontSize: "0.59rem", lineHeight: 1.55 }}>emitter: {entry.emitterId}<br />witness material: {entry.witnessMaterial ? "present; authority is assessed by a local verifier" : "absent; do not guess"}<br />audit key: {entry.auditContentKey.slice(0, 22)}…<LocalAdjudicationDetail adjudication={entry.adjudication} /></div>
               </article>
             ))}
+            </div>
           </div>
         </>
       )}

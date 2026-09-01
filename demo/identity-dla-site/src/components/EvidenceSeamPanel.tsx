@@ -79,6 +79,16 @@ const SPECTRUM = [
     tone: "var(--amber)",
     emphasis: true,
   },
+  {
+    lane: "reference-frame factor heterarchy",
+    carrier: "finite modules + room frame",
+    operators: "18 F# · 5 TS · F#/TS oracle · Lean laws",
+    defect: "—",
+    readout: "18 controls",
+    verdict: "Bayesian fusion + Cl₃ covariance checked",
+    detail: "K4 → 4 · K5 → 5 · language / learning / cortical fidelity unmeasured",
+    tone: "var(--amber)",
+  },
 ] as const;
 
 const controlStyle = {
@@ -91,6 +101,16 @@ const controlStyle = {
   font: "inherit",
   fontSize: "0.66rem",
   padding: "0.55rem 0.3rem 0.38rem",
+} as const;
+
+const instrumentControlStyle = {
+  display: "block",
+  minHeight: 72,
+  borderTop: "1px solid color-mix(in srgb, var(--amber) 34%, transparent)",
+  borderLeft: "2px solid color-mix(in srgb, var(--amber) 58%, transparent)",
+  background: "linear-gradient(118deg, oklch(0.13 0.028 60 / 0.42), oklch(0.052 0.008 265 / 0.72) 72%)",
+  padding: "0.58rem 0.62rem 0.45rem",
+  letterSpacing: "0.05em",
 } as const;
 
 function Register({
@@ -258,7 +278,7 @@ export default function EvidenceSeamPanel() {
       <div className="evidence-seam-layout" style={{ position: "relative", zIndex: 1, display: "grid", gridTemplateColumns: "minmax(0, 1.5fr) minmax(250px, 0.65fr)", gap: 0 }}>
         <div className="evidence-seam-primary" style={{ padding: "1rem", borderRight: "1px solid var(--border)" }}>
           <div className="observatory-controls" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: "0.65rem", marginBottom: "0.9rem" }}>
-            <label style={{ fontSize: "0.55rem", color: "var(--muted-foreground)" }}>
+            <label style={{ ...instrumentControlStyle, fontSize: "0.55rem", color: "var(--muted-foreground)" }}>
               erased coordinates: <strong style={{ color: "var(--foreground)" }}>{erasedCount}</strong>
               <input
                 aria-label="Erased transport coordinates"
@@ -270,14 +290,14 @@ export default function EvidenceSeamPanel() {
                 style={{ width: "100%", marginTop: "0.55rem", accentColor: "var(--amber)" }}
               />
             </label>
-            <label style={{ fontSize: "0.55rem", color: "var(--muted-foreground)" }}>
+            <label style={{ ...instrumentControlStyle, fontSize: "0.55rem", color: "var(--muted-foreground)" }}>
               evidence sign
               <select value={sign} onChange={(event) => setSign(event.target.value as EvidenceSign)} style={{ ...controlStyle, marginTop: "0.35rem" }}>
                 <option>assertion +1</option>
                 <option>retraction −1</option>
               </select>
             </label>
-            <label style={{ fontSize: "0.55rem", color: "var(--muted-foreground)" }}>
+            <label style={{ ...instrumentControlStyle, fontSize: "0.55rem", color: "var(--muted-foreground)" }}>
               CRC-valid semantic change
               <select value={alteration} onChange={(event) => setAlteration(event.target.value as Alteration)} style={{ ...controlStyle, marginTop: "0.35rem" }}>
                 <option value="none">none</option>
