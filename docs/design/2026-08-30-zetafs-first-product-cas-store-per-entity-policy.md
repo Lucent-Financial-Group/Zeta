@@ -1419,7 +1419,7 @@ Each PR is independently reviewable and mergeable. Tests green or it does not la
 - **Title:** `zetafs: freeze-intent/commit WAL; Durable fsyncs CAS before log commit`
 - **Files:** freeze path; `GroupCommitDiskDeltaLog` shape (torn-tail + loud mid CRC); PR2 FileSync Result on Durable; `IDurabilityObserver.OnJournaled` / `OnDurable` as Result
 - **Depends on:** PR2, PR4, PR6 (body to freeze)
-- **Changes:** E2. Snapshot mutbuf (generation G) before CDC; concurrent pwrite hits G+1. Readable iff commit+leaves. DST seeds for subset-of-leaves and pwrite-during-freeze (may stay `toy` until PR12 corpus, but the protocol is specified). DoP=1 log. No `Task.Run` except Ferry launch with injected context.
+- **Changes:** E2. Snapshot mutbuf (generation G) before CDC; concurrent pwrite hits G+1. Readable iff commit+leaves. DST seeds for subset-of-leaves and pwrite-during-freeze (may stay `toy` until PR12 corpus, but the protocol is specified). DoP=1 log. No `Task.Run` except Ferry launch with injected context. **Landing:** `src/Core/ZetaFsFreeze.fs` — Buffered skips the log (not POSIX-readable); Journaled appends intent/commit; Durable fsyncs CAS then log via FileSync Result (`F_FULLFSYNC` on Darwin). Windows Durable refused. Crash-mid-write still `toy`.
 
 ### PR8 -- Placement as HRW-over-ZetaIds + simulated-disk falsifiers
 
