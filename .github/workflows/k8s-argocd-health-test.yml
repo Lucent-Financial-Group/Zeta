@@ -262,7 +262,27 @@ on:
       - ".mise.full.toml"
       - "package.json"
       - "bun.lock"
+  # ONE-SHOT EXPERIMENT SWITCH, not a standing lane.
+  #
+  # `live-kind-cilium-included` answers exactly one question and should be switched
+  # off again once it has: do the four Applications that never reach Healthy on k3d
+  # (vault, openziti-controller, trust-manager, spire) fail because of CILIUM or
+  # because of K3S? It is dispatch-gated rather than wired into the PR/cron path
+  # because its expected FIRST result is red, and an assertion that is red on every
+  # run is a signal nobody reads -- the same defect just repaired in `drift-loud`,
+  # which could not tell "off by decision" from "silently broken". Wiring a
+  # known-red assertion into a standing lane would rebuild that defect on purpose.
   workflow_dispatch:
+    inputs:
+      cilium_included_probe:
+        description: >-
+          Run the kind+Cilium included Synced+Healthy proof. Fills the missing cell of
+          the 2x2 (kindnetd+kind=green, Cilium+k3s=4 unhealthy, Cilium+kind=never
+          asserted) so the CNI is separated from the orchestrator on ONE variable.
+        required: false
+        default: "false"
+        type: choice
+        options: ["false", "true"]
 
 # `packages: read` is what lets this workflow's `github.token` pull the PRIVATE
 # GHCR packages behind the `platform` Application's two images. It is additive
@@ -1271,6 +1291,130 @@ jobs:
       - name: Tear down kind cluster
         if: always()
         run: bun src/Core.TypeScript/cluster/dev-cluster/kind-down.ts --cluster-name zeta-ci-cilium
+
+  # THE MISSING CELL OF THE 2x2. Dispatch-gated; see `workflow_dispatch` above.
+  #
+  #   CNI        orchestrator   app roster asserted   result
+  #   kindnetd   kind           included              green, 25 apps
+  #   Cilium     k3s (k3d)      included              4 never reach Healthy
+  #   Cilium     kind           NEVER ASSERTED        <- this job
+  #
+  # `live-kind-cilium` proves Cilium comes UP on kind and stops there -- it never
+  # runs the app roster, which is why it could not settle this. Running the same
+  # `included` proof that is green on kindnetd against a kind cluster whose CNI is
+  # Cilium changes exactly ONE variable against that green baseline, so a red here
+  # convicts Cilium and a green here convicts k3s.
+  #
+  # Deliberately a SEPARATE job rather than a step bolted onto `live-kind-cilium`:
+  # that lane's 30-minute ceiling is a real guard on a bring-up that should take
+  # ~15, and widening it to fit a 40-minute proof would weaken the guard on every
+  # ordinary run to serve an experiment that runs by hand.
+  live-kind-cilium-included:
+    name: PROBE kind+Cilium included proof (${{ matrix.runner }})
+    needs: dry-run
+    if: github.event_name == 'workflow_dispatch' && inputs.cilium_included_probe == 'true'
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [ubuntu-24.04]
+    env:
+      ZETA_HOST_TIER: full
+      MISE_ENV: full
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 90
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Cache install.sh outputs (mise runtimes + dotnet tools + verifier jars)
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: |
+            ~/.local/bin/mise
+            ~/.local/share/mise
+            ~/.cache/mise
+            ~/.dotnet/tools
+            ~/.elan
+            ~/.config/zeta
+          key: install-${{ runner.os }}-${{ runner.arch }}-full-${{ hashFiles('.mise.toml', '.mise.full.toml', 'tools/setup/**', 'global.json', '!tools/setup/persona-keys/**', '!tools/setup/op-token-setup.*', '!tools/setup/secret-clip.sh', '!tools/setup/manus-smoke-test.ts', '!tools/setup/build-lumen-persona-package.ts') }}
+
+      - name: Restore apt archives (root fix for the exit-124 install-step class)
+        # 561 MB of .deb per ubuntu job against a mirror measured at ~1.1 MB/s is
+        # ~510s of download inside a 420s budget, which is why this step's install
+        # died at exit 124 under six different job names. This restores the archives
+        # and exports ZETA_APT_ARCHIVES_DIR, so the install below is unchanged.
+        # docs/research/2026-08-26-caching-var-cache-apt-archives-is-the-root-fix-for-the-apt-wall-budget-class.md
+        uses: ./.github/actions/apt-archive-cache
+        with:
+          tier: full
+
+      - name: Install toolchain via three-way-parity script
+        env:
+          MISE_GITHUB_TOKEN: ${{ github.token }}
+        run: ./tools/setup/install.sh
+
+      - name: Install bun dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Preflight the WireGuard kernel path on the runner
+        run: |
+          set -euo pipefail
+          iface="$(bun src/Core.TypeScript/cluster/cilium-kind-lane.ts --print-wg-probe-iface)"
+          echo "probe device (from cilium-wireguard-preflight-checks.nix): $iface"
+          sudo modprobe wireguard
+          sudo ip link add dev "$iface" type wireguard
+          sudo ip link del dev "$iface"
+          echo "runner kernel can create a WireGuard device"
+
+      - name: Bring up kind with Cilium as the CNI
+        id: cilium
+        run: |
+          set -o pipefail
+          bun src/Core.TypeScript/cluster/dev-cluster/cilium-kind-up.ts \
+            --cluster-name zeta-ci-cilium-included \
+            --timeout-sec 600 \
+            | tee "$RUNNER_TEMP/cilium-kind.log"
+
+      # `--existing`: the cluster is already up WITH Cilium, so the harness must not
+      # create one (its own kind path would bring up kindnetd and destroy the single
+      # variable this job exists to isolate).
+      - name: Run the included Synced+Healthy proof on kind+Cilium
+        id: proof
+        env:
+          ZETA_GHCR_PULL_TOKEN: ${{ github.token }}
+        run: |
+          set -o pipefail
+          bun src/Core.TypeScript/cluster/argocd-health-test.ts \
+            --run \
+            --existing \
+            --provider kind \
+            --scope included \
+            --runtime docker \
+            --cluster-name zeta-ci-cilium-included \
+            --git-ref "$ZETA_ARGOCD_GIT_REF" \
+            --timeout-sec 2400 \
+            --poll-sec 15 \
+            --ephemeral-vault-init \
+            | tee "$RUNNER_TEMP/cilium-included-proof.log"
+
+      # The verdict table is the POINT of this job, so it is printed whether the
+      # proof passed or failed -- a red run is the informative one here.
+      - name: Per-application verdicts (the answer this job was dispatched for)
+        if: always()
+        run: |
+          echo "=== every app verdict on kind+Cilium ==="
+          grep -oE '=== [a-z0-9-]+: sync=[A-Za-z]+ health=[A-Za-z]+' \
+            "$RUNNER_TEMP/cilium-included-proof.log" 2>/dev/null | sort || true
+          echo "=== the four under investigation ==="
+          for app in vault openziti-controller trust-manager spire; do
+            line="$(grep -oE "=== $app: sync=[A-Za-z]+ health=[A-Za-z]+" \
+              "$RUNNER_TEMP/cilium-included-proof.log" 2>/dev/null | head -1)"
+            echo "  ${line:-=== $app: NOT ASSERTED IN THIS SCOPE}"
+          done
+
+      - name: Tear down kind cluster
+        if: always()
+        run: kind delete cluster --name zeta-ci-cilium-included || true
 
   live-kind-included:
     name: live kind included Synced+Healthy proof (${{ matrix.runner }})
