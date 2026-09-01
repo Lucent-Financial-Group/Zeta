@@ -1,7 +1,7 @@
 # Trajectory - USB / zflash Installer
 
 Status: active — shipped + iterating; first surfaced as a trajectory 2026-05-29 from substrate inventory (the flashing mechanism works on `origin/main`; this surface was missing, so the workstream lived head-only)
-Last refreshed: 2026-08-28
+Last refreshed: 2026-09-01
 Type: workstream (current-focus) — a trajectory the operator is _actively powering_. Many trajectories can be tracked; only a few are workstreams at once (finite-focus / WIP-bounded — a workstream is a trajectory under sustained thrust, and thrust budget is finite, so most trajectories coast). (Genus = "trajectory"; "workstream" is the species: a trajectory under sustained thrust toward a deliverable, vs. emergent-posture trajectories like `anti-infection`. See [`factory-trajectory-surface`](../factory-trajectory-surface/RESUME.md) for the genus/species taxonomy.) One of the operator's three current cluster workstreams (encryption / usb-zflash / ts-workflow-engine).
 Eventual encoding (design-stage — the human maintainer 2026-05-23 genetic-ID substrate + Clifford/HKT): this trajectory's state is trackable as a 128-bit genetic-ID seed (discrete, reversible via parser-combinator ↔ generator-function) → Clifford-space path (continuous, eventual). Mirrors the three-lane I8-lattice / I9-manifold split.
 Current blocker: hardware — metal S6 first-login + WiFi radio / Touch ID / TPM
@@ -129,6 +129,164 @@ is Zeta IdP and ZetaDB/DagFs as git backend/client. See
 [S6-UX-PLACEHOLDER.md](./S6-UX-PLACEHOLDER.md). Slice 5 CODEOWNERS when
 teams confirmed; system mise pinned via Nix overlay (same release as
 `tools/setup/linux.sh`).
+
+## 2026-09-01 — THE ROAD TO K8S ON REAL HARDWARE, measured end to end
+
+The maintainer's stated goal: _"I would really like to get k8s running on real
+hardware soon."_ This section is the honest distance to that, split into what is
+PROVEN, what is UNPROVEN, and what is a DECISION rather than work.
+
+### PROVEN — the boot/install/join path is genuinely covered
+
+Run [33462406161](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/33462406161),
+all steps green, zero skipped:
+
+* **Signed installers, both architectures.** x86_64 1606 MB + aarch64 1582 MB,
+  cosign keyless. The chain was verified four independent ways rather than
+  asserted: rendered bytes -> `.sha256` manifest -> the cosign bundle's own
+  `messageDigest` -> a Fulcio cert naming
+  `build-ai-cluster-iso.yml@refs/heads/main` and `runs/33462406161/attempts/1`.
+  Digest `d93c40fc96815036523b95d680a707d08acfa41a532e9aaf8c969a5562beee93`.
+* **UEFI keyfile, all three phases**: install-time write, picker bind, restore
+  decrypt. Plus wifi ESP acceptance and the x86_64 boot-discriminator self-test.
+* **Format scenarios 1-4**: initial format, boot + install substrate, reformat
+  with retention, path-fork migrate-vs-fresh.
+* **SECOND MACHINE JOINING — the question that actually matters for a cluster:**
+  * `k3s agent JOINS the server` (scenario 5 markers on serial)
+  * `a second CONTROL PLANE joins (one cluster CA, not two)` — the failure that
+    actually bites on HA, tested by name
+  * `dirty disk FAILS CLOSED (k3s must not start)`
+  * `cluster comes ALL the way up (node Ready + CoreDNS)`
+  * `a longhorn PVC actually BINDS and data survives`
+
+So: flashing, installing, encrypting, and forming a two-node cluster are proven in
+QEMU. That is the majority of first-metal risk and it is retired.
+
+### UNPROVEN — the charts, and the substrate they were proven on
+
+| | |
+|---|---|
+| Application dirs | **48** (47 priced) |
+| Get a health verdict at all | **24** |
+| Of those, actually `Healthy` | **18** |
+| **Proven Synced+Healthy** | **18 of 47 ~ 38%** |
+
+Not healthy even on kind: `cdi`, `forgejo`, `gmod`, `kubevirt` = **Missing**;
+`hindsight`, `weaviate` = **Progressing**.
+
+Never asserted anywhere — the nine standing `excludeGlob` deferrals: `cilium`,
+`cilium-lb-ipam`, `longhorn`, `ollama`, `vllm`, `gitlab`, `temporal`,
+`agent-memory`, `platform`.
+
+**THE SUBSTRATE GAP, which is the single biggest metal risk.** Metal runs
+**k3s + Cilium**. The 18 healthy charts are proven on **kind + kindnetd**. The lane
+that tests metal's actual configuration at chart depth is `live-k3d`, and it was
+reverted to `smoke` scope on 2026-09-01 after four Applications would not reach
+Healthy there (`081M1DFQ2MZ087G0R000CMNHQX`). Four probe attempts to separate
+"Cilium's fault" from "k3s's fault" produced **zero data** — see that work-item;
+`--existing` is not a supported path for the `included` proof and the exit is to
+give the kind provider a Cilium-CNI mode.
+
+**Expect chart-level surprises on metal.** Boot and join are proven; what runs on
+top of them is proven on a different substrate.
+
+### LANES ARE CAPACITY PLANNING, NOT CHART TESTING
+
+`k8s-lane-partition.yml` is green and has run 89 times, and "covered by a lane:
+44/47" reads like coverage. It is not: the lane job renders image lists and pulls
+images to measure on-disk cost. It contains **zero** cluster bring-up and **zero**
+health assertions (counted). It solves runner capacity; nothing about chart health.
+
+### DECISIONS OPEN, each with evidence and none taken
+
+* **gitlab** — `081M1ET79Y9087G0R000N29HWF`. CPU was never its blocker; **76 GiB of
+  PVCs** was (gitaly 50, minio 10, postgres 8, redis 8) against a ~70 GiB runner.
+  Measured achievable: 1350m / 4191Mi / 5 GiB. Must go through the ladder
+  (`resourceClaims` + storage claims + `--apply`), NOT flat `valuesObject` values —
+  a flat edit hits every rung and would ship 2 GiB of git storage to `large`.
+* **minio -> seaweedfs** — MinIO's chart upstream is **archived**: newest 5.4.0
+  created 2025-01-02, appVersion `RELEASE.2024-12-18T13-15-44Z`, verified live
+  against `charts.min.io`. SeaweedFS published 4.45.0 on 2026-09-01 and we run
+  4.33.0. Both already reconcile and provision the same five buckets; MinIO is
+  merely the consumer DEFAULT. The gap: seaweedfs's gate proves DEPLOY, not that
+  Loki/Mimir work against its S3 gateway.
+* **orleans** — the k8s manifests are correct (StatefulSet, `podManagementPolicy:
+  Parallel`, POD_NAME/POD_NAMESPACE/POD_IP downward API, RBAC on
+  pods/endpoints/statefulsets, ports 11111/30000, requests AND limits). But **no
+  `Microsoft.Orleans.*` package is referenced anywhere** — `OrleansCronAdapter.fs`
+  says of itself that it is "a lightweight in-memory adapter ... in a real
+  deployment, this would be backed by Orleans IGrain timers". The image
+  `zeta-orleans-silo:latest` is a placeholder and the partitioner cannot price it.
+* **PR-archive flush lane** — `081M1EKTVH7087G0R002XC3GCW`, deadlocked on
+  `action_required`; every fix relaxes a security gate or spends a credential
+  decision.
+
+### ORLEANS CLUSTERING — RESEARCHED 2026-09-01, and the risk is NOT where it looked
+
+The maintainer's hypothesis was that CockroachDB might diverge from PostgreSQL on
+_locking granularity_ — table-level vs partition-level. **The locking half of that
+is settled and favourable; the blocker is somewhere else entirely.**
+
+**Orleans' PostgreSQL clustering SQL takes NO LOCKS.** Read from
+`dotnet/orleans@main src/AdoNet/Orleans.Clustering.AdoNet/PostgreSQL-Clustering.sql`:
+no `LOCK TABLE`, no `pg_advisory_lock`, no `SELECT FOR UPDATE`, no explicit
+serializable transaction. Membership is pure optimistic concurrency — a
+single-row compare-and-swap on a version row:
+
+```sql
+UPDATE OrleansMembershipVersionTable
+SET Version = Version + 1
+WHERE DeploymentId = @DeploymentId AND Version = @VersionArg;
+```
+
+Single-row CAS with client-side retry on mismatch is precisely the pattern
+CockroachDB is built for. On locking, Cockroach is a good fit.
+
+**THE ACTUAL BLOCKER IS PL/pgSQL FEATURE COVERAGE.** Those functions read the
+affected-row count with `GET DIAGNOSTICS RowCountVar = ROW_COUNT`, and
+CockroachDB's PL/pgSQL documentation lists `GET DIAGNOSTICS` as **not supported**,
+alongside `PERFORM`, `EXECUTE`, `CASE`, the `FOUND` variable, and — relevant to
+Orleans' rollback path — _"PL/pgSQL exception blocks cannot catch transaction retry
+errors."_ So Orleans' AdoNet clustering will not install on CockroachDB as shipped.
+
+Not fatal, but not free: Orleans keeps its SQL as DATA in the `OrleansQuery`
+table, so a CockroachDB dialect can be authored (restructure to `RETURNING` or
+plain conditional statements instead of `GET DIAGNOSTICS`). That is a maintained
+fork of upstream's SQL, and it is a standing cost, not a one-off.
+
+**RECOMMENDATION: Redis for Orleans membership.** Redis clustering providers are
+**stable as of Orleans 10.0** and documented at `orleans.dev/integrations/redis`
+(first-class, not the OrleansContrib community package). We already run `redis/`
+in-tree. One production caveat from the docs: _persistence must be explicitly
+enabled_ — a volatile Redis can lose membership and take the cluster down with it.
+
+**ON "CAN REDIS SCALE OUT" — the question mostly dissolves.** Orleans membership
+is a handful of keys and one row per silo; it needs AVAILABILITY, not sharding.
+Redis Cluster does shard by key hash and Sentinel gives HA, so either covers it,
+but neither is load-bearing for membership size. The thing that scales out in
+Orleans is the SILOS, and that is independent of the membership store. Where scale
+genuinely matters is grain PERSISTENCE — and if that lands on AdoNet it inherits
+the same PL/pgSQL question, so a Redis or blob-backed grain store keeps both
+halves off that path.
+
+Sources: [PostgreSQL-Clustering.sql](https://github.com/dotnet/orleans/blob/main/src/AdoNet/Orleans.Clustering.AdoNet/PostgreSQL-Clustering.sql) ·
+[CockroachDB PL/pgSQL](https://docs.cockroachlabs.com/docs/stable/plpgsql) ·
+[Orleans cluster management](https://learn.microsoft.com/en-us/dotnet/orleans/implementation/cluster-management) ·
+[Orleans Redis integration](https://orleans.dev/integrations/redis/)
+
+### THE ONE THING BLOCKING THE USB RIGHT NOW
+
+Nothing technical. The ISO is staged and verified, `/dev/disk6` (124 GB, no
+filesystem) is plugged in, and `zflash` refuses because the target was
+**discovered, not stated** — by design. It needs a human to name the device:
+
+```
+bun src/Core.TypeScript/zflash/flash-usb.ts <iso> \
+  --expect-device=/dev/disk6 --expect-size=123979431936 --expect-model="USB 3.2.1 FD"
+```
+
+It will still require a typed confirmation phrase carrying a runtime-random nonce,
+and read-back verifies after writing.
 
 ## Why This Exists
 
