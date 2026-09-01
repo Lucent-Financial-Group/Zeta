@@ -1,0 +1,220 @@
+module Zeta.Tests.ZetaFsJumpropeTests
+
+open System
+open System.IO
+open System.Text
+open System.Text.Json
+open global.Xunit
+open Zeta.Core
+open Zeta.Core.FSharp.Blake3
+
+let private repoRoot () =
+    let mutable dir =
+        DirectoryInfo(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location))
+
+    while not (isNull dir) && not (File.Exists(Path.Join(dir.FullName, "Zeta.sln"))) do
+        dir <- dir.Parent
+
+    if isNull dir then
+        failwith "Could not locate repo root (Zeta.sln)."
+    else
+        dir.FullName
+
+let private goldenPath () =
+    Path.Join(repoRoot (), "tests", "Tests.FSharp", "testdata", "zetafs-jumprope-golden-vectors.json")
+
+let private ensureHasher () =
+    ignore OwnBlake3Hasher.hasher
+
+let private mustOk (r: Result<'a, ZetaFsJumprope.JumpropeError>) : 'a =
+    match r with
+    | Ok v -> v
+    | Error e ->
+        Assert.Fail(sprintf "%s" (ZetaFsJumprope.errorName e))
+        Unchecked.defaultof<'a>
+
+[<Fact>]
+let ``empty file is a single-leaf Jumprope and round-trips`` () =
+    ensureHasher ()
+    let rope = ZetaFsJumprope.buildV1 Array.empty
+    Assert.Equal(0UL, rope.Span)
+    Assert.Equal(1, rope.Leaves.Length)
+    let got = mustOk (ZetaFsJumprope.materialize rope)
+    Assert.Equal<byte>(Array.empty, got)
+
+[<Fact>]
+let ``small file below min-chunk is one leaf`` () =
+    ensureHasher ()
+    let bytes = Encoding.UTF8.GetBytes "hello jumprope"
+    let rope = ZetaFsJumprope.buildV1 bytes
+    Assert.Equal(uint64 bytes.Length, rope.Span)
+    Assert.Equal(1, rope.Leaves.Length)
+    let got = mustOk (ZetaFsJumprope.materialize rope)
+    Assert.Equal<byte>(bytes, got)
+
+[<Fact>]
+let ``multi-chunk file round-trips and seek hits the right byte`` () =
+    ensureHasher ()
+    let bytes = Array.init 200_000 (fun i -> byte (i % 251))
+    let rope = ZetaFsJumprope.buildV1 bytes
+    Assert.True(rope.Leaves.Length > 1, sprintf "expected several FastCDC chunks, got %d" rope.Leaves.Length)
+    Assert.Equal(uint64 bytes.Length, rope.Span)
+    let got = mustOk (ZetaFsJumprope.materialize rope)
+    Assert.Equal<byte>(bytes, got)
+
+    for off in [| 0; 1; 2047; 2048; 8192; 50_000; 199_999 |] do
+        let hit = mustOk (ZetaFsJumprope.seek rope (uint64 off))
+        Assert.Equal(bytes.[off], hit.Payload.Span.[int hit.OffsetInChunk])
+        let viaTrunk = mustOk (ZetaFsJumprope.seekEncoded rope (uint64 off))
+        Assert.Equal(hit.Chunk.ToHex(), viaTrunk.Chunk.ToHex())
+        Assert.Equal(hit.OffsetInChunk, viaTrunk.OffsetInChunk)
+
+[<Fact>]
+let ``identical files share every chunk ContentId`` () =
+    ensureHasher ()
+    let bytes = Array.init 90_000 (fun i -> byte (i % 199))
+    let a = ZetaFsJumprope.buildV1 bytes
+    let b = ZetaFsJumprope.buildV1 bytes
+    Assert.Equal(a.Content.ToHex(), b.Content.ToHex())
+    let idsA = a.Leaves |> Array.map (fun (id, _) -> id.ToHex())
+    let idsB = b.Leaves |> Array.map (fun (id, _) -> id.ToHex())
+    Assert.Equal<string>(idsA, idsB)
+
+[<Fact>]
+let ``two files with a shared prefix share prefix chunk ids`` () =
+    ensureHasher ()
+    let prefix = Array.init 80_000 (fun i -> byte (i % 223))
+    let a = Array.append prefix [| 1uy; 2uy; 3uy |]
+    let b = Array.append prefix [| 9uy; 8uy; 7uy |]
+    let ra = ZetaFsJumprope.buildV1 a
+    let rb = ZetaFsJumprope.buildV1 b
+    Assert.True(ra.Leaves.Length > 1)
+    Assert.True(rb.Leaves.Length > 1)
+    let firstA, _ = ra.Leaves.[0]
+    let firstB, _ = rb.Leaves.[0]
+    Assert.Equal(firstA.ToHex(), firstB.ToHex())
+    Assert.NotEqual<string>(ra.Content.ToHex(), rb.Content.ToHex())
+
+[<Fact>]
+let ``coverage offsets are cumulative and match leaf spans`` () =
+    ensureHasher ()
+    let bytes = Array.init 40_000 (fun i -> byte i)
+    let rope = ZetaFsJumprope.buildV1 bytes
+    let cov = ZetaFsJumprope.asCoverage rope
+    Assert.Equal(rope.Leaves.Length, cov.Length)
+    Assert.Equal(0UL, fst cov.[0])
+    let mutable off = 0UL
+
+    for i in 0 .. rope.Leaves.Length - 1 do
+        let chunk, len = rope.Leaves.[i]
+        Assert.Equal(off, fst cov.[i])
+        Assert.Equal(chunk.ToHex(), (snd cov.[i]).ToHex())
+        off <- off + len
+
+    Assert.Equal(rope.Span, off)
+
+[<Fact>]
+let ``seek past end is OffsetOutOfRange`` () =
+    ensureHasher ()
+    let rope = ZetaFsJumprope.buildV1 [| 1uy; 2uy; 3uy |]
+    match ZetaFsJumprope.seek rope rope.Span with
+    | Error e -> Assert.Equal("OffsetOutOfRange", ZetaFsJumprope.errorName e)
+    | Ok _ -> Assert.Fail("seek at span must fail")
+
+[<Fact>]
+let ``unknown major tag is refused`` () =
+    ensureHasher ()
+    let dv =
+        DynamicValue.Object [ "t", DynamicValue.String "delta/1"; "x", DynamicValue.Int 1L ]
+    let bytes = DynamicValue.toCanonicalCborOk dv
+
+    match ZetaFsJumprope.decodeObject bytes with
+    | Error e -> Assert.Equal("UnknownTag", ZetaFsJumprope.errorName e)
+    | Ok _ -> Assert.Fail("delta/1 must be refused")
+
+[<Fact>]
+let ``pread copies into a caller buffer without a full materialize`` () =
+    ensureHasher ()
+    let bytes = Array.init 50_000 (fun i -> byte (i % 251))
+    let rope = ZetaFsJumprope.buildV1 bytes
+    let dst = Array.zeroCreate 100
+    match ZetaFsJumprope.pread rope 10_000UL (System.Memory<byte>.op_Implicit dst) with
+    | Error e -> Assert.Fail(ZetaFsJumprope.errorName e)
+    | Ok n ->
+        Assert.Equal(100, n)
+        Assert.Equal<byte>(bytes.[10_000 .. 10_099], dst)
+
+[<Fact>]
+let ``dump jumprope goldens when ZETA_DUMP_JUMPROPE=1`` () =
+    ensureHasher ()
+
+    if not (String.Equals(Environment.GetEnvironmentVariable("ZETA_DUMP_JUMPROPE"), "1", StringComparison.Ordinal)) then
+        ()
+    else
+        let cases =
+            [ "empty", Array.empty
+              "hello", Encoding.UTF8.GetBytes "hello jumprope"
+              "zeros-64", Array.zeroCreate 64 ]
+
+        let sb = StringBuilder()
+        sb.AppendLine("{") |> ignore
+        sb.AppendLine("  \"description\": \"ZetaFS Jumprope encodings (PR6). hex-in-JSON. ContentId is BLAKE3-256 of the canonical rope-trunk/1 object. FastCdc.v1. Seek does not ToArray payloads.\",") |> ignore
+        sb.AppendLine("  \"chunker\": \"fastcdc-v1\",") |> ignore
+        sb.AppendLine("  \"cases\": [") |> ignore
+        let last = cases.Length - 1
+
+        cases
+        |> List.iteri (fun i (name, bytes) ->
+            let rope = ZetaFsJumprope.buildV1 bytes
+            let trunk =
+                match ZetaFsJumprope.tryGet rope.Cas rope.Content with
+                | Some t -> Convert.ToHexString(t).ToLowerInvariant()
+                | None -> ""
+
+            sb.AppendLine("    {") |> ignore
+            sb.Append("      \"name\": \"").Append(name).AppendLine("\",") |> ignore
+            sb.Append("      \"inputHex\": \"").Append(Convert.ToHexString(bytes).ToLowerInvariant()).AppendLine("\",") |> ignore
+            sb.Append("      \"contentId\": \"").Append(rope.Content.ToHex()).AppendLine("\",") |> ignore
+            sb.Append("      \"span\": ").Append(rope.Span.ToString(Globalization.CultureInfo.InvariantCulture)).AppendLine(",") |> ignore
+            sb.Append("      \"leafCount\": ").Append(rope.Leaves.Length.ToString(Globalization.CultureInfo.InvariantCulture)).AppendLine(",") |> ignore
+            sb.Append("      \"trunkHex\": \"").Append(trunk).AppendLine("\"") |> ignore
+            if i = last then sb.AppendLine("    }") |> ignore
+            else sb.AppendLine("    },") |> ignore)
+
+        sb.AppendLine("  ]") |> ignore
+        sb.AppendLine("}") |> ignore
+        File.WriteAllText(goldenPath (), sb.ToString())
+        Assert.True(File.Exists(goldenPath ()))
+
+[<Fact>]
+let ``golden vectors lock empty and small encodings`` () =
+    ensureHasher ()
+    let path = goldenPath ()
+    Assert.True(File.Exists path, sprintf "seed not found: %s" path)
+    use doc = JsonDocument.Parse(File.ReadAllText path)
+
+    for v in doc.RootElement.GetProperty("cases").EnumerateArray() do
+        let name = v.GetProperty("name").GetString()
+        let inputHex = v.GetProperty("inputHex").GetString()
+        let input =
+            if String.IsNullOrEmpty inputHex then
+                Array.empty
+            else
+                Convert.FromHexString inputHex
+
+        let rope = ZetaFsJumprope.buildV1 input
+        let contentId = v.GetProperty("contentId").GetString()
+        Assert.True(
+            String.Equals(contentId, rope.Content.ToHex(), StringComparison.Ordinal),
+            sprintf "%s: contentId expected %s got %s" name contentId (rope.Content.ToHex())
+        )
+        Assert.Equal(uint64 (v.GetProperty("span").GetInt64()), rope.Span)
+        Assert.Equal(v.GetProperty("leafCount").GetInt32(), rope.Leaves.Length)
+        let trunkHex = v.GetProperty("trunkHex").GetString()
+        match ZetaFsJumprope.tryGet rope.Cas rope.Content with
+        | None -> Assert.Fail(sprintf "%s: missing trunk" name)
+        | Some trunk ->
+            Assert.True(
+                String.Equals(trunkHex, Convert.ToHexString(trunk).ToLowerInvariant(), StringComparison.Ordinal),
+                sprintf "%s: trunk encoding drifted" name
+            )
