@@ -83,6 +83,52 @@ too, and those are certainly asserted -- which is the only reason the empty
 result was recognised as a broken regex (the format is )
 rather than a finding. An empty grep is not a measurement.
 
+## MEASURED 2026-09-01 — STEP 2 AS WRITTEN IS NOT A VIABLE TEST
+
+Step 2 below says to run `live-kind-cilium` to separate k3s from Cilium. That lane
+was built (`live-kind-cilium-included`, dispatch-gated) and run FOUR times. It has
+produced **zero** per-application verdicts, and the reason is structural rather than
+incidental: **`--existing` is not a supported path for the `included` proof.**
+
+The probe MUST pass `--existing`, because the no-CNI kind profile cannot schedule
+ArgoCD until Cilium is installed, so `cilium-kind-up.ts` has to build the cluster
+first. But the `included` proof depends on preparation the harness performs during
+ITS OWN cluster creation, and `--existing` skips all of it. Each run surfaced
+exactly one more missing piece:
+
+| attempt | refusal | what `--existing` skipped |
+|---|---|---|
+| 1 | `UsageError` | `ZETA_ARGOCD_GIT_REF` unset in the step (my bug, not a coupling) |
+| 2 | `UsageError` | `--ephemeral-vault-init` is refused together with `--existing` |
+| 3 | `DevStorageClassMissing` | the `longhorn` dev StorageClass |
+| 4 | `DevBootstrapSecretMissing` | `grafana-admin-credentials` in namespace `monitoring` |
+
+**THE GUARDS ARE WHY THIS IS A REPORT AND NOT A NEAR-MISS.** Attempts 3 and 4 each
+name the same consequence in their own message: the missing piece would leave pods
+Pending or in `CreateContainerConfigError`, **which ArgoCD reports as `Progressing`
+rather than `Degraded`** — the EXACT symptom the four Applications show on k3d. Every
+one of these gaps would have produced a clean-looking verdict table full of
+`Progressing`, and the obvious reading ("Cilium causes it") would have been wrong.
+The harness refused four times instead of letting a plausible false answer through.
+
+**DO NOT ADD A FIFTH PREPARATION STEP TO THE JOB.** Three of the four failures are one
+defect wearing different clothes, and there is no reason to think the bootstrap secret
+is the last: the preparation set is whatever `bringUpKindCiCluster` does, which is not
+enumerated anywhere as a list a caller can replay.
+
+**The exit is to make the harness build the cluster.** Give the kind provider a
+Cilium-CNI mode so the proof creates and prepares its own cluster and `--existing` is
+not needed. That is real tooling work across `argocd-health-test.ts` and
+`dev-cluster/use-cases.ts`, it is a maintainer-scoped decision, and it is NOT started.
+
+**Consequence for this item:** step 2 cannot settle `openziti-controller`,
+`trust-manager` or `spire` until that lands. `vault` is separately unmeasurable on this
+lane at all — the ceremony is refused with `--existing` while the green baseline runs
+it, so the two are not comparable even if the proof completes.
+
+The probe lane is kept: it is dispatch-gated, blocks nothing, and now refuses to report
+a non-measurement as a roster. It is one harness change away from answering the question.
+
 ## The distinguishing test
 
 For each of the four, the question is the same and it is answerable:
