@@ -1447,7 +1447,7 @@ Each PR is independently reviewable and mergeable. Tests green or it does not la
 - **Title:** `zeta: blake3:/entity:/path verbs; homoglyph warning; never guess 64-hex`
 - **Files:** `src/Core.FSharp.Cli/Program.fs`; StoreSelect stays `.zetafs`-first; UTS #39 skeleton (ASCII lookalikes + pinned table)
 - **Depends on:** PR3, PR5
-- **Changes:** E7. Crockford-26 EntityId print form. 64-hex filename is a path. Independently useful without FUSE.
+- **Changes:** E7. Crockford-26 EntityId print form. 64-hex filename is a path. Independently useful without FUSE. **Landing:** `src/Core/ZetaFsCli.fs` — prefix-required parse; 64-hex without `blake3:` is a path; `zeta id` / `zeta cat` in `src/Core.FSharp.Cli/Program.fs`; UTS #39 ASCII skeleton is a confusable *fact*, not a merge.
 
 ### PR12 -- DST scenario corpus (promotion out of toy)
 
