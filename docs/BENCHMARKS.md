@@ -55,9 +55,34 @@ Head-to-head is `bench/Feldera.Bench` (Q1 projection, Q2 filter) plus
 Step (that used to pairwise-add the queue, O(n²) allocs) and not
 rebuild-the-circuit inside the BenchmarkDotNet iteration.
 
-Until a Release run of those harnesses is pasted here, **we have no
-measured events/sec vs Feldera**. Targets live in
-`bench/Feldera.Bench/README.md`; they are targets, not results.
+### Feldera.Bench Q1/Q2 — measured 2026-09-01 (this machine)
+
+`dotnet run -c Release --project bench/Feldera.Bench -- --filter "*"`.
+BenchmarkDotNet v0.15.8. Apple M2 Ultra, 24 cores, macOS Tahoe 26.6.2,
+.NET 10.0.11 Arm64 RyuJIT, Concurrent Server GC. Tick is
+`Send(prebuilt ofArray batch) + Circuit.Step`. Q1 uses `MapMonotone`.
+CSV: `BenchmarkDotNet.Artifacts/results/Zeta.Feldera.Bench.Queries.NexmarkQ{1,2}-report.csv`
+(gitignored).
+
+| Query | EventCount (generator N) | Mean | Error (99.9% CI half) | Allocated / tick |
+|---|---:|---:|---:|---:|
+| Q1 projection | 10_000 | 34.24 µs | 0.553 µs | 93.61 KB |
+| Q1 projection | 100_000 | 54.89 µs | 1.038 µs | 156.29 KB |
+| Q2 filter | 10_000 | 14.58 µs | 0.095 µs | 47.38 KB |
+| Q2 filter | 100_000 | 23.59 µs | 0.153 µs | 78.16 KB |
+
+**Do not divide generator N by mean and call it Feldera events/s.**
+`NexmarkGen` sets `Price = rng.Next 10_000`, then `ZSet.ofArray` coalesces
+duplicate prices. The Z-set the tick maps/filters has **at most 10_000
+keys**, which is why Q1 100k is only ~1.6× Q1 10k, not 10×. Feldera's
+published 10–40 M Q1/Q2 is 100 M events / 16 workers on a Threadripper
+3990X — a running pipeline of distinct records, not unique-price
+coalesce + one-thread `Step`. These rows are **our tick**, not a
+head-to-head win.
+
+Targets in `bench/Feldera.Bench/README.md` stay targets until the
+generator keys bids by a unique id (or we report `|batch|` as the
+denominator).
 
 Ingest complexity (081M1ETY8TY087G0R0022CT4R5):
 
