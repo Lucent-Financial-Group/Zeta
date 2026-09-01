@@ -86,7 +86,7 @@
 // `--check-snapshot` re-derives live and refuses drift so the snapshot cannot
 // become a comfortable fiction that outlives the charts it describes.
 
-import { readFileSync, readdirSync, mkdirSync, writeFileSync, renameSync, rmSync, existsSync, type Dirent } from "node:fs";
+import { readFileSync, readdirSync, mkdirSync, writeFileSync, renameSync, rmSync, type Dirent } from "node:fs";
 import { resolve, join } from "node:path";
 import { spawnSync } from "node:child_process";
 import { parse as parseYaml } from "yaml";
@@ -1177,9 +1177,19 @@ export function writeSchemaSnapshot(
  */
 export function historicalFixtureSources(repoRoot = REPO_ROOT): readonly ApplicationSource[] {
   const dir = resolve(repoRoot, "src/Core.TypeScript/cluster/testdata/inert-valuesobject-history");
-  if (!existsSync(dir)) return [];
+  // No existsSync gate here. An earlier draft had one and lint-check-then-use-file-races
+  // refused it, correctly: between the check and the readdir the path can be created,
+  // deleted or replaced, so the answer the check returned is already stale when the use
+  // runs -- defensive-looking and preventing nothing. One syscall, one answer.
+  let files: string[];
+  try {
+    files = readdirSync(dir).filter((f) => f.endsWith(".Application.yaml")).sort();
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === "ENOENT") return [];
+    throw error;
+  }
   const out: ApplicationSource[] = [];
-  for (const file of readdirSync(dir).filter((f) => f.endsWith(".Application.yaml")).sort()) {
+  for (const file of files) {
     const text = readFileSync(join(dir, file), "utf8");
     {
       const obj = parseYaml(text) as Record<string, unknown> | null;
