@@ -151,7 +151,18 @@ let ``sealed log does not leave freeze-intent ASCII in the clear`` () =
             | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
             | Ok r ->
                 Assert.True(ZetaFsFreeze.isReadable volume r.Content)
-                let logBytes = FileSystem.Current.ReadAllBytes "/freeze-enc/log/freeze"
+                // BUILD THE PATH THE WAY PRODUCTION DOES. This line was the literal
+                // "/freeze-enc/log/freeze", while `ZetaFsFreeze.logPath` composes it with
+                // `Path.Combine` -- which yields "/freeze-enc\\log\\freeze" on Windows.
+                // `InMemoryFileSystem` keys on the exact string, so the read missed and the
+                // test failed with FileNotFoundException on windows-11-arm ONLY.
+                //
+                // MEASURED: windows-11-arm was green on the seven gate runs before 7c6eae0e
+                // and red on it. The job is `continue-on-error` for windows/macos, so the
+                // break was advisory and merged without blocking -- which is how a
+                // platform-specific defect gets in. A test that hardcodes a separator is
+                // asserting about ONE platform while claiming to assert about the code.
+                let logBytes = FileSystem.Current.ReadAllBytes(Path.Combine("/freeze-enc", "log", "freeze"))
                 let needle = Text.Encoding.UTF8.GetBytes "freeze-intent/1"
                 Assert.Equal(-1, MemoryExtensions.IndexOf(ReadOnlySpan<byte> logBytes, ReadOnlySpan<byte> needle))
     finally
