@@ -1,0 +1,12 @@
+{
+  "pr_number": 16234,
+  "archive_path": "docs/history/pr-reviews/PR-16234-fix-ci-the-warning-still-exited-1-16222-changed-the-level-not-the-decision.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-01T05:53:18.969Z",
+  "schema_version": "v1",
+  "commit_sha": "e70d4d85d8cc14bd043a1408d4533e5cadd6fddb",
+  "title": "fix(ci): the warning still exited 1 — #16222 changed the level, not the decision",
+  "state": "MERGED",
+  "merged_at": "2026-09-01T05:52:39Z",
+  "head_ref": "shadow/drift-loud-warning-still-exited-1"
+}

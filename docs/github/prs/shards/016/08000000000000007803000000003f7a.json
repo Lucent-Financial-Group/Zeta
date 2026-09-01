@@ -1,0 +1,12 @@
+{
+  "pr_number": 16250,
+  "archive_path": "docs/history/pr-reviews/PR-16250-test-zetafs-compose-reclaim-fixture-paths-with-path-combine.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-01T15:49:20.246Z",
+  "schema_version": "v1",
+  "commit_sha": "2e829cfadad17dc3031ccc32b842fc2b1d32bdde",
+  "title": "test(zetafs): compose reclaim fixture paths with Path.Combine",
+  "state": "MERGED",
+  "merged_at": "2026-09-01T15:48:42Z",
+  "head_ref": "feat/zetafs-reclaim-path-combine"
+}

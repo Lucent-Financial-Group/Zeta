@@ -1,0 +1,12 @@
+{
+  "pr_number": 16235,
+  "archive_path": "docs/history/pr-reviews/PR-16235-fix-setup-qemu-is-mandatory-on-windows-and-nothing-on-windows-runs-it.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-01T06:10:21.095Z",
+  "schema_version": "v1",
+  "commit_sha": "ad3f23196db0e4fb038ccf16552bbb92b7237d30",
+  "title": "fix(setup): qemu is mandatory on Windows and nothing on Windows runs it",
+  "state": "MERGED",
+  "merged_at": "2026-09-01T06:09:40Z",
+  "head_ref": "shadow/qemu-is-optional-on-windows-nothing-there-runs-it"
+}

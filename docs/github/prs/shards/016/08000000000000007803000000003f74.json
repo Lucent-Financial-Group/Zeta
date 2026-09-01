@@ -1,0 +1,12 @@
+{
+  "pr_number": 16244,
+  "archive_path": "docs/history/pr-reviews/PR-16244-test-zetafs-packnonce-and-toy-kdf-compare-against-an-oracle-not-f-x-f-x.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-01T15:02:40.346Z",
+  "schema_version": "v1",
+  "commit_sha": "24e4d3cb242f47e72e9451a6363bb4d3f12e253b",
+  "title": "test(zetafs): packNonce and toy KDF compare against an oracle, not f(x)=f(x)",
+  "state": "MERGED",
+  "merged_at": "2026-09-01T15:02:00Z",
+  "head_ref": "feat/zetafs-pr9-arity"
+}

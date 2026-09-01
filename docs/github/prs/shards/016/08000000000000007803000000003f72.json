@@ -1,0 +1,12 @@
+{
+  "pr_number": 16242,
+  "archive_path": "docs/history/pr-reviews/PR-16242-test-hygiene-the-red-state-aggregator-had-no-test-the-observer-with-no-falsifier.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-01T14:35:36.961Z",
+  "schema_version": "v1",
+  "commit_sha": "29665ec32d2d300c2e988b2a3c3c3c53412ae818",
+  "title": "test(hygiene): the red-state aggregator had no test — the observer with no falsifier",
+  "state": "MERGED",
+  "merged_at": "2026-09-01T14:34:57Z",
+  "head_ref": "shadow/the-red-state-aggregator-had-no-test"
+}

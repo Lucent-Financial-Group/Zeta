@@ -1,0 +1,12 @@
+{
+  "pr_number": 16225,
+  "archive_path": "docs/history/pr-reviews/PR-16225-test-setup-manifest-realized-ran-on-one-of-four-manifests-wire-apt-windows.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-01T05:07:53.306Z",
+  "schema_version": "v1",
+  "commit_sha": "6bfceb6504ef014280dcbf46222b5a45feddaeed",
+  "title": "test(setup): manifest-realized ran on ONE of four manifests — wire apt + windows",
+  "state": "MERGED",
+  "merged_at": "2026-09-01T05:07:18Z",
+  "head_ref": "shadow/manifest-realized-runs-on-linux-and-windows-too"
+}

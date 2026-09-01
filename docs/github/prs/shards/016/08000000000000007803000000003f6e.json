@@ -1,0 +1,12 @@
+{
+  "pr_number": 16238,
+  "archive_path": "docs/history/pr-reviews/PR-16238-fix-k8s-the-probe-cannot-run-the-vault-ceremony-so-vault-is-confounded-here.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-01T07:15:55.177Z",
+  "schema_version": "v1",
+  "commit_sha": "3098a1c4b2d8531ebd76599f9963967c9d508f4b",
+  "title": "fix(k8s): the probe cannot run the vault ceremony, so vault is CONFOUNDED here",
+  "state": "MERGED",
+  "merged_at": "2026-09-01T07:15:14Z",
+  "head_ref": "shadow/probe-cannot-run-the-vault-ceremony-so-vault-is-confounded"
+}

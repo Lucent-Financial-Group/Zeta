@@ -1,0 +1,12 @@
+{
+  "pr_number": 16253,
+  "archive_path": "docs/history/pr-reviews/PR-16253-docs-trajectory-the-road-to-k8s-on-real-hardware-measured-plus-orleans-clusterin.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-01T16:23:37.823Z",
+  "schema_version": "v1",
+  "commit_sha": "bd151d7293ef6a57826ac6209c5b3dc322ff3fdc",
+  "title": "docs(trajectory): the road to k8s on real hardware — measured, plus Orleans clustering",
+  "state": "MERGED",
+  "merged_at": "2026-09-01T16:22:59Z",
+  "head_ref": "shadow/resume-the-road-to-k8s-on-real-hardware"
+}

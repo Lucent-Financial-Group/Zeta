@@ -1,0 +1,12 @@
+{
+  "pr_number": 16233,
+  "archive_path": "docs/history/pr-reviews/PR-16233-zetafs-blake3-entity-path-cli-never-guess-64-hex.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-01T05:51:01.010Z",
+  "schema_version": "v1",
+  "commit_sha": "4f174d1ea0f766ad661bf3a1b2aaf558da3adc1a",
+  "title": "zetafs: blake3:/entity:/path CLI; never guess 64-hex",
+  "state": "MERGED",
+  "merged_at": "2026-09-01T05:50:26Z",
+  "head_ref": "feat/zetafs-pr11-cli"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 16226,
+  "archive_path": "docs/history/pr-reviews/PR-16226-zetafs-per-entity-history-policy-as-z-set-satellite-byprefix-copies-at-first-bin.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-01T04:29:02.570Z",
+  "schema_version": "v1",
+  "commit_sha": "e64390170553a22beec56b2e3148d7fcc70e8279",
+  "title": "zetafs: per-entity history policy as Z-set satellite; ByPrefix copies at first bind",
+  "state": "MERGED",
+  "merged_at": "2026-09-01T04:28:26Z",
+  "head_ref": "feat/zetafs-pr5-policy"
+}

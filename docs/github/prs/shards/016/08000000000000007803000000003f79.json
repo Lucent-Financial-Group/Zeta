@@ -1,0 +1,12 @@
+{
+  "pr_number": 16249,
+  "archive_path": "docs/history/pr-reviews/PR-16249-research-adinkra-decompose-finite-intertwiner-space.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-01T15:46:34.885Z",
+  "schema_version": "v1",
+  "commit_sha": "5a4ef469fe8cddb01c8de8a4a59d714c6bedfc9a",
+  "title": "research(adinkra): decompose finite intertwiner space",
+  "state": "MERGED",
+  "merged_at": "2026-09-01T15:45:52Z",
+  "head_ref": "research/finite-intertwiner-decomposition-selector"
+}

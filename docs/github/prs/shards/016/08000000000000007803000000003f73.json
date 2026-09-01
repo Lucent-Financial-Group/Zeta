@@ -1,0 +1,12 @@
+{
+  "pr_number": 16243,
+  "archive_path": "docs/history/pr-reviews/PR-16243-zetafs-explicit-nonce-gcm-keyed-mac-enc-off-default.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-01T14:42:11.150Z",
+  "schema_version": "v1",
+  "commit_sha": "7c6eae0e89b5a113fc524d4e80816cde7b8f01e6",
+  "title": "zetafs: explicit-nonce GCM; keyed MAC; enc=off default",
+  "state": "MERGED",
+  "merged_at": "2026-09-01T14:41:33Z",
+  "head_ref": "feat/zetafs-pr9-crypto"
+}

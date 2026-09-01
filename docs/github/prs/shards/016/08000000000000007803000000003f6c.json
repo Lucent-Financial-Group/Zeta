@@ -1,0 +1,12 @@
+{
+  "pr_number": 16236,
+  "archive_path": "docs/history/pr-reviews/PR-16236-fix-k8s-the-probe-passed-an-empty-git-ref-and-its-table-called-that-a-measuremen.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-01T06:32:55.108Z",
+  "schema_version": "v1",
+  "commit_sha": "b3198fa72f305efa8bd361d9b8e47b79d4114b53",
+  "title": "fix(k8s): the probe passed an EMPTY git ref, and its table called that a measurement",
+  "state": "MERGED",
+  "merged_at": "2026-09-01T06:32:19Z",
+  "head_ref": "shadow/probe-passed-an-empty-git-ref-and-its-table-said-not-asserted"
+}

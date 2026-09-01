@@ -1,0 +1,12 @@
+{
+  "pr_number": 16248,
+  "archive_path": "docs/history/pr-reviews/PR-16248-zetafs-budgeted-reclaim-ferry-rank-2-eligibility.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-01T15:28:49.126Z",
+  "schema_version": "v1",
+  "commit_sha": "b6c233d6b19248833ab02079d03756fec3713d45",
+  "title": "zetafs: budgeted reclaim ferry; rank-2 eligibility",
+  "state": "MERGED",
+  "merged_at": "2026-09-01T15:28:10Z",
+  "head_ref": "feat/zetafs-pr10-reclaim"
+}
