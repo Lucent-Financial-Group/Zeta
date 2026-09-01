@@ -1,0 +1,12 @@
+{
+  "pr_number": 16214,
+  "archive_path": "docs/history/pr-reviews/PR-16214-task-081m1dehs68087g0r000w1f0zb-telemetry-returns-as-daily-aggregates-or-not-at-.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-01T03:18:26.854Z",
+  "schema_version": "v1",
+  "commit_sha": "227400badc94e8a656946219cde7ed0b758e3b43",
+  "title": "task(081M1DEHS68087G0R000W1F0ZB): telemetry returns as daily aggregates or not at all",
+  "state": "MERGED",
+  "merged_at": "2026-09-01T03:17:52Z",
+  "head_ref": "shadow/workitem-telemetry-daily-aggregates"
+}
