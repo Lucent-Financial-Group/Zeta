@@ -78,16 +78,19 @@ let ``partial apply deletes only the minted paths; live files stay`` () =
 
     try
         let fs = FileSystem.Current
-        fs.CreateDirectory "/reclaim"
-        FileSystemIo.writeAllBytes fs "/reclaim/live" [| 1uy |]
-        FileSystemIo.writeAllBytes fs "/reclaim/garbage" [| 2uy |]
+        let root = "reclaim"
+        let live = Path.Combine(root, "live")
+        let garbage = Path.Combine(root, "garbage")
+        fs.CreateDirectory root
+        FileSystemIo.writeAllBytes fs live [| 1uy |]
+        FileSystemIo.writeAllBytes fs garbage [| 2uy |]
         let n =
             ZetaFsReclaim.apply
                 fs
-                [| cid 9uy, "/reclaim/garbage" |]
+                [| cid 9uy, garbage |]
                 { Bytes = 100UL; Count = 1 }
         Assert.Equal(1, n)
-        Assert.False(fs.Exists "/reclaim/garbage")
-        Assert.True(fs.Exists "/reclaim/live")
+        Assert.False(fs.Exists garbage)
+        Assert.True(fs.Exists live)
     finally
         FileSystem.Reset()
