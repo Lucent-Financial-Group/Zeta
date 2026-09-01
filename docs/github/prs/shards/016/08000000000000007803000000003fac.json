@@ -1,0 +1,12 @@
+{
+  "pr_number": 16300,
+  "archive_path": "docs/history/pr-reviews/PR-16300-docs-memory-unique-confirm-leftover-on-main-16274-on-current-lumen.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-01T23:18:51.507Z",
+  "schema_version": "v1",
+  "commit_sha": "9eaed000b2400d2bec0c63b017e4ad8d02818500",
+  "title": "docs(memory): unique-confirm leftover-on-main #16274 on CURRENT-lumen",
+  "state": "MERGED",
+  "merged_at": "2026-09-01T23:18:11Z",
+  "head_ref": "cursor/lumen-unique-confirm-16274-5eaf"
+}
