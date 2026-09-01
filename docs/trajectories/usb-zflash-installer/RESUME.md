@@ -58,9 +58,25 @@ After `--defer-all` + bake-cred (#15912), restore wrote 1 cred on
 [run 33126215487](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/33126215487).
 The 2026-08-24 handoff
 ([`docs/handoffs/2026-08-24-riven-usb-zflash-qemu-restore-next.md`](../../handoffs/2026-08-24-riven-usb-zflash-qemu-restore-next.md))
-is historical. Next software slice is in-guest wrong-passphrase (phase 2b
-on the same installed disk) + hexagonal passphrase port so metal tty1 is
-unit-testable; then a human hardware run of the metal-path runbook.
+is historical. **So is this sentence's own "next slice", as of 2026-08-31:**
+in-guest wrong-passphrase (phase 2b) AND the hexagonal passphrase port both
+LANDED on 2026-08-29 in `133a95b5de` (#15983). `WRONG_QEMU_PASSPHRASE`,
+`PHASE2B_SERIAL_SEPARATOR`, `assertUefiKeyfileRestoreWrongPassphraseContract`
+and `installer/passphrase-source.ts` (`planPassphraseSource` pure,
+`PassphraseSourceEffects` injected) are all on `main` with unit falsifiers.
+
+**AND PHASE 2B HAS NEVER RUN.** It executes inside the restore lane, which only
+runs on `workflow_dispatch`. The last two GREEN restore dispatches were
+2026-08-26 and 2026-08-27 — both BEFORE the code existed. So the real next
+action is not to build it: it is to DISPATCH the lane once and read the first
+verdict. Same shape the k3d provider had (supported in code, dispatched by
+nothing, for two months).
+
+Blocked on one thing: `build-ai-cluster-iso` was red on `main` 2026-08-30 →
+2026-08-31 (see the mise regression note above), so a dispatch would have died
+at scenario 2 long before reaching restore. Dispatch when main's ISO push run is
+green AND the concurrency group is idle — the 2026-08-24 handoff's rule, which
+still holds. Then a human hardware run of the metal-path runbook.
 Not a Cloud VM metal proof.
 
 Next concrete action: **minimize metal** — S6 physical first-login +
@@ -169,7 +185,8 @@ bringup.
 **Software (closed, do not re-litigate):** non-interactive 6.95-picker
 (`--defer-all` #14852) and restore non-zero write (#15912, dispatch
 33126215487). Sibling dispatch steps already `if: always()`.
-**Next software:** in-guest wrong-passphrase phase 2b + passphrase
+**Next software:** ~~in-guest wrong-passphrase phase 2b + passphrase~~ **BOTH LANDED 2026-08-29 (`133a95b5de`) AND NEITHER HAS RUN — dispatch the restore lane, do not rebuild.** Superseded text kept below for lineage:
+**Superseded:** in-guest wrong-passphrase phase 2b + passphrase
 hexagonal port (`passphrase-source.ts`) so a human can run the metal
 tty1 runbook without the software door being untested. Dispatch restore
 on idle `main` after that lands. **Post-login:**
