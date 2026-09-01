@@ -19,6 +19,14 @@ import {
   measureFiniteAdinkraHalfSpinIntertwiner,
   type FiniteAdinkraHalfSpinIntertwinerCensus,
 } from "./nonquotient-adinkra-halfspin-intertwiner";
+import {
+  measureFiniteIntertwinerDecomposition,
+  type FiniteIntertwinerDecompositionCensus,
+} from "./nonquotient-adinkra-halfspin-decomposition";
+import {
+  measureFiniteIntertwinerSelectors,
+  type FiniteIntertwinerSelectorCensus,
+} from "./nonquotient-adinkra-halfspin-selector";
 
 export const EXT_HAMMING_8_4_4_ROWS = [
   [1, 0, 0, 0, 0, 1, 1, 1],
@@ -95,6 +103,10 @@ export interface CodedHalfSpinIntertwinerLane {
   readonly evenGeneratorCount: 7;
   /** Exact finite equivariance witness; it is not a regular-module measurement. */
   readonly census: FiniteAdinkraHalfSpinIntertwinerCensus;
+  /** Exact central-sector, Hom-block, commutant, and generated-algebra witnesses. */
+  readonly decompositionCensus: FiniteIntertwinerDecompositionCensus;
+  /** Deterministic selector measurements and explicit canonicity obstructions. */
+  readonly selectorCensus: FiniteIntertwinerSelectorCensus;
   readonly regularity: UnmeasuredRegularity;
 }
 
@@ -183,6 +195,8 @@ export function measureRepresentationDefectSpectrum(
   const actionCensus = measureNonQuotientHalfSpinAction();
   const bracketCensus = measuredBracketCensus();
   const intertwinerCensus = measureFiniteAdinkraHalfSpinIntertwiner({ field: prime });
+  const decompositionCensus = measureFiniteIntertwinerDecomposition(prime as (typeof PRIMES)[number]);
+  const selectorCensus = measureFiniteIntertwinerSelectors(prime as (typeof PRIMES)[number]);
 
   return {
     uncoded: {
@@ -237,10 +251,12 @@ export function measureRepresentationDefectSpectrum(
       targetDimension: 128,
       evenGeneratorCount: 7,
       census: intertwinerCensus,
+      decompositionCensus,
+      selectorCensus,
       regularity: {
         status: "unmeasured",
         reason:
-          "a full-rank intertwiner is measured for one declared seven-generator restriction, but this is not a regular-module rank-one census",
+          "a full-rank intertwiner, its two-sector multiplicities, and tested selector obstructions are measured for one declared seven-generator restriction, but this is not a regular-module rank-one census",
         missingWitnesses: [
           "a separately declared regular-module carrier",
           "a rank-one-freeness test for that carrier",

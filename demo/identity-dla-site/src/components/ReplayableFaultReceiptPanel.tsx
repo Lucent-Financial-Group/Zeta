@@ -102,19 +102,19 @@ export default function ReplayableFaultReceiptPanel() {
         </div>
       ) : vector !== undefined && state.kind === "ready" ? (
         <div className="fault-receipt-layout" style={{ display: "grid", gridTemplateColumns: "minmax(210px, 0.72fr) minmax(0, 1.28fr)" }}>
-          <div style={{ padding: "0.9rem", borderRight: "1px solid var(--border)" }}>
+          <div style={{ padding: "0.9rem", borderRight: "1px solid color-mix(in srgb, var(--border) 62%, transparent)", background: "oklch(0.048 0.007 265)" }}>
             <div style={{ color: "var(--amber-dim)", fontSize: "0.5rem", letterSpacing: "0.13em", textTransform: "uppercase", marginBottom: "0.6rem" }}>declared fault-vector matrix</div>
             <div style={{ display: "grid", gap: "0.35rem" }}>
               {state.vectors.map((item) => {
                 const active = vector.receipt.scenario === item.receipt.scenario;
                 const tone = vectorTone(item);
-                return <button key={item.receipt.scenario} type="button" onClick={() => { setSelected(item.receipt.scenario); setRun(0); }} style={{ textAlign: "left", font: "inherit", fontSize: "0.57rem", padding: "0.55rem 0.6rem", borderRadius: 0, border: `1px solid ${active ? tone : "var(--border)"}`, background: active ? "oklch(0.11 0.022 85)" : "transparent", color: active ? tone : "var(--muted-foreground)", cursor: "pointer" }}>{item.receipt.teaching.code} · {displayScenario(item.receipt.scenario)}</button>;
+                return <button key={item.receipt.scenario} type="button" onClick={() => { setSelected(item.receipt.scenario); setRun(0); }} style={{ textAlign: "left", font: "inherit", fontSize: "0.57rem", padding: "0.55rem 0.6rem", borderRadius: 0, border: active ? `1px solid ${tone}` : "1px solid transparent", borderLeft: `2px solid ${active ? tone : "var(--cold)"}`, background: active ? "oklch(0.105 0.024 70)" : "oklch(0.045 0.006 265)", color: active ? tone : "var(--muted-foreground)", cursor: "pointer" }}>{item.receipt.teaching.code} · {displayScenario(item.receipt.scenario)}</button>;
               })}
             </div>
           </div>
           <div style={{ padding: "0.9rem" }}>
             <div style={{ display: "flex", justifyContent: "space-between", gap: "0.7rem", alignItems: "baseline", flexWrap: "wrap" }}>
-              <div style={{ color: vectorTone(vector), fontWeight: 900, fontSize: "clamp(1.5rem, 3.6vw, 2.25rem)", lineHeight: 0.92, letterSpacing: "-0.075em" }}>{displayOutcome(vector)}</div>
+              <div style={{ color: vectorTone(vector), fontWeight: 900, fontSize: "clamp(1.85rem, 4.4vw, 3rem)", lineHeight: 0.88, letterSpacing: "-0.085em" }}>{displayOutcome(vector)}</div>
               <span style={{ color: "var(--muted-foreground)", fontSize: "0.5rem" }}>{vector.receipt.teaching.code} / VECTOR-{String(run).padStart(2, "0")}</span>
             </div>
             <div style={{ color: "var(--muted-foreground)", fontSize: "0.48rem", marginTop: "0.35rem", wordBreak: "break-all" }}>DECLARED CONTENT ADDRESS · {vector.contentKey}</div>

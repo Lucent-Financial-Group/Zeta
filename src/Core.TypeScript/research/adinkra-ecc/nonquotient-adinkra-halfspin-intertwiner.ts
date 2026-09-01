@@ -461,6 +461,20 @@ function targetEvenAction(options: IntertwinerCensusOptions): readonly SignedPer
   return generators;
 }
 
+/** Frozen source action used by the measured intertwiner and its follow-on decomposition. */
+export function buildDeclaredAdinkraEvenAction(
+  repSeed = 0,
+): { readonly adinkra: CodedAdinkra; readonly generators: readonly SignedPermutation[] } {
+  return sourceEvenAction(repSeed);
+}
+
+/** Frozen target action used by the measured intertwiner and its follow-on decomposition. */
+export function buildDeclaredHalfSpinEvenAction(
+  options: IntertwinerCensusOptions = {},
+): readonly SignedPermutation[] {
+  return targetEvenAction(options);
+}
+
 function countCliffordSevenViolations(generators: readonly SignedPermutation[]): number {
   let violations = 0;
   for (let first = 0; first < generators.length; first += 1) {

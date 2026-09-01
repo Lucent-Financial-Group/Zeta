@@ -157,9 +157,9 @@ function ReceiptBranchTopology() {
     <div aria-hidden="true" style={{ borderBottom: "1px solid var(--border)", height: 88, margin: "0.65rem 0 0.9rem", overflow: "hidden", position: "relative" }}>
       <div style={{ color: "var(--amber-dim)", fontSize: "0.43rem", left: "0.15rem", letterSpacing: "0.12em", position: "absolute", top: "0.15rem" }}>RETAINED RECEIPT BRANCHES · LOCAL DISCOVERY</div>
       <svg viewBox="0 0 1000 88" preserveAspectRatio="none" style={{ display: "block", height: "100%", width: "100%" }}>
-        <path d="M486 84 L486 60 L452 60 L428 44 L390 44 L365 65 L314 65 L285 49 L242 49 L220 27 L177 27" fill="none" stroke="var(--amber)" strokeWidth="2" vectorEffect="non-scaling-stroke" />
-        <path d="M486 60 L531 60 L554 36 L599 36 L625 54 L680 54 L707 22 L751 22 L786 43 L844 43" fill="none" stroke="var(--amber)" strokeWidth="2" vectorEffect="non-scaling-stroke" />
-        <path d="M452 60 L438 78 L399 78 M390 44 L404 16 L442 16 M285 49 L271 19 L231 19 M599 36 L583 12 L544 12 M680 54 L698 76 L738 76 M786 43 L810 16 L851 16" fill="none" stroke="var(--amber-dim)" strokeWidth="1" vectorEffect="non-scaling-stroke" />
+        <path d="M486 86 L481 65 L448 57 L420 40 L382 47 L349 67 L307 59 L276 42 L235 48 L205 28 L160 34" fill="none" stroke="var(--amber)" strokeWidth="2.2" vectorEffect="non-scaling-stroke" />
+        <path d="M481 65 L523 59 L549 35 L593 42 L627 58 L671 50 L703 23 L750 30 L787 47 L842 39" fill="none" stroke="var(--amber)" strokeWidth="2.2" vectorEffect="non-scaling-stroke" />
+        <path d="M448 57 L429 80 L392 75 M382 47 L397 13 L438 20 M276 42 L257 14 L218 23 M593 42 L568 11 L529 17 M671 50 L695 79 L737 71 M787 47 L814 13 L858 20" fill="none" stroke="var(--amber-dim)" strokeWidth="1" vectorEffect="non-scaling-stroke" />
         <path d="M486 84 L486 72" fill="none" stroke="var(--amber)" strokeWidth="4" vectorEffect="non-scaling-stroke" />
         <circle cx="177" cy="27" r="3" fill="var(--amber)" /><circle cx="844" cy="43" r="3" fill="var(--amber)" />
         <circle cx="399" cy="78" r="2.5" fill="var(--teal)" /><circle cx="738" cy="76" r="2.5" fill="var(--teal)" />
@@ -214,7 +214,7 @@ export default function LiveRoomEvidenceFeed() {
       <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: "1rem", flexWrap: "wrap" }}>
         <div>
           <div style={labelStyle}>Durable room evidence · repository mirror</div>
-          <h2 style={{ margin: "0.25rem 0 0", color: tone, fontSize: "clamp(1.35rem, 3.2vw, 2.35rem)", lineHeight: 0.96, letterSpacing: "-0.075em" }}>{title}</h2>
+          <h2 style={{ margin: "0.3rem 0 0", color: state.kind === "ready" ? "var(--amber-dim)" : tone, fontSize: "clamp(1.05rem, 2.35vw, 1.7rem)", lineHeight: 1, letterSpacing: "-0.045em" }}>{title}</h2>
         </div>
         <button onClick={() => refresh(windowOffset)} style={{ background: "transparent", border: `1px solid ${tone}`, color: tone, padding: "0.44rem 0.65rem", fontFamily: "inherit", fontSize: "0.6rem", letterSpacing: "0.1em", cursor: "pointer" }}>
           REFRESH MANIFEST
@@ -252,7 +252,7 @@ export default function LiveRoomEvidenceFeed() {
           )}
           <div className="evidence-feed-grid">
             {state.entries.map((entry) => (
-              <article className="evidence-feed-record" key={entry.eventId} style={{ border: "1px solid var(--border)", borderLeft: "3px solid var(--amber)", padding: "0.8rem", background: "oklch(0.068 0.011 265)" }}>
+              <article className="evidence-feed-record" key={entry.eventId} style={{ border: 0, borderTop: "1px solid oklch(0.22 0.025 65 / 0.38)", borderLeft: "2px solid color-mix(in srgb, var(--amber) 58%, transparent)", padding: "0.8rem", background: "oklch(0.052 0.008 265)" }}>
                 <div style={{ ...labelStyle, color: "var(--amber)" }}>{entry.weight > 0 ? "+1 assertion" : "−1 retraction"} · sequence {entry.emitterSeq}</div>
                 <div style={{ margin: "0.4rem 0", color: "var(--foreground)", fontSize: "0.73rem", overflowWrap: "anywhere" }}>{entry.eventId}</div>
                 <div style={{ color: "var(--muted-foreground)", fontSize: "0.59rem", lineHeight: 1.55 }}>emitter: {entry.emitterId}<br />witness material: {entry.witnessMaterial ? "present; authority is assessed by a local verifier" : "absent; do not guess"}<br />audit key: {entry.auditContentKey.slice(0, 22)}…<LocalAdjudicationDetail adjudication={entry.adjudication} /></div>

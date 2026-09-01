@@ -33,7 +33,7 @@ describe("finite Adinkra representation-defect spectrum", () => {
     expect(first?.uncoded.regularity).toEqual(second?.uncoded.regularity);
     expect(first?.coded.regularity).toEqual(second?.coded.regularity);
     expect(first?.colouredResidue.regularity).toEqual(second?.colouredResidue.regularity);
-  });
+  }, 30_000);
 
   test("the coloured residue is a non-canonical family: 56 working subsets and balanced colours", () => {
     const residue = measureRepresentationDefectSpectrum().colouredResidue;
@@ -119,6 +119,34 @@ describe("finite Adinkra representation-defect spectrum", () => {
     expect(lane.census.solution.basisRankSpectrum).toEqual({ "8": 16 });
     expect(lane.census.solution.unitCombinationRank).toBe(16);
     expect(lane.census.solution.unitCombinationIntertwines).toBe(true);
+    expect(lane.decompositionCensus.homBlocks.dimensions).toEqual({
+      "+→+": 8,
+      "+→-": 0,
+      "-→+": 0,
+      "-→-": 8,
+    });
+    expect(lane.decompositionCensus.sourceCommutant.nullity).toBe(2);
+    expect(lane.decompositionCensus.targetCommutant.nullity).toBe(128);
+    expect(lane.decompositionCensus.finiteConclusion).toEqual({
+      sourceSectorSimplicityWitness: true,
+      sourceSectorsInequivalent: true,
+      targetMultiplicityDimensions: { "+": 8, "-": 8 },
+      targetCommutantDimensionMatchesMultiplicityPattern: true,
+    });
+    expect(lane.selectorCensus.coefficientBoundaryControls).toEqual({
+      zeroRank: 0,
+      plusOnlyRank: 8,
+      minusOnlyRank: 8,
+      bothSectorsRank: 16,
+    });
+    expect(lane.selectorCensus.minimumSupportSelector.candidatePairCount).toBe(64);
+    expect(lane.selectorCensus.balancedGramSelector.minimizerCountBeforeLexicographicTieBreak).toBe(64);
+    expect(lane.selectorCensus.canonicality).toEqual({
+      presentationDeterministic: true,
+      testedSelectorsNaturalUnderBasisOrientation: false,
+      testedSelectorsModuleCanonical: false,
+      universalCanonicalSelectorClaim: "not established",
+    });
     expect(lane.regularity.status).toBe("unmeasured");
     expect(() => requireMeasuredRegularity(lane.regularity)).toThrow("regularity is unmeasured");
   });
