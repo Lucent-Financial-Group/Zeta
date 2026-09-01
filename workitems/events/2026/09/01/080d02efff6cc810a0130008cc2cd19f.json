@@ -1,0 +1,14 @@
+{
+  "id": "080d02efff6cc810a0130008cc2cd19f",
+  "at": "2026-09-01T17:24:08.729Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1EZZVCR087G0R0027CSB2Y",
+    "type": "task",
+    "title": "Consolidate Zeta host state under one root: ~/.zeta, ~/.config/zeta and three ~/Library roots are live at once",
+    "slug": "consolidate-zeta-host-state-under-one-root-zeta-config-zeta",
+    "priority": "P2",
+    "filename": "081M1EZZVCR087G0R0027CSB2Y-consolidate-zeta-host-state-under-one-root-zeta-config-zeta.md"
+  }
+}
