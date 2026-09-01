@@ -6,7 +6,7 @@
 # bring-up order, and it was written by hand. On 2026-08-21 it named 34
 # components while 46 `kind: Application` manifests shipped: twelve
 # Applications — agent-memory, arc-controller, arc-runner-set, cdi,
-# cilium-lb-ipam, gmod, headlamp, headscale, kubevirt, minio, platform,
+# cilium-lb-ipam, gmod, headlamp, headscale, kubevirt, platform,
 # seaweedfs — appeared nowhere in its graph. Nobody had failed to update a
 # document; a hand-maintained artifact was standing where a DERIVED one was
 # intended (Aaron, 2026-08-21: "we are supposed to use our ace package manager
@@ -260,12 +260,6 @@ spec:
       # zeta.io/sync-policy-reason states "CDI needs no virtualization at all,
       # so it is testable independently of kubevirt."
 
-    - chart: minio
-      dependsOn: []
-      citations: {}
-      # The S3 blob store (`blob-store.object-store.svc:9000`). Backed by
-      # zeta-local-path (a bootstrap StorageClass), so no in-graph edge.
-
     - chart: seaweedfs
       dependsOn: []
       citations: {}
@@ -462,22 +456,26 @@ spec:
 
     # ── Layer 7: object-store consumers ──────────────────────────────────────
     - chart: loki
-      dependsOn: [minio]
+      dependsOn: [seaweedfs]
       citations:
-        minio: >-
-          full-ai-cluster/k8s/applications/loki/Application.yaml:37 points its
-          S3 backend at `endpoint: blob-store.object-store.svc:9000` — the
-          `blob-store` release in namespace `object-store` created by the minio
-          Application, whose `buckets:` list declares `loki-chunks` and
-          `loki-ruler`.
+        seaweedfs: >-
+          full-ai-cluster/k8s/applications/loki/Application.yaml points its S3
+          backend at `endpoint:
+          blob-store-seaweedfs-all-in-one.object-store.svc:8333` — the
+          `blob-store-seaweedfs` release in namespace `object-store`, whose
+          `allInOne.s3.createBuckets` declares `loki-chunks` and `loki-ruler`.
+          Repointed from minio on 2026-09-01 when that Application was removed
+          for an archived upstream.
 
     - chart: mimir
-      dependsOn: [minio, longhorn]
+      dependsOn: [seaweedfs, longhorn]
       citations:
-        minio: >-
-          full-ai-cluster/k8s/applications/mimir/Application.yaml:32,40,48 point
-          three S3 backends at `endpoint: blob-store.object-store.svc:9000`;
-          minio's `buckets:` list declares `mimir-tsdb`.
+        seaweedfs: >-
+          full-ai-cluster/k8s/applications/mimir/Application.yaml points three S3
+          backends at `endpoint:
+          blob-store-seaweedfs-all-in-one.object-store.svc:8333`; seaweedfs's
+          `allInOne.s3.createBuckets` declares `mimir-tsdb` and `mimir-ruler`.
+          Repointed from minio on 2026-09-01.
         longhorn: >-
           full-ai-cluster/k8s/applications/mimir/Application.yaml:82,86,90 set
           `storageClass: longhorn`.

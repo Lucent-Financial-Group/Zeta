@@ -279,7 +279,10 @@ describe("the real tree", () => {
     // buildModel throws on any mismatch; reaching here is the assertion. The
     // join is the load-bearing part: `oz/Application.yaml` is named
     // `openziti-controller`, so a name-keyed join silently drops it.
-    expect(model.roster.length).toBeGreaterThanOrEqual(47);
+    // 47 -> 46 on 2026-09-01: `minio` was removed (upstream project ARCHIVED;
+    // seaweedfs, already in the tree, is the blob store). A FLOOR, so it falls
+    // only when an app genuinely leaves.
+    expect(model.roster.length).toBeGreaterThanOrEqual(46);
     const oz = model.roster.find((r) => r.name === "openziti-controller");
     expect(must(oz, "the openziti-controller roster entry").catalogueKey).toBe("oz");
     expect(model.catalogue.rows.has("oz")).toBe(true);
@@ -361,7 +364,28 @@ describe("the real tree", () => {
     // Between them `platform` goes from THREE blockers to ZERO and leaves the
     // partitioner's quarantine for the first time. `covered by a lane` moves
     // 43/47 -> 44/47.
-    expect(all.diskGib).toBeCloseTo(74.61, 2);
+    // 74.61 -> 73.21 on 2026-09-01. FOUR causes, and only ONE of them is the
+    // minio removal this branch is about -- decomposed here because a single net
+    // figure would let three unrelated facts hide inside one number. The
+    // image-level deltas sum to -1.3231 GiB, measured by diffing the regenerated
+    // footprint against origin/main's, image by image:
+    //
+    //   -0.2257 GiB  minio + mc leave with the app (THIS branch's change)
+    //   -1.5538 GiB  `mcr.microsoft.com/mssql/server:2022-latest` -- the TREE had
+    //                already stopped naming it and the checked-in footprint had
+    //                not caught up. Regenerating did not remove it; it revealed
+    //                that the stored measurement was STALE.
+    //   -1.1846 GiB  `vllm/vllm-openai:latest` genuinely SHRANK upstream
+    //                (9110690483 -> 8634299283 compressed). A moving `:latest`
+    //                tag, which is the argument for the digest pins elsewhere.
+    //   +1.6410 GiB  net of the `bitnami/*` -> `bitnamilegacy/*` move now pricing
+    //                where the old rows read `null`, plus zeta-portal and
+    //                zeta-platform-controller becoming anonymously pullable
+    //
+    // The +1.64 is the same shape as the 2026-08-23 rise above: an image that
+    // could not be SIZED contributed nothing, so making it sizable can only push
+    // the floor up. The number got MORE true; the tree did not grow.
+    expect(all.diskGib).toBeCloseTo(73.21, 2);
     expect(all.cpuMillis).toBeGreaterThan(budget.cpuMillis);
     expect(all.diskGib).toBeGreaterThan(budget.diskGib);
     // WHICH AXIS BINDS IS NOW A MEASUREMENT, NOT AN ASSERTION. At 14 GiB disk was
@@ -451,7 +475,11 @@ describe("the real tree", () => {
     // whole partition turns on and it must not be allowed to drift silently. It
     // is their SIZE that is pinned now, never their verdict.
     expect(priceSet(model, ["hindsight"]).diskGib).toBeCloseTo(22.49, 1);
-    expect(priceSet(model, ["vllm"]).diskGib).toBeCloseTo(22.65, 1);
+    // 22.65 -> 21.47 on 2026-09-01, and this one is NOT a consequence of the
+    // minio removal: `vllm/vllm-openai:latest` shrank upstream by 1.1846 GiB.
+    // Pinning the size is what surfaced it, which is what the comment above says
+    // the pin is for.
+    expect(priceSet(model, ["vllm"]).diskGib).toBeCloseTo(21.47, 1);
     // MUTATION CAUGHT: a partitioner that quarantines on a stale constant rather
     // than on the budget it was handed. Under the old body that mutation passed.
   });

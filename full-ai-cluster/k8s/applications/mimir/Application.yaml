@@ -29,7 +29,7 @@ spec:
             blocks_storage:
               backend: s3
               s3:
-                endpoint: blob-store.object-store.svc:9000
+                endpoint: blob-store-seaweedfs-all-in-one.object-store.svc:8333
                 bucket_name: mimir-tsdb
                 access_key_id: zeta-blob-store
                 secret_access_key: zeta-blob-store-dev-secret
@@ -37,7 +37,7 @@ spec:
             alertmanager_storage:
               backend: s3
               s3:
-                endpoint: blob-store.object-store.svc:9000
+                endpoint: blob-store-seaweedfs-all-in-one.object-store.svc:8333
                 bucket_name: mimir-ruler
                 access_key_id: zeta-blob-store
                 secret_access_key: zeta-blob-store-dev-secret
@@ -45,7 +45,7 @@ spec:
             ruler_storage:
               backend: s3
               s3:
-                endpoint: blob-store.object-store.svc:9000
+                endpoint: blob-store-seaweedfs-all-in-one.object-store.svc:8333
                 bucket_name: mimir-ruler
                 access_key_id: zeta-blob-store
                 secret_access_key: zeta-blob-store-dev-secret

@@ -1,8 +1,16 @@
-# SeaweedFS — lighter S3-compatible blob store (runs alongside MinIO).
+# SeaweedFS — THE S3-compatible blob store for this cluster.
 #
-# Both minio/ and seaweedfs/ reconcile into object-store with distinct
-# service names and ports. Loki/Mimir default to MinIO; repoint the S3
-# endpoint to exercise SeaweedFS without deleting either backend.
+# It became the only one on 2026-09-01, when minio/ was removed. MinIO's
+# community edition repository was ARCHIVED in February 2026 -- read-only, no
+# active development, NO SECURITY PATCHES, no pre-built OSS binaries -- and its
+# chart repo had published nothing since 2025-01-02 (newest 5.4.0, appVersion
+# RELEASE.2024-12-18T13-15-44Z, verified live against charts.min.io). An
+# unpatched object store is a security posture, not a staleness metric.
+#
+# SeaweedFS is Apache 2.0 (no AGPL exposure), actively published -- 4.45.0 landed
+# 2026-09-01 -- and serves the same S3 API surface, which is why this migration is
+# an ENDPOINT CHANGE and nothing more. Loki and Mimir now address the Service
+# below directly.
 # See full-ai-cluster/k8s/object-store/BLOB-STORE-CONTRACT.md.
 #
 # allInOne mode: single pod with embedded master/volume/filer/S3 gateway.

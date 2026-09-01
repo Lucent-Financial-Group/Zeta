@@ -1,15 +1,68 @@
 # Blob store contract — shared S3 for the cluster
 
-Zeta ships two S3-compatible backends under `k8s/applications/`. **Both reconcile
-by default** so you can A/B-test without tearing either down. Loki and Mimir
-point at MinIO unless you repoint the endpoint.
+Zeta ships **one** S3-compatible backend: **SeaweedFS**. Loki and Mimir address it
+directly.
 
 | App | Sync | Endpoint (in-cluster) | Port | Consumer default |
 |-----|------|------------------------|------|------------------|
-| **minio/** | automated | `blob-store.object-store.svc.cluster.local` | 9000 | **yes** |
-| **seaweedfs/** | automated | `blob-store-seaweedfs-all-in-one.object-store.svc.cluster.local` | 8333 | no (opt-in consumer; included gate proves deploy) |
+| **seaweedfs/** | automated | `blob-store-seaweedfs-all-in-one.object-store.svc` | 8333 | **yes** |
 
-## When to pick which (production)
+## MinIO was removed on 2026-09-01, and why
+
+`minio/minio` is **archived and read-only**, and the chart source lived *inside that
+same repository* — so the stale chart and the unmaintained server are one fact, not
+two. Newest chart `5.4.0`, created `2025-01-02`, shipping appVersion
+`RELEASE.2024-12-18T13-15-44Z`, verified live against `charts.min.io` rather than
+read from a changelog. Development moved to the proprietary **AIStor**; the admin
+console was removed from the community build in May 2025.
+
+**The reason this could not keep waiting:** the AGPL community build carries **four
+unpatched HIGH advisories, two of them unauthenticated object write**, and every fix
+ships only in AIStor. That is an S3 endpoint inside the cluster that anyone who can
+reach it may be able to write to, with no upstream that will ever patch it.
+
+Full survey, with every upstream claim carrying the URL or API call it was read from:
+[`docs/research/2026-08-21-minio-is-archived-upstream-what-replaces-our-s3-and-seaweedfs-is-already-running.md`](../../../docs/research/2026-08-21-minio-is-archived-upstream-what-replaces-our-s3-and-seaweedfs-is-already-running.md).
+That document recommended sequencing the retirement *behind* the metal boot and
+behind a large-object A/B. **The maintainer overrode that sequencing on 2026-09-01**
+— "we should remove this now, i've asked to remove it several times since it's not
+supported" — and the unpatched-write advisories are why removing beats waiting.
+
+**Garage was eliminated on the API, not on taste:** it has no conditional writes, and
+upstream calls changing that *structurally impossible*.
+
+That is a security posture, not a staleness metric, and it is why
+`docs/CHART-CURRENCY.md` reads MinIO as `DORMANT` rather than `CURRENT` despite it
+being the one pin that was not behind — being at the newest version means nothing
+when upstream stopped publishing.
+
+**The migration was an endpoint change and nothing more.** MinIO, SeaweedFS and
+Garage serve the same S3 API surface, both backends already reconciled side by
+side, and SeaweedFS already provisioned all five shared buckets with the same dev
+identity. Loki's single endpoint and Mimir's three moved from
+`blob-store.object-store.svc:9000` to
+`blob-store-seaweedfs-all-in-one.object-store.svc:8333`.
+
+**SeaweedFS is Apache 2.0** — no AGPL exposure — and actively published: `4.45.0`
+landed 2026-09-01.
+
+### What this change does NOT prove
+
+The `included` gate proves SeaweedFS **deploys**. It does not prove Loki and Mimir
+read and write through its S3 gateway, and this file has always said edge-case
+differences vs AWS S3 exist. Both consumers were `Healthy` against MinIO before
+this change; the first `included` run after it is what re-establishes that against
+SeaweedFS. Treat a red Loki or Mimir there as this migration's finding, not as an
+unrelated flake.
+
+### Still pinned behind
+
+`seaweedfs` is at `4.33.0` and `4.45.0` is out. The bump is deliberately NOT taken
+here: removing a backend and jumping twelve minor versions in one change would make
+a failure ambiguous between the two. Bump it separately, after the consumers are
+proven green on the endpoint they now use.
+
+## Why SeaweedFS (the comparison that decided it, kept for the record)
 
 | | MinIO | SeaweedFS |
 |---|-------|-----------|

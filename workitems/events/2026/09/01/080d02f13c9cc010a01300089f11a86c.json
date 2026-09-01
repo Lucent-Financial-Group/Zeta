@@ -1,0 +1,14 @@
+{
+  "id": "080d02f13c9cc010a01300089f11a86c",
+  "at": "2026-09-01T18:07:27.128Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1F2F4WQ087G0R000ZWZXTB",
+    "type": "task",
+    "title": "Chart currency audit 2026-09-01: four charts whose UPSTREAM is dead or EOL, not merely behind",
+    "slug": "chart-currency-audit-2026-09-01-four-charts-whose-upstream-i",
+    "priority": "P2",
+    "filename": "081M1F2F4WQ087G0R000ZWZXTB-chart-currency-audit-2026-09-01-four-charts-whose-upstream-i.md"
+  }
+}

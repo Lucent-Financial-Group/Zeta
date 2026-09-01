@@ -189,7 +189,9 @@ describe("081M0N90CHX087G0R0034C7NPT — ace agrees with the two tools that rout
   test("ace loads the declaration at all (fails pre-fix: YAML parse failed: UnsupportedConstruct)", () => {
     const graph = loadDependencyGraphFromFile(GRAPH_ABS);
     expect(graph.kind).toBe("AppDependencyGraph");
-    expect(graph.spec.dependsOn.length).toBe(47);
+    // 47 -> 46 on 2026-09-01: `minio` was removed from the sync-wave graph
+    // (upstream project ARCHIVED; seaweedfs, already in the tree, is the store).
+    expect(graph.spec.dependsOn.length).toBe(46);
   });
 
   test("ace, the yaml package, lane-partition and derive-sync-waves read the SAME nodes and edges", () => {
@@ -210,7 +212,7 @@ describe("081M0N90CHX087G0R0034C7NPT — ace agrees with the two tools that rout
 
     const viaDerive = flattenFromNodes(readDeclaration(REPO_ROOT).spec.spec.dependsOn);
 
-    expect(viaAce.nodes.length).toBe(47);
+    expect(viaAce.nodes.length).toBe(46);
     expect(viaAce.edges.length).toBeGreaterThan(0);
 
     expect(viaAce).toEqual(viaYamlPkg);

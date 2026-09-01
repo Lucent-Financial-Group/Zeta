@@ -1672,7 +1672,7 @@ describe("findRungCoverage — the budgeted rung vs the committed rung", () => {
     // where ArgoCD's include glob has always reached, so `game-hosting/gmod` is in
     // the lane cohort now. The mutation below moves the CURRENT number by one
     // millicore, which is the property under test and is independent of its value.
-    const moved = live.acknowledgedRungBudgetGap.map((key) => key.replace("5231m", "5232m"));
+    const moved = live.acknowledgedRungBudgetGap.map((key) => key.replace("5131m", "5132m"));
     expect(moved).not.toEqual(live.acknowledgedRungBudgetGap);
     expect(findRungCoverage({ ...live, acknowledgedRungBudgetGap: moved }, resources).length).toBe(1);
   });

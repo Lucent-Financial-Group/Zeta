@@ -3,7 +3,7 @@
  *
  * Two halves, and both are load-bearing:
  *
- *   A. THE LIVE TREE. The real 47-Application roster is fully declared, every
+ *   A. THE LIVE TREE. The real 46-Application roster is fully declared, every
  *      edge is cited, no NEW order disagreement exists, and no registration has
  *      gone stale. These are the regression guards -- notably §"every shipped
  *      Application is declared", which is the twelve-missing-apps defect turned
@@ -81,9 +81,9 @@ describe("the live full-ai-cluster tree", () => {
     // an integer that silently keeps passing is how a lane stops asserting
     // what it claims to.
     const manifests = listApplicationManifests();
-    expect(manifests.length).toBe(47);
-    expect(readShippedApplications().length).toBe(47);
-    expect(audit.derivedWaves.size).toBe(47);
+    expect(manifests.length).toBe(46);
+    expect(readShippedApplications().length).toBe(46);
+    expect(audit.derivedWaves.size).toBe(46);
   });
 
   test("the eight known disagreements are all registered WITH a reason", () => {
@@ -148,7 +148,7 @@ describe("the live full-ai-cluster tree", () => {
   test("the declaration parses as ace's own AppDependencyGraph kind", () => {
     const { spec, nodes } = readDeclaration();
     expect(spec.kind).toBe("AppDependencyGraph");
-    expect(nodes.length).toBe(47);
+    expect(nodes.length).toBe(46);
     // The synthetic root `resolveGraph` injects must not collide with a chart.
     expect(nodes.some((n) => n.chart === spec.metadata.name)).toBe(false);
   });

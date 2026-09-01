@@ -1273,9 +1273,9 @@ describe("the checked-in resource ladder", () => {
   // and had never been counted. It requests a literal `cpu: "1", memory: "2Gi"`.
   // Both counts move together for the same reason as spire-crds: an Application
   // no exclude covers is BOTH shipped and applied.
-  test("the dev lane applies 38 of the 47 Applications", () => {
-    expect(applicationDirs()).toHaveLength(47);
-    expect(devLaneAppliedDirs()).toHaveLength(38);
+  test("the dev lane applies 37 of the 46 Applications", () => {
+    expect(applicationDirs()).toHaveLength(46);
+    expect(devLaneAppliedDirs()).toHaveLength(37);
     expect(applicationDirs()).toContain("game-hosting/gmod");
   });
 
@@ -1297,16 +1297,20 @@ describe("the checked-in resource ladder", () => {
   // again nothing was added and nothing was measured differently: the
   // enumerator started seeing an Application the cluster had always applied.
   // 4231 -> 5231, 11427 -> 13475, 8106 -> 9256, 19752 -> 21810. All four are
+  // ALSO MOVED 2026-09-01 by exactly minio's 100m / 512Mi, when the Application was
+  // removed for an archived upstream carrying unpatched write advisories:
+  // 5231 -> 5131, 13475 -> 12963, 9256 -> 9156, 21810 -> 21298. Nothing shrank; one
+  // Application left the tree. All four are
   // now cross-checked against a full render of every chart at this rung by
   // `rendered-resource-requests.ts`, which agrees to the millicore.
   test("metal is exactly what the manifests render today", () => {
     expect(verifyResourceProfileApplied(catalogue, "metal")).toEqual([]);
     const lane = resourceTotal(catalogue, "metal", devLaneAppliedDirs());
-    expect(lane.cpuMillis).toBe(5231);
-    expect(lane.memoryMib).toBe(13475);
+    expect(lane.cpuMillis).toBe(5131);
+    expect(lane.memoryMib).toBe(12963);
     const all = resourceTotal(catalogue, "metal", applicationDirs());
-    expect(all.cpuMillis).toBe(9256);
-    expect(all.memoryMib).toBe(21810);
+    expect(all.cpuMillis).toBe(9156);
+    expect(all.memoryMib).toBe(21298);
   });
 
   // Aaron 2026-08-20: "make things small enough to fit for disk and ram on the
@@ -1345,8 +1349,8 @@ describe("the checked-in resource ladder", () => {
   test("`dev` FITS AGAIN at 1081m — the rung reaches the raw manifests, and the governed rows are floored", () => {
     const budget = envelopeBudget(catalogue.envelope);
     const dev = resourceTotal(catalogue, "dev", devLaneAppliedDirs());
-    expect(dev.cpuMillis).toBe(1081);
-    expect(dev.memoryMib).toBe(8255);
+    expect(dev.cpuMillis).toBe(1056);
+    expect(dev.memoryMib).toBe(7871);
     expect(dev.cpuMillis).toBeLessThan(budget.cpuMillis);
     expect(dev.memoryMib).toBeLessThan(budget.memoryMib);
 
@@ -1371,8 +1375,8 @@ describe("the checked-in resource ladder", () => {
     // re-sized the hardware this rung exists to describe.
     expect(auditRunnerBudget(catalogue, "metal").length).toBeGreaterThan(0);
     const metal = resourceTotal(catalogue, "metal", devLaneAppliedDirs());
-    expect(metal.cpuMillis).toBe(5231);
-    expect(metal.memoryMib).toBe(13475);
+    expect(metal.cpuMillis).toBe(5131);
+    expect(metal.memoryMib).toBe(12963);
 
     // gmod is still COUNTED -- reachability is not exclusion. It contributes
     // 100m at `dev` where it used to contribute 1000m, and 1000m at `metal`
