@@ -167,7 +167,8 @@ Stack: `ReplaceProjectionWith::try_eagerly_replace_alias` <-
 rust-lang/rust#152789 (2026-02-18, `-Znext-solver` dyn object
 candidates). rust-analyzer#21605 is the same panic on `dyn Fn`
 `Output` projections. This instance is Feldera `StarJoinFuncTrait` +
-`FnOnce::Output` on a dyn object bound.
+`FnOnce::Output` on a dyn object bound, not the issue #152789
+minimized `Wrap<U: Foo>` repro -- same mechanism, heavier type.
 
 A coherent panic_fmt naming `StarJoinFuncTrait` is a compiler-bug
 class, not a bit-flip. The earlier LLVM SIGSEGVs on this Mac remain a
