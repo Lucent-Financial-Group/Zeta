@@ -69,9 +69,12 @@
       "namespace": "mimir",
       "chart": "mimir-distributed",
       "repoURL": "https://grafana.github.io/helm-charts",
-      "version": "5.5.1",
-      "valuesHash": "sha256:20b5e1ec59c2b0dc0f6649d9c51e27b9de386fc2dfc292bb07bda0caadaa5327",
+      "version": "6.2.0",
+      "valuesHash": "sha256:eafb929e6f0276fce2016bb3a453d29f1bcd80f7e2c9bf399c56f79d9717bc77",
       "services": {
+        "mimir-rollout-operator": [
+          443
+        ],
         "mimir-alertmanager-headless": [
           8080,
           9095,
@@ -93,6 +96,10 @@
           8080,
           9095
         ],
+        "mimir-gateway": [
+          80,
+          8080
+        ],
         "mimir-gossip-ring": [
           7946
         ],
@@ -112,8 +119,12 @@
           8080,
           9095
         ],
-        "mimir-nginx": [
-          80
+        "mimir-kafka-headless": [
+          9092,
+          9093
+        ],
+        "mimir-kafka": [
+          9092
         ],
         "mimir-overrides-exporter": [
           8080,
