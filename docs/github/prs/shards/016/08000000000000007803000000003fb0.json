@@ -1,0 +1,12 @@
+{
+  "pr_number": 16304,
+  "archive_path": "docs/history/pr-reviews/PR-16304-fix-081m1f1xzy4087g0r002z01fga-gha-probe-1-97-1-98-beta-dbsp-ice.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-01T22:09:29.837Z",
+  "schema_version": "v1",
+  "commit_sha": "81363d86768efd26d677d22030fe60d68067430b",
+  "title": "fix(081M1F1XZY4087G0R002Z01FGA): GHA probe 1.97/1.98/beta dbsp ICE",
+  "state": "MERGED",
+  "merged_at": "2026-09-01T22:08:52Z",
+  "head_ref": "feat/feldera-gha-rustc-probe"
+}
