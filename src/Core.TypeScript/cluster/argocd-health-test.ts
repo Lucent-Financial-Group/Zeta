@@ -1145,12 +1145,48 @@ export function devLonghornStorageClassAliasDeclared(repoRoot = REPO_ROOT): bool
  *   `appDir` must pass this explicitly or the two disagree about which tree
  *   they are describing.
  */
+/**
+ * Applications whose exclusion is PROVIDER-CONDITIONAL, with the provider that
+ * lifts each one.
+ *
+ * WHY THIS EXISTS. `cilium`'s recorded LIFTS WHEN reads "the app-of-apps
+ * included proof runs on that profile, so ArgoCD is reconciling a cluster whose
+ * CNI slot Cilium already owns." That condition became TRUE on 2026-08-31 when
+ * the k3d lane went green at `--scope included` -- and it could not fire,
+ * because this function had no provider argument and `discoverExpectedApplications`
+ * threaded none. A lift condition the mechanism cannot evaluate is a latent
+ * vacuity: it reads like a promise and can never be kept.
+ *
+ * `cilium-lb-ipam` IS DELIBERATELY NOT HERE, and that is the interesting half.
+ * Its lift is CONJUNCTIVE -- "`cilium` above lifts AND the pool is parameterised
+ * per substrate rather than pinned to one maintainer's subnet." The second
+ * conjunct is measurably false: `cilium-lb-ipam/ip-pool.yaml` pins
+ * 192.168.1.240-250, a home LAN range with no meaning on a hosted runner.
+ * Lifting it because its sibling lifted would satisfy half a condition and call
+ * it whole.
+ */
+const PROVIDER_CONDITIONAL_LIFTS: ReadonlyMap<string, Provider> = new Map([["cilium", "k3d"]]);
+
 export function isExcludedFromIncludedProof(
   dir: string,
   appText: string,
   appDir: string,
   aliasDeclared: boolean = devLonghornStorageClassAliasDeclared(),
+  /**
+   * The provider the proof is running on, when known.
+   *
+   * OPTIONAL AND DEFAULTS TO `null` ON PURPOSE. Sixteen call sites reach
+   * `discoverExpectedApplications`, several of them (`app-of-apps-discovery`,
+   * `image-footprint`) answering REPO-level questions that have no business
+   * knowing about a CI substrate. Threading a required provider through those
+   * would put a lane concern into functions that are not about lanes. `null`
+   * means "provider unknown", and an unknown provider lifts NOTHING -- the
+   * conservative direction, and identical to the behaviour before this change.
+   */
+  provider: Provider | null = null,
 ): boolean {
+  const liftsOn = PROVIDER_CONDITIONAL_LIFTS.get(dir);
+  if (liftsOn !== undefined && provider === liftsOn) return false;
   if (DEV_EXCLUDED_DIRS.has(dir)) return true;
   if (DEV_INCLUDED_PROOF_DEFERRED_DIRS.has(dir)) return true;
   if (yamlTreeRequestsReadWriteMany(appDir)) return true;
@@ -1440,7 +1476,11 @@ export function parseApplicationName(yamlText: string): string | null {
   return typeof name === "string" && name.length > 0 ? name : null;
 }
 
-export function discoverExpectedApplications(repoRoot = REPO_ROOT): readonly ExpectedApplication[] {
+export function discoverExpectedApplications(
+  repoRoot = REPO_ROOT,
+  /** See `isExcludedFromIncludedProof`'s `provider` note: optional, `null` lifts nothing. */
+  provider: Provider | null = null,
+): readonly ExpectedApplication[] {
   // Read the substrate condition ONCE for the whole roster: it is a property of
   // the repo, not of any one Application, and re-reading it per directory would
   // let two Applications in the same run disagree about whether dev has a
@@ -1466,7 +1506,7 @@ export function discoverExpectedApplications(repoRoot = REPO_ROOT): readonly Exp
         dir,
         name,
         path: appPath.slice(repoRoot.length + 1),
-        excludedFromDev: isExcludedFromIncludedProof(dir, appText, appDir, aliasDeclared),
+        excludedFromDev: isExcludedFromIncludedProof(dir, appText, appDir, aliasDeclared, provider),
         manualSync: classifySyncPolicy(appText).kind === "manual",
       },
     ];
@@ -1501,7 +1541,12 @@ export function buildPlan(options: CliOptions, repoRoot = REPO_ROOT): HarnessPla
 
   let expectedApplications: readonly ExpectedApplication[];
   try {
-    expectedApplications = discoverExpectedApplications(repoRoot);
+    // PASS THE PROVIDER. Without this the provider-conditional lift added for
+    // `cilium` would exist and never fire -- a capability with no consumer,
+    // which is the same defect (a lift condition nothing can evaluate) one
+    // layer up. `buildPlan` is the only caller that knows which substrate the
+    // proof is about; the repo-level callers keep the `null` default.
+    expectedApplications = discoverExpectedApplications(repoRoot, options.provider);
   } catch (error) {
     return {
       kind: "ApplicationManifestInvalid",

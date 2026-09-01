@@ -241,7 +241,7 @@ export function bringUpKindCiCluster(ports: DevClusterPorts, options: KindCiBrin
   }
 
   controlPlane.waitForCrdEstablished("applications.argoproj.io", 120);
-  appCatalog.applyRootDevCatalog(options.gitRef, options.gitRepoUrl);
+  appCatalog.applyRootDevCatalog(options.gitRef, options.gitRepoUrl, "kind");
 }
 
 export function tearDownKindCluster(ports: DevClusterPorts, clusterName: string): void {
@@ -433,7 +433,10 @@ export function bringUpK3dDevCluster(ports: DevClusterPorts, options: K3dDevBrin
   applyDevBootstrapSecrets(ports);
   applyDevRegistryPullSecret(ports, options.env ?? process.env);
 
-  appCatalog.applyRootDevCatalog(options.gitRef, options.gitRepoUrl);
+  // PROVIDER PASSED. Without it the catalogue keeps the static exclude glob
+  // while the harness asserts the k3d-lifted roster -- asserted-but-unapplied,
+  // which hangs for the full timeout and blames the Application.
+  appCatalog.applyRootDevCatalog(options.gitRef, options.gitRepoUrl, "k3d");
 }
 
 export function tearDownK3dDevCluster(ports: DevClusterPorts, clusterName: string): void {
