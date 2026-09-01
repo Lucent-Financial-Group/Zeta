@@ -1,6 +1,6 @@
 {
   "measuredOn": "2026-09-01",
-  "appsDiscovered": 54,
+  "appsDiscovered": 53,
   "charts": {
     "code.forgejo.org/forgejo-helm|forgejo|17.1.5": {
       "literal": {
@@ -3405,6 +3405,301 @@
       "dynamic": [],
       "charts": ["<root>=argo-rollouts@2.39.5"]
     },
+    "https://argoproj.github.io/argo-helm|argo-rollouts|2.43.0": {
+      "literal": {
+        "apiVersionOverrides": {
+          "ingress": {}
+        },
+        "clusterInstall": {},
+        "containerSecurityContext": {},
+        "controller": {
+          "affinity": {},
+          "albTagKeyResourceID": {},
+          "awsTargetGroupBindingAPIVersion": {},
+          "awsVerifyTargetGroup": {},
+          "component": {},
+          "containerPorts": {
+            "healthz": {},
+            "metrics": {}
+          },
+          "createClusterRole": {},
+          "createConfigmap": {},
+          "deploymentAnnotations": {},
+          "deploymentLabels": {},
+          "extraArgs": {},
+          "extraContainers": {},
+          "extraEnv": {},
+          "image": {
+            "pullPolicy": {},
+            "registry": {},
+            "repository": {},
+            "tag": {}
+          },
+          "initContainers": {},
+          "lifecycle": {},
+          "livenessProbe": {},
+          "logging": {
+            "format": {},
+            "kloglevel": {},
+            "level": {}
+          },
+          "metricProviderPlugins": {},
+          "metrics": {
+            "enabled": {},
+            "service": {
+              "annotations": {},
+              "port": {},
+              "portName": {}
+            },
+            "serviceMonitor": {
+              "additionalAnnotations": {},
+              "additionalLabels": {},
+              "enabled": {},
+              "metricRelabelings": {},
+              "namespace": {},
+              "relabelings": {},
+              "tlsConfig": {}
+            }
+          },
+          "nodeSelector": {},
+          "pdb": {
+            "annotations": {},
+            "enabled": {},
+            "labels": {},
+            "maxUnavailable": {},
+            "minAvailable": {}
+          },
+          "podAnnotations": {},
+          "podLabels": {},
+          "pprofAddress": {},
+          "priorityClassName": {},
+          "readinessProbe": {},
+          "replicas": {},
+          "resources": {},
+          "selfServiceNotification": {},
+          "stepPlugins": {},
+          "terminationGracePeriodSeconds": {},
+          "tolerations": {},
+          "topologySpreadConstraints": {},
+          "trafficRouterPlugins": {},
+          "volumeMounts": {},
+          "volumes": {}
+        },
+        "crdAnnotations": {},
+        "createClusterAggregateRoles": {},
+        "dashboard": {
+          "affinity": {},
+          "component": {},
+          "containerSecurityContext": {},
+          "createClusterRole": {},
+          "deploymentAnnotations": {},
+          "deploymentLabels": {},
+          "enabled": {},
+          "extraArgs": {},
+          "extraEnv": {},
+          "httproute": {
+            "annotations": {},
+            "enabled": {},
+            "hostnames": {},
+            "labels": {},
+            "parentRefs": {},
+            "rules": {}
+          },
+          "image": {
+            "pullPolicy": {},
+            "registry": {},
+            "repository": {},
+            "tag": {}
+          },
+          "ingress": {
+            "annotations": {},
+            "enabled": {},
+            "extraPaths": {},
+            "hosts": {},
+            "ingressClassName": {},
+            "labels": {},
+            "pathType": {},
+            "paths": {},
+            "tls": {}
+          },
+          "logging": {
+            "kloglevel": {},
+            "level": {}
+          },
+          "nodeSelector": {},
+          "pdb": {
+            "annotations": {},
+            "enabled": {},
+            "labels": {},
+            "maxUnavailable": {},
+            "minAvailable": {}
+          },
+          "podAnnotations": {},
+          "podLabels": {},
+          "podSecurityContext": {},
+          "priorityClassName": {},
+          "readonly": {},
+          "replicas": {},
+          "resources": {},
+          "rootPath": {},
+          "service": {
+            "annotations": {},
+            "externalIPs": {},
+            "labels": {},
+            "loadBalancerClass": {},
+            "loadBalancerIP": {},
+            "loadBalancerSourceRanges": {},
+            "nodePort": {},
+            "port": {},
+            "portName": {},
+            "targetPort": {},
+            "type": {}
+          },
+          "serviceAccount": {
+            "annotations": {},
+            "create": {},
+            "name": {}
+          },
+          "tolerations": {},
+          "topologySpreadConstraints": {},
+          "volumeMounts": {},
+          "volumes": {}
+        },
+        "extraObjects": {},
+        "fullnameOverride": {},
+        "global": {},
+        "imagePullSecrets": {},
+        "installCRDs": {},
+        "keepCRDs": {},
+        "kubeVersionOverride": {},
+        "nameOverride": {},
+        "namespaceOverride": {},
+        "notifications": {
+          "configmap": {
+            "create": {}
+          },
+          "notifiers": {},
+          "secret": {
+            "annotations": {},
+            "create": {},
+            "items": {}
+          },
+          "subscriptions": {},
+          "templates": {},
+          "triggers": {}
+        },
+        "podAnnotations": {},
+        "podLabels": {},
+        "podSecurityContext": {},
+        "providerRBAC": {
+          "additionalRules": {},
+          "enabled": {},
+          "providers": {
+            "ambassador": {},
+            "apisix": {},
+            "awsAppMesh": {},
+            "awsLoadBalancerController": {},
+            "contour": {},
+            "gatewayAPI": {},
+            "glooPlatform": {},
+            "istio": {},
+            "smi": {},
+            "traefik": {}
+          }
+        },
+        "serviceAccount": {
+          "annotations": {},
+          "create": {},
+          "name": {}
+        },
+        "serviceAnnotations": {}
+      },
+      "open": [
+        "containerSecurityContext",
+        "controller.affinity",
+        "controller.deploymentAnnotations",
+        "controller.deploymentLabels",
+        "controller.extraArgs",
+        "controller.extraContainers",
+        "controller.extraEnv",
+        "controller.initContainers",
+        "controller.lifecycle",
+        "controller.livenessProbe",
+        "controller.metricProviderPlugins",
+        "controller.metrics.service.annotations",
+        "controller.metrics.serviceMonitor.additionalAnnotations",
+        "controller.metrics.serviceMonitor.additionalLabels",
+        "controller.metrics.serviceMonitor.metricRelabelings",
+        "controller.metrics.serviceMonitor.relabelings",
+        "controller.metrics.serviceMonitor.tlsConfig",
+        "controller.nodeSelector",
+        "controller.pdb.annotations",
+        "controller.pdb.labels",
+        "controller.podAnnotations",
+        "controller.podLabels",
+        "controller.readinessProbe",
+        "controller.resources",
+        "controller.stepPlugins",
+        "controller.tolerations",
+        "controller.topologySpreadConstraints",
+        "controller.trafficRouterPlugins",
+        "controller.volumeMounts",
+        "controller.volumes",
+        "crdAnnotations",
+        "dashboard.affinity",
+        "dashboard.containerSecurityContext",
+        "dashboard.deploymentAnnotations",
+        "dashboard.deploymentLabels",
+        "dashboard.extraArgs",
+        "dashboard.extraEnv",
+        "dashboard.httproute.annotations",
+        "dashboard.httproute.hostnames",
+        "dashboard.httproute.labels",
+        "dashboard.httproute.parentRefs",
+        "dashboard.httproute.rules",
+        "dashboard.ingress.annotations",
+        "dashboard.ingress.extraPaths",
+        "dashboard.ingress.hosts",
+        "dashboard.ingress.labels",
+        "dashboard.ingress.pathType",
+        "dashboard.ingress.paths",
+        "dashboard.ingress.tls",
+        "dashboard.nodeSelector",
+        "dashboard.pdb.annotations",
+        "dashboard.pdb.labels",
+        "dashboard.podAnnotations",
+        "dashboard.podLabels",
+        "dashboard.podSecurityContext",
+        "dashboard.resources",
+        "dashboard.service.annotations",
+        "dashboard.service.externalIPs",
+        "dashboard.service.labels",
+        "dashboard.service.loadBalancerSourceRanges",
+        "dashboard.service.port",
+        "dashboard.serviceAccount.annotations",
+        "dashboard.tolerations",
+        "dashboard.topologySpreadConstraints",
+        "dashboard.volumeMounts",
+        "dashboard.volumes",
+        "extraObjects",
+        "global",
+        "imagePullSecrets",
+        "notifications.notifiers",
+        "notifications.secret.annotations",
+        "notifications.secret.items",
+        "notifications.subscriptions",
+        "notifications.templates",
+        "notifications.triggers",
+        "podAnnotations",
+        "podLabels",
+        "podSecurityContext",
+        "providerRBAC.additionalRules",
+        "serviceAccount.annotations",
+        "serviceAnnotations"
+      ],
+      "dynamic": [],
+      "charts": ["<root>=argo-rollouts@2.43.0"]
+    },
     "https://argoproj.github.io/argo-helm|argo-workflows|0.42.5": {
       "literal": {
         "apiVersionOverrides": {
@@ -5072,7 +5367,7 @@
       "dynamic": [],
       "charts": ["<root>=common@2.28.0", "<root>=redis@20.5.0"]
     },
-    "https://charts.cockroachdb.com/|cockroachdb|14.0.5": {
+    "https://charts.cockroachdb.com/|cockroachdb|22.0.3": {
       "literal": {
         "clusterDomain": {},
         "conf": {
@@ -5085,7 +5380,15 @@
           "locality": {},
           "log": {
             "config": {},
-            "enabled": {}
+            "enabled": {},
+            "persistentVolume": {
+              "annotations": {},
+              "enabled": {},
+              "labels": {},
+              "path": {},
+              "size": {},
+              "storageClass": {}
+            }
           },
           "logtostderr": {},
           "max-sql-memory": {},
@@ -5095,12 +5398,25 @@
           "sql-audit-dir": {},
           "store": {
             "attrs": {},
+            "count": {},
             "enabled": {},
             "size": {},
             "type": {}
+          },
+          "wal-failover": {
+            "persistentVolume": {
+              "annotations": {},
+              "enabled": {},
+              "labels": {},
+              "path": {},
+              "size": {},
+              "storageClass": {}
+            },
+            "value": {}
           }
         },
         "fullnameOverride": {},
+        "godebug": {},
         "iap": {
           "clientId": {},
           "clientSecret": {},
@@ -5114,6 +5430,7 @@
         },
         "ingress": {
           "annotations": {},
+          "className": {},
           "enabled": {},
           "hosts": {},
           "labels": {},
@@ -5157,6 +5474,78 @@
             "grpc": {},
             "http": {}
           }
+        },
+        "operator": {
+          "affinity": {},
+          "certificates": {
+            "externalCertificates": {},
+            "extraNodeAltNames": {}
+          },
+          "clusterSettings": {},
+          "dataStore": {
+            "volumeClaimTemplate": {
+              "metadata": {},
+              "spec": {
+                "accessModes": {},
+                "resources": {
+                  "requests": {
+                    "storage": {}
+                  }
+                },
+                "volumeMode": {}
+              }
+            }
+          },
+          "enabled": {},
+          "env": {},
+          "extras": {
+            "dnsutils": {}
+          },
+          "flags": {
+            "--external-io-dir": {}
+          },
+          "fullnameOverride": {},
+          "image": {
+            "name": {},
+            "pullPolicy": {}
+          },
+          "localityLabels": {},
+          "loggingConf": {},
+          "loggingConfigMapName": {},
+          "nameOverride": {},
+          "nodeSelector": {},
+          "podAnnotations": {},
+          "podLabels": {
+            "app": {
+              "kubernetes": {
+                "io/component": {}
+              }
+            }
+          },
+          "rbac": {
+            "clusterRules": {},
+            "rules": {},
+            "serviceAccountName": {}
+          },
+          "regions": {},
+          "resources": {},
+          "rollingRestartDelay": {},
+          "service": {
+            "ports": {},
+            "public": {
+              "type": {}
+            }
+          },
+          "sideCars": {
+            "containers": {},
+            "initContainers": {},
+            "volumes": {}
+          },
+          "terminationGracePeriod": {},
+          "tlsEnabled": {},
+          "tolerations": {},
+          "topologySpreadConstraints": {},
+          "walFailoverSpec": {}
         },
         "prometheus": {
           "enabled": {}
@@ -5245,6 +5634,7 @@
             "storageClass": {}
           }
         },
+        "timestamp": {},
         "tls": {
           "certs": {
             "caSecret": {},
@@ -5265,6 +5655,7 @@
             "nodeSecret": {},
             "provided": {},
             "selfSigner": {
+              "additionalSANs": {},
               "caCertDuration": {},
               "caCertExpiryWindow": {},
               "caProvided": {},
@@ -5289,6 +5680,7 @@
             "image": {},
             "resources": {}
           },
+          "enableSighupRotation": {},
           "enabled": {},
           "selfSigner": {
             "affinity": {},
@@ -5304,13 +5696,29 @@
             "nodeSelector": {},
             "tolerations": {}
           }
+        },
+        "visus": {
+          "args": {},
+          "bind_port": {},
+          "enabled": {},
+          "image": {
+            "name": {},
+            "pullPolicy": {},
+            "tag": {}
+          },
+          "insecure": {}
         }
       },
       "open": [
         "conf.attrs",
         "conf.join",
         "conf.log.config",
+        "conf.log.persistentVolume.annotations",
+        "conf.log.persistentVolume.labels",
+        "conf.wal-failover.persistentVolume.annotations",
+        "conf.wal-failover.persistentVolume.labels",
         "global",
+        "godebug",
         "image.credentials",
         "ingress.annotations",
         "ingress.hosts",
@@ -5330,6 +5738,25 @@
         "labels",
         "networkPolicy.ingress.grpc",
         "networkPolicy.ingress.http",
+        "operator.affinity",
+        "operator.certificates.externalCertificates",
+        "operator.certificates.extraNodeAltNames",
+        "operator.dataStore.volumeClaimTemplate.metadata",
+        "operator.dataStore.volumeClaimTemplate.spec.accessModes",
+        "operator.env",
+        "operator.localityLabels",
+        "operator.nodeSelector",
+        "operator.podAnnotations",
+        "operator.rbac.clusterRules",
+        "operator.rbac.rules",
+        "operator.regions",
+        "operator.service.ports",
+        "operator.sideCars.containers",
+        "operator.sideCars.initContainers",
+        "operator.sideCars.volumes",
+        "operator.tolerations",
+        "operator.topologySpreadConstraints",
+        "operator.walFailoverSpec",
         "service.discovery.annotations",
         "service.ports",
         "service.public.annotations",
@@ -5354,16 +5781,18 @@
         "statefulset.volumes",
         "storage.persistentVolume.annotations",
         "storage.persistentVolume.labels",
+        "tls.certs.selfSigner.additionalSANs",
         "tls.certs.selfSigner.svcAccountAnnotations",
         "tls.selfSigner.affinity",
         "tls.selfSigner.annotations",
         "tls.selfSigner.image.credentials",
         "tls.selfSigner.labels",
         "tls.selfSigner.nodeSelector",
-        "tls.selfSigner.tolerations"
+        "tls.selfSigner.tolerations",
+        "visus.args"
       ],
       "dynamic": ["conf"],
-      "charts": ["<root>=cockroachdb@14.0.5"]
+      "charts": ["<root>=cockroachdb@22.0.3"]
     },
     "https://charts.cockroachdb.com|cockroachdb|13.0.1": {
       "literal": {
@@ -5727,7 +6156,7 @@
       "dynamic": [],
       "charts": ["<root>=local-path-provisioner@0.0.28"]
     },
-    "https://charts.external-secrets.io|external-secrets|0.10.7": {
+    "https://charts.external-secrets.io|external-secrets|2.10.0": {
       "literal": {
         "affinity": {},
         "bitwarden-sdk-server": {
@@ -5738,7 +6167,11 @@
             "minReplicas": {},
             "targetCPUUtilizationPercentage": {}
           },
+          "commonLabels": {},
+          "deploymentAnnotations": {},
+          "deploymentLabels": {},
           "enabled": {},
+          "extraEnv": {},
           "fullnameOverride": {},
           "image": {
             "pullPolicy": {},
@@ -5746,6 +6179,7 @@
             "tag": {},
             "tls": {
               "enabled": {},
+              "secretName": {},
               "volumeMounts": {},
               "volumes": {}
             }
@@ -5759,19 +6193,26 @@
             "tls": {}
           },
           "nameOverride": {},
+          "namespaceOverride": {},
           "nodeSelector": {},
           "podAnnotations": {},
+          "podDnsConfig": {},
+          "podDnsPolicy": {},
+          "podLabels": {},
           "podSecurityContext": {},
           "replicaCount": {},
           "resources": {},
           "securityContext": {},
           "service": {
+            "annotations": {},
+            "labels": {},
             "port": {},
             "type": {}
           },
           "serviceAccount": {
             "annotations": {},
             "create": {},
+            "labels": {},
             "name": {}
           },
           "tolerations": {}
@@ -5780,12 +6221,15 @@
           "affinity": {},
           "create": {},
           "deploymentAnnotations": {},
+          "enablePartialCache": {},
           "extraArgs": {},
           "extraEnv": {},
+          "extraInitContainers": {},
           "extraVolumeMounts": {},
           "extraVolumes": {},
-          "fullnameOverride": {},
+          "hostAliases": {},
           "hostNetwork": {},
+          "hostUsers": {},
           "image": {
             "flavour": {},
             "pullPolicy": {},
@@ -5793,13 +6237,31 @@
             "tag": {}
           },
           "imagePullSecrets": {},
+          "livenessProbe": {
+            "enabled": {},
+            "failureThreshold": {},
+            "initialDelaySeconds": {},
+            "periodSeconds": {},
+            "port": {},
+            "successThreshold": {},
+            "timeoutSeconds": {}
+          },
           "log": {
             "level": {},
             "timeEncoding": {}
           },
           "metrics": {
             "listen": {
-              "port": {}
+              "auth": {
+                "enabled": {}
+              },
+              "port": {},
+              "secure": {
+                "certDir": {},
+                "certFile": {},
+                "enabled": {},
+                "keyFile": {}
+              }
             },
             "service": {
               "annotations": {},
@@ -5807,13 +6269,18 @@
               "port": {}
             }
           },
-          "nameOverride": {},
+          "networkPolicy": {
+            "egress": {},
+            "enabled": {},
+            "ingress": {}
+          },
           "nodeSelector": {},
           "podAnnotations": {},
           "podDisruptionBudget": {
             "enabled": {},
             "maxUnavailable": {},
-            "minAvailable": {}
+            "minAvailable": {},
+            "nameOverride": {}
           },
           "podLabels": {},
           "podSecurityContext": {
@@ -5825,12 +6292,20 @@
           },
           "readinessProbe": {
             "address": {},
-            "port": {}
+            "enabled": {},
+            "failureThreshold": {},
+            "initialDelaySeconds": {},
+            "periodSeconds": {},
+            "port": {},
+            "successThreshold": {},
+            "timeoutSeconds": {}
           },
           "replicaCount": {},
           "requeueInterval": {},
           "resources": {},
           "revisionHistoryLimit": {},
+          "runtimeClassName": {},
+          "schedulerName": {},
           "securityContext": {
             "allowPrivilegeEscalation": {},
             "capabilities": {
@@ -5851,6 +6326,18 @@
             "extraLabels": {},
             "name": {}
           },
+          "startupProbe": {
+            "enabled": {},
+            "failureThreshold": {},
+            "initialDelaySeconds": {},
+            "periodSeconds": {}
+          },
+          "strategy": {},
+          "tls": {
+            "ciphers": {},
+            "curvePreferences": {},
+            "minVersion": {}
+          },
           "tolerations": {},
           "topologySpreadConstraints": {}
         },
@@ -5863,23 +6350,42 @@
             "enabled": {}
           },
           "createClusterExternalSecret": {},
+          "createClusterGenerator": {},
+          "createClusterPushSecret": {},
           "createClusterSecretStore": {},
-          "createPushSecret": {}
+          "createPushSecret": {},
+          "createSecretStore": {},
+          "unsafeServeV1Beta1": {}
         },
         "createOperator": {},
         "deploymentAnnotations": {},
         "dnsConfig": {},
         "dnsPolicy": {},
+        "enableHTTP2": {},
         "extendedMetricLabels": {},
         "extraArgs": {},
         "extraContainers": {},
         "extraEnv": {},
+        "extraInitContainers": {},
         "extraObjects": {},
         "extraVolumeMounts": {},
         "extraVolumes": {},
         "fullnameOverride": {},
+        "genericTargets": {
+          "enabled": {},
+          "resources": {}
+        },
         "global": {},
+        "grafanaDashboard": {
+          "annotations": {},
+          "enabled": {},
+          "extraLabels": {},
+          "sidecarLabel": {},
+          "sidecarLabelValue": {}
+        },
+        "hostAliases": {},
         "hostNetwork": {},
+        "hostUsers": {},
         "image": {
           "flavour": {},
           "pullPolicy": {},
@@ -5889,13 +6395,42 @@
         "imagePullSecrets": {},
         "installCRDs": {},
         "leaderElect": {},
+        "leaderElectionID": {},
+        "leaderElectionLeaseDuration": {},
+        "leaderElectionRenewDeadline": {},
+        "leaderElectionRetryPeriod": {},
+        "livenessProbe": {
+          "enabled": {},
+          "spec": {
+            "address": {},
+            "failureThreshold": {},
+            "httpGet": {
+              "path": {},
+              "port": {}
+            },
+            "initialDelaySeconds": {},
+            "periodSeconds": {},
+            "port": {},
+            "successThreshold": {},
+            "timeoutSeconds": {}
+          }
+        },
         "log": {
           "level": {},
           "timeEncoding": {}
         },
         "metrics": {
           "listen": {
-            "port": {}
+            "auth": {
+              "enabled": {}
+            },
+            "port": {},
+            "secure": {
+              "certDir": {},
+              "certFile": {},
+              "enabled": {},
+              "keyFile": {}
+            }
           },
           "service": {
             "annotations": {},
@@ -5905,12 +6440,19 @@
         },
         "nameOverride": {},
         "namespaceOverride": {},
+        "networkPolicy": {
+          "egress": {},
+          "enabled": {},
+          "ingress": {}
+        },
         "nodeSelector": {},
+        "openshiftFinalizers": {},
         "podAnnotations": {},
         "podDisruptionBudget": {
           "enabled": {},
           "maxUnavailable": {},
-          "minAvailable": {}
+          "minAvailable": {},
+          "nameOverride": {}
         },
         "podLabels": {},
         "podSecurityContext": {
@@ -5919,17 +6461,30 @@
         "podSpecExtra": {},
         "priorityClassName": {},
         "processClusterExternalSecret": {},
+        "processClusterGenerator": {},
+        "processClusterPushSecret": {},
         "processClusterStore": {},
         "processPushSecret": {},
+        "processSecretStore": {},
         "rbac": {
+          "aggregateToAdmin": {},
+          "aggregateToEdit": {},
+          "aggregateToView": {},
           "create": {},
+          "serviceAccountTokenCreate": {},
           "servicebindings": {
             "create": {}
           }
         },
+        "readinessProbe": {
+          "enabled": {},
+          "spec": {}
+        },
         "replicaCount": {},
         "resources": {},
         "revisionHistoryLimit": {},
+        "runtimeClassName": {},
+        "schedulerName": {},
         "scopedNamespace": {},
         "scopedRBAC": {},
         "securityContext": {
@@ -5964,12 +6519,26 @@
           "metricRelabelings": {},
           "namespace": {},
           "relabelings": {},
+          "renderMode": {},
           "scrapeTimeout": {}
+        },
+        "storeRequeueInterval": {},
+        "strategy": {},
+        "systemAuthDelegator": {},
+        "tls": {
+          "ciphers": {},
+          "curvePreferences": {},
+          "minVersion": {}
         },
         "tolerations": {},
         "topologySpreadConstraints": {},
+        "vault": {
+          "enableTokenCache": {},
+          "tokenCacheSize": {}
+        },
         "webhook": {
           "affinity": {},
+          "annotations": {},
           "certCheckInterval": {},
           "certDir": {},
           "certManager": {
@@ -5979,7 +6548,10 @@
               "create": {},
               "duration": {},
               "issuerRef": {},
-              "renewBefore": {}
+              "privateKey": {},
+              "renewBefore": {},
+              "revisionHistoryLimit": {},
+              "signatureAlgorithm": {}
             },
             "enabled": {}
           },
@@ -5987,11 +6559,13 @@
           "deploymentAnnotations": {},
           "extraArgs": {},
           "extraEnv": {},
+          "extraInitContainers": {},
           "extraVolumeMounts": {},
           "extraVolumes": {},
           "failurePolicy": {},
-          "fullnameOverride": {},
+          "hostAliases": {},
           "hostNetwork": {},
+          "hostUsers": {},
           "image": {
             "flavour": {},
             "pullPolicy": {},
@@ -5999,6 +6573,15 @@
             "tag": {}
           },
           "imagePullSecrets": {},
+          "livenessProbe": {
+            "enabled": {},
+            "failureThreshold": {},
+            "initialDelaySeconds": {},
+            "periodSeconds": {},
+            "port": {},
+            "successThreshold": {},
+            "timeoutSeconds": {}
+          },
           "log": {
             "level": {},
             "timeEncoding": {}
@@ -6006,7 +6589,16 @@
           "lookaheadInterval": {},
           "metrics": {
             "listen": {
-              "port": {}
+              "auth": {
+                "enabled": {}
+              },
+              "port": {},
+              "secure": {
+                "certDir": {},
+                "certFile": {},
+                "enabled": {},
+                "keyFile": {}
+              }
             },
             "service": {
               "annotations": {},
@@ -6014,13 +6606,18 @@
               "port": {}
             }
           },
-          "nameOverride": {},
+          "networkPolicy": {
+            "egress": {},
+            "enabled": {},
+            "ingress": {}
+          },
           "nodeSelector": {},
           "podAnnotations": {},
           "podDisruptionBudget": {
             "enabled": {},
             "maxUnavailable": {},
-            "minAvailable": {}
+            "minAvailable": {},
+            "nameOverride": {}
           },
           "podLabels": {},
           "podSecurityContext": {
@@ -6028,16 +6625,21 @@
           },
           "port": {},
           "priorityClassName": {},
-          "rbac": {
-            "create": {}
-          },
           "readinessProbe": {
             "address": {},
-            "port": {}
+            "enabled": {},
+            "failureThreshold": {},
+            "initialDelaySeconds": {},
+            "periodSeconds": {},
+            "port": {},
+            "successThreshold": {},
+            "timeoutSeconds": {}
           },
           "replicaCount": {},
           "resources": {},
           "revisionHistoryLimit": {},
+          "runtimeClassName": {},
+          "schedulerName": {},
           "secretAnnotations": {},
           "securityContext": {
             "allowPrivilegeEscalation": {},
@@ -6052,12 +6654,31 @@
               "type": {}
             }
           },
+          "service": {
+            "annotations": {},
+            "enabled": {},
+            "labels": {},
+            "loadBalancerIP": {},
+            "type": {}
+          },
           "serviceAccount": {
             "annotations": {},
             "automount": {},
             "create": {},
             "extraLabels": {},
             "name": {}
+          },
+          "startupProbe": {
+            "enabled": {},
+            "failureThreshold": {},
+            "initialDelaySeconds": {},
+            "periodSeconds": {}
+          },
+          "strategy": {},
+          "tls": {
+            "ciphers": {},
+            "curvePreferences": {},
+            "minVersion": {}
           },
           "tolerations": {},
           "topologySpreadConstraints": {}
@@ -6066,6 +6687,10 @@
       "open": [
         "affinity",
         "bitwarden-sdk-server.affinity",
+        "bitwarden-sdk-server.commonLabels",
+        "bitwarden-sdk-server.deploymentAnnotations",
+        "bitwarden-sdk-server.deploymentLabels",
+        "bitwarden-sdk-server.extraEnv",
         "bitwarden-sdk-server.image.tls.volumeMounts",
         "bitwarden-sdk-server.image.tls.volumes",
         "bitwarden-sdk-server.imagePullSecrets",
@@ -6074,19 +6699,28 @@
         "bitwarden-sdk-server.ingress.tls",
         "bitwarden-sdk-server.nodeSelector",
         "bitwarden-sdk-server.podAnnotations",
+        "bitwarden-sdk-server.podDnsConfig",
+        "bitwarden-sdk-server.podLabels",
         "bitwarden-sdk-server.podSecurityContext",
         "bitwarden-sdk-server.resources",
         "bitwarden-sdk-server.securityContext",
+        "bitwarden-sdk-server.service.annotations",
+        "bitwarden-sdk-server.service.labels",
         "bitwarden-sdk-server.serviceAccount.annotations",
+        "bitwarden-sdk-server.serviceAccount.labels",
         "bitwarden-sdk-server.tolerations",
         "certController.affinity",
         "certController.deploymentAnnotations",
         "certController.extraArgs",
         "certController.extraEnv",
+        "certController.extraInitContainers",
         "certController.extraVolumeMounts",
         "certController.extraVolumes",
+        "certController.hostAliases",
         "certController.imagePullSecrets",
         "certController.metrics.service.annotations",
+        "certController.networkPolicy.egress",
+        "certController.networkPolicy.ingress",
         "certController.nodeSelector",
         "certController.podAnnotations",
         "certController.podLabels",
@@ -6094,6 +6728,8 @@
         "certController.securityContext.capabilities.drop",
         "certController.serviceAccount.annotations",
         "certController.serviceAccount.extraLabels",
+        "certController.strategy",
+        "certController.tls.curvePreferences",
         "certController.tolerations",
         "certController.topologySpreadConstraints",
         "commonLabels",
@@ -6103,16 +6739,24 @@
         "extraArgs",
         "extraContainers",
         "extraEnv",
+        "extraInitContainers",
         "extraObjects",
         "extraVolumeMounts",
         "extraVolumes",
+        "genericTargets.resources",
         "global",
+        "grafanaDashboard.annotations",
+        "grafanaDashboard.extraLabels",
+        "hostAliases",
         "imagePullSecrets",
         "metrics.service.annotations",
+        "networkPolicy.egress",
+        "networkPolicy.ingress",
         "nodeSelector",
         "podAnnotations",
         "podLabels",
         "podSpecExtra",
+        "readinessProbe.spec",
         "resources",
         "securityContext.capabilities.drop",
         "service.ipFamilies",
@@ -6121,31 +6765,1086 @@
         "serviceMonitor.additionalLabels",
         "serviceMonitor.metricRelabelings",
         "serviceMonitor.relabelings",
+        "serviceMonitor.renderMode",
+        "strategy",
+        "tls.curvePreferences",
         "tolerations",
         "topologySpreadConstraints",
         "webhook.affinity",
+        "webhook.annotations",
         "webhook.certManager.cert.annotations",
         "webhook.certManager.cert.issuerRef",
+        "webhook.certManager.cert.privateKey",
         "webhook.deploymentAnnotations",
         "webhook.extraArgs",
         "webhook.extraEnv",
+        "webhook.extraInitContainers",
         "webhook.extraVolumeMounts",
         "webhook.extraVolumes",
+        "webhook.hostAliases",
         "webhook.imagePullSecrets",
         "webhook.metrics.service.annotations",
+        "webhook.networkPolicy.egress",
+        "webhook.networkPolicy.ingress",
         "webhook.nodeSelector",
         "webhook.podAnnotations",
         "webhook.podLabels",
         "webhook.resources",
         "webhook.secretAnnotations",
         "webhook.securityContext.capabilities.drop",
+        "webhook.service.annotations",
+        "webhook.service.labels",
         "webhook.serviceAccount.annotations",
         "webhook.serviceAccount.extraLabels",
+        "webhook.strategy",
+        "webhook.tls.curvePreferences",
         "webhook.tolerations",
         "webhook.topologySpreadConstraints"
       ],
       "dynamic": [],
-      "charts": ["<root>=external-secrets@0.10.7", "bitwarden-sdk-server=bitwarden-sdk-server@v0.3.1"]
+      "charts": ["<root>=external-secrets@2.10.0", "bitwarden-sdk-server=bitwarden-sdk-server@v0.6.0"]
+    },
+    "https://charts.gabe565.com|headscale|0.16.0": {
+      "literal": {
+        "additionalContainers": {},
+        "addons": {
+          "codeserver": {
+            "args": {},
+            "enabled": {},
+            "env": {},
+            "git": {
+              "deployKey": {},
+              "deployKeyBase64": {},
+              "deployKeySecret": {}
+            },
+            "image": {
+              "pullPolicy": {},
+              "repository": {},
+              "tag": {}
+            },
+            "ingress": {
+              "annotations": {},
+              "enabled": {},
+              "hosts": {},
+              "ingressClassName": {},
+              "labels": {},
+              "tls": {}
+            },
+            "pullPolicy": {},
+            "resources": {},
+            "securityContext": {
+              "runAsUser": {}
+            },
+            "service": {},
+            "volumeMounts": {},
+            "workingDir": {}
+          },
+          "netshoot": {
+            "enabled": {},
+            "env": {},
+            "image": {
+              "pullPolicy": {},
+              "repository": {},
+              "tag": {}
+            },
+            "pullPolicy": {},
+            "resources": {},
+            "securityContext": {
+              "capabilities": {
+                "add": {}
+              }
+            }
+          },
+          "vpn": {
+            "additionalVolumeMounts": {},
+            "args": {},
+            "configFile": {},
+            "configFileSecret": {},
+            "enabled": {},
+            "env": {},
+            "envFrom": {},
+            "gluetun": {
+              "image": {
+                "pullPolicy": {},
+                "repository": {},
+                "tag": {}
+              },
+              "pullPolicy": {}
+            },
+            "livenessProbe": {},
+            "networkPolicy": {
+              "annotations": {},
+              "egress": {},
+              "enabled": {},
+              "labels": {},
+              "podSelectorLabels": {}
+            },
+            "resources": {},
+            "scripts": {
+              "down": {},
+              "up": {}
+            },
+            "securityContext": {
+              "capabilities": {
+                "add": {}
+              }
+            },
+            "type": {}
+          }
+        },
+        "affinity": {},
+        "args": {},
+        "automountServiceAccountToken": {},
+        "command": {},
+        "common": {},
+        "configMaps": {},
+        "configmap": {},
+        "controller": {
+          "annotations": {},
+          "cronjob": {
+            "backoffLimit": {},
+            "concurrencyPolicy": {},
+            "failedJobsHistory": {},
+            "schedule": {},
+            "startingDeadlineSeconds": {},
+            "successfulJobsHistory": {},
+            "ttlSecondsAfterFinished": {}
+          },
+          "enabled": {},
+          "labels": {},
+          "podManagementPolicy": {},
+          "replicas": {},
+          "restartPolicy": {},
+          "revisionHistoryLimit": {},
+          "rollingUpdate": {
+            "partition": {},
+            "surge": {},
+            "unavailable": {}
+          },
+          "strategy": {},
+          "type": {}
+        },
+        "dnsConfig": {},
+        "dnsPolicy": {},
+        "enableServiceLinks": {},
+        "env": {},
+        "envFrom": {},
+        "fullnameOverride": {},
+        "global": {},
+        "hostAliases": {},
+        "hostIPC": {},
+        "hostNetwork": {},
+        "hostPID": {},
+        "hostname": {},
+        "image": {
+          "pullPolicy": {},
+          "repository": {},
+          "tag": {}
+        },
+        "imagePullSecrets": {},
+        "ingress": {},
+        "initContainers": {},
+        "lifecycle": {},
+        "nameOverride": {},
+        "nodeSelector": {},
+        "persistence": {},
+        "podAnnotations": {},
+        "podLabels": {},
+        "podSecurityContext": {},
+        "postgresql": {
+          "architecture": {},
+          "audit": {
+            "clientMinMessages": {},
+            "logConnections": {},
+            "logDisconnections": {},
+            "logHostname": {},
+            "logLinePrefix": {},
+            "logTimezone": {},
+            "pgAuditLog": {},
+            "pgAuditLogCatalog": {}
+          },
+          "auth": {
+            "database": {},
+            "enablePostgresUser": {},
+            "existingSecret": {},
+            "password": {},
+            "postgresPassword": {},
+            "replicationPassword": {},
+            "replicationUsername": {},
+            "secretKeys": {
+              "adminPasswordKey": {},
+              "replicationPasswordKey": {},
+              "userPasswordKey": {}
+            },
+            "usePasswordFiles": {},
+            "username": {}
+          },
+          "backup": {
+            "cronjob": {
+              "annotations": {},
+              "command": {},
+              "concurrencyPolicy": {},
+              "containerSecurityContext": {
+                "allowPrivilegeEscalation": {},
+                "capabilities": {
+                  "drop": {}
+                },
+                "enabled": {},
+                "privileged": {},
+                "readOnlyRootFilesystem": {},
+                "runAsNonRoot": {},
+                "runAsUser": {},
+                "seLinuxOptions": {},
+                "seccompProfile": {
+                  "type": {}
+                }
+              },
+              "failedJobsHistoryLimit": {},
+              "labels": {},
+              "nodeSelector": {},
+              "podSecurityContext": {
+                "enabled": {},
+                "fsGroup": {},
+                "fsGroupChangePolicy": {},
+                "supplementalGroups": {},
+                "sysctls": {}
+              },
+              "restartPolicy": {},
+              "schedule": {},
+              "startingDeadlineSeconds": {},
+              "storage": {
+                "accessModes": {},
+                "annotations": {},
+                "existingClaim": {},
+                "mountPath": {},
+                "resourcePolicy": {},
+                "size": {},
+                "storageClass": {},
+                "subPath": {},
+                "volumeClaimTemplates": {
+                  "selector": {}
+                }
+              },
+              "successfulJobsHistoryLimit": {},
+              "timeZone": {},
+              "timezone": {},
+              "ttlSecondsAfterFinished": {}
+            },
+            "enabled": {}
+          },
+          "cassandra": {
+            "dbUser": {
+              "existingSecret": {}
+            },
+            "enabled": {}
+          },
+          "clusterDomain": {},
+          "common": {},
+          "commonAnnotations": {},
+          "commonLabels": {},
+          "containerPorts": {
+            "postgresql": {}
+          },
+          "dbUser": {
+            "existingSecret": {}
+          },
+          "dependency-chart": {},
+          "diagnosticMode": {
+            "args": {},
+            "command": {},
+            "enabled": {}
+          },
+          "enabled": {},
+          "exampleValue": {},
+          "existingSecret": {},
+          "extraDeploy": {},
+          "extraMatchLabels": {},
+          "extraPodAffinityTerms": {},
+          "fullnameOverride": {},
+          "global": {
+            "imagePullSecrets": {},
+            "imageRegistry": {},
+            "kubeVersion": {},
+            "postgresql": {
+              "auth": {
+                "database": {},
+                "existingSecret": {},
+                "password": {},
+                "postgresPassword": {},
+                "secretKeys": {
+                  "adminPasswordKey": {},
+                  "replicationPasswordKey": {},
+                  "userPasswordKey": {}
+                },
+                "username": {}
+              },
+              "service": {
+                "ports": {
+                  "postgresql": {}
+                }
+              }
+            },
+            "storageClass": {}
+          },
+          "image": {
+            "debug": {},
+            "digest": {},
+            "pullPolicy": {},
+            "pullSecrets": {},
+            "registry": {},
+            "repository": {},
+            "tag": {}
+          },
+          "ingress": {
+            "apiVersion": {}
+          },
+          "kubeVersion": {},
+          "ldap": {
+            "baseDN": {},
+            "basedn": {},
+            "bindDN": {},
+            "bind_password": {},
+            "binddn": {},
+            "bindpw": {},
+            "enabled": {},
+            "port": {},
+            "prefix": {},
+            "scheme": {},
+            "searchAttribute": {},
+            "searchFilter": {},
+            "search_attr": {},
+            "search_filter": {},
+            "server": {},
+            "suffix": {},
+            "tls": {
+              "enabled": {}
+            },
+            "uri": {},
+            "url": {}
+          },
+          "mariadb": {
+            "architecture": {},
+            "auth": {
+              "existingSecret": {}
+            },
+            "enabled": {}
+          },
+          "metrics": {
+            "collectors": {},
+            "containerPorts": {
+              "metrics": {}
+            },
+            "containerSecurityContext": {
+              "allowPrivilegeEscalation": {},
+              "capabilities": {
+                "drop": {}
+              },
+              "enabled": {},
+              "privileged": {},
+              "readOnlyRootFilesystem": {},
+              "runAsNonRoot": {},
+              "runAsUser": {},
+              "seLinuxOptions": {},
+              "seccompProfile": {
+                "type": {}
+              }
+            },
+            "customLivenessProbe": {},
+            "customMetrics": {},
+            "customReadinessProbe": {},
+            "customStartupProbe": {},
+            "enabled": {},
+            "extraEnvVars": {},
+            "image": {
+              "digest": {},
+              "pullPolicy": {},
+              "pullSecrets": {},
+              "registry": {},
+              "repository": {},
+              "tag": {}
+            },
+            "livenessProbe": {
+              "enabled": {},
+              "failureThreshold": {},
+              "initialDelaySeconds": {},
+              "periodSeconds": {},
+              "successThreshold": {},
+              "timeoutSeconds": {}
+            },
+            "prometheusRule": {
+              "enabled": {},
+              "labels": {},
+              "namespace": {},
+              "rules": {}
+            },
+            "readinessProbe": {
+              "enabled": {},
+              "failureThreshold": {},
+              "initialDelaySeconds": {},
+              "periodSeconds": {},
+              "successThreshold": {},
+              "timeoutSeconds": {}
+            },
+            "resources": {},
+            "service": {
+              "annotations": {
+                "prometheus": {
+                  "io/port": {},
+                  "io/scrape": {}
+                }
+              },
+              "clusterIP": {},
+              "ports": {
+                "metrics": {}
+              },
+              "sessionAffinity": {}
+            },
+            "serviceMonitor": {
+              "enabled": {},
+              "honorLabels": {},
+              "interval": {},
+              "jobLabel": {},
+              "labels": {},
+              "metricRelabelings": {},
+              "namespace": {},
+              "relabelings": {},
+              "scrapeTimeout": {},
+              "selector": {}
+            },
+            "startupProbe": {
+              "enabled": {},
+              "failureThreshold": {},
+              "initialDelaySeconds": {},
+              "periodSeconds": {},
+              "successThreshold": {},
+              "timeoutSeconds": {}
+            }
+          },
+          "mongodb": {
+            "architecture": {},
+            "auth": {
+              "existingSecret": {}
+            },
+            "enabled": {}
+          },
+          "myValue": {},
+          "mysql": {
+            "architecture": {},
+            "auth": {
+              "existingSecret": {}
+            },
+            "enabled": {}
+          },
+          "nameOverride": {},
+          "namespaceOverride": {},
+          "path": {
+            "to": {
+              "the": {
+                "Value": {},
+                "Value1": {},
+                "Value2": {},
+                "existingSecret": {},
+                "image": {},
+                "image1": {},
+                "image2": {},
+                "imageRoot": {},
+                "ingress": {
+                  "annotations": {}
+                },
+                "persistence": {}
+              }
+            }
+          },
+          "persistence": {
+            "size": {}
+          },
+          "podLabels": {},
+          "postgresql": {
+            "enabled": {},
+            "existingSecret": {},
+            "replication": {
+              "enabled": {}
+            }
+          },
+          "postgresqlDataDir": {},
+          "postgresqlSharedPreloadLibraries": {},
+          "primary": {
+            "affinity": {},
+            "annotations": {},
+            "args": {},
+            "automountServiceAccountToken": {},
+            "command": {},
+            "configuration": {},
+            "containerSecurityContext": {
+              "allowPrivilegeEscalation": {},
+              "capabilities": {
+                "drop": {}
+              },
+              "enabled": {},
+              "privileged": {},
+              "readOnlyRootFilesystem": {},
+              "runAsNonRoot": {},
+              "runAsUser": {},
+              "seLinuxOptions": {},
+              "seccompProfile": {
+                "type": {}
+              }
+            },
+            "customLivenessProbe": {},
+            "customReadinessProbe": {},
+            "customStartupProbe": {},
+            "existingConfigmap": {},
+            "existingExtendedConfigmap": {},
+            "extendedConfiguration": {},
+            "extraEnvVars": {},
+            "extraEnvVarsCM": {},
+            "extraEnvVarsSecret": {},
+            "extraPodSpec": {},
+            "extraVolumeMounts": {},
+            "extraVolumes": {},
+            "hostAliases": {},
+            "hostIPC": {},
+            "hostNetwork": {},
+            "initContainers": {},
+            "initdb": {
+              "args": {},
+              "password": {},
+              "postgresqlWalDir": {},
+              "scripts": {},
+              "scriptsConfigMap": {},
+              "scriptsSecret": {},
+              "user": {}
+            },
+            "labels": {},
+            "lifecycleHooks": {},
+            "livenessProbe": {
+              "enabled": {},
+              "failureThreshold": {},
+              "initialDelaySeconds": {},
+              "periodSeconds": {},
+              "successThreshold": {},
+              "timeoutSeconds": {}
+            },
+            "name": {},
+            "networkPolicy": {
+              "allowExternal": {},
+              "allowExternalEgress": {},
+              "enabled": {},
+              "extraEgress": {},
+              "extraIngress": {},
+              "ingressNSMatchLabels": {},
+              "ingressNSPodMatchLabels": {}
+            },
+            "nodeAffinityPreset": {
+              "key": {},
+              "type": {},
+              "values": {}
+            },
+            "nodeSelector": {},
+            "persistence": {
+              "accessModes": {},
+              "annotations": {},
+              "dataSource": {},
+              "enabled": {},
+              "existingClaim": {},
+              "labels": {},
+              "mountPath": {},
+              "selector": {},
+              "size": {},
+              "storageClass": {},
+              "subPath": {}
+            },
+            "persistentVolumeClaimRetentionPolicy": {
+              "enabled": {},
+              "whenDeleted": {},
+              "whenScaled": {}
+            },
+            "pgHbaConfiguration": {},
+            "podAffinityPreset": {},
+            "podAnnotations": {},
+            "podAntiAffinityPreset": {},
+            "podLabels": {},
+            "podSecurityContext": {
+              "enabled": {},
+              "fsGroup": {},
+              "fsGroupChangePolicy": {},
+              "supplementalGroups": {},
+              "sysctls": {}
+            },
+            "priorityClassName": {},
+            "readinessProbe": {
+              "enabled": {},
+              "failureThreshold": {},
+              "initialDelaySeconds": {},
+              "periodSeconds": {},
+              "successThreshold": {},
+              "timeoutSeconds": {}
+            },
+            "resources": {},
+            "schedulerName": {},
+            "service": {
+              "annotations": {},
+              "clusterIP": {},
+              "externalTrafficPolicy": {},
+              "extraPorts": {},
+              "headless": {
+                "annotations": {}
+              },
+              "loadBalancerIP": {},
+              "loadBalancerSourceRanges": {},
+              "nodePorts": {
+                "postgresql": {}
+              },
+              "ports": {
+                "postgresql": {}
+              },
+              "sessionAffinity": {},
+              "sessionAffinityConfig": {},
+              "type": {}
+            },
+            "sidecars": {},
+            "standby": {
+              "enabled": {},
+              "primaryHost": {},
+              "primaryPort": {}
+            },
+            "startupProbe": {
+              "enabled": {},
+              "failureThreshold": {},
+              "initialDelaySeconds": {},
+              "periodSeconds": {},
+              "successThreshold": {},
+              "timeoutSeconds": {}
+            },
+            "terminationGracePeriodSeconds": {},
+            "tolerations": {},
+            "topologySpreadConstraints": {},
+            "updateStrategy": {}
+          },
+          "psp": {
+            "create": {}
+          },
+          "rbac": {
+            "create": {},
+            "rules": {}
+          },
+          "readReplicas": {
+            "affinity": {},
+            "annotations": {},
+            "args": {},
+            "automountServiceAccountToken": {},
+            "command": {},
+            "containerSecurityContext": {
+              "allowPrivilegeEscalation": {},
+              "capabilities": {
+                "drop": {}
+              },
+              "enabled": {},
+              "privileged": {},
+              "readOnlyRootFilesystem": {},
+              "runAsNonRoot": {},
+              "runAsUser": {},
+              "seLinuxOptions": {},
+              "seccompProfile": {
+                "type": {}
+              }
+            },
+            "customLivenessProbe": {},
+            "customReadinessProbe": {},
+            "customStartupProbe": {},
+            "extendedConfiguration": {},
+            "extraEnvVars": {},
+            "extraEnvVarsCM": {},
+            "extraEnvVarsSecret": {},
+            "extraPodSpec": {},
+            "extraVolumeMounts": {},
+            "extraVolumes": {},
+            "hostAliases": {},
+            "hostIPC": {},
+            "hostNetwork": {},
+            "initContainers": {},
+            "labels": {},
+            "lifecycleHooks": {},
+            "livenessProbe": {
+              "enabled": {},
+              "failureThreshold": {},
+              "initialDelaySeconds": {},
+              "periodSeconds": {},
+              "successThreshold": {},
+              "timeoutSeconds": {}
+            },
+            "name": {},
+            "networkPolicy": {
+              "allowExternal": {},
+              "allowExternalEgress": {},
+              "enabled": {},
+              "extraEgress": {},
+              "extraIngress": {},
+              "ingressNSMatchLabels": {},
+              "ingressNSPodMatchLabels": {}
+            },
+            "nodeAffinityPreset": {
+              "key": {},
+              "type": {},
+              "values": {}
+            },
+            "nodeSelector": {},
+            "persistence": {
+              "accessModes": {},
+              "annotations": {},
+              "dataSource": {},
+              "enabled": {},
+              "existingClaim": {},
+              "labels": {},
+              "mountPath": {},
+              "selector": {},
+              "size": {},
+              "storageClass": {},
+              "subPath": {}
+            },
+            "persistentVolumeClaimRetentionPolicy": {
+              "enabled": {},
+              "whenDeleted": {},
+              "whenScaled": {}
+            },
+            "podAffinityPreset": {},
+            "podAnnotations": {},
+            "podAntiAffinityPreset": {},
+            "podLabels": {},
+            "podSecurityContext": {
+              "enabled": {},
+              "fsGroup": {},
+              "fsGroupChangePolicy": {},
+              "supplementalGroups": {},
+              "sysctls": {}
+            },
+            "priorityClassName": {},
+            "readinessProbe": {
+              "enabled": {},
+              "failureThreshold": {},
+              "initialDelaySeconds": {},
+              "periodSeconds": {},
+              "successThreshold": {},
+              "timeoutSeconds": {}
+            },
+            "replicaCount": {},
+            "resources": {},
+            "schedulerName": {},
+            "service": {
+              "annotations": {},
+              "clusterIP": {},
+              "externalTrafficPolicy": {},
+              "extraPorts": {},
+              "headless": {
+                "annotations": {}
+              },
+              "loadBalancerIP": {},
+              "loadBalancerSourceRanges": {},
+              "nodePorts": {
+                "postgresql": {}
+              },
+              "ports": {
+                "postgresql": {}
+              },
+              "sessionAffinity": {},
+              "sessionAffinityConfig": {},
+              "type": {}
+            },
+            "sidecars": {},
+            "startupProbe": {
+              "enabled": {},
+              "failureThreshold": {},
+              "initialDelaySeconds": {},
+              "periodSeconds": {},
+              "successThreshold": {},
+              "timeoutSeconds": {}
+            },
+            "terminationGracePeriodSeconds": {},
+            "tolerations": {},
+            "topologySpreadConstraints": {},
+            "updateStrategy": {}
+          },
+          "redis": {
+            "enabled": {}
+          },
+          "replication": {
+            "applicationName": {},
+            "enabled": {},
+            "numSynchronousReplicas": {},
+            "readReplicas": {},
+            "synchronousCommit": {}
+          },
+          "resources": {
+            "requests": {
+              "cpu": {},
+              "memory": {}
+            }
+          },
+          "serviceAccount": {
+            "annotations": {},
+            "automountServiceAccountToken": {},
+            "create": {},
+            "name": {}
+          },
+          "serviceBindings": {
+            "enabled": {}
+          },
+          "shmVolume": {
+            "enabled": {},
+            "sizeLimit": {}
+          },
+          "tls": {
+            "autoGenerated": {},
+            "certCAFilename": {},
+            "certFilename": {},
+            "certKeyFilename": {},
+            "certificatesSecret": {},
+            "crlFilename": {},
+            "enabled": {},
+            "preferServerCiphers": {}
+          },
+          "volumePermissions": {
+            "containerSecurityContext": {},
+            "enabled": {},
+            "image": {
+              "digest": {},
+              "pullPolicy": {},
+              "pullSecrets": {},
+              "registry": {},
+              "repository": {},
+              "tag": {}
+            },
+            "resources": {}
+          }
+        },
+        "priorityClassName": {},
+        "probes": {},
+        "resources": {},
+        "route": {},
+        "runtimeClassName": {},
+        "schedulerName": {},
+        "secrets": {},
+        "securityContext": {},
+        "service": {},
+        "serviceAccount": {
+          "annotations": {},
+          "create": {},
+          "name": {}
+        },
+        "serviceMonitor": {},
+        "sidecars": {},
+        "termination": {
+          "gracePeriodSeconds": {},
+          "messagePath": {},
+          "messagePolicy": {}
+        },
+        "tolerations": {},
+        "topologySpreadConstraints": {},
+        "volumeClaimTemplates": {}
+      },
+      "open": [
+        "addons.codeserver.args",
+        "addons.codeserver.env",
+        "addons.codeserver.git.deployKey",
+        "addons.codeserver.git.deployKeyBase64",
+        "addons.codeserver.ingress.annotations",
+        "addons.codeserver.ingress.hosts",
+        "addons.codeserver.ingress.labels",
+        "addons.codeserver.ingress.tls",
+        "addons.codeserver.service",
+        "addons.codeserver.volumeMounts",
+        "addons.netshoot.env",
+        "addons.netshoot.securityContext.capabilities.add",
+        "addons.vpn.additionalVolumeMounts",
+        "addons.vpn.args",
+        "addons.vpn.configFile",
+        "addons.vpn.env",
+        "addons.vpn.livenessProbe",
+        "addons.vpn.networkPolicy.annotations",
+        "addons.vpn.networkPolicy.labels",
+        "addons.vpn.networkPolicy.podSelectorLabels",
+        "addons.vpn.securityContext.capabilities.add",
+        "affinity",
+        "args",
+        "command",
+        "configMaps",
+        "configmap",
+        "controller.annotations",
+        "controller.labels",
+        "dnsConfig",
+        "env",
+        "envFrom",
+        "global",
+        "hostAliases",
+        "image.repository",
+        "image.tag",
+        "imagePullSecrets",
+        "ingress",
+        "initContainers",
+        "lifecycle",
+        "nodeSelector",
+        "persistence",
+        "podAnnotations",
+        "podLabels",
+        "podSecurityContext",
+        "postgresql.auth.database",
+        "postgresql.auth.existingSecret",
+        "postgresql.auth.secretKeys.adminPasswordKey",
+        "postgresql.auth.secretKeys.replicationPasswordKey",
+        "postgresql.auth.secretKeys.userPasswordKey",
+        "postgresql.backup.cronjob.annotations",
+        "postgresql.backup.cronjob.command",
+        "postgresql.backup.cronjob.containerSecurityContext.capabilities.drop",
+        "postgresql.backup.cronjob.labels",
+        "postgresql.backup.cronjob.nodeSelector",
+        "postgresql.backup.cronjob.podSecurityContext.supplementalGroups",
+        "postgresql.backup.cronjob.podSecurityContext.sysctls",
+        "postgresql.backup.cronjob.storage.accessModes",
+        "postgresql.backup.cronjob.storage.annotations",
+        "postgresql.backup.cronjob.storage.existingClaim",
+        "postgresql.backup.cronjob.storage.volumeClaimTemplates.selector",
+        "postgresql.clusterDomain",
+        "postgresql.commonAnnotations",
+        "postgresql.commonLabels",
+        "postgresql.diagnosticMode.args",
+        "postgresql.diagnosticMode.command",
+        "postgresql.extraDeploy",
+        "postgresql.global.imagePullSecrets",
+        "postgresql.global.postgresql.auth.database",
+        "postgresql.global.postgresql.auth.existingSecret",
+        "postgresql.global.postgresql.auth.secretKeys.adminPasswordKey",
+        "postgresql.global.postgresql.auth.secretKeys.replicationPasswordKey",
+        "postgresql.global.postgresql.auth.secretKeys.userPasswordKey",
+        "postgresql.image.pullSecrets",
+        "postgresql.metrics.collectors",
+        "postgresql.metrics.containerSecurityContext.capabilities.drop",
+        "postgresql.metrics.customLivenessProbe",
+        "postgresql.metrics.customMetrics",
+        "postgresql.metrics.customReadinessProbe",
+        "postgresql.metrics.customStartupProbe",
+        "postgresql.metrics.extraEnvVars",
+        "postgresql.metrics.image.pullSecrets",
+        "postgresql.metrics.prometheusRule.labels",
+        "postgresql.metrics.prometheusRule.rules",
+        "postgresql.metrics.resources",
+        "postgresql.metrics.serviceMonitor.labels",
+        "postgresql.metrics.serviceMonitor.metricRelabelings",
+        "postgresql.metrics.serviceMonitor.relabelings",
+        "postgresql.metrics.serviceMonitor.selector",
+        "postgresql.primary.affinity",
+        "postgresql.primary.annotations",
+        "postgresql.primary.args",
+        "postgresql.primary.command",
+        "postgresql.primary.containerSecurityContext.capabilities.drop",
+        "postgresql.primary.customLivenessProbe",
+        "postgresql.primary.customReadinessProbe",
+        "postgresql.primary.customStartupProbe",
+        "postgresql.primary.existingConfigmap",
+        "postgresql.primary.existingExtendedConfigmap",
+        "postgresql.primary.extraEnvVars",
+        "postgresql.primary.extraPodSpec",
+        "postgresql.primary.extraVolumeMounts",
+        "postgresql.primary.extraVolumes",
+        "postgresql.primary.hostAliases",
+        "postgresql.primary.initContainers",
+        "postgresql.primary.initdb.scripts",
+        "postgresql.primary.initdb.scriptsConfigMap",
+        "postgresql.primary.initdb.scriptsSecret",
+        "postgresql.primary.labels",
+        "postgresql.primary.lifecycleHooks",
+        "postgresql.primary.networkPolicy.extraEgress",
+        "postgresql.primary.networkPolicy.extraIngress",
+        "postgresql.primary.networkPolicy.ingressNSMatchLabels",
+        "postgresql.primary.networkPolicy.ingressNSPodMatchLabels",
+        "postgresql.primary.nodeAffinityPreset.values",
+        "postgresql.primary.nodeSelector",
+        "postgresql.primary.persistence.accessModes",
+        "postgresql.primary.persistence.annotations",
+        "postgresql.primary.persistence.dataSource",
+        "postgresql.primary.persistence.existingClaim",
+        "postgresql.primary.persistence.labels",
+        "postgresql.primary.persistence.selector",
+        "postgresql.primary.podAnnotations",
+        "postgresql.primary.podLabels",
+        "postgresql.primary.podSecurityContext.supplementalGroups",
+        "postgresql.primary.podSecurityContext.sysctls",
+        "postgresql.primary.resources",
+        "postgresql.primary.service.annotations",
+        "postgresql.primary.service.extraPorts",
+        "postgresql.primary.service.headless.annotations",
+        "postgresql.primary.service.loadBalancerSourceRanges",
+        "postgresql.primary.service.sessionAffinityConfig",
+        "postgresql.primary.sidecars",
+        "postgresql.primary.tolerations",
+        "postgresql.primary.topologySpreadConstraints",
+        "postgresql.primary.updateStrategy",
+        "postgresql.rbac.rules",
+        "postgresql.readReplicas.affinity",
+        "postgresql.readReplicas.annotations",
+        "postgresql.readReplicas.args",
+        "postgresql.readReplicas.command",
+        "postgresql.readReplicas.containerSecurityContext.capabilities.drop",
+        "postgresql.readReplicas.customLivenessProbe",
+        "postgresql.readReplicas.customReadinessProbe",
+        "postgresql.readReplicas.customStartupProbe",
+        "postgresql.readReplicas.extraEnvVars",
+        "postgresql.readReplicas.extraPodSpec",
+        "postgresql.readReplicas.extraVolumeMounts",
+        "postgresql.readReplicas.extraVolumes",
+        "postgresql.readReplicas.hostAliases",
+        "postgresql.readReplicas.initContainers",
+        "postgresql.readReplicas.labels",
+        "postgresql.readReplicas.lifecycleHooks",
+        "postgresql.readReplicas.networkPolicy.extraEgress",
+        "postgresql.readReplicas.networkPolicy.extraIngress",
+        "postgresql.readReplicas.networkPolicy.ingressNSMatchLabels",
+        "postgresql.readReplicas.networkPolicy.ingressNSPodMatchLabels",
+        "postgresql.readReplicas.nodeAffinityPreset.values",
+        "postgresql.readReplicas.nodeSelector",
+        "postgresql.readReplicas.persistence.accessModes",
+        "postgresql.readReplicas.persistence.annotations",
+        "postgresql.readReplicas.persistence.dataSource",
+        "postgresql.readReplicas.persistence.existingClaim",
+        "postgresql.readReplicas.persistence.labels",
+        "postgresql.readReplicas.persistence.selector",
+        "postgresql.readReplicas.podAnnotations",
+        "postgresql.readReplicas.podLabels",
+        "postgresql.readReplicas.podSecurityContext.supplementalGroups",
+        "postgresql.readReplicas.podSecurityContext.sysctls",
+        "postgresql.readReplicas.resources",
+        "postgresql.readReplicas.service.annotations",
+        "postgresql.readReplicas.service.extraPorts",
+        "postgresql.readReplicas.service.headless.annotations",
+        "postgresql.readReplicas.service.loadBalancerSourceRanges",
+        "postgresql.readReplicas.service.sessionAffinityConfig",
+        "postgresql.readReplicas.sidecars",
+        "postgresql.readReplicas.tolerations",
+        "postgresql.readReplicas.topologySpreadConstraints",
+        "postgresql.readReplicas.updateStrategy",
+        "postgresql.serviceAccount.annotations",
+        "postgresql.volumePermissions.containerSecurityContext",
+        "postgresql.volumePermissions.image.pullSecrets",
+        "postgresql.volumePermissions.resources",
+        "probes",
+        "resources",
+        "route",
+        "secrets",
+        "securityContext",
+        "service",
+        "serviceAccount.annotations",
+        "serviceMonitor",
+        "sidecars",
+        "tolerations",
+        "topologySpreadConstraints",
+        "volumeClaimTemplates"
+      ],
+      "dynamic": ["ingress", "service"],
+      "charts": [
+        "<root>=common@1.5.1",
+        "<root>=headscale@0.16.0",
+        "postgresql=common@2.14.1",
+        "postgresql=postgresql@14.0.5"
+      ]
     },
     "https://charts.gabe565.com|headscale|0.4.0": {
       "literal": {
@@ -15495,11 +17194,13 @@
       "dynamic": [],
       "charts": ["<root>=cert-manager@v1.16.2"]
     },
-    "https://charts.jetstack.io|trust-manager|v0.15.0": {
+    "https://charts.jetstack.io|trust-manager|v0.24.0": {
       "literal": {
         "affinity": {},
         "app": {
+          "cipherSuites": {},
           "leaderElection": {
+            "enabled": {},
             "leaseDuration": {},
             "renewDeadline": {}
           },
@@ -15513,6 +17214,7 @@
               "ipFamilyPolicy": {},
               "servicemonitor": {
                 "enabled": {},
+                "endpointAdditionalProperties": {},
                 "interval": {},
                 "labels": {},
                 "prometheusInstance": {},
@@ -15521,6 +17223,7 @@
               "type": {}
             }
           },
+          "minTLSVersion": {},
           "podAnnotations": {},
           "podLabels": {},
           "readinessProbe": {
@@ -15528,8 +17231,17 @@
             "port": {}
           },
           "securityContext": {
-            "seccompProfileEnabled": {}
+            "allowPrivilegeEscalation": {},
+            "capabilities": {
+              "drop": {}
+            },
+            "readOnlyRootFilesystem": {},
+            "runAsNonRoot": {},
+            "seccompProfile": {
+              "type": {}
+            }
           },
+          "targetNamespaces": {},
           "trust": {
             "namespace": {}
           },
@@ -15551,6 +17263,7 @@
                 "enabled": {}
               },
               "certificate": {
+                "duration": {},
                 "secretTemplate": {}
               },
               "helmCert": {
@@ -15559,6 +17272,8 @@
             }
           }
         },
+        "automountServiceAccountToken": {},
+        "commonAnnotations": {},
         "commonLabels": {},
         "crds": {
           "enabled": {},
@@ -15566,22 +17281,43 @@
         },
         "defaultPackage": {
           "enabled": {},
-          "resources": {}
+          "resources": {},
+          "securityContext": {
+            "allowPrivilegeEscalation": {},
+            "capabilities": {
+              "drop": {}
+            },
+            "readOnlyRootFilesystem": {},
+            "runAsNonRoot": {},
+            "seccompProfile": {
+              "type": {}
+            }
+          }
         },
         "defaultPackageImage": {
+          "_defaultReference": {},
+          "name": {},
           "pullPolicy": {},
           "repository": {},
           "tag": {}
         },
+        "enabled": {},
+        "extraObjects": {},
         "filterExpiredCertificates": {
           "enabled": {}
         },
-        "image": {
-          "pullPolicy": {},
-          "repository": {},
-          "tag": {}
+        "filterNonCACerts": {
+          "enabled": {}
         },
+        "global": {},
+        "image": {
+          "name": {},
+          "pullPolicy": {},
+          "repository": {}
+        },
+        "imageNamespace": {},
         "imagePullSecrets": {},
+        "imageRegistry": {},
         "nameOverride": {},
         "namespace": {},
         "nodeSelector": {
@@ -15594,36 +17330,53 @@
           "maxUnavailable": {},
           "minAvailable": {}
         },
+        "podSecurityContext": {},
         "priorityClassName": {},
         "replicaCount": {},
         "resources": {},
+        "revisionHistoryLimit": {},
         "secretTargets": {
           "authorizedSecrets": {},
           "authorizedSecretsAll": {},
           "enabled": {}
         },
+        "serviceAccount": {
+          "automountServiceAccountToken": {},
+          "create": {},
+          "name": {}
+        },
         "tolerations": {},
-        "topologySpreadConstraints": {}
+        "topologySpreadConstraints": {},
+        "volumeMounts": {},
+        "volumes": {}
       },
       "open": [
         "affinity",
         "app.metrics.service.ipFamilies",
+        "app.metrics.service.servicemonitor.endpointAdditionalProperties",
         "app.metrics.service.servicemonitor.labels",
         "app.podAnnotations",
         "app.podLabels",
+        "app.securityContext.capabilities.drop",
         "app.webhook.service.ipFamilies",
         "app.webhook.tls.certificate.secretTemplate",
+        "commonAnnotations",
         "commonLabels",
         "defaultPackage.resources",
+        "defaultPackage.securityContext.capabilities.drop",
+        "extraObjects",
         "global",
         "imagePullSecrets",
+        "podSecurityContext",
         "resources",
         "secretTargets.authorizedSecrets",
         "tolerations",
-        "topologySpreadConstraints"
+        "topologySpreadConstraints",
+        "volumeMounts",
+        "volumes"
       ],
       "dynamic": [],
-      "charts": ["<root>=trust-manager@v0.15.0"]
+      "charts": ["<root>=trust-manager@v0.24.0"]
     },
     "https://charts.longhorn.io|longhorn|1.7.2": {
       "literal": {
@@ -15919,324 +17672,7 @@
       "dynamic": [],
       "charts": ["<root>=longhorn@1.7.2"]
     },
-    "https://charts.min.io/|minio|5.4.0": {
-      "literal": {
-        "additionalAnnotations": {},
-        "additionalLabels": {},
-        "affinity": {},
-        "bucketRoot": {},
-        "buckets": {},
-        "certsPath": {},
-        "clusterDomain": {},
-        "configPathmc": {},
-        "consoleIngress": {
-          "annotations": {},
-          "enabled": {},
-          "hosts": {},
-          "ingressClassName": {},
-          "labels": {},
-          "path": {},
-          "tls": {}
-        },
-        "consoleService": {
-          "annotations": {},
-          "clusterIP": {},
-          "externalIPs": {},
-          "externalTrafficPolicy": {},
-          "loadBalancerIP": {},
-          "loadBalancerSourceRanges": {},
-          "nodePort": {},
-          "port": {},
-          "type": {}
-        },
-        "containerSecurityContext": {
-          "readOnlyRootFilesystem": {}
-        },
-        "customCommandJob": {
-          "containerSecurityContext": {},
-          "exitCommand": {},
-          "extraVolumeMounts": {},
-          "extraVolumes": {},
-          "resources": {},
-          "securityContext": {
-            "enabled": {},
-            "runAsGroup": {},
-            "runAsUser": {}
-          }
-        },
-        "customCommands": {},
-        "deploymentUpdate": {
-          "maxSurge": {},
-          "maxUnavailable": {},
-          "type": {}
-        },
-        "drivesPerNode": {},
-        "environment": {},
-        "etcd": {
-          "clientCert": {},
-          "clientCertKey": {},
-          "corednsPathPrefix": {},
-          "endpoints": {},
-          "pathPrefix": {}
-        },
-        "existingSecret": {},
-        "extraArgs": {},
-        "extraContainers": {},
-        "extraSecret": {},
-        "extraVolumeMounts": {},
-        "extraVolumes": {},
-        "fullnameOverride": {},
-        "global": {},
-        "ignoreChartChecksums": {},
-        "image": {
-          "pullPolicy": {},
-          "repository": {},
-          "tag": {}
-        },
-        "imagePullSecrets": {},
-        "ingress": {
-          "annotations": {},
-          "enabled": {},
-          "hosts": {},
-          "ingressClassName": {},
-          "labels": {},
-          "path": {},
-          "tls": {}
-        },
-        "makeBucketJob": {
-          "containerSecurityContext": {},
-          "exitCommand": {},
-          "resources": {},
-          "securityContext": {
-            "enabled": {},
-            "runAsGroup": {},
-            "runAsUser": {}
-          }
-        },
-        "makePolicyJob": {
-          "containerSecurityContext": {},
-          "exitCommand": {},
-          "resources": {},
-          "securityContext": {
-            "enabled": {},
-            "runAsGroup": {},
-            "runAsUser": {}
-          }
-        },
-        "makeServiceAccountJob": {
-          "containerSecurityContext": {},
-          "exitCommand": {},
-          "resources": {},
-          "securityContext": {
-            "enabled": {},
-            "runAsGroup": {},
-            "runAsUser": {}
-          }
-        },
-        "makeUserJob": {
-          "containerSecurityContext": {},
-          "exitCommand": {},
-          "resources": {},
-          "securityContext": {
-            "enabled": {},
-            "runAsGroup": {},
-            "runAsUser": {}
-          }
-        },
-        "mcImage": {
-          "pullPolicy": {},
-          "repository": {},
-          "tag": {}
-        },
-        "metrics": {
-          "serviceMonitor": {
-            "additionalLabels": {},
-            "annotations": {},
-            "enabled": {},
-            "includeNode": {},
-            "interval": {},
-            "namespace": {},
-            "public": {},
-            "relabelConfigs": {},
-            "relabelConfigsCluster": {},
-            "scrapeTimeout": {}
-          }
-        },
-        "minioAPIPort": {},
-        "minioConsolePort": {},
-        "mode": {},
-        "mountPath": {},
-        "nameOverride": {},
-        "networkPolicy": {
-          "allowExternal": {},
-          "egressEntities": {},
-          "enabled": {},
-          "flavor": {}
-        },
-        "nodeSelector": {},
-        "oidc": {
-          "claimName": {},
-          "claimPrefix": {},
-          "clientId": {},
-          "clientSecret": {},
-          "comment": {},
-          "configUrl": {},
-          "displayName": {},
-          "enabled": {},
-          "existingClientIdKey": {},
-          "existingClientSecretKey": {},
-          "existingClientSecretName": {},
-          "redirectUri": {},
-          "scopes": {}
-        },
-        "persistence": {
-          "accessMode": {},
-          "annotations": {},
-          "enabled": {},
-          "existingClaim": {},
-          "size": {},
-          "storageClass": {},
-          "subPath": {},
-          "volumeName": {}
-        },
-        "podAnnotations": {},
-        "podDisruptionBudget": {
-          "enabled": {},
-          "maxUnavailable": {}
-        },
-        "podLabels": {},
-        "policies": {},
-        "pools": {},
-        "postJob": {
-          "affinity": {},
-          "annotations": {},
-          "nodeSelector": {},
-          "podAnnotations": {},
-          "securityContext": {
-            "enabled": {},
-            "fsGroup": {},
-            "runAsGroup": {},
-            "runAsUser": {}
-          },
-          "tolerations": {}
-        },
-        "priorityClassName": {},
-        "replicas": {},
-        "resources": {},
-        "rootPassword": {},
-        "rootUser": {},
-        "runtimeClassName": {},
-        "securityContext": {
-          "enabled": {},
-          "fsGroup": {},
-          "fsGroupChangePolicy": {},
-          "runAsGroup": {},
-          "runAsUser": {}
-        },
-        "service": {
-          "annotations": {},
-          "clusterIP": {},
-          "externalIPs": {},
-          "externalTrafficPolicy": {},
-          "loadBalancerIP": {},
-          "loadBalancerSourceRanges": {},
-          "nodePort": {},
-          "port": {},
-          "type": {}
-        },
-        "serviceAccount": {
-          "create": {},
-          "name": {}
-        },
-        "statefulSetUpdate": {
-          "updateStrategy": {}
-        },
-        "svcaccts": {},
-        "tls": {
-          "certSecret": {},
-          "enabled": {},
-          "privateKey": {},
-          "publicCrt": {}
-        },
-        "tolerations": {},
-        "topologySpreadConstraints": {},
-        "trustedCertsSecret": {},
-        "users": {}
-      },
-      "open": [
-        "additionalAnnotations",
-        "additionalLabels",
-        "affinity",
-        "buckets",
-        "consoleIngress.annotations",
-        "consoleIngress.hosts",
-        "consoleIngress.labels",
-        "consoleIngress.path",
-        "consoleIngress.tls",
-        "consoleService.annotations",
-        "consoleService.externalIPs",
-        "consoleService.loadBalancerSourceRanges",
-        "consoleService.port",
-        "customCommandJob.extraVolumeMounts",
-        "customCommandJob.extraVolumes",
-        "customCommandJob.resources",
-        "drivesPerNode",
-        "environment",
-        "etcd.endpoints",
-        "extraArgs",
-        "extraContainers",
-        "extraVolumeMounts",
-        "extraVolumes",
-        "global",
-        "imagePullSecrets",
-        "ingress.annotations",
-        "ingress.hosts",
-        "ingress.labels",
-        "ingress.path",
-        "ingress.tls",
-        "makeBucketJob.resources",
-        "makePolicyJob.resources",
-        "makeServiceAccountJob.resources",
-        "makeUserJob.resources",
-        "metrics.serviceMonitor.additionalLabels",
-        "metrics.serviceMonitor.annotations",
-        "metrics.serviceMonitor.relabelConfigs",
-        "metrics.serviceMonitor.relabelConfigsCluster",
-        "mountPath",
-        "networkPolicy.egressEntities",
-        "nodeSelector",
-        "persistence.accessMode",
-        "persistence.annotations",
-        "persistence.enabled",
-        "persistence.size",
-        "persistence.storageClass",
-        "persistence.subPath",
-        "podAnnotations",
-        "podLabels",
-        "policies",
-        "pools",
-        "postJob.affinity",
-        "postJob.annotations",
-        "postJob.nodeSelector",
-        "postJob.podAnnotations",
-        "postJob.tolerations",
-        "replicas",
-        "resources",
-        "service.annotations",
-        "service.externalIPs",
-        "service.loadBalancerSourceRanges",
-        "service.port",
-        "svcaccts",
-        "tls.certSecret",
-        "tls.enabled",
-        "tolerations",
-        "topologySpreadConstraints",
-        "users"
-      ],
-      "dynamic": [],
-      "charts": ["<root>=minio@5.4.0"]
-    },
-    "https://dapr.github.io/helm-charts/|dapr|1.14.4": {
+    "https://dapr.github.io/helm-charts/|dapr|1.18.3": {
       "literal": {
         "dapr_config": {
           "component": {},
@@ -16275,6 +17711,9 @@
             },
             "daprControlPlaneArch": {},
             "daprControlPlaneOs": {},
+            "extraContainers": {
+              "operator": {}
+            },
             "extraVolumeMounts": {
               "operator": {}
             },
@@ -16287,10 +17726,14 @@
                 "minimumAvailable": {}
               },
               "enabled": {},
-              "replicaCount": {}
+              "replicaCount": {},
+              "topologyKey": {}
             },
             "imagePullPolicy": {},
             "imagePullSecrets": {},
+            "initContainers": {
+              "operator": {}
+            },
             "k8sLabels": {},
             "labels": {},
             "logAsJson": {},
@@ -16358,7 +17801,10 @@
             "initialDelaySeconds": {},
             "port": {}
           },
+          "disseminateCoalesceWindow": {},
+          "disseminateTimeout": {},
           "extraEnvVars": {},
+          "fsGroup": {},
           "fullnameOverride": {},
           "global": {
             "actors": {
@@ -16368,6 +17814,9 @@
             "daprControlPlaneArch": {},
             "daprControlPlaneOs": {},
             "dnsSuffix": {},
+            "extraContainers": {
+              "placement": {}
+            },
             "extraVolumeMounts": {
               "placement": {}
             },
@@ -16379,10 +17828,15 @@
                 "maximumUnavailable": {},
                 "minimumAvailable": {}
               },
-              "enabled": {}
+              "enabled": {},
+              "podAntiAffinityPolicy": {},
+              "topologyKey": {}
             },
             "imagePullPolicy": {},
             "imagePullSecrets": {},
+            "initContainers": {
+              "placement": {}
+            },
             "k8sLabels": {},
             "labels": {},
             "logAsJson": {},
@@ -16406,6 +17860,8 @@
           "image": {
             "name": {}
           },
+          "keepAliveTime": {},
+          "keepAliveTimeout": {},
           "livenessProbe": {
             "failureThreshold": {},
             "initialDelaySeconds": {},
@@ -16466,6 +17922,23 @@
           "secretReader": {
             "enabled": {},
             "namespace": {}
+          },
+          "serviceAccount": {
+            "injector": {
+              "annotations": {}
+            },
+            "operator": {
+              "annotations": {}
+            },
+            "placement": {
+              "annotations": {}
+            },
+            "scheduler": {
+              "annotations": {}
+            },
+            "sentry": {
+              "annotations": {}
+            }
           }
         },
         "dapr_scheduler": {
@@ -16482,10 +17955,20 @@
             "initialDelaySeconds": {},
             "port": {}
           },
+          "etcdBackendBatchInterval": {},
+          "etcdBackendBatchLimit": {},
+          "etcdClientEndpoints": {},
+          "etcdClientPassword": {},
+          "etcdClientUsername": {},
           "etcdCompactionMode": {},
           "etcdCompactionRetention": {},
+          "etcdDefragThresholdMB": {},
+          "etcdEmbed": {},
+          "etcdInitialElectionTickAdvance": {},
           "etcdMaxSnapshots": {},
+          "etcdMaxTxnOps": {},
           "etcdMaxWals": {},
+          "etcdMetrics": {},
           "etcdSnapshotCount": {},
           "etcdSpaceQuota": {},
           "extraEnvVars": {},
@@ -16493,6 +17976,10 @@
           "global": {
             "daprControlPlaneArch": {},
             "daprControlPlaneOs": {},
+            "dnsSuffix": {},
+            "extraContainers": {
+              "scheduler": {}
+            },
             "extraVolumeMounts": {
               "scheduler": {}
             },
@@ -16504,10 +17991,14 @@
                 "maximumUnavailable": {},
                 "minimumAvailable": {}
               },
-              "enabled": {}
+              "podAntiAffinityPolicy": {},
+              "topologyKey": {}
             },
             "imagePullPolicy": {},
             "imagePullSecrets": {},
+            "initContainers": {
+              "scheduler": {}
+            },
             "k8sLabels": {},
             "labels": {},
             "logAsJson": {},
@@ -16530,7 +18021,6 @@
             "tag": {},
             "tolerations": {}
           },
-          "ha": {},
           "image": {
             "name": {}
           },
@@ -16541,10 +18031,10 @@
           },
           "logLevel": {},
           "nameOverride": {},
+          "overrideBroadcastHostPort": {},
           "ports": {
             "etcdGRPCClientPort": {},
             "etcdGRPCPeerPort": {},
-            "etcdHTTPClientPort": {},
             "protocol": {}
           },
           "readinessProbe": {
@@ -16560,7 +18050,8 @@
           "service": {
             "annotations": {}
           },
-          "statefulsetAnnotations": {}
+          "statefulsetAnnotations": {},
+          "workers": {}
         },
         "dapr_sentry": {
           "component": {},
@@ -16575,6 +18066,9 @@
           "global": {
             "daprControlPlaneArch": {},
             "daprControlPlaneOs": {},
+            "extraContainers": {
+              "sentry": {}
+            },
             "extraVolumeMounts": {
               "sentry": {}
             },
@@ -16587,10 +18081,14 @@
                 "minimumAvailable": {}
               },
               "enabled": {},
-              "replicaCount": {}
+              "replicaCount": {},
+              "topologyKey": {}
             },
             "imagePullPolicy": {},
             "imagePullSecrets": {},
+            "initContainers": {
+              "sentry": {}
+            },
             "issuerFilenames": {},
             "k8sLabels": {},
             "labels": {},
@@ -16612,13 +18110,36 @@
           "image": {
             "name": {}
           },
+          "jwt": {
+            "enabled": {},
+            "issuer": {},
+            "jwksFilename": {},
+            "keyFilename": {},
+            "keyID": {},
+            "signingAlgorithm": {}
+          },
           "livenessProbe": {
             "failureThreshold": {},
             "initialDelaySeconds": {},
             "periodSeconds": {}
           },
           "logLevel": {},
+          "mode": {},
           "nameOverride": {},
+          "oidc": {
+            "allowedHosts": {},
+            "enabled": {},
+            "jwksURI": {},
+            "pathPrefix": {},
+            "server": {
+              "port": {}
+            },
+            "tls": {
+              "certFile": {},
+              "enabled": {},
+              "keyFile": {}
+            }
+          },
           "ports": {
             "port": {},
             "protocol": {},
@@ -16668,6 +18189,9 @@
             },
             "daprControlPlaneArch": {},
             "daprControlPlaneOs": {},
+            "extraContainers": {
+              "injector": {}
+            },
             "extraVolumeMounts": {
               "injector": {}
             },
@@ -16680,10 +18204,14 @@
                 "minimumAvailable": {}
               },
               "enabled": {},
-              "replicaCount": {}
+              "replicaCount": {},
+              "topologyKey": {}
             },
             "imagePullPolicy": {},
             "imagePullSecrets": {},
+            "initContainers": {
+              "injector": {}
+            },
             "k8sLabels": {},
             "labels": {},
             "logAsJson": {},
@@ -16701,6 +18229,9 @@
             "registry": {},
             "reminders": {
               "serviceName": {}
+            },
+            "scheduler": {
+              "enabled": {}
             },
             "seccompProfile": {},
             "tag": {},
@@ -16723,6 +18254,9 @@
           },
           "logLevel": {},
           "nameOverride": {},
+          "namespaceSelector": {},
+          "nativeSidecar": {},
+          "objectSelector": {},
           "readinessProbe": {
             "failureThreshold": {},
             "initialDelaySeconds": {},
@@ -16767,6 +18301,13 @@
         "dapr_placement.service.annotations",
         "dapr_placement.statefulsetAnnotations",
         "dapr_rbac.global.k8sLabels",
+        "dapr_rbac.serviceAccount.injector.annotations",
+        "dapr_rbac.serviceAccount.operator.annotations",
+        "dapr_rbac.serviceAccount.placement.annotations",
+        "dapr_rbac.serviceAccount.scheduler.annotations",
+        "dapr_rbac.serviceAccount.sentry.annotations",
+        "dapr_scheduler.cluster.storageSize",
+        "dapr_scheduler.etcdClientEndpoints",
         "dapr_scheduler.extraEnvVars",
         "dapr_scheduler.global.k8sLabels",
         "dapr_scheduler.global.nodeSelector",
@@ -16781,6 +18322,7 @@
         "dapr_sentry.global.nodeSelector",
         "dapr_sentry.global.priorityClassName",
         "dapr_sentry.global.tolerations",
+        "dapr_sentry.oidc.allowedHosts",
         "dapr_sentry.resources",
         "dapr_sentry.service.annotations",
         "dapr_sentry.tls.root.certPEM",
@@ -16796,6 +18338,8 @@
         "dapr_sidecar_injector.ignoreEntrypointTolerations",
         "dapr_sidecar_injector.image.name",
         "dapr_sidecar_injector.kubeClusterDomain",
+        "dapr_sidecar_injector.namespaceSelector",
+        "dapr_sidecar_injector.objectSelector",
         "dapr_sidecar_injector.resources",
         "dapr_sidecar_injector.service.annotations",
         "dapr_sidecar_injector.sidecarImagePullPolicy",
@@ -16803,14 +18347,14 @@
       ],
       "dynamic": [],
       "charts": [
-        "<root>=dapr@1.14.4",
-        "dapr_config=dapr_config@1.14.4",
-        "dapr_operator=dapr_operator@1.14.4",
-        "dapr_placement=dapr_placement@1.14.4",
-        "dapr_rbac=dapr_rbac@1.14.4",
-        "dapr_scheduler=dapr_scheduler@1.14.4",
-        "dapr_sentry=dapr_sentry@1.14.4",
-        "dapr_sidecar_injector=dapr_sidecar_injector@1.14.4"
+        "<root>=dapr@1.18.3",
+        "dapr_config=dapr_config@1.18.3",
+        "dapr_operator=dapr_operator@1.18.3",
+        "dapr_placement=dapr_placement@1.18.3",
+        "dapr_rbac=dapr_rbac@1.18.3",
+        "dapr_scheduler=dapr_scheduler@1.18.3",
+        "dapr_sentry=dapr_sentry@1.18.3",
+        "dapr_sidecar_injector=dapr_sidecar_injector@1.18.3"
       ]
     },
     "https://docs.openziti.io/helm-charts/|ziti-controller|3.1.1": {
@@ -19160,7 +20704,7 @@
         "prometheus=prometheus@25.22.0"
       ]
     },
-    "https://grafana.github.io/helm-charts|alloy|0.10.1": {
+    "https://grafana.github.io/helm-charts|alloy|1.12.1": {
       "literal": {
         "$chart_tests": {},
         "agent": {},
@@ -19170,22 +20714,26 @@
             "name": {},
             "portName": {}
           },
+          "command": {},
           "configMap": {
             "content": {},
             "create": {},
             "key": {},
             "name": {}
           },
+          "enableHttpServerPort": {},
           "enableReporting": {},
           "envFrom": {},
           "extraArgs": {},
           "extraEnv": {},
           "extraPorts": {},
           "hostAliases": {},
+          "initialDelaySeconds": {},
           "lifecycle": {},
           "listenAddr": {},
           "listenPort": {},
           "listenScheme": {},
+          "livenessProbe": {},
           "mounts": {
             "dockercontainers": {},
             "extra": {},
@@ -19195,6 +20743,7 @@
           "securityContext": {},
           "stabilityLevel": {},
           "storagePath": {},
+          "timeoutSeconds": {},
           "uiPathPrefix": {}
         },
         "configReloader": {
@@ -19202,6 +20751,7 @@
           "enabled": {},
           "image": {
             "digest": {},
+            "pullPolicy": {},
             "registry": {},
             "repository": {},
             "tag": {}
@@ -19209,34 +20759,32 @@
           "resources": {
             "requests": {}
           },
-          "securityContext": {}
+          "securityContext": {
+            "allowPrivilegeEscalation": {},
+            "capabilities": {
+              "drop": {}
+            },
+            "readOnlyRootFilesystem": {},
+            "runAsGroup": {},
+            "runAsNonRoot": {},
+            "runAsUser": {},
+            "seccompProfile": {
+              "type": {}
+            }
+          }
         },
         "controller": {
           "affinity": {},
-          "autoscaling": {
-            "enabled": {},
-            "maxReplicas": {},
-            "minReplicas": {},
-            "scaleDown": {
-              "policies": {},
-              "selectPolicy": {},
-              "stabilizationWindowSeconds": {}
-            },
-            "scaleUp": {
-              "policies": {},
-              "selectPolicy": {},
-              "stabilizationWindowSeconds": {}
-            },
-            "targetCPUUtilizationPercentage": {},
-            "targetMemoryUtilizationPercentage": {}
-          },
+          "autoscaling": {},
           "dnsPolicy": {},
           "enableStatefulSetAutoDeletePVC": {},
           "extraAnnotations": {},
           "extraContainers": {},
+          "extraLabels": {},
           "hostNetwork": {},
           "hostPID": {},
           "initContainers": {},
+          "minReadySeconds": {},
           "nodeSelector": {},
           "parallelRollout": {},
           "podAnnotations": {},
@@ -19248,6 +20796,7 @@
           "podLabels": {},
           "priorityClassName": {},
           "replicas": {},
+          "revisionHistoryLimit": {},
           "terminationGracePeriodSeconds": {},
           "tolerations": {},
           "topologySpreadConstraints": {},
@@ -19262,6 +20811,7 @@
           "create": {}
         },
         "enableStatefulSetAutoDeletePVC": {},
+        "extraObjects": {},
         "fullnameOverride": {},
         "global": {},
         "image": {
@@ -19286,13 +20836,24 @@
         },
         "nameOverride": {},
         "namespaceOverride": {},
+        "networkPolicy": {
+          "egress": {},
+          "enabled": {},
+          "flavor": {},
+          "ingress": {},
+          "policyTypes": {}
+        },
         "rbac": {
-          "create": {}
+          "clusterRules": {},
+          "create": {},
+          "namespaces": {},
+          "rules": {}
         },
         "service": {
           "annotations": {},
           "clusterIP": {},
           "enabled": {},
+          "externalTrafficPolicy": {},
           "internalTrafficPolicy": {},
           "nodePort": {},
           "type": {}
@@ -19300,6 +20861,7 @@
         "serviceAccount": {
           "additionalLabels": {},
           "annotations": {},
+          "automountServiceAccountToken": {},
           "create": {},
           "name": {}
         },
@@ -19313,24 +20875,26 @@
         }
       },
       "open": [
+        "alloy.command",
         "alloy.envFrom",
         "alloy.extraArgs",
         "alloy.extraEnv",
         "alloy.extraPorts",
         "alloy.hostAliases",
         "alloy.lifecycle",
+        "alloy.livenessProbe",
         "alloy.mounts.extra",
         "alloy.resources",
         "alloy.securityContext",
         "configReloader.customArgs",
         "configReloader.image.digest",
         "configReloader.resources.requests",
-        "configReloader.securityContext",
+        "configReloader.securityContext.capabilities.drop",
         "controller.affinity",
-        "controller.autoscaling.scaleDown.policies",
-        "controller.autoscaling.scaleUp.policies",
+        "controller.autoscaling",
         "controller.extraAnnotations",
         "controller.extraContainers",
+        "controller.extraLabels",
         "controller.initContainers",
         "controller.nodeSelector",
         "controller.podAnnotations",
@@ -19340,6 +20904,7 @@
         "controller.updateStrategy",
         "controller.volumeClaimTemplates",
         "controller.volumes.extra",
+        "extraObjects",
         "global",
         "image.digest",
         "image.pullSecrets",
@@ -19351,6 +20916,12 @@
         "ingress.path",
         "ingress.pathType",
         "ingress.tls",
+        "networkPolicy.egress",
+        "networkPolicy.ingress",
+        "networkPolicy.policyTypes",
+        "rbac.clusterRules",
+        "rbac.namespaces",
+        "rbac.rules",
         "service.annotations",
         "serviceAccount.additionalLabels",
         "serviceAccount.annotations",
@@ -19360,7 +20931,7 @@
         "serviceMonitor.tlsConfig"
       ],
       "dynamic": [],
-      "charts": ["<root>=alloy@0.10.1", "crds=crds@0.0.0"]
+      "charts": ["<root>=alloy@1.12.1", "crds=crds@0.0.0"]
     },
     "https://grafana.github.io/helm-charts|loki|6.18.0": {
       "literal": {
@@ -26463,9 +28034,10 @@
       "dynamic": ["server"],
       "charts": ["<root>=vault@0.34.1"]
     },
-    "https://kubernetes-sigs.github.io/headlamp/|headlamp|0.30.1": {
+    "https://kubernetes-sigs.github.io/headlamp/|headlamp|0.45.0": {
       "literal": {
         "affinity": {},
+        "automountServiceAccountToken": {},
         "clusterRoleBinding": {
           "annotations": {},
           "clusterRoleName": {},
@@ -26473,14 +28045,39 @@
         },
         "config": {
           "baseURL": {},
+          "clusterInventory": {},
+          "enableHelm": {},
           "extraArgs": {},
           "inCluster": {},
+          "inClusterContextName": {},
+          "nodeShellImage": {},
+          "nodeShellNamespace": {},
           "oidc": {},
-          "pluginsDir": {}
+          "pluginsDir": {},
+          "podDebugImage": {},
+          "serviceAccountTokenPath": {},
+          "sessionTTL": {},
+          "staticPlugins": {},
+          "tlsCertPath": {},
+          "tlsKeyPath": {},
+          "unsafeUseServiceAccountToken": {},
+          "watchPlugins": {}
         },
+        "deploymentAnnotations": {},
         "env": {},
+        "extraContainers": {},
         "extraManifests": {},
         "fullnameOverride": {},
+        "hostAliases": {},
+        "hostUsers": {},
+        "httpRoute": {
+          "annotations": {},
+          "enabled": {},
+          "hostnames": {},
+          "labels": {},
+          "parentRefs": {},
+          "rules": {}
+        },
         "image": {
           "pullPolicy": {},
           "registry": {},
@@ -26498,6 +28095,7 @@
         },
         "initContainers": {},
         "nameOverride": {},
+        "namespaceOverride": {},
         "nodeSelector": {},
         "persistentVolumeClaim": {
           "accessModes": {},
@@ -26508,14 +28106,53 @@
           "storageClassName": {},
           "volumeMode": {}
         },
+        "pluginsManager": {
+          "baseImage": {},
+          "configContent": {},
+          "configFile": {},
+          "enabled": {},
+          "env": {},
+          "resources": {},
+          "securityContext": {},
+          "version": {},
+          "volumeMounts": {}
+        },
         "podAnnotations": {},
+        "podDisruptionBudget": {
+          "enabled": {},
+          "maxUnavailable": {},
+          "minAvailable": {},
+          "unhealthyPodEvictionPolicy": {}
+        },
+        "podLabels": {},
         "podSecurityContext": {},
+        "priorityClassName": {},
+        "probes": {
+          "livenessProbe": {
+            "failureThreshold": {},
+            "initialDelaySeconds": {},
+            "periodSeconds": {},
+            "successThreshold": {},
+            "timeoutSeconds": {}
+          },
+          "readinessProbe": {
+            "failureThreshold": {},
+            "initialDelaySeconds": {},
+            "periodSeconds": {},
+            "successThreshold": {},
+            "timeoutSeconds": {}
+          },
+          "scheme": {}
+        },
         "replicaCount": {},
         "resources": {},
         "securityContext": {},
         "service": {
+          "annotations": {},
+          "appProtocol": {},
           "clusterIP": {},
           "externalTrafficPolicy": {},
+          "extraServicePorts": {},
           "loadBalancerIP": {},
           "loadBalancerSourceRanges": {},
           "nodePort": {},
@@ -26528,17 +28165,28 @@
           "name": {}
         },
         "tolerations": {},
+        "topologySpreadConstraints": {},
         "volumeMounts": {},
         "volumes": {}
       },
       "open": [
         "affinity",
         "clusterRoleBinding.annotations",
+        "config.clusterInventory",
         "config.extraArgs",
         "config.oidc",
+        "config.staticPlugins",
+        "deploymentAnnotations",
         "env",
+        "extraContainers",
         "extraManifests",
         "global",
+        "hostAliases",
+        "httpRoute.annotations",
+        "httpRoute.hostnames",
+        "httpRoute.labels",
+        "httpRoute.parentRefs",
+        "httpRoute.rules",
         "imagePullSecrets",
         "ingress.annotations",
         "ingress.hosts",
@@ -26549,38 +28197,75 @@
         "persistentVolumeClaim.accessModes",
         "persistentVolumeClaim.annotations",
         "persistentVolumeClaim.selector",
+        "pluginsManager.configContent",
+        "pluginsManager.env",
+        "pluginsManager.resources",
+        "pluginsManager.securityContext",
+        "pluginsManager.volumeMounts",
         "podAnnotations",
+        "podLabels",
         "podSecurityContext",
         "resources",
         "securityContext",
+        "service.annotations",
+        "service.extraServicePorts",
         "service.loadBalancerSourceRanges",
         "service.port",
         "serviceAccount.annotations",
         "tolerations",
+        "topologySpreadConstraints",
         "volumeMounts",
         "volumes"
       ],
       "dynamic": [],
-      "charts": ["<root>=headlamp@0.30.1"]
+      "charts": ["<root>=headlamp@0.45.0"]
     },
-    "https://kubernetes-sigs.github.io/node-feature-discovery/charts|node-feature-discovery|0.17.1": {
+    "https://kubernetes-sigs.github.io/node-feature-discovery/charts|node-feature-discovery|0.19.0": {
       "literal": {
+        "checksumValuesOnly": {},
         "featureGates": {},
         "fullnameOverride": {},
         "gc": {
           "affinity": {},
           "annotations": {},
           "deploymentAnnotations": {},
+          "dnsPolicy": {},
           "enable": {},
           "extraArgs": {},
           "extraEnvs": {},
           "hostNetwork": {},
+          "hostUsers": {},
+          "initContainers": {},
           "interval": {},
-          "metricsPort": {},
+          "labels": {},
+          "livenessProbe": {
+            "failureThreshold": {},
+            "initialDelaySeconds": {},
+            "periodSeconds": {},
+            "timeoutSeconds": {}
+          },
+          "networkPolicy": {
+            "egress": {},
+            "enabled": {},
+            "ingress": {}
+          },
           "nodeSelector": {},
+          "podDisruptionBudget": {
+            "enable": {},
+            "minAvailable": {},
+            "unhealthyPodEvictionPolicy": {}
+          },
           "podSecurityContext": {},
+          "port": {},
           "rbac": {
             "create": {}
+          },
+          "readinessProbe": {
+            "failureThreshold": {},
+            "initialDelaySeconds": {},
+            "periodSeconds": {},
+            "successThreshold": {},
+            "timeoutSeconds": {}
           },
           "replicaCount": {},
           "resources": {},
@@ -26592,6 +28277,7 @@
           },
           "tolerations": {}
         },
+        "global": {},
         "image": {
           "pullPolicy": {},
           "repository": {},
@@ -26608,37 +28294,42 @@
           "config": {},
           "denyLabelNs": {},
           "deploymentAnnotations": {},
+          "dnsPolicy": {},
           "enable": {},
           "enableTaints": {},
           "extraArgs": {},
           "extraEnvs": {},
           "extraLabelNs": {},
-          "featureApi": {},
-          "featureRulesController": {},
-          "healthPort": {},
           "hostNetwork": {},
+          "hostUsers": {},
+          "initContainers": {},
           "instance": {},
+          "labels": {},
           "livenessProbe": {
             "failureThreshold": {},
-            "grpc": {
-              "port": {}
-            },
             "initialDelaySeconds": {},
             "periodSeconds": {},
             "timeoutSeconds": {}
           },
-          "metricsPort": {},
+          "networkPolicy": {
+            "egress": {},
+            "enabled": {},
+            "ingress": {}
+          },
           "nfdApiParallelism": {},
           "nodeSelector": {},
+          "podDisruptionBudget": {
+            "enable": {},
+            "minAvailable": {},
+            "unhealthyPodEvictionPolicy": {}
+          },
           "podSecurityContext": {},
+          "port": {},
           "rbac": {
             "create": {}
           },
           "readinessProbe": {
             "failureThreshold": {},
-            "grpc": {
-              "port": {}
-            },
             "initialDelaySeconds": {},
             "periodSeconds": {},
             "successThreshold": {},
@@ -26656,9 +28347,6 @@
           },
           "startupProbe": {
             "failureThreshold": {},
-            "grpc": {
-              "port": {}
-            },
             "initialDelaySeconds": {},
             "periodSeconds": {},
             "timeoutSeconds": {}
@@ -26667,6 +28355,7 @@
         },
         "nameOverride": {},
         "namespaceOverride": {},
+        "postDeleteCleanup": {},
         "priorityClassName": {},
         "prometheus": {
           "enable": {},
@@ -26679,35 +28368,37 @@
           "config": {},
           "createCRDs": {},
           "daemonsetAnnotations": {},
+          "dnsPolicy": {},
           "enable": {},
           "extraArgs": {},
           "extraEnvs": {},
-          "healthPort": {},
           "hostNetwork": {},
+          "hostUsers": {},
+          "initContainers": {},
           "kubeletConfigPath": {},
           "kubeletPodResourcesSockPath": {},
           "kubeletStateDir": {},
+          "labels": {},
           "livenessProbe": {
             "failureThreshold": {},
-            "grpc": {
-              "port": {}
-            },
             "initialDelaySeconds": {},
             "periodSeconds": {},
             "timeoutSeconds": {}
           },
-          "metricsPort": {},
+          "networkPolicy": {
+            "egress": {},
+            "enabled": {},
+            "ingress": {}
+          },
           "nodeSelector": {},
           "podSecurityContext": {},
           "podSetFingerprint": {},
+          "port": {},
           "rbac": {
             "create": {}
           },
           "readinessProbe": {
             "failureThreshold": {},
-            "grpc": {
-              "port": {}
-            },
             "initialDelaySeconds": {},
             "periodSeconds": {},
             "successThreshold": {},
@@ -26730,33 +28421,36 @@
           "annotations": {},
           "config": {},
           "daemonsetAnnotations": {},
+          "dnsPolicy": {},
           "enable": {},
           "extraArgs": {},
           "extraEnvs": {},
-          "healthPort": {},
           "hostNetwork": {},
+          "hostUsers": {},
+          "initContainers": {},
+          "labels": {},
           "livenessProbe": {
             "failureThreshold": {},
-            "grpc": {
-              "port": {}
-            },
             "initialDelaySeconds": {},
             "periodSeconds": {},
             "timeoutSeconds": {}
           },
-          "metricsPort": {},
           "mountUsrSrc": {},
+          "networkPolicy": {
+            "egress": {},
+            "enabled": {},
+            "ingress": {}
+          },
           "nodeSelector": {},
+          "ownerRefs": {},
           "podSecurityContext": {},
+          "port": {},
           "priorityClassName": {},
           "rbac": {
             "create": {}
           },
           "readinessProbe": {
             "failureThreshold": {},
-            "grpc": {
-              "port": {}
-            },
             "initialDelaySeconds": {},
             "periodSeconds": {},
             "successThreshold": {},
@@ -26770,7 +28464,12 @@
             "create": {},
             "name": {}
           },
-          "tolerations": {}
+          "tolerations": {},
+          "updateStrategy": {
+            "rollingUpdate": {
+              "maxUnavailable": {}
+            }
+          }
         }
       },
       "open": [
@@ -26780,6 +28479,10 @@
         "gc.deploymentAnnotations",
         "gc.extraArgs",
         "gc.extraEnvs",
+        "gc.initContainers",
+        "gc.labels",
+        "gc.networkPolicy.egress",
+        "gc.networkPolicy.ingress",
         "gc.nodeSelector",
         "gc.podSecurityContext",
         "gc.resources",
@@ -26795,6 +28498,10 @@
         "master.extraArgs",
         "master.extraEnvs",
         "master.extraLabelNs",
+        "master.initContainers",
+        "master.labels",
+        "master.networkPolicy.egress",
+        "master.networkPolicy.ingress",
         "master.nodeSelector",
         "master.podSecurityContext",
         "master.resources",
@@ -26808,6 +28515,10 @@
         "topologyUpdater.daemonsetAnnotations",
         "topologyUpdater.extraArgs",
         "topologyUpdater.extraEnvs",
+        "topologyUpdater.initContainers",
+        "topologyUpdater.labels",
+        "topologyUpdater.networkPolicy.egress",
+        "topologyUpdater.networkPolicy.ingress",
         "topologyUpdater.nodeSelector",
         "topologyUpdater.podSecurityContext",
         "topologyUpdater.resources",
@@ -26820,7 +28531,12 @@
         "worker.daemonsetAnnotations",
         "worker.extraArgs",
         "worker.extraEnvs",
+        "worker.initContainers",
+        "worker.labels",
+        "worker.networkPolicy.egress",
+        "worker.networkPolicy.ingress",
         "worker.nodeSelector",
+        "worker.ownerRefs",
         "worker.podSecurityContext",
         "worker.resources",
         "worker.securityContext",
@@ -26828,7 +28544,7 @@
         "worker.tolerations"
       ],
       "dynamic": [],
-      "charts": ["<root>=node-feature-discovery@0.17.1"]
+      "charts": ["<root>=node-feature-discovery@0.19.0"]
     },
     "https://nats-io.github.io/k8s/helm/charts/|nats|1.2.7": {
       "literal": {
@@ -27252,16 +28968,507 @@
       "dynamic": [],
       "charts": ["<root>=nats@1.2.7"]
     },
-    "https://open-policy-agent.github.io/gatekeeper/charts|gatekeeper|3.18.1": {
+    "https://nats-io.github.io/k8s/helm/charts/|nats|2.14.6": {
       "literal": {
+        "config": {
+          "cluster": {
+            "enabled": {},
+            "merge": {},
+            "noAdvertise": {},
+            "patch": {},
+            "port": {},
+            "replicas": {},
+            "routeURLs": {
+              "k8sClusterDomain": {},
+              "password": {},
+              "useFQDN": {},
+              "user": {}
+            },
+            "tls": {
+              "cert": {},
+              "dir": {},
+              "enabled": {},
+              "key": {},
+              "merge": {},
+              "patch": {},
+              "secretName": {}
+            }
+          },
+          "gateway": {
+            "enabled": {},
+            "merge": {},
+            "patch": {},
+            "port": {},
+            "tls": {
+              "cert": {},
+              "dir": {},
+              "enabled": {},
+              "key": {},
+              "merge": {},
+              "patch": {},
+              "secretName": {}
+            }
+          },
+          "jetstream": {
+            "enabled": {},
+            "fileStore": {
+              "dir": {},
+              "enabled": {},
+              "maxSize": {},
+              "pvc": {
+                "enabled": {},
+                "merge": {},
+                "name": {},
+                "patch": {},
+                "size": {},
+                "storageClassName": {}
+              }
+            },
+            "memoryStore": {
+              "enabled": {},
+              "maxSize": {}
+            },
+            "merge": {},
+            "patch": {}
+          },
+          "lameDuckDuration": {},
+          "lameDuckGracePeriod": {},
+          "leafnodes": {
+            "enabled": {},
+            "merge": {},
+            "patch": {},
+            "port": {},
+            "tls": {
+              "cert": {},
+              "dir": {},
+              "enabled": {},
+              "key": {},
+              "merge": {},
+              "patch": {},
+              "secretName": {}
+            }
+          },
+          "merge": {},
+          "monitor": {
+            "enabled": {},
+            "port": {},
+            "tls": {
+              "enabled": {}
+            }
+          },
+          "mqtt": {
+            "enabled": {},
+            "merge": {},
+            "patch": {},
+            "port": {},
+            "tls": {
+              "cert": {},
+              "dir": {},
+              "enabled": {},
+              "key": {},
+              "merge": {},
+              "patch": {},
+              "secretName": {}
+            }
+          },
+          "nats": {
+            "port": {},
+            "tls": {
+              "cert": {},
+              "dir": {},
+              "enabled": {},
+              "key": {},
+              "merge": {},
+              "patch": {},
+              "secretName": {}
+            }
+          },
+          "patch": {},
+          "profiling": {
+            "enabled": {},
+            "port": {}
+          },
+          "resolver": {
+            "dir": {},
+            "enabled": {},
+            "merge": {},
+            "patch": {},
+            "pvc": {
+              "enabled": {},
+              "merge": {},
+              "name": {},
+              "patch": {},
+              "size": {},
+              "storageClassName": {}
+            }
+          },
+          "serverNamePrefix": {},
+          "websocket": {
+            "enabled": {},
+            "ingress": {
+              "className": {},
+              "enabled": {},
+              "hosts": {},
+              "merge": {},
+              "name": {},
+              "patch": {},
+              "path": {},
+              "pathType": {},
+              "tlsSecretName": {}
+            },
+            "merge": {},
+            "patch": {},
+            "port": {},
+            "tls": {
+              "cert": {},
+              "dir": {},
+              "enabled": {},
+              "key": {},
+              "merge": {},
+              "patch": {},
+              "secretName": {}
+            }
+          }
+        },
+        "configMap": {
+          "merge": {},
+          "name": {},
+          "patch": {}
+        },
+        "container": {
+          "env": {},
+          "image": {
+            "digest": {},
+            "fullImageName": {},
+            "pullPolicy": {},
+            "registry": {},
+            "repository": {},
+            "tag": {}
+          },
+          "livenessProbe": {
+            "failureThreshold": {},
+            "httpGet": {
+              "path": {},
+              "port": {}
+            },
+            "initialDelaySeconds": {},
+            "periodSeconds": {},
+            "successThreshold": {},
+            "timeoutSeconds": {}
+          },
+          "merge": {},
+          "patch": {},
+          "ports": {
+            "cluster": {},
+            "gateway": {},
+            "leafnodes": {},
+            "monitor": {},
+            "mqtt": {},
+            "nats": {},
+            "profiling": {},
+            "websocket": {}
+          },
+          "readinessProbe": {
+            "failureThreshold": {},
+            "httpGet": {
+              "path": {},
+              "port": {}
+            },
+            "initialDelaySeconds": {},
+            "periodSeconds": {},
+            "successThreshold": {},
+            "timeoutSeconds": {}
+          },
+          "resources": {},
+          "startupProbe": {
+            "failureThreshold": {},
+            "httpGet": {
+              "path": {},
+              "port": {}
+            },
+            "initialDelaySeconds": {},
+            "periodSeconds": {},
+            "successThreshold": {},
+            "timeoutSeconds": {}
+          }
+        },
+        "extraResources": {},
+        "fullnameOverride": {},
+        "global": {},
+        "headlessService": {
+          "merge": {},
+          "name": {},
+          "patch": {}
+        },
+        "nameOverride": {},
+        "namespaceOverride": {},
+        "natsBox": {
+          "container": {
+            "env": {},
+            "image": {
+              "digest": {},
+              "fullImageName": {},
+              "pullPolicy": {},
+              "registry": {},
+              "repository": {},
+              "resources": {},
+              "tag": {}
+            },
+            "merge": {},
+            "patch": {},
+            "resources": {}
+          },
+          "contentsSecret": {
+            "merge": {},
+            "name": {},
+            "patch": {}
+          },
+          "contexts": {},
+          "contextsSecret": {
+            "merge": {},
+            "name": {},
+            "patch": {}
+          },
+          "defaultContextName": {},
+          "deployment": {
+            "merge": {},
+            "name": {},
+            "patch": {}
+          },
+          "enabled": {},
+          "podTemplate": {
+            "merge": {},
+            "patch": {}
+          },
+          "serviceAccount": {
+            "enabled": {},
+            "merge": {},
+            "name": {},
+            "patch": {}
+          }
+        },
+        "podDisruptionBudget": {
+          "enabled": {},
+          "merge": {},
+          "name": {},
+          "patch": {}
+        },
+        "podTemplate": {
+          "configChecksumAnnotation": {},
+          "merge": {},
+          "patch": {},
+          "terminationGracePeriodSeconds": {},
+          "topologySpreadConstraints": {}
+        },
+        "promExporter": {
+          "enabled": {},
+          "env": {},
+          "image": {
+            "digest": {},
+            "fullImageName": {},
+            "pullPolicy": {},
+            "registry": {},
+            "repository": {},
+            "tag": {}
+          },
+          "merge": {},
+          "monitorDomain": {},
+          "patch": {},
+          "podMonitor": {
+            "enabled": {},
+            "merge": {},
+            "name": {},
+            "patch": {}
+          },
+          "port": {}
+        },
+        "reloader": {
+          "enabled": {},
+          "env": {},
+          "image": {
+            "digest": {},
+            "fullImageName": {},
+            "pullPolicy": {},
+            "registry": {},
+            "repository": {},
+            "tag": {}
+          },
+          "merge": {},
+          "natsVolumeMountPrefixes": {},
+          "patch": {}
+        },
+        "service": {
+          "enabled": {},
+          "merge": {},
+          "name": {},
+          "patch": {},
+          "ports": {
+            "cluster": {
+              "enabled": {}
+            },
+            "gateway": {
+              "enabled": {}
+            },
+            "leafnodes": {
+              "enabled": {}
+            },
+            "monitor": {
+              "enabled": {}
+            },
+            "mqtt": {
+              "enabled": {}
+            },
+            "nats": {
+              "enabled": {}
+            },
+            "profiling": {
+              "enabled": {}
+            },
+            "websocket": {
+              "enabled": {}
+            }
+          }
+        },
+        "serviceAccount": {
+          "enabled": {},
+          "merge": {},
+          "name": {},
+          "patch": {}
+        },
+        "statefulSet": {
+          "merge": {},
+          "name": {},
+          "patch": {}
+        },
+        "tlsCA": {
+          "configMapName": {},
+          "dir": {},
+          "enabled": {},
+          "key": {},
+          "secretName": {}
+        }
+      },
+      "open": [
+        "config.cluster.merge",
+        "config.cluster.patch",
+        "config.cluster.tls.merge",
+        "config.cluster.tls.patch",
+        "config.gateway.merge",
+        "config.gateway.patch",
+        "config.gateway.tls.merge",
+        "config.gateway.tls.patch",
+        "config.jetstream.fileStore.pvc.merge",
+        "config.jetstream.fileStore.pvc.patch",
+        "config.jetstream.merge",
+        "config.jetstream.patch",
+        "config.leafnodes.merge",
+        "config.leafnodes.patch",
+        "config.leafnodes.tls.merge",
+        "config.leafnodes.tls.patch",
+        "config.merge",
+        "config.mqtt.merge",
+        "config.mqtt.patch",
+        "config.mqtt.tls.merge",
+        "config.mqtt.tls.patch",
+        "config.nats.tls.merge",
+        "config.nats.tls.patch",
+        "config.patch",
+        "config.resolver.merge",
+        "config.resolver.patch",
+        "config.resolver.pvc.merge",
+        "config.resolver.pvc.patch",
+        "config.websocket.ingress.hosts",
+        "config.websocket.ingress.merge",
+        "config.websocket.ingress.patch",
+        "config.websocket.merge",
+        "config.websocket.patch",
+        "config.websocket.tls.merge",
+        "config.websocket.tls.patch",
+        "configMap.merge",
+        "configMap.patch",
+        "container.env",
+        "container.merge",
+        "container.patch",
+        "container.ports.cluster",
+        "container.ports.gateway",
+        "container.ports.leafnodes",
+        "container.ports.monitor",
+        "container.ports.mqtt",
+        "container.ports.nats",
+        "container.ports.profiling",
+        "container.ports.websocket",
+        "container.resources",
+        "extraResources",
+        "global",
+        "headlessService.merge",
+        "headlessService.patch",
+        "natsBox.container.env",
+        "natsBox.container.image.resources",
+        "natsBox.container.merge",
+        "natsBox.container.patch",
+        "natsBox.container.resources",
+        "natsBox.contentsSecret.merge",
+        "natsBox.contentsSecret.patch",
+        "natsBox.contexts",
+        "natsBox.contextsSecret.merge",
+        "natsBox.contextsSecret.patch",
+        "natsBox.deployment.merge",
+        "natsBox.deployment.patch",
+        "natsBox.podTemplate.merge",
+        "natsBox.podTemplate.patch",
+        "natsBox.serviceAccount.merge",
+        "natsBox.serviceAccount.patch",
+        "podDisruptionBudget.merge",
+        "podDisruptionBudget.patch",
+        "podTemplate.merge",
+        "podTemplate.patch",
+        "podTemplate.topologySpreadConstraints",
+        "promExporter.env",
+        "promExporter.merge",
+        "promExporter.patch",
+        "promExporter.podMonitor.merge",
+        "promExporter.podMonitor.patch",
+        "reloader.env",
+        "reloader.merge",
+        "reloader.natsVolumeMountPrefixes",
+        "reloader.patch",
+        "service.merge",
+        "service.patch",
+        "serviceAccount.merge",
+        "serviceAccount.patch",
+        "statefulSet.merge",
+        "statefulSet.patch"
+      ],
+      "dynamic": [],
+      "charts": ["<root>=nats@2.14.6"]
+    },
+    "https://open-policy-agent.github.io/gatekeeper/charts|gatekeeper|3.23.1": {
+      "literal": {
+        "additionalMutatingWebhookConfigsToRotateCerts": {},
+        "additionalValidatingWebhookConfigsToRotateCerts": {},
         "admissionEventsInvolvedNamespace": {},
         "audit": {
           "affinity": {},
+          "apiCacheDir": {},
           "channel": {},
           "connection": {},
+          "containerName": {},
+          "disableAuditOperation": {},
+          "disableAuditSidecar": {},
           "disableCertRotation": {},
+          "disableGenerateOperation": {},
+          "disableStatusOperation": {},
           "dnsPolicy": {},
-          "enablePubsub": {},
+          "exportConnection": {
+            "maxAuditResults": {},
+            "path": {}
+          },
+          "exportSidecar": {},
+          "exportVolume": {},
+          "exportVolumeMount": {
+            "path": {}
+          },
+          "extraEnvs": {},
           "extraRules": {},
           "healthPort": {},
           "hostNetwork": {},
@@ -27277,6 +29484,7 @@
           "resources": {},
           "securityContext": {},
           "serviceAccount": {
+            "automountServiceAccountToken": {},
             "name": {}
           },
           "tolerations": {},
@@ -27288,18 +29496,28 @@
         "auditInterval": {},
         "auditMatchKindOnly": {},
         "auditPodAnnotations": {},
+        "commonAnnotations": {},
         "commonLabels": {},
         "constraintViolationsLimit": {},
         "controllerManager": {
           "affinity": {},
+          "certDir": {},
+          "certServiceName": {},
+          "clientCAName": {},
+          "clientCNName": {},
           "clientCertName": {},
+          "containerName": {},
           "disableCertRotation": {},
+          "disableGenerateOperation": {},
+          "disableWebhookOperation": {},
           "dnsPolicy": {},
           "exemptNamespacePrefixes": {},
           "exemptNamespaceSuffixes": {},
           "exemptNamespaces": {},
+          "extraEnvs": {},
           "extraRules": {},
           "healthPort": {},
+          "host": {},
           "hostNetwork": {},
           "livenessTimeout": {},
           "logFile": {},
@@ -27318,6 +29536,7 @@
           "resources": {},
           "securityContext": {},
           "serviceAccount": {
+            "automountServiceAccountToken": {},
             "name": {}
           },
           "strategyRollingUpdate": {},
@@ -27339,8 +29558,10 @@
         },
         "defaultCreateVAPBindingForConstraints": {},
         "defaultCreateVAPForTemplates": {},
+        "defaultK8sNativeValidationFailurePolicy": {},
         "defaultWaitForVAPBGeneration": {},
         "disableAudit": {},
+        "disableEnforcementActionValidation": {},
         "disableMutation": {},
         "disableValidatingWebhook": {},
         "disabledBuiltins": {},
@@ -27351,13 +29572,21 @@
         "enableExternalData": {},
         "enableGeneratorResourceExpansion": {},
         "enableK8sNativeValidation": {},
+        "enablePprof": {},
+        "enableReferentialRules": {},
+        "enableRemoteCluster": {},
         "enableRuntimeDefaultSeccompProfile": {},
         "enableTLSHealthcheck": {},
+        "enableViolationExport": {},
+        "exportBackend": {},
         "externalCertInjection": {
           "enabled": {},
           "secretName": {}
         },
         "externaldataProviderResponseCacheTTL": {},
+        "extraEnvs": {},
+        "extraVolumeMounts": {},
+        "extraVolumes": {},
         "fullnameOverride": {},
         "image": {
           "crdRepository": {},
@@ -27366,12 +29595,16 @@
           "release": {},
           "repository": {}
         },
+        "kubeconfig": {},
         "logDenies": {},
         "logLevel": {},
+        "logLevelEncoder": {},
+        "logLevelKey": {},
         "logMutations": {},
         "logStatsAdmission": {},
         "logStatsAudit": {},
         "maxServingThreads": {},
+        "metricsAddr": {},
         "metricsBackends": {},
         "mutatingWebhookAnnotations": {},
         "mutatingWebhookCustomRules": {},
@@ -27381,10 +29614,14 @@
         "mutatingWebhookName": {},
         "mutatingWebhookObjectSelector": {},
         "mutatingWebhookReinvocationPolicy": {},
+        "mutatingWebhookScope": {},
+        "mutatingWebhookSubResources": {},
         "mutatingWebhookTimeoutSeconds": {},
         "mutatingWebhookURL": {},
         "mutationAnnotations": {},
         "nameOverride": {},
+        "otlpEndpoint": {},
+        "otlpMetricInterval": {},
         "pdb": {
           "controllerManager": {
             "minAvailable": {}
@@ -27463,6 +29700,7 @@
           "securityContext": {},
           "tolerations": {}
         },
+        "pprofPort": {},
         "preInstall": {
           "crdRepository": {
             "image": {
@@ -27498,12 +29736,10 @@
           "securityContext": {},
           "tolerations": {}
         },
-        "psp": {
-          "enabled": {}
-        },
         "rbac": {
           "create": {}
         },
+        "readinessRetries": {},
         "replicas": {},
         "resourceQuota": {},
         "revisionHistoryLimit": {},
@@ -27514,6 +29750,10 @@
             "create": {}
           }
         },
+        "shutdownDelay": {},
+        "stackdriverMetricInterval": {},
+        "stackdriverOnlyWhenAvailable": {},
+        "syncVAPEnforcementScope": {},
         "upgradeCRDs": {
           "enabled": {},
           "extraRules": {},
@@ -27531,11 +29771,18 @@
         "validatingWebhookMatchConditions": {},
         "validatingWebhookName": {},
         "validatingWebhookObjectSelector": {},
+        "validatingWebhookScope": {},
+        "validatingWebhookSubResources": {},
         "validatingWebhookTimeoutSeconds": {},
         "validatingWebhookURL": {}
       },
       "open": [
+        "additionalMutatingWebhookConfigsToRotateCerts",
+        "additionalValidatingWebhookConfigsToRotateCerts",
         "audit.affinity",
+        "audit.exportSidecar",
+        "audit.exportVolume",
+        "audit.extraEnvs",
         "audit.extraRules",
         "audit.nodeSelector",
         "audit.podLabels",
@@ -27544,10 +29791,12 @@
         "audit.securityContext",
         "audit.tolerations",
         "auditPodAnnotations",
+        "commonAnnotations",
         "commonLabels",
         "controllerManager.affinity",
         "controllerManager.exemptNamespacePrefixes",
         "controllerManager.exemptNamespaces",
+        "controllerManager.extraEnvs",
         "controllerManager.extraRules",
         "controllerManager.networkPolicy.ingress",
         "controllerManager.nodeSelector",
@@ -27563,6 +29812,9 @@
         "crds.securityContext",
         "crds.tolerations",
         "disabledBuiltins",
+        "extraEnvs",
+        "extraVolumeMounts",
+        "extraVolumes",
         "global",
         "image.pullSecrets",
         "metricsBackends",
@@ -27571,6 +29823,7 @@
         "mutatingWebhookExemptNamespacesLabels",
         "mutatingWebhookMatchConditions",
         "mutatingWebhookObjectSelector",
+        "mutatingWebhookSubResources",
         "podAnnotations",
         "podLabels",
         "postInstall.affinity",
@@ -27604,10 +29857,11 @@
         "validatingWebhookCustomRules",
         "validatingWebhookExemptNamespacesLabels",
         "validatingWebhookMatchConditions",
-        "validatingWebhookObjectSelector"
+        "validatingWebhookObjectSelector",
+        "validatingWebhookSubResources"
       ],
       "dynamic": [],
-      "charts": ["<root>=gatekeeper@3.18.1"]
+      "charts": ["<root>=gatekeeper@3.23.1"]
     },
     "https://otwld.github.io/ollama-helm/|ollama|1.6.0": {
       "literal": {
@@ -31500,13 +33754,13 @@
       "dynamic": [],
       "charts": ["<root>=seaweedfs@4.33.0"]
     },
-    "https://spiffe.github.io/helm-charts-hardened/|spire-crds|0.5.0": {
+    "https://spiffe.github.io/helm-charts-hardened/|spire-crds|0.6.1": {
       "literal": {
         "annotations": {}
       },
       "open": ["annotations", "global"],
       "dynamic": [],
-      "charts": ["<root>=spire-crds@0.5.0"]
+      "charts": ["<root>=spire-crds@0.6.1"]
     },
     "https://spiffe.github.io/helm-charts-hardened/|spire|0.24.2": {
       "literal": {
@@ -33024,7 +35278,7 @@
         "upstream-spire-agent=spire-agent@0.1.0"
       ]
     },
-    "https://weaviate.github.io/weaviate-helm|weaviate|17.6.0": {
+    "https://weaviate.github.io/weaviate-helm|weaviate|17.8.3": {
       "literal": {
         "affinity": {
           "podAntiAffinity": {
@@ -33069,6 +35323,13 @@
           }
         },
         "clusterDomain": {},
+        "collectionExport": {
+          "enabled": {},
+          "envconfig": {
+            "EXPORT_DEFAULT_BUCKET": {},
+            "EXPORT_DEFAULT_PATH": {}
+          }
+        },
         "command": {},
         "containerSecurityContext": {},
         "custom_config_map": {
@@ -33141,6 +35402,11 @@
           "successThreshold": {},
           "timeoutSeconds": {}
         },
+        "mcp": {
+          "config": {},
+          "enabled": {},
+          "writeAccessEnabled": {}
+        },
         "modules": {
           "default_vectorizer_module": {},
           "generative-anthropic": {
@@ -33157,6 +35423,10 @@
             "secrets": {}
           },
           "generative-cohere": {
+            "apiKey": {},
+            "enabled": {}
+          },
+          "generative-contextualai": {
             "apiKey": {},
             "enabled": {}
           },
@@ -33425,6 +35695,10 @@
             "apiKey": {},
             "enabled": {}
           },
+          "reranker-contextualai": {
+            "apiKey": {},
+            "enabled": {}
+          },
           "reranker-jinaai": {
             "apiKey": {},
             "enabled": {}
@@ -33595,6 +35869,10 @@
           "text2vec-databricks": {
             "enabled": {},
             "token": {}
+          },
+          "text2vec-digitalocean": {
+            "apiKey": {},
+            "enabled": {}
           },
           "text2vec-google": {
             "apiKey": {},
@@ -33817,6 +36095,9 @@
             "enabled": {}
           }
         },
+        "namespaces": {
+          "enabled": {}
+        },
         "nodeSelector": {},
         "offload": {
           "s3": {
@@ -33973,6 +36254,7 @@
           "timeoutSeconds": {}
         },
         "storage": {
+          "name": {},
           "size": {},
           "storageClassName": {}
         },
@@ -34016,6 +36298,7 @@
         "image.pullSecrets",
         "initContainers.extraInitContainers",
         "livenessProbe.probeType",
+        "mcp.config",
         "modules.generative-aws.envSecrets",
         "modules.generative-aws.secrets",
         "modules.img2vec-neural.imagePullSecrets",
@@ -34092,7 +36375,7 @@
         "updateStrategy"
       ],
       "dynamic": ["livenessProbe.probe", "readinessProbe.probe", "startupProbe.probe"],
-      "charts": ["<root>=weaviate@17.6.0"]
+      "charts": ["<root>=weaviate@17.8.3"]
     }
   },
   "entries": [
@@ -34109,9 +36392,9 @@
     {
       "appId": "full-ai-cluster/alloy",
       "chart": "alloy",
-      "targetRevision": "0.10.1",
+      "targetRevision": "1.12.1",
       "repoURL": "https://grafana.github.io/helm-charts",
-      "chartKey": "https://grafana.github.io/helm-charts|alloy|0.10.1"
+      "chartKey": "https://grafana.github.io/helm-charts|alloy|1.12.1"
     },
     {
       "appId": "full-ai-cluster/arc-controller",
@@ -34130,9 +36413,9 @@
     {
       "appId": "full-ai-cluster/argo-rollouts",
       "chart": "argo-rollouts",
-      "targetRevision": "2.39.5",
+      "targetRevision": "2.43.0",
       "repoURL": "https://argoproj.github.io/argo-helm",
-      "chartKey": "https://argoproj.github.io/argo-helm|argo-rollouts|2.39.5"
+      "chartKey": "https://argoproj.github.io/argo-helm|argo-rollouts|2.43.0"
     },
     {
       "appId": "full-ai-cluster/argo-workflows",
@@ -34185,16 +36468,16 @@
     {
       "appId": "full-ai-cluster/cockroachdb",
       "chart": "cockroachdb",
-      "targetRevision": "14.0.5",
+      "targetRevision": "22.0.3",
       "repoURL": "https://charts.cockroachdb.com/",
-      "chartKey": "https://charts.cockroachdb.com/|cockroachdb|14.0.5"
+      "chartKey": "https://charts.cockroachdb.com/|cockroachdb|22.0.3"
     },
     {
       "appId": "full-ai-cluster/dapr",
       "chart": "dapr",
-      "targetRevision": "1.14.4",
+      "targetRevision": "1.18.3",
       "repoURL": "https://dapr.github.io/helm-charts/",
-      "chartKey": "https://dapr.github.io/helm-charts/|dapr|1.14.4"
+      "chartKey": "https://dapr.github.io/helm-charts/|dapr|1.18.3"
     },
     {
       "appId": "full-ai-cluster/deepseek-coder",
@@ -34209,9 +36492,9 @@
     {
       "appId": "full-ai-cluster/external-secrets",
       "chart": "external-secrets",
-      "targetRevision": "0.10.7",
+      "targetRevision": "2.10.0",
       "repoURL": "https://charts.external-secrets.io",
-      "chartKey": "https://charts.external-secrets.io|external-secrets|0.10.7"
+      "chartKey": "https://charts.external-secrets.io|external-secrets|2.10.0"
     },
     {
       "appId": "full-ai-cluster/forgejo",
@@ -34250,16 +36533,16 @@
     {
       "appId": "full-ai-cluster/headlamp",
       "chart": "headlamp",
-      "targetRevision": "0.30.1",
+      "targetRevision": "0.45.0",
       "repoURL": "https://kubernetes-sigs.github.io/headlamp/",
-      "chartKey": "https://kubernetes-sigs.github.io/headlamp/|headlamp|0.30.1"
+      "chartKey": "https://kubernetes-sigs.github.io/headlamp/|headlamp|0.45.0"
     },
     {
       "appId": "full-ai-cluster/headscale",
       "chart": "headscale",
-      "targetRevision": "0.4.0",
+      "targetRevision": "0.16.0",
       "repoURL": "https://charts.gabe565.com",
-      "chartKey": "https://charts.gabe565.com|headscale|0.4.0"
+      "chartKey": "https://charts.gabe565.com|headscale|0.16.0"
     },
     {
       "appId": "full-ai-cluster/hindsight",
@@ -34307,25 +36590,18 @@
       "chartKey": "https://grafana.github.io/helm-charts|mimir-distributed|5.5.1"
     },
     {
-      "appId": "full-ai-cluster/minio",
-      "chart": "minio",
-      "targetRevision": "5.4.0",
-      "repoURL": "https://charts.min.io/",
-      "chartKey": "https://charts.min.io/|minio|5.4.0"
-    },
-    {
       "appId": "full-ai-cluster/nats",
       "chart": "nats",
-      "targetRevision": "1.2.7",
+      "targetRevision": "2.14.6",
       "repoURL": "https://nats-io.github.io/k8s/helm/charts/",
-      "chartKey": "https://nats-io.github.io/k8s/helm/charts/|nats|1.2.7"
+      "chartKey": "https://nats-io.github.io/k8s/helm/charts/|nats|2.14.6"
     },
     {
       "appId": "full-ai-cluster/node-feature-discovery",
       "chart": "node-feature-discovery",
-      "targetRevision": "0.17.1",
+      "targetRevision": "0.19.0",
       "repoURL": "https://kubernetes-sigs.github.io/node-feature-discovery/charts",
-      "chartKey": "https://kubernetes-sigs.github.io/node-feature-discovery/charts|node-feature-discovery|0.17.1"
+      "chartKey": "https://kubernetes-sigs.github.io/node-feature-discovery/charts|node-feature-discovery|0.19.0"
     },
     {
       "appId": "full-ai-cluster/ollama",
@@ -34337,9 +36613,9 @@
     {
       "appId": "full-ai-cluster/open-policy-agent",
       "chart": "gatekeeper",
-      "targetRevision": "3.18.1",
+      "targetRevision": "3.23.1",
       "repoURL": "https://open-policy-agent.github.io/gatekeeper/charts",
-      "chartKey": "https://open-policy-agent.github.io/gatekeeper/charts|gatekeeper|3.18.1"
+      "chartKey": "https://open-policy-agent.github.io/gatekeeper/charts|gatekeeper|3.23.1"
     },
     {
       "appId": "full-ai-cluster/orleans",
@@ -34409,9 +36685,9 @@
     {
       "appId": "full-ai-cluster/spire-crds",
       "chart": "spire-crds",
-      "targetRevision": "0.5.0",
+      "targetRevision": "0.6.1",
       "repoURL": "https://spiffe.github.io/helm-charts-hardened/",
-      "chartKey": "https://spiffe.github.io/helm-charts-hardened/|spire-crds|0.5.0"
+      "chartKey": "https://spiffe.github.io/helm-charts-hardened/|spire-crds|0.6.1"
     },
     {
       "appId": "full-ai-cluster/tempo",
@@ -34430,9 +36706,9 @@
     {
       "appId": "full-ai-cluster/trust-manager",
       "chart": "trust-manager",
-      "targetRevision": "v0.15.0",
+      "targetRevision": "v0.24.0",
       "repoURL": "https://charts.jetstack.io",
-      "chartKey": "https://charts.jetstack.io|trust-manager|v0.15.0"
+      "chartKey": "https://charts.jetstack.io|trust-manager|v0.24.0"
     },
     {
       "appId": "full-ai-cluster/vault",
@@ -34454,9 +36730,9 @@
     {
       "appId": "full-ai-cluster/weaviate",
       "chart": "weaviate",
-      "targetRevision": "17.6.0",
+      "targetRevision": "17.8.3",
       "repoURL": "https://weaviate.github.io/weaviate-helm",
-      "chartKey": "https://weaviate.github.io/weaviate-helm|weaviate|17.6.0"
+      "chartKey": "https://weaviate.github.io/weaviate-helm|weaviate|17.8.3"
     },
     {
       "appId": "infra/argorollouts",
