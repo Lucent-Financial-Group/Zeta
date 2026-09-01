@@ -1,0 +1,14 @@
+{
+  "id": "080d02edfddfa810a013000876c26165",
+  "at": "2026-09-01T16:14:01.717Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1EVZEZN087G0R003GH4EHC",
+    "type": "task",
+    "title": "Fused filter skip sort when the chain has no Map",
+    "slug": "fused-filter-skip-sort-when-the-chain-has-no-map",
+    "priority": "P1",
+    "filename": "081M1EVZEZN087G0R003GH4EHC-fused-filter-skip-sort-when-the-chain-has-no-map.md"
+  }
+}
