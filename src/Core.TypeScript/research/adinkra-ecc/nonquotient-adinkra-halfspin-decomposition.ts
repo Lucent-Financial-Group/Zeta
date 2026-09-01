@@ -2,6 +2,33 @@
  * Dark Matter Observatory algebra lane: exact central-sector and Hom-space decomposition of the
  * already measured coded-Adinkra / half-spin intertwiner. Finite witnesses only; no preferred
  * physical basis, regularity scalar, or identity interpretation is introduced here.
+ *
+ * WHY THE SPLIT IS 8+8, AND WHY THAT IS NOT A COUNT COINCIDENCE.
+ *
+ * The measured generators satisfy the Cl(0,7) relations -- pairwise anticommuting with
+ * gamma_i^2 = -1, both CHECKED here rather than assumed -- and the Atiyah-Bott-Shapiro
+ * classification gives Cl(0,7) ~ R(8) (+) R(8): two inequivalent 8-dimensional simple
+ * modules. So a faithful 16-dimensional module splits as 8+8 by the CLASSIFICATION, not
+ * because sixteen happens to halve evenly.
+ *
+ * The competitors, and what excludes each -- because a matching count identifies nothing
+ * on its own (`.claude/rules/numerology-vs-number-theory.md`):
+ *
+ *   (16,0) or (0,16)   excluded by the measured INEQUIVALENCE of the two eigenspaces
+ *                      (`sourceCommutantBlocks` is diagonal: no intertwiner crosses)
+ *   a different signature   Cl(7,0) classifies as M_8(C) -- ONE simple factor, not two.
+ *                      The explicit gamma_i^2 = -1 check is what pins us to the split row.
+ *
+ * Each restricted generator set additionally spans the full 64-dimensional matrix algebra
+ * on its own eigenspace, which witnesses absolute irreducibility rather than merely
+ * counting ranks.
+ *
+ * ANCHOR (added 2026-09-01 after an independent recomputation observed that this file
+ * stated the conclusion without naming the theorem that forces it): Atiyah, Bott &
+ * Shapiro, *Clifford Modules*, Topology 3 (1964) -- the mod-8 periodicity table; also
+ * Lawson & Michelsohn, *Spin Geometry*. The same anchor is already used in this
+ * directory by `mod8-clock.ts`; it was reachable but uncited HERE, which is where the
+ * 8+8 claim is actually made.
  */
 
 import {

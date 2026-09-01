@@ -93,13 +93,61 @@ module AdinkraEquivariantFactorLayerTests =
             Assert.Equal(a, b)
 
     [<Fact>]
-    let ``AEFL-8 DAG descriptor is a non-learning independent-root schema`` () =
+    let ``AEFL-8 DAG descriptor TRACKS the sectorization it was built from`` () =
+        // REWRITTEN after an adversarial review of #16274. The old body asserted
+        //     Assert.Contains("independent Gaussian roots", descriptor.Exactness)
+        // which string-matched a prose literal against the SAME literal hardcoded in
+        // `tryToFactorDagLayer` -- a claim of exactness tested instead of an exactness
+        // checked. Worse, every other field it asserted was a constant of
+        // `variableBase`: the function ignored its `sectorized` argument entirely, so
+        // NO sectorization defect could make this test fail. It was a change-detector
+        // wearing a falsifier's name.
+        //
+        // The descriptor now derives from the sectorization, and this checks that
+        // dependence directly.
         let sectorized = trySectorize 0 (beliefs true) |> get
         let descriptor = tryToFactorDagLayer 200 sectorized |> get
         Assert.Equal<int array>([| 200 .. 215 |], descriptor.NodeIds)
         Assert.All(descriptor.Parents, fun parents -> Assert.Empty parents)
         Assert.False(descriptor.LearnsWeights)
-        Assert.Contains("independent Gaussian roots", descriptor.Exactness)
+
+        // (1) The labels report the MEASURED eigenvalue of the feature at each node,
+        //     so a mis-sectorized feature shows up as a label in the wrong half.
+        Assert.Equal<string array>(
+            [| yield! Array.create 8 "+"; yield! Array.create 8 "-" |],
+            descriptor.SectorLabels)
+
+        // (2) The sector membership is the one the recomputation pins, not merely
+        //     "the first eight". This is the assertion that fails if routing changes.
+        Assert.Equal<int array>([| 1; 2; 4; 7; 8; 11; 13; 14 |], Array.sort descriptor.PlusInputs)
+        Assert.Equal<int array>([| 0; 3; 5; 6; 9; 10; 12; 15 |], Array.sort descriptor.MinusInputs)
+
+        // (3) THE CONTROL: a DIFFERENT sectorization must produce a DIFFERENT
+        //     descriptor. Without this, (1) and (2) could still be satisfied by a
+        //     function that IGNORES its argument -- which is exactly what the old
+        //     implementation did.
+        //
+        //     The first draft of this control used `trySectorize 1` and FAILED,
+        //     because that argument is the representative SEED and the sector
+        //     membership is deliberately invariant across seeds -- an independent
+        //     recomputation confirmed identical sectors at seeds 0, 1 and 255, which
+        //     is a property worth having, not a defect. So the control varies the
+        //     thing it actually means to vary: the sectorization itself.
+        let swapped = { sectorized with Plus = sectorized.Minus; Minus = sectorized.Plus }
+        let swappedDescriptor = tryToFactorDagLayer 200 swapped |> get
+        Assert.NotEqual<int array>(descriptor.PlusInputs, swappedDescriptor.PlusInputs)
+        Assert.Equal<int array>(Array.sort descriptor.MinusInputs, Array.sort swappedDescriptor.PlusInputs)
+
+        // (3b) Seed-invariance, now asserted rather than assumed, since the failure
+        //      above turned it from a background belief into a checkable claim.
+        let otherSeed = trySectorize 1 (beliefs true) |> get
+        let otherSeedDescriptor = tryToFactorDagLayer 200 otherSeed |> get
+        Assert.Equal<int array>(descriptor.PlusInputs, otherSeedDescriptor.PlusInputs)
+
+        // (4) And the partition stays a partition under either arrangement: sixteen
+        //     distinct inputs, every one placed exactly once.
+        let placed = Array.append swappedDescriptor.PlusInputs swappedDescriptor.MinusInputs
+        Assert.Equal<int array>([| 0 .. 15 |], Array.sort placed)
 
     [<Fact>]
     let ``AEFL-9 pure Gaussian factor graph baseline remains unchanged`` () =

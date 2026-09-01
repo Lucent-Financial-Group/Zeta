@@ -49,6 +49,11 @@ module AdinkraEquivariantFactorLayer =
         { NodeIds: int array
           Parents: int list array
           SectorLabels: string array
+          /// The ORIGINAL feature indices routed into each sector. Carried so a
+          /// consumer can check WHERE a belief landed instead of trusting that the
+          /// plus sector is "the first eight" by convention.
+          PlusInputs: int array
+          MinusInputs: int array
           Exactness: string
           LearnsWeights: bool }
 
@@ -277,10 +282,23 @@ module AdinkraEquivariantFactorLayer =
               FactorIds = factorIds
               Orientation = sectorized.Orientation }
 
+    /// THIS USED TO IGNORE `sectorized` ENTIRELY. Every field was a constant of
+    /// `variableBase`: `SectorLabels` was a hardcoded eight "+" then eight "-", and
+    /// nothing read the sectorization at all. So the descriptor was identical for a
+    /// correct sectorization, a reversed one, and any other -- and the test that
+    /// checked it (AEFL-8) therefore could not fail for any sectorization defect.
+    ///
+    /// It is now DERIVED. `SectorLabels.[i]` reports the eigenvalue sign of the
+    /// feature actually routed to node `i`, and the sector membership travels with
+    /// the descriptor so a consumer can check placement rather than trust the
+    /// ordering convention. Found while acting on an adversarial review of #16274.
     let tryToFactorDagLayer variableBase sectorized =
+        let ordered = Array.append sectorized.Plus sectorized.Minus
         Ok
             { NodeIds = Array.init 16 ((+) variableBase)
               Parents = Array.create 16 []
-              SectorLabels = [| yield! Array.create 8 "+"; yield! Array.create 8 "-" |]
+              SectorLabels = ordered |> Array.map (fun f -> if f.Eigenvalue > 0 then "+" else "-")
+              PlusInputs = sectorized.Plus |> Array.map _.Input
+              MinusInputs = sectorized.Minus |> Array.map _.Input
               Exactness = "exact partition of sixteen independent Gaussian roots in the canonical central eigenbasis"
               LearnsWeights = false }
