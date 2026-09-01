@@ -67,7 +67,45 @@ import { parse as parseYaml, stringify as stringifyYaml } from "yaml";
 
 export const DEFAULT_APPS_DIR = "full-ai-cluster/k8s/applications";
 export const DEFAULT_ROSTER = "full-ai-cluster/k8s/observability-service-roster.json";
-export const KUBE_VERSION = "1.31.0";
+/** Repo-relative path of the one declared Kubernetes version. */
+export const KUBE_VERSION_DECLARATION = "full-ai-cluster/k8s/kubernetes-version.json";
+
+/**
+ * The Kubernetes version every render here is validated against.
+ *
+ * WAS A BARE LITERAL "1.31.0" until 2026-09-01, with no provenance and no way to
+ * notice it had gone stale. It had: k3s ships 1.35.6, and two other lanes validated
+ * the same manifests against 1.33.0.
+ *
+ * Read from the declaration instead. NOT a default with a fallback -- an unreadable
+ * or malformed declaration THROWS, because silently substituting a guess is how the
+ * previous literal survived so long.
+ */
+export function readDeclaredKubeVersion(repoRoot = "."): string {
+  const path = join(repoRoot, KUBE_VERSION_DECLARATION);
+  let raw: string;
+  try {
+    raw = readFileSync(path, "utf8");
+  } catch (error) {
+    throw new Error(
+      `cannot read the declared Kubernetes version at ${KUBE_VERSION_DECLARATION}: ` +
+        `${String((error as NodeJS.ErrnoException).code ?? error)}. Every manifest render is ` +
+        "validated against it, so there is no safe default to fall back to -- a guess here " +
+        "silently changes which API surface the whole tree is checked against.",
+    );
+  }
+  const parsed = JSON.parse(raw) as { kubernetesVersion?: unknown };
+  const version = parsed.kubernetesVersion;
+  if (typeof version !== "string" || !/^\d+\.\d+\.\d+$/.test(version)) {
+    throw new Error(
+      `${KUBE_VERSION_DECLARATION} does not declare a well-formed kubernetesVersion ` +
+        `(got ${JSON.stringify(version)}).`,
+    );
+  }
+  return version;
+}
+
+export const KUBE_VERSION: string = readDeclaredKubeVersion();
 
 /**
  * Receiver names that deliver nothing while reading as configuration.

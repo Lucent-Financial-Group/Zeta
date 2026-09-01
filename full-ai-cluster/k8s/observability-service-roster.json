@@ -17,7 +17,7 @@
     "",
     "Service names and ports only. No credential material."
   ],
-  "kubeVersion": "1.31.0",
+  "kubeVersion": "1.35.6",
   "apps": {
     "loki": {
       "namespace": "loki",
