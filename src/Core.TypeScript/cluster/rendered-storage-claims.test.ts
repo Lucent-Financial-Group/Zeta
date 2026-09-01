@@ -613,7 +613,7 @@ describe("the live catalogue against the measured render", () => {
     // None of that disk is new. It stopped being invisible, which is the only
     // thing an unrenderable app ever hides.
     expect(totals.get("longhorn")).toBe(867);
-    expect(totals.get("zeta-local-path")).toBe(269);
+    expect(totals.get("zeta-local-path")).toBe(249);
   });
 
   // WAS "the two live inert-values defects are still exactly two apps". Both

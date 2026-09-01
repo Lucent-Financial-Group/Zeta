@@ -1,5 +1,5 @@
 {
-  "measuredOn": "2026-08-23",
+  "measuredOn": "2026-09-01",
   "appsDiscovered": [
     "full-ai-cluster/agent-memory",
     "full-ai-cluster/alloy",
@@ -28,7 +28,6 @@
     "full-ai-cluster/loki",
     "full-ai-cluster/longhorn",
     "full-ai-cluster/mimir",
-    "full-ai-cluster/minio",
     "full-ai-cluster/nats",
     "full-ai-cluster/node-feature-discovery",
     "full-ai-cluster/ollama",
@@ -908,31 +907,6 @@
             "full-ai-cluster/mimir/rollout_operator",
             "full-ai-cluster/mimir/ruler",
             "full-ai-cluster/mimir/store_gateway"
-          ]
-        },
-        {
-          "appId": "full-ai-cluster/minio",
-          "cpuMillis": 25,
-          "memoryMib": 384,
-          "pods": 2,
-          "workloads": [
-            {
-              "workload": "Deployment/blob-store",
-              "replicas": 1,
-              "cpuMillis": 25,
-              "memoryMib": 128
-            },
-            {
-              "workload": "Job/blob-store-post-job",
-              "replicas": 1,
-              "cpuMillis": 0,
-              "memoryMib": 256
-            }
-          ],
-          "overlaid": [
-            "full-ai-cluster/minio/make-bucket-job",
-            "full-ai-cluster/minio/make-user-job",
-            "full-ai-cluster/minio/server"
           ]
         },
         {
@@ -2450,31 +2424,6 @@
             "full-ai-cluster/mimir/rollout_operator",
             "full-ai-cluster/mimir/ruler",
             "full-ai-cluster/mimir/store_gateway"
-          ]
-        },
-        {
-          "appId": "full-ai-cluster/minio",
-          "cpuMillis": 100,
-          "memoryMib": 512,
-          "pods": 2,
-          "workloads": [
-            {
-              "workload": "Deployment/blob-store",
-              "replicas": 1,
-              "cpuMillis": 100,
-              "memoryMib": 256
-            },
-            {
-              "workload": "Job/blob-store-post-job",
-              "replicas": 1,
-              "cpuMillis": 0,
-              "memoryMib": 256
-            }
-          ],
-          "overlaid": [
-            "full-ai-cluster/minio/make-bucket-job",
-            "full-ai-cluster/minio/make-user-job",
-            "full-ai-cluster/minio/server"
           ]
         },
         {

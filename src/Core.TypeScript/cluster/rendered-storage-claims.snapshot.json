@@ -1,5 +1,5 @@
 {
-  "measuredOn": "2026-08-22",
+  "measuredOn": "2026-09-01",
   "clusterDefaultStorageClass": "zeta-local-path",
   "rendered": [
     {
@@ -243,16 +243,6 @@
       "count": 1
     },
     {
-      "appId": "full-ai-cluster/minio",
-      "origin": "PersistentVolumeClaim",
-      "name": "blob-store",
-      "workload": "",
-      "storageClassName": "zeta-local-path",
-      "size": "20Gi",
-      "gibibytes": 20,
-      "count": 1
-    },
-    {
       "appId": "full-ai-cluster/nats",
       "origin": "volumeClaimTemplate",
       "name": "nats-js/nats",
@@ -434,5 +424,5 @@
     }
   ],
   "unrenderable": [],
-  "appsDiscovered": 54
+  "appsDiscovered": 53
 }

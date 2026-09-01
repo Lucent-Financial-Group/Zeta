@@ -1,5 +1,5 @@
 {
-  "measuredOn": "2026-08-23",
+  "measuredOn": "2026-09-01",
   "compressionRatio": 2.67,
   "imagesByApp": {
     "full-ai-cluster/agent-memory": [
@@ -141,10 +141,6 @@
       "grafana/mimir:2.14.0",
       "grafana/rollout-operator:v0.19.1"
     ],
-    "full-ai-cluster/minio": [
-      "quay.io/minio/mc:RELEASE.2024-11-21T17-21-54Z",
-      "quay.io/minio/minio:RELEASE.2024-12-18T13-15-44Z"
-    ],
     "full-ai-cluster/nats": [
       "nats:2.10.23-alpine",
       "natsio/nats-box:0.15.0",
@@ -274,7 +270,7 @@
       "compressedBytes": 159829743
     },
     "atmoz/sftp:alpine": {
-      "compressedBytes": 6913431
+      "compressedBytes": 9381917
     },
     "bitnamilegacy/kubectl:1.32.3": {
       "compressedBytes": 111998161
@@ -361,7 +357,7 @@
       "compressedBytes": 84940612
     },
     "docker:dind": {
-      "compressedBytes": 144715188
+      "compressedBytes": 147302479
     },
     "gcr.io/cockroachlabs-helm-charts/cockroach-self-signer-cert:1.5": {
       "compressedBytes": 170028269
@@ -414,10 +410,10 @@
       "unmeasurableReason": "manifest HTTP 401; the registry REFUSED an anonymous pull token — the repository is private or does not exist, and a registry that answers 401 for an unknown repository cannot distinguish the two"
     },
     "ghcr.io/lucent-financial-group/zeta-platform-controller:latest": {
-      "compressedBytes": 42887187
+      "compressedBytes": 42887183
     },
     "ghcr.io/lucent-financial-group/zeta-portal:latest": {
-      "compressedBytes": 43241230
+      "compressedBytes": 43254359
     },
     "ghcr.io/spiffe/spiffe-csi-driver:0.2.3": {
       "compressedBytes": 3703909
@@ -560,12 +556,6 @@
     "quay.io/kubevirt/virt-operator:v1.8.4": {
       "compressedBytes": 133359009
     },
-    "quay.io/minio/mc:RELEASE.2024-11-21T17-21-54Z": {
-      "compressedBytes": 28118486
-    },
-    "quay.io/minio/minio:RELEASE.2024-12-18T13-15-44Z": {
-      "compressedBytes": 62637996
-    },
     "quay.io/prometheus-operator/prometheus-operator:v0.77.2": {
       "compressedBytes": 18755216
     },
@@ -645,7 +635,7 @@
       "compressedBytes": 48493180
     },
     "vllm/vllm-openai:latest": {
-      "compressedBytes": 9110690483
+      "compressedBytes": 8634299283
     }
   },
   "unrenderable": {}
