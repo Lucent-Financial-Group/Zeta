@@ -19,11 +19,26 @@ type internal ZSetInputOp<'K when 'K : comparison>() =
     override _.Name = "input"
     override _.Inputs = Array.empty
     override this.StepAsync(_: CancellationToken) =
-        let mutable acc = ZSet<'K>.Empty
-        let mutable item = Unchecked.defaultof<ZSet<'K>>
-        while pending.TryDequeue &item do
-            acc <- if acc.IsEmpty then item else ZSet.add acc item
-        this.Value <- acc
+        // Coalesce the whole queue in one k-way merge (O(n log k)), not
+        // pairwise add (O(n^2) allocs when producers Send N singletons).
+        // Nexmark Q1-Q8 used to Send-then-one-Step that way; Feldera batches.
+        // 0/1-item fast path: a single batched Send must not allocate a
+        // ResizeArray + Seq.toArray just to return the same Z-set.
+        let mutable first = Unchecked.defaultof<ZSet<'K>>
+        if not (pending.TryDequeue &first) then
+            this.Value <- ZSet<'K>.Empty
+        else
+            let mutable second = Unchecked.defaultof<ZSet<'K>>
+            if not (pending.TryDequeue &second) then
+                this.Value <- first
+            else
+                let drained = ResizeArray<ZSet<'K>>()
+                drained.Add first
+                drained.Add second
+                let mutable item = Unchecked.defaultof<ZSet<'K>>
+                while pending.TryDequeue &item do
+                    drained.Add item
+                this.Value <- ZSet.sum drained
         ValueTask.CompletedTask
 
 
@@ -85,11 +100,21 @@ type internal ChannelZSetInputOp<'K when 'K : comparison>(capacity: int) =
     override _.Name = "input-channel"
     override _.Inputs = Array.empty
     override this.StepAsync(_: CancellationToken) =
-        let mutable acc = ZSet<'K>.Empty
-        let mutable item = Unchecked.defaultof<ZSet<'K>>
-        while channel.Reader.TryRead &item do
-            acc <- if acc.IsEmpty then item else ZSet.add acc item
-        this.Value <- acc
+        let mutable first = Unchecked.defaultof<ZSet<'K>>
+        if not (channel.Reader.TryRead &first) then
+            this.Value <- ZSet<'K>.Empty
+        else
+            let mutable second = Unchecked.defaultof<ZSet<'K>>
+            if not (channel.Reader.TryRead &second) then
+                this.Value <- first
+            else
+                let drained = ResizeArray<ZSet<'K>>()
+                drained.Add first
+                drained.Add second
+                let mutable item = Unchecked.defaultof<ZSet<'K>>
+                while channel.Reader.TryRead &item do
+                    drained.Add item
+                this.Value <- ZSet.sum drained
         ValueTask.CompletedTask
 
 

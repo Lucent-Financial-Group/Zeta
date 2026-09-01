@@ -28,6 +28,44 @@ let ``input flows to output via identity`` () =
         out.Current.[1] |> should equal 1L
     }
 
+
+[<Fact>]
+let ``N singleton Sends then one Step equals one ofArray Send`` () =
+    let keys = [| 1; 2; 2; 3 |]
+    let c1 = Circuit.create ()
+    let in1 = c1.ZSetInput<int>()
+    let out1 = c1.Output in1.Stream
+    for k in keys do
+        in1.Send(ZSet.singleton k 1L)
+    c1.Step()
+    let c2 = Circuit.create ()
+    let in2 = c2.ZSetInput<int>()
+    let out2 = c2.Output in2.Stream
+    in2.Send(ZSet.ofArray keys)
+    c2.Step()
+    out1.Current |> should equal out2.Current
+    out1.Current.[2] |> should equal 2L
+
+
+[<Fact>]
+let ``ChannelZSetInput N writes then one Step equals one ofArray write`` () =
+    task {
+        let keys = [| 4; 5; 5 |]
+        let c1 = Circuit.create ()
+        let in1 = c1.ChannelZSetInput<int>(16)
+        let out1 = c1.Output in1.Stream
+        for k in keys do
+            in1.TryWrite(ZSet.singleton k 1L) |> ignore
+        do! c1.StepAsync()
+        let c2 = Circuit.create ()
+        let in2 = c2.ChannelZSetInput<int>(16)
+        let out2 = c2.Output in2.Stream
+        in2.TryWrite(ZSet.ofArray keys) |> ignore
+        do! c2.StepAsync()
+        out1.Current |> should equal out2.Current
+        out1.Current.[5] |> should equal 2L
+    }
+
 [<Fact>]
 let ``map applies function per tick`` () =
     task {
