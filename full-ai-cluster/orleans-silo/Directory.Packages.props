@@ -1,0 +1,23 @@
+<Project>
+
+  <!-- INHERITANCE STOPS HERE TOO, and it needs its own file to do it.
+
+       NuGet discovers Directory.Packages.props by walking UP from the project
+       until it finds one — a search entirely separate from the Directory.Build.props
+       chain. So setting ManagePackageVersionsCentrally=false in the sibling
+       Directory.Build.props is NOT sufficient: the repo root's
+       Directory.Packages.props is still found, is imported afterwards, and turns
+       central management back on. Measured, not assumed — the build failed
+       NU1008 on exactly that before this file existed.
+
+       This project pins its own versions inline because it is a container context
+       built from THIS directory, where the root's package list is not present.
+       Adding its packages to the root list instead would make the image build
+       depend on a file outside its own build context, which is the divergence the
+       sibling file exists to prevent. -->
+
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+
+</Project>

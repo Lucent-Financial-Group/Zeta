@@ -1,5 +1,13 @@
-# Orleans Silo StatefulSet. Replicas start at 0 until you publish
-# a real silo image. Replace `image:` and bump `replicas:` >= 1.
+# Orleans Silo StatefulSet.
+#
+# The image is REAL as of 2026-09-01 -- full-ai-cluster/orleans-silo/ builds it and
+# build-platform-images.yml publishes it (081M0QB1Q6Z087G0R00091JH3Q). This header
+# used to say replicas start at 0 until you publish a real silo image, which was an
+# honest statement of a real gap and is no longer the gap.
+#
+# Replicas stay at 0 for a DIFFERENT and still-open reason: the `redis-auth` secret
+# this pod projects does not exist in the tree yet -- the redis Application says
+# `create via Sealed Secret / Vault`. Bump to >= 1 once that secret is provisioned.
 
 apiVersion: apps/v1
 kind: StatefulSet
@@ -39,6 +47,18 @@ spec:
             - { name: POD_NAME, valueFrom: { fieldRef: { fieldPath: metadata.name } } }
             - { name: POD_NAMESPACE, valueFrom: { fieldRef: { fieldPath: metadata.namespace } } }
             - { name: POD_IP, valueFrom: { fieldRef: { fieldPath: status.podIP } } }
+            # The ConfigMap NAMES the secret (clustering.passwordSecret) but a
+            # ConfigMap cannot carry a credential, so the projection happens here.
+            # It was missing until 2026-09-01: the silo would have read an endpoint
+            # it had no password for and failed to form membership, while the TCP
+            # readiness probe on the gateway port could still have reported Ready.
+            # optional: true so a cluster running Redis WITHOUT auth still starts;
+            # the silo passes an empty password through as empty rather than as
+            # "no auth", so a wrong secret fails loudly instead of silently
+            # connecting to an unauthenticated Redis.
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef: { name: redis-auth, key: password, optional: true }
           volumeMounts:
             - { name: config, mountPath: /etc/orleans, readOnly: true }
           resources:

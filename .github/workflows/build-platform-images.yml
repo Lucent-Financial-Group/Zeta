@@ -3,6 +3,7 @@
 # Builds + publishes the two platform container images the cluster pulls:
 #   - ghcr.io/lucent-financial-group/zeta-portal              (full-ai-cluster/portal)
 #   - ghcr.io/lucent-financial-group/zeta-platform-controller (full-ai-cluster/platform-controller)
+#   - ghcr.io/lucent-financial-group/zeta-orleans-silo       (full-ai-cluster/orleans-silo)
 #
 # WHY this exists: the platform manifests
 # (full-ai-cluster/k8s/applications/platform/{portal,controller}.yaml) pin
@@ -35,12 +36,14 @@ on:
     paths:
       - 'full-ai-cluster/portal/**'
       - 'full-ai-cluster/platform-controller/**'
+      - 'full-ai-cluster/orleans-silo/**'
       - '.github/workflows/build-platform-images.yml'
   push:
     branches: [main]
     paths:
       - 'full-ai-cluster/portal/**'
       - 'full-ai-cluster/platform-controller/**'
+      - 'full-ai-cluster/orleans-silo/**'
       - '.github/workflows/build-platform-images.yml'
   workflow_dispatch:
 
@@ -72,6 +75,13 @@ jobs:
             context: full-ai-cluster/portal
           - image: zeta-platform-controller
             context: full-ai-cluster/platform-controller
+          # Added 2026-09-01 (081M0QB1Q6Z087G0R00091JH3Q). Two Applications and one
+          # bootstrap manifest had pinned this image since they were written and
+          # NOTHING built it. GHCR answers 401 for a package that does not exist,
+          # which reads like "private", so the gap looked like a permissions problem.
+          # It was not: the packages API returned 404 Package not found.
+          - image: zeta-orleans-silo
+            context: full-ai-cluster/orleans-silo
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
