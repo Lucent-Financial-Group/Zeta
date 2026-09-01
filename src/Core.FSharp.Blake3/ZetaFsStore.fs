@@ -30,7 +30,7 @@ module ZetaFsStore =
         ZetaFsDeltaLog(dir, codec, hasher = OwnBlake3Hasher.hasher, env = env)
 
     /// Create `.zetafs` under `parentDir` (idempotent). No git repo required.
-    /// New stores write FORMAT `zetafs/2` (`ns=git-trees; body=blob; hash=blake3-256`).
+    /// New stores write FORMAT `zetafs/2` (`ns=git-trees; body=jumprope; hash=blake3-256`).
     /// A v1 store (HEAD present, no FORMAT) is left as v1 — no silent convert.
     let init (parentDir: string) : string =
         let fs = FileSystem.Current
@@ -46,7 +46,7 @@ module ZetaFsStore =
             FileSystemIo.writeAllText fs head "ref: refs/heads/main"
 
         if not (fs.Exists formatPath) && not headExisted then
-            ZetaFsFormat.write fs dir ZetaFsFormat.pr1Default
+            ZetaFsFormat.write fs dir ZetaFsFormat.pr6Default
 
         let rootPath = Path.Combine(dir, ZetaFsNamespace.RootFileName)
 

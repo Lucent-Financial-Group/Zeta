@@ -196,6 +196,7 @@
     <Compile Include="DagFs.fs" />
     <Compile Include="ZetaFs.fs" />
     <Compile Include="ZetaFsNamespace.fs" />
+    <Compile Include="ZetaFsJumprope.fs" />
     <Compile Include="Globals.fs" />
     <Compile Include="TensorRef.fs" />
     <Compile Include="DynamicValueAlgebra.fs" />

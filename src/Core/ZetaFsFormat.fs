@@ -77,7 +77,7 @@ module ZetaFsFormat =
           Enc = Enc.Unspecified
           Polyfill = Polyfill.Single }
 
-    /// What `ZetaFsStore.init` writes for a new store (PR1).
+    /// What `ZetaFsStore.init` wrote for a new store in PR1 (`body=blob`).
     let pr1Default: Manifest =
         { Major = Major.V2
           Ns = Namespace.GitTrees
@@ -86,6 +86,9 @@ module ZetaFsFormat =
           Chunker = Chunker.FastCdcV1
           Enc = Enc.Off
           Polyfill = Polyfill.Single }
+
+    /// What `ZetaFsStore.init` writes for a new store from PR6 (`body=jumprope`).
+    let pr6Default: Manifest = { pr1Default with Body = Body.Jumprope }
 
     let errorName (e: FormatError) : string =
         match e with
@@ -339,11 +342,14 @@ module ZetaFsFormat =
             | Some bytes when bytes.Length = 0 -> Error FormatError.Empty
             | Some bytes -> parse (Encoding.UTF8.GetString bytes)
 
-    let requireGitTreesBlob (m: Manifest) : Result<Manifest, FormatError> =
-        match m.Ns, m.Body with
-        | Namespace.GitTrees, Body.Blob -> Ok m
-        | Namespace.Bindings, _ -> Error(FormatError.ReaderDoesNotSupport("ns", "bindings"))
-        | _, Body.Jumprope -> Error(FormatError.ReaderDoesNotSupport("body", "jumprope"))
+    /// Git-trees polyfill. PR6 wires Jumprope as a body; `ns=bindings` still refuses.
+    let requireGitTrees (m: Manifest) : Result<Manifest, FormatError> =
+        match m.Ns with
+        | Namespace.GitTrees -> Ok m
+        | Namespace.Bindings -> Error(FormatError.ReaderDoesNotSupport("ns", "bindings"))
+
+    /// PR1 name. Alias of `requireGitTrees` — jumprope is a git-trees body from PR6.
+    let requireGitTreesBlob (m: Manifest) : Result<Manifest, FormatError> = requireGitTrees m
 
     let write (fs: IFileSystem) (storeDir: string) (m: Manifest) =
         match m.Major with

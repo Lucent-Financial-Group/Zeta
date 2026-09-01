@@ -79,12 +79,23 @@ let ``PR1 canonical FORMAT round-trips`` () =
     | Ok m -> Assert.Equal(expected, ZetaFsFormat.render m)
 
 [<Fact>]
+let ``PR6 canonical FORMAT round-trips`` () =
+    let expected = ZetaFsFormat.render ZetaFsFormat.pr6Default
+    match ZetaFsFormat.parse expected with
+    | Error e -> Assert.Fail(ZetaFsFormat.describe e)
+    | Ok m ->
+        Assert.Equal(ZetaFsFormat.Body.Jumprope, m.Body)
+        Assert.Equal(expected, ZetaFsFormat.render m)
+
+[<Fact>]
 let ``golden vector cases parse as recorded`` () =
     let path = goldenPath ()
     Assert.True(File.Exists path, sprintf "seed not found: %s" path)
     use doc = JsonDocument.Parse(File.ReadAllText path)
     let canonical = doc.RootElement.GetProperty("canonicalPr1").GetString()
     Assert.Equal(canonical, ZetaFsFormat.render ZetaFsFormat.pr1Default)
+    let canonicalPr6 = doc.RootElement.GetProperty("canonicalPr6").GetString()
+    Assert.Equal(canonicalPr6, ZetaFsFormat.render ZetaFsFormat.pr6Default)
 
     for v in doc.RootElement.GetProperty("cases").EnumerateArray() do
         let name = v.GetProperty("name").GetString()
@@ -133,6 +144,18 @@ let ``missing FORMAT is v1 implicit git-trees blob`` () =
         | Error e -> Assert.Fail(ZetaFsFormat.describe e)
 
 [<Fact>]
+let ``PR6 reader accepts body=jumprope under git-trees`` () =
+    let text = "zetafs/2\nns=git-trees\nbody=jumprope\nhash=blake3-256\n"
+
+    match ZetaFsFormat.parse text with
+    | Error e -> Assert.Fail(ZetaFsFormat.describe e)
+    | Ok m ->
+        Assert.Equal(ZetaFsFormat.Body.Jumprope, m.Body)
+        match ZetaFsFormat.requireGitTrees m with
+        | Ok accepted -> Assert.Equal(ZetaFsFormat.Body.Jumprope, accepted.Body)
+        | Error e -> Assert.Fail(ZetaFsFormat.describe e)
+
+[<Fact>]
 let ``PR1 reader refuses ns=bindings even though FORMAT parses it`` () =
     let text = "zetafs/2\nns=bindings\nbody=blob\nhash=blake3-256\n"
 
@@ -152,7 +175,7 @@ let ``init writes FORMAT on a new store and not on a v1 store`` () =
         let formatPath = Path.Combine(dir, ZetaFsFormat.FileName)
         Assert.True(File.Exists formatPath)
         let body = File.ReadAllText formatPath
-        Assert.Equal(ZetaFsFormat.render ZetaFsFormat.pr1Default, body)
+        Assert.Equal(ZetaFsFormat.render ZetaFsFormat.pr6Default, body)
 
         let v1Parent = tempParent ()
 
