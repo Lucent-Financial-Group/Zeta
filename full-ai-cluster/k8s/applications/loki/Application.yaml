@@ -34,7 +34,7 @@ spec:
             type: s3
             bucketNames: { chunks: loki-chunks, ruler: loki-ruler }
             s3:
-              endpoint: blob-store.object-store.svc:9000
+              endpoint: blob-store-seaweedfs-all-in-one.object-store.svc:8333
               accessKeyId: zeta-blob-store
               secretAccessKey: zeta-blob-store-dev-secret
               insecure: true
