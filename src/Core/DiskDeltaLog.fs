@@ -70,7 +70,7 @@ type DiskDeltaLog<'K when 'K : comparison>
                         | _ -> ()
                  } : Task)
             FileSystem.Current.Move(tmp, path, true)   // atomic publish of the complete entry
-            if fsync then FileSync.fsyncDir root      // durably commit the new dir entry
+            if fsync then FileSync.fsyncDirBestEffort root      // durably commit the new dir entry
         }
         :> Task
 
@@ -271,7 +271,7 @@ type GroupCommitDiskDeltaLog<'K when 'K : comparison>
             | :? FileStream as fileStream -> fileStream.Flush(flushToDisk = true)
             | _ -> fs.Flush()
             if createdSegment then
-                FileSync.fsyncDir root
+                FileSync.fsyncDirBestEffort root
             return [| for i in 0 .. boat.Length - 1 -> boat.Span.[i].Seq |]
         }
 

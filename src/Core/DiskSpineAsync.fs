@@ -116,7 +116,7 @@ type DiskAsyncBackingStore<'K when 'K : comparison>
             // 4. fsync parent directory
             if fsync then
                 let parent = Path.GetDirectoryName candidate
-                FileSync.fsyncDir parent
+                FileSync.fsyncDirBestEffort parent
 
             // 5. SimulatedFs Flush hook
             SimulatedFs.Flush candidate
