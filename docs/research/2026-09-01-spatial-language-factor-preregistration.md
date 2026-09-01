@@ -15,6 +15,57 @@ The first Zeta experiment therefore asks:
 
 > Does a declared reference-frame factor improve held-out relational composition specifically on text-defined spatial tasks, after controlling for graph structure, vocabulary labels, model capacity, and generic relation composition?
 
+### The linguistics lineage this hypothesis actually descends from
+
+The neuroscience above was cited and the LINGUISTICS was not, which left the newest
+evidence carrying an argument that is decades older. Added 2026-09-01 after an
+adversarial review observed the gap. Each is stated with what it entails **and what it
+does not**, because an anchor attached to a claim it does not support keeps a model in
+`toy` rather than moving it (`.claude/rules/anchor-to-human-prior-art.md`).
+
+- **Lakoff & Johnson, _Metaphors We Live By_ (1980)**[7] — abstract domains are
+  systematically structured by spatial and bodily schemas (`argument is war`, `more is
+  up`). This is the canonical statement of the intuition behind the maintainer's
+  "English runs on the same geospatial wiring."
+  **What it does NOT establish:** anything neural. It is a claim about the *structure of
+  language*, evidenced from usage patterns, not about shared circuitry. Citing it as
+  support for "same wiring" would be exactly the overreach this preregistration exists
+  to avoid — it makes the hypothesis *motivated*, not *supported*.
+
+- **Landau & Jackendoff, "'What' and 'where' in spatial language and spatial cognition",
+  _Behavioral and Brain Sciences_ 16 (1993)**[8] — and this one **constrains our design
+  rather than merely encouraging it.** Their finding is that spatial language encodes a
+  *coarse, schematic* geometry: axes, regions, contact, containment — with object shape
+  largely abstracted away. English has a few dozen spatial prepositions, not a metric
+  space.
+  **The consequence for `M_pose` is testable and uncomfortable:** a full rigid-pose model
+  with continuous rotors supplies *more* geometric structure than English spatial
+  language appears to use. If the reference-frame factor helps, it may help through the
+  coarse axial part and not through the metric part.
+
+  **NO EXISTING CONTROL SEPARATES THOSE TWO.** A first draft of this paragraph claimed
+  SL-4 did; it does not. SL-4 permutes the direction→vector mapping and so distinguishes
+  *uses geometry* from *ignores geometry* — a model relying only on coarse axial
+  structure would fail SL-4 exactly as a metric one would. SL-1 (basis
+  rotation/reflection invariance) is nearer but still does not isolate it. That gap is
+  what this anchor actually contributes, so it is written as a new control rather than
+  as a claim that the suite already covers it:
+
+  | ID | Control | Expected implication |
+  |---|---|---|
+  | SL-11 | Quantise every direction vector to the coarse axial set the language uses (the ~dozen prepositional relations), keeping composition otherwise identical | If `M_pose` retains its advantage, the METRIC structure is unused and the model is doing what Landau & Jackendoff say language does. If it loses the advantage, the metric part is load-bearing — which is a claim about the MODEL, and evidence *against* the language analogy that motivated it |
+
+  SL-11 is the rare control whose *passing* is the uncomfortable result: retention would
+  mean the rotor machinery is heavier than the phenomenon requires.
+
+- **Talmy, _Toward a Cognitive Semantics_ (2000)** — figure/ground asymmetry and force
+  dynamics as grammatical primitives; the schematic vocabulary Landau & Jackendoff
+  measure.
+
+**None of these three is neural evidence, and none is offered as such.** They establish
+that spatial *schemas* pervade language. Whether that reuse is implemented on spatial
+*circuitry* is the open question, and Mok & Love[3] remains the standing alternative.
+
 This experiment does not test natural-language understanding end to end. The first slice consumes dataset relation labels after parsing and tests the relational inference layer. A later parser benchmark is required before making a claim about English words or syntax.
 
 ## 2. Public Evidence Lanes
@@ -111,3 +162,6 @@ No benchmark has been downloaded, trained, or scored in this contract. The publi
 [4]: https://arxiv.org/abs/2204.08292 "Shi et al., StepGame"
 [5]: https://aclanthology.org/2021.naacl-main.364/ "Mirzaee et al., SpartQA"
 [6]: https://aclanthology.org/D19-1458/ "Sinha et al., CLUTRR"
+[7]: https://press.uchicago.edu/ucp/books/book/chicago/M/bo3637992.html "Lakoff and Johnson, Metaphors We Live By (1980)"
+[8]: https://doi.org/10.1017/S0140525X00029733 "Landau and Jackendoff, What and where in spatial language and spatial cognition, BBS 16 (1993)"
+[9]: https://mitpress.mit.edu/9780262700962/toward-a-cognitive-semantics/ "Talmy, Toward a Cognitive Semantics (2000)"
