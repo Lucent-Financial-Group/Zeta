@@ -23,8 +23,27 @@ let private repoRoot () =
 let private goldenPath () =
     Path.Join(repoRoot (), "tests", "Tests.FSharp", "testdata", "zetafs-jumprope-golden-vectors.json")
 
+/// FORCE the static constructor, do not merely touch the property.
+///
+/// `ContentHash256.ofBytesHook` is a MUTABLE GLOBAL installed as a SIDE EFFECT of
+/// `OwnBlake3Hasher`'s static constructor, so every test that hashes depends on that
+/// constructor having already run. This function was `ignore OwnBlake3Hasher.hasher`,
+/// which only forces it INCIDENTALLY: a property read whose result is discarded is
+/// exactly the shape an optimising Release build may elide, and nothing in the language
+/// promises the cctor for a read that got optimised away.
+///
+/// The two other test files that need the same hook already knew this and both call
+/// `RunClassConstructor` -- `ContentHash256.Tests.fs` and `Blake3/CrossVerifyTests.fs`.
+/// This file was the odd one out and passed on ordering luck: some earlier test in the
+/// assembly happened to initialise the hook first.
+///
+/// MEASURED 2026-09-01: 9 of the 11 tests in this class fail locally with
+/// "ContentHash256.ofBytes hook is not initialized", on stock main, with no edit of
+/// mine -- and `build-and-test (ubuntu-24.04)` went red on a PR that only made ONE test
+/// in this file slower. Nothing about that change touched hashing; it changed timing.
+/// A test that depends on which test ran first is not testing what it claims.
 let private ensureHasher () =
-    ignore OwnBlake3Hasher.hasher
+    System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof<OwnBlake3Hasher>.TypeHandle)
 
 let private mustOk (r: Result<'a, ZetaFsJumprope.JumpropeError>) : 'a =
     match r with
