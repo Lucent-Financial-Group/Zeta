@@ -1,0 +1,15 @@
+{
+  "pr_number": 16281,
+  "archive_path": "docs/history/pr-reviews/PR-16281-feat-ace-currency-for-any-ecosystem-images-and-nuget-had-no-equivalent-of-the-ch.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7o4sXm",
+    "thread:PRRT_kwDOSF9kNM6eOfjM"
+  ],
+  "fetched_at": "2026-09-01T19:00:16.574Z",
+  "schema_version": "v1",
+  "commit_sha": "b8944d4facab05cf0a8f563358f752f27b149ab1",
+  "title": "feat(ace): currency for any ecosystem — images and NuGet had no equivalent of the chart guard",
+  "state": "MERGED",
+  "merged_at": "2026-09-01T18:59:37Z",
+  "head_ref": "shadow/ace-currency-any-ecosystem"
+}
