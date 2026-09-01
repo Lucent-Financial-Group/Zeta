@@ -36,7 +36,30 @@ already in git. What is lost here is the argument, not the code.
 Re-enabled 2026-09-01 (`pull_request: [closed]` only, no `schedule:`), so the
 ongoing loss has stopped. This item is only about the gap.
 
-## The growth question, MEASURED — and it is not the problem
+## The criterion is DATA QUALITY, not size — size is the tiebreak
+
+Aaron 2026-09-01, correcting the size argument this section originally led with:
+
+> *"we don't want the telemetery for now, this is low qality training data, the
+> pr responses and fixes are the high quality data"*
+
+The bytes argument below is true and it is the WEAK one, because it concedes that
+the deciding variable is volume. The ordering is by **information quality**:
+
+| data | quality | why |
+|---|---|---|
+| heartbeat / tick / drift / metrics telemetry | **low** | machine-generated, repetitive; a tick reporting "nothing changed" carries no signal per byte |
+| PR comments, review threads, corrections | **high** | human+AI reasoning over a real decision, with the wrong answer AND its correction both preserved |
+
+**The diff is already in git.** What the archive uniquely holds is the *argument*
+— what was proposed and rejected, where someone was wrong and got corrected. That
+is the part no other surface can reconstruct.
+
+Which makes the 2026-08-31 sweep exactly backwards: it removed the
+highest-quality surface while the low-quality ones were the actual target. Not a
+sizing error — a **sorting** error.
+
+## The growth arithmetic, MEASURED — the tiebreak, not the reason
 
 Aaron's standing constraint: *"we are trying to avoid unbounded growth on the
 repo until we split it out into multi repo."* So the cost is priced before the
