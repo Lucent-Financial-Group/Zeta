@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <Compile Include="ZSetBench.fs" />
+    <Compile Include="ZSetAllocBench.fs" />
     <Compile Include="CircuitBench.fs" />
     <Compile Include="SpineBench.fs" />
     <Compile Include="BloomBench.fs" />

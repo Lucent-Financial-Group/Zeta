@@ -323,3 +323,25 @@ opensc            # pkcs11-tool — vendor-neutral PKCS#11 CLI; module loader fo
 #      at tag 3.0.7, not inferred.
 # Design + evidence: docs/research/2026-08-18-yubihsm2-sdk-on-linux-the-cluster-
 # is-nixos-so-the-apt-question-was-the-wrong-question.md
+
+# ── Native C/C++ compile deps (Feldera-from-sources README + rustc crates) ────
+# Feldera 0.342.0 `README.md` "Running Feldera from sources" names cmake, a C/C++
+# toolchain (build-essential above), libssl-dev, libsasl2-dev, zlib1g-dev,
+# libzstd-dev, pkg-config, clang. aws-lc-sys (pulled by dbsp / Nexmark) needs
+# cmake even when we never clone Feldera in CI.
+#
+# NOT declared here, on purpose:
+#   golang-go     -- only `--features fips` (aws-lc-fips-sys)
+#   graphviz      -- SQL-compiler diagrams, not Nexmark
+#   openjdk/maven -- SQL compiler, not the Rust Nexmark harness
+#   librdkafka    -- Kafka connectors; Feldera wants `./scripts/install-librdkafka.sh`
+#                    (AWS-LC), not the distro package
+# clang is skipped: build-essential's gcc is enough for aws-lc-sys; llvm is
+# already tier=standard for the WASM lane. zstd BINARY is already above (ollama
+# .tar.zst); libzstd-dev is the headers Feldera's README names separately.
+cmake
+pkg-config
+libssl-dev      # OpenSSL headers (runtime is libssl3t64 above)
+libsasl2-dev    # Cyrus SASL headers (Feldera from-sources; Nexmark may not link it)
+zlib1g-dev      # zlib headers (Feldera from-sources)
+libzstd-dev     # zstd headers (binary `zstd` is already declared)

@@ -404,3 +404,17 @@ opensc            # pkcs11-tool + PKCS#11 module — vendor-neutral smartcard/HS
 # the vacuity class wearing a manifest's clothes. The asymmetry is the honest
 # record, the same way the YubiKey block above is deliberately shorter than apt's.
 pam-reattach  # PAM module: re-attach to the Aqua session so Touch ID sudo works in tmux/screen
+
+# ── Native C/C++ compile deps (Feldera-from-sources README + rustc crates) ────
+# Symmetric with the apt block of the same name. Feldera's macOS brew line is
+# `cmake openssl cyrus-sasl zlib zstd go pkg-config graphviz openjdk@21 maven
+# python@3.10 oven-sh/bun/bun node@20`. We take the native-compile subset and
+# refuse the SQL-compiler / Kafka / fips extras (go, graphviz, openjdk, maven,
+# librdkafka). bun/node/python already come from mise. clang comes from
+# `xcode-select`. zstd was apt-only until this row (ollama .tar.zst on Linux).
+cmake
+pkg-config
+openssl         # headers+lib; keg-only, matches Feldera README formula name
+cyrus-sasl      # brew name for apt libsasl2-dev
+zlib            # keg-only; macOS already ships zlib, formula matches the README
+zstd            # headers+binary; apt already had the binary for ollama .tar.zst

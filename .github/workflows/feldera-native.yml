@@ -1,0 +1,106 @@
+# Compile Feldera's dbsp crate with factory rust on Linux, macOS, and Windows.
+#
+# Not on every PR. Building dbsp on three OS is a cargo-minute bomb
+# (Aaron 2026-09-01: do not clone Feldera on every PR). Triggers:
+#   * workflow_dispatch (once the file is on main; GitHub 404s dispatch
+#     for a workflow that exists only on a feature branch)
+#   * pull_request / push-to-main path-filtered to THIS file, so adding
+#     or editing the workflow is the only PR that pays the compile --
+#     which is this PR, and then almost never.
+# Discriminator was rustc 1.97.0+ vs this Mac. Bisect 2026-09-01:
+# 1.96.0 PASS, 1.97.0 FAIL (same ICE), 1.98.0 FAIL. Factory pin is
+# last-good 1.96.0.
+#
+# ICE: rustc_next_trait_solver try_eagerly_replace_alias
+# (first-bad rustc 1.97.0 / 2d8144b78; 1.98.0 same):
+# "could not replace Alias { FnOnce::Output, ... StarJoinFuncTrait ... }".
+# Same panic site as rust-lang/rust#152789 (next-solver dyn object candidates).
+#
+# Pin: feldera/feldera 0.342.0 at 48312b69bde1af8ab8c6bc3551c9545897664b26
+# (local clone references/prior-art/feldera, gitignored).
+# Compile: cargo build --release -p dbsp with debuginfo=0 (cargo bench uses
+# profile.bench debuginfo=2; that knob does not apply).
+
+name: feldera-native
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/feldera-native.yml"
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/feldera-native.yml"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: feldera-native-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  CARGO_INCREMENTAL: "0"
+  CARGO_PROFILE_RELEASE_DEBUG: "0"
+  CARGO_TERM_COLOR: always
+  RUSTFLAGS: "-C debuginfo=0"
+  RUSTUP_TOOLCHAIN: "1.96.0"
+  FELDERA_SHA: 48312b69bde1af8ab8c6bc3551c9545897664b26
+
+jobs:
+  native:
+    name: native dbsp (${{ matrix.os }})
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, macos-26, windows-2025]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Enable git long paths (Windows; pre-checkout)
+        if: startsWith(matrix.os, 'windows-')
+        run: git config --system core.longpaths true
+
+      - name: Checkout Zeta
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Cache install.sh rustup toolchain
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: |
+            ~/.rustup/toolchains/1.96.0-*
+            ~/.rustup/settings.toml
+            ~/.rustup/update-hashes
+            ~/.cargo
+          key: rustup-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', '.mise.full.toml') }}
+
+      - name: Restore apt archives
+        if: startsWith(matrix.os, 'windows-') == false
+        uses: ./.github/actions/apt-archive-cache
+        with:
+          tier: full
+
+      - name: Install toolchain (Unix)
+        if: startsWith(matrix.os, 'windows-') == false
+        run: ./tools/setup/install.sh
+
+      - name: Install toolchain (Windows)
+        if: startsWith(matrix.os, 'windows-')
+        shell: pwsh
+        run: ./tools/setup/install.ps1 -SkipLoopRegister
+
+      - name: Checkout feldera (pinned SHA; not a submodule)
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: feldera/feldera
+          ref: ${{ env.FELDERA_SHA }}
+          path: .feldera-native
+          persist-credentials: false
+
+      - name: rustc is factory 1.96.0
+        run: rustc -V
+
+      - name: Compile dbsp Release (debuginfo=0)
+        working-directory: .feldera-native
+        run: cargo build --release -p dbsp

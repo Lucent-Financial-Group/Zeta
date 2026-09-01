@@ -129,6 +129,30 @@ const WINDOWS_EXCEPTIONS: Record<string, string> = {
   pcscd:
     "Windows has a built-in smartcard service (SCardSvr); no package to install. The Linux-only entry exists because Linux has no equivalent running by default.",
   libpcsclite1: "PC/SC client library is Linux-only; the Windows equivalent (WinSCard) is an OS component.",
+
+  // ── Native C/C++ compile (Feldera-from-sources + aws-lc-sys) ────────────────
+  // Unix gets cmake/pkg-config/openssl/sasl/zlib/zstd-dev from apt/brew. Windows
+  // CMake is Microsoft's Visual Studio C++ CMake tools, NOT scoop. Aaron
+  // 2026-09-01: that VS package is built with the VS generator, matching Ninja,
+  // and the MSVC/Windows SDK options. A Kitware cmake from scoop/winget/choco
+  // is a second copy without those options.
+  cmake:
+    "Windows CMake comes from Microsoft Visual Studio C++ CMake tools (component Microsoft.VisualStudio.Component.VC.CMake.Project, bundled with VS Build Tools / Desktop development with C++). install.ps1 prepends the vswhere-found cmake.exe + ninja.exe dirs to PATH when the component is present, and warns (does not scoop) when it is not — Server Core smoke has no VS. Scoop/winget/choco cmake is refused.",
+  "pkg-config":
+    "Unix .pc lookup for native crates (Feldera README). Windows native crates use CMake from Visual Studio / vcpkg; pkg-config is not a VS C++ CMake-tools binary and scoop pkgconf is a second stack. Do not scoop it.",
+  "libssl-dev":
+    "OpenSSL headers for Unix native crates (Feldera README libssl-dev). Windows uses Schannel / native TLS; the runtime exception for libssl3t64 already records this. Compiling against OpenSSL on Windows is a vcpkg/VS decision, not scoop openssl.",
+  openssl:
+    "brew's OpenSSL formula (headers+lib); same Windows disposition as libssl-dev / libssl3t64 — Schannel, not scoop openssl.",
+  "libsasl2-dev":
+    "Cyrus SASL headers, Linux-only (Feldera from-sources README). Kafka on Windows is not this slice; Nexmark-without-Kafka may not link SASL. No VS C++ CMake-tools equivalent.",
+  "cyrus-sasl":
+    "brew's name for the same SASL headers/libs as apt libsasl2-dev; same Windows disposition.",
+  "zlib1g-dev":
+    "zlib headers, Linux-only (Feldera README). Windows ships zlib with the OS / VS CRT.",
+  zlib: "brew formula (keg-only; macOS already has zlib). Windows ships zlib in-box / VS CRT.",
+  "libzstd-dev":
+    "zstd headers (Feldera README libzstd-dev). The zstd BINARY is already excepted (Windows tar / in-box). Headers follow the same disposition — not scoop zstd.",
 };
 
 test("manifests/windows covers every apt/brew system tool (or an allowlisted exception)", () => {
@@ -327,4 +351,19 @@ test("no stale WINDOWS_EXCEPTIONS (each must still be a real apt/brew tool)", ()
   const unixTools = new Set([...parseManifest("apt"), ...parseManifest("brew")]);
   const stale = Object.keys(WINDOWS_EXCEPTIONS).filter((t) => !unixTools.has(t));
   expect(stale).toEqual([]);
+});
+
+test("Windows cmake is Visual Studio C++ CMake tools, not a scoop/winget/choco package", () => {
+  expect(parseManifest("apt")).toContain("cmake");
+  expect(parseManifest("brew")).toContain("cmake");
+  expect(parseManifest("windows")).not.toContain("cmake");
+  expect(WINDOWS_EXCEPTIONS.cmake).toMatch(/Visual Studio/);
+  expect(WINDOWS_EXCEPTIONS.cmake).toMatch(/Microsoft\.VisualStudio\.Component\.VC\.CMake\.Project/);
+
+  const installPs1 = readFileSync(join(setupDir, "install.ps1"), "utf8");
+  expect(installPs1).toContain("Publish-VisualStudioCmakePath");
+  expect(installPs1).toContain("Microsoft.VisualStudio.Component.VC.CMake.Project");
+  expect(installPs1).toContain("vswhere");
+  expect(installPs1).not.toMatch(/scoop\s+install\s+cmake/i);
+  expect(installPs1).not.toMatch(/winget\s+install\s+.*cmake/i);
 });

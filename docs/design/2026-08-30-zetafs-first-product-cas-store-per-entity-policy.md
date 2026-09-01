@@ -2,16 +2,16 @@
 
 **Author:** Ani (Grok Build) / design-doc-writer; human maintainer Aaron
 **Date:** 2026-08-30
-**Revised:** 2026-08-31 (composable closures; ZetaDB-first; Prime Agent / RLM placement; metering via existing harness start + dogfood, not a missing invention; unwrap oracles not TPM-on-Mac)
+**Revised:** 2026-09-01 (in-tree PR1-PR11 honesty peel; stay in this monorepo until v0.9ish; do not mint a product GitHub)
 **Work item:** `081M1C59ZG4087G0R000VM8DZN`
-**Status:** Draft, design spec. PR1 (FORMAT + `IFileSystem` door) is landing in-tree. Crash recovery remains `toy` until PR12.
+**Status:** Design spec. PR1-PR11 polyfill is in-tree. Crash recovery remains `toy` until PR12. Stay in this monorepo until a signed, tested v0.9ish FS. Do not mint a GitHub product repo as a prerequisite. Later split: `docs/research/2026-09-01-zetafs-stays-in-monorepo-until-v09-then-product-per-language-ir-oracles.md`.
 **Register:** product design. Existing code cited below is a polyfill / algebra substrate, not this product.
 **Extends (do not contradict):** [`docs/design/2026-08-27-zetafs-names-are-tags-multi-parented-files-and-symlink-native-presentation.md`](../../docs/design/2026-08-27-zetafs-names-are-tags-multi-parented-files-and-symlink-native-presentation.md)
 **Settles:** retention and GC, which that document left unset in **section 6.3 / section 8.3** (cycle guard: section 6.2, specified here). Names-are-tags **section 7** is platform presentation (FUSE / FSKit / ProjFS, case-fold refuse) -- not the retention hole. **Also settles** the former Open Questions as **composable knobs** (C1-C10). C8 is the one exclusive ZetaId slot (`StoreEntity = 13`). C9 is **not** "pick TPM": unwrap oracles compose (passphrase, Keychain, Secure Enclave when a seal tier exists, TPM 2.0 on Linux if present, PKCS#11 HSMs of several manufacturers, live USB probe). R8's tpmSeal-vs-usbISerial XOR is the installer defect; this FS must not repeat it.
 **Does not settle:** the public name (still gated: naming-expert + Ilyana + Aaron). Working label remains **ZetaFS**. Never abbreviate to `ZFS` (OpenZFS occupies it).
 **Why this product exists:** ZetaFS is a **custom filesystem for ZetaDB**, not a general-purpose Finder disk. ROADMAP item 1 (no git CLI; dual Z-set folds over our own store) is the same product. POSIX is a mount so tools can see the DB; the DB does not live *on* POSIX.
 
-> **Honesty peel (same register as the names-are-tags doc).** `ZSetMerkle` is landed. FastCDC is landed and byte-locked. `.zetafs` is an object log on a host filesystem. `DagFs` is an in-memory path map. The WebDAV experiment is read-only and in-memory. POSIX mount, Jumprope bodies, placement profiles, typed durability on the volume, concurrent reclaim, hardware-AEAD volume encryption, and crash recovery that is more than toy -- **designed here, not shipped.** `docs/ZETA-CORE-TECHNOLOGY-FOR-MAX.md` Phase 2 saying "the DAG-FS layer is already shipped" overclaims: what shipped is the algebra + a git-shaped polyfill, not a volume.
+> **Honesty peel (same register as the names-are-tags doc).** Algebra + host-directory polyfill through PR11 is in-tree: FORMAT, FileSync Result + Darwin `F_FULLFSYNC`, TagBinding namespace, mutbuf, policy, Jumprope, freeze (`Buffered`/`Journaled`/`Durable`), placement (polyfill `single` only), explicit-nonce GCM, reclaim ferry, CLI prefixes. On-disk `ns` is still `git-trees`; `ns=bindings` refuses. POSIX mount, native volume, and crash recovery that is more than `toy` -- **designed here, not shipped.** Do not mint a product GitHub until a signed v0.9ish FS. `docs/ZETA-CORE-TECHNOLOGY-FOR-MAX.md` Phase 2 saying "the DAG-FS layer is already shipped" overclaims: what shipped is the algebra + a git-shaped polyfill, not a volume.
 
 ---
 
@@ -927,7 +927,7 @@ OS FDE (optional, external)
 
 **16 domains and Docker secrets (Aaron 2026-08-31).** YubiHSM 2 partitions objects into 16 domains (`YH_MAX_DOMAINS=16`) with 16 sessions device-wide (`YH_MAX_SESSIONS=16`). Mapping: container → SPIFFE → HSM domain 1–16. Docker secrets inject **that container's authkey**, not the filesystem. Confidentiality of *use* is device-enforced (A cannot USE B's keys). Availability and client integrity are **not** isolated — the connector is an unauthenticated shared multiplexer. ZetaFS `SecurityContext` may later *name* a domain; Docker secrets are not a substitute for FORMAT `enc=` or C9 unwrap oracles. Decision function: `src/Core.TypeScript/federated-identity/hsm-domain-map.ts`. Honesty peel: [`docs/research/2026-08-18-hsm-container-isolation-a-shared-connector-is-not-a-boundary-and-what-prove-ish-can-honestly-mean.md`](../research/2026-08-18-hsm-container-isolation-a-shared-connector-is-not-a-boundary-and-what-prove-ish-can-honestly-mean.md). Otto owns secret-injection; this FS records the mapping so C9 can compose with it.
 
-**Extract-repo later, not now.** If dogfood on ZetaDB shows this FS is worth a separate clone, that is a later starting point. `git clone` at a tag stays sufficient here. Do not mint a GitHub repo as a prerequisite of PR1–PR12.
+**Extract-repo later, not now.** If dogfood on ZetaDB shows this FS is worth a separate clone, that is a later starting point. `git clone` at a tag stays sufficient here. Do not mint a GitHub repo as a prerequisite of PR1-PR12. v0.9ish (signed + tested) is the split gate: [`docs/research/2026-09-01-zetafs-stays-in-monorepo-until-v09-then-product-per-language-ir-oracles.md`](../research/2026-09-01-zetafs-stays-in-monorepo-until-v09-then-product-per-language-ir-oracles.md).
 
 **Benchmark plan (promotion from `toy` to `metered`):**
 

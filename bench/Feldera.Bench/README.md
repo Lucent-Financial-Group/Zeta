@@ -44,7 +44,11 @@ Our near-term target is to **beat Feldera on projection/filter** and
 match within 2× on joins. **Not yet a result:** a 2026-09-01 Release
 run of this harness is in `docs/BENCHMARKS.md` (Q1/Q2 mean + alloc).
 That tick coalesces `Price = rng.Next 10_000` so `|Z-set| ≤ 10_000`.
-Do not quote generator-N / mean as Feldera events/s.
+Do not quote generator-N / mean as Feldera events/s. Unique-key Q1/Q2
+(`NexmarkQ1Unique` / `NexmarkQ2Unique`) keep `|Z-set| = N`. Same-box
+Feldera numbers and the three-OS CI job:
+`docs/research/feldera-comparison-status.md`,
+`.github/workflows/feldera-compare.yml`.
 
 ## Roadmap
 

@@ -80,9 +80,14 @@ published 10–40 M Q1/Q2 is 100 M events / 16 workers on a Threadripper
 coalesce + one-thread `Step`. These rows are **our tick**, not a
 head-to-head win.
 
-Targets in `bench/Feldera.Bench/README.md` stay targets until the
-generator keys bids by a unique id (or we report `|batch|` as the
-denominator).
+Unique-key path is now in the harness: `NexmarkQ1Unique` / `NexmarkQ2Unique`
+(`BidRow { Idx; Price }`, `|Z-set| = N`). A short N=3 run on this box
+(2026-09-01) was Q1 10k ~143 µs / 234 KB and Q1 100k ~718 µs / 2.34 MB —
+indicative, high variance, not this table. Same-box Feldera native Q1
+100k streaming was 69.8 ms / ~105 MiB RSS (rustc 1.93.1 binary; factory
+pin is 1.96.0, last-good vs `dbsp` ICE on 1.97.0+). Detail: `docs/research/feldera-comparison-status.md`.
+CI drift check on ubuntu-24.04 / macos-26 / windows-2025:
+`.github/workflows/feldera-compare.yml`.
 
 Ingest complexity (081M1ETY8TY087G0R0022CT4R5):
 

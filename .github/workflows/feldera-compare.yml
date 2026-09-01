@@ -1,0 +1,147 @@
+# Comparative Nexmark / allocation benches on Linux, macOS, and Windows.
+#
+# This is the Zeta side of the Feldera compare (bench/Feldera.Bench unique-key
+# Q1/Q2 + claimed zero-alloc Z-set paths). It is a DRIFT CHECK, not part of
+# `gate (required)`: BDN numbers move with runner noise, and a required gate
+# on a noisy mean is the vacuity class.
+#
+# Feldera's own native Rust harness is NOT cloned here. references/prior-art/
+# is gitignored; building dbsp on three OS every PR is a cargo-minute bomb.
+# Run it locally with factory rust (mise 1.96.0 via tools/setup/install.sh):
+#   cargo build --release -p dbsp_nexmark --bench nexmark
+# Same-box numbers: docs/research/feldera-comparison-status.md
+#
+# Windows in the gate matrix is push-to-main only (~21 min, priced and
+# declined per-PR). This job is short BDN after install, path-filtered, so
+# the three-OS surface is cheap enough to run when the harness actually
+# changes. Aaron 2026-09-01 asked for mac + windows + linux.
+
+name: feldera-compare
+
+on:
+  pull_request:
+    paths:
+      - "bench/Feldera.Bench/**"
+      - "bench/Benchmarks/ZSetAllocBench.fs"
+      - "bench/Benchmarks/ZSetBench.fs"
+      - "bench/Benchmarks/Benchmarks.fsproj"
+      - "src/Core/ZSet.fs"
+      - "src/Core/Circuit.fs"
+      - "src/Core/Operators.fs"
+      - "src/Core/Handles.fs"
+      - ".github/workflows/feldera-compare.yml"
+  push:
+    branches: [main]
+    paths:
+      - "bench/Feldera.Bench/**"
+      - "bench/Benchmarks/ZSetAllocBench.fs"
+      - "bench/Benchmarks/ZSetBench.fs"
+      - "bench/Benchmarks/Benchmarks.fsproj"
+      - "src/Core/ZSet.fs"
+      - "src/Core/Circuit.fs"
+      - "src/Core/Operators.fs"
+      - "src/Core/Handles.fs"
+      - ".github/workflows/feldera-compare.yml"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: feldera-compare-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  DOTNET_NOLOGO: 1
+  DOTNET_CLI_TELEMETRY_OPTOUT: 1
+
+jobs:
+  compare:
+    name: compare (${{ matrix.os }})
+    timeout-minutes: 40
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, macos-26, windows-2025]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Enable git long paths (Windows; pre-checkout)
+        if: startsWith(matrix.os, 'windows-')
+        run: git config --system core.longpaths true
+
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Cache .NET SDK
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.dotnet
+          key: dotnet-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('global.json') }}
+
+      - name: Cache mise runtimes
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: |
+            ~/.local/share/mise
+            ~/.cache/mise
+          key: mise-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', '.mise.full.toml') }}
+
+      - name: Cache NuGet packages
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: |
+            ~/.nuget/packages
+            ~/.local/share/NuGet
+          key: nuget-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('Directory.Packages.props') }}
+
+      - name: Cache install.sh rustup toolchain
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: |
+            ~/.rustup/toolchains/1.96.0-*
+            ~/.rustup/settings.toml
+            ~/.rustup/update-hashes
+            ~/.cargo
+          key: rustup-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', '.mise.full.toml') }}
+
+      - name: Restore apt archives
+        if: startsWith(matrix.os, 'windows-') == false
+        uses: ./.github/actions/apt-archive-cache
+        with:
+          tier: full
+
+      - name: Install toolchain (Unix)
+        if: startsWith(matrix.os, 'windows-') == false
+        run: ./tools/setup/install.sh
+
+      - name: Install toolchain (Windows)
+        if: startsWith(matrix.os, 'windows-')
+        shell: pwsh
+        run: ./tools/setup/install.ps1 -SkipLoopRegister
+
+      - name: Unique-key Nexmark Q1/Q2 (short BDN)
+        run: >
+          dotnet run -c Release --project bench/Feldera.Bench --
+          --filter '*Unique*'
+          --iterationCount 3
+          --warmupCount 1
+
+      - name: Claimed zero-alloc Z-set paths (short BDN)
+        run: >
+          dotnet run -c Release --project bench/Benchmarks --
+          --filter '*ZSetZeroAlloc*'
+          --iterationCount 3
+          --warmupCount 1
+
+      - name: Upload BDN CSV
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: feldera-compare-${{ matrix.os }}
+          path: |
+            BenchmarkDotNet.Artifacts/results/*.csv
+            bench/Feldera.Bench/BenchmarkDotNet.Artifacts/results/*.csv
+            bench/Benchmarks/BenchmarkDotNet.Artifacts/results/*.csv
+          if-no-files-found: error
+          retention-days: 14

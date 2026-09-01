@@ -106,6 +106,34 @@ let ``Empty ZSet operations allocate nothing`` () =
     Assert.True((bytes = 0L), sprintf "Expected 0 bytes, got %d" bytes)
 
 
+[<Fact>]
+let ``ZSet.isEmpty is zero-alloc`` () =
+    let z = ZSet.ofSeq [ 1, 1L ]
+    let bytes = measure 3 (fun () -> z.IsEmpty |> ignore)
+    Assert.True((bytes = 0L), sprintf "Expected 0 bytes, got %d" bytes)
+
+
+[<Fact>]
+let ``ZSet.ofArray unique keys does not coalesce`` () =
+    let keys = Array.init 256 id
+    let z = ZSet.ofArray keys
+    Assert.Equal(256, z.Count)
+
+
+[<Fact>]
+let ``ZSet.ofArray repeated keys coalesce below generator N`` () =
+    let keys = Array.init 256 (fun i -> i % 10)
+    let z = ZSet.ofArray keys
+    Assert.True((z.Count <= 10), sprintf "expected <= 10 unique keys, got %d" z.Count)
+
+
+[<Fact>]
+let ``ZSet.mapMonotone identity on unique keys preserves count`` () =
+    let z = ZSet.ofKeys [ 1 .. 256 ]
+    let mapped = ZSet.mapMonotone id z
+    Assert.Equal(z.Count, mapped.Count)
+
+
 // ─── Pool paths (moved from CoverageTests) ─────────────────────────
 
 [<Fact>]

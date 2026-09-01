@@ -18,6 +18,12 @@ type Bid = {
     DateTime: int64
 }
 
+/// Unique-key Q1/Q2 row. `Idx` is the event identity so `|Z-set| = N`.
+/// Price-only keys coalesce (`rng.Next 10_000`) and cannot be compared
+/// to Feldera events/s. Struct so the unique path does not box a tuple.
+[<Struct>]
+type BidRow = { Idx: int64; Price: int64 }
+
 type Auction = {
     Id: int64
     SellerId: int64
@@ -75,3 +81,8 @@ let generate (seed: int) (n: int) : NexmarkEvent seq =
                     DateTime = t
                 }
     }
+
+/// `n` unique bids. Price still in 0..9999; identity is `Idx = i`.
+let generateBids (seed: int) (n: int) : BidRow array =
+    let rng = Random seed
+    Array.init n (fun i -> { Idx = int64 i; Price = int64 (rng.Next 10_000) })
