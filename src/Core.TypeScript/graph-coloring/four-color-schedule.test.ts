@@ -76,3 +76,78 @@ describe("conditional four-color conflict scheduling", () => {
     expect(findMinimumColorSchedule(permuted)).toEqual(findMinimumColorSchedule(k4));
   });
 });
+
+// ---------------------------------------------------------------------------
+// K3,3 — THE CONTROL THE CLAIM MATRIX NAMES AS ESSENTIAL, AND DID NOT HAVE.
+//
+// docs/research/2026-09-01-thousand-brains-factor-geometry-claim-matrix.md says:
+//
+//   "K5 grades chromatic sufficiency, while K3,3 grades whether planarity is being
+//    confused with color count. An implementation must separately report planarity
+//    status, proper-color validity, and colors used."
+//
+// K3,3 was named there and implemented nowhere. It is the one case that separates the
+// two dials: chi(K3,3) = 2 and it is NONPLANAR. K5 cannot do that job, because K5 is
+// nonplanar AND needs five colours -- it moves both dials at once, so a reader cannot
+// tell which one a passing test is about.
+//
+// Found by an adversarial review of #16290 (2026-09-01), which also found that
+// `tryFourClassSchedule` took no embedding witness at all -- so the Four Color Theorem
+// citation in the module header was attached to a code path that never used it.
+
+import { tryFourClassCertificate } from "./four-color-schedule";
+
+const K33 = {
+  vertices: ["a1", "a2", "a3", "b1", "b2", "b3"],
+  edges: [
+    ["a1", "b1"], ["a1", "b2"], ["a1", "b3"],
+    ["a2", "b1"], ["a2", "b2"], ["a2", "b3"],
+    ["a3", "b1"], ["a3", "b2"], ["a3", "b3"],
+  ] as readonly (readonly [string, string])[],
+};
+
+describe("K3,3 separates planarity from colour count", () => {
+  test("two colours suffice — so FEW COLOURS DOES NOT IMPLY PLANAR", () => {
+    const exact = findMinimumColorSchedule(K33);
+    expect(exact.colorCount).toBe(2);
+  });
+
+  test("and with no embedding supplied, planarity is NOT-ESTABLISHED, not assumed", () => {
+    // The bug this guards: reading a four-class (or two-class) result as evidence of
+    // planarity. The implication runs the other way and only with a witness.
+    const cert = tryFourClassCertificate(K33);
+    expect(cert.schedule).not.toBeNull();
+    expect(cert.planarity).toBe("not-established");
+    expect(cert.viaFourColorTheorem).toBe(false);
+    expect(cert.reason).toContain("not being appealed to");
+  });
+
+  test("a FABRICATED planar witness for K3,3 is REFUTED, not accepted", () => {
+    // K3,3 has no planar embedding; V-E+F=2 would need F=5 with every face a cycle,
+    // and no such set of facial boundaries exists. The verifier must say so.
+    const fabricated = {
+      faces: [
+        ["a1", "b1", "a2", "b2"], ["a2", "b2", "a3", "b3"], ["a3", "b3", "a1", "b1"],
+        ["a1", "b2", "a3", "b1"], ["a2", "b3", "a1", "b2"],
+      ],
+    };
+    const cert = tryFourClassCertificate(K33, fabricated);
+    expect(cert.planarity).toBe("refuted");
+    expect(cert.viaFourColorTheorem).toBe(false);
+    expect(cert.reason).toContain("appeals to no theorem");
+  });
+
+  test("K5 does NOT do this job — the control that shows why K3,3 was needed", () => {
+    // K5 is nonplanar AND needs five colours, so a passing K5 test cannot distinguish
+    // "we checked planarity" from "we counted colours". K3,3 moves only one dial.
+    const K5 = {
+      vertices: ["v1", "v2", "v3", "v4", "v5"],
+      edges: ["v1", "v2", "v3", "v4", "v5"].flatMap((a, i, all) =>
+        all.slice(i + 1).map((b) => [a, b] as readonly [string, string]),
+      ),
+    };
+    expect(findMinimumColorSchedule(K5).colorCount).toBe(5);
+    expect(findMinimumColorSchedule(K33).colorCount).toBe(2);
+    // Both nonplanar; the colour counts disagree. That is the whole point.
+  });
+});

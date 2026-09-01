@@ -152,7 +152,13 @@ module ReferenceFrameFactorHeterarchyTests =
         let covariance = Rffh.Gaussian3.covariance output
         close 1e-10 2.5 covariance.XX
         close 1e-10 2.5 covariance.YY
-        close 1e-10 1.5 (abs covariance.XY)
+        // SIGNED, not `abs`. This line read `abs covariance.XY` until 2026-09-01, and an
+        // adversarial review showed what that cost: a REVERSED rotor sandwich (R~vR instead
+        // of RvR~) produces XY = -1.5 instead of +1.5, and the absolute value let that pass.
+        // Handedness is exactly the defect a Clifford transport must not get wrong, and it
+        // was the one thing this assertion could not see -- a check that cannot fail for the
+        // failure it is named after.
+        close 1e-10 1.5 covariance.XY
         close 1e-10 9.0 covariance.ZZ
 
     [<Fact>]
