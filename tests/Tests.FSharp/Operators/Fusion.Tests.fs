@@ -426,6 +426,24 @@ let ``Build fuses Filter then Filter; order-preserving, no map so no reorder`` (
 
 
 [<Fact>]
+let ``Build fuses Filter then MapMonotone; colliding images still coalesce`` () =
+    task {
+        let c = Circuit.create ()
+        let input = c.ZSetInput<int>()
+        let filtered = c.Filter(input.Stream, Func<int, bool>(fun x -> x > 0))
+        let mapped = c.MapMonotone(filtered, Func<int, int>(fun x -> x / 2))
+        let out = c.Output mapped
+        c.Build()
+        filtered.Op.IsFuseSkipped |> should be True
+        input.Send(ZSet.ofKeys [ -1; 2; 3; 4 ])
+        do! c.StepAsync()
+        out.Current.[1] |> should equal 2L
+        out.Current.[2] |> should equal 1L
+        out.Current.[0] |> should equal 0L
+    }
+
+
+[<Fact>]
 let ``Build fuses Filter then Map into the map and skips the filter`` () =
     task {
         let c = Circuit.create ()

@@ -1,0 +1,14 @@
+{
+  "id": "080d02ef5fb59810a0130008f0ae6c00",
+  "at": "2026-09-01T17:02:20.339Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1EYQXNK087G0R003VW3E83",
+    "type": "task",
+    "title": "flatMap k-way sum; drop Comparer.Create; monotone fuse skip-sort",
+    "slug": "flatmap-k-way-sum-drop-comparer-create-monotone-fuse-skip-so",
+    "priority": "P1",
+    "filename": "081M1EYQXNK087G0R003VW3E83-flatmap-k-way-sum-drop-comparer-create-monotone-fuse-skip-so.md"
+  }
+}

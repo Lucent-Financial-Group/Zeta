@@ -123,6 +123,14 @@ let ``ZSet flatMap chains weights`` () =
 
 
 [<Fact>]
+let ``ZSet flatMap of many singletons equals ofKeys of the images`` () =
+    let z = ZSet.ofKeys [ 1 .. 32 ]
+    let got = ZSet.flatMap (fun k -> ZSet.singleton (k * 10) 1L) z
+    let expected = ZSet.ofKeys [ for k in 1 .. 32 -> k * 10 ]
+    got |> should equal expected
+
+
+[<Fact>]
 let ``ZSet cartesian`` () =
     let a = ZSet.ofKeys [ 1 ; 2 ]
     let b = ZSet.ofKeys [ "a" ; "b" ]

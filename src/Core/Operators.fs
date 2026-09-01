@@ -28,6 +28,10 @@ type internal MapZSetOp<'A, 'B when 'A : comparison and 'B : comparison>
     let inputs = [| input :> Op |]
     let mutable skip = false
     let mutable fusedVisit: (('B -> int64 -> unit) -> unit) option = None
+    /// True when an upstream Map can emit keys out of collation order.
+    /// Filter-only fused chains keep source order; a monotone map then
+    /// skip-sorts. An upstream Map still sorts.
+    let mutable fusedReorders = false
     let mutable ilCompiled: Func<'A, FuseEmit.Result<'A>> option = None
     let mutable ilRoot: Op<ZSet<'A>> option = None
     let mutable ilStages: FuseEmit.Stage<'A> list = []
@@ -90,11 +94,13 @@ type internal MapZSetOp<'A, 'B when 'A : comparison and 'B : comparison>
                 true
             | :? IMapProducer<'A> as up ->
                 up.SetFuseSkip()
+                fusedReorders <- true
                 fusedVisit <- Some (fun visit ->
                     up.ForEachMapped (fun a w -> visit (f.Invoke a) w))
                 true
             | :? IFilterProducer<'A> as up ->
                 up.SetFuseSkip()
+                fusedReorders <- false
                 fusedVisit <- Some (fun visit ->
                     up.ForEachKept (fun a w -> visit (f.Invoke a) w))
                 true
@@ -103,11 +109,13 @@ type internal MapZSetOp<'A, 'B when 'A : comparison and 'B : comparison>
             match box input with
             | :? IMapProducer<'A> as up ->
                 up.SetFuseSkip()
+                fusedReorders <- true
                 fusedVisit <- Some (fun visit ->
                     up.ForEachMapped (fun a w -> visit (f.Invoke a) w))
                 true
             | :? IFilterProducer<'A> as up ->
                 up.SetFuseSkip()
+                fusedReorders <- false
                 fusedVisit <- Some (fun visit ->
                     up.ForEachKept (fun a w -> visit (f.Invoke a) w))
                 true
@@ -116,6 +124,20 @@ type internal MapZSetOp<'A, 'B when 'A : comparison and 'B : comparison>
     override this.StepAsync(_: CancellationToken) =
         if skip then ValueTask.CompletedTask
         else
+            let freeze (rented: ZEntry<'B>[]) (n: int) (reorder: bool) =
+                if n = 0 then ZSet<'B>.Empty
+                else
+                    let span = Span<_>(rented, 0, n)
+                    let live =
+                        if reorder then ZSetBuilder.sortAndConsolidate span
+                        else ZSetBuilder.consolidateSorted span
+                    if live = 0 then ZSet<'B>.Empty
+                    else ZSet(Pool.FreezeSlice(rented, live))
+            let upstreamMap (stages: FuseEmit.Stage<'A> list) =
+                match List.rev stages with
+                | _ :: rest ->
+                    rest |> List.exists (function FuseEmit.Map _ -> true | _ -> false)
+                | [] -> false
             match ilCompiled, ilRoot with
             | Some compiled, Some root ->
                 let span = root.Value.AsSpan()
@@ -128,12 +150,7 @@ type internal MapZSetOp<'A, 'B when 'A : comparison and 'B : comparison>
                         if t.Keep && n < rented.Length then
                             rented.[n] <- ZEntry(unbox (box t.Key), span.[i].Weight)
                             n <- n + 1
-                    if n = 0 then this.Value <- ZSet<'B>.Empty
-                    else
-                        let live = ZSetBuilder.sortAndConsolidate (Span<_>(rented, 0, n))
-                        this.Value <-
-                            if live = 0 then ZSet<'B>.Empty
-                            else ZSet(Pool.FreezeSlice(rented, live))
+                    this.Value <- freeze rented n (not monotone || upstreamMap ilStages)
                 finally
                     Pool.Return rented
             | _ ->
@@ -151,12 +168,7 @@ type internal MapZSetOp<'A, 'B when 'A : comparison and 'B : comparison>
                             if n < rented.Length then
                                 rented.[n] <- ZEntry(k, w)
                                 n <- n + 1)
-                        if n = 0 then this.Value <- ZSet<'B>.Empty
-                        else
-                            let live = ZSetBuilder.sortAndConsolidate (Span<_>(rented, 0, n))
-                            this.Value <-
-                                if live = 0 then ZSet<'B>.Empty
-                                else ZSet(Pool.FreezeSlice(rented, live))
+                        this.Value <- freeze rented n (not monotone || fusedReorders)
                     finally
                         Pool.Return rented
             ValueTask.CompletedTask
