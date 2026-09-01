@@ -1,0 +1,14 @@
+{
+  "id": "080d02f374b2f010a01300083161a7a7",
+  "at": "2026-09-01T19:25:00.894Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1F6X5JX087G0R003DP137N",
+    "type": "task",
+    "title": "Re-measure the vault chart at 0.34.1 and bump MEASURED_CHART_VERSION — nine encoded behaviours, before the unseal ceremony",
+    "slug": "re-measure-the-vault-chart-at-0-34-1-and-bump-measured-chart",
+    "priority": "P2",
+    "filename": "081M1F6X5JX087G0R003DP137N-re-measure-the-vault-chart-at-0-34-1-and-bump-measured-chart.md"
+  }
+}
