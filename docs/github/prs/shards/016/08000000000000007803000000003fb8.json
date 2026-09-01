@@ -1,0 +1,12 @@
+{
+  "pr_number": 16312,
+  "archive_path": "docs/history/pr-reviews/PR-16312-fix-portal-wire-tailwind-v4-through-the-vite-plugin.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-01T22:58:57.945Z",
+  "schema_version": "v1",
+  "commit_sha": "a6e6eb4ed2508940755f969b6f848cf7d1465641",
+  "title": "fix(portal): wire Tailwind v4 through the Vite plugin",
+  "state": "MERGED",
+  "merged_at": "2026-09-01T22:58:16Z",
+  "head_ref": "cursor/fix-zeta-portal-tailwind-v4-ece4"
+}
