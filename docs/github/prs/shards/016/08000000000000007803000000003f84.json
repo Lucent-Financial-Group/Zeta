@@ -1,0 +1,12 @@
+{
+  "pr_number": 16260,
+  "archive_path": "docs/history/pr-reviews/PR-16260-feat-cluster-remove-minio-archived-upstream-with-unpatched-high-advisories-seawe.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-01T18:16:11.195Z",
+  "schema_version": "v1",
+  "commit_sha": "ea4a75fb775a2c3cb6333cd20ff327d8cf59d371",
+  "title": "feat(cluster): remove minio — archived upstream with unpatched HIGH advisories; seaweedfs is the store",
+  "state": "MERGED",
+  "merged_at": "2026-09-01T18:15:31Z",
+  "head_ref": "shadow/remove-minio-archived-upstream-seaweedfs-is-the-store"
+}
