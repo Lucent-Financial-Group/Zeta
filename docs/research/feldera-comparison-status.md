@@ -119,10 +119,17 @@ and warns (does not scoop) when it is not. Unix cmake is apt/brew.
 ## Not yet a result
 
 A longer unique-key BDN pasted into `docs/BENCHMARKS.md`, and a
-factory-rust 1.98.0 rebuild of Feldera `dbsp` on this box. 1.98.0
-SIGSEGV'd LLVM here twice, then ICE'd in
-`rustc_next_trait_solver` compiling `dbsp` (~25s, not a missing
-cmake — aws-lc-sys had already compiled under 1.93.1). This Mac has
-known memory faults; a corrupt cargo `target/` is a live hypothesis,
-so the next compile is `rm -rf target` + `CARGO_INCREMENTAL=0` rather
-than a retry over the same cache.
+factory-rust 1.98.0 rebuild of Feldera `dbsp` on this box.
+
+1.98.0 first SIGSEGV'd LLVM, then ICE'd in `rustc_next_trait_solver`
+(`structural_traits.rs:1012`) compiling `dbsp`. Cache-corruption was
+a live hypothesis on this Mac; it is now **checked**. 2026-09-01:
+`rm -rf target` (5.8G) + `CARGO_INCREMENTAL=0` + `CARGO_BUILD_JOBS=2`
+under rustc 1.98.0 (`88d9e12ae`). aws-lc-sys / cmake / zstd-sys
+compiled; `dbsp` ICE'd at the **same** trait-solver line after ~5
+min of a clean graph (exit 101). So this is not a stale
+`target/` blob. Remaining forks: rustc 1.98.0 vs Feldera 0.342.0
+`edition = 2024`, or this machine's memory on that hot path. The
+measured same-box numbers stay the 1.93.1 MSRV binary. `cargo bench`
+uses `profile.bench` (`-C debuginfo=2`);
+`CARGO_PROFILE_RELEASE_DEBUG=0` does not apply to it.
