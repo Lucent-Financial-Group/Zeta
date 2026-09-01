@@ -136,3 +136,55 @@ RUN set -eu; \
     grep -qF "apt-get update reported errors" /tmp/install-resilience.log \
       || { echo "FAIL: graceful path took but emitted NO warning — silent failure is a shield hole"; exit 1; }; \
     echo "OK: unreachable apt source warned + continued (graceful, not silent)"
+
+
+# ── DID install.sh SATISFY ITS OWN apt MANIFEST? ──────────────────────────────
+#
+# `manifest-realized.ts` shipped 2026-08-31 supporting FOUR manifests -- brew,
+# brew-cask, apt, windows -- and was wired into exactly one lane, macOS. So the
+# check that exists to catch "declared but not installed" has never once been
+# asked about `manifests/apt`, and the 35 apt rows had the same nothing behind
+# them that the brew rows had before it was written.
+#
+# That gap is not hypothetical. The row that motivated the tool was `opensc`: a
+# week of smartcard work proceeded on the belief that the maintainer's
+# SmartCard-HSM was invisible to the OS, a belief formed from an empty
+# `security list-smartcards` and never controlled -- BECAUSE OPENSC WAS DECLARED
+# AND NOT INSTALLED. `manifests/apt` declares `opensc`, `pcscd` and
+# `libpcsclite1` for exactly the same hardware, and nothing has ever verified
+# that `linux.sh` actually lands them.
+#
+# WHAT THIS MEASURES HERE, and it is not host drift. This container was built
+# minutes ago from this very manifest, so "is this host in sync" could not fail
+# and its green would be a claim about nothing. What it measures is the
+# INSTALLER, by cross-checking two independent implementations of "this row is
+# satisfied":
+#
+#   linux.sh    shell parse + `apt-get install <pkg>`      (the realizer)
+#   this step   TypeScript parse + `dpkg-query -W`         (the verifier)
+#
+# A row the install loop silently skips, a `tier=` token the two parsers
+# disagree about, a package whose install name differs from its dpkg name, or
+# an install whose failure the loop swallowed all fail HERE and are invisible to
+# every other check in the repo. It is the apt half of the macOS lane's
+# reasoning, which is written out in full at
+# `.github/workflows/macos-install-sh-test.yml` ("Did install.sh satisfy its own
+# manifest?").
+#
+# Runs LAST on purpose: the resilience run above is the final thing that can
+# change what is installed, so this reads the settled state.
+#
+# TIER: the runs above force ZETA_INSTALL_FULL=1, and `detectTier` can only ask
+# for `full` or less, so the required set is a SUBSET of what was installed --
+# a tier mismatch cannot manufacture a false failure here, only hide rows.
+RUN set -eu; \
+    echo "=== every manifests/apt row installed by the runs above? ==="; \
+    if ! bun tools/setup/manifest-realized.ts; then \
+      echo "FAIL: install.sh did not satisfy manifests/apt on Ubuntu."; \
+      echo "      Two independent parsers disagree about what is installed, or the apt"; \
+      echo "      install loop swallowed a failure. The rows listed above are DECLARED"; \
+      echo "      and ABSENT -- which is the exact shape of the opensc defect that cost"; \
+      echo "      a week of smartcard diagnosis."; \
+      exit 1; \
+    fi; \
+    echo "OK: linux.sh realized every applicable manifests/apt row"
