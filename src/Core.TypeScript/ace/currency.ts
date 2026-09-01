@@ -176,10 +176,18 @@ export function compareVersions(a: string, b: string): number {
     if (typeof x === "number" && typeof y === "number") {
       if (x !== y) return x - y;
     } else {
-      // Ordinal, never locale-aware: a locale-sensitive compare would order
-      // versions differently per machine and break byte-lock across oracles.
-      const c = String(x).localeCompare(String(y), undefined, { sensitivity: "variant" });
-      if (c !== 0) return String(x) < String(y) ? -1 : 1;
+      // ORDINAL, never locale-aware. A locale-sensitive compare orders versions
+      // differently per machine and breaks byte-lock across the oracles.
+      //
+      // This block used to CALL `localeCompare` and then discard its result,
+      // returning the ordinal `<` comparison anyway -- so the comment above it was
+      // true of the returned value and false of the code, and the call did nothing
+      // but sit there being culture-sensitive. The `collation` linter caught it.
+      // JavaScript's `<` on strings is already UTF-16 code-unit order, which is the
+      // ordinal comparison this wants.
+      const sx = String(x);
+      const sy = String(y);
+      if (sx !== sy) return sx < sy ? -1 : 1;
     }
   }
   return 0;
