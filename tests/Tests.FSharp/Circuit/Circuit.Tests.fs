@@ -82,6 +82,21 @@ let ``map applies function per tick`` () =
     }
 
 [<Fact>]
+let ``MapMonotone matches Map on a non-decreasing projection`` () =
+    task {
+        let c = Circuit.create ()
+        let input = c.ZSetInput<int>()
+        let mapped = c.MapMonotone(input.Stream, Func<int, int>(fun x -> x * 2))
+        let out = c.Output mapped
+        input.Send(ZSet.ofKeys [ 1; 2; 3 ])
+        do! c.StepAsync()
+        out.Current.[2] |> should equal 1L
+        out.Current.[4] |> should equal 1L
+        out.Current.[6] |> should equal 1L
+        out.Current.[1] |> should equal 0L
+    }
+
+[<Fact>]
 let ``filter keeps matching entries`` () =
     task {
         let c = Circuit.create ()

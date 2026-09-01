@@ -99,6 +99,22 @@ let ``ZSet scale by negative one is neg`` () =
 
 
 [<Fact>]
+let ``ZSet mapMonotone equals map on a non-decreasing f`` () =
+    let z = ZSet.ofSeq [ 1, 1L ; 2, 3L ; 4, 1L ]
+    let f = fun x -> x * 10
+    ZSet.mapMonotone f z |> should equal (ZSet.map f z)
+
+
+[<Fact>]
+let ``ZSet mapMonotone coalesces colliding images without a sort`` () =
+    let z = ZSet.ofSeq [ 2, 1L ; 3, 2L ; 4, 1L ]
+    let r = ZSet.mapMonotone (fun x -> x / 2) z
+    r.[1] |> should equal 3L
+    r.[2] |> should equal 1L
+    r.Count |> should equal 2
+
+
+[<Fact>]
 let ``ZSet flatMap chains weights`` () =
     let z = ZSet.ofSeq [ 1, 2L ; 2, 3L ]
     let result = ZSet.flatMap (fun k -> ZSet.singleton (k * 10) 1L) z

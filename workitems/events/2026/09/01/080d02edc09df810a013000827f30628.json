@@ -1,0 +1,14 @@
+{
+  "id": "080d02edc09df810a013000827f30628",
+  "at": "2026-09-01T16:05:39.903Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1EVG4XX087G0R003ZE2RHT",
+    "type": "task",
+    "title": "ZSet.mapMonotone O(n) for order-preserving projection",
+    "slug": "zset-mapmonotone-o-n-for-order-preserving-projection",
+    "priority": "P1",
+    "filename": "081M1EVG4XX087G0R003ZE2RHT-zset-mapmonotone-o-n-for-order-preserving-projection.md"
+  }
+}
