@@ -4,7 +4,7 @@
 
 **As of:** 2026-09-01T17:46:26Z — the instant `published-chart-versions.json` was last refreshed. Every age below is measured against that instant, not against the moment you are reading this, so this file is byte-reproducible from committed data.
 
-**This is a report, never a gate.** Being behind is a standing condition, not a regression: 19 of 35 pins are behind upstream right now. A CI check on that would be red from birth and learned-to-ignore within a week. The blocking question — *does this pin resolve at all?* — is a different one and is answered on every PR by `src/Core.TypeScript/hygiene/audit-chart-target-revisions.ts`.
+**This is a report, never a gate.** Being behind is a standing condition, not a regression: 18 of 35 pins are behind upstream right now. A CI check on that would be red from birth and learned-to-ignore within a week. The blocking question — *does this pin resolve at all?* — is a different one and is answered on every PR by `src/Core.TypeScript/hygiene/audit-chart-target-revisions.ts`.
 
 **Behind is not unmaintained.** A pure versions-behind metric reports the most dangerous dependency in this tree as the healthiest one, which is exactly what happened with `minio`: it is the only pin that is not behind, and only because upstream archived the repository. So the gap and upstream's publishing record are two separate columns, and a chart nobody has published in over a year reads `DORMANT`, not `CURRENT`.
 
@@ -13,10 +13,10 @@
 | | count |
 |---|---|
 | chart coordinates under `full-ai-cluster/k8s/applications` | 35 |
-| behind upstream | 19 |
-| …of those, crossing a **major** boundary | 8 |
+| behind upstream | 18 |
+| …of those, crossing a **major** boundary | 7 |
 | …of those, a `0.x` minor (breaking by semver convention) | 4 |
-| at the newest version and upstream still active | 15 |
+| at the newest version and upstream still active | 16 |
 | **`DORMANT`** — at the newest version because upstream stopped publishing | 1 |
 | upstream silent for over a year (any gap) | 1 |
 | **`UNREACHABLE`** — the refresh could not reach the repository | 0 |
@@ -29,7 +29,6 @@
 |---|---|---|---|---|---|---|---|---|---|
 | `DORMANT` | `headscale` | `headscale` | `0.16.0` | 2025-02-19 | `0.16.0` | 2025-02-19 | 0 | -- | **DORMANT** 559d |
 | `BEHIND-MAJOR` | `kube-prometheus-stack` | `kube-prometheus-stack` | `65.5.0` | 2024-10-25 | `88.6.2` | 2026-08-31 | 439 | **MAJOR** | active 1d |
-| `BEHIND-MAJOR` | `argocd` | `argo-cd` | `7.7.10` | 2024-12-12 | `10.6.0` | 2026-09-01 | 200 | **MAJOR** | active 0d |
 | `BEHIND-MAJOR` | `gitlab` | `gitlab` | `8.7.0` | 2024-12-19 | `10.3.1` | 2026-08-26 | 162 | **MAJOR** | active 6d |
 | `BEHIND-MAJOR` | `redis` | `redis` | `20.5.0` | 2024-12-11 | `28.0.12` | 2026-08-27 | 121 | **MAJOR** | active 4d |
 | `BEHIND-MAJOR` | `argo-workflows` | `argo-workflows` | `0.42.5` | 2024-10-02 | `2.0.3` | 2026-08-28 | 76 | **MAJOR** | active 4d |
@@ -49,6 +48,7 @@
 | `BEHIND` | `openziti-controller` | `ziti-controller` | `3.1.1` | 2026-02-24 | `3.3.1` | 2026-08-31 | 4 | minor | active 0d |
 | `CURRENT` | `alloy` | `alloy` | `1.12.1` | 2026-08-27 | `1.12.1` | 2026-08-27 | 0 | -- | active 5d |
 | `CURRENT` | `argo-rollouts` | `argo-rollouts` | `2.43.0` | 2026-09-01 | `2.43.0` | 2026-09-01 | 0 | -- | active 0d |
+| `CURRENT` | `argocd` | `argo-cd` | `10.6.0` | 2026-09-01 | `10.6.0` | 2026-09-01 | 0 | -- | active 0d |
 | `CURRENT` | `cockroachdb` | `cockroachdb` | `22.0.3` | 2026-08-28 | `22.0.3` | 2026-08-28 | 0 | -- | active 4d |
 | `CURRENT` | `dapr` | `dapr` | `1.18.3` | 2026-08-28 | `1.18.3` | 2026-08-28 | 0 | -- | active 4d |
 | `CURRENT` | `external-secrets` | `external-secrets` | `2.10.0` | 2026-08-28 | `2.10.0` | 2026-08-28 | 0 | -- | active 4d |
