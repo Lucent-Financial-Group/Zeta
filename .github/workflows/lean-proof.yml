@@ -229,6 +229,10 @@ jobs:
           # not only the helper algebra, so an unresolved name cannot grade green.
           printf '#print axioms Zeta.AdinkraCentralProjectors.omega7_commutes\n#print axioms Zeta.AdinkraCentralProjectors.omega7_square\n#print axioms Zeta.AdinkraCentralProjectors.projector_plus_idempotent\n#print axioms Zeta.AdinkraCentralProjectors.projector_minus_idempotent\n#print axioms Zeta.AdinkraCentralProjectors.projector_complementary\n#print axioms Zeta.AdinkraCentralProjectors.projector_sum\n#print axioms Zeta.AdinkraCentralProjectors.projector_preserved\n#print axioms Zeta.AdinkraCentralProjectors.omega7_projector_laws\n' \
             | cat Lean4/AdinkraCentralProjectors.lean - > /tmp/adinkra_projector_axiom_audit.lean
+          printf '#print axioms Zeta.RigidPose.identity_act\n#print axioms Zeta.RigidPose.compose_act\n#print axioms Zeta.RigidPose.inverse_act\n#print axioms Zeta.RigidPose.act_inverse\n#print axioms Zeta.RigidPose.compose_inverse_left\n#print axioms Zeta.RigidPose.compose_inverse_right\n#print axioms Zeta.RigidPose.compose_assoc\n' \
+            | cat Lean4/RigidPoseSemidirect.lean - > /tmp/rigid_pose_axiom_audit.lean
+          printf '#print axioms Zeta.ConflictFreeColorSchedule.properColoring_makes_every_class_conflictFree\n#print axioms Zeta.ConflictFreeColorSchedule.same_color_implies_no_conflict\n#print axioms Zeta.ConflictFreeColorSchedule.fourColorWitness_gives_four_conflictFreeClasses\n' \
+            | cat Lean4/ConflictFreeColorSchedule.lean - > /tmp/conflict_schedule_axiom_audit.lean
 
           # ── Added 2026-08-14 (081KZZVC3DD087G0R0035SZN58): the Meno braided/balanced
           # pair. `MenoBraidedRMatrix` was wired into the build 2026-08-13 but never into
@@ -339,6 +343,14 @@ jobs:
             --label "adinkra projector axiom audit" --deny 'sorryAx' --deny 'Unknown constant' \
             --message "AdinkraCentralProjectors depends on sorryAx, or a named theorem did not resolve — the central involution/projector proof regressed or the audit became vacuous" \
             -- lake env lean /tmp/adinkra_projector_axiom_audit.lean
+          bun ../Core.TypeScript/hygiene/run-checked.ts \
+            --label "rigid pose axiom audit" --deny 'sorryAx' --deny 'Unknown constant' \
+            --message "RigidPoseSemidirect depends on sorryAx, or a named theorem did not resolve — the spatial action proof regressed or the audit became vacuous" \
+            -- lake env lean /tmp/rigid_pose_axiom_audit.lean
+          bun ../Core.TypeScript/hygiene/run-checked.ts \
+            --label "conflict schedule axiom audit" --deny 'sorryAx' --deny 'Unknown constant' \
+            --message "ConflictFreeColorSchedule depends on sorryAx, or a named theorem did not resolve — the coloring-to-scheduling proof regressed or the audit became vacuous" \
+            -- lake env lean /tmp/conflict_schedule_axiom_audit.lean
           bun ../Core.TypeScript/hygiene/run-checked.ts \
             --label "meno_rmatrix axiom audit" --deny 'sorryAx' \
             --message "MenoBraidedRMatrix depends on sorryAx — the braided-not-symmetric / Yang-Baxter certificate regressed to sorry/admit" \

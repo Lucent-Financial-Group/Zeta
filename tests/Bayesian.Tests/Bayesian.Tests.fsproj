@@ -13,6 +13,7 @@
     <Compile Include="QuantumFusion.Tests.fs" />
     <Compile Include="FactorGraph.Tests.fs" />
     <Compile Include="AdinkraEquivariantFactorLayer.Tests.fs" />
+    <Compile Include="ReferenceFrameFactorHeterarchy.Tests.fs" />
     <Compile Include="MessageBatch.Tests.fs" />
     <Compile Include="Bp.Tests.fs" />
     <Compile Include="Ep.Tests.fs" />
