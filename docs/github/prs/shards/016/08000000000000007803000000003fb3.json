@@ -1,0 +1,12 @@
+{
+  "pr_number": 16307,
+  "archive_path": "docs/history/pr-reviews/PR-16307-feat-argo-workflows-0-42-5-2-0-3-with-declarative-crds.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-01T22:05:49.290Z",
+  "schema_version": "v1",
+  "commit_sha": "e58062ae293017f125d7384e7c5d679b41c5e035",
+  "title": "feat(argo-workflows): 0.42.5 -> 2.0.3 with declarative CRDs",
+  "state": "MERGED",
+  "merged_at": "2026-09-01T22:05:03Z",
+  "head_ref": "shadow/argo-workflows-2-0-3-declarative-crds"
+}
