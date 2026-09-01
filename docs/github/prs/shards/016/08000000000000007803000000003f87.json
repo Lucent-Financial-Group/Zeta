@@ -1,0 +1,12 @@
+{
+  "pr_number": 16263,
+  "archive_path": "docs/history/pr-reviews/PR-16263-bench-081m1evg4xx087g0r003ze2rht-feldera-q1-uses-mapmonotone.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-01T16:57:07.465Z",
+  "schema_version": "v1",
+  "commit_sha": "e04dfb682175d67a625559083f248d0b79392ba8",
+  "title": "bench(081M1EVG4XX087G0R003ZE2RHT): Feldera Q1 uses MapMonotone",
+  "state": "MERGED",
+  "merged_at": "2026-09-01T16:56:28Z",
+  "head_ref": "feat/feldera-q1-map-monotone"
+}

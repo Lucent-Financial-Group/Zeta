@@ -1,0 +1,12 @@
+{
+  "pr_number": 16262,
+  "archive_path": "docs/history/pr-reviews/PR-16262-feat-081m1evnkye087g0r0004sja97-join-rents-o-matches-not-a-b.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-01T16:55:54.308Z",
+  "schema_version": "v1",
+  "commit_sha": "1bfe205dc5ec6eabd0736723aeaacb834d7245e6",
+  "title": "feat(081M1EVNKYE087G0R0004SJA97): join rents O(matches), not |A|×|B|",
+  "state": "MERGED",
+  "merged_at": "2026-09-01T16:55:15Z",
+  "head_ref": "feat/zset-join-rent-output-3"
+}

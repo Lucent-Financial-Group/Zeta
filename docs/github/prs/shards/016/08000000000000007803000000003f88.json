@@ -1,0 +1,12 @@
+{
+  "pr_number": 16264,
+  "archive_path": "docs/history/pr-reviews/PR-16264-fix-setup-agda-was-killed-not-mis-wired-signal-death-misreported-again.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-01T17:04:29.975Z",
+  "schema_version": "v1",
+  "commit_sha": "fee5a249139341e3ca244a06d91306eb698384dc",
+  "title": "fix(setup): agda was KILLED, not \"mis-wired\" — signal death misreported again",
+  "state": "MERGED",
+  "merged_at": "2026-09-01T17:03:46Z",
+  "head_ref": "shadow/agda-was-killed-not-mis-wired-signal-death-again"
+}
