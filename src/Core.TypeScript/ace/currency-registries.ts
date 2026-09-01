@@ -44,7 +44,11 @@ export const nugetRegistry: CurrencyRegistry = {
 export const npmRegistry: CurrencyRegistry = {
   ecosystem: "npm",
   async publishedVersions(coordinate: string): Promise<readonly PublishedVersion[]> {
-    const body = await getJson(`https://registry.npmjs.org/${coordinate.replace("/", "%2F")}`);
+    // `replaceAll`, not `replace`: the single-argument string form replaces only the
+    // FIRST occurrence. A scoped name (`@scope/name`) carries exactly one slash so
+    // both forms agree today, which is precisely why this would have gone unnoticed
+    // until a coordinate with two did. Flagged by CodeQL, not by review.
+    const body = await getJson(`https://registry.npmjs.org/${coordinate.replaceAll("/", "%2F")}`);
     if (body === null) throw new Error(`npm: unreachable for ${coordinate}`);
     const doc = body as { versions?: Record<string, unknown>; time?: Record<string, string> };
     if (typeof doc.versions !== "object" || doc.versions === null) return [];
