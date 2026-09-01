@@ -188,8 +188,31 @@ HELLO_DIR="$REPO_ROOT/src/Core.Agda"
 if [ -f "$HELLO_DIR/ProvidedView/Hello.agda" ]; then
   echo "→ verifying: agda typecheck of src/Core.Agda/ProvidedView/Hello.agda"
   echo "  (first run builds the Cubical.Foundations.Prelude interface cache)"
-  if (cd "$HELLO_DIR" && agda ProvidedView/Hello.agda); then
+  _agda_rc=0
+  (cd "$HELLO_DIR" && agda ProvidedView/Hello.agda) || _agda_rc=$?
+  if [ "$_agda_rc" -eq 0 ]; then
     echo "✓ cubical lane verified: --cubical module importing Cubical.Foundations.Prelude typechecks"
+  elif [ "$_agda_rc" -ge 128 ]; then
+    # A SIGNAL DEATH IS NOT A TYPECHECK VERDICT, and saying so is the whole point.
+    #
+    # This used to fall into the `else` below and report "lane is mis-wired" -- a claim
+    # about agda and cubical VERSIONS. Measured 2026-09-01 on the maintainer's machine:
+    # `Killed: 9` (SIGKILL, rc 137) while the lane was wired correctly. The message
+    # sent a reader to check pins that were fine.
+    #
+    # Same defect the mise probe carried until #16200 -- a SIGSEGV reported as an empty
+    # version string, 38 hours of a red lane. linux.sh already draws this line at
+    # `rc >= 128`; this is that line, here.
+    echo "error: agda was KILLED by signal $(( _agda_rc - 128 )) (rc=${_agda_rc}) while" >&2
+    echo "       typechecking ProvidedView/Hello.agda. THIS IS NOT A TYPECHECK RESULT and" >&2
+    echo "       says nothing about the agda ${AGDA_VERSION} / cubical ${CUBICAL_TAG} wiring." >&2
+    if [ "$(( _agda_rc - 128 ))" -eq 9 ]; then
+      echo "       Signal 9 is SIGKILL: on this path that is almost always memory pressure." >&2
+      echo "       Building the Cubical.Foundations.Prelude interface cache is the memory" >&2
+      echo "       high-water mark of the whole install. Free memory and re-run, or run this" >&2
+      echo "       lane alone -- the interface cache persists, so a retry starts further in." >&2
+    fi
+    exit 1
   else
     echo "error: cubical verify typecheck FAILED — lane is mis-wired (agda ${AGDA_VERSION}, cubical ${CUBICAL_TAG})." >&2
     exit 1
