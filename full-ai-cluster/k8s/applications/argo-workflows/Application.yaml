@@ -13,10 +13,40 @@ spec:
   source:
     repoURL: https://argoproj.github.io/argo-helm
     chart: argo-workflows
-    targetRevision: 0.42.5
+    # 0.42.5 -> 2.0.3 on 2026-09-01, WITH crds.full: false. Both halves matter.
+    #
+    # A first pass REFUSED this bump on the observation that 2.0.3 renders ZERO
+    # CustomResourceDefinitions where 0.42.5 renders eight -- which would leave the
+    # cluster unable to hold a Workflow at all. The observation was right and the
+    # conclusion was wrong: chart 2.x ships FULL CRDs (`crds.full: true`, its default)
+    # through a pre-install/pre-upgrade hook Job that server-side-applies them, so they
+    # never appear in a plain `helm template`.
+    #
+    # WE TAKE THE DECLARATIVE PATH INSTEAD. `crds.full: false` templates the CRDs as
+    # ordinary manifests -- eight of them, matching 0.42.5 exactly -- which ArgoCD applies
+    # like anything else. The hook path would work too, but it trades declarative
+    # manifests for a privileged Job doing server-side apply at PreSync, and a Job that
+    # fails leaves an Application that can never sync.
+    #
+    # THE COST IS STATED RATHER THAN OMITTED: the minified CRDs carry
+    # `x-kubernetes-preserve-unknown-fields`, so Workflow specs get less schema
+    # validation from the API server than the full CRDs would give. That is a real
+    # trade -- weaker field validation in exchange for CRDs our tooling can SEE. The
+    # lane partitioner, the storage ledger and kubeconform all read the render, and a CRD
+    # delivered by a hook Job is invisible to every one of them.
+    targetRevision: 2.0.3
     helm:
       releaseName: argo-workflows
       valuesObject:
+        crds:
+          # DECLARATIVE, not the hook Job. See the note at targetRevision: with
+          # `full: true` (the chart default) the CRDs ship via a pre-install Job doing
+          # server-side apply, so `helm template` renders NONE of them and every tool
+          # that reads the render is blind to them. `false` templates all eight as
+          # ordinary manifests, matching what 0.42.5 rendered.
+          full: false
+          install: true
+          keep: true
         controller:
           workflowDefaults:
             spec:
