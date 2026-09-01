@@ -10,6 +10,13 @@ workloads.
 dotnet run -c Release --project bench/Feldera.Bench --filter "*"
 ```
 
+Each query **builds the circuit once** in `[<GlobalSetup>]` and ticks
+`Send(one ZSet.ofArray batch) + Circuit.Step`. Do not reconstruct
+the circuit inside the iteration (that measures `Circuit.create`, not
+the tick) and do not `Send` N singletons (the input op used to
+pairwise-add those — O(n²) allocs; it now k-way merges, but a single
+batch is still the Feldera-shaped path).
+
 BenchmarkDotNet runs each query across `EventCount ∈ {10K, 100K}` and
 reports:
 

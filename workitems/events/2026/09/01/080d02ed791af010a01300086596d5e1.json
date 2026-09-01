@@ -1,0 +1,14 @@
+{
+  "id": "080d02ed791af010a01300086596d5e1",
+  "at": "2026-09-01T15:55:54.078Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1ETY8TY087G0R0022CT4R5",
+    "type": "task",
+    "title": "DBSP ingest: ofArray + k-way input coalesce vs pairwise add",
+    "slug": "dbsp-ingest-ofarray-k-way-input-coalesce-vs-pairwise-add",
+    "priority": "P1",
+    "filename": "081M1ETY8TY087G0R0022CT4R5-dbsp-ingest-ofarray-k-way-input-coalesce-vs-pairwise-add.md"
+  }
+}

@@ -35,6 +35,21 @@ let ``ZSet count is zero-alloc`` () =
 
 
 [<Fact>]
+let ``ZSet.ofArray allocates less than pairwise singleton add`` () =
+    let keys = Array.init 256 id
+    let batchBytes = measure 3 (fun () -> ZSet.ofArray keys |> ignore)
+    let pairwiseBytes =
+        measure 3 (fun () ->
+            let mutable acc = ZSet<int>.Empty
+            for k in keys do
+                acc <- ZSet.add acc (ZSet.singleton k 1L)
+            ignore acc)
+    Assert.True(
+        (batchBytes < pairwiseBytes),
+        sprintf "ofArray %d bytes should beat pairwise singleton add %d bytes" batchBytes pairwiseBytes)
+
+
+[<Fact>]
 let ``ZSet.add allocates only the output array`` () =
     let a = ZSet.ofSeq [ 1, 1L ; 2, 2L ; 3, 3L ]
     let b = ZSet.ofSeq [ 4, 4L ; 5, 5L ]

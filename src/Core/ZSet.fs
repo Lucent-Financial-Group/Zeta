@@ -264,8 +264,29 @@ module ZSet =
         finally
             Pool.Return buf
 
+    /// Build from an array of keys at weight 1. No `seq`/`tuple` enumerators.
+    /// Duplicates are summed; the output is sorted and coalesced.
+    let ofArray (keys: 'K[]) : ZSet<'K> =
+        if isNull keys || keys.Length = 0 then
+            ZSet.Empty
+        else
+            let buf = Pool.Rent<ZEntry<'K>> keys.Length
+            try
+                for i in 0 .. keys.Length - 1 do
+                    buf.[i] <- ZEntry(keys.[i], 1L)
+
+                let live = ZSetBuilder.sortAndConsolidate (Span<_>(buf, 0, keys.Length))
+                if live = 0 then
+                    ZSet.Empty
+                else
+                    ZSet(Pool.FreezeSlice(buf, live))
+            finally
+                Pool.Return buf
+
     let inline ofKeys (keys: 'K seq) : ZSet<'K> =
-        keys |> Seq.map (fun k -> k, 1L) |> ofSeq
+        match keys with
+        | :? array<'K> as arr -> ofArray arr
+        | _ -> keys |> Seq.map (fun k -> k, 1L) |> ofSeq
 
     /// Set semantics: each distinct key gets weight 1.
     let ofSet (keys: 'K seq) : ZSet<'K> =

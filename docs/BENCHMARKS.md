@@ -40,20 +40,29 @@ adds on top via the pluggable `IBackingStore<'K>` abstraction). At small
 batches the channel overhead dominates, losing 3.7×. Sync is the default;
 opt in to `SpineAsync` only when you're spilling.
 
-## Comparison to Feldera (rough)
+## Comparison to Feldera (honesty peel)
 
-Feldera's published numbers (from [Nexmark harness](https://github.com/feldera/feldera/tree/main/crates/nexmark))
-are **1.5–3 M events/sec/core** on common Nexmark queries. Our simple-op
-throughput on a single thread:
+Feldera's published Nexmark numbers are **events/sec on a running pipeline**
+(blog: 10–40 M Q1/Q2 at 100 M events / 16 workers on a Threadripper 3990X;
+common per-core quotes 1.5–3 M). Our rows above are **micro-ops on a
+sorted Z-set of N=4096**, not Nexmark. `Add` 52 M entries/sec is not
+Feldera Q1. Do not quote those as the same ballpark.
 
-- `Join` at N=4096: 16 M matches/sec
-- `Add` at N=4096: 52 M entries/sec
-- `Filter` at N=4096: 230 M entries/sec
+Head-to-head is `bench/Feldera.Bench` (Q1 projection, Q2 filter) plus
+`bench/Benchmarks/Nexmark.fs` + `NexmarkFull.fs` (Q1–Q8). The tick is
+`Send(one batch) + Circuit.Step` — not N singleton `Send`s then one
+Step (that used to pairwise-add the queue, O(n²) allocs) and not
+rebuild-the-circuit inside the BenchmarkDotNet iteration.
 
-That puts us in the same ballpark or ahead on micro-ops. A head-to-head
-Nexmark run against the same dataset would be the fair comparison; our
-Q1-Q8 harness is in `bench/Benchmarks/Nexmark.fs` + `NexmarkFull.fs`
-ready for that.
+Until a Release run of those harnesses is pasted here, **we have no
+measured events/sec vs Feldera**. Targets live in
+`bench/Feldera.Bench/README.md`; they are targets, not results.
+
+Ingest complexity (081M1ETY8TY087G0R0022CT4R5):
+
+- `ZSet.ofArray` / `ofKeys` on an array: one sort+consolidate, O(n log n)
+- `ZSetInputOp` drain: 0/1-item identity; k>1 is `ZSet.sum` O(n log k)
+- Pairwise `add` of N singletons was O(n²) allocs — that path is gone
 
 ## Polymorphic Z-set dispatch (ZSetW / MergeKernel — 081KWFXTHJY)
 
@@ -141,5 +150,9 @@ Verified via `GC.GetAllocatedBytesForCurrentThread()` in unit tests:
 | `Spine.Consolidate` | O(n) | O(n) | |
 | `RecursiveSemiNaive` | O(\|LFP\|) total | O(\|LFP\|) | semi-naive Δ-evaluation |
 | `ZSet.sum` of k sets | **O(n log k)** | O(n) | k-way merge |
+| `ZSet.ofArray` | O(n log n) | O(n) | one pool workspace; no seq/tuple enumerators |
+| `ZSetInputOp` drain | O(n log k) | O(output) | k=1 is identity (batched Send) |
 
 Bold entries are places we match theoretically-optimal complexity.
+`map` is still O(n log n) even when `f` is monotone — a measured gap vs
+Feldera/DBSP projection (Nexmark Q1 on int keys).

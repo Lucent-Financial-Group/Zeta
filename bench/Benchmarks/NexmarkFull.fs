@@ -103,13 +103,10 @@ type Q4_AvgFinalByCategory() =
 
     [<Benchmark>]
     member this.Run() : Task =
-        task {
-            for a in this.auctionData do
-                this.auctions.Send(ZSet.singleton a 1L)
-            for b in this.bidData do
-                this.bids.Send(ZSet.singleton b 1L)
-            do! this.c.StepAsync()
-        }
+        this.auctions.Send(ZSet.ofArray this.auctionData)
+        this.bids.Send(ZSet.ofArray this.bidData)
+        this.c.Step()
+        Task.CompletedTask
 
 
 /// Q5: Hot items — auctions with the most bids over a sliding window.
@@ -146,10 +143,9 @@ type Q5_HotItems() =
 
     [<Benchmark>]
     member this.Run() : Task =
-        task {
-            for b in this.data do this.bids.Send(ZSet.singleton b 1L)
-            do! this.c.StepAsync()
-        }
+        this.bids.Send(ZSet.ofArray this.data)
+        this.c.Step()
+        Task.CompletedTask
 
 
 /// Q6: Average selling price by seller.
@@ -210,11 +206,10 @@ type Q6_AvgBySeller() =
 
     [<Benchmark>]
     member this.Run() : Task =
-        task {
-            for a in this.aData do this.auctions.Send(ZSet.singleton a 1L)
-            for b in this.bData do this.bids.Send(ZSet.singleton b 1L)
-            do! this.c.StepAsync()
-        }
+        this.auctions.Send(ZSet.ofArray this.aData)
+        this.bids.Send(ZSet.ofArray this.bData)
+        this.c.Step()
+        Task.CompletedTask
 
 
 /// Q7: Highest bid in each window.
@@ -252,10 +247,9 @@ type Q7_HighestBidPerWindow() =
 
     [<Benchmark>]
     member this.Run() : Task =
-        task {
-            for b in this.data do this.bids.Send(ZSet.singleton b 1L)
-            do! this.c.StepAsync()
-        }
+        this.bids.Send(ZSet.ofArray this.data)
+        this.c.Step()
+        Task.CompletedTask
 
 
 /// Q8: Monitor new users — semi-join of Person and Auction streams per window.
@@ -300,8 +294,7 @@ type Q8_NewUsersAuctioning() =
 
     [<Benchmark>]
     member this.Run() : Task =
-        task {
-            for p in this.pData do this.persons.Send(ZSet.singleton p 1L)
-            for a in this.aData do this.auctions.Send(ZSet.singleton a 1L)
-            do! this.c.StepAsync()
-        }
+        this.persons.Send(ZSet.ofArray this.pData)
+        this.auctions.Send(ZSet.ofArray this.aData)
+        this.c.Step()
+        Task.CompletedTask

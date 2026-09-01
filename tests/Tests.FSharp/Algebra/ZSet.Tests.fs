@@ -54,6 +54,25 @@ let ``ZSet ofKeys with duplicates sums weights`` () =
 
 
 [<Fact>]
+let ``ZSet ofArray equals ofKeys and consolidates duplicates`` () =
+    let keys = [| 3; 1; 2; 1 |]
+    let fromArray = ZSet.ofArray keys
+    let fromKeys = ZSet.ofKeys keys
+    let fromList = ZSet.ofKeys [ 3; 1; 2; 1 ]
+    fromArray |> should equal fromKeys
+    fromArray |> should equal fromList
+    fromArray.[1] |> should equal 2L
+    fromArray.[2] |> should equal 1L
+    fromArray.[3] |> should equal 1L
+    fromArray.Count |> should equal 3
+
+
+[<Fact>]
+let ``ZSet ofArray empty is empty`` () =
+    ZSet.ofArray Array.empty<int> |> ZSet.isEmpty |> should be True
+
+
+[<Fact>]
 let ``ZSet ofSet deduplicates`` () =
     let z = ZSet.ofSet [ 1 ; 1 ; 2 ; 3 ; 3 ]
     z.Count |> should equal 3

@@ -66,11 +66,9 @@ type Q1_CurrencyProjection() =
 
     [<Benchmark>]
     member this.Run() : Task =
-        task {
-            for b in this.bids do
-                this.input.Send(ZSet.singleton b 1L)
-            do! this.c.StepAsync()
-        }
+        this.input.Send(ZSet.ofArray this.bids)
+        this.c.Step()
+        Task.CompletedTask
 
 
 [<MemoryDiagnoser>]
@@ -100,11 +98,9 @@ type Q2_AuctionFilter() =
 
     [<Benchmark>]
     member this.Run() : Task =
-        task {
-            for b in this.bids do
-                this.input.Send(ZSet.singleton b 1L)
-            do! this.c.StepAsync()
-        }
+        this.input.Send(ZSet.ofArray this.bids)
+        this.c.Step()
+        Task.CompletedTask
 
 
 [<MemoryDiagnoser>]
@@ -157,10 +153,7 @@ type Q3_LocalItems() =
 
     [<Benchmark>]
     member this.Run() : Task =
-        task {
-            for p in this.persons do
-                this.personIn.Send(ZSet.singleton p 1L)
-            for a in this.auctions do
-                this.auctionIn.Send(ZSet.singleton a 1L)
-            do! this.c.StepAsync()
-        }
+        this.personIn.Send(ZSet.ofArray this.persons)
+        this.auctionIn.Send(ZSet.ofArray this.auctions)
+        this.c.Step()
+        Task.CompletedTask
