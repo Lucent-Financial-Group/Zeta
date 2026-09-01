@@ -1,0 +1,14 @@
+{
+  "id": "080d02f0bfd44810a01300083db984dc",
+  "at": "2026-09-01T17:50:24.905Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1F1FYM8087G0R0009X7WWC",
+    "type": "task",
+    "title": "Paste Feldera.Bench Q1/Q2 Release numbers into BENCHMARKS.md",
+    "slug": "paste-feldera-bench-q1-q2-release-numbers-into-benchmarks-md",
+    "priority": "P2",
+    "filename": "081M1F1FYM8087G0R0009X7WWC-paste-feldera-bench-q1-q2-release-numbers-into-benchmarks-md.md"
+  }
+}

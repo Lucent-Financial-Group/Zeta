@@ -41,9 +41,10 @@ numbers at 100 M events / 16 worker threads (Threadripper 3990X):
 | Q5 tumbling top-N     | 2–5 M/s          | ≥ 50 % |
 
 Our near-term target is to **beat Feldera on projection/filter** and
-match within 2× on joins — we have a better allocation story on the
-hot path (zero-alloc Span + ArrayPool); Feldera's Rust backend wins
-on raw throughput at the cost of a harder FFI boundary.
+match within 2× on joins. **Not yet a result:** a 2026-09-01 Release
+run of this harness is in `docs/BENCHMARKS.md` (Q1/Q2 mean + alloc).
+That tick coalesces `Price = rng.Next 10_000` so `|Z-set| ≤ 10_000`.
+Do not quote generator-N / mean as Feldera events/s.
 
 ## Roadmap
 
