@@ -68,6 +68,15 @@ const SPECTRUM = [
     verdict: "bracket + Jacobi checked · δ unmeasured",
     tone: "var(--amber)",
   },
+  {
+    lane: "coded → half-spin intertwiner",
+    carrier: "16 → 128 S+",
+    operators: "7 even pairs",
+    defect: "—",
+    verdict: "nullity 16 · rank-16 map · δ unmeasured",
+    tone: "var(--amber)",
+    emphasis: true,
+  },
 ] as const;
 
 const controlStyle = {
@@ -152,6 +161,21 @@ function BoundaryTrace({ tone }: { tone: string }) {
   );
 }
 
+function StructuralProofField() {
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 900 230"
+      preserveAspectRatio="none"
+      style={{ position: "absolute", inset: "0 0 auto auto", width: "64%", height: 230, opacity: 0.3, pointerEvents: "none" }}
+    >
+      <path d="M900 26 H790 L744 72 H654 L604 118 H510 L458 170 H330" fill="none" stroke="var(--amber)" strokeWidth="2.2" vectorEffect="non-scaling-stroke" />
+      <path d="M744 72 V24 H686 M604 118 V55 H550 M510 170 V104 H438 M790 26 V94 H730" fill="none" stroke="var(--amber)" strokeOpacity="0.52" strokeWidth="1.2" vectorEffect="non-scaling-stroke" />
+      <path d="M438 104 H390 L350 68 H296 M730 94 H676 L636 142 H574" fill="none" stroke="oklch(0.72 0.14 190)" strokeOpacity="0.48" strokeWidth="1" strokeDasharray="4 8" vectorEffect="non-scaling-stroke" />
+    </svg>
+  );
+}
+
 export default function EvidenceSeamPanel() {
   const [erasedCount, setErasedCount] = useState(1);
   const [ambiguousFour, setAmbiguousFour] = useState(false);
@@ -193,6 +217,7 @@ export default function EvidenceSeamPanel() {
       aria-labelledby="evidence-seam-title"
       className="evidence-seam-panel"
       style={{
+        position: "relative",
         border: "1px solid var(--border)",
         borderRadius: 0,
         background: "oklch(0.065 0.012 265)",
@@ -202,10 +227,11 @@ export default function EvidenceSeamPanel() {
         minHeight: "calc(100vh - 5rem)",
       }}
     >
-      <header style={{ padding: "1.4rem 1.25rem 1.15rem", borderBottom: "1px solid var(--border)", display: "flex", justifyContent: "space-between", gap: "1rem", flexWrap: "wrap" }}>
+      <StructuralProofField />
+      <header style={{ position: "relative", zIndex: 1, padding: "1.4rem 1.25rem 1.15rem", borderBottom: "1px solid var(--border)", display: "flex", justifyContent: "space-between", gap: "1rem", flexWrap: "wrap" }}>
         <div>
           <div style={{ color: "var(--amber-dim)", fontSize: "0.56rem", letterSpacing: "0.16em", textTransform: "uppercase" }}>
-            room evidence instrument · merged artifacts
+            room evidence instrument · checked finite artifacts
           </div>
           <h2 id="evidence-seam-title" style={{ margin: "0.38rem 0 0", fontSize: "clamp(1.4rem, 3.4vw, 2.5rem)", lineHeight: 0.98, letterSpacing: "-0.06em" }}>
             Adinkra recovery → durable truth → local witness
@@ -217,7 +243,7 @@ export default function EvidenceSeamPanel() {
         </div>
       </header>
 
-      <div className="evidence-seam-layout" style={{ display: "grid", gridTemplateColumns: "minmax(0, 1.5fr) minmax(250px, 0.65fr)", gap: 0 }}>
+      <div className="evidence-seam-layout" style={{ position: "relative", zIndex: 1, display: "grid", gridTemplateColumns: "minmax(0, 1.5fr) minmax(250px, 0.65fr)", gap: 0 }}>
         <div className="evidence-seam-primary" style={{ padding: "1rem", borderRight: "1px solid var(--border)" }}>
           <div className="observatory-controls" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: "0.65rem", marginBottom: "0.9rem" }}>
             <label style={{ fontSize: "0.55rem", color: "var(--muted-foreground)" }}>
@@ -317,7 +343,7 @@ export default function EvidenceSeamPanel() {
         </div>
       </div>
 
-      <div style={{ borderTop: "1px solid var(--border)", padding: "1rem" }}>
+      <div style={{ position: "relative", zIndex: 1, borderTop: "1px solid var(--border)", padding: "1rem" }}>
         <div style={{ display: "flex", justifyContent: "space-between", gap: "1rem", flexWrap: "wrap", marginBottom: "0.75rem" }}>
           <div>
             <div style={{ color: "var(--amber-dim)", fontSize: "0.56rem", letterSpacing: "0.14em", textTransform: "uppercase" }}>
@@ -331,16 +357,16 @@ export default function EvidenceSeamPanel() {
             mutation gate: ambiguity · CRC · duplicate · length<br />4 / 4 deliberate weakenings killed
           </div>
         </div>
-        <div className="evidence-spectrum-grid" style={{ display: "grid", gridTemplateColumns: "1.2fr repeat(3, minmax(0, 0.94fr))", gap: "0.55rem" }}>
+        <div className="evidence-spectrum-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: "0.55rem" }}>
           {SPECTRUM.map((row) => (
-            <div key={row.lane} style={{ border: "1px solid var(--border)", borderTop: `2px solid ${row.tone}`, padding: "0.75rem", background: "oklch(0.068 0.011 265)" }}>
+            <div key={row.lane} style={{ border: 0, borderTop: `${"emphasis" in row ? 3 : 1}px solid ${row.tone}`, borderLeft: "1px solid var(--border)", padding: "0.75rem", background: "emphasis" in row ? "linear-gradient(145deg, oklch(0.14 0.04 55 / 0.38), oklch(0.068 0.011 265) 62%)" : "oklch(0.062 0.009 265)" }}>
               <div style={{ color: "var(--muted-foreground)", fontSize: "0.6rem", fontWeight: 800, minHeight: "2.2em" }}>{row.lane}</div>
               <div style={{ color: row.defect === "—" ? "var(--muted-foreground)" : row.tone, fontSize: "clamp(1.45rem, 3vw, 2.2rem)", fontWeight: 900, letterSpacing: "-0.075em", margin: "0.25rem 0 0.6rem" }}>δ {row.defect}</div>
               <div style={{ display: "grid", gridTemplateColumns: "1fr auto", gap: "0.3rem", fontSize: "0.52rem", color: "var(--muted-foreground)", marginTop: "0.55rem" }}>
                 <span>carrier M</span><strong style={{ color: "var(--foreground)" }}>{row.carrier}</strong>
                 <span>operators A</span><strong style={{ color: "var(--foreground)" }}>{row.operators}</strong>
               </div>
-              <div style={{ marginTop: "0.6rem", borderTop: "1px solid var(--border)", paddingTop: "0.45rem", fontSize: "0.52rem", color: row.tone }}>
+              <div style={{ marginTop: "0.6rem", borderTop: "1px solid var(--border)", paddingTop: "0.45rem", fontSize: "0.52rem", fontWeight: "emphasis" in row ? 900 : 400, color: row.tone }}>
                 {row.verdict}
               </div>
             </div>

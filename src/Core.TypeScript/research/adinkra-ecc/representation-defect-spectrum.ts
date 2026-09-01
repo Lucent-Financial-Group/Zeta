@@ -15,6 +15,10 @@ import {
 } from "./regular-representation-defect";
 import { measureNonQuotientHalfSpinAction, type HalfSpinActionCensus } from "./nonquotient-half-spin-action";
 import { measureFiniteHalfSpinBracket, type HalfSpinBracketCensus } from "./nonquotient-half-spin-bracket";
+import {
+  measureFiniteAdinkraHalfSpinIntertwiner,
+  type FiniteAdinkraHalfSpinIntertwinerCensus,
+} from "./nonquotient-adinkra-halfspin-intertwiner";
 
 export const EXT_HAMMING_8_4_4_ROWS = [
   [1, 0, 0, 0, 0, 1, 1, 1],
@@ -84,11 +88,22 @@ export interface BivectorSpinorLane {
   readonly regularity: UnmeasuredRegularity;
 }
 
+export interface CodedHalfSpinIntertwinerLane {
+  readonly id: "coded-half-spin-intertwiner";
+  readonly sourceDimension: 16;
+  readonly targetDimension: 128;
+  readonly evenGeneratorCount: 7;
+  /** Exact finite equivariance witness; it is not a regular-module measurement. */
+  readonly census: FiniteAdinkraHalfSpinIntertwinerCensus;
+  readonly regularity: UnmeasuredRegularity;
+}
+
 export interface RepresentationDefectSpectrum {
   readonly uncoded: FullColourLane;
   readonly coded: FullColourLane;
   readonly colouredResidue: ColouredResidueLane;
   readonly bivectorSpinor: BivectorSpinorLane;
+  readonly codedHalfSpinIntertwiner: CodedHalfSpinIntertwinerLane;
 }
 
 let cachedBracketCensus: HalfSpinBracketCensus | undefined;
@@ -167,6 +182,7 @@ export function measureRepresentationDefectSpectrum(
   if (totalDimension !== 248) throw new Error(`unexpected spinorial E8 dimension: ${totalDimension}`);
   const actionCensus = measureNonQuotientHalfSpinAction();
   const bracketCensus = measuredBracketCensus();
+  const intertwinerCensus = measureFiniteAdinkraHalfSpinIntertwiner({ field: prime });
 
   return {
     uncoded: {
@@ -212,6 +228,23 @@ export function measureRepresentationDefectSpectrum(
           "an injectivity test for the declared spinor bracket",
           "a separately declared regular-module carrier",
           "a rank-one-freeness test",
+        ],
+      },
+    },
+    codedHalfSpinIntertwiner: {
+      id: "coded-half-spin-intertwiner",
+      sourceDimension: 16,
+      targetDimension: 128,
+      evenGeneratorCount: 7,
+      census: intertwinerCensus,
+      regularity: {
+        status: "unmeasured",
+        reason:
+          "a full-rank intertwiner is measured for one declared seven-generator restriction, but this is not a regular-module rank-one census",
+        missingWitnesses: [
+          "a separately declared regular-module carrier",
+          "a rank-one-freeness test for that carrier",
+          "an embedding-independent regularity definition",
         ],
       },
     },

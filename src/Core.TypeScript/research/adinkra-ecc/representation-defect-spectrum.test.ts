@@ -106,4 +106,20 @@ describe("finite Adinkra representation-defect spectrum", () => {
     }
     expect(() => requireMeasuredRegularity(lane.regularity)).toThrow("regularity is unmeasured");
   });
+
+  test("the coded-to-half-spin lane exposes the rank-16 finite witness without promoting it to regularity", () => {
+    const lane = measureRepresentationDefectSpectrum().codedHalfSpinIntertwiner;
+
+    expect(lane.sourceDimension).toBe(16);
+    expect(lane.targetDimension).toBe(128);
+    expect(lane.evenGeneratorCount).toBe(7);
+    expect(lane.census.sourceCliffordViolations).toBe(0);
+    expect(lane.census.targetCliffordViolations).toBe(0);
+    expect(lane.census.solution.nullity).toBe(16);
+    expect(lane.census.solution.basisRankSpectrum).toEqual({ "8": 16 });
+    expect(lane.census.solution.unitCombinationRank).toBe(16);
+    expect(lane.census.solution.unitCombinationIntertwines).toBe(true);
+    expect(lane.regularity.status).toBe("unmeasured");
+    expect(() => requireMeasuredRegularity(lane.regularity)).toThrow("regularity is unmeasured");
+  });
 });
