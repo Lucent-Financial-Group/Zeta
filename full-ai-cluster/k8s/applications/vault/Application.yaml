@@ -97,11 +97,24 @@ spec:
   source:
     repoURL: https://helm.releases.hashicorp.com
     chart: vault
-    # 0.29.1 -> 0.34.1 on 2026-09-01. Rendered at BOTH versions with this
-    # Application's own valuesObject: no value stopped taking effect and no
-    # resource was removed. Safe as an INSTALL version -- see the batch PR for
-    # why a fresh cluster does not walk this chart's upgrade path.
-    targetRevision: 0.34.1
+    # HELD AT 0.29.1. The bump to 0.34.1 was prepared and REVERTED on 2026-09-01.
+    # 
+    # audit-vault-topology-coherence refused it by name -- `chart-version-unmeasured`:
+    # every chart behaviour that audit encodes was MEASURED against 0.29.1, and it says
+    # so out loud rather than letting a version move quietly underneath it. Its own
+    # words: `a silent bump would make this audit assert things it never checked`.
+    # 
+    # That is nine substantive behaviours -- HA replicas against topology, raft
+    # retry_join, the PDB that would block a drain at one replica, the seal stanza's
+    # Enterprise requirement, listener scheme against VAULT_ADDR, anti-affinity, the
+    # storage class at its sync wave, the injector. Re-measuring them is real work on
+    # the one Application that holds the cluster's secrets, and bumping
+    # MEASURED_CHART_VERSION without doing it is precisely the vacuity this repo
+    # refuses: an audit that asserts what it never checked.
+    # 
+    # Filed rather than rushed. The audit's own timing note still holds -- decide this
+    # BEFORE the unseal ceremony creates live data, which is now, not later.
+    targetRevision: 0.29.1
     helm:
       releaseName: vault
       valuesObject:

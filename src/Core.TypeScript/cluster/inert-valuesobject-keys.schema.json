@@ -27463,7 +27463,7 @@
       "dynamic": [],
       "charts": ["<root>=cilium@1.16.5"]
     },
-    "https://helm.releases.hashicorp.com|vault|0.34.1": {
+    "https://helm.releases.hashicorp.com|vault|0.29.1": {
       "literal": {
         "csi": {
           "agent": {
@@ -27476,10 +27476,7 @@
             },
             "logFormat": {},
             "logLevel": {},
-            "resources": {},
-            "securityContext": {
-              "container": {}
-            }
+            "resources": {}
           },
           "daemonSet": {
             "annotations": {},
@@ -27551,8 +27548,6 @@
             "authorization": {},
             "enabled": {},
             "interval": {},
-            "matchLabels": {},
-            "metricRelabelings": {},
             "scrapeTimeout": {},
             "selectors": {},
             "tlsConfig": {}
@@ -27575,7 +27570,6 @@
       "open": [
         "csi.agent.extraArgs",
         "csi.agent.resources",
-        "csi.agent.securityContext.container",
         "csi.daemonSet.annotations",
         "csi.daemonSet.extraLabels",
         "csi.daemonSet.securityContext.container",
@@ -27597,15 +27591,13 @@
         "serverTelemetry.prometheusRules.rules",
         "serverTelemetry.prometheusRules.selectors",
         "serverTelemetry.serviceMonitor.authorization",
-        "serverTelemetry.serviceMonitor.matchLabels",
-        "serverTelemetry.serviceMonitor.metricRelabelings",
         "serverTelemetry.serviceMonitor.selectors",
         "serverTelemetry.serviceMonitor.tlsConfig",
         "ui.annotations",
         "ui.serviceIPFamilies"
       ],
       "dynamic": ["server"],
-      "charts": ["<root>=vault@0.34.1"]
+      "charts": ["<root>=vault@0.29.1"]
     },
     "https://kubernetes-sigs.github.io/headlamp/|headlamp|0.45.0": {
       "literal": {
@@ -36286,9 +36278,9 @@
     {
       "appId": "full-ai-cluster/vault",
       "chart": "vault",
-      "targetRevision": "0.34.1",
+      "targetRevision": "0.29.1",
       "repoURL": "https://helm.releases.hashicorp.com",
-      "chartKey": "https://helm.releases.hashicorp.com|vault|0.34.1"
+      "chartKey": "https://helm.releases.hashicorp.com|vault|0.29.1"
     },
     {
       "appId": "full-ai-cluster/vllm",
