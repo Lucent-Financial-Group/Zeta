@@ -2,9 +2,11 @@
 /**
  * 081KR7JY10008QG0R0008NGW95 Slice 1: Shadow observer — polling loop + Glass Halo attribution.
  *
- * Watches the Claude Code CLI for grey text (autocomplete suggestions)
- * and auto-accepts after a configurable delay if no human keystroke
- * interrupts.
+ * Watches the Claude Code CLI for prompt suggestions (grey ghost text in
+ * the input — not prefix autocomplete). Auto-accepts after a configurable
+ * delay if no human keystroke interrupts. Grok CLI grew the same UI
+ * (Aaron 2026-08-31); this observer is still Claude-frontmost. Manual
+ * accepts on either surface are marked `(shadow*)` in the sent line.
  *
  * Slice 1 (PR #2973): polling loop infrastructure + testable dry-run mode.
  * Slice 2 (this PR): --detect-cmd flag wires any shell command as the detector.

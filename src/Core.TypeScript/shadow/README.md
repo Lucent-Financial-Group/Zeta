@@ -1,8 +1,16 @@
 # Shadow observer
 
-Auto-accept mode for Claude Code's suggestion UI. When Claude produces a suggestion
-(grey text), the shadow observer detects it and sends an `Enter` keystroke to accept,
-logging every action to a JSON log file.
+Auto-accept mode for **prompt suggestions** (grey **ghost text** in the CLI
+input). This is not autocomplete: there may be no typed prefix and no
+completion menu. Claude Code's product name is prompt suggestion
+(`promptSuggestionEnabled`). Grok CLI grew the same UI class (Aaron 2026-08-31,
+first sighting). When Aaron accepts ghost text by hand he suffixes `(shadow*)`
+so the sent line is attributable. The observer itself still targets the
+Claude Code frontmost terminal; Grok CLI is recorded as a second surface, not
+wired to auto-Enter.
+
+When Claude (or, later, Grok) produces ghost text, the observer can send
+an `Enter` keystroke to accept, logging every action to a JSON log file.
 
 ## Shadow mode
 
