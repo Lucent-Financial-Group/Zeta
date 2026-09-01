@@ -129,85 +129,29 @@ let ``for CONSOLIDATES and scales weights through the bind`` () =
     Assert.Equal(1, q.Stream.Count)
     Assert.Equal(8L, q.Stream.[1])
 
-// ═══ THE INHERITED LIMIT ═════════════════════════════════════════════
+// ═══ JOIN BUFFER IS O(matches), NOT |left| × |right| ════════════════
 //
-//  Delegating to `ZSet.join` is right — the deleted implementation
-//  produced non-Z-sets — but it is not free. `ZSet.join` sizes its output
-//  buffer at |left| × |right| rather than by actual matches, and REFUSES
-//  outright when that product exceeds `Array.MaxLength`, however selective
-//  the key is. The deleted `ResizeArray` version completed on such inputs.
-//
-//  This is a pre-existing defect in `ZSet.join` that `Circuit.Join` has
-//  always had; `zeta { }` now inherits it. It is pinned here rather than
-//  left latent, because a boundary nobody has walked up to is a boundary
-//  that gets discovered in production.
-//
-//  AND THE REFUSAL IS NOT THE OPERATIVE BOUNDARY. Walking up to it found
-//  that out. The first version of the non-vacuity test below asserted that
-//  one row fewer on each side completes — 46_340² = 2_147_395_600, just
-//  under `Array.MaxLength`. It does not complete. `Pool.Rent` is asked for
-//  2 147 395 600 × `sizeof<ZEntry<int64>>` = **32 GiB** in one contiguous
-//  block and throws `OutOfMemoryException` on both `ubuntu-24.04` and
-//  `ubuntu-24.04-arm`, identically and deterministically — not a flake, and
-//  not something a bigger runner fixes at any size that matters.
-//
-//  So the disclosed limit ("refuses above `Array.MaxLength`") UNDERSTATES
-//  the real one. Memory binds first, and it binds ~32 GiB earlier. The
-//  `invalidOp` guard is the boundary you are TOLD about; allocation is the
-//  boundary you actually hit. Every product large enough to be interesting
-//  is unusable well before the guard ever fires.
-//
-//  That gap is why the non-vacuity witness below no longer straddles the
-//  threshold. Exact-boundary success is not merely expensive to test, it is
-//  UNTESTABLE BY CONSTRUCTION while the implementation reserves the whole
-//  product: any product just under `Array.MaxLength` is by definition a
-//  ~32 GiB reservation. The witness proves the same claim — the refusal is
-//  keyed on the product, not on input size — by holding the refused input
-//  fixed and shrinking the other side instead.
+//  `ZSet.join` used to rent the cartesian product and refuse when that
+//  product exceeded Array.MaxLength, even if each key matched once.
+//  46_341² > MaxLength; the true result is 46_341 rows. That was the
+//  defect. The join now counts matches, then rents O(output).
 
 [<Fact>]
-let ``join REFUSES inputs whose CARTESIAN size exceeds Array.MaxLength - even when the result is tiny`` () =
+let ``join COMPLETES when cartesian product exceeds Array.MaxLength but matches fit`` () =
     // 46_341² = 2_147_485_881 > Array.MaxLength = 2_147_483_591.
     let n = 46341L
     let left = Relation.ofKeys [ 1L .. n ]
     let right = Relation.ofKeys [ 1L .. n ]
-
-    // Each key matches exactly ONE key on the other side, so the true
-    // result is n rows — five orders of magnitude smaller than the buffer
-    // `ZSet.join` reserves for it. It refuses anyway. That gap between
-    // "what the answer is" and "what the implementation reserves" is the
-    // whole finding.
-    let ex =
-        Assert.Throws<System.InvalidOperationException>(fun () ->
-            zeta.Join(left, right, (fun (x: int64) -> x), (fun (x: int64) -> x), (fun a b -> a + b))
-            |> ignore)
-
-    Assert.Contains("Array.MaxLength", ex.Message, System.StringComparison.Ordinal)
+    let q =
+        zeta.Join(left, right, (fun (x: int64) -> x), (fun (x: int64) -> x), (fun a b -> a + b))
+    Assert.Equal(int n, q.Stream.Count)
 
 [<Fact>]
-let ``join SUCCEEDS on the very input that was refused - the refusal is about the PRODUCT, not about size`` () =
-    // Non-vacuity for the test above. Without a witness, the refusal test
-    // would pass just as well if `zeta.Join` threw on every large input for
-    // some unrelated reason — a throw that cannot be made NOT to happen
-    // proves nothing about what causes it.
-    //
-    // The witness holds the LEFT relation at exactly the 46_341 rows that
-    // were refused above and shrinks only the RIGHT one. The refused input
-    // is therefore unchanged, byte for byte, while the product collapses
-    // from 2_147_488_281 to 92_682. It completes — so what the guard reads
-    // is |left| × |right|, and neither side's size on its own.
-    //
-    // This discriminates strictly better than straddling the threshold did:
-    // "46_340² succeeds" would leave "large inputs throw" and "large
-    // PRODUCTS throw" still confounded, because both sides shrank together.
-    // Here only one moves.
+let ``join sparse match is O(hits) not O(left)`` () =
     let n = 46341L
     let left = Relation.ofKeys [ 1L .. n ]
     let right = Relation.ofKeys [ 1L; 2L ]
-
     let q = zeta.Join(left, right, (fun (x: int64) -> x), (fun (x: int64) -> x), (fun a b -> a + b))
-    // Keys 1 and 2 match; the projector maps them to 1+1=2 and 2+2=4, two
-    // distinct output keys. Every other left row finds no partner.
     Assert.Equal(2, q.Stream.Count)
 
 // ═══ CROSS-SURFACE ═══════════════════════════════════════════════════
