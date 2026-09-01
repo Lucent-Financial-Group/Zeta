@@ -1,0 +1,12 @@
+{
+  "pr_number": 16280,
+  "archive_path": "docs/history/pr-reviews/PR-16280-feat-081m1f1xzy4087g0r002z01fga-factory-rust-1-98-0-unique-key-nexmark-three-os-.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-01T19:22:00.310Z",
+  "schema_version": "v1",
+  "commit_sha": "f5ce8a2cf1749e1c5d70e94900986af89fee36ee",
+  "title": "feat(081M1F1XZY4087G0R002Z01FGA): factory rust 1.98.0, unique-key Nexmark, three-OS compare CI",
+  "state": "MERGED",
+  "merged_at": "2026-09-01T19:21:19Z",
+  "head_ref": "feat/zetafs-in-repo-until-v09"
+}
