@@ -1426,7 +1426,7 @@ Each PR is independently reviewable and mergeable. Tests green or it does not la
 - **Title:** `zetafs: IPlacement HRW over device ids; simulated-disk stripe/mirror/single+parity`
 - **Files:** new placement module; HRW wrapper over `ConsistentHash` mixer (**not** `Pick(key, n)`); simulated two-disk harness; **no** Ceph source
 - **Depends on:** PR1; independently mergeable with PR7 if CAS put is stubbed
-- **Changes:** Pure function + epoch map. Polyfill remains `single` (E9). Tests: sector hole reconstructs; whole-device loss does not; stripe is zero redundancy. Do not advertise ECC on `.zetafs`. Expansion ratio stays `toy`.
+- **Changes:** Pure function + epoch map. Polyfill remains `single` (E9). Tests: sector hole reconstructs; whole-device loss does not; stripe is zero redundancy. Do not advertise ECC on `.zetafs`. Expansion ratio stays `toy`. **Landing:** `src/Core/ZetaFsPlacement.fs` — HRW `score = mix(ContentId, deviceId)` via SplitMix64; does not call `RendezvousHash.Pick(key, n)`. Simulated XOR repair for `single+parity`. Polyfill profile is `single`.
 
 ### PR9 -- Unencrypted control + nonce-explicit GCM harness
 
