@@ -406,6 +406,26 @@ let ``Build fuses Map then Filter into the filter and skips the map`` () =
 
 
 [<Fact>]
+let ``Build fuses Filter then Filter; order-preserving, no map so no reorder`` () =
+    task {
+        let c = Circuit.create ()
+        let input = c.ZSetInput<int>()
+        let f1 = c.Filter(input.Stream, Func<int, bool>(fun x -> x % 2 = 0))
+        let f2 = c.Filter(f1, Func<int, bool>(fun x -> x > 0))
+        let out = c.Output f2
+        c.Build()
+        f1.Op.IsFuseSkipped |> should be True
+        input.Send(ZSet.ofKeys [ -2; -1; 0; 1; 2; 4 ])
+        do! c.StepAsync()
+        out.Current.[2] |> should equal 1L
+        out.Current.[4] |> should equal 1L
+        out.Current.[0] |> should equal 0L
+        out.Current.[-2] |> should equal 0L
+        out.Current.[1] |> should equal 0L
+    }
+
+
+[<Fact>]
 let ``Build fuses Filter then Map into the map and skips the filter`` () =
     task {
         let c = Circuit.create ()

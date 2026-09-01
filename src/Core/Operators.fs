@@ -165,6 +165,9 @@ type internal FilterZSetOp<'K when 'K : comparison>(input: Op<ZSet<'K>>, predica
     let inputs = [| input :> Op |]
     let mutable skip = false
     let mutable fusedVisit: (('K -> int64 -> unit) -> unit) option = None
+    /// True when the fused producer can emit keys out of collation order
+    /// (a Map upstream). Filter-only chains keep source order — skip sort.
+    let mutable fusedReorders = false
     let mutable ilCompiled: Func<'K, FuseEmit.Result<'K>> option = None
     let mutable ilRoot: Op<ZSet<'K>> option = None
     let mutable ilStages: FuseEmit.Stage<'K> list = []
@@ -226,11 +229,13 @@ type internal FilterZSetOp<'K when 'K : comparison>(input: Op<ZSet<'K>>, predica
                 true
             | :? IMapProducer<'K> as up ->
                 up.SetFuseSkip()
+                fusedReorders <- true
                 fusedVisit <- Some (fun visit ->
                     up.ForEachMapped (fun k w -> if predicate.Invoke k then visit k w))
                 true
             | :? IFilterProducer<'K> as up ->
                 up.SetFuseSkip()
+                fusedReorders <- false
                 fusedVisit <- Some (fun visit ->
                     up.ForEachKept (fun k w -> if predicate.Invoke k then visit k w))
                 true
@@ -239,6 +244,15 @@ type internal FilterZSetOp<'K when 'K : comparison>(input: Op<ZSet<'K>>, predica
     override this.StepAsync(_: CancellationToken) =
         if skip then ValueTask.CompletedTask
         else
+            let freeze (rented: ZEntry<'K>[]) (n: int) (reorder: bool) =
+                if n = 0 then ZSet<'K>.Empty
+                else
+                    let span = Span<_>(rented, 0, n)
+                    let live =
+                        if reorder then ZSetBuilder.sortAndConsolidate span
+                        else ZSetBuilder.consolidateSorted span
+                    if live = 0 then ZSet<'K>.Empty
+                    else ZSet(Pool.FreezeSlice(rented, live))
             match ilCompiled, ilRoot with
             | Some compiled, Some root ->
                 let span = root.Value.AsSpan()
@@ -251,12 +265,10 @@ type internal FilterZSetOp<'K when 'K : comparison>(input: Op<ZSet<'K>>, predica
                         if t.Keep && n < rented.Length then
                             rented.[n] <- ZEntry(t.Key, span.[i].Weight)
                             n <- n + 1
-                    if n = 0 then this.Value <- ZSet<'K>.Empty
-                    else
-                        let live = ZSetBuilder.sortAndConsolidate (Span<_>(rented, 0, n))
-                        this.Value <-
-                            if live = 0 then ZSet<'K>.Empty
-                            else ZSet(Pool.FreezeSlice(rented, live))
+                    let reorder =
+                        ilStages
+                        |> List.exists (function FuseEmit.Map _ -> true | _ -> false)
+                    this.Value <- freeze rented n reorder
                 finally
                     Pool.Return rented
             | _ ->
@@ -272,12 +284,7 @@ type internal FilterZSetOp<'K when 'K : comparison>(input: Op<ZSet<'K>>, predica
                             if n < rented.Length then
                                 rented.[n] <- ZEntry(k, w)
                                 n <- n + 1)
-                        if n = 0 then this.Value <- ZSet<'K>.Empty
-                        else
-                            let live = ZSetBuilder.sortAndConsolidate (Span<_>(rented, 0, n))
-                            this.Value <-
-                                if live = 0 then ZSet<'K>.Empty
-                                else ZSet(Pool.FreezeSlice(rented, live))
+                        this.Value <- freeze rented n fusedReorders
                     finally
                         Pool.Return rented
             ValueTask.CompletedTask
