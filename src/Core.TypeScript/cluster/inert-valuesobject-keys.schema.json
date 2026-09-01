@@ -4127,6 +4127,536 @@
       "dynamic": [],
       "charts": ["<root>=argo-workflows@0.42.5"]
     },
+    "https://argoproj.github.io/argo-helm|argo-workflows|2.0.3": {
+      "literal": {
+        "apiVersionOverrides": {
+          "autoscaling": {},
+          "cloudgoogle": {},
+          "monitoring": {}
+        },
+        "artifactRepository": {
+          "archiveLogs": {},
+          "azure": {},
+          "gcs": {},
+          "s3": {}
+        },
+        "artifactRepositoryRef": {},
+        "commonLabels": {},
+        "controller": {
+          "affinity": {},
+          "clusterWorkflowTemplates": {
+            "enabled": {},
+            "serviceAccounts": {}
+          },
+          "columns": {},
+          "configMap": {
+            "annotations": {},
+            "create": {},
+            "name": {}
+          },
+          "cronWorkflowWorkers": {},
+          "deploymentAnnotations": {},
+          "disableAgentPodCreation": {},
+          "envFrom": {},
+          "extraArgs": {},
+          "extraContainers": {},
+          "extraEnv": {},
+          "extraInitContainers": {},
+          "failedPodRestart": {
+            "enabled": {},
+            "maxRestarts": {}
+          },
+          "image": {
+            "registry": {},
+            "repository": {},
+            "tag": {}
+          },
+          "initialDelay": {},
+          "initlessPod": {
+            "enabled": {}
+          },
+          "instanceID": {
+            "enabled": {},
+            "explicitID": {},
+            "useReleaseName": {}
+          },
+          "kubeConfig": {},
+          "links": {},
+          "livenessProbe": {},
+          "loadBalancerClass": {},
+          "loadBalancerSourceRanges": {},
+          "logging": {
+            "format": {},
+            "globallevel": {},
+            "level": {}
+          },
+          "metricsConfig": {
+            "enabled": {},
+            "headlessService": {},
+            "honorLabels": {},
+            "ignoreErrors": {},
+            "interval": {},
+            "metricRelabelings": {},
+            "metricsTTL": {},
+            "modifiers": {},
+            "path": {},
+            "port": {},
+            "portName": {},
+            "relabelings": {},
+            "scheme": {},
+            "secure": {},
+            "servicePort": {},
+            "servicePortName": {},
+            "targetLabels": {}
+          },
+          "name": {},
+          "namespaceParallelism": {},
+          "navColor": {},
+          "nodeEvents": {
+            "enabled": {}
+          },
+          "nodeSelector": {
+            "kubernetes": {
+              "io/os": {}
+            }
+          },
+          "parallelism": {},
+          "pdb": {
+            "enabled": {},
+            "maxUnavailable": {},
+            "minAvailable": {}
+          },
+          "persistence": {},
+          "podAnnotations": {},
+          "podCleanupWorkers": {},
+          "podGCDeleteDelayDuration": {},
+          "podGCGracePeriodSeconds": {},
+          "podLabels": {},
+          "podSecurityContext": {},
+          "priorityClassName": {},
+          "rbac": {
+            "accessAllSecrets": {},
+            "create": {},
+            "secretWhitelist": {},
+            "writeConfigMaps": {}
+          },
+          "replicas": {},
+          "resourceRateLimit": {},
+          "resources": {},
+          "retentionPolicy": {},
+          "revisionHistoryLimit": {},
+          "securityContext": {},
+          "serviceAccount": {
+            "annotations": {},
+            "create": {},
+            "labels": {},
+            "name": {}
+          },
+          "serviceAnnotations": {},
+          "serviceLabels": {},
+          "serviceMonitor": {
+            "additionalLabels": {},
+            "enabled": {},
+            "namespace": {}
+          },
+          "serviceType": {},
+          "synchronization": {},
+          "telemetryConfig": {
+            "enabled": {},
+            "ignoreErrors": {},
+            "interval": {},
+            "metricsTTL": {},
+            "path": {},
+            "port": {},
+            "scheme": {},
+            "secure": {},
+            "servicePort": {},
+            "servicePortName": {}
+          },
+          "tolerations": {},
+          "topologySpreadConstraints": {},
+          "volumeMounts": {},
+          "volumes": {},
+          "workflowDefaults": {},
+          "workflowEvents": {
+            "enabled": {}
+          },
+          "workflowNamespaces": {},
+          "workflowRestrictions": {},
+          "workflowTTLWorkers": {},
+          "workflowWorkers": {}
+        },
+        "crds": {
+          "annotations": {},
+          "full": {},
+          "install": {},
+          "keep": {},
+          "upgradeJob": {
+            "extraEnv": {},
+            "image": {
+              "registry": {},
+              "repository": {},
+              "tag": {}
+            },
+            "imagePullSecrets": {},
+            "nodeSelector": {},
+            "podLabels": {},
+            "podSecurityContext": {},
+            "resources": {},
+            "securityContext": {
+              "allowPrivilegeEscalation": {},
+              "capabilities": {
+                "drop": {}
+              },
+              "readOnlyRootFilesystem": {},
+              "runAsGroup": {},
+              "runAsNonRoot": {},
+              "runAsUser": {},
+              "seccompProfile": {
+                "type": {}
+              }
+            },
+            "tolerations": {}
+          }
+        },
+        "createAggregateRoles": {},
+        "customArtifactRepository": {},
+        "emissary": {
+          "images": {}
+        },
+        "executor": {
+          "args": {},
+          "env": {},
+          "image": {
+            "pullPolicy": {},
+            "registry": {},
+            "repository": {},
+            "tag": {}
+          },
+          "resources": {},
+          "securityContext": {}
+        },
+        "extraObjects": {},
+        "fullnameOverride": {},
+        "images": {
+          "pullPolicy": {},
+          "pullSecrets": {},
+          "tag": {}
+        },
+        "kubeVersionOverride": {},
+        "mainContainer": {
+          "env": {},
+          "envFrom": {},
+          "imagePullPolicy": {},
+          "resources": {},
+          "securityContext": {}
+        },
+        "nameOverride": {},
+        "namespaceOverride": {},
+        "server": {
+          "GKEbackendConfig": {
+            "enabled": {},
+            "spec": {}
+          },
+          "GKEfrontendConfig": {
+            "enabled": {},
+            "spec": {}
+          },
+          "GKEmanagedCertificate": {
+            "domains": {},
+            "enabled": {}
+          },
+          "affinity": {},
+          "authMode": {},
+          "authModes": {},
+          "autoscaling": {
+            "behavior": {},
+            "enabled": {},
+            "maxReplicas": {},
+            "minReplicas": {},
+            "targetCPUUtilizationPercentage": {},
+            "targetMemoryUtilizationPercentage": {}
+          },
+          "backendTLSPolicy": {
+            "annotations": {},
+            "enabled": {},
+            "labels": {},
+            "targetRefs": {},
+            "validation": {}
+          },
+          "baseHref": {},
+          "clusterWorkflowTemplates": {
+            "enableEditing": {},
+            "enabled": {}
+          },
+          "deploymentAnnotations": {},
+          "enabled": {},
+          "envFrom": {},
+          "extraArgs": {},
+          "extraContainers": {},
+          "extraEnv": {},
+          "extraInitContainers": {},
+          "hostAliases": {},
+          "httproute": {
+            "annotations": {},
+            "enabled": {},
+            "hostnames": {},
+            "labels": {},
+            "parentRefs": {},
+            "rules": {}
+          },
+          "image": {
+            "registry": {},
+            "repository": {},
+            "tag": {}
+          },
+          "ingress": {
+            "annotations": {},
+            "enabled": {},
+            "extraPaths": {},
+            "hosts": {},
+            "ingressClassName": {},
+            "labels": {},
+            "pathType": {},
+            "paths": {},
+            "tls": {}
+          },
+          "lifecycle": {},
+          "livenessProbe": {
+            "enabled": {},
+            "failureThreshold": {},
+            "httpGet": {
+              "path": {},
+              "port": {}
+            },
+            "initialDelaySeconds": {},
+            "periodSeconds": {},
+            "successThreshold": {},
+            "timeoutSeconds": {}
+          },
+          "loadBalancerClass": {},
+          "loadBalancerIP": {},
+          "loadBalancerSourceRanges": {},
+          "logging": {
+            "format": {},
+            "globallevel": {},
+            "level": {}
+          },
+          "name": {},
+          "nodeSelector": {
+            "kubernetes": {
+              "io/os": {}
+            }
+          },
+          "pdb": {
+            "enabled": {},
+            "maxUnavailable": {},
+            "minAvailable": {}
+          },
+          "podAnnotations": {},
+          "podLabels": {},
+          "podSecurityContext": {},
+          "priorityClassName": {},
+          "rbac": {
+            "create": {}
+          },
+          "replicas": {},
+          "resources": {},
+          "revisionHistoryLimit": {},
+          "secure": {},
+          "securityContext": {},
+          "serviceAccount": {
+            "annotations": {},
+            "create": {},
+            "labels": {},
+            "name": {}
+          },
+          "serviceAnnotations": {},
+          "serviceLabels": {},
+          "serviceNodePort": {},
+          "servicePort": {},
+          "servicePortName": {},
+          "serviceTargetPort": {},
+          "serviceType": {},
+          "sso": {
+            "clientId": {
+              "key": {},
+              "name": {}
+            },
+            "clientSecret": {
+              "key": {},
+              "name": {}
+            },
+            "customGroupClaimName": {},
+            "enabled": {},
+            "filterGroupsRegex": {},
+            "insecureSkipVerify": {},
+            "issuer": {},
+            "issuerAlias": {},
+            "rbac": {
+              "enabled": {},
+              "secretWhitelist": {}
+            },
+            "redirectUrl": {},
+            "rootCA": {},
+            "scopes": {},
+            "sessionExpiry": {},
+            "userInfoPath": {}
+          },
+          "terminationGracePeriodSeconds": {},
+          "tmpVolume": {},
+          "tolerations": {},
+          "topologySpreadConstraints": {},
+          "volumeMounts": {},
+          "volumes": {}
+        },
+        "singleNamespace": {},
+        "useStaticCredentials": {},
+        "workflow": {
+          "namespace": {},
+          "rbac": {
+            "agentPermissions": {},
+            "artifactGC": {},
+            "create": {},
+            "rules": {},
+            "serviceAccounts": {}
+          },
+          "serviceAccount": {
+            "annotations": {},
+            "create": {},
+            "createSecret": {},
+            "labels": {},
+            "name": {},
+            "pullSecrets": {}
+          }
+        }
+      },
+      "open": [
+        "artifactRepository.azure",
+        "artifactRepository.gcs",
+        "artifactRepository.s3",
+        "artifactRepositoryRef",
+        "commonLabels",
+        "controller.affinity",
+        "controller.clusterWorkflowTemplates.serviceAccounts",
+        "controller.columns",
+        "controller.configMap.annotations",
+        "controller.deploymentAnnotations",
+        "controller.envFrom",
+        "controller.extraArgs",
+        "controller.extraContainers",
+        "controller.extraEnv",
+        "controller.extraInitContainers",
+        "controller.kubeConfig",
+        "controller.links",
+        "controller.livenessProbe",
+        "controller.loadBalancerSourceRanges",
+        "controller.metricsConfig.metricRelabelings",
+        "controller.metricsConfig.modifiers",
+        "controller.metricsConfig.relabelings",
+        "controller.metricsConfig.targetLabels",
+        "controller.persistence",
+        "controller.podAnnotations",
+        "controller.podLabels",
+        "controller.podSecurityContext",
+        "controller.rbac.secretWhitelist",
+        "controller.resourceRateLimit",
+        "controller.resources",
+        "controller.retentionPolicy",
+        "controller.securityContext",
+        "controller.serviceAccount.annotations",
+        "controller.serviceAccount.labels",
+        "controller.serviceAnnotations",
+        "controller.serviceLabels",
+        "controller.serviceMonitor.additionalLabels",
+        "controller.synchronization",
+        "controller.tolerations",
+        "controller.topologySpreadConstraints",
+        "controller.volumeMounts",
+        "controller.volumes",
+        "controller.workflowDefaults",
+        "controller.workflowNamespaces",
+        "controller.workflowRestrictions",
+        "crds.annotations",
+        "crds.upgradeJob.extraEnv",
+        "crds.upgradeJob.imagePullSecrets",
+        "crds.upgradeJob.nodeSelector",
+        "crds.upgradeJob.podLabels",
+        "crds.upgradeJob.podSecurityContext",
+        "crds.upgradeJob.resources",
+        "crds.upgradeJob.securityContext.capabilities.drop",
+        "crds.upgradeJob.tolerations",
+        "customArtifactRepository",
+        "emissary.images",
+        "executor.args",
+        "executor.env",
+        "executor.resources",
+        "executor.securityContext",
+        "extraObjects",
+        "global",
+        "images.pullSecrets",
+        "mainContainer.env",
+        "mainContainer.envFrom",
+        "mainContainer.resources",
+        "mainContainer.securityContext",
+        "server.GKEbackendConfig.spec",
+        "server.GKEfrontendConfig.spec",
+        "server.GKEmanagedCertificate.domains",
+        "server.affinity",
+        "server.authModes",
+        "server.autoscaling.behavior",
+        "server.backendTLSPolicy.annotations",
+        "server.backendTLSPolicy.labels",
+        "server.backendTLSPolicy.targetRefs",
+        "server.backendTLSPolicy.validation",
+        "server.deploymentAnnotations",
+        "server.envFrom",
+        "server.extraArgs",
+        "server.extraContainers",
+        "server.extraEnv",
+        "server.extraInitContainers",
+        "server.hostAliases",
+        "server.httproute.annotations",
+        "server.httproute.hostnames",
+        "server.httproute.labels",
+        "server.httproute.parentRefs",
+        "server.httproute.rules",
+        "server.ingress.annotations",
+        "server.ingress.extraPaths",
+        "server.ingress.hosts",
+        "server.ingress.labels",
+        "server.ingress.pathType",
+        "server.ingress.paths",
+        "server.ingress.tls",
+        "server.lifecycle",
+        "server.loadBalancerSourceRanges",
+        "server.podAnnotations",
+        "server.podLabels",
+        "server.podSecurityContext",
+        "server.resources",
+        "server.securityContext",
+        "server.serviceAccount.annotations",
+        "server.serviceAccount.labels",
+        "server.serviceAnnotations",
+        "server.serviceLabels",
+        "server.servicePort",
+        "server.sso.filterGroupsRegex",
+        "server.sso.rbac.secretWhitelist",
+        "server.sso.scopes",
+        "server.tmpVolume",
+        "server.tolerations",
+        "server.topologySpreadConstraints",
+        "server.volumeMounts",
+        "server.volumes",
+        "workflow.rbac.rules",
+        "workflow.rbac.serviceAccounts",
+        "workflow.serviceAccount.annotations",
+        "workflow.serviceAccount.labels",
+        "workflow.serviceAccount.pullSecrets"
+      ],
+      "dynamic": [],
+      "charts": ["<root>=argo-workflows@2.0.3"]
+    },
     "https://bitnami.github.io/sealed-secrets|sealed-secrets|2.19.3": {
       "literal": {
         "additionalNamespaces": {},
@@ -36379,9 +36909,9 @@
     {
       "appId": "full-ai-cluster/argo-workflows",
       "chart": "argo-workflows",
-      "targetRevision": "0.42.5",
+      "targetRevision": "2.0.3",
       "repoURL": "https://argoproj.github.io/argo-helm",
-      "chartKey": "https://argoproj.github.io/argo-helm|argo-workflows|0.42.5"
+      "chartKey": "https://argoproj.github.io/argo-helm|argo-workflows|2.0.3"
     },
     {
       "appId": "full-ai-cluster/argocd",
