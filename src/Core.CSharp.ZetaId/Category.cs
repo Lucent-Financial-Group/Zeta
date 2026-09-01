@@ -15,5 +15,6 @@ public enum Category : byte
     InventoryAsset = 10, // physical asset register (git-as-database inventory, inventory/items/) — backfill 2026-07-04, was TS/registry-only
     Channel = 11,   // multiplexed four-corner duplex channel over one transport (ZetaId-keyed; Aaron 2026-07-04)
     Agenda = 12,    // a declarer's voluntary agenda declaration (agendas/<zetaid>-<slug>.md) — 081M0R3WHTH087G0R0015CH5PV, Aaron 2026-08-23
+    StoreEntity = 13, // ZetaFS/ZetaDB hub identity (never reused; C8 exclusive; not ContentAddress)
     Extended = 15,   // reserved escape marker for wider extension categories
 }

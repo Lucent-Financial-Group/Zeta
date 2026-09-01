@@ -173,15 +173,23 @@ test("the allocation was additive: no existing number moved (NO-SHIFT discipline
   for (const [name, id] of [
     ["Observation", 0], ["Emission", 1], ["Workflow", 2], ["Heartbeat", 3], ["Batch", 4],
     ["FrictionTelemetry", 5], ["Bus", 6], ["Spawn", 7], ["WorkItem", 8], ["ContentAddress", 9],
-    ["InventoryAsset", 10], ["Channel", 11], ["Extended", 15],
+    ["InventoryAsset", 10], ["Channel", 11], ["Agenda", 12], ["StoreEntity", 13], ["Extended", 15],
   ] as const) {
     expect({ name, id: ts.get(name) }).toEqual({ name, id });
   }
 });
 
-test("13 and 14 are still free, and Extended (15) is the path beyond them", () => {
+test("StoreEntity is allocated at 13, in every oracle and the registry", () => {
+  expect(Category.StoreEntity).toBe(13);
+  expect(csharpVocabulary().get("StoreEntity")).toBe(13);
+  expect(fsharpVocabulary().get("StoreEntity")).toBe(13);
+  expect(rustVocabulary().get("StoreEntity")).toBe(13);
+  expect(parseRegistry(read("registry/categories.yaml")).get("StoreEntity")).toBe(13);
+});
+
+test("14 is still free, and Extended (15) is the path beyond it", () => {
   const taken = new Set(tsVocabulary().values());
-  expect(taken.has(13)).toBe(false);
+  expect(taken.has(13)).toBe(true);
   expect(taken.has(14)).toBe(false);
   expect(Category.Extended).toBe(15);
 });

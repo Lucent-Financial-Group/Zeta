@@ -4,6 +4,8 @@
 
 > **Stack-vs-heap framing (Aaron 2026-05-12):** This file is the **STACK** — indexed, ordered, traversable canonical view. Recent memory files in `memory/` with timestamps newer than the most-current entries here may be **HEAP** — floating cache, not yet indexed, accessible by direct path. Both are easily accessible: stack via traversal, heap via timestamp/filename. Indexing (heap→stack promotion) happens on cadence via `src/Core.TypeScript/memory/reindex-memory-md.ts` (081KRCQQF0008QG0R0037YYP1A), callable from the autonomous-loop tick. Last reindex: 2026-08-29.
 
+- [**grok-cli-prompt-suggestions-ghost-text-shadow-star**](feedback_aaron_grok_cli_prompt_suggestions_ghost_text_shadow_star_convention_2026_08_31.md) — 2026-08-31 — Grok CLI now shows empty-buffer **prompt suggestions** (ghost text, not autocomplete). Aaron suffixes accepted suggestions `(shadow*)`.
+
 <!-- BEGIN AUTO-INDEX (081KRCQQF0008QG0R0037YYP1A reindex-memory-md.ts) -->
 
 - [**shadow-has-no-visibility-into-subagent-progress**](feedback_aaron_shadow_has_no_visibility_into_subagent_progress_human_is_the_observability_channel_2026_08_27.md) — 2026-08-27 — Aaron observed that shadow lacks context into multi-agent workflow status; he can see on screen that dispatched agents are unfinished, shadow cannot. The orchestrator is blind to work it delegated.

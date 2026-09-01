@@ -48,6 +48,13 @@ module ZetaFsStore =
         if not (fs.Exists formatPath) && not headExisted then
             ZetaFsFormat.write fs dir ZetaFsFormat.pr1Default
 
+        let rootPath = Path.Combine(dir, ZetaFsNamespace.RootFileName)
+
+        if not (fs.Exists rootPath) && not headExisted then
+            let ns =
+                ZetaFsNamespace.create (ZetaFsNamespace.Entropy(fun () -> SystemEnvironment.Default.NextInt64()))
+            FileSystemIo.writeAllText fs rootPath (ZetaFsNamespace.EntityId.format ns.Root)
+
         dir
 
     /// Walk `startDir` and parents for a `.zetafs` directory. Nearest wins.

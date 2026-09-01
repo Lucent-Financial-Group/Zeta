@@ -59,9 +59,9 @@ const HEX_32 = /^[0-9a-f]{32}$/;
  * so a newly-registered category is accepted the moment it is added there and never
  * needs a second edit here.
  *
- * The gaps are the point: `category` is a 4-bit field (0..15) but only 0..11 and 15 are
- * registered, so 12, 13 and 14 decode cleanly and mean nothing. An id claiming one of
- * them is structurally impossible, and a version-only check would wave it through.
+ * The gaps are the point: `category` is a 4-bit field (0..15). Registered slots are
+ * 0..13 and 15; 14 is still free. An id claiming 14 decodes cleanly and means nothing.
+ * A version-only check would wave it through.
  */
 const REGISTERED_CATEGORIES: ReadonlySet<number> = new Set<number>(Object.values(Category));
 
@@ -119,7 +119,7 @@ export function rejectCanonicalZetaIdHex(id: unknown): ZetaIdRejection | null {
       kind: "unregistered-category",
       reason:
         `32-hex, version ${version}, but category ${category} is not registered ` +
-        `(the 4-bit field leaves 12, 13 and 14 undefined)${describeAscii(id)}.`,
+        `(the 4-bit field leaves 14 undefined)${describeAscii(id)}.`,
     };
   }
   return null;
