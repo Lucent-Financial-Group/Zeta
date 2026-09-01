@@ -50,6 +50,29 @@ let ``ZSet.ofArray allocates less than pairwise singleton add`` () =
 
 
 [<Fact>]
+let ``ZSet.mapMonotone allocates no more than map`` () =
+    let z = ZSet.ofKeys [ 1 .. 256 ]
+    let mapBytes = measure 3 (fun () -> ZSet.map (fun x -> x * 2) z |> ignore)
+    let monoBytes = measure 3 (fun () -> ZSet.mapMonotone (fun x -> x * 2) z |> ignore)
+    Assert.True(
+        (monoBytes <= mapBytes),
+        sprintf "mapMonotone %d bytes should be ≤ map %d bytes" monoBytes mapBytes)
+
+
+[<Fact>]
+let ``ZSet.join 1-to-1 does not rent the cartesian product`` () =
+    let a = ZSet.ofKeys [ 1 .. 256 ]
+    let b = ZSet.ofKeys [ 1 .. 256 ]
+    let bytes =
+        measure 3 (fun () ->
+            ZSet.join id id (fun x y -> x, y) a b |> ignore)
+    // Old path rented 256×256 entries (~1 MiB+). Output is 256 pairs.
+    Assert.True(
+        (bytes < 200_000L),
+        sprintf "1:1 join of 256×256 rented %d bytes (cartesian-shaped)" bytes)
+
+
+[<Fact>]
 let ``ZSet.add allocates only the output array`` () =
     let a = ZSet.ofSeq [ 1, 1L ; 2, 2L ; 3, 3L ]
     let b = ZSet.ofSeq [ 4, 4L ; 5, 5L ]
