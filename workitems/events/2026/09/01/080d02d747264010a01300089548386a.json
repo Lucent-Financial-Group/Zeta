@@ -1,0 +1,14 @@
+{
+  "id": "080d02d747264010a01300089548386a",
+  "at": "2026-09-01T03:00:07.496Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1DEHS68087G0R000W1F0ZB",
+    "type": "task",
+    "title": "Telemetry returns as daily aggregates — a few counts per metric with dimensions, not event streams",
+    "slug": "telemetry-returns-as-daily-aggregates-a-few-counts-per-metri",
+    "priority": "P2",
+    "filename": "081M1DEHS68087G0R000W1F0ZB-telemetry-returns-as-daily-aggregates-a-few-counts-per-metri.md"
+  }
+}
