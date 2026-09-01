@@ -743,13 +743,18 @@ describe("the CLI's exit code — the thing CI actually reads", () => {
     expect(runCli(["--offline"]).status).toBe(0);
   });
 
-  test("exits 1 when the baseline is empty — the 11 acknowledged findings are REAL, not absent", () => {
+  test("exits 1 when the baseline is empty — the 14 acknowledged findings are REAL, not absent", () => {
     // Points the run at a baseline path that does not exist, which loads as an
     // empty baseline. If this exits 0, either the findings evaporated or the
     // exit code stopped depending on them.
     const run = runCli(["--offline", "--baseline", "src/Core.TypeScript/cluster/testdata/no-such-baseline.json"]);
     expect(run.status).toBe(1);
-    expect(run.stdout).toContain("REFUSED (11)");
+    // 11 -> 14: mimir 6.2.0 carries three storage keys the derivation cannot see
+    // (the chart comments them out), acknowledged with the render that proves they
+    // work. Emptying the baseline must turn EVERY acknowledged finding back into a
+    // refusal, so this count tracks the baseline or the assertion stops proving the
+    // findings are real.
+    expect(run.stdout).toContain("REFUSED (14)");
     expect(run.stdout).toContain("FAILED");
   });
 });

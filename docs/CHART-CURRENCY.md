@@ -34,7 +34,6 @@
 | `BEHIND-MAJOR` | `argo-workflows` | `argo-workflows` | `0.42.5` | 2024-10-02 | `2.0.3` | 2026-08-28 | 76 | **MAJOR** | active 4d |
 | `BEHIND-MAJOR` | `loki` | `loki` | `6.18.0` | 2024-10-16 | `7.3.0` | 2026-08-10 | 48 | **MAJOR** | active 21d |
 | `BEHIND-MAJOR` | `temporal` | `temporal` | `0.59.0` | 2025-03-28 | `1.6.0` | 2026-07-13 | 26 | **MAJOR** | active 50d |
-| `BEHIND-MAJOR` | `mimir` | `mimir-distributed` | `5.5.1` | 2024-10-21 | `6.2.0` | 2026-08-20 | 13 | **MAJOR** | active 12d |
 | `BEHIND` | `ollama` | `ollama` | `1.6.0` | 2025-02-17 | `1.78.0` | 2026-08-27 | 72 | minor | active 5d |
 | `BEHIND` | `cilium` | `cilium` | `1.16.5` | 2024-12-17 | `1.20.1` | 2026-08-18 | 56 | minor | active 14d |
 | `BEHIND` | `hindsight` | `hindsight` | `0.3.0` | ? | `0.9.2` | ? | 46 | minor (0.x) | unknown |
@@ -54,6 +53,7 @@
 | `CURRENT` | `external-secrets` | `external-secrets` | `2.10.0` | 2026-08-28 | `2.10.0` | 2026-08-28 | 0 | -- | active 4d |
 | `CURRENT` | `forgejo` | `forgejo` | `17.1.5` | ? | `17.1.5` | ? | 0 | -- | unknown |
 | `CURRENT` | `headlamp` | `headlamp` | `0.45.0` | 2026-08-20 | `0.45.0` | 2026-08-20 | 0 | -- | active 11d |
+| `CURRENT` | `mimir` | `mimir-distributed` | `6.2.0` | 2026-08-20 | `6.2.0` | 2026-08-20 | 0 | -- | active 12d |
 | `CURRENT` | `nats` | `nats` | `2.14.6` | 2026-08-28 | `2.14.6` | 2026-08-28 | 0 | -- | active 3d |
 | `CURRENT` | `node-feature-discovery` | `node-feature-discovery` | `0.19.0` | 2026-07-10 | `0.19.0` | 2026-07-10 | 0 | -- | active 53d |
 | `CURRENT` | `open-policy-agent` | `gatekeeper` | `3.23.1` | 2026-08-27 | `3.23.1` | 2026-08-27 | 0 | -- | active 4d |
