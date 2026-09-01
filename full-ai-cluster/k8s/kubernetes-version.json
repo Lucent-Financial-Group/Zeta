@@ -7,7 +7,7 @@
     "TWO different answers, neither of which was what the cluster runs:",
     "",
     "  src/Core.TypeScript/hygiene/audit-observability-chain.ts   1.31.0",
-    "  infra/k8s/tests/validate-applications.ts (--kube-version)  1.33.0",
+    "  the legacy tree's manifest validator (--kube-version default)   1.33.0",
     "  .github/workflows/gate.yml (kubeconform)                   1.33.0",
     "  what k3s actually ships                                    1.35.6",
     "",
@@ -39,7 +39,13 @@
     "1.35.7 while the lock said 1.35.6. Close enough to look right, and wrong.",
     "",
     "WHEN THE LOCK MOVES, this file moves with it. lint-kubernetes-version-agrees.ts",
-    "refuses any consumer that disagrees with this declaration."
+    "refuses any consumer that disagrees with this declaration.",
+    "",
+    "NOTE ON A PATH NOT SPELLED OUT ABOVE: the third literal lived in the legacy",
+    "infra tree, which is scheduled for deletion and whose consumer count",
+    "audit-cluster-tree-consumers is driving to zero. Naming its path here would",
+    "have added a fresh entry to a list whose whole purpose is to shrink, to record",
+    "a fact that reads the same without it."
   ],
   "kubernetesVersion": "1.35.6",
   "k3sVersion": "1.35.6+k3s1",

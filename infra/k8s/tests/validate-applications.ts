@@ -58,6 +58,15 @@ import { fileURLToPath } from "node:url";
 import { parseArgs } from "node:util";
 import { parse as parseYamlStrict, stringify as stringifyYaml } from "yaml";
 
+/** The one declared Kubernetes version; see full-ai-cluster/k8s/kubernetes-version.json. */
+function declaredKubeVersion(): string {
+  const path = "full-ai-cluster/k8s/kubernetes-version.json";
+  const parsed = JSON.parse(readFileSync(path, "utf8")) as { kubernetesVersion?: unknown };
+  const version = parsed.kubernetesVersion;
+  if (typeof version !== "string") throw new Error(`${path} declares no kubernetesVersion`);
+  return version;
+}
+
 // ── Small helpers ────────────────────────────────────────────────────────────
 
 /**
@@ -193,7 +202,10 @@ const { values: args } = parseArgs({
     // full-ai-cluster -- a failure of the validator's assumption, not of the
     // manifest. A red that names the wrong culprit trains people to ignore reds.
     "root-app": { type: "string" },
-    "kube-version": { type: "string", default: "1.33.0" },
+    // Default read from full-ai-cluster/k8s/kubernetes-version.json rather than
+    // written here. It was "1.33.0" while the observability audit said "1.31.0" and
+    // k3s shipped 1.35.6 -- three literals, two answers, neither the cluster's.
+    "kube-version": { type: "string", default: declaredKubeVersion() },
   },
   strict: true,
 });
