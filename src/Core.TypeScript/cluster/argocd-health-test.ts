@@ -680,7 +680,7 @@ const DEV_INCLUDED_PROOF_DEFERRED_DIRS = new Set([
   //   AND THE EXIT CONDITION I WROTE WAS SLIGHTLY WRONG, which is worth more
   //   than the entry was. It said "prints `sync=Synced health=Healthy`". The
   //   lane does not require Synced: `argocd`, `cert-manager`, `external-secrets`,
-  //   `headlamp`, `loki`, `minio` and `node-feature-discovery` are all asserted
+  //   `headlamp`, `loki` and `node-feature-discovery` are all asserted
   //   at `sync=Unknown health=Healthy` in the same passing run -- `Unknown` here
   //   is an ArgoCD ComparisonError on the diff, not a sync failure. A LIFTS WHEN
   //   stricter than the gate it names would have kept this deferral alive after
@@ -931,8 +931,8 @@ export const APPLIED_BUT_UNASSERTED_REASONS: ReadonlyMap<string, string> = new M
       "[cite: chart-pin full-ai-cluster/hindsight hindsight 0.3.0] " +
       "[cite: resource-rung hindsight metal 1000] " +
       "[cite: resource-rung hindsight dev 75] " +
-      "[cite: lane-cpu metal 5231 over] " +
-      "[cite: lane-cpu dev 1081 fits] " +
+      "[cite: lane-cpu metal 5131 over] " +
+      "[cite: lane-cpu dev 1056 fits] " +
       "[cite: workflow-job k8s-argocd-health-test.yml dry-run] " +
       "[cite: path full-ai-cluster/k8s/bootstrap/root-application.yaml] " +
       "[cite: path maintainers/Addisons820/cluster-nodes/node-ad1efd/node.yaml] " +

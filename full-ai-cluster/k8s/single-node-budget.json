@@ -409,7 +409,7 @@
     "and this goes red until the trade is re-stated."
   ],
 
-  "acknowledgedRungBudgetGap": ["metal@dev-lane=5231m/13475Mi>>2500m/9216Mi"],
+  "acknowledgedRungBudgetGap": ["metal@dev-lane=5131m/12963Mi>>2500m/9216Mi"],
 
   "$comment_acknowledgedRootAppDuplicates": [
     "argocd/zeta-root is declared TWICE with two different spec.source.path values:",
