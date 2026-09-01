@@ -189,7 +189,7 @@ if command -v rustup >/dev/null 2>&1; then
     fi
   fi
 else
-  echo "  WARNING: rustup not found (Rust managed via mise: rust = \"1.96.0\")"
+  echo "  WARNING: rustup not found (Rust managed via mise: rust = \"1.96.1\")"
   if [ "${CI:-}" = "true" ]; then
     echo "FAIL: rustup required in CI (Oracle 12 substrate missing)" >&2
     exit 1
