@@ -1333,7 +1333,7 @@
     },
     {
       "key": "feldera-native.yml:probe",
-      "reason": "MEASURED 2026-09-01: probe job INTRODUCED in the same change, zero runs. 3 OS x rustc 1.97.0 / 1.98.0 / beta, PR + workflow_dispatch only (not push-to-main), to ask whether the this-Mac dbsp ICE (StarJoinFuncTrait Alias panic, first-bad 1.97.0) reproduces on GHA. Unix legs run tools/setup/install.sh (kind=ci); Windows has no apt. Falls back to the weak pre-apt bound: 550s, which its 5400s (`timeout-minutes: 90`) satisfies. THE 90 MINUTES IS NOT APT: rustup install of a second compiler plus cargo build --release -p dbsp. DELETE THIS ROW when the probe is removed, or refresh into `jobs` if it is ever promoted to a cadence."
+      "reason": "MEASURED 2026-09-01: probe job INTRODUCED in the same change, zero runs. ubuntu-24.04 + macos-26 x rustc 1.97.0 / 1.98.0 / beta, PR + workflow_dispatch only (not push-to-main), to ask whether the this-Mac dbsp ICE (StarJoinFuncTrait Alias panic, first-bad 1.97.0) reproduces on GHA. Windows is omitted: factory 1.96.1 already fails in feldera-storage (`std::os::fd`), so a 1.97 probe cannot reach the ICE. Unix legs run tools/setup/install.sh (kind=ci). Falls back to the weak pre-apt bound: 550s, which its 5400s (`timeout-minutes: 90`) satisfies. THE 90 MINUTES IS NOT APT: rustup install of a second compiler plus cargo build --release -p dbsp. DELETE THIS ROW when the probe is removed, or refresh into `jobs` if it is ever promoted to a cadence."
     },
     {
       "key": "interp-lane.yml:interp-tests",

@@ -7,12 +7,14 @@
 #
 # Jobs:
 #   native -- factory pin (mise 1.96.1) x 3 OS. Last-good 1.96 line.
-#   probe  -- 1.97.0 / 1.98.0 / beta x 3 OS. PR + dispatch only, not
-#             push-to-main (so merging this file does not pay 9 extra
-#             cargo graphs). Classifier: pass / ice / sigsegv / other.
-#             expect=ice must be the StarJoinFuncTrait Alias panic
-#             (rust-lang issue 159457 family). A pass or SIGSEGV on
-#             1.97/1.98 means this-Mac hardware, not the diagnosis.
+#   probe  -- 1.97.0 / 1.98.0 / beta x ubuntu + macos. PR + dispatch
+#             only, not push-to-main. Windows is omitted: 1.96.1 already
+#             fails in feldera-storage (`std::os::fd` / libc::pread),
+#             so a 1.97 probe there cannot reach the dbsp ICE.
+#             Classifier: pass / ice / sigsegv / other. expect=ice must
+#             be the StarJoinFuncTrait Alias panic (rust-lang issue
+#             159457 family). A pass or SIGSEGV on 1.97/1.98 means
+#             this-Mac hardware, not the diagnosis.
 #
 # Pin: feldera/feldera 0.342.0 at 48312b69bde1af8ab8c6bc3551c9545897664b26
 # Compile: cargo build --release -p dbsp with debuginfo=0.
@@ -101,8 +103,8 @@ jobs:
         working-directory: .feldera-native
         run: cargo build --release -p dbsp
 
-  # 3 OS x 1.97.0 / 1.98.0 / beta. Does not restate the factory pin:
-  # no ~/.rustup/toolchains/<ver>-* glob (coupling audit).
+  # ubuntu + macos x 1.97.0 / 1.98.0 / beta. Does not restate the
+  # factory pin: no ~/.rustup/toolchains/<ver>-* glob (coupling audit).
   probe:
     name: probe dbsp (${{ matrix.os }}, ${{ matrix.pair.rust }})
     if: github.event_name == 'workflow_dispatch' || github.event_name == 'pull_request'
@@ -110,7 +112,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-24.04, macos-26, windows-2025]
+        os: [ubuntu-24.04, macos-26]
         pair:
           - rust: "1.97.0"
             expect: ice
