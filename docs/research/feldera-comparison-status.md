@@ -20,10 +20,10 @@ not copy expression into Zeta.
 
 ## What is true today
 
-- Factory rust is mise-pinned **1.96.0** via `tools/setup/install.sh`
+- Factory rust is mise-pinned **1.96.1** via `tools/setup/install.sh`
   (ace). Feldera 0.342.0 MSRV is 1.93.1. rustc **1.97.0 is first-bad**
-  (`dbsp` ICE); 1.96.0 is last-good. Do not `rustup install` a second
-  compiler to build prior-art.
+  (`dbsp` ICE); 1.96.1 is the last 1.96 patch (no 1.96.2) and compiles
+  `dbsp`. Do not `rustup install` a second compiler to build prior-art.
 - Clone: `references/prior-art/feldera/` (gitignored), SHA `48312b6`.
 - Native Rust Nexmark (not SQL / pipeline-manager):
 
@@ -57,12 +57,12 @@ not copy expression into Zeta.
 
 Feldera 0.342.0 `48312b6`, `--query q1 --query q2 --max-events 100000 --cpu-cores 1`.
 Binary was `cargo bench --no-run` under rustc **1.93.1** (Feldera MSRV).
-Factory pin is rustc **1.96.0** (last-good). Compiling Feldera's
+Factory pin is rustc **1.96.1** (last 1.96 patch). Compiling Feldera's
 `dbsp` crate on 1.97.0 and 1.98.0 ICE's in `rustc_next_trait_solver`.
 1.98.0 also SIGSEGV'd this Darwin LLVM twice before the ICE became
 reproducible. SplitMix64 oracle + golden vector pass on 1.98.0. Do not
 quote 1.97+ Feldera events/s. The table below is the 1.93.1 binary
-(Feldera MSRV), labeled as such. A 1.96.0 `dbsp` lib linked on this
+(Feldera MSRV), labeled as such. A 1.96.1 `dbsp` lib linked on this
 box 2026-09-01; Nexmark numbers from that compiler are not in this
 table yet.
 
@@ -124,7 +124,7 @@ and warns (does not scoop) when it is not. Unix cmake is apt/brew.
 ## Not yet a result
 
 A longer unique-key BDN pasted into `docs/BENCHMARKS.md`, and a
-factory-rust **1.96.0** Nexmark run of Feldera (lib linked; harness
+factory-rust **1.96.1** Nexmark run of Feldera (lib linked; harness
 not yet timed).
 
 ## rustc bisect (Feldera `dbsp` `--release`, debuginfo=0)
@@ -137,12 +137,13 @@ Feldera 0.342.0 `48312b69`. Separate `CARGO_TARGET_DIR` per version.
 | 1.93.1 | MSRV | PASS (earlier Nexmark binary) |
 | 1.94.0 | 2026-03-02 | not probed (between two PASSes) |
 | 1.95.0 | 2026-04-14 | not probed (between two PASSes) |
-| **1.96.0** `ac68faa20` | 2026-05-25 | **PASS** (last-good) |
+| **1.96.0** `ac68faa20` | 2026-05-25 | **PASS** |
+| **1.96.1** `31fca3adb` | 2026-06-26 | **PASS** (last 1.96 patch; factory pin) |
 | **1.97.0** `2d8144b78` | 2026-07-07 | **FAIL rc=101** (first-bad) |
 | 1.98.0 `88d9e12ae` | 2026-08-18 | FAIL rc=101 (same ICE; also earlier LLVM SIGSEGV) |
 
 1.94/1.95 were skipped: 1.93.1 and 1.96.0 both PASS, so the break is
-in (1.96.0, 1.97.0]. Factory pin is **1.96.0**.
+in (1.96.1, 1.97.0]. Factory pin is **1.96.1**. No 1.96.2 exists.
 
 1.98.0 first SIGSEGV'd LLVM, then ICE'd in `rustc_next_trait_solver`
 compiling `dbsp`. Cache-corruption was a live hypothesis on this Mac;
@@ -173,6 +174,6 @@ minimized `Wrap<U: Foo>` repro -- same mechanism, heavier type.
 A coherent panic_fmt naming `StarJoinFuncTrait` is a compiler-bug
 class, not a bit-flip. The earlier LLVM SIGSEGVs on this Mac remain a
 separate hardware-shaped symptom. `feldera-native.yml` compiles
-factory rust (now 1.96.0) `dbsp` on GHA ubuntu-24.04 / macos-26 /
+factory rust (now 1.96.1) `dbsp` on GHA ubuntu-24.04 / macos-26 /
 windows-2025. Same-box Nexmark numbers stay the 1.93.1 binary until a
-1.96.0 harness run is timed.
+1.96.1 harness run is timed.

@@ -19,13 +19,13 @@ composes_with: []
 Aaron 2026-09-01: keep ZetaFS in this monorepo until a signed v0.9ish FS;
 then split product + per-language repos; IR becomes the main repo;
 generated + handwritten oracles; same later for ZetaDB and Ace; Ace
-one-liner after packages publish. Factory rust is mise 1.96.0 via
+one-liner after packages publish. Factory rust is mise 1.96.1 via
 `tools/setup/install.sh` (last-good vs Feldera `dbsp` ICE; first-bad
 1.97.0). Do not rustup-install a second compiler to build Feldera.
 
 ## This change
 
-- Pin rust 1.87.0 -> 1.96.0 (last-good: 1.96.0 PASS `dbsp`; 1.97.0+
+- Pin rust 1.87.0 -> 1.96.1 (last 1.96 patch; `dbsp` PASS; 1.97.0+
   ICE). `.mise.toml` + `.mise.full.toml` + rustup cache globs +
   `install-rust-wasm32.sh`.
 - Unique-key Feldera.Bench Q1/Q2 (`BidRow`) so `|Z-set| = N`.

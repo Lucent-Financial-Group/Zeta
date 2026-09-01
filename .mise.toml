@@ -141,11 +141,12 @@ golangci-lint = "2.13.1"
 # dbsp ICE's on rustc 1.97.0+ (first-bad 1.97.0 / 2d8144b78; 1.98.0
 # same StarJoinFuncTrait / FnOnce::Output next-solver panic at
 # structural_traits.rs try_eagerly_replace_alias). Last-good on this
-# box: 1.96.0 (ac68faa20, 2026-05-25). MSRV is 1.93.1. Pin the last
-# compiler that actually builds prior-art, not the one that ICE's.
-# Measured 2026-09-01: cargo +1.96.0 build --release -p dbsp PASS;
-# cargo +1.97.0 same command FAIL rc=101.
-rust = { version = "1.96.0", components = ["rustfmt", "clippy"], targets = ["wasm32-unknown-unknown"] }
+# box: 1.96.0 (ac68faa20) compiled dbsp; 1.96.1 (31fca3adb, 2026-06-26)
+# is the only 1.96 patch (no 1.96.2) and also compiles dbsp. MSRV is
+# 1.93.1. Pin the last compiler that actually builds prior-art, not
+# 1.97.0+ which ICE's. Measured 2026-09-01: cargo +1.96.1 build
+# --release -p dbsp PASS; +1.97.0 FAIL rc=101.
+rust = { version = "1.96.1", components = ["rustfmt", "clippy"], targets = ["wasm32-unknown-unknown"] }
 # Zig 0.13.0 -- wasm32-freestanding compiler substrate (Oracle 11).
 # Builds the 1,314-byte `src/wasm-dla/bytelock/dla-canonical-zig.wasm` byte-lock
 # substrate; the exact command lives in `bytelock/build-substrates.mjs`. Verified
