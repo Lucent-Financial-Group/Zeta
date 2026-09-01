@@ -402,15 +402,6 @@ module ZSet =
             finally
                 Pool.Return rented
 
-    let inline flatMap ([<InlineIfLambda>] f: 'K -> ZSet<'K2>) (a: ZSet<'K>) : ZSet<'K2> =
-        let span = a.AsSpan()
-        if span.IsEmpty then ZSet<'K2>.Empty
-        else
-            let mutable acc = ZSet<'K2>.Empty
-            for i in 0 .. span.Length - 1 do
-                acc <- add acc (scale span.[i].Weight (f span.[i].Key))
-            acc
-
     let distinct (a: ZSet<'K>) : ZSet<'K> =
         let span = a.AsSpan()
         if span.IsEmpty then a
@@ -597,13 +588,9 @@ module ZSet =
                 let rented = Pool.Rent<ZEntry<'K>> total
                 try
                     let cmp = KeyComparerCache<'K>.Instance
-                    // `PriorityQueue<sourceIdx, ZEntry<'K>>` — we use the
-                    // entire entry as the priority so the tuple compare
-                    // breaks ties on key-then-weight (weight tie doesn't
-                    // matter — source idx is the tiebreaker).
-                    let pq =
-                        PriorityQueue<int, 'K>(
-                            Comparer<'K>.Create(fun a b -> cmp.Compare(a, b)))
+                    // Binary-collation comparer already cached per `'K`.
+                    // `Comparer.Create` allocated a heap comparer every sum.
+                    let pq = PriorityQueue<int, 'K>(cmp)
                     for i in 0 .. sources.Length - 1 do
                         pq.Enqueue(i, sources.[i].[0].Key)
                     let mutable k = 0
@@ -638,6 +625,17 @@ module ZSet =
                     if k = 0 then ZSet.Empty else ZSet(Pool.FreezeSlice(rented, k))
                 finally
                     Pool.Return rented
+
+    let inline flatMap ([<InlineIfLambda>] f: 'K -> ZSet<'K2>) (a: ZSet<'K>) : ZSet<'K2> =
+        let span = a.AsSpan()
+        if span.IsEmpty then ZSet<'K2>.Empty
+        else
+            // k-way merge, not pairwise add (O(n²) allocs when f is a singleton).
+            let parts = ResizeArray<ZSet<'K2>>(span.Length)
+            for i in 0 .. span.Length - 1 do
+                let piece = scale span.[i].Weight (f span.[i].Key)
+                if not piece.IsEmpty then parts.Add piece
+            sum parts
 
     /// C#-friendly builder: accepts `struct ('K * Weight)` tuples so that
     /// `(key, weight)` literals from C# work without `Tuple.Create` ceremony.
