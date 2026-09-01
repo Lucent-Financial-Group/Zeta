@@ -49,7 +49,8 @@ pub fn sha256(bytes: &[u8]) -> [u8; 32] {
     msg.extend_from_slice(&bit_len.to_be_bytes());
 
     // --- Process each 512-bit (64-byte) block ---
-    for block in msg.chunks_exact(64) {
+    // Padding above makes len % 64 == 0, so as_chunks remainder is empty.
+    for block in msg.as_chunks::<64>().0 {
         // Prepare the 64-entry message schedule W.
         let mut w = [0u32; 64];
         for (t, word) in w.iter_mut().take(16).enumerate() {

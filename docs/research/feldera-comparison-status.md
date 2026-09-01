@@ -93,8 +93,36 @@ ubuntu-24.04, macos-26, and windows-2025 when the bench/Z-set paths
 change. Drift check, not `gate (required)`. Feldera itself is not
 cloned in that workflow (`references/prior-art/` is gitignored).
 
+## Native compile deps (install.sh, all OSes)
+
+Feldera's from-sources README (`references/prior-art/feldera/README.md`)
+names rust + C/C++ + cmake + libssl-dev + libsasl2-dev + zlib1g-dev +
+libzstd-dev + pkg-config + clang, then a longer brew line that also
+pulls go / graphviz / openjdk / maven / bun / node.
+
+Declared in `tools/setup/manifests/{apt,brew}` (realized by
+`install.sh`): cmake, pkg-config, OpenSSL headers, SASL headers, zlib
+headers, zstd headers. `zstd` binary was already on apt (ollama
+`.tar.zst`).
+
+Not declared, on purpose: golang (`--features fips` only), graphviz,
+JDK/maven (SQL compiler), librdkafka (Kafka connectors; Feldera wants
+`./scripts/install-librdkafka.sh` against AWS-LC, not the distro
+package). bun/node/python stay on mise.
+
+Windows cmake is **Microsoft Visual Studio C++ CMake tools**
+(`Microsoft.VisualStudio.Component.VC.CMake.Project`), not
+scoop/winget/choco cmake. `install.ps1` prepends the vswhere-found
+`cmake.exe` + `ninja.exe` dirs to PATH when the component is present,
+and warns (does not scoop) when it is not. Unix cmake is apt/brew.
+
 ## Not yet a result
 
 A longer unique-key BDN pasted into `docs/BENCHMARKS.md`, and a
-factory-rust 1.98.0 rebuild of Feldera `dbsp` on this box (1.98.0
-SIGSEGV'd LLVM here twice; retry — this Mac has known memory faults).
+factory-rust 1.98.0 rebuild of Feldera `dbsp` on this box. 1.98.0
+SIGSEGV'd LLVM here twice, then ICE'd in
+`rustc_next_trait_solver` compiling `dbsp` (~25s, not a missing
+cmake — aws-lc-sys had already compiled under 1.93.1). This Mac has
+known memory faults; a corrupt cargo `target/` is a live hypothesis,
+so the next compile is `rm -rf target` + `CARGO_INCREMENTAL=0` rather
+than a retry over the same cache.

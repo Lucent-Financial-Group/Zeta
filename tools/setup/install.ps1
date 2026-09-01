@@ -114,6 +114,63 @@ function Publish-ZetaRuntimePaths {
     }
   }
 }
+
+# Windows CMake is Microsoft's Visual Studio C++ CMake tools, not scoop/winget/choco.
+# Aaron 2026-09-01: that package is built with the VS generator, matching Ninja, and
+# the MSVC/Windows SDK options native crates (aws-lc-sys, Feldera) expect. A second
+# Kitware cmake from scoop is a different binary. Prefer the vswhere-found copy when
+# the component is present; warn and do not scoop when it is not (Server Core smoke
+# has no VS -- failing install there would be a hole in the shield).
+function Publish-VisualStudioCmakePath {
+  $vswhereCandidates = @(
+    (Join-Path ${env:ProgramFiles(x86)} 'Microsoft Visual Studio\Installer\vswhere.exe'),
+    (Join-Path $env:ProgramFiles 'Microsoft Visual Studio\Installer\vswhere.exe')
+  )
+  $vswhere = $vswhereCandidates | Where-Object { $_ -and (Test-Path -LiteralPath $_) } | Select-Object -First 1
+  if (-not $vswhere) {
+    Write-Host 'warn: vswhere.exe not found; Windows CMake comes from Visual Studio C++ CMake tools (Microsoft.VisualStudio.Component.VC.CMake.Project), not scoop/winget. Native crates that need cmake will fail until that VS component is installed.'
+    return
+  }
+
+  $prev = $ErrorActionPreference
+  $ErrorActionPreference = 'Continue'
+  $cmakeExe = $null
+  $ninjaExe = $null
+  try {
+    $cmakeExe = (& $vswhere -latest -products * -requires Microsoft.VisualStudio.Component.VC.CMake.Project -find 'Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe' | Select-Object -First 1)
+    $ninjaExe = (& $vswhere -latest -products * -requires Microsoft.VisualStudio.Component.VC.CMake.Project -find 'Common7\IDE\CommonExtensions\Microsoft\CMake\Ninja\ninja.exe' | Select-Object -First 1)
+  } finally {
+    $ErrorActionPreference = $prev
+  }
+  $cmakeExe = if ($cmakeExe) { "$cmakeExe".Trim() } else { '' }
+  $ninjaExe = if ($ninjaExe) { "$ninjaExe".Trim() } else { '' }
+
+  $dirs = @()
+  if ($cmakeExe -and (Test-Path -LiteralPath $cmakeExe)) {
+    $dirs += [System.IO.Path]::GetDirectoryName($cmakeExe)
+  }
+  if ($ninjaExe -and (Test-Path -LiteralPath $ninjaExe)) {
+    $dirs += [System.IO.Path]::GetDirectoryName($ninjaExe)
+  }
+  $dirs = @($dirs | Where-Object { $_ } | Select-Object -Unique)
+  if ($dirs.Count -eq 0) {
+    Write-Host 'warn: Visual Studio C++ CMake tools (Microsoft.VisualStudio.Component.VC.CMake.Project) not installed. Not installing scoop cmake -- that binary lacks the VS generator/MSVC options. Install VS Build Tools with Desktop development with C++ / CMake tools.'
+    return
+  }
+
+  $separator = [System.IO.Path]::PathSeparator
+  $current = @($env:PATH -split [regex]::Escape([string]$separator) | Where-Object { $_ })
+  $remaining = @($current | Where-Object { $dirs -notcontains $_ })
+  $env:PATH = (@($dirs) + $remaining) -join $separator
+  if ($env:GITHUB_PATH) {
+    $utf8NoBom = New-Object System.Text.UTF8Encoding -ArgumentList $false
+    foreach ($entry in $dirs) {
+      [System.IO.File]::AppendAllText($env:GITHUB_PATH, "$entry$([Environment]::NewLine)", $utf8NoBom)
+    }
+  }
+  Write-Host "ok Visual Studio CMake: $cmakeExe"
+}
+
 # Best-effort native call: surface merged output, return the exit code, NEVER throw -- for GRACEFUL
 # steps that must not brick install (e.g. the local-LLM pull + `optional` manifest tools). Mirrors
 # mechanisms/from-ollama.sh's warn-and-continue discipline (exceptions-as-signals: best-effort substrate).
@@ -490,6 +547,8 @@ if (Test-Path $llmManifest) {
 if (-not $SkipLoopRegister) {
   Invoke-Tool { mise exec -- bun "$RepoRoot\src\Core.TypeScript\persistence\windows\install-scheduled-task.ts" --register } 'register loop task'
 }
+
+Publish-VisualStudioCmakePath
 
 Write-Host ""
 Write-Host "=== Install complete ==="
