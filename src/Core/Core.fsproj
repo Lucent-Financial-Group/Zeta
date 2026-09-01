@@ -199,6 +199,7 @@
     <Compile Include="ZetaFsPolicy.fs" />
     <Compile Include="ZetaFsPlacement.fs" />
     <Compile Include="ZetaFsMutbuf.fs" />
+    <Compile Include="ZetaFsCli.fs" />
     <Compile Include="ZetaFsJumprope.fs" />
     <Compile Include="Globals.fs" />
     <Compile Include="TensorRef.fs" />

@@ -2,8 +2,10 @@ module Zeta.Cli.Program
 
 open System
 open System.IO
+open System.Runtime.CompilerServices
 open LibGit2Sharp
 open Zeta.Core
+open Zeta.Core.FSharp.Blake3
 open Zeta.Core.FSharp.Git
 
 /// The thin `zeta` CLI shell over the command core (roadmap #1, no-git-CLI).
@@ -91,6 +93,70 @@ let private noStore () =
     eprintfn "zeta: no .zetafs store and not inside a git repository (run 'zeta init')"
     1
 
+let private maxCatBytes = 64L * 1024L * 1024L
+
+let private ensureBlake3 () =
+    RuntimeHelpers.RunClassConstructor(typeof<OwnBlake3Hasher>.TypeHandle)
+
+let private idUsage = "zeta: usage: zeta id PATH | blake3:<64-hex> | entity:<Crockford-26>"
+let private catUsage = "zeta: usage: zeta cat PATH | blake3:<64-hex> | entity:<Crockford-26>"
+
+let private resolve cwd : ZetaFsCli.Resolve =
+    let fs = FileSystem.Current
+    let store = ZetaFsStore.discover cwd
+    { ReadPath =
+        fun p ->
+            let full =
+                if Path.IsPathRooted p then
+                    p
+                else
+                    Path.Combine(cwd, p)
+
+            FileSystemIo.tryReadBytesCapped fs maxCatBytes full
+      ReadContent =
+        fun h ->
+            match store with
+            | None -> None
+            | Some dir -> FileSystemIo.tryReadBytesCapped fs maxCatBytes (ZetaFsCli.contentObjectPath dir h)
+      ReadEntity =
+        fun id ->
+            match store with
+            | None -> None
+            | Some dir -> FileSystemIo.tryReadBytesCapped fs maxCatBytes (ZetaFsCli.entityDataPath dir id) }
+
+let private runId (token: string) : int =
+    ensureBlake3 ()
+    let cwd = Environment.CurrentDirectory
+    match ZetaFsCli.identify token (resolve cwd).ReadPath with
+    | Error e ->
+        eprintfn "zeta id: %s" (ZetaFsCli.describeError e)
+        2
+    | Ok id ->
+        match id.Warning with
+        | Some w -> eprintfn "zeta id: %s" w
+        | None -> ()
+
+        printfn "%s" id.Line
+
+        match id.ContentLine with
+        | Some line -> printfn "%s" line
+        | None -> ()
+
+        0
+
+let private runCat (token: string) : int =
+    let cwd = Environment.CurrentDirectory
+    match ZetaFsCli.cat token (resolve cwd) with
+    | Error(ZetaFsCli.CatError.Parse e) ->
+        eprintfn "zeta cat: %s" (ZetaFsCli.describeError e)
+        2
+    | Error(ZetaFsCli.CatError.NotFound t) ->
+        eprintfn "zeta cat: not found: %s" (ZetaFsCli.describe t)
+        1
+    | Ok bytes ->
+        Console.OpenStandardOutput().Write(bytes, 0, bytes.Length)
+        0
+
 let private withLog (cwd: string) (body: IRefDeltaLog<DvKey> -> int) : int =
     match StoreSelect.tryZetaFs cwd with
     | Some log -> body log
@@ -151,6 +217,14 @@ let main argv =
         let dir = StoreSelect.init Environment.CurrentDirectory
         printfn "initialized %s" dir
         0
+    | [| "id"; token |] -> runId token
+    | [| "id" |] ->
+        eprintfn "%s" idUsage
+        2
+    | [| "cat"; token |] -> runCat token
+    | [| "cat" |] ->
+        eprintfn "%s" catUsage
+        2
     | [| "shape"; "render"; path; kind |] -> shapeRender path kind
     | [| "shape"; "accept"; path |] -> shapeAccept path
     | [| "shape"; "render"; _ |] -> eprintfn "zeta: usage: zeta shape render <cartridge.lines> (svg|html)"; 2
