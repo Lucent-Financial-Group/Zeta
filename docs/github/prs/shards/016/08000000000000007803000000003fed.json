@@ -1,0 +1,12 @@
+{
+  "pr_number": 16365,
+  "archive_path": "docs/history/pr-reviews/PR-16365-fix-workitem-main-is-red-on-auto-vivify-three-self-relative-paths-from-16361.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-02T19:49:23.857Z",
+  "schema_version": "v1",
+  "commit_sha": "c15210bec2d16d458f219c48c680676ed9b6b6d1",
+  "title": "fix(workitem): main is red on auto-vivify — three self-relative paths from #16361",
+  "state": "MERGED",
+  "merged_at": "2026-09-02T19:48:45Z",
+  "head_ref": "fix-workitem-dangling-refs"
+}

@@ -55,6 +55,42 @@ spec:
     #
     # Reverting to 0.24.2 restores exactly batch 1's spire state, which PASSED this proof
     # with spire-crds already at 0.6.1 -- so the control is clean: one variable moves.
+      #
+      # THE HYPOTHESIS IS NOW HALF MEASURED, 2026-09-02, and only half -- the two
+      # halves are kept apart because collapsing them is how a guess becomes a
+      # citation.
+      #
+      #   MEASURED, by rendering both versions with THIS valuesObject at
+      #   kube-version 1.35.6: BOTH ValidatingWebhookConfiguration webhooks --
+      #   `vclusterspiffeid.kb.io` and `vclusterfederatedtrustdomain.kb.io` -- move
+      #   `failurePolicy: Ignore` -> `Fail` between 0.24.2 and 0.30.1. The WATCH
+      #   note above predicted exactly that, and it is no longer a prediction.
+      #
+      #   STILL NOT MEASURED: that this is what turned the live lane red. A
+      #   fail-closed webhook whose backing service is not ready WOULD block
+      #   admission, but nothing has observed it doing so here. Only the isolation
+      #   run can close that, and it is the reason this pin has not moved.
+      #
+      # AND THE MITIGATION EXISTS IN THE CHART, so whoever lifts this hold does not
+      # have to choose between the version and the behaviour:
+      #   `controllerManager.validatingWebhookConfiguration.failurePolicy` (the
+      #   spire-server subchart, templates/controller-manager-webhook.yaml:19).
+      # Setting it to `Ignore` takes 0.30.1 while keeping 0.24.2's admission
+      # behaviour, which makes the bump and the policy change two decisions instead
+      # of one bundled together.
+      #
+      # Worth knowing when reading that template: it emits a hardcoded
+      # `failurePolicy: Ignore # Actual value to be set by post install/upgrade
+      # hooks` on one branch and the values-driven value on the other, so the live
+      # object can differ from the rendered one. A render is evidence about the
+      # manifest, not about the cluster -- which is the same reason this pin is held
+      # rather than reasoned about.
+      #
+      # SEQUENCING, not a blocker on the bump itself: the included-proof lane is red
+      # today for redis (missing redis-auth Secret, PR #16362) and mimir (seaweedfs
+      # S3 auth, 081M1FG1RCW). Landing spire into that would give it a verdict
+      # nobody can attribute, which is the failure the isolation was set up to
+      # avoid in the first place.
     targetRevision: 0.24.2
     helm:
       releaseName: spire

@@ -40,8 +40,10 @@
 # secret's `password` key, so StackExchange.Redis's plain AUTH still works, and a
 # `replicator` user exists because the chart REFUSES replica mode without one.
 #
-# STILL OPEN, and unchanged by this commit: the `redis-auth` secret does not exist
-# in the tree. That is why the orleans StatefulSet stays at replicas 0.
+# The secret is not in the tree (metal: Sealed Secret / Vault). That is why
+# the orleans StatefulSet stays at replicas 0. Dev/CI bring-up mints
+# redis-auth into namespace redis the same way it mints grafana-admin-credentials
+# -- see DEV_REDIS_AUTH_SECRET. That mint is not a credential in git.
 
 apiVersion: argoproj.io/v1alpha1
 kind: Application

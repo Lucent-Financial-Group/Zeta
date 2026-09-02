@@ -158,6 +158,43 @@ let ``InMemoryFileSystem swarm stress test scenario`` () =
         FileSystem.Reset()
 
 [<Fact>]
+let ``InMemoryFileSystem crash-mid-write commits a prefix then throws`` () =
+    let fs = InMemoryFileSystem()
+    let ifs = fs :> IFileSystem
+    fs.ArmCrashMidWrite("/torn", 8)
+    let payload = Array.init 100 (fun i -> byte i)
+    let stream = ifs.OpenWrite("/torn", false)
+    stream.Write(payload, 0, payload.Length)
+    let ex = Assert.Throws<CrashMidWriteException>(fun () -> stream.Dispose())
+    Assert.Equal("/torn", ex.Path)
+    Assert.Equal(8, ex.CommittedBytes)
+    Assert.Equal(100, ex.AttemptedBytes)
+    Assert.Equal<byte>(Array.sub payload 0 8, ifs.ReadAllBytes("/torn"))
+
+[<Fact>]
+let ``InMemoryFileSystem crash-mid-write is one-shot and the same arm replays`` () =
+    let run () =
+        let fs = InMemoryFileSystem()
+        let ifs = fs :> IFileSystem
+        fs.ArmCrashMidWrite("/torn", 8)
+        let payload = Array.init 100 (fun i -> byte (i + 3))
+        let stream = ifs.OpenWrite("/torn", false)
+        stream.Write(payload, 0, payload.Length)
+        Assert.Throws<CrashMidWriteException>(fun () -> stream.Dispose()) |> ignore
+        let torn = ifs.ReadAllBytes("/torn")
+        let stream2 = ifs.OpenWrite("/torn-full", false)
+        stream2.Write(payload, 0, payload.Length)
+        stream2.Dispose()
+        torn, ifs.ReadAllBytes("/torn-full")
+
+    let tornA, fullA = run ()
+    let tornB, fullB = run ()
+    Assert.Equal(8, tornA.Length)
+    Assert.Equal<byte>(tornA, tornB)
+    Assert.Equal(100, fullA.Length)
+    Assert.Equal<byte>(fullA, fullB)
+
+[<Fact>]
 let ``FileSystemBlockIo reads back a block written through IFileSystem`` () =
     let mock = InMemoryFileSystem() :> IFileSystem
     let io = FileSystemBlockIo(mock, "/vol/blocks", 4096) :> IBlockIo

@@ -1,0 +1,14 @@
+{
+  "id": "080d031bd0d5d810a01300081997adfd",
+  "at": "2026-09-02T18:55:41.755Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1HQM6NS087G0R0002ZS3MK",
+    "type": "bug",
+    "title": "Tests.FSharp.Git can pass at most once per temp lifetime: cleanup cannot delete a git repo on Windows and swallows saying so",
+    "slug": "tests-fsharp-git-can-pass-at-most-once-per-temp-lifetime-cle",
+    "priority": "P2",
+    "filename": "081M1HQM6NS087G0R0002ZS3MK-tests-fsharp-git-can-pass-at-most-once-per-temp-lifetime-cle.md"
+  }
+}

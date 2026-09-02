@@ -1,7 +1,9 @@
 module Zeta.Tests.Storage.DiskDeltaLogTests
 
+open System
 open System.IO
 open System.Threading
+open System.Threading.Tasks
 open FsUnit.Xunit
 open global.Xunit
 open Zeta.Core
@@ -157,6 +159,48 @@ let ``group-commit segment log rejects multi-ferry writer configs`` () =
         (fun () -> new GroupCommitDiskDeltaLog<int>(dir, CborEntryCodec<int>(keyEnc, keyDec), config) |> ignore)
         |> should throw typeof<System.ArgumentException>)
 
+
+[<Fact>]
+let ``group-commit crash-mid-write through IFileSystem tears the tail and a fresh instance truncates`` () : Task =
+    task {
+        let mock = InMemoryFileSystem()
+        FileSystem.Register(mock)
+        let dir = DeterministicTestPath.nextDir "gcdl-crash-mid"
+        try
+            let codec = CborEntryCodec<int>(keyEnc, keyDec)
+            let log1 = new GroupCommitDiskDeltaLog<int>(dir, codec)
+            let mutable committedLen = 0
+            try
+                let dlog1 = log1 :> IDeltaLog<int>
+                let! seq1 = dlog1.AppendAsync(ZSet.ofKeys [ 1 ], empty, ct).AsTask().ConfigureAwait(false)
+                Assert.Equal(1L, seq1)
+                let segmentPath = Path.Combine(Path.GetFullPath dir, "delta.segment")
+                let committed = FileSystem.Current.ReadAllBytes segmentPath
+                committedLen <- committed.Length
+                mock.ArmCrashMidWrite("delta.segment", committed.Length + 8)
+                let append2 = dlog1.AppendAsync(ZSet.ofKeys [ 2 ], empty, ct).AsTask()
+                let! ex =
+                    Assert
+                        .ThrowsAsync<CrashMidWriteException>(fun () -> append2 :> Task)
+                        .ConfigureAwait(false)
+
+                Assert.Equal(committed.Length + 8, ex.CommittedBytes)
+                Assert.Equal(committed.Length + 8, FileSystem.Current.ReadAllBytes(segmentPath).Length)
+            finally
+                (log1 :> IDisposable).Dispose()
+
+            use log2 = new GroupCommitDiskDeltaLog<int>(dir, codec)
+            let dlog2 = log2 :> IDeltaLog<int>
+            Assert.Equal(1L, dlog2.HighWater)
+            let! replayed = dlog2.ReplayAsync(0L, ct).AsTask().ConfigureAwait(false)
+            Assert.Equal<int64>([| 1L |], replayed |> Array.map (fun e -> e.Seq))
+            let recovered =
+                FileSystem.Current.ReadAllBytes(Path.Combine(Path.GetFullPath dir, "delta.segment"))
+            Assert.Equal(committedLen, recovered.Length)
+        finally
+            FileSystem.Reset()
+            try Directory.Delete(dir, true) with _ -> ()
+    }
 
 [<Fact>]
 let ``group-commit segment log truncates torn trailing record on recovery`` () =

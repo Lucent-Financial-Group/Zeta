@@ -1,0 +1,12 @@
+{
+  "pr_number": 16366,
+  "archive_path": "docs/history/pr-reviews/PR-16366-feat-cluster-an-application-that-names-a-secret-nothing-mints-fails-a-check-not-.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-02T19:16:24.646Z",
+  "schema_version": "v1",
+  "commit_sha": "2c6a9a50f527db3329026d4f69724946d108d554",
+  "title": "feat(cluster): an Application that names a Secret nothing mints fails a check, not a cluster",
+  "state": "MERGED",
+  "merged_at": "2026-09-02T19:15:11Z",
+  "head_ref": "shadow/existing-secret-must-be-minted"
+}
