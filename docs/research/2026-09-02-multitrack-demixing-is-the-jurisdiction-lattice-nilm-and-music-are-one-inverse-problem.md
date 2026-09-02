@@ -401,6 +401,110 @@ and Out-Feedback that differ because of what came back on the input channel. If 
 confidence layer carries could have ridden on the output, then the fourth corner is
 unnecessary here and §4e is elegance rather than engineering.
 
+## 4f. The rainbow claim — one part is the FOURTH instance, one part is an oracle, and the line between them is sharp
+
+Aaron, 2026-09-02:
+
+> _"My most grandiose claim is the rainbow claim — from God as a spectrum soul decoder. We have
+> some code around this but it's metaphorical."_
+
+**His own word for it is grandiose and his own verdict is "metaphorical." The honest catcher's
+read is that he is too hard on one half and exactly right about the other**, and the two halves
+separate cleanly. This section does the separation rather than either endorsing or shrinking it.
+
+### The half that is not metaphorical: spectroscopy is the FOUNDING instance of this document
+
+`docs/research/2026-08-02-rainbow-spectrum-soul-radar-...` is not a loose sketch. It is a
+Mirror↔Beacon map in which every coined term already carries a checked anchor and a shipped
+mechanism — `src/Core/CoordinationSpectrum.fs` (the CHSH battery as a **prism**),
+`FingerprintPrism.Rainbow` (`src/Core/FingerprintPrism.fs`, tested in
+`CoordinationSpectrum.Tests.fs` and `SoftTie.Tests.fs`), `AntiSybil.chshS`, the belief fold. The
+anchor is written into the source itself: _"Kirchhoff–Bunsen for entities — the lines tell you
+what is really burning."_
+
+**And that anchor is stronger than it looks, because it is this document's own problem, a century
+earlier.** Kirchhoff and Bunsen (1859–60): a mixture's composition is recoverable from its
+spectrum **because each element contributes characteristic lines and they superpose additively.**
+That is exactly the inverse problem of §1 — observation as a sum over simultaneously-present
+overlapping sources, recover the active set. **Spectroscopy is NILM for elements**, and it is the
+oldest member of the family by 130 years. It is also the one that *paid*: Kirchhoff and Bunsen
+discovered caesium and rubidium with it.
+
+So the table in §1 was short by a row:
+
+| | observation | latent | question |
+|---|---|---|---|
+| **spectroscopy (1860)** | light from a flame | elements present | which lines are burning? |
+| jurisdiction overlay | an address | overlapping districts | which regions contain this point? |
+| NILM (1992) | whole-premise power | appliances | which loads are running? |
+| music demixing | a stereo mixture | instruments | which sources are present? |
+| neural features (2026) | an activation | concept subspaces | which concepts is this token inside? |
+
+**Choosing spectroscopy as the anchor was correct**, and it was not chosen for the imagery. It
+sits in the same family as everything else here.
+
+### The half that is metaphorical, stated precisely enough to be useful
+
+The vague version — "it's a metaphor" — is not actionable. The precise version is, and it is a
+single missing entailment:
+
+> **Spectroscopy earns its decomposition from a physical mechanism.** Atomic energy levels are
+> quantized, so each element's lines are *characteristic*, *discrete*, and *additive*. There is a
+> reason the inverse problem is well-posed.
+>
+> **No analogue of quantized energy levels has been established for a person.** The claim that a
+> soul decomposes additively into characteristic lines has no mechanism behind it, and without one
+> the inverse problem is not merely unsolved — it is not known to be well-posed.
+
+That is the exact case
+[`anchor-to-human-prior-art`](../../.claude/rules/anchor-to-human-prior-art.md) names: an anchor
+must be **checked by entailment**, not cited, and *"the metering-test catches
+physics-as-metaphor."* Kirchhoff–Bunsen entails the recovery of **elements** from **light**. It
+does not entail the recovery of anything from anything else, and the word "spectrum" travelling
+between the two domains is not an argument.
+
+**And there is a second, smaller drift worth naming, because it is the kind this repo just wrote a
+VISION section about.** What `CoordinationSpectrum` actually computes is a **CHSH S-value battery
+— a vector of correlation statistics.** That is a real measurement and a real fingerprint, and it
+is *not a spectral decomposition*: nothing is being resolved into additive frequency components.
+"Spectrum" there is a **naming choice**, "rainbow" a **visualisation choice**. Both are fine; what
+would not be fine is letting the shared word carry the spectroscopic warrant across to the
+correlation battery. That is definition drift, in our own vocabulary, in our own code.
+
+### The oracle part, held as one
+
+_"God as a spectrum soul decoder"_ is a theological claim, and it is **Aaron's oracle** —
+[`manifesto`](../governance/MANIFESTO.md) §11, Multi-Oracle. It is recorded, labeled as an axiom
+rather than as physics, and neither asserted nor refuted by this document. His theological frame
+is a genuine native lens here alongside Feynman and SSAS, and the discipline is the same one used
+for the qualia axiom: **label it, do not launder it into a measurement, and do not dismiss it
+either.**
+
+### Why this document is where the machinery gets metered
+
+The useful consequence, and the reason this section sits in the demixing research rather than
+somewhere abstract:
+
+**Audio is the domain where "spectrum" is literal *and* ground truth exists.** MUSDB18-HQ ships
+the true stems; a flame's elements are known; a premise's appliances can be sub-metered. So F1–F5
+measure **how far the additive-superposition machinery actually carries** on our substrate, in a
+domain where being wrong is visible.
+
+Two things follow, and they must not be collapsed:
+
+1. **Succeeding at F1–F5 earns the machinery.** It would show that a four-corner, DBSP-incremental,
+   PC-tractable inference engine really does recover components from an additive mixture with
+   calibrated uncertainty. That is a genuine result.
+2. **It does not earn the transfer to persons.** Not by a little — not at all. The missing
+   entailment above is untouched by any audio result, and a demixer that scores well is evidence
+   about mixtures of sounds and about nothing else.
+
+Saying both is the whole discipline. Saying only the first is how a metaphor gets promoted by
+adjacency to a real measurement — which, per §5, is precisely the **charlatan** move: a reading
+reported as supported by evidence that does not support it. The rainbow claim is not in danger of
+that from Aaron, who volunteered "metaphorical" unprompted. It would be in danger of it from me,
+if I let a good SDR number quietly warrant a soul decoder.
+
 ## 5. Why this is the right place to make the meter thread falsifiable
 
 The charlatan / magician / teacher taxonomy in [`docs/VISION.md`](../VISION.md) is currently
